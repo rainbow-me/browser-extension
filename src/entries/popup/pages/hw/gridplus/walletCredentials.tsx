@@ -3,6 +3,8 @@ import { setup } from 'gridplus-sdk';
 import { FormEvent, useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
+import { useGridPlusClientStore } from '~/core/state/gridplusClient';
+import { LocalStorage } from '~/core/storage';
 import { Box, Button, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
@@ -20,6 +22,7 @@ export const WalletCredentials = ({
   appName,
   onAfterSetup,
 }: WalletCredentialsProps) => {
+  const setClient = useGridPlusClientStore((state) => state.setClient);
   const [connecting, setConnecting] = useState(false);
   const [formData, setFormData] = useState({
     deviceId: '',
@@ -28,6 +31,11 @@ export const WalletCredentials = ({
   const formDataFilled =
     formData.deviceId.length > 0 && formData.password.length > 0;
   const disabled = !formDataFilled || connecting;
+  const setStoredClient = (storedClient: string | null) => {
+    if (!storedClient) return;
+    setStoredGridPlusClient(storedClient);
+    setClient(storedClient);
+  };
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setConnecting(true);
@@ -36,10 +44,10 @@ export const WalletCredentials = ({
         deviceId: formData.deviceId,
         password: formData.password,
         name: appName,
-        getStoredClient: getStoredGridPlusClient,
-        setStoredClient: setStoredGridPlusClient,
+        getStoredClient: () => useGridPlusClientStore.getState().client,
+        setStoredClient: setStoredClient,
       });
-      localStorage.setItem('gridPlusDeviceId', formData.deviceId);
+      await LocalStorage.set('gridPlusDeviceId', formData.deviceId);
       onAfterSetup && onAfterSetup(result);
     } finally {
       setConnecting(false);
@@ -47,9 +55,10 @@ export const WalletCredentials = ({
   };
   useEffect(() => {
     const checkPersistedClient = async () => {
-      if (getStoredGridPlusClient()) {
+      const gridPlusClient = await getStoredGridPlusClient();
+      if (gridPlusClient) {
         const result = await setup({
-          getStoredClient: getStoredGridPlusClient,
+          getStoredClient: () => gridPlusClient,
           setStoredClient: setStoredGridPlusClient,
           name: appName,
         });

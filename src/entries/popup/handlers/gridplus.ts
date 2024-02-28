@@ -22,20 +22,21 @@ import { Address } from 'wagmi';
 
 import { getPath } from '~/core/keychain';
 import { LEGACY_CHAINS_FOR_HW } from '~/core/references';
+import { LocalStorage } from '~/core/storage';
 import { addHexPrefix } from '~/core/utils/hex';
 
 const LOCAL_STORAGE_CLIENT_NAME = 'storedClient';
 
 export const getStoredGridPlusClient = () =>
-  localStorage.getItem(LOCAL_STORAGE_CLIENT_NAME) ?? '';
+  LocalStorage.get(LOCAL_STORAGE_CLIENT_NAME) ?? '';
 
 export const setStoredGridPlusClient = (storedClient: string | null) => {
   if (!storedClient) return;
-  localStorage.setItem(LOCAL_STORAGE_CLIENT_NAME, storedClient);
+  LocalStorage.set(LOCAL_STORAGE_CLIENT_NAME, storedClient);
 };
 
 export const removeStoredGridPlusClient = () =>
-  localStorage.removeItem(LOCAL_STORAGE_CLIENT_NAME);
+  LocalStorage.remove(LOCAL_STORAGE_CLIENT_NAME);
 
 export async function signTransactionFromGridPlus(
   transaction: TransactionRequest,
@@ -107,14 +108,12 @@ export async function signTransactionFromGridPlus(
 
       return serializedTransaction;
     } else {
-      console.log('gridplus error', JSON.stringify(response, null, 2), baseTx);
       alert('error signing transaction with gridplus');
       throw new Error('error signing transaction with gridplus');
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
-    console.log('gridplus error', e);
     alert('Please make sure your gridplus is unlocked');
 
     // bubble up the error

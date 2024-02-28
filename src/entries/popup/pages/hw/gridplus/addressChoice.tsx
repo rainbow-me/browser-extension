@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { SessionStorage } from '~/core/storage';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, Button, Text } from '~/design-system';
 import { Checkbox } from '~/entries/popup/components/Checkbox/Checkbox';
@@ -70,9 +71,9 @@ export const AddressChoice = () => {
       setAddresses(nonExistingAddresses);
       setLoadingAddresses(false);
     };
-    const setPersistedFormData = () => {
+    const setPersistedFormData = async () => {
       const persistedAddresses = JSON.parse(
-        sessionStorage.getItem('gridplusPersistedAddresses') ?? '[]',
+        (await SessionStorage.get('gridplusPersistedAddresses')) ?? '[]',
       ) as string[];
       if (persistedAddresses.length < 1) return;
       setFormData({ selectedAddresses: persistedAddresses });
@@ -82,7 +83,7 @@ export const AddressChoice = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
-    sessionStorage.setItem(
+    SessionStorage.set(
       'gridplusPersistedAddresses',
       JSON.stringify(formData.selectedAddresses),
     );
@@ -117,7 +118,6 @@ export const AddressChoice = () => {
           {addresses.map((address, i) => (
             <Box key={address} display="flex" gap="16px" alignItems="center">
               <Checkbox
-                id={`gridplus-address-${i}`}
                 borderColor="blue"
                 onClick={() => toggleAddress(address)}
                 selected={formData.selectedAddresses.includes(address)}

@@ -1,5 +1,4 @@
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
-import { setup } from 'gridplus-sdk';
 import { isEqual } from 'lodash';
 import * as React from 'react';
 import { WagmiConfig } from 'wagmi';
@@ -23,10 +22,7 @@ import { Routes } from './Routes';
 import { HWRequestListener } from './components/HWRequestListener/HWRequestListener';
 import { IdleTimer } from './components/IdleTimer/IdleTimer';
 import { OnboardingKeepAlive } from './components/OnboardingKeepAlive';
-import {
-  getStoredGridPlusClient,
-  setStoredGridPlusClient,
-} from './handlers/gridplus';
+import { useGridPlusInit } from './handlers/gridplusHooks';
 import { AuthProvider } from './hooks/useAuth';
 import { useExpiryListener } from './hooks/useExpiryListener';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
@@ -45,6 +41,7 @@ export function App() {
   const prevChains = usePrevious(rainbowChains);
 
   useExpiryListener();
+  useGridPlusInit();
 
   React.useEffect(() => {
     if (!isEqual(prevChains, rainbowChains)) {
@@ -80,12 +77,6 @@ export function App() {
       analytics.track(event.popupOpened);
       setTimeout(() => flushQueuedEvents(), 1000);
     }
-    if (getStoredGridPlusClient())
-      setup({
-        getStoredClient: getStoredGridPlusClient,
-        setStoredClient: setStoredGridPlusClient,
-        name: 'Rainbow',
-      });
     // Init trezor once globally
     window.TrezorConnect?.init({
       manifest: {

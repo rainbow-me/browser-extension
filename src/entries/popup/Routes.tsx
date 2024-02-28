@@ -1,5 +1,4 @@
 import { AnimatePresence } from 'framer-motion';
-import { connect } from 'gridplus-sdk';
 import * as React from 'react';
 import {
   Outlet,
@@ -9,18 +8,13 @@ import {
   useLocation,
   useRouteError,
 } from 'react-router-dom';
-import { Address } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { screen } from '~/analytics/screen';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useCurrentAddressStore } from '~/core/state';
 import { useErrorStore } from '~/core/state/error';
-import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { useNavRestorationStore } from '~/core/state/navRestoration';
-import { useWalletBackupsStore } from '~/core/state/walletBackups';
-import { useWalletNamesStore } from '~/core/state/walletNames';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
 import { Alert } from '~/design-system/components/Alert/Alert';
@@ -36,12 +30,7 @@ import { ImportWalletViaSeed } from './components/ImportWallet/ImportWalletViaSe
 import { Toast } from './components/Toast/Toast';
 import { UnsupportedBrowserSheet } from './components/UnsupportedBrowserSheet';
 import { WindowStroke } from './components/WindowStroke/WindowStroke';
-import {
-  getStoredGridPlusClient,
-  removeStoredGridPlusClient,
-} from './handlers/gridplus';
-import { remove, wipe } from './handlers/wallet';
-import { useAccounts } from './hooks/useAccounts';
+import { useGridPlusPermissions } from './handlers/gridplusHooks';
 import { useCommandKShortcuts } from './hooks/useCommandKShortcuts';
 import useKeyboardAnalytics from './hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from './hooks/useKeyboardShortcut';
@@ -977,22 +966,9 @@ const ROUTE_DATA = [
 ] satisfies RouteObject[];
 
 const RootLayout = () => {
-  const navigate = useRainbowNavigate();
   const { pathname, state } = useLocation();
   const { setLastPage, setLastState, shouldRestoreNavigation } =
     useNavRestorationStore();
-  const { sortedAccounts } = useAccounts();
-  const { unhideWallet } = useHiddenWalletsStore();
-  const { deleteWalletName } = useWalletNamesStore();
-  const { deleteWalletBackup } = useWalletBackupsStore();
-  const { setCurrentAddress } = useCurrentAddressStore();
-
-  const handleRemoveAccount = async (address: Address) => {
-    unhideWallet({ address });
-    await remove(address);
-    deleteWalletName({ address });
-    deleteWalletBackup({ address });
-  };
 
   React.useLayoutEffect(() => {
     window.scrollTo(0, 0);
@@ -1006,40 +982,9 @@ const RootLayout = () => {
     }
   }, [pathname, setLastPage, setLastState, shouldRestoreNavigation, state]);
 
-  // Handle removed permissions for Rainbow from Lattice1.
-  // If there are GridPlus addresses -> Remove them from Rainbow and switch to another existing address.
-  // If there are only GridPlus addresses -> Start over.
-  React.useEffect(() => {
-    if (sortedAccounts.length === 0) return;
-    if (getStoredGridPlusClient()) {
-      const deviceId = localStorage.getItem('gridPlusDeviceId') ?? '';
-      connect(deviceId).then((permitted) => {
-        const accountsWithGridPlus = sortedAccounts.filter(
-          (account) => account.vendor === 'GridPlus',
-        );
-        const nonGridPlusAccounts = sortedAccounts.filter(
-          (account) => account.vendor !== 'GridPlus',
-        );
-        if (!permitted && accountsWithGridPlus.length > 0) {
-          accountsWithGridPlus.forEach((gridPlusAccount) => {
-            handleRemoveAccount(gridPlusAccount.address);
-          });
-          removeStoredGridPlusClient();
-          if (nonGridPlusAccounts.length > 0) {
-            setCurrentAddress(nonGridPlusAccounts[0].address);
-            navigate(ROUTES.HOME);
-          } else {
-            wipe();
-            navigate(ROUTES.WELCOME);
-          }
-        }
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sortedAccounts.length]);
-
   useGlobalShortcuts();
   useCommandKShortcuts();
+  useGridPlusPermissions();
 
   return (
     <FullScreenBackground>

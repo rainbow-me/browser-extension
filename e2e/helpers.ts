@@ -848,7 +848,7 @@ export async function importGridPlusWallet(driver: WebDriver, rootURL: string) {
     driver,
   });
   inputPairingCode.click();
-  await delayTime('unbelievably-long');
+  await delay(15000);
   await findElementByTestIdAndClick({
     id: 'gridplus-submit',
     driver,
@@ -1141,8 +1141,6 @@ export async function delayTime(
       return await delay(1000);
     case 'very-long':
       return await delay(5000);
-    case 'unbelievably-long':
-      return await delay(15000);
   }
 }
 

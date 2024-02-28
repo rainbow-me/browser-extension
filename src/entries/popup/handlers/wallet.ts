@@ -381,12 +381,20 @@ export const importAccountAtIndex = async (
       break;
     }
     case 'GridPlus': {
-      address = (
-        await fetchAddresses({
-          n: 1,
-          startPath: [0x80000000 + 44, 0x80000000 + 60, 0x80000000, 0, index],
-        })
-      )[0];
+      try {
+        address = (
+          await fetchAddresses({
+            n: 1,
+            startPath: [0x80000000 + 44, 0x80000000 + 60, 0x80000000, 0, index],
+          })
+        )[0];
+      } catch (e) {
+        const parsedError = new RainbowError(
+          'gridplus-sdk#fetchAddress failed',
+        );
+        logger.error(parsedError);
+        throw e;
+      }
       break;
     }
     default:

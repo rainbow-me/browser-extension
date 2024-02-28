@@ -8,18 +8,7 @@ import { selectionStyle } from './Text.css';
 
 export interface TextProps {
   align?: TextStyles['textAlign'];
-  as?:
-    | 'div'
-    | 'p'
-    | 'span'
-    | 'h1'
-    | 'h2'
-    | 'h3'
-    | 'h4'
-    | 'h5'
-    | 'h6'
-    | 'pre'
-    | 'label';
+  as?: 'div' | 'p' | 'span' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'pre';
   children: React.ReactNode;
   color?: TextStyles['color'];
   size: TextStyles['fontSize'];
@@ -32,7 +21,6 @@ export interface TextProps {
   whiteSpace?: TextStyles['whiteSpace'];
   textShadow?: TextStyles['textShadow'];
   fontFamily?: TextStyles['fontFamily'];
-  htmlFor?: string;
 }
 
 export function Text({
@@ -50,7 +38,6 @@ export function Text({
   whiteSpace,
   textShadow,
   fontFamily = 'rounded',
-  htmlFor,
 }: TextProps) {
   return (
     <Box
@@ -73,7 +60,6 @@ export function Text({
         selectionStyle,
       ])}
       testId={testId}
-      htmlFor={htmlFor}
       marginVertical={webkitBackgroundClip === 'text' ? '-6px' : undefined}
       paddingVertical={webkitBackgroundClip === 'text' ? '6px' : undefined}
     >

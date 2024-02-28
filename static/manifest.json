@@ -18,21 +18,34 @@
   "content_scripts": [
     {
       "all_frames": true,
-      "js": ["contentscript.js"],
-      "matches": ["http://*/*", "https://*/*"],
+      "js": [
+        "contentscript.js"
+      ],
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
       "run_at": "document_start"
     },
     {
-      "matches": ["*://connect.trezor.io/9/popup.html"],
-      "js": ["./vendor/trezor-content-script.js"]
+      "matches": [
+        "*://connect.trezor.io/9/popup.html"
+      ],
+      "js": [
+        "./vendor/trezor-content-script.js"
+      ]
     }
   ],
   "content_security_policy": {
-    "extension_pages": "frame-ancestors 'none'; script-src 'self' 'wasm-unsafe-eval'; object-src 'self'; connect-src 'self'"
+    "extension_pages": "frame-ancestors 'none'; script-src 'self'; object-src 'self'; connect-src 'self'"
   },
   "default_locale": "en_US",
   "description": "DEV VERSION",
-  "host_permissions": ["http://*/*", "https://*/*", "wss://*/*"],
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*",
+    "wss://*/*"
+  ],
   "icons": {
     "16": "images/icon-16.png",
     "19": "images/icon-19.png",
@@ -58,8 +71,15 @@
   "version": "1.4.6",
   "web_accessible_resources": [
     {
-      "matches": ["<all_urls>"],
-      "resources": ["inpage.js", "*.woff2", "popup.css", "assets/badges/*.png"]
+      "matches": [
+        "<all_urls>"
+      ],
+      "resources": [
+        "inpage.js",
+        "*.woff2",
+        "popup.css",
+        "assets/badges/*.png"
+      ]
     }
   ],
   "commands": {
