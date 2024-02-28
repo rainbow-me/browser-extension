@@ -26,6 +26,7 @@ import {
   verifyCustomGasSettings,
   waitAndClick,
 } from '../../helpers';
+import { server } from '../../mocks/server';
 import { TEST_VARIABLES } from '../../walletVariables';
 
 let rootURL = getRootUrl();
@@ -35,6 +36,7 @@ const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 
 beforeAll(async () => {
+  server.listen();
   driver = await initDriverWithOptions({
     browser,
     os,
@@ -49,6 +51,7 @@ beforeEach<{ driver: WebDriver }>(async (context) => {
 });
 
 afterEach<{ driver: WebDriver }>(async (context) => {
+  server.resetHandlers();
   await takeScreenshotOnFailure(context);
 });
 

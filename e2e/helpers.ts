@@ -26,6 +26,8 @@ import { erc20ABI } from 'wagmi';
 
 import { RAINBOW_TEST_DAPP } from '~/core/references/links';
 
+import { server } from './mocks/server';
+
 const browser = process.env.BROWSER || 'chrome';
 const isFirefox = browser === 'firefox';
 
@@ -114,6 +116,7 @@ export async function getWindowHandle({ driver }: { driver: WebDriver }) {
 const execAsync = util.promisify(exec);
 
 export async function afterAllCleanup(driver: WebDriver) {
+  server.close();
   await driver.quit();
   try {
     const { stdout, stderr } = await execAsync('yarn anvil:kill');
