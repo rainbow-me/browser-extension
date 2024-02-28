@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import { Address } from 'wagmi';
 
-import { getAccounts } from '~/core/keychain';
 import { i18n } from '~/core/languages';
 import { appSessionsStore, useCurrentAddressStore } from '~/core/state';
 import { hiddenWalletsStore } from '~/core/state/hiddenWallets';
@@ -20,7 +19,7 @@ import {
   Text,
 } from '~/design-system';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
-import { remove, wipe } from '~/entries/popup/handlers/wallet';
+import { getAccounts, remove, wipe } from '~/entries/popup/handlers/wallet';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
 
@@ -58,10 +57,7 @@ export const WipeWalletGroupPrompt = ({
       if (groupAccounts.includes(currentAddress)) {
         const allAccounts = await getAccounts();
 
-        if (
-          allAccounts.length === 0 ||
-          allAccounts.every((acc) => groupAccounts.includes(acc))
-        ) {
+        if (allAccounts.length === 0) {
           await wipe();
           navigate(ROUTES.WELCOME);
           return;
