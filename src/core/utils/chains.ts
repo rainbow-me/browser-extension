@@ -41,6 +41,7 @@ export const customChainIdsToAssetNames: Record<ChainId, string> = {
   42170: 'arbitrumnova',
   1313161554: 'aurora',
   43114: 'avalanchex',
+  81457: 'blast',
   168587773: 'blastsepolia',
   288: 'boba',
   42220: 'celo',
@@ -369,6 +370,10 @@ export const deriveChainIdByHostname = (hostname: string) => {
       return moonbeam.id;
     case 'explorer.holesky.redstone.xyz':
       return 17001;
+    case 'blastscan.io':
+      return 81457;
+    case 'blastsepolia.com':
+      return 168587773;
     default:
       return ChainId.mainnet;
   }
