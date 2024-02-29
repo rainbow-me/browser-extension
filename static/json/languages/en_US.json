@@ -249,6 +249,13 @@
           "wipe_confirmation_desc": "Are you sure you want to remove your Secret Recovery Phrase from Rainbow?",
           "wipe_confirmation_button": "Remove",
           "wipe_confirmation_cancel": "Cancel"
+        },
+        "wipe_hardware_wallet_group": {
+          "delete": "Unpair Hardware Wallet",
+          "wipe_confirmation": "Unpair %{vendor}",
+          "wipe_confirmation_desc": "Are you sure you want to unpair your %{vendor} and disconnect your wallets?",
+          "wipe_confirmation_button": "Unpair",
+          "wipe_confirmation_cancel": "Cancel"
         }
       }
     },
