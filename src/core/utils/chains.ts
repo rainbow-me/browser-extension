@@ -372,7 +372,7 @@ export const deriveChainIdByHostname = (hostname: string) => {
       return 17001;
     case 'blastscan.io':
       return 81457;
-    case 'blastsepolia.com':
+    case 'testnet.blastscan.io':
       return 168587773;
     default:
       return ChainId.mainnet;
