@@ -70,17 +70,14 @@ const TokenRow = memo(function TokenRow({
     });
   };
 
-  const { onMouseDown, onMouseUp, onTouchStart, onTouchEnd } =
-    useTokenPressMouseEvents({ token, onClick: openDetails });
+  const { onMouseDown, onMouseUp } = useTokenPressMouseEvents({
+    token,
+    onClick: openDetails,
+  });
 
   return (
     <TokenContextMenu token={token}>
-      <Box
-        onMouseDown={onMouseDown}
-        onMouseUp={onMouseUp}
-        onTouchStart={onTouchStart}
-        onTouchEnd={onTouchEnd}
-      >
+      <Box onMouseDown={onMouseDown} onMouseUp={onMouseUp}>
         <AssetRow showPinStatus={showPinStatus} asset={token} testId={testId} />
       </Box>
     </TokenContextMenu>

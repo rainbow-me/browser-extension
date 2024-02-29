@@ -1399,7 +1399,9 @@
       "copy_address": "Copy Address",
       "view_on_explorer": "View on %{explorer}",
       "hide": "Hide Token",
-      "report": "Report Token"
+      "report": "Report Token",
+      "unpin_token": "Unpin %{name}",
+      "pin_token": "Pin %{name}"
     },
     "about": {
       "about_token": "About %{name}",

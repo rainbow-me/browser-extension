@@ -4,6 +4,7 @@ import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import { usePinnedAssetStore } from '~/core/state/pinnedAssets';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { truncateAddress } from '~/core/utils/address';
@@ -11,7 +12,7 @@ import { isNativeAsset } from '~/core/utils/chains';
 import { copyAddress } from '~/core/utils/copy';
 import { goToNewTab } from '~/core/utils/tabs';
 import { getTokenBlockExplorer } from '~/core/utils/transactions';
-import { Text } from '~/design-system';
+import { Box, Text } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 
 import {
@@ -34,6 +35,8 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
   const { isWatchingWallet } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
   const setSelectedToken = useSelectedTokenStore((s) => s.setSelectedToken);
+  const { uniqueIds } = usePinnedAssetStore();
+  const pinned = uniqueIds.some((id) => id === token.uniqueId);
 
   // if we are navigating to new page (swap/send) the menu closes automatically,
   // we don't want deselect the token in that case
@@ -130,6 +133,22 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
             </Text>
           </ContextMenuItem>
         )}
+        <ContextMenuItem
+          symbolLeft="pin.fill"
+          onSelect={() => copyAddress(token.address)}
+        >
+          <Box style={{ wordBreak: 'break-all' }}>
+            <Text size="14pt" weight="semibold">
+              {pinned
+                ? i18n.t('token_details.more_options.unpin_token', {
+                    name: token.name,
+                  })
+                : i18n.t('token_details.more_options.pin_token', {
+                    name: token.name,
+                  })}
+            </Text>
+          </Box>
+        </ContextMenuItem>
       </ContextMenuContent>
     </DetailsMenuWrapper>
   );

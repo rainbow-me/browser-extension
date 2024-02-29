@@ -32,30 +32,21 @@ export const useTokenPressMouseEvents = ({
   const { pressed, startPress, endPress } = usePress(onPressed);
 
   const onMouseDown = (e: MouseEvent<HTMLDivElement>) => {
-    if (!ready) setReady(true);
-    if (e.button === 0) startPress();
+    if (e.button === 0) {
+      if (!ready) setReady(true);
+      startPress();
+    }
   };
 
   const onMouseUp = () => {
     if (ready) {
       setReady(false);
-      if (!pressed) onClick();
+      if (!pressed) {
+        endPress();
+        onClick();
+      }
     }
-    endPress();
   };
 
-  const onTouchStart = () => {
-    if (!ready) setReady(true);
-    startPress();
-  };
-
-  const onTouchEnd = () => {
-    if (ready) {
-      setReady(false);
-      if (!pressed) onClick();
-    }
-    endPress();
-  };
-
-  return { onMouseDown, onMouseUp, onTouchStart, onTouchEnd };
+  return { onMouseDown, onMouseUp };
 };
