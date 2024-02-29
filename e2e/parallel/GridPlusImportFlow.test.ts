@@ -31,8 +31,7 @@ describe.runIf(browser !== 'firefox')(
     afterAll(async () => driver.quit());
 
     it('should be able import a wallet via hw wallet', async () => {
-      if (process.env.IS_TESTING === 'true')
-        await importGridPlusWallet(driver, rootURL);
+      await importGridPlusWallet(driver, rootURL);
     });
   },
 );

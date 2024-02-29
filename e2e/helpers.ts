@@ -812,9 +812,6 @@ export async function importHardwareWalletFlow(
 }
 
 export async function importGridPlusWallet(driver: WebDriver, rootURL: string) {
-  const { env } = import.meta as unknown as {
-    env: { GRIDPLUS_DEVICE_ID: string; GRIDPLUS_DEVICE_PASSWORD: string };
-  };
   await goToWelcome(driver, rootURL);
   await findElementByTestIdAndClick({
     id: 'import-wallet-button',
@@ -832,28 +829,17 @@ export async function importGridPlusWallet(driver: WebDriver, rootURL: string) {
     id: 'gridplus-deviceid',
     driver,
   });
-  await inputDeviceId.sendKeys(env.GRIDPLUS_DEVICE_ID);
+  await inputDeviceId.sendKeys('MOCKED_DEVICE_ID');
   const inputPassword = await findElementByTestId({
     id: 'gridplus-password',
     driver,
   });
-  await inputPassword.sendKeys(env.GRIDPLUS_DEVICE_PASSWORD);
+  await inputPassword.sendKeys('MOCKED_PASSWORD');
   await delayTime('long');
   await findElementByTestIdAndClick({
     id: 'gridplus-submit',
     driver,
   });
-  const inputPairingCode = await findElementByTestId({
-    id: 'gridplus-pairing-code',
-    driver,
-  });
-  inputPairingCode.click();
-  await delay(15000);
-  await findElementByTestIdAndClick({
-    id: 'gridplus-submit',
-    driver,
-  });
-  await delayTime('very-long');
   await findElementByTestIdAndClick({
     id: 'gridplus-address-0',
     driver,

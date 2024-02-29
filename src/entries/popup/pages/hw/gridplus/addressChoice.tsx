@@ -12,6 +12,7 @@ import { Box, Button, Text } from '~/design-system';
 import { Checkbox } from '~/entries/popup/components/Checkbox/Checkbox';
 import { Link } from '~/entries/popup/components/Link/Link';
 import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
+import { HARDWARE_WALLETS } from '~/entries/popup/handlers/walletVariables';
 import { useAccounts } from '~/entries/popup/hooks/useAccounts';
 import { ROUTES } from '~/entries/popup/urls';
 
@@ -61,7 +62,14 @@ export const AddressChoice = () => {
   useEffect(() => {
     const fetchWalletAddresses = async () => {
       setLoadingAddresses(true);
-      const fetchedAddresses = (await fetchAddresses()) as Address[];
+      let fetchedAddresses: Address[];
+      if (process.env.IS_TESTING === 'true') {
+        fetchedAddresses = HARDWARE_WALLETS.MOCK_ACCOUNT.accountsToImport.map(
+          (account) => account.address,
+        );
+      } else {
+        fetchedAddresses = (await fetchAddresses()) as Address[];
+      }
       const nonExistingAddresses = fetchedAddresses
         .map((address) => getAddress(address))
         .filter(

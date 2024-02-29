@@ -40,13 +40,18 @@ export const WalletCredentials = ({
     event.preventDefault();
     setConnecting(true);
     try {
-      const result = await setup({
-        deviceId: formData.deviceId,
-        password: formData.password,
-        name: appName,
-        getStoredClient: () => useGridPlusClientStore.getState().client,
-        setStoredClient: setStoredClient,
-      });
+      let result: boolean;
+      if (process.env.IS_TESTING === 'true') {
+        result = true;
+      } else {
+        result = await setup({
+          deviceId: formData.deviceId,
+          password: formData.password,
+          name: appName,
+          getStoredClient: () => useGridPlusClientStore.getState().client,
+          setStoredClient: setStoredClient,
+        });
+      }
       await LocalStorage.set('gridPlusDeviceId', formData.deviceId);
       onAfterSetup && onAfterSetup(result);
     } finally {
