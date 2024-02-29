@@ -35,7 +35,8 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
   const { isWatchingWallet } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
   const setSelectedToken = useSelectedTokenStore((s) => s.setSelectedToken);
-  const { uniqueIds } = usePinnedAssetStore();
+  const { uniqueIds, removedPinnedAsset, addPinnedAsset } =
+    usePinnedAssetStore();
   const pinned = uniqueIds.some((id) => id === token.uniqueId);
 
   // if we are navigating to new page (swap/send) the menu closes automatically,
@@ -135,7 +136,14 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
         )}
         <ContextMenuItem
           symbolLeft="pin.fill"
-          onSelect={() => copyAddress(token.address)}
+          onSelect={() => {
+            if (pinned) {
+              removedPinnedAsset({ uniqueId: token.uniqueId });
+              return;
+            }
+
+            addPinnedAsset({ uniqueId: token.uniqueId });
+          }}
         >
           <Box style={{ wordBreak: 'break-all' }}>
             <Text size="14pt" weight="semibold">
