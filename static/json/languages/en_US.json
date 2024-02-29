@@ -251,7 +251,7 @@
           "wipe_confirmation_cancel": "Cancel"
         },
         "wipe_hardware_wallet_group": {
-          "delete": "Unpair Hardware Wallet",
+          "delete": "Unpair %{vendor}",
           "wipe_confirmation": "Unpair %{vendor}",
           "wipe_confirmation_desc": "Are you sure you want to unpair your %{vendor} and disconnect your wallets?",
           "wipe_confirmation_button": "Unpair",

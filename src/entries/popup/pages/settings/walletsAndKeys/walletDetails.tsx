@@ -453,6 +453,9 @@ export function WalletDetails() {
                   <MenuItem.Title
                     text={i18n.t(
                       'settings.privacy_and_security.wallets_and_keys.wipe_wallet_group.delete',
+                      {
+                        vendor: wallet.vendor,
+                      },
                     )}
                     color="red"
                   />
