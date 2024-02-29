@@ -80,6 +80,7 @@ import { RecoveryPhraseVerify } from './pages/settings/walletsAndKeys/recoveryPh
 import { RecoveryPhraseWarning } from './pages/settings/walletsAndKeys/recoveryPhrase/warning';
 import { WalletDetails } from './pages/settings/walletsAndKeys/walletDetails';
 import { WalletsAndKeys } from './pages/settings/walletsAndKeys/walletsAndKeys';
+import { WipeWalletGroupWarning } from './pages/settings/walletsAndKeys/wipeWalletGroupWarning';
 import { WipeWalletWarning } from './pages/settings/walletsAndKeys/wipeWalletWarning';
 import { Sign } from './pages/sign';
 import { Swap } from './pages/swap';
@@ -659,6 +660,20 @@ const ROUTE_DATA = [
         protectedRoute
       >
         <WipeWalletWarning />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__WIPE_WALLET_GROUP_WARNING,
+    element: (
+      <AnimatedRoute
+        direction="right"
+        navbar
+        navbarIcon="arrow"
+        background="surfaceSecondary"
+        protectedRoute
+      >
+        <WipeWalletGroupWarning />
       </AnimatedRoute>
     ),
   },

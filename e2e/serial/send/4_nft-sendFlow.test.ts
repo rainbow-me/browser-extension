@@ -89,7 +89,7 @@ describe.runIf(browser !== 'firefox')(
       );
     });
 
-    it('should be able to go to setings', async () => {
+    it('should be able to go to settings', async () => {
       await goToPopup(driver, rootURL);
       await findElementByTestIdAndClick({
         id: 'home-page-header-right',
@@ -132,20 +132,20 @@ describe.runIf(browser !== 'firefox')(
         driver,
       });
       await assetInput.click();
-      await assetInput.sendKeys('uni');
-      const uniswapV3PositionsSection = await findElementByTestId({
-        id: 'nfts-collection-section-Uniswap V3 Positions',
+      await assetInput.sendKeys('treasures');
+      const treasuresSection = await findElementByTestId({
+        id: 'nfts-collection-section-The Treasures of Ancient Egypt Official',
         driver,
       });
       const learnWeb3Badges = await doNotFindElementByTestId({
         id: 'nfts-collection-section-LearnWeb3 Badges',
         driver,
       });
-      expect(uniswapV3PositionsSection).toBeTruthy();
+      expect(treasuresSection).toBeTruthy();
       expect(learnWeb3Badges).toBeFalsy();
 
-      await uniswapV3PositionsSection.click();
-      await findElementByTextAndClick(driver, '#521552');
+      await treasuresSection.click();
+      await findElementByTextAndClick(driver, '#5602');
     });
 
     it('should be able to go to review on send flow', async () => {

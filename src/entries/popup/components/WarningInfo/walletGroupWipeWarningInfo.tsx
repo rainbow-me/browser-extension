@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import {
@@ -120,6 +120,7 @@ export default function WarningInfo({
               <Lens
                 testId="wallet-wipe-check"
                 onClick={() => setAcknowledgeCheck(!acknowledgeCheck)}
+                handleOpenMenu={() => setAcknowledgeCheck(!acknowledgeCheck)}
               >
                 <Text
                   align="left"
@@ -127,7 +128,7 @@ export default function WarningInfo({
                   weight="bold"
                   color="labelSecondary"
                 >
-                  {t('wipe_wallets.acknowlegement')}
+                  {t('wipe_wallet_group.acknowlegement')}
                 </Text>
               </Lens>
             </Column>
@@ -149,8 +150,8 @@ export default function WarningInfo({
               tabIndex={0}
             >
               {buttonEnabled
-                ? t('wipe_wallets.button_wipe')
-                : t('wipe_wallets.button_complete')}
+                ? t('wipe_wallet_group.delete')
+                : t('wipe_wallet_group.button_complete')}
             </Button>
           </Box>
         </Row>

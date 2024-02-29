@@ -2,6 +2,8 @@ import {
   arbitrum,
   arbitrumGoerli,
   arbitrumSepolia,
+  avalanche,
+  avalancheFuji,
   base,
   baseSepolia,
   bsc,
@@ -14,7 +16,6 @@ import {
   polygonMumbai,
   zora,
   zoraSepolia,
-  zoraTestnet,
 } from 'viem/chains';
 import { Chain, goerli, mainnet, sepolia } from 'wagmi';
 
@@ -31,7 +32,8 @@ export const chainIdMap: Record<
   | ChainId.polygon
   | ChainId.base
   | ChainId.bsc
-  | ChainId.zora,
+  | ChainId.zora
+  | ChainId.avalanche,
   ChainId[]
 > = {
   [ChainId.mainnet]: [mainnet.id, goerli.id, sepolia.id, holesky.id],
@@ -40,7 +42,8 @@ export const chainIdMap: Record<
   [ChainId.polygon]: [polygon.id, polygonMumbai.id],
   [ChainId.base]: [base.id, baseSepolia.id],
   [ChainId.bsc]: [bsc.id, bscTestnet.id],
-  [ChainId.zora]: [zora.id, zoraTestnet.id, zoraSepolia.id],
+  [ChainId.zora]: [zora.id, zoraSepolia.id],
+  [ChainId.avalanche]: [avalanche.id, avalancheFuji.id],
 };
 
 export const chainLabelMap: Record<
@@ -49,7 +52,8 @@ export const chainLabelMap: Record<
   | ChainId.polygon
   | ChainId.base
   | ChainId.bsc
-  | ChainId.zora,
+  | ChainId.zora
+  | ChainId.avalanche,
   string[]
 > = {
   [ChainId.mainnet]: [
@@ -68,10 +72,8 @@ export const chainLabelMap: Record<
   [ChainId.polygon]: [ChainNameDisplay[polygonMumbai.id]],
   [ChainId.base]: [ChainNameDisplay[baseSepolia.id]],
   [ChainId.bsc]: [ChainNameDisplay[bscTestnet.id]],
-  [ChainId.zora]: [
-    ChainNameDisplay[zoraTestnet.id],
-    ChainNameDisplay[zoraSepolia.id],
-  ],
+  [ChainId.zora]: [ChainNameDisplay[zoraSepolia.id]],
+  [ChainId.avalanche]: [ChainNameDisplay[avalancheFuji.id]],
 };
 
 export const sortNetworks = (order: ChainId[], chains: Chain[]) => {

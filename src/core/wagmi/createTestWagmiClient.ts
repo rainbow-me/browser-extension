@@ -1,6 +1,7 @@
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import {
   arbitrum,
+  avalanche,
   base,
   bsc,
   mainnet,
@@ -27,7 +28,7 @@ const noopStorage = {
 };
 
 const { chains, provider, webSocketProvider } = configureChains(
-  [mainnet, optimism, polygon, arbitrum, base, zora, bsc] as Chain[],
+  [mainnet, optimism, polygon, arbitrum, base, zora, bsc, avalanche] as Chain[],
   [
     jsonRpcProvider({
       rpc: () => {
