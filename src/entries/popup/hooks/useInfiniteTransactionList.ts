@@ -89,16 +89,17 @@ export const useInfiniteTransactionList = ({
     return transactionsAfterCutoff;
   }, [currentAddressCustomNetworkTransactions, cutoff, transactions]);
 
-  const formattedTransactions = useMemo(
-    () =>
-      Object.entries(
-        selectTransactionsByDate([
-          ...pendingTransactions,
-          ...transactionsAfterCutoff,
-        ]),
-      ).flat(2),
-    [pendingTransactions, transactionsAfterCutoff],
-  );
+  const formattedTransactions = useMemo(() => {
+    // filter out "pending transactions" that are already confirmed
+    return Object.entries(
+      selectTransactionsByDate([
+        ...pendingTransactions.filter(
+          (ptx) => !transactionsAfterCutoff.some((tx) => tx.hash === ptx.hash),
+        ),
+        ...transactionsAfterCutoff,
+      ]),
+    ).flat(2);
+  }, [pendingTransactions, transactionsAfterCutoff]);
 
   const infiniteRowVirtualizer = useVirtualizer({
     count: formattedTransactions?.length,
@@ -108,6 +109,9 @@ export const useInfiniteTransactionList = ({
     overscan: 20,
     getItemKey: (i) => {
       const txOrLabel = formattedTransactions[i];
+      // if (typeof txOrLabel != 'string' && txOrLabel.status === 'pending') {
+      //   console.log(txOrLabel);
+      // }
       return typeof txOrLabel === 'string' ? txOrLabel : txOrLabel.hash;
     },
   });
@@ -193,3 +197,77 @@ export const useInfiniteTransactionList = ({
     isRefetching: manuallyRefetching,
   };
 };
+
+// {
+//   "asset": {
+//       "address": "0x44709a920fccf795fbc57baa433cc3dd53c44dbe",
+//       "uniqueId": "0x44709a920fccf795fbc57baa433cc3dd53c44dbe_1",
+//       "chainId": 1,
+//       "chainName": "mainnet",
+//       "mainnetAddress": "0x44709a920fccf795fbc57baa433cc3dd53c44dbe",
+//       "isNativeAsset": false,
+//       "native": {
+//           "balance": {
+//               "amount": "68.6150223759",
+//               "display": "$68.62"
+//           },
+//           "price": {
+//               "change": "5.25%",
+//               "amount": 0.0078895047,
+//               "display": "$0.01"
+//           }
+//       },
+//       "name": "DappRadar",
+//       "price": {
+//           "value": 0.0078895047,
+//           "changed_at": 1709317205,
+//           "relative_change_24h": 5.248798967776636
+//       },
+//       "symbol": "RADAR",
+//       "decimals": 18,
+//       "icon_url": "https://rainbowme-res.cloudinary.com/image/upload/v1654697478/assets/ethereum/0x44709a920fccf795fbc57baa433cc3dd53c44dbe.png",
+//       "colors": {
+//           "primary": "#0068F8",
+//           "fallback": "#95C3F3"
+//       },
+//       "networks": {
+//           "1": {
+//               "address": "0x44709a920fccf795fbc57baa433cc3dd53c44dbe",
+//               "decimals": 18
+//           },
+//           "42161": {
+//               "address": "0x28d32f80af227fc6a323f0b2ca213212797e3097",
+//               "decimals": 18
+//           }
+//       },
+//       "bridging": {
+//           "isBridgeable": false,
+//           "networks": {
+//               "42161": {
+//                   "bridgeable": false
+//               }
+//           }
+//       },
+//       "balance": {
+//           "amount": "8697",
+//           "display": "8,697.00 RADAR"
+//       },
+//       "smallBalance": false
+//   },
+//   "data": "0x095ea7b300000000000000000000000000000000009726632680fb29d3f7a9734e3010e2ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+//   "value": "0",
+//   "changes": [],
+//   "from": "0x507F0daA42b215273B8a063B092ff3b6d27767aF",
+//   "to": "0x44709a920fCcF795fbC57BAA433cc3dd53C44DbE",
+//   "hash": "0x5719786809923ffcbe36b5ed9d0d63028072f2c906dcc1b08ba35d8d61cca8bc",
+//   "chainId": 1,
+//   "nonce": 225,
+//   "status": "pending",
+//   "type": "send",
+//   "approvalAmount": "UNLIMITED",
+//   "maxPriorityFeePerGas": "0x3b9aca00",
+//   "maxFeePerGas": "0xee6b2800",
+//   "title": "Sending",
+//   "description": "DappRadar",
+//   "feeType": "eip-1559"
+// }
