@@ -210,14 +210,16 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
   });
 
   it('should be able to select asset to send from home using keyboard ', async () => {
-    // if (!isFirefox) {
     await executePerformShortcut({ driver, key: 'ESCAPE' });
     await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
     await executePerformShortcut({ driver, key: 'TAB', timesToPress: 8 });
     await executePerformShortcut({ driver, key: 'SPACE' });
-    await executePerformShortcut({ driver, key: 'ARROW_DOWN' });
+    await executePerformShortcut({
+      driver,
+      key: 'ARROW_DOWN',
+      timesToPress: 2,
+    });
     await executePerformShortcut({ driver, key: 'ENTER' });
     await checkExtensionURL(driver, 'send');
-    // }
   });
 });
