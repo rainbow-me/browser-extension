@@ -21,6 +21,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.4.12](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.12)
+
+### Added
+
+- You can now remove a Wallet Group in Settings to cleanup your unused wallets. Always make sure to backup your Secret Recovery Phrase first #1331
+- Added Custom Network autofill support for Blast and Redstone Holesky #1373 #1358
+
+### Changed
+
+- Removed support for deprecated Zora Goerli testnet #1367
+
 ## [v1.4.8](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.8)
 
 ### Added
@@ -99,7 +110,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 - You can now see your Points earnings breakdown each Tuesday with the "Your Earnings" card on the Points tabs #1317
-- Added Custom Network auto-fill support for Boba, Dogechain, Immutable zkEVM, Lyra, Manta, Mode, opBNB, Palm, PGN, Blast Sepolia, and RARI Chain #1302 #1316
+- Added Custom Network autofill support for Boba, Dogechain, Immutable zkEVM, Lyra, Manta, Mode, opBNB, Palm, PGN, Blast Sepolia, and RARI Chain #1302 #1316
 
 ### Changed
 
@@ -147,7 +158,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Resolved duplicate assets displayed for Custom Network assets #1281
 - Fixed the bottom padding on the Points leaderboard interface #1278
 - Resolved an invalid sender error for Custom Network transactions when the nonce is 0 #1284
-- Optimized RPC validation for auto-filled networks when adding a new Custom Network #1279
+- Optimized RPC validation for autofilled networks when adding a new Custom Network #1279
 - Fixed an incorrect "Unlimited" amount displayed for large token amount transfers in the Transaction Simulation interface #1277
 - Optimized NFT image loading with low resolution placeholder thumbnails #1282
 - Resolved an issue with `signTypedData` RPC calls for the Safe app #1288
