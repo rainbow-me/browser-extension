@@ -5,7 +5,7 @@ import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { initializeMessenger } from '~/core/messengers';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
-import { useAppSessionsStore, useCurrentAddressStore } from '~/core/state';
+import { useCurrentAddressStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
@@ -35,7 +35,6 @@ export const RequestAccounts = ({
   const { data: dappMetadata } = useDappMetadata({ url: dappUrl });
   const appName =
     dappMetadata?.appName || (dappUrl ? getDappHostname(dappUrl) : '');
-  const { addSession } = useAppSessionsStore();
 
   const { testnetMode } = useTestnetModeStore();
   const [selectedChainId, setSelectedChainId] = useState<ChainId>(
@@ -49,12 +48,6 @@ export const RequestAccounts = ({
       approveRequest({
         address: selectedWallet,
         chainId: selectedChainId,
-      });
-      addSession({
-        host: dappMetadata?.appHost || '',
-        address: selectedWallet,
-        chainId: selectedChainId,
-        url: dappUrl || '',
       });
       messenger.send(`connect:${dappMetadata?.appHostName}`, {
         address: selectedWallet,
@@ -76,11 +69,9 @@ export const RequestAccounts = ({
     approveRequest,
     selectedWallet,
     selectedChainId,
-    addSession,
-    dappMetadata?.appHost,
     dappMetadata?.appHostName,
+    dappMetadata?.appHost,
     dappMetadata?.appName,
-    dappUrl,
   ]);
 
   const onRejectRequest = useCallback(() => {

@@ -1,8 +1,6 @@
-import { IMessageSender } from '@rainbow-me/provider';
-
 export type CallbackOptions = {
   /** The sender of the message. */
-  sender: IMessageSender;
+  sender: chrome.runtime.MessageSender;
   /** The topic provided. */
   topic: string;
   /** An optional scoped identifier. */

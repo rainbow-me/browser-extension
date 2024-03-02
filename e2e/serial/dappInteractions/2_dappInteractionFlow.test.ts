@@ -287,7 +287,7 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
 
     const chain = await findElementById({ id: 'chainId', driver });
     const chainText = await chain.getText();
-    await expect(Number(chainText)).toBe(1337);
+    await expect(chainText).toBe('0x539');
   });
 
   it('should be able to create token', async () => {
