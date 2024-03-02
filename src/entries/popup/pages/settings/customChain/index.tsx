@@ -92,6 +92,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Blast',
+    networkInfo: {
+      rpcUrl: 'https://blast.blockpi.network/v1/rpc/public',
+      chainId: 81457,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://blastscan.io',
+      testnet: false,
+    },
+  },
+  {
     name: 'Blast Testnet',
     networkInfo: {
       rpcUrl: 'https://sepolia.blast.io',
