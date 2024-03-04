@@ -41,6 +41,7 @@ export enum ChainName {
   arbitrumNova = 'arbitrum-nova',
   arbitrumSepolia = 'arbitrum-sepolia',
   avalanche = 'avalanche',
+  avalancheFuji = 'avalanche-fuji',
   base = 'base',
   bsc = 'bsc',
   celo = 'celo',
@@ -64,7 +65,6 @@ export enum ChainName {
   polygonMumbai = 'polygon-mumbai',
   arbitrumGoerli = 'arbitrum-goerli',
   baseSepolia = 'base-sepolia',
-  zoraTestnet = 'zora-testnet',
   zoraSepolia = 'zora-sepolia',
 }
 
@@ -72,6 +72,7 @@ export enum ChainId {
   arbitrum = chain.arbitrum.id,
   arbitrumNova = chain.arbitrumNova.id,
   avalanche = chain.avalanche.id,
+  avalancheFuji = chain.avalancheFuji.id,
   base = chain.base.id,
   bsc = chain.bsc.id,
   celo = chain.celo.id,
@@ -96,7 +97,6 @@ export enum ChainId {
   arbitrumGoerli = chain.arbitrumGoerli.id,
   arbitrumSepolia = chain.arbitrumSepolia.id,
   baseSepolia = chain.baseSepolia.id,
-  zoraTestnet = chain.zoraTestnet.id,
   zoraSepolia = chain.zoraSepolia.id,
 }
 
@@ -108,6 +108,7 @@ export const chainNameToIdMapping: {
   [ChainName.arbitrumNova]: ChainId.arbitrumNova,
   [ChainName.arbitrumSepolia]: ChainId.arbitrumSepolia,
   [ChainName.avalanche]: ChainId.avalanche,
+  [ChainName.avalancheFuji]: ChainId.avalancheFuji,
   [ChainName.base]: ChainId.base,
   [ChainName.bsc]: ChainId.bsc,
   [ChainName.celo]: ChainId.celo,
@@ -132,7 +133,6 @@ export const chainNameToIdMapping: {
   [ChainName.polygonMumbai]: ChainId.polygonMumbai,
   [ChainName.arbitrumGoerli]: ChainId.arbitrumGoerli,
   [ChainName.baseSepolia]: ChainId.baseSepolia,
-  [ChainName.zoraTestnet]: ChainId.zoraTestnet,
   [ChainName.zoraSepolia]: ChainId.zoraSepolia,
 };
 
@@ -143,6 +143,7 @@ export const chainIdToNameMapping: {
   [ChainId.arbitrumNova]: ChainName.arbitrumNova,
   [ChainId.arbitrumSepolia]: ChainName.arbitrumSepolia,
   [ChainId.avalanche]: ChainName.avalanche,
+  [ChainId.avalancheFuji]: ChainName.avalancheFuji,
   [ChainId.base]: ChainName.base,
   [ChainId.bsc]: ChainName.bsc,
   [ChainId.celo]: ChainName.celo,
@@ -166,14 +167,14 @@ export const chainIdToNameMapping: {
   [ChainId.polygonMumbai]: ChainName.polygonMumbai,
   [ChainId.arbitrumGoerli]: ChainName.arbitrumGoerli,
   [ChainId.baseSepolia]: ChainName.baseSepolia,
-  [ChainId.zoraTestnet]: ChainName.zoraTestnet,
   [ChainId.zoraSepolia]: ChainName.zoraSepolia,
 };
 
 export const ChainNameDisplay = {
   [ChainId.arbitrum]: 'Arbitrum',
   [ChainId.arbitrumNova]: chain.arbitrumNova.name,
-  [ChainId.avalanche]: chain.avalanche.name,
+  [ChainId.avalanche]: 'Avalanche',
+  [ChainId.avalancheFuji]: 'Avalanche Fuji',
   [ChainId.base]: 'Base',
   [ChainId.bsc]: 'BSC',
   [ChainId.celo]: chain.celo.name,
@@ -197,6 +198,5 @@ export const ChainNameDisplay = {
   [ChainId.arbitrumGoerli]: chain.arbitrumGoerli.name,
   [ChainId.arbitrumSepolia]: chain.arbitrumSepolia.name,
   [ChainId.baseSepolia]: chain.baseSepolia.name,
-  [ChainId.zoraTestnet]: 'Zora Goerli',
   [ChainId.zoraSepolia]: 'Zora Sepolia',
 } as const;

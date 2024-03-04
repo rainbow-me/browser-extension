@@ -236,6 +236,19 @@
           "wipe_confirmation_desc": "Are you sure you want to reset the Rainbow browser extension?",
           "wipe_confirmation_button": "Reset",
           "wipe_confirmation_cancel": "Cancel"
+        },
+        "wipe_wallet_group": {
+          "delete": "Remove Wallet Group",
+          "acknowlegement": "I have backed up my Secret Recovery Phrase.",
+          "warning_one": "Removing your Wallet Group will delete the Recovery Phrase from Rainbow.",
+          "warning_two": "Your assets & funds are recoverable with the correct wallet recovery information.",
+          "warning_three": "Ensure your Secret Recovery Phrase is backed up before proceeding. ",
+          "button_wipe": "Reset Rainbow",
+          "button_complete": "Complete Check Above",
+          "wipe_confirmation": "Remove Wallet Group",
+          "wipe_confirmation_desc": "Are you sure you want to remove your Secret Recovery Phrase from Rainbow?",
+          "wipe_confirmation_button": "Remove",
+          "wipe_confirmation_cancel": "Cancel"
         }
       }
     },
@@ -1314,6 +1327,7 @@
       "ens_website": "Website",
       "registered_on": "Registered on",
       "expires_in": "Expires in",
+      "report": "Report",
       "explainer": {
         "floor_price_description": "A collection's floor price is the lowest asking price across all the items currently for sale in a collection.",
         "floor_price_title": "Collection floor price",
@@ -1322,6 +1336,9 @@
       "send": "Send",
       "view_on_opensea": "View on OpenSea",
       "view_on_explorer": "View on %{explorerTitle}"
+    },
+    "toast": {
+      "spam_reported": "Your report has been received!"
     }
   },
   "points": {
@@ -1517,7 +1534,7 @@
       },
       "bsc": {
         "title": "What's BSC?",
-        "description_1": "Binance Smart Chain, or BSC for short, is the blockchain network for the trading platform Binance.",
+        "description_1": "BNB Smart Chain, or BSC for short, is an alternative Layer 1 developed by the cryptocurrency exchange Binance.",
         "description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, BSC has its own security and consensus mechanisms that differ from Ethereum."
       },
       "base": {
@@ -1529,6 +1546,11 @@
         "title": "What's Zora?",
         "description_1": "Zora is a Layer 2 network that runs on top of Ethereum, enabling cheaper and faster transactions while still benefiting from the underlying security of Ethereum.",
         "description_2": "It bundles lots of transactions together in a \"roll up\" before sending them down to live permanently on Ethereum."
+      },
+      "avalanche": {
+        "title": "What's Avalanche?",
+        "description_1": "Avalanche is an alternative Layer 1 powered by an ecosystem of subnets, similar to Ethereum sidechains and Layer 2s.",
+        "description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, Avalanche has its own security and consensus mechanisms that differ from Ethereum."
       },
       "link_button_label": "Read more",
       "action_label": "Got it"
@@ -1681,6 +1703,7 @@
     "contract": "Contract",
     "contract_name": "Contract Name",
     "contract_created_at": "Contract Created",
+    "to": "To",
     "source_code": "Source Code",
     "signature": {
       "message": "Message"

@@ -24,6 +24,8 @@ const getMeteorologyNetworkFromChainId = (chainId: ChainId) => {
       return 'arbitrum';
     case ChainId.zora:
       return 'zora';
+    case ChainId.avalanche:
+      return 'avalanche';
     default:
       return 'mainnet';
   }

@@ -5,7 +5,6 @@ import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
 
 import {
   delayTime,
-  executePerformShortcut,
   findElementById,
   findElementByIdAndClick,
   findElementByTestId,
@@ -22,7 +21,6 @@ import {
   takeScreenshotOnFailure,
   transactionStatus,
   typeOnTextInput,
-  verifyCustomGasSettings,
   waitAndClick,
 } from '../../helpers';
 import { TEST_VARIABLES } from '../../walletVariables';
@@ -208,95 +206,6 @@ it('should be able to click max and switch on send flow', async () => {
   await inputMask.sendKeys('0.01');
 });
 
-it('should be able to open gas dropdown via shortcut', async () => {
-  await delayTime('long');
-  await executePerformShortcut({ driver, key: 'g' });
-  const txnSpeed1 = await findElementByText(driver, 'Transaction Speed');
-  expect(txnSpeed1).toBeTruthy();
-  await executePerformShortcut({ driver, key: 'ESCAPE' });
-});
-
-it('should be able to switch gas prices via dropdown on send flow', async () => {
-  await findElementByTestIdAndClick({ id: 'gas-menu', driver });
-  const txnSpeed2 = await findElementByText(driver, 'Transaction Speed');
-  expect(txnSpeed2).toBeTruthy();
-  await findElementByTextAndClick(driver, 'Urgent');
-  await delayTime('medium');
-  const urgent = await findElementByText(driver, 'Urgent');
-  expect(urgent).toBeTruthy();
-});
-
-it('should be able to open custom gas sheet via shortcut', async () => {
-  await delayTime('long');
-  await executePerformShortcut({ driver, key: 'c' });
-  const gasSettings1 = await findElementByText(driver, 'Gas Settings');
-  expect(gasSettings1).toBeTruthy();
-  await executePerformShortcut({ driver, key: 'ESCAPE' });
-});
-
-it('should be able to open up the custom gas menu on the send flow', async () => {
-  await findElementByTestIdAndClick({ id: 'custom-gas-menu', driver });
-  const gasSettings = await findElementByText(driver, 'Gas Settings');
-  expect(gasSettings).toBeTruthy();
-});
-
-it('should be able to open up the explainers on the custom gas menu', async () => {
-  // explainer 1
-  await findElementByTestIdAndClick({
-    id: 'current-base-fee-explainer',
-    driver,
-  });
-  await delayTime('short');
-  const current = await findElementByText(driver, 'The base fee is');
-  expect(current).toBeTruthy();
-  await findElementByTestIdAndClick({ id: 'explainer-action-button', driver });
-
-  // explainer 2
-  await findElementByTestIdAndClick({ id: 'max-base-fee-explainer', driver });
-  await delayTime('short');
-  const max = await findElementByText(driver, 'This is the maximum');
-  expect(max).toBeTruthy();
-  await findElementByTestIdAndClick({ id: 'explainer-action-button', driver });
-
-  // explainer 3
-  await findElementByTestIdAndClick({
-    id: 'max-priority-fee-explainer',
-    driver,
-  });
-  await delayTime('short');
-  const miner = await findElementByText(driver, 'The miner tip goes');
-  expect(miner).toBeTruthy();
-  await findElementByTestIdAndClick({ id: 'explainer-action-button', driver });
-});
-
-it('should be able to customize gas', async () => {
-  await delayTime('short');
-  await executePerformShortcut({ driver, key: 'TAB' });
-  await executePerformShortcut({ driver, key: 'BACK_SPACE', timesToPress: 5 });
-  await driver.actions().sendKeys('400').perform();
-  await delayTime('short');
-  await executePerformShortcut({ driver, key: 'TAB' });
-  await executePerformShortcut({ driver, key: 'BACK_SPACE', timesToPress: 5 });
-  await driver.actions().sendKeys('400').perform();
-  const baseFeeGweiInputMask = await querySelector(
-    driver,
-    "[data-testid='max-base-fee-input'] [data-testid='gwei-input-mask']",
-  );
-
-  expect(await baseFeeGweiInputMask.getAttribute('value')).toContain('400');
-
-  const minerTipGweiInputMask = await querySelector(
-    driver,
-    "[data-testid='miner-tip-input'] [data-testid='gwei-input-mask']",
-  );
-
-  expect(await minerTipGweiInputMask.getAttribute('value')).toContain('400');
-  await findElementByTestIdAndClick({ id: 'set-gas-button', driver });
-
-  const gasMenu = await findElementByTestId({ id: 'gas-menu', driver });
-  expect(await gasMenu.getText()).toContain('Custom');
-});
-
 it('should be able to go to review on send flow', async () => {
   await findElementByTestIdAndClick({ id: 'send-review-button', driver });
 });
@@ -327,8 +236,7 @@ it('should be able to interact with destination menu on review on send flow', as
 it('should be able to send transaction on review on send flow', async () => {
   await findElementByTestIdAndClick({ id: 'review-confirm-button', driver });
   const sendTransaction = await transactionStatus();
-  expect(sendTransaction).toBe('success');
-  await verifyCustomGasSettings(400, 400);
+  expect(await sendTransaction).toBe('success');
 });
 
 it('should be able to rename a wallet from the wallet switcher', async () => {

@@ -28,7 +28,6 @@ export enum SimpleHashChain {
   ArbitrumSepolia = 'arbitrum-sepolia',
   BaseSepolia = 'base-sepolia',
   OptimismSepolia = 'optimism-sepolia',
-  ZoraTestnet = 'zora-testnet',
   ZoraSepolia = 'zora-sepolia',
 }
 
