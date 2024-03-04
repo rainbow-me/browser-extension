@@ -81,17 +81,6 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
-    name: 'Avalanche',
-    networkInfo: {
-      rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
-      chainId: 43114,
-      decimals: 18,
-      symbol: 'AVAX',
-      explorerUrl: 'https://cchain.explorer.avax.network',
-      testnet: false,
-    },
-  },
-  {
     name: 'Aurora',
     networkInfo: {
       rpcUrl: 'https://mainnet.aurora.dev',
@@ -99,6 +88,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
       decimals: 18,
       symbol: 'ETH',
       explorerUrl: 'https://aurorascan.dev',
+      testnet: false,
+    },
+  },
+  {
+    name: 'Blast',
+    networkInfo: {
+      rpcUrl: 'https://blast.blockpi.network/v1/rpc/public',
+      chainId: 81457,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://blastscan.io',
       testnet: false,
     },
   },
@@ -375,6 +375,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
       symbol: 'ETH',
       explorerUrl: 'https://mainnet.explorer.rarichain.org',
       testnet: false,
+    },
+  },
+  {
+    name: 'Redstone Testnet',
+    networkInfo: {
+      rpcUrl: 'https://rpc.holesky.redstone.xyz',
+      chainId: 17001,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://explorer.holesky.redstone.xyz',
+      testnet: true,
     },
   },
   {
@@ -732,6 +743,7 @@ export function SettingsCustomChain() {
             onSelect={handleNetworkSelect}
             ref={inputRef}
             tabIndex={1}
+            testId={'network-name-field'}
           />
           <FormInput
             onChange={(t) => {
@@ -767,6 +779,7 @@ export function SettingsCustomChain() {
             }
             spellCheck={false}
             tabIndex={3}
+            testId={'custom-network-symbol'}
           />
           <FormInput
             onChange={(t) => {
@@ -814,6 +827,7 @@ export function SettingsCustomChain() {
                 {i18n.t('settings.networks.custom_rpc.testnet')}
               </Text>
               <Checkbox
+                testId={'testnet-toggle'}
                 borderColor="accent"
                 onClick={() =>
                   onInputChange<boolean>(
@@ -834,6 +848,7 @@ export function SettingsCustomChain() {
               tabIndex={6}
               variant="raised"
               width="full"
+              testId={'add-custom-network-button'}
             >
               {i18n.t('settings.networks.custom_rpc.add_network')}
             </Button>

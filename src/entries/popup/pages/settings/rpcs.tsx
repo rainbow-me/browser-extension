@@ -1,5 +1,5 @@
 import chroma from 'chroma-js';
-import React, { useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Address, Chain } from 'wagmi';
 
@@ -55,6 +55,12 @@ import {
 } from '../../components/MoreInfoButton/MoreInfoButton';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
+
+const isDefaultRPC = (chain: Chain) => {
+  const defaultRPC = getDefaultRPC(chain.id);
+  if (!defaultRPC) return false;
+  return chain.rpcUrls.default.http[0] === defaultRPC.http;
+};
 
 export function SettingsNetworksRPCs() {
   const { featureFlags } = useFeatureFlagsStore();
@@ -126,40 +132,16 @@ export function SettingsNetworksRPCs() {
     [chainId],
   );
 
-  const isDefaultRPC = ({
-    rpcUrl,
-    chainId,
-  }: {
-    rpcUrl: string;
-    chainId: number;
-  }) => {
-    const defaultRPC = getDefaultRPC(chainId);
-    if (!defaultRPC) return false;
-    return rpcUrl === defaultRPC.http;
-  };
-
   const mainnetChains = useMemo(
     () =>
-      rainbowChains[Number(chainId)]?.chains
-        ?.filter((chain) => !chain.testnet, [chainId, rainbowChains])
+      rainbowChain?.chains
+        .filter((chain) => !chain.testnet)
         .sort((a, b) => {
-          if (
-            isDefaultRPC({
-              chainId: a.id,
-              rpcUrl: a.rpcUrls.default.http[0],
-            })
-          )
-            return -1;
-          if (
-            isDefaultRPC({
-              chainId: b.id,
-              rpcUrl: b.rpcUrls.default.http[0],
-            })
-          )
-            return 1;
+          if (isDefaultRPC(a)) return -1;
+          if (isDefaultRPC(b)) return 1;
           return 0;
-        }),
-    [chainId, rainbowChains],
+        }) || [],
+    [rainbowChain],
   );
 
   const options = ({ address }: { address: Address }): MoreInfoOption[] => [
@@ -261,7 +243,11 @@ export function SettingsNetworksRPCs() {
             />
             <Box paddingHorizontal="1px" paddingVertical="1px">
               {mainnetChains.map((chain, index) => (
-                <Box key={`${chain.name}`} width="full">
+                <Box
+                  key={`${chain.name}`}
+                  width="full"
+                  testId={`rpc-row-item-${index}`}
+                >
                   <ContextMenu>
                     <ContextMenuTrigger
                       disabled={
@@ -339,10 +325,7 @@ export function SettingsNetworksRPCs() {
                               size="11pt"
                               weight={'medium'}
                             >
-                              {isDefaultRPC({
-                                chainId: chain.id,
-                                rpcUrl: chain.rpcUrls.default.http[0],
-                              })
+                              {isDefaultRPC(chain)
                                 ? i18n.t(
                                     'settings.networks.custom_rpc.rainbow_default_rpc',
                                   )
@@ -405,6 +388,7 @@ export function SettingsNetworksRPCs() {
                     text={i18n.t('settings.networks.custom_rpc.add_rpc')}
                   />
                 }
+                testId={'custom-rpc-button'}
               />
             </Menu>
             <Separator color="separatorTertiary" strokeWeight="1px" />
@@ -423,6 +407,7 @@ export function SettingsNetworksRPCs() {
               paddingRight="10px"
               paddingVertical="9px"
               width="full"
+              testId={'custom-token-section'}
             >
               {customNetworkAssetsForChain?.map((asset, i) => (
                 <ContextMenu key={i}>

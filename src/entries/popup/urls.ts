@@ -31,6 +31,7 @@ export const ROUTES = {
   SETTINGS: '/settings', // Settings
   QR_CODE: '/qr-code', // QR Code
   SETTINGS__NETWORKS: '/settings/networks', // Networks
+  SETTINGS__APPROVALS: '/settings/approvals', // Approvals
   SETTINGS__NETWORKS__RPCS: '/settings/networks/rpcs', // RPCs per network
   SETTINGS__NETWORKS__CUSTOM_RPC: '/settings/networks/custom-chain', // Networks Custom Chain
   SETTINGS__NETWORKS__CUSTOM_RPC__DETAILS:
@@ -49,6 +50,8 @@ export const ROUTES = {
     '/settings/wallets-and-keys/wallet-details/recovery-phrase-warning', // RecoveryPhraseWarning
   SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__WIPE_WALLET_WARNING:
     '/settings/wallets-and-keys/wallet-details/wipe-wallet-warning', // WipeWalletWarning
+  SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__WIPE_WALLET_GROUP_WARNING:
+    '/settings/wallets-and-keys/wallet-details/wipe-wallet-group-warning', // WipeWalletGroupWarning
   SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE:
     '/settings/wallets-and-keys/wallet-details/recovery-phrase', // RecoveryPhrase
   SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_VERIFY:

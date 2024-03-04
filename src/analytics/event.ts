@@ -147,6 +147,10 @@ export const event = {
    */
   popupOpened: 'popup.opened',
   /**
+   * Called when the user completes a Revoke Approcal flow and submits the transaction.
+   */
+  revokeSubmitted: 'revoke.submitted',
+  /**
    * Called when the user completes a Send flow and submits the transaction.
    */
   sendSubmitted: 'send.submitted',
@@ -547,6 +551,24 @@ export type EventProperties = {
   };
   [event.popupOpened]: undefined;
   [event.settingsAnalyticsTrackingDisabled]: undefined;
+  [event.revokeSubmitted]: {
+    /**
+     * Symbol of the asset being sent.
+     */
+    assetSymbol?: string;
+    /**
+     * Human readable name of the asset being sent.
+     */
+    assetName?: string;
+    /**
+     * Contract address of the asset being sent.
+     */
+    assetAddress?: string;
+    /**
+     * `chainId` of the send transaction.
+     */
+    chainId: number;
+  };
   [event.sendSubmitted]: {
     /**
      * Native amount of the asset being sent.

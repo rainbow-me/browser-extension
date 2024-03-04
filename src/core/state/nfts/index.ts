@@ -4,7 +4,7 @@ import create from 'zustand';
 import { createStore } from '../internal/createStore';
 
 type NftDisplayMode = 'byCollection' | 'grouped';
-type NftSort = 'alphabetical' | 'recent';
+export type NftSort = 'alphabetical' | 'recent';
 type IsOpenDictByCollection = Record<string, boolean>;
 type SectionStateByAddress = Record<Address, IsOpenDictByCollection>;
 type HiddenNftDict = Record<string, boolean>;

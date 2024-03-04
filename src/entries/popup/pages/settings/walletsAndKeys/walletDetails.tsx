@@ -33,6 +33,7 @@ import { ROUTES } from '~/entries/popup/urls';
 import { CreateWalletPrompt } from '../../walletSwitcher/createWalletPrompt';
 import { RemoveWalletPrompt } from '../../walletSwitcher/removeWalletPrompt';
 import { RenameWalletPrompt } from '../../walletSwitcher/renameWalletPrompt';
+import { ConfirmPasswordPrompt } from '../privacy/confirmPasswordPrompt';
 
 const InfoButtonOptions = ({
   account,
@@ -129,6 +130,7 @@ export function WalletDetails() {
   const { visibleWallets } = useWallets();
   const { deleteWalletName } = useWalletNamesStore();
   const [createWalletAddress, setCreateWalletAddress] = useState<Address>();
+  const [showEnterPassword, setShowEnterPassword] = useState(false);
 
   const { isWalletBackedUp, getWalletBackup, deleteWalletBackup } =
     useWalletBackupsStore();
@@ -258,6 +260,16 @@ export function WalletDetails() {
 
   return (
     <Box>
+      <ConfirmPasswordPrompt
+        show={showEnterPassword}
+        onClose={() => setShowEnterPassword(false)}
+        extraState={{ ...state }}
+        onSuccess={() =>
+          navigate(
+            ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__WIPE_WALLET_GROUP_WARNING,
+          )
+        }
+      />
       <CreateWalletPrompt
         onCancel={handleCancel}
         show={!!createWalletAddress}
@@ -390,6 +402,27 @@ export function WalletDetails() {
                   />
                 }
                 onClick={handleCreateWalletOnGroup}
+              />
+              <MenuItem
+                first
+                last
+                leftComponent={
+                  <Symbol
+                    size={18}
+                    color="red"
+                    weight="medium"
+                    symbol="trash.fill"
+                  />
+                }
+                titleComponent={
+                  <MenuItem.Title
+                    text={i18n.t(
+                      'settings.privacy_and_security.wallets_and_keys.wipe_wallet_group.delete',
+                    )}
+                    color="red"
+                  />
+                }
+                onClick={() => setShowEnterPassword(true)}
               />
             </Menu>
           )}

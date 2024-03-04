@@ -38,6 +38,7 @@ import { Buy } from './pages/buy';
 import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
 import { ActivityDetails } from './pages/home/Activity/ActivityDetails';
+import { Approvals } from './pages/home/Approvals/Approvals';
 import { ConnectedApps } from './pages/home/ConnectedApps';
 import NFTDetails from './pages/home/NFTs/NFTDetails';
 import { PointsOnboardingSheet } from './pages/home/Points/PointsOnboardingSheet';
@@ -77,6 +78,7 @@ import { RecoveryPhraseVerify } from './pages/settings/walletsAndKeys/recoveryPh
 import { RecoveryPhraseWarning } from './pages/settings/walletsAndKeys/recoveryPhrase/warning';
 import { WalletDetails } from './pages/settings/walletsAndKeys/walletDetails';
 import { WalletsAndKeys } from './pages/settings/walletsAndKeys/walletsAndKeys';
+import { WipeWalletGroupWarning } from './pages/settings/walletsAndKeys/wipeWalletGroupWarning';
 import { WipeWalletWarning } from './pages/settings/walletsAndKeys/wipeWalletWarning';
 import { Sign } from './pages/sign';
 import { Swap } from './pages/swap';
@@ -501,6 +503,21 @@ const ROUTE_DATA = [
     ),
   },
   {
+    path: ROUTES.SETTINGS__APPROVALS,
+    element: (
+      <AnimatedRoute
+        direction="up"
+        navbar
+        navbarBackground="surfacePrimaryElevatedSecondary"
+        navbarIcon="ex"
+        title={i18n.t('approvals.title')}
+        protectedRoute
+      >
+        <Approvals />
+      </AnimatedRoute>
+    ),
+  },
+  {
     path: ROUTES.SETTINGS__PRIVACY,
     element: (
       <AnimatedRoute
@@ -628,6 +645,20 @@ const ROUTE_DATA = [
         protectedRoute
       >
         <WipeWalletWarning />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__WIPE_WALLET_GROUP_WARNING,
+    element: (
+      <AnimatedRoute
+        direction="right"
+        navbar
+        navbarIcon="arrow"
+        background="surfaceSecondary"
+        protectedRoute
+      >
+        <WipeWalletGroupWarning />
       </AnimatedRoute>
     ),
   },

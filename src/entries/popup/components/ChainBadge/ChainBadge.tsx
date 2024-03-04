@@ -1,6 +1,7 @@
 import { AddressZero } from '@ethersproject/constants';
 
 import ArbitrumBadge from 'static/assets/badges/arbitrumBadge@3x.png';
+import AvalancheBadge from 'static/assets/badges/avalancheBadge@3x.png';
 import BaseBadge from 'static/assets/badges/baseBadge@3x.png';
 import BscBadge from 'static/assets/badges/bscBadge@3x.png';
 import EthereumBadge from 'static/assets/badges/ethereumBadge@3x.png';
@@ -43,6 +44,7 @@ const networkBadges = {
   [ChainId.base]: BaseBadge,
   [ChainId.zora]: ZoraBadge,
   [ChainId.bsc]: BscBadge,
+  [ChainId.avalanche]: AvalancheBadge,
   [ChainId.hardhat]: HardhatBadge,
   [ChainId.hardhatOptimism]: HardhatBadge,
   [ChainId.goerli]: EthereumBadge,
@@ -55,8 +57,8 @@ const networkBadges = {
   [ChainId.arbitrumGoerli]: ArbitrumBadge,
   [ChainId.arbitrumSepolia]: ArbitrumBadge,
   [ChainId.baseSepolia]: BaseBadge,
-  [ChainId.zoraTestnet]: ZoraBadge,
   [ChainId.zoraSepolia]: ZoraBadge,
+  [ChainId.avalancheFuji]: AvalancheBadge,
 };
 
 const ChainBadge = ({

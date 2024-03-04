@@ -73,6 +73,7 @@ export function convertAPINetworkToChainId(
     [APINetwork.Polygon]: ChainId.polygon,
     [APINetwork.Base]: ChainId.base,
     [APINetwork.BSC]: ChainId.bsc,
+    [APINetwork.Avalanche]: ChainId.avalanche,
   };
 
   // @ts-expect-error networkMap only accounts for supported chains

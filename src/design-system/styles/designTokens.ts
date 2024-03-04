@@ -545,7 +545,8 @@ export type ForegroundColor =
   | 'polygon'
   | 'base'
   | 'zora'
-  | 'bsc';
+  | 'bsc'
+  | 'avalanche';
 
 export const foregroundColors: Record<
   ForegroundColor,
@@ -633,7 +634,11 @@ export const foregroundColors: Record<
   },
   bsc: {
     light: '#EBAF09',
-    dark: '#EBAF09',
+    dark: '#FFDA66',
+  },
+  avalanche: {
+    light: '#EBAF09',
+    dark: '#FF5D5E',
   },
 };
 
@@ -689,6 +694,7 @@ export const textColors = selectForegroundColors(
   'base',
   'zora',
   'bsc',
+  'avalanche',
   ...genericColors,
 );
 export type TextColor = (typeof textColors)[number];
@@ -1089,6 +1095,8 @@ export const symbolNames = selectSymbolNames(
   'chart.line.flattrend.xyaxis',
   'chart.line.uptrend.xyaxis',
   'chart.line.downtrend.xyaxis',
+  'dollarsign.circle',
+  'square.grid.2x2.fill',
   'pin.fill',
 );
 export type SymbolName = (typeof symbolNames)[number];

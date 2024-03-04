@@ -8,7 +8,7 @@ Rainbow is a fun, simple, and secure Ethereum wallet that makes managing your as
 
 ### Features
 - Auto-discovers tokens and assets
-- Supports Layer 2 chains like Arbitrum, Optimism, Base, & Polygon right out-of-the-box
+- Supports Layer 2 chains like Arbitrum, Optimism, Base, Polygon, Avalanche, & Zora right out-of-the-box
 - Built-in Send, Bridge, and Swap to power all of your DeFi needs
 - Keyboard shortcuts for pros to switch wallets like 1  2  3
 - Search and navigate your wallets with ⌘K or Ctrl-K for the Magic Menu

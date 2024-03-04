@@ -28,6 +28,10 @@ export const shortcuts = {
       display: 'R',
       key: 'r',
     },
+    REVOKE_APPROVAL: {
+      display: 'R',
+      key: 'r',
+    },
   },
   contact_menu: {
     COPY_CONTACT_ADDRESS: {
@@ -181,6 +185,22 @@ export const shortcuts = {
     REFRESH_NFTS: {
       display: 'R',
       key: 'r',
+    },
+    DOWNLOAD_NFT: {
+      display: 'D',
+      key: 'd',
+    },
+    COPY_NFT_ID: {
+      display: 'C',
+      key: 'c',
+    },
+    SEND_NFT: {
+      display: 'S',
+      key: 's',
+    },
+    HIDE_NFT: {
+      display: 'H',
+      key: 'h',
     },
   },
   wallets: {
