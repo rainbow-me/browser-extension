@@ -1,17 +1,19 @@
-import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { Box } from '~/design-system';
 
-import {
-  higlighterBgDark,
-  higlighterBgLight,
-} from './TokenMarkedHighlighter.css';
-
 export function TokenMarkedHighlighter() {
-  const { currentTheme } = useCurrentThemeStore();
-
   return (
     <Box
-      className={currentTheme === 'dark' ? higlighterBgDark : higlighterBgLight}
+      background="accent"
+      style={{
+        position: 'absolute',
+        height: '60%',
+        top: '50%',
+        left: '8.3px',
+        transform: 'translateY(-50%)',
+        borderTopRightRadius: '3px',
+        borderBottomRightRadius: '3px',
+        width: '2px',
+      }}
     />
   );
 }
