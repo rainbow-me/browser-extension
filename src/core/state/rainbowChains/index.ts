@@ -61,6 +61,10 @@ const mergeNewOfficiallySupportedChainsState = (
   newChains: ChainId[],
 ) => {
   const officiallySupportedRainbowChains = getInitialRainbowChains();
+  console.log(
+    '-- officiallySupportedRainbowChains',
+    officiallySupportedRainbowChains,
+  );
   for (const chainId of newChains) {
     const officalConfig = officiallySupportedRainbowChains[chainId];
     const stateChain = state.rainbowChains[chainId];
@@ -164,7 +168,7 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
   {
     persist: {
       name: 'rainbowChains',
-      version: 2,
+      version: 3,
       migrate(persistedState, version) {
         const state = persistedState as RainbowChainsState;
         if (version === 1) {
@@ -173,6 +177,10 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
             ChainId.avalanche,
             ChainId.avalancheFuji,
           ]);
+        }
+        if (version === 2) {
+          // version 2 added support for Blast
+          return mergeNewOfficiallySupportedChainsState(state, [ChainId.blast]);
         }
 
         return state;
