@@ -26,9 +26,9 @@ export const chainBlast: Chain = {
   name: 'Blast',
   network: 'blast',
   rpcUrls: {
-    public: { http: [process.env.BLAST_RPC as string] },
+    public: { http: [process.env.BLAST_MAINNET_RPC as string] },
     default: {
-      http: [process.env.BLAST_RPC as string],
+      http: [process.env.BLAST_MAINNET_RPC as string],
     },
   },
   blockExplorers: {
