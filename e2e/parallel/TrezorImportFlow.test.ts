@@ -21,7 +21,7 @@ let driver: WebDriver;
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 
-describe.runIf(browser === 'firefox')(
+describe.runIf(browser !== 'firefox')(
   'Import wallet with a Trezor hw wallet',
   () => {
     beforeAll(async () => {
