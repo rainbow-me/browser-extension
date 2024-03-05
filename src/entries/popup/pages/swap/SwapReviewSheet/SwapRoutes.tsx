@@ -1,5 +1,6 @@
 import { ReactElement, useCallback, useMemo, useState } from 'react';
 
+import { formatNumber } from '~/core/utils/formatNumber';
 import { capitalize } from '~/core/utils/strings';
 import { Bleed, Box, Inline, Text } from '~/design-system';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
@@ -70,7 +71,7 @@ const RouteProtocol = ({
 }) => {
   const protocolName = protocol.name?.replace('_', ' ')?.toLowerCase();
   const protocolType = protocol.isBridge ? 'Bridge' : 'Swap';
-  const protocolPart = `${protocol?.part}%`;
+  const protocolPart = `${formatNumber(protocol?.part || 100)}%`;
 
   return (
     <Inline space="5px" alignVertical="center">
@@ -90,8 +91,15 @@ const RouteProtocol = ({
       <Text color="label" size="14pt" weight="semibold">
         {capitalize(protocolName)}
       </Text>
-      <Box background="fillSecondary" borderRadius="round" padding="4px">
-        <Text color="labelSecondary" size="12pt" weight="semibold">
+      <Box
+        background="fillSecondary"
+        borderRadius="round"
+        padding="4px"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <Text color="labelSecondary" size="11pt" weight="semibold">
           {routeWithBridge ? protocolType : protocolPart}
         </Text>
       </Box>
@@ -139,6 +147,10 @@ export const SwapRoutes = ({ protocols, testId }: SwapRoutesProps) => {
         : 0,
     );
   }, [components.length]);
+
+  if (components.length - 1 < currentComponentIndex) {
+    setCurrentComponentIndex(components.length - 1);
+  }
 
   return (
     <SwapRoutesWrapper components={components}>
