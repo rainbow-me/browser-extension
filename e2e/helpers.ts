@@ -555,14 +555,13 @@ export async function executePerformShortcut({
   key: any;
   timesToPress?: number;
 }): Promise<void> {
+  if (browser === 'firefox') delayTime('long');
   try {
     for (let i = 0; i < timesToPress; i++) {
       if (!(key in Key)) {
         await performShortcutWithNormalKey(driver, key);
-        isFirefox && delayTime('long');
       } else {
         await performShortcutWithSpecialKey(driver, key);
-        isFirefox && delayTime('long');
       }
     }
   } catch (error) {
@@ -845,7 +844,6 @@ export async function importWalletFlowUsingKeyboardNavigation(
     await executePerformShortcut({ driver, key: 'ENTER' });
   }
 
-  // ok
   const isPrivateKey =
     walletSecret.substring(0, 2) === '0x' && walletSecret.length === 66;
 
@@ -855,7 +853,6 @@ export async function importWalletFlowUsingKeyboardNavigation(
     timesToPress: isPrivateKey ? 3 : 2,
   });
   await executePerformShortcut({ driver, key: 'ENTER' });
-  // ok
   isPrivateKey
     ? await fillPrivateKey(driver, walletSecret)
     : await fillSeedPhrase(driver, walletSecret);

@@ -25,6 +25,8 @@ let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
+const isFirefox = browser === 'firefox';
+const isChrome = browser === 'chrome';
 
 describe('navigate through settings flows with shortcuts', () => {
   beforeAll(async () => {
@@ -75,7 +77,7 @@ describe('navigate through settings flows with shortcuts', () => {
   it('should be able to navigate to settings via keyboard', async () => {
     await executePerformShortcut({ driver, key: 'TAB', timesToPress: 3 });
     await executePerformShortcut({ driver, key: 'ENTER' });
-    await executePerformShortcut({ driver, key: 'TAB' });
+    if (isChrome) await executePerformShortcut({ driver, key: 'TAB' });
     await executePerformShortcut({ driver, key: 'ENTER' });
     await checkExtensionURL(driver, 'settings');
   });
@@ -114,7 +116,7 @@ describe('navigate through settings flows with shortcuts', () => {
 
   it('should be able to toggle analytics with keyboard', async () => {
     await delayTime('medium');
-    if (browser === 'firefox') {
+    if (isFirefox) {
       const defaultToggleStatus = await toggleStatus(
         'analytics-toggle',
         driver,
@@ -226,7 +228,9 @@ describe('navigate through settings flows with shortcuts', () => {
   });
 
   it('should be able to navigate to auto-lock options', async () => {
+    isFirefox && (await delayTime('long'));
     await executePerformShortcut({ driver, key: 'TAB', timesToPress: 6 });
+    isFirefox && (await delayTime('long'));
     await executePerformShortcut({ driver, key: 'ENTER' });
     await checkExtensionURL(driver, 'autolock');
   });
