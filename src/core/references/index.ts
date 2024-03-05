@@ -213,6 +213,7 @@ export const SUPPORTED_MAINNET_CHAINS: Chain[] = [
   zora,
   bsc,
   avalanche,
+  chainBlast,
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
 export const SUPPORTED_CHAINS: Chain[] = [
