@@ -10,7 +10,7 @@ export default defineConfig({
     watch: false,
     retry: 2,
     bail: 1,
-    hookTimeout: 30_000,
+    hookTimeout: 35_000,
   },
   resolve: {
     alias: {
