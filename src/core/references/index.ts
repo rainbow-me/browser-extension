@@ -163,6 +163,7 @@ export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.polygonMumbai]: AddressZero as Address,
   [ChainId.avalanche]: AVAX_AVALANCHE_ADDRESS as Address,
   [ChainId.avalancheFuji]: AddressZero as Address,
+  [ChainId.blast]: AddressZero as Address,
 };
 
 export const NATIVE_ASSETS_MAP_PER_CHAIN: Record<ChainId, AddressOrEth> = {
@@ -188,6 +189,7 @@ export const NATIVE_ASSETS_MAP_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.polygonMumbai]: MATIC_MAINNET_ADDRESS,
   [ChainId.avalanche]: ETH_ADDRESS,
   [ChainId.avalancheFuji]: ETH_ADDRESS,
+  [ChainId.blast]: ETH_ADDRESS,
 };
 
 export const OVM_GAS_PRICE_ORACLE =
