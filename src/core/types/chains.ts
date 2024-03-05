@@ -2,6 +2,7 @@ import * as chain from 'viem/chains';
 import type { Chain } from 'wagmi';
 
 const HARDHAT_CHAIN_ID = 1337;
+const BLAST_CHAIN_ID = 81457;
 const HARDHAT_OP_CHAIN_ID = 1338;
 
 export const chainHardhat: Chain = {
@@ -18,6 +19,26 @@ export const chainHardhat: Chain = {
     default: { http: ['http://127.0.0.1:8545'] },
   },
   testnet: true,
+};
+
+export const chainBlast: Chain = {
+  id: BLAST_CHAIN_ID,
+  name: 'Blast',
+  network: 'blast',
+  rpcUrls: {
+    public: { http: [process.env.BLAST_RPC as string] },
+    default: {
+      http: [process.env.BLAST_RPC as string],
+    },
+  },
+  blockExplorers: {
+    default: { name: 'Blastscan', url: 'https://blastscan.io/' },
+  },
+  nativeCurrency: {
+    name: 'Blast',
+    symbol: 'BLAST',
+    decimals: 18,
+  },
 };
 
 export const chainHardhatOptimism: Chain = {
@@ -75,7 +96,7 @@ export enum ChainId {
   avalanche = chain.avalanche.id,
   avalancheFuji = chain.avalancheFuji.id,
   base = chain.base.id,
-  blast = 81457,
+  blast = BLAST_CHAIN_ID,
   bsc = chain.bsc.id,
   celo = chain.celo.id,
   gnosis = chain.gnosis.id,

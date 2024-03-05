@@ -21,7 +21,7 @@ import {
 } from 'viem/chains';
 import { Address, type Chain, sepolia } from 'wagmi';
 
-import { ChainId, ChainNameDisplay } from '~/core/types/chains';
+import { ChainId, ChainNameDisplay, chainBlast } from '~/core/types/chains';
 
 import { AddressOrEth } from '../types/assets';
 
@@ -235,6 +235,7 @@ export const SUPPORTED_CHAINS: Chain[] = [
   zoraSepolia,
   avalanche,
   avalancheFuji,
+  chainBlast,
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
 export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map((chain) => chain.id);
