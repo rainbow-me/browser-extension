@@ -43,6 +43,7 @@ export enum ChainName {
   avalanche = 'avalanche',
   avalancheFuji = 'avalanche-fuji',
   base = 'base',
+  blast = 'blast',
   bsc = 'bsc',
   celo = 'celo',
   gnosis = 'gnosis',
@@ -74,6 +75,7 @@ export enum ChainId {
   avalanche = chain.avalanche.id,
   avalancheFuji = chain.avalancheFuji.id,
   base = chain.base.id,
+  blast = 81457,
   bsc = chain.bsc.id,
   celo = chain.celo.id,
   gnosis = chain.gnosis.id,
@@ -134,6 +136,7 @@ export const chainNameToIdMapping: {
   [ChainName.arbitrumGoerli]: ChainId.arbitrumGoerli,
   [ChainName.baseSepolia]: ChainId.baseSepolia,
   [ChainName.zoraSepolia]: ChainId.zoraSepolia,
+  [ChainName.blast]: ChainId.blast,
 };
 
 export const chainIdToNameMapping: {
@@ -145,6 +148,7 @@ export const chainIdToNameMapping: {
   [ChainId.avalanche]: ChainName.avalanche,
   [ChainId.avalancheFuji]: ChainName.avalancheFuji,
   [ChainId.base]: ChainName.base,
+  [ChainId.blast]: ChainName.blast,
   [ChainId.bsc]: ChainName.bsc,
   [ChainId.celo]: ChainName.celo,
   [ChainId.gnosis]: ChainName.gnosis,

@@ -203,6 +203,10 @@ export function Tokens() {
     [combinedAssets, computePinnedAssets, computeUniqueAssets],
   );
 
+  console.log('assets', assets);
+  console.log('customNetworkAssets', customNetworkAssets);
+  console.log('allAssets', allAssets);
+
   const containerRef = useContainerRef();
   const assetsRowVirtualizer = useVirtualizer({
     count: filteredAssets?.length || 0,
