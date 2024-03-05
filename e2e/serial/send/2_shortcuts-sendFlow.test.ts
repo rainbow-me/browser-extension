@@ -35,6 +35,7 @@ let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
+const isFirefox = browser === 'firefox';
 
 describe('Complete send flow via shortcuts and keyboard navigation', () => {
   beforeAll(async () => {
@@ -220,6 +221,7 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
       timesToPress: 2,
     });
     await executePerformShortcut({ driver, key: 'ENTER' });
+    isFirefox && (await delayTime('very-long'));
     await checkExtensionURL(driver, 'send');
   });
 });

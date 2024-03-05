@@ -555,7 +555,7 @@ export async function executePerformShortcut({
   key: any;
   timesToPress?: number;
 }): Promise<void> {
-  if (browser === 'firefox') delayTime('long');
+  browser === 'firefox' && delayTime('long');
   try {
     for (let i = 0; i < timesToPress; i++) {
       if (!(key in Key)) {
