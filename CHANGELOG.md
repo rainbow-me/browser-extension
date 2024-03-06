@@ -21,6 +21,48 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.4.12](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.12)
+
+### Added
+
+- You can now remove a Wallet Group in Settings to cleanup your unused wallets. Always make sure to backup your Secret Recovery Phrase first #1331
+- Added Custom Network autofill support for Blast and Redstone Holesky #1373 #1358
+
+### Changed
+
+- Removed support for deprecated Zora Goerli testnet #1367
+
+## [v1.4.8](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.8)
+
+### Added
+
+- Avalanche is now fully supported in Rainbow, so you'll now see any assets you own on Avalanche, and can easy Send, Swap, Bridge, or interact with Avalanche dApps right out of the box #1307
+- You can now see your current Token and NFT Approvals, and revoke each contract approval with 1-click from the Approvals menu in Settings #1322
+- NFTs can now be easily sent to another wallet from the NFT Details interface or by right-clicking on an NFT in your NFT Gallery #1323 #1334
+
+### Changed
+
+- You can now report spam NFTs by right-clicking on an NFT or use the Report button in the drop-down menu on NFT Details #1357
+- You will now also see a `To` field on simulated transactions for simple asset transfers, instead of only seeing a contract address #1337
+- Added translations for recent improvements to Points, Networks, and NFT flows, and translated new Reset Rainbow, Approvals, and Testnet Faucet features #1356
+
+### Fixed
+
+- Resolved an issue that required you to name a wallet when watching a new ENS address or address that resolves to an ENS name #1338
+- Increased default gas limits for Arbitrum Swaps to improve transaction success rates #1344
+- Fixed an issue for local RPCs with `10`, `192`, or `172` IP address prefixes that would be incorrectly proxied through Rainbow and requests would fail #1343
+- Fixed an issue with the vertical padding on token cells in the Send flow #1362
+
+### Internal
+
+- Upgraded `vite`, `follow-redirects`, and statically specified `ip` version to `2.0.1` to resolve the `GHSA-78xj-cgh5-2h22` audit that is downastream of `@lavamoat/allow-scripts` #1345 #1349
+- Bumped policy updates to follow #1349 PR #1359
+
+### Testing
+
+- e2e: Custom Networks coverage with tests for Add Network, Add Custom Network with RPC, Add Custom Testnet, Add Mainnet RPC, and Add Custom Tokens #1306
+- e2e: Send NFT coverage and fixes #1323 #1363
+
 ## [v1.3.78](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.78)
 
 ### Added
@@ -68,7 +110,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 - You can now see your Points earnings breakdown each Tuesday with the "Your Earnings" card on the Points tabs #1317
-- Added Custom Network auto-fill support for Boba, Dogechain, Immutable zkEVM, Lyra, Manta, Mode, opBNB, Palm, PGN, Blast Sepolia, and RARI Chain #1302 #1316
+- Added Custom Network autofill support for Boba, Dogechain, Immutable zkEVM, Lyra, Manta, Mode, opBNB, Palm, PGN, Blast Sepolia, and RARI Chain #1302 #1316
 
 ### Changed
 
@@ -116,7 +158,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Resolved duplicate assets displayed for Custom Network assets #1281
 - Fixed the bottom padding on the Points leaderboard interface #1278
 - Resolved an invalid sender error for Custom Network transactions when the nonce is 0 #1284
-- Optimized RPC validation for auto-filled networks when adding a new Custom Network #1279
+- Optimized RPC validation for autofilled networks when adding a new Custom Network #1279
 - Fixed an incorrect "Unlimited" amount displayed for large token amount transfers in the Transaction Simulation interface #1277
 - Optimized NFT image loading with low resolution placeholder thumbnails #1282
 - Resolved an issue with `signTypedData` RPC calls for the Safe app #1288
