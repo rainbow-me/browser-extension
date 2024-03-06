@@ -265,6 +265,7 @@ describe('Complete swap flow via shortcuts and keyboard navigation', () => {
     // Adding delay to make sure the provider gets the balance after the swap
     // Because CI is slow so this triggers a race condition most of the time.
     await delay(20000);
+    await delay(20000);
     const ethBalanceAfterSwap = await provider.getBalance(
       WALLET_TO_USE_ADDRESS,
     );

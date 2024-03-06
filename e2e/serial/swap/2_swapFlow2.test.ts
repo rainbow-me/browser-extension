@@ -188,7 +188,10 @@ it('should be able to execute unlock and swap', async () => {
   });
   await delayTime('long');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
-  await delay(30000);
+  // Adding delay to make sure the provider gets the balance after the swap
+  // Because CI is slow so this triggers a race condition most of the time.
+  await delay(20000);
+  await delay(20000);
   const usdcBalanceAfterSwap = await tokenContract.balanceOf(
     WALLET_TO_USE_ADDRESS,
   );
