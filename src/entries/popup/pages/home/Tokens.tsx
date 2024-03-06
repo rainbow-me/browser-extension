@@ -136,9 +136,6 @@ export function Tokens() {
     [assets, customNetworkAssets],
   );
 
-  console.log('- assets', assets);
-  console.log('- customNetworkAssets', customNetworkAssets);
-  console.log('- allAssets', allAssets);
   const containerRef = useContainerRef();
   const assetsRowVirtualizer = useVirtualizer({
     count: allAssets?.length || 0,
