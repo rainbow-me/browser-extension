@@ -555,10 +555,10 @@ export async function executePerformShortcut({
   key: any;
   timesToPress?: number;
 }): Promise<void> {
-  browser === 'firefox' && delayTime('long');
   try {
     for (let i = 0; i < timesToPress; i++) {
       if (!(key in Key)) {
+        isFirefox && (await delayTime('medium'));
         await performShortcutWithNormalKey(driver, key);
       } else {
         await performShortcutWithSpecialKey(driver, key);
