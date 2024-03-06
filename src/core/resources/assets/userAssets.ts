@@ -148,6 +148,7 @@ async function userAssetsQueryFunction({
     const chainIdsWithErrorsInResponse =
       res?.data?.meta?.chain_ids_with_errors || [];
     const assets = res?.data?.payload?.assets || [];
+    console.log('---- assets', assets);
     if (address) {
       userAssetsQueryFunctionRetryByChain({
         address,
@@ -168,6 +169,8 @@ async function userAssetsQueryFunction({
             parsedAssetsDict[missingChainId] = cachedUserAssets[missingChainId];
           }
         }
+        console.log('---- parsedAssetsDict 2', parsedAssetsDict);
+        console.log('-------------');
         return parsedAssetsDict;
       }
     }
