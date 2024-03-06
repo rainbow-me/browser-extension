@@ -60,13 +60,11 @@ export enum ChainName {
   hardhatOptimism = 'hardhat-optimism',
   goerli = 'goerli',
   sepolia = 'sepolia',
-  optimismGoerli = 'optimism-goerli',
   optimismSepolia = 'optimism-sepolia',
   bscTestnet = 'bsc-testnet',
   polygonMumbai = 'polygon-mumbai',
   arbitrumGoerli = 'arbitrum-goerli',
   baseSepolia = 'base-sepolia',
-  zoraTestnet = 'zora-testnet',
   zoraSepolia = 'zora-sepolia',
 }
 
@@ -93,14 +91,12 @@ export enum ChainId {
   sepolia = chain.sepolia.id,
   scroll = chain.scroll.id,
   holesky = chain.holesky.id,
-  optimismGoerli = chain.optimismGoerli.id,
   optimismSepolia = chain.optimismSepolia.id,
   bscTestnet = chain.bscTestnet.id,
   polygonMumbai = chain.polygonMumbai.id,
   arbitrumGoerli = chain.arbitrumGoerli.id,
   arbitrumSepolia = chain.arbitrumSepolia.id,
   baseSepolia = chain.baseSepolia.id,
-  zoraTestnet = chain.zoraTestnet.id,
   zoraSepolia = chain.zoraSepolia.id,
 }
 
@@ -132,13 +128,11 @@ export const chainNameToIdMapping: {
   [ChainName.goerli]: ChainId.goerli,
   ['ethereum-sepolia']: ChainId.sepolia,
   [ChainName.sepolia]: ChainId.sepolia,
-  [ChainName.optimismGoerli]: ChainId.optimismGoerli,
   [ChainName.optimismSepolia]: ChainId.optimismSepolia,
   [ChainName.bscTestnet]: ChainId.bscTestnet,
   [ChainName.polygonMumbai]: ChainId.polygonMumbai,
   [ChainName.arbitrumGoerli]: ChainId.arbitrumGoerli,
   [ChainName.baseSepolia]: ChainId.baseSepolia,
-  [ChainName.zoraTestnet]: ChainId.zoraTestnet,
   [ChainName.zoraSepolia]: ChainId.zoraSepolia,
 };
 
@@ -168,13 +162,11 @@ export const chainIdToNameMapping: {
   [ChainId.hardhatOptimism]: ChainName.hardhatOptimism,
   [ChainId.goerli]: ChainName.goerli,
   [ChainId.sepolia]: ChainName.sepolia,
-  [ChainId.optimismGoerli]: ChainName.optimismGoerli,
   [ChainId.optimismSepolia]: ChainName.optimismSepolia,
   [ChainId.bscTestnet]: ChainName.bscTestnet,
   [ChainId.polygonMumbai]: ChainName.polygonMumbai,
   [ChainId.arbitrumGoerli]: ChainName.arbitrumGoerli,
   [ChainId.baseSepolia]: ChainName.baseSepolia,
-  [ChainId.zoraTestnet]: ChainName.zoraTestnet,
   [ChainId.zoraSepolia]: ChainName.zoraSepolia,
 };
 
@@ -200,13 +192,11 @@ export const ChainNameDisplay = {
   [ChainId.goerli]: chain.goerli.name,
   [ChainId.sepolia]: chain.sepolia.name,
   [ChainId.holesky]: chain.holesky.name,
-  [ChainId.optimismGoerli]: chain.optimismGoerli.name,
   [ChainId.optimismSepolia]: chain.optimismSepolia.name,
   [ChainId.bscTestnet]: 'BSC Testnet',
   [ChainId.polygonMumbai]: chain.polygonMumbai.name,
   [ChainId.arbitrumGoerli]: chain.arbitrumGoerli.name,
   [ChainId.arbitrumSepolia]: chain.arbitrumSepolia.name,
   [ChainId.baseSepolia]: chain.baseSepolia.name,
-  [ChainId.zoraTestnet]: 'Zora Goerli',
   [ChainId.zoraSepolia]: 'Zora Sepolia',
 } as const;

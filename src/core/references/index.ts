@@ -13,13 +13,11 @@ import {
   holesky,
   mainnet,
   optimism,
-  optimismGoerli,
   optimismSepolia,
   polygon,
   polygonMumbai,
   zora,
   zoraSepolia,
-  zoraTestnet,
 } from 'viem/chains';
 import { Address, type Chain, sepolia } from 'wagmi';
 
@@ -155,13 +153,11 @@ export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.bscTestnet]: AddressZero as Address,
   [ChainId.optimism]: ETH_OPTIMISM_ADDRESS as Address,
   [ChainId.hardhatOptimism]: AddressZero as Address,
-  [ChainId.optimismGoerli]: AddressZero as Address,
   [ChainId.optimismSepolia]: AddressZero as Address,
   [ChainId.rari]: AddressZero as Address,
   [ChainId.base]: ETH_BASE_ADDRESS as Address,
   [ChainId.baseSepolia]: AddressZero as Address,
   [ChainId.zora]: ETH_ZORA_ADDRESS as Address,
-  [ChainId.zoraTestnet]: AddressZero as Address,
   [ChainId.zoraSepolia]: AddressZero as Address,
   [ChainId.polygon]: MATIC_POLYGON_ADDRESS as Address,
   [ChainId.polygonMumbai]: AddressZero as Address,
@@ -183,12 +179,10 @@ export const NATIVE_ASSETS_MAP_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.optimism]: ETH_ADDRESS,
   [ChainId.rari]: ETH_ADDRESS,
   [ChainId.hardhatOptimism]: ETH_ADDRESS,
-  [ChainId.optimismGoerli]: ETH_ADDRESS,
   [ChainId.optimismSepolia]: ETH_ADDRESS,
   [ChainId.base]: ETH_ADDRESS,
   [ChainId.baseSepolia]: ETH_ADDRESS,
   [ChainId.zora]: ETH_ADDRESS,
-  [ChainId.zoraTestnet]: ETH_ADDRESS,
   [ChainId.zoraSepolia]: ETH_ADDRESS,
   [ChainId.polygon]: MATIC_MAINNET_ADDRESS,
   [ChainId.polygonMumbai]: MATIC_MAINNET_ADDRESS,
@@ -230,7 +224,6 @@ export const SUPPORTED_CHAINS: Chain[] = [
   bsc,
   goerli,
   sepolia,
-  optimismGoerli,
   optimismSepolia,
   bscTestnet,
   polygonMumbai,
@@ -238,7 +231,6 @@ export const SUPPORTED_CHAINS: Chain[] = [
   arbitrumSepolia,
   baseSepolia,
   zoraSepolia,
-  zoraTestnet,
   avalanche,
   avalancheFuji,
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
@@ -249,14 +241,12 @@ export const SUPPORTED_TESTNET_CHAINS: Chain[] = [
   holesky,
   goerli,
   sepolia,
-  optimismGoerli,
   optimismSepolia,
   bscTestnet,
   polygonMumbai,
   arbitrumGoerli,
   arbitrumSepolia,
   baseSepolia,
-  zoraTestnet,
   zoraSepolia,
   avalancheFuji,
 ];
@@ -286,8 +276,6 @@ export const getDefaultRPC = (chainId: ChainId) => {
       return { http: process.env.ETH_SEPOLIA_RPC };
     case ChainId.holesky:
       return { http: process.env.ETH_HOLESKY_RPC };
-    case ChainId.optimismGoerli:
-      return { http: process.env.OPTIMISM_GOERLI_RPC };
     case ChainId.optimismSepolia:
       return { http: process.env.OPTIMISM_SEPOLIA_RPC };
     case ChainId.bscTestnet:
@@ -300,8 +288,6 @@ export const getDefaultRPC = (chainId: ChainId) => {
       return { http: process.env.ARBITRUM_GOERLI_RPC };
     case ChainId.baseSepolia:
       return { http: process.env.BASE_SEPOLIA_RPC };
-    case ChainId.zoraTestnet:
-      return { http: process.env.ZORA_GOERLI_RPC };
     case ChainId.zoraSepolia:
       return { http: process.env.ZORA_SEPOLIA_RPC };
     case ChainId.avalanche:

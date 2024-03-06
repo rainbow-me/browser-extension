@@ -23,7 +23,6 @@ import {
 } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { Symbol, SymbolProps } from '~/design-system/components/Symbol/Symbol';
-import { TextStyles } from '~/design-system/styles/core.css';
 import { globalColors } from '~/design-system/styles/designTokens';
 
 import AccountItem, {
@@ -66,7 +65,9 @@ const infoButtonOptions = ({
   >;
   hide?: boolean;
 }): MoreInfoOption[] => {
-  const options: MoreInfoOption[] = [
+  const isWatchedWallet = account.type === KeychainType.ReadOnlyKeychain;
+
+  return [
     {
       onSelect: () => {
         setRenameAccount(account.address);
@@ -91,34 +92,18 @@ const infoButtonOptions = ({
       symbol: 'paintbrush.pointed.fill',
       onSelect: () => void {},
       disabled: true,
-      separator: !isLastWallet,
+      separator: true,
     },
-  ];
-
-  const removeOption =
-    account.type === KeychainType.ReadOnlyKeychain
-      ? [
-          {
-            onSelect: () => {
-              setRemoveAccount(account);
-            },
-            label: i18n.t('wallet_switcher.remove_wallet'),
-            symbol: 'trash.fill' as SymbolProps['symbol'],
-            color: 'red' as TextStyles['color'],
-          },
-        ]
-      : [
-          {
-            onSelect: () => {
-              setRemoveAccount(account);
-            },
-            label: i18n.t('wallet_switcher.hide_wallet'),
-            symbol: 'eye.slash.circle.fill' as SymbolProps['symbol'],
-            color: 'red' as TextStyles['color'],
-          },
-        ];
-
-  return isLastWallet ? options : options.concat(removeOption);
+    {
+      onSelect: () => setRemoveAccount(account),
+      label: i18n.t(
+        `wallet_switcher.${isWatchedWallet ? 'remove_wallet' : 'hide_wallet'}`,
+      ),
+      symbol: isWatchedWallet ? 'trash.fill' : 'eye.slash.circle.fill',
+      color: 'red',
+      disabled: isLastWallet,
+    },
+  ] satisfies MoreInfoOption[];
 };
 
 const NoWalletsWarning = ({
@@ -208,12 +193,12 @@ export function WalletSwitcher() {
   const { hideWallet, unhideWallet } = useHiddenWalletsStore();
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useRainbowNavigate();
-  const { visibleWallets: accounts, allWallets, fetchWallets } = useWallets();
+  const { visibleWallets: accounts, fetchWallets } = useWallets();
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
   const { featureFlags } = useFeatureFlagsStore();
   const { trackShortcut } = useKeyboardAnalytics();
 
-  const isLastWallet = allWallets?.length === 1;
+  const isLastWallet = accounts?.length === 1;
 
   const { deleteWalletName } = useWalletNamesStore();
 
@@ -237,10 +222,10 @@ export function WalletSwitcher() {
         await remove(address);
       } else {
         // hide otherwise
-        await hideWallet({ address });
+        hideWallet({ address });
       }
 
-      await deleteWalletName({ address });
+      deleteWalletName({ address });
 
       // Switch to the next account if possible
       if (accounts.length > 1) {
@@ -258,7 +243,7 @@ export function WalletSwitcher() {
         await fetchWallets();
       } else {
         // This was the last account wipe and send to welcome screen
-        await unhideWallet({ address });
+        unhideWallet({ address });
         await wipe();
         navigate(ROUTES.WELCOME);
       }

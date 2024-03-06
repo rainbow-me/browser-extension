@@ -92,6 +92,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Blast',
+    networkInfo: {
+      rpcUrl: 'https://blast.blockpi.network/v1/rpc/public',
+      chainId: 81457,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://blastscan.io',
+      testnet: false,
+    },
+  },
+  {
     name: 'Blast Testnet',
     networkInfo: {
       rpcUrl: 'https://sepolia.blast.io',
@@ -364,6 +375,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
       symbol: 'ETH',
       explorerUrl: 'https://mainnet.explorer.rarichain.org',
       testnet: false,
+    },
+  },
+  {
+    name: 'Redstone Testnet',
+    networkInfo: {
+      rpcUrl: 'https://rpc.holesky.redstone.xyz',
+      chainId: 17001,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://explorer.holesky.redstone.xyz',
+      testnet: true,
     },
   },
   {

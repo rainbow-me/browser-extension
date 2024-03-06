@@ -1,8 +1,4 @@
-import React, { useCallback } from 'react';
-import { Address, useAccount } from 'wagmi';
-
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
 import { WELCOME_URL, goToNewTab } from '~/core/utils/tabs';
 import {
   Box,
@@ -22,6 +18,11 @@ import * as wallet from '../../../handlers/wallet';
 const t = (s: string) =>
   i18n.t(s, { scope: 'settings.privacy_and_security.wallets_and_keys' });
 
+async function handleWipeWallet() {
+  await wallet.wipe();
+  goToNewTab({ url: WELCOME_URL });
+}
+
 export const WipeWalletPrompt = ({
   show,
   onClose,
@@ -29,18 +30,6 @@ export const WipeWalletPrompt = ({
   show: boolean;
   onClose: () => void;
 }) => {
-  const { setCurrentAddress } = useCurrentAddressStore();
-  const { address } = useAccount();
-
-  const handleWipeWallet = useCallback(async () => {
-    await wallet.wipe();
-    const accounts = await wallet.getAccounts();
-    if (accounts.length > 0 && !accounts.includes(address as Address)) {
-      setCurrentAddress(accounts[0]);
-    }
-    goToNewTab({ url: WELCOME_URL });
-  }, [address, setCurrentAddress]);
-
   return (
     <Prompt show={show} handleClose={onClose}>
       <Box padding="12px">

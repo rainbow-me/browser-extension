@@ -41,6 +41,7 @@ export const customChainIdsToAssetNames: Record<ChainId, string> = {
   42170: 'arbitrumnova',
   1313161554: 'aurora',
   43114: 'avalanchex',
+  81457: 'blast',
   168587773: 'blastsepolia',
   288: 'boba',
   42220: 'celo',
@@ -66,8 +67,9 @@ export const customChainIdsToAssetNames: Record<ChainId, string> = {
   424: 'pgn',
   1101: 'polygonzkevm',
   369: 'pulsechain',
-  1918988905: 'raritestnet',
   1380012617: 'rari',
+  1918988905: 'raritestnet',
+  17001: 'redstoneholesky',
   534352: 'scroll',
   100: 'xdai',
   324: 'zksync',
@@ -187,9 +189,7 @@ export const getSimpleHashSupportedTestnetChainNames = () => {
     ChainName.arbitrumGoerli,
     ChainName.arbitrumSepolia,
     ChainName.baseSepolia,
-    ChainName.optimismGoerli,
     ChainName.optimismSepolia,
-    ChainName.zoraTestnet,
     ChainName.zoraSepolia,
   ] as (ChainName | 'ethereum-sepolia' | 'ethereum')[];
 };
@@ -367,6 +367,12 @@ export const deriveChainIdByHostname = (hostname: string) => {
       return ChainId.avalancheFuji;
     case 'moonscan.io':
       return moonbeam.id;
+    case 'explorer.holesky.redstone.xyz':
+      return 17001;
+    case 'blastscan.io':
+      return 81457;
+    case 'testnet.blastscan.io':
+      return 168587773;
     default:
       return ChainId.mainnet;
   }
