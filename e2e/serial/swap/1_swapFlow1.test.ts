@@ -270,7 +270,7 @@ it.skip('should be able to set default values for settings and go back to swap',
 
 it('should be able to open token to sell input and select assets', async () => {
   await findElementByTestIdAndClick({
-    id: 'token-to-sell-search-token-input',
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-token-input-remove`,
     driver,
   });
   await findElementByTestIdAndClick({
