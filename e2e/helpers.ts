@@ -383,7 +383,7 @@ export async function findElementByIdAndClick({
 export async function waitAndClick(element: WebElement, driver: WebDriver) {
   try {
     await driver.wait(untilDocumentLoaded(), waitUntilTime);
-    isFirefox ? await delayTime('long') : await delayTime('short');
+    isFirefox ? await delayTime('medium') : await delayTime('short');
     await driver.wait(until.elementIsVisible(element), waitUntilTime);
     await driver.wait(until.elementIsEnabled(element), waitUntilTime);
     return element.click();
