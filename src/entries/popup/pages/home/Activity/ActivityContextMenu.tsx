@@ -9,7 +9,7 @@ import { RainbowTransaction } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
 import { copy } from '~/core/utils/copy';
 import { goToNewTab } from '~/core/utils/tabs';
-import { getTransactionBlockExplorerUrl } from '~/core/utils/transactions';
+import { getTransactionBlockExplorer } from '~/core/utils/transactions';
 import { Box, Text } from '~/design-system';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 
@@ -46,8 +46,8 @@ export function ActivityContextMenu({
   };
 
   const viewOnExplorer = () => {
-    const explorer = getTransactionBlockExplorerUrl(transaction);
-    goToNewTab({ url: explorer });
+    const explorer = getTransactionBlockExplorer(transaction);
+    goToNewTab({ url: explorer?.url });
   };
 
   const onSpeedUp = () => {
