@@ -12,7 +12,7 @@ import { isNativeAsset } from '~/core/utils/chains';
 import { copyAddress } from '~/core/utils/copy';
 import { goToNewTab } from '~/core/utils/tabs';
 import { getTokenBlockExplorer } from '~/core/utils/transactions';
-import { Box, Text } from '~/design-system';
+import { Text, TextOverflow } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 
 import {
@@ -147,17 +147,20 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
             addPinnedAsset({ uniqueId: token.uniqueId });
           }}
         >
-          <Box style={{ wordBreak: 'break-all' }}>
-            <Text size="14pt" weight="semibold">
-              {pinned
-                ? i18n.t('token_details.more_options.unpin_token', {
-                    name: token.name,
-                  })
-                : i18n.t('token_details.more_options.pin_token', {
-                    name: token.name,
-                  })}
-            </Text>
-          </Box>
+          <TextOverflow
+            size="14pt"
+            weight="semibold"
+            color="label"
+            testId="account-name"
+          >
+            {pinned
+              ? i18n.t('token_details.more_options.unpin_token', {
+                  name: token.name,
+                })
+              : i18n.t('token_details.more_options.pin_token', {
+                  name: token.name,
+                })}
+          </TextOverflow>
         </ContextMenuItem>
       </ContextMenuContent>
     </DetailsMenuWrapper>
