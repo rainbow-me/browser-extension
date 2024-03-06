@@ -33,7 +33,7 @@ export function CoinRow({
   testId?: string;
 }) {
   return (
-    <Box style={{ height: '52px', position: 'relative' }} testId={testId}>
+    <Box style={{ height: '52px' }} testId={testId}>
       <RowHighlightWrapper>
         <Inset horizontal="12px" vertical="8px">
           <Rows>
