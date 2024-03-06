@@ -248,7 +248,7 @@ function NetworkData({ transaction: tx }: { transaction: RainbowTransaction }) {
           </Inline>
         }
       />
-      <FeeData transaction={tx} />
+      {tx.status != 'pending' && <FeeData transaction={tx} />}
       {nonce >= 0 && (
         <InfoRow
           symbol="number"
@@ -556,10 +556,8 @@ export function ActivityDetails() {
   };
 
   return (
-    <BottomSheet zIndex={zIndexes.ACTIVITY_DETAILS} show>
-      {isLoading || !transaction ? (
-        <Box />
-      ) : (
+    <BottomSheet zIndex={zIndexes.ACTIVITY_DETAILS} show={!!transaction}>
+      {!isLoading && !!transaction && (
         <>
           <Navbar
             leftComponent={
