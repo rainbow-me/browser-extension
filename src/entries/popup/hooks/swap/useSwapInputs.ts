@@ -173,8 +173,13 @@ export const useSwapInputs = ({
   const setAssetToSellMaxValue = useCallback(() => {
     setAssetToSellValue(assetToSellMaxValue.amount);
     setIndependentValue(assetToSellMaxValue.amount);
+    saveSwapAmount({ amount: assetToSellMaxValue.amount });
     setIndependentFieldIfOccupied('sellField');
-  }, [assetToSellMaxValue.amount, setIndependentFieldIfOccupied]);
+  }, [
+    assetToSellMaxValue.amount,
+    saveSwapAmount,
+    setIndependentFieldIfOccupied,
+  ]);
 
   const flipAssets = useCallback(() => {
     if (bridge && assetToSell && !assetToBuy) return;
