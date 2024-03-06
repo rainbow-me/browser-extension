@@ -15,11 +15,13 @@ export const useTokenPressMouseEvents = ({
   onClick,
 }: TokenPressMouseEventHookArgs) => {
   const [ready, setReady] = useState(false);
-  const { uniqueIds, addPinnedAsset, removedPinnedAsset } =
+  const { pinnedAssets, addPinnedAsset, removedPinnedAsset } =
     usePinnedAssetStore();
 
   const onPressed = useCallback(() => {
-    const pinned = uniqueIds.some((id) => id === token.uniqueId);
+    const pinned = pinnedAssets.some(
+      ({ uniqueId }) => uniqueId === token.uniqueId,
+    );
 
     if (pinned) {
       removedPinnedAsset({ uniqueId: token.uniqueId });
@@ -27,7 +29,7 @@ export const useTokenPressMouseEvents = ({
     }
 
     addPinnedAsset({ uniqueId: token.uniqueId });
-  }, [addPinnedAsset, removedPinnedAsset, token.uniqueId, uniqueIds]);
+  }, [addPinnedAsset, pinnedAssets, removedPinnedAsset, token.uniqueId]);
 
   const { pressed, startPress, endPress } = usePress(onPressed);
 
@@ -48,5 +50,14 @@ export const useTokenPressMouseEvents = ({
     }
   };
 
-  return { onMouseDown, onMouseUp };
+  const onMouseLeave = () => {
+    if (ready) {
+      setReady(false);
+      if (!pressed) {
+        endPress();
+      }
+    }
+  };
+
+  return { onMouseDown, onMouseUp, onMouseLeave };
 };

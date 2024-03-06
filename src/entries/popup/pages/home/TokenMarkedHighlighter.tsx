@@ -8,7 +8,7 @@ export function TokenMarkedHighlighter() {
         position: 'absolute',
         height: '60%',
         top: '50%',
-        left: '8.3px',
+        left: '1.4px',
         transform: 'translateY(-50%)',
         borderTopRightRadius: '3px',
         borderBottomRightRadius: '3px',

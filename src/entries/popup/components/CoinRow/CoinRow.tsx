@@ -7,8 +7,6 @@ import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTranspa
 
 import { CoinIcon } from '../CoinIcon/CoinIcon';
 
-import { TokenMarkedHighlighter } from './TokenMarkedHighlighter';
-
 function RowHighlightWrapper({ children }: { children: ReactNode }) {
   return (
     <Inset horizontal="8px">
@@ -27,18 +25,15 @@ export function CoinRow({
   topRow,
   bottomRow,
   testId,
-  showPinStatus,
 }: {
   asset?: ParsedAsset | ParsedUserAsset;
   fallbackText?: string;
   topRow: ReactNode;
   bottomRow: ReactNode;
   testId?: string;
-  showPinStatus?: boolean;
 }) {
   return (
     <Box style={{ height: '52px', position: 'relative' }} testId={testId}>
-      {showPinStatus && <TokenMarkedHighlighter />}
       <RowHighlightWrapper>
         <Inset horizontal="12px" vertical="8px">
           <Rows>

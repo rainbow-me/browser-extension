@@ -53,15 +53,14 @@ import { ROUTES } from '../../urls';
 
 import { TokensSkeleton } from './Skeletons';
 import { TokenContextMenu } from './TokenDetails/TokenContextMenu';
+import { TokenMarkedHighlighter } from './TokenMarkedHighlighter';
 
 const TokenRow = memo(function TokenRow({
   token,
   testId,
-  showPinStatus,
 }: {
   token: ParsedUserAsset;
   testId: string;
-  showPinStatus: boolean;
 }) {
   const navigate = useRainbowNavigate();
   const openDetails = () => {
@@ -70,17 +69,29 @@ const TokenRow = memo(function TokenRow({
     });
   };
 
-  const { onMouseDown, onMouseUp } = useTokenPressMouseEvents({
+  const { onMouseDown, onMouseUp, onMouseLeave } = useTokenPressMouseEvents({
     token,
     onClick: openDetails,
   });
 
   return (
-    <TokenContextMenu token={token}>
-      <Box onMouseDown={onMouseDown} onMouseUp={onMouseUp}>
-        <AssetRow showPinStatus={showPinStatus} asset={token} testId={testId} />
-      </Box>
-    </TokenContextMenu>
+    <Box
+      as={motion.div}
+      whileTap={{ scale: 0.98 }}
+      width="full"
+      layoutScroll
+      layout="position"
+    >
+      <TokenContextMenu token={token}>
+        <Box
+          onMouseDown={onMouseDown}
+          onMouseUp={onMouseUp}
+          onMouseLeave={onMouseLeave}
+        >
+          <AssetRow asset={token} testId={testId} />
+        </Box>
+      </TokenContextMenu>
+    </Box>
   );
 });
 
@@ -92,7 +103,7 @@ export function Tokens() {
   const { hideSmallBalances } = useHideSmallBalancesStore();
   const { trackShortcut } = useKeyboardAnalytics();
   const { modifierSymbol } = useSystemSpecificModifierKey();
-  const { uniqueIds } = usePinnedAssetStore();
+  const { pinnedAssets } = usePinnedAssetStore();
 
   const {
     data: assets = [],
@@ -208,25 +219,21 @@ export function Tokens() {
           {assetsRowVirtualizer.getVirtualItems().map((virtualItem) => {
             const { key, size, start, index } = virtualItem;
             const token = filteredAssets[index];
-            const pinned = uniqueIds.some((id) => id === token.uniqueId);
+            const pinned = pinnedAssets.some(
+              ({ uniqueId }) => uniqueId === token.uniqueId,
+            );
 
             return (
               <Box
                 key={`${token.uniqueId}-${key}`}
-                as={motion.div}
-                whileTap={{ scale: 0.98 }}
                 layoutId={`list-${index}`}
-                layoutScroll
-                layout="position"
+                as={motion.div}
                 position="absolute"
                 width="full"
                 style={{ height: size, y: start }}
               >
-                <TokenRow
-                  showPinStatus={pinned}
-                  token={token}
-                  testId={`coin-row-item-${index}`}
-                />
+                {pinned && <TokenMarkedHighlighter />}
+                <TokenRow token={token} testId={`coin-row-item-${index}`} />
               </Box>
             );
           })}
@@ -239,13 +246,11 @@ export function Tokens() {
 type AssetRowProps = {
   asset: ParsedUserAsset;
   testId?: string;
-  showPinStatus?: boolean;
 };
 
 export const AssetRow = memo(function AssetRow({
   asset,
   testId,
-  showPinStatus,
 }: AssetRowProps) {
   const name = asset?.name || asset?.symbol || truncateAddress(asset.address);
   const uniqueId = asset?.uniqueId;
@@ -347,7 +352,6 @@ export const AssetRow = memo(function AssetRow({
       asset={asset}
       topRow={topRow}
       bottomRow={bottomRow}
-      showPinStatus={showPinStatus}
     />
   );
 });

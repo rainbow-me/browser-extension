@@ -35,9 +35,11 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
   const { isWatchingWallet } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
   const setSelectedToken = useSelectedTokenStore((s) => s.setSelectedToken);
-  const { uniqueIds, removedPinnedAsset, addPinnedAsset } =
+  const { pinnedAssets, removedPinnedAsset, addPinnedAsset } =
     usePinnedAssetStore();
-  const pinned = uniqueIds.some((id) => id === token.uniqueId);
+  const pinned = pinnedAssets.some(
+    ({ uniqueId }) => uniqueId === token.uniqueId,
+  );
 
   // if we are navigating to new page (swap/send) the menu closes automatically,
   // we don't want deselect the token in that case
