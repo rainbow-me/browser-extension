@@ -1,9 +1,10 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { motion } from 'framer-motion';
-import { CSSProperties, useState } from 'react';
+import { CSSProperties, useCallback, useState } from 'react';
 
 import { RainbowTransaction } from '~/core/types/transactions';
 import { Box, Text } from '~/design-system';
+import { BottomSheet_transition_duration_ms } from '~/design-system/components/BottomSheet/BottomSheet';
 import { backgroundColorsVars } from '~/design-system/styles/core.css';
 import { TextColor } from '~/design-system/styles/designTokens';
 
@@ -34,8 +35,9 @@ const PendingIndicator = ({
   const [totalLength, setTotalLength] = useState<number>();
   return (
     <motion.svg
-      initial={{ opacity: 0, scale: 0.8 }}
+      initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.3 }}
       height={adjustedHeight + borders}
       width={adjustedWidth + borders}
       opacity={totalLength ? 1 : 0}
@@ -78,6 +80,14 @@ export function ActivityPill({
   const color = statusColor[status];
 
   const [size, setSize] = useState<Size | null>(null);
+  const ref = useCallback((n: HTMLDivElement | null) => {
+    setTimeout(() => {
+      if (!n) return; // if the node is null, the component was unmounted before the timeout
+      setSize(n.getBoundingClientRect());
+      // this component is used inside a bottom sheet, the animation to show it changes the size
+      // so we wait for the animation to finish and then get the size
+    }, BottomSheet_transition_duration_ms);
+  }, []);
 
   return (
     <Box position="relative">
@@ -91,12 +101,7 @@ export function ActivityPill({
         </Box>
       )}
       <Box
-        ref={(n) => {
-          if (!n || !!size) return;
-          setTimeout(() => {
-            setSize(n.getBoundingClientRect());
-          }, 100);
-        }}
+        ref={ref}
         display="flex"
         alignItems="center"
         gap="6px"
