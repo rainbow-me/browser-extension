@@ -21,6 +21,227 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.4.12](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.12)
+
+### Added
+
+- You can now remove a Wallet Group in Settings to cleanup your unused wallets. Always make sure to backup your Secret Recovery Phrase first #1331
+- Added Custom Network autofill support for Blast and Redstone Holesky #1373 #1358
+
+### Changed
+
+- Removed support for deprecated Zora Goerli testnet #1367
+
+## [v1.4.8](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.8)
+
+### Added
+
+- Avalanche is now fully supported in Rainbow, so you'll now see any assets you own on Avalanche, and can easy Send, Swap, Bridge, or interact with Avalanche dApps right out of the box #1307
+- You can now see your current Token and NFT Approvals, and revoke each contract approval with 1-click from the Approvals menu in Settings #1322
+- NFTs can now be easily sent to another wallet from the NFT Details interface or by right-clicking on an NFT in your NFT Gallery #1323 #1334
+
+### Changed
+
+- You can now report spam NFTs by right-clicking on an NFT or use the Report button in the drop-down menu on NFT Details #1357
+- You will now also see a `To` field on simulated transactions for simple asset transfers, instead of only seeing a contract address #1337
+- Added translations for recent improvements to Points, Networks, and NFT flows, and translated new Reset Rainbow, Approvals, and Testnet Faucet features #1356
+
+### Fixed
+
+- Resolved an issue that required you to name a wallet when watching a new ENS address or address that resolves to an ENS name #1338
+- Increased default gas limits for Arbitrum Swaps to improve transaction success rates #1344
+- Fixed an issue for local RPCs with `10`, `192`, or `172` IP address prefixes that would be incorrectly proxied through Rainbow and requests would fail #1343
+- Fixed an issue with the vertical padding on token cells in the Send flow #1362
+
+### Internal
+
+- Upgraded `vite`, `follow-redirects`, and statically specified `ip` version to `2.0.1` to resolve the `GHSA-78xj-cgh5-2h22` audit that is downastream of `@lavamoat/allow-scripts` #1345 #1349
+- Bumped policy updates to follow #1349 PR #1359
+
+### Testing
+
+- e2e: Custom Networks coverage with tests for Add Network, Add Custom Network with RPC, Add Custom Testnet, Add Mainnet RPC, and Add Custom Tokens #1306
+- e2e: Send NFT coverage and fixes #1323 #1363
+
+## [v1.3.78](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.78)
+
+### Added
+
+- NFTs are now supported across major Custom Networks and Testnets #1336
+
+### Changed
+
+- Removed Base Goerli network that has been deprecated #1342
+
+## [v1.3.73](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.73)
+
+### Added
+
+- Added support for the `eth_coinbase` RPC method to support dApps like Orbiter.finance #1312
+
+### Changed
+
+- Your Rank for Points now shows a breakdown of your rank difference each week, and which direction you're trending on the leaderboard #1327
+
+### Fixed
+
+- Fixed an issue where Activity Details would appear as a blank screen for Pending Transactions for Custom Networks #1311
+- Fixed Custom Gas shortcuts for L2s and unsupported networks #1321
+- Optimized ENS fetching network calls on the Points leaderboard #1328
+- Resolved an issue that prevent Custom Network assets from appearing in the Magic Menu search #1326
+- Fixed an issue with dApps like Blur where the dApp interface would sometimes hang upon transaction signing due to a BigNumber parsing issue #1330
+- Fixed text overflows on From and To addresses in Transaction Details #1335
+
+### Security
+
+- Upgraded Lavamoat supply chain to mitigate reported vulnerability #1339
+
+### Internal
+
+- Disabled anonymized collection by default on Firefox #1325
+- Blocking token metadata network requests for unsupported networks to reduce backend request load #1324
+
+### Testing
+
+- Updated Firefox Test Setup to pin specific versions of Firefox Developer Edition to mitigate `123.0b1` errors #1329
+
+## [v1.3.57](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.57)
+
+### Added
+
+- You can now see your Points earnings breakdown each Tuesday with the "Your Earnings" card on the Points tabs #1317
+- Added Custom Network autofill support for Boba, Dogechain, Immutable zkEVM, Lyra, Manta, Mode, opBNB, Palm, PGN, Blast Sepolia, and RARI Chain #1302 #1316
+
+### Changed
+
+- Wallet searching is even faster now that the search bar autofocuses when launching the wallet switcher #1299
+- When interacting with dApps that call `wallet_addEthereumChain`, Rainbow will now automatically switch to the network or RPC if you've already added it, and display a notification on the dApp #1298
+- Contracts on the Transaction Request decoding interface now has a more menu with explorer links #1314
+
+### Fixed
+
+- Improved the reliability of Pending Transaction detection and reliability, including for Flashbots transactions #1296
+- Fixed text overflow for long NFT and NFT Collection names in NFT Details #1295
+- Resolved dApp Provider errors when interacting with 1inch Limit Orders and Curve.fi #1297
+- Resolved missing Learn more explainer link on the Flashbots toggle in Settings #1291
+- Resolved issue where Custom Gas options were incorrectly was exposed for L2 networks #1304
+- Preventing duplicate `wallet_addEthereumChain` calls for adding new networks, and now displaying errors #1298
+
+### Internal
+
+- Added `undefined` check for our top telemetry errors related to navigation state restoration #1300
+- Bumped the Swap SDK to `0.9.1` for Avalanche support #1308
+- Allowlisted `GHSA-c24v-8rfc-w8vw` vitest vulnerability #1309
+- Upgraded Ledger packages for upstream Stax device support #1301
+
+## [v1.3.42](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.42)
+
+### Added
+
+- You can now right-click on NFTs from the gallery for quick actions, including a new Hide feature #1273 #1274
+- Testnet Faucets are now presented when you run out of gas during a testnet transaction #1252
+- Reset Rainbow in Wallets & Keys in Settings now allows you to remove all of the wallets from Rainbow #1263
+
+### Changed
+
+- Hardware wallet users attempting to sign a dApp interaction will now see a "Confirm on your device" loading indicator #1127
+- NFTs can now be refreshed with the `R` hotkey #1272
+
+### Fixed
+
+- Resolved issue where wallet creation may fail in Wallet Details after previously removing a wallet #1254
+- Resolved Points leaderboard number formatting issues and missing icons #1259
+- Improved reliability of pending transaction status updates to prevent failed transactions from displaying as pending many hours later #1261
+- Fixed an issue that would cause duplicate wallets when importing the private key for a watched wallet #1266
+- Resolved `undefined` chain and `Insufficient ETH` errors for Custom Network dApp interactions on wallets with no assets #1275 #1271
+- Resolved an instability issue with Transaction Simulation and gas estimation when using a Custom RPC for Gashawk #1280
+- Resolved duplicate assets displayed for Custom Network assets #1281
+- Fixed the bottom padding on the Points leaderboard interface #1278
+- Resolved an invalid sender error for Custom Network transactions when the nonce is 0 #1284
+- Optimized RPC validation for autofilled networks when adding a new Custom Network #1279
+- Fixed an incorrect "Unlimited" amount displayed for large token amount transfers in the Transaction Simulation interface #1277
+- Optimized NFT image loading with low resolution placeholder thumbnails #1282
+- Resolved an issue with `signTypedData` RPC calls for the Safe app #1288
+- Fixed an issue with `chainId` discovery for Anvil RPCs #1289
+- Resolved an issue with filtering out Custom Network assets when a network is disabled #1289
+- Fixed issue with network drag-and-drop reordering in Settings #1285
+- Resolved disappearing Activity history after sending a transaction on Avalanche #1290
+- Allowing creation of wallets without specifying a wallet name #1287
+- More reliable account index increments after creating wallets #1287
+
+### Internal
+
+- Pinned `follow-redirects` to `1.15.4` #1294
+- Upgraded `@metamask/eth-sig-util` to `7.0.1` to resolve [signing issues](https://github.com/MetaMask/metamask-mobile/issues/7792) with the Safe app #1288
+- Added anonymized tracking for Magic Menu interactions #1283
+
+## [v1.3.26](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.26)
+
+### Added
+
+- Base Sepolia, and Zora Sepolia testnets are now supported #1251
+
+### Fixed
+
+- Resolved incomplete token discovery when Custom Networks like Avalanche were enabled #1262
+- Fixed an issue where the Rainbow dApp provider would leak dependencies and sometimes conflict with dApps that relied on `lodash` #1264
+
+### Internal
+
+- Bumped e2e packages including `chromedriver`, `geckodriver`, and `vitest` #1268
+
+## [v1.3.19](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.19)
+
+### Fixed
+
+- Resolved an issue that blocked some eligible wallets with a balance from enrolling in Rainbow Points #1258
+
+## [v1.3.17](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.17)
+
+### Added
+
+- Custom Networks and RPCs are now supported in Rainbow. In the Networks menu in Settings, you can add a network, switch your default RPC, or even add Custom Tokens to appear across Rainbow #1200 #1224 #1225 #1231 #1233 #1220 #1245 #1247 #1248 #1249 #1250 #1255 #1256 #1236
+- Chains like Arbitrum Nova, Polygon zkEVM, Canto, Ethereum Classic, Fantom, Moonbeam, Mantle, Metis, and Pulsechain are now pre-populated when adding a Custom Network for even easier access #1205 #1223 #1244
+- My NFTs and NFT Search is now available in the Magic Menu. NFTs are searchable by token names, token ids, collection names, and contract addresses for even faster access #1227
+
+### Changed
+
+- `SignTypedData` is now supported by the Transaction Decoding feature for dApp interactions #1162
+- Rainbow now displays errors when Sends or Swaps fail to better diagnose gas or nonce issues and RPC failures #1199 #1210 #1240 #1232 #1243 #1238
+- When adding a new Custom Network, we now validate the RPC and display an error if it is not responding #1214
+- Improved the appearance of the Points leaderboard ranks #1229
+- Wallets without a balance now encounter an error and guide when enrolling into Rainbow Points #1230
+- Unranked users now see a different Rank card on the Points leaderboard #1237
+- Added translations for Points and Custom Networks features #1226
+- Improved NFT Gallery scroll pagination and loading indicators #1188
+
+### Fixed
+
+- Resolved an issue with Custom Gas logic for Flashbots transactions. We now force a miner tip of `6` for Sends and dApp interactions when broadcast with the Flashbots RPC #1190
+- Improved Network selection drop-down height consistency when many networks are active #1191
+- Points earnings are now refreshed automatically with each Tuesday drop #1204
+- Resolved an issue where token prices could only be discovered for native assets on Custom Networks #1213
+- Resolved a parsing issue for Points referral codes when a URL is pasted instead of a code #1221
+- Resolved a UI consistency issue with Points referral code formatting #1228
+- Fixed an issue with Cool Mode on the Points and NFT tabs where particle effects wouldn't cease on click release #1219
+- Fixed an issue with Points onboarding for Trezor device users that require a web redirect #1211
+- Resolved a crash during Points onboarding for empty wallets #1218
+- Improved large number formatting on Points leaderboard #1222
+- Optimized the number of network calls when rendering the Points leaderboard #1212
+- Resolved an issue with NFTs disappearing when a Custom Network is active #1239
+- Resolved switch network failures on dApps after adding a Custom Network #1246
+- Fixed text clipping on Points text glow and shadows #1253
+
+### Internal
+
+- Deprecated `useForceConnect` hook #1209
+- Refactored `displayName` usage in favor of `forwardRef` functions #1180
+- Regenerated design system symbols to reduce bundle size #1235
+- Custom RPC feature flag support #1234
+- Feature flag cleanup for Points and NFTs #1242
+- Deprecated the need for `chain id` input for Custom Networks because of auto-discovery #1257
+- Added Zora Sepolia testnet RPC to the allowlist #1202
+
 ## [v1.3.7](https://github.com/rainbow-me/browser-extension/releases/tag/v1.3.7)
 
 ### Changed
@@ -113,7 +334,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Internal
 
 - Added support for `wallet_watchAsset` RPC call #1141
-- Added Custom RPC Settings form validatin to test RPC endpoints #1144
+- Added Custom RPC Settings form validation to test RPC endpoints #1144 #1241
 - Added NFT Gallery loading and empty states #1152 #1155
 - Added NFT Keyboard Navigation and sorting Shortcuts #1154
 - Added Owners and Distinct Owners fields in NFT Details #1153

@@ -5,10 +5,9 @@ import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
 import { useSelectedTransactionStore } from '~/core/state/selectedTransaction';
-import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import { goToNewTab } from '~/core/utils/tabs';
-import { getTransactionBlockExplorerUrl } from '~/core/utils/transactions';
+import { getTransactionBlockExplorer } from '~/core/utils/transactions';
 
 import { triggerToast } from '../components/Toast/Toast';
 
@@ -35,14 +34,13 @@ export function useActivityShortcuts() {
   }, [trimmedHash, truncatedAddress]);
 
   const viewOnExplorer = useCallback(() => {
-    const explorer = getTransactionBlockExplorerUrl({
-      chainId: selectedTransaction?.chainId || ChainId.mainnet,
+    if (!selectedTransaction) return;
+    const explorer = getTransactionBlockExplorer({
+      ...selectedTransaction,
       hash: trimmedHash,
     });
-    goToNewTab({
-      url: explorer,
-    });
-  }, [selectedTransaction?.chainId, trimmedHash]);
+    goToNewTab({ url: explorer?.url });
+  }, [selectedTransaction, trimmedHash]);
 
   const handleActivityShortcuts = useCallback(
     (e: KeyboardEvent) => {

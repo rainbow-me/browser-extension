@@ -1,6 +1,6 @@
 import { i18n } from '../languages';
 
-export function formatDate(date: number | Date) {
+export function formatDate(date: string | number | Date) {
   const targetDate = new Date(date);
 
   const today = new Date();

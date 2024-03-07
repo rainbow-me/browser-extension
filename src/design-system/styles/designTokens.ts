@@ -545,7 +545,8 @@ export type ForegroundColor =
   | 'polygon'
   | 'base'
   | 'zora'
-  | 'bsc';
+  | 'bsc'
+  | 'avalanche';
 
 export const foregroundColors: Record<
   ForegroundColor,
@@ -633,7 +634,11 @@ export const foregroundColors: Record<
   },
   bsc: {
     light: '#EBAF09',
-    dark: '#EBAF09',
+    dark: '#FFDA66',
+  },
+  avalanche: {
+    light: '#EBAF09',
+    dark: '#FF5D5E',
   },
 };
 
@@ -689,6 +694,7 @@ export const textColors = selectForegroundColors(
   'base',
   'zora',
   'bsc',
+  'avalanche',
   ...genericColors,
 );
 export type TextColor = (typeof textColors)[number];

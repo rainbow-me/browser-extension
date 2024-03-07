@@ -472,18 +472,20 @@ export function updateTransaction({
   });
 }
 
-export function getTransactionBlockExplorerUrl({
+export function getTransactionBlockExplorer({
   hash,
   chainId,
+  type,
 }: {
   hash: string;
   chainId: ChainId;
+  type?: TransactionType;
 }) {
   if (!isString(hash)) return;
-  const blockExplorerHost = getBlockExplorerHostForChain(chainId);
-  return blockExplorerHost
-    ? `https://${blockExplorerHost}/tx/${hash}`
-    : undefined;
+  const host =
+    type === 'bridge' ? 'socketscan.io' : getBlockExplorerHostForChain(chainId);
+  const url = `https://${host}/tx/${hash}`;
+  return { name: capitalize(host?.split('.').at?.(-2)), url: url };
 }
 
 export function getTokenBlockExplorerUrl({
