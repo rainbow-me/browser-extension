@@ -248,7 +248,6 @@ export async function parseUserAssets({
     (dict, currentChainId) => ({ ...dict, [currentChainId]: {} }),
     {},
   ) as ParsedAssetsDictByChain;
-  console.log('- parsedAssetsDict assets', assets);
   for (const { asset, quantity, small_balance } of assets) {
     if (!filterAsset(asset) && greaterThan(quantity, 0)) {
       const parsedAsset = parseUserAsset({
@@ -261,8 +260,6 @@ export async function parseUserAssets({
         parsedAsset;
     }
   }
-
-  console.log('- parsedAssetsDict', parsedAssetsDict);
 
   const { connectedToHardhat, connectedToHardhatOp } =
     connectedToHardhatStore.getState();

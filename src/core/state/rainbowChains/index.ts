@@ -61,10 +61,6 @@ const mergeNewOfficiallySupportedChainsState = (
   newChains: ChainId[],
 ) => {
   const officiallySupportedRainbowChains = getInitialRainbowChains();
-  console.log(
-    '-- officiallySupportedRainbowChains',
-    officiallySupportedRainbowChains,
-  );
   for (const chainId of newChains) {
     const officalConfig = officiallySupportedRainbowChains[chainId];
     const stateChain = state.rainbowChains[chainId];
