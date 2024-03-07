@@ -1,6 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion } from 'framer-motion';
+import uniqBy from 'lodash/uniqBy';
 import { memo, useCallback, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
@@ -42,7 +43,6 @@ import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 import { Asterisks } from '../../components/Asterisks/Asterisks';
 import { CoinbaseIcon } from '../../components/CoinbaseIcon/CoinbaseIcon';
 import { QuickPromo } from '../../components/QuickPromo/QuickPromo';
-import { useFilteredPinnedAssets } from '../../hooks/useFilteredPinnedAssets';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
@@ -149,7 +149,59 @@ export function Tokens() {
     [assets, customNetworkAssets],
   );
 
-  const filteredAssets = useFilteredPinnedAssets(combinedAssets);
+  const isPinned = useCallback(
+    (assetUniqueId: string) =>
+      pinnedAssets.some(({ uniqueId }) => uniqueId === assetUniqueId),
+    [pinnedAssets],
+  );
+
+  const computeUniqueAssets = useCallback(
+    (assets: ParsedUserAsset[]) => {
+      const filteredAssets = assets.filter(
+        ({ uniqueId }) => !isPinned(uniqueId),
+      );
+
+      return uniqBy(filteredAssets, 'uniqueId').sort(
+        (a: ParsedUserAsset, b: ParsedUserAsset) =>
+          parseFloat(b?.native?.balance?.amount) -
+          parseFloat(a?.native?.balance?.amount),
+      );
+    },
+    [isPinned],
+  );
+
+  const computePinnedAssets = useCallback(
+    (assets: ParsedUserAsset[]) => {
+      const filteredAssets = assets.filter((asset) => isPinned(asset.uniqueId));
+
+      const sortedAssets = filteredAssets.sort((a, b) => {
+        const pinnedFirstAsset = pinnedAssets.find(
+          ({ uniqueId }) => uniqueId === a.uniqueId,
+        );
+
+        const pinnedSecondAsset = pinnedAssets.find(
+          ({ uniqueId }) => uniqueId === b.uniqueId,
+        );
+
+        // This won't happen, but we'll just return to it's
+        // default sorted order just in case it will happen
+        if (!pinnedFirstAsset || !pinnedSecondAsset) return 0;
+
+        return pinnedFirstAsset.createdAt - pinnedSecondAsset.createdAt;
+      });
+
+      return sortedAssets;
+    },
+    [isPinned, pinnedAssets],
+  );
+
+  const filteredAssets = useMemo(
+    () => [
+      ...computePinnedAssets(combinedAssets),
+      ...computeUniqueAssets(combinedAssets),
+    ],
+    [combinedAssets, computePinnedAssets, computeUniqueAssets],
+  );
 
   const containerRef = useContainerRef();
   const assetsRowVirtualizer = useVirtualizer({
