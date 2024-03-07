@@ -298,6 +298,8 @@ export const getDefaultRPC = (chainId: ChainId) => {
       return { http: process.env.AVALANCHE_MAINNET_RPC };
     case ChainId.avalancheFuji:
       return { http: process.env.AVALANCHE_FUJI_RPC };
+    case ChainId.blast:
+      return { http: process.env.BLAST_MAINNET_RPC };
     default:
       return null;
   }
