@@ -120,6 +120,9 @@ export const useMainChains = () => {
         !SUPPORTED_CHAINS.map((chain) => chain.id).includes(chain.id)),
   );
 
+  console.log('mainSupportedChains', mainSupportedChains);
+  console.log('customChainsIncludingTestnets', customChainsIncludingTestnets);
+
   return mainSupportedChains.concat(customChainsIncludingTestnets);
 };
 

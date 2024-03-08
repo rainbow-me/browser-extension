@@ -101,6 +101,8 @@ export function SettingsNetworks() {
     [mainChains, userChainsOrder],
   );
 
+  console.log('allNetworks', allNetworks);
+
   const enableNetwork = useCallback(
     ({ chainId, enabled }: { chainId: number; enabled: boolean }) => {
       updateUserChain({
@@ -218,7 +220,7 @@ export function SettingsNetworks() {
                               })
                             }
                             paddingHorizontal="14px"
-                            key={chain.name}
+                            key={chain.id}
                             hasRightArrow
                             titleComponent={
                               <MenuItem.Title text={chain.name} />

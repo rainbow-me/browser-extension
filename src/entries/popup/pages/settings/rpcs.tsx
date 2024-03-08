@@ -144,6 +144,9 @@ export function SettingsNetworksRPCs() {
     [rainbowChain],
   );
 
+  console.log('-- mainnetChains', mainnetChains);
+  console.log('-- rainbowChain', rainbowChain);
+
   const options = ({ address }: { address: Address }): MoreInfoOption[] => [
     {
       label: i18n.t('settings.networks.custom_rpc.remove_token'),
@@ -244,7 +247,7 @@ export function SettingsNetworksRPCs() {
             <Box paddingHorizontal="1px" paddingVertical="1px">
               {mainnetChains.map((chain, index) => (
                 <Box
-                  key={`${chain.name}`}
+                  key={`${chain.id}-${chain.name}`}
                   width="full"
                   testId={`rpc-row-item-${index}`}
                 >

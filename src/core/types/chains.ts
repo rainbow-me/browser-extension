@@ -201,6 +201,7 @@ export const ChainNameDisplay = {
   [ChainId.avalanche]: 'Avalanche',
   [ChainId.avalancheFuji]: 'Avalanche Fuji',
   [ChainId.base]: 'Base',
+  [ChainId.blast]: 'Blast',
   [ChainId.bsc]: 'BSC',
   [ChainId.celo]: chain.celo.name,
   [ChainId.linea]: 'Linea',
