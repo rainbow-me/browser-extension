@@ -80,6 +80,7 @@ export type AssetApiResponse = {
   decimals: number;
   icon_url: string;
   name: string;
+  chain_id?: number;
   price?: {
     value: number;
     changed_at: number;
@@ -87,7 +88,6 @@ export type AssetApiResponse = {
   };
   symbol: string;
   colors?: { primary?: string; fallback?: string; shadow?: string };
-  chain_id: ChainId;
   network?: ChainName;
   networks?: {
     [chainId in ChainId]?: {

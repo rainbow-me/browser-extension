@@ -34,12 +34,11 @@ export const fetchTransaction = async ({
   currency,
   chainId,
 }: {
-  hash?: TxHash;
+  hash: TxHash;
   address: Address;
   currency: SupportedCurrencyKey;
-  chainId?: ChainId;
+  chainId: ChainId;
 }) => {
-  if (!chainId || !hash) return undefined;
   try {
     const response = await addysHttp.get<{
       payload: { transaction: TransactionApiResponse };
@@ -100,7 +99,7 @@ export function useBackendTransaction({
         hash: params.hash,
         address: params.address,
         currency: params.currency,
-        chainId: params.chainId,
+        chainId: params.chainId!,
       }),
     enabled: !!hash && !!address && !!chainId && enabled,
     initialData: () => {
@@ -122,13 +121,13 @@ const getCustomChainTransaction = async ({
   chainId,
   hash,
 }: {
-  chainId?: number;
-  hash?: Hash;
+  chainId: number;
+  hash: Hash;
 }) => {
-  if (!chainId || !hash) return undefined;
   const provider = getProvider({ chainId });
   const transaction = await provider.getTransaction(hash);
-  if (!transaction) return undefined;
+  if (!transaction)
+    throw `getCustomChainTransaction: couldn't find transaction`;
 
   const block = transaction?.blockHash
     ? await provider.getBlock(transaction?.blockHash)
@@ -181,7 +180,8 @@ export function useCustomNetworkTransaction({
 }) {
   return useQuery({
     queryKey: createQueryKey('providerTransaction', { chainId, hash }),
-    queryFn: () => getCustomChainTransaction({ chainId, hash }),
+    queryFn: () =>
+      getCustomChainTransaction({ chainId: chainId!, hash: hash! }),
     enabled: !!hash && !!chainId && enabled,
   });
 }
