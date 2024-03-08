@@ -571,6 +571,7 @@ export async function executePerformShortcut({
   try {
     for (let i = 0; i < timesToPress; i++) {
       isFirefox && (await delayTime('short'));
+      isFirefox && (await console.log('hi'));
       if (!(key in Key)) {
         await performShortcutWithNormalKey(driver, key);
       } else {
