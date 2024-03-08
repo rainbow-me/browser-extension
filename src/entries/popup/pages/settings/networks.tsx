@@ -101,8 +101,6 @@ export function SettingsNetworks() {
     [mainChains, userChainsOrder],
   );
 
-  console.log('allNetworks', allNetworks);
-
   const enableNetwork = useCallback(
     ({ chainId, enabled }: { chainId: number; enabled: boolean }) => {
       updateUserChain({
