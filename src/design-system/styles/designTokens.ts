@@ -1098,6 +1098,7 @@ export const symbolNames = selectSymbolNames(
   'dollarsign.circle',
   'square.grid.2x2.fill',
   'pin.fill',
+  'cable.connector.slash',
 );
 export type SymbolName = (typeof symbolNames)[number];
 
