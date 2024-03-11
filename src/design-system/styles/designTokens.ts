@@ -1097,6 +1097,7 @@ export const symbolNames = selectSymbolNames(
   'chart.line.downtrend.xyaxis',
   'dollarsign.circle',
   'square.grid.2x2.fill',
+  'pin.fill',
 );
 export type SymbolName = (typeof symbolNames)[number];
 

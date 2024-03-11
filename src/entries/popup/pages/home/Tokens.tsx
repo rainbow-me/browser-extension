@@ -22,6 +22,7 @@ import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme'
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { usePinnedAssetStore } from '~/core/state/pinnedAssets';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { truncateAddress } from '~/core/utils/address';
 import { isCustomChain } from '~/core/utils/chains';
@@ -46,11 +47,13 @@ import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useSystemSpecificModifierKey } from '../../hooks/useSystemSpecificModifierKey';
+import { useTokenPressMouseEvents } from '../../hooks/useTokenPressMouseEvents';
 import { useTokensShortcuts } from '../../hooks/useTokensShortcuts';
 import { ROUTES } from '../../urls';
 
 import { TokensSkeleton } from './Skeletons';
 import { TokenContextMenu } from './TokenDetails/TokenContextMenu';
+import { TokenMarkedHighlighter } from './TokenMarkedHighlighter';
 
 const TokenRow = memo(function TokenRow({
   token,
@@ -60,18 +63,35 @@ const TokenRow = memo(function TokenRow({
   testId: string;
 }) {
   const navigate = useRainbowNavigate();
-
-  const openDetails = () =>
+  const openDetails = () => {
     navigate(ROUTES.TOKEN_DETAILS(token.uniqueId), {
       state: { skipTransitionOnRoute: ROUTES.HOME },
     });
+  };
+
+  const { onMouseDown, onMouseUp, onMouseLeave } = useTokenPressMouseEvents({
+    token,
+    onClick: openDetails,
+  });
 
   return (
-    <TokenContextMenu token={token}>
-      <Box onClick={openDetails}>
-        <AssetRow asset={token} testId={testId} />
-      </Box>
-    </TokenContextMenu>
+    <Box
+      as={motion.div}
+      whileTap={{ scale: 0.98 }}
+      width="full"
+      layoutScroll
+      layout="position"
+    >
+      <TokenContextMenu token={token}>
+        <Box
+          onMouseDown={onMouseDown}
+          onMouseUp={onMouseUp}
+          onMouseLeave={onMouseLeave}
+        >
+          <AssetRow asset={token} testId={testId} />
+        </Box>
+      </TokenContextMenu>
+    </Box>
   );
 });
 
@@ -83,6 +103,7 @@ export function Tokens() {
   const { hideSmallBalances } = useHideSmallBalancesStore();
   const { trackShortcut } = useKeyboardAnalytics();
   const { modifierSymbol } = useSystemSpecificModifierKey();
+  const { pinnedAssets } = usePinnedAssetStore();
 
   const {
     data: assets = [],
@@ -123,22 +144,68 @@ export function Tokens() {
     },
   );
 
-  const allAssets = useMemo(
-    () =>
-      uniqBy(
-        [...assets, ...customNetworkAssets].sort(
-          (a: ParsedUserAsset, b: ParsedUserAsset) =>
-            parseFloat(b?.native?.balance?.amount) -
-            parseFloat(a?.native?.balance?.amount),
-        ),
-        'uniqueId',
-      ),
+  const combinedAssets = useMemo(
+    () => [...assets, ...customNetworkAssets],
     [assets, customNetworkAssets],
+  );
+
+  const isPinned = useCallback(
+    (assetUniqueId: string) =>
+      pinnedAssets.some(({ uniqueId }) => uniqueId === assetUniqueId),
+    [pinnedAssets],
+  );
+
+  const computeUniqueAssets = useCallback(
+    (assets: ParsedUserAsset[]) => {
+      const filteredAssets = assets.filter(
+        ({ uniqueId }) => !isPinned(uniqueId),
+      );
+
+      return uniqBy(filteredAssets, 'uniqueId').sort(
+        (a: ParsedUserAsset, b: ParsedUserAsset) =>
+          parseFloat(b?.native?.balance?.amount) -
+          parseFloat(a?.native?.balance?.amount),
+      );
+    },
+    [isPinned],
+  );
+
+  const computePinnedAssets = useCallback(
+    (assets: ParsedUserAsset[]) => {
+      const filteredAssets = assets.filter((asset) => isPinned(asset.uniqueId));
+
+      const sortedAssets = filteredAssets.sort((a, b) => {
+        const pinnedFirstAsset = pinnedAssets.find(
+          ({ uniqueId }) => uniqueId === a.uniqueId,
+        );
+
+        const pinnedSecondAsset = pinnedAssets.find(
+          ({ uniqueId }) => uniqueId === b.uniqueId,
+        );
+
+        // This won't happen, but we'll just return to it's
+        // default sorted order just in case it will happen
+        if (!pinnedFirstAsset || !pinnedSecondAsset) return 0;
+
+        return pinnedFirstAsset.createdAt - pinnedSecondAsset.createdAt;
+      });
+
+      return sortedAssets;
+    },
+    [isPinned, pinnedAssets],
+  );
+
+  const filteredAssets = useMemo(
+    () => [
+      ...computePinnedAssets(combinedAssets),
+      ...computeUniqueAssets(combinedAssets),
+    ],
+    [combinedAssets, computePinnedAssets, computeUniqueAssets],
   );
 
   const containerRef = useContainerRef();
   const assetsRowVirtualizer = useVirtualizer({
-    count: allAssets?.length || 0,
+    count: filteredAssets?.length || 0,
     getScrollElement: () => containerRef.current,
     estimateSize: () => 52,
     overscan: 20,
@@ -165,7 +232,7 @@ export function Tokens() {
     return <TokensSkeleton />;
   }
 
-  if (!allAssets?.length) {
+  if (!filteredAssets?.length) {
     return <TokensEmptyState depositAddress={currentAddress} />;
   }
 
@@ -203,19 +270,21 @@ export function Tokens() {
         <Box style={{ overflow: 'auto' }}>
           {assetsRowVirtualizer.getVirtualItems().map((virtualItem) => {
             const { key, size, start, index } = virtualItem;
-            const token = allAssets[index];
+            const token = filteredAssets[index];
+            const pinned = pinnedAssets.some(
+              ({ uniqueId }) => uniqueId === token.uniqueId,
+            );
+
             return (
               <Box
-                key={key}
-                as={motion.div}
-                whileTap={{ scale: 0.98 }}
+                key={`${token.uniqueId}-${key}`}
                 layoutId={`list-${index}`}
-                layoutScroll
-                layout="position"
+                as={motion.div}
                 position="absolute"
                 width="full"
                 style={{ height: size, y: start }}
               >
+                {pinned && <TokenMarkedHighlighter />}
                 <TokenRow token={token} testId={`coin-row-item-${index}`} />
               </Box>
             );
