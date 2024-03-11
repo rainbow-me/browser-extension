@@ -15,7 +15,6 @@ import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
-import { useWalletOrderStore } from '~/core/state/walletOrder';
 import { truncateAddress } from '~/core/utils/address';
 import { TESTNET_MODE_BAR_HEIGHT } from '~/core/utils/dimensions';
 import {
@@ -38,7 +37,6 @@ import { DropdownInputWrapper } from '../../components/DropdownInputWrapper/Drop
 import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { WalletContextMenu } from '../../components/WalletContextMenu';
-import { getAccounts } from '../../handlers/wallet';
 import { useAllFilteredWallets } from '../../hooks/send/useAllFilteredWallets';
 import { useWalletInfo } from '../../hooks/useWalletInfo';
 
@@ -142,15 +140,6 @@ const WalletRow = ({
   );
 };
 
-const sortWallets = (order: Address[], wallets: Address[]) =>
-  order.length
-    ? order
-        .map((orderAddress) =>
-          wallets.find((address) => address === orderAddress),
-        )
-        .filter(Boolean)
-    : wallets;
-
 const DropdownWalletsList = ({
   wallets,
   contacts,
@@ -162,48 +151,9 @@ const DropdownWalletsList = ({
   watchedWallets: Address[];
   selectWalletAndCloseDropdown: (address: Address) => void;
 }) => {
-  const [newWalletOrder, setNewWalletOrder] = useState<`0x${string}`[]>([]);
-  const { walletOrder, saveWalletOrder } = useWalletOrderStore();
-
-  // find the items in getAccounts then compare to the current
-  // walletOrder, then return all items in getAccounts in order
-
-  useEffect(() => {
-    const combineAndOrderArrays = async (orderArray: string[]) => {
-      const orderSet = new Set(orderArray);
-      const primaryArray = await getAccounts();
-      const itemsNotInOrderArray = primaryArray.filter(
-        (item) => !orderSet.has(item),
-      );
-
-      const primaryMap = new Map(primaryArray.map((item) => [item, item]));
-
-      const combinedAndOrdered = [
-        ...orderArray.filter((item) => primaryMap.has(item)),
-        ...itemsNotInOrderArray,
-      ];
-
-      return combinedAndOrdered;
-    };
-
-    combineAndOrderArrays(walletOrder).then((orderedAccounts) => {
-      setNewWalletOrder(orderedAccounts as `0x${string}`[]);
-      saveWalletOrder(orderedAccounts as `0x${string}`[]);
-    });
-  }, [walletOrder, saveWalletOrder]);
-
-  const sortedWallets = useMemo(
-    () => sortWallets(newWalletOrder, wallets),
-    [newWalletOrder, wallets],
-  );
-  const sortedWatchedWallets = useMemo(
-    () => sortWallets(newWalletOrder, watchedWallets),
-    [newWalletOrder, watchedWallets],
-  );
-
   const walletsExist = useMemo(
-    () => sortedWallets.length + contacts.length + watchedWallets.length > 0,
-    [contacts.length, sortedWallets.length, watchedWallets.length],
+    () => wallets.length + contacts.length + watchedWallets.length > 0,
+    [contacts.length, wallets.length, watchedWallets.length],
   );
 
   return (
@@ -214,7 +164,7 @@ const DropdownWalletsList = ({
             <WalletSection
               symbol="lock.square.stack.fill"
               title={i18n.t('send.wallets_list.my_wallets')}
-              wallets={sortedWallets}
+              wallets={wallets}
               onClickWallet={selectWalletAndCloseDropdown}
               section="my_wallets"
             />
@@ -228,7 +178,7 @@ const DropdownWalletsList = ({
             <WalletSection
               symbol="eyes.inverse"
               title={i18n.t('send.wallets_list.watched_wallets')}
-              wallets={sortedWatchedWallets}
+              wallets={watchedWallets}
               onClickWallet={selectWalletAndCloseDropdown}
               section="watching"
             />
