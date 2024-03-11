@@ -75,6 +75,7 @@ export const PairingSecret = ({ onAfterPair }: PairingSecretProps) => {
             }
             value={formData.pairingCode}
             testId="gridplus-pairing-code"
+            tabIndex={0}
             autoFocus
           />
           {formState.error && (
@@ -92,6 +93,7 @@ export const PairingSecret = ({ onAfterPair }: PairingSecretProps) => {
         disabled={disabled}
         width="full"
         symbol="checkmark.circle.fill"
+        tabIndex={0}
       >
         {pairing ? (
           <Spinner size={16} color="label" />

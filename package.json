@@ -76,7 +76,6 @@
   },
   "dependencies": {
     "@capsizecss/core": "3.0.0",
-    "@ethereumjs/common": "4.1.0",
     "@ethereumjs/tx": "5.0.0",
     "@ethereumjs/util": "9.0.0",
     "@ethersproject/abstract-signer": "5.7.0",

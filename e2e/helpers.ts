@@ -1116,7 +1116,7 @@ export async function delay(ms: number) {
 }
 
 export async function delayTime(
-  time: 'short' | 'medium' | 'long' | 'very-long' | 'unbelievably-long',
+  time: 'short' | 'medium' | 'long' | 'very-long',
 ) {
   switch (time) {
     case 'short':

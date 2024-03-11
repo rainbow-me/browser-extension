@@ -135,6 +135,7 @@ export const WalletCredentials = ({
             value={formData.deviceId}
             testId="gridplus-deviceid"
             aria-label="username"
+            tabIndex={0}
           />
         </Box>
         <Box as="fieldset" display="flex" flexDirection="column" gap="8px">
@@ -153,6 +154,7 @@ export const WalletCredentials = ({
             value={formData.password}
             testId="gridplus-password"
             aria-label="password"
+            tabIndex={0}
           />
           <Text size="12pt" weight="medium" color="labelSecondary">
             {i18n.t('hw.gridplus_password_create')}
@@ -167,6 +169,7 @@ export const WalletCredentials = ({
         testId="gridplus-submit"
         width="full"
         symbol="checkmark.circle.fill"
+        tabIndex={0}
       >
         {connecting ? (
           <Spinner size={16} color="label" />

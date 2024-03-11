@@ -151,6 +151,7 @@ export const AddressChoice = () => {
         width="full"
         height="44px"
         symbol="checkmark.circle.fill"
+        tabIndex={0}
       >
         {i18n.t('hw.gridplus_export_addresses')}
       </Button>

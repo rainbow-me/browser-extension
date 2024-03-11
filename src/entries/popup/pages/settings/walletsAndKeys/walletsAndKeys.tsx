@@ -9,6 +9,7 @@ import {
 import { useLocation } from 'react-router';
 import { Address } from 'wagmi';
 
+import gridPlusLogo from 'static/assets/hw/grid-plus-logo.png';
 import { i18n } from '~/core/languages';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { useWalletBackupsStore } from '~/core/state/walletBackups';
@@ -131,6 +132,18 @@ function WalletsAndKeysContextMenu({
     </>
   );
 }
+
+const WalletIcon = ({ vendor }: { vendor: KeychainWallet['vendor'] }) => {
+  switch (vendor) {
+    case 'Trezor':
+      return <TrezorIcon />;
+    case 'GridPlus':
+      return <img src={gridPlusLogo} width={48} height={20} />;
+    case 'Ledger':
+    default:
+      return <LedgerIcon />;
+  }
+};
 
 export const WalletsAndKeys = () => {
   const navigate = useRainbowNavigate();
@@ -294,11 +307,7 @@ export const WalletsAndKeys = () => {
                   onClick={() => handleViewWallet({ wallet })}
                   leftComponent={
                     wallet.type === KeychainType.HardwareWalletKeychain ? (
-                      wallet.vendor === 'Trezor' ? (
-                        <TrezorIcon />
-                      ) : (
-                        <LedgerIcon />
-                      )
+                      <WalletIcon vendor={wallet.vendor!} />
                     ) : (
                       <Symbol
                         symbol={
