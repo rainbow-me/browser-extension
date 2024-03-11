@@ -22,7 +22,6 @@ export function selectorFilterByUserChains<T>({
   const allUserChainIds = Object.keys(userChains)
     .map((chainId) => {
       const id = Number(chainId);
-      if (id === ChainId.blast) return undefined;
       return userChains[id] ? chainIdMap[id] || id : undefined;
     })
     .flat()
