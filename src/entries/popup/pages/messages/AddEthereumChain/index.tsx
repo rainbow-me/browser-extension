@@ -14,7 +14,7 @@ import { AddEthereumChainActions } from './AddEthereumChainActions';
 import { AddEthereumChainInfo } from './AddEthereumChainInfo';
 
 interface ApproveRequestProps {
-  approveRequest: (response: null) => void;
+  approveRequest: (response: boolean) => void;
   rejectRequest: () => void;
   request: ProviderRequestPayload;
 }
@@ -76,7 +76,7 @@ export const AddEthereumChain = ({
       });
       addUserChain({ chainId: Number(chainId) });
 
-      approveRequest(null);
+      approveRequest(true);
       analytics.track(event.dappAddEthereumChainPromptApproved, {
         chainId: Number(chainId),
         rpcUrl,
