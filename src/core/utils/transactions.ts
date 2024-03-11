@@ -1,4 +1,4 @@
-import { FixedNumber } from '@ethersproject/bignumber';
+import { BigNumber, FixedNumber } from '@ethersproject/bignumber';
 import { AddressZero } from '@ethersproject/constants';
 import {
   Provider,
@@ -230,10 +230,10 @@ export function parseTransaction({
     ...change,
     asset: parseUserAsset({
       asset: change.asset,
-      balance: change.value?.toString() || '0',
+      balance: change.quantity || '0',
       currency,
     }),
-    value: change.value || undefined,
+    value: change.quantity || undefined,
   }));
 
   const type = isValidTransactionType(meta.type)
@@ -260,12 +260,12 @@ export function parseTransaction({
     nativeAsset?.price?.toString() || '0',
   );
 
-  const value =
-    nativeAsset?.value &&
-    formatUnits(nativeAsset.value.toString(), nativeAsset.asset.decimals);
-  const valueInNative = FixedNumber.from(value || '0')
-    .mulUnsafe(nativeAssetPrice)
-    .toString();
+  const value = FixedNumber.fromValue(
+    BigNumber.from(nativeAsset?.value || 0),
+    nativeAsset?.asset.decimals || 0,
+  );
+
+  const valueInNative = value.mulUnsafe(nativeAssetPrice).toString();
 
   const nativeAssetDecimals = 18; // we only support networks with 18 decimals native assets rn, backend will change when we support more
 
@@ -293,7 +293,7 @@ export function parseTransaction({
     protocol,
     type,
     direction,
-    value,
+    value: value.toString(),
     changes,
     asset,
     approvalAmount: meta.quantity,
