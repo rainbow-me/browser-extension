@@ -26,11 +26,9 @@ export enum SimpleHashChain {
   PolygonMumbai = 'polygon-mumbai',
   ArbitrumGoerli = 'arbitrum-goerli',
   ArbitrumSepolia = 'arbitrum-sepolia',
-  BaseGoerli = 'base-goerli',
   BaseSepolia = 'base-sepolia',
   OptimismGoerli = 'optimism-goerli',
   OptimismSepolia = 'optimism-sepolia',
-  ZoraTestnet = 'zora-testnet',
   ZoraSepolia = 'zora-sepolia',
 }
 

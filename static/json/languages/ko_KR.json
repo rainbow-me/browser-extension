@@ -73,7 +73,7 @@
     "title": "설정",
     "use_rainbow_as_default_wallet": "기본 지갑으로 Rainbow 사용",
     "sounds": "소리",
-    "default_wallet_description": "앱이 연결할 확장 프로그램을 찾을 때 Rainbow를 우선시하도록 허용하세요",
+    "default_wallet_description": "앱이 연결할 확장 프로그램으로 Rainbow를 우선시하도록 허용",
     "contacts": "연락처",
     "guides_and_support": "가이드 및 지원",
     "learn_about_ethereum": "이더리움에 대해 알아보기",
@@ -94,7 +94,10 @@
         "text": "네트워크를 드래그하여 순서를 변경하십시오",
         "text_bold": "팁:"
       },
+      "disable": "비활성화",
       "disabled": "비활성화됨",
+      "enable": "활성화",
+      "enabled": "네트워크 활성화됨",
       "description": "표시할 네트워크와 토큰을 선택합니다. Rainbow에서 지원하는 모든 네트워크에 연결할 수 있습니다, 확인하지 않은 경우에도.",
       "developer_tools": {
         "title": "개발자 도구 활성화",
@@ -102,6 +105,7 @@
       },
       "custom_rpc": {
         "title": "네트워크 추가",
+        "add_custom_network": "사용자 정의 네트워크 추가",
         "networks": "네트워크",
         "network_name": "네트워크 이름",
         "rpc_url": "RPC URL",
@@ -112,20 +116,23 @@
         "testnet": "테스트넷",
         "block_explorer_url": "블록 탐색기 URL",
         "add_network": "네트워크 추가",
-        "add_rpc": "%{rpcName} RPC 추가",
+        "add_rpc": "RPC 엔드포인트 추가",
+        "add_network_rpc": "%{rpcName} RPC 추가",
         "add_asset": "커스텀 토큰 추가",
-        "network_added": "네트워크 추가됨!",
-        "network_added_correctly": "%{networkName} 이(가) 정상적으로 추가되었습니다!",
+        "network_added": "네트워크 추가됨",
+        "network_added_correctly": "%{networkName}",
         "remove_token": "토큰 제거",
         "remove_rpc": "RPC 제거",
+        "remove_network": "네트워크 제거",
         "tokens": "토큰",
-        "cant_connect": "이 RPC 엔드포인트에 연결할 수 없습니다!",
-        "rpc_not_responding": "제공된 URL이 응답하지 않습니다"
+        "cant_connect": "이 RPC 엔드포인트에 연결할 수 없습니다",
+        "rpc_not_responding": "제공된 RPC 엔드포인트가 응답하지 않습니다",
+        "rainbow_default_rpc": "Rainbow",
+        "rainbow_default": "Rainbow"
       },
       "rpc_endpoints": "RPC 엔드포인트",
-      "enabled": "활성화됨",
       "watch_asset": {
-        "title": "자산 관찰"
+        "title": "커스텀 토큰 추가"
       }
     },
     "privacy_and_security": {
@@ -215,6 +222,20 @@
           "warning_4": "Rainbow 지원팀은 절대로 복구 문구를 요청하지 않습니다",
           "show": "복구 문구 표시",
           "copied": "복구 문구 복사됨"
+        },
+        "wipe_wallets": {
+          "delete": "레인보우 초기화",
+          "acknowlegement": "위의 정보를 읽고 이해했습니다",
+          "warning_one": "레인보우를 초기화하면 비밀번호가 초기화되고 모든 지갑이 제거됩니다",
+          "warning_two": "레인보우의 모든 데이터 및 설정이 지워집니다",
+          "warning_three": "진행하기 전에 비밀 복구 구문이 안전한지 확인하세요 ",
+          "warning_four": "올바른 복구 정보로 자산 및 자금에 접근할 수 있습니다",
+          "button_wipe": "레인보우 초기화",
+          "button_complete": "위의 확인 완료",
+          "wipe_confirmation": "레인보우 초기화",
+          "wipe_confirmation_desc": "레인보우 브라우저 확장 프로그램을 초기화하시겠습니까?",
+          "wipe_confirmation_button": "초기화",
+          "wipe_confirmation_cancel": "취소"
         }
       }
     },
@@ -224,7 +245,10 @@
       "use_flashbots": "Flashbots 사용하기",
       "clear_transactions_and_nonces": "보류 중인 트랜잭션 지우기",
       "clear_transactions_and_nonces_success": "보류 중인 트랜잭션이 지워졌습니다",
-      "flashbots_description": "Flashbots은 거래를 보호하고 거래 실패 가능성을 줄여줍니다. 더 알아보기"
+      "flashbots_description": "Flashbots가 거래를 보호하고 거래 실패 가능성을 줄입니다."
+    },
+    "approvals": {
+      "title": "승인"
     },
     "currency": {
       "title": "통화",
@@ -250,10 +274,7 @@
       "full_watching_wallets": "감시 중인 지갑에 대한 완전한 접근",
       "hw_wallets_enabled": "하드웨어 지갑 지원 활성화",
       "command_k_internal_shortcuts_enabled": "⌘K 내부 단축키 활성화",
-      "custom_rpc": "사용자 정의 RPC",
-      "new_tab_bar_enabled": "새 탭 바",
-      "nfts_enabled": "NFT 활성화됨",
-      "points": "포인트"
+      "custom_rpc": "사용자 정의 RPC"
     }
   },
   "transactions": {
@@ -395,8 +416,10 @@
         "my_wallets": "내 지갑들",
         "my_tokens": "내 토큰들",
         "my_tokens_watched": "토큰",
+        "my_nfts": "내 NFTs",
+        "my_nfts_watched": "NFTs",
         "copy_address": "주소 복사",
-        "view_nfts": "NFTs 보기",
+        "view_profile": "레인보우 프로필 보기",
         "add_wallet": "지갑 추가",
         "lock": "Rainbow 잠금",
         "connected_apps": "연결된 앱",
@@ -440,7 +463,8 @@
         "swap": "브릿지",
         "my_wallets": "스위치",
         "my_tokens_watched": "나의",
-        "view_nfts": "갤러리, 프로필",
+        "my_nfts_watched": "나의",
+        "view_profile": "프로필, 갤러리, ENS, NFTs",
         "testnet_mode": "토글, 네트워크, 테스트넷",
         "developer_tools": "토글, 네트워크, 개발자, 테스트넷",
         "settings": "환경설정",
@@ -491,12 +515,21 @@
         "search_placeholder": "토큰 검색…",
         "section_title": "내 토큰들"
       },
+      "my_nfts": {
+        "empty_label": "NFTs를 찾을 수 없음",
+        "search_placeholder": "NFTs 검색…",
+        "section_title": "내 NFTs"
+      },
       "my_wallets": {
         "search_placeholder": "전환할 지갑 선택…",
         "section_title": "내 지갑들"
       },
       "token_detail": {
         "search_placeholder": "토큰 액션 검색…",
+        "section_title": "액션"
+      },
+      "nft_token_detail": {
+        "search_placeholder": "NFT 작업 검색…",
         "section_title": "액션"
       },
       "wallet_detail": {
@@ -531,6 +564,34 @@
     "no_connections_title": "연결된 앱 없음",
     "no_connections_copy": "연결한 웹사이트는 여기에 표시됩니다"
   },
+  "approvals": {
+    "title": "승인",
+    "unlimited": "무제한",
+    "no_allowance": "허용 없음",
+    "revoke_approval": "승인 취소",
+    "copy_spender": "지출자 복사",
+    "spender_address_copied": "지출자 주소가 복사되었습니다",
+    "revoked_approvals": "취소된 승인",
+    "nothing_found": "찾을 수 없음",
+    "revoke": {
+      "title": "승인 취소",
+      "action": "취소",
+      "cancel": "취소",
+      "allowance": "허용량",
+      "spender": "지출자",
+      "chain": "블록체인"
+    },
+    "token_details": {
+      "explainer": {
+        "token_approval": {
+          "title": "승인이란 무엇인가요?",
+          "description_1": "승인은 dApp이 대신하여 토큰이나 NFT를 사용하고 전송할 수 있게 합니다.",
+          "description_2": "승인을 모니터링하고 불필요하거나 넓은 범위의, 또는 안전하지 않은 승인을 취소해 자산을 보호하는 것이 중요합니다.",
+          "action_label": "확인"
+        }
+      }
+    }
+  },
   "send": {
     "title": "보내기",
     "input_to_address_placeholder": "이름, ENS 또는 주소",
@@ -558,7 +619,10 @@
       "available": "사용 가능",
       "token_balance": "토큰 잔액",
       "networks": "네트워크",
-      "nothing_found": "찾을 수 없음"
+      "nothing_found": "찾을 수 없음",
+      "nfts": "NFTs",
+      "alphabetical": "알파벳순",
+      "recent": "최근"
     },
     "review": {
       "title": "리뷰하고 보내기",
@@ -805,7 +869,7 @@
     "title": "비밀 복구 구문",
     "write_down_seed_importance": "이 결과를 저장하면 당신의 전체 지갑에 접근할 수 있습니다! 안전한 곳에 보관하고 절대 공유하지 마세요",
     "saved_these_words": "이 단어들을 저장했습니다",
-    "phrase_copied": "복구 구문이 복사되었습니다"
+    "copied": "복구 문구 복사됨"
   },
   "import_wallet_via_secret": {
     "title": "지갑 가져오기",
@@ -1031,7 +1095,8 @@
     "request_rejected": "거래 요청 거부됨",
     "bridge_and_try_again": "일부 가스 펀드를 다리 놓고 다시 시도하세요",
     "buy_and_try_again": "일부 가스 펀드를 구입하고 다시 시도하세요",
-    "buy": "%{token}사기"
+    "buy_gas": "%{token}구매",
+    "get_testnet_gas": "무료 테스트넷 %{token}받기"
   },
   "add_chain": {
     "name": "이름",
@@ -1194,7 +1259,8 @@
     "exchange_rate": "환전",
     "collection": "컬렉션",
     "token_contract": "토큰 계약",
-    "token_standard": "토큰 표준"
+    "token_standard": "토큰 표준",
+    "revoke_approval": "승인 취소"
   },
   "tokens_tab": {
     "coinbase_title": "코인베이스에서 입금",
@@ -1209,9 +1275,7 @@
     "unknown_token": "알 수 없는 토큰"
   },
   "nfts": {
-    "coming_soon_header": "곧 출시 예정",
     "empty_state_header": "NFTs",
-    "coming_soon_description": "NFT는 곧 출시됩니다. 기대해 주세요!",
     "empty_state_description": "당신의 NFT들이 여기에 표시됩니다!",
     "view_on_web": "웹에서 보기",
     "display_mode_gallery": "갤러리",
@@ -1220,6 +1284,7 @@
     "sort_option_abc": "Abc",
     "sort_option_recent_long": "최근",
     "sort_option_abc_long": "알파벳순",
+    "hidden_section_title": "숨김",
     "details": {
       "last_sales_price": "마지막 판매 가격",
       "none": "없음",
@@ -1232,6 +1297,8 @@
       "token_contract": "토큰 계약",
       "contract_creator": "계약 생성자",
       "chain": "블록체인",
+      "hide": "숨기기",
+      "unhide": "숨김 해제",
       "id_copied": "ID 복사됨",
       "copy_token_id": "토큰 ID 복사",
       "download": "다운로드",
@@ -1251,20 +1318,24 @@
         "floor_price_description": "컬렉션의 최저 가격은 해당 컬렉션에서 현재 판매 중인 모든 품목 중에서 가장 낮은 요구 가격입니다.",
         "floor_price_title": "컬렉션 최저 가격",
         "floor_price_action_label": "확인"
-      }
+      },
+      "send": "전송",
+      "view_on_opensea": "OpenSea에서 보기",
+      "view_on_explorer": "%{explorerTitle}에서 보기"
     }
   },
   "points": {
-    "coming_soon_header": "곧 출시 예정",
-    "coming_soon_description": "포인트는 바로 앞에 있습니다.\n오늘 바로 적립하세요.",
+    "check_back_soon_header": "곧 다시 확인하세요",
+    "check_back_soon_description": "포인트를 현재 사용할 수 없습니다.\n곧 다시 확인하여 레인보우 포인트를 사용하세요.",
     "your_rank": "당신의 순위",
+    "unranked": "순위 없음",
+    "points_to_rank": "%{rank_cutoff} 포인트가 순위에 필요합니다",
     "next_drop": "다음 드랍",
     "leaderboard": "리더보드",
     "referral_code": "추천 코드",
     "referral_code_description": "친구를 추천하고 Rainbow를 통해 $100을 교환하면 포인트를 얻을 수 있습니다",
     "copied_referral_code": "추천 코드가 복사되었습니다!",
     "copied_referral_link": "추천 링크가 복사되었습니다!",
-    "out_of": "%{total}중에서",
     "out_of_current_total_points": "현재 총 포인트 중 %{total}",
     "header": "포인트를 청구하세요",
     "description": "포인트가 도착했습니다. 얼마나 많은 포인트를 받았는지 알아보세요.",
@@ -1301,11 +1372,31 @@
       "registration_complete": "등록 완료",
       "all_set": "모든 설정이 완료되었습니다!",
       "keep_earning_by": "스왑, 브리징, 민팅, 친구 추천 등으로 계속해서 포인트를 얻으세요",
-      "the_more_you_use": "Rainbow를 더 많이 사용할수록 더 많은 보상을 받게 됩니다"
+      "the_more_you_use": "Rainbow를 더 많이 사용할수록 더 많은 보상을 받게 됩니다",
+      "balance_required": "지갑 잔액 필요",
+      "ensure_you_have_a_balance_on": "계속하려면 다음 네트워크 중 하나에 ETH 잔액이 있는지 확인하세요:",
+      "or_alternatively_balance_on": "또는, Polygon에 MATIC 잔액 또는 BSC에 BNB 잔액",
+      "fund_my_wallet": "지갑에 자금 추가"
     },
     "error": {
       "existing_user": "기존 사용자",
-      "invalid_referral_code": "잘못된 추천 코드"
+      "invalid_referral_code": "잘못된 추천 코드",
+      "unexpected": "예기치 못한 문제가 발생했습니다, 몇 분 후에 다시 시도해주세요"
+    },
+    "weekly_overview": {
+      "week_of": "> %{from} 주 - %{to}",
+      "counting": "> 포인트 산정 중...",
+      "your_activity": "활동 내역:",
+      "referral_activity": "추천 활동:",
+      "new_referrals": "새 추천인:",
+      "retroactive": "소급 포인트:",
+      "total": "총계:",
+      "weekly_counted": "> 주간 수익 집계됨",
+      "you_have": "보유하고 있습니다:",
+      "none": "없음",
+      "your_earnings": "지난주 수익",
+      "view_breakdown": "주간 수익 내역 보기",
+      "view_now": "지금 보기"
     }
   },
   "speed_up_and_cancel": {
@@ -1324,7 +1415,8 @@
     "speed_up_cta": "거래 속도 향상",
     "speed_up_transaction": "거래 속도 향상",
     "close_cta": "취소",
-    "handle_copy_title": "Tx 해시 복사됨"
+    "handle_copy_title": "Tx 해시 복사됨",
+    "revoke_approval": "승인 취소"
   },
   "token_details": {
     "swap": "교환",
@@ -1343,6 +1435,7 @@
     "not_available": "가격을 확인할 수 없습니다",
     "more_options": {
       "copy_address": "주소 복사",
+      "view_on_explorer": "%{explorer}에서 보기",
       "hide": "토큰 숨기기",
       "report": "토큰 신고"
     },
@@ -1467,7 +1560,10 @@
     "network_changed": "네트워크 변경됨",
     "network_changed_failed": "네트워크 변경 실패",
     "unsupported_network": "지원되지 않는 네트워크",
-    "no_active_session": "활성 세션이 없음"
+    "no_active_session": "활성 세션이 없음",
+    "already_added": "RPC 활성화됨",
+    "set_as_active": "새 RPC 활성화됨",
+    "already_active": "네트워크 이미 추가됨"
   },
   "alert": {
     "ok": "확인",
@@ -1535,10 +1631,6 @@
       "after": " 더 요청하려면."
     }
   },
-  "approvals": {
-    "unlimited": "무제한",
-    "no_allowance": "허용 없음"
-  },
   "buy": {
     "title": "구매",
     "fees_title": "수수료",
@@ -1602,6 +1694,7 @@
   "nonce": "논스",
   "copy": "복사",
   "copy_link": "링크 복사",
+  "link_text": "더 알아보기",
   "close": "닫기",
   "verified": "인증됨",
   "unverified": "인증되지 않음",

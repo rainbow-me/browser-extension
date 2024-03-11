@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Address } from 'wagmi';
 
 import {
+  AVAX_AVALANCHE_ADDRESS,
   BNB_MAINNET_ADDRESS,
   ETH_ADDRESS,
   MATIC_MAINNET_ADDRESS,
@@ -52,6 +53,7 @@ const parseAddressSummary = ({
     ETH: ethRawBalance,
     BNB: bnbRawBalance,
     MATIC: maticRawBalance,
+    AVAX: avaxRawBalance,
   } = addressData?.summary.native_balance_by_symbol || {};
 
   const ethBalance = convertRawAmountToBalance(ethRawBalance?.quantity || 0, {
@@ -84,9 +86,18 @@ const parseAddressSummary = ({
     currentCurrency,
   ).amount;
 
+  const avaxBalance = convertRawAmountToBalance(avaxRawBalance?.quantity || 0, {
+    decimals: 18,
+  }).amount;
+  const avaxCurrencyBalance = convertAmountAndPriceToNativeDisplay(
+    avaxBalance || 0,
+    nativeAssets?.[`${AVAX_AVALANCHE_ADDRESS}_1`]?.price?.value || 0,
+    currentCurrency,
+  ).amount;
+
   const balance = add(
     add(ethCurrencyBalance, bnbCurrencyBalance),
-    maticCurrencyBalance,
+    add(maticCurrencyBalance, avaxCurrencyBalance),
   );
 
   const balanceDisplay = convertAmountToNativeDisplay(balance, currentCurrency);
