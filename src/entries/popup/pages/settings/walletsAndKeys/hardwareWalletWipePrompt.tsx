@@ -23,6 +23,7 @@ import { Prompt } from '~/design-system/components/Prompt/Prompt';
 import { getAccounts, remove, wipe } from '~/entries/popup/handlers/wallet';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
+import { RainbowError, logger } from '~/logger';
 
 const { deleteWalletName } = walletNamesStore.getState();
 const { deleteWalletBackup } = walletBackupsStore.getState();
@@ -51,7 +52,6 @@ export const HardwareWalletWipePrompt = ({
   useEffect(() => {
     const fetchWallets = async () => {
       const walletFromKeychain = await getSettingWallets();
-      console.log(walletFromKeychain);
       setWallet(walletFromKeychain);
     };
 
@@ -84,8 +84,13 @@ export const HardwareWalletWipePrompt = ({
       }
 
       navigate(-2);
-    } catch (error) {
-      console.error('An error occurred during wallet removal:', error);
+    } catch (e) {
+      logger.error(
+        new RainbowError('Wallet Removal: Hardware wallet removal error'),
+        {
+          message: (e as Error)?.message,
+        },
+      );
     }
   }, [currentAddress, navigate, setCurrentAddress]);
 
