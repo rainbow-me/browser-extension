@@ -76,7 +76,9 @@ export const HardwareWalletWipePrompt = ({
         const visibleWallets = allAccounts.filter((acc) => !hiddenWallets[acc]);
         // if no more visible wallets, force unhide one and set as current
         if (visibleWallets.length === 0) {
-          unhideWallet({ address: allAccounts[0] });
+          unhideWallet({
+            address: Object.keys(hiddenWallets)[0] as `0x${string}`,
+          });
           setCurrentAddress(allAccounts[0]);
         } else {
           setCurrentAddress(visibleWallets[0]);
