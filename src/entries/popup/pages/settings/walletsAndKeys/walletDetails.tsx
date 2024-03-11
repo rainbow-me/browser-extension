@@ -397,7 +397,7 @@ export function WalletDetails() {
                     size={18}
                     color="red"
                     weight="medium"
-                    symbol="trash.fill"
+                    symbol="cable.connector.slash"
                   />
                 }
                 titleComponent={
