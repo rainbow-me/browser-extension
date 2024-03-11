@@ -80,6 +80,7 @@ export type AssetApiResponse = {
   decimals: number;
   icon_url: string;
   name: string;
+  chain_id?: number;
   price?: {
     value: number;
     changed_at: number;
