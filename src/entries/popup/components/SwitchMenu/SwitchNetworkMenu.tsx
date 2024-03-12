@@ -3,7 +3,7 @@ import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { ChainId } from '~/core/types/chains';
+import { ChainId, chainBlast } from '~/core/types/chains';
 import { isCustomChain } from '~/core/utils/chains';
 import {
   Box,
@@ -44,7 +44,7 @@ import {
 import { SWAP_INPUT_MASK_ID } from '../InputMask/SwapInputMask/SwapInputMask';
 import { ShortcutHint } from '../ShortcutHint/ShortcutHint';
 
-const MENU_SELECTOR_MAX_HEIGHT = DROPDOWN_MENU_ITEM_HEIGHT * 6;
+const MENU_SELECTOR_MAX_HEIGHT = DROPDOWN_MENU_ITEM_HEIGHT * 6.5;
 
 export const SwitchNetworkMenuSelector = ({
   selectedValue,
@@ -70,7 +70,9 @@ export const SwitchNetworkMenuSelector = ({
 
   const chains = useMemo(() => {
     return onlySwapSupportedNetworks
-      ? userChains.filter((chain) => !isCustomChain(chain.id))
+      ? userChains.filter(
+          (chain) => !isCustomChain(chain.id) && chain.id !== chainBlast.id,
+        )
       : userChains;
   }, [onlySwapSupportedNetworks, userChains]);
 
