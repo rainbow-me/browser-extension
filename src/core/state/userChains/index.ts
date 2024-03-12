@@ -109,7 +109,7 @@ export const userChainsStore = createStore<UserChainsState>(
   {
     persist: {
       name: 'userChains',
-      version: 2,
+      version: 3,
     },
   },
 );
