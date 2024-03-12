@@ -21,6 +21,32 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.4.22](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.22)
+
+### Added
+
+- Blast is now supported in Rainbow, with Swap and Bridge support coming soon #1379
+- You can now Pin and Unpin tokens with a hold-click to keep them at the top of your Tokens list #1370
+- Hardware Wallets can now be Unpaired from the Wallets & Keys menu in Settings #1372
+
+### Changed
+
+- When Bridging assets, you can now right-click on a pending transaction to track the status on the Socketscan explorer #1377
+- Swaps are even faster now that we automatically populate your input token and provide a default amount #1378
+- Updated Weekly Points Overview with new line items for Referrals and Bonus Redemptions #1389
+- Removed deprecated Optimism Goerli network #1351
+
+### Fixed
+
+- Resolved an issue where some wallets were missing in the Send wallet list #1368
+- Fixed an issue where the "Reveal Secret Phrase" option would be available on right-click for Hardware Wallets #1371
+- Fixed Mainnet ETH balance display duplication when Blast network is enabled #1383
+- Fixed Switch Chain errors after using `wallet_addEthereumChain` on a dApp #1365
+- Reversed arrows and colors on the Transaction Previews to be more clear about sending vs receiving #137
+- Fixed missing activity on user wallets when parsing assets #1286
+- Improved percentage formatting, fallback icons, and disappearing row on Swap Review #1380
+- Fixed Activity Details animations and inconsistencies #13844
+
 ## [v1.4.12](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.12)
 
 ### Added
@@ -90,7 +116,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Optimized ENS fetching network calls on the Points leaderboard #1328
 - Resolved an issue that prevent Custom Network assets from appearing in the Magic Menu search #1326
 - Fixed an issue with dApps like Blur where the dApp interface would sometimes hang upon transaction signing due to a BigNumber parsing issue #1330
-- Fixed text overflows on From and To addresses in Transaction Details #1335
+- Fixed text overflows on From and To addresses in Activity Details #1335
 
 ### Security
 
