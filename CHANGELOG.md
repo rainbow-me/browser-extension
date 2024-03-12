@@ -45,7 +45,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Reversed arrows and colors on the Transaction Previews to be more clear about sending vs receiving #137
 - Fixed missing activity on user wallets when parsing assets #1286
 - Improved percentage formatting, fallback icons, and disappearing row on Swap Review #1380
-- Fixed Activity Details animations and inconsistencies #13844
+- Fixed Activity Details animations and inconsistencies #1384
 
 ## [v1.4.12](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.12)
 
