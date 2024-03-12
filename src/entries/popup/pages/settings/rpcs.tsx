@@ -244,7 +244,7 @@ export function SettingsNetworksRPCs() {
             <Box paddingHorizontal="1px" paddingVertical="1px">
               {mainnetChains.map((chain, index) => (
                 <Box
-                  key={`${chain.name}`}
+                  key={`${chain.id}-${index}`}
                   width="full"
                   testId={`rpc-row-item-${index}`}
                 >
