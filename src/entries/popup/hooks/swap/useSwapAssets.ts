@@ -77,7 +77,10 @@ export const useSwapAssets = ({ bridge }: { bridge: boolean }) => {
     },
     {
       select: (data) =>
-        selectorFilterByUserChains({ data, selector: sortBy(sortMethod) }),
+        selectorFilterByUserChains({
+          data,
+          selector: sortBy(sortMethod),
+        }).filter((a) => a.chainId !== ChainId.blast),
     },
   );
 
