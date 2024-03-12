@@ -4131,10 +4131,10 @@
   resolved "https://registry.yarnpkg.com/@types/scheduler/-/scheduler-0.16.2.tgz#1a62f89525723dde24ba1b01b092bf5df8ad4d39"
   integrity sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==
 
-"@types/selenium-webdriver@4.1.21":
-  version "4.1.21"
-  resolved "https://registry.yarnpkg.com/@types/selenium-webdriver/-/selenium-webdriver-4.1.21.tgz#79fe31faf9953a4143c3e32944d98d5146bbe185"
-  integrity sha512-QGURnImvxYlIQz5DVhvHdqpYNLBjhJ2Vm+cnQI2G9QZzkWlZm0LkLcvDcHp+qE6N2KBz4CeuvXgPO7W3XQ0Tyw==
+"@types/selenium-webdriver@4.1.22":
+  version "4.1.22"
+  resolved "https://registry.yarnpkg.com/@types/selenium-webdriver/-/selenium-webdriver-4.1.22.tgz#344519b90727eb713e1ce6d2e0198eb0b4f8f316"
+  integrity sha512-MCL4l7q8dwxejr2Q2NXLyNwHWMPdlWE0Kpn6fFwJtvkJF7PTkG5jkvbH/X1IAAQxgt/L1dA8u2GtDeekvSKvOA==
   dependencies:
     "@types/ws" "*"
 
@@ -6544,10 +6544,10 @@ chrome-trace-event@^1.0.2:
   resolved "https://registry.yarnpkg.com/chrome-trace-event/-/chrome-trace-event-1.0.3.tgz#1015eced4741e15d06664a957dbbf50d041e26ac"
   integrity sha512-p3KULyQg4S7NIHixdwbGX+nFHkoBiA4YQmyWtjb8XngSKV124nJmRysgAeujbUVb15vh+RvFUfCPqU7rXk+hZg==
 
-chromedriver@122.0.4:
-  version "122.0.4"
-  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-122.0.4.tgz#6abc9d3c553575986f7668a5a38fd510a877d56d"
-  integrity sha512-MxkaWaxCqefHyh9UorGzl1F6ZNBgC7pqgT0piAysLZdw20ojSgJ62ljG8SFbhDJqBTegKbmuioa6MQ1m4Czdsg==
+chromedriver@122.0.5:
+  version "122.0.5"
+  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-122.0.5.tgz#7edb2bcd47f7b6afd8f44e680a77b115d5eb6040"
+  integrity sha512-5WkCY4ioJZ1Qna6KWqPSrIz1MwGh6tHW7F67XTSbZn/GaMJrpiuy6b5c1BetrddSax+NX8u4tg4l3Wy1THecLQ==
   dependencies:
     "@testim/chrome-version" "^1.1.4"
     axios "^1.6.7"
