@@ -589,7 +589,7 @@
     "unlimited": "Unlimited",
     "no_allowance": "No Allowance",
     "revoke_approval": "Revoke Approval",
-    "copy_spender":"Copy Spender",
+    "copy_spender": "Copy Spender",
     "spender_address_copied": "Spender Address Copied",
     "revoked_approvals": "Revoked Approvals",
     "nothing_found": "Nothing found",
@@ -598,7 +598,7 @@
       "action": "Revoke",
       "cancel": "Cancel",
       "allowance": "Allowance",
-      "spender":"Spender",
+      "spender": "Spender",
       "chain": "Chain"
     },
     "token_details": {
@@ -607,7 +607,7 @@
           "title": "What’s an Approval?",
           "description_1": "Approvals grant a dApp to spend and transfer tokens or NFTs on your behalf.",
           "description_2": "It is important to monitor your approvals and revoke unnecessary, broad, or unsafe approvals that may risk your assets.",
-          "action_label":"Got it"
+          "action_label": "Got it"
         }
       }
     }
@@ -1280,7 +1280,7 @@
     "collection": "Collection",
     "token_contract": "Token Contract",
     "token_standard": "Token Standard",
-    "revoke_approval":"Revoke Approval"
+    "revoke_approval": "Revoke Approval"
   },
   "tokens_tab": {
     "coinbase_title": "Deposit from Coinbase",
@@ -1414,6 +1414,7 @@
       "referral_activity": "Referral Activity:",
       "new_referrals": "New Referrals:",
       "retroactive": "Retroactive Points:",
+      "bonus": "Bonus Points:",
       "total": "Total:",
       "weekly_counted": "> Weekly earnings counted",
       "you_have": "You have:",
