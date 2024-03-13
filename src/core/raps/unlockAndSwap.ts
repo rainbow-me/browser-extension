@@ -64,13 +64,7 @@ export const estimateUnlockAndSwap = async (
     });
   }
 
-  if (
-    swapAssetNeedsUnlocking &&
-    chainId !== ChainId.avalanche &&
-    chainId !== ChainId.blast &&
-    chainId !== ChainId.zora &&
-    chainId !== ChainId.base
-  ) {
+  if (swapAssetNeedsUnlocking) {
     const gasLimitFromMetadata = await estimateUnlockAndSwapFromMetadata({
       swapAssetNeedsUnlocking,
       chainId,
