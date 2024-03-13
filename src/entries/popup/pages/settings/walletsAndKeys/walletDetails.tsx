@@ -35,6 +35,8 @@ import { RemoveWalletPrompt } from '../../walletSwitcher/removeWalletPrompt';
 import { RenameWalletPrompt } from '../../walletSwitcher/renameWalletPrompt';
 import { ConfirmPasswordPrompt } from '../privacy/confirmPasswordPrompt';
 
+import { HardwareWalletWipePrompt } from './hardwareWalletWipePrompt';
+
 const InfoButtonOptions = ({
   account,
   handleViewPrivateKey,
@@ -131,6 +133,7 @@ export function WalletDetails() {
   const { deleteWalletName } = useWalletNamesStore();
   const [createWalletAddress, setCreateWalletAddress] = useState<Address>();
   const [showEnterPassword, setShowEnterPassword] = useState(false);
+  const [showHardwareWalletWipe, setShowHardwareWalletWipe] = useState(false);
 
   const { isWalletBackedUp, getWalletBackup, deleteWalletBackup } =
     useWalletBackupsStore();
@@ -291,6 +294,10 @@ export function WalletDetails() {
         }}
         onRemoveAccount={handleRemoveAccount}
       />
+      <HardwareWalletWipePrompt
+        show={showHardwareWalletWipe}
+        onClose={() => setShowHardwareWalletWipe(false)}
+      />
       <Box paddingHorizontal="20px">
         <MenuContainer testId="settings-menu-container">
           {wallet?.type !== KeychainType.HardwareWalletKeychain &&
@@ -380,6 +387,34 @@ export function WalletDetails() {
               );
             })}
           </Menu>
+          {wallet?.type === KeychainType.HardwareWalletKeychain && (
+            <Menu>
+              <MenuItem
+                first
+                last
+                leftComponent={
+                  <Symbol
+                    size={18}
+                    color="red"
+                    weight="medium"
+                    symbol="cable.connector.slash"
+                  />
+                }
+                titleComponent={
+                  <MenuItem.Title
+                    text={i18n.t(
+                      'settings.privacy_and_security.wallets_and_keys.wipe_hardware_wallet_group.delete',
+                      {
+                        vendor: wallet.vendor,
+                      },
+                    )}
+                    color="red"
+                  />
+                }
+                onClick={() => setShowHardwareWalletWipe(true)}
+              />
+            </Menu>
+          )}
           {wallet?.type === KeychainType.HdKeychain && (
             <Menu>
               <MenuItem
@@ -418,6 +453,9 @@ export function WalletDetails() {
                   <MenuItem.Title
                     text={i18n.t(
                       'settings.privacy_and_security.wallets_and_keys.wipe_wallet_group.delete',
+                      {
+                        vendor: wallet.vendor,
+                      },
                     )}
                     color="red"
                   />
