@@ -41,7 +41,6 @@ import {
 import {
   sendTransactionFromTrezor,
   signMessageByTypeFromTrezor,
-  signTransactionFromTrezor,
 } from './trezor';
 import { walletAction } from './walletAction';
 import { HARDWARE_WALLETS } from './walletVariables';
@@ -88,8 +87,6 @@ export const signTransactionFromHW = async (
 
   if (vendor === 'Ledger') {
     return signTransactionFromLedger(params);
-  } else if (vendor === 'Trezor') {
-    return signTransactionFromTrezor(params);
   }
 };
 

@@ -55,6 +55,7 @@ declare global {
   interface Window {
     TrezorConnect: typeof Window.TrezorConnect;
   }
+  var TrezorConnect: any;
 }
 
 // If this file has no import/export statements (i.e. is a script)

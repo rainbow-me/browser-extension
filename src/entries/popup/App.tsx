@@ -86,6 +86,7 @@ export function App() {
         appUrl: 'https://rainbow.me',
       },
       lazyLoad: true,
+      connectSrc: 'https://connect.trezor.io/9/',
     });
 
     if (process.env.IS_DEV !== 'true') {
