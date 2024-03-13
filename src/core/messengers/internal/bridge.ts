@@ -33,9 +33,9 @@ export const bridgeMessenger = createMessenger({
 
 export function setupBridgeMessengerRelay() {
   if (detectScriptType() !== 'contentScript') {
-    throw new Error(
-      '`setupBridgeMessengerRelay` is only supported in Content Scripts.',
-    );
+    // throw new Error(
+    //   '`setupBridgeMessengerRelay` is only supported in Content Scripts.',
+    // );
   }
 
   // e.g. inpage -> content script -> background

@@ -7,6 +7,8 @@ import { defineReadOnly } from '@ethersproject/properties';
 import { Provider } from '@ethersproject/providers';
 import { Address } from 'wagmi';
 
+import { signTransactionFromTrezor } from '~/core/trezor/actions';
+
 import { initializeMessenger } from '../messengers';
 
 export class HWSigner extends Signer {
@@ -74,6 +76,9 @@ export class HWSigner extends Signer {
   }
 
   async signTransaction(transaction: TransactionRequest): Promise<string> {
+    if (this.vendor === 'Trezor') {
+      return await signTransactionFromTrezor(transaction);
+    }
     return this.fwdHWSignRequest('signTransaction', transaction);
   }
 

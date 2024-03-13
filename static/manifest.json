@@ -29,10 +29,10 @@
     },
     {
       "matches": [
-        "*://connect.trezor.io/9/popup.html"
+        "*://connect.trezor.io/9/*"
       ],
       "js": [
-        "./vendor/trezor-content-script.js"
+        "./vendor/trezor-connect-webextension-content-script.js"
       ]
     }
   ],
