@@ -90,17 +90,19 @@ function WalletsAndKeysContextMenu({
           <div>{children}</div>
         </ContextMenuTrigger>
         <ContextMenuContent>
-          <ContextMenuItem
-            symbolLeft="lock.square.fill"
-            onSelect={() =>
-              navigate(
-                ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
-                { state: { wallet } },
-              )
-            }
-          >
-            {t('context_menu.view_secret_phrase')}
-          </ContextMenuItem>
+          {wallet.type !== KeychainType.HardwareWalletKeychain && (
+            <ContextMenuItem
+              symbolLeft="lock.square.fill"
+              onSelect={() =>
+                navigate(
+                  ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
+                  { state: { wallet } },
+                )
+              }
+            >
+              {t('context_menu.view_secret_phrase')}
+            </ContextMenuItem>
+          )}
           <ContextMenuItem
             symbolLeft="plus.circle.fill"
             onSelect={() => {

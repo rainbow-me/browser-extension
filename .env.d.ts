@@ -35,7 +35,6 @@ declare global {
       ETH_GOERLI_RPC: string;
       ETH_SEPOLIA_RPC: string;
       ETH_HOLESKY_RPC: string;
-      OPTIMISM_GOERLI_RPC: string;
       OPTIMISM_SEPOLIA_RPC: string;
       BSC_TESTNET_RPC: string;
       POLYGON_MUMBAI_RPC: string;
@@ -45,6 +44,7 @@ declare global {
       ZORA_SEPOLIA_RPC: string;
       AVALANCHE_MAINNET_RPC: string;
       AVALANCHE_FUJI_RPC: string;
+      BLAST_MAINNET_RPC: string;
     }
   }
 }

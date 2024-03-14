@@ -13,7 +13,6 @@ import {
   holesky,
   mainnet,
   optimism,
-  optimismGoerli,
   optimismSepolia,
   polygon,
   polygonMumbai,
@@ -22,7 +21,7 @@ import {
 } from 'viem/chains';
 import { Address, type Chain, sepolia } from 'wagmi';
 
-import { ChainId, ChainNameDisplay } from '~/core/types/chains';
+import { ChainId, ChainNameDisplay, chainBlast } from '~/core/types/chains';
 
 import { AddressOrEth } from '../types/assets';
 
@@ -154,7 +153,6 @@ export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.bscTestnet]: AddressZero as Address,
   [ChainId.optimism]: ETH_OPTIMISM_ADDRESS as Address,
   [ChainId.hardhatOptimism]: AddressZero as Address,
-  [ChainId.optimismGoerli]: AddressZero as Address,
   [ChainId.optimismSepolia]: AddressZero as Address,
   [ChainId.rari]: AddressZero as Address,
   [ChainId.base]: ETH_BASE_ADDRESS as Address,
@@ -165,6 +163,7 @@ export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.polygonMumbai]: AddressZero as Address,
   [ChainId.avalanche]: AVAX_AVALANCHE_ADDRESS as Address,
   [ChainId.avalancheFuji]: AddressZero as Address,
+  [ChainId.blast]: AddressZero as Address,
 };
 
 export const NATIVE_ASSETS_MAP_PER_CHAIN: Record<ChainId, AddressOrEth> = {
@@ -181,7 +180,6 @@ export const NATIVE_ASSETS_MAP_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.optimism]: ETH_ADDRESS,
   [ChainId.rari]: ETH_ADDRESS,
   [ChainId.hardhatOptimism]: ETH_ADDRESS,
-  [ChainId.optimismGoerli]: ETH_ADDRESS,
   [ChainId.optimismSepolia]: ETH_ADDRESS,
   [ChainId.base]: ETH_ADDRESS,
   [ChainId.baseSepolia]: ETH_ADDRESS,
@@ -191,6 +189,7 @@ export const NATIVE_ASSETS_MAP_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.polygonMumbai]: MATIC_MAINNET_ADDRESS,
   [ChainId.avalanche]: ETH_ADDRESS,
   [ChainId.avalancheFuji]: ETH_ADDRESS,
+  [ChainId.blast]: ETH_ADDRESS,
 };
 
 export const OVM_GAS_PRICE_ORACLE =
@@ -214,6 +213,7 @@ export const SUPPORTED_MAINNET_CHAINS: Chain[] = [
   zora,
   bsc,
   avalanche,
+  chainBlast,
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
 export const SUPPORTED_CHAINS: Chain[] = [
@@ -227,7 +227,6 @@ export const SUPPORTED_CHAINS: Chain[] = [
   bsc,
   goerli,
   sepolia,
-  optimismGoerli,
   optimismSepolia,
   bscTestnet,
   polygonMumbai,
@@ -237,6 +236,7 @@ export const SUPPORTED_CHAINS: Chain[] = [
   zoraSepolia,
   avalanche,
   avalancheFuji,
+  chainBlast,
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
 export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map((chain) => chain.id);
@@ -245,7 +245,6 @@ export const SUPPORTED_TESTNET_CHAINS: Chain[] = [
   holesky,
   goerli,
   sepolia,
-  optimismGoerli,
   optimismSepolia,
   bscTestnet,
   polygonMumbai,
@@ -281,8 +280,6 @@ export const getDefaultRPC = (chainId: ChainId) => {
       return { http: process.env.ETH_SEPOLIA_RPC };
     case ChainId.holesky:
       return { http: process.env.ETH_HOLESKY_RPC };
-    case ChainId.optimismGoerli:
-      return { http: process.env.OPTIMISM_GOERLI_RPC };
     case ChainId.optimismSepolia:
       return { http: process.env.OPTIMISM_SEPOLIA_RPC };
     case ChainId.bscTestnet:
@@ -301,6 +298,8 @@ export const getDefaultRPC = (chainId: ChainId) => {
       return { http: process.env.AVALANCHE_MAINNET_RPC };
     case ChainId.avalancheFuji:
       return { http: process.env.AVALANCHE_FUJI_RPC };
+    case ChainId.blast:
+      return { http: process.env.BLAST_MAINNET_RPC };
     default:
       return null;
   }

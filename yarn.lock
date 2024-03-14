@@ -3298,10 +3298,10 @@
   dependencies:
     "@babel/runtime" "^7.13.10"
 
-"@rainbow-me/provider@0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@rainbow-me/provider/-/provider-0.0.2.tgz#03d0e222481c22e3f5b199959772704484370f94"
-  integrity sha512-E5PYtYxEKm0PlN3sp28bHrWkjRnXP8mYV2rpV8SYma9pRdcomNvTLQSkcXwG0q55je+RA+DJdOD6mCod71Em3g==
+"@rainbow-me/provider@0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@rainbow-me/provider/-/provider-0.0.6.tgz#ad54c7182d9fe15b78f09fd5fed307a529bb2eb2"
+  integrity sha512-dku6sWJy/AMsSTbC5P9GlXmU86nIdlF98UFB7BokNyr4JWgDv3tVcdy4BU/j6UzbHwBm+keeqSvf5sKEo8K6SA==
   dependencies:
     "@ethersproject/abstract-provider" "5.7.0"
     "@ethersproject/bignumber" "5.7.0"
@@ -11033,10 +11033,10 @@ jju@^1.4.0:
   resolved "https://registry.yarnpkg.com/jju/-/jju-1.4.0.tgz#a3abe2718af241a2b2904f84a625970f389ae32a"
   integrity sha512-8wb9Yw966OSxApiCt0K3yNJL8pnNeIv+OEq2YMidz4FKP6nonSRoOXc80iXY4JaN2FC11B9qsNmDsm+ZOfMROA==
 
-jose@4.13.1:
-  version "4.13.1"
-  resolved "https://registry.yarnpkg.com/jose/-/jose-4.13.1.tgz#449111bb5ab171db85c03f1bd2cb1647ca06db1c"
-  integrity sha512-MSJQC5vXco5Br38mzaQKiq9mwt7lwj2eXpgpRyQYNHYt2lq1PjkWa7DLXX0WVcQLE9HhMh3jPiufS7fhJf+CLQ==
+jose@4.13.1, jose@4.15.5:
+  version "4.15.5"
+  resolved "https://registry.yarnpkg.com/jose/-/jose-4.15.5.tgz#6475d0f467ecd3c630a1b5dadd2735a7288df706"
+  integrity sha512-jc7BFxgKPKi94uOvEmzlSWFFe2+vASyXaKUpdQKatWAESU2MWjDfFf0fdfc83CDKcA5QecabZeNLyfhe3yKNkg==
 
 jpeg-js@^0.4.2:
   version "0.4.4"

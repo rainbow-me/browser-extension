@@ -113,6 +113,17 @@ describe('Complete swap flow via shortcuts and keyboard navigation', () => {
   });
 
   it('should be able to select asset to sell with keyboard navigation', async () => {
+    await executePerformShortcut({
+      driver,
+      key: 'ARROW_UP',
+      timesToPress: 2,
+    });
+    await executePerformShortcut({
+      driver,
+      key: 'ENTER',
+      timesToPress: 1,
+    });
+
     const inputSearch = await findElementByTestId({
       id: 'token-to-sell-search-token-input',
       driver,

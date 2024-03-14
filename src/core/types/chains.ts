@@ -2,6 +2,7 @@ import * as chain from 'viem/chains';
 import type { Chain } from 'wagmi';
 
 const HARDHAT_CHAIN_ID = 1337;
+const BLAST_CHAIN_ID = 81457;
 const HARDHAT_OP_CHAIN_ID = 1338;
 
 export const chainHardhat: Chain = {
@@ -18,6 +19,26 @@ export const chainHardhat: Chain = {
     default: { http: ['http://127.0.0.1:8545'] },
   },
   testnet: true,
+};
+
+export const chainBlast: Chain = {
+  id: BLAST_CHAIN_ID,
+  name: 'Blast',
+  network: 'blast',
+  rpcUrls: {
+    public: { http: [process.env.BLAST_MAINNET_RPC as string] },
+    default: {
+      http: [process.env.BLAST_MAINNET_RPC as string],
+    },
+  },
+  blockExplorers: {
+    default: { name: 'Blastscan', url: 'https://blastscan.io/' },
+  },
+  nativeCurrency: {
+    name: 'Blast',
+    symbol: 'BLAST',
+    decimals: 18,
+  },
 };
 
 export const chainHardhatOptimism: Chain = {
@@ -43,6 +64,7 @@ export enum ChainName {
   avalanche = 'avalanche',
   avalancheFuji = 'avalanche-fuji',
   base = 'base',
+  blast = 'blast',
   bsc = 'bsc',
   celo = 'celo',
   gnosis = 'gnosis',
@@ -60,7 +82,6 @@ export enum ChainName {
   hardhatOptimism = 'hardhat-optimism',
   goerli = 'goerli',
   sepolia = 'sepolia',
-  optimismGoerli = 'optimism-goerli',
   optimismSepolia = 'optimism-sepolia',
   bscTestnet = 'bsc-testnet',
   polygonMumbai = 'polygon-mumbai',
@@ -75,6 +96,7 @@ export enum ChainId {
   avalanche = chain.avalanche.id,
   avalancheFuji = chain.avalancheFuji.id,
   base = chain.base.id,
+  blast = BLAST_CHAIN_ID,
   bsc = chain.bsc.id,
   celo = chain.celo.id,
   gnosis = chain.gnosis.id,
@@ -92,7 +114,6 @@ export enum ChainId {
   sepolia = chain.sepolia.id,
   scroll = chain.scroll.id,
   holesky = chain.holesky.id,
-  optimismGoerli = chain.optimismGoerli.id,
   optimismSepolia = chain.optimismSepolia.id,
   bscTestnet = chain.bscTestnet.id,
   polygonMumbai = chain.polygonMumbai.id,
@@ -130,13 +151,13 @@ export const chainNameToIdMapping: {
   [ChainName.goerli]: ChainId.goerli,
   ['ethereum-sepolia']: ChainId.sepolia,
   [ChainName.sepolia]: ChainId.sepolia,
-  [ChainName.optimismGoerli]: ChainId.optimismGoerli,
   [ChainName.optimismSepolia]: ChainId.optimismSepolia,
   [ChainName.bscTestnet]: ChainId.bscTestnet,
   [ChainName.polygonMumbai]: ChainId.polygonMumbai,
   [ChainName.arbitrumGoerli]: ChainId.arbitrumGoerli,
   [ChainName.baseSepolia]: ChainId.baseSepolia,
   [ChainName.zoraSepolia]: ChainId.zoraSepolia,
+  [ChainName.blast]: ChainId.blast,
 };
 
 export const chainIdToNameMapping: {
@@ -148,6 +169,7 @@ export const chainIdToNameMapping: {
   [ChainId.avalanche]: ChainName.avalanche,
   [ChainId.avalancheFuji]: ChainName.avalancheFuji,
   [ChainId.base]: ChainName.base,
+  [ChainId.blast]: ChainName.blast,
   [ChainId.bsc]: ChainName.bsc,
   [ChainId.celo]: ChainName.celo,
   [ChainId.gnosis]: ChainName.gnosis,
@@ -165,7 +187,6 @@ export const chainIdToNameMapping: {
   [ChainId.hardhatOptimism]: ChainName.hardhatOptimism,
   [ChainId.goerli]: ChainName.goerli,
   [ChainId.sepolia]: ChainName.sepolia,
-  [ChainId.optimismGoerli]: ChainName.optimismGoerli,
   [ChainId.optimismSepolia]: ChainName.optimismSepolia,
   [ChainId.bscTestnet]: ChainName.bscTestnet,
   [ChainId.polygonMumbai]: ChainName.polygonMumbai,
@@ -180,6 +201,7 @@ export const ChainNameDisplay = {
   [ChainId.avalanche]: 'Avalanche',
   [ChainId.avalancheFuji]: 'Avalanche Fuji',
   [ChainId.base]: 'Base',
+  [ChainId.blast]: 'Blast',
   [ChainId.bsc]: 'BSC',
   [ChainId.celo]: chain.celo.name,
   [ChainId.linea]: 'Linea',
@@ -196,7 +218,6 @@ export const ChainNameDisplay = {
   [ChainId.goerli]: chain.goerli.name,
   [ChainId.sepolia]: chain.sepolia.name,
   [ChainId.holesky]: chain.holesky.name,
-  [ChainId.optimismGoerli]: chain.optimismGoerli.name,
   [ChainId.optimismSepolia]: chain.optimismSepolia.name,
   [ChainId.bscTestnet]: 'BSC Testnet',
   [ChainId.polygonMumbai]: chain.polygonMumbai.name,
