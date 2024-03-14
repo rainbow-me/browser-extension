@@ -81,6 +81,7 @@ const SaveOrEditContact = ({
                   style={{ textAlign: 'center' }}
                   testId="contact-prompt-input"
                   tabIndex={1}
+                  autoFocus={!name?.length}
                 />
               </Box>
 
@@ -105,7 +106,7 @@ const SaveOrEditContact = ({
             onClick={onSave}
             tabIndex={2}
             testId="contact-prompt-confirm"
-            autoFocus
+            autoFocus={!!name?.length}
             enterCta
           >
             {i18n.t(
