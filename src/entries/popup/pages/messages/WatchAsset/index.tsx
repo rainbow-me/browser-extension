@@ -24,7 +24,7 @@ import { WatchAssetActions } from './WatchAssetActions';
 import { WatchAssetInfo } from './WatchAssetInfo';
 
 interface ApproveRequestProps {
-  approveRequest: (response: null) => void;
+  approveRequest: (response: boolean | null) => void;
   rejectRequest: () => void;
   request: ProviderRequestPayload;
 }
@@ -34,7 +34,6 @@ export const WatchAsset = ({
   rejectRequest,
   request,
 }: ApproveRequestProps) => {
-  console.log('watch assets request', request);
   const [loading, setLoading] = useState(false);
   const { data: dappMetadata } = useDappMetadata({
     url: request?.meta?.sender?.url,
@@ -165,7 +164,7 @@ export const WatchAsset = ({
         });
       }
 
-      approveRequest(null);
+      approveRequest(true);
 
       analytics.track(event.dappPromptWatchAssetApproved, {
         chainId: Number(chainId),
