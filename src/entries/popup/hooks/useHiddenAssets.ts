@@ -1,6 +1,8 @@
 import { useCallback } from 'react';
 
 import { useHiddenAssetStore } from '~/core/state/hiddenAssets/hiddenAssets';
+import { ParsedUserAsset } from '~/core/types/assets';
+import { SearchAsset } from '~/core/types/search';
 
 export const useHiddenAssets = () => {
   const {
@@ -10,21 +12,23 @@ export const useHiddenAssets = () => {
   } = useHiddenAssetStore();
 
   const isHidden = useCallback(
-    (address: string, chainId: number) =>
-      hiddenAssets.some((uniqueId) => uniqueId === `${address}-${chainId}`),
+    (asset: ParsedUserAsset | SearchAsset) =>
+      hiddenAssets.some(
+        (uniqueId) => uniqueId === `${asset.address}-${asset.chainId}`,
+      ),
     [hiddenAssets],
   );
 
   const addHiddenAsset = useCallback(
-    (tokenAddress: string, chainId: number) => {
-      addHiddenAssetStore({ uniqueId: `${tokenAddress}-${chainId}` });
+    (asset: ParsedUserAsset) => {
+      addHiddenAssetStore({ uniqueId: `${asset.address}-${asset.chainId}` });
     },
     [addHiddenAssetStore],
   );
 
   const removeHiddenAsset = useCallback(
-    (tokenAddress: string, chainId: number) => {
-      removeHiddenAssetStore({ uniqueId: `${tokenAddress}-${chainId}` });
+    (asset: ParsedUserAsset) => {
+      removeHiddenAssetStore({ uniqueId: `${asset.address}-${asset.chainId}` });
     },
     [removeHiddenAssetStore],
   );

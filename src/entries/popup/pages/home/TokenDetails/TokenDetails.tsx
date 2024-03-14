@@ -336,7 +336,7 @@ function MoreOptions({
           <DropdownMenuItem
             symbolLeft="eye.slash.fill"
             onSelect={() => {
-              removeHiddenAsset(token.address, token.chainId);
+              removeHiddenAsset(token);
             }}
           >
             <TextOverflow weight="semibold" size="14pt">
@@ -434,7 +434,7 @@ export function TokenDetails() {
     isTestnetChainId({ chainId: token?.chainId }) || !!customAsset
   );
 
-  const hidden = isHidden(token.address, token.chainId);
+  const hidden = isHidden(token);
 
   const tokenBalance = {
     ...formatCurrencyParts(token.balance.amount),

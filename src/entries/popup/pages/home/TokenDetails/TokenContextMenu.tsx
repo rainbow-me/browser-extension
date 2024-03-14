@@ -167,7 +167,7 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
         <ContextMenuItem
           symbolLeft="eye.slash.fill"
           onSelect={() => {
-            addHiddenAsset(token.address, token.chainId);
+            addHiddenAsset(token);
             if (pinned) removedPinnedAsset({ uniqueId: token.uniqueId });
           }}
         >

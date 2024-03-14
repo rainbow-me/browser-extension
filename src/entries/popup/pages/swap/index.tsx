@@ -215,10 +215,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
   } = useSwapAssets({ bridge });
 
   const filteredNonHiddenAssetsToSell = useMemo(
-    () =>
-      assetsToSell.filter(
-        ({ address, chainId }) => !isHidden(address, chainId),
-      ),
+    () => assetsToSell.filter((asset) => !isHidden(asset)),
     [assetsToSell, isHidden],
   );
 
@@ -226,9 +223,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     return assetsToBuy.map((assets) => {
       return {
         ...assets,
-        data: assets.data.filter(
-          ({ address, chainId }) => !isHidden(address, chainId),
-        ),
+        data: assets.data.filter((asset) => !isHidden(asset)),
       };
     });
   }, [assetsToBuy, isHidden]);

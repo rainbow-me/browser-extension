@@ -120,7 +120,7 @@ export function Send() {
   } = useSendAsset();
 
   const filteredNonHiddenAssets = useMemo(
-    () => assets.filter(({ address, chainId }) => !isHidden(address, chainId)),
+    () => assets.filter((asset) => !isHidden(asset)),
     [assets, isHidden],
   );
 

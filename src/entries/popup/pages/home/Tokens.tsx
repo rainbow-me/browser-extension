@@ -154,9 +154,7 @@ export function Tokens() {
 
   const combinedFilteredAssets = useMemo(
     () =>
-      [...assets, ...customNetworkAssets].filter(
-        ({ address, chainId }) => !isHidden(address, chainId),
-      ),
+      [...assets, ...customNetworkAssets].filter((asset) => !isHidden(asset)),
     [assets, customNetworkAssets, isHidden],
   );
 
