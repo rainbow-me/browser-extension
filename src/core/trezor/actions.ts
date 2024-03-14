@@ -6,20 +6,16 @@ import {
   parse,
   serialize,
 } from '@ethersproject/transactions';
-import { Address } from 'wagmi';
-
-import { getPath } from '~/core/keychain';
 
 import { LEGACY_CHAINS_FOR_HW } from '../references/index';
 import { ChainId } from '../types/chains';
 
 export async function signTransactionFromTrezor(
   transaction: TransactionRequest,
+  path?: string,
 ): Promise<string> {
   try {
     const { from: address } = transaction;
-
-    const path = await getPath(address as Address);
 
     const baseTx: UnsignedTransaction = {
       chainId: transaction.chainId || undefined,
