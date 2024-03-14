@@ -53,6 +53,7 @@ import {
   useSwapPriceImpact,
 } from '../../hooks/swap/useSwapPriceImpact';
 import { useBrowser } from '../../hooks/useBrowser';
+import { useHiddenAssets } from '../../hooks/useHiddenAssets';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import {
@@ -184,6 +185,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
 
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
   const [urlSearchParams] = useSearchParams();
+  const { isHidden } = useHiddenAssets();
   const hideBackButton = urlSearchParams.get('hideBack') === 'true';
 
   const hideSwapReviewSheet = useCallback(() => {
@@ -211,6 +213,25 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     setAssetToSellFilter,
     setAssetToBuyFilter,
   } = useSwapAssets({ bridge });
+
+  const filteredNonHiddenAssetsToSell = useMemo(
+    () =>
+      assetsToSell.filter(
+        ({ address, chainId }) => !isHidden(address, chainId),
+      ),
+    [assetsToSell, isHidden],
+  );
+
+  const filteredNonHiddenAssetsToBuy = useMemo(() => {
+    return assetsToBuy.map((assets) => {
+      return {
+        ...assets,
+        data: assets.data.filter(
+          ({ address, chainId }) => !isHidden(address, chainId),
+        ),
+      };
+    });
+  }, [assetsToBuy, isHidden]);
 
   const { toSellInputHeight, toBuyInputHeight } = useSwapDropdownDimensions({
     assetToSell,
@@ -395,7 +416,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
         if (savedTokenToSell) {
           setAssetToSell(savedTokenToSell);
         } else {
-          setAssetToSell(assetsToSell[0]);
+          setAssetToSell(filteredNonHiddenAssetsToSell[0]);
           setDefaultAssetWasSet(true);
         }
         setDidPopulateSavedTokens(true);
@@ -543,7 +564,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                 <TokenToSellInput
                   dropdownHeight={toSellInputHeight}
                   asset={assetToSell}
-                  assets={assetsToSell}
+                  assets={filteredNonHiddenAssetsToSell}
                   selectAsset={selectAssetToSell}
                   onDropdownOpen={onAssetToSellInputOpen}
                   dropdownClosed={assetToSellDropdownClosed}
@@ -626,7 +647,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                   dropdownHeight={toBuyInputHeight}
                   assetToBuy={assetToBuy}
                   assetToSell={assetToSell}
-                  assets={assetsToBuy}
+                  assets={filteredNonHiddenAssetsToBuy}
                   selectAsset={setAssetToBuy}
                   onDropdownOpen={onAssetToBuyInputOpen}
                   dropdownClosed={assetToBuyDropdownClosed}

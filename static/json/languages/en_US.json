@@ -1465,7 +1465,9 @@
       "hide": "Hide Token",
       "report": "Report Token",
       "unpin_token": "Unpin %{name}",
-      "pin_token": "Pin %{name}"
+      "pin_token": "Pin %{name}",
+      "hide_token": "Hide %{name}",
+      "unhide_token": "Unhide %{name}"
     },
     "about": {
       "about_token": "About %{name}",

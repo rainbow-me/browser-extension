@@ -67,6 +67,7 @@ import { useSendInputs } from '../../hooks/send/useSendInputs';
 import { useSendState } from '../../hooks/send/useSendState';
 import { useSendUniqueAsset } from '../../hooks/send/useSendUniqueAsset';
 import { useSendValidations } from '../../hooks/send/useSendValidations';
+import { useHiddenAssets } from '../../hooks/useHiddenAssets';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import usePrevious from '../../hooks/usePrevious';
@@ -102,6 +103,8 @@ export function Send() {
 
   const { isContact } = useContactsStore();
   const { allWallets } = useWallets();
+  const { isHidden } = useHiddenAssets();
+
   const isMyWallet = (address: Address) =>
     allWallets?.some((w) => w.address === address);
 
@@ -115,6 +118,11 @@ export function Send() {
     setSortMethod,
     sortMethod,
   } = useSendAsset();
+
+  const filteredNonHiddenAssets = useMemo(
+    () => assets.filter(({ address, chainId }) => !isHidden(address, chainId)),
+    [assets, isHidden],
+  );
 
   const { nft, nfts, nftSortMethod, setNftSortMethod, selectNft } =
     useSendUniqueAsset();
@@ -658,7 +666,7 @@ export function Send() {
                 >
                   <SendTokenInput
                     asset={asset}
-                    assets={assets}
+                    assets={filteredNonHiddenAssets}
                     selectAssetAddressAndChain={selectAsset}
                     dropdownClosed={toAddressDropdownOpen}
                     setSortMethod={setSortMethod}

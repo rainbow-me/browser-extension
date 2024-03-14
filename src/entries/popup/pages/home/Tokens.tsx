@@ -43,6 +43,7 @@ import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 import { Asterisks } from '../../components/Asterisks/Asterisks';
 import { CoinbaseIcon } from '../../components/CoinbaseIcon/CoinbaseIcon';
 import { QuickPromo } from '../../components/QuickPromo/QuickPromo';
+import { useHiddenAssets } from '../../hooks/useHiddenAssets';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
@@ -104,6 +105,7 @@ export function Tokens() {
   const { trackShortcut } = useKeyboardAnalytics();
   const { modifierSymbol } = useSystemSpecificModifierKey();
   const { pinnedAssets } = usePinnedAssetStore();
+  const { isHidden } = useHiddenAssets();
 
   const {
     data: assets = [],
@@ -144,15 +146,18 @@ export function Tokens() {
     },
   );
 
-  const combinedAssets = useMemo(
-    () => [...assets, ...customNetworkAssets],
-    [assets, customNetworkAssets],
-  );
-
   const isPinned = useCallback(
     (assetUniqueId: string) =>
       pinnedAssets.some(({ uniqueId }) => uniqueId === assetUniqueId),
     [pinnedAssets],
+  );
+
+  const combinedFilteredAssets = useMemo(
+    () =>
+      [...assets, ...customNetworkAssets].filter(
+        ({ address, chainId }) => !isHidden(address, chainId),
+      ),
+    [assets, customNetworkAssets, isHidden],
   );
 
   const computeUniqueAssets = useCallback(
@@ -197,10 +202,10 @@ export function Tokens() {
 
   const filteredAssets = useMemo(
     () => [
-      ...computePinnedAssets(combinedAssets),
-      ...computeUniqueAssets(combinedAssets),
+      ...computePinnedAssets(combinedFilteredAssets),
+      ...computeUniqueAssets(combinedFilteredAssets),
     ],
-    [combinedAssets, computePinnedAssets, computeUniqueAssets],
+    [combinedFilteredAssets, computePinnedAssets, computeUniqueAssets],
   );
 
   const containerRef = useContainerRef();

@@ -14,6 +14,7 @@ import { goToNewTab } from '~/core/utils/tabs';
 import { getTokenBlockExplorer } from '~/core/utils/transactions';
 import { Text, TextOverflow } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
+import { useHiddenAssets } from '~/entries/popup/hooks/useHiddenAssets';
 
 import {
   ContextMenuContent,
@@ -37,6 +38,7 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
   const setSelectedToken = useSelectedTokenStore((s) => s.setSelectedToken);
   const { pinnedAssets, removedPinnedAsset, addPinnedAsset } =
     usePinnedAssetStore();
+  const { addHiddenAsset } = useHiddenAssets();
   const pinned = pinnedAssets.some(
     ({ uniqueId }) => uniqueId === token.uniqueId,
   );
@@ -160,6 +162,19 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
               : i18n.t('token_details.more_options.pin_token', {
                   name: token.name,
                 })}
+          </TextOverflow>
+        </ContextMenuItem>
+        <ContextMenuItem
+          symbolLeft="eye.slash.fill"
+          onSelect={() => {
+            addHiddenAsset(token.address, token.chainId);
+            if (pinned) removedPinnedAsset({ uniqueId: token.uniqueId });
+          }}
+        >
+          <TextOverflow size="14pt" weight="semibold" color="label">
+            {i18n.t('token_details.more_options.hide_token', {
+              name: token.name,
+            })}
           </TextOverflow>
         </ContextMenuItem>
       </ContextMenuContent>
