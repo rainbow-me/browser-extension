@@ -86,6 +86,8 @@ export function getNetworkFromSimpleHashChain(
       return ChainName.optimismSepolia;
     case SimpleHashChain.ZoraSepolia:
       return ChainName.zoraSepolia;
+    case SimpleHashChain.Blast:
+      return ChainName.blast;
     case SimpleHashChain.BlastSepolia:
       return ChainName.blastSepolia;
     default:

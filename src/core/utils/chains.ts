@@ -169,6 +169,7 @@ export const getSimpleHashSupportedChainNames = () => {
     ChainName.arbitrumNova,
     ChainName.avalanche,
     ChainName.base,
+    ChainName.blast,
     ChainName.bsc,
     ChainName.celo,
     ChainName.gnosis,
