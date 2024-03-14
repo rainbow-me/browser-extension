@@ -77,7 +77,7 @@ export class HWSigner extends Signer {
 
   async signTransaction(transaction: TransactionRequest): Promise<string> {
     if (this.vendor === 'Trezor') {
-      return await signTransactionFromTrezor(transaction);
+      return await signTransactionFromTrezor(transaction, this.path);
     }
     return this.fwdHWSignRequest('signTransaction', transaction);
   }
