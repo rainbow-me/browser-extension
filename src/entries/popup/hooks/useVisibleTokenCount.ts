@@ -49,9 +49,6 @@ export const useVisibleTokenCount = () => {
     },
   );
 
-  console.log('assets', assets);
-  console.log('customNetworkAssets', customNetworkAssets);
-
   const allAssets = useMemo(
     () =>
       uniqBy(
