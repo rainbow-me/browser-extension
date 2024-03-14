@@ -60,6 +60,7 @@ const networkBadges = {
   [ChainId.zoraSepolia]: ZoraBadge,
   [ChainId.avalancheFuji]: AvalancheBadge,
   [ChainId.blast]: BlastBadge,
+  [ChainId.blastSepolia]: BlastBadge,
 };
 
 const ChainBadge = ({

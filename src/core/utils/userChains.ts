@@ -18,7 +18,7 @@ import {
 } from 'viem/chains';
 import { Chain, goerli, mainnet, sepolia } from 'wagmi';
 
-import { ChainId, ChainNameDisplay } from '../types/chains';
+import { ChainId, ChainNameDisplay, chainBlast, chainBlastSepolia } from '../types/chains';
 
 import {
   getSupportedChainsWithHardhat,

@@ -3,6 +3,8 @@ import type { Chain } from 'wagmi';
 
 const HARDHAT_CHAIN_ID = 1337;
 const BLAST_CHAIN_ID = 81457;
+const BLAST_SEPOLIA_CHAIN_ID = 168587773;
+
 const HARDHAT_OP_CHAIN_ID = 1338;
 
 export const chainHardhat: Chain = {
@@ -12,6 +14,22 @@ export const chainHardhat: Chain = {
   nativeCurrency: {
     decimals: 18,
     name: 'Hardhat',
+    symbol: 'ETH',
+  },
+  rpcUrls: {
+    public: { http: ['http://127.0.0.1:8545'] },
+    default: { http: ['http://127.0.0.1:8545'] },
+  },
+  testnet: true,
+};
+
+export const chainHardhatOptimism: Chain = {
+  id: HARDHAT_OP_CHAIN_ID,
+  name: 'Hardhat OP',
+  network: 'hardhat-optimism',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Hardhat OP',
     symbol: 'ETH',
   },
   rpcUrls: {
@@ -41,18 +59,18 @@ export const chainBlast: Chain = {
   },
 };
 
-export const chainHardhatOptimism: Chain = {
-  id: HARDHAT_OP_CHAIN_ID,
-  name: 'Hardhat OP',
-  network: 'hardhat-optimism',
+export const chainBlastSepolia: Chain = {
+  id: BLAST_SEPOLIA_CHAIN_ID,
+  name: 'Blast Sepolia',
+  network: 'blast-sepolia',
   nativeCurrency: {
     decimals: 18,
-    name: 'Hardhat OP',
+    name: 'Ether',
     symbol: 'ETH',
   },
   rpcUrls: {
-    public: { http: ['http://127.0.0.1:8545'] },
-    default: { http: ['http://127.0.0.1:8545'] },
+    public: { http: ['https://sepolia.blast.io'] },
+    default: { http: ['https://sepolia.blast.io'] },
   },
   testnet: true,
 };
@@ -65,6 +83,7 @@ export enum ChainName {
   avalancheFuji = 'avalanche-fuji',
   base = 'base',
   blast = 'blast',
+  blastSepolia = 'blast-sepolia',
   bsc = 'bsc',
   celo = 'celo',
   gnosis = 'gnosis',
@@ -97,6 +116,7 @@ export enum ChainId {
   avalancheFuji = chain.avalancheFuji.id,
   base = chain.base.id,
   blast = BLAST_CHAIN_ID,
+  blastSepolia = BLAST_SEPOLIA_CHAIN_ID,
   bsc = chain.bsc.id,
   celo = chain.celo.id,
   gnosis = chain.gnosis.id,
@@ -158,6 +178,7 @@ export const chainNameToIdMapping: {
   [ChainName.baseSepolia]: ChainId.baseSepolia,
   [ChainName.zoraSepolia]: ChainId.zoraSepolia,
   [ChainName.blast]: ChainId.blast,
+  [ChainName.blastSepolia]: ChainId.blastSepolia,
 };
 
 export const chainIdToNameMapping: {
@@ -170,6 +191,7 @@ export const chainIdToNameMapping: {
   [ChainId.avalancheFuji]: ChainName.avalancheFuji,
   [ChainId.base]: ChainName.base,
   [ChainId.blast]: ChainName.blast,
+  [ChainId.blastSepolia]: ChainName.blastSepolia,
   [ChainId.bsc]: ChainName.bsc,
   [ChainId.celo]: ChainName.celo,
   [ChainId.gnosis]: ChainName.gnosis,
@@ -202,6 +224,7 @@ export const ChainNameDisplay = {
   [ChainId.avalancheFuji]: 'Avalanche Fuji',
   [ChainId.base]: 'Base',
   [ChainId.blast]: 'Blast',
+  [ChainId.blastSepolia]: 'Blast Sepolia',
   [ChainId.bsc]: 'BSC',
   [ChainId.celo]: chain.celo.name,
   [ChainId.linea]: 'Linea',

@@ -189,6 +189,7 @@ export const getSimpleHashSupportedTestnetChainNames = () => {
     ChainName.arbitrumGoerli,
     ChainName.arbitrumSepolia,
     ChainName.baseSepolia,
+    ChainName.blastSepolia,
     ChainName.optimismSepolia,
     ChainName.zoraSepolia,
   ] as (ChainName | 'ethereum-sepolia' | 'ethereum')[];
