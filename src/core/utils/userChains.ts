@@ -32,7 +32,8 @@ export const chainIdMap: Record<
   | ChainId.base
   | ChainId.bsc
   | ChainId.zora
-  | ChainId.avalanche,
+  | ChainId.avalanche
+  | ChainId.blast,
   ChainId[]
 > = {
   [ChainId.mainnet]: [mainnet.id, goerli.id, sepolia.id, holesky.id],
@@ -43,6 +44,7 @@ export const chainIdMap: Record<
   [ChainId.bsc]: [bsc.id, bscTestnet.id],
   [ChainId.zora]: [zora.id, zoraSepolia.id],
   [ChainId.avalanche]: [avalanche.id, avalancheFuji.id],
+  [ChainId.blast]: [chainBlast.id, chainBlastSepolia.id],
 };
 
 export const chainLabelMap: Record<
@@ -52,7 +54,8 @@ export const chainLabelMap: Record<
   | ChainId.base
   | ChainId.bsc
   | ChainId.zora
-  | ChainId.avalanche,
+  | ChainId.avalanche
+  | ChainId.blast,
   string[]
 > = {
   [ChainId.mainnet]: [
@@ -70,6 +73,7 @@ export const chainLabelMap: Record<
   [ChainId.bsc]: [ChainNameDisplay[bscTestnet.id]],
   [ChainId.zora]: [ChainNameDisplay[zoraSepolia.id]],
   [ChainId.avalanche]: [ChainNameDisplay[avalancheFuji.id]],
+  [ChainId.blast]: [ChainNameDisplay[chainBlastSepolia.id]],
 };
 
 export const sortNetworks = (order: ChainId[], chains: Chain[]) => {
