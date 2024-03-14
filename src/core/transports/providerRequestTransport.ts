@@ -1,7 +1,4 @@
-import {
-  RequestArguments,
-  RequestResponse,
-} from '@rainbow-me/provider/dist/references';
+import { RequestArguments, RequestResponse } from '@rainbow-me/provider';
 
 import { bridgeMessenger } from '../messengers/internal/bridge';
 import { CallbackOptions } from '../messengers/internal/createMessenger';

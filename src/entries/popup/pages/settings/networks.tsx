@@ -218,7 +218,7 @@ export function SettingsNetworks() {
                               })
                             }
                             paddingHorizontal="14px"
-                            key={chain.name}
+                            key={chain.id}
                             hasRightArrow
                             titleComponent={
                               <MenuItem.Title text={chain.name} />

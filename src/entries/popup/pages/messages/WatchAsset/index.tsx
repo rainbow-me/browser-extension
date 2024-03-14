@@ -34,6 +34,7 @@ export const WatchAsset = ({
   rejectRequest,
   request,
 }: ApproveRequestProps) => {
+  console.log('watch assets request', request);
   const [loading, setLoading] = useState(false);
   const { data: dappMetadata } = useDappMetadata({
     url: request?.meta?.sender?.url,

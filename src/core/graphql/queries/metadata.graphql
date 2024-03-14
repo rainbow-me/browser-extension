@@ -366,6 +366,7 @@ query points($address: String!) {
           }
           differences {
             type
+            group_id
             earnings {
               total
             }

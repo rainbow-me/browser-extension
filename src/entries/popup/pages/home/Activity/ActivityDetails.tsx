@@ -18,8 +18,7 @@ import { formatCurrency, formatNumber } from '~/core/utils/formatNumber';
 import { isLowerCaseMatch, truncateString } from '~/core/utils/strings';
 import {
   getAdditionalDetails,
-  getBlockExplorerName,
-  getTransactionBlockExplorerUrl,
+  getTransactionBlockExplorer,
 } from '~/core/utils/transactions';
 import {
   Box,
@@ -249,7 +248,7 @@ function NetworkData({ transaction: tx }: { transaction: RainbowTransaction }) {
           </Inline>
         }
       />
-      <FeeData transaction={tx} />
+      {tx.status != 'pending' && <FeeData transaction={tx} />}
       {nonce >= 0 && (
         <InfoRow
           symbol="number"
@@ -423,8 +422,7 @@ function MoreOptions({
   revoke?: boolean;
   onRevoke: () => void;
 }) {
-  const explorerHost = getBlockExplorerName(transaction.chainId);
-  const explorerUrl = getTransactionBlockExplorerUrl(transaction);
+  const explorer = getTransactionBlockExplorer(transaction);
   const hash = transaction.hash;
   return (
     <DropdownMenu>
@@ -456,15 +454,15 @@ function MoreOptions({
             {hash}
           </TextOverflow>
         </DropdownMenuItem>
-        {explorerUrl && (
+        {explorer && (
           <>
             <DropdownMenuItem
               symbolLeft="doc.on.doc.fill"
               onSelect={() => {
                 copy({
                   title: i18n.t('activity_details.explorer_copied'),
-                  description: truncateString(explorerUrl, 18),
-                  value: explorerUrl,
+                  description: truncateString(explorer.url, 18),
+                  value: explorer.url,
                 });
               }}
             >
@@ -472,7 +470,7 @@ function MoreOptions({
                 {i18n.t('activity_details.copy_explorer_url')}
               </Text>
               <TextOverflow size="11pt" color="labelTertiary" weight="medium">
-                {explorerUrl}
+                {explorer.url}
               </TextOverflow>
             </DropdownMenuItem>
 
@@ -482,9 +480,9 @@ function MoreOptions({
             <DropdownMenuItem
               symbolLeft="binoculars.fill"
               external
-              onSelect={() => window.open(explorerUrl, '_blank')}
+              onSelect={() => window.open(explorer.url, '_blank')}
             >
-              {i18n.t('token_details.view_on', { explorer: explorerHost })}
+              {i18n.t('token_details.view_on', { explorer: explorer.name })}
             </DropdownMenuItem>
             {revoke ? (
               <DropdownMenuItem
@@ -558,10 +556,8 @@ export function ActivityDetails() {
   };
 
   return (
-    <BottomSheet zIndex={zIndexes.ACTIVITY_DETAILS} show>
-      {isLoading || !transaction ? (
-        <Box />
-      ) : (
+    <BottomSheet zIndex={zIndexes.ACTIVITY_DETAILS} show={!!transaction}>
+      {!isLoading && !!transaction && (
         <>
           <Navbar
             leftComponent={

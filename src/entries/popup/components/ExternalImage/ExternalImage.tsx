@@ -137,9 +137,9 @@ const ExternalImage = (props: ExternalImageProps) => {
           ? { borderRadius: props.borderRadius }
           : {}),
         boxShadow: isLoading || error ? undefined : props.boxShadow,
-        height: props.height,
         overflow: error ? 'visible' : 'clip',
-        width: props.width,
+        height: props.height && (Number(props.height) ?? props.height),
+        width: props.width && (Number(props.width) ?? props.width),
       }}
     >
       {renderContent()}

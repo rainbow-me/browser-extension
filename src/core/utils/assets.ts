@@ -100,18 +100,18 @@ export function parseAsset({
 }): ParsedAsset {
   const address = asset.asset_code;
   const chainName = asset.network ?? ChainName.mainnet;
+  const networks = 'networks' in asset ? asset.networks || {} : {};
   const chainId =
+    ('chain_id' in asset && asset.chain_id) ||
     chainIdFromChainName(chainName) ||
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    (Number(Object.keys(asset.networks)?.[0]) as ChainId);
+    Number(Object.keys(networks)[0]);
 
   // ZerionAsset should be removed when we move fully away from websckets/refraction api
   const mainnetAddress = isZerionAsset(asset)
     ? asset.mainnet_address ||
       asset.implementations?.[ChainName.mainnet]?.address ||
       undefined
-    : asset.networks?.[ChainId.mainnet]?.address;
+    : networks[ChainId.mainnet]?.address;
 
   const standard = 'interface' in asset ? asset.interface : undefined;
 
@@ -122,7 +122,7 @@ export function parseAsset({
     chainId,
     chainName,
     mainnetAddress,
-    isNativeAsset: isNativeAsset(address, chainIdFromChainName(chainName)),
+    isNativeAsset: isNativeAsset(address, chainId),
     native: {
       price: getNativeAssetPrice({
         currency,

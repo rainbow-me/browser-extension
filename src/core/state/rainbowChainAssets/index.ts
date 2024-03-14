@@ -1,7 +1,23 @@
 import { Address } from 'wagmi';
 import create from 'zustand';
 
+import { ChainId } from '~/core/types/chains';
+
 import { createStore } from '../internal/createStore';
+
+const mergeNewOfficiallySupportedChainsAssetState = (
+  state: RainbowChainAssetsState,
+  newChains: ChainId[],
+) => {
+  for (const chainId of newChains) {
+    const stateChain = state.rainbowChainAssets[chainId];
+    // if the rpc already exists in the state, remove all custom tokens
+    if (stateChain.length > 0) {
+      delete state.rainbowChainAssets[chainId];
+    }
+  }
+  return { ...state };
+};
 
 export interface RainbowChainAsset {
   name: string;
@@ -98,7 +114,17 @@ export const rainbowChainAssetsStore = createStore<RainbowChainAssetsState>(
   {
     persist: {
       name: 'rainbowChainAssets',
-      version: 0,
+      version: 1,
+      migrate(persistedState, version) {
+        const state = persistedState as RainbowChainAssetsState;
+        if (version === 1) {
+          // version 1 added support for Blast
+          return mergeNewOfficiallySupportedChainsAssetState(state, [
+            ChainId.blast,
+          ]);
+        }
+        return state;
+      },
     },
   },
 );

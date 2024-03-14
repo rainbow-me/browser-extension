@@ -117,11 +117,16 @@ it('should be able to connect to hardhat', async () => {
 });
 
 it('should be able to go to swap flow', async () => {
+  await delayTime('very-long');
   await findElementByTestIdAndClick({ id: 'header-link-swap', driver });
   await delayTime('long');
 });
 
 it('should be able to go to review a unlock and swap', async () => {
+  await findElementByTestIdAndClick({
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-token-input-remove`,
+    driver,
+  });
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-row`,
     driver,

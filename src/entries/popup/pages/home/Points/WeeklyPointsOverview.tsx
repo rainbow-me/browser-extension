@@ -65,18 +65,25 @@ function ConsoleText({
 
 const rainbowColorsArray = Object.values(rainbowColors);
 
-const getEarningTypeLabel = (
+type WeeklyEarning = {
   type:
-    | ('referral' | 'redemption' | 'retroactive' | 'transaction')
+    | 'new_referrals'
+    | 'referral_activity'
+    | 'redemption'
+    | 'retroactive'
+    | 'transaction'
     // eslint-disable-next-line @typescript-eslint/ban-types
-    | (string & {}),
-) => {
+    | (string & {});
+  earnings: number;
+};
+const getEarningTypeLabel = (type: WeeklyEarning['type']) => {
   if (type === 'transaction')
     return i18n.t('points.weekly_overview.your_activity');
-  if (type === 'referral')
+  if (type === 'referral_activity')
     return i18n.t('points.weekly_overview.referral_activity');
-  if (type === 'redemption')
+  if (type === 'new_referrals')
     return i18n.t('points.weekly_overview.new_referrals');
+  if (type === 'redemption') return i18n.t('points.weekly_overview.bonus');
   if (type === 'retroactive')
     return i18n.t('points.weekly_overview.retroactive');
   return type;
@@ -100,23 +107,20 @@ export function PointsWeeklyOverview() {
     if (!differences) return null;
 
     let total = 0;
-    const totalDifferencesByType: Record<
-      string,
-      { type: string; earnings: number }
-    > = {};
+    const rewardsByType: Record<string, WeeklyEarning> = {};
     for (const diff of differences) {
       if (!diff) continue;
-      const { type, earnings } = diff;
-      totalDifferencesByType[type] = {
+      const type = diff.type === 'referral' ? diff.group_id : diff.type;
+      rewardsByType[type] = {
         type,
-        earnings:
-          (totalDifferencesByType[type]?.earnings || 0) + earnings.total,
+        earnings: (rewardsByType[type]?.earnings || 0) + diff.earnings.total,
       };
-      total += earnings.total;
+      total += diff.earnings.total;
     }
 
-    const diffs = Object.values(totalDifferencesByType).filter(
-      (d) => !(d.type === 'retroactive' && d.earnings === 0),
+    const diffs = Object.values(rewardsByType).filter(
+      (d) =>
+        !(['retroactive', 'redemption'].includes(d.type) && d.earnings === 0),
     );
 
     return { total, differences: diffs };

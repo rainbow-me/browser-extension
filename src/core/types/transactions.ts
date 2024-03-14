@@ -162,6 +162,7 @@ export type TransactionApiResponse = {
     | {
         asset: AssetApiResponse;
         value: number | null;
+        quantity: string;
         direction: TransactionDirection;
         address_from: Address;
         address_to: Address;

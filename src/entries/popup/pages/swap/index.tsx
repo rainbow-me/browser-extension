@@ -163,6 +163,8 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
   const [inputToOpenOnMount, setInputToOpenOnMount] = useState<
     'sell' | 'buy' | null
   >(null);
+  const [defaultAssetWasSet, setDefaultAssetWasSet] = useState<boolean>(false);
+  const [defaultValueWasSet, setDefaultValueWasSet] = useState<boolean>(false);
   const { isFirefox } = useBrowser();
 
   // translate based on the context, bridge or swap
@@ -393,7 +395,8 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
         if (savedTokenToSell) {
           setAssetToSell(savedTokenToSell);
         } else {
-          setInputToOpenOnMount('sell');
+          setAssetToSell(assetsToSell[0]);
+          setDefaultAssetWasSet(true);
         }
         setDidPopulateSavedTokens(true);
       }
@@ -419,6 +422,12 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
             break;
         }
       }
+    }
+
+    if (defaultAssetWasSet && !defaultValueWasSet) {
+      setAssetToSellMaxValue();
+      setDefaultValueWasSet(true);
+      assetToBuyInputRef.current?.focus();
     }
 
     return () => {

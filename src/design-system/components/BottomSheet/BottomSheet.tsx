@@ -14,6 +14,9 @@ interface BottomSheetProps {
   onClickOutside?: VoidFunction;
 }
 
+export const BottomSheet_transition_duration_ms = 300;
+const transition_duration_s = BottomSheet_transition_duration_ms / 1000;
+
 export const BottomSheet = ({
   background,
   children,
@@ -49,7 +52,7 @@ export const BottomSheet = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             key="background"
-            transition={{ duration: 0.3 }}
+            transition={{ duration: transition_duration_s }}
             ref={containerRef}
             tabIndex={0}
           />
@@ -66,7 +69,7 @@ export const BottomSheet = ({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 1, y: 800 }}
             key="bottom"
-            transition={{ duration: 0.3 }}
+            transition={{ duration: transition_duration_s }}
             layout
             isModal
           >

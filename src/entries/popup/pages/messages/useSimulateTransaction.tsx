@@ -29,6 +29,7 @@ const parseSimulationAsset = (asset: SimulationAsset, chainId: ChainId) => {
       symbol: asset.symbol,
       name: asset.name,
       decimals: asset.decimals,
+      chain_id: chainId,
       networks: {
         [chainId]: {
           address: asset.assetCode,

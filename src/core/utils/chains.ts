@@ -370,7 +370,7 @@ export const deriveChainIdByHostname = (hostname: string) => {
     case 'explorer.holesky.redstone.xyz':
       return 17001;
     case 'blastscan.io':
-      return 81457;
+      return ChainId.blast;
     case 'testnet.blastscan.io':
       return 168587773;
     default:
