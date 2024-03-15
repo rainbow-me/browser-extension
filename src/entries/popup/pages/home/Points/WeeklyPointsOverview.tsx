@@ -127,7 +127,7 @@ export function PointsWeeklyOverview() {
   }, [points?.user.stats.last_airdrop.differences]);
 
   const nextDistributionTime = useMemo(() => {
-    return new Date(points?.meta.distribution.next || 0);
+    return new Date((points?.meta.distribution.next ?? 0) * 1000);
   }, [points?.meta.distribution.next]);
 
   return (
