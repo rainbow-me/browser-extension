@@ -1,9 +1,9 @@
-import { Analytics as AnalyticsNode } from '@segment/analytics-node';
+import { Analytics as RudderAnalytics } from '@rudderstack/analytics-js-service-worker';
 
 import { EventProperties, event } from '~/analytics/event';
 import { UserProperties } from '~/analytics/userProperties';
 import { analyticsDisabledStore } from '~/core/state/currentSettings/analyticsDisabled';
-import { RainbowError, logger } from '~/logger';
+import { logger } from '~/logger';
 
 import { version } from '../../package.json';
 
@@ -31,7 +31,7 @@ const context = {
 };
 
 export class Analytics {
-  client?: AnalyticsNode;
+  client?: RudderAnalytics;
   deviceId?: string;
   event = event;
   disabled = true; // to do: check user setting here
@@ -59,11 +59,12 @@ export class Analytics {
     }, 10);
 
     try {
-      this.client = new AnalyticsNode({
-        maxEventsInBatch: 1 /* replicate analytics-next flushing behavior */,
-        writeKey: process.env.SEGMENT_WRITE_KEY,
-      }).on('error', ({ code, reason }) =>
-        logger.error(new RainbowError('Segment error'), { code, reason }),
+      this.client = new RudderAnalytics(
+        process.env.RUDDERSTACK_WRITE_KEY,
+        process.env.RUDDERSTACK_DATA_PLANE,
+        {
+          maxInternalQueueSize: 1 /* replicate analytics-next flushing behavior */,
+        },
       );
       logger.debug(`Segment initialized`);
     } catch (e) {
