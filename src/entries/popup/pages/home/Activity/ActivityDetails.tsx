@@ -234,7 +234,7 @@ function NetworkData({ transaction: tx }: { transaction: RainbowTransaction }) {
         <InfoRow
           symbol="dollarsign.square"
           label={i18n.t('activity_details.value')}
-          value={`${formatEther(value)} ${chain.nativeCurrency.symbol}`}
+          value={`${formatEther(+value)} ${chain.nativeCurrency.symbol}`}
         />
       )}
       <InfoRow

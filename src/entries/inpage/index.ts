@@ -53,6 +53,7 @@ const rainbowProvider = new RainbowProvider({
         emit('chainChanged', toHex(String(chainId)));
       });
       messenger?.reply(`disconnect:${host}`, async () => {
+        emit('accountsChanged', []);
         emit('disconnect', []);
       });
       messenger?.reply(`connect:${host}`, async (connectionInfo) => {
