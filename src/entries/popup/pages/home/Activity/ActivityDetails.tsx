@@ -1,4 +1,5 @@
-import { formatEther, formatUnits } from '@ethersproject/units';
+import { BigNumber } from '@ethersproject/bignumber';
+import { formatUnits } from '@ethersproject/units';
 import { motion } from 'framer-motion';
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
@@ -53,7 +54,6 @@ import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
-import { SpeedUpAndCancelSheet } from '../../speedUpAndCancelSheet';
 import { triggerRevokeApproval } from '../Approvals/utils';
 import { CopyableValue, InfoRow } from '../TokenDetails/About';
 
@@ -155,18 +155,35 @@ function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
 
   const maxPriorityFeePerGas =
     tx.maxPriorityFeePerGas && formatUnits(tx.maxPriorityFeePerGas, 'gwei');
-  const maxFeePerGas = tx.maxFeePerGas && formatUnits(tx.maxFeePerGas, 'gwei');
+
+  // if baseFee is undefined (like in pending txs or custom networks the api wont have data about it)
+  // so we try to calculate with the data we may have locally
+  tx.baseFee ??=
+    tx.maxFeePerGas && tx.maxPriorityFeePerGas
+      ? BigNumber.from(tx.maxFeePerGas).sub(tx.maxPriorityFeePerGas).toString()
+      : undefined;
   const baseFee = tx.baseFee && formatUnits(tx.baseFee, 'gwei');
 
   const gasPrice = tx.gasPrice && formatUnits(tx.gasPrice, 'gwei');
 
+  let fee;
+  if (native !== undefined && native.fee !== undefined) {
+    // if the fee is less than $0.01, the provider returns 0 so we display it as <$0.01
+    const feeInNative = +native.fee <= 0.01 ? 0.01 : native.fee;
+    fee = `${+feeInNative <= 0.01 ? '<' : ''}${formatCurrency(feeInNative)}`;
+  } else {
+    // handle custom networks fee
+  }
+
+  if ((!baseFee || !maxPriorityFeePerGas) && !gasPrice) return null;
+
   return (
     <>
-      {native?.fee && (
+      {fee && (
         <InfoRow
           symbol="fuelpump.fill"
           label={i18n.t('activity_details.fee')}
-          value={formatCurrency(native.fee)}
+          value={fee}
         />
       )}
       {feeType === 'legacy' ? (
@@ -190,17 +207,6 @@ function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
           />
           <InfoRow
             symbol="barometer"
-            label={i18n.t('activity_details.max_base_fee')}
-            value={
-              maxFeePerGas ? (
-                `${formatNumber(maxFeePerGas)} Gwei`
-              ) : (
-                <InfoValueSkeleton />
-              )
-            }
-          />
-          <InfoRow
-            symbol="barometer"
             label={i18n.t('activity_details.max_priority_fee')}
             value={
               maxPriorityFeePerGas ? (
@@ -217,24 +223,25 @@ function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
 }
 
 function NetworkData({ transaction: tx }: { transaction: RainbowTransaction }) {
-  const { nonce, native, value } = tx;
+  const { nonce, native = { value: 0 } } = tx;
   const { rainbowChains } = useRainbowChains();
   const chain = getChain({ chainId: tx.chainId });
 
+  const formattedValueInNative =
+    Number(native.value) > 0 && formatCurrency(native.value);
+  const formattedValue =
+    Number(tx.value) > 0 &&
+    `${formatNumber(tx.value)} ${chain.nativeCurrency.symbol}`;
+
+  const value = formattedValueInNative || formattedValue;
+
   return (
     <Stack space="24px">
-      {native?.value && +native?.value > 0 && (
+      {value && (
         <InfoRow
           symbol="dollarsign.square"
           label={i18n.t('activity_details.value')}
-          value={formatCurrency(native.value)}
-        />
-      )}
-      {!(native?.value && +native?.value) && value && (
-        <InfoRow
-          symbol="dollarsign.square"
-          label={i18n.t('activity_details.value')}
-          value={`${formatEther(value)} ${chain.nativeCurrency.symbol}`}
+          value={value}
         />
       )}
       <InfoRow
@@ -248,7 +255,7 @@ function NetworkData({ transaction: tx }: { transaction: RainbowTransaction }) {
           </Inline>
         }
       />
-      {tx.status != 'pending' && <FeeData transaction={tx} />}
+      <FeeData transaction={tx} />
       {nonce >= 0 && (
         <InfoRow
           symbol="number"
@@ -260,13 +267,8 @@ function NetworkData({ transaction: tx }: { transaction: RainbowTransaction }) {
   );
 }
 
-const SpeedUpOrCancel = ({
-  transaction,
-}: {
-  transaction: RainbowTransaction;
-}) => {
-  const { sheet, setCurrentHomeSheet } = useCurrentHomeSheetStore();
-  const navigate = useRainbowNavigate();
+const SpeedUpOrCancel = () => {
+  const { setCurrentHomeSheet } = useCurrentHomeSheetStore();
 
   return (
     <Box display="flex" flexDirection="column" gap="8px">
@@ -290,17 +292,6 @@ const SpeedUpOrCancel = ({
       >
         {i18n.t('speed_up_and_cancel.cancel')}
       </Button>
-      {sheet !== 'none' && (
-        <SpeedUpAndCancelSheet
-          currentSheet={sheet}
-          transaction={transaction}
-          onClose={() => {
-            setCurrentHomeSheet('none');
-            navigate(ROUTES.HOME);
-            console.log('naviogating to homeee');
-          }}
-        />
-      )}
     </Box>
   );
 };
@@ -585,9 +576,7 @@ export function ActivityDetails() {
             )}
             <ConfirmationData transaction={transaction} />
             <NetworkData transaction={transaction} />
-            {transaction.status === 'pending' && (
-              <SpeedUpOrCancel transaction={transaction} />
-            )}
+            {transaction.status === 'pending' && <SpeedUpOrCancel />}
           </Stack>
         </>
       )}

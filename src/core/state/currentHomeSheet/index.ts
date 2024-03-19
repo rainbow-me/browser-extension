@@ -13,7 +13,10 @@ export interface CurrentSheetState {
 export const currentHomeSheetStore = createStore<CurrentSheetState>(
   (set, get) => ({
     getCurrentHomeSheet: () => get().sheet,
-    setCurrentHomeSheet: (sheetMode: SheetMode) => set({ sheet: sheetMode }),
+    setCurrentHomeSheet: (sheetMode: SheetMode) => {
+      console.log('settinhs', sheetMode);
+      set({ sheet: sheetMode });
+    },
     sheet: 'none',
   }),
 );

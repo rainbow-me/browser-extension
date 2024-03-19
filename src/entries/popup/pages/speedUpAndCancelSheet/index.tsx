@@ -49,6 +49,8 @@ import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { isLedgerConnectionError } from '../../handlers/ledger';
 import { sendTransaction } from '../../handlers/wallet';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { ROUTES } from '../../urls';
 import { zIndexes } from '../../utils/zIndexes';
 
 const calcGasParamRetryValue = (prevWeiValue?: string) => {
@@ -81,14 +83,21 @@ export function SpeedUpAndCancelSheet({
   const { selectedGas } = useGasStore();
   const [sending, setSending] = useState(false);
 
+  const navigate = useRainbowNavigate();
+
   const { data: transactionResponse } = useTransaction({
     chainId: transaction?.chainId,
     hash: transaction?.hash,
   });
   const cancel = currentSheet === 'cancel';
-  const handleClose = useCallback(() => {
+
+  const onExecuteTransaction = () => {
+    if (cancel) handleCancellation();
+    else handleSpeedUp();
+
     onClose();
-  }, [onClose]);
+    navigate(ROUTES.HOME, { state: { tab: 'activity' } });
+  };
 
   const getNewTransactionGasParams = useCallback(() => {
     if (transaction?.chainId === ChainId.mainnet) {
@@ -120,6 +129,18 @@ export function SpeedUpAndCancelSheet({
       const maxFeePerGas = greaterThan(rawMaxFeePerGas, minMaxFeePerGas)
         ? toHex(rawMaxFeePerGas)
         : toHex(minMaxFeePerGas);
+
+      console.log({
+        transactionMaxFeePerGas,
+        transactionMaxPriorityFeePerGas,
+        minMaxFeePerGas,
+        minMaxPriorityFeePerGas,
+        rawMaxPriorityFeePerGas,
+        rawMaxFeePerGas,
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+      });
+
       return { maxFeePerGas, maxPriorityFeePerGas };
     } else {
       const transactionGasPrice =
@@ -209,7 +230,6 @@ export function SpeedUpAndCancelSheet({
         chainId: cancellationResult?.chainId,
         transaction: cancelTx,
       });
-      handleClose();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       if (!isLedgerConnectionError(e)) {
@@ -247,7 +267,6 @@ export function SpeedUpAndCancelSheet({
         chainId: speedUpResult?.chainId,
         transaction: speedUpTransaction,
       });
-      handleClose();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       if (!isLedgerConnectionError(e)) {
@@ -273,8 +292,15 @@ export function SpeedUpAndCancelSheet({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const { address } = useAccount();
+
   return (
-    <Prompt zIndex={zIndexes.SPEED_UP_CANCEL_PROMPT} show={true} padding="12px">
+    <Prompt
+      zIndex={zIndexes.SPEED_UP_CANCEL_PROMPT}
+      show={true}
+      padding="12px"
+      handleClose={onClose}
+    >
       <Box
         style={{
           height: window.innerHeight - 64,
@@ -372,13 +398,11 @@ export function SpeedUpAndCancelSheet({
                             {i18n.t('speed_up_and_cancel.wallet')}
                           </Text>
                           <Inline alignVertical="center" space="4px">
-                            {transaction?.to && (
-                              <WalletAvatar
-                                addressOrName={transaction.to}
-                                size={18}
-                                emojiSize="12pt"
-                              />
-                            )}
+                            <WalletAvatar
+                              addressOrName={address}
+                              size={18}
+                              emojiSize="12pt"
+                            />
                             <AccountName />
                           </Inline>
                         </Stack>
@@ -404,7 +428,7 @@ export function SpeedUpAndCancelSheet({
                         height="44px"
                         variant="flat"
                         width="full"
-                        onClick={cancel ? handleCancellation : handleSpeedUp}
+                        onClick={onExecuteTransaction}
                       >
                         {sending ? (
                           <Box

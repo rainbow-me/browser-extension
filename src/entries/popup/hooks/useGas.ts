@@ -97,6 +97,7 @@ const useGas = ({
   useEffect(() => {
     if (
       !gasData ||
+      !debouncedMaxBaseFee ||
       prevDebouncedMaxBaseFee === debouncedMaxBaseFee ||
       !enabled ||
       chainId !== ChainId.mainnet ||
@@ -146,6 +147,7 @@ const useGas = ({
   useEffect(() => {
     if (
       !gasData ||
+      !debouncedMaxPriorityFee ||
       prevDebouncedMaxPriorityFee === debouncedMaxPriorityFee ||
       !enabled ||
       chainId !== ChainId.mainnet ||
@@ -163,6 +165,8 @@ const useGas = ({
 
     const maxBaseFee = (storeGasFeeParamsBySpeed?.custom as GasFeeParams)
       ?.maxBaseFee?.amount;
+
+    console.log('setCustomMaxPriorityFee', debouncedMaxPriorityFee);
 
     let maxPriorityFeeWei = gweiToWei(debouncedMaxPriorityFee || '0');
     // Set the flashbots minimum
