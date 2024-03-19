@@ -5,9 +5,9 @@ import { createQueryKey } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
 import { connectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import {
+  AssetApiResponse,
   ParsedAssetsDictByChain,
   ParsedUserAsset,
-  ZerionAsset,
 } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
@@ -51,7 +51,7 @@ export async function parseUserAssets({
   assets: {
     quantity: string;
     small_balance?: boolean;
-    asset: ZerionAsset;
+    asset: AssetApiResponse;
   }[];
   chainIds: ChainId[];
   currency: SupportedCurrencyKey;
