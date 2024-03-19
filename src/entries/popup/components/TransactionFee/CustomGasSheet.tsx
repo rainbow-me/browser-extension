@@ -1,11 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -273,6 +267,7 @@ export const CustomGasSheet = ({
         setMaxBaseFee(prevSelectedGas?.maxBaseFee?.gwei);
       }
       setSelectedSpeedOption(GasSpeed.CUSTOM);
+      console.log('updateCustomMaxPriorityFee', maxPriorityFee);
       setCustomMaxPriorityFee(maxPriorityFee);
       setMaxPriorityFee(maxPriorityFee);
       const normalSpeed = gasFeeParamsBySpeed?.normal as GasFeeParams;
