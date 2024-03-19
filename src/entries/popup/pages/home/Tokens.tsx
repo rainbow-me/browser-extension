@@ -145,9 +145,13 @@ export function Tokens() {
   );
 
   const combinedAssets = useMemo(
-    () => [...assets, ...customNetworkAssets],
+    () => [...customNetworkAssets, ...assets],
     [assets, customNetworkAssets],
   );
+
+  console.log('combinedAssets', combinedAssets);
+  console.log('assets', assets);
+  console.log('customNetworkAssets', customNetworkAssets);
 
   const isPinned = useCallback(
     (assetUniqueId: string) =>
