@@ -418,10 +418,16 @@ export const CustomGasSheet = ({
         backdropFilter="blur(26px)"
         scrimBackground
         zIndex={zIndexes.CUSTOM_GAS_SHEET}
+        borderRadius="32px"
       >
         <Box paddingHorizontal="20px">
-          <Box paddingVertical="27px">
-            <Text color="label" align="center" size="14pt" weight="heavy">
+          <Box
+            style={{ height: 64 }}
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Text color="label" size="14pt" weight="heavy">
               {i18n.t('custom_gas.title')}
             </Text>
           </Box>
@@ -431,7 +437,6 @@ export const CustomGasSheet = ({
                 <Box height="full">
                   <Stack space="12px">
                     <Inline
-                      height="full"
                       alignHorizontal="right"
                       space="4px"
                       alignVertical="center"
@@ -454,31 +459,29 @@ export const CustomGasSheet = ({
                     <Inline
                       height="full"
                       alignHorizontal="justify"
-                      alignVertical="bottom"
+                      alignVertical="center"
                     >
-                      <Box>
-                        <Inline space="4px" alignVertical="center">
-                          <Text
-                            color="label"
-                            align="left"
-                            size="14pt"
-                            weight="semibold"
-                          >
-                            {i18n.t('custom_gas.current_base_fee')}
-                          </Text>
-                          <Box>
-                            <Bleed vertical="6px" horizontal="6px">
-                              <ButtonSymbol
-                                symbol="info.circle.fill"
-                                color="labelQuaternary"
-                                height="28px"
-                                variant="transparent"
-                                onClick={showCurrentBaseFeeExplainer}
-                              />
-                            </Bleed>
-                          </Box>
-                        </Inline>
-                      </Box>
+                      <Inline space="4px" alignVertical="center">
+                        <Text
+                          color="label"
+                          align="left"
+                          size="14pt"
+                          weight="semibold"
+                        >
+                          {i18n.t('custom_gas.current_base_fee')}
+                        </Text>
+                        <Box>
+                          <Bleed vertical="6px" horizontal="6px">
+                            <ButtonSymbol
+                              symbol="info.circle.fill"
+                              color="labelQuaternary"
+                              height="28px"
+                              variant="transparent"
+                              onClick={showCurrentBaseFeeExplainer}
+                            />
+                          </Bleed>
+                        </Box>
+                      </Inline>
 
                       <Text
                         color="label"
@@ -569,12 +572,12 @@ export const CustomGasSheet = ({
           <Box
             background="surfaceSecondaryElevated"
             paddingBottom="20px"
-            paddingTop="22px"
+            paddingTop="20px"
             marginHorizontal="-20px"
             paddingHorizontal="20px"
             style={{
-              borderEndEndRadius: 16,
-              borderEndStartRadius: 16,
+              borderEndEndRadius: 32,
+              borderEndStartRadius: 32,
             }}
           >
             <Box paddingBottom="8px">
@@ -583,7 +586,10 @@ export const CustomGasSheet = ({
               </Text>
             </Box>
 
-            <Stack space="2px">
+            <Stack
+              space="2px"
+              separator={<Separator color="separatorTertiary" />}
+            >
               <Lens
                 paddingVertical="8px"
                 borderRadius="12px"
@@ -608,7 +614,7 @@ export const CustomGasSheet = ({
                         </Text>
                       </Column>
                       <Column>
-                        <Stack space="12px">
+                        <Stack space="8px">
                           <Text
                             align="left"
                             color="label"
@@ -619,7 +625,7 @@ export const CustomGasSheet = ({
                           </Text>
                           <TextOverflow
                             align="left"
-                            color="label"
+                            color="labelTertiary"
                             size="11pt"
                             weight="semibold"
                           >
@@ -631,7 +637,7 @@ export const CustomGasSheet = ({
                   </Column>
 
                   <Column width="3/5">
-                    <Stack space="12px">
+                    <Stack space="8px">
                       <TextOverflow
                         align="right"
                         color="label"
@@ -642,7 +648,7 @@ export const CustomGasSheet = ({
                       </TextOverflow>
                       <TextOverflow
                         align="right"
-                        color="label"
+                        color="labelTertiary"
                         size="11pt"
                         weight="semibold"
                       >
@@ -652,89 +658,73 @@ export const CustomGasSheet = ({
                   </Column>
                 </Columns>
               </Lens>
-
-              <Box>
-                <Separator color="separatorTertiary" />
-              </Box>
-
-              {speeds.map((speed, i) => (
-                <Box key={i}>
-                  <Lens
-                    paddingVertical="8px"
-                    borderRadius="12px"
-                    marginHorizontal="-12px"
-                    paddingHorizontal="12px"
-                    background={{
-                      default:
-                        selectedSpeedOption === speed
-                          ? 'accent'
-                          : 'transparent',
-                      hover: 'accent',
-                    }}
-                    onClick={() => onSelectedGasChange(speed)}
-                    tabIndex={selectedSpeedOption === speed ? -1 : 0}
-                  >
-                    <Columns alignVertical="center" alignHorizontal="justify">
-                      <Column width="2/5">
-                        <Columns space="10px" alignVertical="center">
-                          <Column width="content">
-                            <Text weight="semibold" size="14pt">
-                              {txSpeedEmoji[speed]}
+              {speeds.map((speed) => (
+                <Lens
+                  key={speed}
+                  paddingVertical="8px"
+                  borderRadius="12px"
+                  marginHorizontal="-12px"
+                  paddingHorizontal="12px"
+                  background={{
+                    default:
+                      selectedSpeedOption === speed ? 'accent' : 'transparent',
+                    hover: 'accent',
+                  }}
+                  onClick={() => onSelectedGasChange(speed)}
+                  tabIndex={selectedSpeedOption === speed ? -1 : 0}
+                >
+                  <Columns alignVertical="center" alignHorizontal="justify">
+                    <Column width="2/5">
+                      <Columns space="10px" alignVertical="center">
+                        <Column width="content">
+                          <Text weight="semibold" size="14pt">
+                            {txSpeedEmoji[speed]}
+                          </Text>
+                        </Column>
+                        <Column>
+                          <Stack space="8px">
+                            <Text
+                              align="left"
+                              color="label"
+                              size="14pt"
+                              weight="semibold"
+                            >
+                              {i18n.t(`transaction_fee.${speed}`)}
                             </Text>
-                          </Column>
-                          <Column>
-                            <Stack space="12px">
-                              <Text
-                                align="left"
-                                color="label"
-                                size="14pt"
-                                weight="semibold"
-                              >
-                                {i18n.t(`transaction_fee.${speed}`)}
-                              </Text>
-                              <TextOverflow
-                                align="left"
-                                color="label"
-                                size="11pt"
-                                weight="semibold"
-                              >
-                                {gasFeeParamsBySpeed[speed]?.gasFee?.display}
-                              </TextOverflow>
-                            </Stack>
-                          </Column>
-                        </Columns>
-                      </Column>
-                      <Column width="3/5">
-                        <Stack space="12px">
-                          <TextOverflow
-                            align="right"
-                            color="label"
-                            size="14pt"
-                            weight="semibold"
-                          >
-                            {gasFeeParamsBySpeed?.[speed]?.display}
-                          </TextOverflow>
-                          <TextOverflow
-                            align="right"
-                            color="label"
-                            size="11pt"
-                            weight="semibold"
-                          >
-                            {
-                              gasFeeParamsBySpeed?.[speed]?.estimatedTime
-                                ?.display
-                            }
-                          </TextOverflow>
-                        </Stack>
-                      </Column>
-                    </Columns>
-                  </Lens>
-                  {i !== speeds.length - 1 && (
-                    <Box paddingHorizontal="20px">
-                      <Separator color="separatorTertiary" />
-                    </Box>
-                  )}
-                </Box>
+                            <TextOverflow
+                              align="left"
+                              color="labelTertiary"
+                              size="11pt"
+                              weight="semibold"
+                            >
+                              {gasFeeParamsBySpeed[speed]?.gasFee?.display}
+                            </TextOverflow>
+                          </Stack>
+                        </Column>
+                      </Columns>
+                    </Column>
+                    <Column width="3/5">
+                      <Stack space="8px">
+                        <TextOverflow
+                          align="right"
+                          color="label"
+                          size="14pt"
+                          weight="semibold"
+                        >
+                          {gasFeeParamsBySpeed?.[speed]?.display}
+                        </TextOverflow>
+                        <TextOverflow
+                          align="right"
+                          color="labelTertiary"
+                          size="11pt"
+                          weight="semibold"
+                        >
+                          {gasFeeParamsBySpeed?.[speed]?.estimatedTime?.display}
+                        </TextOverflow>
+                      </Stack>
+                    </Column>
+                  </Columns>
+                </Lens>
               ))}
             </Stack>
 
