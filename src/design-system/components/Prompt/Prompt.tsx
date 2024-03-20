@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box, Row, Rows } from '~/design-system';
@@ -11,6 +11,8 @@ import {
 } from '~/design-system/styles/designTokens';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
+import { BoxProps } from '../Box/Box';
+
 export const Prompt = ({
   show,
   children,
@@ -20,6 +22,7 @@ export const Prompt = ({
   backdropFilter,
   zIndex,
   handleClose,
+  borderRadius = '16px',
 }: {
   show: boolean;
   children: ReactNode;
@@ -29,6 +32,7 @@ export const Prompt = ({
   backdropFilter?: BackdropFilter;
   zIndex?: number;
   handleClose?: () => void;
+  borderRadius?: BoxProps['borderRadius'];
 }) => {
   const emphasizedShort = animatedRouteTransitionConfig['emphasizedShort'];
   const deceleratedShort = animatedRouteTransitionConfig['deceleratedShort'];
@@ -98,7 +102,7 @@ export const Prompt = ({
                   exit={{ opacity: 0 }}
                   transition={deceleratedShort}
                   background={background ?? 'surfaceMenu'}
-                  borderRadius="16px"
+                  borderRadius={borderRadius}
                   borderColor="separatorTertiary"
                   borderWidth="1px"
                 >
