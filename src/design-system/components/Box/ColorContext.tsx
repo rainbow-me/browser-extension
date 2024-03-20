@@ -167,9 +167,11 @@ const RawAccentColorProvider = createColorProvider(
 
 export const AccentColorProvider = ({
   color,
+  respectColor,
   children,
 }: {
   color?: string;
+  respectColor?: boolean;
   children: AccentColorContextProviderProps['children'];
 }) => {
   const { currentTheme } = useCurrentThemeStore();
@@ -179,7 +181,11 @@ export const AccentColorProvider = ({
       : foregroundColors.labelQuaternary.light;
   return (
     <RawAccentColorProvider
-      color={handleAccentColor(currentTheme, color || defaultColor)}
+      color={
+        respectColor
+          ? color || defaultColor
+          : handleAccentColor(currentTheme, color || defaultColor)
+      }
     >
       {children}
     </RawAccentColorProvider>
