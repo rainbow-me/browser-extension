@@ -60,6 +60,7 @@ export const fetchTransaction = async ({
       params: { currency: currency.toLowerCase() },
     });
     const tx = response.data.payload.transaction;
+    console.log(tx);
     if (response.data.meta.status === 'pending') {
       const localPendingTx = searchInLocalPendingTransactions(address, hash);
       if (localPendingTx) return localPendingTx;
