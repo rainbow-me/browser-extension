@@ -33,6 +33,14 @@ type ConsolidatedTransactionsResult = QueryFunctionResult<
   typeof consolidatedTransactionsQueryFunction
 >;
 
+const searchInLocalPendingTransactions = (userAddress: Address, hash: Hash) => {
+  const { pendingTransactions } = pendingTransactionsStore.getState();
+  const localPendingTx = pendingTransactions[userAddress]?.find(
+    (tx) => tx.hash === hash,
+  );
+  return localPendingTx;
+};
+
 export const fetchTransaction = async ({
   hash,
   address,
@@ -52,11 +60,9 @@ export const fetchTransaction = async ({
       params: { currency: currency.toLowerCase() },
     });
     const tx = response.data.payload.transaction;
+    console.log(tx);
     if (response.data.meta.status === 'pending') {
-      const { pendingTransactions } = pendingTransactionsStore.getState();
-      const localPendingTx = pendingTransactions[address]?.find(
-        (tx) => tx.hash === hash,
-      );
+      const localPendingTx = searchInLocalPendingTransactions(address, hash);
       if (localPendingTx) return localPendingTx;
 
       const providerTx = await getCustomChainTransaction({ chainId, hash });
@@ -66,6 +72,11 @@ export const fetchTransaction = async ({
     if (!parsedTx) throw new Error('Failed to parse transaction');
     return parsedTx;
   } catch (e) {
+    // if it's a pending tx BE may be in another mempool and it will return 404,
+    // which throws and gets caught here, so we check if we got it in localstorage
+    const localPendingTx = searchInLocalPendingTransactions(address, hash);
+    if (localPendingTx) return localPendingTx;
+
     logger.error(new RainbowError('fetchTransaction: '), {
       message: (e as Error)?.message,
     });
