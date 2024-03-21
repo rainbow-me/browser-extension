@@ -1,6 +1,5 @@
 import {
   arbitrum,
-  arbitrumGoerli,
   arbitrumSepolia,
   avalanche,
   avalancheFuji,
@@ -37,7 +36,7 @@ export const chainIdMap: Record<
 > = {
   [ChainId.mainnet]: [mainnet.id, goerli.id, sepolia.id, holesky.id],
   [ChainId.optimism]: [optimism.id, optimismSepolia.id],
-  [ChainId.arbitrum]: [arbitrum.id, arbitrumGoerli.id, arbitrumSepolia.id],
+  [ChainId.arbitrum]: [arbitrum.id, arbitrumSepolia.id],
   [ChainId.polygon]: [polygon.id, polygonMumbai.id],
   [ChainId.base]: [base.id, baseSepolia.id],
   [ChainId.bsc]: [bsc.id, bscTestnet.id],
@@ -61,10 +60,7 @@ export const chainLabelMap: Record<
     ChainNameDisplay[holesky.id],
   ],
   [ChainId.optimism]: [ChainNameDisplay[optimismSepolia.id]],
-  [ChainId.arbitrum]: [
-    ChainNameDisplay[arbitrumGoerli.id],
-    ChainNameDisplay[arbitrumSepolia.id],
-  ],
+  [ChainId.arbitrum]: [ChainNameDisplay[arbitrumSepolia.id]],
   [ChainId.polygon]: [ChainNameDisplay[polygonMumbai.id]],
   [ChainId.base]: [ChainNameDisplay[baseSepolia.id]],
   [ChainId.bsc]: [ChainNameDisplay[bscTestnet.id]],
