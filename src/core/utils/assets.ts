@@ -48,7 +48,7 @@ export const getCustomChainIconUrl = (
 ) => {
   if (!chainId || !customChainIdsToAssetNames[chainId]) return '';
   const baseUrl =
-    'https://raw.githubusercontent.com/rainbow-me/assets/master/blockchains/';
+    'https://raw.githubusercontent.com/rainbow-me/assets/m.aster/blockchains/';
 
   if (address === AddressZero || address === ETH_ADDRESS) {
     return `${baseUrl}${customChainIdsToAssetNames[chainId]}/info/logo.png`;
@@ -146,7 +146,7 @@ export function parseAssetMetadata({
   currency: SupportedCurrencyKey;
 }): ParsedAsset {
   const mainnetAddress = asset.networks?.[ChainId.mainnet]?.address || address;
-  const uniqueId = `${mainnetAddress || address}_${chainId}`;
+  const uniqueId = `${address}_${chainId}`;
   const priceData = {
     relative_change_24h: asset?.price?.relativeChange24h,
     value: asset?.price?.value,

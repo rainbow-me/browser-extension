@@ -1,6 +1,7 @@
 import { AddressZero } from '@ethersproject/constants';
 import { expect, test } from 'vitest';
 
+import { ETH_ADDRESS } from '../references';
 import { AddressOrEth, AssetApiResponse, AssetMetadata } from '../types/assets';
 import { ChainId, ChainName } from '../types/chains';
 import { SearchAsset } from '../types/search';
@@ -18,13 +19,18 @@ const ETH_FROM_ZERION = {
   name: 'Ethereum',
   symbol: 'ETH',
   decimals: 18,
+  price: {
+    value: 1499.87,
+    relative_change_24h: -3.4472325578401155,
+    changed_at: 1678390027,
+  },
   networks: {
     [ChainId.arbitrum]: {
       address: AddressZero,
       decimals: 18,
     },
     [ChainId.mainnet]: {
-      address: AddressZero,
+      address: ETH_ADDRESS,
       decimals: 18,
     },
     [ChainId.optimism]: {
@@ -146,6 +152,11 @@ const BSC_ETH_FROM_ZERION = {
     bridgeable: true,
     networks: [],
   },
+  price: {
+    value: 1500.67,
+    relative_change_24h: -3.3290651940864646,
+    changed_at: 1678390027,
+  },
 } satisfies AssetApiResponse;
 
 const USD_FROM_ZERION = {
@@ -155,28 +166,28 @@ const USD_FROM_ZERION = {
   symbol: 'USDC',
   decimals: 6,
   networks: {
-    [ChainId.arbitrum]: {
-      address: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8',
-      decimals: 6,
-    },
-    [ChainId.avalanche]: {
-      address: '0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664',
-      decimals: 6,
-    },
-    [ChainId.bsc]: {
-      address: '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
-      decimals: 18,
-    },
-    [ChainId.mainnet]: {
+    '1': {
       address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
       decimals: 6,
     },
-    [ChainId.optimism]: {
+    '10': {
       address: '0x7f5c764cbc14f9669b88837ca1490cca17c31607',
       decimals: 6,
     },
-    [ChainId.polygon]: {
+    '56': {
+      address: '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
+      decimals: 18,
+    },
+    '137': {
       address: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
+      decimals: 6,
+    },
+    '42161': {
+      address: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8',
+      decimals: 6,
+    },
+    '43114': {
+      address: '0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664',
       decimals: 6,
     },
   },
@@ -190,6 +201,11 @@ const USD_FROM_ZERION = {
     bridgeable: true,
     networks: [],
   },
+  price: {
+    value: 1.0034249098613037,
+    relative_change_24h: 0.3604239001534948,
+    changed_at: 1678390027,
+  },
 } satisfies AssetApiResponse;
 
 const OPTIMISM_USD_FROM_SEARCH = {
@@ -197,7 +213,7 @@ const OPTIMISM_USD_FROM_SEARCH = {
   highLiquidity: true,
   name: 'USD Coin',
   symbol: 'USDC',
-  uniqueId: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48_10',
+  uniqueId: '0x7f5c764cbc14f9669b88837ca1490cca17c31607_10',
   colors: {
     primary: '#2775CA',
     fallback: '#9ABDE8',
@@ -255,6 +271,37 @@ const OPTIMISM_USD_FROM_ZERION = {
   bridging: {
     bridgeable: true,
     networks: [],
+  },
+  networks: {
+    '1': {
+      address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+      decimals: 6,
+    },
+    '10': {
+      address: '0x7f5c764cbc14f9669b88837ca1490cca17c31607',
+      decimals: 6,
+    },
+    '56': {
+      address: '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
+      decimals: 18,
+    },
+    '137': {
+      address: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
+      decimals: 6,
+    },
+    '42161': {
+      address: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8',
+      decimals: 6,
+    },
+    '43114': {
+      address: '0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664',
+      decimals: 6,
+    },
+  },
+  price: {
+    value: 1.001,
+    relative_change_24h: 0.06633900739942358,
+    changed_at: 1678390027,
   },
 } satisfies AssetApiResponse;
 
@@ -324,7 +371,9 @@ test('[utils/assets -> parseAsset] :: parse zerion asset', async () => {
     asset: BSC_ETH_FROM_ZERION,
     currency: 'EUR',
   });
-  expect(bscEth.uniqueId).toEqual('eth_56');
+  expect(bscEth.uniqueId).toEqual(
+    '0x2170ed0880ac9a755fd29b2688956bd959f933f8_56',
+  );
   expect(bscEth.isNativeAsset).toEqual(false);
   expect(bscEth.native.price?.display[0]).toEqual('€');
 
