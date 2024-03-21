@@ -1,29 +1,28 @@
 import { motion } from 'framer-motion';
-import React, { RefObject, useCallback, useState } from 'react';
+import React, { forwardRef, useCallback, useRef, useState } from 'react';
 
 import { Box, Inline, Text } from '~/design-system';
 import {
   transformScales,
   transitions,
 } from '~/design-system/styles/designTokens';
+import { mergeRefs } from '~/entries/popup/utils/mergeRefs';
 
 import { Input } from '../../../../../design-system/components/Input/Input';
 import { maskInput } from '../utils';
 
 const GWEI_DECIMALS = 9;
 
-export const GweiInputMask = ({
-  value,
-  variant,
-  onChange,
-  inputRef,
-}: {
-  value: string;
-  variant: 'surface' | 'bordered' | 'transparent';
-  onChange: (value: string) => void;
-  inputRef: RefObject<HTMLInputElement>;
-}) => {
+export const GweiInputMask = forwardRef<
+  HTMLInputElement,
+  {
+    value: string;
+    variant: 'surface' | 'bordered' | 'transparent';
+    onChange: (value: string) => void;
+  }
+>(function GweiInputMask({ value, variant, onChange }, ref) {
   const [isFocused, setIsFocused] = useState(false);
+  const inputRef = useRef<HTMLInputElement>();
 
   const handleOnChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,7 +89,7 @@ export const GweiInputMask = ({
           onChange={handleOnChange}
           height="34px"
           variant={variant}
-          innerRef={inputRef}
+          innerRef={mergeRefs(inputRef, ref)}
           enableTapScale={false}
           testId="gwei-input-mask"
           style={{
@@ -102,4 +101,4 @@ export const GweiInputMask = ({
       </Box>
     </Box>
   );
-};
+});

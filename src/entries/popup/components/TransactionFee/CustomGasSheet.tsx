@@ -187,7 +187,6 @@ export const CustomGasSheet = ({
   const prevSelectedGasOption = usePrevious(selectedSpeedOption);
 
   const maxBaseFeeInputRef = useRef<HTMLInputElement>(null);
-  const maxPriorityFeeInputRef = useRef<HTMLInputElement>(null);
 
   const [maxBaseFee, setMaxBaseFee] = useState(
     (customSpeed as GasFeeParams)?.maxBaseFee?.gwei,
@@ -267,7 +266,6 @@ export const CustomGasSheet = ({
         setMaxBaseFee(prevSelectedGas?.maxBaseFee?.gwei);
       }
       setSelectedSpeedOption(GasSpeed.CUSTOM);
-      console.log('updateCustomMaxPriorityFee', maxPriorityFee);
       setCustomMaxPriorityFee(maxPriorityFee);
       setMaxPriorityFee(maxPriorityFee);
       const normalSpeed = gasFeeParamsBySpeed?.normal as GasFeeParams;
@@ -511,7 +509,7 @@ export const CustomGasSheet = ({
 
                   <Box style={{ width: 98 }} marginRight="-4px">
                     <GweiInputMask
-                      inputRef={maxBaseFeeInputRef}
+                      ref={maxBaseFeeInputRef}
                       value={maxBaseFee}
                       variant="surface"
                       onChange={updateCustomMaxBaseFee}
@@ -534,7 +532,6 @@ export const CustomGasSheet = ({
                   </Box>
                   <Box style={{ width: 98 }} marginRight="-4px">
                     <GweiInputMask
-                      inputRef={maxPriorityFeeInputRef}
                       value={maxPriorityFee}
                       variant="surface"
                       onChange={updateCustomMaxPriorityFee}
