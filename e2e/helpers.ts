@@ -811,6 +811,53 @@ export async function importHardwareWalletFlow(
   await findElementByText(driver, 'Rainbow is ready to use');
 }
 
+export async function importGridPlusWallet(driver: WebDriver, rootURL: string) {
+  await goToWelcome(driver, rootURL);
+  await findElementByTestIdAndClick({
+    id: 'import-wallet-button',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'connect-wallet-option',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: `gridplus-option`,
+    driver,
+  });
+  const inputDeviceId = await findElementByTestId({
+    id: 'gridplus-deviceid',
+    driver,
+  });
+  await inputDeviceId.sendKeys('MOCKED_DEVICE_ID');
+  const inputPassword = await findElementByTestId({
+    id: 'gridplus-password',
+    driver,
+  });
+  await inputPassword.sendKeys('MOCKED_PASSWORD');
+  await delayTime('long');
+  await findElementByTestIdAndClick({
+    id: 'gridplus-submit',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'gridplus-address-0',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'gridplus-submit',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'connect-wallets-button',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'hw-done',
+    driver,
+  });
+}
+
 export async function importWalletFlowUsingKeyboardNavigation(
   driver: WebDriver,
   rootURL: string,

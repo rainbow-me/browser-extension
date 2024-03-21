@@ -8,6 +8,7 @@ import { keccak256 } from '@ethersproject/keccak256';
 import AppEth from '@ledgerhq/hw-app-eth';
 import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import { getProvider } from '@wagmi/core';
+import { fetchAddresses } from 'gridplus-sdk';
 import { Address } from 'wagmi';
 
 import { PrivateKey } from '~/core/keychain/IKeychain';
@@ -33,6 +34,11 @@ import { RainbowError, logger } from '~/logger';
 
 import { PathOptions } from '../pages/hw/addByIndexSheet';
 
+import {
+  sendTransactionFromGridPlus,
+  signMessageByTypeFromGridPlus,
+  signTransactionFromGridPlus,
+} from './gridplus';
 import {
   sendTransactionFromLedger,
   signMessageByTypeFromLedger,
@@ -90,6 +96,8 @@ export const signTransactionFromHW = async (
     return signTransactionFromLedger(params);
   } else if (vendor === 'Trezor') {
     return signTransactionFromTrezor(params);
+  } else if (vendor === 'GridPlus') {
+    return signTransactionFromGridPlus(params);
   }
 };
 
@@ -153,6 +161,8 @@ export const sendTransaction = async (
         return sendTransactionFromLedger(params);
       case 'Trezor':
         return sendTransactionFromTrezor(params);
+      case 'GridPlus':
+        return sendTransactionFromGridPlus(params);
       default:
         throw new Error('Unsupported hardware wallet');
     }
@@ -193,6 +203,8 @@ export const personalSign = async (
         return signMessageByTypeFromLedger(msgData, address, 'personal_sign');
       case 'Trezor':
         return signMessageByTypeFromTrezor(msgData, address, 'personal_sign');
+      case 'GridPlus':
+        return signMessageByTypeFromGridPlus(msgData, address, 'personal_sign');
       default:
         throw new Error('Unsupported hardware wallet');
     }
@@ -210,9 +222,14 @@ export const signTypedData = async (
     switch (vendor) {
       case 'Ledger':
         return signMessageByTypeFromLedger(msgData, address, 'sign_typed_data');
-      case 'Trezor': {
+      case 'Trezor':
         return signMessageByTypeFromTrezor(msgData, address, 'sign_typed_data');
-      }
+      case 'GridPlus':
+        return signMessageByTypeFromGridPlus(
+          msgData,
+          address,
+          'sign_typed_data',
+        );
       default:
         throw new Error('Unsupported hardware wallet');
     }
@@ -325,7 +342,7 @@ export const exportAccount = async (address: Address, password: string) =>
   });
 
 export const importAccountAtIndex = async (
-  type: string | 'Trezor' | 'Ledger',
+  type: string | 'Trezor' | 'Ledger' | 'GridPlus',
   index: number,
   currentPath?: PathOptions,
 ) => {
@@ -361,6 +378,23 @@ export const importAccountAtIndex = async (
       await transport?.close();
 
       address = result.address;
+      break;
+    }
+    case 'GridPlus': {
+      try {
+        address = (
+          await fetchAddresses({
+            n: 1,
+            startPath: [0x80000000 + 44, 0x80000000 + 60, 0x80000000, 0, index],
+          })
+        )[0];
+      } catch (e) {
+        const parsedError = new RainbowError(
+          'gridplus-sdk#fetchAddress failed',
+        );
+        logger.error(parsedError);
+        throw e;
+      }
       break;
     }
     default:
@@ -511,7 +545,7 @@ export const importAccountsFromHW = async (
   }[],
   accountsEnabled: number,
   deviceId: string,
-  vendor: 'Ledger' | 'Trezor',
+  vendor: 'Ledger' | 'Trezor' | 'GridPlus',
 ) => {
   const address = await walletAction('import_hw', {
     deviceId,

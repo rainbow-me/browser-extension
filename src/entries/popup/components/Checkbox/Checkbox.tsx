@@ -37,11 +37,11 @@ export function Checkbox({
       justifyContent="center"
       display="flex"
       onClick={onClick}
+      testId={testId}
       style={{
         width: width || '18px',
         height: height || '18px',
       }}
-      testId={testId}
     >
       {selected && (
         <Symbol symbol="checkmark" size={8} color="label" weight="bold" />

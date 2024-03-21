@@ -33,7 +33,7 @@ import { AddByIndexSheet } from '../addByIndexSheet';
 
 import { AccountIndex } from './AccountIndex';
 
-type Vendor = 'Ledger' | 'Trezor';
+type Vendor = 'Ledger' | 'Trezor' | 'GridPlus';
 
 const WalletListHW = () => {
   const [showAddByIndexSheet, setShowAddByIndexSheet] =
@@ -438,7 +438,7 @@ const WalletListHW = () => {
       </FullScreenContainer>
       <AddByIndexSheet
         show={showAddByIndexSheet}
-        vendor={state.vendor as 'Ledger' | 'Trezor'}
+        vendor={state.vendor as 'Ledger' | 'Trezor' | 'GridPlus'}
         onDone={handleCloseAddByIndexSheet}
       />
     </>
