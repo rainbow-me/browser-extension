@@ -294,11 +294,11 @@ function MoreOptions({
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {swappable && (
-          <Fragment>
-            <AccentColorProvider
-              color={token.colors?.primary || token.colors?.fallback}
-            >
+        <AccentColorProvider
+          color={token.colors?.primary || token.colors?.fallback}
+        >
+          {swappable && (
+            <Fragment>
               {!isNative && (
                 <DropdownMenuItem
                   symbolLeft="doc.on.doc.fill"
@@ -328,24 +328,24 @@ function MoreOptions({
                   {i18n.t('token_details.view_on', { explorer: explorer.name })}
                 </DropdownMenuItem>
               )}
-            </AccentColorProvider>
-          </Fragment>
-        )}
+            </Fragment>
+          )}
 
-        {hidden && (
-          <DropdownMenuItem
-            symbolLeft="eye.slash.fill"
-            onSelect={() => {
-              removeHiddenAsset(token);
-            }}
-          >
-            <TextOverflow weight="semibold" size="14pt">
-              {i18n.t('token_details.more_options.unhide_token', {
-                name: token.name,
-              })}
-            </TextOverflow>
-          </DropdownMenuItem>
-        )}
+          {hidden && (
+            <DropdownMenuItem
+              symbolLeft="eye.slash.fill"
+              onSelect={() => {
+                removeHiddenAsset(token);
+              }}
+            >
+              <TextOverflow weight="semibold" size="14pt">
+                {i18n.t('token_details.more_options.unhide_token', {
+                  name: token.name,
+                })}
+              </TextOverflow>
+            </DropdownMenuItem>
+          )}
+        </AccentColorProvider>
       </DropdownMenuContent>
     </DropdownMenu>
   );
