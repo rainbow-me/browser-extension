@@ -149,10 +149,6 @@ export function Tokens() {
     [assets, customNetworkAssets],
   );
 
-  console.log('combinedAssets', combinedAssets);
-  console.log('assets', assets);
-  console.log('customNetworkAssets', customNetworkAssets);
-
   const isPinned = useCallback(
     (assetUniqueId: string) =>
       pinnedAssets.some(({ uniqueId }) => uniqueId === assetUniqueId),
