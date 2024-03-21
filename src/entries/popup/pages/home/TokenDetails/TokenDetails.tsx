@@ -3,11 +3,11 @@ import { Navigate, To, useParams } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { ETH_ADDRESS } from '~/core/references';
-import { shortcuts } from '~/core/references/shortcuts';
 import { useApprovals } from '~/core/resources/approvals/approvals';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useFavoritesStore } from '~/core/state/favorites';
+import { usePinnedAssetStore } from '~/core/state/pinnedAssets';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedUserAsset, UniqueId } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -271,16 +271,22 @@ export const getCoingeckoUrl = ({
 
 function MoreOptions({
   token,
-  hidden,
   swappable,
 }: {
   token: ParsedUserAsset;
-  hidden: boolean;
   swappable: boolean;
 }) {
-  const { removeHiddenAsset } = useHiddenAssets();
+  const { removeHiddenAsset, addHiddenAsset, isHidden } = useHiddenAssets();
+  const { pinnedAssets, removedPinnedAsset, addPinnedAsset } =
+    usePinnedAssetStore();
+
+  const hidden = isHidden(token);
   const explorer = getTokenBlockExplorer(token);
   const isNative = isNativeAsset(token.address, token.chainId);
+  const pinned = pinnedAssets.some(
+    ({ uniqueId }) => uniqueId === token.uniqueId,
+  );
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -298,29 +304,57 @@ function MoreOptions({
         <AccentColorProvider
           color={token.colors?.primary || token.colors?.fallback}
         >
-          {hidden && (
+          {!hidden && (
             <DropdownMenuItem
-              symbolLeft="eye.slash.fill"
+              symbolLeft="pin.fill"
               onSelect={() => {
-                removeHiddenAsset(token);
+                if (pinned) {
+                  removedPinnedAsset({ uniqueId: token.uniqueId });
+                  return;
+                }
+
+                addPinnedAsset({ uniqueId: token.uniqueId });
               }}
-              shortcut={shortcuts.tokens.HIDE_ASSET.display}
             >
               <TextOverflow weight="semibold" size="14pt">
-                {i18n.t('token_details.more_options.unhide_token', {
-                  name: token.symbol,
-                })}
+                {pinned
+                  ? i18n.t('token_details.more_options.unpin_token', {
+                      name: token.symbol,
+                    })
+                  : i18n.t('token_details.more_options.pin_token', {
+                      name: token.symbol,
+                    })}
               </TextOverflow>
             </DropdownMenuItem>
           )}
+          <DropdownMenuItem
+            symbolLeft="eye.slash.fill"
+            onSelect={() => {
+              if (hidden) {
+                removeHiddenAsset(token);
+                return;
+              }
 
+              if (pinned) removedPinnedAsset({ uniqueId: token.uniqueId });
+              addHiddenAsset(token);
+            }}
+          >
+            <TextOverflow weight="semibold" size="14pt">
+              {hidden
+                ? i18n.t('token_details.more_options.unhide_token', {
+                    name: token.symbol,
+                  })
+                : i18n.t('token_details.more_options.hide_token', {
+                    name: token.symbol,
+                  })}
+            </TextOverflow>
+          </DropdownMenuItem>
           {swappable && (
-            <Fragment>
+            <>
               {!isNative && (
                 <DropdownMenuItem
                   symbolLeft="doc.on.doc.fill"
                   onSelect={() => copyAddress(token.address)}
-                  shortcut={shortcuts.home.COPY_ADDRESS.display}
                 >
                   <Text size="14pt" weight="semibold">
                     {i18n.t('token_details.more_options.copy_address')}
@@ -330,13 +364,9 @@ function MoreOptions({
                   </Text>
                 </DropdownMenuItem>
               )}
-
-              {!isNative && (
-                <Box style={{ margin: '4px 0' }}>
-                  <Separator />
-                </Box>
-              )}
-
+              <Box style={{ margin: '4px 0' }}>
+                <Separator />
+              </Box>
               <DropdownMenuItem
                 symbolLeft="safari"
                 external
@@ -353,7 +383,7 @@ function MoreOptions({
                   {i18n.t('token_details.view_on', { explorer: explorer.name })}
                 </DropdownMenuItem>
               )}
-            </Fragment>
+            </>
           )}
         </AccentColorProvider>
       </DropdownMenuContent>
@@ -371,7 +401,6 @@ export function TokenDetails() {
     useCustomNetworkAsset({ uniqueId });
 
   const { isWatchingWallet } = useWallets();
-  const { isHidden } = useHiddenAssets();
 
   const navigate = useRainbowNavigate();
   const token = userAsset || customAsset;
@@ -444,8 +473,6 @@ export function TokenDetails() {
     isTestnetChainId({ chainId: token?.chainId }) || !!customAsset
   );
 
-  const hidden = isHidden(token);
-
   const tokenBalance = {
     ...formatCurrencyParts(token.balance.amount),
     symbol: token.symbol,
@@ -484,18 +511,10 @@ export function TokenDetails() {
             />
           }
           rightComponent={
-            isSwappable || hidden ? (
-              <Inline alignVertical="center" space="7px">
-                {isSwappable && <FavoriteButton token={token} />}
-                {(isSwappable || hidden) && (
-                  <MoreOptions
-                    hidden={hidden}
-                    swappable={isSwappable}
-                    token={token}
-                  />
-                )}
-              </Inline>
-            ) : undefined
+            <Inline alignVertical="center" space="7px">
+              {isSwappable && <FavoriteButton token={token} />}
+              <MoreOptions swappable={isSwappable} token={token} />
+            </Inline>
           }
         />
         <Box padding="20px" gap="16px" display="flex" flexDirection="column">
