@@ -89,6 +89,33 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
     <DetailsMenuWrapper closed={true} onOpenChange={onOpenChange}>
       <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
       <ContextMenuContent>
+        {allowSwap && (
+          <ContextMenuItem
+            symbolLeft="arrow.triangle.swap"
+            onSelect={onSwap}
+            shortcut={shortcuts.home.GO_TO_SWAP.display}
+          >
+            {`${i18n.t('token_details.swap')} ${token.symbol}`}
+          </ContextMenuItem>
+        )}
+        {!isWatchingWallet && isBridgeable && (
+          <ContextMenuItem
+            symbolLeft="arrow.turn.up.right"
+            onSelect={onBridge}
+            shortcut={shortcuts.tokens.BRIDGE_ASSET.display}
+          >
+            {`${i18n.t('token_details.bridge')} ${token.symbol}`}
+          </ContextMenuItem>
+        )}
+        {!isWatchingWallet && (
+          <ContextMenuItem
+            symbolLeft="paperplane.fill"
+            onSelect={onSend}
+            shortcut={shortcuts.home.GO_TO_SEND.display}
+          >
+            {`${i18n.t('token_details.send')} ${token.symbol}`}
+          </ContextMenuItem>
+        )}
         <ContextMenuItem
           symbolLeft="pin.fill"
           onSelect={() => {
@@ -130,33 +157,6 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
             })}
           </TextOverflow>
         </ContextMenuItem>
-        {allowSwap && (
-          <ContextMenuItem
-            symbolLeft="arrow.triangle.swap"
-            onSelect={onSwap}
-            shortcut={shortcuts.home.GO_TO_SWAP.display}
-          >
-            {`${i18n.t('token_details.swap')} ${token.symbol}`}
-          </ContextMenuItem>
-        )}
-        {!isWatchingWallet && isBridgeable && (
-          <ContextMenuItem
-            symbolLeft="arrow.turn.up.right"
-            onSelect={onBridge}
-            shortcut={shortcuts.tokens.BRIDGE_ASSET.display}
-          >
-            {`${i18n.t('token_details.bridge')} ${token.symbol}`}
-          </ContextMenuItem>
-        )}
-        {!isWatchingWallet && (
-          <ContextMenuItem
-            symbolLeft="paperplane.fill"
-            onSelect={onSend}
-            shortcut={shortcuts.home.GO_TO_SEND.display}
-          >
-            {`${i18n.t('token_details.send')} ${token.symbol}`}
-          </ContextMenuItem>
-        )}
         {!isNative && (
           <ContextMenuItem
             symbolLeft="doc.on.doc.fill"

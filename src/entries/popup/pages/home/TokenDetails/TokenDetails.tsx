@@ -3,6 +3,7 @@ import { Navigate, To, useParams } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { ETH_ADDRESS } from '~/core/references';
+import { shortcuts } from '~/core/references/shortcuts';
 import { useApprovals } from '~/core/resources/approvals/approvals';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
@@ -297,12 +298,29 @@ function MoreOptions({
         <AccentColorProvider
           color={token.colors?.primary || token.colors?.fallback}
         >
+          {hidden && (
+            <DropdownMenuItem
+              symbolLeft="eye.slash.fill"
+              onSelect={() => {
+                removeHiddenAsset(token);
+              }}
+              shortcut={shortcuts.tokens.HIDE_ASSET.display}
+            >
+              <TextOverflow weight="semibold" size="14pt">
+                {i18n.t('token_details.more_options.unhide_token', {
+                  name: token.symbol,
+                })}
+              </TextOverflow>
+            </DropdownMenuItem>
+          )}
+
           {swappable && (
             <Fragment>
               {!isNative && (
                 <DropdownMenuItem
                   symbolLeft="doc.on.doc.fill"
                   onSelect={() => copyAddress(token.address)}
+                  shortcut={shortcuts.home.COPY_ADDRESS.display}
                 >
                   <Text size="14pt" weight="semibold">
                     {i18n.t('token_details.more_options.copy_address')}
@@ -312,12 +330,19 @@ function MoreOptions({
                   </Text>
                 </DropdownMenuItem>
               )}
+
+              {!isNative && (
+                <Box style={{ margin: '4px 0' }}>
+                  <Separator />
+                </Box>
+              )}
+
               <DropdownMenuItem
                 symbolLeft="safari"
                 external
                 onSelect={() => window.open(getCoingeckoUrl(token), '_blank')}
               >
-                CoinGecko
+                {i18n.t('token_details.view_on_coingecko')}
               </DropdownMenuItem>
               {!isNative && explorer && (
                 <DropdownMenuItem
@@ -329,21 +354,6 @@ function MoreOptions({
                 </DropdownMenuItem>
               )}
             </Fragment>
-          )}
-
-          {hidden && (
-            <DropdownMenuItem
-              symbolLeft="eye.slash.fill"
-              onSelect={() => {
-                removeHiddenAsset(token);
-              }}
-            >
-              <TextOverflow weight="semibold" size="14pt">
-                {i18n.t('token_details.more_options.unhide_token', {
-                  name: token.name,
-                })}
-              </TextOverflow>
-            </DropdownMenuItem>
           )}
         </AccentColorProvider>
       </DropdownMenuContent>

@@ -1458,6 +1458,7 @@
     "approvals": "Token Approvals",
     "this_token_is_on_network": "This %{symbol} is on the %{chainName} network",
     "view_on": "View on %{explorer}",
+    "view_on_coingecko": "View on CoinGecko",
     "not_available": "Price not available",
     "more_options": {
       "copy_address": "Copy Address",
