@@ -12,7 +12,7 @@ import { isNativeAsset } from '~/core/utils/chains';
 import { copyAddress } from '~/core/utils/copy';
 import { goToNewTab } from '~/core/utils/tabs';
 import { getTokenBlockExplorer } from '~/core/utils/transactions';
-import { Text, TextOverflow } from '~/design-system';
+import { Box, Separator, Text, TextOverflow } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { useHiddenAssets } from '~/entries/popup/hooks/useHiddenAssets';
 
@@ -89,6 +89,47 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
     <DetailsMenuWrapper closed={true} onOpenChange={onOpenChange}>
       <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
       <ContextMenuContent>
+        <ContextMenuItem
+          symbolLeft="pin.fill"
+          onSelect={() => {
+            if (pinned) {
+              removedPinnedAsset({ uniqueId: token.uniqueId });
+              return;
+            }
+
+            addPinnedAsset({ uniqueId: token.uniqueId });
+          }}
+          shortcut={shortcuts.tokens.PIN_ASSET.display}
+        >
+          <TextOverflow
+            size="14pt"
+            weight="semibold"
+            color="label"
+            testId="account-name"
+          >
+            {pinned
+              ? i18n.t('token_details.more_options.unpin_token', {
+                  name: token.symbol,
+                })
+              : i18n.t('token_details.more_options.pin_token', {
+                  name: token.symbol,
+                })}
+          </TextOverflow>
+        </ContextMenuItem>
+        <ContextMenuItem
+          symbolLeft="eye.slash.fill"
+          onSelect={() => {
+            addHiddenAsset(token);
+            if (pinned) removedPinnedAsset({ uniqueId: token.uniqueId });
+          }}
+          shortcut={shortcuts.tokens.HIDE_ASSET.display}
+        >
+          <TextOverflow size="14pt" weight="semibold" color="label">
+            {i18n.t('token_details.more_options.hide_token', {
+              name: token.symbol,
+            })}
+          </TextOverflow>
+        </ContextMenuItem>
         {allowSwap && (
           <ContextMenuItem
             symbolLeft="arrow.triangle.swap"
@@ -116,14 +157,6 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
             {`${i18n.t('token_details.send')} ${token.symbol}`}
           </ContextMenuItem>
         )}
-        {explorer && (
-          <ContextMenuItem
-            symbolLeft="binoculars.fill"
-            onSelect={() => goToNewTab(explorer)}
-          >
-            {i18n.t('token_details.view_on', { explorer: explorer.name })}
-          </ContextMenuItem>
-        )}
         {!isNative && (
           <ContextMenuItem
             symbolLeft="doc.on.doc.fill"
@@ -138,45 +171,20 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
             </Text>
           </ContextMenuItem>
         )}
-        <ContextMenuItem
-          symbolLeft="pin.fill"
-          onSelect={() => {
-            if (pinned) {
-              removedPinnedAsset({ uniqueId: token.uniqueId });
-              return;
-            }
-
-            addPinnedAsset({ uniqueId: token.uniqueId });
-          }}
-        >
-          <TextOverflow
-            size="14pt"
-            weight="semibold"
-            color="label"
-            testId="account-name"
+        {explorer && (
+          <Box style={{ margin: '4px 0' }}>
+            <Separator />
+          </Box>
+        )}
+        {explorer && (
+          <ContextMenuItem
+            symbolLeft="binoculars.fill"
+            onSelect={() => goToNewTab(explorer)}
+            external
           >
-            {pinned
-              ? i18n.t('token_details.more_options.unpin_token', {
-                  name: token.name,
-                })
-              : i18n.t('token_details.more_options.pin_token', {
-                  name: token.name,
-                })}
-          </TextOverflow>
-        </ContextMenuItem>
-        <ContextMenuItem
-          symbolLeft="eye.slash.fill"
-          onSelect={() => {
-            addHiddenAsset(token);
-            if (pinned) removedPinnedAsset({ uniqueId: token.uniqueId });
-          }}
-        >
-          <TextOverflow size="14pt" weight="semibold" color="label">
-            {i18n.t('token_details.more_options.hide_token', {
-              name: token.name,
-            })}
-          </TextOverflow>
-        </ContextMenuItem>
+            {i18n.t('token_details.view_on', { explorer: explorer.name })}
+          </ContextMenuItem>
+        )}
       </ContextMenuContent>
     </DetailsMenuWrapper>
   );

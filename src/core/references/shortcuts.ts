@@ -270,6 +270,14 @@ export const shortcuts = {
       display: 'B',
       key: 'b',
     },
+    HIDE_ASSET: {
+      display: 'H',
+      key: 'h',
+    },
+    PIN_ASSET: {
+      display: 'P',
+      key: 'p',
+    },
     VIEW_ASSET: {
       display: 'V',
       key: 'v',
