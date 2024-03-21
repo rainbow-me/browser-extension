@@ -1,6 +1,6 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import BigNumber from 'bignumber.js';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Address,
   useAccount,
@@ -69,6 +69,40 @@ type SpeedUpAndCancelSheetProps = {
   transaction: RainbowTransaction;
 };
 
+function useWhyDidYouUpdate(name, props) {
+  // Get a mutable ref object where we can store props ...
+  // ... for comparison next time this hook runs.
+  const previousProps = useRef() as any;
+
+  useEffect(() => {
+    if (previousProps.current) {
+      // Get all keys from previous and current props
+      const allKeys = Object.keys({ ...previousProps.current, ...props });
+      // Use this object to keep track of changed props
+      const changesObj = {};
+      // Iterate through keys
+      allKeys.forEach((key) => {
+        // If previous is different from current
+        if (previousProps.current[key] !== props[key]) {
+          // Add to changesObj
+          changesObj[key] = {
+            from: previousProps.current[key],
+            to: props[key],
+          };
+        }
+      });
+
+      // If changesObj not empty then output to console
+      if (Object.keys(changesObj).length) {
+        console.log('[why-did-you-update]', name, changesObj);
+      }
+    }
+
+    // Finally update previousProps with current props for next hook call
+    previousProps.current = props;
+  });
+}
+
 // governs type of sheet displayed on top of MainLayout
 // we should centralize this type if we add additional
 // sheet modes to the main layout
@@ -90,6 +124,14 @@ export function SpeedUpAndCancelSheet({
     hash: transaction?.hash,
   });
   const cancel = currentSheet === 'cancel';
+
+  useWhyDidYouUpdate('SpeedUpAndCancelSheet', {
+    currentSheet,
+    onClose,
+    transaction,
+    selectedGas,
+    sending,
+  });
 
   const onExecuteTransaction = () => {
     if (cancel) handleCancellation();
@@ -129,17 +171,6 @@ export function SpeedUpAndCancelSheet({
       const maxFeePerGas = greaterThan(rawMaxFeePerGas, minMaxFeePerGas)
         ? toHex(rawMaxFeePerGas)
         : toHex(minMaxFeePerGas);
-
-      console.log({
-        transactionMaxFeePerGas,
-        transactionMaxPriorityFeePerGas,
-        minMaxFeePerGas,
-        minMaxPriorityFeePerGas,
-        rawMaxPriorityFeePerGas,
-        rawMaxFeePerGas,
-        maxFeePerGas,
-        maxPriorityFeePerGas,
-      });
 
       return { maxFeePerGas, maxPriorityFeePerGas };
     } else {
@@ -284,14 +315,6 @@ export function SpeedUpAndCancelSheet({
     }
   };
 
-  useEffect(() => {
-    // we keep this outside of `onClose` so that global shortcuts (e.g. Escape) still clear the tx
-    return () => {
-      setSelectedTransaction();
-    }; // invoke without param to remove selection
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const { address } = useAccount();
 
   return (
@@ -300,6 +323,8 @@ export function SpeedUpAndCancelSheet({
       show={true}
       padding="12px"
       handleClose={onClose}
+      borderRadius="24px"
+      background="surfacePrimaryElevated"
     >
       <Box
         style={{
@@ -329,25 +354,19 @@ export function SpeedUpAndCancelSheet({
                 flexGrow="1"
                 flexDirection="column"
               >
-                <Box paddingTop="80px">
+                <Stack paddingTop="68px" gap="20px" alignItems="center">
                   <Text weight="semibold" size="32pt" align="center">
                     {cancel ? '☠️' : '🚀'}
                   </Text>
-                  <Box paddingTop="20px">
-                    <Text
-                      color="label"
-                      size="20pt"
-                      weight="bold"
-                      align="center"
-                    >
-                      {i18n.t(
-                        cancel
-                          ? 'speed_up_and_cancel.cancel_title'
-                          : 'speed_up_and_cancel.speed_up_title',
-                      )}
-                    </Text>
-                  </Box>
-                  <Box paddingTop="36px" justifyContent="center" display="flex">
+                  <Text color="label" size="20pt" weight="bold" align="center">
+                    {i18n.t(
+                      cancel
+                        ? 'speed_up_and_cancel.cancel_title'
+                        : 'speed_up_and_cancel.speed_up_title',
+                    )}
+                  </Text>
+                  <Separator width={102} color="separatorTertiary" />
+                  <Box justifyContent="center" display="flex">
                     <Box style={{ width: 236 }}>
                       <Text
                         size="14pt"
@@ -363,7 +382,7 @@ export function SpeedUpAndCancelSheet({
                       </Text>
                     </Box>
                   </Box>
-                </Box>
+                </Stack>
                 <Box paddingHorizontal="20px" paddingVertical="16px">
                   <TransactionFee
                     chainId={transaction?.chainId || ChainId.mainnet}
@@ -377,7 +396,7 @@ export function SpeedUpAndCancelSheet({
                 </Box>
               </Box>
               <Box marginHorizontal="-12px">
-                <Separator />
+                <Separator color="separatorSecondary" />
               </Box>
               <Box style={{ height: 186 }}>
                 <Rows>
