@@ -33,7 +33,6 @@ const ASSET_SOURCE = {
   [ChainId.avalanche]: 'assets/badges/avalancheBadge@3x.png',
   [ChainId.hardhat]: 'assets/badges/hardhatBadge@3x.png',
   [ChainId.hardhatOptimism]: 'assets/badges/hardhatBadge@3x.png',
-  [ChainId.goerli]: 'assets/badges/ethereumBadge@3x.png',
   [ChainId.sepolia]: 'assets/badges/ethereumBadge@3x.png',
   [ChainId.holesky]: 'assets/badges/ethereumBadge@3x.png',
   [ChainId.optimismSepolia]: 'assets/badges/optimismBadge@3x.png',

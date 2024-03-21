@@ -16,7 +16,7 @@ import {
   zora,
   zoraSepolia,
 } from 'viem/chains';
-import { Chain, goerli, mainnet, sepolia } from 'wagmi';
+import { Chain, mainnet, sepolia } from 'wagmi';
 
 import { ChainId, ChainNameDisplay } from '../types/chains';
 
@@ -35,7 +35,7 @@ export const chainIdMap: Record<
   | ChainId.avalanche,
   ChainId[]
 > = {
-  [ChainId.mainnet]: [mainnet.id, goerli.id, sepolia.id, holesky.id],
+  [ChainId.mainnet]: [mainnet.id, sepolia.id, holesky.id],
   [ChainId.optimism]: [optimism.id, optimismSepolia.id],
   [ChainId.arbitrum]: [arbitrum.id, arbitrumGoerli.id, arbitrumSepolia.id],
   [ChainId.polygon]: [polygon.id, polygonMumbai.id],
@@ -56,7 +56,6 @@ export const chainLabelMap: Record<
   string[]
 > = {
   [ChainId.mainnet]: [
-    ChainNameDisplay[goerli.id],
     ChainNameDisplay[sepolia.id],
     ChainNameDisplay[holesky.id],
   ],

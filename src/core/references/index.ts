@@ -9,7 +9,6 @@ import {
   baseSepolia,
   bsc,
   bscTestnet,
-  goerli,
   holesky,
   mainnet,
   optimism,
@@ -143,7 +142,6 @@ export const WBTC_AVALANCHE_ADDRESS =
 export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.mainnet]: ETH_ADDRESS as Address,
   [ChainId.hardhat]: AddressZero as Address,
-  [ChainId.goerli]: AddressZero as Address,
   [ChainId.sepolia]: AddressZero as Address,
   [ChainId.holesky]: AddressZero as Address,
   [ChainId.arbitrum]: ETH_ARBITRUM_ADDRESS as Address,
@@ -169,7 +167,6 @@ export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
 export const NATIVE_ASSETS_MAP_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.mainnet]: ETH_ADDRESS,
   [ChainId.hardhat]: ETH_ADDRESS,
-  [ChainId.goerli]: ETH_ADDRESS,
   [ChainId.sepolia]: ETH_ADDRESS,
   [ChainId.holesky]: ETH_ADDRESS,
   [ChainId.arbitrum]: ETH_ADDRESS,
@@ -225,7 +222,6 @@ export const SUPPORTED_CHAINS: Chain[] = [
   base,
   zora,
   bsc,
-  goerli,
   sepolia,
   optimismSepolia,
   bscTestnet,
@@ -243,7 +239,6 @@ export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map((chain) => chain.id);
 
 export const SUPPORTED_TESTNET_CHAINS: Chain[] = [
   holesky,
-  goerli,
   sepolia,
   optimismSepolia,
   bscTestnet,
@@ -274,8 +269,6 @@ export const getDefaultRPC = (chainId: ChainId) => {
       return { http: process.env.ZORA_MAINNET_RPC };
     case ChainId.bsc:
       return { http: process.env.BSC_MAINNET_RPC };
-    case ChainId.goerli:
-      return { http: process.env.ETH_GOERLI_RPC };
     case ChainId.sepolia:
       return { http: process.env.ETH_SEPOLIA_RPC };
     case ChainId.holesky:

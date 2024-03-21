@@ -535,7 +535,6 @@ export const meteorologySupportsChain = (chainId: ChainId) =>
   [
     ChainId.bsc,
     ChainId.sepolia,
-    ChainId.goerli,
     ChainId.holesky,
     ChainId.mainnet,
     ChainId.polygon,
@@ -550,7 +549,6 @@ export const meteorologySupportsType2ForChain = (chainId: ChainId) =>
   [
     ChainId.mainnet,
     ChainId.sepolia,
-    ChainId.goerli,
     ChainId.holesky,
     ChainId.base,
     ChainId.arbitrum,
