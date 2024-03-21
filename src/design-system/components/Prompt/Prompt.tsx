@@ -105,6 +105,7 @@ export const Prompt = ({
                   borderRadius={borderRadius}
                   borderColor="separatorTertiary"
                   borderWidth="1px"
+                  style={{ overflow: 'hidden' }}
                 >
                   {children}
                 </Box>
