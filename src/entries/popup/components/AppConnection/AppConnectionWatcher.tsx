@@ -150,7 +150,7 @@ export const AppConnectionWatcher = () => {
   useLayoutEffect(() => {
     if (
       !!prevCurrentAddress &&
-      !isLowerCaseMatch(currentAddress, prevCurrentAddress) &&
+      (!isLowerCaseMatch(currentAddress, prevCurrentAddress) || firstLoad) &&
       (!checkAndDisplayBanner() || !differentActiveSession)
     ) {
       shouldAnimateOut.current = false;
@@ -162,6 +162,7 @@ export const AppConnectionWatcher = () => {
     prevCurrentAddress,
     checkAndDisplayBanner,
     differentActiveSession,
+    firstLoad,
   ]);
 
   useLayoutEffect(() => {

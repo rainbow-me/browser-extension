@@ -39,7 +39,6 @@ const ASSET_SOURCE = {
   [ChainId.optimismSepolia]: 'assets/badges/optimismBadge@3x.png',
   [ChainId.bscTestnet]: 'assets/badges/bscBadge@3x.png',
   [ChainId.polygonMumbai]: 'assets/badges/polygonBadge@3x.png',
-  [ChainId.arbitrumGoerli]: 'assets/badges/arbitrumBadge@3x.png',
   [ChainId.arbitrumSepolia]: 'assets/badges/arbitrumBadge@3x.png',
   [ChainId.baseSepolia]: 'assets/badges/baseBadge@3x.png',
   [ChainId.zoraSepolia]: 'assets/badges/zoraBadge@3x.png',

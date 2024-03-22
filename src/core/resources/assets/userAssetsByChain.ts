@@ -15,9 +15,10 @@ import { ChainId } from '~/core/types/chains';
 import { AddressAssetsReceivedMessage } from '~/core/types/refraction';
 import { RainbowError, logger } from '~/logger';
 
-import { parseUserAssets, userAssetsQueryKey } from './userAssets';
+import { parseUserAssets, userAssetsQueryKey } from './common';
 
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
+export const USER_ASSETS_STALE_INTERVAL = 30000;
 
 // ///////////////////////////////////////////////
 // Query Types

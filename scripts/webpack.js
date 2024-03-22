@@ -63,7 +63,7 @@ const replacePopupCssName = () => {
 }
 
 
-const MAX_CYCLES = 8;
+const MAX_CYCLES = 2;
 let numCyclesDetected = 0;
 
 const webpackConfig = { ...config, 
