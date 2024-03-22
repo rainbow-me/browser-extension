@@ -49,7 +49,7 @@ export const getCustomChainIconUrl = (
 ) => {
   if (!chainId || !customChainIdsToAssetNames[chainId]) return '';
   const baseUrl =
-    'https://raw.githubusercontent.com/rainbow-me/assets/m.aster/blockchains/';
+    'https://raw.githubusercontent.com/rainbow-me/assets/master/blockchains/';
 
   if (address === AddressZero || address === ETH_ADDRESS) {
     return `${baseUrl}${customChainIdsToAssetNames[chainId]}/info/logo.png`;
@@ -97,8 +97,8 @@ export function parseAsset({
   const chainName = asset.network ?? ChainName.mainnet;
   const networks = 'networks' in asset ? asset.networks || {} : {};
   const chainId = asset.chain_id;
-  // ZerionAsset should be removed when we move fully away from websckets/refraction api
-  const mainnetAddress = networks[ChainId.mainnet]?.address;
+  const mainnetAddress =
+    asset.symbol === 'ETH' ? ETH_ADDRESS : networks[ChainId.mainnet]?.address;
 
   const standard = 'interface' in asset ? asset.interface : undefined;
 

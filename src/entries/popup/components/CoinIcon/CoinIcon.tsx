@@ -1,4 +1,3 @@
-import { AddressZero } from '@ethersproject/constants';
 import { upperCase } from 'lodash';
 import React, { ReactNode } from 'react';
 
@@ -192,7 +191,7 @@ function CloudinaryCoinIcon({
   let src = url;
   const eth = ETH_ADDRESS;
 
-  if (address === eth || mainnetAddress === eth || address === AddressZero) {
+  if (address === eth || mainnetAddress === eth) {
     src = EthIcon;
   }
 

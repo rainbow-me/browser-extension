@@ -158,7 +158,8 @@ export type ProtocolType =
   | 'pickle'
   | 'yearn-v3'
   | 'venus'
-  | 'sushiswap';
+  | 'sushiswap'
+  | 'native';
 
 export type AssetMetadata = {
   circulatingSupply: number;
