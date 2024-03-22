@@ -3303,10 +3303,10 @@
   dependencies:
     "@babel/runtime" "^7.13.10"
 
-"@rainbow-me/provider@0.0.6":
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/@rainbow-me/provider/-/provider-0.0.6.tgz#ad54c7182d9fe15b78f09fd5fed307a529bb2eb2"
-  integrity sha512-dku6sWJy/AMsSTbC5P9GlXmU86nIdlF98UFB7BokNyr4JWgDv3tVcdy4BU/j6UzbHwBm+keeqSvf5sKEo8K6SA==
+"@rainbow-me/provider@0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@rainbow-me/provider/-/provider-0.0.7.tgz#db2368c3e870d7afad5af63e3675b715e1476693"
+  integrity sha512-NTik6yePCmvnbfGkZobFAabhHp/D3jAjX5/6bium7bz+jxegE8PGRgi99XVG1O5f0S/ES1DZFaKceJHrIWCTww==
   dependencies:
     "@ethersproject/abstract-provider" "5.7.0"
     "@ethersproject/bignumber" "5.7.0"
@@ -3315,10 +3315,10 @@
     eventemitter3 "5.0.1"
     viem "1.21.4"
 
-"@rainbow-me/swaps@0.9.1":
-  version "0.9.1"
-  resolved "https://registry.yarnpkg.com/@rainbow-me/swaps/-/swaps-0.9.1.tgz#2c34e16590d123bf3bf2e57c82eede746c65e168"
-  integrity sha512-skbv8lrDCjaK3012vvam07ySDy0qeI45QWFnkPK9791MD+Re3uBZ4h/LPOhPra6setNdERMKTzivYHZZrdg39g==
+"@rainbow-me/swaps@0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@rainbow-me/swaps/-/swaps-0.10.0.tgz#d1d2a67e751feb1fddf1206de5b0b4d514fedf2d"
+  integrity sha512-hBh9fhTWzqgDPIhi+R2ZzTGww0yIGnNZaHasEtpByRuHsxGWoljfbu3Eq/Sdi5pxpQiEnJPqmsLWfga+I54RmQ==
   dependencies:
     "@ethereumjs/util" "9.0.0"
     "@ethersproject/abi" "5.7.0"
@@ -8905,10 +8905,10 @@ flatted@^3.1.0:
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-3.2.7.tgz#609f39207cb614b89d0765b477cb2d437fbf9787"
   integrity sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==
 
-follow-redirects@1.15.4, follow-redirects@^1.15.0:
-  version "1.15.4"
-  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.4.tgz#cdc7d308bf6493126b17ea2191ea0ccf3e535adf"
-  integrity sha512-Cr4D/5wlrb0z9dgERpUL3LrmPKVDsETIJhaCMeDfuFYcqa5bldGV6wBsAN6X/vxlXQtFBMrXdXxdL8CbDTGniw==
+follow-redirects@1.15.6, follow-redirects@^1.15.0:
+  version "1.15.6"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.15.6.tgz#7f815c0cda4249c74ff09e95ef97c23b5fd0399b"
+  integrity sha512-wWN62YITEaOpSK584EZXJafH1AGpO8RVgElfkuXbTOrPX4fIfOyEpW/CsiNd8JdYrAoOvafRTOEnvsO++qCqFA==
 
 for-each@^0.3.3:
   version "0.3.3"
