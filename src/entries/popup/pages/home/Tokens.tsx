@@ -145,7 +145,7 @@ export function Tokens() {
   );
 
   const combinedAssets = useMemo(
-    () => [...customNetworkAssets, ...assets],
+    () => [...assets, ...customNetworkAssets],
     [assets, customNetworkAssets],
   );
 

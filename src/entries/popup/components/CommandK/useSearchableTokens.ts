@@ -58,7 +58,7 @@ export const useSearchableTokens = () => {
   );
 
   const searchableTokens = useMemo(() => {
-    return [...customNetworkAssets, ...assets].map<TokenSearchItem>(
+    return [...assets, ...customNetworkAssets].map<TokenSearchItem>(
       (asset) => ({
         action: () => navigate(ROUTES.TOKEN_DETAILS(asset.uniqueId)),
         actionLabel: actionLabels.open,
