@@ -8,11 +8,14 @@ import {
 import { useAssets, useUserAssets } from '~/core/resources/assets';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
-import { ParsedAsset, ParsedSearchAsset } from '~/core/types/assets';
+import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { SearchAsset } from '~/core/types/search';
-import { parseSearchAsset } from '~/core/utils/assets';
-import { isLowerCaseMatch } from '~/core/utils/strings';
+import {
+  isSameAsset,
+  isSameAssetInDiffChains,
+  parseSearchAsset,
+} from '~/core/utils/assets';
 
 import { SortMethod } from '../send/useSendAsset';
 import { useDebounce } from '../useDebounce';
@@ -26,21 +29,6 @@ const sortBy = (by: SortMethod) => {
     case 'chain':
       return selectUserAssetsListByChainId;
   }
-};
-
-export const isSameAsset = (
-  a1: Pick<ParsedAsset, 'chainId' | 'address'>,
-  a2: Pick<ParsedAsset, 'chainId' | 'address'>,
-) => +a1.chainId === +a2.chainId && isLowerCaseMatch(a1.address, a2.address);
-
-const isSameAssetInDiffChains = (
-  a1?: Pick<ParsedAsset, 'address' | 'networks'> | null,
-  a2?: Pick<ParsedAsset, 'address'> | null,
-) => {
-  if (!a1?.networks || !a2) return false;
-  return Object.values(a1.networks).some(
-    (assetInNetwork) => assetInNetwork?.address === a2.address,
-  );
 };
 
 export const useSwapAssets = ({ bridge }: { bridge: boolean }) => {
@@ -80,7 +68,7 @@ export const useSwapAssets = ({ bridge }: { bridge: boolean }) => {
         selectorFilterByUserChains({
           data,
           selector: sortBy(sortMethod),
-        }).filter((a) => a.chainId !== ChainId.blast),
+        }),
     },
   );
 
