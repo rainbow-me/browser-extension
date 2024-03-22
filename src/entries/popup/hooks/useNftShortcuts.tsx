@@ -1,6 +1,7 @@
 import { useCallback, useRef } from 'react';
 
 import { i18n } from '~/core/languages';
+import { reportNftAsSpam } from '~/core/network/nfts';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useNftsStore } from '~/core/state/nfts';
@@ -18,7 +19,7 @@ export function useNftShortcuts(nft?: UniqueAsset | null) {
   const { currentAddress: address } = useCurrentAddressStore();
   const { selectedNft, setSelectedNft } = useSelectedNftStore();
   const { trackShortcut } = useKeyboardAnalytics();
-  const { toggleHideNFT } = useNftsStore();
+  const { toggleHideNFT, hideNFT } = useNftsStore();
   const navigate = useRainbowNavigate();
   const nftToFocus = nft ?? selectedNft;
   const getNftIsSelected = useCallback(() => !!nftToFocus, [nftToFocus]);
@@ -54,6 +55,14 @@ export function useNftShortcuts(nft?: UniqueAsset | null) {
     }
   }, [navigate, nft, setSelectedNft]);
 
+  const handleReportNft = useCallback(() => {
+    if (nft) {
+      reportNftAsSpam(nft);
+      hideNFT(address, nft?.uniqueId || '');
+      triggerToast({ title: i18n.t('nfts.toast.spam_reported') });
+    }
+  }, [nft, address, hideNFT]);
+
   const handleNftShortcuts = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === shortcuts.nfts.DOWNLOAD_NFT.key) {
@@ -84,8 +93,22 @@ export function useNftShortcuts(nft?: UniqueAsset | null) {
           type: 'nfts.send',
         });
       }
+      if (e.key === shortcuts.nfts.REPORT_NFT.key) {
+        handleReportNft();
+        trackShortcut({
+          key: shortcuts.nfts.REPORT_NFT.display,
+          type: 'nfts.report',
+        });
+      }
     },
-    [handleCopyId, handleDownload, handleHideNft, handleSendNft, trackShortcut],
+    [
+      handleCopyId,
+      handleDownload,
+      handleHideNft,
+      handleSendNft,
+      handleReportNft,
+      trackShortcut,
+    ],
   );
   useKeyboardShortcut({
     condition: getNftIsSelected,
