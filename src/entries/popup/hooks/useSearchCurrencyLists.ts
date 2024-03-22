@@ -12,13 +12,13 @@ import {
   TokenSearchListId,
   TokenSearchThreshold,
 } from '~/core/types/search';
+import { isSameAsset } from '~/core/utils/assets';
 import { getChainName } from '~/core/utils/chains';
 import { addHexPrefix } from '~/core/utils/hex';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
 import { filterList } from '../utils/search';
 
-import { isSameAsset } from './swap/useSwapAssets';
 import { useFavoriteAssets } from './useFavoriteAssets';
 
 const VERIFIED_ASSETS_PAYLOAD: {
