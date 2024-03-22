@@ -24,6 +24,7 @@ export interface NftsState {
     collectionId: string;
   }) => void;
   toggleHideNFT: (address: Address, uniqueId: string) => void;
+  hideNFT: (address: Address, uniqueId: string) => void;
 }
 
 export const nftsStore = createStore<NftsState>(
@@ -56,6 +57,18 @@ export const nftsStore = createStore<NftsState>(
           [address]: {
             ...hidden[address],
             [uniqueId]: !hidden[address]?.[uniqueId],
+          },
+        },
+      });
+    },
+    hideNFT(address: Address, uniqueId: string) {
+      const { hidden } = get();
+      set({
+        hidden: {
+          ...hidden,
+          [address]: {
+            ...hidden[address],
+            [uniqueId]: true,
           },
         },
       });

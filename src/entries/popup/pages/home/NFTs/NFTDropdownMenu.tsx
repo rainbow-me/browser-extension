@@ -44,7 +44,7 @@ export default function NFTDropdownMenu({
   nft?: UniqueAsset | null;
 }) {
   const { currentAddress: address } = useCurrentAddressStore();
-  const { hidden, toggleHideNFT } = useNftsStore();
+  const { hidden, toggleHideNFT, hideNFT } = useNftsStore();
   const { setSelectedNft } = useSelectedNftStore();
   const navigate = useRainbowNavigate();
   const hiddenNftsForAddress = hidden[address] || {};
@@ -89,9 +89,10 @@ export default function NFTDropdownMenu({
   const handleReportNft = useCallback(() => {
     if (nft) {
       reportNftAsSpam(nft);
+      hideNFT(address, nft?.uniqueId || '');
       triggerToast({ title: i18n.t('nfts.toast.spam_reported') });
     }
-  }, [nft]);
+  }, [nft, address, hideNFT]);
 
   const onValueChange = (
     value:
@@ -203,6 +204,9 @@ export default function NFTDropdownMenu({
                         {i18n.t('nfts.details.report')}
                       </Text>
                     </Box>
+                  }
+                  rightComponent={
+                    <ShortcutHint hint={shortcuts.nfts.REPORT_NFT.display} />
                   }
                 />
               </DropdownMenuRadioItem>
