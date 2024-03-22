@@ -3,7 +3,7 @@ import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { ChainId, chainBlast } from '~/core/types/chains';
+import { ChainId } from '~/core/types/chains';
 import { isCustomChain } from '~/core/utils/chains';
 import {
   Box,
@@ -70,9 +70,7 @@ export const SwitchNetworkMenuSelector = ({
 
   const chains = useMemo(() => {
     return onlySwapSupportedNetworks
-      ? userChains.filter(
-          (chain) => !isCustomChain(chain.id) && chain.id !== chainBlast.id,
-        )
+      ? userChains.filter((chain) => !isCustomChain(chain.id))
       : userChains;
   }, [onlySwapSupportedNetworks, userChains]);
 

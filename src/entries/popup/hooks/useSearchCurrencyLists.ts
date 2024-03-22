@@ -12,13 +12,13 @@ import {
   TokenSearchListId,
   TokenSearchThreshold,
 } from '~/core/types/search';
+import { isSameAsset } from '~/core/utils/assets';
 import { getChainName } from '~/core/utils/chains';
 import { addHexPrefix } from '~/core/utils/hex';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
 import { filterList } from '../utils/search';
 
-import { isSameAsset } from './swap/useSwapAssets';
 import { useFavoriteAssets } from './useFavoriteAssets';
 
 const VERIFIED_ASSETS_PAYLOAD: {
@@ -163,6 +163,13 @@ export function useSearchCurrencyLists({
     fromChainId,
   });
 
+  const { data: blastVerifiedAssets, isLoading: blastVerifiedAssetsLoading } =
+    useTokenSearch({
+      chainId: ChainId.blast,
+      ...VERIFIED_ASSETS_PAYLOAD,
+      fromChainId,
+    });
+
   // current search
   const { data: targetVerifiedAssets, isLoading: targetVerifiedAssetsLoading } =
     useTokenSearch({
@@ -193,7 +200,7 @@ export function useSearchCurrencyLists({
   const { favorites } = useFavoriteAssets();
 
   const favoritesList = useMemo(() => {
-    const favoritesByChain = favorites[outputChainId];
+    const favoritesByChain = favorites[outputChainId] || [];
     if (query === '') {
       return favoritesByChain;
     } else {
@@ -249,6 +256,10 @@ export function useSearchCurrencyLists({
         assets: avalancheVerifiedAssets,
         loading: avalancheVerifiedAssetsLoading,
       },
+      [ChainId.blast]: {
+        assets: blastVerifiedAssets,
+        loading: blastVerifiedAssetsLoading,
+      },
     }),
     [
       mainnetVerifiedAssets,
@@ -267,12 +278,14 @@ export function useSearchCurrencyLists({
       zoraVerifiedAssetsLoading,
       avalancheVerifiedAssets,
       avalancheVerifiedAssetsLoading,
+      blastVerifiedAssets,
+      blastVerifiedAssetsLoading,
     ],
   );
 
   const getCuratedAssets = useCallback(
     (chainId: ChainId) =>
-      verifiedAssets[chainId].assets?.filter(
+      verifiedAssets[chainId]?.assets?.filter(
         ({ isRainbowCurated }) => isRainbowCurated,
       ),
     [verifiedAssets],
@@ -301,7 +314,7 @@ export function useSearchCurrencyLists({
 
   const loading = useMemo(() => {
     return query === ''
-      ? verifiedAssets[outputChainId].loading
+      ? verifiedAssets[outputChainId]?.loading
       : targetVerifiedAssetsLoading || targetUnverifiedAssetsLoading;
   }, [
     outputChainId,
@@ -322,39 +335,42 @@ export function useSearchCurrencyLists({
       [ChainId.base]: getCuratedAssets(ChainId.base),
       [ChainId.zora]: getCuratedAssets(ChainId.zora),
       [ChainId.avalanche]: getCuratedAssets(ChainId.avalanche),
+      [ChainId.blast]: getCuratedAssets(ChainId.blast),
     }),
     [getCuratedAssets],
   );
 
-  const bridgeList =
-    bridge &&
-    assetToSell?.networks &&
-    Object.entries(assetToSell.networks)
-      .map(([_chainId, assetOnNetworkOverrides]) => {
-        if (!assetOnNetworkOverrides) return;
-        const chainId = +_chainId as unknown as ChainId; // Object.entries messes the type
-        const chainName = getChainName({ chainId });
-        const { address, decimals } = assetOnNetworkOverrides;
-        // filter out the asset we're selling already
-        if (
-          isSameAsset(assetToSell, { chainId, address }) ||
-          !SUPPORTED_CHAINS.some((n) => n.id === chainId)
+  const bridgeList = (
+    bridge && assetToSell?.networks
+      ? Object.entries(assetToSell.networks).map(
+          ([_chainId, assetOnNetworkOverrides]) => {
+            if (!assetOnNetworkOverrides) return;
+            const chainId = +_chainId as unknown as ChainId; // Object.entries messes the type
+
+            const chainName = getChainName({ chainId });
+            const { address, decimals } = assetOnNetworkOverrides;
+            // filter out the asset we're selling already
+            if (
+              isSameAsset(assetToSell, { chainId, address }) ||
+              !SUPPORTED_CHAINS.some((n) => n.id === chainId)
+            )
+              return;
+            return {
+              ...assetToSell,
+              chainId,
+              chainName: chainName,
+              uniqueId: `${address}-${chainId}`,
+              address,
+              decimals,
+            };
+          },
         )
-          return;
-        return {
-          ...assetToSell,
-          chainId,
-          chainName: chainName,
-          uniqueId: `${address}-${chainId}`,
-          address,
-          decimals,
-        };
-      })
-      .filter(Boolean);
+      : []
+  ).filter(Boolean);
 
   const crosschainExactMatches = Object.values(verifiedAssets)
     ?.map((verifiedList) => {
-      return verifiedList.assets?.filter((t) => {
+      return verifiedList?.assets?.filter((t) => {
         const symbolMatch = isLowerCaseMatch(t?.symbol, query);
         const nameMatch = isLowerCaseMatch(t?.name, query);
         return symbolMatch || nameMatch;

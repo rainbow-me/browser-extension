@@ -36,6 +36,7 @@ import {
   convertAmountToRawAmount,
   convertRawAmountToDecimalFormat,
 } from './numbers';
+import { isLowerCaseMatch } from './strings';
 
 const get24HrChange = (priceData?: ZerionAssetPrice) => {
   const twentyFourHrChange = priceData?.relative_change_24h;
@@ -487,4 +488,19 @@ export const fetchAssetWithPrice = async ({
     });
   }
   return null;
+};
+
+export const isSameAsset = (
+  a1: Pick<ParsedAsset, 'chainId' | 'address'>,
+  a2: Pick<ParsedAsset, 'chainId' | 'address'>,
+) => +a1.chainId === +a2.chainId && isLowerCaseMatch(a1.address, a2.address);
+
+export const isSameAssetInDiffChains = (
+  a1?: Pick<ParsedAsset, 'address' | 'networks'> | null,
+  a2?: Pick<ParsedAsset, 'address'> | null,
+) => {
+  if (!a1?.networks || !a2) return false;
+  return Object.values(a1.networks).some(
+    (assetInNetwork) => assetInNetwork?.address === a2.address,
+  );
 };
