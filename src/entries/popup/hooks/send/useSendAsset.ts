@@ -67,7 +67,7 @@ export const useSendAsset = () => {
 
   const allAssets = useMemo(
     () =>
-      uniqBy([...customNetworkAssets, ...assets], 'uniqueId').sort(
+      uniqBy([...assets, ...customNetworkAssets], 'uniqueId').sort(
         (a: ParsedUserAsset, b: ParsedUserAsset) =>
           parseFloat(b?.native?.balance?.amount) -
           parseFloat(a?.native?.balance?.amount),
