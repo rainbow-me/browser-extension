@@ -124,11 +124,15 @@ You can run a development build as a "playground". The following playgrounds are
 Run `curl -L https://foundry.paradigm.xyz | bash` to install foundry.
 You'll need to restart the terminal.
 
-### 2. Run the tests
+### 2. Install browsers
+
+Reference and install [supported browsers](./e2e/README.md) for testing. The test suite relies on fixed browser versions, so we rely on each browser's developer edition without auto-updates for local testing.
+
+### 3. Run the tests
 
 To run the Browser Extension test suites:
 
-- `yarn e2e` – runs end-to-end tests against Chrome for Testing browser.
+- `yarn e2e` – runs end-to-end tests against Chrome.
 - `yarn test` – runs unit/integration tests.
   - `yarn test:watch` – run tests in watch mode.
 
