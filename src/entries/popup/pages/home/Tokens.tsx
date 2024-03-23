@@ -2,7 +2,7 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion } from 'framer-motion';
 import uniqBy from 'lodash/uniqBy';
-import { memo, useCallback, useMemo, useState } from 'react';
+import { RefObject, memo, useCallback, useMemo, useRef, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -59,9 +59,11 @@ import { TokenMarkedHighlighter } from './TokenMarkedHighlighter';
 const TokenRow = memo(function TokenRow({
   token,
   testId,
+  tokensRef,
 }: {
   token: ParsedUserAsset;
   testId: string;
+  tokensRef: RefObject<HTMLDivElement>;
 }) {
   const navigate = useRainbowNavigate();
   const openDetails = () => {
@@ -83,7 +85,7 @@ const TokenRow = memo(function TokenRow({
       layoutScroll
       layout="position"
     >
-      <TokenContextMenu token={token}>
+      <TokenContextMenu token={token} tokensRef={tokensRef}>
         <Box
           onMouseDown={onMouseDown}
           onMouseUp={onMouseUp}
@@ -106,6 +108,8 @@ export function Tokens() {
   const { modifierSymbol } = useSystemSpecificModifierKey();
   const { pinnedAssets } = usePinnedAssetStore();
   const { isHidden } = useHiddenAssets();
+
+  const tokensRef = useRef<HTMLDivElement>(null);
 
   const {
     data: assets = [],
@@ -249,6 +253,7 @@ export function Tokens() {
       paddingBottom="8px"
       paddingTop="2px"
       marginTop="-14px"
+      ref={tokensRef}
     >
       <QuickPromo
         text={i18n.t('command_k.quick_promo.text', { modifierSymbol })}
@@ -288,7 +293,11 @@ export function Tokens() {
                 style={{ height: size, y: start }}
               >
                 {pinned && <TokenMarkedHighlighter />}
-                <TokenRow token={token} testId={`coin-row-item-${index}`} />
+                <TokenRow
+                  tokensRef={tokensRef}
+                  token={token}
+                  testId={`coin-row-item-${index}`}
+                />
               </Box>
             );
           })}

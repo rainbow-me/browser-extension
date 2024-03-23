@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, RefObject, useCallback } from 'react';
 
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
@@ -14,7 +14,9 @@ import { goToNewTab } from '~/core/utils/tabs';
 import { getTokenBlockExplorer } from '~/core/utils/transactions';
 import { Box, Separator, Text, TextOverflow } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
+import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { useHiddenAssets } from '~/entries/popup/hooks/useHiddenAssets';
+import { simulateClick } from '~/entries/popup/utils/simulateClick';
 
 import {
   ContextMenuContent,
@@ -27,12 +29,19 @@ import { useRainbowNavigate } from '../../../hooks/useRainbowNavigate';
 import { useWallets } from '../../../hooks/useWallets';
 import { ROUTES } from '../../../urls';
 
+import { KeyboardShortcutListener } from './KeyboardShortcutListener';
+
 interface TokenContextMenuProps {
   children: ReactNode;
   token: ParsedUserAsset;
+  tokensRef: RefObject<HTMLDivElement>;
 }
 
-export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
+export function TokenContextMenu({
+  children,
+  token,
+  tokensRef,
+}: TokenContextMenuProps) {
   const { isWatchingWallet } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
   const setSelectedToken = useSelectedTokenStore((s) => s.setSelectedToken);
@@ -57,6 +66,11 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
     (!isWatchingWallet || featureFlags.full_watching_wallets) &&
     config.swaps_enabled;
 
+  const isBridgeable = token.bridging?.isBridgeable;
+
+  const explorer = getTokenBlockExplorer(token);
+  const isNative = isNativeAsset(token?.address, token?.chainId);
+
   const onSwap = () => {
     setSelectedToken(token);
     if (allowSwap) {
@@ -78,10 +92,35 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
     navigate(ROUTES.BRIDGE);
   };
 
-  const isBridgeable = token.bridging?.isBridgeable;
+  const togglePin = useCallback(() => {
+    if (pinned) {
+      removedPinnedAsset({ uniqueId: token.uniqueId });
 
-  const explorer = getTokenBlockExplorer(token);
-  const isNative = isNativeAsset(token?.address, token?.chainId);
+      return;
+    }
+
+    addPinnedAsset({ uniqueId: token.uniqueId });
+  }, [addPinnedAsset, removedPinnedAsset, pinned, token]);
+
+  const hideToken = useCallback(() => {
+    addHiddenAsset(token);
+    if (pinned) removedPinnedAsset({ uniqueId: token.uniqueId });
+    triggerToast({
+      title: i18n.t('token_details.more_options.hide_token_toast', {
+        name: token.symbol,
+      }),
+    });
+  }, [addHiddenAsset, removedPinnedAsset, pinned, token]);
+
+  const copyTokenAddress = useCallback(() => {
+    if (isNative) return;
+    navigator.clipboard.writeText(token.address);
+    triggerToast({
+      title: i18n.t('wallet_header.copy_toast'),
+      description: truncateAddress(token.address),
+    });
+    simulateClick(tokensRef.current);
+  }, [isNative, token.address, tokensRef]);
 
   if (isWatchingWallet && !allowSwap && isNative) return <>{children}</>;
 
@@ -89,6 +128,11 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
     <DetailsMenuWrapper closed={true} onOpenChange={onOpenChange}>
       <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
       <ContextMenuContent>
+        <KeyboardShortcutListener
+          hideToken={hideToken}
+          togglePin={togglePin}
+          copyTokenAddress={copyTokenAddress}
+        />
         {allowSwap && (
           <ContextMenuItem
             symbolLeft="arrow.triangle.swap"
@@ -118,14 +162,7 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
         )}
         <ContextMenuItem
           symbolLeft="pin.fill"
-          onSelect={() => {
-            if (pinned) {
-              removedPinnedAsset({ uniqueId: token.uniqueId });
-              return;
-            }
-
-            addPinnedAsset({ uniqueId: token.uniqueId });
-          }}
+          onSelect={togglePin}
           shortcut={shortcuts.tokens.PIN_ASSET.display}
         >
           <TextOverflow
@@ -145,10 +182,7 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
         </ContextMenuItem>
         <ContextMenuItem
           symbolLeft="eye.slash.fill"
-          onSelect={() => {
-            addHiddenAsset(token);
-            if (pinned) removedPinnedAsset({ uniqueId: token.uniqueId });
-          }}
+          onSelect={hideToken}
           shortcut={shortcuts.tokens.HIDE_ASSET.display}
         >
           <TextOverflow size="14pt" weight="semibold" color="label">
