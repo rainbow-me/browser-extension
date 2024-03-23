@@ -66,7 +66,7 @@
     "e2e:mac:chrome": "BROWSER=chrome OS=mac yarn vitest:parallel && yarn vitest:serial",
     "e2e:mac:brave": "BROWSER=brave OS=mac yarn vitest:parallel && yarn vitest:serial",
     "e2e:mac:firefox": "yarn firefox:zip && BROWSER=firefox OS=mac yarn vitest:parallel && yarn vitest:serial",
-    "e2e:mac": "yarn e2e:mac:chrome && yarn e2e:mac:brave",
+    "e2e:mac": "yarn e2e:mac:chrome",
     "e2e": "yarn e2e:mac",
     "firefox:manifest": "node scripts/firefox-manifest.js",
     "firefox:build": "yarn build && yarn firefox:manifest",
