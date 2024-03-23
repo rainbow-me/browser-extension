@@ -201,7 +201,7 @@ export function NFTs() {
     nftCount,
   ]);
 
-  useNftShortcuts();
+  useNftShortcuts({ simulateMouseClickRef: containerRef });
 
   if (!isLoading && sortedSections.length === 0) {
     return <NFTEmptyState />;

@@ -48,6 +48,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '~/design-system/components/Accordion/Accordion';
+import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { Lens } from '~/design-system/components/Lens/Lens';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import {
@@ -98,6 +99,7 @@ export default function NFTDetails() {
   const navigate = useRainbowNavigate();
   const { setSelectedNft } = useSelectedNftStore();
   const collections = selectNftCollections(data);
+  const containerRef = useContainerRef();
   const nft = useMemo(() => {
     if (!collectionId || !nftId) return null;
     return collections?.[collectionId]?.assets?.find(
@@ -149,7 +151,7 @@ export default function NFTDetails() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useNftShortcuts(nft);
+  useNftShortcuts({ nft, simulateMouseClickRef: containerRef });
 
   return (
     <Box background="surfacePrimary">

@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { RefObject, useCallback, useRef } from 'react';
 
 import { i18n } from '~/core/languages';
 import { reportNftAsSpam } from '~/core/network/nfts';
@@ -10,12 +10,21 @@ import { UniqueAsset } from '~/core/types/nfts';
 
 import { triggerToast } from '../components/Toast/Toast';
 import { ROUTES } from '../urls';
+import { simulateClick } from '../utils/simulateClick';
 
 import useKeyboardAnalytics from './useKeyboardAnalytics';
 import { useKeyboardShortcut } from './useKeyboardShortcut';
 import { useRainbowNavigate } from './useRainbowNavigate';
 
-export function useNftShortcuts(nft?: UniqueAsset | null) {
+interface UseNftShorcutsProps {
+  nft?: UniqueAsset | null;
+  simulateMouseClickRef: RefObject<HTMLDivElement>;
+}
+
+export function useNftShortcuts({
+  nft,
+  simulateMouseClickRef,
+}: UseNftShorcutsProps) {
   const { currentAddress: address } = useCurrentAddressStore();
   const { selectedNft, setSelectedNft } = useSelectedNftStore();
   const { trackShortcut } = useKeyboardAnalytics();
@@ -56,12 +65,12 @@ export function useNftShortcuts(nft?: UniqueAsset | null) {
   }, [navigate, nft, setSelectedNft]);
 
   const handleReportNft = useCallback(() => {
-    if (nft) {
-      reportNftAsSpam(nft);
-      hideNFT(address, nft?.uniqueId || '');
+    if (nftToFocus) {
+      reportNftAsSpam(nftToFocus);
+      hideNFT(address, nftToFocus.uniqueId);
       triggerToast({ title: i18n.t('nfts.toast.spam_reported') });
     }
-  }, [nft, address, hideNFT]);
+  }, [nftToFocus, address, hideNFT]);
 
   const handleNftShortcuts = useCallback(
     (e: KeyboardEvent) => {
@@ -112,6 +121,13 @@ export function useNftShortcuts(nft?: UniqueAsset | null) {
   );
   useKeyboardShortcut({
     condition: getNftIsSelected,
-    handler: handleNftShortcuts,
+    handler: (e) => {
+      handleNftShortcuts(e);
+      // Prevent Radix UI dropdown menu to be opened when listening to
+      // a shortcut by adding 'pointerdown' mouse event to a div ref
+      if (simulateMouseClickRef?.current) {
+        simulateClick(simulateMouseClickRef.current);
+      }
+    },
   });
 }
