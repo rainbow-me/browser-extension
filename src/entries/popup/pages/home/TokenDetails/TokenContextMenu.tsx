@@ -34,13 +34,13 @@ import { KeyboardShortcutListener } from './KeyboardShortcutListener';
 interface TokenContextMenuProps {
   children: ReactNode;
   token: ParsedUserAsset;
-  tokensRef: RefObject<HTMLDivElement>;
+  containerRef: RefObject<HTMLDivElement>;
 }
 
 export function TokenContextMenu({
   children,
   token,
-  tokensRef,
+  containerRef,
 }: TokenContextMenuProps) {
   const { isWatchingWallet } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
@@ -98,13 +98,17 @@ export function TokenContextMenu({
         removedPinnedAsset({ uniqueId: token.uniqueId });
         return;
       }
-
       addPinnedAsset({ uniqueId: token.uniqueId });
     };
-
     toggle();
-    simulateClick(tokensRef.current);
-  }, [tokensRef, pinned, addPinnedAsset, token.uniqueId, removedPinnedAsset]);
+    simulateClick(containerRef.current);
+  }, [
+    containerRef,
+    pinned,
+    addPinnedAsset,
+    token.uniqueId,
+    removedPinnedAsset,
+  ]);
 
   const hideToken = useCallback(() => {
     addHiddenAsset(token);
@@ -123,8 +127,8 @@ export function TokenContextMenu({
       title: i18n.t('wallet_header.copy_toast'),
       description: truncateAddress(token.address),
     });
-    simulateClick(tokensRef.current);
-  }, [isNative, token.address, tokensRef]);
+    simulateClick(containerRef.current);
+  }, [isNative, token.address, containerRef]);
 
   if (isWatchingWallet && !allowSwap && isNative) return <>{children}</>;
 
