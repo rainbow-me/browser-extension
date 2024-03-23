@@ -93,14 +93,18 @@ export function TokenContextMenu({
   };
 
   const togglePin = useCallback(() => {
-    if (pinned) {
-      removedPinnedAsset({ uniqueId: token.uniqueId });
+    const toggle = () => {
+      if (pinned) {
+        removedPinnedAsset({ uniqueId: token.uniqueId });
+        return;
+      }
 
-      return;
-    }
+      addPinnedAsset({ uniqueId: token.uniqueId });
+    };
 
-    addPinnedAsset({ uniqueId: token.uniqueId });
-  }, [addPinnedAsset, removedPinnedAsset, pinned, token]);
+    toggle();
+    simulateClick(tokensRef.current);
+  }, [tokensRef, pinned, addPinnedAsset, token.uniqueId, removedPinnedAsset]);
 
   const hideToken = useCallback(() => {
     addHiddenAsset(token);
