@@ -1468,8 +1468,12 @@
       "unpin_token": "Unpin %{name}",
       "pin_token": "Pin %{name}",
       "hide_token": "Hide %{name}",
-      "unhide_token": "Unhide %{name}",
-      "hide_token_toast": "%{name} hidden"
+      "unhide_token": "Unhide %{name}"
+    },
+    "toast": {
+      "hide_token": "Your %{name} is hidden",
+      "pin_token": "Your %{name} is pinned",
+      "unpin_token": "Your %{name} is unpinned"
     },
     "about": {
       "about_token": "About %{name}",

@@ -21,10 +21,18 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { useFlashbotsEnabledStore, useGasStore } from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import {
+  computeUniqueIdForHiddenAsset,
+  useHiddenAssetStore,
+} from '~/core/state/hiddenAssets/hiddenAssets';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSelectedNftStore } from '~/core/state/selectedNft';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
-import { AddressOrEth, ParsedAsset } from '~/core/types/assets';
+import {
+  AddressOrEth,
+  ParsedAsset,
+  ParsedUserAsset,
+} from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
   TransactionGasParams,
@@ -67,7 +75,6 @@ import { useSendInputs } from '../../hooks/send/useSendInputs';
 import { useSendState } from '../../hooks/send/useSendState';
 import { useSendUniqueAsset } from '../../hooks/send/useSendUniqueAsset';
 import { useSendValidations } from '../../hooks/send/useSendValidations';
-import { useHiddenAssets } from '../../hooks/useHiddenAssets';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import usePrevious from '../../hooks/usePrevious';
@@ -103,7 +110,15 @@ export function Send() {
 
   const { isContact } = useContactsStore();
   const { allWallets } = useWallets();
-  const { isHidden } = useHiddenAssets();
+  const { hiddenAssets } = useHiddenAssetStore();
+
+  const isHidden = useCallback(
+    (asset: ParsedUserAsset) =>
+      hiddenAssets.some(
+        (uniqueId) => uniqueId === computeUniqueIdForHiddenAsset(asset),
+      ),
+    [hiddenAssets],
+  );
 
   const isMyWallet = (address: Address) =>
     allWallets?.some((w) => w.address === address);

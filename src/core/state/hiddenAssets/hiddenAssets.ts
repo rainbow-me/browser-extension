@@ -1,5 +1,8 @@
 import create from 'zustand';
 
+import { ParsedUserAsset } from '~/core/types/assets';
+import { SearchAsset } from '~/core/types/search';
+
 import { createStore } from '../internal/createStore';
 
 type UpdateHiddenAssetArgs = {
@@ -14,7 +17,13 @@ export interface HiddenAssetState {
   removeHiddenAsset: UpdateHiddenAssetFn;
 }
 
-export const hiddenAssets = createStore<HiddenAssetState>(
+export const computeUniqueIdForHiddenAsset = (
+  asset: ParsedUserAsset | SearchAsset,
+) => {
+  return `${asset.address}-${asset.chainId}`;
+};
+
+export const hiddenAssetsStore = createStore<HiddenAssetState>(
   (set, get) => ({
     hiddenAssets: [],
     addHiddenAsset: ({ uniqueId }: UpdateHiddenAssetArgs) => {
@@ -40,4 +49,4 @@ export const hiddenAssets = createStore<HiddenAssetState>(
   },
 );
 
-export const useHiddenAssetStore = create(hiddenAssets);
+export const useHiddenAssetStore = create(hiddenAssetsStore);

@@ -6,10 +6,15 @@ import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useGasStore } from '~/core/state';
+import {
+  computeUniqueIdForHiddenAsset,
+  useHiddenAssetStore,
+} from '~/core/state/hiddenAssets/hiddenAssets';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
-import { ParsedSearchAsset } from '~/core/types/assets';
+import { ParsedSearchAsset, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { SearchAsset } from '~/core/types/search';
 import { getQuoteServiceTime } from '~/core/utils/swaps';
 import {
   Box,
@@ -53,7 +58,6 @@ import {
   useSwapPriceImpact,
 } from '../../hooks/swap/useSwapPriceImpact';
 import { useBrowser } from '../../hooks/useBrowser';
-import { useHiddenAssets } from '../../hooks/useHiddenAssets';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import {
@@ -185,7 +189,16 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
 
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
   const [urlSearchParams] = useSearchParams();
-  const { isHidden } = useHiddenAssets();
+  const { hiddenAssets } = useHiddenAssetStore();
+
+  const isHidden = useCallback(
+    (asset: ParsedUserAsset | SearchAsset) =>
+      hiddenAssets.some(
+        (uniqueId) => uniqueId === computeUniqueIdForHiddenAsset(asset),
+      ),
+    [hiddenAssets],
+  );
+
   const hideBackButton = urlSearchParams.get('hideBack') === 'true';
 
   const hideSwapReviewSheet = useCallback(() => {
@@ -389,7 +402,6 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
   const [didPopulateSavedTokens, setDidPopulateSavedTokens] = useState(false);
   const [didPopulateSavedInputValues, setDidPopulateSavedInputValues] =
     useState(false);
-
   useEffect(() => {
     // navigating from token row
     if (selectedToken) {

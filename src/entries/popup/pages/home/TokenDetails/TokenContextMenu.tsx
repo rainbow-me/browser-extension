@@ -4,6 +4,10 @@ import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import {
+  computeUniqueIdForHiddenAsset,
+  useHiddenAssetStore,
+} from '~/core/state/hiddenAssets/hiddenAssets';
 import { usePinnedAssetStore } from '~/core/state/pinnedAssets';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedUserAsset } from '~/core/types/assets';
@@ -15,7 +19,6 @@ import { getTokenBlockExplorer } from '~/core/utils/transactions';
 import { Text, TextOverflow } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
-import { useHiddenAssets } from '~/entries/popup/hooks/useHiddenAssets';
 import { simulateClick } from '~/entries/popup/utils/simulateClick';
 
 import {
@@ -48,7 +51,7 @@ export function TokenContextMenu({
   const setSelectedToken = useSelectedTokenStore((s) => s.setSelectedToken);
   const { pinnedAssets, removedPinnedAsset, addPinnedAsset } =
     usePinnedAssetStore();
-  const { addHiddenAsset } = useHiddenAssets();
+  const { addHiddenAsset } = useHiddenAssetStore();
   const pinned = pinnedAssets.some(
     ({ uniqueId }) => uniqueId === token.uniqueId,
   );
@@ -96,22 +99,33 @@ export function TokenContextMenu({
   const togglePinToken = useCallback(() => {
     if (pinned) {
       removedPinnedAsset({ uniqueId: token.uniqueId });
+      triggerToast({
+        title: i18n.t('token_details.toast.unpin_token', {
+          name: token.symbol,
+        }),
+      });
       simulateClick(containerRef.current);
       return;
     }
     addPinnedAsset({ uniqueId: token.uniqueId });
+    triggerToast({
+      title: i18n.t('token_details.toast.pin_token', {
+        name: token.symbol,
+      }),
+    });
     simulateClick(containerRef.current);
   }, [containerRef, token, pinned, addPinnedAsset, removedPinnedAsset]);
 
   const hideToken = useCallback(() => {
-    addHiddenAsset(token);
+    addHiddenAsset({ uniqueId: computeUniqueIdForHiddenAsset(token) });
     if (pinned) removedPinnedAsset({ uniqueId: token.uniqueId });
+    setSelectedToken();
     triggerToast({
-      title: i18n.t('token_details.more_options.hide_token_toast', {
+      title: i18n.t('token_details.toast.hide_token', {
         name: token.symbol,
       }),
     });
-  }, [token, pinned, addHiddenAsset, removedPinnedAsset]);
+  }, [token, pinned, addHiddenAsset, removedPinnedAsset, setSelectedToken]);
 
   const copyTokenAddress = useCallback(() => {
     if (isNative) return;

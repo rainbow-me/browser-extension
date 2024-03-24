@@ -7,6 +7,10 @@ import { useApprovals } from '~/core/resources/approvals/approvals';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useFavoritesStore } from '~/core/state/favorites';
+import {
+  computeUniqueIdForHiddenAsset,
+  useHiddenAssetStore,
+} from '~/core/state/hiddenAssets/hiddenAssets';
 import { usePinnedAssetStore } from '~/core/state/pinnedAssets';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedUserAsset, UniqueId } from '~/core/types/assets';
@@ -55,7 +59,6 @@ import {
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { SideChainExplainerSheet } from '~/entries/popup/components/SideChainExplainer';
 import { useCustomNetworkAsset } from '~/entries/popup/hooks/useCustomNetworkAsset';
-import { useHiddenAssets } from '~/entries/popup/hooks/useHiddenAssets';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
@@ -277,9 +280,19 @@ function MoreOptions({
   token: ParsedUserAsset;
   swappable: boolean;
 }) {
-  const { removeHiddenAsset, addHiddenAsset, isHidden } = useHiddenAssets();
+  const { hiddenAssets, removeHiddenAsset, addHiddenAsset } =
+    useHiddenAssetStore();
+
   const { pinnedAssets, removedPinnedAsset, addPinnedAsset } =
     usePinnedAssetStore();
+
+  const isHidden = useCallback(
+    (asset: ParsedUserAsset) =>
+      hiddenAssets.some(
+        (uniqueId) => uniqueId === computeUniqueIdForHiddenAsset(asset),
+      ),
+    [hiddenAssets],
+  );
 
   const hidden = isHidden(token);
   const explorer = getTokenBlockExplorer(token);
@@ -290,11 +303,11 @@ function MoreOptions({
 
   const toggleHideToken = useCallback(() => {
     if (hidden) {
-      removeHiddenAsset(token);
+      removeHiddenAsset({ uniqueId: computeUniqueIdForHiddenAsset(token) });
       return;
     }
     if (pinned) removedPinnedAsset({ uniqueId: token.uniqueId });
-    addHiddenAsset(token);
+    addHiddenAsset({ uniqueId: computeUniqueIdForHiddenAsset(token) });
   }, [
     token,
     hidden,
