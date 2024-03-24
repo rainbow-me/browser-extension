@@ -5,13 +5,13 @@ import useKeyboardAnalytics from '~/entries/popup/hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 
 interface TokenMenuShortcutListenerProps {
-  togglePin: () => void;
+  pinToken: () => void;
   hideToken: () => void;
   copyTokenAddress: () => void;
 }
 
 export function TokenMenuShortcutListener({
-  togglePin,
+  pinToken,
   hideToken,
   copyTokenAddress,
 }: TokenMenuShortcutListenerProps) {
@@ -27,7 +27,7 @@ export function TokenMenuShortcutListener({
             key: shortcuts.tokens.PIN_ASSET.display,
             type: 'tokenDetailsMenu.pin',
           });
-          togglePin();
+          pinToken();
           break;
         case shortcuts.tokens.HIDE_ASSET.key:
           trackShortcut({
@@ -45,7 +45,7 @@ export function TokenMenuShortcutListener({
           break;
       }
     },
-    [copyTokenAddress, hideToken, togglePin, trackShortcut],
+    [copyTokenAddress, hideToken, pinToken, trackShortcut],
   );
 
   useKeyboardShortcut({

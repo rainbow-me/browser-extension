@@ -45,6 +45,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
 import {
@@ -287,6 +288,30 @@ function MoreOptions({
     ({ uniqueId }) => uniqueId === token.uniqueId,
   );
 
+  const toggleHideToken = useCallback(() => {
+    if (hidden) {
+      removeHiddenAsset(token);
+      return;
+    }
+    if (pinned) removedPinnedAsset({ uniqueId: token.uniqueId });
+    addHiddenAsset(token);
+  }, [
+    token,
+    hidden,
+    pinned,
+    removedPinnedAsset,
+    addHiddenAsset,
+    removeHiddenAsset,
+  ]);
+
+  const togglePinToken = useCallback(() => {
+    if (pinned) {
+      removedPinnedAsset({ uniqueId: token.uniqueId });
+      return;
+    }
+    addPinnedAsset({ uniqueId: token.uniqueId });
+  }, [token.uniqueId, pinned, addPinnedAsset, removedPinnedAsset]);
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -305,17 +330,7 @@ function MoreOptions({
           color={token.colors?.primary || token.colors?.fallback}
         >
           {!hidden && (
-            <DropdownMenuItem
-              symbolLeft="pin.fill"
-              onSelect={() => {
-                if (pinned) {
-                  removedPinnedAsset({ uniqueId: token.uniqueId });
-                  return;
-                }
-
-                addPinnedAsset({ uniqueId: token.uniqueId });
-              }}
-            >
+            <DropdownMenuItem symbolLeft="pin.fill" onSelect={togglePinToken}>
               <TextOverflow weight="semibold" size="14pt">
                 {pinned
                   ? i18n.t('token_details.more_options.unpin_token', {
@@ -329,15 +344,7 @@ function MoreOptions({
           )}
           <DropdownMenuItem
             symbolLeft="eye.slash.fill"
-            onSelect={() => {
-              if (hidden) {
-                removeHiddenAsset(token);
-                return;
-              }
-
-              if (pinned) removedPinnedAsset({ uniqueId: token.uniqueId });
-              addHiddenAsset(token);
-            }}
+            onSelect={toggleHideToken}
           >
             <TextOverflow weight="semibold" size="14pt">
               {hidden
@@ -364,9 +371,7 @@ function MoreOptions({
                   </Text>
                 </DropdownMenuItem>
               )}
-              <Box style={{ margin: '4px 0' }}>
-                <Separator />
-              </Box>
+              <DropdownMenuSeparator />
               <DropdownMenuItem
                 symbolLeft="safari"
                 external

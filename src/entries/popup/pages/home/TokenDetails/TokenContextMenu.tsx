@@ -12,7 +12,7 @@ import { isNativeAsset } from '~/core/utils/chains';
 import { copyAddress } from '~/core/utils/copy';
 import { goToNewTab } from '~/core/utils/tabs';
 import { getTokenBlockExplorer } from '~/core/utils/transactions';
-import { Box, Separator, Text, TextOverflow } from '~/design-system';
+import { Text, TextOverflow } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { useHiddenAssets } from '~/entries/popup/hooks/useHiddenAssets';
@@ -21,6 +21,7 @@ import { simulateClick } from '~/entries/popup/utils/simulateClick';
 import {
   ContextMenuContent,
   ContextMenuItem,
+  ContextMenuSeparator,
   ContextMenuTrigger,
 } from '../../../components/ContextMenu/ContextMenu';
 import { DetailsMenuWrapper } from '../../../components/DetailsMenu';
@@ -92,23 +93,15 @@ export function TokenContextMenu({
     navigate(ROUTES.BRIDGE);
   };
 
-  const togglePin = useCallback(() => {
-    const toggle = () => {
-      if (pinned) {
-        removedPinnedAsset({ uniqueId: token.uniqueId });
-        return;
-      }
-      addPinnedAsset({ uniqueId: token.uniqueId });
-    };
-    toggle();
+  const togglePinToken = useCallback(() => {
+    if (pinned) {
+      removedPinnedAsset({ uniqueId: token.uniqueId });
+      simulateClick(containerRef.current);
+      return;
+    }
+    addPinnedAsset({ uniqueId: token.uniqueId });
     simulateClick(containerRef.current);
-  }, [
-    containerRef,
-    pinned,
-    addPinnedAsset,
-    token.uniqueId,
-    removedPinnedAsset,
-  ]);
+  }, [containerRef, token, pinned, addPinnedAsset, removedPinnedAsset]);
 
   const hideToken = useCallback(() => {
     addHiddenAsset(token);
@@ -118,17 +111,13 @@ export function TokenContextMenu({
         name: token.symbol,
       }),
     });
-  }, [addHiddenAsset, removedPinnedAsset, pinned, token]);
+  }, [token, pinned, addHiddenAsset, removedPinnedAsset]);
 
   const copyTokenAddress = useCallback(() => {
     if (isNative) return;
-    navigator.clipboard.writeText(token.address);
-    triggerToast({
-      title: i18n.t('wallet_header.copy_toast'),
-      description: truncateAddress(token.address),
-    });
+    copyAddress(token.address);
     simulateClick(containerRef.current);
-  }, [isNative, token.address, containerRef]);
+  }, [token.address, containerRef, isNative]);
 
   if (isWatchingWallet && !allowSwap && isNative) return <>{children}</>;
 
@@ -138,7 +127,7 @@ export function TokenContextMenu({
       <ContextMenuContent>
         <TokenMenuShortcutListener
           hideToken={hideToken}
-          togglePin={togglePin}
+          pinToken={togglePinToken}
           copyTokenAddress={copyTokenAddress}
         />
         {allowSwap && (
@@ -170,7 +159,7 @@ export function TokenContextMenu({
         )}
         <ContextMenuItem
           symbolLeft="pin.fill"
-          onSelect={togglePin}
+          onSelect={togglePinToken}
           shortcut={shortcuts.tokens.PIN_ASSET.display}
         >
           <TextOverflow
@@ -202,7 +191,7 @@ export function TokenContextMenu({
         {!isNative && (
           <ContextMenuItem
             symbolLeft="doc.on.doc.fill"
-            onSelect={() => copyAddress(token.address)}
+            onSelect={copyTokenAddress}
             shortcut={shortcuts.home.COPY_ADDRESS.display}
           >
             <Text size="14pt" weight="semibold">
@@ -213,11 +202,7 @@ export function TokenContextMenu({
             </Text>
           </ContextMenuItem>
         )}
-        {explorer && (
-          <Box style={{ margin: '4px 0' }}>
-            <Separator />
-          </Box>
-        )}
+        {explorer && <ContextMenuSeparator />}
         {explorer && (
           <ContextMenuItem
             symbolLeft="binoculars.fill"
