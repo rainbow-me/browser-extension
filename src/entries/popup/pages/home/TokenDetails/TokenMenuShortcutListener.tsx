@@ -4,17 +4,17 @@ import { shortcuts } from '~/core/references/shortcuts';
 import useKeyboardAnalytics from '~/entries/popup/hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 
-interface KeyboardShortcutListenerProps {
+interface TokenMenuShortcutListenerProps {
   togglePin: () => void;
   hideToken: () => void;
   copyTokenAddress: () => void;
 }
 
-export function KeyboardShortcutListener({
+export function TokenMenuShortcutListener({
   togglePin,
   hideToken,
   copyTokenAddress,
-}: KeyboardShortcutListenerProps) {
+}: TokenMenuShortcutListenerProps) {
   const { trackShortcut } = useKeyboardAnalytics();
 
   const condition = useCallback(() => true, []);
@@ -25,21 +25,21 @@ export function KeyboardShortcutListener({
         case shortcuts.tokens.PIN_ASSET.key:
           trackShortcut({
             key: shortcuts.tokens.PIN_ASSET.display,
-            type: 'tokens.pin',
+            type: 'tokenDetailsMenu.pin',
           });
           togglePin();
           break;
         case shortcuts.tokens.HIDE_ASSET.key:
           trackShortcut({
             key: shortcuts.tokens.HIDE_ASSET.display,
-            type: 'tokens.hide',
+            type: 'tokenDetailsMenu.hide',
           });
           hideToken();
           break;
         case shortcuts.home.COPY_ADDRESS.key:
           trackShortcut({
             key: shortcuts.home.COPY_ADDRESS.display,
-            type: 'tokens.copyTokenAddress',
+            type: 'tokenDetailsMenu.copyTokenAddress',
           });
           copyTokenAddress();
           break;

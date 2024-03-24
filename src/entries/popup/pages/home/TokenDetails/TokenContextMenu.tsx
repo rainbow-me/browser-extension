@@ -29,7 +29,7 @@ import { useRainbowNavigate } from '../../../hooks/useRainbowNavigate';
 import { useWallets } from '../../../hooks/useWallets';
 import { ROUTES } from '../../../urls';
 
-import { KeyboardShortcutListener } from './KeyboardShortcutListener';
+import { TokenMenuShortcutListener } from './TokenMenuShortcutListener';
 
 interface TokenContextMenuProps {
   children: ReactNode;
@@ -136,7 +136,7 @@ export function TokenContextMenu({
     <DetailsMenuWrapper closed={true} onOpenChange={onOpenChange}>
       <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
       <ContextMenuContent>
-        <KeyboardShortcutListener
+        <TokenMenuShortcutListener
           hideToken={hideToken}
           togglePin={togglePin}
           copyTokenAddress={copyTokenAddress}

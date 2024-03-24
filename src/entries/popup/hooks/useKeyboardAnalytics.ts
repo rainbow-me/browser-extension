@@ -65,11 +65,11 @@ export type KeyboardEventDescription =
   | 'tokens.goToSend'
   | 'tokens.goToSwap'
   | 'tokens.goToBridge'
-  | 'tokens.pin'
-  | 'tokens.hide'
-  | 'tokens.copyTokenAddress'
   | 'tokens.refresh'
   | 'tokens.viewAssetOnExplorer'
+  | 'tokenDetailsMenu.pin'
+  | 'tokenDetailsMenu.hide'
+  | 'tokenDetailsMenu.copyTokenAddress'
   | 'walletSwitcher.search';
 
 const analyticsTrack = <T extends keyof EventProperties>(
