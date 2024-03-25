@@ -110,6 +110,7 @@ export const AppConnectionWatcher = () => {
   }, []);
 
   const checkAndDisplayBanner = useCallback(() => {
+    console.log('- checkAndDisplayBanner');
     // Clear existing timeouts
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
@@ -150,9 +151,9 @@ export const AppConnectionWatcher = () => {
   useLayoutEffect(() => {
     if (
       !!prevCurrentAddress &&
-      (!isLowerCaseMatch(currentAddress, prevCurrentAddress) ||
-        (firstLoad && location.pathname !== ROUTES.HOME)) &&
-      (!checkAndDisplayBanner() || !differentActiveSession)
+      (!isLowerCaseMatch(currentAddress, prevCurrentAddress) || firstLoad) &&
+      ((location.pathname === ROUTES.HOME && !checkAndDisplayBanner()) ||
+        !differentActiveSession)
     ) {
       shouldAnimateOut.current = false;
       hide();
@@ -168,11 +169,17 @@ export const AppConnectionWatcher = () => {
   ]);
 
   useLayoutEffect(() => {
+    console.log('-- location', location);
+    console.log(
+      '-- location !== home',
+      location.pathname,
+      location.pathname !== ROUTES.HOME,
+    );
     if (location.pathname !== ROUTES.HOME) {
       shouldAnimateOut.current = true;
       hide();
     }
-  }, [hide, location.pathname]);
+  }, [hide, location, location.pathname]);
 
   useLayoutEffect(() => {
     if (
