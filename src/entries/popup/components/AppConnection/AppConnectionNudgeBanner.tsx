@@ -151,6 +151,7 @@ export const AppConnectionNudgeBanner = ({
                           ? globalColors.grey100
                           : globalColors.white100
                       }
+                      respectColor
                     >
                       <Box
                         style={{ opacity: useDarkForegroundColor ? 0.65 : 1 }}
