@@ -2203,18 +2203,6 @@
   dependencies:
     "@lit-labs/ssr-dom-shim" "^1.0.0"
 
-"@lukeed/csprng@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@lukeed/csprng/-/csprng-1.1.0.tgz#1e3e4bd05c1cc7a0b2ddbd8a03f39f6e4b5e6cfe"
-  integrity sha512-Z7C/xXCiGWsg0KuKsHTKJxbWhpI3Vs5GwLfOean7MGyVFGqdRgBbAjOCh6u4bbjPc/8MJ2pZmK/0DLdCbivLDA==
-
-"@lukeed/uuid@2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@lukeed/uuid/-/uuid-2.0.1.tgz#4f6c34259ee0982a455e1797d56ac27bb040fd74"
-  integrity sha512-qC72D4+CDdjGqJvkFMMEAtancHUQ7/d/tAiHf64z8MopFDmcrtbcJuerDtFceuAfQJ2pDSfCKCtbqoGBNnwg0w==
-  dependencies:
-    "@lukeed/csprng" "^1.1.0"
-
 "@mdn/browser-compat-data@5.2.42":
   version "5.2.42"
   resolved "https://registry.yarnpkg.com/@mdn/browser-compat-data/-/browser-compat-data-5.2.42.tgz#c6672c6008ca36846c46930d39c8aa342cff85d3"
@@ -3339,12 +3327,11 @@
   resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.0.2.tgz#1c17eadb2fa77f80a796ad5ea9bf108e6993ef06"
   integrity sha512-GRSOFhJzjGN+d4sKHTMSvNeUPoZiDHWmRnXfzaxrqe7dE/Nzlc8BiMSJdLDESZlndM7jIUrZ/F4yWqVYlI0rwQ==
 
-"@rudderstack/analytics-js-service-worker@3.0.5":
-  version "3.0.5"
-  resolved "https://registry.yarnpkg.com/@rudderstack/analytics-js-service-worker/-/analytics-js-service-worker-3.0.5.tgz#010d08ce124b13b0d501c074ac6bb17f7314f83a"
-  integrity sha512-cFDnaueB1J2jyoZNIseOEZEO4h3WjctLtHHtDIhnhQbOFQFkwosNI/yJOjWcXQY661T3ikbzHA6RronXLYCxbQ==
+"@rudderstack/analytics-js-service-worker@3.0.6":
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/@rudderstack/analytics-js-service-worker/-/analytics-js-service-worker-3.0.6.tgz#5b85da235e490313c227a8f6f3d883705c9b9d48"
+  integrity sha512-N9rDT+kmqIDoTDJIYUa3oJTzLLGcOih9KHGdTWQxP8hYZl0GP4hngb+5OQo9ydl+QiyPu86tNvFFehxHQMbAdA==
   dependencies:
-    "@lukeed/uuid" "2.0.1"
     "@vespaiach/axios-fetch-adapter" "0.3.1"
     assert "2.1.0"
     axios "1.6.7"
