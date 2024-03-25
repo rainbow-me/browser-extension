@@ -1,6 +1,6 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import BigNumber from 'bignumber.js';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import {
   Address,
   useAccount,
@@ -11,7 +11,6 @@ import {
 
 import { i18n } from '~/core/languages';
 import { useGasStore } from '~/core/state';
-import { useSelectedTransactionStore } from '~/core/state/selectedTransaction';
 import { ChainId } from '~/core/types/chains';
 import {
   GasSpeed,
@@ -69,40 +68,6 @@ type SpeedUpAndCancelSheetProps = {
   transaction: RainbowTransaction;
 };
 
-function useWhyDidYouUpdate(name, props) {
-  // Get a mutable ref object where we can store props ...
-  // ... for comparison next time this hook runs.
-  const previousProps = useRef() as any;
-
-  useEffect(() => {
-    if (previousProps.current) {
-      // Get all keys from previous and current props
-      const allKeys = Object.keys({ ...previousProps.current, ...props });
-      // Use this object to keep track of changed props
-      const changesObj = {};
-      // Iterate through keys
-      allKeys.forEach((key) => {
-        // If previous is different from current
-        if (previousProps.current[key] !== props[key]) {
-          // Add to changesObj
-          changesObj[key] = {
-            from: previousProps.current[key],
-            to: props[key],
-          };
-        }
-      });
-
-      // If changesObj not empty then output to console
-      if (Object.keys(changesObj).length) {
-        console.log('[why-did-you-update]', name, changesObj);
-      }
-    }
-
-    // Finally update previousProps with current props for next hook call
-    previousProps.current = props;
-  });
-}
-
 // governs type of sheet displayed on top of MainLayout
 // we should centralize this type if we add additional
 // sheet modes to the main layout
@@ -113,7 +78,7 @@ export function SpeedUpAndCancelSheet({
   onClose,
   transaction,
 }: SpeedUpAndCancelSheetProps) {
-  const { setSelectedTransaction } = useSelectedTransactionStore();
+  // const { setSelectedTransaction } = useSelectedTransactionStore();
   const { selectedGas } = useGasStore();
   const [sending, setSending] = useState(false);
 
@@ -124,14 +89,6 @@ export function SpeedUpAndCancelSheet({
     hash: transaction?.hash,
   });
   const cancel = currentSheet === 'cancel';
-
-  useWhyDidYouUpdate('SpeedUpAndCancelSheet', {
-    currentSheet,
-    onClose,
-    transaction,
-    selectedGas,
-    sending,
-  });
 
   const onExecuteTransaction = () => {
     if (cancel) handleCancellation();

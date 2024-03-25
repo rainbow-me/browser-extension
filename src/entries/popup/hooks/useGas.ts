@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { gasUnits } from '~/core/references';
@@ -204,8 +204,6 @@ const useGas = ({
     storeGasFeeParamsBySpeed?.custom,
   ]);
 
-  const [selectedSpeed, setSelectedSpeed] = useState<GasSpeed>(defaultSpeed);
-
   const gasFeeParamsBySpeed:
     | GasFeeParamsBySpeed
     | GasFeeLegacyParamsBySpeed
@@ -247,29 +245,49 @@ const useGas = ({
     storeGasFeeParamsBySpeed.custom,
   ]);
 
-  useEffect(() => {
-    if (prevDefaultSpeed !== defaultSpeed) {
-      setSelectedSpeed(defaultSpeed);
-    }
-  }, [defaultSpeed, prevDefaultSpeed]);
+  const [selectedSpeed, setSelectedSpeed] = useReducer<
+    (s: GasSpeed, sa: GasSpeed) => GasSpeed
+  >((s, selectedSpeed) => {
+    if (!gasFeeParamsBySpeed?.[selectedSpeed]) return s;
+    setSelectedGas({ selectedGas: gasFeeParamsBySpeed[selectedSpeed] });
+    return selectedSpeed;
+  }, defaultSpeed || GasSpeed.NORMAL);
 
-  useEffect(() => {
-    if (
-      enabled &&
-      gasFeeParamsBySpeed?.[selectedSpeed] &&
-      gasFeeParamsChanged(selectedGas, gasFeeParamsBySpeed?.[selectedSpeed])
-    ) {
-      setSelectedGas({
-        selectedGas: gasFeeParamsBySpeed[selectedSpeed],
-      });
-    }
-  }, [
-    enabled,
-    gasFeeParamsBySpeed,
-    selectedGas,
-    selectedSpeed,
-    setSelectedGas,
-  ]);
+  // useEffect(() => {
+  //   if (prevDefaultSpeed !== defaultSpeed) {
+  //     setSelectedSpeed(defaultSpeed);
+  //   }
+  // }, [defaultSpeed, prevDefaultSpeed]);
+
+  // // useEffect(() => {
+  // if (
+  //   enabled &&
+  //   gasFeeParamsBySpeed?.[selectedSpeed] &&
+  //   gasFeeParamsChanged(selectedGas, gasFeeParamsBySpeed?.[selectedSpeed])
+  // ) {
+  //   console.log(
+  //     'AAAAA',
+  //     {
+  //       a: [selectedGas, gasFeeParamsBySpeed?.[selectedSpeed]],
+  //       selectedSpeed,
+  //     },
+  //     gasFeeParamsChanged(selectedGas, gasFeeParamsBySpeed?.[selectedSpeed]),
+  //   );
+
+  //   // if (i === 0) {
+  //   setSelectedGas({
+  //     selectedGas: gasFeeParamsBySpeed[selectedSpeed],
+  //   });
+  //   //   i++;
+  //   // }
+  // }
+  // // }, [
+  // //   enabled,
+  // //   gasFeeParamsBySpeed,
+  // //   selectedGas,
+  // //   selectedSpeed,
+  // //   setSelectedGas,
+  // // ]);
 
   useEffect(() => {
     if (
