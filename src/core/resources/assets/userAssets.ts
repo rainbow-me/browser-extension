@@ -130,7 +130,6 @@ async function userAssetsQueryFunction({
     const chainIdsWithErrorsInResponse =
       res?.data?.meta?.chain_ids_with_errors || [];
     const assets = res?.data?.payload?.assets || [];
-    console.log('BE assets', assets);
     if (address) {
       userAssetsQueryFunctionRetryByChain({
         address,
