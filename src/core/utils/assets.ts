@@ -1,6 +1,5 @@
 import { AddressZero } from '@ethersproject/constants';
 import { Provider } from '@ethersproject/providers';
-import isURL from 'validator/lib/isURL';
 import { Address, erc20ABI } from 'wagmi';
 import { getContract } from 'wagmi/actions';
 
@@ -305,15 +304,6 @@ export const parseSearchAsset = ({
   colors: userAsset?.colors || assetWithPrice?.colors || searchAsset?.colors,
   type: userAsset?.type || assetWithPrice?.type,
 });
-
-export function filterAsset(asset: ZerionAsset) {
-  const nameFragments = asset?.name?.split(' ');
-  const nameContainsURL = nameFragments.some((f) => isURL(f));
-  const symbolFragments = asset?.symbol?.split(' ');
-  const symbolContainsURL = symbolFragments.some((f) => isURL(f));
-  const shouldFilter = nameContainsURL || symbolContainsURL;
-  return shouldFilter;
-}
 
 export const fetchAssetBalanceViaProvider = async ({
   parsedAsset,
