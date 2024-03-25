@@ -132,6 +132,7 @@
     "firebase": "9.18.0",
     "framer-motion": "10.2.3",
     "graphql-request": "5.2.0",
+    "gridplus-sdk": "2.5.2",
     "i18n-js": "4.1.1",
     "idna-uts46-hx": "3.5.0",
     "imgix-core-js": "2.3.2",
@@ -230,6 +231,8 @@
     "worker-loader": "3.0.8"
   },
   "resolutions": {
+    "@ethereumjs/common": "4.1.0",
+    "@ethereumjs/tx": "5.0.0",
     "bn.js": "5.2.1",
     "@scure/bip39": "1.2.1",
     "protobufjs": "7.2.4",
@@ -314,6 +317,8 @@
       "web-ext>sign-addon>core-js": false,
       "web-ext>ws>bufferutil": false,
       "web-ext>ws>utf-8-validate": false,
+      "gridplus-sdk": false,
+      "gridplus-sdk>secp256k1": false,
       "@ledgerhq/domain-service>eip55>keccak": false,
       "wagmi>@wagmi/core>@wagmi/connectors>@coinbase/wallet-sdk>keccak": false,
       "viem>ws>bufferutil": false,

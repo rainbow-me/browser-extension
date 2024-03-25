@@ -30,6 +30,7 @@ import { ImportWalletViaSeed } from './components/ImportWallet/ImportWalletViaSe
 import { Toast } from './components/Toast/Toast';
 import { UnsupportedBrowserSheet } from './components/UnsupportedBrowserSheet';
 import { WindowStroke } from './components/WindowStroke/WindowStroke';
+import { useGridPlusPermissions } from './handlers/gridplusHooks';
 import { useCommandKShortcuts } from './hooks/useCommandKShortcuts';
 import useKeyboardAnalytics from './hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from './hooks/useKeyboardShortcut';
@@ -46,6 +47,7 @@ import { PointsReferralSheet } from './pages/home/Points/PointsReferralSheet';
 import { PointsWeeklyOverview } from './pages/home/Points/WeeklyPointsOverview';
 import { TokenDetails } from './pages/home/TokenDetails/TokenDetails';
 import { ChooseHW } from './pages/hw/chooseHW';
+import { ConnectGridPlus } from './pages/hw/gridplus';
 import { ConnectLedger } from './pages/hw/ledger';
 import { SuccessHW } from './pages/hw/success';
 import { ConnectTrezor } from './pages/hw/trezor';
@@ -328,6 +330,19 @@ const ROUTE_DATA = [
         background="surfaceSecondary"
       >
         <ConnectTrezor />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.HW_GRIDPLUS,
+    element: (
+      <AnimatedRoute
+        protectedRoute={['NEW', 'READY']}
+        direction="up"
+        navbar
+        background="surfaceSecondary"
+      >
+        <ConnectGridPlus />
       </AnimatedRoute>
     ),
   },
@@ -984,6 +999,7 @@ const RootLayout = () => {
 
   useGlobalShortcuts();
   useCommandKShortcuts();
+  useGridPlusPermissions();
 
   return (
     <FullScreenBackground>

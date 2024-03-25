@@ -17,7 +17,7 @@ export const HWRequestListener = () => {
 
   interface HWSigningRequest {
     action: 'signTransaction' | 'signMessage' | 'signTypedData';
-    vendor: 'Ledger' | 'Trezor';
+    vendor: 'Ledger' | 'Trezor' | 'GridPlus';
     payload:
       | TransactionRequest
       | { message: string; address: string }
