@@ -54,7 +54,7 @@ export class Analytics {
     try {
       this.client = new RudderAnalytics(
         process.env.RUDDERSTACK_WRITE_KEY,
-        process.env.RUDDERSTACK_DATA_PLANE,
+        `${process.env.RUDDERSTACK_DATA_PLANE}/v1/batch`,
         {
           maxInternalQueueSize: 1 /* replicate analytics-next flushing behavior */,
         },
