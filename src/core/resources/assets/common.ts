@@ -12,7 +12,6 @@ import {
 import { ChainId } from '~/core/types/chains';
 import {
   fetchAssetBalanceViaProvider,
-  filterAsset,
   parseUserAsset,
 } from '~/core/utils/assets';
 import { greaterThan } from '~/core/utils/numbers';
@@ -61,7 +60,7 @@ export async function parseUserAssets({
     {},
   ) as ParsedAssetsDictByChain;
   for (const { asset, quantity, small_balance } of assets) {
-    if (!filterAsset(asset) && greaterThan(quantity, 0)) {
+    if (greaterThan(quantity, 0)) {
       const parsedAsset = parseUserAsset({
         asset,
         currency,
