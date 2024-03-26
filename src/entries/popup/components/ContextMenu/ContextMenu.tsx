@@ -2,7 +2,13 @@ import * as ContextMenuPrimitive from '@radix-ui/react-context-menu';
 import { DismissableLayerProps } from '@radix-ui/react-tooltip';
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
-import React, { CSSProperties, ReactNode, useRef } from 'react';
+import React, {
+  CSSProperties,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useAccount } from 'wagmi';
 
 import { shortcuts } from '~/core/references/shortcuts';
@@ -247,6 +253,10 @@ export const ContextMenuItem = ({
   disabled,
   testId,
 }: ContextMenuItemProps) => {
+  const [isMounting, setIsMounting] = useState(true);
+  useEffect(() => {
+    setTimeout(() => setIsMounting(false), 400);
+  }, []);
   // eslint-disable-next-line no-param-reassign
   if (disabled) color = 'labelTertiary';
   return (
@@ -269,8 +279,8 @@ export const ContextMenuItem = ({
         default: 'transparent',
         hover: disabled ? 'transparent' : 'surfaceSecondary',
       }}
-      disabled={disabled}
       tabIndex={disabled ? -1 : 0}
+      disabled={disabled || isMounting}
     >
       <Inline alignVertical="center" space="8px" wrap={false}>
         {isSymbol(symbolLeft) ? (
