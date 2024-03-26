@@ -19,7 +19,6 @@ const fetchWalletAvatar = async ({
   avatarUrl?: string | null;
 }): Promise<WalletAvatar> => {
   const { setWalletAvatar } = walletAvatarStore.getState();
-  console.log('===fetchWalletAvatar');
   const ensAvatar =
     avatarUrl === null
       ? null
