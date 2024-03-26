@@ -1,4 +1,4 @@
-import { Analytics as RudderAnalytics } from '@rudderstack/analytics-js-service-worker';
+import { RudderAnalytics } from '@rudderstack/analytics-js';
 
 import { EventProperties, event } from '~/analytics/event';
 import { UserProperties } from '~/analytics/userProperties';
@@ -52,13 +52,12 @@ export class Analytics {
     }, 10);
 
     try {
-      this.client = new RudderAnalytics(
-        process.env.RUDDERSTACK_WRITE_KEY,
-        process.env.RUDDERSTACK_DATA_PLANE,
-        {
-          maxInternalQueueSize: 1 /* replicate analytics-next flushing behavior */,
-        },
-      );
+      this.client = new RudderAnalytics();
+      this.client.load(process.env.RUDDERSTACK_WRITE_KEY, process.env.RUDDERSTACK_DATA_PLANE, {
+        loadIntegration: false,
+        plugins: ['StorageEncryption', 'StorageMigrator', 'XhrQueue'],
+        getSourceConfig: () => ({}),
+      });
       logger.debug(`RudderStack initialized`);
     } catch (e) {
       logger.debug(`RudderStack failed to initialize`);
@@ -74,7 +73,7 @@ export class Analytics {
     if (this.disabled || IS_DEV || IS_TESTING || !this.deviceId) return;
     const metadata = this.getDefaultMetadata();
     const traits = { ...userProperties, ...metadata };
-    this.client?.identify({ userId: this.deviceId, traits, context });
+    this.client?.identify(this.deviceId, traits, { context });
     logger.info('analytics.identify()', {
       userId: this.deviceId,
       userProperties,
@@ -82,13 +81,13 @@ export class Analytics {
   }
 
   /**
-   * Sends a `screen` event to RudderStack.
+   * Sends a `page` event to RudderStack.
    */
   screen(name: string, params: Record<string, string> = {}): void {
     if (this.disabled || IS_DEV || IS_TESTING || !this.deviceId) return;
     const metadata = this.getDefaultMetadata();
     const properties = { ...params, ...metadata };
-    this.client?.screen({ userId: this.deviceId, name, properties, context });
+    this.client?.page({ userId: this.deviceId, name, properties, context });
     logger.info('analytics.screen()', {
       userId: this.deviceId,
       name,
@@ -108,7 +107,8 @@ export class Analytics {
     if (this.disabled || IS_DEV || IS_TESTING || !this.deviceId) return;
     const metadata = this.getDefaultMetadata();
     const properties = Object.assign(metadata, params);
-    this.client?.track({ userId: this.deviceId, event, properties, context });
+    const options = { userId: this.deviceId, event, context }
+    this.client?.track(event, properties, options);
     logger.info('analytics.track()', {
       userId: this.deviceId,
       event,

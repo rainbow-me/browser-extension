@@ -8,7 +8,7 @@ import { ROUTES } from '~/entries/popup/urls';
  * Route names like `SETTINGS__PRIVACY__WALLETS_AND_KEYS` are
  * transformed to `settings.privacy.wallets_and_keys` screen events.
  */
-export const screen = Object.fromEntries(
+export const screen: Record<string, any> = Object.fromEntries(
   Object.entries(ROUTES).map(([key, value]) => [
     value,
     key.toLowerCase().replaceAll('__', '.'),
