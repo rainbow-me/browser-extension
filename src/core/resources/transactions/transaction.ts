@@ -155,7 +155,6 @@ const getCustomChainTransaction = async ({
     ? await provider.getBlock(transaction?.blockHash)
     : undefined;
 
-  // backend returns the value formatted to decimals, so lets do the same here
   const decimals = 18; // assuming every chain uses 18 decimals
   const value = formatUnits(transaction.value, decimals);
 
