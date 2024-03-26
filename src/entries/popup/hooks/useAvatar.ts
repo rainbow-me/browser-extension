@@ -19,7 +19,7 @@ const fetchWalletAvatar = async ({
   avatarUrl?: string | null;
 }): Promise<WalletAvatar> => {
   const { setWalletAvatar } = walletAvatarStore.getState();
-
+  console.log('===fetchWalletAvatar');
   const ensAvatar =
     avatarUrl === null
       ? null
@@ -58,6 +58,7 @@ export function useAvatar({
         : undefined,
     {
       enabled: !!addressOrName,
+      staleTime: 1 * 60 * 1_000, // 1 min
       initialData: () => {
         return addressOrName && walletAvatar
           ? walletAvatar[addressOrName]
