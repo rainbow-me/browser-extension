@@ -1,6 +1,7 @@
-import { useCallback, useRef } from 'react';
+import { RefObject, useCallback, useRef } from 'react';
 
 import { i18n } from '~/core/languages';
+import { reportNftAsSpam } from '~/core/network/nfts';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useNftsStore } from '~/core/state/nfts';
@@ -9,16 +10,25 @@ import { UniqueAsset } from '~/core/types/nfts';
 
 import { triggerToast } from '../components/Toast/Toast';
 import { ROUTES } from '../urls';
+import { simulateClick } from '../utils/simulateClick';
 
 import useKeyboardAnalytics from './useKeyboardAnalytics';
 import { useKeyboardShortcut } from './useKeyboardShortcut';
 import { useRainbowNavigate } from './useRainbowNavigate';
 
-export function useNftShortcuts(nft?: UniqueAsset | null) {
+interface UseNftShorcutsProps {
+  nft?: UniqueAsset | null;
+  simulateMouseClickRef: RefObject<HTMLDivElement>;
+}
+
+export function useNftShortcuts({
+  nft,
+  simulateMouseClickRef,
+}: UseNftShorcutsProps) {
   const { currentAddress: address } = useCurrentAddressStore();
   const { selectedNft, setSelectedNft } = useSelectedNftStore();
   const { trackShortcut } = useKeyboardAnalytics();
-  const { toggleHideNFT } = useNftsStore();
+  const { toggleHideNFT, hideNFT } = useNftsStore();
   const navigate = useRainbowNavigate();
   const nftToFocus = nft ?? selectedNft;
   const getNftIsSelected = useCallback(() => !!nftToFocus, [nftToFocus]);
@@ -54,6 +64,14 @@ export function useNftShortcuts(nft?: UniqueAsset | null) {
     }
   }, [navigate, nft, setSelectedNft]);
 
+  const handleReportNft = useCallback(() => {
+    if (nftToFocus) {
+      reportNftAsSpam(nftToFocus);
+      hideNFT(address, nftToFocus.uniqueId);
+      triggerToast({ title: i18n.t('nfts.toast.spam_reported') });
+    }
+  }, [nftToFocus, address, hideNFT]);
+
   const handleNftShortcuts = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === shortcuts.nfts.DOWNLOAD_NFT.key) {
@@ -84,11 +102,32 @@ export function useNftShortcuts(nft?: UniqueAsset | null) {
           type: 'nfts.send',
         });
       }
+      if (e.key === shortcuts.nfts.REPORT_NFT.key) {
+        handleReportNft();
+        trackShortcut({
+          key: shortcuts.nfts.REPORT_NFT.display,
+          type: 'nfts.report',
+        });
+      }
     },
-    [handleCopyId, handleDownload, handleHideNft, handleSendNft, trackShortcut],
+    [
+      handleCopyId,
+      handleDownload,
+      handleHideNft,
+      handleSendNft,
+      handleReportNft,
+      trackShortcut,
+    ],
   );
   useKeyboardShortcut({
     condition: getNftIsSelected,
-    handler: handleNftShortcuts,
+    handler: (e) => {
+      handleNftShortcuts(e);
+      // Prevent Radix UI dropdown menu to be opened when listening to
+      // a shortcut by adding 'pointerdown' mouse event to a div ref
+      if (simulateMouseClickRef?.current) {
+        simulateClick(simulateMouseClickRef.current);
+      }
+    },
   });
 }

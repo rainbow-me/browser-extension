@@ -202,6 +202,10 @@ export const shortcuts = {
       display: 'H',
       key: 'h',
     },
+    REPORT_NFT: {
+      display: 'R',
+      key: 'r',
+    },
   },
   wallets: {
     CHOOSE_WALLET_GROUP_NEW: {

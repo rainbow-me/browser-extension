@@ -37,7 +37,7 @@ export default function NFTContextMenu({
   offsetOverride?: boolean;
 }) {
   const { currentAddress: address } = useCurrentAddressStore();
-  const { hidden, toggleHideNFT } = useNftsStore();
+  const { hidden, toggleHideNFT, hideNFT } = useNftsStore();
   const { selectedNft, setSelectedNft } = useSelectedNftStore();
   const navigate = useRainbowNavigate();
   const hiddenNftsForAddress = hidden[address] || {};
@@ -90,9 +90,10 @@ export default function NFTContextMenu({
   const handleReportNft = useCallback(() => {
     if (nftToFocus) {
       reportNftAsSpam(nftToFocus);
+      hideNFT(address, nftToFocus?.uniqueId || '');
       triggerToast({ title: i18n.t('nfts.toast.spam_reported') });
     }
-  }, [nftToFocus]);
+  }, [nftToFocus, address, hideNFT]);
 
   return (
     <DetailsMenuWrapper closed={true} onOpenChange={handleOpenChange}>
@@ -132,6 +133,7 @@ export default function NFTContextMenu({
             <ContextMenuItem
               symbolLeft={'exclamationmark.circle.fill'}
               onSelect={handleReportNft}
+              shortcut={shortcuts.nfts.REPORT_NFT.display}
             >
               <Text size="14pt" weight="semibold">
                 {i18n.t('nfts.details.report')}
