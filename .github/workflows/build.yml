@@ -69,6 +69,7 @@ jobs:
           path: build/
       - name: Remove old screenshots
         run: rm -rf screenshots/*
+
   # FIREFOX TESTS
   firefox-e2e-parallel:
     runs-on: ubuntu-latest
@@ -100,40 +101,6 @@ jobs:
       - name: Fail if any tests failed
         if: steps.FFE2eParallel.outcome == 'failure'
         run: exit 1
-  # firefox-e2e-swap:
-  #   runs-on: swaps-runner-bx
-  #   timeout-minutes: 25
-  #   needs: [build]
-  #   env:
-  #     DISPLAY: :0
-  #     VITEST_SEGFAULT_RETRY: 4
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: ./.github/actions/firefoxTestsSetup
-  #       with:
-  #         gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
-  #     - name: Run e2e Swap (Firefox)
-  #       id: FFE2eSwap
-  #       continue-on-error: true
-  #       uses: nick-fields/retry@v2
-  #       with:
-  #         timeout_minutes: 25
-  #         max_attempts: 2
-  #         command: |
-  #           export BROWSER=firefox
-  #           export OS=linux
-  #           export FIREFOX_BIN="$(pwd)/firefox/firefox"
-  #           yarn firefox:manifest && yarn firefox:zip
-  #           yarn vitest:swap --retry=5
-  #     - name: Upload deps artifacts
-  #       if: steps.FFE2eSwap.outcome == 'failure'
-  #       uses: actions/upload-artifact@v3
-  #       with:
-  #         name: screenshots
-  #         path: screenshots/
-  #     - name: Fail if any tests failed
-  #       if: steps.FFE2eSwap.outcome == 'failure'
-  #       run: exit 1
   firefox-e2e-send:
     runs-on: send-runner-bx
     timeout-minutes: 16
@@ -202,6 +169,7 @@ jobs:
       - name: Fail if any tests failed
         if: steps.FFE2eDappInteractions.outcome == 'failure'
         run: exit 1
+
   # CHROME TESTS
   chrome-e2e-parallel:
     runs-on: ubuntu-latest
@@ -364,63 +332,7 @@ jobs:
       - name: Fail if any tests failed
         if: steps.ChromeE2EDappInteractions.outcome == 'failure'
         run: exit 1
-  # BRAVE TESTS
-  # brave-e2e:
-  #   needs: [build]
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 20
-  #   env:
-  #     DISPLAY: :0
-  #     VITEST_SEGFAULT_RETRY: 3
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: actions/setup-node@v3
-  #       with:
-  #         node-version: "18.18.0"
-  #     - name: Download deps cache artifacts
-  #       uses: actions/download-artifact@v3
-  #       with:
-  #         name: node_modules.tar.gz
-  #     - name: Unzip node_modules
-  #       run: tar xzvf node_modules.tar.gz
-  #     - name: Download build artifacts
-  #       uses: actions/download-artifact@v3
-  #       with:
-  #         name: rainbowbx-${{ github.sha }}.zip
-  #         path: build
-  #     - name: Setup xvfb
-  #       run: |
-  #         sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
-  #         # start xvfb in the background
-  #         sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
-  #     - name: Setup Brave browser
-  #       run: |
-  #         sudo apt install apt-transport-https curl
-  #         sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
-  #         echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main"|sudo tee /etc/apt/sources.list.d/brave-browser-release.list
-  #         sudo apt update
-  #         sudo apt install brave-browser
-  #     - name: Install Anvil
-  #       uses: foundry-rs/foundry-toolchain@v1
-  #       with:
-  #         version: nightly
-  #     - uses: actions/checkout@v3
-  #       with:
-  #           repository: 'rainbow-me/browser-extension-env'
-  #           token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
-  #           path: tmp
-  #     - name: Copy dotenv
-  #       run: cat tmp/dotenv >> .env && rm -rf tmp
-  #     - name: Run e2e (Brave)
-  #       uses: nick-fields/retry@v2
-  #       with:
-  #         timeout_minutes: 18
-  #         max_attempts: 3
-  #         command:  |
-  #           export BROWSER=brave
-  #           export OS=linux
-  #           export BRAVE_BIN='/usr/bin/brave-browser-stable'
-  #           yarn vitest:parallel && yarn vitest:serial
+
   # UNIT TESTS
   unit-tests:
     runs-on: ubuntu-latest
