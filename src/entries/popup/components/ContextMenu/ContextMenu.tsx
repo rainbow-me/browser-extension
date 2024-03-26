@@ -257,8 +257,7 @@ export const ContextMenuItem = ({
   useEffect(() => {
     setTimeout(() => setIsMounting(false), 400);
   }, []);
-  // eslint-disable-next-line no-param-reassign
-  if (disabled) color = 'labelTertiary';
+  const conditionalColor = disabled ? 'labelTertiary' : color;
   return (
     <Box
       testId={testId}
@@ -288,15 +287,15 @@ export const ContextMenuItem = ({
             size={16}
             symbol={symbolLeft}
             weight="semibold"
-            color={color}
+            color={conditionalColor}
           />
         ) : (
-          <Text color={color} weight="semibold" size="14pt">
+          <Text color={conditionalColor} weight="semibold" size="14pt">
             {symbolLeft}
           </Text>
         )}
         {typeof children === 'string' ? (
-          <TextOverflow size="14pt" weight="semibold" color={color}>
+          <TextOverflow size="14pt" weight="semibold" color={conditionalColor}>
             {children}
           </TextOverflow>
         ) : (
