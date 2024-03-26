@@ -15,12 +15,8 @@ export interface SerializedReadOnlyKeychain {
   address: Address;
 }
 export class ReadOnlyKeychain implements IKeychain {
-  type: KeychainType.ReadOnlyKeychain;
+  type: KeychainType.ReadOnlyKeychain = KeychainType.ReadOnlyKeychain;
   address?: Address;
-
-  constructor() {
-    this.type = KeychainType.ReadOnlyKeychain;
-  }
 
   init(options: SerializedReadOnlyKeychain) {
     this.deserialize(options);

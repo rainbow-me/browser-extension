@@ -47,11 +47,10 @@ const privates = new WeakMap<
 >();
 
 export class HdKeychain implements IKeychain {
-  type: KeychainType.HdKeychain;
+  type: KeychainType.HdKeychain = KeychainType.HdKeychain;
   imported: boolean;
 
   constructor() {
-    this.type = KeychainType.HdKeychain;
     this.imported = false;
 
     privates.set(this, {
