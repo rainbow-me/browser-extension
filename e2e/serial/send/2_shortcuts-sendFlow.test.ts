@@ -216,6 +216,7 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
       await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
       await executePerformShortcut({ driver, key: 'TAB', timesToPress: 8 });
       await executePerformShortcut({ driver, key: 'SPACE' });
+      await delayTime('long');
       await executePerformShortcut({ driver, key: 'ARROW_DOWN' });
       await executePerformShortcut({ driver, key: 'ENTER' });
       await checkExtensionURL(driver, 'send');
