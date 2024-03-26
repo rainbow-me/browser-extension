@@ -77,10 +77,14 @@ export interface ZerionAssetPrice {
 
 export type AssetApiResponse = {
   asset_code: AddressOrEth;
+  bridging: {
+    bridgeable: boolean;
+    networks: { [id in ChainId]?: { bridgeable: boolean } };
+  };
   decimals: number;
   icon_url: string;
   name: string;
-  chain_id?: number;
+  chain_id: number;
   price?: {
     value: number;
     changed_at: number;
@@ -154,7 +158,8 @@ export type ProtocolType =
   | 'pickle'
   | 'yearn-v3'
   | 'venus'
-  | 'sushiswap';
+  | 'sushiswap'
+  | 'native';
 
 export type AssetMetadata = {
   circulatingSupply: number;

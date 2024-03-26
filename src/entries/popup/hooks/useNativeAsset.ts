@@ -1,6 +1,7 @@
+import { AddressZero } from '@ethersproject/constants';
 import { Address, useNetwork } from 'wagmi';
 
-import { ETH_ADDRESS, NATIVE_ASSETS_MAP_PER_CHAIN } from '~/core/references';
+import { NATIVE_ASSETS_MAP_PER_CHAIN } from '~/core/references';
 import { useUserTestnetNativeAsset } from '~/core/resources/assets/userTestnetNativeAsset';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { ParsedUserAsset } from '~/core/types/assets';
@@ -62,7 +63,7 @@ export const useNativeAsset = ({
   });
 
   const { data: customNetworkNativeAsset } = useCustomNetworkAsset({
-    uniqueId: `${ETH_ADDRESS}_${chainId}`,
+    uniqueId: `${AddressZero}_${chainId}`,
     filterZeroBalance: false,
   });
 
