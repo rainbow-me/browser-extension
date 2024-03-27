@@ -210,7 +210,7 @@ type SimulationMeta = {
   transferTo: SimulationTarget;
 };
 
-type TransactionSimulationResponse = {
+export type TransactionSimulationResponse = {
   simulateTransactions: [
     {
       scanning: {
@@ -220,6 +220,9 @@ type TransactionSimulationResponse = {
       error: {
         message: string;
         type: SimulationError;
+      };
+      gas: {
+        estimate: string;
       };
       simulation: {
         in: SimulationChange[];
@@ -247,6 +250,9 @@ type MessageSimulationResponse = {
     error: {
       message: string;
       type: SimulationError;
+    };
+    gas: {
+      estimate: string;
     };
     simulation: {
       in: SimulationChange[];
