@@ -153,18 +153,13 @@ const InfoValueSkeleton = () => <Skeleton width="50px" height="12px" />;
 function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
   const { native, feeType } = tx;
 
-  const maxPriorityFeePerGas =
-    tx.maxPriorityFeePerGas && formatUnits(tx.maxPriorityFeePerGas, 'gwei');
-
   // if baseFee is undefined (like in pending txs or custom networks the api wont have data about it)
   // so we try to calculate with the data we may have locally
-  tx.baseFee ??=
-    tx.maxFeePerGas && tx.maxPriorityFeePerGas
-      ? BigNumber.from(tx.maxFeePerGas).sub(tx.maxPriorityFeePerGas).toString()
-      : undefined;
-  const baseFee = tx.baseFee && formatUnits(tx.baseFee, 'gwei');
-
-  const gasPrice = tx.gasPrice && formatUnits(tx.gasPrice, 'gwei');
+  const baseFee =
+    tx.baseFee ||
+    (tx.maxFeePerGas &&
+      tx.maxPriorityFeePerGas &&
+      BigNumber.from(tx.maxFeePerGas).sub(tx.maxPriorityFeePerGas).toString());
 
   let fee;
   if (native !== undefined && native.fee !== undefined) {
@@ -175,7 +170,7 @@ function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
     // handle custom networks fee
   }
 
-  if ((!baseFee || !maxPriorityFeePerGas) && !gasPrice) return null;
+  if ((!baseFee || !tx.maxPriorityFeePerGas) && !tx.gasPrice) return null;
 
   return (
     <>
@@ -188,11 +183,11 @@ function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
       )}
       {feeType === 'legacy' ? (
         <>
-          {gasPrice && (
+          {tx.gasPrice && (
             <InfoRow
               symbol="barometer"
               label={i18n.t('activity_details.gas_price')}
-              value={`${formatNumber(gasPrice)} Gwei`}
+              value={`${formatNumber(formatUnits(tx.gasPrice, 'gwei'))} Gwei`}
             />
           )}
         </>
@@ -202,15 +197,21 @@ function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
             symbol="barometer"
             label={i18n.t('activity_details.base_fee')}
             value={
-              baseFee ? `${formatNumber(baseFee)} Gwei` : <InfoValueSkeleton />
+              baseFee ? (
+                `${formatNumber(formatUnits(baseFee, 'gwei'))} Gwei`
+              ) : (
+                <InfoValueSkeleton />
+              )
             }
           />
           <InfoRow
             symbol="barometer"
             label={i18n.t('activity_details.max_priority_fee')}
             value={
-              maxPriorityFeePerGas ? (
-                `${formatNumber(maxPriorityFeePerGas)} Gwei`
+              tx.maxPriorityFeePerGas ? (
+                `${formatNumber(
+                  formatUnits(tx.maxPriorityFeePerGas, 'gwei'),
+                )} Gwei`
               ) : (
                 <InfoValueSkeleton />
               )

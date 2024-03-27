@@ -156,9 +156,7 @@ const getCustomChainTransaction = async ({
     ? await provider.getBlock(transaction?.blockHash)
     : undefined;
 
-  // backend returns the value formatted to decimals, so lets do the same here
   const decimals = 18; // assuming every chain uses 18 decimals
-  console.log('aaaaaaa', transaction);
   const value = formatUnits(transaction.value, decimals);
 
   const parsedTransaction = transaction.blockNumber
@@ -174,7 +172,7 @@ const getCustomChainTransaction = async ({
         from: transaction.from as Address,
         to: transaction.to as Address,
         data: transaction.data,
-        value: value,
+        value,
         type: 'send',
         title: i18n.t('transactions.send.confirmed'),
         baseFee: block?.baseFeePerGas?.toString(),
@@ -190,7 +188,7 @@ const getCustomChainTransaction = async ({
         from: transaction.from as Address,
         to: transaction.to as Address,
         data: transaction.data,
-        value: value,
+        value,
         type: 'send',
         title: i18n.t('transactions.send.pending'),
       } satisfies PendingTransaction);
