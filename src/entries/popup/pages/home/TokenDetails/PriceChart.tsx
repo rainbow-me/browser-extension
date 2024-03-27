@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useReducer, useState } from 'react';
+import { memo, useReducer, useState } from 'react';
 
 import { metadataClient } from '~/core/graphql';
 import { i18n } from '~/core/languages';
@@ -37,7 +37,10 @@ type PriceChange = {
   date: number;
 };
 
-function PriceChange({ changePercentage = 0, date }: PriceChange) {
+const PriceChange = memo(function PriceChange({
+  changePercentage = 0,
+  date,
+}: PriceChange) {
   const { color, symbol } = parsePriceChange(+changePercentage.toFixed(2));
   return (
     <Box display="flex" flexDirection="column" gap="10px" alignItems="flex-end">
@@ -54,9 +57,9 @@ function PriceChange({ changePercentage = 0, date }: PriceChange) {
       </Text>
     </Box>
   );
-}
+});
 
-function TokenPrice({
+const TokenPrice = memo(function TokenPrice({
   token,
   hasPriceData,
   isLoading,
@@ -89,7 +92,7 @@ function TokenPrice({
       </Box>
     </Box>
   );
-}
+});
 
 const chartTimes = ['hour', 'day', 'week', 'month', 'year'] as const;
 type ChartTime = (typeof chartTimes)[number];
@@ -150,6 +153,34 @@ const chartTimeToTimestamp = {
   year: new Date().setFullYear(now.getFullYear() - 1),
 } satisfies Record<ChartTime, number>;
 
+const SelectChartTime = memo(function SelectChartTime({
+  selectedTime,
+  setSelectedTime,
+}: {
+  selectedTime: ChartTime;
+  setSelectedTime: (time: ChartTime) => void;
+}) {
+  return (
+    <Box display="flex" justifyContent="center" gap="12px">
+      {chartTimes.map((time) => {
+        const isSelected = time === selectedTime;
+        return (
+          <Button
+            onClick={() => setSelectedTime(time)}
+            key={time}
+            height="24px"
+            variant={isSelected ? 'tinted' : 'transparentHover'}
+            color={isSelected ? 'accent' : 'labelTertiary'}
+            tabIndex={0}
+          >
+            {i18n.t(`token_details.${time}`)}
+          </Button>
+        );
+      })}
+    </Box>
+  );
+});
+
 export function PriceChart({ token }: { token: ParsedUserAsset }) {
   const [selectedTime, setSelectedTime] = useState<ChartTime>('day');
   const shouldHaveData = !isTestnetChainId({ chainId: token.chainId });
@@ -161,12 +192,14 @@ export function PriceChart({ token }: { token: ParsedUserAsset }) {
     time: selectedTime,
   });
 
+  const priceAtBeginningOfSelectedTime = data?.[0]?.price;
   const lastPrice =
     (data && data[data.length - 1]?.price) || token.price?.value;
+
   const selectedTimePriceChange = {
     date: chartTimeToTimestamp[selectedTime],
     changePercentage:
-      percentDiff(lastPrice, data?.[0]?.price || token.price?.value) || 0,
+      percentDiff(lastPrice, priceAtBeginningOfSelectedTime) || 0,
   };
 
   const [indicatorPointPriceChange, setIndicatorPoint] = useReducer<
@@ -175,7 +208,10 @@ export function PriceChart({ token }: { token: ParsedUserAsset }) {
     if (!point || !data) return null;
     return {
       date: point.timestamp * 1000,
-      changePercentage: percentDiff(lastPrice, point.price),
+      changePercentage: percentDiff(
+        point.price,
+        priceAtBeginningOfSelectedTime,
+      ),
     };
   }, null);
 
@@ -208,23 +244,10 @@ export function PriceChart({ token }: { token: ParsedUserAsset }) {
               />
             )}
           </Box>
-          <Box display="flex" justifyContent="center" gap="12px">
-            {chartTimes.map((time) => {
-              const isSelected = time === selectedTime;
-              return (
-                <Button
-                  onClick={() => setSelectedTime(time)}
-                  key={time}
-                  height="24px"
-                  variant={isSelected ? 'tinted' : 'transparentHover'}
-                  color={isSelected ? 'accent' : 'labelTertiary'}
-                  tabIndex={0}
-                >
-                  {i18n.t(`token_details.${time}`)}
-                </Button>
-              );
-            })}
-          </Box>
+          <SelectChartTime
+            selectedTime={selectedTime}
+            setSelectedTime={setSelectedTime}
+          />
         </>
       )}
     </>

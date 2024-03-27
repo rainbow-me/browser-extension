@@ -12,6 +12,7 @@ import {
   queryClient,
 } from '~/core/react-query';
 import {
+  ETH_ADDRESS,
   SUPPORTED_MAINNET_CHAINS,
   SupportedCurrencyKey,
 } from '~/core/references';
@@ -38,7 +39,6 @@ import {
 import { getRainbowChains } from '~/core/utils/chains';
 import { convertDecimalFormatToRawAmount, isZero } from '~/core/utils/numbers';
 import { RainbowError, logger } from '~/logger';
-import { ETH_MAINNET_ASSET } from '~/test/utils';
 
 import { ASSETS_TIMEOUT_DURATION } from './assets';
 
@@ -202,10 +202,6 @@ async function customNetworkAssetsFunction({
       )
       .map(async (chain) => {
         const provider = getProvider({ chainId: chain.id });
-        const nativeAssetAddress =
-          chain.id === ChainId.mainnet
-            ? ETH_MAINNET_ASSET.address
-            : AddressZero;
         const nativeAssetBalance = (
           await provider.getBalance(address)
         )?.toString();
@@ -214,19 +210,19 @@ async function customNetworkAssetsFunction({
           (filterZeroBalance ? !isZero(nativeAssetBalance) : true)
             ? parseUserAssetBalances({
                 asset: {
-                  address: nativeAssetAddress,
+                  address: AddressZero,
                   chainId: chain.id,
                   chainName: chain.name as ChainName,
                   isNativeAsset: true,
                   name: chain.nativeCurrency.symbol,
                   symbol: chain.nativeCurrency.symbol,
-                  uniqueId: `${'eth'}_${chain.id}`,
+                  uniqueId: `${ETH_ADDRESS}_${chain.id}`,
                   decimals: 18,
                   native: { price: undefined },
                   price: { value: 0 },
                   bridging: { isBridgeable: false, networks: [] },
-                  mainnetAddress: nativeAssetAddress as AddressOrEth,
-                  icon_url: getCustomChainIconUrl(chain.id, nativeAssetAddress),
+                  mainnetAddress: ETH_ADDRESS as AddressOrEth,
+                  icon_url: getCustomChainIconUrl(chain.id, ETH_ADDRESS),
                 },
                 currency,
                 balance: nativeAssetBalance,

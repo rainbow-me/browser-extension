@@ -39,7 +39,6 @@ declare global {
       BSC_TESTNET_RPC: string;
       POLYGON_MUMBAI_RPC: string;
       ARBITRUM_SEPOLIA_RPC: string;
-      ARBITRUM_GOERLI_RPC: string;
       BASE_SEPOLIA_RPC: string;
       ZORA_SEPOLIA_RPC: string;
       AVALANCHE_MAINNET_RPC: string;
