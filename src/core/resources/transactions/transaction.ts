@@ -60,7 +60,6 @@ export const fetchTransaction = async ({
       params: { currency: currency.toLowerCase() },
     });
     const tx = response.data.payload.transaction;
-    console.log(tx);
     if (response.data.meta.status === 'pending') {
       const localPendingTx = searchInLocalPendingTransactions(address, hash);
       if (localPendingTx) return localPendingTx;
@@ -248,42 +247,3 @@ export const useTransaction = ({
       : backendTransactionIsFetched,
   };
 };
-
-// {
-//   "hash": "0xa4b337726133df28af806ab316cf7faeb7a1bbfa39d931cd218a25f0ea6781ba",
-//   "type": 2,
-//   "accessList": [],
-//   "blockHash": null,
-//   "blockNumber": null,
-//   "transactionIndex": null,
-//   "confirmations": 0,
-//   "from": "0x507F0daA42b215273B8a063B092ff3b6d27767aF",
-//   "gasPrice": {
-//       "type": "BigNumber",
-//       "hex": "0x04e3b29200"
-//   },
-//   "maxPriorityFeePerGas": {
-//       "type": "BigNumber",
-//       "hex": "0x3b9aca00"
-//   },
-//   "maxFeePerGas": {
-//       "type": "BigNumber",
-//       "hex": "0x04e3b29200"
-//   },
-//   "gasLimit": {
-//       "type": "BigNumber",
-//       "hex": "0x0298ba"
-//   },
-//   "to": "0x00000000009726632680FB29d3F7A9734E3010E2",
-//   "value": {
-//       "type": "BigNumber",
-//       "hex": "0x18de76816d8000"
-//   },
-//   "nonce": 230,
-//   "data": "0x3c2b9a7d0000000000000000000000007fd4d7737597e7b4ee22acbf8d94362343ae0a790000000000000000000000001111111254eeb25477b68fb85ed929f73a96058200000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000361d6c5d380000000000000000000000000000000000000000000000000000000000000000c80502b1c500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000018a8591510480000000000000000000000000000000000000000000000000000000000000000640000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000000180000000000000003b6d0340aaea0db2b27344f20e0245d3b058d746e9dd98d5520b7e0f000000000000000000000000000000000000000000000000e76c9849",
-//   "r": "0xec9fb10f291fde2dda7795b9a028fe5d7d752baf66e175038a9e22db3d2567e4",
-//   "s": "0x70c9c53275f1348bd67d4c43187675d78e05be0061e2f8a9b882aa7de7703b6c",
-//   "v": 0,
-//   "creates": null,
-//   "chainId": 1
-// }
