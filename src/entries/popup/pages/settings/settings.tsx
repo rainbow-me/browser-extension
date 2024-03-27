@@ -437,7 +437,7 @@ export function Settings() {
             last
             leftComponent={<MenuItem.TextIcon icon="💬" />}
             titleComponent={
-              <MenuItem.Title text={i18n.t('settings.share_beta_feedback')} />
+              <MenuItem.Title text={i18n.t('settings.share_feedback')} />
             }
             rightComponent={
               <Symbol
