@@ -1734,6 +1734,7 @@
   "unverified": "Unverified",
   "skip": "Skip",
   "done": "Done",
+  "view_on_explorer": "View on %{explorer}",
   "watch_asset": {
     "chain_id": "Chain ID",
     "symbol": "Symbol",

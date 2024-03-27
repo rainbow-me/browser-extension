@@ -242,8 +242,10 @@ export function parseTransaction({
 
   if (
     !type ||
-    (transactionTypeShouldHaveChanges(type) && changes.length === 0) ||
-    !tx.address_from
+    !tx.address_from ||
+    (status !== 'failed' && // failed txs won't have changes
+      transactionTypeShouldHaveChanges(type) &&
+      changes.length === 0)
   )
     return; // filters some spam or weird api responses
 

@@ -103,7 +103,7 @@ async function parseTransactions(
   currency: SupportedCurrencyKey,
 ) {
   const data = message?.payload?.transactions || [];
-  const parsedTransactionPromises = data
+  return data
     .map((tx) =>
       parseTransaction({
         tx,
@@ -114,11 +114,6 @@ async function parseTransactions(
       }),
     )
     .filter(Boolean);
-
-  const parsedTransactions = (
-    await Promise.all(parsedTransactionPromises)
-  ).flat();
-  return parsedTransactions;
 }
 
 // ///////////////////////////////////////////////
