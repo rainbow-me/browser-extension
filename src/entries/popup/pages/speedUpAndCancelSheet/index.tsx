@@ -1,6 +1,6 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import BigNumber from 'bignumber.js';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Address,
   useAccount,
@@ -11,6 +11,7 @@ import {
 
 import { i18n } from '~/core/languages';
 import { useGasStore } from '~/core/state';
+import { useSelectedTransactionStore } from '~/core/state/selectedTransaction';
 import { ChainId } from '~/core/types/chains';
 import {
   GasSpeed,
@@ -78,7 +79,7 @@ export function SpeedUpAndCancelSheet({
   onClose,
   transaction,
 }: SpeedUpAndCancelSheetProps) {
-  // const { setSelectedTransaction } = useSelectedTransactionStore();
+  const { setSelectedTransaction } = useSelectedTransactionStore();
   const { selectedGas } = useGasStore();
   const [sending, setSending] = useState(false);
 
@@ -271,6 +272,14 @@ export function SpeedUpAndCancelSheet({
       setSending(false);
     }
   };
+
+  useEffect(() => {
+    // we keep this outside of `onClose` so that global shortcuts (e.g. Escape) still clear the tx
+    return () => {
+      setSelectedTransaction();
+    }; // invoke without param to remove selection
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const { address } = useAccount();
 
