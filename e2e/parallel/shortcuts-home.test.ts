@@ -197,6 +197,8 @@ describe.runIf(browser !== 'firefox')(
     });
 
     it('should be able to navigate to highlight transaction + open context menu with keyboard', async () => {
+      await delayTime('medium');
+      await findElementByText(driver, 'Tokens');
       await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
       await findElementByText(driver, 'Activity');
       await executePerformShortcut({
@@ -207,6 +209,8 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({ driver, key: 'ENTER' });
       await findElementByText(driver, 'Copy Tx Hash');
       await executePerformShortcut({ driver, key: 'ESCAPE' });
+      await delayTime('very-long');
+      await delayTime('very-long');
       const txHash = await isElementFoundByText({
         text: 'Copy Tx Hash',
         driver,
