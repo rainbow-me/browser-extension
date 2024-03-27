@@ -312,8 +312,9 @@ export const ReviewSheet = ({
   );
 
   const sendEnabled = useMemo(
-    () => !notSendingOnEthereum || notSendingOnEthereumChecks,
-    [notSendingOnEthereum, notSendingOnEthereumChecks],
+    () =>
+      !notSendingOnEthereum || notSendingOnEthereumChecks || isToWalletOwner,
+    [isToWalletOwner, notSendingOnEthereum, notSendingOnEthereumChecks],
   );
 
   const handleSend = useCallback(async () => {
@@ -537,14 +538,14 @@ export const ReviewSheet = ({
                     </Columns>
                   </Row>
                 </Rows>
-                {notSendingOnEthereum && (
+                {notSendingOnEthereum && !isToWalletOwner && (
                   <Separator color="separatorTertiary" />
                 )}
               </Stack>
             </Box>
           </Stack>
 
-          {notSendingOnEthereum && (
+          {notSendingOnEthereum && !isToWalletOwner && (
             <Box paddingHorizontal="16px" paddingBottom="20px">
               <Stack space="20px">
                 <Box
