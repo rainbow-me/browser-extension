@@ -209,6 +209,7 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({ driver, key: 'ENTER' });
       await findElementByText(driver, 'Copy Tx Hash');
       await executePerformShortcut({ driver, key: 'ESCAPE' });
+      await delayTime('very-long');
       const txHash = await isElementFoundByText({
         text: 'Copy Tx Hash',
         driver,
