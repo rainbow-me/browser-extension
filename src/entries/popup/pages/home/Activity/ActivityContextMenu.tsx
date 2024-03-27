@@ -34,6 +34,11 @@ export function ActivityContextMenu({
   const [open, setOpen] = useState(false);
   const revokeRef = useRef<HTMLDivElement>(null);
 
+  const onOpenChange = (open: boolean) => {
+    if (!open) setSelectedTransaction(undefined);
+    setOpen(open);
+  };
+
   const truncatedHash = truncateAddress(transaction.hash);
 
   const handleCopy = () => {
@@ -74,14 +79,8 @@ export function ActivityContextMenu({
     },
   });
 
-  // useEffect(() => {
-  //   if (!open) {
-  //     setSelectedTransaction(undefined);
-  //   }
-  // }, [open, setSelectedTransaction]);
-
   return (
-    <ContextMenu onOpenChange={setOpen}>
+    <ContextMenu onOpenChange={onOpenChange}>
       <ContextMenuTrigger onTrigger={onTrigger}>{children}</ContextMenuTrigger>
       <ContextMenuContent>
         {transaction?.status === 'pending' && (
