@@ -57,7 +57,6 @@ const useGas = ({
   const { currentCurrency } = useCurrentCurrencyStore();
   const { data: gasData, isLoading } = useGasData({ chainId });
   const { nativeAsset } = useNativeAsset({ chainId, address });
-  const prevDefaultSpeed = usePrevious(defaultSpeed);
 
   const [internalMaxPriorityFee, setInternalMaxPriorityFee] = useState('');
   const [internalMaxBaseFee, setInternalMaxBaseFee] = useState('');
@@ -77,7 +76,6 @@ const useGas = ({
   );
 
   const {
-    selectedGas,
     setSelectedGas,
     gasFeeParamsBySpeed: storeGasFeeParamsBySpeed,
     setGasFeeParamsBySpeed,
@@ -166,8 +164,6 @@ const useGas = ({
     const maxBaseFee = (storeGasFeeParamsBySpeed?.custom as GasFeeParams)
       ?.maxBaseFee?.amount;
 
-    console.log('setCustomMaxPriorityFee', debouncedMaxPriorityFee);
-
     let maxPriorityFeeWei = gweiToWei(debouncedMaxPriorityFee || '0');
     // Set the flashbots minimum
     if (
@@ -252,42 +248,6 @@ const useGas = ({
     setSelectedGas({ selectedGas: gasFeeParamsBySpeed[selectedSpeed] });
     return selectedSpeed;
   }, defaultSpeed || GasSpeed.NORMAL);
-
-  // useEffect(() => {
-  //   if (prevDefaultSpeed !== defaultSpeed) {
-  //     setSelectedSpeed(defaultSpeed);
-  //   }
-  // }, [defaultSpeed, prevDefaultSpeed]);
-
-  // // useEffect(() => {
-  // if (
-  //   enabled &&
-  //   gasFeeParamsBySpeed?.[selectedSpeed] &&
-  //   gasFeeParamsChanged(selectedGas, gasFeeParamsBySpeed?.[selectedSpeed])
-  // ) {
-  //   console.log(
-  //     'AAAAA',
-  //     {
-  //       a: [selectedGas, gasFeeParamsBySpeed?.[selectedSpeed]],
-  //       selectedSpeed,
-  //     },
-  //     gasFeeParamsChanged(selectedGas, gasFeeParamsBySpeed?.[selectedSpeed]),
-  //   );
-
-  //   // if (i === 0) {
-  //   setSelectedGas({
-  //     selectedGas: gasFeeParamsBySpeed[selectedSpeed],
-  //   });
-  //   //   i++;
-  //   // }
-  // }
-  // // }, [
-  // //   enabled,
-  // //   gasFeeParamsBySpeed,
-  // //   selectedGas,
-  // //   selectedSpeed,
-  // //   setSelectedGas,
-  // // ]);
 
   useEffect(() => {
     if (

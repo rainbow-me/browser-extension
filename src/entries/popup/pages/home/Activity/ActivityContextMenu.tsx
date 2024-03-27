@@ -10,10 +10,10 @@ import { copy } from '~/core/utils/copy';
 import { goToNewTab } from '~/core/utils/tabs';
 import { getTransactionBlockExplorer } from '~/core/utils/transactions';
 import { Box, Text } from '~/design-system';
-import { DetailsMenuWrapper } from '~/entries/popup/components/DetailsMenu';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 
 import {
+  ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuSeparator,
@@ -33,6 +33,11 @@ export function ActivityContextMenu({
   const { setSelectedTransaction } = useSelectedTransactionStore();
   const [open, setOpen] = useState(false);
   const revokeRef = useRef<HTMLDivElement>(null);
+
+  const onOpenChange = (open: boolean) => {
+    if (!open) setSelectedTransaction(undefined);
+    setOpen(open);
+  };
 
   const truncatedHash = truncateAddress(transaction.hash);
 
@@ -77,14 +82,8 @@ export function ActivityContextMenu({
     },
   });
 
-  // useEffect(() => {
-  //   if (!open) {
-  //     setSelectedTransaction(undefined);
-  //   }
-  // }, [open, setSelectedTransaction]);
-
   return (
-    <DetailsMenuWrapper onOpenChange={setOpen} closed={!open}>
+    <ContextMenu onOpenChange={onOpenChange}>
       <ContextMenuTrigger onTrigger={onTrigger}>{children}</ContextMenuTrigger>
       <ContextMenuContent>
         {transaction?.status === 'pending' && (
@@ -151,6 +150,6 @@ export function ActivityContextMenu({
           </ContextMenuItem>
         ) : null}
       </ContextMenuContent>
-    </DetailsMenuWrapper>
+    </ContextMenu>
   );
 }
