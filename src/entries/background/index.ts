@@ -1,3 +1,8 @@
+try {
+  importScripts('./vendor/trezor-connect-webextension.js');
+} catch (e) {
+  console.log('error importing Trezor script: ', e);
+}
 import { uuid4 } from '@sentry/utils';
 
 import { initFCM } from '~/core/firebase/fcm';
@@ -5,6 +10,7 @@ import config from '~/core/firebase/remoteConfig';
 import { initializeMessenger } from '~/core/messengers';
 import { initializeSentry } from '~/core/sentry';
 import { syncStores } from '~/core/state/internal/syncStores';
+import { initializeTrezor } from '~/core/trezor/initializeTrezor';
 import { getRainbowChains } from '~/core/utils/chains';
 import { createWagmiClient } from '~/core/wagmi';
 
@@ -18,6 +24,7 @@ import { handleTabAndWindowUpdates } from './handlers/handleTabAndWindowUpdates'
 import { handleWallets } from './handlers/handleWallets';
 require('../../core/utils/lockdown');
 
+initializeTrezor();
 initializeSentry('background');
 
 const updateWagmiClient = () => {
