@@ -24,6 +24,7 @@ import {
   importHardwareWallet,
   importWallet,
   isInitialized,
+  isMnemonicInVault,
   isPasswordSet,
   isVaultUnlocked,
   lockVault,
@@ -150,6 +151,9 @@ export const handleWallets = () =>
             response = await deriveAccountsFromSecret(
               payload as EthereumWalletSeed,
             );
+            break;
+          case 'is_mnemonic_in_vault':
+            response = await isMnemonicInVault(payload as EthereumWalletSeed);
             break;
           case 'get_accounts':
             response = await getAccounts();

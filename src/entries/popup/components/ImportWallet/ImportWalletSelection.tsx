@@ -1,3 +1,4 @@
+import { useMutation } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
@@ -69,17 +70,14 @@ const useDeriveAccountsFromSecrets = (secrets: string[]) => {
 };
 
 export const useImportWalletsFromSecrets = () => {
-  const [isImporting, setIsImporting] = useState(false);
-
-  const importSecrets = async ({
-    secrets,
-    accountsIgnored = [],
-  }: {
-    secrets: string[];
-    accountsIgnored?: Address[];
-  }) => {
-    setIsImporting(true);
-    return (async () => {
+  const { mutateAsync: importSecrets, isLoading: isImporting } = useMutation({
+    mutationFn: async ({
+      secrets,
+      accountsIgnored = [],
+    }: {
+      secrets: string[];
+      accountsIgnored?: Address[];
+    }) => {
       const prevAccounts = await wallet.getAccounts();
       await wallet.importWithSecret(secrets.join(' '));
 
@@ -94,12 +92,12 @@ export const useImportWalletsFromSecrets = () => {
       await Promise.all(accountsToRemove.map(wallet.remove));
 
       return wallet.getAccounts();
-    })().finally(() => {
-      setIsImporting(false);
+    },
+    onSuccess: () => {
       derivedAccountsStore.clear();
       removeImportWalletSecrets();
-    });
-  };
+    },
+  });
 
   return { importSecrets, isImporting };
 };
@@ -130,7 +128,10 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
   const onImport = () =>
     importSecrets({ secrets }).then(() => {
       setCurrentAddress(accountsToImport[0]);
-      if (onboarding) navigate(ROUTES.CREATE_PASSWORD);
+      if (onboarding)
+        navigate(ROUTES.CREATE_PASSWORD, {
+          state: { backTo: ROUTES.IMPORT__SEED },
+        });
       else navigate(ROUTES.HOME);
     });
 
