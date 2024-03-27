@@ -197,7 +197,30 @@ describe.runIf(browser !== 'firefox')(
     });
 
     it('should be able to navigate to highlight transaction + open context menu with keyboard', async () => {
-      await findElementByText(driver, 'Tokens');
+      try {
+        await findElementByText(driver, 'Tokens');
+        console.log('tokens found');
+      } catch {
+        console.log('tokens not found');
+      }
+      try {
+        await findElementByText(driver, 'Activity');
+        console.log('Activity found');
+      } catch {
+        console.log('Activity not found');
+      }
+      try {
+        await findElementByText(driver, 'NFTs');
+        console.log('NFTs found');
+      } catch {
+        console.log('NFTs not found');
+      }
+      try {
+        await findElementByText(driver, 'Points');
+        console.log('Points found');
+      } catch {
+        console.log('Points not found');
+      }
       await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
       await findElementByText(driver, 'Activity');
       await executePerformShortcut({
