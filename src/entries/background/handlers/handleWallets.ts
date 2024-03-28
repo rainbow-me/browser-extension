@@ -6,7 +6,7 @@ import {
 import { Bytes } from '@ethersproject/bytes';
 import { ChainId } from '@rainbow-me/swaps';
 import { type Address } from 'viem';
-import { getProvider } from '@wagmi/core';
+import { getPublicClient } from 'wagmi/actions';
 
 import {
   addAccountAtIndex,
@@ -187,7 +187,7 @@ export const handleWallets = () =>
             ) {
               provider = getFlashbotsProvider();
             } else {
-              provider = getProvider({
+              provider = getPublicClient({
                 chainId: (payload as TransactionRequest).chainId,
               });
             }
@@ -206,7 +206,7 @@ export const handleWallets = () =>
             ) {
               provider = getFlashbotsProvider();
             } else {
-              provider = getProvider({
+              provider = getPublicClient({
                 chainId: p.rapActionParameters.chainId,
               });
             }

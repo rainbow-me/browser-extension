@@ -14,7 +14,7 @@ import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import { SignTypedDataVersion, TypedDataUtils } from '@metamask/eth-sig-util';
 import { ChainId } from '@rainbow-me/swaps';
 import { type Address } from 'viem';
-import { getProvider } from '@wagmi/core';
+import { getPublicClient } from 'wagmi/actions';
 
 import { i18n } from '~/core/languages';
 import { LEGACY_CHAINS_FOR_HW } from '~/core/references';
@@ -123,7 +123,7 @@ export async function sendTransactionFromLedger(
   transaction: TransactionRequest,
 ): Promise<TransactionResponse> {
   const serializedTransaction = await signTransactionFromLedger(transaction);
-  const provider = getProvider({
+  const provider = getPublicClient({
     chainId: transaction.chainId,
   });
 

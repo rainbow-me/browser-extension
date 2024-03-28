@@ -1,5 +1,5 @@
 import { type Address } from 'viem';
-import { getProvider } from '@wagmi/core';
+import { getPublicClient } from 'wagmi/actions';
 
 import { createQueryKey } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
@@ -88,7 +88,7 @@ export async function parseUserAssets({
       ? ETH_MAINNET_ASSET
       : OPTIMISM_MAINNET_ASSET;
 
-    const provider = getProvider({ chainId: selectedHardhatChainId });
+    const provider = getPublicClient({ chainId: selectedHardhatChainId });
 
     // Ensure assets are checked if connected to hardhat
     const assets = parsedAssetsDict[mainnetOrOptimismChainId];

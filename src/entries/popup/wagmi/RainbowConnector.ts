@@ -41,7 +41,7 @@ export class RainbowConnector extends Connector<
 
   async connect() {
     const [provider, account, chainId] = await Promise.all([
-      this.getProvider(),
+      this.getPublicClient(),
       this.getAccount(),
       this.getChainId(),
     ]);
@@ -66,7 +66,7 @@ export class RainbowConnector extends Connector<
   }
 
   async disconnect() {
-    const provider = await this.getProvider();
+    const provider = await this.getPublicClient();
     if (!provider?.removeListener) return;
 
     // TODO: Remove event listeners from `connect`.
@@ -86,13 +86,13 @@ export class RainbowConnector extends Connector<
     return currentChainId || 1;
   }
 
-  async getProvider() {
+  async getPublicClient() {
     return this.#provider;
   }
 
   async getSigner({ chainId }: { chainId?: number } = {}) {
     const [provider, account] = await Promise.all([
-      this.getProvider(),
+      this.getPublicClient(),
       this.getAccount(),
     ]);
     return new Web3Provider(

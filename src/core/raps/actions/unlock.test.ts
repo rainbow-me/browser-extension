@@ -1,6 +1,6 @@
 import { Wallet } from '@ethersproject/wallet';
 import { RAINBOW_ROUTER_CONTRACT_ADDRESS } from '@rainbow-me/swaps';
-import { getProvider } from '@wagmi/core';
+import { getPublicClient } from 'wagmi/actions';
 import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test } from 'vitest';
 
@@ -57,7 +57,7 @@ test('[rap/unlock] :: estimate approve', async () => {
 });
 
 test('[rap/unlock] :: should execute approve', async () => {
-  const provider = getProvider({ chainId: mainnet.id });
+  const provider = getPublicClient({ chainId: mainnet.id });
   const wallet = new Wallet(TEST_PK_1, provider);
   const approvalTx = await executeApprove({
     chainId: mainnet.id,

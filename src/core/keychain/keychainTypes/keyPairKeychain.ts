@@ -2,7 +2,7 @@
 import { Signer } from '@ethersproject/abstract-signer';
 import { Mnemonic } from '@ethersproject/hdnode';
 import { Wallet } from '@ethersproject/wallet';
-import { getProvider } from '@wagmi/core';
+import { getPublicClient } from 'wagmi/actions';
 import { type Address } from 'viem';
 import { mainnet } from 'viem/chains';
 
@@ -33,7 +33,7 @@ export class KeyPairKeychain implements IKeychain {
   }
 
   getSigner(address: Address): Signer {
-    const provider = getProvider({ chainId: mainnet.id });
+    const provider = getPublicClient({ chainId: mainnet.id });
     const wallet = privates.get(this).wallets[0] as TWallet;
     if (!wallet) throw new Error('Account not found');
     return new RainbowSigner(provider, wallet.privateKey, wallet.address);

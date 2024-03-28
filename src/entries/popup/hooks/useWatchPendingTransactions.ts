@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { type Address } from 'viem';
 import { mainnet } from 'viem/chains';
-import { getProvider } from '@wagmi/core';
+import { getPublicClient } from 'wagmi/actions';
 
 import { queryClient } from '~/core/react-query';
 import { userAssetsFetchQuery } from '~/core/resources/assets/userAssets';
@@ -85,7 +85,7 @@ export const useWatchPendingTransactions = ({
 
   const processCustomNetworkTransaction = useCallback(
     async (tx: RainbowTransaction) => {
-      const provider = getProvider({ chainId: tx.chainId });
+      const provider = getPublicClient({ chainId: tx.chainId });
       const transactionResponse = await provider.getTransaction(tx.hash);
       const transactionStatus = await getTransactionReceiptStatus({
         transactionResponse,
@@ -200,7 +200,7 @@ export const useWatchPendingTransactions = ({
       }, new Map());
 
       chainIds.map(async (chainId) => {
-        const provider = getProvider({ chainId });
+        const provider = getPublicClient({ chainId });
         const providerTransactionCount = await provider.getTransactionCount(
           address,
           'latest',

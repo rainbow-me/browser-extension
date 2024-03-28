@@ -1,6 +1,6 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { useQuery } from '@tanstack/react-query';
-import { getProvider } from '@wagmi/core';
+import { getPublicClient } from 'wagmi/actions';
 
 import {
   QueryConfig,
@@ -51,7 +51,7 @@ async function optimismL1SecurityFeeQueryFunction({
   queryKey: [{ transactionRequest, chainId }],
 }: QueryFunctionArgs<typeof optimismL1SecurityFeeQueryKey>) {
   if (chainNeedsL1SecurityFee(chainId)) {
-    const provider = getProvider({ chainId: ChainId.optimism });
+    const provider = getPublicClient({ chainId: ChainId.optimism });
     const gasPrice = await provider.getGasPrice();
     const l1Fee = await calculateL1FeeOptimism({
       currentGasPrice: gasPrice.toString(),

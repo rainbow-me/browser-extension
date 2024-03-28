@@ -1,5 +1,6 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Hash, getProvider } from '@wagmi/core';
+import { Hash } from '@wagmi/core';
+import { getPublicClient } from 'wagmi/actions';
 import { type Address } from 'viem';
 
 import { i18n } from '~/core/languages';
@@ -124,7 +125,7 @@ const getCustomChainTransaction = async ({
   chainId: number;
   hash: Hash;
 }) => {
-  const provider = getProvider({ chainId });
+  const provider = getPublicClient({ chainId });
   const transaction = await provider.getTransaction(hash);
   if (!transaction)
     throw `getCustomChainTransaction: couldn't find transaction`;

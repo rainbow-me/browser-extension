@@ -8,7 +8,7 @@ import { keccak256 } from '@ethersproject/keccak256';
 import AppEth from '@ledgerhq/hw-app-eth';
 import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import { type Address } from 'viem';
-import { getProvider } from '@wagmi/core';
+import { getPublicClient } from 'wagmi/actions';
 
 import { PrivateKey } from '~/core/keychain/IKeychain';
 import { getHDPathForVendorAndType } from '~/core/keychain/hdPath';
@@ -62,7 +62,7 @@ export const signTransactionFromHW = async (
   vendor: string,
 ): Promise<string | undefined> => {
   const { selectedGas } = gasStore.getState();
-  const provider = getProvider({
+  const provider = getPublicClient({
     chainId: transactionRequest.chainId,
   });
   const gasLimit = await estimateGasWithPadding({
@@ -97,7 +97,7 @@ export const sendTransaction = async (
   transactionRequest: TransactionRequest,
 ): Promise<TransactionResponse> => {
   const { selectedGas } = gasStore.getState();
-  const provider = getProvider({
+  const provider = getPublicClient({
     chainId: transactionRequest.chainId,
   });
   const gasLimit = await estimateGasWithPadding({

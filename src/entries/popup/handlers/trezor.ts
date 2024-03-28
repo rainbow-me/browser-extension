@@ -15,7 +15,7 @@ import { SignTypedDataVersion, TypedDataUtils } from '@metamask/eth-sig-util';
 import { ChainId } from '@rainbow-me/swaps';
 import transformTypedDataPlugin from '@trezor/connect-plugin-ethereum';
 import { type Address } from 'viem';
-import { getProvider } from '@wagmi/core';
+import { getPublicClient } from 'wagmi/actions';
 
 import { LEGACY_CHAINS_FOR_HW } from '~/core/references';
 import { addHexPrefix } from '~/core/utils/hex';
@@ -32,7 +32,7 @@ export async function signTransactionFromTrezor(
 ): Promise<string> {
   try {
     const { from: address } = transaction;
-    const provider = getProvider({
+    const provider = getPublicClient({
       chainId: transaction.chainId,
     });
 
@@ -111,7 +111,7 @@ export async function sendTransactionFromTrezor(
   transaction: TransactionRequest,
 ): Promise<TransactionResponse> {
   const serializedTransaction = await signTransactionFromTrezor(transaction);
-  const provider = getProvider({
+  const provider = getPublicClient({
     chainId: transaction.chainId,
   });
   return provider.sendTransaction(serializedTransaction);

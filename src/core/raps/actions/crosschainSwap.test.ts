@@ -6,7 +6,7 @@ import {
   SwapType,
   getCrosschainQuote,
 } from '@rainbow-me/swaps';
-import { getProvider } from '@wagmi/core';
+import { getPublicClient } from 'wagmi/actions';
 import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test } from 'vitest';
 
@@ -53,7 +53,7 @@ test('[rap/crosschainSwap] :: should estimate crosschain swap gas limit', async 
 });
 
 test('[rap/crosschainSwap] :: should execute crosschain swap', async () => {
-  const provider = getProvider({ chainId: mainnet.id });
+  const provider = getPublicClient({ chainId: mainnet.id });
   const wallet = new Wallet(TEST_PK_3, provider);
 
   const swapTx = await executeCrosschainSwap({

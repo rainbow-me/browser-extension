@@ -5,8 +5,8 @@ import { parseUnits } from '@ethersproject/units';
 import { type Address, erc20Abi } from 'viem';
 import {
   getContract,
-  getProvider,
-} from '@wagmi/core';
+  getPublicClient,
+} from 'wagmi/actions';
 
 import { ChainId } from '~/core/types/chains';
 import {
@@ -41,7 +41,7 @@ export const getAssetRawAllowance = async ({
   chainId: ChainId;
 }) => {
   try {
-    const provider = await getProvider({ chainId });
+    const provider = await getPublicClient({ chainId });
     const tokenContract = new Contract(assetAddress, erc20Abi, provider);
     const allowance = await tokenContract.allowance(owner, spender);
     return allowance.toString();
@@ -93,7 +93,7 @@ export const estimateApprove = async ({
   chainId: ChainId;
 }): Promise<string> => {
   try {
-    const provider = getProvider({ chainId });
+    const provider = getPublicClient({ chainId });
     const tokenContract = new Contract(tokenAddress, erc20Abi, provider);
     const gasLimit = await tokenContract.estimateGas.approve(
       spender,
@@ -123,7 +123,7 @@ export const populateApprove = async ({
   chainId: ChainId;
 }): Promise<PopulatedTransaction | null> => {
   try {
-    const provider = getProvider({ chainId });
+    const provider = getPublicClient({ chainId });
     const tokenContract = new Contract(tokenAddress, erc20Abi, provider);
     const approveTransaction = await tokenContract.populateTransaction.approve(
       spender,
@@ -153,7 +153,7 @@ export const estimateERC721Approval = async ({
   chainId: ChainId;
 }): Promise<string> => {
   try {
-    const provider = getProvider({ chainId });
+    const provider = getPublicClient({ chainId });
     const tokenContract = new Contract(tokenAddress, erc20Abi, provider);
     const gasLimit = await tokenContract.estimateGas.setApprovalForAll(
       spender,
@@ -186,7 +186,7 @@ export const populateRevokeApproval = async ({
   type: 'erc20' | 'nft';
 }): Promise<PopulatedTransaction> => {
   if (!tokenAddress || !spenderAddress || !chainId) return {};
-  const provider = getProvider({ chainId });
+  const provider = getPublicClient({ chainId });
   const tokenContract = new Contract(tokenAddress, erc20Abi, provider);
   if (type === 'erc20') {
     const amountToApprove = parseUnits('0', 'ether');

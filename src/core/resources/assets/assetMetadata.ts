@@ -1,7 +1,7 @@
 import { isValidAddress } from '@ethereumjs/util';
 import { useQuery } from '@tanstack/react-query';
 import { type Address } from 'viem';
-import { getProvider } from '@wagmi/core';
+import { getPublicClient } from 'wagmi/actions';
 
 import {
   QueryConfig,
@@ -41,7 +41,7 @@ async function assetMetadataQueryFunction({
   queryKey: [{ assetAddress, chainId }],
 }: QueryFunctionArgs<typeof assetMetadataQueryKey>) {
   if (assetAddress && isValidAddress(assetAddress)) {
-    const provider = getProvider({ chainId: Number(chainId) });
+    const provider = getPublicClient({ chainId: Number(chainId) });
     const metadata = await getAssetMetadata({
       address: assetAddress,
       provider,

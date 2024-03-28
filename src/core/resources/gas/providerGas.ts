@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { type Chain } from 'viem/chains';
-import { getProvider } from '@wagmi/core';
+import { getPublicClient } from 'wagmi/actions';
 
 import {
   QueryConfig,
@@ -34,7 +34,7 @@ type ProviderGasQueryKey = ReturnType<typeof providerGasQueryKey>;
 async function providerGasQueryFunction({
   queryKey: [{ chainId }],
 }: QueryFunctionArgs<typeof providerGasQueryKey>) {
-  const provider = getProvider({ chainId });
+  const provider = getPublicClient({ chainId });
   const gasPrice = await provider.getGasPrice();
   const gweiGasPrice = weiToGwei(gasPrice.toString());
 

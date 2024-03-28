@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { type Address } from 'viem';
-import { getProvider } from 'wagmi/actions';
+import { getPublicClient } from 'wagmi/actions';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -110,7 +110,7 @@ export const WatchAsset = ({
   }, [asset, wrongNetwork]);
 
   const fetchAssetData = useCallback(async () => {
-    const provider = getProvider({ chainId: Number(selectedChainId) });
+    const provider = getPublicClient({ chainId: Number(selectedChainId) });
     const assetWithMetadata = asset;
 
     // Get the balance onchain

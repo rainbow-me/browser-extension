@@ -4,7 +4,7 @@ import { BytesLike } from '@ethersproject/bytes';
 import { Wallet } from '@ethersproject/wallet';
 import * as bip39 from '@scure/bip39';
 import { wordlist as englishWordlist } from '@scure/bip39/wordlists/english';
-import { getProvider } from '@wagmi/core';
+import { getPublicClient } from 'wagmi/actions';
 import { HDKey } from 'ethereum-cryptography/hdkey';
 import { bytesToHex } from 'ethereum-cryptography/utils';
 import { type Address } from 'viem';
@@ -107,7 +107,7 @@ export class HdKeychain implements IKeychain {
 
   getSigner(address: Address): Signer {
     const _privates = privates.get(this)!;
-    const provider = getProvider({ chainId: mainnet.id });
+    const provider = getPublicClient({ chainId: mainnet.id });
     const wallet = _privates!.getWalletForAddress(address) as TWallet;
     if (!wallet) throw new Error('Account not found');
     return new RainbowSigner(provider, wallet.privateKey, wallet.address);

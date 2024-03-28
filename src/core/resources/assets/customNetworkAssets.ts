@@ -1,7 +1,7 @@
 import { AddressZero } from '@ethersproject/constants';
 import { useQuery } from '@tanstack/react-query';
 import { type Address } from 'viem';
-import { getProvider } from '@wagmi/core';
+import { getPublicClient } from 'wagmi/actions';
 
 import { requestMetadata } from '~/core/graphql';
 import {
@@ -201,7 +201,7 @@ async function customNetworkAssetsFunction({
           !SUPPORTED_MAINNET_CHAINS.map((chain) => chain.id).includes(chain.id),
       )
       .map(async (chain) => {
-        const provider = getProvider({ chainId: chain.id });
+        const provider = getPublicClient({ chainId: chain.id });
         const nativeAssetBalance = (
           await provider.getBalance(address)
         )?.toString();

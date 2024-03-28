@@ -6,7 +6,7 @@ import {
   TransactionResponse,
 } from '@ethersproject/providers';
 import { formatUnits } from '@ethersproject/units';
-import { getProvider } from '@wagmi/core';
+import { getPublicClient } from 'wagmi/actions';
 import { isString } from 'lodash';
 import { type Address } from 'viem';
 
@@ -407,7 +407,7 @@ export async function getNextNonce({
   const { getNonce } = nonceStore.getState();
   const localNonceData = getNonce({ address, chainId });
   const localNonce = localNonceData?.currentNonce || 0;
-  const provider = getProvider({ chainId });
+  const provider = getPublicClient({ chainId });
   const txCountIncludingPending = await provider.getTransactionCount(
     address,
     'pending',

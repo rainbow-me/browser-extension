@@ -15,7 +15,7 @@ import {
   wrapNativeAsset,
 } from '@rainbow-me/swaps';
 import { type Address } from 'viem';
-import { getProvider } from '@wagmi/core';
+import { getPublicClient } from 'wagmi/actions';
 
 import { metadataPostClient } from '~/core/graphql';
 import { ChainId } from '~/core/types/chains';
@@ -58,7 +58,7 @@ export const estimateSwapGasLimit = async ({
   requiresApprove?: boolean;
   quote: Quote;
 }): Promise<string> => {
-  const provider = getProvider({ chainId });
+  const provider = getPublicClient({ chainId });
   if (!provider || !quote) {
     return gasUnits.basic_swap[chainId];
   }
@@ -161,7 +161,7 @@ export const estimateUnlockAndSwapFromMetadata = async ({
       chainId,
     });
     const swapTransaction = await populateSwap({
-      provider: getProvider({ chainId }),
+      provider: getPublicClient({ chainId }),
       quote,
     });
     if (

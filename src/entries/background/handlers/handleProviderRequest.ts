@@ -2,7 +2,7 @@ import {
   AddEthereumChainProposedChain,
   handleProviderRequest as rnbwHandleProviderRequest,
 } from '@rainbow-me/provider';
-import { getProvider } from '@wagmi/core';
+import { getPublicClient } from 'wagmi/actions';
 import { UserRejectedRequestError } from 'wagmi';
 import { type Chain } from 'viem/chains';
 
@@ -250,7 +250,7 @@ export const handleProviderRequest = ({
     getChain: (chainId: number) =>
       SUPPORTED_CHAINS.find((chain) => chain.id === Number(chainId)),
     getFeatureFlags: () => featureFlagsStore.getState().featureFlags,
-    getProvider: getProvider,
+    getProvider: getPublicClient,
     messengerProviderRequest: (request: ProviderRequestPayload) =>
       messengerProviderRequest(popupMessenger, request),
     onAddEthereumChain: ({

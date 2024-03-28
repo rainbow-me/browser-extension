@@ -7,7 +7,7 @@ import {
   SwapType,
   getQuote,
 } from '@rainbow-me/swaps';
-import { getProvider } from '@wagmi/core';
+import { getPublicClient } from 'wagmi/actions';
 import { beforeAll, expect, test } from 'vitest';
 
 import {
@@ -152,7 +152,7 @@ test('[rap/unlockAndSwap] :: create unlock and swap rap without unlock', async (
 });
 
 test('[rap/unlockAndSwap] :: create unlock and swap rap without unlock and execute it', async () => {
-  const provider = getProvider({ chainId: ChainId.mainnet });
+  const provider = getPublicClient({ chainId: ChainId.mainnet });
   const wallet = new Wallet(TEST_PK_1, provider);
   const swap = await walletExecuteRap(wallet, 'swap', {
     quote: doesntNeedUnlockQuote as Quote,
@@ -180,7 +180,7 @@ test('[rap/unlockAndSwap] :: create swap rap and execute it', async () => {
   setSelectedGas({
     selectedGas: SELECTED_GAS,
   });
-  const provider = getProvider({ chainId: ChainId.mainnet });
+  const provider = getPublicClient({ chainId: ChainId.mainnet });
   const wallet = new Wallet(TEST_PK_1, provider);
   const swap = await walletExecuteRap(wallet, 'swap', {
     quote: ethToEnsQuote as Quote,
@@ -197,7 +197,7 @@ test('[rap/unlockAndSwap] :: create unlock and swap rap with unlock and execute 
   setSelectedGas({
     selectedGas: SELECTED_GAS,
   });
-  const provider = getProvider({ chainId: ChainId.mainnet });
+  const provider = getPublicClient({ chainId: ChainId.mainnet });
   const wallet = new Wallet(TEST_PK_1, provider);
   const swap = await walletExecuteRap(wallet, 'swap', {
     quote: needsUnlockQuote as Quote,
@@ -214,7 +214,7 @@ test('[rap/unlockAndSwap] :: create unlock and wrap eth rap with unlock and exec
   setSelectedGas({
     selectedGas: SELECTED_GAS,
   });
-  const provider = getProvider({ chainId: ChainId.mainnet });
+  const provider = getPublicClient({ chainId: ChainId.mainnet });
   const wallet = new Wallet(TEST_PK_1, provider);
   const swap = await walletExecuteRap(wallet, 'swap', {
     quote: wrapEthQuote as Quote,
@@ -242,7 +242,7 @@ test('[rap/unlockAndSwap] :: create unwrap weth rap and execute it', async () =>
   setSelectedGas({
     selectedGas: SELECTED_GAS,
   });
-  const provider = getProvider({ chainId: ChainId.mainnet });
+  const provider = getPublicClient({ chainId: ChainId.mainnet });
   const wallet = new Wallet(TEST_PK_1, provider);
   const swap = await walletExecuteRap(wallet, 'swap', {
     quote: unwrapEthQuote as Quote,
