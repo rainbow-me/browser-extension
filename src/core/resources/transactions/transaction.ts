@@ -1,7 +1,6 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { Hash } from '@wagmi/core';
+import { type Address, type Hash } from 'viem';
 import { getPublicClient } from 'wagmi/actions';
-import { type Address } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { addysHttp } from '~/core/network/addys';
