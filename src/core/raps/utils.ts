@@ -1,6 +1,6 @@
 import { Block, Provider } from '@ethersproject/abstract-provider';
 import { MaxUint256 } from '@ethersproject/constants';
-import { Contract } from '@ethersproject/contracts';
+import { Contract, PopulatedTransaction } from '@ethersproject/contracts';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import {
   ALLOWS_PERMIT,
@@ -279,4 +279,27 @@ export const estimateSwapGasLimitWithFakeApproval = async (
     //
   }
   return getDefaultGasLimitForTrade(quote, chainId);
+};
+
+export const populateSwap = async ({
+  provider,
+  quote,
+}: {
+  provider: Provider;
+  quote: Quote | CrosschainQuote;
+}): Promise<PopulatedTransaction | null> => {
+  try {
+    const { router, methodName, params, methodArgs } = getQuoteExecutionDetails(
+      quote,
+      { from: quote.from },
+      provider as StaticJsonRpcProvider,
+    );
+    const swapTransaction = await router.populateTransaction[methodName](
+      ...(methodArgs ?? []),
+      params,
+    );
+    return swapTransaction;
+  } catch (e) {
+    return null;
+  }
 };
