@@ -152,7 +152,7 @@
     "react-switch": "7.0.0",
     "socket.io-client": "4.5.3",
     "validator": "13.9.0",
-    "viem": "1.21.4",
+    "viem": "2.9.4",
     "wagmi": "0.12.19",
     "word-wrap": "1.2.4",
     "zustand": "4.1.5"
