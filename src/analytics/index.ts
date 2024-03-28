@@ -1,9 +1,9 @@
-import { Analytics as AnalyticsNode } from '@segment/analytics-node';
+import { Analytics as RudderAnalytics } from '@rudderstack/analytics-js-service-worker';
 
 import { EventProperties, event } from '~/analytics/event';
 import { UserProperties } from '~/analytics/userProperties';
 import { analyticsDisabledStore } from '~/core/state/currentSettings/analyticsDisabled';
-import { RainbowError, logger } from '~/logger';
+import { logger } from '~/logger';
 
 import { version } from '../../package.json';
 
@@ -12,7 +12,7 @@ const IS_TESTING = process.env.IS_TESTING === 'true';
 
 /**
  * Metadata about the current application and browser/device.
- * `context` doesn't come for free in @segment/analytics-node
+ * `context` doesn't come for free in @rudderstack/analytics-js-service-worker
  */
 const context = {
   direct: true /* collect ip address for geoip */,
@@ -31,24 +31,17 @@ const context = {
 };
 
 export class Analytics {
-  client?: AnalyticsNode;
+  client?: RudderAnalytics;
   deviceId?: string;
   event = event;
   disabled = true; // to do: check user setting here
 
   constructor() {
     /**
-     * Using @segment/analytics-node beta because analytics-node is deprecated.
-     * https://github.com/segmentio/analytics-next/tree/master/packages/node#readme
-     * @segment/analytics-next relies on a remote fetch plugin architecture
-     * that isn't viable in manifest v3 and extensions are not officially supported:
-     * - When connected to Analytics.js 2.0 source, we load a light-weight plugin on the
-     *   webpage for session tracking and enrichment as an alternative to Amplitude SDK.
-     * - We do not provide a way to disable loading the session plugin for Amplitude at
-     *   the moment, unfortunately. With that said, I have logged this as a feature request
-     * - We do not formally support loading Segment, including our Analytics.js library, within
-     *   Chrome extensions. There have been stories of people getting this working, but it's not
-     *   something we would be able to support, although you can go ahead and give it a try.
+     * Adopted `@rudderstack/analytics-js-service-worker` which mirrors
+     * `@rudderstack/rudder-sdk-node` and doesn't rely on the remote fetch
+     * plugin architecture as `@rudderstack/analytics-js` v3.
+     * https://www.rudderstack.com/docs/sources/event-streams/sdks/rudderstack-javascript-sdk/v3/#plugins
      */
 
     // wait for analyticsDisabledStore to be initialized and turn it on if enabled
@@ -59,20 +52,18 @@ export class Analytics {
     }, 10);
 
     try {
-      this.client = new AnalyticsNode({
-        maxEventsInBatch: 1 /* replicate analytics-next flushing behavior */,
-        writeKey: process.env.SEGMENT_WRITE_KEY,
-      }).on('error', ({ code, reason }) =>
-        logger.error(new RainbowError('Segment error'), { code, reason }),
+      this.client = new RudderAnalytics(
+        process.env.RUDDERSTACK_WRITE_KEY,
+        `${process.env.RUDDERSTACK_DATA_PLANE}/v1/batch`,
       );
-      logger.debug(`Segment initialized`);
+      logger.debug(`RudderStack initialized`);
     } catch (e) {
-      logger.debug(`Segment failed to initialize`);
+      logger.debug(`RudderStack failed to initialize`);
     }
   }
 
   /**
-   * Sends an `identify` event to Segment along with the traits you pass in
+   * Sends an `identify` event to RudderStack along with the traits you pass in
    * here. This uses the `deviceId` as the identifier, and attaches the hashed
    * wallet address as a property, if available.
    */
@@ -88,7 +79,7 @@ export class Analytics {
   }
 
   /**
-   * Sends a `screen` event to Segment.
+   * Sends a `screen` event to RudderStack.
    */
   screen(name: string, params: Record<string, string> = {}): void {
     if (this.disabled || IS_DEV || IS_TESTING || !this.deviceId) return;
@@ -103,7 +94,7 @@ export class Analytics {
   }
 
   /**
-   * Send an event to Segment. Param `event` must exist in
+   * Send an event to RudderStack. Param `event` must exist in
    * `~/analytics/event`, and if properties are associated with it, they must
    * be defined as part of `EventProperties` in the same file
    */
@@ -131,7 +122,7 @@ export class Analytics {
   }
 
   /**
-   * Set `deviceId` for use as the identifier in Segment. This DOES NOT call
+   * Set `deviceId` for use as the identifier in RudderStack. This DOES NOT call
    * `identify()`, you must do that on your own.
    */
   setDeviceId(deviceId: string) {
@@ -140,14 +131,14 @@ export class Analytics {
   }
 
   /**
-   * Enable Segment tracking. Defaults to enabled.
+   * Enable RudderStack tracking. Defaults to enabled.
    */
   enable() {
     this.disabled = false;
   }
 
   /**
-   * Disable Segment tracking. Defaults to enabled.
+   * Disable RudderStack tracking. Defaults to enabled.
    */
   disable() {
     this.disabled = true;
