@@ -39,7 +39,7 @@ export const RequestAccounts = ({
 
   const { testnetMode } = useTestnetModeStore();
   const [selectedChainId, setSelectedChainId] = useState<ChainId>(
-    testnetMode ? ChainId.goerli : ChainId.mainnet,
+    testnetMode ? ChainId.sepolia : ChainId.mainnet,
   );
   const [selectedWallet, setSelectedWallet] = useState<Address>(currentAddress);
 

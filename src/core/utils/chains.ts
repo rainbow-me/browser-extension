@@ -337,8 +337,6 @@ export const deriveChainIdByHostname = (hostname: string) => {
   switch (hostname) {
     case 'etherscan.io':
       return ChainId.mainnet;
-    case 'goerli.etherscan.io':
-      return ChainId.goerli;
     case 'arbiscan.io':
       return ChainId.arbitrum;
     case 'explorer-mumbai.maticvigil.com':

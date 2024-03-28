@@ -33,7 +33,6 @@ declare global {
       BASE_MAINNET_RPC: string;
       ZORA_MAINNET_RPC: string;
       BSC_MAINNET_RPC: string;
-      ETH_GOERLI_RPC: string;
       ETH_SEPOLIA_RPC: string;
       ETH_HOLESKY_RPC: string;
       OPTIMISM_SEPOLIA_RPC: string;
