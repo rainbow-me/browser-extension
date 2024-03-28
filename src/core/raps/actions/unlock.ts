@@ -3,12 +3,10 @@ import { MaxUint256 } from '@ethersproject/constants';
 import { Contract, PopulatedTransaction } from '@ethersproject/contracts';
 import { parseUnits } from '@ethersproject/units';
 import {
-  Address,
-  erc20ABI,
-  erc721ABI,
   getContract,
   getProvider,
 } from '@wagmi/core';
+import { type Address, erc20Abi } from 'viem';
 
 import { ChainId } from '~/core/types/chains';
 import {
@@ -44,7 +42,7 @@ export const getAssetRawAllowance = async ({
 }) => {
   try {
     const provider = await getProvider({ chainId });
-    const tokenContract = new Contract(assetAddress, erc20ABI, provider);
+    const tokenContract = new Contract(assetAddress, erc20Abi, provider);
     const allowance = await tokenContract.allowance(owner, spender);
     return allowance.toString();
   } catch (error) {
@@ -96,7 +94,7 @@ export const estimateApprove = async ({
 }): Promise<string> => {
   try {
     const provider = getProvider({ chainId });
-    const tokenContract = new Contract(tokenAddress, erc20ABI, provider);
+    const tokenContract = new Contract(tokenAddress, erc20Abi, provider);
     const gasLimit = await tokenContract.estimateGas.approve(
       spender,
       MaxUint256,
@@ -126,7 +124,7 @@ export const populateApprove = async ({
 }): Promise<PopulatedTransaction | null> => {
   try {
     const provider = getProvider({ chainId });
-    const tokenContract = new Contract(tokenAddress, erc20ABI, provider);
+    const tokenContract = new Contract(tokenAddress, erc20Abi, provider);
     const approveTransaction = await tokenContract.populateTransaction.approve(
       spender,
       MaxUint256,
@@ -156,7 +154,7 @@ export const estimateERC721Approval = async ({
 }): Promise<string> => {
   try {
     const provider = getProvider({ chainId });
-    const tokenContract = new Contract(tokenAddress, erc721ABI, provider);
+    const tokenContract = new Contract(tokenAddress, erc20Abi, provider);
     const gasLimit = await tokenContract.estimateGas.setApprovalForAll(
       spender,
       false,
@@ -189,7 +187,7 @@ export const populateRevokeApproval = async ({
 }): Promise<PopulatedTransaction> => {
   if (!tokenAddress || !spenderAddress || !chainId) return {};
   const provider = getProvider({ chainId });
-  const tokenContract = new Contract(tokenAddress, erc721ABI, provider);
+  const tokenContract = new Contract(tokenAddress, erc20Abi, provider);
   if (type === 'erc20') {
     const amountToApprove = parseUnits('0', 'ether');
     const txObject = await tokenContract.populateTransaction.approve(
@@ -224,7 +222,7 @@ export const executeApprove = async ({
 }) => {
   const tokenContract = getContract({
     address: tokenAddress,
-    abi: erc20ABI,
+    abi: erc20Abi,
     signerOrProvider: wallet,
   });
 

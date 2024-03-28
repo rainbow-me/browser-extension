@@ -10,7 +10,7 @@ import {
   getQuoteExecutionDetails,
 } from '@rainbow-me/swaps';
 import { type Chain, mainnet } from 'viem/chains';
-import { erc20ABI } from 'wagmi';
+import { erc20Abi } from 'viem';
 
 import { gasUnits } from '../references';
 import { ChainId } from '../types/chains';
@@ -100,7 +100,7 @@ const getStateDiff = async (
     quote.swapType === 'normal'
       ? RAINBOW_ROUTER_CONTRACT_ADDRESS
       : (quote as CrosschainQuote).allowanceTarget;
-  const tokenContract = new Contract(tokenAddress, erc20ABI, provider);
+  const tokenContract = new Contract(tokenAddress, erc20Abi, provider);
 
   const { number: blockNumber } = await (
     provider.getBlock as () => Promise<Block>

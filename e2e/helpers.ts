@@ -19,7 +19,7 @@ import {
 import chrome from 'selenium-webdriver/chrome';
 import firefox from 'selenium-webdriver/firefox';
 import { expect } from 'vitest';
-import { erc20ABI } from 'wagmi';
+import { erc20Abi } from 'viem';
 
 import { RAINBOW_TEST_DAPP } from '~/core/references/links';
 
@@ -726,7 +726,7 @@ export async function connectToTestDapp(driver: WebDriver) {
 export async function getOnchainBalance(addy: string, contract: string) {
   try {
     const provider = getDefaultProvider('http://127.0.0.1:8545');
-    const testContract = new Contract(contract, erc20ABI, provider);
+    const testContract = new Contract(contract, erc20Abi, provider);
     const balance = await testContract.balanceOf(addy);
 
     return balance;

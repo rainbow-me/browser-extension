@@ -4,7 +4,7 @@ import { Contract } from '@ethersproject/contracts';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
-import { erc20ABI } from 'wagmi';
+import { erc20Abi } from 'viem';
 
 import { ChainId } from '~/core/types/chains';
 
@@ -153,7 +153,7 @@ it('should be able to execute unlock and swap', async () => {
   await delayTime('short');
   const tokenContract = new Contract(
     SWAP_VARIABLES.USDC_MAINNET_ADDRESS,
-    erc20ABI,
+    erc20Abi,
     provider,
   );
   const usdcBalanceBeforeSwap = await tokenContract.balanceOf(

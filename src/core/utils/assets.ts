@@ -1,6 +1,6 @@
 import { AddressZero } from '@ethersproject/constants';
 import { Provider } from '@ethersproject/providers';
-import { Address, erc20ABI } from 'wagmi';
+import { type Address, erc20Abi } from 'viem';
 import { getContract } from 'wagmi/actions';
 
 import { ETH_ADDRESS, SupportedCurrencyKey } from '~/core/references';
@@ -320,7 +320,7 @@ export const fetchAssetBalanceViaProvider = async ({
     ? await provider.getBalance(currentAddress)
     : await getContract({
         address: parsedAsset.address,
-        abi: erc20ABI,
+        abi: erc20Abi,
         signerOrProvider: provider,
       }).balanceOf(currentAddress);
 
@@ -387,7 +387,7 @@ export const getAssetMetadata = async ({
 }) => {
   const contract = await getContract({
     address,
-    abi: erc20ABI,
+    abi: erc20Abi,
     signerOrProvider: provider,
   });
   const [decimals, symbol, name] = await Promise.allSettled([
@@ -414,7 +414,7 @@ export const getAssetBalance = async ({
 }) => {
   const balance = await getContract({
     address: assetAddress,
-    abi: erc20ABI,
+    abi: erc20Abi,
     signerOrProvider: provider,
   }).balanceOf(currentAddress);
 
