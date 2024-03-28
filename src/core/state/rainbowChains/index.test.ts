@@ -11,7 +11,6 @@ const TEST_RPC_1: Chain = {
   },
   id: fantom.id,
   name: 'Test RPC 1',
-  network: 'rpc-1',
   nativeCurrency: {
     name: 'TR1',
     symbol: 'TR1',
@@ -29,7 +28,6 @@ const TEST_RPC_2: Chain = {
   },
   id: fantom.id,
   name: 'Test RPC 2',
-  network: 'rpc-2',
   nativeCurrency: {
     name: 'TR2',
     symbol: 'TR2',
@@ -47,7 +45,6 @@ const TEST_RPC_3: Chain = {
   },
   id: celo.id,
   name: 'Test RPC 3',
-  network: 'rpc-3',
   nativeCurrency: {
     name: 'TR3',
     symbol: 'TR3',

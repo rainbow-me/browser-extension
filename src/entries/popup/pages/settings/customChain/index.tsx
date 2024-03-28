@@ -613,7 +613,6 @@ export function SettingsCustomChain() {
       const chain: Chain = {
         id: chainId,
         name,
-        network: name,
         nativeCurrency: {
           symbol,
           decimals: 18,

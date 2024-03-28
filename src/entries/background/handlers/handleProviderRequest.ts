@@ -279,7 +279,6 @@ export const handleProviderRequest = ({
           id: Number(chainId),
           nativeCurrency: { name, symbol, decimals },
           name: proposedChain.chainName,
-          network: proposedChain.chainName,
           rpcUrls: {
             default: { http: [rpcUrl] },
             public: { http: [rpcUrl] },

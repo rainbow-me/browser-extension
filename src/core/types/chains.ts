@@ -7,7 +7,6 @@ const HARDHAT_OP_CHAIN_ID = 1338;
 export const chainHardhat: Chain = {
   id: HARDHAT_CHAIN_ID,
   name: 'Hardhat',
-  network: 'hardhat',
   nativeCurrency: {
     decimals: 18,
     name: 'Hardhat',

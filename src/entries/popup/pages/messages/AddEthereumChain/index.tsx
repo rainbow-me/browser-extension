@@ -62,7 +62,6 @@ export const AddEthereumChain = ({
       const chain: Chain = {
         id: Number(chainId),
         name: chainName || name,
-        network: chainName || name,
         nativeCurrency: {
           symbol,
           decimals: 18,
