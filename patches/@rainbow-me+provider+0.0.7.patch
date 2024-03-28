@@ -1,0 +1,43 @@
+diff --git a/node_modules/@rainbow-me/provider/.DS_Store b/node_modules/@rainbow-me/provider/.DS_Store
+new file mode 100644
+index 0000000..290d9a9
+Binary files /dev/null and b/node_modules/@rainbow-me/provider/.DS_Store differ
+diff --git a/node_modules/@rainbow-me/provider/dist/references/chains.d.ts b/node_modules/@rainbow-me/provider/dist/references/chains.d.ts
+index 256510a..7a71b9b 100644
+--- a/node_modules/@rainbow-me/provider/dist/references/chains.d.ts
++++ b/node_modules/@rainbow-me/provider/dist/references/chains.d.ts
+@@ -17,8 +17,6 @@ export type Chain = {
+     id: number;
+     /** Human-readable name */
+     name: string;
+-    /** Internal network name */
+-    network: string;
+     /** Currency used by chain */
+     nativeCurrency: NativeCurrency;
+     /** Collection of RPC endpoints */
+diff --git a/node_modules/@rainbow-me/provider/dist/utils/ethereum.js b/node_modules/@rainbow-me/provider/dist/utils/ethereum.js
+index a630ca8..60c9525 100644
+--- a/node_modules/@rainbow-me/provider/dist/utils/ethereum.js
++++ b/node_modules/@rainbow-me/provider/dist/utils/ethereum.js
+@@ -10,8 +10,9 @@ var __rest = (this && this.__rest) || function (s, e) {
+     return t;
+ };
+ export var normalizeTransactionResponsePayload = function (payload) {
++    var _a;
+     // Firefox can't serialize functions
+-    if (navigator.userAgent.toLowerCase().includes('firefox')) {
++    if ((_a = navigator.userAgent) === null || _a === void 0 ? void 0 : _a.toLowerCase().includes('firefox')) {
+         // eslint-disable-next-line @typescript-eslint/no-unused-vars
+         var _ = payload.wait, cleanedPayload = __rest(payload, ["wait"]);
+         return cleanedPayload;
+diff --git a/node_modules/@rainbow-me/provider/dist/utils/hex.js b/node_modules/@rainbow-me/provider/dist/utils/hex.js
+index 353b9a6..2e9036a 100644
+--- a/node_modules/@rainbow-me/provider/dist/utils/hex.js
++++ b/node_modules/@rainbow-me/provider/dist/utils/hex.js
+@@ -1,4 +1,5 @@
+ import { BigNumber } from '@ethersproject/bignumber';
++import { hexValue } from '@ethersproject/bytes';
+ export var toHex = function (stringToConvert) {
+-    return BigNumber.from(stringToConvert).toHexString();
++    return hexValue(BigNumber.from(stringToConvert).toHexString());
+ };
