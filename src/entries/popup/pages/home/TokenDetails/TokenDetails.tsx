@@ -7,6 +7,11 @@ import { useApprovals } from '~/core/resources/approvals/approvals';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useFavoritesStore } from '~/core/state/favorites';
+import {
+  computeUniqueIdForHiddenAsset,
+  useHiddenAssetStore,
+} from '~/core/state/hiddenAssets/hiddenAssets';
+import { usePinnedAssetStore } from '~/core/state/pinnedAssets';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedUserAsset, UniqueId } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -44,6 +49,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
 import {
@@ -267,9 +273,58 @@ export const getCoingeckoUrl = ({
   return `https://www.coingecko.com/en/coins/${mainnetAddress || address}`;
 };
 
-function MoreOptions({ token }: { token: ParsedUserAsset }) {
+function MoreOptions({
+  token,
+  swappable,
+}: {
+  token: ParsedUserAsset;
+  swappable: boolean;
+}) {
+  const { hiddenAssets, removeHiddenAsset, addHiddenAsset } =
+    useHiddenAssetStore();
+
+  const { pinnedAssets, removedPinnedAsset, addPinnedAsset } =
+    usePinnedAssetStore();
+
+  const isHidden = useCallback(
+    (asset: ParsedUserAsset) =>
+      hiddenAssets.some(
+        (uniqueId) => uniqueId === computeUniqueIdForHiddenAsset(asset),
+      ),
+    [hiddenAssets],
+  );
+
+  const hidden = isHidden(token);
   const explorer = getTokenBlockExplorer(token);
   const isNative = isNativeAsset(token.address, token.chainId);
+  const pinned = pinnedAssets.some(
+    ({ uniqueId }) => uniqueId === token.uniqueId,
+  );
+
+  const toggleHideToken = useCallback(() => {
+    if (hidden) {
+      removeHiddenAsset({ uniqueId: computeUniqueIdForHiddenAsset(token) });
+      return;
+    }
+    if (pinned) removedPinnedAsset({ uniqueId: token.uniqueId });
+    addHiddenAsset({ uniqueId: computeUniqueIdForHiddenAsset(token) });
+  }, [
+    token,
+    hidden,
+    pinned,
+    removedPinnedAsset,
+    addHiddenAsset,
+    removeHiddenAsset,
+  ]);
+
+  const togglePinToken = useCallback(() => {
+    if (pinned) {
+      removedPinnedAsset({ uniqueId: token.uniqueId });
+      return;
+    }
+    addPinnedAsset({ uniqueId: token.uniqueId });
+  }, [token.uniqueId, pinned, addPinnedAsset, removedPinnedAsset]);
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -287,34 +342,66 @@ function MoreOptions({ token }: { token: ParsedUserAsset }) {
         <AccentColorProvider
           color={token.colors?.primary || token.colors?.fallback}
         >
-          {!isNative && (
-            <DropdownMenuItem
-              symbolLeft="doc.on.doc.fill"
-              onSelect={() => copyAddress(token.address)}
-            >
-              <Text size="14pt" weight="semibold">
-                {i18n.t('token_details.more_options.copy_address')}
-              </Text>
-              <Text size="11pt" color="labelTertiary" weight="medium">
-                {truncateAddress(token.address)}
-              </Text>
+          {!hidden && (
+            <DropdownMenuItem symbolLeft="pin.fill" onSelect={togglePinToken}>
+              <TextOverflow weight="semibold" size="14pt">
+                {pinned
+                  ? i18n.t('token_details.more_options.unpin_token', {
+                      name: token.symbol,
+                    })
+                  : i18n.t('token_details.more_options.pin_token', {
+                      name: token.symbol,
+                    })}
+              </TextOverflow>
             </DropdownMenuItem>
           )}
           <DropdownMenuItem
-            symbolLeft="safari"
-            external
-            onSelect={() => window.open(getCoingeckoUrl(token), '_blank')}
+            symbolLeft="eye.slash.fill"
+            onSelect={toggleHideToken}
           >
-            CoinGecko
+            <TextOverflow weight="semibold" size="14pt">
+              {hidden
+                ? i18n.t('token_details.more_options.unhide_token', {
+                    name: token.symbol,
+                  })
+                : i18n.t('token_details.more_options.hide_token', {
+                    name: token.symbol,
+                  })}
+            </TextOverflow>
           </DropdownMenuItem>
-          {!isNative && explorer && (
-            <DropdownMenuItem
-              symbolLeft="binoculars.fill"
-              external
-              onSelect={() => window.open(explorer.url, '_blank')}
-            >
-              {i18n.t('token_details.view_on', { explorer: explorer.name })}
-            </DropdownMenuItem>
+          {swappable && (
+            <>
+              {!isNative && (
+                <DropdownMenuItem
+                  symbolLeft="doc.on.doc.fill"
+                  onSelect={() => copyAddress(token.address)}
+                >
+                  <Text size="14pt" weight="semibold">
+                    {i18n.t('token_details.more_options.copy_address')}
+                  </Text>
+                  <Text size="11pt" color="labelTertiary" weight="medium">
+                    {truncateAddress(token.address)}
+                  </Text>
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                symbolLeft="safari"
+                external
+                onSelect={() => window.open(getCoingeckoUrl(token), '_blank')}
+              >
+                {i18n.t('token_details.view_on_coingecko')}
+              </DropdownMenuItem>
+              {!isNative && explorer && (
+                <DropdownMenuItem
+                  symbolLeft="binoculars.fill"
+                  external
+                  onSelect={() => window.open(explorer.url, '_blank')}
+                >
+                  {i18n.t('token_details.view_on', { explorer: explorer.name })}
+                </DropdownMenuItem>
+              )}
+            </>
           )}
         </AccentColorProvider>
       </DropdownMenuContent>
@@ -442,12 +529,10 @@ export function TokenDetails() {
             />
           }
           rightComponent={
-            isSwappable ? (
-              <Inline alignVertical="center" space="7px">
-                <FavoriteButton token={token} />
-                <MoreOptions token={token} />
-              </Inline>
-            ) : undefined
+            <Inline alignVertical="center" space="7px">
+              {isSwappable && <FavoriteButton token={token} />}
+              <MoreOptions swappable={isSwappable} token={token} />
+            </Inline>
           }
         />
         <Box padding="20px" gap="16px" display="flex" flexDirection="column">

@@ -2,7 +2,7 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion } from 'framer-motion';
 import uniqBy from 'lodash/uniqBy';
-import { memo, useCallback, useMemo, useState } from 'react';
+import { RefObject, memo, useCallback, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -22,6 +22,10 @@ import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme'
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import {
+  computeUniqueIdForHiddenAsset,
+  useHiddenAssetStore,
+} from '~/core/state/hiddenAssets/hiddenAssets';
 import { usePinnedAssetStore } from '~/core/state/pinnedAssets';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { truncateAddress } from '~/core/utils/address';
@@ -58,9 +62,11 @@ import { TokenMarkedHighlighter } from './TokenMarkedHighlighter';
 const TokenRow = memo(function TokenRow({
   token,
   testId,
+  containerRef,
 }: {
   token: ParsedUserAsset;
   testId: string;
+  containerRef: RefObject<HTMLDivElement>;
 }) {
   const navigate = useRainbowNavigate();
   const openDetails = () => {
@@ -82,7 +88,7 @@ const TokenRow = memo(function TokenRow({
       layoutScroll
       layout="position"
     >
-      <TokenContextMenu token={token}>
+      <TokenContextMenu token={token} containerRef={containerRef}>
         <Box
           onMouseDown={onMouseDown}
           onMouseUp={onMouseUp}
@@ -104,6 +110,15 @@ export function Tokens() {
   const { trackShortcut } = useKeyboardAnalytics();
   const { modifierSymbol } = useSystemSpecificModifierKey();
   const { pinnedAssets } = usePinnedAssetStore();
+  const { hiddenAssets } = useHiddenAssetStore();
+
+  const isHidden = useCallback(
+    (asset: ParsedUserAsset) =>
+      hiddenAssets.some(
+        (uniqueId) => uniqueId === computeUniqueIdForHiddenAsset(asset),
+      ),
+    [hiddenAssets],
+  );
 
   const {
     data: assets = [],
@@ -144,15 +159,16 @@ export function Tokens() {
     },
   );
 
-  const combinedAssets = useMemo(
-    () => [...assets, ...customNetworkAssets],
-    [assets, customNetworkAssets],
-  );
-
   const isPinned = useCallback(
     (assetUniqueId: string) =>
       pinnedAssets.some(({ uniqueId }) => uniqueId === assetUniqueId),
     [pinnedAssets],
+  );
+
+  const combinedFilteredAssets = useMemo(
+    () =>
+      [...assets, ...customNetworkAssets].filter((asset) => !isHidden(asset)),
+    [assets, customNetworkAssets, isHidden],
   );
 
   const computeUniqueAssets = useCallback(
@@ -197,10 +213,10 @@ export function Tokens() {
 
   const filteredAssets = useMemo(
     () => [
-      ...computePinnedAssets(combinedAssets),
-      ...computeUniqueAssets(combinedAssets),
+      ...computePinnedAssets(combinedFilteredAssets),
+      ...computeUniqueAssets(combinedFilteredAssets),
     ],
-    [combinedAssets, computePinnedAssets, computeUniqueAssets],
+    [combinedFilteredAssets, computePinnedAssets, computeUniqueAssets],
   );
 
   const containerRef = useContainerRef();
@@ -285,7 +301,11 @@ export function Tokens() {
                 style={{ height: size, y: start }}
               >
                 {pinned && <TokenMarkedHighlighter />}
-                <TokenRow token={token} testId={`coin-row-item-${index}`} />
+                <TokenRow
+                  containerRef={containerRef}
+                  token={token}
+                  testId={`coin-row-item-${index}`}
+                />
               </Box>
             );
           })}
