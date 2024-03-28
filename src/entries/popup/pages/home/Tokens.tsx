@@ -165,11 +165,14 @@ export function Tokens() {
     [pinnedAssets],
   );
 
-  const combinedFilteredAssets = useMemo(
-    () =>
-      [...assets, ...customNetworkAssets].filter((asset) => !isHidden(asset)),
-    [assets, customNetworkAssets, isHidden],
+  const combinedAssets = useMemo(
+    () => [...assets, ...customNetworkAssets],
+    [assets, customNetworkAssets],
   );
+
+  const unhiddenAssets = useMemo(() => {
+    return combinedAssets.filter((asset) => !isHidden(asset));
+  }, [combinedAssets, isHidden]);
 
   const computeUniqueAssets = useCallback(
     (assets: ParsedUserAsset[]) => {
@@ -213,10 +216,10 @@ export function Tokens() {
 
   const filteredAssets = useMemo(
     () => [
-      ...computePinnedAssets(combinedFilteredAssets),
-      ...computeUniqueAssets(combinedFilteredAssets),
+      ...computePinnedAssets(unhiddenAssets),
+      ...computeUniqueAssets(unhiddenAssets),
     ],
-    [combinedFilteredAssets, computePinnedAssets, computeUniqueAssets],
+    [unhiddenAssets, computePinnedAssets, computeUniqueAssets],
   );
 
   const containerRef = useContainerRef();

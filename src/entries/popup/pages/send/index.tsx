@@ -134,7 +134,7 @@ export function Send() {
     sortMethod,
   } = useSendAsset();
 
-  const filteredNonHiddenAssets = useMemo(
+  const unhiddenAssets = useMemo(
     () => assets.filter((asset) => !isHidden(asset)),
     [assets, isHidden],
   );
@@ -681,7 +681,7 @@ export function Send() {
                 >
                   <SendTokenInput
                     asset={asset}
-                    assets={filteredNonHiddenAssets}
+                    assets={unhiddenAssets}
                     selectAssetAddressAndChain={selectAsset}
                     dropdownClosed={toAddressDropdownOpen}
                     setSortMethod={setSortMethod}

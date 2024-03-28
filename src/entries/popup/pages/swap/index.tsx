@@ -227,12 +227,12 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     setAssetToBuyFilter,
   } = useSwapAssets({ bridge });
 
-  const filteredNonHiddenAssetsToSell = useMemo(
+  const unhiddenAssetsToSell = useMemo(
     () => assetsToSell.filter((asset) => !isHidden(asset)),
     [assetsToSell, isHidden],
   );
 
-  const filteredNonHiddenAssetsToBuy = useMemo(() => {
+  const unhiddenAssetsToBuy = useMemo(() => {
     return assetsToBuy.map((assets) => {
       return {
         ...assets,
@@ -423,7 +423,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
         if (savedTokenToSell) {
           setAssetToSell(savedTokenToSell);
         } else {
-          setAssetToSell(filteredNonHiddenAssetsToSell[0]);
+          setAssetToSell(unhiddenAssetsToSell[0]);
           setDefaultAssetWasSet(true);
         }
         setDidPopulateSavedTokens(true);
@@ -571,7 +571,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                 <TokenToSellInput
                   dropdownHeight={toSellInputHeight}
                   asset={assetToSell}
-                  assets={filteredNonHiddenAssetsToSell}
+                  assets={unhiddenAssetsToSell}
                   selectAsset={selectAssetToSell}
                   onDropdownOpen={onAssetToSellInputOpen}
                   dropdownClosed={assetToSellDropdownClosed}
@@ -654,7 +654,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                   dropdownHeight={toBuyInputHeight}
                   assetToBuy={assetToBuy}
                   assetToSell={assetToSell}
-                  assets={filteredNonHiddenAssetsToBuy}
+                  assets={unhiddenAssetsToBuy}
                   selectAsset={setAssetToBuy}
                   onDropdownOpen={onAssetToBuyInputOpen}
                   dropdownClosed={assetToBuyDropdownClosed}
