@@ -1,4 +1,4 @@
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 
 import {
   AVAX_AVALANCHE_ADDRESS,

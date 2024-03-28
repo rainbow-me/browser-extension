@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useCallback, useState } from 'react';
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { useENSAvatar } from '~/core/resources/metadata/ensAvatar';

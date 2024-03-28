@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { Address, getProvider } from '@wagmi/core';
+import { type Address } from 'viem';
+import { getProvider } from '@wagmi/core';
 
 import { i18n } from '~/core/languages';
 import {

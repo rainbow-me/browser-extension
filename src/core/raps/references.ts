@@ -1,6 +1,6 @@
 import { Signer } from '@ethersproject/abstract-signer';
 import { CrosschainQuote, Quote } from '@rainbow-me/swaps';
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 
 import { ParsedAsset } from '../types/assets';
 

@@ -1,5 +1,5 @@
 import React, { ReactNode, useCallback } from 'react';
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { ChainId } from '~/core/types/chains';

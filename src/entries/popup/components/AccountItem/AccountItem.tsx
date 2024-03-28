@@ -1,5 +1,5 @@
 import React from 'react';
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 
 import { supportedCurrencies } from '~/core/references';
 import {

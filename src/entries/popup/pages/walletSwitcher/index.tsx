@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { DropResult } from 'react-beautiful-dnd';
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';

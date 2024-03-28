@@ -2,7 +2,7 @@ import { isValidAddress } from '@ethereumjs/util';
 import { isEqual } from 'lodash';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router';
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 
 import { useAssetMetadata } from '~/core/resources/assets/assetMetadata';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';

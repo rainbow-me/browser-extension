@@ -1,4 +1,5 @@
-import { Address, useEnsName } from 'wagmi';
+import { type Address } from 'viem';
+import { useEnsName } from 'wagmi';
 
 import { ContactsStore, useContactsStore } from '~/core/state/contacts';
 

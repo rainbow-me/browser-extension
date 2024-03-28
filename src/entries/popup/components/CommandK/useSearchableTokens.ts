@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Address } from 'viem';
+import { type Address } from 'viem';
 
 import {
   selectUserAssetsFilteringSmallBalancesList,

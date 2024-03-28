@@ -1,4 +1,5 @@
-import { Address, useEnsName } from 'wagmi';
+import { type Address } from 'viem';
+import { useEnsName } from 'wagmi';
 
 import { useContactsStore } from '~/core/state/contacts';
 import { useWalletNamesStore } from '~/core/state/walletNames';

@@ -7,7 +7,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';

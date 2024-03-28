@@ -1,4 +1,4 @@
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 
 import { selectUserAssetWithUniqueId } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';

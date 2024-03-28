@@ -14,8 +14,8 @@ import {
 import { SignTypedDataVersion, TypedDataUtils } from '@metamask/eth-sig-util';
 import { ChainId } from '@rainbow-me/swaps';
 import transformTypedDataPlugin from '@trezor/connect-plugin-ethereum';
+import { type Address } from 'viem';
 import { getProvider } from '@wagmi/core';
-import { Address } from 'wagmi';
 
 import { LEGACY_CHAINS_FOR_HW } from '~/core/references';
 import { addHexPrefix } from '~/core/utils/hex';

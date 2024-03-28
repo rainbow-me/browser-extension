@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 
 import hardhwareWalletAvatarImageMask from 'static/assets/hardhwareWalletAvatarImageMask.svg';
 import { i18n } from '~/core/languages';

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 
 import { useWalletNamesStore } from '~/core/state/walletNames';
 import { useWalletOrderStore } from '~/core/state/walletOrder';

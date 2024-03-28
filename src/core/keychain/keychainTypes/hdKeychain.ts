@@ -7,7 +7,7 @@ import { wordlist as englishWordlist } from '@scure/bip39/wordlists/english';
 import { getProvider } from '@wagmi/core';
 import { HDKey } from 'ethereum-cryptography/hdkey';
 import { bytesToHex } from 'ethereum-cryptography/utils';
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 import { mainnet } from 'viem/chains';
 
 import { KeychainType } from '~/core/types/keychainTypes';

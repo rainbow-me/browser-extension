@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 
 import { Contact } from '~/core/state/contacts';
 import { KeychainType } from '~/core/types/keychainTypes';

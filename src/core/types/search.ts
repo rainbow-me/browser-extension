@@ -1,4 +1,4 @@
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 
 import { AddressOrEth, ParsedAsset, UniqueId } from './assets';
 import { ChainId } from './chains';

@@ -8,7 +8,7 @@ import {
 import { formatUnits } from '@ethersproject/units';
 import { getProvider } from '@wagmi/core';
 import { isString } from 'lodash';
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 
 import { i18n } from '../languages';
 import { createHttpClient } from '../network/internal/createHttpClient';

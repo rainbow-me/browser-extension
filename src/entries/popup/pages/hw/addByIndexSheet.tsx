@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 
 import { getHDPathForVendorAndType } from '~/core/keychain/hdPath';
 import { i18n } from '~/core/languages';

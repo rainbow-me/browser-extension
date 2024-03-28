@@ -7,8 +7,8 @@ import { HDNode, Mnemonic } from '@ethersproject/hdnode';
 import { keccak256 } from '@ethersproject/keccak256';
 import AppEth from '@ledgerhq/hw-app-eth';
 import TransportWebHID from '@ledgerhq/hw-transport-webhid';
+import { type Address } from 'viem';
 import { getProvider } from '@wagmi/core';
-import { Address } from 'wagmi';
 
 import { PrivateKey } from '~/core/keychain/IKeychain';
 import { getHDPathForVendorAndType } from '~/core/keychain/hdPath';

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { getProvider } from '@wagmi/core';
 import { type Chain } from 'viem/chains';
+import { getProvider } from '@wagmi/core';
 
 import {
   QueryConfig,

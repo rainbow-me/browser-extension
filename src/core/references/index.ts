@@ -21,7 +21,7 @@ import {
   zora,
   zoraSepolia,
 } from 'viem/chains';
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 

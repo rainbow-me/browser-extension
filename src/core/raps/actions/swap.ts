@@ -14,7 +14,8 @@ import {
   unwrapNativeAsset,
   wrapNativeAsset,
 } from '@rainbow-me/swaps';
-import { Address, getProvider } from '@wagmi/core';
+import { type Address } from 'viem';
+import { getProvider } from '@wagmi/core';
 
 import { metadataPostClient } from '~/core/graphql';
 import { ChainId } from '~/core/types/chains';

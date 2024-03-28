@@ -1,5 +1,5 @@
 import { isAddress } from '@ethersproject/address';
-import { Address } from '@wagmi/core';
+import { type Address } from 'viem';
 import { motion } from 'framer-motion';
 import { ChangeEvent, useCallback, useMemo, useReducer, useState } from 'react';
 import { useEnsAddress, useEnsName } from 'wagmi';

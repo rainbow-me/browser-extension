@@ -2,11 +2,11 @@ import { Signer } from '@ethersproject/abstract-signer';
 import { MaxUint256 } from '@ethersproject/constants';
 import { Contract, PopulatedTransaction } from '@ethersproject/contracts';
 import { parseUnits } from '@ethersproject/units';
+import { type Address, erc20Abi } from 'viem';
 import {
   getContract,
   getProvider,
 } from '@wagmi/core';
-import { type Address, erc20Abi } from 'viem';
 
 import { ChainId } from '~/core/types/chains';
 import {

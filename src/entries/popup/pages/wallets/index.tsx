@@ -1,6 +1,7 @@
 import { fetchEnsAddress } from '@wagmi/core';
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
-import { Address, useAccount, useEnsName } from 'wagmi';
+import { type Address } from 'viem';
+import { useAccount, useEnsName } from 'wagmi';
 
 import { useCurrentAddressStore } from '~/core/state';
 import { WalletAction } from '~/core/types/walletActions';

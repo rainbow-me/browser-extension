@@ -1,5 +1,5 @@
+import { type Address } from 'viem';
 import { getProvider } from '@wagmi/core';
-import { Address } from 'wagmi';
 
 import { createQueryKey } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';

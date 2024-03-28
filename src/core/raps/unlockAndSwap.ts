@@ -5,7 +5,7 @@ import {
   RAINBOW_ROUTER_CONTRACT_ADDRESS,
   WRAPPED_ASSET,
 } from '@rainbow-me/swaps';
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 
 import { ETH_ADDRESS } from '../references';
 import { ChainId } from '../types/chains';

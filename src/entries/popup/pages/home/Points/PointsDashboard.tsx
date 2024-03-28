@@ -4,7 +4,7 @@ import { hex } from 'chroma-js';
 import { formatDistanceToNowStrict } from 'date-fns';
 import { MotionProps, motion } from 'framer-motion';
 import { PropsWithChildren, memo, useEffect, useReducer } from 'react';
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 
 import { PointsQuery } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';

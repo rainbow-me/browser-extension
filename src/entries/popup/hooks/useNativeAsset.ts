@@ -1,4 +1,5 @@
-import { Address, useNetwork } from 'wagmi';
+import { type Address } from 'viem';
+import { useNetwork } from 'wagmi';
 
 import { ETH_ADDRESS, NATIVE_ASSETS_MAP_PER_CHAIN } from '~/core/references';
 import { useUserTestnetNativeAsset } from '~/core/resources/assets/userTestnetNativeAsset';

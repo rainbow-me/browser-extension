@@ -11,7 +11,7 @@ import {
   TypedMessage,
   signTypedData as signTypedDataSigUtil,
 } from '@metamask/eth-sig-util';
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 
 import {
   SignMessageArguments,

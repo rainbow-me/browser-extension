@@ -3,7 +3,8 @@ import clsx from 'clsx';
 import { format, formatDistanceStrict } from 'date-fns';
 import { ReactNode, useCallback, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { Address, useEnsName } from 'wagmi';
+import { type Address } from 'viem';
+import { useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { selectNftCollections } from '~/core/resources/_selectors/nfts';

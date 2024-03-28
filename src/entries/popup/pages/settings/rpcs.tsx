@@ -1,7 +1,7 @@
 import chroma from 'chroma-js';
 import { useCallback, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 import { type Chain } from 'viem/chains';
 
 import { i18n } from '~/core/languages';

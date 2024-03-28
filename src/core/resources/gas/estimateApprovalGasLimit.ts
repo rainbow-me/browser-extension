@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Address } from 'viem';
+import { type Address } from 'viem';
 
 import { estimateApprove } from '~/core/raps/actions';
 import { estimateERC721Approval } from '~/core/raps/actions/unlock';

@@ -3,7 +3,7 @@ import { Signer } from '@ethersproject/abstract-signer';
 import { Mnemonic } from '@ethersproject/hdnode';
 import { Wallet } from '@ethersproject/wallet';
 import { getProvider } from '@wagmi/core';
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 import { mainnet } from 'viem/chains';
 
 import { KeychainType } from '~/core/types/keychainTypes';

@@ -1,4 +1,4 @@
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 
 import { ParsedUserAsset, ZerionAssetPrice } from '~/core/types/assets';
 import { UniqueAsset } from '~/core/types/nfts';

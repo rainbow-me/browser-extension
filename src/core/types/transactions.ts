@@ -1,5 +1,5 @@
 import { TransactionResponse } from '@ethersproject/providers';
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 
 import {
   AssetApiResponse,

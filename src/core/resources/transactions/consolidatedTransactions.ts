@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 
 import { addysHttp } from '~/core/network/addys';
 import {

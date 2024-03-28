@@ -1,5 +1,5 @@
 import { PropsWithChildren, useState } from 'react';
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { truncateAddress } from '~/core/utils/address';

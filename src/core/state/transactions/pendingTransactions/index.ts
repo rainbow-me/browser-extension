@@ -1,5 +1,5 @@
 import { isAddress } from '@ethersproject/address';
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 import create from 'zustand';
 
 import { RainbowTransaction } from '~/core/types/transactions';

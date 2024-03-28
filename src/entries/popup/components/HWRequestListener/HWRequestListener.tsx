@@ -2,7 +2,7 @@
 import { Bytes } from '@ethersproject/bytes';
 import { TransactionRequest } from '@ethersproject/providers';
 import { useEffect } from 'react';
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 
 import { initializeMessenger } from '~/core/messengers';
 

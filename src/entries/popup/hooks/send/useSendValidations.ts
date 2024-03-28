@@ -1,7 +1,7 @@
 import { isValidAddress } from '@ethereumjs/util';
 import { getProvider } from '@wagmi/core';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { ParsedUserAsset } from '~/core/types/assets';

@@ -1,6 +1,7 @@
 import { Signer } from '@ethersproject/abstract-signer';
 import { CrosschainQuote, fillCrosschainQuote } from '@rainbow-me/swaps';
-import { Address, getProvider } from '@wagmi/core';
+import { type Address } from 'viem';
+import { getProvider } from '@wagmi/core';
 
 import { REFERRER, gasUnits } from '~/core/references';
 import { ChainId } from '~/core/types/chains';

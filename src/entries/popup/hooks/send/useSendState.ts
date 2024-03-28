@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';

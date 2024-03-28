@@ -1,4 +1,4 @@
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 
 export const HARDWARE_WALLETS = {
   MOCK_ACCOUNT: {

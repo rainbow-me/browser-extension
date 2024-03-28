@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 import { getProvider } from 'wagmi/actions';
 
 import { analytics } from '~/analytics';

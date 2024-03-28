@@ -1,8 +1,8 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import BigNumber from 'bignumber.js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { type Address } from 'viem';
 import {
-  Address,
   useAccount,
   useBalance,
   useEnsName,

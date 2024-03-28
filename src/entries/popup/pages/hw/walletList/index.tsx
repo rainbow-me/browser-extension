@@ -1,4 +1,4 @@
-import { Address } from '@wagmi/core';
+import { type Address } from 'viem';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 

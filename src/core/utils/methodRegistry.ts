@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Contract, ContractInterface } from '@ethersproject/contracts';
-import { Address, getProvider } from '@wagmi/core';
+import { type Address } from 'viem';
+import { getProvider } from '@wagmi/core';
 
 import { metadataClient } from '~/core/graphql';
 

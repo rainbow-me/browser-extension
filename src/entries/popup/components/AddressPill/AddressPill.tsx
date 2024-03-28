@@ -1,5 +1,5 @@
 import React from 'react';
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 
 import { Box, Inline, TextOverflow } from '~/design-system';
 

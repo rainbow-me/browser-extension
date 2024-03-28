@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
 
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
