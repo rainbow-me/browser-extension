@@ -120,6 +120,8 @@ const RESTORE_NAV_MAP: Record<string, string[]> = {
   [ROUTES.WALLET_SWITCHER]: [ROUTES.WALLET_SWITCHER],
 };
 
+const MODAL_ROUTES = ['home/activity-details'];
+
 export default function useRestoreNavigation() {
   const navigate = useRainbowNavigate();
   const {
@@ -131,13 +133,23 @@ export default function useRestoreNavigation() {
   const restoreNavigation = async () => {
     if (lastPage && shouldRestoreNavigation) {
       await setShouldRestoreNavigation(false);
-      if (RESTORE_NAV_MAP[lastPage]) {
-        const navPath = RESTORE_NAV_MAP[lastPage];
-        for (const screen of navPath) {
-          if (navPath.indexOf(screen) === navPath.length - 1) {
-            navigate(screen, { state: lastState });
-          } else {
-            navigate(screen);
+      if (
+        MODAL_ROUTES.some((route) => {
+          return lastPage.includes(route);
+        })
+      ) {
+        setTimeout(() => {
+          navigate(lastPage, { state: { skipTransitionOnRoute: ROUTES.HOME } });
+        }, 200);
+      } else {
+        if (RESTORE_NAV_MAP[lastPage]) {
+          const navPath = RESTORE_NAV_MAP[lastPage];
+          for (const screen of navPath) {
+            if (navPath.indexOf(screen) === navPath.length - 1) {
+              navigate(screen, { state: lastState });
+            } else {
+              navigate(screen);
+            }
           }
         }
       }
