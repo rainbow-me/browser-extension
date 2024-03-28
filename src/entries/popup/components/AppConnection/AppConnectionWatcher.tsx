@@ -110,7 +110,6 @@ export const AppConnectionWatcher = () => {
   }, []);
 
   const checkAndDisplayBanner = useCallback(() => {
-    console.log('- checkAndDisplayBanner');
     // Clear existing timeouts
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
@@ -169,12 +168,6 @@ export const AppConnectionWatcher = () => {
   ]);
 
   useLayoutEffect(() => {
-    console.log('-- location', location);
-    console.log(
-      '-- location !== home',
-      location.pathname,
-      location.pathname !== ROUTES.HOME,
-    );
     if (location.pathname !== ROUTES.HOME) {
       shouldAnimateOut.current = true;
       hide();
