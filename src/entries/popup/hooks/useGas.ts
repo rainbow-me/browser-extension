@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
-import { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { gasUnits } from '~/core/references';
@@ -57,6 +57,7 @@ const useGas = ({
   const { currentCurrency } = useCurrentCurrencyStore();
   const { data: gasData, isLoading } = useGasData({ chainId });
   const { nativeAsset } = useNativeAsset({ chainId, address });
+  const prevDefaultSpeed = usePrevious(defaultSpeed);
 
   const [internalMaxPriorityFee, setInternalMaxPriorityFee] = useState('');
   const [internalMaxBaseFee, setInternalMaxBaseFee] = useState('');
@@ -76,6 +77,7 @@ const useGas = ({
   );
 
   const {
+    selectedGas,
     setSelectedGas,
     gasFeeParamsBySpeed: storeGasFeeParamsBySpeed,
     setGasFeeParamsBySpeed,
@@ -95,7 +97,6 @@ const useGas = ({
   useEffect(() => {
     if (
       !gasData ||
-      !debouncedMaxBaseFee ||
       prevDebouncedMaxBaseFee === debouncedMaxBaseFee ||
       !enabled ||
       chainId !== ChainId.mainnet ||
@@ -145,7 +146,6 @@ const useGas = ({
   useEffect(() => {
     if (
       !gasData ||
-      !debouncedMaxPriorityFee ||
       prevDebouncedMaxPriorityFee === debouncedMaxPriorityFee ||
       !enabled ||
       chainId !== ChainId.mainnet ||
@@ -200,6 +200,8 @@ const useGas = ({
     storeGasFeeParamsBySpeed?.custom,
   ]);
 
+  const [selectedSpeed, setSelectedSpeed] = useState<GasSpeed>(defaultSpeed);
+
   const gasFeeParamsBySpeed:
     | GasFeeParamsBySpeed
     | GasFeeLegacyParamsBySpeed
@@ -241,13 +243,29 @@ const useGas = ({
     storeGasFeeParamsBySpeed.custom,
   ]);
 
-  const [selectedSpeed, setSelectedSpeed] = useReducer<
-    (s: GasSpeed, sa: GasSpeed) => GasSpeed
-  >((s, selectedSpeed) => {
-    if (!gasFeeParamsBySpeed?.[selectedSpeed]) return s;
-    setSelectedGas({ selectedGas: gasFeeParamsBySpeed[selectedSpeed] });
-    return selectedSpeed;
-  }, defaultSpeed || GasSpeed.NORMAL);
+  useEffect(() => {
+    if (prevDefaultSpeed !== defaultSpeed) {
+      setSelectedSpeed(defaultSpeed);
+    }
+  }, [defaultSpeed, prevDefaultSpeed]);
+
+  useEffect(() => {
+    if (
+      enabled &&
+      gasFeeParamsBySpeed?.[selectedSpeed] &&
+      gasFeeParamsChanged(selectedGas, gasFeeParamsBySpeed?.[selectedSpeed])
+    ) {
+      setSelectedGas({
+        selectedGas: gasFeeParamsBySpeed[selectedSpeed],
+      });
+    }
+  }, [
+    enabled,
+    gasFeeParamsBySpeed,
+    selectedGas,
+    selectedSpeed,
+    setSelectedGas,
+  ]);
 
   useEffect(() => {
     if (
