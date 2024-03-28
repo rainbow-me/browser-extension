@@ -181,21 +181,20 @@ export function Settings() {
             onClick={() => navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS)}
           />
           <MenuItem
-            testId={'privacy-security-link'}
+            testId={'networks-link'}
+            first
             leftComponent={
               <Symbol
-                symbol="lock.fill"
-                weight="semibold"
+                symbol="network"
+                weight="medium"
                 size={18}
-                color="blue"
+                color="green"
               />
             }
             hasRightArrow
-            onClick={() => navigate(ROUTES.SETTINGS__PRIVACY)}
+            onClick={() => navigate(ROUTES.SETTINGS__NETWORKS)}
             titleComponent={
-              <MenuItem.Title
-                text={i18n.t('settings.privacy_and_security.title')}
-              />
+              <MenuItem.Title text={i18n.t('settings.networks.title')} />
             }
           />
           <MenuItem
@@ -237,23 +236,23 @@ export function Settings() {
         </Menu>
         <Menu>
           <MenuItem
-            testId={'networks-link'}
-            first
+            testId={'privacy-security-link'}
             leftComponent={
               <Symbol
-                symbol="network"
-                weight="medium"
+                symbol="lock.fill"
+                weight="semibold"
                 size={18}
-                color="green"
+                color="blue"
               />
             }
             hasRightArrow
-            onClick={() => navigate(ROUTES.SETTINGS__NETWORKS)}
+            onClick={() => navigate(ROUTES.SETTINGS__PRIVACY)}
             titleComponent={
-              <MenuItem.Title text={i18n.t('settings.networks.title')} />
+              <MenuItem.Title
+                text={i18n.t('settings.privacy_and_security.title')}
+              />
             }
           />
-
           <MenuItem
             testId={'currency-selection'}
             hasRightArrow
@@ -288,25 +287,6 @@ export function Settings() {
             titleComponent={
               <MenuItem.Title text={i18n.t('settings.language.title')} />
             }
-          />
-          <MenuItem
-            titleComponent={<MenuItem.Title text={i18n.t('settings.sounds')} />}
-            leftComponent={
-              <Symbol
-                symbol="speaker.wave.2.fill"
-                weight="semibold"
-                size={18}
-                color="labelTertiary"
-              />
-            }
-            rightComponent={
-              <Toggle
-                checked={soundsEnabled}
-                handleChange={toggleSounds}
-                tabIndex={-1}
-              />
-            }
-            onToggle={toggleSounds}
           />
           <Lens
             style={{
@@ -385,6 +365,25 @@ export function Settings() {
               }}
             />
           </Lens>
+          <MenuItem
+            titleComponent={<MenuItem.Title text={i18n.t('settings.sounds')} />}
+            leftComponent={
+              <Symbol
+                symbol="speaker.wave.2.fill"
+                weight="semibold"
+                size={18}
+                color="labelTertiary"
+              />
+            }
+            rightComponent={
+              <Toggle
+                checked={soundsEnabled}
+                handleChange={toggleSounds}
+                tabIndex={-1}
+              />
+            }
+            onToggle={toggleSounds}
+          />
         </Menu>
         <Menu>
           <MenuItem
@@ -437,7 +436,7 @@ export function Settings() {
             last
             leftComponent={<MenuItem.TextIcon icon="💬" />}
             titleComponent={
-              <MenuItem.Title text={i18n.t('settings.share_beta_feedback')} />
+              <MenuItem.Title text={i18n.t('settings.share_feedback')} />
             }
             rightComponent={
               <Symbol
