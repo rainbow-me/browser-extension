@@ -17,7 +17,7 @@ import {
 } from 'viem/chains';
 import { Chain, goerli, mainnet, sepolia } from 'wagmi';
 
-import { ChainId, ChainNameDisplay } from '../types/chains';
+import { ChainId, ChainNameDisplay, chainBlast } from '../types/chains';
 
 import {
   getSupportedChainsWithHardhat,
@@ -27,11 +27,13 @@ import {
 export const chainIdMap: Record<
   | ChainId.mainnet
   | ChainId.optimism
+  | ChainId.arbitrum
   | ChainId.polygon
   | ChainId.base
   | ChainId.bsc
   | ChainId.zora
-  | ChainId.avalanche,
+  | ChainId.avalanche
+  | ChainId.blast,
   ChainId[]
 > = {
   [ChainId.mainnet]: [mainnet.id, goerli.id, sepolia.id, holesky.id],
@@ -42,6 +44,7 @@ export const chainIdMap: Record<
   [ChainId.bsc]: [bsc.id, bscTestnet.id],
   [ChainId.zora]: [zora.id, zoraSepolia.id],
   [ChainId.avalanche]: [avalanche.id, avalancheFuji.id],
+  [ChainId.blast]: [chainBlast.id],
 };
 
 export const chainLabelMap: Record<
@@ -66,6 +69,7 @@ export const chainLabelMap: Record<
   [ChainId.bsc]: [ChainNameDisplay[bscTestnet.id]],
   [ChainId.zora]: [ChainNameDisplay[zoraSepolia.id]],
   [ChainId.avalanche]: [ChainNameDisplay[avalancheFuji.id]],
+  [ChainId.blast]: [ChainNameDisplay[chainBlast.id]],
 };
 
 export const sortNetworks = (order: ChainId[], chains: Chain[]) => {
