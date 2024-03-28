@@ -2,7 +2,7 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion } from 'framer-motion';
 import uniqBy from 'lodash/uniqBy';
-import { RefObject, memo, useCallback, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -62,11 +62,9 @@ import { TokenMarkedHighlighter } from './TokenMarkedHighlighter';
 const TokenRow = memo(function TokenRow({
   token,
   testId,
-  containerRef,
 }: {
   token: ParsedUserAsset;
   testId: string;
-  containerRef: RefObject<HTMLDivElement>;
 }) {
   const navigate = useRainbowNavigate();
   const openDetails = () => {
@@ -88,7 +86,7 @@ const TokenRow = memo(function TokenRow({
       layoutScroll
       layout="position"
     >
-      <TokenContextMenu token={token} containerRef={containerRef}>
+      <TokenContextMenu token={token}>
         <Box
           onMouseDown={onMouseDown}
           onMouseUp={onMouseUp}
@@ -304,11 +302,7 @@ export function Tokens() {
                 style={{ height: size, y: start }}
               >
                 {pinned && <TokenMarkedHighlighter />}
-                <TokenRow
-                  containerRef={containerRef}
-                  token={token}
-                  testId={`coin-row-item-${index}`}
-                />
+                <TokenRow token={token} testId={`coin-row-item-${index}`} />
               </Box>
             );
           })}

@@ -1,4 +1,4 @@
-import { ReactNode, RefObject, useCallback } from 'react';
+import { ReactNode, useCallback } from 'react';
 
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
@@ -19,7 +19,6 @@ import { getTokenBlockExplorer } from '~/core/utils/transactions';
 import { Text, TextOverflow } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
-import { simulateClick } from '~/entries/popup/utils/simulateClick';
 
 import {
   ContextMenuContent,
@@ -33,19 +32,12 @@ import { useRainbowNavigate } from '../../../hooks/useRainbowNavigate';
 import { useWallets } from '../../../hooks/useWallets';
 import { ROUTES } from '../../../urls';
 
-import { TokenMenuShortcutListener } from './TokenMenuShortcutListener';
-
 interface TokenContextMenuProps {
   children: ReactNode;
   token: ParsedUserAsset;
-  containerRef: RefObject<HTMLDivElement>;
 }
 
-export function TokenContextMenu({
-  children,
-  token,
-  containerRef,
-}: TokenContextMenuProps) {
+export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
   const { isWatchingWallet } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
   const setSelectedToken = useSelectedTokenStore((s) => s.setSelectedToken);
@@ -104,7 +96,6 @@ export function TokenContextMenu({
           name: token.symbol,
         }),
       });
-      simulateClick(containerRef.current);
       return;
     }
     addPinnedAsset({ uniqueId: token.uniqueId });
@@ -113,8 +104,7 @@ export function TokenContextMenu({
         name: token.symbol,
       }),
     });
-    simulateClick(containerRef.current);
-  }, [containerRef, token, pinned, addPinnedAsset, removedPinnedAsset]);
+  }, [token, pinned, addPinnedAsset, removedPinnedAsset]);
 
   const hideToken = useCallback(() => {
     addHiddenAsset({ uniqueId: computeUniqueIdForHiddenAsset(token) });
@@ -130,8 +120,7 @@ export function TokenContextMenu({
   const copyTokenAddress = useCallback(() => {
     if (isNative) return;
     copyAddress(token.address);
-    simulateClick(containerRef.current);
-  }, [token.address, containerRef, isNative]);
+  }, [token.address, isNative]);
 
   if (isWatchingWallet && !allowSwap && isNative) return <>{children}</>;
 
@@ -139,11 +128,6 @@ export function TokenContextMenu({
     <DetailsMenuWrapper closed={true} onOpenChange={onOpenChange}>
       <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
       <ContextMenuContent>
-        <TokenMenuShortcutListener
-          hideToken={hideToken}
-          pinToken={togglePinToken}
-          copyTokenAddress={copyTokenAddress}
-        />
         {allowSwap && (
           <ContextMenuItem
             symbolLeft="arrow.triangle.swap"
