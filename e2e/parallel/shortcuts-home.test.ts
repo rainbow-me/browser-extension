@@ -220,8 +220,8 @@ describe.runIf(browser !== 'firefox')(
       console.log('-- 9');
       await delayTime('very-long');
       console.log('-- 10');
-      const txHash = await findElementByTestId({
-        id: 'activity-context-copy-tx-hash',
+      const txHash = await isElementFoundByText({
+        text: 'Copy Tx Hash',
         driver,
       });
       console.log('-- 11 txHash', txHash);
