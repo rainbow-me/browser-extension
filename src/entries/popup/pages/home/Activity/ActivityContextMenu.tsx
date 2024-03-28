@@ -1,9 +1,10 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
 import { useSelectedTransactionStore } from '~/core/state/selectedTransaction';
+import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
 import { copy } from '~/core/utils/copy';
@@ -11,6 +12,7 @@ import { goToNewTab } from '~/core/utils/tabs';
 import { getTransactionBlockExplorer } from '~/core/utils/transactions';
 import { Box, Text } from '~/design-system';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
+import { ROUTES } from '~/entries/popup/urls';
 
 import {
   ContextMenu,
@@ -29,7 +31,6 @@ export function ActivityContextMenu({
   transaction: RainbowTransaction;
   onRevokeTransaction?: () => void;
 }) {
-  const { setCurrentHomeSheet } = useCurrentHomeSheetStore();
   const { setSelectedTransaction } = useSelectedTransactionStore();
   const [open, setOpen] = useState(false);
   const revokeRef = useRef<HTMLDivElement>(null);
@@ -44,14 +45,25 @@ export function ActivityContextMenu({
     });
   };
 
-  const explorer = getTransactionBlockExplorer(transaction);
+  const viewOnExplorer = () => {
+    const explorer = getTransactionBlockExplorer(transaction);
+    goToNewTab({ url: explorer?.url });
+  };
+
+  const navigate = useNavigate();
 
   const onSpeedUp = () => {
-    setCurrentHomeSheet('speedUp');
+    navigate({
+      pathname: ROUTES.ACTIVITY_DETAILS(transaction.chainId, transaction.hash),
+      search: '?sheet=speedUp',
+    });
   };
 
   const onCancel = () => {
-    setCurrentHomeSheet('cancel');
+    navigate({
+      pathname: ROUTES.ACTIVITY_DETAILS(transaction.chainId, transaction.hash),
+      search: '?sheet=cancel',
+    });
   };
 
   const onTrigger = useCallback(
@@ -108,15 +120,15 @@ export function ActivityContextMenu({
           </>
         )}
 
-        {explorer && (
-          <ContextMenuItem
-            symbolLeft="binoculars.fill"
-            onSelect={() => goToNewTab({ url: explorer.url })}
-            shortcut={shortcuts.activity.VIEW_TRANSACTION.display}
-          >
-            {i18n.t('view_on_explorer', { explorer: explorer.name })}
-          </ContextMenuItem>
-        )}
+        <ContextMenuItem
+          symbolLeft="binoculars.fill"
+          onSelect={viewOnExplorer}
+          shortcut={shortcuts.activity.VIEW_TRANSACTION.display}
+        >
+          {transaction?.chainId === ChainId.mainnet
+            ? i18n.t('speed_up_and_cancel.view_on_etherscan')
+            : i18n.t('speed_up_and_cancel.view_on_explorer')}
+        </ContextMenuItem>
 
         <ContextMenuItem
           symbolLeft="doc.on.doc.fill"

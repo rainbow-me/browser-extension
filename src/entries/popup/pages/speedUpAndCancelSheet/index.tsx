@@ -49,6 +49,8 @@ import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { isLedgerConnectionError } from '../../handlers/ledger';
 import { sendTransaction } from '../../handlers/wallet';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { ROUTES } from '../../urls';
 import { zIndexes } from '../../utils/zIndexes';
 
 const calcGasParamRetryValue = (prevWeiValue?: string) => {
@@ -81,14 +83,21 @@ export function SpeedUpAndCancelSheet({
   const { selectedGas } = useGasStore();
   const [sending, setSending] = useState(false);
 
+  const navigate = useRainbowNavigate();
+
   const { data: transactionResponse } = useTransaction({
     chainId: transaction?.chainId,
     hash: transaction?.hash,
   });
   const cancel = currentSheet === 'cancel';
-  const handleClose = useCallback(() => {
+
+  const onExecuteTransaction = () => {
+    if (cancel) handleCancellation();
+    else handleSpeedUp();
+
     onClose();
-  }, [onClose]);
+    navigate(ROUTES.HOME, { state: { tab: 'activity' } });
+  };
 
   const getNewTransactionGasParams = useCallback(() => {
     if (transaction?.chainId === ChainId.mainnet) {
@@ -120,6 +129,7 @@ export function SpeedUpAndCancelSheet({
       const maxFeePerGas = greaterThan(rawMaxFeePerGas, minMaxFeePerGas)
         ? toHex(rawMaxFeePerGas)
         : toHex(minMaxFeePerGas);
+
       return { maxFeePerGas, maxPriorityFeePerGas };
     } else {
       const transactionGasPrice =
@@ -209,7 +219,6 @@ export function SpeedUpAndCancelSheet({
         chainId: cancellationResult?.chainId,
         transaction: cancelTx,
       });
-      handleClose();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       if (!isLedgerConnectionError(e)) {
@@ -219,7 +228,7 @@ export function SpeedUpAndCancelSheet({
           description: extractedError,
         });
       }
-      logger.error(new RainbowError('send: error speed up tx'), {
+      logger.error(new RainbowError('send: error cancel tx'), {
         message: (e as Error)?.message,
       });
     } finally {
@@ -247,7 +256,6 @@ export function SpeedUpAndCancelSheet({
         chainId: speedUpResult?.chainId,
         transaction: speedUpTransaction,
       });
-      handleClose();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       if (!isLedgerConnectionError(e)) {
@@ -257,7 +265,7 @@ export function SpeedUpAndCancelSheet({
           description: extractedError,
         });
       }
-      logger.error(new RainbowError('send: error cancel tx'), {
+      logger.error(new RainbowError('send: error speed up tx'), {
         message: (e as Error)?.message,
       });
     } finally {
@@ -273,8 +281,17 @@ export function SpeedUpAndCancelSheet({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const { address } = useAccount();
+
   return (
-    <Prompt zIndex={zIndexes.SPEED_UP_CANCEL_PROMPT} show={true} padding="12px">
+    <Prompt
+      zIndex={zIndexes.SPEED_UP_CANCEL_PROMPT}
+      show={currentSheet !== 'none'}
+      padding="12px"
+      handleClose={onClose}
+      borderRadius="24px"
+      background="surfacePrimaryElevated"
+    >
       <Box
         style={{
           height: window.innerHeight - 64,
@@ -303,25 +320,19 @@ export function SpeedUpAndCancelSheet({
                 flexGrow="1"
                 flexDirection="column"
               >
-                <Box paddingTop="80px">
+                <Stack paddingTop="68px" gap="20px" alignItems="center">
                   <Text weight="semibold" size="32pt" align="center">
                     {cancel ? '☠️' : '🚀'}
                   </Text>
-                  <Box paddingTop="20px">
-                    <Text
-                      color="label"
-                      size="20pt"
-                      weight="bold"
-                      align="center"
-                    >
-                      {i18n.t(
-                        cancel
-                          ? 'speed_up_and_cancel.cancel_title'
-                          : 'speed_up_and_cancel.speed_up_title',
-                      )}
-                    </Text>
-                  </Box>
-                  <Box paddingTop="36px" justifyContent="center" display="flex">
+                  <Text color="label" size="20pt" weight="bold" align="center">
+                    {i18n.t(
+                      cancel
+                        ? 'speed_up_and_cancel.cancel_title'
+                        : 'speed_up_and_cancel.speed_up_title',
+                    )}
+                  </Text>
+                  <Separator width={102} color="separatorTertiary" />
+                  <Box justifyContent="center" display="flex">
                     <Box style={{ width: 236 }}>
                       <Text
                         size="14pt"
@@ -337,7 +348,7 @@ export function SpeedUpAndCancelSheet({
                       </Text>
                     </Box>
                   </Box>
-                </Box>
+                </Stack>
                 <Box paddingHorizontal="20px" paddingVertical="16px">
                   <TransactionFee
                     chainId={transaction?.chainId || ChainId.mainnet}
@@ -351,7 +362,7 @@ export function SpeedUpAndCancelSheet({
                 </Box>
               </Box>
               <Box marginHorizontal="-12px">
-                <Separator />
+                <Separator color="separatorSecondary" />
               </Box>
               <Box style={{ height: 186 }}>
                 <Rows>
@@ -372,13 +383,11 @@ export function SpeedUpAndCancelSheet({
                             {i18n.t('speed_up_and_cancel.wallet')}
                           </Text>
                           <Inline alignVertical="center" space="4px">
-                            {transaction?.to && (
-                              <WalletAvatar
-                                addressOrName={transaction.to}
-                                size={18}
-                                emojiSize="12pt"
-                              />
-                            )}
+                            <WalletAvatar
+                              addressOrName={address}
+                              size={18}
+                              emojiSize="12pt"
+                            />
                             <AccountName />
                           </Inline>
                         </Stack>
@@ -404,7 +413,7 @@ export function SpeedUpAndCancelSheet({
                         height="44px"
                         variant="flat"
                         width="full"
-                        onClick={cancel ? handleCancellation : handleSpeedUp}
+                        onClick={onExecuteTransaction}
                       >
                         {sending ? (
                           <Box

@@ -2,15 +2,18 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits } from '@ethersproject/units';
 import { motion } from 'framer-motion';
 import { useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { useApprovals } from '~/core/resources/approvals/approvals';
 import { useTransaction } from '~/core/resources/transactions/transaction';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
-import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
-import { RainbowTransaction, TxHash } from '~/core/types/transactions';
+import {
+  PendingTransaction,
+  RainbowTransaction,
+  TxHash,
+} from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
 import { getChain } from '~/core/utils/chains';
 import { copy } from '~/core/utils/copy';
@@ -54,7 +57,7 @@ import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
-import { SpeedUpAndCancelSheet } from '../../speedUpAndCancelSheet';
+import { SheetMode, SpeedUpAndCancelSheet } from '../../speedUpAndCancelSheet';
 import { triggerRevokeApproval } from '../Approvals/utils';
 import { CopyableValue, InfoRow } from '../TokenDetails/About';
 
@@ -272,45 +275,44 @@ function NetworkData({ transaction: tx }: { transaction: RainbowTransaction }) {
 const SpeedUpOrCancel = ({
   transaction,
 }: {
-  transaction: RainbowTransaction;
+  transaction: PendingTransaction;
 }) => {
-  const { sheet, setCurrentHomeSheet } = useCurrentHomeSheetStore();
-  const navigate = useRainbowNavigate();
+  const [searchParams, setSearchParams] = useSearchParams('none');
+  const sheetParam = searchParams.get('sheet');
+  const sheet =
+    sheetParam === 'speedUp' || sheetParam === 'cancel' ? sheetParam : 'none';
+  const setSheet = (mode: SheetMode) => setSearchParams({ sheet: mode });
 
   return (
-    <Box display="flex" flexDirection="column" gap="8px">
-      <Button
-        onClick={() => setCurrentHomeSheet('speedUp')}
-        symbol="bolt.fill"
-        height="32px"
-        width="full"
-        variant="plain"
-        color="blue"
-      >
-        {i18n.t('speed_up_and_cancel.speed_up')}
-      </Button>
-      <Button
-        onClick={() => setCurrentHomeSheet('cancel')}
-        symbol="trash.fill"
-        height="32px"
-        width="full"
-        variant="plain"
-        color="fillSecondary"
-      >
-        {i18n.t('speed_up_and_cancel.cancel')}
-      </Button>
-      {sheet !== 'none' && (
-        <SpeedUpAndCancelSheet
-          currentSheet={sheet}
-          transaction={transaction}
-          onClose={() => {
-            setCurrentHomeSheet('none');
-            navigate(ROUTES.HOME);
-            console.log('naviogating to homeee');
-          }}
-        />
-      )}
-    </Box>
+    <>
+      <Box display="flex" flexDirection="column" gap="8px">
+        <Button
+          onClick={() => setSheet('speedUp')}
+          symbol="bolt.fill"
+          height="32px"
+          width="full"
+          variant="plain"
+          color="blue"
+        >
+          {i18n.t('speed_up_and_cancel.speed_up')}
+        </Button>
+        <Button
+          onClick={() => setSheet('cancel')}
+          symbol="trash.fill"
+          height="32px"
+          width="full"
+          variant="plain"
+          color="fillSecondary"
+        >
+          {i18n.t('speed_up_and_cancel.cancel')}
+        </Button>
+      </Box>
+      <SpeedUpAndCancelSheet
+        currentSheet={sheet}
+        transaction={transaction}
+        onClose={() => setSheet('none')}
+      />
+    </>
   );
 };
 
