@@ -99,7 +99,6 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
 
   it('should be able to save contact', async () => {
     await executePerformShortcut({ driver, key: 'DECIMAL' });
-    await executePerformShortcut({ driver, key: 'TAB' });
     await driver.actions().sendKeys('0xtester.eth').perform();
     await executePerformShortcut({ driver, key: 'TAB' });
     await executePerformShortcut({ driver, key: 'ENTER' });
