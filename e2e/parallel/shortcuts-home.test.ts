@@ -197,24 +197,34 @@ describe.runIf(browser !== 'firefox')(
     });
 
     it('should be able to navigate to highlight transaction + open context menu with keyboard', async () => {
+      console.log('-- 1');
       await delayTime('medium');
+      console.log('-- 2');
       await findElementByText(driver, 'Tokens');
+      console.log('-- 3');
       await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
+      console.log('-- 4');
       await findElementByText(driver, 'Activity');
+      console.log('-- 5');
       await executePerformShortcut({
         driver,
         key: 'ARROW_DOWN',
         timesToPress: 8,
       });
+      console.log('-- 6');
       await executePerformShortcut({ driver, key: 'ENTER' });
+      console.log('-- 7');
       await findElementByText(driver, 'Copy Tx Hash');
+      console.log('-- 8');
       await executePerformShortcut({ driver, key: 'ESCAPE' });
+      console.log('-- 9');
       await delayTime('very-long');
-      await delayTime('very-long');
-      const txHash = await isElementFoundByText({
-        text: 'Copy Tx Hash',
+      console.log('-- 10');
+      const txHash = await findElementByTestId({
+        id: 'activity-context-copy-tx-hash',
         driver,
       });
+      console.log('-- 11 txHash', txHash);
       expect(txHash).toBe(false);
     });
 

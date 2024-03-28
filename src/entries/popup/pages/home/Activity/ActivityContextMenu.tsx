@@ -122,18 +122,20 @@ export function ActivityContextMenu({
             : i18n.t('speed_up_and_cancel.view_on_explorer')}
         </ContextMenuItem>
 
-        <ContextMenuItem
-          symbolLeft="doc.on.doc.fill"
-          onSelect={handleCopy}
-          shortcut={shortcuts.activity.COPY_TRANSACTION.display}
-        >
-          <Text color="label" size="14pt" weight="semibold">
-            {i18n.t('speed_up_and_cancel.copy_tx_hash')}
-          </Text>
-          <Text color="labelSecondary" size="12pt" weight="semibold">
-            {truncatedHash}
-          </Text>
-        </ContextMenuItem>
+        <Box testId="activity-context-copy-tx-hash">
+          <ContextMenuItem
+            symbolLeft="doc.on.doc.fill"
+            onSelect={handleCopy}
+            shortcut={shortcuts.activity.COPY_TRANSACTION.display}
+          >
+            <Text color="label" size="14pt" weight="semibold">
+              {i18n.t('speed_up_and_cancel.copy_tx_hash')}
+            </Text>
+            <Text color="labelSecondary" size="12pt" weight="semibold">
+              {truncatedHash}
+            </Text>
+          </ContextMenuItem>
+        </Box>
 
         {onRevokeTransaction ? (
           <ContextMenuItem
