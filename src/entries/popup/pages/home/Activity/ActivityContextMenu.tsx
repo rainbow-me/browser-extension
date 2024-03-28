@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { ReactNode, useCallback, useRef, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -77,12 +77,6 @@ export function ActivityContextMenu({
       }
     },
   });
-
-  useEffect(() => {
-    if (!open) {
-      setSelectedTransaction(undefined);
-    }
-  }, [open, setSelectedTransaction]);
 
   return (
     <ContextMenu onOpenChange={setOpen}>
