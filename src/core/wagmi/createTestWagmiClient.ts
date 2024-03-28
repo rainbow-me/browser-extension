@@ -4,6 +4,7 @@ import {
   arbitrum,
   avalanche,
   base,
+  blast,
   bsc,
   mainnet,
   optimism,
@@ -28,7 +29,7 @@ const noopStorage = {
 };
 
 const { chains, provider, webSocketProvider } = configureChains(
-  [mainnet, optimism, polygon, arbitrum, base, zora, bsc, avalanche] as Chain[],
+  [mainnet, optimism, polygon, arbitrum, base, zora, bsc, avalanche, blast] as Chain[],
   [
     jsonRpcProvider({
       rpc: () => {

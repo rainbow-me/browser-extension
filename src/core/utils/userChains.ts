@@ -6,6 +6,7 @@ import {
   avalancheFuji,
   base,
   baseSepolia,
+  blast,
   bsc,
   bscTestnet,
   goerli,
@@ -20,7 +21,7 @@ import {
   zoraSepolia,
 } from 'viem/chains';
 
-import { ChainId, ChainNameDisplay, chainBlast } from '../types/chains';
+import { ChainId, ChainNameDisplay } from '../types/chains';
 
 import {
   getSupportedChainsWithHardhat,
@@ -47,7 +48,7 @@ export const chainIdMap: Record<
   [ChainId.bsc]: [bsc.id, bscTestnet.id],
   [ChainId.zora]: [zora.id, zoraSepolia.id],
   [ChainId.avalanche]: [avalanche.id, avalancheFuji.id],
-  [ChainId.blast]: [chainBlast.id],
+  [ChainId.blast]: [blast.id],
 };
 
 export const chainLabelMap: Record<
@@ -72,7 +73,7 @@ export const chainLabelMap: Record<
   [ChainId.bsc]: [ChainNameDisplay[bscTestnet.id]],
   [ChainId.zora]: [ChainNameDisplay[zoraSepolia.id]],
   [ChainId.avalanche]: [ChainNameDisplay[avalancheFuji.id]],
-  [ChainId.blast]: [ChainNameDisplay[chainBlast.id]],
+  [ChainId.blast]: [ChainNameDisplay[blast.id]],
 };
 
 export const sortNetworks = (order: ChainId[], chains: Chain[]) => {
