@@ -1,6 +1,6 @@
 import { AddressZero } from '@ethersproject/constants';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import { getNetwork } from '@wagmi/core';
+import { getNetwork } from 'wagmi/actions';
 import {
   type Chain,
   celo,

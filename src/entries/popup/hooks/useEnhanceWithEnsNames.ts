@@ -1,6 +1,6 @@
 import { useQueries } from '@tanstack/react-query';
 import { type Address } from 'viem';
-import { FetchEnsNameResult, fetchEnsName } from '@wagmi/core';
+import { type FetchEnsNameResult, fetchEnsName } from 'wagmi/actions';
 
 import { ChainId } from '~/core/types/chains';
 

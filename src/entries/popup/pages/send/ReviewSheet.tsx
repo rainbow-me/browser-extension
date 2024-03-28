@@ -1,4 +1,4 @@
-import { getNetwork } from '@wagmi/core';
+import { getNetwork } from 'wagmi/actions';
 import { motion } from 'framer-motion';
 import React, {
   useCallback,
