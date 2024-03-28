@@ -228,7 +228,7 @@ export function SpeedUpAndCancelSheet({
           description: extractedError,
         });
       }
-      logger.error(new RainbowError('send: error speed up tx'), {
+      logger.error(new RainbowError('send: error cancel tx'), {
         message: (e as Error)?.message,
       });
     } finally {
@@ -265,7 +265,7 @@ export function SpeedUpAndCancelSheet({
           description: extractedError,
         });
       }
-      logger.error(new RainbowError('send: error cancel tx'), {
+      logger.error(new RainbowError('send: error speed up tx'), {
         message: (e as Error)?.message,
       });
     } finally {
