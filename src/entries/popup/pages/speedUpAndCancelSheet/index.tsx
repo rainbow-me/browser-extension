@@ -286,7 +286,7 @@ export function SpeedUpAndCancelSheet({
   return (
     <Prompt
       zIndex={zIndexes.SPEED_UP_CANCEL_PROMPT}
-      show={true}
+      show={currentSheet !== 'none'}
       padding="12px"
       handleClose={onClose}
       borderRadius="24px"
