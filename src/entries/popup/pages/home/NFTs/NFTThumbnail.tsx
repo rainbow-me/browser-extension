@@ -33,6 +33,7 @@ export const NFTThumbnail = memo(function NftThumbnail({
         placeholderSrc={placeholderSrc}
         height={size}
         width={size}
+        avoidImgix
       />
     </Lens>
   );
