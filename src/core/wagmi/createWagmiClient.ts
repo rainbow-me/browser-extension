@@ -1,6 +1,6 @@
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
+import { type Chain } from 'viem/chains';
 import {
-  Chain,
   CreateClientConfig,
   configureChains,
   createClient,

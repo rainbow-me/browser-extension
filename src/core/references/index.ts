@@ -1,5 +1,6 @@
 import { AddressZero } from '@ethersproject/constants';
 import {
+  type Chain,
   arbitrum,
   arbitrumSepolia,
   avalanche,

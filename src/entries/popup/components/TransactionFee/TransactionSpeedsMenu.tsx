@@ -1,5 +1,5 @@
 import React, { useImperativeHandle, useRef } from 'react';
-import { Chain } from 'wagmi';
+import { type Chain } from 'viem/chains';
 
 import { i18n } from '~/core/languages';
 import { txSpeedEmoji } from '~/core/references/txSpeed';

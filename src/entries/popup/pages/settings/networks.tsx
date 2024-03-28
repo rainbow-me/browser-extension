@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { DropResult } from 'react-beautiful-dnd';
-import { Chain } from 'wagmi';
+import { type Chain } from 'viem/chains';
 
 import { i18n } from '~/core/languages';
 import { SUPPORTED_CHAINS, SUPPORTED_CHAIN_IDS } from '~/core/references';

@@ -9,8 +9,8 @@ import {
   RAINBOW_ROUTER_CONTRACT_ADDRESS,
   getQuoteExecutionDetails,
 } from '@rainbow-me/swaps';
-import { mainnet } from 'viem/chains';
-import { Chain, erc20ABI } from 'wagmi';
+import { type Chain, mainnet } from 'viem/chains';
+import { erc20ABI } from 'wagmi';
 
 import { gasUnits } from '../references';
 import { ChainId } from '../types/chains';

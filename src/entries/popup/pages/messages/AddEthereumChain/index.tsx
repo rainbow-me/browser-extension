@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { Chain } from 'wagmi';
+import { type Chain } from 'viem/chains';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';

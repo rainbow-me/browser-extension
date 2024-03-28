@@ -1,5 +1,5 @@
 import * as chain from 'viem/chains';
-import type { Chain } from 'wagmi';
+import type { Chain } from 'viem/chains';
 
 const HARDHAT_CHAIN_ID = 1337;
 const BLAST_CHAIN_ID = 81457;
@@ -44,7 +44,6 @@ export const chainBlast: Chain = {
 export const chainHardhatOptimism: Chain = {
   id: HARDHAT_OP_CHAIN_ID,
   name: 'Hardhat OP',
-  network: 'hardhat-optimism',
   nativeCurrency: {
     decimals: 18,
     name: 'Hardhat OP',

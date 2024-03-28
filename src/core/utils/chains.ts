@@ -2,7 +2,7 @@ import { AddressZero } from '@ethersproject/constants';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { getNetwork } from '@wagmi/core';
 import {
-  Chain,
+  type Chain,
   celo,
   fantom,
   harmonyOne,

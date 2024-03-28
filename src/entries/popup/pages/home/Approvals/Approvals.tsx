@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
-import { Address, Chain } from 'wagmi';
+import { Address } from 'wagmi';
+import { type Chain } from 'viem/chains';
 
 import { i18n } from '~/core/languages';
 import { SUPPORTED_MAINNET_CHAINS } from '~/core/references';

@@ -1,4 +1,5 @@
 import {
+  type Chain,
   arbitrum,
   arbitrumSepolia,
   avalanche,

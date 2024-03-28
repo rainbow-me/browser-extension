@@ -5,7 +5,8 @@ import {
   Web3Provider,
 } from '@ethersproject/providers';
 import { RainbowProvider } from '@rainbow-me/provider';
-import { Chain, Connector } from 'wagmi';
+import { Connector } from 'wagmi';
+import { type Chain } from 'viem/chains';
 
 import { currentAddressStore, currentChainIdStore } from '~/core/state';
 

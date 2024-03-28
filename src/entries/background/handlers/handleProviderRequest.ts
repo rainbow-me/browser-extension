@@ -2,8 +2,9 @@ import {
   AddEthereumChainProposedChain,
   handleProviderRequest as rnbwHandleProviderRequest,
 } from '@rainbow-me/provider';
-import { Chain, getProvider } from '@wagmi/core';
+import { getProvider } from '@wagmi/core';
 import { UserRejectedRequestError } from 'wagmi';
+import { type Chain } from 'viem/chains';
 
 import { event } from '~/analytics/event';
 import { queueEventTracking } from '~/analytics/queueEvent';

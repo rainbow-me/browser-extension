@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useCallback, useMemo, useRef } from 'react';
-import { Chain } from 'wagmi';
+import { type Chain } from 'viem/chains';
 
 import { SUPPORTED_MAINNET_CHAINS } from '~/core/references';
 import { useApprovals } from '~/core/resources/approvals/approvals';

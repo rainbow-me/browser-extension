@@ -1,5 +1,6 @@
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import {
+  type Chain,
   arbitrum,
   avalanche,
   base,
@@ -10,7 +11,6 @@ import {
   zora,
 } from 'viem/chains';
 import {
-  Chain,
   CreateClientConfig,
   configureChains,
   createClient,

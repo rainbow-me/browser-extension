@@ -1,6 +1,5 @@
-import { celo, fantom } from 'viem/chains';
+import { type Chain, celo, fantom } from 'viem/chains';
 import { expect, test } from 'vitest';
-import { Chain } from 'wagmi';
 
 import { rainbowChainsStore } from '.';
 
