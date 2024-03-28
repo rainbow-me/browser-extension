@@ -438,7 +438,7 @@ const boxBaseProperties = defineProperties({
     bottom: positionSpace,
     cursor: cursorOpts,
     display: ['none', 'flex', 'block', 'inline'],
-    flexDirection: ['row', 'column', 'column-reverse'],
+    flexDirection: ['row', 'column', 'column-reverse', 'row-reverse'],
     flexWrap: ['wrap'],
     flexBasis: ['0'],
     flexGrow: ['0', '1'],
