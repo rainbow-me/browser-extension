@@ -1,6 +1,6 @@
 # `~/analytics`
 
-Our Segment wrapper.
+Our RudderStack wrapper.
 
 ```typescript
 import { analytics } from '~/analytics';

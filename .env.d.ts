@@ -6,7 +6,8 @@ declare global {
       ZORA_MAINNET_RPC: string;
       BASE_MAINNET_RPC: string;
       ETHERSCAN_API_KEY: string;
-      SEGMENT_WRITE_KEY: string;
+      RUDDERSTACK_WRITE_KEY: string;
+      RUDDERSTACK_DATA_PLANE: string;
       SENTRY_DSN: string;
       DATA_API_KEY: string;
       DATA_ENDPOINT: string;
