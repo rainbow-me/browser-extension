@@ -1,12 +1,10 @@
 import { motion } from 'framer-motion';
-import { memo, useCallback, useMemo, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { Chain } from 'wagmi';
 
 import { SUPPORTED_MAINNET_CHAINS } from '~/core/references';
 import { useApprovals } from '~/core/resources/approvals/approvals';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
-import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
-import { useSelectedTransactionStore } from '~/core/state/selectedTransaction';
 import { useUserChainsStore } from '~/core/state/userChains';
 import {
   RainbowTransaction,
@@ -38,7 +36,6 @@ import { simulateContextClick } from '~/entries/popup/utils/simulateClick';
 import { useActivityShortcuts } from '../../../hooks/useActivityShortcuts';
 import { useRainbowNavigate } from '../../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../../urls';
-import { SpeedUpAndCancelSheet } from '../../speedUpAndCancelSheet';
 import { triggerRevokeApproval } from '../Approvals/utils';
 import { ActivitySkeleton } from '../Skeletons';
 
@@ -47,22 +44,6 @@ import { ActivityIcon } from './ActivityIcon';
 import { ActivityTypeIcon } from './ActivityTypeIcon';
 import { ActivityValue } from './ActivityValue';
 import { NoActivity } from './NoActivity';
-
-const SpeedUpAndCancelSheetUncontrolled = memo(
-  function SpeedUpAndCancelSheetUncontrolled() {
-    const { sheet, setCurrentHomeSheet } = useCurrentHomeSheetStore();
-    const { selectedTransaction } = useSelectedTransactionStore();
-
-    if (sheet === 'none' || !selectedTransaction) return null;
-    return (
-      <SpeedUpAndCancelSheet
-        currentSheet={sheet}
-        transaction={selectedTransaction}
-        onClose={() => setCurrentHomeSheet('none')}
-      />
-    );
-  },
-);
 
 export function Activities() {
   const {
@@ -139,7 +120,6 @@ export function Activities() {
   const rows = activityRowVirtualizer.getVirtualItems();
   return (
     <>
-      <SpeedUpAndCancelSheetUncontrolled />
       <Box
         marginTop="-20px"
         width="full"

@@ -1,8 +1,8 @@
-import { ReactNode, useCallback, useRef, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
 import { useSelectedTransactionStore } from '~/core/state/selectedTransaction';
 import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
@@ -12,6 +12,7 @@ import { goToNewTab } from '~/core/utils/tabs';
 import { getTransactionBlockExplorer } from '~/core/utils/transactions';
 import { Box, Text } from '~/design-system';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
+import { ROUTES } from '~/entries/popup/urls';
 
 import {
   ContextMenu,
@@ -30,7 +31,6 @@ export function ActivityContextMenu({
   transaction: RainbowTransaction;
   onRevokeTransaction?: () => void;
 }) {
-  const { setCurrentHomeSheet } = useCurrentHomeSheetStore();
   const { setSelectedTransaction } = useSelectedTransactionStore();
   const [open, setOpen] = useState(false);
   const revokeRef = useRef<HTMLDivElement>(null);
@@ -50,12 +50,20 @@ export function ActivityContextMenu({
     goToNewTab({ url: explorer?.url });
   };
 
+  const navigate = useNavigate();
+
   const onSpeedUp = () => {
-    setCurrentHomeSheet('speedUp');
+    navigate({
+      pathname: ROUTES.ACTIVITY_DETAILS(transaction.chainId, transaction.hash),
+      search: '?sheet=speedUp',
+    });
   };
 
   const onCancel = () => {
-    setCurrentHomeSheet('cancel');
+    navigate({
+      pathname: ROUTES.ACTIVITY_DETAILS(transaction.chainId, transaction.hash),
+      search: '?sheet=cancel',
+    });
   };
 
   const onTrigger = useCallback(
@@ -80,6 +88,12 @@ export function ActivityContextMenu({
       }
     },
   });
+
+  useEffect(() => {
+    if (!open) {
+      setSelectedTransaction(undefined);
+    }
+  }, [open, setSelectedTransaction]);
 
   return (
     <ContextMenu onOpenChange={setOpen}>
