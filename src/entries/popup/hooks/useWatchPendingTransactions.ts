@@ -1,6 +1,7 @@
-import { getProvider, mainnet } from '@wagmi/core';
 import { useCallback, useMemo } from 'react';
-import { Address } from 'wagmi';
+import { type Address } from 'viem';
+import { mainnet } from 'viem/chains';
+import { getProvider } from '@wagmi/core';
 
 import { queryClient } from '~/core/react-query';
 import { userAssetsFetchQuery } from '~/core/resources/assets/userAssets';

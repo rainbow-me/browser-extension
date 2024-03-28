@@ -15,10 +15,11 @@ import {
   optimismSepolia,
   polygon,
   polygonMumbai,
+  sepolia,
   zora,
   zoraSepolia,
 } from 'viem/chains';
-import { Address, type Chain, sepolia } from 'wagmi';
+import { Address } from 'wagmi';
 
 import { ChainId, ChainNameDisplay, chainBlast } from '~/core/types/chains';
 

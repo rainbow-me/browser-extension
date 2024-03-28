@@ -7,15 +7,17 @@ import {
   baseSepolia,
   bsc,
   bscTestnet,
+  goerli,
   holesky,
+  mainnet,
   optimism,
   optimismSepolia,
   polygon,
   polygonMumbai,
+  sepolia,
   zora,
   zoraSepolia,
 } from 'viem/chains';
-import { Chain, goerli, mainnet, sepolia } from 'wagmi';
 
 import { ChainId, ChainNameDisplay, chainBlast } from '../types/chains';
 
