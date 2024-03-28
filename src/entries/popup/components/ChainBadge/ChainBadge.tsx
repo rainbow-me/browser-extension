@@ -54,7 +54,6 @@ const networkBadges = {
   [ChainId.optimismSepolia]: OptimismBadge,
   [ChainId.bscTestnet]: BscBadge,
   [ChainId.polygonMumbai]: PolygonBadge,
-  [ChainId.arbitrumGoerli]: ArbitrumBadge,
   [ChainId.arbitrumSepolia]: ArbitrumBadge,
   [ChainId.baseSepolia]: BaseBadge,
   [ChainId.zoraSepolia]: ZoraBadge,

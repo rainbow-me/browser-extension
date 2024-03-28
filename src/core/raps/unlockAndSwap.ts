@@ -1,6 +1,5 @@
 import {
   ALLOWS_PERMIT,
-  ChainId,
   ETH_ADDRESS as ETH_ADDRESS_AGGREGATOR,
   PermitSupportedTokenList,
   RAINBOW_ROUTER_CONTRACT_ADDRESS,
@@ -9,6 +8,7 @@ import {
 import { Address } from 'wagmi';
 
 import { ETH_ADDRESS } from '../references';
+import { ChainId } from '../types/chains';
 import { isNativeAsset } from '../utils/chains';
 import { add } from '../utils/numbers';
 import { isLowerCaseMatch } from '../utils/strings';
@@ -19,6 +19,7 @@ import {
   estimateApprove,
   estimateSwapGasLimit,
 } from './actions';
+import { estimateUnlockAndSwapFromMetadata } from './actions/swap';
 import { createNewAction, createNewRap } from './common';
 import {
   RapAction,
@@ -61,6 +62,19 @@ export const estimateUnlockAndSwap = async (
       spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
       chainId,
     });
+  }
+
+  if (swapAssetNeedsUnlocking) {
+    const gasLimitFromMetadata = await estimateUnlockAndSwapFromMetadata({
+      swapAssetNeedsUnlocking,
+      chainId,
+      accountAddress,
+      sellTokenAddress,
+      quote,
+    });
+    if (gasLimitFromMetadata) {
+      return gasLimitFromMetadata;
+    }
   }
 
   let unlockGasLimit;

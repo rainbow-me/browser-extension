@@ -24,7 +24,6 @@ export enum SimpleHashChain {
   Rari = 'rari',
   Scroll = 'scroll',
   PolygonMumbai = 'polygon-mumbai',
-  ArbitrumGoerli = 'arbitrum-goerli',
   ArbitrumSepolia = 'arbitrum-sepolia',
   BaseSepolia = 'base-sepolia',
   OptimismSepolia = 'optimism-sepolia',

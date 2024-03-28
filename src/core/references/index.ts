@@ -1,7 +1,6 @@
 import { AddressZero } from '@ethersproject/constants';
 import {
   arbitrum,
-  arbitrumGoerli,
   arbitrumSepolia,
   avalanche,
   avalancheFuji,
@@ -147,7 +146,6 @@ export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.sepolia]: AddressZero as Address,
   [ChainId.holesky]: AddressZero as Address,
   [ChainId.arbitrum]: ETH_ARBITRUM_ADDRESS as Address,
-  [ChainId.arbitrumGoerli]: AddressZero as Address,
   [ChainId.arbitrumSepolia]: AddressZero as Address,
   [ChainId.bsc]: BNB_BSC_ADDRESS as Address,
   [ChainId.bscTestnet]: AddressZero as Address,
@@ -174,7 +172,6 @@ export const NATIVE_ASSETS_MAP_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.sepolia]: ETH_ADDRESS,
   [ChainId.holesky]: ETH_ADDRESS,
   [ChainId.arbitrum]: ETH_ADDRESS,
-  [ChainId.arbitrumGoerli]: ETH_ADDRESS,
   [ChainId.arbitrumSepolia]: ETH_ADDRESS,
   [ChainId.bsc]: BNB_MAINNET_ADDRESS,
   [ChainId.bscTestnet]: BNB_MAINNET_ADDRESS,
@@ -232,7 +229,6 @@ export const SUPPORTED_CHAINS: Chain[] = [
   optimismSepolia,
   bscTestnet,
   polygonMumbai,
-  arbitrumGoerli,
   arbitrumSepolia,
   baseSepolia,
   zoraSepolia,
@@ -251,7 +247,6 @@ export const SUPPORTED_TESTNET_CHAINS: Chain[] = [
   optimismSepolia,
   bscTestnet,
   polygonMumbai,
-  arbitrumGoerli,
   arbitrumSepolia,
   baseSepolia,
   zoraSepolia,
@@ -292,8 +287,6 @@ export const getDefaultRPC = (chainId: ChainId) => {
       return { http: process.env.POLYGON_MUMBAI_RPC };
     case ChainId.arbitrumSepolia:
       return { http: process.env.ARBITRUM_SEPOLIA_RPC };
-    case ChainId.arbitrumGoerli:
-      return { http: process.env.ARBITRUM_GOERLI_RPC };
     case ChainId.baseSepolia:
       return { http: process.env.BASE_SEPOLIA_RPC };
     case ChainId.zoraSepolia:

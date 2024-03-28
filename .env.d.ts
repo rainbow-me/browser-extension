@@ -6,7 +6,8 @@ declare global {
       ZORA_MAINNET_RPC: string;
       BASE_MAINNET_RPC: string;
       ETHERSCAN_API_KEY: string;
-      SEGMENT_WRITE_KEY: string;
+      RUDDERSTACK_WRITE_KEY: string;
+      RUDDERSTACK_DATA_PLANE: string;
       SENTRY_DSN: string;
       DATA_API_KEY: string;
       DATA_ENDPOINT: string;
@@ -39,7 +40,6 @@ declare global {
       BSC_TESTNET_RPC: string;
       POLYGON_MUMBAI_RPC: string;
       ARBITRUM_SEPOLIA_RPC: string;
-      ARBITRUM_GOERLI_RPC: string;
       BASE_SEPOLIA_RPC: string;
       ZORA_SEPOLIA_RPC: string;
       AVALANCHE_MAINNET_RPC: string;

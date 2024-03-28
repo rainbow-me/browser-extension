@@ -99,7 +99,6 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
 
   it('should be able to save contact', async () => {
     await executePerformShortcut({ driver, key: 'DECIMAL' });
-    await executePerformShortcut({ driver, key: 'TAB' });
     await driver.actions().sendKeys('0xtester.eth').perform();
     await executePerformShortcut({ driver, key: 'TAB' });
     await executePerformShortcut({ driver, key: 'ENTER' });
@@ -216,6 +215,7 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
       await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
       await executePerformShortcut({ driver, key: 'TAB', timesToPress: 8 });
       await executePerformShortcut({ driver, key: 'SPACE' });
+      await delayTime('long');
       await executePerformShortcut({ driver, key: 'ARROW_DOWN' });
       await executePerformShortcut({ driver, key: 'ENTER' });
       await checkExtensionURL(driver, 'send');
