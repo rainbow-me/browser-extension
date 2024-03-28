@@ -8,7 +8,6 @@ export const TestnetFaucet = {
   [ChainId.optimismSepolia]: 'https://app.optimism.io/faucet',
   [ChainId.bscTestnet]: 'https://www.bnbchain.org/en/testnet-faucet',
   [ChainId.polygonMumbai]: 'https://faucet.polygon.technology',
-  [ChainId.arbitrumGoerli]: 'https://faucet.quicknode.com/arbitrum/goerli',
   [ChainId.arbitrumSepolia]: 'https://faucet.quicknode.com/arbitrum/sepolia',
   [ChainId.baseSepolia]: 'https://app.optimism.io/faucet',
   [ChainId.zoraSepolia]: 'https://app.optimism.io/faucet',
