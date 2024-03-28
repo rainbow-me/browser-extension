@@ -1,6 +1,6 @@
 import { RainbowProvider } from '@rainbow-me/provider';
 import { uuid4 } from '@sentry/utils';
-import { Ethereum } from '@wagmi/core';
+import { type WindowProvider } from 'wagmi/window';
 import _ from 'lodash';
 import { EIP1193Provider, announceProvider } from 'mipd';
 
@@ -18,17 +18,17 @@ declare global {
   interface Window {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore - clashes with Wagmi's Window type https://github.com/wagmi-dev/wagmi/blob/a25ddf534781b2da81ee6aba307b93750efc5595/packages/core/src/types/index.ts#L77
-    ethereum: RainbowProvider | Ethereum;
+    ethereum: RainbowProvider | WindowProvider;
     lodash: unknown;
     rainbow: RainbowProvider;
-    providers: (RainbowProvider | Ethereum)[];
+    providers: (RainbowProvider | WindowProvider)[];
     walletRouter: {
       rainbowProvider: RainbowProvider;
-      lastInjectedProvider?: RainbowProvider | Ethereum;
-      currentProvider: RainbowProvider | Ethereum;
-      providers: (RainbowProvider | Ethereum)[];
+      lastInjectedProvider?: RainbowProvider | WindowProvider;
+      currentProvider: RainbowProvider | WindowProvider;
+      providers: (RainbowProvider | WindowProvider)[];
       setDefaultProvider: (rainbowAsDefault: boolean) => void;
-      addProvider: (provider: RainbowProvider | Ethereum) => void;
+      addProvider: (provider: RainbowProvider | WindowProvider) => void;
     };
   }
 }
@@ -129,11 +129,11 @@ if (shouldInjectProvider()) {
           } else {
             const nonDefaultProvider =
               window.walletRouter.lastInjectedProvider ??
-              (window.ethereum as Ethereum);
+              (window.ethereum as WindowProvider);
             window.walletRouter.currentProvider = nonDefaultProvider;
           }
         },
-        addProvider(provider: RainbowProvider | Ethereum) {
+        addProvider(provider: RainbowProvider | WindowProvider) {
           if (!window.walletRouter.providers.includes(provider)) {
             window.walletRouter.providers.push(provider);
           }
