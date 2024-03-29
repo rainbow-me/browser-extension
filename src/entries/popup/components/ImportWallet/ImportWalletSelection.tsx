@@ -1,4 +1,3 @@
-import { useMutation } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
@@ -70,14 +69,17 @@ const useDeriveAccountsFromSecrets = (secrets: string[]) => {
 };
 
 export const useImportWalletsFromSecrets = () => {
-  const { mutateAsync: importSecrets, isLoading: isImporting } = useMutation({
-    mutationFn: async ({
-      secrets,
-      accountsIgnored = [],
-    }: {
-      secrets: string[];
-      accountsIgnored?: Address[];
-    }) => {
+  const [isImporting, setIsImporting] = useState(false);
+
+  const importSecrets = async ({
+    secrets,
+    accountsIgnored = [],
+  }: {
+    secrets: string[];
+    accountsIgnored?: Address[];
+  }) => {
+    setIsImporting(true);
+    return (async () => {
       const prevAccounts = await wallet.getAccounts();
       await wallet.importWithSecret(secrets.join(' '));
 
@@ -92,12 +94,12 @@ export const useImportWalletsFromSecrets = () => {
       await Promise.all(accountsToRemove.map(wallet.remove));
 
       return wallet.getAccounts();
-    },
-    onSuccess: () => {
+    })().finally(() => {
+      setIsImporting(false);
       derivedAccountsStore.clear();
       removeImportWalletSecrets();
-    },
-  });
+    });
+  };
 
   return { importSecrets, isImporting };
 };
