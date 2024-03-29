@@ -26,6 +26,7 @@ export interface RainbowConfig extends Record<string, any> {
   flashbots_enabled: boolean;
   rpc_proxy_enabled: boolean;
   points_enabled: boolean;
+  defi_positions_enabled: boolean;
   // SWAPS
   default_slippage_bips: {
     [ChainName.mainnet]: number;
@@ -47,6 +48,7 @@ const DEFAULT_CONFIG = {
   flashbots_enabled: true,
   rpc_proxy_enabled: true,
   points_enabled: true,
+  defi_positions_enabled: false,
   // SWAPS
   default_slippage_bips: {
     arbitrum: 200,
@@ -104,7 +106,8 @@ export const init = async () => {
             key === 'BX_tx_requests_enabled' ||
             key === 'BX_flashbots_enabled' ||
             key === 'BX_rpc_proxy_enabled' ||
-            key === 'BX_points_enabled'
+            key === 'BX_points_enabled' ||
+            key === 'BX_defi_positions_enabled'
           ) {
             config[realKey] = entry.asBoolean();
           } else {
