@@ -169,6 +169,7 @@ export const getSimpleHashSupportedChainNames = () => {
     ChainName.arbitrumNova,
     ChainName.avalanche,
     ChainName.base,
+    ChainName.blast,
     ChainName.bsc,
     ChainName.celo,
     ChainName.gnosis,
@@ -188,6 +189,7 @@ export const getSimpleHashSupportedTestnetChainNames = () => {
     ChainName.polygonMumbai,
     ChainName.arbitrumSepolia,
     ChainName.baseSepolia,
+    ChainName.blastSepolia,
     ChainName.optimismSepolia,
     ChainName.zoraSepolia,
   ] as (ChainName | 'ethereum-sepolia' | 'ethereum')[];
@@ -337,8 +339,6 @@ export const deriveChainIdByHostname = (hostname: string) => {
   switch (hostname) {
     case 'etherscan.io':
       return ChainId.mainnet;
-    case 'goerli.etherscan.io':
-      return ChainId.goerli;
     case 'arbiscan.io':
       return ChainId.arbitrum;
     case 'explorer-mumbai.maticvigil.com':

@@ -6,8 +6,8 @@ import {
   ALLOWS_PERMIT,
   CrosschainQuote,
   Quote,
-  RAINBOW_ROUTER_CONTRACT_ADDRESS,
   getQuoteExecutionDetails,
+  getRainbowRouterContractAddress,
 } from '@rainbow-me/swaps';
 import { mainnet } from 'viem/chains';
 import { Chain, erc20ABI } from 'wagmi';
@@ -96,9 +96,10 @@ const getStateDiff = async (
 ): Promise<unknown> => {
   const tokenAddress = quote.sellTokenAddress;
   const fromAddr = quote.from;
+  const { chainId } = await provider.getNetwork();
   const toAddr =
     quote.swapType === 'normal'
-      ? RAINBOW_ROUTER_CONTRACT_ADDRESS
+      ? getRainbowRouterContractAddress(chainId)
       : (quote as CrosschainQuote).allowanceTarget;
   const tokenContract = new Contract(tokenAddress, erc20ABI, provider);
 
@@ -252,7 +253,7 @@ export const estimateSwapGasLimitWithFakeApproval = async (
           gasPrice: toHexNoLeadingZeros(`100000000000`),
           to:
             quote.swapType === 'normal'
-              ? RAINBOW_ROUTER_CONTRACT_ADDRESS
+              ? getRainbowRouterContractAddress
               : (quote as CrosschainQuote).allowanceTarget,
           value: '0x0', // 100 gwei
         },

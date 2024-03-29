@@ -5,11 +5,11 @@ import {
   CrosschainQuote,
   ETH_ADDRESS as ETH_ADDRESS_AGGREGATORS,
   Quote,
-  RAINBOW_ROUTER_CONTRACT_ADDRESS,
   ChainId as SwapChainId,
   WRAPPED_ASSET,
   fillQuote,
   getQuoteExecutionDetails,
+  getRainbowRouterContractAddress,
   getWrappedAssetMethod,
   unwrapNativeAsset,
   wrapNativeAsset,
@@ -156,7 +156,7 @@ export const estimateUnlockAndSwapFromMetadata = async ({
     const approveTransaction = await populateApprove({
       owner: accountAddress,
       tokenAddress: sellTokenAddress,
-      spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
+      spender: getRainbowRouterContractAddress(chainId as number),
       chainId,
     });
     const swapTransaction = await populateSwap({

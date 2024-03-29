@@ -1,5 +1,5 @@
 import { Wallet } from '@ethersproject/wallet';
-import { RAINBOW_ROUTER_CONTRACT_ADDRESS } from '@rainbow-me/swaps';
+import { getRainbowRouterContractAddress } from '@rainbow-me/swaps';
 import { getProvider } from '@wagmi/core';
 import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test } from 'vitest';
@@ -29,7 +29,7 @@ test('[rap/unlock] :: get raw allowance', async () => {
   const rawAllowance = await getAssetRawAllowance({
     owner: RAINBOW_WALLET_ADDRESS,
     assetAddress: USDC_MAINNET_ASSET.address,
-    spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
+    spender: getRainbowRouterContractAddress(mainnet.id),
     chainId: mainnet.id,
   });
   expect(rawAllowance).toBe('0');
@@ -40,7 +40,7 @@ test('[rap/unlock] :: asset needs unlocking', async () => {
     amount: '1000',
     owner: RAINBOW_WALLET_ADDRESS,
     assetToUnlock: USDC_MAINNET_ASSET,
-    spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
+    spender: getRainbowRouterContractAddress(mainnet.id),
     chainId: mainnet.id,
   });
   expect(needsUnlocking).toBe(true);
@@ -50,7 +50,7 @@ test('[rap/unlock] :: estimate approve', async () => {
   const approveGasLimit = await estimateApprove({
     owner: RAINBOW_WALLET_ADDRESS,
     tokenAddress: USDC_MAINNET_ASSET.address,
-    spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
+    spender: getRainbowRouterContractAddress(mainnet.id),
     chainId: mainnet.id,
   });
   expect(Number(approveGasLimit)).toBeGreaterThan(0);
@@ -66,7 +66,7 @@ test('[rap/unlock] :: should execute approve', async () => {
       maxFeePerGas: '800000000000',
       maxPriorityFeePerGas: '2000000000',
     },
-    spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
+    spender: getRainbowRouterContractAddress(mainnet.id),
     tokenAddress: USDC_MAINNET_ASSET.address,
     wallet,
   });

@@ -33,7 +33,6 @@ const ASSET_SOURCE = {
   [ChainId.avalanche]: 'assets/badges/avalancheBadge@3x.png',
   [ChainId.hardhat]: 'assets/badges/hardhatBadge@3x.png',
   [ChainId.hardhatOptimism]: 'assets/badges/hardhatBadge@3x.png',
-  [ChainId.goerli]: 'assets/badges/ethereumBadge@3x.png',
   [ChainId.sepolia]: 'assets/badges/ethereumBadge@3x.png',
   [ChainId.holesky]: 'assets/badges/ethereumBadge@3x.png',
   [ChainId.optimismSepolia]: 'assets/badges/optimismBadge@3x.png',
@@ -44,6 +43,7 @@ const ASSET_SOURCE = {
   [ChainId.zoraSepolia]: 'assets/badges/zoraBadge@3x.png',
   [ChainId.avalancheFuji]: 'assets/badges/avalancheBadge@3x.png',
   [ChainId.blast]: 'assets/badges/blastBadge@3x.png',
+  [ChainId.blastSepolia]: 'assets/badges/blastBadge@3x.png',
 };
 
 export enum IN_DAPP_NOTIFICATION_STATUS {

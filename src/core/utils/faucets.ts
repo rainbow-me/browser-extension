@@ -3,7 +3,6 @@ import { moonbaseAlpha, polygonZkEvm, scrollSepolia } from 'viem/chains';
 import { ChainId } from '../types/chains';
 
 export const TestnetFaucet = {
-  [ChainId.goerli]: 'https://goerlifaucet.com',
   [ChainId.sepolia]: 'https://sepoliafaucet.com',
   [ChainId.holesky]: 'https://faucet.quicknode.com/ethereum/holesky',
   [ChainId.optimismSepolia]: 'https://app.optimism.io/faucet',
@@ -13,6 +12,7 @@ export const TestnetFaucet = {
   [ChainId.baseSepolia]: 'https://app.optimism.io/faucet',
   [ChainId.zoraSepolia]: 'https://app.optimism.io/faucet',
   [ChainId.avalancheFuji]: 'https://faucet.quicknode.com/avalanche/fuji',
+  [ChainId.blastSepolia]: 'https://faucet.quicknode.com/blast/sepolia',
   [moonbaseAlpha.id]: 'https://faucet.paradigm.xyz',
   [scrollSepolia.id]: 'https://faucet.quicknode.com/scroll/sepolia',
   [polygonZkEvm.id]: 'https://faucet.polygon.technology',

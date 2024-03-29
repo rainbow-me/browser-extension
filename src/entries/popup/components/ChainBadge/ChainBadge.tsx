@@ -48,7 +48,6 @@ const networkBadges = {
   [ChainId.avalanche]: AvalancheBadge,
   [ChainId.hardhat]: HardhatBadge,
   [ChainId.hardhatOptimism]: HardhatBadge,
-  [ChainId.goerli]: EthereumBadge,
   [ChainId.sepolia]: EthereumBadge,
   [ChainId.holesky]: EthereumBadge,
   [ChainId.optimismSepolia]: OptimismBadge,
@@ -59,6 +58,7 @@ const networkBadges = {
   [ChainId.zoraSepolia]: ZoraBadge,
   [ChainId.avalancheFuji]: AvalancheBadge,
   [ChainId.blast]: BlastBadge,
+  [ChainId.blastSepolia]: BlastBadge,
 };
 
 const ChainBadge = ({
