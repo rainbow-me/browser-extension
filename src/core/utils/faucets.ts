@@ -13,6 +13,7 @@ export const TestnetFaucet = {
   [ChainId.zoraSepolia]: 'https://app.optimism.io/faucet',
   [ChainId.avalancheFuji]: 'https://faucet.quicknode.com/avalanche/fuji',
   [ChainId.blastSepolia]: 'https://faucet.quicknode.com/blast/sepolia',
+  [ChainId.polygonAmoy]: 'https://faucet.polygon.technology',
   [moonbaseAlpha.id]: 'https://faucet.paradigm.xyz',
   [scrollSepolia.id]: 'https://faucet.quicknode.com/scroll/sepolia',
   [polygonZkEvm.id]: 'https://faucet.polygon.technology',
