@@ -62,6 +62,7 @@ export function useTokensShortcuts() {
 
   const hideToken = useCallback(
     (_selectedToken: ParsedUserAsset) => {
+      simulateClick(containerRef.current);
       addHiddenAsset({
         uniqueId: computeUniqueIdForHiddenAsset(_selectedToken),
       });
@@ -73,28 +74,34 @@ export function useTokensShortcuts() {
         }),
       });
     },
-    [pinned, addHiddenAsset, removedPinnedAsset, setSelectedToken],
+    [
+      pinned,
+      containerRef,
+      addHiddenAsset,
+      removedPinnedAsset,
+      setSelectedToken,
+    ],
   );
 
   const togglePinToken = useCallback(
     (_selectedToken: ParsedUserAsset) => {
       if (pinned) {
+        simulateClick(containerRef.current);
         removedPinnedAsset({ uniqueId: _selectedToken.uniqueId });
         triggerToast({
           title: i18n.t('token_details.toast.unpin_token', {
             name: _selectedToken.symbol,
           }),
         });
-        simulateClick(containerRef.current);
         return;
       }
+      simulateClick(containerRef.current);
       addPinnedAsset({ uniqueId: _selectedToken.uniqueId });
       triggerToast({
         title: i18n.t('token_details.toast.pin_token', {
           name: _selectedToken.symbol,
         }),
       });
-      simulateClick(containerRef.current);
     },
     [pinned, containerRef, addPinnedAsset, removedPinnedAsset],
   );
@@ -106,8 +113,8 @@ export function useTokensShortcuts() {
         _selectedToken?.chainId,
       );
       if (isNative) return;
-      copyAddress(_selectedToken.address);
       simulateClick(containerRef.current);
+      copyAddress(_selectedToken.address);
     },
     [containerRef],
   );
