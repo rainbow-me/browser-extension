@@ -192,6 +192,7 @@ export const getSimpleHashSupportedTestnetChainNames = () => {
     ChainName.blastSepolia,
     ChainName.optimismSepolia,
     ChainName.zoraSepolia,
+    ChainName.polygonAmoy,
   ] as (ChainName | 'ethereum-sepolia' | 'ethereum')[];
 };
 
@@ -345,6 +346,9 @@ export const deriveChainIdByHostname = (hostname: string) => {
     case 'explorer-mumbai.matic.today':
     case 'mumbai.polygonscan.com':
       return ChainId.polygonMumbai;
+    case 'amoy.polygonscan.com':
+    case 'oklink.com/amoy':
+      return ChainId.polygonAmoy;
     case 'polygonscan.com':
       return ChainId.polygon;
     case 'optimistic.etherscan.io':

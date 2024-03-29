@@ -19,7 +19,13 @@ import {
 } from 'viem/chains';
 import { Address, type Chain, sepolia } from 'wagmi';
 
-import { ChainId, ChainNameDisplay, chainBlast, chainBlastSepolia } from '~/core/types/chains';
+import {
+  ChainId,
+  ChainNameDisplay,
+  chainBlast,
+  chainBlastSepolia,
+  chainPolygonAmoy,
+} from '~/core/types/chains';
 
 import { AddressOrEth } from '../types/assets';
 
@@ -161,6 +167,7 @@ export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.avalancheFuji]: AddressZero as Address,
   [ChainId.blast]: AddressZero as Address,
   [ChainId.blastSepolia]: AddressZero as Address,
+  [ChainId.polygonAmoy]: AddressZero as Address,
 };
 
 export const NATIVE_ASSETS_MAP_PER_CHAIN: Record<ChainId, AddressOrEth> = {
@@ -186,6 +193,7 @@ export const NATIVE_ASSETS_MAP_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.avalancheFuji]: ETH_ADDRESS,
   [ChainId.blast]: ETH_ADDRESS,
   [ChainId.blastSepolia]: ETH_ADDRESS,
+  [ChainId.polygonAmoy]: MATIC_MAINNET_ADDRESS,
 };
 
 export const OVM_GAS_PRICE_ORACLE =
@@ -231,7 +239,8 @@ export const SUPPORTED_CHAINS: Chain[] = [
   avalanche,
   avalancheFuji,
   chainBlast,
-  chainBlastSepolia
+  chainBlastSepolia,
+  chainPolygonAmoy,
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
 export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map((chain) => chain.id);
@@ -246,7 +255,8 @@ export const SUPPORTED_TESTNET_CHAINS: Chain[] = [
   baseSepolia,
   zoraSepolia,
   avalancheFuji,
-  chainBlastSepolia
+  chainBlastSepolia,
+  chainPolygonAmoy,
 ];
 
 export const SUPPORTED_TESTNET_CHAIN_IDS: number[] =
@@ -292,6 +302,8 @@ export const getDefaultRPC = (chainId: ChainId) => {
       return { http: process.env.BLAST_MAINNET_RPC };
     case ChainId.blastSepolia:
       return { http: process.env.BLAST_SEPOLIA_RPC };
+    case ChainId.polygonAmoy:
+      return { http: process.env.POLYGON_AMOY_RPC };
     default:
       return null;
   }
