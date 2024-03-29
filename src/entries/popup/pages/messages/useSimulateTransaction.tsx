@@ -39,10 +39,6 @@ const parseSimulationAsset = (asset: SimulationAsset, chainId: ChainId) => {
       asset_code: asset.assetCode,
       icon_url: asset.iconURL,
       interface: parseInterface(asset.interface),
-      bridging: {
-        bridgeable: false,
-        networks: {},
-      },
     },
     currency: currentCurrencyStore.getState().currentCurrency,
   });

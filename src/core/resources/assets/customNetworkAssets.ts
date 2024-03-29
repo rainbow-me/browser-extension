@@ -216,7 +216,7 @@ async function customNetworkAssetsFunction({
                   isNativeAsset: true,
                   name: chain.nativeCurrency.symbol,
                   symbol: chain.nativeCurrency.symbol,
-                  uniqueId: `${AddressZero}_${chain.id}`,
+                  uniqueId: `${ETH_ADDRESS}_${chain.id}`,
                   decimals: 18,
                   native: { price: undefined },
                   price: { value: 0 },

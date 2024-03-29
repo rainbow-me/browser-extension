@@ -1,4 +1,4 @@
-import { AssetApiResponse } from '~/core/types/assets';
+import { ZerionAsset } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
 import { PaginatedTransactionsApiResponse } from '~/core/types/transactions';
 
@@ -23,7 +23,7 @@ export interface MessageMeta {
 export interface AddressAssetsReceivedMessage {
   payload?: {
     assets?: {
-      asset: AssetApiResponse;
+      asset: ZerionAsset;
       quantity: string;
       small_balances?: boolean;
     }[];
@@ -47,7 +47,7 @@ export interface TransactionsReceivedMessage {
 export interface AssetPricesReceivedMessage {
   payload?: {
     prices?: {
-      [id: string]: AssetApiResponse;
+      [id: string]: ZerionAsset;
     };
   };
   meta?: MessageMeta;

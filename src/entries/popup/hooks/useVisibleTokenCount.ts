@@ -51,10 +51,13 @@ export const useVisibleTokenCount = () => {
 
   const allAssets = useMemo(
     () =>
-      uniqBy([...assets, ...customNetworkAssets], 'uniqueId').sort(
-        (a: ParsedUserAsset, b: ParsedUserAsset) =>
-          parseFloat(b?.native?.balance?.amount) -
-          parseFloat(a?.native?.balance?.amount),
+      uniqBy(
+        [...assets, ...customNetworkAssets].sort(
+          (a: ParsedUserAsset, b: ParsedUserAsset) =>
+            parseFloat(b?.native?.balance?.amount) -
+            parseFloat(a?.native?.balance?.amount),
+        ),
+        'uniqueId',
       ),
     [assets, customNetworkAssets],
   );
