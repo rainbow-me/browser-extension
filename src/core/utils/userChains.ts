@@ -17,7 +17,13 @@ import {
 } from 'viem/chains';
 import { Chain, mainnet, sepolia } from 'wagmi';
 
-import { ChainId, ChainNameDisplay, chainBlast, chainBlastSepolia } from '../types/chains';
+import {
+  ChainId,
+  ChainNameDisplay,
+  chainBlast,
+  chainBlastSepolia,
+  chainPolygonAmoy,
+} from '../types/chains';
 
 import {
   getSupportedChainsWithHardhat,
@@ -39,7 +45,7 @@ export const chainIdMap: Record<
   [ChainId.mainnet]: [mainnet.id, sepolia.id, holesky.id],
   [ChainId.optimism]: [optimism.id, optimismSepolia.id],
   [ChainId.arbitrum]: [arbitrum.id, arbitrumSepolia.id],
-  [ChainId.polygon]: [polygon.id, polygonMumbai.id],
+  [ChainId.polygon]: [polygon.id, polygonMumbai.id, chainPolygonAmoy.id],
   [ChainId.base]: [base.id, baseSepolia.id],
   [ChainId.bsc]: [bsc.id, bscTestnet.id],
   [ChainId.zora]: [zora.id, zoraSepolia.id],

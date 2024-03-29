@@ -88,6 +88,8 @@ export function getNetworkFromSimpleHashChain(
       return ChainName.blast;
     case SimpleHashChain.BlastSepolia:
       return ChainName.blastSepolia;
+    case SimpleHashChain.PolygonAmoy:
+      return ChainName.polygonAmoy;
     default:
       /*
        * Throws here because according to TS types, we should NEVER hit this

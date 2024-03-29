@@ -4,6 +4,7 @@ import type { Chain } from 'wagmi';
 const HARDHAT_CHAIN_ID = 1337;
 const BLAST_CHAIN_ID = 81457;
 const BLAST_SEPOLIA_CHAIN_ID = 168587773;
+const POLYGON_AMOY_CHAIN_ID = 80002;
 
 const HARDHAT_OP_CHAIN_ID = 1338;
 
@@ -75,6 +76,22 @@ export const chainBlastSepolia: Chain = {
   testnet: true,
 };
 
+export const chainPolygonAmoy: Chain = {
+  id: POLYGON_AMOY_CHAIN_ID,
+  name: 'Polygon Amoy',
+  network: 'polygon-amoy',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'MATIC',
+    symbol: 'MATIC',
+  },
+  rpcUrls: {
+    public: { http: ['https://rpc-amoy.polygon.technology'] },
+    default: { http: ['https://rpc-amoy.polygon.technology'] },
+  },
+  testnet: true,
+};
+
 export enum ChainName {
   arbitrum = 'arbitrum',
   arbitrumNova = 'arbitrum-nova',
@@ -105,6 +122,7 @@ export enum ChainName {
   polygonMumbai = 'polygon-mumbai',
   baseSepolia = 'base-sepolia',
   zoraSepolia = 'zora-sepolia',
+  polygonAmoy = 'polygon-amoy',
 }
 
 export enum ChainId {
@@ -137,6 +155,7 @@ export enum ChainId {
   arbitrumSepolia = chain.arbitrumSepolia.id,
   baseSepolia = chain.baseSepolia.id,
   zoraSepolia = chain.zoraSepolia.id,
+  polygonAmoy = chainPolygonAmoy.id,
 }
 
 export const chainNameToIdMapping: {
@@ -173,6 +192,7 @@ export const chainNameToIdMapping: {
   [ChainName.zoraSepolia]: ChainId.zoraSepolia,
   [ChainName.blast]: ChainId.blast,
   [ChainName.blastSepolia]: ChainId.blastSepolia,
+  [ChainName.polygonAmoy]: ChainId.polygonAmoy,
 };
 
 export const chainIdToNameMapping: {
@@ -207,6 +227,7 @@ export const chainIdToNameMapping: {
   [ChainId.polygonMumbai]: ChainName.polygonMumbai,
   [ChainId.baseSepolia]: ChainName.baseSepolia,
   [ChainId.zoraSepolia]: ChainName.zoraSepolia,
+  [ChainId.polygonAmoy]: ChainName.polygonAmoy,
 };
 
 export const ChainNameDisplay = {
@@ -238,4 +259,5 @@ export const ChainNameDisplay = {
   [ChainId.arbitrumSepolia]: chain.arbitrumSepolia.name,
   [ChainId.baseSepolia]: chain.baseSepolia.name,
   [ChainId.zoraSepolia]: 'Zora Sepolia',
+  [ChainId.polygonAmoy]: 'Polygon Amoy',
 } as const;
