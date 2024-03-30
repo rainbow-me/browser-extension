@@ -85,8 +85,8 @@ export function useTokensShortcuts() {
 
   const togglePinToken = useCallback(
     (_selectedToken: ParsedUserAsset) => {
+      simulateClick(containerRef.current);
       if (pinned) {
-        simulateClick(containerRef.current);
         removedPinnedAsset({ uniqueId: _selectedToken.uniqueId });
         triggerToast({
           title: i18n.t('token_details.toast.unpin_token', {
@@ -95,7 +95,6 @@ export function useTokensShortcuts() {
         });
         return;
       }
-      simulateClick(containerRef.current);
       addPinnedAsset({ uniqueId: _selectedToken.uniqueId });
       triggerToast({
         title: i18n.t('token_details.toast.pin_token', {
