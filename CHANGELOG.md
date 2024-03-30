@@ -27,19 +27,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - You can now bridge ETH to Blast with Rainbow #1411
 
-### Changed
-
-- Improved Token Charts cursor hover and scroll feel #1394
-- Emitting `accountsChanged` upon disconnect to align with MetaMask RPC #1388
-
 ### Fixed
 
-- Resolved issue where users may only see a Cancel button on dApp requests for Custom Networks #1405
 - Fixed an incorrect date calculate on the weekly Points drop breakdowns #1409
 - Fixed an issue where the Connect banner would not always appear upon switching wallets #1404
 - Resolved a color clash issue with the buttons on the Connect banners #1407
-- Fixed rejection errors upon approving `wallet_watchAsset` RPC requests #1387
-- Fixed `sendAsync` RPC call crash #1392
 - Fixed a crash when inspecting the Transaction Details for certain airdropped tokens #1412
 
 ### Removed
@@ -53,6 +45,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Testing
 
 - Pinned e2e browser to Chrome 121 to mitigate Ledger dependency bundle failures in later versions of Chromedriver #1420
+
+## [v1.4.25](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.25)
+
+### Changed
+
+- Improved Token Charts cursor hover and scroll feel #1394
+- Emitting `accountsChanged` upon disconnect to align with MetaMask RPC #1388
+
+### Fixed
+
+- Resolved issue where users may only see a Cancel button on dApp requests for Custom Networks #1405
+- Fixed `sendAsync` RPC call crash #1392
+- Fixed rejection errors upon approving `wallet_watchAsset` RPC requests #1387
 
 ## [v1.4.22](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.22)
 
