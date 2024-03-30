@@ -18,7 +18,9 @@ import { goToNewTab } from '~/core/utils/tabs';
 import { getTokenBlockExplorer } from '~/core/utils/transactions';
 import { Text, TextOverflow } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
+import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
+import { simulateClick } from '~/entries/popup/utils/simulateClick';
 
 import {
   ContextMenuContent,
@@ -57,6 +59,7 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
 
   const navigate = useRainbowNavigate();
   const navigateToSwaps = useNavigateToSwaps();
+  const containerRef = useContainerRef();
 
   const allowSwap =
     (!isWatchingWallet || featureFlags.full_watching_wallets) &&
@@ -89,6 +92,7 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
   };
 
   const togglePinToken = useCallback(() => {
+    simulateClick(containerRef.current);
     if (pinned) {
       removedPinnedAsset({ uniqueId: token.uniqueId });
       triggerToast({
@@ -104,9 +108,17 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
         name: token.symbol,
       }),
     });
-  }, [token, pinned, addPinnedAsset, removedPinnedAsset]);
+  }, [
+    containerRef,
+    pinned,
+    addPinnedAsset,
+    token.uniqueId,
+    token.symbol,
+    removedPinnedAsset,
+  ]);
 
   const hideToken = useCallback(() => {
+    simulateClick(containerRef.current);
     addHiddenAsset({ uniqueId: computeUniqueIdForHiddenAsset(token) });
     if (pinned) removedPinnedAsset({ uniqueId: token.uniqueId });
     setSelectedToken();
@@ -115,12 +127,20 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
         name: token.symbol,
       }),
     });
-  }, [token, pinned, addHiddenAsset, removedPinnedAsset, setSelectedToken]);
+  }, [
+    containerRef,
+    addHiddenAsset,
+    token,
+    pinned,
+    removedPinnedAsset,
+    setSelectedToken,
+  ]);
 
   const copyTokenAddress = useCallback(() => {
     if (isNative) return;
+    simulateClick(containerRef.current);
     copyAddress(token.address);
-  }, [token.address, isNative]);
+  }, [containerRef, isNative, token.address]);
 
   if (isWatchingWallet && !allowSwap && isNative) return <>{children}</>;
 
