@@ -21,6 +21,42 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.4.41](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.41)
+
+### Added
+
+- You can now swap tokens on Blast and Zora with Rainbow's slick cross-chain swaps #1442
+- Right-click a spam token or a regret to hide it from your wallet. You can always search for these tokens to unhide in the future with the Magic Menu #1402
+- Blast Sepolia is now supported in Testnet Mode #1396
+
+### Changed
+
+- Approve and Swap gas estimations are now more reliable #1395
+- Removed L2 support confirmations in Send when interacting with your own wallets #1429
+- Re-ordered Settings menus to be even cleaner for our recent additions like Approvals #1438
+- Removed automatic filtering for tokens with URLs like Ether.fi with our improved spam detection #1430
+- Supported the `return` hokey in the Save Contact flow #1398
+
+### Fixed
+
+- Fixed ENS Profile resolution spamming utilized for the NFT Gallery that caused inadvertent performance issues #1433
+- Fixed accidental clicks when interacting with the right-click menus #1432
+- Activity Details will now properly restore after opening and closing Rainbow #1427
+- Corrected “Pin Extension” guide location for Arc Browser #1437
+- Fixed spacing in the Wallet Group selector #1436
+
+### Removed
+
+- Removed deprecated Goerli network #1414
+
+### Internal
+
+- Added and reverted changes to unique asset ids due to transaction fetching issues #1421
+- Reduced Imigix usage for NFT thumbnails for trusted sources #1428
+- Improved type safety of keychain manager #1434
+- Merging PKs to HD Groups wherever possible in keychain #1434
+- Migrated to Rudderstack from Segment for analytics #1410
+
 ## [v1.4.34](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.34)
 
 ### Added
@@ -32,7 +68,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Fixed an incorrect date calculate on the weekly Points drop breakdowns #1409
 - Fixed an issue where the Connect banner would not always appear upon switching wallets #1404
 - Resolved a color clash issue with the buttons on the Connect banners #1407
-- Fixed a crash when inspecting the Transaction Details for certain airdropped tokens #1412
+- Fixed a crash when inspecting the Activity Details for certain airdropped tokens #1412
 
 ### Removed
 
