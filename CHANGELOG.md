@@ -34,7 +34,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - When Bridging assets, you can now right-click on a pending transaction to track the status on the Socketscan explorer #1377
 - Swaps are even faster now that we automatically populate your input token and provide a default amount #1378
 - Updated Weekly Points Overview with new line items for Referrals and Bonus Redemptions #1389
-- Removed deprecated Optimism Goerli network #1351
 
 ### Fixed
 
@@ -47,6 +46,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Improved percentage formatting, fallback icons, and disappearing row on Swap Review #1380
 - Fixed Activity Details animations and inconsistencies #1384
 
+### Removed
+
+- Removed deprecated Optimism Goerli network #1351
+
 ## [v1.4.12](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.12)
 
 ### Added
@@ -54,7 +57,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - You can now remove a Wallet Group in Settings to cleanup your unused wallets. Always make sure to backup your Secret Recovery Phrase first #1331
 - Added Custom Network autofill support for Blast and Redstone Holesky #1373 #1358
 
-### Changed
+### Removed
 
 - Removed support for deprecated Zora Goerli testnet #1367
 
@@ -95,7 +98,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - NFTs are now supported across major Custom Networks and Testnets #1336
 
-### Changed
+### Removed
 
 - Removed Base Goerli network that has been deprecated #1342
 
