@@ -45,6 +45,8 @@ type BaseTransaction = {
   };
 
   type: TransactionType;
+  typeOverride?: 'speed_up' | 'cancel'; // we keep the tx metadata like type "swap" and add this override to indicate it's a speed up or cancel
+
   protocol?: ProtocolType;
   title: string;
   description?: string;

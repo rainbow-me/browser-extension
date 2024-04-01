@@ -134,7 +134,7 @@ export const ExplainerSheet = ({
             ) : (
               header?.icon
             )}
-            <Text weight="heavy" size="20pt" color="label">
+            <Text weight="heavy" size="20pt" color="label" align="center">
               {title}
             </Text>
 

@@ -419,6 +419,11 @@
       "pending": "Bidding",
       "confirmed": "Bid",
       "failed": "Bid Failed"
+    },
+    "speed_up": {
+      "pending": "Speeding up",
+      "confirmed": "Sped up",
+      "failed": "Speed up Failed"
     }
   },
   "command_k": {

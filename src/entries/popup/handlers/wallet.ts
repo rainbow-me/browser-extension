@@ -2,6 +2,7 @@ import {
   TransactionRequest,
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
+import { BigNumber } from '@ethersproject/bignumber';
 import { Bytes } from '@ethersproject/bytes';
 import { HDNode, Mnemonic } from '@ethersproject/hdnode';
 import { keccak256 } from '@ethersproject/keccak256';
@@ -157,12 +158,31 @@ export const sendTransaction = async (
         throw new Error('Unsupported hardware wallet');
     }
   } else {
-    return walletAction(
+    const transactionResponse = walletAction<TransactionResponse>(
       'send_transaction',
       params,
-    ) as unknown as TransactionResponse;
+    );
+
+    return deserializeBigNumbers(transactionResponse);
   }
 };
+
+function deserializeBigNumbers<T>(obj: T) {
+  for (const key in obj) {
+    const v = obj[key];
+    if (
+      v &&
+      typeof v === 'object' &&
+      '_hex' in v &&
+      'type' in v &&
+      v.type === 'BigNumber'
+    ) {
+      // @ts-ignore
+      obj[key] = BigNumber.from(obj[key]._hex);
+    }
+  }
+  return obj;
+}
 
 export async function executeRap<T extends RapTypes>({
   rapActionParameters,
