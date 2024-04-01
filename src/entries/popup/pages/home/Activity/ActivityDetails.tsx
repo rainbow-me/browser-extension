@@ -50,6 +50,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
+import { ExplainerSheet } from '~/entries/popup/components/ExplainerSheet/ExplainerSheet';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { useRainbowChains } from '~/entries/popup/hooks/useRainbowChains';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
@@ -272,12 +273,36 @@ function NetworkData({ transaction: tx }: { transaction: RainbowTransaction }) {
   );
 }
 
+function SpeedUpErrorExplainer() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const explainer = searchParams.get('explainer');
+
+  return (
+    <ExplainerSheet
+      show={explainer === 'speed_up_error'}
+      onClickOutside={() => setSearchParams({})}
+      header={{
+        icon: <Symbol symbol="xmark.circle.fill" color="red" size={32} />,
+      }}
+      title="Failed to speed up transaction"
+      description={[
+        'A speed up can fail when the state of the network changed since you first submitted the transaction',
+      ]}
+      actionButton={{
+        action: () => setSearchParams({ sheet: 'cancel' }),
+        label: 'Cancel Transaction',
+        labelColor: 'label',
+      }}
+    />
+  );
+}
+
 const SpeedUpOrCancel = ({
   transaction,
 }: {
   transaction: PendingTransaction;
 }) => {
-  const [searchParams, setSearchParams] = useSearchParams('none');
+  const [searchParams, setSearchParams] = useSearchParams();
   const sheetParam = searchParams.get('sheet');
   const sheet =
     sheetParam === 'speedUp' || sheetParam === 'cancel' ? sheetParam : 'none';
@@ -312,6 +337,7 @@ const SpeedUpOrCancel = ({
         transaction={transaction}
         onClose={() => setSheet('none')}
       />
+      <SpeedUpErrorExplainer />
     </>
   );
 };
@@ -522,6 +548,8 @@ export function ActivityDetails() {
     chainId: Number(chainId),
   });
   const navigate = useRainbowNavigate();
+
+  console.log(transaction);
 
   const { data: approvals } = useApprovals(
     {

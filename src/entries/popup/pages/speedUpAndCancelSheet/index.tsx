@@ -1,25 +1,17 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { useMutation } from '@tanstack/react-query';
 import BigNumber from 'bignumber.js';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  Address,
-  useAccount,
-  useBalance,
-  useEnsName,
-  useTransaction,
-} from 'wagmi';
+import { Address, useAccount, useBalance, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useGasStore } from '~/core/state';
-import { useSelectedTransactionStore } from '~/core/state/selectedTransaction';
-import { ChainId } from '~/core/types/chains';
 import {
   GasSpeed,
   TransactionGasParams,
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
 import {
-  NewTransaction,
+  PendingTransaction,
   RainbowTransaction,
   TxHash,
 } from '~/core/types/transactions';
@@ -41,7 +33,6 @@ import {
 } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
-import { RainbowError, logger } from '~/logger';
 
 import { EthSymbol } from '../../components/EthSymbol/EthSymbol';
 import { Spinner } from '../../components/Spinner/Spinner';
@@ -53,7 +44,7 @@ import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 import { zIndexes } from '../../utils/zIndexes';
 
-const calcGasParamRetryValue = (prevWeiValue?: string) => {
+const addTenPercent = (prevWeiValue = '0') => {
   const prevWeiValueBN = new BigNumber(prevWeiValue || 0);
 
   const newWeiValueBN = prevWeiValueBN
@@ -63,10 +54,81 @@ const calcGasParamRetryValue = (prevWeiValue?: string) => {
   return newWeiValueBN.toFixed(0);
 };
 
+const greaterValueInHex = (a: string, b: string) =>
+  toHex(greaterThan(a, b) ? a : b);
+
+async function gasParamsToOverrideTransaction(
+  transaction: PendingTransaction,
+  selectedGasParams: TransactionGasParams | TransactionLegacyGasParams,
+) {
+  // add 10% to the gas params of the transaction we are overriding
+  // (so it executes faster than the original transaction)
+  // if the selected gas params are higher than this, we use the selected gas params
+
+  if ('gasPrice' in transaction)
+    return {
+      gasPrice: greaterValueInHex(
+        selectedGasParams.gasPrice,
+        addTenPercent(transaction.gasPrice),
+      ),
+    };
+
+  const minMaxFeePerGas = addTenPercent(transaction.maxFeePerGas);
+  const minMaxPriorityFeePerGas = addTenPercent(
+    transaction.maxPriorityFeePerGas,
+  );
+
+  return {
+    maxFeePerGas: greaterValueInHex(
+      selectedGasParams.maxFeePerGas,
+      minMaxFeePerGas,
+    ),
+    maxPriorityFeePerGas: greaterValueInHex(
+      minMaxPriorityFeePerGas,
+      selectedGasParams.maxPriorityFeePerGas,
+    ),
+  };
+}
+
+const cancelTransaction = (
+  transaction: PendingTransaction,
+  selectedGasParams: TransactionGasParams | TransactionLegacyGasParams,
+): TransactionRequest => {
+  const gasParams = gasParamsToOverrideTransaction(
+    transaction,
+    selectedGasParams,
+  );
+  // to cancel we send 0 to the from address with higher gas price/priority fee
+  return {
+    ...transaction,
+    type: undefined,
+    to: transaction.from,
+    value: toHex('0'),
+    data: undefined,
+    ...gasParams,
+  };
+};
+
+const speedUpTransaction = (
+  transaction: PendingTransaction,
+  selectedGasParams: TransactionGasParams | TransactionLegacyGasParams,
+): TransactionRequest => {
+  const gasParams = gasParamsToOverrideTransaction(
+    transaction,
+    selectedGasParams,
+  );
+  // to speed up we just resent the same tx with higher gas price/priority fee
+  return {
+    ...transaction,
+    type: undefined,
+    ...gasParams,
+  };
+};
+
 type SpeedUpAndCancelSheetProps = {
   currentSheet: SheetMode;
   onClose: () => void;
-  transaction: RainbowTransaction;
+  transaction: PendingTransaction;
 };
 
 // governs type of sheet displayed on top of MainLayout
@@ -79,207 +141,58 @@ export function SpeedUpAndCancelSheet({
   onClose,
   transaction,
 }: SpeedUpAndCancelSheetProps) {
-  const { setSelectedTransaction } = useSelectedTransactionStore();
-  const { selectedGas } = useGasStore();
-  const [sending, setSending] = useState(false);
-
   const navigate = useRainbowNavigate();
 
-  const { data: transactionResponse } = useTransaction({
-    chainId: transaction?.chainId,
-    hash: transaction?.hash,
-  });
+  const selectedGasParams = useGasStore(
+    (s) => s.selectedGas.transactionGasParams,
+  );
+
   const cancel = currentSheet === 'cancel';
 
-  const onExecuteTransaction = () => {
-    if (cancel) handleCancellation();
-    else handleSpeedUp();
+  const transactionRequest = (cancel ? cancelTransaction : speedUpTransaction)(
+    transaction,
+    selectedGasParams,
+  );
 
-    onClose();
-    navigate(ROUTES.HOME, { state: { tab: 'activity' } });
-  };
+  const { mutate: executeTransaction, isLoading: sending } = useMutation({
+    mutationFn: async () => {
+      const replaceTx = await sendTransaction(transactionRequest);
 
-  const getNewTransactionGasParams = useCallback(() => {
-    if (transaction?.chainId === ChainId.mainnet) {
-      const transactionMaxFeePerGas =
-        transactionResponse?.maxFeePerGas || transaction?.maxFeePerGas;
-      const transactionMaxPriorityFeePerGas =
-        transactionResponse?.maxPriorityFeePerGas ||
-        transaction?.maxPriorityFeePerGas;
-      const minMaxFeePerGas = calcGasParamRetryValue(
-        transactionMaxFeePerGas?.toString(),
-      );
-      const minMaxPriorityFeePerGas = calcGasParamRetryValue(
-        transactionMaxPriorityFeePerGas?.toString(),
-      );
-      const rawMaxPriorityFeePerGas = (
-        selectedGas.transactionGasParams as TransactionGasParams
-      ).maxPriorityFeePerGas;
-      const rawMaxFeePerGas = (
-        selectedGas.transactionGasParams as TransactionGasParams
-      ).maxFeePerGas;
-
-      const maxPriorityFeePerGas = greaterThan(
-        rawMaxPriorityFeePerGas,
-        minMaxPriorityFeePerGas,
-      )
-        ? toHex(rawMaxPriorityFeePerGas)
-        : toHex(minMaxPriorityFeePerGas);
-
-      const maxFeePerGas = greaterThan(rawMaxFeePerGas, minMaxFeePerGas)
-        ? toHex(rawMaxFeePerGas)
-        : toHex(minMaxFeePerGas);
-
-      return { maxFeePerGas, maxPriorityFeePerGas };
-    } else {
-      const transactionGasPrice =
-        transactionResponse?.gasPrice || transaction?.gasPrice;
-
-      const minGasPrice = calcGasParamRetryValue(
-        transactionGasPrice?.toString(),
-      );
-      const rawGasPrice = (
-        selectedGas.transactionGasParams as TransactionLegacyGasParams
-      ).gasPrice;
-      return {
-        gasPrice: greaterThan(rawGasPrice, minGasPrice)
-          ? toHex(rawGasPrice)
-          : toHex(minGasPrice),
-      };
-    }
-  }, [
-    transaction?.gasPrice,
-    transaction?.maxFeePerGas,
-    transaction?.maxPriorityFeePerGas,
-    transaction?.chainId,
-    transactionResponse?.gasPrice,
-    transactionResponse?.maxFeePerGas,
-    transactionResponse?.maxPriorityFeePerGas,
-    selectedGas.transactionGasParams,
-  ]);
-
-  const speedUpTransactionRequest: TransactionRequest = useMemo(() => {
-    const gasParams = getNewTransactionGasParams();
-    return {
-      to: transaction?.to,
-      from: transaction?.from,
-      value: toHex(transaction?.value || ''),
-      chainId: transaction?.chainId,
-      data: transaction?.data,
-      nonce: transaction?.nonce,
-      ...gasParams,
-    };
-  }, [
-    getNewTransactionGasParams,
-    transaction?.chainId,
-    transaction?.data,
-    transaction?.from,
-    transaction?.nonce,
-    transaction?.to,
-    transaction?.value,
-  ]);
-  const cancelTransactionRequest: TransactionRequest = useMemo(() => {
-    const gasParams = getNewTransactionGasParams();
-    return {
-      to: transaction?.from,
-      from: transaction?.from,
-      value: toHex('0'),
-      chainId: transaction?.chainId,
-      data: undefined,
-      nonce: transaction?.nonce,
-      ...gasParams,
-    };
-  }, [
-    getNewTransactionGasParams,
-    transaction?.chainId,
-    transaction?.from,
-    transaction?.nonce,
-  ]);
-
-  const handleCancellation = async () => {
-    setSending(true);
-    try {
-      const cancellationResult = await sendTransaction(
-        cancelTransactionRequest,
-      );
-      const cancelTx = {
-        ...transaction,
-        data: cancellationResult?.data,
-        value: cancellationResult?.value?.toString(),
-        from: cancellationResult?.from as Address,
-        to: cancellationResult?.from as Address,
-        hash: cancellationResult?.hash as TxHash,
-        chainId: cancelTransactionRequest?.chainId as ChainId,
-        status: 'pending',
-        type: 'cancel',
-        nonce: transaction?.nonce,
-      } satisfies NewTransaction;
       updateTransaction({
-        address: cancellationResult?.from as Address,
-        chainId: cancellationResult?.chainId,
-        transaction: cancelTx,
+        address: replaceTx.from as Address,
+        chainId: replaceTx.chainId,
+        transaction: {
+          ...transaction,
+          data: replaceTx.data,
+          value: replaceTx.value?.toString(),
+          from: replaceTx.from as Address,
+          to: replaceTx.to as Address,
+          hash: replaceTx.hash as TxHash,
+          chainId: replaceTx.chainId,
+          maxFeePerGas: replaceTx.maxFeePerGas?.toString(),
+          maxPriorityFeePerGas: replaceTx.maxPriorityFeePerGas?.toString(),
+          status: 'pending',
+          typeOverride: cancel ? 'cancel' : 'speed_up',
+          nonce: transaction.nonce,
+        },
       });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
+    },
+    onSuccess: () => {
+      onClose();
+      navigate(ROUTES.HOME, { state: { tab: 'activity' } });
+    },
+    onError: (e: Error) => {
       if (!isLedgerConnectionError(e)) {
-        const extractedError = (e as Error).message.split('[')[0];
+        const extractedError = e.message.split('[')[0];
         triggerAlert({
           text: i18n.t('errors.sending_transaction'),
           description: extractedError,
         });
       }
-      logger.error(new RainbowError('send: error cancel tx'), {
-        message: (e as Error)?.message,
-      });
-    } finally {
-      setSending(false);
-    }
-  };
-  const handleSpeedUp = async () => {
-    try {
-      setSending(true);
-      const speedUpResult = await sendTransaction(speedUpTransactionRequest);
-      const speedUpTransaction = {
-        ...transaction,
-        data: speedUpResult?.data,
-        value: speedUpResult?.value?.toString(),
-        from: speedUpResult?.from as Address,
-        to: speedUpResult?.to as Address,
-        hash: speedUpResult?.hash as TxHash,
-        chainId: speedUpResult?.chainId,
-        status: 'pending',
-        type: 'speed_up',
-        nonce: transaction?.nonce,
-      } satisfies NewTransaction;
-      updateTransaction({
-        address: speedUpResult?.from as Address,
-        chainId: speedUpResult?.chainId,
-        transaction: speedUpTransaction,
-      });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
-      if (!isLedgerConnectionError(e)) {
-        const extractedError = (e as Error).message.split('[')[0];
-        triggerAlert({
-          text: i18n.t('errors.sending_transaction'),
-          description: extractedError,
-        });
-      }
-      logger.error(new RainbowError('send: error speed up tx'), {
-        message: (e as Error)?.message,
-      });
-    } finally {
-      setSending(false);
-    }
-  };
-
-  useEffect(() => {
-    // we keep this outside of `onClose` so that global shortcuts (e.g. Escape) still clear the tx
-    return () => {
-      setSelectedTransaction();
-    }; // invoke without param to remove selection
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      onClose();
+      navigate('?explainer=speed_up_error');
+    },
+  });
 
   const { address } = useAccount();
 
@@ -351,13 +264,9 @@ export function SpeedUpAndCancelSheet({
                 </Stack>
                 <Box paddingHorizontal="20px" paddingVertical="16px">
                   <TransactionFee
-                    chainId={transaction?.chainId || ChainId.mainnet}
+                    chainId={transaction.chainId}
                     defaultSpeed={GasSpeed.URGENT}
-                    transactionRequest={
-                      cancel
-                        ? cancelTransactionRequest
-                        : speedUpTransactionRequest
-                    }
+                    transactionRequest={transactionRequest}
                   />
                 </Box>
               </Box>
@@ -396,12 +305,11 @@ export function SpeedUpAndCancelSheet({
                             weight="semibold"
                             color="labelQuaternary"
                             size="12pt"
+                            align="right"
                           >
                             {i18n.t('speed_up_and_cancel.balance')}
                           </Text>
-                          {transaction && (
-                            <WalletBalance transaction={transaction} />
-                          )}
+                          <WalletBalance transaction={transaction} />
                         </Stack>
                       </Box>
                     </Inset>
@@ -413,7 +321,7 @@ export function SpeedUpAndCancelSheet({
                         height="44px"
                         variant="flat"
                         width="full"
-                        onClick={onExecuteTransaction}
+                        onClick={executeTransaction}
                       >
                         {sending ? (
                           <Box
@@ -478,16 +386,23 @@ function WalletBalance({ transaction }: { transaction: RainbowTransaction }) {
     address: transaction.from,
     chainId: transaction.chainId,
   });
+  if (!balance) return null;
+
   const displayBalance = handleSignificantDecimals(balance?.formatted || 0, 3);
   return (
     <Box paddingTop="2px">
-      <Inline alignVertical="center" alignHorizontal="right">
-        {balance?.symbol === 'ETH' && (
+      <Inline alignVertical="center" alignHorizontal="right" space="4px">
+        {balance.symbol === 'ETH' && (
           <EthSymbol color="labelSecondary" size={12} />
         )}
         <Text color="labelSecondary" size="14pt" weight="medium">
           {displayBalance}
         </Text>
+        {balance.symbol !== 'ETH' && (
+          <Text color="labelSecondary" size="14pt" weight="medium">
+            {balance.symbol}
+          </Text>
+        )}
       </Inline>
     </Box>
   );
