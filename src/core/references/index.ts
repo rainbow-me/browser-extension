@@ -144,6 +144,10 @@ export const USDC_AVALANCHE_ADDRESS =
 export const WBTC_AVALANCHE_ADDRESS =
   '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599';
 
+// blast
+export const ETH_BLAST_ADDRESS = AddressZero;
+export const USDB_BLAST_ADDRESS = '0x4300000000000000000000000000000000000003';
+
 export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.mainnet]: ETH_ADDRESS as Address,
   [ChainId.hardhat]: AddressZero as Address,
