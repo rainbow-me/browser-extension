@@ -7,7 +7,6 @@ import { getAddress } from '@ethersproject/address';
 import { BigNumberish } from '@ethersproject/bignumber';
 import { Contract, ContractInterface } from '@ethersproject/contracts';
 import { serialize } from '@ethersproject/transactions';
-import BigNumber from 'bignumber.js';
 
 import { globalColors } from '~/design-system/styles/designTokens';
 
@@ -33,6 +32,7 @@ import {
 } from '../types/gas';
 
 import { gweiToWei, weiToGwei } from './ethereum';
+import { formatNumber } from './formatNumber';
 import { addHexPrefix, convertStringToHex, toHex } from './hex';
 import { fetchJsonLocally } from './localJson';
 import {
@@ -110,8 +110,8 @@ export const parseGasFeeParam = ({ wei }: { wei: string }): GasFeeParam => {
   const gwei = wei ? weiToGwei(wei) : '';
   return {
     amount: wei,
-    display: `${gwei} Gwei`,
-    gwei: `${Math.round(Number(gwei) * 10) / 10}`,
+    display: `${formatNumber(gwei)} Gwei`,
+    gwei,
   };
 };
 
@@ -149,11 +149,11 @@ export const parseCustomGasFeeParams = ({
     ? currentBaseFee
     : maxBaseFee.amount;
 
-  const display = `${new BigNumber(
+  const display = `${formatNumber(
     weiToGwei(add(baseFee, maxPriorityFeePerGas.amount)),
-  ).toFixed(0)} - ${new BigNumber(
+  )} - ${formatNumber(
     weiToGwei(add(baseFeeWei, maxPriorityFeePerGas.amount)),
-  ).toFixed(0)} Gwei`;
+  )} Gwei`;
 
   const estimatedTime = parseGasDataConfirmationTime({
     maxBaseFee: maxBaseFee.amount,
@@ -226,7 +226,7 @@ export const parseGasFeeParams = ({
   optimismL1SecurityFee?: string | null;
 }): GasFeeParams => {
   const maxBaseFee = parseGasFeeParam({
-    wei: new BigNumber(multiply(wei, getBaseFeeMultiplier(speed))).toFixed(0),
+    wei: multiply(wei, getBaseFeeMultiplier(speed)),
   });
   const maxPriorityFeePerGas = parseGasFeeParam({
     wei: maxPriorityFeeSuggestions[speed === 'custom' ? 'urgent' : speed],
@@ -236,11 +236,11 @@ export const parseGasFeeParams = ({
     ? currentBaseFee
     : maxBaseFee.amount;
 
-  const display = `${new BigNumber(
+  const display = `${formatNumber(
     weiToGwei(add(baseFee, maxPriorityFeePerGas.amount)),
-  ).toFixed(0)} - ${new BigNumber(
+  )} - ${formatNumber(
     weiToGwei(add(maxBaseFee.amount, maxPriorityFeePerGas.amount)),
-  ).toFixed(0)} Gwei`;
+  )} Gwei`;
 
   const estimatedTime = parseGasDataConfirmationTime({
     maxBaseFee: maxBaseFee.amount,
@@ -310,7 +310,7 @@ export const parseGasFeeLegacyParams = ({
 }): GasFeeLegacyParams => {
   const wei = gweiToWei(gwei);
   const gasPrice = parseGasFeeParam({
-    wei: new BigNumber(multiply(wei, getBaseFeeMultiplier(speed))).toFixed(0),
+    wei: multiply(wei, getBaseFeeMultiplier(speed)),
   });
   const display = parseGasFeeParam({ wei }).display;
 

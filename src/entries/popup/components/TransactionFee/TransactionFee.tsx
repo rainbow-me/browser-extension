@@ -206,45 +206,41 @@ function Fee({
               onSpeedChanged={onSpeedChanged}
               chainId={chainId}
               gasFeeParamsBySpeed={gasFeeParamsBySpeed}
-              editable={
-                chainId === ChainId.mainnet || chainId === ChainId.polygon
-              }
               accentColor={accentColor}
               plainTriggerBorder={plainTriggerBorder}
               onOpenChange={onSpeedOpenChange}
               dropdownContentMarginRight={speedMenuMarginRight}
               ref={switchTransactionSpeedMenuRef}
             />
-            {chainId === ChainId.mainnet ? (
-              <CursorTooltip
-                align="end"
-                arrowAlignment="right"
-                arrowCentered
-                text={i18n.t('tooltip.gwei_settings')}
-                textWeight="bold"
-                textSize="12pt"
-                textColor="labelSecondary"
-                hint={shortcuts.global.OPEN_CUSTOM_GAS_MENU.display}
+
+            <CursorTooltip
+              align="end"
+              arrowAlignment="right"
+              arrowCentered
+              text={i18n.t('tooltip.gwei_settings')}
+              textWeight="bold"
+              textSize="12pt"
+              textColor="labelSecondary"
+              hint={shortcuts.global.OPEN_CUSTOM_GAS_MENU.display}
+            >
+              <Lens
+                borderRadius="round"
+                boxShadow="12px accent"
+                borderWidth="2px"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                borderColor="fillSecondary"
+                style={{ height: 28, width: 28 }}
+                onClick={openCustomGasSheet}
               >
-                <Lens
-                  borderRadius="round"
-                  boxShadow="12px accent"
-                  borderWidth="2px"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  borderColor="fillSecondary"
-                  style={{ height: 28, width: 28 }}
-                  onClick={openCustomGasSheet}
-                >
-                  <Symbol
-                    weight="medium"
-                    symbol="slider.horizontal.3"
-                    size={12}
-                  />
-                </Lens>
-              </CursorTooltip>
-            ) : null}
+                <Symbol
+                  weight="medium"
+                  symbol="slider.horizontal.3"
+                  size={12}
+                />
+              </Lens>
+            </CursorTooltip>
           </Inline>
         </Column>
       </Columns>

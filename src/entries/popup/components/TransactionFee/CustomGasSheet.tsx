@@ -7,9 +7,11 @@ import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { txSpeedEmoji } from '~/core/references/txSpeed';
 import { useGasStore } from '~/core/state';
+import { ChainId } from '~/core/types/chains';
 import { GasFeeParams, GasSpeed } from '~/core/types/gas';
+import { formatNumber } from '~/core/utils/formatNumber';
 import { getBaseFeeTrendParams } from '~/core/utils/gas';
-import { isZero, lessThan, toFixedDecimals } from '~/core/utils/numbers';
+import { isZero, lessThan } from '~/core/utils/numbers';
 import {
   Bleed,
   Box,
@@ -148,10 +150,19 @@ const ExplainerHeaderPill = ({
           weight="bold"
           size="14pt"
           color={color as TextStyles['color']}
-        >{`${label} ∙ ${toFixedDecimals(gwei, 0)} Gwei`}</Text>
+        >{`${label} ∙ ${formatNumber(gwei)} Gwei`}</Text>
       </Inline>
     </Box>
   );
+};
+
+const chainsWithoutPriorityFee = [
+  ChainId.arbitrum,
+  ChainId.arbitrumNova,
+  ChainId.arbitrumSepolia,
+];
+const isPriorityFeeSupported = (chainId: ChainId) => {
+  return !chainsWithoutPriorityFee.includes(chainId);
 };
 
 export const CustomGasSheet = ({
@@ -488,7 +499,7 @@ export const CustomGasSheet = ({
                         size="14pt"
                         weight="semibold"
                       >
-                        {`${toFixedDecimals(currentBaseFee, 0)} Gwei`}
+                        {`${formatNumber(currentBaseFee)} Gwei`}
                       </Text>
                     </Inline>
                   </Stack>

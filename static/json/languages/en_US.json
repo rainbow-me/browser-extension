@@ -1585,7 +1585,7 @@
       "current_base_surging": "Fees are unusually high right now! Unless your transaction is urgent, it’s best to wait for fees to drop.",
       "current_base_falling": "Fees are dropping right now!",
       "current_base_rising": "Fees are rising right now! It’s best to use a higher max base fee to avoid a stuck transaction.",
-      "current_base_description": "The base fee is set by the Ethereum network and changes depending on how busy the network is.",
+      "current_base_description": "The base fee is set by the network and changes depending on how busy the network is.",
       "current_base_title": "Current base fee",
       "max_base_explainer_1": "This is the maximum base fee you’re willing to pay for this transaction.",
       "max_base_explainer_2": "Setting a higher max base fee prevents your transaction from getting stuck if fees rise.",

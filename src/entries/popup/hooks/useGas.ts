@@ -99,7 +99,6 @@ const useGas = ({
       !gasData ||
       prevDebouncedMaxBaseFee === debouncedMaxBaseFee ||
       !enabled ||
-      chainId !== ChainId.mainnet ||
       !nativeAsset
     ) {
       return;
@@ -148,7 +147,6 @@ const useGas = ({
       !gasData ||
       prevDebouncedMaxPriorityFee === debouncedMaxPriorityFee ||
       !enabled ||
-      chainId !== ChainId.mainnet ||
       !nativeAsset
     )
       return;
