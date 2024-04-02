@@ -2,14 +2,19 @@ import { getActiveModal, getExplainerSheet } from './activeElement';
 
 export const simulateTab = (forwards: boolean) => {
   const activeElement = document.activeElement;
+  console.log('activeElement -- ', activeElement);
   if (activeElement) {
     const modal = getActiveModal();
+    console.log('modal -- ', modal);
     const explainer = getExplainerSheet();
+    console.log('explainer -- ', explainer);
     const target = explainer || modal || document;
+    console.log('target -- ', target);
 
     const tabbableArray = Array.from(
       target.querySelectorAll('[tabindex]:not([tabindex="-1"])'),
     );
+    console.log('tabbableArray -- ', tabbableArray);
     const getTabIndexFromElement = (element: Element) => {
       return parseInt(
         element?.attributes?.getNamedItem('tabIndex')?.value || '0',
@@ -31,6 +36,7 @@ export const simulateTab = (forwards: boolean) => {
         return getTabIndexFromElement(elOne) - getTabIndexFromElement(elTwo);
       },
     );
+    console.log('sortedCustomOrderArray -- ', sortedCustomOrderArray);
     const tabbableNodeList = sortedCustomOrderArray.concat(defaultOrderArray);
     const activeIndex = Array.from(tabbableNodeList).indexOf(activeElement);
     const activeElementIsFirst = activeIndex === 0;

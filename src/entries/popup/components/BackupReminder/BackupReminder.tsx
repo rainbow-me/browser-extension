@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { i18n } from '~/core/languages';
+import { shortcuts } from '~/core/references/shortcuts';
 import {
   Box,
   Button,
@@ -13,6 +14,7 @@ import {
 } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useWalletBackups } from '../../hooks/useWalletBackups';
 import { ROUTES } from '../../urls';
@@ -23,13 +25,22 @@ export const BackupReminder = () => {
   const { showWalletBackupReminder, closeBackupReminder } = useWalletBackups();
   const navigate = useRainbowNavigate();
 
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (e.key === shortcuts.global.CLOSE.key) {
+        e.preventDefault();
+        closeBackupReminder();
+      }
+    },
+  });
+
   return (
     <BottomSheet
       show={showWalletBackupReminder}
       zIndex={zIndexes.APP_CONNECTION_WALLET_SWITCHER}
       onClickOutside={closeBackupReminder}
     >
-      <Box id="wallet-backup-reminder-sheet">
+      <Box id="wallet-backup-reminder-sheet" isModal>
         <Navbar
           leftComponent={
             <Navbar.CloseButton
