@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useSelectedTransactionStore } from '~/core/state/selectedTransaction';
-import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
 import { copy } from '~/core/utils/copy';
@@ -45,10 +44,7 @@ export function ActivityContextMenu({
     });
   };
 
-  const viewOnExplorer = () => {
-    const explorer = getTransactionBlockExplorer(transaction);
-    goToNewTab({ url: explorer?.url });
-  };
+  const explorer = getTransactionBlockExplorer(transaction);
 
   const navigate = useNavigate();
 
@@ -123,15 +119,15 @@ export function ActivityContextMenu({
           </>
         )}
 
-        <ContextMenuItem
-          symbolLeft="binoculars.fill"
-          onSelect={viewOnExplorer}
-          shortcut={shortcuts.activity.VIEW_TRANSACTION.display}
-        >
-          {transaction?.chainId === ChainId.mainnet
-            ? i18n.t('speed_up_and_cancel.view_on_etherscan')
-            : i18n.t('speed_up_and_cancel.view_on_explorer')}
-        </ContextMenuItem>
+        {explorer && (
+          <ContextMenuItem
+            symbolLeft="binoculars.fill"
+            onSelect={() => goToNewTab({ url: explorer.url })}
+            shortcut={shortcuts.activity.VIEW_TRANSACTION.display}
+          >
+            {i18n.t('view_on_explorer', { explorer: explorer.name })}
+          </ContextMenuItem>
+        )}
 
         <Box testId="activity-context-copy-tx-hash">
           <ContextMenuItem
