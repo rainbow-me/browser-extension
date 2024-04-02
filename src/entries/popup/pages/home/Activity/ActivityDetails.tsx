@@ -12,7 +12,7 @@ import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { RainbowTransaction, TxHash } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
-import { findRainbowChainForChainId, getChain } from '~/core/utils/chains';
+import { findRainbowChainForChainId } from '~/core/utils/chains';
 import { copy } from '~/core/utils/copy';
 import { formatDate } from '~/core/utils/formatDate';
 import { formatCurrency, formatNumber } from '~/core/utils/formatNumber';
@@ -48,7 +48,6 @@ import {
   DropdownMenuTrigger,
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
-import { useRainbowChains } from '~/entries/popup/hooks/useRainbowChains';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
@@ -235,18 +234,28 @@ function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
   );
 }
 
-function NetworkData({ transaction: tx }: { transaction: RainbowTransaction }) {
-  const { nonce, native = { value: 0 } } = tx;
-  const { rainbowChains } = useRainbowChains();
-  const chain = getChain({ chainId: tx.chainId });
-
+const formatValue = (transaction: RainbowTransaction) => {
   const formattedValueInNative =
-    Number(native.value) > 0 && formatCurrency(native.value);
-  const formattedValue =
-    Number(tx.value) > 0 &&
-    `${formatNumber(tx.value)} ${chain.nativeCurrency.symbol}`;
+    transaction.native &&
+    Number(transaction.native.value) > 0 &&
+    formatCurrency(transaction.native.value);
 
-  const value = formattedValueInNative || formattedValue;
+  if (formattedValueInNative) return formattedValueInNative;
+
+  const nativeCurrencySymbol = findRainbowChainForChainId(transaction.chainId)
+    ?.nativeCurrency.symbol;
+
+  if (!nativeCurrencySymbol) return;
+
+  const formattedValue =
+    Number(transaction.value) > 0 &&
+    `${formatNumber(transaction.value)} ${nativeCurrencySymbol}`;
+
+  return formattedValue;
+};
+function NetworkData({ transaction: tx }: { transaction: RainbowTransaction }) {
+  const chain = findRainbowChainForChainId(tx.chainId);
+  const value = formatValue(tx);
 
   return (
     <Stack space="24px">
@@ -263,17 +272,16 @@ function NetworkData({ transaction: tx }: { transaction: RainbowTransaction }) {
         value={
           <Inline alignVertical="center" space="4px">
             <ChainBadge chainId={tx.chainId} size={12} />
-            {ChainNameDisplay[tx.chainId] ||
-              rainbowChains.find((chain) => chain.id === tx.chainId)?.name}
+            {ChainNameDisplay[tx.chainId] || chain?.name}
           </Inline>
         }
       />
       <FeeData transaction={tx} />
-      {nonce >= 0 && (
+      {tx.nonce >= 0 && (
         <InfoRow
           symbol="number"
           label={i18n.t('activity_details.nonce')}
-          value={nonce}
+          value={tx.nonce}
         />
       )}
     </Stack>
