@@ -22,6 +22,7 @@ import { ROUTES } from '../urls';
 import {
   appConnectionMenuIsActive,
   appConnectionSwitchWalletsPromptIsActive,
+  getActiveModal,
   getInputIsFocused,
 } from '../utils/activeElement';
 import {
@@ -104,7 +105,9 @@ export function useHomeShortcuts() {
       const activeAppWalletSwitcher =
         appConnectionSwitchWalletsPromptIsActive();
       const inputIsFocused = getInputIsFocused();
+      const isModal = getActiveModal();
       if (inputIsFocused) return;
+      if (isModal) return;
       switch (e.key) {
         case shortcuts.home.BUY.key:
           trackShortcut({

@@ -101,6 +101,7 @@ export const BackupReminder = () => {
                     },
                   });
                 }}
+                tabIndex={0}
               >
                 <Text align="center" color="label" size="16pt" weight="heavy">
                   {i18n.t('wallet_backup_reminder.button_label_action')}
@@ -113,6 +114,7 @@ export const BackupReminder = () => {
                 height="44px"
                 variant="tinted"
                 onClick={closeBackupReminder}
+                tabIndex={0}
               >
                 <Text
                   align="center"
