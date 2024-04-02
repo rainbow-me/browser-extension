@@ -12,7 +12,7 @@ import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { RainbowTransaction, TxHash } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
-import { getChain } from '~/core/utils/chains';
+import { findRainbowChainForChainId, getChain } from '~/core/utils/chains';
 import { copy } from '~/core/utils/copy';
 import { formatDate } from '~/core/utils/formatDate';
 import { formatCurrency, formatNumber } from '~/core/utils/formatNumber';
@@ -151,8 +151,26 @@ function ConfirmationData({
 
 const InfoValueSkeleton = () => <Skeleton width="50px" height="12px" />;
 
+const formatFee = (transaction: RainbowTransaction) => {
+  if (
+    transaction.native !== undefined &&
+    transaction.native.fee !== undefined
+  ) {
+    // if the fee is less than $0.01, the provider returns 0 so we display it as <$0.01
+    const feeInNative =
+      +transaction.native.fee <= 0.01 ? 0.01 : transaction.native.fee;
+    return `${+feeInNative <= 0.01 ? '<' : ''}${formatCurrency(feeInNative)}`;
+  }
+
+  const nativeCurrencySymbol = findRainbowChainForChainId(transaction.chainId)
+    ?.nativeCurrency.symbol;
+
+  if (!transaction.fee || !nativeCurrencySymbol) return;
+
+  return `${formatNumber(transaction.fee)} ${nativeCurrencySymbol}`;
+};
 function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
-  const { native, feeType } = tx;
+  const { feeType } = tx;
 
   // if baseFee is undefined (like in pending txs or custom networks the api wont have data about it)
   // so we try to calculate with the data we may have locally
@@ -162,14 +180,7 @@ function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
       tx.maxPriorityFeePerGas &&
       BigNumber.from(tx.maxFeePerGas).sub(tx.maxPriorityFeePerGas).toString());
 
-  let fee;
-  if (native !== undefined && native.fee !== undefined) {
-    // if the fee is less than $0.01, the provider returns 0 so we display it as <$0.01
-    const feeInNative = +native.fee <= 0.01 ? 0.01 : native.fee;
-    fee = `${+feeInNative <= 0.01 ? '<' : ''}${formatCurrency(feeInNative)}`;
-  } else {
-    // handle custom networks fee
-  }
+  const fee = formatFee(tx);
 
   if ((!baseFee || !tx.maxPriorityFeePerGas) && !tx.gasPrice) return null;
 
