@@ -292,7 +292,7 @@ function MoreOptions({
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
 
   const resetSelectedToken = useCallback(() => {
-    if (selectedToken) setSelectedToken(undefined);
+    if (selectedToken) setSelectedToken();
   }, [setSelectedToken, selectedToken]);
 
   useEffect(() => {
@@ -363,10 +363,10 @@ function MoreOptions({
     copyAddress(token.address);
   }, [token]);
 
-  const getTokenEnabled = useCallback(() => !!token, [token]);
+  const getTokenExist = useCallback(() => !!token, [token]);
 
   useTokenDetailsShortcuts({
-    getTokenEnabled,
+    getTokenExist,
     toggleHideToken,
     togglePinToken,
     copyTokenAddress,
