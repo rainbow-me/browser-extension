@@ -1,8 +1,9 @@
-import { useCallback, useReducer } from 'react';
+import { useCallback, useEffect, useReducer } from 'react';
 import { Navigate, To, useParams } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { ETH_ADDRESS } from '~/core/references';
+import { shortcuts } from '~/core/references/shortcuts';
 import { useApprovals } from '~/core/resources/approvals/approvals';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
@@ -58,8 +59,10 @@ import {
 } from '~/entries/popup/components/ExplainerSheet/ExplainerSheet';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { SideChainExplainerSheet } from '~/entries/popup/components/SideChainExplainer';
+import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { useCustomNetworkAsset } from '~/entries/popup/hooks/useCustomNetworkAsset';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
+import { useTokenDetailsShortcuts } from '~/entries/popup/hooks/useTokenDetailsShortcuts';
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
@@ -286,6 +289,17 @@ function MoreOptions({
   const { pinnedAssets, removedPinnedAsset, addPinnedAsset } =
     usePinnedAssetStore();
 
+  const { selectedToken, setSelectedToken } = useSelectedTokenStore();
+
+  const resetSelectedToken = useCallback(() => {
+    if (selectedToken) setSelectedToken(undefined);
+  }, [setSelectedToken, selectedToken]);
+
+  useEffect(() => {
+    // When component unmounts reset the selectedToken
+    return resetSelectedToken;
+  }, [resetSelectedToken]);
+
   const isHidden = useCallback(
     (asset: ParsedUserAsset) =>
       hiddenAssets.some(
@@ -304,10 +318,20 @@ function MoreOptions({
   const toggleHideToken = useCallback(() => {
     if (hidden) {
       removeHiddenAsset({ uniqueId: computeUniqueIdForHiddenAsset(token) });
+      triggerToast({
+        title: i18n.t('token_details.toast.unhide_token', {
+          name: token.symbol,
+        }),
+      });
       return;
     }
     if (pinned) removedPinnedAsset({ uniqueId: token.uniqueId });
     addHiddenAsset({ uniqueId: computeUniqueIdForHiddenAsset(token) });
+    triggerToast({
+      title: i18n.t('token_details.toast.hide_token', {
+        name: token.symbol,
+      }),
+    });
   }, [
     token,
     hidden,
@@ -320,13 +344,40 @@ function MoreOptions({
   const togglePinToken = useCallback(() => {
     if (pinned) {
       removedPinnedAsset({ uniqueId: token.uniqueId });
+      triggerToast({
+        title: i18n.t('token_details.toast.unpin_token', {
+          name: token.symbol,
+        }),
+      });
       return;
     }
     addPinnedAsset({ uniqueId: token.uniqueId });
-  }, [token.uniqueId, pinned, addPinnedAsset, removedPinnedAsset]);
+    triggerToast({
+      title: i18n.t('token_details.toast.pin_token', {
+        name: token.symbol,
+      }),
+    });
+  }, [token, pinned, addPinnedAsset, removedPinnedAsset]);
+
+  const copyTokenAddress = useCallback(() => {
+    copyAddress(token.address);
+  }, [token]);
+
+  const getTokenEnabled = useCallback(() => !!token, [token]);
+
+  useTokenDetailsShortcuts({
+    getTokenEnabled,
+    toggleHideToken,
+    togglePinToken,
+    copyTokenAddress,
+  });
+
+  const onOpenChange = (open: boolean) => {
+    setSelectedToken(open ? token : undefined);
+  };
 
   return (
-    <DropdownMenu>
+    <DropdownMenu onOpenChange={onOpenChange}>
       <DropdownMenuTrigger asChild>
         <div>
           <ButtonSymbol
@@ -343,7 +394,11 @@ function MoreOptions({
           color={token.colors?.primary || token.colors?.fallback}
         >
           {!hidden && (
-            <DropdownMenuItem symbolLeft="pin.fill" onSelect={togglePinToken}>
+            <DropdownMenuItem
+              symbolLeft="pin.fill"
+              onSelect={togglePinToken}
+              shortcut={shortcuts.tokens.PIN_ASSET.display}
+            >
               <TextOverflow weight="semibold" size="14pt">
                 {pinned
                   ? i18n.t('token_details.more_options.unpin_token', {
@@ -358,6 +413,7 @@ function MoreOptions({
           <DropdownMenuItem
             symbolLeft="eye.slash.fill"
             onSelect={toggleHideToken}
+            shortcut={shortcuts.tokens.HIDE_ASSET.display}
           >
             <TextOverflow weight="semibold" size="14pt">
               {hidden
@@ -374,7 +430,8 @@ function MoreOptions({
               {!isNative && (
                 <DropdownMenuItem
                   symbolLeft="doc.on.doc.fill"
-                  onSelect={() => copyAddress(token.address)}
+                  onSelect={copyTokenAddress}
+                  shortcut={shortcuts.home.COPY_ADDRESS.display}
                 >
                   <Text size="14pt" weight="semibold">
                     {i18n.t('token_details.more_options.copy_address')}
