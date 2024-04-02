@@ -102,7 +102,10 @@ const defaultFavorites = {
     USDC_AVALANCHE_ADDRESS,
     WBTC_AVALANCHE_ADDRESS,
   ],
-  [ChainId.blast]: [ETH_BLAST_ADDRESS, USDB_BLAST_ADDRESS],
+  [ChainId.blast]: [
+    ETH_BLAST_ADDRESS,
+    USDB_BLAST_ADDRESS,
+  ]
 } satisfies FavoritesState['favorites'];
 
 const mergeNewOfficiallySupportedChainsState = (
@@ -155,7 +158,7 @@ export const favoritesStore = createStore<FavoritesState>(
           return mergeNewOfficiallySupportedChainsState(state, [
             ChainId.avalanche,
           ]);
-        } else if (version <= 2) {
+        } else if (version === 2) {
           // version 3 added support for Blast
           return mergeNewOfficiallySupportedChainsState(state, [ChainId.blast]);
         }
