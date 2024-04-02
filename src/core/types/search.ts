@@ -19,7 +19,6 @@ export type SearchAsset = {
   decimals: number;
   highLiquidity: boolean;
   icon_url: string;
-  isRainbowCurated: boolean;
   isNativeAsset: boolean;
   isVerified: boolean;
   mainnetAddress: AddressOrEth;
