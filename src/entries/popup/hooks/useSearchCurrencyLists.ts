@@ -170,8 +170,6 @@ export function useSearchCurrencyLists({
       fromChainId,
     });
 
-  console.log('blastVerifiedAssets', blastVerifiedAssets);
-
   // current search
   const { data: targetVerifiedAssets, isLoading: targetVerifiedAssetsLoading } =
     useTokenSearch({
