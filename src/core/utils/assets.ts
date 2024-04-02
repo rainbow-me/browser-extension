@@ -127,8 +127,8 @@ export function parseAsset({
     networks: asset.networks,
     ...('bridging' in asset && {
       bridging: {
-        isBridgeable: !!asset?.bridging?.bridgeable,
-        networks: asset?.bridging?.networks || undefined,
+        isBridgeable: !!asset.bridging.bridgeable,
+        networks: asset.bridging.networks,
       },
     }),
   };
