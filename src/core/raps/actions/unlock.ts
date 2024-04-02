@@ -113,6 +113,36 @@ export const estimateApprove = async ({
   }
 };
 
+export const populateApprove = async ({
+  owner,
+  tokenAddress,
+  spender,
+  chainId,
+}: {
+  owner: Address;
+  tokenAddress: Address;
+  spender: Address;
+  chainId: ChainId;
+}): Promise<PopulatedTransaction | null> => {
+  try {
+    const provider = getProvider({ chainId });
+    const tokenContract = new Contract(tokenAddress, erc20ABI, provider);
+    const approveTransaction = await tokenContract.populateTransaction.approve(
+      spender,
+      MaxUint256,
+      {
+        from: owner,
+      },
+    );
+    return approveTransaction;
+  } catch (error) {
+    logger.error(new RainbowError(' error populateApprove'), {
+      message: (error as Error)?.message,
+    });
+    return null;
+  }
+};
+
 export const estimateERC721Approval = async ({
   owner,
   tokenAddress,

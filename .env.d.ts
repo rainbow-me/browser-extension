@@ -6,7 +6,8 @@ declare global {
       ZORA_MAINNET_RPC: string;
       BASE_MAINNET_RPC: string;
       ETHERSCAN_API_KEY: string;
-      SEGMENT_WRITE_KEY: string;
+      RUDDERSTACK_WRITE_KEY: string;
+      RUDDERSTACK_DATA_PLANE: string;
       SENTRY_DSN: string;
       DATA_API_KEY: string;
       DATA_ENDPOINT: string;
@@ -32,18 +33,19 @@ declare global {
       BASE_MAINNET_RPC: string;
       ZORA_MAINNET_RPC: string;
       BSC_MAINNET_RPC: string;
-      ETH_GOERLI_RPC: string;
       ETH_SEPOLIA_RPC: string;
       ETH_HOLESKY_RPC: string;
       OPTIMISM_SEPOLIA_RPC: string;
       BSC_TESTNET_RPC: string;
       POLYGON_MUMBAI_RPC: string;
+      POLYGON_AMOY_RPC: string;
       ARBITRUM_SEPOLIA_RPC: string;
       BASE_SEPOLIA_RPC: string;
       ZORA_SEPOLIA_RPC: string;
       AVALANCHE_MAINNET_RPC: string;
       AVALANCHE_FUJI_RPC: string;
       BLAST_MAINNET_RPC: string;
+      BLAST_SEPOLIA_RPC: string;
     }
   }
 }

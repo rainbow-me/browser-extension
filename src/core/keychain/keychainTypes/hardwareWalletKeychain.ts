@@ -15,7 +15,7 @@ export interface SerializedHardwareWalletKeychain {
   hdPath?: string;
   deviceId?: string;
   accountsEnabled?: number;
-  type: string;
+  type: KeychainType.HardwareWalletKeychain;
   autodiscover?: boolean;
   wallets?: Array<{ address: Address; index: number; hdPath?: string }>;
   accountsDeleted?: Array<number>;
@@ -24,11 +24,11 @@ export interface SerializedHardwareWalletKeychain {
 const privates = new WeakMap();
 
 export class HardwareWalletKeychain implements IKeychain {
-  type: string;
+  type: KeychainType.HardwareWalletKeychain =
+    KeychainType.HardwareWalletKeychain;
   vendor?: string;
 
   constructor() {
-    this.type = KeychainType.HardwareWalletKeychain;
     this.vendor = undefined;
 
     privates.set(this, {

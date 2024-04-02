@@ -10,10 +10,10 @@ import { copy } from '~/core/utils/copy';
 import { goToNewTab } from '~/core/utils/tabs';
 import { getTransactionBlockExplorer } from '~/core/utils/transactions';
 import { Box, Text } from '~/design-system';
+import { DetailsMenuWrapper } from '~/entries/popup/components/DetailsMenu';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 
 import {
-  ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuSeparator,
@@ -67,9 +67,12 @@ export function ActivityContextMenu({
   useKeyboardShortcut({
     condition: () => !!open,
     handler: (e: KeyboardEvent) => {
-      e.preventDefault();
       if (e.key === shortcuts.activity.REFRESH_TRANSACTIONS.key) {
         onRevoke();
+        e.preventDefault();
+      }
+      if (e.key === shortcuts.global.CLOSE.key) {
+        setOpen(false);
       }
     },
   });
@@ -81,7 +84,7 @@ export function ActivityContextMenu({
   }, [open, setSelectedTransaction]);
 
   return (
-    <ContextMenu onOpenChange={setOpen}>
+    <DetailsMenuWrapper onOpenChange={setOpen} closed={!open}>
       <ContextMenuTrigger onTrigger={onTrigger}>{children}</ContextMenuTrigger>
       <ContextMenuContent>
         {transaction?.status === 'pending' && (
@@ -118,18 +121,20 @@ export function ActivityContextMenu({
           </ContextMenuItem>
         )}
 
-        <ContextMenuItem
-          symbolLeft="doc.on.doc.fill"
-          onSelect={handleCopy}
-          shortcut={shortcuts.activity.COPY_TRANSACTION.display}
-        >
-          <Text color="label" size="14pt" weight="semibold">
-            {i18n.t('speed_up_and_cancel.copy_tx_hash')}
-          </Text>
-          <Text color="labelSecondary" size="12pt" weight="semibold">
-            {truncatedHash}
-          </Text>
-        </ContextMenuItem>
+        <Box testId="activity-context-copy-tx-hash">
+          <ContextMenuItem
+            symbolLeft="doc.on.doc.fill"
+            onSelect={handleCopy}
+            shortcut={shortcuts.activity.COPY_TRANSACTION.display}
+          >
+            <Text color="label" size="14pt" weight="semibold">
+              {i18n.t('speed_up_and_cancel.copy_tx_hash')}
+            </Text>
+            <Text color="labelSecondary" size="12pt" weight="semibold">
+              {truncatedHash}
+            </Text>
+          </ContextMenuItem>
+        </Box>
 
         {onRevokeTransaction ? (
           <ContextMenuItem
@@ -146,6 +151,6 @@ export function ActivityContextMenu({
           </ContextMenuItem>
         ) : null}
       </ContextMenuContent>
-    </ContextMenu>
+    </DetailsMenuWrapper>
   );
 }

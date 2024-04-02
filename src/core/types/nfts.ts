@@ -28,6 +28,9 @@ export enum SimpleHashChain {
   BaseSepolia = 'base-sepolia',
   OptimismSepolia = 'optimism-sepolia',
   ZoraSepolia = 'zora-sepolia',
+  Blast = 'blast',
+  BlastSepolia = 'blast-sepolia',
+  PolygonAmoy = 'polygon-amoy',
 }
 
 /**

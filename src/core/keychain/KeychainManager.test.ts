@@ -62,7 +62,7 @@ test('[keychain/KeychainManager] :: should be able to export the seed phrase for
 
 test('[keychain/KeychainManager] :: should be able to add a read only wallet using an address', async () => {
   await keychainManager.importKeychain({
-    type: 'ReadOnlyKeychain',
+    type: KeychainType.ReadOnlyKeychain,
     address: '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4',
   });
   const accounts = await keychainManager.getAccounts();
@@ -79,7 +79,10 @@ test('[keychain/KeychainManager] :: should be able to remove an account from a R
 });
 
 test('[keychain/KeychainManager] :: should be able to import a wallet using a private key', async () => {
-  await keychainManager.importKeychain({ type: 'KeyPairKeychain', privateKey });
+  await keychainManager.importKeychain({
+    type: KeychainType.KeyPairKeychain,
+    privateKey,
+  });
   const accounts = await keychainManager.getAccounts();
   expect(accounts.length).toBe(2);
   expect(isAddress(accounts[1])).toBe(true);

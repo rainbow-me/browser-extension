@@ -21,10 +21,18 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { useFlashbotsEnabledStore, useGasStore } from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import {
+  computeUniqueIdForHiddenAsset,
+  useHiddenAssetStore,
+} from '~/core/state/hiddenAssets/hiddenAssets';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSelectedNftStore } from '~/core/state/selectedNft';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
-import { AddressOrEth, ParsedAsset } from '~/core/types/assets';
+import {
+  AddressOrEth,
+  ParsedAsset,
+  ParsedUserAsset,
+} from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
   TransactionGasParams,
@@ -102,6 +110,16 @@ export function Send() {
 
   const { isContact } = useContactsStore();
   const { allWallets } = useWallets();
+  const { hiddenAssets } = useHiddenAssetStore();
+
+  const isHidden = useCallback(
+    (asset: ParsedUserAsset) =>
+      hiddenAssets.some(
+        (uniqueId) => uniqueId === computeUniqueIdForHiddenAsset(asset),
+      ),
+    [hiddenAssets],
+  );
+
   const isMyWallet = (address: Address) =>
     allWallets?.some((w) => w.address === address);
 
@@ -115,6 +133,11 @@ export function Send() {
     setSortMethod,
     sortMethod,
   } = useSendAsset();
+
+  const unhiddenAssets = useMemo(
+    () => assets.filter((asset) => !isHidden(asset)),
+    [assets, isHidden],
+  );
 
   const { nft, nfts, nftSortMethod, setNftSortMethod, selectNft } =
     useSendUniqueAsset();
@@ -658,7 +681,7 @@ export function Send() {
                 >
                   <SendTokenInput
                     asset={asset}
-                    assets={assets}
+                    assets={unhiddenAssets}
                     selectAssetAddressAndChain={selectAsset}
                     dropdownClosed={toAddressDropdownOpen}
                     setSortMethod={setSortMethod}
