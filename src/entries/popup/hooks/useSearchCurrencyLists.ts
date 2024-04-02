@@ -283,16 +283,14 @@ export function useSearchCurrencyLists({
     ],
   );
 
-  const getCuratedAssets = useCallback(
+  const getVerifiedAssets = useCallback(
     (chainId: ChainId) =>
-      verifiedAssets[chainId]?.assets?.filter(
-        ({ isRainbowCurated }) => isRainbowCurated,
-      ),
+      verifiedAssets[chainId]?.assets?.filter(({ isVerified }) => isVerified),
     [verifiedAssets],
   );
 
   const bridgeAsset = useMemo(() => {
-    const curatedAssets = getCuratedAssets(outputChainId);
+    const curatedAssets = getVerifiedAssets(outputChainId);
     const bridgeAsset = curatedAssets?.find((asset) =>
       isLowerCaseMatch(
         asset.mainnetAddress,
@@ -310,7 +308,7 @@ export function useSearchCurrencyLists({
       ? bridgeAsset
       : null;
     return outputChainId === assetToSell?.chainId ? null : filteredBridgeAsset;
-  }, [assetToSell, getCuratedAssets, outputChainId, query]);
+  }, [assetToSell, getVerifiedAssets, outputChainId, query]);
 
   const loading = useMemo(() => {
     return query === ''
@@ -327,17 +325,17 @@ export function useSearchCurrencyLists({
   // displayed when no search query is present
   const curatedAssets = useMemo(
     () => ({
-      [ChainId.mainnet]: getCuratedAssets(ChainId.mainnet),
-      [ChainId.optimism]: getCuratedAssets(ChainId.optimism),
-      [ChainId.bsc]: getCuratedAssets(ChainId.bsc),
-      [ChainId.polygon]: getCuratedAssets(ChainId.polygon),
-      [ChainId.arbitrum]: getCuratedAssets(ChainId.arbitrum),
-      [ChainId.base]: getCuratedAssets(ChainId.base),
-      [ChainId.zora]: getCuratedAssets(ChainId.zora),
-      [ChainId.avalanche]: getCuratedAssets(ChainId.avalanche),
-      [ChainId.blast]: getCuratedAssets(ChainId.blast),
+      [ChainId.mainnet]: getVerifiedAssets(ChainId.mainnet),
+      [ChainId.optimism]: getVerifiedAssets(ChainId.optimism),
+      [ChainId.bsc]: getVerifiedAssets(ChainId.bsc),
+      [ChainId.polygon]: getVerifiedAssets(ChainId.polygon),
+      [ChainId.arbitrum]: getVerifiedAssets(ChainId.arbitrum),
+      [ChainId.base]: getVerifiedAssets(ChainId.base),
+      [ChainId.zora]: getVerifiedAssets(ChainId.zora),
+      [ChainId.avalanche]: getVerifiedAssets(ChainId.avalanche),
+      [ChainId.blast]: getVerifiedAssets(ChainId.blast),
     }),
-    [getCuratedAssets],
+    [getVerifiedAssets],
   );
 
   const bridgeList = (

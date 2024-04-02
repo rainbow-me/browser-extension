@@ -61,7 +61,6 @@ const ETH_FROM_SEARCH: SearchAsset = {
   icon_url:
     'https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/smartchain/0x2170ed0880ac9a755fd29b2688956bd959f933f8.png',
   rainbowMetadataId: 76174,
-  isRainbowCurated: true,
   isVerified: true,
   networks: {
     '1': { address: 'eth', decimals: 18 },
@@ -221,7 +220,6 @@ const OPTIMISM_USD_FROM_SEARCH = {
   icon_url:
     'https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png',
   rainbowMetadataId: 1746,
-  isRainbowCurated: true,
   isVerified: true,
   networks: {
     '1': {
