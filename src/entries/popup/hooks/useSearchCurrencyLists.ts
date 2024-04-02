@@ -283,9 +283,10 @@ export function useSearchCurrencyLists({
     ],
   );
 
+  // temporarily limiting the number of assets to display
+  // for performance after deprecating `isRainbowCurated`
   const getVerifiedAssets = useCallback(
-    (chainId: ChainId) =>
-      verifiedAssets[chainId]?.assets?.filter(({ isVerified }) => isVerified),
+    (chainId: ChainId) => verifiedAssets[chainId]?.assets?.slice(0, 50),
     [verifiedAssets],
   );
 
