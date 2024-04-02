@@ -237,6 +237,7 @@ function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
 const formatValue = (transaction: RainbowTransaction) => {
   const formattedValueInNative =
     transaction.native &&
+    transaction.native.value &&
     Number(transaction.native.value) > 0 &&
     formatCurrency(transaction.native.value);
 
