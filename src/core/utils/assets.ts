@@ -125,10 +125,12 @@ export function parseAsset({
     colors: asset.colors,
     standard,
     networks: asset.networks,
-    bridging: {
-      isBridgeable: asset.bridging.bridgeable,
-      networks: asset.bridging.networks,
-    },
+    ...('bridging' in asset && {
+      bridging: {
+        isBridgeable: !!asset.bridging.bridgeable,
+        networks: asset.bridging.networks,
+      },
+    }),
   };
 
   return parsedAsset;
