@@ -13,12 +13,14 @@ import {
   ETH_ADDRESS,
   ETH_ARBITRUM_ADDRESS,
   ETH_BASE_ADDRESS,
+  ETH_BLAST_ADDRESS,
   ETH_OPTIMISM_ADDRESS,
   ETH_ZORA_ADDRESS,
   MATIC_POLYGON_ADDRESS,
   OP_ADDRESS,
   SOCKS_ADDRESS,
   SOCKS_ARBITRUM_ADDRESS,
+  USDB_BLAST_ADDRESS,
   USDC_ADDRESS,
   USDC_ARBITRUM_ADDRESS,
   USDC_AVALANCHE_ADDRESS,
@@ -33,6 +35,7 @@ import {
   WBTC_OPTIMISM_ADDRESS,
   WBTC_POLYGON_ADDRESS,
   WETH_BASE_ADDRESS,
+  WETH_BLAST_ADDRESS,
   WETH_OPTIMISM_ADDRESS,
   WETH_POLYGON_ADDRESS,
   WETH_ZORA_ADDRESS,
@@ -100,6 +103,7 @@ const defaultFavorites = {
     USDC_AVALANCHE_ADDRESS,
     WBTC_AVALANCHE_ADDRESS,
   ],
+  [ChainId.blast]: [ETH_BLAST_ADDRESS, WETH_BLAST_ADDRESS, USDB_BLAST_ADDRESS],
 } satisfies FavoritesState['favorites'];
 
 const mergeNewOfficiallySupportedChainsState = (
@@ -144,14 +148,21 @@ export const favoritesStore = createStore<FavoritesState>(
   {
     persist: {
       name: 'favorites',
-      version: 2,
+      version: 3,
       migrate(persistedState, version) {
         const state = persistedState as FavoritesState;
         if (version === 1) {
           // version 2 added support for Avalanche
-          return mergeNewOfficiallySupportedChainsState(state, [
+          const version2State = mergeNewOfficiallySupportedChainsState(state, [
             ChainId.avalanche,
           ]);
+          // version 3 added support for Blast
+          return mergeNewOfficiallySupportedChainsState(version2State, [
+            ChainId.blast,
+          ]);
+        } else if (version === 2) {
+          // version 3 added support for Blast
+          return mergeNewOfficiallySupportedChainsState(state, [ChainId.blast]);
         }
         return state;
       },
