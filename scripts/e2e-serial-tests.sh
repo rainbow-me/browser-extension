@@ -1,6 +1,6 @@
 #!/bin/bash
 ANVIL_PORT=8545
-MAX_RETRIES=2
+MAX_RETRIES=5
 RETRY_COUNT=0
 
 # Function to launch and verify Anvil

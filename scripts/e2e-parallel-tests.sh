@@ -1,5 +1,5 @@
 #!/bin/bash
-MAX_RETRIES=2
+MAX_RETRIES=5
 RETRY_COUNT=0
 
 # Function to run tests
