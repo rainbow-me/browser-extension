@@ -32,8 +32,10 @@ const waitUntilTime = 20_000;
 const testPassword = 'test1234';
 const BINARY_PATHS = {
   mac: {
-    chrome: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-    brave: '/Applications/Brave Browser.app/Contents/MacOS/Brave Browser',
+    chrome:
+      '/Applications/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing',
+    brave:
+      '/Applications/Brave Browser Beta.app/Contents/MacOS/Brave Browser Beta',
     firefox:
       '/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox',
   },
