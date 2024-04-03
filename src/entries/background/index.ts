@@ -1,7 +1,6 @@
 import { uuid4 } from '@sentry/utils';
 
 import { initFCM } from '~/core/firebase/fcm';
-import config from '~/core/firebase/remoteConfig';
 import { initializeMessenger } from '~/core/messengers';
 import { initializeSentry } from '~/core/sentry';
 import { syncStores } from '~/core/state/internal/syncStores';
@@ -20,9 +19,13 @@ require('../../core/utils/lockdown');
 
 initializeSentry('background');
 
-const updateWagmiClient = () => {
+const updateWagmiClient = ({
+  rpcProxyEnabled,
+}: {
+  rpcProxyEnabled: boolean;
+}) => {
   const { rainbowChains } = getRainbowChains();
-  createWagmiClient({ rainbowChains, useProxy: config.rpc_proxy_enabled });
+  createWagmiClient({ rainbowChains, useProxy: rpcProxyEnabled });
 };
 
 const popupMessenger = initializeMessenger({ connect: 'popup' });
@@ -41,9 +44,12 @@ initFCM();
 handleKeepAlive();
 
 setTimeout(() => {
-  updateWagmiClient();
+  updateWagmiClient({ rpcProxyEnabled: true });
 }, 100);
 
-popupMessenger.reply('rainbow_updateWagmiClient', async () => {
-  updateWagmiClient();
-});
+popupMessenger.reply(
+  'rainbow_updateWagmiClient',
+  async (payload: { rpcProxyEnabled: boolean }) => {
+    updateWagmiClient({ rpcProxyEnabled: payload.rpcProxyEnabled });
+  },
+);
