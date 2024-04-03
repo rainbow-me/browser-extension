@@ -48,17 +48,18 @@ const networkBadges = {
   [ChainId.avalanche]: AvalancheBadge,
   [ChainId.hardhat]: HardhatBadge,
   [ChainId.hardhatOptimism]: HardhatBadge,
-  [ChainId.goerli]: EthereumBadge,
   [ChainId.sepolia]: EthereumBadge,
   [ChainId.holesky]: EthereumBadge,
   [ChainId.optimismSepolia]: OptimismBadge,
   [ChainId.bscTestnet]: BscBadge,
   [ChainId.polygonMumbai]: PolygonBadge,
+  [ChainId.polygonAmoy]: PolygonBadge,
   [ChainId.arbitrumSepolia]: ArbitrumBadge,
   [ChainId.baseSepolia]: BaseBadge,
   [ChainId.zoraSepolia]: ZoraBadge,
   [ChainId.avalancheFuji]: AvalancheBadge,
   [ChainId.blast]: BlastBadge,
+  [ChainId.blastSepolia]: BlastBadge,
 };
 
 const ChainBadge = ({

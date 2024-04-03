@@ -151,7 +151,8 @@ export const AppConnectionWatcher = () => {
     if (
       !!prevCurrentAddress &&
       (!isLowerCaseMatch(currentAddress, prevCurrentAddress) || firstLoad) &&
-      (!checkAndDisplayBanner() || !differentActiveSession)
+      ((location.pathname === ROUTES.HOME && !checkAndDisplayBanner()) ||
+        !differentActiveSession)
     ) {
       shouldAnimateOut.current = false;
       hide();
@@ -163,6 +164,7 @@ export const AppConnectionWatcher = () => {
     checkAndDisplayBanner,
     differentActiveSession,
     firstLoad,
+    location.pathname,
   ]);
 
   useLayoutEffect(() => {
@@ -170,7 +172,7 @@ export const AppConnectionWatcher = () => {
       shouldAnimateOut.current = true;
       hide();
     }
-  }, [hide, location.pathname]);
+  }, [hide, location, location.pathname]);
 
   useLayoutEffect(() => {
     if (

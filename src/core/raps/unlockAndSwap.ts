@@ -1,14 +1,14 @@
 import {
   ALLOWS_PERMIT,
-  ChainId,
   ETH_ADDRESS as ETH_ADDRESS_AGGREGATOR,
   PermitSupportedTokenList,
-  RAINBOW_ROUTER_CONTRACT_ADDRESS,
   WRAPPED_ASSET,
+  getRainbowRouterContractAddress,
 } from '@rainbow-me/swaps';
 import { Address } from 'wagmi';
 
 import { ETH_ADDRESS } from '../references';
+import { ChainId } from '../types/chains';
 import { isNativeAsset } from '../utils/chains';
 import { add } from '../utils/numbers';
 import { isLowerCaseMatch } from '../utils/strings';
@@ -19,6 +19,7 @@ import {
   estimateApprove,
   estimateSwapGasLimit,
 } from './actions';
+import { estimateUnlockAndSwapFromMetadata } from './actions/swap';
 import { createNewAction, createNewRap } from './common';
 import {
   RapAction,
@@ -58,9 +59,22 @@ export const estimateUnlockAndSwap = async (
       owner: accountAddress,
       amount: sellAmount,
       assetToUnlock: assetToSell,
-      spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
+      spender: getRainbowRouterContractAddress(chainId),
       chainId,
     });
+  }
+
+  if (swapAssetNeedsUnlocking) {
+    const gasLimitFromMetadata = await estimateUnlockAndSwapFromMetadata({
+      swapAssetNeedsUnlocking,
+      chainId,
+      accountAddress,
+      sellTokenAddress,
+      quote,
+    });
+    if (gasLimitFromMetadata) {
+      return gasLimitFromMetadata;
+    }
   }
 
   let unlockGasLimit;
@@ -69,7 +83,7 @@ export const estimateUnlockAndSwap = async (
     unlockGasLimit = await estimateApprove({
       owner: accountAddress,
       tokenAddress: sellTokenAddress,
-      spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
+      spender: getRainbowRouterContractAddress(chainId),
       chainId,
     });
     gasLimits = gasLimits.concat(unlockGasLimit);
@@ -122,7 +136,7 @@ export const createUnlockAndSwapRap = async (
       owner: accountAddress,
       amount: sellAmount as string,
       assetToUnlock: assetToSell,
-      spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
+      spender: getRainbowRouterContractAddress(chainId),
       chainId,
     });
   }
@@ -140,7 +154,7 @@ export const createUnlockAndSwapRap = async (
       amount: sellAmount,
       assetToUnlock: assetToSell,
       chainId,
-      contractAddress: RAINBOW_ROUTER_CONTRACT_ADDRESS,
+      contractAddress: getRainbowRouterContractAddress(chainId),
     } as RapUnlockActionParameters);
     actions = actions.concat(unlock);
   }

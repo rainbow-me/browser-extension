@@ -5,14 +5,13 @@ import { createQueryKey } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
 import { connectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import {
+  AssetApiResponse,
   ParsedAssetsDictByChain,
   ParsedUserAsset,
-  ZerionAsset,
 } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
   fetchAssetBalanceViaProvider,
-  filterAsset,
   parseUserAsset,
 } from '~/core/utils/assets';
 import { greaterThan } from '~/core/utils/numbers';
@@ -51,7 +50,7 @@ export async function parseUserAssets({
   assets: {
     quantity: string;
     small_balance?: boolean;
-    asset: ZerionAsset;
+    asset: AssetApiResponse;
   }[];
   chainIds: ChainId[];
   currency: SupportedCurrencyKey;
@@ -61,7 +60,7 @@ export async function parseUserAssets({
     {},
   ) as ParsedAssetsDictByChain;
   for (const { asset, quantity, small_balance } of assets) {
-    if (!filterAsset(asset) && greaterThan(quantity, 0)) {
+    if (greaterThan(quantity, 0)) {
       const parsedAsset = parseUserAsset({
         asset,
         currency,

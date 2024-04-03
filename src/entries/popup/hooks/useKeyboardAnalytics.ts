@@ -68,6 +68,9 @@ export type KeyboardEventDescription =
   | 'tokens.goToBridge'
   | 'tokens.refresh'
   | 'tokens.viewAssetOnExplorer'
+  | 'tokenDetailsMenu.pin'
+  | 'tokenDetailsMenu.hide'
+  | 'tokenDetailsMenu.copyTokenAddress'
   | 'walletSwitcher.search';
 
 const analyticsTrack = <T extends keyof EventProperties>(
