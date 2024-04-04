@@ -9,6 +9,7 @@ import {
   Rows,
   Separator,
   Stack,
+  Symbol,
   Text,
 } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
@@ -210,18 +211,36 @@ export const ExplainerSheet = ({
                 height="44px"
                 variant={actionButton?.variant || 'raised'}
                 onClick={actionButton?.action}
-                symbol={actionButton?.symbol}
                 testId="explainer-action-button"
-                symbolSide={actionButton?.symbolSide || 'left'}
               >
-                <Text
-                  align="center"
-                  weight="bold"
-                  size="16pt"
-                  color={actionButton?.labelColor || 'accent'}
-                >
-                  {actionButton?.label}
-                </Text>
+                <Inline alignVertical="center" space="4px">
+                  {actionButton?.symbol &&
+                    actionButton.symbolSide != 'right' && (
+                      <Symbol
+                        color={actionButton.labelColor || 'accent'}
+                        size={14}
+                        symbol={actionButton.symbol}
+                        weight="bold"
+                      />
+                    )}
+                  <Text
+                    align="center"
+                    weight="bold"
+                    size="16pt"
+                    color={actionButton?.labelColor || 'accent'}
+                  >
+                    {actionButton?.label}
+                  </Text>
+                  {actionButton?.symbol &&
+                    actionButton.symbolSide == 'right' && (
+                      <Symbol
+                        color={actionButton.labelColor || 'accent'}
+                        size={14}
+                        symbol={actionButton.symbol}
+                        weight="bold"
+                      />
+                    )}
+                </Inline>
               </Button>
             </Row>
 
