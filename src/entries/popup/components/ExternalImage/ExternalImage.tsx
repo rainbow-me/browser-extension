@@ -7,6 +7,8 @@ import { SymbolName } from '~/design-system/styles/designTokens';
 
 import { maybeSignUri } from '../../handlers/imgix';
 
+const GOOGLE_USER_CONTENT_URL = 'https://lh3.googleusercontent.com/';
+
 type ExternalImageProps = JSX.IntrinsicAttributes &
   React.ClassAttributes<HTMLImageElement> &
   React.ImgHTMLAttributes<HTMLImageElement> & {
@@ -17,10 +19,14 @@ type ExternalImageProps = JSX.IntrinsicAttributes &
     mask?: string;
     resizeMode?: 'contain' | 'cover';
     placeholderSrc?: string;
+    avoidImgix?: boolean;
   };
 
 const ExternalImage = (props: ExternalImageProps) => {
   const signedUrl = React.useMemo(() => {
+    if (props.avoidImgix && props.src?.startsWith(GOOGLE_USER_CONTENT_URL)) {
+      return props.src;
+    }
     return maybeSignUri(props.src, {
       h: Number(props.height),
       w: Number(props.width),
@@ -28,6 +34,12 @@ const ExternalImage = (props: ExternalImageProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.src]);
   const signedPlaceholderUrl = React.useMemo(() => {
+    if (
+      props.avoidImgix &&
+      props.placeholderSrc?.startsWith(GOOGLE_USER_CONTENT_URL)
+    ) {
+      return props.placeholderSrc;
+    }
     return maybeSignUri(props.placeholderSrc, {
       h: Number(props.height),
       w: Number(props.width),
@@ -47,11 +59,16 @@ const ExternalImage = (props: ExternalImageProps) => {
   } = useImage({
     srcList: signedPlaceholderUrl || '',
     useSuspense: false,
+    imgPromise: async (img) => {
+      if (img) {
+        return img;
+      }
+      return undefined;
+    },
   });
 
-  const hasPlaceholder = !!props.placeholderSrc;
   const placeholderLoaded =
-    hasPlaceholder && !placeholderIsLoading && !placeholderError;
+    !!signedPlaceholderUrl && !placeholderIsLoading && !placeholderError;
 
   const renderContent = () => {
     if (isLoading && !placeholderLoaded) {

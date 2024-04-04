@@ -211,10 +211,18 @@ export const ExplainerSheet = ({
                 height="44px"
                 variant={actionButton?.variant || 'raised'}
                 onClick={actionButton?.action}
-                symbol={actionButton?.symbol}
                 testId="explainer-action-button"
               >
                 <Inline alignVertical="center" space="4px">
+                  {actionButton?.symbol &&
+                    actionButton.symbolSide != 'right' && (
+                      <Symbol
+                        color={actionButton.labelColor || 'accent'}
+                        size={14}
+                        symbol={actionButton.symbol}
+                        weight="bold"
+                      />
+                    )}
                   <Text
                     align="center"
                     weight="bold"
@@ -223,14 +231,15 @@ export const ExplainerSheet = ({
                   >
                     {actionButton?.label}
                   </Text>
-                  {actionButton?.symbol && (
-                    <Symbol
-                      color={actionButton?.labelColor || 'accent'}
-                      size={14}
-                      symbol={actionButton.symbol}
-                      weight="bold"
-                    />
-                  )}
+                  {actionButton?.symbol &&
+                    actionButton.symbolSide == 'right' && (
+                      <Symbol
+                        color={actionButton.labelColor || 'accent'}
+                        size={14}
+                        symbol={actionButton.symbol}
+                        weight="bold"
+                      />
+                    )}
                 </Inline>
               </Button>
             </Row>

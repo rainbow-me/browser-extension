@@ -115,7 +115,7 @@ export function useBackendTransaction({
   };
 
   return useQuery({
-    queryKey: createQueryKey('transactison', params),
+    queryKey: createQueryKey('transaction', params),
     queryFn: () =>
       fetchTransaction({
         hash: params.hash,

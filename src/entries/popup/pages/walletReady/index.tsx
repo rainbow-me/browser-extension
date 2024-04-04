@@ -30,17 +30,20 @@ const PinToToolbar = () => {
       position="fixed"
       borderRadius="16px"
       style={{
-        ...(!isArc && {
-          borderTopLeftRadius: 0,
-          borderTopRightRadius: 0,
-          right: isBrave ? '144px' : '104px',
-        }),
+        ...(isArc
+          ? { top: '8px', left: '8px' }
+          : {
+              borderTopLeftRadius: 0,
+              borderTopRightRadius: 0,
+              right: isBrave ? '144px' : '104px',
+              top: '0',
+            }),
         maxWidth: '152px',
-        top: isArc ? '95px' : '0',
       }}
       paddingHorizontal="12px"
       paddingVertical="16px"
       display="flex"
+      flexDirection={isArc ? 'row-reverse' : 'row'}
       gap="12px"
       background="surfacePrimaryElevated"
       borderColor="buttonStrokeSecondary"
@@ -50,7 +53,7 @@ const PinToToolbar = () => {
         {i18n.t('wallet_ready.pin_rainbow_to_your_toolbar')}
       </Text>
       <Symbol
-        symbol={isArc ? 'arrow.right' : 'arrow.up'}
+        symbol={isArc ? 'arrow.left' : 'arrow.up'}
         color="purple"
         size={14}
         weight="bold"
