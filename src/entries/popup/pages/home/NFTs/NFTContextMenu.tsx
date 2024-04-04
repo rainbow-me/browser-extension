@@ -88,8 +88,11 @@ export default function NFTContextMenu({
   );
 
   const handleSendNft = useCallback(() => {
+    if (nft) {
+      setSelectedNft(nft);
+    }
     navigate(ROUTES.SEND);
-  }, [navigate]);
+  }, [nft, navigate, setSelectedNft]);
 
   const handleReportNft = useCallback(() => {
     if (nftToFocus) {
