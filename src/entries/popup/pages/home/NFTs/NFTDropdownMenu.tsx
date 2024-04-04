@@ -44,11 +44,12 @@ export default function NFTDropdownMenu({
   nft?: UniqueAsset | null;
 }) {
   const { currentAddress: address } = useCurrentAddressStore();
-  const { hidden, toggleHideNFT, hideNFT } = useNftsStore();
+  const { hidden, toggleHideNFT } = useNftsStore();
+  const nftUniqueId = nft?.uniqueId || '';
   const { setSelectedNft } = useSelectedNftStore();
   const navigate = useRainbowNavigate();
   const hiddenNftsForAddress = hidden[address] || {};
-  const displayed = !hiddenNftsForAddress[nft?.uniqueId || ''];
+  const displayed = !hiddenNftsForAddress[nftUniqueId];
   const hasContractAddress = !!nft?.asset_contract.address;
   const hasNetwork = !!nft?.network;
 
@@ -89,10 +90,10 @@ export default function NFTDropdownMenu({
   const handleReportNft = useCallback(() => {
     if (nft) {
       reportNftAsSpam(nft);
-      hideNFT(address, nft?.uniqueId || '');
+      toggleHideNFT(address, nftUniqueId);
       triggerToast({ title: i18n.t('nfts.toast.spam_reported') });
     }
-  }, [nft, address, hideNFT]);
+  }, [nft, nftUniqueId, address, toggleHideNFT]);
 
   const onValueChange = (
     value:
@@ -118,7 +119,7 @@ export default function NFTDropdownMenu({
         downloadLink.current?.click();
         break;
       case 'hide':
-        toggleHideNFT(address, nft?.uniqueId || '');
+        toggleHideNFT(address, nftUniqueId);
         break;
       case 'send':
         handleSendNft();
