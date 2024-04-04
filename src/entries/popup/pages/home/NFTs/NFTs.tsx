@@ -13,6 +13,7 @@ import { getNftCount } from '~/core/resources/nfts/nfts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useNftsStore } from '~/core/state/nfts';
+import { useSelectedNftStore } from '~/core/state/selectedNft';
 import { UniqueAsset } from '~/core/types/nfts';
 import { chunkArray } from '~/core/utils/assets';
 import { getUniqueAssetImageThumbnailURL } from '~/core/utils/nfts';
@@ -66,6 +67,7 @@ export function NFTs() {
   const sortedSections = selectSortedNftCollections(sort, data);
   const navigate = useRainbowNavigate();
   const containerRef = useContainerRef();
+  const { selectedNft } = useSelectedNftStore();
   const groupedAssets = sortedSections
     .map((section) => section.assets)
     .flat()
@@ -160,14 +162,19 @@ export function NFTs() {
     );
   };
 
-  useKeyboardShortcut({
-    handler: async (e: KeyboardEvent) => {
-      if (e.key === shortcuts.nfts.REFRESH_NFTS.key) {
+  const handleShortcuts = useCallback(
+    async (e: KeyboardEvent) => {
+      if (e.key === shortcuts.nfts.REFRESH_NFTS.key && !selectedNft) {
         setManuallyRefetching(true);
         await refetch();
         setManuallyRefetching(false);
       }
     },
+    [refetch, selectedNft],
+  );
+
+  useKeyboardShortcut({
+    handler: handleShortcuts,
   });
 
   useEffect(() => {
@@ -201,7 +208,7 @@ export function NFTs() {
     nftCount,
   ]);
 
-  useNftShortcuts({ simulateMouseClickRef: containerRef });
+  useNftShortcuts();
 
   if (!isLoading && sortedSections.length === 0) {
     return <NFTEmptyState />;

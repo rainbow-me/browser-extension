@@ -37,7 +37,7 @@ export default function NFTContextMenu({
   offsetOverride?: boolean;
 }) {
   const { currentAddress: address } = useCurrentAddressStore();
-  const { hidden, toggleHideNFT, hideNFT } = useNftsStore();
+  const { hidden, toggleHideNFT } = useNftsStore();
   const { selectedNft, setSelectedNft } = useSelectedNftStore();
   const navigate = useRainbowNavigate();
   const hiddenNftsForAddress = hidden[address] || {};
@@ -45,6 +45,7 @@ export default function NFTContextMenu({
   const hasContractAddress = !!nftToFocus?.asset_contract.address;
   const hasNetwork = !!nftToFocus?.network;
   const displayed = !hiddenNftsForAddress[nftToFocus?.uniqueId || ''];
+  const nftUniqueId = nftToFocus?.uniqueId || '';
 
   const explorerTitle =
     nftToFocus?.network === 'mainnet'
@@ -76,24 +77,27 @@ export default function NFTContextMenu({
 
   const handleOpenChange = useCallback(
     (isOpen: boolean) => {
-      if (isOpen && nft) {
-        setSelectedNft(nft);
+      if (nft) {
+        setSelectedNft(isOpen ? nft : undefined);
       }
     },
     [nft, setSelectedNft],
   );
 
   const handleSendNft = useCallback(() => {
+    if (nft) {
+      setSelectedNft(nft);
+    }
     navigate(ROUTES.SEND);
-  }, [navigate]);
+  }, [nft, navigate, setSelectedNft]);
 
   const handleReportNft = useCallback(() => {
     if (nftToFocus) {
       reportNftAsSpam(nftToFocus);
-      hideNFT(address, nftToFocus?.uniqueId || '');
+      toggleHideNFT(address, nftUniqueId);
       triggerToast({ title: i18n.t('nfts.toast.spam_reported') });
     }
-  }, [nftToFocus, address, hideNFT]);
+  }, [nftToFocus, address, nftUniqueId, toggleHideNFT]);
 
   return (
     <DetailsMenuWrapper closed={true} onOpenChange={handleOpenChange}>
@@ -119,9 +123,7 @@ export default function NFTContextMenu({
             </ContextMenuItem>
             <ContextMenuItem
               symbolLeft={displayed ? 'eye.slash.fill' : 'eye.fill'}
-              onSelect={() =>
-                toggleHideNFT(address, nftToFocus?.uniqueId || '')
-              }
+              onSelect={() => toggleHideNFT(address, nftUniqueId)}
               shortcut={shortcuts.nfts.HIDE_NFT.display}
             >
               <Text size="14pt" weight="semibold">

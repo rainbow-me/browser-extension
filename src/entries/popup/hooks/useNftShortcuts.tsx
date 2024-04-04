@@ -1,4 +1,4 @@
-import { RefObject, useCallback, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 
 import { i18n } from '~/core/languages';
 import { reportNftAsSpam } from '~/core/network/nfts';
@@ -7,6 +7,7 @@ import { useCurrentAddressStore } from '~/core/state';
 import { useNftsStore } from '~/core/state/nfts';
 import { useSelectedNftStore } from '~/core/state/selectedNft';
 import { UniqueAsset } from '~/core/types/nfts';
+import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 
 import { triggerToast } from '../components/Toast/Toast';
 import { ROUTES } from '../urls';
@@ -16,23 +17,17 @@ import useKeyboardAnalytics from './useKeyboardAnalytics';
 import { useKeyboardShortcut } from './useKeyboardShortcut';
 import { useRainbowNavigate } from './useRainbowNavigate';
 
-interface UseNftShorcutsProps {
-  nft?: UniqueAsset | null;
-  simulateMouseClickRef: RefObject<HTMLDivElement>;
-}
-
-export function useNftShortcuts({
-  nft,
-  simulateMouseClickRef,
-}: UseNftShorcutsProps) {
+export function useNftShortcuts(nft?: UniqueAsset | null) {
   const { currentAddress: address } = useCurrentAddressStore();
+  const containerRef = useContainerRef();
   const { selectedNft, setSelectedNft } = useSelectedNftStore();
   const { trackShortcut } = useKeyboardAnalytics();
-  const { toggleHideNFT, hideNFT } = useNftsStore();
+  const { toggleHideNFT } = useNftsStore();
   const navigate = useRainbowNavigate();
   const nftToFocus = nft ?? selectedNft;
   const getNftIsSelected = useCallback(() => !!nftToFocus, [nftToFocus]);
   const downloadLink = useRef<HTMLAnchorElement>(null);
+  const nftUniqueId = nftToFocus?.uniqueId || '';
 
   const handleCopyId = useCallback(() => {
     if (nftToFocus) {
@@ -54,26 +49,28 @@ export function useNftShortcuts({
   }, [nftToFocus?.image_url]);
 
   const handleHideNft = useCallback(() => {
-    toggleHideNFT(address, nftToFocus?.uniqueId || '');
-  }, [address, nftToFocus?.uniqueId, toggleHideNFT]);
+    toggleHideNFT(address, nftUniqueId);
+  }, [address, nftUniqueId, toggleHideNFT]);
 
   const handleSendNft = useCallback(() => {
-    if (nft) {
-      setSelectedNft(nft);
+    if (nftToFocus) {
+      setSelectedNft(nftToFocus);
       navigate(ROUTES.SEND, { replace: true });
     }
-  }, [navigate, nft, setSelectedNft]);
+  }, [nftToFocus, navigate, setSelectedNft]);
 
   const handleReportNft = useCallback(() => {
     if (nftToFocus) {
       reportNftAsSpam(nftToFocus);
-      hideNFT(address, nftToFocus.uniqueId);
+      toggleHideNFT(address, nftUniqueId);
       triggerToast({ title: i18n.t('nfts.toast.spam_reported') });
     }
-  }, [nftToFocus, address, hideNFT]);
+  }, [nftToFocus, address, nftUniqueId, toggleHideNFT]);
 
   const handleNftShortcuts = useCallback(
     (e: KeyboardEvent) => {
+      simulateClick(containerRef.current);
+
       if (e.key === shortcuts.nfts.DOWNLOAD_NFT.key) {
         handleDownload();
         trackShortcut({
@@ -111,23 +108,17 @@ export function useNftShortcuts({
       }
     },
     [
-      handleCopyId,
+      containerRef,
       handleDownload,
+      trackShortcut,
+      handleCopyId,
       handleHideNft,
       handleSendNft,
       handleReportNft,
-      trackShortcut,
     ],
   );
   useKeyboardShortcut({
     condition: getNftIsSelected,
-    handler: (e) => {
-      handleNftShortcuts(e);
-      // Prevent Radix UI dropdown menu to be opened when listening to
-      // a shortcut by adding 'pointerdown' mouse event to a div ref
-      if (simulateMouseClickRef?.current) {
-        simulateClick(simulateMouseClickRef.current);
-      }
-    },
+    handler: handleNftShortcuts,
   });
 }
