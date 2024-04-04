@@ -59,11 +59,16 @@ const ExternalImage = (props: ExternalImageProps) => {
   } = useImage({
     srcList: signedPlaceholderUrl || '',
     useSuspense: false,
+    imgPromise: async (img) => {
+      if (img) {
+        return img;
+      }
+      return undefined;
+    },
   });
 
-  const hasPlaceholder = !!props.placeholderSrc;
   const placeholderLoaded =
-    hasPlaceholder && !placeholderIsLoading && !placeholderError;
+    !!signedPlaceholderUrl && !placeholderIsLoading && !placeholderError;
 
   const renderContent = () => {
     if (isLoading && !placeholderLoaded) {
