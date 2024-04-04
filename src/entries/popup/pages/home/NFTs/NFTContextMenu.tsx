@@ -50,6 +50,8 @@ export default function NFTContextMenu({
   const displayed = !hiddenNftsForAddress[nftToFocus?.uniqueId || ''];
   const nftUniqueId = nftToFocus?.uniqueId || '';
 
+  const navigatingRef = useRef(false);
+
   const explorerTitle =
     nftToFocus?.network === 'mainnet'
       ? 'Etherscan'
@@ -78,17 +80,15 @@ export default function NFTContextMenu({
     });
   }, [nftToFocus?.id]);
 
-  const handleOpenChange = useCallback(
-    (isOpen: boolean) => {
-      if (nft) {
-        setSelectedNft(isOpen ? nft : undefined);
-      }
-    },
-    [nft, setSelectedNft],
-  );
+  const handleOpenChange = (isOpen: boolean) => {
+    if (nft) {
+      setSelectedNft(isOpen || navigatingRef.current ? nft : undefined);
+    }
+  };
 
   const handleSendNft = useCallback(() => {
     if (nft) {
+      navigatingRef.current = true;
       setSelectedNft(nft);
     }
     navigate(ROUTES.SEND);
