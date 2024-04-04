@@ -14,6 +14,7 @@ import {
 } from '~/core/utils/chains';
 import { goToNewTab } from '~/core/utils/tabs';
 import { Box, Stack, Text, TextOverflow } from '~/design-system';
+import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import {
   ContextMenuContent,
   ContextMenuItem,
@@ -24,6 +25,7 @@ import { DetailsMenuWrapper } from '~/entries/popup/components/DetailsMenu';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
+import { simulateClick } from '~/entries/popup/utils/simulateClick';
 
 import { getOpenseaUrl } from './utils';
 
@@ -38,6 +40,7 @@ export default function NFTContextMenu({
 }) {
   const { currentAddress: address } = useCurrentAddressStore();
   const { hidden, toggleHideNFT } = useNftsStore();
+  const containerRef = useContainerRef();
   const { selectedNft, setSelectedNft } = useSelectedNftStore();
   const navigate = useRainbowNavigate();
   const hiddenNftsForAddress = hidden[address] || {};
@@ -93,11 +96,12 @@ export default function NFTContextMenu({
 
   const handleReportNft = useCallback(() => {
     if (nftToFocus) {
+      simulateClick(containerRef.current);
       reportNftAsSpam(nftToFocus);
       toggleHideNFT(address, nftUniqueId);
       triggerToast({ title: i18n.t('nfts.toast.spam_reported') });
     }
-  }, [nftToFocus, address, nftUniqueId, toggleHideNFT]);
+  }, [containerRef, nftToFocus, address, nftUniqueId, toggleHideNFT]);
 
   return (
     <DetailsMenuWrapper closed={true} onOpenChange={handleOpenChange}>
@@ -123,7 +127,10 @@ export default function NFTContextMenu({
             </ContextMenuItem>
             <ContextMenuItem
               symbolLeft={displayed ? 'eye.slash.fill' : 'eye.fill'}
-              onSelect={() => toggleHideNFT(address, nftUniqueId)}
+              onSelect={() => {
+                simulateClick(containerRef.current);
+                toggleHideNFT(address, nftUniqueId);
+              }}
               shortcut={shortcuts.nfts.HIDE_NFT.display}
             >
               <Text size="14pt" weight="semibold">
