@@ -83,7 +83,8 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({ driver, key: 'TAB', timesToPress: 2 });
       await executePerformShortcut({ driver, key: 'ENTER' });
       await checkExtensionURL(driver, 'wallet-switcher');
-      await executePerformShortcut({ driver, key: 'ESCAPE' });
+      await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
+      await delayTime('very-long');
     });
 
     it('navigate to wallet switcher with shortcut', async () => {
