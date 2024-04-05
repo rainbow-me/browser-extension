@@ -9,7 +9,6 @@ import { flushQueuedEvents } from '~/analytics/flushQueuedEvents';
 // !!!! DO NOT REMOVE THE NEXT 2 LINES BELOW !!!!
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import config from '~/core/firebase/remoteConfig';
-import { useRemoteConfig } from '~/core/firebase/useRemoteConfig';
 import { initializeMessenger } from '~/core/messengers';
 import { persistOptions, queryClient } from '~/core/react-query';
 import { initializeSentry, setSentryUser } from '~/core/sentry';
@@ -39,17 +38,16 @@ export function App() {
   const { deviceId } = useDeviceIdStore();
   const { rainbowChains } = useRainbowChains();
   const prevChains = usePrevious(rainbowChains);
-  const { remoteConfig } = useRemoteConfig();
 
   useExpiryListener();
 
   React.useEffect(() => {
     if (!isEqual(prevChains, rainbowChains)) {
       backgroundMessenger.send('rainbow_updateWagmiClient', {
-        rpcProxyEnabled: remoteConfig.rpc_proxy_enabled,
+        rpcProxyEnabled: config.rpc_proxy_enabled,
       });
     }
-  }, [prevChains, rainbowChains, remoteConfig.rpc_proxy_enabled]);
+  }, [prevChains, rainbowChains]);
 
   const wagmiClient = React.useMemo(
     () =>
@@ -66,10 +64,10 @@ export function App() {
   React.useEffect(() => {
     if (!isEqual(prevChains, rainbowChains)) {
       backgroundMessenger.send('rainbow_updateWagmiClient', {
-        rpcProxyEnabled: remoteConfig.rpc_proxy_enabled,
+        rpcProxyEnabled: config.rpc_proxy_enabled,
       });
     }
-  }, [prevChains, rainbowChains, remoteConfig.rpc_proxy_enabled]);
+  }, [prevChains, rainbowChains]);
 
   React.useEffect(() => {
     // Disable analytics & sentry for e2e and dev mode
