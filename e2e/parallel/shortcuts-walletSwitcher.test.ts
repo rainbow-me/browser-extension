@@ -6,7 +6,6 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import {
   checkExtensionURL,
   checkWalletName,
-  delayTime,
   executePerformShortcut,
   findElementById,
   findElementByTestId,
@@ -96,7 +95,6 @@ describe.runIf(browser !== 'firefox')(
 
     it('select search bar with keyboard', async () => {
       await executePerformShortcut({ driver, key: 'TAB', timesToPress: 2 });
-      await delayTime('long');
       const placeholder = await returnAttributesOfActiveElement(
         driver,
         'placeholder',
