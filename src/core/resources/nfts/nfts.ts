@@ -72,7 +72,7 @@ async function nftsQueryFunction({
     })
     .map((chain) => chain.id);
   const simplehashChainNames = !testnetMode
-    ? getSimpleHashSupportedChainNames().concat('gnosis' as ChainName)
+    ? getSimpleHashSupportedChainNames()
     : getSimpleHashSupportedTestnetChainNames();
   const chains = simplehashChainNames.filter((simplehashChainName) => {
     const id = chainNameToIdMapping[simplehashChainName];
