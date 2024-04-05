@@ -18,6 +18,7 @@ import { ChainId, ChainName } from '~/core/types/chains';
 
 import { requestMetadata } from '../graphql';
 import { i18n } from '../languages';
+import { AddysPositionAsset } from '../resources/positions';
 import { SearchAsset } from '../types/search';
 
 import {
@@ -183,7 +184,7 @@ export function parseUserAsset({
   balance,
   smallBalance,
 }: {
-  asset: AssetApiResponse;
+  asset: AssetApiResponse | AddysPositionAsset;
   currency: SupportedCurrencyKey;
   balance: string;
   smallBalance?: boolean;
