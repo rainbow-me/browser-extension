@@ -68,7 +68,7 @@
     "notifications"
   ],
   "short_name": "Rainbow",
-  "version": "1.4.47",
+  "version": "1.4.49",
   "web_accessible_resources": [
     {
       "matches": [
