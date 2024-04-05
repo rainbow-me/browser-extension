@@ -107,10 +107,6 @@ async function positionsQueryFunction({
   queryKey: [{ address, currency, testnetMode }],
 }: QueryFunctionArgs<typeof positionsQueryKey>) {
   if (!address) return {} as ParsedPositionsByChain;
-  const cache = queryClient.getQueryCache();
-  const cachedPositions = (cache.find(
-    positionsQueryKey({ address, currency, testnetMode }),
-  )?.state.data || {}) as ParsedPositionsByChain;
   try {
     const supportedChainIds = getBackendSupportedChains({ testnetMode }).map(
       ({ id }) => id,
@@ -141,7 +137,6 @@ async function positionsQueryFunction({
     logger.error(new RainbowError('positionsQueryFunction: '), {
       message: (e as Error)?.message,
     });
-    return cachedPositions;
   }
 }
 
