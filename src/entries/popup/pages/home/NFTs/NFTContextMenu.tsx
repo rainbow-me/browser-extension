@@ -51,6 +51,9 @@ export default function NFTContextMenu({
       ? 'Etherscan'
       : i18n.t('nfts.details.explorer');
   const getBlockExplorerUrl = () => {
+    if (nftToFocus?.poapDropId) {
+      return `https://collectors.poap.xyz/drop/${nftToFocus.poapDropId}`;
+    }
     if (nftToFocus?.network === 'mainnet') {
       return `https://${getBlockExplorerHostForChain(
         chainIdFromChainName(nftToFocus?.network as ChainName),
@@ -185,7 +188,9 @@ export default function NFTContextMenu({
               onSelect={() => goToNewTab({ url: getBlockExplorerUrl() })}
             >
               <Text size="14pt" weight="semibold">
-                {i18n.t('nfts.details.view_on_explorer', { explorerTitle })}
+                {nftToFocus?.poapDropId
+                  ? i18n.t('nfts.details.view_gallery')
+                  : i18n.t('nfts.details.view_on_explorer', { explorerTitle })}
               </Text>
             </ContextMenuItem>
           </Stack>

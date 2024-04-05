@@ -72,11 +72,11 @@ async function nftsQueryFunction({
     })
     .map((chain) => chain.id);
   const simplehashChainNames = !testnetMode
-    ? getSimpleHashSupportedChainNames()
+    ? getSimpleHashSupportedChainNames().concat('gnosis' as ChainName)
     : getSimpleHashSupportedTestnetChainNames();
   const chains = simplehashChainNames.filter((simplehashChainName) => {
     const id = chainNameToIdMapping[simplehashChainName];
-    return activeChainIds.includes(id);
+    return activeChainIds.includes(id) || simplehashChainName === 'gnosis';
   }) as ChainName[];
   const polygonAllowList = await polygonAllowListFetcher();
   const acquisitionMap: Record<string, string> = {};

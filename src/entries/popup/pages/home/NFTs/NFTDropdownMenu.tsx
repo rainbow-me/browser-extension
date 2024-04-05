@@ -56,6 +56,10 @@ export default function NFTDropdownMenu({
     nft?.network === 'mainnet' ? 'Etherscan' : i18n.t('nfts.details.explorer');
 
   const getBlockExplorerUrl = () => {
+    if (nft?.poapDropId) {
+      return `https://collectors.poap.xyz/drop/${nft.poapDropId}`;
+    }
+
     if (nft?.network === 'mainnet') {
       return `https://${getBlockExplorerHostForChain(
         chainIdFromChainName(nft?.network as ChainName),
@@ -310,9 +314,11 @@ export default function NFTDropdownMenu({
                   centerComponent={
                     <Box paddingVertical="6px">
                       <Text size="14pt" weight="semibold">
-                        {i18n.t('nfts.details.view_on_explorer', {
-                          explorerTitle,
-                        })}
+                        {nft?.poapDropId
+                          ? i18n.t('nfts.details.view_gallery')
+                          : i18n.t('nfts.details.view_on_explorer', {
+                              explorerTitle,
+                            })}
                       </Text>
                     </Box>
                   }
