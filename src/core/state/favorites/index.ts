@@ -42,6 +42,7 @@ import {
 } from '~/core/references';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { migrate } from '~/core/utils/migrate';
 
 import { createStore } from '../internal/createStore';
 
@@ -149,23 +150,16 @@ export const favoritesStore = createStore<FavoritesState>(
     persist: {
       name: 'favorites',
       version: 3,
-      migrate(persistedState, version) {
-        const state = persistedState as FavoritesState;
-        if (version === 1) {
-          // version 2 added support for Avalanche
-          const version2State = mergeNewOfficiallySupportedChainsState(state, [
-            ChainId.avalanche,
-          ]);
-          // version 3 added support for Blast
-          return mergeNewOfficiallySupportedChainsState(version2State, [
-            ChainId.blast,
-          ]);
-        } else if (version === 2) {
-          // version 3 added support for Blast
-          return mergeNewOfficiallySupportedChainsState(state, [ChainId.blast]);
-        }
-        return state;
-      },
+      migrate: migrate(
+        // version 1 didn't need a migration
+        (state: FavoritesState) => state,
+        // version 2 added avalanche
+        (state) =>
+          mergeNewOfficiallySupportedChainsState(state, [ChainId.avalanche]),
+        // version 3 added blast
+        (state) =>
+          mergeNewOfficiallySupportedChainsState(state, [ChainId.blast]),
+      ),
     },
   },
 );
