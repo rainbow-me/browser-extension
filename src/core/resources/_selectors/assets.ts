@@ -104,10 +104,15 @@ export function selectUserAssetWithUniqueId(uniqueId: UniqueId) {
   };
 }
 
-export function selectUserAssetsBalance(assets: ParsedAssetsDictByChain) {
+export function selectUserAssetsBalance(
+  assets: ParsedAssetsDictByChain,
+  hidden: (asset: ParsedUserAsset) => boolean,
+) {
   const networksTotalBalance = Object.values(assets).map((assetsOnject) => {
     const assetsNetwork = Object.values(assetsOnject);
+
     const networkBalance = assetsNetwork
+      .filter((asset) => !hidden(asset))
       .map((asset) => asset.native.balance.amount)
       .reduce((prevBalance, currBalance) => add(prevBalance, currBalance), '0');
     return networkBalance;

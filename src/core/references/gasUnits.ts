@@ -13,6 +13,7 @@ export const gasUnits = {
     [ChainId.bsc]: '600000',
     [ChainId.polygon]: '600000',
     [ChainId.avalanche]: '600000',
+    [ChainId.blast]: '600000',
   },
   basic_swap_permit: '400000',
   ens_register_with_config: '280000',
