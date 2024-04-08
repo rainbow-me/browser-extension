@@ -164,7 +164,6 @@ export const getSupportedTestnetChains = () => {
 export const getSimpleHashSupportedChainNames = () => {
   return [
     'ethereum',
-    ChainName.polygon,
     ChainName.arbitrum,
     ChainName.arbitrumNova,
     ChainName.avalanche,
@@ -176,6 +175,7 @@ export const getSimpleHashSupportedChainNames = () => {
     ChainName.linea,
     ChainName.manta,
     ChainName.optimism,
+    ChainName.polygon,
     ChainName.polygonZkEvm,
     ChainName.rari,
     ChainName.scroll,
