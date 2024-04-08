@@ -30,26 +30,26 @@ import {
 } from './chains';
 
 export const chainIdMap: Record<
+  | ChainId.arbitrum
+  | ChainId.avalanche
+  | ChainId.base
+  | ChainId.blast
+  | ChainId.bsc
   | ChainId.mainnet
   | ChainId.optimism
-  | ChainId.arbitrum
   | ChainId.polygon
-  | ChainId.base
-  | ChainId.bsc
-  | ChainId.zora
-  | ChainId.avalanche
-  | ChainId.blast,
+  | ChainId.zora,
   ChainId[]
 > = {
+  [ChainId.arbitrum]: [arbitrum.id, arbitrumSepolia.id],
+  [ChainId.avalanche]: [avalanche.id, avalancheFuji.id],
+  [ChainId.base]: [base.id, baseSepolia.id],
+  [ChainId.blast]: [chainBlast.id, chainBlastSepolia.id],
+  [ChainId.bsc]: [bsc.id, bscTestnet.id],
   [ChainId.mainnet]: [mainnet.id, sepolia.id, holesky.id],
   [ChainId.optimism]: [optimism.id, optimismSepolia.id],
-  [ChainId.arbitrum]: [arbitrum.id, arbitrumSepolia.id],
   [ChainId.polygon]: [polygon.id, chainPolygonAmoy.id],
-  [ChainId.base]: [base.id, baseSepolia.id],
-  [ChainId.bsc]: [bsc.id, bscTestnet.id],
   [ChainId.zora]: [zora.id, zoraSepolia.id],
-  [ChainId.avalanche]: [avalanche.id, avalancheFuji.id],
-  [ChainId.blast]: [chainBlast.id, chainBlastSepolia.id],
 };
 
 export const chainLabelMap: Record<
