@@ -43,51 +43,51 @@ export function getNetworkFromSimpleHashChain(
   chain: SimpleHashChain,
 ): ChainName {
   switch (chain) {
-    case SimpleHashChain.Ethereum:
-    case SimpleHashChain.Gnosis:
-      return ChainName.mainnet;
-    case SimpleHashChain.Polygon:
-      return ChainName.polygon;
     case SimpleHashChain.Arbitrum:
       return ChainName.arbitrum;
-    case SimpleHashChain.Optimism:
-      return ChainName.optimism;
-    case SimpleHashChain.Bsc:
-      return ChainName.bsc;
-    case SimpleHashChain.Zora:
-      return ChainName.zora;
-    case SimpleHashChain.Base:
-      return ChainName.base;
-    case SimpleHashChain.Avalanche:
-      return ChainName.avalanche;
     case SimpleHashChain.ArbitrumNova:
       return ChainName.arbitrumNova;
-    case SimpleHashChain.Celo:
-      return ChainName.celo;
-    case SimpleHashChain.Linea:
-      return ChainName.linea;
-    case SimpleHashChain.Manta:
-      return ChainName.manta;
-    case SimpleHashChain.PolygonZkEVM:
-      return ChainName.polygonZkEvm;
-    case SimpleHashChain.Rari:
-      return ChainName.rari;
-    case SimpleHashChain.Scroll:
-      return ChainName.scroll;
     case SimpleHashChain.ArbitrumSepolia:
       return ChainName.arbitrumSepolia;
+    case SimpleHashChain.Avalanche:
+      return ChainName.avalanche;
+    case SimpleHashChain.Base:
+      return ChainName.base;
     case SimpleHashChain.BaseSepolia:
       return ChainName.baseSepolia;
-    case SimpleHashChain.OptimismSepolia:
-      return ChainName.optimismSepolia;
-    case SimpleHashChain.ZoraSepolia:
-      return ChainName.zoraSepolia;
     case SimpleHashChain.Blast:
       return ChainName.blast;
     case SimpleHashChain.BlastSepolia:
       return ChainName.blastSepolia;
+    case SimpleHashChain.Bsc:
+      return ChainName.bsc;
+    case SimpleHashChain.Celo:
+      return ChainName.celo;
+    case SimpleHashChain.Ethereum:
+    case SimpleHashChain.Gnosis:
+      return ChainName.mainnet;
+    case SimpleHashChain.Linea:
+      return ChainName.linea;
+    case SimpleHashChain.Manta:
+      return ChainName.manta;
+    case SimpleHashChain.Rari:
+      return ChainName.rari;
+    case SimpleHashChain.Scroll:
+      return ChainName.scroll;
+    case SimpleHashChain.Optimism:
+      return ChainName.optimism;
+    case SimpleHashChain.OptimismSepolia:
+      return ChainName.optimismSepolia;
+    case SimpleHashChain.Polygon:
+      return ChainName.polygon;
     case SimpleHashChain.PolygonAmoy:
       return ChainName.polygonAmoy;
+    case SimpleHashChain.PolygonZkEVM:
+      return ChainName.polygonZkEvm;
+    case SimpleHashChain.Zora:
+      return ChainName.zora;
+    case SimpleHashChain.ZoraSepolia:
+      return ChainName.zoraSepolia;
     default:
       /*
        * Throws here because according to TS types, we should NEVER hit this
