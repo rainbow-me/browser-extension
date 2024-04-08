@@ -232,16 +232,16 @@ export const SUPPORTED_CHAINS: Chain[] = [
   bsc,
   avalanche,
   chainBlast,
-  sepolia,
-  holesky,
-  chainPolygonAmoy,
-  optimismSepolia,
   arbitrumSepolia,
-  baseSepolia,
-  zoraSepolia,
-  bscTestnet,
   avalancheFuji,
+  baseSepolia,
   chainBlastSepolia,
+  bscTestnet,
+  holesky,
+  optimismSepolia,
+  chainPolygonAmoy,
+  sepolia,
+  zoraSepolia,
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
 export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map((chain) => chain.id);
