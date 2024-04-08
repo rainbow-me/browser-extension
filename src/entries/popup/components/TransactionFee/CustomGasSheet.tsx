@@ -221,9 +221,7 @@ export const CustomGasSheet = ({
 
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
-      if (
-        [shortcuts.global.BACK.key, shortcuts.global.CLOSE.key].includes(e.key)
-      ) {
+      if ([shortcuts.global.CLOSE.key].includes(e.key)) {
         e.preventDefault();
         e.stopPropagation();
         closeCustomGasSheet();
