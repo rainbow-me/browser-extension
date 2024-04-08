@@ -21,6 +21,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.4.50](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.50)
+
+### Fixed
+
+- Resolved an issue where network requests for Custom RPCs and Custom Networks were failing #1465
+
+### Internal
+
+- Bumped `@rainbow-me/swaps` for future DEGEN chain Swap and Bridge support #1462
+- Added DeFi Positions networking requests and data handlers #1439
+
+### Testing
+
+- Adopted Telos Tesnet for e2e Custom Networks tests because the Polygon zkEVM Testnet was unresponsive #1463
+
 ## [v1.4.41](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.41)
 
 ### Added
