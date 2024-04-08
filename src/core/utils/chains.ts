@@ -180,7 +180,7 @@ export const getSimpleHashSupportedChainNames = () => {
     ChainName.rari,
     ChainName.scroll,
     ChainName.zora,
-  ] as (ChainName | 'ethereum' | 'ethereum-sepolia')[];
+  ] as (ChainName | 'ethereum')[];
 };
 
 export const getSimpleHashSupportedTestnetChainNames = () => {
