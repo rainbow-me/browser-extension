@@ -40,7 +40,7 @@ export const BackupReminder = () => {
       zIndex={zIndexes.APP_CONNECTION_WALLET_SWITCHER}
       onClickOutside={closeBackupReminder}
     >
-      <Box id="wallet-backup-reminder-sheet" isModal>
+      <Box id="wallet-backup-reminder-sheet" isExplainerSheet>
         <Navbar
           leftComponent={
             <Navbar.CloseButton
