@@ -21,6 +21,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.4.54](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.54)
+
+### Fixed
+
+- Fixed an issue with balance estimation during Sends on Polygon and BSC #1472
+- Now showing the right transaction explorer in the right-click menu on Activity #1419
+- Fixed an issue that hid failed transactions from the Activity list #1419
+- Resolved transaction display settlement issues after performing a Swap, to prevent incorrect transaction types from being displayed #1419
+- Improved currency display values in Activity Details for each transaction #1419
+- Resolved cell highlight rounding issues on the Settings menu when navigating with your keyboard #1464
+- Resolved missing asset icons in the Activity list #1468
+
+### Internal
+
+- Amended Zora RPC url to favor new domain #1466
+- Added a migration to remove Custom RPCs added by Zora.co #1467
+
+### Testing
+
+- Fixed test retries by moving retry logic to the runner scripts #1456
+
 ## [v1.4.50](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.50)
 
 ### Fixed
