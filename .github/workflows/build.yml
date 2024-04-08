@@ -90,7 +90,7 @@ jobs:
             export OS=linux
             export FIREFOX_BIN="$(pwd)/firefox/firefox"
             yarn firefox:manifest && yarn firefox:zip
-            yarn vitest:parallel --retry=5
+            yarn vitest:parallel
       - name: Upload deps artifacts
         if: steps.FFE2eParallel.outcome == 'failure'
         uses: actions/upload-artifact@v3
@@ -115,16 +115,12 @@ jobs:
   #     - name: Run e2e Swap (Firefox)
   #       id: FFE2eSwap
   #       continue-on-error: true
-  #       uses: nick-fields/retry@v2
-  #       with:
-  #         timeout_minutes: 25
-  #         max_attempts: 2
-  #         command: |
-  #           export BROWSER=firefox
-  #           export OS=linux
-  #           export FIREFOX_BIN="$(pwd)/firefox/firefox"
-  #           yarn firefox:manifest && yarn firefox:zip
-  #           yarn vitest:swap --retry=5
+  #       run: |
+  #         export BROWSER=firefox
+  #         export OS=linux
+  #         export FIREFOX_BIN="$(pwd)/firefox/firefox"
+  #         yarn firefox:manifest && yarn firefox:zip
+  #         yarn vitest:swap
   #     - name: Upload deps artifacts
   #       if: steps.FFE2eSwap.outcome == 'failure'
   #       uses: actions/upload-artifact@v3
@@ -149,16 +145,12 @@ jobs:
       - name: Run e2e Send (Firefox)
         id: FFE2eSend
         continue-on-error: true
-        uses: nick-fields/retry@v2
-        with:
-          timeout_minutes: 25
-          max_attempts: 2
-          command: |
-            export BROWSER=firefox
-            export OS=linux
-            export FIREFOX_BIN="$(pwd)/firefox/firefox"
-            yarn firefox:manifest && yarn firefox:zip
-            yarn vitest:send --retry=5
+        run: |
+          export BROWSER=firefox
+          export OS=linux
+          export FIREFOX_BIN="$(pwd)/firefox/firefox"
+          yarn firefox:manifest && yarn firefox:zip
+          yarn vitest:send
       - name: Upload deps artifacts
         if: steps.FFE2eSend.outcome == 'failure'
         uses: actions/upload-artifact@v3
@@ -183,16 +175,12 @@ jobs:
       - name: Run e2e Dapp Interactions (Firefox)
         id: FFE2eDappInteractions
         continue-on-error: true
-        uses: nick-fields/retry@v2
-        with:
-          timeout_minutes: 25
-          max_attempts: 2
-          command: |
-            export BROWSER=firefox
-            export OS=linux
-            export FIREFOX_BIN="$(pwd)/firefox/firefox"
-            yarn firefox:manifest && yarn firefox:zip
-            yarn vitest:dappInteractions --retry=5
+        run: |
+          export BROWSER=firefox
+          export OS=linux
+          export FIREFOX_BIN="$(pwd)/firefox/firefox"
+          yarn firefox:manifest && yarn firefox:zip
+          yarn vitest:dappInteractions
       - name: Upload deps artifacts
         if: steps.FFE2eDappInteractions.outcome == 'failure'
         uses: actions/upload-artifact@v3
@@ -222,7 +210,7 @@ jobs:
           export BROWSER=chrome
           export OS=linux
           export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
-          yarn vitest:parallel --retry=5
+          yarn vitest:parallel
       - name: Upload deps artifacts
         if: steps.ChromeE2EParallel.outcome == 'failure'
         uses: actions/upload-artifact@v3
@@ -247,15 +235,11 @@ jobs:
       - name: Run e2e swap (Chrome)
         id: ChromeE2ESwaps
         continue-on-error: true
-        uses: nick-fields/retry@v2
-        with:
-          timeout_minutes: 25
-          max_attempts: 2
-          command: |
-            export BROWSER=chrome
-            export OS=linux
-            export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
-            yarn vitest:swap
+        run: |
+          export BROWSER=chrome
+          export OS=linux
+          export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
+          yarn vitest:swap
       - name: Upload deps artifacts
         if: steps.ChromeE2ESwaps.outcome == 'failure'
         uses: actions/upload-artifact@v3
@@ -280,15 +264,11 @@ jobs:
       - name: Run e2e send (Chrome)
         id: ChromeE2ESend
         continue-on-error: true
-        uses: nick-fields/retry@v2
-        with:
-          timeout_minutes: 25
-          max_attempts: 2
-          command: |
-            export BROWSER=chrome
-            export OS=linux
-            export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
-            yarn vitest:send --retry=5
+        run: |
+          export BROWSER=chrome
+          export OS=linux
+          export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
+          yarn vitest:send
       - name: Upload deps artifacts
         if: steps.ChromeE2ESend.outcome == 'failure'
         uses: actions/upload-artifact@v3
@@ -313,15 +293,11 @@ jobs:
       - name: Run Optimism e2e send (Chrome)
         id: ChromeOpE2ESend
         continue-on-error: true
-        uses: nick-fields/retry@v2
-        with:
-          timeout_minutes: 25
-          max_attempts: 2
-          command: |
-            export BROWSER=chrome
-            export OS=linux
-            export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
-            yarn vitest:send:optimism --retry=5
+        run: |
+          export BROWSER=chrome
+          export OS=linux
+          export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
+          yarn vitest:send:optimism
       - name: Upload deps artifacts
         if: steps.ChromeOpE2ESend.outcome == 'failure'
         uses: actions/upload-artifact@v3
@@ -346,15 +322,11 @@ jobs:
       - name: Run e2e dappInteractions (Chrome)
         id: ChromeE2EDappInteractions
         continue-on-error: true
-        uses: nick-fields/retry@v2
-        with:
-          timeout_minutes: 25
-          max_attempts: 2
-          command: |
-            export BROWSER=chrome
-            export OS=linux
-            export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
-            yarn vitest:dappInteractions --retry=5
+        run: |
+          export BROWSER=chrome
+          export OS=linux
+          export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
+          yarn vitest:dappInteractions
       - name: Upload deps artifacts
         if: steps.ChromeE2EDappInteractions.outcome == 'failure'
         uses: actions/upload-artifact@v3
@@ -412,15 +384,11 @@ jobs:
   #     - name: Copy dotenv
   #       run: cat tmp/dotenv >> .env && rm -rf tmp
   #     - name: Run e2e (Brave)
-  #       uses: nick-fields/retry@v2
-  #       with:
-  #         timeout_minutes: 18
-  #         max_attempts: 3
-  #         command:  |
-  #           export BROWSER=brave
-  #           export OS=linux
-  #           export BRAVE_BIN='/usr/bin/brave-browser-stable'
-  #           yarn vitest:parallel && yarn vitest:serial
+  #       run:  |
+  #        export BROWSER=brave
+  #         export OS=linux
+  #         export BRAVE_BIN='/usr/bin/brave-browser-stable'
+  #         yarn vitest:parallel && yarn vitest:serial
   # UNIT TESTS
   unit-tests:
     runs-on: ubuntu-latest
@@ -457,11 +425,7 @@ jobs:
       - name: Copy dotenv
         run: cat tmp/dotenv >> .env && rm -rf tmp
       - name: Run unit tests
-        uses: nick-fields/retry@v2
-        with:
-          timeout_minutes: 5
-          max_attempts: 3
-          command: yarn test
+        run: yarn test
 
   # LINT, TYPECHECK, AUDIT
   ci-checks:
