@@ -3,6 +3,7 @@ import { ChainId } from '../types/chains';
 
 export const proxyRpcEndpoint = (endpoint: string, chainId: ChainId) => {
   if (
+    endpoint &&
     endpoint !== 'http://127.0.0.1:8545' &&
     endpoint !== 'http://localhost:8545' &&
     !endpoint.includes('http://10.') &&
