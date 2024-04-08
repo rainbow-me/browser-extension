@@ -74,8 +74,6 @@ export function getNetworkFromSimpleHashChain(
       return ChainName.rari;
     case SimpleHashChain.Scroll:
       return ChainName.scroll;
-    case SimpleHashChain.PolygonMumbai:
-      return ChainName.polygonMumbai;
     case SimpleHashChain.ArbitrumSepolia:
       return ChainName.arbitrumSepolia;
     case SimpleHashChain.BaseSepolia:

@@ -23,7 +23,6 @@ export enum SimpleHashChain {
   PolygonZkEVM = 'polygon-zkevm',
   Rari = 'rari',
   Scroll = 'scroll',
-  PolygonMumbai = 'polygon-mumbai',
   ArbitrumSepolia = 'arbitrum-sepolia',
   BaseSepolia = 'base-sepolia',
   OptimismSepolia = 'optimism-sepolia',
