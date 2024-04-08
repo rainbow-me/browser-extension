@@ -51,6 +51,8 @@ export function getNetworkFromSimpleHashChain(
       return ChainName.arbitrumSepolia;
     case SimpleHashChain.Avalanche:
       return ChainName.avalanche;
+    case SimpleHashChain.AvalancheFuji:
+      return ChainName.avalancheFuji;
     case SimpleHashChain.Base:
       return ChainName.base;
     case SimpleHashChain.BaseSepolia:
@@ -61,6 +63,8 @@ export function getNetworkFromSimpleHashChain(
       return ChainName.blastSepolia;
     case SimpleHashChain.Bsc:
       return ChainName.bsc;
+    case SimpleHashChain.BscTestnet:
+      return ChainName.bscTestnet;
     case SimpleHashChain.Celo:
       return ChainName.celo;
     case SimpleHashChain.Ethereum:

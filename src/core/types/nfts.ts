@@ -17,6 +17,7 @@ export enum SimpleHashChain {
   Base = 'base',
   ArbitrumNova = 'arbitrum-nova',
   Avalanche = 'avalanche',
+  AvalancheFuji = 'avalanche-fuji',
   Celo = 'celo',
   Linea = 'linea',
   Manta = 'manta',
@@ -29,6 +30,7 @@ export enum SimpleHashChain {
   ZoraSepolia = 'zora-sepolia',
   Blast = 'blast',
   BlastSepolia = 'blast-sepolia',
+  BscTestnet = 'bsc-testnet',
   PolygonAmoy = 'polygon-amoy',
 }
 
