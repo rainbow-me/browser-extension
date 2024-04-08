@@ -187,8 +187,10 @@ export const getSimpleHashSupportedTestnetChainNames = () => {
   return [
     'ethereum-sepolia',
     ChainName.arbitrumSepolia,
+    ChainName.avalancheFuji,
     ChainName.baseSepolia,
     ChainName.blastSepolia,
+    ChainName.bscTestnet,
     ChainName.optimismSepolia,
     ChainName.polygonAmoy,
     ChainName.zoraSepolia,
