@@ -21,7 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
-## [v1.4.54](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.54)
+## [v1.4.55](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.55)
 
 ### Fixed
 
@@ -36,7 +36,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Internal
 
 - Amended Zora RPC url to favor new domain #1466
-- Added a migration to remove Custom RPCs added by Zora.co #1467
+- Added a migration to remove Custom RPCs added by Zora.co #1467 #1475
 
 ### Testing
 
