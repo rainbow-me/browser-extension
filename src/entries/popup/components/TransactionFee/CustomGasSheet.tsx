@@ -7,7 +7,6 @@ import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { txSpeedEmoji } from '~/core/references/txSpeed';
 import { useGasStore } from '~/core/state';
-import { ChainId } from '~/core/types/chains';
 import { GasFeeParams, GasSpeed } from '~/core/types/gas';
 import { formatNumber } from '~/core/utils/formatNumber';
 import { getBaseFeeTrendParams } from '~/core/utils/gas';
@@ -154,15 +153,6 @@ const ExplainerHeaderPill = ({
       </Inline>
     </Box>
   );
-};
-
-const chainsWithoutPriorityFee = [
-  ChainId.arbitrum,
-  ChainId.arbitrumNova,
-  ChainId.arbitrumSepolia,
-];
-const isPriorityFeeSupported = (chainId: ChainId) => {
-  return !chainsWithoutPriorityFee.includes(chainId);
 };
 
 export const CustomGasSheet = ({
@@ -410,6 +400,8 @@ export const CustomGasSheet = ({
     [hideExplainerSheet, showExplainerSheet],
   );
 
+  const supportsPriorityFee = false; // chainSupportsPriorityFee(chainId)
+
   return (
     <>
       <ExplainerSheet
@@ -527,7 +519,7 @@ export const CustomGasSheet = ({
                   </Box>
                 </Inline>
               </Box>
-              <Box>
+              <Box style={{ opacity: !supportsPriorityFee ? 0.6 : 1 }}>
                 <Inline
                   height="full"
                   alignHorizontal="justify"
@@ -546,6 +538,7 @@ export const CustomGasSheet = ({
                       value={maxPriorityFee}
                       variant="surface"
                       onChange={updateCustomMaxPriorityFee}
+                      disabled={!supportsPriorityFee}
                     />
                   </Box>
                 </Inline>

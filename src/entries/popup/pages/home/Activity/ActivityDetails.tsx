@@ -173,19 +173,19 @@ const formatFee = (transaction: RainbowTransaction) => {
   return `${formatNumber(transaction.fee)} ${nativeCurrencySymbol}`;
 };
 function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
-  const { feeType } = tx;
+  const { feeType, maxPriorityFeePerGas } = tx;
 
   // if baseFee is undefined (like in pending txs or custom networks the api wont have data about it)
   // so we try to calculate with the data we may have locally
   const baseFee =
     tx.baseFee ||
     (tx.maxFeePerGas &&
-      tx.maxPriorityFeePerGas &&
-      BigNumber.from(tx.maxFeePerGas).sub(tx.maxPriorityFeePerGas).toString());
+      maxPriorityFeePerGas &&
+      BigNumber.from(tx.maxFeePerGas).sub(maxPriorityFeePerGas).toString());
 
   const fee = formatFee(tx);
 
-  if ((!baseFee || !tx.maxPriorityFeePerGas) && !tx.gasPrice) return null;
+  if ((!baseFee || !maxPriorityFeePerGas) && !tx.gasPrice) return null;
 
   return (
     <>
@@ -219,19 +219,21 @@ function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
               )
             }
           />
-          <InfoRow
-            symbol="barometer"
-            label={i18n.t('activity_details.max_priority_fee')}
-            value={
-              tx.maxPriorityFeePerGas ? (
-                `${formatNumber(
-                  formatUnits(tx.maxPriorityFeePerGas, 'gwei'),
-                )} Gwei`
-              ) : (
-                <InfoValueSkeleton />
-              )
-            }
-          />
+          {Number(maxPriorityFeePerGas) !== 0 && (
+            <InfoRow
+              symbol="barometer"
+              label={i18n.t('activity_details.max_priority_fee')}
+              value={
+                maxPriorityFeePerGas ? (
+                  `${formatNumber(
+                    formatUnits(maxPriorityFeePerGas, 'gwei'),
+                  )} Gwei`
+                ) : (
+                  <InfoValueSkeleton />
+                )
+              }
+            />
+          )}
         </>
       )}
     </>

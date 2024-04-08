@@ -65,7 +65,7 @@ export const parseGasDataConfirmationTime = ({
 }) => {
   let blocksToWaitForPriorityFee = 0;
   let blocksToWaitForBaseFee = 0;
-  const { byPriorityFee, byBaseFee } = blocksToConfirmation;
+  const { byPriorityFee = {}, byBaseFee = {} } = blocksToConfirmation;
 
   if (lessThan(maxPriorityFee, divide(byPriorityFee[4], 2))) {
     blocksToWaitForPriorityFee += 240;
