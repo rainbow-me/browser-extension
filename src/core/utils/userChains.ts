@@ -53,28 +53,29 @@ export const chainIdMap: Record<
 };
 
 export const chainLabelMap: Record<
+  | ChainId.arbitrum
+  | ChainId.avalanche
+  | ChainId.base
+  | ChainId.blast
+  | ChainId.bsc
   | ChainId.mainnet
   | ChainId.optimism
   | ChainId.polygon
-  | ChainId.base
-  | ChainId.bsc
-  | ChainId.zora
-  | ChainId.avalanche
-  | ChainId.blast,
+  | ChainId.zora,
   string[]
 > = {
+  [ChainId.arbitrum]: [ChainNameDisplay[arbitrumSepolia.id]],
+  [ChainId.avalanche]: [ChainNameDisplay[avalancheFuji.id]],
+  [ChainId.base]: [ChainNameDisplay[baseSepolia.id]],
+  [ChainId.blast]: [ChainNameDisplay[chainBlastSepolia.id]],
+  [ChainId.bsc]: [ChainNameDisplay[bscTestnet.id]],
   [ChainId.mainnet]: [
     ChainNameDisplay[sepolia.id],
     ChainNameDisplay[holesky.id],
   ],
   [ChainId.optimism]: [ChainNameDisplay[optimismSepolia.id]],
-  [ChainId.arbitrum]: [ChainNameDisplay[arbitrumSepolia.id]],
   [ChainId.polygon]: [ChainNameDisplay[chainPolygonAmoy.id]],
-  [ChainId.base]: [ChainNameDisplay[baseSepolia.id]],
-  [ChainId.bsc]: [ChainNameDisplay[bscTestnet.id]],
   [ChainId.zora]: [ChainNameDisplay[zoraSepolia.id]],
-  [ChainId.avalanche]: [ChainNameDisplay[avalancheFuji.id]],
-  [ChainId.blast]: [ChainNameDisplay[chainBlastSepolia.id]],
 };
 
 export const sortNetworks = (order: ChainId[], chains: Chain[]) => {
