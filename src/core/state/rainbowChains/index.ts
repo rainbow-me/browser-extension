@@ -164,7 +164,7 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
   {
     persist: {
       name: 'rainbowChains',
-      version: 3,
+      version: 4,
       migrate(persistedState, version) {
         const state = persistedState as RainbowChainsState;
         if (version === 1) {
@@ -177,6 +177,11 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
         if (version === 2) {
           // version 2 added support for Blast
           return mergeNewOfficiallySupportedChainsState(state, [ChainId.blast]);
+        }
+
+        if (version === 3) {
+          state.removeCustomRPC({ rpcUrl: 'https://rpc.zora.co' });
+          return state;
         }
 
         return state;
