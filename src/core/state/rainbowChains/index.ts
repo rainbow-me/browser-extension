@@ -77,6 +77,43 @@ const mergeNewOfficiallySupportedChainsState = (
   return state;
 };
 
+const removeCustomRPC = ({
+  state,
+  rpcUrl,
+  rainbowChains,
+}: {
+  state: RainbowChainsState;
+  rpcUrl: string;
+  rainbowChains: Record<number, RainbowChain>;
+}) => {
+  const updatedrainbowChains = { ...rainbowChains };
+
+  Object.entries(rainbowChains).forEach(([chainId, rainbowChains]) => {
+    const index = rainbowChains.chains.findIndex((chain) =>
+      chain.rpcUrls.default.http.includes(rpcUrl),
+    );
+    if (index !== -1) {
+      rainbowChains.chains.splice(index, 1);
+
+      // If deleted RPC was active, reset activeRpcUrl or set to another RPC if available
+      if (rainbowChains.activeRpcUrl === rpcUrl) {
+        rainbowChains.activeRpcUrl =
+          rainbowChains.chains[0]?.rpcUrls.default.http[0] || '';
+      }
+
+      // Remove the chain if no RPCs are left
+      if (!rainbowChains.chains.length) {
+        delete updatedrainbowChains[Number(chainId)];
+      } else {
+        updatedrainbowChains[Number(chainId)] = rainbowChains;
+      }
+    }
+  });
+  state.rainbowChains = updatedrainbowChains;
+
+  return state;
+};
+
 export const rainbowChainsStore = createStore<RainbowChainsState>(
   (set, get) => ({
     rainbowChains: getInitialRainbowChains(),
@@ -164,7 +201,7 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
   {
     persist: {
       name: 'rainbowChains',
-      version: 3,
+      version: 4,
       migrate(persistedState, version) {
         const state = persistedState as RainbowChainsState;
         if (version === 1) {
@@ -177,6 +214,14 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
         if (version === 2) {
           // version 2 added support for Blast
           return mergeNewOfficiallySupportedChainsState(state, [ChainId.blast]);
+        }
+
+        if (version === 3) {
+          return removeCustomRPC({
+            state,
+            rpcUrl: 'https://rpc.zora.co',
+            rainbowChains: state.rainbowChains,
+          });
         }
 
         return state;
