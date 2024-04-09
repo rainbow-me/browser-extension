@@ -82,10 +82,6 @@ export function getNetworkFromSimpleHashChain(
       return ChainName.manta;
     case SimpleHashChain.MantaTestnet:
       return ChainName.mantaTestnet;
-    case SimpleHashChain.Rari:
-      return ChainName.rari;
-    case SimpleHashChain.RariTestnet:
-      return ChainName.rariTestnet;
     case SimpleHashChain.Optimism:
       return ChainName.optimism;
     case SimpleHashChain.OptimismSepolia:
@@ -106,6 +102,10 @@ export function getNetworkFromSimpleHashChain(
       return ChainName.proofOfPlay;
     case SimpleHashChain.ProofOfPlayTestnet:
       return ChainName.proofOfPlayTestnet;
+    case SimpleHashChain.Rari:
+      return ChainName.rari;
+    case SimpleHashChain.RariTestnet:
+      return ChainName.rariTestnet;
     case SimpleHashChain.Scroll:
       return ChainName.scroll;
     case SimpleHashChain.ScrollSepolia:
