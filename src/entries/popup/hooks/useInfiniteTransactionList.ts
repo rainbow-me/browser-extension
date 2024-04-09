@@ -19,6 +19,7 @@ import { useBackendSupportedChains } from '~/core/utils/chains';
 
 import useComponentWillUnmount from './useComponentWillUnmount';
 import { useKeyboardShortcut } from './useKeyboardShortcut';
+import { useUserChains } from './useUserChains';
 
 const PAGES_TO_CACHE_LIMIT = 2;
 
@@ -46,10 +47,11 @@ export const useInfiniteTransactionList = ({
   );
 
   const { testnetMode } = useTestnetModeStore();
-
-  const supportedChainIds = useBackendSupportedChains({ testnetMode }).map(
-    ({ id }) => id,
-  );
+  const { chains } = useUserChains();
+  const userChainIds = chains.map(({ id }) => id);
+  const supportedChainIds = useBackendSupportedChains({ testnetMode })
+    .map(({ id }) => id)
+    .filter((id) => userChainIds.includes(id));
 
   const {
     data,
