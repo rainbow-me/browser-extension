@@ -94,10 +94,8 @@ export const InfoRow = ({
   </Box>
 );
 
-// MARKET CAP
 function MarketCapInfoRow({ marketCap }: { marketCap: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
-
   return (
     <>
       <InfoRow
@@ -139,10 +137,8 @@ function MarketCapInfoRow({ marketCap }: { marketCap: ReactNode }) {
   );
 }
 
-// FULLY DILUTED
 function FullyDilutedInfoRow({ fullyDiluted }: { fullyDiluted: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
-
   return (
     <>
       <InfoRow
