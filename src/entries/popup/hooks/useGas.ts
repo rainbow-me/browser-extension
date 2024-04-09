@@ -104,14 +104,21 @@ const useGas = ({
       return;
     }
 
-    const { data } = gasData as MeteorologyResponse;
-    const currentBaseFee = data.currentBaseFee;
-    const secondsPerNewBlock = data.secondsPerNewBlock;
+    const { data } = gasData;
 
-    const blocksToConfirmation = {
-      byBaseFee: data.blocksToConfirmationByBaseFee,
-      byPriorityFee: data.blocksToConfirmationByPriorityFee,
-    };
+    let currentBaseFee;
+    let secondsPerNewBlock;
+    let blocksToConfirmation;
+    if ('legacy' in data) {
+      currentBaseFee = data.legacy.proposeGasPrice;
+    } else {
+      currentBaseFee = data.currentBaseFee;
+      secondsPerNewBlock = data.secondsPerNewBlock;
+      blocksToConfirmation = {
+        byBaseFee: data.blocksToConfirmationByBaseFee,
+        byPriorityFee: data.blocksToConfirmationByPriorityFee,
+      };
+    }
 
     const maxPriorityFeePerGas = (
       storeGasFeeParamsBySpeed?.custom as GasFeeParams
@@ -150,14 +157,22 @@ const useGas = ({
       !nativeAsset
     )
       return;
-    const { data } = gasData as MeteorologyResponse;
-    const currentBaseFee = data.currentBaseFee;
-    const secondsPerNewBlock = data.secondsPerNewBlock;
 
-    const blocksToConfirmation = {
-      byBaseFee: data.blocksToConfirmationByBaseFee,
-      byPriorityFee: data.blocksToConfirmationByPriorityFee,
-    };
+    const { data } = gasData;
+
+    let currentBaseFee;
+    let secondsPerNewBlock;
+    let blocksToConfirmation;
+    if ('legacy' in data) {
+      currentBaseFee = data.legacy.proposeGasPrice;
+    } else {
+      currentBaseFee = data.currentBaseFee;
+      secondsPerNewBlock = data.secondsPerNewBlock;
+      blocksToConfirmation = {
+        byBaseFee: data.blocksToConfirmationByBaseFee,
+        byPriorityFee: data.blocksToConfirmationByPriorityFee,
+      };
+    }
 
     const maxBaseFee = (storeGasFeeParamsBySpeed?.custom as GasFeeParams)
       ?.maxBaseFee?.amount;
@@ -286,6 +301,12 @@ const useGas = ({
     storeGasFeeParamsBySpeed,
   ]);
 
+  const data = gasData?.data;
+  const currentBaseFee =
+    data && 'legacy' in data
+      ? data.legacy.proposeGasPrice
+      : data?.currentBaseFee;
+
   return {
     gasFeeParamsBySpeed,
     setSelectedSpeed,
@@ -294,9 +315,7 @@ const useGas = ({
     setCustomMaxBaseFee,
     setCustomMaxPriorityFee,
     clearCustomGasModified,
-    currentBaseFee: weiToGwei(
-      (gasData as MeteorologyResponse)?.data?.currentBaseFee,
-    ),
+    currentBaseFee: currentBaseFee && weiToGwei(currentBaseFee),
     baseFeeTrend: (gasData as MeteorologyResponse)?.data?.baseFeeTrend,
   };
 };

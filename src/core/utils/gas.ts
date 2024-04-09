@@ -59,13 +59,15 @@ export const parseGasDataConfirmationTime = ({
 }: {
   maxBaseFee: string;
   maxPriorityFee: string;
-  blocksToConfirmation: BlocksToConfirmation;
+  blocksToConfirmation: BlocksToConfirmation | undefined;
   additionalTime?: number;
-  secondsPerNewBlock: number;
+  secondsPerNewBlock: number | undefined;
 }) => {
+  if (!secondsPerNewBlock || !blocksToConfirmation) return undefined;
+
   let blocksToWaitForPriorityFee = 0;
   let blocksToWaitForBaseFee = 0;
-  const { byPriorityFee = {}, byBaseFee = {} } = blocksToConfirmation;
+  const { byPriorityFee, byBaseFee } = blocksToConfirmation;
 
   if (lessThan(maxPriorityFee, divide(byPriorityFee[4], 2))) {
     blocksToWaitForPriorityFee += 240;
@@ -133,10 +135,10 @@ export const parseCustomGasFeeParams = ({
   currentBaseFee: string;
   gasLimit: string;
   nativeAsset?: ParsedAsset;
-  blocksToConfirmation: BlocksToConfirmation;
+  blocksToConfirmation: BlocksToConfirmation | undefined;
   currency: SupportedCurrencyKey;
   additionalTime?: number;
-  secondsPerNewBlock: number;
+  secondsPerNewBlock: number | undefined;
 }): GasFeeParams => {
   const maxBaseFee = parseGasFeeParam({
     wei: baseFeeWei || '0',
@@ -222,7 +224,7 @@ export const parseGasFeeParams = ({
   blocksToConfirmation: BlocksToConfirmation;
   currency: SupportedCurrencyKey;
   additionalTime?: number;
-  secondsPerNewBlock: number;
+  secondsPerNewBlock: number | undefined;
   optimismL1SecurityFee?: string | null;
 }): GasFeeParams => {
   const maxBaseFee = parseGasFeeParam({

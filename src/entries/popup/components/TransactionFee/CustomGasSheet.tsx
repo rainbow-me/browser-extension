@@ -342,7 +342,7 @@ export const CustomGasSheet = ({
       show: true,
       header: {
         emoji: trendParams.emoji,
-        headerPill: (
+        headerPill: trendParams.symbol ? (
           <ExplainerHeaderPill
             color={trendParams.color}
             label={trendParams.label}
@@ -350,7 +350,7 @@ export const CustomGasSheet = ({
             symbol={trendParams.symbol}
             borderColor={trendParams.borderColor}
           />
-        ),
+        ) : undefined,
       },
       description: [
         i18n.t('explainers.custom_gas.current_base_description'),
@@ -400,7 +400,7 @@ export const CustomGasSheet = ({
     [hideExplainerSheet, showExplainerSheet],
   );
 
-  const supportsPriorityFee = false; // chainSupportsPriorityFee(chainId)
+  const supportsPriorityFee = true; // chainSupportsPriorityFee(chainId)
 
   return (
     <>
@@ -436,26 +436,28 @@ export const CustomGasSheet = ({
               <Box paddingBottom="12px">
                 <Box height="full">
                   <Stack space="12px">
-                    <Inline
-                      alignHorizontal="right"
-                      space="4px"
-                      alignVertical="center"
-                    >
-                      <Symbol
-                        symbol={trend.symbol as SymbolName}
-                        color={trend.color as SymbolStyles['color']}
-                        weight="bold"
-                        size={11}
-                      />
-                      <Text
-                        color={trend.color as TextStyles['color']}
-                        align="center"
-                        size="11pt"
-                        weight="bold"
+                    {!!trend.symbol && (
+                      <Inline
+                        alignHorizontal="right"
+                        space="4px"
+                        alignVertical="center"
                       >
-                        {trend.label}
-                      </Text>
-                    </Inline>
+                        <Symbol
+                          symbol={trend.symbol as SymbolName}
+                          color={trend.color as SymbolStyles['color']}
+                          weight="bold"
+                          size={11}
+                        />
+                        <Text
+                          color={trend.color as TextStyles['color']}
+                          align="center"
+                          size="11pt"
+                          weight="bold"
+                        >
+                          {trend.label}
+                        </Text>
+                      </Inline>
+                    )}
                     <Inline
                       height="full"
                       alignHorizontal="justify"
@@ -647,14 +649,16 @@ export const CustomGasSheet = ({
                       >
                         {customSpeed?.display}
                       </TextOverflow>
-                      <TextOverflow
-                        align="right"
-                        color="labelTertiary"
-                        size="11pt"
-                        weight="semibold"
-                      >
-                        {customSpeed?.estimatedTime?.display}
-                      </TextOverflow>
+                      {customSpeed?.estimatedTime && (
+                        <TextOverflow
+                          align="right"
+                          color="labelTertiary"
+                          size="11pt"
+                          weight="semibold"
+                        >
+                          {customSpeed.estimatedTime.display}
+                        </TextOverflow>
+                      )}
                     </Stack>
                   </Column>
                 </Columns>
@@ -714,14 +718,16 @@ export const CustomGasSheet = ({
                         >
                           {gasFeeParamsBySpeed?.[speed]?.display}
                         </TextOverflow>
-                        <TextOverflow
-                          align="right"
-                          color="labelTertiary"
-                          size="11pt"
-                          weight="semibold"
-                        >
-                          {gasFeeParamsBySpeed?.[speed]?.estimatedTime?.display}
-                        </TextOverflow>
+                        {gasFeeParamsBySpeed?.[speed]?.estimatedTime && (
+                          <TextOverflow
+                            align="right"
+                            color="labelTertiary"
+                            size="11pt"
+                            weight="semibold"
+                          >
+                            {gasFeeParamsBySpeed[speed].estimatedTime?.display}
+                          </TextOverflow>
+                        )}
                       </Stack>
                     </Column>
                   </Columns>
