@@ -335,6 +335,7 @@ export function useSearchCurrencyLists({
       [ChainId.zora]: getVerifiedAssets(ChainId.zora),
       [ChainId.avalanche]: getVerifiedAssets(ChainId.avalanche),
       [ChainId.blast]: getVerifiedAssets(ChainId.blast),
+      [ChainId.degen]: getVerifiedAssets(ChainId.degen),
     }),
     [getVerifiedAssets],
   );

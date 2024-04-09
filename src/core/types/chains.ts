@@ -92,6 +92,22 @@ export const chainPolygonAmoy: Chain = {
   testnet: true,
 };
 
+export const chainDegen: Chain = {
+  id: 666666666,
+  name: 'Degen',
+  network: 'degen',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'DEGEN',
+    symbol: 'DEGEN',
+  },
+  rpcUrls: {
+    public: { http: ['https://rpc.degen.tips'] },
+    default: { http: ['https://rpc.degen.tips'] },
+  },
+  testnet: false,
+};
+
 export enum ChainName {
   arbitrum = 'arbitrum',
   arbitrumNova = 'arbitrum-nova',
@@ -103,6 +119,7 @@ export enum ChainName {
   blastSepolia = 'blast-sepolia',
   bsc = 'bsc',
   celo = 'celo',
+  degen = 'degen',
   gnosis = 'gnosis',
   linea = 'linea',
   manta = 'manta',
@@ -156,6 +173,7 @@ export enum ChainId {
   baseSepolia = chain.baseSepolia.id,
   zoraSepolia = chain.zoraSepolia.id,
   polygonAmoy = chainPolygonAmoy.id,
+  degen = chainDegen.id,
 }
 
 export const chainNameToIdMapping: {
@@ -193,6 +211,7 @@ export const chainNameToIdMapping: {
   [ChainName.blast]: ChainId.blast,
   [ChainName.blastSepolia]: ChainId.blastSepolia,
   [ChainName.polygonAmoy]: ChainId.polygonAmoy,
+  [ChainName.degen]: ChainId.degen,
 };
 
 export const chainIdToNameMapping: {
@@ -228,6 +247,7 @@ export const chainIdToNameMapping: {
   [ChainId.baseSepolia]: ChainName.baseSepolia,
   [ChainId.zoraSepolia]: ChainName.zoraSepolia,
   [ChainId.polygonAmoy]: ChainName.polygonAmoy,
+  [ChainId.degen]: ChainName.degen,
 };
 
 export const ChainNameDisplay = {
@@ -260,4 +280,5 @@ export const ChainNameDisplay = {
   [ChainId.baseSepolia]: chain.baseSepolia.name,
   [ChainId.zoraSepolia]: 'Zora Sepolia',
   [ChainId.polygonAmoy]: 'Polygon Amoy',
+  [ChainId.degen]: 'Degen',
 } as const;
