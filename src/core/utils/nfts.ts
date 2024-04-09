@@ -70,24 +70,52 @@ export function getNetworkFromSimpleHashChain(
     case SimpleHashChain.Ethereum:
     case SimpleHashChain.Gnosis:
       return ChainName.mainnet;
+    case SimpleHashChain.Godwoken:
+      return ChainName.godwoken;
+    case SimpleHashChain.GodwokenTestnet:
+      return ChainName.godwokenTestnet;
     case SimpleHashChain.Linea:
       return ChainName.linea;
+    case SimpleHashChain.LineaTestnet:
+      return ChainName.lineaTestnet;
     case SimpleHashChain.Manta:
       return ChainName.manta;
+    case SimpleHashChain.MantaTestnet:
+      return ChainName.mantaTestnet;
     case SimpleHashChain.Rari:
       return ChainName.rari;
-    case SimpleHashChain.Scroll:
-      return ChainName.scroll;
+    case SimpleHashChain.RariTestnet:
+      return ChainName.rariTestnet;
     case SimpleHashChain.Optimism:
       return ChainName.optimism;
     case SimpleHashChain.OptimismSepolia:
       return ChainName.optimismSepolia;
+    case SimpleHashChain.Palm:
+      return ChainName.palm;
+    case SimpleHashChain.PalmTestnet:
+      return ChainName.palmTestnet;
     case SimpleHashChain.Polygon:
       return ChainName.polygon;
     case SimpleHashChain.PolygonAmoy:
       return ChainName.polygonAmoy;
     case SimpleHashChain.PolygonZkEVM:
       return ChainName.polygonZkEvm;
+    case SimpleHashChain.PolygonZkEVMTestnet:
+      return ChainName.polygonZkEvmTestnet;
+    case SimpleHashChain.ProofOfPlay:
+      return ChainName.proofOfPlay;
+    case SimpleHashChain.ProofOfPlayTestnet:
+      return ChainName.proofOfPlayTestnet;
+    case SimpleHashChain.Scroll:
+      return ChainName.scroll;
+    case SimpleHashChain.ScrollSepolia:
+      return ChainName.scrollSepolia;
+    case SimpleHashChain.Xai:
+      return ChainName.xai;
+    case SimpleHashChain.XaiSepolia:
+      return ChainName.xaiSepolia;
+    case SimpleHashChain.ZkSync:
+      return ChainName.zkSync;
     case SimpleHashChain.Zora:
       return ChainName.zora;
     case SimpleHashChain.ZoraSepolia:
