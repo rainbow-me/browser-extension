@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { ReactNode, useReducer } from 'react';
+import { ReactNode, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { ParsedUserAsset } from '~/core/types/assets';
@@ -94,11 +94,10 @@ export const InfoRow = ({
   </Box>
 );
 
+// MARKET CAP
 function MarketCapInfoRow({ marketCap }: { marketCap: ReactNode }) {
-  const [isMarketCapExplainerOpen, toggleMarketCapExplainer] = useReducer(
-    (s) => !s,
-    false,
-  );
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <>
       <InfoRow
@@ -108,7 +107,7 @@ function MarketCapInfoRow({ marketCap }: { marketCap: ReactNode }) {
             display="flex"
             alignItems="center"
             gap="4px"
-            onClick={toggleMarketCapExplainer}
+            onClick={() => setIsOpen(true)}
           >
             {i18n.t(`token_details.about.market_cap`)}
             <Symbol
@@ -122,17 +121,17 @@ function MarketCapInfoRow({ marketCap }: { marketCap: ReactNode }) {
         value={marketCap}
       />
       <ExplainerSheet
-        show={isMarketCapExplainerOpen}
+        show={isOpen}
         title={i18n.t('token_details.about.market_cap_explainer.title')}
         description={[
           i18n.t('token_details.about.market_cap_explainer.description'),
         ]}
-        onClickOutside={toggleMarketCapExplainer}
+        onClickOutside={() => setIsOpen(false)}
         actionButton={{
           label: i18n.t('token_details.about.market_cap_explainer.action'),
           variant: 'tinted',
           labelColor: 'blue',
-          action: toggleMarketCapExplainer,
+          action: () => setIsOpen(false),
         }}
         header={{ emoji: '📈' }}
       />
@@ -140,11 +139,9 @@ function MarketCapInfoRow({ marketCap }: { marketCap: ReactNode }) {
   );
 }
 
+// FULLY DILUTED
 function FullyDilutedInfoRow({ fullyDiluted }: { fullyDiluted: ReactNode }) {
-  const [isFullyDilutedExplainerOpen, toggleFullyDilutedExplainer] = useReducer(
-    (s) => !s,
-    false,
-  );
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
@@ -155,7 +152,7 @@ function FullyDilutedInfoRow({ fullyDiluted }: { fullyDiluted: ReactNode }) {
             display="flex"
             alignItems="center"
             gap="4px"
-            onClick={toggleFullyDilutedExplainer}
+            onClick={() => setIsOpen(true)}
           >
             {i18n.t(`token_details.about.fully_diluted`)}
             <Symbol
@@ -169,17 +166,17 @@ function FullyDilutedInfoRow({ fullyDiluted }: { fullyDiluted: ReactNode }) {
         value={fullyDiluted}
       />
       <ExplainerSheet
-        show={isFullyDilutedExplainerOpen}
+        show={isOpen}
         title={i18n.t('token_details.about.fully_diluted_explainer.title')}
         description={[
           i18n.t('token_details.about.fully_diluted_explainer.description'),
         ]}
-        onClickOutside={toggleFullyDilutedExplainer}
+        onClickOutside={() => setIsOpen(false)}
         actionButton={{
           label: i18n.t('token_details.about.fully_diluted_explainer.action'),
           variant: 'tinted',
           labelColor: 'blue',
-          action: toggleFullyDilutedExplainer,
+          action: () => setIsOpen(false),
         }}
         header={{ emoji: '📊' }}
       />
