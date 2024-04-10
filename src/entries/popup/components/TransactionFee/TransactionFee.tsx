@@ -158,6 +158,7 @@ function Fee({
         setCustomMaxPriorityFee={setCustomMaxPriorityFee}
         closeCustomGasSheet={closeCustomGasSheet}
         setSelectedSpeed={setSelectedSpeed}
+        chainId={chainId}
       />
       <Columns alignHorizontal="justify" alignVertical="center">
         <Column>

@@ -1,5 +1,13 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  Fragment,
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -7,7 +15,9 @@ import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { txSpeedEmoji } from '~/core/references/txSpeed';
 import { useGasStore } from '~/core/state';
+import { ChainId } from '~/core/types/chains';
 import { GasFeeParams, GasSpeed } from '~/core/types/gas';
+import { chainSupportsPriorityFee } from '~/core/utils/chains';
 import { formatNumber } from '~/core/utils/formatNumber';
 import { getBaseFeeTrendParams } from '~/core/utils/gas';
 import { isZero, lessThan } from '~/core/utils/numbers';
@@ -38,6 +48,7 @@ import {
   useExplainerSheetParams,
 } from '../ExplainerSheet/ExplainerSheet';
 import { GweiInputMask } from '../InputMask/GweiInputMask/GweiInputMask';
+import { CursorTooltip } from '../Tooltip/CursorTooltip';
 
 const speeds = [GasSpeed.URGENT, GasSpeed.FAST, GasSpeed.NORMAL];
 
@@ -155,11 +166,75 @@ const ExplainerHeaderPill = ({
   );
 };
 
+function PriorityFeeUnsupportedTooltip({ children }: PropsWithChildren) {
+  return (
+    <CursorTooltip
+      arrowAlignment="center"
+      arrowDirection="down"
+      arrowCentered
+      text={'Priority fees are not supported on this chain'}
+      textWeight="bold"
+      textSize="12pt"
+      textColor="labelSecondary"
+    >
+      {children}
+    </CursorTooltip>
+  );
+}
+
+function PriorityFeeInput({
+  warning,
+  showExplainer,
+  inputRef,
+  value,
+  onChange,
+  chainId,
+}: {
+  warning: 'stuck' | 'fail' | undefined;
+  showExplainer: () => void;
+  inputRef: React.RefObject<HTMLInputElement>;
+  value: string;
+  onChange: (value: string) => void;
+  chainId: ChainId;
+}) {
+  const supportsPriorityFee = chainSupportsPriorityFee(chainId);
+  const Tooltip = !supportsPriorityFee
+    ? PriorityFeeUnsupportedTooltip
+    : Fragment;
+
+  return (
+    <Tooltip>
+      <Box
+        style={{ opacity: !supportsPriorityFee ? 0.6 : 1 }}
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+      >
+        <GasLabel
+          label={i18n.t('custom_gas.miner_tip')}
+          warning={warning}
+          onClick={showExplainer}
+        />
+        <Box style={{ width: 98 }} marginRight="-4px">
+          <GweiInputMask
+            inputRef={inputRef}
+            value={value}
+            variant="surface"
+            onChange={onChange}
+            disabled={!supportsPriorityFee}
+          />
+        </Box>
+      </Box>
+    </Tooltip>
+  );
+}
+
 export const CustomGasSheet = ({
   show,
   currentBaseFee,
   baseFeeTrend,
   flashbotsEnabled,
+  chainId,
   setCustomMaxBaseFee,
   setCustomMaxPriorityFee,
   closeCustomGasSheet,
@@ -169,6 +244,7 @@ export const CustomGasSheet = ({
   currentBaseFee: string;
   baseFeeTrend: number;
   flashbotsEnabled: boolean;
+  chainId: ChainId;
   setCustomMaxBaseFee: (maxBaseFee: string) => void;
   setCustomMaxPriorityFee: (maxPriorityFee: string) => void;
   closeCustomGasSheet: () => void;
@@ -400,8 +476,6 @@ export const CustomGasSheet = ({
     [hideExplainerSheet, showExplainerSheet],
   );
 
-  const supportsPriorityFee = true; // chainSupportsPriorityFee(chainId)
-
   return (
     <>
       <ExplainerSheet
@@ -521,30 +595,14 @@ export const CustomGasSheet = ({
                   </Box>
                 </Inline>
               </Box>
-              <Box style={{ opacity: !supportsPriorityFee ? 0.6 : 1 }}>
-                <Inline
-                  height="full"
-                  alignHorizontal="justify"
-                  alignVertical="center"
-                >
-                  <Box>
-                    <GasLabel
-                      label={i18n.t('custom_gas.miner_tip')}
-                      warning={maxPriorityFeeWarning}
-                      onClick={showMaxPriorityFeeExplainer}
-                    />
-                  </Box>
-                  <Box style={{ width: 98 }} marginRight="-4px">
-                    <GweiInputMask
-                      inputRef={maxPriorityFeeInputRef}
-                      value={maxPriorityFee}
-                      variant="surface"
-                      onChange={updateCustomMaxPriorityFee}
-                      disabled={!supportsPriorityFee}
-                    />
-                  </Box>
-                </Inline>
-              </Box>
+              <PriorityFeeInput
+                chainId={chainId}
+                warning={maxPriorityFeeWarning}
+                showExplainer={showMaxPriorityFeeExplainer}
+                inputRef={maxPriorityFeeInputRef}
+                value={maxPriorityFee}
+                onChange={updateCustomMaxPriorityFee}
+              />
               <Box paddingVertical="12px">
                 <Columns alignHorizontal="justify" alignVertical="center">
                   <Column>
