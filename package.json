@@ -232,7 +232,7 @@
   "resolutions": {
     "bn.js": "5.2.1",
     "@scure/bip39": "1.2.1",
-    "protobufjs": "7.2.4",
+    "protobufjs": "7.2.5",
     "@grpc/grpc-js": "1.8.8",
     "semver": "7.5.2",
     "globby": "11.1.0",
