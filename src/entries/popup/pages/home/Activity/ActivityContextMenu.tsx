@@ -45,6 +45,8 @@ export function ActivityContextMenu({
   };
 
   const explorer = getTransactionBlockExplorer(transaction);
+  console.log('-- explorer', explorer);
+  console.log('-- transaction', transaction);
 
   const onSpeedUp = () => {
     setCurrentHomeSheet('speedUp');

@@ -105,6 +105,9 @@ export const chainDegen: Chain = {
     public: { http: ['https://rpc.degen.tips'] },
     default: { http: ['https://rpc.degen.tips'] },
   },
+  blockExplorers: {
+    default: { name: 'Degen Explorer', url: 'https://explorer.degen.tips/' },
+  },
   testnet: false,
 };
 
