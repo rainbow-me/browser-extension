@@ -115,10 +115,7 @@ export const useSimulateTransaction = ({
       chainId,
       domain,
     }),
-    enabled:
-      !!chainId &&
-      !!transaction.to &&
-      (!!transaction.value || !!transaction.data),
+    enabled: !!chainId && (!!transaction.value || !!transaction.data),
     queryFn: async () => {
       const response = (await metadataPostClient.simulateTransactions({
         chainId,
