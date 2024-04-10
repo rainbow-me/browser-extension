@@ -119,7 +119,7 @@ export const useSimulateTransaction = ({
     queryFn: async () => {
       const response = (await metadataPostClient.simulateTransactions({
         chainId,
-        transactions: [transaction],
+        transactions: [{ ...transaction, to: transaction.to || '' }],
         domain,
       })) as TransactionSimulationResponse;
       return parseSimulation(response.simulateTransactions[0], chainId);
