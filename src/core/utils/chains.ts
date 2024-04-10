@@ -290,7 +290,6 @@ export function chainNameFromChainId(chainId: ChainId): ChainName {
 
 export function getBlockExplorerHostForChain(chainId: ChainId) {
   const chain = getChain({ chainId });
-  console.log('-- getBlockExplorerHostForChain', chain);
   return chain?.blockExplorers
     ? getDappHost(chain.blockExplorers.default.url)
     : undefined;
