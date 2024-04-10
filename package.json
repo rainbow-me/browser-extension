@@ -159,7 +159,7 @@
   },
   "devDependencies": {
     "@foundry-rs/hardhat-anvil": "0.1.7",
-    "@lavamoat/allow-scripts": "3.0.4",
+    "@lavamoat/allow-scripts": "3.0.1",
     "@lavamoat/preinstall-always-fail": "2.0.0",
     "@peculiar/webcrypto": "1.4.1",
     "@testing-library/react": "13.4.0",
@@ -230,6 +230,7 @@
     "worker-loader": "3.0.8"
   },
   "resolutions": {
+    "**/tar": "6.2.1",
     "bn.js": "5.2.1",
     "@scure/bip39": "1.2.1",
     "protobufjs": "7.2.4",
