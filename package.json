@@ -230,6 +230,7 @@
     "worker-loader": "3.0.8"
   },
   "resolutions": {
+    "tar": "6.2.1",
     "bn.js": "5.2.1",
     "@scure/bip39": "1.2.1",
     "protobufjs": "7.2.4",
