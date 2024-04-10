@@ -158,7 +158,7 @@ export const sendTransaction = async (
         throw new Error('Unsupported hardware wallet');
     }
   } else {
-    const transactionResponse = walletAction<TransactionResponse>(
+    const transactionResponse = await walletAction<TransactionResponse>(
       'send_transaction',
       params,
     );
@@ -177,6 +177,7 @@ function deserializeBigNumbers<T>(obj: T) {
       'type' in v &&
       v.type === 'BigNumber'
     ) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       obj[key] = BigNumber.from(obj[key]._hex);
     }

@@ -7,6 +7,7 @@ import { getAddress } from '@ethersproject/address';
 import { BigNumberish } from '@ethersproject/bignumber';
 import { Contract, ContractInterface } from '@ethersproject/contracts';
 import { serialize } from '@ethersproject/transactions';
+import BigNumber from 'bignumber.js';
 
 import { globalColors } from '~/design-system/styles/designTokens';
 
@@ -109,9 +110,10 @@ export const parseGasDataConfirmationTime = ({
 };
 
 export const parseGasFeeParam = ({ wei }: { wei: string }): GasFeeParam => {
-  const gwei = wei ? weiToGwei(wei) : '';
+  const _wei = new BigNumber(wei).toFixed(0); // wei is the smallest unit, shouldn't have decimals
+  const gwei = _wei ? weiToGwei(_wei) : '';
   return {
-    amount: wei,
+    amount: _wei,
     display: `${formatNumber(gwei)} Gwei`,
     gwei,
   };

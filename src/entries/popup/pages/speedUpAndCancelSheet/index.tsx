@@ -99,10 +99,12 @@ const cancelTransaction = (
     selectedGasParams,
   );
   // to cancel we send 0 to the from address with higher gas price/priority fee
+  const { nonce, chainId, from } = transaction;
   return {
-    ...transaction,
-    type: undefined,
-    to: transaction.from,
+    nonce,
+    chainId,
+    from,
+    to: from,
     value: toHex('0'),
     data: undefined,
     ...gasParams,
@@ -118,9 +120,15 @@ const speedUpTransaction = (
     selectedGasParams,
   );
   // to speed up we just resent the same tx with higher gas price/priority fee
+  const { data, chainId, from, to, nonce, gasLimit, value } = transaction;
   return {
-    ...transaction,
-    type: undefined,
+    data,
+    chainId,
+    from,
+    to,
+    nonce,
+    gasLimit,
+    value,
     ...gasParams,
   };
 };
