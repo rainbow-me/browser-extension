@@ -252,12 +252,6 @@ export const parseGasFeeParams = ({
     secondsPerNewBlock,
   });
 
-  console.log(
-    'PARSE',
-    maxBaseFee.amount,
-    convertStringToHex(maxBaseFee.amount),
-  );
-
   const transactionGasParams = {
     maxPriorityFeePerGas: addHexPrefix(
       convertStringToHex(maxPriorityFeePerGas.amount),
