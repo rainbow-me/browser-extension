@@ -26,6 +26,7 @@ export const BackupReminder = () => {
   const navigate = useRainbowNavigate();
 
   useKeyboardShortcut({
+    condition: () => showWalletBackupReminder,
     handler: (e: KeyboardEvent) => {
       if (e.key === shortcuts.global.CLOSE.key) {
         e.preventDefault();

@@ -114,8 +114,10 @@ export const ExplainerSheet = ({
   onClickOutside,
 }: ExplainerSheetProps) => {
   useKeyboardShortcut({
+    condition: () => !!show,
     handler: (e: KeyboardEvent) => {
       if (e.key === shortcuts.global.CLOSE.key) {
+        e.preventDefault();
         onClickOutside?.();
       }
     },
