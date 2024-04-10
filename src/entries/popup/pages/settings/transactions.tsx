@@ -143,6 +143,7 @@ export function Transactions() {
         </Menu>
         <Menu>
           <MenuItem
+            first
             last
             titleComponent={
               <MenuItem.Title

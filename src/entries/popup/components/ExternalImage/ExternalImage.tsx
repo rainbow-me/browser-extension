@@ -63,7 +63,7 @@ const ExternalImage = (props: ExternalImageProps) => {
       if (img) {
         return img;
       }
-      return undefined;
+      throw new Error(`couldn't load image`);
     },
   });
 
@@ -155,8 +155,8 @@ const ExternalImage = (props: ExternalImageProps) => {
           : {}),
         boxShadow: isLoading || error ? undefined : props.boxShadow,
         overflow: error ? 'visible' : 'clip',
-        height: Number(props.height) || props.height,
-        width: Number(props.width) || props.width,
+        height: props.height && (Number(props.height) || props.height),
+        width: props.width && (Number(props.width) || props.width),
       }}
     >
       {renderContent()}
