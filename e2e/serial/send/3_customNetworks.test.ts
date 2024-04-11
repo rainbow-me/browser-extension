@@ -188,7 +188,7 @@ it('should be able to add a custom token', async () => {
   });
 
   // needs a couple seconds to validate
-  await delayTime('medium');
+  await delayTime('very-long');
 
   const tokenName = await findElementByTestId({
     id: 'token-name-field',
