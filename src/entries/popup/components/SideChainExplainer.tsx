@@ -8,29 +8,57 @@ import {
   ExplainerSheetProps,
 } from './ExplainerSheet/ExplainerSheet';
 
-type SideChain = Exclude<
-  ChainId,
-  ChainId.mainnet | ChainId.hardhat | ChainId.hardhatOptimism
->;
-export const isSideChain = (chainId: ChainId): chainId is SideChain =>
-  [
-    ChainId.arbitrum,
-    ChainId.polygon,
-    ChainId.optimism,
-    ChainId.bsc,
-    ChainId.avalanche,
-  ].includes(chainId);
+const excludedChains: ChainId[] = [
+  ChainId.mainnet,
+  ChainId.hardhat,
+  ChainId.hardhatOptimism,
+];
+
+export const isSideChain = (chainId: ChainId): boolean => {
+  return !excludedChains.includes(chainId);
+};
 
 export const getSideChainExplainerParams = (
-  chainId: SideChain,
+  chainId: ChainId,
   onDismiss: VoidFunction,
 ) => {
   const chainName = chainNameFromChainId(chainId);
+  const specificChains = {
+    [ChainId.polygon]: 'polygon',
+    [ChainId.bsc]: 'bsc',
+    [ChainId.avalanche]: 'avalanche',
+  };
+
+  const chainTypeKey = specificChains[chainId];
+
+  const basePath = chainTypeKey
+    ? `explainers.sidechains.specific.${chainTypeKey}`
+    : 'explainers.sidechains.layer_two';
+
+  if (!chainName)
+    return {
+      title: i18n.t(`explainers.sidechains.specific.custom_network.title`),
+      description: [
+        i18n.t(`explainers.sidechains.specific.custom_network.description_1`),
+        i18n.t(`explainers.sidechains.specific.custom_network.description_2`),
+      ] as string[],
+      header: { icon: <ChainBadge chainId={chainId} size="45" /> },
+      linkButton: {
+        url: 'https://learn.rainbow.me/a-beginners-guide-to-layer-2-networks',
+        label: i18n.t(`explainers.sidechains.link_button_label`),
+      },
+      actionButton: {
+        label: i18n.t('explainers.sidechains.action_label'),
+        variant: 'tinted',
+        labelColor: 'blue',
+        action: onDismiss,
+      },
+    } as const;
   return {
-    title: i18n.t(`explainers.sidechains.${chainName}.title`),
+    title: i18n.t(`${basePath}.title`, { chainName }),
     description: [
-      i18n.t(`explainers.sidechains.${chainName}.description_1`),
-      i18n.t(`explainers.sidechains.${chainName}.description_2`),
+      i18n.t(`${basePath}.description_1`, { chainName }),
+      i18n.t(`${basePath}.description_2`),
     ] as string[],
     header: { icon: <ChainBadge chainId={chainId} size="45" /> },
     linkButton: {
