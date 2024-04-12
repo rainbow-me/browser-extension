@@ -27,6 +27,8 @@ export const getSideChainExplainerParams = (
     [ChainId.polygon]: 'polygon',
     [ChainId.bsc]: 'bsc',
     [ChainId.avalanche]: 'avalanche',
+    [ChainId.blast]: 'blast',
+    // [ChainId.degen]: 'degen',
   };
 
   const chainTypeKey = specificChains[chainId];

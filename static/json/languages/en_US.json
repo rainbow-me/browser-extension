@@ -1558,6 +1558,16 @@
           "description_1": "Avalanche is an alternative Layer 1 powered by an ecosystem of subnets, similar to Ethereum sidechains and Layer 2s.",
           "description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, Avalanche has its own security and consensus mechanisms that differ from Ethereum."
         },
+        "blast": {
+          "title": "What's Blast?",
+          "description_1": "Blast is an Ethereum Layer-2 (L2) platform created by the same talented team behind Blur, the popular NFT marketplace.",
+          "description_2": "The chain distinguishes itself with the introduction of native yield for ether (ETH) and various stablecoins such as USDC, USDT, and DAI."
+        },
+        "degen": {
+          "title": "What's Degen?",
+          "description_1": "Degen Chain is a Layer 3 network that runs on top of Arbitrum and Ethereum.",
+          "description_2": "It offering incredibly fast and cheap transactions denominated in the Farcaster community token $degen."
+        },
         "custom_network": {
           "title": "What's this Network?",
           "description_1": "This is a custom network added by you! Custom networks can be tailored to meet specific needs, offering unique features and capabilities.",
