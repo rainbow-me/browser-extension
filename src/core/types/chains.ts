@@ -94,11 +94,11 @@ export const chainPolygonAmoy: Chain = {
 
 export const chainDegen: Chain = {
   id: 666666666,
-  name: 'Degen',
+  name: 'Degen Chain',
   network: 'degen',
   nativeCurrency: {
     decimals: 18,
-    name: 'DEGEN',
+    name: 'Degen',
     symbol: 'DEGEN',
   },
   rpcUrls: {
