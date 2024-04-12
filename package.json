@@ -267,7 +267,8 @@
     "ip": "2.0.1",
     "viem": "1.21.4",
     "@solana/web3.js": "1.90.0",
-    "jose": "4.15.5"
+    "jose": "4.15.5",
+    "phin": "3.7.1"
   },
   "lavamoat": {
     "allowScripts": {
