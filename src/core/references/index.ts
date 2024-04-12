@@ -194,6 +194,7 @@ export const NATIVE_ASSETS_MAP_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.zoraSepolia]: ETH_ADDRESS,
   [ChainId.polygon]: MATIC_MAINNET_ADDRESS,
   [ChainId.polygonMumbai]: MATIC_MAINNET_ADDRESS,
+  [ChainId.hardhatPolygon]: ETH_ADDRESS,
   [ChainId.avalanche]: ETH_ADDRESS,
   [ChainId.avalancheFuji]: ETH_ADDRESS,
   [ChainId.blast]: ETH_ADDRESS,

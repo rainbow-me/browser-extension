@@ -19,6 +19,7 @@ const FAVORITES_EMPTY_STATE = {
   [ChainId.avalanche]: [],
   [ChainId.hardhat]: [],
   [ChainId.hardhatOptimism]: [],
+  [ChainId.hardhatPolygon]: [],
 };
 
 // expensive hook, only use in top level parent components

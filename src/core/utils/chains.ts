@@ -81,7 +81,9 @@ export const getSupportedChainsWithHardhat = () => {
     (chain) =>
       !chain.testnet ||
       (process.env.IS_TESTING === 'true' &&
-        (chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism)),
+        (chain.id === ChainId.hardhat ||
+          chain.id === ChainId.hardhatOptimism ||
+          chain.id === ChainId.hardhatPolygon)),
   );
 };
 
@@ -107,7 +109,11 @@ export const useMainChains = () => {
   const customMainChains = chains?.filter(
     (chain) =>
       !supportedChainIds.includes(chain.id) &&
-      !(chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism),
+      !(
+        chain.id === ChainId.hardhat ||
+        chain.id === ChainId.hardhatOptimism ||
+        chain.id === ChainId.hardhatPolygon
+      ),
   );
 
   const customChainsIncludingTestnets = customMainChains.filter(
@@ -137,7 +143,11 @@ export const getMainChains = () => {
   const customMainChains = chains?.filter(
     (chain) =>
       !supportedChainIds.includes(chain.id) &&
-      !(chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism),
+      !(
+        chain.id === ChainId.hardhat ||
+        chain.id === ChainId.hardhatOptimism ||
+        chain.id === ChainId.hardhatPolygon
+      ),
   );
 
   const customChainsIncludingTestnets = customMainChains.filter(
@@ -312,6 +322,7 @@ export function isSupportedChainId(chainId: number) {
 export const chainIdToUse = (
   connectedToHardhat: boolean,
   connectedToHardhatOp: boolean,
+  connectedToHardhatPolygon: boolean,
   activeSessionChainId: number,
 ) => {
   if (connectedToHardhat) {
@@ -319,6 +330,9 @@ export const chainIdToUse = (
   }
   if (connectedToHardhatOp) {
     return ChainId.hardhatOptimism;
+  }
+  if (connectedToHardhatPolygon) {
+    return ChainId.hardhatPolygon;
   }
   return activeSessionChainId;
 };

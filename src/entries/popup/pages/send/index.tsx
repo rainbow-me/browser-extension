@@ -123,8 +123,11 @@ export function Send() {
   const isMyWallet = (address: Address) =>
     allWallets?.some((w) => w.address === address);
 
-  const { connectedToHardhat, connectedToHardhatOp } =
-    useConnectedToHardhatStore();
+  const {
+    connectedToHardhat,
+    connectedToHardhatOp,
+    connectedToHardhatPolygon,
+  } = useConnectedToHardhatStore();
 
   const {
     asset,
@@ -259,6 +262,7 @@ export function Send() {
   const activeChainId = chainIdToUse(
     connectedToHardhat,
     connectedToHardhatOp,
+    connectedToHardhatPolygon,
     chainId,
   );
 

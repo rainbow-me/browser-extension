@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import { getProvider } from '@wagmi/core';
 import { Address } from 'wagmi';
 
@@ -19,6 +20,7 @@ import {
   DAI_MAINNET_ASSET,
   ETH_MAINNET_ASSET,
   OPTIMISM_MAINNET_ASSET,
+  POLYGON_MAINNET_ASSET,
   USDC_MAINNET_ASSET,
 } from '~/test/utils';
 
@@ -71,26 +73,33 @@ export async function parseUserAssets({
         parsedAsset;
     }
   }
+  const {
+    connectedToHardhat,
+    connectedToHardhatOp,
+    connectedToHardhatPolygon,
+  } = connectedToHardhatStore.getState();
 
-  const { connectedToHardhat, connectedToHardhatOp } =
-    connectedToHardhatStore.getState();
-  if (connectedToHardhat || connectedToHardhatOp) {
-    // separating out these ternaries for readability
+  if (connectedToHardhat || connectedToHardhatOp || connectedToHardhatPolygon) {
     const selectedHardhatChainId = connectedToHardhat
       ? ChainId.hardhat
-      : ChainId.hardhatOptimism;
+      : connectedToHardhatOp
+      ? ChainId.hardhatOptimism
+      : ChainId.hardhatPolygon;
 
     const mainnetOrOptimismChainId = connectedToHardhat
       ? ChainId.mainnet
-      : ChainId.optimism;
+      : connectedToHardhatOp
+      ? ChainId.optimism
+      : ChainId.polygon;
 
     const ethereumOrOptimismAsset = connectedToHardhat
       ? ETH_MAINNET_ASSET
-      : OPTIMISM_MAINNET_ASSET;
+      : connectedToHardhatOp
+      ? OPTIMISM_MAINNET_ASSET
+      : POLYGON_MAINNET_ASSET;
 
     const provider = getProvider({ chainId: selectedHardhatChainId });
 
-    // Ensure assets are checked if connected to hardhat
     const assets = parsedAssetsDict[mainnetOrOptimismChainId];
     assets[ethereumOrOptimismAsset.uniqueId] = ethereumOrOptimismAsset;
     if (process.env.IS_TESTING === 'true') {
@@ -121,7 +130,7 @@ export async function parseUserAssets({
       acc[parsedAsset.uniqueId] = parsedAsset;
       return acc;
     }, {});
-    // eslint-disable-next-line require-atomic-updates
+
     parsedAssetsDict[mainnetOrOptimismChainId] = newAssets;
   }
   return parsedAssetsDict;

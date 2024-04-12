@@ -53,6 +53,7 @@
     "// Runs tests": "",
     "anvil": "ETH_MAINNET_RPC=$(grep ETH_MAINNET_RPC .env | cut -d '=' -f2) && anvil --fork-url $ETH_MAINNET_RPC",
     "anvil:optimism": "OPTIMISM_MAINNET_RPC=$(grep OPTIMISM_MAINNET_RPC .env | cut -d '=' -f2) && anvil --fork-url $OPTIMISM_MAINNET_RPC",
+    "anvil:polygon": "OPTIMISM_MAINNET_RPC=$(grep POLYGON_MAINNET_RPC .env | cut -d '=' -f2) && anvil --fork-url $POLYGON_MAINNET_RPC",
     "anvil:kill": "lsof -i :8545|tail -n +2|awk '{print $2}'|xargs -r kill -s SIGINT",
     "test": "./scripts/unit-tests.sh",
     "test:watch": "yarn anvil & vitest --watch",

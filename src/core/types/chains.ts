@@ -7,6 +7,7 @@ const BLAST_SEPOLIA_CHAIN_ID = 168587773;
 const POLYGON_AMOY_CHAIN_ID = 80002;
 
 const HARDHAT_OP_CHAIN_ID = 1338;
+const HARDHAT_POLYGON_CHAIN_ID = 1339;
 
 export const chainHardhat: Chain = {
   id: HARDHAT_CHAIN_ID,
@@ -32,6 +33,22 @@ export const chainHardhatOptimism: Chain = {
     decimals: 18,
     name: 'Hardhat OP',
     symbol: 'ETH',
+  },
+  rpcUrls: {
+    public: { http: ['http://127.0.0.1:8545'] },
+    default: { http: ['http://127.0.0.1:8545'] },
+  },
+  testnet: true,
+};
+
+export const chainHardhatPolygon: Chain = {
+  id: HARDHAT_POLYGON_CHAIN_ID,
+  name: 'Hardhat Polygon',
+  network: 'hardhat-polygon',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Hardhat Polygon',
+    symbol: 'MATIC',
   },
   rpcUrls: {
     public: { http: ['http://127.0.0.1:8545'] },
@@ -116,6 +133,7 @@ export enum ChainName {
   holesky = 'holesky',
   hardhat = 'hardhat',
   hardhatOptimism = 'hardhat-optimism',
+  hardhatPolygon = 'hardhat-polygon',
   sepolia = 'sepolia',
   optimismSepolia = 'optimism-sepolia',
   bscTestnet = 'bsc-testnet',
@@ -146,6 +164,7 @@ export enum ChainId {
   zora = chain.zora.id,
   hardhat = HARDHAT_CHAIN_ID,
   hardhatOptimism = chainHardhatOptimism.id,
+  hardhatPolygon = chainHardhatPolygon.id,
   sepolia = chain.sepolia.id,
   scroll = chain.scroll.id,
   holesky = chain.holesky.id,
@@ -183,6 +202,7 @@ export const chainNameToIdMapping: {
   [ChainName.holesky]: ChainId.holesky,
   [ChainName.hardhat]: ChainId.hardhat,
   [ChainName.hardhatOptimism]: ChainId.hardhatOptimism,
+  [ChainName.hardhatPolygon]: ChainId.hardhatPolygon,
   ['ethereum-sepolia']: ChainId.sepolia,
   [ChainName.sepolia]: ChainId.sepolia,
   [ChainName.optimismSepolia]: ChainId.optimismSepolia,
@@ -221,6 +241,7 @@ export const chainIdToNameMapping: {
   [ChainId.holesky]: ChainName.holesky,
   [ChainId.hardhat]: ChainName.hardhat,
   [ChainId.hardhatOptimism]: ChainName.hardhatOptimism,
+  [ChainId.hardhatPolygon]: ChainName.hardhatPolygon,
   [ChainId.sepolia]: ChainName.sepolia,
   [ChainId.optimismSepolia]: ChainName.optimismSepolia,
   [ChainId.bscTestnet]: ChainName.bscTestnet,
@@ -251,6 +272,7 @@ export const ChainNameDisplay = {
   [ChainId.mainnet]: 'Ethereum',
   [ChainId.hardhat]: 'Hardhat',
   [ChainId.hardhatOptimism]: chainHardhatOptimism.name,
+  [ChainId.hardhatPolygon]: chainHardhatPolygon.name,
   [ChainId.sepolia]: chain.sepolia.name,
   [ChainId.holesky]: chain.holesky.name,
   [ChainId.optimismSepolia]: chain.optimismSepolia.name,

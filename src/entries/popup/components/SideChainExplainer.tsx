@@ -10,7 +10,10 @@ import {
 
 type SideChain = Exclude<
   ChainId,
-  ChainId.mainnet | ChainId.hardhat | ChainId.hardhatOptimism
+  | ChainId.mainnet
+  | ChainId.hardhat
+  | ChainId.hardhatOptimism
+  | ChainId.hardhatPolygon
 >;
 export const isSideChain = (chainId: ChainId): chainId is SideChain =>
   [

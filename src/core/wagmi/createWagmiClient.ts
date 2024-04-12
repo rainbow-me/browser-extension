@@ -12,7 +12,12 @@ import { proxyRpcEndpoint } from '../providers';
 import { queryClient } from '../react-query';
 import { SUPPORTED_CHAINS, getDefaultRPC } from '../references';
 import { LocalStorage } from '../storage';
-import { ChainId, chainHardhat, chainHardhatOptimism } from '../types/chains';
+import {
+  ChainId,
+  chainHardhat,
+  chainHardhatOptimism,
+  chainHardhatPolygon,
+} from '../types/chains';
 import { findRainbowChainForChainId } from '../utils/chains';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
@@ -29,7 +34,11 @@ export const getOriginalRpcEndpoint = (chain: Chain) => {
   if (userAddedNetwork) {
     return { http: userAddedNetwork.rpcUrls.default.http[0] };
   }
-  if (chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism) {
+  if (
+    chain.id === ChainId.hardhat ||
+    chain.id === ChainId.hardhatOptimism ||
+    chain.id === ChainId.hardhatPolygon
+  ) {
     return { http: chain.rpcUrls.default.http[0] };
   }
 
@@ -37,7 +46,11 @@ export const getOriginalRpcEndpoint = (chain: Chain) => {
 };
 
 const supportedChains = IS_TESTING
-  ? SUPPORTED_CHAINS.concat(chainHardhat, chainHardhatOptimism)
+  ? SUPPORTED_CHAINS.concat(
+      chainHardhat,
+      chainHardhatOptimism,
+      chainHardhatPolygon,
+    )
   : SUPPORTED_CHAINS;
 
 export const configureChainsForWagmiClient = (

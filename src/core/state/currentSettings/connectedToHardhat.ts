@@ -8,6 +8,9 @@ export interface ConnectedToHardhatState {
 
   connectedToHardhatOp: boolean;
   setConnectedToHardhatOp: (connectedToHardhatOp: boolean) => void;
+
+  connectedToHardhatPolygon: boolean;
+  setConnectedToHardhatPolygon: (connectedToHardhatPolygon: boolean) => void;
 }
 
 export const connectedToHardhatStore = createStore<ConnectedToHardhatState>(
@@ -20,6 +23,10 @@ export const connectedToHardhatStore = createStore<ConnectedToHardhatState>(
     connectedToHardhatOp: false,
     setConnectedToHardhatOp: (connectedToHardhatOp) => {
       set({ connectedToHardhatOp });
+    },
+    connectedToHardhatPolygon: false,
+    setConnectedToHardhatPolygon: (connectedToHardhatPolygon) => {
+      set({ connectedToHardhatPolygon });
     },
   }),
   {

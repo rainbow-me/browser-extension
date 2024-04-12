@@ -48,6 +48,7 @@ const networkBadges = {
   [ChainId.avalanche]: AvalancheBadge,
   [ChainId.hardhat]: HardhatBadge,
   [ChainId.hardhatOptimism]: HardhatBadge,
+  [ChainId.hardhatPolygon]: HardhatBadge,
   [ChainId.sepolia]: EthereumBadge,
   [ChainId.holesky]: EthereumBadge,
   [ChainId.optimismSepolia]: OptimismBadge,

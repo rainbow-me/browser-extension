@@ -90,6 +90,30 @@ export const USDC_MAINNET_ASSET = {
   decimals: 6,
 } satisfies ParsedUserAsset;
 
+export const POLYGON_MAINNET_ASSET = {
+  address: '0x0000000000000000000000000000000000000000',
+  balance: { amount: '10000', display: '10,000.00 ETH' },
+  chainId: 10,
+  chainName: 'optimism' as ChainName,
+  colors: { primary: '#808088', fallback: '#E8EAF5' },
+  decimals: 18,
+  icon_url:
+    'https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/ethereum/eth.png',
+  isNativeAsset: true,
+  mainnetAddress: 'eth',
+  name: 'Ethereum',
+  native: {
+    balance: { amount: '16341800', display: '$16,341,800.00' },
+    price: { change: '0.15%', amount: 1634.18, display: '$1,634.18' },
+  },
+  price: {
+    value: 1634.18,
+    relative_change_24h: 0.14646492502099484,
+  },
+  symbol: 'ETH',
+  uniqueId: 'eth_10',
+} satisfies ParsedUserAsset;
+
 export const OPTIMISM_MAINNET_ASSET = {
   address: '0x0000000000000000000000000000000000000000',
   balance: { amount: '10000', display: '10,000.00 ETH' },

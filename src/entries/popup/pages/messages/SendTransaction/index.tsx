@@ -58,8 +58,11 @@ export function SendTransaction({
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
   const { selectedGas } = useGasStore();
   const selectedWallet = activeSession?.address || '';
-  const { connectedToHardhat, connectedToHardhatOp } =
-    useConnectedToHardhatStore();
+  const {
+    connectedToHardhat,
+    connectedToHardhatOp,
+    connectedToHardhatPolygon,
+  } = useConnectedToHardhatStore();
   const { asset, selectAssetAddressAndChain } = useSendAsset();
   const { watchedWallets } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
@@ -85,6 +88,7 @@ export function SendTransaction({
       const activeChainId = chainIdToUse(
         connectedToHardhat,
         connectedToHardhatOp,
+        connectedToHardhatPolygon,
         activeSession.chainId,
       );
       const txData = {
@@ -149,6 +153,7 @@ export function SendTransaction({
     request?.params,
     connectedToHardhat,
     connectedToHardhatOp,
+    connectedToHardhatPolygon,
     asset,
     flashbotsEnabledGlobally,
     selectedGas.transactionGasParams,
@@ -192,6 +197,7 @@ export function SendTransaction({
       const activeChainId = chainIdToUse(
         connectedToHardhat,
         connectedToHardhatOp,
+        connectedToHardhatPolygon,
         activeSession?.chainId,
       );
       selectAssetAddressAndChain(
@@ -204,6 +210,7 @@ export function SendTransaction({
     connectedToHardhat,
     selectAssetAddressAndChain,
     connectedToHardhatOp,
+    connectedToHardhatPolygon,
   ]);
 
   return (

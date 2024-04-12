@@ -59,6 +59,8 @@ export function Settings() {
     setConnectedToHardhat,
     connectedToHardhatOp,
     setConnectedToHardhatOp,
+    connectedToHardhatPolygon,
+    setConnectedToHardhatPolygon,
   } = useConnectedToHardhatStore();
   const { clearNonces } = useNonceStore();
 
@@ -119,6 +121,10 @@ export function Settings() {
   const connectToHardhatOp = useCallback(() => {
     setConnectedToHardhatOp(!connectedToHardhatOp);
   }, [setConnectedToHardhatOp, connectedToHardhatOp]);
+
+  const connectToHardhatPolygon = useCallback(() => {
+    setConnectedToHardhatPolygon(!connectedToHardhatPolygon);
+  }, [setConnectedToHardhatPolygon, connectedToHardhatPolygon]);
 
   const setRainbowAsDefaultWallet = useCallback(
     async (rainbowAsDefault: boolean) => {
@@ -487,6 +493,19 @@ export function Settings() {
               }
               onClick={connectToHardhatOp}
               testId="connect-to-hardhat-op"
+            />
+            <MenuItem
+              titleComponent={
+                <MenuItem.Title
+                  text={
+                    connectedToHardhatPolygon
+                      ? 'Disconnect from Hardhat Polygon'
+                      : 'Connect to Hardhat Polygon'
+                  }
+                />
+              }
+              onClick={connectToHardhatPolygon}
+              testId="connect-to-hardhat-polygon"
             />
             <MenuItem
               last

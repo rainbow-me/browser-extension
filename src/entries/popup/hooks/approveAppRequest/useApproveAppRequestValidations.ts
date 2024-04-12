@@ -16,8 +16,11 @@ export const useApproveAppRequestValidations = ({
   session: ActiveSession;
   dappStatus?: DAppStatus;
 }) => {
-  const { connectedToHardhat, connectedToHardhatOp } =
-    useConnectedToHardhatStore();
+  const {
+    connectedToHardhat,
+    connectedToHardhatOp,
+    connectedToHardhatPolygon,
+  } = useConnectedToHardhatStore();
 
   const enoughNativeAssetForGas = useHasEnoughGas(session);
 
@@ -25,6 +28,7 @@ export const useApproveAppRequestValidations = ({
     const activeChainId = chainIdToUse(
       connectedToHardhat,
       connectedToHardhatOp,
+      connectedToHardhatPolygon,
       session?.chainId || ChainId.mainnet,
     );
     if (dappStatus === DAppStatus.Scam)
@@ -39,6 +43,7 @@ export const useApproveAppRequestValidations = ({
   }, [
     connectedToHardhat,
     connectedToHardhatOp,
+    connectedToHardhatPolygon,
     session?.chainId,
     dappStatus,
     enoughNativeAssetForGas,
