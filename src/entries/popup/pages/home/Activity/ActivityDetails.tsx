@@ -618,9 +618,9 @@ export function ActivityDetails() {
             )}
             <ConfirmationData transaction={transaction} />
             <NetworkData transaction={transaction} />
-            {/* {transaction.status === 'pending' && ( */}
-            <SpeedUpOrCancel transaction={transaction} />
-            {/* )} */}
+            {transaction.status === 'pending' && (
+              <SpeedUpOrCancel transaction={transaction} />
+            )}
           </Stack>
         </>
       )}
