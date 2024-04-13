@@ -1,4 +1,5 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -44,6 +45,8 @@ export function ActivityContextMenu({
   };
 
   const explorer = getTransactionBlockExplorer(transaction);
+
+  const navigate = useNavigate();
 
   const onSpeedUp = () => {
     navigate({
