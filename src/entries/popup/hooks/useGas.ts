@@ -110,11 +110,11 @@ const useGas = ({
     let secondsPerNewBlock;
     let blocksToConfirmation;
     if ('legacy' in data) {
-      currentBaseFee = data.legacy.proposeGasPrice;
+      currentBaseFee = data.legacy.safeGasPrice;
     } else {
       currentBaseFee = data.currentBaseFee;
       secondsPerNewBlock = data.secondsPerNewBlock;
-      blocksToConfirmation = {
+      blocksToConfirmation = data.blocksToConfirmationByBaseFee && {
         byBaseFee: data.blocksToConfirmationByBaseFee,
         byPriorityFee: data.blocksToConfirmationByPriorityFee,
       };
@@ -123,6 +123,8 @@ const useGas = ({
     const maxPriorityFeePerGas = (
       storeGasFeeParamsBySpeed?.custom as GasFeeParams
     )?.maxPriorityFeePerGas?.amount;
+
+    console.log({ maxPriorityFeePerGas });
 
     const newCustomSpeed = parseCustomGasFeeParams({
       currentBaseFee,
@@ -135,6 +137,7 @@ const useGas = ({
       currency: currentCurrency,
       secondsPerNewBlock,
     });
+    console.log({ newCustomSpeed });
     setCustomSpeed(newCustomSpeed);
   }, [
     chainId,
@@ -164,11 +167,11 @@ const useGas = ({
     let secondsPerNewBlock;
     let blocksToConfirmation;
     if ('legacy' in data) {
-      currentBaseFee = data.legacy.proposeGasPrice;
+      currentBaseFee = data.legacy.safeGasPrice;
     } else {
       currentBaseFee = data.currentBaseFee;
       secondsPerNewBlock = data.secondsPerNewBlock;
-      blocksToConfirmation = {
+      blocksToConfirmation = data.blocksToConfirmationByBaseFee && {
         byBaseFee: data.blocksToConfirmationByBaseFee,
         byPriorityFee: data.blocksToConfirmationByPriorityFee,
       };
@@ -177,7 +180,7 @@ const useGas = ({
     const maxBaseFee = (storeGasFeeParamsBySpeed?.custom as GasFeeParams)
       ?.maxBaseFee?.amount;
 
-    let maxPriorityFeeWei = gweiToWei(debouncedMaxPriorityFee || '0');
+    let maxPriorityFeeWei = gweiToWei(debouncedMaxPriorityFee);
     // Set the flashbots minimum
     if (
       flashbotsEnabled &&
@@ -263,13 +266,14 @@ const useGas = ({
   }, [defaultSpeed, prevDefaultSpeed]);
 
   useEffect(() => {
+    const gasFeeParams = gasFeeParamsBySpeed?.[selectedSpeed];
     if (
       enabled &&
-      gasFeeParamsBySpeed?.[selectedSpeed] &&
-      gasFeeParamsChanged(selectedGas, gasFeeParamsBySpeed?.[selectedSpeed])
+      gasFeeParams &&
+      gasFeeParamsChanged(selectedGas, gasFeeParams)
     ) {
       setSelectedGas({
-        selectedGas: gasFeeParamsBySpeed[selectedSpeed],
+        selectedGas: gasFeeParams,
       });
     }
   }, [
@@ -281,13 +285,13 @@ const useGas = ({
   ]);
 
   useEffect(() => {
+    const feeParams = gasFeeParamsBySpeed?.[selectedSpeed];
+    const storeFeeParams = storeGasFeeParamsBySpeed[selectedSpeed];
     if (
       enabled &&
-      gasFeeParamsBySpeed?.[selectedSpeed] &&
-      gasFeeParamsChanged(
-        storeGasFeeParamsBySpeed[selectedSpeed],
-        gasFeeParamsBySpeed[selectedSpeed],
-      )
+      feeParams &&
+      storeFeeParams &&
+      gasFeeParamsChanged(storeFeeParams, feeParams)
     ) {
       setGasFeeParamsBySpeed({
         gasFeeParamsBySpeed,
@@ -315,7 +319,7 @@ const useGas = ({
     setCustomMaxBaseFee,
     setCustomMaxPriorityFee,
     clearCustomGasModified,
-    currentBaseFee: currentBaseFee && weiToGwei(currentBaseFee),
+    currentBaseFee: weiToGwei(currentBaseFee || '0'),
     baseFeeTrend: (gasData as MeteorologyResponse)?.data?.baseFeeTrend,
   };
 };

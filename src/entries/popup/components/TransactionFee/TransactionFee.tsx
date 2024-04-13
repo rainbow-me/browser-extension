@@ -182,20 +182,22 @@ function Fee({
                         }`}
                   </TextOverflow>
                 </Column>
-                <Column>
-                  <TextOverflow
-                    weight="semibold"
-                    color="labelTertiary"
-                    size="14pt"
-                  >
-                    {isLoading
-                      ? ''
-                      : `${
-                          gasFeeParamsForSelectedSpeed?.estimatedTime.display ||
-                          ''
-                        }`}
-                  </TextOverflow>
-                </Column>
+                {gasFeeParamsForSelectedSpeed?.estimatedTime && (
+                  <Column>
+                    <TextOverflow
+                      weight="semibold"
+                      color="labelTertiary"
+                      size="14pt"
+                    >
+                      {isLoading
+                        ? ''
+                        : `${
+                            gasFeeParamsForSelectedSpeed?.estimatedTime
+                              .display || ''
+                          }`}
+                    </TextOverflow>
+                  </Column>
+                )}
               </Columns>
             </Row>
           </Rows>

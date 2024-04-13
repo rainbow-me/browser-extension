@@ -17,7 +17,6 @@ import { txSpeedEmoji } from '~/core/references/txSpeed';
 import { useGasStore } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
 import { GasFeeParams, GasSpeed } from '~/core/types/gas';
-import { chainSupportsPriorityFee } from '~/core/utils/chains';
 import { formatNumber } from '~/core/utils/formatNumber';
 import { getBaseFeeTrendParams } from '~/core/utils/gas';
 import { isZero, lessThan } from '~/core/utils/numbers';
@@ -49,8 +48,6 @@ import {
 } from '../ExplainerSheet/ExplainerSheet';
 import { GweiInputMask } from '../InputMask/GweiInputMask/GweiInputMask';
 import { CursorTooltip } from '../Tooltip/CursorTooltip';
-
-const speeds = [GasSpeed.URGENT, GasSpeed.FAST, GasSpeed.NORMAL];
 
 const GasLabel = ({
   label,
@@ -172,7 +169,7 @@ function PriorityFeeUnsupportedTooltip({ children }: PropsWithChildren) {
       arrowAlignment="center"
       arrowDirection="down"
       arrowCentered
-      text={'Priority fees are not supported on this chain'}
+      text={'Miner tip is not supported on this chain'}
       textWeight="bold"
       textSize="12pt"
       textColor="labelSecondary"
@@ -188,24 +185,21 @@ function PriorityFeeInput({
   inputRef,
   value,
   onChange,
-  chainId,
+  disabled,
 }: {
   warning: 'stuck' | 'fail' | undefined;
   showExplainer: () => void;
   inputRef: React.RefObject<HTMLInputElement>;
-  value: string;
+  value: string | undefined;
   onChange: (value: string) => void;
-  chainId: ChainId;
+  disabled: boolean;
 }) {
-  const supportsPriorityFee = chainSupportsPriorityFee(chainId);
-  const Tooltip = !supportsPriorityFee
-    ? PriorityFeeUnsupportedTooltip
-    : Fragment;
+  const Tooltip = disabled ? PriorityFeeUnsupportedTooltip : Fragment;
 
   return (
     <Tooltip>
       <Box
-        style={{ opacity: !supportsPriorityFee ? 0.6 : 1 }}
+        style={{ opacity: disabled ? 0.6 : 1 }}
         display="flex"
         alignItems="center"
         justifyContent="space-between"
@@ -218,10 +212,10 @@ function PriorityFeeInput({
         <Box style={{ width: 98 }} marginRight="-4px">
           <GweiInputMask
             inputRef={inputRef}
-            value={value}
+            value={value || '0'}
             variant="surface"
             onChange={onChange}
-            disabled={!supportsPriorityFee}
+            disabled={!disabled}
           />
         </Box>
       </Box>
@@ -270,7 +264,9 @@ export const CustomGasSheet = ({
     (customSpeed as GasFeeParams)?.maxBaseFee?.gwei,
   );
   const [maxPriorityFee, setMaxPriorityFee] = useState(
-    (customSpeed as GasFeeParams)?.maxPriorityFeePerGas?.gwei,
+    customSpeed && 'maxPriorityFeePerGas' in customSpeed
+      ? customSpeed.maxPriorityFeePerGas?.gwei
+      : undefined,
   );
 
   const [maxBaseFeeWarning, setMaxBaseFeeWarning] = useState<
@@ -399,10 +395,18 @@ export const CustomGasSheet = ({
 
   const onSelectedGasChange = useCallback(
     (speed: GasSpeed) => {
-      const selectedGas = gasFeeParamsBySpeed[speed] as GasFeeParams;
-      setSelectedGas({ selectedGas: gasFeeParamsBySpeed[speed] });
-      setMaxBaseFee(selectedGas?.maxBaseFee?.gwei);
-      setMaxPriorityFee(selectedGas?.maxPriorityFeePerGas?.gwei);
+      const selectedGas = gasFeeParamsBySpeed[speed];
+      if (!selectedGas) return;
+
+      setSelectedGas({ selectedGas });
+      console.log('onSelectedGasChange', { selectedGas });
+      if ('maxBaseFee' in selectedGas) {
+        setMaxBaseFee(selectedGas.maxBaseFee?.gwei);
+        setMaxPriorityFee(selectedGas.maxPriorityFeePerGas?.gwei);
+      } else {
+        setMaxBaseFee(selectedGas.gasPrice.gwei);
+        setMaxPriorityFee(undefined);
+      }
       setSelectedSpeedOption(speed);
       maxBaseFeeInputRef?.current?.focus();
     },
@@ -596,7 +600,7 @@ export const CustomGasSheet = ({
                 </Inline>
               </Box>
               <PriorityFeeInput
-                chainId={chainId}
+                disabled={maxPriorityFee === undefined}
                 warning={maxPriorityFeeWarning}
                 showExplainer={showMaxPriorityFeeExplainer}
                 inputRef={maxPriorityFeeInputRef}
@@ -721,76 +725,85 @@ export const CustomGasSheet = ({
                   </Column>
                 </Columns>
               </Lens>
-              {speeds.map((speed) => (
-                <Lens
-                  key={speed}
-                  paddingVertical="8px"
-                  borderRadius="12px"
-                  marginHorizontal="-12px"
-                  paddingHorizontal="12px"
-                  background={{
-                    default:
-                      selectedSpeedOption === speed ? 'accent' : 'transparent',
-                    hover: 'accent',
-                  }}
-                  onClick={() => onSelectedGasChange(speed)}
-                  tabIndex={selectedSpeedOption === speed ? -1 : 0}
-                >
-                  <Columns alignVertical="center" alignHorizontal="justify">
-                    <Column width="2/5">
-                      <Columns space="10px" alignVertical="center">
-                        <Column width="content">
-                          <Text weight="semibold" size="14pt">
-                            {txSpeedEmoji[speed]}
-                          </Text>
+              {Object.entries(gasFeeParamsBySpeed)
+                .filter(([speed]) => speed !== 'custom')
+                .map(([_speed, _params]) => {
+                  const speed = _speed as GasSpeed;
+                  const { gasFee, display, estimatedTime } =
+                    _params as GasFeeParams;
+                  return (
+                    <Lens
+                      key={speed}
+                      paddingVertical="8px"
+                      borderRadius="12px"
+                      marginHorizontal="-12px"
+                      paddingHorizontal="12px"
+                      background={{
+                        default:
+                          selectedSpeedOption === speed
+                            ? 'accent'
+                            : 'transparent',
+                        hover: 'accent',
+                      }}
+                      onClick={() => onSelectedGasChange(speed)}
+                      tabIndex={selectedSpeedOption === speed ? -1 : 0}
+                    >
+                      <Columns alignVertical="center" alignHorizontal="justify">
+                        <Column width="2/5">
+                          <Columns space="10px" alignVertical="center">
+                            <Column width="content">
+                              <Text weight="semibold" size="14pt">
+                                {txSpeedEmoji[speed]}
+                              </Text>
+                            </Column>
+                            <Column>
+                              <Stack space="8px">
+                                <Text
+                                  align="left"
+                                  color="label"
+                                  size="14pt"
+                                  weight="semibold"
+                                >
+                                  {i18n.t(`transaction_fee.${speed}`)}
+                                </Text>
+                                <TextOverflow
+                                  align="left"
+                                  color="labelTertiary"
+                                  size="11pt"
+                                  weight="semibold"
+                                >
+                                  {gasFee.display}
+                                </TextOverflow>
+                              </Stack>
+                            </Column>
+                          </Columns>
                         </Column>
-                        <Column>
+                        <Column width="3/5">
                           <Stack space="8px">
-                            <Text
-                              align="left"
+                            <TextOverflow
+                              align="right"
                               color="label"
                               size="14pt"
                               weight="semibold"
                             >
-                              {i18n.t(`transaction_fee.${speed}`)}
-                            </Text>
-                            <TextOverflow
-                              align="left"
-                              color="labelTertiary"
-                              size="11pt"
-                              weight="semibold"
-                            >
-                              {gasFeeParamsBySpeed[speed]?.gasFee?.display}
+                              {display}
                             </TextOverflow>
+                            {estimatedTime && (
+                              <TextOverflow
+                                align="right"
+                                color="labelTertiary"
+                                size="11pt"
+                                weight="semibold"
+                              >
+                                {estimatedTime?.display}
+                              </TextOverflow>
+                            )}
                           </Stack>
                         </Column>
                       </Columns>
-                    </Column>
-                    <Column width="3/5">
-                      <Stack space="8px">
-                        <TextOverflow
-                          align="right"
-                          color="label"
-                          size="14pt"
-                          weight="semibold"
-                        >
-                          {gasFeeParamsBySpeed?.[speed]?.display}
-                        </TextOverflow>
-                        {gasFeeParamsBySpeed?.[speed]?.estimatedTime && (
-                          <TextOverflow
-                            align="right"
-                            color="labelTertiary"
-                            size="11pt"
-                            weight="semibold"
-                          >
-                            {gasFeeParamsBySpeed[speed].estimatedTime?.display}
-                          </TextOverflow>
-                        )}
-                      </Stack>
-                    </Column>
-                  </Columns>
-                </Lens>
-              ))}
+                    </Lens>
+                  );
+                })}
             </Stack>
 
             <Box paddingTop="20px">

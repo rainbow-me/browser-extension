@@ -49,3 +49,5 @@ export const useGasData = ({ chainId }: { chainId: ChainId }) => {
       : providerGasDataIsLoading,
   };
 };
+
+export type GasData = NonNullable<ReturnType<typeof useGasData>['data']>;

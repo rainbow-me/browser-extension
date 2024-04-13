@@ -1,3 +1,4 @@
+import { FeeData } from '@ethersproject/providers';
 import { useQuery } from '@tanstack/react-query';
 import { getProvider } from '@wagmi/core';
 import { Chain } from 'wagmi';
@@ -11,7 +12,7 @@ import {
 } from '~/core/react-query';
 import { weiToGwei } from '~/core/utils/ethereum';
 
-import { MeteorologyLegacyResponse } from './meteorology';
+import { MeteorologyLegacyResponse, MeteorologyResponse } from './meteorology';
 
 // ///////////////////////////////////////////////
 // Query Types
@@ -31,29 +32,65 @@ type ProviderGasQueryKey = ReturnType<typeof providerGasQueryKey>;
 // ///////////////////////////////////////////////
 // Query Function
 
+type ParsedFeeData =
+  | Omit<MeteorologyLegacyResponse['data'], 'meta'>
+  | (Pick<
+      MeteorologyResponse['data'],
+      'currentBaseFee' | 'baseFeeSuggestion'
+    > & {
+      maxPriorityFeeSuggestions: { normal: string };
+      secondsPerNewBlock: undefined;
+      blocksToConfirmationByBaseFee: undefined;
+      blocksToConfirmationByPriorityFee: undefined;
+    });
+
+const parseFeeData = ({
+  gasPrice,
+  maxPriorityFeePerGas,
+  lastBaseFeePerGas,
+}: FeeData): ParsedFeeData => {
+  if (!lastBaseFeePerGas && gasPrice) {
+    return {
+      legacy: {
+        safeGasPrice: weiToGwei(gasPrice.toString()),
+      },
+    };
+  }
+
+  if (lastBaseFeePerGas && maxPriorityFeePerGas) {
+    console.log(maxPriorityFeePerGas);
+    return {
+      currentBaseFee: weiToGwei(lastBaseFeePerGas.toString()),
+      maxPriorityFeeSuggestions: {
+        normal: weiToGwei(maxPriorityFeePerGas.toString()),
+      },
+      baseFeeSuggestion: weiToGwei(lastBaseFeePerGas.toString()),
+      secondsPerNewBlock: undefined,
+      blocksToConfirmationByBaseFee: undefined,
+      blocksToConfirmationByPriorityFee: undefined,
+    };
+  }
+
+  throw new Error('Invalid fee data');
+};
+
 async function providerGasQueryFunction({
   queryKey: [{ chainId }],
 }: QueryFunctionArgs<typeof providerGasQueryKey>) {
   const provider = getProvider({ chainId });
-  const gasPrice = await provider.getGasPrice();
-  const gweiGasPrice = weiToGwei(gasPrice.toString());
+  const feeData = await provider.getFeeData();
 
-  const parsedResponse = {
+  const data = parseFeeData(feeData);
+
+  return {
     data: {
-      legacy: {
-        fastGasPrice: gweiGasPrice,
-        proposeGasPrice: gweiGasPrice,
-        safeGasPrice: gweiGasPrice,
-      },
+      ...data,
       meta: {
-        blockNumber: 0,
         provider: 'provider',
+        blockNumber: 0,
       },
     },
   };
-
-  const providerGasData = parsedResponse as MeteorologyLegacyResponse;
-  return providerGasData;
 }
 
 type ProviderGasResult = QueryFunctionResult<typeof providerGasQueryFunction>;
