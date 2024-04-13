@@ -329,9 +329,9 @@ function TransactionInfo({
       <Tabs
         tabs={
           // we need a simulation to show the details tab
-          simulation
-            ? [tabLabel('overview'), tabLabel('details'), tabLabel('data')]
-            : [tabLabel('overview'), tabLabel('data')]
+          !simulation && status === 'error'
+            ? [tabLabel('overview'), tabLabel('data')]
+            : [tabLabel('overview'), tabLabel('details'), tabLabel('data')]
         }
         expanded={expanded}
         onExpand={onExpand}
