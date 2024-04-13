@@ -1342,7 +1342,9 @@
       },
       "send": "Send",
       "view_on_opensea": "View on OpenSea",
-      "view_on_explorer": "View on %{explorerTitle}"
+      "view_on_explorer": "View on %{explorerTitle}",
+      "gallery": "gallery",
+      "view_gallery": "View Gallery"
     },
     "toast": {
       "spam_reported": "Your report has been received!"
@@ -1742,6 +1744,7 @@
   "unverified": "Unverified",
   "skip": "Skip",
   "done": "Done",
+  "view_on_explorer": "View on %{explorer}",
   "watch_asset": {
     "chain_id": "Chain ID",
     "symbol": "Symbol",

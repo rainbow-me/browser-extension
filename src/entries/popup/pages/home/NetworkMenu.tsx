@@ -98,7 +98,7 @@ export const AppConnection = () => {
                     position="relative"
                     style={{
                       marginRight: 16,
-                      marginTop: 8,
+                      marginTop: 1,
                     }}
                   >
                     <Inline
