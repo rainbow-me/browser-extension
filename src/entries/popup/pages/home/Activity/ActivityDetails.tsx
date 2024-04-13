@@ -2,13 +2,12 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits } from '@ethersproject/units';
 import { motion } from 'framer-motion';
 import { useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { useApprovals } from '~/core/resources/approvals/approvals';
 import { useTransaction } from '~/core/resources/transactions/transaction';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
-import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { RainbowTransaction, TxHash } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
@@ -53,7 +52,7 @@ import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
-import { SpeedUpAndCancelSheet } from '../../speedUpAndCancelSheet';
+import { SheetMode, SpeedUpAndCancelSheet } from '../../speedUpAndCancelSheet';
 import { triggerRevokeApproval } from '../Approvals/utils';
 import { CopyableValue, InfoRow } from '../TokenDetails/About';
 
@@ -294,43 +293,48 @@ const SpeedUpOrCancel = ({
 }: {
   transaction: RainbowTransaction;
 }) => {
-  const { sheet, setCurrentHomeSheet } = useCurrentHomeSheetStore();
+  const [searchParams] = useSearchParams();
   const navigate = useRainbowNavigate();
-
+  const sheetParam = searchParams.get('sheet');
+  const sheet =
+    sheetParam === 'speedUp' || sheetParam === 'cancel' ? sheetParam : 'none';
+  const setSheet = (mode: SheetMode) => {
+    navigate(`?sheet=${mode}`, {
+      state: { skipTransitionOnRoute: ROUTES.HOME },
+    });
+  };
   return (
-    <Box display="flex" flexDirection="column" gap="8px">
-      <Button
-        onClick={() => setCurrentHomeSheet('speedUp')}
-        symbol="bolt.fill"
-        height="32px"
-        width="full"
-        variant="plain"
-        color="blue"
-      >
-        {i18n.t('speed_up_and_cancel.speed_up')}
-      </Button>
-      <Button
-        onClick={() => setCurrentHomeSheet('cancel')}
-        symbol="trash.fill"
-        height="32px"
-        width="full"
-        variant="plain"
-        color="fillSecondary"
-      >
-        {i18n.t('speed_up_and_cancel.cancel')}
-      </Button>
+    <>
+      <Box display="flex" flexDirection="column" gap="8px">
+        <Button
+          onClick={() => setSheet('speedUp')}
+          symbol="bolt.fill"
+          height="32px"
+          width="full"
+          variant="plain"
+          color="blue"
+        >
+          {i18n.t('speed_up_and_cancel.speed_up')}
+        </Button>
+        <Button
+          onClick={() => setSheet('cancel')}
+          symbol="trash.fill"
+          height="32px"
+          width="full"
+          variant="plain"
+          color="fillSecondary"
+        >
+          {i18n.t('speed_up_and_cancel.cancel')}
+        </Button>
+      </Box>
       {sheet !== 'none' && (
         <SpeedUpAndCancelSheet
           currentSheet={sheet}
           transaction={transaction}
-          onClose={() => {
-            setCurrentHomeSheet('none');
-            navigate(ROUTES.HOME);
-            console.log('naviogating to homeee');
-          }}
+          onClose={() => setSheet('none')}
         />
       )}
-    </Box>
+    </>
   );
 };
 
@@ -614,9 +618,9 @@ export function ActivityDetails() {
             )}
             <ConfirmationData transaction={transaction} />
             <NetworkData transaction={transaction} />
-            {transaction.status === 'pending' && (
-              <SpeedUpOrCancel transaction={transaction} />
-            )}
+            {/* {transaction.status === 'pending' && ( */}
+            <SpeedUpOrCancel transaction={transaction} />
+            {/* )} */}
           </Stack>
         </>
       )}
