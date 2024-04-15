@@ -211,7 +211,9 @@ export const CustomGasSheet = ({
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
       if (
-        [shortcuts.global.BACK.key, shortcuts.global.CLOSE.key].includes(e.key)
+        shortcuts.global.CLOSE.key === e.key ||
+        (shortcuts.global.BACK.key === e.key &&
+          document.activeElement?.tagName !== 'INPUT') // if an input is focused, don't close the sheet with arrow back
       ) {
         e.preventDefault();
         e.stopPropagation();
