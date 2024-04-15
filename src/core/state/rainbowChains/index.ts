@@ -1,4 +1,4 @@
-import { Chain } from 'viem/chains';
+import { Chain, zora } from 'viem/chains';
 import create from 'zustand';
 
 import { SUPPORTED_CHAINS, getDefaultRPC } from '~/core/references';
@@ -114,6 +114,24 @@ const removeCustomRPC = ({
   return state;
 };
 
+const addCustomRPC = ({
+  state,
+  chain,
+}: {
+  state: RainbowChainsState;
+  chain: Chain;
+}) => {
+  const rainbowChains = state.rainbowChains;
+  const rainbowChain = rainbowChains[chain.id] || {
+    chains: [],
+    activeRpcUrl: '',
+  };
+  rainbowChain.chains.push(chain);
+  rainbowChain.activeRpcUrl = chain.rpcUrls.default.http[0];
+  state.rainbowChains = { ...rainbowChains, [chain.id]: rainbowChain };
+  return state;
+};
+
 export const rainbowChainsStore = createStore<RainbowChainsState>(
   (set, get) => ({
     rainbowChains: getInitialRainbowChains(),
@@ -201,7 +219,7 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
   {
     persist: {
       name: 'rainbowChains',
-      version: 5,
+      version: 6,
       migrate(persistedState, version) {
         const state = persistedState as RainbowChainsState;
         if (version === 1) {
@@ -227,6 +245,15 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
         if (version === 4) {
           // version 5 added support for Degen
           return mergeNewOfficiallySupportedChainsState(state, [ChainId.degen]);
+        }
+
+        if (version === 5) {
+          if (
+            !state.rainbowChains[zora.id] ||
+            state.rainbowChains[zora.id]?.chains.length === 0
+          ) {
+            return addCustomRPC({ chain: zora, state });
+          }
         }
 
         return state;
