@@ -1,4 +1,4 @@
-import { Chain, Common, Hardfork } from '@ethereumjs/common';
+import { Common, Hardfork } from '@ethereumjs/common';
 import { TransactionFactory, TypedTxData } from '@ethereumjs/tx';
 import {
   TransactionRequest,
@@ -12,16 +12,16 @@ import {
   serialize,
 } from '@ethersproject/transactions';
 import { TypedDataUtils } from '@metamask/eth-sig-util';
-import { ChainId } from '@rainbow-me/swaps';
 import { getProvider } from '@wagmi/core';
 import {
+  Constants,
   sign as gridPlusSign,
   signMessage as gridPlusSignMessage,
 } from 'gridplus-sdk';
+import { encode } from 'rlp';
 import { Address } from 'wagmi';
 
 import { getPath } from '~/core/keychain';
-import { LEGACY_CHAINS_FOR_HW } from '~/core/references';
 import { LocalStorage } from '~/core/storage';
 import { addHexPrefix } from '~/core/utils/hex';
 
@@ -43,6 +43,15 @@ export async function signTransactionFromGridPlus(
 ) {
   try {
     const { from: address } = transaction;
+    const path = await getPath(address as Address);
+    const addressIndex = parseInt(path.split('/')[5]);
+    const signerPath = [
+      0x80000000 + 44,
+      0x80000000 + 60,
+      0x80000000,
+      0,
+      addressIndex,
+    ];
     const baseTx: UnsignedTransaction = {
       chainId: transaction.chainId,
       data: transaction.data,
@@ -58,30 +67,42 @@ export async function signTransactionFromGridPlus(
         : undefined,
     };
 
-    const forceLegacy = LEGACY_CHAINS_FOR_HW.includes(
-      transaction.chainId as ChainId,
-    );
-
     if (transaction.gasPrice) {
       baseTx.gasPrice = transaction.gasPrice;
-    } else if (!forceLegacy) {
-      baseTx.maxFeePerGas = transaction.maxFeePerGas;
-      baseTx.maxPriorityFeePerGas = transaction.maxPriorityFeePerGas;
-      baseTx.type = 2;
     } else {
-      baseTx.gasPrice = transaction.maxFeePerGas;
+      if (transaction.maxFeePerGas && transaction.maxPriorityFeePerGas) {
+        baseTx.maxFeePerGas = transaction.maxFeePerGas;
+        baseTx.maxPriorityFeePerGas = transaction.maxPriorityFeePerGas;
+        baseTx.type = 2;
+      } else {
+        baseTx.gasPrice = transaction.maxFeePerGas;
+      }
     }
 
-    const common = new Common({
-      chain: Chain.Mainnet,
-      hardfork: Hardfork.London,
+    const common = Common.custom({
+      chainId: transaction.chainId,
+      defaultHardfork: Hardfork.London,
     });
 
     const txPayload = TransactionFactory.fromTxData(baseTx as TypedTxData, {
       common,
     });
 
-    const response = await gridPlusSign(txPayload.getMessageToSign() as Buffer);
+    const signPayload = {
+      data: {
+        signerPath,
+        chain: transaction.chainId,
+        curveType: Constants.SIGNING.CURVES.SECP256K1,
+        hashType: Constants.SIGNING.HASHES.KECCAK256,
+        encodingType: Constants.SIGNING.ENCODINGS.EVM,
+        payload:
+          baseTx.type === 2
+            ? txPayload.getMessageToSign()
+            : encode(txPayload.getMessageToSign()),
+      },
+    };
+
+    const response = await gridPlusSign([], signPayload);
 
     const r = addHexPrefix(response.sig.r.toString('hex'));
     const s = addHexPrefix(response.sig.s.toString('hex'));
@@ -90,9 +111,6 @@ export async function signTransactionFromGridPlus(
     ).toNumber();
 
     if (response.pubkey) {
-      if (baseTx.gasLimit) {
-        baseTx.type = 2;
-      }
       const serializedTransaction = serialize(baseTx, {
         r,
         s,
@@ -115,7 +133,6 @@ export async function signTransactionFromGridPlus(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
     alert('Please make sure your gridplus is unlocked');
-
     // bubble up the error
     throw e;
   }
