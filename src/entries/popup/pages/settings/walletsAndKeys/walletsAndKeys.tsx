@@ -9,7 +9,7 @@ import {
 import { useLocation } from 'react-router';
 import { Address } from 'wagmi';
 
-import gridPlusLogo from 'static/assets/hw/grid-plus-logo.png';
+import gridPlusLogo from 'static/assets/hw/grid-plus-circle.svg';
 import { i18n } from '~/core/languages';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { useWalletBackupsStore } from '~/core/state/walletBackups';
@@ -140,7 +140,7 @@ const WalletIcon = ({ vendor }: { vendor: KeychainWallet['vendor'] }) => {
     case 'Trezor':
       return <TrezorIcon />;
     case 'GridPlus':
-      return <img src={gridPlusLogo} width={48} height={20} />;
+      return <img src={gridPlusLogo} width={28} height={28} />;
     case 'Ledger':
     default:
       return <LedgerIcon />;
