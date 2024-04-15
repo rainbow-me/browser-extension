@@ -1,3 +1,4 @@
+import { formatUnits } from '@ethersproject/units';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Hash, getProvider } from '@wagmi/core';
 import { Address } from 'wagmi';
@@ -10,7 +11,11 @@ import {
   consolidatedTransactionsQueryFunction,
   consolidatedTransactionsQueryKey,
 } from '~/core/resources/transactions/consolidatedTransactions';
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import {
+  pendingTransactionsStore,
+  useCurrentAddressStore,
+  useCurrentCurrencyStore,
+} from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ChainId } from '~/core/types/chains';
 import {
@@ -27,6 +32,14 @@ import { RainbowError, logger } from '~/logger';
 type ConsolidatedTransactionsResult = QueryFunctionResult<
   typeof consolidatedTransactionsQueryFunction
 >;
+
+const searchInLocalPendingTransactions = (userAddress: Address, hash: Hash) => {
+  const { pendingTransactions } = pendingTransactionsStore.getState();
+  const localPendingTx = pendingTransactions[userAddress]?.find(
+    (tx) => tx.hash === hash,
+  );
+  return localPendingTx;
+};
 
 export const fetchTransaction = async ({
   hash,
@@ -48,6 +61,9 @@ export const fetchTransaction = async ({
     });
     const tx = response.data.payload.transaction;
     if (response.data.meta.status === 'pending') {
+      const localPendingTx = searchInLocalPendingTransactions(address, hash);
+      if (localPendingTx) return localPendingTx;
+
       const providerTx = await getCustomChainTransaction({ chainId, hash });
       return providerTx;
     }
@@ -55,9 +71,15 @@ export const fetchTransaction = async ({
     if (!parsedTx) throw new Error('Failed to parse transaction');
     return parsedTx;
   } catch (e) {
+    // if it's a pending tx BE may be in another mempool and it will return 404,
+    // which throws and gets caught here, so we check if we got it in localstorage
+    const localPendingTx = searchInLocalPendingTransactions(address, hash);
+    if (localPendingTx) return localPendingTx;
+
     logger.error(new RainbowError('fetchTransaction: '), {
       message: (e as Error)?.message,
     });
+    throw e; // log & rethrow
   }
 };
 
@@ -133,6 +155,9 @@ const getCustomChainTransaction = async ({
     ? await provider.getBlock(transaction?.blockHash)
     : undefined;
 
+  const decimals = 18; // assuming every chain uses 18 decimals
+  const value = formatUnits(transaction.value, decimals);
+
   const parsedTransaction = transaction.blockNumber
     ? ({
         status: 'confirmed',
@@ -146,7 +171,7 @@ const getCustomChainTransaction = async ({
         from: transaction.from as Address,
         to: transaction.to as Address,
         data: transaction.data,
-        value: transaction.value.toString(),
+        value,
         type: 'send',
         title: i18n.t('transactions.send.confirmed'),
         baseFee: block?.baseFeePerGas?.toString(),
@@ -162,7 +187,7 @@ const getCustomChainTransaction = async ({
         from: transaction.from as Address,
         to: transaction.to as Address,
         data: transaction.data,
-        value: transaction.value.toString(),
+        value,
         type: 'send',
         title: i18n.t('transactions.send.pending'),
       } satisfies PendingTransaction);

@@ -10,6 +10,7 @@ import {
   findElementById,
   findElementByTestId,
   findElementByText,
+  findElementByTextAndClick,
   getExtensionIdByName,
   getRootUrl,
   importWalletFlowUsingKeyboardNavigation,
@@ -82,6 +83,8 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({ driver, key: 'TAB', timesToPress: 2 });
       await executePerformShortcut({ driver, key: 'ENTER' });
       await checkExtensionURL(driver, 'wallet-switcher');
+      // need this to unfocus search field on slow running tests
+      await findElementByTextAndClick(driver, 'wallets');
       await executePerformShortcut({ driver, key: 'ESCAPE' });
     });
 

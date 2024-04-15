@@ -1,6 +1,5 @@
 import {
   arbitrum,
-  arbitrumGoerli,
   arbitrumSepolia,
   avalanche,
   avalancheFuji,
@@ -16,9 +15,15 @@ import {
   zora,
   zoraSepolia,
 } from 'viem/chains';
-import { Chain, goerli, mainnet, sepolia } from 'wagmi';
+import { Chain, mainnet, sepolia } from 'wagmi';
 
-import { ChainId, ChainNameDisplay } from '../types/chains';
+import {
+  ChainId,
+  ChainNameDisplay,
+  chainBlast,
+  chainBlastSepolia,
+  chainPolygonAmoy,
+} from '../types/chains';
 
 import {
   getSupportedChainsWithHardhat,
@@ -28,21 +33,24 @@ import {
 export const chainIdMap: Record<
   | ChainId.mainnet
   | ChainId.optimism
+  | ChainId.arbitrum
   | ChainId.polygon
   | ChainId.base
   | ChainId.bsc
   | ChainId.zora
-  | ChainId.avalanche,
+  | ChainId.avalanche
+  | ChainId.blast,
   ChainId[]
 > = {
-  [ChainId.mainnet]: [mainnet.id, goerli.id, sepolia.id, holesky.id],
+  [ChainId.mainnet]: [mainnet.id, sepolia.id, holesky.id],
   [ChainId.optimism]: [optimism.id, optimismSepolia.id],
-  [ChainId.arbitrum]: [arbitrum.id, arbitrumGoerli.id, arbitrumSepolia.id],
-  [ChainId.polygon]: [polygon.id, polygonMumbai.id],
+  [ChainId.arbitrum]: [arbitrum.id, arbitrumSepolia.id],
+  [ChainId.polygon]: [polygon.id, polygonMumbai.id, chainPolygonAmoy.id],
   [ChainId.base]: [base.id, baseSepolia.id],
   [ChainId.bsc]: [bsc.id, bscTestnet.id],
   [ChainId.zora]: [zora.id, zoraSepolia.id],
   [ChainId.avalanche]: [avalanche.id, avalancheFuji.id],
+  [ChainId.blast]: [chainBlast.id, chainBlastSepolia.id],
 };
 
 export const chainLabelMap: Record<
@@ -52,24 +60,22 @@ export const chainLabelMap: Record<
   | ChainId.base
   | ChainId.bsc
   | ChainId.zora
-  | ChainId.avalanche,
+  | ChainId.avalanche
+  | ChainId.blast,
   string[]
 > = {
   [ChainId.mainnet]: [
-    ChainNameDisplay[goerli.id],
     ChainNameDisplay[sepolia.id],
     ChainNameDisplay[holesky.id],
   ],
   [ChainId.optimism]: [ChainNameDisplay[optimismSepolia.id]],
-  [ChainId.arbitrum]: [
-    ChainNameDisplay[arbitrumGoerli.id],
-    ChainNameDisplay[arbitrumSepolia.id],
-  ],
+  [ChainId.arbitrum]: [ChainNameDisplay[arbitrumSepolia.id]],
   [ChainId.polygon]: [ChainNameDisplay[polygonMumbai.id]],
   [ChainId.base]: [ChainNameDisplay[baseSepolia.id]],
   [ChainId.bsc]: [ChainNameDisplay[bscTestnet.id]],
   [ChainId.zora]: [ChainNameDisplay[zoraSepolia.id]],
   [ChainId.avalanche]: [ChainNameDisplay[avalancheFuji.id]],
+  [ChainId.blast]: [ChainNameDisplay[chainBlastSepolia.id]],
 };
 
 export const sortNetworks = (order: ChainId[], chains: Chain[]) => {

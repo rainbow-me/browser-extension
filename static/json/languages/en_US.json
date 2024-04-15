@@ -78,8 +78,8 @@
     "contacts": "Contacts",
     "guides_and_support": "Guides & Support",
     "learn_about_ethereum": "Learn About Ethereum",
-    "follow_us_on_twitter": "Follow Us on Twitter",
-    "share_beta_feedback": "Share Beta Feedback",
+    "follow_us_on_twitter": "Follow us on Twitter",
+    "share_feedback": "Share Feedback",
     "theme": {
       "title": "Theme",
       "system": "System",
@@ -1343,7 +1343,9 @@
       },
       "send": "Send",
       "view_on_opensea": "View on OpenSea",
-      "view_on_explorer": "View on %{explorerTitle}"
+      "view_on_explorer": "View on %{explorerTitle}",
+      "gallery": "gallery",
+      "view_gallery": "View Gallery"
     },
     "toast": {
       "spam_reported": "Your report has been received!"
@@ -1459,6 +1461,7 @@
     "approvals": "Token Approvals",
     "this_token_is_on_network": "This %{symbol} is on the %{chainName} network",
     "view_on": "View on %{explorer}",
+    "view_on_coingecko": "View on CoinGecko",
     "not_available": "Price not available",
     "more_options": {
       "copy_address": "Copy Address",
@@ -1466,7 +1469,14 @@
       "hide": "Hide Token",
       "report": "Report Token",
       "unpin_token": "Unpin %{name}",
-      "pin_token": "Pin %{name}"
+      "pin_token": "Pin %{name}",
+      "hide_token": "Hide %{name}",
+      "unhide_token": "Unhide %{name}"
+    },
+    "toast": {
+      "hide_token": "Your %{name} is hidden",
+      "pin_token": "Your %{name} is pinned",
+      "unpin_token": "Your %{name} is unpinned"
     },
     "about": {
       "about_token": "About %{name}",
@@ -1753,6 +1763,7 @@
   "unverified": "Unverified",
   "skip": "Skip",
   "done": "Done",
+  "view_on_explorer": "View on %{explorer}",
   "watch_asset": {
     "chain_id": "Chain ID",
     "symbol": "Symbol",

@@ -81,6 +81,7 @@ const SaveOrEditContact = ({
                   style={{ textAlign: 'center' }}
                   testId="contact-prompt-input"
                   tabIndex={1}
+                  autoFocus={!name?.length}
                 />
               </Box>
 
@@ -95,6 +96,8 @@ const SaveOrEditContact = ({
         </Stack>
         <Stack alignHorizontal="center" space="8px">
           <Button
+            symbol="return.left"
+            symbolSide="left"
             width="full"
             color="accent"
             height="36px"
@@ -103,6 +106,8 @@ const SaveOrEditContact = ({
             onClick={onSave}
             tabIndex={2}
             testId="contact-prompt-confirm"
+            autoFocus={!!name?.length}
+            enterCta
           >
             {i18n.t(
               `contacts.${
@@ -186,6 +191,7 @@ const DeleteContact = ({
             borderRadius="9px"
             onClick={onRemove}
             testId="contact-prompt-delete-confirm"
+            tabIndex={1}
           >
             {i18n.t('contacts.remove_contact_action')}
           </Button>
@@ -196,6 +202,7 @@ const DeleteContact = ({
             variant="raised"
             borderRadius="9px"
             onClick={onCancel}
+            tabIndex={2}
           >
             {i18n.t('contacts.cancel')}
           </Button>

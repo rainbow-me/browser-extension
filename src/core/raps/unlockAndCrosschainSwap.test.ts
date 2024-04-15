@@ -19,6 +19,7 @@ import {
 let swapGasLimit = 0;
 
 const needsUnlockQuote: Quote | QuoteError | null = {
+  chainId: 1,
   buyAmount: '22815411',
   buyAmountDisplay: '22815411',
   buyAmountInEth: '7674057708816777',
@@ -47,6 +48,7 @@ const needsUnlockQuote: Quote | QuoteError | null = {
 };
 
 const doesntNeedUnlockQuote: Quote | QuoteError | null = {
+  chainId: 1,
   buyAmount: '2934529154',
   buyAmountDisplay: '2934529154',
   buyAmountInEth: '988585673036047522',

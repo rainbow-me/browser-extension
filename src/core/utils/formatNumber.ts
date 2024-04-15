@@ -29,6 +29,10 @@ export const formatCurrencyParts = (
     style: 'currency',
     currency,
     minimumFractionDigits: 2,
+    // roundingPriority exists and is widely available but ts is complaining https://github.com/microsoft/TypeScript/issues/52072
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    roundingPriority: 'morePrecision',
     ...options,
   });
 

@@ -6,10 +6,15 @@ import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useGasStore } from '~/core/state';
+import {
+  computeUniqueIdForHiddenAsset,
+  useHiddenAssetStore,
+} from '~/core/state/hiddenAssets/hiddenAssets';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
-import { ParsedSearchAsset } from '~/core/types/assets';
+import { ParsedSearchAsset, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { SearchAsset } from '~/core/types/search';
 import { getQuoteServiceTime } from '~/core/utils/swaps';
 import {
   Box,
@@ -184,6 +189,16 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
 
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
   const [urlSearchParams] = useSearchParams();
+  const { hiddenAssets } = useHiddenAssetStore();
+
+  const isHidden = useCallback(
+    (asset: ParsedUserAsset | SearchAsset) =>
+      hiddenAssets.some(
+        (uniqueId) => uniqueId === computeUniqueIdForHiddenAsset(asset),
+      ),
+    [hiddenAssets],
+  );
+
   const hideBackButton = urlSearchParams.get('hideBack') === 'true';
 
   const hideSwapReviewSheet = useCallback(() => {
@@ -211,6 +226,20 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     setAssetToSellFilter,
     setAssetToBuyFilter,
   } = useSwapAssets({ bridge });
+
+  const unhiddenAssetsToSell = useMemo(
+    () => assetsToSell.filter((asset) => !isHidden(asset)),
+    [assetsToSell, isHidden],
+  );
+
+  const unhiddenAssetsToBuy = useMemo(() => {
+    return assetsToBuy.map((assets) => {
+      return {
+        ...assets,
+        data: assets.data.filter((asset) => !isHidden(asset)),
+      };
+    });
+  }, [assetsToBuy, isHidden]);
 
   const { toSellInputHeight, toBuyInputHeight } = useSwapDropdownDimensions({
     assetToSell,
@@ -373,7 +402,6 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
   const [didPopulateSavedTokens, setDidPopulateSavedTokens] = useState(false);
   const [didPopulateSavedInputValues, setDidPopulateSavedInputValues] =
     useState(false);
-
   useEffect(() => {
     // navigating from token row
     if (selectedToken) {
@@ -395,7 +423,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
         if (savedTokenToSell) {
           setAssetToSell(savedTokenToSell);
         } else {
-          setAssetToSell(assetsToSell[0]);
+          setAssetToSell(unhiddenAssetsToSell[0]);
           setDefaultAssetWasSet(true);
         }
         setDidPopulateSavedTokens(true);
@@ -543,7 +571,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                 <TokenToSellInput
                   dropdownHeight={toSellInputHeight}
                   asset={assetToSell}
-                  assets={assetsToSell}
+                  assets={unhiddenAssetsToSell}
                   selectAsset={selectAssetToSell}
                   onDropdownOpen={onAssetToSellInputOpen}
                   dropdownClosed={assetToSellDropdownClosed}
@@ -626,7 +654,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                   dropdownHeight={toBuyInputHeight}
                   assetToBuy={assetToBuy}
                   assetToSell={assetToSell}
-                  assets={assetsToBuy}
+                  assets={unhiddenAssetsToBuy}
                   selectAsset={setAssetToBuy}
                   onDropdownOpen={onAssetToBuyInputOpen}
                   dropdownClosed={assetToBuyDropdownClosed}

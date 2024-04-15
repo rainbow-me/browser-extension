@@ -161,6 +161,9 @@ query simulateTransactions(
       message
       type
     }
+    gas {
+      estimate
+    }
     simulation {
       in {
         ...change

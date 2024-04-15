@@ -1,5 +1,12 @@
 import { motion } from 'framer-motion';
-import { MouseEvent, createContext, useContext, useRef, useState } from 'react';
+import {
+  MouseEvent,
+  createContext,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { formatCurrency } from '~/core/utils/formatNumber';
 import {
@@ -115,51 +122,49 @@ export const LineChart = ({
   data: ChartData[];
   onMouseMove: (pointData?: ChartPoint) => void;
 }) => {
-  const maxY = Math.max(...data.map((item) => item.price));
-  const minY = Math.min(...data.map((item) => item.price));
+  const { points, d } = useMemo(() => {
+    const prices = data.map((item) => item.price);
+    const maxY = Math.max(...prices);
+    const minY = Math.min(...prices);
 
-  const yScale = (height - 2 * paddingY) / (maxY - minY);
+    const yScale = (height - 2 * paddingY) / (maxY - minY);
 
-  const points = data.map(({ price, timestamp }, index) => {
-    const x = (index / data.length) * width;
-    const y = height - paddingY - (price - minY) * yScale;
-    return { price, timestamp, x, y };
-  });
+    const points = data.map(({ price, timestamp }, index) => {
+      const x = (index / data.length) * width;
+      const y = height - paddingY - (price - minY) * yScale;
+      return { price, timestamp, x, y };
+    });
 
-  const d = monotoneCubicInterpolation(points);
+    const d = monotoneCubicInterpolation(points);
+
+    return { points, d };
+  }, [data, height, paddingY, width]);
 
   const [indicator, setIndicator] = useState<Position | null>(null);
 
   const pathRef = useRef<SVGPathElement>(null);
-  const pathRightRef = useRef<SVGPathElement>(null);
 
   const handleMouseMove = (event: MouseEvent<SVGSVGElement>) => {
-    const svgContainer = event.currentTarget;
-    const { left, width } = svgContainer.getBoundingClientRect();
-    const mouseX = event.clientX - left;
-
     const path = pathRef.current;
-    const pathRight = pathRightRef.current;
-    if (!path || !pathRight) return;
-
-    const pathLength = path.getTotalLength();
+    const pathLength = path?.getTotalLength();
     if (!pathLength) return;
 
-    const mousePathLength = pathLength * (mouseX / width);
-    const { x, y } = path.getPointAtLength(mousePathLength);
-    setIndicator({ x, y });
+    const { left } = event.currentTarget.getBoundingClientRect();
+    const mouseX = event.clientX - left;
 
-    pathRight.style.strokeDasharray = `${mousePathLength} ${pathLength}`;
+    const point = findClosestPoint(points, mouseX);
+    if (!point) return;
 
-    onMouseMove(findClosestPoint(points, x));
+    setIndicator(point);
+    onMouseMove(point);
   };
 
   const onMouseLeave = () => {
     setIndicator(null);
     onMouseMove(undefined);
-    if (!pathRightRef.current) return;
-    pathRightRef.current.style.strokeDasharray = `0`;
   };
+
+  const paintedLineOffset = indicator ? (indicator.x / width) * 100 : 0;
 
   return (
     <ChartContext.Provider value={{ width, height, points }}>
@@ -169,20 +174,22 @@ export const LineChart = ({
         onMouseMove={handleMouseMove}
         onMouseLeave={onMouseLeave}
       >
+        <linearGradient id="indicatorPaintedLine" x1="0%" x2="100%">
+          <stop offset="0%" stopColor={accentColorAsHsl} />
+          <stop offset={`${paintedLineOffset}%`} stopColor={accentColorAsHsl} />
+          <stop
+            offset={`${paintedLineOffset}%`}
+            stopColor={globalColors.blueGrey60}
+          />
+        </linearGradient>
         <motion.path
           ref={pathRef}
           animate={{ d }}
           fill="none"
-          stroke={globalColors.blueGrey60}
+          stroke={
+            paintedLineOffset ? 'url(#indicatorPaintedLine)' : accentColorAsHsl
+          }
           strokeWidth={3}
-        />
-        <motion.path
-          ref={pathRightRef}
-          animate={{ d }}
-          fill="none"
-          strokeWidth={3}
-          stroke={accentColorAsHsl}
-          strokeDasharray="0"
         />
         {indicator && <Indicator position={indicator} />}
       </motion.svg>

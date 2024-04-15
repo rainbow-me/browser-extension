@@ -104,11 +104,11 @@ it('should be able to add a custom network', async () => {
     id: 'add-custom-network-button',
   });
 
-  const fujiChain = await findElementByTestId({
+  const cronos = await findElementByTestId({
     id: 'network-row-25',
     driver,
   });
-  expect(fujiChain).toBeTruthy();
+  expect(cronos).toBeTruthy();
 });
 
 it('should be able to add a custom testnet network', async () => {
@@ -117,19 +117,14 @@ it('should be able to add a custom testnet network', async () => {
   await findElementByTestIdAndClick({ driver, id: 'network-name-field' });
 
   // fill out custom network form
-  await typeOnTextInput({ text: 'Polygon zkEVM Testnet', driver });
+  await typeOnTextInput({ text: 'Telos EVM Testnet', driver });
   await executePerformShortcut({ driver, key: 'TAB' });
   await typeOnTextInput({
-    text: 'https://rpc.public.zkevm-test.net',
+    text: 'https://testnet.telos.net/evm',
     driver,
   });
   await executePerformShortcut({ driver, key: 'TAB' });
   await typeOnTextInput({ text: 'ETH', driver });
-  await executePerformShortcut({ driver, key: 'TAB' });
-  await typeOnTextInput({
-    text: 'https://testnet-zkevm.polygonscan.com/',
-    driver,
-  });
   await findElementByTestIdAndClick({ driver, id: 'testnet-toggle' });
 
   // needs a couple seconds to validate the custom RPC
@@ -140,11 +135,11 @@ it('should be able to add a custom testnet network', async () => {
     id: 'add-custom-network-button',
   });
 
-  const cronosChain = await findElementByTestId({
-    id: 'network-row-1442',
+  const telos = await findElementByTestId({
+    id: 'network-row-41',
     driver,
   });
-  expect(cronosChain).toBeTruthy();
+  expect(telos).toBeTruthy();
 });
 
 it('should be able to add a custom ETH RPC and switch to it', async () => {
@@ -193,7 +188,7 @@ it('should be able to add a custom token', async () => {
   });
 
   // needs a couple seconds to validate
-  await delayTime('medium');
+  await delayTime('very-long');
 
   const tokenName = await findElementByTestId({
     id: 'token-name-field',

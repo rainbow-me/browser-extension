@@ -1,7 +1,6 @@
 import { AddressZero } from '@ethersproject/constants';
 import {
   arbitrum,
-  arbitrumGoerli,
   arbitrumSepolia,
   avalanche,
   avalancheFuji,
@@ -9,7 +8,6 @@ import {
   baseSepolia,
   bsc,
   bscTestnet,
-  goerli,
   holesky,
   mainnet,
   optimism,
@@ -21,7 +19,13 @@ import {
 } from 'viem/chains';
 import { Address, type Chain, sepolia } from 'wagmi';
 
-import { ChainId, ChainNameDisplay, chainBlast } from '~/core/types/chains';
+import {
+  ChainId,
+  ChainNameDisplay,
+  chainBlast,
+  chainBlastSepolia,
+  chainPolygonAmoy,
+} from '~/core/types/chains';
 
 import { AddressOrEth } from '../types/assets';
 
@@ -140,14 +144,17 @@ export const USDC_AVALANCHE_ADDRESS =
 export const WBTC_AVALANCHE_ADDRESS =
   '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599';
 
+// blast
+export const ETH_BLAST_ADDRESS = AddressZero;
+export const WETH_BLAST_ADDRESS = '0x4300000000000000000000000000000000000004';
+export const USDB_BLAST_ADDRESS = '0x4300000000000000000000000000000000000003';
+
 export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.mainnet]: ETH_ADDRESS as Address,
   [ChainId.hardhat]: AddressZero as Address,
-  [ChainId.goerli]: AddressZero as Address,
   [ChainId.sepolia]: AddressZero as Address,
   [ChainId.holesky]: AddressZero as Address,
   [ChainId.arbitrum]: ETH_ARBITRUM_ADDRESS as Address,
-  [ChainId.arbitrumGoerli]: AddressZero as Address,
   [ChainId.arbitrumSepolia]: AddressZero as Address,
   [ChainId.bsc]: BNB_BSC_ADDRESS as Address,
   [ChainId.bscTestnet]: AddressZero as Address,
@@ -164,16 +171,16 @@ export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.avalanche]: AVAX_AVALANCHE_ADDRESS as Address,
   [ChainId.avalancheFuji]: AddressZero as Address,
   [ChainId.blast]: AddressZero as Address,
+  [ChainId.blastSepolia]: AddressZero as Address,
+  [ChainId.polygonAmoy]: AddressZero as Address,
 };
 
 export const NATIVE_ASSETS_MAP_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.mainnet]: ETH_ADDRESS,
   [ChainId.hardhat]: ETH_ADDRESS,
-  [ChainId.goerli]: ETH_ADDRESS,
   [ChainId.sepolia]: ETH_ADDRESS,
   [ChainId.holesky]: ETH_ADDRESS,
   [ChainId.arbitrum]: ETH_ADDRESS,
-  [ChainId.arbitrumGoerli]: ETH_ADDRESS,
   [ChainId.arbitrumSepolia]: ETH_ADDRESS,
   [ChainId.bsc]: BNB_MAINNET_ADDRESS,
   [ChainId.bscTestnet]: BNB_MAINNET_ADDRESS,
@@ -190,6 +197,8 @@ export const NATIVE_ASSETS_MAP_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.avalanche]: ETH_ADDRESS,
   [ChainId.avalancheFuji]: ETH_ADDRESS,
   [ChainId.blast]: ETH_ADDRESS,
+  [ChainId.blastSepolia]: ETH_ADDRESS,
+  [ChainId.polygonAmoy]: MATIC_MAINNET_ADDRESS,
 };
 
 export const OVM_GAS_PRICE_ORACLE =
@@ -225,34 +234,34 @@ export const SUPPORTED_CHAINS: Chain[] = [
   base,
   zora,
   bsc,
-  goerli,
   sepolia,
   optimismSepolia,
   bscTestnet,
   polygonMumbai,
-  arbitrumGoerli,
   arbitrumSepolia,
   baseSepolia,
   zoraSepolia,
   avalanche,
   avalancheFuji,
   chainBlast,
+  chainBlastSepolia,
+  chainPolygonAmoy,
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
 export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map((chain) => chain.id);
 
 export const SUPPORTED_TESTNET_CHAINS: Chain[] = [
   holesky,
-  goerli,
   sepolia,
   optimismSepolia,
   bscTestnet,
   polygonMumbai,
-  arbitrumGoerli,
   arbitrumSepolia,
   baseSepolia,
   zoraSepolia,
   avalancheFuji,
+  chainBlastSepolia,
+  chainPolygonAmoy,
 ];
 
 export const SUPPORTED_TESTNET_CHAIN_IDS: number[] =
@@ -274,8 +283,6 @@ export const getDefaultRPC = (chainId: ChainId) => {
       return { http: process.env.ZORA_MAINNET_RPC };
     case ChainId.bsc:
       return { http: process.env.BSC_MAINNET_RPC };
-    case ChainId.goerli:
-      return { http: process.env.ETH_GOERLI_RPC };
     case ChainId.sepolia:
       return { http: process.env.ETH_SEPOLIA_RPC };
     case ChainId.holesky:
@@ -288,8 +295,6 @@ export const getDefaultRPC = (chainId: ChainId) => {
       return { http: process.env.POLYGON_MUMBAI_RPC };
     case ChainId.arbitrumSepolia:
       return { http: process.env.ARBITRUM_SEPOLIA_RPC };
-    case ChainId.arbitrumGoerli:
-      return { http: process.env.ARBITRUM_GOERLI_RPC };
     case ChainId.baseSepolia:
       return { http: process.env.BASE_SEPOLIA_RPC };
     case ChainId.zoraSepolia:
@@ -300,6 +305,10 @@ export const getDefaultRPC = (chainId: ChainId) => {
       return { http: process.env.AVALANCHE_FUJI_RPC };
     case ChainId.blast:
       return { http: process.env.BLAST_MAINNET_RPC };
+    case ChainId.blastSepolia:
+      return { http: process.env.BLAST_SEPOLIA_RPC };
+    case ChainId.polygonAmoy:
+      return { http: process.env.POLYGON_AMOY_RPC };
     default:
       return null;
   }

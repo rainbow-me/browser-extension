@@ -76,8 +76,6 @@ export function getNetworkFromSimpleHashChain(
       return ChainName.scroll;
     case SimpleHashChain.PolygonMumbai:
       return ChainName.polygonMumbai;
-    case SimpleHashChain.ArbitrumGoerli:
-      return ChainName.arbitrumGoerli;
     case SimpleHashChain.ArbitrumSepolia:
       return ChainName.arbitrumSepolia;
     case SimpleHashChain.BaseSepolia:
@@ -86,6 +84,12 @@ export function getNetworkFromSimpleHashChain(
       return ChainName.optimismSepolia;
     case SimpleHashChain.ZoraSepolia:
       return ChainName.zoraSepolia;
+    case SimpleHashChain.Blast:
+      return ChainName.blast;
+    case SimpleHashChain.BlastSepolia:
+      return ChainName.blastSepolia;
+    case SimpleHashChain.PolygonAmoy:
+      return ChainName.polygonAmoy;
     default:
       /*
        * Throws here because according to TS types, we should NEVER hit this
@@ -140,6 +144,12 @@ export function filterSimpleHashNFTs(
     }));
 }
 
+export function extractPoapDropId(externalUrl: string) {
+  const parsedUrl = new URL(externalUrl);
+  const pathParts = parsedUrl.pathname.split('/');
+  return pathParts[2];
+}
+
 /**
  * Maps a `SimpleHashNFT` to a `UniqueAsset`.
  * @param nft `SimpleHashNFT`
@@ -164,6 +174,7 @@ export function simpleHashNFTToUniqueAsset(
   const standard = nft.contract.type;
 
   const isPoap = nft.contract_address.toLowerCase() === POAP_NFT_ADDRESS;
+  const poapDropId = !isPoap ? null : extractPoapDropId(nft.external_url || '');
 
   return {
     animation_url:
@@ -219,6 +230,7 @@ export function simpleHashNFTToUniqueAsset(
     name: nft.name,
     network: nft.chain,
     permalink: marketplace?.nft_url ?? '',
+    poapDropId,
     predominantColor: nft.previews?.predominant_color ?? undefined,
     traits: nft.extra_metadata?.attributes ?? [],
     uniqueId: isENS

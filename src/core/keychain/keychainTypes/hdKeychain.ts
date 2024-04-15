@@ -26,7 +26,7 @@ export interface SerializedHdKeychain {
   mnemonic: string;
   hdPath?: SupportedHDPath;
   accountsEnabled?: number;
-  type: string;
+  type: KeychainType.HdKeychain;
   imported?: boolean;
   autodiscover?: boolean;
   accountsDeleted?: Array<number>;
@@ -47,11 +47,10 @@ const privates = new WeakMap<
 >();
 
 export class HdKeychain implements IKeychain {
-  type: string;
+  type: KeychainType.HdKeychain = KeychainType.HdKeychain;
   imported: boolean;
 
   constructor() {
-    this.type = KeychainType.HdKeychain;
     this.imported = false;
 
     privates.set(this, {

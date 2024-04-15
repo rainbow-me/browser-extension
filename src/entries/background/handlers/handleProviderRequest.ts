@@ -243,7 +243,8 @@ export const handleProviderRequest = ({
 }) =>
   rnbwHandleProviderRequest({
     providerRequestTransport: providerRequestTransport,
-    isSupportedChain: isSupportedChainId,
+    isSupportedChain: (chainId: number) =>
+      isSupportedChainId(chainId) || isCustomChain(chainId),
     getActiveSession: ({ host }: { host: string }) =>
       appSessionsStore.getState().getActiveSession({ host }),
     getChain: (chainId: number) =>

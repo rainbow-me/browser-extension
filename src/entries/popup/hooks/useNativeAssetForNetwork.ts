@@ -1,10 +1,12 @@
+import { AddressZero } from '@ethersproject/constants';
 import { Address } from 'wagmi';
 
 import {
-  AVAX_AVALANCHE_ADDRESS,
+  BNB_BSC_ADDRESS,
   BNB_MAINNET_ADDRESS,
   ETH_ADDRESS,
   MATIC_MAINNET_ADDRESS,
+  MATIC_POLYGON_ADDRESS,
   NATIVE_ASSETS_PER_CHAIN,
 } from '~/core/references';
 import { ParsedAsset, UniqueId } from '~/core/types/assets';
@@ -24,13 +26,12 @@ const getNetworkNativeMainnetAssetAddress = ({
     case ChainId.optimism:
     case ChainId.base:
     case ChainId.zora:
+    case ChainId.avalanche:
       return ETH_ADDRESS as Address;
     case ChainId.bsc:
       return BNB_MAINNET_ADDRESS;
     case ChainId.polygon:
       return MATIC_MAINNET_ADDRESS;
-    case ChainId.avalanche:
-      return AVAX_AVALANCHE_ADDRESS;
     default:
       return ETH_ADDRESS as Address;
   }
@@ -42,24 +43,20 @@ export const getNetworkNativeAssetUniqueId = ({
   chainId: ChainId;
 }): UniqueId => {
   switch (chainId) {
-    case ChainId.arbitrum:
-      return `${ETH_ADDRESS}_${chainId}` as UniqueId;
     case ChainId.mainnet:
       return `${ETH_ADDRESS}_${chainId}` as UniqueId;
-    case ChainId.optimism:
-      return `${ETH_ADDRESS}_${chainId}` as UniqueId;
+    case ChainId.arbitrum:
     case ChainId.base:
-      return `${ETH_ADDRESS}_${chainId}` as UniqueId;
+    case ChainId.optimism:
     case ChainId.zora:
-      return `${ETH_ADDRESS}_${chainId}` as UniqueId;
     case ChainId.avalanche:
-      return `${AVAX_AVALANCHE_ADDRESS}_${chainId}` as UniqueId;
+      return `${AddressZero}_${chainId}` as UniqueId;
     case ChainId.bsc:
-      return `${BNB_MAINNET_ADDRESS}_${chainId}` as UniqueId;
+      return `${BNB_BSC_ADDRESS}_${chainId}` as UniqueId;
     case ChainId.polygon:
-      return `${MATIC_MAINNET_ADDRESS}_${chainId}` as UniqueId;
+      return `${MATIC_POLYGON_ADDRESS}_${chainId}` as UniqueId;
     default:
-      return `${ETH_ADDRESS}_${chainId}` as UniqueId;
+      return `${AddressZero}_${chainId}` as UniqueId;
   }
 };
 

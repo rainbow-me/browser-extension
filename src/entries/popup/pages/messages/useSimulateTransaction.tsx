@@ -39,6 +39,10 @@ const parseSimulationAsset = (asset: SimulationAsset, chainId: ChainId) => {
       asset_code: asset.assetCode,
       icon_url: asset.iconURL,
       interface: parseInterface(asset.interface),
+      bridging: {
+        bridgeable: false,
+        networks: {},
+      },
     },
     currency: currentCurrencyStore.getState().currentCurrency,
   });
@@ -210,7 +214,7 @@ type SimulationMeta = {
   transferTo: SimulationTarget;
 };
 
-type TransactionSimulationResponse = {
+export type TransactionSimulationResponse = {
   simulateTransactions: [
     {
       scanning: {
@@ -220,6 +224,9 @@ type TransactionSimulationResponse = {
       error: {
         message: string;
         type: SimulationError;
+      };
+      gas: {
+        estimate: string;
       };
       simulation: {
         in: SimulationChange[];
@@ -247,6 +254,9 @@ type MessageSimulationResponse = {
     error: {
       message: string;
       type: SimulationError;
+    };
+    gas: {
+      estimate: string;
     };
     simulation: {
       in: SimulationChange[];
