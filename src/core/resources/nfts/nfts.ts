@@ -157,7 +157,6 @@ async function nftsQueryFunction({
       }
     },
   );
-  console.log('-- nfts', nfts);
   return {
     nfts,
     nextPage,
