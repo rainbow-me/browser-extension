@@ -200,6 +200,11 @@ export function SendTransaction({
         connectedToHardhatPolygon,
         activeSession?.chainId,
       );
+      console.log(
+        '@@@@@@@@@@@',
+        connectedToHardhatPolygon,
+        '-- connected To Hardhat Polygon sendTransaction',
+      );
       selectAssetAddressAndChain(
         NATIVE_ASSETS_PER_CHAIN[activeChainId] as Address,
         activeChainId,

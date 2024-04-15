@@ -79,6 +79,12 @@ export async function parseUserAssets({
     connectedToHardhatPolygon,
   } = connectedToHardhatStore.getState();
 
+  console.log(
+    '@@@@@@@@@@ ',
+    connectedToHardhatPolygon,
+    `-- Connected to Hardhat Polygon`,
+  );
+
   if (connectedToHardhat || connectedToHardhatOp || connectedToHardhatPolygon) {
     const selectedHardhatChainId = connectedToHardhat
       ? ChainId.hardhat

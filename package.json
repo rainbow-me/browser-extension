@@ -63,6 +63,7 @@
     "vitest:swap": "./scripts/e2e-serial-tests.sh 'swap'",
     "vitest:send": "./scripts/e2e-serial-tests.sh 'send'",
     "vitest:send:optimism": "./scripts/e2e-op-serial-tests.sh 'optimismTransactions'",
+    "vitest:send:optimism": "./scripts/e2e-polygon-serial-tests.sh 'polygonTransactions'",
     "vitest:dappInteractions": "./scripts/e2e-serial-tests.sh 'dappInteractions'",
     "e2e:mac:chrome": "BROWSER=chrome OS=mac yarn vitest:parallel && yarn vitest:serial",
     "e2e:mac:brave": "BROWSER=brave OS=mac yarn vitest:parallel && yarn vitest:serial",

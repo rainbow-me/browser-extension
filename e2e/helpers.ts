@@ -533,6 +533,7 @@ export async function navigateToElementWithTestId({
   try {
     await executePerformShortcut({ driver, key: 'TAB' });
     const testIds = await getFocusedElementDataTestIds(driver);
+    console.log(testIds, '--testIds');
     if (testIds.includes(testId)) {
       await delayTime('short');
       await executePerformShortcut({ driver, key: 'ENTER' });

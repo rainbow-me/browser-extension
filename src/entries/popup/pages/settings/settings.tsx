@@ -504,7 +504,10 @@ export function Settings() {
                   }
                 />
               }
-              onClick={connectToHardhatPolygon}
+              onClick={() => {
+                connectToHardhatPolygon;
+                console.log(connectedToHardhatPolygon);
+              }}
               testId="connect-to-hardhat-polygon"
             />
             <MenuItem
