@@ -14,7 +14,7 @@ export interface GasStore {
   selectedGas: GasFeeParams | GasFeeLegacyParams;
   gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed;
   customGasModified: boolean;
-  setCustomSpeed: (speed: GasFeeParams) => void;
+  setCustomSpeed: (speed: GasFeeParams | GasFeeLegacyParams) => void;
   setSelectedGas: ({
     selectedGas,
   }: {
@@ -43,7 +43,7 @@ export const gasStore = createStore<GasStore>(
         gasFeeParamsBySpeed,
       });
     },
-    setCustomSpeed: (speed: GasFeeParams) => {
+    setCustomSpeed: (speed: GasFeeParams | GasFeeLegacyParams) => {
       const { gasFeeParamsBySpeed } = get();
       set({
         gasFeeParamsBySpeed: {

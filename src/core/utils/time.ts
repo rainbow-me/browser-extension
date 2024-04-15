@@ -42,7 +42,10 @@ export const getMinimalTimeUnitStringForMs = (
 ): string => {
   const ms = Number(value);
 
-  const { days, hours, minutes, seconds } = parseMilliseconds(Number(ms));
+  // eslint-disable-next-line prefer-const
+  let { days, hours, minutes, seconds, milliseconds } = parseMilliseconds(ms);
+
+  if (!seconds && milliseconds) seconds = milliseconds / 1000;
 
   const times = { days, hours, minutes, seconds };
   const timeUnitKey = Object.entries(times).find(

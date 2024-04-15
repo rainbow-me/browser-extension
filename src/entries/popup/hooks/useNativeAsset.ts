@@ -63,6 +63,7 @@ export const useNativeAsset = ({
   });
 
   const { data: customNetworkNativeAsset } = useCustomNetworkAsset({
+    address: address || currentAddress,
     uniqueId: `${AddressZero}_${chainId}`,
     filterZeroBalance: false,
   });

@@ -73,8 +73,8 @@ export type MeteorologyResponse = {
 export type MeteorologyLegacyResponse = {
   data: {
     legacy: {
-      fastGasPrice: string;
-      proposeGasPrice: string;
+      fastGasPrice?: string;
+      proposeGasPrice?: string;
       safeGasPrice: string;
     };
     meta: {

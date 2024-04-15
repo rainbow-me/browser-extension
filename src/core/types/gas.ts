@@ -25,7 +25,10 @@ export interface GasFeeLegacyParams {
 }
 
 export type GasFeeLegacyParamsBySpeed = {
-  [key in GasSpeed]: GasFeeLegacyParams;
+  custom: GasFeeLegacyParams;
+  urgent?: GasFeeLegacyParams;
+  fast?: GasFeeLegacyParams;
+  normal: GasFeeLegacyParams;
 };
 
 export interface TransactionGasParams {
@@ -37,7 +40,7 @@ export interface GasFeeParams {
   maxBaseFee: GasFeeParam;
   maxPriorityFeePerGas: GasFeeParam;
   option: GasSpeed;
-  estimatedTime: { amount: number; display: string };
+  estimatedTime: { amount: number; display: string } | undefined;
   display: string;
   transactionGasParams: TransactionGasParams;
   gasFee: { amount: string; display: string };

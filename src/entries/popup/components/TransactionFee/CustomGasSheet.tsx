@@ -1,5 +1,13 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  Fragment,
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -7,9 +15,11 @@ import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { txSpeedEmoji } from '~/core/references/txSpeed';
 import { useGasStore } from '~/core/state';
+import { ChainId } from '~/core/types/chains';
 import { GasFeeParams, GasSpeed } from '~/core/types/gas';
+import { formatNumber } from '~/core/utils/formatNumber';
 import { getBaseFeeTrendParams } from '~/core/utils/gas';
-import { isZero, lessThan, toFixedDecimals } from '~/core/utils/numbers';
+import { isZero, lessThan } from '~/core/utils/numbers';
 import {
   Bleed,
   Box,
@@ -37,8 +47,7 @@ import {
   useExplainerSheetParams,
 } from '../ExplainerSheet/ExplainerSheet';
 import { GweiInputMask } from '../InputMask/GweiInputMask/GweiInputMask';
-
-const speeds = [GasSpeed.URGENT, GasSpeed.FAST, GasSpeed.NORMAL];
+import { CursorTooltip } from '../Tooltip/CursorTooltip';
 
 const GasLabel = ({
   label,
@@ -148,17 +157,78 @@ const ExplainerHeaderPill = ({
           weight="bold"
           size="14pt"
           color={color as TextStyles['color']}
-        >{`${label} ∙ ${toFixedDecimals(gwei, 0)} Gwei`}</Text>
+        >{`${label} ∙ ${formatNumber(gwei)} Gwei`}</Text>
       </Inline>
     </Box>
   );
 };
+
+function PriorityFeeUnsupportedTooltip({ children }: PropsWithChildren) {
+  return (
+    <CursorTooltip
+      arrowAlignment="center"
+      arrowDirection="down"
+      arrowCentered
+      text={'Miner tip is not supported on this chain'}
+      textWeight="bold"
+      textSize="12pt"
+      textColor="labelSecondary"
+    >
+      {children}
+    </CursorTooltip>
+  );
+}
+
+function PriorityFeeInput({
+  warning,
+  showExplainer,
+  inputRef,
+  value,
+  onChange,
+  disabled,
+}: {
+  warning: 'stuck' | 'fail' | undefined;
+  showExplainer: () => void;
+  inputRef: React.RefObject<HTMLInputElement>;
+  value: string | undefined;
+  onChange: (value: string) => void;
+  disabled: boolean;
+}) {
+  const Tooltip = disabled ? PriorityFeeUnsupportedTooltip : Fragment;
+
+  return (
+    <Tooltip>
+      <Box
+        style={{ opacity: disabled ? 0.6 : 1 }}
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+      >
+        <GasLabel
+          label={i18n.t('custom_gas.miner_tip')}
+          warning={warning}
+          onClick={showExplainer}
+        />
+        <Box style={{ width: 98 }} marginRight="-4px">
+          <GweiInputMask
+            inputRef={inputRef}
+            value={value || '0'}
+            variant="surface"
+            onChange={onChange}
+            disabled={!disabled}
+          />
+        </Box>
+      </Box>
+    </Tooltip>
+  );
+}
 
 export const CustomGasSheet = ({
   show,
   currentBaseFee,
   baseFeeTrend,
   flashbotsEnabled,
+  chainId,
   setCustomMaxBaseFee,
   setCustomMaxPriorityFee,
   closeCustomGasSheet,
@@ -168,6 +238,7 @@ export const CustomGasSheet = ({
   currentBaseFee: string;
   baseFeeTrend: number;
   flashbotsEnabled: boolean;
+  chainId: ChainId;
   setCustomMaxBaseFee: (maxBaseFee: string) => void;
   setCustomMaxPriorityFee: (maxPriorityFee: string) => void;
   closeCustomGasSheet: () => void;
@@ -193,7 +264,9 @@ export const CustomGasSheet = ({
     (customSpeed as GasFeeParams)?.maxBaseFee?.gwei,
   );
   const [maxPriorityFee, setMaxPriorityFee] = useState(
-    (customSpeed as GasFeeParams)?.maxPriorityFeePerGas?.gwei,
+    customSpeed && 'maxPriorityFeePerGas' in customSpeed
+      ? customSpeed.maxPriorityFeePerGas?.gwei
+      : undefined,
   );
 
   const [maxBaseFeeWarning, setMaxBaseFeeWarning] = useState<
@@ -210,9 +283,7 @@ export const CustomGasSheet = ({
 
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
-      if (
-        [shortcuts.global.BACK.key, shortcuts.global.CLOSE.key].includes(e.key)
-      ) {
+      if ([shortcuts.global.CLOSE.key].includes(e.key)) {
         e.preventDefault();
         e.stopPropagation();
         closeCustomGasSheet();
@@ -324,10 +395,18 @@ export const CustomGasSheet = ({
 
   const onSelectedGasChange = useCallback(
     (speed: GasSpeed) => {
-      const selectedGas = gasFeeParamsBySpeed[speed] as GasFeeParams;
-      setSelectedGas({ selectedGas: gasFeeParamsBySpeed[speed] });
-      setMaxBaseFee(selectedGas?.maxBaseFee?.gwei);
-      setMaxPriorityFee(selectedGas?.maxPriorityFeePerGas?.gwei);
+      const selectedGas = gasFeeParamsBySpeed[speed];
+      if (!selectedGas) return;
+
+      setSelectedGas({ selectedGas });
+      console.log('onSelectedGasChange', { selectedGas });
+      if ('maxBaseFee' in selectedGas) {
+        setMaxBaseFee(selectedGas.maxBaseFee?.gwei);
+        setMaxPriorityFee(selectedGas.maxPriorityFeePerGas?.gwei);
+      } else {
+        setMaxBaseFee(selectedGas.gasPrice.gwei);
+        setMaxPriorityFee(undefined);
+      }
       setSelectedSpeedOption(speed);
       maxBaseFeeInputRef?.current?.focus();
     },
@@ -343,7 +422,7 @@ export const CustomGasSheet = ({
       show: true,
       header: {
         emoji: trendParams.emoji,
-        headerPill: (
+        headerPill: trendParams.symbol ? (
           <ExplainerHeaderPill
             color={trendParams.color}
             label={trendParams.label}
@@ -351,7 +430,7 @@ export const CustomGasSheet = ({
             symbol={trendParams.symbol}
             borderColor={trendParams.borderColor}
           />
-        ),
+        ) : undefined,
       },
       description: [
         i18n.t('explainers.custom_gas.current_base_description'),
@@ -435,26 +514,28 @@ export const CustomGasSheet = ({
               <Box paddingBottom="12px">
                 <Box height="full">
                   <Stack space="12px">
-                    <Inline
-                      alignHorizontal="right"
-                      space="4px"
-                      alignVertical="center"
-                    >
-                      <Symbol
-                        symbol={trend.symbol as SymbolName}
-                        color={trend.color as SymbolStyles['color']}
-                        weight="bold"
-                        size={11}
-                      />
-                      <Text
-                        color={trend.color as TextStyles['color']}
-                        align="center"
-                        size="11pt"
-                        weight="bold"
+                    {!!trend.symbol && (
+                      <Inline
+                        alignHorizontal="right"
+                        space="4px"
+                        alignVertical="center"
                       >
-                        {trend.label}
-                      </Text>
-                    </Inline>
+                        <Symbol
+                          symbol={trend.symbol as SymbolName}
+                          color={trend.color as SymbolStyles['color']}
+                          weight="bold"
+                          size={11}
+                        />
+                        <Text
+                          color={trend.color as TextStyles['color']}
+                          align="center"
+                          size="11pt"
+                          weight="bold"
+                        >
+                          {trend.label}
+                        </Text>
+                      </Inline>
+                    )}
                     <Inline
                       height="full"
                       alignHorizontal="justify"
@@ -488,7 +569,7 @@ export const CustomGasSheet = ({
                         size="14pt"
                         weight="semibold"
                       >
-                        {`${toFixedDecimals(currentBaseFee, 0)} Gwei`}
+                        {`${formatNumber(currentBaseFee)} Gwei`}
                       </Text>
                     </Inline>
                   </Stack>
@@ -518,29 +599,14 @@ export const CustomGasSheet = ({
                   </Box>
                 </Inline>
               </Box>
-              <Box>
-                <Inline
-                  height="full"
-                  alignHorizontal="justify"
-                  alignVertical="center"
-                >
-                  <Box>
-                    <GasLabel
-                      label={i18n.t('custom_gas.miner_tip')}
-                      warning={maxPriorityFeeWarning}
-                      onClick={showMaxPriorityFeeExplainer}
-                    />
-                  </Box>
-                  <Box style={{ width: 98 }} marginRight="-4px">
-                    <GweiInputMask
-                      inputRef={maxPriorityFeeInputRef}
-                      value={maxPriorityFee}
-                      variant="surface"
-                      onChange={updateCustomMaxPriorityFee}
-                    />
-                  </Box>
-                </Inline>
-              </Box>
+              <PriorityFeeInput
+                disabled={maxPriorityFee === undefined}
+                warning={maxPriorityFeeWarning}
+                showExplainer={showMaxPriorityFeeExplainer}
+                inputRef={maxPriorityFeeInputRef}
+                value={maxPriorityFee}
+                onChange={updateCustomMaxPriorityFee}
+              />
               <Box paddingVertical="12px">
                 <Columns alignHorizontal="justify" alignVertical="center">
                   <Column>
@@ -645,86 +711,99 @@ export const CustomGasSheet = ({
                       >
                         {customSpeed?.display}
                       </TextOverflow>
-                      <TextOverflow
-                        align="right"
-                        color="labelTertiary"
-                        size="11pt"
-                        weight="semibold"
-                      >
-                        {customSpeed?.estimatedTime?.display}
-                      </TextOverflow>
-                    </Stack>
-                  </Column>
-                </Columns>
-              </Lens>
-              {speeds.map((speed) => (
-                <Lens
-                  key={speed}
-                  paddingVertical="8px"
-                  borderRadius="12px"
-                  marginHorizontal="-12px"
-                  paddingHorizontal="12px"
-                  background={{
-                    default:
-                      selectedSpeedOption === speed ? 'accent' : 'transparent',
-                    hover: 'accent',
-                  }}
-                  onClick={() => onSelectedGasChange(speed)}
-                  tabIndex={selectedSpeedOption === speed ? -1 : 0}
-                >
-                  <Columns alignVertical="center" alignHorizontal="justify">
-                    <Column width="2/5">
-                      <Columns space="10px" alignVertical="center">
-                        <Column width="content">
-                          <Text weight="semibold" size="14pt">
-                            {txSpeedEmoji[speed]}
-                          </Text>
-                        </Column>
-                        <Column>
-                          <Stack space="8px">
-                            <Text
-                              align="left"
-                              color="label"
-                              size="14pt"
-                              weight="semibold"
-                            >
-                              {i18n.t(`transaction_fee.${speed}`)}
-                            </Text>
-                            <TextOverflow
-                              align="left"
-                              color="labelTertiary"
-                              size="11pt"
-                              weight="semibold"
-                            >
-                              {gasFeeParamsBySpeed[speed]?.gasFee?.display}
-                            </TextOverflow>
-                          </Stack>
-                        </Column>
-                      </Columns>
-                    </Column>
-                    <Column width="3/5">
-                      <Stack space="8px">
-                        <TextOverflow
-                          align="right"
-                          color="label"
-                          size="14pt"
-                          weight="semibold"
-                        >
-                          {gasFeeParamsBySpeed?.[speed]?.display}
-                        </TextOverflow>
+                      {customSpeed?.estimatedTime && (
                         <TextOverflow
                           align="right"
                           color="labelTertiary"
                           size="11pt"
                           weight="semibold"
                         >
-                          {gasFeeParamsBySpeed?.[speed]?.estimatedTime?.display}
+                          {customSpeed.estimatedTime.display}
                         </TextOverflow>
-                      </Stack>
-                    </Column>
-                  </Columns>
-                </Lens>
-              ))}
+                      )}
+                    </Stack>
+                  </Column>
+                </Columns>
+              </Lens>
+              {Object.entries(gasFeeParamsBySpeed)
+                .filter(([speed]) => speed !== 'custom')
+                .map(([_speed, _params]) => {
+                  const speed = _speed as GasSpeed;
+                  const { gasFee, display, estimatedTime } =
+                    _params as GasFeeParams;
+                  return (
+                    <Lens
+                      key={speed}
+                      paddingVertical="8px"
+                      borderRadius="12px"
+                      marginHorizontal="-12px"
+                      paddingHorizontal="12px"
+                      background={{
+                        default:
+                          selectedSpeedOption === speed
+                            ? 'accent'
+                            : 'transparent',
+                        hover: 'accent',
+                      }}
+                      onClick={() => onSelectedGasChange(speed)}
+                      tabIndex={selectedSpeedOption === speed ? -1 : 0}
+                    >
+                      <Columns alignVertical="center" alignHorizontal="justify">
+                        <Column width="2/5">
+                          <Columns space="10px" alignVertical="center">
+                            <Column width="content">
+                              <Text weight="semibold" size="14pt">
+                                {txSpeedEmoji[speed]}
+                              </Text>
+                            </Column>
+                            <Column>
+                              <Stack space="8px">
+                                <Text
+                                  align="left"
+                                  color="label"
+                                  size="14pt"
+                                  weight="semibold"
+                                >
+                                  {i18n.t(`transaction_fee.${speed}`)}
+                                </Text>
+                                <TextOverflow
+                                  align="left"
+                                  color="labelTertiary"
+                                  size="11pt"
+                                  weight="semibold"
+                                >
+                                  {gasFee.display}
+                                </TextOverflow>
+                              </Stack>
+                            </Column>
+                          </Columns>
+                        </Column>
+                        <Column width="3/5">
+                          <Stack space="8px">
+                            <TextOverflow
+                              align="right"
+                              color="label"
+                              size="14pt"
+                              weight="semibold"
+                            >
+                              {display}
+                            </TextOverflow>
+                            {estimatedTime && (
+                              <TextOverflow
+                                align="right"
+                                color="labelTertiary"
+                                size="11pt"
+                                weight="semibold"
+                              >
+                                {estimatedTime?.display}
+                              </TextOverflow>
+                            )}
+                          </Stack>
+                        </Column>
+                      </Columns>
+                    </Lens>
+                  );
+                })}
             </Stack>
 
             <Box paddingTop="20px">

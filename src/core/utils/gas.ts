@@ -18,17 +18,16 @@ import {
   gasUnits,
   supportedCurrencies,
 } from '../references';
-import {
-  MeteorologyLegacyResponse,
-  MeteorologyResponse,
-} from '../resources/gas/meteorology';
+import { GasData } from '../resources/gas/gasData';
 import { ParsedAsset } from '../types/assets';
 import { ChainId } from '../types/chains';
 import {
   BlocksToConfirmation,
   GasFeeLegacyParams,
+  GasFeeLegacyParamsBySpeed,
   GasFeeParam,
   GasFeeParams,
+  GasFeeParamsBySpeed,
   GasSpeed,
 } from '../types/gas';
 
@@ -60,10 +59,12 @@ export const parseGasDataConfirmationTime = ({
 }: {
   maxBaseFee: string;
   maxPriorityFee: string;
-  blocksToConfirmation: BlocksToConfirmation;
+  blocksToConfirmation: BlocksToConfirmation | undefined;
   additionalTime?: number;
-  secondsPerNewBlock: number;
+  secondsPerNewBlock: number | undefined;
 }) => {
+  if (!secondsPerNewBlock || !blocksToConfirmation) return undefined;
+
   let blocksToWaitForPriorityFee = 0;
   let blocksToWaitForBaseFee = 0;
   const { byPriorityFee, byBaseFee } = blocksToConfirmation;
@@ -131,35 +132,37 @@ export const parseCustomGasFeeParams = ({
 }: {
   baseFeeWei: string;
   speed: GasSpeed;
-  maxPriorityFeeWei: string;
+  maxPriorityFeeWei: string | undefined;
   currentBaseFee: string;
   gasLimit: string;
   nativeAsset?: ParsedAsset;
-  blocksToConfirmation: BlocksToConfirmation;
+  blocksToConfirmation: BlocksToConfirmation | undefined;
   currency: SupportedCurrencyKey;
   additionalTime?: number;
-  secondsPerNewBlock: number;
+  secondsPerNewBlock: number | undefined;
 }): GasFeeParams => {
   const maxBaseFee = parseGasFeeParam({
     wei: baseFeeWei || '0',
   });
-  const maxPriorityFeePerGas = parseGasFeeParam({
-    wei: maxPriorityFeeWei || '0',
-  });
+  const maxPriorityFeePerGas = maxPriorityFeeWei
+    ? parseGasFeeParam({
+        wei: maxPriorityFeeWei,
+      })
+    : undefined;
 
   const baseFee = lessThan(currentBaseFee, maxBaseFee.amount)
     ? currentBaseFee
     : maxBaseFee.amount;
 
-  const display = `${new BigNumber(
-    weiToGwei(add(baseFee, maxPriorityFeePerGas.amount)),
-  ).toFixed(0)} - ${new BigNumber(
-    weiToGwei(add(baseFeeWei, maxPriorityFeePerGas.amount)),
-  ).toFixed(0)} Gwei`;
+  const display = `${formatNumber(
+    weiToGwei(add(baseFee, maxPriorityFeePerGas?.amount || '0')),
+  )} - ${formatNumber(
+    weiToGwei(add(baseFeeWei, maxPriorityFeePerGas?.amount || '0')),
+  )} Gwei`;
 
   const estimatedTime = parseGasDataConfirmationTime({
     maxBaseFee: maxBaseFee.amount,
-    maxPriorityFee: maxPriorityFeePerGas.amount,
+    maxPriorityFee: maxPriorityFeePerGas?.amount || '0',
     blocksToConfirmation,
     additionalTime,
     secondsPerNewBlock,
@@ -214,35 +217,38 @@ export const parseGasFeeParams = ({
   wei: string;
   speed: GasSpeed;
   maxPriorityFeeSuggestions: {
-    fast: string;
-    urgent: string;
+    fast?: string;
+    urgent?: string;
     normal: string;
   };
   currentBaseFee: string;
   gasLimit: string;
   nativeAsset?: ParsedAsset;
-  blocksToConfirmation: BlocksToConfirmation;
+  blocksToConfirmation: BlocksToConfirmation | undefined;
   currency: SupportedCurrencyKey;
   additionalTime?: number;
-  secondsPerNewBlock: number;
+  secondsPerNewBlock: number | undefined;
   optimismL1SecurityFee?: string | null;
 }): GasFeeParams => {
   const maxBaseFee = parseGasFeeParam({
-    wei: new BigNumber(multiply(wei, getBaseFeeMultiplier(speed))).toFixed(0),
+    wei: multiply(wei, getBaseFeeMultiplier(speed)),
   });
+
   const maxPriorityFeePerGas = parseGasFeeParam({
-    wei: maxPriorityFeeSuggestions[speed === 'custom' ? 'urgent' : speed],
+    wei:
+      maxPriorityFeeSuggestions[speed === 'custom' ? 'urgent' : speed] ||
+      maxPriorityFeeSuggestions.normal,
   });
 
   const baseFee = lessThan(currentBaseFee, maxBaseFee.amount)
     ? currentBaseFee
     : maxBaseFee.amount;
 
-  const display = `${new BigNumber(
+  const display = `${formatNumber(
     weiToGwei(add(baseFee, maxPriorityFeePerGas.amount)),
-  ).toFixed(0)} - ${new BigNumber(
+  )} - ${formatNumber(
     weiToGwei(add(maxBaseFee.amount, maxPriorityFeePerGas.amount)),
-  ).toFixed(0)} Gwei`;
+  )} Gwei`;
 
   const estimatedTime = parseGasDataConfirmationTime({
     maxBaseFee: maxBaseFee.amount,
@@ -312,7 +318,7 @@ export const parseGasFeeLegacyParams = ({
 }): GasFeeLegacyParams => {
   const wei = gweiToWei(gwei);
   const gasPrice = parseGasFeeParam({
-    wei: new BigNumber(multiply(wei, getBaseFeeMultiplier(speed))).toFixed(0),
+    wei: multiply(wei, getBaseFeeMultiplier(speed)),
   });
   const display = parseGasFeeParam({ wei }).display;
 
@@ -573,7 +579,7 @@ export const parseGasFeeParamsBySpeed = ({
   additionalTime = 0,
 }: {
   chainId: ChainId;
-  data: MeteorologyResponse | MeteorologyLegacyResponse;
+  data: GasData;
   gasLimit: string;
   nativeAsset?: ParsedAsset;
   currency: SupportedCurrencyKey;
@@ -581,28 +587,34 @@ export const parseGasFeeParamsBySpeed = ({
   flashbotsEnabled?: boolean;
   additionalTime?: number;
 }) => {
-  if (meteorologySupportsType2ForChain(chainId)) {
-    const response = data as MeteorologyResponse;
+  const gasData = data.data;
+  if (
+    'currentBaseFee' in gasData &&
+    gasData.currentBaseFee &&
+    gasData.maxPriorityFeeSuggestions
+  ) {
     const {
-      data: {
-        currentBaseFee,
-        maxPriorityFeeSuggestions,
-        baseFeeSuggestion,
-        secondsPerNewBlock,
-      },
-    } = response;
+      currentBaseFee,
+      maxPriorityFeeSuggestions,
+      baseFeeSuggestion,
+      secondsPerNewBlock,
+      blocksToConfirmationByBaseFee,
+      blocksToConfirmationByPriorityFee,
+    } = gasData;
 
-    const blocksToConfirmation = {
-      byBaseFee: response.data.blocksToConfirmationByBaseFee,
-      byPriorityFee: response.data.blocksToConfirmationByPriorityFee,
-    };
+    const blocksToConfirmation = blocksToConfirmationByBaseFee
+      ? {
+          byBaseFee: blocksToConfirmationByBaseFee,
+          byPriorityFee: blocksToConfirmationByPriorityFee,
+        }
+      : undefined;
 
     if (flashbotsEnabled) {
-      for (const speed in maxPriorityFeeSuggestions) {
-        type gasSpeed = 'fast' | 'normal' | 'urgent';
-        maxPriorityFeeSuggestions[speed as gasSpeed] = Math.max(
+      for (const key in maxPriorityFeeSuggestions) {
+        const speed = key as keyof typeof maxPriorityFeeSuggestions;
+        maxPriorityFeeSuggestions[speed] = Math.max(
           Number(gweiToWei(FLASHBOTS_MIN_TIP.toString())),
-          Number(maxPriorityFeeSuggestions[speed as gasSpeed]),
+          Number(maxPriorityFeeSuggestions[speed]),
         ).toString();
       }
     }
@@ -622,73 +634,68 @@ export const parseGasFeeParamsBySpeed = ({
         optimismL1SecurityFee,
       });
 
-    return {
-      custom: parseGasFeeParamsSpeed({
-        speed: GasSpeed.CUSTOM,
+    return Object.keys(maxPriorityFeeSuggestions).reduce(
+      (paramsBySpeed, speed) => ({
+        ...paramsBySpeed,
+        [speed]: parseGasFeeParamsSpeed({ speed: speed as GasSpeed }),
       }),
-      urgent: parseGasFeeParamsSpeed({
-        speed: GasSpeed.URGENT,
-      }),
-      fast: parseGasFeeParamsSpeed({
-        speed: GasSpeed.FAST,
-      }),
-      normal: parseGasFeeParamsSpeed({
-        speed: GasSpeed.NORMAL,
-      }),
-    };
-  } else {
-    const response = data as MeteorologyLegacyResponse;
-    const chainWaitTime = getChainWaitTime(chainId);
-    const parseGasFeeParamsSpeed = ({
-      speed,
-      gwei,
-      waitTime,
-    }: {
-      speed: GasSpeed;
-      gwei: string;
-      waitTime: number | null;
-    }) =>
-      parseGasFeeLegacyParams({
-        gwei,
-        speed,
-        waitTime,
-        gasLimit,
-        nativeAsset,
-        currency,
-        optimismL1SecurityFee,
-      });
-
-    return {
-      custom: parseGasFeeParamsSpeed({
-        gwei: response?.data.legacy.fastGasPrice,
-        speed: GasSpeed.CUSTOM,
-        waitTime: chainWaitTime
-          ? chainWaitTime.fastWait + additionalTime
-          : null,
-      }),
-      urgent: parseGasFeeParamsSpeed({
-        gwei: response?.data.legacy.fastGasPrice,
-        speed: GasSpeed.URGENT,
-        waitTime: chainWaitTime
-          ? chainWaitTime.fastWait + additionalTime
-          : null,
-      }),
-      fast: parseGasFeeParamsSpeed({
-        gwei: response?.data.legacy.proposeGasPrice,
-        speed: GasSpeed.FAST,
-        waitTime: chainWaitTime
-          ? chainWaitTime.proposedWait + additionalTime
-          : null,
-      }),
-      normal: parseGasFeeParamsSpeed({
-        gwei: response?.data.legacy.safeGasPrice,
-        speed: GasSpeed.NORMAL,
-        waitTime: chainWaitTime
-          ? chainWaitTime.safeWait + additionalTime
-          : null,
-      }),
-    };
+      {} as GasFeeParamsBySpeed,
+    );
   }
+
+  if (!('legacy' in gasData)) throw new Error('Invalid gas data');
+
+  const chainWaitTime = getChainWaitTime(chainId);
+  const parseGasFeeParamsSpeed = ({
+    speed,
+    gwei,
+    waitTime,
+  }: {
+    speed: GasSpeed;
+    gwei: string;
+    waitTime: number | null;
+  }) =>
+    parseGasFeeLegacyParams({
+      gwei,
+      speed,
+      waitTime,
+      gasLimit,
+      nativeAsset,
+      currency,
+      optimismL1SecurityFee,
+    });
+
+  const { safeGasPrice, proposeGasPrice, fastGasPrice } = gasData.legacy;
+
+  return {
+    custom: parseGasFeeParamsSpeed({
+      gwei: fastGasPrice || safeGasPrice,
+      speed: GasSpeed.CUSTOM,
+      waitTime: chainWaitTime ? chainWaitTime.fastWait + additionalTime : null,
+    }),
+    ...(fastGasPrice &&
+      proposeGasPrice && {
+        urgent: parseGasFeeParamsSpeed({
+          gwei: fastGasPrice,
+          speed: GasSpeed.URGENT,
+          waitTime: chainWaitTime
+            ? chainWaitTime.fastWait + additionalTime
+            : null,
+        }),
+        fast: parseGasFeeParamsSpeed({
+          gwei: proposeGasPrice,
+          speed: GasSpeed.FAST,
+          waitTime: chainWaitTime
+            ? chainWaitTime.proposedWait + additionalTime
+            : null,
+        }),
+      }),
+    normal: parseGasFeeParamsSpeed({
+      gwei: safeGasPrice,
+      speed: GasSpeed.NORMAL,
+      waitTime: chainWaitTime ? chainWaitTime.safeWait + additionalTime : null,
+    }),
+  } satisfies GasFeeLegacyParamsBySpeed;
 };
 
 export const gasFeeParamsChanged = (

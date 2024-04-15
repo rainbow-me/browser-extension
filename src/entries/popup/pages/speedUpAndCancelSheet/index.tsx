@@ -65,13 +65,18 @@ async function gasParamsToOverrideTransaction(
   // (so it executes faster than the original transaction)
   // if the selected gas params are higher than this, we use the selected gas params
 
-  if ('gasPrice' in transaction)
+  if ('gasPrice' in transaction) {
+    if (!('gasPrice' in selectedGasParams)) return selectedGasParams;
+
     return {
       gasPrice: greaterValueInHex(
         selectedGasParams.gasPrice,
         addTenPercent(transaction.gasPrice),
       ),
     };
+  }
+
+  if (!('maxFeePerGas' in selectedGasParams)) return selectedGasParams;
 
   const minMaxFeePerGas = addTenPercent(transaction.maxFeePerGas);
   const minMaxPriorityFeePerGas = addTenPercent(

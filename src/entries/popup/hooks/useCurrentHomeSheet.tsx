@@ -26,13 +26,15 @@ export function useCurrentHomeSheet() {
     switch (sheet) {
       case 'cancel':
       case 'speedUp':
-        return selectedTransaction ? (
+        if (!selectedTransaction || selectedTransaction.status !== 'pending')
+          return null;
+        return (
           <SpeedUpAndCancelSheet
             currentSheet={sheet}
             onClose={closeSheet}
             transaction={selectedTransaction}
           />
-        ) : null;
+        );
       default:
         return null;
     }

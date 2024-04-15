@@ -17,11 +17,13 @@ export const GweiInputMask = ({
   variant,
   onChange,
   inputRef,
+  disabled,
 }: {
   value: string;
   variant: 'surface' | 'bordered' | 'transparent';
   onChange: (value: string) => void;
   inputRef: RefObject<HTMLInputElement>;
+  disabled?: boolean;
 }) => {
   const [isFocused, setIsFocused] = useState(false);
 
@@ -53,7 +55,7 @@ export const GweiInputMask = ({
       width="full"
       as={motion.div}
       whileTap={
-        variant !== 'transparent'
+        variant !== 'transparent' && !disabled
           ? { scale: transformScales['0.96'] }
           : undefined
       }
@@ -82,6 +84,7 @@ export const GweiInputMask = ({
 
       <Box backdropFilter="opacity(0%)">
         <Input
+          disabled={disabled}
           onFocus={onFocus}
           onBlur={onBlur}
           value={`${value}`}

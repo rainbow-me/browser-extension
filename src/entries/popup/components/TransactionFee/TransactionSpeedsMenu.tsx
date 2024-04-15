@@ -25,8 +25,6 @@ import {
   DropdownMenuTrigger,
 } from '../DropdownMenu/DropdownMenu';
 
-const speeds = [GasSpeed.URGENT, GasSpeed.FAST, GasSpeed.NORMAL];
-
 export const SwitchSpeedMenuSelector = ({
   gasFeeParamsBySpeed,
   chainId,
@@ -65,34 +63,37 @@ export const SwitchSpeedMenuSelector = ({
           </Box>
         </DropdownMenuRadioItem>
       ) : null}
-      {speeds.map((speed, i) => {
-        return (
-          <DropdownMenuRadioItem
-            value={speed}
-            key={i}
-            selectedValue={selectedValue}
-          >
-            <Box testId={`switch-network-item-${chainId}`}>
-              <Inline space="8px" alignVertical="center">
-                <Text weight="semibold" size="14pt">
-                  {txSpeedEmoji[speed]}
-                </Text>
-                <Stack space="6px">
-                  <Text color="label" size="14pt" weight="semibold">
-                    {i18n.t(`transaction_fee.${speed}`)}
+      {gasFeeParamsBySpeed &&
+        Object.entries(gasFeeParamsBySpeed).map(([_speed, _params], i) => {
+          const speed = _speed as GasSpeed;
+          const { display } = _params as GasFeeParamsBySpeed[GasSpeed];
+          return (
+            <DropdownMenuRadioItem
+              value={speed}
+              key={i}
+              selectedValue={selectedValue}
+            >
+              <Box testId={`switch-network-item-${chainId}`}>
+                <Inline space="8px" alignVertical="center">
+                  <Text weight="semibold" size="14pt">
+                    {txSpeedEmoji[speed]}
                   </Text>
-                  <Text color="label" size="11pt" weight="medium">
-                    {gasFeeParamsBySpeed?.[speed].display}
-                  </Text>
-                </Stack>
-              </Inline>
-            </Box>
-            <DropdownMenuItemIndicator style={{ marginLeft: 'auto' }}>
-              <Symbol weight="medium" symbol="checkmark" size={11} />
-            </DropdownMenuItemIndicator>
-          </DropdownMenuRadioItem>
-        );
-      })}
+                  <Stack space="6px">
+                    <Text color="label" size="14pt" weight="semibold">
+                      {i18n.t(`transaction_fee.${speed}`)}
+                    </Text>
+                    <Text color="label" size="11pt" weight="medium">
+                      {display}
+                    </Text>
+                  </Stack>
+                </Inline>
+              </Box>
+              <DropdownMenuItemIndicator style={{ marginLeft: 'auto' }}>
+                <Symbol weight="medium" symbol="checkmark" size={11} />
+              </DropdownMenuItemIndicator>
+            </DropdownMenuRadioItem>
+          );
+        })}
     </>
   );
 };

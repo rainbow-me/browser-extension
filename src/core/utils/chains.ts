@@ -380,3 +380,12 @@ export const deriveChainIdByHostname = (hostname: string) => {
       return ChainId.mainnet;
   }
 };
+
+const chainsWithoutPriorityFee = [
+  ChainId.arbitrum,
+  ChainId.arbitrumNova,
+  ChainId.arbitrumSepolia,
+];
+export const chainSupportsPriorityFee = (chainId: ChainId) => {
+  return !chainsWithoutPriorityFee.includes(chainId);
+};
