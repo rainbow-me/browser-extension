@@ -183,6 +183,114 @@ export const WETH_MAINNET_ASSET = {
   uniqueId: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2_1',
 } satisfies ParsedAsset;
 
+export const NFTS_TEST_DATA_0XF39 = {
+  nfts: [
+    {
+      asset_contract: {
+        address: '0xef180a17feb01b15d2efb4ded8107a5807fabadb',
+        name: 'The Treasures of Ancient Egypt Official',
+        schema_name: 'ERC721',
+        symbol: 'Treasure',
+        deployed_by: '0x33E8fce4ee1eB405E59E93c9E19AD8d0fFD9bc4e',
+      },
+      background: null,
+      collection: {
+        description:
+          'Book I - Pyramids  \n\nBook II - Guardians of Egypt  \n\nBook III-The Betrayer Must...\n\nBook Ⅳ-Die\n\nOn July 20, GMT, if no one succeeds in getting the treasure, everything will be reduced to ashes. \n\nGuardians of Egypt, you only need to pay them 0.001 and you will get a chance to discover Egyptian treasures[mint](https://etherscan.io/address/0xef180a17feb01b15d2efb4ded8107a5807fabadb#writeContract)',
+        discord_url: 'https://discord.gg/9STYvmc',
+        external_url: null,
+        image_url:
+          'https://lh3.googleusercontent.com/45eY3ZvIEd44kxuHq0IAnWL8JhN9kMXinMCNPm7hGMKGjmMoE2skD1f8kmgc-D_latIeA1kjxBqC04YRpIw090y1SI5oHLKeXGw',
+        name: 'The Treasures of Ancient Egypt Official',
+        slug: 'the-treasures-of-ancient-egypt-official',
+        twitter_username: 'treasures_nft_',
+        collection_id: '6f01adedc93f0decc76b708b409b5213',
+        distinct_nft_count: 5638,
+        distinct_owner_count: 910,
+        total_quantity: 5638,
+      },
+      description:
+        'Book I - Pyramids  Book II - guardian of egypt  Book III-The betrayal must...  Book Ⅳ-die',
+      external_link: null,
+      familyImage:
+        'https://lh3.googleusercontent.com/45eY3ZvIEd44kxuHq0IAnWL8JhN9kMXinMCNPm7hGMKGjmMoE2skD1f8kmgc-D_latIeA1kjxBqC04YRpIw090y1SI5oHLKeXGw',
+      familyName: 'The Treasures of Ancient Egypt Official',
+      floorPriceEth: '0.0005',
+      fullUniqueId: 'mainnet_0xef180a17feb01b15d2efb4ded8107a5807fabadb_5602',
+      id: '5602',
+      image_original_url:
+        'ipfs://QmQmNbC2g87yuEVq6dU6iavM5dPunn2aGx63y9PexhLeZy/5602.png',
+      image_preview_url:
+        'https://lh3.googleusercontent.com/vnYKYr19L_meAydfvjdf4FPRAVIcFCrupLIYewx5EtdJIJzAE_phQnyXaDSqWd8ATNkfxjDYVnT0sAcQ8GIpCGgljBQM-Q46hA=s250',
+      image_thumbnail_url:
+        'https://lh3.googleusercontent.com/vnYKYr19L_meAydfvjdf4FPRAVIcFCrupLIYewx5EtdJIJzAE_phQnyXaDSqWd8ATNkfxjDYVnT0sAcQ8GIpCGgljBQM-Q46hA=s1000',
+      image_url:
+        'https://cdn.simplehash.com/assets/83182ba908b9667c8ed46774e566c6c975e6dc29934e619cd82c851a52b46b38.png',
+      isPoap: false,
+      isSendable: true,
+      lowResUrl:
+        'https://lh3.googleusercontent.com/vnYKYr19L_meAydfvjdf4FPRAVIcFCrupLIYewx5EtdJIJzAE_phQnyXaDSqWd8ATNkfxjDYVnT0sAcQ8GIpCGgljBQM-Q46hA=s1000',
+      marketplaceCollectionUrl:
+        'https://opensea.io/collection/the-treasures-of-ancient-egypt-official',
+      marketplaceId: 'opensea',
+      marketplaceName: 'OpenSea',
+      name: 'Treasures of Ancient Egypt  #5602',
+      network: 'mainnet',
+      permalink:
+        'https://opensea.io/assets/ethereum/0xef180a17feb01b15d2efb4ded8107a5807fabadb/5602',
+      poapDropId: null,
+      predominantColor: '#caa261',
+      traits: [
+        {
+          trait_type: 'Background',
+          value: 'silence',
+          display_type: null,
+        },
+        {
+          trait_type: 'Attributes',
+          value: '2',
+          display_type: null,
+        },
+        {
+          trait_type: 'Spirit',
+          value: 'q',
+          display_type: null,
+        },
+        {
+          trait_type: 'MEvolved Jutsu',
+          value: 'None',
+          display_type: null,
+        },
+        {
+          trait_type: 'Crypto Jutsu',
+          value: 'Hashrate Fast Covery @Motsu',
+          display_type: null,
+        },
+        {
+          trait_type: 'Meta Jutsu',
+          value: 'HODL Ogami @Senjutsu',
+          display_type: null,
+        },
+        {
+          trait_type: 'Ultimate Jutsu',
+          value: 'WallStreetBet WON @Genkai',
+          display_type: null,
+        },
+      ],
+      uniqueId: '0xef180a17feb01b15d2efb4ded8107a5807fabadb_5602',
+      urlSuffixForAsset: '0xef180a17feb01b15d2efb4ded8107a5807fabadb/5602',
+      video_url: null,
+      video_properties: null,
+      audio_url: null,
+      audio_properties: null,
+      model_url: null,
+      model_properties: null,
+      last_sale: null,
+    },
+  ],
+  nextPage: null,
+} as { nfts: UniqueAsset[]; nextPage: null };
+
 export const NFTS_TEST_DATA = {
   nfts: [
     {

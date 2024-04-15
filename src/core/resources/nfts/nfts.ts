@@ -29,8 +29,9 @@ import {
   simpleHashNFTToUniqueAsset,
 } from '~/core/utils/nfts';
 import { isLowerCaseMatch } from '~/core/utils/strings';
-import { NFTS_TEST_DATA } from '~/test/utils';
+import { NFTS_TEST_DATA, NFTS_TEST_DATA_0XF39 } from '~/test/utils';
 const EMPTY_WALLET_ADDRESS = '0x3637f053D542E6D00Eee42D656dD7C59Fa33a62F';
+const TEST_WALLET_ADDRESS = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
 
 const POLYGON_ALLOWLIST_STALE_TIME = 600000; // 10 minutes
 
@@ -65,6 +66,12 @@ async function nftsQueryFunction({
     isLowerCaseMatch(address, EMPTY_WALLET_ADDRESS)
   ) {
     return NFTS_TEST_DATA;
+  }
+  if (
+    process.env.IS_TESTING === 'true' &&
+    isLowerCaseMatch(address, TEST_WALLET_ADDRESS)
+  ) {
+    return NFTS_TEST_DATA_0XF39;
   }
   const activeChainIds = userChains
     .filter((chain) => {
@@ -150,6 +157,7 @@ async function nftsQueryFunction({
       }
     },
   );
+  console.log('-- nfts', nfts);
   return {
     nfts,
     nextPage,
