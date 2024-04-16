@@ -164,7 +164,15 @@ export function Tokens() {
   );
 
   const combinedAssets = useMemo(
-    () => [...assets, ...customNetworkAssets],
+    () =>
+      Array.from(
+        new Map(
+          [...customNetworkAssets, ...assets].map((item) => [
+            item.uniqueId,
+            item,
+          ]),
+        ).values(),
+      ),
     [assets, customNetworkAssets],
   );
 
