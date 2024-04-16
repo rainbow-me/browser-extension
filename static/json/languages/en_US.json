@@ -696,6 +696,10 @@
       "price_impact": {
         "title": "Small market",
         "description": "Losing %{impactAmount}"
+      },
+      "unknown_price": {
+        "title": "%{symbol} Market Value Unknown",
+        "description": "If you decide to continue, be sure that you are satisfied receiving the quoted amount."
       }
     },
     "aggregators": {
@@ -1342,7 +1346,9 @@
       },
       "send": "Send",
       "view_on_opensea": "View on OpenSea",
-      "view_on_explorer": "View on %{explorerTitle}"
+      "view_on_explorer": "View on %{explorerTitle}",
+      "gallery": "gallery",
+      "view_gallery": "View Gallery"
     },
     "toast": {
       "spam_reported": "Your report has been received!"
@@ -1472,6 +1478,7 @@
     },
     "toast": {
       "hide_token": "Your %{name} is hidden",
+      "unhide_token": "Your %{name} is unhidden",
       "pin_token": "Your %{name} is pinned",
       "unpin_token": "Your %{name} is unpinned"
     },
@@ -1742,6 +1749,7 @@
   "unverified": "Unverified",
   "skip": "Skip",
   "done": "Done",
+  "view_on_explorer": "View on %{explorer}",
   "watch_asset": {
     "chain_id": "Chain ID",
     "symbol": "Symbol",

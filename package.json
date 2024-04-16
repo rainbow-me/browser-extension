@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.4.50",
+  "version": "1.4.63",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -57,7 +57,7 @@
     "test": "./scripts/unit-tests.sh",
     "test:watch": "yarn anvil & vitest --watch",
     "// Runs e2e": "",
-    "vitest:parallel": "yarn vitest e2e/parallel --config ./e2e/parallel/vitest.config.ts --bail 1",
+    "vitest:parallel": "./scripts/e2e-parallel-tests.sh",
     "vitest:serial": "./scripts/e2e-serial-tests.sh",
     "vitest:swap": "./scripts/e2e-serial-tests.sh 'swap'",
     "vitest:send": "./scripts/e2e-serial-tests.sh 'send'",
@@ -230,9 +230,10 @@
     "worker-loader": "3.0.8"
   },
   "resolutions": {
+    "tar": "6.2.1",
     "bn.js": "5.2.1",
     "@scure/bip39": "1.2.1",
-    "protobufjs": "7.2.4",
+    "protobufjs": "7.2.5",
     "@grpc/grpc-js": "1.8.8",
     "semver": "7.5.2",
     "globby": "11.1.0",
@@ -266,7 +267,8 @@
     "ip": "2.0.1",
     "viem": "1.21.4",
     "@solana/web3.js": "1.90.0",
-    "jose": "4.15.5"
+    "jose": "4.15.5",
+    "phin": "3.7.1"
   },
   "lavamoat": {
     "allowScripts": {

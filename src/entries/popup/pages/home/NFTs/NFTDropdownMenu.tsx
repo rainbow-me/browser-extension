@@ -51,11 +51,16 @@ export default function NFTDropdownMenu({
   const displayed = !hiddenNftsForAddress[nft?.uniqueId || ''];
   const hasContractAddress = !!nft?.asset_contract.address;
   const hasNetwork = !!nft?.network;
+  const isPOAP = nft?.familyName === 'POAP';
 
   const explorerTitle =
     nft?.network === 'mainnet' ? 'Etherscan' : i18n.t('nfts.details.explorer');
 
   const getBlockExplorerUrl = () => {
+    if (nft?.poapDropId) {
+      return `https://collectors.poap.xyz/drop/${nft.poapDropId}`;
+    }
+
     if (nft?.network === 'mainnet') {
       return `https://${getBlockExplorerHostForChain(
         chainIdFromChainName(nft?.network as ChainName),
@@ -144,27 +149,29 @@ export default function NFTDropdownMenu({
         >
           <Stack space="4px">
             <Stack>
-              <DropdownMenuRadioItem highlightAccentColor value="send">
-                <HomeMenuRow
-                  leftComponent={
-                    <Symbol
-                      size={18}
-                      symbol="paperplane.fill"
-                      weight="semibold"
-                    />
-                  }
-                  centerComponent={
-                    <Stack space="6px">
-                      <Text size="14pt" weight="semibold">
-                        {i18n.t('nfts.details.send')}
-                      </Text>
-                    </Stack>
-                  }
-                  rightComponent={
-                    <ShortcutHint hint={shortcuts.nfts.SEND_NFT.display} />
-                  }
-                />
-              </DropdownMenuRadioItem>
+              {!isPOAP && (
+                <DropdownMenuRadioItem highlightAccentColor value="send">
+                  <HomeMenuRow
+                    leftComponent={
+                      <Symbol
+                        size={18}
+                        symbol="paperplane.fill"
+                        weight="semibold"
+                      />
+                    }
+                    centerComponent={
+                      <Stack space="6px">
+                        <Text size="14pt" weight="semibold">
+                          {i18n.t('nfts.details.send')}
+                        </Text>
+                      </Stack>
+                    }
+                    rightComponent={
+                      <ShortcutHint hint={shortcuts.nfts.SEND_NFT.display} />
+                    }
+                  />
+                </DropdownMenuRadioItem>
+              )}
               <DropdownMenuRadioItem highlightAccentColor value="hide">
                 <HomeMenuRow
                   leftComponent={
@@ -274,7 +281,7 @@ export default function NFTDropdownMenu({
                 />
               </DropdownMenuRadioItem>
               <Separator color="separatorSecondary" />
-              {hasContractAddress && hasNetwork && (
+              {hasContractAddress && hasNetwork && !isPOAP && (
                 <DropdownMenuRadioItem highlightAccentColor value="opensea">
                   <HomeMenuRow
                     leftComponent={
@@ -310,9 +317,11 @@ export default function NFTDropdownMenu({
                   centerComponent={
                     <Box paddingVertical="6px">
                       <Text size="14pt" weight="semibold">
-                        {i18n.t('nfts.details.view_on_explorer', {
-                          explorerTitle,
-                        })}
+                        {nft?.poapDropId
+                          ? i18n.t('nfts.details.view_gallery')
+                          : i18n.t('nfts.details.view_on_explorer', {
+                              explorerTitle,
+                            })}
                       </Text>
                     </Box>
                   }

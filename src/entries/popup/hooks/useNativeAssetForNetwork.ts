@@ -2,9 +2,11 @@ import { AddressZero } from '@ethersproject/constants';
 import { Address } from 'wagmi';
 
 import {
+  BNB_BSC_ADDRESS,
   BNB_MAINNET_ADDRESS,
   ETH_ADDRESS,
   MATIC_MAINNET_ADDRESS,
+  MATIC_POLYGON_ADDRESS,
   NATIVE_ASSETS_PER_CHAIN,
 } from '~/core/references';
 import { ParsedAsset, UniqueId } from '~/core/types/assets';
@@ -50,9 +52,9 @@ export const getNetworkNativeAssetUniqueId = ({
     case ChainId.avalanche:
       return `${AddressZero}_${chainId}` as UniqueId;
     case ChainId.bsc:
-      return `${BNB_MAINNET_ADDRESS}_${chainId}` as UniqueId;
+      return `${BNB_BSC_ADDRESS}_${chainId}` as UniqueId;
     case ChainId.polygon:
-      return `${MATIC_MAINNET_ADDRESS}_${chainId}` as UniqueId;
+      return `${MATIC_POLYGON_ADDRESS}_${chainId}` as UniqueId;
     default:
       return `${AddressZero}_${chainId}` as UniqueId;
   }

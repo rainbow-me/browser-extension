@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from 'react';
+import { useLocation } from 'react-router';
 import { Address } from 'wagmi';
 
 import config from '~/core/firebase/remoteConfig';
@@ -43,6 +44,8 @@ export function useTokensShortcuts() {
   const { pinnedAssets, removedPinnedAsset, addPinnedAsset } =
     usePinnedAssetStore();
   const { addHiddenAsset } = useHiddenAssetStore();
+  const location = useLocation();
+  const isHomeRoute = location.pathname === ROUTES.HOME;
 
   const hasExplorerLink =
     selectedToken &&
@@ -124,7 +127,7 @@ export function useTokensShortcuts() {
 
   const handleTokenShortcuts = useCallback(
     (e: KeyboardEvent) => {
-      if (selectedToken) {
+      if (selectedToken && isHomeRoute) {
         if (e.key === shortcuts.tokens.SWAP_ASSET.key) {
           if (allowSwap) {
             trackShortcut({
@@ -185,6 +188,7 @@ export function useTokensShortcuts() {
       }
     },
     [
+      isHomeRoute,
       allowSwap,
       copyTokenAddress,
       hasExplorerLink,
@@ -199,7 +203,7 @@ export function useTokensShortcuts() {
     ],
   );
   useKeyboardShortcut({
-    condition: () => !!selectedToken,
+    condition: () => !!selectedToken && isHomeRoute,
     handler: handleTokenShortcuts,
   });
 }

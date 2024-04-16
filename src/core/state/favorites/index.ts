@@ -14,6 +14,7 @@ import {
   ETH_ARBITRUM_ADDRESS,
   ETH_BASE_ADDRESS,
   ETH_BLAST_ADDRESS,
+  ETH_DEGEN_ADDRESS,
   ETH_OPTIMISM_ADDRESS,
   ETH_ZORA_ADDRESS,
   MATIC_POLYGON_ADDRESS,
@@ -105,6 +106,7 @@ const defaultFavorites = {
     WBTC_AVALANCHE_ADDRESS,
   ],
   [ChainId.blast]: [ETH_BLAST_ADDRESS, WETH_BLAST_ADDRESS, USDB_BLAST_ADDRESS],
+  [ChainId.degen]: [ETH_DEGEN_ADDRESS],
 } satisfies FavoritesState['favorites'];
 
 const mergeNewOfficiallySupportedChainsState = (
@@ -149,7 +151,7 @@ export const favoritesStore = createStore<FavoritesState>(
   {
     persist: {
       name: 'favorites',
-      version: 3,
+      version: 4,
       migrate: migrate(
         // version 1 didn't need a migration
         (state: FavoritesState) => state,
@@ -159,6 +161,9 @@ export const favoritesStore = createStore<FavoritesState>(
         // version 3 added blast
         (state) =>
           mergeNewOfficiallySupportedChainsState(state, [ChainId.blast]),
+        // version 4 added degen
+        (state) =>
+          mergeNewOfficiallySupportedChainsState(state, [ChainId.degen]),
       ),
     },
   },

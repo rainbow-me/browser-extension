@@ -15,7 +15,7 @@ export const ActivityIcon = ({
   badge?: boolean;
   size?: 36 | 20 | 14 | 16;
 }) => {
-  if (['wrap', 'undwrap', 'swap'].includes(type)) {
+  if (['wrap', 'unwrap', 'swap'].includes(type)) {
     const inAsset = changes?.find((a) => a?.direction === 'in')?.asset;
     const outAsset = changes?.find((a) => a?.direction === 'out')?.asset;
 
