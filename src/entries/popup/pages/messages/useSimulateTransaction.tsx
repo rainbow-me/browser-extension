@@ -5,6 +5,7 @@ import { metadataPostClient } from '~/core/graphql';
 import { Message, Transaction } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { createQueryKey } from '~/core/react-query';
+import { SupportedCurrencyKey } from '~/core/references';
 import { currentCurrencyStore } from '~/core/state';
 import { AddressOrEth, ParsedAsset } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
@@ -133,11 +134,13 @@ export const useSimulateMessage = ({
   address,
   message,
   domain,
+  currency,
 }: {
   chainId: ChainId;
   address?: Address;
   message: Message;
   domain: string;
+  currency: SupportedCurrencyKey;
 }) => {
   return useQuery<TransactionSimulation, SimulationError>({
     queryKey: createQueryKey('simulateMessage', {
@@ -155,6 +158,7 @@ export const useSimulateMessage = ({
         address,
         message,
         domain,
+        currency,
       })) as MessageSimulationResponse;
 
       return parseSimulation(response.simulateMessage, chainId);
