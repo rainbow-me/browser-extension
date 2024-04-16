@@ -79,12 +79,6 @@ export async function parseUserAssets({
     connectedToHardhatPolygon,
   } = connectedToHardhatStore.getState();
 
-  console.log(
-    '@@@@@@@@@@ ',
-    connectedToHardhatPolygon,
-    `-- Connected to Hardhat Polygon`,
-  );
-
   if (connectedToHardhat || connectedToHardhatOp || connectedToHardhatPolygon) {
     const selectedHardhatChainId = connectedToHardhat
       ? ChainId.hardhat
@@ -92,13 +86,13 @@ export async function parseUserAssets({
       ? ChainId.hardhatOptimism
       : ChainId.hardhatPolygon;
 
-    const mainnetOrOptimismChainId = connectedToHardhat
+    const hardhatChainId = connectedToHardhat
       ? ChainId.mainnet
       : connectedToHardhatOp
       ? ChainId.optimism
       : ChainId.polygon;
 
-    const ethereumOrOptimismAsset = connectedToHardhat
+    const hardhatAsset = connectedToHardhat
       ? ETH_MAINNET_ASSET
       : connectedToHardhatOp
       ? OPTIMISM_MAINNET_ASSET
@@ -106,15 +100,15 @@ export async function parseUserAssets({
 
     const provider = getProvider({ chainId: selectedHardhatChainId });
 
-    const assets = parsedAssetsDict[mainnetOrOptimismChainId];
-    assets[ethereumOrOptimismAsset.uniqueId] = ethereumOrOptimismAsset;
+    const assets = parsedAssetsDict[hardhatChainId];
+    assets[hardhatAsset.uniqueId] = hardhatAsset;
     if (process.env.IS_TESTING === 'true') {
       assets[USDC_MAINNET_ASSET.uniqueId] = USDC_MAINNET_ASSET;
       assets[DAI_MAINNET_ASSET.uniqueId] = DAI_MAINNET_ASSET;
     }
 
     const balanceRequests = Object.values(assets).map(async (asset) => {
-      if (asset.chainId !== mainnetOrOptimismChainId) return asset;
+      if (asset.chainId !== hardhatChainId) return asset;
 
       try {
         const parsedAsset = await fetchAssetBalanceViaProvider({
@@ -137,7 +131,7 @@ export async function parseUserAssets({
       return acc;
     }, {});
 
-    parsedAssetsDict[mainnetOrOptimismChainId] = newAssets;
+    parsedAssetsDict[hardhatChainId] = newAssets;
   }
   return parsedAssetsDict;
 }

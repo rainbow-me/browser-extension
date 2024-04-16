@@ -91,27 +91,27 @@ export const USDC_MAINNET_ASSET = {
 } satisfies ParsedUserAsset;
 
 export const POLYGON_MAINNET_ASSET = {
-  address: '0x0000000000000000000000000000000000000000',
+  address: '0x0000000000000000000000000000000000001010',
   balance: { amount: '10000', display: '10,000.00 MATIC' },
   chainId: 137,
   chainName: 'polygon' as ChainName,
-  colors: { primary: '#8247E5', fallback: '#E8EAF5' },
+  colors: { primary: '#81D5F8', fallback: '#2891F9' },
   decimals: 18,
   icon_url:
-    'https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0.png',
+    'https://rainbowme-res.cloudinary.com/image/upload/v1668633495/assets/ethereum/0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0.png',
   isNativeAsset: true,
-  mainnetAddress: 'eth',
-  name: 'Matic Token',
+  mainnetAddress: '0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0',
+  name: 'Matic',
   native: {
-    balance: { amount: '2000000', display: '$2,000,000.00' },
-    price: { change: '0.15%', amount: 1.63, display: '$1.63' },
+    balance: { amount: '2000000', display: '$1,400,000.00' },
+    price: { change: '0.15%', amount: 0.7, display: '$0.7' },
   },
   price: {
-    value: 1.63,
+    value: 0.7,
     relative_change_24h: 0.14646492502099484,
   },
   symbol: 'MATIC',
-  uniqueId: 'matic_137',
+  uniqueId: '0x0000000000000000000000000000000000001010_137',
 } satisfies ParsedUserAsset;
 
 export const OPTIMISM_MAINNET_ASSET = {

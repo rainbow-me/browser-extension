@@ -34,6 +34,7 @@ export const useTokenPressMouseEvents = ({
   const { pressed, startPress, endPress } = usePress(onPressed);
 
   const onMouseDown = (e: MouseEvent<HTMLDivElement>) => {
+    console.log(token);
     if (e.button === 0) {
       if (!ready) setReady(true);
       startPress();

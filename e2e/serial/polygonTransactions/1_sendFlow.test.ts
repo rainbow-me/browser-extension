@@ -115,7 +115,7 @@ describe('Complete Hardhat Polygon send flow', () => {
       id: 'input-wrapper-dropdown-token-input',
       driver,
     });
-    expect(await tokenInput.getText()).toContain('Ethereum');
+    expect(await tokenInput.getText()).toContain('Matic');
     const value = await findElementByTestId({ id: 'send-input-mask', driver });
     const valueNum = await value.getAttribute('value');
     expect(Number(valueNum)).toBe(0);
