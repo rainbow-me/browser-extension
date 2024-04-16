@@ -114,13 +114,23 @@ export const rainbowChainAssetsStore = createStore<RainbowChainAssetsState>(
   {
     persist: {
       name: 'rainbowChainAssets',
-      version: 1,
+      version: 2,
       migrate(persistedState, version) {
         const state = persistedState as RainbowChainAssetsState;
-        if (version === 1) {
+        if (version === 0) {
           // version 1 added support for Blast
+          const version1State = mergeNewOfficiallySupportedChainsAssetState(
+            state,
+            [ChainId.blast],
+          );
+          // version 2 added support for Degen
+          return mergeNewOfficiallySupportedChainsAssetState(version1State, [
+            ChainId.degen,
+          ]);
+        } else if (version === 1) {
+          // version 2 added support for Degen
           return mergeNewOfficiallySupportedChainsAssetState(state, [
-            ChainId.blast,
+            ChainId.degen,
           ]);
         }
         return state;

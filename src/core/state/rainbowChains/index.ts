@@ -201,7 +201,7 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
   {
     persist: {
       name: 'rainbowChains',
-      version: 4,
+      version: 5,
       migrate(persistedState, version) {
         const state = persistedState as RainbowChainsState;
         if (version === 1) {
@@ -222,6 +222,11 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
             rpcUrl: 'https://rpc.zora.co',
             rainbowChains: state.rainbowChains,
           });
+        }
+
+        if (version === 4) {
+          // version 5 added support for Degen
+          return mergeNewOfficiallySupportedChainsState(state, [ChainId.degen]);
         }
 
         return state;

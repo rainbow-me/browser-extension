@@ -46,6 +46,7 @@ declare global {
       AVALANCHE_FUJI_RPC: string;
       BLAST_MAINNET_RPC: string;
       BLAST_SEPOLIA_RPC: string;
+      DEGEN_MAINNET_RPC: string;
     }
   }
 }
