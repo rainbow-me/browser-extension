@@ -363,10 +363,10 @@ function MoreOptions({
     copyAddress(token.address);
   }, [token]);
 
-  const getTokenExist = useCallback(() => !!token, [token]);
+  const getTokenExists = useCallback(() => !!token, [token]);
 
   useTokenDetailsShortcuts({
-    getTokenExist,
+    getTokenExists,
     toggleHideToken,
     togglePinToken,
     copyTokenAddress,

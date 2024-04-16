@@ -9,14 +9,14 @@ import useKeyboardAnalytics from './useKeyboardAnalytics';
 import { useKeyboardShortcut } from './useKeyboardShortcut';
 
 interface UseTokenDetailsShortcutsParameters {
-  getTokenExist: () => boolean;
+  getTokenExists: () => boolean;
   toggleHideToken: () => void;
   togglePinToken: () => void;
   copyTokenAddress: () => void;
 }
 
 export function useTokenDetailsShortcuts({
-  getTokenExist,
+  getTokenExists,
   togglePinToken,
   toggleHideToken,
   copyTokenAddress,
@@ -62,7 +62,7 @@ export function useTokenDetailsShortcuts({
   );
 
   useKeyboardShortcut({
-    condition: getTokenExist,
+    condition: getTokenExists,
     handler: handleTokenShortcuts,
   });
 }
