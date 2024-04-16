@@ -201,7 +201,7 @@
     "eslint-plugin-prettier": "5.0.0",
     "file-loader": "6.2.0",
     "fs-extra": "10.1.0",
-    "geckodriver": "4.3.0",
+    "geckodriver": "4.3.3",
     "globby": "11.0.4",
     "happy-dom": "8.9.0",
     "html-webpack-plugin": "5.5.0",
