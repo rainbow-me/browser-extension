@@ -33,7 +33,7 @@ runs:
     uses: foundry-rs/foundry-toolchain@v1
     with:
        version: nightly
-  - uses: actions/checkout@v3
+  - uses: actions/checkout@v4
     with:
          repository: 'rainbow-me/browser-extension-env'
          token: ${{ inputs.gh-access-token }}
