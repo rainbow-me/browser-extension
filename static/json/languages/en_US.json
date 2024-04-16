@@ -1478,6 +1478,7 @@
     },
     "toast": {
       "hide_token": "Your %{name} is hidden",
+      "unhide_token": "Your %{name} is unhidden",
       "pin_token": "Your %{name} is pinned",
       "unpin_token": "Your %{name} is unpinned"
     },

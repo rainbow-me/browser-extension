@@ -273,8 +273,17 @@ export function SpeedUpAndCancelSheet({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const { address } = useAccount();
+
   return (
-    <Prompt zIndex={zIndexes.SPEED_UP_CANCEL_PROMPT} show={true} padding="12px">
+    <Prompt
+      zIndex={zIndexes.SPEED_UP_CANCEL_PROMPT}
+      show={currentSheet !== 'none'}
+      padding="12px"
+      handleClose={onClose}
+      borderRadius="24px"
+      background="surfacePrimaryElevated"
+    >
       <Box
         style={{
           height: window.innerHeight - 64,
@@ -303,25 +312,19 @@ export function SpeedUpAndCancelSheet({
                 flexGrow="1"
                 flexDirection="column"
               >
-                <Box paddingTop="80px">
+                <Stack paddingTop="68px" gap="20px" alignItems="center">
                   <Text weight="semibold" size="32pt" align="center">
                     {cancel ? '☠️' : '🚀'}
                   </Text>
-                  <Box paddingTop="20px">
-                    <Text
-                      color="label"
-                      size="20pt"
-                      weight="bold"
-                      align="center"
-                    >
-                      {i18n.t(
-                        cancel
-                          ? 'speed_up_and_cancel.cancel_title'
-                          : 'speed_up_and_cancel.speed_up_title',
-                      )}
-                    </Text>
-                  </Box>
-                  <Box paddingTop="36px" justifyContent="center" display="flex">
+                  <Text color="label" size="20pt" weight="bold" align="center">
+                    {i18n.t(
+                      cancel
+                        ? 'speed_up_and_cancel.cancel_title'
+                        : 'speed_up_and_cancel.speed_up_title',
+                    )}
+                  </Text>
+                  <Separator width={102} color="separatorTertiary" />
+                  <Box justifyContent="center" display="flex">
                     <Box style={{ width: 236 }}>
                       <Text
                         size="14pt"
@@ -337,10 +340,10 @@ export function SpeedUpAndCancelSheet({
                       </Text>
                     </Box>
                   </Box>
-                </Box>
+                </Stack>
                 <Box paddingHorizontal="20px" paddingVertical="16px">
                   <TransactionFee
-                    chainId={transaction?.chainId || ChainId.mainnet}
+                    chainId={transaction.chainId}
                     defaultSpeed={GasSpeed.URGENT}
                     transactionRequest={
                       cancel
@@ -351,7 +354,7 @@ export function SpeedUpAndCancelSheet({
                 </Box>
               </Box>
               <Box marginHorizontal="-12px">
-                <Separator />
+                <Separator color="separatorSecondary" />
               </Box>
               <Box style={{ height: 186 }}>
                 <Rows>
@@ -372,13 +375,11 @@ export function SpeedUpAndCancelSheet({
                             {i18n.t('speed_up_and_cancel.wallet')}
                           </Text>
                           <Inline alignVertical="center" space="4px">
-                            {transaction?.to && (
-                              <WalletAvatar
-                                addressOrName={transaction.to}
-                                size={18}
-                                emojiSize="12pt"
-                              />
-                            )}
+                            <WalletAvatar
+                              addressOrName={address}
+                              size={18}
+                              emojiSize="12pt"
+                            />
                             <AccountName />
                           </Inline>
                         </Stack>
@@ -387,12 +388,11 @@ export function SpeedUpAndCancelSheet({
                             weight="semibold"
                             color="labelQuaternary"
                             size="12pt"
+                            align="right"
                           >
                             {i18n.t('speed_up_and_cancel.balance')}
                           </Text>
-                          {transaction && (
-                            <WalletBalance transaction={transaction} />
-                          )}
+                          <WalletBalance transaction={transaction} />
                         </Stack>
                       </Box>
                     </Inset>
@@ -469,16 +469,23 @@ function WalletBalance({ transaction }: { transaction: RainbowTransaction }) {
     address: transaction.from,
     chainId: transaction.chainId,
   });
+  if (!balance) return null;
+
   const displayBalance = handleSignificantDecimals(balance?.formatted || 0, 3);
   return (
     <Box paddingTop="2px">
-      <Inline alignVertical="center" alignHorizontal="right">
-        {balance?.symbol === 'ETH' && (
+      <Inline alignVertical="center" alignHorizontal="right" space="4px">
+        {balance.symbol === 'ETH' && (
           <EthSymbol color="labelSecondary" size={12} />
         )}
         <Text color="labelSecondary" size="14pt" weight="medium">
           {displayBalance}
         </Text>
+        {balance.symbol !== 'ETH' && (
+          <Text color="labelSecondary" size="14pt" weight="medium">
+            {balance.symbol}
+          </Text>
+        )}
       </Inline>
     </Box>
   );
