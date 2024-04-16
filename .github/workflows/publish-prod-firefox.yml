@@ -36,7 +36,7 @@ jobs:
       - name: Update the manifest for firefox
         run: yarn firefox:manifest
       - name: Archive the build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: rainbowbx-firefox-v${{ env.release_version }}.zip
           path: build/

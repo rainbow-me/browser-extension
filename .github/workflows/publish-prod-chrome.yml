@@ -34,7 +34,7 @@ jobs:
       - name: Update the manifest
         run: yarn update-manifest prod
       - name: Archive the build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: rainbowbx-chrome-v${{ env.release_version }}.zip
           path: build/
