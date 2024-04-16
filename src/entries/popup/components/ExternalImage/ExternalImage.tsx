@@ -59,11 +59,16 @@ const ExternalImage = (props: ExternalImageProps) => {
   } = useImage({
     srcList: signedPlaceholderUrl || '',
     useSuspense: false,
+    imgPromise: async (img) => {
+      if (img) {
+        return img;
+      }
+      throw new Error(`couldn't load image`);
+    },
   });
 
-  const hasPlaceholder = !!props.placeholderSrc;
   const placeholderLoaded =
-    hasPlaceholder && !placeholderIsLoading && !placeholderError;
+    !!signedPlaceholderUrl && !placeholderIsLoading && !placeholderError;
 
   const renderContent = () => {
     if (isLoading && !placeholderLoaded) {
@@ -150,8 +155,8 @@ const ExternalImage = (props: ExternalImageProps) => {
           : {}),
         boxShadow: isLoading || error ? undefined : props.boxShadow,
         overflow: error ? 'visible' : 'clip',
-        height: props.height && (Number(props.height) ?? props.height),
-        width: props.width && (Number(props.width) ?? props.width),
+        height: props.height && (Number(props.height) || props.height),
+        width: props.width && (Number(props.width) || props.width),
       }}
     >
       {renderContent()}

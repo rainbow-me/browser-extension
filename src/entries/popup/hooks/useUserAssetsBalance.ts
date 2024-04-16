@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { Address } from 'wagmi';
 
 import {
@@ -7,11 +8,25 @@ import {
 import { useUserAssets } from '~/core/resources/assets';
 import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import {
+  computeUniqueIdForHiddenAsset,
+  useHiddenAssetStore,
+} from '~/core/state/hiddenAssets/hiddenAssets';
+import { ParsedUserAsset } from '~/core/types/assets';
 import { add, convertAmountToNativeDisplay } from '~/core/utils/numbers';
 
 export function useUserAssetsBalance() {
   const { currentAddress: address } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
+  const { hiddenAssets } = useHiddenAssetStore();
+  const isHidden = useCallback(
+    (asset: ParsedUserAsset) =>
+      hiddenAssets.some(
+        (uniqueId) => uniqueId === computeUniqueIdForHiddenAsset(asset),
+      ),
+    [hiddenAssets],
+  );
+
   const { data: totalAssetsBalanceKnownNetworks } = useUserAssets(
     {
       address,
@@ -19,7 +34,12 @@ export function useUserAssetsBalance() {
     },
     {
       select: (data) =>
-        selectorFilterByUserChains({ data, selector: selectUserAssetsBalance }),
+        selectorFilterByUserChains({
+          data,
+          selector: (assetsByChain) => {
+            return selectUserAssetsBalance(assetsByChain, isHidden);
+          },
+        }),
     },
   );
 
@@ -33,7 +53,9 @@ export function useUserAssetsBalance() {
         select: (data) =>
           selectorFilterByUserChains({
             data,
-            selector: selectUserAssetsBalance,
+            selector: (assetsByChain) => {
+              return selectUserAssetsBalance(assetsByChain, isHidden);
+            },
           }),
       },
     );

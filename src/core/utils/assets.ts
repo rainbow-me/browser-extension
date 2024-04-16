@@ -18,6 +18,7 @@ import { ChainId, ChainName } from '~/core/types/chains';
 
 import { requestMetadata } from '../graphql';
 import { i18n } from '../languages';
+import { AddysPositionAsset } from '../resources/positions';
 import { SearchAsset } from '../types/search';
 
 import {
@@ -125,10 +126,12 @@ export function parseAsset({
     colors: asset.colors,
     standard,
     networks: asset.networks,
-    bridging: {
-      isBridgeable: asset.bridging.bridgeable,
-      networks: asset.bridging.networks,
-    },
+    ...('bridging' in asset && {
+      bridging: {
+        isBridgeable: !!asset.bridging.bridgeable,
+        networks: asset.bridging.networks,
+      },
+    }),
   };
 
   return parsedAsset;
@@ -181,7 +184,7 @@ export function parseUserAsset({
   balance,
   smallBalance,
 }: {
-  asset: AssetApiResponse;
+  asset: AssetApiResponse | AddysPositionAsset;
   currency: SupportedCurrencyKey;
   balance: string;
   smallBalance?: boolean;

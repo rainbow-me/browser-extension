@@ -21,6 +21,143 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.4.55](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.55)
+
+### Fixed
+
+- Fixed an issue with balance estimation during Sends on Polygon and BSC #1472
+- Now showing the right transaction explorer in the right-click menu on Activity #1419
+- Fixed an issue that hid failed transactions from the Activity list #1419
+- Resolved transaction display settlement issues after performing a Swap, to prevent incorrect transaction types from being displayed #1419
+- Improved currency display values in Activity Details for each transaction #1419
+- Resolved cell highlight rounding issues on the Settings menu when navigating with your keyboard #1464
+- Resolved missing asset icons in the Activity list #1468
+
+### Internal
+
+- Amended Zora RPC url to favor new domain #1466
+- Added a migration to remove Custom RPCs added by Zora.co #1467 #1475
+
+### Testing
+
+- Fixed test retries by moving retry logic to the runner scripts #1456
+
+## [v1.4.50](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.50)
+
+### Fixed
+
+- Resolved an issue where network requests for Custom RPCs and Custom Networks were failing #1465
+
+### Internal
+
+- Bumped `@rainbow-me/swaps` for future DEGEN chain Swap and Bridge support #1462
+- Added DeFi Positions networking requests and data handlers #1439
+
+### Testing
+
+- Adopted Telos Tesnet for e2e Custom Networks tests because the Polygon zkEVM Testnet was unresponsive #1463
+
+## [v1.4.48](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.48)
+
+### Added
+
+- Added support for Polygon Amoy testnet #1443
+
+### Changed
+
+- Added `ETH` and `USDB` as default favorite assets for Blast #1448
+- Reduced filtering of assets for the Swap search to ensure broader asset coverage for networks like Blast #1453
+
+### Fixed
+
+- Wallet balances will now display the correct balance after a token is hidden #1455
+- Fixed Swaps gas estimation for Blast network #1447
+- Resolved an issue that could cause the Connect Banner for dApps to appear on the lock screen #1424
+- Fixed a console error related to fetching an undefined image URL #1458
+
+### Internal
+
+- Included refactors to unique asset ids (which were previously reverted) #1421
+- Resolved an unreleased issue related to #1421 that would cause activity parsing to fail #1452
+- Added `defi_positions_enabled` feature flag for DeFi Positions work #1440
+- Modified RPC requests to the RPC Proxy to ensure that `custom_rpc` flag is used correctly so that we favor the default Rainbow RPC where possible #1444
+- Resolved a Firebase networking error related to incorrectly fetching the Remote Config inside the background script #1457
+- Bumped `vitest` to resolve audit failure #1460
+
+## [v1.4.41](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.41)
+
+### Added
+
+- You can now swap tokens on Blast and Zora with Rainbow's slick cross-chain swaps #1442
+- Right-click a spam token or a regret to hide it from your wallet. You can always search for these tokens to unhide in the future with the Magic Menu #1402
+- Blast Sepolia is now supported in Testnet Mode #1396
+
+### Changed
+
+- Approve and Swap gas estimations are now more reliable #1395
+- Removed L2 support confirmations in Send when interacting with your own wallets #1429
+- Re-ordered Settings menus to be even cleaner for our recent additions like Approvals #1438
+- Removed automatic filtering for tokens with URLs like Ether.fi with our improved spam detection #1430
+- Supported the `return` hokey in the Save Contact flow #1398
+
+### Fixed
+
+- Fixed ENS Profile resolution spamming utilized for the NFT Gallery that caused inadvertent performance issues #1433
+- Fixed accidental clicks when interacting with the right-click menus #1432
+- Activity Details will now properly restore after opening and closing Rainbow #1427
+- Corrected “Pin Extension” guide location for Arc Browser #1437
+- Fixed spacing in the Wallet Group selector #1436
+
+### Removed
+
+- Removed deprecated Goerli network #1414
+
+### Internal
+
+- Added and reverted changes to unique asset ids due to transaction fetching issues #1421
+- Reduced Imigix usage for NFT thumbnails for trusted sources #1428
+- Improved type safety of keychain manager #1434
+- Merging PKs to HD Groups wherever possible in keychain #1434
+- Migrated to Rudderstack from Segment for analytics #1410
+
+## [v1.4.34](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.34)
+
+### Added
+
+- You can now bridge ETH to Blast with Rainbow #1411
+
+### Fixed
+
+- Fixed an incorrect date calculate on the weekly Points drop breakdowns #1409
+- Fixed an issue where the Connect banner would not always appear upon switching wallets #1404
+- Resolved a color clash issue with the buttons on the Connect banners #1407
+- Fixed a crash when inspecting the Activity Details for certain airdropped tokens #1412
+
+### Removed
+
+- Removed deprecated Arbitrum Goerli network #1397
+
+### Internal
+
+- Limited the number of Webpack circular dependencies to 2 and resolved a handful of instances #1401
+
+### Testing
+
+- Pinned e2e browser to Chrome 121 to mitigate Ledger dependency bundle failures in later versions of Chromedriver #1420
+
+## [v1.4.25](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.25)
+
+### Changed
+
+- Improved Token Charts cursor hover and scroll feel #1394
+- Emitting `accountsChanged` upon disconnect to align with MetaMask RPC #1388
+
+### Fixed
+
+- Resolved issue where users may only see a Cancel button on dApp requests for Custom Networks #1405
+- Fixed `sendAsync` RPC call crash #1392
+- Fixed rejection errors upon approving `wallet_watchAsset` RPC requests #1387
+
 ## [v1.4.22](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.22)
 
 ### Added
@@ -34,7 +171,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - When Bridging assets, you can now right-click on a pending transaction to track the status on the Socketscan explorer #1377
 - Swaps are even faster now that we automatically populate your input token and provide a default amount #1378
 - Updated Weekly Points Overview with new line items for Referrals and Bonus Redemptions #1389
-- Removed deprecated Optimism Goerli network #1351
 
 ### Fixed
 
@@ -47,6 +183,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Improved percentage formatting, fallback icons, and disappearing row on Swap Review #1380
 - Fixed Activity Details animations and inconsistencies #1384
 
+### Removed
+
+- Removed deprecated Optimism Goerli network #1351
+
 ## [v1.4.12](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.12)
 
 ### Added
@@ -54,7 +194,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - You can now remove a Wallet Group in Settings to cleanup your unused wallets. Always make sure to backup your Secret Recovery Phrase first #1331
 - Added Custom Network autofill support for Blast and Redstone Holesky #1373 #1358
 
-### Changed
+### Removed
 
 - Removed support for deprecated Zora Goerli testnet #1367
 
@@ -95,7 +235,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - NFTs are now supported across major Custom Networks and Testnets #1336
 
-### Changed
+### Removed
 
 - Removed Base Goerli network that has been deprecated #1342
 
