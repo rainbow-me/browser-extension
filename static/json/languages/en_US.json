@@ -696,6 +696,10 @@
       "price_impact": {
         "title": "Small market",
         "description": "Losing %{impactAmount}"
+      },
+      "unknown_price": {
+        "title": "%{symbol} Market Value Unknown",
+        "description": "If you decide to continue, be sure that you are satisfied receiving the quoted amount."
       }
     },
     "aggregators": {
