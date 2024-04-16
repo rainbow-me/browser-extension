@@ -14,6 +14,7 @@ import {
   ETH_ARBITRUM_ADDRESS,
   ETH_BASE_ADDRESS,
   ETH_BLAST_ADDRESS,
+  ETH_DEGEN_ADDRESS,
   ETH_OPTIMISM_ADDRESS,
   ETH_ZORA_ADDRESS,
   MATIC_POLYGON_ADDRESS,
@@ -104,6 +105,7 @@ const defaultFavorites = {
     WBTC_AVALANCHE_ADDRESS,
   ],
   [ChainId.blast]: [ETH_BLAST_ADDRESS, WETH_BLAST_ADDRESS, USDB_BLAST_ADDRESS],
+  [ChainId.degen]: [ETH_DEGEN_ADDRESS],
 } satisfies FavoritesState['favorites'];
 
 const mergeNewOfficiallySupportedChainsState = (
@@ -148,7 +150,7 @@ export const favoritesStore = createStore<FavoritesState>(
   {
     persist: {
       name: 'favorites',
-      version: 3,
+      version: 4,
       migrate(persistedState, version) {
         const state = persistedState as FavoritesState;
         if (version === 1) {
@@ -157,12 +159,26 @@ export const favoritesStore = createStore<FavoritesState>(
             ChainId.avalanche,
           ]);
           // version 3 added support for Blast
-          return mergeNewOfficiallySupportedChainsState(version2State, [
+          const version3State = mergeNewOfficiallySupportedChainsState(
+            version2State,
+            [ChainId.blast],
+          );
+          // version 4 added support for Degen
+          return mergeNewOfficiallySupportedChainsState(version3State, [
             ChainId.blast,
           ]);
         } else if (version === 2) {
           // version 3 added support for Blast
-          return mergeNewOfficiallySupportedChainsState(state, [ChainId.blast]);
+          const version3State = mergeNewOfficiallySupportedChainsState(state, [
+            ChainId.blast,
+          ]);
+          // version 4 added support for Degen
+          return mergeNewOfficiallySupportedChainsState(version3State, [
+            ChainId.degen,
+          ]);
+        } else if (version === 3) {
+          // version 4 added support for Degen
+          return mergeNewOfficiallySupportedChainsState(state, [ChainId.degen]);
         }
         return state;
       },
