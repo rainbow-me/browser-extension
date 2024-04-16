@@ -180,6 +180,9 @@ it('should be able to add a custom token', async () => {
   await findElementByTestIdAndClick({ driver, id: 'custom-token-link' });
   await checkExtensionURL(driver, 'custom-chain/details');
 
+  // needs a couple of seconds to navigate
+  await delayTime('very-long');
+  
   // fill out custom token
   await executePerformShortcut({ driver, key: 'TAB', timesToPress: 2 });
   await typeOnTextInput({

@@ -37,7 +37,12 @@ export const GweiInputMask = ({
   );
 
   const onMaskClick = useCallback(() => {
+    document?.getSelection()?.collapseToEnd();
     inputRef?.current?.focus();
+  }, [inputRef]);
+
+  const onMaskDoubleClick = useCallback(() => {
+    inputRef?.current?.select();
   }, [inputRef]);
 
   const onFocus = useCallback(() => {
@@ -59,6 +64,7 @@ export const GweiInputMask = ({
       }
       transition={transitions.bounce}
       onClick={onMaskClick}
+      onDoubleClick={onMaskDoubleClick}
     >
       <Box
         position="absolute"

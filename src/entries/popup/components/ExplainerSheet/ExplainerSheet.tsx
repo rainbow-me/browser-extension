@@ -134,7 +134,7 @@ export const ExplainerSheet = ({
             ) : (
               header?.icon
             )}
-            <Text weight="heavy" size="20pt" color="label">
+            <Text weight="heavy" size="20pt" color="label" align="center">
               {title}
             </Text>
 
@@ -215,6 +215,15 @@ export const ExplainerSheet = ({
                 testId="explainer-action-button"
               >
                 <Inline alignVertical="center" space="4px">
+                  {actionButton?.symbol &&
+                    actionButton.symbolSide != 'right' && (
+                      <Symbol
+                        color={actionButton.labelColor || 'accent'}
+                        size={14}
+                        symbol={actionButton.symbol}
+                        weight="bold"
+                      />
+                    )}
                   <Text
                     align="center"
                     weight="bold"
@@ -223,14 +232,15 @@ export const ExplainerSheet = ({
                   >
                     {actionButton?.label}
                   </Text>
-                  {actionButton?.symbol && (
-                    <Symbol
-                      color={actionButton?.labelColor || 'accent'}
-                      size={14}
-                      symbol={actionButton.symbol}
-                      weight="bold"
-                    />
-                  )}
+                  {actionButton?.symbol &&
+                    actionButton.symbolSide == 'right' && (
+                      <Symbol
+                        color={actionButton.labelColor || 'accent'}
+                        size={14}
+                        symbol={actionButton.symbol}
+                        weight="bold"
+                      />
+                    )}
                 </Inline>
               </Button>
             </Row>

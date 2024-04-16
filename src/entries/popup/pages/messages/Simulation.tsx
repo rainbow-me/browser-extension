@@ -102,7 +102,13 @@ function SimulatedChangeRow({
         {asset?.type === 'nft' ? (
           <NFTIcon asset={asset} size={16} />
         ) : (
-          <CoinIcon asset={asset} size={14} />
+          <CoinIcon
+            asset={asset}
+            size={14}
+            badgeSize={8}
+            badgePositionBottom={1.5}
+            badgePositionLeft={-4}
+          />
         )}
         <Inline wrap={false} space="4px" alignVertical="center">
           <TextOverflow size="14pt" weight="bold" color={color}>
