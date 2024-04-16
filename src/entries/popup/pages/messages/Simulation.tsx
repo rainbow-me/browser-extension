@@ -83,7 +83,7 @@ function SimulatedChangeRow({
         <Text size="14pt" weight="bold" color="label">
           {label}
         </Text>
-        {quantity !== 'UNLIMITED' && assetPrice && (
+        {quantity !== 'UNLIMITED' && !!assetPrice && (
           <Box marginLeft={'-4px'}>
             <TextOverflow size="12pt" weight="bold" color="labelSecondary">
               {
