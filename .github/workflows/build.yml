@@ -17,7 +17,7 @@ jobs:
       cancel-in-progress: true
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: "18.18.0"
           cache: 'yarn'
@@ -39,7 +39,7 @@ jobs:
     needs: [install]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: "18.18.0"
       - name: Download deps cache artifacts
@@ -346,7 +346,7 @@ jobs:
   #     VITEST_SEGFAULT_RETRY: 3
   #   steps:
   #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-node@v3
+  #     - uses: actions/setup-node@v4
   #       with:
   #         node-version: "18.18.0"
   #     - name: Download deps cache artifacts
@@ -395,7 +395,7 @@ jobs:
     needs: [install]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: "18.18.0"
       - name: Download deps cache artifacts
@@ -433,7 +433,7 @@ jobs:
     needs: [install]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: "18.18.0"
       - name: Download deps cache artifacts
