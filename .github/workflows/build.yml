@@ -43,7 +43,7 @@ jobs:
         with:
           node-version: "18.18.0"
       - name: Download deps cache artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: node_modules.tar.gz
       - name: Unzip node_modules
@@ -350,13 +350,13 @@ jobs:
   #       with:
   #         node-version: "18.18.0"
   #     - name: Download deps cache artifacts
-  #       uses: actions/download-artifact@v3
+  #       uses: actions/download-artifact@v4
   #       with:
   #         name: node_modules.tar.gz
   #     - name: Unzip node_modules
   #       run: tar xzvf node_modules.tar.gz
   #     - name: Download build artifacts
-  #       uses: actions/download-artifact@v3
+  #       uses: actions/download-artifact@v4
   #       with:
   #         name: rainbowbx-${{ github.sha }}.zip
   #         path: build
@@ -399,7 +399,7 @@ jobs:
         with:
           node-version: "18.18.0"
       - name: Download deps cache artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: node_modules.tar.gz
       - name: Unzip node_modules
@@ -437,7 +437,7 @@ jobs:
         with:
           node-version: "18.18.0"
       - name: Download deps cache artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: node_modules.tar.gz
       - name: Unzip node_modules
