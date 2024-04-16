@@ -43,6 +43,7 @@ import {
 } from '~/core/references';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { migrate } from '~/core/utils/migrate';
 
 import { createStore } from '../internal/createStore';
 
@@ -151,37 +152,19 @@ export const favoritesStore = createStore<FavoritesState>(
     persist: {
       name: 'favorites',
       version: 4,
-      migrate(persistedState, version) {
-        const state = persistedState as FavoritesState;
-        if (version === 1) {
-          // version 2 added support for Avalanche
-          const version2State = mergeNewOfficiallySupportedChainsState(state, [
-            ChainId.avalanche,
-          ]);
-          // version 3 added support for Blast
-          const version3State = mergeNewOfficiallySupportedChainsState(
-            version2State,
-            [ChainId.blast],
-          );
-          // version 4 added support for Degen
-          return mergeNewOfficiallySupportedChainsState(version3State, [
-            ChainId.blast,
-          ]);
-        } else if (version === 2) {
-          // version 3 added support for Blast
-          const version3State = mergeNewOfficiallySupportedChainsState(state, [
-            ChainId.blast,
-          ]);
-          // version 4 added support for Degen
-          return mergeNewOfficiallySupportedChainsState(version3State, [
-            ChainId.degen,
-          ]);
-        } else if (version === 3) {
-          // version 4 added support for Degen
-          return mergeNewOfficiallySupportedChainsState(state, [ChainId.degen]);
-        }
-        return state;
-      },
+      migrate: migrate(
+        // version 1 didn't need a migration
+        (state: FavoritesState) => state,
+        // version 2 added avalanche
+        (state) =>
+          mergeNewOfficiallySupportedChainsState(state, [ChainId.avalanche]),
+        // version 3 added blast
+        (state) =>
+          mergeNewOfficiallySupportedChainsState(state, [ChainId.blast]),
+        // version 4 added degen
+        (state) =>
+          mergeNewOfficiallySupportedChainsState(state, [ChainId.degen]),
+      ),
     },
   },
 );
