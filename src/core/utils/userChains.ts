@@ -21,6 +21,7 @@ import {
   ChainNameDisplay,
   chainBlast,
   chainBlastSepolia,
+  chainDegen,
   chainPolygonAmoy,
 } from '../types/chains';
 
@@ -38,7 +39,8 @@ export const chainIdMap: Record<
   | ChainId.bsc
   | ChainId.zora
   | ChainId.avalanche
-  | ChainId.blast,
+  | ChainId.blast
+  | ChainId.degen,
   ChainId[]
 > = {
   [ChainId.mainnet]: [mainnet.id, sepolia.id, holesky.id],
@@ -50,6 +52,7 @@ export const chainIdMap: Record<
   [ChainId.zora]: [zora.id, zoraSepolia.id],
   [ChainId.avalanche]: [avalanche.id, avalancheFuji.id],
   [ChainId.blast]: [chainBlast.id, chainBlastSepolia.id],
+  [ChainId.degen]: [chainDegen.id],
 };
 
 export const chainLabelMap: Record<
@@ -60,7 +63,8 @@ export const chainLabelMap: Record<
   | ChainId.bsc
   | ChainId.zora
   | ChainId.avalanche
-  | ChainId.blast,
+  | ChainId.blast
+  | ChainId.degen,
   string[]
 > = {
   [ChainId.mainnet]: [
@@ -75,6 +79,7 @@ export const chainLabelMap: Record<
   [ChainId.zora]: [ChainNameDisplay[zoraSepolia.id]],
   [ChainId.avalanche]: [ChainNameDisplay[avalancheFuji.id]],
   [ChainId.blast]: [ChainNameDisplay[chainBlastSepolia.id]],
+  [ChainId.degen]: [ChainNameDisplay[chainDegen.id]],
 };
 
 export const sortNetworks = (order: ChainId[], chains: Chain[]) => {

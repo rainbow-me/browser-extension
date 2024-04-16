@@ -23,6 +23,7 @@ import {
   ChainNameDisplay,
   chainBlast,
   chainBlastSepolia,
+  chainDegen,
   chainPolygonAmoy,
 } from '~/core/types/chains';
 
@@ -148,6 +149,9 @@ export const ETH_BLAST_ADDRESS = AddressZero;
 export const WETH_BLAST_ADDRESS = '0x4300000000000000000000000000000000000004';
 export const USDB_BLAST_ADDRESS = '0x4300000000000000000000000000000000000003';
 
+// degen
+export const ETH_DEGEN_ADDRESS = AddressZero;
+
 export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.mainnet]: ETH_ADDRESS as Address,
   [ChainId.hardhat]: AddressZero as Address,
@@ -171,6 +175,7 @@ export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.blast]: AddressZero as Address,
   [ChainId.blastSepolia]: AddressZero as Address,
   [ChainId.polygonAmoy]: AddressZero as Address,
+  [ChainId.degen]: AddressZero as Address,
 };
 
 export const NATIVE_ASSETS_MAP_PER_CHAIN: Record<ChainId, AddressOrEth> = {
@@ -196,6 +201,7 @@ export const NATIVE_ASSETS_MAP_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.blast]: ETH_ADDRESS,
   [ChainId.blastSepolia]: ETH_ADDRESS,
   [ChainId.polygonAmoy]: MATIC_MAINNET_ADDRESS,
+  [ChainId.degen]: ETH_DEGEN_ADDRESS,
 };
 
 export const OVM_GAS_PRICE_ORACLE =
@@ -220,6 +226,7 @@ export const SUPPORTED_MAINNET_CHAINS: Chain[] = [
   bsc,
   avalanche,
   chainBlast,
+  chainDegen,
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
 export const SUPPORTED_CHAINS: Chain[] = [
@@ -242,6 +249,7 @@ export const SUPPORTED_CHAINS: Chain[] = [
   chainBlast,
   chainBlastSepolia,
   chainPolygonAmoy,
+  chainDegen,
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
 export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map((chain) => chain.id);
@@ -302,6 +310,8 @@ export const getDefaultRPC = (chainId: ChainId) => {
       return { http: process.env.BLAST_SEPOLIA_RPC };
     case ChainId.polygonAmoy:
       return { http: process.env.POLYGON_AMOY_RPC };
+    case ChainId.degen:
+      return { http: process.env.DEGEN_MAINNET_RPC };
     default:
       return null;
   }
