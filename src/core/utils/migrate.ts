@@ -12,6 +12,13 @@ interface Migrator {
     m3: (s: B) => C,
     m4: (s: C) => D,
   ): R<D>;
+  <A, B, C, D, E>(
+    m1: (s: any) => A,
+    m2: (s: A) => B,
+    m3: (s: B) => C,
+    m4: (s: C) => D,
+    m5: (s: D) => E,
+  ): R<E>;
   // if you need more migrations, add more overloads here
 }
 

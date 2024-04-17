@@ -7,6 +7,7 @@ import {
   chainHardhat,
   chainHardhatOptimism,
 } from '~/core/types/chains';
+import { migrate } from '~/core/utils/migrate';
 
 import { createStore } from '../internal/createStore';
 
@@ -220,44 +221,38 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
     persist: {
       name: 'rainbowChains',
       version: 6,
-      migrate(persistedState, version) {
-        const state = persistedState as RainbowChainsState;
-        if (version === 1) {
-          // version 2 added support for Avalanche and Avalanche Fuji
-          return mergeNewOfficiallySupportedChainsState(state, [
+      migrate: migrate(
+        // version 2 added support for Avalanche and Avalanche Fuji
+        (state) =>
+          mergeNewOfficiallySupportedChainsState(state, [
             ChainId.avalanche,
             ChainId.avalancheFuji,
-          ]);
-        }
-        if (version === 2) {
-          // version 2 added support for Blast
-          return mergeNewOfficiallySupportedChainsState(state, [ChainId.blast]);
-        }
-
-        if (version === 3) {
-          return removeCustomRPC({
+          ]),
+        // version 2 added support for Blast
+        (state: RainbowChainsState) =>
+          mergeNewOfficiallySupportedChainsState(state, [
+            ChainId.avalanche,
+            ChainId.avalancheFuji,
+          ]),
+        (state) =>
+          removeCustomRPC({
             state,
             rpcUrl: 'https://rpc.zora.co',
             rainbowChains: state.rainbowChains,
-          });
-        }
-
-        if (version === 4) {
-          // version 5 added support for Degen
-          return mergeNewOfficiallySupportedChainsState(state, [ChainId.degen]);
-        }
-
-        if (version === 5) {
+          }),
+        // version 5 added support for Degen
+        (state: RainbowChainsState) =>
+          mergeNewOfficiallySupportedChainsState(state, [ChainId.degen]),
+        (state: RainbowChainsState) => {
           if (
             !state.rainbowChains[zora.id] ||
             state.rainbowChains[zora.id]?.chains.length === 0
           ) {
             return addCustomRPC({ chain: zora, state });
           }
-        }
-
-        return state;
-      },
+          return state;
+        },
+      ),
     },
   },
 );
