@@ -38,6 +38,7 @@ export interface RainbowConfig extends Record<string, any> {
     [ChainName.bsc]: number;
     [ChainName.avalanche]: number;
     [ChainName.blast]: number;
+    [ChainName.degen]: number;
   };
 }
 
@@ -61,6 +62,7 @@ const DEFAULT_CONFIG = {
     bsc: 200,
     avalanche: 200,
     blast: 200,
+    degen: 200,
   },
 };
 

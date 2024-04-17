@@ -14,6 +14,7 @@ import {
   ETH_ARBITRUM_ADDRESS,
   ETH_BASE_ADDRESS,
   ETH_BLAST_ADDRESS,
+  ETH_DEGEN_ADDRESS,
   ETH_OPTIMISM_ADDRESS,
   ETH_ZORA_ADDRESS,
   MATIC_POLYGON_ADDRESS,
@@ -42,6 +43,7 @@ import {
 } from '~/core/references';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { migrate } from '~/core/utils/migrate';
 
 import { createStore } from '../internal/createStore';
 
@@ -104,6 +106,7 @@ const defaultFavorites = {
     WBTC_AVALANCHE_ADDRESS,
   ],
   [ChainId.blast]: [ETH_BLAST_ADDRESS, WETH_BLAST_ADDRESS, USDB_BLAST_ADDRESS],
+  [ChainId.degen]: [ETH_DEGEN_ADDRESS],
 } satisfies FavoritesState['favorites'];
 
 const mergeNewOfficiallySupportedChainsState = (
@@ -148,24 +151,20 @@ export const favoritesStore = createStore<FavoritesState>(
   {
     persist: {
       name: 'favorites',
-      version: 3,
-      migrate(persistedState, version) {
-        const state = persistedState as FavoritesState;
-        if (version === 1) {
-          // version 2 added support for Avalanche
-          const version2State = mergeNewOfficiallySupportedChainsState(state, [
-            ChainId.avalanche,
-          ]);
-          // version 3 added support for Blast
-          return mergeNewOfficiallySupportedChainsState(version2State, [
-            ChainId.blast,
-          ]);
-        } else if (version === 2) {
-          // version 3 added support for Blast
-          return mergeNewOfficiallySupportedChainsState(state, [ChainId.blast]);
-        }
-        return state;
-      },
+      version: 4,
+      migrate: migrate(
+        // version 1 didn't need a migration
+        (state: FavoritesState) => state,
+        // version 2 added avalanche
+        (state) =>
+          mergeNewOfficiallySupportedChainsState(state, [ChainId.avalanche]),
+        // version 3 added blast
+        (state) =>
+          mergeNewOfficiallySupportedChainsState(state, [ChainId.blast]),
+        // version 4 added degen
+        (state) =>
+          mergeNewOfficiallySupportedChainsState(state, [ChainId.degen]),
+      ),
     },
   },
 );

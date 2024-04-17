@@ -199,12 +199,14 @@ query simulateMessage(
   $address: String!
   $message: Message!
   $domain: String
+  $currency: String
 ) {
   simulateMessage(
     chainID: $chainId
     address: $address
     message: $message
     domain: $domain
+    currency: $currency
   ) {
     scanning {
       result

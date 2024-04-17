@@ -47,6 +47,7 @@ export const customChainIdsToAssetNames: Record<ChainId, string> = {
   42220: 'celo',
   61: 'classic',
   25: 'cronos',
+  666666666: 'degen',
   2000: 'dogechain',
   250: 'fantom',
   314: 'filecoin',
