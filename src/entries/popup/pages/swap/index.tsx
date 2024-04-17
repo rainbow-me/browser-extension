@@ -1,6 +1,7 @@
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { Address } from 'viem';
 
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
@@ -49,6 +50,7 @@ import {
   useSwapQuote,
   useSwapQuoteHandler,
   useSwapSettings,
+  useSwapSlippage,
   useSwapValidations,
 } from '../../hooks/swap';
 import { useSwapNativeAmounts } from '../../hooks/swap/useSwapNativeAmounts';
@@ -298,10 +300,15 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     assetToBuy,
   });
 
-  const { source, slippage, setSettings, swapFlashbotsEnabled } =
-    useSwapSettings({
-      chainId: assetToSell?.chainId || ChainId.mainnet,
-    });
+  const {
+    source,
+    slippage,
+    setSettings,
+    swapFlashbotsEnabled,
+    slippageManuallyUpdated,
+  } = useSwapSettings({
+    chainId: assetToSell?.chainId || ChainId.mainnet,
+  });
 
   const flashbotsEnabledGlobally =
     config.flashbots_enabled &&
@@ -339,6 +346,15 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     bridge,
   });
 
+  const { data: swapSlippage } = useSwapSlippage({
+    chainId: assetToSell?.chainId || ChainId.mainnet,
+    toChainId: assetToBuy?.chainId || ChainId.mainnet,
+    sellTokenAddress: assetToSell?.address as Address,
+    buyTokenAddress: assetToBuy?.address as Address,
+    sellAmount: assetToSellValue,
+    buyAmount: assetToBuyValue,
+  });
+
   const {
     data: quote,
     isLoading,
@@ -351,7 +367,10 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     assetToBuyValue,
     independentField,
     source,
-    slippage,
+    slippage:
+      !slippageManuallyUpdated && swapSlippage?.slippagePercent !== undefined
+        ? swapSlippage?.slippagePercent
+        : slippage,
   });
 
   const { assetToSellNativeDisplay, assetToBuyNativeDisplay } =
