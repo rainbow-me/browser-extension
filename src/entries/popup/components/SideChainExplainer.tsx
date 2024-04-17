@@ -28,8 +28,11 @@ export const getSideChainExplainerParams = (
     [ChainId.bsc]: 'bsc',
     [ChainId.avalanche]: 'avalanche',
     [ChainId.blast]: 'blast',
+    // add here and in i18n once degen support is live
     // [ChainId.degen]: 'degen',
   };
+
+  const capitalizeString = (str: string) => str[0].toUpperCase() + str.slice(1);
 
   const chainTypeKey = specificChains[chainId];
 
@@ -57,9 +60,13 @@ export const getSideChainExplainerParams = (
       },
     } as const;
   return {
-    title: i18n.t(`${basePath}.title`, { chainName }),
+    title: i18n.t(`${basePath}.title`, {
+      chainName: capitalizeString(chainName),
+    }),
     description: [
-      i18n.t(`${basePath}.description_1`, { chainName }),
+      i18n.t(`${basePath}.description_1`, {
+        chainName: capitalizeString(chainName),
+      }),
       i18n.t(`${basePath}.description_2`),
     ] as string[],
     header: { icon: <ChainBadge chainId={chainId} size="45" /> },
