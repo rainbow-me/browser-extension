@@ -110,7 +110,7 @@ function parseTokenSearch(assets: SearchAsset[], chainId: ChainId) {
           `${ETH_ADDRESS}_${ChainId.degen}`,
         ].includes(`${a.uniqueId}_${chainId}`),
         mainnetAddress: a.uniqueId as Address,
-        uniqueId: `${networkInfo?.address}_${chainId}`,
+        uniqueId: `${networkInfo?.address || a.uniqueId}_${chainId}`,
       };
     })
     .filter(Boolean);
