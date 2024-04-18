@@ -21,6 +21,69 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.4.55](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.55)
+
+### Fixed
+
+- Fixed an issue with balance estimation during Sends on Polygon and BSC #1472
+- Now showing the right transaction explorer in the right-click menu on Activity #1419
+- Fixed an issue that hid failed transactions from the Activity list #1419
+- Resolved transaction display settlement issues after performing a Swap, to prevent incorrect transaction types from being displayed #1419
+- Improved currency display values in Activity Details for each transaction #1419
+- Resolved cell highlight rounding issues on the Settings menu when navigating with your keyboard #1464
+- Resolved missing asset icons in the Activity list #1468
+
+### Internal
+
+- Amended Zora RPC url to favor new domain #1466
+- Added a migration to remove Custom RPCs added by Zora.co #1467 #1475
+
+### Testing
+
+- Fixed test retries by moving retry logic to the runner scripts #1456
+
+## [v1.4.50](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.50)
+
+### Fixed
+
+- Resolved an issue where network requests for Custom RPCs and Custom Networks were failing #1465
+
+### Internal
+
+- Bumped `@rainbow-me/swaps` for future DEGEN chain Swap and Bridge support #1462
+- Added DeFi Positions networking requests and data handlers #1439
+
+### Testing
+
+- Adopted Telos Tesnet for e2e Custom Networks tests because the Polygon zkEVM Testnet was unresponsive #1463
+
+## [v1.4.48](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.48)
+
+### Added
+
+- Added support for Polygon Amoy testnet #1443
+
+### Changed
+
+- Added `ETH` and `USDB` as default favorite assets for Blast #1448
+- Reduced filtering of assets for the Swap search to ensure broader asset coverage for networks like Blast #1453
+
+### Fixed
+
+- Wallet balances will now display the correct balance after a token is hidden #1455
+- Fixed Swaps gas estimation for Blast network #1447
+- Resolved an issue that could cause the Connect Banner for dApps to appear on the lock screen #1424
+- Fixed a console error related to fetching an undefined image URL #1458
+
+### Internal
+
+- Included refactors to unique asset ids (which were previously reverted) #1421
+- Resolved an unreleased issue related to #1421 that would cause activity parsing to fail #1452
+- Added `defi_positions_enabled` feature flag for DeFi Positions work #1440
+- Modified RPC requests to the RPC Proxy to ensure that `custom_rpc` flag is used correctly so that we favor the default Rainbow RPC where possible #1444
+- Resolved a Firebase networking error related to incorrectly fetching the Remote Config inside the background script #1457
+- Bumped `vitest` to resolve audit failure #1460
+
 ## [v1.4.41](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.41)
 
 ### Added

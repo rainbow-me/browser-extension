@@ -1,4 +1,4 @@
-import { Chain } from 'viem/chains';
+import { Chain, zora } from 'viem/chains';
 import create from 'zustand';
 
 import { SUPPORTED_CHAINS, getDefaultRPC } from '~/core/references';
@@ -7,6 +7,7 @@ import {
   chainHardhat,
   chainHardhatOptimism,
 } from '~/core/types/chains';
+import { migrate } from '~/core/utils/migrate';
 
 import { createStore } from '../internal/createStore';
 
@@ -74,6 +75,61 @@ const mergeNewOfficiallySupportedChainsState = (
       state.rainbowChains[chainId] = officalConfig;
     }
   }
+  return state;
+};
+
+const removeCustomRPC = ({
+  state,
+  rpcUrl,
+  rainbowChains,
+}: {
+  state: RainbowChainsState;
+  rpcUrl: string;
+  rainbowChains: Record<number, RainbowChain>;
+}) => {
+  const updatedrainbowChains = { ...rainbowChains };
+
+  Object.entries(rainbowChains).forEach(([chainId, rainbowChains]) => {
+    const index = rainbowChains.chains.findIndex((chain) =>
+      chain.rpcUrls.default.http.includes(rpcUrl),
+    );
+    if (index !== -1) {
+      rainbowChains.chains.splice(index, 1);
+
+      // If deleted RPC was active, reset activeRpcUrl or set to another RPC if available
+      if (rainbowChains.activeRpcUrl === rpcUrl) {
+        rainbowChains.activeRpcUrl =
+          rainbowChains.chains[0]?.rpcUrls.default.http[0] || '';
+      }
+
+      // Remove the chain if no RPCs are left
+      if (!rainbowChains.chains.length) {
+        delete updatedrainbowChains[Number(chainId)];
+      } else {
+        updatedrainbowChains[Number(chainId)] = rainbowChains;
+      }
+    }
+  });
+  state.rainbowChains = updatedrainbowChains;
+
+  return state;
+};
+
+const addCustomRPC = ({
+  state,
+  chain,
+}: {
+  state: RainbowChainsState;
+  chain: Chain;
+}) => {
+  const rainbowChains = state.rainbowChains;
+  const rainbowChain = rainbowChains[chain.id] || {
+    chains: [],
+    activeRpcUrl: '',
+  };
+  rainbowChain.chains.push(chain);
+  rainbowChain.activeRpcUrl = chain.rpcUrls.default.http[0];
+  state.rainbowChains = { ...rainbowChains, [chain.id]: rainbowChain };
   return state;
 };
 
@@ -164,23 +220,39 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
   {
     persist: {
       name: 'rainbowChains',
-      version: 3,
-      migrate(persistedState, version) {
-        const state = persistedState as RainbowChainsState;
-        if (version === 1) {
-          // version 2 added support for Avalanche and Avalanche Fuji
-          return mergeNewOfficiallySupportedChainsState(state, [
+      version: 6,
+      migrate: migrate(
+        // version 2 added support for Avalanche and Avalanche Fuji
+        (state) =>
+          mergeNewOfficiallySupportedChainsState(state, [
             ChainId.avalanche,
             ChainId.avalancheFuji,
-          ]);
-        }
-        if (version === 2) {
-          // version 2 added support for Blast
-          return mergeNewOfficiallySupportedChainsState(state, [ChainId.blast]);
-        }
-
-        return state;
-      },
+          ]),
+        // version 2 added support for Blast
+        (state: RainbowChainsState) =>
+          mergeNewOfficiallySupportedChainsState(state, [
+            ChainId.avalanche,
+            ChainId.avalancheFuji,
+          ]),
+        (state) =>
+          removeCustomRPC({
+            state,
+            rpcUrl: 'https://rpc.zora.co',
+            rainbowChains: state.rainbowChains,
+          }),
+        // version 5 added support for Degen
+        (state: RainbowChainsState) =>
+          mergeNewOfficiallySupportedChainsState(state, [ChainId.degen]),
+        (state: RainbowChainsState) => {
+          if (
+            !state.rainbowChains[zora.id] ||
+            state.rainbowChains[zora.id]?.chains.length === 0
+          ) {
+            return addCustomRPC({ chain: zora, state });
+          }
+          return state;
+        },
+      ),
     },
   },
 );

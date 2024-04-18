@@ -104,6 +104,7 @@ export default function NFTDetails() {
       (asset: UniqueAsset) => asset.id === nftId,
     );
   }, [collectionId, collections, nftId]);
+  const isPOAP = nft?.familyName === 'POAP';
   const {
     ensAddress,
     ensBio,
@@ -263,22 +264,24 @@ export default function NFTDetails() {
               <Box paddingVertical="16px">
                 <Inline space="6px"></Inline>
                 <Columns space="8px">
-                  <Column>
-                    <Button
-                      width="full"
-                      color="accent"
-                      height="36px"
-                      variant="flat"
-                      borderRadius="round"
-                      symbol="arrow.up.right.square.fill"
-                      onClick={() =>
-                        goToNewTab({ url: getOpenseaUrl({ nft }) })
-                      }
-                      tabIndex={0}
-                    >
-                      {'OpenSea'}
-                    </Button>
-                  </Column>
+                  {!isPOAP && (
+                    <Column>
+                      <Button
+                        width="full"
+                        color="accent"
+                        height="36px"
+                        variant="flat"
+                        borderRadius="round"
+                        symbol="arrow.up.right.square.fill"
+                        onClick={() =>
+                          goToNewTab({ url: getOpenseaUrl({ nft }) })
+                        }
+                        tabIndex={0}
+                      >
+                        {'OpenSea'}
+                      </Button>
+                    </Column>
+                  )}
                   {nft?.isSendable && (
                     <Column>
                       <Button
@@ -356,6 +359,7 @@ export default function NFTDetails() {
               {nft?.asset_contract.address && (
                 <NFTEtherscanLinkButton
                   contractAddress={nft.asset_contract.address}
+                  poapDropId={nft.poapDropId}
                   network={nft.network}
                 />
               )}
@@ -1034,11 +1038,23 @@ const NFTCollectionExternalLinkButton = ({ url }: { url: string }) => {
 
 const NFTEtherscanLinkButton = ({
   contractAddress,
+  poapDropId,
   network,
 }: {
   contractAddress: string;
+  poapDropId: string | null;
   network: string;
 }) => {
+  if (poapDropId) {
+    return (
+      <NFTLinkButton
+        symbol="link"
+        title={i18n.t('nfts.details.gallery')}
+        url={`https://collectors.poap.xyz/drop/${poapDropId}`}
+      />
+    );
+  }
+
   const blockExplorerUrl = `https://${getBlockExplorerHostForChain(
     chainIdFromChainName(network as ChainName),
   )}/token/${contractAddress}`;

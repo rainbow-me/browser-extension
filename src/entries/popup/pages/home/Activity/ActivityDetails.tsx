@@ -1,17 +1,17 @@
-import { formatEther, formatUnits } from '@ethersproject/units';
+import { BigNumber } from '@ethersproject/bignumber';
+import { formatUnits } from '@ethersproject/units';
 import { motion } from 'framer-motion';
 import { useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { useApprovals } from '~/core/resources/approvals/approvals';
 import { useTransaction } from '~/core/resources/transactions/transaction';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
-import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { RainbowTransaction, TxHash } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
-import { getChain } from '~/core/utils/chains';
+import { findRainbowChainForChainId } from '~/core/utils/chains';
 import { copy } from '~/core/utils/copy';
 import { formatDate } from '~/core/utils/formatDate';
 import { formatCurrency, formatNumber } from '~/core/utils/formatNumber';
@@ -47,13 +47,12 @@ import {
   DropdownMenuTrigger,
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
-import { useRainbowChains } from '~/entries/popup/hooks/useRainbowChains';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
-import { SpeedUpAndCancelSheet } from '../../speedUpAndCancelSheet';
+import { SheetMode, SpeedUpAndCancelSheet } from '../../speedUpAndCancelSheet';
 import { triggerRevokeApproval } from '../Approvals/utils';
 import { CopyableValue, InfoRow } from '../TokenDetails/About';
 
@@ -150,32 +149,55 @@ function ConfirmationData({
 
 const InfoValueSkeleton = () => <Skeleton width="50px" height="12px" />;
 
+const formatFee = (transaction: RainbowTransaction) => {
+  if (
+    transaction.native !== undefined &&
+    transaction.native.fee !== undefined
+  ) {
+    // if the fee is less than $0.01, the provider returns 0 so we display it as <$0.01
+    const feeInNative =
+      +transaction.native.fee <= 0.01 ? 0.01 : transaction.native.fee;
+    return `${+feeInNative <= 0.01 ? '<' : ''}${formatCurrency(feeInNative)}`;
+  }
+
+  const nativeCurrencySymbol = findRainbowChainForChainId(transaction.chainId)
+    ?.nativeCurrency.symbol;
+
+  if (!transaction.fee || !nativeCurrencySymbol) return;
+
+  return `${formatNumber(transaction.fee)} ${nativeCurrencySymbol}`;
+};
 function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
-  const { native, feeType } = tx;
+  const { feeType } = tx;
 
-  const maxPriorityFeePerGas =
-    tx.maxPriorityFeePerGas && formatUnits(tx.maxPriorityFeePerGas, 'gwei');
-  const maxFeePerGas = tx.maxFeePerGas && formatUnits(tx.maxFeePerGas, 'gwei');
-  const baseFee = tx.baseFee && formatUnits(tx.baseFee, 'gwei');
+  // if baseFee is undefined (like in pending txs or custom networks the api wont have data about it)
+  // so we try to calculate with the data we may have locally
+  const baseFee =
+    tx.baseFee ||
+    (tx.maxFeePerGas &&
+      tx.maxPriorityFeePerGas &&
+      BigNumber.from(tx.maxFeePerGas).sub(tx.maxPriorityFeePerGas).toString());
 
-  const gasPrice = tx.gasPrice && formatUnits(tx.gasPrice, 'gwei');
+  const fee = formatFee(tx);
+
+  if ((!baseFee || !tx.maxPriorityFeePerGas) && !tx.gasPrice) return null;
 
   return (
     <>
-      {native?.fee && (
+      {fee && (
         <InfoRow
           symbol="fuelpump.fill"
           label={i18n.t('activity_details.fee')}
-          value={formatCurrency(native.fee)}
+          value={fee}
         />
       )}
       {feeType === 'legacy' ? (
         <>
-          {gasPrice && (
+          {tx.gasPrice && (
             <InfoRow
               symbol="barometer"
               label={i18n.t('activity_details.gas_price')}
-              value={`${formatNumber(gasPrice)} Gwei`}
+              value={`${formatNumber(formatUnits(tx.gasPrice, 'gwei'))} Gwei`}
             />
           )}
         </>
@@ -185,15 +207,8 @@ function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
             symbol="barometer"
             label={i18n.t('activity_details.base_fee')}
             value={
-              baseFee ? `${formatNumber(baseFee)} Gwei` : <InfoValueSkeleton />
-            }
-          />
-          <InfoRow
-            symbol="barometer"
-            label={i18n.t('activity_details.max_base_fee')}
-            value={
-              maxFeePerGas ? (
-                `${formatNumber(maxFeePerGas)} Gwei`
+              baseFee ? (
+                `${formatNumber(formatUnits(baseFee, 'gwei'))} Gwei`
               ) : (
                 <InfoValueSkeleton />
               )
@@ -203,8 +218,10 @@ function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
             symbol="barometer"
             label={i18n.t('activity_details.max_priority_fee')}
             value={
-              maxPriorityFeePerGas ? (
-                `${formatNumber(maxPriorityFeePerGas)} Gwei`
+              tx.maxPriorityFeePerGas ? (
+                `${formatNumber(
+                  formatUnits(tx.maxPriorityFeePerGas, 'gwei'),
+                )} Gwei`
               ) : (
                 <InfoValueSkeleton />
               )
@@ -216,25 +233,37 @@ function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
   );
 }
 
+const formatValue = (transaction: RainbowTransaction) => {
+  const formattedValueInNative =
+    transaction.native &&
+    transaction.native.value &&
+    Number(transaction.native.value) > 0 &&
+    formatCurrency(transaction.native.value);
+
+  if (formattedValueInNative) return formattedValueInNative;
+
+  const nativeCurrencySymbol = findRainbowChainForChainId(transaction.chainId)
+    ?.nativeCurrency.symbol;
+
+  if (!nativeCurrencySymbol) return;
+
+  const formattedValue =
+    Number(transaction.value) > 0 &&
+    `${formatNumber(transaction.value)} ${nativeCurrencySymbol}`;
+
+  return formattedValue;
+};
 function NetworkData({ transaction: tx }: { transaction: RainbowTransaction }) {
-  const { nonce, native, value } = tx;
-  const { rainbowChains } = useRainbowChains();
-  const chain = getChain({ chainId: tx.chainId });
+  const chain = findRainbowChainForChainId(tx.chainId);
+  const value = formatValue(tx);
 
   return (
     <Stack space="24px">
-      {native?.value && +native?.value > 0 && (
+      {value && (
         <InfoRow
           symbol="dollarsign.square"
           label={i18n.t('activity_details.value')}
-          value={formatCurrency(native.value)}
-        />
-      )}
-      {!(native?.value && +native?.value) && value && (
-        <InfoRow
-          symbol="dollarsign.square"
-          label={i18n.t('activity_details.value')}
-          value={`${formatEther(+value)} ${chain.nativeCurrency.symbol}`}
+          value={value}
         />
       )}
       <InfoRow
@@ -243,17 +272,16 @@ function NetworkData({ transaction: tx }: { transaction: RainbowTransaction }) {
         value={
           <Inline alignVertical="center" space="4px">
             <ChainBadge chainId={tx.chainId} size={12} />
-            {ChainNameDisplay[tx.chainId] ||
-              rainbowChains.find((chain) => chain.id === tx.chainId)?.name}
+            {ChainNameDisplay[tx.chainId] || chain?.name}
           </Inline>
         }
       />
-      {tx.status != 'pending' && <FeeData transaction={tx} />}
-      {nonce >= 0 && (
+      <FeeData transaction={tx} />
+      {tx.nonce >= 0 && (
         <InfoRow
           symbol="number"
           label={i18n.t('activity_details.nonce')}
-          value={nonce}
+          value={tx.nonce}
         />
       )}
     </Stack>
@@ -265,43 +293,48 @@ const SpeedUpOrCancel = ({
 }: {
   transaction: RainbowTransaction;
 }) => {
-  const { sheet, setCurrentHomeSheet } = useCurrentHomeSheetStore();
+  const [searchParams] = useSearchParams();
   const navigate = useRainbowNavigate();
-
+  const sheetParam = searchParams.get('sheet');
+  const sheet =
+    sheetParam === 'speedUp' || sheetParam === 'cancel' ? sheetParam : 'none';
+  const setSheet = (mode: SheetMode) => {
+    navigate(`?sheet=${mode}`, {
+      state: { skipTransitionOnRoute: ROUTES.HOME },
+    });
+  };
   return (
-    <Box display="flex" flexDirection="column" gap="8px">
-      <Button
-        onClick={() => setCurrentHomeSheet('speedUp')}
-        symbol="bolt.fill"
-        height="32px"
-        width="full"
-        variant="plain"
-        color="blue"
-      >
-        {i18n.t('speed_up_and_cancel.speed_up')}
-      </Button>
-      <Button
-        onClick={() => setCurrentHomeSheet('cancel')}
-        symbol="trash.fill"
-        height="32px"
-        width="full"
-        variant="plain"
-        color="fillSecondary"
-      >
-        {i18n.t('speed_up_and_cancel.cancel')}
-      </Button>
+    <>
+      <Box display="flex" flexDirection="column" gap="8px">
+        <Button
+          onClick={() => setSheet('speedUp')}
+          symbol="bolt.fill"
+          height="32px"
+          width="full"
+          variant="plain"
+          color="blue"
+        >
+          {i18n.t('speed_up_and_cancel.speed_up')}
+        </Button>
+        <Button
+          onClick={() => setSheet('cancel')}
+          symbol="trash.fill"
+          height="32px"
+          width="full"
+          variant="plain"
+          color="fillSecondary"
+        >
+          {i18n.t('speed_up_and_cancel.cancel')}
+        </Button>
+      </Box>
       {sheet !== 'none' && (
         <SpeedUpAndCancelSheet
           currentSheet={sheet}
           transaction={transaction}
-          onClose={() => {
-            setCurrentHomeSheet('none');
-            navigate(ROUTES.HOME);
-            console.log('naviogating to homeee');
-          }}
+          onClose={() => setSheet('none')}
         />
       )}
-    </Box>
+    </>
   );
 };
 
