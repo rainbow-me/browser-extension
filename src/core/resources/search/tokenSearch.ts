@@ -15,6 +15,7 @@ import {
   BNB_MAINNET_ADDRESS,
   ETH_ADDRESS,
   MATIC_MAINNET_ADDRESS,
+  ROOTSTOCK_MAINNET_ADDRESS,
 } from '~/core/references';
 import { ChainId } from '~/core/types/chains';
 import {
@@ -108,6 +109,7 @@ function parseTokenSearch(assets: SearchAsset[], chainId: ChainId) {
           `${ETH_ADDRESS}_${ChainId.avalanche}`,
           `${ETH_ADDRESS}_${ChainId.blast}`,
           `${ETH_ADDRESS}_${ChainId.degen}`,
+          `${ROOTSTOCK_MAINNET_ADDRESS}_${ChainId.rootstock}`,
         ].includes(`${a.uniqueId}_${chainId}`),
         mainnetAddress: a.uniqueId as Address,
         uniqueId: `${a.uniqueId}_${chainId}`,

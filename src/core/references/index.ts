@@ -14,6 +14,7 @@ import {
   optimismSepolia,
   polygon,
   polygonMumbai,
+  rootstock,
   zora,
   zoraSepolia,
 } from 'viem/chains';
@@ -153,6 +154,9 @@ export const USDB_BLAST_ADDRESS = '0x4300000000000000000000000000000000000003';
 // degen
 export const ETH_DEGEN_ADDRESS = AddressZero;
 
+// rootstock
+export const ROOTSTOCK_MAINNET_ADDRESS = AddressZero;
+
 export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.mainnet]: ETH_ADDRESS as Address,
   [ChainId.hardhat]: AddressZero as Address,
@@ -178,6 +182,7 @@ export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.blastSepolia]: AddressZero as Address,
   [ChainId.polygonAmoy]: AddressZero as Address,
   [ChainId.degen]: AddressZero as Address,
+  [ChainId.rootstock]: AddressZero as Address,
 };
 
 export const NATIVE_ASSETS_MAP_PER_CHAIN: Record<ChainId, AddressOrEth> = {
@@ -205,6 +210,7 @@ export const NATIVE_ASSETS_MAP_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.blastSepolia]: ETH_ADDRESS,
   [ChainId.polygonAmoy]: MATIC_MAINNET_ADDRESS,
   [ChainId.degen]: ETH_DEGEN_ADDRESS,
+  [ChainId.rootstock]: ROOTSTOCK_MAINNET_ADDRESS,
 };
 
 export const OVM_GAS_PRICE_ORACLE =
@@ -254,6 +260,7 @@ export const SUPPORTED_CHAINS: Chain[] = [
   chainBlastSepolia,
   chainPolygonAmoy,
   chainDegen,
+  rootstock,
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
 export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map((chain) => chain.id);
@@ -319,6 +326,8 @@ export const getDefaultRPC = (chainId: ChainId) => {
       return { http: process.env.POLYGON_AMOY_RPC };
     case ChainId.degen:
       return { http: process.env.DEGEN_MAINNET_RPC };
+    case ChainId.rootstock:
+      return { http: process.env.ROOTSTOCK_MAINNET_RPC };
     default:
       return null;
   }

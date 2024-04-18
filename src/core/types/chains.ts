@@ -143,6 +143,7 @@ export enum ChainName {
   baseSepolia = 'base-sepolia',
   zoraSepolia = 'zora-sepolia',
   polygonAmoy = 'polygon-amoy',
+  rootstock = 'rootstock',
 }
 
 export enum ChainId {
@@ -177,6 +178,7 @@ export enum ChainId {
   zoraSepolia = chain.zoraSepolia.id,
   polygonAmoy = chainPolygonAmoy.id,
   degen = chainDegen.id,
+  rootstock = chain.rootstock.id,
 }
 
 export const chainNameToIdMapping: {
@@ -215,6 +217,7 @@ export const chainNameToIdMapping: {
   [ChainName.blastSepolia]: ChainId.blastSepolia,
   [ChainName.polygonAmoy]: ChainId.polygonAmoy,
   [ChainName.degen]: ChainId.degen,
+  [ChainName.rootstock]: ChainId.rootstock,
 };
 
 export const chainIdToNameMapping: {
@@ -251,6 +254,7 @@ export const chainIdToNameMapping: {
   [ChainId.zoraSepolia]: ChainName.zoraSepolia,
   [ChainId.polygonAmoy]: ChainName.polygonAmoy,
   [ChainId.degen]: ChainName.degen,
+  [ChainId.rootstock]: ChainName.rootstock,
 };
 
 export const ChainNameDisplay = {
@@ -284,4 +288,5 @@ export const ChainNameDisplay = {
   [ChainId.zoraSepolia]: 'Zora Sepolia',
   [ChainId.polygonAmoy]: 'Polygon Amoy',
   [ChainId.degen]: 'Degen',
+  [ChainId.rootstock]: 'Rootstock',
 } as const;

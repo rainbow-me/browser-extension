@@ -12,6 +12,7 @@ import {
   optimismSepolia,
   polygon,
   polygonMumbai,
+  rootstock,
   zora,
   zoraSepolia,
 } from 'viem/chains';
@@ -41,7 +42,8 @@ export const chainIdMap: Record<
   | ChainId.zora
   | ChainId.avalanche
   | ChainId.blast
-  | ChainId.degen,
+  | ChainId.degen
+  | ChainId.rootstock,
   ChainId[]
 > = {
   [ChainId.mainnet]: [mainnet.id, sepolia.id, holesky.id],
@@ -54,6 +56,7 @@ export const chainIdMap: Record<
   [ChainId.avalanche]: [avalanche.id, avalancheFuji.id],
   [ChainId.blast]: [chainBlast.id, chainBlastSepolia.id],
   [ChainId.degen]: [chainDegen.id],
+  [ChainId.rootstock]: [rootstock.id],
 };
 
 export const chainLabelMap: Record<
@@ -65,7 +68,8 @@ export const chainLabelMap: Record<
   | ChainId.zora
   | ChainId.avalanche
   | ChainId.blast
-  | ChainId.degen,
+  | ChainId.degen
+  | ChainId.rootstock,
   string[]
 > = {
   [ChainId.mainnet]: [
@@ -81,6 +85,7 @@ export const chainLabelMap: Record<
   [ChainId.avalanche]: [ChainNameDisplay[avalancheFuji.id]],
   [ChainId.blast]: [ChainNameDisplay[chainBlastSepolia.id]],
   [ChainId.degen]: [ChainNameDisplay[chainDegen.id]],
+  [ChainId.rootstock]: [ChainNameDisplay[rootstock.id]],
 };
 
 export const sortNetworks = (order: ChainId[], chains: Chain[]) => {

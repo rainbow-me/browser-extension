@@ -19,6 +19,7 @@ import {
   ETH_ZORA_ADDRESS,
   MATIC_POLYGON_ADDRESS,
   OP_ADDRESS,
+  ROOTSTOCK_MAINNET_ADDRESS,
   SOCKS_ADDRESS,
   SOCKS_ARBITRUM_ADDRESS,
   USDB_BLAST_ADDRESS,
@@ -107,6 +108,7 @@ const defaultFavorites = {
   ],
   [ChainId.blast]: [ETH_BLAST_ADDRESS, WETH_BLAST_ADDRESS, USDB_BLAST_ADDRESS],
   [ChainId.degen]: [ETH_DEGEN_ADDRESS],
+  [ChainId.rootstock]: [ROOTSTOCK_MAINNET_ADDRESS],
 } satisfies FavoritesState['favorites'];
 
 const mergeNewOfficiallySupportedChainsState = (

@@ -47,6 +47,7 @@ declare global {
       BLAST_MAINNET_RPC: string;
       BLAST_SEPOLIA_RPC: string;
       DEGEN_MAINNET_RPC: string;
+      ROOTSTOCK_MAINNET_RPC: string;
     }
   }
 }

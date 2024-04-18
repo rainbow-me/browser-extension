@@ -399,6 +399,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
       testnet: false,
     },
   },
+  {
+    name: 'Rootstock Testnet',
+    networkInfo: {
+      rpcUrl: 'https://public-node.testnet.rsk.co',
+      chainId: 31,
+      decimals: 18,
+      symbol: 'tRBTC',
+      explorerUrl: 'https://explorer.testnet.rootstock.io',
+      testnet: true,
+    },
+  },
 ];
 
 const KNOWN_NETWORKS_AUTOCOMPLETE_DICT = {
