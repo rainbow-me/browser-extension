@@ -39,7 +39,7 @@ type BaseTransaction = {
   value?: string; // network asset amount sent with the tx (like eth or matic)
   fee?: string;
   native?: {
-    // fee and value but in the user prefered currency terms (USD, EUR, etc)
+    // fee and value but in the user preferred currency terms (USD, EUR, etc)
     value?: string;
     fee?: string;
   };

@@ -170,7 +170,7 @@ const formatFee = (transaction: RainbowTransaction) => {
 function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
   const { feeType } = tx;
 
-  // if baseFee is undefined (like in pending txs or custom networks the api wont have data about it)
+  // if baseFee is undefined (like in pending txs or custom networks the api won't have data about it)
   // so we try to calculate with the data we may have locally
   const baseFee =
     tx.baseFee ||

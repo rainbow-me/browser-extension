@@ -35,7 +35,7 @@ export function getUniqueTokenType(contractAddress: string): UniqueTokenType {
 
 /**
  * Returns a `ChainName` from a `SimpleHashChain`. If an invalid value is
- * forcably passed in, it will throw.
+ * forcibly passed in, it will throw.
  * @param chain `SimpleHashChain`
  * @returns `Network`
  */

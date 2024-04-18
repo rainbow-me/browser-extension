@@ -58,7 +58,7 @@ export function Sign() {
             : verifyMessage(msgData, result);
 
         if (getAddress(actualAddress) === address) {
-          alert(`Message signed succesfully: ${result}`);
+          alert(`Message signed successfully: ${result}`);
           setSignature(result);
         } else {
           alert(`Signature does not match address: ${actualAddress}`);

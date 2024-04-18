@@ -402,7 +402,7 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
       tokenText,
     );
 
-    // test dapp hardcodes the amount of tokens created and transfered. expected values are as below
+    // test dapp hardcodes the amount of tokens created and transferred. expected values are as below
     expect(Number(senderPreSendbalance)).toBe(100000);
     expect(Number(senderPostSendbalance)).toBe(
       Number(senderPreSendbalance) - 15000,
@@ -490,7 +490,7 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
       tokenText,
     );
 
-    // test dapp hardcodes the amount of tokens created and transfered. expected values are as below
+    // test dapp hardcodes the amount of tokens created and transferred. expected values are as below
     expect(Number(senderPreSendbalance)).toBe(85000);
     expect(Number(senderPostSendbalance)).toBe(
       Number(senderPreSendbalance) - 15000,
