@@ -46,8 +46,14 @@ export const WalletName = ({
 }: { address: Address } & Partial<TextProps>) => {
   const { displayName } = useWalletInfo({ address });
   return (
-    // eslint-disable-next-line react/jsx-props-no-spreading
-    <TextOverflow color="label" size="14pt" weight="semibold" {...props}>
+    <TextOverflow
+      color="label"
+      size="14pt"
+      weight="semibold"
+      maxWidth={130}
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      {...props}
+    >
       {displayName}
     </TextOverflow>
   );
