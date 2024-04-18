@@ -28,8 +28,8 @@ export const getSideChainExplainerParams = (
     [ChainId.bsc]: 'bsc',
     [ChainId.avalanche]: 'avalanche',
     [ChainId.blast]: 'blast',
-    // add here and in i18n once degen support is live
-    // [ChainId.degen]: 'degen',
+    [ChainId.degen]: 'degen'
+    // add new chains here with unique i18n explainer keys
   };
 
   const capitalizeString = (str: string) => str[0].toUpperCase() + str.slice(1);
