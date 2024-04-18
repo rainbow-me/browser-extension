@@ -4,12 +4,15 @@
 export function detectScriptType() {
   const hasChromeRuntime = typeof chrome !== 'undefined' && chrome.runtime;
   const hasWindow = typeof window !== 'undefined';
-
   if (hasChromeRuntime && hasWindow) {
     if (window.location.pathname.includes('background')) return 'background';
     if (window.location.pathname.includes('contentscript'))
       return 'contentScript';
-    if (window.location.pathname.includes('popup')) return 'popup';
+    if (
+      window.location.pathname.includes('popup') &&
+      !window.location.origin.includes('trezor')
+    )
+      return 'popup';
     return 'contentScript';
   }
   if (hasChromeRuntime && !hasWindow) return 'background';
