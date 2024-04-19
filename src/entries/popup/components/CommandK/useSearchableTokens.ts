@@ -57,28 +57,39 @@ export const useSearchableTokens = () => {
     },
   );
 
+  const combinedAssets = useMemo(
+    () =>
+      Array.from(
+        new Map(
+          [...customNetworkAssets, ...assets].map((item) => [
+            item.uniqueId,
+            item,
+          ]),
+        ).values(),
+      ),
+    [assets, customNetworkAssets],
+  );
+
   const searchableTokens = useMemo(() => {
-    return [...assets, ...customNetworkAssets].map<TokenSearchItem>(
-      (asset) => ({
-        action: () => navigate(ROUTES.TOKEN_DETAILS(asset.uniqueId)),
-        actionLabel: actionLabels.open,
-        actionPage: PAGES.TOKEN_DETAIL,
-        asset: asset as ParsedUserAsset,
-        id: asset.uniqueId,
-        name: asset.name,
-        nativeTokenBalance: asset.native.balance.display,
-        network: asset.chainName,
-        page: PAGES.MY_TOKENS,
-        price: asset.price,
-        searchTags: [asset.symbol, asset.chainName],
-        selectedWalletAddress: address,
-        tokenBalanceAmount: asset.balance.amount,
-        tokenBalanceDisplay: asset.balance.display,
-        tokenSymbol: asset.symbol,
-        type: SearchItemType.Token,
-      }),
-    );
-  }, [address, assets, customNetworkAssets, navigate]);
+    return combinedAssets.map<TokenSearchItem>((asset) => ({
+      action: () => navigate(ROUTES.TOKEN_DETAILS(asset.uniqueId)),
+      actionLabel: actionLabels.open,
+      actionPage: PAGES.TOKEN_DETAIL,
+      asset: asset as ParsedUserAsset,
+      id: asset.uniqueId,
+      name: asset.name,
+      nativeTokenBalance: asset.native.balance.display,
+      network: asset.chainName,
+      page: PAGES.MY_TOKENS,
+      price: asset.price,
+      searchTags: [asset.symbol, asset.chainName],
+      selectedWalletAddress: address,
+      tokenBalanceAmount: asset.balance.amount,
+      tokenBalanceDisplay: asset.balance.display,
+      tokenSymbol: asset.symbol,
+      type: SearchItemType.Token,
+    }));
+  }, [address, combinedAssets, navigate]);
 
   return { searchableTokens };
 };
