@@ -367,13 +367,13 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
-    name: 'Redstone Testnet',
+    name: 'Redstone Garnet',
     networkInfo: {
-      rpcUrl: 'https://rpc.holesky.redstone.xyz',
-      chainId: 17001,
+      rpcUrl: 'https://rpc.garnet.qry.live',
+      chainId: 17069,
       decimals: 18,
       symbol: 'ETH',
-      explorerUrl: 'https://explorer.holesky.redstone.xyz',
+      explorerUrl: 'https://explorer.garnet.qry.live',
       testnet: true,
     },
   },
