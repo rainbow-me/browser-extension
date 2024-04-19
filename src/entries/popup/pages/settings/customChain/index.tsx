@@ -378,6 +378,28 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Rootstock',
+    networkInfo: {
+      rpcUrl: 'https://public-node.rsk.co',
+      chainId: 30,
+      decimals: 18,
+      symbol: 'RBTC',
+      explorerUrl: 'https://explorer.rootstock.io',
+      testnet: false,
+    },
+  },
+  {
+    name: 'Rootstock Testnet',
+    networkInfo: {
+      rpcUrl: 'https://public-node.testnet.rsk.co',
+      chainId: 31,
+      decimals: 18,
+      symbol: 'tRBTC',
+      explorerUrl: 'https://explorer.testnet.rootstock.io',
+      testnet: true,
+    },
+  },
+  {
     name: 'Scroll',
     networkInfo: {
       rpcUrl: 'https://rpc.scroll.io',
