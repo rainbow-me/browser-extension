@@ -367,6 +367,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Redstone',
+    networkInfo: {
+      rpcUrl: 'https://rpc.redstonechain.com',
+      chainId: 690,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://explorer.redstone.xyz',
+      testnet: false,
+    },
+  },
+  {
     name: 'Redstone Garnet',
     networkInfo: {
       rpcUrl: 'https://rpc.garnet.qry.live',
