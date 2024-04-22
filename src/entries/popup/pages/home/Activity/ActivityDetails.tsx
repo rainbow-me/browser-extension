@@ -577,8 +577,6 @@ export function ActivityDetails() {
   });
   const navigate = useRainbowNavigate();
 
-  console.log(transaction);
-
   const { data: approvals } = useApprovals(
     {
       address: currentAddress,
