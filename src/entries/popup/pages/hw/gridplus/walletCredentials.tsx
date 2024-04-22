@@ -1,3 +1,5 @@
+import { randomUUID } from 'crypto';
+
 import { motion } from 'framer-motion';
 import { setup } from 'gridplus-sdk';
 import { FormEvent, useEffect, useState } from 'react';
@@ -24,12 +26,8 @@ export const WalletCredentials = ({
 }: WalletCredentialsProps) => {
   const setClient = useGridPlusClientStore((state) => state.setClient);
   const [connecting, setConnecting] = useState(false);
-  const [formData, setFormData] = useState({
-    deviceId: '',
-    password: '',
-  });
-  const formDataFilled =
-    formData.deviceId.length > 0 && formData.password.length > 0;
+  const [deviceId, setDeviceId] = useState('');
+  const formDataFilled = deviceId.length > 0; // device ids probably have a pattern we could match against
 
   const disabled = !formDataFilled || connecting;
 
@@ -48,14 +46,14 @@ export const WalletCredentials = ({
         result = true;
       } else {
         result = await setup({
-          deviceId: formData.deviceId,
-          password: formData.password,
+          deviceId: deviceId,
+          password: randomUUID(),
           name: appName,
           getStoredClient: () => useGridPlusClientStore.getState().client,
           setStoredClient: setStoredClient,
         });
       }
-      await LocalStorage.set('gridPlusDeviceId', formData.deviceId);
+      await LocalStorage.set('gridPlusDeviceId', deviceId);
       onAfterSetup && onAfterSetup(result);
     } finally {
       setConnecting(false);
@@ -134,36 +132,12 @@ export const WalletCredentials = ({
             height="40px"
             id="deviceId"
             placeholder="Enter Device ID"
-            onChange={(e) =>
-              setFormData({ ...formData, deviceId: e.target.value })
-            }
-            value={formData.deviceId}
+            onChange={(e) => setDeviceId(e.target.value)}
+            value={deviceId}
             testId="gridplus-deviceid"
             aria-label="username"
             tabIndex={0}
           />
-        </Box>
-        <Box as="fieldset" display="flex" flexDirection="column" gap="8px">
-          <Text size="14pt" weight="semibold" color="labelSecondary">
-            {i18n.t('hw.gridplus_password')}
-          </Text>
-          <Input
-            variant="bordered"
-            height="40px"
-            id="password"
-            type="password"
-            placeholder="Enter Password"
-            onChange={(e) =>
-              setFormData({ ...formData, password: e.target.value })
-            }
-            value={formData.password}
-            testId="gridplus-password"
-            aria-label="password"
-            tabIndex={0}
-          />
-          <Text size="12pt" weight="medium" color="labelSecondary">
-            {i18n.t('hw.gridplus_password_create')}
-          </Text>
         </Box>
       </Box>
       <Button
