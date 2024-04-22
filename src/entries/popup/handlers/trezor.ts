@@ -23,7 +23,11 @@ const getPath = async (address: Address) => {
 export async function sendTransactionFromTrezor(
   transaction: TransactionRequest,
 ): Promise<TransactionResponse> {
-  const serializedTransaction = await signTransactionFromTrezor(transaction);
+  const path = await getPath(transaction.from as Address);
+  const serializedTransaction = await signTransactionFromTrezor(
+    transaction,
+    path,
+  );
   const provider = getProvider({
     chainId: transaction.chainId,
   });
