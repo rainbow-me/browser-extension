@@ -21,6 +21,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.4.67](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.67)
+
+### Changed
+
+- Broadened coverage of our network explainers as you interact with assets across alternative L1s, L2s and L3s #1490
+
+### Fixed
+
+- Resolved an issue with missing prices for some token pairs in our Swap interface #1505
+
+### Internal
+
+- Bumped `@solana/web3.js` version to `1.90.2` to resolve CI audit issue #1503
+
 ## [v1.4.55](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.55)
 
 ### Fixed
