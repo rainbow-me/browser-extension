@@ -324,11 +324,17 @@ const SpeedUpOrCancel = ({
 }: {
   transaction: PendingTransaction;
 }) => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useRainbowNavigate();
+  const [searchParams] = useSearchParams();
+
   const sheetParam = searchParams.get('sheet');
   const sheet =
     sheetParam === 'speedUp' || sheetParam === 'cancel' ? sheetParam : 'none';
-  const setSheet = (mode: SheetMode) => setSearchParams({ sheet: mode });
+  const setSheet = (mode: SheetMode) => {
+    navigate(`?sheet=${mode}`, {
+      state: { skipTransitionOnRoute: ROUTES.HOME },
+    });
+  };
 
   return (
     <>
@@ -646,9 +652,9 @@ export function ActivityDetails() {
             )}
             <ConfirmationData transaction={transaction} />
             <NetworkData transaction={transaction} />
-            {/* {transaction.status === 'pending' && ( */}
-            <SpeedUpOrCancel transaction={transaction} />
-            {/* )} */}
+            {transaction.status === 'pending' && (
+              <SpeedUpOrCancel transaction={transaction} />
+            )}
           </Stack>
         </>
       )}

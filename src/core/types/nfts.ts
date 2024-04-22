@@ -339,6 +339,7 @@ export interface UniqueAsset {
   fullUniqueId: string;
   urlSuffixForAsset: string;
   isPoap?: boolean;
+  poapDropId: string | null;
   network: ChainName;
   predominantColor?: string;
   video_url: string | null;
