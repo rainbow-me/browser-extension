@@ -11,13 +11,19 @@ import { ROUTES } from '~/entries/popup/urls';
 
 const useGridPlusAddresses = () =>
   useQuery({
-    queryKey: ['gridplusAddressess', useGridPlusClientStore.getState().client],
+    queryKey: ['gridplusAddresses', useGridPlusClientStore.getState().client],
     queryFn: async () => {
       if (process.env.IS_TESTING === 'true') {
         return HARDWARE_WALLETS.MOCK_ACCOUNT.accountsToImport.map(
           (account) => account.address,
         );
       }
+
+      /*
+        the code below could be removed when we merge 
+        https://github.com/rainbow-me/browser-extension/pull/1435
+        as the keychain itself will handle it
+      */
 
       const currentWallets = getWallets();
 
@@ -32,18 +38,21 @@ const useGridPlusAddresses = () =>
         (address) => !alreadyAddedOwnedAccounts.includes(address),
       );
     },
+    staleTime: 0,
+    cacheTime: 0,
   });
 
 export const AddressChoice = () => {
   const { state } = useLocation();
 
-  const { data: addresses } = useGridPlusAddresses();
+  const { data: addresses, isFetching } = useGridPlusAddresses();
 
-  if (!addresses || addresses.length === 0) return <Spinner size={24} />;
+  if (isFetching || !addresses || addresses.length === 0)
+    return <Spinner size={24} />;
 
-  const accountsToImport = addresses.map((address, i) => ({
+  const accountsToImport = addresses.map((address) => ({
     address,
-    index: i,
+    index: -1, // GridPlus doesn't support add by index, gonna keep it with a negative value to avoid refactoring the whole flow
   }));
 
   return (
@@ -56,6 +65,7 @@ export const AddressChoice = () => {
         vendor: 'GridPlus',
         direction: state?.direction,
         navbarIcon: state?.navbarIcon,
+        supportsAddByIndex: false,
       }}
     />
   );

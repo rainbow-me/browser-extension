@@ -1,5 +1,5 @@
 import { Address } from '@wagmi/core';
-import React, { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
@@ -43,6 +43,8 @@ const WalletListHW = () => {
   const [accountsIgnored, setAccountsIgnored] = useState<Address[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { setCurrentAddress } = useCurrentAddressStore();
+
+  const { supportsAddByIndex = true } = state;
 
   const [accountsToImport, setAccountsToImport] = useState<
     { address: Address; index: number; hdPath?: string }[]
@@ -241,36 +243,38 @@ const WalletListHW = () => {
                                   })}
                                 </Text>
                               </Column>
-                              <Column>
-                                <ButtonOverflow>
-                                  <Box
-                                    onClick={() => {
-                                      setShowAddByIndexSheet(true);
-                                    }}
-                                  >
-                                    <Inline
-                                      alignHorizontal="right"
-                                      alignVertical="center"
-                                      space="4px"
+                              {supportsAddByIndex && (
+                                <Column>
+                                  <ButtonOverflow>
+                                    <Box
+                                      onClick={() => {
+                                        setShowAddByIndexSheet(true);
+                                      }}
                                     >
-                                      <Symbol
-                                        color={'labelSecondary'}
-                                        size={12}
-                                        symbol={'plus.circle.fill'}
-                                        weight="regular"
-                                      />
-                                      <Text
-                                        size="14pt"
-                                        weight="regular"
-                                        color="labelSecondary"
-                                        align="right"
+                                      <Inline
+                                        alignHorizontal="right"
+                                        alignVertical="center"
+                                        space="4px"
                                       >
-                                        {i18n.t('hw.add_by_index')}
-                                      </Text>
-                                    </Inline>
-                                  </Box>
-                                </ButtonOverflow>
-                              </Column>
+                                        <Symbol
+                                          color={'labelSecondary'}
+                                          size={12}
+                                          symbol={'plus.circle.fill'}
+                                          weight="regular"
+                                        />
+                                        <Text
+                                          size="14pt"
+                                          weight="regular"
+                                          color="labelSecondary"
+                                          align="right"
+                                        >
+                                          {i18n.t('hw.add_by_index')}
+                                        </Text>
+                                      </Inline>
+                                    </Box>
+                                  </ButtonOverflow>
+                                </Column>
+                              )}
                             </Columns>
                           </Box>
                         )}
@@ -330,9 +334,13 @@ const WalletListHW = () => {
                                                   color="label"
                                                   address={address as Address}
                                                 />
-                                                <Bleed vertical="8px">
-                                                  <AccountIndex index={index} />
-                                                </Bleed>
+                                                {index !== -1 && (
+                                                  <Bleed vertical="8px">
+                                                    <AccountIndex
+                                                      index={index}
+                                                    />
+                                                  </Bleed>
+                                                )}
                                               </Inline>
                                               <Box style={{ height: 9 }}>
                                                 {!walletsSummaryIsLoading ? (
@@ -375,6 +383,7 @@ const WalletListHW = () => {
                         </Box>
                       </Stack>
                       {newDevice &&
+                        supportsAddByIndex &&
                         Object.values(walletsSummary).length <= 6 && (
                           <Inline alignHorizontal="center">
                             <Button
@@ -436,11 +445,13 @@ const WalletListHW = () => {
           </Rows>
         </Box>
       </FullScreenContainer>
-      <AddByIndexSheet
-        show={showAddByIndexSheet}
-        vendor={state.vendor as 'Ledger' | 'Trezor' | 'GridPlus'}
-        onDone={handleCloseAddByIndexSheet}
-      />
+      {supportsAddByIndex && (
+        <AddByIndexSheet
+          show={showAddByIndexSheet}
+          vendor={state.vendor as 'Ledger' | 'Trezor' | 'GridPlus'}
+          onDone={handleCloseAddByIndexSheet}
+        />
+      )}
     </>
   );
 };
