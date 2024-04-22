@@ -7,11 +7,6 @@ export function initThemingCritical({
   defaultTheme,
   enableSaved = true,
 }: { defaultTheme?: ColorContext; enableSaved?: boolean } = {}) {
-  document.addEventListener('DOMContentLoaded', () => {
-    // const savedTheme = 'dark'; // Default to 'light' if nothing is saved
-    // const className = savedTheme === 'dark' ? 'darkTheme' : 'lightTheme';
-    document.documentElement.classList.add('dt');
-  });
   const setTheme = (theme: ColorContext) => {
     document.documentElement.classList.remove(
       ...Object.values(rootThemeClasses),
