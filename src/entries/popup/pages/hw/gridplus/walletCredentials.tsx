@@ -30,12 +30,15 @@ export const WalletCredentials = ({
   });
   const formDataFilled =
     formData.deviceId.length > 0 && formData.password.length > 0;
+
   const disabled = !formDataFilled || connecting;
+
   const setStoredClient = (storedClient: string | null) => {
     if (!storedClient) return;
     setStoredGridPlusClient(storedClient);
     setClient(storedClient);
   };
+
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setConnecting(true);
@@ -58,6 +61,7 @@ export const WalletCredentials = ({
       setConnecting(false);
     }
   };
+
   useEffect(() => {
     const checkPersistedClient = async () => {
       const gridPlusClient = await getStoredGridPlusClient();
@@ -72,6 +76,7 @@ export const WalletCredentials = ({
     };
     checkPersistedClient();
   }, [appName, onAfterSetup]);
+
   return (
     <Box
       as={motion.form}
