@@ -180,6 +180,7 @@ export function Tokens() {
     return combinedAssets.filter((asset) => !isHidden(asset));
   }, [combinedAssets, isHidden]);
 
+  console.log('- unhiddenAssets', unhiddenAssets);
   const computeUniqueAssets = useCallback(
     (assets: ParsedUserAsset[]) => {
       const filteredAssets = assets.filter(
