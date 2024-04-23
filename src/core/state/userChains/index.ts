@@ -4,6 +4,7 @@ import { SUPPORTED_MAINNET_CHAINS } from '~/core/references';
 import { ChainId } from '~/core/types/chains';
 
 import { createStore } from '../internal/createStore';
+import { withSelectors } from '../internal/withSelectors';
 
 export interface UserChainsState {
   /**
@@ -114,4 +115,4 @@ export const userChainsStore = createStore<UserChainsState>(
   },
 );
 
-export const useUserChainsStore = create(userChainsStore);
+export const useUserChainsStore = withSelectors(create(userChainsStore));

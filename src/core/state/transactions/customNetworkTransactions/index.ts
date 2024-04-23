@@ -4,6 +4,7 @@ import create from 'zustand';
 import { MinedTransaction } from '~/core/types/transactions';
 
 import { createStore } from '../../internal/createStore';
+import { withSelectors } from '../../internal/withSelectors';
 
 export interface CustomNetworkTransactionsState {
   customNetworkTransactions: Record<
@@ -85,6 +86,6 @@ export const customNetworkTransactionsStore =
     },
   );
 
-export const useCustomNetworkTransactionsStore = create(
-  customNetworkTransactionsStore,
+export const useCustomNetworkTransactionsStore = withSelectors(
+  create(customNetworkTransactionsStore),
 );

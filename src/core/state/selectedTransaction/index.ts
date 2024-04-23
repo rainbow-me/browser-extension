@@ -3,6 +3,7 @@ import create from 'zustand';
 import { RainbowTransaction } from '~/core/types/transactions';
 
 import { createStore } from '../internal/createStore';
+import { withSelectors } from '../internal/withSelectors';
 
 export interface SelectedTransactionState {
   getSelectedTransaction: () => RainbowTransaction | null;
@@ -20,4 +21,6 @@ export const selectedTransactionStore = createStore<SelectedTransactionState>(
   }),
 );
 
-export const useSelectedTransactionStore = create(selectedTransactionStore);
+export const useSelectedTransactionStore = withSelectors(
+  create(selectedTransactionStore),
+);

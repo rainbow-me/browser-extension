@@ -516,7 +516,7 @@ export const useCommands = (
   const navigate = useRainbowNavigate();
   const navigateToSwaps = useNavigateToSwaps();
   const { isWatchingWallet } = useWallets();
-  const { save } = useSavedEnsNames();
+  const save = useSavedEnsNames.use.save();
   const { searchableENSOrAddress } = useSearchableENSorAddress(
     currentPage,
     searchQuery,
@@ -525,7 +525,7 @@ export const useCommands = (
   const { searchableTokens } = useSearchableTokens();
   const { searchableNFTs } = useSearchableNFTs();
   const { searchableWallets } = useSearchableWallets(currentPage);
-  const { setSelectedToken } = useSelectedTokenStore();
+  const setSelectedToken = useSelectedTokenStore.use.setSelectedToken();
   const { sortedAccounts } = useAccounts();
 
   const { setTestnetMode, testnetMode } = useTestnetModeStore();

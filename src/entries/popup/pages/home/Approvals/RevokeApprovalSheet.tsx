@@ -1,12 +1,6 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { useQuery } from '@tanstack/react-query';
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Address } from 'viem';
 
 import { analytics } from '~/analytics';
@@ -91,7 +85,10 @@ export const RevokeApprovalSheet = ({
     approval?.chain_id === ChainId.mainnet;
 
   const [waitingForDevice, setWaitingForDevice] = useState(false);
-  const { clearCustomGasModified, selectedGas } = useGasStore();
+
+  const selectedGas = useGasStore.use.selectedGas();
+  const clearCustomGasModified = useGasStore.use.clearCustomGasModified();
+
   const navigate = useRainbowNavigate();
   const { currentCurrency } = useCurrentCurrencyStore();
 

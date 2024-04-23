@@ -2,6 +2,7 @@ import { Address } from 'wagmi';
 import create from 'zustand';
 
 import { createStore } from '../internal/createStore';
+import { withSelectors } from '../internal/withSelectors';
 
 export interface Contact {
   name: string;
@@ -52,4 +53,4 @@ export const contactsStore = createStore<ContactsStore>(
   },
 );
 
-export const useContactsStore = create(contactsStore);
+export const useContactsStore = withSelectors(create(contactsStore));

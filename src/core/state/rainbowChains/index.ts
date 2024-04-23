@@ -10,6 +10,7 @@ import {
 import { migrate } from '~/core/utils/migrate';
 
 import { createStore } from '../internal/createStore';
+import { withSelectors } from '../internal/withSelectors';
 
 export interface RainbowChain {
   activeRpcUrl: string;
@@ -257,4 +258,4 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
   },
 );
 
-export const useRainbowChainsStore = create(rainbowChainsStore);
+export const useRainbowChainsStore = withSelectors(create(rainbowChainsStore));

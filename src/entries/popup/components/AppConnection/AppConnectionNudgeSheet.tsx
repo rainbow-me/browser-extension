@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import appConnectionSheetImageMask from 'static/assets/appConnectionSheetImageMask.svg';
 import { i18n } from '~/core/languages';
@@ -41,7 +41,9 @@ export const AppConnectionNudgeSheet = ({
   const { displayName } = useWalletName({ address: currentAddress || '0x' });
   const { url } = useActiveTab();
   const { data: dappMetadata } = useDappMetadata({ url });
-  const { setNudgeSheetDisabled } = useAppConnectionWalletSwitcherStore();
+  const setNudgeSheetDisabled =
+    useAppConnectionWalletSwitcherStore.use.setNudgeSheetDisabled();
+
   const previousShow = usePrevious(show);
   const name = useDebounce(displayName, 500);
 

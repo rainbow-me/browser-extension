@@ -409,9 +409,10 @@ export function SettingsCustomChain() {
   const {
     state: { chain },
   }: { state: { chain?: Chain } } = useLocation();
-  const { addCustomRPC, setActiveRPC } = useRainbowChainsStore();
+  const addCustomRPC = useRainbowChainsStore.use.addCustomRPC();
+  const setActiveRPC = useRainbowChainsStore.use.setActiveRPC();
   const navigate = useRainbowNavigate();
-  const { addUserChain } = useUserChainsStore();
+  const addUserChain = useUserChainsStore.use.addUserChain();
   const { customNetworkDrafts, saveCustomNetworkDraft } =
     usePopupInstanceStore();
   const draftKey = chain?.id ?? 'new';

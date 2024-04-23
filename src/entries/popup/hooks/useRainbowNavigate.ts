@@ -13,7 +13,7 @@ import { ROUTES } from '../urls';
 export function useRainbowNavigate() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { setSelectedTab } = useTabNavigation();
+  const setSelectedTab = useTabNavigation((s) => s.setSelectedTab);
 
   return function (to: To | number, options?: NavigateOptions) {
     if (typeof to === 'number') {

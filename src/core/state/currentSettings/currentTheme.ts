@@ -3,6 +3,8 @@ import create from 'zustand';
 import { createStore } from '~/core/state/internal/createStore';
 import { ThemeOption } from '~/core/types/settings';
 
+import { withSelectors } from '../internal/withSelectors';
+
 export interface CurrentThemeState {
   currentTheme: Exclude<ThemeOption, 'system'>;
   currentUserSelectedTheme: ThemeOption;
@@ -36,4 +38,4 @@ export const currentThemeStore = createStore<CurrentThemeState>(
   },
 );
 
-export const useCurrentThemeStore = create(currentThemeStore);
+export const useCurrentThemeStore = withSelectors(create(currentThemeStore));

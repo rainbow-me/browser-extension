@@ -2,6 +2,7 @@ import { Address } from 'wagmi';
 import create from 'zustand';
 
 import { createStore } from '../internal/createStore';
+import { withSelectors } from '../internal/withSelectors';
 
 type NftDisplayMode = 'byCollection' | 'grouped';
 export type NftSort = 'alphabetical' | 'recent';
@@ -69,4 +70,4 @@ export const nftsStore = createStore<NftsState>(
   },
 );
 
-export const useNftsStore = create(nftsStore);
+export const useNftsStore = withSelectors(create(nftsStore));

@@ -262,7 +262,7 @@ export function WalletSwitcher() {
 
   const isSearching = !!searchQuery;
 
-  const { saveWalletOrder } = useWalletOrderStore();
+  const saveWalletOrder = useWalletOrderStore.use.saveWalletOrder();
 
   const { filteredAndSortedAccounts, sortedAccounts } = useAccounts(
     ({ sortedAccounts }) => ({

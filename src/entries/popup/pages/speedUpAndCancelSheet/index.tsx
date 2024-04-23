@@ -77,8 +77,9 @@ export function SpeedUpAndCancelSheet({
   onClose,
   transaction,
 }: SpeedUpAndCancelSheetProps) {
-  const { setSelectedTransaction } = useSelectedTransactionStore();
-  const { selectedGas } = useGasStore();
+  const setSelectedTransaction =
+    useSelectedTransactionStore.use.setSelectedTransaction();
+  const selectedGas = useGasStore.use.selectedGas();
   const [sending, setSending] = useState(false);
 
   const { data: transactionResponse } = useTransaction({
