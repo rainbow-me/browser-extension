@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.4.64",
+  "version": "1.4.72",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -266,7 +266,7 @@
     "follow-redirects": "1.15.6",
     "ip": "2.0.1",
     "viem": "1.21.4",
-    "@solana/web3.js": "1.90.0",
+    "@solana/web3.js": "1.90.2",
     "jose": "4.15.5",
     "phin": "3.7.1"
   },
