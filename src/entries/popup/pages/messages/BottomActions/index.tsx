@@ -50,7 +50,6 @@ export const WalletName = ({
       color="label"
       size="14pt"
       weight="semibold"
-      maxWidth={130}
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...props}
     >
@@ -202,7 +201,14 @@ export const BottomSwitchWallet = ({
                 size={18}
                 emojiSize={'12pt'}
               />
-              <WalletName color="label" address={wallet as Address} />
+              <Box
+                style={{
+                  flex: 1,
+                  display: 'flex',
+                }}
+              >
+                <WalletName color="label" address={wallet as Address} />
+              </Box>
             </Inline>
           </Box>
         )}
