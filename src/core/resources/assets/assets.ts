@@ -114,7 +114,7 @@ function parseAssets(
           chainId: assetMetadata.chainId,
           currency,
         });
-        assetsDict[parsedAsset?.uniqueId] = parsedAsset;
+        assetsDict[parsedAsset?.chainId] = parsedAsset;
       }
       return assetsDict;
     },

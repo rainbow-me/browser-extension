@@ -1,14 +1,11 @@
 import { AddressZero } from '@ethersproject/constants';
-import { zeroAddress } from 'viem';
 import { Address } from 'wagmi';
 
 import {
   AVAX_AVALANCHE_ADDRESS,
   BNB_BSC_ADDRESS,
-  BNB_MAINNET_ADDRESS,
   DEGEN_DEGEN_ADDRESS,
   ETH_ADDRESS,
-  MATIC_MAINNET_ADDRESS,
   MATIC_POLYGON_ADDRESS,
   NATIVE_ASSETS_PER_CHAIN,
 } from '~/core/references';
@@ -18,27 +15,33 @@ import { chainNameFromChainId } from '~/core/utils/chains';
 
 import { getNativeAssets, useNativeAssets } from './useNativeAssets';
 
-const getNetworkNativeMainnetAssetAddress = ({
+const getNetworkNativeAssetChainId = ({
   chainId,
 }: {
   chainId: ChainId;
-}): Address => {
+}):
+  | ChainId.mainnet
+  | ChainId.polygon
+  | ChainId.avalanche
+  | ChainId.degen
+  | ChainId.bsc => {
   switch (chainId) {
+    case ChainId.avalanche:
+      return ChainId.avalanche;
+    case ChainId.bsc:
+      return ChainId.bsc;
+    case ChainId.polygon:
+      return ChainId.polygon;
+    case ChainId.degen:
+      return ChainId.degen;
     case ChainId.arbitrum:
     case ChainId.mainnet:
     case ChainId.optimism:
     case ChainId.base:
     case ChainId.zora:
-    case ChainId.avalanche:
-      return ETH_ADDRESS as Address;
-    case ChainId.bsc:
-      return BNB_MAINNET_ADDRESS;
-    case ChainId.polygon:
-      return MATIC_MAINNET_ADDRESS;
-    case ChainId.degen:
-      return zeroAddress;
+    case ChainId.blast:
     default:
-      return ETH_ADDRESS as Address;
+      return ChainId.mainnet;
   }
 };
 
@@ -73,8 +76,8 @@ export async function getNativeAssetForNetwork({
   chainId: ChainId;
 }) {
   const nativeAssets = await getNativeAssets();
-  const mainnetAddress = getNetworkNativeMainnetAssetAddress({ chainId });
-  const nativeAsset = nativeAssets?.[`${mainnetAddress}_${ChainId.mainnet}`];
+  const nativeAssetMetadataChainId = getNetworkNativeAssetChainId({ chainId });
+  const nativeAsset = nativeAssets?.[nativeAssetMetadataChainId];
   if (nativeAsset) {
     return {
       ...nativeAsset,
@@ -85,7 +88,6 @@ export async function getNativeAssetForNetwork({
         ChainName.mainnet,
       uniqueId: getNetworkNativeAssetUniqueId({ chainId }),
       address: NATIVE_ASSETS_PER_CHAIN[chainId] as Address,
-      mainnetAddress,
       isNativeAsset: true,
     };
   }
@@ -98,9 +100,8 @@ export function useNativeAssetForNetwork({
   chainId: ChainId;
 }): ParsedAsset | undefined {
   const nativeAssets = useNativeAssets();
-  console.log('- nativeAssets', nativeAssets);
-  const mainnetAddress = getNetworkNativeMainnetAssetAddress({ chainId });
-  const nativeAsset = nativeAssets?.[`${mainnetAddress}_${chainId}`];
+  const nativeAssetMetadataChainId = getNetworkNativeAssetChainId({ chainId });
+  const nativeAsset = nativeAssets?.[nativeAssetMetadataChainId];
   if (nativeAsset) {
     return {
       ...nativeAsset,
@@ -108,7 +109,6 @@ export function useNativeAssetForNetwork({
       chainName: nativeAsset?.chainName || ChainName.mainnet,
       uniqueId: getNetworkNativeAssetUniqueId({ chainId }),
       address: NATIVE_ASSETS_PER_CHAIN[chainId] as Address,
-      mainnetAddress,
       isNativeAsset: true,
     };
   }
