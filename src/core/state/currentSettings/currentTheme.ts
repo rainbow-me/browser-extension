@@ -23,8 +23,10 @@ export const currentThemeStore = createStore<CurrentThemeState>(
           currentTheme: prefersDarkMode ? 'dark' : 'light',
           currentUserSelectedTheme: 'system',
         });
+        localStorage.setItem('theme', prefersDarkMode ? 'dark' : 'light');
       } else {
         set({ currentTheme: newTheme, currentUserSelectedTheme: newTheme });
+        localStorage.setItem('theme', newTheme);
       }
     },
   }),

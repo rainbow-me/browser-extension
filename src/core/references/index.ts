@@ -151,7 +151,7 @@ export const WETH_BLAST_ADDRESS = '0x4300000000000000000000000000000000000004';
 export const USDB_BLAST_ADDRESS = '0x4300000000000000000000000000000000000003';
 
 // degen
-export const ETH_DEGEN_ADDRESS = AddressZero;
+export const DEGEN_DEGEN_ADDRESS = AddressZero;
 
 export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.mainnet]: ETH_ADDRESS as Address,
@@ -204,7 +204,7 @@ export const NATIVE_ASSETS_MAP_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.blast]: ETH_ADDRESS,
   [ChainId.blastSepolia]: ETH_ADDRESS,
   [ChainId.polygonAmoy]: MATIC_MAINNET_ADDRESS,
-  [ChainId.degen]: ETH_DEGEN_ADDRESS,
+  [ChainId.degen]: DEGEN_DEGEN_ADDRESS,
 };
 
 export const OVM_GAS_PRICE_ORACLE =

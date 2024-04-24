@@ -161,6 +161,7 @@ const SwapWarning = ({
   );
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const MissingPriceExplanation = ({
   assetToBuy,
   assetToSell,
@@ -732,10 +733,10 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                 timeEstimate={timeEstimate}
                 priceImpact={priceImpact}
               />
-              <MissingPriceExplanation
+              {/* <MissingPriceExplanation
                 assetToBuy={assetToBuy}
                 assetToSell={assetToSell}
-              />
+              /> */}
             </Stack>
           </Row>
           <Row height="content">
