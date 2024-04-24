@@ -53,6 +53,7 @@ import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useSystemSpecificModifierKey } from '../../hooks/useSystemSpecificModifierKey';
 import { useTokenPressMouseEvents } from '../../hooks/useTokenPressMouseEvents';
 import { useTokensShortcuts } from '../../hooks/useTokensShortcuts';
+import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 
 import { TokensSkeleton } from './Skeletons';
@@ -73,6 +74,8 @@ const TokenRow = memo(function TokenRow({
     });
   };
 
+  const { isWatchingWallet } = useWallets();
+
   const { onMouseDown, onMouseUp, onMouseLeave } = useTokenPressMouseEvents({
     token,
     onClick: openDetails,
@@ -88,9 +91,10 @@ const TokenRow = memo(function TokenRow({
     >
       <TokenContextMenu token={token}>
         <Box
-          onMouseDown={onMouseDown}
-          onMouseUp={onMouseUp}
-          onMouseLeave={onMouseLeave}
+          onMouseDown={(e) => !isWatchingWallet && onMouseDown(e)}
+          onMouseUp={() => !isWatchingWallet && onMouseUp()}
+          onMouseLeave={() => !isWatchingWallet && onMouseLeave()}
+          onClick={() => isWatchingWallet && openDetails()}
         >
           <AssetRow asset={token} testId={testId} />
         </Box>

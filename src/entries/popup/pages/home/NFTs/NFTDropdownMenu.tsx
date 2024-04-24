@@ -32,6 +32,7 @@ import { HomeMenuRow } from '~/entries/popup/components/HomeMenuRow/HomeMenuRow'
 import { ShortcutHint } from '~/entries/popup/components/ShortcutHint/ShortcutHint';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
+import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
 
 import { getOpenseaUrl } from './utils';
@@ -53,6 +54,8 @@ export default function NFTDropdownMenu({
   const hasContractAddress = !!nft?.asset_contract.address;
   const hasNetwork = !!nft?.network;
   const isPOAP = nft?.familyName === 'POAP';
+
+  const { isWatchingWallet } = useWallets();
 
   const explorerTitle =
     nft?.network === 'mainnet' ? 'Etherscan' : i18n.t('nfts.details.explorer');
@@ -151,7 +154,7 @@ export default function NFTDropdownMenu({
         >
           <Stack space="4px">
             <Stack>
-              {!isPOAP && (
+              {!isPOAP && !isWatchingWallet && (
                 <DropdownMenuRadioItem highlightAccentColor value="send">
                   <HomeMenuRow
                     leftComponent={
@@ -174,50 +177,54 @@ export default function NFTDropdownMenu({
                   />
                 </DropdownMenuRadioItem>
               )}
-              <DropdownMenuRadioItem highlightAccentColor value="hide">
-                <HomeMenuRow
-                  leftComponent={
-                    <Symbol
-                      size={18}
-                      symbol={displayed ? 'eye.slash.fill' : 'eye.fill'}
-                      weight="semibold"
-                    />
-                  }
-                  centerComponent={
-                    <Box paddingVertical="6px" paddingLeft="2px">
-                      <Text size="14pt" weight="semibold">
-                        {displayed
-                          ? i18n.t('nfts.details.hide')
-                          : i18n.t('nfts.details.unhide')}
-                      </Text>
-                    </Box>
-                  }
-                  rightComponent={
-                    <ShortcutHint hint={shortcuts.nfts.HIDE_NFT.display} />
-                  }
-                />
-              </DropdownMenuRadioItem>
-              <DropdownMenuRadioItem highlightAccentColor value="report">
-                <HomeMenuRow
-                  leftComponent={
-                    <Symbol
-                      size={18}
-                      symbol="exclamationmark.circle.fill"
-                      weight="semibold"
-                    />
-                  }
-                  centerComponent={
-                    <Box paddingVertical="6px" paddingLeft="2px">
-                      <Text size="14pt" weight="semibold">
-                        {i18n.t('nfts.details.report')}
-                      </Text>
-                    </Box>
-                  }
-                  rightComponent={
-                    <ShortcutHint hint={shortcuts.nfts.REPORT_NFT.display} />
-                  }
-                />
-              </DropdownMenuRadioItem>
+              {!isWatchingWallet && (
+                <DropdownMenuRadioItem highlightAccentColor value="hide">
+                  <HomeMenuRow
+                    leftComponent={
+                      <Symbol
+                        size={18}
+                        symbol={displayed ? 'eye.slash.fill' : 'eye.fill'}
+                        weight="semibold"
+                      />
+                    }
+                    centerComponent={
+                      <Box paddingVertical="6px" paddingLeft="2px">
+                        <Text size="14pt" weight="semibold">
+                          {displayed
+                            ? i18n.t('nfts.details.hide')
+                            : i18n.t('nfts.details.unhide')}
+                        </Text>
+                      </Box>
+                    }
+                    rightComponent={
+                      <ShortcutHint hint={shortcuts.nfts.HIDE_NFT.display} />
+                    }
+                  />
+                </DropdownMenuRadioItem>
+              )}
+              {!isWatchingWallet && (
+                <DropdownMenuRadioItem highlightAccentColor value="report">
+                  <HomeMenuRow
+                    leftComponent={
+                      <Symbol
+                        size={18}
+                        symbol="exclamationmark.circle.fill"
+                        weight="semibold"
+                      />
+                    }
+                    centerComponent={
+                      <Box paddingVertical="6px" paddingLeft="2px">
+                        <Text size="14pt" weight="semibold">
+                          {i18n.t('nfts.details.report')}
+                        </Text>
+                      </Box>
+                    }
+                    rightComponent={
+                      <ShortcutHint hint={shortcuts.nfts.REPORT_NFT.display} />
+                    }
+                  />
+                </DropdownMenuRadioItem>
+              )}
               {nft?.image_url && (
                 <DropdownMenuRadioItem
                   highlightAccentColor

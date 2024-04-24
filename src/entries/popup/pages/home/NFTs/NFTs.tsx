@@ -35,6 +35,7 @@ import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import { useNftShortcuts } from '~/entries/popup/hooks/useNftShortcuts';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useUserChains } from '~/entries/popup/hooks/useUserChains';
+import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
 
 import { NFTCollectionSection } from './NFTCollectionSection';
@@ -48,6 +49,7 @@ const COLLECTION_IMAGE_SIZE = 16;
 export function NFTs() {
   const { currentAddress: address } = useCurrentAddressStore();
   const { displayMode, hidden, sort, sections: sectionsState } = useNftsStore();
+  const { isWatchingWallet } = useWallets();
   const hiddenNftsForAddress = useMemo(
     () => hidden[address] || {},
     [hidden, address],
@@ -265,7 +267,11 @@ export function NFTs() {
                               }}
                             >
                               {rowData.map((asset, i) => (
-                                <NFTContextMenu key={i} nft={asset}>
+                                <NFTContextMenu
+                                  key={i}
+                                  nft={asset}
+                                  offset={isWatchingWallet ? -120 : -220}
+                                >
                                   <NFTThumbnail
                                     borderRadius="10px"
                                     size={96}

@@ -291,6 +291,8 @@ function MoreOptions({
 
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
 
+  const { isWatchingWallet } = useWallets();
+
   const resetSelectedToken = useCallback(() => {
     if (selectedToken) setSelectedToken();
   }, [setSelectedToken, selectedToken]);
@@ -393,7 +395,7 @@ function MoreOptions({
         <AccentColorProvider
           color={token.colors?.primary || token.colors?.fallback}
         >
-          {!hidden && (
+          {!hidden && !isWatchingWallet && (
             <DropdownMenuItem
               symbolLeft="pin.fill"
               onSelect={togglePinToken}
@@ -410,21 +412,23 @@ function MoreOptions({
               </TextOverflow>
             </DropdownMenuItem>
           )}
-          <DropdownMenuItem
-            symbolLeft="eye.slash.fill"
-            onSelect={toggleHideToken}
-            shortcut={shortcuts.tokens.HIDE_ASSET.display}
-          >
-            <TextOverflow weight="semibold" size="14pt">
-              {hidden
-                ? i18n.t('token_details.more_options.unhide_token', {
-                    name: token.symbol,
-                  })
-                : i18n.t('token_details.more_options.hide_token', {
-                    name: token.symbol,
-                  })}
-            </TextOverflow>
-          </DropdownMenuItem>
+          {!isWatchingWallet && (
+            <DropdownMenuItem
+              symbolLeft="eye.slash.fill"
+              onSelect={toggleHideToken}
+              shortcut={shortcuts.tokens.HIDE_ASSET.display}
+            >
+              <TextOverflow weight="semibold" size="14pt">
+                {hidden
+                  ? i18n.t('token_details.more_options.unhide_token', {
+                      name: token.symbol,
+                    })
+                  : i18n.t('token_details.more_options.hide_token', {
+                      name: token.symbol,
+                    })}
+              </TextOverflow>
+            </DropdownMenuItem>
+          )}
           {swappable && (
             <>
               {!isNative && (
@@ -441,7 +445,7 @@ function MoreOptions({
                   </Text>
                 </DropdownMenuItem>
               )}
-              <DropdownMenuSeparator />
+              {(!isWatchingWallet || !isNative) && <DropdownMenuSeparator />}
               <DropdownMenuItem
                 symbolLeft="safari"
                 external
@@ -588,7 +592,9 @@ export function TokenDetails() {
           rightComponent={
             <Inline alignVertical="center" space="7px">
               {isSwappable && <FavoriteButton token={token} />}
-              <MoreOptions swappable={isSwappable} token={token} />
+              {(isSwappable || !isWatchingWallet) && (
+                <MoreOptions swappable={isSwappable} token={token} />
+              )}
             </Inline>
           }
         />

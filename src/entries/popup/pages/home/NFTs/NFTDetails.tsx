@@ -78,6 +78,7 @@ import { useEns } from '~/entries/popup/hooks/useEns';
 import { useNftShortcuts } from '~/entries/popup/hooks/useNftShortcuts';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useUserChains } from '~/entries/popup/hooks/useUserChains';
+import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
 import chunkLinks from '~/entries/popup/utils/chunkLinks';
 
@@ -97,6 +98,7 @@ export default function NFTDetails() {
   const { data } = useNfts({ address, testnetMode, userChains });
   const navigate = useRainbowNavigate();
   const { setSelectedNft } = useSelectedNftStore();
+  const { isWatchingWallet } = useWallets();
   const collections = selectNftCollections(data);
   const nft = useMemo(() => {
     if (!collectionId || !nftId) return null;
@@ -175,7 +177,7 @@ export default function NFTDetails() {
                 borderRadius="16px"
                 style={{ height: 320, width: 320 }}
               >
-                <NFTContextMenu nft={nft} offsetOverride={true}>
+                <NFTContextMenu nft={nft} offset={0}>
                   <ExternalImage
                     src={nft ? getUniqueAssetImageThumbnailURL(nft) : ''}
                     placeholderSrc={
@@ -282,7 +284,7 @@ export default function NFTDetails() {
                       </Button>
                     </Column>
                   )}
-                  {nft?.isSendable && (
+                  {!isWatchingWallet && nft?.isSendable && (
                     <Column>
                       <Button
                         width="full"

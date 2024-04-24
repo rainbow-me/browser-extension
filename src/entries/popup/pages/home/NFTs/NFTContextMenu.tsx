@@ -24,6 +24,7 @@ import {
 import { DetailsMenuWrapper } from '~/entries/popup/components/DetailsMenu';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
+import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
 import { simulateClick } from '~/entries/popup/utils/simulateClick';
 
@@ -32,11 +33,11 @@ import { getOpenseaUrl } from './utils';
 export default function NFTContextMenu({
   children,
   nft,
-  offsetOverride,
+  offset,
 }: {
   children: ReactNode;
   nft?: UniqueAsset | null;
-  offsetOverride?: boolean;
+  offset?: number;
 }) {
   const { currentAddress: address } = useCurrentAddressStore();
   const { hidden, toggleHideNFT } = useNftsStore();
@@ -52,7 +53,7 @@ export default function NFTContextMenu({
 
   const navigatingRef = useRef(false);
   const isPOAP = nftToFocus?.familyName === 'POAP';
-
+  const { isWatchingWallet } = useWallets();
   const explorerTitle =
     nftToFocus?.network === 'mainnet'
       ? 'Etherscan'
@@ -116,11 +117,11 @@ export default function NFTContextMenu({
         marginRight="16px"
         marginTop="6px"
         position="absolute"
-        top={offsetOverride ? 0 : -220}
+        top={typeof offset == 'number' ? offset : -220}
       >
         <Stack space="4px">
           <Stack>
-            {!isPOAP && (
+            {!isPOAP && !isWatchingWallet && (
               <ContextMenuItem
                 symbolLeft="paperplane.fill"
                 onSelect={handleSendNft}
@@ -131,29 +132,33 @@ export default function NFTContextMenu({
                 </Text>
               </ContextMenuItem>
             )}
-            <ContextMenuItem
-              symbolLeft={displayed ? 'eye.slash.fill' : 'eye.fill'}
-              onSelect={() => {
-                simulateClick(containerRef.current);
-                toggleHideNFT(address, nftUniqueId);
-              }}
-              shortcut={shortcuts.nfts.HIDE_NFT.display}
-            >
-              <Text size="14pt" weight="semibold">
-                {displayed
-                  ? i18n.t('nfts.details.hide')
-                  : i18n.t('nfts.details.unhide')}
-              </Text>
-            </ContextMenuItem>
-            <ContextMenuItem
-              symbolLeft={'exclamationmark.circle.fill'}
-              onSelect={handleReportNft}
-              shortcut={shortcuts.nfts.REPORT_NFT.display}
-            >
-              <Text size="14pt" weight="semibold">
-                {i18n.t('nfts.details.report')}
-              </Text>
-            </ContextMenuItem>
+            {!isWatchingWallet && (
+              <ContextMenuItem
+                symbolLeft={displayed ? 'eye.slash.fill' : 'eye.fill'}
+                onSelect={() => {
+                  simulateClick(containerRef.current);
+                  toggleHideNFT(address, nftUniqueId);
+                }}
+                shortcut={shortcuts.nfts.HIDE_NFT.display}
+              >
+                <Text size="14pt" weight="semibold">
+                  {displayed
+                    ? i18n.t('nfts.details.hide')
+                    : i18n.t('nfts.details.unhide')}
+                </Text>
+              </ContextMenuItem>
+            )}
+            {!isWatchingWallet && (
+              <ContextMenuItem
+                symbolLeft={'exclamationmark.circle.fill'}
+                onSelect={handleReportNft}
+                shortcut={shortcuts.nfts.REPORT_NFT.display}
+              >
+                <Text size="14pt" weight="semibold">
+                  {i18n.t('nfts.details.report')}
+                </Text>
+              </ContextMenuItem>
+            )}
             {nftToFocus?.image_url && (
               <ContextMenuItem
                 symbolLeft={'arrow.down.circle.fill'}

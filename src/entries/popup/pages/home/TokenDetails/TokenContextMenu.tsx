@@ -155,37 +155,41 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
             {`${i18n.t('token_details.send')} ${token.symbol}`}
           </ContextMenuItem>
         )}
-        <ContextMenuItem
-          symbolLeft="pin.fill"
-          onSelect={togglePinToken}
-          shortcut={shortcuts.tokens.PIN_ASSET.display}
-        >
-          <TextOverflow
-            size="14pt"
-            weight="semibold"
-            color="label"
-            testId="account-name"
+        {!isWatchingWallet && (
+          <ContextMenuItem
+            symbolLeft="pin.fill"
+            onSelect={togglePinToken}
+            shortcut={shortcuts.tokens.PIN_ASSET.display}
           >
-            {pinned
-              ? i18n.t('token_details.more_options.unpin_token', {
-                  name: token.symbol,
-                })
-              : i18n.t('token_details.more_options.pin_token', {
-                  name: token.symbol,
-                })}
-          </TextOverflow>
-        </ContextMenuItem>
-        <ContextMenuItem
-          symbolLeft="eye.slash.fill"
-          onSelect={hideToken}
-          shortcut={shortcuts.tokens.HIDE_ASSET.display}
-        >
-          <TextOverflow size="14pt" weight="semibold" color="label">
-            {i18n.t('token_details.more_options.hide_token', {
-              name: token.symbol,
-            })}
-          </TextOverflow>
-        </ContextMenuItem>
+            <TextOverflow
+              size="14pt"
+              weight="semibold"
+              color="label"
+              testId="account-name"
+            >
+              {pinned
+                ? i18n.t('token_details.more_options.unpin_token', {
+                    name: token.symbol,
+                  })
+                : i18n.t('token_details.more_options.pin_token', {
+                    name: token.symbol,
+                  })}
+            </TextOverflow>
+          </ContextMenuItem>
+        )}
+        {!isWatchingWallet && (
+          <ContextMenuItem
+            symbolLeft="eye.slash.fill"
+            onSelect={hideToken}
+            shortcut={shortcuts.tokens.HIDE_ASSET.display}
+          >
+            <TextOverflow size="14pt" weight="semibold" color="label">
+              {i18n.t('token_details.more_options.hide_token', {
+                name: token.symbol,
+              })}
+            </TextOverflow>
+          </ContextMenuItem>
+        )}
         {!isNative && (
           <ContextMenuItem
             symbolLeft="doc.on.doc.fill"

@@ -25,6 +25,7 @@ import { transitions } from '~/design-system/styles/designTokens';
 import { NFTIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
 import { parseNftName } from '~/entries/popup/components/CommandK/useSearchableNFTs';
 import ExternalImage from '~/entries/popup/components/ExternalImage/ExternalImage';
+import { useWallets } from '~/entries/popup/hooks/useWallets';
 
 import NFTContextMenu from './NFTContextMenu';
 import { NFTThumbnail } from './NFTThumbnail';
@@ -46,6 +47,7 @@ export function NFTCollectionSection({
 }) {
   const { currentAddress: address } = useCurrentAddressStore();
   const { sections, toggleGallerySectionOpen } = useNftsStore();
+  const { isWatchingWallet } = useWallets();
   const sectionsForAddress = sections[address] || {};
   const collectionId = section?.collection?.collection_id;
   const collectionVisible = collectionId && sectionsForAddress[collectionId];
@@ -136,7 +138,11 @@ export function NFTCollectionSection({
             >
               {section.assets.map((asset, i) => {
                 return (
-                  <NFTContextMenu key={i} nft={asset}>
+                  <NFTContextMenu
+                    key={i}
+                    nft={asset}
+                    offset={isWatchingWallet ? -120 : -220}
+                  >
                     <NFTThumbnail
                       borderRadius="10px"
                       size={96}
