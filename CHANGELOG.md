@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
-- Added auto-fill support for Redstone and Rootstock networks in the Add Network flow #1508
+- Added autofill support for Redstone and Rootstock networks in the Add Network flow #1508
 
 ### Fixed
 
