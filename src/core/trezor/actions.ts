@@ -73,13 +73,10 @@ export async function signTransactionFromTrezor(
       return serializedTransaction;
     } else {
       console.log('trezor error', JSON.stringify(response, null, 2), baseTx);
-      alert('error signing transaction with trezor');
       throw new Error('error signing transaction with trezor');
     }
   } catch (e: any) {
     console.log('trezor error', e);
-    alert('Please make sure your trezor is unlocked');
-
     // bubble up the error
     throw e;
   }

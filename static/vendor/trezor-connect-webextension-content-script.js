@@ -308,8 +308,8 @@
         sendFn,
         channel,
         logger,
-        lazyHandshake = false,
-        legacyMode = false
+        lazyHandshake = true,
+        legacyMode = true 
       }) {
         super();
         this.channel = channel;

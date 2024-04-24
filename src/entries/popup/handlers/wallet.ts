@@ -380,7 +380,7 @@ export const connectTrezor = async () => {
       showOnTrezor: false,
     });
 
-    if (!result.success) {
+    if (!result?.payload?.publicKey) {
       const e = new RainbowError(
         'window.TrezorConnect.ethereumGetPublicKey failed',
       );

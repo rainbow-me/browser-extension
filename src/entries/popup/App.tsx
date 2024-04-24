@@ -79,15 +79,6 @@ export function App() {
       analytics.track(event.popupOpened);
       setTimeout(() => flushQueuedEvents(), 1000);
     }
-    // Init trezor once globally
-    window.TrezorConnect?.init({
-      manifest: {
-        email: 'support@rainbow.me',
-        appUrl: 'https://rainbow.me',
-      },
-      lazyLoad: true,
-      connectSrc: 'https://connect.trezor.io/9/',
-    });
 
     if (process.env.IS_DEV !== 'true') {
       document.addEventListener('contextmenu', (e) => e.preventDefault());
