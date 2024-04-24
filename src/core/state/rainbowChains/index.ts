@@ -4,6 +4,7 @@ import create from 'zustand';
 import { SUPPORTED_CHAINS, getDefaultRPC } from '~/core/references';
 import {
   ChainId,
+  chainDegen,
   chainHardhat,
   chainHardhatOptimism,
 } from '~/core/types/chains';
@@ -227,7 +228,7 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
   {
     persist: {
       name: 'rainbowChains',
-      version: 6,
+      version: 7,
       migrate: migrate(
         // version 2 added support for Avalanche and Avalanche Fuji
         (state) =>
@@ -256,6 +257,15 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
             state.rainbowChains[zora.id]?.chains.length === 0
           ) {
             return addCustomRPC({ chain: zora, state });
+          }
+          return state;
+        },
+        (state: RainbowChainsState) => {
+          if (
+            !state.rainbowChains[chainDegen.id] ||
+            state.rainbowChains[chainDegen.id]?.chains.length === 0
+          ) {
+            return addCustomRPC({ chain: chainDegen, state });
           }
           return state;
         },
