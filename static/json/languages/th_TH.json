@@ -78,7 +78,7 @@
     "guides_and_support": "คู่มือและการสนับสนุน",
     "learn_about_ethereum": "เรียนรู้เกี่ยวกับ Ethereum",
     "follow_us_on_twitter": "ติดตามเราบน Twitter",
-    "share_beta_feedback": "แชร์คำติชม Beta",
+    "share_feedback": "แชร์คำติชม",
     "theme": {
       "title": "ธีม",
       "system": "ระบบ",
@@ -235,6 +235,26 @@
           "wipe_confirmation": "รีเซ็ต Rainbow",
           "wipe_confirmation_desc": "คุณแน่ใจหรือไม่ว่าต้องการรีเซ็ตส่วนขยายของ Rainbow บนเบราว์เซอร์",
           "wipe_confirmation_button": "รีเซ็ต",
+          "wipe_confirmation_cancel": "ยกเลิก"
+        },
+        "wipe_wallet_group": {
+          "delete": "ลบกลุ่มกระเป๋าเงิน",
+          "acknowlegement": "ฉันได้สำรอง Secret Recovery Phrase แล้ว",
+          "warning_one": "การลบกลุ่มกระเป๋าเงินจะลบ Recovery Phrase ออกจาก Rainbow",
+          "warning_two": "ทรัพย์สินและเงินของคุณสามารถกู้คืนได้ด้วยข้อมูลกู้คืนกระเป๋าเงินที่ถูกต้อง",
+          "warning_three": "ตรวจสอบว่าได้สำรอง Secret Recovery Phrase ก่อนดำเนินการ",
+          "button_wipe": "รีเซ็ต Rainbow",
+          "button_complete": "ตรวจสอบข้อมูลข้างต้นให้ครบถ้วน",
+          "wipe_confirmation": "ลบกลุ่มกระเป๋าเงิน",
+          "wipe_confirmation_desc": "คุณแน่ใจหรือไม่ว่าต้องการลบ Secret Recovery Phrase ออกจาก Rainbow",
+          "wipe_confirmation_button": "ลบ",
+          "wipe_confirmation_cancel": "ยกเลิก"
+        },
+        "wipe_hardware_wallet_group": {
+          "delete": "ยกเลิกการเชื่อมต่อ %{vendor}",
+          "wipe_confirmation": "ยกเลิกการเชื่อมต่อ %{vendor}",
+          "wipe_confirmation_desc": "คุณแน่ใจหรือไม่ว่าต้องการยกเลิกการเชื่อมต่อ %{vendor} และตัดการเชื่อมต่อกระเป๋าเงินของคุณ",
+          "wipe_confirmation_button": "ยกเลิกการเชื่อมต่อ",
           "wipe_confirmation_cancel": "ยกเลิก"
         }
       }
@@ -676,6 +696,10 @@
       "price_impact": {
         "title": "ตลาดเล็ก",
         "description": "การสูญเสีย %{impactAmount}"
+      },
+      "unknown_price": {
+        "title": "มูลค่าตลาดของ %{symbol} ไม่ทราบ",
+        "description": "หากคุณตัดสินใจดำเนินการต่อ โปรดตรวจสอบว่าคุณพอใจกับจำนวนที่ได้รับ"
       }
     },
     "aggregators": {
@@ -1314,6 +1338,7 @@
       "ens_website": "เว็บไซต์",
       "registered_on": "ลงทะเบียนเมื่อ",
       "expires_in": "หมดอายุใน",
+      "report": "รายงาน",
       "explainer": {
         "floor_price_description": "ราคาต่ำสุดของคอลเลกชันคือราคาที่ถามต่ำสุดในรายการที่วางขายอยู่ในคอลเลกชัน",
         "floor_price_title": "ราคาพื้นคอลเลกชั่น",
@@ -1321,7 +1346,12 @@
       },
       "send": "ส่ง",
       "view_on_opensea": "ดูที่ OpenSea",
-      "view_on_explorer": "ดูที่ %{explorerTitle}"
+      "view_on_explorer": "ดูที่ %{explorerTitle}",
+      "gallery": "แกลเลอรี",
+      "view_gallery": "ดูแกลเลอรี"
+    },
+    "toast": {
+      "spam_reported": "รายงานของคุณได้รับแล้ว"
     }
   },
   "points": {
@@ -1390,6 +1420,7 @@
       "referral_activity": "กิจกรรมการอ้างอิง:",
       "new_referrals": "การอ้างอิงใหม่:",
       "retroactive": "คะแนนย้อนหลัง:",
+      "bonus": "คะแนนโบนัส:",
       "total": "รวม:",
       "weekly_counted": "> การนับรายได้รายสัปดาห์",
       "you_have": "คุณมี:",
@@ -1432,12 +1463,23 @@
     "approvals": "การอนุมัติโทเคน",
     "this_token_is_on_network": "%{symbol} นี้อยู่บนเครือข่าย %{chainName}",
     "view_on": "ดูบน %{explorer}",
+    "view_on_coingecko": "ดูที่ CoinGecko",
     "not_available": "ราคาไม่สามารถใช้ได้",
     "more_options": {
       "copy_address": "คัดลอกที่อยู่",
       "view_on_explorer": "ดูบน %{explorer}",
       "hide": "ซ่อนโทเคน",
-      "report": "แจ้งโทเคน"
+      "report": "แจ้งโทเคน",
+      "unpin_token": "ถอนการปักหมุด %{name}",
+      "pin_token": "ปักหมุด %{name}",
+      "hide_token": "ซ่อน %{name}",
+      "unhide_token": "เลิกซ่อน %{name}"
+    },
+    "toast": {
+      "hide_token": "%{name} ของคุณถูกซ่อนไว้",
+      "unhide_token": "%{name} ของคุณถูกเลิกซ่อน",
+      "pin_token": "%{name} ของคุณถูกปักหมุด",
+      "unpin_token": "%{name} ของคุณถูกถอนการปักหมุด"
     },
     "about": {
       "about_token": "เกี่ยวกับ %{name}",
@@ -1499,35 +1541,42 @@
   },
   "explainers": {
     "sidechains": {
-      "arbitrum": {
-        "title": "Arbitrum คืออะไร?",
-        "description_1": "Arbitrum เป็น Layer 2 network ที่ทำงานบน Ethereum ทำให้ธุรกรรมถูกและเร็วขึ้น ยังได้รับประโยชน์จากความปลอดภัยหลักของ Ethereum",
-        "description_2": "มันรวมธุรกรรมหลายๆ รายการเข้าด้วยกันใน \"roll up\" ก่อนที่จะส่งไปอยู่ถาวรใน Ethereum"
+      "layer_two": {
+        "title": "อะไรคือ %{chainName}",
+        "description_1": "%{chainName} เป็นเครือข่าย Layer 2 ที่ทำงานบน Ethereum ช่วยให้การทำธุรกรรมถูกและเร็วขึ้น พร้อมรักษาความปลอดภัยจาก Ethereum",
+        "description_2": "มันจะรวมธุรกรรมจำนวนมากเข้าด้วยกันในรูปแบบ \"roll up\" ก่อนที่จะส่งลงไปยัง Ethereum อย่างถาวร"
       },
-      "optimism": {
-        "title": "Optimism คืออะไร",
-        "description_1": "Optimism เป็น Layer 2 network ที่ทำงานบน Ethereum ทำให้ธุรกรรมถูกและเร็วขึ้น ยังได้รับประโยชน์จากความปลอดภัยหลักของ Ethereum",
-        "description_2": "ทำการรวมธุรกรรมหลายๆ รายการใน \"roll up\" ก่อนส่งไปยัง Ethereum อย่างถาวร"
-      },
-      "polygon": {
-        "title": "Polygon คืออะไร",
-        "description_1": "Polygon เป็น sidechain เครือข่ายที่แยกต่างหากที่ทำงานข้างๆ Ethereum และสามารถทำงานร่วมกัน",
-        "description_2": "มันช่วยให้ธุรกรรมถูกและเร็วขึ้น แต่ไม่เหมือนกับ Layer 2 networks, Polygon มีความปลอดภัยของตัวเองและกลไกการสรุปที่แตกต่างจาก Ethereum"
-      },
-      "bsc": {
-        "title": "BSC คืออะไร",
-        "description_1": "Binance Smart Chain หรือ BSC คือเครือข่าย blockchain สำหรับแพลตฟอร์มการซื้อขาย Binance",
-        "description_2": "ช่วยให้การทำธุรกรรมถูกกว่าและเร็วขึ้น แต่ไม่เหมือนกับเครือข่าย Layer 2, BSC มีระบบความปลอดภัยและการสร้างความเห็นชอบที่ต่างจาก Ethereum"
-      },
-      "base": {
-        "title": "Base คืออะไร?",
-        "description_1": "Base คือเครือข่าย Layer 2 ที่ทำงานบน Ethereum ทำให้สามารถทำธุรกรรมที่ถูกและเร็วขึ้น และยังได้รับประโยชน์จากความปลอดภัยของ Ethereum",
-        "description_2": "ทำการรวมธุรกรรมหลายๆ รายการใน \"roll up\" ก่อนส่งไปยัง Ethereum อย่างถาวร"
-      },
-      "zora": {
-        "title": "Zora คืออะไร",
-        "description_1": "Zora เป็นเครือข่าย Layer 2 ที่ทำงานบน Ethereum, ทำให้การทำธุรกรรมถูกต้นทุนและเร็วขึ้นในขณะที่ยังได้รับประโยชน์จากความปลอดภัยที่ภายใต้ของ Ethereum",
-        "description_2": "ทำการรวมธุรกรรมหลายๆ รายการใน \"roll up\" ก่อนส่งไปยัง Ethereum อย่างถาวร"
+      "specific": {
+        "polygon": {
+          "title": "อะไรคือ Polygon",
+          "description_1": "Polygon เป็น sidechain ซึ่งเป็นเครือข่ายที่ทำงานควบคู่ไปกับ Ethereum และสามารถทำงานร่วมกันได้",
+          "description_2": "มันช่วยให้การทำธุรกรรมถูกและเร็วขึ้น แต่ไม่เหมือนกับเครือข่าย Layer 2, Polygon มีระบบความปลอดภัยและกลไกการตกลงที่แตกต่างจาก Ethereum"
+        },
+        "bsc": {
+          "title": "อะไรคือ BSC",
+          "description_1": "BNB Smart Chain หรือ BSC คือ Layer 1 ทางเลือกที่พัฒนาโดยแพลตฟอร์มเทรดเหรียญ Binance",
+          "description_2": "มีค่าธรรมเนียมและความเร็วในการทำธุรกรรมที่ถูกและเร็วกว่า แต่ไม่เหมือน Layer 2, BSC มีกลไกความปลอดภัยและความเห็นชอบที่ต่างจาก Ethereum"
+        },
+        "avalanche": {
+          "title": "Avalanche คืออะไร",
+          "description_1": "Avalanche คือ Layer 1 ทางเลือกที่ใช้ระบบของ subnets คล้ายกับ sidechains และ Layer 2 ของ Ethereum",
+          "description_2": "ช่วยให้ทำธุรกรรมได้ถูกและเร็วขึ้น แต่ไม่เหมือน Layer 2, Avalanche มีกลไกความปลอดภัยและความเห็นชอบที่ต่างจาก Ethereum"
+        },
+        "blast": {
+          "title": "Blast คืออะไร",
+          "description_1": "Blast เป็นแพลตฟอร์ม Layer-2 (L2) ของ Ethereum ที่สร้างโดยทีมเดียวกับที่สร้าง Blur, ตลาด NFT ยอดนิยม",
+          "description_2": "แตกต่างด้วยการนำเสนอผลตอบแทนพื้นฐานสำหรับเหรียญ ether (ETH) และ stablecoins หลายชนิด เช่น USDC, USDT, และ DAI"
+        },
+        "degen": {
+          "title": "Degen คืออะไร",
+          "description_1": "Degen Chain เป็นเครือข่าย Layer 3 ที่ทำงานบน Arbitrum และ Ethereum",
+          "description_2": "มีการทำธุรกรรมที่เร็วและถูกมาก โดยใช้เหรียญชุมชน Farcaster ว่า $degen"
+        },
+        "custom_network": {
+          "title": "เครือข่ายนี้คืออะไร",
+          "description_1": "นี่คือเครือข่ายที่คุณเพิ่มเอง! เครือข่ายที่กำหนดเองสามารถออกแบบให้ตอบสนองความต้องการเฉพาะได้ โดยมีคุณสมบัติและความสามารถที่เฉพาะเจาะจง",
+          "description_2": "ขึ้นอยู่กับการตั้งค่า เครือข่ายนี้อาจใช้โปรโตคอล มาตรการความปลอดภัย และกลไกความเห็นชอบที่แตกต่างกัน เพื่อเพิ่มประสิทธิภาพ ลดต้นทุน หรือให้บริการพิเศษ"
+        }
       },
       "link_button_label": "อ่านเพิ่มเติม",
       "action_label": "เข้าใจแล้ว"
@@ -1680,6 +1729,7 @@
     "contract": "สัญญา",
     "contract_name": "ชื่อสัญญา",
     "contract_created_at": "สร้างสัญญาแล้ว",
+    "to": "ถึง",
     "source_code": "รหัสต้นฉบับ",
     "signature": {
       "message": "ข้อความ"
@@ -1700,6 +1750,7 @@
   "unverified": "ไม่ได้รับการตรวจสอบ",
   "skip": "ข้าม",
   "done": "เสร็จสิ้น",
+  "view_on_explorer": "ดูบน %{explorer}",
   "watch_asset": {
     "chain_id": "รหัสเครือข่าย",
     "symbol": "สัญลักษณ์",
