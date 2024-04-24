@@ -76,7 +76,7 @@ export interface WalletSearchItem extends BaseSearchItem {
   truncatedName?: string;
   type: SearchItemType.Wallet;
   walletName?: string;
-  walletType: string;
+  walletType?: string;
 }
 
 export type SearchItem =

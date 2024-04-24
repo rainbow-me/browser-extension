@@ -65,6 +65,10 @@ const calculateCommandRelevance = (
         ? command.ensName.toLowerCase()
         : '';
 
+      if (command.id?.startsWith('contact')) {
+        return 0;
+      }
+
       // High relevance: Wallet name or ENS name or address starts with the query
       if (
         (normalizedQuery.length > 2 &&

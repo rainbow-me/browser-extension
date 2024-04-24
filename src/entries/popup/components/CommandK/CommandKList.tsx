@@ -41,7 +41,7 @@ function getPageTitle(
   }
 
   const title = currentPage.listTitle;
-
+  console.log(currentPage);
   if (typeof title === 'string') {
     return title;
   } else if (command) {

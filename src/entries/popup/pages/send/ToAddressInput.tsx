@@ -318,7 +318,7 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
     const { currentAddress } = useCurrentAddressStore();
     const selectableWallets = wallets.filter((a) => a !== currentAddress);
     const { sendAddress: savedSendAddress } = usePopupInstanceStore();
-
+    console.log({ toAddressOrName });
     useEffect(() => {
       if (!toAddressOrName && !savedSendAddress) {
         setTimeout(() => {

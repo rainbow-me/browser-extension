@@ -108,7 +108,7 @@ export function Send() {
 
   const navigate = useRainbowNavigate();
 
-  const { isContact } = useContactsStore();
+  const { selectedContact, isContact, setSelectedContact } = useContactsStore();
   const { allWallets } = useWallets();
   const { hiddenAssets } = useHiddenAssetStore();
 
@@ -506,9 +506,14 @@ export function Send() {
       );
     }
 
-    if (sendAddress && sendAddress.length) {
+    // If a user chooses a contact from Cmd+K menu
+    if (selectedContact) {
+      setToAddressOrName(selectedContact);
+      setSelectedContact({ address: null });
+    } else if (sendAddress && sendAddress.length) {
       setToAddressOrName(sendAddress);
     }
+
     if (sendField !== independentField) {
       switchIndependentField();
     }

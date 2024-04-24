@@ -5,6 +5,7 @@ export const actionLabels = {
   open: i18n.t('command_k.action_labels.open'),
   openInNewTab: i18n.t('command_k.action_labels.open_in_new_tab'),
   switchToWallet: i18n.t('command_k.action_labels.switch_to_wallet'),
+  sendToWallet: i18n.t('command_k.action_labels.send_to_wallet'),
   view: i18n.t('command_k.action_labels.view'),
 };
 

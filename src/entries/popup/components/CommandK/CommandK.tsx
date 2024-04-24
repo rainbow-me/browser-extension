@@ -24,6 +24,7 @@ import {
   useCommandExecution,
   useKeyboardNavigation,
 } from './utils';
+import { useContacts } from '../../hooks/useContacts';
 
 export const CommandK = () => {
   const { isCommandKVisible, isFetching } = useCommandKStatus();

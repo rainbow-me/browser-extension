@@ -52,6 +52,7 @@ import { useSearchableNFTs } from './useSearchableNFTs';
 import { useSearchableTokens } from './useSearchableTokens';
 import { useSearchableWallets } from './useSearchableWallets';
 import { handleExportAddresses } from './utils';
+import { useContactSearchableWallets } from './useContactSearchableWallets';
 
 interface CommandOverride {
   [key: string]: Partial<ShortcutSearchItem>;
@@ -108,6 +109,17 @@ export const staticCommandInfo: CommandInfo = {
     symbol: 'person.crop.rectangle.stack.fill',
     symbolSize: 16,
     toPage: PAGES.MY_WALLETS,
+    type: SearchItemType.Shortcut,
+  },
+  myContacts: {
+    actionLabel: actionLabels.view,
+    name: getCommandName('my_contacts'),
+    page: PAGES.HOME,
+    searchTags: getSearchTags('my_contacts'),
+    shortcut: shortcuts.home.GO_TO_CONTACTS,
+    symbol: 'person.crop.rectangle.stack.fill',
+    symbolSize: 16,
+    toPage: PAGES.MY_CONTACTS,
     type: SearchItemType.Shortcut,
   },
   myTokens: {
@@ -445,6 +457,25 @@ export const staticCommandInfo: CommandInfo = {
     symbolSize: 14.5,
     type: SearchItemType.Shortcut,
   },
+  // PAGE: CONTACT_DETAIL
+  contactWallet: {
+    actionLabel: actionLabels.switchToWallet,
+    hideFromMainSearch: true,
+    name: getCommandName('my_contacts'),
+    page: PAGES.CONTACT_DETAIL,
+    symbol: 'person.crop.rectangle.stack.fill',
+    symbolSize: 16,
+    type: SearchItemType.Shortcut,
+  },
+  viewContactOnEtherscan: {
+    actionLabel: actionLabels.openInNewTab,
+    hideFromMainSearch: true,
+    name: getCommandName('view_wallet_on_etherscan'),
+    page: PAGES.CONTACT_DETAIL,
+    symbol: 'magnifyingglass',
+    symbolSize: 14.5,
+    type: SearchItemType.Shortcut,
+  },
   viewOnENS: {
     actionLabel: actionLabels.openInNewTab,
     hideFromMainSearch: true,
@@ -465,6 +496,7 @@ const compileCommandList = (
   nfts: NFTSearchItem[],
   walletSearchResult: ENSOrAddressSearchItem[],
   wallets: WalletSearchItem[],
+  contactWallets: WalletSearchItem[],
 ): SearchItem[] => {
   const shortcuts = Object.keys(staticInfo)
     .filter((key) => {
@@ -476,14 +508,23 @@ const compileCommandList = (
       }
       return true;
     })
-    .map((key) => ({
-      id: key,
-      ...staticInfo[key],
-      ...overrides[key],
-      onClick: overrides[key]?.action,
-    }));
+    .map((key) => {
+      return {
+        id: key,
+        ...staticInfo[key],
+        ...overrides[key],
+        onClick: overrides[key]?.action,
+      };
+    });
 
-  return [...shortcuts, ...tokens, ...nfts, ...walletSearchResult, ...wallets];
+  return [
+    ...shortcuts,
+    ...tokens,
+    ...nfts,
+    ...walletSearchResult,
+    ...wallets,
+    ...contactWallets,
+  ];
 };
 
 const isENSOrAddressCommand = (
@@ -525,6 +566,7 @@ export const useCommands = (
   const { searchableTokens } = useSearchableTokens();
   const { searchableNFTs } = useSearchableNFTs();
   const { searchableWallets } = useSearchableWallets(currentPage);
+  const { contactWallets } = useContactSearchableWallets(searchQuery);
   const { setSelectedToken } = useSelectedTokenStore();
   const { sortedAccounts } = useAccounts();
 
@@ -855,6 +897,13 @@ export const useCommands = (
           ? previousPageState.selectedCommand?.address
           : undefined,
       },
+      // PAGE: CONTACT_DETAIL
+      contactWallet: {
+        action: () => handleSelectAddress(previousPageState.selectedCommand),
+        address: isWalletCommand(previousPageState.selectedCommand)
+          ? previousPageState.selectedCommand?.address
+          : undefined,
+      },
       copyWalletAddress: {
         action: () =>
           isWalletCommand(previousPageState.selectedCommand) &&
@@ -917,6 +966,7 @@ export const useCommands = (
         searchableNFTs,
         searchableENSOrAddress,
         searchableWallets,
+        contactWallets,
       ),
     [
       isFullScreen,
@@ -927,6 +977,7 @@ export const useCommands = (
       searchableNFTs,
       searchableENSOrAddress,
       searchableWallets,
+      contactWallets,
     ],
   );
 
