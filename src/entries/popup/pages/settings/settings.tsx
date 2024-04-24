@@ -182,7 +182,6 @@ export function Settings() {
           />
           <MenuItem
             testId={'networks-link'}
-            first
             leftComponent={
               <Symbol
                 symbol="network"
@@ -236,6 +235,7 @@ export function Settings() {
         </Menu>
         <Menu>
           <MenuItem
+            first
             testId={'privacy-security-link'}
             leftComponent={
               <Symbol
@@ -291,8 +291,6 @@ export function Settings() {
           <Lens
             style={{
               borderRadius: 6,
-              borderBottomLeftRadius: 15,
-              borderBottomRightRadius: 15,
             }}
             onKeyDown={() => setThemeDropdownOpen(true)}
             onClick={() => setThemeDropdownOpen(true)}
@@ -366,6 +364,7 @@ export function Settings() {
             />
           </Lens>
           <MenuItem
+            last
             titleComponent={<MenuItem.Title text={i18n.t('settings.sounds')} />}
             leftComponent={
               <Symbol
@@ -464,7 +463,6 @@ export function Settings() {
               testId="test-sandbox-background"
             />
             <MenuItem
-              last
               titleComponent={
                 <MenuItem.Title
                   text={
@@ -478,7 +476,6 @@ export function Settings() {
               testId="connect-to-hardhat"
             />
             <MenuItem
-              last
               titleComponent={
                 <MenuItem.Title
                   text={

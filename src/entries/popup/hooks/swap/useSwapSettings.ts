@@ -17,6 +17,8 @@ export const DEFAULT_SLIPPAGE_BIPS = {
   [ChainId.zora]: 200,
   [ChainId.arbitrum]: 200,
   [ChainId.avalanche]: 200,
+  [ChainId.blast]: 200,
+  [ChainId.degen]: 200,
 };
 
 export const DEFAULT_SLIPPAGE = {
@@ -28,6 +30,8 @@ export const DEFAULT_SLIPPAGE = {
   [ChainId.zora]: '2',
   [ChainId.arbitrum]: '2',
   [ChainId.avalanche]: '2',
+  [ChainId.blast]: '2',
+  [ChainId.degen]: '2',
 };
 
 const slippageInBipsToString = (slippageInBips: number) =>
@@ -42,7 +46,9 @@ export const getDefaultSlippage = (chainId: ChainId) => {
     | ChainName.base
     | ChainName.zora
     | ChainName.bsc
-    | ChainName.avalanche;
+    | ChainName.avalanche
+    | ChainName.blast
+    | ChainName.degen;
   return slippageInBipsToString(
     config.default_slippage_bips[chainName] || DEFAULT_SLIPPAGE_BIPS[chainId],
   );

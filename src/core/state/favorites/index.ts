@@ -10,15 +10,18 @@ import {
   DAI_BSC_ADDRESS,
   DAI_OPTIMISM_ADDRESS,
   DAI_POLYGON_ADDRESS,
+  DEGEN_DEGEN_ADDRESS,
   ETH_ADDRESS,
   ETH_ARBITRUM_ADDRESS,
   ETH_BASE_ADDRESS,
+  ETH_BLAST_ADDRESS,
   ETH_OPTIMISM_ADDRESS,
   ETH_ZORA_ADDRESS,
   MATIC_POLYGON_ADDRESS,
   OP_ADDRESS,
   SOCKS_ADDRESS,
   SOCKS_ARBITRUM_ADDRESS,
+  USDB_BLAST_ADDRESS,
   USDC_ADDRESS,
   USDC_ARBITRUM_ADDRESS,
   USDC_AVALANCHE_ADDRESS,
@@ -33,12 +36,14 @@ import {
   WBTC_OPTIMISM_ADDRESS,
   WBTC_POLYGON_ADDRESS,
   WETH_BASE_ADDRESS,
+  WETH_BLAST_ADDRESS,
   WETH_OPTIMISM_ADDRESS,
   WETH_POLYGON_ADDRESS,
   WETH_ZORA_ADDRESS,
 } from '~/core/references';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { migrate } from '~/core/utils/migrate';
 
 import { createStore } from '../internal/createStore';
 
@@ -100,6 +105,8 @@ const defaultFavorites = {
     USDC_AVALANCHE_ADDRESS,
     WBTC_AVALANCHE_ADDRESS,
   ],
+  [ChainId.blast]: [ETH_BLAST_ADDRESS, WETH_BLAST_ADDRESS, USDB_BLAST_ADDRESS],
+  [ChainId.degen]: [DEGEN_DEGEN_ADDRESS],
 } satisfies FavoritesState['favorites'];
 
 const mergeNewOfficiallySupportedChainsState = (
@@ -144,17 +151,20 @@ export const favoritesStore = createStore<FavoritesState>(
   {
     persist: {
       name: 'favorites',
-      version: 2,
-      migrate(persistedState, version) {
-        const state = persistedState as FavoritesState;
-        if (version === 1) {
-          // version 2 added support for Avalanche
-          return mergeNewOfficiallySupportedChainsState(state, [
-            ChainId.avalanche,
-          ]);
-        }
-        return state;
-      },
+      version: 4,
+      migrate: migrate(
+        // version 1 didn't need a migration
+        (state: FavoritesState) => state,
+        // version 2 added avalanche
+        (state) =>
+          mergeNewOfficiallySupportedChainsState(state, [ChainId.avalanche]),
+        // version 3 added blast
+        (state) =>
+          mergeNewOfficiallySupportedChainsState(state, [ChainId.blast]),
+        // version 4 added degen
+        (state) =>
+          mergeNewOfficiallySupportedChainsState(state, [ChainId.degen]),
+      ),
     },
   },
 );
