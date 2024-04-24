@@ -67,7 +67,14 @@ const mergeNewOfficiallySupportedChainsState = (
     const stateChain = state.rainbowChains[chainId];
     // if the rpc already exists in the state, merge the chains
     // else add the new rpc config to the state
-    if (stateChain.chains.length > 0) {
+    if (
+      stateChain.chains.length > 0 &&
+      !stateChain.chains.find(
+        (chain) =>
+          chain.rpcUrls.default.http[0] ===
+          officalConfig.chains[0].rpcUrls.default.http[0],
+      )
+    ) {
       state.rainbowChains[chainId].chains = stateChain.chains.concat(
         officalConfig.chains,
       );
