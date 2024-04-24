@@ -1,4 +1,4 @@
-import { Chain } from 'viem/chains';
+import { Chain, zora } from 'viem/chains';
 import create from 'zustand';
 
 import { SUPPORTED_CHAINS, getDefaultRPC } from '~/core/references';
@@ -7,6 +7,7 @@ import {
   chainHardhat,
   chainHardhatOptimism,
 } from '~/core/types/chains';
+import { migrate } from '~/core/utils/migrate';
 
 import { createStore } from '../internal/createStore';
 
@@ -114,6 +115,24 @@ const removeCustomRPC = ({
   return state;
 };
 
+const addCustomRPC = ({
+  state,
+  chain,
+}: {
+  state: RainbowChainsState;
+  chain: Chain;
+}) => {
+  const rainbowChains = state.rainbowChains;
+  const rainbowChain = rainbowChains[chain.id] || {
+    chains: [],
+    activeRpcUrl: '',
+  };
+  rainbowChain.chains.push(chain);
+  rainbowChain.activeRpcUrl = chain.rpcUrls.default.http[0];
+  state.rainbowChains = { ...rainbowChains, [chain.id]: rainbowChain };
+  return state;
+};
+
 export const rainbowChainsStore = createStore<RainbowChainsState>(
   (set, get) => ({
     rainbowChains: getInitialRainbowChains(),
@@ -201,36 +220,39 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
   {
     persist: {
       name: 'rainbowChains',
-      version: 5,
-      migrate(persistedState, version) {
-        const state = persistedState as RainbowChainsState;
-        if (version === 1) {
-          // version 2 added support for Avalanche and Avalanche Fuji
-          return mergeNewOfficiallySupportedChainsState(state, [
+      version: 6,
+      migrate: migrate(
+        // version 2 added support for Avalanche and Avalanche Fuji
+        (state) =>
+          mergeNewOfficiallySupportedChainsState(state, [
             ChainId.avalanche,
             ChainId.avalancheFuji,
-          ]);
-        }
-        if (version === 2) {
-          // version 2 added support for Blast
-          return mergeNewOfficiallySupportedChainsState(state, [ChainId.blast]);
-        }
-
-        if (version === 3) {
-          return removeCustomRPC({
+          ]),
+        // version 2 added support for Blast
+        (state: RainbowChainsState) =>
+          mergeNewOfficiallySupportedChainsState(state, [
+            ChainId.avalanche,
+            ChainId.avalancheFuji,
+          ]),
+        (state) =>
+          removeCustomRPC({
             state,
             rpcUrl: 'https://rpc.zora.co',
             rainbowChains: state.rainbowChains,
-          });
-        }
-
-        if (version === 4) {
-          // version 5 added support for Degen
-          return mergeNewOfficiallySupportedChainsState(state, [ChainId.degen]);
-        }
-
-        return state;
-      },
+          }),
+        // version 5 added support for Degen
+        (state: RainbowChainsState) =>
+          mergeNewOfficiallySupportedChainsState(state, [ChainId.degen]),
+        (state: RainbowChainsState) => {
+          if (
+            !state.rainbowChains[zora.id] ||
+            state.rainbowChains[zora.id]?.chains.length === 0
+          ) {
+            return addCustomRPC({ chain: zora, state });
+          }
+          return state;
+        },
+      ),
     },
   },
 );

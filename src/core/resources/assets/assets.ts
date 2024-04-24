@@ -16,11 +16,7 @@ import {
   UniqueId,
 } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import {
-  chunkArray,
-  createAssetQuery,
-  parseAssetMetadata,
-} from '~/core/utils/assets';
+import { createAssetQuery, parseAssetMetadata } from '~/core/utils/assets';
 import { RainbowError, logger } from '~/logger';
 
 export const ASSETS_TIMEOUT_DURATION = 10000;
@@ -30,24 +26,15 @@ const ASSETS_REFETCH_INTERVAL = 60000;
 // Query Types
 
 export type AssetsQueryArgs = {
-  assetAddresses: AddressOrEth[];
-  chainId: ChainId;
+  assets: { address: AddressOrEth; chainId: ChainId }[];
   currency: SupportedCurrencyKey;
 };
 
 // ///////////////////////////////////////////////
 // Query Key
 
-const assetsQueryKey = ({
-  assetAddresses,
-  chainId,
-  currency,
-}: AssetsQueryArgs) =>
-  createQueryKey(
-    'assets',
-    { assetAddresses, chainId, currency },
-    { persisterVersion: 2 },
-  );
+const assetsQueryKey = ({ assets, currency }: AssetsQueryArgs) =>
+  createQueryKey('assets', { assets, currency }, { persisterVersion: 3 });
 
 type AssetsQueryKey = ReturnType<typeof assetsQueryKey>;
 
@@ -55,23 +42,30 @@ type AssetsQueryKey = ReturnType<typeof assetsQueryKey>;
 // Query Function
 
 export async function assetsQueryFunction({
-  queryKey: [{ assetAddresses, chainId, currency }],
+  queryKey: [{ assets, currency }],
 }: QueryFunctionArgs<typeof assetsQueryKey>): Promise<{
   [key: UniqueId]: ParsedAsset;
 }> {
   try {
-    if (!assetAddresses || !assetAddresses.length) return {};
-    const batches = chunkArray([...assetAddresses], 10); // chunking because a full batch would throw 413
-    const batchResults = batches.map((batchedQuery) =>
-      requestMetadata(createAssetQuery(batchedQuery, chainId, currency, true), {
-        timeout: ASSETS_TIMEOUT_DURATION,
-      }),
+    if (!assets || !assets.length) return {};
+    const batches = assets.map((asset) =>
+      requestMetadata(
+        createAssetQuery([asset.address], asset.chainId, currency, true),
+        {
+          timeout: ASSETS_TIMEOUT_DURATION,
+        },
+      ),
     ) as Promise<Record<string, AssetMetadata>[]>[];
-    const results = (await Promise.all(batchResults))
+
+    const results = (await Promise.all(batches))
       .flat()
       .map((r) => Object.values(r))
       .flat();
-    const parsedAssets = parseAssets(results, chainId, currency);
+    const assetsMetadata = results.map((assetMetadata, i) => ({
+      assetMetadata,
+      chainId: assets[i].chainId,
+    }));
+    const parsedAssets = parseAssets(assetsMetadata, currency);
     return parsedAssets;
   } catch (e) {
     logger.error(new RainbowError('assetsQueryFunction: '), {
@@ -87,7 +81,7 @@ type AssetsQueryResult = QueryFunctionResult<typeof assetsQueryFunction>;
 // Query Fetcher
 
 export async function fetchAssets(
-  { assetAddresses, chainId, currency }: AssetsQueryArgs,
+  { assets, currency }: AssetsQueryArgs,
   config: QueryConfig<
     AssetsQueryResult,
     Error,
@@ -96,28 +90,31 @@ export async function fetchAssets(
   > = {},
 ) {
   return await queryClient.fetchQuery(
-    assetsQueryKey({ assetAddresses, chainId, currency }),
+    assetsQueryKey({ assets, currency }),
     assetsQueryFunction,
     config,
   );
 }
 
 function parseAssets(
-  assets: AssetMetadata[],
-  chainId: ChainId,
+  assetsMetadata: {
+    assetMetadata: AssetMetadata;
+    chainId: ChainId;
+  }[],
   currency: SupportedCurrencyKey,
 ) {
-  return assets.reduce(
-    (assetsDict, asset) => {
-      const address = asset.networks?.[chainId]?.address;
+  return assetsMetadata.reduce(
+    (assetsDict, assetMetadata) => {
+      const address =
+        assetMetadata.assetMetadata.networks?.[assetMetadata.chainId]?.address;
       if (address) {
         const parsedAsset = parseAssetMetadata({
           address,
-          asset,
-          chainId,
+          asset: assetMetadata.assetMetadata,
+          chainId: assetMetadata.chainId,
           currency,
         });
-        assetsDict[parsedAsset?.uniqueId] = parsedAsset;
+        assetsDict[parsedAsset?.chainId] = parsedAsset;
       }
       return assetsDict;
     },
@@ -129,7 +126,7 @@ function parseAssets(
 // Query Hook
 
 export function useAssets<TSelectData = AssetsQueryResult>(
-  { assetAddresses, chainId, currency }: AssetsQueryArgs,
+  { assets, currency }: AssetsQueryArgs,
   config: QueryConfig<
     AssetsQueryResult,
     Error,
@@ -137,12 +134,8 @@ export function useAssets<TSelectData = AssetsQueryResult>(
     AssetsQueryKey
   > = {},
 ) {
-  return useQuery(
-    assetsQueryKey({ assetAddresses, chainId, currency }),
-    assetsQueryFunction,
-    {
-      ...config,
-      refetchInterval: ASSETS_REFETCH_INTERVAL,
-    },
-  );
+  return useQuery(assetsQueryKey({ assets, currency }), assetsQueryFunction, {
+    ...config,
+    refetchInterval: ASSETS_REFETCH_INTERVAL,
+  });
 }
