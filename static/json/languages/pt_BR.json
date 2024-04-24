@@ -78,7 +78,7 @@
     "guides_and_support": "Guias e Suporte",
     "learn_about_ethereum": "Aprenda sobre Ethereum",
     "follow_us_on_twitter": "Siga-nos no Twitter",
-    "share_beta_feedback": "Compartilhe Feedback Beta",
+    "share_feedback": "Compartilhar Feedback",
     "theme": {
       "title": "Tema",
       "system": "Sistema",
@@ -235,6 +235,26 @@
           "wipe_confirmation": "Redefinir Rainbow",
           "wipe_confirmation_desc": "Tem certeza de que deseja redefinir a extensão do navegador Rainbow?",
           "wipe_confirmation_button": "Redefinir",
+          "wipe_confirmation_cancel": "Cancelar"
+        },
+        "wipe_wallet_group": {
+          "delete": "Remover Grupo de Carteiras",
+          "acknowlegement": "Eu fiz o backup da minha Frase de Recuperação Secreta",
+          "warning_one": "Remover seu Grupo de Carteiras excluirá a Frase de Recuperação do Rainbow",
+          "warning_two": "Seus ativos e fundos podem ser recuperados com as informações corretas de recuperação da carteira",
+          "warning_three": "Certifique-se de ter feito o backup da sua Frase de Recuperação Secreta antes de prosseguir",
+          "button_wipe": "Redefinir Rainbow",
+          "button_complete": "Verificação Completa Acima",
+          "wipe_confirmation": "Remover Grupo de Carteiras",
+          "wipe_confirmation_desc": "Tem certeza de que deseja remover sua Frase de Recuperação Secreta do Rainbow?",
+          "wipe_confirmation_button": "Remover",
+          "wipe_confirmation_cancel": "Cancelar"
+        },
+        "wipe_hardware_wallet_group": {
+          "delete": "Desemparelhar %{vendor}",
+          "wipe_confirmation": "Desemparelhar %{vendor}",
+          "wipe_confirmation_desc": "Tem certeza de que deseja desemparelhar seu %{vendor} e desconectar suas carteiras?",
+          "wipe_confirmation_button": "Desemparelhar",
           "wipe_confirmation_cancel": "Cancelar"
         }
       }
@@ -676,6 +696,10 @@
       "price_impact": {
         "title": "Mercado pequeno",
         "description": "Perder %{impactAmount}"
+      },
+      "unknown_price": {
+        "title": "Valor de Mercado de %{symbol} Desconhecido",
+        "description": "Se decidir continuar, certifique-se de que está satisfeito com o valor cotado"
       }
     },
     "aggregators": {
@@ -1314,6 +1338,7 @@
       "ens_website": "Website",
       "registered_on": "Registrado em",
       "expires_in": "Expira em",
+      "report": "Denunciar",
       "explainer": {
         "floor_price_description": "O preço mínimo de uma coleção é o menor preço solicitado entre todos os itens à venda na coleção.",
         "floor_price_title": "Preço mínimo da coleção",
@@ -1321,7 +1346,12 @@
       },
       "send": "Enviar",
       "view_on_opensea": "Ver no OpenSea",
-      "view_on_explorer": "Ver em %{explorerTitle}"
+      "view_on_explorer": "Ver em %{explorerTitle}",
+      "gallery": "galeria",
+      "view_gallery": "Ver Galeria"
+    },
+    "toast": {
+      "spam_reported": "Sua denúncia foi recebida!"
     }
   },
   "points": {
@@ -1390,6 +1420,7 @@
       "referral_activity": "Atividade de Indicação:",
       "new_referrals": "Novas Indicações:",
       "retroactive": "Pontos Retroativos:",
+      "bonus": "Pontos Bônus:",
       "total": "Total:",
       "weekly_counted": "> Ganhos semanais contabilizados",
       "you_have": "Você tem:",
@@ -1432,12 +1463,23 @@
     "approvals": "Aprovações de Tokens",
     "this_token_is_on_network": "Esta %{symbol} está na rede %{chainName}",
     "view_on": "Ver no %{explorer}",
+    "view_on_coingecko": "Ver no CoinGecko",
     "not_available": "Preço não disponível",
     "more_options": {
       "copy_address": "Copiar Endereço",
       "view_on_explorer": "Ver no %{explorer}",
       "hide": "Ocultar Token",
-      "report": "Relatar Token"
+      "report": "Relatar Token",
+      "unpin_token": "Desafixar %{name}",
+      "pin_token": "Afixar %{name}",
+      "hide_token": "Ocultar %{name}",
+      "unhide_token": "Reexibir %{name}"
+    },
+    "toast": {
+      "hide_token": "Seu %{name} está oculto",
+      "unhide_token": "Seu %{name} está visível",
+      "pin_token": "Seu %{name} está afixado",
+      "unpin_token": "Seu %{name} está desafixado"
     },
     "about": {
       "about_token": "Sobre %{name}",
@@ -1499,35 +1541,42 @@
   },
   "explainers": {
     "sidechains": {
-      "arbitrum": {
-        "title": "O que é Arbitrum?",
-        "description_1": "Arbitrum é uma rede de Camada 2 que funciona sobre o Ethereum, permitindo transações mais baratas e rápidas, ao mesmo tempo em que se beneficia da segurança subjacente do Ethereum.",
-        "description_2": "Ele agrupa várias transações juntas em um \"roll up\" antes de enviá-las para serem registradas permanentemente no Ethereum."
+      "layer_two": {
+        "title": "O que é %{chainName}?",
+        "description_1": "%{chainName} é uma rede de Camada 2 que funciona sobre o Ethereum, possibilitando transações mais baratas e rápidas enquanto ainda se beneficia da segurança subjacente do Ethereum",
+        "description_2": "Ela agrupa várias transações em um \"roll up\" antes de enviá-las para viver permanentemente no Ethereum"
       },
-      "optimism": {
-        "title": "O que é Optimism?",
-        "description_1": "Optimismo é uma rede de Camada 2 que roda em cima do Ethereum, permitindo transações mais baratas e rápidas, enquanto ainda se beneficia da segurança subjacente do Ethereum.",
-        "description_2": "Agrupa muitas transações juntas em um \"roll up\" antes de enviá-las permanentemente para o Ethereum."
-      },
-      "polygon": {
-        "title": "O que é o Polygon?",
-        "description_1": "Polygon é uma sidechain, uma rede distinta que roda ao lado do Ethereum e é compatível com ele.",
-        "description_2": "Permite transações mais baratas e rápidas, mas, ao contrário das redes de Camada 2, o Polygon tem seus próprios mecanismos de segurança e consenso que diferem do Ethereum."
-      },
-      "bsc": {
-        "title": "O que é o BSC?",
-        "description_1": "Binance Smart Chain, ou BSC, é a rede blockchain da plataforma de negociação Binance.",
-        "description_2": "Permite transações mais baratas e rápidas, mas, ao contrário das redes de Camada 2, o BSC tem seus próprios mecanismos de segurança e consenso que diferem do Ethereum."
-      },
-      "base": {
-        "title": "O que é Base?",
-        "description_1": "Base é uma rede Layer 2 que roda em cima do Ethereum, permitindo transações mais baratas e rápidas, enquanto ainda se beneficia da segurança subjacente do Ethereum.",
-        "description_2": "Ele agrupa muitas transações juntas em um \"roll up\" antes de enviá-las para viver permanentemente no Ethereum."
-      },
-      "zora": {
-        "title": "O que é Zora?",
-        "description_1": "Zora é uma rede Layer 2 que funciona em cima do Ethereum, permitindo transações mais baratas e rápidas ao mesmo tempo em que se beneficia da segurança subjacente do Ethereum.",
-        "description_2": "Agrupa várias transações juntas em um \"roll up\" antes de enviá-las permanentemente para o Ethereum."
+      "specific": {
+        "polygon": {
+          "title": "O que é Polygon?",
+          "description_1": "Polygon é uma sidechain, uma rede distinta que funciona paralelamente ao Ethereum e é compatível com ele",
+          "description_2": "Ela permite transações mais baratas e rápidas, mas ao contrário das redes de Camada 2, Polygon tem seus próprios mecanismos de segurança e consenso que diferem do Ethereum"
+        },
+        "bsc": {
+          "title": "O que é BSC?",
+          "description_1": "BNB Smart Chain, ou BSC abreviadamente, é uma Layer 1 alternativa desenvolvida pela exchange de criptomoedas Binance.",
+          "description_2": "Permite transações mais baratas e rápidas, mas, ao contrário das redes Layer 2, a BSC possui seus próprios mecanismos de segurança e consenso que diferem do Ethereum."
+        },
+        "avalanche": {
+          "title": "O que é Avalanche?",
+          "description_1": "Avalanche é uma Layer 1 alternativa movida por um ecossistema de subnets, semelhante às sidechains e Layer 2s do Ethereum.",
+          "description_2": "Permite transações mais baratas e rápidas, mas, ao contrário das redes Layer 2, Avalanche possui seus próprios mecanismos de segurança e consenso que diferem do Ethereum."
+        },
+        "blast": {
+          "title": "O que é Blast?",
+          "description_1": "Blast é uma plataforma Layer-2 (L2) do Ethereum criada pela mesma equipe talentosa por trás do Blur, o popular mercado de NFTs.",
+          "description_2": "A rede se distingue com a introdução de rendimento nativo para ether (ETH) e várias stablecoins como USDC, USDT e DAI."
+        },
+        "degen": {
+          "title": "O que é Degen?",
+          "description_1": "Degen Chain é uma rede Layer 3 que funciona em cima do Arbitrum e Ethereum.",
+          "description_2": "Oferece transações incrivelmente rápidas e baratas denominadas no token comunitário Farcaster $degen."
+        },
+        "custom_network": {
+          "title": "O que é esta Rede?",
+          "description_1": "Esta é uma rede personalizada adicionada por você! Redes personalizadas podem ser adaptadas para atender necessidades específicas, oferecendo recursos e capacidades únicos.",
+          "description_2": "Dependendo de sua configuração, esta rede pode utilizar protocolos distintos, medidas de segurança e mecanismos de consenso, projetados para otimizar o desempenho, reduzir custos ou fornecer serviços especializados."
+        }
       },
       "link_button_label": "Leia mais",
       "action_label": "Entendi"
@@ -1680,6 +1729,7 @@
     "contract": "Contrato",
     "contract_name": "Nome do contrato",
     "contract_created_at": "Contrato criado em",
+    "to": "Para",
     "source_code": "Código-fonte",
     "signature": {
       "message": "Mensagem"
@@ -1700,6 +1750,7 @@
   "unverified": "Não verificado",
   "skip": "Pular",
   "done": "Concluído",
+  "view_on_explorer": "Ver no %{explorer}",
   "watch_asset": {
     "chain_id": "ID da rede",
     "symbol": "Símbolo",
