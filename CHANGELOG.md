@@ -21,6 +21,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.4.73](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.73)
+
+### Changed
+
+- Added auto-fill support for Redstone and Rootstock networks in the Add Network flow #1508
+
+### Fixed
+
+- Resolved duplicate instances of tokens like `DEGEN` when Rainbow introduces rich metadata for a new network #1499
+- Resolved a white flash on launch for users in dark mode #1509
+- Improved quote price estimates for Swaps on Degen Chain #1512
+
 ## [v1.4.67](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.67)
 
 ### Changed
