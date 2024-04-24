@@ -78,7 +78,7 @@
     "guides_and_support": "الدلائل والدعم",
     "learn_about_ethereum": "تعرف على Ethereum",
     "follow_us_on_twitter": "تابعنا على تويتر",
-    "share_beta_feedback": "شارك تعليقات التجربة",
+    "share_feedback": "شارك الرأي",
     "theme": {
       "title": "الثيم",
       "system": "النظام",
@@ -235,6 +235,26 @@
           "wipe_confirmation": "إعادة تعيين رينبو",
           "wipe_confirmation_desc": "هل أنت متأكد أنك تريد إعادة تعيين امتداد متصفح رينبو؟",
           "wipe_confirmation_button": "إعادة تعيين",
+          "wipe_confirmation_cancel": "إلغاء"
+        },
+        "wipe_wallet_group": {
+          "delete": "إزالة مجموعة المحفظة",
+          "acknowlegement": "لقد قمت بنسخ عبارة الاسترداد السرية الخاصة بي",
+          "warning_one": "إزالة مجموعة المحفظة ستحذف عبارة الاسترداد من Rainbow",
+          "warning_two": "يمكن استرداد أصولك وأموالك بالمعلومات الصحيحة لاسترداد المحفظة",
+          "warning_three": "تأكد من نسخ عبارة الاسترداد السرية قبل المتابعة",
+          "button_wipe": "إعادة تعيين رينبو",
+          "button_complete": "اكتمال التحقق أعلاه",
+          "wipe_confirmation": "إزالة مجموعة المحفظة",
+          "wipe_confirmation_desc": "هل أنت متأكد أنك تريد إزالة عبارة الاسترداد السرية من Rainbow؟",
+          "wipe_confirmation_button": "إزالة",
+          "wipe_confirmation_cancel": "إلغاء"
+        },
+        "wipe_hardware_wallet_group": {
+          "delete": "فصل %{vendor}",
+          "wipe_confirmation": "فصل %{vendor}",
+          "wipe_confirmation_desc": "هل أنت متأكد أنك تريد فصل %{vendor} وقطع الاتصال بمحافظك؟",
+          "wipe_confirmation_button": "فصل",
           "wipe_confirmation_cancel": "إلغاء"
         }
       }
@@ -676,6 +696,10 @@
       "price_impact": {
         "title": "سوق صغير",
         "description": "خسارة %{impactAmount}"
+      },
+      "unknown_price": {
+        "title": "قيمة السوق %{symbol} غير معروفة",
+        "description": "إذا قررت المتابعة، تأكد من رضاك عن الكمية المقتبسة"
       }
     },
     "aggregators": {
@@ -1314,6 +1338,7 @@
       "ens_website": "الموقع الإلكتروني",
       "registered_on": "مسجل في",
       "expires_in": "ينتهي في",
+      "report": "الإبلاغ",
       "explainer": {
         "floor_price_description": "أقل سعر في المجموعة هو أدنى سعر طلب لكل الأغراض المعروضة حاليًا للبيع في مجموعة",
         "floor_price_title": "أقل سعر للمجموعة",
@@ -1321,7 +1346,12 @@
       },
       "send": "أرسل",
       "view_on_opensea": "عرض على OpenSea",
-      "view_on_explorer": "عرض على %{explorerTitle}"
+      "view_on_explorer": "عرض على %{explorerTitle}",
+      "gallery": "معرض",
+      "view_gallery": "عرض المعرض"
+    },
+    "toast": {
+      "spam_reported": "تم استلام تقريرك!"
     }
   },
   "points": {
@@ -1390,6 +1420,7 @@
       "referral_activity": "نشاط الإحالة:",
       "new_referrals": "إحالات جديدة:",
       "retroactive": "النقاط الرجعية:",
+      "bonus": "نقاط إضافية:",
       "total": "المجموع:",
       "weekly_counted": "> تم احتساب الأرباح الأسبوعية",
       "you_have": "لديك:",
@@ -1432,12 +1463,23 @@
     "approvals": "موافقات الرمز",
     "this_token_is_on_network": "هذا %{symbol} موجود على الشبكة %{chainName}",
     "view_on": "عرض على %{explorer}",
+    "view_on_coingecko": "عرض على CoinGecko",
     "not_available": "السعر غير متوفر",
     "more_options": {
       "copy_address": "نسخ العنوان",
       "view_on_explorer": "عرض على %{explorer}",
       "hide": "إخفاء الرمز",
-      "report": "الإبلاغ عن الرمز"
+      "report": "الإبلاغ عن الرمز",
+      "unpin_token": "إلغاء تثبيت %{name}",
+      "pin_token": "تثبيت %{name}",
+      "hide_token": "إخفاء %{name}",
+      "unhide_token": "إظهار %{name}"
+    },
+    "toast": {
+      "hide_token": "%{name} مخفي",
+      "unhide_token": "%{name} ظاهر",
+      "pin_token": "%{name} مثبت",
+      "unpin_token": "%{name} غير مثبت"
     },
     "about": {
       "about_token": "عن %{name}",
@@ -1499,35 +1541,42 @@
   },
   "explainers": {
     "sidechains": {
-      "arbitrum": {
-        "title": "ما هو أربيتروم؟",
-        "description_1": "يعتبر Arbitrum شبكة من الطبقة الثانية تعمل فوق إثيريوم، مما يتيح إجراء عمليات تحويل أرخص وأسرع مع الاستفادة من الأمان الأساسي لإثيريوم",
-        "description_2": "يقوم بتجميع الكثير من العمليات معا في شكل \"رول أب\" قبل إرسالها لتعيش بشكل دائم على Ethereum"
+      "layer_two": {
+        "title": "ما هو %{chainName}؟",
+        "description_1": "%{chainName} هو شبكة الطبقة الثانية التي تعمل فوق إيثريوم، مما يتيح معاملات أرخص وأسرع مع الاستفادة من الأمان الأساسي لإيثريوم",
+        "description_2": "يجمع العديد من المعاملات معًا في \"تجميع\" قبل إرسالها لتعيش بشكل دائم على إيثريوم"
       },
-      "optimism": {
-        "title": "ما هو الأمل؟",
-        "description_1": "إن الأمل هو شبكة من الطبقة الثانية تعمل فوق إثيريوم، مما يتيح إجراء عمليات تحويل أرخص وأسرع مع الاستفادة من الأمان الأساسي لإثيريوم",
-        "description_2": "يقوم بتجميع الكثير من العمليات معا في شكل \"رول أب\" قبل إرسالها لتعيش بشكل دائم على Ethereum"
-      },
-      "polygon": {
-        "title": "ما هو البوليجون؟",
-        "description_1": "البوليجون هو جانبي للسلسلة، شبكة متميزة تعمل بجانب إيثريوم وتتوافق معه",
-        "description_2": "يسمح بعمليات تحويل أرخص وأسرع، ولكن على عكس الشبكات من الطبقة الثانية، البوليجون لديه آليات أمان واتفاقية خاصة به تختلف عن إثيريوم"
-      },
-      "bsc": {
-        "title": "ما هو BSC؟",
-        "description_1": "هو شبكة بلوكشين لمنصة التداول باينانس أو BSC بشكل مختصر",
-        "description_2": "يسمح بتكاليف معاملات أرخص وأسرع، ولكن على عكس شبكات الطبقة 2، يملك BSC آليات الأمان والإجماع الخاصة بها والتي تختلف عن إيثيريوم"
-      },
-      "base": {
-        "title": "ما هو الأساس؟",
-        "description_1": "الأساس هو شبكة الطبقة 2 التي تعمل على أساس Ethereum، مما يتيح المعاملات الأرخص والأسرع في الوقت الذي لا يزال يستفيد من الأمان الأساسي لـ Ethereum",
-        "description_2": "يقوم بتجميع الكثير من العمليات معا في شكل \"رول أب\" قبل إرسالها لتعيش بشكل دائم على Ethereum"
-      },
-      "zora": {
-        "title": "ما هو Zora؟",
-        "description_1": "Zora هو شبكة الطبقة الثانية التي تعمل فوق Ethereum، مما يتيح معاملات أرخص وأسرع مع الاستفادة من الأمان الأساسي لـ Ethereum",
-        "description_2": "يقوم بتجميع الكثير من العمليات معا في شكل \"رول أب\" قبل إرسالها لتعيش بشكل دائم على Ethereum"
+      "specific": {
+        "polygon": {
+          "title": "ما هو Polygon؟",
+          "description_1": "Polygon هي شبكة جانبية، شبكة متميزة تعمل جنبًا إلى جنب مع إيثريوم ومتوافقة معها",
+          "description_2": "تسمح بمعاملات أرخص وأسرع، لكن على عكس شبكات الطبقة الثانية، لدى Polygon آليات أمان وإجماع خاصة بها تختلف عن إيثريوم"
+        },
+        "bsc": {
+          "title": "ما هو BSC؟",
+          "description_1": "سلسلة BNB الذكية، أو BSC اختصارًا، هي طبقة بديلة 1 طورتها منصة تبادل العملات المشفرة Binance",
+          "description_2": "تتيح معاملات أرخص وأسرع، لكن على عكس شبكات الطبقة 2، BSC لديها آليات أمان وإجماع خاصة بها مختلفة عن Ethereum"
+        },
+        "avalanche": {
+          "title": "ما هو Avalanche؟",
+          "description_1": "Avalanche هي طبقة بديلة 1 تعمل بنظام بيئي من الشبكات الفرعية، مشابهة لجانبيات Ethereum وطبقات الـ 2",
+          "description_2": "تتيح معاملات أرخص وأسرع، لكن على عكس شبكات الطبقة 2، Avalanche لديها آليات أمان وإجماع خاصة بها مختلفة عن Ethereum"
+        },
+        "blast": {
+          "title": "ما هو Blast؟",
+          "description_1": "Blast هي منصة الطبقة الثانية (L2) لـ Ethereum تم إنشاؤها من قبل الفريق الموهوب نفسه وراء Blur، سوق NFT الشهير",
+          "description_2": "تميز السلسلة نفسها بإدخال عائد أصلي لـ ether (ETH) وعملات مستقرة متنوعة مثل USDC وUSDT وDAI"
+        },
+        "degen": {
+          "title": "ما هو Degen؟",
+          "description_1": "Degen Chain هي شبكة الطبقة 3 التي تعمل فوق Arbitrum وEthereum",
+          "description_2": "تقدم معاملات سريعة ورخيصة للغاية بالعملة المجتمعية $degen من Farcaster"
+        },
+        "custom_network": {
+          "title": "ما هذه الشبكة؟",
+          "description_1": "هذه شبكة مخصصة أضفتها بنفسك! يمكن تخصيص الشبكات المخصصة لتلبية احتياجات معينة، وتقديم ميزات وقدرات فريدة",
+          "description_2": "بناءً على تكوينها، قد تستخدم هذه الشبكة بروتوكولات مختلفة وتدابير أمان وآليات إجماع، مصممة لتحسين الأداء، وخفض التكاليف، أو تقديم خدمات متخصصة"
+        }
       },
       "link_button_label": "اقرأ المزيد",
       "action_label": "فهمت"
@@ -1680,6 +1729,7 @@
     "contract": "عقد",
     "contract_name": "اسم العقد",
     "contract_created_at": "العقد المُنشأ",
+    "to": "إلى",
     "source_code": "شفرة المصدر",
     "signature": {
       "message": "رسالة"
@@ -1700,6 +1750,7 @@
   "unverified": "غير متحقق منه",
   "skip": "تخطِ",
   "done": "تم",
+  "view_on_explorer": "عرض على %{explorer}",
   "watch_asset": {
     "chain_id": "معرّف الشبكة",
     "symbol": "رمز",
