@@ -63,7 +63,7 @@ const mergeNewOfficiallySupportedChainsState = (
 ) => {
   const officiallySupportedRainbowChains = getInitialRainbowChains();
   for (const chainId of newChains) {
-    const officalConfig = officiallySupportedRainbowChains[chainId];
+    const officialConfig = officiallySupportedRainbowChains[chainId];
     const stateChain = state.rainbowChains[chainId];
     // if the rpc already exists in the state, merge the chains
     // else add the new rpc config to the state
@@ -72,14 +72,14 @@ const mergeNewOfficiallySupportedChainsState = (
       !stateChain.chains.find(
         (chain) =>
           chain.rpcUrls.default.http[0] ===
-          officalConfig.chains[0].rpcUrls.default.http[0],
+          officialConfig.chains[0].rpcUrls.default.http[0],
       )
     ) {
       state.rainbowChains[chainId].chains = stateChain.chains.concat(
-        officalConfig.chains,
+        officialConfig.chains,
       );
     } else {
-      state.rainbowChains[chainId] = officalConfig;
+      state.rainbowChains[chainId] = officialConfig;
     }
   }
   return state;
