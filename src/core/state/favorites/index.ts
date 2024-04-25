@@ -122,6 +122,17 @@ const mergeNewOfficiallySupportedChainsState = (
   return state;
 };
 
+const migrations: ((s: FavoritesState) => FavoritesState)[] = [
+  // version 1 didn't need a migration
+  (state: FavoritesState) => state,
+  // version 2 added avalanche
+  (state) => mergeNewOfficiallySupportedChainsState(state, [ChainId.avalanche]),
+  // version 3 added blast
+  (state) => mergeNewOfficiallySupportedChainsState(state, [ChainId.blast]),
+  // version 4 added degen
+  (state) => mergeNewOfficiallySupportedChainsState(state, [ChainId.degen]),
+];
+
 export const favoritesStore = createStore<FavoritesState>(
   (set, get) => ({
     favorites: defaultFavorites,
@@ -151,20 +162,8 @@ export const favoritesStore = createStore<FavoritesState>(
   {
     persist: {
       name: 'favorites',
-      version: 4,
-      migrate: migrate(
-        // version 1 didn't need a migration
-        (state: FavoritesState) => state,
-        // version 2 added avalanche
-        (state) =>
-          mergeNewOfficiallySupportedChainsState(state, [ChainId.avalanche]),
-        // version 3 added blast
-        (state) =>
-          mergeNewOfficiallySupportedChainsState(state, [ChainId.blast]),
-        // version 4 added degen
-        (state) =>
-          mergeNewOfficiallySupportedChainsState(state, [ChainId.degen]),
-      ),
+      version: migrations.length - 1,
+      migrate: migrate(migrations),
     },
   },
 );

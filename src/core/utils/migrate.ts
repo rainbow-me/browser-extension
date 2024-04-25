@@ -3,31 +3,7 @@
 type R<T> = (persistedState: unknown, version: number) => T;
 
 interface Migrator {
-  <A>(m1: (s: any) => A): R<A>;
-  <A, B>(m1: (s: any) => A, m2: (s: A) => B): R<B>;
-  <A, B, C>(m1: (s: any) => A, m2: (s: A) => B, m3: (s: B) => C): R<C>;
-  <A, B, C, D>(
-    m1: (s: any) => A,
-    m2: (s: A) => B,
-    m3: (s: B) => C,
-    m4: (s: C) => D,
-  ): R<D>;
-  <A, B, C, D, E>(
-    m1: (s: any) => A,
-    m2: (s: A) => B,
-    m3: (s: B) => C,
-    m4: (s: C) => D,
-    m5: (s: D) => E,
-  ): R<E>;
-  <A, B, C, D, E, F>(
-    m1: (s: any) => A,
-    m2: (s: A) => B,
-    m3: (s: B) => C,
-    m4: (s: C) => D,
-    m5: (s: D) => E,
-    m6: (s: E) => F,
-  ): R<F>;
-  // if you need more migrations, add more overloads here
+  <T>(migrations: ((s: any) => any)[]): R<T>;
 }
 
 /**
@@ -37,11 +13,10 @@ interface Migrator {
  * - migrations must be in order
  * - zustand persister version must be an integer
  */
-export const migrate: Migrator = (
-  ...migrations: ((s: unknown) => unknown)[]
-) => {
-  return (persistedState: unknown, version: number) =>
-    migrations
-      .toSpliced(0, version)
+export const migrate: Migrator = (migrations: ((s: any) => any)[]) => {
+  return (persistedState: any, version: number) => {
+    return migrations
+      .slice(0, version) // Use slice to select up to the specified version
       .reduce((acc, fn) => fn(acc), persistedState);
+  };
 };

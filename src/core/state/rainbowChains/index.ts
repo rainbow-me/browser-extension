@@ -141,6 +141,45 @@ const addCustomRPC = ({
   return state;
 };
 
+const migrations: ((s: RainbowChainsState) => RainbowChainsState)[] = [
+  // version 2 added support for Avalanche and Avalanche Fuji
+  (state) =>
+    mergeNewOfficiallySupportedChainsState(state, [
+      ChainId.avalanche,
+      ChainId.avalancheFuji,
+    ]),
+  // version 2 added support for Blast
+  (state: RainbowChainsState) =>
+    mergeNewOfficiallySupportedChainsState(state, [ChainId.blast]),
+  (state) =>
+    removeCustomRPC({
+      state,
+      rpcUrl: 'https://rpc.zora.co',
+      rainbowChains: state.rainbowChains,
+    }),
+  // version 5 added support for Degen
+  (state: RainbowChainsState) =>
+    mergeNewOfficiallySupportedChainsState(state, [ChainId.degen]),
+  (state: RainbowChainsState) => {
+    if (
+      !state.rainbowChains[zora.id] ||
+      state.rainbowChains[zora.id]?.chains.length === 0
+    ) {
+      return addCustomRPC({ chain: zora, state });
+    }
+    return state;
+  },
+  (state: RainbowChainsState) => {
+    if (
+      !state.rainbowChains[chainDegen.id] ||
+      state.rainbowChains[chainDegen.id]?.chains.length === 0
+    ) {
+      return addCustomRPC({ chain: chainDegen, state });
+    }
+    return state;
+  },
+];
+
 export const rainbowChainsStore = createStore<RainbowChainsState>(
   (set, get) => ({
     rainbowChains: getInitialRainbowChains(),
@@ -228,48 +267,8 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
   {
     persist: {
       name: 'rainbowChains',
-      version: 7,
-      migrate: migrate(
-        // version 2 added support for Avalanche and Avalanche Fuji
-        (state) =>
-          mergeNewOfficiallySupportedChainsState(state, [
-            ChainId.avalanche,
-            ChainId.avalancheFuji,
-          ]),
-        // version 2 added support for Blast
-        (state: RainbowChainsState) =>
-          mergeNewOfficiallySupportedChainsState(state, [
-            ChainId.avalanche,
-            ChainId.avalancheFuji,
-          ]),
-        (state) =>
-          removeCustomRPC({
-            state,
-            rpcUrl: 'https://rpc.zora.co',
-            rainbowChains: state.rainbowChains,
-          }),
-        // version 5 added support for Degen
-        (state: RainbowChainsState) =>
-          mergeNewOfficiallySupportedChainsState(state, [ChainId.degen]),
-        (state: RainbowChainsState) => {
-          if (
-            !state.rainbowChains[zora.id] ||
-            state.rainbowChains[zora.id]?.chains.length === 0
-          ) {
-            return addCustomRPC({ chain: zora, state });
-          }
-          return state;
-        },
-        (state: RainbowChainsState) => {
-          if (
-            !state.rainbowChains[chainDegen.id] ||
-            state.rainbowChains[chainDegen.id]?.chains.length === 0
-          ) {
-            return addCustomRPC({ chain: chainDegen, state });
-          }
-          return state;
-        },
-      ),
+      version: migrations.length - 1,
+      migrate: migrate(migrations),
     },
   },
 );
