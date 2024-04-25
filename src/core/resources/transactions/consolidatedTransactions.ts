@@ -27,7 +27,6 @@ const CONSOLIDATED_TRANSACTIONS_TIMEOUT = 20000;
 export type ConsolidatedTransactionsArgs = {
   address: Address;
   currency: SupportedCurrencyKey;
-  testnetMode: boolean;
   userChainIds: number[];
 };
 
@@ -37,12 +36,11 @@ export type ConsolidatedTransactionsArgs = {
 export const consolidatedTransactionsQueryKey = ({
   address,
   currency,
-  testnetMode,
   userChainIds,
 }: ConsolidatedTransactionsArgs) =>
   createQueryKey(
     'consolidatedTransactions',
-    { address, currency, testnetMode, userChainIds },
+    { address, currency, userChainIds },
     { persisterVersion: 1 },
   );
 
@@ -56,12 +54,7 @@ type ConsolidatedTransactionsQueryKey = ReturnType<
 export async function fetchConsolidatedTransactions<
   TSelectData = ConsolidatedTransactionsResult,
 >(
-  {
-    address,
-    currency,
-    testnetMode,
-    userChainIds,
-  }: ConsolidatedTransactionsArgs,
+  { address, currency, userChainIds }: ConsolidatedTransactionsArgs,
   config: QueryConfig<
     ConsolidatedTransactionsResult,
     Error,
@@ -73,7 +66,6 @@ export async function fetchConsolidatedTransactions<
     consolidatedTransactionsQueryKey({
       address,
       currency,
-      testnetMode,
       userChainIds,
     }),
     consolidatedTransactionsQueryFunction,
@@ -153,12 +145,7 @@ async function parseConsolidatedTransactions(
 export function useConsolidatedTransactions<
   TSelectData = ConsolidatedTransactionsResult,
 >(
-  {
-    address,
-    currency,
-    userChainIds,
-    testnetMode,
-  }: ConsolidatedTransactionsArgs,
+  { address, currency, userChainIds }: ConsolidatedTransactionsArgs,
   config: InfiniteQueryConfig<
     ConsolidatedTransactionsResult,
     Error,
@@ -169,7 +156,6 @@ export function useConsolidatedTransactions<
     consolidatedTransactionsQueryKey({
       address,
       currency,
-      testnetMode,
       userChainIds,
     }),
     consolidatedTransactionsQueryFunction,
