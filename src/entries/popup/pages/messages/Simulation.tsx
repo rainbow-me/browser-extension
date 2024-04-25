@@ -4,7 +4,6 @@ import { ReactNode } from 'react';
 import { i18n } from '~/core/languages';
 import { useAssets } from '~/core/resources/assets';
 import { useCurrentCurrencyStore } from '~/core/state';
-import { ChainId } from '~/core/types/chains';
 import { createNumberFormatter } from '~/core/utils/formatNumber';
 import { convertRawAmountToNativeDisplay } from '~/core/utils/numbers';
 import {
@@ -65,8 +64,7 @@ function SimulatedChangeRow({
       ? Number.MAX_SAFE_INTEGER
       : formatUnits(quantity, asset.decimals);
   const { data: additionalAssetData } = useAssets({
-    assetAddresses: asset ? [asset?.address] : [],
-    chainId: asset ? asset?.chainId : ChainId.mainnet,
+    assets: asset ? [{ address: asset.address, chainId: asset.chainId }] : [],
     currency: currentCurrency,
   });
   const assetDataWithPrice = Object.values(additionalAssetData || {})?.[0];
