@@ -18,7 +18,11 @@ import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useFlashbotsEnabledStore, useGasStore } from '~/core/state';
+import {
+  useCurrentAddressStore,
+  useFlashbotsEnabledStore,
+  useGasStore,
+} from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import {
@@ -107,17 +111,16 @@ export function Send() {
   const [toAddressDropdownOpen, setToAddressDropdownOpen] = useState(false);
 
   const navigate = useRainbowNavigate();
-
+  const { currentAddress: address } = useCurrentAddressStore();
   const { isContact } = useContactsStore();
   const { allWallets } = useWallets();
-  const { hiddenAssets } = useHiddenAssetStore();
+  const { hidden } = useHiddenAssetStore();
 
   const isHidden = useCallback(
-    (asset: ParsedUserAsset) =>
-      hiddenAssets.some(
-        (uniqueId) => uniqueId === computeUniqueIdForHiddenAsset(asset),
-      ),
-    [hiddenAssets],
+    (asset: ParsedUserAsset) => {
+      return !!hidden[address]?.[computeUniqueIdForHiddenAsset(asset)];
+    },
+    [address, hidden],
   );
 
   const isMyWallet = (address: Address) =>

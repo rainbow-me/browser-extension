@@ -5,6 +5,7 @@ import { Address } from 'wagmi';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
+import { useCurrentAddressStore } from '~/core/state';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import {
   computeUniqueIdForHiddenAsset,
@@ -36,6 +37,7 @@ export function useTokensShortcuts() {
   const { featureFlags } = useFeatureFlagsStore();
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
   const { trackShortcut } = useKeyboardAnalytics();
+  const { currentAddress: address } = useCurrentAddressStore();
   const navigate = useRainbowNavigate();
   const navigateToSwaps = useNavigateToSwaps();
 
@@ -43,7 +45,7 @@ export function useTokensShortcuts() {
 
   const { pinnedAssets, removedPinnedAsset, addPinnedAsset } =
     usePinnedAssetStore();
-  const { addHiddenAsset } = useHiddenAssetStore();
+  const { toggleHideAsset } = useHiddenAssetStore();
   const location = useLocation();
   const isHomeRoute = location.pathname === ROUTES.HOME;
 
@@ -65,9 +67,8 @@ export function useTokensShortcuts() {
 
   const hideToken = useCallback(
     (_selectedToken: ParsedUserAsset) => {
-      addHiddenAsset({
-        uniqueId: computeUniqueIdForHiddenAsset(_selectedToken),
-      });
+      simulateClick(containerRef.current);
+      toggleHideAsset(address, computeUniqueIdForHiddenAsset(_selectedToken));
       if (pinned) removedPinnedAsset({ uniqueId: _selectedToken.uniqueId });
       setSelectedToken();
       triggerToast({
@@ -76,28 +77,36 @@ export function useTokensShortcuts() {
         }),
       });
     },
-    [pinned, addHiddenAsset, removedPinnedAsset, setSelectedToken],
+    [
+      containerRef,
+      address,
+      pinned,
+      removedPinnedAsset,
+      setSelectedToken,
+      toggleHideAsset,
+    ],
   );
 
   const togglePinToken = useCallback(
     (_selectedToken: ParsedUserAsset) => {
       if (pinned) {
+        simulateClick(containerRef.current);
         removedPinnedAsset({ uniqueId: _selectedToken.uniqueId });
         triggerToast({
           title: i18n.t('token_details.toast.unpin_token', {
             name: _selectedToken.symbol,
           }),
         });
-        simulateClick(containerRef.current);
+
         return;
       }
+      simulateClick(containerRef.current);
       addPinnedAsset({ uniqueId: _selectedToken.uniqueId });
       triggerToast({
         title: i18n.t('token_details.toast.pin_token', {
           name: _selectedToken.symbol,
         }),
       });
-      simulateClick(containerRef.current);
     },
     [pinned, containerRef, addPinnedAsset, removedPinnedAsset],
   );

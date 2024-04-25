@@ -283,8 +283,9 @@ function MoreOptions({
   token: ParsedUserAsset;
   swappable: boolean;
 }) {
-  const { hiddenAssets, removeHiddenAsset, addHiddenAsset } =
-    useHiddenAssetStore();
+  const { toggleHideAsset, hidden: hiddenStore } = useHiddenAssetStore();
+
+  const { currentAddress: address } = useCurrentAddressStore();
 
   const { pinnedAssets, removedPinnedAsset, addPinnedAsset } =
     usePinnedAssetStore();
@@ -303,11 +304,10 @@ function MoreOptions({
   }, [resetSelectedToken]);
 
   const isHidden = useCallback(
-    (asset: ParsedUserAsset) =>
-      hiddenAssets.some(
-        (uniqueId) => uniqueId === computeUniqueIdForHiddenAsset(asset),
-      ),
-    [hiddenAssets],
+    (asset: ParsedUserAsset) => {
+      return !!hiddenStore[address]?.[computeUniqueIdForHiddenAsset(asset)];
+    },
+    [address, hiddenStore],
   );
 
   const hidden = isHidden(token);
@@ -318,8 +318,9 @@ function MoreOptions({
   );
 
   const toggleHideToken = useCallback(() => {
+    if (pinned) removedPinnedAsset({ uniqueId: token.uniqueId });
+    toggleHideAsset(address, computeUniqueIdForHiddenAsset(token));
     if (hidden) {
-      removeHiddenAsset({ uniqueId: computeUniqueIdForHiddenAsset(token) });
       triggerToast({
         title: i18n.t('token_details.toast.unhide_token', {
           name: token.symbol,
@@ -327,21 +328,12 @@ function MoreOptions({
       });
       return;
     }
-    if (pinned) removedPinnedAsset({ uniqueId: token.uniqueId });
-    addHiddenAsset({ uniqueId: computeUniqueIdForHiddenAsset(token) });
     triggerToast({
       title: i18n.t('token_details.toast.hide_token', {
         name: token.symbol,
       }),
     });
-  }, [
-    token,
-    hidden,
-    pinned,
-    removedPinnedAsset,
-    addHiddenAsset,
-    removeHiddenAsset,
-  ]);
+  }, [hidden, pinned, removedPinnedAsset, token, toggleHideAsset, address]);
 
   const togglePinToken = useCallback(() => {
     if (pinned) {

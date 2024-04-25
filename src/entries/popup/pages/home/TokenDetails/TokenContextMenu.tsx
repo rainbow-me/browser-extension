@@ -3,6 +3,7 @@ import { ReactNode, useCallback } from 'react';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
+import { useCurrentAddressStore } from '~/core/state';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import {
   computeUniqueIdForHiddenAsset,
@@ -18,7 +19,9 @@ import { goToNewTab } from '~/core/utils/tabs';
 import { getTokenBlockExplorer } from '~/core/utils/transactions';
 import { Text, TextOverflow } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
+import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
+import { simulateClick } from '~/entries/popup/utils/simulateClick';
 
 import {
   ContextMenuContent,
@@ -41,9 +44,10 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
   const { isWatchingWallet } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
   const setSelectedToken = useSelectedTokenStore((s) => s.setSelectedToken);
+  const { currentAddress: address } = useCurrentAddressStore();
   const { pinnedAssets, removedPinnedAsset, addPinnedAsset } =
     usePinnedAssetStore();
-  const { addHiddenAsset } = useHiddenAssetStore();
+  const { toggleHideAsset } = useHiddenAssetStore();
   const pinned = pinnedAssets.some(
     ({ uniqueId }) => uniqueId === token.uniqueId,
   );
@@ -66,6 +70,7 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
 
   const explorer = getTokenBlockExplorer(token);
   const isNative = isNativeAsset(token?.address, token?.chainId);
+  const containerRef = useContainerRef();
 
   const onSwap = () => {
     setSelectedToken(token);
@@ -90,24 +95,28 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
 
   const togglePinToken = useCallback(() => {
     if (pinned) {
+      simulateClick(containerRef.current);
       removedPinnedAsset({ uniqueId: token.uniqueId });
       triggerToast({
         title: i18n.t('token_details.toast.unpin_token', {
           name: token.symbol,
         }),
       });
+
       return;
     }
+    simulateClick(containerRef.current);
     addPinnedAsset({ uniqueId: token.uniqueId });
     triggerToast({
       title: i18n.t('token_details.toast.pin_token', {
         name: token.symbol,
       }),
     });
-  }, [token, pinned, addPinnedAsset, removedPinnedAsset]);
+  }, [token, containerRef, pinned, addPinnedAsset, removedPinnedAsset]);
 
   const hideToken = useCallback(() => {
-    addHiddenAsset({ uniqueId: computeUniqueIdForHiddenAsset(token) });
+    simulateClick(containerRef.current);
+    toggleHideAsset(address, computeUniqueIdForHiddenAsset(token));
     if (pinned) removedPinnedAsset({ uniqueId: token.uniqueId });
     setSelectedToken();
     triggerToast({
@@ -115,7 +124,15 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
         name: token.symbol,
       }),
     });
-  }, [token, pinned, addHiddenAsset, removedPinnedAsset, setSelectedToken]);
+  }, [
+    token,
+    containerRef,
+    address,
+    pinned,
+    toggleHideAsset,
+    removedPinnedAsset,
+    setSelectedToken,
+  ]);
 
   const copyTokenAddress = useCallback(() => {
     if (isNative) return;
