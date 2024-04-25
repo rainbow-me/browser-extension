@@ -80,6 +80,15 @@ export function App() {
       setTimeout(() => flushQueuedEvents(), 1000);
     }
 
+    TrezorConnect.init({
+      manifest: {
+        email: 'support@rainbow.me',
+        appUrl: 'https://rainbow.me',
+      },
+      transports: ['BridgeTransport', 'WebUsbTransport'],
+      connectSrc: 'https://connect.trezor.io/9/',
+    });
+
     if (process.env.IS_DEV !== 'true') {
       document.addEventListener('contextmenu', (e) => e.preventDefault());
     }

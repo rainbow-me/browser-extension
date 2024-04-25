@@ -13,6 +13,7 @@ import { ChainId } from '../types/chains';
 export async function signTransactionFromTrezor(
   transaction: TransactionRequest,
   path?: string,
+  fromPopup?: boolean,
 ): Promise<string> {
   try {
     const { from: address } = transaction;
@@ -32,10 +33,14 @@ export async function signTransactionFromTrezor(
 
     let forceLegacy = false;
 
+    console.log('1');
+
     // Trezor doesn't support type 2 for these networks yet
     if (LEGACY_CHAINS_FOR_HW.includes(transaction.chainId as ChainId)) {
       forceLegacy = true;
     }
+
+    console.log('2');
 
     if (transaction.gasPrice) {
       baseTx.gasPrice = transaction.gasPrice;
@@ -46,16 +51,35 @@ export async function signTransactionFromTrezor(
       baseTx.gasPrice = transaction.maxFeePerGas;
     }
 
-    const nonceHex = BigNumber.from(transaction.nonce).toHexString();
-    const response = await TrezorConnect.ethereumSignTransaction({
-      path,
-      transaction: {
-        ...baseTx,
-        nonce: nonceHex,
-      },
-    });
+    console.log('3');
 
-    if (response.success) {
+    const nonceHex = BigNumber.from(transaction.nonce).toHexString();
+    console.log('33');
+
+    let response;
+
+    if (!fromPopup) {
+      response = await TrezorConnect.ethereumSignTransaction({
+        path,
+        transaction: {
+          ...baseTx,
+          nonce: nonceHex,
+        },
+      });
+    } else {
+      console.log('IN WINDOW FLOW');
+      response = await window.TrezorConnect.ethereumSignTransaction({
+        path,
+        transaction: {
+          ...baseTx,
+          nonce: nonceHex,
+        },
+      });
+    }
+
+    console.log('4');
+
+    if (response.payload) {
       if (baseTx.maxFeePerGas) {
         baseTx.type = 2;
       }
@@ -67,6 +91,7 @@ export async function signTransactionFromTrezor(
 
       const parsedTx = parse(serializedTransaction);
       if (parsedTx.from?.toLowerCase() !== address?.toLowerCase()) {
+        console.log('6');
         throw new Error('Transaction was not signed by the right address');
       }
 

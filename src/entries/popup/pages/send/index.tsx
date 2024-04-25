@@ -355,6 +355,7 @@ export function Send() {
             chainId: activeChainId,
             data,
           });
+          console.log('RESULT on send screen: ', result);
           if (result && asset) {
             const transaction: NewTransaction = buildPendingTransaction(result);
             addNewTransaction({

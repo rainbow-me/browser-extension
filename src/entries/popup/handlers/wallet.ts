@@ -19,6 +19,7 @@ import {
 } from '~/core/raps/references';
 import { gasStore } from '~/core/state';
 import { SessionStorage } from '~/core/storage';
+import { signTransactionFromTrezor } from '~/core/trezor/actions';
 import {
   TransactionGasParams,
   TransactionLegacyGasParams,
@@ -87,6 +88,8 @@ export const signTransactionFromHW = async (
 
   if (vendor === 'Ledger') {
     return signTransactionFromLedger(params);
+  } else if (vendor === 'Trezor') {
+    return signTransactionFromTrezor(params);
   }
 };
 

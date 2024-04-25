@@ -24,13 +24,17 @@ export async function sendTransactionFromTrezor(
   transaction: TransactionRequest,
 ): Promise<TransactionResponse> {
   const path = await getPath(transaction.from as Address);
+  console.log('ABOUT TO SIGN FROM TREZOR', path);
   const serializedTransaction = await signTransactionFromTrezor(
     transaction,
     path,
+    true,
   );
+  console.log('AFTER SERIALIZED TX');
   const provider = getProvider({
     chainId: transaction.chainId,
   });
+  console.log('SENIND THE TX');
   return provider.sendTransaction(serializedTransaction);
 }
 
