@@ -162,7 +162,7 @@ export const favoritesStore = createStore<FavoritesState>(
   {
     persist: {
       name: 'favorites',
-      version: migrations.length - 1,
+      version: migrations.length,
       migrate: migrate(migrations),
     },
   },

@@ -274,7 +274,7 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
   {
     persist: {
       name: 'rainbowChains',
-      version: 8,
+      version: migrations.length,
       migrate: migrate(migrations),
     },
   },
