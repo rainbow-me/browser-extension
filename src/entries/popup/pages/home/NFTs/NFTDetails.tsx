@@ -85,7 +85,7 @@ import chunkLinks from '~/entries/popup/utils/chunkLinks';
 import { BirdIcon } from './BirdIcon';
 import NFTContextMenu from './NFTContextMenu';
 import NFTDropdownMenu from './NFTDropdownMenu';
-import { getOpenseaUrl } from './utils';
+import { getOpenseaUrl, getRaribleUrl } from './utils';
 
 export default function NFTDetails() {
   const { currentAddress: address } = useCurrentAddressStore();
@@ -281,6 +281,24 @@ export default function NFTDetails() {
                         tabIndex={0}
                       >
                         {'OpenSea'}
+                      </Button>
+                    </Column>
+                  )}
+                  {!isPOAP && isWatchingWallet && (
+                    <Column>
+                      <Button
+                        width="full"
+                        color="accent"
+                        height="36px"
+                        variant="flat"
+                        borderRadius="round"
+                        symbol="arrow.up.right.square.fill"
+                        onClick={() =>
+                          goToNewTab({ url: getRaribleUrl({ nft }) })
+                        }
+                        tabIndex={0}
+                      >
+                        {'Rarible'}
                       </Button>
                     </Column>
                   )}
