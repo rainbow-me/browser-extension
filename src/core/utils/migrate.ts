@@ -16,7 +16,7 @@ interface Migrator {
 export const migrate: Migrator = (migrations: ((s: any) => any)[]) => {
   return (persistedState: any, version: number) => {
     return migrations
-      .slice(0, version) // Use slice to select up to the specified version
+      .toSpliced(0, version)
       .reduce((acc, fn) => fn(acc), persistedState);
   };
 };
