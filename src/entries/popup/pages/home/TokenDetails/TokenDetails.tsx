@@ -395,7 +395,7 @@ function MoreOptions({
         <AccentColorProvider
           color={token.colors?.primary || token.colors?.fallback}
         >
-          {!hidden && !isWatchingWallet && (
+          {!hidden && (
             <DropdownMenuItem
               symbolLeft="pin.fill"
               onSelect={togglePinToken}
@@ -445,7 +445,7 @@ function MoreOptions({
                   </Text>
                 </DropdownMenuItem>
               )}
-              {(!isWatchingWallet || !isNative) && <DropdownMenuSeparator />}
+              <DropdownMenuSeparator />
               <DropdownMenuItem
                 symbolLeft="safari"
                 external
@@ -592,9 +592,7 @@ export function TokenDetails() {
           rightComponent={
             <Inline alignVertical="center" space="7px">
               {isSwappable && <FavoriteButton token={token} />}
-              {(isSwappable || !isWatchingWallet) && (
-                <MoreOptions swappable={isSwappable} token={token} />
-              )}
+              <MoreOptions swappable={isSwappable} token={token} />
             </Inline>
           }
         />

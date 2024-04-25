@@ -155,28 +155,26 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
             {`${i18n.t('token_details.send')} ${token.symbol}`}
           </ContextMenuItem>
         )}
-        {!isWatchingWallet && (
-          <ContextMenuItem
-            symbolLeft="pin.fill"
-            onSelect={togglePinToken}
-            shortcut={shortcuts.tokens.PIN_ASSET.display}
+        <ContextMenuItem
+          symbolLeft="pin.fill"
+          onSelect={togglePinToken}
+          shortcut={shortcuts.tokens.PIN_ASSET.display}
+        >
+          <TextOverflow
+            size="14pt"
+            weight="semibold"
+            color="label"
+            testId="account-name"
           >
-            <TextOverflow
-              size="14pt"
-              weight="semibold"
-              color="label"
-              testId="account-name"
-            >
-              {pinned
-                ? i18n.t('token_details.more_options.unpin_token', {
-                    name: token.symbol,
-                  })
-                : i18n.t('token_details.more_options.pin_token', {
-                    name: token.symbol,
-                  })}
-            </TextOverflow>
-          </ContextMenuItem>
-        )}
+            {pinned
+              ? i18n.t('token_details.more_options.unpin_token', {
+                  name: token.symbol,
+                })
+              : i18n.t('token_details.more_options.pin_token', {
+                  name: token.symbol,
+                })}
+          </TextOverflow>
+        </ContextMenuItem>
         {!isWatchingWallet && (
           <ContextMenuItem
             symbolLeft="eye.slash.fill"

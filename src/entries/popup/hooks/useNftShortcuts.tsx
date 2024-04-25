@@ -16,61 +16,94 @@ import { simulateClick } from '../utils/simulateClick';
 import useKeyboardAnalytics from './useKeyboardAnalytics';
 import { useKeyboardShortcut } from './useKeyboardShortcut';
 import { useRainbowNavigate } from './useRainbowNavigate';
+import { useWallets } from './useWallets';
 
 export function useNftShortcuts(nft?: UniqueAsset | null) {
   const { currentAddress: address } = useCurrentAddressStore();
   const containerRef = useContainerRef();
   const { selectedNft, setSelectedNft } = useSelectedNftStore();
+  const { isWatchingWallet } = useWallets();
   const { trackShortcut } = useKeyboardAnalytics();
-  const { toggleHideNFT } = useNftsStore();
+  const { hidden, toggleHideNFT } = useNftsStore();
   const navigate = useRainbowNavigate();
   const nftToFocus = nft ?? selectedNft;
   const getNftIsSelected = useCallback(() => !!nftToFocus, [nftToFocus]);
   const downloadLink = useRef<HTMLAnchorElement>(null);
   const nftUniqueId = nftToFocus?.uniqueId || '';
 
+  const hiddenNftsForAddress = hidden[address] || {};
+  const displayed = !hiddenNftsForAddress[nftToFocus?.uniqueId || ''];
+
   const handleCopyId = useCallback(() => {
     if (nftToFocus) {
+      simulateClick(containerRef.current);
       navigator.clipboard.writeText(nftToFocus.id);
       triggerToast({
         title: i18n.t('nfts.details.copy_token_id'),
         description: nftToFocus.id,
       });
     }
-  }, [nftToFocus]);
+  }, [containerRef, nftToFocus]);
 
   const handleDownload = useCallback(() => {
+    simulateClick(containerRef.current);
     downloadLink.current?.click();
     const link = document.createElement('a');
     link.setAttribute('download', '');
     link.href = nftToFocus?.image_url || '';
     link.click();
     link.remove();
-  }, [nftToFocus?.image_url]);
+  }, [containerRef, nftToFocus?.image_url]);
 
   const handleHideNft = useCallback(() => {
-    toggleHideNFT(address, nftUniqueId);
-  }, [address, nftUniqueId, toggleHideNFT]);
+    if (!isWatchingWallet) {
+      simulateClick(containerRef.current);
+      toggleHideNFT(address, nftUniqueId);
+      if (displayed) {
+        triggerToast({
+          title: i18n.t('nfts.toast.hidden'),
+        });
+      } else {
+        triggerToast({
+          title: i18n.t('nfts.toast.unhidden'),
+        });
+      }
+    }
+  }, [
+    displayed,
+    isWatchingWallet,
+    containerRef,
+    address,
+    nftUniqueId,
+    toggleHideNFT,
+  ]);
 
   const handleSendNft = useCallback(() => {
-    if (nftToFocus) {
+    if (nftToFocus && !isWatchingWallet) {
+      simulateClick(containerRef.current);
       setSelectedNft(nftToFocus);
       navigate(ROUTES.SEND, { replace: true });
     }
-  }, [nftToFocus, navigate, setSelectedNft]);
+  }, [nftToFocus, isWatchingWallet, containerRef, setSelectedNft, navigate]);
 
   const handleReportNft = useCallback(() => {
-    if (nftToFocus) {
+    if (nftToFocus && !isWatchingWallet) {
+      simulateClick(containerRef.current);
       reportNftAsSpam(nftToFocus);
       toggleHideNFT(address, nftUniqueId);
       triggerToast({ title: i18n.t('nfts.toast.spam_reported') });
     }
-  }, [nftToFocus, address, nftUniqueId, toggleHideNFT]);
+  }, [
+    containerRef,
+    isWatchingWallet,
+    nftToFocus,
+    address,
+    nftUniqueId,
+    toggleHideNFT,
+  ]);
 
   const handleNftShortcuts = useCallback(
     (e: KeyboardEvent) => {
-      simulateClick(containerRef.current);
-
       if (e.key === shortcuts.nfts.DOWNLOAD_NFT.key) {
         handleDownload();
         trackShortcut({
@@ -108,7 +141,6 @@ export function useNftShortcuts(nft?: UniqueAsset | null) {
       }
     },
     [
-      containerRef,
       handleDownload,
       trackShortcut,
       handleCopyId,

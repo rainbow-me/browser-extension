@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useRef } from 'react';
+import { ReactNode, useCallback } from 'react';
 
 import { i18n } from '~/core/languages';
 import { reportNftAsSpam } from '~/core/network/nfts';
@@ -78,8 +78,6 @@ export default function NFTDropdownMenu({
 
   const openseaUrl = getOpenseaUrl({ nft });
 
-  const downloadLink = useRef<HTMLAnchorElement>(null);
-
   const copyId = useCallback(() => {
     navigator.clipboard.writeText(nft?.id as string);
     triggerToast({
@@ -103,6 +101,27 @@ export default function NFTDropdownMenu({
     }
   }, [nft, nftUniqueId, address, toggleHideNFT]);
 
+  const handleDownload = useCallback(() => {
+    const link = document.createElement('a');
+    link.setAttribute('download', '');
+    link.href = nft?.image_url || '';
+    link.click();
+    link.remove();
+  }, [nft?.image_url]);
+
+  const handleHideNFT = useCallback(() => {
+    toggleHideNFT(address, nftUniqueId);
+    if (displayed) {
+      triggerToast({
+        title: i18n.t('nfts.toast.hidden'),
+      });
+    } else {
+      triggerToast({
+        title: i18n.t('nfts.toast.unhidden'),
+      });
+    }
+  }, [address, displayed, nftUniqueId, toggleHideNFT]);
+
   const onValueChange = (
     value:
       | 'send'
@@ -124,10 +143,10 @@ export default function NFTDropdownMenu({
         goToNewTab({ url: openseaUrl });
         break;
       case 'download':
-        downloadLink.current?.click();
+        handleDownload();
         break;
       case 'hide':
-        toggleHideNFT(address, nftUniqueId);
+        handleHideNFT();
         break;
       case 'send':
         handleSendNft();
@@ -241,11 +260,9 @@ export default function NFTDropdownMenu({
                       />
                     }
                     centerComponent={
-                      <Box paddingVertical="6px" cursor="pointer">
-                        <Text size="14pt" weight="semibold" cursor="pointer">
-                          <a href={nft?.image_url} download ref={downloadLink}>
-                            {i18n.t('nfts.details.download')}
-                          </a>
+                      <Box paddingVertical="6px">
+                        <Text size="14pt" weight="semibold">
+                          {i18n.t('nfts.details.download')}
                         </Text>
                       </Box>
                     }

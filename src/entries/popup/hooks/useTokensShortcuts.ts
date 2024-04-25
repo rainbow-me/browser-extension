@@ -149,7 +149,7 @@ export function useTokensShortcuts() {
           navigate(ROUTES.BRIDGE);
         }
 
-        if (e.key === shortcuts.tokens.SEND_ASSET.key) {
+        if (e.key === shortcuts.tokens.SEND_ASSET.key && !isWatchingWallet) {
           trackShortcut({
             key: shortcuts.tokens.SEND_ASSET.display,
             type: 'tokens.goToSend',
@@ -163,7 +163,6 @@ export function useTokensShortcuts() {
           });
           hasExplorerLink && viewOnExplorer();
         }
-
         if (e.key === shortcuts.tokens.PIN_ASSET.key) {
           trackShortcut({
             key: shortcuts.tokens.PIN_ASSET.display,
@@ -171,7 +170,7 @@ export function useTokensShortcuts() {
           });
           togglePinToken(selectedToken);
         }
-        if (e.key === shortcuts.tokens.HIDE_ASSET.key) {
+        if (e.key === shortcuts.tokens.HIDE_ASSET.key && !isWatchingWallet) {
           trackShortcut({
             key: shortcuts.tokens.HIDE_ASSET.display,
             type: 'tokenDetailsMenu.hide',
@@ -188,18 +187,19 @@ export function useTokensShortcuts() {
       }
     },
     [
-      isHomeRoute,
-      allowSwap,
-      copyTokenAddress,
-      hasExplorerLink,
-      hideToken,
-      navigate,
-      navigateToSwaps,
       selectedToken,
-      setSelectedToken,
-      togglePinToken,
+      isHomeRoute,
+      isWatchingWallet,
+      allowSwap,
       trackShortcut,
+      navigateToSwaps,
+      setSelectedToken,
+      navigate,
+      hasExplorerLink,
       viewOnExplorer,
+      togglePinToken,
+      hideToken,
+      copyTokenAddress,
     ],
   );
   useKeyboardShortcut({

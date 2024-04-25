@@ -7,6 +7,7 @@ import { simulateClick } from '../utils/simulateClick';
 
 import useKeyboardAnalytics from './useKeyboardAnalytics';
 import { useKeyboardShortcut } from './useKeyboardShortcut';
+import { useWallets } from './useWallets';
 
 interface UseTokenDetailsShortcutsParameters {
   getTokenExists: () => boolean;
@@ -22,7 +23,7 @@ export function useTokenDetailsShortcuts({
   copyTokenAddress,
 }: UseTokenDetailsShortcutsParameters) {
   const { trackShortcut } = useKeyboardAnalytics();
-
+  const { isWatchingWallet } = useWallets();
   const containerRef = useContainerRef();
 
   const handleTokenShortcuts = useCallback(
@@ -35,7 +36,7 @@ export function useTokenDetailsShortcuts({
         });
         togglePinToken();
       }
-      if (e.key === shortcuts.tokens.HIDE_ASSET.key) {
+      if (e.key === shortcuts.tokens.HIDE_ASSET.key && !isWatchingWallet) {
         simulateClick(containerRef.current);
         trackShortcut({
           key: shortcuts.tokens.HIDE_ASSET.display,
@@ -53,6 +54,7 @@ export function useTokenDetailsShortcuts({
       }
     },
     [
+      isWatchingWallet,
       containerRef,
       trackShortcut,
       togglePinToken,

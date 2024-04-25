@@ -1351,7 +1351,9 @@
       "view_gallery": "View Gallery"
     },
     "toast": {
-      "spam_reported": "Your report has been received!"
+      "spam_reported": "Your report has been received!",
+      "hidden": "NFT hidden",
+      "unhidden": "NFT unhidden"
     }
   },
   "points": {

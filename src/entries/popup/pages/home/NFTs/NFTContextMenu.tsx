@@ -75,8 +75,6 @@ export default function NFTContextMenu({
 
   const openseaUrl = getOpenseaUrl({ nft: nftToFocus });
 
-  const downloadLink = useRef<HTMLAnchorElement>(null);
-
   const handleCopyId = useCallback(() => {
     navigator.clipboard.writeText(nftToFocus?.id as string);
     triggerToast({
@@ -108,6 +106,15 @@ export default function NFTContextMenu({
     }
   }, [containerRef, nftToFocus, address, nftUniqueId, toggleHideNFT]);
 
+  const handleDownload = useCallback(() => {
+    simulateClick(containerRef.current);
+    const link = document.createElement('a');
+    link.setAttribute('download', '');
+    link.href = nftToFocus?.image_url || '';
+    link.click();
+    link.remove();
+  }, [containerRef, nftToFocus?.image_url]);
+
   return (
     <DetailsMenuWrapper closed={true} onOpenChange={handleOpenChange}>
       <ContextMenuTrigger asChild>
@@ -138,6 +145,15 @@ export default function NFTContextMenu({
                 onSelect={() => {
                   simulateClick(containerRef.current);
                   toggleHideNFT(address, nftUniqueId);
+                  if (displayed) {
+                    triggerToast({
+                      title: i18n.t('nfts.toast.hidden'),
+                    });
+                  } else {
+                    triggerToast({
+                      title: i18n.t('nfts.toast.unhidden'),
+                    });
+                  }
                 }}
                 shortcut={shortcuts.nfts.HIDE_NFT.display}
               >
@@ -162,13 +178,11 @@ export default function NFTContextMenu({
             {nftToFocus?.image_url && (
               <ContextMenuItem
                 symbolLeft={'arrow.down.circle.fill'}
-                onSelect={() => downloadLink.current?.click()}
+                onSelect={handleDownload}
                 shortcut={shortcuts.nfts.DOWNLOAD_NFT.display}
               >
                 <Text size="14pt" weight="semibold">
-                  <a href={nftToFocus?.image_url} download ref={downloadLink}>
-                    {i18n.t('nfts.details.download')}
-                  </a>
+                  {i18n.t('nfts.details.download')}
                 </Text>
               </ContextMenuItem>
             )}
