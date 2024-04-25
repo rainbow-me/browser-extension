@@ -45,12 +45,10 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
   const { featureFlags } = useFeatureFlagsStore();
   const setSelectedToken = useSelectedTokenStore((s) => s.setSelectedToken);
   const { currentAddress: address } = useCurrentAddressStore();
-  const { pinnedAssets, removedPinnedAsset, addPinnedAsset } =
-    usePinnedAssetStore();
+  const { pinned: pinnedStore, togglePinAsset } = usePinnedAssetStore();
   const { toggleHideAsset } = useHiddenAssetStore();
-  const pinned = pinnedAssets.some(
-    ({ uniqueId }) => uniqueId === token.uniqueId,
-  );
+
+  const pinned = !!pinnedStore[address]?.[token.uniqueId]?.pinned;
 
   // if we are navigating to new page (swap/send) the menu closes automatically,
   // we don't want deselect the token in that case
@@ -94,30 +92,34 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
   };
 
   const togglePinToken = useCallback(() => {
+    simulateClick(containerRef.current);
+    togglePinAsset(address, token.uniqueId);
     if (pinned) {
-      simulateClick(containerRef.current);
-      removedPinnedAsset({ uniqueId: token.uniqueId });
       triggerToast({
         title: i18n.t('token_details.toast.unpin_token', {
           name: token.symbol,
         }),
       });
-
       return;
     }
-    simulateClick(containerRef.current);
-    addPinnedAsset({ uniqueId: token.uniqueId });
     triggerToast({
       title: i18n.t('token_details.toast.pin_token', {
         name: token.symbol,
       }),
     });
-  }, [token, containerRef, pinned, addPinnedAsset, removedPinnedAsset]);
+  }, [
+    token.uniqueId,
+    token.symbol,
+    pinned,
+    containerRef,
+    togglePinAsset,
+    address,
+  ]);
 
   const hideToken = useCallback(() => {
     simulateClick(containerRef.current);
     toggleHideAsset(address, computeUniqueIdForHiddenAsset(token));
-    if (pinned) removedPinnedAsset({ uniqueId: token.uniqueId });
+    if (pinned) togglePinAsset(address, token.uniqueId);
     setSelectedToken();
     triggerToast({
       title: i18n.t('token_details.toast.hide_token', {
@@ -130,7 +132,7 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
     address,
     pinned,
     toggleHideAsset,
-    removedPinnedAsset,
+    togglePinAsset,
     setSelectedToken,
   ]);
 

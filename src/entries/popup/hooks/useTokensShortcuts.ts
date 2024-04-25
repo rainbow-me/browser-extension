@@ -43,8 +43,7 @@ export function useTokensShortcuts() {
 
   const containerRef = useContainerRef();
 
-  const { pinnedAssets, removedPinnedAsset, addPinnedAsset } =
-    usePinnedAssetStore();
+  const { pinned: pinnedStore, togglePinAsset } = usePinnedAssetStore();
   const { toggleHideAsset } = useHiddenAssetStore();
   const location = useLocation();
   const isHomeRoute = location.pathname === ROUTES.HOME;
@@ -53,10 +52,9 @@ export function useTokensShortcuts() {
     selectedToken &&
     !isNativeAsset(selectedToken?.address, selectedToken?.chainId);
 
-  const pinned = pinnedAssets.some(({ uniqueId }) => {
-    if (!selectedToken) return false;
-    return uniqueId === selectedToken.uniqueId;
-  });
+  const pinned = selectedToken
+    ? !!pinnedStore[address]?.[selectedToken.uniqueId]?.pinned
+    : false;
 
   const allowSwap = useMemo(
     () =>
@@ -69,7 +67,7 @@ export function useTokensShortcuts() {
     (_selectedToken: ParsedUserAsset) => {
       simulateClick(containerRef.current);
       toggleHideAsset(address, computeUniqueIdForHiddenAsset(_selectedToken));
-      if (pinned) removedPinnedAsset({ uniqueId: _selectedToken.uniqueId });
+      if (pinned) togglePinAsset(address, _selectedToken.uniqueId);
       setSelectedToken();
       triggerToast({
         title: i18n.t('token_details.toast.hide_token', {
@@ -81,34 +79,31 @@ export function useTokensShortcuts() {
       containerRef,
       address,
       pinned,
-      removedPinnedAsset,
-      setSelectedToken,
       toggleHideAsset,
+      togglePinAsset,
+      setSelectedToken,
     ],
   );
 
   const togglePinToken = useCallback(
     (_selectedToken: ParsedUserAsset) => {
+      simulateClick(containerRef.current);
+      togglePinAsset(address, _selectedToken.uniqueId);
       if (pinned) {
-        simulateClick(containerRef.current);
-        removedPinnedAsset({ uniqueId: _selectedToken.uniqueId });
         triggerToast({
           title: i18n.t('token_details.toast.unpin_token', {
             name: _selectedToken.symbol,
           }),
         });
-
         return;
       }
-      simulateClick(containerRef.current);
-      addPinnedAsset({ uniqueId: _selectedToken.uniqueId });
       triggerToast({
         title: i18n.t('token_details.toast.pin_token', {
           name: _selectedToken.symbol,
         }),
       });
     },
-    [pinned, containerRef, addPinnedAsset, removedPinnedAsset],
+    [containerRef, address, togglePinAsset, pinned],
   );
 
   const copyTokenAddress = useCallback(

@@ -287,8 +287,7 @@ function MoreOptions({
 
   const { currentAddress: address } = useCurrentAddressStore();
 
-  const { pinnedAssets, removedPinnedAsset, addPinnedAsset } =
-    usePinnedAssetStore();
+  const { pinned: pinnedStore, togglePinAsset } = usePinnedAssetStore();
 
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
 
@@ -313,12 +312,11 @@ function MoreOptions({
   const hidden = isHidden(token);
   const explorer = getTokenBlockExplorer(token);
   const isNative = isNativeAsset(token.address, token.chainId);
-  const pinned = pinnedAssets.some(
-    ({ uniqueId }) => uniqueId === token.uniqueId,
-  );
+
+  const pinned = !!pinnedStore[address]?.[token.uniqueId]?.pinned;
 
   const toggleHideToken = useCallback(() => {
-    if (pinned) removedPinnedAsset({ uniqueId: token.uniqueId });
+    if (pinned) togglePinAsset(address, token.uniqueId);
     toggleHideAsset(address, computeUniqueIdForHiddenAsset(token));
     if (hidden) {
       triggerToast({
@@ -333,11 +331,11 @@ function MoreOptions({
         name: token.symbol,
       }),
     });
-  }, [hidden, pinned, removedPinnedAsset, token, toggleHideAsset, address]);
+  }, [token, hidden, pinned, togglePinAsset, toggleHideAsset, address]);
 
   const togglePinToken = useCallback(() => {
+    togglePinAsset(address, token.uniqueId);
     if (pinned) {
-      removedPinnedAsset({ uniqueId: token.uniqueId });
       triggerToast({
         title: i18n.t('token_details.toast.unpin_token', {
           name: token.symbol,
@@ -345,13 +343,12 @@ function MoreOptions({
       });
       return;
     }
-    addPinnedAsset({ uniqueId: token.uniqueId });
     triggerToast({
       title: i18n.t('token_details.toast.pin_token', {
         name: token.symbol,
       }),
     });
-  }, [token, pinned, addPinnedAsset, removedPinnedAsset]);
+  }, [token.uniqueId, token.symbol, togglePinAsset, address, pinned]);
 
   const copyTokenAddress = useCallback(() => {
     copyAddress(token.address);
