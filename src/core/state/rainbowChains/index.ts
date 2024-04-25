@@ -148,9 +148,10 @@ const migrations: ((s: RainbowChainsState) => RainbowChainsState)[] = [
       ChainId.avalanche,
       ChainId.avalancheFuji,
     ]),
-  // version 2 added support for Blast
+  // version 3 added support for Blast
   (state: RainbowChainsState) =>
     mergeNewOfficiallySupportedChainsState(state, [ChainId.blast]),
+  // version 4
   (state) =>
     removeCustomRPC({
       state,
@@ -160,6 +161,7 @@ const migrations: ((s: RainbowChainsState) => RainbowChainsState)[] = [
   // version 5 added support for Degen
   (state: RainbowChainsState) =>
     mergeNewOfficiallySupportedChainsState(state, [ChainId.degen]),
+  // version 6
   (state: RainbowChainsState) => {
     if (
       !state.rainbowChains[zora.id] ||
@@ -169,6 +171,11 @@ const migrations: ((s: RainbowChainsState) => RainbowChainsState)[] = [
     }
     return state;
   },
+  // version 7, check https://github.com/rainbow-me/browser-extension/pull/1520 we had to
+  // add dumb migrations
+  (state: RainbowChainsState) => state,
+  (state: RainbowChainsState) => state,
+  // version 8
   (state: RainbowChainsState) => {
     if (
       !state.rainbowChains[chainDegen.id] ||
@@ -267,7 +274,7 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
   {
     persist: {
       name: 'rainbowChains',
-      version: migrations.length - 1,
+      version: 8,
       migrate: migrate(migrations),
     },
   },
