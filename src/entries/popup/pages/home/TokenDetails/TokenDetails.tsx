@@ -66,7 +66,6 @@ import { useTokenDetailsShortcuts } from '~/entries/popup/hooks/useTokenDetailsS
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
-import { getActiveElement } from '~/entries/popup/utils/activeElement';
 
 import { TokenApprovalContextMenu } from '../Approvals/Approvals';
 import { triggerRevokeApproval } from '../Approvals/utils';
