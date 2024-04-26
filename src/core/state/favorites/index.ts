@@ -43,7 +43,7 @@ import {
 } from '~/core/references';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { migrate } from '~/core/utils/migrate';
+import { persistOptions } from '~/core/utils/persistOptions';
 
 import { createStore } from '../internal/createStore';
 
@@ -149,10 +149,10 @@ export const favoritesStore = createStore<FavoritesState>(
     },
   }),
   {
-    persist: {
+    persist: persistOptions({
       name: 'favorites',
       version: 4,
-      migrate: migrate(
+      migrations: [
         // version 1 didn't need a migration
         (state: FavoritesState) => state,
         // version 2 added avalanche
@@ -164,8 +164,8 @@ export const favoritesStore = createStore<FavoritesState>(
         // version 4 added degen
         (state) =>
           mergeNewOfficiallySupportedChainsState(state, [ChainId.degen]),
-      ),
-    },
+      ],
+    }),
   },
 );
 
