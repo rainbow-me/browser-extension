@@ -56,11 +56,19 @@ export const getDefaultSlippage = (chainId: ChainId) => {
 
 export const useSwapSettings = ({ chainId }: { chainId: ChainId }) => {
   const [source, setSource] = useState<Source | 'auto'>('auto');
-
-  const [slippage, setSlippage] = useState<string>(getDefaultSlippage(chainId));
+  const [slippageManuallyUpdated, setSlippageManuallyUpdated] =
+    useState<boolean>(false);
+  const [internalSlippage, setInternalSlippage] = useState<string>(
+    getDefaultSlippage(chainId),
+  );
   const { swapFlashbotsEnabled, setSwapFlashbotsEnabled } =
     useFlashbotsEnabledStore();
   const prevChainId = usePrevious(chainId);
+
+  const setSlippage = useCallback((slippage: string) => {
+    setInternalSlippage(slippage);
+    setSlippageManuallyUpdated(true);
+  }, []);
 
   const setSettings = useCallback(
     ({
@@ -76,22 +84,24 @@ export const useSwapSettings = ({ chainId }: { chainId: ChainId }) => {
       setSlippage(slippage);
       setSwapFlashbotsEnabled(swapFlashbotsEnabled);
     },
-    [setSwapFlashbotsEnabled],
+    [setSlippage, setSwapFlashbotsEnabled],
   );
 
   useEffect(() => {
     if (prevChainId !== chainId) {
       setSlippage(getDefaultSlippage(chainId));
+      setSlippageManuallyUpdated(false);
     }
-  }, [chainId, prevChainId]);
+  }, [chainId, prevChainId, setSlippage]);
 
   return {
     source,
-    slippage,
+    slippage: internalSlippage,
     swapFlashbotsEnabled,
     setSource,
     setSlippage,
     setSwapFlashbotsEnabled,
     setSettings,
+    slippageManuallyUpdated,
   };
 };

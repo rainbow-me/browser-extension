@@ -78,7 +78,7 @@
     "guides_and_support": "ガイドとサポート",
     "learn_about_ethereum": "Ethereumについて学ぶ",
     "follow_us_on_twitter": "Twitterでフォローする",
-    "share_beta_feedback": "ベータフィードバックを共有する",
+    "share_feedback": "フィードバックを共有する",
     "theme": {
       "title": "テーマ",
       "system": "システム",
@@ -235,6 +235,26 @@
           "wipe_confirmation": "Rainbowをリセット",
           "wipe_confirmation_desc": "Rainbowブラウザ拡張をリセットしてもよろしいですか？",
           "wipe_confirmation_button": "リセット",
+          "wipe_confirmation_cancel": "キャンセル"
+        },
+        "wipe_wallet_group": {
+          "delete": "ウォレットグループを削除",
+          "acknowlegement": "シークレットリカバリーフレーズをバックアップしました",
+          "warning_one": "ウォレットグループを削除すると、Rainbowからリカバリーフレーズが削除されます",
+          "warning_two": "正しいウォレット復旧情報があれば、資産と資金は回復可能です",
+          "warning_three": "進む前にシークレットリカバリーフレーズがバックアップされていることを確認してください",
+          "button_wipe": "Rainbowをリセット",
+          "button_complete": "上記のチェックを完了",
+          "wipe_confirmation": "ウォレットグループを削除",
+          "wipe_confirmation_desc": "Rainbowからシークレットリカバリーフレーズを削除してもよろしいですか？",
+          "wipe_confirmation_button": "削除する",
+          "wipe_confirmation_cancel": "キャンセル"
+        },
+        "wipe_hardware_wallet_group": {
+          "delete": "%{vendor}のペアリングを解除",
+          "wipe_confirmation": "%{vendor}のペアリングを解除",
+          "wipe_confirmation_desc": "%{vendor}とのペアリングを解除し、ウォレットの接続を切断してもよろしいですか？",
+          "wipe_confirmation_button": "ペアリング解除",
           "wipe_confirmation_cancel": "キャンセル"
         }
       }
@@ -676,6 +696,10 @@
       "price_impact": {
         "title": "小規模な市場",
         "description": "%{impactAmount}を失う"
+      },
+      "unknown_price": {
+        "title": "%{symbol}の市場価値不明",
+        "description": "続行する場合は、提示された数量に満足していることを確認してください"
       }
     },
     "aggregators": {
@@ -1314,6 +1338,7 @@
       "ens_website": "ウェブサイト",
       "registered_on": "登録日",
       "expires_in": "有効期限",
+      "report": "報告する",
       "explainer": {
         "floor_price_description": "コレクションの床価格は、現在販売中のアイテムの中で最も低い希望価格を指します。",
         "floor_price_title": "コレクションの床価格",
@@ -1321,7 +1346,12 @@
       },
       "send": "送信する",
       "view_on_opensea": "OpenSeaで見る",
-      "view_on_explorer": "%{explorerTitle}で見る"
+      "view_on_explorer": "%{explorerTitle}で見る",
+      "gallery": "ギャラリー",
+      "view_gallery": "ギャラリーを見る"
+    },
+    "toast": {
+      "spam_reported": "報告を受け付けました！"
     }
   },
   "points": {
@@ -1390,6 +1420,7 @@
       "referral_activity": "紹介アクティビティ:",
       "new_referrals": "新規紹介者:",
       "retroactive": "遡及ポイント:",
+      "bonus": "ボーナスポイント：",
       "total": "合計:",
       "weekly_counted": "週間収益が計上されました",
       "you_have": "あなたの保有:",
@@ -1432,12 +1463,23 @@
     "approvals": "トークンの承認",
     "this_token_is_on_network": "この %{symbol} は %{chainName} ネットワーク上にあります",
     "view_on": "表示 %{explorer}で",
+    "view_on_coingecko": "CoinGeckoで見る",
     "not_available": "価格は利用できません",
     "more_options": {
       "copy_address": "アドレスをコピー",
       "view_on_explorer": "表示 %{explorer}で",
       "hide": "トークンを非表示にする",
-      "report": "トークンを報告する"
+      "report": "トークンを報告する",
+      "unpin_token": "%{name}のピンを外す",
+      "pin_token": "%{name}をピン留め",
+      "hide_token": "%{name}を非表示にする",
+      "unhide_token": "%{name}の非表示を解除"
+    },
+    "toast": {
+      "hide_token": "%{name}が非表示にされました",
+      "unhide_token": "%{name}の非表示が解除されました",
+      "pin_token": "%{name}がピン留めされました",
+      "unpin_token": "%{name}のピン留めが外されました"
     },
     "about": {
       "about_token": "%{name}について",
@@ -1499,35 +1541,42 @@
   },
   "explainers": {
     "sidechains": {
-      "arbitrum": {
-        "title": "Arbitrumとは？",
-        "description_1": "ArbitrumはEthereum上で動作するLayer 2ネットワークであり、より安価で高速なトランザクションを実現することができますが、Ethereumの基本的なセキュリティを維持します。",
-        "description_2": "それは多くのトランザクションをまとめて\"ロールアップ\"し、それらをEthereumに永久に送信する前にグループ化します。"
+      "layer_two": {
+        "title": "%{chainName}とは何ですか？",
+        "description_1": "%{chainName}はイーサリアムの上で動作するレイヤー2ネットワークで、安価かつ高速なトランザクションを可能にしつつ、イーサリアムの基盤セキュリティの恩恵を受けます",
+        "description_2": "多くのトランザクションを「ロールアップ」にまとめてから、イーサリアム上に永続的に送信します"
       },
-      "optimism": {
-        "title": "Optimismとは？",
-        "description_1": "オプティミズムは、Ethereumの上で動作するLayer 2ネットワークであり、より安価かつ高速なトランザクションが可能ですが、Ethereumの基本的なセキュリティメカニズムを利用しています。",
-        "description_2": "それらをEthereumに永久的に送信する前に、複数のトランザクションを「ロールアップ」という形でまとめます。"
-      },
-      "polygon": {
-        "title": "Polygonとは？",
-        "description_1": "Polygonは、Ethereumと並行して動作する異なるネットワークであるサイドチェーンであり、Ethereumと互換性があります。",
-        "description_2": "より安価かつ高速なトランザクションが可能ですが、Layer 2ネットワークとは異なり、Polygonには独自のセキュリティとコンセンサスメカニズムがあります。"
-      },
-      "bsc": {
-        "title": "BSCとは？",
-        "description_1": "バイナンススマートチェーン（BSC）は、取引プラットフォームBinanceのためのブロックチェーンネットワークです。",
-        "description_2": "より安価かつ高速なトランザクションが可能ですが、Layer 2ネットワークとは異なり、BSCには独自のセキュリティとコンセンサスメカニズムがあります。"
-      },
-      "base": {
-        "title": "ベースとは？",
-        "description_1": "ベースは、Ethereumの基盤のセキュリティを活用しながら、より安価かつ高速なトランザクションを可能にする、Ethereum上で動作するLayer 2ネットワークです。",
-        "description_2": "トランザクションを\"ロールアップ\"してからEthereumに永久に記録する前に、多くのトランザクションをまとめて送信します。"
-      },
-      "zora": {
-        "title": "ゾーラとは？",
-        "description_1": "ZoraはEthereumの上で実行されるLayer 2ネットワークであり、より安価かつ高速なトランザクションを可能にしながら、Ethereumの基礎的なセキュリティの恩恵を受けることができます。",
-        "description_2": "それは複数のトランザクションをまとめて「ロールアップ」し、それらをEthereum上で永久に保存する前に送信します。"
+      "specific": {
+        "polygon": {
+          "title": "ポリゴンとは何ですか？",
+          "description_1": "ポリゴンはサイドチェーンで、イーサリアムと並行して動作し、互換性がある独自のネットワークです",
+          "description_2": "安価かつ高速なトランザクションを可能にしますが、レイヤー2ネットワークとは異なり、ポリゴンにはイーサリアムとは異なる独自のセキュリティと合意形成メカニズムがあります"
+        },
+        "bsc": {
+          "title": "BSCとは何ですか？",
+          "description_1": "BNBスマートチェーン、またはBSCは、暗号通貨取引所バイナンスによって開発された代替レイヤー1です。",
+          "description_2": "取引のコストが安く、スピードも速いですが、レイヤー2ネットワークとは異なり、BSCにはイーサリアムとは異なる独自のセキュリティと合意形成メカニズムがあります。"
+        },
+        "avalanche": {
+          "title": "アバランチとは何ですか？",
+          "description_1": "アバランチは、イーサリアムのサイドチェーンやレイヤー2と同様のサブネットのエコシステムによって動作する代替レイヤー1です。",
+          "description_2": "取引のコストが安く、スピードも速いですが、レイヤー2ネットワークとは異なり、アバランチにはイーサリアムとは異なる独自のセキュリティと合意形成メカニズムがあります。"
+        },
+        "blast": {
+          "title": "ブラストとは何ですか？",
+          "description_1": "ブラストは、人気のあるNFTマーケットプレイスであるブラーの背後にいる才能あるチームによって作られたイーサリアムレイヤー2（L2）プラットフォームです。",
+          "description_2": "このチェーンは、イーサ（ETH）やUSDC、USDT、DAIなどの様々なステーブルコインに対するネイティブな利回りの導入によって他と区別されています。"
+        },
+        "degen": {
+          "title": "ディージェンとは何ですか？",
+          "description_1": "ディージェンチェーンは、アービトラムとイーサリアムの上で動作するレイヤー3ネットワークです。",
+          "description_2": "非常に速く、安価な取引を提供し、Farcasterコミュニティトークン$degenで決済されます。"
+        },
+        "custom_network": {
+          "title": "このネットワークとは何ですか？",
+          "description_1": "これはあなたが追加したカスタムネットワークです！カスタムネットワークは特定のニーズに合わせて調整可能で、ユニークな機能や能力を提供します。",
+          "description_2": "その設定によって、このネットワークはパフォーマンスを最適化したり、コストを削減したり、特殊なサービスを提供するために、特有のプロトコル、セキュリティ対策、合意形成メカニズムを利用するかもしれません。"
+        }
       },
       "link_button_label": "詳細を読む",
       "action_label": "了解"
@@ -1680,6 +1729,7 @@
     "contract": "契約",
     "contract_name": "契約名",
     "contract_created_at": "契約作成日",
+    "to": "まで",
     "source_code": "ソースコード",
     "signature": {
       "message": "メッセージ"
@@ -1700,6 +1750,7 @@
   "unverified": "未確認",
   "skip": "スキップ",
   "done": "完了",
+  "view_on_explorer": "表示 %{explorer}で",
   "watch_asset": {
     "chain_id": "チェーンID",
     "symbol": "記号",

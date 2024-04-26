@@ -96,14 +96,16 @@ export const useSwapAssets = ({ bridge }: { bridge: boolean }) => {
   });
 
   const { data: buyPriceData = [] } = useAssets({
-    assetAddresses: assetToBuy ? [assetToBuy?.address] : [],
-    chainId: outputChainId,
+    assets: assetToBuy?.address
+      ? [{ address: assetToBuy?.address, chainId: outputChainId }]
+      : [],
     currency: currentCurrency,
   });
 
   const { data: sellPriceData = [] } = useAssets({
-    assetAddresses: assetToSell ? [assetToSell?.address] : [],
-    chainId: outputChainId,
+    assets: assetToSell?.address
+      ? [{ address: assetToSell?.address, chainId: outputChainId }]
+      : [],
     currency: currentCurrency,
   });
 

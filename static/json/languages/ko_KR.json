@@ -78,7 +78,7 @@
     "guides_and_support": "가이드 및 지원",
     "learn_about_ethereum": "이더리움에 대해 알아보기",
     "follow_us_on_twitter": "트위터에서 팔로우하기",
-    "share_beta_feedback": "베타 피드백 공유",
+    "share_feedback": "피드백 공유",
     "theme": {
       "title": "테마",
       "system": "시스템",
@@ -235,6 +235,26 @@
           "wipe_confirmation": "레인보우 초기화",
           "wipe_confirmation_desc": "레인보우 브라우저 확장 프로그램을 초기화하시겠습니까?",
           "wipe_confirmation_button": "초기화",
+          "wipe_confirmation_cancel": "취소"
+        },
+        "wipe_wallet_group": {
+          "delete": "지갑 그룹 제거",
+          "acknowlegement": "비밀 복구 구문을 백업했습니다.",
+          "warning_one": "지갑 그룹을 제거하면 Rainbow에서 복구 구문이 삭제됩니다.",
+          "warning_two": "올바른 지갑 복구 정보로 자산 및 자금을 복구할 수 있습니다.",
+          "warning_three": "진행하기 전에 비밀 복구 구문이 백업되었는지 확인하세요.",
+          "button_wipe": "레인보우 초기화",
+          "button_complete": "위의 확인 완료",
+          "wipe_confirmation": "지갑 그룹 제거",
+          "wipe_confirmation_desc": "Rainbow에서 비밀 복구 구문을 제거하시겠습니까?",
+          "wipe_confirmation_button": "제거",
+          "wipe_confirmation_cancel": "취소"
+        },
+        "wipe_hardware_wallet_group": {
+          "delete": "%{vendor} 연결 해제",
+          "wipe_confirmation": "%{vendor} 연결 해제",
+          "wipe_confirmation_desc": "%{vendor}를 연결 해제하고 지갑을 분리하시겠습니까?",
+          "wipe_confirmation_button": "연결 해제",
           "wipe_confirmation_cancel": "취소"
         }
       }
@@ -676,6 +696,10 @@
       "price_impact": {
         "title": "소규모 시장",
         "description": "%{impactAmount}손실"
+      },
+      "unknown_price": {
+        "title": "%{symbol} 시장 가치 알 수 없음",
+        "description": "계속하기로 결정하신다면, 제시된 금액에 만족하는지 확인하세요."
       }
     },
     "aggregators": {
@@ -1314,6 +1338,7 @@
       "ens_website": "웹사이트",
       "registered_on": "등록 일자",
       "expires_in": "만료 기간",
+      "report": "신고하기",
       "explainer": {
         "floor_price_description": "컬렉션의 최저 가격은 해당 컬렉션에서 현재 판매 중인 모든 품목 중에서 가장 낮은 요구 가격입니다.",
         "floor_price_title": "컬렉션 최저 가격",
@@ -1321,7 +1346,12 @@
       },
       "send": "전송",
       "view_on_opensea": "OpenSea에서 보기",
-      "view_on_explorer": "%{explorerTitle}에서 보기"
+      "view_on_explorer": "%{explorerTitle}에서 보기",
+      "gallery": "갤러리",
+      "view_gallery": "갤러리 보기"
+    },
+    "toast": {
+      "spam_reported": "신고가 접수되었습니다!"
     }
   },
   "points": {
@@ -1390,6 +1420,7 @@
       "referral_activity": "추천 활동:",
       "new_referrals": "새 추천인:",
       "retroactive": "소급 포인트:",
+      "bonus": "보너스 포인트:",
       "total": "총계:",
       "weekly_counted": "> 주간 수익 집계됨",
       "you_have": "보유하고 있습니다:",
@@ -1432,12 +1463,23 @@
     "approvals": "토큰 승인",
     "this_token_is_on_network": "이 %{symbol} 는 %{chainName} 네트워크에 있습니다",
     "view_on": "%{explorer}에서 보기",
+    "view_on_coingecko": "CoinGecko에서 보기",
     "not_available": "가격을 확인할 수 없습니다",
     "more_options": {
       "copy_address": "주소 복사",
       "view_on_explorer": "%{explorer}에서 보기",
       "hide": "토큰 숨기기",
-      "report": "토큰 신고"
+      "report": "토큰 신고",
+      "unpin_token": "%{name} 고정 해제",
+      "pin_token": "%{name} 고정하기",
+      "hide_token": "%{name}숨기기",
+      "unhide_token": "%{name} 숨김 해제"
+    },
+    "toast": {
+      "hide_token": "%{name}이(가) 숨겨졌습니다",
+      "unhide_token": "%{name}이(가) 숨김 해제되었습니다",
+      "pin_token": "%{name}이(가) 고정되었습니다",
+      "unpin_token": "%{name}이(가) 고정 해제되었습니다"
     },
     "about": {
       "about_token": "%{name}정보",
@@ -1499,35 +1541,42 @@
   },
   "explainers": {
     "sidechains": {
-      "arbitrum": {
-        "title": "Arbitrum이란 무엇인가요?",
-        "description_1": "Arbitrum은 Ethereum 위에서 실행되는 레이어 2 네트워크로, Ethereum의 기본 보안 효과를 유지하면서 저렴하고 빠른 거래를 가능하게 합니다.",
-        "description_2": "Arbitrum은 많은 거래를 \"롤업\"하고 이를 Ethereum에 영구적으로 적용하기 전에 번들로 만듭니다."
+      "layer_two": {
+        "title": "%{chainName}이(가) 무엇인가요?",
+        "description_1": "%{chainName}은 이더리움 위에서 실행되는 레이어 2 네트워크로, 이더리움의 보안을 유지하면서 더 저렴하고 빠른 거래를 가능하게 합니다.",
+        "description_2": "이더리움에 영구적으로 전송되기 전에 '롤업'에서 많은 거래들을 함께 묶습니다."
       },
-      "optimism": {
-        "title": "Optimism이 무엇인가요?",
-        "description_1": "Optimism은 Ethereum 위에서 작동하는 레이어 2 네트워크로, 저렴하고 빠른 거래를 가능하게 하면서 Ethereum의 기본 보안을 누릴 수 있습니다.",
-        "description_2": "Arbitrum은 많은 거래를 \"롤업\"하고 이를 Ethereum에 영구적으로 적용하기 전에 번들로 만듭니다."
-      },
-      "polygon": {
-        "title": "Polygon이 무엇인가요?",
-        "description_1": "Polygon은 Ethereum과 호환되는 별도의 네트워크인 사이드체인입니다.",
-        "description_2": "Polygon은 저렴하고 빠른 거래를 가능하게 하지만, 레이어 2 네트워크와 달리 Polygon에는 Ethereum과 다른 자체 보안 및 합의 메커니즘이 있습니다."
-      },
-      "bsc": {
-        "title": "BSC란 무엇인가요?",
-        "description_1": "Binance Smart Chain 또는 BSC는 거래 플랫폼 Binance를 위한 블록체인 네트워크입니다.",
-        "description_2": "더 저렴하고 빠른 거래를 가능하게 하지만 Layer 2 네트워크와 달리 BSC는 Ethereum과 다른 보안 및 합의 메커니즘이 있습니다."
-      },
-      "base": {
-        "title": "Base란 무엇인가요?",
-        "description_1": "Base는 이더리움 위에서 작동하는 Layer 2 네트워크로, 더 저렴하고 빠른 거래를 가능하게하면서도 이더리움의 기본적인 보안 혜택을 누릴 수 있습니다.",
-        "description_2": "Arbitrum은 많은 거래를 \"롤업\"하고 이를 Ethereum에 영구적으로 적용하기 전에 번들로 만듭니다."
-      },
-      "zora": {
-        "title": "Zora가 무엇인가요?",
-        "description_1": "Zora는 Ethereum 위에서 실행되는 Layer 2 네트워크로, 더 싼 비용과 더 빠른 거래를 가능케 하면서도 Ethereum의 기본적인 보안을 누릴 수 있습니다.",
-        "description_2": "Arbitrum은 많은 거래를 \"롤업\"하고 이를 Ethereum에 영구적으로 적용하기 전에 번들로 만듭니다."
+      "specific": {
+        "polygon": {
+          "title": "폴리곤이란?",
+          "description_1": "폴리곤은 이더리움과 호환되는 별도의 네트워크로, 이더리움과 함께 실행됩니다.",
+          "description_2": "폴리곤은 더 저렴하고 빠른 거래를 가능하게 하지만, 레이어 2 네트워크와 달리 자체 보안 및 합의 메커니즘이 이더리움과 다릅니다."
+        },
+        "bsc": {
+          "title": "BSC란 무엇인가요?",
+          "description_1": "바이낸스 스마트 체인(BSC)은 바이낸스가 개발한 대체 레이어 1입니다.",
+          "description_2": "저렴하고 빠른 거래를 가능하게 하지만, 레이어 2 네트워크와 달리 BSC는 이더리움과 다른 보안 및 합의 메커니즘을 가집니다."
+        },
+        "avalanche": {
+          "title": "어벌랜치란 무엇인가요?",
+          "description_1": "어벌랜치는 이더리움 사이드체인 및 레이어 2와 유사한 서브넷 생태계를 기반으로 하는 대체 레이어 1입니다.",
+          "description_2": "저렴하고 빠른 거래를 가능하게 하지만, 레이어 2 네트워크와 달리 어벌랜치는 이더리움과 다른 보안 및 합의 메커니즘을 가집니다."
+        },
+        "blast": {
+          "title": "블라스트란 무엇인가요?",
+          "description_1": "블라스트는 인기 있는 NFT 마켓플레이스인 블러 뒤의 재능 있는 팀이 만든 이더리움 레이어-2(L2) 플랫폼입니다.",
+          "description_2": "이 체인은 이더(ETH)와 USDC, USDT, DAI와 같은 다양한 스테이블코인에 대한 네이티브 수익을 도입함으로써 자신을 차별화합니다."
+        },
+        "degen": {
+          "title": "디젠이란 무엇인가요?",
+          "description_1": "디젠 체인은 아비트럼과 이더리움 위에서 운영되는 레이어 3 네트워크입니다.",
+          "description_2": "파캐스터 커뮤니티 토큰 $degen으로 표시된 놀라울 정도로 빠르고 저렴한 거래를 제공합니다."
+        },
+        "custom_network": {
+          "title": "이 네트워크란 무엇인가요?",
+          "description_1": "이것은 사용자가 추가한 맞춤 네트워크입니다! 맞춤 네트워크는 특정 요구에 맞게 조정될 수 있으며, 독특한 기능과 능력을 제공합니다.",
+          "description_2": "그 구성에 따라 이 네트워크는 성능 최적화, 비용 절감 또는 특화된 서비스 제공을 위해 설계된 독특한 프로토콜, 보안 조치 및 합의 메커니즘을 사용할 수 있습니다."
+        }
       },
       "link_button_label": "더 읽기",
       "action_label": "알았습니다"
@@ -1680,6 +1729,7 @@
     "contract": "계약",
     "contract_name": "계약 이름",
     "contract_created_at": "계약 생성됨",
+    "to": "수신",
     "source_code": "소스 코드",
     "signature": {
       "message": "메시지"
@@ -1700,6 +1750,7 @@
   "unverified": "인증되지 않음",
   "skip": "건너뛰기",
   "done": "완료",
+  "view_on_explorer": "%{explorer}에서 보기",
   "watch_asset": {
     "chain_id": "체인 ID",
     "symbol": "심볼",
