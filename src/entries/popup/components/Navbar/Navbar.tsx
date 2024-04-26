@@ -194,10 +194,10 @@ function NavbarButtonWithBack({
         e.key === shortcuts.global.CLOSE.key &&
         !radixIsActive() &&
         (withinModal || !getActiveModal());
-      if (
-        closeWithEscape ||
-        (!getInputIsFocused() && e.key === shortcuts.global.BACK.key)
-      ) {
+      const keyIsBack =
+        e.key === shortcuts.global.BACK.key ||
+        e.key === shortcuts.global.CLOSE.key;
+      if (closeWithEscape || (!getInputIsFocused() && keyIsBack)) {
         trackShortcut({
           key: closeWithEscape
             ? shortcuts.global.CLOSE.display

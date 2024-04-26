@@ -66,6 +66,7 @@ import { useTokenDetailsShortcuts } from '~/entries/popup/hooks/useTokenDetailsS
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
+import { getActiveElement } from '~/entries/popup/utils/activeElement';
 
 import { TokenApprovalContextMenu } from '../Approvals/Approvals';
 import { triggerRevokeApproval } from '../Approvals/utils';
@@ -480,6 +481,13 @@ export function TokenDetails() {
   const navigate = useRainbowNavigate();
   const token = userAsset || customAsset;
 
+  useEffect(() => {
+    const app = document.getElementById('app');
+    setTimeout(() => {
+      app?.focus();
+    }, 150);
+  }, []);
+
   const { data: approvals } = useApprovals(
     {
       address: currentAddress,
@@ -583,6 +591,7 @@ export function TokenDetails() {
                   state: { skipTransitionOnRoute: ROUTES.HOME },
                 })
               }
+              withinModal
             />
           }
           rightComponent={
