@@ -195,20 +195,13 @@ export const BottomSwitchWallet = ({
         }
         renderMenuItem={(wallet, i) => (
           <Box testId={`switch-wallet-item-${i}`}>
-            <Inline space="8px" alignVertical="center">
+            <Inline space="8px" alignVertical="center" wrap={false}>
               <WalletAvatar
                 addressOrName={wallet as Address}
                 size={18}
                 emojiSize={'12pt'}
               />
-              <Box
-                style={{
-                  flex: 1,
-                  display: 'flex',
-                }}
-              >
-                <WalletName color="label" address={wallet as Address} />
-              </Box>
+              <WalletName color="label" address={wallet as Address} />
             </Inline>
           </Box>
         )}
