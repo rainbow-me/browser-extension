@@ -213,16 +213,11 @@ export const ShortcutRow = ({
     command.address && command.id === 'addAsWatchedWallet';
   const isSwitchToWalletRow =
     command.address && command.id === 'switchToWallet';
-  const isContactToWalletRow =
-    command.address && command.id === 'contactWallet';
+  const isContactWalletRow = command.address && command.id === 'contactWallet';
   const isViewTokenRow = command.asset && command.id === 'viewToken';
 
   const LeftComponent = React.useMemo(() => {
-    if (
-      isAddAsWatchedWalletRow ||
-      isSwitchToWalletRow ||
-      isContactToWalletRow
-    ) {
+    if (isAddAsWatchedWalletRow || isSwitchToWalletRow || isContactWalletRow) {
       return (
         <WalletAvatar
           addressOrName={command.address || ''}
@@ -262,7 +257,7 @@ export const ShortcutRow = ({
     command.textIcon,
     isAddAsWatchedWalletRow,
     isSwitchToWalletRow,
-    isContactToWalletRow,
+    isContactWalletRow,
     isViewTokenRow,
   ]);
 
