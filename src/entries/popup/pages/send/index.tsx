@@ -108,7 +108,8 @@ export function Send() {
 
   const navigate = useRainbowNavigate();
 
-  const { selectedContact, isContact, setSelectedContact } = useContactsStore();
+  const { selectedContactAddress, isContact, setSelectedContactAddress } =
+    useContactsStore();
   const { allWallets } = useWallets();
   const { hiddenAssets } = useHiddenAssetStore();
 
@@ -506,10 +507,10 @@ export function Send() {
       );
     }
 
-    // If a user chooses a contact from Cmd+K menu
-    if (selectedContact) {
-      setToAddressOrName(selectedContact);
-      setSelectedContact({ address: null });
+    // If user chooses contact from Cmd+K menu
+    if (selectedContactAddress) {
+      setToAddressOrName(selectedContactAddress);
+      setSelectedContactAddress({ address: null });
     } else if (sendAddress && sendAddress.length) {
       setToAddressOrName(sendAddress);
     }
@@ -522,7 +523,6 @@ export function Send() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   const prevToAddressIsSmartContract = usePrevious(toAddressIsSmartContract);
   useEffect(() => {
     if (

@@ -10,7 +10,7 @@ export interface Contact {
 
 export interface ContactsStore {
   contacts: { [address: Address]: Contact };
-  selectedContact: string | null;
+  selectedContactAddress: Address | null;
   getContact: ({
     address,
   }: {
@@ -19,13 +19,13 @@ export interface ContactsStore {
   isContact: ({ address }: { address: Address }) => boolean;
   saveContact: ({ contact }: { contact: Contact }) => void;
   deleteContact: ({ address }: { address: Address }) => void;
-  setSelectedContact: ({ address }: { address: Address | null }) => void;
+  setSelectedContactAddress: ({ address }: { address: Address | null }) => void;
 }
 
 export const contactsStore = createStore<ContactsStore>(
   (set, get) => ({
     contacts: {},
-    selectedContact: null,
+    selectedContactAddress: null,
     getContact: ({ address }) => {
       const newContacts = get().contacts;
       return address ? newContacts[address] : undefined;
@@ -46,8 +46,8 @@ export const contactsStore = createStore<ContactsStore>(
       delete contacts[address];
       set({ contacts: { ...contacts } });
     },
-    setSelectedContact: ({ address }) => {
-      set({ selectedContact: address });
+    setSelectedContactAddress: ({ address }) => {
+      set({ selectedContactAddress: address });
     },
   }),
   {

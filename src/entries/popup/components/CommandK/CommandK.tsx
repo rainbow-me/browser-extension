@@ -24,7 +24,6 @@ import {
   useCommandExecution,
   useKeyboardNavigation,
 } from './utils';
-import { useContacts } from '../../hooks/useContacts';
 
 export const CommandK = () => {
   const { isCommandKVisible, isFetching } = useCommandKStatus();
@@ -85,7 +84,7 @@ export const CommandK = () => {
   const filteredCommands = React.useMemo(() => {
     return filterAndSortCommands(commandList, currentPage, searchQuery);
   }, [commandList, currentPage, searchQuery]);
-
+  console.log({ filteredCommands });
   const { handleExecuteCommand } = useCommandExecution(
     clearPageState,
     clearSearch,

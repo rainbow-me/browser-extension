@@ -12,6 +12,7 @@ export enum SearchItemType {
   Shortcut,
   Token,
   Wallet,
+  Contact,
 }
 
 export interface BaseSearchItem {
@@ -79,9 +80,19 @@ export interface WalletSearchItem extends BaseSearchItem {
   walletType?: string;
 }
 
+export interface ContactSearchItem extends BaseSearchItem {
+  address: Address;
+  ensName?: string | null;
+  truncatedName?: string;
+  walletName?: string;
+  type: SearchItemType.Contact;
+  label?: string;
+}
+
 export type SearchItem =
   | ENSOrAddressSearchItem
   | NFTSearchItem
   | ShortcutSearchItem
   | TokenSearchItem
-  | WalletSearchItem;
+  | WalletSearchItem
+  | ContactSearchItem;

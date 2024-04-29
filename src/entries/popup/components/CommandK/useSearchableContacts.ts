@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { Address } from 'wagmi';
 
-import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { useContactsStore } from '~/core/state/contacts';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
@@ -17,14 +16,20 @@ import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 
-import { SearchItemType, WalletSearchItem } from './SearchItems';
+import { ContactSearchItem, SearchItemType } from './SearchItems';
 import { PAGES } from './pageConfig';
 import { actionLabels } from './references';
 import { truncateName } from './useSearchableWallets';
 
-export const useContactSearchableWallets = (searchQuery: string) => {
+interface UseSearchableContactsParameters {
+  showLabel: boolean;
+}
+
+export const useSearchableContacts = ({
+  showLabel,
+}: UseSearchableContactsParameters) => {
   const contacts = useContacts();
-  const { setSelectedContact } = useContactsStore();
+  const { setSelectedContactAddress } = useContactsStore();
   const { isWatchingWallet } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
   const navigate = useRainbowNavigate();
@@ -56,27 +61,32 @@ export const useContactSearchableWallets = (searchQuery: string) => {
 
       // Trezor needs to be opened in a new tab because of their own popup
       if (isTrezor && !isFullScreen) {
-        setSelectedContact({ address });
+        setSelectedContactAddress({ address });
         goToNewTab({ url: POPUP_URL + `#${ROUTES.SEND}?hideBack=true` });
       }
     },
-    [setSelectedContact, allowSend, isTrezor, isFullScreen],
+    [setSelectedContactAddress, allowSend, isTrezor, isFullScreen],
   );
 
   const handleSelectAddress = useCallback(
     (address: Address) => {
       if (shouldNavigateToSend) {
-        setSelectedContact({ address });
+        setSelectedContactAddress({ address });
         navigate(ROUTES.SEND);
       } else {
         handleSendFallback(address);
       }
     },
-    [handleSendFallback, navigate, setSelectedContact, shouldNavigateToSend],
+    [
+      handleSendFallback,
+      navigate,
+      setSelectedContactAddress,
+      shouldNavigateToSend,
+    ],
   );
 
-  const contactWallets = useMemo(() => {
-    return contacts.map<WalletSearchItem>((account) => ({
+  const searchableContacts = useMemo(() => {
+    return contacts.map<ContactSearchItem>((account) => ({
       action: () => handleSelectAddress(account.address),
       actionLabel: actionLabels.sendToWallet,
       actionPage: PAGES.CONTACT_DETAIL,
@@ -87,9 +97,10 @@ export const useContactSearchableWallets = (searchQuery: string) => {
       name: account.name || account.ensName || truncateAddress(account.address),
       page: PAGES.MY_CONTACTS,
       truncatedName: truncateName(account.name || account.ensName),
-      type: SearchItemType.Wallet,
+      label: showLabel ? 'contact' : undefined,
+      type: SearchItemType.Contact,
     }));
-  }, [contacts, handleSelectAddress]);
+  }, [showLabel, contacts, handleSelectAddress]);
 
-  return { contactWallets };
+  return { searchableContacts };
 };

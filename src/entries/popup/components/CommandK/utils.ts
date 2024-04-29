@@ -54,7 +54,10 @@ const calculateCommandRelevance = (
 
     const normalizedShortcutKey = command.shortcut?.key.toLowerCase();
 
-    if (command.type === SearchItemType.Wallet) {
+    if (
+      command.type === SearchItemType.Wallet ||
+      command.type === SearchItemType.Contact
+    ) {
       const normalizedAddress = command.address
         ? command.address.toLowerCase()
         : '';
@@ -64,10 +67,6 @@ const calculateCommandRelevance = (
       const normalizedEnsName = command.ensName
         ? command.ensName.toLowerCase()
         : '';
-
-      if (command.id?.startsWith('contact')) {
-        return 0;
-      }
 
       // High relevance: Wallet name or ENS name or address starts with the query
       if (

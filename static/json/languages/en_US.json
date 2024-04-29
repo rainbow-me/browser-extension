@@ -428,6 +428,7 @@
       "open_in_new_tab": "Open in New Tab",
       "switch_to_wallet": "Switch to Wallet",
       "send_to_wallet": "Send to Wallet",
+      "add_contact": "Add Contact",
       "view": "View"
     },
     "commands": {
@@ -476,8 +477,11 @@
         "view_on_ens": "View on ENS",
         "switch_to_wallet": "Switch to This Wallet",
         "contact_wallet": "Contact this wallet",
+        "add_contact": "Add Contact",
+        "remove_contact": "Remove Contact",
         "copy_wallet_address": "Copy Address",
         "view_wallet_on_etherscan": "View on Etherscan",
+        "send_contact": "Send to Contact",
         "export_addresses_as_csv": "Export Addresses as CSV",
         "enable_flashbots": "Enable Flashbots",
         "disable_flashbots": "Disable Flashbots"
@@ -523,6 +527,9 @@
       "title_hidden": "Small Balances Hidden",
       "title_revealed": "Showing Small Balances"
     },
+    "contact_toast": {
+      "title_added": "Added to Contacts"
+    },
     "no_results": "No results",
     "pages": {
       "add_wallet": {
@@ -564,6 +571,9 @@
         "search_placeholder": "Search wallet actions…",
         "section_title": "Actions"
       }
+    },
+    "labels": {
+      "contact": "Contact"
     },
     "quick_promo": {
       "text": "Press %{modifierSymbol}K to open the Magic Menu",

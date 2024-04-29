@@ -15,13 +15,11 @@ import {
   WalletRow,
 } from './CommandRows';
 import {
-  ENSOrAddressSearchItem,
   NFTSearchItem,
   SearchItem,
   SearchItemType,
   ShortcutSearchItem,
   TokenSearchItem,
-  WalletSearchItem,
 } from './SearchItems';
 import { CommandKPage, PAGES } from './pageConfig';
 import { timingConfig } from './references';
@@ -41,7 +39,7 @@ function getPageTitle(
   }
 
   const title = currentPage.listTitle;
-  console.log(currentPage);
+
   if (typeof title === 'string') {
     return title;
   } else if (command) {
@@ -200,15 +198,12 @@ export const CommandKList = React.forwardRef<
                   );
                 } else if (
                   command.type === SearchItemType.ENSOrAddressResult ||
-                  command.type === SearchItemType.Wallet
+                  command.type === SearchItemType.Wallet ||
+                  command.type === SearchItemType.Contact
                 ) {
                   row = (
                     <WalletRow
-                      command={
-                        command.type === SearchItemType.Wallet
-                          ? (command as WalletSearchItem)
-                          : (command as ENSOrAddressSearchItem)
-                      }
+                      command={command}
                       handleExecuteCommand={handleExecuteCommand}
                       key={command.id}
                       selected={isSelected}
