@@ -84,7 +84,7 @@ export const CommandK = () => {
   const filteredCommands = React.useMemo(() => {
     return filterAndSortCommands(commandList, currentPage, searchQuery);
   }, [commandList, currentPage, searchQuery]);
-  console.log({ filteredCommands });
+
   const { handleExecuteCommand } = useCommandExecution(
     clearPageState,
     clearSearch,

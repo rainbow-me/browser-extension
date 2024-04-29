@@ -514,7 +514,6 @@ export function Send() {
     } else if (sendAddress && sendAddress.length) {
       setToAddressOrName(sendAddress);
     }
-
     if (sendField !== independentField) {
       switchIndependentField();
     }
@@ -523,6 +522,7 @@ export function Send() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   const prevToAddressIsSmartContract = usePrevious(toAddressIsSmartContract);
   useEffect(() => {
     if (

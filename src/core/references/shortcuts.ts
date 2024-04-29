@@ -136,10 +136,6 @@ export const shortcuts = {
       display: 'W',
       key: 'w',
     },
-    GO_TO_CONTACTS: {
-      display: 'C',
-      key: 'c',
-    },
     LOCK: {
       display: 'L',
       key: 'l',

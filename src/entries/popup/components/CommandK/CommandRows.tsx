@@ -261,8 +261,8 @@ export const ShortcutRow = ({
     command.symbolSize,
     command.textIcon,
     isAddAsWatchedWalletRow,
-    isContactToWalletRow,
     isSwitchToWalletRow,
+    isContactToWalletRow,
     isViewTokenRow,
   ]);
 
@@ -387,13 +387,13 @@ export const WalletRow = ({
   }, [command.address]);
 
   const isWalletSearchItem = command.type === SearchItemType.Wallet;
-  const isWalletContact = command.type === SearchItemType.Contact;
+  const isContactSearchItem = command.type === SearchItemType.Contact;
   const hardwareWalletType = isWalletSearchItem && command.hardwareWalletType;
   const walletType = isWalletSearchItem && command.walletType;
-  const walletLabel = isWalletContact && command.label;
+  const walletLabel = isContactSearchItem && command.label;
 
   const description = React.useMemo(() => {
-    if (!isWalletSearchItem && !isWalletContact) {
+    if (!isWalletSearchItem && !isContactSearchItem) {
       return undefined;
     } else if (walletLabel) {
       return i18n.t(`command_k.labels.${walletLabel}`);
@@ -408,7 +408,7 @@ export const WalletRow = ({
     return undefined;
   }, [
     isWalletSearchItem,
-    isWalletContact,
+    isContactSearchItem,
     walletLabel,
     walletType,
     hardwareWalletType,

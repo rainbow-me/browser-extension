@@ -120,7 +120,6 @@ export const staticCommandInfo: CommandInfo = {
     name: getCommandName('my_contacts'),
     page: PAGES.HOME,
     searchTags: getSearchTags('my_contacts'),
-    shortcut: shortcuts.home.GO_TO_CONTACTS,
     symbol: 'person.crop.circle.fill',
     symbolSize: 16,
     toPage: PAGES.MY_CONTACTS,
@@ -734,7 +733,7 @@ export const useCommands = (
   }, []);
 
   const handleWatchWallet = React.useCallback(
-    async (command: ENSOrAddressSearchItem | ContactSearchItem) => {
+    async (command: ENSOrAddressSearchItem) => {
       if (!command.address) return;
 
       const importedAddress = await wallet.importWithSecret(command.address);
