@@ -4,6 +4,7 @@ import create from 'zustand';
 import { SUPPORTED_CHAINS, getDefaultRPC } from '~/core/references';
 import {
   ChainId,
+  chainDegen,
   chainHardhat,
   chainHardhatOptimism,
 } from '~/core/types/chains';
@@ -63,16 +64,23 @@ const mergeNewOfficiallySupportedChainsState = (
 ) => {
   const officiallySupportedRainbowChains = getInitialRainbowChains();
   for (const chainId of newChains) {
-    const officalConfig = officiallySupportedRainbowChains[chainId];
+    const officialConfig = officiallySupportedRainbowChains[chainId];
     const stateChain = state.rainbowChains[chainId];
     // if the rpc already exists in the state, merge the chains
     // else add the new rpc config to the state
-    if (stateChain.chains.length > 0) {
+    if (
+      stateChain.chains.length > 0 &&
+      !stateChain.chains.find(
+        (chain) =>
+          chain.rpcUrls.default.http[0] ===
+          officialConfig.chains[0].rpcUrls.default.http[0],
+      )
+    ) {
       state.rainbowChains[chainId].chains = stateChain.chains.concat(
-        officalConfig.chains,
+        officialConfig.chains,
       );
     } else {
-      state.rainbowChains[chainId] = officalConfig;
+      state.rainbowChains[chainId] = officialConfig;
     }
   }
   return state;
@@ -220,9 +228,9 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
   {
     persist: persistOptions({
       name: 'rainbowChains',
-      version: 6,
+      version: 8,
       migrations: [
-        // v1 didn't have need a migration
+        // v1 didn't need a migration
         function v1(s: RainbowChainsState) {
           return s;
         },
@@ -249,16 +257,30 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
         },
 
         // version 5 added support for Degen
-        function v5(state: RainbowChainsState) {
+        function v5(state) {
           return mergeNewOfficiallySupportedChainsState(state, [ChainId.degen]);
         },
 
-        function v6(state: RainbowChainsState) {
+        function v6(state) {
           if (
             !state.rainbowChains[zora.id] ||
             state.rainbowChains[zora.id]?.chains.length === 0
           ) {
             return addCustomRPC({ chain: zora, state });
+          }
+          return state;
+        },
+
+        function v7(state) {
+          return state;
+        },
+
+        function v8(state) {
+          if (
+            !state.rainbowChains[chainDegen.id] ||
+            state.rainbowChains[chainDegen.id]?.chains.length === 0
+          ) {
+            return addCustomRPC({ chain: chainDegen, state });
           }
           return state;
         },

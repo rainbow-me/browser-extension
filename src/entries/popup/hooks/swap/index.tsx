@@ -6,3 +6,4 @@ export { useSwapQuoteHandler } from './useSwapQuoteHandler';
 export { useSwapReviewDetails } from './useSwapReviewDetails';
 export { useSwapSettings } from './useSwapSettings';
 export { useSwapValidations } from './useSwapValidations';
+export { useSwapSlippage } from './useSwapSlippage';
