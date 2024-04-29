@@ -80,7 +80,7 @@ export const chainLabelMap: Record<
   [ChainId.zora]: [ChainNameDisplay[zoraSepolia.id]],
   [ChainId.avalanche]: [ChainNameDisplay[avalancheFuji.id]],
   [ChainId.blast]: [ChainNameDisplay[chainBlastSepolia.id]],
-  [ChainId.degen]: [ChainNameDisplay[chainDegen.id]],
+  [ChainId.degen]: [],
 };
 
 export const sortNetworks = (order: ChainId[], chains: Chain[]) => {
