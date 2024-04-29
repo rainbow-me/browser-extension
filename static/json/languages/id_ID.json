@@ -78,7 +78,7 @@
     "guides_and_support": "Panduan & Dukungan",
     "learn_about_ethereum": "Pelajari tentang Ethereum",
     "follow_us_on_twitter": "Ikuti kami di Twitter",
-    "share_beta_feedback": "Berbagi Masukan Beta",
+    "share_feedback": "Bagikan Masukan",
     "theme": {
       "title": "Tema",
       "system": "Sistem",
@@ -235,6 +235,26 @@
           "wipe_confirmation": "Reset Rainbow",
           "wipe_confirmation_desc": "Apakah Anda yakin ingin mereset ekstensi browser Rainbow?",
           "wipe_confirmation_button": "Atur Ulang",
+          "wipe_confirmation_cancel": "Batal"
+        },
+        "wipe_wallet_group": {
+          "delete": "Hapus Grup Wallet",
+          "acknowlegement": "Saya sudah mem-backup Frase Pemulihan Rahasia saya.",
+          "warning_one": "Menghapus Grup Wallet akan menghapus Frase Pemulihan dari Rainbow.",
+          "warning_two": "Aset & dana Anda dapat dipulihkan dengan informasi pemulihan wallet yang benar.",
+          "warning_three": "Pastikan Anda mem-backup Frase Pemulihan Rahasia sebelum melanjutkan.",
+          "button_wipe": "Reset Rainbow",
+          "button_complete": "Lengkapi Pemeriksaan Di Atas",
+          "wipe_confirmation": "Hapus Grup Wallet",
+          "wipe_confirmation_desc": "Apakah Anda yakin ingin menghapus Frase Pemulihan Rahasia dari Rainbow?",
+          "wipe_confirmation_button": "Hapus",
+          "wipe_confirmation_cancel": "Batal"
+        },
+        "wipe_hardware_wallet_group": {
+          "delete": "Putuskan %{vendor}",
+          "wipe_confirmation": "Putuskan %{vendor}",
+          "wipe_confirmation_desc": "Apakah Anda yakin ingin memutuskan %{vendor} dan memutuskan koneksi wallet Anda?",
+          "wipe_confirmation_button": "Putuskan",
           "wipe_confirmation_cancel": "Batal"
         }
       }
@@ -676,6 +696,10 @@
       "price_impact": {
         "title": "Pasar kecil",
         "description": "Kehilangan %{impactAmount}"
+      },
+      "unknown_price": {
+        "title": "Nilai Pasar %{symbol} Tidak Diketahui",
+        "description": "Jika Anda memutuskan untuk melanjutkan, pastikan Anda puas dengan jumlah yang dikutip."
       }
     },
     "aggregators": {
@@ -1314,6 +1338,7 @@
       "ens_website": "Situs Web",
       "registered_on": "Terdaftar pada",
       "expires_in": "Berakhir dalam",
+      "report": "Laporkan",
       "explainer": {
         "floor_price_description": "Harga lantai koleksi adalah harga penawaran terendah dari semua item yang sedang dijual dalam sebuah koleksi.",
         "floor_price_title": "Harga Dasar Koleksi",
@@ -1321,7 +1346,12 @@
       },
       "send": "Kirim",
       "view_on_opensea": "Lihat di OpenSea",
-      "view_on_explorer": "Lihat di %{explorerTitle}"
+      "view_on_explorer": "Lihat di %{explorerTitle}",
+      "gallery": "galeri",
+      "view_gallery": "Lihat Galeri"
+    },
+    "toast": {
+      "spam_reported": "Laporan Anda telah diterima!"
     }
   },
   "points": {
@@ -1390,6 +1420,7 @@
       "referral_activity": "Aktivitas Referral:",
       "new_referrals": "Referral Baru:",
       "retroactive": "Poin Retroaktif:",
+      "bonus": "Poin Bonus:",
       "total": "Total:",
       "weekly_counted": "> Pendapatan mingguan terhitung",
       "you_have": "Anda memiliki:",
@@ -1432,12 +1463,23 @@
     "approvals": "Persetujuan Token",
     "this_token_is_on_network": "Ini %{symbol} berada di jaringan %{chainName}",
     "view_on": "Lihat di %{explorer}",
+    "view_on_coingecko": "Lihat di CoinGecko",
     "not_available": "Harga tidak tersedia",
     "more_options": {
       "copy_address": "Salin Alamat",
       "view_on_explorer": "Lihat di %{explorer}",
       "hide": "Sembunyikan Token",
-      "report": "Laporkan Token"
+      "report": "Laporkan Token",
+      "unpin_token": "Lepas %{name}",
+      "pin_token": "Sematkan %{name}",
+      "hide_token": "Sembunyikan %{name}",
+      "unhide_token": "Tampilkan %{name}"
+    },
+    "toast": {
+      "hide_token": "%{name} Anda disembunyikan",
+      "unhide_token": "%{name} Anda ditampilkan",
+      "pin_token": "%{name} Anda disematkan",
+      "unpin_token": "%{name} Anda dilepas"
     },
     "about": {
       "about_token": "Tentang %{name}",
@@ -1499,35 +1541,42 @@
   },
   "explainers": {
     "sidechains": {
-      "arbitrum": {
-        "title": "Apa itu Arbitrum?",
-        "description_1": "Arbitrum adalah jaringan Layer 2 yang berjalan di atas Ethereum, memungkinkan transaksi yang lebih murah dan lebih cepat sambil tetap mendapatkan keuntungan dari keamanan dasar Ethereum",
-        "description_2": "Ini menggabungkan banyak transaksi bersama-sama dalam \"roll up\" sebelum mengirimkannya ke Ethereum untuk secara permanen"
+      "layer_two": {
+        "title": "Apa itu %{chainName}?",
+        "description_1": "%{chainName} adalah jaringan Layer 2 yang berjalan di atas Ethereum, memungkinkan transaksi yang lebih murah dan lebih cepat sambil tetap mendapatkan keamanan dari Ethereum.",
+        "description_2": "Ia menggabungkan banyak transaksi bersama-sama dalam \"roll up\" sebelum mengirimkannya ke Ethereum untuk disimpan secara permanen."
       },
-      "optimism": {
-        "title": "Apa itu Optimism?",
-        "description_1": "Optimism adalah jaringan Layer 2 yang berjalan di atas Ethereum, memungkinkan transaksi yang lebih murah dan lebih cepat sambil tetap mendapatkan keuntungan dari keamanan dasar Ethereum",
-        "description_2": "Ini menggabungkan banyak transaksi bersama-sama dalam \"roll up\" sebelum mengirimkannya ke Ethereum untuk secara permanen"
-      },
-      "polygon": {
-        "title": "Apa itu Polygon?",
-        "description_1": "Polygon adalah sidechain, jaringan yang berjalan bersamaan dengan Ethereum dan kompatibel dengannya",
-        "description_2": "Ini memungkinkan transaksi yang lebih murah dan cepat, tetapi tidak seperti jaringan Layer 2, Polygon memiliki mekanisme keamanan dan konsensus sendiri yang berbeda dari Ethereum"
-      },
-      "bsc": {
-        "title": "Apa itu BSC?",
-        "description_1": "Binance Smart Chain, atau BSC untuk singkatnya, adalah jaringan blockchain untuk platform trading Binance",
-        "description_2": "Ini memungkinkan transaksi yang lebih murah dan cepat, tetapi tidak seperti jaringan Layer 2, BSC memiliki mekanisme keamanan dan konsensus sendiri yang berbeda dari Ethereum"
-      },
-      "base": {
-        "title": "Apa itu Base?",
-        "description_1": "Base adalah jaringan Layer 2 yang berjalan di atas Ethereum, memungkinkan transaksi yang lebih murah dan cepat sambil tetap mendapatkan manfaat dari keamanan dasar Ethereum",
-        "description_2": "Ini menggabungkan banyak transaksi bersama-sama dalam \"roll up\" sebelum mengirimkannya ke Ethereum untuk secara permanen"
-      },
-      "zora": {
-        "title": "Apa itu Zora?",
-        "description_1": "Zora adalah jaringan Layer 2 yang berjalan di atas Ethereum, memungkinkan transaksi yang lebih murah dan cepat sambil tetap mendapatkan manfaat dari keamanan dasar Ethereum",
-        "description_2": "Ini menggabungkan banyak transaksi bersama-sama dalam \"roll up\" sebelum mengirimkannya ke Ethereum untuk secara permanen"
+      "specific": {
+        "polygon": {
+          "title": "Apa itu Polygon?",
+          "description_1": "Polygon adalah sidechain, jaringan terpisah yang berjalan bersamaan dengan Ethereum dan kompatibel dengannya.",
+          "description_2": "Ia memungkinkan transaksi yang lebih murah dan lebih cepat, namun berbeda dengan jaringan Layer 2, Polygon memiliki mekanisme keamanan dan konsensus sendiri yang berbeda dari Ethereum."
+        },
+        "bsc": {
+          "title": "Apa itu BSC?",
+          "description_1": "BNB Smart Chain atau BSC merupakan Layer 1 alternatif yang dikembangkan oleh bursa kripto Binance.",
+          "description_2": "Memungkinkan transaksi lebih murah dan cepat, namun tidak seperti jaringan Layer 2, BSC memiliki mekanisme keamanan dan konsensus sendiri yang berbeda dari Ethereum."
+        },
+        "avalanche": {
+          "title": "Apa itu Avalanche?",
+          "description_1": "Avalanche adalah Layer 1 alternatif yang didukung oleh ekosistem subnet, serupa dengan sidechain dan Layer 2 Ethereum.",
+          "description_2": "Memungkinkan transaksi lebih murah dan cepat, namun tidak seperti jaringan Layer 2, Avalanche memiliki mekanisme keamanan dan konsensus sendiri yang berbeda dari Ethereum."
+        },
+        "blast": {
+          "title": "Apa itu Blast?",
+          "description_1": "Blast adalah platform Layer-2 (L2) Ethereum yang dibuat oleh tim di balik Blur, pasar NFT populer.",
+          "description_2": "Rantai ini membedakan diri dengan pengenalan hasil asli untuk ether (ETH) dan berbagai stablecoin seperti USDC, USDT, dan DAI."
+        },
+        "degen": {
+          "title": "Apa itu Degen?",
+          "description_1": "Degen Chain adalah jaringan Layer 3 yang berjalan di atas Arbitrum dan Ethereum.",
+          "description_2": "Menawarkan transaksi yang sangat cepat dan murah dengan denominasi token komunitas Farcaster $degen."
+        },
+        "custom_network": {
+          "title": "Apa itu Jaringan ini?",
+          "description_1": "Ini adalah jaringan kustom yang Anda tambahkan! Jaringan kustom dapat disesuaikan untuk memenuhi kebutuhan spesifik, menawarkan fitur dan kemampuan unik.",
+          "description_2": "Tergantung pada konfigurasinya, jaringan ini mungkin menggunakan protokol, langkah keamanan, dan mekanisme konsensus yang berbeda, dirancang untuk mengoptimalkan kinerja, mengurangi biaya, atau menyediakan layanan khusus."
+        }
       },
       "link_button_label": "Baca lebih lanjut",
       "action_label": "Mengerti"
@@ -1680,6 +1729,7 @@
     "contract": "Kontrak",
     "contract_name": "Nama Kontrak",
     "contract_created_at": "Kontrak Dibuat",
+    "to": "Ke",
     "source_code": "Kode Sumber",
     "signature": {
       "message": "Pesan"
@@ -1700,6 +1750,7 @@
   "unverified": "Tidak Terverifikasi",
   "skip": "Lewati",
   "done": "Selesai",
+  "view_on_explorer": "Lihat di %{explorer}",
   "watch_asset": {
     "chain_id": "ID Jaringan",
     "symbol": "Simbol",
