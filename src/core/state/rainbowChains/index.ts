@@ -4,6 +4,7 @@ import create from 'zustand';
 import { SUPPORTED_CHAINS, getDefaultRPC } from '~/core/references';
 import {
   ChainId,
+  chainDegen,
   chainHardhat,
   chainHardhatOptimism,
 } from '~/core/types/chains';
@@ -63,16 +64,23 @@ const mergeNewOfficiallySupportedChainsState = (
 ) => {
   const officiallySupportedRainbowChains = getInitialRainbowChains();
   for (const chainId of newChains) {
-    const officalConfig = officiallySupportedRainbowChains[chainId];
+    const officialConfig = officiallySupportedRainbowChains[chainId];
     const stateChain = state.rainbowChains[chainId];
     // if the rpc already exists in the state, merge the chains
     // else add the new rpc config to the state
-    if (stateChain.chains.length > 0) {
+    if (
+      stateChain.chains.length > 0 &&
+      !stateChain.chains.find(
+        (chain) =>
+          chain.rpcUrls.default.http[0] ===
+          officialConfig.chains[0].rpcUrls.default.http[0],
+      )
+    ) {
       state.rainbowChains[chainId].chains = stateChain.chains.concat(
-        officalConfig.chains,
+        officialConfig.chains,
       );
     } else {
-      state.rainbowChains[chainId] = officalConfig;
+      state.rainbowChains[chainId] = officialConfig;
     }
   }
   return state;
@@ -220,7 +228,7 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
   {
     persist: {
       name: 'rainbowChains',
-      version: 6,
+      version: 7,
       migrate: migrate(
         // version 2 added support for Avalanche and Avalanche Fuji
         (state) =>
@@ -249,6 +257,15 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
             state.rainbowChains[zora.id]?.chains.length === 0
           ) {
             return addCustomRPC({ chain: zora, state });
+          }
+          return state;
+        },
+        (state: RainbowChainsState) => {
+          if (
+            !state.rainbowChains[chainDegen.id] ||
+            state.rainbowChains[chainDegen.id]?.chains.length === 0
+          ) {
+            return addCustomRPC({ chain: chainDegen, state });
           }
           return state;
         },
