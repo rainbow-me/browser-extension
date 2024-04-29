@@ -19,6 +19,14 @@ interface Migrator {
     m4: (s: C) => D,
     m5: (s: D) => E,
   ): R<E>;
+  <A, B, C, D, E, F>(
+    m1: (s: any) => A,
+    m2: (s: A) => B,
+    m3: (s: B) => C,
+    m4: (s: C) => D,
+    m5: (s: D) => E,
+    m6: (s: E) => F,
+  ): R<F>;
   // if you need more migrations, add more overloads here
 }
 

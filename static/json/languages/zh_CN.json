@@ -78,7 +78,7 @@
     "guides_and_support": "指南和支持",
     "learn_about_ethereum": "了解以太坊",
     "follow_us_on_twitter": "在 Twitter 上关注我们",
-    "share_beta_feedback": "分享测试反馈",
+    "share_feedback": "分享反馈",
     "theme": {
       "title": "主题",
       "system": "系统",
@@ -235,6 +235,26 @@
           "wipe_confirmation": "重置Rainbow",
           "wipe_confirmation_desc": "您确定要重置Rainbow浏览器扩展吗？",
           "wipe_confirmation_button": "重置",
+          "wipe_confirmation_cancel": "取消"
+        },
+        "wipe_wallet_group": {
+          "delete": "删除钱包组",
+          "acknowlegement": "我已备份我的秘密恢复短语",
+          "warning_one": "移除钱包组将从Rainbow删除恢复短语",
+          "warning_two": "您的资产和资金可以通过正确的钱包恢复信息来恢复",
+          "warning_three": "继续前请确保已备份秘密恢复短语",
+          "button_wipe": "重置Rainbow",
+          "button_complete": "完成上述检查",
+          "wipe_confirmation": "删除钱包组",
+          "wipe_confirmation_desc": "确定要从Rainbow移除您的秘密恢复短语吗？",
+          "wipe_confirmation_button": "删除",
+          "wipe_confirmation_cancel": "取消"
+        },
+        "wipe_hardware_wallet_group": {
+          "delete": "取消配对%{vendor}",
+          "wipe_confirmation": "取消配对%{vendor}",
+          "wipe_confirmation_desc": "确定要取消配对您的%{vendor}并断开您的钱包连接吗？",
+          "wipe_confirmation_button": "取消配对",
           "wipe_confirmation_cancel": "取消"
         }
       }
@@ -676,6 +696,10 @@
       "price_impact": {
         "title": "市场较小",
         "description": "失去 %{impactAmount}"
+      },
+      "unknown_price": {
+        "title": "%{symbol}市值未知",
+        "description": "如果决定继续，请确保您对报价金额满意"
       }
     },
     "aggregators": {
@@ -1314,6 +1338,7 @@
       "ens_website": "网站",
       "registered_on": "注册时间",
       "expires_in": "到期时间",
+      "report": "举报",
       "explainer": {
         "floor_price_description": "一个收藏品的底价是该收藏中所有待售物品的最低要价",
         "floor_price_title": "藏品底价",
@@ -1321,7 +1346,12 @@
       },
       "send": "发送",
       "view_on_opensea": "在OpenSea上查看",
-      "view_on_explorer": "在 %{explorerTitle}上查看"
+      "view_on_explorer": "在 %{explorerTitle}上查看",
+      "gallery": "画廊",
+      "view_gallery": "查看画廊"
+    },
+    "toast": {
+      "spam_reported": "您的举报已收到！"
     }
   },
   "points": {
@@ -1390,6 +1420,7 @@
       "referral_activity": "推荐活动：",
       "new_referrals": "新推荐：",
       "retroactive": "追溯积分：",
+      "bonus": "额外积分：",
       "total": "总计：",
       "weekly_counted": "＞ 已计算的每周收益",
       "you_have": "您有：",
@@ -1432,12 +1463,23 @@
     "approvals": "代币批准",
     "this_token_is_on_network": "该 %{symbol} 在 %{chainName} 网络上",
     "view_on": "在 %{explorer}上查看",
+    "view_on_coingecko": "在CoinGecko上查看",
     "not_available": "价格不可用",
     "more_options": {
       "copy_address": "复制地址",
       "view_on_explorer": "在 %{explorer}上查看",
       "hide": "隐藏代币",
-      "report": "报告代币"
+      "report": "报告代币",
+      "unpin_token": "取消置顶%{name}",
+      "pin_token": "置顶%{name}",
+      "hide_token": "隐藏 %{name}",
+      "unhide_token": "取消隐藏%{name}"
+    },
+    "toast": {
+      "hide_token": "您的%{name}已隐藏",
+      "unhide_token": "您的%{name}已取消隐藏",
+      "pin_token": "您的%{name}已置顶",
+      "unpin_token": "您的%{name}已取消置顶"
     },
     "about": {
       "about_token": "关于 %{name}",
@@ -1499,35 +1541,42 @@
   },
   "explainers": {
     "sidechains": {
-      "arbitrum": {
-        "title": "什么是Arbitrum？",
-        "description_1": "Arbitrum是一个基于以太坊的二层网络，能够实现更便宜、更快速的交易，同时又能从以太坊的底层安全性中受益。",
-        "description_2": "它将许多交易捆绑在一起，然后将它们发送到以太坊上永久保存。"
+      "layer_two": {
+        "title": "%{chainName}是什么？",
+        "description_1": "%{chainName}是一个在以太坊之上运行的二层网络，能够在保障以太坊底层安全的同时实现更便宜更快速的交易",
+        "description_2": "它将许多交易打包在一个“卷起”中，然后发送到以太坊上永久存储"
       },
-      "optimism": {
-        "title": "什么是Optimism？",
-        "description_1": "Optimism是以太坊上运行的Layer 2网络，可以实现更便宜和更快速的交易，同时仍然享受以太坊底层安全性的优势。",
-        "description_2": "它在发送之前会将大量交易捆绑在一起，并永久存储在以太坊上。"
-      },
-      "polygon": {
-        "title": "Polygon是什么？",
-        "description_1": "Polygon是一个侧链，与以太坊并行运行并与之兼容。",
-        "description_2": "它支持更便宜和更快速的交易，但与Layer 2网络不同，Polygon具有自己的安全性和共识机制，与以太坊不同。"
-      },
-      "bsc": {
-        "title": "BSC是什么？",
-        "description_1": "Binance智能链，简称BSC，是Binance交易平台的区块链网络。",
-        "description_2": "它支持更便宜和更快速的交易，但与Layer 2网络不同，BSC具有自己的安全性和共识机制，与以太坊不同。"
-      },
-      "base": {
-        "title": "什么是Base?",
-        "description_1": "Base是在以太坊之上运行的第二层网络，可以实现更便宜和更快的交易，同时仍能从以太坊的底层安全性中受益。",
-        "description_2": "它将许多交易捆绑在一起，在发送到以太坊之前将它们“卷起”并永久保存。"
-      },
-      "zora": {
-        "title": "什么是Zora?",
-        "description_1": "Zora是一个在以太坊之上运行的二层网络，可以实现更便宜、更快速的交易，同时仍然享受以太坊底层安全性的好处。",
-        "description_2": "在将它们永久存储在以太坊上之前，它会将许多交易捆绑在一起并进行\"roll up\"处理。"
+      "specific": {
+        "polygon": {
+          "title": "Polygon是什么？",
+          "description_1": "Polygon是一个侧链，一个与以太坊并行运行且兼容的独立网络",
+          "description_2": "它允许更便宜更快速的交易，但与二层网络不同，Polygon拥有自己的安全和共识机制，与以太坊有所不同"
+        },
+        "bsc": {
+          "title": "BSC是什么？",
+          "description_1": "币安智能链，简称BSC，是由加密货币交易所币安开发的另一种Layer 1。",
+          "description_2": "它允许更便宜、更快速的交易，但与Layer 2网络不同，BSC拥有与以太坊不同的安全和共识机制。"
+        },
+        "avalanche": {
+          "title": "什么是Avalanche？",
+          "description_1": "Avalanche是一个由子网生态系统驱动的另一种Layer 1，类似于以太坊侧链和Layer 2。",
+          "description_2": "它允许更便宜、更快速的交易，但与Layer 2网络不同，Avalanche拥有与以太坊不同的安全和共识机制。"
+        },
+        "blast": {
+          "title": "什么是Blast？",
+          "description_1": "Blast是由流行NFT市场Blur背后的才华团队创建的以太坊Layer-2 (L2) 平台。",
+          "description_2": "该链通过为以太币（ETH）及USDC、USDT和DAI等各种稳定币引入原生收益而与众不同。"
+        },
+        "degen": {
+          "title": "什么是Degen？",
+          "description_1": "Degen链是一个在Arbitrum和以太坊之上运行的Layer 3网络。",
+          "description_2": "它提供以Farcaster社区代币$degen计价的极快且成本低廉的交易。"
+        },
+        "custom_network": {
+          "title": "这是什么网络？",
+          "description_1": "这是您添加的自定义网络！自定义网络可以根据特定需求进行定制，提供独特的功能和能力。",
+          "description_2": "根据其配置，这个网络可能利用不同的协议、安全措施和共识机制，旨在优化性能、降低成本或提供专业服务。"
+        }
       },
       "link_button_label": "了解更多",
       "action_label": "了解"
@@ -1680,6 +1729,7 @@
     "contract": "合约",
     "contract_name": "合约名称",
     "contract_created_at": "创建合约",
+    "to": "至",
     "source_code": "源代码",
     "signature": {
       "message": "消息"
@@ -1700,6 +1750,7 @@
   "unverified": "未验证",
   "skip": "跳过",
   "done": "完成",
+  "view_on_explorer": "在 %{explorer}上查看",
   "watch_asset": {
     "chain_id": "链ID",
     "symbol": "符号",
