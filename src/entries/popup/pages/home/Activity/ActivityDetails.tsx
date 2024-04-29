@@ -304,15 +304,13 @@ function SpeedUpErrorExplainer() {
       header={{
         icon: <Symbol symbol="xmark.circle.fill" color="red" size={32} />,
       }}
-      title="Failed to speed up transaction"
-      description={[
-        'A speed up can fail when the state of the network changed since you first submitted the transaction',
-      ]}
+      title={i18n.t('speed_up_and_cancel.speed_up_failed.title')}
+      description={[i18n.t('speed_up_and_cancel.speed_up_failed.description')]}
       actionButton={{
         action: () => setSearchParams({ sheet: 'cancel' }),
         symbol: 'trash.fill',
         symbolSide: 'left',
-        label: 'Cancel Transaction',
+        label: i18n.t('speed_up_and_cancel.cancel_title'),
         labelColor: 'label',
       }}
     />

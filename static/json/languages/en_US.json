@@ -1453,7 +1453,11 @@
     "speed_up_transaction": "Speed up transaction",
     "close_cta": "Cancel",
     "handle_copy_title": "Tx Hash Copied",
-    "revoke_approval": "Revoke Approval"
+    "revoke_approval": "Revoke Approval",
+    "speed_up_failed": {
+      "title": "Speed up failed",
+      "description": "Attempts to speed up a transaction can fail during network congestion, gas limit increases, or when the original transaction is confirmed first"
+    }
   },
   "token_details": {
     "swap": "Swap",
@@ -1586,7 +1590,7 @@
       },
       "link_button_label": "Read more",
       "action_label": "Got it"
-    },    
+    },
     "send": {
       "to_smart_contract": {
         "description_1": "The address you entered is for a smart contract.",
