@@ -33,27 +33,18 @@ jobs:
         run: yarn firefox:build
       - name: Update the manifest
         run: yarn update-manifest prod
-      - name: Update the manifest for firefox
-        run: yarn firefox:manifest
       - name: Archive the build artifact
         uses: actions/upload-artifact@v3
         with:
-          name: rainbowbx-firefox-v${{ env.release_version }}.zip
+          name: rainbowbx-firefox-v${{ env.release_version }}
           path: build/
-      - name: Zip it
-        run: yarn firefox:zip
-      - name: Submit to the firefox addons store
-        uses: PlasmoHQ/bpp@v3.5.0
-        with:
-          artifact: ./rainbowbx.xpi
-          keys: ${{ secrets.BPP_KEYS_PROD_FIREFOX }}
-      - name: Commit changes
-        uses: EndBug/add-and-commit@v9
-        with:
-          message: Version Bump (Production) - v${{ env.release_version }}
-          committer_name: GitHub Actions
-          committer_email: actions@github.com
-          add: '*.json'
+#     - name: Zip it
+#       run: yarn firefox:zip
+#     - name: Submit to the firefox addons store
+#       uses: PlasmoHQ/bpp@v3.5.0
+#       with:
+#         artifact: ./rainbowbx.xpi
+#         keys: ${{ secrets.BPP_KEYS_PROD_FIREFOX }}
       - name: Create Sentry release
         uses: getsentry/action-release@v1
         env:
