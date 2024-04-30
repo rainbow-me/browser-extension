@@ -419,6 +419,11 @@
       "pending": "Bidding",
       "confirmed": "Bid",
       "failed": "Bid Failed"
+    },
+    "speed_up": {
+      "pending": "Speeding up",
+      "confirmed": "Sped up",
+      "failed": "Speed up Failed"
     }
   },
   "command_k": {
@@ -1452,7 +1457,11 @@
     "speed_up_transaction": "Speed up transaction",
     "close_cta": "Cancel",
     "handle_copy_title": "Tx Hash Copied",
-    "revoke_approval": "Revoke Approval"
+    "revoke_approval": "Revoke Approval",
+    "speed_up_failed": {
+      "title": "Speed up failed",
+      "description": "Attempts to speed up a transaction can fail during network congestion, gas limit increases, or when the original transaction is confirmed first"
+    }
   },
   "token_details": {
     "swap": "Swap",
