@@ -24,6 +24,7 @@ export const SignMessageActions = ({
         dappStatus={dappStatus}
         onClick={onRejectRequest}
         label={i18n.t('common_actions.cancel')}
+        waitingForDevice={waitingForDevice}
       />
       <AcceptRequestButton
         dappStatus={dappStatus}

@@ -21,7 +21,7 @@ runs:
   - name: Download build artifacts
     uses: actions/download-artifact@v3
     with:
-        name: rainbowbx-${{ github.sha }}.zip
+        name: rainbowbx-${{ github.sha }}
         path: build
   - name: Setup xvfb
     shell: 'bash'

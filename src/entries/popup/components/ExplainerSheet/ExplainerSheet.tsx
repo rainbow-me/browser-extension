@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 
+import { shortcuts } from '~/core/references/shortcuts';
 import { goToNewTab } from '~/core/utils/tabs';
 import {
   Box,
@@ -18,6 +19,7 @@ import { TextLink } from '~/design-system/components/TextLink/TextLink';
 import { TextStyles } from '~/design-system/styles/core.css';
 import { ButtonVariant } from '~/design-system/styles/designTokens';
 
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { zIndexes } from '../../utils/zIndexes';
 
 export interface ExplainerSheetProps {
@@ -111,6 +113,16 @@ export const ExplainerSheet = ({
   testId,
   onClickOutside,
 }: ExplainerSheetProps) => {
+  useKeyboardShortcut({
+    condition: () => !!show,
+    handler: (e: KeyboardEvent) => {
+      if (e.key === shortcuts.global.CLOSE.key) {
+        e.preventDefault();
+        onClickOutside?.();
+      }
+    },
+  });
+
   const goToLink = useCallback((link?: string) => {
     link &&
       goToNewTab({
@@ -211,7 +223,6 @@ export const ExplainerSheet = ({
                 height="44px"
                 variant={actionButton?.variant || 'raised'}
                 onClick={actionButton?.action}
-                symbol={actionButton?.symbol}
                 testId="explainer-action-button"
               >
                 <Inline alignVertical="center" space="4px">
