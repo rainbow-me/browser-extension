@@ -36,9 +36,8 @@ export const useSearchableContacts = ({
 
   const { type, vendor } = useCurrentWalletTypeAndVendor();
 
-  const isTrezor = useMemo(() => {
-    return type === KeychainType.HardwareWalletKeychain && vendor === 'Trezor';
-  }, [type, vendor]);
+  const isTrezor =
+    type === KeychainType.HardwareWalletKeychain && vendor === 'Trezor';
 
   const allowSend = !isWatchingWallet || featureFlags.full_watching_wallets;
 
