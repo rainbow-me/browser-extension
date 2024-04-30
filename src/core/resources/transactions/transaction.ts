@@ -1,6 +1,6 @@
 import { Provider, TransactionResponse } from '@ethersproject/providers';
 import { formatUnits } from '@ethersproject/units';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { QueryClient, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Hash, getProvider } from '@wagmi/core';
 import { Address } from 'wagmi';
 
@@ -182,6 +182,34 @@ const fetchTransactionDataFromProvider = async ({
 
 type PaginatedTransactions = { pages: ConsolidatedTransactionsResult[] };
 
+const findTransactionInConsolidatedBEQueryCache = (
+  queryClient: QueryClient,
+  queryKey: ReturnType<typeof consolidatedTransactionsQueryKey>,
+  { hash, chainId }: { hash: Hash; chainId: ChainId },
+) => {
+  const queryData = queryClient.getQueryData<PaginatedTransactions>(queryKey);
+  const pages = queryData?.pages;
+  if (!pages) return;
+
+  for (const page of pages) {
+    const tx = page.transactions.find(
+      (tx) => tx.hash === hash && tx.chainId === chainId,
+    );
+    if (tx) return tx;
+  }
+};
+
+const findTransactionInCustomNetworkTransactionsStore = (
+  account: Address,
+  { hash, chainId }: { hash: Hash; chainId: ChainId },
+) => {
+  const { getCustomNetworkTransactions } =
+    customNetworkTransactionsStore.getState();
+  return getCustomNetworkTransactions({ address: account }).find(
+    (tx) => tx.hash === hash && tx.chainId === chainId,
+  );
+};
+
 export const useTransaction = ({
   chainId,
   hash,
@@ -213,24 +241,20 @@ export const useTransaction = ({
     queryFn: () => fetchTransaction(params),
     enabled: !!hash && !!address && !!chainId,
     initialData: () => {
-      // consolidatedTransactions is only for BE supported chains
-      const queryData = queryClient.getQueryData<PaginatedTransactions>(
-        consolidatedTransactionsKey,
-      );
-      const pages = queryData?.pages || [];
-      for (const page of pages) {
-        const tx = page.transactions.find(
-          (tx) => tx.hash === hash && tx.chainId === chainId,
-        );
-        if (tx) return tx;
-      }
+      if (!hash || !chainId) return;
 
-      // try to find in custom network transactions store
-      const { getCustomNetworkTransactions } =
-        customNetworkTransactionsStore.getState();
-      return getCustomNetworkTransactions({ address }).find(
-        (tx) => tx.hash === hash && tx.chainId === chainId,
-      );
+      const tx = SUPPORTED_CHAIN_IDS.includes(chainId)
+        ? findTransactionInConsolidatedBEQueryCache(
+            queryClient,
+            consolidatedTransactionsKey,
+            { hash, chainId },
+          )
+        : findTransactionInCustomNetworkTransactionsStore(address, {
+            hash,
+            chainId,
+          });
+
+      if (tx) return tx;
     },
     initialDataUpdatedAt: () => {
       if (!chainId || !SUPPORTED_CHAIN_IDS.includes(chainId)) return undefined;
