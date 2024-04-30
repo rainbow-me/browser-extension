@@ -25,6 +25,7 @@ import {
 } from '~/core/types/gas';
 import { KeychainWallet } from '~/core/types/keychainTypes';
 import { ExecuteRapResponse } from '~/core/types/transactions';
+import { deserializeBigNumbers } from '~/core/utils/deserializeBigNumbers';
 import { hasPreviousTransactions } from '~/core/utils/ethereum';
 import { estimateGasWithPadding } from '~/core/utils/gas';
 import { toHex } from '~/core/utils/hex';
@@ -157,10 +158,12 @@ export const sendTransaction = async (
         throw new Error('Unsupported hardware wallet');
     }
   } else {
-    return walletAction(
+    const transactionResponse = await walletAction<TransactionResponse>(
       'send_transaction',
       params,
-    ) as unknown as TransactionResponse;
+    );
+
+    return deserializeBigNumbers(transactionResponse);
   }
 };
 
