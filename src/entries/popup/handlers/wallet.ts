@@ -2,7 +2,6 @@ import {
   TransactionRequest,
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
-import { BigNumber } from '@ethersproject/bignumber';
 import { Bytes } from '@ethersproject/bytes';
 import { HDNode, Mnemonic } from '@ethersproject/hdnode';
 import { keccak256 } from '@ethersproject/keccak256';
@@ -26,6 +25,7 @@ import {
 } from '~/core/types/gas';
 import { KeychainWallet } from '~/core/types/keychainTypes';
 import { ExecuteRapResponse } from '~/core/types/transactions';
+import { deserializeBigNumbers } from '~/core/utils/deserializeBigNumbers';
 import { hasPreviousTransactions } from '~/core/utils/ethereum';
 import { estimateGasWithPadding } from '~/core/utils/gas';
 import { toHex } from '~/core/utils/hex';
@@ -166,24 +166,6 @@ export const sendTransaction = async (
     return deserializeBigNumbers(transactionResponse);
   }
 };
-
-function deserializeBigNumbers<T>(obj: T) {
-  for (const key in obj) {
-    const v = obj[key];
-    if (
-      v &&
-      typeof v === 'object' &&
-      '_hex' in v &&
-      'type' in v &&
-      v.type === 'BigNumber'
-    ) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      obj[key] = BigNumber.from(obj[key]._hex);
-    }
-  }
-  return obj;
-}
 
 export async function executeRap<T extends RapTypes>({
   rapActionParameters,
