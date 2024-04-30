@@ -70,7 +70,7 @@ export const BottomSheet = ({
             exit={{ opacity: 1, y: 800 }}
             key="bottom"
             transition={{ duration: transition_duration_s }}
-            layout
+            layout="preserve-aspect"
             isModal
           >
             <Box
