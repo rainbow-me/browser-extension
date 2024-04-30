@@ -2,6 +2,7 @@ import { isAddress } from '@ethersproject/address';
 import { Mnemonic, isValidMnemonic } from '@ethersproject/hdnode';
 import { TransactionResponse } from '@ethersproject/providers';
 import { parseEther } from '@ethersproject/units';
+import BigNumber from 'bignumber.js';
 import omit from 'lodash/omit';
 import { Address } from 'wagmi';
 
@@ -10,7 +11,7 @@ import { ethUnits } from '../references';
 import { EthereumWalletType } from '../types/walletTypes';
 
 import { addHexPrefix, isHexStringIgnorePrefix } from './hex';
-import { divide, multiply } from './numbers';
+import { divide } from './numbers';
 
 export type EthereumWalletSeed = PrivateKey | Mnemonic['phrase'];
 
@@ -75,7 +76,7 @@ export const hasPreviousTransactions = async (
 };
 
 export const gweiToWei = (gweiAmount: string) => {
-  const weiAmount = multiply(gweiAmount, ethUnits.gwei);
+  const weiAmount = new BigNumber(gweiAmount).times(ethUnits.gwei).toFixed(0); // fixed to 0 because wei is the smallest unit
   return weiAmount;
 };
 

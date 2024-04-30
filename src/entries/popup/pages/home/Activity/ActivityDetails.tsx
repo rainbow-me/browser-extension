@@ -9,7 +9,11 @@ import { useApprovals } from '~/core/resources/approvals/approvals';
 import { useTransaction } from '~/core/resources/transactions/transaction';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
-import { RainbowTransaction, TxHash } from '~/core/types/transactions';
+import {
+  PendingTransaction,
+  RainbowTransaction,
+  TxHash,
+} from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
 import { findRainbowChainForChainId } from '~/core/utils/chains';
 import { copy } from '~/core/utils/copy';
@@ -46,6 +50,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
+import { ExplainerSheet } from '~/entries/popup/components/ExplainerSheet/ExplainerSheet';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
@@ -288,13 +293,38 @@ function NetworkData({ transaction: tx }: { transaction: RainbowTransaction }) {
   );
 }
 
+function SpeedUpErrorExplainer() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const explainer = searchParams.get('explainer');
+
+  return (
+    <ExplainerSheet
+      show={explainer === 'speed_up_error'}
+      onClickOutside={() => setSearchParams({})}
+      header={{
+        icon: <Symbol symbol="xmark.circle.fill" color="red" size={32} />,
+      }}
+      title={i18n.t('speed_up_and_cancel.speed_up_failed.title')}
+      description={[i18n.t('speed_up_and_cancel.speed_up_failed.description')]}
+      actionButton={{
+        action: () => setSearchParams({ sheet: 'cancel' }),
+        symbol: 'trash.fill',
+        symbolSide: 'left',
+        label: i18n.t('speed_up_and_cancel.cancel_title'),
+        labelColor: 'label',
+      }}
+    />
+  );
+}
+
 const SpeedUpOrCancel = ({
   transaction,
 }: {
-  transaction: RainbowTransaction;
+  transaction: PendingTransaction;
 }) => {
-  const [searchParams] = useSearchParams();
   const navigate = useRainbowNavigate();
+  const [searchParams] = useSearchParams();
+
   const sheetParam = searchParams.get('sheet');
   const sheet =
     sheetParam === 'speedUp' || sheetParam === 'cancel' ? sheetParam : 'none';
@@ -303,6 +333,7 @@ const SpeedUpOrCancel = ({
       state: { skipTransitionOnRoute: ROUTES.HOME },
     });
   };
+
   return (
     <>
       <Box display="flex" flexDirection="column" gap="8px">
@@ -327,13 +358,12 @@ const SpeedUpOrCancel = ({
           {i18n.t('speed_up_and_cancel.cancel')}
         </Button>
       </Box>
-      {sheet !== 'none' && (
-        <SpeedUpAndCancelSheet
-          currentSheet={sheet}
-          transaction={transaction}
-          onClose={() => setSheet('none')}
-        />
-      )}
+      <SpeedUpAndCancelSheet
+        currentSheet={sheet}
+        transaction={transaction}
+        onClose={() => setSheet('none')}
+      />
+      <SpeedUpErrorExplainer />
     </>
   );
 };
