@@ -390,6 +390,7 @@ export const AcceptRequestButton = ({
       testId="accept-request-button"
       disabled={disabled}
       tabIndex={0}
+      paddingHorizontal={waitingForDevice ? '16px' : '24px'}
       shortcut={
         !disabled && !waitingForDevice && !isScamDapp
           ? { ...shortcuts.transaction_request.ACCEPT, type: 'request.accept' }
@@ -400,7 +401,7 @@ export const AcceptRequestButton = ({
     >
       <TextOverflow weight="bold" size="16pt" color={textColor}>
         {loading || waitingForDevice ? (
-          <Inline space="4px" alignVertical="center">
+          <Inline space="4px" alignVertical="center" wrap={false}>
             <Spinner size={16} color="label" />
             {waitingForDevice && i18n.t('approve_request.confirm_hw')}
           </Inline>
@@ -416,10 +417,12 @@ export const RejectRequestButton = ({
   onClick,
   label,
   dappStatus,
+  waitingForDevice,
 }: {
   onClick: () => void;
   label: string;
   dappStatus?: DAppStatus;
+  waitingForDevice?: boolean;
 }) => {
   const isScamDapp = dappStatus === DAppStatus.Scam;
 
@@ -428,9 +431,9 @@ export const RejectRequestButton = ({
       color={isScamDapp ? 'red' : 'separatorSecondary'}
       variant="flat"
       height="44px"
-      width="full"
       onClick={onClick}
       testId="reject-request-button"
+      width={waitingForDevice ? 'fit' : 'full'}
       tabIndex={0}
       shortcut={{
         ...shortcuts.transaction_request.CANCEL,
