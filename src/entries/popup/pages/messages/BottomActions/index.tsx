@@ -46,8 +46,13 @@ export const WalletName = ({
 }: { address: Address } & Partial<TextProps>) => {
   const { displayName } = useWalletInfo({ address });
   return (
-    // eslint-disable-next-line react/jsx-props-no-spreading
-    <TextOverflow color="label" size="14pt" weight="semibold" {...props}>
+    <TextOverflow
+      color="label"
+      size="14pt"
+      weight="semibold"
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      {...props}
+    >
       {displayName}
     </TextOverflow>
   );
@@ -190,7 +195,7 @@ export const BottomSwitchWallet = ({
         }
         renderMenuItem={(wallet, i) => (
           <Box testId={`switch-wallet-item-${i}`}>
-            <Inline space="8px" alignVertical="center">
+            <Inline space="8px" alignVertical="center" wrap={false}>
               <WalletAvatar
                 addressOrName={wallet as Address}
                 size={18}
