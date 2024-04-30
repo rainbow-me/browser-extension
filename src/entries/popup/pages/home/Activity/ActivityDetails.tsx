@@ -2,7 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits } from '@ethersproject/units';
 import { motion } from 'framer-motion';
 import { useMemo } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { Navigate, useParams, useSearchParams } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { useApprovals } from '~/core/resources/approvals/approvals';
@@ -569,7 +569,7 @@ export function ActivityDetails() {
   const { hash, chainId } = useParams<{ hash: TxHash; chainId: string }>();
   const { isWatchingWallet } = useWallets();
 
-  const { data: transaction, isLoading } = useTransaction({
+  const { data: transaction } = useTransaction({
     hash,
     chainId: Number(chainId),
   });
@@ -611,49 +611,45 @@ export function ActivityDetails() {
 
   const backToHome = () =>
     navigate(ROUTES.HOME, {
-      state: { skipTransitionOnRoute: ROUTES.HOME },
+      state: { skipTransitionOnRoute: ROUTES.HOME, tab: 'activity' },
     });
 
   const onRevoke = () => {
     triggerRevokeApproval({ show: true, approval: approvalToRevoke });
   };
 
-  return (
-    <BottomSheet zIndex={zIndexes.ACTIVITY_DETAILS} show={!!transaction}>
-      {!isLoading && !!transaction && (
-        <>
-          <Navbar
-            leftComponent={
-              <Navbar.CloseButton onClick={backToHome} withinModal />
-            }
-            titleComponent={<ActivityPill transaction={transaction} />}
-            rightComponent={
-              <MoreOptions
-                transaction={transaction}
-                revoke={!!approvalToRevoke && !isWatchingWallet}
-                onRevoke={onRevoke}
-              />
-            }
-          />
-          <Separator color="separatorTertiary" />
+  if (!transaction) {
+    return <Navigate to={ROUTES.HOME} state={{ tab: 'activity' }} />;
+  }
 
-          <Stack
-            separator={<Separator color="separatorTertiary" />}
-            padding="20px"
-            gap="20px"
-          >
-            <ToFrom transaction={transaction} />
-            {additionalDetails && (
-              <AdditionalDetails details={additionalDetails} />
-            )}
-            <ConfirmationData transaction={transaction} />
-            <NetworkData transaction={transaction} />
-            {transaction.status === 'pending' && (
-              <SpeedUpOrCancel transaction={transaction} />
-            )}
-          </Stack>
-        </>
-      )}
+  return (
+    <BottomSheet zIndex={zIndexes.ACTIVITY_DETAILS} show>
+      <Navbar
+        leftComponent={<Navbar.CloseButton onClick={backToHome} withinModal />}
+        titleComponent={<ActivityPill transaction={transaction} />}
+        rightComponent={
+          <MoreOptions
+            transaction={transaction}
+            revoke={!!approvalToRevoke && !isWatchingWallet}
+            onRevoke={onRevoke}
+          />
+        }
+      />
+      <Separator color="separatorTertiary" />
+
+      <Stack
+        separator={<Separator color="separatorTertiary" />}
+        padding="20px"
+        gap="20px"
+      >
+        <ToFrom transaction={transaction} />
+        {additionalDetails && <AdditionalDetails details={additionalDetails} />}
+        <ConfirmationData transaction={transaction} />
+        <NetworkData transaction={transaction} />
+        {transaction.status === 'pending' && (
+          <SpeedUpOrCancel transaction={transaction} />
+        )}
+      </Stack>
     </BottomSheet>
   );
 }

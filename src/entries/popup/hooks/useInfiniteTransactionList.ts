@@ -67,7 +67,6 @@ export const useInfiniteTransactionList = ({
     address,
     currency,
     userChainIds: supportedChainIds,
-    testnetMode,
   });
 
   const pages = data?.pages;
@@ -122,7 +121,6 @@ export const useInfiniteTransactionList = ({
           address,
           currency,
           userChainIds: supportedChainIds,
-          testnetMode,
         }),
         {
           ...data,
@@ -130,7 +128,7 @@ export const useInfiniteTransactionList = ({
         },
       );
     }
-  }, [address, currency, data, testnetMode, supportedChainIds]);
+  }, [address, currency, data, supportedChainIds]);
 
   useComponentWillUnmount(cleanupPages);
 
