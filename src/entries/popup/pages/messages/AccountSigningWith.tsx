@@ -66,11 +66,16 @@ export function AccountSigningWith({
   const address = session.address;
 
   return (
-    <Inline alignVertical="center" space="8px">
+    <Inline alignVertical="center" space="8px" wrap={false}>
       <WalletAvatar addressOrName={address} size={36} emojiSize="20pt / 150%" />
       <Stack space="10px">
-        <Inline alignVertical="center" space="4px">
-          <Text size="14pt" weight="bold" color="labelTertiary">
+        <Inline alignVertical="center" space="4px" wrap={false}>
+          <Text
+            size="14pt"
+            weight="bold"
+            color="labelTertiary"
+            whiteSpace="nowrap"
+          >
             {i18n.t('approve_request.signing_with')}
           </Text>
           <WalletName address={address} size="14pt" weight="bold" />
