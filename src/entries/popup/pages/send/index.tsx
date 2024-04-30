@@ -12,6 +12,7 @@ import {
   useState,
 } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { isAddress } from 'viem';
 import { Address } from 'wagmi';
 
 import { analytics } from '~/analytics';
@@ -115,6 +116,9 @@ export function Send() {
   const [urlSearchParams] = useSearchParams();
 
   const queryToAddress = urlSearchParams.get('to');
+  const validatedQueryToAddress = isAddress(queryToAddress as Address)
+    ? queryToAddress
+    : null;
 
   const isHidden = useCallback(
     (asset: ParsedUserAsset) =>
@@ -510,8 +514,8 @@ export function Send() {
       );
     }
 
-    if (queryToAddress) {
-      setToAddressOrName(queryToAddress);
+    if (validatedQueryToAddress) {
+      setToAddressOrName(validatedQueryToAddress);
     } else if (sendAddress && sendAddress.length) {
       setToAddressOrName(sendAddress);
     }
@@ -669,7 +673,7 @@ export function Send() {
                 toAddress={toAddress}
                 toEnsName={toEnsName}
                 toAddressOrName={toAddressOrName}
-                queryToAddress={queryToAddress}
+                queryToAddress={validatedQueryToAddress}
                 clearToAddress={clearToAddress}
                 handleToAddressChange={handleToAddressChange}
                 setToAddressOrName={setToAddressOrName}
