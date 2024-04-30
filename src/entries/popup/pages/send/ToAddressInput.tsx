@@ -13,7 +13,6 @@ import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
-import { useContactsStore } from '~/core/state/contacts';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { truncateAddress } from '~/core/utils/address';
@@ -234,6 +233,7 @@ interface ToAddressProps {
   toAddressOrName: string;
   toEnsName?: string;
   toAddress?: Address;
+  queryToAddress: string | null;
   handleToAddressChange: InputHTMLAttributes<HTMLInputElement>['onChange'];
   clearToAddress: () => void;
   setToAddressOrName: (adrressOrName: string) => void;
@@ -247,6 +247,7 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
       toAddressOrName,
       toEnsName,
       toAddress,
+      queryToAddress,
       handleToAddressChange,
       clearToAddress,
       setToAddressOrName,
@@ -323,9 +324,9 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
     const { currentAddress } = useCurrentAddressStore();
     const selectableWallets = wallets.filter((a) => a !== currentAddress);
     const { sendAddress: savedSendAddress } = usePopupInstanceStore();
-    const { selectedContactAddress } = useContactsStore();
+
     useEffect(() => {
-      if (!toAddressOrName && !savedSendAddress && !selectedContactAddress) {
+      if (!toAddressOrName && !savedSendAddress && !queryToAddress) {
         setTimeout(() => {
           openDropdown();
         }, 200);

@@ -625,26 +625,18 @@ export const useCommands = (
 
   const { flashbotsEnabled, setFlashbotsEnabled } = useFlashbotsEnabledStore();
 
-  const { contacts, setSelectedContactAddress, deleteContact, saveContact } =
-    useContactsStore();
+  const { contacts, deleteContact, saveContact } = useContactsStore();
 
   const { allWallets } = useWallets();
 
   const { type, vendor } = useCurrentWalletTypeAndVendor();
 
-  const isTrezor = React.useMemo(() => {
-    return type === KeychainType.HardwareWalletKeychain && vendor === 'Trezor';
-  }, [type, vendor]);
+  const isTrezor =
+    type === KeychainType.HardwareWalletKeychain && vendor === 'Trezor';
 
-  const allowSend = React.useMemo(
-    () => !isWatchingWallet || featureFlags.full_watching_wallets,
-    [featureFlags.full_watching_wallets, isWatchingWallet],
-  );
+  const allowSend = !isWatchingWallet || featureFlags.full_watching_wallets;
 
-  const shouldNavigateToSend = React.useMemo(() => {
-    // Trezor should always be in a new tab
-    return !(isTrezor && !isFullScreen) && allowSend;
-  }, [allowSend, isFullScreen, isTrezor]);
+  const shouldNavigateToSend = !(isTrezor && !isFullScreen) && allowSend;
 
   const handleCopy = React.useCallback((address: Address) => {
     navigator.clipboard.writeText(address as string);
@@ -774,28 +766,23 @@ export const useCommands = (
 
       // Trezor needs to be opened in a new tab because of their own popup
       if (isTrezor && !isFullScreen) {
-        setSelectedContactAddress({ address });
-        goToNewTab({ url: POPUP_URL + `#${ROUTES.SEND}?hideBack=true` });
+        goToNewTab({
+          url: POPUP_URL + `#${ROUTES.SEND}?hideBack=true&to=${address}`,
+        });
       }
     },
-    [setSelectedContactAddress, allowSend, isTrezor, isFullScreen],
+    [allowSend, isTrezor, isFullScreen],
   );
 
   const handleSendToContact = React.useCallback(
     (address: Address) => {
       if (shouldNavigateToSend) {
-        setSelectedContactAddress({ address });
-        navigate(ROUTES.SEND);
+        navigate(`${ROUTES.SEND}?to=${address}`);
       } else {
         handleSendFallback(address);
       }
     },
-    [
-      shouldNavigateToSend,
-      handleSendFallback,
-      navigate,
-      setSelectedContactAddress,
-    ],
+    [shouldNavigateToSend, handleSendFallback, navigate],
   );
 
   const handleAddContact = React.useCallback(

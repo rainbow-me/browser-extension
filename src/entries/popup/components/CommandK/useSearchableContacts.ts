@@ -2,7 +2,6 @@ import { useCallback, useMemo } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { useContactsStore } from '~/core/state/contacts';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
@@ -29,7 +28,6 @@ export const useSearchableContacts = ({
   showLabel,
 }: UseSearchableContactsParameters) => {
   const contacts = useContacts();
-  const { setSelectedContactAddress } = useContactsStore();
   const { isWatchingWallet } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
   const navigate = useRainbowNavigate();
@@ -42,15 +40,10 @@ export const useSearchableContacts = ({
     return type === KeychainType.HardwareWalletKeychain && vendor === 'Trezor';
   }, [type, vendor]);
 
-  const allowSend = useMemo(
-    () => !isWatchingWallet || featureFlags.full_watching_wallets,
-    [featureFlags.full_watching_wallets, isWatchingWallet],
-  );
+  const allowSend = !isWatchingWallet || featureFlags.full_watching_wallets;
 
-  const shouldNavigateToSend = useMemo(() => {
-    // Trezor should always be in a new tab
-    return !(isTrezor && !isFullScreen) && allowSend;
-  }, [allowSend, isFullScreen, isTrezor]);
+  // Trezor should always be in a new tab
+  const shouldNavigateToSend = !(isTrezor && !isFullScreen) && allowSend;
 
   const handleSendFallback = useCallback(
     (address: Address) => {
@@ -61,28 +54,23 @@ export const useSearchableContacts = ({
 
       // Trezor needs to be opened in a new tab because of their own popup
       if (isTrezor && !isFullScreen) {
-        setSelectedContactAddress({ address });
-        goToNewTab({ url: POPUP_URL + `#${ROUTES.SEND}?hideBack=true` });
+        goToNewTab({
+          url: POPUP_URL + `#${ROUTES.SEND}?hideBack=true&to=${address}`,
+        });
       }
     },
-    [setSelectedContactAddress, allowSend, isTrezor, isFullScreen],
+    [allowSend, isTrezor, isFullScreen],
   );
 
   const handleSelectAddress = useCallback(
     (address: Address) => {
       if (shouldNavigateToSend) {
-        setSelectedContactAddress({ address });
-        navigate(ROUTES.SEND);
+        navigate(`${ROUTES.SEND}?to=${address}`);
       } else {
         handleSendFallback(address);
       }
     },
-    [
-      handleSendFallback,
-      navigate,
-      setSelectedContactAddress,
-      shouldNavigateToSend,
-    ],
+    [shouldNavigateToSend, handleSendFallback, navigate],
   );
 
   const searchableContacts = useMemo(() => {
