@@ -7,6 +7,7 @@ import { useCurrentAddressStore } from '~/core/state';
 import { useNftsStore } from '~/core/state/nfts';
 import { useSelectedNftStore } from '~/core/state/selectedNft';
 import { UniqueAsset } from '~/core/types/nfts';
+import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 
 import { triggerToast } from '../components/Toast/Toast';
@@ -87,20 +88,12 @@ export function useNftShortcuts(nft?: UniqueAsset | null) {
   }, [nftToFocus, isWatchingWallet, containerRef, setSelectedNft, navigate]);
 
   const handleReportNft = useCallback(() => {
-    if (nftToFocus && !isWatchingWallet) {
-      simulateClick(containerRef.current);
-      reportNftAsSpam(nftToFocus);
+    reportNftAsSpam(nftToFocus!);
+    if (displayed) {
       toggleHideNFT(address, nftUniqueId);
-      triggerToast({ title: i18n.t('nfts.toast.spam_reported') });
     }
-  }, [
-    containerRef,
-    isWatchingWallet,
-    nftToFocus,
-    address,
-    nftUniqueId,
-    toggleHideNFT,
-  ]);
+    triggerToast({ title: i18n.t('nfts.toast.spam_reported') });
+  }, [displayed, nftToFocus, address, nftUniqueId, toggleHideNFT]);
 
   const handleNftShortcuts = useCallback(
     (e: KeyboardEvent) => {
@@ -133,7 +126,15 @@ export function useNftShortcuts(nft?: UniqueAsset | null) {
         });
       }
       if (e.key === shortcuts.nfts.REPORT_NFT.key) {
-        handleReportNft();
+        if (nftToFocus && !isWatchingWallet) {
+          simulateClick(containerRef.current);
+          triggerAlert({
+            action: handleReportNft,
+            actionText: i18n.t('nfts.report_nft_action_text'),
+            text: i18n.t('nfts.report_nft_confirm_description'),
+            dismissText: i18n.t('alert.cancel'),
+          });
+        }
         trackShortcut({
           key: shortcuts.nfts.REPORT_NFT.display,
           type: 'nfts.report',
@@ -141,6 +142,9 @@ export function useNftShortcuts(nft?: UniqueAsset | null) {
       }
     },
     [
+      nftToFocus,
+      isWatchingWallet,
+      containerRef,
       handleDownload,
       trackShortcut,
       handleCopyId,

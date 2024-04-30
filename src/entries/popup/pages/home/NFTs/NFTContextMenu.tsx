@@ -14,6 +14,7 @@ import {
 } from '~/core/utils/chains';
 import { goToNewTab } from '~/core/utils/tabs';
 import { Box, Stack, Text, TextOverflow } from '~/design-system';
+import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import {
   ContextMenuContent,
@@ -99,12 +100,13 @@ export default function NFTContextMenu({
 
   const handleReportNft = useCallback(() => {
     if (nftToFocus) {
-      simulateClick(containerRef.current);
       reportNftAsSpam(nftToFocus);
-      toggleHideNFT(address, nftUniqueId);
+      if (displayed) {
+        toggleHideNFT(address, nftUniqueId);
+      }
       triggerToast({ title: i18n.t('nfts.toast.spam_reported') });
     }
-  }, [containerRef, nftToFocus, address, nftUniqueId, toggleHideNFT]);
+  }, [displayed, nftToFocus, address, nftUniqueId, toggleHideNFT]);
 
   const handleDownload = useCallback(() => {
     simulateClick(containerRef.current);
@@ -167,7 +169,15 @@ export default function NFTContextMenu({
             {!isWatchingWallet && (
               <ContextMenuItem
                 symbolLeft={'exclamationmark.circle.fill'}
-                onSelect={handleReportNft}
+                onSelect={() => {
+                  simulateClick(containerRef.current);
+                  triggerAlert({
+                    action: handleReportNft,
+                    actionText: i18n.t('nfts.report_nft_action_text'),
+                    text: i18n.t('nfts.report_nft_confirm_description'),
+                    dismissText: i18n.t('alert.cancel'),
+                  });
+                }}
                 shortcut={shortcuts.nfts.REPORT_NFT.display}
               >
                 <Text size="14pt" weight="semibold">

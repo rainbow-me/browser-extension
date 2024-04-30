@@ -16,6 +16,7 @@ interface AlertProps {
   callback?: () => void;
   text: string;
   description?: string;
+  dismissText?: string;
 }
 
 const eventEmitter = new EventEmitter();
@@ -33,10 +34,12 @@ export const triggerAlert = ({
   text,
   description,
   callback,
+  dismissText,
 }: AlertProps) => {
   eventEmitter.emit('rainbow_alert', {
     action,
     actionText,
+    dismissText,
     text,
     description,
     callback,
@@ -119,7 +122,7 @@ export const Alert = () => {
               tabIndex={0}
             >
               <Text color="label" size="16pt" weight="bold">
-                {i18n.t('alert.ok')}
+                {alert?.dismissText || i18n.t('alert.ok')}
               </Text>
             </Button>
           </Inline>

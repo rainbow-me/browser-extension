@@ -212,7 +212,12 @@ export function NFTs() {
 
   useNftShortcuts();
 
-  if (!isLoading && sortedSections.length === 0) {
+  const isEmpty =
+    displayMode === 'grouped'
+      ? !groupedAssetRowData.length
+      : !allSections.length;
+
+  if (!isLoading && isEmpty) {
     return <NFTEmptyState />;
   }
 

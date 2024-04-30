@@ -21,6 +21,8 @@ import {
   Text,
   TextOverflow,
 } from '~/design-system';
+import { triggerAlert } from '~/design-system/components/Alert/Alert';
+import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,6 +36,7 @@ import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
+import { simulateClick } from '~/entries/popup/utils/simulateClick';
 
 import { getOpenseaUrl } from './utils';
 
@@ -54,6 +57,7 @@ export default function NFTDropdownMenu({
   const hasContractAddress = !!nft?.asset_contract.address;
   const hasNetwork = !!nft?.network;
   const isPOAP = nft?.familyName === 'POAP';
+  const containerRef = useContainerRef();
 
   const { isWatchingWallet } = useWallets();
 
@@ -96,10 +100,12 @@ export default function NFTDropdownMenu({
   const handleReportNft = useCallback(() => {
     if (nft) {
       reportNftAsSpam(nft);
-      toggleHideNFT(address, nftUniqueId);
+      if (displayed) {
+        toggleHideNFT(address, nftUniqueId);
+      }
       triggerToast({ title: i18n.t('nfts.toast.spam_reported') });
     }
-  }, [nft, nftUniqueId, address, toggleHideNFT]);
+  }, [nft, displayed, nftUniqueId, address, toggleHideNFT]);
 
   const handleDownload = useCallback(() => {
     const link = document.createElement('a');
@@ -152,7 +158,13 @@ export default function NFTDropdownMenu({
         handleSendNft();
         break;
       case 'report':
-        handleReportNft();
+        simulateClick(containerRef.current);
+        triggerAlert({
+          action: handleReportNft,
+          actionText: i18n.t('nfts.report_nft_action_text'),
+          text: i18n.t('nfts.report_nft_confirm_description'),
+          dismissText: i18n.t('alert.cancel'),
+        });
         break;
     }
   };
