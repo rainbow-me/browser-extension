@@ -626,7 +626,7 @@ export function SendTransactionInfo({
         )}
       </AnimatePresence>
 
-      {!hasEnoughGas ? (
+      {hasEnoughGas ? (
         <TransactionInfo
           request={txRequest}
           dappMetadata={dappMetadata}

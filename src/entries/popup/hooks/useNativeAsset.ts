@@ -50,12 +50,10 @@ export const useNativeAsset = ({
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
     chainId: chainId || ChainId.mainnet,
   });
-  console.log('-- nativeAssetUniqueId', nativeAssetUniqueId);
   const { data: userNativeAsset } = useUserAsset(
     nativeAssetUniqueId || '',
     address || currentAddress,
   );
-  console.log('-- userNativeAsset', userNativeAsset);
   const mockNativeAsset = useMockNativeAsset({ chainId });
 
   const { data: testnetNativeAsset } = useUserTestnetNativeAsset({
@@ -81,6 +79,5 @@ export const useNativeAsset = ({
   } else {
     nativeAsset = userNativeAsset || mockNativeAsset;
   }
-  console.log('returning nativeAsset', nativeAsset);
   return { nativeAsset };
 };
