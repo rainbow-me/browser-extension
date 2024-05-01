@@ -4,7 +4,6 @@ import { ReactNode } from 'react';
 import { i18n } from '~/core/languages';
 import { useAssets } from '~/core/resources/assets';
 import { useCurrentCurrencyStore } from '~/core/state';
-import { ChainId } from '~/core/types/chains';
 import { createNumberFormatter } from '~/core/utils/formatNumber';
 import { convertRawAmountToNativeDisplay } from '~/core/utils/numbers';
 import {
@@ -65,8 +64,7 @@ function SimulatedChangeRow({
       ? Number.MAX_SAFE_INTEGER
       : formatUnits(quantity, asset.decimals);
   const { data: additionalAssetData } = useAssets({
-    assetAddresses: asset ? [asset?.address] : [],
-    chainId: asset ? asset?.chainId : ChainId.mainnet,
+    assets: asset ? [{ address: asset.address, chainId: asset.chainId }] : [],
     currency: currentCurrency,
   });
   const assetDataWithPrice = Object.values(additionalAssetData || {})?.[0];
@@ -83,7 +81,7 @@ function SimulatedChangeRow({
         <Text size="14pt" weight="bold" color="label">
           {label}
         </Text>
-        {quantity !== 'UNLIMITED' && assetPrice && (
+        {quantity !== 'UNLIMITED' && !!assetPrice ? (
           <Box marginLeft={'-4px'}>
             <TextOverflow size="12pt" weight="bold" color="labelSecondary">
               {
@@ -96,13 +94,19 @@ function SimulatedChangeRow({
               }
             </TextOverflow>
           </Box>
-        )}
+        ) : null}
       </Inline>
       <Inline wrap={false} space="6px" alignVertical="center">
         {asset?.type === 'nft' ? (
           <NFTIcon asset={asset} size={16} />
         ) : (
-          <CoinIcon asset={asset} size={14} />
+          <CoinIcon
+            asset={asset}
+            size={14}
+            badgeSize={8}
+            badgePositionBottom={1.5}
+            badgePositionLeft={-4}
+          />
         )}
         <Inline wrap={false} space="4px" alignVertical="center">
           <TextOverflow size="14pt" weight="bold" color={color}>

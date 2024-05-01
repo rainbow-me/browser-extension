@@ -1,4 +1,3 @@
-import uniqBy from 'lodash/uniqBy';
 import { useMemo } from 'react';
 
 import {
@@ -49,14 +48,27 @@ export const useVisibleTokenCount = () => {
     },
   );
 
+  const combinedAssets = useMemo(
+    () =>
+      Array.from(
+        new Map(
+          [...customNetworkAssets, ...assets].map((item) => [
+            item.uniqueId,
+            item,
+          ]),
+        ).values(),
+      ),
+    [assets, customNetworkAssets],
+  );
+
   const allAssets = useMemo(
     () =>
-      uniqBy([...assets, ...customNetworkAssets], 'uniqueId').sort(
+      combinedAssets.sort(
         (a: ParsedUserAsset, b: ParsedUserAsset) =>
           parseFloat(b?.native?.balance?.amount) -
           parseFloat(a?.native?.balance?.amount),
       ),
-    [assets, customNetworkAssets],
+    [combinedAssets],
   );
 
   const visibleTokenCount = useMemo(

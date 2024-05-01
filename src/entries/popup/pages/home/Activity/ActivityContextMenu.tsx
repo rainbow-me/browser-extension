@@ -1,8 +1,8 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
 import { useSelectedTransactionStore } from '~/core/state/selectedTransaction';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
@@ -10,10 +10,11 @@ import { copy } from '~/core/utils/copy';
 import { goToNewTab } from '~/core/utils/tabs';
 import { getTransactionBlockExplorer } from '~/core/utils/transactions';
 import { Box, Text } from '~/design-system';
-import { DetailsMenuWrapper } from '~/entries/popup/components/DetailsMenu';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
+import { ROUTES } from '~/entries/popup/urls';
 
 import {
+  ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuSeparator,
@@ -29,7 +30,6 @@ export function ActivityContextMenu({
   transaction: RainbowTransaction;
   onRevokeTransaction?: () => void;
 }) {
-  const { setCurrentHomeSheet } = useCurrentHomeSheetStore();
   const { setSelectedTransaction } = useSelectedTransactionStore();
   const [open, setOpen] = useState(false);
   const revokeRef = useRef<HTMLDivElement>(null);
@@ -46,12 +46,20 @@ export function ActivityContextMenu({
 
   const explorer = getTransactionBlockExplorer(transaction);
 
+  const navigate = useNavigate();
+
   const onSpeedUp = () => {
-    setCurrentHomeSheet('speedUp');
+    navigate({
+      pathname: ROUTES.ACTIVITY_DETAILS(transaction.chainId, transaction.hash),
+      search: '?sheet=speedUp',
+    });
   };
 
   const onCancel = () => {
-    setCurrentHomeSheet('cancel');
+    navigate({
+      pathname: ROUTES.ACTIVITY_DETAILS(transaction.chainId, transaction.hash),
+      search: '?sheet=cancel',
+    });
   };
 
   const onTrigger = useCallback(
@@ -84,7 +92,7 @@ export function ActivityContextMenu({
   }, [open, setSelectedTransaction]);
 
   return (
-    <DetailsMenuWrapper onOpenChange={setOpen} closed={!open}>
+    <ContextMenu onOpenChange={setOpen}>
       <ContextMenuTrigger onTrigger={onTrigger}>{children}</ContextMenuTrigger>
       <ContextMenuContent>
         {transaction?.status === 'pending' && (
@@ -151,6 +159,6 @@ export function ActivityContextMenu({
           </ContextMenuItem>
         ) : null}
       </ContextMenuContent>
-    </DetailsMenuWrapper>
+    </ContextMenu>
   );
 }

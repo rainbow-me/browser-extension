@@ -170,6 +170,13 @@ export function useSearchCurrencyLists({
       fromChainId,
     });
 
+  const { data: degenVerifiedAssets, isLoading: degenVerifiedAssetsLoading } =
+    useTokenSearch({
+      chainId: ChainId.degen,
+      ...VERIFIED_ASSETS_PAYLOAD,
+      fromChainId,
+    });
+
   // current search
   const { data: targetVerifiedAssets, isLoading: targetVerifiedAssetsLoading } =
     useTokenSearch({
@@ -260,6 +267,10 @@ export function useSearchCurrencyLists({
         assets: blastVerifiedAssets,
         loading: blastVerifiedAssetsLoading,
       },
+      [ChainId.degen]: {
+        assets: degenVerifiedAssets,
+        loading: degenVerifiedAssetsLoading,
+      },
     }),
     [
       mainnetVerifiedAssets,
@@ -280,6 +291,8 @@ export function useSearchCurrencyLists({
       avalancheVerifiedAssetsLoading,
       blastVerifiedAssets,
       blastVerifiedAssetsLoading,
+      degenVerifiedAssets,
+      degenVerifiedAssetsLoading,
     ],
   );
 
@@ -335,6 +348,7 @@ export function useSearchCurrencyLists({
       [ChainId.zora]: getVerifiedAssets(ChainId.zora),
       [ChainId.avalanche]: getVerifiedAssets(ChainId.avalanche),
       [ChainId.blast]: getVerifiedAssets(ChainId.blast),
+      [ChainId.degen]: getVerifiedAssets(ChainId.degen),
     }),
     [getVerifiedAssets],
   );

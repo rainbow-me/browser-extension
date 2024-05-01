@@ -13,7 +13,6 @@ import {
 import { useConsolidatedTransactions } from '~/core/resources/transactions/consolidatedTransactions';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction, TxHash } from '~/core/types/transactions';
@@ -331,7 +330,6 @@ export const Approvals = () => {
     approval: Approval | null;
     spender: ApprovalSpender | null;
   }>({ approval: null, spender: null });
-  const { testnetMode } = useTestnetModeStore();
   const supportedMainnetIds = SUPPORTED_MAINNET_CHAINS.map((c: Chain) => c.id);
   const [sort, setSort] = useState<SortType>('recent');
   const [activeTab, setActiveTab] = useState<Tab>('tokens');
@@ -340,7 +338,6 @@ export const Approvals = () => {
     address: currentAddress,
     currency: currentCurrency,
     userChainIds: supportedMainnetIds,
-    testnetMode,
   });
 
   const revokeTransactions = useMemo(

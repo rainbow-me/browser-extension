@@ -1,6 +1,7 @@
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { Address } from 'viem';
 
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
@@ -49,6 +50,7 @@ import {
   useSwapQuote,
   useSwapQuoteHandler,
   useSwapSettings,
+  useSwapSlippage,
   useSwapValidations,
 } from '../../hooks/swap';
 import { useSwapNativeAmounts } from '../../hooks/swap/useSwapNativeAmounts';
@@ -161,6 +163,59 @@ const SwapWarning = ({
   );
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const MissingPriceExplanation = ({
+  assetToBuy,
+  assetToSell,
+}: {
+  assetToBuy: ParsedSearchAsset | null;
+  assetToSell: ParsedSearchAsset | null;
+}) => {
+  const missingPriceSymbols = [assetToBuy, assetToSell].reduce(
+    (symbols, asset) => {
+      if (asset?.price?.value === undefined && asset?.symbol) {
+        return [...symbols, asset?.symbol];
+      }
+      return symbols;
+    },
+    [] as string[],
+  );
+  if (!missingPriceSymbols?.length) return null;
+  return (
+    <ButtonOverflow>
+      <Box paddingHorizontal="20px">
+        <Box paddingVertical="10px" paddingHorizontal="12px">
+          <Inline space="8px" alignVertical="center" alignHorizontal="center">
+            <Inline space="4px" alignVertical="center">
+              <Symbol
+                symbol="exclamationmark.triangle.fill"
+                size={16}
+                color={'orange'}
+                weight="bold"
+              />
+              <Text color="label" size="14pt" weight="bold">
+                {i18n.t('swap.warnings.unknown_price.title', {
+                  symbol: missingPriceSymbols.join('/'),
+                })}
+              </Text>
+            </Inline>
+            <Box paddingHorizontal="12px" paddingBottom="6px" paddingTop="4px">
+              <Text
+                color="labelTertiary"
+                size="12pt"
+                weight="semibold"
+                align="center"
+              >
+                {i18n.t('swap.warnings.unknown_price.description')}
+              </Text>
+            </Box>
+          </Inline>
+        </Box>
+      </Box>
+    </ButtonOverflow>
+  );
+};
+
 export function Swap({ bridge = false }: { bridge?: boolean }) {
   const [showSwapSettings, setShowSwapSettings] = useState(false);
   const [showSwapReview, setShowSwapReview] = useState(false);
@@ -246,10 +301,15 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     assetToBuy,
   });
 
-  const { source, slippage, setSettings, swapFlashbotsEnabled } =
-    useSwapSettings({
-      chainId: assetToSell?.chainId || ChainId.mainnet,
-    });
+  const {
+    source,
+    slippage,
+    setSettings,
+    swapFlashbotsEnabled,
+    slippageManuallyUpdated,
+  } = useSwapSettings({
+    chainId: assetToSell?.chainId || ChainId.mainnet,
+  });
 
   const flashbotsEnabledGlobally =
     config.flashbots_enabled &&
@@ -287,6 +347,15 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     bridge,
   });
 
+  const { data: swapSlippage } = useSwapSlippage({
+    chainId: assetToSell?.chainId || ChainId.mainnet,
+    toChainId: assetToBuy?.chainId || ChainId.mainnet,
+    sellTokenAddress: assetToSell?.address as Address,
+    buyTokenAddress: assetToBuy?.address as Address,
+    sellAmount: assetToSellValue,
+    buyAmount: assetToBuyValue,
+  });
+
   const {
     data: quote,
     isLoading,
@@ -299,7 +368,10 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     assetToBuyValue,
     independentField,
     source,
-    slippage,
+    slippage:
+      !slippageManuallyUpdated && swapSlippage?.slippagePercent !== undefined
+        ? swapSlippage?.slippagePercent
+        : slippage,
   });
 
   const { assetToSellNativeDisplay, assetToBuyNativeDisplay } =
@@ -680,6 +752,10 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                 timeEstimate={timeEstimate}
                 priceImpact={priceImpact}
               />
+              {/* <MissingPriceExplanation
+                assetToBuy={assetToBuy}
+                assetToSell={assetToSell}
+              /> */}
             </Stack>
           </Row>
           <Row height="content">
