@@ -28,7 +28,7 @@ export const getSideChainExplainerParams = (
     [ChainId.bsc]: 'bsc',
     [ChainId.avalanche]: 'avalanche',
     [ChainId.blast]: 'blast',
-    [ChainId.degen]: 'degen'
+    [ChainId.degen]: 'degen',
     // add new chains here with unique i18n explainer keys
   };
 

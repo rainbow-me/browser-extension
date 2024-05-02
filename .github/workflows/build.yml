@@ -65,7 +65,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: rainbowbx-${{ github.sha }}.zip
+          name: rainbowbx-${{ github.sha }}
           path: build/
       - name: Remove old screenshots
         run: rm -rf screenshots/*
@@ -358,7 +358,7 @@ jobs:
   #     - name: Download build artifacts
   #       uses: actions/download-artifact@v3
   #       with:
-  #         name: rainbowbx-${{ github.sha }}.zip
+  #         name: rainbowbx-${{ github.sha }}
   #         path: build
   #     - name: Setup xvfb
   #       run: |

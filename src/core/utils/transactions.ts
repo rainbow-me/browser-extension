@@ -328,7 +328,7 @@ export const parseNewTransaction = (
     ...tx,
     status: 'pending',
     data: tx.data,
-    title: i18n.t(`transactions.${tx.type}.${tx.status}`),
+    title: i18n.t(`transactions.${tx.typeOverride || tx.type}.${tx.status}`),
     description: asset?.name || methodName,
     from: tx.from,
     changes,

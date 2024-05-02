@@ -30,7 +30,6 @@ export const useTransactionListForPendingTxs = () => {
     address,
     currency,
     userChainIds: supportedChainIds,
-    testnetMode,
   });
 
   useEffect(() => {
