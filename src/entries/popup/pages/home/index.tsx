@@ -1,3 +1,4 @@
+import { logger } from '@sentry/utils';
 import { motion, useMotionValueEvent } from 'framer-motion';
 import { memo, useEffect, useLayoutEffect, useRef, useState } from 'react';
 
@@ -8,9 +9,13 @@ import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore, usePendingRequestStore } from '~/core/state';
 import { useTabNavigation } from '~/core/state/currentSettings/tabNavigation';
+import { useErrorStore } from '~/core/state/error';
+import { goToNewTab } from '~/core/utils/tabs';
 import { AccentColorProvider, Box, Separator } from '~/design-system';
+import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { globalColors } from '~/design-system/styles/designTokens';
+import { RainbowError } from '~/logger';
 
 import { AccountName } from '../../components/AccountName/AccountName';
 import { AppConnectionWalletSwitcher } from '../../components/AppConnection/AppConnectionWalletSwitcher';
@@ -156,6 +161,25 @@ export const Home = memo(function Home() {
       navigate(ROUTES.APPROVE_APP_REQUEST);
     }
   }, [navigate, pendingRequests, prevPendingRequest?.id]);
+
+  const { error, setError } = useErrorStore();
+  useEffect(() => {
+    if (error) {
+      triggerAlert({
+        action: () =>
+          goToNewTab({
+            url: 'https://rainbow.me/extension/support?report=true',
+          }),
+        actionText: i18n.t('errors.report_error'),
+        text: i18n.t('errors.error_encountered'),
+      });
+      logger.error(new RainbowError('Error Boundary Did Catch: '), {
+        message: error.message,
+        stack: error.stack,
+      });
+      setError(null);
+    }
+  }, [error, setError]);
 
   useEffect(() => {
     analytics.track(event.walletViewed);

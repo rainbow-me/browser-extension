@@ -1,7 +1,6 @@
 import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
 import {
-  Navigate,
   Outlet,
   RouteObject,
   RouterProvider,
@@ -14,14 +13,13 @@ import { analytics } from '~/analytics';
 import { screen } from '~/analytics/screen';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
+import { useErrorStore } from '~/core/state/error';
 import { useNavRestorationStore } from '~/core/state/navRestoration';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
-import { goToNewTab } from '~/core/utils/tabs';
 import { Box } from '~/design-system';
-import { Alert, triggerAlert } from '~/design-system/components/Alert/Alert';
+import { Alert } from '~/design-system/components/Alert/Alert';
 import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { BoxProps } from '~/design-system/components/Box/Box';
-import { RainbowError, logger } from '~/logger';
 
 import { AppConnectionWatcher } from './components/AppConnection/AppConnectionWatcher';
 import { CommandK } from './components/CommandK/CommandK';
@@ -35,6 +33,7 @@ import { WindowStroke } from './components/WindowStroke/WindowStroke';
 import { useCommandKShortcuts } from './hooks/useCommandKShortcuts';
 import useKeyboardAnalytics from './hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from './hooks/useKeyboardShortcut';
+import { useRainbowNavigate } from './hooks/useRainbowNavigate';
 import { Buy } from './pages/buy';
 import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
@@ -1062,23 +1061,15 @@ const useGlobalShortcuts = () => {
 };
 
 function Rerouter() {
-  const error = useRouteError();
+  const error = useRouteError() as Error;
+  const navigate = useRainbowNavigate();
+  const { setError } = useErrorStore();
 
-  triggerAlert({
-    action: () =>
-      goToNewTab({
-        url: 'https://rainbow.me/extension/support?report=true',
-      }),
-    actionText: i18n.t('errors.report_error'),
-    text: i18n.t('errors.error_encountered'),
-  });
+  React.useEffect(() => {
+    setError(error);
+    navigate(ROUTES.HOME, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  if (error instanceof Error) {
-    logger.error(new RainbowError('Error Boundary Did Catch: '), {
-      message: error.message,
-      stack: error.stack,
-    });
-  }
-
-  return <Navigate to={ROUTES.HOME} />;
+  return null;
 }
