@@ -7,7 +7,6 @@ export const TestnetFaucet = {
   [ChainId.holesky]: 'https://faucet.quicknode.com/ethereum/holesky',
   [ChainId.optimismSepolia]: 'https://app.optimism.io/faucet',
   [ChainId.bscTestnet]: 'https://www.bnbchain.org/en/testnet-faucet',
-  [ChainId.polygonMumbai]: 'https://faucet.polygon.technology',
   [ChainId.arbitrumSepolia]: 'https://faucet.quicknode.com/arbitrum/sepolia',
   [ChainId.baseSepolia]: 'https://app.optimism.io/faucet',
   [ChainId.zoraSepolia]: 'https://app.optimism.io/faucet',
