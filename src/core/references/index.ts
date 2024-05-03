@@ -13,7 +13,6 @@ import {
   optimism,
   optimismSepolia,
   polygon,
-  polygonMumbai,
   zora,
   zoraSepolia,
 } from 'viem/chains';
@@ -171,7 +170,6 @@ export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.zora]: ETH_ZORA_ADDRESS as Address,
   [ChainId.zoraSepolia]: AddressZero as Address,
   [ChainId.polygon]: MATIC_POLYGON_ADDRESS as Address,
-  [ChainId.polygonMumbai]: AddressZero as Address,
   [ChainId.avalanche]: AVAX_AVALANCHE_ADDRESS as Address,
   [ChainId.avalancheFuji]: AddressZero as Address,
   [ChainId.blast]: AddressZero as Address,
@@ -198,7 +196,6 @@ export const NATIVE_ASSETS_MAP_PER_CHAIN: Record<ChainId, AddressOrEth> = {
   [ChainId.zora]: ETH_ADDRESS,
   [ChainId.zoraSepolia]: ETH_ADDRESS,
   [ChainId.polygon]: MATIC_MAINNET_ADDRESS,
-  [ChainId.polygonMumbai]: MATIC_MAINNET_ADDRESS,
   [ChainId.avalanche]: ETH_ADDRESS,
   [ChainId.avalancheFuji]: ETH_ADDRESS,
   [ChainId.blast]: ETH_ADDRESS,
@@ -244,7 +241,6 @@ export const SUPPORTED_CHAINS: Chain[] = [
   sepolia,
   optimismSepolia,
   bscTestnet,
-  polygonMumbai,
   arbitrumSepolia,
   baseSepolia,
   zoraSepolia,
@@ -263,7 +259,6 @@ export const SUPPORTED_TESTNET_CHAINS: Chain[] = [
   sepolia,
   optimismSepolia,
   bscTestnet,
-  polygonMumbai,
   arbitrumSepolia,
   baseSepolia,
   zoraSepolia,
@@ -299,8 +294,6 @@ export const getDefaultRPC = (chainId: ChainId) => {
       return { http: process.env.OPTIMISM_SEPOLIA_RPC };
     case ChainId.bscTestnet:
       return { http: process.env.BSC_TESTNET_RPC };
-    case ChainId.polygonMumbai:
-      return { http: process.env.POLYGON_MUMBAI_RPC };
     case ChainId.arbitrumSepolia:
       return { http: process.env.ARBITRUM_SEPOLIA_RPC };
     case ChainId.baseSepolia:
