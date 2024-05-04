@@ -160,8 +160,8 @@ jobs:
       - name: Fail if any tests failed
         if: steps.FFE2eSend.outcome == 'failure'
         run: exit 1
-  firefox-e2e-dappInteractions:
-    runs-on: dapp-interactions-runner-bx
+  firefox-e2e-dapp:
+    runs-on: dapp-runner-bx
     timeout-minutes: 25
     needs: [build]
     env:
@@ -172,23 +172,23 @@ jobs:
       - uses: ./.github/actions/firefoxTestsSetup
         with:
           gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
-      - name: Run e2e Dapp Interactions (Firefox)
-        id: FFE2eDappInteractions
+      - name: Run e2e Dapp (Firefox)
+        id: FFE2eDapp
         continue-on-error: true
         run: |
           export BROWSER=firefox
           export OS=linux
           export FIREFOX_BIN="$(pwd)/firefox/firefox"
           yarn firefox:manifest && yarn firefox:zip
-          yarn vitest:dappInteractions
+          yarn vitest:dapp
       - name: Upload deps artifacts
-        if: steps.FFE2eDappInteractions.outcome == 'failure'
+        if: steps.FFE2eDapp.outcome == 'failure'
         uses: actions/upload-artifact@v3
         with:
           name: screenshots
           path: screenshots/
       - name: Fail if any tests failed
-        if: steps.FFE2eDappInteractions.outcome == 'failure'
+        if: steps.FFE2eDapp.outcome == 'failure'
         run: exit 1
   # CHROME TESTS
   chrome-e2e-parallel:
@@ -278,8 +278,8 @@ jobs:
       - name: Fail if any tests failed
         if: steps.ChromeE2ESend.outcome == 'failure'
         run: exit 1
-  chrome-optimism-e2e-send:
-    runs-on: send-runner-bx
+  chrome-e2e-networks:
+    runs-on: networks-runner-bx
     timeout-minutes: 25
     needs: [build]
     env:
@@ -290,25 +290,25 @@ jobs:
       - uses: ./.github/actions/chromeTestsSetup
         with:
           gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
-      - name: Run Optimism e2e send (Chrome)
-        id: ChromeOpE2ESend
+      - name: Run Netoworks e2e (Chrome)
+        id: ChromeE2ENetworks
         continue-on-error: true
         run: |
           export BROWSER=chrome
           export OS=linux
           export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
-          yarn vitest:send:optimism
+          yarn vitest:networks
       - name: Upload deps artifacts
-        if: steps.ChromeOpE2ESend.outcome == 'failure'
+        if: steps.ChromeE2ENetworks.outcome == 'failure'
         uses: actions/upload-artifact@v3
         with:
           name: screenshots
           path: screenshots/
       - name: Fail if any tests failed
-        if: steps.ChromeOpE2ESend.outcome == 'failure'
+        if: steps.ChromeE2ENetworks.outcome == 'failure'
         run: exit 1
-  chrome-e2e-dappInteractions:
-    runs-on: dapp-interactions-runner-bx
+  chrome-e2e-dapp:
+    runs-on: dapp-runner-bx
     timeout-minutes: 25
     needs: [build]
     env:
@@ -319,22 +319,22 @@ jobs:
       - uses: ./.github/actions/chromeTestsSetup
         with:
           gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
-      - name: Run e2e dappInteractions (Chrome)
-        id: ChromeE2EDappInteractions
+      - name: Run e2e dapp (Chrome)
+        id: ChromeE2EDapp
         continue-on-error: true
         run: |
           export BROWSER=chrome
           export OS=linux
           export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
-          yarn vitest:dappInteractions
+          yarn vitest:dapp
       - name: Upload deps artifacts
-        if: steps.ChromeE2EDappInteractions.outcome == 'failure'
+        if: steps.ChromeE2EDapp.outcome == 'failure'
         uses: actions/upload-artifact@v3
         with:
           name: screenshots
           path: screenshots/
       - name: Fail if any tests failed
-        if: steps.ChromeE2EDappInteractions.outcome == 'failure'
+        if: steps.ChromeE2EDapp.outcome == 'failure'
         run: exit 1
   # BRAVE TESTS
   # brave-e2e:
@@ -454,7 +454,7 @@ jobs:
         run: yarn typecheck
   cleanup:
     runs-on:  ubuntu-latest
-    needs: [firefox-e2e-parallel, firefox-e2e-send, firefox-e2e-dappInteractions, chrome-e2e-parallel, chrome-e2e-swap, chrome-e2e-send, chrome-e2e-dappInteractions, chrome-optimism-e2e-send, unit-tests, ci-checks]
+    needs: [firefox-e2e-parallel, firefox-e2e-send, firefox-e2e-dapp, chrome-e2e-parallel, chrome-e2e-swap, chrome-e2e-send, chrome-e2e-dapp, chrome-e2e-networks, unit-tests, ci-checks]
     steps:
       - uses: geekyeggo/delete-artifact@v2
         with:
