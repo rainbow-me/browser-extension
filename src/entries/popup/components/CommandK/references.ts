@@ -1,11 +1,11 @@
 import { i18n } from '~/core/languages';
 
 export const actionLabels = {
-  activateCommand: i18n.t('command_k.action_labels.activate_command'),
-  open: i18n.t('command_k.action_labels.open'),
-  openInNewTab: i18n.t('command_k.action_labels.open_in_new_tab'),
-  switchToWallet: i18n.t('command_k.action_labels.switch_to_wallet'),
-  view: i18n.t('command_k.action_labels.view'),
+  activateCommand: () => i18n.t('command_k.action_labels.activate_command'),
+  open: () => i18n.t('command_k.action_labels.open'),
+  openInNewTab: () => i18n.t('command_k.action_labels.open_in_new_tab'),
+  switchToWallet: () => i18n.t('command_k.action_labels.switch_to_wallet'),
+  view: () => i18n.t('command_k.action_labels.view'),
 };
 
 export const springConfig = {

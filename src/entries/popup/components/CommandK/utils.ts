@@ -259,7 +259,7 @@ export function useCommandExecution(
           case SearchItemType.Wallet:
             return 'View Wallet';
           default:
-            return command?.actionLabel;
+            return command?.actionLabel?.();
         }
       };
       analytics.track(event.commandKActionExecuted, {
