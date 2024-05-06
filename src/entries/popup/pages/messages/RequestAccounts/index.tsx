@@ -35,11 +35,14 @@ export const RequestAccounts = ({
   const { data: dappMetadata } = useDappMetadata({ url: dappUrl });
   const appName =
     dappMetadata?.appName || (dappUrl ? getDappHostname(dappUrl) : '');
+  const requestedChainId = (request.params?.[0] as { chainId?: string })
+    ?.chainId;
   const { addSession } = useAppSessionsStore();
 
   const { testnetMode } = useTestnetModeStore();
   const [selectedChainId, setSelectedChainId] = useState<ChainId>(
-    testnetMode ? ChainId.sepolia : ChainId.mainnet,
+    (requestedChainId ? Number(requestedChainId) : undefined) ||
+      (testnetMode ? ChainId.sepolia : ChainId.mainnet),
   );
   const [selectedWallet, setSelectedWallet] = useState<Address>(currentAddress);
 
