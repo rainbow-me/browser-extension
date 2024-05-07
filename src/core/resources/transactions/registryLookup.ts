@@ -90,11 +90,11 @@ export async function fetchRegistryLookup(
     RegistryLookupQueryKey
   > = {},
 ) {
-  return await queryClient.fetchQuery(
-    registryLookupQueryKey({ data, to, chainId, hash }),
-    registryLookupQueryFunction,
-    config,
-  );
+  return await queryClient.fetchQuery({
+    queryKey: registryLookupQueryKey({ data, to, chainId, hash }),
+    queryFn: registryLookupQueryFunction,
+    ...config,
+  });
 }
 
 // ///////////////////////////////////////////////
@@ -109,9 +109,9 @@ export function useRegistryLookup(
     RegistryLookupQueryKey
   > = {},
 ) {
-  return useQuery(
-    registryLookupQueryKey({ data, to, chainId, hash }),
-    registryLookupQueryFunction,
-    config,
-  );
+  return useQuery({
+    queryKey: registryLookupQueryKey({ data, to, chainId, hash }),
+    queryFn: registryLookupQueryFunction,
+    ...config,
+  });
 }

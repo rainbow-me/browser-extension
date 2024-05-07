@@ -118,16 +118,14 @@ export function useUserTestnetNativeAsset(
     UserTestnetNativeAssetQueryKey
   > = {},
 ) {
-  return useQuery(
-    userTestnetNativeAssetQueryKey({
+  return useQuery({
+    queryKey: userTestnetNativeAssetQueryKey({
       address,
       currency,
       chainId,
     }),
-    userTestnetNativeAssetQueryFunction,
-    {
-      ...config,
-      refetchInterval: USER_ASSETS_REFETCH_INTERVAL,
-    },
-  );
+    queryFn: userTestnetNativeAssetQueryFunction,
+    ...config,
+    refetchInterval: USER_ASSETS_REFETCH_INTERVAL,
+  });
 }

@@ -69,11 +69,11 @@ export async function fetchFirstTransactionTimestamp(
     FirstTransactionTimestampQueryKey
   > = {},
 ) {
-  return await queryClient.fetchQuery(
-    firstTransactionTimestampQueryKey({ address }),
-    firstTransactionTimestampQueryFunction,
-    config,
-  );
+  return await queryClient.fetchQuery({
+    queryKey: firstTransactionTimestampQueryKey({ address }),
+    queryFn: firstTransactionTimestampQueryFunction,
+    ...config,
+  });
 }
 
 // ///////////////////////////////////////////////
@@ -88,9 +88,9 @@ export function useFirstTransactionTimestamp(
     FirstTransactionTimestampQueryKey
   > = {},
 ) {
-  return useQuery(
-    firstTransactionTimestampQueryKey({ address }),
-    firstTransactionTimestampQueryFunction,
-    config,
-  );
+  return useQuery({
+    queryKey: firstTransactionTimestampQueryKey({ address }),
+    queryFn: firstTransactionTimestampQueryFunction,
+    ...config,
+  });
 }

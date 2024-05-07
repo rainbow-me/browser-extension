@@ -58,15 +58,18 @@ export function NFTs() {
   const { chains: userChains } = useUserChains();
   const [manuallyRefetching, setManuallyRefetching] = useState(false);
   const {
-    data,
+    data: sortedSections = [],
     fetchNextPage,
     hasNextPage,
     isFetching,
     isFetchingNextPage,
     isLoading,
     refetch,
-  } = useNfts({ address, testnetMode, userChains });
-  const sortedSections = selectSortedNftCollections(sort, data);
+  } = useNfts(
+    { address, testnetMode, userChains },
+    { select: (data) => selectSortedNftCollections(sort, data) },
+  );
+
   const navigate = useRainbowNavigate();
   const containerRef = useContainerRef();
   const { selectedNft } = useSelectedNftStore();
@@ -94,37 +97,38 @@ export function NFTs() {
     .concat(
       hiddenAssets.length
         ? {
-            assets: hiddenAssets,
-            collection: {
-              collection_id: '_hidden',
-              description: null,
-              discord_url: null,
-              total_quantity: null,
-              distinct_nft_count: null,
-              distinct_owner_count: null,
-              external_url: null,
-              featured_image_url: null,
-              hidden: null,
-              image_url: null,
-              name: i18n.t('nfts.hidden_section_title'),
-              short_description: null,
-              slug: '',
-              twitter_username: null,
-              wiki_link: null,
-            },
-          }
+          assets: hiddenAssets,
+          collection: {
+            collection_id: '_hidden',
+            description: null,
+            discord_url: null,
+            total_quantity: null,
+            distinct_nft_count: null,
+            distinct_owner_count: null,
+            external_url: null,
+            featured_image_url: null,
+            hidden: null,
+            image_url: null,
+            name: i18n.t('nfts.hidden_section_title'),
+            short_description: null,
+            slug: '',
+            twitter_username: null,
+            wiki_link: null,
+          },
+        }
         : [],
     );
+
   const estimateCollectionGalleryRowSize = useCallback(
     (sectionIndex: number) => {
       const COLLECTION_HEADER_HEIGHT = 30;
       const PADDING = 29;
 
-      const collection = allSections[sectionIndex];
+      const collection = allSections?.[sectionIndex];
       const sectionIsOpen = (sectionsState[address] || {})[
         collection?.collection?.collection_id || ''
       ];
-      if (sectionIsOpen) {
+      if (sectionIsOpen && collection) {
         const displayedAssets = collection.assets.filter((asset) => {
           return (
             collection.collection.collection_id === '_hidden' ||
@@ -139,7 +143,9 @@ export function NFTs() {
         return PADDING + COLLECTION_HEADER_HEIGHT + thumbnailHeight;
       } else {
         const finalCellPadding =
-          !sectionIsOpen && sectionIndex === allSections?.length - 1 ? 12 : 0;
+          !sectionIsOpen && sectionIndex === (allSections?.length || 0) - 1
+            ? 12
+            : 0;
         return COLLECTION_HEADER_HEIGHT + finalCellPadding;
       }
     },
@@ -151,7 +157,7 @@ export function NFTs() {
     estimateSize: estimateCollectionGalleryRowSize,
     overscan: 12,
   });
-  const groupedAssetRowData = chunkArray(groupedAssets, 3);
+  const groupedAssetRowData = chunkArray(groupedAssets || [], 3);
   const groupedGalleryRowVirtualizer = useVirtualizer({
     count: groupedAssetRowData?.length,
     getScrollElement: () => containerRef.current,
@@ -202,7 +208,6 @@ export function NFTs() {
     }
   }, [
     address,
-    data?.pages?.length,
     fetchNextPage,
     hasNextPage,
     isFetching,
@@ -340,8 +345,8 @@ export function NFTs() {
                     .getVirtualItems()
                     .map((virtualItem) => {
                       const { key, size, start, index } = virtualItem;
-                      const section = allSections[index];
-                      const isLast = index === allSections.length - 1;
+                      const section = allSections?.[index];
+                      const isLast = index === (allSections?.length || 0) - 1;
                       return (
                         <Box
                           key={key}

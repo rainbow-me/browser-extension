@@ -71,14 +71,12 @@ export function useAssetMetadata(
     AssetMetadataQueryKey
   > = {},
 ) {
-  return useQuery(
-    assetMetadataQueryKey({
+  return useQuery({
+    queryKey: assetMetadataQueryKey({
       assetAddress,
       chainId,
     }),
-    assetMetadataQueryFunction,
-    {
-      ...config,
-    },
-  );
+    queryFn: assetMetadataQueryFunction,
+    ...config,
+  });
 }

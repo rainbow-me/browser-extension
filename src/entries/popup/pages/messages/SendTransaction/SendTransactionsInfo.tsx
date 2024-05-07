@@ -109,7 +109,7 @@ const Overview = memo(function Overview({
 }: {
   chainId: ChainId;
   simulation: TransactionSimulation | undefined;
-  status: 'loading' | 'error' | 'success';
+  status: 'pending' | 'error' | 'success';
   error: SimulationError | null;
   metadata: DappMetadata | null;
 }) {
@@ -339,7 +339,7 @@ function TransactionInfo({
           <Overview
             chainId={chainId}
             simulation={simulation}
-            status={status === 'error' && isRefetching ? 'loading' : status}
+            status={status === 'error' && isRefetching ? 'pending' : status}
             error={error}
             metadata={dappMetadata}
           />

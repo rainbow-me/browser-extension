@@ -154,8 +154,9 @@ async function positionsQueryFunctionRetryByChain({
   try {
     const cache = queryClient.getQueryCache();
     const cachedPositions =
-      (cache.find(positionsQueryKey({ address, currency, testnetMode }))?.state
-        ?.data as ParsedPositionsByChain) || {};
+      (cache.find({
+        queryKey: positionsQueryKey({ address, currency, testnetMode }),
+      })?.state?.data as ParsedPositionsByChain) || {};
     const retries = [];
     for (const chainIdWithError of chainIds) {
       retries.push(
@@ -237,11 +238,11 @@ export async function fetchPositions(
     PositionsQueryKey
   > = {},
 ) {
-  return await queryClient.fetchQuery(
-    positionsQueryKey({ address, currency, testnetMode }),
-    positionsQueryFunction,
-    config,
-  );
+  return await queryClient.fetchQuery({
+    queryKey: positionsQueryKey({ address, currency, testnetMode }),
+    queryFn: positionsQueryFunction,
+    ...config,
+  });
 }
 
 // ///////////////////////////////////////////////
@@ -256,11 +257,11 @@ export function usePositions(
     PositionsQueryKey
   > = {},
 ) {
-  return useQuery(
-    positionsQueryKey({ address, currency, testnetMode }),
-    positionsQueryFunction,
-    config,
-  );
+  return useQuery({
+    queryKey: positionsQueryKey({ address, currency, testnetMode }),
+    queryFn: positionsQueryFunction,
+    ...config,
+  });
 }
 
 function parsePositions(

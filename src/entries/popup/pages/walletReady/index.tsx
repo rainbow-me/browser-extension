@@ -10,9 +10,10 @@ import { ReadyShortcut } from './ReadyShortcut';
 
 const userSettingsPlaceholder = {} as chrome.action.UserSettings;
 const useChromeUserSettings = () => {
-  const settings = useQuery(['chrome.action.getUserSettings'], () =>
-    chrome.action.getUserSettings(),
-  );
+  const settings = useQuery({
+    queryKey: ['chrome.action.getUserSettings'],
+    queryFn: () => chrome.action.getUserSettings(),
+  });
   return settings.data || userSettingsPlaceholder;
 };
 

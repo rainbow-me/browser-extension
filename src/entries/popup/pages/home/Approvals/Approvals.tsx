@@ -343,7 +343,7 @@ export const Approvals = () => {
   const revokeTransactions = useMemo(
     () =>
       data?.pages
-        .map((p) => p.transactions)
+        ?.map((p) => p.transactions)
         .flat()
         .filter(
           (tx) =>

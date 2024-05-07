@@ -109,7 +109,7 @@
     "@sentry/browser": "7.69.0",
     "@sentry/tracing": "7.69.0",
     "@tanstack/query-async-storage-persister": "4.29.19",
-    "@tanstack/react-query": "4.29.19",
+    "@tanstack/react-query": "5.35.1",
     "@tanstack/react-query-persist-client": "4.29.19",
     "@tanstack/react-virtual": "3.0.0-beta.54",
     "@trezor/connect-plugin-ethereum": "9.0.2",

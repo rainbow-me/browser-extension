@@ -5,6 +5,7 @@ import { truncateAddress } from '~/core/utils/address';
 
 export const useWalletName = ({ address }: { address?: Address }) => {
   const { data: ensName } = useEnsName({ address });
+  console.log('-- ensName', ensName);
   const { walletNames } = useWalletNamesStore();
 
   if (!address) {

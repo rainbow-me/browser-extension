@@ -30,6 +30,7 @@ import {
 } from '~/core/utils/nfts';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { NFTS_TEST_DATA } from '~/test/utils';
+
 const EMPTY_WALLET_ADDRESS = '0x3637f053D542E6D00Eee42D656dD7C59Fa33a62F';
 
 const POLYGON_ALLOWLIST_STALE_TIME = 600000; // 10 minutes
@@ -56,15 +57,25 @@ const nftsQueryKey = ({ address, testnetMode, userChains }: NftsArgs) =>
 // ///////////////////////////////////////////////
 // Query Function
 
+type _QueryResult = {
+  cutoff?: number;
+  nextPage?: string;
+  pages?: {
+    nfts: UniqueAsset[];
+    nextPage?: string;
+  }[];
+  nfts: UniqueAsset[];
+};
+
 async function nftsQueryFunction({
   queryKey: [{ address, testnetMode, userChains }],
   pageParam,
-}: QueryFunctionArgs<typeof nftsQueryKey>) {
+}: QueryFunctionArgs<typeof nftsQueryKey>): Promise<_QueryResult> {
   if (
     process.env.IS_TESTING === 'true' &&
     isLowerCaseMatch(address, EMPTY_WALLET_ADDRESS)
   ) {
-    return NFTS_TEST_DATA;
+    return NFTS_TEST_DATA as unknown as _QueryResult;
   }
   const activeChainIds = userChains
     .filter((chain) => {
@@ -83,10 +94,10 @@ async function nftsQueryFunction({
   const collectionsResponse = await fetchNftCollections({
     address,
     chains,
-    cursor: pageParam,
+    cursor: pageParam as string | undefined,
   });
   const collections = collectionsResponse.collections;
-  const nextPage = collectionsResponse.nextPage;
+  const nextPage = collectionsResponse.nextPage || undefined;
   const filteredCollections = collections?.filter(
     (collection: SimpleHashCollectionDetails) => {
       const polygonContractAddressString =
@@ -156,7 +167,7 @@ async function nftsQueryFunction({
   };
 }
 
-type NftsResult = QueryFunctionResult<typeof nftsQueryFunction>;
+export type NftsResult = QueryFunctionResult<typeof nftsQueryFunction>;
 
 // ///////////////////////////////////////////////
 // Query Hook
@@ -165,31 +176,22 @@ export function useNfts<TSelectData = NftsResult>(
   { address, testnetMode, userChains }: NftsArgs,
   config: InfiniteQueryConfig<NftsResult, Error, TSelectData> = {},
 ) {
-  return useInfiniteQuery(
-    nftsQueryKey({ address, testnetMode, userChains }),
-    nftsQueryFunction,
-    {
-      ...config,
-      getNextPageParam: (lastPage) => lastPage?.nextPage,
-      refetchInterval: 600000,
-      retry: 3,
-    },
-  );
+  return useInfiniteQuery({
+    queryKey: nftsQueryKey({ address, testnetMode, userChains }),
+    queryFn: nftsQueryFunction,
+    getNextPageParam: (lastPage) => lastPage?.nextPage || null,
+    initialPageParam: null,
+    ...config,
+    refetchInterval: 600000,
+    retry: 3,
+  });
 }
 
 // ///////////////////////////////////////////////
 // Query Utils
 
 export function getNftCount({ address, testnetMode, userChains }: NftsArgs) {
-  const nftData:
-    | {
-        pages: {
-          nfts: UniqueAsset[];
-          nextPage?: string;
-        }[];
-        pageParams: (string | null)[];
-      }
-    | undefined = queryClient.getQueryData(
+  const nftData: _QueryResult | undefined = queryClient.getQueryData(
     nftsQueryKey({ address, testnetMode, userChains }),
   );
   if (nftData?.pages) {
@@ -206,9 +208,9 @@ export function getNftCount({ address, testnetMode, userChains }: NftsArgs) {
 // Polygon Allow List Fetcher
 
 function polygonAllowListFetcher() {
-  return queryClient.fetchQuery<PolygonAllowListDictionary>(
-    ['137-allowlist'],
-    async () => await fetchPolygonAllowList(),
-    { staleTime: POLYGON_ALLOWLIST_STALE_TIME },
-  );
+  return queryClient.fetchQuery<PolygonAllowListDictionary>({
+    queryKey: ['137-allowlist'],
+    queryFn: async () => await fetchPolygonAllowList(),
+    staleTime: POLYGON_ALLOWLIST_STALE_TIME,
+  });
 }

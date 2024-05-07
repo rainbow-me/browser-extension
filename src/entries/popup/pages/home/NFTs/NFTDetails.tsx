@@ -95,11 +95,14 @@ export default function NFTDetails() {
   }>();
   const { testnetMode } = useTestnetModeStore();
   const { chains: userChains } = useUserChains();
-  const { data } = useNfts({ address, testnetMode, userChains });
+  const { data: collections = {} } = useNfts(
+    { address, testnetMode, userChains },
+    { select: (data) => selectNftCollections(data) },
+  );
   const navigate = useRainbowNavigate();
   const { isWatchingWallet } = useWallets();
   const setSelectedNft = useSelectedNftStore.use.setSelectedNft();
-  const collections = selectNftCollections(data);
+
   const nft = useMemo(() => {
     if (!collectionId || !nftId) return null;
     return collections?.[collectionId]?.assets?.find(
@@ -738,7 +741,7 @@ const NFTAccordionAboutSection = ({
                 subValue={`(${Math.floor(
                   (nft.collection.distinct_owner_count /
                     nft.collection.total_quantity) *
-                    100,
+                  100,
                 )}%)`}
                 value={nft.collection.distinct_owner_count}
               />

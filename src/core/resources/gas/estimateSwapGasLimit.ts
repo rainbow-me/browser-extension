@@ -101,16 +101,16 @@ export async function fetchEstimateSwapGasLimit(
     EstimateSwapGasLimitQueryKey
   > = {},
 ) {
-  return await queryClient.fetchQuery(
-    estimateSwapGasLimitQueryKey({
+  return await queryClient.fetchQuery({
+    queryKey: estimateSwapGasLimitQueryKey({
       chainId,
       quote,
       assetToSell,
       assetToBuy,
     }),
-    estimateSwapGasLimitQueryFunction,
-    config,
-  );
+    queryFn: estimateSwapGasLimitQueryFunction,
+    ...config,
+  });
 }
 
 // ///////////////////////////////////////////////
@@ -125,14 +125,14 @@ export function useEstimateSwapGasLimit(
     EstimateSwapGasLimitQueryKey
   > = {},
 ) {
-  return useQuery(
-    estimateSwapGasLimitQueryKey({
+  return useQuery({
+    queryKey: estimateSwapGasLimitQueryKey({
       chainId,
       quote,
       assetToSell,
       assetToBuy,
     }),
-    estimateSwapGasLimitQueryFunction,
-    { keepPreviousData: true, ...config },
-  );
+    queryFn: estimateSwapGasLimitQueryFunction,
+    ...config,
+  });
 }

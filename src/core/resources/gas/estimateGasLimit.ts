@@ -79,11 +79,11 @@ export async function fetchEstimateGasLimit(
     EstimateGasLimitQueryKey
   > = {},
 ) {
-  return await queryClient.fetchQuery(
-    estimateGasLimitQueryKey({ chainId, transactionRequest }),
-    estimateGasLimitQueryFunction,
-    config,
-  );
+  return await queryClient.fetchQuery({
+    queryKey: estimateGasLimitQueryKey({ chainId, transactionRequest }),
+    queryFn: estimateGasLimitQueryFunction,
+    ...config,
+  });
 }
 
 // ///////////////////////////////////////////////
@@ -98,9 +98,9 @@ export function useEstimateGasLimit(
     EstimateGasLimitQueryKey
   > = {},
 ) {
-  return useQuery(
-    estimateGasLimitQueryKey({ chainId, transactionRequest }),
-    estimateGasLimitQueryFunction,
-    { keepPreviousData: true, ...config },
-  );
+  return useQuery({
+    queryKey: estimateGasLimitQueryKey({ chainId, transactionRequest }),
+    queryFn: estimateGasLimitQueryFunction,
+    ...config,
+  });
 }

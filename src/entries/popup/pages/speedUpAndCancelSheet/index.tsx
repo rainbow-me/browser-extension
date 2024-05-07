@@ -167,7 +167,7 @@ export function SpeedUpAndCancelSheet({
     selectedGasParams,
   );
 
-  const { mutate: executeTransaction, isLoading: sending } = useMutation({
+  const { mutate: executeTransaction, isPending: sending } = useMutation({
     mutationFn: async () => {
       const replaceTx = await sendTransaction(transactionRequest);
 

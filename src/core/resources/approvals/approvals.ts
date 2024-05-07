@@ -112,11 +112,11 @@ export async function fetchApprovals(
     AprovalsQueryKey
   > = {},
 ) {
-  return await queryClient.fetchQuery(
-    approvalsQueryKey({ address, chainIds, currency }),
-    approvalsQueryFunction,
-    config,
-  );
+  return await queryClient.fetchQuery({
+    queryKey: approvalsQueryKey({ address, chainIds, currency }),
+    queryFn: approvalsQueryFunction,
+    ...config,
+  });
 }
 
 // ///////////////////////////////////////////////
@@ -131,9 +131,9 @@ export function useApprovals(
     AprovalsQueryKey
   > = {},
 ) {
-  return useQuery(
-    approvalsQueryKey({ address, chainIds, currency }),
-    approvalsQueryFunction,
-    config,
-  );
+  return useQuery({
+    queryKey: approvalsQueryKey({ address, chainIds, currency }),
+    queryFn: approvalsQueryFunction,
+    ...config,
+  });
 }

@@ -105,12 +105,10 @@ export function useAddysSummary(
     AddysSummaryQueryKey
   > = {},
 ) {
-  return useQuery(
-    addysSummaryQueryKey({ addresses, currency }),
-    addysSummaryQueryFunction,
-    {
-      ...config,
-      retry: true,
-    },
-  );
+  return useQuery({
+    queryKey: addysSummaryQueryKey({ addresses, currency }),
+    queryFn: addysSummaryQueryFunction,
+    ...config,
+    retry: true,
+  });
 }

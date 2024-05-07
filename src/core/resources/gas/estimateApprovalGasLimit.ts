@@ -94,17 +94,17 @@ export async function fetchEstimateSwapGasLimit(
     EstimateApprovalGasLimitQueryKey
   > = {},
 ) {
-  return await queryClient.fetchQuery(
-    estimateApprovalGasLimitQueryKey({
+  return await queryClient.fetchQuery({
+    queryKey: estimateApprovalGasLimitQueryKey({
       chainId,
       ownerAddress,
       assetAddress,
       spenderAddress,
       assetType,
     }),
-    estimateApprovalGasLimitQueryFunction,
-    config,
-  );
+    queryFn: estimateApprovalGasLimitQueryFunction,
+    ...config,
+  });
 }
 
 // ///////////////////////////////////////////////
@@ -125,15 +125,15 @@ export function useEstimateApprovalGasLimit(
     EstimateApprovalGasLimitQueryKey
   > = {},
 ) {
-  return useQuery(
-    estimateApprovalGasLimitQueryKey({
+  return useQuery({
+    queryKey: estimateApprovalGasLimitQueryKey({
       chainId,
       ownerAddress,
       assetAddress,
       spenderAddress,
       assetType,
     }),
-    estimateApprovalGasLimitQueryFunction,
-    { keepPreviousData: true, ...config },
-  );
+    queryFn: estimateApprovalGasLimitQueryFunction,
+    ...config,
+  });
 }

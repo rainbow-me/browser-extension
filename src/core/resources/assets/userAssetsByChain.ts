@@ -59,15 +59,15 @@ export async function fetchUserAssetsByChain<
     UserAssetsByChainQueryKey
   > = {},
 ) {
-  return await queryClient.fetchQuery(
-    userAssetsByChainQueryKey({
+  return await queryClient.fetchQuery({
+    queryKey: userAssetsByChainQueryKey({
       address,
       chainId,
       currency,
     }),
-    userAssetsByChainQueryFunction,
-    config,
-  );
+    queryFn: userAssetsByChainQueryFunction,
+    ...config,
+  });
 }
 
 // ///////////////////////////////////////////////
@@ -79,9 +79,9 @@ export async function userAssetsByChainQueryFunction({
   Record<string, ParsedUserAsset>
 > {
   const cache = queryClient.getQueryCache();
-  const cachedUserAssets = (cache.find(
-    userAssetsQueryKey({ address, currency }),
-  )?.state?.data || {}) as ParsedAssetsDictByChain;
+  const cachedUserAssets = (cache.find({
+    queryKey: userAssetsQueryKey({ address, currency }),
+  })?.state?.data || {}) as ParsedAssetsDictByChain;
   const cachedDataForChain = cachedUserAssets?.[chainId];
   try {
     const url = `/${chainId}/${address}/assets/?currency=${currency.toLowerCase()}`;
@@ -129,16 +129,14 @@ export function useUserAssetsByChain<TSelectResult = UserAssetsByChainResult>(
     UserAssetsByChainQueryKey
   > = {},
 ) {
-  return useQuery(
-    userAssetsByChainQueryKey({
+  return useQuery({
+    queryKey: userAssetsByChainQueryKey({
       address,
       chainId,
       currency,
     }),
-    userAssetsByChainQueryFunction,
-    {
-      ...config,
-      refetchInterval: USER_ASSETS_REFETCH_INTERVAL,
-    },
-  );
+    queryFn: userAssetsByChainQueryFunction,
+    ...config,
+    refetchInterval: USER_ASSETS_REFETCH_INTERVAL,
+  });
 }

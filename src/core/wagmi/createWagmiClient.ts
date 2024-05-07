@@ -9,7 +9,7 @@ import {
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
 import { proxyRpcEndpoint } from '../providers';
-import { queryClient } from '../react-query';
+// import { queryClient } from '../react-query';
 import { SUPPORTED_CHAINS, getDefaultRPC } from '../references';
 import { LocalStorage } from '../storage';
 import { ChainId, chainHardhat, chainHardhatOptimism } from '../types/chains';
@@ -99,7 +99,7 @@ export function createWagmiClient({
     // Passing `undefined` will use wagmi's default storage (window.localStorage).
     // If `persist` is falsy, we want to pass through a noopStorage.
     storage: persist ? undefined : createStorage({ storage: noopStorage }),
-    queryClient,
+    // queryClient,
     webSocketProvider,
   });
 }

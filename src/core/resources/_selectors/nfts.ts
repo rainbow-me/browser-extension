@@ -3,7 +3,7 @@ import { InfiniteData } from '@tanstack/react-query';
 import { NftSort } from '~/core/state/nfts';
 import { UniqueAsset } from '~/core/types/nfts';
 
-type NFTInfiniteData = InfiniteData<{
+export type NFTInfiniteData = InfiniteData<{
   nfts: UniqueAsset[];
   nextPage?: string | null;
 }>;

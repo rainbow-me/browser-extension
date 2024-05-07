@@ -62,15 +62,15 @@ export async function fetchConsolidatedTransactions<
     ConsolidatedTransactionsQueryKey
   >,
 ) {
-  return await queryClient.fetchQuery(
-    consolidatedTransactionsQueryKey({
+  return await queryClient.fetchQuery({
+    queryKey: consolidatedTransactionsQueryKey({
       address,
       currency,
       userChainIds,
     }),
-    consolidatedTransactionsQueryFunction,
-    config,
-  );
+    queryFn: consolidatedTransactionsQueryFunction,
+    ...config,
+  });
 }
 
 // ///////////////////////////////////////////////
@@ -79,6 +79,7 @@ export async function fetchConsolidatedTransactions<
 type _QueryResult = {
   cutoff?: number;
   nextPage?: string;
+  pages?: { cutoff: number; transactions: RainbowTransaction[] }[];
   transactions: RainbowTransaction[];
 };
 
@@ -95,7 +96,7 @@ export async function consolidatedTransactionsQueryFunction({
         params: {
           currency: currency.toLowerCase(),
           // passing empty value to pageParam breaks request
-          ...(pageParam ? { pageCursor: pageParam } : {}),
+          ...(pageParam ? { pageCursor: pageParam as string } : {}),
         },
         timeout: CONSOLIDATED_TRANSACTIONS_TIMEOUT,
       },
@@ -152,18 +153,17 @@ export function useConsolidatedTransactions<
     TSelectData
   > = {},
 ) {
-  return useInfiniteQuery(
-    consolidatedTransactionsQueryKey({
+  return useInfiniteQuery({
+    queryKey: consolidatedTransactionsQueryKey({
       address,
       currency,
       userChainIds,
     }),
-    consolidatedTransactionsQueryFunction,
-    {
-      ...config,
-      getNextPageParam: (lastPage) => lastPage?.nextPage,
-      refetchInterval: CONSOLIDATED_TRANSACTIONS_INTERVAL,
-      retry: 3,
-    },
-  );
+    queryFn: consolidatedTransactionsQueryFunction,
+    ...config,
+    getNextPageParam: (lastPage) => lastPage?.nextPage,
+    initialPageParam: null,
+    refetchInterval: CONSOLIDATED_TRANSACTIONS_INTERVAL,
+    retry: 3,
+  });
 }

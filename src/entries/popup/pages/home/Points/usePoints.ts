@@ -23,7 +23,10 @@ export const seedPointsQueryCache = async (
 };
 
 export const fetchPointsQuery = async (address: Address) =>
-  queryClient.fetchQuery(['points', address], () => fetchPoints(address));
+  queryClient.fetchQuery({
+    queryKey: ['points', address],
+    queryFn: () => fetchPoints(address),
+  });
 
 let nextDropTimeout: NodeJS.Timeout | undefined;
 export const usePoints = (address: Address) => {

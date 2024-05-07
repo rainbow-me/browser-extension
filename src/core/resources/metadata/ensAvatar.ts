@@ -82,11 +82,9 @@ export async function resolveEnsProfileQueryFunction({
 // Query Hook
 
 export function useENSAvatar({ addressOrName }: ResolveEnsProfileArgs) {
-  return useQuery(
-    ResolveEnsProfileQueryKey({ addressOrName }),
-    resolveEnsProfileQueryFunction,
-    {
-      staleTime: 10 * 60 * 1_000, // 10 min
-    },
-  );
+  return useQuery({
+    queryKey: ResolveEnsProfileQueryKey({ addressOrName }),
+    queryFn: resolveEnsProfileQueryFunction,
+    staleTime: 10 * 60 * 1_000, // 10 min
+  });
 }

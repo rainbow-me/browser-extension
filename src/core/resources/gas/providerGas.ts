@@ -70,11 +70,11 @@ export async function getProviderGas(
     ProviderGasQueryKey
   > = {},
 ) {
-  return await queryClient.fetchQuery(
-    providerGasQueryKey({ chainId }),
-    providerGasQueryFunction,
-    config,
-  );
+  return await queryClient.fetchQuery({
+    queryKey: providerGasQueryKey({ chainId }),
+    queryFn: providerGasQueryFunction,
+    ...config,
+  });
 }
 
 // ///////////////////////////////////////////////
@@ -89,9 +89,9 @@ export function useProviderGas(
     ProviderGasQueryKey
   > = {},
 ) {
-  return useQuery(
-    providerGasQueryKey({ chainId }),
-    providerGasQueryFunction,
-    config,
-  );
+  return useQuery({
+    queryKey: providerGasQueryKey({ chainId }),
+    queryFn: providerGasQueryFunction,
+    ...config,
+  });
 }

@@ -7,7 +7,7 @@ import { LocalStorage } from '../storage';
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      cacheTime: 1_000 * 60 * 60 * 24, // 24 hours
+      gcTime: 1_000 * 60 * 60 * 24, // 24 hours
       networkMode: 'offlineFirst',
       refetchOnWindowFocus: false,
       retry: 0,

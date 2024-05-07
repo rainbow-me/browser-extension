@@ -113,7 +113,7 @@ export const useSwapQuote = ({
     queryKey: ['getSwapQuote', quotesParams],
     enabled: !!quotesParams,
     refetchInterval: SWAP_POLLING_INTERVAL,
-    cacheTime: CACHE_INTERVAL,
+    gcTime: CACHE_INTERVAL,
   });
 
   const isWrapOrUnwrapEth = useMemo(() => {
