@@ -30,7 +30,6 @@
     "https://*.live.ledger.com",
     "https://falling-wandering-film.base-mainnet.quiknode.pro",
     "https://data-seed-prebsc-1-s1.binance.org:8545",
-    "https://matic-mumbai.chainstacklabs.com",
     "https://goerli-rollup.arbitrum.io/rpc",
     "https://rpc.zora.energy",
     "https://testnet.rpc.zora.energy",
@@ -38,6 +37,7 @@
     "https://proportionate-newest-mountain.arbitrum-goerli.quiknode.pro",
     "https://bitter-prettiest-vineyard.ethereum-holesky.quiknode.pro",
     "https://alien-lively-thunder.optimism-sepolia.quiknode.pro",
+    "https://rpc-amoy.polygon.technology",
     "https://nftp.rainbow.me/",
     "https://signing.gridpl.us",
     "https://api.thegraph.com/subgraphs/name/ensdomains/ens"
