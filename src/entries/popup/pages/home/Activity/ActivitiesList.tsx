@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { useCallback, useMemo, useRef } from 'react';
 import { Chain } from 'wagmi';
 
+import { i18n } from '~/core/languages';
 import { SUPPORTED_MAINNET_CHAINS } from '~/core/references';
 import { useApprovals } from '~/core/resources/approvals/approvals';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
@@ -44,6 +45,7 @@ import { ActivityIcon } from './ActivityIcon';
 import { ActivityTypeIcon } from './ActivityTypeIcon';
 import { ActivityValue } from './ActivityValue';
 import { NoActivity } from './NoActivity';
+import { getDescription } from '~/core/utils/transactions';
 
 export function Activities() {
   const {
@@ -189,11 +191,15 @@ const ActivityDescription = ({
   transaction: RainbowTransaction;
 }) => {
   const { type, to, asset } = transaction;
-  let description = transaction.description;
+  let description = getDescription(
+    transaction.asset,
+    transaction.type,
+    transaction.approvalAction,
+  );
   let tag: string | undefined;
   if (type === 'contract_interaction' && to) {
     description = transaction.contract?.name || truncateAddress(to);
-    tag = transaction.description;
+    tag = description;
   }
 
   const nftChangesAmount = transaction.changes
@@ -278,11 +284,13 @@ const typeLabelColor = {
 } satisfies Record<TransactionStatus, TextColor>;
 
 const ActivityTypeLabel = ({
-  transaction: { type, title, status },
+  transaction: { type, status, typeOverride },
 }: {
   transaction: RainbowTransaction;
 }) => {
   const color = typeLabelColor[status];
+
+  const title = i18n.t(`transactions.${typeOverride || type}.${status}`);
 
   return (
     <Columns space="4px" alignHorizontal="left">

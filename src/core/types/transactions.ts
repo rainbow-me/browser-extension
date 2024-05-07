@@ -48,11 +48,10 @@ type BaseTransaction = {
   typeOverride?: 'speed_up' | 'cancel'; // we keep the tx metadata like type "swap" and add this override to indicate it's a speed up or cancel
 
   protocol?: ProtocolType;
-  title: string;
-  description?: string;
 
   asset?: ParsedAsset; // this is the relevant tx asset, like the asset being sold/approved/withdrawn etc
   approvalAmount?: 'UNLIMITED' | (string & object);
+  approvalAction?: string;
   contract?: {
     name: string;
     iconUrl?: string;

@@ -65,13 +65,12 @@ export const useWatchPendingTransactions = ({
     async (tx: RainbowTransaction): Promise<RainbowTransaction> => {
       const flashbotsTxStatus = await getTransactionFlashbotStatus(tx, tx.hash);
       if (flashbotsTxStatus) {
-        const { flashbotsStatus, status, minedAt, title } = flashbotsTxStatus;
+        const { flashbotsStatus, status, minedAt } = flashbotsTxStatus;
 
         return {
           ...tx,
           status,
           minedAt,
-          title,
           flashbotsStatus,
         } as RainbowTransaction;
       }

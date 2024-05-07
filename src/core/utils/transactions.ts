@@ -173,15 +173,15 @@ const getAssetFromChanges = (
   return changes[0]?.asset;
 };
 
-const getDescription = (
+export const getDescription = (
   asset: ParsedAsset | undefined,
   type: TransactionType,
-  meta: PaginatedTransactionsApiResponse['meta'],
+  action?: string,
 ) => {
   if (asset?.type === 'nft') return asset.symbol || asset.name;
   if (type === 'cancel') return i18n.t('transactions.cancelled');
 
-  return asset?.name || meta.action;
+  return asset?.name || action;
 };
 
 const parseFees = (
@@ -255,8 +255,6 @@ export function parseTransaction({
 
   const direction = tx.direction || getDirection(type);
 
-  const description = getDescription(asset, type, meta);
-
   const nativeAsset = changes.find((change) => change?.asset.isNativeAsset);
   const nativeAssetPrice = FixedNumber.fromString(
     nativeAsset?.price?.toString() || '0',
@@ -286,8 +284,6 @@ export function parseTransaction({
   return {
     from: tx.address_from,
     to: tx.address_to,
-    title: i18n.t(`transactions.${type}.${status}`),
-    description,
     hash,
     chainId: +chainId,
     status,
@@ -299,6 +295,7 @@ export function parseTransaction({
     changes,
     asset,
     approvalAmount: meta.quantity,
+    approvalAction: meta.action,
     minedAt: tx.mined_at,
     blockNumber: tx.block_number,
     confirmations: tx.block_confirmations,
@@ -321,15 +318,10 @@ export const parseNewTransaction = (
     }),
   }));
 
-  const asset = changes?.[0]?.asset || tx.asset;
-  const methodName = 'Unknown method';
-
   return {
     ...tx,
     status: 'pending',
     data: tx.data,
-    title: i18n.t(`transactions.${tx.typeOverride || tx.type}.${tx.status}`),
-    description: asset?.name || methodName,
     from: tx.from,
     changes,
     hash: tx.hash,

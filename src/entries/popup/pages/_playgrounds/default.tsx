@@ -22,6 +22,7 @@ import {
 
 import { i18n } from '../../../../core/languages';
 import { ClearStorage } from '../../components/_dev/ClearStorage';
+import { getDescription } from '~/core/utils/transactions';
 
 export function Default() {
   const { address } = useAccount();
@@ -156,6 +157,11 @@ export function Default() {
           Transactions:
         </Text>
         {transactions?.map((tx: RainbowTransaction) => {
+          const { asset, type, status, approvalAction } = tx;
+
+          const title = i18n.t(`transactions.${type}.${status}`);
+          const description = getDescription(asset, type, approvalAction);
+
           return (
             <Text
               color="labelSecondary"
@@ -163,7 +169,7 @@ export function Default() {
               weight="medium"
               key={tx?.hash}
             >
-              {`${tx?.title} ${tx?.description}: ${tx.native?.value}`}
+              {`${title} ${description}: ${tx.native?.value}`}
             </Text>
           );
         })}

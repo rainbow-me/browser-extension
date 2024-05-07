@@ -10,6 +10,7 @@ import { TextColor } from '~/design-system/styles/designTokens';
 
 import { ActivityIcon } from './ActivityIcon';
 import { pendingDashLenght, pendingStyle } from './ActivityPill.css';
+import { i18n } from '~/core/languages';
 
 type Size = { width: number; height: number };
 const PendingIndicator = ({
@@ -76,7 +77,10 @@ export function ActivityPill({
 }: {
   transaction: RainbowTransaction;
 }) {
-  const { status, title } = transaction;
+  const { status, type } = transaction;
+
+  const title = !SUPPORTED_CHAIN_IDS.includes(chainId) ? i18n.t(`transactions.${type}.${status}`);
+
   const color = statusColor[status];
 
   const [size, setSize] = useState<Size | null>(null);
