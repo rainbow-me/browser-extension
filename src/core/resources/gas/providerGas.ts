@@ -1,6 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import { getProvider } from '@wagmi/core';
-import { Chain } from 'wagmi';
 
 import {
   QueryConfig,
@@ -9,7 +7,9 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
+import { ChainId } from '~/core/types/chains';
 import { weiToGwei } from '~/core/utils/ethereum';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 
 import { MeteorologyLegacyResponse } from './meteorology';
 
@@ -17,7 +17,7 @@ import { MeteorologyLegacyResponse } from './meteorology';
 // Query Types
 
 export type ProviderGasArgs = {
-  chainId: Chain['id'];
+  chainId: ChainId;
 };
 
 // ///////////////////////////////////////////////

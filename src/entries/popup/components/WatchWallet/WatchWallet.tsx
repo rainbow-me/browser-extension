@@ -1,7 +1,7 @@
 import { isAddress } from '@ethersproject/address';
-import { Address } from '@wagmi/core';
 import { motion } from 'framer-motion';
 import { ChangeEvent, useCallback, useMemo, useReducer, useState } from 'react';
+import { Address } from 'viem';
 import { useEnsAddress, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -166,7 +166,7 @@ function RecommendedWatchWallets({
 }
 
 const getError = (
-  address: string,
+  address: Address,
   input: string,
   allWallets: AddressAndType[],
   savedNames: Record<Address, string>,
@@ -203,14 +203,14 @@ export const useValidateInput = (input: string) => {
 
   const { data: addressFromEns, isFetching: isFetchingEns } = useEnsAddress({
     name: input,
-    enabled: isInputEns,
     chainId: ChainId.mainnet,
+    query: { enabled: isInputEns },
   });
   const savedNames = useSavedEnsNames.use.savedNames();
 
   const isLoading = isFetchingEns;
 
-  const inputAddress = addressFromEns || input;
+  const inputAddress = (addressFromEns || input) as Address;
   const address = isAddress(inputAddress) ? inputAddress : undefined;
 
   const { allWallets } = useWallets();
@@ -270,8 +270,10 @@ export const WatchWallet = ({
   const { data: ensFromAddress, isFetching: isFetchingAddressEns } = useEnsName(
     {
       address,
-      enabled: !isInputEns && !!address,
       chainId: ChainId.mainnet,
+      query: {
+        enabled: !isInputEns && !!address,
+      },
     },
   );
 

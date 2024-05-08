@@ -1,7 +1,7 @@
 import { isEqual } from 'lodash';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
-import { Chain } from 'wagmi';
+import { Chain } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { useChainMetadata } from '~/core/resources/chains/chainMetadata';
@@ -647,7 +647,6 @@ export function SettingsCustomChain() {
       const chain: Chain = {
         id: chainId,
         name,
-        network: name,
         nativeCurrency: {
           symbol,
           decimals: 18,

@@ -1,4 +1,5 @@
 import {
+  Chain,
   arbitrum,
   arbitrumSepolia,
   avalanche,
@@ -8,13 +9,14 @@ import {
   bsc,
   bscTestnet,
   holesky,
+  mainnet,
   optimism,
   optimismSepolia,
   polygon,
+  sepolia,
   zora,
   zoraSepolia,
 } from 'viem/chains';
-import { Chain, mainnet, sepolia } from 'wagmi';
 
 import {
   ChainId,
@@ -105,7 +107,7 @@ export const filterUserNetworks = ({
   userChains: Record<ChainId, boolean>;
   userChainsOrder: ChainId[];
 }) => {
-  const supportedChains = testnetMode
+  const supportedChains: Chain[] = testnetMode
     ? getSupportedTestnetChains()
     : getSupportedChainsWithHardhat();
 

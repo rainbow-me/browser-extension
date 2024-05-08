@@ -1,7 +1,6 @@
 import { AddressZero } from '@ethersproject/constants';
 import { useQuery } from '@tanstack/react-query';
-import { getProvider } from '@wagmi/core';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { requestMetadata } from '~/core/graphql';
 import {
@@ -38,6 +37,7 @@ import {
 } from '~/core/utils/assets';
 import { getRainbowChains } from '~/core/utils/chains';
 import { convertDecimalFormatToRawAmount, isZero } from '~/core/utils/numbers';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 import { RainbowError, logger } from '~/logger';
 
 import { ASSETS_TIMEOUT_DURATION } from './assets';
@@ -235,7 +235,7 @@ async function customNetworkAssetsFunction({
             getAssetBalance({
               assetAddress: asset.address,
               currentAddress: address,
-              provider,
+              chainId: chain.id,
             }),
           ),
         );

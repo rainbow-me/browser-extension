@@ -1,7 +1,7 @@
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { isEqual } from 'lodash';
 import * as React from 'react';
-import { WagmiConfig } from 'wagmi';
+import { WagmiProvider } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -15,7 +15,7 @@ import { initializeSentry, setSentryUser } from '~/core/sentry';
 import { useCurrentLanguageStore, useDeviceIdStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
-import { createWagmiClient } from '~/core/wagmi';
+import { wagmiConfig } from '~/core/wagmi/createWagmiClient';
 import { Box, ThemeProvider } from '~/design-system';
 
 import { Routes } from './Routes';
@@ -28,7 +28,7 @@ import { useIsFullScreen } from './hooks/useIsFullScreen';
 import usePrevious from './hooks/usePrevious';
 import { useRainbowChains } from './hooks/useRainbowChains';
 import { PlaygroundComponents } from './pages/_playgrounds';
-import { RainbowConnector } from './wagmi/RainbowConnector';
+// import { RainbowConnector } from './wagmi/RainbowConnector';
 
 const playground = process.env.PLAYGROUND as 'default' | 'ds';
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
@@ -49,17 +49,17 @@ export function App() {
     }
   }, [prevChains, rainbowChains]);
 
-  const wagmiClient = React.useMemo(
-    () =>
-      createWagmiClient({
-        autoConnect: true,
-        connectors: ({ chains }) => [new RainbowConnector({ chains })],
-        persist: true,
-        rainbowChains,
-        useProxy: config.rpc_proxy_enabled,
-      }),
-    [rainbowChains],
-  );
+  // const wagmiClient = React.useMemo(
+  //   () =>
+  //     createWagmiClient({
+  //       autoConnect: true,
+  //       connectors: ({ chains }) => [new RainbowConnector({ chains })],
+  //       persist: true,
+  //       rainbowChains,
+  //       useProxy: config.rpc_proxy_enabled,
+  //     }),
+  //   [rainbowChains],
+  // );
 
   React.useEffect(() => {
     if (!isEqual(prevChains, rainbowChains)) {
@@ -107,7 +107,7 @@ export function App() {
         client={queryClient}
         persistOptions={persistOptions}
       >
-        <WagmiConfig client={wagmiClient}>
+        <WagmiProvider config={wagmiConfig}>
           <ThemeProvider theme={currentTheme}>
             {playground ? (
               PlaygroundComponents[playground]
@@ -129,7 +129,7 @@ export function App() {
               </AuthProvider>
             )}
           </ThemeProvider>
-        </WagmiConfig>
+        </WagmiProvider>
       </PersistQueryClientProvider>
       <HWRequestListener />
     </>

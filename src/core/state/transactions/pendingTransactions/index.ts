@@ -1,5 +1,5 @@
 import { isAddress } from '@ethersproject/address';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 import create from 'zustand';
 
 import { RainbowTransaction } from '~/core/types/transactions';
@@ -97,7 +97,7 @@ export const pendingTransactionsStore = createStore<PendingTransactionsState>(
         const state = persistedState as PendingTransactionsState;
         if (version === 0) {
           const oldState = persistedState as PendingTransactionsStateV1;
-          const addresses = Object.keys(oldState);
+          const addresses = Object.keys(oldState) as Address[];
           const pendingTransactions: { [key: string]: RainbowTransaction[] } =
             addresses.reduce(
               (accumulator, currentKey) => {
@@ -121,7 +121,7 @@ export const pendingTransactionsStore = createStore<PendingTransactionsState>(
         }
         if (version === 1) {
           const oldState = persistedState as PendingTransactionsStateV1;
-          const addresses = Object.keys(oldState);
+          const addresses = Object.keys(oldState) as Address[];
           const pendingTransactions: { [key: string]: RainbowTransaction[] } =
             addresses.reduce(
               (accumulator, currentKey) => {

@@ -1,4 +1,4 @@
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { ChainId, ChainName } from '~/core/types/chains';
 

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { metadataClient } from '~/core/graphql';
 import {

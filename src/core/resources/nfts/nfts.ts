@@ -1,6 +1,5 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { Chain } from 'viem';
-import { Address } from 'wagmi';
+import { Address, Chain } from 'viem';
 
 import {
   fetchNftCollections,

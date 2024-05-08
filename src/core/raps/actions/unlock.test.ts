@@ -1,9 +1,10 @@
 import { Wallet } from '@ethersproject/wallet';
 import { getRainbowRouterContractAddress } from '@rainbow-me/swaps';
-import { getProvider } from '@wagmi/core';
+import { Address } from 'viem';
 import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test } from 'vitest';
 
+import { getProvider } from '~/core/wagmi/clientToProvider';
 import {
   RAINBOW_WALLET_ADDRESS,
   TEST_PK_1,
@@ -11,7 +12,7 @@ import {
   delay,
 } from '~/test/utils';
 
-import { createTestWagmiClient } from '../../wagmi/createTestWagmiClient';
+// import { createTestWagmiClient } from '../../wagmi/createTestWagmiClient';
 
 import {
   assetNeedsUnlocking,
@@ -21,14 +22,14 @@ import {
 } from './unlock';
 
 beforeAll(async () => {
-  createTestWagmiClient();
+  // createTestWagmiClient();
   await delay(3000);
 });
 
 test('[rap/unlock] :: get raw allowance', async () => {
   const rawAllowance = await getAssetRawAllowance({
     owner: RAINBOW_WALLET_ADDRESS,
-    assetAddress: USDC_MAINNET_ASSET.address,
+    assetAddress: USDC_MAINNET_ASSET.address as Address,
     spender: getRainbowRouterContractAddress(mainnet.id),
     chainId: mainnet.id,
   });
@@ -49,7 +50,7 @@ test('[rap/unlock] :: asset needs unlocking', async () => {
 test('[rap/unlock] :: estimate approve', async () => {
   const approveGasLimit = await estimateApprove({
     owner: RAINBOW_WALLET_ADDRESS,
-    tokenAddress: USDC_MAINNET_ASSET.address,
+    tokenAddress: USDC_MAINNET_ASSET.address as Address,
     spender: getRainbowRouterContractAddress(mainnet.id),
     chainId: mainnet.id,
   });
@@ -60,15 +61,13 @@ test('[rap/unlock] :: should execute approve', async () => {
   const provider = getProvider({ chainId: mainnet.id });
   const wallet = new Wallet(TEST_PK_1, provider);
   const approvalTx = await executeApprove({
-    chainId: mainnet.id,
-    gasLimit: '60000',
     gasParams: {
       maxFeePerGas: '800000000000',
       maxPriorityFeePerGas: '2000000000',
     },
     spender: getRainbowRouterContractAddress(mainnet.id),
-    tokenAddress: USDC_MAINNET_ASSET.address,
-    wallet,
+    tokenAddress: USDC_MAINNET_ASSET.address as Address,
+    address: wallet.address as Address,
   });
   expect(approvalTx.hash).toBeDefined();
 });

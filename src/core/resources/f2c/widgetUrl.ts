@@ -1,5 +1,5 @@
 import qs from 'qs';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { f2cHttp } from '~/core/network';
 import {

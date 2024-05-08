@@ -1,7 +1,7 @@
 import { getSlippage } from '@rainbow-me/swaps';
 import { useQuery } from '@tanstack/react-query';
 import { BigNumberish } from 'ethers';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import {
   QueryConfig,

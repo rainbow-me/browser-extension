@@ -12,8 +12,7 @@ import {
   useState,
 } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { isAddress } from 'viem';
-import { Address } from 'wagmi';
+import { Address, isAddress } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -310,10 +309,10 @@ export function Send() {
           nft
             ? { direction: 'out', asset: buildNftAssetObject(nft) }
             : {
-                direction: 'out',
-                asset,
-                value: assetAmount,
-              },
+              direction: 'out',
+              asset,
+              value: assetAmount,
+            },
         ],
         asset: nft ? buildNftAssetObject(nft) : asset,
         data: result.data,

@@ -68,7 +68,7 @@ export const resolveEnsAvatar = ({
 }) => {
   if (!addressOrName) return null;
   return isAddress(addressOrName)
-    ? reverseResolve(addressOrName)
+    ? reverseResolve(addressOrName as Address)
     : resolve(addressOrName);
 };
 

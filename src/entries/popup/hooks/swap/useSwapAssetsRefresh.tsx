@@ -1,4 +1,3 @@
-import { getProvider } from '@wagmi/core';
 import { useCallback, useEffect, useRef } from 'react';
 
 import {
@@ -49,23 +48,18 @@ export const useSwapRefreshAssets = () => {
       const [assetToBuy, assetToSell] = assetsToRefresh;
 
       const updatedAssets = userAssets;
-      const assetToBuyProvider = getProvider({ chainId: assetToBuy?.chainId });
-      const assetToSellProvider = getProvider({
-        chainId: assetToSell?.chainId,
-      });
-
       const [updatedAssetToBuy, updatedAssetToSell] = await Promise.all([
         fetchAssetBalanceViaProvider({
           parsedAsset: assetToBuy,
           currentAddress,
           currency: currentCurrency,
-          provider: assetToBuyProvider,
+          chainId: assetToBuy?.chainId,
         }),
         fetchAssetBalanceViaProvider({
           parsedAsset: assetToSell,
           currentAddress,
           currency: currentCurrency,
-          provider: assetToSellProvider,
+          chainId: assetToSell?.chainId,
         }),
       ]);
 

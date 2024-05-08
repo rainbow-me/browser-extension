@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getProvider } from '@wagmi/core';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import {
   QueryConfig,
@@ -88,13 +87,12 @@ async function userTestnetNativeAssetQueryFunction({
     )
       return null;
 
-    const provider = getProvider({ chainId });
     const nativeAsset = getNativeAssetMock({ chainId });
     const parsedAsset = await fetchAssetBalanceViaProvider({
       parsedAsset: nativeAsset,
       currentAddress: address,
       currency,
-      provider,
+      chainId,
     });
     return parsedAsset;
   } catch (e) {

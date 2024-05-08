@@ -1,7 +1,6 @@
 import { AddressZero } from '@ethersproject/constants';
-import { Provider } from '@ethersproject/providers';
-import { Address, erc20ABI } from 'wagmi';
-import { getContract } from 'wagmi/actions';
+import { getClient } from '@wagmi/core';
+import { Address, Client, erc20Abi, getContract } from 'viem';
 
 import { ETH_ADDRESS, SupportedCurrencyKey } from '~/core/references';
 import {
@@ -20,6 +19,7 @@ import { requestMetadata } from '../graphql';
 import { i18n } from '../languages';
 import { AddysPositionAsset } from '../resources/positions';
 import { SearchAsset } from '../types/search';
+import { wagmiConfig } from '../wagmi/createWagmiClient';
 
 import {
   chainNameFromChainId,
@@ -297,20 +297,18 @@ export const fetchAssetBalanceViaProvider = async ({
   parsedAsset,
   currentAddress,
   currency,
-  provider,
+  chainId,
 }: {
   parsedAsset: ParsedUserAsset;
   currentAddress: Address;
   currency: SupportedCurrencyKey;
-  provider: Provider;
+  chainId: ChainId;
 }) => {
-  const balance = parsedAsset.isNativeAsset
-    ? await provider.getBalance(currentAddress)
-    : await getContract({
-        address: parsedAsset.address,
-        abi: erc20ABI,
-        signerOrProvider: provider,
-      }).balanceOf(currentAddress);
+  const balance = await getAssetBalance({
+    assetAddress: parsedAsset.address as Address,
+    currentAddress,
+    chainId,
+  });
 
   const updatedAsset = parseUserAssetBalances({
     asset: parsedAsset,
@@ -368,20 +366,21 @@ export const createAssetQuery = (
 
 export const getAssetMetadata = async ({
   address,
-  provider,
+  chainId,
 }: {
   address: Address;
-  provider: Provider;
+  chainId: ChainId;
 }) => {
+  const client = getClient(wagmiConfig, { chainId }) as Client;
   const contract = await getContract({
     address,
-    abi: erc20ABI,
-    signerOrProvider: provider,
+    abi: erc20Abi,
+    client: client,
   });
   const [decimals, symbol, name] = await Promise.allSettled([
-    contract.decimals(),
-    contract.symbol(),
-    contract.name(),
+    contract.read.decimals(),
+    contract.read.symbol(),
+    contract.read.name(),
   ]);
 
   return {
@@ -394,17 +393,18 @@ export const getAssetMetadata = async ({
 export const getAssetBalance = async ({
   assetAddress,
   currentAddress,
-  provider,
+  chainId,
 }: {
   assetAddress: Address;
   currentAddress: Address;
-  provider: Provider;
+  chainId: ChainId;
 }) => {
+  const client = getClient(wagmiConfig, { chainId }) as Client;
   const balance = await getContract({
     address: assetAddress,
-    abi: erc20ABI,
-    signerOrProvider: provider,
-  }).balanceOf(currentAddress);
+    abi: erc20Abi,
+    client,
+  }).read.balanceOf([currentAddress]);
 
   return balance.toString();
 };

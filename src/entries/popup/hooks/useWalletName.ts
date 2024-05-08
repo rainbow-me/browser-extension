@@ -1,11 +1,11 @@
-import { Address, useEnsName } from 'wagmi';
+import { Address } from 'viem';
+import { useEnsName } from 'wagmi';
 
 import { useWalletNamesStore } from '~/core/state/walletNames';
 import { truncateAddress } from '~/core/utils/address';
 
 export const useWalletName = ({ address }: { address?: Address }) => {
   const { data: ensName } = useEnsName({ address });
-  console.log('-- ensName', ensName);
   const { walletNames } = useWalletNamesStore();
 
   if (!address) {

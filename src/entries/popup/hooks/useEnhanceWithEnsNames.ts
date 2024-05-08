@@ -1,5 +1,6 @@
 import { useQueries } from '@tanstack/react-query';
-import { Address, FetchEnsNameResult, fetchEnsName } from '@wagmi/core';
+import { Address, GetEnsNameReturnType, createPublicClient, http } from 'viem';
+import { mainnet } from 'viem/chains';
 
 import { ChainId } from '~/core/types/chains';
 
@@ -12,10 +13,14 @@ export const useEnhanceWithEnsNames = <
 }: {
   accounts: TAccounts;
   chainId?: ChainId;
-}): (TAccounts[number] & { ensName?: FetchEnsNameResult })[] => {
+}): (TAccounts[number] & { ensName?: GetEnsNameReturnType })[] => {
+  const publicClient = createPublicClient({
+    chain: mainnet,
+    transport: http(),
+  });
   const queries = useQueries({
     queries: accounts.map((account) => ({
-      queryFn: () => fetchEnsName({ chainId, address: account.address }),
+      queryFn: () => publicClient.getEnsName({ address: account.address }),
       queryKey: [{ entity: 'ensName', address: account.address, chainId }], // same as wagmi query key so we share the cache
       refetchOnWindowFocus: false,
       staleTime: 20 * 1000, // 20s

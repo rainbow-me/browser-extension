@@ -7,7 +7,6 @@ import {
   SwapType,
   getQuote,
 } from '@rainbow-me/swaps';
-import { getProvider } from '@wagmi/core';
 import { beforeAll, expect, test } from 'vitest';
 
 import {
@@ -22,7 +21,8 @@ import {
 
 import { gasStore } from '../state';
 import { GasSpeed } from '../types/gas';
-import { createTestWagmiClient } from '../wagmi/createTestWagmiClient';
+import { getProvider } from '../wagmi/clientToProvider';
+// import { createTestWagmiClient } from '../wagmi/createTestWagmiClient';
 
 import { walletExecuteRap } from './execute';
 import { createUnlockAndSwapRap, estimateUnlockAndSwap } from './unlockAndSwap';
@@ -57,7 +57,7 @@ const SELECTED_GAS = {
 };
 
 beforeAll(async () => {
-  createTestWagmiClient();
+  // createTestWagmiClient();
   await delay(3000);
   doesntNeedUnlockQuote = await getQuote({
     chainId: 1,

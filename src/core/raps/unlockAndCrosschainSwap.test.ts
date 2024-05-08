@@ -9,7 +9,7 @@ import {
   delay,
 } from '~/test/utils';
 
-import { createTestWagmiClient } from '../wagmi/createTestWagmiClient';
+// import { createTestWagmiClient } from '../wagmi/createTestWagmiClient';
 
 import {
   createUnlockAndCrosschainSwapRap,
@@ -83,7 +83,7 @@ const doesntNeedUnlockQuote: Quote | QuoteError | null = {
 };
 
 beforeAll(async () => {
-  createTestWagmiClient();
+  // createTestWagmiClient();
   await delay(3000);
 });
 

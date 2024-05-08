@@ -110,7 +110,7 @@ export const fetchEnsProfile = ({
 }) => {
   if (!addressOrName) return null;
   return isAddress(addressOrName)
-    ? reverseResolveEnsProfile(addressOrName)
+    ? reverseResolveEnsProfile(addressOrName as Address)
     : resolveEnsProfile(addressOrName);
 };
 

@@ -1,6 +1,5 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { useQuery } from '@tanstack/react-query';
-import { getProvider } from '@wagmi/core';
 
 import {
   QueryConfig,
@@ -12,6 +11,7 @@ import {
 import { gasUnits } from '~/core/references/gasUnits';
 import { ChainId } from '~/core/types/chains';
 import { estimateGas } from '~/core/utils/gas';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 
 // ///////////////////////////////////////////////
 // Query Types

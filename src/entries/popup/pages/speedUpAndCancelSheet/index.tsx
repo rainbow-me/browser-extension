@@ -1,7 +1,8 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { useMutation } from '@tanstack/react-query';
 import BigNumber from 'bignumber.js';
-import { Address, useAccount, useBalance, useEnsName } from 'wagmi';
+import { Address } from 'viem';
+import { useAccount, useBalance, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useGasStore } from '~/core/state';

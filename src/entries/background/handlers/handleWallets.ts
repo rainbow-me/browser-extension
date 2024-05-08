@@ -5,8 +5,7 @@ import {
 } from '@ethersproject/abstract-signer';
 import { Bytes } from '@ethersproject/bytes';
 import { ChainId } from '@rainbow-me/swaps';
-import { getProvider } from '@wagmi/core';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import {
   addAccountAtIndex,
@@ -42,6 +41,7 @@ import { flashbotsEnabledStore } from '~/core/state';
 import { WalletAction } from '~/core/types/walletActions';
 import { EthereumWalletSeed } from '~/core/utils/ethereum';
 import { getFlashbotsProvider } from '~/core/utils/flashbots';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 
 type WalletActionArguments = {
   action: WalletAction;

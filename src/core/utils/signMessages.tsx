@@ -1,6 +1,6 @@
 import { getAddress, isAddress } from '@ethersproject/address';
 import { Bytes, isHexString } from '@ethersproject/bytes';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { RainbowError, logger } from '~/logger';
 
@@ -37,7 +37,11 @@ export const getSigningRequestDisplayDetails = (
         } catch (error) {
           // TODO error handling
         }
-        return { message, msgData: message, address: getAddress(address) };
+        return {
+          message,
+          msgData: message,
+          address: getAddress(address) as Address,
+        };
       }
       default: {
         // There's a lot of inconsistency in the parameter order for this method
@@ -63,7 +67,7 @@ export const getSigningRequestDisplayDetails = (
             return {
               message: JSON.stringify(sanitizedMessageData, null, 2),
               msgData: sanitizedMessageData,
-              address: getAddress(address),
+              address: getAddress(address) as Address,
               typedData: true,
             };
           }

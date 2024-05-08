@@ -1,6 +1,5 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { useQuery } from '@tanstack/react-query';
-import { getProvider } from '@wagmi/core';
 
 import {
   QueryConfig,
@@ -14,6 +13,7 @@ import {
   calculateL1FeeOptimism,
   chainNeedsL1SecurityFee,
 } from '~/core/utils/gas';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 
 // ///////////////////////////////////////////////
 // Query Types

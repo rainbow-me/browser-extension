@@ -1,6 +1,5 @@
 import { AddressZero } from '@ethersproject/constants';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import { getNetwork } from '@wagmi/core';
 import {
   Chain,
   celo,
@@ -9,7 +8,7 @@ import {
   mainnet,
   moonbeam,
 } from 'viem/chains';
-import { useNetwork } from 'wagmi';
+import { useConfig } from 'wagmi';
 
 import {
   NATIVE_ASSETS_PER_CHAIN,
@@ -31,6 +30,7 @@ import {
   rainbowChainsStore,
 } from '../state/rainbowChains';
 import { AddressOrEth } from '../types/assets';
+import { wagmiConfig } from '../wagmi/createWagmiClient';
 
 import { getDappHost, isValidUrl } from './connectedApps';
 import { isLowerCaseMatch } from './strings';
@@ -81,7 +81,7 @@ export const customChainIdsToAssetNames: Record<ChainId, string> = {
 };
 
 export const getSupportedChainsWithHardhat = () => {
-  const { chains } = getNetwork();
+  const { chains } = wagmiConfig;
   return chains.filter(
     (chain) =>
       !chain.testnet ||
@@ -94,12 +94,12 @@ export const isDefaultSupportedChain = ({ chainId }: { chainId: ChainId }) =>
   SUPPORTED_CHAIN_IDS.map((id) => id).includes(chainId);
 
 export const getSupportedChains = () => {
-  const { chains } = getNetwork();
+  const { chains } = wagmiConfig;
   return chains.filter((chain) => !chain.testnet);
 };
 
 export const useMainChains = () => {
-  const { chains } = useNetwork();
+  const { chains } = useConfig();
   // All the mainnets we support
   const mainSupportedChains = SUPPORTED_MAINNET_CHAINS.filter(
     (chain) => !chain.testnet,
@@ -129,7 +129,7 @@ export const useMainChains = () => {
 };
 
 export const getMainChains = () => {
-  const { chains } = getNetwork();
+  const { chains } = wagmiConfig;
   // All the mainnets we support
   const mainSupportedChains = SUPPORTED_MAINNET_CHAINS.filter(
     (chain) => !chain.testnet,
@@ -162,7 +162,7 @@ export const getSupportedChainIds = () =>
   getSupportedChains().map((chain) => chain.id);
 
 export const getSupportedTestnetChains = () => {
-  const { chains } = getNetwork();
+  const { chains } = wagmiConfig;
   return chains.filter((chain) => !!chain.testnet);
 };
 
@@ -205,7 +205,7 @@ export const useBackendSupportedChains = ({
 }: {
   testnetMode?: boolean;
 }) => {
-  const { chains } = useNetwork();
+  const { chains } = useConfig();
   return chains.filter((chain) =>
     testnetMode ? !!chain.testnet : !chain.testnet,
   );
@@ -216,7 +216,7 @@ export const getBackendSupportedChains = ({
 }: {
   testnetMode?: boolean;
 }) => {
-  const { chains } = getNetwork();
+  const { chains } = wagmiConfig;
   return chains.filter((chain) =>
     testnetMode ? !!chain.testnet : !chain.testnet,
   );
@@ -299,7 +299,7 @@ export function getBlockExplorerHostForChain(chainId: ChainId) {
 }
 
 export function getChain({ chainId }: { chainId?: ChainId }) {
-  const { chains } = getNetwork();
+  const { chains } = wagmiConfig;
   const chain = chains.find((chain) => chain.id === chainId);
   return chain || { ...mainnet, testnet: false };
 }

@@ -6,7 +6,7 @@ import { beforeAll, expect, test } from 'vitest';
 import { delay } from '~/test/utils';
 
 import { KeychainType } from '../types/keychainTypes';
-import { createTestWagmiClient } from '../wagmi/createTestWagmiClient';
+// import { createTestWagmiClient } from '../wagmi/createTestWagmiClient';
 
 import { PrivateKey } from './IKeychain';
 import { keychainManager } from './KeychainManager';
@@ -15,7 +15,7 @@ let privateKey = '';
 let password = '';
 
 beforeAll(async () => {
-  createTestWagmiClient();
+  // createTestWagmiClient();
   await delay(3000);
 });
 

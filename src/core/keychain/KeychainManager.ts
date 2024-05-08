@@ -8,7 +8,7 @@ import {
   importKey,
 } from '@metamask/browser-passworder';
 import * as Sentry from '@sentry/browser';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { LocalStorage, SessionStorage } from '../storage';
 import { KeychainType } from '../types/keychainTypes';

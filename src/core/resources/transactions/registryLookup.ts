@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Address, getProvider } from '@wagmi/core';
+import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
 import {
@@ -11,6 +11,7 @@ import {
 } from '~/core/react-query';
 import { ChainId } from '~/core/types/chains';
 import { methodRegistryLookupAndParse } from '~/core/utils/methodRegistry';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 import { RainbowError, logger } from '~/logger';
 
 // ///////////////////////////////////////////////

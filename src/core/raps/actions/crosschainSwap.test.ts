@@ -6,11 +6,11 @@ import {
   SwapType,
   getCrosschainQuote,
 } from '@rainbow-me/swaps';
-import { getProvider } from '@wagmi/core';
 import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test } from 'vitest';
 
 import { ChainId } from '~/core/types/chains';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 import {
   TEST_ADDRESS_3,
   TEST_PK_3,
@@ -18,7 +18,7 @@ import {
   delay,
 } from '~/test/utils';
 
-import { createTestWagmiClient } from '../../wagmi/createTestWagmiClient';
+// import { createTestWagmiClient } from '../../wagmi/createTestWagmiClient';
 
 import {
   estimateCrosschainSwapGasLimit,
@@ -28,7 +28,7 @@ import {
 let crosschainQuote: CrosschainQuote | QuoteError | null;
 
 beforeAll(async () => {
-  createTestWagmiClient();
+  // createTestWagmiClient();
   await delay(3000);
   crosschainQuote = await getCrosschainQuote({
     chainId: 1,

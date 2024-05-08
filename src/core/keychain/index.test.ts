@@ -13,7 +13,7 @@ import { beforeAll, expect, test } from 'vitest';
 
 import { delay } from '~/test/utils';
 
-import { createTestWagmiClient } from '../wagmi/createTestWagmiClient';
+// import { createTestWagmiClient } from '../wagmi/createTestWagmiClient';
 
 import { PrivateKey } from './IKeychain';
 
@@ -40,7 +40,7 @@ let privateKey = '';
 let password = '';
 
 beforeAll(async () => {
-  createTestWagmiClient();
+  // createTestWagmiClient();
   await delay(3000);
 });
 
