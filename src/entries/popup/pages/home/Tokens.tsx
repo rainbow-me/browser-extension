@@ -296,10 +296,11 @@ export function Tokens() {
             return (
               <Box
                 key={`${token.uniqueId}-${key}`}
-                layoutId={`list-${index}`}
                 as={motion.div}
                 position="absolute"
                 width="full"
+                initial={{ x: 4 }}
+                animate={{ x: 0 }}
                 style={{ height: size, y: start }}
               >
                 {pinned && <TokenMarkedHighlighter />}

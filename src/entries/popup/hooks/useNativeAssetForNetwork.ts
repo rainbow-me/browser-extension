@@ -15,7 +15,7 @@ import { chainNameFromChainId } from '~/core/utils/chains';
 
 import { getNativeAssets, useNativeAssets } from './useNativeAssets';
 
-const getNetworkNativeAssetChainId = ({
+export const getNetworkNativeAssetChainId = ({
   chainId,
 }: {
   chainId: ChainId;
