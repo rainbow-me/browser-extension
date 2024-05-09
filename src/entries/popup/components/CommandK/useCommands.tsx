@@ -516,6 +516,15 @@ export const staticCommandInfo: CommandInfo = {
     symbolSize: 15,
     type: SearchItemType.Shortcut,
   },
+  viewContactProfile: {
+    actionLabel: actionLabels.openInNewTab,
+    hideFromMainSearch: true,
+    name: getCommandName('view_profile'),
+    page: PAGES.CONTACT_DETAIL
+    symbol: 'sparkle',
+    symbolSize: 15,
+    type: SearchItemType.Shortcut,
+  },
   viewContactOnEtherscan: {
     actionLabel: actionLabels.openInNewTab,
     hideFromMainSearch: true,
@@ -1066,10 +1075,15 @@ export const useCommands = (
           isContactCommand(previousPageState.selectedCommand) &&
           handleCopy(previousPageState.selectedCommand.address),
       },
-      viewContactOnEtherscan: {
+      viewContactProfile: {
         action: () =>
           isContactCommand(previousPageState.selectedCommand) &&
           viewWalletOnEtherscan(previousPageState.selectedCommand.address),
+      },
+      viewContactOnEtherscan: {
+        action: () =>
+          isContactCommand(previousPageState.selectedCommand) &&
+          openProfile(previousPageState.selectedCommand.address),
       },
     }),
     [
