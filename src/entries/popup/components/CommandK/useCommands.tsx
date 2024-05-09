@@ -522,7 +522,7 @@ export const useCommands = (
     searchQuery,
     setSelectedCommandNeedsUpdate,
   );
-  const { searchableTokens } = useSearchableTokens();
+  const { searchableTokens } = useSearchableTokens(searchQuery);
   const { searchableNFTs } = useSearchableNFTs();
   const { searchableWallets } = useSearchableWallets(currentPage);
   const { setSelectedToken } = useSelectedTokenStore();

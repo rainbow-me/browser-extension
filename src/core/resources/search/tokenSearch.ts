@@ -1,5 +1,5 @@
 import { isAddress } from '@ethersproject/address';
-import { useQuery } from '@tanstack/react-query';
+import { useQueries, useQuery } from '@tanstack/react-query';
 import qs from 'qs';
 import { Address } from 'wagmi';
 
@@ -23,6 +23,7 @@ import {
   TokenSearchListId,
   TokenSearchThreshold,
 } from '~/core/types/search';
+import { useRainbowChains } from '~/entries/popup/hooks/useRainbowChains';
 
 // ///////////////////////////////////////////////
 // Query Types
@@ -53,6 +54,20 @@ const tokenSearchQueryKey = ({
     { persisterVersion: 1 },
   );
 
+const tokensSearchQueryKey = ({
+  chainId,
+  fromChainId,
+  keys,
+  list,
+  threshold,
+  query,
+}: TokenSearchArgs) =>
+  createQueryKey(
+    'TokensSearch',
+    { chainId, fromChainId, keys, list, threshold, query },
+    { persisterVersion: 1 },
+  );
+
 type TokenSearchQueryKey = ReturnType<typeof tokenSearchQueryKey>;
 
 // ///////////////////////////////////////////////
@@ -60,7 +75,9 @@ type TokenSearchQueryKey = ReturnType<typeof tokenSearchQueryKey>;
 
 async function tokenSearchQueryFunction({
   queryKey: [{ chainId, fromChainId, keys, list, threshold, query }],
-}: QueryFunctionArgs<typeof tokenSearchQueryKey>) {
+}: QueryFunctionArgs<
+  typeof tokenSearchQueryKey | typeof tokensSearchQueryKey
+>) {
   const queryParams: {
     keys: string;
     list: TokenSearchListId;
@@ -154,4 +171,36 @@ export function useTokenSearch(
     tokenSearchQueryFunction,
     config,
   );
+}
+
+// ///////////////////////////////////////////////
+// Query Hook
+
+export function useTokensSearch({
+  fromChainId,
+  keys,
+  list,
+  threshold,
+  query,
+}: Omit<TokenSearchArgs, 'chainId'>) {
+  const { rainbowChains } = useRainbowChains();
+
+  const queries = useQueries({
+    queries: rainbowChains.map((chain) => ({
+      queryFn: tokenSearchQueryFunction,
+      queryKey: tokensSearchQueryKey({
+        chainId: chain.id,
+        fromChainId,
+        keys,
+        list,
+        threshold,
+        query,
+      }),
+      enabled: !!query,
+      refetchOnWindowFocus: false,
+      staleTime: 20 * 1000, // 20s
+    })),
+  });
+
+  return queries.map(({ data: token }) => token).flat();
 }

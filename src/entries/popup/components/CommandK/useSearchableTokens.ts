@@ -8,10 +8,16 @@ import {
 } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
 import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
+import { useTokensSearch } from '~/core/resources/search/tokenSearch';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
 import { ParsedUserAsset } from '~/core/types/assets';
 
+import {
+  TokenSearchAssetKey,
+  TokenSearchListId,
+  TokenSearchThreshold,
+} from '~/core/types/search';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
@@ -19,12 +25,28 @@ import { SearchItemType, TokenSearchItem } from './SearchItems';
 import { PAGES } from './pageConfig';
 import { actionLabels } from './references';
 
-export const useSearchableTokens = () => {
+const VERIFIED_ASSETS_PAYLOAD: {
+  keys: TokenSearchAssetKey[];
+  list: TokenSearchListId;
+  threshold: TokenSearchThreshold;
+} = {
+  keys: ['symbol', 'name'],
+  list: 'verifiedAssets',
+  threshold: 'CONTAINS',
+};
+
+export const useSearchableTokens = (searchQuery: string) => {
   const { currentAddress: address } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
   const { hideSmallBalances } = useHideSmallBalancesStore();
   const navigate = useRainbowNavigate();
 
+  const tokensSearch = useTokensSearch({
+    ...VERIFIED_ASSETS_PAYLOAD,
+    query: searchQuery,
+  });
+
+  console.log('tokensSearch', tokensSearch);
   const { data: assets = [] } = useUserAssets(
     {
       address,
