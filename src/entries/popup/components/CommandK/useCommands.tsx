@@ -1079,12 +1079,12 @@ export const useCommands = (
       viewContactProfile: {
         action: () =>
           isContactCommand(previousPageState.selectedCommand) &&
-          viewWalletOnEtherscan(previousPageState.selectedCommand.address),
+          openProfile(previousPageState.selectedCommand),
       },
       viewContactOnEtherscan: {
         action: () =>
           isContactCommand(previousPageState.selectedCommand) &&
-          openProfile(previousPageState.selectedCommand),
+          viewWalletOnEtherscan(previousPageState.selectedCommand.address),
       },
     }),
     [
