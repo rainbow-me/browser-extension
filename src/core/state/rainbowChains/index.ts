@@ -4,10 +4,11 @@ import create from 'zustand';
 import { SUPPORTED_CHAINS, getDefaultRPC } from '~/core/references';
 import {
   ChainId,
+  chainDegen,
   chainHardhat,
   chainHardhatOptimism,
 } from '~/core/types/chains';
-import { migrate } from '~/core/utils/migrate';
+import { persistOptions } from '~/core/utils/persistOptions';
 
 import { createStore } from '../internal/createStore';
 import { withSelectors } from '../internal/withSelectors';
@@ -64,16 +65,23 @@ const mergeNewOfficiallySupportedChainsState = (
 ) => {
   const officiallySupportedRainbowChains = getInitialRainbowChains();
   for (const chainId of newChains) {
-    const officalConfig = officiallySupportedRainbowChains[chainId];
+    const officialConfig = officiallySupportedRainbowChains[chainId];
     const stateChain = state.rainbowChains[chainId];
     // if the rpc already exists in the state, merge the chains
     // else add the new rpc config to the state
-    if (stateChain.chains.length > 0) {
+    if (
+      stateChain.chains.length > 0 &&
+      !stateChain.chains.find(
+        (chain) =>
+          chain.rpcUrls.default.http[0] ===
+          officialConfig.chains[0].rpcUrls.default.http[0],
+      )
+    ) {
       state.rainbowChains[chainId].chains = stateChain.chains.concat(
-        officalConfig.chains,
+        officialConfig.chains,
       );
     } else {
-      state.rainbowChains[chainId] = officalConfig;
+      state.rainbowChains[chainId] = officialConfig;
     }
   }
   return state;
@@ -219,32 +227,42 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
     },
   }),
   {
-    persist: {
+    persist: persistOptions({
       name: 'rainbowChains',
-      version: 6,
-      migrate: migrate(
+      version: 8,
+      migrations: [
+        // v1 didn't need a migration
+        function v1(s: RainbowChainsState) {
+          return s;
+        },
+
         // version 2 added support for Avalanche and Avalanche Fuji
-        (state) =>
-          mergeNewOfficiallySupportedChainsState(state, [
+        function v2(state) {
+          return mergeNewOfficiallySupportedChainsState(state, [
             ChainId.avalanche,
             ChainId.avalancheFuji,
-          ]),
-        // version 2 added support for Blast
-        (state: RainbowChainsState) =>
-          mergeNewOfficiallySupportedChainsState(state, [
-            ChainId.avalanche,
-            ChainId.avalancheFuji,
-          ]),
-        (state) =>
-          removeCustomRPC({
+          ]);
+        },
+
+        // version 3 added support for Blast
+        function v3(state) {
+          return mergeNewOfficiallySupportedChainsState(state, [ChainId.blast]);
+        },
+
+        function v4(state) {
+          return removeCustomRPC({
             state,
             rpcUrl: 'https://rpc.zora.co',
             rainbowChains: state.rainbowChains,
-          }),
+          });
+        },
+
         // version 5 added support for Degen
-        (state: RainbowChainsState) =>
-          mergeNewOfficiallySupportedChainsState(state, [ChainId.degen]),
-        (state: RainbowChainsState) => {
+        function v5(state) {
+          return mergeNewOfficiallySupportedChainsState(state, [ChainId.degen]);
+        },
+
+        function v6(state) {
           if (
             !state.rainbowChains[zora.id] ||
             state.rainbowChains[zora.id]?.chains.length === 0
@@ -253,8 +271,22 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
           }
           return state;
         },
-      ),
-    },
+
+        function v7(state) {
+          return state;
+        },
+
+        function v8(state) {
+          if (
+            !state.rainbowChains[chainDegen.id] ||
+            state.rainbowChains[chainDegen.id]?.chains.length === 0
+          ) {
+            return addCustomRPC({ chain: chainDegen, state });
+          }
+          return state;
+        },
+      ],
+    }),
   },
 );
 

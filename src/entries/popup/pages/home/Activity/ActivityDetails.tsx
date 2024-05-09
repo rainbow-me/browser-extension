@@ -2,14 +2,18 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits } from '@ethersproject/units';
 import { motion } from 'framer-motion';
 import { useMemo } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { Navigate, useParams, useSearchParams } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { useApprovals } from '~/core/resources/approvals/approvals';
 import { useTransaction } from '~/core/resources/transactions/transaction';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
-import { RainbowTransaction, TxHash } from '~/core/types/transactions';
+import {
+  PendingTransaction,
+  RainbowTransaction,
+  TxHash,
+} from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
 import { findRainbowChainForChainId } from '~/core/utils/chains';
 import { copy } from '~/core/utils/copy';
@@ -46,6 +50,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
+import { ExplainerSheet } from '~/entries/popup/components/ExplainerSheet/ExplainerSheet';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
@@ -288,13 +293,38 @@ function NetworkData({ transaction: tx }: { transaction: RainbowTransaction }) {
   );
 }
 
+function SpeedUpErrorExplainer() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const explainer = searchParams.get('explainer');
+
+  return (
+    <ExplainerSheet
+      show={explainer === 'speed_up_error'}
+      onClickOutside={() => setSearchParams({})}
+      header={{
+        icon: <Symbol symbol="xmark.circle.fill" color="red" size={32} />,
+      }}
+      title={i18n.t('speed_up_and_cancel.speed_up_failed.title')}
+      description={[i18n.t('speed_up_and_cancel.speed_up_failed.description')]}
+      actionButton={{
+        action: () => setSearchParams({ sheet: 'cancel' }),
+        symbol: 'trash.fill',
+        symbolSide: 'left',
+        label: i18n.t('speed_up_and_cancel.cancel_title'),
+        labelColor: 'label',
+      }}
+    />
+  );
+}
+
 const SpeedUpOrCancel = ({
   transaction,
 }: {
-  transaction: RainbowTransaction;
+  transaction: PendingTransaction;
 }) => {
-  const [searchParams] = useSearchParams();
   const navigate = useRainbowNavigate();
+  const [searchParams] = useSearchParams();
+
   const sheetParam = searchParams.get('sheet');
   const sheet =
     sheetParam === 'speedUp' || sheetParam === 'cancel' ? sheetParam : 'none';
@@ -303,6 +333,7 @@ const SpeedUpOrCancel = ({
       state: { skipTransitionOnRoute: ROUTES.HOME },
     });
   };
+
   return (
     <>
       <Box display="flex" flexDirection="column" gap="8px">
@@ -327,13 +358,12 @@ const SpeedUpOrCancel = ({
           {i18n.t('speed_up_and_cancel.cancel')}
         </Button>
       </Box>
-      {sheet !== 'none' && (
-        <SpeedUpAndCancelSheet
-          currentSheet={sheet}
-          transaction={transaction}
-          onClose={() => setSheet('none')}
-        />
-      )}
+      <SpeedUpAndCancelSheet
+        currentSheet={sheet}
+        transaction={transaction}
+        onClose={() => setSheet('none')}
+      />
+      <SpeedUpErrorExplainer />
     </>
   );
 };
@@ -539,7 +569,7 @@ export function ActivityDetails() {
   const { hash, chainId } = useParams<{ hash: TxHash; chainId: string }>();
   const { isWatchingWallet } = useWallets();
 
-  const { data: transaction, isLoading } = useTransaction({
+  const { data: transaction } = useTransaction({
     hash,
     chainId: Number(chainId),
   });
@@ -581,49 +611,45 @@ export function ActivityDetails() {
 
   const backToHome = () =>
     navigate(ROUTES.HOME, {
-      state: { skipTransitionOnRoute: ROUTES.HOME },
+      state: { skipTransitionOnRoute: ROUTES.HOME, tab: 'activity' },
     });
 
   const onRevoke = () => {
     triggerRevokeApproval({ show: true, approval: approvalToRevoke });
   };
 
-  return (
-    <BottomSheet zIndex={zIndexes.ACTIVITY_DETAILS} show={!!transaction}>
-      {!isLoading && !!transaction && (
-        <>
-          <Navbar
-            leftComponent={
-              <Navbar.CloseButton onClick={backToHome} withinModal />
-            }
-            titleComponent={<ActivityPill transaction={transaction} />}
-            rightComponent={
-              <MoreOptions
-                transaction={transaction}
-                revoke={!!approvalToRevoke && !isWatchingWallet}
-                onRevoke={onRevoke}
-              />
-            }
-          />
-          <Separator color="separatorTertiary" />
+  if (!transaction) {
+    return <Navigate to={ROUTES.HOME} state={{ tab: 'activity' }} />;
+  }
 
-          <Stack
-            separator={<Separator color="separatorTertiary" />}
-            padding="20px"
-            gap="20px"
-          >
-            <ToFrom transaction={transaction} />
-            {additionalDetails && (
-              <AdditionalDetails details={additionalDetails} />
-            )}
-            <ConfirmationData transaction={transaction} />
-            <NetworkData transaction={transaction} />
-            {transaction.status === 'pending' && (
-              <SpeedUpOrCancel transaction={transaction} />
-            )}
-          </Stack>
-        </>
-      )}
+  return (
+    <BottomSheet zIndex={zIndexes.ACTIVITY_DETAILS} show>
+      <Navbar
+        leftComponent={<Navbar.CloseButton onClick={backToHome} withinModal />}
+        titleComponent={<ActivityPill transaction={transaction} />}
+        rightComponent={
+          <MoreOptions
+            transaction={transaction}
+            revoke={!!approvalToRevoke && !isWatchingWallet}
+            onRevoke={onRevoke}
+          />
+        }
+      />
+      <Separator color="separatorTertiary" />
+
+      <Stack
+        separator={<Separator color="separatorTertiary" />}
+        padding="20px"
+        gap="20px"
+      >
+        <ToFrom transaction={transaction} />
+        {additionalDetails && <AdditionalDetails details={additionalDetails} />}
+        <ConfirmationData transaction={transaction} />
+        <NetworkData transaction={transaction} />
+        {transaction.status === 'pending' && (
+          <SpeedUpOrCancel transaction={transaction} />
+        )}
+      </Stack>
     </BottomSheet>
   );
 }

@@ -31,6 +31,7 @@ import {
   commandKRowSelectedStyleDark,
 } from './CommandKStyles.css';
 import {
+  ContactSearchItem,
   ENSOrAddressSearchItem,
   NFTSearchItem,
   SearchItem,
@@ -212,10 +213,11 @@ export const ShortcutRow = ({
     command.address && command.id === 'addAsWatchedWallet';
   const isSwitchToWalletRow =
     command.address && command.id === 'switchToWallet';
+  const isContactWalletRow = command.address && command.id === 'contactWallet';
   const isViewTokenRow = command.asset && command.id === 'viewToken';
 
   const LeftComponent = React.useMemo(() => {
-    if (isAddAsWatchedWalletRow || isSwitchToWalletRow) {
+    if (isAddAsWatchedWalletRow || isSwitchToWalletRow || isContactWalletRow) {
       return (
         <WalletAvatar
           addressOrName={command.address || ''}
@@ -255,6 +257,7 @@ export const ShortcutRow = ({
     command.textIcon,
     isAddAsWatchedWalletRow,
     isSwitchToWalletRow,
+    isContactWalletRow,
     isViewTokenRow,
   ]);
 
@@ -364,7 +367,7 @@ export const TokenRow = ({
 };
 
 type WalletRowProps = {
-  command: WalletSearchItem | ENSOrAddressSearchItem;
+  command: WalletSearchItem | ENSOrAddressSearchItem | ContactSearchItem;
   handleExecuteCommand: (command: SearchItem, e?: KeyboardEvent) => void;
   selected: boolean;
 };
@@ -379,12 +382,16 @@ export const WalletRow = ({
   }, [command.address]);
 
   const isWalletSearchItem = command.type === SearchItemType.Wallet;
+  const isContactSearchItem = command.type === SearchItemType.Contact;
   const hardwareWalletType = isWalletSearchItem && command.hardwareWalletType;
   const walletType = isWalletSearchItem && command.walletType;
+  const walletLabel = isContactSearchItem && command.label;
 
   const description = React.useMemo(() => {
-    if (!isWalletSearchItem) {
+    if (!isWalletSearchItem && !isContactSearchItem) {
       return undefined;
+    } else if (walletLabel) {
+      return i18n.t(`command_k.labels.${walletLabel}`);
     } else if (walletType === KeychainType.ReadOnlyKeychain) {
       return i18n.t('wallet_switcher.watching');
     } else if (
@@ -394,7 +401,13 @@ export const WalletRow = ({
       return i18n.t(`wallet_switcher.${hardwareWalletType.toLowerCase()}`);
     }
     return undefined;
-  }, [hardwareWalletType, isWalletSearchItem, walletType]);
+  }, [
+    isWalletSearchItem,
+    isContactSearchItem,
+    walletLabel,
+    walletType,
+    hardwareWalletType,
+  ]);
 
   const Avatar = React.useMemo(
     () => (

@@ -70,7 +70,11 @@ export const customChainIdsToAssetNames: Record<ChainId, string> = {
   369: 'pulsechain',
   1380012617: 'rari',
   1918988905: 'raritestnet',
+  690: 'redstone',
+  17069: 'redstonegarnet',
   17001: 'redstoneholesky',
+  30: 'rootstock',
+  31: 'rootstocktestnet',
   534352: 'scroll',
   100: 'xdai',
   324: 'zksync',
@@ -187,7 +191,6 @@ export const getSimpleHashSupportedChainNames = () => {
 export const getSimpleHashSupportedTestnetChainNames = () => {
   return [
     'ethereum-sepolia',
-    ChainName.polygonMumbai,
     ChainName.arbitrumSepolia,
     ChainName.baseSepolia,
     ChainName.blastSepolia,
@@ -343,10 +346,6 @@ export const deriveChainIdByHostname = (hostname: string) => {
       return ChainId.mainnet;
     case 'arbiscan.io':
       return ChainId.arbitrum;
-    case 'explorer-mumbai.maticvigil.com':
-    case 'explorer-mumbai.matic.today':
-    case 'mumbai.polygonscan.com':
-      return ChainId.polygonMumbai;
     case 'amoy.polygonscan.com':
     case 'oklink.com/amoy':
       return ChainId.polygonAmoy;

@@ -17,6 +17,7 @@ import { createNumberFormatter } from '~/core/utils/formatNumber';
 import {
   Box,
   Inline,
+  Inset,
   Separator,
   Stack,
   Symbol,
@@ -24,14 +25,15 @@ import {
   TextOverflow,
 } from '~/design-system';
 import { BoxProps } from '~/design-system/components/Box/Box';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 import {
   globalColors,
   linearGradients,
 } from '~/design-system/styles/designTokens';
 import { AddressOrEns } from '~/entries/popup/components/AddressOrEns/AddressorEns';
-import { Link } from '~/entries/popup/components/Link/Link';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
+import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
 
 import { AirdropIcon } from './AirdropIcon';
@@ -44,26 +46,34 @@ const { format: formatNumber } = createNumberFormatter({
 function Card({
   children,
   ...props
-}: PropsWithChildren<BoxProps & MotionProps>) {
+}: PropsWithChildren<BoxProps & MotionProps> & {
+  onClick?: () => void;
+}) {
   return (
-    <Box
-      as={motion.div}
-      initial={{ scale: 0.98, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      display="flex"
-      flexDirection="column"
-      justifyContent="center"
-      gap="12px"
-      paddingVertical="16px"
-      paddingHorizontal="18px"
+    <Lens
+      onClick={props.onClick}
       borderRadius="16px"
-      background="surfaceSecondaryElevated"
       width="full"
-      boxShadow="12px surfaceSecondaryElevated"
-      {...props}
+      tabIndex={typeof props.tabIndex === 'number' ? props.tabIndex : 0}
     >
-      {children}
-    </Box>
+      <Box
+        as={motion.div}
+        initial={{ scale: 0.98, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        gap="12px"
+        paddingVertical="16px"
+        paddingHorizontal="18px"
+        borderRadius="16px"
+        background="surfaceSecondaryElevated"
+        boxShadow="12px surfaceSecondaryElevated"
+        {...props}
+      >
+        {children}
+      </Box>
+    </Lens>
   );
 }
 
@@ -146,33 +156,46 @@ function Leaderboard() {
           </Text>
         )}
       </Card>
-      <Card paddingVertical="10px" paddingHorizontal="16px">
+      <Card paddingVertical="10px" paddingHorizontal="16px" tabIndex={-1}>
         <Stack separator={<Separator color="separatorTertiary" />} space="12px">
           {leaderboard.accounts
             ?.slice(0, 100)
             .map(({ address, earnings, ens, avatarURL }, index) => (
-              <Inline
+              <Lens
                 key={address}
-                wrap={false}
-                space="12px"
-                alignVertical="center"
-                alignHorizontal="justify"
+                marginHorizontal="-16px"
+                marginVertical="-10px"
+                style={{
+                  borderTopLeftRadius: index === 0 ? 16 : 6,
+                  borderTopRightRadius: index === 0 ? 16 : 6,
+                  borderBottomLeftRadius: index === 99 ? 16 : 6,
+                  borderBottomRightRadius: index === 99 ? 16 : 6,
+                }}
               >
-                <Inline wrap={false} space="12px" alignVertical="center">
-                  <WalletAvatar
-                    size={32}
-                    avatarUrl={avatarURL || null}
-                    addressOrName={address}
-                    emojiSize="16pt"
-                  />
-                  <TextOverflow size="14pt" weight="bold">
-                    {ens || truncateAddress(address as Address)}
-                  </TextOverflow>
-                </Inline>
-                <LeaderboardPositionNumberDisplay position={index + 1}>
-                  {formatNumber(earnings.total)}
-                </LeaderboardPositionNumberDisplay>
-              </Inline>
+                <Inset horizontal="16px" vertical="10px">
+                  <Inline
+                    wrap={false}
+                    space="12px"
+                    alignVertical="center"
+                    alignHorizontal="justify"
+                  >
+                    <Inline wrap={false} space="12px" alignVertical="center">
+                      <WalletAvatar
+                        size={32}
+                        avatarUrl={avatarURL || null}
+                        addressOrName={address}
+                        emojiSize="16pt"
+                      />
+                      <TextOverflow size="14pt" weight="bold">
+                        {ens || truncateAddress(address as Address)}
+                      </TextOverflow>
+                    </Inline>
+                    <LeaderboardPositionNumberDisplay position={index + 1}>
+                      {formatNumber(earnings.total)}
+                    </LeaderboardPositionNumberDisplay>
+                  </Inline>
+                </Inset>
+              </Lens>
             ))}
         </Stack>
       </Card>
@@ -209,6 +232,12 @@ const formatReferralCode = (referralCode: string) =>
 function ReferralCode() {
   const { currentAddress } = useCurrentAddressStore();
   const { data, isSuccess } = usePoints(currentAddress);
+  const copyReferralCode = () =>
+    copy({
+      value: data?.user.referralCode || '',
+      title: i18n.t('points.copied_referral_code'),
+      description: formatReferralCode(data?.user.referralCode || ''),
+    });
 
   return (
     <Stack gap="12px">
@@ -222,13 +251,8 @@ function ReferralCode() {
               whileTap={{ scale: 0.98 }}
               whileFocus={{ scale: 1.02 }}
               whileHover={{ scale: 1.02 }}
-              onTap={() =>
-                copy({
-                  value: data.user.referralCode,
-                  title: i18n.t('points.copied_referral_code'),
-                  description: formatReferralCode(data.user.referralCode),
-                })
-              }
+              onTap={copyReferralCode}
+              onClick={copyReferralCode}
             >
               <Text size="20pt" weight="bold" align="center">
                 {formatReferralCode(data.user.referralCode)}
@@ -243,6 +267,7 @@ function ReferralCode() {
               whileFocus={{ scale: 1.02 }}
               whileHover={{ scale: 1.02 }}
               onTap={() => copyReferralLink(data.user.referralCode)}
+              onClick={() => copyReferralLink(data.user.referralCode)}
             >
               <Symbol
                 symbol="square.on.square"
@@ -472,6 +497,7 @@ function YourPoints() {
 const cyanAlpha = (alpha: number) =>
   hex(globalColors.cyan50).alpha(alpha).css();
 function YourEarningsLastWeek() {
+  const navigate = useRainbowNavigate();
   return (
     <Card
       flexDirection="row"
@@ -480,6 +506,14 @@ function YourEarningsLastWeek() {
       gap="12px"
       borderColor="separatorSecondary"
       borderWidth="1px"
+      onClick={() =>
+        navigate(ROUTES.POINTS_WEEKLY_OVERVIEW, {
+          state: {
+            tab: 'points',
+            skipTransitionOnRoute: ROUTES.HOME,
+          },
+        })
+      }
     >
       <Box
         style={{
@@ -506,14 +540,9 @@ function YourEarningsLastWeek() {
         <Text color="labelTertiary" size="12pt" weight="bold">
           {i18n.t('points.weekly_overview.view_breakdown')}
         </Text>
-        <Link
-          to={ROUTES.POINTS_WEEKLY_OVERVIEW}
-          state={{ tab: 'points', skipTransitionOnRoute: ROUTES.HOME }}
-        >
-          <Text color="cyan" size="12pt" weight="heavy" textShadow="12px blue">
-            {i18n.t('points.weekly_overview.view_now')}
-          </Text>
-        </Link>
+        <Text color="cyan" size="12pt" weight="heavy" textShadow="12px blue">
+          {i18n.t('points.weekly_overview.view_now')}
+        </Text>
       </Stack>
     </Card>
   );

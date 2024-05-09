@@ -21,6 +21,90 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.4.81](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.81)
+
+### Changed
+
+- More reliable and accurate slippage threshold estimates are now available for Swaps #1502
+- You can now navigate the Points dashboard and Weekly Drops with your Keyboard #1522
+
+### Fixed
+
+- Resolved issues for users that experienced a missing RPC and failed transactions on Degen Chain L3 #1518
+- Fixed an issue where Speed up and Cancel transaction would not appear in the Activity list #1413
+- Improved Ledger connection reliability to reduce signing timeouts #1494
+- Resolved a UI display issue when Signing transactions for Hardware Wallets #1524
+- Fixed text overflows for long wallet names on dApp Connection prompts and Transaction Previews #1525 #1507
+- Improved performance when launching Activity Details for a transaction #1519
+- Fixed shortcuts handling on the Backup Reminders and added `esc` dismissal #1454
+
+### Internal
+
+- Translations for new Settings flows, Transactions warnings, and more #1516
+- Replaced `migrate` util with `persistOptions` for better state versioning #1523
+- Improved Firefox release workflow #1515
+
+## [v1.4.73](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.73)
+
+### Changed
+
+- Added autofill support for Redstone and Rootstock networks in the Add Network flow #1508
+
+### Fixed
+
+- Resolved duplicate instances of tokens like `DEGEN` when Rainbow introduces rich metadata for a new network #1499
+- Resolved a white flash on launch for users in dark mode #1509
+- Improved quote price estimates for Swaps on Degen Chain #1512
+
+## [v1.4.67](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.67)
+
+### Changed
+
+- Broadened coverage of our network explainers as you interact with assets across alternative L1s, and Ethereum L2s and L3s #1490
+
+### Fixed
+
+- Resolved an issue with missing prices for some token pairs in our Swap interface #1505
+
+### Internal
+
+- Bumped `@solana/web3.js` version to `1.90.2` to resolve CI audit issue #1503
+
+## [v1.4.65](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.65)
+
+### Added
+
+- Your POAP collection is now available in the NFT Gallery #1469
+- Degen Chain is now fully supported in Rainbow. Send, Swap, and interact with Degen dApps with Rainbow #1476
+
+### Changed
+
+- You'll now see USD or preferable currency estimates for each Transaction Preview, so that you can at a glance understand the real cost of a transaction #1481
+- Enabled Transaction Previews and simulation for Contract deployments #1485
+- It's now even easier to Speed up and Cancel a transaction #1495
+- Shortcuts on now supported for the Token Details menus #1449
+
+### Fixed
+
+- Resolved an issue where Zora Chain would be unavailable for a subset of users after an extension upgrade #1496
+- Now hiding Transaction Simulation tabs when no result is available #1471
+- You'll now see a warning when Rainbow is missing asset prices for an attempted Swap #1498
+- Fixed an issue where transactions could appear for disabled networks in the Activity list #1474
+- Fixed an issue where dApp requests to switch chain may fail after adding a new network or RPC #1479
+- Fixed balance resolution for Custom Networks to properly display Transaction Previews instead of gas top-up requests #1486
+- Fixed dApp connection network badge positioning #1480
+- Fixed Transaction Preview network badge size #1492
+- Fixed double click text selection in Custom Gas gwei input fields #1488
+- Fixed currency pass-through in Transaction Previews so that you'll always see your preferred currency denomination #1500
+- Fixed UI for when a simulation balance and price is unavailable in Transaction Previews #1501
+
+### Internal
+
+- Added a Zustand `migrate` util to assist sequential typed state migrations to ensure valid state for users upgrading from older versions of Rainbow #1470
+- Bumped `tar` resolution to `6.2.1` to resolve GHSA-f5x3-32g6-xq36 audit #1483
+- Bumped `protobufjs` to `7.2.5` to resolve audit #1487
+- Bumped `phin` to `3.7.1` to resolve audit #1493
+
 ## [v1.4.55](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.55)
 
 ### Fixed

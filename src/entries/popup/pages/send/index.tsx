@@ -11,6 +11,8 @@ import {
   useRef,
   useState,
 } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { isAddress } from 'viem';
 import { Address } from 'wagmi';
 
 import { analytics } from '~/analytics';
@@ -111,6 +113,12 @@ export function Send() {
   const isContact = useContactsStore.use.isContact();
   const { allWallets } = useWallets();
   const { hiddenAssets } = useHiddenAssetStore();
+  const [urlSearchParams] = useSearchParams();
+
+  const queryToAddress = urlSearchParams.get('to');
+  const validatedQueryToAddress = isAddress(queryToAddress as Address)
+    ? queryToAddress
+    : null;
 
   const isHidden = useCallback(
     (asset: ParsedUserAsset) =>
@@ -507,7 +515,9 @@ export function Send() {
       );
     }
 
-    if (sendAddress && sendAddress.length) {
+    if (validatedQueryToAddress) {
+      setToAddressOrName(validatedQueryToAddress);
+    } else if (sendAddress && sendAddress.length) {
       setToAddressOrName(sendAddress);
     }
     if (sendField !== independentField) {
@@ -664,6 +674,7 @@ export function Send() {
                 toAddress={toAddress}
                 toEnsName={toEnsName}
                 toAddressOrName={toAddressOrName}
+                queryToAddress={validatedQueryToAddress}
                 clearToAddress={clearToAddress}
                 handleToAddressChange={handleToAddressChange}
                 setToAddressOrName={setToAddressOrName}

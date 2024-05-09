@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.4.71",
+  "version": "1.4.89",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -103,7 +103,7 @@
     "@radix-ui/react-tabs": "1.0.4",
     "@radix-ui/react-tooltip": "1.0.3",
     "@rainbow-me/provider": "0.0.7",
-    "@rainbow-me/swaps": "0.15.0",
+    "@rainbow-me/swaps": "0.17.0",
     "@rudderstack/analytics-js-service-worker": "3.0.6",
     "@scure/bip39": "1.2.1",
     "@sentry/browser": "7.69.0",

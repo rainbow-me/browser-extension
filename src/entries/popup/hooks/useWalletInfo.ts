@@ -20,6 +20,7 @@ export const useWalletInfo = ({
 
   return {
     contactName: contact?.name,
+    contactAddress: contact?.address,
     displayName:
       walletName || contact?.name || ensName || truncateAddress(address),
     isContact: contact,

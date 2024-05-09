@@ -10,11 +10,11 @@ import {
   DAI_BSC_ADDRESS,
   DAI_OPTIMISM_ADDRESS,
   DAI_POLYGON_ADDRESS,
+  DEGEN_DEGEN_ADDRESS,
   ETH_ADDRESS,
   ETH_ARBITRUM_ADDRESS,
   ETH_BASE_ADDRESS,
   ETH_BLAST_ADDRESS,
-  ETH_DEGEN_ADDRESS,
   ETH_OPTIMISM_ADDRESS,
   ETH_ZORA_ADDRESS,
   MATIC_POLYGON_ADDRESS,
@@ -43,7 +43,7 @@ import {
 } from '~/core/references';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { migrate } from '~/core/utils/migrate';
+import { persistOptions } from '~/core/utils/persistOptions';
 
 import { createStore } from '../internal/createStore';
 
@@ -106,7 +106,7 @@ const defaultFavorites = {
     WBTC_AVALANCHE_ADDRESS,
   ],
   [ChainId.blast]: [ETH_BLAST_ADDRESS, WETH_BLAST_ADDRESS, USDB_BLAST_ADDRESS],
-  [ChainId.degen]: [ETH_DEGEN_ADDRESS],
+  [ChainId.degen]: [DEGEN_DEGEN_ADDRESS],
 } satisfies FavoritesState['favorites'];
 
 const mergeNewOfficiallySupportedChainsState = (
@@ -149,10 +149,10 @@ export const favoritesStore = createStore<FavoritesState>(
     },
   }),
   {
-    persist: {
+    persist: persistOptions({
       name: 'favorites',
       version: 4,
-      migrate: migrate(
+      migrations: [
         // version 1 didn't need a migration
         (state: FavoritesState) => state,
         // version 2 added avalanche
@@ -164,8 +164,8 @@ export const favoritesStore = createStore<FavoritesState>(
         // version 4 added degen
         (state) =>
           mergeNewOfficiallySupportedChainsState(state, [ChainId.degen]),
-      ),
-    },
+      ],
+    }),
   },
 );
 

@@ -11,7 +11,6 @@ import {
   useNonceStore,
   usePendingTransactionsStore,
 } from '~/core/state';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
 import { useUserChainsStore } from '~/core/state/userChains';
 import {
@@ -43,7 +42,6 @@ export const useWatchPendingTransactions = ({
   const addCustomNetworkTransactions =
     useCustomNetworkTransactionsStore.use.addCustomNetworkTransactions();
   const { userChains } = useUserChainsStore();
-  const { testnetMode } = useTestnetModeStore();
 
   const pendingTransactions = useMemo(
     () => storePendingTransactions[address] || [],
@@ -250,7 +248,6 @@ export const useWatchPendingTransactions = ({
         queryKey: consolidatedTransactionsQueryKey({
           address,
           currency: currentCurrency,
-          testnetMode,
           userChainIds: Object.keys(userChains).map(Number),
         }),
       });
@@ -278,7 +275,6 @@ export const useWatchPendingTransactions = ({
     processNonces,
     processPendingTransaction,
     setPendingTransactions,
-    testnetMode,
     userChains,
   ]);
 
