@@ -37,6 +37,10 @@ export const PAGES: { [KEY: string]: Page } = {
     listTitle: i18n.t('command_k.pages.my_wallets.section_title'),
     searchPlaceholder: i18n.t('command_k.pages.my_wallets.search_placeholder'),
   },
+  MY_CONTACTS: {
+    listTitle: i18n.t('command_k.pages.my_contacts.section_title'),
+    searchPlaceholder: i18n.t('command_k.pages.my_contacts.search_placeholder'),
+  },
   NFT_TOKEN_DETAIL: {
     listTitle: (command: SearchItem) =>
       command.type === SearchItemType.NFT
@@ -62,6 +66,12 @@ export const PAGES: { [KEY: string]: Page } = {
     ),
   },
   WALLET_DETAIL: {
+    listTitle: (command: SearchItem) => command.name,
+    searchPlaceholder: i18n.t(
+      'command_k.pages.wallet_detail.search_placeholder',
+    ),
+  },
+  CONTACT_DETAIL: {
     listTitle: (command: SearchItem) => command.name,
     searchPlaceholder: i18n.t(
       'command_k.pages.wallet_detail.search_placeholder',
