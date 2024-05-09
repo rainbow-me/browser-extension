@@ -967,8 +967,11 @@ const ROUTE_DATA = [
 
 const RootLayout = () => {
   const { pathname, state } = useLocation();
-  const { setLastPage, setLastState, shouldRestoreNavigation } =
-    useNavRestorationStore();
+  const shouldRestoreNavigation = useNavRestorationStore(
+    (s) => s.shouldRestoreNavigation,
+  );
+  const setLastPage = useNavRestorationStore((s) => s.setLastPage);
+  const setLastState = useNavRestorationStore((s) => s.setLastState);
 
   React.useLayoutEffect(() => {
     window.scrollTo(0, 0);

@@ -246,3 +246,8 @@ export function useHomeShortcuts() {
     handler: handleHomeShortcuts,
   });
 }
+
+export function HomeShortcuts() {
+  useHomeShortcuts();
+  return null;
+}
