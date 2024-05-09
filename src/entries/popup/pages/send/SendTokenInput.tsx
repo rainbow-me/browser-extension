@@ -12,12 +12,11 @@ import React, {
 } from 'react';
 
 import { i18n } from '~/core/languages';
-import { NFTCollectionSectionData } from '~/core/resources/_selectors/nfts';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { NftSort } from '~/core/state/nfts';
 import { AddressOrEth, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { UniqueAsset } from '~/core/types/nfts';
+import { SimpleHashCollectionDetails, UniqueAsset } from '~/core/types/nfts';
 import { TESTNET_MODE_BAR_HEIGHT } from '~/core/utils/dimensions';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
 import { Bleed, Box, Inline, Stack, Symbol, Text } from '~/design-system';
@@ -215,10 +214,10 @@ interface SendTokenInputProps {
     chainId: ChainId,
   ) => void;
   nft?: UniqueAsset;
-  nfts: NFTCollectionSectionData[];
+  collections?: SimpleHashCollectionDetails[];
   nftSortMethod: NftSort;
   setNftSortMethod: (sort: NftSort) => void;
-  selectNft: (collectionId: string, uniqueId: string) => void;
+  selectNft: (nft?: UniqueAsset) => void;
   dropdownClosed: boolean;
   setSortMethod: (sortMethod: SortMethod) => void;
   sortMethod: SortMethod;
@@ -232,8 +231,8 @@ export const SendTokenInput = React.forwardRef<
   const {
     asset,
     assets,
+    collections,
     nft,
-    nfts,
     nftSortMethod,
     setNftSortMethod,
     selectNft,
@@ -268,7 +267,7 @@ export const SendTokenInput = React.forwardRef<
 
   const onSelectAsset = useCallback(
     (address: AddressOrEth | '', chainId: ChainId) => {
-      selectNft('', '');
+      selectNft();
       selectAssetAddressAndChain(address, chainId);
       setDropdownVisible(false);
     },
@@ -276,8 +275,8 @@ export const SendTokenInput = React.forwardRef<
   );
 
   const onSelectNft = useCallback(
-    (collectionId: string, uniqueId: string) => {
-      selectNft(collectionId, uniqueId);
+    (nft?: UniqueAsset) => {
+      selectNft(nft);
       selectAssetAddressAndChain('', ChainId.mainnet);
       setDropdownVisible(false);
     },
@@ -302,29 +301,22 @@ export const SendTokenInput = React.forwardRef<
       : assets;
   }, [assets, inputValue]);
 
-  const filteredNfts = useMemo(() => {
-    return nfts.reduce((res, currentSection) => {
-      const { assets, collection } = currentSection;
+  const filteredCollections = useMemo(() => {
+    return collections?.reduce((res, currentCollection) => {
       const val = inputValue.toLowerCase();
-      const collectionMatch = collection.name.toLowerCase().startsWith(val);
-      const assetMatches = assets.filter(({ name }) =>
-        name.toLowerCase().startsWith(val),
-      );
-      if (collectionMatch) {
-        res.push(currentSection);
-      } else if (assetMatches.length) {
-        res.push({
-          ...currentSection,
-          assets: assetMatches,
-        });
+      const match = currentCollection.collection_details.name
+        .toLowerCase()
+        .startsWith(val);
+      if (match) {
+        return [...res, currentCollection];
       }
       return res;
-    }, [] as NFTCollectionSectionData[]);
-  }, [inputValue, nfts]);
+    }, [] as SimpleHashCollectionDetails[]);
+  }, [inputValue, collections]);
 
   const onCloseDropdown = useCallback(() => {
     onSelectAsset('', ChainId.mainnet);
-    onSelectNft('', '');
+    onSelectNft();
     setTimeout(() => {
       inputRef?.current?.focus();
       onDropdownAction();
@@ -510,7 +502,7 @@ export const SendTokenInput = React.forwardRef<
             </Stack>
           )}
           <Box>
-            {!!filteredNfts?.length && (
+            {!!filteredCollections?.length && (
               <Stack space="8px">
                 <Box paddingHorizontal="20px" paddingTop="20px">
                   <Inline alignHorizontal="justify">
@@ -534,18 +526,13 @@ export const SendTokenInput = React.forwardRef<
                   </Inline>
                 </Box>
                 <Box paddingTop="12px" paddingHorizontal="8px">
-                  {filteredNfts.map((section) => {
+                  {filteredCollections?.map((collection) => {
                     return (
                       <NFTCollectionSection
                         displayMode="list"
-                        key={section.collection.collection_id}
-                        onAssetClick={(nft) =>
-                          onSelectNft(
-                            nft.collection.collection_id || '',
-                            nft.fullUniqueId,
-                          )
-                        }
-                        section={section}
+                        key={collection.collection_id}
+                        onAssetClick={(nft) => onSelectNft(nft)}
+                        collection={collection}
                         isLast={false}
                       />
                     );
@@ -553,7 +540,7 @@ export const SendTokenInput = React.forwardRef<
                 </Box>
               </Stack>
             )}
-            {!filteredAssets.length && !filteredNfts.length && (
+            {!filteredCollections?.length && (
               <Box alignItems="center" style={{ paddingTop: 119 }}>
                 <Box paddingHorizontal="44px">
                   <Stack space="16px">

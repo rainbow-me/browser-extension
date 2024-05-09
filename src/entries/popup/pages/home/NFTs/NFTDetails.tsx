@@ -2,17 +2,12 @@ import { DropdownMenuRadioGroup } from '@radix-ui/react-dropdown-menu';
 import clsx from 'clsx';
 import { format, formatDistanceStrict } from 'date-fns';
 import { ReactNode, useCallback, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { Address } from 'viem';
 import { useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { chainsLabel } from '~/core/references/chains';
-import { selectNftCollections } from '~/core/resources/_selectors/nfts';
 import { useEnsRegistration } from '~/core/resources/ens/ensRegistration';
-import { useNfts } from '~/core/resources/nfts';
-import { useCurrentAddressStore } from '~/core/state';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useSelectedNftStore } from '~/core/state/selectedNft';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId, ChainName, chainNameToIdMapping } from '~/core/types/chains';
@@ -76,7 +71,6 @@ import { useDominantColor } from '~/entries/popup/hooks/useDominantColor';
 import { useEns } from '~/entries/popup/hooks/useEns';
 import { useNftShortcuts } from '~/entries/popup/hooks/useNftShortcuts';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
-import { useUserChains } from '~/entries/popup/hooks/useUserChains';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
 import chunkLinks from '~/entries/popup/utils/chunkLinks';
@@ -87,31 +81,12 @@ import NFTDropdownMenu from './NFTDropdownMenu';
 import { getOpenseaUrl, getRaribleUrl } from './utils';
 
 export default function NFTDetails() {
-  const { currentAddress: address } = useCurrentAddressStore();
-  const { collectionId, nftId } = useParams<{
-    collectionId: string;
-    nftId: string;
-  }>();
-  const { testnetMode } = useTestnetModeStore();
-  const { chains: userChains } = useUserChains();
-
-  const userChainIds = userChains.map(({ id }) => id);
-
-  const { data: collections = {} } = useNfts(
-    { address, testnetMode, userChainIds },
-    { select: (data) => selectNftCollections(data) },
-  );
+  const { state } = useLocation();
+  const nft = state?.nft;
+  const isPOAP = nft?.familyName === 'POAP';
   const navigate = useRainbowNavigate();
   const { isWatchingWallet } = useWallets();
   const setSelectedNft = useSelectedNftStore.use.setSelectedNft();
-
-  const nft = useMemo(() => {
-    if (!collectionId || !nftId) return null;
-    return collections?.[collectionId]?.assets?.find(
-      (asset: UniqueAsset) => asset.id === nftId,
-    );
-  }, [collectionId, collections, nftId]);
-  const isPOAP = nft?.familyName === 'POAP';
   const {
     ensAddress,
     ensBio,

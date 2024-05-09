@@ -1,11 +1,10 @@
 import { useMemo } from 'react';
 
+import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
-import { getNftCount } from '~/core/resources/nfts/nfts';
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import { useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { Box, Inline, Inset, Text } from '~/design-system';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 
@@ -13,12 +12,10 @@ import { Asterisks } from '../../components/Asterisks/Asterisks';
 import { Tab } from '../../components/Tabs/TabBar';
 import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { useUserAssetsBalance } from '../../hooks/useUserAssetsBalance';
-import { useUserChains } from '../../hooks/useUserChains';
 import { useVisibleTokenCount } from '../../hooks/useVisibleTokenCount';
 
 import DisplayModeDropdown from './NFTs/DisplayModeDropdown';
 import SortDropdown from './NFTs/SortDropdown';
-import config from '~/core/firebase/remoteConfig';
 
 export function TabHeader({
   activeTab,
@@ -26,20 +23,11 @@ export function TabHeader({
   activeTab: Tab;
   onSelectTab: (tab: Tab) => void;
 }) {
-  const { currentAddress: address } = useCurrentAddressStore();
   const { hideAssetBalances } = useHideAssetBalancesStore();
   const { display: userAssetsBalanceDisplay, isLoading } =
     useUserAssetsBalance();
   const { currentCurrency } = useCurrentCurrencyStore();
   const { visibleTokenCount } = useVisibleTokenCount();
-  const { testnetMode } = useTestnetModeStore();
-  const { chains: userChains } = useUserChains();
-  const userChainIds = userChains.map(({ id }) => id);
-  const nftCount = getNftCount({
-    address,
-    testnetMode,
-    userChainIds,
-  });
 
   const displayBalanceComponent = useMemo(
     () =>
@@ -112,9 +100,9 @@ export function TabHeader({
               {visibleTokenCount}
             </Text>
           )}
-          {activeTab === 'nfts' && nftCount > 0 && (
+          {activeTab === 'nfts' && (
             <Text color="labelQuaternary" size="14pt" weight="bold">
-              {nftCount}
+              {100}
             </Text>
           )}
         </Inline>

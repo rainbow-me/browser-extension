@@ -1,15 +1,11 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useState } from 'react';
 
-import {
-  selectNftCollections,
-  sortSectionsAlphabetically,
-  sortSectionsByRecent,
-} from '~/core/resources/_selectors/nfts';
-import { useNfts } from '~/core/resources/nfts';
+import { selectNftCollections } from '~/core/resources/_selectors/nfts';
+import { useNftCollections } from '~/core/resources/nfts/collections';
 import { useCurrentAddressStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { NftSort } from '~/core/state/nfts';
-import { isLowerCaseMatch } from '~/core/utils/strings';
+import { UniqueAsset } from '~/core/types/nfts';
 
 import { useUserChains } from '../useUserChains';
 
@@ -18,40 +14,20 @@ export const useSendUniqueAsset = () => {
   const [sortMethod, setSortMethod] = useState<NftSort>('recent');
   const { testnetMode } = useTestnetModeStore();
 
-  const [selectedNftUniqueId, setSelectedNftUniqueId] = useState<string>('');
-  const [selectedNftCollectionId, setSelectedNftCollectionId] =
-    useState<string>('');
+  const [selectedNft, setSelectedNft] = useState<UniqueAsset>();
   const { chains: userChains } = useUserChains();
-  const userChainIds = userChains.map(({ id }) => id);
-
-  const { data: sectionsDictionary = {} } = useNfts(
-    { address, testnetMode, userChainIds },
-    { select: (data) => selectNftCollections(data) },
-  );
-  const sortedSections = useMemo(() => {
-    const sections = Object.values(sectionsDictionary);
-    return sortMethod === 'alphabetical'
-      ? sortSectionsAlphabetically(sections)
-      : sortSectionsByRecent(sections);
-  }, [sectionsDictionary, sortMethod]);
-
-  const selectNft = useCallback((collectionId: string, uniqueId: string) => {
-    setSelectedNftCollectionId(collectionId);
-    setSelectedNftUniqueId(uniqueId);
-  }, []);
-
-  const nft = useMemo(() => {
-    const collectionAssets =
-      sectionsDictionary?.[selectedNftCollectionId]?.assets || [];
-    return collectionAssets.find((nft) =>
-      isLowerCaseMatch(nft?.fullUniqueId, selectedNftUniqueId),
-    );
-  }, [sectionsDictionary, selectedNftCollectionId, selectedNftUniqueId]);
+  const { data } = useNftCollections({
+    address,
+    sort: sortMethod,
+    testnetMode,
+    userChains,
+  });
+  const nftCollections = selectNftCollections(data);
 
   return {
-    selectNft,
-    nft,
-    nfts: sortedSections,
+    selectNft: setSelectedNft,
+    nft: selectedNft,
+    collections: nftCollections,
     nftSortMethod: sortMethod,
     setNftSortMethod: setSortMethod,
   };
