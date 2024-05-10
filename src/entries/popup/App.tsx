@@ -109,7 +109,7 @@ export function App() {
             <AuthProvider>
               <Box
                 id="main"
-                background="red"
+                background="surfacePrimaryElevated"
                 style={{
                   maxWidth: !isFullScreen
                     ? `${POPUP_DIMENSIONS.width}px`

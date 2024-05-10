@@ -104,5 +104,7 @@ export function useOptimismL1SecurityFee(
     queryKey: optimismL1SecurityFeeQueryKey({ transactionRequest, chainId }),
     queryFn: optimismL1SecurityFeeQueryFunction,
     ...config,
+    placeholderData: (previousData) =>
+      chainNeedsL1SecurityFee(chainId) ? previousData : null,
   });
 }

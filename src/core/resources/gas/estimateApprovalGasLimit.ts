@@ -135,5 +135,6 @@ export function useEstimateApprovalGasLimit(
     }),
     queryFn: estimateApprovalGasLimitQueryFunction,
     ...config,
+    placeholderData: (previousData) => previousData,
   });
 }

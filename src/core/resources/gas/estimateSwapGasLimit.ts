@@ -134,5 +134,6 @@ export function useEstimateSwapGasLimit(
     }),
     queryFn: estimateSwapGasLimitQueryFunction,
     ...config,
+    placeholderData: (previousData) => previousData,
   });
 }
