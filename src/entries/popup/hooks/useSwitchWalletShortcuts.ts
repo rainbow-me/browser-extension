@@ -33,3 +33,8 @@ export function useSwitchWalletShortcuts(disable?: boolean) {
     condition: () => !disable,
   });
 }
+
+export function SwitchWalletShortcuts() {
+  useSwitchWalletShortcuts();
+  return null;
+}

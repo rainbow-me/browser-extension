@@ -131,9 +131,9 @@ export function Activities() {
       >
         <Box
           width="full"
+          position="relative"
           style={{
             height: activityRowVirtualizer.getTotalSize(),
-            position: 'relative',
           }}
         >
           {rows.map((virtualItem) => {
@@ -145,11 +145,9 @@ export function Activities() {
                 key={key}
                 data-index={index}
                 as={motion.div}
-                layoutId={`list-${index}`}
-                layoutScroll
-                layout="position"
-                initial={{ opacity: isLabel ? 0 : 1 }}
-                animate={{ opacity: 1 }}
+                initial={{ opacity: isLabel ? 0 : 1, x: -4 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ opacity: { duration: 0.3 } }}
                 position="absolute"
                 width="full"
                 style={{ height: size, y: start }}
