@@ -7,6 +7,7 @@ import {
   holesky,
   optimismSepolia,
   polygonZkEvm,
+  scroll,
   sepolia,
 } from 'viem/chains';
 import * as chains from 'viem/chains';

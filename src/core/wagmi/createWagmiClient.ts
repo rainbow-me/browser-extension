@@ -35,7 +35,6 @@ const supportedChains = IS_TESTING
 const chains = [...supportedChains] as [Chain, ...Chain[]];
 const transports = chains.reduce(
   (acc: Record<number, Transport>, chain: Chain) => {
-    console.log('-- chain', chain);
     acc[chain.id] = http(getOriginalRpcEndpoint(chain)?.http);
     return acc;
   },

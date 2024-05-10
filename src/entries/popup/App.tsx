@@ -27,10 +27,7 @@ import { useExpiryListener } from './hooks/useExpiryListener';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
 import usePrevious from './hooks/usePrevious';
 import { useRainbowChains } from './hooks/useRainbowChains';
-import { PlaygroundComponents } from './pages/_playgrounds';
-// import { RainbowConnector } from './wagmi/RainbowConnector';
 
-const playground = process.env.PLAYGROUND as 'default' | 'ds';
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
 export function App() {
@@ -103,34 +100,30 @@ export function App() {
 
   return (
     <>
-      <PersistQueryClientProvider
-        client={queryClient}
-        persistOptions={persistOptions}
-      >
-        <WagmiProvider config={wagmiConfig}>
+      <WagmiProvider config={wagmiConfig}>
+        <PersistQueryClientProvider
+          client={queryClient}
+          persistOptions={persistOptions}
+        >
           <ThemeProvider theme={currentTheme}>
-            {playground ? (
-              PlaygroundComponents[playground]
-            ) : (
-              <AuthProvider>
-                <Box
-                  id="main"
-                  background="surfacePrimaryElevated"
-                  style={{
-                    maxWidth: !isFullScreen
-                      ? `${POPUP_DIMENSIONS.width}px`
-                      : undefined,
-                  }}
-                >
-                  <Routes />
-                </Box>
-                <IdleTimer />
-                <OnboardingKeepAlive />
-              </AuthProvider>
-            )}
+            <AuthProvider>
+              <Box
+                id="main"
+                background="red"
+                style={{
+                  maxWidth: !isFullScreen
+                    ? `${POPUP_DIMENSIONS.width}px`
+                    : undefined,
+                }}
+              >
+                <Routes />
+              </Box>
+              <IdleTimer />
+              <OnboardingKeepAlive />
+            </AuthProvider>
           </ThemeProvider>
-        </WagmiProvider>
-      </PersistQueryClientProvider>
+        </PersistQueryClientProvider>
+      </WagmiProvider>
       <HWRequestListener />
     </>
   );

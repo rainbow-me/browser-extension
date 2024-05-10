@@ -1,8 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { motion } from 'framer-motion';
 import React, { ReactNode, useCallback, useState } from 'react';
-import { useAccount } from 'wagmi';
 
+import { useCurrentAddressStore } from '~/core/state';
 import { Box, Column, Columns, Symbol, TextOverflow } from '~/design-system';
 import { Lens } from '~/design-system/components/Lens/Lens';
 import { transformScales } from '~/design-system/styles/designTokens';
@@ -35,7 +35,8 @@ export function AccountName({
   tabIndex,
   renderTooltip,
 }: AccountNameProps) {
-  const { address } = useAccount();
+  const { currentAddress: address } = useCurrentAddressStore();
+  console.log('-- account name address', address);
   const { displayName } = useWalletName({ address: address || '0x' });
   const navigate = useRainbowNavigate();
   const [hover, setHover] = useState(false);

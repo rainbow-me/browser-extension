@@ -1,7 +1,7 @@
 import { fetchEnsAddress } from '@wagmi/core';
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { Address } from 'viem';
-import { useAccount, useEnsName } from 'wagmi';
+import { useEnsName } from 'wagmi';
 
 import { useCurrentAddressStore } from '~/core/state';
 import { WalletAction } from '~/core/types/walletActions';
@@ -269,7 +269,7 @@ export function Wallets() {
   const [password, setPassword] = useState<string>('');
   const [isUnlocked, setIsUnlocked] = useState<boolean>(true);
   const [isNewUser, setIsNewUser] = useState<boolean>(true);
-  const { address } = useAccount();
+  const { currentAddress: address } = useCurrentAddressStore();
   const { data: ensName } = useEnsName({ address });
   const setCurrentAddress = useCurrentAddressStore.use.setCurrentAddress();
 

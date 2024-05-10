@@ -2,10 +2,10 @@ import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { useMutation } from '@tanstack/react-query';
 import BigNumber from 'bignumber.js';
 import { Address } from 'viem';
-import { useAccount, useBalance, useEnsName } from 'wagmi';
+import { useBalance, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { useGasStore } from '~/core/state';
+import { useCurrentAddressStore, useGasStore } from '~/core/state';
 import {
   GasSpeed,
   TransactionGasParams,
@@ -208,7 +208,7 @@ export function SpeedUpAndCancelSheet({
     },
   });
 
-  const { address } = useAccount();
+  const { currentAddress: address } = useCurrentAddressStore();
 
   return (
     <Prompt
@@ -384,7 +384,7 @@ export function SpeedUpAndCancelSheet({
 }
 
 function AccountName() {
-  const { address } = useAccount();
+  const { currentAddress: address } = useCurrentAddressStore();
   const { data: ensName } = useEnsName({ address });
   return (
     <Box>

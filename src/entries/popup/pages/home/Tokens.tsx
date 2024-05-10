@@ -1,4 +1,3 @@
-/* eslint-disable no-nested-ternary */
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion } from 'framer-motion';
 import uniqBy from 'lodash/uniqBy';
@@ -119,7 +118,7 @@ export function Tokens() {
 
   const {
     data: assets = [],
-    isInitialLoading,
+    isFetching,
     refetch: refetchUserAssets,
   } = useUserAssets(
     {
@@ -247,7 +246,7 @@ export function Tokens() {
 
   useTokensShortcuts();
 
-  if (isInitialLoading || manuallyRefetchingTokens) {
+  if (isFetching || manuallyRefetchingTokens) {
     return <TokensSkeleton />;
   }
 
@@ -259,9 +258,10 @@ export function Tokens() {
     <Box
       width="full"
       style={{
-        // Prevent bottommost coin icon shadow from clipping
-        overflow: 'visible',
+        overflow: 'auto',
+        height: '320px',
       }}
+      ref={containerRef}
       paddingBottom="8px"
       paddingTop="2px"
       marginTop="-14px"
@@ -282,7 +282,7 @@ export function Tokens() {
       <Box
         width="full"
         style={{
-          height: assetsRowVirtualizer.getTotalSize(),
+          height: `${assetsRowVirtualizer.getTotalSize()}px`,
           position: 'relative',
         }}
       >
@@ -296,12 +296,14 @@ export function Tokens() {
             return (
               <Box
                 key={`${token.uniqueId}-${key}`}
+                layoutId={`list-${index}`}
                 as={motion.div}
                 position="absolute"
                 width="full"
-                initial={{ x: 4 }}
-                animate={{ x: 0 }}
-                style={{ height: size, y: start }}
+                style={{
+                  height: `${size}px`,
+                  y: start,
+                }}
               >
                 {pinned && <TokenMarkedHighlighter />}
                 <TokenRow token={token} testId={`coin-row-item-${index}`} />
@@ -352,6 +354,7 @@ export const AssetRow = memo(function AssetRow({
 
   const nativeBalanceDisplay = useMemo(
     () =>
+      // eslint-disable-next-line no-nested-ternary
       hideAssetBalances ? (
         <Inline alignHorizontal="right">
           <TextOverflow size="14pt" weight="semibold" align="right">
@@ -514,11 +517,10 @@ function TokensEmptyState({ depositAddress }: EmptyStateProps) {
             borderRadius="16px"
             padding="16px"
             style={{
-              boxShadow: `0 0 0 1px ${
-                currentTheme === 'dark'
+              boxShadow: `0 0 0 1px ${currentTheme === 'dark'
                   ? 'rgba(245, 248, 255, 0.025)'
                   : 'rgba(9, 17, 31, 0.03)'
-              } inset`,
+                } inset`,
             }}
           >
             <Stack space="12px">
@@ -574,11 +576,10 @@ function TokensEmptyState({ depositAddress }: EmptyStateProps) {
           borderRadius="16px"
           padding="16px"
           style={{
-            boxShadow: `0 0 0 1px ${
-              currentTheme === 'dark'
+            boxShadow: `0 0 0 1px ${currentTheme === 'dark'
                 ? 'rgba(245, 248, 255, 0.025)'
                 : 'rgba(9, 17, 31, 0.03)'
-            } inset`,
+              } inset`,
           }}
         >
           <Stack space="12px">

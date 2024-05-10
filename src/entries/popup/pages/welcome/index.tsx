@@ -20,6 +20,7 @@ export function Welcome() {
   const setNeedsInitialization =
     useWalletBackupsStore.use.setNeedsInitialization();
 
+  console.log('-- Welcome');
   useEffect(() => {
     setNeedsInitialization(false);
   }, [setNeedsInitialization]);
