@@ -46,18 +46,6 @@ export function App() {
     }
   }, [prevChains, rainbowChains]);
 
-  // const wagmiClient = React.useMemo(
-  //   () =>
-  //     createWagmiClient({
-  //       autoConnect: true,
-  //       connectors: ({ chains }) => [new RainbowConnector({ chains })],
-  //       persist: true,
-  //       rainbowChains,
-  //       useProxy: config.rpc_proxy_enabled,
-  //     }),
-  //   [rainbowChains],
-  // );
-
   React.useEffect(() => {
     if (!isEqual(prevChains, rainbowChains)) {
       backgroundMessenger.send('rainbow_updateWagmiClient', {

@@ -32,7 +32,21 @@ const supportedChains = IS_TESTING
   ? SUPPORTED_CHAINS.concat(chainHardhat, chainHardhatOptimism)
   : SUPPORTED_CHAINS;
 
-const chains = [...supportedChains] as [Chain, ...Chain[]];
+const chains = supportedChains.map((chain) => {
+  const rpcUrl = getOriginalRpcEndpoint(chain)?.http;
+  return {
+    ...chain,
+    rpcUrls: {
+      default: {
+        http: [rpcUrl],
+      },
+      public: {
+        http: [rpcUrl],
+      },
+    },
+  } as Chain;
+}) as [Chain, ...Chain[]];
+
 const transports = chains.reduce(
   (acc: Record<number, Transport>, chain: Chain) => {
     acc[chain.id] = http(getOriginalRpcEndpoint(chain)?.http);

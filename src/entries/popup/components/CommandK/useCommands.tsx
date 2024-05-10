@@ -928,8 +928,8 @@ export const useCommands = (
           isFirefox
             ? triggerAlert({ text: i18n.t('alert.no_hw_ff') })
             : navigate(ROUTES.HW_CHOOSE, {
-                state: { direction: 'upRight', navbarIcon: 'ex' },
-              });
+              state: { direction: 'upRight', navbarIcon: 'ex' },
+            });
         },
       },
 

@@ -29,14 +29,11 @@ const asyncStoragePersister = createAsyncStoragePersister({
 
 export const persistOptions: Omit<PersistQueryClientOptions, 'queryClient'> = {
   persister: asyncStoragePersister,
-  // dehydrateOptions: {
-  //   shouldDehydrateQuery: (query) =>
-  //     Boolean(
-  //       // We want to persist queries that have a `cacheTime` of above zero.
-  //       query.gcTime !== 0 &&
-  //         // We want to persist queries that have `persisterVersion` in their query key.
-  //         (query.queryKey[2] as { persisterVersion?: number })
-  //           ?.persisterVersion,
-  //     ),
-  // },
+  dehydrateOptions: {
+    shouldDehydrateQuery: (query) =>
+      Boolean(
+        // We want to persist queries that have a `cacheTime` of above zero.
+        query.gcTime !== 0,
+      ),
+  },
 };

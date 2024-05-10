@@ -36,7 +36,7 @@
 
 //     this.id = 'rainbow';
 //     this.name = 'rainbow';
-//     this.#provider = new RainbowProvider();
+//     this.#provider = new );
 //   }
 
 //   async connect() {
