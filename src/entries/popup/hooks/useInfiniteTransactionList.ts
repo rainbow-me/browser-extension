@@ -33,7 +33,7 @@ export const useInfiniteTransactionList = ({
   const { currentAddress: address } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
   const pendingTransactions = usePendingTransactionsStore(
-    (s) => s.pendingTransactions[address],
+    (s) => s.pendingTransactions[address] ?? [],
   );
   const [manuallyRefetching, setManuallyRefetching] = useState(false);
 
