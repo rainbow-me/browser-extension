@@ -234,6 +234,7 @@ export function NFTs() {
         flexDirection="column"
         width="full"
         paddingHorizontal="12px"
+        ref={containerRef}
       >
         {displayMode === 'grouped' && (
           <>
@@ -247,7 +248,7 @@ export function NFTs() {
               <Box
                 width="full"
                 style={{
-                  height: groupedGalleryRowVirtualizer.getTotalSize(),
+                  height: `${groupedGalleryRowVirtualizer.getTotalSize()}px`,
                   position: 'relative',
                 }}
               >
@@ -335,7 +336,7 @@ export function NFTs() {
               <Box
                 width="full"
                 style={{
-                  height: collectionGalleryRowVirtualizer.getTotalSize(),
+                  height: `${collectionGalleryRowVirtualizer.getTotalSize()}px`,
                   position: 'relative',
                   marginBottom: isPaginating ? -6 : 0,
                 }}

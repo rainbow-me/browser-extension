@@ -128,12 +128,14 @@ export function Activities() {
           overflow: 'visible',
         }}
         paddingBottom="12px"
+        ref={containerRef}
       >
         <Box
           width="full"
           position="relative"
           style={{
-            height: activityRowVirtualizer.getTotalSize(),
+            height: `${activityRowVirtualizer.getTotalSize()}px`,
+            position: 'relative',
           }}
         >
           {rows.map((virtualItem) => {

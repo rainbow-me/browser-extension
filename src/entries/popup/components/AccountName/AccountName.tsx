@@ -36,7 +36,6 @@ export function AccountName({
   renderTooltip,
 }: AccountNameProps) {
   const { currentAddress: address } = useCurrentAddressStore();
-  console.log('-- account name address', address);
   const { displayName } = useWalletName({ address: address || '0x' });
   const navigate = useRainbowNavigate();
   const [hover, setHover] = useState(false);

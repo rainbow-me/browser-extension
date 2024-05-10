@@ -259,7 +259,6 @@ export function Tokens() {
       width="full"
       style={{
         overflow: 'auto',
-        height: '320px',
       }}
       ref={containerRef}
       paddingBottom="8px"
