@@ -231,6 +231,7 @@ export function useUserAssets<TSelectResult = UserAssetsResult>(
     ...config,
     refetchInterval: USER_ASSETS_REFETCH_INTERVAL,
     staleTime: process.env.IS_TESTING === 'true' ? 0 : 1000,
+    placeholderData: (previousData) => previousData,
   });
 }
 

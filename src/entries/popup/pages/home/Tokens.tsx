@@ -119,6 +119,7 @@ export function Tokens() {
   const {
     data: assets = [],
     isFetching,
+    isPending,
     refetch: refetchUserAssets,
   } = useUserAssets(
     {
@@ -246,7 +247,7 @@ export function Tokens() {
 
   useTokensShortcuts();
 
-  if (isFetching || manuallyRefetchingTokens) {
+  if ((isFetching && isPending) || manuallyRefetchingTokens) {
     return <TokensSkeleton />;
   }
 
