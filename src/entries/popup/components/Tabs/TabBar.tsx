@@ -1,9 +1,10 @@
 import chroma from 'chroma-js';
 import { motion } from 'framer-motion';
-import { ReactElement, useMemo } from 'react';
+import { ReactElement, memo, useMemo } from 'react';
 
 import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { useTabNavigation } from '~/core/state/currentSettings/tabNavigation';
 import { Box, Inline } from '~/design-system';
 import { globalColors } from '~/design-system/styles/designTokens';
 
@@ -69,15 +70,10 @@ const tabConfig: TabConfigType[] = [
   },
 ];
 
-export function TabBar({
-  activeTab,
-  height = 44,
-  onSelectTab,
-}: {
-  activeTab: Tab;
-  height?: number;
-  onSelectTab: (tab: Tab) => void;
-}) {
+export const TabBar = memo(function TabBar() {
+  const height = 44;
+  const { selectedTab, setSelectedTab } = useTabNavigation();
+
   const { currentAddress } = useCurrentAddressStore();
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
   const { currentTheme } = useCurrentThemeStore();
@@ -119,7 +115,7 @@ export function TabBar({
       }}
       transition={timingConfig(0.2)}
     >
-      <TabBackground selectedTabIndex={TABS.indexOf(activeTab)} />
+      <TabBackground selectedTabIndex={TABS.indexOf(selectedTab)} />
       <Inline
         alignHorizontal="center"
         alignVertical="center"
@@ -137,15 +133,15 @@ export function TabBar({
               index={index}
               key={index}
               name={tab.name}
-              onSelectTab={onSelectTab}
-              selectedTabIndex={TABS.indexOf(activeTab)}
+              onSelectTab={setSelectedTab}
+              selectedTabIndex={TABS.indexOf(selectedTab)}
             />
           );
         })}
       </Inline>
     </Box>
   );
-}
+});
 
 function Tab({
   Icon,
