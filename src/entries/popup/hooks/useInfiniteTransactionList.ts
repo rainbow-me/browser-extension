@@ -15,6 +15,7 @@ import {
 } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
+import { RainbowTransaction } from '~/core/types/transactions';
 import { useBackendSupportedChains } from '~/core/utils/chains';
 
 import useComponentWillUnmount from './useComponentWillUnmount';
@@ -27,19 +28,22 @@ interface UseInfiniteTransactionListParams {
   getScrollElement: () => HTMLDivElement | null;
 }
 
+const stableEmptyPendingTransactionsArray: RainbowTransaction[] = [];
+
 export const useInfiniteTransactionList = ({
   getScrollElement,
 }: UseInfiniteTransactionListParams) => {
   const { currentAddress: address } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const { pendingTransactions: storePendingTransactions } =
-    usePendingTransactionsStore();
-  const [manuallyRefetching, setManuallyRefetching] = useState(false);
-  const pendingTransactions = useMemo(
-    () => storePendingTransactions[address] || [],
-    [address, storePendingTransactions],
+  const pendingTransactions = usePendingTransactionsStore(
+    (s) =>
+      s.pendingTransactions[address] || stableEmptyPendingTransactionsArray,
   );
-  const { customNetworkTransactions } = useCustomNetworkTransactionsStore();
+  const [manuallyRefetching, setManuallyRefetching] = useState(false);
+
+  const customNetworkTransactions = useCustomNetworkTransactionsStore(
+    (s) => s.customNetworkTransactions,
+  );
 
   const currentAddressCustomNetworkTransactions = useMemo(
     () => Object.values(customNetworkTransactions[address] || {}).flat(),
@@ -106,11 +110,16 @@ export const useInfiniteTransactionList = ({
     getScrollElement,
     estimateSize: (i) =>
       typeof formattedTransactions[i] === 'string' ? 34 : 52,
-    overscan: 20,
-    getItemKey: (i) => {
-      const txOrLabel = formattedTransactions[i];
-      return typeof txOrLabel === 'string' ? txOrLabel : txOrLabel.hash;
-    },
+    overscan: 30,
+    getItemKey: useCallback(
+      (i: number) => {
+        const txOrLabel = formattedTransactions[i];
+        return typeof txOrLabel === 'string'
+          ? txOrLabel
+          : txOrLabel.hash + txOrLabel.chainId;
+      },
+      [formattedTransactions],
+    ),
   });
   const rows = infiniteRowVirtualizer.getVirtualItems();
 

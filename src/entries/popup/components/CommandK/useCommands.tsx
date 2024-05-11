@@ -5,6 +5,7 @@ import { Address, useEnsName } from 'wagmi';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore, useFlashbotsEnabledStore } from '~/core/state';
+import { useContactsStore } from '~/core/state/contacts';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
@@ -15,6 +16,7 @@ import { useSavedEnsNames } from '~/core/state/savedEnsNames';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { getBlockExplorerHostForChain } from '~/core/utils/chains';
 import {
@@ -32,10 +34,12 @@ import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
 
 import { useBrowser } from '../../hooks/useBrowser';
+import { useCurrentWalletTypeAndVendor } from '../../hooks/useCurrentWalletType';
 import { useIsFullScreen } from '../../hooks/useIsFullScreen';
 import { triggerToast } from '../Toast/Toast';
 
 import {
+  ContactSearchItem,
   ENSOrAddressSearchItem,
   NFTSearchItem,
   SearchItem,
@@ -47,6 +51,7 @@ import {
 import { CommandKPage, PAGES } from './pageConfig';
 import { actionLabels } from './references';
 import { CommandKPageState } from './useCommandKNavigation';
+import { useSearchableContacts } from './useSearchableContacts';
 import { useSearchableENSorAddress } from './useSearchableENSOrAddress';
 import { useSearchableNFTs } from './useSearchableNFTs';
 import { useSearchableTokens } from './useSearchableTokens';
@@ -108,6 +113,16 @@ export const staticCommandInfo: CommandInfo = {
     symbol: 'person.crop.rectangle.stack.fill',
     symbolSize: 16,
     toPage: PAGES.MY_WALLETS,
+    type: SearchItemType.Shortcut,
+  },
+  myContacts: {
+    actionLabel: actionLabels.view,
+    name: getCommandName('my_contacts'),
+    page: PAGES.HOME,
+    searchTags: getSearchTags('my_contacts'),
+    symbol: 'person.crop.circle.fill',
+    symbolSize: 16,
+    toPage: PAGES.MY_CONTACTS,
     type: SearchItemType.Shortcut,
   },
   myTokens: {
@@ -445,6 +460,15 @@ export const staticCommandInfo: CommandInfo = {
     symbolSize: 14.5,
     type: SearchItemType.Shortcut,
   },
+  addContact: {
+    actionLabel: actionLabels.addContact,
+    hideFromMainSearch: true,
+    name: getCommandName('add_contact'),
+    page: PAGES.WALLET_DETAIL,
+    symbol: 'plus.app.fill',
+    symbolSize: 14.5,
+    type: SearchItemType.Shortcut,
+  },
   viewOnENS: {
     actionLabel: actionLabels.openInNewTab,
     hideFromMainSearch: true,
@@ -452,6 +476,62 @@ export const staticCommandInfo: CommandInfo = {
     page: PAGES.WALLET_DETAIL,
     symbol: 'globe',
     symbolSize: 15.5,
+    type: SearchItemType.Shortcut,
+  },
+
+  // PAGE: CONTACT_DETAIL
+  contactWallet: {
+    actionLabel: actionLabels.switchToWallet,
+    hideFromMainSearch: true,
+    name: getCommandName('add_as_watched_wallet'),
+    page: PAGES.CONTACT_DETAIL,
+    symbol: 'person.crop.rectangle.stack.fill',
+    symbolSize: 16,
+    type: SearchItemType.Shortcut,
+  },
+  sendToContact: {
+    actionLabel: actionLabels.openInNewTab,
+    hideFromMainSearch: true,
+    name: getCommandName('send_contact'),
+    page: PAGES.CONTACT_DETAIL,
+    symbol: 'paperplane.fill',
+    symbolSize: 14.5,
+    type: SearchItemType.Shortcut,
+  },
+  removeContact: {
+    actionLabel: actionLabels.openInNewTab,
+    hideFromMainSearch: true,
+    name: getCommandName('remove_contact'),
+    page: PAGES.CONTACT_DETAIL,
+    symbol: 'trash.fill',
+    symbolSize: 14.5,
+    type: SearchItemType.Shortcut,
+  },
+  copyContactAddress: {
+    name: getCommandName('copy_address'),
+    page: PAGES.CONTACT_DETAIL,
+    shortcut: shortcuts.home.COPY_ADDRESS,
+    shouldRemainOnActiveRoute: true,
+    symbol: 'square.on.square',
+    symbolSize: 15,
+    type: SearchItemType.Shortcut,
+  },
+  viewContactProfile: {
+    actionLabel: actionLabels.openInNewTab,
+    hideFromMainSearch: true,
+    name: getCommandName('view_profile'),
+    page: PAGES.CONTACT_DETAIL,
+    symbol: 'sparkle',
+    symbolSize: 15,
+    type: SearchItemType.Shortcut,
+  },
+  viewContactOnEtherscan: {
+    actionLabel: actionLabels.openInNewTab,
+    hideFromMainSearch: true,
+    name: getCommandName('view_wallet_on_etherscan'),
+    page: PAGES.CONTACT_DETAIL,
+    symbol: 'magnifyingglass',
+    symbolSize: 14.5,
     type: SearchItemType.Shortcut,
   },
 };
@@ -465,6 +545,7 @@ const compileCommandList = (
   nfts: NFTSearchItem[],
   walletSearchResult: ENSOrAddressSearchItem[],
   wallets: WalletSearchItem[],
+  contacts: ContactSearchItem[],
 ): SearchItem[] => {
   const shortcuts = Object.keys(staticInfo)
     .filter((key) => {
@@ -476,14 +557,23 @@ const compileCommandList = (
       }
       return true;
     })
-    .map((key) => ({
-      id: key,
-      ...staticInfo[key],
-      ...overrides[key],
-      onClick: overrides[key]?.action,
-    }));
+    .map((key) => {
+      return {
+        id: key,
+        ...staticInfo[key],
+        ...overrides[key],
+        onClick: overrides[key]?.action,
+      };
+    });
 
-  return [...shortcuts, ...tokens, ...nfts, ...walletSearchResult, ...wallets];
+  return [
+    ...shortcuts,
+    ...tokens,
+    ...nfts,
+    ...walletSearchResult,
+    ...wallets,
+    ...contacts,
+  ];
 };
 
 const isENSOrAddressCommand = (
@@ -496,6 +586,9 @@ const isTokenCommand = (
 const isWalletCommand = (
   command: SearchItem | null,
 ): command is WalletSearchItem => command?.type === SearchItemType.Wallet;
+const isContactCommand = (
+  command: SearchItem | null,
+): command is ContactSearchItem => command?.type === SearchItemType.Contact;
 
 const isETHAddress = (address: Address | 'eth') =>
   address === 'eth' || address === '0x0000000000000000000000000000000000000000';
@@ -525,6 +618,9 @@ export const useCommands = (
   const { searchableTokens } = useSearchableTokens();
   const { searchableNFTs } = useSearchableNFTs();
   const { searchableWallets } = useSearchableWallets(currentPage);
+  const { searchableContacts } = useSearchableContacts({
+    showLabel: !!searchQuery && currentPage === PAGES.HOME,
+  });
   const { setSelectedToken } = useSelectedTokenStore();
   const { sortedAccounts } = useAccounts();
 
@@ -536,6 +632,21 @@ export const useCommands = (
   const { hideSmallBalances, setHideSmallBalances } =
     useHideSmallBalancesStore();
 
+  const { flashbotsEnabled, setFlashbotsEnabled } = useFlashbotsEnabledStore();
+
+  const { contacts, deleteContact, saveContact } = useContactsStore();
+
+  const { allWallets } = useWallets();
+
+  const { type, vendor } = useCurrentWalletTypeAndVendor();
+
+  const isTrezor =
+    type === KeychainType.HardwareWalletKeychain && vendor === 'Trezor';
+
+  const allowSend = !isWatchingWallet || featureFlags.full_watching_wallets;
+
+  const shouldNavigateToSend = !(isTrezor && !isFullScreen) && allowSend;
+
   const handleCopy = React.useCallback((address: Address) => {
     navigator.clipboard.writeText(address as string);
     triggerToast({
@@ -543,6 +654,11 @@ export const useCommands = (
       description: truncateAddress(address),
     });
   }, []);
+
+  const isContactAdded = React.useCallback(
+    (address: Address) => !!contacts[address || ''],
+    [contacts],
+  );
 
   const handleToggleDeveloperTools = React.useCallback(() => {
     const status = developerToolsEnabled ? 'disabled' : 'enabled';
@@ -583,7 +699,7 @@ export const useCommands = (
   }, [hideSmallBalances, setHideSmallBalances]);
 
   const openProfile = React.useCallback(
-    (command?: ENSOrAddressSearchItem) =>
+    (command?: ENSOrAddressSearchItem | WalletSearchItem | ContactSearchItem) =>
       goToNewTab({
         url: getProfileUrl(
           (command?.ensName ?? command?.address) || (ensName ?? address),
@@ -630,6 +746,17 @@ export const useCommands = (
     [save, setCurrentAddress],
   );
 
+  const handleWatchContact = React.useCallback(
+    async (command: ENSOrAddressSearchItem | ContactSearchItem) => {
+      if (!allWallets.some((wallet) => wallet.address === command.address)) {
+        await wallet.importWithSecret(command.address);
+      }
+      if (command.ensName) save(command.ensName, command.address);
+      setCurrentAddress(command.address);
+    },
+    [allWallets, save, setCurrentAddress],
+  );
+
   const openENSApp = React.useCallback((ensName: string) => {
     goToNewTab({ url: `https://app.ens.domains/${ensName}` });
   }, []);
@@ -639,7 +766,44 @@ export const useCommands = (
     explorer && goToNewTab({ url: getExplorerUrl(explorer, address) });
   }, []);
 
-  const { flashbotsEnabled, setFlashbotsEnabled } = useFlashbotsEnabledStore();
+  const handleSendFallback = React.useCallback(
+    (address: Address) => {
+      if (!allowSend) {
+        triggerAlert({ text: i18n.t('alert.wallet_watching_mode') });
+        return;
+      }
+
+      // Trezor needs to be opened in a new tab because of their own popup
+      if (isTrezor && !isFullScreen) {
+        goToNewTab({
+          url: POPUP_URL + `#${ROUTES.SEND}?hideBack=true&to=${address}`,
+        });
+      }
+    },
+    [allowSend, isTrezor, isFullScreen],
+  );
+
+  const handleSendToContact = React.useCallback(
+    (address: Address) => {
+      if (shouldNavigateToSend) {
+        navigate(`${ROUTES.SEND}?to=${address}`);
+      } else {
+        handleSendFallback(address);
+      }
+    },
+    [shouldNavigateToSend, handleSendFallback, navigate],
+  );
+
+  const handleAddContact = React.useCallback(
+    (address: Address, walletName?: string, ensName?: string | null) => {
+      saveContact({ contact: { address, name: walletName || ensName || '' } });
+      triggerToast({
+        title: i18n.t(`command_k.contact_toast.title_added`),
+        description: truncateAddress(address),
+      });
+    },
+    [saveContact],
+  );
 
   const commandOverrides: CommandOverride = React.useMemo(
     () => ({
@@ -865,6 +1029,18 @@ export const useCommands = (
           isWalletCommand(previousPageState.selectedCommand) &&
           viewWalletOnEtherscan(previousPageState.selectedCommand.address),
       },
+      addContact: {
+        action: () =>
+          isWalletCommand(previousPageState.selectedCommand) &&
+          handleAddContact(
+            previousPageState.selectedCommand.address,
+            previousPageState.selectedCommand.walletName,
+            previousPageState.selectedCommand.ensName,
+          ),
+        hidden:
+          isWalletCommand(previousPageState.selectedCommand) &&
+          isContactAdded(previousPageState.selectedCommand.address),
+      },
       viewOnENS: {
         action: () =>
           isWalletCommand(previousPageState.selectedCommand) &&
@@ -874,35 +1050,76 @@ export const useCommands = (
           isWalletCommand(previousPageState.selectedCommand) &&
           !previousPageState.selectedCommand?.ensName,
       },
+
+      // PAGE: CONTACT_DETAIL
+      contactWallet: {
+        action: () =>
+          isContactCommand(previousPageState.selectedCommand) &&
+          handleWatchContact(previousPageState.selectedCommand),
+        address: isContactCommand(previousPageState.selectedCommand)
+          ? previousPageState.selectedCommand?.address
+          : undefined,
+        symbol: currentTheme === 'dark' ? 'eyes.inverse' : 'eyes',
+      },
+      sendToContact: {
+        action: () =>
+          isContactCommand(previousPageState.selectedCommand) &&
+          handleSendToContact(previousPageState.selectedCommand.address),
+      },
+      removeContact: {
+        action: () =>
+          isContactCommand(previousPageState.selectedCommand) &&
+          deleteContact({ address: previousPageState.selectedCommand.address }),
+      },
+      copyContactAddress: {
+        action: () =>
+          isContactCommand(previousPageState.selectedCommand) &&
+          handleCopy(previousPageState.selectedCommand.address),
+      },
+      viewContactProfile: {
+        action: () =>
+          isContactCommand(previousPageState.selectedCommand) &&
+          openProfile(previousPageState.selectedCommand),
+      },
+      viewContactOnEtherscan: {
+        action: () =>
+          isContactCommand(previousPageState.selectedCommand) &&
+          viewWalletOnEtherscan(previousPageState.selectedCommand.address),
+      },
     }),
     [
-      address,
-      currentTheme,
-      developerToolsEnabled,
+      previousPageState.selectedCommand,
+      isWatchingWallet,
       ensName,
-      handleCopy,
-      handleSelectAddress,
-      handleToggleHiddenBalances,
-      handleToggleHiddenSmallBalances,
-      handleToggleDeveloperTools,
-      handleToggleTestnetMode,
-      handleWatchWallet,
+      address,
+      developerToolsEnabled,
+      testnetMode,
       hideAssetBalances,
       hideSmallBalances,
-      isFirefox,
-      isWatchingWallet,
-      navigate,
-      navigateToSwaps,
-      openENSApp,
-      openProfile,
-      previousPageState.selectedCommand,
-      selectTokenAndNavigate,
-      sortedAccounts,
-      testnetMode,
-      viewTokenOnExplorer,
       flashbotsEnabled,
+      currentTheme,
+      sortedAccounts,
+      isFirefox,
+      navigateToSwaps,
+      openProfile,
+      handleToggleDeveloperTools,
+      handleToggleTestnetMode,
+      handleToggleHiddenBalances,
+      handleToggleHiddenSmallBalances,
+      isContactAdded,
+      handleCopy,
+      navigate,
       setFlashbotsEnabled,
+      selectTokenAndNavigate,
+      viewTokenOnExplorer,
+      handleWatchWallet,
       viewWalletOnEtherscan,
+      openENSApp,
+      handleSelectAddress,
+      handleAddContact,
+      handleSendToContact,
+      deleteContact,
+      handleWatchContact,
     ],
   );
 
@@ -917,6 +1134,7 @@ export const useCommands = (
         searchableNFTs,
         searchableENSOrAddress,
         searchableWallets,
+        searchableContacts,
       ),
     [
       isFullScreen,
@@ -927,6 +1145,7 @@ export const useCommands = (
       searchableNFTs,
       searchableENSOrAddress,
       searchableWallets,
+      searchableContacts,
     ],
   );
 

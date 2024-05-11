@@ -7,7 +7,7 @@ import { Box, Button, Stack, Text } from '~/design-system';
 
 import { AccountName } from '../../components/AccountName/AccountName';
 import { triggerToast } from '../../components/Toast/Toast';
-import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
+import { SwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
 
 import { QRCode } from './qrcode';
 
@@ -22,8 +22,6 @@ export const QRCodePage = () => {
     });
   }, [address]);
 
-  useSwitchWalletShortcuts();
-
   return (
     <Box
       display="flex"
@@ -31,6 +29,7 @@ export const QRCodePage = () => {
       alignItems="center"
       justifyContent="center"
     >
+      <SwitchWalletShortcuts />
       <Stack space="8px">
         <Box paddingHorizontal="20px" paddingTop="20px">
           <QRCode size={280} value={address as string} />
