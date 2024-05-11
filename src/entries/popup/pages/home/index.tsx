@@ -1,28 +1,21 @@
+import { logger } from '@sentry/utils';
 import { motion, useMotionValueEvent } from 'framer-motion';
-import {
-  PropsWithChildren,
-  memo,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
+import { memo, useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { identifyWalletTypes } from '~/analytics/identify/walletTypes';
-import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore, usePendingRequestStore } from '~/core/state';
 import { useTabNavigation } from '~/core/state/currentSettings/tabNavigation';
 import { useErrorStore } from '~/core/state/error';
 import { goToNewTab } from '~/core/utils/tabs';
-import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
+import { AccentColorProvider, Box, Separator } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { globalColors } from '~/design-system/styles/designTokens';
-import { RainbowError, logger } from '~/logger';
+import { RainbowError } from '~/logger';
 
 import { AccountName } from '../../components/AccountName/AccountName';
 import { AppConnectionWalletSwitcher } from '../../components/AppConnection/AppConnectionWalletSwitcher';
@@ -35,15 +28,15 @@ import { WalletContextMenu } from '../../components/WalletContextMenu';
 import { removeImportWalletSecrets } from '../../handlers/importWalletSecrets';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useCurrentHomeSheet } from '../../hooks/useCurrentHomeSheet';
-import { useHomeShortcuts } from '../../hooks/useHomeShortcuts';
+import { HomeShortcuts } from '../../hooks/useHomeShortcuts';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
-import { usePendingTransactionWatcher } from '../../hooks/usePendingTransactionWatcher';
+import { PendingTransactionWatcher } from '../../hooks/usePendingTransactionWatcher';
 import usePrevious from '../../hooks/usePrevious';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
-import useRestoreNavigation from '../../hooks/useRestoreNavigation';
+import { RestoreNavigation } from '../../hooks/useRestoreNavigation';
 import { useScroll } from '../../hooks/useScroll';
-import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
+import { SwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
 import { useVisibleTokenCount } from '../../hooks/useVisibleTokenCount';
 import { useWallets } from '../../hooks/useWallets';
 import { StickyHeader } from '../../layouts/StickyHeader';
@@ -59,30 +52,25 @@ import { Points } from './Points/Points';
 import { TabHeader } from './TabHeader';
 import { Tokens } from './Tokens';
 
-type TabProps = {
-  activeTab: Tab;
-  containerRef: React.RefObject<HTMLDivElement>;
-  onSelectTab: (tab: Tab) => void;
-  prevScrollPosition: React.MutableRefObject<number | undefined>;
-};
-
 const TOP_NAV_HEIGHT = 65;
 
-const isPlaceholderTab = (tab: Tab) => {
-  if (tab === 'points' && !config.points_enabled) {
-    return true;
-  }
-  return false;
-};
-
-const Tabs = memo(function Tabs({
-  activeTab,
-  containerRef,
-  onSelectTab,
-  prevScrollPosition,
-}: TabProps) {
+const Tabs = memo(function Tabs() {
   const { trackShortcut } = useKeyboardAnalytics();
   const { visibleTokenCount } = useVisibleTokenCount();
+
+  const { selectedTab: activeTab, setSelectedTab } = useTabNavigation();
+
+  const containerRef = useContainerRef();
+  const prevScrollPosition = useRef<number | undefined>(undefined);
+
+  const onSelectTab = (tab: Tab) => {
+    prevScrollPosition.current = containerRef.current?.scrollTop;
+    if (activeTab === tab && containerRef.current?.scrollTop !== 0) {
+      containerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    setSelectedTab(tab);
+  };
 
   const COLLAPSED_HEADER_TOP_OFFSET = 157;
 
@@ -100,8 +88,7 @@ const Tabs = memo(function Tabs({
           ? COLLAPSED_HEADER_TOP_OFFSET + 4 // don't know why, but +4 solves a shift :)
           : 0,
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab]);
+  }, [activeTab, containerRef, prevScrollPosition, visibleTokenCount]);
 
   useKeyboardShortcut({
     handler: (e) => {
@@ -134,13 +121,6 @@ const Tabs = memo(function Tabs({
     },
   });
 
-  const getDisableBottomPadding = () => {
-    if (activeTab === 'nfts') {
-      return false;
-    }
-    return isPlaceholderTab(activeTab);
-  };
-
   const { isWatchingWallet } = useWallets();
   if (activeTab === 'points' && isWatchingWallet) {
     onSelectTab('tokens');
@@ -149,12 +129,18 @@ const Tabs = memo(function Tabs({
   return (
     <>
       <TabBar activeTab={activeTab} setActiveTab={onSelectTab} />
-      <Content disableBottomPadding={getDisableBottomPadding()}>
+      <Box
+        background="surfacePrimaryElevated"
+        style={{ flex: 1, position: 'relative', contentVisibility: 'visible' }}
+        height="full"
+        paddingTop="20px"
+        paddingBottom={activeTab === 'nfts' ? '20px' : '64px'}
+      >
         {activeTab === 'activity' && <Activities />}
         {activeTab === 'tokens' && <Tokens />}
         {activeTab === 'nfts' && <NFTs />}
         {activeTab === 'points' && <Points />}
-      </Content>
+      </Box>
     </>
   );
 });
@@ -163,38 +149,20 @@ export const Home = memo(function Home() {
   const { currentAddress } = useCurrentAddressStore();
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
   const { currentHomeSheet, isDisplayingSheet } = useCurrentHomeSheet();
-  const { error, setError } = useErrorStore();
   const navigate = useRainbowNavigate();
   const { pendingRequests } = usePendingRequestStore();
   const prevPendingRequest = usePrevious(pendingRequests?.[0]);
-  const { selectedTab, setSelectedTab } = useTabNavigation();
 
-  const [activeTab, setActiveTab] = useState<Tab>(() => {
-    if (isPlaceholderTab(selectedTab)) {
-      const pendingTabSwitch = selectedTab;
-      setSelectedTab('tokens');
-      return pendingTabSwitch;
-    } else return selectedTab;
-  });
-
-  const containerRef = useContainerRef();
-  const prevScrollPosition = useRef<number | undefined>(undefined);
-
-  const onSelectTab = (tab: Tab) => {
-    prevScrollPosition.current = containerRef.current?.scrollTop;
-    if (activeTab === tab && containerRef.current?.scrollTop !== 0) {
-      containerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
+  useEffect(() => {
+    if (
+      pendingRequests?.[0] &&
+      pendingRequests?.[0].id !== prevPendingRequest?.id
+    ) {
+      navigate(ROUTES.APPROVE_APP_REQUEST);
     }
-    setActiveTab(tab);
-    if (isPlaceholderTab(tab)) {
-      // Don’t persist placeholder tabs (NFTs, Points)
-      setSelectedTab('tokens');
-    } else {
-      setSelectedTab(tab);
-    }
-  };
+  }, [navigate, pendingRequests, prevPendingRequest?.id]);
 
+  const { error, setError } = useErrorStore();
   useEffect(() => {
     if (error) {
       triggerAlert({
@@ -214,24 +182,10 @@ export const Home = memo(function Home() {
   }, [error, setError]);
 
   useEffect(() => {
-    if (
-      pendingRequests?.[0] &&
-      pendingRequests?.[0].id !== prevPendingRequest?.id
-    ) {
-      navigate(ROUTES.APPROVE_APP_REQUEST);
-    }
-  }, [navigate, pendingRequests, prevPendingRequest?.id]);
-
-  useEffect(() => {
     analytics.track(event.walletViewed);
     identifyWalletTypes();
     removeImportWalletSecrets();
   }, []);
-
-  usePendingTransactionWatcher({ address: currentAddress });
-  useHomeShortcuts();
-  useRestoreNavigation();
-  useSwitchWalletShortcuts();
 
   return (
     <AccentColorProvider color={avatar?.color || globalColors.blue50}>
@@ -252,18 +206,19 @@ export const Home = memo(function Home() {
           >
             <TopNav />
             <Header />
-            <Tabs
-              activeTab={activeTab}
-              containerRef={containerRef}
-              onSelectTab={onSelectTab}
-              prevScrollPosition={prevScrollPosition}
-            />
+            <Tabs />
             <AppConnectionWalletSwitcher />
           </motion.div>
-          <NewTabBar activeTab={activeTab} onSelectTab={onSelectTab} />
+          <NewTabBar />
           <BackupReminder />
           {currentHomeSheet}
           <RevokeApproval />
+
+          <PendingTransactionWatcher />
+
+          <HomeShortcuts />
+          <RestoreNavigation />
+          <SwitchWalletShortcuts />
         </>
       )}
     </AccentColorProvider>
@@ -356,24 +311,5 @@ function TabBar({
         <Separator color="separatorTertiary" strokeWeight="1px" />
       </Box>
     </StickyHeader>
-  );
-}
-
-function Content({
-  children,
-  disableBottomPadding,
-}: PropsWithChildren<{ disableBottomPadding?: boolean }>) {
-  return (
-    <Box
-      background="surfacePrimaryElevated"
-      style={{ flex: 1, position: 'relative', contentVisibility: 'visible' }}
-    >
-      <Box
-        height="full"
-        paddingBottom={disableBottomPadding ? undefined : '64px'}
-      >
-        <Inset top="20px">{children}</Inset>
-      </Box>
-    </Box>
   );
 }

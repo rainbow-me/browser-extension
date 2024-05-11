@@ -37,7 +37,6 @@ declare global {
       ETH_HOLESKY_RPC: string;
       OPTIMISM_SEPOLIA_RPC: string;
       BSC_TESTNET_RPC: string;
-      POLYGON_MUMBAI_RPC: string;
       POLYGON_AMOY_RPC: string;
       ARBITRUM_SEPOLIA_RPC: string;
       BASE_SEPOLIA_RPC: string;

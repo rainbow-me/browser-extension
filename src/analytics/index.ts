@@ -55,6 +55,9 @@ export class Analytics {
       this.client = new RudderAnalytics(
         process.env.RUDDERSTACK_WRITE_KEY,
         `${process.env.RUDDERSTACK_DATA_PLANE}/v1/batch`,
+        {
+          flushAt: 1,
+        },
       );
       logger.debug(`RudderStack initialized`);
     } catch (e) {

@@ -106,10 +106,14 @@ const WalletRow = ({
   section: 'contacts' | 'my_wallets' | 'watching';
   testId?: string;
 }) => {
-  const { displayName, contactName, isNameDefined } = useWalletInfo({
-    address: wallet,
-  });
-  const name = section === 'contacts' ? contactName : displayName;
+  const { displayName, contactAddress, contactName, isNameDefined } =
+    useWalletInfo({
+      address: wallet,
+    });
+  const name =
+    section === 'contacts'
+      ? contactName || truncateAddress(contactAddress)
+      : displayName;
 
   return (
     <Box
@@ -229,6 +233,7 @@ interface ToAddressProps {
   toAddressOrName: string;
   toEnsName?: string;
   toAddress?: Address;
+  queryToAddress: string | null;
   handleToAddressChange: InputHTMLAttributes<HTMLInputElement>['onChange'];
   clearToAddress: () => void;
   setToAddressOrName: (adrressOrName: string) => void;
@@ -242,6 +247,7 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
       toAddressOrName,
       toEnsName,
       toAddress,
+      queryToAddress,
       handleToAddressChange,
       clearToAddress,
       setToAddressOrName,
@@ -320,7 +326,7 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
     const { sendAddress: savedSendAddress } = usePopupInstanceStore();
 
     useEffect(() => {
-      if (!toAddressOrName && !savedSendAddress) {
+      if (!toAddressOrName && !savedSendAddress && !queryToAddress) {
         setTimeout(() => {
           openDropdown();
         }, 200);

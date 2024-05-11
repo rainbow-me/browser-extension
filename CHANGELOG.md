@@ -21,6 +21,43 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.4.84](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.84)
+
+### Fixed
+
+- Fixed missing gas token names on the Transaction Previews for Degen Chain and additional L2 and L3 networks
+
+### Removed
+
+- Removed deprecated Polygon Mumbai network #1477
+
+### Internal
+
+- Temporarily altered Rudderstack flush behavior to mitigate event drops #1533
+
+## [v1.4.81](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.81)
+
+### Changed
+
+- More reliable and accurate slippage threshold estimates are now available for Swaps #1502
+- You can now navigate the Points dashboard and Weekly Drops with your Keyboard #1522
+
+### Fixed
+
+- Resolved issues for users that experienced a missing RPC and failed transactions on Degen Chain L3 #1518
+- Fixed an issue where Speed up and Cancel transaction would not appear in the Activity list #1413
+- Improved Ledger connection reliability to reduce signing timeouts #1494
+- Resolved a UI display issue when Signing transactions for Hardware Wallets #1524
+- Fixed text overflows for long wallet names on dApp Connection prompts and Transaction Previews #1525 #1507
+- Improved performance when launching Activity Details for a transaction #1519
+- Fixed shortcuts handling on the Backup Reminders and added `esc` dismissal #1454
+
+### Internal
+
+- Translations for new Settings flows, Transactions warnings, and more #1516
+- Replaced `migrate` util with `persistOptions` for better state versioning #1523
+- Improved Firefox release workflow #1515
+
 ## [v1.4.73](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.73)
 
 ### Changed
