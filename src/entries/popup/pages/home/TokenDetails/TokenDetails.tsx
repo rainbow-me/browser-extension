@@ -473,6 +473,13 @@ export function TokenDetails() {
   const navigate = useRainbowNavigate();
   const token = userAsset || customAsset;
 
+  useEffect(() => {
+    const app = document.getElementById('app');
+    setTimeout(() => {
+      app?.focus();
+    }, 150);
+  }, []);
+
   const { data: approvals } = useApprovals(
     {
       address: currentAddress,
@@ -576,6 +583,7 @@ export function TokenDetails() {
                   state: { skipTransitionOnRoute: ROUTES.HOME },
                 })
               }
+              withinModal
             />
           }
           rightComponent={
