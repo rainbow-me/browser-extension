@@ -47,7 +47,7 @@ export function ImportOrCreateWallet() {
     wipeIncompleteWallet();
   }, []);
 
-  const { setCurrentAddress } = useCurrentAddressStore();
+  const setCurrentAddress = useCurrentAddressStore.use.setCurrentAddress();
 
   const handleImportWalletClick = React.useCallback(async () => {
     const permissionsOk = await requestPermissionsIfNeeded();

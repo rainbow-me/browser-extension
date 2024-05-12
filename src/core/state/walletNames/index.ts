@@ -2,6 +2,7 @@ import { Address } from 'wagmi';
 import create from 'zustand';
 
 import { createStore } from '../internal/createStore';
+import { withSelectors } from '../internal/withSelectors';
 
 export interface WalletNamesStore {
   walletNames: { [address: Address]: string };
@@ -49,4 +50,4 @@ export const walletNamesStore = createStore<WalletNamesStore>(
   },
 );
 
-export const useWalletNamesStore = create(walletNamesStore);
+export const useWalletNamesStore = withSelectors(create(walletNamesStore));

@@ -40,10 +40,10 @@ interface TokenContextMenuProps {
 export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
   const { isWatchingWallet } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
-  const setSelectedToken = useSelectedTokenStore((s) => s.setSelectedToken);
+  const setSelectedToken = useSelectedTokenStore.use.setSelectedToken();
   const { pinnedAssets, removedPinnedAsset, addPinnedAsset } =
     usePinnedAssetStore();
-  const { addHiddenAsset } = useHiddenAssetStore();
+  const addHiddenAsset = useHiddenAssetStore.use.addHiddenAsset();
   const pinned = pinnedAssets.some(
     ({ uniqueId }) => uniqueId === token.uniqueId,
   );

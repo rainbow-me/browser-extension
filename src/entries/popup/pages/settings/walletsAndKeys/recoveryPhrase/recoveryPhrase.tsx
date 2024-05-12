@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
@@ -14,7 +14,7 @@ import { ROUTES } from '~/entries/popup/urls';
 export function RecoveryPhrase() {
   const { state } = useLocation();
   const navigate = useRainbowNavigate();
-  const { setWalletBackedUp } = useWalletBackupsStore();
+  const setWalletBackedUp = useWalletBackupsStore.use.setWalletBackedUp();
 
   const [seed, setSeed] = useState('');
 

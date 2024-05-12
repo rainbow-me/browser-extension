@@ -5,6 +5,7 @@ import create from 'zustand';
 import { RainbowTransaction } from '~/core/types/transactions';
 
 import { createStore } from '../../internal/createStore';
+import { withSelectors } from '../../internal/withSelectors';
 
 export interface PendingTransactionsStateV1 {
   [key: Address]: {
@@ -145,4 +146,6 @@ export const pendingTransactionsStore = createStore<PendingTransactionsState>(
   },
 );
 
-export const usePendingTransactionsStore = create(pendingTransactionsStore);
+export const usePendingTransactionsStore = withSelectors(
+  create(pendingTransactionsStore),
+);

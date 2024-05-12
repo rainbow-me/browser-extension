@@ -105,7 +105,9 @@ export function SettingsNetworksRPCs() {
     (chain) => chain.rpcUrls.default.http[0] === rainbowChain.activeRpcUrl,
   );
 
-  const { userChains, updateUserChain, removeUserChain } = useUserChainsStore();
+  const userChains = useUserChainsStore.use.userChains();
+  const updateUserChain = useUserChainsStore.use.updateUserChain();
+  const removeUserChain = useUserChainsStore.use.removeUserChain();
 
   const handleToggleChain = useCallback(
     (newVal: boolean) => {

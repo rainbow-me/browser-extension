@@ -4,6 +4,7 @@ import { ParsedUserAsset } from '~/core/types/assets';
 import { SearchAsset } from '~/core/types/search';
 
 import { createStore } from '../internal/createStore';
+import { withSelectors } from '../internal/withSelectors';
 
 type UpdateHiddenAssetArgs = {
   uniqueId: string;
@@ -49,4 +50,4 @@ export const hiddenAssetsStore = createStore<HiddenAssetState>(
   },
 );
 
-export const useHiddenAssetStore = create(hiddenAssetsStore);
+export const useHiddenAssetStore = withSelectors(create(hiddenAssetsStore));

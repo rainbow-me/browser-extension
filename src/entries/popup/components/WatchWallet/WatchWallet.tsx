@@ -206,7 +206,7 @@ export const useValidateInput = (input: string) => {
     enabled: isInputEns,
     chainId: ChainId.mainnet,
   });
-  const { savedNames } = useSavedEnsNames();
+  const savedNames = useSavedEnsNames.use.savedNames();
 
   const isLoading = isFetchingEns;
 
@@ -263,8 +263,8 @@ export const WatchWallet = ({
     [address, selectedAddresses],
   );
 
-  const { setCurrentAddress } = useCurrentAddressStore();
-  const { save } = useSavedEnsNames();
+  const setCurrentAddress = useCurrentAddressStore.use.setCurrentAddress();
+  const save = useSavedEnsNames.use.save();
 
   const [renameAccount, setRenameAccount] = useState<Address>();
   const { data: ensFromAddress, isFetching: isFetchingAddressEns } = useEnsName(

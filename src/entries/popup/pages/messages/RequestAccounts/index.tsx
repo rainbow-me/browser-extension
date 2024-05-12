@@ -35,7 +35,7 @@ export const RequestAccounts = ({
   const { data: dappMetadata } = useDappMetadata({ url: dappUrl });
   const appName =
     dappMetadata?.appName || (dappUrl ? getDappHostname(dappUrl) : '');
-  const { addSession } = useAppSessionsStore();
+  const addSession = useAppSessionsStore.use.addSession();
 
   const { testnetMode } = useTestnetModeStore();
   const [selectedChainId, setSelectedChainId] = useState<ChainId>(
