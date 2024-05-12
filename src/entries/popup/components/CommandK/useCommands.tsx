@@ -699,7 +699,7 @@ export const useCommands = (
   }, [hideSmallBalances, setHideSmallBalances]);
 
   const openProfile = React.useCallback(
-    (command?: ENSOrAddressSearchItem) =>
+    (command?: ENSOrAddressSearchItem | WalletSearchItem | ContactSearchItem) =>
       goToNewTab({
         url: getProfileUrl(
           (command?.ensName ?? command?.address) || (ensName ?? address),
@@ -1050,6 +1050,7 @@ export const useCommands = (
           isWalletCommand(previousPageState.selectedCommand) &&
           !previousPageState.selectedCommand?.ensName,
       },
+
       // PAGE: CONTACT_DETAIL
       contactWallet: {
         action: () =>
@@ -1078,12 +1079,12 @@ export const useCommands = (
       viewContactProfile: {
         action: () =>
           isContactCommand(previousPageState.selectedCommand) &&
-          viewWalletOnEtherscan(previousPageState.selectedCommand.address),
+          openProfile(previousPageState.selectedCommand),
       },
       viewContactOnEtherscan: {
         action: () =>
           isContactCommand(previousPageState.selectedCommand) &&
-          openProfile(previousPageState.selectedCommand.address),
+          viewWalletOnEtherscan(previousPageState.selectedCommand.address),
       },
     }),
     [
