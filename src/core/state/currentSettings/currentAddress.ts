@@ -3,6 +3,8 @@ import create from 'zustand';
 
 import { createStore } from '~/core/state/internal/createStore';
 
+import { withSelectors } from '../internal/withSelectors';
+
 interface PersistedAddressState {
   currentAddress: Address;
   setCurrentAddress: (address: Address) => void;
@@ -47,4 +49,4 @@ persistedAddressStore.subscribe((state) => {
   }
 });
 
-export const useCurrentAddressStore = currentAddressStore;
+export const useCurrentAddressStore = withSelectors(currentAddressStore);

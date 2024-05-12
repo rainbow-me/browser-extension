@@ -96,7 +96,7 @@ export default function NFTDetails() {
   const { chains: userChains } = useUserChains();
   const { data } = useNfts({ address, testnetMode, userChains });
   const navigate = useRainbowNavigate();
-  const { setSelectedNft } = useSelectedNftStore();
+  const setSelectedNft = useSelectedNftStore.use.setSelectedNft();
   const collections = selectNftCollections(data);
   const nft = useMemo(() => {
     if (!collectionId || !nftId) return null;

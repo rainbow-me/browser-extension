@@ -9,7 +9,7 @@ export const useWalletInfo = ({
 }: {
   address?: Address;
 }) => {
-  const { contacts } = useContactsStore();
+  const contacts = useContactsStore.use.contacts();
   const { walletNames } = useWalletNamesStore();
   const { data: ensName } = useEnsName({ address });
 

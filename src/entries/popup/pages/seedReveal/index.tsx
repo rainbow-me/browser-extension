@@ -25,7 +25,7 @@ import { ROUTES } from '../../urls';
 
 export function SeedReveal() {
   const navigate = useRainbowNavigate();
-  const { setWalletBackedUp } = useWalletBackupsStore();
+  const setWalletBackedUp = useWalletBackupsStore.use.setWalletBackedUp();
   const [seed, setSeed] = useState('');
   const { currentAddress } = useCurrentAddressStore();
 

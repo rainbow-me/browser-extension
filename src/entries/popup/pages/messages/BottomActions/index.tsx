@@ -140,7 +140,7 @@ export const BottomSwitchWallet = ({
   selectedWallet: Address;
   setSelectedWallet: (selected: Address) => void;
 }) => {
-  const { setCurrentAddress } = useCurrentAddressStore();
+  const setCurrentAddress = useCurrentAddressStore.use.setCurrentAddress();
   const { sortedAccounts } = useAccounts();
   const { trackShortcut } = useKeyboardAnalytics();
   const menuTriggerRef = useRef<{ triggerMenu: () => void }>(null);

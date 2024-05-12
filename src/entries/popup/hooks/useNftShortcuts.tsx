@@ -18,7 +18,7 @@ export function useNftShortcuts(nft?: UniqueAsset | null) {
   const { currentAddress: address } = useCurrentAddressStore();
   const { selectedNft, setSelectedNft } = useSelectedNftStore();
   const { trackShortcut } = useKeyboardAnalytics();
-  const { toggleHideNFT } = useNftsStore();
+  const toggleHideNFT = useNftsStore.use.toggleHideNFT();
   const navigate = useRainbowNavigate();
   const nftToFocus = nft ?? selectedNft;
   const getNftIsSelected = useCallback(() => !!nftToFocus, [nftToFocus]);
