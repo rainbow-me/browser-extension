@@ -21,6 +21,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.4.84](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.84)
+
+### Fixed
+
+- Fixed missing gas token names on the Transaction Previews for Degen Chain and additional L2 and L3 networks
+
+### Removed
+
+- Removed deprecated Polygon Mumbai network #1477
+
+### Internal
+
+- Temporarily altered Rudderstack flush behavior to mitigate event drops #1533
+
 ## [v1.4.81](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.81)
 
 ### Changed

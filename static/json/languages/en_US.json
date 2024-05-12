@@ -432,6 +432,8 @@
       "open": "Open",
       "open_in_new_tab": "Open in New Tab",
       "switch_to_wallet": "Switch to Wallet",
+      "send_to_wallet": "Send to Wallet",
+      "add_contact": "Add Contact",
       "view": "View"
     },
     "commands": {
@@ -439,6 +441,7 @@
         "send": "Send",
         "swap": "Swap",
         "my_wallets": "My Wallets",
+        "my_contacts": "My Contacts",
         "my_tokens": "My Tokens",
         "my_tokens_watched": "Tokens",
         "my_nfts": "My NFTs",
@@ -478,8 +481,11 @@
         "add_as_watched_wallet": "Watch This Wallet",
         "view_on_ens": "View on ENS",
         "switch_to_wallet": "Switch to This Wallet",
+        "add_contact": "Add Contact",
+        "remove_contact": "Remove Contact",
         "copy_wallet_address": "Copy Address",
         "view_wallet_on_etherscan": "View on Etherscan",
+        "send_contact": "Send to Contact",
         "export_addresses_as_csv": "Export Addresses as CSV",
         "enable_flashbots": "Enable Flashbots",
         "disable_flashbots": "Disable Flashbots"
@@ -487,6 +493,7 @@
       "search_tags": {
         "swap": "bridge",
         "my_wallets": "switch",
+        "my_contacts": "contact, contacts",
         "my_tokens_watched": "my",
         "my_nfts_watched": "my",
         "view_profile": "profile, gallery, ens, nfts",
@@ -524,6 +531,9 @@
       "title_hidden": "Small Balances Hidden",
       "title_revealed": "Showing Small Balances"
     },
+    "contact_toast": {
+      "title_added": "Added to Contacts"
+    },
     "no_results": "No results",
     "pages": {
       "add_wallet": {
@@ -549,6 +559,10 @@
         "search_placeholder": "Select a wallet to switch to…",
         "section_title": "My Wallets"
       },
+      "my_contacts": {
+        "search_placeholder": "Select a your contact wallet",
+        "section_title": "My Contacts"
+      },
       "token_detail": {
         "search_placeholder": "Search token actions…",
         "section_title": "Actions"
@@ -561,6 +575,9 @@
         "search_placeholder": "Search wallet actions…",
         "section_title": "Actions"
       }
+    },
+    "labels": {
+      "contact": "Contact"
     },
     "quick_promo": {
       "text": "Press %{modifierSymbol}K to open the Magic Menu",
