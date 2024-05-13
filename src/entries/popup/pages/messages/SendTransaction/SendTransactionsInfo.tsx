@@ -172,16 +172,15 @@ const TransactionDetails = memo(function TransactionDetails({
   simulation,
   session,
 }: {
-  simulation: TransactionSimulation | undefined;
+  simulation: TransactionSimulation;
   session: { address: Address; chainId: ChainId };
 }) {
-  const metaTo = simulation?.meta.to;
-  const metaTransferTo = simulation?.meta.transferTo;
+  const metaTo = simulation.meta.to;
+  const metaTransferTo = simulation.meta.transferTo;
 
   const isContract = metaTo?.function || metaTo?.created;
 
-  const { getNonce } = useNonceStore();
-  const { currentNonce: nonce } = getNonce(session) || {};
+  const nonce = useNonceStore((s) => s.getNonce(session)?.currentNonce);
 
   const functionName = metaTo?.function.split('(')[0];
   const contract = metaTo && {
@@ -327,7 +326,12 @@ function TransactionInfo({
   return (
     <>
       <Tabs
-        tabs={[tabLabel('overview'), tabLabel('details'), tabLabel('data')]}
+        tabs={
+          // we need a simulation to show the details tab
+          !simulation && status === 'error'
+            ? [tabLabel('overview'), tabLabel('data')]
+            : [tabLabel('overview'), tabLabel('details'), tabLabel('data')]
+        }
         expanded={expanded}
         onExpand={onExpand}
       >
@@ -340,12 +344,14 @@ function TransactionInfo({
             metadata={dappMetadata}
           />
         </TabContent>
-        <TabContent value={tabLabel('details')}>
-          <TransactionDetails
-            session={activeSession!}
-            simulation={simulation}
-          />
-        </TabContent>
+        {simulation && (
+          <TabContent value={tabLabel('details')}>
+            <TransactionDetails
+              session={activeSession!}
+              simulation={simulation}
+            />
+          </TabContent>
+        )}
         <TabContent value={tabLabel('data')}>
           <TransactionData data={txData} expanded={expanded} />
         </TabContent>
@@ -406,7 +412,7 @@ function InsuficientGasFunds({
 
   const navigate = useRainbowNavigate();
 
-  const setSelectedToken = useSelectedTokenStore((s) => s.setSelectedToken);
+  const setSelectedToken = useSelectedTokenStore.use.setSelectedToken();
 
   if (!nativeAsset) return null;
 

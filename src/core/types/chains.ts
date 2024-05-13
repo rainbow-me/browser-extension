@@ -3,6 +3,9 @@ import type { Chain } from 'wagmi';
 
 const HARDHAT_CHAIN_ID = 1337;
 const BLAST_CHAIN_ID = 81457;
+const BLAST_SEPOLIA_CHAIN_ID = 168587773;
+const POLYGON_AMOY_CHAIN_ID = 80002;
+
 const HARDHAT_OP_CHAIN_ID = 1338;
 
 export const chainHardhat: Chain = {
@@ -12,6 +15,22 @@ export const chainHardhat: Chain = {
   nativeCurrency: {
     decimals: 18,
     name: 'Hardhat',
+    symbol: 'ETH',
+  },
+  rpcUrls: {
+    public: { http: ['http://127.0.0.1:8545'] },
+    default: { http: ['http://127.0.0.1:8545'] },
+  },
+  testnet: true,
+};
+
+export const chainHardhatOptimism: Chain = {
+  id: HARDHAT_OP_CHAIN_ID,
+  name: 'Hardhat OP',
+  network: 'hardhat-optimism',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Hardhat OP',
     symbol: 'ETH',
   },
   rpcUrls: {
@@ -41,20 +60,55 @@ export const chainBlast: Chain = {
   },
 };
 
-export const chainHardhatOptimism: Chain = {
-  id: HARDHAT_OP_CHAIN_ID,
-  name: 'Hardhat OP',
-  network: 'hardhat-optimism',
+export const chainBlastSepolia: Chain = {
+  id: BLAST_SEPOLIA_CHAIN_ID,
+  name: 'Blast Sepolia',
+  network: 'blast-sepolia',
   nativeCurrency: {
     decimals: 18,
-    name: 'Hardhat OP',
+    name: 'Ether',
     symbol: 'ETH',
   },
   rpcUrls: {
-    public: { http: ['http://127.0.0.1:8545'] },
-    default: { http: ['http://127.0.0.1:8545'] },
+    public: { http: ['https://sepolia.blast.io'] },
+    default: { http: ['https://sepolia.blast.io'] },
   },
   testnet: true,
+};
+
+export const chainPolygonAmoy: Chain = {
+  id: POLYGON_AMOY_CHAIN_ID,
+  name: 'Polygon Amoy',
+  network: 'polygon-amoy',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'MATIC',
+    symbol: 'MATIC',
+  },
+  rpcUrls: {
+    public: { http: ['https://rpc-amoy.polygon.technology'] },
+    default: { http: ['https://rpc-amoy.polygon.technology'] },
+  },
+  testnet: true,
+};
+
+export const chainDegen: Chain = {
+  id: 666666666,
+  name: 'Degen Chain',
+  network: 'degen',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Degen',
+    symbol: 'DEGEN',
+  },
+  rpcUrls: {
+    public: { http: ['https://rpc.degen.tips'] },
+    default: { http: ['https://rpc.degen.tips'] },
+  },
+  blockExplorers: {
+    default: { name: 'Degen Explorer', url: 'https://explorer.degen.tips/' },
+  },
+  testnet: false,
 };
 
 export enum ChainName {
@@ -65,8 +119,10 @@ export enum ChainName {
   avalancheFuji = 'avalanche-fuji',
   base = 'base',
   blast = 'blast',
+  blastSepolia = 'blast-sepolia',
   bsc = 'bsc',
   celo = 'celo',
+  degen = 'degen',
   gnosis = 'gnosis',
   linea = 'linea',
   manta = 'manta',
@@ -80,13 +136,12 @@ export enum ChainName {
   holesky = 'holesky',
   hardhat = 'hardhat',
   hardhatOptimism = 'hardhat-optimism',
-  goerli = 'goerli',
   sepolia = 'sepolia',
   optimismSepolia = 'optimism-sepolia',
   bscTestnet = 'bsc-testnet',
-  polygonMumbai = 'polygon-mumbai',
   baseSepolia = 'base-sepolia',
   zoraSepolia = 'zora-sepolia',
+  polygonAmoy = 'polygon-amoy',
 }
 
 export enum ChainId {
@@ -96,6 +151,7 @@ export enum ChainId {
   avalancheFuji = chain.avalancheFuji.id,
   base = chain.base.id,
   blast = BLAST_CHAIN_ID,
+  blastSepolia = BLAST_SEPOLIA_CHAIN_ID,
   bsc = chain.bsc.id,
   celo = chain.celo.id,
   gnosis = chain.gnosis.id,
@@ -109,16 +165,16 @@ export enum ChainId {
   zora = chain.zora.id,
   hardhat = HARDHAT_CHAIN_ID,
   hardhatOptimism = chainHardhatOptimism.id,
-  goerli = chain.goerli.id,
   sepolia = chain.sepolia.id,
   scroll = chain.scroll.id,
   holesky = chain.holesky.id,
   optimismSepolia = chain.optimismSepolia.id,
   bscTestnet = chain.bscTestnet.id,
-  polygonMumbai = chain.polygonMumbai.id,
   arbitrumSepolia = chain.arbitrumSepolia.id,
   baseSepolia = chain.baseSepolia.id,
   zoraSepolia = chain.zoraSepolia.id,
+  polygonAmoy = chainPolygonAmoy.id,
+  degen = chainDegen.id,
 }
 
 export const chainNameToIdMapping: {
@@ -146,15 +202,16 @@ export const chainNameToIdMapping: {
   [ChainName.holesky]: ChainId.holesky,
   [ChainName.hardhat]: ChainId.hardhat,
   [ChainName.hardhatOptimism]: ChainId.hardhatOptimism,
-  [ChainName.goerli]: ChainId.goerli,
   ['ethereum-sepolia']: ChainId.sepolia,
   [ChainName.sepolia]: ChainId.sepolia,
   [ChainName.optimismSepolia]: ChainId.optimismSepolia,
   [ChainName.bscTestnet]: ChainId.bscTestnet,
-  [ChainName.polygonMumbai]: ChainId.polygonMumbai,
   [ChainName.baseSepolia]: ChainId.baseSepolia,
   [ChainName.zoraSepolia]: ChainId.zoraSepolia,
   [ChainName.blast]: ChainId.blast,
+  [ChainName.blastSepolia]: ChainId.blastSepolia,
+  [ChainName.polygonAmoy]: ChainId.polygonAmoy,
+  [ChainName.degen]: ChainId.degen,
 };
 
 export const chainIdToNameMapping: {
@@ -167,6 +224,7 @@ export const chainIdToNameMapping: {
   [ChainId.avalancheFuji]: ChainName.avalancheFuji,
   [ChainId.base]: ChainName.base,
   [ChainId.blast]: ChainName.blast,
+  [ChainId.blastSepolia]: ChainName.blastSepolia,
   [ChainId.bsc]: ChainName.bsc,
   [ChainId.celo]: ChainName.celo,
   [ChainId.gnosis]: ChainName.gnosis,
@@ -182,13 +240,13 @@ export const chainIdToNameMapping: {
   [ChainId.holesky]: ChainName.holesky,
   [ChainId.hardhat]: ChainName.hardhat,
   [ChainId.hardhatOptimism]: ChainName.hardhatOptimism,
-  [ChainId.goerli]: ChainName.goerli,
   [ChainId.sepolia]: ChainName.sepolia,
   [ChainId.optimismSepolia]: ChainName.optimismSepolia,
   [ChainId.bscTestnet]: ChainName.bscTestnet,
-  [ChainId.polygonMumbai]: ChainName.polygonMumbai,
   [ChainId.baseSepolia]: ChainName.baseSepolia,
   [ChainId.zoraSepolia]: ChainName.zoraSepolia,
+  [ChainId.polygonAmoy]: ChainName.polygonAmoy,
+  [ChainId.degen]: ChainName.degen,
 };
 
 export const ChainNameDisplay = {
@@ -198,6 +256,7 @@ export const ChainNameDisplay = {
   [ChainId.avalancheFuji]: 'Avalanche Fuji',
   [ChainId.base]: 'Base',
   [ChainId.blast]: 'Blast',
+  [ChainId.blastSepolia]: 'Blast Sepolia',
   [ChainId.bsc]: 'BSC',
   [ChainId.celo]: chain.celo.name,
   [ChainId.linea]: 'Linea',
@@ -211,13 +270,13 @@ export const ChainNameDisplay = {
   [ChainId.mainnet]: 'Ethereum',
   [ChainId.hardhat]: 'Hardhat',
   [ChainId.hardhatOptimism]: chainHardhatOptimism.name,
-  [ChainId.goerli]: chain.goerli.name,
   [ChainId.sepolia]: chain.sepolia.name,
   [ChainId.holesky]: chain.holesky.name,
   [ChainId.optimismSepolia]: chain.optimismSepolia.name,
   [ChainId.bscTestnet]: 'BSC Testnet',
-  [ChainId.polygonMumbai]: chain.polygonMumbai.name,
   [ChainId.arbitrumSepolia]: chain.arbitrumSepolia.name,
   [ChainId.baseSepolia]: chain.baseSepolia.name,
   [ChainId.zoraSepolia]: 'Zora Sepolia',
+  [ChainId.polygonAmoy]: 'Polygon Amoy',
+  [ChainId.degen]: 'Degen',
 } as const;

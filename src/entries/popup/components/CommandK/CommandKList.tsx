@@ -15,13 +15,11 @@ import {
   WalletRow,
 } from './CommandRows';
 import {
-  ENSOrAddressSearchItem,
   NFTSearchItem,
   SearchItem,
   SearchItemType,
   ShortcutSearchItem,
   TokenSearchItem,
-  WalletSearchItem,
 } from './SearchItems';
 import { CommandKPage, PAGES } from './pageConfig';
 import { timingConfig } from './references';
@@ -42,13 +40,7 @@ function getPageTitle(
 
   const title = currentPage.listTitle;
 
-  if (typeof title === 'string') {
-    return title;
-  } else if (command) {
-    return title(command);
-  }
-
-  return '';
+  return title(command);
 }
 
 export const CommandKList = React.forwardRef<
@@ -200,15 +192,12 @@ export const CommandKList = React.forwardRef<
                   );
                 } else if (
                   command.type === SearchItemType.ENSOrAddressResult ||
-                  command.type === SearchItemType.Wallet
+                  command.type === SearchItemType.Wallet ||
+                  command.type === SearchItemType.Contact
                 ) {
                   row = (
                     <WalletRow
-                      command={
-                        command.type === SearchItemType.Wallet
-                          ? (command as WalletSearchItem)
-                          : (command as ENSOrAddressSearchItem)
-                      }
+                      command={command}
                       handleExecuteCommand={handleExecuteCommand}
                       key={command.id}
                       selected={isSelected}
@@ -288,8 +277,8 @@ export function CommandKEmptyState({
           weight="bold"
         />
         <Text color="labelQuaternary" size="20pt" weight="bold">
-          {!searchQuery && currentPage.emptyLabel
-            ? currentPage.emptyLabel
+          {!searchQuery && typeof currentPage.emptyLabel === 'function'
+            ? currentPage.emptyLabel()
             : i18n.t('command_k.no_results')}
         </Text>
       </Stack>

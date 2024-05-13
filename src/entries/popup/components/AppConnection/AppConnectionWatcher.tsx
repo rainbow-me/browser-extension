@@ -1,4 +1,4 @@
-import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
@@ -73,11 +73,12 @@ export const AppConnectionWatcher = () => {
     url,
   ]);
 
-  const {
-    nudgeSheetEnabled,
-    appHasInteractedWithNudgeSheet,
-    setAppHasInteractedWithNudgeSheet,
-  } = useAppConnectionWalletSwitcherStore();
+  const nudgeSheetEnabled =
+    useAppConnectionWalletSwitcherStore.use.nudgeSheetEnabled();
+  const appHasInteractedWithNudgeSheet =
+    useAppConnectionWalletSwitcherStore.use.appHasInteractedWithNudgeSheet();
+  const setAppHasInteractedWithNudgeSheet =
+    useAppConnectionWalletSwitcherStore.use.setAppHasInteractedWithNudgeSheet();
 
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
@@ -151,7 +152,8 @@ export const AppConnectionWatcher = () => {
     if (
       !!prevCurrentAddress &&
       (!isLowerCaseMatch(currentAddress, prevCurrentAddress) || firstLoad) &&
-      (!checkAndDisplayBanner() || !differentActiveSession)
+      ((location.pathname === ROUTES.HOME && !checkAndDisplayBanner()) ||
+        !differentActiveSession)
     ) {
       shouldAnimateOut.current = false;
       hide();
@@ -163,6 +165,7 @@ export const AppConnectionWatcher = () => {
     checkAndDisplayBanner,
     differentActiveSession,
     firstLoad,
+    location.pathname,
   ]);
 
   useLayoutEffect(() => {
@@ -170,7 +173,7 @@ export const AppConnectionWatcher = () => {
       shouldAnimateOut.current = true;
       hide();
     }
-  }, [hide, location.pathname]);
+  }, [hide, location, location.pathname]);
 
   useLayoutEffect(() => {
     if (

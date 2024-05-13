@@ -2,23 +2,28 @@ import { Signer } from '@ethersproject/abstract-signer';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { Transaction } from '@ethersproject/transactions';
 import {
+  CrosschainQuote,
   ETH_ADDRESS as ETH_ADDRESS_AGGREGATORS,
   Quote,
   ChainId as SwapChainId,
   WRAPPED_ASSET,
   fillQuote,
   getQuoteExecutionDetails,
+  getRainbowRouterContractAddress,
   getWrappedAssetMethod,
   unwrapNativeAsset,
   wrapNativeAsset,
 } from '@rainbow-me/swaps';
 import { Address, getProvider } from '@wagmi/core';
 
+import { metadataPostClient } from '~/core/graphql';
 import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
+import { add } from '~/core/utils/numbers';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { isUnwrapEth, isWrapEth } from '~/core/utils/swaps';
 import { addNewTransaction } from '~/core/utils/transactions';
+import { TransactionSimulationResponse } from '~/entries/popup/pages/messages/useSimulateTransaction';
 import { RainbowError, logger } from '~/logger';
 
 import { REFERRER, gasUnits } from '../../references';
@@ -36,7 +41,10 @@ import {
   estimateSwapGasLimitWithFakeApproval,
   getDefaultGasLimitForTrade,
   overrideWithFastSpeedIfNeeded,
+  populateSwap,
 } from '../utils';
+
+import { populateApprove } from './unlock';
 
 const WRAP_GAS_PADDING = 1.002;
 
@@ -129,6 +137,77 @@ export const estimateSwapGasLimit = async ({
       return getDefaultGasLimitForTrade(quote, chainId);
     }
   }
+};
+
+export const estimateUnlockAndSwapFromMetadata = async ({
+  swapAssetNeedsUnlocking,
+  chainId,
+  accountAddress,
+  sellTokenAddress,
+  quote,
+}: {
+  swapAssetNeedsUnlocking: boolean;
+  chainId: ChainId;
+  accountAddress: Address;
+  sellTokenAddress: Address;
+  quote: Quote | CrosschainQuote;
+}) => {
+  try {
+    const approveTransaction = await populateApprove({
+      owner: accountAddress,
+      tokenAddress: sellTokenAddress,
+      spender: getRainbowRouterContractAddress(chainId as number),
+      chainId,
+    });
+    const swapTransaction = await populateSwap({
+      provider: getProvider({ chainId }),
+      quote,
+    });
+    if (
+      approveTransaction?.to &&
+      approveTransaction?.data &&
+      approveTransaction?.from &&
+      swapTransaction?.to &&
+      swapTransaction?.data &&
+      swapTransaction?.from
+    ) {
+      const transactions = swapAssetNeedsUnlocking
+        ? [
+            {
+              to: approveTransaction?.to,
+              data: approveTransaction?.data || '0x0',
+              from: approveTransaction?.from,
+              value: approveTransaction?.value?.toString() || '0x0',
+            },
+            {
+              to: swapTransaction?.to,
+              data: swapTransaction?.data || '0x0',
+              from: swapTransaction?.from,
+              value: swapTransaction?.value?.toString() || '0x0',
+            },
+          ]
+        : [
+            {
+              to: swapTransaction?.to,
+              data: swapTransaction?.data || '0x0',
+              from: swapTransaction?.from,
+              value: swapTransaction?.value?.toString() || '0x0',
+            },
+          ];
+
+      const response = (await metadataPostClient.simulateTransactions({
+        chainId,
+        transactions,
+      })) as TransactionSimulationResponse;
+      const gasLimit = response.simulateTransactions
+        .map((res) => res.gas.estimate)
+        .reduce((acc, limit) => add(acc, limit), '0');
+      return gasLimit;
+    }
+  } catch (e) {
+    return null;
+  }
+  return null;
 };
 
 export const executeSwap = async ({

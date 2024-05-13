@@ -367,13 +367,46 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
-    name: 'Redstone Testnet',
+    name: 'Redstone',
     networkInfo: {
-      rpcUrl: 'https://rpc.holesky.redstone.xyz',
-      chainId: 17001,
+      rpcUrl: 'https://rpc.redstonechain.com',
+      chainId: 690,
       decimals: 18,
       symbol: 'ETH',
-      explorerUrl: 'https://explorer.holesky.redstone.xyz',
+      explorerUrl: 'https://explorer.redstone.xyz',
+      testnet: false,
+    },
+  },
+  {
+    name: 'Redstone Garnet',
+    networkInfo: {
+      rpcUrl: 'https://rpc.garnet.qry.live',
+      chainId: 17069,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://explorer.garnet.qry.live',
+      testnet: true,
+    },
+  },
+  {
+    name: 'Rootstock',
+    networkInfo: {
+      rpcUrl: 'https://public-node.rsk.co',
+      chainId: 30,
+      decimals: 18,
+      symbol: 'RBTC',
+      explorerUrl: 'https://explorer.rootstock.io',
+      testnet: false,
+    },
+  },
+  {
+    name: 'Rootstock Testnet',
+    networkInfo: {
+      rpcUrl: 'https://public-node.testnet.rsk.co',
+      chainId: 31,
+      decimals: 18,
+      symbol: 'tRBTC',
+      explorerUrl: 'https://explorer.testnet.rootstock.io',
       testnet: true,
     },
   },
@@ -409,9 +442,10 @@ export function SettingsCustomChain() {
   const {
     state: { chain },
   }: { state: { chain?: Chain } } = useLocation();
-  const { addCustomRPC, setActiveRPC } = useRainbowChainsStore();
+  const addCustomRPC = useRainbowChainsStore.use.addCustomRPC();
+  const setActiveRPC = useRainbowChainsStore.use.setActiveRPC();
   const navigate = useRainbowNavigate();
-  const { addUserChain } = useUserChainsStore();
+  const addUserChain = useUserChainsStore.use.addUserChain();
   const { customNetworkDrafts, saveCustomNetworkDraft } =
     usePopupInstanceStore();
   const draftKey = chain?.id ?? 'new';

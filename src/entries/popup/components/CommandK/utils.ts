@@ -54,7 +54,10 @@ const calculateCommandRelevance = (
 
     const normalizedShortcutKey = command.shortcut?.key.toLowerCase();
 
-    if (command.type === SearchItemType.Wallet) {
+    if (
+      command.type === SearchItemType.Wallet ||
+      command.type === SearchItemType.Contact
+    ) {
       const normalizedAddress = command.address
         ? command.address.toLowerCase()
         : '';
@@ -259,7 +262,7 @@ export function useCommandExecution(
           case SearchItemType.Wallet:
             return 'View Wallet';
           default:
-            return command?.actionLabel;
+            return command?.actionLabel?.();
         }
       };
       analytics.track(event.commandKActionExecuted, {

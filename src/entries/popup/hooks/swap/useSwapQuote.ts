@@ -30,7 +30,7 @@ interface UseSwapQuotesProps {
   assetToBuyValue?: string;
   independentField: IndependentField;
   source: Source | 'auto';
-  slippage: string;
+  slippage: string | number;
 }
 
 export const useSwapQuote = ({

@@ -77,8 +77,8 @@
     "contacts": "Contacts",
     "guides_and_support": "Guides & Support",
     "learn_about_ethereum": "Learn About Ethereum",
-    "follow_us_on_twitter": "Follow Us on Twitter",
-    "share_beta_feedback": "Share Beta Feedback",
+    "follow_us_on_twitter": "Follow us on Twitter",
+    "share_feedback": "Share Feedback",
     "theme": {
       "title": "Theme",
       "system": "System",
@@ -419,6 +419,11 @@
       "pending": "Bidding",
       "confirmed": "Bid",
       "failed": "Bid Failed"
+    },
+    "speed_up": {
+      "pending": "Speeding up",
+      "confirmed": "Sped up",
+      "failed": "Speed up Failed"
     }
   },
   "command_k": {
@@ -427,6 +432,8 @@
       "open": "Open",
       "open_in_new_tab": "Open in New Tab",
       "switch_to_wallet": "Switch to Wallet",
+      "send_to_wallet": "Send to Wallet",
+      "add_contact": "Add Contact",
       "view": "View"
     },
     "commands": {
@@ -434,6 +441,7 @@
         "send": "Send",
         "swap": "Swap",
         "my_wallets": "My Wallets",
+        "my_contacts": "My Contacts",
         "my_tokens": "My Tokens",
         "my_tokens_watched": "Tokens",
         "my_nfts": "My NFTs",
@@ -473,8 +481,11 @@
         "add_as_watched_wallet": "Watch This Wallet",
         "view_on_ens": "View on ENS",
         "switch_to_wallet": "Switch to This Wallet",
+        "add_contact": "Add Contact",
+        "remove_contact": "Remove Contact",
         "copy_wallet_address": "Copy Address",
         "view_wallet_on_etherscan": "View on Etherscan",
+        "send_contact": "Send to Contact",
         "export_addresses_as_csv": "Export Addresses as CSV",
         "enable_flashbots": "Enable Flashbots",
         "disable_flashbots": "Disable Flashbots"
@@ -482,6 +493,7 @@
       "search_tags": {
         "swap": "bridge",
         "my_wallets": "switch",
+        "my_contacts": "contact, contacts",
         "my_tokens_watched": "my",
         "my_nfts_watched": "my",
         "view_profile": "profile, gallery, ens, nfts",
@@ -519,6 +531,9 @@
       "title_hidden": "Small Balances Hidden",
       "title_revealed": "Showing Small Balances"
     },
+    "contact_toast": {
+      "title_added": "Added to Contacts"
+    },
     "no_results": "No results",
     "pages": {
       "add_wallet": {
@@ -544,6 +559,10 @@
         "search_placeholder": "Select a wallet to switch to…",
         "section_title": "My Wallets"
       },
+      "my_contacts": {
+        "search_placeholder": "Select a your contact wallet",
+        "section_title": "My Contacts"
+      },
       "token_detail": {
         "search_placeholder": "Search token actions…",
         "section_title": "Actions"
@@ -556,6 +575,9 @@
         "search_placeholder": "Search wallet actions…",
         "section_title": "Actions"
       }
+    },
+    "labels": {
+      "contact": "Contact"
     },
     "quick_promo": {
       "text": "Press %{modifierSymbol}K to open the Magic Menu",
@@ -696,6 +718,10 @@
       "price_impact": {
         "title": "Small market",
         "description": "Losing %{impactAmount}"
+      },
+      "unknown_price": {
+        "title": "%{symbol} Market Value Unknown",
+        "description": "If you decide to continue, be sure that you are satisfied receiving the quoted amount."
       }
     },
     "aggregators": {
@@ -1343,7 +1369,9 @@
       },
       "send": "Send",
       "view_on_opensea": "View on OpenSea",
-      "view_on_explorer": "View on %{explorerTitle}"
+      "view_on_explorer": "View on %{explorerTitle}",
+      "gallery": "gallery",
+      "view_gallery": "View Gallery"
     },
     "toast": {
       "spam_reported": "Your report has been received!"
@@ -1443,7 +1471,11 @@
     "speed_up_transaction": "Speed up transaction",
     "close_cta": "Cancel",
     "handle_copy_title": "Tx Hash Copied",
-    "revoke_approval": "Revoke Approval"
+    "revoke_approval": "Revoke Approval",
+    "speed_up_failed": {
+      "title": "Speed up failed",
+      "description": "Attempts to speed up a transaction can fail during network congestion, gas limit increases, or when the original transaction is confirmed first"
+    }
   },
   "token_details": {
     "swap": "Swap",
@@ -1459,6 +1491,7 @@
     "approvals": "Token Approvals",
     "this_token_is_on_network": "This %{symbol} is on the %{chainName} network",
     "view_on": "View on %{explorer}",
+    "view_on_coingecko": "View on CoinGecko",
     "not_available": "Price not available",
     "more_options": {
       "copy_address": "Copy Address",
@@ -1466,7 +1499,15 @@
       "hide": "Hide Token",
       "report": "Report Token",
       "unpin_token": "Unpin %{name}",
-      "pin_token": "Pin %{name}"
+      "pin_token": "Pin %{name}",
+      "hide_token": "Hide %{name}",
+      "unhide_token": "Unhide %{name}"
+    },
+    "toast": {
+      "hide_token": "Your %{name} is hidden",
+      "unhide_token": "Your %{name} is unhidden",
+      "pin_token": "Your %{name} is pinned",
+      "unpin_token": "Your %{name} is unpinned"
     },
     "about": {
       "about_token": "About %{name}",
@@ -1528,40 +1569,42 @@
   },
   "explainers": {
     "sidechains": {
-      "arbitrum": {
-        "title": "What's Arbitrum?",
-        "description_1": "Arbitrum is a Layer 2 network that runs on top of Ethereum, enabling cheaper and faster transactions while still benefiting from the underlying security of Ethereum.",
+      "layer_two": {
+        "title": "What's %{chainName}?",
+        "description_1": "%{chainName} is a Layer 2 network that runs on top of Ethereum, enabling cheaper and faster transactions while still benefiting from the underlying security of Ethereum.",
         "description_2": "It bundles lots of transactions together in a \"roll up\" before sending them down to live permanently on Ethereum."
       },
-      "optimism": {
-        "title": "What's Optimism?",
-        "description_1": "Optimism is a Layer 2 network that runs on top of Ethereum, enabling cheaper and faster transactions while still benefiting from the underlying security of Ethereum.",
-        "description_2": "It bundles lots of transactions together in a \"roll up\" before sending them down to live permanently on Ethereum."
-      },
-      "polygon": {
-        "title": "What's Polygon?",
-        "description_1": "Polygon is a sidechain, a distinct network that runs alongside Ethereum and is compatible with it.",
-        "description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, Polygon has its own security and consensus mechanisms that differ from Ethereum."
-      },
-      "bsc": {
-        "title": "What's BSC?",
-        "description_1": "BNB Smart Chain, or BSC for short, is an alternative Layer 1 developed by the cryptocurrency exchange Binance.",
-        "description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, BSC has its own security and consensus mechanisms that differ from Ethereum."
-      },
-      "base": {
-        "title": "What's Base?",
-        "description_1": "Base is a Layer 2 network that runs on top of Ethereum, enabling cheaper and faster transactions while still benefiting from the underlying security of Ethereum.",
-        "description_2": "It bundles lots of transactions together in a \"roll up\" before sending them down to live permanently on Ethereum."
-      },
-      "zora": {
-        "title": "What's Zora?",
-        "description_1": "Zora is a Layer 2 network that runs on top of Ethereum, enabling cheaper and faster transactions while still benefiting from the underlying security of Ethereum.",
-        "description_2": "It bundles lots of transactions together in a \"roll up\" before sending them down to live permanently on Ethereum."
-      },
-      "avalanche": {
-        "title": "What's Avalanche?",
-        "description_1": "Avalanche is an alternative Layer 1 powered by an ecosystem of subnets, similar to Ethereum sidechains and Layer 2s.",
-        "description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, Avalanche has its own security and consensus mechanisms that differ from Ethereum."
+      "specific": {
+        "polygon": {
+          "title": "What's Polygon?",
+          "description_1": "Polygon is a sidechain, a distinct network that runs alongside Ethereum and is compatible with it.",
+          "description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, Polygon has its own security and consensus mechanisms that differ from Ethereum."
+        },
+        "bsc": {
+          "title": "What's BSC?",
+          "description_1": "BNB Smart Chain, or BSC for short, is an alternative Layer 1 developed by the cryptocurrency exchange Binance.",
+          "description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, BSC has its own security and consensus mechanisms that differ from Ethereum."
+        },
+        "avalanche": {
+          "title": "What's Avalanche?",
+          "description_1": "Avalanche is an alternative Layer 1 powered by an ecosystem of subnets, similar to Ethereum sidechains and Layer 2s.",
+          "description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, Avalanche has its own security and consensus mechanisms that differ from Ethereum."
+        },
+        "blast": {
+          "title": "What's Blast?",
+          "description_1": "Blast is an Ethereum Layer-2 (L2) platform created by the same talented team behind Blur, the popular NFT marketplace.",
+          "description_2": "The chain distinguishes itself with the introduction of native yield for ether (ETH) and various stablecoins such as USDC, USDT, and DAI."
+        },
+        "degen": {
+          "title": "What's Degen?",
+          "description_1": "Degen Chain is a Layer 3 network that runs on top of Arbitrum and Ethereum.",
+          "description_2": "It offering incredibly fast and cheap transactions denominated in the Farcaster community token $degen."
+        },
+        "custom_network": {
+          "title": "What's this Network?",
+          "description_1": "This is a custom network added by you! Custom networks can be tailored to meet specific needs, offering unique features and capabilities.",
+          "description_2": "Depending on its configuration, this network might utilize distinct protocols, security measures, and consensus mechanisms, designed to optimize performance, reduce costs, or deliver specialized services."
+        }
       },
       "link_button_label": "Read more",
       "action_label": "Got it"
@@ -1735,6 +1778,7 @@
   "unverified": "Unverified",
   "skip": "Skip",
   "done": "Done",
+  "view_on_explorer": "View on %{explorer}",
   "watch_asset": {
     "chain_id": "Chain ID",
     "symbol": "Symbol",

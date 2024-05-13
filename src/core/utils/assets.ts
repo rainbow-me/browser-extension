@@ -12,17 +12,16 @@ import {
   ParsedSearchAsset,
   ParsedUserAsset,
   UniqueId,
-  ZerionAsset,
   ZerionAssetPrice,
 } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
 
 import { requestMetadata } from '../graphql';
 import { i18n } from '../languages';
+import { AddysPositionAsset } from '../resources/positions';
 import { SearchAsset } from '../types/search';
 
 import {
-  chainIdFromChainName,
   chainNameFromChainId,
   customChainIdsToAssetNames,
   isNativeAsset,
@@ -87,36 +86,25 @@ export const getNativeAssetBalance = ({
   return convertAmountAndPriceToNativeDisplay(value, priceUnit, currency);
 };
 
-const isZerionAsset = (
-  asset: ZerionAsset | AssetApiResponse,
-): asset is ZerionAsset => 'implementations' in asset || !('networks' in asset);
-
 export function parseAsset({
   asset,
   currency,
 }: {
-  asset: ZerionAsset | AssetApiResponse;
+  asset: AssetApiResponse;
   currency: SupportedCurrencyKey;
 }): ParsedAsset {
   const address = asset.asset_code;
   const chainName = asset.network ?? ChainName.mainnet;
   const networks = 'networks' in asset ? asset.networks || {} : {};
-  const chainId =
-    ('chain_id' in asset && asset.chain_id) ||
-    chainIdFromChainName(chainName) ||
-    Number(Object.keys(networks)[0]);
-
-  // ZerionAsset should be removed when we move fully away from websckets/refraction api
-  const mainnetAddress = isZerionAsset(asset)
-    ? asset.mainnet_address ||
-      asset.implementations?.[ChainName.mainnet]?.address ||
-      undefined
-    : networks[ChainId.mainnet]?.address;
+  const chainId = asset.chain_id;
+  const mainnetAddress =
+    asset.symbol === 'ETH' ? ETH_ADDRESS : networks[ChainId.mainnet]?.address;
 
   const standard = 'interface' in asset ? asset.interface : undefined;
 
-  const uniqueId: UniqueId = `${mainnetAddress || address}_${chainId}`;
+  const uniqueId: UniqueId = `${asset.asset_code}_${chainId}`;
   const parsedAsset = {
+    assetCode: asset.asset_code,
     address,
     uniqueId,
     chainId,
@@ -137,10 +125,10 @@ export function parseAsset({
     icon_url: asset.icon_url || getCustomChainIconUrl(chainId, address),
     colors: asset.colors,
     standard,
-    ...('networks' in asset && { networks: asset.networks }),
+    networks: asset.networks,
     ...('bridging' in asset && {
       bridging: {
-        isBridgeable: asset.bridging.bridgeable,
+        isBridgeable: !!asset.bridging.bridgeable,
         networks: asset.bridging.networks,
       },
     }),
@@ -161,7 +149,7 @@ export function parseAssetMetadata({
   currency: SupportedCurrencyKey;
 }): ParsedAsset {
   const mainnetAddress = asset.networks?.[ChainId.mainnet]?.address || address;
-  const uniqueId = `${mainnetAddress || address}_${chainId}`;
+  const uniqueId = `${address}_${chainId}`;
   const priceData = {
     relative_change_24h: asset?.price?.relativeChange24h,
     value: asset?.price?.value,
@@ -196,7 +184,7 @@ export function parseUserAsset({
   balance,
   smallBalance,
 }: {
-  asset: ZerionAsset | AssetApiResponse;
+  asset: AssetApiResponse | AddysPositionAsset;
   currency: SupportedCurrencyKey;
   balance: string;
   smallBalance?: boolean;

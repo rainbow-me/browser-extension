@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 
 import { useCommandKStatus } from '../components/CommandK/useCommandKStatus';
 
@@ -11,54 +11,61 @@ interface KeyboardShortcutConfig {
   modifierKey?: ModifierKey;
 }
 
+const getSystemSpecificModifierKey = (modifierKey: ModifierKey | undefined) => {
+  if (modifierKey === 'command') {
+    // Use Command key on Mac, Control on other platforms
+    return navigator.userAgent.includes('Mac') ? 'metaKey' : 'ctrlKey';
+  }
+  return modifierKey;
+};
+
 export function useKeyboardShortcut({
   condition,
   enableWithinCommandK,
   handler,
   modifierKey,
 }: KeyboardShortcutConfig) {
-  const { isCommandKVisible } = useCommandKStatus();
+  const isCommandKVisible = useCommandKStatus((s) => s.isCommandKVisible);
+
+  // "latest ref pattern" so we don't have to worry about stabilizing the callbacks
+  const handlerRef = useRef(handler);
+  const conditionRef = useRef(condition);
+  useLayoutEffect(() => {
+    handlerRef.current = handler;
+    conditionRef.current = condition;
+  });
 
   const shouldListen = useMemo(() => {
+    const condition = conditionRef.current;
     if (!isCommandKVisible || enableWithinCommandK) {
       return condition?.() || condition === undefined;
-    } else return false;
-  }, [condition, enableWithinCommandK, isCommandKVisible]);
-
-  const systemSpecificModifierKey = useMemo(() => {
-    if (modifierKey === 'command') {
-      // Use Command key on Mac, Control on other platforms
-      return navigator.userAgent.includes('Mac') ? 'metaKey' : 'ctrlKey';
     }
-    return modifierKey;
-  }, [modifierKey]);
+    return false;
+  }, [enableWithinCommandK, isCommandKVisible]);
 
-  const modifiedHandler = useCallback(
-    (e: KeyboardEvent) => {
+  useEffect(() => {
+    const systemSpecificModifierKey = getSystemSpecificModifierKey(modifierKey);
+    const modifiedHandler = (e: KeyboardEvent) => {
       // If a modifierKey is specified, check if it's being held down
       if (systemSpecificModifierKey && !e[systemSpecificModifierKey]) {
         return;
       }
-      handler(e);
-    },
-    [handler, systemSpecificModifierKey],
-  );
+      handlerRef.current(e);
+    };
 
-  const addHandler = useCallback(
-    () => document.addEventListener('keydown', modifiedHandler),
-    [modifiedHandler],
-  );
-  const removeHandler = useCallback(
-    () => document.removeEventListener('keydown', modifiedHandler),
-    [modifiedHandler],
-  );
+    const addHandler = () =>
+      document.addEventListener('keydown', modifiedHandler);
+    const removeHandler = () =>
+      document.removeEventListener('keydown', modifiedHandler);
 
-  useEffect(() => {
     if (shouldListen) {
       addHandler();
     } else {
       removeHandler();
     }
-    return () => removeHandler();
-  }, [addHandler, removeHandler, shouldListen]);
+
+    return () => {
+      removeHandler();
+    };
+  }, [modifierKey, shouldListen]);
 }

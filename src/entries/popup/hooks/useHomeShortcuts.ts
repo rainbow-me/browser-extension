@@ -22,6 +22,7 @@ import { ROUTES } from '../urls';
 import {
   appConnectionMenuIsActive,
   appConnectionSwitchWalletsPromptIsActive,
+  getExplainerSheet,
   getInputIsFocused,
 } from '../utils/activeElement';
 import {
@@ -104,7 +105,9 @@ export function useHomeShortcuts() {
       const activeAppWalletSwitcher =
         appConnectionSwitchWalletsPromptIsActive();
       const inputIsFocused = getInputIsFocused();
+      const isExplainerSheet = getExplainerSheet();
       if (inputIsFocused) return;
+      if (isExplainerSheet) return;
       switch (e.key) {
         case shortcuts.home.BUY.key:
           trackShortcut({
@@ -114,7 +117,7 @@ export function useHomeShortcuts() {
           navigate(ROUTES.BUY);
           break;
         case shortcuts.home.COPY_ADDRESS.key:
-          if (!selectedNft) {
+          if (!selectedNft && !selectedToken) {
             trackShortcut({
               key: shortcuts.home.COPY_ADDRESS.display,
               type: 'home.copyAddress',
@@ -155,11 +158,13 @@ export function useHomeShortcuts() {
           navigateToSwaps();
           break;
         case shortcuts.home.GO_TO_PROFILE.key:
-          trackShortcut({
-            key: shortcuts.home.GO_TO_PROFILE.display,
-            type: 'home.goToProfile',
-          });
-          openProfile();
+          if (!selectedToken) {
+            trackShortcut({
+              key: shortcuts.home.GO_TO_PROFILE.display,
+              type: 'home.goToProfile',
+            });
+            openProfile();
+          }
           break;
         case shortcuts.home.GO_TO_WALLETS.key:
           if (!activeAppConnectionMenu) {
@@ -225,18 +230,24 @@ export function useHomeShortcuts() {
     [
       trackShortcut,
       navigate,
-      handleCopy,
+      selectedNft,
+      selectedToken,
       allowSend,
       navigateToSwaps,
-      openProfile,
       handleTestnetMode,
+      handleCopy,
       alertWatchingWallet,
+      openProfile,
       disconnectFromApp,
-      selectedNft,
     ],
   );
   useKeyboardShortcut({
     condition: getHomeShortcutsAreActive,
     handler: handleHomeShortcuts,
   });
+}
+
+export function HomeShortcuts() {
+  useHomeShortcuts();
+  return null;
 }

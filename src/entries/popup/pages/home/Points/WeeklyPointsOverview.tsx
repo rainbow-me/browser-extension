@@ -217,6 +217,7 @@ export function PointsWeeklyOverview() {
           borderRadius="12px"
           height="36px"
           variant="shadow"
+          tabIndex={0}
         >
           {i18n.t('close')}
         </Button>

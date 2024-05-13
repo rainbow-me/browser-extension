@@ -25,10 +25,11 @@ import { triggerToast } from '../../components/Toast/Toast';
 export function Transactions() {
   const { defaultTxSpeed, setDefaultTxSpeed } = useDefaultTxSpeedStore();
   const { flashbotsEnabled, setFlashbotsEnabled } = useFlashbotsEnabledStore();
-  const { clearNonces } = useNonceStore();
-  const { clearPendingTransactions } = usePendingTransactionsStore();
-  const { clearAllCustomNetworkTransactions } =
-    useCustomNetworkTransactionsStore();
+  const clearNonces = useNonceStore.use.clearNonces();
+  const clearPendingTransactions =
+    usePendingTransactionsStore.use.clearPendingTransactions();
+  const clearAllCustomNetworkTransactions =
+    useCustomNetworkTransactionsStore.use.clearAllCustomNetworkTransactions();
   const filteredTxSpeedOptionKeys = Object.values(GasSpeed).filter(
     (opt) => opt !== GasSpeed.CUSTOM,
   );
@@ -143,6 +144,7 @@ export function Transactions() {
         </Menu>
         <Menu>
           <MenuItem
+            first
             last
             titleComponent={
               <MenuItem.Title

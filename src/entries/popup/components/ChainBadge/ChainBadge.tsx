@@ -5,6 +5,7 @@ import AvalancheBadge from 'static/assets/badges/avalancheBadge@3x.png';
 import BaseBadge from 'static/assets/badges/baseBadge@3x.png';
 import BlastBadge from 'static/assets/badges/blastBadge@3x.png';
 import BscBadge from 'static/assets/badges/bscBadge@3x.png';
+import DegenBadge from 'static/assets/badges/degenBadge@3x.png';
 import EthereumBadge from 'static/assets/badges/ethereumBadge@3x.png';
 import HardhatBadge from 'static/assets/badges/hardhatBadge@3x.png';
 import OptimismBadge from 'static/assets/badges/optimismBadge@3x.png';
@@ -48,17 +49,18 @@ const networkBadges = {
   [ChainId.avalanche]: AvalancheBadge,
   [ChainId.hardhat]: HardhatBadge,
   [ChainId.hardhatOptimism]: HardhatBadge,
-  [ChainId.goerli]: EthereumBadge,
   [ChainId.sepolia]: EthereumBadge,
   [ChainId.holesky]: EthereumBadge,
   [ChainId.optimismSepolia]: OptimismBadge,
   [ChainId.bscTestnet]: BscBadge,
-  [ChainId.polygonMumbai]: PolygonBadge,
+  [ChainId.polygonAmoy]: PolygonBadge,
   [ChainId.arbitrumSepolia]: ArbitrumBadge,
   [ChainId.baseSepolia]: BaseBadge,
   [ChainId.zoraSepolia]: ZoraBadge,
   [ChainId.avalancheFuji]: AvalancheBadge,
   [ChainId.blast]: BlastBadge,
+  [ChainId.blastSepolia]: BlastBadge,
+  [ChainId.degen]: DegenBadge,
 };
 
 const ChainBadge = ({

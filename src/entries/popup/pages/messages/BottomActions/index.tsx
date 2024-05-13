@@ -46,8 +46,13 @@ export const WalletName = ({
 }: { address: Address } & Partial<TextProps>) => {
   const { displayName } = useWalletInfo({ address });
   return (
-    // eslint-disable-next-line react/jsx-props-no-spreading
-    <TextOverflow color="label" size="14pt" weight="semibold" {...props}>
+    <TextOverflow
+      color="label"
+      size="14pt"
+      weight="semibold"
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      {...props}
+    >
       {displayName}
     </TextOverflow>
   );
@@ -135,7 +140,7 @@ export const BottomSwitchWallet = ({
   selectedWallet: Address;
   setSelectedWallet: (selected: Address) => void;
 }) => {
-  const { setCurrentAddress } = useCurrentAddressStore();
+  const setCurrentAddress = useCurrentAddressStore.use.setCurrentAddress();
   const { sortedAccounts } = useAccounts();
   const { trackShortcut } = useKeyboardAnalytics();
   const menuTriggerRef = useRef<{ triggerMenu: () => void }>(null);
@@ -190,7 +195,7 @@ export const BottomSwitchWallet = ({
         }
         renderMenuItem={(wallet, i) => (
           <Box testId={`switch-wallet-item-${i}`}>
-            <Inline space="8px" alignVertical="center">
+            <Inline space="8px" alignVertical="center" wrap={false}>
               <WalletAvatar
                 addressOrName={wallet as Address}
                 size={18}
@@ -390,6 +395,7 @@ export const AcceptRequestButton = ({
       testId="accept-request-button"
       disabled={disabled}
       tabIndex={0}
+      paddingHorizontal={waitingForDevice ? '16px' : '24px'}
       shortcut={
         !disabled && !waitingForDevice && !isScamDapp
           ? { ...shortcuts.transaction_request.ACCEPT, type: 'request.accept' }
@@ -400,7 +406,7 @@ export const AcceptRequestButton = ({
     >
       <TextOverflow weight="bold" size="16pt" color={textColor}>
         {loading || waitingForDevice ? (
-          <Inline space="4px" alignVertical="center">
+          <Inline space="4px" alignVertical="center" wrap={false}>
             <Spinner size={16} color="label" />
             {waitingForDevice && i18n.t('approve_request.confirm_hw')}
           </Inline>
@@ -416,10 +422,12 @@ export const RejectRequestButton = ({
   onClick,
   label,
   dappStatus,
+  waitingForDevice,
 }: {
   onClick: () => void;
   label: string;
   dappStatus?: DAppStatus;
+  waitingForDevice?: boolean;
 }) => {
   const isScamDapp = dappStatus === DAppStatus.Scam;
 
@@ -428,9 +436,9 @@ export const RejectRequestButton = ({
       color={isScamDapp ? 'red' : 'separatorSecondary'}
       variant="flat"
       height="44px"
-      width="full"
       onClick={onClick}
       testId="reject-request-button"
+      width={waitingForDevice ? 'fit' : 'full'}
       tabIndex={0}
       shortcut={{
         ...shortcuts.transaction_request.CANCEL,

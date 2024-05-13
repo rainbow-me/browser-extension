@@ -5,6 +5,7 @@ import { metadataPostClient } from '~/core/graphql';
 import { Message, Transaction } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { createQueryKey } from '~/core/react-query';
+import { SupportedCurrencyKey } from '~/core/references';
 import { currentCurrencyStore } from '~/core/state';
 import { AddressOrEth, ParsedAsset } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
@@ -39,6 +40,10 @@ const parseSimulationAsset = (asset: SimulationAsset, chainId: ChainId) => {
       asset_code: asset.assetCode,
       icon_url: asset.iconURL,
       interface: parseInterface(asset.interface),
+      bridging: {
+        bridgeable: false,
+        networks: {},
+      },
     },
     currency: currentCurrencyStore.getState().currentCurrency,
   });
@@ -111,14 +116,11 @@ export const useSimulateTransaction = ({
       chainId,
       domain,
     }),
-    enabled:
-      !!chainId &&
-      !!transaction.to &&
-      (!!transaction.value || !!transaction.data),
+    enabled: !!chainId && (!!transaction.value || !!transaction.data),
     queryFn: async () => {
       const response = (await metadataPostClient.simulateTransactions({
         chainId,
-        transactions: [transaction],
+        transactions: [{ ...transaction, to: transaction.to || '' }],
         domain,
       })) as TransactionSimulationResponse;
       return parseSimulation(response.simulateTransactions[0], chainId);
@@ -132,11 +134,13 @@ export const useSimulateMessage = ({
   address,
   message,
   domain,
+  currency,
 }: {
   chainId: ChainId;
   address?: Address;
   message: Message;
   domain: string;
+  currency: SupportedCurrencyKey;
 }) => {
   return useQuery<TransactionSimulation, SimulationError>({
     queryKey: createQueryKey('simulateMessage', {
@@ -154,6 +158,7 @@ export const useSimulateMessage = ({
         address,
         message,
         domain,
+        currency,
       })) as MessageSimulationResponse;
 
       return parseSimulation(response.simulateMessage, chainId);
@@ -210,7 +215,7 @@ type SimulationMeta = {
   transferTo: SimulationTarget;
 };
 
-type TransactionSimulationResponse = {
+export type TransactionSimulationResponse = {
   simulateTransactions: [
     {
       scanning: {
@@ -220,6 +225,9 @@ type TransactionSimulationResponse = {
       error: {
         message: string;
         type: SimulationError;
+      };
+      gas: {
+        estimate: string;
       };
       simulation: {
         in: SimulationChange[];
@@ -247,6 +255,9 @@ type MessageSimulationResponse = {
     error: {
       message: string;
       type: SimulationError;
+    };
+    gas: {
+      estimate: string;
     };
     simulation: {
       in: SimulationChange[];

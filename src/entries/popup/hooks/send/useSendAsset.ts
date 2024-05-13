@@ -1,4 +1,3 @@
-import uniqBy from 'lodash/uniqBy';
 import { useCallback, useMemo, useState } from 'react';
 
 import {
@@ -65,17 +64,27 @@ export const useSendAsset = () => {
     [],
   );
 
-  const allAssets = useMemo(
+  const combinedAssets = useMemo(
     () =>
-      uniqBy(
-        [...assets, ...customNetworkAssets].sort(
-          (a: ParsedUserAsset, b: ParsedUserAsset) =>
-            parseFloat(b?.native?.balance?.amount) -
-            parseFloat(a?.native?.balance?.amount),
-        ),
-        'uniqueId',
+      Array.from(
+        new Map(
+          [...customNetworkAssets, ...assets].map((item) => [
+            item.uniqueId,
+            item,
+          ]),
+        ).values(),
       ),
     [assets, customNetworkAssets],
+  );
+
+  const allAssets = useMemo(
+    () =>
+      combinedAssets.sort(
+        (a: ParsedUserAsset, b: ParsedUserAsset) =>
+          parseFloat(b?.native?.balance?.amount) -
+          parseFloat(a?.native?.balance?.amount),
+      ),
+    [combinedAssets],
   );
 
   const asset = useMemo(

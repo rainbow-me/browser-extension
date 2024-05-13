@@ -19,9 +19,11 @@ import {
 let swapGasLimit = 0;
 
 const needsUnlockQuote: Quote | QuoteError | null = {
+  chainId: 1,
   buyAmount: '22815411',
   buyAmountDisplay: '22815411',
   buyAmountInEth: '7674057708816777',
+  buyAmountMinusFees: '7674057708816777',
   buyTokenAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
   data: '0x415565b0000000000000000000000000c18360217d8f7ab5e7c516566761ea12ce7f9d72000...',
   defaultGasLimit: '350000',
@@ -47,9 +49,11 @@ const needsUnlockQuote: Quote | QuoteError | null = {
 };
 
 const doesntNeedUnlockQuote: Quote | QuoteError | null = {
+  chainId: 1,
   buyAmount: '2934529154',
   buyAmountDisplay: '2934529154',
   buyAmountInEth: '988585673036047522',
+  buyAmountMinusFees: '988585673036047522',
   buyTokenAddress: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8',
   data: '0x37c6145a...',
   defaultGasLimit: '520000',

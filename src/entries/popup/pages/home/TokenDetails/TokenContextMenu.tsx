@@ -1,9 +1,13 @@
-import { ReactNode } from 'react';
+import { ReactNode, useCallback } from 'react';
 
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import {
+  computeUniqueIdForHiddenAsset,
+  useHiddenAssetStore,
+} from '~/core/state/hiddenAssets/hiddenAssets';
 import { usePinnedAssetStore } from '~/core/state/pinnedAssets';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedUserAsset } from '~/core/types/assets';
@@ -14,10 +18,12 @@ import { goToNewTab } from '~/core/utils/tabs';
 import { getTokenBlockExplorer } from '~/core/utils/transactions';
 import { Text, TextOverflow } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
+import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 
 import {
   ContextMenuContent,
   ContextMenuItem,
+  ContextMenuSeparator,
   ContextMenuTrigger,
 } from '../../../components/ContextMenu/ContextMenu';
 import { DetailsMenuWrapper } from '../../../components/DetailsMenu';
@@ -34,9 +40,10 @@ interface TokenContextMenuProps {
 export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
   const { isWatchingWallet } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
-  const setSelectedToken = useSelectedTokenStore((s) => s.setSelectedToken);
+  const setSelectedToken = useSelectedTokenStore.use.setSelectedToken();
   const { pinnedAssets, removedPinnedAsset, addPinnedAsset } =
     usePinnedAssetStore();
+  const addHiddenAsset = useHiddenAssetStore.use.addHiddenAsset();
   const pinned = pinnedAssets.some(
     ({ uniqueId }) => uniqueId === token.uniqueId,
   );
@@ -54,6 +61,11 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
   const allowSwap =
     (!isWatchingWallet || featureFlags.full_watching_wallets) &&
     config.swaps_enabled;
+
+  const isBridgeable = token.bridging?.isBridgeable;
+
+  const explorer = getTokenBlockExplorer(token);
+  const isNative = isNativeAsset(token?.address, token?.chainId);
 
   const onSwap = () => {
     setSelectedToken(token);
@@ -76,10 +88,39 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
     navigate(ROUTES.BRIDGE);
   };
 
-  const isBridgeable = token.bridging?.isBridgeable;
+  const togglePinToken = useCallback(() => {
+    if (pinned) {
+      removedPinnedAsset({ uniqueId: token.uniqueId });
+      triggerToast({
+        title: i18n.t('token_details.toast.unpin_token', {
+          name: token.symbol,
+        }),
+      });
+      return;
+    }
+    addPinnedAsset({ uniqueId: token.uniqueId });
+    triggerToast({
+      title: i18n.t('token_details.toast.pin_token', {
+        name: token.symbol,
+      }),
+    });
+  }, [token, pinned, addPinnedAsset, removedPinnedAsset]);
 
-  const explorer = getTokenBlockExplorer(token);
-  const isNative = isNativeAsset(token?.address, token?.chainId);
+  const hideToken = useCallback(() => {
+    addHiddenAsset({ uniqueId: computeUniqueIdForHiddenAsset(token) });
+    if (pinned) removedPinnedAsset({ uniqueId: token.uniqueId });
+    setSelectedToken();
+    triggerToast({
+      title: i18n.t('token_details.toast.hide_token', {
+        name: token.symbol,
+      }),
+    });
+  }, [token, pinned, addHiddenAsset, removedPinnedAsset, setSelectedToken]);
+
+  const copyTokenAddress = useCallback(() => {
+    if (isNative) return;
+    copyAddress(token.address);
+  }, [token.address, isNative]);
 
   if (isWatchingWallet && !allowSwap && isNative) return <>{children}</>;
 
@@ -114,18 +155,41 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
             {`${i18n.t('token_details.send')} ${token.symbol}`}
           </ContextMenuItem>
         )}
-        {explorer && (
-          <ContextMenuItem
-            symbolLeft="binoculars.fill"
-            onSelect={() => goToNewTab(explorer)}
+        <ContextMenuItem
+          symbolLeft="pin.fill"
+          onSelect={togglePinToken}
+          shortcut={shortcuts.tokens.PIN_ASSET.display}
+        >
+          <TextOverflow
+            size="14pt"
+            weight="semibold"
+            color="label"
+            testId="account-name"
           >
-            {i18n.t('token_details.view_on', { explorer: explorer.name })}
-          </ContextMenuItem>
-        )}
+            {pinned
+              ? i18n.t('token_details.more_options.unpin_token', {
+                  name: token.symbol,
+                })
+              : i18n.t('token_details.more_options.pin_token', {
+                  name: token.symbol,
+                })}
+          </TextOverflow>
+        </ContextMenuItem>
+        <ContextMenuItem
+          symbolLeft="eye.slash.fill"
+          onSelect={hideToken}
+          shortcut={shortcuts.tokens.HIDE_ASSET.display}
+        >
+          <TextOverflow size="14pt" weight="semibold" color="label">
+            {i18n.t('token_details.more_options.hide_token', {
+              name: token.symbol,
+            })}
+          </TextOverflow>
+        </ContextMenuItem>
         {!isNative && (
           <ContextMenuItem
             symbolLeft="doc.on.doc.fill"
-            onSelect={() => copyAddress(token.address)}
+            onSelect={copyTokenAddress}
             shortcut={shortcuts.home.COPY_ADDRESS.display}
           >
             <Text size="14pt" weight="semibold">
@@ -136,32 +200,16 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
             </Text>
           </ContextMenuItem>
         )}
-        <ContextMenuItem
-          symbolLeft="pin.fill"
-          onSelect={() => {
-            if (pinned) {
-              removedPinnedAsset({ uniqueId: token.uniqueId });
-              return;
-            }
-
-            addPinnedAsset({ uniqueId: token.uniqueId });
-          }}
-        >
-          <TextOverflow
-            size="14pt"
-            weight="semibold"
-            color="label"
-            testId="account-name"
+        {explorer && <ContextMenuSeparator />}
+        {explorer && (
+          <ContextMenuItem
+            symbolLeft="binoculars.fill"
+            onSelect={() => goToNewTab(explorer)}
+            external
           >
-            {pinned
-              ? i18n.t('token_details.more_options.unpin_token', {
-                  name: token.name,
-                })
-              : i18n.t('token_details.more_options.pin_token', {
-                  name: token.name,
-                })}
-          </TextOverflow>
-        </ContextMenuItem>
+            {i18n.t('token_details.view_on', { explorer: explorer.name })}
+          </ContextMenuItem>
+        )}
       </ContextMenuContent>
     </DetailsMenuWrapper>
   );

@@ -1,20 +1,21 @@
 import { Address } from 'wagmi';
 import create from 'zustand';
 
-import { MinedTransaction } from '~/core/types/transactions';
+import { RainbowTransaction } from '~/core/types/transactions';
 
 import { createStore } from '../../internal/createStore';
+import { withSelectors } from '../../internal/withSelectors';
 
 export interface CustomNetworkTransactionsState {
   customNetworkTransactions: Record<
     Address,
-    Record<number, MinedTransaction[]>
+    Record<number, RainbowTransaction[]>
   >;
   getCustomNetworkTransactions: ({
     address,
   }: {
     address: Address;
-  }) => MinedTransaction[];
+  }) => RainbowTransaction[];
   addCustomNetworkTransactions: ({
     address,
     chainId,
@@ -22,7 +23,7 @@ export interface CustomNetworkTransactionsState {
   }: {
     address: Address;
     chainId: number;
-    transaction: MinedTransaction;
+    transaction: RainbowTransaction;
   }) => void;
   clearCustomNetworkTransactions: ({
     address,
@@ -85,6 +86,6 @@ export const customNetworkTransactionsStore =
     },
   );
 
-export const useCustomNetworkTransactionsStore = create(
-  customNetworkTransactionsStore,
+export const useCustomNetworkTransactionsStore = withSelectors(
+  create(customNetworkTransactionsStore),
 );

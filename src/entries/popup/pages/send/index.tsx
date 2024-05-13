@@ -11,6 +11,8 @@ import {
   useRef,
   useState,
 } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { isAddress } from 'viem';
 import { Address } from 'wagmi';
 
 import { analytics } from '~/analytics';
@@ -21,10 +23,18 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { useFlashbotsEnabledStore, useGasStore } from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import {
+  computeUniqueIdForHiddenAsset,
+  useHiddenAssetStore,
+} from '~/core/state/hiddenAssets/hiddenAssets';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSelectedNftStore } from '~/core/state/selectedNft';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
-import { AddressOrEth, ParsedAsset } from '~/core/types/assets';
+import {
+  AddressOrEth,
+  ParsedAsset,
+  ParsedUserAsset,
+} from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
   TransactionGasParams,
@@ -100,8 +110,24 @@ export function Send() {
 
   const navigate = useRainbowNavigate();
 
-  const { isContact } = useContactsStore();
+  const isContact = useContactsStore.use.isContact();
   const { allWallets } = useWallets();
+  const { hiddenAssets } = useHiddenAssetStore();
+  const [urlSearchParams] = useSearchParams();
+
+  const queryToAddress = urlSearchParams.get('to');
+  const validatedQueryToAddress = isAddress(queryToAddress as Address)
+    ? queryToAddress
+    : null;
+
+  const isHidden = useCallback(
+    (asset: ParsedUserAsset) =>
+      hiddenAssets.some(
+        (uniqueId) => uniqueId === computeUniqueIdForHiddenAsset(asset),
+      ),
+    [hiddenAssets],
+  );
+
   const isMyWallet = (address: Address) =>
     allWallets?.some((w) => w.address === address);
 
@@ -116,10 +142,16 @@ export function Send() {
     sortMethod,
   } = useSendAsset();
 
+  const unhiddenAssets = useMemo(
+    () => assets.filter((asset) => !isHidden(asset)),
+    [assets, isHidden],
+  );
+
   const { nft, nfts, nftSortMethod, setNftSortMethod, selectNft } =
     useSendUniqueAsset();
 
-  const { clearCustomGasModified, selectedGas } = useGasStore();
+  const selectedGas = useGasStore.use.selectedGas();
+  const clearCustomGasModified = useGasStore.use.clearCustomGasModified();
 
   const { selectedNft, setSelectedNft } = useSelectedNftStore();
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
@@ -483,7 +515,9 @@ export function Send() {
       );
     }
 
-    if (sendAddress && sendAddress.length) {
+    if (validatedQueryToAddress) {
+      setToAddressOrName(validatedQueryToAddress);
+    } else if (sendAddress && sendAddress.length) {
       setToAddressOrName(sendAddress);
     }
     if (sendField !== independentField) {
@@ -640,6 +674,7 @@ export function Send() {
                 toAddress={toAddress}
                 toEnsName={toEnsName}
                 toAddressOrName={toAddressOrName}
+                queryToAddress={validatedQueryToAddress}
                 clearToAddress={clearToAddress}
                 handleToAddressChange={handleToAddressChange}
                 setToAddressOrName={setToAddressOrName}
@@ -658,7 +693,7 @@ export function Send() {
                 >
                   <SendTokenInput
                     asset={asset}
-                    assets={assets}
+                    assets={unhiddenAssets}
                     selectAssetAddressAndChain={selectAsset}
                     dropdownClosed={toAddressDropdownOpen}
                     setSortMethod={setSortMethod}

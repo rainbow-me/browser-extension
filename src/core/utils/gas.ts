@@ -33,6 +33,7 @@ import {
 } from '../types/gas';
 
 import { gweiToWei, weiToGwei } from './ethereum';
+import { formatNumber } from './formatNumber';
 import { addHexPrefix, convertStringToHex, toHex } from './hex';
 import { fetchJsonLocally } from './localJson';
 import {
@@ -107,11 +108,12 @@ export const parseGasDataConfirmationTime = ({
 };
 
 export const parseGasFeeParam = ({ wei }: { wei: string }): GasFeeParam => {
-  const gwei = wei ? weiToGwei(wei) : '';
+  const _wei = new BigNumber(wei).toFixed(0); // wei is the smallest unit, shouldn't have decimals
+  const gwei = _wei ? weiToGwei(_wei) : '';
   return {
-    amount: wei,
-    display: `${gwei} Gwei`,
-    gwei: `${Math.round(Number(gwei) * 10) / 10}`,
+    amount: _wei,
+    display: `${formatNumber(gwei)} Gwei`,
+    gwei,
   };
 };
 
@@ -535,7 +537,6 @@ export const meteorologySupportsChain = (chainId: ChainId) =>
   [
     ChainId.bsc,
     ChainId.sepolia,
-    ChainId.goerli,
     ChainId.holesky,
     ChainId.mainnet,
     ChainId.polygon,
@@ -550,7 +551,6 @@ export const meteorologySupportsType2ForChain = (chainId: ChainId) =>
   [
     ChainId.mainnet,
     ChainId.sepolia,
-    ChainId.goerli,
     ChainId.holesky,
     ChainId.base,
     ChainId.arbitrum,

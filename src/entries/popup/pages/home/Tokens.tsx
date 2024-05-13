@@ -22,6 +22,10 @@ import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme'
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import {
+  computeUniqueIdForHiddenAsset,
+  useHiddenAssetStore,
+} from '~/core/state/hiddenAssets/hiddenAssets';
 import { usePinnedAssetStore } from '~/core/state/pinnedAssets';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { truncateAddress } from '~/core/utils/address';
@@ -104,6 +108,15 @@ export function Tokens() {
   const { trackShortcut } = useKeyboardAnalytics();
   const { modifierSymbol } = useSystemSpecificModifierKey();
   const { pinnedAssets } = usePinnedAssetStore();
+  const { hiddenAssets } = useHiddenAssetStore();
+
+  const isHidden = useCallback(
+    (asset: ParsedUserAsset) =>
+      hiddenAssets.some(
+        (uniqueId) => uniqueId === computeUniqueIdForHiddenAsset(asset),
+      ),
+    [hiddenAssets],
+  );
 
   const {
     data: assets = [],
@@ -144,16 +157,28 @@ export function Tokens() {
     },
   );
 
-  const combinedAssets = useMemo(
-    () => [...assets, ...customNetworkAssets],
-    [assets, customNetworkAssets],
-  );
-
   const isPinned = useCallback(
     (assetUniqueId: string) =>
       pinnedAssets.some(({ uniqueId }) => uniqueId === assetUniqueId),
     [pinnedAssets],
   );
+
+  const combinedAssets = useMemo(
+    () =>
+      Array.from(
+        new Map(
+          [...customNetworkAssets, ...assets].map((item) => [
+            item.uniqueId,
+            item,
+          ]),
+        ).values(),
+      ),
+    [assets, customNetworkAssets],
+  );
+
+  const unhiddenAssets = useMemo(() => {
+    return combinedAssets.filter((asset) => !isHidden(asset));
+  }, [combinedAssets, isHidden]);
 
   const computeUniqueAssets = useCallback(
     (assets: ParsedUserAsset[]) => {
@@ -197,10 +222,10 @@ export function Tokens() {
 
   const filteredAssets = useMemo(
     () => [
-      ...computePinnedAssets(combinedAssets),
-      ...computeUniqueAssets(combinedAssets),
+      ...computePinnedAssets(unhiddenAssets),
+      ...computeUniqueAssets(unhiddenAssets),
     ],
-    [combinedAssets, computePinnedAssets, computeUniqueAssets],
+    [unhiddenAssets, computePinnedAssets, computeUniqueAssets],
   );
 
   const containerRef = useContainerRef();
@@ -278,10 +303,11 @@ export function Tokens() {
             return (
               <Box
                 key={`${token.uniqueId}-${key}`}
-                layoutId={`list-${index}`}
                 as={motion.div}
                 position="absolute"
                 width="full"
+                initial={{ x: 4 }}
+                animate={{ x: 0 }}
                 style={{ height: size, y: start }}
               >
                 {pinned && <TokenMarkedHighlighter />}

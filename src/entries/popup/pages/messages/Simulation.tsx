@@ -2,8 +2,18 @@ import { formatUnits } from '@ethersproject/units';
 import { ReactNode } from 'react';
 
 import { i18n } from '~/core/languages';
+import { useAssets } from '~/core/resources/assets';
+import { useCurrentCurrencyStore } from '~/core/state';
 import { createNumberFormatter } from '~/core/utils/formatNumber';
-import { Inline, Stack, Symbol, Text, TextOverflow } from '~/design-system';
+import { convertRawAmountToNativeDisplay } from '~/core/utils/numbers';
+import {
+  Box,
+  Inline,
+  Stack,
+  Symbol,
+  Text,
+  TextOverflow,
+} from '~/design-system';
 import { TextColor } from '~/design-system/styles/designTokens';
 
 import { CoinIcon, NFTIcon } from '../../components/CoinIcon/CoinIcon';
@@ -48,14 +58,21 @@ function SimulatedChangeRow({
   color: TextColor;
   label: string;
 }) {
+  const { currentCurrency } = useCurrentCurrencyStore();
   const changeAmount =
     quantity === 'UNLIMITED'
       ? Number.MAX_SAFE_INTEGER
       : formatUnits(quantity, asset.decimals);
+  const { data: additionalAssetData } = useAssets({
+    assets: asset ? [{ address: asset.address, chainId: asset.chainId }] : [],
+    currency: currentCurrency,
+  });
+  const assetDataWithPrice = Object.values(additionalAssetData || {})?.[0];
+  const assetPrice = assetDataWithPrice?.price?.value;
   return (
     <Inline
-      wrap={false}
-      space="24px"
+      wrap={true}
+      space="12px"
       alignHorizontal="justify"
       alignVertical="center"
     >
@@ -64,12 +81,32 @@ function SimulatedChangeRow({
         <Text size="14pt" weight="bold" color="label">
           {label}
         </Text>
+        {quantity !== 'UNLIMITED' && !!assetPrice ? (
+          <Box marginLeft={'-4px'}>
+            <TextOverflow size="12pt" weight="bold" color="labelSecondary">
+              {
+                convertRawAmountToNativeDisplay(
+                  quantity,
+                  asset?.decimals || 18,
+                  assetPrice,
+                  currentCurrency,
+                )?.display
+              }
+            </TextOverflow>
+          </Box>
+        ) : null}
       </Inline>
       <Inline wrap={false} space="6px" alignVertical="center">
         {asset?.type === 'nft' ? (
           <NFTIcon asset={asset} size={16} />
         ) : (
-          <CoinIcon asset={asset} size={14} />
+          <CoinIcon
+            asset={asset}
+            size={14}
+            badgeSize={8}
+            badgePositionBottom={1.5}
+            badgePositionLeft={-4}
+          />
         )}
         <Inline wrap={false} space="4px" alignVertical="center">
           <TextOverflow size="14pt" weight="bold" color={color}>

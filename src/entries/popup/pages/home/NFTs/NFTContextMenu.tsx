@@ -37,7 +37,8 @@ export default function NFTContextMenu({
   offsetOverride?: boolean;
 }) {
   const { currentAddress: address } = useCurrentAddressStore();
-  const { hidden, toggleHideNFT } = useNftsStore();
+  const hidden = useNftsStore.use.hidden();
+  const toggleHideNFT = useNftsStore.use.toggleHideNFT();
   const { selectedNft, setSelectedNft } = useSelectedNftStore();
   const navigate = useRainbowNavigate();
   const hiddenNftsForAddress = hidden[address] || {};
@@ -45,12 +46,16 @@ export default function NFTContextMenu({
   const hasContractAddress = !!nftToFocus?.asset_contract.address;
   const hasNetwork = !!nftToFocus?.network;
   const displayed = !hiddenNftsForAddress[nftToFocus?.uniqueId || ''];
+  const isPOAP = nftToFocus?.familyName === 'POAP';
 
   const explorerTitle =
     nftToFocus?.network === 'mainnet'
       ? 'Etherscan'
       : i18n.t('nfts.details.explorer');
   const getBlockExplorerUrl = () => {
+    if (nftToFocus?.poapDropId) {
+      return `https://collectors.poap.xyz/drop/${nftToFocus.poapDropId}`;
+    }
     if (nftToFocus?.network === 'mainnet') {
       return `https://${getBlockExplorerHostForChain(
         chainIdFromChainName(nftToFocus?.network as ChainName),
@@ -107,15 +112,17 @@ export default function NFTContextMenu({
       >
         <Stack space="4px">
           <Stack>
-            <ContextMenuItem
-              symbolLeft="paperplane.fill"
-              onSelect={handleSendNft}
-              shortcut={shortcuts.nfts.SEND_NFT.display}
-            >
-              <Text size="14pt" weight="semibold">
-                {i18n.t('nfts.details.send')}
-              </Text>
-            </ContextMenuItem>
+            {!isPOAP && (
+              <ContextMenuItem
+                symbolLeft="paperplane.fill"
+                onSelect={handleSendNft}
+                shortcut={shortcuts.nfts.SEND_NFT.display}
+              >
+                <Text size="14pt" weight="semibold">
+                  {i18n.t('nfts.details.send')}
+                </Text>
+              </ContextMenuItem>
+            )}
             <ContextMenuItem
               symbolLeft={displayed ? 'eye.slash.fill' : 'eye.fill'}
               onSelect={() =>
@@ -168,7 +175,7 @@ export default function NFTContextMenu({
               </TextOverflow>
             </ContextMenuItem>
             <ContextMenuSeparator />
-            {hasContractAddress && hasNetwork && (
+            {hasContractAddress && hasNetwork && !isPOAP && (
               <ContextMenuItem
                 external
                 symbolLeft={'safari'}
@@ -185,7 +192,9 @@ export default function NFTContextMenu({
               onSelect={() => goToNewTab({ url: getBlockExplorerUrl() })}
             >
               <Text size="14pt" weight="semibold">
-                {i18n.t('nfts.details.view_on_explorer', { explorerTitle })}
+                {nftToFocus?.poapDropId
+                  ? i18n.t('nfts.details.view_gallery')
+                  : i18n.t('nfts.details.view_on_explorer', { explorerTitle })}
               </Text>
             </ContextMenuItem>
           </Stack>

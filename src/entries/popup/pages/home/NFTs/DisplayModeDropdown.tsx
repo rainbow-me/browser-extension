@@ -20,14 +20,16 @@ import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import { gradientBorderDark, gradientBorderLight } from './NFTs.css';
 
 export default function DisplayModeDropdown() {
-  const { displayMode, setNftDisplayMode } = useNftsStore();
+  const displayMode = useNftsStore.use.displayMode();
+  const setNftDisplayMode = useNftsStore.use.setNftDisplayMode();
+
   const onValueChange = useCallback(
     (value: typeof displayMode) => {
       setNftDisplayMode(value);
     },
     [setNftDisplayMode],
   );
-  const { currentTheme } = useCurrentThemeStore();
+  const currentTheme = useCurrentThemeStore.use.currentTheme();
   const [open, setIsOpen] = useState(false);
 
   useKeyboardShortcut({

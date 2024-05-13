@@ -13,7 +13,7 @@ export const useHasEnoughGas = (session: ActiveSession) => {
     address: session?.address,
     chainId,
   });
-  const { selectedGas } = useGasStore();
+  const selectedGas = useGasStore.use.selectedGas();
 
   return lessThan(
     selectedGas?.gasFee?.amount || '0',

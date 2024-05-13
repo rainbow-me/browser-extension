@@ -31,7 +31,7 @@ export const useSearchableWallets = (currentPage: CommandKPage) => {
   const { sortedAccounts } = useAccounts(({ sortedAccounts }) => ({
     sortedAccounts,
   }));
-  const { setCurrentAddress } = useCurrentAddressStore();
+  const setCurrentAddress = useCurrentAddressStore.use.setCurrentAddress();
 
   const handleSelectAddress = useCallback(
     (address: Address) => {

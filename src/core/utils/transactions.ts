@@ -242,8 +242,10 @@ export function parseTransaction({
 
   if (
     !type ||
-    (transactionTypeShouldHaveChanges(type) && changes.length === 0) ||
-    !tx.address_from
+    !tx.address_from ||
+    (status !== 'failed' && // failed txs won't have changes
+      transactionTypeShouldHaveChanges(type) &&
+      changes.length === 0)
   )
     return; // filters some spam or weird api responses
 
@@ -326,7 +328,7 @@ export const parseNewTransaction = (
     ...tx,
     status: 'pending',
     data: tx.data,
-    title: i18n.t(`transactions.${tx.type}.${tx.status}`),
+    title: i18n.t(`transactions.${tx.typeOverride || tx.type}.${tx.status}`),
     description: asset?.name || methodName,
     from: tx.from,
     changes,

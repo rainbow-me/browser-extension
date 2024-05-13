@@ -1,5 +1,5 @@
 import { AnimatePresence, motion, useAnimationControls } from 'framer-motion';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { usePendingRequestStore } from '~/core/state';
@@ -17,7 +17,8 @@ export function Welcome() {
   const [showOnboardBeforeConnectSheet, setShowOnboardBeforeConnectSheet] =
     useState(!!pendingRequests.length);
   const headerControls = useAnimationControls();
-  const { setNeedsInitialization } = useWalletBackupsStore();
+  const setNeedsInitialization =
+    useWalletBackupsStore.use.setNeedsInitialization();
 
   useEffect(() => {
     setNeedsInitialization(false);

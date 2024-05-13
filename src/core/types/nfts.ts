@@ -23,11 +23,13 @@ export enum SimpleHashChain {
   PolygonZkEVM = 'polygon-zkevm',
   Rari = 'rari',
   Scroll = 'scroll',
-  PolygonMumbai = 'polygon-mumbai',
   ArbitrumSepolia = 'arbitrum-sepolia',
   BaseSepolia = 'base-sepolia',
   OptimismSepolia = 'optimism-sepolia',
   ZoraSepolia = 'zora-sepolia',
+  Blast = 'blast',
+  BlastSepolia = 'blast-sepolia',
+  PolygonAmoy = 'polygon-amoy',
 }
 
 /**
@@ -336,6 +338,7 @@ export interface UniqueAsset {
   fullUniqueId: string;
   urlSuffixForAsset: string;
   isPoap?: boolean;
+  poapDropId: string | null;
   network: ChainName;
   predominantColor?: string;
   video_url: string | null;

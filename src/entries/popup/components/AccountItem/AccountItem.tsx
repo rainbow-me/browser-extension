@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Address } from 'wagmi';
 
 import { supportedCurrencies } from '~/core/references';
@@ -9,6 +9,11 @@ import {
 import { useUserAssets } from '~/core/resources/assets';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
+import {
+  computeUniqueIdForHiddenAsset,
+  useHiddenAssetStore,
+} from '~/core/state/hiddenAssets/hiddenAssets';
+import { ParsedUserAsset } from '~/core/types/assets';
 import { truncateAddress } from '~/core/utils/address';
 import { convertAmountToNativeDisplay } from '~/core/utils/numbers';
 import {
@@ -35,14 +40,24 @@ export enum LabelOption {
 }
 
 const TotalAssetsBalance = ({ account }: { account: Address }) => {
+  const { hiddenAssets } = useHiddenAssetStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
+  const isHidden = useCallback(
+    (asset: ParsedUserAsset) =>
+      hiddenAssets.some(
+        (uniqueId) => uniqueId === computeUniqueIdForHiddenAsset(asset),
+      ),
+    [hiddenAssets],
+  );
   const { data: totalAssetsBalance, isLoading } = useUserAssets(
     { address: account, currency },
     {
       select: (data) =>
         selectorFilterByUserChains<string>({
           data,
-          selector: selectUserAssetsBalance,
+          selector: (assetsByChain) => {
+            return selectUserAssetsBalance(assetsByChain, isHidden);
+          },
         }),
     },
   );
