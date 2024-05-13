@@ -37,9 +37,10 @@ export const useWatchPendingTransactions = ({
     pendingTransactions: storePendingTransactions,
     setPendingTransactions,
   } = usePendingTransactionsStore();
-  const { setNonce } = useNonceStore();
+  const setNonce = useNonceStore.use.setNonce();
   const { currentCurrency } = useCurrentCurrencyStore();
-  const { addCustomNetworkTransactions } = useCustomNetworkTransactionsStore();
+  const addCustomNetworkTransactions =
+    useCustomNetworkTransactionsStore.use.addCustomNetworkTransactions();
   const { userChains } = useUserChainsStore();
 
   const pendingTransactions = useMemo(

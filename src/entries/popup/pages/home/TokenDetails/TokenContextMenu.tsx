@@ -43,11 +43,10 @@ interface TokenContextMenuProps {
 export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
   const { isWatchingWallet } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
-  const setSelectedToken = useSelectedTokenStore((s) => s.setSelectedToken);
   const { currentAddress: address } = useCurrentAddressStore();
   const { pinned: pinnedStore, togglePinAsset } = usePinnedAssetStore();
-  const { toggleHideAsset } = useHiddenAssetStore();
-
+  const setSelectedToken = useSelectedTokenStore.use.setSelectedToken();
+  const toggleHideAsset = useHiddenAssetStore.use.toggleHideAsset();
   const pinned = !!pinnedStore[address]?.[token.uniqueId]?.pinned;
 
   // if we are navigating to new page (swap/send) the menu closes automatically,

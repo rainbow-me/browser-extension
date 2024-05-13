@@ -114,7 +114,8 @@ export function Send() {
 
   const navigate = useRainbowNavigate();
   const { currentAddress: address } = useCurrentAddressStore();
-  const { isContact } = useContactsStore();
+
+  const isContact = useContactsStore.use.isContact();
   const { allWallets } = useWallets();
   const { hidden } = useHiddenAssetStore();
   const [urlSearchParams] = useSearchParams();
@@ -153,7 +154,8 @@ export function Send() {
   const { nft, nfts, nftSortMethod, setNftSortMethod, selectNft } =
     useSendUniqueAsset();
 
-  const { clearCustomGasModified, selectedGas } = useGasStore();
+  const selectedGas = useGasStore.use.selectedGas();
+  const clearCustomGasModified = useGasStore.use.clearCustomGasModified();
 
   const { selectedNft, setSelectedNft } = useSelectedNftStore();
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();

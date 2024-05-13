@@ -180,8 +180,7 @@ const TransactionDetails = memo(function TransactionDetails({
 
   const isContract = metaTo?.function || metaTo?.created;
 
-  const { getNonce } = useNonceStore();
-  const { currentNonce: nonce } = getNonce(session) || {};
+  const nonce = useNonceStore((s) => s.getNonce(session)?.currentNonce);
 
   const functionName = metaTo?.function.split('(')[0];
   const contract = metaTo && {
@@ -413,7 +412,7 @@ function InsuficientGasFunds({
 
   const navigate = useRainbowNavigate();
 
-  const setSelectedToken = useSelectedTokenStore((s) => s.setSelectedToken);
+  const setSelectedToken = useSelectedTokenStore.use.setSelectedToken();
 
   if (!nativeAsset) return null;
 

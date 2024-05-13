@@ -4,6 +4,7 @@ import create from 'zustand';
 import { ChainId } from '~/core/types/chains';
 
 import { createStore } from '../internal/createStore';
+import { withSelectors } from '../internal/withSelectors';
 
 export interface AppSession {
   activeSessionAddress: Address;
@@ -242,4 +243,4 @@ export const appSessionsStore = createStore<AppSessionsStore<AppSession>>(
   },
 );
 
-export const useAppSessionsStore = create(appSessionsStore);
+export const useAppSessionsStore = withSelectors(create(appSessionsStore));

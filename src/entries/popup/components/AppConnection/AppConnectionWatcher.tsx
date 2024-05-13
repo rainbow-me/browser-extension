@@ -1,4 +1,4 @@
-import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
@@ -73,11 +73,12 @@ export const AppConnectionWatcher = () => {
     url,
   ]);
 
-  const {
-    nudgeSheetEnabled,
-    appHasInteractedWithNudgeSheet,
-    setAppHasInteractedWithNudgeSheet,
-  } = useAppConnectionWalletSwitcherStore();
+  const nudgeSheetEnabled =
+    useAppConnectionWalletSwitcherStore.use.nudgeSheetEnabled();
+  const appHasInteractedWithNudgeSheet =
+    useAppConnectionWalletSwitcherStore.use.appHasInteractedWithNudgeSheet();
+  const setAppHasInteractedWithNudgeSheet =
+    useAppConnectionWalletSwitcherStore.use.setAppHasInteractedWithNudgeSheet();
 
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {

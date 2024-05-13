@@ -2,6 +2,7 @@ import { Address } from 'wagmi';
 import create from 'zustand';
 
 import { createStore } from '../internal/createStore';
+import { withSelectors } from '../internal/withSelectors';
 
 export interface WalletOrderStore {
   walletOrder: Address[];
@@ -31,4 +32,4 @@ export const walletOrderStore = createStore<WalletOrderStore>(
   },
 );
 
-export const useWalletOrderStore = create(walletOrderStore);
+export const useWalletOrderStore = withSelectors(create(walletOrderStore));

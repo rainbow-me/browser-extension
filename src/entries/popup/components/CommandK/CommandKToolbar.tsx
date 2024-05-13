@@ -105,7 +105,7 @@ export function CommandKToolbar({
                   whileTap={{ scale: 0.925 }}
                 >
                   <Inline alignVertical="center" space="10px" wrap={false}>
-                    <Inline alignVertical="center" space="4px">
+                    <Inline wrap={false} alignVertical="center" space="4px">
                       <Box
                         alignItems="center"
                         as={motion.div}
@@ -184,7 +184,8 @@ export function CommandKToolbar({
                 wrap={false}
               >
                 <Text align="right" color="label" size="12pt" weight="bold">
-                  {selectedCommand?.actionLabel || actionLabels.activateCommand}
+                  {selectedCommand?.actionLabel?.() ||
+                    actionLabels.activateCommand()}
                 </Text>
                 <Box
                   alignItems="center"

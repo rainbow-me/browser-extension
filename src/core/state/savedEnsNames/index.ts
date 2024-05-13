@@ -2,6 +2,7 @@ import { Address } from 'wagmi';
 import create from 'zustand';
 
 import { createStore } from '../internal/createStore';
+import { withSelectors } from '../internal/withSelectors';
 
 type SavedNamesStore = {
   savedNames: Record<Address, string>;
@@ -20,4 +21,4 @@ export const savedEnsNamesStore = createStore<SavedNamesStore>(
   { persist: { name: 'ensSavedNames', version: 0 } },
 );
 
-export const useSavedEnsNames = create(savedEnsNamesStore);
+export const useSavedEnsNames = withSelectors(create(savedEnsNamesStore));

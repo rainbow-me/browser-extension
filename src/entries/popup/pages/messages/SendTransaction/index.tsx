@@ -56,7 +56,7 @@ export function SendTransaction({
     url: request?.meta?.sender?.url,
   });
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
-  const { selectedGas } = useGasStore();
+  const selectedGas = useGasStore.use.selectedGas();
   const selectedWallet = activeSession?.address || '';
   const { connectedToHardhat, connectedToHardhatOp } =
     useConnectedToHardhatStore();

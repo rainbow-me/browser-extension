@@ -9,6 +9,7 @@ import {
 } from '~/core/types/gas';
 
 import { createStore } from '../internal/createStore';
+import { withSelectors } from '../internal/withSelectors';
 
 export interface GasStore {
   selectedGas: GasFeeParams | GasFeeLegacyParams;
@@ -65,4 +66,4 @@ export const gasStore = createStore<GasStore>(
   },
 );
 
-export const useGasStore = create(gasStore);
+export const useGasStore = withSelectors(create(gasStore));

@@ -4,6 +4,7 @@ import create from 'zustand';
 import { ChainId } from '~/core/types/chains';
 
 import { createStore } from '../internal/createStore';
+import { withSelectors } from '../internal/withSelectors';
 
 type NonceData = {
   currentNonce?: number;
@@ -67,4 +68,4 @@ export const nonceStore = createStore<CurrentNonceState>(
   },
 );
 
-export const useNonceStore = create(nonceStore);
+export const useNonceStore = withSelectors(create(nonceStore));

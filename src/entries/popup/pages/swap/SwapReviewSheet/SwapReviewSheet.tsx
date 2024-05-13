@@ -221,10 +221,11 @@ const SwapReviewSheetWithQuote = ({
 
   const [showMoreDetails, setShowDetails] = useState(false);
   const [sendingSwap, setSendingSwap] = useState(false);
-  const { selectedGas } = useGasStore();
-  const { setSwapAssetsToRefresh } = useSwapAssetsToRefreshStore();
+  const selectedGas = useGasStore.use.selectedGas();
+  const setSwapAssetsToRefresh =
+    useSwapAssetsToRefreshStore.use.setSwapAssetsToRefresh();
   const confirmSwapButtonRef = useRef<HTMLButtonElement>(null);
-  const { resetSwapValues } = usePopupInstanceStore();
+  const resetSwapValues = usePopupInstanceStore.use.resetSwapValues();
   const { connectedToHardhat } = useConnectedToHardhatStore();
 
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({

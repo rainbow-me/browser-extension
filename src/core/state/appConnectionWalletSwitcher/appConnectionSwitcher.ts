@@ -2,6 +2,7 @@ import { Address } from 'wagmi';
 import create from 'zustand';
 
 import { createStore } from '../internal/createStore';
+import { withSelectors } from '../internal/withSelectors';
 
 export interface AppConnectionWalletSwitcherStore {
   nudgeSheetEnabled: boolean;
@@ -78,6 +79,6 @@ export const appConnectionWalletSwitcherStore =
     },
   );
 
-export const useAppConnectionWalletSwitcherStore = create(
-  appConnectionWalletSwitcherStore,
+export const useAppConnectionWalletSwitcherStore = withSelectors(
+  create(appConnectionWalletSwitcherStore),
 );

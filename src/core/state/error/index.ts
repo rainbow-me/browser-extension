@@ -1,6 +1,7 @@
 import create from 'zustand';
 
 import { createStore } from '../internal/createStore';
+import { withSelectors } from '../internal/withSelectors';
 
 export interface ErrorState {
   error: Error | null;
@@ -12,4 +13,4 @@ export const errorStore = createStore<ErrorState>((set) => ({
   setError: (error) => set({ error }),
 }));
 
-export const useErrorStore = create(errorStore);
+export const useErrorStore = withSelectors(create(errorStore));
