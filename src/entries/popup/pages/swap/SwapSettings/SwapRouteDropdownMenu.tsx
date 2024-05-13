@@ -12,11 +12,13 @@ import {
 
 import { aggregatorInfo } from '../utils';
 
+type DropdownSource = Source.Aggregator0x | Source.Aggregator1inch | 'auto';
+
 interface SwapRouteDropdownMenuProps {
   accentColor?: string;
   children: ReactNode;
-  setSource: (source: Source | 'auto') => void;
-  source: Source | 'auto';
+  setSource: (source: DropdownSource | 'auto') => void;
+  source: DropdownSource | 'auto';
 }
 
 export const SwapRouteDropdownMenu = ({
@@ -26,7 +28,7 @@ export const SwapRouteDropdownMenu = ({
   setSource,
 }: SwapRouteDropdownMenuProps) => {
   const onValueChange = useCallback(
-    (value: Source | 'auto') => {
+    (value: DropdownSource | 'auto') => {
       setSource(value);
     },
     [setSource],
@@ -37,7 +39,7 @@ export const SwapRouteDropdownMenu = ({
       <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
       <DropdownMenuContent accentColor={accentColor} marginRight="12px">
         <DropdownMenuRadioGroup
-          onValueChange={(value) => onValueChange(value as Source | 'auto')}
+          onValueChange={(value) => onValueChange(value as DropdownSource)}
           value={source}
         >
           <DropdownMenuRadioItem
@@ -82,7 +84,7 @@ export const SwapRouteDropdownMenu = ({
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem
             highlightAccentColor
-            value={Source.Aggregotor1inch}
+            value={Source.Aggregator1inch}
             selectedValue={source}
           >
             <Box testId="settings-route-context-1inch">
