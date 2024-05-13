@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import gridPlusLogo from 'static/assets/hw/grid-plus-logo.png';
@@ -43,16 +43,10 @@ export function ChooseHW() {
   }, [isFullScreen, navigate, state]);
 
   const handleGridPlusChoice = useCallback(() => {
-    if (!isFullScreen) {
-      goToNewTab({
-        url: POPUP_URL + `#${ROUTES.HW_GRIDPLUS}`,
-      });
-    } else {
-      navigate(ROUTES.HW_GRIDPLUS, {
-        state: { direction: state?.direction, navbarIcon: state?.navbarIcon },
-      });
-    }
-  }, [isFullScreen, navigate, state]);
+    navigate(ROUTES.HW_GRIDPLUS, {
+      state: { direction: state?.direction, navbarIcon: state?.navbarIcon },
+    });
+  }, [navigate, state]);
 
   return (
     <Box height="full">
