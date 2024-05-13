@@ -1,7 +1,6 @@
-import { randomUUID } from 'crypto';
-
 import { motion } from 'framer-motion';
 import { setup } from 'gridplus-sdk';
+import { uniqueId } from 'lodash';
 import { FormEvent, useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
@@ -47,7 +46,7 @@ export const WalletCredentials = ({
       } else {
         result = await setup({
           deviceId: deviceId,
-          password: randomUUID(),
+          password: uniqueId(),
           name: appName,
           getStoredClient: () => useGridPlusClientStore.getState().client,
           setStoredClient: setStoredClient,
