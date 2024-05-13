@@ -40,13 +40,7 @@ function getPageTitle(
 
   const title = currentPage.listTitle;
 
-  if (typeof title === 'string') {
-    return title;
-  } else if (command) {
-    return title(command);
-  }
-
-  return '';
+  return title(command);
 }
 
 export const CommandKList = React.forwardRef<
@@ -283,8 +277,8 @@ export function CommandKEmptyState({
           weight="bold"
         />
         <Text color="labelQuaternary" size="20pt" weight="bold">
-          {!searchQuery && currentPage.emptyLabel
-            ? currentPage.emptyLabel
+          {!searchQuery && typeof currentPage.emptyLabel === 'function'
+            ? currentPage.emptyLabel()
             : i18n.t('command_k.no_results')}
         </Text>
       </Stack>

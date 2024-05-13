@@ -3,12 +3,13 @@ import create from 'zustand';
 import { isNativePopup } from '~/core/utils/tabs';
 
 import { createStore } from '../internal/createStore';
+import { withSelectors } from '../internal/withSelectors';
 
 export interface NavRestorationStore {
   clearLastPage: () => Promise<void>;
-  lastPage?: string;
+  lastPage: string | undefined;
   setLastPage: (lastPage: string) => Promise<void>;
-  lastState?: Record<string, string>;
+  lastState: Record<string, string> | undefined;
   setLastState: (lastState: Record<string, string>) => Promise<void>;
   setShouldRestoreNavigation: (should: boolean) => Promise<void>;
   shouldRestoreNavigation: boolean;
@@ -52,4 +53,6 @@ export const navRestorationStore = createStore<NavRestorationStore>(
   },
 );
 
-export const useNavRestorationStore = create(navRestorationStore);
+export const useNavRestorationStore = withSelectors(
+  create(navRestorationStore),
+);

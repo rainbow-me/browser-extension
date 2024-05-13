@@ -44,7 +44,7 @@ const ImportWalletViaPrivateKey = () => {
   const [isValid, setIsValid] = useState(false);
   const [isAddingWallets, setIsAddingWallets] = useState(false);
   const [secrets, setSecrets] = useState<string[]>(['']);
-  const { setCurrentAddress } = useCurrentAddressStore();
+  const setCurrentAddress = useCurrentAddressStore.use.setCurrentAddress();
 
   const [validity, setValidity] = useState<
     { valid: boolean; too_long: boolean; type: string | undefined }[]

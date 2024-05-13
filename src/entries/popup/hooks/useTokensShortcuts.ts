@@ -43,7 +43,7 @@ export function useTokensShortcuts() {
 
   const { pinnedAssets, removedPinnedAsset, addPinnedAsset } =
     usePinnedAssetStore();
-  const { addHiddenAsset } = useHiddenAssetStore();
+  const addHiddenAsset = useHiddenAssetStore.use.addHiddenAsset();
   const location = useLocation();
   const isHomeRoute = location.pathname === ROUTES.HOME;
 

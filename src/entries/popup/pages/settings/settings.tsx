@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -60,7 +60,7 @@ export function Settings() {
     connectedToHardhatOp,
     setConnectedToHardhatOp,
   } = useConnectedToHardhatStore();
-  const { clearNonces } = useNonceStore();
+  const clearNonces = useNonceStore.use.clearNonces();
 
   const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
 

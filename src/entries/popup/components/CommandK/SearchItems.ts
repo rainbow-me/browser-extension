@@ -17,7 +17,7 @@ export enum SearchItemType {
 
 export interface BaseSearchItem {
   action?: () => void;
-  actionLabel?: string;
+  actionLabel?: () => string;
   actionPage?: CommandKPage;
   asset?: ParsedUserAsset;
   description?: string;

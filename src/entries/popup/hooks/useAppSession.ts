@@ -22,8 +22,8 @@ export function useAppSession({ host = '' }: { host?: string }) {
   } = useAppSessionsStore();
 
   const activeSession = getActiveSession({ host });
-  const { clearAppHasInteractedWithNudgeSheet } =
-    useAppConnectionWalletSwitcherStore();
+  const clearAppHasInteractedWithNudgeSheet =
+    useAppConnectionWalletSwitcherStore.use.clearAppHasInteractedWithNudgeSheet();
 
   const updateAppSessionAddress = React.useCallback(
     ({ address }: { address: Address }) => {

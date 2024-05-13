@@ -4,6 +4,7 @@ import create from 'zustand';
 import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
 
 import { createStore } from '../internal/createStore';
+import { withSelectors } from '../internal/withSelectors';
 
 export interface WalletBackupReminderStore {
   reminded: boolean;
@@ -101,4 +102,4 @@ export const walletBackupsStore = createStore<WalletBackupsStore>(
   },
 );
 
-export const useWalletBackupsStore = create(walletBackupsStore);
+export const useWalletBackupsStore = withSelectors(create(walletBackupsStore));

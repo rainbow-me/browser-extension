@@ -153,7 +153,7 @@ function SwapSend({
   isSwappable: boolean;
 }) {
   const navigate = useRainbowNavigate();
-  const { setSelectedToken } = useSelectedTokenStore();
+  const setSelectedToken = useSelectedTokenStore.use.setSelectedToken();
   const selectTokenAndNavigate = (to: To) => {
     setSelectedToken(token);
     navigate(to);
@@ -480,6 +480,13 @@ export function TokenDetails() {
   const navigate = useRainbowNavigate();
   const token = userAsset || customAsset;
 
+  useEffect(() => {
+    const app = document.getElementById('app');
+    setTimeout(() => {
+      app?.focus();
+    }, 150);
+  }, []);
+
   const { data: approvals } = useApprovals(
     {
       address: currentAddress,
@@ -583,6 +590,7 @@ export function TokenDetails() {
                   state: { skipTransitionOnRoute: ROUTES.HOME },
                 })
               }
+              withinModal
             />
           }
           rightComponent={

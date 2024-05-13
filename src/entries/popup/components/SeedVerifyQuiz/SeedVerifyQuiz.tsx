@@ -146,7 +146,7 @@ export function SeedVerifyQuiz({
   );
   const [selectedWords, setSelectedWords] = useState<SeedWord[]>([]);
 
-  const { setWalletBackedUp } = useWalletBackupsStore();
+  const setWalletBackedUp = useWalletBackupsStore.use.setWalletBackedUp();
   const seedBoxBorderColor = useMemo(() => {
     if (validated) return globalColors.green90;
     if (incorrect) return globalColors.red90;
