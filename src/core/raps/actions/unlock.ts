@@ -1,18 +1,8 @@
 import { MaxUint256 } from '@ethersproject/constants';
 import { Contract, PopulatedTransaction } from '@ethersproject/contracts';
 import { parseUnits } from '@ethersproject/units';
-import {
-  Address,
-  Hash,
-  createPublicClient,
-  createWalletClient,
-  erc20Abi,
-  erc721Abi,
-  hexToBigInt,
-  http,
-  toHex,
-} from 'viem';
-import { mainnet, optimism } from 'viem/chains';
+import { getTransaction, writeContract } from '@wagmi/core';
+import { Address, Hash, erc20Abi, erc721Abi, hexToBigInt, toHex } from 'viem';
 
 import { gasStore } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
@@ -23,6 +13,7 @@ import {
 import { NewTransaction } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { getProvider } from '~/core/wagmi/clientToProvider';
+import { wagmiConfig } from '~/core/wagmi/createWagmiClient';
 import { RainbowError, logger } from '~/logger';
 
 import { ETH_ADDRESS, gasUnits } from '../../references';
@@ -219,18 +210,9 @@ export const executeApprove = async ({
   spender: Address;
   tokenAddress: Address;
 }) => {
-  // fix this
-  const publicClient = createPublicClient({
-    chain: optimism,
-    transport: http(),
-  });
-  const walletClient = createWalletClient({
-    chain: mainnet,
-    transport: http(),
-  });
   const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } = gasParams;
 
-  const { request } = await publicClient.simulateContract({
+  const hash = await writeContract(wagmiConfig, {
     address: tokenAddress,
     abi: erc20Abi,
     functionName: 'approve',
@@ -246,8 +228,9 @@ export const executeApprove = async ({
       : undefined) as undefined,
   });
 
-  const hash = await walletClient.writeContract(request);
-  return await publicClient.getTransaction({ hash });
+  const transaction = await getTransaction(wagmiConfig, { hash });
+
+  return transaction;
 };
 
 export const unlock = async ({
