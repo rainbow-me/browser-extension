@@ -12,7 +12,7 @@ import {
   http,
   toHex,
 } from 'viem';
-import { mainnet } from 'viem/chains';
+import { mainnet, optimism } from 'viem/chains';
 
 import { gasStore } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
@@ -221,7 +221,7 @@ export const executeApprove = async ({
 }) => {
   // fix this
   const publicClient = createPublicClient({
-    chain: mainnet,
+    chain: optimism,
     transport: http(),
   });
   const walletClient = createWalletClient({
