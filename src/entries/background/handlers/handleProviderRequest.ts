@@ -247,11 +247,9 @@ export const handleProviderRequest = ({
       isSupportedChainId(chainId) || isCustomChain(chainId),
     getActiveSession: ({ host }: { host: string }) =>
       appSessionsStore.getState().getActiveSession({ host }),
-    // FIX THIS
-    getChain: (chainId: number) =>
-      SUPPORTED_CHAINS.find(
-        (chain) => chain.id === Number(chainId),
-      ) as undefined,
+    getChainNativeCurrency: (chainId: number) =>
+      SUPPORTED_CHAINS.find((chain) => chain.id === Number(chainId))
+        ?.nativeCurrency,
     getFeatureFlags: () => featureFlagsStore.getState().featureFlags,
     getProvider: getProvider,
     messengerProviderRequest: (request: ProviderRequestPayload) =>
