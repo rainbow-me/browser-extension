@@ -17,8 +17,8 @@ type DropdownSource = Source.Aggregator0x | Source.Aggregator1inch | 'auto';
 interface SwapRouteDropdownMenuProps {
   accentColor?: string;
   children: ReactNode;
-  setSource: (source: DropdownSource | 'auto') => void;
-  source: DropdownSource | 'auto';
+  setSource: (source: DropdownSource) => void;
+  source: DropdownSource;
 }
 
 export const SwapRouteDropdownMenu = ({
@@ -28,7 +28,7 @@ export const SwapRouteDropdownMenu = ({
   setSource,
 }: SwapRouteDropdownMenuProps) => {
   const onValueChange = useCallback(
-    (value: DropdownSource | 'auto') => {
+    (value: DropdownSource) => {
       setSource(value);
     },
     [setSource],
