@@ -228,7 +228,7 @@ export const executeApprove = async ({
       : undefined) as undefined,
   });
 
-  const transaction = await getTransaction(wagmiConfig, { hash });
+  const transaction = await getTransaction(wagmiConfig, { hash, chainId: 1 });
 
   return transaction;
 };
@@ -293,8 +293,7 @@ export const unlock = async ({
 
   const transaction = {
     asset: assetToUnlock,
-    // FIX THIS
-    data: '' as string,
+    data: approval.input,
     value: approval.value?.toString(),
     changes: [],
     from: parameters.fromAddress,
