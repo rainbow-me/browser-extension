@@ -40,6 +40,24 @@ import { isLowerCaseMatch } from './strings';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
+export const findRainbowChainForChainId = (chainId: number) => {
+  const { rainbowChains } = getRainbowChains();
+  return rainbowChains.find((chain) => chain.id === chainId);
+};
+
+export const getRainbowChains = () => {
+  const { rainbowChains } = rainbowChainsStore.getState();
+  return {
+    rainbowChains: Object.values(rainbowChains)
+      .map((rainbowChain) =>
+        rainbowChain.chains.find(
+          (rpc) => rpc.rpcUrls.default.http[0] === rainbowChain.activeRpcUrl,
+        ),
+      )
+      .filter(Boolean),
+  };
+};
+
 export const getOriginalRpcEndpoint = (chain: Chain) => {
   // overrides have preference
   const userAddedNetwork = findRainbowChainForChainId(chain.id);
@@ -268,24 +286,6 @@ export const getBackendSupportedChains = ({
   return chains.filter((chain) =>
     testnetMode ? !!chain.testnet : !chain.testnet,
   );
-};
-
-export const getRainbowChains = () => {
-  const { rainbowChains } = rainbowChainsStore.getState();
-  return {
-    rainbowChains: Object.values(rainbowChains)
-      .map((rainbowChain) =>
-        rainbowChain.chains.find(
-          (rpc) => rpc.rpcUrls.default.http[0] === rainbowChain.activeRpcUrl,
-        ),
-      )
-      .filter(Boolean),
-  };
-};
-
-export const findRainbowChainForChainId = (chainId: number) => {
-  const { rainbowChains } = getRainbowChains();
-  return rainbowChains.find((chain) => chain.id === chainId);
 };
 
 export const getChainName = ({ chainId }: { chainId: number }) => {

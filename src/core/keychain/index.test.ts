@@ -15,6 +15,8 @@ import { delay } from '~/test/utils';
 
 // import { createTestWagmiClient } from '../wagmi/createTestWagmiClient';
 
+import { wagmiConfig } from '../utils/chains';
+
 import { PrivateKey } from './IKeychain';
 
 import {
@@ -40,7 +42,7 @@ let privateKey = '';
 let password = '';
 
 beforeAll(async () => {
-  // createTestWagmiClient();
+  wagmiConfig;
   await delay(3000);
 });
 

@@ -11,6 +11,8 @@ import {
 
 // import { createTestWagmiClient } from '../wagmi/createTestWagmiClient';
 
+import { wagmiConfig } from '../utils/chains';
+
 import {
   createUnlockAndCrosschainSwapRap,
   estimateUnlockAndCrosschainSwap,
@@ -84,6 +86,7 @@ const doesntNeedUnlockQuote: Quote | QuoteError | null = {
 
 beforeAll(async () => {
   // createTestWagmiClient();
+  wagmiConfig;
   await delay(3000);
 });
 

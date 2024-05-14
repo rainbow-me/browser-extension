@@ -21,6 +21,7 @@ import {
 
 import { gasStore } from '../state';
 import { GasSpeed } from '../types/gas';
+import { wagmiConfig } from '../utils/chains';
 import { getProvider } from '../wagmi/clientToProvider';
 // import { createTestWagmiClient } from '../wagmi/createTestWagmiClient';
 
@@ -58,6 +59,7 @@ const SELECTED_GAS = {
 
 beforeAll(async () => {
   // createTestWagmiClient();
+  wagmiConfig;
   await delay(3000);
   doesntNeedUnlockQuote = await getQuote({
     chainId: 1,
