@@ -282,3 +282,10 @@ export const getUniqueAssetImageThumbnailURL = (asset: UniqueAsset) => {
 export const getUniqueAssetImagePreviewURL = (asset: UniqueAsset) => {
   return asset.image_preview_url || getUniqueAssetImageThumbnailURL(asset);
 };
+
+export const isENS = (asset: UniqueAsset) => {
+  const lowercasedContractAddress = asset.asset_contract.address?.toLowerCase();
+  return lowercasedContractAddress === ENS_NFT_CONTRACT_ADDRESS;
+};
+
+export const ENS_COLLECTION_ID = 'e34baafc65deb66d52d11be5d44f523e';

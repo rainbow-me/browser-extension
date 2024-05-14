@@ -100,11 +100,6 @@ export function TabHeader({
               {visibleTokenCount}
             </Text>
           )}
-          {activeTab === 'nfts' && (
-            <Text color="labelQuaternary" size="14pt" weight="bold">
-              {100}
-            </Text>
-          )}
         </Inline>
         {isLoading && (
           <Inline alignVertical="center">

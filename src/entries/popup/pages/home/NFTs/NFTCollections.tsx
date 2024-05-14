@@ -69,25 +69,27 @@ export default function NFTCollections({
       const isHiddenSection =
         collection.collection_details.description === '_hidden';
       const sectionIsOpen = (sections[address] || {})[
-        collection?.collection_id || ''
+        isHiddenSection ? '_hidden' : collection?.collection_id || ''
       ];
+      let assetCount = 0;
+      if (isHiddenSection) {
+        assetCount = Object.values(hiddenNftsForAddress).filter(
+          (v) => v,
+        ).length;
+      } else {
+        assetCount =
+          collection.nft_ids
+            .map((s) => s.split('.'))
+            .filter(
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+              ([_, id, num]) => !hiddenNftsForAddress?.[`${id}_${num}`],
+            ).length || 0;
+      }
+      if (isHiddenSection && assetCount === 0) {
+        return 0;
+      }
       if (sectionIsOpen) {
-        let assetCount = 0;
-        if (isHiddenSection) {
-          assetCount = Object.values(hiddenNftsForAddress).filter(
-            (v) => v,
-          ).length;
-        } else {
-          assetCount =
-            collection.nft_ids
-              .map((s) => s.split('.'))
-              .filter(
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                ([_, id, num]) => !hiddenNftsForAddress?.[`${id}_${num}`],
-              ).length || 0;
-        }
         const sectionRowCount = Math.ceil(assetCount / 3);
-
         const thumbnailHeight =
           sectionRowCount * (sectionRowCount > 1 ? 112 : 96);
         return PADDING + COLLECTION_HEADER_HEIGHT + thumbnailHeight;
