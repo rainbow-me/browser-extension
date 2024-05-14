@@ -2,7 +2,7 @@ import { getConnectorClient } from '@wagmi/core';
 import { providers } from 'ethers';
 import type { Account, Chain, Client, Transport } from 'viem';
 
-import { wagmiConfig } from './createWagmiClient';
+import { wagmiConfig } from '../utils/chains';
 
 export function clientToSigner(client: Client<Transport, Chain, Account>) {
   const { account, chain, transport } = client;

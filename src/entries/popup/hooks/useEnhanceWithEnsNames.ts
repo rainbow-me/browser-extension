@@ -3,7 +3,7 @@ import { getEnsName } from '@wagmi/core';
 import { Address, GetEnsNameReturnType } from 'viem';
 
 import { ChainId } from '~/core/types/chains';
-import { wagmiConfig } from '~/core/wagmi/createWagmiClient';
+import { wagmiConfig } from '~/core/utils/chains';
 
 // Initially returns the same "accounts" list, and update the list with ensName after fetching
 export const useEnhanceWithEnsNames = <

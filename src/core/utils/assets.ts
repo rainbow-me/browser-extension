@@ -19,12 +19,12 @@ import { requestMetadata } from '../graphql';
 import { i18n } from '../languages';
 import { AddysPositionAsset } from '../resources/positions';
 import { SearchAsset } from '../types/search';
-import { wagmiConfig } from '../wagmi/createWagmiClient';
 
 import {
   chainNameFromChainId,
   customChainIdsToAssetNames,
   isNativeAsset,
+  wagmiConfig,
 } from './chains';
 import {
   convertAmountAndPriceToNativeDisplay,

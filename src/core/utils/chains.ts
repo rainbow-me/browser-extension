@@ -1,5 +1,6 @@
 import { AddressZero } from '@ethersproject/constants';
 import { JsonRpcProvider } from '@ethersproject/providers';
+import { Transport, http } from 'viem';
 import {
   Chain,
   celo,
@@ -8,18 +9,21 @@ import {
   mainnet,
   moonbeam,
 } from 'viem/chains';
-import { useConfig } from 'wagmi';
+import { createConfig, useConfig } from 'wagmi';
 
 import {
   NATIVE_ASSETS_PER_CHAIN,
   SUPPORTED_CHAINS,
   SUPPORTED_CHAIN_IDS,
   SUPPORTED_MAINNET_CHAINS,
+  getDefaultRPC,
 } from '~/core/references';
 import {
   ChainId,
   ChainName,
   ChainNameDisplay,
+  chainHardhat,
+  chainHardhatOptimism,
   chainIdToNameMapping,
   chainNameToIdMapping,
 } from '~/core/types/chains';
@@ -30,13 +34,57 @@ import {
   rainbowChainsStore,
 } from '../state/rainbowChains';
 import { AddressOrEth } from '../types/assets';
-import { wagmiConfig } from '../wagmi/createWagmiClient';
 
 import { getDappHost, isValidUrl } from './connectedApps';
 import { isLowerCaseMatch } from './strings';
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
+const IS_TESTING = process.env.IS_TESTING === 'true';
+
+export const getOriginalRpcEndpoint = (chain: Chain) => {
+  // overrides have preference
+  const userAddedNetwork = findRainbowChainForChainId(chain.id);
+  if (userAddedNetwork) {
+    return { http: userAddedNetwork.rpcUrls.default.http[0] };
+  }
+  if (chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism) {
+    return { http: chain.rpcUrls.default.http[0] };
+  }
+
+  return getDefaultRPC(chain.id);
+};
+
+const supportedChains = IS_TESTING
+  ? SUPPORTED_CHAINS.concat(chainHardhat, chainHardhatOptimism)
+  : SUPPORTED_CHAINS;
+
+const chains = supportedChains.map((chain) => {
+  const rpcUrl = getOriginalRpcEndpoint(chain)?.http;
+  return {
+    ...chain,
+    rpcUrls: {
+      default: {
+        http: [rpcUrl],
+      },
+      public: {
+        http: [rpcUrl],
+      },
+    },
+  } as Chain;
+}) as [Chain, ...Chain[]];
+
+const transports = chains.reduce(
+  (acc: Record<number, Transport>, chain: Chain) => {
+    acc[chain.id] = http(getOriginalRpcEndpoint(chain)?.http);
+    return acc;
+  },
+  {},
+);
+
+export const wagmiConfig = createConfig({
+  chains,
+  transports,
+});
+
 export const customChainIdsToAssetNames: Record<ChainId, string> = {
   42170: 'arbitrumnova',
   1313161554: 'aurora',

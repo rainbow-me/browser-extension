@@ -3,7 +3,7 @@ import { getClient } from '@wagmi/core';
 import { providers } from 'ethers';
 import type { Chain, Client, Transport } from 'viem';
 
-import { wagmiConfig } from './createWagmiClient';
+import { wagmiConfig } from '../utils/chains';
 
 export function clientToProvider(client: Client<Transport, Chain>) {
   const { chain, transport } = client;
