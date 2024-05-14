@@ -26,8 +26,9 @@ export const useSearchableNFTs = () => {
   const { testnetMode } = useTestnetModeStore();
   const { chains: userChains } = useUserChains();
 
+  const userChainIds = userChains.map(({ id }) => id);
   const { data: nfts = [] } = useNfts(
-    { address, testnetMode, userChains },
+    { address, testnetMode, userChainIds },
     { select: (data) => selectNfts(data) },
   );
 

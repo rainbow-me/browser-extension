@@ -147,8 +147,8 @@ export function Activities() {
                 key={key}
                 data-index={index}
                 as={motion.div}
-                initial={{ opacity: isLabel ? 0 : 1, x: -4 }}
-                animate={{ opacity: 1, x: 0 }}
+                initial={{ opacity: isLabel ? 0 : 1 }}
+                animate={{ opacity: 1 }}
                 transition={{ opacity: { duration: 0.3 } }}
                 position="absolute"
                 width="full"

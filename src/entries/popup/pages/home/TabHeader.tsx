@@ -34,10 +34,11 @@ export function TabHeader({
   const { visibleTokenCount } = useVisibleTokenCount();
   const { testnetMode } = useTestnetModeStore();
   const { chains: userChains } = useUserChains();
+  const userChainIds = userChains.map(({ id }) => id);
   const nftCount = getNftCount({
     address,
     testnetMode,
-    userChains,
+    userChainIds,
   });
 
   const displayBalanceComponent = useMemo(

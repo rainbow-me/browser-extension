@@ -22,8 +22,10 @@ export const useSendUniqueAsset = () => {
   const [selectedNftCollectionId, setSelectedNftCollectionId] =
     useState<string>('');
   const { chains: userChains } = useUserChains();
+  const userChainIds = userChains.map(({ id }) => id);
+
   const { data: sectionsDictionary = {} } = useNfts(
-    { address, testnetMode, userChains },
+    { address, testnetMode, userChainIds },
     { select: (data) => selectNftCollections(data) },
   );
   const sortedSections = useMemo(() => {

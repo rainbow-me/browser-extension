@@ -1,3 +1,4 @@
+import { QueryClientProvider } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { isEqual } from 'lodash';
 import * as React from 'react';
@@ -93,23 +94,25 @@ export function App() {
           client={queryClient}
           persistOptions={persistOptions}
         >
-          <ThemeProvider theme={currentTheme}>
-            <AuthProvider>
-              <Box
-                id="main"
-                background="surfacePrimaryElevated"
-                style={{
-                  maxWidth: !isFullScreen
-                    ? `${POPUP_DIMENSIONS.width}px`
-                    : undefined,
-                }}
-              >
-                <Routes />
-              </Box>
-              <IdleTimer />
-              <OnboardingKeepAlive />
-            </AuthProvider>
-          </ThemeProvider>
+          <QueryClientProvider client={queryClient}>
+            <ThemeProvider theme={currentTheme}>
+              <AuthProvider>
+                <Box
+                  id="main"
+                  background="surfacePrimaryElevated"
+                  style={{
+                    maxWidth: !isFullScreen
+                      ? `${POPUP_DIMENSIONS.width}px`
+                      : undefined,
+                  }}
+                >
+                  <Routes />
+                </Box>
+                <IdleTimer />
+                <OnboardingKeepAlive />
+              </AuthProvider>
+            </ThemeProvider>
+          </QueryClientProvider>
         </PersistQueryClientProvider>
       </WagmiProvider>
       <HWRequestListener />

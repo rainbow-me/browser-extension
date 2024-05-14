@@ -56,6 +56,9 @@ export function NFTs() {
   );
   const { testnetMode } = useTestnetModeStore();
   const { chains: userChains } = useUserChains();
+
+  const userChainIds = userChains.map(({ id }) => id);
+
   const [manuallyRefetching, setManuallyRefetching] = useState(false);
   const {
     data: sortedSections = [],
@@ -66,7 +69,7 @@ export function NFTs() {
     isLoading,
     refetch,
   } = useNfts(
-    { address, testnetMode, userChains },
+    { address, testnetMode, userChainIds },
     { select: (data) => selectSortedNftCollections(sort, data) },
   );
 
@@ -193,7 +196,7 @@ export function NFTs() {
   const nftCount = getNftCount({
     address,
     testnetMode,
-    userChains,
+    userChainIds,
   });
   const isPaginating = hasNextPage && nftCount < NFTS_LIMIT;
 
