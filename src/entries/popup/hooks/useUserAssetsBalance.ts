@@ -18,13 +18,12 @@ import { add, convertAmountToNativeDisplay } from '~/core/utils/numbers';
 export function useUserAssetsBalance() {
   const { currentAddress: address } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const { hiddenAssets } = useHiddenAssetStore();
+  const { hidden } = useHiddenAssetStore();
   const isHidden = useCallback(
-    (asset: ParsedUserAsset) =>
-      hiddenAssets.some(
-        (uniqueId) => uniqueId === computeUniqueIdForHiddenAsset(asset),
-      ),
-    [hiddenAssets],
+    (asset: ParsedUserAsset) => {
+      return !!hidden[address]?.[computeUniqueIdForHiddenAsset(asset)];
+    },
+    [address, hidden],
   );
 
   const { data: totalAssetsBalanceKnownNetworks } = useUserAssets(

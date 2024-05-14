@@ -209,7 +209,9 @@ export const SwapSettings = ({
     useFlashbotsEnabledStore();
 
   const prevChainId = usePrevious(chainId);
-  const [source, setSource] = useState<Source | 'auto'>('auto');
+  const [source, setSource] = useState<
+    Source.Aggregator0x | Source.Aggregator1inch | 'auto'
+  >('auto');
   const [slippage, setSlippage] = useState<string>(defaultSlippage);
 
   const slippageInputRef = useRef(null);

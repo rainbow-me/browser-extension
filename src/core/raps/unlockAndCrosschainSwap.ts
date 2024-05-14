@@ -51,7 +51,8 @@ export const estimateUnlockAndCrosschainSwap = async (
     isLowerCaseMatch(ETH_ADDRESS_AGGREGATOR, sellTokenAddress) ||
     isNativeAsset(assetToSell.address, chainId);
 
-  if (!isNativeAssetUnwrapping && !nativeAsset) {
+  const shouldNotUnlockAsset = quote.no_approval !== undefined && quote.no_approval;
+  if (!isNativeAssetUnwrapping && !nativeAsset && !shouldNotUnlockAsset) {
     swapAssetNeedsUnlocking = await assetNeedsUnlocking({
       owner: accountAddress,
       amount: sellAmount,
@@ -117,7 +118,8 @@ export const createUnlockAndCrosschainSwapRap = async (
 
   let swapAssetNeedsUnlocking = false;
 
-  if (!isNativeAssetUnwrapping && !nativeAsset) {
+  const shouldNotUnlockAsset = quote.no_approval !== undefined && quote.no_approval;
+  if (!isNativeAssetUnwrapping && !nativeAsset && !shouldNotUnlockAsset) {
     swapAssetNeedsUnlocking = await assetNeedsUnlocking({
       owner: accountAddress,
       amount: sellAmount,

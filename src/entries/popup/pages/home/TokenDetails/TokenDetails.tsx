@@ -283,13 +283,15 @@ function MoreOptions({
   token: ParsedUserAsset;
   swappable: boolean;
 }) {
-  const { hiddenAssets, removeHiddenAsset, addHiddenAsset } =
-    useHiddenAssetStore();
+  const { toggleHideAsset, hidden: hiddenStore } = useHiddenAssetStore();
 
-  const { pinnedAssets, removedPinnedAsset, addPinnedAsset } =
-    usePinnedAssetStore();
+  const { currentAddress: address } = useCurrentAddressStore();
+
+  const { pinned: pinnedStore, togglePinAsset } = usePinnedAssetStore();
 
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
+
+  const { isWatchingWallet } = useWallets();
 
   const resetSelectedToken = useCallback(() => {
     if (selectedToken) setSelectedToken();
@@ -301,23 +303,22 @@ function MoreOptions({
   }, [resetSelectedToken]);
 
   const isHidden = useCallback(
-    (asset: ParsedUserAsset) =>
-      hiddenAssets.some(
-        (uniqueId) => uniqueId === computeUniqueIdForHiddenAsset(asset),
-      ),
-    [hiddenAssets],
+    (asset: ParsedUserAsset) => {
+      return !!hiddenStore[address]?.[computeUniqueIdForHiddenAsset(asset)];
+    },
+    [address, hiddenStore],
   );
 
   const hidden = isHidden(token);
   const explorer = getTokenBlockExplorer(token);
   const isNative = isNativeAsset(token.address, token.chainId);
-  const pinned = pinnedAssets.some(
-    ({ uniqueId }) => uniqueId === token.uniqueId,
-  );
+
+  const pinned = !!pinnedStore[address]?.[token.uniqueId]?.pinned;
 
   const toggleHideToken = useCallback(() => {
+    if (pinned) togglePinAsset(address, token.uniqueId);
+    toggleHideAsset(address, computeUniqueIdForHiddenAsset(token));
     if (hidden) {
-      removeHiddenAsset({ uniqueId: computeUniqueIdForHiddenAsset(token) });
       triggerToast({
         title: i18n.t('token_details.toast.unhide_token', {
           name: token.symbol,
@@ -325,25 +326,16 @@ function MoreOptions({
       });
       return;
     }
-    if (pinned) removedPinnedAsset({ uniqueId: token.uniqueId });
-    addHiddenAsset({ uniqueId: computeUniqueIdForHiddenAsset(token) });
     triggerToast({
       title: i18n.t('token_details.toast.hide_token', {
         name: token.symbol,
       }),
     });
-  }, [
-    token,
-    hidden,
-    pinned,
-    removedPinnedAsset,
-    addHiddenAsset,
-    removeHiddenAsset,
-  ]);
+  }, [token, hidden, pinned, togglePinAsset, toggleHideAsset, address]);
 
   const togglePinToken = useCallback(() => {
+    togglePinAsset(address, token.uniqueId);
     if (pinned) {
-      removedPinnedAsset({ uniqueId: token.uniqueId });
       triggerToast({
         title: i18n.t('token_details.toast.unpin_token', {
           name: token.symbol,
@@ -351,13 +343,12 @@ function MoreOptions({
       });
       return;
     }
-    addPinnedAsset({ uniqueId: token.uniqueId });
     triggerToast({
       title: i18n.t('token_details.toast.pin_token', {
         name: token.symbol,
       }),
     });
-  }, [token, pinned, addPinnedAsset, removedPinnedAsset]);
+  }, [token.uniqueId, token.symbol, togglePinAsset, address, pinned]);
 
   const copyTokenAddress = useCallback(() => {
     copyAddress(token.address);
@@ -410,21 +401,23 @@ function MoreOptions({
               </TextOverflow>
             </DropdownMenuItem>
           )}
-          <DropdownMenuItem
-            symbolLeft="eye.slash.fill"
-            onSelect={toggleHideToken}
-            shortcut={shortcuts.tokens.HIDE_ASSET.display}
-          >
-            <TextOverflow weight="semibold" size="14pt">
-              {hidden
-                ? i18n.t('token_details.more_options.unhide_token', {
-                    name: token.symbol,
-                  })
-                : i18n.t('token_details.more_options.hide_token', {
-                    name: token.symbol,
-                  })}
-            </TextOverflow>
-          </DropdownMenuItem>
+          {!isWatchingWallet && (
+            <DropdownMenuItem
+              symbolLeft="eye.slash.fill"
+              onSelect={toggleHideToken}
+              shortcut={shortcuts.tokens.HIDE_ASSET.display}
+            >
+              <TextOverflow weight="semibold" size="14pt">
+                {hidden
+                  ? i18n.t('token_details.more_options.unhide_token', {
+                      name: token.symbol,
+                    })
+                  : i18n.t('token_details.more_options.hide_token', {
+                      name: token.symbol,
+                    })}
+              </TextOverflow>
+            </DropdownMenuItem>
+          )}
           {swappable && (
             <>
               {!isNative && (

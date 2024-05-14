@@ -19,3 +19,5 @@ src/core/graphql/__generated__/
 anvil*.log
 
 rainbowbx.xpi
+
+.idea/**

@@ -14,6 +14,8 @@ import {
 } from '~/core/utils/chains';
 import { goToNewTab } from '~/core/utils/tabs';
 import { Box, Stack, Text, TextOverflow } from '~/design-system';
+import { triggerAlert } from '~/design-system/components/Alert/Alert';
+import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import {
   ContextMenuContent,
   ContextMenuItem,
@@ -23,20 +25,23 @@ import {
 import { DetailsMenuWrapper } from '~/entries/popup/components/DetailsMenu';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
+import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
+import { simulateClick } from '~/entries/popup/utils/simulateClick';
 
 import { getOpenseaUrl } from './utils';
 
 export default function NFTContextMenu({
   children,
   nft,
-  offsetOverride,
+  offset,
 }: {
   children: ReactNode;
   nft?: UniqueAsset | null;
-  offsetOverride?: boolean;
+  offset?: number;
 }) {
   const { currentAddress: address } = useCurrentAddressStore();
+  const containerRef = useContainerRef();
   const hidden = useNftsStore.use.hidden();
   const toggleHideNFT = useNftsStore.use.toggleHideNFT();
   const { selectedNft, setSelectedNft } = useSelectedNftStore();
@@ -46,8 +51,11 @@ export default function NFTContextMenu({
   const hasContractAddress = !!nftToFocus?.asset_contract.address;
   const hasNetwork = !!nftToFocus?.network;
   const displayed = !hiddenNftsForAddress[nftToFocus?.uniqueId || ''];
-  const isPOAP = nftToFocus?.familyName === 'POAP';
+  const nftUniqueId = nftToFocus?.uniqueId || '';
 
+  const navigatingRef = useRef(false);
+  const isPOAP = nftToFocus?.familyName === 'POAP';
+  const { isWatchingWallet } = useWallets();
   const explorerTitle =
     nftToFocus?.network === 'mainnet'
       ? 'Etherscan'
@@ -69,8 +77,6 @@ export default function NFTContextMenu({
 
   const openseaUrl = getOpenseaUrl({ nft: nftToFocus });
 
-  const downloadLink = useRef<HTMLAnchorElement>(null);
-
   const handleCopyId = useCallback(() => {
     navigator.clipboard.writeText(nftToFocus?.id as string);
     triggerToast({
@@ -79,25 +85,38 @@ export default function NFTContextMenu({
     });
   }, [nftToFocus?.id]);
 
-  const handleOpenChange = useCallback(
-    (isOpen: boolean) => {
-      if (isOpen && nft) {
-        setSelectedNft(nft);
-      }
-    },
-    [nft, setSelectedNft],
-  );
+  const handleOpenChange = (isOpen: boolean) => {
+    if (nft) {
+      setSelectedNft(isOpen || navigatingRef.current ? nft : undefined);
+    }
+  };
 
   const handleSendNft = useCallback(() => {
+    if (nft) {
+      navigatingRef.current = true;
+      setSelectedNft(nft);
+    }
     navigate(ROUTES.SEND);
-  }, [navigate]);
+  }, [nft, navigate, setSelectedNft]);
 
   const handleReportNft = useCallback(() => {
     if (nftToFocus) {
       reportNftAsSpam(nftToFocus);
+      if (displayed) {
+        toggleHideNFT(address, nftUniqueId);
+      }
       triggerToast({ title: i18n.t('nfts.toast.spam_reported') });
     }
-  }, [nftToFocus]);
+  }, [displayed, nftToFocus, address, nftUniqueId, toggleHideNFT]);
+
+  const handleDownload = useCallback(() => {
+    simulateClick(containerRef.current);
+    const link = document.createElement('a');
+    link.setAttribute('download', '');
+    link.href = nftToFocus?.image_url || '';
+    link.click();
+    link.remove();
+  }, [containerRef, nftToFocus?.image_url]);
 
   return (
     <DetailsMenuWrapper closed={true} onOpenChange={handleOpenChange}>
@@ -108,11 +127,11 @@ export default function NFTContextMenu({
         marginRight="16px"
         marginTop="6px"
         position="absolute"
-        top={offsetOverride ? 0 : -220}
+        top={typeof offset == 'number' ? offset : -220}
       >
         <Stack space="4px">
           <Stack>
-            {!isPOAP && (
+            {!isPOAP && !isWatchingWallet && (
               <ContextMenuItem
                 symbolLeft="paperplane.fill"
                 onSelect={handleSendNft}
@@ -123,37 +142,58 @@ export default function NFTContextMenu({
                 </Text>
               </ContextMenuItem>
             )}
-            <ContextMenuItem
-              symbolLeft={displayed ? 'eye.slash.fill' : 'eye.fill'}
-              onSelect={() =>
-                toggleHideNFT(address, nftToFocus?.uniqueId || '')
-              }
-              shortcut={shortcuts.nfts.HIDE_NFT.display}
-            >
-              <Text size="14pt" weight="semibold">
-                {displayed
-                  ? i18n.t('nfts.details.hide')
-                  : i18n.t('nfts.details.unhide')}
-              </Text>
-            </ContextMenuItem>
-            <ContextMenuItem
-              symbolLeft={'exclamationmark.circle.fill'}
-              onSelect={handleReportNft}
-            >
-              <Text size="14pt" weight="semibold">
-                {i18n.t('nfts.details.report')}
-              </Text>
-            </ContextMenuItem>
+            {!isWatchingWallet && (
+              <ContextMenuItem
+                symbolLeft={displayed ? 'eye.slash.fill' : 'eye.fill'}
+                onSelect={() => {
+                  simulateClick(containerRef.current);
+                  toggleHideNFT(address, nftUniqueId);
+                  if (displayed) {
+                    triggerToast({
+                      title: i18n.t('nfts.toast.hidden'),
+                    });
+                  } else {
+                    triggerToast({
+                      title: i18n.t('nfts.toast.unhidden'),
+                    });
+                  }
+                }}
+                shortcut={shortcuts.nfts.HIDE_NFT.display}
+              >
+                <Text size="14pt" weight="semibold">
+                  {displayed
+                    ? i18n.t('nfts.details.hide')
+                    : i18n.t('nfts.details.unhide')}
+                </Text>
+              </ContextMenuItem>
+            )}
+            {!isWatchingWallet && (
+              <ContextMenuItem
+                symbolLeft={'exclamationmark.circle.fill'}
+                onSelect={() => {
+                  simulateClick(containerRef.current);
+                  triggerAlert({
+                    action: handleReportNft,
+                    actionText: i18n.t('nfts.report_nft_action_text'),
+                    text: i18n.t('nfts.report_nft_confirm_description'),
+                    dismissText: i18n.t('alert.cancel'),
+                  });
+                }}
+                shortcut={shortcuts.nfts.REPORT_NFT.display}
+              >
+                <Text size="14pt" weight="semibold">
+                  {i18n.t('nfts.details.report')}
+                </Text>
+              </ContextMenuItem>
+            )}
             {nftToFocus?.image_url && (
               <ContextMenuItem
                 symbolLeft={'arrow.down.circle.fill'}
-                onSelect={() => downloadLink.current?.click()}
+                onSelect={handleDownload}
                 shortcut={shortcuts.nfts.DOWNLOAD_NFT.display}
               >
                 <Text size="14pt" weight="semibold">
-                  <a href={nftToFocus?.image_url} download ref={downloadLink}>
-                    {i18n.t('nfts.details.download')}
-                  </a>
+                  {i18n.t('nfts.details.download')}
                 </Text>
               </ContextMenuItem>
             )}
