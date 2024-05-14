@@ -78,13 +78,14 @@ import { useEns } from '~/entries/popup/hooks/useEns';
 import { useNftShortcuts } from '~/entries/popup/hooks/useNftShortcuts';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useUserChains } from '~/entries/popup/hooks/useUserChains';
+import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
 import chunkLinks from '~/entries/popup/utils/chunkLinks';
 
 import { BirdIcon } from './BirdIcon';
 import NFTContextMenu from './NFTContextMenu';
 import NFTDropdownMenu from './NFTDropdownMenu';
-import { getOpenseaUrl } from './utils';
+import { getOpenseaUrl, getRaribleUrl } from './utils';
 
 export default function NFTDetails() {
   const { currentAddress: address } = useCurrentAddressStore();
@@ -96,6 +97,7 @@ export default function NFTDetails() {
   const { chains: userChains } = useUserChains();
   const { data } = useNfts({ address, testnetMode, userChains });
   const navigate = useRainbowNavigate();
+  const { isWatchingWallet } = useWallets();
   const setSelectedNft = useSelectedNftStore.use.setSelectedNft();
   const collections = selectNftCollections(data);
   const nft = useMemo(() => {
@@ -175,7 +177,7 @@ export default function NFTDetails() {
                 borderRadius="16px"
                 style={{ height: 320, width: 320 }}
               >
-                <NFTContextMenu nft={nft} offsetOverride={true}>
+                <NFTContextMenu nft={nft} offset={0}>
                   <ExternalImage
                     src={nft ? getUniqueAssetImageThumbnailURL(nft) : ''}
                     placeholderSrc={
@@ -282,7 +284,25 @@ export default function NFTDetails() {
                       </Button>
                     </Column>
                   )}
-                  {nft?.isSendable && (
+                  {!isPOAP && isWatchingWallet && (
+                    <Column>
+                      <Button
+                        width="full"
+                        color="accent"
+                        height="36px"
+                        variant="flat"
+                        borderRadius="round"
+                        symbol="arrow.up.right.square.fill"
+                        onClick={() =>
+                          goToNewTab({ url: getRaribleUrl({ nft }) })
+                        }
+                        tabIndex={0}
+                      >
+                        {'Rarible'}
+                      </Button>
+                    </Column>
+                  )}
+                  {!isWatchingWallet && nft?.isSendable && (
                     <Column>
                       <Button
                         width="full"

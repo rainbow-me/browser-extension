@@ -1,5 +1,6 @@
 import { MouseEvent, useCallback, useState } from 'react';
 
+import { useCurrentAddressStore } from '~/core/state';
 import { usePinnedAssetStore } from '~/core/state/pinnedAssets';
 import { ParsedUserAsset } from '~/core/types/assets';
 
@@ -15,21 +16,12 @@ export const useTokenPressMouseEvents = ({
   onClick,
 }: TokenPressMouseEventHookArgs) => {
   const [ready, setReady] = useState(false);
-  const { pinnedAssets, addPinnedAsset, removedPinnedAsset } =
-    usePinnedAssetStore();
+  const { togglePinAsset } = usePinnedAssetStore();
+  const { currentAddress: address } = useCurrentAddressStore();
 
   const onPressed = useCallback(() => {
-    const pinned = pinnedAssets.some(
-      ({ uniqueId }) => uniqueId === token.uniqueId,
-    );
-
-    if (pinned) {
-      removedPinnedAsset({ uniqueId: token.uniqueId });
-      return;
-    }
-
-    addPinnedAsset({ uniqueId: token.uniqueId });
-  }, [addPinnedAsset, pinnedAssets, removedPinnedAsset, token.uniqueId]);
+    togglePinAsset(address, token.uniqueId);
+  }, [token.uniqueId, address, togglePinAsset]);
 
   const { pressed, startPress, endPress } = usePress(onPressed);
 

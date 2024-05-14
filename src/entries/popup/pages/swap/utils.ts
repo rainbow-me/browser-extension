@@ -8,5 +8,5 @@ import { i18n } from '~/core/languages';
 export const aggregatorInfo = {
   auto: { logo: LogoRainbow, name: i18n.t('swap.aggregators.rainbow') },
   [Source.Aggregator0x]: { logo: Logo0x, name: Source.Aggregator0x },
-  [Source.Aggregotor1inch]: { logo: Logo1Inch, name: Source.Aggregotor1inch },
+  [Source.Aggregator1inch]: { logo: Logo1Inch, name: Source.Aggregator1inch },
 };
