@@ -9,6 +9,7 @@ import { ChainName } from '~/core/types/chains';
 import { SimpleHashCollectionDetails, UniqueAsset } from '~/core/types/nfts';
 import { getSimpleHashSupportedChainNames } from '~/core/utils/chains';
 import {
+  ENS_COLLECTION_ID,
   getUniqueAssetImagePreviewURL,
   getUniqueAssetImageThumbnailURL,
 } from '~/core/utils/nfts';
@@ -57,17 +58,21 @@ export function NFTCollectionSection({
   const hiddenNftsForAddress = hidden[address];
   const sectionsForAddress = sections[address] || {};
   const collectionId = collection?.collection_id;
-  const totalCopiesOwned = collection?.distinct_nfts_owned;
-  const collectionVisible = !!(
-    collectionId && sectionsForAddress[collectionId]
-  );
   const isHiddenSection =
     collection.collection_details.description === '_hidden';
+  const shouldHideHiddenSection =
+    !Object.values(hiddenNftsForAddress).filter(Boolean).length;
+  const collectionVisible = !!(
+    collectionId &&
+    sectionsForAddress[isHiddenSection ? '_hidden' : collectionId]
+  );
   const { data, hasNextPage, isFetching, isFetchingNextPage, fetchNextPage } =
     useNftsForCollection(
       {
         address,
-        collectionId,
+        collectionId: isHiddenSection
+          ? `${collectionId},${ENS_COLLECTION_ID}`
+          : collectionId,
         collectionChains: (isHiddenSection
           ? getSimpleHashSupportedChainNames()
           : collection?.collection_details?.chains) as ChainName[],
@@ -85,15 +90,15 @@ export function NFTCollectionSection({
   const setCollectionVisible = useCallback(() => {
     toggleGallerySectionOpen({
       address,
-      collectionId: collectionId || '',
+      collectionId: isHiddenSection ? '_hidden' : collectionId || '',
     });
-  }, [address, collectionId, toggleGallerySectionOpen]);
+  }, [address, collectionId, isHiddenSection, toggleGallerySectionOpen]);
   useEffect(() => {
     if (hasNextPage && !isFetching && !isFetchingNextPage) {
       fetchNextPage();
     }
   }, [fetchNextPage, hasNextPage, isFetching, isFetchingNextPage]);
-  return (
+  return shouldHideHiddenSection && isHiddenSection ? null : (
     <Rows>
       <Row>
         <Lens onClick={setCollectionVisible} borderRadius="6px">
@@ -134,7 +139,7 @@ export function NFTCollectionSection({
                     <Box paddingTop="1px">
                       {!isHiddenSection && (
                         <Text size="12pt" weight="bold" color="labelQuaternary">
-                          {totalCopiesOwned}
+                          {nfts?.length}
                         </Text>
                       )}
                     </Box>
