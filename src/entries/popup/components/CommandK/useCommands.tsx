@@ -116,6 +116,16 @@ export const getStaticCommandInfo = (): CommandInfo => {
       toPage: PAGES.MY_WALLETS,
       type: SearchItemType.Shortcut,
     },
+    myContacts: {
+      actionLabel: actionLabels.view,
+      name: getCommandName('my_contacts'),
+      page: PAGES.HOME,
+      searchTags: getSearchTags('my_contacts'),
+      symbol: 'person.crop.circle.fill',
+      symbolSize: 16,
+      toPage: PAGES.MY_CONTACTS,
+      type: SearchItemType.Shortcut,
+    },
     myTokens: {
       actionLabel: actionLabels.view,
       name: getCommandName('my_tokens'),
@@ -434,6 +444,24 @@ export const getStaticCommandInfo = (): CommandInfo => {
       symbolSize: 16,
       type: SearchItemType.Shortcut,
     },
+    sendToWallet: {
+      actionLabel: actionLabels.activateCommand,
+      hideFromMainSearch: true,
+      name: getCommandName('send_to_wallet'),
+      page: PAGES.WALLET_DETAIL,
+      symbol: 'paperplane.fill',
+      symbolSize: 14.5,
+      type: SearchItemType.Shortcut,
+    },
+    addContact: {
+      actionLabel: actionLabels.activateCommand,
+      hideFromMainSearch: true,
+      name: getCommandName('add_contact'),
+      page: PAGES.WALLET_DETAIL,
+      symbol: 'plus.app.fill',
+      symbolSize: 14.5,
+      type: SearchItemType.Shortcut,
+    },
     copyWalletAddress: {
       hideFromMainSearch: true,
       name: getCommandName('copy_wallet_address'),
@@ -462,17 +490,8 @@ export const getStaticCommandInfo = (): CommandInfo => {
     },
 
     // PAGE: CONTACT_DETAIL
-    contactWallet: {
-      actionLabel: actionLabels.switchToWallet,
-      hideFromMainSearch: true,
-      name: getCommandName('add_as_watched_wallet'),
-      page: PAGES.CONTACT_DETAIL,
-      symbol: 'person.crop.rectangle.stack.fill',
-      symbolSize: 16,
-      type: SearchItemType.Shortcut,
-    },
     sendToContact: {
-      actionLabel: actionLabels.openInNewTab,
+      actionLabel: actionLabels.activateCommand,
       hideFromMainSearch: true,
       name: getCommandName('send_contact'),
       page: PAGES.CONTACT_DETAIL,
@@ -481,7 +500,7 @@ export const getStaticCommandInfo = (): CommandInfo => {
       type: SearchItemType.Shortcut,
     },
     removeContact: {
-      actionLabel: actionLabels.openInNewTab,
+      actionLabel: actionLabels.activateCommand,
       hideFromMainSearch: true,
       name: getCommandName('remove_contact'),
       page: PAGES.CONTACT_DETAIL,
@@ -615,20 +634,18 @@ export const useCommands = (
   const { hideSmallBalances, setHideSmallBalances } =
     useHideSmallBalancesStore();
 
+  const { currentAddress } = useCurrentAddressStore();
+
   const { flashbotsEnabled, setFlashbotsEnabled } = useFlashbotsEnabledStore();
 
   const { contacts, deleteContact, saveContact } = useContactsStore();
-
-  const { allWallets } = useWallets();
 
   const { type, vendor } = useCurrentWalletTypeAndVendor();
 
   const isTrezor =
     type === KeychainType.HardwareWalletKeychain && vendor === 'Trezor';
 
-  const allowSend = !isWatchingWallet || featureFlags.full_watching_wallets;
-
-  const shouldNavigateToSend = !(isTrezor && !isFullScreen) && allowSend;
+  const shouldNavigateToSend = !(isTrezor && !isFullScreen);
 
   const handleCopy = React.useCallback((address: Address) => {
     navigator.clipboard.writeText(address as string);
@@ -729,17 +746,6 @@ export const useCommands = (
     [save, setCurrentAddress],
   );
 
-  const handleWatchContact = React.useCallback(
-    async (command: ENSOrAddressSearchItem | ContactSearchItem) => {
-      if (!allWallets.some((wallet) => wallet.address === command.address)) {
-        await wallet.importWithSecret(command.address);
-      }
-      if (command.ensName) save(command.ensName, command.address);
-      setCurrentAddress(command.address);
-    },
-    [allWallets, save, setCurrentAddress],
-  );
-
   const openENSApp = React.useCallback((ensName: string) => {
     goToNewTab({ url: `https://app.ens.domains/${ensName}` });
   }, []);
@@ -751,11 +757,6 @@ export const useCommands = (
 
   const handleSendFallback = React.useCallback(
     (address: Address) => {
-      if (!allowSend) {
-        triggerAlert({ text: i18n.t('alert.wallet_watching_mode') });
-        return;
-      }
-
       // Trezor needs to be opened in a new tab because of their own popup
       if (isTrezor && !isFullScreen) {
         goToNewTab({
@@ -763,10 +764,10 @@ export const useCommands = (
         });
       }
     },
-    [allowSend, isTrezor, isFullScreen],
+    [isTrezor, isFullScreen],
   );
 
-  const handleSendToContact = React.useCallback(
+  const handleSendToWallet = React.useCallback(
     (address: Address) => {
       if (shouldNavigateToSend) {
         navigate(`${ROUTES.SEND}?to=${address}`);
@@ -1002,6 +1003,12 @@ export const useCommands = (
           ? previousPageState.selectedCommand?.address
           : undefined,
       },
+      sendToWallet: {
+        action: () =>
+          isWalletCommand(previousPageState.selectedCommand) &&
+          handleSendToWallet(previousPageState.selectedCommand?.address),
+        hidden: isWatchingWallet,
+      },
       copyWalletAddress: {
         action: () =>
           isWalletCommand(previousPageState.selectedCommand) &&
@@ -1021,8 +1028,9 @@ export const useCommands = (
             previousPageState.selectedCommand.ensName,
           ),
         hidden:
-          isWalletCommand(previousPageState.selectedCommand) &&
-          isContactAdded(previousPageState.selectedCommand.address),
+          isWatchingWallet ||
+          (isWalletCommand(previousPageState.selectedCommand) &&
+            isContactAdded(previousPageState.selectedCommand.address)),
       },
       viewOnENS: {
         action: () =>
@@ -1035,24 +1043,23 @@ export const useCommands = (
       },
 
       // PAGE: CONTACT_DETAIL
-      contactWallet: {
-        action: () =>
-          isContactCommand(previousPageState.selectedCommand) &&
-          handleWatchContact(previousPageState.selectedCommand),
-        address: isContactCommand(previousPageState.selectedCommand)
-          ? previousPageState.selectedCommand?.address
-          : undefined,
-        symbol: currentTheme === 'dark' ? 'eyes.inverse' : 'eyes',
-      },
       sendToContact: {
         action: () =>
           isContactCommand(previousPageState.selectedCommand) &&
-          handleSendToContact(previousPageState.selectedCommand.address),
+          handleSendToWallet(previousPageState.selectedCommand.address),
+        hidden:
+          isWatchingWallet ||
+          (isContactCommand(previousPageState.selectedCommand) &&
+            currentAddress === previousPageState.selectedCommand.address),
       },
       removeContact: {
         action: () =>
           isContactCommand(previousPageState.selectedCommand) &&
           deleteContact({ address: previousPageState.selectedCommand.address }),
+        hidden:
+          isWatchingWallet ||
+          (isContactCommand(previousPageState.selectedCommand) &&
+            currentAddress === previousPageState.selectedCommand.address),
       },
       copyContactAddress: {
         action: () =>
@@ -1071,28 +1078,28 @@ export const useCommands = (
       },
     }),
     [
-      previousPageState.selectedCommand,
+      navigateToSwaps,
       isWatchingWallet,
       ensName,
       address,
+      openProfile,
+      handleToggleDeveloperTools,
       developerToolsEnabled,
+      handleToggleTestnetMode,
       testnetMode,
+      handleToggleHiddenBalances,
       hideAssetBalances,
+      handleToggleHiddenSmallBalances,
       hideSmallBalances,
       flashbotsEnabled,
       currentTheme,
-      sortedAccounts,
-      isFirefox,
-      navigateToSwaps,
-      openProfile,
-      handleToggleDeveloperTools,
-      handleToggleTestnetMode,
-      handleToggleHiddenBalances,
-      handleToggleHiddenSmallBalances,
+      previousPageState.selectedCommand,
       isContactAdded,
       handleCopy,
+      sortedAccounts,
       navigate,
       setFlashbotsEnabled,
+      isFirefox,
       selectTokenAndNavigate,
       viewTokenOnExplorer,
       handleWatchWallet,
@@ -1100,9 +1107,9 @@ export const useCommands = (
       openENSApp,
       handleSelectAddress,
       handleAddContact,
-      handleSendToContact,
+      handleSendToWallet,
+      currentAddress,
       deleteContact,
-      handleWatchContact,
     ],
   );
 
