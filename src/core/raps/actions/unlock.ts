@@ -1,7 +1,7 @@
+import { Signer } from '@ethersproject/abstract-signer';
 import { MaxUint256 } from '@ethersproject/constants';
 import { Contract, PopulatedTransaction } from '@ethersproject/contracts';
 import { parseUnits } from '@ethersproject/units';
-import { getTransaction, writeContract } from '@wagmi/core';
 import { Address, Hash, erc20Abi, erc721Abi, hexToBigInt, toHex } from 'viem';
 
 import { gasStore } from '~/core/state';
@@ -13,7 +13,6 @@ import {
 import { NewTransaction } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { getProvider } from '~/core/wagmi/clientToProvider';
-import { wagmiConfig } from '~/core/wagmi/createWagmiClient';
 import { RainbowError, logger } from '~/logger';
 
 import { ETH_ADDRESS, gasUnits } from '../../references';
@@ -198,26 +197,23 @@ export const populateRevokeApproval = async ({
 };
 
 export const executeApprove = async ({
-  address,
   gasParams,
   nonce,
   spender,
   tokenAddress,
+  wallet,
 }: {
-  address: Address;
   gasParams: Partial<TransactionGasParams & TransactionLegacyGasParams>;
   nonce?: number;
   spender: Address;
   tokenAddress: Address;
+  wallet: Signer;
 }) => {
   const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } = gasParams;
 
-  const hash = await writeContract(wagmiConfig, {
-    address: tokenAddress,
-    abi: erc20Abi,
-    functionName: 'approve',
-    args: [spender, MaxUint256.toBigInt()],
-    account: address as Address,
+  const tokenContract = new Contract(tokenAddress, erc20Abi, wallet);
+
+  return await tokenContract.approve([spender, MaxUint256.toBigInt()], {
     nonce,
     gasPrice: gasPrice ? hexToBigInt(toHex(gasPrice)) : undefined,
     maxFeePerGas: (maxFeePerGas
@@ -227,10 +223,6 @@ export const executeApprove = async ({
       ? hexToBigInt(toHex(maxPriorityFeePerGas))
       : undefined) as undefined,
   });
-
-  const transaction = await getTransaction(wagmiConfig, { hash, chainId: 1 });
-
-  return transaction;
 };
 
 // fix this
@@ -274,14 +266,13 @@ export const unlock = async ({
 
   let approval;
 
-  const address = await wallet.getAddress();
   try {
     approval = await executeApprove({
       tokenAddress: assetAddress,
       spender: contractAddress,
       gasParams,
-      address: address as Address,
       nonce,
+      wallet,
     });
   } catch (e) {
     logger.error(new RainbowError('unlock: error executeApprove'), {
@@ -294,7 +285,7 @@ export const unlock = async ({
 
   const transaction = {
     asset: assetToUnlock,
-    data: approval.input,
+    data: approval.data,
     value: approval.value?.toString(),
     changes: [],
     from: parameters.fromAddress,
