@@ -1323,6 +1323,8 @@
   "nfts": {
     "empty_state_header": "NFTs",
     "empty_state_description": "Your NFTs will appear here!",
+    "report_nft_action_text": "Report",
+    "report_nft_confirm_description": "Confirm report of NFT?",
     "view_on_web": "View on Web",
     "display_mode_gallery": "Gallery",
     "display_mode_collections": "Collections",
@@ -1373,7 +1375,9 @@
       "view_gallery": "View Gallery"
     },
     "toast": {
-      "spam_reported": "Your report has been received!"
+      "spam_reported": "Your report has been received!",
+      "hidden": "NFT hidden",
+      "unhidden": "NFT unhidden"
     }
   },
   "points": {
@@ -1643,6 +1647,7 @@
   },
   "alert": {
     "ok": "Ok",
+    "cancel": "Cancel",
     "wallet_watching_mode": "This wallet is currently Watched. Import the Secret Recovery Phrase, Private Key, or pair your device.",
     "wallet_testing_mode": "Testnets are not supported by Swap. Disable Testnet Mode to continue.",
     "coming_soon": "Coming Soon!",

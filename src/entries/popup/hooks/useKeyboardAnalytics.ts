@@ -44,6 +44,7 @@ export type KeyboardEventDescription =
   | 'nfts.download'
   | 'nfts.hide'
   | 'nfts.send'
+  | 'nfts.report'
   | 'radix.switchMenu.dismiss'
   | 'send.cancel'
   | 'send.copyContactAddress'

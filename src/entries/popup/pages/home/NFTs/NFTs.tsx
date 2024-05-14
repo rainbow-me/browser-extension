@@ -13,6 +13,7 @@ import { getNftCount } from '~/core/resources/nfts/nfts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useNftsStore } from '~/core/state/nfts';
+import { useSelectedNftStore } from '~/core/state/selectedNft';
 import { UniqueAsset } from '~/core/types/nfts';
 import { chunkArray } from '~/core/utils/assets';
 import { getUniqueAssetImageThumbnailURL } from '~/core/utils/nfts';
@@ -34,6 +35,7 @@ import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import { useNftShortcuts } from '~/entries/popup/hooks/useNftShortcuts';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useUserChains } from '~/entries/popup/hooks/useUserChains';
+import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
 
 import { NFTCollectionSection } from './NFTCollectionSection';
@@ -47,6 +49,7 @@ const COLLECTION_IMAGE_SIZE = 16;
 export function NFTs() {
   const { currentAddress: address } = useCurrentAddressStore();
   const { displayMode, hidden, sort, sections: sectionsState } = useNftsStore();
+  const { isWatchingWallet } = useWallets();
   const hiddenNftsForAddress = useMemo(
     () => hidden[address] || {},
     [hidden, address],
@@ -66,6 +69,7 @@ export function NFTs() {
   const sortedSections = selectSortedNftCollections(sort, data);
   const navigate = useRainbowNavigate();
   const containerRef = useContainerRef();
+  const { selectedNft } = useSelectedNftStore();
   const groupedAssets = sortedSections
     .map((section) => section.assets)
     .flat()
@@ -160,14 +164,19 @@ export function NFTs() {
     );
   };
 
-  useKeyboardShortcut({
-    handler: async (e: KeyboardEvent) => {
-      if (e.key === shortcuts.nfts.REFRESH_NFTS.key) {
+  const handleShortcuts = useCallback(
+    async (e: KeyboardEvent) => {
+      if (e.key === shortcuts.nfts.REFRESH_NFTS.key && !selectedNft) {
         setManuallyRefetching(true);
         await refetch();
         setManuallyRefetching(false);
       }
     },
+    [refetch, selectedNft],
+  );
+
+  useKeyboardShortcut({
+    handler: handleShortcuts,
   });
 
   useEffect(() => {
@@ -203,7 +212,12 @@ export function NFTs() {
 
   useNftShortcuts();
 
-  if (!isLoading && sortedSections.length === 0) {
+  const isEmpty =
+    displayMode === 'grouped'
+      ? !groupedAssetRowData.length
+      : !allSections.length;
+
+  if (!isLoading && isEmpty) {
     return <NFTEmptyState />;
   }
 
@@ -258,7 +272,11 @@ export function NFTs() {
                               }}
                             >
                               {rowData.map((asset, i) => (
-                                <NFTContextMenu key={i} nft={asset}>
+                                <NFTContextMenu
+                                  key={i}
+                                  nft={asset}
+                                  offset={isWatchingWallet ? -120 : -220}
+                                >
                                   <NFTThumbnail
                                     borderRadius="10px"
                                     size={96}
