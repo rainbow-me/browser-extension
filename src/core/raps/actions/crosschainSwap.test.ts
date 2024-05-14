@@ -47,7 +47,10 @@ test('[rap/crosschainSwap] :: should estimate crosschain swap gas limit', async 
   const swapGasLimit = await estimateCrosschainSwapGasLimit({
     chainId: mainnet.id,
     requiresApprove: false,
-    quote: crosschainQuote as CrosschainQuote,
+    quote: {
+      ...crosschainQuote,
+      fromChainId: mainnet.id,
+    } as CrosschainQuote,
   });
   expect(Number(swapGasLimit)).toBeGreaterThan(0);
 });
@@ -62,7 +65,7 @@ test('[rap/crosschainSwap] :: should execute crosschain swap', async () => {
       maxFeePerGas: '2000000000000',
       maxPriorityFeePerGas: '2000000000',
     },
-    quote: crosschainQuote as CrosschainQuote,
+    quote: { fromChainId: mainnet.id, ...crosschainQuote } as CrosschainQuote,
     wallet,
   });
 
