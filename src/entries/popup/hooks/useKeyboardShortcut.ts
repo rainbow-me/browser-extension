@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { useCommandKStatus } from '../components/CommandK/useCommandKStatus';
 
@@ -27,21 +27,12 @@ export function useKeyboardShortcut({
 }: KeyboardShortcutConfig) {
   const isCommandKVisible = useCommandKStatus((s) => s.isCommandKVisible);
 
-  // "latest ref pattern" so we don't have to worry about stabilizing the callbacks
-  const handlerRef = useRef(handler);
-  const conditionRef = useRef(condition);
-  useLayoutEffect(() => {
-    handlerRef.current = handler;
-    conditionRef.current = condition;
-  });
-
   const shouldListen = useMemo(() => {
-    const condition = conditionRef.current;
     if (!isCommandKVisible || enableWithinCommandK) {
       return condition?.() || condition === undefined;
     }
     return false;
-  }, [enableWithinCommandK, isCommandKVisible]);
+  }, [condition, enableWithinCommandK, isCommandKVisible]);
 
   useEffect(() => {
     const systemSpecificModifierKey = getSystemSpecificModifierKey(modifierKey);
@@ -50,7 +41,7 @@ export function useKeyboardShortcut({
       if (systemSpecificModifierKey && !e[systemSpecificModifierKey]) {
         return;
       }
-      handlerRef.current(e);
+      handler(e);
     };
 
     const addHandler = () =>
@@ -67,5 +58,5 @@ export function useKeyboardShortcut({
     return () => {
       removeHandler();
     };
-  }, [modifierKey, shouldListen]);
+  }, [handler, modifierKey, shouldListen]);
 }
