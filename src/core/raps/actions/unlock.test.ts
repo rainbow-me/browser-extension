@@ -4,7 +4,6 @@ import { Address } from 'viem';
 import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test } from 'vitest';
 
-import { wagmiConfig } from '~/core/utils/chains';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import {
   RAINBOW_WALLET_ADDRESS,
@@ -23,8 +22,6 @@ import {
 } from './unlock';
 
 beforeAll(async () => {
-  // createTestWagmiClient();
-  wagmiConfig;
   await delay(3000);
 });
 

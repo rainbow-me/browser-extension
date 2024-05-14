@@ -9,7 +9,6 @@ import {
 import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test } from 'vitest';
 
-import { wagmiConfig } from '~/core/utils/chains';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import { TEST_ADDRESS_2, TEST_PK_2, delay } from '~/test/utils';
 
@@ -20,8 +19,6 @@ import { estimateSwapGasLimit, executeSwap } from './swap';
 let quote: Quote | QuoteError | null;
 
 beforeAll(async () => {
-  // createTestWagmiClient();
-  wagmiConfig;
   await delay(3000);
   quote = await getQuote({
     chainId: 1,

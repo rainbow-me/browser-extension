@@ -76,7 +76,10 @@ const supportedChains = IS_TESTING
   : SUPPORTED_CHAINS;
 
 const chains = supportedChains.map((chain) => {
-  const rpcUrl = getOriginalRpcEndpoint(chain)?.http;
+  const rpcUrl =
+    IS_TESTING && chain.id === ChainId.mainnet
+      ? chainHardhat.rpcUrls.default.http[0]
+      : getOriginalRpcEndpoint(chain)?.http;
   return {
     ...chain,
     rpcUrls: {

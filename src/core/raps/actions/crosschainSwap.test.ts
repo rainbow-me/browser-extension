@@ -10,7 +10,6 @@ import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test } from 'vitest';
 
 import { ChainId } from '~/core/types/chains';
-import { wagmiConfig } from '~/core/utils/chains';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import {
   TEST_ADDRESS_3,
@@ -29,8 +28,6 @@ import {
 let crosschainQuote: CrosschainQuote | QuoteError | null;
 
 beforeAll(async () => {
-  // createTestWagmiClient();
-  wagmiConfig;
   await delay(3000);
   crosschainQuote = await getCrosschainQuote({
     chainId: 1,
