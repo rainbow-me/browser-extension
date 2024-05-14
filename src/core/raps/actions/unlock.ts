@@ -228,7 +228,6 @@ export const executeApprove = async ({
   });
 };
 
-// fix this
 export const unlock = async ({
   baseNonce,
   index,
