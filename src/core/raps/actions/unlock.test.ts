@@ -61,6 +61,7 @@ test('[rap/unlock] :: should execute approve', async () => {
   const provider = getProvider({ chainId: mainnet.id });
   const wallet = new Wallet(TEST_PK_1, provider);
   const approvalTx = await executeApprove({
+    gasLimit: '60000',
     gasParams: {
       maxFeePerGas: '800000000000',
       maxPriorityFeePerGas: '2000000000',
