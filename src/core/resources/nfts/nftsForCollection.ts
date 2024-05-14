@@ -44,12 +44,6 @@ async function nftsForCollectionQueryFunction({
   queryKey: [{ address, collectionId, collectionChains }],
   pageParam,
 }: QueryFunctionArgs<typeof nftsForCollectionQueryKey>) {
-  //   if (
-  //     process.env.IS_TESTING === 'true' &&
-  //     isLowerCaseMatch(address, EMPTY_WALLET_ADDRESS)
-  //   ) {
-  //     return NFTS_TEST_DATA;
-  //   }
   const result = await fetchNfts({
     address,
     chains: collectionChains,

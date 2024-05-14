@@ -21,8 +21,11 @@ import {
   filterSimpleHashNFTs,
   simpleHashNFTToUniqueAsset,
 } from '~/core/utils/nfts';
+import { isLowerCaseMatch } from '~/core/utils/strings';
+import { NFTS_TEST_DATA } from '~/test/utils';
 
 const POLYGON_ALLOWLIST_STALE_TIME = 600000; // 10 minutes
+const EMPTY_WALLET_ADDRESS = '0x3637f053D542E6D00Eee42D656dD7C59Fa33a62F';
 
 // ///////////////////////////////////////////////
 // Query Types
@@ -56,12 +59,12 @@ async function galleryNftsQueryFunction({
   queryKey: [{ address, sort, testnetMode, userChains }],
   pageParam,
 }: QueryFunctionArgs<typeof galleryNftsQueryKey>) {
-  //   if (
-  //     process.env.IS_TESTING === 'true' &&
-  //     isLowerCaseMatch(address, EMPTY_WALLET_ADDRESS)
-  //   ) {
-  //     return NFTS_TEST_DATA;
-  //   }
+  if (
+    process.env.IS_TESTING === 'true' &&
+    isLowerCaseMatch(address, EMPTY_WALLET_ADDRESS)
+  ) {
+    return NFTS_TEST_DATA;
+  }
   const activeChainIds = userChains
     .filter((chain) => {
       return !testnetMode ? !chain.testnet : chain.testnet;

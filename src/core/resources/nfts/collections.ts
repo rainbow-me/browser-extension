@@ -58,12 +58,6 @@ async function nftCollectionsQueryFunction({
   queryKey: [{ address, sort, testnetMode, userChains }],
   pageParam,
 }: QueryFunctionArgs<typeof nftCollectionsQueryKey>) {
-  //   if (
-  //     process.env.IS_TESTING === 'true' &&
-  //     isLowerCaseMatch(address, EMPTY_WALLET_ADDRESS)
-  //   ) {
-  //     return NFTS_TEST_DATA;
-  //   }
   const activeChainIds = userChains
     .filter((chain) => {
       return !testnetMode ? !chain.testnet : chain.testnet;
