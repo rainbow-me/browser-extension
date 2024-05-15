@@ -54,14 +54,15 @@ export function NFTCollectionSection({
   const sections = useNftsStore.use.sections();
   const toggleGallerySectionOpen = useNftsStore.use.toggleGallerySectionOpen();
   const hidden = useNftsStore.use.hidden();
-  const hiddenNftsForAddress = hidden[address];
+  const hiddenNftsForAddress = hidden[address] || {};
   const sectionsForAddress = sections[address] || {};
   const collectionId = collection?.collection_id;
   const totalCopiesOwned = collection?.distinct_nfts_owned;
   const isHiddenSection =
     collection.collection_details.description === '_hidden';
-  const shouldHideHiddenSection =
-    !Object.values(hiddenNftsForAddress).filter(Boolean).length;
+  const shouldHideHiddenSection = !Object.values(
+    hiddenNftsForAddress || {},
+  ).filter(Boolean).length;
   const collectionVisible = !!(
     collectionId &&
     sectionsForAddress[isHiddenSection ? '_hidden' : collectionId]
