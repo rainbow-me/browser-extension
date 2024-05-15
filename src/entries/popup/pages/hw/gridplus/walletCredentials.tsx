@@ -36,9 +36,15 @@ export const WalletCredentials = ({
     setClient(storedClient);
   };
 
+  const [isTakingTooLong, setIsTakingTooLong] = useState(false);
+
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setConnecting(true);
+    const takingTooLongTimeout = setTimeout(
+      () => setIsTakingTooLong(true),
+      5000,
+    );
     try {
       let result: boolean;
       if (process.env.IS_TESTING === 'true') {
@@ -55,6 +61,8 @@ export const WalletCredentials = ({
       await LocalStorage.set('gridPlusDeviceId', deviceId);
       onAfterSetup && onAfterSetup(result);
     } finally {
+      clearTimeout(takingTooLongTimeout);
+      setIsTakingTooLong(false);
       setConnecting(false);
     }
   };
@@ -84,6 +92,7 @@ export const WalletCredentials = ({
       onSubmit={onSubmit}
       width="full"
       paddingBottom="16px"
+      gap="12px"
     >
       <Box
         display="flex"
@@ -155,6 +164,12 @@ export const WalletCredentials = ({
           i18n.t('hw.gridplus_connect')
         )}
       </Button>
+      {isTakingTooLong && (
+        <Text size="11pt" weight="regular" color="orange" align="center">
+          This is taking longer than expected check if your device is connected
+          to the internet
+        </Text>
+      )}
     </Box>
   );
 };
