@@ -76,10 +76,7 @@ const supportedChains = IS_TESTING
   : SUPPORTED_CHAINS;
 
 const chains = supportedChains.map((chain) => {
-  const rpcUrl =
-    IS_TESTING && chain.id === ChainId.mainnet
-      ? chainHardhat.rpcUrls.default.http[0]
-      : getOriginalRpcEndpoint(chain)?.http;
+  const rpcUrl = getOriginalRpcEndpoint(chain)?.http;
   return {
     ...chain,
     rpcUrls: {
@@ -100,10 +97,44 @@ const transports = chains.reduce(
   },
   {},
 );
+const testChains = supportedChains.map((chain) => {
+  const rpcUrl =
+    chain.id === ChainId.mainnet
+      ? chainHardhat.rpcUrls.default.http[0]
+      : getOriginalRpcEndpoint(chain)?.http;
+  return {
+    ...chain,
+    rpcUrls: {
+      default: {
+        http: [rpcUrl],
+      },
+      public: {
+        http: [rpcUrl],
+      },
+    },
+  } as Chain;
+}) as [Chain, ...Chain[]];
+
+const testTransports = chains.reduce(
+  (acc: Record<number, Transport>, chain: Chain) => {
+    acc[chain.id] = http(
+      chain.id === ChainId.mainnet
+        ? chainHardhat.rpcUrls.default.http[0]
+        : getOriginalRpcEndpoint(chain)?.http,
+    );
+    return acc;
+  },
+  {},
+);
 
 export const wagmiConfig = createConfig({
   chains,
   transports,
+});
+
+export const wagmiTestConfig = createConfig({
+  chains: testChains,
+  transports: testTransports,
 });
 
 export const customChainIdsToAssetNames: Record<ChainId, string> = {
