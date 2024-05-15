@@ -8,7 +8,6 @@ import { useNftsStore } from '~/core/state/nfts';
 import { ChainName } from '~/core/types/chains';
 import { SimpleHashCollectionDetails, UniqueAsset } from '~/core/types/nfts';
 import {
-  ENS_COLLECTION_ID,
   getUniqueAssetImagePreviewURL,
   getUniqueAssetImageThumbnailURL,
   simpleHashSupportedChainNames,
@@ -58,6 +57,7 @@ export function NFTCollectionSection({
   const hiddenNftsForAddress = hidden[address];
   const sectionsForAddress = sections[address] || {};
   const collectionId = collection?.collection_id;
+  const totalCopiesOwned = collection?.distinct_nfts_owned;
   const isHiddenSection =
     collection.collection_details.description === '_hidden';
   const shouldHideHiddenSection =
@@ -70,9 +70,7 @@ export function NFTCollectionSection({
     useNftsForCollection(
       {
         address,
-        collectionId: isHiddenSection
-          ? `${collectionId},${ENS_COLLECTION_ID}`
-          : collectionId,
+        collectionId,
         collectionChains: (isHiddenSection
           ? simpleHashSupportedChainNames
           : collection?.collection_details?.chains) as ChainName[],
@@ -139,7 +137,7 @@ export function NFTCollectionSection({
                     <Box paddingTop="1px">
                       {!isHiddenSection && (
                         <Text size="12pt" weight="bold" color="labelQuaternary">
-                          {nfts?.length}
+                          {nfts?.length || totalCopiesOwned}
                         </Text>
                       )}
                     </Box>

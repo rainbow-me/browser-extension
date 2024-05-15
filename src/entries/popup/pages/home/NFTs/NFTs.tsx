@@ -46,6 +46,7 @@ export function NFTs() {
         width="full"
         paddingHorizontal="12px"
         ref={containerRef}
+        paddingBottom="28px"
       >
         <NFTGallery
           address={address}

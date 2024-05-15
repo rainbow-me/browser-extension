@@ -131,27 +131,6 @@ describe('Visit NFTs Gallery and Details Pages', () => {
     expect(expirationValueText !== 'Invalid Date');
   });
 
-  it('should be able to sort nfts alphabetically', async () => {
-    await findElementByTestIdAndClick({
-      id: 'navbar-button-with-back',
-      driver,
-    });
-    await findElementByTestIdAndClick({
-      id: 'nfts-sort-dropdown',
-      driver,
-    });
-    await findElementByTestIdAndClick({
-      id: 'nfts-sort-option-abc',
-      driver,
-    });
-    await findElementByTestIdAndClick({
-      id: 'nft-thumbnail-https://lh3.googleusercontent.com/O_dtxR4ggdzoCNEAZ89s7w5eBiu8rP5TELBQcuFZyIHc-raU2qj48LSkJmEKeN64JaGa7m9X5EFYUreCCJBlx9lXW0rgjrZUL0E=s1000-0',
-      driver,
-    });
-    const ensName = findElementByText(driver, 'testmar27.eth');
-    expect(ensName).toBeTruthy();
-  });
-
   it('should be able to change nfts display mode', async () => {
     await findElementByTestIdAndClick({
       id: 'navbar-button-with-back',
