@@ -177,7 +177,7 @@ export default function NFTGallery({
   );
 }
 
-function GroupedNFTsSkeleton({
+export function GroupedNFTsSkeleton({
   skeletonLength = 9,
 }: {
   skeletonLength?: number;
