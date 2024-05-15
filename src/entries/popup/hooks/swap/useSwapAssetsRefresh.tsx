@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 
+import { ETH_ADDRESS } from '~/core/references';
 import {
   selectUserAssetsDictByChain,
   selectorFilterByUserChains,
@@ -48,25 +49,26 @@ export const useSwapRefreshAssets = () => {
       const [assetToBuy, assetToSell] = assetsToRefresh;
 
       const updatedAssets = userAssets;
-      const [updatedAssetToBuy, updatedAssetToSell] = await Promise.all([
-        fetchAssetBalanceViaProvider({
-          parsedAsset: assetToBuy,
-          currentAddress,
-          currency: currentCurrency,
-          chainId: assetToBuy?.chainId,
-        }),
-        fetchAssetBalanceViaProvider({
-          parsedAsset: assetToSell,
-          currentAddress,
-          currency: currentCurrency,
-          chainId: assetToSell?.chainId,
-        }),
-      ]);
 
-      updatedAssets[assetToBuy.chainId][updatedAssetToBuy.uniqueId] =
-        updatedAssetToBuy;
-      updatedAssets[assetToSell.chainId][updatedAssetToSell.uniqueId] =
-        updatedAssetToSell;
+      const fetchAssetPromises = [assetToBuy, assetToSell]
+        .map(
+          (asset) =>
+            asset.address !== ETH_ADDRESS &&
+            fetchAssetBalanceViaProvider({
+              parsedAsset: asset,
+              currentAddress,
+              currency: currentCurrency,
+              chainId: asset.chainId,
+            }),
+        )
+        .filter(Boolean);
+
+      const assets = await Promise.all(fetchAssetPromises);
+
+      assets.forEach((asset) => {
+        if (!asset) return;
+        updatedAssets[asset.chainId][asset.uniqueId] = asset;
+      });
 
       userAssetsSetQueryData({
         address: currentAddress,

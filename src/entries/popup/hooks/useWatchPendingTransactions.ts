@@ -100,7 +100,6 @@ export const useWatchPendingTransactions = ({
 
   const processSupportedNetworkTransaction = useCallback(
     async (tx: RainbowTransaction) => {
-      console.log('-- processCustomNetworkTransaction', tx);
       const transaction = await fetchTransaction({
         hash: tx.hash,
         chainId: tx.chainId,
@@ -222,7 +221,6 @@ export const useWatchPendingTransactions = ({
   );
 
   const watchPendingTransactions = useCallback(async () => {
-    console.log('--- watchPendingTransactions');
     if (!pendingTransactions?.length) return;
     const updatedPendingTransactions = await Promise.all(
       pendingTransactions.map((tx) => processPendingTransaction(tx)),
