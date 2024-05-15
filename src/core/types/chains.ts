@@ -168,7 +168,7 @@ export enum ChainId {
   polygonZkEvm = chains.polygonZkEvm.id,
   rari = 1380012617,
   zora = chains.zora.id,
-  hardhat = chains.hardhat.id,
+  hardhat = chainHardhat.id,
   hardhatOptimism = chainHardhatOptimism.id,
   sepolia = chains.sepolia.id,
   scroll = chains.scroll.id,

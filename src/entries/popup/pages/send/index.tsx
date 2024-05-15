@@ -309,10 +309,10 @@ export function Send() {
           nft
             ? { direction: 'out', asset: buildNftAssetObject(nft) }
             : {
-              direction: 'out',
-              asset,
-              value: assetAmount,
-            },
+                direction: 'out',
+                asset,
+                value: assetAmount,
+              },
         ],
         asset: nft ? buildNftAssetObject(nft) : asset,
         data: result.data,
@@ -321,7 +321,7 @@ export function Send() {
         from: fromAddress,
         to: txToAddress,
         hash: result.hash as TxHash,
-        chainId,
+        chainId: activeChainId,
         status: 'pending',
         type: 'send',
         nonce: result.nonce,
@@ -336,10 +336,10 @@ export function Send() {
       } as NewTransaction;
     },
     [
+      activeChainId,
       asset,
       assetAmount,
       buildNftAssetObject,
-      chainId,
       flashbotsEnabledGlobally,
       fromAddress,
       nft,
@@ -371,7 +371,7 @@ export function Send() {
             const transaction: NewTransaction = buildPendingTransaction(result);
             addNewTransaction({
               address: fromAddress,
-              chainId,
+              chainId: activeChainId,
               transaction,
             });
             callback?.();
@@ -403,7 +403,7 @@ export function Send() {
             const transaction: NewTransaction = buildPendingTransaction(result);
             addNewTransaction({
               address: fromAddress,
-              chainId,
+              chainId: activeChainId,
               transaction,
             });
             callback?.();

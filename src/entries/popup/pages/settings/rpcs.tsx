@@ -327,7 +327,7 @@ export function SettingsNetworksRPCs() {
                               size="11pt"
                               weight={'medium'}
                             >
-                              {isDefaultRPC(chain)
+                              {!isDefaultRPC(chain)
                                 ? i18n.t(
                                     'settings.networks.custom_rpc.rainbow_default_rpc',
                                   )
