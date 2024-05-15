@@ -1662,6 +1662,7 @@
     "needs_app_ledger_description_2": "Enter your passcode to unlock your Ledger. Once unlocked, open the Ethereum app by pressing both buttons at once.",
     "connect_trezor_title": "Complete your Trezor set up",
     "connect_gridplus_title": "Connect your Lattice1",
+    "connect_gridplus_taking_too_long": "This is taking longer than expected check if your device is connected to the internet",
     "connect_trezor_description": "Continue to connect your Trezor to Rainbow through the web interface.",
     "connect_gridplus_description": "Connect your Lattice1 to Rainbow using the Connection Wizard.",
     "learn_more": "Learn more.",

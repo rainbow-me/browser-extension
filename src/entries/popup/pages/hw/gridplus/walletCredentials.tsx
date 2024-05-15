@@ -166,8 +166,7 @@ export const WalletCredentials = ({
       </Button>
       {isTakingTooLong && (
         <Text size="11pt" weight="regular" color="orange" align="center">
-          This is taking longer than expected check if your device is connected
-          to the internet
+          {i18n.t('hw.connect_gridplus_taking_too_long')}
         </Text>
       )}
     </Box>
