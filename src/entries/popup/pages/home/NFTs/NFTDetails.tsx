@@ -88,7 +88,7 @@ export default function NFTDetails() {
   const isPOAP = nft?.familyName === 'POAP';
   const navigate = useRainbowNavigate();
   const { isWatchingWallet } = useWallets();
-  const setSelectedNft = useSelectedNftStore.use.setSelectedNft();
+  const { setSelectedNft } = useSelectedNftStore();
   const {
     ensAddress,
     ensBio,

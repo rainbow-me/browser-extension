@@ -231,9 +231,7 @@ export function simpleHashNFTToUniqueAsset(
     poapDropId,
     predominantColor: nft.previews?.predominant_color ?? undefined,
     traits: nft.extra_metadata?.attributes ?? [],
-    uniqueId: isENS
-      ? nft.name ?? `${nft.contract_address}_${nft.token_id}`
-      : `${nft.contract_address}_${nft.token_id}`,
+    uniqueId: `${nft.contract_address}_${nft.token_id}`,
     urlSuffixForAsset: `${nft.contract_address}/${nft.token_id}`,
     video_url: nft.video_url,
     video_properties: nft.video_properties,

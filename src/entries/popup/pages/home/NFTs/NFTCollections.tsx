@@ -86,7 +86,7 @@ export default function NFTCollections({
             ).length || 0;
       }
       if (isHiddenSection && assetCount === 0) {
-        return 0;
+        return 12;
       }
       if (sectionIsOpen) {
         const sectionRowCount = Math.ceil(assetCount / 3);
