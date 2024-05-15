@@ -23,6 +23,7 @@ import {
   goToPopup,
   importWalletFlowUsingKeyboardNavigation,
   initDriverWithOptions,
+  isElementFoundByText,
   navigateToElementWithTestId,
   takeScreenshotOnFailure,
   transactionStatus,
@@ -99,21 +100,17 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
   it('should be able to save contact', async () => {
     await executePerformShortcut({ driver, key: 'DECIMAL' });
     await driver.actions().sendKeys('0xtester.eth').perform();
-    await executePerformShortcut({ driver, key: 'TAB' });
     await executePerformShortcut({ driver, key: 'ENTER' });
     await delayTime('long');
   });
 
   it('should be able to open contact menu', async () => {
     await executePerformShortcut({ driver, key: 'DECIMAL' });
-    const copyOption = await findElementByTestId({
-      driver,
-      id: 'navbar-contact-button-edit-copy',
-    });
+    const copyOption = await findElementByText(driver, 'Copy Address');
     expect(copyOption).toBeTruthy();
     await executePerformShortcut({ driver, key: 'ESCAPE' });
-    const doNotFindCopyOption = await findElementByTestId({
-      id: 'navbar-contact-button-edit-copy',
+    const doNotFindCopyOption = await isElementFoundByText({
+      text: 'Copy Address',
       driver,
     });
     expect(doNotFindCopyOption).toBe(false);
