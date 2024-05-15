@@ -61,7 +61,6 @@ export default function NFTGallery({
 
   const shouldDisplay = displayMode === 'grouped';
   useKeyboardShortcut({
-    condition: () => shouldDisplay,
     handler: async (e: KeyboardEvent) => {
       if (e.key === shortcuts.nfts.REFRESH_NFTS.key) {
         setManuallyRefetching(true);

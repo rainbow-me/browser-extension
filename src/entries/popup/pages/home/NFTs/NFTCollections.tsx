@@ -112,7 +112,6 @@ export default function NFTCollections({
 
   const shouldDisplay = displayMode === 'byCollection';
   useKeyboardShortcut({
-    condition: () => shouldDisplay,
     handler: async (e: KeyboardEvent) => {
       if (e.key === shortcuts.nfts.REFRESH_NFTS.key) {
         setManuallyRefetching(true);
