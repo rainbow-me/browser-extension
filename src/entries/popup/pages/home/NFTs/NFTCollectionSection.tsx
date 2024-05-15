@@ -32,6 +32,7 @@ import ExternalImage from '~/entries/popup/components/ExternalImage/ExternalImag
 import { useWallets } from '~/entries/popup/hooks/useWallets';
 
 import NFTContextMenu from './NFTContextMenu';
+import { GroupedNFTsSkeleton } from './NFTGallery';
 import { NFTThumbnail } from './NFTThumbnail';
 
 type NFTCollectionDisplayMode = 'grid' | 'list';
@@ -67,19 +68,25 @@ export function NFTCollectionSection({
     collectionId &&
     sectionsForAddress[isHiddenSection ? '_hidden' : collectionId]
   );
-  const { data, hasNextPage, isFetching, isFetchingNextPage, fetchNextPage } =
-    useNftsForCollection(
-      {
-        address,
-        collectionId,
-        collectionChains: (isHiddenSection
-          ? simpleHashSupportedChainNames
-          : collection?.collection_details?.chains) as ChainName[],
-      },
-      {
-        enabled: collectionVisible,
-      },
-    );
+  const {
+    data,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+    fetchNextPage,
+    isLoading,
+  } = useNftsForCollection(
+    {
+      address,
+      collectionId,
+      collectionChains: (isHiddenSection
+        ? simpleHashSupportedChainNames
+        : collection?.collection_details?.chains) as ChainName[],
+    },
+    {
+      enabled: collectionVisible,
+    },
+  );
   const nfts = selectNfts(data)?.filter((n) => {
     if (isHiddenSection) {
       return hiddenNftsForAddress[n.uniqueId];
@@ -167,44 +174,52 @@ export function NFTCollectionSection({
         </Lens>
         <Inset horizontal="4px">
           {displayMode === 'grid' && collectionVisible && (
-            <Box
-              style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                flexDirection: 'row',
-                justifyContent: 'flex-start',
-                gap: 16,
-                paddingBottom: collectionVisible ? 23 : 0,
-                paddingTop: 6,
-              }}
-            >
-              {nfts?.map((asset, i) => {
-                return (
-                  <NFTContextMenu
-                    key={i}
-                    nft={asset}
-                    offset={isWatchingWallet ? -120 : -220}
-                  >
-                    <NFTThumbnail
-                      borderRadius="10px"
-                      size={96}
-                      imageSrc={
-                        collectionVisible
-                          ? getUniqueAssetImageThumbnailURL(asset)
-                          : undefined
-                      }
-                      placeholderSrc={
-                        collectionVisible
-                          ? getUniqueAssetImagePreviewURL(asset)
-                          : undefined
-                      }
-                      onClick={() => onAssetClick(asset)}
-                      index={i}
-                    />
-                  </NFTContextMenu>
-                );
-              })}
-            </Box>
+            <>
+              {!isLoading ? (
+                <Box
+                  style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    flexDirection: 'row',
+                    justifyContent: 'flex-start',
+                    gap: 16,
+                    paddingBottom: collectionVisible ? 23 : 0,
+                    paddingTop: 6,
+                  }}
+                >
+                  {nfts?.map((asset, i) => {
+                    return (
+                      <NFTContextMenu
+                        key={i}
+                        nft={asset}
+                        offset={isWatchingWallet ? -120 : -220}
+                      >
+                        <NFTThumbnail
+                          borderRadius="10px"
+                          size={96}
+                          imageSrc={
+                            collectionVisible
+                              ? getUniqueAssetImageThumbnailURL(asset)
+                              : undefined
+                          }
+                          placeholderSrc={
+                            collectionVisible
+                              ? getUniqueAssetImagePreviewURL(asset)
+                              : undefined
+                          }
+                          onClick={() => onAssetClick(asset)}
+                          index={i}
+                        />
+                      </NFTContextMenu>
+                    );
+                  })}
+                </Box>
+              ) : (
+                <Box paddingTop="6px">
+                  <GroupedNFTsSkeleton skeletonLength={totalCopiesOwned} />
+                </Box>
+              )}
+            </>
           )}
           {displayMode === 'list' && collectionVisible && (
             <Rows>
