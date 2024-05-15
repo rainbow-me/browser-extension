@@ -18,6 +18,7 @@ import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import NFTContextMenu from './NFTContextMenu';
 import { NFTThumbnail } from './NFTThumbnail';
 import { fadeOutMask } from './NFTs.css';
+import { NftsEmptyState } from './NftsEmptyState';
 
 interface NFTGalleryProps {
   address: Address;
@@ -92,6 +93,7 @@ export default function NFTGallery({
   ]);
 
   if (!shouldDisplay) return null;
+  if (!isLoading && !nfts?.length) return <NftsEmptyState />;
 
   return (
     <>

@@ -23,6 +23,7 @@ import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 
 import { NFTCollectionSection } from './NFTCollectionSection';
 import { fadeOutMask } from './NFTs.css';
+import { NftsEmptyState } from './NftsEmptyState';
 
 const COLLECTION_IMAGE_SIZE = 16;
 
@@ -148,6 +149,7 @@ export default function NFTCollections({
   }, [sections, sort, hiddenNftsForAddress]);
 
   if (!shouldDisplay) return null;
+  if (!isLoading && collections.length === 1) return <NftsEmptyState />;
 
   return (
     <>
