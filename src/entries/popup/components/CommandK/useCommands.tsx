@@ -510,6 +510,7 @@ export const getStaticCommandInfo = (): CommandInfo => {
       type: SearchItemType.Shortcut,
     },
     copyContactAddress: {
+      hideFromMainSearch: true,
       name: getCommandName('copy_address'),
       page: PAGES.CONTACT_DETAIL,
       shortcut: shortcuts.home.COPY_ADDRESS,
