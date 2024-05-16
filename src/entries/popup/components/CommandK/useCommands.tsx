@@ -403,6 +403,15 @@ export const getStaticCommandInfo = (): CommandInfo => {
       symbolSize: 15,
       type: SearchItemType.Shortcut,
     },
+    viewUnownedWalletOnEtherscan: {
+      actionLabel: actionLabels.openInNewTab,
+      hideFromMainSearch: true,
+      name: getCommandName('view_wallet_on_etherscan'),
+      page: PAGES.UNOWNED_WALLET_DETAIL,
+      symbol: 'magnifyingglass',
+      symbolSize: 14.5,
+      type: SearchItemType.Shortcut,
+    },
     viewUnownedWalletProfile: {
       actionLabel: actionLabels.openInNewTab,
       hideFromMainSearch: true,
@@ -412,15 +421,6 @@ export const getStaticCommandInfo = (): CommandInfo => {
       shouldRemainOnActiveRoute: true,
       symbol: 'sparkle',
       symbolSize: 15,
-      type: SearchItemType.Shortcut,
-    },
-    viewUnownedWalletOnEtherscan: {
-      actionLabel: actionLabels.openInNewTab,
-      hideFromMainSearch: true,
-      name: getCommandName('view_wallet_on_etherscan'),
-      page: PAGES.UNOWNED_WALLET_DETAIL,
-      symbol: 'magnifyingglass',
-      symbolSize: 14.5,
       type: SearchItemType.Shortcut,
     },
     viewUnownedWalletOnENS: {
@@ -977,15 +977,15 @@ export const useCommands = (
           isENSOrAddressCommand(previousPageState.selectedCommand) &&
           !previousPageState.selectedCommand?.ensName,
       },
-      viewUnownedWalletProfile: {
-        action: () =>
-          isENSOrAddressCommand(previousPageState.selectedCommand) &&
-          openProfile(previousPageState.selectedCommand),
-      },
       viewUnownedWalletOnEtherscan: {
         action: () =>
           isENSOrAddressCommand(previousPageState.selectedCommand) &&
           viewWalletOnEtherscan(previousPageState.selectedCommand.address),
+      },
+      viewUnownedWalletProfile: {
+        action: () =>
+          isENSOrAddressCommand(previousPageState.selectedCommand) &&
+          openProfile(previousPageState.selectedCommand),
       },
       viewUnownedWalletOnENS: {
         action: () =>
