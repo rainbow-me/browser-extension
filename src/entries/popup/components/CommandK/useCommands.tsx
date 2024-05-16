@@ -1003,6 +1003,9 @@ export const useCommands = (
         address: isWalletCommand(previousPageState.selectedCommand)
           ? previousPageState.selectedCommand?.address
           : undefined,
+        hidden:
+          isWalletCommand(previousPageState.selectedCommand) &&
+          currentAddress === previousPageState.selectedCommand?.address,
       },
       sendToWallet: {
         action: () =>
