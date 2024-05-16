@@ -10,6 +10,7 @@ import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test } from 'vitest';
 
 import { ChainId } from '~/core/types/chains';
+import { updateWagmiConfig } from '~/core/wagmi';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import {
   TEST_ADDRESS_3,
@@ -17,8 +18,6 @@ import {
   USDC_ARBITRUM_ASSET,
   delay,
 } from '~/test/utils';
-
-// import { createTestWagmiClient } from '../../wagmi/createTestWagmiClient';
 
 import {
   estimateCrosschainSwapGasLimit,
@@ -28,6 +27,7 @@ import {
 let crosschainQuote: CrosschainQuote | QuoteError | null;
 
 beforeAll(async () => {
+  updateWagmiConfig([mainnet]);
   await delay(3000);
   crosschainQuote = await getCrosschainQuote({
     chainId: 1,

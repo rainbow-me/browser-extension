@@ -1,89 +1,60 @@
 import { useEffect } from 'react';
-import { Chain, Transport, http } from 'viem';
+import { Chain, HttpTransport, Transport, http } from 'viem';
 import { createConfig } from 'wagmi';
 
 import { proxyRpcEndpoint } from '../providers';
 import { SUPPORTED_CHAINS } from '../references';
 import { useRainbowChainsStore } from '../state';
-import { chainHardhat, chainHardhatOptimism } from '../types/chains';
+import { ChainId, chainHardhat, chainHardhatOptimism } from '../types/chains';
 import { getOriginalRpcEndpoint } from '../utils/chains';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
 const supportedChains = IS_TESTING
-  ? SUPPORTED_CHAINS.concat(chainHardhat, chainHardhatOptimism)
+  ? [...SUPPORTED_CHAINS, chainHardhat, chainHardhatOptimism]
   : SUPPORTED_CHAINS;
 
-const wagmiChains = supportedChains.map((chain) => {
-  const rpcUrl = proxyRpcEndpoint(
-    getOriginalRpcEndpoint(chain)?.http || '',
-    chain.id,
-  );
-  return {
-    ...chain,
-    rpcUrls: {
-      default: {
-        http: [rpcUrl],
-      },
-      public: {
-        http: [rpcUrl],
-      },
-    },
-  } as Chain;
-}) as [Chain, ...Chain[]];
-
-const transports = wagmiChains.reduce(
-  (acc: Record<number, Transport>, chain: Chain) => {
-    acc[chain.id] = http(
-      proxyRpcEndpoint(getOriginalRpcEndpoint(chain)?.http || '', chain.id),
-    );
-    return acc;
-  },
-  {},
-);
-
-let wagmiConfig = createConfig({
-  chains: wagmiChains,
-  transports,
-});
-
-const updateWagmiConfig = (chains: Chain[]) => {
-  const wagmiChains = chains.map((chain) => {
-    const rpcUrl = proxyRpcEndpoint(
-      getOriginalRpcEndpoint(chain)?.http || '',
-      chain.id,
-    );
+const createChains = (chains: Chain[]): [Chain, ...Chain[]] => {
+  return chains.map((chain) => {
+    const rpcUrl =
+      IS_TESTING && chain.id === ChainId.mainnet
+        ? chainHardhat.rpcUrls.default.http[0]
+        : proxyRpcEndpoint(getOriginalRpcEndpoint(chain)?.http || '', chain.id);
     return {
       ...chain,
       rpcUrls: {
-        default: {
-          http: [rpcUrl],
-        },
-        public: {
-          http: [rpcUrl],
-        },
+        default: { http: [rpcUrl] },
+        public: { http: [rpcUrl] },
       },
     } as Chain;
   }) as [Chain, ...Chain[]];
+};
 
-  const transports = chains.reduce(
-    (acc: Record<number, Transport>, chain: Chain) => {
-      acc[chain.id] = http(
-        proxyRpcEndpoint(getOriginalRpcEndpoint(chain)?.http || '', chain.id),
-      );
-      return acc;
-    },
-    {},
-  );
+const createTransports = (chains: Chain[]): Record<number, Transport> => {
+  return chains.reduce((acc: Record<number, HttpTransport>, chain) => {
+    acc[chain.id] = http(
+      IS_TESTING && chain.id === ChainId.mainnet
+        ? chainHardhat.rpcUrls.default.http[0]
+        : proxyRpcEndpoint(getOriginalRpcEndpoint(chain)?.http || '', chain.id),
+    );
+    return acc;
+  }, {});
+};
 
+let wagmiConfig = createConfig({
+  chains: createChains(supportedChains),
+  transports: createTransports(supportedChains),
+});
+
+const updateWagmiConfig = (chains: Chain[]) => {
   wagmiConfig = createConfig({
-    chains: wagmiChains,
-    transports,
+    chains: createChains(chains),
+    transports: createTransports(chains),
   });
 };
 
 const WagmiConfigUpdater = () => {
-  const rainbowChains = useRainbowChainsStore.use.rainbowChains();
+  const rainbowChains = useRainbowChainsStore((state) => state.rainbowChains);
   const chains = Object.values(rainbowChains)
     .map((rainbowChain) =>
       rainbowChain.chains.find(
@@ -99,4 +70,4 @@ const WagmiConfigUpdater = () => {
   return null;
 };
 
-export { wagmiConfig, WagmiConfigUpdater };
+export { wagmiConfig, WagmiConfigUpdater, updateWagmiConfig };
