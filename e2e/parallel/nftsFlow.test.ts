@@ -144,10 +144,10 @@ describe('Visit NFTs Gallery and Details Pages', () => {
       id: 'nfts-displaymode-option-byCollection',
       driver,
     });
-    const ensByCollectionSection = await findElementByTestId({
-      id: 'nfts-collection-section-ENS',
+    const emptyState = await findElementByText(
       driver,
-    });
-    expect(ensByCollectionSection).toBeTruthy();
+      'Your NFTs will appear here!',
+    );
+    expect(emptyState).toBeTruthy();
   });
 });
