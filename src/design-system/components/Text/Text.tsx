@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React from 'react';
+import React, { HTMLAttributes } from 'react';
 
 import { TextStyles, textStyles } from '../../styles/core.css';
 import { Box } from '../Box/Box';
@@ -21,6 +21,7 @@ export interface TextProps {
   whiteSpace?: TextStyles['whiteSpace'];
   textShadow?: TextStyles['textShadow'];
   fontFamily?: TextStyles['fontFamily'];
+  translate?: HTMLAttributes<unknown>['translate'];
 }
 
 export function Text({
@@ -38,6 +39,7 @@ export function Text({
   whiteSpace,
   textShadow,
   fontFamily = 'rounded',
+  translate,
 }: TextProps) {
   return (
     <Box
@@ -62,6 +64,7 @@ export function Text({
       testId={testId}
       marginVertical={webkitBackgroundClip === 'text' ? '-6px' : undefined}
       paddingVertical={webkitBackgroundClip === 'text' ? '6px' : undefined}
+      translate={translate}
     >
       {children}
     </Box>
