@@ -1058,9 +1058,8 @@ export const useCommands = (
           isContactCommand(previousPageState.selectedCommand) &&
           deleteContact({ address: previousPageState.selectedCommand.address }),
         hidden:
-          isWatchingWallet ||
-          (isContactCommand(previousPageState.selectedCommand) &&
-            currentAddress === previousPageState.selectedCommand.address),
+          isContactCommand(previousPageState.selectedCommand) &&
+          currentAddress === previousPageState.selectedCommand.address,
       },
       copyContactAddress: {
         action: () =>
