@@ -517,15 +517,6 @@ export const getStaticCommandInfo = (): CommandInfo => {
       symbolSize: 15,
       type: SearchItemType.Shortcut,
     },
-    viewContactProfile: {
-      actionLabel: actionLabels.openInNewTab,
-      hideFromMainSearch: true,
-      name: getCommandName('view_profile'),
-      page: PAGES.CONTACT_DETAIL,
-      symbol: 'sparkle',
-      symbolSize: 15,
-      type: SearchItemType.Shortcut,
-    },
     viewContactOnEtherscan: {
       actionLabel: actionLabels.openInNewTab,
       hideFromMainSearch: true,
@@ -533,6 +524,15 @@ export const getStaticCommandInfo = (): CommandInfo => {
       page: PAGES.CONTACT_DETAIL,
       symbol: 'magnifyingglass',
       symbolSize: 14.5,
+      type: SearchItemType.Shortcut,
+    },
+    viewContactProfile: {
+      actionLabel: actionLabels.openInNewTab,
+      hideFromMainSearch: true,
+      name: getCommandName('view_profile'),
+      page: PAGES.CONTACT_DETAIL,
+      symbol: 'sparkle',
+      symbolSize: 15,
       type: SearchItemType.Shortcut,
     },
   };
