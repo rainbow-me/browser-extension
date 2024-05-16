@@ -7,7 +7,7 @@ import { useRainbowChains } from '~/entries/popup/hooks/useRainbowChains';
 import { proxyRpcEndpoint } from '../providers';
 import { SUPPORTED_CHAINS, getDefaultRPC } from '../references';
 import { ChainId, chainHardhat, chainHardhatOptimism } from '../types/chains';
-import { findRainbowChainForChainId } from '../utils/chains';
+import { findRainbowChainForChainId } from '../utils/rainbowChains';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 

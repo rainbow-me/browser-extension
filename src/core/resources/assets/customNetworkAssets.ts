@@ -35,8 +35,8 @@ import {
   parseAssetMetadata,
   parseUserAssetBalances,
 } from '~/core/utils/assets';
-import { getRainbowChains } from '~/core/utils/chains';
 import { convertDecimalFormatToRawAmount, isZero } from '~/core/utils/numbers';
+import { getRainbowChains } from '~/core/utils/rainbowChains';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import { RainbowError, logger } from '~/logger';
 

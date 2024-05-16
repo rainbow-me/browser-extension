@@ -15,10 +15,10 @@ import {
   TxHash,
 } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
-import { findRainbowChainForChainId } from '~/core/utils/chains';
 import { copy } from '~/core/utils/copy';
 import { formatDate } from '~/core/utils/formatDate';
 import { formatCurrency, formatNumber } from '~/core/utils/formatNumber';
+import { findRainbowChainForChainId } from '~/core/utils/rainbowChains';
 import { isLowerCaseMatch, truncateString } from '~/core/utils/strings';
 import {
   getAdditionalDetails,

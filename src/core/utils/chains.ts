@@ -25,33 +25,13 @@ import {
 } from '~/core/types/chains';
 
 import { proxyRpcEndpoint } from '../providers';
-import {
-  RAINBOW_CHAINS_SUPPORTED,
-  rainbowChainsStore,
-} from '../state/rainbowChains';
+import { RAINBOW_CHAINS_SUPPORTED } from '../state/rainbowChains';
 import { AddressOrEth } from '../types/assets';
 import { wagmiConfig } from '../wagmi';
 
 import { getDappHost, isValidUrl } from './connectedApps';
+import { findRainbowChainForChainId } from './rainbowChains';
 import { isLowerCaseMatch } from './strings';
-
-export const findRainbowChainForChainId = (chainId: number) => {
-  const { rainbowChains } = getRainbowChains();
-  return rainbowChains.find((chain) => chain.id === chainId);
-};
-
-export const getRainbowChains = () => {
-  const { rainbowChains } = rainbowChainsStore.getState();
-  return {
-    rainbowChains: Object.values(rainbowChains)
-      .map((rainbowChain) =>
-        rainbowChain.chains.find(
-          (rpc) => rpc.rpcUrls.default.http[0] === rainbowChain.activeRpcUrl,
-        ),
-      )
-      .filter(Boolean),
-  };
-};
 
 export const customChainIdsToAssetNames: Record<ChainId, string> = {
   42170: 'arbitrumnova',
