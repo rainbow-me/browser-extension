@@ -15,8 +15,8 @@ import { persistOptions, queryClient } from '~/core/react-query';
 import { initializeSentry, setSentryUser } from '~/core/sentry';
 import { useCurrentLanguageStore, useDeviceIdStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
-import { wagmiConfig } from '~/core/utils/chains';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
+import { WagmiConfigUpdater, wagmiConfig } from '~/core/wagmi';
 import { Box, ThemeProvider } from '~/design-system';
 
 import { Routes } from './Routes';
@@ -110,6 +110,7 @@ export function App() {
                 </Box>
                 <IdleTimer />
                 <OnboardingKeepAlive />
+                <WagmiConfigUpdater />
               </AuthProvider>
             </ThemeProvider>
           </QueryClientProvider>

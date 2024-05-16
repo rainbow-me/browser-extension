@@ -3,7 +3,7 @@ import { getClient } from '@wagmi/core';
 import { providers } from 'ethers';
 import type { Chain, Client, Transport } from 'viem';
 
-import { wagmiConfig, wagmiTestConfig } from '../utils/chains';
+import { wagmiConfig } from '.';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
@@ -25,7 +25,7 @@ export function clientToProvider(client: Client<Transport, Chain>) {
 
 /** Action to convert a viem Public Client to an ethers.js Provider. */
 export function getProvider({ chainId }: { chainId?: number } = {}) {
-  const client = getClient(IS_TESTING ? wagmiTestConfig : wagmiConfig, {
+  const client = getClient(IS_TESTING ? wagmiConfig : wagmiConfig, {
     chainId,
   }) as Client<Transport, Chain>;
   return clientToProvider(client);

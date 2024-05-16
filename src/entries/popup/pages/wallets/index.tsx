@@ -5,8 +5,8 @@ import { useEnsName } from 'wagmi';
 
 import { useCurrentAddressStore } from '~/core/state';
 import { WalletAction } from '~/core/types/walletActions';
-import { wagmiConfig } from '~/core/utils/chains';
 import { EthereumWalletSeed, isENSAddressFormat } from '~/core/utils/ethereum';
+import { wagmiConfig } from '~/core/wagmi';
 import { Box, Separator, Text } from '~/design-system';
 
 import * as wallet from '../../handlers/wallet';

@@ -18,10 +18,10 @@ import {
   getBlockExplorerHostForChain,
   isCustomChain,
   isL2Chain,
-  wagmiConfig,
 } from '~/core/utils/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { getExplorerUrl, goToNewTab } from '~/core/utils/tabs';
+import { wagmiConfig } from '~/core/wagmi';
 import {
   Bleed,
   Box,
