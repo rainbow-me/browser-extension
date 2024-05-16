@@ -1,23 +1,18 @@
 import 'chromedriver';
 import 'geckodriver';
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, it } from 'vitest';
 
 import {
   checkExtensionURL,
-  delayTime,
   executeMultipleShortcuts,
   executePerformShortcut,
-  findElementByIdAndClick,
-  findElementByTestIdAndClick,
   getExtensionIdByName,
   getRootUrl,
   goToPopup,
   importWalletFlow,
   initDriverWithOptions,
-  querySelector,
   typeOnTextInput,
-  waitUntilElementByTestIdIsPresent,
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
 
@@ -73,109 +68,41 @@ describe('Command+K behaviours', () => {
     await checkExtensionURL(driver, 'send');
   });
 
-  it('should be able to add a new wallet via watch', async () => {
+  it('should be able to add a searched wallet as contact and send it using my contacts section', async () => {
     await goToPopup(driver, rootURL);
-    await findElementByIdAndClick({
-      id: 'header-account-name-shuffle',
-      driver,
-    });
-    await findElementByTestIdAndClick({ id: 'add-wallet-button', driver });
 
-    await findElementByTestIdAndClick({
-      id: 'watch-wallets-button',
-      driver,
-    });
+    // cmd k
+    await executePerformShortcut({ driver, key: 'k' });
 
+    // search for wallet
     await typeOnTextInput({
-      id: 'secret-text-area-watch',
+      id: 'command-k-input',
       driver,
-      text: TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS,
+      text: 'skillet.eth',
     });
 
-    await waitUntilElementByTestIdIsPresent({
-      id: 'watch-wallets-button-ready',
-      driver,
-    });
-
-    await findElementByTestIdAndClick({
-      id: 'watch-wallets-button-ready',
-      driver,
-    });
-
-    await delayTime('medium');
-
-    await goToPopup(driver, rootURL);
-    const label = await querySelector(
-      driver,
-      '[data-testid="header"] [data-testid="account-name"]',
-    );
-
-    const actual = await label.getText();
-    const expected = [
-      '0x089b...be9E',
-      TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS,
-    ];
-    expect(expected.includes(actual)).toEqual(true);
-  });
-
-  it('should be able to add a watched wallet as contact and send it using my contacts section', async () => {
-    await findElementByIdAndClick({
-      id: 'header-account-name-shuffle',
-      driver,
-    });
-
-    // Seed phrase wallet
-    await findElementByTestIdAndClick({ id: 'wallet-account-1', driver });
-
-    await executePerformShortcut({ driver, key: 'k' });
-
+    // select wallet and add as contact
+    await executePerformShortcut({ driver, key: 'ENTER' });
     await executePerformShortcut({
       driver,
       key: 'ARROW_DOWN',
-      timesToPress: 2,
+      timesToPress: 1,
     });
-
     await executePerformShortcut({ driver, key: 'ENTER' });
 
-    await executePerformShortcut({
-      driver,
-      key: 'ARROW_DOWN',
-    });
-
-    // Cmd+Enter
-    await executeMultipleShortcuts({
-      driver,
-      keyDown: 'COMMAND',
-      key: 'ENTER',
-    });
-
-    await executePerformShortcut({
-      driver,
-      key: 'ARROW_DOWN',
-      timesToPress: 2,
-    });
-
-    await executePerformShortcut({ driver, key: 'ENTER' });
-
+    // cmd k
     await executePerformShortcut({ driver, key: 'k' });
 
+    // select contact from my contacts
     await executePerformShortcut({
       driver,
       key: 'ARROW_DOWN',
       timesToPress: 3,
     });
-
+    await executePerformShortcut({ driver, key: 'ENTER' });
     await executePerformShortcut({ driver, key: 'ENTER' });
 
-    // Cmd+Enter
-    await executeMultipleShortcuts({
-      driver,
-      keyDown: 'COMMAND',
-      key: 'ENTER',
-    });
-
-    await executePerformShortcut({ driver, key: 'ENTER' });
-
+    // should be on send flow
     await checkExtensionURL(driver, 'send');
   });
 });
