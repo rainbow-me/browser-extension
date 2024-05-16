@@ -112,7 +112,12 @@ export const CommandRow = ({
             >
               <Inline alignVertical="center" space="8px" wrap={false}>
                 <Inline alignVertical="bottom" space="8px" wrap={false}>
-                  <TextOverflow color="label" size="14pt" weight="semibold">
+                  <TextOverflow
+                    color="label"
+                    size="14pt"
+                    weight="semibold"
+                    testId={`command-name-${name || command.name}`}
+                  >
                     {name || command.name}
                   </TextOverflow>
                   {description && (
@@ -210,7 +215,7 @@ export const ShortcutRow = ({
   selected,
 }: ShortcutRowProps) => {
   const isAddAsWatchedWalletRow =
-    command.address && command.id === 'addAsWatchedWallet';
+    command.address && command.id === 'watchUnownedWallet';
   const isSwitchToWalletRow =
     command.address && command.id === 'switchToWallet';
   const isContactWalletRow = command.address && command.id === 'contactWallet';
