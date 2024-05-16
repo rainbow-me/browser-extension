@@ -544,11 +544,11 @@ const compileCommandList = (
   isWatchedWallet: boolean,
   overrides: CommandOverride,
   staticInfo: CommandInfo,
-  tokens: TokenSearchItem[],
-  nfts: NFTSearchItem[],
-  walletSearchResult: ENSOrAddressSearchItem[],
   wallets: WalletSearchItem[],
   contacts: ContactSearchItem[],
+  walletSearchResult: ENSOrAddressSearchItem[],
+  tokens: TokenSearchItem[],
+  nfts: NFTSearchItem[],
 ): SearchItem[] => {
   const shortcuts = Object.keys(staticInfo)
     .filter((key) => {
@@ -571,11 +571,11 @@ const compileCommandList = (
 
   return [
     ...shortcuts,
-    ...tokens,
-    ...nfts,
-    ...walletSearchResult,
     ...wallets,
     ...contacts,
+    ...walletSearchResult,
+    ...tokens,
+    ...nfts,
   ];
 };
 
@@ -1122,11 +1122,11 @@ export const useCommands = (
         (isWatchingWallet ?? false) && !featureFlags.full_watching_wallets,
         commandOverrides,
         getStaticCommandInfo(),
-        searchableTokens,
-        searchableNFTs,
-        searchableENSOrAddress,
         searchableWallets,
         searchableContacts,
+        searchableENSOrAddress,
+        searchableTokens,
+        searchableNFTs,
       ),
     [
       isFullScreen,
