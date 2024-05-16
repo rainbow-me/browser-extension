@@ -306,7 +306,7 @@ export const SendTokenInput = React.forwardRef<
       const val = inputValue.toLowerCase();
       const match = currentCollection.collection_details.name
         .toLowerCase()
-        .startsWith(val);
+        .includes(val);
       if (match) {
         return [...res, currentCollection];
       }
