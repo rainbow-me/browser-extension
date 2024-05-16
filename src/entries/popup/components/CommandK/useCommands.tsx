@@ -1065,15 +1065,15 @@ export const useCommands = (
           isContactCommand(previousPageState.selectedCommand) &&
           handleCopy(previousPageState.selectedCommand.address),
       },
-      viewContactProfile: {
-        action: () =>
-          isContactCommand(previousPageState.selectedCommand) &&
-          openProfile(previousPageState.selectedCommand),
-      },
       viewContactOnEtherscan: {
         action: () =>
           isContactCommand(previousPageState.selectedCommand) &&
           viewWalletOnEtherscan(previousPageState.selectedCommand.address),
+      },
+      viewContactProfile: {
+        action: () =>
+          isContactCommand(previousPageState.selectedCommand) &&
+          openProfile(previousPageState.selectedCommand),
       },
     }),
     [
