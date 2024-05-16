@@ -54,6 +54,13 @@ describe('Command+K behaviours', () => {
     });
     await executePerformShortcut({ driver, key: 'ENTER' });
 
+    // Select 2nd wallet
+    await executePerformShortcut({
+      driver,
+      key: 'ARROW_DOWN',
+      timesToPress: 1,
+    });
+
     // Cmd+Enter
     await executeMultipleShortcuts({
       driver,
@@ -61,11 +68,7 @@ describe('Command+K behaviours', () => {
       key: 'ENTER',
     });
 
-    await executePerformShortcut({
-      driver,
-      key: 'ARROW_DOWN',
-    });
-
+    // Send to wallet
     await executePerformShortcut({ driver, key: 'ENTER' });
     await checkExtensionURL(driver, 'send');
   });
