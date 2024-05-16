@@ -446,6 +446,7 @@ export const getStaticCommandInfo = (): CommandInfo => {
     sendToWallet: {
       actionLabel: actionLabels.activateCommand,
       hideFromMainSearch: true,
+      hideForWatchedWallets: true,
       name: getCommandName('send_to_wallet'),
       page: PAGES.WALLET_DETAIL,
       symbol: 'paperplane.fill',
@@ -492,6 +493,7 @@ export const getStaticCommandInfo = (): CommandInfo => {
     sendToContact: {
       actionLabel: actionLabels.activateCommand,
       hideFromMainSearch: true,
+      hideForWatchedWallets: true,
       name: getCommandName('send_contact'),
       page: PAGES.CONTACT_DETAIL,
       symbol: 'paperplane.fill',
