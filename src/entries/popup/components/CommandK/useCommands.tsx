@@ -279,7 +279,6 @@ export const getStaticCommandInfo = (): CommandInfo => {
     },
     flashbots: {
       actionLabel: actionLabels.activateCommand,
-      hideForWatchedWallets: true,
       shouldRemainOnActiveRoute: true,
       name: getCommandName('enable_flashbots'),
       symbol: 'bolt.shield.fill',
