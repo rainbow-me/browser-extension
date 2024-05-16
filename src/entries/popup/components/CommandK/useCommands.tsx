@@ -387,12 +387,30 @@ export const getStaticCommandInfo = (): CommandInfo => {
     },
 
     // PAGE: UNOWNED_WALLET_DETAIL
-    addAsWatchedWallet: {
+    watchUnownedWallet: {
       hideFromMainSearch: true,
       name: getCommandName('add_as_watched_wallet'),
       page: PAGES.UNOWNED_WALLET_DETAIL,
       symbol: 'eyes.inverse',
       symbolSize: 16,
+      type: SearchItemType.Shortcut,
+    },
+    addUnownedWalletContact: {
+      actionLabel: actionLabels.activateCommand,
+      hideFromMainSearch: true,
+      name: getCommandName('add_contact'),
+      page: PAGES.UNOWNED_WALLET_DETAIL,
+      symbol: 'plus.app.fill',
+      symbolSize: 14.5,
+      type: SearchItemType.Shortcut,
+    },
+    removeUnownedWalletContact: {
+      actionLabel: actionLabels.activateCommand,
+      hideFromMainSearch: true,
+      name: getCommandName('remove_contact'),
+      page: PAGES.UNOWNED_WALLET_DETAIL,
+      symbol: 'trash.fill',
+      symbolSize: 14.5,
       type: SearchItemType.Shortcut,
     },
     copyUnownedWalletAddress: {
@@ -450,15 +468,6 @@ export const getStaticCommandInfo = (): CommandInfo => {
       name: getCommandName('send_to_wallet'),
       page: PAGES.WALLET_DETAIL,
       symbol: 'paperplane.fill',
-      symbolSize: 14.5,
-      type: SearchItemType.Shortcut,
-    },
-    addContact: {
-      actionLabel: actionLabels.activateCommand,
-      hideFromMainSearch: true,
-      name: getCommandName('add_contact'),
-      page: PAGES.WALLET_DETAIL,
-      symbol: 'plus.app.fill',
       symbolSize: 14.5,
       type: SearchItemType.Shortcut,
     },
@@ -964,7 +973,7 @@ export const useCommands = (
       },
 
       // PAGE: UNOWNED_WALLET_DETAIL
-      addAsWatchedWallet: {
+      watchUnownedWallet: {
         action: () =>
           isENSOrAddressCommand(previousPageState.selectedCommand) &&
           handleWatchWallet(previousPageState.selectedCommand),
@@ -972,6 +981,26 @@ export const useCommands = (
           ? previousPageState.selectedCommand?.address
           : undefined,
         symbol: currentTheme === 'dark' ? 'eyes.inverse' : 'eyes',
+      },
+      addUnownedWalletContact: {
+        action: () =>
+          isWalletCommand(previousPageState.selectedCommand) &&
+          handleAddContact(
+            previousPageState.selectedCommand.address,
+            previousPageState.selectedCommand.walletName,
+            previousPageState.selectedCommand.ensName,
+          ),
+        hidden:
+          isENSOrAddressCommand(previousPageState.selectedCommand) &&
+          isContactAdded(previousPageState.selectedCommand.address),
+      },
+      removeUnownedWalletContact: {
+        action: () =>
+          isContactCommand(previousPageState.selectedCommand) &&
+          deleteContact({ address: previousPageState.selectedCommand.address }),
+        hidden:
+          isENSOrAddressCommand(previousPageState.selectedCommand) &&
+          !isContactAdded(previousPageState.selectedCommand.address),
       },
       copyUnownedWalletAddress: {
         action: () =>
@@ -1026,18 +1055,6 @@ export const useCommands = (
         action: () =>
           isWalletCommand(previousPageState.selectedCommand) &&
           viewWalletOnEtherscan(previousPageState.selectedCommand.address),
-      },
-      addContact: {
-        action: () =>
-          isWalletCommand(previousPageState.selectedCommand) &&
-          handleAddContact(
-            previousPageState.selectedCommand.address,
-            previousPageState.selectedCommand.walletName,
-            previousPageState.selectedCommand.ensName,
-          ),
-        hidden:
-          isWalletCommand(previousPageState.selectedCommand) &&
-          isContactAdded(previousPageState.selectedCommand.address),
       },
       viewOnENS: {
         action: () =>
