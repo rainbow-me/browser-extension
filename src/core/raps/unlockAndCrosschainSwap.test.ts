@@ -1,4 +1,5 @@
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
+import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test } from 'vitest';
 
 import {
@@ -8,6 +9,8 @@ import {
   USDC_ARBITRUM_ASSET,
   delay,
 } from '~/test/utils';
+
+import { updateWagmiConfig } from '../wagmi';
 
 import {
   createUnlockAndCrosschainSwapRap,
@@ -81,6 +84,7 @@ const doesntNeedUnlockQuote: Quote | QuoteError | null = {
 };
 
 beforeAll(async () => {
+  updateWagmiConfig([mainnet]);
   await delay(3000);
 });
 

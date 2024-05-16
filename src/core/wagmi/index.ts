@@ -2,17 +2,31 @@ import { useEffect } from 'react';
 import { Chain, HttpTransport, Transport, http } from 'viem';
 import { createConfig } from 'wagmi';
 
+import { useRainbowChains } from '~/entries/popup/hooks/useRainbowChains';
+
 import { proxyRpcEndpoint } from '../providers';
-import { SUPPORTED_CHAINS } from '../references';
-import { useRainbowChainsStore } from '../state';
+import { SUPPORTED_CHAINS, getDefaultRPC } from '../references';
 import { ChainId, chainHardhat, chainHardhatOptimism } from '../types/chains';
-import { getOriginalRpcEndpoint } from '../utils/chains';
+import { findRainbowChainForChainId } from '../utils/chains';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
 const supportedChains = IS_TESTING
   ? [...SUPPORTED_CHAINS, chainHardhat, chainHardhatOptimism]
   : SUPPORTED_CHAINS;
+
+const getOriginalRpcEndpoint = (chain: Chain) => {
+  // overrides have preference
+  const userAddedNetwork = findRainbowChainForChainId(chain.id);
+  if (userAddedNetwork) {
+    return { http: userAddedNetwork.rpcUrls.default.http[0] };
+  }
+  if (chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism) {
+    return { http: chain.rpcUrls.default.http[0] };
+  }
+
+  return getDefaultRPC(chain.id);
+};
 
 const createChains = (chains: Chain[]): [Chain, ...Chain[]] => {
   return chains.map((chain) => {
@@ -54,15 +68,7 @@ const updateWagmiConfig = (chains: Chain[]) => {
 };
 
 const WagmiConfigUpdater = () => {
-  const rainbowChains = useRainbowChainsStore((state) => state.rainbowChains);
-  const chains = Object.values(rainbowChains)
-    .map((rainbowChain) =>
-      rainbowChain.chains.find(
-        (rpc) => rpc.rpcUrls.default.http[0] === rainbowChain.activeRpcUrl,
-      ),
-    )
-    .filter(Boolean) as [Chain, ...Chain[]];
-
+  const { rainbowChains: chains } = useRainbowChains();
   useEffect(() => {
     updateWagmiConfig(chains);
   }, [chains]);
