@@ -560,7 +560,7 @@
         "section_title": "My Wallets"
       },
       "my_contacts": {
-        "search_placeholder": "Select a your contact wallet",
+        "search_placeholder": "Select a contact to send to…",
         "section_title": "My Contacts"
       },
       "token_detail": {
