@@ -84,7 +84,7 @@ export const useSearchableContacts = ({
           ? () => handleSelectAddress(account.address)
           : undefined,
         actionLabel: !hideAction
-          ? actionLabels.sendToWallet
+          ? actionLabels.sendToContact
           : actionLabels.view,
         toPage: hideAction ? PAGES.CONTACT_DETAIL : undefined,
         actionPage: !hideAction ? PAGES.CONTACT_DETAIL : undefined,
