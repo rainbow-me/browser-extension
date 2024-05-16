@@ -63,7 +63,7 @@ async function galleryNftsQueryFunction({
     process.env.IS_TESTING === 'true' &&
     isLowerCaseMatch(address, EMPTY_WALLET_ADDRESS)
   ) {
-    return NFTS_TEST_DATA;
+    return getGalleryNftsTestData({ sort });
   }
   const activeChainIds = userChains
     .filter((chain) => {
@@ -113,6 +113,16 @@ export function useGalleryNfts<TSelectData = GalleryNftsResult>(
       staleTime: 600000,
     },
   );
+}
+
+function getGalleryNftsTestData({ sort }: { sort: NftSort }) {
+  if (sort === 'alphabetical') {
+    return {
+      ...NFTS_TEST_DATA,
+      nfts: [...NFTS_TEST_DATA.nfts].reverse(),
+    };
+  }
+  return NFTS_TEST_DATA;
 }
 
 // ///////////////////////////////////////////////
