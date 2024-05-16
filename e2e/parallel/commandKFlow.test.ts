@@ -83,7 +83,7 @@ describe('Command+K behaviours', () => {
     });
 
     await waitUntilElementByTestIdIsPresent({
-      id: 'command-row-skillet.eth',
+      id: 'command-name-skillet.eth',
       driver,
     });
 

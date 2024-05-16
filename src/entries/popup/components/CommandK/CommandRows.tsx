@@ -116,7 +116,7 @@ export const CommandRow = ({
                     color="label"
                     size="14pt"
                     weight="semibold"
-                    testId={`command-row-${name || command.name}`}
+                    testId={`command-name-${name || command.name}`}
                   >
                     {name || command.name}
                   </TextOverflow>
