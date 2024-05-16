@@ -1029,9 +1029,8 @@ export const useCommands = (
             previousPageState.selectedCommand.ensName,
           ),
         hidden:
-          isWatchingWallet ||
-          (isWalletCommand(previousPageState.selectedCommand) &&
-            isContactAdded(previousPageState.selectedCommand.address)),
+          isWalletCommand(previousPageState.selectedCommand) &&
+          isContactAdded(previousPageState.selectedCommand.address),
       },
       viewOnENS: {
         action: () =>
