@@ -532,7 +532,8 @@
       "title_revealed": "Showing Small Balances"
     },
     "contact_toast": {
-      "title_added": "Added to Contacts"
+      "title_added": "Added Contact",
+      "title_removed": "Removed Contact"
     },
     "no_results": "No results",
     "pages": {

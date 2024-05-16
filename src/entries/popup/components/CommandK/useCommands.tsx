@@ -790,14 +790,25 @@ export const useCommands = (
   );
 
   const handleAddContact = React.useCallback(
-    (address: Address, walletName?: string, ensName?: string | null) => {
-      saveContact({ contact: { address, name: walletName || ensName || '' } });
+    (address: Address, ensName?: string | null) => {
+      saveContact({ contact: { address, name: ensName || '' } });
       triggerToast({
         title: i18n.t(`command_k.contact_toast.title_added`),
-        description: truncateAddress(address),
+        description: ensName || truncateAddress(address),
       });
     },
     [saveContact],
+  );
+
+  const handleRemoveContact = React.useCallback(
+    (address: Address, ensName?: string | null) => {
+      deleteContact({ address });
+      triggerToast({
+        title: i18n.t(`command_k.contact_toast.title_removed`),
+        description: ensName || truncateAddress(address),
+      });
+    },
+    [deleteContact],
   );
 
   const commandOverrides: CommandOverride = React.useMemo(
@@ -984,10 +995,9 @@ export const useCommands = (
       },
       addUnownedWalletContact: {
         action: () =>
-          isWalletCommand(previousPageState.selectedCommand) &&
+          isENSOrAddressCommand(previousPageState.selectedCommand) &&
           handleAddContact(
             previousPageState.selectedCommand.address,
-            previousPageState.selectedCommand.walletName,
             previousPageState.selectedCommand.ensName,
           ),
         hidden:
@@ -996,8 +1006,11 @@ export const useCommands = (
       },
       removeUnownedWalletContact: {
         action: () =>
-          isContactCommand(previousPageState.selectedCommand) &&
-          deleteContact({ address: previousPageState.selectedCommand.address }),
+          isENSOrAddressCommand(previousPageState.selectedCommand) &&
+          handleRemoveContact(
+            previousPageState.selectedCommand.address,
+            previousPageState.selectedCommand.ensName,
+          ),
         hidden:
           isENSOrAddressCommand(previousPageState.selectedCommand) &&
           !isContactAdded(previousPageState.selectedCommand.address),
@@ -1079,7 +1092,10 @@ export const useCommands = (
       removeContact: {
         action: () =>
           isContactCommand(previousPageState.selectedCommand) &&
-          deleteContact({ address: previousPageState.selectedCommand.address }),
+          handleRemoveContact(
+            previousPageState.selectedCommand.address,
+            previousPageState.selectedCommand.ensName,
+          ),
         hidden:
           isContactCommand(previousPageState.selectedCommand) &&
           currentAddress === previousPageState.selectedCommand.address,
@@ -1131,9 +1147,9 @@ export const useCommands = (
       openENSApp,
       handleSelectAddress,
       handleAddContact,
+      handleRemoveContact,
       handleSendToWallet,
       currentAddress,
-      deleteContact,
     ],
   );
 
