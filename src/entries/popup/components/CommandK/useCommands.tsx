@@ -803,6 +803,9 @@ export const useCommands = (
         searchTags: isWatchingWallet ? getSearchTags('my_tokens_watched') : [],
         selectedWallet: ensName || truncateAddress(address),
       },
+      myContacts: {
+        hidden: contacts && Object.keys(contacts).length === 0,
+      },
       myNFTs: {
         name: isWatchingWallet
           ? getCommandName('my_nfts_watched')
@@ -1099,6 +1102,7 @@ export const useCommands = (
       isContactAdded,
       handleCopy,
       sortedAccounts,
+      contacts,
       navigate,
       setFlashbotsEnabled,
       isFirefox,
