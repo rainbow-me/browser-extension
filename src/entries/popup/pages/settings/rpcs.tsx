@@ -99,6 +99,8 @@ export function SettingsNetworksRPCs() {
   const { rainbowChains, setActiveRPC, removeCustomRPC } =
     useRainbowChainsStore();
 
+  console.log('-- rainbowChains', rainbowChains);
+
   const rainbowChain = rainbowChains[Number(chainId)];
 
   const activeCustomRPC = rainbowChain?.chains.find(

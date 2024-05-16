@@ -2,6 +2,9 @@ import { Provider } from '@ethersproject/providers';
 import { getClient } from '@wagmi/core';
 import { providers } from 'ethers';
 import type { Chain, Client, Transport } from 'viem';
+import { mainnet, optimism } from 'viem/chains';
+
+import { chainHardhat, chainHardhatOptimism } from '../types/chains';
 
 import { wagmiConfig } from '.';
 
@@ -25,8 +28,17 @@ export function clientToProvider(client: Client<Transport, Chain>) {
 
 /** Action to convert a viem Public Client to an ethers.js Provider. */
 export function getProvider({ chainId }: { chainId?: number } = {}) {
-  const client = getClient(IS_TESTING ? wagmiConfig : wagmiConfig, {
-    chainId,
-  }) as Client<Transport, Chain>;
+  const internalChainId = (() => {
+    if (IS_TESTING) {
+      if (chainId === mainnet.id) return chainHardhat.id;
+      if (chainId === optimism.id) return chainHardhatOptimism.id;
+    }
+    return chainId;
+  })();
+
+  const client = getClient(wagmiConfig, { chainId: internalChainId }) as Client<
+    Transport,
+    Chain
+  >;
   return clientToProvider(client);
 }

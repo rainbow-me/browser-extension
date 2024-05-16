@@ -15,30 +15,25 @@ const supportedChains = IS_TESTING
   ? [...SUPPORTED_CHAINS, chainHardhat, chainHardhatOptimism]
   : SUPPORTED_CHAINS;
 
-const handleRpcUrl = (chain: Chain) => {
-  if (IS_TESTING && chain.id === ChainId.mainnet) {
-    return chainHardhat.rpcUrls.default.http[0];
-  } else if (IS_TESTING && chain.id === ChainId.optimism) {
-    return chainHardhatOptimism.rpcUrls.default.http[0];
-  } else {
-    return proxyRpcEndpoint(
-      getOriginalRpcEndpoint(chain)?.http || '',
-      chain.id,
-    );
-  }
-};
-
 const getOriginalRpcEndpoint = (chain: Chain) => {
-  // overrides have preference
   const userAddedNetwork = findRainbowChainForChainId(chain.id);
   if (userAddedNetwork) {
-    return { http: userAddedNetwork.rpcUrls.default.http[0] };
+    return userAddedNetwork.rpcUrls.default.http[0];
   }
-  if (chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism) {
-    return { http: chain.rpcUrls.default.http[0] };
-  }
+  return getDefaultRPC(chain.id)?.http;
+};
 
-  return getDefaultRPC(chain.id);
+export const handleRpcUrl = (chain: Chain) => {
+  if (
+    (IS_TESTING &&
+      (chain.id === ChainId.mainnet || chain.id === ChainId.optimism)) ||
+    chain.id === chainHardhat.id ||
+    chain.id === chainHardhatOptimism.id
+  ) {
+    return chainHardhat.rpcUrls.default.http[0];
+  } else {
+    return proxyRpcEndpoint(getOriginalRpcEndpoint(chain) || '', chain.id);
+  }
 };
 
 const createChains = (chains: Chain[]): [Chain, ...Chain[]] => {
