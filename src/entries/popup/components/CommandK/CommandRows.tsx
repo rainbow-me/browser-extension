@@ -210,7 +210,7 @@ export const ShortcutRow = ({
   selected,
 }: ShortcutRowProps) => {
   const isAddAsWatchedWalletRow =
-    command.address && command.id === 'addAsWatchedWallet';
+    command.address && command.id === 'watchUnownedWallet';
   const isSwitchToWalletRow =
     command.address && command.id === 'switchToWallet';
   const isContactWalletRow = command.address && command.id === 'contactWallet';
