@@ -48,7 +48,6 @@ export function TextOverflow({
           whiteSpace: 'nowrap',
           textShadow,
         })}
-        testId={testId}
       >
         <Inset vertical="8px">
           <Box
@@ -58,6 +57,7 @@ export function TextOverflow({
               overflow: 'hidden',
               textOverflow: 'ellipsis',
             }}
+            testId={testId}
           >
             {children}
           </Box>

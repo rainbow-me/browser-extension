@@ -112,7 +112,12 @@ export const CommandRow = ({
             >
               <Inline alignVertical="center" space="8px" wrap={false}>
                 <Inline alignVertical="bottom" space="8px" wrap={false}>
-                  <TextOverflow color="label" size="14pt" weight="semibold">
+                  <TextOverflow
+                    color="label"
+                    size="14pt"
+                    weight="semibold"
+                    testId={`command-row-${name || command.name}`}
+                  >
                     {name || command.name}
                   </TextOverflow>
                   {description && (

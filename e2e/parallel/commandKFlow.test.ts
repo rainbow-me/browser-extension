@@ -13,6 +13,7 @@ import {
   importWalletFlow,
   initDriverWithOptions,
   typeOnTextInput,
+  waitUntilElementByTestIdIsPresent,
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
 
@@ -79,6 +80,11 @@ describe('Command+K behaviours', () => {
       id: 'command-k-input',
       driver,
       text: 'skillet.eth',
+    });
+
+    await waitUntilElementByTestIdIsPresent({
+      id: 'command-row-skillet.eth',
+      driver,
     });
 
     // select wallet and add as contact
