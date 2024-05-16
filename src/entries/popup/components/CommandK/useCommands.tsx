@@ -403,7 +403,7 @@ export const getStaticCommandInfo = (): CommandInfo => {
       symbolSize: 15,
       type: SearchItemType.Shortcut,
     },
-    viewUnownedWalletNFTs: {
+    viewUnownedWalletProfile: {
       actionLabel: actionLabels.openInNewTab,
       hideFromMainSearch: true,
       name: getCommandName('view_profile'),
@@ -977,7 +977,7 @@ export const useCommands = (
           isENSOrAddressCommand(previousPageState.selectedCommand) &&
           !previousPageState.selectedCommand?.ensName,
       },
-      viewUnownedWalletNFTs: {
+      viewUnownedWalletProfile: {
         action: () =>
           isENSOrAddressCommand(previousPageState.selectedCommand) &&
           openProfile(previousPageState.selectedCommand),
