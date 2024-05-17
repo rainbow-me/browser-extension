@@ -22,6 +22,7 @@ import { i18n } from '../languages';
 import { AddysPositionAsset } from '../resources/positions';
 import { SearchAsset } from '../types/search';
 import { wagmiConfig } from '../wagmi';
+import { getProvider } from '../wagmi/clientToProvider';
 
 import {
   chainNameFromChainId,
@@ -373,18 +374,13 @@ export const getAssetMetadata = async ({
   address: Address;
   chainId: ChainId;
 }) => {
-  const client = getClient(wagmiConfig, { chainId }) as Client;
-  const contract = await getContract({
-    address,
-    abi: erc20Abi,
-    client: client,
-  });
+  const provider = getProvider({ chainId });
+  const contract = new Contract(address, erc20Abi, provider);
   const [decimals, symbol, name] = await Promise.allSettled([
-    contract.read.decimals(),
-    contract.read.symbol(),
-    contract.read.name(),
+    contract.decimals(),
+    contract.symbol(),
+    contract.name(),
   ]);
-
   return {
     decimals: extractFulfilledValue<number>(decimals),
     symbol: extractFulfilledValue<string>(symbol),
