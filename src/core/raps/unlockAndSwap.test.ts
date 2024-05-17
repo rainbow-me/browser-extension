@@ -21,6 +21,7 @@ import {
 } from '~/test/utils';
 
 import { gasStore } from '../state';
+import { connectedToHardhatStore } from '../state/currentSettings/connectedToHardhat';
 import { GasSpeed } from '../types/gas';
 import { updateWagmiConfig } from '../wagmi';
 import { getProvider } from '../wagmi/clientToProvider';
@@ -58,6 +59,7 @@ const SELECTED_GAS = {
 };
 
 beforeAll(async () => {
+  connectedToHardhatStore.setState({ connectedToHardhat: true });
   updateWagmiConfig([mainnet]);
   await delay(3000);
   doesntNeedUnlockQuote = await getQuote({

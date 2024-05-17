@@ -4,6 +4,7 @@ import { Address } from 'viem';
 import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test } from 'vitest';
 
+import { connectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { updateWagmiConfig } from '~/core/wagmi';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import {
@@ -21,6 +22,7 @@ import {
 } from './unlock';
 
 beforeAll(async () => {
+  connectedToHardhatStore.setState({ connectedToHardhat: true });
   updateWagmiConfig([mainnet]);
   await delay(3000);
 });

@@ -10,6 +10,7 @@ import {
   delay,
 } from '~/test/utils';
 
+import { connectedToHardhatStore } from '../state/currentSettings/connectedToHardhat';
 import { updateWagmiConfig } from '../wagmi';
 
 import {
@@ -84,6 +85,7 @@ const doesntNeedUnlockQuote: Quote | QuoteError | null = {
 };
 
 beforeAll(async () => {
+  connectedToHardhatStore.setState({ connectedToHardhat: true });
   updateWagmiConfig([mainnet]);
   await delay(3000);
 });

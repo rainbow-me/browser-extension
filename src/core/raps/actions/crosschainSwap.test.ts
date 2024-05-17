@@ -9,6 +9,7 @@ import {
 import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test } from 'vitest';
 
+import { connectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ChainId } from '~/core/types/chains';
 import { updateWagmiConfig } from '~/core/wagmi';
 import { getProvider } from '~/core/wagmi/clientToProvider';
@@ -27,6 +28,7 @@ import {
 let crosschainQuote: CrosschainQuote | QuoteError | null;
 
 beforeAll(async () => {
+  connectedToHardhatStore.setState({ connectedToHardhat: true });
   updateWagmiConfig([mainnet]);
   await delay(3000);
   crosschainQuote = await getCrosschainQuote({

@@ -16,6 +16,7 @@ import { delay } from '~/test/utils';
 
 // import { createTestWagmiClient } from '../wagmi/createTestWagmiClient';
 
+import { connectedToHardhatStore } from '../state/currentSettings/connectedToHardhat';
 import { updateWagmiConfig } from '../wagmi';
 
 import { PrivateKey } from './IKeychain';
@@ -43,6 +44,7 @@ let privateKey = '';
 let password = '';
 
 beforeAll(async () => {
+  connectedToHardhatStore.setState({ connectedToHardhat: true });
   updateWagmiConfig([mainnet]);
   await delay(3000);
 });
