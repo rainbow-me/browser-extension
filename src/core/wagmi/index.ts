@@ -6,6 +6,7 @@ import { useRainbowChains } from '~/entries/popup/hooks/useRainbowChains';
 
 import { proxyRpcEndpoint } from '../providers';
 import { SUPPORTED_CHAINS, getDefaultRPC } from '../references';
+import { connectedToHardhatStore } from '../state/currentSettings/connectedToHardhat';
 import { ChainId, chainHardhat, chainHardhatOptimism } from '../types/chains';
 import { findRainbowChainForChainId } from '../utils/rainbowChains';
 
@@ -26,7 +27,10 @@ const getOriginalRpcEndpoint = (chain: Chain) => {
 export const handleRpcUrl = (chain: Chain) => {
   if (
     (IS_TESTING &&
-      (chain.id === ChainId.mainnet || chain.id === ChainId.optimism)) ||
+      ((chain.id === ChainId.mainnet &&
+        connectedToHardhatStore.getState().connectedToHardhat) ||
+        (chain.id === ChainId.optimism &&
+          connectedToHardhatStore.getState().connectedToHardhatOp))) ||
     chain.id === chainHardhat.id ||
     chain.id === chainHardhatOptimism.id
   ) {
