@@ -14,6 +14,7 @@ import {
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useSwapAssetsToRefreshStore } from '~/core/state/swapAssetsToRefresh';
 import { fetchAssetBalanceViaProvider } from '~/core/utils/assets';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 
 export const useSwapRefreshAssets = () => {
   const { currentAddress } = useCurrentAddressStore();
@@ -58,7 +59,7 @@ export const useSwapRefreshAssets = () => {
               parsedAsset: asset,
               currentAddress,
               currency: currentCurrency,
-              chainId: asset.chainId,
+              provider: getProvider({ chainId: asset.chainId }),
             }),
         )
         .filter(Boolean);

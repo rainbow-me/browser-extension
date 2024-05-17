@@ -1,4 +1,6 @@
 import { AddressZero } from '@ethersproject/constants';
+import { Contract } from '@ethersproject/contracts';
+import { Provider } from '@ethersproject/providers';
 import { getClient } from '@wagmi/core';
 import { Address, Client, erc20Abi, getContract } from 'viem';
 
@@ -297,18 +299,18 @@ export const fetchAssetBalanceViaProvider = async ({
   parsedAsset,
   currentAddress,
   currency,
-  chainId,
+  provider,
 }: {
   parsedAsset: ParsedUserAsset;
   currentAddress: Address;
   currency: SupportedCurrencyKey;
-  chainId: ChainId;
+  provider: Provider;
 }) => {
-  const balance = await getAssetBalance({
-    assetAddress: parsedAsset.address as Address,
-    currentAddress,
-    chainId,
-  });
+  const balance = parsedAsset.isNativeAsset
+    ? await provider.getBalance(currentAddress)
+    : await new Contract(parsedAsset.address, erc20Abi, provider).balanceOf(
+        currentAddress,
+      );
 
   const updatedAsset = parseUserAssetBalances({
     asset: parsedAsset,

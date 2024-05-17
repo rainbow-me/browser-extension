@@ -15,6 +15,7 @@ import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId, ChainName, ChainNameDisplay } from '~/core/types/chains';
 import { fetchAssetBalanceViaProvider } from '~/core/utils/assets';
 import { getChain, isTestnetChainId } from '~/core/utils/chains';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
 
@@ -84,15 +85,17 @@ async function userTestnetNativeAssetQueryFunction({
       !isTestnetChainId({ chainId }) &&
       chainId !== ChainId.hardhat &&
       chainId !== ChainId.hardhatOptimism
-    )
+    ) {
       return null;
+    }
 
     const nativeAsset = getNativeAssetMock({ chainId });
+    const provider = getProvider({ chainId });
     const parsedAsset = await fetchAssetBalanceViaProvider({
       parsedAsset: nativeAsset,
       currentAddress: address,
       currency,
-      chainId,
+      provider,
     });
     return parsedAsset;
   } catch (e) {
@@ -116,6 +119,7 @@ export function useUserTestnetNativeAsset(
     UserTestnetNativeAssetQueryKey
   > = {},
 ) {
+  console.log('======= useUserTestnetNativeAsset');
   return useQuery({
     queryKey: userTestnetNativeAssetQueryKey({
       address,

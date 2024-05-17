@@ -16,6 +16,7 @@ import {
   getCustomChainIconUrl,
 } from '~/core/utils/assets';
 import { getChain } from '~/core/utils/chains';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 import { Row, Rows, Separator } from '~/design-system';
 import { RainbowError, logger } from '~/logger';
 
@@ -116,7 +117,7 @@ export const WatchAsset = ({
       parsedAsset: assetWithMetadata,
       currentAddress,
       currency: currentCurrency,
-      chainId: Number(selectedChainId),
+      provider: getProvider({ chainId: Number(selectedChainId) }),
     });
 
     // Attempt to get the price through the backend
