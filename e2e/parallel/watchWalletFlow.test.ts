@@ -33,16 +33,13 @@ const os = process.env.OS || 'mac';
 
 describe('Watch wallet then add more and switch between them', () => {
   beforeAll(async () => {
-    console.log('log 1');
     driver = await initDriverWithOptions({
       browser,
       os,
     });
-    console.log('log 2');
     const extensionId = await getExtensionIdByName(driver, 'Rainbow');
     if (!extensionId) throw new Error('Extension not found');
     rootURL += extensionId;
-    console.log('log 3', rootURL);
   });
 
   afterAll(async () => driver.quit());
@@ -50,53 +47,39 @@ describe('Watch wallet then add more and switch between them', () => {
   // Watch a wallet
   it('should be able watch a wallet', async () => {
     //  Start from welcome screen
-    console.log('log 4', rootURL);
     await goToWelcome(driver, rootURL);
-    console.log('log 5');
     await findElementByTestIdAndClick({ id: 'import-wallet-button', driver });
-    console.log('log 6');
     await findElementByTestIdAndClick({ id: 'watch-wallet-option', driver });
-    console.log('log 7');
 
     const watchTextArea = await findElementByTestId({
       id: 'secret-text-area-watch',
       driver,
     });
-    console.log('log 8');
     await watchTextArea.sendKeys(TEST_VARIABLES.WATCHED_WALLET.PRIMARY_ADDRESS);
 
-    console.log('log 9');
     await waitUntilElementByTestIdIsPresent({
       id: 'watch-wallets-button-ready',
       driver,
     });
 
-    console.log('log 1');
     await findElementByTestIdAndClick({
       id: 'watch-wallets-button-ready',
       driver,
     });
 
-    console.log('log 2');
     const passwordInput = await findElementByTestId({
       id: 'password-input',
       driver,
     });
-    console.log('log 3');
     await passwordInput.sendKeys('test1234');
-    console.log('log 4');
     const confirmPasswordInput = await findElementByTestId({
       id: 'confirm-password-input',
       driver,
     });
-    console.log('log 4');
     await confirmPasswordInput.sendKeys('test1234');
-    console.log('log 5');
     await findElementByTestIdAndClick({ id: 'set-password-button', driver });
 
-    console.log('log 6');
     await findElementByText(driver, 'Rainbow is ready to use');
-    console.log('log 7');
   });
 
   it('should display watched account name', async () => {
