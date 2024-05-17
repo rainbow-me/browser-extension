@@ -1,5 +1,4 @@
 import { useMemo } from 'react';
-import { useBalance } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
@@ -28,7 +27,6 @@ export function TabHeader({
 }) {
   const { currentAddress: address } = useCurrentAddressStore();
   const { hideAssetBalances } = useHideAssetBalancesStore();
-  const { data: balance, isLoading } = useBalance({ address });
   const { display: userAssetsBalanceDisplay } = useUserAssetsBalance();
   const { currentCurrency } = useCurrentCurrencyStore();
   const { visibleTokenCount } = useVisibleTokenCount();
@@ -64,7 +62,7 @@ export function TabHeader({
           userSelect="all"
           cursor="text"
         >
-          {userAssetsBalanceDisplay}
+          {userAssetsBalanceDisplay || ''}
         </Text>
       ),
     [activeTab, currentCurrency, hideAssetBalances, userAssetsBalanceDisplay],
@@ -109,7 +107,7 @@ export function TabHeader({
           </Inline>
         )}
 
-        {activeTab !== 'nfts' && balance && (
+        {activeTab !== 'nfts' && (
           <CursorTooltip
             align="end"
             arrowAlignment="right"
