@@ -26,7 +26,10 @@ export function useUserAssetsBalance() {
     [address, hidden],
   );
 
-  const { data: totalAssetsBalanceKnownNetworks } = useUserAssets(
+  const {
+    data: totalAssetsBalanceKnownNetworks,
+    isLoading: knownNetworksIsLoading,
+  } = useUserAssets(
     {
       address,
       currency,
@@ -42,22 +45,24 @@ export function useUserAssetsBalance() {
     },
   );
 
-  const { data: totalAssetsBalanceCustomNetworks = [] } =
-    useCustomNetworkAssets(
-      {
-        address: address as Address,
-        currency,
-      },
-      {
-        select: (data) =>
-          selectorFilterByUserChains({
-            data,
-            selector: (assetsByChain) => {
-              return selectUserAssetsBalance(assetsByChain, isHidden);
-            },
-          }),
-      },
-    );
+  const {
+    data: totalAssetsBalanceCustomNetworks = [],
+    isLoading: customNetworksIsLoading,
+  } = useCustomNetworkAssets(
+    {
+      address: address as Address,
+      currency,
+    },
+    {
+      select: (data) =>
+        selectorFilterByUserChains({
+          data,
+          selector: (assetsByChain) => {
+            return selectUserAssetsBalance(assetsByChain, isHidden);
+          },
+        }),
+    },
+  );
 
   const totalAssetsBalance = add(
     totalAssetsBalanceKnownNetworks as string,
@@ -67,5 +72,6 @@ export function useUserAssetsBalance() {
   return {
     amount: totalAssetsBalance,
     display: convertAmountToNativeDisplay(totalAssetsBalance || 0, currency),
+    isLoading: knownNetworksIsLoading || customNetworksIsLoading,
   };
 }

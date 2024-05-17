@@ -27,7 +27,8 @@ export function TabHeader({
 }) {
   const { currentAddress: address } = useCurrentAddressStore();
   const { hideAssetBalances } = useHideAssetBalancesStore();
-  const { display: userAssetsBalanceDisplay } = useUserAssetsBalance();
+  const { display: userAssetsBalanceDisplay, isLoading } =
+    useUserAssetsBalance();
   const { currentCurrency } = useCurrentCurrencyStore();
   const { visibleTokenCount } = useVisibleTokenCount();
   const { testnetMode } = useTestnetModeStore();
