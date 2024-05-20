@@ -37,7 +37,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Resolved an issue where pending transactions could visually overlap in Activity #1532
 - Blocking auto-translation attempts in some browsers while interacting with your Secret Recovery Phrase #1544
-- Fixed an issue with `ESC` keyboard dismissals for the Token Details card
+- Fixed an issue with `ESC` keyboard dismissals for the Token Details card #1521
 - Fixed an issue for some dApps like Etherscan that required triggering a connection request upon switching networks #1536
 - Resolved interaction consistency with right-click menus and action menus in NFT Details #1425
 
