@@ -3,6 +3,7 @@ import create from 'zustand';
 import { ParsedSearchAsset } from '~/core/types/assets';
 
 import { createStore } from '../internal/createStore';
+import { withSelectors } from '../internal/withSelectors';
 
 export interface SwapAssetsToRefreshState {
   setSwapAssetsToRefresh: (assetsToRefresh: {
@@ -30,4 +31,6 @@ export const swapAssetsToRefreshStore = createStore<SwapAssetsToRefreshState>(
   }),
 );
 
-export const useSwapAssetsToRefreshStore = create(swapAssetsToRefreshStore);
+export const useSwapAssetsToRefreshStore = withSelectors(
+  create(swapAssetsToRefreshStore),
+);

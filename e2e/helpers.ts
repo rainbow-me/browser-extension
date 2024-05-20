@@ -476,6 +476,36 @@ export async function performShortcutWithNormalKey(
   }
 }
 
+export async function executeMultipleShortcuts({
+  driver,
+  keyDown,
+  key,
+}: {
+  driver: WebDriver;
+  keyDown: keyof typeof Key | string;
+  key: keyof typeof Key | string;
+}) {
+  try {
+    await delayTime('short');
+    const keyDownAction =
+      keyDown in Key ? (Key[keyDown as keyof typeof Key] as string) : keyDown;
+    const keyAction =
+      key in Key ? (Key[key as keyof typeof Key] as string) : key;
+    await driver
+      .actions()
+      .keyDown(keyDownAction)
+      .sendKeys(keyAction)
+      .keyUp(keyDownAction)
+      .perform();
+  } catch (error) {
+    console.error(
+      `Error occurred while attempting multiple shortcuts with the keydown '${keyDown}' and key '${key}':`,
+      error,
+    );
+    throw error;
+  }
+}
+
 export async function performShortcutWithSpecialKey(
   driver: WebDriver,
   specialKey: keyof typeof Key,

@@ -44,7 +44,7 @@ import { useBrowser } from '../../hooks/useBrowser';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
-import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
+import { SwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
 import { AddressAndType, useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 
@@ -262,7 +262,7 @@ export function WalletSwitcher() {
 
   const isSearching = !!searchQuery;
 
-  const { saveWalletOrder } = useWalletOrderStore();
+  const saveWalletOrder = useWalletOrderStore.use.saveWalletOrder();
 
   const { filteredAndSortedAccounts, sortedAccounts } = useAccounts(
     ({ sortedAccounts }) => ({
@@ -334,15 +334,13 @@ export function WalletSwitcher() {
     },
   });
 
-  // separate because this is used on other screens
-  useSwitchWalletShortcuts();
-
   return (
     <Box
       style={{ minHeight: 0, height: '100vh' }}
       display="flex"
       flexDirection="column"
     >
+      <SwitchWalletShortcuts />
       <RenameWalletPrompt
         account={renameAccount}
         onClose={() => setRenameAccount(undefined)}

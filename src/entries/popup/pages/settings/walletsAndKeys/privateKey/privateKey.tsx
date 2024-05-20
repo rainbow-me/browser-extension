@@ -67,7 +67,12 @@ export function PrivateKey() {
             wordBreak: 'break-all',
           }}
         >
-          <Text size="14pt" weight="bold" testId={'private-key-hash'}>
+          <Text
+            size="14pt"
+            weight="bold"
+            testId={'private-key-hash'}
+            translate="no"
+          >
             {privKey}
           </Text>
         </Box>

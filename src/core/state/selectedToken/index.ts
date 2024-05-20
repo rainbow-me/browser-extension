@@ -3,6 +3,7 @@ import create from 'zustand';
 import { ParsedUserAsset } from '~/core/types/assets';
 
 import { createStore } from '../internal/createStore';
+import { withSelectors } from '../internal/withSelectors';
 
 export interface SelectedTokenState {
   getSelectedToken: () => ParsedUserAsset | null;
@@ -20,4 +21,4 @@ export const selectedTokenStore = createStore<SelectedTokenState>(
   }),
 );
 
-export const useSelectedTokenStore = create(selectedTokenStore);
+export const useSelectedTokenStore = withSelectors(create(selectedTokenStore));

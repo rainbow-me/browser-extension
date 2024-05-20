@@ -5,6 +5,7 @@ import { Address, useEnsName } from 'wagmi';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore, useFlashbotsEnabledStore } from '~/core/state';
+import { useContactsStore } from '~/core/state/contacts';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
@@ -15,6 +16,7 @@ import { useSavedEnsNames } from '~/core/state/savedEnsNames';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { getBlockExplorerHostForChain } from '~/core/utils/chains';
 import {
@@ -32,10 +34,12 @@ import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
 
 import { useBrowser } from '../../hooks/useBrowser';
+import { useCurrentWalletTypeAndVendor } from '../../hooks/useCurrentWalletType';
 import { useIsFullScreen } from '../../hooks/useIsFullScreen';
 import { triggerToast } from '../Toast/Toast';
 
 import {
+  ContactSearchItem,
   ENSOrAddressSearchItem,
   NFTSearchItem,
   SearchItem,
@@ -47,6 +51,7 @@ import {
 import { CommandKPage, PAGES } from './pageConfig';
 import { actionLabels } from './references';
 import { CommandKPageState } from './useCommandKNavigation';
+import { useSearchableContacts } from './useSearchableContacts';
 import { useSearchableENSorAddress } from './useSearchableENSOrAddress';
 import { useSearchableNFTs } from './useSearchableNFTs';
 import { useSearchableTokens } from './useSearchableTokens';
@@ -75,385 +80,473 @@ const getSearchTags = (key: string) => {
     : tagString.split(/,\s*/);
 };
 
-export const staticCommandInfo: CommandInfo = {
-  // PAGE: HOME
-  send: {
-    actionLabel: actionLabels.open,
-    hideForWatchedWallets: true,
-    name: getCommandName('send'),
-    page: PAGES.HOME,
-    shortcut: shortcuts.home.GO_TO_SEND,
-    symbol: 'paperplane.fill',
-    symbolSize: 14.5,
-    to: ROUTES.SEND,
-    type: SearchItemType.Shortcut,
-  },
-  swap: {
-    actionLabel: actionLabels.open,
-    hideForWatchedWallets: true,
-    name: getCommandName('swap'),
-    page: PAGES.HOME,
-    searchTags: getSearchTags('swap'),
-    shortcut: shortcuts.home.GO_TO_SWAP,
-    symbol: 'arrow.triangle.swap',
-    symbolSize: 15.5,
-    type: SearchItemType.Shortcut,
-  },
-  myWallets: {
-    actionLabel: actionLabels.view,
-    name: getCommandName('my_wallets'),
-    page: PAGES.HOME,
-    searchTags: getSearchTags('my_wallets'),
-    shortcut: shortcuts.home.GO_TO_WALLETS,
-    symbol: 'person.crop.rectangle.stack.fill',
-    symbolSize: 16,
-    toPage: PAGES.MY_WALLETS,
-    type: SearchItemType.Shortcut,
-  },
-  myTokens: {
-    actionLabel: actionLabels.view,
-    name: getCommandName('my_tokens'),
-    page: PAGES.HOME,
-    symbol: 'circlebadge.2.fill',
-    symbolSize: 16.25,
-    toPage: PAGES.MY_TOKENS,
-    type: SearchItemType.Shortcut,
-  },
-  myNFTs: {
-    actionLabel: actionLabels.view,
-    name: getCommandName('my_nfts'),
-    page: PAGES.HOME,
-    symbol: 'photo',
-    symbolSize: 16.25,
-    toPage: PAGES.MY_NFTS,
-    type: SearchItemType.Shortcut,
-  },
-  copyAddress: {
-    name: getCommandName('copy_address'),
-    page: PAGES.HOME,
-    shortcut: shortcuts.home.COPY_ADDRESS,
-    shouldRemainOnActiveRoute: true,
-    symbol: 'square.on.square',
-    symbolSize: 15,
-    type: SearchItemType.Shortcut,
-  },
-  viewProfile: {
-    actionLabel: actionLabels.openInNewTab,
-    name: getCommandName('view_profile'),
-    page: PAGES.HOME,
-    searchTags: getSearchTags('view_profile'),
-    shortcut: shortcuts.home.GO_TO_PROFILE,
-    shouldRemainOnActiveRoute: true,
-    symbol: 'sparkle',
-    symbolSize: 15,
-    type: SearchItemType.Shortcut,
-  },
-  addWallet: {
-    actionLabel: actionLabels.view,
-    name: getCommandName('add_wallet'),
-    page: PAGES.HOME,
-    searchTags: getSearchTags('add_wallet'),
-    symbol: 'plus.app.fill',
-    symbolSize: 14,
-    toPage: PAGES.ADD_WALLET,
-    type: SearchItemType.Shortcut,
-  },
-  lock: {
-    name: getCommandName('lock'),
-    page: PAGES.HOME,
-    shortcut: shortcuts.home.LOCK,
-    symbol: 'lock.open.fill',
-    symbolSize: 15,
-    type: SearchItemType.Shortcut,
-  },
-  developerTools: {
-    name: getCommandName('developer_tools'),
-    page: PAGES.HOME,
-    searchTags: getSearchTags('developer_tools'),
-    symbol: 'hammer.fill',
-    symbolSize: 15.75,
-    type: SearchItemType.Shortcut,
-  },
-  testnetMode: {
-    name: getCommandName('testnet_mode'),
-    page: PAGES.HOME,
-    searchTags: getSearchTags('testnet_mode'),
-    shortcut: shortcuts.home.TESTNET_MODE,
-    shouldRemainOnActiveRoute: true,
-    symbol: 'arcade.stick',
-    symbolSize: 15.75,
-    type: SearchItemType.Shortcut,
-  },
-  connectedApps: {
-    actionLabel: actionLabels.open,
-    name: getCommandName('connected_apps'),
-    page: PAGES.HOME,
-    shortcut: shortcuts.home.GO_TO_CONNECTED_APPS,
-    symbol: 'square.on.square.dashed',
-    symbolSize: 15,
-    to: ROUTES.CONNECTED,
-    type: SearchItemType.Shortcut,
-  },
-  settings: {
-    actionLabel: actionLabels.open,
-    name: getCommandName('settings'),
-    page: PAGES.HOME,
-    searchTags: getSearchTags('settings'),
-    shortcut: shortcuts.home.GO_TO_SETTINGS,
-    symbol: 'gearshape.fill',
-    symbolSize: 15,
-    to: ROUTES.SETTINGS,
-    type: SearchItemType.Shortcut,
-  },
-  networkSettings: {
-    actionLabel: actionLabels.open,
-    name: getCommandName('network_settings'),
-    page: PAGES.HOME,
-    searchTags: getSearchTags('network_settings'),
-    symbol: 'network',
-    symbolSize: 14.75,
-    type: SearchItemType.Shortcut,
-  },
-  myQRCode: {
-    actionLabel: actionLabels.open,
-    name: getCommandName('my_qr_code'),
-    page: PAGES.HOME,
-    shortcut: shortcuts.home.GO_TO_QR,
-    symbol: 'person.fill.viewfinder',
-    symbolSize: 15.5,
-    to: ROUTES.QR_CODE,
-    type: SearchItemType.Shortcut,
-  },
-  hideBalances: {
-    name: getCommandName('hide_balances'),
-    page: PAGES.HOME,
-    searchTags: getSearchTags('hide_balances'),
-    shouldRemainOnActiveRoute: true,
-    symbol: 'asterisk',
-    symbolSize: 15,
-    type: SearchItemType.Shortcut,
-  },
-  hideSmallBalances: {
-    name: getCommandName('hide_small_balances'),
-    page: PAGES.HOME,
-    searchTags: getSearchTags('hide_small_balances'),
-    shouldRemainOnActiveRoute: true,
-    symbol: 'xmark.bin.fill',
-    symbolSize: 16,
-    type: SearchItemType.Shortcut,
-  },
-  walletsAndKeys: {
-    actionLabel: actionLabels.open,
-    downrank: true,
-    name: getCommandName('wallets_and_keys'),
-    page: PAGES.HOME,
-    searchTags: getSearchTags('wallets_and_keys'),
-    symbol: 'key.fill',
-    symbolSize: 16.5,
-    type: SearchItemType.Shortcut,
-  },
-  viewFullScreen: {
-    actionLabel: actionLabels.openInNewTab,
-    hideWhenFullScreen: true,
-    name: getCommandName('view_full_screen'),
-    page: PAGES.HOME,
-    symbol: 'arrow.up.left.and.arrow.down.right',
-    symbolSize: 14,
-    type: SearchItemType.Shortcut,
-  },
-  flashbots: {
-    actionLabel: actionLabels.activateCommand,
-    hideForWatchedWallets: true,
-    shouldRemainOnActiveRoute: true,
-    name: getCommandName('enable_flashbots'),
-    symbol: 'bolt.shield.fill',
-    symbolSize: 15,
-    type: SearchItemType.Shortcut,
-  },
-  exportAddresses: {
-    name: i18n.t(`command_k.commands.names.export_addresses_as_csv`),
-    page: PAGES.HOME,
-    shouldRemainOnActiveRoute: true,
-    searchTags: getSearchTags('export_addresses'),
-    symbol: 'doc.on.doc',
-    symbolSize: 15,
-    type: SearchItemType.Shortcut,
-  },
+export const getStaticCommandInfo = (): CommandInfo => {
+  return {
+    // PAGE: HOME
+    send: {
+      actionLabel: actionLabels.open,
+      hideForWatchedWallets: true,
+      name: getCommandName('send'),
+      page: PAGES.HOME,
+      shortcut: shortcuts.home.GO_TO_SEND,
+      symbol: 'paperplane.fill',
+      symbolSize: 14.5,
+      to: ROUTES.SEND,
+      type: SearchItemType.Shortcut,
+    },
+    swap: {
+      actionLabel: actionLabels.open,
+      hideForWatchedWallets: true,
+      name: getCommandName('swap'),
+      page: PAGES.HOME,
+      searchTags: getSearchTags('swap'),
+      shortcut: shortcuts.home.GO_TO_SWAP,
+      symbol: 'arrow.triangle.swap',
+      symbolSize: 15.5,
+      type: SearchItemType.Shortcut,
+    },
+    myWallets: {
+      actionLabel: actionLabels.view,
+      name: getCommandName('my_wallets'),
+      page: PAGES.HOME,
+      searchTags: getSearchTags('my_wallets'),
+      shortcut: shortcuts.home.GO_TO_WALLETS,
+      symbol: 'person.crop.rectangle.stack.fill',
+      symbolSize: 16,
+      toPage: PAGES.MY_WALLETS,
+      type: SearchItemType.Shortcut,
+    },
+    myContacts: {
+      actionLabel: actionLabels.view,
+      name: getCommandName('my_contacts'),
+      page: PAGES.HOME,
+      searchTags: getSearchTags('my_contacts'),
+      symbol: 'person.crop.circle.fill',
+      symbolSize: 16,
+      toPage: PAGES.MY_CONTACTS,
+      type: SearchItemType.Shortcut,
+    },
+    myTokens: {
+      actionLabel: actionLabels.view,
+      name: getCommandName('my_tokens'),
+      page: PAGES.HOME,
+      symbol: 'circlebadge.2.fill',
+      symbolSize: 16.25,
+      toPage: PAGES.MY_TOKENS,
+      type: SearchItemType.Shortcut,
+    },
+    myNFTs: {
+      actionLabel: actionLabels.view,
+      name: getCommandName('my_nfts'),
+      page: PAGES.HOME,
+      symbol: 'photo',
+      symbolSize: 16.25,
+      toPage: PAGES.MY_NFTS,
+      type: SearchItemType.Shortcut,
+    },
+    copyAddress: {
+      name: getCommandName('copy_address'),
+      page: PAGES.HOME,
+      shortcut: shortcuts.home.COPY_ADDRESS,
+      shouldRemainOnActiveRoute: true,
+      symbol: 'square.on.square',
+      symbolSize: 15,
+      type: SearchItemType.Shortcut,
+    },
+    viewProfile: {
+      actionLabel: actionLabels.openInNewTab,
+      name: getCommandName('view_profile'),
+      page: PAGES.HOME,
+      searchTags: getSearchTags('view_profile'),
+      shortcut: shortcuts.home.GO_TO_PROFILE,
+      shouldRemainOnActiveRoute: true,
+      symbol: 'sparkle',
+      symbolSize: 15,
+      type: SearchItemType.Shortcut,
+    },
+    addWallet: {
+      actionLabel: actionLabels.view,
+      name: getCommandName('add_wallet'),
+      page: PAGES.HOME,
+      searchTags: getSearchTags('add_wallet'),
+      symbol: 'plus.app.fill',
+      symbolSize: 14,
+      toPage: PAGES.ADD_WALLET,
+      type: SearchItemType.Shortcut,
+    },
+    lock: {
+      name: getCommandName('lock'),
+      page: PAGES.HOME,
+      shortcut: shortcuts.home.LOCK,
+      symbol: 'lock.open.fill',
+      symbolSize: 15,
+      type: SearchItemType.Shortcut,
+    },
+    developerTools: {
+      name: getCommandName('developer_tools'),
+      page: PAGES.HOME,
+      searchTags: getSearchTags('developer_tools'),
+      symbol: 'hammer.fill',
+      symbolSize: 15.75,
+      type: SearchItemType.Shortcut,
+    },
+    testnetMode: {
+      name: getCommandName('testnet_mode'),
+      page: PAGES.HOME,
+      searchTags: getSearchTags('testnet_mode'),
+      shortcut: shortcuts.home.TESTNET_MODE,
+      shouldRemainOnActiveRoute: true,
+      symbol: 'arcade.stick',
+      symbolSize: 15.75,
+      type: SearchItemType.Shortcut,
+    },
+    connectedApps: {
+      actionLabel: actionLabels.open,
+      name: getCommandName('connected_apps'),
+      page: PAGES.HOME,
+      shortcut: shortcuts.home.GO_TO_CONNECTED_APPS,
+      symbol: 'square.on.square.dashed',
+      symbolSize: 15,
+      to: ROUTES.CONNECTED,
+      type: SearchItemType.Shortcut,
+    },
+    settings: {
+      actionLabel: actionLabels.open,
+      name: getCommandName('settings'),
+      page: PAGES.HOME,
+      searchTags: getSearchTags('settings'),
+      shortcut: shortcuts.home.GO_TO_SETTINGS,
+      symbol: 'gearshape.fill',
+      symbolSize: 15,
+      to: ROUTES.SETTINGS,
+      type: SearchItemType.Shortcut,
+    },
+    networkSettings: {
+      actionLabel: actionLabels.open,
+      name: getCommandName('network_settings'),
+      page: PAGES.HOME,
+      searchTags: getSearchTags('network_settings'),
+      symbol: 'network',
+      symbolSize: 14.75,
+      type: SearchItemType.Shortcut,
+    },
+    myQRCode: {
+      actionLabel: actionLabels.open,
+      name: getCommandName('my_qr_code'),
+      page: PAGES.HOME,
+      shortcut: shortcuts.home.GO_TO_QR,
+      symbol: 'person.fill.viewfinder',
+      symbolSize: 15.5,
+      to: ROUTES.QR_CODE,
+      type: SearchItemType.Shortcut,
+    },
+    hideBalances: {
+      name: getCommandName('hide_balances'),
+      page: PAGES.HOME,
+      searchTags: getSearchTags('hide_balances'),
+      shouldRemainOnActiveRoute: true,
+      symbol: 'asterisk',
+      symbolSize: 15,
+      type: SearchItemType.Shortcut,
+    },
+    hideSmallBalances: {
+      name: getCommandName('hide_small_balances'),
+      page: PAGES.HOME,
+      searchTags: getSearchTags('hide_small_balances'),
+      shouldRemainOnActiveRoute: true,
+      symbol: 'xmark.bin.fill',
+      symbolSize: 16,
+      type: SearchItemType.Shortcut,
+    },
+    walletsAndKeys: {
+      actionLabel: actionLabels.open,
+      downrank: true,
+      name: getCommandName('wallets_and_keys'),
+      page: PAGES.HOME,
+      searchTags: getSearchTags('wallets_and_keys'),
+      symbol: 'key.fill',
+      symbolSize: 16.5,
+      type: SearchItemType.Shortcut,
+    },
+    viewFullScreen: {
+      actionLabel: actionLabels.openInNewTab,
+      hideWhenFullScreen: true,
+      name: getCommandName('view_full_screen'),
+      page: PAGES.HOME,
+      symbol: 'arrow.up.left.and.arrow.down.right',
+      symbolSize: 14,
+      type: SearchItemType.Shortcut,
+    },
+    flashbots: {
+      actionLabel: actionLabels.activateCommand,
+      shouldRemainOnActiveRoute: true,
+      name: getCommandName('enable_flashbots'),
+      symbol: 'bolt.shield.fill',
+      symbolSize: 15,
+      type: SearchItemType.Shortcut,
+    },
+    exportAddresses: {
+      name: i18n.t(`command_k.commands.names.export_addresses_as_csv`),
+      page: PAGES.HOME,
+      shouldRemainOnActiveRoute: true,
+      searchTags: getSearchTags('export_addresses'),
+      symbol: 'doc.on.doc',
+      symbolSize: 15,
+      type: SearchItemType.Shortcut,
+    },
 
-  // PAGE: ADD_WALLET
-  createWallet: {
-    actionLabel: actionLabels.open,
-    name: getCommandName('create_wallet'),
-    page: PAGES.ADD_WALLET,
-    searchTags: getSearchTags('create_wallet'),
-    symbol: 'plus.circle',
-    symbolSize: 15.25,
-    type: SearchItemType.Shortcut,
-  },
-  importWallet: {
-    actionLabel: actionLabels.open,
-    name: getCommandName('import_wallet'),
-    page: PAGES.ADD_WALLET,
-    searchTags: getSearchTags('import_wallet'),
-    symbol: 'lock.rotation',
-    symbolSize: 16.5,
-    type: SearchItemType.Shortcut,
-  },
-  watchWallet: {
-    actionLabel: actionLabels.open,
-    downrank: true,
-    name: getCommandName('watch_wallet'),
-    page: PAGES.ADD_WALLET,
-    searchTags: getSearchTags('watch_wallet'),
-    symbol: 'eyes.inverse',
-    symbolSize: 16,
-    type: SearchItemType.Shortcut,
-  },
-  addHardwareWallet: {
-    actionLabel: actionLabels.open,
-    name: getCommandName('add_hardware_wallet'),
-    page: PAGES.ADD_WALLET,
-    searchTags: getSearchTags('add_hardware_wallet'),
-    symbol: 'cable.connector',
-    symbolSize: 16.75,
-    type: SearchItemType.Shortcut,
-  },
+    // PAGE: ADD_WALLET
+    createWallet: {
+      actionLabel: actionLabels.open,
+      name: getCommandName('create_wallet'),
+      page: PAGES.ADD_WALLET,
+      searchTags: getSearchTags('create_wallet'),
+      symbol: 'plus.circle',
+      symbolSize: 15.25,
+      type: SearchItemType.Shortcut,
+    },
+    importWallet: {
+      actionLabel: actionLabels.open,
+      name: getCommandName('import_wallet'),
+      page: PAGES.ADD_WALLET,
+      searchTags: getSearchTags('import_wallet'),
+      symbol: 'lock.rotation',
+      symbolSize: 16.5,
+      type: SearchItemType.Shortcut,
+    },
+    watchWallet: {
+      actionLabel: actionLabels.open,
+      downrank: true,
+      name: getCommandName('watch_wallet'),
+      page: PAGES.ADD_WALLET,
+      searchTags: getSearchTags('watch_wallet'),
+      symbol: 'eyes.inverse',
+      symbolSize: 16,
+      type: SearchItemType.Shortcut,
+    },
+    addHardwareWallet: {
+      actionLabel: actionLabels.open,
+      name: getCommandName('add_hardware_wallet'),
+      page: PAGES.ADD_WALLET,
+      searchTags: getSearchTags('add_hardware_wallet'),
+      symbol: 'cable.connector',
+      symbolSize: 16.75,
+      type: SearchItemType.Shortcut,
+    },
 
-  // PAGE: TOKEN_DETAIL
-  viewToken: {
-    actionLabel: actionLabels.open,
-    hideFromMainSearch: true,
-    name: getCommandName('view_token'),
-    page: PAGES.TOKEN_DETAIL,
-    symbol: 'circlebadge.2.fill',
-    symbolSize: 16.5,
-    type: SearchItemType.Shortcut,
-  },
-  sendToken: {
-    actionLabel: actionLabels.open,
-    hideForWatchedWallets: true,
-    hideFromMainSearch: true,
-    name: getCommandName('send_token'),
-    page: PAGES.TOKEN_DETAIL,
-    shortcut: shortcuts.home.GO_TO_SEND,
-    symbol: 'paperplane.fill',
-    symbolSize: 14.5,
-    type: SearchItemType.Shortcut,
-  },
-  swapToken: {
-    actionLabel: actionLabels.open,
-    hideForWatchedWallets: true,
-    hideFromMainSearch: true,
-    name: getCommandName('swap_token'),
-    page: PAGES.TOKEN_DETAIL,
-    searchTags: getSearchTags('swap'),
-    shortcut: shortcuts.home.GO_TO_SWAP,
-    symbol: 'arrow.triangle.swap',
-    symbolSize: 15.5,
-    type: SearchItemType.Shortcut,
-  },
-  copyTokenAddress: {
-    hideFromMainSearch: true,
-    name: getCommandName('copy_token_address'),
-    page: PAGES.TOKEN_DETAIL,
-    shouldRemainOnActiveRoute: true,
-    symbol: 'square.on.square',
-    symbolSize: 15,
-    type: SearchItemType.Shortcut,
-  },
-  viewTokenOnExplorer: {
-    actionLabel: actionLabels.openInNewTab,
-    hideFromMainSearch: true,
-    name: getCommandName('view_token_on_explorer'),
-    page: PAGES.TOKEN_DETAIL,
-    symbol: 'magnifyingglass',
-    symbolSize: 14.5,
-    type: SearchItemType.Shortcut,
-  },
+    // PAGE: TOKEN_DETAIL
+    viewToken: {
+      actionLabel: actionLabels.open,
+      hideFromMainSearch: true,
+      name: getCommandName('view_token'),
+      page: PAGES.TOKEN_DETAIL,
+      symbol: 'circlebadge.2.fill',
+      symbolSize: 16.5,
+      type: SearchItemType.Shortcut,
+    },
+    sendToken: {
+      actionLabel: actionLabels.open,
+      hideForWatchedWallets: true,
+      hideFromMainSearch: true,
+      name: getCommandName('send_token'),
+      page: PAGES.TOKEN_DETAIL,
+      shortcut: shortcuts.home.GO_TO_SEND,
+      symbol: 'paperplane.fill',
+      symbolSize: 14.5,
+      type: SearchItemType.Shortcut,
+    },
+    swapToken: {
+      actionLabel: actionLabels.open,
+      hideForWatchedWallets: true,
+      hideFromMainSearch: true,
+      name: getCommandName('swap_token'),
+      page: PAGES.TOKEN_DETAIL,
+      searchTags: getSearchTags('swap'),
+      shortcut: shortcuts.home.GO_TO_SWAP,
+      symbol: 'arrow.triangle.swap',
+      symbolSize: 15.5,
+      type: SearchItemType.Shortcut,
+    },
+    copyTokenAddress: {
+      hideFromMainSearch: true,
+      name: getCommandName('copy_token_address'),
+      page: PAGES.TOKEN_DETAIL,
+      shouldRemainOnActiveRoute: true,
+      symbol: 'square.on.square',
+      symbolSize: 15,
+      type: SearchItemType.Shortcut,
+    },
+    viewTokenOnExplorer: {
+      actionLabel: actionLabels.openInNewTab,
+      hideFromMainSearch: true,
+      name: getCommandName('view_token_on_explorer'),
+      page: PAGES.TOKEN_DETAIL,
+      symbol: 'magnifyingglass',
+      symbolSize: 14.5,
+      type: SearchItemType.Shortcut,
+    },
 
-  // PAGE: UNOWNED_WALLET_DETAIL
-  addAsWatchedWallet: {
-    hideFromMainSearch: true,
-    name: getCommandName('add_as_watched_wallet'),
-    page: PAGES.UNOWNED_WALLET_DETAIL,
-    symbol: 'eyes.inverse',
-    symbolSize: 16,
-    type: SearchItemType.Shortcut,
-  },
-  copyUnownedWalletAddress: {
-    hideFromMainSearch: true,
-    name: getCommandName('copy_wallet_address'),
-    page: PAGES.UNOWNED_WALLET_DETAIL,
-    symbol: 'square.on.square',
-    symbolSize: 15,
-    type: SearchItemType.Shortcut,
-  },
-  viewUnownedWalletNFTs: {
-    actionLabel: actionLabels.openInNewTab,
-    hideFromMainSearch: true,
-    name: getCommandName('view_profile'),
-    page: PAGES.UNOWNED_WALLET_DETAIL,
-    searchTags: getSearchTags('view_profile'),
-    shouldRemainOnActiveRoute: true,
-    symbol: 'sparkle',
-    symbolSize: 15,
-    type: SearchItemType.Shortcut,
-  },
-  viewUnownedWalletOnEtherscan: {
-    actionLabel: actionLabels.openInNewTab,
-    hideFromMainSearch: true,
-    name: getCommandName('view_wallet_on_etherscan'),
-    page: PAGES.UNOWNED_WALLET_DETAIL,
-    symbol: 'magnifyingglass',
-    symbolSize: 14.5,
-    type: SearchItemType.Shortcut,
-  },
-  viewUnownedWalletOnENS: {
-    actionLabel: actionLabels.openInNewTab,
-    hideFromMainSearch: true,
-    name: getCommandName('view_on_ens'),
-    page: PAGES.UNOWNED_WALLET_DETAIL,
-    symbol: 'globe',
-    symbolSize: 15.5,
-    type: SearchItemType.Shortcut,
-  },
+    // PAGE: UNOWNED_WALLET_DETAIL
+    watchUnownedWallet: {
+      hideFromMainSearch: true,
+      name: getCommandName('add_as_watched_wallet'),
+      page: PAGES.UNOWNED_WALLET_DETAIL,
+      symbol: 'eyes.inverse',
+      symbolSize: 16,
+      type: SearchItemType.Shortcut,
+    },
+    addUnownedWalletContact: {
+      actionLabel: actionLabels.activateCommand,
+      hideFromMainSearch: true,
+      name: getCommandName('add_contact'),
+      page: PAGES.UNOWNED_WALLET_DETAIL,
+      symbol: 'plus.app.fill',
+      symbolSize: 14.5,
+      type: SearchItemType.Shortcut,
+    },
+    removeUnownedWalletContact: {
+      actionLabel: actionLabels.activateCommand,
+      hideFromMainSearch: true,
+      name: getCommandName('remove_contact'),
+      page: PAGES.UNOWNED_WALLET_DETAIL,
+      symbol: 'trash.fill',
+      symbolSize: 14.5,
+      type: SearchItemType.Shortcut,
+    },
+    copyUnownedWalletAddress: {
+      hideFromMainSearch: true,
+      name: getCommandName('copy_wallet_address'),
+      page: PAGES.UNOWNED_WALLET_DETAIL,
+      symbol: 'square.on.square',
+      symbolSize: 15,
+      type: SearchItemType.Shortcut,
+    },
+    viewUnownedWalletOnEtherscan: {
+      actionLabel: actionLabels.openInNewTab,
+      hideFromMainSearch: true,
+      name: getCommandName('view_wallet_on_etherscan'),
+      page: PAGES.UNOWNED_WALLET_DETAIL,
+      symbol: 'magnifyingglass',
+      symbolSize: 14.5,
+      type: SearchItemType.Shortcut,
+    },
+    viewUnownedWalletProfile: {
+      actionLabel: actionLabels.openInNewTab,
+      hideFromMainSearch: true,
+      name: getCommandName('view_profile'),
+      page: PAGES.UNOWNED_WALLET_DETAIL,
+      searchTags: getSearchTags('view_profile'),
+      shouldRemainOnActiveRoute: true,
+      symbol: 'sparkle',
+      symbolSize: 15,
+      type: SearchItemType.Shortcut,
+    },
+    viewUnownedWalletOnENS: {
+      actionLabel: actionLabels.openInNewTab,
+      hideFromMainSearch: true,
+      name: getCommandName('view_on_ens'),
+      page: PAGES.UNOWNED_WALLET_DETAIL,
+      symbol: 'globe',
+      symbolSize: 15.5,
+      type: SearchItemType.Shortcut,
+    },
 
-  // PAGE: WALLET_DETAIL
-  switchToWallet: {
-    actionLabel: actionLabels.switchToWallet,
-    hideFromMainSearch: true,
-    name: getCommandName('switch_to_wallet'),
-    page: PAGES.WALLET_DETAIL,
-    symbol: 'person.crop.rectangle.stack.fill',
-    symbolSize: 16,
-    type: SearchItemType.Shortcut,
-  },
-  copyWalletAddress: {
-    hideFromMainSearch: true,
-    name: getCommandName('copy_wallet_address'),
-    page: PAGES.WALLET_DETAIL,
-    symbol: 'square.on.square',
-    symbolSize: 15,
-    type: SearchItemType.Shortcut,
-  },
-  viewWalletOnEtherscan: {
-    actionLabel: actionLabels.openInNewTab,
-    hideFromMainSearch: true,
-    name: getCommandName('view_wallet_on_etherscan'),
-    page: PAGES.WALLET_DETAIL,
-    symbol: 'magnifyingglass',
-    symbolSize: 14.5,
-    type: SearchItemType.Shortcut,
-  },
-  viewOnENS: {
-    actionLabel: actionLabels.openInNewTab,
-    hideFromMainSearch: true,
-    name: getCommandName('view_on_ens'),
-    page: PAGES.WALLET_DETAIL,
-    symbol: 'globe',
-    symbolSize: 15.5,
-    type: SearchItemType.Shortcut,
-  },
+    // PAGE: WALLET_DETAIL
+    switchToWallet: {
+      actionLabel: actionLabels.switchToWallet,
+      hideFromMainSearch: true,
+      name: getCommandName('switch_to_wallet'),
+      page: PAGES.WALLET_DETAIL,
+      symbol: 'person.crop.rectangle.stack.fill',
+      symbolSize: 16,
+      type: SearchItemType.Shortcut,
+    },
+    sendToWallet: {
+      actionLabel: actionLabels.activateCommand,
+      hideFromMainSearch: true,
+      hideForWatchedWallets: true,
+      name: getCommandName('send_to_wallet'),
+      page: PAGES.WALLET_DETAIL,
+      symbol: 'paperplane.fill',
+      symbolSize: 14.5,
+      type: SearchItemType.Shortcut,
+    },
+    copyWalletAddress: {
+      hideFromMainSearch: true,
+      name: getCommandName('copy_wallet_address'),
+      page: PAGES.WALLET_DETAIL,
+      symbol: 'square.on.square',
+      symbolSize: 15,
+      type: SearchItemType.Shortcut,
+    },
+    viewWalletOnEtherscan: {
+      actionLabel: actionLabels.openInNewTab,
+      hideFromMainSearch: true,
+      name: getCommandName('view_wallet_on_etherscan'),
+      page: PAGES.WALLET_DETAIL,
+      symbol: 'magnifyingglass',
+      symbolSize: 14.5,
+      type: SearchItemType.Shortcut,
+    },
+    viewOnENS: {
+      actionLabel: actionLabels.openInNewTab,
+      hideFromMainSearch: true,
+      name: getCommandName('view_on_ens'),
+      page: PAGES.WALLET_DETAIL,
+      symbol: 'globe',
+      symbolSize: 15.5,
+      type: SearchItemType.Shortcut,
+    },
+
+    // PAGE: CONTACT_DETAIL
+    sendToContact: {
+      actionLabel: actionLabels.activateCommand,
+      hideFromMainSearch: true,
+      hideForWatchedWallets: true,
+      name: getCommandName('send_contact'),
+      page: PAGES.CONTACT_DETAIL,
+      symbol: 'paperplane.fill',
+      symbolSize: 14.5,
+      type: SearchItemType.Shortcut,
+    },
+    removeContact: {
+      actionLabel: actionLabels.activateCommand,
+      hideFromMainSearch: true,
+      name: getCommandName('remove_contact'),
+      page: PAGES.CONTACT_DETAIL,
+      symbol: 'trash.fill',
+      symbolSize: 14.5,
+      type: SearchItemType.Shortcut,
+    },
+    copyContactAddress: {
+      hideFromMainSearch: true,
+      name: getCommandName('copy_address'),
+      page: PAGES.CONTACT_DETAIL,
+      shortcut: shortcuts.home.COPY_ADDRESS,
+      shouldRemainOnActiveRoute: true,
+      symbol: 'square.on.square',
+      symbolSize: 15,
+      type: SearchItemType.Shortcut,
+    },
+    viewContactOnEtherscan: {
+      actionLabel: actionLabels.openInNewTab,
+      hideFromMainSearch: true,
+      name: getCommandName('view_wallet_on_etherscan'),
+      page: PAGES.CONTACT_DETAIL,
+      symbol: 'magnifyingglass',
+      symbolSize: 14.5,
+      type: SearchItemType.Shortcut,
+    },
+    viewContactProfile: {
+      actionLabel: actionLabels.openInNewTab,
+      hideFromMainSearch: true,
+      name: getCommandName('view_profile'),
+      page: PAGES.CONTACT_DETAIL,
+      symbol: 'sparkle',
+      symbolSize: 15,
+      type: SearchItemType.Shortcut,
+    },
+  };
 };
 
 const compileCommandList = (
@@ -461,10 +554,11 @@ const compileCommandList = (
   isWatchedWallet: boolean,
   overrides: CommandOverride,
   staticInfo: CommandInfo,
+  wallets: WalletSearchItem[],
+  contacts: ContactSearchItem[],
+  walletSearchResult: ENSOrAddressSearchItem[],
   tokens: TokenSearchItem[],
   nfts: NFTSearchItem[],
-  walletSearchResult: ENSOrAddressSearchItem[],
-  wallets: WalletSearchItem[],
 ): SearchItem[] => {
   const shortcuts = Object.keys(staticInfo)
     .filter((key) => {
@@ -476,14 +570,23 @@ const compileCommandList = (
       }
       return true;
     })
-    .map((key) => ({
-      id: key,
-      ...staticInfo[key],
-      ...overrides[key],
-      onClick: overrides[key]?.action,
-    }));
+    .map((key) => {
+      return {
+        id: key,
+        ...staticInfo[key],
+        ...overrides[key],
+        onClick: overrides[key]?.action,
+      };
+    });
 
-  return [...shortcuts, ...tokens, ...nfts, ...walletSearchResult, ...wallets];
+  return [
+    ...shortcuts,
+    ...wallets,
+    ...contacts,
+    ...walletSearchResult,
+    ...tokens,
+    ...nfts,
+  ];
 };
 
 const isENSOrAddressCommand = (
@@ -496,6 +599,9 @@ const isTokenCommand = (
 const isWalletCommand = (
   command: SearchItem | null,
 ): command is WalletSearchItem => command?.type === SearchItemType.Wallet;
+const isContactCommand = (
+  command: SearchItem | null,
+): command is ContactSearchItem => command?.type === SearchItemType.Contact;
 
 const isETHAddress = (address: Address | 'eth') =>
   address === 'eth' || address === '0x0000000000000000000000000000000000000000';
@@ -516,7 +622,7 @@ export const useCommands = (
   const navigate = useRainbowNavigate();
   const navigateToSwaps = useNavigateToSwaps();
   const { isWatchingWallet } = useWallets();
-  const { save } = useSavedEnsNames();
+  const save = useSavedEnsNames.use.save();
   const { searchableENSOrAddress } = useSearchableENSorAddress(
     currentPage,
     searchQuery,
@@ -525,7 +631,10 @@ export const useCommands = (
   const { searchableTokens } = useSearchableTokens(searchQuery);
   const { searchableNFTs } = useSearchableNFTs();
   const { searchableWallets } = useSearchableWallets(currentPage);
-  const { setSelectedToken } = useSelectedTokenStore();
+  const setSelectedToken = useSelectedTokenStore.use.setSelectedToken();
+  const { searchableContacts } = useSearchableContacts({
+    showLabel: !!searchQuery && currentPage === PAGES.HOME,
+  });
   const { sortedAccounts } = useAccounts();
 
   const { setTestnetMode, testnetMode } = useTestnetModeStore();
@@ -536,6 +645,19 @@ export const useCommands = (
   const { hideSmallBalances, setHideSmallBalances } =
     useHideSmallBalancesStore();
 
+  const { currentAddress } = useCurrentAddressStore();
+
+  const { flashbotsEnabled, setFlashbotsEnabled } = useFlashbotsEnabledStore();
+
+  const { contacts, deleteContact, saveContact } = useContactsStore();
+
+  const { type, vendor } = useCurrentWalletTypeAndVendor();
+
+  const isTrezor =
+    type === KeychainType.HardwareWalletKeychain && vendor === 'Trezor';
+
+  const shouldNavigateToSend = !(isTrezor && !isFullScreen);
+
   const handleCopy = React.useCallback((address: Address) => {
     navigator.clipboard.writeText(address as string);
     triggerToast({
@@ -543,6 +665,11 @@ export const useCommands = (
       description: truncateAddress(address),
     });
   }, []);
+
+  const isContactAdded = React.useCallback(
+    (address: Address) => !!contacts[address || ''],
+    [contacts],
+  );
 
   const handleToggleDeveloperTools = React.useCallback(() => {
     const status = developerToolsEnabled ? 'disabled' : 'enabled';
@@ -583,7 +710,7 @@ export const useCommands = (
   }, [hideSmallBalances, setHideSmallBalances]);
 
   const openProfile = React.useCallback(
-    (command?: ENSOrAddressSearchItem) =>
+    (command?: ENSOrAddressSearchItem | WalletSearchItem | ContactSearchItem) =>
       goToNewTab({
         url: getProfileUrl(
           (command?.ensName ?? command?.address) || (ensName ?? address),
@@ -639,7 +766,50 @@ export const useCommands = (
     explorer && goToNewTab({ url: getExplorerUrl(explorer, address) });
   }, []);
 
-  const { flashbotsEnabled, setFlashbotsEnabled } = useFlashbotsEnabledStore();
+  const handleSendFallback = React.useCallback(
+    (address: Address) => {
+      // Trezor needs to be opened in a new tab because of their own popup
+      if (isTrezor && !isFullScreen) {
+        goToNewTab({
+          url: POPUP_URL + `#${ROUTES.SEND}?hideBack=true&to=${address}`,
+        });
+      }
+    },
+    [isTrezor, isFullScreen],
+  );
+
+  const handleSendToWallet = React.useCallback(
+    (address: Address) => {
+      if (shouldNavigateToSend) {
+        navigate(`${ROUTES.SEND}?to=${address}`);
+      } else {
+        handleSendFallback(address);
+      }
+    },
+    [shouldNavigateToSend, handleSendFallback, navigate],
+  );
+
+  const handleAddContact = React.useCallback(
+    (address: Address, ensName?: string | null) => {
+      saveContact({ contact: { address, name: ensName || '' } });
+      triggerToast({
+        title: i18n.t(`command_k.contact_toast.title_added`),
+        description: ensName || truncateAddress(address),
+      });
+    },
+    [saveContact],
+  );
+
+  const handleRemoveContact = React.useCallback(
+    (address: Address, ensName?: string | null) => {
+      deleteContact({ address });
+      triggerToast({
+        title: i18n.t(`command_k.contact_toast.title_removed`),
+        description: ensName || truncateAddress(address),
+      });
+    },
+    [deleteContact],
+  );
 
   const commandOverrides: CommandOverride = React.useMemo(
     () => ({
@@ -653,6 +823,9 @@ export const useCommands = (
           : getCommandName('my_tokens'),
         searchTags: isWatchingWallet ? getSearchTags('my_tokens_watched') : [],
         selectedWallet: ensName || truncateAddress(address),
+      },
+      myContacts: {
+        hidden: contacts && Object.keys(contacts).length === 0,
       },
       myNFTs: {
         name: isWatchingWallet
@@ -811,7 +984,7 @@ export const useCommands = (
       },
 
       // PAGE: UNOWNED_WALLET_DETAIL
-      addAsWatchedWallet: {
+      watchUnownedWallet: {
         action: () =>
           isENSOrAddressCommand(previousPageState.selectedCommand) &&
           handleWatchWallet(previousPageState.selectedCommand),
@@ -819,6 +992,28 @@ export const useCommands = (
           ? previousPageState.selectedCommand?.address
           : undefined,
         symbol: currentTheme === 'dark' ? 'eyes.inverse' : 'eyes',
+      },
+      addUnownedWalletContact: {
+        action: () =>
+          isENSOrAddressCommand(previousPageState.selectedCommand) &&
+          handleAddContact(
+            previousPageState.selectedCommand.address,
+            previousPageState.selectedCommand.ensName,
+          ),
+        hidden:
+          isENSOrAddressCommand(previousPageState.selectedCommand) &&
+          isContactAdded(previousPageState.selectedCommand.address),
+      },
+      removeUnownedWalletContact: {
+        action: () =>
+          isENSOrAddressCommand(previousPageState.selectedCommand) &&
+          handleRemoveContact(
+            previousPageState.selectedCommand.address,
+            previousPageState.selectedCommand.ensName,
+          ),
+        hidden:
+          isENSOrAddressCommand(previousPageState.selectedCommand) &&
+          !isContactAdded(previousPageState.selectedCommand.address),
       },
       copyUnownedWalletAddress: {
         action: () =>
@@ -828,15 +1023,15 @@ export const useCommands = (
           isENSOrAddressCommand(previousPageState.selectedCommand) &&
           !previousPageState.selectedCommand?.ensName,
       },
-      viewUnownedWalletNFTs: {
-        action: () =>
-          isENSOrAddressCommand(previousPageState.selectedCommand) &&
-          openProfile(previousPageState.selectedCommand),
-      },
       viewUnownedWalletOnEtherscan: {
         action: () =>
           isENSOrAddressCommand(previousPageState.selectedCommand) &&
           viewWalletOnEtherscan(previousPageState.selectedCommand.address),
+      },
+      viewUnownedWalletProfile: {
+        action: () =>
+          isENSOrAddressCommand(previousPageState.selectedCommand) &&
+          openProfile(previousPageState.selectedCommand),
       },
       viewUnownedWalletOnENS: {
         action: () =>
@@ -854,6 +1049,15 @@ export const useCommands = (
         address: isWalletCommand(previousPageState.selectedCommand)
           ? previousPageState.selectedCommand?.address
           : undefined,
+        hidden:
+          isWalletCommand(previousPageState.selectedCommand) &&
+          currentAddress === previousPageState.selectedCommand?.address,
+      },
+      sendToWallet: {
+        action: () =>
+          isWalletCommand(previousPageState.selectedCommand) &&
+          handleSendToWallet(previousPageState.selectedCommand?.address),
+        hidden: isWatchingWallet,
       },
       copyWalletAddress: {
         action: () =>
@@ -874,35 +1078,78 @@ export const useCommands = (
           isWalletCommand(previousPageState.selectedCommand) &&
           !previousPageState.selectedCommand?.ensName,
       },
+
+      // PAGE: CONTACT_DETAIL
+      sendToContact: {
+        action: () =>
+          isContactCommand(previousPageState.selectedCommand) &&
+          handleSendToWallet(previousPageState.selectedCommand.address),
+        hidden:
+          isWatchingWallet ||
+          (isContactCommand(previousPageState.selectedCommand) &&
+            currentAddress === previousPageState.selectedCommand.address),
+      },
+      removeContact: {
+        action: () =>
+          isContactCommand(previousPageState.selectedCommand) &&
+          handleRemoveContact(
+            previousPageState.selectedCommand.address,
+            previousPageState.selectedCommand.ensName,
+          ),
+        hidden:
+          isContactCommand(previousPageState.selectedCommand) &&
+          currentAddress === previousPageState.selectedCommand.address,
+      },
+      copyContactAddress: {
+        action: () =>
+          isContactCommand(previousPageState.selectedCommand) &&
+          handleCopy(previousPageState.selectedCommand.address),
+      },
+      viewContactOnEtherscan: {
+        action: () =>
+          isContactCommand(previousPageState.selectedCommand) &&
+          viewWalletOnEtherscan(previousPageState.selectedCommand.address),
+      },
+      viewContactProfile: {
+        action: () =>
+          isContactCommand(previousPageState.selectedCommand) &&
+          openProfile(previousPageState.selectedCommand),
+      },
     }),
     [
-      address,
-      currentTheme,
-      developerToolsEnabled,
-      ensName,
-      handleCopy,
-      handleSelectAddress,
-      handleToggleHiddenBalances,
-      handleToggleHiddenSmallBalances,
-      handleToggleDeveloperTools,
-      handleToggleTestnetMode,
-      handleWatchWallet,
-      hideAssetBalances,
-      hideSmallBalances,
-      isFirefox,
-      isWatchingWallet,
-      navigate,
       navigateToSwaps,
-      openENSApp,
+      isWatchingWallet,
+      ensName,
+      address,
       openProfile,
-      previousPageState.selectedCommand,
-      selectTokenAndNavigate,
-      sortedAccounts,
+      handleToggleDeveloperTools,
+      developerToolsEnabled,
+      handleToggleTestnetMode,
       testnetMode,
-      viewTokenOnExplorer,
+      handleToggleHiddenBalances,
+      hideAssetBalances,
+      handleToggleHiddenSmallBalances,
+      hideSmallBalances,
       flashbotsEnabled,
+      currentTheme,
+      previousPageState.selectedCommand,
+      isContactAdded,
+      handleCopy,
+      sortedAccounts,
+      contacts,
+      navigate,
       setFlashbotsEnabled,
+      isFirefox,
+      selectTokenAndNavigate,
+      viewTokenOnExplorer,
+      handleWatchWallet,
       viewWalletOnEtherscan,
+      openENSApp,
+      handleSelectAddress,
+      handleAddContact,
+      handleRemoveContact,
+      handleSendToWallet,
+      currentAddress,
     ],
   );
 
@@ -912,11 +1159,12 @@ export const useCommands = (
         isFullScreen,
         (isWatchingWallet ?? false) && !featureFlags.full_watching_wallets,
         commandOverrides,
-        staticCommandInfo,
+        getStaticCommandInfo(),
+        searchableWallets,
+        searchableContacts,
+        searchableENSOrAddress,
         searchableTokens,
         searchableNFTs,
-        searchableENSOrAddress,
-        searchableWallets,
       ),
     [
       isFullScreen,
@@ -927,6 +1175,7 @@ export const useCommands = (
       searchableNFTs,
       searchableENSOrAddress,
       searchableWallets,
+      searchableContacts,
     ],
   );
 

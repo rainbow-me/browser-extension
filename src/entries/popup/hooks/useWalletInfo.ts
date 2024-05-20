@@ -9,7 +9,7 @@ export const useWalletInfo = ({
 }: {
   address?: Address;
 }) => {
-  const { contacts } = useContactsStore();
+  const contacts = useContactsStore.use.contacts();
   const { walletNames } = useWalletNamesStore();
   const { data: ensName } = useEnsName({ address });
 
@@ -20,6 +20,7 @@ export const useWalletInfo = ({
 
   return {
     contactName: contact?.name,
+    contactAddress: contact?.address,
     displayName:
       walletName || contact?.name || ensName || truncateAddress(address),
     isContact: contact,

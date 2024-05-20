@@ -7,6 +7,7 @@ import { isNativePopup } from '~/core/utils/tabs';
 import { IndependentField } from '~/entries/popup/hooks/swap/useSwapInputs';
 
 import { createStore } from '../internal/createStore';
+import { withSelectors } from '../internal/withSelectors';
 
 type SendAddress = Address | 'eth' | '';
 interface CustomNetworkDraft {
@@ -166,7 +167,7 @@ export const popupInstanceStore = createStore<PopupInstanceStore>(
   },
 );
 
-export const usePopupInstanceStore = create(popupInstanceStore);
+export const usePopupInstanceStore = withSelectors(create(popupInstanceStore));
 
 // creates handlers that only work in popup context and passes through callback types
 function popupInstanceHandlerFactory<

@@ -54,16 +54,14 @@ export const AppConnectionWalletItem = React.forwardRef(
     const [hovering, setHovering] = useState(false);
     const { displayName } = useWalletName({ address });
     const chainName = getChainName({ chainId });
-    const { hiddenAssets } = useHiddenAssetStore();
+    const { hidden } = useHiddenAssetStore();
     const showChainBadge = !!chainId && chainId !== ChainId.mainnet;
     const isHidden = useCallback(
-      (asset: ParsedUserAsset) =>
-        hiddenAssets.some(
-          (uniqueId) => uniqueId === computeUniqueIdForHiddenAsset(asset),
-        ),
-      [hiddenAssets],
+      (asset: ParsedUserAsset) => {
+        return !!hidden[address]?.[computeUniqueIdForHiddenAsset(asset)];
+      },
+      [address, hidden],
     );
-
     const { currentCurrency: currency } = useCurrentCurrencyStore();
     const { data: totalAssetsBalance } = useUserAssets(
       { address, currency },

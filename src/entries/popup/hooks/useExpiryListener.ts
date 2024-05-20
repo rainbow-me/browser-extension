@@ -10,8 +10,10 @@ import usePrevious from './usePrevious';
 export function useExpiryListener() {
   const { resetValues, setupPort } = usePopupInstanceStore();
   const { currentAddress } = useCurrentAddressStore();
-  const { clearLastPage, lastPage, setShouldRestoreNavigation } =
-    useNavRestorationStore();
+  const clearLastPage = useNavRestorationStore.use.clearLastPage();
+  const lastPage = useNavRestorationStore.use.lastPage();
+  const setShouldRestoreNavigation =
+    useNavRestorationStore.use.setShouldRestoreNavigation();
   const previousAddress = usePrevious(currentAddress);
 
   const checkExpiry = async () => {

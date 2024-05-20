@@ -12,11 +12,12 @@ export enum SearchItemType {
   Shortcut,
   Token,
   Wallet,
+  Contact,
 }
 
 export interface BaseSearchItem {
   action?: () => void;
-  actionLabel?: string;
+  actionLabel?: () => string;
   actionPage?: CommandKPage;
   asset?: ParsedUserAsset;
   description?: string;
@@ -76,7 +77,16 @@ export interface WalletSearchItem extends BaseSearchItem {
   truncatedName?: string;
   type: SearchItemType.Wallet;
   walletName?: string;
-  walletType: string;
+  walletType?: string;
+}
+
+export interface ContactSearchItem extends BaseSearchItem {
+  address: Address;
+  ensName?: string | null;
+  truncatedName?: string;
+  walletName?: string;
+  type: SearchItemType.Contact;
+  label?: string;
 }
 
 export type SearchItem =
@@ -84,4 +94,5 @@ export type SearchItem =
   | NFTSearchItem
   | ShortcutSearchItem
   | TokenSearchItem
-  | WalletSearchItem;
+  | WalletSearchItem
+  | ContactSearchItem;

@@ -11,6 +11,8 @@ import {
   useRef,
   useState,
 } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { isAddress } from 'viem';
 import { Address } from 'wagmi';
 
 import { analytics } from '~/analytics';
@@ -18,7 +20,11 @@ import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useFlashbotsEnabledStore, useGasStore } from '~/core/state';
+import {
+  useCurrentAddressStore,
+  useFlashbotsEnabledStore,
+  useGasStore,
+} from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import {
@@ -107,17 +113,23 @@ export function Send() {
   const [toAddressDropdownOpen, setToAddressDropdownOpen] = useState(false);
 
   const navigate = useRainbowNavigate();
+  const { currentAddress: address } = useCurrentAddressStore();
 
-  const { isContact } = useContactsStore();
+  const isContact = useContactsStore.use.isContact();
   const { allWallets } = useWallets();
-  const { hiddenAssets } = useHiddenAssetStore();
+  const { hidden } = useHiddenAssetStore();
+  const [urlSearchParams] = useSearchParams();
+
+  const queryToAddress = urlSearchParams.get('to');
+  const validatedQueryToAddress = isAddress(queryToAddress as Address)
+    ? queryToAddress
+    : null;
 
   const isHidden = useCallback(
-    (asset: ParsedUserAsset) =>
-      hiddenAssets.some(
-        (uniqueId) => uniqueId === computeUniqueIdForHiddenAsset(asset),
-      ),
-    [hiddenAssets],
+    (asset: ParsedUserAsset) => {
+      return !!hidden[address]?.[computeUniqueIdForHiddenAsset(asset)];
+    },
+    [address, hidden],
   );
 
   const isMyWallet = (address: Address) =>
@@ -142,7 +154,8 @@ export function Send() {
   const { nft, nfts, nftSortMethod, setNftSortMethod, selectNft } =
     useSendUniqueAsset();
 
-  const { clearCustomGasModified, selectedGas } = useGasStore();
+  const selectedGas = useGasStore.use.selectedGas();
+  const clearCustomGasModified = useGasStore.use.clearCustomGasModified();
 
   const { selectedNft, setSelectedNft } = useSelectedNftStore();
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
@@ -506,7 +519,9 @@ export function Send() {
       );
     }
 
-    if (sendAddress && sendAddress.length) {
+    if (validatedQueryToAddress) {
+      setToAddressOrName(validatedQueryToAddress);
+    } else if (sendAddress && sendAddress.length) {
       setToAddressOrName(sendAddress);
     }
     if (sendField !== independentField) {
@@ -663,6 +678,7 @@ export function Send() {
                 toAddress={toAddress}
                 toEnsName={toEnsName}
                 toAddressOrName={toAddressOrName}
+                queryToAddress={validatedQueryToAddress}
                 clearToAddress={clearToAddress}
                 handleToAddressChange={handleToAddressChange}
                 setToAddressOrName={setToAddressOrName}

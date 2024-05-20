@@ -1,5 +1,5 @@
 import { Address } from '@wagmi/core';
-import React, { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
@@ -42,7 +42,7 @@ const WalletListHW = () => {
   const { state } = useLocation();
   const [accountsIgnored, setAccountsIgnored] = useState<Address[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const { setCurrentAddress } = useCurrentAddressStore();
+  const setCurrentAddress = useCurrentAddressStore.use.setCurrentAddress();
 
   const [accountsToImport, setAccountsToImport] = useState<
     { address: Address; index: number; hdPath?: string }[]

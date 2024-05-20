@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useRef } from 'react';
+import { ReactNode, useCallback } from 'react';
 
 import { i18n } from '~/core/languages';
 import { reportNftAsSpam } from '~/core/network/nfts';
@@ -21,6 +21,8 @@ import {
   Text,
   TextOverflow,
 } from '~/design-system';
+import { triggerAlert } from '~/design-system/components/Alert/Alert';
+import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,7 +34,9 @@ import { HomeMenuRow } from '~/entries/popup/components/HomeMenuRow/HomeMenuRow'
 import { ShortcutHint } from '~/entries/popup/components/ShortcutHint/ShortcutHint';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
+import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
+import { simulateClick } from '~/entries/popup/utils/simulateClick';
 
 import { getOpenseaUrl } from './utils';
 
@@ -44,14 +48,19 @@ export default function NFTDropdownMenu({
   nft?: UniqueAsset | null;
 }) {
   const { currentAddress: address } = useCurrentAddressStore();
-  const { hidden, toggleHideNFT } = useNftsStore();
-  const { setSelectedNft } = useSelectedNftStore();
+  const nftUniqueId = nft?.uniqueId || '';
+  const hidden = useNftsStore.use.hidden();
+  const toggleHideNFT = useNftsStore.use.toggleHideNFT();
+  const setSelectedNft = useSelectedNftStore.use.setSelectedNft();
   const navigate = useRainbowNavigate();
   const hiddenNftsForAddress = hidden[address] || {};
-  const displayed = !hiddenNftsForAddress[nft?.uniqueId || ''];
+  const displayed = !hiddenNftsForAddress[nftUniqueId];
   const hasContractAddress = !!nft?.asset_contract.address;
   const hasNetwork = !!nft?.network;
   const isPOAP = nft?.familyName === 'POAP';
+  const containerRef = useContainerRef();
+
+  const { isWatchingWallet } = useWallets();
 
   const explorerTitle =
     nft?.network === 'mainnet' ? 'Etherscan' : i18n.t('nfts.details.explorer');
@@ -74,8 +83,6 @@ export default function NFTDropdownMenu({
 
   const openseaUrl = getOpenseaUrl({ nft });
 
-  const downloadLink = useRef<HTMLAnchorElement>(null);
-
   const copyId = useCallback(() => {
     navigator.clipboard.writeText(nft?.id as string);
     triggerToast({
@@ -94,9 +101,33 @@ export default function NFTDropdownMenu({
   const handleReportNft = useCallback(() => {
     if (nft) {
       reportNftAsSpam(nft);
+      if (displayed) {
+        toggleHideNFT(address, nftUniqueId);
+      }
       triggerToast({ title: i18n.t('nfts.toast.spam_reported') });
     }
-  }, [nft]);
+  }, [nft, displayed, nftUniqueId, address, toggleHideNFT]);
+
+  const handleDownload = useCallback(() => {
+    const link = document.createElement('a');
+    link.setAttribute('download', '');
+    link.href = nft?.image_url || '';
+    link.click();
+    link.remove();
+  }, [nft?.image_url]);
+
+  const handleHideNFT = useCallback(() => {
+    toggleHideNFT(address, nftUniqueId);
+    if (displayed) {
+      triggerToast({
+        title: i18n.t('nfts.toast.hidden'),
+      });
+    } else {
+      triggerToast({
+        title: i18n.t('nfts.toast.unhidden'),
+      });
+    }
+  }, [address, displayed, nftUniqueId, toggleHideNFT]);
 
   const onValueChange = (
     value:
@@ -119,16 +150,22 @@ export default function NFTDropdownMenu({
         goToNewTab({ url: openseaUrl });
         break;
       case 'download':
-        downloadLink.current?.click();
+        handleDownload();
         break;
       case 'hide':
-        toggleHideNFT(address, nft?.uniqueId || '');
+        handleHideNFT();
         break;
       case 'send':
         handleSendNft();
         break;
       case 'report':
-        handleReportNft();
+        simulateClick(containerRef.current);
+        triggerAlert({
+          action: handleReportNft,
+          actionText: i18n.t('nfts.report_nft_action_text'),
+          text: i18n.t('nfts.report_nft_confirm_description'),
+          dismissText: i18n.t('alert.cancel'),
+        });
         break;
     }
   };
@@ -149,7 +186,7 @@ export default function NFTDropdownMenu({
         >
           <Stack space="4px">
             <Stack>
-              {!isPOAP && (
+              {!isPOAP && !isWatchingWallet && (
                 <DropdownMenuRadioItem highlightAccentColor value="send">
                   <HomeMenuRow
                     leftComponent={
@@ -172,47 +209,54 @@ export default function NFTDropdownMenu({
                   />
                 </DropdownMenuRadioItem>
               )}
-              <DropdownMenuRadioItem highlightAccentColor value="hide">
-                <HomeMenuRow
-                  leftComponent={
-                    <Symbol
-                      size={18}
-                      symbol={displayed ? 'eye.slash.fill' : 'eye.fill'}
-                      weight="semibold"
-                    />
-                  }
-                  centerComponent={
-                    <Box paddingVertical="6px" paddingLeft="2px">
-                      <Text size="14pt" weight="semibold">
-                        {displayed
-                          ? i18n.t('nfts.details.hide')
-                          : i18n.t('nfts.details.unhide')}
-                      </Text>
-                    </Box>
-                  }
-                  rightComponent={
-                    <ShortcutHint hint={shortcuts.nfts.HIDE_NFT.display} />
-                  }
-                />
-              </DropdownMenuRadioItem>
-              <DropdownMenuRadioItem highlightAccentColor value="report">
-                <HomeMenuRow
-                  leftComponent={
-                    <Symbol
-                      size={18}
-                      symbol="exclamationmark.circle.fill"
-                      weight="semibold"
-                    />
-                  }
-                  centerComponent={
-                    <Box paddingVertical="6px" paddingLeft="2px">
-                      <Text size="14pt" weight="semibold">
-                        {i18n.t('nfts.details.report')}
-                      </Text>
-                    </Box>
-                  }
-                />
-              </DropdownMenuRadioItem>
+              {!isWatchingWallet && (
+                <DropdownMenuRadioItem highlightAccentColor value="hide">
+                  <HomeMenuRow
+                    leftComponent={
+                      <Symbol
+                        size={18}
+                        symbol={displayed ? 'eye.slash.fill' : 'eye.fill'}
+                        weight="semibold"
+                      />
+                    }
+                    centerComponent={
+                      <Box paddingVertical="6px" paddingLeft="2px">
+                        <Text size="14pt" weight="semibold">
+                          {displayed
+                            ? i18n.t('nfts.details.hide')
+                            : i18n.t('nfts.details.unhide')}
+                        </Text>
+                      </Box>
+                    }
+                    rightComponent={
+                      <ShortcutHint hint={shortcuts.nfts.HIDE_NFT.display} />
+                    }
+                  />
+                </DropdownMenuRadioItem>
+              )}
+              {!isWatchingWallet && (
+                <DropdownMenuRadioItem highlightAccentColor value="report">
+                  <HomeMenuRow
+                    leftComponent={
+                      <Symbol
+                        size={18}
+                        symbol="exclamationmark.circle.fill"
+                        weight="semibold"
+                      />
+                    }
+                    centerComponent={
+                      <Box paddingVertical="6px" paddingLeft="2px">
+                        <Text size="14pt" weight="semibold">
+                          {i18n.t('nfts.details.report')}
+                        </Text>
+                      </Box>
+                    }
+                    rightComponent={
+                      <ShortcutHint hint={shortcuts.nfts.REPORT_NFT.display} />
+                    }
+                  />
+                </DropdownMenuRadioItem>
+              )}
               {nft?.image_url && (
                 <DropdownMenuRadioItem
                   highlightAccentColor
@@ -229,11 +273,9 @@ export default function NFTDropdownMenu({
                       />
                     }
                     centerComponent={
-                      <Box paddingVertical="6px" cursor="pointer">
-                        <Text size="14pt" weight="semibold" cursor="pointer">
-                          <a href={nft?.image_url} download ref={downloadLink}>
-                            {i18n.t('nfts.details.download')}
-                          </a>
+                      <Box paddingVertical="6px">
+                        <Text size="14pt" weight="semibold">
+                          {i18n.t('nfts.details.download')}
                         </Text>
                       </Box>
                     }

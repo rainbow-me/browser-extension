@@ -432,6 +432,7 @@
       "open": "Open",
       "open_in_new_tab": "Open in New Tab",
       "switch_to_wallet": "Switch to Wallet",
+      "send_to_contact": "Send to Contact",
       "view": "View"
     },
     "commands": {
@@ -439,6 +440,7 @@
         "send": "Send",
         "swap": "Swap",
         "my_wallets": "My Wallets",
+        "my_contacts": "My Contacts",
         "my_tokens": "My Tokens",
         "my_tokens_watched": "Tokens",
         "my_nfts": "My NFTs",
@@ -478,8 +480,12 @@
         "add_as_watched_wallet": "Watch This Wallet",
         "view_on_ens": "View on ENS",
         "switch_to_wallet": "Switch to This Wallet",
+        "send_to_wallet": "Send to This Wallet",
+        "add_contact": "Add as Contact",
+        "remove_contact": "Remove Contact",
         "copy_wallet_address": "Copy Address",
         "view_wallet_on_etherscan": "View on Etherscan",
+        "send_contact": "Send to Contact",
         "export_addresses_as_csv": "Export Addresses as CSV",
         "enable_flashbots": "Enable Flashbots",
         "disable_flashbots": "Disable Flashbots"
@@ -487,6 +493,7 @@
       "search_tags": {
         "swap": "bridge",
         "my_wallets": "switch",
+        "my_contacts": "contact, contacts",
         "my_tokens_watched": "my",
         "my_nfts_watched": "my",
         "view_profile": "profile, gallery, ens, nfts",
@@ -524,6 +531,10 @@
       "title_hidden": "Small Balances Hidden",
       "title_revealed": "Showing Small Balances"
     },
+    "contact_toast": {
+      "title_added": "Contact Added",
+      "title_removed": "Contact Removed"
+    },
     "no_results": "No results",
     "pages": {
       "add_wallet": {
@@ -549,6 +560,10 @@
         "search_placeholder": "Select a wallet to switch to…",
         "section_title": "My Wallets"
       },
+      "my_contacts": {
+        "search_placeholder": "Select a contact to send to…",
+        "section_title": "My Contacts"
+      },
       "token_detail": {
         "search_placeholder": "Search token actions…",
         "section_title": "Actions"
@@ -561,6 +576,9 @@
         "search_placeholder": "Search wallet actions…",
         "section_title": "Actions"
       }
+    },
+    "labels": {
+      "contact": "Contact"
     },
     "quick_promo": {
       "text": "Press %{modifierSymbol}K to open the Magic Menu",
@@ -1306,6 +1324,8 @@
   "nfts": {
     "empty_state_header": "NFTs",
     "empty_state_description": "Your NFTs will appear here!",
+    "report_nft_action_text": "Report",
+    "report_nft_confirm_description": "Confirm report of NFT?",
     "view_on_web": "View on Web",
     "display_mode_gallery": "Gallery",
     "display_mode_collections": "Collections",
@@ -1356,7 +1376,9 @@
       "view_gallery": "View Gallery"
     },
     "toast": {
-      "spam_reported": "Your report has been received!"
+      "spam_reported": "Your report has been received!",
+      "hidden": "NFT hidden",
+      "unhidden": "NFT unhidden"
     }
   },
   "points": {
@@ -1626,6 +1648,7 @@
   },
   "alert": {
     "ok": "Ok",
+    "cancel": "Cancel",
     "wallet_watching_mode": "This wallet is currently Watched. Import the Secret Recovery Phrase, Private Key, or pair your device.",
     "wallet_testing_mode": "Testnets are not supported by Swap. Disable Testnet Mode to continue.",
     "coming_soon": "Coming Soon!",

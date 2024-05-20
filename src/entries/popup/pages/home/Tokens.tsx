@@ -107,15 +107,14 @@ export function Tokens() {
   const { hideSmallBalances } = useHideSmallBalancesStore();
   const { trackShortcut } = useKeyboardAnalytics();
   const { modifierSymbol } = useSystemSpecificModifierKey();
-  const { pinnedAssets } = usePinnedAssetStore();
-  const { hiddenAssets } = useHiddenAssetStore();
+  const { pinned: pinnedStore } = usePinnedAssetStore();
+  const { hidden } = useHiddenAssetStore();
 
   const isHidden = useCallback(
-    (asset: ParsedUserAsset) =>
-      hiddenAssets.some(
-        (uniqueId) => uniqueId === computeUniqueIdForHiddenAsset(asset),
-      ),
-    [hiddenAssets],
+    (asset: ParsedUserAsset) => {
+      return !!hidden[currentAddress]?.[computeUniqueIdForHiddenAsset(asset)];
+    },
+    [currentAddress, hidden],
   );
 
   const {
@@ -159,8 +158,8 @@ export function Tokens() {
 
   const isPinned = useCallback(
     (assetUniqueId: string) =>
-      pinnedAssets.some(({ uniqueId }) => uniqueId === assetUniqueId),
-    [pinnedAssets],
+      !!pinnedStore[currentAddress]?.[assetUniqueId]?.pinned,
+    [currentAddress, pinnedStore],
   );
 
   const combinedAssets = useMemo(
@@ -200,13 +199,8 @@ export function Tokens() {
       const filteredAssets = assets.filter((asset) => isPinned(asset.uniqueId));
 
       const sortedAssets = filteredAssets.sort((a, b) => {
-        const pinnedFirstAsset = pinnedAssets.find(
-          ({ uniqueId }) => uniqueId === a.uniqueId,
-        );
-
-        const pinnedSecondAsset = pinnedAssets.find(
-          ({ uniqueId }) => uniqueId === b.uniqueId,
-        );
+        const pinnedFirstAsset = pinnedStore[currentAddress]?.[a.uniqueId];
+        const pinnedSecondAsset = pinnedStore[currentAddress]?.[b.uniqueId];
 
         // This won't happen, but we'll just return to it's
         // default sorted order just in case it will happen
@@ -217,7 +211,7 @@ export function Tokens() {
 
       return sortedAssets;
     },
-    [isPinned, pinnedAssets],
+    [currentAddress, pinnedStore, isPinned],
   );
 
   const filteredAssets = useMemo(
@@ -296,17 +290,17 @@ export function Tokens() {
           {assetsRowVirtualizer.getVirtualItems().map((virtualItem) => {
             const { key, size, start, index } = virtualItem;
             const token = filteredAssets[index];
-            const pinned = pinnedAssets.some(
-              ({ uniqueId }) => uniqueId === token.uniqueId,
-            );
+            const pinned =
+              !!pinnedStore[currentAddress]?.[token.uniqueId]?.pinned;
 
             return (
               <Box
                 key={`${token.uniqueId}-${key}`}
-                layoutId={`list-${index}`}
                 as={motion.div}
                 position="absolute"
                 width="full"
+                initial={{ x: 4 }}
+                animate={{ x: 0 }}
                 style={{ height: size, y: start }}
               >
                 {pinned && <TokenMarkedHighlighter />}

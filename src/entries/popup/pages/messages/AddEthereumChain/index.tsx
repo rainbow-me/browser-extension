@@ -52,8 +52,8 @@ export const AddEthereumChain = ({
     chainName.toLowerCase().includes('testnet'),
   );
 
-  const { addCustomRPC } = useRainbowChainsStore();
-  const { addUserChain } = useUserChainsStore();
+  const addCustomRPC = useRainbowChainsStore.use.addCustomRPC();
+  const addUserChain = useUserChainsStore.use.addUserChain();
 
   const onAcceptRequest = useCallback(() => {
     try {

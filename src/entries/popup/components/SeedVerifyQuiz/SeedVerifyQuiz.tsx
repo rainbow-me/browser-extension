@@ -119,7 +119,13 @@ const SeedWordRow = ({
         </Box>
 
         <Box style={{ width: 57 + additionalWidth }}>
-          <Text size="14pt" weight="bold" color="label" align="left">
+          <Text
+            size="14pt"
+            weight="bold"
+            color="label"
+            align="left"
+            translate="no"
+          >
             {word}
           </Text>
         </Box>
@@ -146,7 +152,7 @@ export function SeedVerifyQuiz({
   );
   const [selectedWords, setSelectedWords] = useState<SeedWord[]>([]);
 
-  const { setWalletBackedUp } = useWalletBackupsStore();
+  const setWalletBackedUp = useWalletBackupsStore.use.setWalletBackedUp();
   const seedBoxBorderColor = useMemo(() => {
     if (validated) return globalColors.green90;
     if (incorrect) return globalColors.red90;
