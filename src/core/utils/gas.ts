@@ -363,12 +363,12 @@ export const getBaseFeeMultiplier = (speed: GasSpeed) => {
   switch (speed) {
     case 'urgent':
     case 'custom':
-      return 1.1;
+      return 1.2;
     case 'fast':
-      return 1.05;
+      return 1.15;
     case 'normal':
     default:
-      return 1;
+      return 1.1;
   }
 };
 
@@ -536,8 +536,6 @@ export const calculateL1FeeOptimism = async ({
 export const meteorologySupportsChain = (chainId: ChainId) =>
   [
     ChainId.bsc,
-    ChainId.sepolia,
-    ChainId.holesky,
     ChainId.mainnet,
     ChainId.polygon,
     ChainId.base,
@@ -550,8 +548,6 @@ export const meteorologySupportsChain = (chainId: ChainId) =>
 export const meteorologySupportsType2ForChain = (chainId: ChainId) =>
   [
     ChainId.mainnet,
-    ChainId.sepolia,
-    ChainId.holesky,
     ChainId.base,
     ChainId.arbitrum,
     ChainId.optimism,
