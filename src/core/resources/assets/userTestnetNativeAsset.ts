@@ -119,7 +119,6 @@ export function useUserTestnetNativeAsset(
     UserTestnetNativeAssetQueryKey
   > = {},
 ) {
-  console.log('======= useUserTestnetNativeAsset');
   return useQuery({
     queryKey: userTestnetNativeAssetQueryKey({
       address,
