@@ -50,7 +50,7 @@ export type MeteorologyResponse = {
       '3': string;
       '4': string;
     };
-    confirmationTimeByPriorityFee: {
+    confirmationTimeByPriorityFee?: {
       '15': string;
       '30': string;
       '45': string;

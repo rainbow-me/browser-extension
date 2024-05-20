@@ -545,16 +545,6 @@ export const meteorologySupportsChain = (chainId: ChainId) =>
     ChainId.avalanche,
   ].includes(chainId);
 
-export const meteorologySupportsType2ForChain = (chainId: ChainId) =>
-  [
-    ChainId.mainnet,
-    ChainId.base,
-    ChainId.arbitrum,
-    ChainId.optimism,
-    ChainId.zora,
-    ChainId.avalanche,
-  ].includes(chainId);
-
 export const chainNeedsL1SecurityFee = (chainId: ChainId) =>
   [ChainId.base, ChainId.optimism, ChainId.zora].includes(chainId);
 
@@ -577,7 +567,7 @@ export const parseGasFeeParamsBySpeed = ({
   flashbotsEnabled?: boolean;
   additionalTime?: number;
 }) => {
-  if (meteorologySupportsType2ForChain(chainId)) {
+  if ((data as MeteorologyResponse)?.data?.currentBaseFee) {
     const response = data as MeteorologyResponse;
     const {
       data: {
