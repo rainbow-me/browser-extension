@@ -14,8 +14,6 @@ import { beforeAll, expect, test } from 'vitest';
 
 import { delay } from '~/test/utils';
 
-// import { createTestWagmiClient } from '../wagmi/createTestWagmiClient';
-
 import { connectedToHardhatStore } from '../state/currentSettings/connectedToHardhat';
 import { updateWagmiConfig } from '../wagmi';
 

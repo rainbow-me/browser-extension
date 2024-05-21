@@ -5,8 +5,6 @@ import { beforeAll, expect, test } from 'vitest';
 
 import { delay } from '~/test/utils';
 
-// import { createTestWagmiClient } from '../wagmi/createTestWagmiClient';
-
 import { KeychainType } from '../types/keychainTypes';
 
 import { PrivateKey } from './IKeychain';
