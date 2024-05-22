@@ -4,7 +4,8 @@ import { initFCM } from '~/core/firebase/fcm';
 import { initializeMessenger } from '~/core/messengers';
 import { initializeSentry } from '~/core/sentry';
 import { syncStores } from '~/core/state/internal/syncStores';
-// import { createWagmiClient } from '~/core/wagmi';
+import { getRainbowChains } from '~/core/utils/rainbowChains';
+import { updateWagmiConfig } from '~/core/wagmi';
 
 import { handleDisconnect } from './handlers/handleDisconnect';
 import { handleInstallExtension } from './handlers/handleInstallExtension';
@@ -17,15 +18,6 @@ import { handleWallets } from './handlers/handleWallets';
 require('../../core/utils/lockdown');
 
 initializeSentry('background');
-
-// const updateWagmiClient = ({
-//   rpcProxyEnabled,
-// }: {
-//   rpcProxyEnabled: boolean;
-// }) => {
-//   const { rainbowChains } = getRainbowChains();
-//   // createWagmiClient({ rainbowChains, useProxy: rpcProxyEnabled });
-// };
 
 const popupMessenger = initializeMessenger({ connect: 'popup' });
 const inpageMessenger = initializeMessenger({ connect: 'inpage' });
@@ -42,13 +34,7 @@ uuid4();
 initFCM();
 handleKeepAlive();
 
-// setTimeout(() => {
-//   updateWagmiClient({ rpcProxyEnabled: true });
-// }, 100);
-
-// popupMessenger.reply(
-//   'rainbow_updateWagmiClient',
-//   async (payload: { rpcProxyEnabled: boolean }) => {
-//     updateWagmiClient({ rpcProxyEnabled: payload.rpcProxyEnabled });
-//   },
-// );
+popupMessenger.reply('rainbow_updateWagmiClient', async () => {
+  const { rainbowChains } = getRainbowChains();
+  updateWagmiConfig(rainbowChains);
+});
