@@ -3,9 +3,9 @@ import { DismissableLayerProps } from '@radix-ui/react-menu';
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import React, { CSSProperties, ReactNode, useRef } from 'react';
-import { useAccount } from 'wagmi';
 
 import { shortcuts } from '~/core/references/shortcuts';
+import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { hasChildren } from '~/core/utils/react';
 import {
@@ -46,7 +46,7 @@ interface DropdownMenuTriggerProps {
 
 export function DropdownMenuTrigger(props: DropdownMenuTriggerProps) {
   const { children, accentColor, asChild } = props;
-  const { address } = useAccount();
+  const { currentAddress: address } = useCurrentAddressStore();
   const { data: avatar } = useAvatar({ addressOrName: address });
   const triggerRef = useRef<HTMLButtonElement>(null);
 
@@ -128,7 +128,7 @@ export const DropdownMenuContentBody = React.forwardRef<
     animate = false,
   } = props;
   const { currentTheme } = useCurrentThemeStore();
-  const { address } = useAccount();
+  const { currentAddress: address } = useCurrentAddressStore();
   const { data: avatar } = useAvatar({ addressOrName: address });
   return (
     <AccentColorProvider

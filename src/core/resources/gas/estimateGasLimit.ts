@@ -1,6 +1,5 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { useQuery } from '@tanstack/react-query';
-import { getProvider } from '@wagmi/core';
 
 import {
   QueryConfig,
@@ -12,6 +11,7 @@ import {
 import { gasUnits } from '~/core/references/gasUnits';
 import { ChainId } from '~/core/types/chains';
 import { estimateGas } from '~/core/utils/gas';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 
 // ///////////////////////////////////////////////
 // Query Types
@@ -79,11 +79,11 @@ export async function fetchEstimateGasLimit(
     EstimateGasLimitQueryKey
   > = {},
 ) {
-  return await queryClient.fetchQuery(
-    estimateGasLimitQueryKey({ chainId, transactionRequest }),
-    estimateGasLimitQueryFunction,
-    config,
-  );
+  return await queryClient.fetchQuery({
+    queryKey: estimateGasLimitQueryKey({ chainId, transactionRequest }),
+    queryFn: estimateGasLimitQueryFunction,
+    ...config,
+  });
 }
 
 // ///////////////////////////////////////////////
@@ -98,9 +98,10 @@ export function useEstimateGasLimit(
     EstimateGasLimitQueryKey
   > = {},
 ) {
-  return useQuery(
-    estimateGasLimitQueryKey({ chainId, transactionRequest }),
-    estimateGasLimitQueryFunction,
-    { keepPreviousData: true, ...config },
-  );
+  return useQuery({
+    queryKey: estimateGasLimitQueryKey({ chainId, transactionRequest }),
+    queryFn: estimateGasLimitQueryFunction,
+    ...config,
+    placeholderData: (previousData) => previousData,
+  });
 }

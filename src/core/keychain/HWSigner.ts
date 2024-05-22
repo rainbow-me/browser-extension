@@ -5,7 +5,7 @@ import { Signer } from '@ethersproject/abstract-signer';
 import { Bytes } from '@ethersproject/bytes';
 import { defineReadOnly } from '@ethersproject/properties';
 import { Provider } from '@ethersproject/providers';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { initializeMessenger } from '../messengers';
 
@@ -35,8 +35,8 @@ export class HWSigner extends Signer {
     defineReadOnly(this, 'messenger', popupMessenger);
   }
 
-  async getAddress(): Promise<string> {
-    return this.address as string;
+  async getAddress(): Promise<Address> {
+    return this.address as Address;
   }
 
   async fwdHWSignRequest(action: string, payload: any): Promise<string> {

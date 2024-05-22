@@ -110,7 +110,7 @@ export const fetchEnsProfile = ({
 }) => {
   if (!addressOrName) return null;
   return isAddress(addressOrName)
-    ? reverseResolveEnsProfile(addressOrName)
+    ? reverseResolveEnsProfile(addressOrName as Address)
     : resolveEnsProfile(addressOrName);
 };
 
@@ -134,12 +134,10 @@ export function useENSProfile<TSelectResult = EnsProfileResult>(
     EnsProfileQueryKey
   > = {},
 ) {
-  return useQuery(
-    EnsProfileQueryKey({ addressOrName }),
-    resolveEnsProfileQueryFunction,
-    {
-      ...config,
-      staleTime: 10 * 60 * 1_000, // 10 min
-    },
-  );
+  return useQuery({
+    queryKey: EnsProfileQueryKey({ addressOrName }),
+    queryFn: resolveEnsProfileQueryFunction,
+    ...config,
+    staleTime: 10 * 60 * 1_000, // 10 min
+  });
 }

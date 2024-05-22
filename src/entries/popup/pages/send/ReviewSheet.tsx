@@ -1,4 +1,3 @@
-import { getNetwork } from '@wagmi/core';
 import { motion } from 'framer-motion';
 import React, {
   useCallback,
@@ -7,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { ParsedUserAsset } from '~/core/types/assets';
@@ -22,6 +21,7 @@ import {
 } from '~/core/utils/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { getExplorerUrl, goToNewTab } from '~/core/utils/tabs';
+import { wagmiConfig } from '~/core/wagmi';
 import {
   Bleed,
   Box,
@@ -277,7 +277,7 @@ export const ReviewSheet = ({
   const prevShow = usePrevious(show);
   const [sending, setSending] = useState(false);
   const confirmSendButtonRef = useRef<HTMLButtonElement>(null);
-  const { chains } = getNetwork();
+  const { chains } = wagmiConfig;
   const assetChainId =
     asset?.chainId || chainIdFromChainName(nft?.network || ChainName.mainnet);
   const chain = useMemo(

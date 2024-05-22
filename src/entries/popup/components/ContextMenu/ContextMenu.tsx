@@ -9,9 +9,9 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useAccount } from 'wagmi';
 
 import { shortcuts } from '~/core/references/shortcuts';
+import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { hasChildren } from '~/core/utils/react';
 import {
@@ -58,7 +58,7 @@ interface ContextMenuTriggerProps {
 
 export const ContextMenuTrigger = (props: ContextMenuTriggerProps) => {
   const { children, accentColor, asChild, disabled } = props;
-  const { address } = useAccount();
+  const { currentAddress: address } = useCurrentAddressStore();
   const { data: avatar } = useAvatar({ addressOrName: address });
   const triggerRef = useRef<HTMLDivElement>(null);
 
@@ -158,7 +158,7 @@ const ContextMenuContentBody = React.forwardRef<
     onPointerDownOutside,
   } = props;
   const { currentTheme } = useCurrentThemeStore();
-  const { address } = useAccount();
+  const { currentAddress: address } = useCurrentAddressStore();
   const { data: avatar } = useAvatar({ addressOrName: address });
   return (
     <AccentColorProvider

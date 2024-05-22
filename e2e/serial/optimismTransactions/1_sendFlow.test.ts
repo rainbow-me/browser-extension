@@ -108,7 +108,7 @@ describe('Complete Hardhat Optimism send flow', () => {
   it('should be able to select asset to send with keyboard', async () => {
     await navigateToElementWithTestId({
       driver,
-      testId: 'asset-name-eth_10',
+      testId: 'asset-name-0x0000000000000000000000000000000000000000_10',
     });
     await delayTime('long');
     const tokenInput = await findElementByTestId({

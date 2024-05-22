@@ -1,6 +1,11 @@
 #!/bin/bash
 ANVIL_PORT=8545
 
+# Automatically export all variables
+set -a  
+source .env
+set +a 
+
 # Launch anvil in the bg
 yarn anvil:kill
 yarn anvil > anvil-unit.log 2>&1 &

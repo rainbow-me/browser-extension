@@ -12,7 +12,7 @@ import { defineReadOnly } from '@ethersproject/properties';
 import { Provider } from '@ethersproject/providers';
 import { personalSign } from '@metamask/eth-sig-util';
 import { bytesToHex } from 'ethereum-cryptography/utils';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { addHexPrefix } from '../utils/hex';
 
@@ -33,8 +33,8 @@ export class RainbowSigner extends Signer {
     return Buffer.from(addHexPrefix(this.privateKey).substring(2), 'hex');
   };
 
-  async getAddress(): Promise<string> {
-    return this.address as string;
+  async getAddress(): Promise<Address> {
+    return this.address as Address;
   }
 
   async signMessage(message: Bytes | string): Promise<string> {

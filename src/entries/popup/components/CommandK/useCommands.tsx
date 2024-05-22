@@ -1,6 +1,7 @@
 import React from 'react';
 import { To } from 'react-router-dom';
-import { Address, useEnsName } from 'wagmi';
+import { Address } from 'viem';
+import { useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -927,8 +928,8 @@ export const useCommands = (
           isFirefox
             ? triggerAlert({ text: i18n.t('alert.no_hw_ff') })
             : navigate(ROUTES.HW_CHOOSE, {
-                state: { direction: 'upRight', navbarIcon: 'ex' },
-              });
+              state: { direction: 'upRight', navbarIcon: 'ex' },
+            });
         },
       },
 

@@ -1,4 +1,4 @@
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 import create from 'zustand';
 
 import { ParsedSearchAsset } from '~/core/types/assets';

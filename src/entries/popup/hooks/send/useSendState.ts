@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
@@ -108,8 +108,8 @@ export const useSendState = ({
     toAddressOrName,
     chainId,
     data,
-    fromAddress,
-    toAddress,
+    fromAddress: fromAddress as Address,
+    toAddress: toAddress as Address | undefined,
     toEnsName,
     txToAddress,
     value,

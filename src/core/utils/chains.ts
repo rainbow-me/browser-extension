@@ -1,6 +1,5 @@
 import { AddressZero } from '@ethersproject/constants';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import { getNetwork } from '@wagmi/core';
 import {
   Chain,
   celo,
@@ -9,7 +8,7 @@ import {
   mainnet,
   moonbeam,
 } from 'viem/chains';
-import { useNetwork } from 'wagmi';
+import { useConfig } from 'wagmi';
 
 import {
   NATIVE_ASSETS_PER_CHAIN,
@@ -26,17 +25,14 @@ import {
 } from '~/core/types/chains';
 
 import { proxyRpcEndpoint } from '../providers';
-import {
-  RAINBOW_CHAINS_SUPPORTED,
-  rainbowChainsStore,
-} from '../state/rainbowChains';
+import { RAINBOW_CHAINS_SUPPORTED } from '../state/rainbowChains';
 import { AddressOrEth } from '../types/assets';
+import { wagmiConfig } from '../wagmi';
 
 import { getDappHost, isValidUrl } from './connectedApps';
+import { findRainbowChainForChainId } from './rainbowChains';
 import { isLowerCaseMatch } from './strings';
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 export const customChainIdsToAssetNames: Record<ChainId, string> = {
   42170: 'arbitrumnova',
   1313161554: 'aurora',
@@ -81,7 +77,7 @@ export const customChainIdsToAssetNames: Record<ChainId, string> = {
 };
 
 export const getSupportedChainsWithHardhat = () => {
-  const { chains } = getNetwork();
+  const { chains } = wagmiConfig;
   return chains.filter(
     (chain) =>
       !chain.testnet ||
@@ -94,12 +90,12 @@ export const isDefaultSupportedChain = ({ chainId }: { chainId: ChainId }) =>
   SUPPORTED_CHAIN_IDS.map((id) => id).includes(chainId);
 
 export const getSupportedChains = () => {
-  const { chains } = getNetwork();
+  const { chains } = wagmiConfig;
   return chains.filter((chain) => !chain.testnet);
 };
 
 export const useMainChains = () => {
-  const { chains } = useNetwork();
+  const { chains } = useConfig();
   // All the mainnets we support
   const mainSupportedChains = SUPPORTED_MAINNET_CHAINS.filter(
     (chain) => !chain.testnet,
@@ -129,7 +125,7 @@ export const useMainChains = () => {
 };
 
 export const getMainChains = () => {
-  const { chains } = getNetwork();
+  const { chains } = wagmiConfig;
   // All the mainnets we support
   const mainSupportedChains = SUPPORTED_MAINNET_CHAINS.filter(
     (chain) => !chain.testnet,
@@ -162,7 +158,7 @@ export const getSupportedChainIds = () =>
   getSupportedChains().map((chain) => chain.id);
 
 export const getSupportedTestnetChains = () => {
-  const { chains } = getNetwork();
+  const { chains } = wagmiConfig;
   return chains.filter((chain) => !!chain.testnet);
 };
 
@@ -205,7 +201,7 @@ export const useBackendSupportedChains = ({
 }: {
   testnetMode?: boolean;
 }) => {
-  const { chains } = useNetwork();
+  const { chains } = useConfig();
   return chains.filter((chain) =>
     testnetMode ? !!chain.testnet : !chain.testnet,
   );
@@ -216,28 +212,10 @@ export const getBackendSupportedChains = ({
 }: {
   testnetMode?: boolean;
 }) => {
-  const { chains } = getNetwork();
+  const { chains } = wagmiConfig;
   return chains.filter((chain) =>
     testnetMode ? !!chain.testnet : !chain.testnet,
   );
-};
-
-export const getRainbowChains = () => {
-  const { rainbowChains } = rainbowChainsStore.getState();
-  return {
-    rainbowChains: Object.values(rainbowChains)
-      .map((rainbowChain) =>
-        rainbowChain.chains.find(
-          (rpc) => rpc.rpcUrls.default.http[0] === rainbowChain.activeRpcUrl,
-        ),
-      )
-      .filter(Boolean),
-  };
-};
-
-export const findRainbowChainForChainId = (chainId: number) => {
-  const { rainbowChains } = getRainbowChains();
-  return rainbowChains.find((chain) => chain.id === chainId);
 };
 
 export const getChainName = ({ chainId }: { chainId: number }) => {
@@ -299,7 +277,7 @@ export function getBlockExplorerHostForChain(chainId: ChainId) {
 }
 
 export function getChain({ chainId }: { chainId?: ChainId }) {
-  const { chains } = getNetwork();
+  const { chains } = wagmiConfig;
   const chain = chains.find((chain) => chain.id === chainId);
   return chain || { ...mainnet, testnet: false };
 }

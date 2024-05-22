@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { useRainbowChainsStore } from '~/core/state';
 
 export const useRainbowChains = () => {
-  const { rainbowChains } = useRainbowChainsStore();
+  const rainbowChains = useRainbowChainsStore.use.rainbowChains();
   const chains = useMemo(
     () =>
       Object.values(rainbowChains)

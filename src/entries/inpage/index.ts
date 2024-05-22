@@ -1,6 +1,5 @@
 import { RainbowProvider } from '@rainbow-me/provider';
 import { uuid4 } from '@sentry/utils';
-import { Ethereum } from '@wagmi/core';
 import _ from 'lodash';
 import { EIP1193Provider, announceProvider } from 'mipd';
 
@@ -18,17 +17,17 @@ declare global {
   interface Window {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore - clashes with Wagmi's Window type https://github.com/wagmi-dev/wagmi/blob/a25ddf534781b2da81ee6aba307b93750efc5595/packages/core/src/types/index.ts#L77
-    ethereum: RainbowProvider | Ethereum;
+    ethereum: RainbowProvider;
     lodash: unknown;
     rainbow: RainbowProvider;
-    providers: (RainbowProvider | Ethereum)[];
+    providers: RainbowProvider[];
     walletRouter: {
       rainbowProvider: RainbowProvider;
-      lastInjectedProvider?: RainbowProvider | Ethereum;
-      currentProvider: RainbowProvider | Ethereum;
-      providers: (RainbowProvider | Ethereum)[];
+      lastInjectedProvider?: RainbowProvider;
+      currentProvider: RainbowProvider;
+      providers: RainbowProvider[];
       setDefaultProvider: (rainbowAsDefault: boolean) => void;
-      addProvider: (provider: RainbowProvider | Ethereum) => void;
+      addProvider: (provider: RainbowProvider) => void;
     };
   }
 }
@@ -128,12 +127,11 @@ if (shouldInjectProvider()) {
             window.walletRouter.currentProvider = window.rainbow;
           } else {
             const nonDefaultProvider =
-              window.walletRouter.lastInjectedProvider ??
-              (window.ethereum as Ethereum);
+              window.walletRouter.lastInjectedProvider ?? window.ethereum;
             window.walletRouter.currentProvider = nonDefaultProvider;
           }
         },
-        addProvider(provider: RainbowProvider | Ethereum) {
+        addProvider(provider: RainbowProvider) {
           if (!window.walletRouter.providers.includes(provider)) {
             window.walletRouter.providers.push(provider);
           }

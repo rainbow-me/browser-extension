@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getProvider } from '@wagmi/core';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import {
   QueryConfig,
@@ -16,6 +15,7 @@ import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId, ChainName, ChainNameDisplay } from '~/core/types/chains';
 import { fetchAssetBalanceViaProvider } from '~/core/utils/assets';
 import { getChain, isTestnetChainId } from '~/core/utils/chains';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
 
@@ -85,11 +85,12 @@ async function userTestnetNativeAssetQueryFunction({
       !isTestnetChainId({ chainId }) &&
       chainId !== ChainId.hardhat &&
       chainId !== ChainId.hardhatOptimism
-    )
+    ) {
       return null;
+    }
 
-    const provider = getProvider({ chainId });
     const nativeAsset = getNativeAssetMock({ chainId });
+    const provider = getProvider({ chainId });
     const parsedAsset = await fetchAssetBalanceViaProvider({
       parsedAsset: nativeAsset,
       currentAddress: address,
@@ -118,16 +119,14 @@ export function useUserTestnetNativeAsset(
     UserTestnetNativeAssetQueryKey
   > = {},
 ) {
-  return useQuery(
-    userTestnetNativeAssetQueryKey({
+  return useQuery({
+    queryKey: userTestnetNativeAssetQueryKey({
       address,
       currency,
       chainId,
     }),
-    userTestnetNativeAssetQueryFunction,
-    {
-      ...config,
-      refetchInterval: USER_ASSETS_REFETCH_INTERVAL,
-    },
-  );
+    queryFn: userTestnetNativeAssetQueryFunction,
+    ...config,
+    refetchInterval: USER_ASSETS_REFETCH_INTERVAL,
+  });
 }

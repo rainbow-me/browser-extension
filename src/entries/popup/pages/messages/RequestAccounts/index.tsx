@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';

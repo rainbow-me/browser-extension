@@ -132,6 +132,9 @@ export const TokenToSellDropdown = ({
         initial="hidden"
         animate="show"
         ref={containerRef}
+        style={{
+          height: `${assetsRowVirtualizer.getTotalSize()}px`,
+        }}
       >
         {!!assets?.length &&
           assetsRowVirtualizer?.getVirtualItems().map((virtualItem, i) => {

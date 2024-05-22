@@ -5,7 +5,7 @@ import {
   WRAPPED_ASSET,
   getRainbowRouterContractAddress,
 } from '@rainbow-me/swaps';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { ETH_ADDRESS } from '../references';
 import { ChainId } from '../types/chains';

@@ -1,7 +1,7 @@
 import chroma from 'chroma-js';
 import { useCallback, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Address, Chain } from 'wagmi';
+import { Address, Chain } from 'viem';
 
 import { i18n } from '~/core/languages';
 import {
@@ -98,6 +98,8 @@ export function SettingsNetworksRPCs() {
   const { developerToolsEnabled } = useDeveloperToolsEnabledStore();
   const { rainbowChains, setActiveRPC, removeCustomRPC } =
     useRainbowChainsStore();
+
+  console.log('-- rainbowChains', rainbowChains);
 
   const rainbowChain = rainbowChains[Number(chainId)];
 

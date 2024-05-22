@@ -342,7 +342,7 @@ export const PointsOnboardingSheet = () => {
     data: validSignatureResponse,
     error,
     mutate: validateSignature,
-    isLoading: validatingSignature,
+    isPending: validatingSignature,
     isSuccess: accessGranted,
   } = useMutation<
     ValidatePointsSignatureMutation['onboardPoints'],
@@ -370,7 +370,7 @@ export const PointsOnboardingSheet = () => {
 
   const userOnboarding = validSignatureResponse?.user.onboarding;
 
-  const { mutate: signChallenge, isLoading: isWaitingForSignature } =
+  const { mutate: signChallenge, isPending: isWaitingForSignature } =
     useMutation({
       mutationFn: async () => {
         if (!data) return;

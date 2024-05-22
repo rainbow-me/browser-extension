@@ -1,6 +1,6 @@
-import { Address } from '@wagmi/core';
-import { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
@@ -169,11 +169,11 @@ const WalletListHW = () => {
                     >
                       {selectedAccounts === 1
                         ? i18n.t(
-                            'edit_import_wallet_selection.importing_your_wallet.one',
-                          )
+                          'edit_import_wallet_selection.importing_your_wallet.one',
+                        )
                         : i18n.t(
-                            'edit_import_wallet_selection.importing_your_wallet.other',
-                          )}
+                          'edit_import_wallet_selection.importing_your_wallet.other',
+                        )}
                     </Text>
                     <Box
                       width="fit"
@@ -206,12 +206,12 @@ const WalletListHW = () => {
                         >
                           {accountsToImport?.length > 1
                             ? i18n.t('hw.connect_wallets_found', {
-                                count: accountsToImport?.length,
-                                vendor: state.vendor,
-                              })
+                              count: accountsToImport?.length,
+                              vendor: state.vendor,
+                            })
                             : i18n.t('hw.connect_wallets_not_found', {
-                                vendor: state.vendor,
-                              })}
+                              vendor: state.vendor,
+                            })}
                         </Text>
                       </Box>
                     </Stack>
@@ -426,8 +426,8 @@ const WalletListHW = () => {
                   >
                     {selectedAccounts > 1
                       ? i18n.t('hw.connect_n_wallets', {
-                          count: selectedAccounts,
-                        })
+                        count: selectedAccounts,
+                      })
                       : i18n.t('hw.connect_wallet')}
                   </Button>
                 </Box>

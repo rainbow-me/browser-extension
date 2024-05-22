@@ -8,8 +8,8 @@ import {
   recoverTypedSignature,
 } from '@metamask/eth-sig-util';
 import React, { useCallback, useState } from 'react';
-import { useAccount } from 'wagmi';
 
+import { useCurrentAddressStore } from '~/core/state';
 import { WalletAction } from '~/core/types/walletActions';
 import { Box, Column, Columns, Row, Rows, Text } from '~/design-system';
 
@@ -19,7 +19,7 @@ export function Sign() {
   const [message, setMessage] = useState('');
   const [signature, setSignature] = useState('');
   const [signing, setSigning] = useState(false);
-  const { address } = useAccount();
+  const { currentAddress: address } = useCurrentAddressStore();
 
   const handleMessageChange = useCallback(
     (event: { target: { value: React.SetStateAction<string> } }) => {

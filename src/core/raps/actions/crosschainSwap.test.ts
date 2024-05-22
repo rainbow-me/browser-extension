@@ -6,19 +6,19 @@ import {
   SwapType,
   getCrosschainQuote,
 } from '@rainbow-me/swaps';
-import { getProvider } from '@wagmi/core';
 import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test } from 'vitest';
 
+import { connectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ChainId } from '~/core/types/chains';
+import { updateWagmiConfig } from '~/core/wagmi';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 import {
   TEST_ADDRESS_3,
   TEST_PK_3,
   USDC_ARBITRUM_ASSET,
   delay,
 } from '~/test/utils';
-
-import { createTestWagmiClient } from '../../wagmi/createTestWagmiClient';
 
 import {
   estimateCrosschainSwapGasLimit,
@@ -28,7 +28,8 @@ import {
 let crosschainQuote: CrosschainQuote | QuoteError | null;
 
 beforeAll(async () => {
-  createTestWagmiClient();
+  connectedToHardhatStore.setState({ connectedToHardhat: true });
+  updateWagmiConfig([mainnet]);
   await delay(3000);
   crosschainQuote = await getCrosschainQuote({
     chainId: 1,

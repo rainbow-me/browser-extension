@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { addysHttp } from '~/core/network/addys';
 import {
@@ -76,10 +76,10 @@ export const userAssetsFetchQuery = ({
   currency,
   testnetMode,
 }: FetchUserAssetsArgs) => {
-  queryClient.fetchQuery(
-    userAssetsQueryKey({ address, currency, testnetMode }),
-    userAssetsQueryFunction,
-  );
+  queryClient.fetchQuery({
+    queryKey: userAssetsQueryKey({ address, currency, testnetMode }),
+    queryFn: userAssetsQueryFunction,
+  });
 };
 
 export const userAssetsSetQueryDefaults = ({
@@ -112,9 +112,9 @@ async function userAssetsQueryFunction({
   queryKey: [{ address, currency, testnetMode }],
 }: QueryFunctionArgs<typeof userAssetsQueryKey>) {
   const cache = queryClient.getQueryCache();
-  const cachedUserAssets = (cache.find(
-    userAssetsQueryKey({ address, currency, testnetMode }),
-  )?.state?.data || {}) as ParsedAssetsDictByChain;
+  const cachedUserAssets = (cache.find({
+    queryKey: userAssetsQueryKey({ address, currency, testnetMode }),
+  })?.state?.data || {}) as ParsedAssetsDictByChain;
   try {
     const supportedChainIds = getBackendSupportedChains({ testnetMode }).map(
       ({ id }) => id,
@@ -178,8 +178,9 @@ async function userAssetsQueryFunctionRetryByChain({
   try {
     const cache = queryClient.getQueryCache();
     const cachedUserAssets =
-      (cache.find(userAssetsQueryKey({ address, currency, testnetMode }))?.state
-        ?.data as ParsedAssetsDictByChain) || {};
+      (cache.find({
+        queryKey: userAssetsQueryKey({ address, currency, testnetMode }),
+      })?.state?.data as ParsedAssetsDictByChain) || {};
     const retries = [];
     for (const chainIdWithError of chainIds) {
       retries.push(
@@ -189,7 +190,7 @@ async function userAssetsQueryFunctionRetryByChain({
             chainId: chainIdWithError,
             currency,
           },
-          { cacheTime: 0 },
+          { gcTime: 0 },
         ),
       );
     }
@@ -224,15 +225,14 @@ export function useUserAssets<TSelectResult = UserAssetsResult>(
   > = {},
 ) {
   const { testnetMode } = useTestnetModeStore();
-  return useQuery(
-    userAssetsQueryKey({ address, currency, testnetMode }),
-    userAssetsQueryFunction,
-    {
-      ...config,
-      refetchInterval: USER_ASSETS_REFETCH_INTERVAL,
-      staleTime: process.env.IS_TESTING === 'true' ? 0 : 1000,
-    },
-  );
+  return useQuery({
+    queryKey: userAssetsQueryKey({ address, currency, testnetMode }),
+    queryFn: userAssetsQueryFunction,
+    ...config,
+    refetchInterval: USER_ASSETS_REFETCH_INTERVAL,
+    staleTime: process.env.IS_TESTING === 'true' ? 0 : 1000,
+    placeholderData: (previousData) => previousData,
+  });
 }
 
 // ///////////////////////////////////////////////
@@ -274,15 +274,15 @@ export async function fetchUserAssetsByChain<
     UserAssetsByChainQueryKey
   > = {},
 ) {
-  return await queryClient.fetchQuery(
-    userAssetsByChainQueryKey({
+  return await queryClient.fetchQuery({
+    queryKey: userAssetsByChainQueryKey({
       address,
       chainId,
       currency,
     }),
-    userAssetsByChainQueryFunction,
-    config,
-  );
+    queryFn: userAssetsByChainQueryFunction,
+    ...config,
+  });
 }
 
 // ///////////////////////////////////////////////
@@ -294,9 +294,9 @@ export async function userAssetsByChainQueryFunction({
   Record<string, ParsedUserAsset>
 > {
   const cache = queryClient.getQueryCache();
-  const cachedUserAssets = (cache.find(
-    userAssetsQueryKey({ address, currency }),
-  )?.state?.data || {}) as ParsedAssetsDictByChain;
+  const cachedUserAssets = (cache.find({
+    queryKey: userAssetsQueryKey({ address, currency }),
+  })?.state?.data || {}) as ParsedAssetsDictByChain;
   const cachedDataForChain = cachedUserAssets?.[chainId];
   try {
     const url = `/${chainId}/${address}/assets/?currency=${currency.toLowerCase()}`;
@@ -344,16 +344,14 @@ export function useUserAssetsByChain<TSelectResult = UserAssetsByChainResult>(
     UserAssetsByChainQueryKey
   > = {},
 ) {
-  return useQuery(
-    userAssetsByChainQueryKey({
+  return useQuery({
+    queryKey: userAssetsByChainQueryKey({
       address,
       chainId,
       currency,
     }),
-    userAssetsByChainQueryFunction,
-    {
-      ...config,
-      refetchInterval: USER_ASSETS_REFETCH_INTERVAL,
-    },
-  );
+    queryFn: userAssetsByChainQueryFunction,
+    ...config,
+    refetchInterval: USER_ASSETS_REFETCH_INTERVAL,
+  });
 }

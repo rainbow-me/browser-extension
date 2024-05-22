@@ -118,7 +118,7 @@ export const TokenToBuySection = ({
   const t = useTranslationContext();
   const { containerRef, assetsRowVirtualizer } = useVirtualizedAssets({
     assets: assetSection.data,
-    size: 5,
+    size: 52,
   });
 
   const { background, gradient, symbol, title, webkitBackgroundClip } =
@@ -132,8 +132,20 @@ export const TokenToBuySection = ({
   }, [assetSection.id, outputChainId]);
 
   if (!assetSection.data.length) return null;
+
+  const height =
+    assetsRowVirtualizer.getTotalSize() +
+    14 +
+    (assetSection.id === 'other_networks' ? 52 : 0);
+
   return (
-    <Box testId={`${assetSection.id}-token-to-buy-section`}>
+    <Box
+      testId={`${assetSection.id}-token-to-buy-section`}
+      style={{
+        position: 'relative',
+        height,
+      }}
+    >
       <Stack space="8px">
         {assetSection.id === 'other_networks' ? (
           <Box borderRadius="12px" style={{ height: '52px' }}>
@@ -174,7 +186,13 @@ export const TokenToBuySection = ({
           </VerifiedWrappedTooltip>
         </Box>
 
-        <Box ref={containerRef}>
+        <Box
+          ref={containerRef}
+          style={{
+            position: 'relative',
+            height: `${assetsRowVirtualizer.getTotalSize()}px`,
+          }}
+        >
           {assetsRowVirtualizer?.getVirtualItems().map((virtualItem, i) => {
             const { index } = virtualItem;
             const asset = assetSection.data?.[index] as SearchAsset;
