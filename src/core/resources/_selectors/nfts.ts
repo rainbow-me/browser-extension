@@ -1,10 +1,13 @@
 import { InfiniteData } from '@tanstack/react-query';
 
-import { NftSort } from '~/core/state/nfts';
-import { UniqueAsset } from '~/core/types/nfts';
-
+import { i18n } from '~/core/languages';
+import { SimpleHashCollectionDetails, UniqueAsset } from '~/core/types/nfts';
 type NFTInfiniteData = InfiniteData<{
   nfts: UniqueAsset[];
+  nextPage?: string | null;
+}>;
+type NFTCollectionInfiniteData = InfiniteData<{
+  collections: SimpleHashCollectionDetails[];
   nextPage?: string | null;
 }>;
 export type NFTCollectionSectionData = {
@@ -16,76 +19,64 @@ export type NFTCollectionSectionData = {
 export const selectNfts = (data?: NFTInfiniteData) =>
   data?.pages?.map((page) => page.nfts).flat();
 
-export const sortSectionsAlphabetically = (
-  sections: NFTCollectionSectionData[],
+export const selectNftCollections = (
+  data?: NFTCollectionInfiniteData,
+  hiddenNfts?: Record<string, boolean>,
 ) => {
-  return sections.sort((a, b) => {
-    const aName = a.collection.name.toLowerCase();
-    const bName = b.collection.name.toLowerCase();
-    if (aName < bName) {
-      return -1;
-    }
-    if (aName > bName) {
-      return 1;
-    }
-    return 0;
-  });
-};
-
-export const sortSectionsByRecent = (sections: NFTCollectionSectionData[]) => {
-  return sections.sort((a, b) => {
-    const earliestDate = new Date(-8640000000000000);
-    const aCollectionAcquisition = a.lastCollectionAcquisition;
-    const bCollectionAcquisition = b.lastCollectionAcquisition;
-    const dateA = aCollectionAcquisition
-      ? new Date(aCollectionAcquisition)
-      : earliestDate;
-    const dateB = bCollectionAcquisition
-      ? new Date(bCollectionAcquisition)
-      : earliestDate;
-    return dateB.getTime() - dateA.getTime();
-  });
-};
-
-export const selectNftCollections = (data?: NFTInfiniteData) => {
-  const nfts = selectNfts(data);
-  const collections =
-    nfts?.reduce(
-      (collections, nft) => {
-        const currentCollectionId = nft.collection.collection_id;
-        if (currentCollectionId) {
-          const existingCollection = collections[currentCollectionId];
-          if (existingCollection) {
-            existingCollection.assets.push(nft);
-          } else {
-            collections[currentCollectionId] = {
-              assets: [nft],
-              collection: nft.collection,
-              lastCollectionAcquisition: nft.last_collection_acquisition,
-            };
-          }
-        }
-        return collections;
+  let idsOfCollectionsWithHiddenNfts: string[] = [];
+  return data?.pages
+    ?.map((page) => page.collections)
+    .flat()
+    .filter((c) => {
+      const collectionNftIds = c.nft_ids
+        .map((s) => s.split('.'))
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        .filter(([_, id, num]) => !hiddenNfts?.[`${id}_${num}`]);
+      if (c.nft_ids.length !== collectionNftIds.length) {
+        idsOfCollectionsWithHiddenNfts = [
+          ...idsOfCollectionsWithHiddenNfts,
+          c.collection_id,
+        ];
+      }
+      return Boolean(
+        c.collection_details.name &&
+          c.collection_details.image_url &&
+          collectionNftIds?.length,
+      );
+    })
+    .concat({
+      collection_id: idsOfCollectionsWithHiddenNfts.join(','),
+      distinct_nfts_owned: Object.values(hiddenNfts || {}).filter((v) => v)
+        .length,
+      distinct_nfts_owned_string: '0',
+      nft_ids: [],
+      collection_details: {
+        banner_image_url: '',
+        category: null,
+        chains: [],
+        description: '_hidden',
+        discord_url: '',
+        distinct_nft_count: 0,
+        distinct_owner_count: 0,
+        external_url: '',
+        floor_prices: [],
+        instagram_username: null,
+        is_nsfw: false,
+        marketplace_pages: [],
+        medium_username: null,
+        metaplex_first_verified_creator: null,
+        metaplex_mint: null,
+        total_quantity: 0,
+        featured_image_url: '',
+        image_url: '',
+        name: i18n.t('nfts.hidden_section_title'),
+        short_description: null,
+        slug: '',
+        twitter_username: '',
+        wiki_link: '',
+        spam_score: 0,
+        telegram_url: null,
+        top_contracts: [],
       },
-      {} as Record<
-        string,
-        {
-          assets: UniqueAsset[];
-          collection: UniqueAsset['collection'];
-          lastCollectionAcquisition?: string;
-        }
-      >,
-    ) || {};
-  return collections;
-};
-
-export const selectSortedNftCollections = (
-  sort: NftSort,
-  data?: NFTInfiniteData,
-) => {
-  const collections = selectNftCollections(data);
-  const sections = Object.values(collections);
-  return sort === 'alphabetical'
-    ? sortSectionsAlphabetically(sections)
-    : sortSectionsByRecent(sections);
+    } as SimpleHashCollectionDetails);
 };
