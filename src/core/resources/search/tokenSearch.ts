@@ -16,6 +16,7 @@ import {
   ETH_ADDRESS,
   MATIC_POLYGON_ADDRESS,
 } from '~/core/references';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ChainId } from '~/core/types/chains';
 import {
   SearchAsset,
@@ -23,7 +24,7 @@ import {
   TokenSearchListId,
   TokenSearchThreshold,
 } from '~/core/types/search';
-import { useRainbowChains } from '~/entries/popup/hooks/useRainbowChains';
+import { getBackendSupportedChains, isCustomChain } from '~/core/utils/chains';
 
 // ///////////////////////////////////////////////
 // Query Types
@@ -51,21 +52,7 @@ const tokenSearchQueryKey = ({
   createQueryKey(
     'TokenSearch',
     { chainId, fromChainId, keys, list, threshold, query },
-    { persisterVersion: 1 },
-  );
-
-const tokensSearchQueryKey = ({
-  chainId,
-  fromChainId,
-  keys,
-  list,
-  threshold,
-  query,
-}: TokenSearchArgs) =>
-  createQueryKey(
-    'TokensSearch',
-    { chainId, fromChainId, keys, list, threshold, query },
-    { persisterVersion: 1 },
+    { persisterVersion: 2 },
   );
 
 type TokenSearchQueryKey = ReturnType<typeof tokenSearchQueryKey>;
@@ -75,9 +62,7 @@ type TokenSearchQueryKey = ReturnType<typeof tokenSearchQueryKey>;
 
 async function tokenSearchQueryFunction({
   queryKey: [{ chainId, fromChainId, keys, list, threshold, query }],
-}: QueryFunctionArgs<
-  typeof tokenSearchQueryKey | typeof tokensSearchQueryKey
->) {
+}: QueryFunctionArgs<typeof tokenSearchQueryKey>) {
   const queryParams: {
     keys: string;
     list: TokenSearchListId;
@@ -109,7 +94,8 @@ function parseTokenSearch(assets: SearchAsset[], chainId: ChainId) {
   return assets
     .map((a) => {
       const networkInfo = a.networks[chainId];
-      return {
+
+      const asset: SearchAsset = {
         ...a,
         address: networkInfo ? networkInfo.address : a.address,
         chainId,
@@ -129,6 +115,8 @@ function parseTokenSearch(assets: SearchAsset[], chainId: ChainId) {
         mainnetAddress: a.uniqueId as Address,
         uniqueId: `${networkInfo?.address || a.uniqueId}_${chainId}`,
       };
+
+      return asset;
     })
     .filter(Boolean);
 }
@@ -176,31 +164,43 @@ export function useTokenSearch(
 // ///////////////////////////////////////////////
 // Query Hook
 
-export function useTokensSearch({
-  fromChainId,
+export function useTokenSearchAllNetworks({
   keys,
   list,
   threshold,
   query,
-}: Omit<TokenSearchArgs, 'chainId'>) {
-  const { rainbowChains } = useRainbowChains();
+}: Omit<TokenSearchArgs, 'chainId' | 'fromChainId'>) {
+  const { testnetMode } = useTestnetModeStore();
+
+  const rainbowSupportedChains = getBackendSupportedChains({
+    testnetMode: false,
+  }).filter(({ id }) => !isCustomChain(id));
 
   const queries = useQueries({
-    queries: rainbowChains.map((chain) => ({
-      queryFn: tokenSearchQueryFunction,
-      queryKey: tokensSearchQueryKey({
-        chainId: chain.id,
-        fromChainId,
-        keys,
-        list,
-        threshold,
-        query,
-      }),
-      enabled: !!query,
-      refetchOnWindowFocus: false,
-      staleTime: 20 * 1000, // 20s
-    })),
+    queries: rainbowSupportedChains.map(({ id: chainId }) => {
+      return {
+        queryKey: tokenSearchQueryKey({
+          chainId,
+          keys,
+          list,
+          threshold,
+          query,
+        }),
+        queryFn: tokenSearchQueryFunction,
+        select: (data: SearchAsset[]) => {
+          if (!isAddress(query)) return [];
+          return data;
+        },
+        // testnet is not supported at the moment
+        enabled: isAddress(query) && !testnetMode,
+        refetchOnWindowFocus: false,
+        staleTime: 10 * 60 * 1_000, // 10 min
+      };
+    }),
   });
 
-  return queries.map(({ data: token }) => token).flat();
+  return {
+    data: queries.map(({ data: assets }) => assets || []).flat(),
+    isFetching: queries.some(({ isFetching }) => isFetching),
+  };
 }

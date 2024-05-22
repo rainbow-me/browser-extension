@@ -1143,3 +1143,53 @@ export async function takeScreenshotOnFailure(context: any) {
     }
   });
 }
+
+export async function performSearchTokenAddressActionsCmdK({
+  driver,
+  tokenAddress,
+  tokenName,
+  rootURL,
+}: {
+  driver: WebDriver;
+  tokenAddress: string;
+  tokenName: string;
+  rootURL: string;
+}) {
+  await goToPopup(driver, rootURL, '#/home');
+
+  // Open Cmd+K menu
+  await executePerformShortcut({ driver, key: 'k' });
+
+  await clearInput({ id: 'command-k-input', driver });
+
+  await typeOnTextInput({
+    id: 'command-k-input',
+    driver,
+    text: tokenAddress,
+  });
+
+  await waitUntilElementByTestIdIsPresent({
+    id: `command-name-${tokenName}`,
+    driver,
+  });
+
+  await executePerformShortcut({
+    driver,
+    key: 'ARROW_DOWN',
+  });
+
+  // Go to token details
+  await executePerformShortcut({ driver, key: 'ENTER' });
+
+  await checkExtensionURL(driver, 'token-details');
+
+  await waitUntilElementByTestIdIsPresent({
+    id: `about-${tokenAddress}`,
+    driver,
+  });
+
+  await waitUntilElementByTestIdIsPresent({
+    id: `token-price-name-${tokenAddress}`,
+    driver,
+  });
+}

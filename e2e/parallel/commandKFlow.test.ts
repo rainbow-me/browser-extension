@@ -1,7 +1,10 @@
+/* eslint-disable no-await-in-loop */
 import 'chromedriver';
 import 'geckodriver';
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, it } from 'vitest';
+
+import { TokenNames, tokenAddresses, tokenNames } from 'e2e/tokenVariables';
 
 import {
   checkExtensionURL,
@@ -12,6 +15,7 @@ import {
   goToPopup,
   importWalletFlow,
   initDriverWithOptions,
+  performSearchTokenAddressActionsCmdK,
   typeOnTextInput,
   waitUntilElementByTestIdIsPresent,
 } from '../helpers';
@@ -110,5 +114,41 @@ describe('Command+K behaviours', () => {
 
     // should be on send flow
     await checkExtensionURL(driver, 'send');
+  });
+
+  it('should be able to search for custom unowned tokens on mainnet', async () => {
+    for (const [key, tokenAddress] of Object.entries(tokenAddresses.mainnet)) {
+      const tokenName = tokenNames[key as TokenNames];
+      await performSearchTokenAddressActionsCmdK({
+        driver,
+        tokenAddress,
+        tokenName,
+        rootURL,
+      });
+    }
+  });
+
+  it('should be able to search for custom unowned tokens on optimism', async () => {
+    for (const [key, tokenAddress] of Object.entries(tokenAddresses.optimism)) {
+      const tokenName = tokenNames[key as TokenNames];
+      await performSearchTokenAddressActionsCmdK({
+        driver,
+        tokenAddress,
+        tokenName,
+        rootURL,
+      });
+    }
+  });
+
+  it('should be able to search for custom unowned tokens on base', async () => {
+    for (const [key, tokenAddress] of Object.entries(tokenAddresses.base)) {
+      const tokenName = tokenNames[key as TokenNames];
+      await performSearchTokenAddressActionsCmdK({
+        driver,
+        tokenAddress,
+        tokenName,
+        rootURL,
+      });
+    }
   });
 });

@@ -39,7 +39,7 @@ export const RAINBOW_CHAINS_SUPPORTED = IS_TESTING
   ? SUPPORTED_CHAINS.concat(chainHardhat, chainHardhatOptimism)
   : SUPPORTED_CHAINS;
 
-const getInitialRainbowChains = () => {
+export const getInitialRainbowChains = () => {
   const rainbowChains: Record<number, RainbowChain> = {};
   RAINBOW_CHAINS_SUPPORTED.forEach((chain) => {
     const rpcUrl =

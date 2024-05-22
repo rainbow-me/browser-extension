@@ -2,6 +2,7 @@ import { Address } from 'wagmi';
 
 import { ParsedUserAsset, ZerionAssetPrice } from '~/core/types/assets';
 import { UniqueAsset } from '~/core/types/nfts';
+import { SearchAsset } from '~/core/types/search';
 import { SymbolName } from '~/design-system/styles/designTokens';
 
 import { CommandKPage } from './pageConfig';
@@ -13,13 +14,14 @@ export enum SearchItemType {
   Token,
   Wallet,
   Contact,
+  UnownedToken,
 }
 
 export interface BaseSearchItem {
   action?: () => void;
   actionLabel?: () => string;
   actionPage?: CommandKPage;
-  asset?: ParsedUserAsset;
+  asset?: ParsedUserAsset | SearchAsset;
   description?: string;
   downrank?: boolean;
   hidden?: boolean;
@@ -60,6 +62,7 @@ export interface ShortcutSearchItem extends BaseSearchItem {
 }
 
 export interface TokenSearchItem extends BaseSearchItem {
+  address: string;
   asset: ParsedUserAsset;
   price: ZerionAssetPrice | undefined;
   tokenBalanceAmount: string;
@@ -68,6 +71,12 @@ export interface TokenSearchItem extends BaseSearchItem {
   nativeTokenBalance: string;
   selectedWalletAddress: Address;
   type: SearchItemType.Token;
+}
+
+export interface UnownedTokenSearchItem extends BaseSearchItem {
+  address: string;
+  tokenSymbol: string;
+  type: SearchItemType.UnownedToken;
 }
 
 export interface WalletSearchItem extends BaseSearchItem {
@@ -94,5 +103,6 @@ export type SearchItem =
   | NFTSearchItem
   | ShortcutSearchItem
   | TokenSearchItem
+  | UnownedTokenSearchItem
   | WalletSearchItem
   | ContactSearchItem;

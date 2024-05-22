@@ -2,41 +2,52 @@ import * as React from 'react';
 
 import { truncateAddress } from '~/core/utils/address';
 import { isENSAddressFormat } from '~/core/utils/ethereum';
+import { isLowerCaseMatch } from '~/core/utils/strings';
 
 import { useWallets } from '../../hooks/useWallets';
 import { useValidateInput } from '../WatchWallet/WatchWallet';
 
-import { ENSOrAddressSearchItem, SearchItemType } from './SearchItems';
+import {
+  ENSOrAddressSearchItem,
+  SearchItemType,
+  TokenSearchItem,
+  UnownedTokenSearchItem,
+} from './SearchItems';
 import { CommandKPage, PAGES } from './pageConfig';
 import { actionLabels } from './references';
 import { useCommandKStatus } from './useCommandKStatus';
 import { truncateName } from './useSearchableWallets';
 
-export const useSearchableENSorAddress = (
-  currentPage: CommandKPage,
-  searchQuery: string,
-  setSelectedCommandNeedsUpdate: React.Dispatch<React.SetStateAction<boolean>>,
-): { searchableENSOrAddress: ENSOrAddressSearchItem[] } => {
+export const useSearchableENSorAddress = ({
+  currentPage,
+  searchQuery,
+  assets,
+  isFetchingAssets,
+  setSelectedCommandNeedsUpdate,
+}: {
+  currentPage: CommandKPage;
+  searchQuery: string;
+  assets: (TokenSearchItem | UnownedTokenSearchItem)[];
+  isFetchingAssets: boolean;
+  setSelectedCommandNeedsUpdate: React.Dispatch<React.SetStateAction<boolean>>;
+}): { searchableENSOrAddress: ENSOrAddressSearchItem[] } => {
   const { isFetching, setIsFetching } = useCommandKStatus();
   const { allWallets } = useWallets();
 
   const query = searchQuery.trim();
   const validation = useValidateInput(query);
-  const [cache, setCache] = React.useState<
-    Record<string, ENSOrAddressSearchItem[]>
-  >({});
 
   const searchableENSOrAddress = React.useMemo<ENSOrAddressSearchItem[]>(() => {
     if (currentPage !== PAGES.HOME) return [];
 
-    if (cache[query]) {
-      return cache[query];
-    }
-
     if (
       validation.address &&
       !validation.error &&
-      !allWallets.some((wallet) => wallet.address === validation.address)
+      !isFetchingAssets &&
+      !allWallets.some((wallet) => wallet.address === validation.address) &&
+      !assets.some((asset) =>
+        isLowerCaseMatch(asset.address, validation.address),
+      )
     ) {
       const ensName = validation.ensName || null;
       return [
@@ -56,7 +67,15 @@ export const useSearchableENSorAddress = (
     }
 
     return [];
-  }, [allWallets, cache, currentPage, query, validation]);
+  }, [
+    isFetchingAssets,
+    currentPage,
+    assets,
+    allWallets,
+    validation.address,
+    validation.ensName,
+    validation.error,
+  ]);
 
   React.useLayoutEffect(() => {
     const shouldStartFetching =
@@ -86,15 +105,6 @@ export const useSearchableENSorAddress = (
     setSelectedCommandNeedsUpdate,
     validation,
   ]);
-
-  React.useEffect(() => {
-    if (
-      searchableENSOrAddress.length &&
-      searchableENSOrAddress !== cache[query]
-    ) {
-      setCache((prev) => ({ ...prev, [query]: searchableENSOrAddress }));
-    }
-  }, [cache, query, searchableENSOrAddress]);
 
   return { searchableENSOrAddress };
 };

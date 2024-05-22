@@ -14,6 +14,7 @@ interface UseTokenDetailsShortcutsParameters {
   toggleHideToken: () => void;
   togglePinToken: () => void;
   copyTokenAddress: () => void;
+  unownedToken: boolean;
 }
 
 export function useTokenDetailsShortcuts({
@@ -21,6 +22,7 @@ export function useTokenDetailsShortcuts({
   togglePinToken,
   toggleHideToken,
   copyTokenAddress,
+  unownedToken,
 }: UseTokenDetailsShortcutsParameters) {
   const { trackShortcut } = useKeyboardAnalytics();
   const { isWatchingWallet } = useWallets();
@@ -28,7 +30,7 @@ export function useTokenDetailsShortcuts({
 
   const handleTokenShortcuts = useCallback(
     (e: KeyboardEvent) => {
-      if (e.key === shortcuts.tokens.PIN_ASSET.key) {
+      if (e.key === shortcuts.tokens.PIN_ASSET.key && !unownedToken) {
         simulateClick(containerRef.current);
         trackShortcut({
           key: shortcuts.tokens.PIN_ASSET.display,
@@ -36,7 +38,11 @@ export function useTokenDetailsShortcuts({
         });
         togglePinToken();
       }
-      if (e.key === shortcuts.tokens.HIDE_ASSET.key && !isWatchingWallet) {
+      if (
+        e.key === shortcuts.tokens.HIDE_ASSET.key &&
+        !isWatchingWallet &&
+        !unownedToken
+      ) {
         simulateClick(containerRef.current);
         trackShortcut({
           key: shortcuts.tokens.HIDE_ASSET.display,
@@ -54,6 +60,7 @@ export function useTokenDetailsShortcuts({
       }
     },
     [
+      unownedToken,
       isWatchingWallet,
       containerRef,
       trackShortcut,
