@@ -6,9 +6,8 @@ import {
   TransactionResponse,
 } from '@ethersproject/providers';
 import { formatUnits } from '@ethersproject/units';
-import { getProvider } from '@wagmi/core';
 import { isString } from 'lodash';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { i18n } from '../languages';
 import { createHttpClient } from '../network/internal/createHttpClient';
@@ -35,6 +34,7 @@ import {
   isValidTransactionType,
   transactionTypeShouldHaveChanges,
 } from '../types/transactions';
+import { getProvider } from '../wagmi/clientToProvider';
 
 import { parseAsset, parseUserAsset, parseUserAssetBalances } from './assets';
 import { getBlockExplorerHostForChain, isNativeAsset } from './chains';
@@ -409,7 +409,9 @@ export async function getNextNonce({
   const { getNonce } = nonceStore.getState();
   const localNonceData = getNonce({ address, chainId });
   const localNonce = localNonceData?.currentNonce || 0;
+  console.log('- getNextNonce');
   const provider = getProvider({ chainId });
+  console.log('- getNextNonce', provider);
   const txCountIncludingPending = await provider.getTransactionCount(
     address,
     'pending',

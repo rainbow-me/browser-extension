@@ -1,31 +1,30 @@
 import { AddressZero } from '@ethersproject/constants';
+import { Address } from 'abitype';
 import {
+  Chain,
   arbitrum,
   arbitrumSepolia,
   avalanche,
   avalancheFuji,
   base,
   baseSepolia,
+  blast,
+  blastSepolia,
   bsc,
   bscTestnet,
+  degen,
   holesky,
   mainnet,
   optimism,
   optimismSepolia,
   polygon,
+  polygonAmoy,
+  sepolia,
   zora,
   zoraSepolia,
 } from 'viem/chains';
-import { Address, type Chain, sepolia } from 'wagmi';
 
-import {
-  ChainId,
-  ChainNameDisplay,
-  chainBlast,
-  chainBlastSepolia,
-  chainDegen,
-  chainPolygonAmoy,
-} from '~/core/types/chains';
+import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 
 import { AddressOrEth } from '../types/assets';
 
@@ -225,8 +224,8 @@ export const SUPPORTED_MAINNET_CHAINS: Chain[] = [
   zora,
   bsc,
   avalanche,
-  chainBlast,
-  chainDegen,
+  blast,
+  degen,
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
 export const SUPPORTED_CHAINS: Chain[] = [
@@ -246,10 +245,10 @@ export const SUPPORTED_CHAINS: Chain[] = [
   zoraSepolia,
   avalanche,
   avalancheFuji,
-  chainBlast,
-  chainBlastSepolia,
-  chainPolygonAmoy,
-  chainDegen,
+  blast,
+  blastSepolia,
+  polygonAmoy,
+  degen,
 ].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
 
 export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map((chain) => chain.id);
@@ -263,8 +262,8 @@ export const SUPPORTED_TESTNET_CHAINS: Chain[] = [
   baseSepolia,
   zoraSepolia,
   avalancheFuji,
-  chainBlastSepolia,
-  chainPolygonAmoy,
+  blastSepolia,
+  polygonAmoy,
 ];
 
 export const SUPPORTED_TESTNET_CHAIN_IDS: number[] =

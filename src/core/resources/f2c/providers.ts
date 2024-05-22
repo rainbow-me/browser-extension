@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query';
 import { f2cHttp } from '~/core/network';
 import {
   QueryConfig,
-  QueryFunctionArgs,
   QueryFunctionResult,
   createQueryKey,
   queryClient,
@@ -13,8 +12,6 @@ import { ProviderConfig } from './types';
 
 // ///////////////////////////////////////////////
 // Query Types
-
-export type ProvidersListArgs = {};
 
 // ///////////////////////////////////////////////
 // Query Key
@@ -27,9 +24,7 @@ type ProvidersListQueryKey = ReturnType<typeof providersListQueryKey>;
 // ///////////////////////////////////////////////
 // Query Function
 
-async function providersListQueryFunction({
-  queryKey: [],
-}: QueryFunctionArgs<typeof providersListQueryKey>) {
+async function providersListQueryFunction() {
   const parsedResponse = await f2cHttp.get<{
     providers: ProviderConfig[];
   }>('/v1/providers/list');
@@ -44,7 +39,6 @@ type ProvidersListResult = QueryFunctionResult<
 // Query Fetcher
 
 export async function fetchProvidersList(
-  {}: ProvidersListArgs,
   config: QueryConfig<
     ProvidersListResult,
     Error,
@@ -52,11 +46,11 @@ export async function fetchProvidersList(
     ProvidersListQueryKey
   > = {},
 ) {
-  return await queryClient.fetchQuery(
-    providersListQueryKey(),
-    providersListQueryFunction,
-    config,
-  );
+  return await queryClient.fetchQuery({
+    queryKey: providersListQueryKey(),
+    queryFn: providersListQueryFunction,
+    ...config,
+  });
 }
 
 // ///////////////////////////////////////////////
@@ -70,5 +64,9 @@ export function useProvidersList(
     ProvidersListQueryKey
   > = {},
 ) {
-  return useQuery(providersListQueryKey(), providersListQueryFunction, config);
+  return useQuery({
+    queryKey: providersListQueryKey(),
+    queryFn: providersListQueryFunction,
+    ...config,
+  });
 }

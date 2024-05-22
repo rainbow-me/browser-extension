@@ -1,7 +1,8 @@
+import { QueryClientProvider } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { isEqual } from 'lodash';
 import * as React from 'react';
-import { WagmiConfig } from 'wagmi';
+import { WagmiProvider } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -15,7 +16,7 @@ import { initializeSentry, setSentryUser } from '~/core/sentry';
 import { useCurrentLanguageStore, useDeviceIdStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
-import { createWagmiClient } from '~/core/wagmi';
+import { WagmiConfigUpdater, wagmiConfig } from '~/core/wagmi';
 import { Box, ThemeProvider } from '~/design-system';
 
 import { Routes } from './Routes';
@@ -27,10 +28,7 @@ import { useExpiryListener } from './hooks/useExpiryListener';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
 import usePrevious from './hooks/usePrevious';
 import { useRainbowChains } from './hooks/useRainbowChains';
-import { PlaygroundComponents } from './pages/_playgrounds';
-import { RainbowConnector } from './wagmi/RainbowConnector';
 
-const playground = process.env.PLAYGROUND as 'default' | 'ds';
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
 export function App() {
@@ -48,18 +46,6 @@ export function App() {
       });
     }
   }, [prevChains, rainbowChains]);
-
-  const wagmiClient = React.useMemo(
-    () =>
-      createWagmiClient({
-        autoConnect: true,
-        connectors: ({ chains }) => [new RainbowConnector({ chains })],
-        persist: true,
-        rainbowChains,
-        useProxy: config.rpc_proxy_enabled,
-      }),
-    [rainbowChains],
-  );
 
   React.useEffect(() => {
     if (!isEqual(prevChains, rainbowChains)) {
@@ -103,15 +89,13 @@ export function App() {
 
   return (
     <>
-      <PersistQueryClientProvider
-        client={queryClient}
-        persistOptions={persistOptions}
-      >
-        <WagmiConfig client={wagmiClient}>
-          <ThemeProvider theme={currentTheme}>
-            {playground ? (
-              PlaygroundComponents[playground]
-            ) : (
+      <WagmiProvider config={wagmiConfig}>
+        <PersistQueryClientProvider
+          client={queryClient}
+          persistOptions={persistOptions}
+        >
+          <QueryClientProvider client={queryClient}>
+            <ThemeProvider theme={currentTheme}>
               <AuthProvider>
                 <Box
                   id="main"
@@ -126,11 +110,12 @@ export function App() {
                 </Box>
                 <IdleTimer />
                 <OnboardingKeepAlive />
+                <WagmiConfigUpdater />
               </AuthProvider>
-            )}
-          </ThemeProvider>
-        </WagmiConfig>
-      </PersistQueryClientProvider>
+            </ThemeProvider>
+          </QueryClientProvider>
+        </PersistQueryClientProvider>
+      </WagmiProvider>
       <HWRequestListener />
     </>
   );

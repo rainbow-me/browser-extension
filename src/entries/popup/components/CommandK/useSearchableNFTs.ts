@@ -26,10 +26,13 @@ export const useSearchableNFTs = () => {
   const { testnetMode } = useTestnetModeStore();
   const { chains: userChains } = useUserChains();
 
-  const { data } = useNfts({ address, testnetMode, userChains });
+  const userChainIds = userChains.map(({ id }) => id);
+  const { data: nfts = [] } = useNfts(
+    { address, testnetMode, userChainIds },
+    { select: (data) => selectNfts(data) },
+  );
 
   const searchableNFTs = useMemo(() => {
-    const nfts = selectNfts(data) || [];
     return nfts.map<NFTSearchItem>((nft) => ({
       action: () =>
         navigate(
@@ -46,7 +49,7 @@ export const useSearchableNFTs = () => {
       downrank: true,
       nft,
     }));
-  }, [address, data, navigate]);
+  }, [address, navigate, nfts]);
 
   return { searchableNFTs };
 };

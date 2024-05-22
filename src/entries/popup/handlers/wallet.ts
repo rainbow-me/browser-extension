@@ -7,8 +7,7 @@ import { HDNode, Mnemonic } from '@ethersproject/hdnode';
 import { keccak256 } from '@ethersproject/keccak256';
 import AppEth from '@ledgerhq/hw-app-eth';
 import TransportWebHID from '@ledgerhq/hw-transport-webhid';
-import { getProvider } from '@wagmi/core';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { PrivateKey } from '~/core/keychain/IKeychain';
 import { getHDPathForVendorAndType } from '~/core/keychain/hdPath';
@@ -30,6 +29,7 @@ import { hasPreviousTransactions } from '~/core/utils/ethereum';
 import { estimateGasWithPadding } from '~/core/utils/gas';
 import { toHex } from '~/core/utils/hex';
 import { getNextNonce } from '~/core/utils/transactions';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 import { RainbowError, logger } from '~/logger';
 
 import { PathOptions } from '../pages/hw/addByIndexSheet';
@@ -98,9 +98,11 @@ export const sendTransaction = async (
   transactionRequest: TransactionRequest,
 ): Promise<TransactionResponse> => {
   const { selectedGas } = gasStore.getState();
+  console.log('get provider', transactionRequest.chainId);
   const provider = getProvider({
     chainId: transactionRequest.chainId,
   });
+  console.log(' provider', provider);
   const gasLimit = await estimateGasWithPadding({
     transactionRequest,
     provider,
@@ -158,6 +160,7 @@ export const sendTransaction = async (
         throw new Error('Unsupported hardware wallet');
     }
   } else {
+    console.log('about to send');
     const transactionResponse = await walletAction<TransactionResponse>(
       'send_transaction',
       params,

@@ -1,5 +1,6 @@
 import { isAddress } from '@ethersproject/address';
-import { Address, useEnsAddress, useEnsName } from 'wagmi';
+import { Address } from 'viem';
+import { useEnsAddress, useEnsName } from 'wagmi';
 
 import { useENSProfile } from '~/core/resources/metadata/ensProfile';
 import { isENSAddressFormat } from '~/core/utils/ethereum';
@@ -13,11 +14,10 @@ export const useEns = ({
 }) => {
   const { data: ensAddress } = useEnsAddress({
     name: addressOrName,
-    enabled: isENSAddressFormat(addressOrName),
   });
   const { data: ensName } = useEnsName({
     address: addressOrName as Address,
-    enabled: isAddress(addressOrName),
+    query: { enabled: isAddress(addressOrName) },
   });
   const { data: ensProfile } = useENSProfile(
     {

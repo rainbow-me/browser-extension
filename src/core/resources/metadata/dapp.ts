@@ -100,13 +100,11 @@ export async function prefetchDappMetadata({ url }: { url: string }) {
   const { dappMetadata } = dappMetadataStore.getState();
   const appHost = url && isValidUrl(url) ? getDappHost(url) : '';
   if (!dappMetadata[appHost]) {
-    queryClient.prefetchQuery(
-      DappMetadataQueryKey({ url }),
-      async () => fetchDappMetadata({ url, status: false }),
-      {
-        staleTime: 60000,
-      },
-    );
+    queryClient.prefetchQuery({
+      queryKey: DappMetadataQueryKey({ url }),
+      queryFn: () => fetchDappMetadata({ url, status: false }),
+      staleTime: 60000,
+    });
   }
 }
 
@@ -114,8 +112,10 @@ export async function prefetchDappMetadata({ url }: { url: string }) {
 // Query Hook
 
 export function useDappMetadata({ url }: DappMetadataArgs) {
-  return useQuery(DappMetadataQueryKey({ url }), dappMetadataQueryFunction, {
-    cacheTime: 1000 * 60 * 60 * 24,
+  return useQuery({
+    queryKey: DappMetadataQueryKey({ url }),
+    queryFn: dappMetadataQueryFunction,
+    gcTime: 1000 * 60 * 60 * 24,
     initialData: () => {
       const appHost = url && isValidUrl(url) ? getDappHost(url) : '';
       const { getDappMetadata } = dappMetadataStore.getState();

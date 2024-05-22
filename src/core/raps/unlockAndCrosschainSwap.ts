@@ -5,7 +5,7 @@ import {
   PermitSupportedTokenList,
   WRAPPED_ASSET,
 } from '@rainbow-me/swaps';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { ETH_ADDRESS } from '../references';
 import { isNativeAsset } from '../utils/chains';

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { metadataClient } from '~/core/graphql';
 import { AboutTokenQuery } from '~/core/graphql/__generated__/metadata';

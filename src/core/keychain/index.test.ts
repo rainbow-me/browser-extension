@@ -9,11 +9,13 @@ import {
   TypedMessage,
   recoverTypedSignature,
 } from '@metamask/eth-sig-util';
+import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test } from 'vitest';
 
 import { delay } from '~/test/utils';
 
-import { createTestWagmiClient } from '../wagmi/createTestWagmiClient';
+import { connectedToHardhatStore } from '../state/currentSettings/connectedToHardhat';
+import { updateWagmiConfig } from '../wagmi';
 
 import { PrivateKey } from './IKeychain';
 
@@ -40,7 +42,8 @@ let privateKey = '';
 let password = '';
 
 beforeAll(async () => {
-  createTestWagmiClient();
+  connectedToHardhatStore.setState({ connectedToHardhat: true });
+  updateWagmiConfig([mainnet]);
   await delay(3000);
 });
 

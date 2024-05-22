@@ -2,8 +2,7 @@ import {
   AddEthereumChainProposedChain,
   handleProviderRequest as rnbwHandleProviderRequest,
 } from '@rainbow-me/provider';
-import { Chain, getProvider } from '@wagmi/core';
-import { UserRejectedRequestError } from 'wagmi';
+import { Chain, UserRejectedRequestError } from 'viem';
 
 import { event } from '~/analytics/event';
 import { queueEventTracking } from '~/analytics/queueEvent';
@@ -26,6 +25,7 @@ import { isCustomChain, isSupportedChainId } from '~/core/utils/chains';
 import { getDappHost, isValidUrl } from '~/core/utils/connectedApps';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { WELCOME_URL, goToNewTab } from '~/core/utils/tabs';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 import { IN_DAPP_NOTIFICATION_STATUS } from '~/entries/iframe/notification';
 import { RainbowError, logger } from '~/logger';
 
@@ -125,7 +125,7 @@ const messengerProviderRequest = async (
     ),
   );
   if (!payload) {
-    throw new UserRejectedRequestError('User rejected the request.');
+    throw new UserRejectedRequestError(Error('User rejected the request.'));
   }
   return payload;
 };
@@ -247,8 +247,9 @@ export const handleProviderRequest = ({
       isSupportedChainId(chainId) || isCustomChain(chainId),
     getActiveSession: ({ host }: { host: string }) =>
       appSessionsStore.getState().getActiveSession({ host }),
-    getChain: (chainId: number) =>
-      SUPPORTED_CHAINS.find((chain) => chain.id === Number(chainId)),
+    getChainNativeCurrency: (chainId: number) =>
+      SUPPORTED_CHAINS.find((chain) => chain.id === Number(chainId))
+        ?.nativeCurrency,
     getFeatureFlags: () => featureFlagsStore.getState().featureFlags,
     getProvider: getProvider,
     messengerProviderRequest: (request: ProviderRequestPayload) =>
@@ -279,7 +280,6 @@ export const handleProviderRequest = ({
           id: Number(chainId),
           nativeCurrency: { name, symbol, decimals },
           name: proposedChain.chainName,
-          network: proposedChain.chainName,
           rpcUrls: {
             default: { http: [rpcUrl] },
             public: { http: [rpcUrl] },

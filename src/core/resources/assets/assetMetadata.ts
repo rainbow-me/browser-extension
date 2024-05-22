@@ -1,7 +1,6 @@
 import { isValidAddress } from '@ethereumjs/util';
 import { useQuery } from '@tanstack/react-query';
-import { getProvider } from '@wagmi/core';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import {
   QueryConfig,
@@ -41,10 +40,9 @@ async function assetMetadataQueryFunction({
   queryKey: [{ assetAddress, chainId }],
 }: QueryFunctionArgs<typeof assetMetadataQueryKey>) {
   if (assetAddress && isValidAddress(assetAddress)) {
-    const provider = getProvider({ chainId: Number(chainId) });
     const metadata = await getAssetMetadata({
       address: assetAddress,
-      provider,
+      chainId: Number(chainId),
     });
     return {
       address: assetAddress,
@@ -71,14 +69,12 @@ export function useAssetMetadata(
     AssetMetadataQueryKey
   > = {},
 ) {
-  return useQuery(
-    assetMetadataQueryKey({
+  return useQuery({
+    queryKey: assetMetadataQueryKey({
       assetAddress,
       chainId,
     }),
-    assetMetadataQueryFunction,
-    {
-      ...config,
-    },
-  );
+    queryFn: assetMetadataQueryFunction,
+    ...config,
+  });
 }

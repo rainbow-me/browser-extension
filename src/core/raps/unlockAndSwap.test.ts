@@ -7,7 +7,7 @@ import {
   SwapType,
   getQuote,
 } from '@rainbow-me/swaps';
-import { getProvider } from '@wagmi/core';
+import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test } from 'vitest';
 
 import {
@@ -21,8 +21,10 @@ import {
 } from '~/test/utils';
 
 import { gasStore } from '../state';
+import { connectedToHardhatStore } from '../state/currentSettings/connectedToHardhat';
 import { GasSpeed } from '../types/gas';
-import { createTestWagmiClient } from '../wagmi/createTestWagmiClient';
+import { updateWagmiConfig } from '../wagmi';
+import { getProvider } from '../wagmi/clientToProvider';
 
 import { walletExecuteRap } from './execute';
 import { createUnlockAndSwapRap, estimateUnlockAndSwap } from './unlockAndSwap';
@@ -57,7 +59,8 @@ const SELECTED_GAS = {
 };
 
 beforeAll(async () => {
-  createTestWagmiClient();
+  connectedToHardhatStore.setState({ connectedToHardhat: true });
+  updateWagmiConfig([mainnet]);
   await delay(3000);
   doesntNeedUnlockQuote = await getQuote({
     chainId: 1,

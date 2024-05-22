@@ -40,7 +40,7 @@ export function NFTCollectionSection({
   onAssetClick,
   displayMode = 'grid',
 }: {
-  section: { assets: UniqueAsset[]; collection: UniqueAsset['collection'] };
+  section?: { assets: UniqueAsset[]; collection: UniqueAsset['collection'] };
   isLast: boolean;
   onAssetClick: (asset: UniqueAsset) => void;
   displayMode?: NFTCollectionDisplayMode;
@@ -58,6 +58,7 @@ export function NFTCollectionSection({
       collectionId: collectionId || '',
     });
   }, [address, collectionId, toggleGallerySectionOpen]);
+  if (!section) return null;
   return (
     <Rows>
       <Row>
@@ -68,7 +69,7 @@ export function NFTCollectionSection({
                 paddingTop: 7,
                 paddingBottom: isLast && !collectionVisible ? 19 : 7,
               }}
-              testId={`nfts-collection-section-${section.collection.name}`}
+              testId={`nfts-collection-section-${section?.collection.name}`}
             >
               <Columns alignVertical="center">
                 <Column>
@@ -82,7 +83,7 @@ export function NFTCollectionSection({
                       }}
                     >
                       <ExternalImage
-                        src={section.collection.image_url || ''}
+                        src={section?.collection.image_url || ''}
                         height={COLLECTION_IMAGE_SIZE}
                         width={COLLECTION_IMAGE_SIZE}
                         borderRadius="round"
@@ -94,11 +95,11 @@ export function NFTCollectionSection({
                       color="label"
                       maxWidth={260}
                     >
-                      {section.collection.name}
+                      {section?.collection.name}
                     </TextOverflow>
                     <Box paddingTop="1px">
                       <Text size="12pt" weight="bold" color="labelQuaternary">
-                        {section.assets.length}
+                        {section?.assets.length}
                       </Text>
                     </Box>
                   </Inline>

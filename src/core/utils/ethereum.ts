@@ -4,7 +4,7 @@ import { TransactionResponse } from '@ethersproject/providers';
 import { parseEther } from '@ethersproject/units';
 import BigNumber from 'bignumber.js';
 import omit from 'lodash/omit';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { PrivateKey } from '../keychain/IKeychain';
 import { ethUnits } from '../references';

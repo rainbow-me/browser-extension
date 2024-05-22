@@ -49,20 +49,18 @@ export function useAvatar({
 }) {
   const { walletAvatar } = useWalletAvatarStore();
 
-  return useQuery(
-    ['walletAvatar', addressOrName],
-    async () =>
+  return useQuery({
+    queryKey: ['walletAvatar', addressOrName],
+    queryFn: async () =>
       addressOrName
         ? fetchWalletAvatar({ addressOrName, avatarUrl })
         : undefined,
-    {
-      enabled: !!addressOrName,
-      staleTime: 1 * 60 * 1_000, // 1 min
-      initialData: () => {
-        return addressOrName && walletAvatar
-          ? walletAvatar[addressOrName]
-          : undefined;
-      },
+    enabled: !!addressOrName,
+    staleTime: 1 * 60 * 1_000, // 1 min
+    initialData: () => {
+      return addressOrName && walletAvatar
+        ? walletAvatar[addressOrName]
+        : undefined;
     },
-  );
+  });
 }

@@ -1,11 +1,15 @@
 import { useState } from 'react';
-import { useAccount, useBalance } from 'wagmi';
+import { useBalance } from 'wagmi';
 
 import { selectUserAssetsList } from '~/core/resources/_selectors';
 import { useUserAssets } from '~/core/resources/assets';
 import { useFirstTransactionTimestamp } from '~/core/resources/transactions';
 import { useTransactions } from '~/core/resources/transactions/transactions';
-import { useCurrentCurrencyStore, useCurrentLanguageStore } from '~/core/state';
+import {
+  useCurrentAddressStore,
+  useCurrentCurrencyStore,
+  useCurrentLanguageStore,
+} from '~/core/state';
 import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { Box, Inset, Stack, Text } from '~/design-system';
@@ -24,7 +28,7 @@ import { i18n } from '../../../../core/languages';
 import { ClearStorage } from '../../components/_dev/ClearStorage';
 
 export function Default() {
-  const { address } = useAccount();
+  const { currentAddress: address } = useCurrentAddressStore();
   const { currentCurrency, setCurrentCurrency } = useCurrentCurrencyStore();
   const { currentLanguage } = useCurrentLanguageStore();
   const [selectedNetwork, setSelectedNetwork] = useState('ethereum');

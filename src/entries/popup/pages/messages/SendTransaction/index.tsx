@@ -1,7 +1,7 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { getAddress } from '@ethersproject/address';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -89,7 +89,7 @@ export function SendTransaction({
       );
       const txData = {
         from: selectedWallet,
-        to: txRequest?.to ? getAddress(txRequest?.to) : undefined,
+        to: txRequest?.to ? (getAddress(txRequest?.to) as Address) : undefined,
         value: txRequest.value || '0x0',
         data: txRequest.data ?? '0x',
         chainId: activeChainId,

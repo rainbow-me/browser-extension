@@ -66,15 +66,15 @@ export async function fetchSwappableAddresses(
     SwappableAddressesQueryKey
   > = {},
 ) {
-  return await queryClient.fetchQuery(
-    swappableAddressesQueryKey({
+  return await queryClient.fetchQuery({
+    queryKey: swappableAddressesQueryKey({
       addresses,
       fromChainId,
       toChainId,
     }),
-    swappableAddressesQueryFunction,
-    config,
-  );
+    queryFn: swappableAddressesQueryFunction,
+    ...config,
+  });
 }
 
 // ///////////////////////////////////////////////
@@ -89,13 +89,13 @@ export function useSwappableAddresses<TSelectResult = SwappableAddressesResult>(
     SwappableAddressesQueryKey
   > = {},
 ) {
-  return useQuery(
-    swappableAddressesQueryKey({
+  return useQuery({
+    queryKey: swappableAddressesQueryKey({
       addresses,
       fromChainId,
       toChainId,
     }),
-    swappableAddressesQueryFunction,
-    config,
-  );
+    queryFn: swappableAddressesQueryFunction,
+    ...config,
+  });
 }

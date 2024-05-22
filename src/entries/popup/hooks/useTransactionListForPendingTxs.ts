@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { useConsolidatedTransactions } from '~/core/resources/transactions/consolidatedTransactions';
 import {

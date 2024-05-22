@@ -1,7 +1,6 @@
 import { isValidAddress } from '@ethereumjs/util';
-import { getProvider } from '@wagmi/core';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { ParsedUserAsset } from '~/core/types/assets';
@@ -16,6 +15,7 @@ import {
   lessOrEqualThan,
   lessThan,
 } from '~/core/utils/numbers';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 
 import { useNativeAsset } from '../useNativeAsset';
 

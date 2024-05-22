@@ -31,15 +31,7 @@ export type QueryConfig<
   TQueryKey extends QueryKey,
 > = Pick<
   UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
-  | 'cacheTime'
-  | 'enabled'
-  | 'refetchInterval'
-  | 'retry'
-  | 'staleTime'
-  | 'select'
-  | 'onError'
-  | 'onSettled'
-  | 'onSuccess'
+  'gcTime' | 'enabled' | 'refetchInterval' | 'retry' | 'staleTime' | 'select'
 >;
 
 export type InfiniteQueryConfig<TQueryFnData, TError, TData> = Pick<
@@ -50,15 +42,7 @@ export type InfiniteQueryConfig<TQueryFnData, TError, TData> = Pick<
     TQueryFnData,
     Array<string | { [key: string]: any }>
   >,
-  | 'cacheTime'
-  | 'enabled'
-  | 'refetchInterval'
-  | 'retry'
-  | 'staleTime'
-  | 'select'
-  | 'onError'
-  | 'onSettled'
-  | 'onSuccess'
+  'gcTime' | 'enabled' | 'refetchInterval' | 'retry' | 'staleTime' | 'select'
 >;
 
 export type MutationConfig<Data, Error, Variables = void> = Pick<

@@ -1,11 +1,12 @@
 import { Signer } from '@ethersproject/abstract-signer';
 import { CrosschainQuote, fillCrosschainQuote } from '@rainbow-me/swaps';
-import { Address, getProvider } from '@wagmi/core';
+import { Address } from 'viem';
 
 import { REFERRER, gasUnits } from '~/core/references';
 import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 import { RainbowError, logger } from '~/logger';
 
 import { gasStore } from '../../state';

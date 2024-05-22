@@ -165,7 +165,7 @@ export const useInfiniteTransactionList = ({
       fetchNextPage();
     }
   }, [
-    data?.pages.length,
+    data?.pages?.length,
     fetchNextPage,
     hasNextPage,
     isFetching,

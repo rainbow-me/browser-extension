@@ -1,7 +1,6 @@
 import { AddressZero } from '@ethersproject/constants';
 import { useQuery } from '@tanstack/react-query';
-import { getProvider } from '@wagmi/core';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { requestMetadata } from '~/core/graphql';
 import {
@@ -36,8 +35,9 @@ import {
   parseAssetMetadata,
   parseUserAssetBalances,
 } from '~/core/utils/assets';
-import { getRainbowChains } from '~/core/utils/chains';
 import { convertDecimalFormatToRawAmount, isZero } from '~/core/utils/numbers';
+import { getRainbowChains } from '~/core/utils/rainbowChains';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 import { RainbowError, logger } from '~/logger';
 
 import { ASSETS_TIMEOUT_DURATION } from './assets';
@@ -116,16 +116,16 @@ export const CustomNetworkAssetsFetchQuery = ({
   filterZeroBalance,
   rainbowChainAssets,
 }: FetchCustomNetworkAssetsArgs) => {
-  queryClient.fetchQuery(
-    customNetworkAssetsKey({
+  queryClient.fetchQuery({
+    queryKey: customNetworkAssetsKey({
       address,
       currency,
       testnetMode,
       filterZeroBalance,
       rainbowChainAssets,
     }),
-    customNetworkAssetsFunction,
-  );
+    queryFn: customNetworkAssetsFunction,
+  });
 };
 
 export const CustomNetworkAssetsSetQueryDefaults = ({
@@ -176,15 +176,15 @@ async function customNetworkAssetsFunction({
   ],
 }: QueryFunctionArgs<typeof customNetworkAssetsKey>) {
   const cache = queryClient.getQueryCache();
-  const cachedCustomNetworkAssets = (cache.find(
-    customNetworkAssetsKey({
+  const cachedCustomNetworkAssets = (cache.find({
+    queryKey: customNetworkAssetsKey({
       address,
       currency,
       testnetMode,
       filterZeroBalance,
       rainbowChainAssets,
     }),
-  )?.state?.data || {}) as Record<ChainId | number, ParsedAssetsDict>;
+  })?.state?.data || {}) as Record<ChainId | number, ParsedAssetsDict>;
 
   const { rainbowChains: chains } = getRainbowChains();
 
@@ -235,7 +235,7 @@ async function customNetworkAssetsFunction({
             getAssetBalance({
               assetAddress: asset.address,
               currentAddress: address,
-              provider,
+              chainId: chain.id,
             }),
           ),
         );
@@ -360,19 +360,17 @@ export function useCustomNetworkAssets<
 ) {
   const { testnetMode } = useTestnetModeStore();
   const { rainbowChainAssets } = useRainbowChainAssetsStore();
-  return useQuery(
-    customNetworkAssetsKey({
+  return useQuery({
+    queryKey: customNetworkAssetsKey({
       address,
       currency,
       testnetMode,
       filterZeroBalance,
       rainbowChainAssets,
     }),
-    customNetworkAssetsFunction,
-    {
-      ...config,
-      refetchInterval: CUSTOM_NETWORK_ASSETS_REFETCH_INTERVAL,
-      staleTime: process.env.IS_TESTING === 'true' ? 0 : 1000,
-    },
-  );
+    queryFn: customNetworkAssetsFunction,
+    ...config,
+    refetchInterval: CUSTOM_NETWORK_ASSETS_REFETCH_INTERVAL,
+    staleTime: process.env.IS_TESTING === 'true' ? 0 : 1000,
+  });
 }

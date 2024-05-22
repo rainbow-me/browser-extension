@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useCallback, useMemo, useRef } from 'react';
-import { Chain } from 'wagmi';
+import { Chain } from 'viem';
 
 import { SUPPORTED_MAINNET_CHAINS } from '~/core/references';
 import { useApprovals } from '~/core/resources/approvals/approvals';
@@ -128,12 +128,14 @@ export function Activities() {
           overflow: 'visible',
         }}
         paddingBottom="12px"
+        ref={containerRef}
       >
         <Box
           width="full"
           position="relative"
           style={{
-            height: activityRowVirtualizer.getTotalSize(),
+            height: `${activityRowVirtualizer.getTotalSize()}px`,
+            position: 'relative',
           }}
         >
           {rows.map((virtualItem) => {
@@ -145,8 +147,8 @@ export function Activities() {
                 key={key}
                 data-index={index}
                 as={motion.div}
-                initial={{ opacity: isLabel ? 0 : 1, x: -4 }}
-                animate={{ opacity: 1, x: 0 }}
+                initial={{ opacity: isLabel ? 0 : 1 }}
+                animate={{ opacity: 1 }}
                 transition={{ opacity: { duration: 0.3 } }}
                 position="absolute"
                 width="full"

@@ -22,10 +22,12 @@ export const useSendUniqueAsset = () => {
   const [selectedNftCollectionId, setSelectedNftCollectionId] =
     useState<string>('');
   const { chains: userChains } = useUserChains();
-  const { data } = useNfts({ address, testnetMode, userChains });
-  const sectionsDictionary = useMemo(() => {
-    return selectNftCollections(data);
-  }, [data]);
+  const userChainIds = userChains.map(({ id }) => id);
+
+  const { data: sectionsDictionary = {} } = useNfts(
+    { address, testnetMode, userChainIds },
+    { select: (data) => selectNftCollections(data) },
+  );
   const sortedSections = useMemo(() => {
     const sections = Object.values(sectionsDictionary);
     return sortMethod === 'alphabetical'

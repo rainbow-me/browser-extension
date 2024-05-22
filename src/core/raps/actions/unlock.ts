@@ -2,25 +2,20 @@ import { Signer } from '@ethersproject/abstract-signer';
 import { MaxUint256 } from '@ethersproject/constants';
 import { Contract, PopulatedTransaction } from '@ethersproject/contracts';
 import { parseUnits } from '@ethersproject/units';
-import {
-  Address,
-  erc20ABI,
-  erc721ABI,
-  getContract,
-  getProvider,
-} from '@wagmi/core';
+import { Address, Hash, erc20Abi, erc721Abi } from 'viem';
 
+import { gasStore } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
 import {
   TransactionGasParams,
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
-import { NewTransaction, TxHash } from '~/core/types/transactions';
+import { NewTransaction } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 import { RainbowError, logger } from '~/logger';
 
 import { ETH_ADDRESS, gasUnits } from '../../references';
-import { gasStore } from '../../state';
 import { ParsedAsset } from '../../types/assets';
 import {
   convertAmountToRawAmount,
@@ -28,8 +23,7 @@ import {
   toBigNumber,
 } from '../../utils/numbers';
 import { ActionProps, RapActionResult } from '../references';
-
-import { overrideWithFastSpeedIfNeeded } from './../utils';
+import { overrideWithFastSpeedIfNeeded } from '../utils';
 
 export const getAssetRawAllowance = async ({
   owner,
@@ -44,7 +38,7 @@ export const getAssetRawAllowance = async ({
 }) => {
   try {
     const provider = await getProvider({ chainId });
-    const tokenContract = new Contract(assetAddress, erc20ABI, provider);
+    const tokenContract = new Contract(assetAddress, erc20Abi, provider);
     const allowance = await tokenContract.allowance(owner, spender);
     return allowance.toString();
   } catch (error) {
@@ -96,7 +90,7 @@ export const estimateApprove = async ({
 }): Promise<string> => {
   try {
     const provider = getProvider({ chainId });
-    const tokenContract = new Contract(tokenAddress, erc20ABI, provider);
+    const tokenContract = new Contract(tokenAddress, erc20Abi, provider);
     const gasLimit = await tokenContract.estimateGas.approve(
       spender,
       MaxUint256,
@@ -126,7 +120,7 @@ export const populateApprove = async ({
 }): Promise<PopulatedTransaction | null> => {
   try {
     const provider = getProvider({ chainId });
-    const tokenContract = new Contract(tokenAddress, erc20ABI, provider);
+    const tokenContract = new Contract(tokenAddress, erc20Abi, provider);
     const approveTransaction = await tokenContract.populateTransaction.approve(
       spender,
       MaxUint256,
@@ -156,7 +150,7 @@ export const estimateERC721Approval = async ({
 }): Promise<string> => {
   try {
     const provider = getProvider({ chainId });
-    const tokenContract = new Contract(tokenAddress, erc721ABI, provider);
+    const tokenContract = new Contract(tokenAddress, erc721Abi, provider);
     const gasLimit = await tokenContract.estimateGas.setApprovalForAll(
       spender,
       false,
@@ -189,7 +183,7 @@ export const populateRevokeApproval = async ({
 }): Promise<PopulatedTransaction> => {
   if (!tokenAddress || !spenderAddress || !chainId) return {};
   const provider = getProvider({ chainId });
-  const tokenContract = new Contract(tokenAddress, erc721ABI, provider);
+  const tokenContract = new Contract(tokenAddress, erc721Abi, provider);
   if (type === 'erc20') {
     const amountToApprove = parseUnits('0', 'ether');
     const txObject = await tokenContract.populateTransaction.approve(
@@ -207,30 +201,25 @@ export const populateRevokeApproval = async ({
 };
 
 export const executeApprove = async ({
-  gasLimit,
   gasParams,
+  gasLimit,
   nonce,
   spender,
   tokenAddress,
   wallet,
 }: {
-  chainId: ChainId;
-  gasLimit: string;
   gasParams: Partial<TransactionGasParams & TransactionLegacyGasParams>;
+  gasLimit: string;
   nonce?: number;
   spender: Address;
   tokenAddress: Address;
   wallet: Signer;
 }) => {
-  const tokenContract = getContract({
-    address: tokenAddress,
-    abi: erc20ABI,
-    signerOrProvider: wallet,
-  });
-
   const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } = gasParams;
 
-  return tokenContract.approve(spender, MaxUint256, {
+  const tokenContract = new Contract(tokenAddress, erc20Abi, wallet);
+
+  return await tokenContract.approve(spender, MaxUint256, {
     nonce,
     gasLimit: toBigNumber(gasLimit),
     gasPrice: toBigNumber(gasPrice),
@@ -278,15 +267,15 @@ export const unlock = async ({
   const nonce = baseNonce ? baseNonce + index : undefined;
 
   let approval;
+
   try {
     approval = await executeApprove({
       tokenAddress: assetAddress,
       spender: contractAddress,
       gasLimit,
       gasParams,
-      wallet,
       nonce,
-      chainId,
+      wallet,
     });
   } catch (e) {
     logger.error(new RainbowError('unlock: error executeApprove'), {
@@ -304,8 +293,8 @@ export const unlock = async ({
     changes: [],
     from: parameters.fromAddress,
     to: assetAddress,
-    hash: approval.hash as TxHash,
-    chainId: approval.chainId,
+    hash: approval.hash as Hash,
+    chainId: approval.chainId as ChainId,
     nonce: approval.nonce,
     status: 'pending',
     type: 'approve',

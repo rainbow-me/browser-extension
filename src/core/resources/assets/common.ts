@@ -1,5 +1,4 @@
-import { getProvider } from '@wagmi/core';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { createQueryKey } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
@@ -15,6 +14,7 @@ import {
   parseUserAsset,
 } from '~/core/utils/assets';
 import { greaterThan } from '~/core/utils/numbers';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 import {
   DAI_MAINNET_ASSET,
   ETH_MAINNET_ASSET,
@@ -88,8 +88,6 @@ export async function parseUserAssets({
       ? ETH_MAINNET_ASSET
       : OPTIMISM_MAINNET_ASSET;
 
-    const provider = getProvider({ chainId: selectedHardhatChainId });
-
     // Ensure assets are checked if connected to hardhat
     const assets = parsedAssetsDict[mainnetOrOptimismChainId];
     assets[ethereumOrOptimismAsset.uniqueId] = ethereumOrOptimismAsset;
@@ -100,7 +98,7 @@ export async function parseUserAssets({
 
     const balanceRequests = Object.values(assets).map(async (asset) => {
       if (asset.chainId !== mainnetOrOptimismChainId) return asset;
-
+      const provider = getProvider({ chainId: selectedHardhatChainId });
       try {
         const parsedAsset = await fetchAssetBalanceViaProvider({
           parsedAsset: asset,

@@ -5,7 +5,7 @@ import { i18n } from '~/core/languages';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { isL2Chain } from '~/core/utils/chains';
-import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
+import { Box, Inline, Row, Rows, Stack, Symbol, Text } from '~/design-system';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
 import { SwitchNetworkMenu } from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
 import { AssetToBuySection } from '~/entries/popup/hooks/useSearchCurrencyLists';
@@ -92,17 +92,19 @@ export const TokenToBuyDropdown = ({
         initial="hidden"
         animate="show"
       >
-        <Stack space="16px">
-          {assets?.map((assetSection) => (
-            <TokenToBuySection
-              key={assetSection.id}
-              assetSection={assetSection}
-              onSelectAsset={onSelectAsset}
-              onDropdownChange={onDropdownChange}
-              outputChainId={outputChainId}
-            />
+        <Rows space="16px">
+          {assets?.map((assetSection, i) => (
+            <Row key={i}>
+              <TokenToBuySection
+                key={assetSection.id}
+                assetSection={assetSection}
+                onSelectAsset={onSelectAsset}
+                onDropdownChange={onDropdownChange}
+                outputChainId={outputChainId}
+              />
+            </Row>
           ))}
-        </Stack>
+        </Rows>
 
         {!assetsCount && (
           <Box alignItems="center" style={{ paddingTop: 91 }}>
