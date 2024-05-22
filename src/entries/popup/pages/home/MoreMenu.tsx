@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useAccount, useEnsName } from 'wagmi';
+import { useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import {
@@ -7,6 +7,7 @@ import {
   RAINBOW_SUPPORT_URL,
 } from '~/core/references/links';
 import { shortcuts } from '~/core/references/shortcuts';
+import { useCurrentAddressStore } from '~/core/state';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { getProfileUrl, goToNewTab } from '~/core/utils/tabs';
@@ -29,7 +30,7 @@ import { ROUTES } from '../../urls';
 import playSound from '../../utils/playSound';
 
 export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
-  const { address } = useAccount();
+  const { currentAddress: address } = useCurrentAddressStore();
   const { data: ensName } = useEnsName({ address });
   const navigate = useRainbowNavigate();
   const { testnetMode, setTestnetMode } = useTestnetModeStore();

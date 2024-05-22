@@ -1,7 +1,7 @@
 import { isAddress } from '@ethersproject/address';
 import { useQuery } from '@tanstack/react-query';
 import qs from 'qs';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { tokenSearchHttp } from '~/core/network/tokenSearch';
 import {
@@ -130,11 +130,18 @@ export async function fetchTokenSearch(
     TokenSearchQueryKey
   > = {},
 ) {
-  return await queryClient.fetchQuery(
-    tokenSearchQueryKey({ chainId, fromChainId, keys, list, threshold, query }),
-    tokenSearchQueryFunction,
-    config,
-  );
+  return await queryClient.fetchQuery({
+    queryKey: tokenSearchQueryKey({
+      chainId,
+      fromChainId,
+      keys,
+      list,
+      threshold,
+      query,
+    }),
+    queryFn: tokenSearchQueryFunction,
+    ...config,
+  });
 }
 
 // ///////////////////////////////////////////////
@@ -149,9 +156,16 @@ export function useTokenSearch(
     TokenSearchQueryKey
   > = {},
 ) {
-  return useQuery(
-    tokenSearchQueryKey({ chainId, fromChainId, keys, list, threshold, query }),
-    tokenSearchQueryFunction,
-    config,
-  );
+  return useQuery({
+    queryKey: tokenSearchQueryKey({
+      chainId,
+      fromChainId,
+      keys,
+      list,
+      threshold,
+      query,
+    }),
+    queryFn: tokenSearchQueryFunction,
+    ...config,
+  });
 }

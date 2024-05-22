@@ -14,7 +14,7 @@ import {
   unwrapNativeAsset,
   wrapNativeAsset,
 } from '@rainbow-me/swaps';
-import { Address, getProvider } from '@wagmi/core';
+import { Address } from 'viem';
 
 import { metadataPostClient } from '~/core/graphql';
 import { ChainId } from '~/core/types/chains';
@@ -23,6 +23,7 @@ import { add } from '~/core/utils/numbers';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { isUnwrapEth, isWrapEth } from '~/core/utils/swaps';
 import { addNewTransaction } from '~/core/utils/transactions';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 import { TransactionSimulationResponse } from '~/entries/popup/pages/messages/useSimulateTransaction';
 import { RainbowError, logger } from '~/logger';
 

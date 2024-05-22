@@ -2,7 +2,7 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { analytics } from '~/analytics';
 import { EventProperties } from '~/analytics/event';

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { initializeMessenger } from '~/core/messengers';
 import { useAppSessionsStore } from '~/core/state';

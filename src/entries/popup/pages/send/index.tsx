@@ -12,8 +12,7 @@ import {
   useState,
 } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { isAddress } from 'viem';
-import { Address } from 'wagmi';
+import { Address, isAddress } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -322,7 +321,7 @@ export function Send() {
         from: fromAddress,
         to: txToAddress,
         hash: result.hash as TxHash,
-        chainId,
+        chainId: activeChainId,
         status: 'pending',
         type: 'send',
         nonce: result.nonce,
@@ -337,10 +336,10 @@ export function Send() {
       } as NewTransaction;
     },
     [
+      activeChainId,
       asset,
       assetAmount,
       buildNftAssetObject,
-      chainId,
       flashbotsEnabledGlobally,
       fromAddress,
       nft,
@@ -372,7 +371,7 @@ export function Send() {
             const transaction: NewTransaction = buildPendingTransaction(result);
             addNewTransaction({
               address: fromAddress,
-              chainId,
+              chainId: activeChainId,
               transaction,
             });
             callback?.();
@@ -404,7 +403,7 @@ export function Send() {
             const transaction: NewTransaction = buildPendingTransaction(result);
             addNewTransaction({
               address: fromAddress,
-              chainId,
+              chainId: activeChainId,
               transaction,
             });
             callback?.();

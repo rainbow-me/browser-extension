@@ -135,7 +135,7 @@ const usePriceChart = ({
       return chart || null;
     },
     queryKey: createQueryKey('price chart', { address, chainId, time }),
-    keepPreviousData: true,
+    placeholderData: (previousData) => previousData,
     staleTime: 1 * 60 * 1000, // 1min
     enabled: isDefaultSupportedChain({ chainId }),
   });

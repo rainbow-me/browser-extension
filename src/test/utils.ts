@@ -111,7 +111,7 @@ export const OPTIMISM_MAINNET_ASSET = {
     relative_change_24h: 0.14646492502099484,
   },
   symbol: 'ETH',
-  uniqueId: 'eth_10',
+  uniqueId: '0x0000000000000000000000000000000000000000_10',
 } satisfies ParsedUserAsset;
 
 export const ENS_MAINNET_ASSET = {

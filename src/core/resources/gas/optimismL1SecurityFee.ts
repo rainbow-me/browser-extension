@@ -1,6 +1,5 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { useQuery } from '@tanstack/react-query';
-import { getProvider } from '@wagmi/core';
 
 import {
   QueryConfig,
@@ -14,6 +13,7 @@ import {
   calculateL1FeeOptimism,
   chainNeedsL1SecurityFee,
 } from '~/core/utils/gas';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 
 // ///////////////////////////////////////////////
 // Query Types
@@ -81,11 +81,11 @@ export async function fetchOptimismL1SecurityFee(
     OptimismL1SecurityFeeQueryKey
   > = {},
 ) {
-  return await queryClient.fetchQuery(
-    optimismL1SecurityFeeQueryKey({ transactionRequest, chainId }),
-    optimismL1SecurityFeeQueryFunction,
-    config,
-  );
+  return await queryClient.fetchQuery({
+    queryKey: optimismL1SecurityFeeQueryKey({ transactionRequest, chainId }),
+    queryFn: optimismL1SecurityFeeQueryFunction,
+    ...config,
+  });
 }
 
 // ///////////////////////////////////////////////
@@ -100,12 +100,11 @@ export function useOptimismL1SecurityFee(
     OptimismL1SecurityFeeQueryKey
   > = {},
 ) {
-  return useQuery(
-    optimismL1SecurityFeeQueryKey({ transactionRequest, chainId }),
-    optimismL1SecurityFeeQueryFunction,
-    {
-      keepPreviousData: chainNeedsL1SecurityFee(chainId),
-      ...config,
-    },
-  );
+  return useQuery({
+    queryKey: optimismL1SecurityFeeQueryKey({ transactionRequest, chainId }),
+    queryFn: optimismL1SecurityFeeQueryFunction,
+    ...config,
+    placeholderData: (previousData) =>
+      chainNeedsL1SecurityFee(chainId) ? previousData : null,
+  });
 }

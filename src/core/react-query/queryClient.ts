@@ -7,7 +7,7 @@ import { LocalStorage } from '../storage';
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      cacheTime: 1_000 * 60 * 60 * 24, // 24 hours
+      gcTime: 1_000 * 60 * 60 * 24, // 24 hours
       networkMode: 'offlineFirst',
       refetchOnWindowFocus: false,
       retry: 0,
@@ -33,10 +33,7 @@ export const persistOptions: Omit<PersistQueryClientOptions, 'queryClient'> = {
     shouldDehydrateQuery: (query) =>
       Boolean(
         // We want to persist queries that have a `cacheTime` of above zero.
-        query.cacheTime !== 0 &&
-          // We want to persist queries that have `persisterVersion` in their query key.
-          (query.queryKey[2] as { persisterVersion?: number })
-            ?.persisterVersion,
+        query.gcTime !== 0,
       ),
   },
 };

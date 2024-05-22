@@ -124,11 +124,11 @@ export async function fetchMeteorology(
     MeteorologyQueryKey
   > = {},
 ) {
-  return await queryClient.fetchQuery(
-    meteorologyQueryKey({ chainId }),
-    meteorologyQueryFunction,
-    config,
-  );
+  return await queryClient.fetchQuery({
+    queryKey: meteorologyQueryKey({ chainId }),
+    queryFn: meteorologyQueryFunction,
+    ...config,
+  });
 }
 
 // ///////////////////////////////////////////////
@@ -143,9 +143,9 @@ export function useMeteorology(
     MeteorologyQueryKey
   > = {},
 ) {
-  return useQuery(
-    meteorologyQueryKey({ chainId }),
-    meteorologyQueryFunction,
-    config,
-  );
+  return useQuery({
+    queryKey: meteorologyQueryKey({ chainId }),
+    queryFn: meteorologyQueryFunction,
+    ...config,
+  });
 }

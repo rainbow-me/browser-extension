@@ -24,7 +24,7 @@ export const useVirtualizedAssets = ({
   const assetsRowVirtualizer = useVirtualizer({
     count: assets?.length || 0,
     getScrollElement: () => containerRef.current,
-    estimateSize: () => size || 52,
+    estimateSize: () => (size ? size : 52),
     overscan: 20,
   });
   return {

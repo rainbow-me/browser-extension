@@ -74,11 +74,11 @@ export async function prefetchTemplateResource(
     TemplateResourceQueryKey
   > = {},
 ) {
-  return await queryClient.prefetchQuery(
-    templateResourceQueryKey({ foo, bar, baz }),
-    templateResourceQueryFunction,
-    config,
-  );
+  return await queryClient.prefetchQuery({
+    queryKey: templateResourceQueryKey({ foo, bar, baz }),
+    queryFn: templateResourceQueryFunction,
+    ...config,
+  });
 }
 
 // ///////////////////////////////////////////////
@@ -93,11 +93,11 @@ export async function fetchTemplateResource(
     TemplateResourceQueryKey
   > = {},
 ) {
-  return await queryClient.fetchQuery(
-    templateResourceQueryKey({ foo, bar, baz }),
-    templateResourceQueryFunction,
-    config,
-  );
+  return await queryClient.fetchQuery({
+    queryKey: templateResourceQueryKey({ foo, bar, baz }),
+    queryFn: templateResourceQueryFunction,
+    ...config,
+  });
 }
 
 // ///////////////////////////////////////////////
@@ -112,9 +112,9 @@ export function useTemplateResource(
     TemplateResourceQueryKey
   > = {},
 ) {
-  return useQuery(
-    templateResourceQueryKey({ foo, bar, baz }),
-    templateResourceQueryFunction,
-    config,
-  );
+  return useQuery({
+    queryKey: templateResourceQueryKey({ foo, bar, baz }),
+    queryFn: templateResourceQueryFunction,
+    ...config,
+  });
 }

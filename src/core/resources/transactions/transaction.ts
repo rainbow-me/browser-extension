@@ -1,8 +1,7 @@
 import { Provider, TransactionResponse } from '@ethersproject/providers';
 import { formatUnits } from '@ethersproject/units';
 import { QueryClient, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Hash, getProvider } from '@wagmi/core';
-import { Address } from 'wagmi';
+import { Address, Hash } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { addysHttp } from '~/core/network/addys';
@@ -25,6 +24,7 @@ import {
   TxHash,
 } from '~/core/types/transactions';
 import { parseTransaction } from '~/core/utils/transactions';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 import { useUserChains } from '~/entries/popup/hooks/useUserChains';
 import { RainbowError, logger } from '~/logger';
 

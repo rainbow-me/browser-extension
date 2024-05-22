@@ -1,5 +1,5 @@
 import { AddressZero } from '@ethersproject/constants';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import {
   AVAX_AVALANCHE_ADDRESS,

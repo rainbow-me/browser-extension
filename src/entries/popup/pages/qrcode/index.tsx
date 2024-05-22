@@ -1,7 +1,7 @@
 import React from 'react';
-import { useAccount } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { useCurrentAddressStore } from '~/core/state';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, Button, Stack, Text } from '~/design-system';
 
@@ -12,7 +12,7 @@ import { SwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
 import { QRCode } from './qrcode';
 
 export const QRCodePage = () => {
-  const { address } = useAccount();
+  const { currentAddress: address } = useCurrentAddressStore();
 
   const handleCopy = React.useCallback(() => {
     navigator.clipboard.writeText(address as string);

@@ -3,7 +3,8 @@ import clsx from 'clsx';
 import { format, formatDistanceStrict } from 'date-fns';
 import { ReactNode, useCallback, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { Address, useEnsName } from 'wagmi';
+import { Address } from 'viem';
+import { useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { selectNftCollections } from '~/core/resources/_selectors/nfts';
@@ -95,11 +96,17 @@ export default function NFTDetails() {
   }>();
   const { testnetMode } = useTestnetModeStore();
   const { chains: userChains } = useUserChains();
-  const { data } = useNfts({ address, testnetMode, userChains });
+
+  const userChainIds = userChains.map(({ id }) => id);
+
+  const { data: collections = {} } = useNfts(
+    { address, testnetMode, userChainIds },
+    { select: (data) => selectNftCollections(data) },
+  );
   const navigate = useRainbowNavigate();
   const { isWatchingWallet } = useWallets();
   const setSelectedNft = useSelectedNftStore.use.setSelectedNft();
-  const collections = selectNftCollections(data);
+
   const nft = useMemo(() => {
     if (!collectionId || !nftId) return null;
     return collections?.[collectionId]?.assets?.find(

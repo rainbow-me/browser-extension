@@ -57,13 +57,11 @@ export function useChainMetadata(
     AssetMetadataQueryKey
   > = {},
 ) {
-  return useQuery(
-    chainMetadataQueryKey({
+  return useQuery({
+    queryKey: chainMetadataQueryKey({
       rpcUrl,
     }),
-    chainMetadataQueryFunction,
-    {
-      ...config,
-    },
-  );
+    queryFn: chainMetadataQueryFunction,
+    ...config,
+  });
 }

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { addysHttp } from '~/core/network/addys';
 import {
@@ -105,12 +105,10 @@ export function useAddysSummary(
     AddysSummaryQueryKey
   > = {},
 ) {
-  return useQuery(
-    addysSummaryQueryKey({ addresses, currency }),
-    addysSummaryQueryFunction,
-    {
-      ...config,
-      retry: true,
-    },
-  );
+  return useQuery({
+    queryKey: addysSummaryQueryKey({ addresses, currency }),
+    queryFn: addysSummaryQueryFunction,
+    ...config,
+    retry: true,
+  });
 }

@@ -120,19 +120,22 @@ export const RevokeApprovalSheet = ({
     };
   }, [currentAddress, approval?.chain_id]);
 
-  const { data: revokeApproveTransaction } = useQuery(
-    ['populateRevokeApproval', assetAddress, spenderAddress, approvalChainId],
-    async () =>
+  const { data: revokeApproveTransaction } = useQuery({
+    queryKey: [
+      'populateRevokeApproval',
+      assetAddress,
+      spenderAddress,
+      approvalChainId,
+    ],
+    queryFn: async () =>
       await populateRevokeApproval({
         tokenAddress: assetAddress,
         spenderAddress: spenderAddress,
         chainId: approvalChainId,
         type: assetType,
       }),
-    {
-      enabled: !!approval && !!spender,
-    },
-  );
+    enabled: !!approval && !!spender,
+  });
 
   const revokeApproveTransactionRequest: TransactionRequest | null =
     useMemo(() => {

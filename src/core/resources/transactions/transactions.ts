@@ -57,11 +57,16 @@ export async function fetchTransactions<TSelectData = TransactionsResult>(
     TransactionsQueryKey
   >,
 ) {
-  return await queryClient.fetchQuery(
-    transactionsQueryKey({ address, chainId, currency, transactionsLimit }),
-    transactionsQueryFunction,
-    config,
-  );
+  return await queryClient.fetchQuery({
+    queryKey: transactionsQueryKey({
+      address,
+      chainId,
+      currency,
+      transactionsLimit,
+    }),
+    queryFn: transactionsQueryFunction,
+    ...config,
+  });
 }
 
 // ///////////////////////////////////////////////
@@ -86,9 +91,14 @@ async function transactionsQueryFunction({
     return parseTransactions(response?.data, currency);
   } catch (e) {
     const cache = queryClient.getQueryCache();
-    const cachedTransactions = cache.find(
-      transactionsQueryKey({ address, chainId, currency, transactionsLimit }),
-    )?.state?.data as RainbowTransaction[];
+    const cachedTransactions = cache.find({
+      queryKey: transactionsQueryKey({
+        address,
+        chainId,
+        currency,
+        transactionsLimit,
+      }),
+    })?.state?.data as RainbowTransaction[];
     logger.error(new RainbowError('transactionsQueryFunction: '), {
       message: (e as Error)?.message,
     });
@@ -128,12 +138,15 @@ export function useTransactions<TSelectData = TransactionsResult>(
     TransactionsQueryKey
   > = {},
 ) {
-  return useQuery(
-    transactionsQueryKey({ address, currency, chainId, transactionsLimit }),
-    transactionsQueryFunction,
-    {
-      ...config,
-      refetchInterval: TRANSACTIONS_REFETCH_INTERVAL,
-    },
-  );
+  return useQuery({
+    queryKey: transactionsQueryKey({
+      address,
+      currency,
+      chainId,
+      transactionsLimit,
+    }),
+    queryFn: transactionsQueryFunction,
+    ...config,
+    refetchInterval: TRANSACTIONS_REFETCH_INTERVAL,
+  });
 }

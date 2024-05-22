@@ -103,9 +103,9 @@ export function useEnsRegistration(
     EnsRegistrationQueryKey
   > = {},
 ) {
-  return useQuery(
-    ensRegistrationQueryKey({ name }),
-    ensRegistrationQueryFunction,
-    config,
-  );
+  return useQuery({
+    queryKey: ensRegistrationQueryKey({ name }),
+    queryFn: ensRegistrationQueryFunction,
+    ...config,
+  });
 }

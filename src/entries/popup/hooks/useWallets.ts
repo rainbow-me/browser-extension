@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { useCurrentAddressStore } from '~/core/state';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
@@ -32,7 +32,9 @@ const fetchWallets = async () => {
 export const useWallets = () => {
   const { hiddenWallets } = useHiddenWalletsStore();
 
-  const { data: allWallets, refetch } = useQuery(['accounts'], fetchWallets, {
+  const { data: allWallets, refetch } = useQuery({
+    queryKey: ['accounts'],
+    queryFn: fetchWallets,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
   });

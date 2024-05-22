@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { Chain } from 'wagmi';
+import { Chain } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -62,7 +62,6 @@ export const AddEthereumChain = ({
       const chain: Chain = {
         id: Number(chainId),
         name: chainName || name,
-        network: chainName || name,
         nativeCurrency: {
           symbol,
           decimals: 18,

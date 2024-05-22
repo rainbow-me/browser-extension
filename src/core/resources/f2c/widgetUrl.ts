@@ -1,5 +1,5 @@
 import qs from 'qs';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { f2cHttp } from '~/core/network';
 import {
@@ -76,14 +76,14 @@ export async function fetchProviderWidgetUrl(
     ProviderWidgetUrlQueryKey
   > = {},
 ) {
-  return await queryClient.fetchQuery(
-    providerWidgetUrlQueryKey({
+  return await queryClient.fetchQuery({
+    queryKey: providerWidgetUrlQueryKey({
       provider,
       depositAddress,
       defaultExperience,
       redirectUri,
     }),
-    providerWidgetUrlQueryFunction,
-    config,
-  );
+    queryFn: providerWidgetUrlQueryFunction,
+    ...config,
+  });
 }

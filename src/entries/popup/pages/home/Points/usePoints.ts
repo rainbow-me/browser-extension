@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { metadataClient } from '~/core/graphql';
 import {
@@ -23,7 +23,10 @@ export const seedPointsQueryCache = async (
 };
 
 export const fetchPointsQuery = async (address: Address) =>
-  queryClient.fetchQuery(['points', address], () => fetchPoints(address));
+  queryClient.fetchQuery({
+    queryKey: ['points', address],
+    queryFn: () => fetchPoints(address),
+  });
 
 let nextDropTimeout: NodeJS.Timeout | undefined;
 export const usePoints = (address: Address) => {

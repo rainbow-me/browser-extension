@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { POPUP_URL, goToNewTab } from '~/core/utils/tabs';

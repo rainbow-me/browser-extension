@@ -15,6 +15,7 @@ export const useHasEnoughGas = (session: ActiveSession) => {
   });
   const selectedGas = useGasStore.use.selectedGas();
 
+  console.log('nativeAsset', chainId, nativeAsset);
   return lessThan(
     selectedGas?.gasFee?.amount || '0',
     toWei(nativeAsset?.balance?.amount || '0'),

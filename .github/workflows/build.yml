@@ -424,6 +424,9 @@ jobs:
             path: tmp
       - name: Copy dotenv
         run: cat tmp/dotenv >> .env && rm -rf tmp
+      - name: Set IS_TESTING=true
+        run: |
+          sed -i 's/IS_TESTING.*/IS_TESTING=true/g' .env
       - name: Run unit tests
         run: yarn test
 

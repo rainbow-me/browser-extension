@@ -9,8 +9,8 @@ import {
   getQuoteExecutionDetails,
   getRainbowRouterContractAddress,
 } from '@rainbow-me/swaps';
+import { erc20Abi } from 'viem';
 import { mainnet } from 'viem/chains';
-import { Chain, erc20ABI } from 'wagmi';
 
 import { gasUnits } from '../references';
 import { ChainId } from '../types/chains';
@@ -101,7 +101,7 @@ const getStateDiff = async (
     quote.swapType === 'normal'
       ? getRainbowRouterContractAddress(chainId)
       : (quote as CrosschainQuote).allowanceTarget;
-  const tokenContract = new Contract(tokenAddress, erc20ABI, provider);
+  const tokenContract = new Contract(tokenAddress, erc20Abi, provider);
 
   const { number: blockNumber } = await (
     provider.getBlock as () => Promise<Block>
@@ -205,7 +205,7 @@ const getClosestGasEstimate = async (
 
 export const getDefaultGasLimitForTrade = (
   quote: Quote,
-  chainId: Chain['id'],
+  chainId: ChainId,
 ): string => {
   const allowsPermit =
     chainId === mainnet.id &&

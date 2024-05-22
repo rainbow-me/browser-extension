@@ -1,6 +1,6 @@
-import { getProvider } from '@wagmi/core';
 import { useCallback, useEffect, useRef } from 'react';
 
+import { ETH_ADDRESS } from '~/core/references';
 import {
   selectUserAssetsDictByChain,
   selectorFilterByUserChains,
@@ -14,6 +14,7 @@ import {
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useSwapAssetsToRefreshStore } from '~/core/state/swapAssetsToRefresh';
 import { fetchAssetBalanceViaProvider } from '~/core/utils/assets';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 
 export const useSwapRefreshAssets = () => {
   const { currentAddress } = useCurrentAddressStore();
@@ -49,30 +50,26 @@ export const useSwapRefreshAssets = () => {
       const [assetToBuy, assetToSell] = assetsToRefresh;
 
       const updatedAssets = userAssets;
-      const assetToBuyProvider = getProvider({ chainId: assetToBuy?.chainId });
-      const assetToSellProvider = getProvider({
-        chainId: assetToSell?.chainId,
+
+      const fetchAssetPromises = [assetToBuy, assetToSell]
+        .map(
+          (asset) =>
+            asset.address !== ETH_ADDRESS &&
+            fetchAssetBalanceViaProvider({
+              parsedAsset: asset,
+              currentAddress,
+              currency: currentCurrency,
+              provider: getProvider({ chainId: asset.chainId }),
+            }),
+        )
+        .filter(Boolean);
+
+      const assets = await Promise.all(fetchAssetPromises);
+
+      assets.forEach((asset) => {
+        if (!asset) return;
+        updatedAssets[asset.chainId][asset.uniqueId] = asset;
       });
-
-      const [updatedAssetToBuy, updatedAssetToSell] = await Promise.all([
-        fetchAssetBalanceViaProvider({
-          parsedAsset: assetToBuy,
-          currentAddress,
-          currency: currentCurrency,
-          provider: assetToBuyProvider,
-        }),
-        fetchAssetBalanceViaProvider({
-          parsedAsset: assetToSell,
-          currentAddress,
-          currency: currentCurrency,
-          provider: assetToSellProvider,
-        }),
-      ]);
-
-      updatedAssets[assetToBuy.chainId][updatedAssetToBuy.uniqueId] =
-        updatedAssetToBuy;
-      updatedAssets[assetToSell.chainId][updatedAssetToSell.uniqueId] =
-        updatedAssetToSell;
 
       userAssetsSetQueryData({
         address: currentAddress,
