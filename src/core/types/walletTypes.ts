@@ -5,4 +5,5 @@ export enum EthereumWalletType {
   seed = 'seed',
   ledgerPublicKey = 'ledgerPublicKey',
   trezorPublicKey = 'trezorPublicKey',
+  gridPlusPublicKey = 'gridPlusPublicKey',
 }

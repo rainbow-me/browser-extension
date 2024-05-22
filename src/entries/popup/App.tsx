@@ -22,6 +22,7 @@ import { Routes } from './Routes';
 import { HWRequestListener } from './components/HWRequestListener/HWRequestListener';
 import { IdleTimer } from './components/IdleTimer/IdleTimer';
 import { OnboardingKeepAlive } from './components/OnboardingKeepAlive';
+import { useGridPlusInit } from './handlers/gridplusHooks';
 import { AuthProvider } from './hooks/useAuth';
 import { useExpiryListener } from './hooks/useExpiryListener';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
@@ -40,6 +41,7 @@ export function App() {
   const prevChains = usePrevious(rainbowChains);
 
   useExpiryListener();
+  useGridPlusInit();
 
   React.useEffect(() => {
     if (!isEqual(prevChains, rainbowChains)) {
