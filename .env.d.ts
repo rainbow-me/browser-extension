@@ -11,7 +11,6 @@ declare global {
       SENTRY_DSN: string;
       DATA_API_KEY: string;
       DATA_ENDPOINT: string;
-      DATA_ORIGIN: string;
       PLAYGROUND: 'default' | 'ds';
       LOG_LEVEL: 'debug' | 'info' | 'warn' | 'error';
       LOG_DEBUG: string;
