@@ -419,6 +419,11 @@
       "pending": "المزايدة",
       "confirmed": "المزايدة",
       "failed": "فشلت المزايدة"
+    },
+    "speed_up": {
+      "pending": "تسريع العملية",
+      "confirmed": "تم تسريع العملية",
+      "failed": "فشل تسريع العملية"
     }
   },
   "command_k": {
@@ -427,6 +432,7 @@
       "open": "افتح",
       "open_in_new_tab": "افتح في علامة تبويب جديدة",
       "switch_to_wallet": "التبديل إلى المحفظة",
+      "send_to_contact": "إرسال إلى جهة اتصال",
       "view": "عرض"
     },
     "commands": {
@@ -434,6 +440,7 @@
         "send": "أرسل",
         "swap": "تبديل",
         "my_wallets": "محافظي",
+        "my_contacts": "جهات الاتصال الخاصة بي",
         "my_tokens": "الرموز الخاصة بي",
         "my_tokens_watched": "رموز",
         "my_nfts": "NFTs الخاصة بي",
@@ -473,8 +480,12 @@
         "add_as_watched_wallet": "مشاهدة هذه المحفظة",
         "view_on_ens": "عرض على ENS",
         "switch_to_wallet": "التبديل إلى هذه المحفظة",
+        "send_to_wallet": "إرسال إلى هذه المحفظة",
+        "add_contact": "إضافة كجهة اتصال",
+        "remove_contact": "إزالة الاتصال",
         "copy_wallet_address": "نسخ العنوان",
         "view_wallet_on_etherscan": "عرض على Etherscan",
+        "send_contact": "إرسال إلى جهة اتصال",
         "export_addresses_as_csv": "تصدير العناوين كملف CSV",
         "enable_flashbots": "تمكين Flashbots",
         "disable_flashbots": "تعطيل Flashbots"
@@ -482,6 +493,7 @@
       "search_tags": {
         "swap": "الجسر",
         "my_wallets": "التبديل",
+        "my_contacts": "جهة اتصال، جهات الاتصال",
         "my_tokens_watched": "يا",
         "my_nfts_watched": "يا",
         "view_profile": "الملف الشخصي، المعرض، ENS، NFTs",
@@ -519,6 +531,10 @@
       "title_hidden": "التوازنات الصغيرة مخفية",
       "title_revealed": "عرض الرصيد الصغير"
     },
+    "contact_toast": {
+      "title_added": "تمت إضافة جهة اتصال",
+      "title_removed": "تمت إزالة جهة الاتصال"
+    },
     "no_results": "لا يوجد نتائج",
     "pages": {
       "add_wallet": {
@@ -544,6 +560,10 @@
         "search_placeholder": "اختر محفظة للتبديل إليها…",
         "section_title": "محافظي"
       },
+      "my_contacts": {
+        "search_placeholder": "اختر جهة اتصال للإرسال إليها…",
+        "section_title": "جهات الاتصال الخاصة بي"
+      },
       "token_detail": {
         "search_placeholder": "بحث عن أعمال الرمز…",
         "section_title": "الأعمال"
@@ -556,6 +576,9 @@
         "search_placeholder": "البحث عن أعمال المحفظة…",
         "section_title": "الأعمال"
       }
+    },
+    "labels": {
+      "contact": "اتصال"
     },
     "quick_promo": {
       "text": "اضغط %{modifierSymbol}ك لفتح القائمة السحرية",
@@ -1301,6 +1324,8 @@
   "nfts": {
     "empty_state_header": "NFTs",
     "empty_state_description": "ستظهر NFTs الخاصة بك هنا!",
+    "report_nft_action_text": "الإبلاغ",
+    "report_nft_confirm_description": "تأكيد الإبلاغ عن NFT؟",
     "view_on_web": "عرض على الويب",
     "display_mode_gallery": "المعرض",
     "display_mode_collections": "المجموعات",
@@ -1351,7 +1376,9 @@
       "view_gallery": "عرض المعرض"
     },
     "toast": {
-      "spam_reported": "تم استلام تقريرك!"
+      "spam_reported": "تم استلام تقريرك!",
+      "hidden": "تم إخفاء NFT",
+      "unhidden": "تم إظهار NFT"
     }
   },
   "points": {
@@ -1447,7 +1474,11 @@
     "speed_up_transaction": "تسريع العملية",
     "close_cta": "الغاء",
     "handle_copy_title": "تم نسخ الهاش الخاص بالمعاملة",
-    "revoke_approval": "إلغاء الموافقة"
+    "revoke_approval": "إلغاء الموافقة",
+    "speed_up_failed": {
+      "title": "فشل تسريع العملية",
+      "description": "قد تفشل محاولات تسريع العملية أثناء ازدحام الشبكة، زيادة حد الغاز، أو عند تأكيد المعاملة الأصلية أولاً"
+    }
   },
   "token_details": {
     "swap": "تبديل",
@@ -1616,6 +1647,7 @@
   },
   "alert": {
     "ok": "حسنا",
+    "cancel": "إلغاء",
     "wallet_watching_mode": "هذه المحفظة حاليا في وضع 'المشاهدة'",
     "wallet_testing_mode": "لا يتم دعم الشبكات التجريبية بواسطة Swap. قم بتعطيل وضع الشبكة التجريبية للمتابعة.",
     "coming_soon": "قريبا!",
