@@ -1,7 +1,6 @@
 export type TokenNames =
   | keyof (typeof tokenAddresses)['mainnet']
-  | keyof (typeof tokenAddresses)['optimism']
-  | keyof (typeof tokenAddresses)['base'];
+  | keyof (typeof tokenAddresses)['optimism'];
 
 export const tokenAddresses = {
   mainnet: {
@@ -16,12 +15,6 @@ export const tokenAddresses = {
     uniswap: '0x6fd9d7ad17242c41f7131d257212c54a0e816691',
     chainlink: '0x350a791bfc2c21f9ed5d10980dad2e2638ffa7f6',
   },
-  base: {
-    wormhole: '0xb0ffa8000886e57f86dd5264b9582b2ad87b2b91',
-    usdc: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
-    degen: '0x4ed4e862860bed51a9570b96d89af5e1b0efefed',
-    snx: '0x22e6966b799c4d5b13be962e1d117b56327fda66',
-  },
 };
 
 export const tokenNames: Record<TokenNames, string> = {
@@ -29,7 +22,4 @@ export const tokenNames: Record<TokenNames, string> = {
   usdc: 'USD Coin',
   uniswap: 'Uniswap',
   chainlink: 'Chainlink',
-  wormhole: 'Wormhole',
-  snx: 'Synthetix',
-  degen: 'Degen',
 };

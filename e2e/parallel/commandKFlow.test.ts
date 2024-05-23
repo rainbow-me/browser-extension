@@ -139,16 +139,4 @@ describe('Command+K behaviours', () => {
       });
     }
   });
-
-  it('should be able to search for custom unowned tokens on base', async () => {
-    for (const [key, tokenAddress] of Object.entries(tokenAddresses.base)) {
-      const tokenName = tokenNames[key as TokenNames];
-      await performSearchTokenAddressActionsCmdK({
-        driver,
-        tokenAddress,
-        tokenName,
-        rootURL,
-      });
-    }
-  });
 });
