@@ -7,7 +7,6 @@ import { i18n } from '~/core/languages';
 import {
   SUPPORTED_CHAINS,
   SUPPORTED_CHAIN_IDS,
-  getDefaultRPC,
 } from '~/core/references/chains';
 import { selectUserAssetsDictByChain } from '~/core/resources/_selectors/assets';
 import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
@@ -23,6 +22,7 @@ import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { getSupportedTestnetChains } from '~/core/utils/chains';
 import { chainIdMap } from '~/core/utils/userChains';
+import { getDefaultRPC } from '~/core/wagmi/clientRpc';
 import {
   Box,
   Column,

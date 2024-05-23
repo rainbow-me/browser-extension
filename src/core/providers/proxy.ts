@@ -1,5 +1,5 @@
-import { getDefaultRPC } from '../references/chains';
 import { ChainId } from '../types/chains';
+import { getDefaultRPC } from '../wagmi/clientRpc';
 
 export const proxyRpcEndpoint = (endpoint: string, chainId: ChainId) => {
   if (

@@ -1,7 +1,7 @@
 import { Chain, zora } from 'viem/chains';
 import create from 'zustand';
 
-import { SUPPORTED_CHAINS, getDefaultRPC } from '~/core/references/chains';
+import { SUPPORTED_CHAINS } from '~/core/references/chains';
 import {
   ChainId,
   chainDegen,
@@ -9,6 +9,7 @@ import {
   chainHardhatOptimism,
 } from '~/core/types/chains';
 import { persistOptions } from '~/core/utils/persistOptions';
+import { getDefaultRPC } from '~/core/wagmi/clientRpc';
 
 import { createStore } from '../internal/createStore';
 import { withSelectors } from '../internal/withSelectors';
