@@ -1,7 +1,6 @@
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
-      ALCHEMY_API_KEY: string;
       BSC_MAINNET_RPC: string;
       ZORA_MAINNET_RPC: string;
       BASE_MAINNET_RPC: string;
