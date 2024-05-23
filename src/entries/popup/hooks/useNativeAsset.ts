@@ -51,7 +51,6 @@ export const useNativeAsset = ({
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
     chainId: chainId || ChainId.mainnet,
   });
-  console.log('-- nativeAssetUniqueId', nativeAssetUniqueId);
   const { data: userNativeAsset } = useUserAsset(
     nativeAssetUniqueId || '',
     address || currentAddress,
@@ -72,12 +71,6 @@ export const useNativeAsset = ({
 
   const chain = chains.find((chain) => chain.id === chainId);
   const isChainIdCustomNetwork = isCustomChain(chainId);
-  console.log(
-    '-- isChainIdCustomNetwork',
-    isChainIdCustomNetwork,
-    customNetworkNativeAsset,
-  );
-  console.log('-- chain?.testnet', chain, testnetNativeAsset);
 
   let nativeAsset: ParsedUserAsset | undefined | null;
   if (isChainIdCustomNetwork) {
