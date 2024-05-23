@@ -13,10 +13,6 @@ import {
 import * as chains from 'viem/chains';
 
 const HARDHAT_CHAIN_ID = 1337;
-const BLAST_CHAIN_ID = 81457;
-const BLAST_SEPOLIA_CHAIN_ID = 168587773;
-const POLYGON_AMOY_CHAIN_ID = 80002;
-
 const HARDHAT_OP_CHAIN_ID = 1338;
 
 export const chainHardhat: Chain = {
@@ -47,73 +43,6 @@ export const chainHardhatOptimism: Chain = {
     default: { http: ['http://127.0.0.1:8545'] },
   },
   testnet: true,
-};
-
-export const chainBlast: Chain = {
-  id: BLAST_CHAIN_ID,
-  name: 'Blast',
-  rpcUrls: {
-    public: { http: [process.env.BLAST_MAINNET_RPC as string] },
-    default: {
-      http: [process.env.BLAST_MAINNET_RPC as string],
-    },
-  },
-  blockExplorers: {
-    default: { name: 'Blastscan', url: 'https://blastscan.io/' },
-  },
-  nativeCurrency: {
-    name: 'Blast',
-    symbol: 'BLAST',
-    decimals: 18,
-  },
-};
-
-export const chainBlastSepolia: Chain = {
-  id: BLAST_SEPOLIA_CHAIN_ID,
-  name: 'Blast Sepolia',
-  nativeCurrency: {
-    decimals: 18,
-    name: 'Ether',
-    symbol: 'ETH',
-  },
-  rpcUrls: {
-    public: { http: ['https://sepolia.blast.io'] },
-    default: { http: ['https://sepolia.blast.io'] },
-  },
-  testnet: true,
-};
-
-export const chainPolygonAmoy: Chain = {
-  id: POLYGON_AMOY_CHAIN_ID,
-  name: 'Polygon Amoy',
-  nativeCurrency: {
-    decimals: 18,
-    name: 'MATIC',
-    symbol: 'MATIC',
-  },
-  rpcUrls: {
-    public: { http: ['https://rpc-amoy.polygon.technology'] },
-    default: { http: ['https://rpc-amoy.polygon.technology'] },
-  },
-  testnet: true,
-};
-
-export const chainDegen: Chain = {
-  id: 666666666,
-  name: 'Degen Chain',
-  nativeCurrency: {
-    decimals: 18,
-    name: 'Degen',
-    symbol: 'DEGEN',
-  },
-  rpcUrls: {
-    public: { http: ['https://rpc.degen.tips'] },
-    default: { http: ['https://rpc.degen.tips'] },
-  },
-  blockExplorers: {
-    default: { name: 'Degen Explorer', url: 'https://explorer.degen.tips/' },
-  },
-  testnet: false,
 };
 
 export enum ChainName {

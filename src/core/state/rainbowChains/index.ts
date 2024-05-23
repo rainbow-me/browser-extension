@@ -1,10 +1,9 @@
-import { Chain, zora } from 'viem/chains';
+import { Chain, degen, zora } from 'viem/chains';
 import create from 'zustand';
 
 import { SUPPORTED_CHAINS } from '~/core/references/chains';
 import {
   ChainId,
-  chainDegen,
   chainHardhat,
   chainHardhatOptimism,
 } from '~/core/types/chains';
@@ -279,10 +278,10 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
 
         function v8(state) {
           if (
-            !state.rainbowChains[chainDegen.id] ||
-            state.rainbowChains[chainDegen.id]?.chains.length === 0
+            !state.rainbowChains[degen.id] ||
+            state.rainbowChains[degen.id]?.chains.length === 0
           ) {
-            return addCustomRPC({ chain: chainDegen, state });
+            return addCustomRPC({ chain: degen, state });
           }
           return state;
         },

@@ -6,26 +6,23 @@ import {
   avalancheFuji,
   base,
   baseSepolia,
+  blast,
+  blastSepolia,
   bsc,
   bscTestnet,
+  degen,
   holesky,
   mainnet,
   optimism,
   optimismSepolia,
   polygon,
+  polygonAmoy,
   sepolia,
   zora,
   zoraSepolia,
 } from 'viem/chains';
 
-import {
-  ChainId,
-  ChainNameDisplay,
-  chainBlast,
-  chainBlastSepolia,
-  chainDegen,
-  chainPolygonAmoy,
-} from '../types/chains';
+import { ChainId, ChainNameDisplay } from '../types/chains';
 
 import {
   getSupportedChainsWithHardhat,
@@ -48,13 +45,13 @@ export const chainIdMap: Record<
   [ChainId.mainnet]: [mainnet.id, sepolia.id, holesky.id],
   [ChainId.optimism]: [optimism.id, optimismSepolia.id],
   [ChainId.arbitrum]: [arbitrum.id, arbitrumSepolia.id],
-  [ChainId.polygon]: [polygon.id, chainPolygonAmoy.id],
+  [ChainId.polygon]: [polygon.id, polygonAmoy.id],
   [ChainId.base]: [base.id, baseSepolia.id],
   [ChainId.bsc]: [bsc.id, bscTestnet.id],
   [ChainId.zora]: [zora.id, zoraSepolia.id],
   [ChainId.avalanche]: [avalanche.id, avalancheFuji.id],
-  [ChainId.blast]: [chainBlast.id, chainBlastSepolia.id],
-  [ChainId.degen]: [chainDegen.id],
+  [ChainId.blast]: [blast.id, blastSepolia.id],
+  [ChainId.degen]: [degen.id],
 };
 
 export const chainLabelMap: Record<
@@ -75,12 +72,12 @@ export const chainLabelMap: Record<
   ],
   [ChainId.optimism]: [ChainNameDisplay[optimismSepolia.id]],
   [ChainId.arbitrum]: [ChainNameDisplay[arbitrumSepolia.id]],
-  [ChainId.polygon]: [ChainNameDisplay[chainPolygonAmoy.id]],
+  [ChainId.polygon]: [ChainNameDisplay[polygonAmoy.id]],
   [ChainId.base]: [ChainNameDisplay[baseSepolia.id]],
   [ChainId.bsc]: [ChainNameDisplay[bscTestnet.id]],
   [ChainId.zora]: [ChainNameDisplay[zoraSepolia.id]],
   [ChainId.avalanche]: [ChainNameDisplay[avalancheFuji.id]],
-  [ChainId.blast]: [ChainNameDisplay[chainBlastSepolia.id]],
+  [ChainId.blast]: [ChainNameDisplay[blastSepolia.id]],
   [ChainId.degen]: [],
 };
 
