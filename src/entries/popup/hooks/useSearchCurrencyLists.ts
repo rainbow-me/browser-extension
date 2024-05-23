@@ -2,7 +2,7 @@ import { isAddress } from '@ethersproject/address';
 import { rankings } from 'match-sorter';
 import { useCallback, useMemo } from 'react';
 
-import { SUPPORTED_CHAINS } from '~/core/references';
+import { SUPPORTED_CHAINS } from '~/core/references/chains';
 import { useTokenSearch } from '~/core/resources/search';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';

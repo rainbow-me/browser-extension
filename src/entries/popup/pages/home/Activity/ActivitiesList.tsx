@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { useCallback, useMemo, useRef } from 'react';
 import { Chain } from 'viem';
 
-import { SUPPORTED_MAINNET_CHAINS } from '~/core/references';
+import { SUPPORTED_MAINNET_CHAINS } from '~/core/references/chains';
 import { useApprovals } from '~/core/resources/approvals/approvals';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useUserChainsStore } from '~/core/state/userChains';

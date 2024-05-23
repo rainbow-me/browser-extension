@@ -1,4 +1,4 @@
-import { getDefaultRPC } from '../references';
+import { getDefaultRPC } from '../references/chains';
 import { ChainId } from '../types/chains';
 
 export const proxyRpcEndpoint = (endpoint: string, chainId: ChainId) => {

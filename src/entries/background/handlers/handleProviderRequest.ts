@@ -9,7 +9,7 @@ import { queueEventTracking } from '~/analytics/queueEvent';
 import { hasVault, isInitialized, isPasswordSet } from '~/core/keychain';
 import { Messenger } from '~/core/messengers';
 import { CallbackOptions } from '~/core/messengers/internal/createMessenger';
-import { SUPPORTED_CHAINS } from '~/core/references';
+import { SUPPORTED_CHAINS } from '~/core/references/chains';
 import {
   appSessionsStore,
   notificationWindowStore,

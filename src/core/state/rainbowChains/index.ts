@@ -1,7 +1,7 @@
 import { Chain, zora } from 'viem/chains';
 import create from 'zustand';
 
-import { SUPPORTED_CHAINS, getDefaultRPC } from '~/core/references';
+import { SUPPORTED_CHAINS, getDefaultRPC } from '~/core/references/chains';
 import {
   ChainId,
   chainDegen,

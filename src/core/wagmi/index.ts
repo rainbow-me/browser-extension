@@ -5,7 +5,7 @@ import { createConfig } from 'wagmi';
 import { useRainbowChains } from '~/entries/popup/hooks/useRainbowChains';
 
 import { proxyRpcEndpoint } from '../providers';
-import { SUPPORTED_CHAINS, getDefaultRPC } from '../references';
+import { SUPPORTED_CHAINS, getDefaultRPC } from '../references/chains';
 import { connectedToHardhatStore } from '../state/currentSettings/connectedToHardhat';
 import { ChainId, chainHardhat, chainHardhatOptimism } from '../types/chains';
 import { findRainbowChainForChainId } from '../utils/rainbowChains';

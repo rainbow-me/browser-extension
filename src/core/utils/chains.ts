@@ -10,12 +10,7 @@ import {
 } from 'viem/chains';
 import { useConfig } from 'wagmi';
 
-import {
-  NATIVE_ASSETS_PER_CHAIN,
-  SUPPORTED_CHAINS,
-  SUPPORTED_CHAIN_IDS,
-  SUPPORTED_MAINNET_CHAINS,
-} from '~/core/references';
+import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
 import {
   ChainId,
   ChainName,
@@ -25,6 +20,11 @@ import {
 } from '~/core/types/chains';
 
 import { proxyRpcEndpoint } from '../providers';
+import {
+  SUPPORTED_CHAINS,
+  SUPPORTED_CHAIN_IDS,
+  SUPPORTED_MAINNET_CHAINS,
+} from '../references/chains';
 import { RAINBOW_CHAINS_SUPPORTED } from '../state/rainbowChains';
 import { AddressOrEth } from '../types/assets';
 import { wagmiConfig } from '../wagmi';
