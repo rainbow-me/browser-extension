@@ -419,6 +419,11 @@
       "pending": "Teklif Veriliyor",
       "confirmed": "Teklif",
       "failed": "Teklif Hatası"
+    },
+    "speed_up": {
+      "pending": "Hızlanıyor",
+      "confirmed": "Hızlandı",
+      "failed": "Hızlanma Başarısız"
     }
   },
   "command_k": {
@@ -427,6 +432,7 @@
       "open": "Aç",
       "open_in_new_tab": "Yeni Sekmede Aç",
       "switch_to_wallet": "Cüzdana Geçiş Yap",
+      "send_to_contact": "Kişiye Gönder",
       "view": "Görüntüle"
     },
     "commands": {
@@ -434,6 +440,7 @@
         "send": "Gönder",
         "swap": "Takas Et",
         "my_wallets": "Cüzdanlarım",
+        "my_contacts": "Kişilerim",
         "my_tokens": "Tokenlerim",
         "my_tokens_watched": "Tokenler",
         "my_nfts": "Benim NFT'lerim",
@@ -473,8 +480,12 @@
         "add_as_watched_wallet": "Bu Cüzdanı İzle",
         "view_on_ens": "ENS'de Görüntüle",
         "switch_to_wallet": "Bu Cüzdana Geç",
+        "send_to_wallet": "Bu Cüzdana Gönder",
+        "add_contact": "Kişi Olarak Ekle",
+        "remove_contact": "Kişiyi Kaldır",
         "copy_wallet_address": "Adresi Kopyala",
         "view_wallet_on_etherscan": "Etherscan'da Görüntüle",
+        "send_contact": "Kişiye Gönder",
         "export_addresses_as_csv": "CSV olarak Adresleri Dışa Aktar",
         "enable_flashbots": "Flashbots'i etkinleştir",
         "disable_flashbots": "Flashbots'i devre dışı bırak"
@@ -482,6 +493,7 @@
       "search_tags": {
         "swap": "köprü",
         "my_wallets": "değiştir",
+        "my_contacts": "iletişim, kişiler",
         "my_tokens_watched": "benim",
         "my_nfts_watched": "benim",
         "view_profile": "profil, galeri, ens, nft'ler",
@@ -519,6 +531,10 @@
       "title_hidden": "Küçük Bakiyeler Gizlendi",
       "title_revealed": "Küçük Bakiyeler Gösteriliyor"
     },
+    "contact_toast": {
+      "title_added": "Kişi Eklendi",
+      "title_removed": "Kişi Kaldırıldı"
+    },
     "no_results": "Sonuç bulunamadı",
     "pages": {
       "add_wallet": {
@@ -544,6 +560,10 @@
         "search_placeholder": "Geçiş yapmak için bir cüzdan seçin…",
         "section_title": "Cüzdanlarım"
       },
+      "my_contacts": {
+        "search_placeholder": "Göndermek için bir kişi seçin…",
+        "section_title": "Kişilerim"
+      },
       "token_detail": {
         "search_placeholder": "Token işlemlerini ara…",
         "section_title": "İşlemler"
@@ -556,6 +576,9 @@
         "search_placeholder": "Cüzdan işlemlerini ara…",
         "section_title": "İşlemler"
       }
+    },
+    "labels": {
+      "contact": "İletişim"
     },
     "quick_promo": {
       "text": "Sihirli Menü'yü açmak için %{modifierSymbol}K tuşuna basın",
@@ -1301,6 +1324,8 @@
   "nfts": {
     "empty_state_header": "NFT'ler",
     "empty_state_description": "NFT'leriniz burada görünecek!",
+    "report_nft_action_text": "Rapor Et",
+    "report_nft_confirm_description": "NFT raporunu onaylıyor musunuz?",
     "view_on_web": "Web'de Görüntüle",
     "display_mode_gallery": "Galeri",
     "display_mode_collections": "Koleksiyonlar",
@@ -1351,7 +1376,9 @@
       "view_gallery": "Galeriyi Görüntüle"
     },
     "toast": {
-      "spam_reported": "Raporunuz alındı!"
+      "spam_reported": "Raporunuz alındı!",
+      "hidden": "NFT gizlendi",
+      "unhidden": "NFT gizliliği kaldırıldı"
     }
   },
   "points": {
@@ -1447,7 +1474,11 @@
     "speed_up_transaction": "İşlemi Hızlandır",
     "close_cta": "İptal Et",
     "handle_copy_title": "Tx Hash Kopyalandı",
-    "revoke_approval": "Onayı İptal Et"
+    "revoke_approval": "Onayı İptal Et",
+    "speed_up_failed": {
+      "title": "Hızlanma başarısız",
+      "description": "Bir işlemi hızlandırma girişimleri ağ tıkanıklığı, gaz limit artışları veya orijinal işlem ilk onaylandığında başarısız olabilir"
+    }
   },
   "token_details": {
     "swap": "Değiştir",
@@ -1616,6 +1647,7 @@
   },
   "alert": {
     "ok": "Tamam",
+    "cancel": "İptal",
     "wallet_watching_mode": "Bu cüzdan şu anda 'İzleme' modunda",
     "wallet_testing_mode": "Testnet'ler Swap tarafından desteklenmemektedir. Devam etmek için Testnet Modunu devre dışı bırakın.",
     "coming_soon": "Çok yakında!",

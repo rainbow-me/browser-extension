@@ -419,6 +419,11 @@
       "pending": "입찰 중",
       "confirmed": "입찰",
       "failed": "입찰 실패"
+    },
+    "speed_up": {
+      "pending": "가속 중",
+      "confirmed": "가속 완료",
+      "failed": "속도를 올리다 실패"
     }
   },
   "command_k": {
@@ -427,6 +432,7 @@
       "open": "열기",
       "open_in_new_tab": "새 탭에서 열기",
       "switch_to_wallet": "지갑으로 전환",
+      "send_to_contact": "연락처에 보내기",
       "view": "보기"
     },
     "commands": {
@@ -434,6 +440,7 @@
         "send": "전송",
         "swap": "교환",
         "my_wallets": "내 지갑들",
+        "my_contacts": "내 연락처",
         "my_tokens": "내 토큰들",
         "my_tokens_watched": "토큰",
         "my_nfts": "내 NFTs",
@@ -473,8 +480,12 @@
         "add_as_watched_wallet": "이 지갑 감시",
         "view_on_ens": "ENS에서 보기",
         "switch_to_wallet": "이 지갑으로 전환",
+        "send_to_wallet": "이 지갑으로 보내기",
+        "add_contact": "연락처로 추가",
+        "remove_contact": "연락처 제거",
         "copy_wallet_address": "주소 복사",
         "view_wallet_on_etherscan": "Etherscan에서 보기",
+        "send_contact": "연락처에 보내기",
         "export_addresses_as_csv": "주소를 CSV로 내보내기",
         "enable_flashbots": "플래시봇 활성화",
         "disable_flashbots": "플래시봇 비활성화"
@@ -482,6 +493,7 @@
       "search_tags": {
         "swap": "브릿지",
         "my_wallets": "스위치",
+        "my_contacts": "연락처, 연락처들",
         "my_tokens_watched": "나의",
         "my_nfts_watched": "나의",
         "view_profile": "프로필, 갤러리, ENS, NFTs",
@@ -519,6 +531,10 @@
       "title_hidden": "작은 잔액 숨김",
       "title_revealed": "소액 잔액 표시"
     },
+    "contact_toast": {
+      "title_added": "연락처 추가됨",
+      "title_removed": "연락처 삭제됨"
+    },
     "no_results": "결과 없음",
     "pages": {
       "add_wallet": {
@@ -544,6 +560,10 @@
         "search_placeholder": "전환할 지갑 선택…",
         "section_title": "내 지갑들"
       },
+      "my_contacts": {
+        "search_placeholder": "보낼 연락처를 선택하세요…",
+        "section_title": "내 연락처"
+      },
       "token_detail": {
         "search_placeholder": "토큰 액션 검색…",
         "section_title": "액션"
@@ -556,6 +576,9 @@
         "search_placeholder": "지갑 액션 검색…",
         "section_title": "액션"
       }
+    },
+    "labels": {
+      "contact": "연락처"
     },
     "quick_promo": {
       "text": "%{modifierSymbol}K를 눌러 매직 메뉴를 엽니다",
@@ -1301,6 +1324,8 @@
   "nfts": {
     "empty_state_header": "NFTs",
     "empty_state_description": "당신의 NFT들이 여기에 표시됩니다!",
+    "report_nft_action_text": "신고하기",
+    "report_nft_confirm_description": "NFT 신고를 확인하시겠습니까?",
     "view_on_web": "웹에서 보기",
     "display_mode_gallery": "갤러리",
     "display_mode_collections": "컬렉션",
@@ -1351,7 +1376,9 @@
       "view_gallery": "갤러리 보기"
     },
     "toast": {
-      "spam_reported": "신고가 접수되었습니다!"
+      "spam_reported": "신고가 접수되었습니다!",
+      "hidden": "NFT 숨김",
+      "unhidden": "NFT 숨김 취소"
     }
   },
   "points": {
@@ -1447,7 +1474,11 @@
     "speed_up_transaction": "거래 속도 향상",
     "close_cta": "취소",
     "handle_copy_title": "Tx 해시 복사됨",
-    "revoke_approval": "승인 취소"
+    "revoke_approval": "승인 취소",
+    "speed_up_failed": {
+      "title": "가속 실패",
+      "description": "트랜잭션 가속 시도는 네트워크 혼잡, 가스 한도 증가, 또는 원래 트랜잭션이 먼저 확인되었을 때 실패할 수 있습니다"
+    }
   },
   "token_details": {
     "swap": "교환",
@@ -1616,6 +1647,7 @@
   },
   "alert": {
     "ok": "확인",
+    "cancel": "취소",
     "wallet_watching_mode": "현재 이 지갑은 '감시중' 모드입니다",
     "wallet_testing_mode": "테스트넷은 Swap에서 지원하지 않습니다. 계속하려면 테스트넷 모드를 비활성화하십시오.",
     "coming_soon": "곧 출시됩니다!",

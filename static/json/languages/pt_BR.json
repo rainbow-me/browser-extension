@@ -419,6 +419,11 @@
       "pending": "Licitando",
       "confirmed": "Lance",
       "failed": "Lance Falhou"
+    },
+    "speed_up": {
+      "pending": "Acelerando",
+      "confirmed": "Acelerado",
+      "failed": "Falha ao Acelerar"
     }
   },
   "command_k": {
@@ -427,6 +432,7 @@
       "open": "Abrir",
       "open_in_new_tab": "Abrir em Nova Aba",
       "switch_to_wallet": "Alternar para Carteira",
+      "send_to_contact": "Enviar para Contato",
       "view": "Visualizar"
     },
     "commands": {
@@ -434,6 +440,7 @@
         "send": "Enviar",
         "swap": "Trocar",
         "my_wallets": "Minhas Carteiras",
+        "my_contacts": "Meus Contatos",
         "my_tokens": "Meus Tokens",
         "my_tokens_watched": "Tokens",
         "my_nfts": "Meus NFTs",
@@ -473,8 +480,12 @@
         "add_as_watched_wallet": "Assistir esta Carteira",
         "view_on_ens": "Ver no ENS",
         "switch_to_wallet": "Trocar para esta Carteira",
+        "send_to_wallet": "Enviar para esta Carteira",
+        "add_contact": "Adicionar como Contato",
+        "remove_contact": "Remover contato",
         "copy_wallet_address": "Copiar Endereço",
         "view_wallet_on_etherscan": "Ver no Etherscan",
+        "send_contact": "Enviar para Contato",
         "export_addresses_as_csv": "Exportar endereços como CSV",
         "enable_flashbots": "Ativar Flashbots",
         "disable_flashbots": "Desativar Flashbots"
@@ -482,6 +493,7 @@
       "search_tags": {
         "swap": "ponte",
         "my_wallets": "alternar",
+        "my_contacts": "contato, contatos",
         "my_tokens_watched": "meus",
         "my_nfts_watched": "meus",
         "view_profile": "perfil, galeria, ens, nfts",
@@ -519,6 +531,10 @@
       "title_hidden": "Saldo Pequeno Oculto",
       "title_revealed": "Mostrando Saldos Pequenos"
     },
+    "contact_toast": {
+      "title_added": "Contato Adicionado",
+      "title_removed": "Contato Removido"
+    },
     "no_results": "Nenhum resultado",
     "pages": {
       "add_wallet": {
@@ -544,6 +560,10 @@
         "search_placeholder": "Selecione uma carteira para alternar…",
         "section_title": "Minhas Carteiras"
       },
+      "my_contacts": {
+        "search_placeholder": "Selecione um contato para enviar…",
+        "section_title": "Meus Contatos"
+      },
       "token_detail": {
         "search_placeholder": "Pesquisar ações de token…",
         "section_title": "Ações"
@@ -556,6 +576,9 @@
         "search_placeholder": "Pesquisar ações da carteira…",
         "section_title": "Ações"
       }
+    },
+    "labels": {
+      "contact": "Contato"
     },
     "quick_promo": {
       "text": "Pressione %{modifierSymbol}K para abrir o Menu Mágico",
@@ -1301,6 +1324,8 @@
   "nfts": {
     "empty_state_header": "NFTs",
     "empty_state_description": "Seus NFTs aparecerão aqui!",
+    "report_nft_action_text": "Denunciar",
+    "report_nft_confirm_description": "Confirmar relatório de NFT?",
     "view_on_web": "Ver na Web",
     "display_mode_gallery": "Galeria",
     "display_mode_collections": "Coleções",
@@ -1351,7 +1376,9 @@
       "view_gallery": "Ver Galeria"
     },
     "toast": {
-      "spam_reported": "Sua denúncia foi recebida!"
+      "spam_reported": "Sua denúncia foi recebida!",
+      "hidden": "NFT oculto",
+      "unhidden": "NFT visível novamente"
     }
   },
   "points": {
@@ -1447,7 +1474,11 @@
     "speed_up_transaction": "Acelerar transação",
     "close_cta": "Cancelar",
     "handle_copy_title": "Hash da Tx Copiado",
-    "revoke_approval": "Revogar Aprovação"
+    "revoke_approval": "Revogar Aprovação",
+    "speed_up_failed": {
+      "title": "Falha ao Acelerar",
+      "description": "Tentativas de acelerar uma transação podem falhar durante congestionamento da rede, aumento do limite de gás, ou quando a transação original é confirmada primeiro"
+    }
   },
   "token_details": {
     "swap": "Trocar",
@@ -1616,6 +1647,7 @@
   },
   "alert": {
     "ok": "Ok",
+    "cancel": "Cancelar",
     "wallet_watching_mode": "Esta carteira está atualmente no modo 'Acompanhando'",
     "wallet_testing_mode": "Testnets não são suportadas por Swap. Desative o Modo Testnet para continuar.",
     "coming_soon": "Em breve!",
