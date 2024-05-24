@@ -499,11 +499,16 @@ export function TokenDetails() {
   const { data: customAsset, isFetched: isCustomAssetFetched } =
     useCustomNetworkAsset({ uniqueId });
   const { data: searchedAssets, isFetched: isTokenSearchFetched } =
-    useTokenSearch({
-      ...VERIFIED_ASSETS_PAYLOAD,
-      chainId: queryChainId ?? ChainId.mainnet,
-      query: uniqueId ?? '',
-    });
+    useTokenSearch(
+      {
+        ...VERIFIED_ASSETS_PAYLOAD,
+        chainId: queryChainId ?? ChainId.mainnet,
+        query: uniqueId ?? '',
+      },
+      {
+        enabled: !!queryChainId,
+      },
+    );
 
   const { isWatchingWallet } = useWallets();
 
