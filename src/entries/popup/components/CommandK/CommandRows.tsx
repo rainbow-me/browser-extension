@@ -366,7 +366,9 @@ export const TokenRow = ({
       name={command.name}
       selected={selected}
       LeftComponent={TokenIcon}
-      RightComponent={TokenBalanceBadge}
+      RightComponent={
+        command.type === SearchItemType.Token ? TokenBalanceBadge : undefined
+      }
     />
   );
 };

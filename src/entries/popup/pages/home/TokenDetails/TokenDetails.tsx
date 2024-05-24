@@ -591,7 +591,7 @@ export function TokenDetails() {
       !userAsset &&
       isCustomAssetFetched &&
       !customAsset &&
-      isTokenSearchFetched &&
+      (isTokenSearchFetched || !queryChainId) &&
       !searchedAsset)
   ) {
     return <Navigate to={ROUTES.HOME} />;
