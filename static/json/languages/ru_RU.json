@@ -419,6 +419,11 @@
       "pending": "Ставка",
       "confirmed": "Ставка",
       "failed": "Ставка не удалась"
+    },
+    "speed_up": {
+      "pending": "Ускорение",
+      "confirmed": "Ускорено",
+      "failed": "Не удалось ускорить"
     }
   },
   "command_k": {
@@ -427,6 +432,7 @@
       "open": "Открыть",
       "open_in_new_tab": "Открыть в новой вкладке",
       "switch_to_wallet": "Переключиться на кошелек",
+      "send_to_contact": "Отправить контакту",
       "view": "Просмотр"
     },
     "commands": {
@@ -434,6 +440,7 @@
         "send": "Отправить",
         "swap": "Обменять",
         "my_wallets": "Мои кошельки",
+        "my_contacts": "Мои контакты",
         "my_tokens": "Мои токены",
         "my_tokens_watched": "Токены",
         "my_nfts": "Мои NFT",
@@ -473,8 +480,12 @@
         "add_as_watched_wallet": "Просмотр данного кошелька",
         "view_on_ens": "Просмотр в ENS",
         "switch_to_wallet": "Переключиться на этот кошелек",
+        "send_to_wallet": "Отправить на этот кошелек",
+        "add_contact": "Добавить как контакт",
+        "remove_contact": "Удалить контакт",
         "copy_wallet_address": "Скопировать адрес",
         "view_wallet_on_etherscan": "Просмотр в Etherscan",
+        "send_contact": "Отправить контакту",
         "export_addresses_as_csv": "Экспортировать адреса в формате CSV",
         "enable_flashbots": "Включить Flashbots",
         "disable_flashbots": "Отключить Flashbots"
@@ -482,6 +493,7 @@
       "search_tags": {
         "swap": "Мост",
         "my_wallets": "Переключение",
+        "my_contacts": "контакт, контакты",
         "my_tokens_watched": "мои",
         "my_nfts_watched": "мои",
         "view_profile": "профиль, галерея, ens, nft",
@@ -519,6 +531,10 @@
       "title_hidden": "Скрытые небольшие балансы",
       "title_revealed": "Показать небольшие балансы"
     },
+    "contact_toast": {
+      "title_added": "Контакт добавлен",
+      "title_removed": "Контакт удален"
+    },
     "no_results": "Нет результатов",
     "pages": {
       "add_wallet": {
@@ -544,6 +560,10 @@
         "search_placeholder": "Выберите кошелек для переключения…",
         "section_title": "Мои кошельки"
       },
+      "my_contacts": {
+        "search_placeholder": "Выберите контакт для отправки…",
+        "section_title": "Мои контакты"
+      },
       "token_detail": {
         "search_placeholder": "Поиск действий токена…",
         "section_title": "Действия"
@@ -556,6 +576,9 @@
         "search_placeholder": "Поиск действий кошелька…",
         "section_title": "Действия"
       }
+    },
+    "labels": {
+      "contact": "Свяжитесь"
     },
     "quick_promo": {
       "text": "Нажмите %{modifierSymbol}K, чтобы открыть волшебное меню",
@@ -1301,6 +1324,8 @@
   "nfts": {
     "empty_state_header": "NFT",
     "empty_state_description": "Ваши NFT появятся здесь!",
+    "report_nft_action_text": "Сообщить",
+    "report_nft_confirm_description": "Подтвердить отчет по NFT?",
     "view_on_web": "Посмотреть на Веб",
     "display_mode_gallery": "Галерея",
     "display_mode_collections": "Коллекции",
@@ -1351,7 +1376,9 @@
       "view_gallery": "Посмотреть галерею"
     },
     "toast": {
-      "spam_reported": "Ваше сообщение получено!"
+      "spam_reported": "Ваше сообщение получено!",
+      "hidden": "NFT скрыт",
+      "unhidden": "NFT виден"
     }
   },
   "points": {
@@ -1447,7 +1474,11 @@
     "speed_up_transaction": "Ускорить транзакцию",
     "close_cta": "Отменить",
     "handle_copy_title": "Хеш транзакции скопирован",
-    "revoke_approval": "Отозвать разрешение"
+    "revoke_approval": "Отозвать разрешение",
+    "speed_up_failed": {
+      "title": "Ускорение не удалось",
+      "description": "Попытки ускорить транзакцию могут не удаться из-за перегрузки сети, увеличения лимита газа или если исходная транзакция подтвердится первой"
+    }
   },
   "token_details": {
     "swap": "Обменять",
@@ -1616,6 +1647,7 @@
   },
   "alert": {
     "ok": "ОК",
+    "cancel": "Отмена",
     "wallet_watching_mode": "Этот кошелек в настоящее время находится в режиме 'Наблюдение'",
     "wallet_testing_mode": "Тестнеты не поддерживаются Swap. Отключите режим тестнета, чтобы продолжить.",
     "coming_soon": "Скоро!",

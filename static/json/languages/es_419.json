@@ -419,6 +419,11 @@
       "pending": "Haciendo una Oferta",
       "confirmed": "Oferta",
       "failed": "Oferta Fallida"
+    },
+    "speed_up": {
+      "pending": "Acelerando",
+      "confirmed": "Acelerado",
+      "failed": "Aceleración Fallida"
     }
   },
   "command_k": {
@@ -427,6 +432,7 @@
       "open": "Abrir",
       "open_in_new_tab": "Abrir en nueva pestaña",
       "switch_to_wallet": "Cambiar a monedero",
+      "send_to_contact": "Enviar a Contacto",
       "view": "Ver"
     },
     "commands": {
@@ -434,6 +440,7 @@
         "send": "Enviar",
         "swap": "Intercambiar",
         "my_wallets": "Mis monederos",
+        "my_contacts": "Mis Contactos",
         "my_tokens": "Mis tokens",
         "my_tokens_watched": "Tokens",
         "my_nfts": "Mis NFTs",
@@ -473,8 +480,12 @@
         "add_as_watched_wallet": "Observar esta Billetera",
         "view_on_ens": "Ver en ENS",
         "switch_to_wallet": "Cambiar a esta Billetera",
+        "send_to_wallet": "Enviar a esta Billetera",
+        "add_contact": "Agregar como Contacto",
+        "remove_contact": "Eliminar contacto",
         "copy_wallet_address": "Copiar Dirección",
         "view_wallet_on_etherscan": "Ver en Etherscan",
+        "send_contact": "Enviar a Contacto",
         "export_addresses_as_csv": "Exportar Direcciones como CSV",
         "enable_flashbots": "Habilitar Flashbots",
         "disable_flashbots": "Desactivar Flashbots"
@@ -482,6 +493,7 @@
       "search_tags": {
         "swap": "puente",
         "my_wallets": "cambiar",
+        "my_contacts": "contacto, contactos",
         "my_tokens_watched": "mis",
         "my_nfts_watched": "mis",
         "view_profile": "perfil, galería, ens, nfts",
@@ -519,6 +531,10 @@
       "title_hidden": "Se ocultan los saldos pequeños",
       "title_revealed": "Mostrando saldos pequeños"
     },
+    "contact_toast": {
+      "title_added": "Contacto Agregado",
+      "title_removed": "Contacto Eliminado"
+    },
     "no_results": "No hay resultados",
     "pages": {
       "add_wallet": {
@@ -544,6 +560,10 @@
         "search_placeholder": "Selecciona un monedero para cambiar a…",
         "section_title": "Mis billeteras"
       },
+      "my_contacts": {
+        "search_placeholder": "Selecciona un contacto para enviar a...",
+        "section_title": "Mis Contactos"
+      },
       "token_detail": {
         "search_placeholder": "Buscar acciones de token…",
         "section_title": "Acciones"
@@ -556,6 +576,9 @@
         "search_placeholder": "Buscar acciones de billetera…",
         "section_title": "Acciones"
       }
+    },
+    "labels": {
+      "contact": "Contacto"
     },
     "quick_promo": {
       "text": "Presiona %{modifierSymbol}K para abrir el Menú Mágico",
@@ -1301,6 +1324,8 @@
   "nfts": {
     "empty_state_header": "NFTs",
     "empty_state_description": "¡Tus tokens no fungibles aparecerán aquí!",
+    "report_nft_action_text": "Reportar",
+    "report_nft_confirm_description": "¿Confirmar reporte de NFT?",
     "view_on_web": "Ver en Web",
     "display_mode_gallery": "Galería",
     "display_mode_collections": "Colecciones",
@@ -1351,7 +1376,9 @@
       "view_gallery": "Ver Galería"
     },
     "toast": {
-      "spam_reported": "¡Tu reporte ha sido recibido!"
+      "spam_reported": "¡Tu reporte ha sido recibido!",
+      "hidden": "NFT oculto",
+      "unhidden": "NFT desocultado"
     }
   },
   "points": {
@@ -1447,7 +1474,11 @@
     "speed_up_transaction": "Acelerar transacción",
     "close_cta": "Cancelar",
     "handle_copy_title": "Hash de Tx copiado",
-    "revoke_approval": "Revocar Aprobación"
+    "revoke_approval": "Revocar Aprobación",
+    "speed_up_failed": {
+      "title": "Aceleración fallida",
+      "description": "Los intentos de acelerar una transacción pueden fallar durante la congestión de la red, aumentos del límite de gas, o cuando se confirma primero la transacción original"
+    }
   },
   "token_details": {
     "swap": "Intercambiar",
@@ -1616,6 +1647,7 @@
   },
   "alert": {
     "ok": "Aceptar",
+    "cancel": "Cancelar",
     "wallet_watching_mode": "Esta billetera está actualmente en modo 'Observación'",
     "wallet_testing_mode": "Las redes de prueba no son compatibles con el intercambio. Desactive el Modo de prueba para continuar.",
     "coming_soon": "¡Próximamente!",

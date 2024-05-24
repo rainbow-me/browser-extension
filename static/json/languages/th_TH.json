@@ -419,6 +419,11 @@
       "pending": "การประมูล",
       "confirmed": "ประมูล",
       "failed": "การประมูลไม่สำเร็จ"
+    },
+    "speed_up": {
+      "pending": "กำลังเร่ง",
+      "confirmed": "เร่งแล้ว",
+      "failed": "การเร่งล้มเหลว"
     }
   },
   "command_k": {
@@ -427,6 +432,7 @@
       "open": "เปิด",
       "open_in_new_tab": "เปิดในแท็บใหม่",
       "switch_to_wallet": "สลับไปยัง Wallet",
+      "send_to_contact": "ส่งถึงผู้ติดต่อ",
       "view": "ดู"
     },
     "commands": {
@@ -434,6 +440,7 @@
         "send": "ส่ง",
         "swap": "แลกเปลี่ยน",
         "my_wallets": "Wallet ของฉัน",
+        "my_contacts": "รายชื่อผู้ติดต่อของฉัน",
         "my_tokens": "โทเคนของฉัน",
         "my_tokens_watched": "โทเคน",
         "my_nfts": "NFT ของฉัน",
@@ -473,8 +480,12 @@
         "add_as_watched_wallet": "ตรวจสอบกระเป๋าสตางค์นี้",
         "view_on_ens": "ดูบน ENS",
         "switch_to_wallet": "สลับไปยังกระเป๋าสตางค์นี้",
+        "send_to_wallet": "ส่งถึงกระเป๋าสตางค์นี้",
+        "add_contact": "เพิ่มเป็นผู้ติดต่อ",
+        "remove_contact": "ลบผู้ติดต่อ",
         "copy_wallet_address": "คัดลอกที่อยู่",
         "view_wallet_on_etherscan": "ดูบน Etherscan",
+        "send_contact": "ส่งถึงผู้ติดต่อ",
         "export_addresses_as_csv": "ส่งออกที่อยู่เป็น CSV",
         "enable_flashbots": "เปิดใช้งาน Flashbots",
         "disable_flashbots": "ปิดการใช้งาน Flashbots"
@@ -482,6 +493,7 @@
       "search_tags": {
         "swap": "สะพาน",
         "my_wallets": "สลับ",
+        "my_contacts": "ติดต่อ, รายชื่อติดต่อ",
         "my_tokens_watched": "ของฉัน",
         "my_nfts_watched": "ของฉัน",
         "view_profile": "โปรไฟล์, แกลเลอรี, ens, nfts",
@@ -519,6 +531,10 @@
       "title_hidden": "ซ่อนยอดเงินเล็กน้อย",
       "title_revealed": "แสดงยอดเงินเล็กน้อย"
     },
+    "contact_toast": {
+      "title_added": "เพิ่มผู้ติดต่อแล้ว",
+      "title_removed": "ลบผู้ติดต่อแล้ว"
+    },
     "no_results": "ไม่มีผลลัพธ์",
     "pages": {
       "add_wallet": {
@@ -544,6 +560,10 @@
         "search_placeholder": "เลือกกระเป๋าเงินเพื่อสลับไปยัง…",
         "section_title": "Wallet ของฉัน"
       },
+      "my_contacts": {
+        "search_placeholder": "เลือกผู้ติดต่อที่จะส่งถึง...",
+        "section_title": "รายชื่อผู้ติดต่อของฉัน"
+      },
       "token_detail": {
         "search_placeholder": "ค้นหาการดำเนินการของโทเค็น…",
         "section_title": "การดำเนินการ"
@@ -556,6 +576,9 @@
         "search_placeholder": "ค้นหาการดำเนินการของกระเป๋าเงิน…",
         "section_title": "การดำเนินการ"
       }
+    },
+    "labels": {
+      "contact": "ติดต่อ"
     },
     "quick_promo": {
       "text": "กด %{modifierSymbol}K เพื่อเปิดเมนูวิเศษ",
@@ -1301,6 +1324,8 @@
   "nfts": {
     "empty_state_header": "NFTs",
     "empty_state_description": "NFTs ของคุณจะปรากฎที่นี่!",
+    "report_nft_action_text": "รายงาน",
+    "report_nft_confirm_description": "ยืนยันรายงาน NFT?",
     "view_on_web": "ดูในเว็บ",
     "display_mode_gallery": "แกลเลอรี",
     "display_mode_collections": "คอลเลกชัน",
@@ -1351,7 +1376,9 @@
       "view_gallery": "ดูแกลเลอรี"
     },
     "toast": {
-      "spam_reported": "รายงานของคุณได้รับแล้ว"
+      "spam_reported": "รายงานของคุณได้รับแล้ว",
+      "hidden": "NFT ถูกซ่อนแล้ว",
+      "unhidden": "NFT ไม่ถูกซ่อนแล้ว"
     }
   },
   "points": {
@@ -1447,7 +1474,11 @@
     "speed_up_transaction": "เร่งธุรกรรม",
     "close_cta": "ยกเลิก",
     "handle_copy_title": "คัดลอก Tx Hash",
-    "revoke_approval": "ยกเลิกการอนุมัติ"
+    "revoke_approval": "ยกเลิกการอนุมัติ",
+    "speed_up_failed": {
+      "title": "การเร่งล้มเหลว",
+      "description": "ความพยายามในการเร่งธุรกรรมอาจล้มเหลวในช่วงที่เครือข่ายคับคั่ง เพิ่มขีดจำกัดก๊าซ หรือเมื่อธุรกรรมเดิมได้รับการยืนยันก่อน"
+    }
   },
   "token_details": {
     "swap": "แลกเปลี่ยน",
@@ -1616,6 +1647,7 @@
   },
   "alert": {
     "ok": "ตกลง",
+    "cancel": "ยกเลิก",
     "wallet_watching_mode": "กระเป๋าสตางค์นี้อยู่ในโหมด 'ดู' ณ ตอนนี้",
     "wallet_testing_mode": "Testnet ไม่ได้รับการสนับสนุนโดย Swap ปิดโหมด Testnet เพื่อดำเนินการต่อ",
     "coming_soon": "เร็ว ๆ นี้!",
