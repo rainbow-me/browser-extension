@@ -50,6 +50,9 @@ query aboutToken($chainId: Int!, $address: String!, $currency: String) {
     networks
     volume1d
     description
+    price {
+      value
+    }
     links {
       homepage {
         url

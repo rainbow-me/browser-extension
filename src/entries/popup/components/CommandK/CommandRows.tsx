@@ -38,6 +38,7 @@ import {
   SearchItemType,
   ShortcutSearchItem,
   TokenSearchItem,
+  UnownedTokenSearchItem,
   WalletSearchItem,
 } from './SearchItems';
 
@@ -284,7 +285,7 @@ export const ShortcutRow = ({
 };
 
 type TokenRowProps = {
-  command: TokenSearchItem;
+  command: TokenSearchItem | UnownedTokenSearchItem;
   handleExecuteCommand: (command: SearchItem, e?: KeyboardEvent) => void;
   selected: boolean;
 };
@@ -311,7 +312,11 @@ export const TokenRow = ({
   );
 
   const TokenBalanceBadge = React.useMemo(() => {
-    const hasValue = command.price && command.price?.value > 0;
+    const hasValue =
+      command.type === SearchItemType.Token &&
+      command.price &&
+      command.price?.value > 0;
+
     return (
       <Box
         alignItems="center"
@@ -346,18 +351,13 @@ export const TokenRow = ({
             weight="semibold"
           >
             {hasValue
-              ? command.nativeTokenBalance
+              ? (command as TokenSearchItem).nativeTokenBalance
               : i18n.t('command_k.command_rows.no_value')}
           </Text>
         )}
       </Box>
     );
-  }, [
-    command.nativeTokenBalance,
-    command.price,
-    currentCurrency,
-    hideAssetBalances,
-  ]);
+  }, [command, currentCurrency, hideAssetBalances]);
 
   return (
     <CommandRow
@@ -366,7 +366,9 @@ export const TokenRow = ({
       name={command.name}
       selected={selected}
       LeftComponent={TokenIcon}
-      RightComponent={TokenBalanceBadge}
+      RightComponent={
+        command.type === SearchItemType.Token ? TokenBalanceBadge : undefined
+      }
     />
   );
 };

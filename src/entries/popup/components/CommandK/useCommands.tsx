@@ -18,6 +18,7 @@ import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { KeychainType } from '~/core/types/keychainTypes';
+import { SearchAsset } from '~/core/types/search';
 import { truncateAddress } from '~/core/utils/address';
 import { getBlockExplorerHostForChain } from '~/core/utils/chains';
 import {
@@ -47,6 +48,7 @@ import {
   SearchItemType,
   ShortcutSearchItem,
   TokenSearchItem,
+  UnownedTokenSearchItem,
   WalletSearchItem,
 } from './SearchItems';
 import { CommandKPage, PAGES } from './pageConfig';
@@ -558,7 +560,7 @@ const compileCommandList = (
   wallets: WalletSearchItem[],
   contacts: ContactSearchItem[],
   walletSearchResult: ENSOrAddressSearchItem[],
-  tokens: TokenSearchItem[],
+  tokens: (TokenSearchItem | UnownedTokenSearchItem)[],
   nfts: NFTSearchItem[],
 ): SearchItem[] => {
   const shortcuts = Object.keys(staticInfo)
@@ -624,12 +626,15 @@ export const useCommands = (
   const navigateToSwaps = useNavigateToSwaps();
   const { isWatchingWallet } = useWallets();
   const save = useSavedEnsNames.use.save();
-  const { searchableENSOrAddress } = useSearchableENSorAddress(
+  const { data: searchableTokens, isFetching: isFetchingTokens } =
+    useSearchableTokens(searchQuery);
+  const { searchableENSOrAddress } = useSearchableENSorAddress({
     currentPage,
     searchQuery,
+    assets: searchableTokens,
+    isFetchingAssets: isFetchingTokens,
     setSelectedCommandNeedsUpdate,
-  );
-  const { searchableTokens } = useSearchableTokens();
+  });
   const { searchableNFTs } = useSearchableNFTs();
   const { searchableWallets } = useSearchableWallets(currentPage);
   const setSelectedToken = useSelectedTokenStore.use.setSelectedToken();
@@ -737,13 +742,16 @@ export const useCommands = (
     [navigate, setSelectedToken],
   );
 
-  const viewTokenOnExplorer = React.useCallback((asset: ParsedUserAsset) => {
-    if (isETHAddress(asset.address)) {
-      return;
-    }
-    const explorer = getBlockExplorerHostForChain(asset.chainId);
-    explorer && goToNewTab({ url: getExplorerUrl(explorer, asset.address) });
-  }, []);
+  const viewTokenOnExplorer = React.useCallback(
+    (asset: ParsedUserAsset | SearchAsset) => {
+      if (isETHAddress(asset.address)) {
+        return;
+      }
+      const explorer = getBlockExplorerHostForChain(asset.chainId);
+      explorer && goToNewTab({ url: getExplorerUrl(explorer, asset.address) });
+    },
+    [],
+  );
 
   const handleWatchWallet = React.useCallback(
     async (command: ENSOrAddressSearchItem) => {
