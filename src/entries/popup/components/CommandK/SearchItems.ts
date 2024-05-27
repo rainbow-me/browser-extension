@@ -74,6 +74,7 @@ export interface TokenSearchItem extends BaseSearchItem {
 }
 
 export interface UnownedTokenSearchItem extends BaseSearchItem {
+  asset: SearchAsset;
   address: string;
   tokenSymbol: string;
   type: SearchItemType.UnownedToken;

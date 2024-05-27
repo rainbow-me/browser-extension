@@ -220,7 +220,9 @@ export const ShortcutRow = ({
   const isSwitchToWalletRow =
     command.address && command.id === 'switchToWallet';
   const isContactWalletRow = command.address && command.id === 'contactWallet';
-  const isViewTokenRow = command.asset && command.id === 'viewToken';
+  const isViewTokenRow =
+    command.asset &&
+    (command.id === 'viewToken' || command.id === 'viewUnownedToken');
 
   const LeftComponent = React.useMemo(() => {
     if (isAddAsWatchedWalletRow || isSwitchToWalletRow || isContactWalletRow) {
