@@ -206,32 +206,3 @@ export const getChainMetadataRPCUrl = async ({
   }
   return null;
 };
-
-export const meteorologySupportsChain = (chainId: ChainId) =>
-  [
-    ChainId.bsc,
-    ChainId.sepolia,
-    ChainId.holesky,
-    ChainId.mainnet,
-    ChainId.polygon,
-    ChainId.base,
-    ChainId.arbitrum,
-    ChainId.optimism,
-    ChainId.zora,
-    ChainId.avalanche,
-  ].includes(chainId);
-
-export const meteorologySupportsType2ForChain = (chainId: ChainId) =>
-  [
-    ChainId.mainnet,
-    ChainId.sepolia,
-    ChainId.holesky,
-    ChainId.base,
-    ChainId.arbitrum,
-    ChainId.optimism,
-    ChainId.zora,
-    ChainId.avalanche,
-  ].includes(chainId);
-
-export const chainNeedsL1SecurityFee = (chainId: ChainId) =>
-  [ChainId.base, ChainId.optimism, ChainId.zora].includes(chainId);

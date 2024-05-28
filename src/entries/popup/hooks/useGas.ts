@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'viem';
 
 import { gasUnits } from '~/core/references';
+import { needsL1SecurityFeeChains } from '~/core/references/chains';
 import { useEstimateGasLimit, useGasData } from '~/core/resources/gas';
 import { useEstimateApprovalGasLimit } from '~/core/resources/gas/estimateApprovalGasLimit';
 import { useEstimateSwapGasLimit } from '~/core/resources/gas/estimateSwapGasLimit';
@@ -22,7 +23,6 @@ import {
   GasFeeParamsBySpeed,
   GasSpeed,
 } from '~/core/types/gas';
-import { chainNeedsL1SecurityFee } from '~/core/utils/chains';
 import { gweiToWei, weiToGwei } from '~/core/utils/ethereum';
 import {
   FLASHBOTS_MIN_TIP,
@@ -73,7 +73,7 @@ const useGas = ({
       transactionRequest: useDebounce(transactionRequest || {}, 500),
       chainId,
     },
-    { enabled: chainNeedsL1SecurityFee(chainId) },
+    { enabled: needsL1SecurityFeeChains.includes(chainId) },
   );
 
   const {

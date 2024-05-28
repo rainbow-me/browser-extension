@@ -1,5 +1,5 @@
+import { meteorologySupportedChains } from '~/core/references/chains';
 import { ChainId } from '~/core/types/chains';
-import { meteorologySupportsChain } from '~/core/utils/chains';
 
 import { useMeteorology } from './meteorology';
 import { useProviderGas } from './providerGas';
@@ -23,7 +23,8 @@ const getRefetchTime = (chainId: ChainId) => {
 };
 
 export const useGasData = ({ chainId }: { chainId: ChainId }) => {
-  const meteorologySupportsChainId = meteorologySupportsChain(chainId);
+  const meteorologySupportsChainId =
+    meteorologySupportedChains.includes(chainId);
   const { data: meteorologyData, isLoading: meteorologyDataIsLoading } =
     useMeteorology(
       { chainId },
