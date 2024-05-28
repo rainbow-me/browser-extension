@@ -12,7 +12,7 @@ import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
-import { getChain, isTestnetChainId } from '~/core/utils/chains';
+import { getChain } from '~/core/utils/chains';
 import { copy, copyAddress } from '~/core/utils/copy';
 import { TestnetFaucet } from '~/core/utils/faucets';
 import { formatDate } from '~/core/utils/formatDate';
@@ -380,7 +380,7 @@ function InsuficientGasFunds({
   }) => void;
 }) {
   const { testnetMode } = useTestnetModeStore();
-  const isTestnet = testnetMode || isTestnetChainId({ chainId });
+  const isTestnet = testnetMode || getChain({ chainId }).testnet;
 
   const { nativeAsset } = useNativeAsset({ chainId, address });
   const chainName = getChain({ chainId }).name;

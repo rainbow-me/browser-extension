@@ -8,7 +8,7 @@ import { SUPPORTED_CHAIN_IDS } from '~/core/references/chains';
 import { AddressOrEth, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { SearchAsset } from '~/core/types/search';
-import { isTestnetChainId } from '~/core/utils/chains';
+import { getChain } from '~/core/utils/chains';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { formatDate } from '~/core/utils/formatDate';
 import { formatCurrency } from '~/core/utils/formatNumber';
@@ -203,7 +203,7 @@ export function PriceChart({
   tokenInfo: ParsedTokenInfo;
 }) {
   const [selectedTime, setSelectedTime] = useState<ChartTime>('day');
-  const shouldHaveData = !isTestnetChainId({ chainId: token.chainId });
+  const shouldHaveData = !getChain({ chainId: token.chainId }).testnet;
 
   const { data, isLoading } = usePriceChart({
     mainnetAddress: token.mainnetAddress,

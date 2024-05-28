@@ -4,7 +4,7 @@ import { Chain, mainnet } from 'viem/chains';
 import { useConfig } from 'wagmi';
 
 import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
-import { ChainId, ChainNameDisplay } from '~/core/types/chains';
+import { ChainId } from '~/core/types/chains';
 
 import { proxyRpcEndpoint } from '../providers';
 import {
@@ -104,11 +104,6 @@ export const getBackendSupportedChains = ({
   );
 };
 
-export const getChainName = ({ chainId }: { chainId: number }) => {
-  const chain = getChain({ chainId });
-  return ChainNameDisplay[chainId] || chain.name;
-};
-
 export const isCustomChain = (chainId: number) =>
   !RAINBOW_CHAINS_SUPPORTED.map((chain) => chain.id).includes(chainId) &&
   !!findRainbowChainForChainId(chainId);
@@ -131,11 +126,6 @@ export function getChain({ chainId }: { chainId?: ChainId }) {
   const { chains } = wagmiConfig;
   const chain = chains.find((chain) => chain.id === chainId);
   return chain || { ...mainnet, testnet: false };
-}
-
-export function isTestnetChainId({ chainId }: { chainId?: ChainId }) {
-  const chain = getChain({ chainId });
-  return !!chain.testnet;
 }
 
 export const chainIdToUse = (
