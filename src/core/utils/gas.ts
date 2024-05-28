@@ -543,6 +543,8 @@ export const meteorologySupportsChain = (chainId: ChainId) =>
     ChainId.optimism,
     ChainId.zora,
     ChainId.avalanche,
+    ChainId.blast,
+    ChainId.degen,
   ].includes(chainId);
 
 export const chainNeedsL1SecurityFee = (chainId: ChainId) =>
