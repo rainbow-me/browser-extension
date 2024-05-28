@@ -112,69 +112,6 @@ export const getSupportedTestnetChains = () => {
   return chains.filter((chain) => !!chain.testnet);
 };
 
-export const getSimpleHashSupportedChainNames = () => {
-  return [
-    'ethereum',
-    ChainName.polygon,
-    ChainName.arbitrum,
-    ChainName.arbitrumNova,
-    ChainName.avalanche,
-    ChainName.base,
-    ChainName.blast,
-    ChainName.bsc,
-    ChainName.celo,
-    ChainName.gnosis,
-    ChainName.linea,
-    ChainName.manta,
-    ChainName.optimism,
-    ChainName.polygonZkEvm,
-    ChainName.rari,
-    ChainName.scroll,
-    ChainName.zora,
-  ] as (ChainName | 'ethereum' | 'ethereum-sepolia')[];
-};
-
-export const getSimpleHashSupportedTestnetChainNames = () => {
-  return [
-    'ethereum-sepolia',
-    ChainName.arbitrumSepolia,
-    ChainName.baseSepolia,
-    ChainName.blastSepolia,
-    ChainName.optimismSepolia,
-    ChainName.zoraSepolia,
-    ChainName.polygonAmoy,
-  ] as (ChainName | 'ethereum-sepolia' | 'ethereum')[];
-};
-
-export const meteorologySupportsChain = (chainId: ChainId) =>
-  [
-    ChainId.bsc,
-    ChainId.sepolia,
-    ChainId.holesky,
-    ChainId.mainnet,
-    ChainId.polygon,
-    ChainId.base,
-    ChainId.arbitrum,
-    ChainId.optimism,
-    ChainId.zora,
-    ChainId.avalanche,
-  ].includes(chainId);
-
-export const meteorologySupportsType2ForChain = (chainId: ChainId) =>
-  [
-    ChainId.mainnet,
-    ChainId.sepolia,
-    ChainId.holesky,
-    ChainId.base,
-    ChainId.arbitrum,
-    ChainId.optimism,
-    ChainId.zora,
-    ChainId.avalanche,
-  ].includes(chainId);
-
-export const chainNeedsL1SecurityFee = (chainId: ChainId) =>
-  [ChainId.base, ChainId.optimism, ChainId.zora].includes(chainId);
-
 export const useBackendSupportedChains = ({
   testnetMode,
 }: {
@@ -205,33 +142,6 @@ export const getChainName = ({ chainId }: { chainId: number }) => {
 export const isCustomChain = (chainId: number) =>
   !RAINBOW_CHAINS_SUPPORTED.map((chain) => chain.id).includes(chainId) &&
   !!findRainbowChainForChainId(chainId);
-
-/**
- * @desc Checks if the given chain is a Layer 2.
- * @param chain The chain name to check.
- * @return Whether or not the chain is an L2 network.
- */
-export const isL2Chain = (chain: ChainName | ChainId): boolean => {
-  switch (chain) {
-    case ChainName.arbitrum:
-    case ChainName.base:
-    case ChainName.bsc:
-    case ChainName.optimism:
-    case ChainName.polygon:
-    case ChainName.zora:
-    case ChainName.avalanche:
-    case ChainId.arbitrum:
-    case ChainId.base:
-    case ChainId.bsc:
-    case ChainId.optimism:
-    case ChainId.polygon:
-    case ChainId.zora:
-    case ChainId.avalanche:
-      return true;
-    default:
-      return false;
-  }
-};
 
 export function isNativeAsset(address: AddressOrEth, chainId: ChainId) {
   if (isCustomChain(chainId)) {
@@ -296,3 +206,32 @@ export const getChainMetadataRPCUrl = async ({
   }
   return null;
 };
+
+export const meteorologySupportsChain = (chainId: ChainId) =>
+  [
+    ChainId.bsc,
+    ChainId.sepolia,
+    ChainId.holesky,
+    ChainId.mainnet,
+    ChainId.polygon,
+    ChainId.base,
+    ChainId.arbitrum,
+    ChainId.optimism,
+    ChainId.zora,
+    ChainId.avalanche,
+  ].includes(chainId);
+
+export const meteorologySupportsType2ForChain = (chainId: ChainId) =>
+  [
+    ChainId.mainnet,
+    ChainId.sepolia,
+    ChainId.holesky,
+    ChainId.base,
+    ChainId.arbitrum,
+    ChainId.optimism,
+    ChainId.zora,
+    ChainId.avalanche,
+  ].includes(chainId);
+
+export const chainNeedsL1SecurityFee = (chainId: ChainId) =>
+  [ChainId.base, ChainId.optimism, ChainId.zora].includes(chainId);

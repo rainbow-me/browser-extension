@@ -17,7 +17,6 @@ import {
   chainIdFromChainName,
   getBlockExplorerHostForChain,
   isCustomChain,
-  isL2Chain,
 } from '~/core/utils/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { getExplorerUrl, goToNewTab } from '~/core/utils/tabs';
@@ -152,7 +151,7 @@ const EditContactDropdown = ({
                       <Text size="14pt" weight="semibold">
                         {i18n.t(
                           `contacts.${
-                            chainId && isL2Chain(chainId)
+                            chainId && explorer !== 'etherscan'
                               ? 'view_on_explorer'
                               : 'view_on_etherscan'
                           }`,
@@ -294,9 +293,7 @@ export const ReviewSheet = ({
     asset?.native?.balance?.amount === '0';
 
   const notSendingOnEthereum = useMemo(
-    () =>
-      isL2Chain(chain?.id || ChainId.mainnet) ||
-      isCustomChain(chain?.id || ChainId.mainnet),
+    () => chain?.id !== ChainId.mainnet,
     [chain?.id],
   );
 

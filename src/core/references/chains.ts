@@ -50,7 +50,7 @@ import {
   zoraSepolia,
 } from 'viem/chains';
 
-import { ChainId, ChainNameDisplay } from '../types/chains';
+import { ChainId, ChainName, ChainNameDisplay } from '../types/chains';
 
 export const SUPPORTED_CHAINS: Chain[] = [
   mainnet,
@@ -123,3 +123,33 @@ export const customChainIdsToAssetNames: Record<ChainId, string> = {
   100: 'xdai',
   [zkSync.id]: 'zksync',
 };
+
+export const simpleHashSupportedChainNames = [
+  'ethereum',
+  ChainName.polygon,
+  ChainName.arbitrum,
+  ChainName.arbitrumNova,
+  ChainName.avalanche,
+  ChainName.base,
+  ChainName.blast,
+  ChainName.bsc,
+  ChainName.celo,
+  ChainName.gnosis,
+  ChainName.linea,
+  ChainName.manta,
+  ChainName.optimism,
+  ChainName.polygonZkEvm,
+  ChainName.rari,
+  ChainName.scroll,
+  ChainName.zora,
+] as (ChainName | 'ethereum' | 'ethereum-sepolia')[];
+
+export const simpleHashSupportedTestnetChainNames = [
+  'ethereum-sepolia',
+  ChainName.arbitrumSepolia,
+  ChainName.baseSepolia,
+  ChainName.blastSepolia,
+  ChainName.optimismSepolia,
+  ChainName.zoraSepolia,
+  ChainName.polygonAmoy,
+] as (ChainName | 'ethereum-sepolia' | 'ethereum')[];
