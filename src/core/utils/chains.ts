@@ -26,49 +26,6 @@ import { getDappHost, isValidUrl } from './connectedApps';
 import { findRainbowChainForChainId } from './rainbowChains';
 import { isLowerCaseMatch } from './strings';
 
-export const customChainIdsToAssetNames: Record<ChainId, string> = {
-  42170: 'arbitrumnova',
-  1313161554: 'aurora',
-  43114: 'avalanchex',
-  81457: 'blast',
-  168587773: 'blastsepolia',
-  288: 'boba',
-  42220: 'celo',
-  61: 'classic',
-  25: 'cronos',
-  666666666: 'degen',
-  2000: 'dogechain',
-  250: 'fantom',
-  314: 'filecoin',
-  1666600000: 'harmony',
-  13371: 'immutablezkevm',
-  2222: 'kavaevm',
-  8217: 'klaytn',
-  59144: 'linea',
-  957: 'lyra',
-  169: 'manta',
-  5000: 'mantle',
-  1088: 'metis',
-  34443: 'mode',
-  1284: 'moonbeam',
-  7700: 'nativecanto',
-  204: 'opbnb',
-  11297108109: 'palm',
-  424: 'pgn',
-  1101: 'polygonzkevm',
-  369: 'pulsechain',
-  1380012617: 'rari',
-  1918988905: 'raritestnet',
-  690: 'redstone',
-  17069: 'redstonegarnet',
-  17001: 'redstoneholesky',
-  30: 'rootstock',
-  31: 'rootstocktestnet',
-  534352: 'scroll',
-  100: 'xdai',
-  324: 'zksync',
-};
-
 export const getSupportedChainsWithHardhat = () => {
   const { chains } = wagmiConfig;
   return chains.filter(

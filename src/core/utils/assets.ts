@@ -19,16 +19,13 @@ import { ChainId, ChainName } from '~/core/types/chains';
 
 import { requestMetadata } from '../graphql';
 import { i18n } from '../languages';
+import { customChainIdsToAssetNames } from '../references/chains';
 import { AddysPositionAsset } from '../resources/positions';
 import { SearchAsset } from '../types/search';
 import { wagmiConfig } from '../wagmi';
 import { getProvider } from '../wagmi/clientToProvider';
 
-import {
-  chainNameFromChainId,
-  customChainIdsToAssetNames,
-  isNativeAsset,
-} from './chains';
+import { chainNameFromChainId, isNativeAsset } from './chains';
 import {
   convertAmountAndPriceToNativeDisplay,
   convertAmountToBalanceDisplay,
