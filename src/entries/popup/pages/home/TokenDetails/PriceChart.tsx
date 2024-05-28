@@ -4,10 +4,11 @@ import { memo, useReducer, useState } from 'react';
 import { metadataClient } from '~/core/graphql';
 import { i18n } from '~/core/languages';
 import { createQueryKey } from '~/core/react-query';
+import { SUPPORTED_CHAIN_IDS } from '~/core/references/chains';
 import { AddressOrEth, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { SearchAsset } from '~/core/types/search';
-import { isDefaultSupportedChain, isTestnetChainId } from '~/core/utils/chains';
+import { isTestnetChainId } from '~/core/utils/chains';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { formatDate } from '~/core/utils/formatDate';
 import { formatCurrency } from '~/core/utils/formatNumber';
@@ -150,7 +151,7 @@ const usePriceChart = ({
     queryKey: createQueryKey('price chart', { address, chainId, time }),
     placeholderData: (previousData) => previousData,
     staleTime: 1 * 60 * 1000, // 1min
-    enabled: isDefaultSupportedChain({ chainId }),
+    enabled: SUPPORTED_CHAIN_IDS.includes(chainId),
   });
 };
 

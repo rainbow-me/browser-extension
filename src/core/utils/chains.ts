@@ -9,7 +9,6 @@ import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { proxyRpcEndpoint } from '../providers';
 import {
   SUPPORTED_CHAINS,
-  SUPPORTED_CHAIN_IDS,
   SUPPORTED_MAINNET_CHAINS,
 } from '../references/chains';
 import { RAINBOW_CHAINS_SUPPORTED } from '../state/rainbowChains';
@@ -19,6 +18,46 @@ import { wagmiConfig } from '../wagmi';
 import { getDappHost, isValidUrl } from './connectedApps';
 import { findRainbowChainForChainId } from './rainbowChains';
 import { isLowerCaseMatch } from './strings';
+
+const getMainChainsHelper = (chains: readonly [Chain, ...Chain[]]) => {
+  // All the mainnets we support
+  const mainSupportedChains = SUPPORTED_MAINNET_CHAINS.filter(
+    (chain) => !chain.testnet,
+  );
+  // The chain ID of all the mainnets we support
+  const supportedChainIds = new Set(
+    mainSupportedChains.map((chain) => chain.id),
+  );
+
+  // All the chains that the user added
+  const customMainChains = chains?.filter(
+    (chain) =>
+      !supportedChainIds.has(chain.id) &&
+      !(chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism),
+  );
+
+  const customChainsIncludingTestnets = customMainChains.filter(
+    (chain) =>
+      !chain.testnet ||
+      (chain.testnet &&
+        !supportedChainIds.has(chain.id) &&
+        !SUPPORTED_CHAINS.some(
+          (supportedChain) => supportedChain.id === chain.id,
+        )),
+  );
+
+  return mainSupportedChains.concat(customChainsIncludingTestnets);
+};
+
+export const useMainChains = () => {
+  const { chains } = useConfig();
+  return getMainChainsHelper(chains);
+};
+
+export const getMainChains = () => {
+  const { chains } = wagmiConfig;
+  return getMainChainsHelper(chains);
+};
 
 export const getSupportedChainsWithHardhat = () => {
   const { chains } = wagmiConfig;
@@ -30,72 +69,9 @@ export const getSupportedChainsWithHardhat = () => {
   );
 };
 
-export const isDefaultSupportedChain = ({ chainId }: { chainId: ChainId }) =>
-  SUPPORTED_CHAIN_IDS.map((id) => id).includes(chainId);
-
 export const getSupportedChains = () => {
   const { chains } = wagmiConfig;
   return chains.filter((chain) => !chain.testnet);
-};
-
-export const useMainChains = () => {
-  const { chains } = useConfig();
-  // All the mainnets we support
-  const mainSupportedChains = SUPPORTED_MAINNET_CHAINS.filter(
-    (chain) => !chain.testnet,
-  );
-
-  // The chain ID of all the mainnets we support
-  const supportedChainIds = mainSupportedChains.map((chain) => chain.id);
-
-  // All the chains that the user added
-  const customMainChains = chains?.filter(
-    (chain) =>
-      !supportedChainIds.includes(chain.id) &&
-      !(chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism),
-  );
-
-  const customChainsIncludingTestnets = customMainChains.filter(
-    (chain: Chain) =>
-      !chain.testnet ||
-      (chain.testnet &&
-        !mainSupportedChains
-          .map((chain: Chain) => chain.id)
-          .includes(chain.id) &&
-        !SUPPORTED_CHAINS.map((chain) => chain.id).includes(chain.id)),
-  );
-
-  return mainSupportedChains.concat(customChainsIncludingTestnets);
-};
-
-export const getMainChains = () => {
-  const { chains } = wagmiConfig;
-  // All the mainnets we support
-  const mainSupportedChains = SUPPORTED_MAINNET_CHAINS.filter(
-    (chain) => !chain.testnet,
-  );
-
-  // The chain ID of all the mainnets we support
-  const supportedChainIds = mainSupportedChains.map((chain) => chain.id);
-
-  // All the chains that the user added
-  const customMainChains = chains?.filter(
-    (chain) =>
-      !supportedChainIds.includes(chain.id) &&
-      !(chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism),
-  );
-
-  const customChainsIncludingTestnets = customMainChains.filter(
-    (chain: Chain) =>
-      !chain.testnet ||
-      (chain.testnet &&
-        !mainSupportedChains
-          .map((chain: Chain) => chain.id)
-          .includes(chain.id) &&
-        !SUPPORTED_CHAINS.map((chain) => chain.id).includes(chain.id)),
-  );
-
-  return mainSupportedChains.concat(customChainsIncludingTestnets);
 };
 
 export const getSupportedChainIds = () =>

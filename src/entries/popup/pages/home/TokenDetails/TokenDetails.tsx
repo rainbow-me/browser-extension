@@ -25,7 +25,7 @@ import {
 } from '~/core/types/search';
 import { truncateAddress } from '~/core/utils/address';
 import {
-  getChainName,
+  getChain,
   isCustomChain,
   isNativeAsset,
   isTestnetChainId,
@@ -228,7 +228,7 @@ function NetworkBanner({
   chainId: ChainId;
 }) {
   const [isExplainerOpen, toggleExplainer] = useReducer((s) => !s, false);
-  const chainName = getChainName({ chainId });
+  const chainName = getChain({ chainId }).name;
 
   if (chainId === ChainId.mainnet) return null;
 
