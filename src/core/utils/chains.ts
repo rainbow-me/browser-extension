@@ -9,7 +9,6 @@ import {
   ChainName,
   ChainNameDisplay,
   chainIdToNameMapping,
-  chainNameToIdMapping,
 } from '~/core/types/chains';
 
 import { proxyRpcEndpoint } from '../providers';
@@ -148,10 +147,6 @@ export function isNativeAsset(address: AddressOrEth, chainId: ChainId) {
     return AddressZero === address;
   }
   return isLowerCaseMatch(NATIVE_ASSETS_PER_CHAIN[chainId], address);
-}
-
-export function chainIdFromChainName(chainName: ChainName) {
-  return chainNameToIdMapping[chainName];
 }
 
 export function chainNameFromChainId(chainId: ChainId): ChainName {

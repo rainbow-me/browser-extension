@@ -9,10 +9,9 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
-import { ChainId, ChainName } from '~/core/types/chains';
+import { ChainId, ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import { TransactionsReceivedMessage } from '~/core/types/refraction';
 import { RainbowTransaction } from '~/core/types/transactions';
-import { chainIdFromChainName } from '~/core/utils/chains';
 import { parseTransaction } from '~/core/utils/transactions';
 import { RainbowError, logger } from '~/logger';
 
@@ -118,9 +117,10 @@ async function parseTransactions(
       parseTransaction({
         tx,
         currency,
-        chainId: chainIdFromChainName(
-          (message?.meta?.chain_id as ChainName) ?? ChainName.mainnet,
-        ),
+        chainId:
+          chainNameToIdMapping[
+            (message?.meta?.chain_id || ChainName.mainnet) as ChainName
+          ],
       }),
     )
     .filter(Boolean);

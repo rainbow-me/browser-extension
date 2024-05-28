@@ -10,11 +10,15 @@ import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { ParsedUserAsset } from '~/core/types/assets';
-import { ChainId, ChainName, ChainNameDisplay } from '~/core/types/chains';
+import {
+  ChainId,
+  ChainName,
+  ChainNameDisplay,
+  chainNameToIdMapping,
+} from '~/core/types/chains';
 import { UniqueAsset } from '~/core/types/nfts';
 import { truncateAddress } from '~/core/utils/address';
 import {
-  chainIdFromChainName,
   getBlockExplorerHostForChain,
   isCustomChain,
 } from '~/core/utils/chains';
@@ -278,7 +282,7 @@ export const ReviewSheet = ({
   const confirmSendButtonRef = useRef<HTMLButtonElement>(null);
   const { chains } = wagmiConfig;
   const assetChainId =
-    asset?.chainId || chainIdFromChainName(nft?.network || ChainName.mainnet);
+    asset?.chainId || chainNameToIdMapping[nft?.network || ChainName.mainnet];
   const chain = useMemo(
     () => chains.find((c) => c.id === assetChainId),
     [assetChainId, chains],
