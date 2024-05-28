@@ -3,8 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import config from '~/core/firebase/remoteConfig';
 import { useFlashbotsEnabledStore } from '~/core/state';
-import { ChainId, ChainName } from '~/core/types/chains';
-import { chainNameFromChainId } from '~/core/utils/chains';
+import { ChainId, ChainName, chainIdToNameMapping } from '~/core/types/chains';
 
 import usePrevious from '../usePrevious';
 
@@ -38,7 +37,7 @@ const slippageInBipsToString = (slippageInBips: number) =>
   (slippageInBips / 100).toString();
 
 export const getDefaultSlippage = (chainId: ChainId) => {
-  const chainName = chainNameFromChainId(chainId) as
+  const chainName = chainIdToNameMapping[chainId] as
     | ChainName.mainnet
     | ChainName.optimism
     | ChainName.polygon

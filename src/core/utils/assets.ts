@@ -15,7 +15,7 @@ import {
   UniqueId,
   ZerionAssetPrice,
 } from '~/core/types/assets';
-import { ChainId, ChainName } from '~/core/types/chains';
+import { ChainId, ChainName, chainIdToNameMapping } from '~/core/types/chains';
 
 import { requestMetadata } from '../graphql';
 import { i18n } from '../languages';
@@ -25,7 +25,7 @@ import { SearchAsset } from '../types/search';
 import { wagmiConfig } from '../wagmi';
 import { getProvider } from '../wagmi/clientToProvider';
 
-import { chainNameFromChainId, isNativeAsset } from './chains';
+import { isNativeAsset } from './chains';
 import {
   convertAmountAndPriceToNativeDisplay,
   convertAmountToBalanceDisplay,
@@ -157,7 +157,7 @@ export function parseAssetMetadata({
   const parsedAsset = {
     address,
     chainId,
-    chainName: chainNameFromChainId(chainId),
+    chainName: chainIdToNameMapping[chainId],
     colors: asset?.colors,
     decimals: asset?.decimals,
     icon_url: asset?.iconUrl,
@@ -277,7 +277,7 @@ export const parseSearchAsset = ({
   ...searchAsset,
   address: searchAsset.address,
   chainId: searchAsset.chainId,
-  chainName: chainNameFromChainId(searchAsset.chainId),
+  chainName: chainIdToNameMapping[searchAsset.chainId],
   native: {
     balance: userAsset?.native.balance || {
       amount: '0',

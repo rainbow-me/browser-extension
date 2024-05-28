@@ -4,12 +4,7 @@ import { Chain, mainnet } from 'viem/chains';
 import { useConfig } from 'wagmi';
 
 import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
-import {
-  ChainId,
-  ChainName,
-  ChainNameDisplay,
-  chainIdToNameMapping,
-} from '~/core/types/chains';
+import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 
 import { proxyRpcEndpoint } from '../providers';
 import {
@@ -147,10 +142,6 @@ export function isNativeAsset(address: AddressOrEth, chainId: ChainId) {
     return AddressZero === address;
   }
   return isLowerCaseMatch(NATIVE_ASSETS_PER_CHAIN[chainId], address);
-}
-
-export function chainNameFromChainId(chainId: ChainId): ChainName {
-  return chainIdToNameMapping[chainId];
 }
 
 export function getBlockExplorerHostForChain(chainId: ChainId) {
