@@ -1,5 +1,5 @@
 import { ChainId } from '~/core/types/chains';
-import { meteorologySupportsChain } from '~/core/utils/gas';
+import { meteorologySupportsChain } from '~/core/utils/chains';
 
 import { useMeteorology } from './meteorology';
 import { useProviderGas } from './providerGas';

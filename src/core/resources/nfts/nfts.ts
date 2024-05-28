@@ -79,10 +79,12 @@ async function nftsQueryFunction({
   const simplehashChainNames = !testnetMode
     ? getSimpleHashSupportedChainNames()
     : getSimpleHashSupportedTestnetChainNames();
+
   const chains = simplehashChainNames.filter((simplehashChainName) => {
     const id = chainNameToIdMapping[simplehashChainName];
     return userChainIds.includes(id) || simplehashChainName === 'gnosis';
   }) as ChainName[];
+
   const polygonAllowList = await polygonAllowListFetcher();
   const acquisitionMap: Record<string, string> = {};
   const collectionsResponse = await fetchNftCollections({

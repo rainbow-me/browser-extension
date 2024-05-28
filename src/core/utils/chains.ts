@@ -1,13 +1,6 @@
 import { AddressZero } from '@ethersproject/constants';
 import { JsonRpcProvider } from '@ethersproject/providers';
-import {
-  Chain,
-  celo,
-  fantom,
-  harmonyOne,
-  mainnet,
-  moonbeam,
-} from 'viem/chains';
+import { Chain, mainnet } from 'viem/chains';
 import { useConfig } from 'wagmi';
 
 import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
@@ -196,6 +189,35 @@ export const getSimpleHashSupportedTestnetChainNames = () => {
   ] as (ChainName | 'ethereum-sepolia' | 'ethereum')[];
 };
 
+export const meteorologySupportsChain = (chainId: ChainId) =>
+  [
+    ChainId.bsc,
+    ChainId.sepolia,
+    ChainId.holesky,
+    ChainId.mainnet,
+    ChainId.polygon,
+    ChainId.base,
+    ChainId.arbitrum,
+    ChainId.optimism,
+    ChainId.zora,
+    ChainId.avalanche,
+  ].includes(chainId);
+
+export const meteorologySupportsType2ForChain = (chainId: ChainId) =>
+  [
+    ChainId.mainnet,
+    ChainId.sepolia,
+    ChainId.holesky,
+    ChainId.base,
+    ChainId.arbitrum,
+    ChainId.optimism,
+    ChainId.zora,
+    ChainId.avalanche,
+  ].includes(chainId);
+
+export const chainNeedsL1SecurityFee = (chainId: ChainId) =>
+  [ChainId.base, ChainId.optimism, ChainId.zora].includes(chainId);
+
 export const useBackendSupportedChains = ({
   testnetMode,
 }: {
@@ -316,45 +338,4 @@ export const getChainMetadataRPCUrl = async ({
     return { chainId: network.chainId };
   }
   return null;
-};
-
-export const deriveChainIdByHostname = (hostname: string) => {
-  switch (hostname) {
-    case 'etherscan.io':
-      return ChainId.mainnet;
-    case 'arbiscan.io':
-      return ChainId.arbitrum;
-    case 'amoy.polygonscan.com':
-    case 'oklink.com/amoy':
-      return ChainId.polygonAmoy;
-    case 'polygonscan.com':
-      return ChainId.polygon;
-    case 'optimistic.etherscan.io':
-      return ChainId.optimism;
-    case 'bscscan.com':
-      return ChainId.bsc;
-    case 'ftmscan.com':
-      return fantom.id;
-    case 'explorer.celo.org':
-      return celo.id;
-    case 'explorer.harmony.one':
-      return harmonyOne.id;
-    case 'explorer.avax.network':
-    case 'subnets.avax.network':
-    case 'snowtrace.io':
-      return ChainId.avalanche;
-    case 'subnets-test.avax.network':
-    case 'testnet.snowtrace.io':
-      return ChainId.avalancheFuji;
-    case 'moonscan.io':
-      return moonbeam.id;
-    case 'explorer.holesky.redstone.xyz':
-      return 17001;
-    case 'blastscan.io':
-      return ChainId.blast;
-    case 'testnet.blastscan.io':
-      return 168587773;
-    default:
-      return ChainId.mainnet;
-  }
 };

@@ -9,10 +9,8 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { ChainId } from '~/core/types/chains';
-import {
-  calculateL1FeeOptimism,
-  chainNeedsL1SecurityFee,
-} from '~/core/utils/gas';
+import { chainNeedsL1SecurityFee } from '~/core/utils/chains';
+import { calculateL1FeeOptimism } from '~/core/utils/gas';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 
 // ///////////////////////////////////////////////

@@ -22,10 +22,10 @@ import {
   GasFeeParamsBySpeed,
   GasSpeed,
 } from '~/core/types/gas';
+import { chainNeedsL1SecurityFee } from '~/core/utils/chains';
 import { gweiToWei, weiToGwei } from '~/core/utils/ethereum';
 import {
   FLASHBOTS_MIN_TIP,
-  chainNeedsL1SecurityFee,
   gasFeeParamsChanged,
   parseCustomGasFeeParams,
   parseGasFeeParamsBySpeed,
