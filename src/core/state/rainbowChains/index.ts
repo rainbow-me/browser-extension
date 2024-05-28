@@ -1,14 +1,13 @@
 import { Chain, degen, zora } from 'viem/chains';
 import create from 'zustand';
 
-import { SUPPORTED_CHAINS } from '~/core/references/chains';
+import { SUPPORTED_CHAINS, defaultRPC } from '~/core/references/chains';
 import {
   ChainId,
   chainHardhat,
   chainHardhatOptimism,
 } from '~/core/types/chains';
 import { persistOptions } from '~/core/utils/persistOptions';
-import { getDefaultRPC } from '~/core/wagmi/clientRpc';
 
 import { createStore } from '../internal/createStore';
 import { withSelectors } from '../internal/withSelectors';
@@ -42,8 +41,7 @@ export const RAINBOW_CHAINS_SUPPORTED = IS_TESTING
 export const getInitialRainbowChains = () => {
   const rainbowChains: Record<number, RainbowChain> = {};
   RAINBOW_CHAINS_SUPPORTED.forEach((chain) => {
-    const rpcUrl =
-      getDefaultRPC(chain.id)?.http || chain.rpcUrls.default.http[0];
+    const rpcUrl = defaultRPC[chain.id] || chain.rpcUrls.default.http[0];
     const rnbwChain = {
       ...chain,
       rpcUrls: {

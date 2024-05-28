@@ -1,5 +1,5 @@
+import { defaultRPC } from '../references/chains';
 import { ChainId } from '../types/chains';
-import { getDefaultRPC } from '../wagmi/clientRpc';
 
 export const proxyRpcEndpoint = (endpoint: string, chainId: ChainId) => {
   if (
@@ -10,7 +10,7 @@ export const proxyRpcEndpoint = (endpoint: string, chainId: ChainId) => {
     !endpoint.includes('http://192.168') &&
     !endpoint.match(/http:\/\/172.(1[6-9]|2[0-9]|3[0-1])./)
   ) {
-    if (getDefaultRPC(chainId)?.http === endpoint) {
+    if (defaultRPC[chainId] === endpoint) {
       return `${process.env.RPC_PROXY_BASE_URL}/${chainId}/${process.env.RPC_PROXY_API_KEY}`;
     }
     return `${process.env.RPC_PROXY_BASE_URL}/${chainId}/${
