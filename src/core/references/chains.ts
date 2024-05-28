@@ -24,19 +24,6 @@ import {
 
 import { ChainNameDisplay } from '../types/chains';
 
-export const SUPPORTED_MAINNET_CHAINS: Chain[] = [
-  mainnet,
-  polygon,
-  optimism,
-  arbitrum,
-  base,
-  zora,
-  bsc,
-  avalanche,
-  blast,
-  degen,
-].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
-
 export const SUPPORTED_CHAINS: Chain[] = [
   mainnet,
   polygon,
@@ -62,18 +49,6 @@ export const SUPPORTED_CHAINS: Chain[] = [
 
 export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map((chain) => chain.id);
 
-export const SUPPORTED_TESTNET_CHAINS: Chain[] = [
-  holesky,
-  sepolia,
-  optimismSepolia,
-  bscTestnet,
-  arbitrumSepolia,
-  baseSepolia,
-  zoraSepolia,
-  avalancheFuji,
-  blastSepolia,
-  polygonAmoy,
-];
-
-export const SUPPORTED_TESTNET_CHAIN_IDS: number[] =
-  SUPPORTED_TESTNET_CHAINS.map((tn) => tn.id);
+export const SUPPORTED_MAINNET_CHAINS: Chain[] = SUPPORTED_CHAINS.filter(
+  (chain) => !chain.testnet,
+);
