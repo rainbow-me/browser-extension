@@ -138,10 +138,6 @@ export function isTestnetChainId({ chainId }: { chainId?: ChainId }) {
   return !!chain.testnet;
 }
 
-export function isSupportedChainId(chainId: number) {
-  return SUPPORTED_CHAINS.map((chain) => chain.id).includes(chainId);
-}
-
 export const chainIdToUse = (
   connectedToHardhat: boolean,
   connectedToHardhatOp: boolean,

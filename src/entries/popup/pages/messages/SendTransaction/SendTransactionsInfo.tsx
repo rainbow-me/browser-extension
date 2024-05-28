@@ -12,7 +12,7 @@ import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
-import { getChainName, isTestnetChainId } from '~/core/utils/chains';
+import { getChain, isTestnetChainId } from '~/core/utils/chains';
 import { copy, copyAddress } from '~/core/utils/copy';
 import { TestnetFaucet } from '~/core/utils/faucets';
 import { formatDate } from '~/core/utils/formatDate';
@@ -117,7 +117,7 @@ const Overview = memo(function Overview({
     metadata?.status || DAppStatus.Unverified,
     { size: 12 },
   );
-  const chainName = getChainName({ chainId });
+  const chainName = getChain({ chainId }).name;
 
   return (
     <Stack space="16px" paddingTop="14px">
@@ -383,7 +383,7 @@ function InsuficientGasFunds({
   const isTestnet = testnetMode || isTestnetChainId({ chainId });
 
   const { nativeAsset } = useNativeAsset({ chainId, address });
-  const chainName = getChainName({ chainId });
+  const chainName = getChain({ chainId }).name;
 
   const { currentCurrency } = useCurrentCurrencyStore();
   const { data: hasBridgeableBalance } = useUserAssets(
