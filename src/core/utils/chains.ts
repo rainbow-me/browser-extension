@@ -11,7 +11,7 @@ import {
   SUPPORTED_CHAINS,
   SUPPORTED_MAINNET_CHAINS,
 } from '../references/chains';
-import { RAINBOW_CHAINS_SUPPORTED } from '../state/rainbowChains';
+import { RAINBOW_CHAINS_SUPPORTED } from '../state/rainbowChains/utils';
 import { AddressOrEth } from '../types/assets';
 import { wagmiConfig } from '../wagmi';
 
