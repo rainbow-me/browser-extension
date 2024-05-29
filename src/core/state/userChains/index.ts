@@ -46,12 +46,12 @@ const chains = SUPPORTED_MAINNET_CHAINS.reduce(
   {} as Record<number, boolean>,
 );
 
-const userChainsOrder = Object.keys(chains).map((id) => Number(id) as number);
+const chainsOrder = Object.keys(chains).map((id) => Number(id) as number);
 
 export const userChainsStore = createStore<UserChainsState>(
   (set, get) => ({
     userChains: chains,
-    userChainsOrder,
+    userChainsOrder: chainsOrder,
     updateUserChains: ({ chainIds, enabled }) => {
       const { userChains } = get();
       const chainsUpdated = chainIds.reduce(

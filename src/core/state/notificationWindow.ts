@@ -1,6 +1,7 @@
 import create from 'zustand';
 
 import { createStore } from './internal/createStore';
+import { withSelectors } from './internal/withSelectors';
 
 export type NotificationWindow = chrome.windows.Window;
 
@@ -37,4 +38,6 @@ export const notificationWindowStore = createStore<NotificationWindowsState>(
   },
 );
 
-export const useNotificationWindowStore = create(notificationWindowStore);
+export const useNotificationWindowStore = withSelectors(
+  create(notificationWindowStore),
+);
