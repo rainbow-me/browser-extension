@@ -19,6 +19,8 @@ import { getDappHost, isValidUrl } from './connectedApps';
 import { findRainbowChainForChainId } from './rainbowChains';
 import { isLowerCaseMatch } from './strings';
 
+// Main chains for chain settings
+
 const getMainChainsHelper = (chains: readonly [Chain, ...Chain[]]) => {
   // All the mainnets we support
   const mainSupportedChains = SUPPORTED_MAINNET_CHAINS.filter(
@@ -59,6 +61,9 @@ export const getMainChains = () => {
   return getMainChainsHelper(chains);
 };
 
+// All the chains we support
+// rainbow default and custom chains
+
 export const useSupportedChains = ({ testnets }: { testnets?: boolean }) => {
   const { chains } = useConfig();
   return chains.filter((chain) =>
@@ -78,6 +83,14 @@ export const getSupportedChains = ({ testnets }: { testnets?: boolean }) => {
   );
 };
 
+// Chain helpers
+
+export function getChain({ chainId }: { chainId?: ChainId }) {
+  const { chains } = wagmiConfig;
+  const chain = chains.find((chain) => chain.id === chainId);
+  return chain || { ...mainnet, testnet: false };
+}
+
 export const isCustomChain = (chainId: number) =>
   !RAINBOW_CHAINS_SUPPORTED.map((chain) => chain.id).includes(chainId) &&
   !!findRainbowChainForChainId(chainId);
@@ -94,12 +107,6 @@ export function getBlockExplorerHostForChain(chainId: ChainId) {
   return chain?.blockExplorers
     ? getDappHost(chain.blockExplorers.default.url)
     : undefined;
-}
-
-export function getChain({ chainId }: { chainId?: ChainId }) {
-  const { chains } = wagmiConfig;
-  const chain = chains.find((chain) => chain.id === chainId);
-  return chain || { ...mainnet, testnet: false };
 }
 
 export const chainIdToUse = (
