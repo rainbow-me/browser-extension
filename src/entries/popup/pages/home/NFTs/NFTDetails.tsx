@@ -806,9 +806,7 @@ const NFTAccordionAboutSection = ({
             <Inline alignVertical="center" space="6px">
               <ChainBadge
                 chainId={
-                  chainNameToIdMapping[
-                    (nft?.network as ChainName) || ChainName.mainnet
-                  ]
+                  chainNameToIdMapping[nft?.network || ChainName.mainnet]
                 }
                 size={12}
               />

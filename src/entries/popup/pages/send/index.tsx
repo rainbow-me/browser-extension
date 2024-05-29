@@ -38,7 +38,7 @@ import {
   ParsedAsset,
   ParsedUserAsset,
 } from '~/core/types/assets';
-import { ChainId, ChainName, chainNameToIdMapping } from '~/core/types/chains';
+import { ChainId, chainNameToIdMapping } from '~/core/types/chains';
 import {
   TransactionGasParams,
   TransactionLegacyGasParams,
@@ -289,7 +289,7 @@ export function Send() {
       name: nft.name,
       symbol: nft.collection.name,
       uniqueId: `${nft.asset_contract.address || ''}_${
-        chainNameToIdMapping[nft.network as ChainName]
+        chainNameToIdMapping[nft.network]
       }`,
       decimals: 0,
       native: {

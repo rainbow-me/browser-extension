@@ -118,9 +118,7 @@ async function parseTransactions(
         tx,
         currency,
         chainId:
-          chainNameToIdMapping[
-            (message?.meta?.chain_id || ChainName.mainnet) as ChainName
-          ],
+          chainNameToIdMapping[message?.meta?.chain_id || ChainName.mainnet],
       }),
     )
     .filter(Boolean);
