@@ -14,7 +14,7 @@ import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ParsedAssetsDictByChain, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { AddressAssetsReceivedMessage } from '~/core/types/refraction';
-import { getBackendSupportedChains } from '~/core/utils/chains';
+import { getSupportedChains } from '~/core/utils/chains';
 import { RainbowError, logger } from '~/logger';
 
 import { parseUserAssets } from './common';
@@ -116,9 +116,9 @@ async function userAssetsQueryFunction({
     queryKey: userAssetsQueryKey({ address, currency, testnetMode }),
   })?.state?.data || {}) as ParsedAssetsDictByChain;
   try {
-    const supportedChainIds = getBackendSupportedChains({ testnetMode }).map(
-      ({ id }) => id,
-    );
+    const supportedChainIds = getSupportedChains({
+      testnets: testnetMode,
+    }).map(({ id }) => id);
     const url = `/${supportedChainIds.join(',')}/${address}/assets`;
     const res = await addysHttp.get<AddressAssetsReceivedMessage>(url, {
       params: {

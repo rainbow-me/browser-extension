@@ -21,7 +21,7 @@ import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/deve
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
 import { useUserChainsStore } from '~/core/state/userChains';
-import { getSupportedTestnetChains } from '~/core/utils/chains';
+import { getSupportedChains } from '~/core/utils/chains';
 import { chainIdMap } from '~/core/utils/userChains';
 import {
   Box,
@@ -166,11 +166,11 @@ export function SettingsNetworksRPCs() {
       rainbowChains[Number(chainId)]?.chains?.filter(
         (chain) => chain.testnet,
       ) || [];
-    const supportedTestnetChains = getSupportedTestnetChains().filter(
-      (chain) => {
-        return chainIdMap[chainId]?.includes(chain.id) && chain.id !== chainId;
-      },
-    );
+    const supportedTestnetChains = getSupportedChains({
+      testnets: true,
+    }).filter((chain) => {
+      return chainIdMap[chainId]?.includes(chain.id) && chain.id !== chainId;
+    });
     return [...customTestnetChains, ...supportedTestnetChains];
   }, [chainId, rainbowChains]);
 

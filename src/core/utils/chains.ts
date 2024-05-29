@@ -59,48 +59,22 @@ export const getMainChains = () => {
   return getMainChainsHelper(chains);
 };
 
-export const getSupportedChainsWithHardhat = () => {
-  const { chains } = wagmiConfig;
-  return chains.filter(
-    (chain) =>
-      !chain.testnet ||
-      (process.env.IS_TESTING === 'true' &&
-        (chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism)),
-  );
-};
-
-export const getSupportedChains = () => {
-  const { chains } = wagmiConfig;
-  return chains.filter((chain) => !chain.testnet);
-};
-
-export const getSupportedChainIds = () =>
-  getSupportedChains().map((chain) => chain.id);
-
-export const getSupportedTestnetChains = () => {
-  const { chains } = wagmiConfig;
-  return chains.filter((chain) => !!chain.testnet);
-};
-
-export const useBackendSupportedChains = ({
-  testnetMode,
-}: {
-  testnetMode?: boolean;
-}) => {
+export const useSupportedChains = ({ testnets }: { testnets?: boolean }) => {
   const { chains } = useConfig();
   return chains.filter((chain) =>
-    testnetMode ? !!chain.testnet : !chain.testnet,
+    testnets ? !!chain.testnet : !chain.testnet,
   );
 };
 
-export const getBackendSupportedChains = ({
-  testnetMode,
-}: {
-  testnetMode?: boolean;
-}) => {
+export const getSupportedChains = ({ testnets }: { testnets?: boolean }) => {
   const { chains } = wagmiConfig;
   return chains.filter((chain) =>
-    testnetMode ? !!chain.testnet : !chain.testnet,
+    testnets
+      ? !!chain.testnet
+      : !chain.testnet ||
+        (process.env.IS_TESTING === 'true' &&
+          (chain.id === ChainId.hardhat ||
+            chain.id === ChainId.hardhatOptimism)),
   );
 };
 

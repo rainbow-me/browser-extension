@@ -24,10 +24,7 @@ import {
 
 import { ChainId, ChainNameDisplay } from '../types/chains';
 
-import {
-  getSupportedChainsWithHardhat,
-  getSupportedTestnetChains,
-} from './chains';
+import { getSupportedChains } from './chains';
 
 export const chainIdMap: Record<
   | ChainId.mainnet
@@ -104,9 +101,9 @@ export const filterUserNetworks = ({
   userChains: Record<ChainId, boolean>;
   userChainsOrder: ChainId[];
 }) => {
-  const supportedChains: Chain[] = testnetMode
-    ? getSupportedTestnetChains()
-    : getSupportedChainsWithHardhat();
+  const supportedChains: Chain[] = getSupportedChains({
+    testnets: testnetMode,
+  });
 
   const availableChains = Object.keys(userChains)
     .filter((chainId) => userChains[Number(chainId)] === true)

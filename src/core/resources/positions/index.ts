@@ -13,7 +13,7 @@ import { SupportedCurrencyKey } from '~/core/references';
 import { AssetApiResponse, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId, ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import { parseUserAsset } from '~/core/utils/assets';
-import { getBackendSupportedChains } from '~/core/utils/chains';
+import { getSupportedChains } from '~/core/utils/chains';
 import { RainbowError, logger } from '~/logger';
 
 const POSITIONS_TIMEOUT_DURATION = 20000;
@@ -105,9 +105,9 @@ async function positionsQueryFunction({
 }: QueryFunctionArgs<typeof positionsQueryKey>) {
   if (!address) return {} as ParsedPositionsByChain;
   try {
-    const supportedChainIds = getBackendSupportedChains({ testnetMode }).map(
-      ({ id }) => id,
-    );
+    const supportedChainIds = getSupportedChains({
+      testnets: testnetMode,
+    }).map(({ id }) => id);
     const response = await addysHttp.get<AddysPositionsResponse>(
       `/${supportedChainIds.join(',')}/${address}/positions`,
       {
