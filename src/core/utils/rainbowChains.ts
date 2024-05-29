@@ -1,4 +1,4 @@
-import { useRainbowChainsStore } from '../state';
+import { rainbowChainsStore } from '../state';
 
 export const findRainbowChainForChainId = (chainId: number) => {
   const { rainbowChains } = getRainbowChains();
@@ -6,7 +6,7 @@ export const findRainbowChainForChainId = (chainId: number) => {
 };
 
 export const getRainbowChains = () => {
-  const rainbowChains = useRainbowChainsStore.use.rainbowChains();
+  const { rainbowChains } = rainbowChainsStore.getState();
   return {
     rainbowChains: Object.values(rainbowChains)
       .map((rainbowChain) =>

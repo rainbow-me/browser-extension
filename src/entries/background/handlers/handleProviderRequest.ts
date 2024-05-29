@@ -14,10 +14,10 @@ import {
   SUPPORTED_CHAIN_IDS,
 } from '~/core/references/chains';
 import {
-  useAppSessionsStore,
-  useNotificationWindowStore,
-  usePendingRequestStore,
-  useRainbowChainsStore,
+  appSessionsStore,
+  notificationWindowStore,
+  pendingRequestStore,
+  rainbowChainsStore,
 } from '~/core/state';
 import { featureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { userChainsStore } from '~/core/state/userChains';
@@ -45,8 +45,7 @@ const getPopupTitleBarHeight = (platform: string) => {
 };
 
 const createNewWindow = async (tabId: string) => {
-  const setNotificationWindow =
-    useNotificationWindowStore.use.setNotificationWindow();
+  const { setNotificationWindow } = notificationWindowStore.getState();
   const currentWindow = await chrome.windows.getCurrent();
   const window = await chrome.windows.create({
     url: chrome.runtime.getURL('popup.html') + '?tabId=' + tabId,
@@ -70,8 +69,7 @@ const focusOnWindow = (windowId: number) => {
 };
 
 const openWindowForTabId = async (tabId: string) => {
-  const notificationWindows =
-    useNotificationWindowStore.use.notificationWindows();
+  const { notificationWindows } = notificationWindowStore.getState();
   const notificationWindow = notificationWindows[tabId];
   if (notificationWindow) {
     chrome.windows.get(
@@ -102,7 +100,7 @@ const messengerProviderRequest = async (
   messenger: Messenger,
   request: ProviderRequestPayload,
 ) => {
-  const addPendingRequest = usePendingRequestStore.use.addPendingRequest();
+  const { addPendingRequest } = pendingRequestStore.getState();
   // Add pending request to global background state.
   addPendingRequest(request);
 
@@ -250,10 +248,8 @@ export const handleProviderRequest = ({
     providerRequestTransport: providerRequestTransport,
     isSupportedChain: (chainId: number) =>
       SUPPORTED_CHAIN_IDS.includes(chainId) || isCustomChain(chainId),
-    getActiveSession: ({ host }: { host: string }) => {
-      const getActiveSession = useAppSessionsStore.use.getActiveSession();
-      return getActiveSession({ host });
-    },
+    getActiveSession: ({ host }: { host: string }) =>
+      appSessionsStore.getState().getActiveSession({ host }),
     getChainNativeCurrency: (chainId: number) =>
       SUPPORTED_CHAINS.find((chain) => chain.id === Number(chainId))
         ?.nativeCurrency,
@@ -270,9 +266,8 @@ export const handleProviderRequest = ({
     }): { chainAlreadyAdded: boolean } => {
       const url = callbackOptions?.sender.url || '';
       const host = (isValidUrl(url) && getDappHost(url)) || '';
-      const rainbowChains = useRainbowChainsStore.use.rainbowChains();
-      const addCustomRPC = useRainbowChainsStore.use.addCustomRPC();
-      const setActiveRPC = useRainbowChainsStore.use.setActiveRPC();
+      const { rainbowChains, addCustomRPC, setActiveRPC } =
+        rainbowChainsStore.getState();
       const { addUserChain } = userChainsStore.getState();
       const alreadyAddedChain = Object.keys(rainbowChains).find(
         (id) => Number(id) === Number(proposedChain.chainId),
@@ -362,8 +357,9 @@ export const handleProviderRequest = ({
       const host = (isValidUrl(url || '') && getDappHost(url)) || '';
       const extensionUrl = chrome.runtime.getURL('');
       const proposedChainId = Number(proposedChain.chainId);
-      const getActiveChain = useRainbowChainsStore.use.getActiveChain();
-      const chain = getActiveChain({ chainId: proposedChainId });
+      const chain = rainbowChainsStore
+        .getState()
+        .getActiveChain({ chainId: proposedChainId });
       const supportedChainId =
         isCustomChain(proposedChainId) ||
         SUPPORTED_CHAIN_IDS.includes(proposedChainId);
@@ -393,14 +389,14 @@ export const handleProviderRequest = ({
       const dappName = callbackOptions?.sender.tab?.title || host;
       const extensionUrl = chrome.runtime.getURL('');
       const proposedChainId = Number(proposedChain.chainId);
-      const updateActiveSessionChainId =
-        useAppSessionsStore.use.updateActiveSessionChainId();
+      const { updateActiveSessionChainId } = appSessionsStore.getState();
       updateActiveSessionChainId({
         chainId: proposedChainId,
         host,
       });
-      const getActiveChain = useRainbowChainsStore.use.getActiveChain();
-      const chain = getActiveChain({ chainId: proposedChainId });
+      const chain = rainbowChainsStore
+        .getState()
+        .getActiveChain({ chainId: proposedChainId });
       inpageMessenger?.send('rainbow_ethereumChainEvent', {
         chainId: proposedChainId,
         chainName: chain?.name,

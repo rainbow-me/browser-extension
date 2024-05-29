@@ -2,7 +2,6 @@ import create from 'zustand';
 
 import { ProviderRequestPayload } from '../../transports/providerRequestTransport';
 import { createStore } from '../internal/createStore';
-import { withSelectors } from '../internal/withSelectors';
 
 export interface PendingRequestsStore {
   pendingRequests: ProviderRequestPayload[];
@@ -32,6 +31,4 @@ export const pendingRequestStore = createStore<PendingRequestsStore>(
   },
 );
 
-export const usePendingRequestStore = withSelectors(
-  create(pendingRequestStore),
-);
+export const usePendingRequestStore = create(pendingRequestStore);
