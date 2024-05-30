@@ -49,7 +49,6 @@ const updateWagmiConfig = (chains: Chain[]) => {
 
 const WagmiConfigUpdater = () => {
   const { rainbowChains: chains } = useRainbowChains();
-  console.log('chains', chains);
   useEffect(() => {
     updateWagmiConfig(chains);
   }, [chains]);

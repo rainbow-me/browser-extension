@@ -7,7 +7,17 @@ exports.config = {
     document: './queries/ens.graphql',
   },
   metadata: {
+    schema: {
+      method: 'GET',
+      url: 'https://metadata.p.rainbow.me/v1/graph',
+    },
     document: './queries/metadata.graphql',
-    schema: { method: 'GET', url: 'https://metadata.p.rainbow.me/v1/graph' },
+  },
+  metadataStaging: {
+    schema: {
+      method: 'GET',
+      url: 'https://metadata.s.rainbow.me/v1/graph',
+    },
+    document: './queries/metadataStaging.graphql',
   },
 };

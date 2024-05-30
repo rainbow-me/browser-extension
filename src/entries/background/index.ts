@@ -7,6 +7,7 @@ import { syncStores } from '~/core/state/internal/syncStores';
 import { getRainbowChains } from '~/core/utils/rainbowChains';
 import { updateWagmiConfig } from '~/core/wagmi';
 
+import { handleChains } from './handlers/handleChains';
 import { handleDisconnect } from './handlers/handleDisconnect';
 import { handleInstallExtension } from './handlers/handleInstallExtension';
 import { handleKeepAlive } from './handlers/handleKeepAlive';
@@ -33,6 +34,7 @@ syncStores();
 uuid4();
 initFCM();
 handleKeepAlive();
+handleChains();
 
 popupMessenger.reply('rainbow_updateWagmiClient', async () => {
   const { rainbowChains } = getRainbowChains();
