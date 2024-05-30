@@ -12,11 +12,14 @@ jobs:
     concurrency: 
       group: ${{ github.workflow }}-${{ github.ref }}
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.event.pull_request.head.ref }}
           token: ${{ secrets.REPO_TOKEN }}
+      - name: Check Last Commit Message
+        uses: ./.github/actions/check-commit-message.yml
       - uses: actions/setup-node@v2
         with:
           node-version: "18.18.0"
@@ -71,3 +74,4 @@ jobs:
           sourcemaps: ./build
           version: ${{ env.release_version }}
           url_prefix: 'chrome-extension://kajddphdgkbiifcaichanbfjgmfaneem'
+          
