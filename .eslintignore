@@ -1,6 +1,5 @@
 build/
 docs/
 .env.d.ts
-scripts/
 static/
 __generated__

@@ -1,9 +1,76 @@
 import { Chain } from 'viem';
 
-import { GetNetworksQuery } from '~/core/graphql/__generated__/metadataStaging';
-import { fetchBackendChains } from '~/core/resources/chains/backendChains';
+import chainsData from 'static/data/chains.json';
 
-type Network = NonNullable<GetNetworksQuery['networks']>[number];
+type Device = 'BX' | 'APP';
+
+export interface Network {
+  id: string;
+  name: string;
+  label: string;
+  testnet: boolean;
+  opStack: boolean;
+  icons: {
+    badgeURL: string;
+  };
+  defaultExplorer: {
+    url: string;
+    label: string;
+    transactionURL: string;
+    tokenURL: string;
+  };
+  defaultRPC: {
+    enabledDevices: Array<Device | null>;
+    url: string;
+  };
+  nativeAsset: {
+    address: string;
+    name: string;
+    symbol: string;
+    decimals: number;
+    iconURL: string;
+    colors: {
+      primary: string;
+      fallback: string;
+      shadow: string;
+    };
+  };
+  nativeWrappedAsset: {
+    address: string;
+    name: string;
+    symbol: string;
+    decimals: number;
+    iconURL: string;
+    colors: {
+      primary: string;
+      fallback: string;
+      shadow: string;
+    };
+  };
+  enabledServices: {
+    gas: {
+      enabled: boolean;
+      eip1559Enabled: boolean;
+      legacyEnabled: boolean;
+    };
+    trade: {
+      swapping: boolean;
+      bridging: boolean;
+    };
+    wallet: {
+      approvals: boolean;
+      transactions: boolean;
+      balance: boolean;
+      summary: boolean;
+      defiPositions: boolean;
+      hasActivity: boolean;
+    };
+    token: {
+      tokenSearch: boolean;
+      nftProxy: boolean;
+    };
+  };
+}
 
 function transformNetworkToChain(network: Network): Chain {
   if (!network) {
@@ -33,19 +100,16 @@ function transformNetworkToChain(network: Network): Chain {
   };
 }
 
-function transformGetNetworksQueryToChains(
-  queryResult?: GetNetworksQuery | null,
-): Chain[] {
-  if (!queryResult?.networks) {
+function transformGetNetworksQueryToChains(networks?: Network[]): Chain[] {
+  if (!networks) {
     return [];
   }
-  return queryResult.networks.map((network) =>
-    transformNetworkToChain(network),
-  );
+  return networks.map((network) => transformNetworkToChain(network));
 }
 
 export async function handleChains() {
-  const backendChains = await fetchBackendChains({ hash: '123' });
-  const chains = transformGetNetworksQueryToChains(backendChains);
+  const chains = transformGetNetworksQueryToChains(
+    chainsData.networks as Network[],
+  );
   console.log('-- chains', chains);
 }
