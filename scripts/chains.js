@@ -1,6 +1,8 @@
-import { writeFileSync } from 'fs';
-import { join } from 'path';
-// import { writeJson, writeFileSync } from 'fs-extra'
+/* eslint-disable @typescript-eslint/no-var-requires */
+const path = require('path');
+
+const fs = require('fs-extra');
+
 /**
  * Fetches data from the GraphQL API and saves it to a JSON file.
  */
@@ -84,7 +86,7 @@ async function fetchData() {
   });
 
   const { data } = await response.json();
-  writeFileSync(join(__dirname, '../static/data/chains.json'), data);
+  await fs.writeJson(path.join(__dirname, '../static/data/chains.json'), data);
 }
 
 async function main() {
