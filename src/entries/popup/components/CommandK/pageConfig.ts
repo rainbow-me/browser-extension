@@ -77,6 +77,11 @@ export const PAGES: { [KEY: string]: Page } = {
     searchPlaceholder: () =>
       i18n.t('command_k.pages.wallet_detail.search_placeholder'),
   },
+  UNOWNED_TOKEN_DETAIL: {
+    listTitle: (command) => command?.name ?? '',
+    searchPlaceholder: () =>
+      i18n.t('command_k.pages.token_detail.search_placeholder'),
+  },
 };
 
 export type CommandKPage = (typeof PAGES)[keyof typeof PAGES];

@@ -132,6 +132,7 @@ export const useSearchableTokens = (searchQuery: string) => {
             `${ROUTES.TOKEN_DETAILS(asset.address)}?chainId=${asset.chainId}`,
           ),
         actionLabel: actionLabels.open,
+        actionPage: PAGES.UNOWNED_TOKEN_DETAIL,
         asset,
         id: asset.uniqueId,
         name: asset.name,
