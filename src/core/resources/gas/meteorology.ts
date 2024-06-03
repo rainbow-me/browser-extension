@@ -8,26 +8,37 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
+import { meteorologySupportedChains } from '~/core/references/chains';
 import { ChainId } from '~/core/types/chains';
 
-const getMeteorologyNetworkFromChainId = (chainId: ChainId) => {
+type MeteorologySupportedChain = (typeof meteorologySupportedChains)[number];
+
+const getMeteorologyNetworkFromChainId = (
+  chainId: MeteorologySupportedChain,
+) => {
   switch (chainId) {
-    case ChainId.polygon:
-      return 'polygon';
-    case ChainId.bsc:
-      return 'bsc';
-    case ChainId.base:
-      return 'base';
-    case ChainId.optimism:
-      return 'optimism';
     case ChainId.arbitrum:
       return 'arbitrum';
-    case ChainId.zora:
-      return 'zora';
     case ChainId.avalanche:
       return 'avalanche';
-    default:
+    case ChainId.base:
+      return 'base';
+    case ChainId.blast:
+      return 'blast';
+    case ChainId.bsc:
+      return 'bsc';
+    case ChainId.holesky:
+      return 'holesky';
+    case ChainId.sepolia:
+      return 'sepolia';
+    case ChainId.mainnet:
       return 'mainnet';
+    case ChainId.polygon:
+      return 'polygon';
+    case ChainId.optimism:
+      return 'optimism';
+    case ChainId.zora:
+      return 'zora';
   }
 };
 // ///////////////////////////////////////////////
