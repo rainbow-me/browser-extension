@@ -533,23 +533,6 @@ export const calculateL1FeeOptimism = async ({
   }
 };
 
-export const meteorologySupportsChain = (chainId: ChainId) =>
-  [
-    ChainId.bsc,
-    ChainId.mainnet,
-    ChainId.polygon,
-    ChainId.base,
-    ChainId.arbitrum,
-    ChainId.optimism,
-    ChainId.zora,
-    ChainId.avalanche,
-    ChainId.blast,
-    ChainId.degen,
-  ].includes(chainId);
-
-export const chainNeedsL1SecurityFee = (chainId: ChainId) =>
-  [ChainId.base, ChainId.optimism, ChainId.zora].includes(chainId);
-
 export const parseGasFeeParamsBySpeed = ({
   chainId,
   data,

@@ -11,12 +11,9 @@ import {
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
 import { AssetApiResponse, ParsedUserAsset } from '~/core/types/assets';
-import { ChainId, ChainName } from '~/core/types/chains';
+import { ChainId, ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import { parseUserAsset } from '~/core/utils/assets';
-import {
-  chainIdFromChainName,
-  getBackendSupportedChains,
-} from '~/core/utils/chains';
+import { getBackendSupportedChains } from '~/core/utils/chains';
 import { RainbowError, logger } from '~/logger';
 
 const POSITIONS_TIMEOUT_DURATION = 20000;
@@ -306,6 +303,6 @@ function parsePosition(
     stakes: position.stakes?.map((s) =>
       parseUserAsset({ asset: s.asset, balance: s.quantity, currency }),
     ),
-    chainId: chainIdFromChainName(position?.network),
+    chainId: chainNameToIdMapping[position?.network],
   };
 }

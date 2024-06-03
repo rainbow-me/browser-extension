@@ -14,7 +14,7 @@ import {
 import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId, ChainName, ChainNameDisplay } from '~/core/types/chains';
 import { fetchAssetBalanceViaProvider } from '~/core/utils/assets';
-import { getChain, isTestnetChainId } from '~/core/utils/chains';
+import { getChain } from '~/core/utils/chains';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
@@ -82,7 +82,7 @@ async function userTestnetNativeAssetQueryFunction({
   try {
     // Don't do anything unless it's a testnet
     if (
-      !isTestnetChainId({ chainId }) &&
+      !getChain({ chainId }).testnet &&
       chainId !== ChainId.hardhat &&
       chainId !== ChainId.hardhatOptimism
     ) {

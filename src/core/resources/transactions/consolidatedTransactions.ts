@@ -11,10 +11,9 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
-import { ChainName } from '~/core/types/chains';
+import { ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import { TransactionsReceivedMessage } from '~/core/types/refraction';
 import { RainbowTransaction } from '~/core/types/transactions';
-import { chainIdFromChainName } from '~/core/utils/chains';
 import { parseTransaction } from '~/core/utils/transactions';
 import { RainbowError, logger } from '~/logger';
 
@@ -134,7 +133,7 @@ async function parseConsolidatedTransactions(
       parseTransaction({
         tx,
         currency,
-        chainId: chainIdFromChainName(tx?.network ?? ChainName.mainnet),
+        chainId: chainNameToIdMapping[tx?.network ?? ChainName.mainnet],
       }),
     )
     .filter(Boolean);

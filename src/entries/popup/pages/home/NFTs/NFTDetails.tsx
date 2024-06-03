@@ -14,13 +14,14 @@ import { useCurrentAddressStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useSelectedNftStore } from '~/core/state/selectedNft';
 import { AddressOrEth } from '~/core/types/assets';
-import { ChainName, ChainNameDisplay } from '~/core/types/chains';
+import {
+  ChainName,
+  ChainNameDisplay,
+  chainNameToIdMapping,
+} from '~/core/types/chains';
 import { UniqueAsset } from '~/core/types/nfts';
 import { truncateAddress } from '~/core/utils/address';
-import {
-  chainIdFromChainName,
-  getBlockExplorerHostForChain,
-} from '~/core/utils/chains';
+import { getBlockExplorerHostForChain } from '~/core/utils/chains';
 import { copyAddress } from '~/core/utils/copy';
 import {
   getUniqueAssetImagePreviewURL,
@@ -702,7 +703,7 @@ const NFTAccordionAboutSection = ({
   showFloorPriceExplainerSheet: () => void;
 }) => {
   const networkDisplay = nft?.network
-    ? ChainNameDisplay[chainIdFromChainName(nft?.network)]
+    ? ChainNameDisplay[chainNameToIdMapping[nft?.network]]
     : '';
   const deployedBy = nft?.asset_contract?.deployed_by;
   const { data: creatorEnsName } = useEnsName({
@@ -804,9 +805,9 @@ const NFTAccordionAboutSection = ({
             </Inline>
             <Inline alignVertical="center" space="6px">
               <ChainBadge
-                chainId={chainIdFromChainName(
-                  nft?.network || ChainName.mainnet,
-                )}
+                chainId={
+                  chainNameToIdMapping[nft?.network || ChainName.mainnet]
+                }
                 size={12}
               />
               <TextOverflow
@@ -1083,7 +1084,7 @@ const NFTEtherscanLinkButton = ({
   }
 
   const blockExplorerUrl = `https://${getBlockExplorerHostForChain(
-    chainIdFromChainName(network as ChainName),
+    chainNameToIdMapping[network as ChainName],
   )}/token/${contractAddress}`;
   const title =
     network === 'mainnet' ? 'Etherscan' : i18n.t('nfts.details.explorer');

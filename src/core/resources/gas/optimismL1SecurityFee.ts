@@ -8,11 +8,9 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
+import { needsL1SecurityFeeChains } from '~/core/references/chains';
 import { ChainId } from '~/core/types/chains';
-import {
-  calculateL1FeeOptimism,
-  chainNeedsL1SecurityFee,
-} from '~/core/utils/gas';
+import { calculateL1FeeOptimism } from '~/core/utils/gas';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 
 // ///////////////////////////////////////////////
@@ -50,7 +48,7 @@ type OptimismL1SecurityFeeQueryKey = ReturnType<
 async function optimismL1SecurityFeeQueryFunction({
   queryKey: [{ transactionRequest, chainId }],
 }: QueryFunctionArgs<typeof optimismL1SecurityFeeQueryKey>) {
-  if (chainNeedsL1SecurityFee(chainId)) {
+  if (needsL1SecurityFeeChains.includes(chainId)) {
     const provider = getProvider({ chainId: ChainId.optimism });
     const gasPrice = await provider.getGasPrice();
     const l1Fee = await calculateL1FeeOptimism({
@@ -105,6 +103,6 @@ export function useOptimismL1SecurityFee(
     queryFn: optimismL1SecurityFeeQueryFunction,
     ...config,
     placeholderData: (previousData) =>
-      chainNeedsL1SecurityFee(chainId) ? previousData : null,
+      needsL1SecurityFeeChains.includes(chainId) ? previousData : null,
   });
 }

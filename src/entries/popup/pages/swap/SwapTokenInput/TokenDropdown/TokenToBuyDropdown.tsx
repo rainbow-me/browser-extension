@@ -4,7 +4,6 @@ import { useMemo } from 'react';
 import { i18n } from '~/core/languages';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { isL2Chain } from '~/core/utils/chains';
 import { Box, Inline, Row, Rows, Stack, Symbol, Text } from '~/design-system';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
 import { SwitchNetworkMenu } from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
@@ -34,7 +33,7 @@ export const TokenToBuyDropdown = ({
   onDropdownChange,
 }: TokenToBuyDropdownProps) => {
   const isL2 = useMemo(
-    () => outputChainId && isL2Chain(outputChainId),
+    () => outputChainId && outputChainId !== ChainId.mainnet,
     [outputChainId],
   );
 

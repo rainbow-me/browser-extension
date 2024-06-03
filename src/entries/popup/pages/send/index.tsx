@@ -38,14 +38,14 @@ import {
   ParsedAsset,
   ParsedUserAsset,
 } from '~/core/types/assets';
-import { ChainId } from '~/core/types/chains';
+import { ChainId, chainNameToIdMapping } from '~/core/types/chains';
 import {
   TransactionGasParams,
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
 import { UniqueAsset } from '~/core/types/nfts';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
-import { chainIdFromChainName, chainIdToUse } from '~/core/utils/chains';
+import { chainIdToUse } from '~/core/utils/chains';
 import {
   getUniqueAssetImagePreviewURL,
   getUniqueAssetImageThumbnailURL,
@@ -283,14 +283,14 @@ export function Send() {
   const buildNftAssetObject = useCallback((nft: UniqueAsset) => {
     return {
       address: (nft.asset_contract.address || '') as AddressOrEth,
-      chainId: chainIdFromChainName(nft.network),
+      chainId: chainNameToIdMapping[nft.network],
       chainName: nft.network,
       isNativeAsset: false,
       name: nft.name,
       symbol: nft.collection.name,
-      uniqueId: `${nft.asset_contract.address || ''}_${chainIdFromChainName(
-        nft.network,
-      )}`,
+      uniqueId: `${nft.asset_contract.address || ''}_${
+        chainNameToIdMapping[nft.network]
+      }`,
       decimals: 0,
       native: {
         price: {
