@@ -1,18 +1,11 @@
 import {
   Chain,
-  arbitrum,
   arbitrumNova,
-  arbitrumSepolia,
   aurora,
   avalanche,
-  avalancheFuji,
-  base,
-  baseSepolia,
   blast,
   blastSepolia,
   boba,
-  bsc,
-  bscTestnet,
   canto,
   celo,
   classic,
@@ -22,58 +15,59 @@ import {
   fantom,
   filecoin,
   harmonyOne,
-  holesky,
   immutableZkEvm,
   kava,
   klaytn,
   linea,
-  mainnet,
   manta,
   mantle,
   metis,
   mode,
   moonbeam,
   opBNB,
-  optimism,
-  optimismSepolia,
   palm,
   pgn,
-  polygon,
-  polygonAmoy,
   polygonZkEvm,
   pulsechain,
   rootstock,
   scroll,
-  sepolia,
   zkSync,
-  zora,
-  zoraSepolia,
 } from 'viem/chains';
 
-import { ChainId, ChainName, ChainNameDisplay } from '../types/chains';
+import dataBackendChains from 'static/data/chains.json';
 
-export const SUPPORTED_CHAINS: Chain[] = [
-  mainnet,
-  polygon,
-  optimism,
-  arbitrum,
-  holesky,
-  base,
-  zora,
-  bsc,
-  sepolia,
-  optimismSepolia,
-  bscTestnet,
-  arbitrumSepolia,
-  baseSepolia,
-  zoraSepolia,
-  avalanche,
-  avalancheFuji,
-  blast,
-  blastSepolia,
-  polygonAmoy,
-  degen,
-].map((chain) => ({ ...chain, name: ChainNameDisplay[chain.id] }));
+import { BackendNetwork, ChainId, ChainName } from '../types/chains';
+import { transformBackendNetworksToChains } from '../utils/backendNetworks';
+
+export const defaultRPC: { [key in ChainId]?: string } = {
+  [ChainId.mainnet]: process.env.ETH_MAINNET_RPC,
+  [ChainId.optimism]: process.env.OPTIMISM_MAINNET_RPC,
+  [ChainId.arbitrum]: process.env.ARBITRUM_MAINNET_RPC,
+  [ChainId.polygon]: process.env.POLYGON_MAINNET_RPC,
+  [ChainId.base]: process.env.BASE_MAINNET_RPC,
+  [ChainId.zora]: process.env.ZORA_MAINNET_RPC,
+  [ChainId.bsc]: process.env.BSC_MAINNET_RPC,
+  [ChainId.sepolia]: process.env.ETH_SEPOLIA_RPC,
+  [ChainId.holesky]: process.env.ETH_HOLESKY_RPC,
+  [ChainId.optimismSepolia]: process.env.OPTIMISM_SEPOLIA_RPC,
+  [ChainId.bscTestnet]: process.env.BSC_TESTNET_RPC,
+  [ChainId.arbitrumSepolia]: process.env.ARBITRUM_SEPOLIA_RPC,
+  [ChainId.baseSepolia]: process.env.BASE_SEPOLIA_RPC,
+  [ChainId.zoraSepolia]: process.env.ZORA_SEPOLIA_RPC,
+  [ChainId.avalanche]: process.env.AVALANCHE_MAINNET_RPC,
+  [ChainId.avalancheFuji]: process.env.AVALANCHE_FUJI_RPC,
+  [ChainId.blast]: process.env.BLAST_MAINNET_RPC,
+  [ChainId.blastSepolia]: process.env.BLAST_SEPOLIA_RPC,
+  [ChainId.polygonAmoy]: process.env.POLYGON_AMOY_RPC,
+  [ChainId.degen]: process.env.DEGEN_MAINNET_RPC,
+};
+
+const backendNetworks = dataBackendChains as { networks: BackendNetwork[] };
+const backendChains = transformBackendNetworksToChains(
+  backendNetworks.networks,
+);
+
+export const SUPPORTED_CHAINS: Chain[] = backendChains;
 
 export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map((chain) => chain.id);
 
@@ -174,26 +168,3 @@ export const needsL1SecurityFeeChains = [
   ChainId.optimism,
   ChainId.zora,
 ];
-
-export const defaultRPC: { [key in ChainId]?: string } = {
-  [ChainId.mainnet]: process.env.ETH_MAINNET_RPC,
-  [ChainId.optimism]: process.env.OPTIMISM_MAINNET_RPC,
-  [ChainId.arbitrum]: process.env.ARBITRUM_MAINNET_RPC,
-  [ChainId.polygon]: process.env.POLYGON_MAINNET_RPC,
-  [ChainId.base]: process.env.BASE_MAINNET_RPC,
-  [ChainId.zora]: process.env.ZORA_MAINNET_RPC,
-  [ChainId.bsc]: process.env.BSC_MAINNET_RPC,
-  [ChainId.sepolia]: process.env.ETH_SEPOLIA_RPC,
-  [ChainId.holesky]: process.env.ETH_HOLESKY_RPC,
-  [ChainId.optimismSepolia]: process.env.OPTIMISM_SEPOLIA_RPC,
-  [ChainId.bscTestnet]: process.env.BSC_TESTNET_RPC,
-  [ChainId.arbitrumSepolia]: process.env.ARBITRUM_SEPOLIA_RPC,
-  [ChainId.baseSepolia]: process.env.BASE_SEPOLIA_RPC,
-  [ChainId.zoraSepolia]: process.env.ZORA_SEPOLIA_RPC,
-  [ChainId.avalanche]: process.env.AVALANCHE_MAINNET_RPC,
-  [ChainId.avalancheFuji]: process.env.AVALANCHE_FUJI_RPC,
-  [ChainId.blast]: process.env.BLAST_MAINNET_RPC,
-  [ChainId.blastSepolia]: process.env.BLAST_SEPOLIA_RPC,
-  [ChainId.polygonAmoy]: process.env.POLYGON_AMOY_RPC,
-  [ChainId.degen]: process.env.DEGEN_MAINNET_RPC,
-};

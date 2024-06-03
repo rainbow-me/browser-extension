@@ -79,7 +79,7 @@ async function fetchData() {
   }
   `;
 
-  const response = await fetch('https://metadata.s.rainbow.me/v1/graph', {
+  const response = await fetch('https://metadata.p.rainbow.me/v1/graph', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ query: graphqlQuery, variables: { device: 'BX' } }),

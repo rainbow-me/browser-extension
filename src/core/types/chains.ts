@@ -214,3 +214,72 @@ export const ChainNameDisplay = {
   [ChainId.polygonAmoy]: 'Polygon Amoy',
   [ChainId.degen]: 'Degen',
 } as const;
+
+export interface BackendNetwork {
+  chainID: string;
+  id: string;
+  name: string;
+  label: string;
+  icons: {
+    badgeURL: string;
+  };
+  testnet: boolean;
+  opStack: boolean;
+  defaultExplorer: {
+    url: string;
+    label: string;
+    transactionURL: string;
+    tokenURL: string;
+  };
+  defaultRPC: {
+    enabledDevices: string[];
+    url: string;
+  };
+  nativeAsset: {
+    address: string;
+    name: string;
+    symbol: string;
+    decimals: number;
+    iconURL: string;
+    colors: {
+      primary: string;
+      fallback: string;
+      shadow: string;
+    };
+  };
+  nativeWrappedAsset: {
+    address: string;
+    name: string;
+    symbol: string;
+    decimals: number;
+    iconURL: string;
+    colors: {
+      primary: string;
+      fallback: string;
+      shadow: string;
+    };
+  };
+  enabledServices: {
+    gas: {
+      enabled: boolean;
+      eip1559Enabled: boolean;
+      legacyEnabled: boolean;
+    };
+    trade: {
+      swapping: boolean;
+      bridging: boolean;
+    };
+    wallet: {
+      approvals: boolean;
+      transactions: boolean;
+      balance: boolean;
+      summary: boolean;
+      defiPositions: boolean;
+      hasActivity: boolean;
+    };
+    token: {
+      tokenSearch: boolean;
+      nftProxy: boolean;
+    };
+  };
+}
