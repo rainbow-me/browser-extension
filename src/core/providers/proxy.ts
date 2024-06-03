@@ -11,18 +11,8 @@ export const proxyRpcEndpoint = (endpoint: string, chainId: ChainId) => {
     !endpoint.match(/http:\/\/172.(1[6-9]|2[0-9]|3[0-1])./)
   ) {
     if (defaultRPC[chainId] === endpoint) {
-      console.log(
-        'proxy 1',
-        `${process.env.RPC_PROXY_BASE_URL}/${chainId}/${process.env.RPC_PROXY_API_KEY}`,
-      );
       return `${process.env.RPC_PROXY_BASE_URL}/${chainId}/${process.env.RPC_PROXY_API_KEY}`;
     }
-    console.log(
-      'proxy 2',
-      `${process.env.RPC_PROXY_BASE_URL}/${chainId}/${
-        process.env.RPC_PROXY_API_KEY
-      }?custom_rpc=${encodeURIComponent(endpoint)}`,
-    );
     return `${process.env.RPC_PROXY_BASE_URL}/${chainId}/${
       process.env.RPC_PROXY_API_KEY
     }?custom_rpc=${encodeURIComponent(endpoint)}`;

@@ -18,6 +18,7 @@ const supportedChains = IS_TESTING
 const createChains = (chains: Chain[]): [Chain, ...Chain[]] => {
   return chains.map((chain) => {
     const rpcUrl = handleRpcUrl(chain);
+    console.log('createChains', chain.id, rpcUrl);
     return {
       ...chain,
       rpcUrls: {

@@ -8,6 +8,8 @@ export function transformBackendNetworkToChain(network: BackendNetwork): Chain {
     throw new Error('Invalid network data');
   }
 
+  const defaultRpcUrl = proxyBackendNetworkRpcEndpoint(network.defaultRPC.url);
+
   return {
     id: parseInt(network.id, 10),
     name: network.name,
@@ -19,7 +21,10 @@ export function transformBackendNetworkToChain(network: BackendNetwork): Chain {
     },
     rpcUrls: {
       default: {
-        http: [proxyBackendNetworkRpcEndpoint(network.defaultRPC.url)],
+        http: [defaultRpcUrl],
+      },
+      public: {
+        http: [defaultRpcUrl],
       },
     },
     blockExplorers: {

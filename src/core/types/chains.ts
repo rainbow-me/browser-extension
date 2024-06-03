@@ -216,7 +216,6 @@ export const ChainNameDisplay = {
 } as const;
 
 export interface BackendNetwork {
-  chainID: string;
   id: string;
   name: string;
   label: string;

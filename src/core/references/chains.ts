@@ -34,9 +34,9 @@ import {
   zkSync,
 } from 'viem/chains';
 
-import dataBackendChains from 'static/data/chains.json';
+import backendChains from 'static/data/chains.json';
 
-import { BackendNetwork, ChainId, ChainName } from '../types/chains';
+import { ChainId, ChainName } from '../types/chains';
 import { transformBackendNetworksToChains } from '../utils/backendNetworks';
 
 export const defaultRPC: { [key in ChainId]?: string } = {
@@ -62,12 +62,9 @@ export const defaultRPC: { [key in ChainId]?: string } = {
   [ChainId.degen]: process.env.DEGEN_MAINNET_RPC,
 };
 
-const backendNetworks = dataBackendChains as { networks: BackendNetwork[] };
-const backendChains = transformBackendNetworksToChains(
-  backendNetworks.networks,
+export const SUPPORTED_CHAINS: Chain[] = transformBackendNetworksToChains(
+  backendChains.networks,
 );
-
-export const SUPPORTED_CHAINS: Chain[] = backendChains;
 
 export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map((chain) => chain.id);
 
