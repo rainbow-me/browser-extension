@@ -24,12 +24,7 @@ import {
   TokenSearchThreshold,
 } from '~/core/types/search';
 import { truncateAddress } from '~/core/utils/address';
-import {
-  getChainName,
-  isCustomChain,
-  isNativeAsset,
-  isTestnetChainId,
-} from '~/core/utils/chains';
+import { getChain, isCustomChain, isNativeAsset } from '~/core/utils/chains';
 import { copyAddress } from '~/core/utils/copy';
 import {
   FormattedCurrencyParts,
@@ -228,7 +223,7 @@ function NetworkBanner({
   chainId: ChainId;
 }) {
   const [isExplainerOpen, toggleExplainer] = useReducer((s) => !s, false);
-  const chainName = getChainName({ chainId });
+  const chainName = getChain({ chainId }).name;
 
   if (chainId === ChainId.mainnet) return null;
 
@@ -600,7 +595,7 @@ export function TokenDetails() {
   if (!token) return null;
 
   const isSwappable = !(
-    isTestnetChainId({ chainId: token?.chainId }) || !!customAsset
+    getChain({ chainId: token?.chainId }).testnet || !!customAsset
   );
 
   const isUnownedToken = !userAsset && !customAsset && !!searchedAsset;

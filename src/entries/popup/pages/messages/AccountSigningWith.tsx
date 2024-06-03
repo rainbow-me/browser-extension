@@ -1,7 +1,7 @@
 import { i18n } from '~/core/languages';
 import { ActiveSession } from '~/core/state/appSessions';
 import { ChainId } from '~/core/types/chains';
-import { getChainName } from '~/core/utils/chains';
+import { getChain } from '~/core/utils/chains';
 import { Inline, Stack, Text } from '~/design-system';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
@@ -19,7 +19,7 @@ export interface SelectedNetwork {
 
 function WalletNativeBalance({ session }: { session: ActiveSession }) {
   const chainId = session?.chainId || ChainId.mainnet;
-  const chainName = getChainName({ chainId });
+  const chainName = getChain({ chainId }).name;
   const { nativeAsset } = useNativeAsset({
     chainId,
     address: session?.address,

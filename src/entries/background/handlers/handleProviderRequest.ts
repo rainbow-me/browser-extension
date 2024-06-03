@@ -9,7 +9,10 @@ import { queueEventTracking } from '~/analytics/queueEvent';
 import { hasVault, isInitialized, isPasswordSet } from '~/core/keychain';
 import { Messenger } from '~/core/messengers';
 import { CallbackOptions } from '~/core/messengers/internal/createMessenger';
-import { SUPPORTED_CHAINS } from '~/core/references';
+import {
+  SUPPORTED_CHAINS,
+  SUPPORTED_CHAIN_IDS,
+} from '~/core/references/chains';
 import {
   appSessionsStore,
   notificationWindowStore,
@@ -21,7 +24,7 @@ import { userChainsStore } from '~/core/state/userChains';
 import { SessionStorage } from '~/core/storage';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
-import { isCustomChain, isSupportedChainId } from '~/core/utils/chains';
+import { isCustomChain } from '~/core/utils/chains';
 import { getDappHost, isValidUrl } from '~/core/utils/connectedApps';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { WELCOME_URL, goToNewTab } from '~/core/utils/tabs';
@@ -244,7 +247,7 @@ export const handleProviderRequest = ({
   rnbwHandleProviderRequest({
     providerRequestTransport: providerRequestTransport,
     isSupportedChain: (chainId: number) =>
-      isSupportedChainId(chainId) || isCustomChain(chainId),
+      SUPPORTED_CHAIN_IDS.includes(chainId) || isCustomChain(chainId),
     getActiveSession: ({ host }: { host: string }) =>
       appSessionsStore.getState().getActiveSession({ host }),
     getChainNativeCurrency: (chainId: number) =>
@@ -358,7 +361,8 @@ export const handleProviderRequest = ({
         .getState()
         .getActiveChain({ chainId: proposedChainId });
       const supportedChainId =
-        isCustomChain(proposedChainId) || isSupportedChainId(proposedChainId);
+        isCustomChain(proposedChainId) ||
+        SUPPORTED_CHAIN_IDS.includes(proposedChainId);
       inpageMessenger?.send('rainbow_ethereumChainEvent', {
         chainId: proposedChainId,
         chainName: chain?.name || 'NO NAME',

@@ -6,12 +6,9 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useNftsStore } from '~/core/state/nfts';
 import { useSelectedNftStore } from '~/core/state/selectedNft';
-import { ChainName } from '~/core/types/chains';
+import { ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import { UniqueAsset } from '~/core/types/nfts';
-import {
-  chainIdFromChainName,
-  getBlockExplorerHostForChain,
-} from '~/core/utils/chains';
+import { getBlockExplorerHostForChain } from '~/core/utils/chains';
 import { goToNewTab } from '~/core/utils/tabs';
 import {
   Box,
@@ -72,11 +69,11 @@ export default function NFTDropdownMenu({
 
     if (nft?.network === 'mainnet') {
       return `https://${getBlockExplorerHostForChain(
-        chainIdFromChainName(nft?.network as ChainName),
+        chainNameToIdMapping[nft?.network as ChainName],
       )}/nft/${nft?.asset_contract.address}/${nft?.id}`;
     } else {
       return `https://${getBlockExplorerHostForChain(
-        chainIdFromChainName(nft?.network as ChainName),
+        chainNameToIdMapping[nft?.network as ChainName],
       )}/token/${nft?.asset_contract.address}?a=${nft?.id}`;
     }
   };

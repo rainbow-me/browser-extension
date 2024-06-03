@@ -5,8 +5,8 @@ import { useConfig } from 'wagmi';
 import { useUserTestnetNativeAsset } from '~/core/resources/assets/userTestnetNativeAsset';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { ParsedUserAsset } from '~/core/types/assets';
-import { ChainId } from '~/core/types/chains';
-import { chainNameFromChainId, isCustomChain } from '~/core/utils/chains';
+import { ChainId, chainIdToNameMapping } from '~/core/types/chains';
+import { isCustomChain } from '~/core/utils/chains';
 
 import { useCustomNetworkAsset } from './useCustomNetworkAsset';
 import {
@@ -30,7 +30,7 @@ const useMockNativeAsset = ({
   return {
     ...nativeAsset,
     chainId: chain.id,
-    chainName: chainNameFromChainId(chain.id),
+    chainName: chainIdToNameMapping[chain.id],
     native: {
       balance: { amount: '0', display: `0 ${nativeAsset?.symbol}` },
     },
@@ -51,7 +51,6 @@ export const useNativeAsset = ({
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
     chainId: chainId || ChainId.mainnet,
   });
-  console.log('-- nativeAssetUniqueId', nativeAssetUniqueId);
   const { data: userNativeAsset } = useUserAsset(
     nativeAssetUniqueId || '',
     address || currentAddress,
@@ -72,12 +71,6 @@ export const useNativeAsset = ({
 
   const chain = chains.find((chain) => chain.id === chainId);
   const isChainIdCustomNetwork = isCustomChain(chainId);
-  console.log(
-    '-- isChainIdCustomNetwork',
-    isChainIdCustomNetwork,
-    customNetworkNativeAsset,
-  );
-  console.log('-- chain?.testnet', chain, testnetNativeAsset);
 
   let nativeAsset: ParsedUserAsset | undefined | null;
   if (isChainIdCustomNetwork) {

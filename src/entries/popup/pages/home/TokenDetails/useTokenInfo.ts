@@ -4,10 +4,10 @@ import { Address } from 'viem';
 import { metadataClient } from '~/core/graphql';
 import { AboutTokenQuery } from '~/core/graphql/__generated__/metadata';
 import { createQueryKey } from '~/core/react-query';
+import { SUPPORTED_CHAIN_IDS } from '~/core/references/chains';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { isDefaultSupportedChain } from '~/core/utils/chains';
 import { formatCurrency } from '~/core/utils/formatNumber';
 
 const parseTokenInfo = (token: AboutTokenQuery['token']) => {
@@ -57,7 +57,7 @@ export const useTokenInfo = <Select = ParsedTokenInfo>(
       { ...(args ? { args } : {}) },
       { persisterVersion: 2 },
     ),
-    enabled: !!token && isDefaultSupportedChain({ chainId: token.chainId }),
+    enabled: !!token && SUPPORTED_CHAIN_IDS.includes(token.chainId),
     ...options,
   });
 };

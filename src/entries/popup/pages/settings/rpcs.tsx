@@ -7,8 +7,8 @@ import { i18n } from '~/core/languages';
 import {
   SUPPORTED_CHAINS,
   SUPPORTED_CHAIN_IDS,
-  getDefaultRPC,
-} from '~/core/references';
+  defaultRPC,
+} from '~/core/references/chains';
 import { selectUserAssetsDictByChain } from '~/core/resources/_selectors/assets';
 import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
 import {
@@ -57,9 +57,9 @@ import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
 const isDefaultRPC = (chain: Chain) => {
-  const defaultRPC = getDefaultRPC(chain.id);
-  if (!defaultRPC) return false;
-  return chain.rpcUrls.default.http[0] === defaultRPC.http;
+  const rpc = defaultRPC[chain.id];
+  if (!rpc) return false;
+  return chain.rpcUrls.default.http[0] === rpc;
 };
 
 export function SettingsNetworksRPCs() {
@@ -98,8 +98,6 @@ export function SettingsNetworksRPCs() {
   const { developerToolsEnabled } = useDeveloperToolsEnabledStore();
   const { rainbowChains, setActiveRPC, removeCustomRPC } =
     useRainbowChainsStore();
-
-  console.log('-- rainbowChains', rainbowChains);
 
   const rainbowChain = rainbowChains[Number(chainId)];
 
