@@ -86,7 +86,10 @@ async function fetchData() {
   });
 
   const { data } = await response.json();
-  await fs.writeJson(path.join(__dirname, '../static/data/chains.json'), data);
+  const filePath = path.join(__dirname, '../static/data/chains.json');
+
+  await fs.ensureFile(filePath);
+  await fs.writeJson(filePath, data);
 }
 
 async function main() {
