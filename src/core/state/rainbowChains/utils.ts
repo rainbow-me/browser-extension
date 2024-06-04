@@ -8,17 +8,9 @@ import { RainbowChain, RainbowChainsState } from '.';
 export const getInitialRainbowChains = () => {
   const rainbowChains: Record<number, RainbowChain> = {};
   SUPPORTED_CHAINS.forEach((chain) => {
-    const rpcUrl = chain.rpcUrls.default.http[0];
-    const rnbwChain = {
-      ...chain,
-      rpcUrls: {
-        default: { http: [rpcUrl] },
-        public: { http: [rpcUrl] },
-      },
-    };
     rainbowChains[chain.id] = {
-      activeRpcUrl: rpcUrl,
-      chains: [rnbwChain],
+      activeRpcUrl: chain.rpcUrls.default.http[0],
+      chains: [chain],
     };
   });
   return rainbowChains;
