@@ -1,23 +1,13 @@
 import { Chain } from 'viem';
 
 import { SUPPORTED_CHAINS } from '~/core/references/chains';
-import {
-  ChainId,
-  chainHardhat,
-  chainHardhatOptimism,
-} from '~/core/types/chains';
+import { ChainId } from '~/core/types/chains';
 
 import { RainbowChain, RainbowChainsState } from '.';
 
-const IS_TESTING = process.env.IS_TESTING === 'true';
-
-export const RAINBOW_CHAINS_SUPPORTED = IS_TESTING
-  ? SUPPORTED_CHAINS.concat(chainHardhat, chainHardhatOptimism)
-  : SUPPORTED_CHAINS;
-
 export const getInitialRainbowChains = () => {
   const rainbowChains: Record<number, RainbowChain> = {};
-  RAINBOW_CHAINS_SUPPORTED.forEach((chain) => {
+  SUPPORTED_CHAINS.forEach((chain) => {
     const rpcUrl = chain.rpcUrls.default.http[0];
     const rnbwChain = {
       ...chain,

@@ -5,15 +5,8 @@ import { createConfig } from 'wagmi';
 import { useRainbowChains } from '~/entries/popup/hooks/useRainbowChains';
 
 import { SUPPORTED_CHAINS } from '../references/chains';
-import { chainHardhat, chainHardhatOptimism } from '../types/chains';
 
 import { handleRpcUrl } from './clientRpc';
-
-const IS_TESTING = process.env.IS_TESTING === 'true';
-
-const supportedChains = IS_TESTING
-  ? [...SUPPORTED_CHAINS, chainHardhat, chainHardhatOptimism]
-  : SUPPORTED_CHAINS;
 
 const createChains = (chains: Chain[]): [Chain, ...Chain[]] => {
   return chains.map((chain) => {
@@ -36,8 +29,8 @@ const createTransports = (chains: Chain[]): Record<number, Transport> => {
 };
 
 let wagmiConfig = createConfig({
-  chains: createChains(supportedChains),
-  transports: createTransports(supportedChains),
+  chains: createChains(SUPPORTED_CHAINS),
+  transports: createTransports(SUPPORTED_CHAINS),
 });
 
 const updateWagmiConfig = (chains: Chain[]) => {

@@ -11,7 +11,6 @@ import {
   SUPPORTED_CHAINS,
   SUPPORTED_MAINNET_CHAINS,
 } from '../references/chains';
-import { RAINBOW_CHAINS_SUPPORTED } from '../state/rainbowChains/utils';
 import { AddressOrEth } from '../types/assets';
 import { wagmiConfig } from '../wagmi';
 
@@ -92,7 +91,7 @@ export function getChain({ chainId }: { chainId?: ChainId }) {
 }
 
 export const isCustomChain = (chainId: number) =>
-  !RAINBOW_CHAINS_SUPPORTED.map((chain) => chain.id).includes(chainId) &&
+  !SUPPORTED_CHAINS.map((chain) => chain.id).includes(chainId) &&
   !!findRainbowChainForChainId(chainId);
 
 export function isNativeAsset(address: AddressOrEth, chainId: ChainId) {

@@ -36,12 +36,21 @@ import {
 
 import backendChains from 'static/data/chains.json';
 
-import { ChainId, ChainName } from '../types/chains';
+import {
+  ChainId,
+  ChainName,
+  chainHardhat,
+  chainHardhatOptimism,
+} from '../types/chains';
 import { transformBackendNetworksToChains } from '../utils/backendNetworks';
 
-export const SUPPORTED_CHAINS: Chain[] = transformBackendNetworksToChains(
-  backendChains.networks,
-);
+const IS_TESTING = process.env.IS_TESTING === 'true';
+
+const BACKEND_CHAINS = transformBackendNetworksToChains(backendChains.networks);
+
+export const SUPPORTED_CHAINS: Chain[] = IS_TESTING
+  ? [...BACKEND_CHAINS, chainHardhat, chainHardhatOptimism]
+  : BACKEND_CHAINS;
 
 export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map((chain) => chain.id);
 
