@@ -1,6 +1,6 @@
 import { Chain } from 'viem';
 
-import { SUPPORTED_CHAINS, defaultRPC } from '~/core/references/chains';
+import { SUPPORTED_CHAINS } from '~/core/references/chains';
 import {
   ChainId,
   chainHardhat,
@@ -18,7 +18,7 @@ export const RAINBOW_CHAINS_SUPPORTED = IS_TESTING
 export const getInitialRainbowChains = () => {
   const rainbowChains: Record<number, RainbowChain> = {};
   RAINBOW_CHAINS_SUPPORTED.forEach((chain) => {
-    const rpcUrl = defaultRPC[chain.id] || chain.rpcUrls.default.http[0];
+    const rpcUrl = chain.rpcUrls.default.http[0];
     const rnbwChain = {
       ...chain,
       rpcUrls: {

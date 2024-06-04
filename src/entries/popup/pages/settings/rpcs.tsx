@@ -7,7 +7,6 @@ import { i18n } from '~/core/languages';
 import {
   SUPPORTED_CHAINS,
   SUPPORTED_CHAIN_IDS,
-  defaultRPC,
 } from '~/core/references/chains';
 import { selectUserAssetsDictByChain } from '~/core/resources/_selectors/assets';
 import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
@@ -57,7 +56,8 @@ import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
 const isDefaultRPC = (chain: Chain) => {
-  const rpc = defaultRPC[chain.id];
+  const rpc = SUPPORTED_CHAINS.find((c) => c.id === chain.id)?.rpcUrls.default
+    .http[0];
   if (!rpc) return false;
   return chain.rpcUrls.default.http[0] === rpc;
 };
