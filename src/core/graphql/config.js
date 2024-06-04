@@ -13,11 +13,4 @@ exports.config = {
     },
     document: './queries/metadata.graphql',
   },
-  metadataStaging: {
-    schema: {
-      method: 'GET',
-      url: 'https://metadata.s.rainbow.me/v1/graph',
-    },
-    document: './queries/metadataStaging.graphql',
-  },
 };
