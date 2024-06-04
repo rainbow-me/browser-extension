@@ -27,6 +27,6 @@ export const handleRpcUrl = (chain: Chain) => {
   ) {
     return chainHardhat.rpcUrls.default.http[0];
   } else {
-    return proxyRpcEndpoint(getOriginalRpcEndpoint(chain) || '', chain.id);
+    return proxyRpcEndpoint(getOriginalRpcEndpoint(chain), chain.id);
   }
 };
