@@ -54,25 +54,25 @@ async function fetchData() {
     }
     enabledServices {
       gas {
-      enabled
-      eip1559Enabled
-      legacyEnabled
+		enabled
+		eip1559Enabled
+		legacyEnabled
       }
       trade {
-      swapping
-      bridging
+		swapping
+		bridging
       }
       wallet {
-      approvals
-      transactions
-      balance
-      summary
-      defiPositions
-      hasActivity
+		approvals
+		transactions
+		balance
+		summary
+		defiPositions
+		hasActivity
       }
       token {
-      tokenSearch
-      nftProxy
+		tokenSearch
+		nftProxy
       }
     }
     }
