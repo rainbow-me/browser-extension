@@ -6,7 +6,10 @@ import { ChainId } from '~/core/types/chains';
 import { IndependentField } from '~/entries/popup/hooks/swap/useSwapInputs';
 import useKeyboardAnalytics from '~/entries/popup/hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
-import { AssetToBuySection } from '~/entries/popup/hooks/useSearchCurrencyLists';
+import {
+  AssetToBuySearchStatus,
+  AssetToBuySection,
+} from '~/entries/popup/hooks/useSearchCurrencyLists';
 import { mergeRefs } from '~/entries/popup/utils/mergeRefs';
 
 import { TokenToBuyDropdown } from './TokenDropdown/TokenToBuyDropdown';
@@ -30,6 +33,7 @@ interface TokenToBuyProps {
   openDropdownOnMount?: boolean;
   assetToBuyNativeDisplay: { amount: string; display: string } | null;
   assetToSellNativeDisplay: { amount: string; display: string } | null;
+  assetsToBuySearchStatus: AssetToBuySearchStatus;
   onDropdownOpen: (open: boolean) => void;
   setOutputChainId?: (chainId: ChainId) => void;
   selectAsset: (asset: ParsedSearchAsset | null) => void;
@@ -56,6 +60,7 @@ export const TokenToBuyInput = forwardRef(function TokenToBuyInput(
     inputRef,
     inputDisabled,
     openDropdownOnMount,
+    assetsToBuySearchStatus,
     onDropdownOpen,
     selectAsset,
     setAssetFilter,
@@ -116,6 +121,7 @@ export const TokenToBuyInput = forwardRef(function TokenToBuyInput(
           onDropdownChange={onDropdownChange}
           asset={assetToBuy}
           assets={assets}
+          searchStatus={assetsToBuySearchStatus}
           onSelectAsset={onSelectAssetRef?.current}
           outputChainId={outputChainId}
           setOutputChainId={setOutputChainId}

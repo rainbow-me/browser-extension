@@ -24,7 +24,8 @@ import {
   TokenSearchListId,
   TokenSearchThreshold,
 } from '~/core/types/search';
-import { getBackendSupportedChains, isCustomChain } from '~/core/utils/chains';
+import { isCustomChain } from '~/core/utils/chains';
+import { useUserChains } from '~/entries/popup/hooks/useUserChains';
 
 // ///////////////////////////////////////////////
 // Query Types
@@ -32,6 +33,13 @@ import { getBackendSupportedChains, isCustomChain } from '~/core/utils/chains';
 export type TokenSearchArgs = {
   chainId: ChainId;
   fromChainId?: ChainId | '';
+  keys: TokenSearchAssetKey[];
+  list: TokenSearchListId;
+  threshold: TokenSearchThreshold;
+  query: string;
+};
+
+export type TokenSearchAllNetworksArgs = {
   keys: TokenSearchAssetKey[];
   list: TokenSearchListId;
   threshold: TokenSearchThreshold;
@@ -178,20 +186,29 @@ export function useTokenSearch(
 // ///////////////////////////////////////////////
 // Query Hook
 
-export function useTokenSearchAllNetworks({
-  keys,
-  list,
-  threshold,
-  query,
-}: Omit<TokenSearchArgs, 'chainId' | 'fromChainId'>) {
+export function useTokenSearchAllNetworks(
+  {
+    keys,
+    list,
+    threshold,
+    query,
+  }: Omit<TokenSearchArgs, 'chainId' | 'fromChainId'>,
+  config: QueryConfig<
+    TokenSearchResult,
+    Error,
+    TokenSearchResult,
+    TokenSearchQueryKey
+  > = {},
+) {
   const { testnetMode } = useTestnetModeStore();
+  const { chains: userChains } = useUserChains();
 
-  const rainbowSupportedChains = getBackendSupportedChains({
-    testnetMode: false,
-  }).filter(({ id }) => !isCustomChain(id));
+  const supportedNetworks = userChains.filter(
+    (chain) => !isCustomChain(chain.id),
+  );
 
   const queries = useQueries({
-    queries: rainbowSupportedChains.map(({ id: chainId }) => {
+    queries: supportedNetworks.map(({ id: chainId }) => {
       return {
         queryKey: tokenSearchQueryKey({
           chainId,
@@ -202,13 +219,14 @@ export function useTokenSearchAllNetworks({
         }),
         queryFn: tokenSearchQueryFunction,
         select: (data: SearchAsset[]) => {
-          if (!isAddress(query)) return [];
+          if (!isAddress(query) || testnetMode) return [];
           return data;
         },
         // testnet is not supported at the moment
         enabled: isAddress(query) && !testnetMode,
         refetchOnWindowFocus: false,
         staleTime: 10 * 60 * 1_000, // 10 min
+        ...config,
       };
     }),
   });
