@@ -7,12 +7,11 @@ export function transformBackendNetworkToChain(network: BackendNetwork): Chain {
   if (!network) {
     throw new Error('Invalid network data');
   }
-
   const defaultRpcUrl = proxyBackendNetworkRpcEndpoint(network.defaultRPC.url);
 
   return {
     id: parseInt(network.id, 10),
-    name: network.name,
+    name: network.label,
     testnet: network.testnet,
     nativeCurrency: {
       name: network.nativeAsset.name,

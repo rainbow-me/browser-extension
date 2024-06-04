@@ -8,8 +8,8 @@ const fs = require('fs-extra');
  */
 async function fetchData() {
   const graphqlQuery = `
-  query getNetworks($device: Device!) {
-    networks(device: $device) {
+  query getNetworks($device: Device!, $includeTestnets: Boolean!) {
+    networks(device: $device, includeTestnets: $includeTestnets) {
     id
     name
     label
@@ -82,7 +82,10 @@ async function fetchData() {
   const response = await fetch('https://metadata.p.rainbow.me/v1/graph', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ query: graphqlQuery, variables: { device: 'BX' } }),
+    body: JSON.stringify({
+      query: graphqlQuery,
+      variables: { device: 'BX', includeTestnets: true },
+    }),
   });
 
   const { data } = await response.json();

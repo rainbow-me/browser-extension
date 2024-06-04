@@ -207,7 +207,6 @@ export const useValidateInput = (input: string) => {
     },
   });
 
-  console.log('- addressFromEns', addressFromEns);
   const savedNames = useSavedEnsNames.use.savedNames();
 
   const isLoading = isFetchingEns;
