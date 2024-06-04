@@ -46,7 +46,7 @@ export function useUserAssetsBalance() {
   );
 
   const {
-    data: totalAssetsBalanceCustomNetworks = [],
+    data: totalAssetsBalanceCustomNetworks,
     isLoading: customNetworksIsLoading,
   } = useCustomNetworkAssets(
     {
@@ -65,8 +65,8 @@ export function useUserAssetsBalance() {
   );
 
   const totalAssetsBalance = add(
-    totalAssetsBalanceKnownNetworks as string,
-    totalAssetsBalanceCustomNetworks as string,
+    totalAssetsBalanceKnownNetworks ?? '0',
+    totalAssetsBalanceCustomNetworks ?? '0',
   );
 
   return {
