@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import { Address } from 'wagmi';
 
+import { SupportedCurrencyKey } from '~/core/references';
 import {
   selectUserAssetsBalance,
   selectorFilterByUserChains,
@@ -13,11 +14,16 @@ import {
   useHiddenAssetStore,
 } from '~/core/state/hiddenAssets/hiddenAssets';
 import { ParsedUserAsset } from '~/core/types/assets';
+import { ChainId } from '~/core/types/chains';
 import { add, convertAmountToNativeDisplay } from '~/core/utils/numbers';
 
-export function useUserAssetsBalance() {
+export function useUserAssetsBalance(args?: {
+  chain?: ChainId;
+  currency?: SupportedCurrencyKey;
+}) {
+  const { chain, currency } = args || {};
   const { currentAddress: address } = useCurrentAddressStore();
-  const { currentCurrency: currency } = useCurrentCurrencyStore();
+  const { currentCurrency } = useCurrentCurrencyStore();
   const { hidden } = useHiddenAssetStore();
   const isHidden = useCallback(
     (asset: ParsedUserAsset) => {
@@ -29,7 +35,7 @@ export function useUserAssetsBalance() {
   const { data: totalAssetsBalanceKnownNetworks } = useUserAssets(
     {
       address,
-      currency,
+      currency: currency || currentCurrency,
     },
     {
       select: (data) =>
@@ -38,6 +44,7 @@ export function useUserAssetsBalance() {
           selector: (assetsByChain) => {
             return selectUserAssetsBalance(assetsByChain, isHidden);
           },
+          chain,
         }),
     },
   );
@@ -46,7 +53,7 @@ export function useUserAssetsBalance() {
     useCustomNetworkAssets(
       {
         address: address as Address,
-        currency,
+        currency: currency || currentCurrency,
       },
       {
         select: (data) =>
@@ -55,6 +62,7 @@ export function useUserAssetsBalance() {
             selector: (assetsByChain) => {
               return selectUserAssetsBalance(assetsByChain, isHidden);
             },
+            chain,
           }),
       },
     );
@@ -66,6 +74,9 @@ export function useUserAssetsBalance() {
 
   return {
     amount: totalAssetsBalance,
-    display: convertAmountToNativeDisplay(totalAssetsBalance || 0, currency),
+    display: convertAmountToNativeDisplay(
+      totalAssetsBalance || 0,
+      currency || currentCurrency,
+    ),
   };
 }
