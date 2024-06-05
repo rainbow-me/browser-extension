@@ -82,3 +82,7 @@ export const nameChains: Record<number, string> = backendChains.networks.reduce(
   },
   {} as Record<number, string>,
 );
+
+export const swapSupportedChains = SUPPORTED_CHAINS.filter(
+  (chain) => backendChains.networks[chain.id]?.enabledServices.trade.swapping,
+);
