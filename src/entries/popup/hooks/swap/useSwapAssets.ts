@@ -88,7 +88,7 @@ export const useSwapAssets = ({ bridge }: { bridge: boolean }) => {
   }, [debouncedAssetToSellFilter, userAssets]) as ParsedSearchAsset[];
 
   const {
-    searchStatus: searchAssetsToBuyStatus,
+    networkSearchStatus: searchAssetsToBuyNetworkStatus,
     results: searchAssetsToBuySections,
   } = useSearchCurrencyLists({
     inputChainId: assetToSell?.chainId,
@@ -193,7 +193,7 @@ export const useSwapAssets = ({ bridge }: { bridge: boolean }) => {
     assetToSell: parsedAssetToSell,
     assetToBuy: parsedAssetToBuy,
     outputChainId: bridge ? undefined : outputChainId,
-    assetsToBuySearchStatus: searchAssetsToBuyStatus,
+    assetsToBuySearchNetworkStatus: searchAssetsToBuyNetworkStatus,
     setSortMethod,
     setAssetToSell,
     setAssetToBuy,

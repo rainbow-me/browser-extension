@@ -7,7 +7,7 @@ import { IndependentField } from '~/entries/popup/hooks/swap/useSwapInputs';
 import useKeyboardAnalytics from '~/entries/popup/hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import {
-  AssetToBuySearchStatus,
+  AssetToBuyNetworkSearchStatus,
   AssetToBuySection,
 } from '~/entries/popup/hooks/useSearchCurrencyLists';
 import { mergeRefs } from '~/entries/popup/utils/mergeRefs';
@@ -33,7 +33,7 @@ interface TokenToBuyProps {
   openDropdownOnMount?: boolean;
   assetToBuyNativeDisplay: { amount: string; display: string } | null;
   assetToSellNativeDisplay: { amount: string; display: string } | null;
-  assetsToBuySearchStatus: AssetToBuySearchStatus;
+  assetsToBuyNetworkSearchStatus: AssetToBuyNetworkSearchStatus;
   onDropdownOpen: (open: boolean) => void;
   setOutputChainId?: (chainId: ChainId) => void;
   selectAsset: (asset: ParsedSearchAsset | null) => void;
@@ -60,7 +60,7 @@ export const TokenToBuyInput = forwardRef(function TokenToBuyInput(
     inputRef,
     inputDisabled,
     openDropdownOnMount,
-    assetsToBuySearchStatus,
+    assetsToBuyNetworkSearchStatus,
     onDropdownOpen,
     selectAsset,
     setAssetFilter,
@@ -121,7 +121,7 @@ export const TokenToBuyInput = forwardRef(function TokenToBuyInput(
           onDropdownChange={onDropdownChange}
           asset={assetToBuy}
           assets={assets}
-          searchStatus={assetsToBuySearchStatus}
+          networkSearchStatus={assetsToBuyNetworkSearchStatus}
           onSelectAsset={onSelectAssetRef?.current}
           outputChainId={outputChainId}
           setOutputChainId={setOutputChainId}

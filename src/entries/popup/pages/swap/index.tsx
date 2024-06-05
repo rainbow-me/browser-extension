@@ -272,7 +272,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     sortMethod,
     assetToBuy,
     assetToSell,
-    assetsToBuySearchStatus,
+    assetsToBuySearchNetworkStatus,
     outputChainId,
     setSortMethod,
     setOutputChainId,
@@ -725,7 +725,9 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                   ref={tokenToBuyInputRef}
                   dropdownHeight={toBuyInputHeight}
                   assetToBuy={assetToBuy}
-                  assetsToBuySearchStatus={assetsToBuySearchStatus}
+                  assetsToBuyNetworkSearchStatus={
+                    assetsToBuySearchNetworkStatus
+                  }
                   assetToSell={assetToSell}
                   assets={unhiddenAssetsToBuy}
                   selectAsset={setAssetToBuy}

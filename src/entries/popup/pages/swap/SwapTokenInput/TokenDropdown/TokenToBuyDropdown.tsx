@@ -8,7 +8,7 @@ import { Box, Inline, Row, Rows, Stack, Symbol, Text } from '~/design-system';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
 import { SwitchNetworkMenu } from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
 import {
-  AssetToBuySearchStatus,
+  AssetToBuyNetworkSearchStatus,
   AssetToBuySection,
 } from '~/entries/popup/hooks/useSearchCurrencyLists';
 import { useTranslationContext } from '~/entries/popup/hooks/useTranslationContext';
@@ -22,7 +22,7 @@ export type TokenToBuyDropdownProps = {
   asset: ParsedSearchAsset | null;
   assets?: AssetToBuySection[];
   outputChainId?: ChainId;
-  searchStatus: AssetToBuySearchStatus;
+  networkSearchStatus: AssetToBuyNetworkSearchStatus;
   onSelectAsset?: (asset: ParsedSearchAsset | null) => void;
   setOutputChainId?: (chainId: ChainId) => void;
   onDropdownChange: (open: boolean) => void;
@@ -32,7 +32,7 @@ export const TokenToBuyDropdown = ({
   asset,
   assets,
   outputChainId,
-  searchStatus,
+  networkSearchStatus,
   onSelectAsset,
   setOutputChainId,
   onDropdownChange,
@@ -53,7 +53,7 @@ export const TokenToBuyDropdown = ({
     <Stack space="20px">
       {setOutputChainId &&
         outputChainId &&
-        searchStatus !== AssetToBuySearchStatus.all && (
+        networkSearchStatus !== AssetToBuyNetworkSearchStatus.all && (
           <Box paddingHorizontal="20px">
             <Inline alignHorizontal="justify">
               <Inline space="4px" alignVertical="center">

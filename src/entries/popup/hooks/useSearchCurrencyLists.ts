@@ -47,7 +47,7 @@ export interface AssetToBuySection {
   id: AssetToBuySectionId;
 }
 
-export enum AssetToBuySearchStatus {
+export enum AssetToBuyNetworkSearchStatus {
   all = 'all',
   single = 'single',
 }
@@ -107,9 +107,9 @@ export function useSearchCurrencyLists({
 
   const enableAllNetworkTokenSearch = queryIsAddress && !testnetMode && !bridge;
 
-  const searchStatus = enableAllNetworkTokenSearch
-    ? AssetToBuySearchStatus.all
-    : AssetToBuySearchStatus.single;
+  const networkSearchStatus = enableAllNetworkTokenSearch
+    ? AssetToBuyNetworkSearchStatus.all
+    : AssetToBuyNetworkSearchStatus.single;
 
   // static search data
   const {
@@ -567,6 +567,6 @@ export function useSearchCurrencyLists({
   return {
     loading,
     results,
-    searchStatus,
+    networkSearchStatus,
   };
 }
