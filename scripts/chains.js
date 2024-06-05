@@ -10,71 +10,66 @@ async function fetchData() {
   const graphqlQuery = `
   query getNetworks($device: Device!, $includeTestnets: Boolean!) {
     networks(device: $device, includeTestnets: $includeTestnets) {
-    id
-    name
-    label
-    icons {
-      badgeURL
-    }
-    testnet
-    opStack
-    defaultExplorer {
-      url
+      id
+      name
       label
-      transactionURL
-      tokenURL
-    }
-    defaultRPC {
-      enabledDevices
-      url
-    }
-    nativeAsset {
-      address
-      name
-      symbol
-      decimals
-      iconURL
-      colors {
-      primary
-      fallback
-      shadow
+      icons {
+        badgeURL
       }
-    }
-    nativeWrappedAsset {
-      address
-      name
-      symbol
-      decimals
-      iconURL
-      colors {
-      primary
-      fallback
-      shadow
+      testnet
+      opStack
+      defaultExplorer {
+        url
+        label
+        transactionURL
+        tokenURL
       }
-    }
-    enabledServices {
-      gas {
-        enabled
-        eip1559Enabled
-        legacyEnabled
+      defaultRPC {
+        enabledDevices
+        url
       }
-      trade {
-        swapping
-        bridging
+      nativeAsset {
+        address
+        name
+        symbol
+        decimals
+        iconURL
+        colors {
+          primary
+          fallback
+          shadow
+        }
       }
-      wallet {
-        approvals
-        transactions
-        balance
-        summary
-        defiPositions
-        hasActivity
+      nativeWrappedAsset {
+          address
+          name
+          symbol
+          decimals
+          iconURL
+          colors {
+          primary
+          fallback
+          shadow
+        }
       }
-      token {
-        tokenSearch
-        nftProxy
+      enabledServices {
+        gas {
+          enabled
+        }
+        trade {
+          swapping
+        }
+        wallet {
+          approvals
+          transactions
+          balance
+          summary
+        }
+        token {
+          tokenSearch
+          nftProxy
+        }
       }
-    }
     }
   }
   `;
