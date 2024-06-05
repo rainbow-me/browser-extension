@@ -1,3 +1,4 @@
+import backendChains from 'static/data/chains.json';
 import {
   Chain,
   arbitrumNova,
@@ -34,9 +35,8 @@ import {
   zkSync,
 } from 'viem/chains';
 
-import backendChains from 'static/data/chains.json';
-
 import {
+  BackendNetwork,
   ChainId,
   ChainName,
   chainHardhat,
@@ -57,6 +57,46 @@ export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map((chain) => chain.id);
 export const SUPPORTED_MAINNET_CHAINS: Chain[] = SUPPORTED_CHAINS.filter(
   (chain) => !chain.testnet,
 );
+
+export const simpleHashSupportedChainNames = [
+  'ethereum',
+  ChainName.polygon,
+  ChainName.arbitrum,
+  ChainName.arbitrumNova,
+  ChainName.avalanche,
+  ChainName.base,
+  ChainName.blast,
+  ChainName.bsc,
+  ChainName.celo,
+  ChainName.gnosis,
+  ChainName.linea,
+  ChainName.manta,
+  ChainName.optimism,
+  ChainName.polygonZkEvm,
+  ChainName.rari,
+  ChainName.scroll,
+  ChainName.zora,
+] as (ChainName | 'ethereum' | 'ethereum-sepolia')[];
+
+export const simpleHashSupportedTestnetChainNames = [
+  'ethereum-sepolia',
+  ChainName.arbitrumSepolia,
+  ChainName.baseSepolia,
+  ChainName.blastSepolia,
+  ChainName.optimismSepolia,
+  ChainName.zoraSepolia,
+  ChainName.polygonAmoy,
+] as (ChainName | 'ethereum-sepolia' | 'ethereum')[];
+
+export const meteorologySupportedChains = backendChains.networks
+  .filter(
+    (backendChain: BackendNetwork) => backendChain.enabledServices.gas.enabled,
+  )
+  .map((backendChain: BackendNetwork) => parseInt(backendChain.id, 10));
+
+export const needsL1SecurityFeeChains = backendChains.networks
+  .filter((backendChain: BackendNetwork) => backendChain.opStack)
+  .map((backendChain: BackendNetwork) => parseInt(backendChain.id, 10));
 
 export const customChainIdsToAssetNames: Record<ChainId, string> = {
   [arbitrumNova.id]: 'arbitrumnova',
@@ -100,54 +140,3 @@ export const customChainIdsToAssetNames: Record<ChainId, string> = {
   100: 'xdai',
   [zkSync.id]: 'zksync',
 };
-
-export const simpleHashSupportedChainNames = [
-  'ethereum',
-  ChainName.polygon,
-  ChainName.arbitrum,
-  ChainName.arbitrumNova,
-  ChainName.avalanche,
-  ChainName.base,
-  ChainName.blast,
-  ChainName.bsc,
-  ChainName.celo,
-  ChainName.gnosis,
-  ChainName.linea,
-  ChainName.manta,
-  ChainName.optimism,
-  ChainName.polygonZkEvm,
-  ChainName.rari,
-  ChainName.scroll,
-  ChainName.zora,
-] as (ChainName | 'ethereum' | 'ethereum-sepolia')[];
-
-export const simpleHashSupportedTestnetChainNames = [
-  'ethereum-sepolia',
-  ChainName.arbitrumSepolia,
-  ChainName.baseSepolia,
-  ChainName.blastSepolia,
-  ChainName.optimismSepolia,
-  ChainName.zoraSepolia,
-  ChainName.polygonAmoy,
-] as (ChainName | 'ethereum-sepolia' | 'ethereum')[];
-
-export const meteorologySupportedChains = [
-  ChainId.arbitrum,
-  ChainId.avalanche,
-  ChainId.base,
-  ChainId.blast,
-  ChainId.bsc,
-  ChainId.holesky,
-  ChainId.sepolia,
-  ChainId.mainnet,
-  ChainId.polygon,
-  ChainId.optimism,
-  ChainId.zora,
-  ChainId.degen,
-];
-
-export const needsL1SecurityFeeChains = [
-  ChainId.base,
-  ChainId.optimism,
-  ChainId.zora,
-];
