@@ -155,16 +155,17 @@ export const simpleHashSupportedTestnetChainNames = [
 ] as (ChainName | 'ethereum-sepolia' | 'ethereum')[];
 
 export const meteorologySupportedChains = [
+  ChainId.arbitrum,
+  ChainId.avalanche,
+  ChainId.base,
+  ChainId.blast,
   ChainId.bsc,
-  ChainId.sepolia,
   ChainId.holesky,
+  ChainId.sepolia,
   ChainId.mainnet,
   ChainId.polygon,
-  ChainId.base,
-  ChainId.arbitrum,
   ChainId.optimism,
   ChainId.zora,
-  ChainId.avalanche,
 ];
 
 export const needsL1SecurityFeeChains = [
