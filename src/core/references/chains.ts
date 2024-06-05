@@ -74,3 +74,11 @@ export const nativeAssetChains: Record<number, AddressOrEth> =
     },
     {} as Record<number, AddressOrEth>,
   );
+
+export const nameChains: Record<number, string> = backendChains.networks.reduce(
+  (acc, backendChain) => {
+    acc[parseInt(backendChain.id, 10)] = backendChain.label;
+    return acc;
+  },
+  {} as Record<number, string>,
+);

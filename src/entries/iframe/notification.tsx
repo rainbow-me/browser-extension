@@ -3,7 +3,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { i18n } from '~/core/languages';
-import { ChainId, ChainNameDisplay } from '~/core/types/chains';
+import { nameChains } from '~/core/references/chains';
+import { ChainId } from '~/core/types/chains';
 import { isDarkColor } from '~/core/utils/colors';
 import { INJECTED_NOTIFICATION_DIMENSIONS } from '~/core/utils/dimensions';
 import {
@@ -260,7 +261,7 @@ const NotificationComponent = ({
       case IN_DAPP_NOTIFICATION_STATUS.success:
         return {
           title: i18n.t(`injected_notifications.network_changed`),
-          description: ChainNameDisplay[chainId] || chainName,
+          description: nameChains[chainId] || chainName,
         };
       case IN_DAPP_NOTIFICATION_STATUS.unsupported_network:
         return {

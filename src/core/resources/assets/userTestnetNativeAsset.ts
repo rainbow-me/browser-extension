@@ -8,9 +8,9 @@ import {
   createQueryKey,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
-import { nativeAssetChains } from '~/core/references/chains';
+import { nameChains, nativeAssetChains } from '~/core/references/chains';
 import { ParsedUserAsset } from '~/core/types/assets';
-import { ChainId, ChainName, ChainNameDisplay } from '~/core/types/chains';
+import { ChainId, ChainName } from '~/core/types/chains';
 import { fetchAssetBalanceViaProvider } from '~/core/utils/assets';
 import { getChain } from '~/core/utils/chains';
 import { getProvider } from '~/core/wagmi/clientToProvider';
@@ -23,7 +23,7 @@ export const getNativeAssetMock = ({ chainId }: { chainId: ChainId }) => {
     address: nativeAssetChains[chainId],
     balance: { amount: '', display: '' },
     chainId: chainId,
-    chainName: ChainNameDisplay[chainId] as ChainName,
+    chainName: nameChains[chainId] as ChainName,
     colors: { primary: '#808088', fallback: '#E8EAF5' },
     decimals: chain.nativeCurrency.decimals,
     icon_url: '',

@@ -1,15 +1,4 @@
-import {
-  Chain,
-  arbitrumNova,
-  arbitrumSepolia,
-  baseSepolia,
-  celo,
-  holesky,
-  optimismSepolia,
-  polygonZkEvm,
-  scroll,
-  sepolia,
-} from 'viem/chains';
+import { Chain } from 'viem/chains';
 import * as chains from 'viem/chains';
 
 const HARDHAT_CHAIN_ID = 1337;
@@ -182,38 +171,6 @@ export const chainIdToNameMapping: {
   [ChainId.polygonAmoy]: ChainName.polygonAmoy,
   [ChainId.degen]: ChainName.degen,
 };
-
-export const ChainNameDisplay = {
-  [ChainId.arbitrum]: 'Arbitrum',
-  [ChainId.arbitrumNova]: arbitrumNova.name,
-  [ChainId.avalanche]: 'Avalanche',
-  [ChainId.avalancheFuji]: 'Avalanche Fuji',
-  [ChainId.base]: 'Base',
-  [ChainId.blast]: 'Blast',
-  [ChainId.blastSepolia]: 'Blast Sepolia',
-  [ChainId.bsc]: 'BSC',
-  [ChainId.celo]: celo.name,
-  [ChainId.linea]: 'Linea',
-  [ChainId.manta]: 'Manta',
-  [ChainId.optimism]: 'Optimism',
-  [ChainId.polygon]: 'Polygon',
-  [ChainId.polygonZkEvm]: polygonZkEvm.name,
-  [ChainId.rari]: 'RARI Chain',
-  [ChainId.scroll]: scroll.name,
-  [ChainId.zora]: 'Zora',
-  [ChainId.mainnet]: 'Ethereum',
-  [ChainId.hardhat]: 'Hardhat',
-  [ChainId.hardhatOptimism]: chainHardhatOptimism.name,
-  [ChainId.sepolia]: sepolia.name,
-  [ChainId.holesky]: holesky.name,
-  [ChainId.optimismSepolia]: optimismSepolia.name,
-  [ChainId.bscTestnet]: 'BSC Testnet',
-  [ChainId.arbitrumSepolia]: arbitrumSepolia.name,
-  [ChainId.baseSepolia]: baseSepolia.name,
-  [ChainId.zoraSepolia]: 'Zora Sepolia',
-  [ChainId.polygonAmoy]: 'Polygon Amoy',
-  [ChainId.degen]: 'Degen',
-} as const;
 
 export interface BackendNetwork {
   id: string;

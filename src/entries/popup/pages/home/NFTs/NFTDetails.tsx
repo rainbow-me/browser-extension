@@ -7,6 +7,7 @@ import { Address } from 'viem';
 import { useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { nameChains } from '~/core/references/chains';
 import { selectNftCollections } from '~/core/resources/_selectors/nfts';
 import { useEnsRegistration } from '~/core/resources/ens/ensRegistration';
 import { useNfts } from '~/core/resources/nfts';
@@ -14,11 +15,7 @@ import { useCurrentAddressStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useSelectedNftStore } from '~/core/state/selectedNft';
 import { AddressOrEth } from '~/core/types/assets';
-import {
-  ChainName,
-  ChainNameDisplay,
-  chainNameToIdMapping,
-} from '~/core/types/chains';
+import { ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import { UniqueAsset } from '~/core/types/nfts';
 import { truncateAddress } from '~/core/utils/address';
 import { getBlockExplorerHostForChain } from '~/core/utils/chains';
@@ -703,7 +700,7 @@ const NFTAccordionAboutSection = ({
   showFloorPriceExplainerSheet: () => void;
 }) => {
   const networkDisplay = nft?.network
-    ? ChainNameDisplay[chainNameToIdMapping[nft?.network]]
+    ? nameChains[chainNameToIdMapping[nft?.network]]
     : '';
   const deployedBy = nft?.asset_contract?.deployed_by;
   const { data: creatorEnsName } = useEnsName({

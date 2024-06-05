@@ -22,7 +22,8 @@ import {
   zoraSepolia,
 } from 'viem/chains';
 
-import { ChainId, ChainNameDisplay } from '../types/chains';
+import { nameChains } from '../references/chains';
+import { ChainId } from '../types/chains';
 
 import { getSupportedChains } from './chains';
 
@@ -63,18 +64,15 @@ export const chainLabelMap: Record<
   | ChainId.degen,
   string[]
 > = {
-  [ChainId.mainnet]: [
-    ChainNameDisplay[sepolia.id],
-    ChainNameDisplay[holesky.id],
-  ],
-  [ChainId.optimism]: [ChainNameDisplay[optimismSepolia.id]],
-  [ChainId.arbitrum]: [ChainNameDisplay[arbitrumSepolia.id]],
-  [ChainId.polygon]: [ChainNameDisplay[polygonAmoy.id]],
-  [ChainId.base]: [ChainNameDisplay[baseSepolia.id]],
-  [ChainId.bsc]: [ChainNameDisplay[bscTestnet.id]],
-  [ChainId.zora]: [ChainNameDisplay[zoraSepolia.id]],
-  [ChainId.avalanche]: [ChainNameDisplay[avalancheFuji.id]],
-  [ChainId.blast]: [ChainNameDisplay[blastSepolia.id]],
+  [ChainId.mainnet]: [nameChains[sepolia.id], nameChains[holesky.id]],
+  [ChainId.optimism]: [nameChains[optimismSepolia.id]],
+  [ChainId.arbitrum]: [nameChains[arbitrumSepolia.id]],
+  [ChainId.polygon]: [nameChains[polygonAmoy.id]],
+  [ChainId.base]: [nameChains[baseSepolia.id]],
+  [ChainId.bsc]: [nameChains[bscTestnet.id]],
+  [ChainId.zora]: [nameChains[zoraSepolia.id]],
+  [ChainId.avalanche]: [nameChains[avalancheFuji.id]],
+  [ChainId.blast]: [nameChains[blastSepolia.id]],
   [ChainId.degen]: [],
 };
 
