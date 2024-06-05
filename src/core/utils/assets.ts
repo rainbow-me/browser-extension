@@ -19,7 +19,7 @@ import { ChainId, ChainName, chainIdToNameMapping } from '~/core/types/chains';
 
 import { requestMetadata } from '../graphql';
 import { i18n } from '../languages';
-import { customChainIdsToAssetNames } from '../references/chains';
+import { customChainIdsToAssetNames } from '../references/assets';
 import { AddysPositionAsset } from '../resources/positions';
 import { SearchAsset } from '../types/search';
 import { wagmiConfig } from '../wagmi';
