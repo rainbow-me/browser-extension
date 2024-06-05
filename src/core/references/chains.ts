@@ -6,7 +6,6 @@ import { AddressOrEth } from '../types/assets';
 import {
   BackendNetwork,
   BackendNetworkServices,
-  ChainName,
   chainHardhat,
   chainHardhatOptimism,
 } from '../types/chains';
@@ -25,36 +24,6 @@ export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map((chain) => chain.id);
 export const SUPPORTED_MAINNET_CHAINS: Chain[] = SUPPORTED_CHAINS.filter(
   (chain) => !chain.testnet,
 );
-
-export const simpleHashSupportedChainNames = [
-  'ethereum',
-  ChainName.polygon,
-  ChainName.arbitrum,
-  ChainName.arbitrumNova,
-  ChainName.avalanche,
-  ChainName.base,
-  ChainName.blast,
-  ChainName.bsc,
-  ChainName.celo,
-  ChainName.gnosis,
-  ChainName.linea,
-  ChainName.manta,
-  ChainName.optimism,
-  ChainName.polygonZkEvm,
-  ChainName.rari,
-  ChainName.scroll,
-  ChainName.zora,
-] as (ChainName | 'ethereum' | 'ethereum-sepolia')[];
-
-export const simpleHashSupportedTestnetChainNames = [
-  'ethereum-sepolia',
-  ChainName.arbitrumSepolia,
-  ChainName.baseSepolia,
-  ChainName.blastSepolia,
-  ChainName.optimismSepolia,
-  ChainName.zoraSepolia,
-  ChainName.polygonAmoy,
-] as (ChainName | 'ethereum-sepolia' | 'ethereum')[];
 
 export const needsL1SecurityFeeChains = backendChains.networks
   .filter((backendChain: BackendNetwork) => backendChain.opStack)
@@ -77,37 +46,45 @@ export const nameChains: Record<number, string> = backendChains.networks.reduce(
   },
   {} as Record<number, string>,
 );
-const filterChainsByService = (
+const filterChainIdsByService = (
   servicePath: (services: BackendNetworkServices) => boolean,
 ): number[] => {
-  return SUPPORTED_CHAINS.filter((chain) => {
-    const backendNetworks = backendChains.networks as BackendNetwork[];
-    const services = backendNetworks[chain.id]?.enabledServices;
-    return services && servicePath(services);
-  }).map((chain) => chain.id);
+  return backendChains.networks
+    .filter((network: BackendNetwork) => {
+      const services = network?.enabledServices;
+      return services && servicePath(services);
+    })
+    .map((network: BackendNetwork) => parseInt(network.id, 10));
 };
 
-export const meteorologySupportedChains = filterChainsByService(
+export const meteorologySupportedChainIds = filterChainIdsByService(
   (services) => services.gas.enabled,
 );
-export const supportedSwapChains = filterChainsByService(
+
+export const supportedSwapChainIds = filterChainIdsByService(
   (services) => services.trade.swapping,
 );
-export const supportedApprovalChains = filterChainsByService(
+
+export const supportedApprovalChainIds = filterChainIdsByService(
   (services) => services.wallet.approvals,
 );
-export const supportedTransactionChains = filterChainsByService(
+
+export const supportedTransactionChainIds = filterChainIdsByService(
   (services) => services.wallet.transactions,
 );
-export const supportedBalanceChains = filterChainsByService(
+
+export const supportedBalanceChainIds = filterChainIdsByService(
   (services) => services.wallet.balance,
 );
-export const supportedSummaryChains = filterChainsByService(
-  (services) => services.wallet.summary,
+
+export const supportedPositionsChainIds = filterChainIdsByService(
+  (services) => services.wallet.defiPositions,
 );
-export const supportedTokenSearchChains = filterChainsByService(
+
+export const supportedTokenSearchChainIds = filterChainIdsByService(
   (services) => services.token.tokenSearch,
 );
-export const supportedNftChains = filterChainsByService(
+
+export const supportedNftChainIds = filterChainIdsByService(
   (services) => services.token.nftProxy,
 );

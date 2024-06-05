@@ -10,6 +10,7 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
+import { supportedTransactionChainIds } from '~/core/references/chains';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ParsedAssetsDictByChain, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -118,7 +119,10 @@ async function userAssetsQueryFunction({
   try {
     const supportedChainIds = getSupportedChains({
       testnets: testnetMode,
-    }).map(({ id }) => id);
+    })
+      .map(({ id }) => id)
+      .filter((id) => supportedTransactionChainIds.includes(id));
+
     const url = `/${supportedChainIds.join(',')}/${address}/assets`;
     const res = await addysHttp.get<AddressAssetsReceivedMessage>(url, {
       params: {

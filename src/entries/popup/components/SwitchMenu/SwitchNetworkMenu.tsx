@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useRef } from 'react';
 import { Chain } from 'viem';
 
 import { i18n } from '~/core/languages';
-import { supportedSwapChains } from '~/core/references/chains';
+import { supportedSwapChainIds } from '~/core/references/chains';
 import { shortcuts } from '~/core/references/shortcuts';
 import { ChainId } from '~/core/types/chains';
 import {
@@ -72,7 +72,7 @@ export const SwitchNetworkMenuSelector = ({
     () =>
       userChains.filter((chain) =>
         onlySwapSupportedNetworks
-          ? supportedSwapChains.includes(chain.id)
+          ? supportedSwapChainIds.includes(chain.id)
           : false,
       ),
     [onlySwapSupportedNetworks, userChains],

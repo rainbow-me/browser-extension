@@ -183,7 +183,7 @@ export interface BackendNetworkServices {
     approvals: boolean;
     transactions: boolean;
     balance: boolean;
-    summary: boolean;
+    defiPositions: boolean;
   };
   token: {
     tokenSearch: boolean;

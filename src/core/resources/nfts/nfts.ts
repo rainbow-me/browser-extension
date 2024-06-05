@@ -13,10 +13,6 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
-import {
-  simpleHashSupportedChainNames,
-  simpleHashSupportedTestnetChainNames,
-} from '~/core/references/chains';
 import { ChainId, ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import {
   PolygonAllowListDictionary,
@@ -29,6 +25,36 @@ import {
 } from '~/core/utils/nfts';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { NFTS_TEST_DATA } from '~/test/utils';
+
+const simpleHashSupportedChainNames = [
+  'ethereum',
+  ChainName.polygon,
+  ChainName.arbitrum,
+  ChainName.arbitrumNova,
+  ChainName.avalanche,
+  ChainName.base,
+  ChainName.blast,
+  ChainName.bsc,
+  ChainName.celo,
+  ChainName.gnosis,
+  ChainName.linea,
+  ChainName.manta,
+  ChainName.optimism,
+  ChainName.polygonZkEvm,
+  ChainName.rari,
+  ChainName.scroll,
+  ChainName.zora,
+] as (ChainName | 'ethereum' | 'ethereum-sepolia')[];
+
+const simpleHashSupportedTestnetChainNames = [
+  'ethereum-sepolia',
+  ChainName.arbitrumSepolia,
+  ChainName.baseSepolia,
+  ChainName.blastSepolia,
+  ChainName.optimismSepolia,
+  ChainName.zoraSepolia,
+  ChainName.polygonAmoy,
+] as (ChainName | 'ethereum-sepolia' | 'ethereum')[];
 
 const EMPTY_WALLET_ADDRESS = '0x3637f053D542E6D00Eee42D656dD7C59Fa33a62F';
 

@@ -10,6 +10,7 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
+import { supportedApprovalChainIds } from '~/core/references/chains';
 import { AssetApiResponse } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { TxHash } from '~/core/types/transactions';
@@ -80,8 +81,11 @@ export async function approvalsQueryFunction({
   queryKey: [{ address, chainIds, currency }],
 }: QueryFunctionArgs<typeof approvalsQueryKey>): Promise<Approval[] | null> {
   try {
+    const supportedChainIds = chainIds.filter((chainId) =>
+      supportedApprovalChainIds.includes(chainId),
+    );
     const response = await addysHttp.get(
-      `/${chainIds.join(',')}/${address}/approvals`,
+      `/${supportedChainIds.join(',')}/${address}/approvals`,
       {
         params: {
           currency: currency.toLowerCase(),

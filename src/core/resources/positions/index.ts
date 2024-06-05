@@ -10,6 +10,7 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
+import { supportedPositionsChainIds } from '~/core/references/chains';
 import { AssetApiResponse, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId, ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import { parseUserAsset } from '~/core/utils/assets';
@@ -107,7 +108,10 @@ async function positionsQueryFunction({
   try {
     const supportedChainIds = getSupportedChains({
       testnets: testnetMode,
-    }).map(({ id }) => id);
+    })
+      .map(({ id }) => id)
+      .filter((id) => supportedPositionsChainIds.includes(id));
+
     const response = await addysHttp.get<AddysPositionsResponse>(
       `/${supportedChainIds.join(',')}/${address}/positions`,
       {
