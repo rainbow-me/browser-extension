@@ -172,6 +172,25 @@ export const chainIdToNameMapping: {
   [ChainId.degen]: ChainName.degen,
 };
 
+export interface BackendNetworkServices {
+  gas: {
+    enabled: boolean;
+  };
+  trade: {
+    swapping: boolean;
+  };
+  wallet: {
+    approvals: boolean;
+    transactions: boolean;
+    balance: boolean;
+    summary: boolean;
+  };
+  token: {
+    tokenSearch: boolean;
+    nftProxy: boolean;
+  };
+}
+
 export interface BackendNetwork {
   id: string;
   name: string;
@@ -215,27 +234,5 @@ export interface BackendNetwork {
       shadow: string;
     };
   };
-  enabledServices: {
-    gas: {
-      enabled: boolean;
-      eip1559Enabled: boolean;
-      legacyEnabled: boolean;
-    };
-    trade: {
-      swapping: boolean;
-      bridging: boolean;
-    };
-    wallet: {
-      approvals: boolean;
-      transactions: boolean;
-      balance: boolean;
-      summary: boolean;
-      defiPositions: boolean;
-      hasActivity: boolean;
-    };
-    token: {
-      tokenSearch: boolean;
-      nftProxy: boolean;
-    };
-  };
+  enabledServices: BackendNetworkServices;
 }

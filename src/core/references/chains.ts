@@ -5,6 +5,7 @@ import { Chain } from 'viem/chains';
 import { AddressOrEth } from '../types/assets';
 import {
   BackendNetwork,
+  BackendNetworkServices,
   ChainName,
   chainHardhat,
   chainHardhatOptimism,
@@ -55,12 +56,6 @@ export const simpleHashSupportedTestnetChainNames = [
   ChainName.polygonAmoy,
 ] as (ChainName | 'ethereum-sepolia' | 'ethereum')[];
 
-export const meteorologySupportedChains = backendChains.networks
-  .filter(
-    (backendChain: BackendNetwork) => backendChain.enabledServices.gas.enabled,
-  )
-  .map((backendChain: BackendNetwork) => parseInt(backendChain.id, 10));
-
 export const needsL1SecurityFeeChains = backendChains.networks
   .filter((backendChain: BackendNetwork) => backendChain.opStack)
   .map((backendChain: BackendNetwork) => parseInt(backendChain.id, 10));
@@ -76,13 +71,43 @@ export const nativeAssetChains: Record<number, AddressOrEth> =
   );
 
 export const nameChains: Record<number, string> = backendChains.networks.reduce(
-  (acc, backendChain) => {
+  (acc, backendChain: BackendNetwork) => {
     acc[parseInt(backendChain.id, 10)] = backendChain.label;
     return acc;
   },
   {} as Record<number, string>,
 );
+const filterChainsByService = (
+  servicePath: (services: BackendNetworkServices) => boolean,
+): number[] => {
+  return SUPPORTED_CHAINS.filter((chain) => {
+    const backendNetworks = backendChains.networks as BackendNetwork[];
+    const services = backendNetworks[chain.id]?.enabledServices;
+    return services && servicePath(services);
+  }).map((chain) => chain.id);
+};
 
-export const swapSupportedChains = SUPPORTED_CHAINS.filter(
-  (chain) => backendChains.networks[chain.id]?.enabledServices.trade.swapping,
+export const meteorologySupportedChains = filterChainsByService(
+  (services) => services.gas.enabled,
+);
+export const supportedSwapChains = filterChainsByService(
+  (services) => services.trade.swapping,
+);
+export const supportedApprovalChains = filterChainsByService(
+  (services) => services.wallet.approvals,
+);
+export const supportedTransactionChains = filterChainsByService(
+  (services) => services.wallet.transactions,
+);
+export const supportedBalanceChains = filterChainsByService(
+  (services) => services.wallet.balance,
+);
+export const supportedSummaryChains = filterChainsByService(
+  (services) => services.wallet.summary,
+);
+export const supportedTokenSearchChains = filterChainsByService(
+  (services) => services.token.tokenSearch,
+);
+export const supportedNftChains = filterChainsByService(
+  (services) => services.token.nftProxy,
 );
