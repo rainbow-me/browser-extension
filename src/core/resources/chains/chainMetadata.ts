@@ -1,13 +1,27 @@
+import { JsonRpcProvider } from '@ethersproject/providers';
 import { useQuery } from '@tanstack/react-query';
 
+import { proxyRpcEndpoint } from '~/core/providers';
 import {
   QueryConfig,
   QueryFunctionArgs,
   QueryFunctionResult,
   createQueryKey,
 } from '~/core/react-query';
-import { getChainMetadataRPCUrl } from '~/core/utils/chains';
 import { isValidUrl } from '~/core/utils/connectedApps';
+
+export const getChainMetadataRPCUrl = async ({
+  rpcUrl,
+}: {
+  rpcUrl?: string;
+}) => {
+  if (rpcUrl && isValidUrl(rpcUrl)) {
+    const provider = new JsonRpcProvider(proxyRpcEndpoint(rpcUrl, 0));
+    const network = await provider.getNetwork();
+    return { chainId: network.chainId };
+  }
+  return null;
+};
 
 // ///////////////////////////////////////////////
 // Query Types

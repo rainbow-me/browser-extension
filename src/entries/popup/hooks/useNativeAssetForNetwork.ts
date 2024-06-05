@@ -7,8 +7,8 @@ import {
   DEGEN_DEGEN_ADDRESS,
   ETH_ADDRESS,
   MATIC_POLYGON_ADDRESS,
-  NATIVE_ASSETS_PER_CHAIN,
 } from '~/core/references';
+import { nativeAssetChains } from '~/core/references/chains';
 import { ParsedAsset, UniqueId } from '~/core/types/assets';
 import { ChainId, ChainName, chainIdToNameMapping } from '~/core/types/chains';
 
@@ -86,7 +86,7 @@ export async function getNativeAssetForNetwork({
         nativeAsset?.chainName ||
         ChainName.mainnet,
       uniqueId: getNetworkNativeAssetUniqueId({ chainId }),
-      address: NATIVE_ASSETS_PER_CHAIN[chainId] as Address,
+      address: nativeAssetChains[chainId] as Address,
       isNativeAsset: true,
     };
   }
@@ -107,7 +107,7 @@ export function useNativeAssetForNetwork({
       chainId: nativeAsset?.chainId || ChainId.mainnet,
       chainName: nativeAsset?.chainName || ChainName.mainnet,
       uniqueId: getNetworkNativeAssetUniqueId({ chainId }),
-      address: NATIVE_ASSETS_PER_CHAIN[chainId] as Address,
+      address: nativeAssetChains[chainId] as Address,
       isNativeAsset: true,
     };
   }

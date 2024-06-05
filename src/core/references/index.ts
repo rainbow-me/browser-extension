@@ -1,9 +1,6 @@
 import { AddressZero } from '@ethersproject/constants';
-import { Address } from 'abitype';
 
 import { ChainId } from '~/core/types/chains';
-
-import { AddressOrEth } from '../types/assets';
 
 export { ethUnits } from './ethUnits';
 export { gasUnits } from './gasUnits';
@@ -127,32 +124,6 @@ export const USDB_BLAST_ADDRESS = '0x4300000000000000000000000000000000000003';
 
 // degen
 export const DEGEN_DEGEN_ADDRESS = AddressZero;
-
-export const NATIVE_ASSETS_PER_CHAIN: Record<ChainId, AddressOrEth> = {
-  [ChainId.mainnet]: ETH_ADDRESS as Address,
-  [ChainId.hardhat]: AddressZero as Address,
-  [ChainId.sepolia]: AddressZero as Address,
-  [ChainId.holesky]: AddressZero as Address,
-  [ChainId.arbitrum]: ETH_ARBITRUM_ADDRESS as Address,
-  [ChainId.arbitrumSepolia]: AddressZero as Address,
-  [ChainId.bsc]: BNB_BSC_ADDRESS as Address,
-  [ChainId.bscTestnet]: AddressZero as Address,
-  [ChainId.optimism]: ETH_OPTIMISM_ADDRESS as Address,
-  [ChainId.hardhatOptimism]: AddressZero as Address,
-  [ChainId.optimismSepolia]: AddressZero as Address,
-  [ChainId.rari]: AddressZero as Address,
-  [ChainId.base]: ETH_BASE_ADDRESS as Address,
-  [ChainId.baseSepolia]: AddressZero as Address,
-  [ChainId.zora]: ETH_ZORA_ADDRESS as Address,
-  [ChainId.zoraSepolia]: AddressZero as Address,
-  [ChainId.polygon]: MATIC_POLYGON_ADDRESS as Address,
-  [ChainId.avalanche]: AVAX_AVALANCHE_ADDRESS as Address,
-  [ChainId.avalancheFuji]: AddressZero as Address,
-  [ChainId.blast]: AddressZero as Address,
-  [ChainId.blastSepolia]: AddressZero as Address,
-  [ChainId.polygonAmoy]: AddressZero as Address,
-  [ChainId.degen]: AddressZero as Address,
-};
 
 export const OVM_GAS_PRICE_ORACLE =
   '0x420000000000000000000000000000000000000F';

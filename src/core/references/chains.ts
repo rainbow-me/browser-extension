@@ -1,6 +1,8 @@
 import backendChains from 'static/data/chains.json';
+import { Address } from 'viem';
 import { Chain } from 'viem/chains';
 
+import { AddressOrEth } from '../types/assets';
 import {
   BackendNetwork,
   ChainName,
@@ -62,3 +64,13 @@ export const meteorologySupportedChains = backendChains.networks
 export const needsL1SecurityFeeChains = backendChains.networks
   .filter((backendChain: BackendNetwork) => backendChain.opStack)
   .map((backendChain: BackendNetwork) => parseInt(backendChain.id, 10));
+
+export const nativeAssetChains: Record<number, AddressOrEth> =
+  backendChains.networks.reduce(
+    (acc, backendChain: BackendNetwork) => {
+      acc[parseInt(backendChain.id, 10)] = backendChain.nativeAsset
+        .address as Address;
+      return acc;
+    },
+    {} as Record<number, AddressOrEth>,
+  );

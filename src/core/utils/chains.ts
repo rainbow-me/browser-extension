@@ -1,20 +1,18 @@
 import { AddressZero } from '@ethersproject/constants';
-import { JsonRpcProvider } from '@ethersproject/providers';
 import { Chain, mainnet } from 'viem/chains';
 import { useConfig } from 'wagmi';
 
-import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
 import { ChainId } from '~/core/types/chains';
 
-import { proxyRpcEndpoint } from '../providers';
 import {
   SUPPORTED_CHAINS,
   SUPPORTED_MAINNET_CHAINS,
+  nativeAssetChains,
 } from '../references/chains';
 import { AddressOrEth } from '../types/assets';
 import { wagmiConfig } from '../wagmi';
 
-import { getDappHost, isValidUrl } from './connectedApps';
+import { getDappHost } from './connectedApps';
 import { findRainbowChainForChainId } from './rainbowChains';
 import { isLowerCaseMatch } from './strings';
 
@@ -98,7 +96,7 @@ export function isNativeAsset(address: AddressOrEth, chainId: ChainId) {
   if (isCustomChain(chainId)) {
     return AddressZero === address;
   }
-  return isLowerCaseMatch(NATIVE_ASSETS_PER_CHAIN[chainId], address);
+  return isLowerCaseMatch(nativeAssetChains[chainId], address);
 }
 
 export function getBlockExplorerHostForChain(chainId: ChainId) {
@@ -120,17 +118,4 @@ export const chainIdToUse = (
     return ChainId.hardhatOptimism;
   }
   return activeSessionChainId;
-};
-
-export const getChainMetadataRPCUrl = async ({
-  rpcUrl,
-}: {
-  rpcUrl?: string;
-}) => {
-  if (rpcUrl && isValidUrl(rpcUrl)) {
-    const provider = new JsonRpcProvider(proxyRpcEndpoint(rpcUrl, 0));
-    const network = await provider.getNetwork();
-    return { chainId: network.chainId };
-  }
-  return null;
 };

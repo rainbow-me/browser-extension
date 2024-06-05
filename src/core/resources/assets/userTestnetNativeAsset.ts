@@ -7,10 +7,8 @@ import {
   QueryFunctionResult,
   createQueryKey,
 } from '~/core/react-query';
-import {
-  NATIVE_ASSETS_PER_CHAIN,
-  SupportedCurrencyKey,
-} from '~/core/references';
+import { SupportedCurrencyKey } from '~/core/references';
+import { nativeAssetChains } from '~/core/references/chains';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId, ChainName, ChainNameDisplay } from '~/core/types/chains';
 import { fetchAssetBalanceViaProvider } from '~/core/utils/assets';
@@ -22,7 +20,7 @@ const USER_ASSETS_REFETCH_INTERVAL = 60000;
 export const getNativeAssetMock = ({ chainId }: { chainId: ChainId }) => {
   const chain = getChain({ chainId });
   const nativeAssetMock = {
-    address: NATIVE_ASSETS_PER_CHAIN[chainId],
+    address: nativeAssetChains[chainId],
     balance: { amount: '', display: '' },
     chainId: chainId,
     chainName: ChainNameDisplay[chainId] as ChainName,
