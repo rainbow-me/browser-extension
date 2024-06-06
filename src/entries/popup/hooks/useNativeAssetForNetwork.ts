@@ -1,6 +1,6 @@
 import { Address } from 'viem';
 
-import { nativeAssetChains } from '~/core/references/chains';
+import { chainsNativeAsset } from '~/core/references/chains';
 import { ParsedAsset, UniqueId } from '~/core/types/assets';
 import { ChainId, ChainName, chainIdToNameMapping } from '~/core/types/chains';
 
@@ -40,7 +40,7 @@ export const getNetworkNativeAssetUniqueId = ({
   chainId,
 }: {
   chainId: ChainId;
-}): UniqueId => `${nativeAssetChains[chainId]}_${chainId}` as UniqueId;
+}): UniqueId => `${chainsNativeAsset[chainId]}_${chainId}` as UniqueId;
 
 export async function getNativeAssetForNetwork({
   chainId,
@@ -59,7 +59,7 @@ export async function getNativeAssetForNetwork({
         nativeAsset?.chainName ||
         ChainName.mainnet,
       uniqueId: getNetworkNativeAssetUniqueId({ chainId }),
-      address: nativeAssetChains[chainId] as Address,
+      address: chainsNativeAsset[chainId] as Address,
       isNativeAsset: true,
     };
   }
@@ -80,7 +80,7 @@ export function useNativeAssetForNetwork({
       chainId: nativeAsset?.chainId || ChainId.mainnet,
       chainName: nativeAsset?.chainName || ChainName.mainnet,
       uniqueId: getNetworkNativeAssetUniqueId({ chainId }),
-      address: nativeAssetChains[chainId] as Address,
+      address: chainsNativeAsset[chainId] as Address,
       isNativeAsset: true,
     };
   }

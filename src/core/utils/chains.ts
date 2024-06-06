@@ -7,7 +7,7 @@ import { ChainId } from '~/core/types/chains';
 import {
   SUPPORTED_CHAINS,
   SUPPORTED_MAINNET_CHAINS,
-  nativeAssetChains,
+  chainsNativeAsset,
 } from '../references/chains';
 import { AddressOrEth } from '../types/assets';
 import { wagmiConfig } from '../wagmi';
@@ -96,7 +96,7 @@ export function isNativeAsset(address: AddressOrEth, chainId: ChainId) {
   if (isCustomChain(chainId)) {
     return AddressZero === address;
   }
-  return isLowerCaseMatch(nativeAssetChains[chainId], address);
+  return isLowerCaseMatch(chainsNativeAsset[chainId], address);
 }
 
 export function getBlockExplorerHostForChain(chainId: ChainId) {

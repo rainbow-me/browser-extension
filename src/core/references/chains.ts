@@ -33,7 +33,7 @@ export const needsL1SecurityFeeChains = backendNetworks.networks
   .filter((backendNetwork: BackendNetwork) => backendNetwork.opStack)
   .map((backendNetwork: BackendNetwork) => parseInt(backendNetwork.id, 10));
 
-export const nativeAssetChains: Record<number, AddressOrEth> =
+export const chainsNativeAsset: Record<number, AddressOrEth> =
   backendNetworks.networks.reduce(
     (acc, backendNetwork: BackendNetwork) => {
       acc[parseInt(backendNetwork.id, 10)] = backendNetwork.nativeAsset
@@ -43,7 +43,7 @@ export const nativeAssetChains: Record<number, AddressOrEth> =
     {} as Record<number, AddressOrEth>,
   );
 
-export const nameChains: Record<number, string> =
+export const chainsLabel: Record<number, string> =
   backendNetworks.networks.reduce(
     (acc, backendNetwork: BackendNetwork) => {
       acc[parseInt(backendNetwork.id, 10)] = backendNetwork.label;

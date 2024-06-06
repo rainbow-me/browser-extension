@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
-import { nameChains } from '~/core/references/chains';
+import { chainsLabel } from '~/core/references/chains';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
@@ -103,7 +103,7 @@ export const TestnetModeWatcher = ({
             <Stack space="12px" alignHorizontal="center">
               <Text color="label" size="16pt" weight="bold">
                 {i18n.t('testnet_mode_watcher.connect_to', {
-                  chainName: nameChains[hint.chainId],
+                  chainName: chainsLabel[hint.chainId],
                 })}
               </Text>
               <Text
@@ -117,7 +117,7 @@ export const TestnetModeWatcher = ({
                   {i18n.t('testnet_mode_watcher.testnet_mode')}
                 </TextLink>{' '}
                 {i18n.t(`testnet_mode_watcher.testnet_mode_active`, {
-                  chainName: nameChains[hint.chainId],
+                  chainName: chainsLabel[hint.chainId],
                 })}
               </Text>
             </Stack>
