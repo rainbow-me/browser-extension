@@ -7,6 +7,7 @@ import { useEnsAddress } from 'wagmi';
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { useSavedEnsNames } from '~/core/state/savedEnsNames';
+import { ChainId } from '~/core/types/chains';
 import { isENSAddressFormat } from '~/core/utils/ethereum';
 import {
   Box,
@@ -76,7 +77,7 @@ function RecommendedAccountRow({
   onToggle: (address: Address) => void;
   selected: Record<Address, boolean>;
 }) {
-  const { data: address } = useEnsAddress({ name });
+  const { data: address } = useEnsAddress({ name, chainId: ChainId.mainnet });
   return (
     <Box onClick={() => address && onToggle(address)}>
       <Columns>
@@ -202,6 +203,7 @@ export const useValidateInput = (input: string) => {
 
   const { data: addressFromEns, isFetching: isFetchingEns } = useEnsAddress({
     name: input,
+    chainId: ChainId.mainnet,
     query: {
       enabled: isInputEns,
     },

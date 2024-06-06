@@ -6,6 +6,7 @@ import { useBalance, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore, useGasStore } from '~/core/state';
+import { ChainId } from '~/core/types/chains';
 import {
   GasSpeed,
   TransactionGasParams,
@@ -385,7 +386,7 @@ export function SpeedUpAndCancelSheet({
 
 function AccountName() {
   const { currentAddress: address } = useCurrentAddressStore();
-  const { data: ensName } = useEnsName({ address });
+  const { data: ensName } = useEnsName({ address, chainId: ChainId.mainnet });
   return (
     <Box>
       <Text color="labelSecondary" size="14pt" weight="medium">

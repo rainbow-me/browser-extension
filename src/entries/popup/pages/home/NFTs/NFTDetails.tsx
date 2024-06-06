@@ -15,7 +15,7 @@ import { useCurrentAddressStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useSelectedNftStore } from '~/core/state/selectedNft';
 import { AddressOrEth } from '~/core/types/assets';
-import { ChainName, chainNameToIdMapping } from '~/core/types/chains';
+import { ChainId, ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import { UniqueAsset } from '~/core/types/nfts';
 import { truncateAddress } from '~/core/utils/address';
 import { getBlockExplorerHostForChain } from '~/core/utils/chains';
@@ -705,6 +705,7 @@ const NFTAccordionAboutSection = ({
   const deployedBy = nft?.asset_contract?.deployed_by;
   const { data: creatorEnsName } = useEnsName({
     address: (deployedBy as Address) || undefined,
+    chainId: ChainId.mainnet,
   });
   const goToDeployerURL = useCallback(
     (deployedBy: string) =>

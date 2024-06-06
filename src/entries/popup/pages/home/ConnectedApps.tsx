@@ -168,7 +168,7 @@ const ConnectedApp = ({
   address: Address;
 }) => {
   const [disconnectButtonVisible, setDisconnectButtonVisible] = useState(false);
-  const { data: ensName } = useEnsName({ address });
+  const { data: ensName } = useEnsName({ address, chainId: ChainId.mainnet });
   const { disconnectAppSession, activeSession } = useAppSession({
     host,
   });

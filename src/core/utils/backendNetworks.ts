@@ -1,4 +1,5 @@
 import { Chain } from 'viem';
+import { mainnet } from 'viem/chains';
 
 import { proxyBackendNetworkRpcEndpoint } from '../providers';
 import { BackendNetwork } from '../types/chains';
@@ -32,6 +33,8 @@ export function transformBackendNetworkToChain(network: BackendNetwork): Chain {
         name: network.defaultExplorer.label,
       },
     },
+    contracts:
+      parseInt(network.id, 10) === mainnet.id ? mainnet.contracts : undefined,
   };
 }
 
