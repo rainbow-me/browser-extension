@@ -86,7 +86,7 @@ async function fetchData() {
   });
 
   const { data } = await response.json();
-  const filePath = path.join(__dirname, '../static/data/chains.json');
+  const filePath = path.join(__dirname, '../static/data/networks.json');
 
   await fs.ensureFile(filePath);
   await fs.writeJson(filePath, data);
@@ -94,12 +94,12 @@ async function fetchData() {
 
 async function main() {
   try {
-    console.log('Fetching chains ...');
+    console.log('Fetching networks ...');
     await fetchData();
-    console.log('Chains data fetched and available.');
+    console.log('Networks data fetched and available.');
     process.exit(0);
   } catch (error) {
-    console.error('Error fetching chains data:', error);
+    console.error('Error fetching networks data:', error);
     process.exit(1);
   }
 }

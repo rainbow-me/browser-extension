@@ -13,7 +13,11 @@ import { transformBackendNetworksToChains } from '../utils/backendNetworks';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
-const BACKEND_CHAINS = transformBackendNetworksToChains(backendChains.networks);
+console.log('backendNetworks', backendNetworks);
+const BACKEND_CHAINS = transformBackendNetworksToChains(
+  backendNetworks.networks,
+);
+console.log('BACKEND_CHAINS', BACKEND_CHAINS);
 
 export const SUPPORTED_CHAINS: Chain[] = IS_TESTING
   ? [...BACKEND_CHAINS, chainHardhat, chainHardhatOptimism]
@@ -25,31 +29,33 @@ export const SUPPORTED_MAINNET_CHAINS: Chain[] = SUPPORTED_CHAINS.filter(
   (chain) => !chain.testnet,
 );
 
-export const needsL1SecurityFeeChains = backendChains.networks
-  .filter((backendChain: BackendNetwork) => backendChain.opStack)
-  .map((backendChain: BackendNetwork) => parseInt(backendChain.id, 10));
+export const needsL1SecurityFeeChains = backendNetworks.networks
+  .filter((backendNetwork: BackendNetwork) => backendNetwork.opStack)
+  .map((backendNetwork: BackendNetwork) => parseInt(backendNetwork.id, 10));
 
 export const nativeAssetChains: Record<number, AddressOrEth> =
-  backendChains.networks.reduce(
-    (acc, backendChain: BackendNetwork) => {
-      acc[parseInt(backendChain.id, 10)] = backendChain.nativeAsset
+  backendNetworks.networks.reduce(
+    (acc, backendNetwork: BackendNetwork) => {
+      acc[parseInt(backendNetwork.id, 10)] = backendNetwork.nativeAsset
         .address as Address;
       return acc;
     },
     {} as Record<number, AddressOrEth>,
   );
 
-export const nameChains: Record<number, string> = backendChains.networks.reduce(
-  (acc, backendChain: BackendNetwork) => {
-    acc[parseInt(backendChain.id, 10)] = backendChain.label;
-    return acc;
-  },
-  {} as Record<number, string>,
-);
+export const nameChains: Record<number, string> =
+  backendNetworks.networks.reduce(
+    (acc, backendNetwork: BackendNetwork) => {
+      acc[parseInt(backendNetwork.id, 10)] = backendNetwork.label;
+      return acc;
+    },
+    {} as Record<number, string>,
+  );
+
 const filterChainIdsByService = (
   servicePath: (services: BackendNetworkServices) => boolean,
 ): number[] => {
-  return backendChains.networks
+  return backendNetworks.networks
     .filter((network: BackendNetwork) => {
       const services = network?.enabledServices;
       return services && servicePath(services);

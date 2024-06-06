@@ -8,10 +8,10 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
-import { meteorologySupportedChains } from '~/core/references/chains';
+import { meteorologySupportedChainIds } from '~/core/references/chains';
 import { ChainId } from '~/core/types/chains';
 
-type MeteorologySupportedChain = (typeof meteorologySupportedChains)[number];
+type MeteorologySupportedChain = (typeof meteorologySupportedChainIds)[number];
 
 const getMeteorologyNetworkFromChainId = (
   chainId: MeteorologySupportedChain,

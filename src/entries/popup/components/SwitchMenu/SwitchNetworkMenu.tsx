@@ -73,7 +73,7 @@ export const SwitchNetworkMenuSelector = ({
       userChains.filter((chain) =>
         onlySwapSupportedNetworks
           ? supportedSwapChainIds.includes(chain.id)
-          : false,
+          : true,
       ),
     [onlySwapSupportedNetworks, userChains],
   );
