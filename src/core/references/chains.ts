@@ -58,33 +58,33 @@ const filterChainIdsByService = (
 };
 
 export const meteorologySupportedChainIds = filterChainIdsByService(
-  (services) => services.gas.enabled,
+  (services) => services.meteorology.enabled,
 );
 
 export const supportedSwapChainIds = filterChainIdsByService(
-  (services) => services.trade.swapping,
+  (services) => services.swap.enabled,
 );
 
 export const supportedApprovalChainIds = filterChainIdsByService(
-  (services) => services.wallet.approvals,
+  (services) => services.addys.approvals,
 );
 
 export const supportedTransactionChainIds = filterChainIdsByService(
-  (services) => services.wallet.transactions,
+  (services) => services.addys.transactions,
 );
 
 export const supportedBalanceChainIds = filterChainIdsByService(
-  (services) => services.wallet.balance,
+  (services) => services.addys.balance,
 );
 
 export const supportedPositionsChainIds = filterChainIdsByService(
-  (services) => services.wallet.defiPositions,
+  (services) => services.addys.positions,
 );
 
 export const supportedTokenSearchChainIds = filterChainIdsByService(
-  (services) => services.token.tokenSearch,
+  (services) => services.tokenSearch.enabled,
 );
 
 export const supportedNftChainIds = filterChainIdsByService(
-  (services) => services.token.nftProxy,
+  (services) => services.nftProxy.enabled,
 );

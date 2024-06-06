@@ -173,21 +173,23 @@ export const chainIdToNameMapping: {
 };
 
 export interface BackendNetworkServices {
-  gas: {
+  meteorology: {
     enabled: boolean;
   };
-  trade: {
-    swapping: boolean;
+  swap: {
+    enabled: boolean;
   };
-  wallet: {
+  addys: {
     approvals: boolean;
     transactions: boolean;
     balance: boolean;
-    defiPositions: boolean;
+    positions: boolean;
   };
-  token: {
-    tokenSearch: boolean;
-    nftProxy: boolean;
+  tokenSearch: {
+    enabled: boolean;
+  };
+  nftProxy: {
+    enabled: boolean;
   };
 }
 

@@ -53,26 +53,28 @@ async function fetchData() {
         }
       }
       enabledServices {
-        gas {
+        meteorology {
           enabled
         }
-        trade {
-          swapping
+        swap {
+          enabled
         }
-        wallet {
+        addys {
           approvals
           transactions
           balance
-          summary
+          positions
         }
-        token {
-          tokenSearch
-          nftProxy
+        tokenSearch {
+          enabled
+        }
+        nftProxy {
+          enabled
         }
       }
     }
   }
-  `;
+`;
 
   const response = await fetch('https://metadata.p.rainbow.me/v1/graph', {
     method: 'POST',
