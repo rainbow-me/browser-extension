@@ -6,9 +6,8 @@ import {
   ButtonSymbol,
   Column,
   Columns,
-  Inline,
   Symbol,
-  Text,
+  textStyles,
 } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 
@@ -45,24 +44,41 @@ export const QuickPromo = ({
         paddingVertical="10px"
         borderRadius="round"
         boxShadow="12px"
-        style={{ height: 36 }}
+        paddingTop="10px"
+        paddingBottom="10px"
       >
         <Box width="full">
           <Columns alignHorizontal="justify" alignVertical="center" space="4px">
-            <Inline space="4px" alignVertical="center">
+            <Column width="content">
               <Symbol
                 size={12}
                 weight="bold"
                 color={symbolColor || 'blue'}
                 symbol={symbol}
               />
-              <Text color="label" size="12pt" weight="bold">
+            </Column>
+
+            <Box>
+              <Box
+                as="span"
+                className={textStyles({
+                  fontWeight: 'bold',
+                  color: 'label',
+                })}
+              >
                 {textBold}
-              </Text>
-              <Text color="labelSecondary" size="12pt" weight="semibold">
+              </Box>
+              &nbsp;
+              <Box
+                as="span"
+                className={textStyles({
+                  fontWeight: 'semibold',
+                  color: 'labelSecondary',
+                })}
+              >
                 {text}
-              </Text>
-            </Inline>
+              </Box>
+            </Box>
             <Column width="content">
               <Box marginVertical="-4px">
                 <ButtonSymbol
