@@ -71,15 +71,15 @@ export const supportedSwapChainIds = filterChainIdsByService(
   (services) => services.swap.enabled,
 );
 
-export const supportedApprovalChainIds = filterChainIdsByService(
+export const supportedApprovalsChainIds = filterChainIdsByService(
   (services) => services.addys.approvals,
 );
 
-export const supportedTransactionChainIds = filterChainIdsByService(
+export const supportedTransactionsChainIds = filterChainIdsByService(
   (services) => services.addys.transactions,
 );
 
-export const supportedBalanceChainIds = filterChainIdsByService(
+export const supportedAssetsChainIds = filterChainIdsByService(
   (services) => services.addys.balance,
 );
 
