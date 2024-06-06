@@ -1,4 +1,4 @@
-import backendChains from 'static/data/chains.json';
+import backendNetworks from 'static/data/networks.json';
 import { Address } from 'viem';
 import { Chain } from 'viem/chains';
 
@@ -13,11 +13,9 @@ import { transformBackendNetworksToChains } from '../utils/backendNetworks';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
-console.log('backendNetworks', backendNetworks);
 const BACKEND_CHAINS = transformBackendNetworksToChains(
   backendNetworks.networks,
 );
-console.log('BACKEND_CHAINS', BACKEND_CHAINS);
 
 export const SUPPORTED_CHAINS: Chain[] = IS_TESTING
   ? [...BACKEND_CHAINS, chainHardhat, chainHardhatOptimism]
@@ -47,6 +45,15 @@ export const chainsLabel: Record<number, string> =
   backendNetworks.networks.reduce(
     (acc, backendNetwork: BackendNetwork) => {
       acc[parseInt(backendNetwork.id, 10)] = backendNetwork.label;
+      return acc;
+    },
+    {} as Record<number, string>,
+  );
+
+export const chainsName: Record<number, string> =
+  backendNetworks.networks.reduce(
+    (acc, backendNetwork: BackendNetwork) => {
+      acc[parseInt(backendNetwork.id, 10)] = backendNetwork.name;
       return acc;
     },
     {} as Record<number, string>,
