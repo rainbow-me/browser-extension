@@ -134,7 +134,7 @@ module.exports = {
       https: 'agent-base',
       crypto: false,
     },
-    extensions: ['.tsx', '.ts', '.js'],
+    extensions: ['.tsx', '.ts', '.js', '.json'],
   },
   output: {
     filename: '[name].js',
