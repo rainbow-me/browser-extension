@@ -100,25 +100,25 @@ export function NFTs() {
     .concat(
       hiddenAssets.length
         ? {
-          assets: hiddenAssets,
-          collection: {
-            collection_id: '_hidden',
-            description: null,
-            discord_url: null,
-            total_quantity: null,
-            distinct_nft_count: null,
-            distinct_owner_count: null,
-            external_url: null,
-            featured_image_url: null,
-            hidden: null,
-            image_url: null,
-            name: i18n.t('nfts.hidden_section_title'),
-            short_description: null,
-            slug: '',
-            twitter_username: null,
-            wiki_link: null,
-          },
-        }
+            assets: hiddenAssets,
+            collection: {
+              collection_id: '_hidden',
+              description: null,
+              discord_url: null,
+              total_quantity: null,
+              distinct_nft_count: null,
+              distinct_owner_count: null,
+              external_url: null,
+              featured_image_url: null,
+              hidden: null,
+              image_url: null,
+              name: i18n.t('nfts.hidden_section_title'),
+              short_description: null,
+              slug: '',
+              twitter_username: null,
+              wiki_link: null,
+            },
+          }
         : [],
     );
 

@@ -259,6 +259,7 @@ export function Tokens() {
     <Box
       width="full"
       style={{
+        height: `336px`,
         overflow: 'auto',
       }}
       ref={containerRef}
@@ -286,7 +287,7 @@ export function Tokens() {
           position: 'relative',
         }}
       >
-        <Box style={{ overflow: 'auto' }}>
+        <Box>
           {assetsRowVirtualizer.getVirtualItems().map((virtualItem) => {
             const { key, size, start, index } = virtualItem;
             const token = filteredAssets[index];
