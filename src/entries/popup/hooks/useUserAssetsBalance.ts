@@ -64,14 +64,16 @@ export function useUserAssetsBalance() {
     },
   );
 
-  const totalAssetsBalance = add(
-    totalAssetsBalanceKnownNetworks ?? '0',
-    totalAssetsBalanceCustomNetworks ?? '0',
-  );
+  const totalAssetsBalance =
+    totalAssetsBalanceKnownNetworks && totalAssetsBalanceCustomNetworks
+      ? add(totalAssetsBalanceKnownNetworks, totalAssetsBalanceCustomNetworks)
+      : undefined;
 
   return {
     amount: totalAssetsBalance,
-    display: convertAmountToNativeDisplay(totalAssetsBalance || 0, currency),
+    display: totalAssetsBalance
+      ? convertAmountToNativeDisplay(totalAssetsBalance || 0, currency)
+      : undefined,
     isLoading: knownNetworksIsLoading || customNetworksIsLoading,
   };
 }
