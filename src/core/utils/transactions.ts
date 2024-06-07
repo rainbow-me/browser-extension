@@ -173,6 +173,19 @@ const getAssetFromChanges = (
   return changes[0]?.asset;
 };
 
+const getAddressToFromChanges = (
+  changes: {
+    direction: TransactionDirection;
+    asset: ParsedUserAsset;
+    address_to: Address;
+  }[],
+  type: TransactionType,
+) => {
+  if (type === 'sale')
+    return changes?.find((c) => c?.direction === 'out')?.address_to;
+  return changes[0]?.address_to;
+};
+
 const getDescription = (
   asset: ParsedAsset | undefined,
   type: TransactionType,
@@ -253,6 +266,10 @@ export function parseTransaction({
     ? parseAsset({ asset: meta.asset, currency })
     : getAssetFromChanges(changes, type);
 
+  const addressTo = asset
+    ? getAddressToFromChanges(changes, type)
+    : tx.address_to;
+
   const direction = tx.direction || getDirection(type);
 
   const description = getDescription(asset, type, meta);
@@ -285,7 +302,7 @@ export function parseTransaction({
 
   return {
     from: tx.address_from,
-    to: tx.address_to,
+    to: addressTo,
     title: i18n.t(`transactions.${type}.${status}`),
     description,
     hash,
