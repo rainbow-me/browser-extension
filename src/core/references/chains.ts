@@ -87,7 +87,7 @@ export const supportedTransactionsChainIds = filterChainIdsByService(
 );
 
 export const supportedAssetsChainIds = filterChainIdsByService(
-  (services) => services.addys.balance,
+  (services) => services.addys.assets,
 );
 
 export const supportedPositionsChainIds = filterChainIdsByService(

@@ -25,7 +25,6 @@ import {
   TokenSearchThreshold,
 } from '~/core/types/search';
 import { getSupportedChains, isCustomChain } from '~/core/utils/chains';
-import { useUserChains } from '~/entries/popup/hooks/useUserChains';
 
 // ///////////////////////////////////////////////
 // Query Types

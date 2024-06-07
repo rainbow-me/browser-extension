@@ -62,7 +62,7 @@ async function fetchData() {
         addys {
           approvals
           transactions
-          balance
+          assets
           positions
         }
         tokenSearch {

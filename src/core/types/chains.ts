@@ -182,7 +182,7 @@ export interface BackendNetworkServices {
   addys: {
     approvals: boolean;
     transactions: boolean;
-    balance: boolean;
+    assets: boolean;
     positions: boolean;
   };
   tokenSearch: {
