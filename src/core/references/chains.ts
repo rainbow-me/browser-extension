@@ -166,6 +166,7 @@ export const meteorologySupportedChains = [
   ChainId.polygon,
   ChainId.optimism,
   ChainId.zora,
+  ChainId.degen,
 ];
 
 export const needsL1SecurityFeeChains = [
