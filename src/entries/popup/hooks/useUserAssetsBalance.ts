@@ -72,7 +72,7 @@ export function useUserAssetsBalance() {
   return {
     amount: totalAssetsBalance,
     display: totalAssetsBalance
-      ? convertAmountToNativeDisplay(totalAssetsBalance || 0, currency)
+      ? convertAmountToNativeDisplay(totalAssetsBalance, currency)
       : undefined,
     isLoading: knownNetworksIsLoading || customNetworksIsLoading,
   };
