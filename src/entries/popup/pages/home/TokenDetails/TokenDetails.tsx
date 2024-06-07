@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useReducer } from 'react';
-import { Navigate, To, useParams } from 'react-router-dom';
+import { Navigate, To, useParams, useSearchParams } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { ETH_ADDRESS } from '~/core/references';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useApprovals } from '~/core/resources/approvals/approvals';
+import { useTokenSearch } from '~/core/resources/search';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useFavoritesStore } from '~/core/state/favorites';
@@ -16,13 +17,14 @@ import { usePinnedAssetStore } from '~/core/state/pinnedAssets';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedUserAsset, UniqueId } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { truncateAddress } from '~/core/utils/address';
 import {
-  getChainName,
-  isCustomChain,
-  isNativeAsset,
-  isTestnetChainId,
-} from '~/core/utils/chains';
+  SearchAsset,
+  TokenSearchAssetKey,
+  TokenSearchListId,
+  TokenSearchThreshold,
+} from '~/core/types/search';
+import { truncateAddress } from '~/core/utils/address';
+import { getChain, isCustomChain, isNativeAsset } from '~/core/utils/chains';
 import { copyAddress } from '~/core/utils/copy';
 import {
   FormattedCurrencyParts,
@@ -72,6 +74,17 @@ import { triggerRevokeApproval } from '../Approvals/utils';
 
 import { About } from './About';
 import { PriceChart } from './PriceChart';
+import { useTokenInfo } from './useTokenInfo';
+
+const VERIFIED_ASSETS_PAYLOAD: {
+  keys: TokenSearchAssetKey[];
+  list: TokenSearchListId;
+  threshold: TokenSearchThreshold;
+} = {
+  keys: ['symbol', 'name'],
+  list: 'verifiedAssets',
+  threshold: 'CONTAINS',
+};
 
 const HiddenValue = () => <Asterisks color="labelTertiary" size={10} />;
 
@@ -210,7 +223,7 @@ function NetworkBanner({
   chainId: ChainId;
 }) {
   const [isExplainerOpen, toggleExplainer] = useReducer((s) => !s, false);
-  const chainName = getChainName({ chainId });
+  const chainName = getChain({ chainId }).name;
 
   if (chainId === ChainId.mainnet) return null;
 
@@ -252,7 +265,7 @@ function NetworkBanner({
   );
 }
 
-function FavoriteButton({ token }: { token: ParsedUserAsset }) {
+function FavoriteButton({ token }: { token: ParsedUserAsset | SearchAsset }) {
   const { favorites, addFavorite, removeFavorite } = useFavoritesStore();
   const isFavorite = favorites[token.chainId]?.includes(token.address);
   return (
@@ -270,7 +283,7 @@ function FavoriteButton({ token }: { token: ParsedUserAsset }) {
 export const getCoingeckoUrl = ({
   address,
   mainnetAddress,
-}: Pick<ParsedUserAsset, 'address' | 'mainnetAddress'>) => {
+}: Pick<ParsedUserAsset | SearchAsset, 'address' | 'mainnetAddress'>) => {
   if ([mainnetAddress, address].includes(ETH_ADDRESS))
     return `https://www.coingecko.com/en/coins/ethereum`;
   return `https://www.coingecko.com/en/coins/${mainnetAddress || address}`;
@@ -278,9 +291,11 @@ export const getCoingeckoUrl = ({
 
 function MoreOptions({
   token,
+  unownedToken,
   swappable,
 }: {
-  token: ParsedUserAsset;
+  token: ParsedUserAsset | SearchAsset;
+  unownedToken: boolean;
   swappable: boolean;
 }) {
   const { toggleHideAsset, hidden: hiddenStore } = useHiddenAssetStore();
@@ -303,7 +318,7 @@ function MoreOptions({
   }, [resetSelectedToken]);
 
   const isHidden = useCallback(
-    (asset: ParsedUserAsset) => {
+    (asset: ParsedUserAsset | SearchAsset) => {
       return !!hiddenStore[address]?.[computeUniqueIdForHiddenAsset(asset)];
     },
     [address, hiddenStore],
@@ -361,10 +376,13 @@ function MoreOptions({
     toggleHideToken,
     togglePinToken,
     copyTokenAddress,
+    unownedToken,
   });
 
   const onOpenChange = (open: boolean) => {
-    setSelectedToken(open ? token : undefined);
+    if ('native' in token) {
+      setSelectedToken(open ? token : undefined);
+    }
   };
 
   return (
@@ -384,7 +402,7 @@ function MoreOptions({
         <AccentColorProvider
           color={token.colors?.primary || token.colors?.fallback}
         >
-          {!hidden && (
+          {!hidden && !unownedToken && (
             <DropdownMenuItem
               symbolLeft="pin.fill"
               onSelect={togglePinToken}
@@ -401,7 +419,7 @@ function MoreOptions({
               </TextOverflow>
             </DropdownMenuItem>
           )}
-          {!isWatchingWallet && (
+          {!isWatchingWallet && !unownedToken && (
             <DropdownMenuItem
               symbolLeft="eye.slash.fill"
               onSelect={toggleHideToken}
@@ -434,7 +452,11 @@ function MoreOptions({
                   </Text>
                 </DropdownMenuItem>
               )}
-              <DropdownMenuSeparator />
+              {!isNative ||
+              (!hidden && !unownedToken) ||
+              (!isWatchingWallet && !unownedToken) ? (
+                <DropdownMenuSeparator />
+              ) : null}
               <DropdownMenuItem
                 symbolLeft="safari"
                 external
@@ -463,15 +485,36 @@ export function TokenDetails() {
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency } = useCurrentCurrencyStore();
   const { uniqueId } = useParams<{ uniqueId: UniqueId }>();
+  const [urlSearchParams] = useSearchParams();
 
-  const { data: userAsset, isFetched } = useUserAsset(uniqueId);
+  const queryChainId = urlSearchParams.get('chainId') as ChainId | null;
+
+  const { data: userAsset, isFetched: isUserAssetFetched } =
+    useUserAsset(uniqueId);
   const { data: customAsset, isFetched: isCustomAssetFetched } =
     useCustomNetworkAsset({ uniqueId });
+  const { data: searchedAssets, isFetched: isTokenSearchFetched } =
+    useTokenSearch(
+      {
+        ...VERIFIED_ASSETS_PAYLOAD,
+        chainId: queryChainId ?? ChainId.mainnet,
+        query: uniqueId ?? '',
+      },
+      {
+        enabled: !!queryChainId,
+      },
+    );
 
   const { isWatchingWallet } = useWallets();
 
   const navigate = useRainbowNavigate();
-  const token = userAsset || customAsset;
+
+  // First available searched asset
+  const searchedAsset = searchedAssets?.[0]
+    ? { ...searchedAssets[0], chainId: Number(searchedAssets[0].chainId) }
+    : undefined;
+
+  const token = userAsset || customAsset || searchedAsset;
 
   useEffect(() => {
     const app = document.getElementById('app');
@@ -499,6 +542,8 @@ export function TokenDetails() {
       },
     },
   );
+
+  const { data: tokenInfo } = useTokenInfo(token ?? null);
 
   const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
@@ -537,7 +582,12 @@ export function TokenDetails() {
 
   if (
     !uniqueId ||
-    (isFetched && !userAsset && isCustomAssetFetched && !customAsset)
+    (isUserAssetFetched &&
+      !userAsset &&
+      isCustomAssetFetched &&
+      !customAsset &&
+      (isTokenSearchFetched || !queryChainId) &&
+      !searchedAsset)
   ) {
     return <Navigate to={ROUTES.HOME} />;
   }
@@ -545,14 +595,10 @@ export function TokenDetails() {
   if (!token) return null;
 
   const isSwappable = !(
-    isTestnetChainId({ chainId: token?.chainId }) || !!customAsset
+    getChain({ chainId: token?.chainId }).testnet || !!customAsset
   );
 
-  const tokenBalance = {
-    ...formatCurrencyParts(token.balance.amount),
-    symbol: token.symbol,
-  };
-  const tokenNativeBalance = formatCurrencyParts(token.native.balance.amount);
+  const isUnownedToken = !userAsset && !customAsset && !!searchedAsset;
 
   const tokenApprovals = approvals
     ?.map((approval) =>
@@ -589,24 +635,35 @@ export function TokenDetails() {
           rightComponent={
             <Inline alignVertical="center" space="7px">
               {isSwappable && <FavoriteButton token={token} />}
-              <MoreOptions swappable={isSwappable} token={token} />
+              <MoreOptions
+                swappable={isSwappable}
+                unownedToken={isUnownedToken}
+                token={token}
+              />
             </Inline>
           }
         />
         <Box padding="20px" gap="16px" display="flex" flexDirection="column">
-          <PriceChart token={token} />
+          <PriceChart token={token} tokenInfo={tokenInfo} />
 
           <Separator color="separatorTertiary" />
 
-          <BalanceValue
-            balance={tokenBalance}
-            nativeBalance={tokenNativeBalance}
-            chainId={token.chainId}
-          />
-
-          {!isWatchingWallet && token.balance.amount !== '0' && (
-            <SwapSend token={token} isSwappable={isSwappable} />
+          {'balance' in token && 'native' in token && (
+            <BalanceValue
+              balance={{
+                ...formatCurrencyParts(token.balance.amount),
+                symbol: token.symbol,
+              }}
+              nativeBalance={formatCurrencyParts(token.native.balance.amount)}
+              chainId={token.chainId}
+            />
           )}
+
+          {!isWatchingWallet &&
+            'balance' in token &&
+            token.balance.amount !== '0' && (
+              <SwapSend token={token} isSwappable={isSwappable} />
+            )}
 
           <NetworkBanner tokenSymbol={token.symbol} chainId={token.chainId} />
         </Box>
@@ -707,7 +764,7 @@ export function TokenDetails() {
             </Box>
           ) : null}
           <Separator color="separatorTertiary" />
-          <About token={token} />
+          <About token={token} tokenInfo={tokenInfo} />
         </Box>
       )}
       <ExplainerSheet

@@ -6,7 +6,7 @@ import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
-import { isTestnetChainId } from '~/core/utils/chains';
+import { getChain } from '~/core/utils/chains';
 import {
   Box,
   Button,
@@ -76,9 +76,9 @@ export const TestnetModeWatcher = ({
   useEffect(() => {
     if (activeSession && !hint.show) {
       const activeSessionChainId = activeSession?.chainId;
-      const activeChainIsTestnet = isTestnetChainId({
+      const activeChainIsTestnet = getChain({
         chainId: activeSessionChainId,
-      });
+      }).testnet;
       if (testnetMode && !activeChainIsTestnet) {
         setHint({
           show: true,

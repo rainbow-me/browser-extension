@@ -73,8 +73,8 @@ export const WatchAsset = ({
     () => ({
       address: assetAddress,
       chainId: Number(selectedChainId),
-      chainName: (getChain({ chainId: Number(selectedChainId) }).name ||
-        '') as ChainName,
+      chainName: getChain({ chainId: Number(selectedChainId) })
+        .name as ChainName,
       decimals: assetMetadata?.decimals || decimals,
       symbol: assetMetadata?.symbol || symbol,
       isNativeAsset: false,

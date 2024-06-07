@@ -3,7 +3,10 @@ import { DropResult } from 'react-beautiful-dnd';
 import { Chain } from 'viem';
 
 import { i18n } from '~/core/languages';
-import { SUPPORTED_CHAINS, SUPPORTED_CHAIN_IDS } from '~/core/references';
+import {
+  SUPPORTED_CHAINS,
+  SUPPORTED_CHAIN_IDS,
+} from '~/core/references/chains';
 import { useRainbowChainsStore } from '~/core/state';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';

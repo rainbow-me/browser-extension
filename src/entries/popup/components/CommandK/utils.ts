@@ -185,7 +185,7 @@ const memoize = (
       commandListVersion = currentVersion;
     }
 
-    if (!resultsCache.has(query)) {
+    if (!resultsCache.has(query) || commandListVersion === currentVersion) {
       const result = search(commandList, currentPage, query);
       const cacheItem: CacheItem = {};
       result.forEach(

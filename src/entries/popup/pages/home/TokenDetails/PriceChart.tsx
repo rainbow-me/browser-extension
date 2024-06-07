@@ -4,9 +4,11 @@ import { memo, useReducer, useState } from 'react';
 import { metadataClient } from '~/core/graphql';
 import { i18n } from '~/core/languages';
 import { createQueryKey } from '~/core/react-query';
+import { SUPPORTED_CHAIN_IDS } from '~/core/references/chains';
 import { AddressOrEth, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { isDefaultSupportedChain, isTestnetChainId } from '~/core/utils/chains';
+import { SearchAsset } from '~/core/types/search';
+import { getChain } from '~/core/utils/chains';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { formatDate } from '~/core/utils/formatDate';
 import { formatCurrency } from '~/core/utils/formatNumber';
@@ -23,6 +25,7 @@ import { SymbolName } from '~/design-system/styles/designTokens';
 import { CoinIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
 
 import { ChartData, ChartPoint, LineChart } from './LineChart';
+import { ParsedTokenInfo } from './useTokenInfo';
 
 const parsePriceChange = (
   value: number,
@@ -61,11 +64,13 @@ const PriceChange = memo(function PriceChange({
 
 const TokenPrice = memo(function TokenPrice({
   token,
+  tokenInfo,
   hasPriceData,
   isLoading,
   fallbackPrice,
 }: {
-  token: ParsedUserAsset;
+  token: ParsedUserAsset | SearchAsset;
+  tokenInfo: ParsedTokenInfo;
   hasPriceData: boolean;
   isLoading: boolean;
   fallbackPrice?: number;
@@ -82,10 +87,19 @@ const TokenPrice = memo(function TokenPrice({
         <Text size="16pt" weight="heavy" cursor="text" userSelect="all">
           {!isLoading && !hasPriceData && !fallbackPrice
             ? i18n.t('token_details.not_available')
-            : formatCurrency(token.native.price?.amount || fallbackPrice)}
+            : formatCurrency(
+                'native' in token
+                  ? token.native.price?.amount || fallbackPrice
+                  : tokenInfo?.price?.value || fallbackPrice,
+              )}
         </Text>
         <Box style={{ maxWidth: '150px' }}>
-          <TextOverflow color="accent" size="14pt" weight="heavy">
+          <TextOverflow
+            color="accent"
+            size="14pt"
+            weight="heavy"
+            testId={`token-price-name-${token.address}`}
+          >
             {token.name}
           </TextOverflow>
         </Box>
@@ -137,7 +151,7 @@ const usePriceChart = ({
     queryKey: createQueryKey('price chart', { address, chainId, time }),
     placeholderData: (previousData) => previousData,
     staleTime: 1 * 60 * 1000, // 1min
-    enabled: isDefaultSupportedChain({ chainId }),
+    enabled: SUPPORTED_CHAIN_IDS.includes(chainId),
   });
 };
 
@@ -181,20 +195,26 @@ const SelectChartTime = memo(function SelectChartTime({
   );
 });
 
-export function PriceChart({ token }: { token: ParsedUserAsset }) {
+export function PriceChart({
+  token,
+  tokenInfo,
+}: {
+  token: ParsedUserAsset | SearchAsset;
+  tokenInfo: ParsedTokenInfo;
+}) {
   const [selectedTime, setSelectedTime] = useState<ChartTime>('day');
-  const shouldHaveData = !isTestnetChainId({ chainId: token.chainId });
+  const shouldHaveData = !getChain({ chainId: token.chainId }).testnet;
 
   const { data, isLoading } = usePriceChart({
     mainnetAddress: token.mainnetAddress,
     address: token.address,
-    chainId: token.chainId,
+    chainId: Number(token.chainId),
     time: selectedTime,
   });
 
   const priceAtBeginningOfSelectedTime = data?.[0]?.price;
-  const lastPrice =
-    (data && data[data.length - 1]?.price) || token.price?.value;
+  const tokenPriceValue = 'price' in token ? token.price?.value : undefined;
+  const lastPrice = (data && data[data.length - 1]?.price) || tokenPriceValue;
 
   const selectedTimePriceChange = {
     date: chartTimeToTimestamp[selectedTime],
@@ -227,6 +247,7 @@ export function PriceChart({ token }: { token: ParsedUserAsset }) {
           hasPriceData={hasPriceData}
           isLoading={isLoading}
           token={token}
+          tokenInfo={tokenInfo}
           fallbackPrice={lastPrice}
         />
         <PriceChange changePercentage={changePercentage} date={date} />

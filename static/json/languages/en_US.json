@@ -439,6 +439,8 @@
       "names": {
         "send": "Send",
         "swap": "Swap",
+        "bridge": "Bridge",
+        "get": "Get",
         "my_wallets": "My Wallets",
         "my_contacts": "My Contacts",
         "my_tokens": "My Tokens",
@@ -473,6 +475,7 @@
         "wallets_and_keys": "Wallets & Keys",
         "view_full_screen": "View Full Screen",
         "view_token": "View Token",
+        "view_token_details": "View %{symbol} Details",
         "send_token": "Send Token",
         "swap_token": "Swap Token",
         "copy_token_address": "Copy Token Contract Address",
@@ -492,6 +495,7 @@
       },
       "search_tags": {
         "swap": "bridge",
+        "get": "swap",
         "my_wallets": "switch",
         "my_contacts": "contact, contacts",
         "my_tokens_watched": "my",

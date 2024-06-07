@@ -10,8 +10,7 @@ import {
   NATIVE_ASSETS_PER_CHAIN,
 } from '~/core/references';
 import { ParsedAsset, UniqueId } from '~/core/types/assets';
-import { ChainId, ChainName } from '~/core/types/chains';
-import { chainNameFromChainId } from '~/core/utils/chains';
+import { ChainId, ChainName, chainIdToNameMapping } from '~/core/types/chains';
 
 import { getNativeAssets, useNativeAssets } from './useNativeAssets';
 
@@ -83,7 +82,7 @@ export async function getNativeAssetForNetwork({
       ...nativeAsset,
       chainId: chainId || nativeAsset?.chainId || ChainId.mainnet,
       chainName:
-        chainNameFromChainId(chainId) ||
+        chainIdToNameMapping[chainId] ||
         nativeAsset?.chainName ||
         ChainName.mainnet,
       uniqueId: getNetworkNativeAssetUniqueId({ chainId }),

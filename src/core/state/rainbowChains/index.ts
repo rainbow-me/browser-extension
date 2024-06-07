@@ -1,10 +1,9 @@
-import { Chain, zora } from 'viem/chains';
+import { Chain, degen, zora } from 'viem/chains';
 import create from 'zustand';
 
-import { SUPPORTED_CHAINS, getDefaultRPC } from '~/core/references';
+import { SUPPORTED_CHAINS, defaultRPC } from '~/core/references/chains';
 import {
   ChainId,
-  chainDegen,
   chainHardhat,
   chainHardhatOptimism,
 } from '~/core/types/chains';
@@ -39,11 +38,10 @@ export const RAINBOW_CHAINS_SUPPORTED = IS_TESTING
   ? SUPPORTED_CHAINS.concat(chainHardhat, chainHardhatOptimism)
   : SUPPORTED_CHAINS;
 
-const getInitialRainbowChains = () => {
+export const getInitialRainbowChains = () => {
   const rainbowChains: Record<number, RainbowChain> = {};
   RAINBOW_CHAINS_SUPPORTED.forEach((chain) => {
-    const rpcUrl =
-      getDefaultRPC(chain.id)?.http || chain.rpcUrls.default.http[0];
+    const rpcUrl = defaultRPC[chain.id] || chain.rpcUrls.default.http[0];
     const rnbwChain = {
       ...chain,
       rpcUrls: {
@@ -278,10 +276,10 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
 
         function v8(state) {
           if (
-            !state.rainbowChains[chainDegen.id] ||
-            state.rainbowChains[chainDegen.id]?.chains.length === 0
+            !state.rainbowChains[degen.id] ||
+            state.rainbowChains[degen.id]?.chains.length === 0
           ) {
-            return addCustomRPC({ chain: chainDegen, state });
+            return addCustomRPC({ chain: degen, state });
           }
           return state;
         },

@@ -4,10 +4,10 @@ import { Address } from 'viem';
 import { metadataClient } from '~/core/graphql';
 import { AboutTokenQuery } from '~/core/graphql/__generated__/metadata';
 import { createQueryKey } from '~/core/react-query';
+import { SUPPORTED_CHAIN_IDS } from '~/core/references/chains';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { isDefaultSupportedChain } from '~/core/utils/chains';
 import { formatCurrency } from '~/core/utils/formatNumber';
 
 const parseTokenInfo = (token: AboutTokenQuery['token']) => {
@@ -22,6 +22,7 @@ const parseTokenInfo = (token: AboutTokenQuery['token']) => {
       high: format(token.allTime.highValue),
       low: format(token.allTime.lowValue),
     },
+    price: token.price,
     circulatingSupply: format(token.circulatingSupply),
     fullyDilutedValuation: format(token.fullyDilutedValuation),
     marketCap: format(token.marketCap),
@@ -36,7 +37,7 @@ const parseTokenInfo = (token: AboutTokenQuery['token']) => {
     isBridgeable: !!token.bridging,
   };
 };
-type ParsedTokenInfo = ReturnType<typeof parseTokenInfo>;
+export type ParsedTokenInfo = ReturnType<typeof parseTokenInfo>;
 
 export const useTokenInfo = <Select = ParsedTokenInfo>(
   token: { address: AddressOrEth; chainId: ChainId } | null,
@@ -51,8 +52,12 @@ export const useTokenInfo = <Select = ParsedTokenInfo>(
         .aboutToken(args)
         .then((d) => parseTokenInfo(d.token));
     },
-    queryKey: createQueryKey('token about info', args),
-    enabled: !!token && isDefaultSupportedChain({ chainId: token.chainId }),
+    queryKey: createQueryKey(
+      'tokenInfo',
+      { ...(args ? { args } : {}) },
+      { persisterVersion: 2 },
+    ),
+    enabled: !!token && SUPPORTED_CHAIN_IDS.includes(token.chainId),
     ...options,
   });
 };

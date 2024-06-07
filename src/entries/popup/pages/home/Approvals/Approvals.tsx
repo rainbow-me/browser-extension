@@ -3,7 +3,7 @@ import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
 import { Address, Chain } from 'viem';
 
 import { i18n } from '~/core/languages';
-import { SUPPORTED_MAINNET_CHAINS } from '~/core/references';
+import { SUPPORTED_MAINNET_CHAINS } from '~/core/references/chains';
 import { shortcuts } from '~/core/references/shortcuts';
 import {
   Approval,

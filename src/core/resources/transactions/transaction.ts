@@ -6,7 +6,8 @@ import { Address, Hash } from 'viem';
 import { i18n } from '~/core/languages';
 import { addysHttp } from '~/core/network/addys';
 import { QueryFunctionResult, createQueryKey } from '~/core/react-query';
-import { SUPPORTED_CHAIN_IDS, SupportedCurrencyKey } from '~/core/references';
+import { SupportedCurrencyKey } from '~/core/references';
+import { SUPPORTED_CHAIN_IDS } from '~/core/references/chains';
 import {
   consolidatedTransactionsQueryFunction,
   consolidatedTransactionsQueryKey,

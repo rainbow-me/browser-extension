@@ -13,16 +13,16 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
+import {
+  simpleHashSupportedChainNames,
+  simpleHashSupportedTestnetChainNames,
+} from '~/core/references/chains';
 import { ChainId, ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import {
   PolygonAllowListDictionary,
   SimpleHashCollectionDetails,
   UniqueAsset,
 } from '~/core/types/nfts';
-import {
-  getSimpleHashSupportedChainNames,
-  getSimpleHashSupportedTestnetChainNames,
-} from '~/core/utils/chains';
 import {
   filterSimpleHashNFTs,
   simpleHashNFTToUniqueAsset,
@@ -77,12 +77,14 @@ async function nftsQueryFunction({
     return NFTS_TEST_DATA as unknown as _QueryResult;
   }
   const simplehashChainNames = !testnetMode
-    ? getSimpleHashSupportedChainNames()
-    : getSimpleHashSupportedTestnetChainNames();
+    ? simpleHashSupportedChainNames
+    : simpleHashSupportedTestnetChainNames;
+
   const chains = simplehashChainNames.filter((simplehashChainName) => {
     const id = chainNameToIdMapping[simplehashChainName];
     return userChainIds.includes(id) || simplehashChainName === 'gnosis';
   }) as ChainName[];
+
   const polygonAllowList = await polygonAllowListFetcher();
   const acquisitionMap: Record<string, string> = {};
   const collectionsResponse = await fetchNftCollections({

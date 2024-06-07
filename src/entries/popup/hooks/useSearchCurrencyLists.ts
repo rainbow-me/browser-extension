@@ -2,7 +2,7 @@ import { isAddress } from '@ethersproject/address';
 import { rankings } from 'match-sorter';
 import { useCallback, useMemo } from 'react';
 
-import { SUPPORTED_CHAINS } from '~/core/references';
+import { SUPPORTED_CHAINS } from '~/core/references/chains';
 import { useTokenSearch } from '~/core/resources/search';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -13,7 +13,7 @@ import {
   TokenSearchThreshold,
 } from '~/core/types/search';
 import { isSameAsset } from '~/core/utils/assets';
-import { getChainName } from '~/core/utils/chains';
+import { getChain } from '~/core/utils/chains';
 import { addHexPrefix } from '~/core/utils/hex';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
@@ -360,7 +360,7 @@ export function useSearchCurrencyLists({
             if (!assetOnNetworkOverrides) return;
             const chainId = +_chainId as unknown as ChainId; // Object.entries messes the type
 
-            const chainName = getChainName({ chainId });
+            const chainName = getChain({ chainId }).name;
             const { address, decimals } = assetOnNetworkOverrides;
             // filter out the asset we're selling already
             if (
