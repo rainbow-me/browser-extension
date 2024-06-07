@@ -1,8 +1,11 @@
 import { Chain } from 'viem';
 import { mainnet } from 'viem/chains';
 
-import { proxyBackendNetworkRpcEndpoint } from '../providers';
 import { BackendNetwork } from '../types/chains';
+
+const proxyBackendNetworkRpcEndpoint = (endpoint: string) => {
+  return `${endpoint}${process.env.RPC_PROXY_API_KEY}`;
+};
 
 export function transformBackendNetworkToChain(network: BackendNetwork): Chain {
   if (!network) {

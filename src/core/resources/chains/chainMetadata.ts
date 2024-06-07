@@ -1,7 +1,7 @@
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { useQuery } from '@tanstack/react-query';
 
-import { proxyRpcEndpoint } from '~/core/providers';
+import { proxyRpcEndpoint } from '~/core/providers/proxy';
 import {
   QueryConfig,
   QueryFunctionArgs,

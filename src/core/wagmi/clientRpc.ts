@@ -1,6 +1,6 @@
 import { Chain } from 'viem';
 
-import { proxyRpcEndpoint } from '../providers';
+import { proxyRpcEndpoint } from '../providers/proxy';
 import { connectedToHardhatStore } from '../state/currentSettings/connectedToHardhat';
 import { ChainId, chainHardhat, chainHardhatOptimism } from '../types/chains';
 import { findRainbowChainForChainId } from '../utils/rainbowChains';

@@ -17,7 +17,3 @@ export const proxyRpcEndpoint = (endpoint: string, chainId: ChainId) => {
   }
   return endpoint;
 };
-
-export const proxyBackendNetworkRpcEndpoint = (endpoint: string) => {
-  return `${endpoint}${process.env.RPC_PROXY_API_KEY}`;
-};
