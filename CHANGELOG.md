@@ -21,6 +21,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.4.122](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.122)
+
+### Changed
+
+- You can now search for a Token Contract Address in Swaps to more quickly find a token #1561
+
+### Fixed
+
+- Resolved gas estimation issues for Blast and Degen chain #1559 #1566
+- Fixed the `To` field in Activity Details for a transaction to better reflect a transaction recipient #1567
+- Resolved `NaN` balances displayed on the Tokens tab while reloading balances #1562
+- Fixed text overflows for alternative languages on the Tip Banner on the Tokens tab #1563
+
+### Internal
+
+- Consolidated chains info to prepare for new Chains Metadata endpoint #1554
+
 ## [v1.4.111](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.111)
 
 ### Changed
