@@ -21,6 +21,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.4.111](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.111)
+
+### Changed
+
+- You can now search for Token Contract Addresses in the Magic Menu with Cmd+K to easily find and get an asset #1547
+
+### Fixed
+
+- Resolved accuracy of Ethereum Sepolia and additional testnet gas estimates #1546
+- Fixed a crash for some browsers that attempted to translate the Onboarding flow #1548
+
+### Internal
+
+- Translations for Magic Menu, Contacts, Report NFTs, and Speed up and Cancel Txs #1550
+- Upgraded Wagmi and Viem to v2, and included React Query #1541
+
 ## [v1.4.97](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.97)
 
 ### Added
