@@ -1,6 +1,7 @@
-import backendNetworks from 'static/data/networks.json';
 import { Address } from 'viem';
 import { Chain } from 'viem/chains';
+
+import backendNetworks from 'static/data/networks.json';
 
 import { AddressOrEth } from '../types/assets';
 import {

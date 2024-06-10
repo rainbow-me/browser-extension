@@ -6,11 +6,11 @@ import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 
 export const useWalletName = ({ address }: { address?: Address }) => {
-  const { data: ensName, error } = useEnsName({
+  const { data: ensName } = useEnsName({
     address,
     chainId: ChainId.mainnet,
   });
-  console.log('-- useWalletName', ensName, error);
+
   const { walletNames } = useWalletNamesStore();
 
   if (!address) {
