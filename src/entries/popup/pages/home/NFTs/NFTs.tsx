@@ -166,6 +166,7 @@ export function NFTs() {
     getScrollElement: () => containerRef.current,
     estimateSize: () => 112,
     overscan: 12,
+    paddingEnd: 20,
   });
   const onAssetClick = (asset: UniqueAsset) => {
     navigate(

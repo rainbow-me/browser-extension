@@ -215,6 +215,7 @@ function ClaimYourPoints() {
       flexDirection="column"
       justifyContent="flex-start"
       marginTop="-20px"
+      paddingBottom="64px"
       paddingTop={config.points_enabled ? '40px' : '80px'}
       ref={ref}
       style={{ height: 336 - (testnetMode ? TESTNET_MODE_BAR_HEIGHT : 0) }}
