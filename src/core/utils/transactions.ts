@@ -173,15 +173,18 @@ const getAssetFromChanges = (
   return changes[0]?.asset;
 };
 
-const getAddressToFromChanges = (
+const getAddressTo = (
+  meta: PaginatedTransactionsApiResponse['meta'],
   changes: {
     direction: TransactionDirection;
     asset: ParsedUserAsset;
     address_to: Address;
   }[],
-  type: TransactionType,
 ) => {
-  if (type === 'sale')
+  if (meta.type === 'approve') {
+    return meta?.approval_to;
+  }
+  if (meta.type === 'sale')
     return changes?.find((c) => c?.direction === 'out')?.address_to;
   return changes[0]?.address_to;
 };
@@ -266,9 +269,7 @@ export function parseTransaction({
     ? parseAsset({ asset: meta.asset, currency })
     : getAssetFromChanges(changes, type);
 
-  const addressTo = asset
-    ? getAddressToFromChanges(changes, type)
-    : tx.address_to;
+  const addressTo = asset ? getAddressTo(meta, changes) : tx.address_to;
 
   const direction = tx.direction || getDirection(type);
 
@@ -426,9 +427,7 @@ export async function getNextNonce({
   const { getNonce } = nonceStore.getState();
   const localNonceData = getNonce({ address, chainId });
   const localNonce = localNonceData?.currentNonce || 0;
-  console.log('- getNextNonce');
   const provider = getProvider({ chainId });
-  console.log('- getNextNonce', provider);
   const txCountIncludingPending = await provider.getTransactionCount(
     address,
     'pending',
