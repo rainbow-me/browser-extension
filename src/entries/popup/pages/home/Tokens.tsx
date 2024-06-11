@@ -228,6 +228,7 @@ export function Tokens() {
     getScrollElement: () => containerRef.current,
     estimateSize: () => 52,
     overscan: 20,
+    paddingEnd: 64,
   });
 
   useKeyboardShortcut({

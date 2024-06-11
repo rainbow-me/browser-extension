@@ -566,6 +566,7 @@ export function PointsDashboard() {
       width="full"
       marginTop="-20px" // there is a 20px top inset wrapping all tabs, I don't wanna mess with that rn afraid of breaking something somewhere else
       padding="20px"
+      paddingBottom="64px"
       background={currentTheme === 'light' ? 'surfaceSecondary' : undefined}
     >
       <Stack gap="20px">
