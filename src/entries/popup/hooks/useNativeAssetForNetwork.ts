@@ -77,8 +77,11 @@ export function useNativeAssetForNetwork({
   if (nativeAsset) {
     return {
       ...nativeAsset,
-      chainId: nativeAsset?.chainId || ChainId.mainnet,
-      chainName: nativeAsset?.chainName || ChainName.mainnet,
+      chainId: chainId || nativeAsset?.chainId || ChainId.mainnet,
+      chainName:
+        chainNameFromChainId(chainId) ||
+        nativeAsset?.chainName ||
+        ChainName.mainnet,
       uniqueId: getNetworkNativeAssetUniqueId({ chainId }),
       address: chainsNativeAsset[chainId] as Address,
       isNativeAsset: true,

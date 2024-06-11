@@ -1,8 +1,20 @@
 import { motion } from 'framer-motion';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { useMutation } from 'wagmi';
 
+import { metadataPostClient } from '~/core/graphql';
+import {
+  ClaimUserRewardsMutation,
+  PointsErrorType,
+} from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
+import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import { ChainId } from '~/core/types/chains';
+import {
+  convertAmountAndPriceToNativeDisplay,
+  convertRawAmountToBalance,
+} from '~/core/utils/numbers';
 import {
   Box,
   Button,
@@ -16,22 +28,65 @@ import {
 } from '~/design-system';
 import { AnimatedText } from '~/design-system/components/AnimatedText/AnimatedText';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
+import { useNativeAsset } from '~/entries/popup/hooks/useNativeAsset';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useWalletName } from '~/entries/popup/hooks/useWalletName';
 import { ROUTES } from '~/entries/popup/urls';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
 import ConsoleText from './ConsoleText';
-import { usePoints } from './usePoints';
-import { RAINBOW_TEXT, getDelayForRow, getWeeklyEarnings } from './utils';
+import { CLAIM_MOCK_DATA } from './references';
+import { invalidatePointsQuery } from './usePoints';
+import { RAINBOW_TEXT, getDelayForRow } from './utils';
 
 export function ClaimOverview() {
-  const [success, setSuccess] = useState(false);
-  //   const [error, setError] = useState<string | undefined>();
+  const { state } = useLocation();
+  //   const claimNetwork = state?.claimNetwork as ChainId;
+  const claimAmount: string = state?.claimAmount;
+  const [waitToDisplay, setWaitToDisplay] = useState(true);
   const [showSummary, setShowSummary] = useState(false);
+  const [error, setError] = useState<PointsErrorType | undefined>();
   const navigate = useRainbowNavigate();
   const { currentAddress } = useCurrentAddressStore();
+  const { currentCurrency: currency } = useCurrentCurrencyStore();
   const { displayName } = useWalletName({ address: currentAddress });
+
+  const { currentAddress: address } = useCurrentAddressStore();
+
+  const eth = useNativeAsset({ chainId: ChainId.mainnet });
+  const ethPrice = eth?.nativeAsset?.price?.value;
+  const claimableBalance = convertRawAmountToBalance(claimAmount, {
+    decimals: 18,
+    symbol: eth?.nativeAsset?.symbol,
+  });
+  const claimablePriceDisplay = convertAmountAndPriceToNativeDisplay(
+    claimableBalance.amount,
+    ethPrice || '0',
+    currency,
+  );
+
+  const {
+    // data: claimData,
+    isSuccess: claimSuccess,
+    mutate: claimRewards,
+  } = useMutation<ClaimUserRewardsMutation['claimUserRewards']>({
+    mutationFn: async () => {
+      const response =
+        process.env.IS_TESTING === 'true'
+          ? CLAIM_MOCK_DATA
+          : await metadataPostClient.claimUserRewards({ address });
+      const claimInfo = response?.claimUserRewards;
+
+      if (claimInfo?.error) {
+        setError(claimInfo?.error.type);
+      }
+
+      // clear and refresh claim data so available claim UI disappears
+      invalidatePointsQuery(address);
+
+      return claimInfo;
+    },
+  });
 
   const backToHome = () => {
     navigate(ROUTES.HOME, {
@@ -39,25 +94,23 @@ export function ClaimOverview() {
     });
   };
 
-  const { data: points } = usePoints(currentAddress);
-
-  const weeklyEarnings = useMemo(() => {
-    return getWeeklyEarnings(points);
-  }, [points]);
+  const showPreparingClaim = !showSummary;
+  const showSuccess = !waitToDisplay && claimSuccess && !showSummary && !error;
+  const showError = !waitToDisplay && error;
 
   useEffect(() => {
-    setTimeout(() => setSuccess(true), 5000);
-    setTimeout(() => setShowSummary(true), 10000);
+    claimRewards();
+    setTimeout(() => setWaitToDisplay(false), 3000);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const showPreparingClaim = !showSummary;
-  const showSuccess = success && !showSummary;
+  useEffect(() => {
+    if (showSuccess && !showSummary) {
+      setTimeout(() => setShowSummary(true), 5000);
+    }
+  }, [showSuccess, showSummary]);
 
   return (
-    <BottomSheet
-      zIndex={zIndexes.ACTIVITY_DETAILS}
-      show={!!(weeklyEarnings && points)}
-    >
+    <BottomSheet zIndex={zIndexes.ACTIVITY_DETAILS} show={true}>
       <Box
         display="flex"
         as={motion.div}
@@ -78,11 +131,17 @@ export function ClaimOverview() {
             </Inline>
             {showPreparingClaim && <PreparingClaimText />}
             {showSuccess && <SuccessText />}
-            {showSummary && <ClaimSummary />}
+            {showError && <ErrorText error={error} />}
+            {showSummary && (
+              <ClaimSummary
+                amount={claimableBalance.amount}
+                price={claimablePriceDisplay.display}
+              />
+            )}
           </Stack>
         </Stack>
 
-        {showSummary && (
+        {(showSummary || showError) && (
           <Button
             onClick={backToHome}
             color="accent"
@@ -98,7 +157,7 @@ export function ClaimOverview() {
               color="accent"
               textShadow="12px accent"
             >
-              {'Done'}
+              {i18n.t('points.rewards.done')}
             </Text>
           </Button>
         )}
@@ -110,15 +169,17 @@ export function ClaimOverview() {
 function PreparingClaimText() {
   return (
     <>
-      <ConsoleText>{`> Counting earned points...`}</ConsoleText>
-      <ConsoleText>{`> Calculating your referrals...`}</ConsoleText>
-      <ConsoleText>{`> Allocating your earnings...`}</ConsoleText>
+      <ConsoleText>{i18n.t('points.rewards.counting_points')}</ConsoleText>
+      <ConsoleText>
+        {i18n.t('points.rewards.calculating_referrals')}
+      </ConsoleText>
+      <ConsoleText>{i18n.t('points.rewards.allocating_earnings')}</ConsoleText>
     </>
   );
 }
 
 const ROWS_TEXT = [
-  `> Your reward is ready`,
+  `${i18n.t('points.rewards.your_reward_is_ready')}`,
   `${RAINBOW_TEXT.row1}`,
   `${RAINBOW_TEXT.row2}`,
   `${RAINBOW_TEXT.row3}`,
@@ -127,7 +188,7 @@ const ROWS_TEXT = [
   `${RAINBOW_TEXT.row6}`,
   `${RAINBOW_TEXT.row7}`,
   `${RAINBOW_TEXT.row8}`,
-  `\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0CLAIMING YOUR REWARD`,
+  `${i18n.t('points.rewards.claiming_your_reward')}`,
 ];
 
 function SuccessText() {
@@ -158,6 +219,23 @@ function SuccessText() {
   );
 }
 
+function ErrorText({ error }: { error: PointsErrorType }) {
+  return (
+    <AnimatedText
+      align="left"
+      size="14pt mono"
+      weight="bold"
+      delay={0}
+      color="red"
+      textShadow="12px red"
+    >
+      {error === PointsErrorType.AlreadyClaimed
+        ? i18n.t('points.rewards.already_claimed')
+        : i18n.t('points.rewards.no_claim')}
+    </AnimatedText>
+  );
+}
+
 function RainbowSlant() {
   return (
     <Box paddingTop="30px">
@@ -182,7 +260,7 @@ function RainbowSlant() {
   );
 }
 
-function ClaimSummary() {
+function ClaimSummary({ amount, price }: { amount: string; price: string }) {
   return (
     <Box
       display="flex"
@@ -193,28 +271,50 @@ function ClaimSummary() {
       flexDirection="column"
       justifyContent="space-between"
     >
-      <ConsoleText color="green">{`> Claim Complete`}</ConsoleText>
+      <ConsoleText color="green">
+        {i18n.t('points.rewards.claim_complete')}
+      </ConsoleText>
       <Box paddingVertical="44px">
-        <Rows>
+        <Rows space="12px">
           <Row>
             <Columns>
               <Column>
-                <ConsoleText color="pink">{'Your reward'}</ConsoleText>
+                <ConsoleText color="accent">
+                  {i18n.t('points.rewards.your_rewards')}
+                </ConsoleText>
               </Column>
               <Column>
                 <Box display="flex" justifyContent="flex-end">
-                  <ConsoleText color="pink">{'+ 0.2 Base ETH'}</ConsoleText>
+                  <ConsoleText color="accent">{price}</ConsoleText>
+                </Box>
+              </Column>
+            </Columns>
+          </Row>
+          <Row>
+            <Columns>
+              <Column>
+                <ConsoleText color="label">
+                  {i18n.t('points.rewards.in_eth')}
+                </ConsoleText>
+              </Column>
+              <Column>
+                <Box display="flex" justifyContent="flex-end">
+                  <ConsoleText color="label">
+                    {i18n.t('points.rewards.amount_in_eth', {
+                      amount,
+                    })}
+                  </ConsoleText>
                 </Box>
               </Column>
             </Columns>
           </Row>
         </Rows>
       </Box>
-      <ConsoleText>{`Your ETH is in your wallet and ready to spend. You're all set.`}</ConsoleText>
+      <ConsoleText>{i18n.t('points.rewards.ready_to_spend')}</ConsoleText>
       <Box paddingVertical="30px">
-        <ConsoleText>{`Keep earning points and your share of Rainbow rewards by swapping, bridging, minting, referring friends, and more`}</ConsoleText>
+        <ConsoleText>{i18n.t('points.rewards.keep_earning')}</ConsoleText>
       </Box>
-      <ConsoleText>{`The more you use Rainbow, the more you'll be rewarded`}</ConsoleText>
+      <ConsoleText>{i18n.t('points.rewards.use_rainbow')}</ConsoleText>
     </Box>
   );
 }
