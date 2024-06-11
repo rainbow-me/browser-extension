@@ -176,7 +176,7 @@ function Leaderboard() {
           <Inline wrap={false} space="12px" alignVertical="center">
             <Stack space="12px">
               <Text size="14pt" color="label" weight="bold">
-                {'My Points'}
+                {i18n.t('points.my_points')}
               </Text>
               <RainbowText size="26pt" weight="heavy" inline>
                 {formatNumber(data?.user?.earnings.total)}
@@ -185,7 +185,7 @@ function Leaderboard() {
           </Inline>
           <Stack space="12px">
             <Text size="14pt" color="accent" weight="bold" align="right">
-              {'Rank'}
+              {i18n.t('points.rank')}
             </Text>
             {user.stats.position.unranked ? (
               <Text size="26pt" weight="bold" color="labelQuaternary">
@@ -206,7 +206,7 @@ function Leaderboard() {
       </Card>
       <Box paddingTop="10px">
         <Text size="16pt" weight="bold">
-          {'Top Points Holders'}
+          {i18n.t('points.top_holders')}
         </Text>
       </Box>
       <Card paddingVertical="10px" paddingHorizontal="16px" tabIndex={-1}>
@@ -437,7 +437,7 @@ function getRankDifference(
   } as const;
 }
 
-const YourRankAndNextDrop = memo(function YourRankAndNextDrop() {
+const StatsCarousel = memo(function YourRankAndNextDrop() {
   const { currentAddress } = useCurrentAddressStore();
   const { data, isSuccess } = usePoints(currentAddress);
 
@@ -501,7 +501,9 @@ const YourRankAndNextDrop = memo(function YourRankAndNextDrop() {
                 color="accent"
                 textShadow="16px accent"
               >
-                {`Rank #${'13,121'}`}
+                {i18n.t('points.ranking', {
+                  rank: lastPeriod.position.current,
+                })}
               </Text>
             )}
           </Inline>
@@ -525,7 +527,9 @@ const YourRankAndNextDrop = memo(function YourRankAndNextDrop() {
               color="accent"
               textShadow="16px accent"
             >
-              {`${earningsFromReferrals} points`}
+              {i18n.t('points.referral_earnings', {
+                earnings: earningsFromReferrals,
+              })}
             </Text>
           </Inline>
         </Card>
@@ -602,7 +606,7 @@ function YourPoints() {
       gap="20px"
     >
       <Text size="16pt" weight="bold" color="label">
-        {'My Points'}
+        {i18n.t('points.my_points')}
       </Text>
       <RainbowText size="44pt" weight="heavy" inline>
         {formatNumber(earnings.total)}
@@ -637,8 +641,8 @@ function ClaimYourPoints({
   const eth = useNativeAsset({ chainId: ChainId.mainnet });
   const ethPrice = eth?.nativeAsset?.price?.value;
   const { currentCurrency: currency } = useCurrentCurrencyStore();
-  if (!claimableReward || claimableReward === '0' || !ethPrice) return null;
-  const claimableBalance = convertRawAmountToBalance(claimableReward, {
+  // if (!claimableReward || claimableReward === '0' || !ethPrice) return null;
+  const claimableBalance = convertRawAmountToBalance(claimableReward || '0', {
     decimals: 18,
     symbol: eth?.nativeAsset?.symbol,
   });
@@ -646,7 +650,7 @@ function ClaimYourPoints({
     <Card>
       <Box paddingTop="6px">
         <Text size="16pt" weight="bold" align="center" textShadow="16px label">
-          {'Available to Claim'}
+          {i18n.t('points.rewards.available_to_claim')}
         </Text>
       </Box>
       <Box
@@ -662,7 +666,7 @@ function ClaimYourPoints({
             {
               convertAmountAndPriceToNativeDisplay(
                 claimableBalance.amount,
-                ethPrice,
+                ethPrice || 0,
                 currency,
               )?.display
             }
@@ -670,7 +674,7 @@ function ClaimYourPoints({
         </Inline>
       </Box>
       <ClaimYourPointsCta
-        claimableReward={claimableReward}
+        claimableReward={claimableReward || '0'}
         showClaimSheet={showClaimSheet}
       />
     </Card>
@@ -842,7 +846,7 @@ function RainbowUserEarnings({ totalEarnings }: { totalEarnings: string }) {
   return (
     <Inline alignVertical="center" space="6px" alignHorizontal="center">
       <Text size="12pt" color="labelTertiary" weight="bold">
-        {'Rainbow users have earned'}
+        {i18n.t('points.rewards.program_earnings')}
       </Text>
       <ChainBadge chainId={ChainId.mainnet} size={'14'} />
       <Text size="12pt" color="labelSecondary" weight="heavy">
@@ -881,7 +885,7 @@ function MyEarnings({ earnings = '0' }: { earnings?: string }) {
               weight="heavy"
               textShadow="16px label"
             >
-              {'My Earnings'}
+              {i18n.t('points.rewards.my_earnings')}
             </Text>
           </Inline>
           <Symbol
@@ -896,7 +900,7 @@ function MyEarnings({ earnings = '0' }: { earnings?: string }) {
             <ChainBadge chainId={ChainId.mainnet} size="32" />
             <Stack space="10px">
               <Text size="12pt" color="labelQuaternary" weight="bold">
-                {'Claimed Earnings'}
+                {i18n.t('points.rewards.claimed_earnings')}
               </Text>
               <Text size="14pt" color="label" weight="heavy">
                 {`${convertRawAmountToDecimalFormat(earnings, 18)} ETH`}
@@ -911,7 +915,7 @@ function MyEarnings({ earnings = '0' }: { earnings?: string }) {
                 weight="bold"
                 align="right"
               >
-                {'Current Value'}
+                {i18n.t('points.rewards.current_value')}
               </Text>
               <Text size="14pt" color="label" weight="bold" align="right">
                 {`${
@@ -949,7 +953,7 @@ function NoHistoricalRewards() {
               weight="heavy"
               textShadow="16px label"
             >
-              {'Earn ETH Rewards'}
+              {i18n.t('points.rewards.earn_eth_rewards')}
             </Text>
           </Inline>
         </Box>
@@ -960,9 +964,7 @@ function NoHistoricalRewards() {
             size="12pt"
             align="center"
           >
-            {
-              'Every week, top points holders and the biggest weekly points earners will receive a portion of Rainbow’s onchain revenue. Collect points by swapping or transacting in Rainbow.'
-            }
+            {i18n.t('points.rewards.points_explanation')}
           </Text>
         </Box>
       </Stack>
@@ -975,7 +977,6 @@ function Rewards() {
   const { data: points } = usePoints(currentAddress);
   const navigate = useRainbowNavigate();
 
-  console.log('POINTS DATA: ', points);
   const hasLastAirdropPoints = points?.user.stats.last_airdrop.differences.some(
     (d) => d && d.earnings.total > 0,
   );
@@ -1011,7 +1012,7 @@ function Rewards() {
         {shouldShowWeeklyOverview && <YourEarningsLastWeek />}
         <Separator color="separatorTertiary" />
         <YourPoints />
-        <YourRankAndNextDrop />
+        <StatsCarousel />
         <Separator color="separatorTertiary" />
         <ReferralCode />
       </Stack>

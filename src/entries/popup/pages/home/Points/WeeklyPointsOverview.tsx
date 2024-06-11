@@ -2,6 +2,7 @@ import { format, sub } from 'date-fns';
 import { motion } from 'framer-motion';
 import { useMemo } from 'react';
 
+import { PointsQuery } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { createNumberFormatter } from '~/core/utils/formatNumber';
@@ -43,7 +44,7 @@ export function PointsWeeklyOverview() {
   const { data: points } = usePoints(currentAddress);
 
   const weeklyEarnings = useMemo(() => {
-    return getWeeklyEarnings(points);
+    return getWeeklyEarnings(points as PointsQuery['points']);
   }, [points]);
 
   const nextDistributionTime = (points?.meta.distribution.next ?? 0) * 1000;

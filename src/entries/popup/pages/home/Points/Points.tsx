@@ -286,5 +286,9 @@ export function Points() {
   if (!config.points_enabled || data?.error?.type === 'NON_EXISTING_USER') {
     return <ClaimYourPoints />;
   }
-  return config.rewards_enabled ? <PointsDashboard /> : <OldPointsDashboard />;
+  return config.rewards_enabled || process.env.INTERNAL_BUILD === 'true' ? (
+    <PointsDashboard />
+  ) : (
+    <OldPointsDashboard />
+  );
 }

@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 
 import { i18n } from '~/core/languages';
+import { useCurrentAddressStore } from '~/core/state';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import {
   Box,
@@ -21,8 +22,13 @@ import { useUserAssetsBalance } from '~/entries/popup/hooks/useUserAssetsBalance
 import { ROUTES } from '~/entries/popup/urls';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
+import { usePoints } from './usePoints';
+
 export function ClaimSheet() {
   const navigate = useRainbowNavigate();
+  const { currentAddress: address } = useCurrentAddressStore();
+  const { data, isSuccess } = usePoints(address);
+  const rewards = data?.user?.rewards;
   const { amount: opBalance } = useUserAssetsBalance({
     chain: ChainId.optimism,
     currency: 'ETH',
@@ -53,20 +59,32 @@ export function ClaimSheet() {
             textShadow="16px accent"
             align="center"
           >
-            {'Choose Claim Network'}
+            {i18n.t('points.rewards.choose_claim_network')}
           </Text>
         </Box>
         <Stack gap="10px">
           <Separator color="separatorTertiary" />
           <Rows>
             <Row>
-              <ClaimSheetRow chain={ChainId.optimism} display={opDisplay} />
+              <ClaimSheetRow
+                balance={rewards?.claimable || '0'}
+                chain={ChainId.optimism}
+                display={opDisplay}
+              />
             </Row>
             <Row>
-              <ClaimSheetRow chain={ChainId.base} display={baseDisplay} />
+              <ClaimSheetRow
+                balance={rewards?.claimable || '0'}
+                chain={ChainId.base}
+                display={baseDisplay}
+              />
             </Row>
             <Row>
-              <ClaimSheetRow chain={ChainId.zora} display={zoraDisplay} />
+              <ClaimSheetRow
+                balance={rewards?.claimable || '0'}
+                chain={ChainId.zora}
+                display={zoraDisplay}
+              />
             </Row>
           </Rows>
         </Stack>
@@ -85,6 +103,7 @@ export function ClaimSheet() {
             variant="transparentShadow"
             tabIndex={0}
             paddingHorizontal="20px"
+            disabled={!isSuccess}
           >
             <Text
               size="16pt"
@@ -102,9 +121,11 @@ export function ClaimSheet() {
 }
 
 function ClaimSheetRow({
+  balance,
   chain,
   display,
 }: {
+  balance: string;
   chain: ChainId;
   display: string;
 }) {
@@ -112,6 +133,9 @@ function ClaimSheetRow({
   return (
     <Inset horizontal="8px">
       <Box
+        style={{
+          filter: chain !== ChainId.optimism ? 'grayscale(1)' : 'grayscale(0)',
+        }}
         paddingVertical="10px"
         className={rowTransparentAccentHighlight}
         borderRadius="12px"
@@ -121,31 +145,53 @@ function ClaimSheetRow({
         whileHover={{ scale: 1.02 }}
         paddingHorizontal="8px"
         onClick={() => {
+          if (chain !== ChainId.optimism) return;
           navigate(ROUTES.CLAIM_OVERVIEW, {
             state: {
               tab: 'points',
               skipTransitionOnRoute: ROUTES.HOME,
+              claimAmount: balance,
+              claimNetwork: chain,
             },
           });
         }}
       >
-        <Inset horizontal="24px">
-          <Inline space="12px">
-            <ChainBadge chainId={chain} size="32" />
-            <Stack gap="10px">
-              <Text
-                size="16pt"
-                color="label"
-                textShadow="16px label"
-                weight="heavy"
-              >
-                {ChainNameDisplay[chain]}
-              </Text>
-              <Text size="12pt" color="labelQuaternary" weight="bold">
-                {display}
-              </Text>
-            </Stack>
-          </Inline>
+        <Inset horizontal="8px">
+          <Box display="flex" justifyContent="space-between">
+            <Inline space="12px">
+              <ChainBadge chainId={chain} size="32" />
+              <Stack gap="10px">
+                <Text
+                  size="16pt"
+                  color="label"
+                  textShadow="16px label"
+                  weight="heavy"
+                >
+                  {ChainNameDisplay[chain]}
+                </Text>
+                <Text size="12pt" color="labelQuaternary" weight="bold">
+                  {display}
+                </Text>
+              </Stack>
+            </Inline>
+            {chain !== ChainId.optimism && (
+              <Inline alignVertical="center">
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  borderRadius="5px"
+                  padding="7px"
+                  borderWidth="1px"
+                  borderColor="labelQuaternary"
+                  height="fit"
+                >
+                  <Text color="labelQuaternary" size="12pt" weight="bold">
+                    {i18n.t('points.rewards.coming_soon')}
+                  </Text>
+                </Box>
+              </Inline>
+            )}
+          </Box>
         </Inset>
       </Box>
     </Inset>
