@@ -21,11 +21,7 @@ const fetchPoints = async (address: Address) => {
 };
 
 export const invalidatePointsQuery = (address: Address) => {
-  queryClient.invalidateQueries([
-    'points',
-    address,
-    PointsDocument.loc?.source.body,
-  ]);
+  queryClient.invalidateQueries(['points', address]);
 };
 
 export const seedPointsQueryCache = async (

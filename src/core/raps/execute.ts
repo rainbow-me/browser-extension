@@ -101,7 +101,7 @@ function getRapFullName<T extends RapActionTypes>(actions: RapAction<T>[]) {
 
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
-const waitForNodeAck = async (
+export const waitForNodeAck = async (
   hash: string,
   provider: Signer['provider'],
 ): Promise<void> => {
