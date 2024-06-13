@@ -133,9 +133,9 @@ function ClaimSheetRow({
   return (
     <Inset horizontal="8px">
       <Box
-        // style={{
-        //   filter: chain !== ChainId.optimism ? 'grayscale(1)' : 'grayscale(0)',
-        // }}
+        style={{
+          filter: chain !== ChainId.optimism ? 'grayscale(1)' : 'grayscale(0)',
+        }}
         paddingVertical="10px"
         className={rowTransparentAccentHighlight}
         borderRadius="12px"
@@ -145,7 +145,7 @@ function ClaimSheetRow({
         whileHover={{ scale: 1.02 }}
         paddingHorizontal="8px"
         onClick={() => {
-          //   if (chain !== ChainId.optimism) return;
+          if (chain !== ChainId.optimism) return;
           navigate(ROUTES.CLAIM_OVERVIEW, {
             state: {
               tab: 'points',
@@ -174,7 +174,7 @@ function ClaimSheetRow({
                 </Text>
               </Stack>
             </Inline>
-            {/* {chain !== ChainId.optimism && (
+            {chain !== ChainId.optimism && (
               <Inline alignVertical="center">
                 <Box
                   display="flex"
@@ -190,7 +190,7 @@ function ClaimSheetRow({
                   </Text>
                 </Box>
               </Inline>
-            )} */}
+            )}
           </Box>
         </Inset>
       </Box>
