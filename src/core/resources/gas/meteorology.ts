@@ -27,6 +27,8 @@ const getMeteorologyNetworkFromChainId = (
       return 'blast';
     case ChainId.bsc:
       return 'bsc';
+    case ChainId.degen:
+      return 'degen';
     case ChainId.holesky:
       return 'holesky';
     case ChainId.sepolia:

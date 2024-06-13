@@ -7,7 +7,10 @@ import { ChainId } from '~/core/types/chains';
 import { Box, Inline, Row, Rows, Stack, Symbol, Text } from '~/design-system';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
 import { SwitchNetworkMenu } from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
-import { AssetToBuySection } from '~/entries/popup/hooks/useSearchCurrencyLists';
+import {
+  AssetToBuyNetworkSearchStatus,
+  AssetToBuySection,
+} from '~/entries/popup/hooks/useSearchCurrencyLists';
 import { useTranslationContext } from '~/entries/popup/hooks/useTranslationContext';
 
 import { dropdownContainerVariant } from '../../../../components/DropdownInputWrapper/DropdownInputWrapper';
@@ -19,6 +22,7 @@ export type TokenToBuyDropdownProps = {
   asset: ParsedSearchAsset | null;
   assets?: AssetToBuySection[];
   outputChainId?: ChainId;
+  networkSearchStatus: AssetToBuyNetworkSearchStatus;
   onSelectAsset?: (asset: ParsedSearchAsset | null) => void;
   setOutputChainId?: (chainId: ChainId) => void;
   onDropdownChange: (open: boolean) => void;
@@ -28,6 +32,7 @@ export const TokenToBuyDropdown = ({
   asset,
   assets,
   outputChainId,
+  networkSearchStatus,
   onSelectAsset,
   setOutputChainId,
   onDropdownChange,
@@ -46,44 +51,46 @@ export const TokenToBuyDropdown = ({
 
   return (
     <Stack space="20px">
-      {setOutputChainId && outputChainId && (
-        <Box paddingHorizontal="20px">
-          <Inline alignHorizontal="justify">
-            <Inline space="4px" alignVertical="center">
-              <Symbol
-                symbol="network"
-                color="labelTertiary"
-                weight="semibold"
-                size={14}
+      {setOutputChainId &&
+        outputChainId &&
+        networkSearchStatus !== AssetToBuyNetworkSearchStatus.all && (
+          <Box paddingHorizontal="20px">
+            <Inline alignHorizontal="justify">
+              <Inline space="4px" alignVertical="center">
+                <Symbol
+                  symbol="network"
+                  color="labelTertiary"
+                  weight="semibold"
+                  size={14}
+                />
+                <Text size="14pt" weight="semibold" color="labelTertiary">
+                  {i18n.t('swap.tokens_input.filter_by_network')}
+                </Text>
+              </Inline>
+              <SwitchNetworkMenu
+                onOpenChange={onDropdownChange}
+                marginRight="20px"
+                accentColor={asset?.colors?.primary || asset?.colors?.fallback}
+                type="dropdown"
+                chainId={outputChainId}
+                onChainChanged={(chainId) => {
+                  setOutputChainId(chainId);
+                }}
+                triggerComponent={
+                  <ButtonOverflow testId="token-to-buy-networks-trigger">
+                    <BottomNetwork
+                      selectedChainId={outputChainId}
+                      displaySymbol
+                      symbolSize={12}
+                      symbol="chevron.down"
+                    />
+                  </ButtonOverflow>
+                }
+                onlySwapSupportedNetworks
               />
-              <Text size="14pt" weight="semibold" color="labelTertiary">
-                {i18n.t('swap.tokens_input.filter_by_network')}
-              </Text>
             </Inline>
-            <SwitchNetworkMenu
-              onOpenChange={onDropdownChange}
-              marginRight="20px"
-              accentColor={asset?.colors?.primary || asset?.colors?.fallback}
-              type="dropdown"
-              chainId={outputChainId}
-              onChainChanged={(chainId) => {
-                setOutputChainId(chainId);
-              }}
-              triggerComponent={
-                <ButtonOverflow testId="token-to-buy-networks-trigger">
-                  <BottomNetwork
-                    selectedChainId={outputChainId}
-                    displaySymbol
-                    symbolSize={12}
-                    symbol="chevron.down"
-                  />
-                </ButtonOverflow>
-              }
-              onlySwapSupportedNetworks
-            />
-          </Inline>
-        </Box>
-      )}
+          </Box>
+        )}
 
       <Box
         as={motion.div}
