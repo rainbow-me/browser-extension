@@ -234,7 +234,7 @@
     "bn.js": "5.2.1",
     "@scure/bip39": "1.2.1",
     "protobufjs": "7.2.5",
-    "@grpc/grpc-js": "1.8.8",
+    "@grpc/grpc-js": "1.10.9",
     "semver": "7.5.2",
     "globby": "11.1.0",
     "json5": "2.2.2",
@@ -268,7 +268,8 @@
     "viem": "1.21.4",
     "@solana/web3.js": "1.90.2",
     "jose": "4.15.5",
-    "phin": "3.7.1"
+    "phin": "3.7.1",
+    "braces": "3.0.3"
   },
   "lavamoat": {
     "allowScripts": {
