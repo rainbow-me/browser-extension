@@ -32,6 +32,7 @@ interface UseSwapQuotesProps {
   independentField: IndependentField;
   source: Source | 'auto';
   slippage: string | number;
+  isClaim?: boolean;
 }
 
 export const useSwapQuote = ({
@@ -42,6 +43,7 @@ export const useSwapQuote = ({
   independentField,
   slippage,
   source,
+  isClaim,
 }: UseSwapQuotesProps) => {
   const { currentAddress } = useCurrentAddressStore();
 
@@ -92,7 +94,7 @@ export const useSwapQuote = ({
       refuel: false,
       swapType: isCrosschainSwap ? SwapType.crossChain : SwapType.normal,
       toChainId: isCrosschainSwap ? assetToBuy.chainId : assetToSell.chainId,
-      feePercentageBasisPoints: INTERNAL_BUILD ? 0 : undefined,
+      feePercentageBasisPoints: INTERNAL_BUILD || isClaim ? 0 : undefined,
     };
   }, [
     assetToBuy,
@@ -104,6 +106,7 @@ export const useSwapQuote = ({
     isCrosschainSwap,
     slippage,
     source,
+    isClaim,
   ]);
 
   const { data, isLoading, isError, fetchStatus } = useQuery({
