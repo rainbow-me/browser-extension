@@ -1,9 +1,7 @@
-import { SwapType, getCrosschainQuote } from '@rainbow-me/swaps';
-import { getProvider } from '@wagmi/core';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Address, useMutation } from 'wagmi';
+import { useMutation } from 'wagmi';
 
 import { metadataPostClient } from '~/core/graphql';
 import {
@@ -11,8 +9,6 @@ import {
   PointsErrorType,
 } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
-import { waitForNodeAck } from '~/core/raps/execute';
-import { QuoteTypeMap } from '~/core/raps/references';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
 import {
@@ -32,15 +28,11 @@ import {
 } from '~/design-system';
 import { AnimatedText } from '~/design-system/components/AnimatedText/AnimatedText';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
-import { useSwapSlippage } from '~/entries/popup/hooks/swap';
 import { useNativeAsset } from '~/entries/popup/hooks/useNativeAsset';
-import { useNativeAssetForNetwork } from '~/entries/popup/hooks/useNativeAssetForNetwork';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useWalletName } from '~/entries/popup/hooks/useWalletName';
 import { ROUTES } from '~/entries/popup/urls';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
-
-import * as wallet from '../../../handlers/wallet';
 
 import ConsoleText from './ConsoleText';
 import { CLAIM_MOCK_DATA } from './references';
@@ -49,13 +41,11 @@ import { RAINBOW_TEXT, getDelayForRow } from './utils';
 
 export function ClaimOverview() {
   const { state } = useLocation();
-  const claimNetwork = state?.claimNetwork as ChainId;
+  //   const claimNetwork = state?.claimNetwork as ChainId;
   const claimAmount: string = state?.claimAmount;
   const [waitToDisplay, setWaitToDisplay] = useState(true);
   const [showSummary, setShowSummary] = useState(false);
   const [error, setError] = useState<PointsErrorType | undefined>();
-  const [bridgeSuccess, setBridgeSuccess] = useState(false);
-  const [bridgeError, setBridgeError] = useState<string | undefined>();
   const navigate = useRainbowNavigate();
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
@@ -75,19 +65,7 @@ export function ClaimOverview() {
     currency,
   );
 
-  const opEth = useNativeAssetForNetwork({ chainId: ChainId.optimism });
-  const destinationEth = useNativeAssetForNetwork({ chainId: ChainId.base });
-
-  const { data: swapSlippage } = useSwapSlippage({
-    chainId: ChainId.optimism,
-    toChainId: destinationEth?.chainId || ChainId.mainnet,
-    sellTokenAddress: opEth?.address as Address,
-    buyTokenAddress: destinationEth?.address as Address,
-    sellAmount: claimableBalance.amount || 0,
-    buyAmount: '',
-  });
-
-  const { isSuccess: claimSuccess, mutate: claimRewards } = useMutation<
+  const { mutate: claimRewards } = useMutation<
     ClaimUserRewardsMutation['claimUserRewards']
   >({
     mutationFn: async () => {
@@ -106,59 +84,6 @@ export function ClaimOverview() {
 
       return claimInfo;
     },
-    onSuccess: async (d) => {
-      console.log('claim network: ', claimNetwork);
-      console.log('claim data: ', d);
-      console.log('hash: ', d?.txHash);
-      console.log('claim amount: ', claimAmount);
-      console.log('claimable balance amount: ', claimableBalance);
-      if (
-        claimNetwork !== ChainId.optimism &&
-        d?.txHash &&
-        opEth &&
-        destinationEth
-      ) {
-        console.log('start');
-        const provider = getProvider({ chainId: ChainId.optimism });
-        console.log('waiting');
-        await waitForNodeAck(d?.txHash, provider);
-        console.log('done waiting');
-        console.log('swap slippage: ', swapSlippage);
-        const quote = await getCrosschainQuote({
-          chainId: ChainId.optimism,
-          fromAddress: address,
-          sellTokenAddress: opEth.address,
-          buyTokenAddress: destinationEth.address,
-          sellAmount: claimAmount || '0',
-          slippage: swapSlippage?.slippagePercent || 2,
-          destReceiver: address,
-          swapType: SwapType.crossChain,
-          toChainId: claimNetwork,
-          feePercentageBasisPoints: 0,
-        });
-        console.log('QUOTE: ', quote);
-        const { errorMessage, nonce: bridgeNonce } = await wallet.executeRap({
-          rapActionParameters: {
-            sellAmount: claimableBalance.amount,
-            chainId: ChainId.optimism,
-            assetToSell: opEth,
-            assetToBuy: destinationEth,
-            quote: quote as QuoteTypeMap['crosschainSwap'],
-            flashbots: false,
-          },
-          type: 'crosschainSwap',
-        });
-        console.log('swap attempted');
-
-        if (errorMessage) {
-          setBridgeError(errorMessage);
-        }
-
-        if (typeof bridgeNonce === 'number') {
-          setBridgeSuccess(true);
-        }
-      }
-    },
   });
 
   const backToHome = () => {
@@ -167,12 +92,9 @@ export function ClaimOverview() {
     });
   };
 
-  const claimNeedsBridge = claimNetwork !== ChainId.optimism;
-  const claimFinished = claimNeedsBridge ? bridgeSuccess : claimSuccess;
   const showPreparingClaim = !showSummary;
-  const showSuccess =
-    !waitToDisplay && claimFinished && !showSummary && !error && !bridgeError;
-  const showError = !waitToDisplay && (error || bridgeError);
+  const showSuccess = !waitToDisplay && !showSummary && !error;
+  const showError = !waitToDisplay && error;
 
   useEffect(() => {
     claimRewards();
@@ -207,7 +129,7 @@ export function ClaimOverview() {
             </Inline>
             {showPreparingClaim && <PreparingClaimText />}
             {showSuccess && <SuccessText />}
-            {showError && <ErrorText error={error} bridgeError={bridgeError} />}
+            {showError && <ErrorText error={error} />}
             {showSummary && (
               <ClaimSummary
                 amount={claimableBalance.amount}
@@ -302,6 +224,7 @@ function ErrorText({
   error?: PointsErrorType;
   bridgeError?: string;
 }) {
+  if (!error && !bridgeError) return null;
   const getMessage = () => {
     if (error) {
       return error === PointsErrorType.AlreadyClaimed
