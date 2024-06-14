@@ -51,6 +51,7 @@ export interface RapSwapActionParameters<T extends 'swap' | 'crosschainSwap'> {
   nonce?: number;
   flashbots?: boolean;
   quote: QuoteTypeMap[T];
+  claimHash?: string;
 }
 
 export interface RapUnlockActionParameters {
@@ -60,9 +61,14 @@ export interface RapUnlockActionParameters {
   chainId: number;
 }
 
+export interface RapClaimActionParameters {
+  claimHash: string;
+}
+
 export type RapActionParameters =
   | RapSwapActionParameters<'swap'>
   | RapSwapActionParameters<'crosschainSwap'>
+  | RapClaimActionParameters
   | RapUnlockActionParameters;
 
 export interface RapActionTransaction {
@@ -73,6 +79,7 @@ export type RapActionParameterMap = {
   swap: RapSwapActionParameters<'swap'>;
   crosschainSwap: RapSwapActionParameters<'crosschainSwap'>;
   unlock: RapUnlockActionParameters;
+  claim: RapClaimActionParameters;
 };
 
 export interface RapAction<T extends RapActionTypes> {
@@ -82,13 +89,14 @@ export interface RapAction<T extends RapActionTypes> {
 }
 
 export interface Rap {
-  actions: RapAction<'swap' | 'crosschainSwap' | 'unlock'>[];
+  actions: RapAction<'swap' | 'crosschainSwap' | 'unlock' | 'claim'>[];
 }
 
 export enum rapActions {
   swap = 'swap',
   crosschainSwap = 'crosschainSwap',
   unlock = 'unlock',
+  claim = 'claim',
 }
 
 export type RapActionTypes = keyof typeof rapActions;
