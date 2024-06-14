@@ -473,7 +473,9 @@ const StatsCarousel = memo(function YourRankAndNextDrop() {
     >
       <Inline wrap={false} space="12px">
         <Card style={{ height: CARD_HEIGHT, minWidth: MIN_CARD_WIDTH }}>
-          <TextWithMoreInfo>{'Earned Last Week'}</TextWithMoreInfo>
+          <TextWithMoreInfo>
+            {i18n.t('points.rewards.earned_last_week')}
+          </TextWithMoreInfo>
           <Text size="20pt" weight="bold">
             {lastPeriod.earnings.total || 0}
           </Text>
@@ -509,7 +511,9 @@ const StatsCarousel = memo(function YourRankAndNextDrop() {
           </Inline>
         </Card>
         <Card style={{ height: CARD_HEIGHT, minWidth: MIN_CARD_WIDTH }}>
-          <TextWithMoreInfo>{'My Referrals'}</TextWithMoreInfo>
+          <TextWithMoreInfo>
+            {i18n.t('points.rewards.my_referrals')}
+          </TextWithMoreInfo>
           <Text size="20pt" weight="bold">
             {user.stats.referral.total_referees}
           </Text>
@@ -641,7 +645,7 @@ function ClaimYourPoints({
   const eth = useNativeAsset({ chainId: ChainId.mainnet });
   const ethPrice = eth?.nativeAsset?.price?.value;
   const { currentCurrency: currency } = useCurrentCurrencyStore();
-  // if (!claimableReward || claimableReward === '0' || !ethPrice) return null;
+  if (!claimableReward || claimableReward === '0' || !ethPrice) return null;
   const claimableBalance = convertRawAmountToBalance(claimableReward || '0', {
     decimals: 18,
     symbol: eth?.nativeAsset?.symbol,
