@@ -15,7 +15,7 @@ import {
   TokenSearchThreshold,
 } from '~/core/types/search';
 import { isSameAsset } from '~/core/utils/assets';
-import { getChain } from '~/core/utils/chains';
+import { getChain, isNativeAsset } from '~/core/utils/chains';
 import { addHexPrefix } from '~/core/utils/hex';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
@@ -424,6 +424,7 @@ export function useSearchCurrencyLists({
               return;
             return {
               ...assetToSell,
+              isNativeAsset: isNativeAsset(address, chainId),
               chainId,
               chainName: chainName,
               uniqueId: `${address}-${chainId}`,
