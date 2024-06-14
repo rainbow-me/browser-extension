@@ -24,6 +24,10 @@ export const invalidatePointsQuery = (address: Address) => {
   queryClient.invalidateQueries(['points', address]);
 };
 
+export const refetchPointsQuery = (address: Address) => {
+  queryClient.refetchQueries(['points', address]);
+};
+
 export const seedPointsQueryCache = async (
   address: Address,
   data: ValidatePointsSignatureMutation['onboardPoints'],

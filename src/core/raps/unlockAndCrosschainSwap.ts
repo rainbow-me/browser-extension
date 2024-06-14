@@ -91,8 +91,8 @@ export const estimateUnlockAndCrosschainSwap = async (
 export const createUnlockAndCrosschainSwapRap = async (
   swapParameters: RapSwapActionParameters<'crosschainSwap'>,
 ) => {
-  let actions: RapAction<'crosschainSwap' | 'unlock'>[] = [];
-  const { sellAmount, assetToBuy, quote, chainId, assetToSell } =
+  let actions: RapAction<'crosschainSwap' | 'unlock' | 'claim'>[] = [];
+  const { sellAmount, assetToBuy, quote, chainId, assetToSell, claimHash } =
     swapParameters;
 
   const {
@@ -136,6 +136,13 @@ export const createUnlockAndCrosschainSwapRap = async (
     ALLOWS_PERMIT[
       assetToSell.address?.toLowerCase() as keyof PermitSupportedTokenList
     ];
+
+  if (claimHash) {
+    const claim = createNewAction('claim', {
+      claimHash: claimHash,
+    });
+    actions = actions.concat(claim);
+  }
 
   if (swapAssetNeedsUnlocking && !allowsPermit) {
     const unlock = createNewAction('unlock', {

@@ -5,7 +5,7 @@ import { Signer } from '@ethersproject/abstract-signer';
 
 import { RainbowError, logger } from '~/logger';
 
-import { swap, unlock } from './actions';
+import { claim, swap, unlock } from './actions';
 import { crosschainSwap } from './actions/crosschainSwap';
 import {
   ActionProps,
@@ -40,6 +40,8 @@ export function createSwapRapByType<T extends RapTypes>(
 
 function typeAction<T extends RapActionTypes>(type: T, props: ActionProps<T>) {
   switch (type) {
+    case 'claim':
+      return () => claim(props as ActionProps<'claim'>);
     case 'unlock':
       return () => unlock(props as ActionProps<'unlock'>);
     case 'swap':
@@ -143,13 +145,11 @@ export const walletExecuteRap = async (
       rapName,
       flashbots: parameters?.flashbots,
     };
-
     const {
       baseNonce,
       errorMessage: error,
       hash,
     } = await executeAction(actionParams);
-
     if (typeof baseNonce === 'number') {
       actions.length > 1 &&
         hash &&
