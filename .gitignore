@@ -21,3 +21,5 @@ anvil*.log
 rainbowbx.xpi
 
 .idea/**
+
+static/data

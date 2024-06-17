@@ -22,12 +22,10 @@ import {
   zoraSepolia,
 } from 'viem/chains';
 
-import { ChainId, ChainNameDisplay } from '../types/chains';
+import { chainsLabel } from '../references/chains';
+import { ChainId } from '../types/chains';
 
-import {
-  getSupportedChainsWithHardhat,
-  getSupportedTestnetChains,
-} from './chains';
+import { getSupportedChains } from './chains';
 
 export const chainIdMap: Record<
   | ChainId.mainnet
@@ -66,18 +64,15 @@ export const chainLabelMap: Record<
   | ChainId.degen,
   string[]
 > = {
-  [ChainId.mainnet]: [
-    ChainNameDisplay[sepolia.id],
-    ChainNameDisplay[holesky.id],
-  ],
-  [ChainId.optimism]: [ChainNameDisplay[optimismSepolia.id]],
-  [ChainId.arbitrum]: [ChainNameDisplay[arbitrumSepolia.id]],
-  [ChainId.polygon]: [ChainNameDisplay[polygonAmoy.id]],
-  [ChainId.base]: [ChainNameDisplay[baseSepolia.id]],
-  [ChainId.bsc]: [ChainNameDisplay[bscTestnet.id]],
-  [ChainId.zora]: [ChainNameDisplay[zoraSepolia.id]],
-  [ChainId.avalanche]: [ChainNameDisplay[avalancheFuji.id]],
-  [ChainId.blast]: [ChainNameDisplay[blastSepolia.id]],
+  [ChainId.mainnet]: [chainsLabel[sepolia.id], chainsLabel[holesky.id]],
+  [ChainId.optimism]: [chainsLabel[optimismSepolia.id]],
+  [ChainId.arbitrum]: [chainsLabel[arbitrumSepolia.id]],
+  [ChainId.polygon]: [chainsLabel[polygonAmoy.id]],
+  [ChainId.base]: [chainsLabel[baseSepolia.id]],
+  [ChainId.bsc]: [chainsLabel[bscTestnet.id]],
+  [ChainId.zora]: [chainsLabel[zoraSepolia.id]],
+  [ChainId.avalanche]: [chainsLabel[avalancheFuji.id]],
+  [ChainId.blast]: [chainsLabel[blastSepolia.id]],
   [ChainId.degen]: [],
 };
 
@@ -104,9 +99,9 @@ export const filterUserNetworks = ({
   userChains: Record<ChainId, boolean>;
   userChainsOrder: ChainId[];
 }) => {
-  const supportedChains: Chain[] = testnetMode
-    ? getSupportedTestnetChains()
-    : getSupportedChainsWithHardhat();
+  const supportedChains: Chain[] = getSupportedChains({
+    testnets: testnetMode,
+  });
 
   const availableChains = Object.keys(userChains)
     .filter((chainId) => userChains[Number(chainId)] === true)

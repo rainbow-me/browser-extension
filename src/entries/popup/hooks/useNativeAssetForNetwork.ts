@@ -1,14 +1,6 @@
-import { AddressZero } from '@ethersproject/constants';
 import { Address } from 'viem';
 
-import {
-  AVAX_AVALANCHE_ADDRESS,
-  BNB_BSC_ADDRESS,
-  DEGEN_DEGEN_ADDRESS,
-  ETH_ADDRESS,
-  MATIC_POLYGON_ADDRESS,
-  NATIVE_ASSETS_PER_CHAIN,
-} from '~/core/references';
+import { chainsNativeAsset } from '~/core/references/chains';
 import { ParsedAsset, UniqueId } from '~/core/types/assets';
 import { ChainId, ChainName, chainIdToNameMapping } from '~/core/types/chains';
 
@@ -48,26 +40,7 @@ export const getNetworkNativeAssetUniqueId = ({
   chainId,
 }: {
   chainId: ChainId;
-}): UniqueId => {
-  switch (chainId) {
-    case ChainId.mainnet:
-      return `${ETH_ADDRESS}_${chainId}` as UniqueId;
-    case ChainId.arbitrum:
-    case ChainId.base:
-    case ChainId.optimism:
-    case ChainId.zora:
-    case ChainId.avalanche:
-      return `${AVAX_AVALANCHE_ADDRESS}_${chainId}` as UniqueId;
-    case ChainId.degen:
-      return `${DEGEN_DEGEN_ADDRESS}_${chainId}` as UniqueId;
-    case ChainId.bsc:
-      return `${BNB_BSC_ADDRESS}_${chainId}` as UniqueId;
-    case ChainId.polygon:
-      return `${MATIC_POLYGON_ADDRESS}_${chainId}` as UniqueId;
-    default:
-      return `${AddressZero}_${chainId}` as UniqueId;
-  }
-};
+}): UniqueId => `${chainsNativeAsset[chainId]}_${chainId}` as UniqueId;
 
 export async function getNativeAssetForNetwork({
   chainId,
@@ -86,7 +59,7 @@ export async function getNativeAssetForNetwork({
         nativeAsset?.chainName ||
         ChainName.mainnet,
       uniqueId: getNetworkNativeAssetUniqueId({ chainId }),
-      address: NATIVE_ASSETS_PER_CHAIN[chainId] as Address,
+      address: chainsNativeAsset[chainId] as Address,
       isNativeAsset: true,
     };
   }
@@ -107,7 +80,7 @@ export function useNativeAssetForNetwork({
       chainId: nativeAsset?.chainId || ChainId.mainnet,
       chainName: nativeAsset?.chainName || ChainName.mainnet,
       uniqueId: getNetworkNativeAssetUniqueId({ chainId }),
-      address: NATIVE_ASSETS_PER_CHAIN[chainId] as Address,
+      address: chainsNativeAsset[chainId] as Address,
       isNativeAsset: true,
     };
   }

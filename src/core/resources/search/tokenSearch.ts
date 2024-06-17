@@ -24,8 +24,7 @@ import {
   TokenSearchListId,
   TokenSearchThreshold,
 } from '~/core/types/search';
-import { isCustomChain } from '~/core/utils/chains';
-import { useUserChains } from '~/entries/popup/hooks/useUserChains';
+import { getSupportedChains, isCustomChain } from '~/core/utils/chains';
 
 // ///////////////////////////////////////////////
 // Query Types
@@ -201,14 +200,13 @@ export function useTokenSearchAllNetworks(
   > = {},
 ) {
   const { testnetMode } = useTestnetModeStore();
-  const { chains: userChains } = useUserChains();
 
-  const supportedNetworks = userChains.filter(
-    (chain) => !isCustomChain(chain.id),
-  );
+  const rainbowSupportedChains = getSupportedChains({
+    testnets: false,
+  }).filter(({ id }) => !isCustomChain(id));
 
   const queries = useQueries({
-    queries: supportedNetworks.map(({ id: chainId }) => {
+    queries: rainbowSupportedChains.map(({ id: chainId }) => {
       return {
         queryKey: tokenSearchQueryKey({
           chainId,

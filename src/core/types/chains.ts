@@ -1,15 +1,4 @@
-import {
-  Chain,
-  arbitrumNova,
-  arbitrumSepolia,
-  baseSepolia,
-  celo,
-  holesky,
-  optimismSepolia,
-  polygonZkEvm,
-  scroll,
-  sepolia,
-} from 'viem/chains';
+import { Chain } from 'viem/chains';
 import * as chains from 'viem/chains';
 
 const HARDHAT_CHAIN_ID = 1337;
@@ -183,34 +172,69 @@ export const chainIdToNameMapping: {
   [ChainId.degen]: ChainName.degen,
 };
 
-export const ChainNameDisplay = {
-  [ChainId.arbitrum]: 'Arbitrum',
-  [ChainId.arbitrumNova]: arbitrumNova.name,
-  [ChainId.avalanche]: 'Avalanche',
-  [ChainId.avalancheFuji]: 'Avalanche Fuji',
-  [ChainId.base]: 'Base',
-  [ChainId.blast]: 'Blast',
-  [ChainId.blastSepolia]: 'Blast Sepolia',
-  [ChainId.bsc]: 'BSC',
-  [ChainId.celo]: celo.name,
-  [ChainId.linea]: 'Linea',
-  [ChainId.manta]: 'Manta',
-  [ChainId.optimism]: 'Optimism',
-  [ChainId.polygon]: 'Polygon',
-  [ChainId.polygonZkEvm]: polygonZkEvm.name,
-  [ChainId.rari]: 'RARI Chain',
-  [ChainId.scroll]: scroll.name,
-  [ChainId.zora]: 'Zora',
-  [ChainId.mainnet]: 'Ethereum',
-  [ChainId.hardhat]: 'Hardhat',
-  [ChainId.hardhatOptimism]: chainHardhatOptimism.name,
-  [ChainId.sepolia]: sepolia.name,
-  [ChainId.holesky]: holesky.name,
-  [ChainId.optimismSepolia]: optimismSepolia.name,
-  [ChainId.bscTestnet]: 'BSC Testnet',
-  [ChainId.arbitrumSepolia]: arbitrumSepolia.name,
-  [ChainId.baseSepolia]: baseSepolia.name,
-  [ChainId.zoraSepolia]: 'Zora Sepolia',
-  [ChainId.polygonAmoy]: 'Polygon Amoy',
-  [ChainId.degen]: 'Degen',
-} as const;
+export interface BackendNetworkServices {
+  meteorology: {
+    enabled: boolean;
+  };
+  swap: {
+    enabled: boolean;
+  };
+  addys: {
+    approvals: boolean;
+    transactions: boolean;
+    assets: boolean;
+    positions: boolean;
+  };
+  tokenSearch: {
+    enabled: boolean;
+  };
+  nftProxy: {
+    enabled: boolean;
+  };
+}
+
+export interface BackendNetwork {
+  id: string;
+  name: string;
+  label: string;
+  icons: {
+    badgeURL: string;
+  };
+  testnet: boolean;
+  opStack: boolean;
+  defaultExplorer: {
+    url: string;
+    label: string;
+    transactionURL: string;
+    tokenURL: string;
+  };
+  defaultRPC: {
+    enabledDevices: string[];
+    url: string;
+  };
+  nativeAsset: {
+    address: string;
+    name: string;
+    symbol: string;
+    decimals: number;
+    iconURL: string;
+    colors: {
+      primary: string;
+      fallback: string;
+      shadow: string;
+    };
+  };
+  nativeWrappedAsset: {
+    address: string;
+    name: string;
+    symbol: string;
+    decimals: number;
+    iconURL: string;
+    colors: {
+      primary: string;
+      fallback: string;
+      shadow: string;
+    };
+  };
+  enabledServices: BackendNetworkServices;
+}

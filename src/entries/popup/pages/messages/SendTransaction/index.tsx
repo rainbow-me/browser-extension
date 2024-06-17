@@ -7,7 +7,7 @@ import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
-import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
+import { chainsNativeAsset } from '~/core/references/chains';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useFlashbotsEnabledStore, useGasStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
@@ -195,7 +195,7 @@ export function SendTransaction({
         activeSession?.chainId,
       );
       selectAssetAddressAndChain(
-        NATIVE_ASSETS_PER_CHAIN[activeChainId] as Address,
+        chainsNativeAsset[activeChainId] as Address,
         activeChainId,
       );
     }

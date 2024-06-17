@@ -1,23 +1,22 @@
 import { AddressZero } from '@ethersproject/constants';
-import { JsonRpcProvider } from '@ethersproject/providers';
 import { Chain, mainnet } from 'viem/chains';
 import { useConfig } from 'wagmi';
 
-import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
 import { ChainId } from '~/core/types/chains';
 
-import { proxyRpcEndpoint } from '../providers';
 import {
   SUPPORTED_CHAINS,
   SUPPORTED_MAINNET_CHAINS,
+  chainsNativeAsset,
 } from '../references/chains';
-import { RAINBOW_CHAINS_SUPPORTED } from '../state/rainbowChains';
 import { AddressOrEth } from '../types/assets';
 import { wagmiConfig } from '../wagmi';
 
-import { getDappHost, isValidUrl } from './connectedApps';
+import { getDappHost } from './connectedApps';
 import { findRainbowChainForChainId } from './rainbowChains';
 import { isLowerCaseMatch } from './strings';
+
+// Main chains for chain settings
 
 const getMainChainsHelper = (chains: readonly [Chain, ...Chain[]]) => {
   // All the mainnets we support
@@ -59,60 +58,45 @@ export const getMainChains = () => {
   return getMainChainsHelper(chains);
 };
 
-export const getSupportedChainsWithHardhat = () => {
-  const { chains } = wagmiConfig;
-  return chains.filter(
-    (chain) =>
-      !chain.testnet ||
-      (process.env.IS_TESTING === 'true' &&
-        (chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism)),
-  );
-};
+// All the chains we support
+// rainbow default and custom chains
 
-export const getSupportedChains = () => {
-  const { chains } = wagmiConfig;
-  return chains.filter((chain) => !chain.testnet);
-};
-
-export const getSupportedChainIds = () =>
-  getSupportedChains().map((chain) => chain.id);
-
-export const getSupportedTestnetChains = () => {
-  const { chains } = wagmiConfig;
-  return chains.filter((chain) => !!chain.testnet);
-};
-
-export const useBackendSupportedChains = ({
-  testnetMode,
-}: {
-  testnetMode?: boolean;
-}) => {
+export const useSupportedChains = ({ testnets }: { testnets?: boolean }) => {
   const { chains } = useConfig();
   return chains.filter((chain) =>
-    testnetMode ? !!chain.testnet : !chain.testnet,
+    testnets ? !!chain.testnet : !chain.testnet,
   );
 };
 
-export const getBackendSupportedChains = ({
-  testnetMode,
-}: {
-  testnetMode?: boolean;
-}) => {
+export const getSupportedChains = ({ testnets }: { testnets?: boolean }) => {
   const { chains } = wagmiConfig;
   return chains.filter((chain) =>
-    testnetMode ? !!chain.testnet : !chain.testnet,
+    testnets
+      ? !!chain.testnet
+      : !chain.testnet ||
+        (process.env.IS_TESTING === 'true' &&
+          (chain.id === ChainId.hardhat ||
+            chain.id === ChainId.hardhatOptimism)),
   );
 };
 
+// Chain helpers
+
+export function getChain({ chainId }: { chainId?: ChainId }) {
+  const { chains } = wagmiConfig;
+  const chain = chains.find((chain) => chain.id === chainId);
+  return chain || { ...mainnet, testnet: false };
+}
+
 export const isCustomChain = (chainId: number) =>
-  !RAINBOW_CHAINS_SUPPORTED.map((chain) => chain.id).includes(chainId) &&
+  !SUPPORTED_CHAINS.map((chain) => chain.id).includes(chainId) &&
   !!findRainbowChainForChainId(chainId);
 
 export function isNativeAsset(address: AddressOrEth, chainId: ChainId) {
   if (isCustomChain(chainId)) {
     return AddressZero === address;
   }
-  return isLowerCaseMatch(NATIVE_ASSETS_PER_CHAIN[chainId], address);
+  return isLowerCaseMatch(chainsNativeAsset[chainId], address);
 }
 
 export function getBlockExplorerHostForChain(chainId: ChainId) {
@@ -120,12 +104,6 @@ export function getBlockExplorerHostForChain(chainId: ChainId) {
   return chain?.blockExplorers
     ? getDappHost(chain.blockExplorers.default.url)
     : undefined;
-}
-
-export function getChain({ chainId }: { chainId?: ChainId }) {
-  const { chains } = wagmiConfig;
-  const chain = chains.find((chain) => chain.id === chainId);
-  return chain || { ...mainnet, testnet: false };
 }
 
 export const chainIdToUse = (
@@ -140,17 +118,4 @@ export const chainIdToUse = (
     return ChainId.hardhatOptimism;
   }
   return activeSessionChainId;
-};
-
-export const getChainMetadataRPCUrl = async ({
-  rpcUrl,
-}: {
-  rpcUrl?: string;
-}) => {
-  if (rpcUrl && isValidUrl(rpcUrl)) {
-    const provider = new JsonRpcProvider(proxyRpcEndpoint(rpcUrl, 0));
-    const network = await provider.getNetwork();
-    return { chainId: network.chainId };
-  }
-  return null;
 };

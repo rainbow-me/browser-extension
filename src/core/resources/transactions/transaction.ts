@@ -7,7 +7,7 @@ import { i18n } from '~/core/languages';
 import { addysHttp } from '~/core/network/addys';
 import { QueryFunctionResult, createQueryKey } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
-import { SUPPORTED_CHAIN_IDS } from '~/core/references/chains';
+import { supportedTransactionsChainIds } from '~/core/references/chains';
 import {
   consolidatedTransactionsQueryFunction,
   consolidatedTransactionsQueryKey,
@@ -52,7 +52,7 @@ export const fetchTransaction = async ({
   currency: SupportedCurrencyKey;
   chainId: ChainId;
 }) => {
-  if (!SUPPORTED_CHAIN_IDS.includes(chainId)) {
+  if (!supportedTransactionsChainIds.includes(chainId)) {
     return fetchTransactionDataFromProvider({
       chainId,
       hash,
@@ -244,7 +244,7 @@ export const useTransaction = ({
     initialData: () => {
       if (!hash || !chainId) return;
 
-      const tx = SUPPORTED_CHAIN_IDS.includes(chainId)
+      const tx = supportedTransactionsChainIds.includes(chainId)
         ? findTransactionInConsolidatedBEQueryCache(
             queryClient,
             consolidatedTransactionsKey,
@@ -258,7 +258,8 @@ export const useTransaction = ({
       if (tx) return tx;
     },
     initialDataUpdatedAt: () => {
-      if (!chainId || !SUPPORTED_CHAIN_IDS.includes(chainId)) return undefined;
+      if (!chainId || !supportedTransactionsChainIds.includes(chainId))
+        return undefined;
       return queryClient.getQueryState(consolidatedTransactionsKey)
         ?.dataUpdatedAt;
     },
