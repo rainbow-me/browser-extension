@@ -43,6 +43,9 @@ export const useGasData = ({ chainId }: { chainId: ChainId }) => {
       },
     );
 
+  console.log('meteorologyData', meteorologyData);
+  console.log('providerGasData', providerGasData);
+
   return {
     data: meteorologySupportsChainId ? meteorologyData : providerGasData,
     isLoading: meteorologySupportsChainId
