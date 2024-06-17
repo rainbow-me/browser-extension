@@ -16,7 +16,7 @@ import {
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
 import { RainbowTransaction } from '~/core/types/transactions';
-import { useBackendSupportedChains } from '~/core/utils/chains';
+import { useSupportedChains } from '~/core/utils/chains';
 
 import useComponentWillUnmount from './useComponentWillUnmount';
 import { useKeyboardShortcut } from './useKeyboardShortcut';
@@ -53,7 +53,7 @@ export const useInfiniteTransactionList = ({
   const { testnetMode } = useTestnetModeStore();
   const { chains } = useUserChains();
   const userChainIds = chains.map(({ id }) => id);
-  const supportedChainIds = useBackendSupportedChains({ testnetMode })
+  const supportedChainIds = useSupportedChains({ testnets: testnetMode })
     .map(({ id }) => id)
     .filter((id) => userChainIds.includes(id));
 

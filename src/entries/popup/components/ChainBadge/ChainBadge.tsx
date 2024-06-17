@@ -11,7 +11,7 @@ import HardhatBadge from 'static/assets/badges/hardhatBadge@3x.png';
 import OptimismBadge from 'static/assets/badges/optimismBadge@3x.png';
 import PolygonBadge from 'static/assets/badges/polygonBadge@3x.png';
 import ZoraBadge from 'static/assets/badges/zoraBadge@3x.png';
-import { customChainIdsToAssetNames } from '~/core/references/chains';
+import { customChainIdsToAssetNames } from '~/core/references/assets';
 import { rainbowChainsStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { ChainId } from '~/core/types/chains';

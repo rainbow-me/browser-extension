@@ -3,6 +3,7 @@ import { Address } from 'viem';
 import { useEnsAddress, useEnsName } from 'wagmi';
 
 import { useENSProfile } from '~/core/resources/metadata/ensProfile';
+import { ChainId } from '~/core/types/chains';
 import { isENSAddressFormat } from '~/core/utils/ethereum';
 
 export const useEns = ({
@@ -14,9 +15,11 @@ export const useEns = ({
 }) => {
   const { data: ensAddress } = useEnsAddress({
     name: addressOrName,
+    chainId: ChainId.mainnet,
   });
   const { data: ensName } = useEnsName({
     address: addressOrName as Address,
+    chainId: ChainId.mainnet,
     query: { enabled: isAddress(addressOrName) },
   });
   const { data: ensProfile } = useENSProfile(

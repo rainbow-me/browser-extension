@@ -1,6 +1,6 @@
 import { Provider, StaticJsonRpcProvider } from '@ethersproject/providers';
 
-import { proxyRpcEndpoint } from '../providers';
+import { proxyRpcEndpoint } from '../providers/proxy';
 import { ChainId } from '../types/chains';
 
 export const getFlashbotsProvider = () => {

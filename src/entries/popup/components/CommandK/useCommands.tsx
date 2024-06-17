@@ -678,7 +678,7 @@ export const useCommands = (
   const { currentAddress: address, setCurrentAddress } =
     useCurrentAddressStore();
   const { currentTheme } = useCurrentThemeStore();
-  const { data: ensName } = useEnsName({ address });
+  const { data: ensName } = useEnsName({ address, chainId: ChainId.mainnet });
   const { featureFlags } = useFeatureFlagsStore();
   const isFullScreen = useIsFullScreen();
   const navigate = useRainbowNavigate();

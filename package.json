@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.4.128",
+  "version": "1.4.130",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -22,6 +22,8 @@
     "playground:ds": "PLAYGROUND=ds webpack --config ./webpack.config.dev.js --watch",
     "lint": "eslint --cache --max-warnings 0",
     "typecheck": "tsc --noEmit",
+	"// Fetch backend networks": "",
+    "fetch:networks": "node scripts/networks.js",
     "// Design System scripts": "",
     "// GraphQL scripts": "",
     "graphql-setup": "yarn graphql-codegen:install && yarn graphql-codegen",
@@ -43,7 +45,7 @@
     "// Checks the lockfile for changes": "",
     "check-lockfile": "./scripts/check-lockfile.sh",
     "// Installs deps, runs allowed scripts, patches packages and generates lavamoat policies": "",
-    "setup": "yarn install && yarn ds:install && yarn graphql-setup && yarn ds:generate-symbols && yarn allow-scripts && yarn patch-package && yarn policy",
+    "setup": "yarn install && yarn ds:install && yarn graphql-setup && yarn ds:generate-symbols && yarn fetch:networks && yarn allow-scripts && yarn patch-package && yarn policy",
     "// runs audit against dep. tree": "",
     "audit:ci": "yarn audit-ci --moderate --config audit-ci.jsonc",
     "// Generates a zip file based on the build folder ready to upload to the chrome web store": "",

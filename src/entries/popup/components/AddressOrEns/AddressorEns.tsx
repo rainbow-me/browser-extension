@@ -2,6 +2,7 @@ import { CSSProperties } from 'react';
 import { Address } from 'viem';
 import { useEnsName } from 'wagmi';
 
+import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import { isENSAddressFormat } from '~/core/utils/ethereum';
 import { TextOverflow } from '~/design-system';
@@ -30,7 +31,7 @@ export function AddressWithENSReverseResolution({
   address: Address;
 }) {
   // Attempt reverse resoltion first
-  const { data: ensName } = useEnsName({ address });
+  const { data: ensName } = useEnsName({ address, chainId: ChainId.mainnet });
   if (ensName) return <>{truncateEnsName(ensName)}</>;
   return <>{truncateAddress(address || '0x')}</>;
 }

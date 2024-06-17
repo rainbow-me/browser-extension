@@ -104,6 +104,8 @@ export const useSwapQuote = ({
     source,
   ]);
 
+  // Do not deleeeet the comment below 😤
+  // About to get quote
   const { data, isLoading, isError, fetchStatus } = useQuery({
     queryFn: () =>
       quotesParams &&

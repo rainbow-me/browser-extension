@@ -4,6 +4,7 @@ import { Address } from 'viem';
 import { useEnsName } from 'wagmi';
 
 import { useCurrentAddressStore } from '~/core/state';
+import { ChainId } from '~/core/types/chains';
 import { WalletAction } from '~/core/types/walletActions';
 import { EthereumWalletSeed, isENSAddressFormat } from '~/core/utils/ethereum';
 import { wagmiConfig } from '~/core/wagmi';
@@ -270,7 +271,7 @@ export function Wallets() {
   const [isUnlocked, setIsUnlocked] = useState<boolean>(true);
   const [isNewUser, setIsNewUser] = useState<boolean>(true);
   const { currentAddress: address } = useCurrentAddressStore();
-  const { data: ensName } = useEnsName({ address });
+  const { data: ensName } = useEnsName({ address, chainId: ChainId.mainnet });
   const setCurrentAddress = useCurrentAddressStore.use.setCurrentAddress();
 
   const updatePassword = useCallback((pwd: string) => {

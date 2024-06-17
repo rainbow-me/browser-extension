@@ -9,13 +9,9 @@ import React, {
 import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
+import { chainsLabel } from '~/core/references/chains';
 import { ParsedUserAsset } from '~/core/types/assets';
-import {
-  ChainId,
-  ChainName,
-  ChainNameDisplay,
-  chainNameToIdMapping,
-} from '~/core/types/chains';
+import { ChainId, ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import { UniqueAsset } from '~/core/types/nfts';
 import { truncateAddress } from '~/core/utils/address';
 import {
@@ -302,7 +298,7 @@ export const ReviewSheet = ({
   );
 
   const chainName =
-    ChainNameDisplay[asset?.chainId || ChainId.mainnet] || chain?.name;
+    chainsLabel[asset?.chainId || ChainId.mainnet] || chain?.name;
 
   const isToWalletOwner = useMemo(
     () =>

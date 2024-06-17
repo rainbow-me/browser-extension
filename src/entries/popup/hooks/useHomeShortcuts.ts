@@ -12,6 +12,7 @@ import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useSelectedNftStore } from '~/core/state/selectedNft';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { useSelectedTransactionStore } from '~/core/state/selectedTransaction';
+import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import { getProfileUrl, goToNewTab } from '~/core/utils/tabs';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
@@ -41,7 +42,7 @@ import { useWallets } from './useWallets';
 
 export function useHomeShortcuts() {
   const { currentAddress: address } = useCurrentAddressStore();
-  const { data: ensName } = useEnsName({ address });
+  const { data: ensName } = useEnsName({ address, chainId: ChainId.mainnet });
   const { selectedToken } = useSelectedTokenStore();
   const { selectedTransaction } = useSelectedTransactionStore();
   const { sheet } = useCurrentHomeSheetStore();

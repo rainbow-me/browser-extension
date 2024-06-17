@@ -1,7 +1,6 @@
 import { Chain } from 'viem';
 
-import { proxyRpcEndpoint } from '../providers';
-import { defaultRPC } from '../references/chains';
+import { proxyRpcEndpoint } from '../providers/proxy';
 import { connectedToHardhatStore } from '../state/currentSettings/connectedToHardhat';
 import { ChainId, chainHardhat, chainHardhatOptimism } from '../types/chains';
 import { findRainbowChainForChainId } from '../utils/rainbowChains';
@@ -13,7 +12,7 @@ const getOriginalRpcEndpoint = (chain: Chain) => {
   if (userAddedNetwork) {
     return userAddedNetwork.rpcUrls.default.http[0];
   }
-  return defaultRPC[chain.id];
+  return chain.rpcUrls.default.http[0];
 };
 
 export const handleRpcUrl = (chain: Chain) => {
@@ -28,6 +27,6 @@ export const handleRpcUrl = (chain: Chain) => {
   ) {
     return chainHardhat.rpcUrls.default.http[0];
   } else {
-    return proxyRpcEndpoint(getOriginalRpcEndpoint(chain) || '', chain.id);
+    return proxyRpcEndpoint(getOriginalRpcEndpoint(chain), chain.id);
   }
 };

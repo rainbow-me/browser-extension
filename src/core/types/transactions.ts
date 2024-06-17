@@ -199,6 +199,7 @@ export type TransactionApiResponse = {
   };
   block_confirmations?: number; // also only available on the tx by hash endpoint
   meta: {
+    approval_to?: Address;
     contract_name?: string;
     contract_icon_url?: string;
     type?: TransactionType;

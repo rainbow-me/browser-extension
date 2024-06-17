@@ -2,11 +2,12 @@ import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
+import { chainsLabel } from '~/core/references/chains';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCurrentAddressStore } from '~/core/state';
 import { useAppConnectionWalletSwitcherStore } from '~/core/state/appConnectionWalletSwitcher/appConnectionSwitcher';
-import { ChainId, ChainNameDisplay } from '~/core/types/chains';
+import { ChainId } from '~/core/types/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { Box } from '~/design-system';
 
@@ -59,7 +60,7 @@ export const AppConnectionWatcher = () => {
       title: i18n.t('app_connection_switcher.banner.app_connected', {
         appName: dappMetadata?.appName || dappMetadata?.appHostName,
       }),
-      description: ChainNameDisplay[activeSession?.chainId || ChainId.mainnet],
+      description: chainsLabel[activeSession?.chainId || ChainId.mainnet],
     });
   }, [
     activeSession?.chainId,
