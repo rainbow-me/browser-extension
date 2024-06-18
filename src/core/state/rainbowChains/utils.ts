@@ -106,8 +106,6 @@ export const replaceChainsWithInitial = (state: RainbowChainsState) => {
   Object.entries(updatedRainbowChains).forEach(
     ([chainId, currentRainbowChain]) => {
       const rainbowChain = initialRainbowChains[Number(chainId)];
-      console.log('rainbowChain', rainbowChain);
-      console.log('oldDefaultRPC', oldDefaultRPC);
 
       if (rainbowChain) {
         const oldRpcUrl = oldDefaultRPC[Number(chainId)];
@@ -121,7 +119,13 @@ export const replaceChainsWithInitial = (state: RainbowChainsState) => {
           (chain) => chain.rpcUrls.default.http[0] === oldDefaultRPC,
         );
 
-        console.log('newRpcUrl, oldRpcUrl', newRpcUrl, oldRpcUrl);
+        console.log(
+          'newRpcUrl, oldRpcUrl',
+          chainId,
+          existingChainIndex,
+          newRpcUrl,
+          oldRpcUrl,
+        );
 
         if (existingChainIndex !== -1) {
           currentRainbowChain.chains[existingChainIndex] = newRainbowChain;
