@@ -1,6 +1,6 @@
 import { Chain } from 'viem';
 
-import { SUPPORTED_CHAINS } from '~/core/references/chains';
+import { SUPPORTED_CHAINS, oldDefaultRPC } from '~/core/references/chains';
 import { ChainId } from '~/core/types/chains';
 
 import { RainbowChain, RainbowChainsState } from '.';
@@ -96,5 +96,49 @@ export const addCustomRPC = ({
   rainbowChain.chains.push(chain);
   rainbowChain.activeRpcUrl = chain.rpcUrls.default.http[0];
   state.rainbowChains = { ...rainbowChains, [chain.id]: rainbowChain };
+  return state;
+};
+
+export const replaceChainsWithInitial = (state: RainbowChainsState) => {
+  const initialRainbowChains = getInitialRainbowChains();
+  const updatedRainbowChains = { ...state.rainbowChains };
+
+  Object.entries(updatedRainbowChains).forEach(
+    ([chainId, currentRainbowChain]) => {
+      const rainbowChain = initialRainbowChains[Number(chainId)];
+      console.log('rainbowChain', rainbowChain);
+      console.log('oldDefaultRPC', oldDefaultRPC);
+
+      if (rainbowChain) {
+        const oldRpcUrl = oldDefaultRPC[Number(chainId)];
+        const newRainbowChain = rainbowChain.chains[0];
+        const activeRpcUrl = currentRainbowChain.activeRpcUrl;
+        const newRpcUrl = newRainbowChain.rpcUrls.default.http[0];
+
+        // If the new chain's RPC URL is in oldDefaultRPC, replace the chain in chains
+        // Otherwise, add the new chain to the chains array
+        const existingChainIndex = currentRainbowChain.chains.findIndex(
+          (chain) => chain.rpcUrls.default.http[0] === oldDefaultRPC,
+        );
+
+        console.log('newRpcUrl, oldRpcUrl', newRpcUrl, oldRpcUrl);
+
+        if (existingChainIndex !== -1) {
+          currentRainbowChain.chains[existingChainIndex] = newRainbowChain;
+        } else {
+          currentRainbowChain.chains.push(newRainbowChain);
+        }
+        if (activeRpcUrl === oldRpcUrl) {
+          currentRainbowChain.activeRpcUrl = newRpcUrl;
+        }
+
+        updatedRainbowChains[Number(chainId)] = currentRainbowChain;
+      }
+    },
+  );
+
+  console.log('MIGRATION updatedRainbowChains', updatedRainbowChains);
+
+  state.rainbowChains = updatedRainbowChains;
   return state;
 };
