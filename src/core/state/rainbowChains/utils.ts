@@ -121,14 +121,6 @@ export const replaceChainsWithInitial = (state: RainbowChainsState) => {
             chain.rpcUrls.default.http[0] === newRpcUrl,
         );
 
-        console.log(
-          'newRpcUrl, oldRpcUrl',
-          chainId,
-          existingChainIndex,
-          newRpcUrl,
-          oldRpcUrl,
-        );
-
         if (existingChainIndex !== -1) {
           currentRainbowChain.chains[existingChainIndex] = newRainbowChain;
         } else {
@@ -142,8 +134,6 @@ export const replaceChainsWithInitial = (state: RainbowChainsState) => {
       }
     },
   );
-
-  console.log('MIGRATION updatedRainbowChains', updatedRainbowChains);
 
   state.rainbowChains = updatedRainbowChains;
   return state;
