@@ -116,7 +116,9 @@ export const replaceChainsWithInitial = (state: RainbowChainsState) => {
         // If the new chain's RPC URL is in oldDefaultRPC, replace the chain in chains
         // Otherwise, add the new chain to the chains array
         const existingChainIndex = currentRainbowChain.chains.findIndex(
-          (chain) => chain.rpcUrls.default.http[0] === oldDefaultRPC,
+          (chain) =>
+            chain.rpcUrls.default.http[0] === oldDefaultRPC ||
+            chain.rpcUrls.default.http[0] === newRpcUrl,
         );
 
         console.log(
