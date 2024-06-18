@@ -8,28 +8,9 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
+import { chainsName } from '~/core/references/chains';
 import { ChainId } from '~/core/types/chains';
 
-const getMeteorologyNetworkFromChainId = (chainId: ChainId) => {
-  switch (chainId) {
-    case ChainId.polygon:
-      return 'polygon';
-    case ChainId.bsc:
-      return 'bsc';
-    case ChainId.base:
-      return 'base';
-    case ChainId.optimism:
-      return 'optimism';
-    case ChainId.arbitrum:
-      return 'arbitrum';
-    case ChainId.zora:
-      return 'zora';
-    case ChainId.avalanche:
-      return 'avalanche';
-    default:
-      return 'mainnet';
-  }
-};
 // ///////////////////////////////////////////////
 // Query Types
 
@@ -102,7 +83,7 @@ type MeteorologyQueryKey = ReturnType<typeof meteorologyQueryKey>;
 async function meteorologyQueryFunction({
   queryKey: [{ chainId }],
 }: QueryFunctionArgs<typeof meteorologyQueryKey>) {
-  const network = getMeteorologyNetworkFromChainId(chainId);
+  const network = chainsName[chainId];
   const parsedResponse = await meteorologyHttp.get(`/${network}`);
   const meteorologyData = parsedResponse.data as
     | MeteorologyResponse

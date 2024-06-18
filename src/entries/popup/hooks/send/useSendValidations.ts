@@ -4,10 +4,10 @@ import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { ParsedUserAsset } from '~/core/types/assets';
-import { ChainId } from '~/core/types/chains';
+import { ChainId, chainNameToIdMapping } from '~/core/types/chains';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
 import { UniqueAsset } from '~/core/types/nfts';
-import { chainIdFromChainName, getChain } from '~/core/utils/chains';
+import { getChain } from '~/core/utils/chains';
 import { toWei } from '~/core/utils/ethereum';
 import {
   add,
@@ -41,7 +41,7 @@ export const useSendValidations = ({
     if (asset) {
       return asset?.chainId || ChainId.mainnet;
     } else if (nft && nft.network) {
-      return chainIdFromChainName(nft.network);
+      return chainNameToIdMapping[nft.network];
     }
     return ChainId.mainnet;
   };

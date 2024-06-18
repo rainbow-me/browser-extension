@@ -6,31 +6,26 @@ import {
   avalancheFuji,
   base,
   baseSepolia,
+  blast,
+  blastSepolia,
   bsc,
   bscTestnet,
+  degen,
   holesky,
   mainnet,
   optimism,
   optimismSepolia,
   polygon,
+  polygonAmoy,
   sepolia,
   zora,
   zoraSepolia,
 } from 'viem/chains';
 
-import {
-  ChainId,
-  ChainNameDisplay,
-  chainBlast,
-  chainBlastSepolia,
-  chainDegen,
-  chainPolygonAmoy,
-} from '../types/chains';
+import { chainsLabel } from '../references/chains';
+import { ChainId } from '../types/chains';
 
-import {
-  getSupportedChainsWithHardhat,
-  getSupportedTestnetChains,
-} from './chains';
+import { getSupportedChains } from './chains';
 
 export const chainIdMap: Record<
   | ChainId.mainnet
@@ -48,13 +43,13 @@ export const chainIdMap: Record<
   [ChainId.mainnet]: [mainnet.id, sepolia.id, holesky.id],
   [ChainId.optimism]: [optimism.id, optimismSepolia.id],
   [ChainId.arbitrum]: [arbitrum.id, arbitrumSepolia.id],
-  [ChainId.polygon]: [polygon.id, chainPolygonAmoy.id],
+  [ChainId.polygon]: [polygon.id, polygonAmoy.id],
   [ChainId.base]: [base.id, baseSepolia.id],
   [ChainId.bsc]: [bsc.id, bscTestnet.id],
   [ChainId.zora]: [zora.id, zoraSepolia.id],
   [ChainId.avalanche]: [avalanche.id, avalancheFuji.id],
-  [ChainId.blast]: [chainBlast.id, chainBlastSepolia.id],
-  [ChainId.degen]: [chainDegen.id],
+  [ChainId.blast]: [blast.id, blastSepolia.id],
+  [ChainId.degen]: [degen.id],
 };
 
 export const chainLabelMap: Record<
@@ -69,18 +64,15 @@ export const chainLabelMap: Record<
   | ChainId.degen,
   string[]
 > = {
-  [ChainId.mainnet]: [
-    ChainNameDisplay[sepolia.id],
-    ChainNameDisplay[holesky.id],
-  ],
-  [ChainId.optimism]: [ChainNameDisplay[optimismSepolia.id]],
-  [ChainId.arbitrum]: [ChainNameDisplay[arbitrumSepolia.id]],
-  [ChainId.polygon]: [ChainNameDisplay[chainPolygonAmoy.id]],
-  [ChainId.base]: [ChainNameDisplay[baseSepolia.id]],
-  [ChainId.bsc]: [ChainNameDisplay[bscTestnet.id]],
-  [ChainId.zora]: [ChainNameDisplay[zoraSepolia.id]],
-  [ChainId.avalanche]: [ChainNameDisplay[avalancheFuji.id]],
-  [ChainId.blast]: [ChainNameDisplay[chainBlastSepolia.id]],
+  [ChainId.mainnet]: [chainsLabel[sepolia.id], chainsLabel[holesky.id]],
+  [ChainId.optimism]: [chainsLabel[optimismSepolia.id]],
+  [ChainId.arbitrum]: [chainsLabel[arbitrumSepolia.id]],
+  [ChainId.polygon]: [chainsLabel[polygonAmoy.id]],
+  [ChainId.base]: [chainsLabel[baseSepolia.id]],
+  [ChainId.bsc]: [chainsLabel[bscTestnet.id]],
+  [ChainId.zora]: [chainsLabel[zoraSepolia.id]],
+  [ChainId.avalanche]: [chainsLabel[avalancheFuji.id]],
+  [ChainId.blast]: [chainsLabel[blastSepolia.id]],
   [ChainId.degen]: [],
 };
 
@@ -107,9 +99,9 @@ export const filterUserNetworks = ({
   userChains: Record<ChainId, boolean>;
   userChainsOrder: ChainId[];
 }) => {
-  const supportedChains: Chain[] = testnetMode
-    ? getSupportedTestnetChains()
-    : getSupportedChainsWithHardhat();
+  const supportedChains: Chain[] = getSupportedChains({
+    testnets: testnetMode,
+  });
 
   const availableChains = Object.keys(userChains)
     .filter((chainId) => userChains[Number(chainId)] === true)

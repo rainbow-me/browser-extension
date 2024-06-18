@@ -17,6 +17,13 @@ jobs:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.event.pull_request.head.ref }}
           token: ${{ secrets.REPO_TOKEN }}
+      - name: Check for new commits
+        run: |
+          last_commit=$(git log -1 --pretty=%B)
+          if [[ "$last_commit" == *"Version Bump (Internal)"* ]]; then
+            echo "No new commits. Canceling publish..."
+            exit 1
+          fi
       - uses: actions/setup-node@v2
         with:
           node-version: "18.18.0"
@@ -30,8 +37,18 @@ jobs:
           path: tmp
       - name: Copy dotenv
         run: cat tmp/dotenv >> .env && rm -rf tmp
+      - uses: actions/checkout@v3
+        with:
+          repository: 'rainbow-me/browser-extension-action'
+          token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+          path: tmp
       - name: Mark the build as internal
         run: echo "INTERNAL_BUILD=true" >> .env
+      - name: Run browser-extension-action
+        run: |
+          cd tmp
+          gh workflow run browser-extension-action.yml
+          cd .. && rm -rf tmp
       - name: Bump the version
         run: yarn bump
       - name: Fetch the current version number

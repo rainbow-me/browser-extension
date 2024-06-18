@@ -2,8 +2,10 @@ import { isAddress } from '@ethersproject/address';
 import { rankings } from 'match-sorter';
 import { useCallback, useMemo } from 'react';
 
-import { SUPPORTED_CHAINS } from '~/core/references';
+import { SUPPORTED_CHAINS } from '~/core/references/chains';
 import { useTokenSearch } from '~/core/resources/search';
+import { useTokenSearchAllNetworks } from '~/core/resources/search/tokenSearch';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
@@ -13,7 +15,7 @@ import {
   TokenSearchThreshold,
 } from '~/core/types/search';
 import { isSameAsset } from '~/core/utils/assets';
-import { getChainName } from '~/core/utils/chains';
+import { getChain, isNativeAsset } from '~/core/utils/chains';
 import { addHexPrefix } from '~/core/utils/hex';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
@@ -43,6 +45,11 @@ export type AssetToBuySectionId =
 export interface AssetToBuySection {
   data: SearchAsset[];
   id: AssetToBuySectionId;
+}
+
+export enum AssetToBuyNetworkSearchStatus {
+  all = 'all',
+  single = 'single',
 }
 
 const filterBridgeAsset = ({
@@ -95,6 +102,14 @@ export function useSearchCurrencyLists({
     () => (queryIsAddress ? 'CASE_SENSITIVE_EQUAL' : 'CONTAINS'),
     [queryIsAddress],
   );
+
+  const { testnetMode } = useTestnetModeStore();
+
+  const enableAllNetworkTokenSearch = queryIsAddress && !testnetMode && !bridge;
+
+  const networkSearchStatus = enableAllNetworkTokenSearch
+    ? AssetToBuyNetworkSearchStatus.all
+    : AssetToBuyNetworkSearchStatus.single;
 
   // static search data
   const {
@@ -179,14 +194,19 @@ export function useSearchCurrencyLists({
 
   // current search
   const { data: targetVerifiedAssets, isLoading: targetVerifiedAssetsLoading } =
-    useTokenSearch({
-      chainId: outputChainId,
-      keys,
-      list: 'verifiedAssets',
-      threshold,
-      query,
-      fromChainId,
-    });
+    useTokenSearch(
+      {
+        chainId: outputChainId,
+        keys,
+        list: 'verifiedAssets',
+        threshold,
+        query,
+        fromChainId,
+      },
+      {
+        enabled: !enableAllNetworkTokenSearch,
+      },
+    );
   const {
     data: targetUnverifiedAssets,
     isLoading: targetUnverifiedAssetsLoading,
@@ -200,7 +220,41 @@ export function useSearchCurrencyLists({
       fromChainId,
     },
     {
-      enabled: enableUnverifiedSearch,
+      enabled: enableUnverifiedSearch && !enableAllNetworkTokenSearch,
+    },
+  );
+
+  // All verified assets from all user chains
+  const { data: targetAllNetworksUnverifiedAssets } = useTokenSearchAllNetworks(
+    {
+      keys,
+      list: 'highLiquidityAssets',
+      threshold,
+      query,
+    },
+    {
+      select: (data: SearchAsset[]) => {
+        if (!enableAllNetworkTokenSearch) return [];
+        return data;
+      },
+      enabled: enableAllNetworkTokenSearch,
+    },
+  );
+
+  // All verified assets from all user chains
+  const { data: targetAllNetworksVerifiedAssets } = useTokenSearchAllNetworks(
+    {
+      keys,
+      list: 'verifiedAssets',
+      threshold,
+      query,
+    },
+    {
+      select: (data: SearchAsset[]) => {
+        if (!enableAllNetworkTokenSearch) return [];
+        return data;
+      },
+      enabled: enableAllNetworkTokenSearch,
     },
   );
 
@@ -360,7 +414,7 @@ export function useSearchCurrencyLists({
             if (!assetOnNetworkOverrides) return;
             const chainId = +_chainId as unknown as ChainId; // Object.entries messes the type
 
-            const chainName = getChainName({ chainId });
+            const chainName = getChain({ chainId }).name;
             const { address, decimals } = assetOnNetworkOverrides;
             // filter out the asset we're selling already
             if (
@@ -370,6 +424,7 @@ export function useSearchCurrencyLists({
               return;
             return {
               ...assetToSell,
+              isNativeAsset: isNativeAsset(address, chainId),
               chainId,
               chainName: chainName,
               uniqueId: `${address}-${chainId}`,
@@ -441,6 +496,26 @@ export function useSearchCurrencyLists({
         ),
         id: 'verified',
       });
+    } else if (enableAllNetworkTokenSearch) {
+      if (targetAllNetworksUnverifiedAssets.length) {
+        sections.push({
+          data: filterAssetsFromFavoritesBridgeAndAssetToSell(
+            targetAllNetworksUnverifiedAssets,
+          ),
+          id: 'unverified',
+        });
+      }
+
+      if (targetAllNetworksVerifiedAssets.length) {
+        sections.push({
+          data: filterAssetsFromFavoritesBridgeAndAssetToSell(
+            targetAllNetworksVerifiedAssets,
+          ),
+          id: 'verified',
+        });
+      }
+
+      return sections;
     } else {
       if (targetVerifiedAssets?.length) {
         sections.push({
@@ -472,23 +547,27 @@ export function useSearchCurrencyLists({
 
     return sections;
   }, [
+    enableAllNetworkTokenSearch,
+    bridge,
     bridgeAsset,
     favoritesList,
     query,
+    bridgeList,
+    targetAllNetworksUnverifiedAssets,
+    targetAllNetworksVerifiedAssets,
     filterAssetsFromBridgeAndAssetToSell,
     filterAssetsFromFavoritesBridgeAndAssetToSell,
     curatedAssets,
     outputChainId,
     targetVerifiedAssets,
     targetUnverifiedAssets,
-    crosschainExactMatches,
-    bridgeList,
-    bridge,
     enableUnverifiedSearch,
+    crosschainExactMatches,
   ]);
 
   return {
     loading,
     results,
+    networkSearchStatus,
   };
 }

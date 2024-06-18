@@ -10,11 +10,8 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
-import {
-  ETH_ADDRESS,
-  SUPPORTED_MAINNET_CHAINS,
-  SupportedCurrencyKey,
-} from '~/core/references';
+import { ETH_ADDRESS, SupportedCurrencyKey } from '~/core/references';
+import { SUPPORTED_MAINNET_CHAINS } from '~/core/references/chains';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import {
   RainbowChainAsset,

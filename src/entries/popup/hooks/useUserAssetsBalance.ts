@@ -46,7 +46,7 @@ export function useUserAssetsBalance() {
   );
 
   const {
-    data: totalAssetsBalanceCustomNetworks = [],
+    data: totalAssetsBalanceCustomNetworks,
     isLoading: customNetworksIsLoading,
   } = useCustomNetworkAssets(
     {
@@ -64,14 +64,16 @@ export function useUserAssetsBalance() {
     },
   );
 
-  const totalAssetsBalance = add(
-    totalAssetsBalanceKnownNetworks as string,
-    totalAssetsBalanceCustomNetworks as string,
-  );
+  const totalAssetsBalance =
+    totalAssetsBalanceKnownNetworks && totalAssetsBalanceCustomNetworks
+      ? add(totalAssetsBalanceKnownNetworks, totalAssetsBalanceCustomNetworks)
+      : undefined;
 
   return {
     amount: totalAssetsBalance,
-    display: convertAmountToNativeDisplay(totalAssetsBalance || 0, currency),
+    display: totalAssetsBalance
+      ? convertAmountToNativeDisplay(totalAssetsBalance, currency)
+      : undefined,
     isLoading: knownNetworksIsLoading || customNetworksIsLoading,
   };
 }

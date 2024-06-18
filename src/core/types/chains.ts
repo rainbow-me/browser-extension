@@ -1,22 +1,7 @@
-import {
-  Chain,
-  arbitrumNova,
-  arbitrumSepolia,
-  baseSepolia,
-  celo,
-  holesky,
-  optimismSepolia,
-  polygonZkEvm,
-  scroll,
-  sepolia,
-} from 'viem/chains';
+import { Chain } from 'viem/chains';
 import * as chains from 'viem/chains';
 
 const HARDHAT_CHAIN_ID = 1337;
-const BLAST_CHAIN_ID = 81457;
-const BLAST_SEPOLIA_CHAIN_ID = 168587773;
-const POLYGON_AMOY_CHAIN_ID = 80002;
-
 const HARDHAT_OP_CHAIN_ID = 1338;
 
 export const chainHardhat: Chain = {
@@ -47,73 +32,6 @@ export const chainHardhatOptimism: Chain = {
     default: { http: ['http://127.0.0.1:8545'] },
   },
   testnet: true,
-};
-
-export const chainBlast: Chain = {
-  id: BLAST_CHAIN_ID,
-  name: 'Blast',
-  rpcUrls: {
-    public: { http: [process.env.BLAST_MAINNET_RPC as string] },
-    default: {
-      http: [process.env.BLAST_MAINNET_RPC as string],
-    },
-  },
-  blockExplorers: {
-    default: { name: 'Blastscan', url: 'https://blastscan.io/' },
-  },
-  nativeCurrency: {
-    name: 'Blast',
-    symbol: 'BLAST',
-    decimals: 18,
-  },
-};
-
-export const chainBlastSepolia: Chain = {
-  id: BLAST_SEPOLIA_CHAIN_ID,
-  name: 'Blast Sepolia',
-  nativeCurrency: {
-    decimals: 18,
-    name: 'Ether',
-    symbol: 'ETH',
-  },
-  rpcUrls: {
-    public: { http: ['https://sepolia.blast.io'] },
-    default: { http: ['https://sepolia.blast.io'] },
-  },
-  testnet: true,
-};
-
-export const chainPolygonAmoy: Chain = {
-  id: POLYGON_AMOY_CHAIN_ID,
-  name: 'Polygon Amoy',
-  nativeCurrency: {
-    decimals: 18,
-    name: 'MATIC',
-    symbol: 'MATIC',
-  },
-  rpcUrls: {
-    public: { http: ['https://rpc-amoy.polygon.technology'] },
-    default: { http: ['https://rpc-amoy.polygon.technology'] },
-  },
-  testnet: true,
-};
-
-export const chainDegen: Chain = {
-  id: 666666666,
-  name: 'Degen Chain',
-  nativeCurrency: {
-    decimals: 18,
-    name: 'Degen',
-    symbol: 'DEGEN',
-  },
-  rpcUrls: {
-    public: { http: ['https://rpc.degen.tips'] },
-    default: { http: ['https://rpc.degen.tips'] },
-  },
-  blockExplorers: {
-    default: { name: 'Degen Explorer', url: 'https://explorer.degen.tips/' },
-  },
-  testnet: false,
 };
 
 export enum ChainName {
@@ -254,34 +172,69 @@ export const chainIdToNameMapping: {
   [ChainId.degen]: ChainName.degen,
 };
 
-export const ChainNameDisplay = {
-  [ChainId.arbitrum]: 'Arbitrum',
-  [ChainId.arbitrumNova]: arbitrumNova.name,
-  [ChainId.avalanche]: 'Avalanche',
-  [ChainId.avalancheFuji]: 'Avalanche Fuji',
-  [ChainId.base]: 'Base',
-  [ChainId.blast]: 'Blast',
-  [ChainId.blastSepolia]: 'Blast Sepolia',
-  [ChainId.bsc]: 'BSC',
-  [ChainId.celo]: celo.name,
-  [ChainId.linea]: 'Linea',
-  [ChainId.manta]: 'Manta',
-  [ChainId.optimism]: 'Optimism',
-  [ChainId.polygon]: 'Polygon',
-  [ChainId.polygonZkEvm]: polygonZkEvm.name,
-  [ChainId.rari]: 'RARI Chain',
-  [ChainId.scroll]: scroll.name,
-  [ChainId.zora]: 'Zora',
-  [ChainId.mainnet]: 'Ethereum',
-  [ChainId.hardhat]: 'Hardhat',
-  [ChainId.hardhatOptimism]: chainHardhatOptimism.name,
-  [ChainId.sepolia]: sepolia.name,
-  [ChainId.holesky]: holesky.name,
-  [ChainId.optimismSepolia]: optimismSepolia.name,
-  [ChainId.bscTestnet]: 'BSC Testnet',
-  [ChainId.arbitrumSepolia]: arbitrumSepolia.name,
-  [ChainId.baseSepolia]: baseSepolia.name,
-  [ChainId.zoraSepolia]: 'Zora Sepolia',
-  [ChainId.polygonAmoy]: 'Polygon Amoy',
-  [ChainId.degen]: 'Degen',
-} as const;
+export interface BackendNetworkServices {
+  meteorology: {
+    enabled: boolean;
+  };
+  swap: {
+    enabled: boolean;
+  };
+  addys: {
+    approvals: boolean;
+    transactions: boolean;
+    assets: boolean;
+    positions: boolean;
+  };
+  tokenSearch: {
+    enabled: boolean;
+  };
+  nftProxy: {
+    enabled: boolean;
+  };
+}
+
+export interface BackendNetwork {
+  id: string;
+  name: string;
+  label: string;
+  icons: {
+    badgeURL: string;
+  };
+  testnet: boolean;
+  opStack: boolean;
+  defaultExplorer: {
+    url: string;
+    label: string;
+    transactionURL: string;
+    tokenURL: string;
+  };
+  defaultRPC: {
+    enabledDevices: string[];
+    url: string;
+  };
+  nativeAsset: {
+    address: string;
+    name: string;
+    symbol: string;
+    decimals: number;
+    iconURL: string;
+    colors: {
+      primary: string;
+      fallback: string;
+      shadow: string;
+    };
+  };
+  nativeWrappedAsset: {
+    address: string;
+    name: string;
+    symbol: string;
+    decimals: number;
+    iconURL: string;
+    colors: {
+      primary: string;
+      fallback: string;
+      shadow: string;
+    };
+  };
+  enabledServices: BackendNetworkServices;
+}

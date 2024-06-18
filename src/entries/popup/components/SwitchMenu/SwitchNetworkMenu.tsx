@@ -2,9 +2,9 @@ import React, { useCallback, useMemo, useRef } from 'react';
 import { Chain } from 'viem';
 
 import { i18n } from '~/core/languages';
+import { supportedSwapChainIds } from '~/core/references/chains';
 import { shortcuts } from '~/core/references/shortcuts';
 import { ChainId } from '~/core/types/chains';
-import { isCustomChain } from '~/core/utils/chains';
 import {
   Box,
   Column,
@@ -68,11 +68,15 @@ export const SwitchNetworkMenuSelector = ({
   const { trackShortcut } = useKeyboardAnalytics();
   const { chains: userChains } = useUserChains();
 
-  const chains = useMemo(() => {
-    return onlySwapSupportedNetworks
-      ? userChains.filter((chain) => !isCustomChain(chain.id))
-      : userChains;
-  }, [onlySwapSupportedNetworks, userChains]);
+  const chains = useMemo(
+    () =>
+      userChains.filter((chain) =>
+        onlySwapSupportedNetworks
+          ? supportedSwapChainIds.includes(chain.id)
+          : true,
+      ),
+    [onlySwapSupportedNetworks, userChains],
+  );
 
   const { MenuRadioItem } = useMemo(() => {
     return type === 'dropdown'

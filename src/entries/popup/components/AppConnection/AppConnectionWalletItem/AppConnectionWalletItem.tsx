@@ -16,7 +16,7 @@ import {
 } from '~/core/state/hiddenAssets/hiddenAssets';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { getChainName } from '~/core/utils/chains';
+import { getChain } from '~/core/utils/chains';
 import { convertAmountToNativeDisplay } from '~/core/utils/numbers';
 import {
   Box,
@@ -53,7 +53,7 @@ export const AppConnectionWalletItem = React.forwardRef(
     const { address, onClick, chainId, active, connected } = props;
     const [hovering, setHovering] = useState(false);
     const { displayName } = useWalletName({ address });
-    const chainName = getChainName({ chainId });
+    const chainName = getChain({ chainId }).name;
     const { hidden } = useHiddenAssetStore();
     const showChainBadge = !!chainId && chainId !== ChainId.mainnet;
     const isHidden = useCallback(

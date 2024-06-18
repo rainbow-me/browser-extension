@@ -24,7 +24,7 @@ import {
   TokenSearchListId,
   TokenSearchThreshold,
 } from '~/core/types/search';
-import { getBackendSupportedChains, isCustomChain } from '~/core/utils/chains';
+import { getSupportedChains, isCustomChain } from '~/core/utils/chains';
 
 // ///////////////////////////////////////////////
 // Query Types
@@ -32,6 +32,13 @@ import { getBackendSupportedChains, isCustomChain } from '~/core/utils/chains';
 export type TokenSearchArgs = {
   chainId: ChainId;
   fromChainId?: ChainId | '';
+  keys: TokenSearchAssetKey[];
+  list: TokenSearchListId;
+  threshold: TokenSearchThreshold;
+  query: string;
+};
+
+export type TokenSearchAllNetworksArgs = {
   keys: TokenSearchAssetKey[];
   list: TokenSearchListId;
   threshold: TokenSearchThreshold;
@@ -178,16 +185,24 @@ export function useTokenSearch(
 // ///////////////////////////////////////////////
 // Query Hook
 
-export function useTokenSearchAllNetworks({
-  keys,
-  list,
-  threshold,
-  query,
-}: Omit<TokenSearchArgs, 'chainId' | 'fromChainId'>) {
+export function useTokenSearchAllNetworks(
+  {
+    keys,
+    list,
+    threshold,
+    query,
+  }: Omit<TokenSearchArgs, 'chainId' | 'fromChainId'>,
+  config: QueryConfig<
+    TokenSearchResult,
+    Error,
+    TokenSearchResult,
+    TokenSearchQueryKey
+  > = {},
+) {
   const { testnetMode } = useTestnetModeStore();
 
-  const rainbowSupportedChains = getBackendSupportedChains({
-    testnetMode: false,
+  const rainbowSupportedChains = getSupportedChains({
+    testnets: false,
   }).filter(({ id }) => !isCustomChain(id));
 
   const queries = useQueries({
@@ -202,13 +217,14 @@ export function useTokenSearchAllNetworks({
         }),
         queryFn: tokenSearchQueryFunction,
         select: (data: SearchAsset[]) => {
-          if (!isAddress(query)) return [];
+          if (!isAddress(query) || testnetMode) return [];
           return data;
         },
         // testnet is not supported at the moment
         enabled: isAddress(query) && !testnetMode,
         refetchOnWindowFocus: false,
         staleTime: 10 * 60 * 1_000, // 10 min
+        ...config,
       };
     }),
   });

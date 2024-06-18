@@ -1,11 +1,8 @@
 import { motion } from 'framer-motion';
 import { useCallback, useMemo, useRef } from 'react';
-import { Chain } from 'viem';
 
-import { SUPPORTED_MAINNET_CHAINS } from '~/core/references';
 import { useApprovals } from '~/core/resources/approvals/approvals';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
-import { useUserChainsStore } from '~/core/state/userChains';
 import {
   RainbowTransaction,
   TransactionStatus,
@@ -30,6 +27,7 @@ import { SpinnerRow } from '~/entries/popup/components/SpinnerRow/SpinnerRow';
 import { Tag } from '~/entries/popup/components/Tag';
 import { useInfiniteTransactionList } from '~/entries/popup/hooks/useInfiniteTransactionList';
 import { useTransactionListForPendingTxs } from '~/entries/popup/hooks/useTransactionListForPendingTxs';
+import { useUserChains } from '~/entries/popup/hooks/useUserChains';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { simulateContextClick } from '~/entries/popup/utils/simulateClick';
 
@@ -59,17 +57,12 @@ export function Activities() {
   const containerRef = useContainerRef();
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency } = useCurrentCurrencyStore();
-  const supportedMainnetIds = SUPPORTED_MAINNET_CHAINS.map((c: Chain) => c.id);
-  const { userChains } = useUserChainsStore();
+  const { chains } = useUserChains();
   const { isWatchingWallet } = useWallets();
-
-  const chainIds = Object.keys(userChains)
-    .filter((id) => supportedMainnetIds.includes(Number(id)))
-    .map(Number);
 
   const { data: approvals } = useApprovals({
     address: currentAddress,
-    chainIds: chainIds,
+    chainIds: chains.map((c) => c.id),
     currency: currentCurrency,
   });
 

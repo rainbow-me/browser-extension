@@ -7,14 +7,12 @@ import {
   QueryFunctionResult,
   createQueryKey,
 } from '~/core/react-query';
-import {
-  NATIVE_ASSETS_PER_CHAIN,
-  SupportedCurrencyKey,
-} from '~/core/references';
+import { SupportedCurrencyKey } from '~/core/references';
+import { chainsLabel, chainsNativeAsset } from '~/core/references/chains';
 import { ParsedUserAsset } from '~/core/types/assets';
-import { ChainId, ChainName, ChainNameDisplay } from '~/core/types/chains';
+import { ChainId, ChainName } from '~/core/types/chains';
 import { fetchAssetBalanceViaProvider } from '~/core/utils/assets';
-import { getChain, isTestnetChainId } from '~/core/utils/chains';
+import { getChain } from '~/core/utils/chains';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
@@ -22,10 +20,10 @@ const USER_ASSETS_REFETCH_INTERVAL = 60000;
 export const getNativeAssetMock = ({ chainId }: { chainId: ChainId }) => {
   const chain = getChain({ chainId });
   const nativeAssetMock = {
-    address: NATIVE_ASSETS_PER_CHAIN[chainId],
+    address: chainsNativeAsset[chainId],
     balance: { amount: '', display: '' },
     chainId: chainId,
-    chainName: ChainNameDisplay[chainId] as ChainName,
+    chainName: chainsLabel[chainId] as ChainName,
     colors: { primary: '#808088', fallback: '#E8EAF5' },
     decimals: chain.nativeCurrency.decimals,
     icon_url: '',
@@ -82,7 +80,7 @@ async function userTestnetNativeAssetQueryFunction({
   try {
     // Don't do anything unless it's a testnet
     if (
-      !isTestnetChainId({ chainId }) &&
+      !getChain({ chainId }).testnet &&
       chainId !== ChainId.hardhat &&
       chainId !== ChainId.hardhatOptimism
     ) {

@@ -9,15 +9,14 @@ import React, {
 import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
+import { chainsLabel } from '~/core/references/chains';
 import { ParsedUserAsset } from '~/core/types/assets';
-import { ChainId, ChainName, ChainNameDisplay } from '~/core/types/chains';
+import { ChainId, ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import { UniqueAsset } from '~/core/types/nfts';
 import { truncateAddress } from '~/core/utils/address';
 import {
-  chainIdFromChainName,
   getBlockExplorerHostForChain,
   isCustomChain,
-  isL2Chain,
 } from '~/core/utils/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { getExplorerUrl, goToNewTab } from '~/core/utils/tabs';
@@ -152,7 +151,7 @@ const EditContactDropdown = ({
                       <Text size="14pt" weight="semibold">
                         {i18n.t(
                           `contacts.${
-                            chainId && isL2Chain(chainId)
+                            chainId && explorer !== 'etherscan'
                               ? 'view_on_explorer'
                               : 'view_on_etherscan'
                           }`,
@@ -279,7 +278,7 @@ export const ReviewSheet = ({
   const confirmSendButtonRef = useRef<HTMLButtonElement>(null);
   const { chains } = wagmiConfig;
   const assetChainId =
-    asset?.chainId || chainIdFromChainName(nft?.network || ChainName.mainnet);
+    asset?.chainId || chainNameToIdMapping[nft?.network || ChainName.mainnet];
   const chain = useMemo(
     () => chains.find((c) => c.id === assetChainId),
     [assetChainId, chains],
@@ -294,14 +293,12 @@ export const ReviewSheet = ({
     asset?.native?.balance?.amount === '0';
 
   const notSendingOnEthereum = useMemo(
-    () =>
-      isL2Chain(chain?.id || ChainId.mainnet) ||
-      isCustomChain(chain?.id || ChainId.mainnet),
+    () => chain?.id !== ChainId.mainnet,
     [chain?.id],
   );
 
   const chainName =
-    ChainNameDisplay[asset?.chainId || ChainId.mainnet] || chain?.name;
+    chainsLabel[asset?.chainId || ChainId.mainnet] || chain?.name;
 
   const isToWalletOwner = useMemo(
     () =>

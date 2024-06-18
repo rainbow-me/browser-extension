@@ -20,15 +20,41 @@ import {
   UniqueAsset,
 } from '~/core/types/nfts';
 import {
-  getSimpleHashSupportedChainNames,
-  getSimpleHashSupportedTestnetChainNames,
-} from '~/core/utils/chains';
-import {
   filterSimpleHashNFTs,
   simpleHashNFTToUniqueAsset,
 } from '~/core/utils/nfts';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { NFTS_TEST_DATA } from '~/test/utils';
+
+const simpleHashSupportedChainNames = [
+  'ethereum',
+  ChainName.polygon,
+  ChainName.arbitrum,
+  ChainName.arbitrumNova,
+  ChainName.avalanche,
+  ChainName.base,
+  ChainName.blast,
+  ChainName.bsc,
+  ChainName.celo,
+  ChainName.gnosis,
+  ChainName.linea,
+  ChainName.manta,
+  ChainName.optimism,
+  ChainName.polygonZkEvm,
+  ChainName.rari,
+  ChainName.scroll,
+  ChainName.zora,
+] as (ChainName | 'ethereum' | 'ethereum-sepolia')[];
+
+const simpleHashSupportedTestnetChainNames = [
+  'ethereum-sepolia',
+  ChainName.arbitrumSepolia,
+  ChainName.baseSepolia,
+  ChainName.blastSepolia,
+  ChainName.optimismSepolia,
+  ChainName.zoraSepolia,
+  ChainName.polygonAmoy,
+] as (ChainName | 'ethereum-sepolia' | 'ethereum')[];
 
 const EMPTY_WALLET_ADDRESS = '0x3637f053D542E6D00Eee42D656dD7C59Fa33a62F';
 
@@ -77,12 +103,14 @@ async function nftsQueryFunction({
     return NFTS_TEST_DATA as unknown as _QueryResult;
   }
   const simplehashChainNames = !testnetMode
-    ? getSimpleHashSupportedChainNames()
-    : getSimpleHashSupportedTestnetChainNames();
+    ? simpleHashSupportedChainNames
+    : simpleHashSupportedTestnetChainNames;
+
   const chains = simplehashChainNames.filter((simplehashChainName) => {
     const id = chainNameToIdMapping[simplehashChainName];
     return userChainIds.includes(id) || simplehashChainName === 'gnosis';
   }) as ChainName[];
+
   const polygonAllowList = await polygonAllowListFetcher();
   const acquisitionMap: Record<string, string> = {};
   const collectionsResponse = await fetchNftCollections({

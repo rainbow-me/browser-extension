@@ -10,6 +10,7 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { ChainId } from '~/core/types/chains';
 import { getProfileUrl, goToNewTab } from '~/core/utils/tabs';
 import { Box, Inline, Row, Rows, Stack, Symbol, Text } from '~/design-system';
 
@@ -31,7 +32,7 @@ import playSound from '../../utils/playSound';
 
 export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
   const { currentAddress: address } = useCurrentAddressStore();
-  const { data: ensName } = useEnsName({ address });
+  const { data: ensName } = useEnsName({ address, chainId: ChainId.mainnet });
   const navigate = useRainbowNavigate();
   const { testnetMode, setTestnetMode } = useTestnetModeStore();
   const { developerToolsEnabled } = useDeveloperToolsEnabledStore();

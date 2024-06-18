@@ -1156,8 +1156,13 @@
         "define": true
       },
       "packages": {
-        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
-        "webpack>terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true
+        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
+        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
+      }
+    },
+    "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
+      "globals": {
+        "define": true
       }
     },
     "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": {
@@ -1367,6 +1372,9 @@
       }
     },
     "msw>chokidar>braces": {
+      "globals": {
+        "console.log": true
+      },
       "packages": {
         "msw>chokidar>braces>fill-range": true
       }
