@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.4.130",
+  "version": "1.4.131",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -22,7 +22,7 @@
     "playground:ds": "PLAYGROUND=ds webpack --config ./webpack.config.dev.js --watch",
     "lint": "eslint --cache --max-warnings 0",
     "typecheck": "tsc --noEmit",
-	"// Fetch backend networks": "",
+    "// Fetch backend networks": "",
     "fetch:networks": "node scripts/networks.js",
     "// Design System scripts": "",
     "// GraphQL scripts": "",
