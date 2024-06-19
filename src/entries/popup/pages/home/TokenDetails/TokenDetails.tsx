@@ -81,9 +81,19 @@ const VERIFIED_ASSETS_PAYLOAD: {
   list: TokenSearchListId;
   threshold: TokenSearchThreshold;
 } = {
-  keys: ['symbol', 'name'],
+  keys: ['address'],
   list: 'verifiedAssets',
-  threshold: 'CONTAINS',
+  threshold: 'CASE_SENSITIVE_EQUAL',
+};
+
+const UNVERIFIED_ASSETS_PAYLOAD: {
+  keys: TokenSearchAssetKey[];
+  list: TokenSearchListId;
+  threshold: TokenSearchThreshold;
+} = {
+  keys: ['address'],
+  list: 'highLiquidityAssets',
+  threshold: 'CASE_SENSITIVE_EQUAL',
 };
 
 const HiddenValue = () => <Asterisks color="labelTertiary" size={10} />;
@@ -493,28 +503,59 @@ export function TokenDetails() {
     useUserAsset(uniqueId);
   const { data: customAsset, isFetched: isCustomAssetFetched } =
     useCustomNetworkAsset({ uniqueId });
-  const { data: searchedAssets, isFetched: isTokenSearchFetched } =
-    useTokenSearch(
-      {
-        ...VERIFIED_ASSETS_PAYLOAD,
-        chainId: queryChainId ?? ChainId.mainnet,
-        query: uniqueId ?? '',
-      },
-      {
-        enabled: !!queryChainId,
-      },
-    );
+  const {
+    data: verifiedSearchedAssets,
+    isFetched: isVerifiedTokenSearchFetched,
+  } = useTokenSearch(
+    {
+      ...VERIFIED_ASSETS_PAYLOAD,
+      chainId: queryChainId ?? ChainId.mainnet,
+      query: uniqueId ?? '',
+    },
+    {
+      select: (data) =>
+        data.map((asset) => ({
+          ...asset,
+          chainId: Number(asset.chainId),
+        })),
+      enabled: !!queryChainId,
+    },
+  );
+
+  const {
+    data: unverifiedSearchedAssets,
+    isFetched: isUnverifiedTokenSearchFetched,
+  } = useTokenSearch(
+    {
+      ...UNVERIFIED_ASSETS_PAYLOAD,
+      chainId: queryChainId ?? ChainId.mainnet,
+      query: uniqueId ?? '',
+    },
+    {
+      select: (data) =>
+        data.map((asset) => ({
+          ...asset,
+          chainId: Number(asset.chainId),
+        })),
+      enabled: !!queryChainId,
+    },
+  );
 
   const { isWatchingWallet } = useWallets();
 
   const navigate = useRainbowNavigate();
 
-  // First available searched asset
-  const searchedAsset = searchedAssets?.[0]
-    ? { ...searchedAssets[0], chainId: Number(searchedAssets[0].chainId) }
-    : undefined;
+  // First available verified search asset
+  const [verifiedSearchedAsset] = verifiedSearchedAssets || [];
 
-  const token = userAsset || customAsset || searchedAsset;
+  // First available unverified search asset
+  const [unverifiedSearchedAsset] = unverifiedSearchedAssets || [];
+
+  const token =
+    userAsset ||
+    customAsset ||
+    verifiedSearchedAsset ||
+    unverifiedSearchedAsset;
 
   useEffect(() => {
     const app = document.getElementById('app');
@@ -580,14 +621,20 @@ export function TokenDetails() {
     });
   }, [hideExplainerSheet, showExplainerSheet]);
 
+  const isTokenSearchUnavailable =
+    !queryChainId ||
+    (isVerifiedTokenSearchFetched &&
+      !verifiedSearchedAsset &&
+      isUnverifiedTokenSearchFetched &&
+      !unverifiedSearchedAsset);
+
   if (
     !uniqueId ||
     (isUserAssetFetched &&
       !userAsset &&
       isCustomAssetFetched &&
       !customAsset &&
-      (isTokenSearchFetched || !queryChainId) &&
-      !searchedAsset)
+      isTokenSearchUnavailable)
   ) {
     return <Navigate to={ROUTES.HOME} />;
   }
@@ -598,7 +645,10 @@ export function TokenDetails() {
     getChain({ chainId: token?.chainId }).testnet || !!customAsset
   );
 
-  const isUnownedToken = !userAsset && !customAsset && !!searchedAsset;
+  const isUnownedToken =
+    !userAsset &&
+    !customAsset &&
+    (!!verifiedSearchedAsset || !!unverifiedSearchedAsset);
 
   const tokenApprovals = approvals
     ?.map((approval) =>

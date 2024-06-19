@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { Address } from 'viem';
+import { useEffect, useMemo } from 'react';
+import { Address, isAddress } from 'viem';
 
 import {
   selectUserAssetsFilteringSmallBalancesList,
@@ -11,14 +11,13 @@ import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAss
 import { useTokenSearchAllNetworks } from '~/core/resources/search/tokenSearch';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ParsedUserAsset } from '~/core/types/assets';
-import {
-  TokenSearchAssetKey,
-  TokenSearchListId,
-  TokenSearchThreshold,
-} from '~/core/types/search';
+import { TokenSearchAssetKey, TokenSearchThreshold } from '~/core/types/search';
+import { isENSAddressFormat } from '~/core/utils/ethereum';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
+import { useDebounce } from '../../hooks/useDebounce';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
@@ -27,52 +26,122 @@ import {
   TokenSearchItem,
   UnownedTokenSearchItem,
 } from './SearchItems';
-import { PAGES } from './pageConfig';
+import { CommandKPage, PAGES } from './pageConfig';
 import { actionLabels } from './references';
 
-const VERIFIED_ASSETS_PAYLOAD: {
-  keys: TokenSearchAssetKey[];
-  list: TokenSearchListId;
-  threshold: TokenSearchThreshold;
-} = {
-  keys: ['symbol', 'name'],
-  list: 'verifiedAssets',
-  threshold: 'CONTAINS',
-};
+interface UseSearchableTokensProps {
+  searchQuery: string;
+  currentPage: CommandKPage;
+  setSelectedCommandNeedsUpdate: (selectedCommandNeedsUpdate: boolean) => void;
+}
 
-export const useSearchableTokens = (searchQuery: string) => {
+export const useSearchableTokens = ({
+  searchQuery,
+  currentPage,
+  setSelectedCommandNeedsUpdate,
+}: UseSearchableTokensProps) => {
   const { currentAddress: address } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
   const { hideSmallBalances } = useHideSmallBalancesStore();
   const navigate = useRainbowNavigate();
+  const { testnetMode } = useTestnetModeStore();
 
-  const { data: searchedAssets, isFetching: isFetchingSearchedAssets } =
-    useTokenSearchAllNetworks({
-      ...VERIFIED_ASSETS_PAYLOAD,
-      query: searchQuery,
-    });
+  const query = searchQuery.toLowerCase();
 
-  const { data: userAssets = [], isFetching: isFetchingUserAssets } =
-    useUserAssets(
-      {
-        address,
-        currency,
-      },
-      {
-        select: (data) =>
-          selectorFilterByUserChains({
-            data,
-            selector: hideSmallBalances
-              ? selectUserAssetsFilteringSmallBalancesList
-              : selectUserAssetsList,
-          }),
-      },
-    );
+  const debouncedSearchQuery = useDebounce(query, 250);
+
+  const enableAssetSearch =
+    currentPage === PAGES.HOME &&
+    debouncedSearchQuery.trim().length > 2 &&
+    !isENSAddressFormat(debouncedSearchQuery) &&
+    !testnetMode;
+
+  const queryIsAddress = useMemo(
+    () => isAddress(debouncedSearchQuery),
+    [debouncedSearchQuery],
+  );
+
+  const keys: TokenSearchAssetKey[] = useMemo(
+    () => (queryIsAddress ? ['address'] : ['name', 'symbol']),
+    [queryIsAddress],
+  );
+
+  const threshold: TokenSearchThreshold = useMemo(
+    () => (queryIsAddress ? 'CASE_SENSITIVE_EQUAL' : 'CONTAINS'),
+    [queryIsAddress],
+  );
 
   const {
-    data: customNetworkAssets = [],
-    isFetching: isFetchingCustomNetworkAssets,
-  } = useCustomNetworkAssets(
+    data: verifiedSearchAssets,
+    isFetching: isFetchingVerifiedSearchedAssets,
+  } = useTokenSearchAllNetworks(
+    {
+      list: 'verifiedAssets',
+      keys,
+      threshold,
+      query: debouncedSearchQuery,
+    },
+    {
+      select: (data) => {
+        if (!enableAssetSearch) return [];
+        return data;
+      },
+      enabled: enableAssetSearch,
+      staleTime: 10 * 60 * 1_000, // 10 min
+    },
+  );
+
+  const {
+    data: unverifiedSearcAssets,
+    isFetching: isFetchingUnverifiedSearchedAssets,
+  } = useTokenSearchAllNetworks(
+    {
+      list: 'highLiquidityAssets',
+      keys,
+      threshold,
+      query: debouncedSearchQuery,
+    },
+    {
+      select: (data) => {
+        if (!enableAssetSearch) return [];
+        return data;
+      },
+      enabled: enableAssetSearch,
+      staleTime: 10 * 60 * 1_000, // 10 min
+    },
+  );
+
+  const allSearchedAssets = useMemo(
+    () => [
+      ...verifiedSearchAssets.map((asset) => ({
+        status: 'verified' as UnownedTokenSearchItem['status'],
+        ...asset,
+      })),
+      ...unverifiedSearcAssets.map((asset) => ({
+        status: 'unverified' as UnownedTokenSearchItem['status'],
+        ...asset,
+      })),
+    ],
+    [verifiedSearchAssets, unverifiedSearcAssets],
+  );
+
+  const { data: userAssets = [] } = useUserAssets(
+    {
+      address,
+      currency,
+    },
+    {
+      select: (data) =>
+        selectorFilterByUserChains({
+          data,
+          selector: hideSmallBalances
+            ? selectUserAssetsFilteringSmallBalancesList
+            : selectUserAssetsList,
+        }),
+    },
+  );
+
+  const { data: customNetworkAssets = [] } = useCustomNetworkAssets(
     {
       address: address as Address,
       currency,
@@ -124,8 +193,9 @@ export const useSearchableTokens = (searchQuery: string) => {
   }, [address, combinedAssets, navigate]);
 
   const unownedSearchableTokens = useMemo(() => {
-    return searchedAssets
+    return allSearchedAssets
       .map<UnownedTokenSearchItem>((asset) => ({
+        status: asset.status,
         address: asset.address,
         action: () =>
           navigate(
@@ -137,29 +207,38 @@ export const useSearchableTokens = (searchQuery: string) => {
         id: asset.uniqueId,
         name: asset.name,
         network: asset.chainId,
-        searchTags: [asset.address],
+        searchTags: [asset.symbol, asset.address],
         tokenSymbol: asset.symbol,
         type: SearchItemType.UnownedToken,
       }))
       .filter((searchedToken) => {
-        const hasToken = ownedSearchableTokens.some((ownedToken) => {
+        const hasAsset = ownedSearchableTokens.some((ownedToken) => {
           return isLowerCaseMatch(searchedToken.address, ownedToken.address);
         });
 
-        return !hasToken;
+        return !hasAsset;
       });
-  }, [navigate, ownedSearchableTokens, searchedAssets]);
+  }, [navigate, ownedSearchableTokens, allSearchedAssets]);
 
   const combinedSearchableTokens = useMemo(
     () => [...ownedSearchableTokens, ...unownedSearchableTokens],
     [ownedSearchableTokens, unownedSearchableTokens],
   );
 
+  useEffect(() => {
+    // If a user searches for a token the first result is automatically chosen.
+    if (unownedSearchableTokens.length > 0 && enableAssetSearch) {
+      setSelectedCommandNeedsUpdate(true);
+    }
+  }, [
+    unownedSearchableTokens.length,
+    enableAssetSearch,
+    setSelectedCommandNeedsUpdate,
+  ]);
+
   return {
     data: combinedSearchableTokens,
-    isFetching:
-      isFetchingSearchedAssets ||
-      isFetchingUserAssets ||
-      isFetchingCustomNetworkAssets,
+    isFetchingSearchAssets:
+      isFetchingVerifiedSearchedAssets || isFetchingUnverifiedSearchedAssets,
   };
 };

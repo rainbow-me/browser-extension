@@ -74,6 +74,7 @@ export interface TokenSearchItem extends BaseSearchItem {
 }
 
 export interface UnownedTokenSearchItem extends BaseSearchItem {
+  status: 'verified' | 'unverified';
   asset: SearchAsset;
   address: string;
   tokenSymbol: string;

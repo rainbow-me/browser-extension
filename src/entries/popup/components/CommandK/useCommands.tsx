@@ -685,13 +685,18 @@ export const useCommands = (
   const navigateToSwaps = useNavigateToSwaps();
   const { isWatchingWallet } = useWallets();
   const save = useSavedEnsNames.use.save();
-  const { data: searchableTokens, isFetching: isFetchingTokens } =
-    useSearchableTokens(searchQuery);
+  const { data: searchableTokens, isFetchingSearchAssets } =
+    useSearchableTokens({
+      searchQuery,
+      currentPage,
+      setSelectedCommandNeedsUpdate,
+    });
+
   const { searchableENSOrAddress } = useSearchableENSorAddress({
     currentPage,
     searchQuery,
     assets: searchableTokens,
-    isFetchingAssets: isFetchingTokens,
+    isFetchingSearchAssets: isFetchingSearchAssets,
     setSelectedCommandNeedsUpdate,
   });
   const { searchableNFTs } = useSearchableNFTs();
@@ -1318,5 +1323,8 @@ export const useCommands = (
     ],
   );
 
-  return { commandList };
+  return {
+    commandList,
+    isFetchingSearchAssetsCommands: isFetchingSearchAssets,
+  };
 };
