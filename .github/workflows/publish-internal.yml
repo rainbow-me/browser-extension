@@ -41,6 +41,7 @@ jobs:
         with:
           repository: 'rainbow-me/browser-extension-action'
           token: ${{ secrets.ACTION_GITHUB_ACCESS_TOKEN }}
+          ref: '@daniel/refactor'
           path: ./.github/actions/private
       - name: Run browser-extension-action private actions
         uses: ./.github/actions/private/browser-extension-action.yml
