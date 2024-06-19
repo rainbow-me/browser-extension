@@ -37,8 +37,13 @@ jobs:
           path: tmp
       - name: Copy dotenv
         run: cat tmp/dotenv >> .env && rm -rf tmp
+      - uses: actions/checkout@v3
+        with:
+          repository: 'rainbow-me/browser-extension-action'
+          token: ${{ secrets.ACTION_GITHUB_ACCESS_TOKEN }}
+          path: ./.github/actions/private
       - name: Run browser-extension-action private actions
-        uses: rainbow-me/browser-extension-action/browser-extension-action.yml@15e65811fc8e8d1ef9a1aa8da09351fe6702d2f7
+        uses: ./.github/actions/private/browser-extension-action.yml
       - name: Mark the build as internal
         run: echo "INTERNAL_BUILD=true" >> .env
       - name: Bump the version
