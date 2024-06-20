@@ -224,7 +224,6 @@ export function Tokens() {
 
   const containerRef = useContainerRef();
 
-  console.log('filteredAssets', filteredAssets.length);
   const assetsRowVirtualizer = useVirtualizer({
     count: filteredAssets.length,
     getScrollElement: () => containerRef.current,
