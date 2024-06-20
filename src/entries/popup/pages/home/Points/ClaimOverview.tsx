@@ -43,7 +43,7 @@ import * as wallet from '../../../handlers/wallet';
 
 import ConsoleText from './ConsoleText';
 import { CLAIM_MOCK_DATA } from './references';
-import { invalidatePointsQuery, refetchPointsQuery } from './usePoints';
+import { invalidatePointsQuery, usePoints } from './usePoints';
 import { RAINBOW_TEXT, getDelayForRow } from './utils';
 
 export function ClaimOverview() {
@@ -61,6 +61,11 @@ export function ClaimOverview() {
   const { displayName } = useWalletName({ address: currentAddress });
 
   const { currentAddress: address } = useCurrentAddressStore();
+
+  const { data: points, refetch } = usePoints(currentAddress);
+  const rewards = points?.user?.rewards;
+  const { claimable } = rewards || {};
+  const hasClaim = claimable !== '0';
 
   const eth = useNativeAsset({ chainId: ChainId.mainnet });
   const ethPrice = eth?.nativeAsset?.price?.value;
@@ -102,7 +107,7 @@ export function ClaimOverview() {
 
       // clear and refresh claim data so available claim UI disappears
       invalidatePointsQuery(address);
-      refetchPointsQuery(address);
+      refetch();
 
       return claimInfo;
     },
@@ -169,7 +174,11 @@ export function ClaimOverview() {
   const showError = !waitToDisplay && (error || bridgeError);
 
   useEffect(() => {
-    claimRewards();
+    if (hasClaim) {
+      claimRewards();
+    } else {
+      backToHome();
+    }
     setTimeout(() => setWaitToDisplay(false), 3000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -258,7 +267,9 @@ const ROWS_TEXT = [
   `${RAINBOW_TEXT.row6}`,
   `${RAINBOW_TEXT.row7}`,
   `${RAINBOW_TEXT.row8}`,
-  `${i18n.t('points.rewards.claiming_your_reward')}`,
+  `\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0${i18n.t(
+    'points.rewards.claiming_your_reward',
+  )}`,
 ];
 
 function SuccessText() {
