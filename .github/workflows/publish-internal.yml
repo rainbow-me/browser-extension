@@ -40,7 +40,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: 'rainbow-me/browser-extension-action'
-          token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+          token: ${{ secrets.ACTION_GITHUB_ACCESS_TOKEN }}
           path: tmp
       - name: Mark the build as internal
         run: echo "INTERNAL_BUILD=true" >> .env
