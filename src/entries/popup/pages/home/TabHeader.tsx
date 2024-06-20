@@ -69,6 +69,9 @@ export function TabHeader({
     [activeTab, currentCurrency, hideAssetBalances, userAssetsBalanceDisplay],
   );
 
+  const shouldDisplayBalanceComponent =
+    activeTab !== 'nfts' && activeTab !== 'points';
+
   return (
     <Inset bottom="20px" top="8px">
       <Box
@@ -108,7 +111,7 @@ export function TabHeader({
           </Inline>
         )}
 
-        {activeTab !== 'nfts' && (
+        {shouldDisplayBalanceComponent && (
           <CursorTooltip
             align="end"
             arrowAlignment="right"
