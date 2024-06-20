@@ -79,7 +79,7 @@ export function useNativeAssetForNetwork({
       ...nativeAsset,
       chainId: chainId || nativeAsset?.chainId || ChainId.mainnet,
       chainName:
-        chainNameFromChainId(chainId) ||
+        chainIdToNameMapping[chainId] ||
         nativeAsset?.chainName ||
         ChainName.mainnet,
       uniqueId: getNetworkNativeAssetUniqueId({ chainId }),

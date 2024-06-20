@@ -1,8 +1,9 @@
 import { SwapType, getCrosschainQuote } from '@rainbow-me/swaps';
+import { useMutation } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Address, useMutation } from 'wagmi';
+import { Address } from 'viem';
 
 import { metadataPostClient } from '~/core/graphql';
 import {
@@ -112,6 +113,7 @@ export function ClaimOverview() {
       return claimInfo;
     },
     onSuccess: async (d) => {
+      // if the selected network is not optimism, we kick off the bridge flow here
       if (
         claimNetwork !== ChainId.optimism &&
         d?.txHash &&

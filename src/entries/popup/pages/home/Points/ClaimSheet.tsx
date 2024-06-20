@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion';
 
 import { i18n } from '~/core/languages';
+import { chainsLabel } from '~/core/references/chains';
 import { useCurrentAddressStore } from '~/core/state';
-import { ChainId, ChainNameDisplay } from '~/core/types/chains';
+import { ChainId } from '~/core/types/chains';
 import {
   Box,
   Button,
@@ -167,7 +168,7 @@ function ClaimSheetRow({
                   textShadow="16px label"
                   weight="heavy"
                 >
-                  {ChainNameDisplay[chain]}
+                  {chainsLabel[chain]}
                 </Text>
                 <Text size="12pt" color="labelQuaternary" weight="bold">
                   {display}

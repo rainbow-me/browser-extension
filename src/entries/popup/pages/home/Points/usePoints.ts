@@ -21,11 +21,11 @@ const fetchPoints = async (address: Address) => {
 };
 
 export const invalidatePointsQuery = (address: Address) => {
-  queryClient.invalidateQueries(['points', address]);
+  queryClient.invalidateQueries({ queryKey: ['points', address] });
 };
 
 export const refetchPointsQuery = (address: Address) => {
-  queryClient.refetchQueries(['points', address]);
+  queryClient.refetchQueries({ queryKey: ['points', address] });
 };
 
 export const seedPointsQueryCache = async (
