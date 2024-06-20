@@ -1491,7 +1491,8 @@
       "already_claimed": "> Your reward has already been claimed",
       "no_claim": "> You do not have a reward to claim at this time",
       "earned_last_week": "Earned Last Week",
-      "my_referrals": "My Referrals"
+      "my_referrals": "My Referrals",
+      "claim_reward": "Claim %{reward}"
     }
   },
   "speed_up_and_cancel": {

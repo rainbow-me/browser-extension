@@ -719,7 +719,9 @@ function ClaimYourPointsCta({
       onClick={() => showClaimSheet()}
     >
       <RainbowText size="20pt" weight="heavy">
-        {`${convertRawAmountToDecimalFormat(claimableReward, 18)} ETH`}
+        {i18n.t('points.rewards.claim_reward', {
+          reward: `${convertRawAmountToDecimalFormat(claimableReward, 18)} ETH`,
+        })}
       </RainbowText>
       <Box
         style={{
