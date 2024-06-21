@@ -7,6 +7,7 @@ import { RainbowError, logger } from '~/logger';
 
 import { claim, swap, unlock } from './actions';
 import { crosschainSwap } from './actions/crosschainSwap';
+import { createClaimAndBridgeRap } from './claimAndBridge';
 import {
   ActionProps,
   Rap,
@@ -25,6 +26,10 @@ export function createSwapRapByType<T extends RapTypes>(
   swapParameters: RapSwapActionParameters<T>,
 ) {
   switch (type) {
+    case 'claimBridge':
+      return createClaimAndBridgeRap(
+        swapParameters as RapSwapActionParameters<'claimBridge'>,
+      );
     case 'crosschainSwap':
       return createUnlockAndCrosschainSwapRap(
         swapParameters as RapSwapActionParameters<'crosschainSwap'>,

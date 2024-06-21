@@ -9,10 +9,12 @@ export async function claim({
   baseNonce,
 }: ActionProps<'claim'>) {
   const { address } = parameters;
-  const claimInfo =
-    process.env.IS_TESTING === 'true'
-      ? CLAIM_MOCK_DATA
-      : await metadataPostClient.claimUserRewards({ address });
+  if (!address) {
+    throw new Error('Invalid address');
+  }
+  const claimInfo = process.env.INTERNAL_BUILD
+    ? CLAIM_MOCK_DATA
+    : await metadataPostClient.claimUserRewards({ address });
 
   const txHash = claimInfo.claimUserRewards?.txHash;
   if (!txHash) {

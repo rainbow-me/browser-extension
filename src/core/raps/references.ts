@@ -48,6 +48,7 @@ export interface RapSwapActionParameters<
   buyAmount?: string;
   permit?: boolean;
   chainId: number;
+  toChainId?: number;
   requiresApprove?: boolean;
   meta?: SwapMetadata;
   assetToSell: ParsedAsset;
@@ -66,13 +67,13 @@ export interface RapUnlockActionParameters {
 }
 
 export interface RapClaimActionParameters {
-  address: Address;
+  address?: Address;
   assetToSell: ParsedAsset;
   sellAmount: string;
   assetToBuy: ParsedAsset;
   meta?: SwapMetadata;
   chainId: ChainId;
-  toChainId: ChainId;
+  toChainId?: ChainId;
   quote: undefined;
 }
 
@@ -101,7 +102,9 @@ export interface RapAction<T extends RapActionTypes> {
 }
 
 export interface Rap {
-  actions: RapAction<'swap' | 'crosschainSwap' | 'unlock' | 'claim'>[];
+  actions: RapAction<
+    'swap' | 'crosschainSwap' | 'unlock' | 'claim' | 'claimBridge'
+  >[];
 }
 
 export enum rapActions {

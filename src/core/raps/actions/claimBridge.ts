@@ -29,6 +29,10 @@ export async function claimBridge({
 }: ActionProps<'claim'>) {
   const { address, toChainId, sellAmount, chainId } = parameters;
 
+  if (!toChainId || !address) {
+    throw new RainbowError('claimBridge: error getClaimBridgeQuote');
+  }
+
   const claimBridgeQuote = await getClaimBridgeQuote({
     chainId,
     toChainId,
@@ -118,7 +122,7 @@ export async function claimBridge({
     chainId: parameters.chainId,
     nonce: swap.nonce,
     status: 'pending',
-    type: 'swap',
+    type: 'bridge',
     flashbots: false,
     ...gasParams,
   } satisfies NewTransaction;

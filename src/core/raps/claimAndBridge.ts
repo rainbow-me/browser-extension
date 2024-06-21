@@ -1,7 +1,7 @@
 import { createNewAction, createNewRap } from './common';
 import { RapAction, RapClaimActionParameters } from './references';
 
-export const createClaimAndBridge = async (
+export const createClaimAndBridgeRap = async (
   claimParameters: RapClaimActionParameters,
 ) => {
   let actions: RapAction<'crosschainSwap' | 'claim' | 'claimBridge'>[] = [];
@@ -15,11 +15,11 @@ export const createClaimAndBridge = async (
     address,
   } = claimParameters;
 
-  const claim = createNewAction('claim', {} as RapClaimActionParameters);
+  const claim = createNewAction('claim', claimParameters);
   actions = actions.concat(claim);
 
   // if we need the bridge
-  if (chainId !== toChainId) {
+  if (chainId !== toChainId && toChainId !== undefined) {
     // create a bridge rap
     const bridge = createNewAction('claimBridge', {
       address,
