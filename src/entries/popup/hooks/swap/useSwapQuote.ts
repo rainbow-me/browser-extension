@@ -13,7 +13,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 
 import { useCurrentAddressStore } from '~/core/state';
-import { ParsedSearchAsset } from '~/core/types/assets';
+import { ParsedAsset, ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { convertAmountToRawAmount } from '~/core/utils/numbers';
 import { isUnwrapEth, isWrapEth } from '~/core/utils/swaps';
@@ -25,8 +25,8 @@ const CACHE_INTERVAL = 1000;
 const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
 
 interface UseSwapQuotesProps {
-  assetToSell: ParsedSearchAsset | null;
-  assetToBuy: ParsedSearchAsset | null;
+  assetToSell: ParsedSearchAsset | ParsedAsset | null;
+  assetToBuy: ParsedSearchAsset | ParsedAsset | null;
   assetToSellValue?: string;
   assetToBuyValue?: string;
   independentField: IndependentField;

@@ -41,7 +41,6 @@ import { ActivityDetails } from './pages/home/Activity/ActivityDetails';
 import { Approvals } from './pages/home/Approvals/Approvals';
 import { ConnectedApps } from './pages/home/ConnectedApps';
 import NFTDetails from './pages/home/NFTs/NFTDetails';
-import { ClaimOverview } from './pages/home/Points/ClaimOverview';
 import { ClaimSheet } from './pages/home/Points/ClaimSheet';
 import { PointsOnboardingSheet } from './pages/home/Points/PointsOnboardingSheet';
 import { PointsReferralSheet } from './pages/home/Points/PointsReferralSheet';
@@ -184,14 +183,6 @@ const ROUTE_DATA = [
         element: (
           <ChildRoute>
             <PointsWeeklyOverview />
-          </ChildRoute>
-        ),
-      },
-      {
-        path: ROUTES.CLAIM_OVERVIEW,
-        element: (
-          <ChildRoute>
-            <ClaimOverview />
           </ChildRoute>
         ),
       },

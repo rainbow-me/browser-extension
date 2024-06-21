@@ -1,24 +1,9 @@
-import { SwapType, getCrosschainQuote } from '@rainbow-me/swaps';
-import { useMutation } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Address } from 'viem';
 
-import { metadataPostClient } from '~/core/graphql';
-import {
-  ClaimUserRewardsMutation,
-  PointsErrorType,
-} from '~/core/graphql/__generated__/metadata';
+import { PointsErrorType } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
-import { QuoteTypeMap, RapActionParameters } from '~/core/raps/references';
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
-import { ChainId } from '~/core/types/chains';
-import {
-  convertAmountAndPriceToNativeDisplay,
-  convertRawAmountToBalance,
-} from '~/core/utils/numbers';
-import { getNextNonce } from '~/core/utils/transactions';
+import { useCurrentAddressStore } from '~/core/state';
 import {
   Box,
   Button,
@@ -32,166 +17,42 @@ import {
 } from '~/design-system';
 import { AnimatedText } from '~/design-system/components/AnimatedText/AnimatedText';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
-import { useSwapSlippage } from '~/entries/popup/hooks/swap';
-import { useNativeAsset } from '~/entries/popup/hooks/useNativeAsset';
-import { useNativeAssetForNetwork } from '~/entries/popup/hooks/useNativeAssetForNetwork';
-import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useWalletName } from '~/entries/popup/hooks/useWalletName';
-import { ROUTES } from '~/entries/popup/urls';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
-import * as wallet from '../../../handlers/wallet';
-
 import ConsoleText from './ConsoleText';
-import { CLAIM_MOCK_DATA } from './references';
-import { invalidatePointsQuery, usePoints } from './usePoints';
 import { RAINBOW_TEXT, getDelayForRow } from './utils';
 
-export function ClaimOverview() {
-  const { state } = useLocation();
-  const claimNetwork = state?.claimNetwork as ChainId;
-  const claimAmount: string = state?.claimAmount;
-  const [bridgeSuccess, setBridgeSuccess] = useState(false);
-  const [bridgeError, setBridgeError] = useState<string | undefined>();
-  const [waitToDisplay, setWaitToDisplay] = useState(true);
-  const [showSummary, setShowSummary] = useState(false);
-  const [error, setError] = useState<PointsErrorType | undefined>();
-  const navigate = useRainbowNavigate();
+export function ClaimOverview({
+  claimableAmount,
+  claimableDisplay,
+  goBack,
+  error,
+  preparingClaim,
+  success,
+  show,
+}: {
+  claimableAmount: string;
+  claimableDisplay: string;
+  goBack: () => void;
+  error?: PointsErrorType | string;
+  preparingClaim: boolean;
+  success: boolean;
+  show: boolean;
+}) {
   const { currentAddress } = useCurrentAddressStore();
-  const { currentCurrency: currency } = useCurrentCurrencyStore();
   const { displayName } = useWalletName({ address: currentAddress });
 
-  const { currentAddress: address } = useCurrentAddressStore();
-
-  const { data: points, refetch } = usePoints(currentAddress);
-  const rewards = points?.user?.rewards;
-  const { claimable } = rewards || {};
-  const hasClaim = claimable !== '0';
-
-  const eth = useNativeAsset({ chainId: ChainId.mainnet });
-  const ethPrice = eth?.nativeAsset?.price?.value;
-  const claimableBalance = convertRawAmountToBalance(claimAmount, {
-    decimals: 18,
-    symbol: eth?.nativeAsset?.symbol,
-  });
-  const claimablePriceDisplay = convertAmountAndPriceToNativeDisplay(
-    claimableBalance.amount,
-    ethPrice || '0',
-    currency,
-  );
-
-  const opEth = useNativeAssetForNetwork({ chainId: ChainId.optimism });
-  const destinationEth = useNativeAssetForNetwork({ chainId: ChainId.base });
-
-  const { data: swapSlippage } = useSwapSlippage({
-    chainId: ChainId.optimism,
-    toChainId: destinationEth?.chainId || ChainId.mainnet,
-    sellTokenAddress: opEth?.address as Address,
-    buyTokenAddress: destinationEth?.address as Address,
-    sellAmount: claimableBalance.amount || 0,
-    buyAmount: '',
-  });
-
-  const { mutate: claimRewards, isSuccess: claimSuccess } = useMutation<
-    ClaimUserRewardsMutation['claimUserRewards']
-  >({
-    mutationFn: async () => {
-      const response =
-        process.env.IS_TESTING === 'true'
-          ? CLAIM_MOCK_DATA
-          : await metadataPostClient.claimUserRewards({ address });
-      const claimInfo = response?.claimUserRewards;
-
-      if (claimInfo?.error) {
-        setError(claimInfo?.error.type);
-      }
-
-      // clear and refresh claim data so available claim UI disappears
-      invalidatePointsQuery(address);
-      refetch();
-
-      return claimInfo;
-    },
-    onSuccess: async (d) => {
-      // if the selected network is not optimism, we kick off the bridge flow here
-      if (
-        claimNetwork !== ChainId.optimism &&
-        d?.txHash &&
-        opEth &&
-        destinationEth
-      ) {
-        const nonce = await getNextNonce({
-          address,
-          chainId: ChainId.optimism,
-        });
-        const quote = await getCrosschainQuote({
-          chainId: ChainId.optimism,
-          fromAddress: address,
-          sellTokenAddress: opEth.address,
-          buyTokenAddress: destinationEth.address,
-          sellAmount: claimAmount || '0',
-          slippage: swapSlippage?.slippagePercent || 2,
-          destReceiver: address,
-          swapType: SwapType.crossChain,
-          toChainId: claimNetwork,
-          feePercentageBasisPoints: 0,
-        });
-        const actionParams: RapActionParameters = {
-          sellAmount: claimableBalance.amount,
-          chainId: ChainId.optimism,
-          assetToSell: opEth,
-          assetToBuy: destinationEth,
-          quote: quote as QuoteTypeMap['crosschainSwap'],
-          flashbots: false,
-          claimHash: d?.txHash,
-          nonce,
-        };
-        const { errorMessage, nonce: bridgeNonce } = await wallet.executeRap({
-          rapActionParameters: actionParams,
-          type: 'crosschainSwap',
-        });
-
-        if (errorMessage) {
-          setBridgeError(errorMessage);
-        }
-
-        if (typeof bridgeNonce === 'number') {
-          setBridgeSuccess(true);
-        }
-      }
-    },
-  });
-
-  const backToHome = () => {
-    navigate(ROUTES.HOME, {
-      state: { tab: 'points', skipTransitionOnRoute: ROUTES.HOME },
-    });
-  };
-
-  const claimNeedsBridge = claimNetwork !== ChainId.optimism;
-  const claimFinished = claimNeedsBridge ? bridgeSuccess : claimSuccess;
-  const showPreparingClaim = !showSummary;
-  const showSuccess =
-    !waitToDisplay && claimFinished && !showSummary && !error && !bridgeError;
-  const showError = !waitToDisplay && (error || bridgeError);
+  const [waitToDisplay, setWaitToDisplay] = useState(true);
+  const showSuccess = !waitToDisplay && success && preparingClaim && !error;
 
   useEffect(() => {
-    if (hasClaim) {
-      claimRewards();
-    } else {
-      backToHome();
-    }
     setTimeout(() => setWaitToDisplay(false), 3000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  useEffect(() => {
-    if (showSuccess && !showSummary) {
-      setTimeout(() => setShowSummary(true), 5000);
-    }
-  }, [showSuccess, showSummary]);
 
   return (
-    <BottomSheet zIndex={zIndexes.ACTIVITY_DETAILS} show={true}>
+    <BottomSheet zIndex={zIndexes.ACTIVITY_DETAILS} show={show}>
       <Box
         display="flex"
         as={motion.div}
@@ -210,21 +71,18 @@ export function ClaimOverview() {
               <ConsoleText>{i18n.t('points.onboarding.account')}</ConsoleText>
               <ConsoleText color="accent">{displayName || ''}</ConsoleText>
             </Inline>
-            {showPreparingClaim && <PreparingClaimText />}
+            {preparingClaim && <PreparingClaimText />}
             {showSuccess && <SuccessText />}
-            {showError && <ErrorText error={error} />}
-            {showSummary && (
-              <ClaimSummary
-                amount={claimableBalance.amount}
-                price={claimablePriceDisplay.display}
-              />
+            {error && <ErrorText error={error} />}
+            {!preparingClaim && (
+              <ClaimSummary amount={claimableAmount} price={claimableDisplay} />
             )}
           </Stack>
         </Stack>
 
-        {(showSummary || showError) && (
+        {(!preparingClaim || error) && (
           <Button
-            onClick={backToHome}
+            onClick={goBack}
             color="accent"
             width="full"
             borderRadius="12px"
@@ -302,21 +160,17 @@ function SuccessText() {
   );
 }
 
-function ErrorText({
-  error,
-  bridgeError,
-}: {
-  error?: PointsErrorType;
-  bridgeError?: string;
-}) {
-  if (!error && !bridgeError) return null;
+function ErrorText({ error }: { error?: string }) {
+  if (!error) return null;
   const getMessage = () => {
-    if (error) {
-      return error === PointsErrorType.AlreadyClaimed
-        ? i18n.t('points.rewards.already_claimed')
-        : i18n.t('points.rewards.no_claim');
+    switch (error) {
+      case PointsErrorType.AlreadyClaimed:
+        return i18n.t('points.rewards.already_claimed');
+      case PointsErrorType.NoClaim:
+        return i18n.t('points.rewards.no_claim');
+      default:
+        return error;
     }
-    return bridgeError;
   };
   return (
     <AnimatedText

@@ -1,9 +1,23 @@
+import { AddressZero } from '@ethersproject/constants';
+import { useMutation } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 
+import { metadataPostClient } from '~/core/graphql';
+import {
+  ClaimUserRewardsMutation,
+  PointsErrorType,
+} from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
+import { QuoteTypeMap, RapActionParameters } from '~/core/raps/references';
 import { chainsLabel } from '~/core/references/chains';
-import { useCurrentAddressStore } from '~/core/state';
+import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
+import { GasSpeed } from '~/core/types/gas';
+import {
+  convertAmountAndPriceToNativeDisplay,
+  convertRawAmountToBalance,
+} from '~/core/utils/numbers';
 import {
   Box,
   Button,
@@ -18,37 +32,227 @@ import {
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTransparentAccentHighlight.css';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
+import { useSwapQuote, useSwapSlippage } from '~/entries/popup/hooks/swap';
+import { useSwapGas } from '~/entries/popup/hooks/useGas';
+import { useNativeAssetForNetwork } from '~/entries/popup/hooks/useNativeAssetForNetwork';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
-import { useUserAssetsBalance } from '~/entries/popup/hooks/useUserAssetsBalance';
 import { ROUTES } from '~/entries/popup/urls';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
-import { usePoints } from './usePoints';
+import * as wallet from '../../../handlers/wallet';
+
+import { ClaimOverview } from './ClaimOverview';
+import { CLAIM_MOCK_DATA } from './references';
+import { invalidatePointsQuery, usePoints } from './usePoints';
 
 export function ClaimSheet() {
   const navigate = useRainbowNavigate();
+  const goBack = () => navigate(-1);
+  const backToHome = () => {
+    navigate(ROUTES.HOME, {
+      state: { tab: 'points', skipTransitionOnRoute: ROUTES.HOME },
+    });
+  };
+
+  const [showClaimOverview, setShowClaimOverview] = useState(false);
+  const [showNetworkSelection, setShowNetworkSelection] = useState(true);
+
+  const [selectedChainId, setSelectedChainId] = useState<ChainId>(
+    ChainId.optimism,
+  );
+  const requiresBridge = selectedChainId !== ChainId.optimism;
+  const [claimError, setClaimError] = useState<PointsErrorType>();
+  const [bridgeError, setBridgeError] = useState<string>();
+  const [bridgeSuccess, setBridgeSuccess] = useState(false);
+  const [showSummary, setShowSummary] = useState(false);
+
   const { currentAddress: address } = useCurrentAddressStore();
-  const { data, isSuccess } = usePoints(address);
+  const { currentCurrency: currency } = useCurrentCurrencyStore();
+  const { data, refetch } = usePoints(address);
   const rewards = data?.user?.rewards;
-  const { amount: opBalance } = useUserAssetsBalance({
-    chain: ChainId.optimism,
-    currency: 'ETH',
+  const { claimable } = rewards || {};
+
+  const opEth = useNativeAssetForNetwork({ chainId: ChainId.optimism });
+  const baseEth = useNativeAssetForNetwork({ chainId: ChainId.base });
+  const zoraEth = useNativeAssetForNetwork({ chainId: ChainId.zora });
+  const ethPrice = opEth?.native?.price?.amount;
+  const destinationEth = useNativeAssetForNetwork({ chainId: selectedChainId });
+
+  const claimableBalance = convertRawAmountToBalance(claimable || '0', {
+    decimals: 18,
+    symbol: 'ETH',
   });
-  const opDisplay = `${parseFloat(Number(opBalance).toFixed(8))} ETH`;
-  const { amount: baseBalance } = useUserAssetsBalance({
-    chain: ChainId.base,
-    currency: 'ETH',
+  const claimablePriceDisplay = convertAmountAndPriceToNativeDisplay(
+    claimableBalance.amount,
+    ethPrice || '0',
+    currency,
+  );
+  const sellAmount = claimable || '0';
+
+  const { data: swapSlippage } = useSwapSlippage(
+    {
+      chainId: ChainId.optimism,
+      toChainId: selectedChainId,
+      sellTokenAddress: AddressZero,
+      buyTokenAddress: AddressZero,
+      sellAmount,
+      buyAmount: '',
+    },
+    {
+      enabled: requiresBridge,
+    },
+  );
+  const slippage = swapSlippage?.slippagePercent || 2;
+  const { data: baseQuote } = useSwapQuote({
+    assetToSell: opEth || null,
+    assetToBuy: baseEth || null,
+    assetToSellValue: '0',
+    slippage,
+    independentField: 'sellField',
+    source: 'auto',
+    isClaim: true,
   });
-  const baseDisplay = `${parseFloat(Number(baseBalance).toFixed(8))} ETH`;
-  const { amount: zoraBalance } = useUserAssetsBalance({
-    chain: ChainId.zora,
-    currency: 'ETH',
+  const { data: zoraQuote } = useSwapQuote({
+    assetToSell: opEth || null,
+    assetToBuy: zoraEth || null,
+    assetToSellValue: '0',
+    slippage,
+    independentField: 'sellField',
+    source: 'auto',
+    isClaim: true,
   });
-  const zoraDisplay = `${parseFloat(Number(zoraBalance).toFixed(8))} ETH`;
+  const { gasFeeParamsBySpeed: baseGasFeeParamsBySpeed } = useSwapGas({
+    chainId: ChainId.optimism,
+    defaultSpeed: GasSpeed.URGENT,
+    quote: baseQuote,
+    assetToSell: opEth,
+    assetToBuy: baseEth,
+    enabled: true,
+    persist: false,
+  });
+  const { gasFeeParamsBySpeed: zoraGasFeeParamsBySpeed } = useSwapGas({
+    chainId: ChainId.optimism,
+    defaultSpeed: GasSpeed.URGENT,
+    quote: zoraQuote,
+    assetToSell: opEth,
+    assetToBuy: zoraEth,
+    enabled: true,
+  });
+
+  const claimNetworkInfo = [
+    { chainId: ChainId.optimism, fee: 'Free to Claim' },
+    {
+      chainId: ChainId.base,
+      fee: baseGasFeeParamsBySpeed?.urgent?.gasFee?.display,
+    },
+    {
+      chainId: ChainId.zora,
+      fee: zoraGasFeeParamsBySpeed?.urgent?.gasFee?.display,
+    },
+  ];
+
+  const { mutate: claimRewards, isSuccess: claimSuccess } = useMutation<
+    ClaimUserRewardsMutation['claimUserRewards']
+  >({
+    mutationFn: async () => {
+      const response =
+        process.env.IS_TESTING === 'true'
+          ? CLAIM_MOCK_DATA
+          : await metadataPostClient.claimUserRewards({ address });
+      const claimInfo = response?.claimUserRewards;
+
+      if (claimInfo?.error) {
+        setClaimError(claimInfo?.error.type);
+      }
+
+      // clear and refresh claim data so available claim UI disappears
+      invalidatePointsQuery(address);
+      refetch();
+
+      return claimInfo;
+    },
+    onSuccess: async (d) => {
+      // if the selected network is not optimism, we kick off the bridge flow here
+      if (requiresBridge && d?.txHash && opEth && destinationEth) {
+        const actionParams: RapActionParameters = {
+          sellAmount,
+          chainId: ChainId.optimism,
+          assetToSell: opEth,
+          assetToBuy: destinationEth,
+          quote: baseQuote as QuoteTypeMap['crosschainSwap'],
+          flashbots: false,
+          claimHash: d?.txHash,
+        };
+        const { errorMessage, nonce: bridgeNonce } = await wallet.executeRap({
+          rapActionParameters: actionParams,
+          type: 'crosschainSwap',
+        });
+
+        if (errorMessage) {
+          setBridgeError(errorMessage);
+        }
+
+        if (typeof bridgeNonce === 'number') {
+          setBridgeSuccess(true);
+        }
+      }
+    },
+  });
+
+  const claimFinished = requiresBridge ? bridgeSuccess : claimSuccess;
+  const showPreparingClaim = !showSummary;
+  const showSuccess =
+    claimFinished && !showSummary && !claimError && !bridgeError;
+
+  const handleNetworkSelection = (chain: ChainId) => {
+    setShowNetworkSelection(false);
+    setShowClaimOverview(true);
+    setSelectedChainId(chain);
+    setTimeout(() => claimRewards(), 500);
+  };
+
+  useEffect(() => {
+    if (showSuccess && !showSummary) {
+      setTimeout(() => setShowSummary(true), 5000);
+    }
+  }, [showSuccess, showSummary]);
+
+  return (
+    <>
+      <ClaimNetworkSelection
+        goBack={goBack}
+        networkInfo={claimNetworkInfo}
+        onSelect={handleNetworkSelection}
+        show={showNetworkSelection}
+      />
+      <ClaimOverview
+        claimableAmount={claimableBalance.amount}
+        claimableDisplay={claimablePriceDisplay.display}
+        error={claimError || bridgeError}
+        goBack={backToHome}
+        preparingClaim={showPreparingClaim}
+        success={showSuccess}
+        show={showClaimOverview}
+      />
+    </>
+  );
+}
+
+export function ClaimNetworkSelection({
+  goBack,
+  networkInfo,
+  onSelect,
+  show,
+}: {
+  goBack: () => void;
+  networkInfo: { chainId: ChainId; fee?: string }[];
+  onSelect: (chain: ChainId) => void;
+  show: boolean;
+}) {
   return (
     <BottomSheet
-      show
-      onClickOutside={() => navigate(-1)}
+      show={show}
+      onClickOutside={goBack}
       zIndex={zIndexes.BOTTOM_SHEET}
     >
       <Box paddingTop="24px" paddingBottom="12px" isModal>
@@ -66,27 +270,15 @@ export function ClaimSheet() {
         <Stack gap="10px">
           <Separator color="separatorTertiary" />
           <Rows>
-            <Row>
-              <ClaimSheetRow
-                balance={rewards?.claimable || '0'}
-                chain={ChainId.optimism}
-                display={opDisplay}
-              />
-            </Row>
-            <Row>
-              <ClaimSheetRow
-                balance={rewards?.claimable || '0'}
-                chain={ChainId.base}
-                display={baseDisplay}
-              />
-            </Row>
-            <Row>
-              <ClaimSheetRow
-                balance={rewards?.claimable || '0'}
-                chain={ChainId.zora}
-                display={zoraDisplay}
-              />
-            </Row>
+            {networkInfo.map((info) => (
+              <Row key={info.chainId}>
+                <ClaimSheetRow
+                  chain={info.chainId}
+                  display={info.fee || ''}
+                  onSelect={onSelect}
+                />
+              </Row>
+            ))}
           </Rows>
         </Stack>
         <Box
@@ -97,14 +289,13 @@ export function ClaimSheet() {
         >
           <Button
             color="fillTertiary"
-            onClick={() => navigate(-1)}
+            onClick={goBack}
             width="full"
             borderRadius="12px"
             height="44px"
             variant="transparentShadow"
             tabIndex={0}
             paddingHorizontal="20px"
-            disabled={!isSuccess}
           >
             <Text
               size="16pt"
@@ -122,21 +313,17 @@ export function ClaimSheet() {
 }
 
 function ClaimSheetRow({
-  balance,
   chain,
   display,
+  onSelect,
 }: {
-  balance: string;
   chain: ChainId;
   display: string;
+  onSelect: (chainId: ChainId) => void;
 }) {
-  const navigate = useRainbowNavigate();
   return (
     <Inset horizontal="8px">
       <Box
-        style={{
-          filter: chain !== ChainId.optimism ? 'grayscale(1)' : 'grayscale(0)',
-        }}
         paddingVertical="10px"
         className={rowTransparentAccentHighlight}
         borderRadius="12px"
@@ -145,17 +332,7 @@ function ClaimSheetRow({
         whileFocus={{ scale: 1.02 }}
         whileHover={{ scale: 1.02 }}
         paddingHorizontal="8px"
-        onClick={() => {
-          if (chain !== ChainId.optimism) return;
-          navigate(ROUTES.CLAIM_OVERVIEW, {
-            state: {
-              tab: 'points',
-              skipTransitionOnRoute: ROUTES.HOME,
-              claimAmount: balance,
-              claimNetwork: chain,
-            },
-          });
-        }}
+        onClick={() => onSelect(chain)}
       >
         <Inset horizontal="8px">
           <Box display="flex" justifyContent="space-between">
@@ -175,23 +352,6 @@ function ClaimSheetRow({
                 </Text>
               </Stack>
             </Inline>
-            {chain !== ChainId.optimism && (
-              <Inline alignVertical="center">
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  borderRadius="5px"
-                  padding="7px"
-                  borderWidth="1px"
-                  borderColor="labelQuaternary"
-                  height="fit"
-                >
-                  <Text color="labelQuaternary" size="12pt" weight="bold">
-                    {i18n.t('points.rewards.coming_soon')}
-                  </Text>
-                </Box>
-              </Inline>
-            )}
           </Box>
         </Inset>
       </Box>

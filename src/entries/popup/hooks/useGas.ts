@@ -15,7 +15,7 @@ import {
 } from '~/core/resources/gas/meteorology';
 import { useOptimismL1SecurityFee } from '~/core/resources/gas/optimismL1SecurityFee';
 import { useCurrentCurrencyStore, useGasStore } from '~/core/state';
-import { ParsedSearchAsset } from '~/core/types/assets';
+import { ParsedAsset, ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
   GasFeeLegacyParamsBySpeed,
@@ -44,6 +44,7 @@ const useGas = ({
   enabled,
   flashbotsEnabled,
   additionalTime,
+  persist = true,
 }: {
   chainId: ChainId;
   address?: Address;
@@ -53,6 +54,7 @@ const useGas = ({
   enabled?: boolean;
   flashbotsEnabled?: boolean;
   additionalTime?: number;
+  persist?: boolean;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
   const { data: gasData, isLoading } = useGasData({ chainId });
@@ -251,6 +253,7 @@ const useGas = ({
 
   useEffect(() => {
     if (
+      persist &&
       enabled &&
       gasFeeParamsBySpeed?.[selectedSpeed] &&
       gasFeeParamsChanged(selectedGas, gasFeeParamsBySpeed?.[selectedSpeed])
@@ -260,6 +263,7 @@ const useGas = ({
       });
     }
   }, [
+    persist,
     enabled,
     gasFeeParamsBySpeed,
     selectedGas,
@@ -269,6 +273,7 @@ const useGas = ({
 
   useEffect(() => {
     if (
+      persist &&
       enabled &&
       gasFeeParamsBySpeed?.[selectedSpeed] &&
       gasFeeParamsChanged(
@@ -281,6 +286,7 @@ const useGas = ({
       });
     }
   }, [
+    persist,
     enabled,
     gasFeeParamsBySpeed,
     selectedSpeed,
@@ -337,6 +343,7 @@ export const useSwapGas = ({
   quote,
   assetToSell,
   assetToBuy,
+  persist,
   enabled,
   flashbotsEnabled,
   quoteServiceTime,
@@ -344,8 +351,9 @@ export const useSwapGas = ({
   chainId: ChainId;
   defaultSpeed?: GasSpeed;
   quote?: Quote | CrosschainQuote | QuoteError;
-  assetToSell?: ParsedSearchAsset;
-  assetToBuy?: ParsedSearchAsset;
+  assetToSell?: ParsedSearchAsset | ParsedAsset;
+  assetToBuy?: ParsedSearchAsset | ParsedAsset;
+  persist?: boolean;
   enabled?: boolean;
   flashbotsEnabled?: boolean;
   quoteServiceTime?: number;
@@ -381,6 +389,7 @@ export const useSwapGas = ({
     enabled,
     flashbotsEnabled,
     additionalTime: quoteServiceTime,
+    persist,
   });
 };
 
