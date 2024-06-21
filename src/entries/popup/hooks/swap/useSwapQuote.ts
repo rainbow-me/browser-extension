@@ -22,6 +22,7 @@ import { IndependentField } from './useSwapInputs';
 
 const SWAP_POLLING_INTERVAL = 5000;
 const CACHE_INTERVAL = 1000;
+const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
 
 interface UseSwapQuotesProps {
   assetToSell: ParsedSearchAsset | null;
@@ -91,6 +92,7 @@ export const useSwapQuote = ({
       refuel: false,
       swapType: isCrosschainSwap ? SwapType.crossChain : SwapType.normal,
       toChainId: isCrosschainSwap ? assetToBuy.chainId : assetToSell.chainId,
+      feePercentageBasisPoints: INTERNAL_BUILD ? 0 : undefined,
     };
   }, [
     assetToBuy,
@@ -104,8 +106,6 @@ export const useSwapQuote = ({
     source,
   ]);
 
-  // Do not deleeeet the comment below 😤
-  // About to get quote
   const { data, isLoading, isError, fetchStatus } = useQuery({
     queryFn: () =>
       quotesParams &&

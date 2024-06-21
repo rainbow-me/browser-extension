@@ -37,18 +37,8 @@ jobs:
           path: tmp
       - name: Copy dotenv
         run: cat tmp/dotenv >> .env && rm -rf tmp
-      - uses: actions/checkout@v3
-        with:
-          repository: 'rainbow-me/browser-extension-action'
-          token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
-          path: tmp
       - name: Mark the build as internal
         run: echo "INTERNAL_BUILD=true" >> .env
-      - name: Run browser-extension-action
-        run: |
-          cd tmp
-          gh workflow run browser-extension-action.yml
-          cd .. && rm -rf tmp
       - name: Bump the version
         run: yarn bump
       - name: Fetch the current version number
