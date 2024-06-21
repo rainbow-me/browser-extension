@@ -1,3 +1,6 @@
+import { metadataPostClient } from '~/core/graphql';
+import { CLAIM_MOCK_DATA } from '~/entries/popup/pages/home/Points/references';
+
 import { ActionProps } from '../references';
 
 export async function claim({
@@ -5,11 +8,23 @@ export async function claim({
   wallet,
   baseNonce,
 }: ActionProps<'claim'>) {
-  const { claimHash } = parameters;
-  const claimTx = await wallet?.provider?.getTransaction(claimHash);
+  const { address } = parameters;
+  const claimInfo =
+    process.env.IS_TESTING === 'true'
+      ? CLAIM_MOCK_DATA
+      : await metadataPostClient.claimUserRewards({ address });
+
+  const txHash = claimInfo.claimUserRewards?.txHash;
+  if (!txHash) {
+    throw new Error('Failed to claim rewards');
+  }
+  const claimTx = await wallet?.provider?.getTransaction(txHash);
   await claimTx?.wait();
-  return {
+
+  const tx = {
     nonce: (baseNonce || 0) - 1,
-    hash: claimHash,
+    hash: txHash,
   };
+
+  return tx;
 }

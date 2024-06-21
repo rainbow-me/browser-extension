@@ -281,6 +281,11 @@ export function Points() {
   const { currentAddress } = useCurrentAddressStore();
   const { data, isInitialLoading } = usePoints(currentAddress);
 
+  console.log(
+    'aaaa config,INTERNAL_BUILD ',
+    config,
+    process.env.INTERNAL_BUILD,
+  );
   if (isInitialLoading) return null;
 
   if (!config.points_enabled || data?.error?.type === 'NON_EXISTING_USER') {

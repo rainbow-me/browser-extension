@@ -126,7 +126,9 @@ const waitForNodeAck = async (
 export const walletExecuteRap = async (
   wallet: Signer,
   type: RapTypes,
-  parameters: RapSwapActionParameters<'swap' | 'crosschainSwap'>,
+  parameters: RapSwapActionParameters<
+    'swap' | 'crosschainSwap' | 'claimBridge'
+  >,
 ): Promise<{ nonce: number | undefined; errorMessage: string | null }> => {
   const rap: Rap = await createSwapRapByType(type, parameters);
 

@@ -1,16 +1,9 @@
-import { AddressZero } from '@ethersproject/constants';
-import { SwapType, getCrosschainQuote } from '@rainbow-me/swaps';
 import { useMutation } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
-import { metadataPostClient } from '~/core/graphql';
-import {
-  ClaimUserRewardsMutation,
-  PointsErrorType,
-} from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
-import { QuoteTypeMap, RapActionParameters } from '~/core/raps/references';
+import { RapClaimActionParameters } from '~/core/raps/references';
 import { chainsLabel } from '~/core/references/chains';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
@@ -32,7 +25,6 @@ import {
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTransparentAccentHighlight.css';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
-import { useSwapSlippage } from '~/entries/popup/hooks/swap';
 import { useNativeAssetForNetwork } from '~/entries/popup/hooks/useNativeAssetForNetwork';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
@@ -41,7 +33,6 @@ import { zIndexes } from '~/entries/popup/utils/zIndexes';
 import * as wallet from '../../../handlers/wallet';
 
 import { ClaimOverview } from './ClaimOverview';
-import { CLAIM_MOCK_DATA } from './references';
 import { invalidatePointsQuery, usePoints } from './usePoints';
 
 export function ClaimSheet() {
@@ -60,8 +51,7 @@ export function ClaimSheet() {
     ChainId.optimism,
   );
   const requiresBridge = selectedChainId !== ChainId.optimism;
-  const [claimError, setClaimError] = useState<PointsErrorType>();
-  const [bridgeError, setBridgeError] = useState<string>();
+  const [claimError, setClaimError] = useState<string | undefined>();
   const [bridgeSuccess, setBridgeSuccess] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
 
@@ -86,84 +76,52 @@ export function ClaimSheet() {
   );
   const sellAmount = claimable || '0';
 
-  const { data: swapSlippage } = useSwapSlippage(
-    {
-      chainId: ChainId.optimism,
-      toChainId: selectedChainId,
-      sellTokenAddress: AddressZero,
-      buyTokenAddress: AddressZero,
-      sellAmount,
-      buyAmount: '',
-    },
-    {
-      enabled: requiresBridge,
-    },
-  );
-
-  const { mutate: claimRewards, isSuccess: claimSuccess } = useMutation<
-    ClaimUserRewardsMutation['claimUserRewards']
-  >({
+  const { mutate: claimRewards, isSuccess: claimSuccess } = useMutation<{
+    nonce: number;
+  }>({
     mutationFn: async () => {
-      const response =
-        process.env.IS_TESTING === 'true'
-          ? CLAIM_MOCK_DATA
-          : await metadataPostClient.claimUserRewards({ address });
-      const claimInfo = response?.claimUserRewards;
-
-      if (claimInfo?.error) {
-        setClaimError(claimInfo?.error.type);
-      }
-
-      // clear and refresh claim data so available claim UI disappears
-      invalidatePointsQuery(address);
-      refetch();
-
-      return claimInfo;
-    },
-    onSuccess: async (d) => {
-      // if the selected network is not optimism, we kick off the bridge flow here
-      if (requiresBridge && d?.txHash && opEth && destinationEth) {
-        const quote = await getCrosschainQuote({
-          chainId: ChainId.optimism,
-          fromAddress: address,
-          sellTokenAddress: opEth.address,
-          buyTokenAddress: destinationEth.address,
-          sellAmount,
-          slippage: swapSlippage?.slippagePercent || 2,
-          destReceiver: address,
-          swapType: SwapType.crossChain,
+      if (opEth && destinationEth) {
+        const actionParams = {
+          address,
           toChainId: selectedChainId,
-          feePercentageBasisPoints: 0,
-        });
-        const actionParams: RapActionParameters = {
           sellAmount,
           chainId: ChainId.optimism,
           assetToSell: opEth,
           assetToBuy: destinationEth,
-          quote: quote as QuoteTypeMap['crosschainSwap'],
-          flashbots: false,
-          claimHash: d?.txHash,
-        };
+          quote: undefined,
+        } satisfies RapClaimActionParameters;
+
         const { errorMessage, nonce: bridgeNonce } = await wallet.executeRap({
           rapActionParameters: actionParams,
-          type: 'crosschainSwap',
+          type: 'claimBridge',
         });
 
         if (errorMessage) {
-          setBridgeError(errorMessage);
+          throw new Error(errorMessage);
         }
 
-        if (typeof bridgeNonce === 'number') {
-          setBridgeSuccess(true);
-        }
+        // clear and refresh claim data so available claim UI disappears
+        invalidatePointsQuery(address);
+        refetch();
+
+        return { nonce: bridgeNonce };
+      } else {
+        throw new Error('opEth and destinationEth are not defined');
       }
+    },
+    onSuccess: async (bridgeNonce) => {
+      if (typeof bridgeNonce === 'number') {
+        setBridgeSuccess(true);
+      }
+    },
+    onError: (error) => {
+      setClaimError(error.message);
     },
   });
 
   const claimFinished = requiresBridge ? bridgeSuccess : claimSuccess;
   const showPreparingClaim = !showSummary;
-  const showSuccess =
-    claimFinished && !showSummary && !claimError && !bridgeError;
+  const showSuccess = claimFinished && !showSummary && !claimError;
 
   const handleNetworkSelection = (chain: ChainId) => {
     setShowNetworkSelection(false);
@@ -201,7 +159,7 @@ export function ClaimSheet() {
       <ClaimOverview
         claimableAmount={claimableBalance.amount}
         claimableDisplay={claimablePriceDisplay.display}
-        error={claimError || bridgeError}
+        error={claimError}
         goBack={backToHome}
         preparingClaim={showPreparingClaim}
         success={showSuccess}
