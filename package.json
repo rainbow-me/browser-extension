@@ -22,7 +22,7 @@
     "playground:ds": "PLAYGROUND=ds webpack --config ./webpack.config.dev.js --watch",
     "lint": "eslint --cache --max-warnings 0",
     "typecheck": "tsc --noEmit",
-	"// Fetch backend networks": "",
+	  "// Fetch backend networks": "",
     "fetch:networks": "node scripts/networks.js",
     "// Design System scripts": "",
     "// GraphQL scripts": "",
@@ -45,7 +45,7 @@
     "// Checks the lockfile for changes": "",
     "check-lockfile": "./scripts/check-lockfile.sh",
     "// Installs deps, runs allowed scripts, patches packages and generates lavamoat policies": "",
-    "setup": "yarn install && yarn ds:install && yarn graphql-setup && yarn ds:generate-symbols && yarn fetch:networks && yarn allow-scripts && yarn patch-package && yarn policy",
+    "setup": "yarn install && yarn ds:install && yarn ds:generate-symbols && yarn fetch:networks && yarn allow-scripts && yarn patch-package && yarn policy",
     "// runs audit against dep. tree": "",
     "audit:ci": "yarn audit-ci --moderate --config audit-ci.jsonc",
     "// Generates a zip file based on the build folder ready to upload to the chrome web store": "",
@@ -229,7 +229,8 @@
     "webpack-bundle-analyzer": "4.8.0",
     "webpack-cli": "5.1.4",
     "webpack-extension-reloader": "rainbow-me/webpack-extension-reloader#23fc3ed1f59f295702d459ad58aec90d6f0a3551",
-    "worker-loader": "3.0.8"
+    "worker-loader": "3.0.8",
+    "@graphql-eslint/eslint-plugin": "3.10.7"
   },
   "resolutions": {
     "tar": "6.2.1",
