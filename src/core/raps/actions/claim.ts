@@ -13,7 +13,7 @@ export async function claim({
     throw new Error('Invalid address');
   }
   const claimInfo =
-    process.env.INTERNAL_BUILD === 'true'
+    process.env.IS_TESTING === 'true'
       ? CLAIM_MOCK_DATA
       : await metadataPostClient.claimUserRewards({ address });
 
