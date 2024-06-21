@@ -45,7 +45,7 @@
     "// Checks the lockfile for changes": "",
     "check-lockfile": "./scripts/check-lockfile.sh",
     "// Installs deps, runs allowed scripts, patches packages and generates lavamoat policies": "",
-    "setup": "yarn install && yarn ds:install && yarn ds:generate-symbols && yarn fetch:networks && yarn allow-scripts && yarn patch-package && yarn policy",
+    "setup": "yarn install && yarn ds:install && yarn graphql-setup && yarn ds:generate-symbols && yarn fetch:networks && yarn allow-scripts && yarn patch-package && yarn policy",
     "// runs audit against dep. tree": "",
     "audit:ci": "yarn audit-ci --moderate --config audit-ci.jsonc",
     "// Generates a zip file based on the build folder ready to upload to the chrome web store": "",
