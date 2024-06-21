@@ -19,7 +19,7 @@ export const createClaimAndBridge = async (
   actions = actions.concat(claim);
 
   // if we need the bridge
-  if (chainId === toChainId) {
+  if (chainId !== toChainId) {
     // create a bridge rap
     const bridge = createNewAction('claimBridge', {
       address,
