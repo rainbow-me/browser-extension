@@ -44,7 +44,6 @@ const useGas = ({
   enabled,
   flashbotsEnabled,
   additionalTime,
-  persist = true,
 }: {
   chainId: ChainId;
   address?: Address;
@@ -54,7 +53,6 @@ const useGas = ({
   enabled?: boolean;
   flashbotsEnabled?: boolean;
   additionalTime?: number;
-  persist?: boolean;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
   const { data: gasData, isLoading } = useGasData({ chainId });
@@ -253,7 +251,6 @@ const useGas = ({
 
   useEffect(() => {
     if (
-      persist &&
       enabled &&
       gasFeeParamsBySpeed?.[selectedSpeed] &&
       gasFeeParamsChanged(selectedGas, gasFeeParamsBySpeed?.[selectedSpeed])
@@ -263,7 +260,6 @@ const useGas = ({
       });
     }
   }, [
-    persist,
     enabled,
     gasFeeParamsBySpeed,
     selectedGas,
@@ -273,7 +269,6 @@ const useGas = ({
 
   useEffect(() => {
     if (
-      persist &&
       enabled &&
       gasFeeParamsBySpeed?.[selectedSpeed] &&
       gasFeeParamsChanged(
@@ -286,7 +281,6 @@ const useGas = ({
       });
     }
   }, [
-    persist,
     enabled,
     gasFeeParamsBySpeed,
     selectedSpeed,
@@ -343,7 +337,6 @@ export const useSwapGas = ({
   quote,
   assetToSell,
   assetToBuy,
-  persist,
   enabled,
   flashbotsEnabled,
   quoteServiceTime,
@@ -353,7 +346,6 @@ export const useSwapGas = ({
   quote?: Quote | CrosschainQuote | QuoteError;
   assetToSell?: ParsedSearchAsset | ParsedAsset;
   assetToBuy?: ParsedSearchAsset | ParsedAsset;
-  persist?: boolean;
   enabled?: boolean;
   flashbotsEnabled?: boolean;
   quoteServiceTime?: number;
@@ -389,7 +381,6 @@ export const useSwapGas = ({
     enabled,
     flashbotsEnabled,
     additionalTime: quoteServiceTime,
-    persist,
   });
 };
 

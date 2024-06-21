@@ -1,4 +1,5 @@
 import { AddressZero } from '@ethersproject/constants';
+import { SwapType, getCrosschainQuote } from '@rainbow-me/swaps';
 import { useMutation } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
@@ -13,7 +14,6 @@ import { QuoteTypeMap, RapActionParameters } from '~/core/raps/references';
 import { chainsLabel } from '~/core/references/chains';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
-import { GasSpeed } from '~/core/types/gas';
 import {
   convertAmountAndPriceToNativeDisplay,
   convertRawAmountToBalance,
@@ -32,8 +32,7 @@ import {
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTransparentAccentHighlight.css';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
-import { useSwapQuote, useSwapSlippage } from '~/entries/popup/hooks/swap';
-import { useSwapGas } from '~/entries/popup/hooks/useGas';
+import { useSwapSlippage } from '~/entries/popup/hooks/swap';
 import { useNativeAssetForNetwork } from '~/entries/popup/hooks/useNativeAssetForNetwork';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
@@ -73,8 +72,6 @@ export function ClaimSheet() {
   const { claimable } = rewards || {};
 
   const opEth = useNativeAssetForNetwork({ chainId: ChainId.optimism });
-  const baseEth = useNativeAssetForNetwork({ chainId: ChainId.base });
-  const zoraEth = useNativeAssetForNetwork({ chainId: ChainId.zora });
   const ethPrice = opEth?.native?.price?.amount;
   const destinationEth = useNativeAssetForNetwork({ chainId: selectedChainId });
 
@@ -102,54 +99,6 @@ export function ClaimSheet() {
       enabled: requiresBridge,
     },
   );
-  const slippage = swapSlippage?.slippagePercent || 2;
-  const { data: baseQuote } = useSwapQuote({
-    assetToSell: opEth || null,
-    assetToBuy: baseEth || null,
-    assetToSellValue: '0',
-    slippage,
-    independentField: 'sellField',
-    source: 'auto',
-    isClaim: true,
-  });
-  const { data: zoraQuote } = useSwapQuote({
-    assetToSell: opEth || null,
-    assetToBuy: zoraEth || null,
-    assetToSellValue: '0',
-    slippage,
-    independentField: 'sellField',
-    source: 'auto',
-    isClaim: true,
-  });
-  const { gasFeeParamsBySpeed: baseGasFeeParamsBySpeed } = useSwapGas({
-    chainId: ChainId.optimism,
-    defaultSpeed: GasSpeed.URGENT,
-    quote: baseQuote,
-    assetToSell: opEth,
-    assetToBuy: baseEth,
-    enabled: true,
-    persist: false,
-  });
-  const { gasFeeParamsBySpeed: zoraGasFeeParamsBySpeed } = useSwapGas({
-    chainId: ChainId.optimism,
-    defaultSpeed: GasSpeed.URGENT,
-    quote: zoraQuote,
-    assetToSell: opEth,
-    assetToBuy: zoraEth,
-    enabled: true,
-  });
-
-  const claimNetworkInfo = [
-    { chainId: ChainId.optimism, fee: 'Free to Claim' },
-    {
-      chainId: ChainId.base,
-      fee: baseGasFeeParamsBySpeed?.urgent?.gasFee?.display,
-    },
-    {
-      chainId: ChainId.zora,
-      fee: zoraGasFeeParamsBySpeed?.urgent?.gasFee?.display,
-    },
-  ];
 
   const { mutate: claimRewards, isSuccess: claimSuccess } = useMutation<
     ClaimUserRewardsMutation['claimUserRewards']
@@ -174,12 +123,24 @@ export function ClaimSheet() {
     onSuccess: async (d) => {
       // if the selected network is not optimism, we kick off the bridge flow here
       if (requiresBridge && d?.txHash && opEth && destinationEth) {
+        const quote = await getCrosschainQuote({
+          chainId: ChainId.optimism,
+          fromAddress: address,
+          sellTokenAddress: opEth.address,
+          buyTokenAddress: destinationEth.address,
+          sellAmount,
+          slippage: swapSlippage?.slippagePercent || 2,
+          destReceiver: address,
+          swapType: SwapType.crossChain,
+          toChainId: selectedChainId,
+          feePercentageBasisPoints: 0,
+        });
         const actionParams: RapActionParameters = {
           sellAmount,
           chainId: ChainId.optimism,
           assetToSell: opEth,
           assetToBuy: destinationEth,
-          quote: baseQuote as QuoteTypeMap['crosschainSwap'],
+          quote: quote as QuoteTypeMap['crosschainSwap'],
           flashbots: false,
           claimHash: d?.txHash,
         };
@@ -210,6 +171,18 @@ export function ClaimSheet() {
     setSelectedChainId(chain);
     setTimeout(() => claimRewards(), 500);
   };
+
+  const claimNetworkInfo = [
+    { chainId: ChainId.optimism, fee: 'Free to Claim' },
+    {
+      chainId: ChainId.base,
+      fee: 'This needs a value',
+    },
+    {
+      chainId: ChainId.zora,
+      fee: 'This needs a value',
+    },
+  ];
 
   useEffect(() => {
     if (showSuccess && !showSummary) {
