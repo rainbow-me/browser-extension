@@ -250,6 +250,8 @@ export const handleProviderRequest = ({
       SUPPORTED_CHAIN_IDS.includes(chainId) || isCustomChain(chainId),
     getActiveSession: ({ host }: { host: string }) =>
       appSessionsStore.getState().getActiveSession({ host }),
+    removeAppSession: ({ host }: { host: string }) =>
+      appSessionsStore.getState().removeAppSession({ host }),
     getChainNativeCurrency: (chainId: number) =>
       SUPPORTED_CHAINS.find((chain) => chain.id === Number(chainId))
         ?.nativeCurrency,
