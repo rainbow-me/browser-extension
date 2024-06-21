@@ -17,13 +17,6 @@ jobs:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.event.pull_request.head.ref }}
           token: ${{ secrets.REPO_TOKEN }}
-      - uses: actions/checkout@v3
-        with:
-          repository: 'rainbow-me/browser-extension-env'
-          token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
-          path: tmp
-      - name: Copy dotenv
-        run: cat tmp/dotenv >> .env && rm -rf tmp
       - name: Check for new commits
         run: |
           last_commit=$(git log -1 --pretty=%B)
@@ -37,6 +30,13 @@ jobs:
           cache: 'yarn'
       - name: Install deps via Yarn
         run: yarn setup
+      - uses: actions/checkout@v3
+        with:
+          repository: 'rainbow-me/browser-extension-env'
+          token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+          path: tmp
+      - name: Copy dotenv
+        run: cat tmp/dotenv >> .env && rm -rf tmp
       - uses: actions/checkout@v3
         with:
           repository: 'rainbow-me/browser-extension-action'

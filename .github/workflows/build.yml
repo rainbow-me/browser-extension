@@ -17,13 +17,6 @@ jobs:
       cancel-in-progress: true
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/checkout@v3
-        with:
-            repository: 'rainbow-me/browser-extension-env'
-            token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
-            path: tmp
-      - name: Copy dotenv
-        run: cat tmp/dotenv >> .env && rm -rf tmp
       - uses: actions/setup-node@v3
         with:
           node-version: "18.18.0"
@@ -46,13 +39,6 @@ jobs:
     needs: [install]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/checkout@v3
-        with:
-            repository: 'rainbow-me/browser-extension-env'
-            token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
-            path: tmp
-      - name: Copy dotenv
-        run: cat tmp/dotenv >> .env && rm -rf tmp
       - uses: actions/setup-node@v3
         with:
           node-version: "18.18.0"
@@ -62,6 +48,13 @@ jobs:
           name: node_modules.tar.gz
       - name: Unzip node_modules
         run: tar xzf node_modules.tar.gz
+      - uses: actions/checkout@v3
+        with:
+            repository: 'rainbow-me/browser-extension-env'
+            token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+            path: tmp
+      - name: Copy dotenv
+        run: cat tmp/dotenv >> .env && rm -rf tmp
       - name: Set IS_TESTING=true
         run: |
           sed -i 's/IS_TESTING.*/IS_TESTING=true/g' .env
@@ -404,13 +397,6 @@ jobs:
     needs: [install]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/checkout@v3
-        with:
-            repository: 'rainbow-me/browser-extension-env'
-            token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
-            path: tmp
-      - name: Copy dotenv
-        run: cat tmp/dotenv >> .env && rm -rf tmp
       - uses: actions/setup-node@v3
         with:
           node-version: "18.18.0"
@@ -435,6 +421,13 @@ jobs:
         uses: foundry-rs/foundry-toolchain@v1
         with:
           version: nightly
+      - uses: actions/checkout@v3
+        with:
+            repository: 'rainbow-me/browser-extension-env'
+            token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+            path: tmp
+      - name: Copy dotenv
+        run: cat tmp/dotenv >> .env && rm -rf tmp
       - name: Set IS_TESTING=true
         run: |
           sed -i 's/IS_TESTING.*/IS_TESTING=true/g' .env
