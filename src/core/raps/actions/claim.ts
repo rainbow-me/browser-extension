@@ -25,7 +25,7 @@ export async function claim({
   await claimTx?.wait();
 
   return {
-    nonce: claimTx?.nonce || baseNonce,
+    nonce: (baseNonce || 0) - 1,
     hash: txHash,
   };
 }
