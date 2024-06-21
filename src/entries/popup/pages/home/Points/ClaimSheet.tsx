@@ -26,6 +26,7 @@ import {
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTransparentAccentHighlight.css';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
+import { useSwapGas } from '~/entries/popup/hooks/useGas';
 import { useNativeAssetForNetwork } from '~/entries/popup/hooks/useNativeAssetForNetwork';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
@@ -76,6 +77,8 @@ export function ClaimSheet() {
     currency,
   );
   const sellAmount = claimable || '0';
+
+  useSwapGas({ chainId: ChainId.optimism });
 
   const { mutate: claimRewards, isSuccess: claimSuccess } = useMutation<{
     nonce: number;
