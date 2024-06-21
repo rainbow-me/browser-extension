@@ -6,6 +6,7 @@ import { Signer } from '@ethersproject/abstract-signer';
 import { RainbowError, logger } from '~/logger';
 
 import { claim, swap, unlock } from './actions';
+import { claimBridge } from './actions/claimBridge';
 import { crosschainSwap } from './actions/crosschainSwap';
 import { createClaimAndBridgeRap } from './claimAndBridge';
 import {
@@ -53,6 +54,8 @@ function typeAction<T extends RapActionTypes>(type: T, props: ActionProps<T>) {
       return () => swap(props as ActionProps<'swap'>);
     case 'crosschainSwap':
       return () => crosschainSwap(props as ActionProps<'crosschainSwap'>);
+    case 'claimBridge':
+      return () => claimBridge(props as ActionProps<'claimBridge'>);
     default:
       // eslint-disable-next-line react/display-name
       return () => null;

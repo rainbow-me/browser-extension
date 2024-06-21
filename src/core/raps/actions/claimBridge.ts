@@ -26,7 +26,7 @@ export async function claimBridge({
   index,
   wallet,
   baseNonce,
-}: ActionProps<'claim'>) {
+}: ActionProps<'claimBridge'>) {
   const { address, toChainId, sellAmount, chainId } = parameters;
 
   if (!toChainId || !address) {

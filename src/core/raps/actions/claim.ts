@@ -12,9 +12,10 @@ export async function claim({
   if (!address) {
     throw new Error('Invalid address');
   }
-  const claimInfo = process.env.INTERNAL_BUILD
-    ? CLAIM_MOCK_DATA
-    : await metadataPostClient.claimUserRewards({ address });
+  const claimInfo =
+    process.env.INTERNAL_BUILD === 'true'
+      ? CLAIM_MOCK_DATA
+      : await metadataPostClient.claimUserRewards({ address });
 
   const txHash = claimInfo.claimUserRewards?.txHash;
   if (!txHash) {
@@ -23,10 +24,8 @@ export async function claim({
   const claimTx = await wallet?.provider?.getTransaction(txHash);
   await claimTx?.wait();
 
-  const tx = {
-    nonce: (baseNonce || 0) - 1,
+  return {
+    nonce: claimTx?.nonce || baseNonce,
     hash: txHash,
   };
-
-  return tx;
 }
