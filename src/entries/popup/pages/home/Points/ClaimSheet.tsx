@@ -2,6 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
+import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { RapClaimActionParameters } from '~/core/raps/references';
 import { chainsLabel } from '~/core/references/chains';
@@ -131,14 +132,14 @@ export function ClaimSheet() {
   };
 
   const claimNetworkInfo = [
-    { chainId: ChainId.optimism, fee: 'Free to Claim' },
+    { chainId: ChainId.optimism, fee: i18n.t('points.rewards.free_to_claim') },
     {
       chainId: ChainId.base,
-      fee: 'This needs a value',
+      fee: i18n.t('points.rewards.has_bridge_fee'),
     },
     {
       chainId: ChainId.zora,
-      fee: 'This needs a value',
+      fee: i18n.t('points.rewards.has_bridge_fee'),
     },
   ];
 
@@ -252,6 +253,10 @@ function ClaimSheetRow({
   display: string;
   onSelect: (chainId: ChainId) => void;
 }) {
+  const rugBridging =
+    chain !== ChainId.optimism &&
+    !config.rewards_bridging_enabled &&
+    process.env.IS_TESTING !== 'true';
   return (
     <Inset horizontal="8px">
       <Box
@@ -263,7 +268,11 @@ function ClaimSheetRow({
         whileFocus={{ scale: 1.02 }}
         whileHover={{ scale: 1.02 }}
         paddingHorizontal="8px"
-        onClick={() => onSelect(chain)}
+        onClick={() => {
+          if (!rugBridging) {
+            onSelect(chain);
+          }
+        }}
       >
         <Inset horizontal="8px">
           <Box display="flex" justifyContent="space-between">
@@ -283,6 +292,23 @@ function ClaimSheetRow({
                 </Text>
               </Stack>
             </Inline>
+            {rugBridging && (
+              <Inline alignVertical="center">
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  borderRadius="5px"
+                  padding="7px"
+                  borderWidth="1px"
+                  borderColor="labelQuaternary"
+                  height="fit"
+                >
+                  <Text color="labelQuaternary" size="12pt" weight="bold">
+                    {i18n.t('points.rewards.coming_soon')}
+                  </Text>
+                </Box>
+              </Inline>
+            )}
           </Box>
         </Inset>
       </Box>

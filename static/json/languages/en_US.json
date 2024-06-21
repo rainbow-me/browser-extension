@@ -1492,7 +1492,9 @@
       "no_claim": "> You do not have a reward to claim at this time",
       "earned_last_week": "Earned Last Week",
       "my_referrals": "My Referrals",
-      "claim_reward": "Claim %{reward}"
+      "claim_reward": "Claim %{reward}",
+      "free_to_claim": "Free to Claim",
+      "has_bridge_fee": "Has Bridge Fee"
     }
   },
   "speed_up_and_cancel": {
