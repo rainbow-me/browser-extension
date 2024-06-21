@@ -253,7 +253,7 @@ function ClaimSheetRow({
   display: string;
   onSelect: (chainId: ChainId) => void;
 }) {
-  const rugBridging =
+  const disableBridging =
     chain !== ChainId.optimism &&
     !config.rewards_bridging_enabled &&
     process.env.IS_TESTING !== 'true';
@@ -269,7 +269,7 @@ function ClaimSheetRow({
         whileHover={{ scale: 1.02 }}
         paddingHorizontal="8px"
         onClick={() => {
-          if (!rugBridging) {
+          if (!disableBridging) {
             onSelect(chain);
           }
         }}
@@ -292,7 +292,7 @@ function ClaimSheetRow({
                 </Text>
               </Stack>
             </Inline>
-            {rugBridging && (
+            {disableBridging && (
               <Inline alignVertical="center">
                 <Box
                   display="flex"
