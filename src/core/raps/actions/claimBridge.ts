@@ -53,6 +53,7 @@ export async function claimBridge({
   const { selectedGas, gasFeeParamsBySpeed } = gasStore.getState();
 
   let gasParams = selectedGas.transactionGasParams;
+
   if (currentRap.actions.length - 1 > index) {
     gasParams = overrideWithFastSpeedIfNeeded({
       selectedGas,
@@ -76,7 +77,7 @@ export async function claimBridge({
     );
     throw e;
   }
-  const nonce = baseNonce ? baseNonce + index : undefined;
+  const nonce = baseNonce ? baseNonce + 1 : undefined;
 
   const swapParams = {
     chainId,

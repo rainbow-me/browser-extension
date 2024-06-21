@@ -92,26 +92,29 @@ export function ClaimSheet() {
           quote: undefined,
         } satisfies RapClaimActionParameters;
 
-        const { errorMessage, nonce: bridgeNonce } = await wallet.executeRap({
-          rapActionParameters: actionParams,
-          type: 'claimBridge',
-        });
+        try {
+          const { errorMessage, nonce: bridgeNonce } = await wallet.executeRap({
+            rapActionParameters: actionParams,
+            type: 'claimBridge',
+          });
 
-        if (errorMessage) {
-          throw new Error(errorMessage);
+          if (errorMessage) {
+            throw new Error(errorMessage);
+          }
+
+          // clear and refresh claim data so available claim UI disappears
+          invalidatePointsQuery(address);
+          refetch();
+          return { nonce: bridgeNonce };
+        } catch (error) {
+          throw new Error('rap threw an error');
         }
-
-        // clear and refresh claim data so available claim UI disappears
-        invalidatePointsQuery(address);
-        refetch();
-
-        return { nonce: bridgeNonce };
       } else {
         throw new Error('opEth and destinationEth are not defined');
       }
     },
-    onSuccess: async (bridgeNonce) => {
-      if (typeof bridgeNonce === 'number') {
+    onSuccess: async ({ nonce }) => {
+      if (typeof nonce === 'number') {
         setBridgeSuccess(true);
       }
     },
