@@ -21,6 +21,7 @@ import { ActionProps } from '../references';
 
 import { executeCrosschainSwap } from './crosschainSwap';
 
+// This action is used to bridge the claimed funds to another chain
 export async function claimBridge({
   parameters,
   wallet,
@@ -28,15 +29,19 @@ export async function claimBridge({
 }: ActionProps<'claimBridge'>) {
   const { address, toChainId, sellAmount, chainId } = parameters;
   console.log('claimBridge action called with params', parameters);
+
+  // Check if the address and toChainId are valid
+  // otherwise we can't continue
   if (!toChainId || !address) {
     throw new RainbowError('claimBridge: error getClaimBridgeQuote');
   }
 
   console.log('getting claim bridge quote');
-  // 1 -  Get a quote for the full amount of the claim
+
   let maxBridgeableAmount = sellAmount;
   let needsNewQuote = false;
 
+  // 1 - Get a quote to bridge the claimed funds
   const claimBridgeQuote = await getClaimBridgeQuote({
     chainId,
     toChainId,
@@ -50,26 +55,25 @@ export async function claimBridge({
 
   console.log('got claim bridge quote', claimBridgeQuote);
 
+  // if we don't get a quote or there's an error we can't continue
   if (!claimBridgeQuote || (claimBridgeQuote as QuoteError)?.error) {
     throw new RainbowError('claimBridge: error getClaimBridgeQuote');
   }
 
   let bridgeQuote = claimBridgeQuote as CrosschainQuote;
 
-  // 2 -  Get the gas limit for the claim
+  // 2 - We use the default gas limit (already inflated) from the quote to calculate the aproximate gas fee
   const initalGasLimit = bridgeQuote.defaultGasLimit!;
-
-  // 3 - Calculate the gas fee
   const { selectedGas, gasFeeParamsBySpeed } = gasStore.getState();
   console.log('selectedGas', selectedGas);
   console.log('gasFeeParamsBySpeed', gasFeeParamsBySpeed);
-
   const gasParams = selectedGas.transactionGasParams as TransactionGasParams;
   const feeAmount = add(gasParams.maxFeePerGas, gasParams.maxPriorityFeePerGas);
   console.log('fee amount', new BigNumber(feeAmount).toNumber());
   const gasFeeInWei = multiply(initalGasLimit!, feeAmount);
   console.log('gas fee in wei', new BigNumber(gasFeeInWei).toNumber());
 
+  // 3 - Check if the user has enough balance to pay the gas fee
   const provider = getProvider({
     chainId: optimism.id,
   });
@@ -77,14 +81,16 @@ export async function claimBridge({
   const balance = await provider.getBalance(address);
   console.log('balance', balance.toString());
 
+  // if the balance minus the sell amount is less than the gas fee we need to make adjustments
   if (lessThan(subtract(balance.toString(), sellAmount), gasFeeInWei)) {
-    console.log('not enough balance to bridge 100%');
+    // if the balance is less than the gas fee we can't continue
     if (lessThan(sellAmount, gasFeeInWei)) {
       console.log('not enough balance to bridge at all');
       throw new RainbowError(
         'claimBridge: error insufficient funds to pay gas fee',
       );
     } else {
+      // otherwie we bridge the maximum amount we can afford
       console.log('enough balance to bridge some');
       maxBridgeableAmount = subtract(sellAmount, gasFeeInWei);
       console.log('will bridge instead', {
@@ -95,6 +101,7 @@ export async function claimBridge({
     }
   }
 
+  // if we need to bridge a different amount we get a new quote
   if (needsNewQuote) {
     console.log('getting new quote with maxBridgeableAmount');
     const newQuote = await getClaimBridgeQuote({
@@ -118,6 +125,7 @@ export async function claimBridge({
     bridgeQuote = newQuote as CrosschainQuote;
   }
 
+  // now that we have a valid quote for the maxBridgeableAmount we can estimate the gas limit
   let gasLimit;
   try {
     console.log('estimating gas limit');
@@ -144,8 +152,10 @@ export async function claimBridge({
     throw e;
   }
 
+  // we need to bump the base nonce to next available one
   const nonce = baseNonce ? baseNonce + 1 : undefined;
 
+  // 4 - Execute the crosschain swap
   const swapParams = {
     chainId,
     gasLimit: gasLimit!.toString(),
@@ -168,9 +178,11 @@ export async function claimBridge({
     );
     throw e;
   }
-  if (!swap)
+  if (!swap) {
     throw new RainbowError('crosschainSwap: error executeCrosschainSwap');
+  }
 
+  // 5 - if the swap was successful we add the transaction to the store
   const transaction = {
     data: bridgeQuote.data,
     value: bridgeQuote.value?.toString(),
