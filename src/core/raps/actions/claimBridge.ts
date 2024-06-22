@@ -19,10 +19,7 @@ import { RainbowError, logger } from '~/logger';
 
 import { ActionProps } from '../references';
 
-import {
-  estimateCrosschainSwapGasLimit,
-  executeCrosschainSwap,
-} from './crosschainSwap';
+import { executeCrosschainSwap } from './crosschainSwap';
 
 export async function claimBridge({
   parameters,
@@ -70,7 +67,7 @@ export async function claimBridge({
   const gasParams = selectedGas.transactionGasParams as TransactionGasParams;
   const feeAmount = add(gasParams.maxFeePerGas, gasParams.maxPriorityFeePerGas);
   console.log('fee amount', new BigNumber(feeAmount).toNumber());
-  const gasFeeInWei = multiply(initalGasLimit, feeAmount);
+  const gasFeeInWei = multiply(initalGasLimit!, feeAmount);
   console.log('gas fee in wei', new BigNumber(gasFeeInWei).toNumber());
 
   const provider = getProvider({
@@ -123,13 +120,20 @@ export async function claimBridge({
 
   let gasLimit;
   try {
-    console.log('calculating gas limit');
-    gasLimit = await estimateCrosschainSwapGasLimit({
-      chainId,
-      requiresApprove: false,
-      quote: bridgeQuote,
-    });
-    console.log('calculated gas limit', gasLimit);
+    console.log('estimating gas limit');
+    try {
+      gasLimit = await provider.estimateGas({
+        from: address,
+        to: bridgeQuote.to as Address,
+        data: bridgeQuote.data,
+        value: bridgeQuote.value,
+        ...gasParams,
+      });
+    } catch (e) {
+      console.log('error estimating gas limit', e);
+    }
+
+    console.log('estimated gas limit', gasLimit);
   } catch (e) {
     logger.error(
       new RainbowError('crosschainSwap: error estimateCrosschainSwapGasLimit'),
@@ -144,7 +148,7 @@ export async function claimBridge({
 
   const swapParams = {
     chainId,
-    gasLimit,
+    gasLimit: gasLimit!.toString(),
     nonce,
     quote: bridgeQuote,
     wallet,
