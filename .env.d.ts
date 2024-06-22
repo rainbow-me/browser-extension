@@ -36,6 +36,7 @@ declare global {
       RPC_PROXY_API_KEY: string;
       RPC_PROXY_BASE_URL: string;
       RPC_PROXY_ENABLED: 'true' | 'false';
+      GRAPH_ENS_API_KEY: string;
       // Firebase Remote Config
       FIREBASE_API_KEY_BX: string;
       FIREBASE_AUTH_DOMAIN_BX: string;

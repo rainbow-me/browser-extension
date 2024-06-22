@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -56,10 +57,16 @@ export function useHomeShortcuts() {
   const { testnetMode, setTestnetMode } = useTestnetModeStore();
   const { developerToolsEnabled } = useDeveloperToolsEnabledStore();
   const { selectedNft } = useSelectedNftStore();
+  const location = useLocation();
 
   const allowSend = useMemo(
     () => !isWatchingWallet || featureFlags.full_watching_wallets,
     [featureFlags.full_watching_wallets, isWatchingWallet],
+  );
+
+  const isTokenDetailsPage = useMemo(
+    () => location.pathname.startsWith('/home/token-details'),
+    [location],
   );
 
   const alertWatchingWallet = useCallback(() => {
@@ -118,7 +125,7 @@ export function useHomeShortcuts() {
           navigate(ROUTES.BUY);
           break;
         case shortcuts.home.COPY_ADDRESS.key:
-          if (!selectedNft && !selectedToken) {
+          if (!selectedNft && !selectedToken && !isTokenDetailsPage) {
             trackShortcut({
               key: shortcuts.home.COPY_ADDRESS.display,
               type: 'home.copyAddress',
@@ -159,7 +166,7 @@ export function useHomeShortcuts() {
           navigateToSwaps();
           break;
         case shortcuts.home.GO_TO_PROFILE.key:
-          if (!selectedToken) {
+          if (!selectedToken && !isTokenDetailsPage) {
             trackShortcut({
               key: shortcuts.home.GO_TO_PROFILE.display,
               type: 'home.goToProfile',
@@ -229,6 +236,7 @@ export function useHomeShortcuts() {
       }
     },
     [
+      isTokenDetailsPage,
       trackShortcut,
       navigate,
       selectedNft,

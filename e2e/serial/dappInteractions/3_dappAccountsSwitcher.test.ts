@@ -407,7 +407,7 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
     });
     expect(walletItemBadge).toBeTruthy();
     await goToTestApp(driver);
-    const expectedNetwork = 'Network: Polygon - matic';
+    const expectedNetwork = 'Network: Polygon';
     const network = await querySelector(driver, '[id="network"]');
     const actualNetwork = await network.getText();
     expect(actualNetwork).toEqual(expectedNetwork);
