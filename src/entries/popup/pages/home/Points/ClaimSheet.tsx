@@ -8,6 +8,7 @@ import { RapClaimActionParameters } from '~/core/raps/references';
 import { chainsLabel } from '~/core/references/chains';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
+import { GasSpeed } from '~/core/types/gas';
 import {
   convertAmountAndPriceToNativeDisplay,
   convertRawAmountToBalance,
@@ -78,7 +79,11 @@ export function ClaimSheet() {
   );
   const sellAmount = claimable || '0';
 
-  useSwapGas({ chainId: ChainId.optimism });
+  useSwapGas({
+    chainId: ChainId.optimism,
+    defaultSpeed: GasSpeed.FAST,
+    enabled: true,
+  });
 
   const { mutate: claimRewards, isSuccess: claimSuccess } = useMutation<{
     nonce: number;
@@ -96,9 +101,14 @@ export function ClaimSheet() {
         } satisfies RapClaimActionParameters;
 
         try {
+          console.log('claimRewards creating claim and bridge rap');
           const { errorMessage, nonce: bridgeNonce } = await wallet.executeRap({
             rapActionParameters: actionParams,
             type: 'claimBridge',
+          });
+          console.log('claimRewards rap executed', {
+            errorMessage,
+            bridgeNonce,
           });
 
           if (errorMessage) {
@@ -108,6 +118,7 @@ export function ClaimSheet() {
           // clear and refresh claim data so available claim UI disappears
           invalidatePointsQuery(address);
           refetch();
+          console.log('claimRewards returning', bridgeNonce);
           return { nonce: bridgeNonce };
         } catch (error) {
           throw new Error('rap threw an error');
@@ -117,11 +128,13 @@ export function ClaimSheet() {
       }
     },
     onSuccess: async ({ nonce }) => {
+      console.log('claimRewards success', nonce);
       if (typeof nonce === 'number') {
         setBridgeSuccess(true);
       }
     },
     onError: (error) => {
+      console.log('claimRewards error', error);
       setClaimError(error.message);
     },
   });
@@ -138,11 +151,11 @@ export function ClaimSheet() {
   };
 
   const claimNetworkInfo = [
-    { chainId: ChainId.optimism, fee: i18n.t('points.rewards.free_to_claim') },
     {
       chainId: ChainId.base,
       fee: i18n.t('points.rewards.has_bridge_fee'),
     },
+    { chainId: ChainId.optimism, fee: i18n.t('points.rewards.free_to_claim') },
     {
       chainId: ChainId.zora,
       fee: i18n.t('points.rewards.has_bridge_fee'),
