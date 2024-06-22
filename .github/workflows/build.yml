@@ -58,8 +58,6 @@ jobs:
       - name: Set IS_TESTING=true
         run: |
           sed -i 's/IS_TESTING.*/IS_TESTING=true/g' .env
-      - name: Graphql Setup
-        run: yarn graphql-setup
       - name: Fetch networks
         run: yarn fetch:networks
       - name: Build the extension
@@ -413,8 +411,6 @@ jobs:
           target: wasm32-unknown-unknown
           profile: minimal
           override: true
-      - name: Graphql Setup
-        run: yarn graphql-setup
       - name: Fetch networks
         run: yarn fetch:networks
       - name: Install Anvil
@@ -451,8 +447,6 @@ jobs:
         run: tar xzf node_modules.tar.gz
       - name: DS Setup
         run: yarn ds:install
-      - name: Graphql Setup
-        run: yarn graphql-setup
       - name: Fetch networks
         run: yarn fetch:networks
       - name: Lint
