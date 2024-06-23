@@ -101,14 +101,9 @@ export function ClaimSheet() {
         } satisfies RapClaimActionParameters;
 
         try {
-          console.log('claimRewards creating claim and bridge rap');
           const { errorMessage, nonce: bridgeNonce } = await wallet.executeRap({
             rapActionParameters: actionParams,
             type: 'claimBridge',
-          });
-          console.log('claimRewards rap executed', {
-            errorMessage,
-            bridgeNonce,
           });
 
           if (errorMessage) {
@@ -118,7 +113,6 @@ export function ClaimSheet() {
           // clear and refresh claim data so available claim UI disappears
           invalidatePointsQuery(address);
           refetch();
-          console.log('claimRewards returning', bridgeNonce);
           return { nonce: bridgeNonce };
         } catch (error) {
           throw new Error('rap threw an error');
@@ -128,13 +122,11 @@ export function ClaimSheet() {
       }
     },
     onSuccess: async ({ nonce }) => {
-      console.log('claimRewards success', nonce);
       if (typeof nonce === 'number') {
         setBridgeSuccess(true);
       }
     },
     onError: (error) => {
-      console.log('claimRewards error', error);
       setClaimError(error.message);
     },
   });
