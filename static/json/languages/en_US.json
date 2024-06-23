@@ -1494,7 +1494,10 @@
       "my_referrals": "My Referrals",
       "claim_reward": "Claim %{reward}",
       "free_to_claim": "Free to Claim",
-      "has_bridge_fee": "Has Bridge Fee"
+      "has_bridge_fee": "Has Bridge Fee",
+      "claim_failed": "Claim Failed. Please try again.",
+      "claim_success_bridge_failed": "Claim Succeded but funds were not bridged."
+
     }
   },
   "speed_up_and_cancel": {

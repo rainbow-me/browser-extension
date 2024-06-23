@@ -32,6 +32,7 @@ import { useNativeAssetForNetwork } from '~/entries/popup/hooks/useNativeAssetFo
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
+import { RainbowError, logger } from '~/logger';
 
 import * as wallet from '../../../handlers/wallet';
 
@@ -86,7 +87,7 @@ export function ClaimSheet() {
   });
 
   const { mutate: claimRewards, isSuccess: claimSuccess } = useMutation<{
-    nonce: number;
+    nonce: number | null;
   }>({
     mutationFn: async () => {
       if (opEth && destinationEth) {
@@ -100,33 +101,38 @@ export function ClaimSheet() {
           quote: undefined,
         } satisfies RapClaimActionParameters;
 
-        try {
-          const { errorMessage, nonce: bridgeNonce } = await wallet.executeRap({
-            rapActionParameters: actionParams,
-            type: 'claimBridge',
-          });
+        const { nonce: bridgeNonce, errorMessage } = await wallet.executeRap({
+          rapActionParameters: actionParams,
+          type: 'claimBridge',
+        });
 
-          if (errorMessage) {
-            throw new Error(errorMessage);
+        if (errorMessage) {
+          if (errorMessage.includes('[CLAIM]')) {
+            // Handle claim error. Retry is possible
+            setClaimError(i18n.t('points.rewards.claim_failed'));
+          } else {
+            // Retry is not possible!
+            setClaimError(i18n.t('points.rewards.claim_success_bridge_failed'));
           }
-
-          // clear and refresh claim data so available claim UI disappears
-          invalidatePointsQuery(address);
-          refetch();
-          return { nonce: bridgeNonce };
-        } catch (error) {
-          throw new Error('rap threw an error');
+          logger.error(new RainbowError('ETH REWARDS CLAIM ERROR'), {
+            message: errorMessage,
+          });
+          return { nonce: null };
         }
-      } else {
-        throw new Error('opEth and destinationEth are not defined');
+        // clear and refresh claim data so available claim UI disappears
+        invalidatePointsQuery(address);
+        refetch();
+        return { nonce: bridgeNonce };
       }
+      return { nonce: null };
     },
-    onSuccess: async ({ nonce }) => {
+    onSuccess: async ({ nonce }: { nonce: number | null }) => {
       if (typeof nonce === 'number') {
         setBridgeSuccess(true);
       }
     },
     onError: (error) => {
+      console.log('on error', error);
       setClaimError(error.message);
     },
   });

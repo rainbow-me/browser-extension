@@ -14,7 +14,6 @@ import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { add, lessThan, multiply, subtract } from '~/core/utils/numbers';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { getProvider } from '~/core/wagmi/clientToProvider';
-import { RainbowError, logger } from '~/logger';
 
 import { ActionProps } from '../references';
 
@@ -31,7 +30,7 @@ export async function claimBridge({
   // Check if the address and toChainId are valid
   // otherwise we can't continue
   if (!toChainId || !address) {
-    throw new RainbowError('claimBridge: error getClaimBridgeQuote');
+    throw new Error('[CLAIM-BRIDGE]: error getting getClaimBridgeQuote');
   }
 
   let maxBridgeableAmount = sellAmount;
@@ -51,7 +50,7 @@ export async function claimBridge({
 
   // if we don't get a quote or there's an error we can't continue
   if (!claimBridgeQuote || (claimBridgeQuote as QuoteError)?.error) {
-    throw new RainbowError('claimBridge: error getClaimBridgeQuote');
+    throw new Error('[CLAIM-BRIDGE]: error getting getClaimBridgeQuote');
   }
 
   let bridgeQuote = claimBridgeQuote as CrosschainQuote;
@@ -74,8 +73,8 @@ export async function claimBridge({
   if (lessThan(subtract(balance.toString(), sellAmount), gasFeeInWei)) {
     // if the balance is less than the gas fee we can't continue
     if (lessThan(sellAmount, gasFeeInWei)) {
-      throw new RainbowError(
-        'claimBridge: error insufficient funds to pay gas fee',
+      throw new Error(
+        '[CLAIM-BRIDGE]: error insufficient funds to pay gas fee',
       );
     } else {
       // otherwise we bridge the maximum amount we can afford
@@ -98,7 +97,7 @@ export async function claimBridge({
     });
 
     if (!newQuote || (newQuote as QuoteError)?.error) {
-      throw new RainbowError('claimBridge: error getClaimBridgeQuote (new)');
+      throw new Error('[CLAIM-BRIDGE]: error getClaimBridgeQuote (new)');
     }
 
     bridgeQuote = newQuote as CrosschainQuote;
@@ -107,26 +106,16 @@ export async function claimBridge({
   // now that we have a valid quote for the maxBridgeableAmount we can estimate the gas limit
   let gasLimit;
   try {
-    try {
-      gasLimit = await provider.estimateGas({
-        from: address,
-        to: bridgeQuote.to as Address,
-        data: bridgeQuote.data,
-        value: bridgeQuote.value,
-        ...gasParams,
-      });
-    } catch (e) {
-      // Instead of failing we'll try using the default gas limit + 20%
-      gasLimit = (Number(bridgeQuote.defaultGasLimit) * 1.2).toString();
-    }
+    gasLimit = await provider.estimateGas({
+      from: address,
+      to: bridgeQuote.to as Address,
+      data: bridgeQuote.data,
+      value: bridgeQuote.value,
+      ...gasParams,
+    });
   } catch (e) {
-    logger.error(
-      new RainbowError('crosschainSwap: error estimateCrosschainSwapGasLimit'),
-      {
-        message: (e as Error)?.message,
-      },
-    );
-    throw e;
+    // Instead of failing we'll try using the default gas limit + 20%
+    gasLimit = (Number(bridgeQuote.defaultGasLimit) * 1.2).toString();
   }
 
   // we need to bump the base nonce to next available one
@@ -146,14 +135,10 @@ export async function claimBridge({
   try {
     swap = await executeCrosschainSwap(swapParams);
   } catch (e) {
-    logger.error(
-      new RainbowError('crosschainSwap: error executeCrosschainSwap'),
-      { message: (e as Error)?.message },
-    );
-    throw e;
+    throw new Error('[CLAIM-BRIDGE]: crosschainSwap error');
   }
   if (!swap) {
-    throw new RainbowError('crosschainSwap: error executeCrosschainSwap');
+    throw new Error('[CLAIM-BRIDGE]: executeCrosschainSwap returned undefined');
   }
 
   // 5 - if the swap was successful we add the transaction to the store
