@@ -4,7 +4,7 @@ import { RapAction, RapClaimActionParameters } from './references';
 export const createClaimAndBridgeRap = async (
   claimParameters: RapClaimActionParameters,
 ) => {
-  let actions: RapAction<'crosschainSwap' | 'claim' | 'claimBridge'>[] = [];
+  let actions: RapAction<'claim' | 'claimBridge'>[] = [];
   const {
     assetToSell,
     sellAmount,
