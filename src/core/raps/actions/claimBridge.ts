@@ -11,7 +11,7 @@ import { optimism } from 'viem/chains';
 import { gasStore } from '~/core/state';
 import { TransactionGasParams } from '~/core/types/gas';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
-import { add, lessThan, multiply, subtract } from '~/core/utils/numbers';
+import { add, addBuffer, lessThan, multiply, subtract } from '~/core/utils/numbers';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 
@@ -114,8 +114,12 @@ export async function claimBridge({
       ...gasParams,
     });
   } catch (e) {
-    // Instead of failing we'll try using the default gas limit + 20%
-    gasLimit = (Number(bridgeQuote.defaultGasLimit) * 1.2).toString();
+    // Instead of failing we'll try using the default gas limit + 20% if it exists
+    gasLimit = bridgeQuote.defaultGasLimit ? addBuffer(bridgeQuote.defaultGasLimit) : null;
+  }
+
+  if (!gasLimit) {
+    throw new Error('[CLAIM-BRIDGE]: error estimating gas or using default gas limit');
   }
 
   // we need to bump the base nonce to next available one
