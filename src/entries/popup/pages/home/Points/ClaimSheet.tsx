@@ -132,7 +132,6 @@ export function ClaimSheet() {
       }
     },
     onError: (error) => {
-      console.log('on error', error);
       setClaimError(error.message);
     },
   });
