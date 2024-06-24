@@ -149,7 +149,7 @@ export function ClaimSheet() {
     setSelectedChainId(chain);
     setInitialClaimableAmount(claimableBalance.amount);
     setInitialClaimableDisplay(claimablePriceDisplay.display);
-    setTimeout(() => claimRewards(), 500);
+    claimRewards();
   };
 
   const baseInfo = {
@@ -170,7 +170,7 @@ export function ClaimSheet() {
 
   useEffect(() => {
     if (showSuccess && !showSummary) {
-      setTimeout(() => setShowSummary(true), 5000);
+      setTimeout(() => setShowSummary(true), 7000);
     }
   }, [showSuccess, showSummary]);
 

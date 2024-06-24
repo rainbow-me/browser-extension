@@ -47,7 +47,7 @@ export function ClaimOverview({
   const showSuccess = !waitToDisplay && success && preparingClaim && !error;
 
   useEffect(() => {
-    setTimeout(() => setWaitToDisplay(false), 3000);
+    setTimeout(() => setWaitToDisplay(false), 4000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
