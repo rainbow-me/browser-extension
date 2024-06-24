@@ -64,7 +64,6 @@ export const estimateCrosschainSwapGasLimit = async ({
       );
     }
 
-    console.log('about to call estimateGasWithPadding');
 
     const gasLimit = await estimateGasWithPadding({
       transactionRequest: {
