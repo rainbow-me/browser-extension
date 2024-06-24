@@ -59,6 +59,9 @@ export function ClaimSheet() {
   const [bridgeSuccess, setBridgeSuccess] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
 
+  const [initialClaimableAmount, setInitialClaimableAmount] = useState('');
+  const [initialClaimableDisplay, setInitialClaimableDisplay] = useState('');
+
   const { currentAddress: address } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
   const { data, refetch } = usePoints(address);
@@ -144,6 +147,8 @@ export function ClaimSheet() {
     setShowNetworkSelection(false);
     setShowClaimOverview(true);
     setSelectedChainId(chain);
+    setInitialClaimableAmount(claimableBalance.amount);
+    setInitialClaimableDisplay(claimablePriceDisplay.display);
     setTimeout(() => claimRewards(), 500);
   };
 
@@ -174,8 +179,8 @@ export function ClaimSheet() {
         show={showNetworkSelection}
       />
       <ClaimOverview
-        claimableAmount={claimableBalance.amount}
-        claimableDisplay={claimablePriceDisplay.display}
+        claimableAmount={initialClaimableAmount}
+        claimableDisplay={initialClaimableDisplay}
         error={claimError}
         goBack={backToHome}
         preparingClaim={showPreparingClaim}
