@@ -13,6 +13,7 @@ import {
 import { Address } from 'viem';
 
 import rainbowIcon from 'static/images/icon-16@2x.png';
+import { analytics } from '~/analytics';
 import { PointsQuery } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
@@ -63,6 +64,15 @@ import { usePoints } from './usePoints';
 const { format: formatNumber } = createNumberFormatter({
   maximumSignificantDigits: 8,
 });
+
+const trackSharedReferralLink = (linkOrCode: string) => {
+  analytics.track(analytics.event.sharedReferralLink, { linkOrCode });
+};
+
+// TODO: Also track amount in USD
+const trackTappedClaimButton = (claimAmount: number) => {
+  analytics.track(analytics.event.tappedClaimButton, { claimAmount });
+};
 
 function Card({
   children,
@@ -273,25 +283,28 @@ function TextWithMoreInfo({ children }: PropsWithChildren) {
   );
 }
 
-export const copyReferralLink = (referralCode: string) =>
+export const copyReferralLink = (referralCode: string) => {
+  trackSharedReferralLink('link');
   copy({
     value: `https://rainbow.me/points?ref=${referralCode}`,
     title: i18n.t('points.copied_referral_link'),
     description: `rainbow.me/points?ref=${referralCode}`,
   });
+};
 
 const formatReferralCode = (referralCode: string) =>
   referralCode.slice(0, 3) + '-' + referralCode.slice(-3);
 function ReferralCode() {
   const { currentAddress } = useCurrentAddressStore();
   const { data, isSuccess } = usePoints(currentAddress);
-  const copyReferralCode = () =>
+  const copyReferralCode = () => {
+    trackSharedReferralLink('code');
     copy({
       value: data?.user.referralCode || '',
       title: i18n.t('points.copied_referral_code'),
       description: formatReferralCode(data?.user.referralCode || ''),
     });
-
+  };
   return (
     <Stack gap="12px">
       <Text size="16pt" weight="bold" color="label">
@@ -716,7 +729,10 @@ function ClaimYourPointsCta({
       whileTap={{ scale: 0.98 }}
       whileFocus={{ scale: 1.02 }}
       whileHover={{ scale: 1.02 }}
-      onClick={() => showClaimSheet()}
+      onClick={() => {
+        trackTappedClaimButton(parseInt(claimableReward));
+        showClaimSheet();
+      }}
     >
       <RainbowText size="20pt" weight="heavy">
         {i18n.t('points.rewards.claim_reward', {

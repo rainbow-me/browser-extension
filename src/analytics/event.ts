@@ -1,3 +1,4 @@
+/* eslint-disable sort-keys */
 /* eslint sort-keys: "error"*/
 
 import { Address } from 'viem';
@@ -191,6 +192,15 @@ export const event = {
    * screen is viewed or opened in the extension popup.
    */
   walletViewed: 'wallet.viewed',
+
+  // new
+  viewedRewards: 'rewards.viewed',
+  viewedPointsLeaderboard: 'points.leaderboard.viewed',
+  clickedPointsTab: 'points.tab.clicked',
+  tappedClaimButton: 'claim.button.tapped',
+  claimed: 'claim.claimed',
+  networkSelected: 'network.selected',
+  sharedReferralLink: 'referral.link.shared',
 } as const;
 
 /**
@@ -666,4 +676,20 @@ export type EventProperties = {
     tradeAmountUSD: number;
   };
   [event.walletViewed]: undefined;
+
+  // new
+  [event.viewedRewards]: undefined;
+  [event.viewedPointsLeaderboard]: undefined;
+  [event.clickedPointsTab]: undefined;
+  [event.tappedClaimButton]: {
+    claimAmount: number;
+  };
+  [event.claimed]: {
+    claimAmount: number;
+    claimAmountUSD: number;
+  };
+  [event.networkSelected]: {
+    network: 'optimism' | 'base' | 'zora';
+  };
+  [event.sharedReferralLink]: { linkOrCode: string };
 };

@@ -2,12 +2,13 @@ import { useMutation } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
+import { analytics } from '~/analytics';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { RapClaimActionParameters } from '~/core/raps/references';
 import { chainsLabel } from '~/core/references/chains';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
-import { ChainId } from '~/core/types/chains';
+import { ChainId, ChainName, chainIdToNameMapping } from '~/core/types/chains';
 import { GasSpeed } from '~/core/types/gas';
 import {
   convertAmountAndPriceToNativeDisplay,
@@ -38,6 +39,18 @@ import * as wallet from '../../../handlers/wallet';
 
 import { ClaimOverview } from './ClaimOverview';
 import { invalidatePointsQuery, usePoints } from './usePoints';
+
+const trackNetworkSelected = (chainId: ChainId) => {
+  function getChainNameFromId(chainId: ChainId): ChainName {
+    return chainIdToNameMapping[chainId];
+  }
+
+  const network = getChainNameFromId(chainId);
+
+  analytics.track(analytics.event.networkSelected, {
+    network: network as 'optimism' | 'zora' | 'base',
+  });
+};
 
 export function ClaimSheet() {
   const navigate = useRainbowNavigate();
@@ -144,6 +157,7 @@ export function ClaimSheet() {
   const showSuccess = claimFinished && !showSummary && !claimError;
 
   const handleNetworkSelection = (chain: ChainId) => {
+    trackNetworkSelected(chain);
     setShowNetworkSelection(false);
     setShowClaimOverview(true);
     setSelectedChainId(chain);
