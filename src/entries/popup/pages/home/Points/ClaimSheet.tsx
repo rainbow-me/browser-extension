@@ -149,12 +149,10 @@ export function ClaimSheet() {
 
   const baseInfo = {
     chainId: ChainId.base,
-    fee: i18n.t('points.rewards.has_bridge_fee'),
   };
 
   const opInfo = {
     chainId: ChainId.optimism,
-    fee: i18n.t('points.rewards.free_to_claim'),
   };
 
   const claimNetworkInfo = [
@@ -162,7 +160,6 @@ export function ClaimSheet() {
     config.rewards_bridging_enabled ? opInfo : baseInfo,
     {
       chainId: ChainId.zora,
-      fee: i18n.t('points.rewards.has_bridge_fee'),
     },
   ];
 
