@@ -40,15 +40,16 @@ import * as wallet from '../../../handlers/wallet';
 import { ClaimOverview } from './ClaimOverview';
 import { invalidatePointsQuery, usePoints } from './usePoints';
 
-const trackNetworkSelected = (chainId: ChainId) => {
+const trackClaimAndNetwork = (claimAmount: number, chainId: ChainId) => {
   function getChainNameFromId(chainId: ChainId): ChainName {
     return chainIdToNameMapping[chainId];
   }
 
   const network = getChainNameFromId(chainId);
 
-  analytics.track(analytics.event.networkSelected, {
-    network: network as 'optimism' | 'zora' | 'base',
+  analytics.track(analytics.event.claimed, {
+    claimAmount,
+    networkSelected: network as 'optimism' | 'zora' | 'base',
   });
 };
 
@@ -156,13 +157,13 @@ export function ClaimSheet() {
   const showPreparingClaim = !showSummary;
   const showSuccess = claimFinished && !showSummary && !claimError;
 
-  const handleNetworkSelection = (chain: ChainId) => {
-    trackNetworkSelected(chain);
+  const handleNetworkSelection = (claimableBalance: number, chain: ChainId) => {
     setShowNetworkSelection(false);
     setShowClaimOverview(true);
     setSelectedChainId(chain);
     setInitialClaimableAmount(claimableBalance.amount);
     setInitialClaimableDisplay(claimablePriceDisplay.display);
+    trackClaimAndNetwork(claimableBalance, chain);
     setTimeout(() => claimRewards(), 500);
   };
 
@@ -193,7 +194,12 @@ export function ClaimSheet() {
       <ClaimNetworkSelection
         goBack={goBack}
         networkInfo={claimNetworkInfo}
-        onSelect={handleNetworkSelection}
+        onSelect={() =>
+          handleNetworkSelection(
+            parseInt(claimableBalance.amount),
+            selectedChainId,
+          )
+        }
         show={showNetworkSelection}
       />
       <ClaimOverview

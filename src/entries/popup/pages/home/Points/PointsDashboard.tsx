@@ -74,6 +74,14 @@ const trackTappedClaimButton = (claimAmount: number) => {
   analytics.track(analytics.event.tappedClaimButton, { claimAmount });
 };
 
+const trackViewedRewardsTab = () => {
+  analytics.track(analytics.event.viewedPointsTab);
+};
+
+const trackViewedLeaderboardTab = () => {
+  analytics.track(analytics.event.viewedLeaderboardTab);
+};
+
 function Card({
   children,
   ...props
@@ -1117,6 +1125,13 @@ export function PointsDashboard() {
   const [displayMode, setDisplayMode] = useState<'rewards' | 'leaderboard'>(
     'rewards',
   );
+  useEffect(() => {
+    if (displayMode === 'rewards') {
+      trackViewedRewardsTab();
+    } else if (displayMode === 'leaderboard') {
+      trackViewedLeaderboardTab();
+    }
+  }, [displayMode]);
   return (
     <>
       <Stack

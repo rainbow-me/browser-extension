@@ -1,6 +1,3 @@
-/* eslint-disable sort-keys */
-/* eslint sort-keys: "error"*/
-
 import { Address } from 'viem';
 
 import { KeyboardEventDescription } from '~/entries/popup/hooks/useKeyboardAnalytics';
@@ -17,6 +14,11 @@ export const event = {
    * `swapSubmitted` is called when the user is completing a cross-chain swap.
    */
   bridgeSubmitted: 'bridge.submitted',
+  /**
+   * Called when user chooses which network to claim rewards on and the
+   * code to claim is executed within the Points / Eth rewards screen
+   */
+  claimed: 'claim.claimed',
   /**
    * Called when a commandK action is executed
    */
@@ -182,25 +184,36 @@ export const event = {
   settingsRainbowDefaultProviderEnabled:
     'settings.rainbow_default_provider.enabled',
   /**
+   * Called when user copies their referral link within the
+   * Points / Eth rewards screen and tracks if it was a code or link
+   */
+  sharedReferralLink: 'referral.link.shared',
+  /**
    * Called when the user completes a Swap/Bridge and submits the transaction.
    * This includes cross-chain swaps, while `bridgeSubmitted` is instead called
    * for mapped asset bridge transactions where the `mainnetAddress` is equal.
    */
   swapSubmitted: 'swap.submitted',
   /**
+   * Called when user taps the claim button
+   * within the Points / Eth rewards screen
+   */
+  tappedClaimButton: 'claim.button.tapped',
+  /**
+   * Called when user views Leaderboard tab
+   * within the Points / Eth rewards screen
+   */
+  viewedLeaderboardTab: 'points.leaderboard.viewed',
+  /**
+   * Called when user views Points tab
+   * within the Points / Eth rewards screen
+   */
+  viewedPointsTab: 'points.tab.viewed',
+  /**
    * Called when the core wallet Tokens & Activity
    * screen is viewed or opened in the extension popup.
    */
   walletViewed: 'wallet.viewed',
-
-  // new
-  viewedRewards: 'rewards.viewed',
-  viewedPointsLeaderboard: 'points.leaderboard.viewed',
-  clickedPointsTab: 'points.tab.clicked',
-  tappedClaimButton: 'claim.button.tapped',
-  claimed: 'claim.claimed',
-  networkSelected: 'network.selected',
-  sharedReferralLink: 'referral.link.shared',
 } as const;
 
 /**
@@ -676,20 +689,33 @@ export type EventProperties = {
     tradeAmountUSD: number;
   };
   [event.walletViewed]: undefined;
-
-  // new
-  [event.viewedRewards]: undefined;
-  [event.viewedPointsLeaderboard]: undefined;
-  [event.clickedPointsTab]: undefined;
+  /**
+   * Was the Leaderboard or Points tab viewed for Eth rewards
+   */
+  [event.viewedLeaderboardTab]: undefined;
+  [event.viewedPointsTab]: undefined;
+  /**
+   * Claim button tapped for Eth rewards
+   */
   [event.tappedClaimButton]: {
     claimAmount: number;
   };
+  /**
+   * Did user claim, and on what chain for Eth rewards
+   */
   [event.claimed]: {
+    /**
+     * number amount in Eth of claim
+     * TODO: add USD value
+     */
     claimAmount: number;
-    claimAmountUSD: number;
+    /**
+     * which network of the three possible was selected
+     */
+    networkSelected: 'optimism' | 'base' | 'zora';
   };
-  [event.networkSelected]: {
-    network: 'optimism' | 'base' | 'zora';
-  };
+  /**
+   * Was referral copied, and was it link or code
+   */
   [event.sharedReferralLink]: { linkOrCode: string };
 };
