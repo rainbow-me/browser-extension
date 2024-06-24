@@ -16,7 +16,7 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { gasUnits } from '~/core/references/gasUnits';
-import { ParsedSearchAsset } from '~/core/types/assets';
+import { ParsedAsset, ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 
 // ///////////////////////////////////////////////
@@ -29,8 +29,8 @@ export type EstimateSwapGasLimitResponse = {
 export type EstimateSwapGasLimitArgs = {
   chainId: ChainId;
   quote?: Quote | CrosschainQuote | QuoteError;
-  assetToSell?: ParsedSearchAsset;
-  assetToBuy?: ParsedSearchAsset;
+  assetToSell?: ParsedSearchAsset | ParsedAsset;
+  assetToBuy?: ParsedSearchAsset | ParsedAsset;
 };
 
 // ///////////////////////////////////////////////

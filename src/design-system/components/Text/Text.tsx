@@ -16,6 +16,7 @@ export interface TextProps {
   testId?: string;
   background?: TextStyles['background'];
   webkitBackgroundClip?: TextStyles['WebkitBackgroundClip'];
+  webkitTextFillColor?: TextStyles['WebkitTextFillColor'];
   cursor?: TextStyles['cursor'];
   userSelect?: TextStyles['userSelect'];
   whiteSpace?: TextStyles['whiteSpace'];
@@ -34,6 +35,7 @@ export function Text({
   weight,
   testId,
   webkitBackgroundClip,
+  webkitTextFillColor,
   cursor = 'default',
   userSelect = 'none',
   whiteSpace,
@@ -55,6 +57,7 @@ export function Text({
           background,
           userSelect,
           WebkitBackgroundClip: webkitBackgroundClip,
+          WebkitTextFillColor: webkitTextFillColor,
           transition: 'color 200ms ease-out, text-shadow 1s ease',
           whiteSpace,
           textShadow,

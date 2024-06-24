@@ -62,6 +62,13 @@ const list = style({ listStyle: 'none' });
 const table = style({ borderCollapse: 'collapse', borderSpacing: 0 });
 const appearanceNone = style({ appearance: 'none' });
 const backgroundTransparent = style({ backgroundColor: 'transparent' });
+export const transparentOnHover = style({
+  selectors: {
+    '&:hover': {
+      opacity: '0 !important',
+    },
+  },
+});
 const button = style([backgroundTransparent, { cursor: 'default' }]);
 const field = [appearanceNone, backgroundTransparent];
 
@@ -189,7 +196,14 @@ interface ShadowDefinition {
   light: string;
 }
 
-export type ShadowSize = '1px' | '12px' | '18px' | '24px' | '30px';
+export type ShadowSize =
+  | '1px'
+  | '12px'
+  | '16px'
+  | '18px'
+  | '24px'
+  | '30px'
+  | '52px';
 export type Shadow = ShadowSize | `${ShadowSize} ${ShadowColor}`;
 
 function coloredShadows<Size extends ShadowSize>(
@@ -240,6 +254,26 @@ const shadowTokens: Record<Shadow, ShadowDefinition> = {
     ].join(', '),
     dark: [
       `0 4px 12px ${getShadowColor('shadowFar', 'dark', 0.2)}`,
+      `0 2px 6px ${getShadowColor('shadowNear', 'dark', 0.02)}`,
+    ].join(', '),
+  })),
+  '16px': {
+    light: [
+      `0 6px 16px ${getShadowColor('shadowFar', 'light', 0.08)}`,
+      `0 2px 6px ${getShadowColor('shadowNear', 'light', 0.02)}`,
+    ].join(', '),
+    dark: [
+      `0 6px 16px ${getShadowColor('shadowFar', 'dark', 0.24)}`,
+      `0 2px 6px ${getShadowColor('shadowNear', 'dark', 0.02)}`,
+    ].join(', '),
+  },
+  ...coloredShadows('16px', (color) => ({
+    light: [
+      `0 6px 16px ${getShadowColor(color, 'light', 0.24)}`,
+      `0 2px 6px ${getShadowColor('shadowNear', 'light', 0.02)}`,
+    ].join(', '),
+    dark: [
+      `0 6px 16px ${getShadowColor('shadowFar', 'dark', 0.24)}`,
       `0 2px 6px ${getShadowColor('shadowNear', 'dark', 0.02)}`,
     ].join(', '),
   })),
@@ -305,6 +339,22 @@ const shadowTokens: Record<Shadow, ShadowDefinition> = {
       `0 2px 6px ${getShadowColor('shadowNear', 'dark', 0.02)}`,
     ].join(', '),
   })),
+  '52px': {
+    light: `0px 13px 52px 0px ${getShadowColor('shadowFar', 'light', 0.12)}`,
+    dark: `0px 13px 52px 0px ${getShadowColor('shadowFar', 'dark', 0.2)}`,
+  },
+  ...coloredShadows('52px', (color) => ({
+    light: `0px 13px 52px 0px ${getShadowColor(
+      color,
+      'light',
+      color === 'accent' ? 0.18 : 0.08,
+    )}`,
+    dark: `0px 13px 52px 0px ${getShadowColor(
+      color,
+      'dark',
+      color === 'accent' ? 0.25 : 0.12,
+    )}`,
+  })),
 };
 
 export const shadowVars = createThemeContract(
@@ -340,9 +390,17 @@ const textShadowTokens = {
     light: `0 0px 12px ${getTextShadowColor(color, 'light', 0.6)}`,
     dark: `0 0px 12px ${getTextShadowColor(color, 'dark', 0.8)}`,
   })),
+  ...coloredTextShadows('16px', (color) => ({
+    light: `0 0px 16px ${getTextShadowColor(color, 'light', 0.375)}`,
+    dark: `0 0px 16px ${getTextShadowColor(color, 'dark', 0.5)}`,
+  })),
   '12px label': {
     light: `0px 0px 12px rgba(27, 29, 31, 0.45)`,
     dark: `0px 0px 12px rgba(244, 248, 255, 0.45)`,
+  },
+  '16px label': {
+    light: `0px 0px 16px rgba(27, 29, 31, 0.24)`,
+    dark: `0px 0px 16px rgba(244, 248, 255, 0.24)`,
   },
 };
 
@@ -637,6 +695,7 @@ const textProperties = defineProperties({
     textAlign: ['left', 'center', 'right'],
     background: linearGradients,
     WebkitBackgroundClip: ['border-box', 'text'],
+    WebkitTextFillColor: ['transparent'],
     userSelect: userSelectOpts,
     textOverflow: ['ellipsis'],
     whiteSpace: ['nowrap', 'pre-wrap'],

@@ -2,6 +2,7 @@ import { format, sub } from 'date-fns';
 import { motion } from 'framer-motion';
 import { useMemo } from 'react';
 
+import { PointsQuery } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { createNumberFormatter } from '~/core/utils/formatNumber';
@@ -11,83 +12,23 @@ import {
   Button,
   Inline,
   Stack,
-  textStyles,
 } from '~/design-system';
 import { rainbowColors } from '~/design-system/components/AnimatedText/AnimatedText';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
-import { TextProps } from '~/design-system/components/Text/Text';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useWalletName } from '~/entries/popup/hooks/useWalletName';
 import { ROUTES } from '~/entries/popup/urls';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
+import ConsoleText from './ConsoleText';
 import { usePoints } from './usePoints';
+import { getEarningTypeLabel, getWeeklyEarnings } from './utils';
 
 const { format: formatNumber } = createNumberFormatter({
   maximumSignificantDigits: 8,
 });
 
-function ConsoleText({
-  children,
-  color = 'labelTertiary',
-}: {
-  color?: TextProps['color'];
-  children: string;
-}) {
-  if (typeof children !== 'string')
-    throw '<ConsoleText /> children must be string';
-
-  return (
-    <motion.span
-      className={textStyles({
-        textShadow: `12px ${color}`,
-        textAlign: 'left',
-        fontSize: '14pt mono',
-        fontFamily: 'mono',
-        fontWeight: 'semibold',
-        color,
-      })}
-    >
-      {children.split('').map((char, i) => (
-        <motion.span
-          variants={{
-            hidden: { opacity: 0 },
-            visible: { opacity: 1 },
-          }}
-          key={`${char} ${i}`}
-        >
-          {char}
-        </motion.span>
-      ))}
-    </motion.span>
-  );
-}
-
 const rainbowColorsArray = Object.values(rainbowColors);
-
-type WeeklyEarning = {
-  type:
-    | 'new_referrals'
-    | 'referral_activity'
-    | 'redemption'
-    | 'retroactive'
-    | 'transaction'
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    | (string & {});
-  earnings: number;
-};
-const getEarningTypeLabel = (type: WeeklyEarning['type']) => {
-  if (type === 'transaction')
-    return i18n.t('points.weekly_overview.your_activity');
-  if (type === 'referral_activity')
-    return i18n.t('points.weekly_overview.referral_activity');
-  if (type === 'new_referrals')
-    return i18n.t('points.weekly_overview.new_referrals');
-  if (type === 'redemption') return i18n.t('points.weekly_overview.bonus');
-  if (type === 'retroactive')
-    return i18n.t('points.weekly_overview.retroactive');
-  return type;
-};
 
 export function PointsWeeklyOverview() {
   const navigate = useRainbowNavigate();
@@ -103,28 +44,8 @@ export function PointsWeeklyOverview() {
   const { data: points } = usePoints(currentAddress);
 
   const weeklyEarnings = useMemo(() => {
-    const differences = points?.user.stats.last_airdrop.differences;
-    if (!differences) return null;
-
-    let total = 0;
-    const rewardsByType: Record<string, WeeklyEarning> = {};
-    for (const diff of differences) {
-      if (!diff) continue;
-      const type = diff.type === 'referral' ? diff.group_id : diff.type;
-      rewardsByType[type] = {
-        type,
-        earnings: (rewardsByType[type]?.earnings || 0) + diff.earnings.total,
-      };
-      total += diff.earnings.total;
-    }
-
-    const diffs = Object.values(rewardsByType).filter(
-      (d) =>
-        !(['retroactive', 'redemption'].includes(d.type) && d.earnings === 0),
-    );
-
-    return { total, differences: diffs };
-  }, [points?.user.stats.last_airdrop.differences]);
+    return getWeeklyEarnings(points as PointsQuery['points']);
+  }, [points]);
 
   const nextDistributionTime = (points?.meta.distribution.next ?? 0) * 1000;
 

@@ -61,14 +61,15 @@ export const Box = forwardRef(function Box(
   ref,
 ) {
   let hasBoxStyles = false;
-  const boxStyleOptions: BoxStyles = {};
+  // attempting to use the keyof operator on BoxStyles is too cumbersome for TypeScript because <Box /> has become quite bloated, so we're typing this obj as any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const boxStyleOptions: any = {};
   const restProps: Record<string, unknown> = {};
 
   for (const key in props) {
     if (boxStyles.properties.has(key as keyof BoxStyles)) {
       hasBoxStyles = true;
-      boxStyleOptions[key as keyof BoxStyles] =
-        props[key as keyof typeof props];
+      boxStyleOptions[key] = props[key as keyof typeof props];
     } else {
       restProps[key] = props[key as keyof typeof props];
     }
