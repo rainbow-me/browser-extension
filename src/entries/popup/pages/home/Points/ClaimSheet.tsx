@@ -41,7 +41,27 @@ import * as wallet from '../../../handlers/wallet';
 import { ClaimOverview } from './ClaimOverview';
 import { invalidatePointsQuery, usePoints } from './usePoints';
 
-const trackClaimAndNetwork = (claimAmount: number, chainId: ChainId) => {
+const identifyUserUnclaimedBalance = (
+  unclaimedBalance: string,
+  unclaimedBalanceUSD: string,
+) => {
+  analytics.identify({
+    unclaimedBalance,
+    unclaimedBalanceUSD,
+  });
+};
+
+const identifyUserClaimedBalance = (
+  claimedBalance: string,
+  claimedBalanceUSD: string,
+) => {
+  analytics.identify({
+    claimedBalance,
+    claimedBalanceUSD,
+  });
+};
+
+const trackClaimAndNetwork = (claimAmount: string, chainId: ChainId) => {
   function getChainNameFromId(chainId: ChainId): ChainName {
     return chainIdToNameMapping[chainId];
   }
@@ -160,13 +180,13 @@ export function ClaimSheet() {
   const showPreparingClaim = !showSummary;
   const showSuccess = claimFinished && !showSummary && !claimError;
 
-  const handleNetworkSelection = (claimableBalance: number, chain: ChainId) => {
+  const handleNetworkSelection = (chain: ChainId) => {
     setShowNetworkSelection(false);
     setShowClaimOverview(true);
     setSelectedChainId(chain);
     setInitialClaimableAmount(claimableBalance.amount);
     setInitialClaimableDisplay(claimablePriceDisplay.display);
-    trackClaimAndNetwork(claimableBalance, chain);
+    trackClaimAndNetwork(claimableBalance.amount, chain);
     setTimeout(() => claimRewards(), 500);
   };
 
@@ -191,18 +211,37 @@ export function ClaimSheet() {
       setTimeout(() => setShowSummary(true), 5000);
     }
   }, [showSuccess, showSummary]);
+  useEffect(() => {
+    if (address && claimableBalance.amount && ethPrice) {
+      const unclaimedBalanceUSD = parseFloat(
+        claimablePriceDisplay.display.replace(/[^0-9.-]+/g, ''),
+      );
+      identifyUserUnclaimedBalance(
+        claimableBalance.amount.toString(),
+        unclaimedBalanceUSD.toString(),
+      );
+    }
+    if (address && rewards?.claimed && ethPrice) {
+      const claimedBalanceUSD = convertAmountToNativeDisplay(
+        parseInt(rewards.claimed),
+        'USD',
+      );
+      identifyUserClaimedBalance(rewards.claimed, claimedBalanceUSD);
+    }
+  }, [
+    address,
+    claimableBalance.amount,
+    claimablePriceDisplay.display,
+    ethPrice,
+    rewards,
+  ]);
 
   return (
     <>
       <ClaimNetworkSelection
         goBack={goBack}
         networkInfo={claimNetworkInfo}
-        onSelect={() =>
-          handleNetworkSelection(
-            parseInt(claimableBalance.amount),
-            selectedChainId,
-          )
-        }
+        onSelect={() => handleNetworkSelection(selectedChainId)}
         show={showNetworkSelection}
       />
       <ClaimOverview

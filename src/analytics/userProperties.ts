@@ -10,4 +10,9 @@ export interface UserProperties {
   trezorDevices?: number;
   ledgerDevices?: number;
   hasImported?: boolean;
+  userId?: string;
+  unclaimedBalance?: string;
+  unclaimedBalanceUSD?: string;
+  claimedBalance?: string;
+  claimedBalanceUSD?: string;
 }

@@ -705,12 +705,12 @@ export type EventProperties = {
    */
   [event.claimed]: {
     /**
-     * number amount in Eth of claim
+     * string amount in Eth of claim
      * TODO: add USD value
      */
-    claimAmount: number;
+    claimAmount: string;
     /**
-     * string in USD of claim
+     * string amount in USD of claim
      */
     claimAmountUSD: string;
     /**
