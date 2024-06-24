@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 import { PointsErrorType } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
@@ -186,7 +186,7 @@ function ErrorText({ error }: { error?: string }) {
   );
 }
 
-function RainbowSlant() {
+const RainbowSlant = memo(function () {
   return (
     <Box paddingTop="30px">
       <Stack space="12px">
@@ -208,7 +208,8 @@ function RainbowSlant() {
       </Stack>
     </Box>
   );
-}
+});
+RainbowSlant.displayName = 'RainbowSlant';
 
 function ClaimSummary({ amount, price }: { amount: string; price: string }) {
   return (
