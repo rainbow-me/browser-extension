@@ -169,7 +169,8 @@ export type ButtonVariant =
   | 'plain'
   | 'square'
   | 'disabled'
-  | 'shadow';
+  | 'shadow'
+  | 'transparentShadow';
 
 export const backdropFilter = {
   'blur(10px)': 'blur(10px)',
@@ -729,6 +730,14 @@ export const linearGradients = {
     linear-gradient(90deg, #EB8A15 0%, #BA5A0A 100%),
     linear-gradient(90deg, color(display-p3 0.871 0.561 0.220) 0%, color(display-p3 0.682 0.373 0.145) 100%)
   `,
+  subtleDarkLeft:
+    'linear-gradient(to left, rgb(25, 26, 28), rgb(25, 26, 28)) padding-box, linear-gradient(to left, rgba(245, 248, 255, 0.04), transparent, transparent) border-box',
+  subtleLightLeft:
+    'linear-gradient(to left, #f5f5f7, #f5f5f7) padding-box, linear-gradient(to left, rgba(0, 0, 0, 0.03), transparent, transparent) border-box',
+  subtleDarkRight:
+    'linear-gradient(to right, rgb(25, 26, 28), rgb(25, 26, 28)) padding-box, linear-gradient(to right, rgba(245, 248, 255, 0.04), transparent, transparent) border-box',
+  subtleLightRight:
+    'linear-gradient(to right, #f5f5f7, #f5f5f7) padding-box, linear-gradient(to right, rgba(0, 0, 0, 0.05), transparent, transparent) border-box',
 } as const;
 export type LinearGradient = keyof typeof linearGradients;
 
@@ -1099,6 +1108,9 @@ export const symbolNames = selectSymbolNames(
   'square.grid.2x2.fill',
   'pin.fill',
   'cable.connector.slash',
+  'questionmark.circle.fill',
+  'rays',
+  'trophy.fill',
 );
 export type SymbolName = (typeof symbolNames)[number];
 

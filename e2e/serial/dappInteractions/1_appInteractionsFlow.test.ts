@@ -270,7 +270,7 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
       await driver.navigate().refresh();
     }
 
-    const expectedNetwork = 'Network: Ethereum - homestead';
+    const expectedNetwork = 'Network: Ethereum';
     const network = await querySelector(driver, '[id="network"]');
     const actualNetwork = await network.getText();
     expect(actualNetwork).toEqual(expectedNetwork);

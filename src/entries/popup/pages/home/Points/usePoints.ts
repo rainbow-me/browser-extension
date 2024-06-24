@@ -9,9 +9,23 @@ import {
 } from '~/core/graphql/__generated__/metadata';
 import { queryClient } from '~/core/react-query';
 
+import { POINTS_MOCK_DATA } from './references';
+
 const fetchPoints = async (address: Address) => {
+  if (process.env.IS_TESTING === 'true') {
+    return POINTS_MOCK_DATA;
+  }
+
   const { points } = await metadataClient.points({ address });
   return points;
+};
+
+export const invalidatePointsQuery = (address: Address) => {
+  queryClient.invalidateQueries({ queryKey: ['points', address] });
+};
+
+export const refetchPointsQuery = (address: Address) => {
+  queryClient.refetchQueries({ queryKey: ['points', address] });
 };
 
 export const seedPointsQueryCache = async (

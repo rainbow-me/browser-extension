@@ -15,7 +15,7 @@ import {
 } from '~/core/resources/gas/meteorology';
 import { useOptimismL1SecurityFee } from '~/core/resources/gas/optimismL1SecurityFee';
 import { useCurrentCurrencyStore, useGasStore } from '~/core/state';
-import { ParsedSearchAsset } from '~/core/types/assets';
+import { ParsedAsset, ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
   GasFeeLegacyParamsBySpeed,
@@ -344,8 +344,8 @@ export const useSwapGas = ({
   chainId: ChainId;
   defaultSpeed?: GasSpeed;
   quote?: Quote | CrosschainQuote | QuoteError;
-  assetToSell?: ParsedSearchAsset;
-  assetToBuy?: ParsedSearchAsset;
+  assetToSell?: ParsedSearchAsset | ParsedAsset;
+  assetToBuy?: ParsedSearchAsset | ParsedAsset;
   enabled?: boolean;
   flashbotsEnabled?: boolean;
   quoteServiceTime?: number;

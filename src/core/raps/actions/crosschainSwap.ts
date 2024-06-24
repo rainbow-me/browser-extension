@@ -64,6 +64,7 @@ export const estimateCrosschainSwapGasLimit = async ({
       );
     }
 
+
     const gasLimit = await estimateGasWithPadding({
       transactionRequest: {
         data: quote.data,
@@ -122,7 +123,6 @@ export const crosschainSwap = async ({
       gasFeeParamsBySpeed,
     });
   }
-
   let gasLimit;
   try {
     gasLimit = await estimateCrosschainSwapGasLimit({
@@ -139,7 +139,6 @@ export const crosschainSwap = async ({
     );
     throw e;
   }
-
   const nonce = baseNonce ? baseNonce + index : undefined;
 
   const swapParams = {
@@ -161,7 +160,6 @@ export const crosschainSwap = async ({
     );
     throw e;
   }
-
   if (!swap)
     throw new RainbowError('crosschainSwap: error executeCrosschainSwap');
 

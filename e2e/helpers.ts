@@ -748,7 +748,7 @@ export async function connectToTestDapp(driver: WebDriver) {
 
   const mmButton = await querySelector(
     driver,
-    '[data-testid="rk-wallet-option-rainbow"]',
+    '[data-testid="rk-wallet-option-me.rainbow"]',
   );
   await waitAndClick(mmButton, driver);
 

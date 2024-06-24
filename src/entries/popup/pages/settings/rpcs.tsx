@@ -21,6 +21,7 @@ import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags'
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { getSupportedChains } from '~/core/utils/chains';
+import { getDappHost } from '~/core/utils/connectedApps';
 import { chainIdMap } from '~/core/utils/userChains';
 import {
   Box,
@@ -331,7 +332,7 @@ export function SettingsNetworksRPCs() {
                                 ? i18n.t(
                                     'settings.networks.custom_rpc.rainbow_default_rpc',
                                   )
-                                : chain.rpcUrls.default.http[0]}
+                                : getDappHost(chain.rpcUrls.default.http[0])}
                             </TextOverflow>
                           </Box>
                         }

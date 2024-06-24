@@ -13,8 +13,6 @@ yarn-error.log
 build/
 screenshots/
 
-src/core/graphql/__generated__/
-
 # Anvil logs
 anvil*.log
 

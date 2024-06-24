@@ -3,4 +3,4 @@ docs/
 .env.d.ts
 scripts/
 static/
-__generated__
+src/core/graphql/__generated__/
