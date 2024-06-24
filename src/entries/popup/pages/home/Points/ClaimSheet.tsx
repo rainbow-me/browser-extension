@@ -152,15 +152,19 @@ export function ClaimSheet() {
     setTimeout(() => claimRewards(), 500);
   };
 
+  const baseInfo = {
+    chainId: ChainId.base,
+  };
+
+  const opInfo = {
+    chainId: ChainId.optimism,
+  };
+
   const claimNetworkInfo = [
-    {
-      chainId: ChainId.base,
-      fee: i18n.t('points.rewards.has_bridge_fee'),
-    },
-    { chainId: ChainId.optimism, fee: i18n.t('points.rewards.free_to_claim') },
+    config.rewards_bridging_enabled ? baseInfo : opInfo,
+    config.rewards_bridging_enabled ? opInfo : baseInfo,
     {
       chainId: ChainId.zora,
-      fee: i18n.t('points.rewards.has_bridge_fee'),
     },
   ];
 
