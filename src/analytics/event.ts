@@ -710,6 +710,10 @@ export type EventProperties = {
      */
     claimAmount: number;
     /**
+     * string in USD of claim
+     */
+    claimAmountUSD: string;
+    /**
      * which network of the three possible was selected
      */
     networkSelected: 'optimism' | 'base' | 'zora';

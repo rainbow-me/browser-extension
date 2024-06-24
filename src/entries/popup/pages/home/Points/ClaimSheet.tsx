@@ -12,6 +12,7 @@ import { ChainId, ChainName, chainIdToNameMapping } from '~/core/types/chains';
 import { GasSpeed } from '~/core/types/gas';
 import {
   convertAmountAndPriceToNativeDisplay,
+  convertAmountToNativeDisplay,
   convertRawAmountToBalance,
 } from '~/core/utils/numbers';
 import {
@@ -46,9 +47,11 @@ const trackClaimAndNetwork = (claimAmount: number, chainId: ChainId) => {
   }
 
   const network = getChainNameFromId(chainId);
+  const claimAmountUSD = convertAmountToNativeDisplay(claimAmount, 'USD');
 
   analytics.track(analytics.event.claimed, {
     claimAmount,
+    claimAmountUSD,
     networkSelected: network as 'optimism' | 'zora' | 'base',
   });
 };
