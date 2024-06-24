@@ -12,6 +12,7 @@ import {
   getInitialRainbowChains,
   mergeNewOfficiallySupportedChainsState,
   removeCustomRPC,
+  replaceChainsWithInitial,
 } from './utils';
 
 export interface RainbowChain {
@@ -121,7 +122,7 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
   {
     persist: persistOptions({
       name: 'rainbowChains',
-      version: 8,
+      version: 9,
       migrations: [
         // v1 didn't need a migration
         function v1(s: RainbowChainsState) {
@@ -176,6 +177,9 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
             return addCustomRPC({ chain: degen, state });
           }
           return state;
+        },
+        function v9(state) {
+          return replaceChainsWithInitial(state);
         },
       ],
     }),

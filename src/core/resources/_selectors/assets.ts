@@ -14,9 +14,11 @@ import { chainIdMap } from '~/core/utils/userChains';
 export function selectorFilterByUserChains<T>({
   data,
   selector,
+  chain,
 }: {
   data: ParsedAssetsDictByChain;
   selector: (data: ParsedAssetsDictByChain) => T;
+  chain?: ChainId;
 }): T {
   const { userChains } = userChainsStore.getState();
   const allUserChainIds = Object.keys(userChains)
@@ -28,7 +30,7 @@ export function selectorFilterByUserChains<T>({
     .filter(Boolean);
   const filteredAssetsDictByChain = Object.keys(data).reduce((acc, key) => {
     const chainKey = Number(key);
-    if (allUserChainIds.includes(chainKey)) {
+    if (chain === chainKey || (!chain && allUserChainIds.includes(chainKey))) {
       acc[chainKey] = data[chainKey];
     }
     return acc;

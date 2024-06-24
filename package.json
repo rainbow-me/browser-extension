@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.4.130",
+  "version": "1.4.133",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -22,13 +22,13 @@
     "playground:ds": "PLAYGROUND=ds webpack --config ./webpack.config.dev.js --watch",
     "lint": "eslint --cache --max-warnings 0",
     "typecheck": "tsc --noEmit",
-	"// Fetch backend networks": "",
+    "// Fetch backend networks": "",
     "fetch:networks": "node scripts/networks.js",
     "// Design System scripts": "",
     "// GraphQL scripts": "",
     "graphql-setup": "yarn graphql-codegen:install && yarn graphql-codegen",
     "graphql-codegen:install": "yarn install --cwd src/core/graphql",
-    "graphql-codegen": "cd src/core/graphql && yarn codegen",
+    "graphql-codegen": "export GRAPH_ENS_API_KEY=$(grep GRAPH_ENS_API_KEY .env | cut -d '=' -f2) && cd src/core/graphql && yarn codegen",
     "ds:install": "yarn install --cwd src/design-system/docs",
     "ds": "cd src/design-system/docs && yarn dev",
     "ds:build": "cd src/design-system/docs && yarn build",
@@ -45,7 +45,7 @@
     "// Checks the lockfile for changes": "",
     "check-lockfile": "./scripts/check-lockfile.sh",
     "// Installs deps, runs allowed scripts, patches packages and generates lavamoat policies": "",
-    "setup": "yarn install && yarn ds:install && yarn graphql-setup && yarn ds:generate-symbols && yarn fetch:networks && yarn allow-scripts && yarn patch-package && yarn policy",
+    "setup": "yarn install && yarn ds:install && yarn ds:generate-symbols && yarn fetch:networks && yarn allow-scripts && yarn patch-package && yarn policy",
     "// runs audit against dep. tree": "",
     "audit:ci": "yarn audit-ci --moderate --config audit-ci.jsonc",
     "// Generates a zip file based on the build folder ready to upload to the chrome web store": "",
@@ -104,8 +104,8 @@
     "@radix-ui/react-select": "1.2.1",
     "@radix-ui/react-tabs": "1.0.4",
     "@radix-ui/react-tooltip": "1.0.3",
-    "@rainbow-me/provider": "0.1.0",
-    "@rainbow-me/swaps": "0.19.0",
+    "@rainbow-me/provider": "0.1.1",
+    "@rainbow-me/swaps": "0.21.0",
     "@rudderstack/analytics-js-service-worker": "3.0.6",
     "@scure/bip39": "1.2.1",
     "@sentry/browser": "7.69.0",
@@ -134,6 +134,7 @@
     "firebase": "9.18.0",
     "framer-motion": "10.2.3",
     "graphql-request": "5.2.0",
+    "graphql-tag": "^2.11.0",
     "i18n-js": "4.1.1",
     "idna-uts46-hx": "3.5.0",
     "imgix-core-js": "2.3.2",
@@ -229,7 +230,8 @@
     "webpack-bundle-analyzer": "4.8.0",
     "webpack-cli": "5.1.4",
     "webpack-extension-reloader": "rainbow-me/webpack-extension-reloader#23fc3ed1f59f295702d459ad58aec90d6f0a3551",
-    "worker-loader": "3.0.8"
+    "worker-loader": "3.0.8",
+    "@graphql-eslint/eslint-plugin": "3.10.7"
   },
   "resolutions": {
     "tar": "6.2.1",
@@ -271,7 +273,8 @@
     "@solana/web3.js": "1.90.2",
     "jose": "4.15.5",
     "phin": "3.7.1",
-    "braces": "3.0.3"
+    "braces": "3.0.3",
+    "ws": "8.17.1"
   },
   "lavamoat": {
     "allowScripts": {

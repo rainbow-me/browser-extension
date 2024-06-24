@@ -178,7 +178,9 @@ export async function executeRap<T extends RapTypes>({
   type: RapTypes;
 }): Promise<ExecuteRapResponse> {
   const nonce = await getNextNonce({
-    address: rapActionParameters.quote.from as Address,
+    address:
+      rapActionParameters?.address ||
+      (rapActionParameters.quote?.from as Address),
     chainId: rapActionParameters.chainId as number,
   });
   const params: WalletExecuteRapProps = {

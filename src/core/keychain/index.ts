@@ -246,11 +246,14 @@ export const executeRap = async ({
   type,
   provider,
 }: {
-  rapActionParameters: RapSwapActionParameters<'swap' | 'crosschainSwap'>;
+  rapActionParameters: RapSwapActionParameters<
+    'swap' | 'crosschainSwap' | 'claimBridge'
+  >;
   type: RapTypes;
   provider: Provider;
 }): Promise<{ nonce: number | undefined }> => {
-  const from = rapActionParameters.quote.from as Address;
+  const from = (rapActionParameters.address ||
+    rapActionParameters.quote?.from) as Address;
   if (typeof from === 'undefined') {
     throw new Error('Missing from address');
   }

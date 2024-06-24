@@ -14,6 +14,8 @@ export const ROUTES = {
   POINTS_REFERRAL: '/home/points-referral',
   POINTS_ONBOARDING: '/home/points-onboarding',
   POINTS_WEEKLY_OVERVIEW: '/home/points-weekly-overview',
+  CLAIM_SHEET: '/home/claim-sheet',
+  CLAIM_OVERVIEW: '/home/claim-overview',
   CONNECTED: '/connected', // ConnectedApps
   WELCOME: '/welcome', // Welcome
   IMPORT_OR_CONNECT: '/import-or-connect', // ImportOrConnect

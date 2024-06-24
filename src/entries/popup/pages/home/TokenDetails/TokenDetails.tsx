@@ -314,18 +314,9 @@ function MoreOptions({
 
   const { pinned: pinnedStore, togglePinAsset } = usePinnedAssetStore();
 
-  const { selectedToken, setSelectedToken } = useSelectedTokenStore();
+  const { setSelectedToken } = useSelectedTokenStore();
 
   const { isWatchingWallet } = useWallets();
-
-  const resetSelectedToken = useCallback(() => {
-    if (selectedToken) setSelectedToken();
-  }, [setSelectedToken, selectedToken]);
-
-  useEffect(() => {
-    // When component unmounts reset the selectedToken
-    return resetSelectedToken;
-  }, [resetSelectedToken]);
 
   const isHidden = useCallback(
     (asset: ParsedUserAsset | SearchAsset) => {
@@ -359,6 +350,7 @@ function MoreOptions({
   }, [token, hidden, pinned, togglePinAsset, toggleHideAsset, address]);
 
   const togglePinToken = useCallback(() => {
+    if (hidden) return;
     togglePinAsset(address, token.uniqueId);
     if (pinned) {
       triggerToast({
@@ -373,7 +365,7 @@ function MoreOptions({
         name: token.symbol,
       }),
     });
-  }, [token.uniqueId, token.symbol, togglePinAsset, address, pinned]);
+  }, [token.uniqueId, token.symbol, togglePinAsset, hidden, address, pinned]);
 
   const copyTokenAddress = useCallback(() => {
     copyAddress(token.address);
