@@ -1102,7 +1102,7 @@ export type PointsQueryVariables = Exact<{
 }>;
 
 
-export type PointsQuery = { __typename?: 'Query', points?: { __typename?: 'Points', error?: { __typename?: 'PointsError', message: string, type: PointsErrorType } | null, meta: { __typename?: 'PointsMeta', status: PointsMetaStatus, distribution: { __typename?: 'PointsMetaDistribution', next: number } }, leaderboard: { __typename?: 'PointsLeaderboard', stats: { __typename?: 'PointsLeaderboardStats', total_users: number, total_points: number, rank_cutoff: number }, accounts?: Array<{ __typename?: 'PointsLeaderboardAccount', address: string, ens: string, avatarURL: string, earnings: { __typename?: 'PointsLeaderboardEarnings', total: number } }> | null }, user: { __typename?: 'PointsUser', referralCode: string, earnings: { __typename?: 'PointsEarnings', total: number }, stats: { __typename?: 'PointsStats', position: { __typename?: 'PointsStatsPosition', unranked: boolean, current: number }, last_airdrop: { __typename?: 'PointsStatsPositionLastAirdrop', position: { __typename?: 'PointsStatsPosition', current: number }, differences: Array<{ __typename?: 'PointsStatsPositionLastAirdropDifference', type: string, group_id: string, earnings: { __typename?: 'PointsEarnings', total: number } } | null> } } } } | null };
+export type PointsQuery = { __typename?: 'Query', points?: { __typename?: 'Points', error?: { __typename?: 'PointsError', message: string, type: PointsErrorType } | null, meta: { __typename?: 'PointsMeta', status: PointsMetaStatus, distribution: { __typename?: 'PointsMetaDistribution', next: number }, rewards: { __typename?: 'PointsMetaRewards', total: string } }, leaderboard: { __typename?: 'PointsLeaderboard', stats: { __typename?: 'PointsLeaderboardStats', total_users: number, total_points: number, rank_cutoff: number }, accounts?: Array<{ __typename?: 'PointsLeaderboardAccount', address: string, ens: string, avatarURL: string, earnings: { __typename?: 'PointsLeaderboardEarnings', total: number } }> | null }, user: { __typename?: 'PointsUser', referralCode: string, earnings_by_type: Array<{ __typename?: 'PointsUserEarningByType', type: string, earnings: { __typename?: 'PointsEarnings', total: number } } | null>, earnings: { __typename?: 'PointsEarnings', total: number }, rewards: { __typename?: 'PointsRewards', total: string, claimable: string, claimed: string }, stats: { __typename?: 'PointsStats', position: { __typename?: 'PointsStatsPosition', unranked: boolean, current: number }, referral: { __typename?: 'PointsStatsReferral', total_referees: number, qualified_referees: number }, last_airdrop: { __typename?: 'PointsStatsPositionLastAirdrop', position: { __typename?: 'PointsStatsPosition', unranked: boolean, current: number }, earnings: { __typename?: 'PointsEarnings', total: number }, differences: Array<{ __typename?: 'PointsStatsPositionLastAirdropDifference', type: string, group_id: string, earnings: { __typename?: 'PointsEarnings', total: number } } | null> }, last_period: { __typename?: 'PointsStatsPositionLastPeriod', position: { __typename?: 'PointsStatsPosition', unranked: boolean, current: number }, earnings: { __typename?: 'PointsEarnings', total: number } } } } } | null };
 
 export type RedeemCodeForPointsMutationVariables = Exact<{
   address: Scalars['String'];
@@ -1111,6 +1111,13 @@ export type RedeemCodeForPointsMutationVariables = Exact<{
 
 
 export type RedeemCodeForPointsMutation = { __typename?: 'Mutation', redeemCode?: { __typename?: 'RedeemedPoints', earnings: { __typename?: 'RedeemedPointsEarnings', total: number }, redemption_code: { __typename?: 'RedemptionCode', code: string }, error?: { __typename?: 'PointsError', type: PointsErrorType, message: string } | null } | null };
+
+export type ClaimUserRewardsMutationVariables = Exact<{
+  address: Scalars['String'];
+}>;
+
+
+export type ClaimUserRewardsMutation = { __typename?: 'Mutation', claimUserRewards?: { __typename?: 'UserClaimTransaction', chainID: number, uoHash: string, txHash: string, error?: { __typename?: 'PointsError', type: PointsErrorType, message: string } | null } | null };
 
 export const AssetFragmentDoc = gql`
     fragment asset on TransactionSimulationAsset {
@@ -1448,6 +1455,9 @@ export const PointsDocument = gql`
         next
       }
       status
+      rewards {
+        total
+      }
     }
     leaderboard {
       stats {
@@ -1466,17 +1476,36 @@ export const PointsDocument = gql`
     }
     user {
       referralCode
+      earnings_by_type {
+        type
+        earnings {
+          total
+        }
+      }
       earnings {
         total
+      }
+      rewards {
+        total
+        claimable
+        claimed
       }
       stats {
         position {
           unranked
           current
         }
+        referral {
+          total_referees
+          qualified_referees
+        }
         last_airdrop {
           position {
+            unranked
             current
+          }
+          earnings {
+            total
           }
           differences {
             type
@@ -1484,6 +1513,15 @@ export const PointsDocument = gql`
             earnings {
               total
             }
+          }
+        }
+        last_period {
+          position {
+            unranked
+            current
+          }
+          earnings {
+            total
           }
         }
       }
@@ -1504,6 +1542,19 @@ export const RedeemCodeForPointsDocument = gql`
       type
       message
     }
+  }
+}
+    `;
+export const ClaimUserRewardsDocument = gql`
+    mutation claimUserRewards($address: String!) {
+  claimUserRewards(address: $address) {
+    error {
+      type
+      message
+    }
+    chainID
+    uoHash
+    txHash
   }
 }
     `;
@@ -1551,6 +1602,9 @@ export function getSdk<C, E>(requester: Requester<C, E>) {
     },
     redeemCodeForPoints(variables: RedeemCodeForPointsMutationVariables, options?: C): Promise<RedeemCodeForPointsMutation> {
       return requester<RedeemCodeForPointsMutation, RedeemCodeForPointsMutationVariables>(RedeemCodeForPointsDocument, variables, options) as Promise<RedeemCodeForPointsMutation>;
+    },
+    claimUserRewards(variables: ClaimUserRewardsMutationVariables, options?: C): Promise<ClaimUserRewardsMutation> {
+      return requester<ClaimUserRewardsMutation, ClaimUserRewardsMutationVariables>(ClaimUserRewardsDocument, variables, options) as Promise<ClaimUserRewardsMutation>;
     }
   };
 }

@@ -13,7 +13,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 
 import { useCurrentAddressStore } from '~/core/state';
-import { ParsedSearchAsset } from '~/core/types/assets';
+import { ParsedAsset, ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { convertAmountToRawAmount } from '~/core/utils/numbers';
 import { isUnwrapEth, isWrapEth } from '~/core/utils/swaps';
@@ -25,13 +25,14 @@ const CACHE_INTERVAL = 1000;
 const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
 
 interface UseSwapQuotesProps {
-  assetToSell: ParsedSearchAsset | null;
-  assetToBuy: ParsedSearchAsset | null;
+  assetToSell: ParsedSearchAsset | ParsedAsset | null;
+  assetToBuy: ParsedSearchAsset | ParsedAsset | null;
   assetToSellValue?: string;
   assetToBuyValue?: string;
   independentField: IndependentField;
   source: Source | 'auto';
   slippage: string | number;
+  isClaim?: boolean;
 }
 
 export const useSwapQuote = ({
@@ -42,6 +43,7 @@ export const useSwapQuote = ({
   independentField,
   slippage,
   source,
+  isClaim,
 }: UseSwapQuotesProps) => {
   const { currentAddress } = useCurrentAddressStore();
 
@@ -92,7 +94,7 @@ export const useSwapQuote = ({
       refuel: false,
       swapType: isCrosschainSwap ? SwapType.crossChain : SwapType.normal,
       toChainId: isCrosschainSwap ? assetToBuy.chainId : assetToSell.chainId,
-      feePercentageBasisPoints: INTERNAL_BUILD ? 0 : undefined,
+      feePercentageBasisPoints: INTERNAL_BUILD || isClaim ? 0 : undefined,
     };
   }, [
     assetToBuy,
@@ -104,6 +106,7 @@ export const useSwapQuote = ({
     isCrosschainSwap,
     slippage,
     source,
+    isClaim,
   ]);
 
   const { data, isLoading, isError, fetchStatus } = useQuery({

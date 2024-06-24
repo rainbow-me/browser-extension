@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion';
 import React, { forwardRef } from 'react';
 
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+
 import {
   BoxStyles,
   ShadowSize,
@@ -117,7 +119,10 @@ export const stylesForHeightAndVariant = ({
     },
     square: {},
     shadow: {
-      boxShadow: shadowValue('30px', color),
+      boxShadow: shadowValue('12px', color),
+    },
+    transparentShadow: {
+      boxShadow: shadowValue('52px', color),
     },
   },
   '36px': {
@@ -136,6 +141,9 @@ export const stylesForHeightAndVariant = ({
     shadow: {
       boxShadow: shadowValue('24px', color),
     },
+    transparentShadow: {
+      boxShadow: shadowValue('52px', color),
+    },
   },
   '32px': {
     raised: { boxShadow: shadowValue('24px', color) },
@@ -152,6 +160,9 @@ export const stylesForHeightAndVariant = ({
     square: {},
     shadow: {
       boxShadow: shadowValue('24px', color),
+    },
+    transparentShadow: {
+      boxShadow: shadowValue('52px', color),
     },
   },
   '30px': {
@@ -170,6 +181,9 @@ export const stylesForHeightAndVariant = ({
     shadow: {
       boxShadow: shadowValue('24px', color),
     },
+    transparentShadow: {
+      boxShadow: shadowValue('52px', color),
+    },
   },
   '28px': {
     raised: { boxShadow: shadowValue('12px', color) },
@@ -187,6 +201,9 @@ export const stylesForHeightAndVariant = ({
     shadow: {
       boxShadow: shadowValue('12px', color),
     },
+    transparentShadow: {
+      boxShadow: shadowValue('52px', color),
+    },
   },
   '24px': {
     raised: { boxShadow: shadowValue('12px', color) },
@@ -203,6 +220,9 @@ export const stylesForHeightAndVariant = ({
     square: {},
     shadow: {
       boxShadow: shadowValue('12px', color),
+    },
+    transparentShadow: {
+      boxShadow: shadowValue('52px', color),
     },
   },
 });
@@ -248,6 +268,12 @@ export const stylesForVariant = ({
     textColor: color as TextColor,
     backgroundColor: transparentAccentColorAsHsl20,
   },
+  transparentShadow: {
+    borderColor: color as ButtonColor,
+    borderWidth: '2px',
+    textColor: color as TextColor,
+    backgroundColor: 'transparent',
+  },
   transparent: {
     textColor: color as TextColor,
   },
@@ -288,6 +314,7 @@ export const ButtonWrapper = forwardRef<HTMLButtonElement, ButtonWrapperProps>(
     }: ButtonWrapperProps,
     ref,
   ) {
+    const { currentTheme } = useCurrentThemeStore();
     const { boxShadow } = stylesForHeightAndVariant({
       color: color as ButtonColor,
     })[height][variant];
@@ -358,6 +385,22 @@ export const ButtonWrapper = forwardRef<HTMLButtonElement, ButtonWrapperProps>(
           ref={ref}
           autoFocus={autoFocus}
         >
+          {variant === 'transparentShadow' && (
+            <Box
+              background={color as BackgroundColor}
+              borderRadius={borderRadius ?? 'round'}
+              style={{
+                position: 'absolute',
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
+                opacity: currentTheme === 'dark' ? 0.15 : 0.1,
+                margin: -2,
+                backdropFilter: 'blur(10px)',
+              }}
+            ></Box>
+          )}
           {children}
         </Box>
       </Box>

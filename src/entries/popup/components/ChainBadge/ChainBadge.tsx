@@ -25,6 +25,7 @@ import ExternalImage from '../ExternalImage/ExternalImage';
 const chainBadgeSize = {
   '60': 60,
   '45': 45,
+  '32': 32,
   '18': 18,
   '16': 16,
   '14': 14,
