@@ -220,11 +220,7 @@ export function ClaimNetworkSelection({
           <Rows>
             {networkInfo.map((info) => (
               <Row key={info.chainId}>
-                <ClaimSheetRow
-                  chain={info.chainId}
-                  display={info.fee || ''}
-                  onSelect={onSelect}
-                />
+                <ClaimSheetRow chain={info.chainId} onSelect={onSelect} />
               </Row>
             ))}
           </Rows>
@@ -262,11 +258,9 @@ export function ClaimNetworkSelection({
 
 function ClaimSheetRow({
   chain,
-  display,
   onSelect,
 }: {
   chain: ChainId;
-  display: string;
   onSelect: (chainId: ChainId) => void;
 }) {
   const disableBridging =
@@ -292,21 +286,16 @@ function ClaimSheetRow({
       >
         <Inset horizontal="8px">
           <Box display="flex" justifyContent="space-between">
-            <Inline space="12px">
+            <Inline space="12px" alignVertical="center">
               <ChainBadge chainId={chain} size="32" />
-              <Stack gap="10px">
-                <Text
-                  size="16pt"
-                  color="label"
-                  textShadow="16px label"
-                  weight="heavy"
-                >
-                  {chainsLabel[chain]}
-                </Text>
-                <Text size="12pt" color="labelQuaternary" weight="bold">
-                  {display}
-                </Text>
-              </Stack>
+              <Text
+                size="16pt"
+                color="label"
+                textShadow="16px label"
+                weight="heavy"
+              >
+                {chainsLabel[chain]}
+              </Text>
             </Inline>
             {disableBridging && (
               <Inline alignVertical="center">
