@@ -75,7 +75,6 @@ export const estimateCrosschainSwapGasLimit = async ({
       provider: provider,
       paddingFactor: SWAP_GAS_PADDING,
     });
-    console.log('estimateGasWithPadding returned', gasLimit);
 
     return gasLimit || getCrosschainSwapDefaultGasLimit(quote);
   } catch (error) {
