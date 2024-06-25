@@ -192,33 +192,6 @@ export function ClaimSheet() {
       setTimeout(() => setShowSummary(true), 5000);
     }
   }, [showSuccess, showSummary]);
-  useEffect(() => {
-    if (address && claimableBalance.amount && ethPrice) {
-      const unclaimedBalanceUSD = Number(
-        claimablePriceDisplay.display.slice(1),
-      );
-      analytics.identify({
-        unclaimedBalance: Number(claimableBalance.amount),
-        unclaimedBalanceUSD,
-      });
-    }
-    if (address && rewards?.claimed && ethPrice) {
-      const claimedBalanceUSD = convertAmountToNativeDisplay(
-        Number(rewards.claimed),
-        'USD',
-      ).slice(1);
-      analytics.identify({
-        claimedBalance: Number(rewards.claimed),
-        claimedBalanceUSD: Number(claimedBalanceUSD),
-      });
-    }
-  }, [
-    address,
-    claimableBalance.amount,
-    claimablePriceDisplay.display,
-    ethPrice,
-    rewards,
-  ]);
 
   return (
     <>
