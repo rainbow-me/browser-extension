@@ -20,8 +20,8 @@ export interface UserProperties {
   ledgerDevices?: number;
   // whether a recovery phrase or private key has been imported
   hasImported?: boolean;
-  unclaimedBalance?: string;
-  unclaimedBalanceUSD?: string;
-  claimedBalance?: string;
-  claimedBalanceUSD?: string;
+  unclaimedBalance?: number;
+  unclaimedBalanceUSD?: number;
+  claimedBalance?: number;
+  claimedBalanceUSD?: number;
 }

@@ -42,26 +42,6 @@ import * as wallet from '../../../handlers/wallet';
 import { ClaimOverview } from './ClaimOverview';
 import { invalidatePointsQuery, usePoints } from './usePoints';
 
-const identifyUserUnclaimedBalance = (
-  unclaimedBalance: string,
-  unclaimedBalanceUSD: string,
-) => {
-  analytics.identify({
-    unclaimedBalance,
-    unclaimedBalanceUSD,
-  });
-};
-
-const identifyUserClaimedBalance = (
-  claimedBalance: string,
-  claimedBalanceUSD: string,
-) => {
-  analytics.identify({
-    claimedBalance,
-    claimedBalanceUSD,
-  });
-};
-
 const trackClaimAndNetwork = (claimAmount: string, chainId: ChainId) => {
   function getChainNameFromId(chainId: ChainId): ChainName {
     return chainIdToNameMapping[chainId];
@@ -214,20 +194,23 @@ export function ClaimSheet() {
   }, [showSuccess, showSummary]);
   useEffect(() => {
     if (address && claimableBalance.amount && ethPrice) {
-      const unclaimedBalanceUSD = parseFloat(
-        claimablePriceDisplay.display.replace(/[^0-9.-]+/g, ''),
+      const unclaimedBalanceUSD = Number(
+        claimablePriceDisplay.display.slice(1),
       );
-      identifyUserUnclaimedBalance(
-        claimableBalance.amount.toString(),
-        unclaimedBalanceUSD.toString(),
-      );
+      analytics.identify({
+        unclaimedBalance: Number(claimableBalance.amount),
+        unclaimedBalanceUSD,
+      });
     }
     if (address && rewards?.claimed && ethPrice) {
       const claimedBalanceUSD = convertAmountToNativeDisplay(
-        parseInt(rewards.claimed),
+        Number(rewards.claimed),
         'USD',
-      ).replace('$', '');
-      identifyUserClaimedBalance(rewards.claimed, claimedBalanceUSD);
+      ).slice(1);
+      analytics.identify({
+        claimedBalance: Number(rewards.claimed),
+        claimedBalanceUSD: Number(claimedBalanceUSD),
+      });
     }
   }, [
     address,
