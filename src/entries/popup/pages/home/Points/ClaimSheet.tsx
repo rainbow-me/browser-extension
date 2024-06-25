@@ -9,11 +9,10 @@ import { i18n } from '~/core/languages';
 import { RapClaimActionParameters } from '~/core/raps/references';
 import { chainsLabel } from '~/core/references/chains';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
-import { ChainId, ChainName, chainIdToNameMapping } from '~/core/types/chains';
+import { ChainId, chainIdToNameMapping } from '~/core/types/chains';
 import { GasSpeed } from '~/core/types/gas';
 import {
   convertAmountAndPriceToNativeDisplay,
-  convertAmountToNativeDisplay,
   convertRawAmountToBalance,
 } from '~/core/utils/numbers';
 import {
@@ -41,21 +40,6 @@ import * as wallet from '../../../handlers/wallet';
 
 import { ClaimOverview } from './ClaimOverview';
 import { invalidatePointsQuery, usePoints } from './usePoints';
-
-const trackClaimAndNetwork = (claimAmount: string, chainId: ChainId) => {
-  function getChainNameFromId(chainId: ChainId): ChainName {
-    return chainIdToNameMapping[chainId];
-  }
-
-  const network = getChainNameFromId(chainId);
-  const claimAmountUSD = convertAmountToNativeDisplay(claimAmount, 'USD');
-
-  analytics.track(event.pointsRewardsClaimSubmitted, {
-    claimAmount: Number(claimAmount),
-    claimAmountUSD: Number(claimAmountUSD.slice(1)), // remove `$` first
-    networkSelected: network as 'optimism' | 'zora' | 'base',
-  });
-};
 
 export function ClaimSheet() {
   const navigate = useRainbowNavigate();
@@ -167,8 +151,15 @@ export function ClaimSheet() {
     setSelectedChainId(chain);
     setInitialClaimableAmount(claimableBalance.amount);
     setInitialClaimableDisplay(claimablePriceDisplay.display);
-    trackClaimAndNetwork(claimableBalance.amount, chain);
     setTimeout(() => claimRewards(), 500);
+    analytics.track(event.pointsRewardsClaimSubmitted, {
+      claimAmount: Number(claimableBalance.amount),
+      claimAmountUSD: Number(claimablePriceDisplay.display.slice(1)),
+      networkSelected: chainIdToNameMapping[chain] as
+        | 'optimism'
+        | 'zora'
+        | 'base',
+    });
   };
 
   const baseInfo = {
