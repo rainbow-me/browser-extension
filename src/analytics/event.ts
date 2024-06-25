@@ -149,6 +149,11 @@ export const event = {
    */
   pointsLeaderboardViewed: 'points.leaderboard.viewed',
   /**
+   * Called when user copies their referral link
+   * within Points and tracks if it was a code or link
+   */
+  pointsReferralCopied: 'points.referral.copied',
+  /**
    * Called when user views the Rewards tab within Points
    */
   pointsRewardsViewed: 'points.rewards.viewed',
@@ -197,11 +202,6 @@ export const event = {
    */
   settingsRainbowDefaultProviderEnabled:
     'settings.rainbow_default_provider.enabled',
-  /**
-   * Called when user copies their referral link within the
-   * Points / Eth rewards screen and tracks if it was a code or link
-   */
-  sharedReferralLink: 'referral.link.shared',
   /**
    * Called when the user completes a Swap/Bridge and submits the transaction.
    * This includes cross-chain swaps, while `bridgeSubmitted` is instead called
@@ -577,6 +577,12 @@ export type EventProperties = {
     type: KeyboardEventDescription;
   };
   [event.pointsLeaderboardViewed]: undefined;
+  [event.pointsReferralCopied]: {
+    /**
+     * Was a `link` or `code` copied
+     */
+    type: 'link' | 'code';
+  };
   [event.pointsRewardsViewed]: undefined;
   [event.pointsViewed]: undefined;
   [event.popupOpened]: undefined;
@@ -720,8 +726,4 @@ export type EventProperties = {
      */
     networkSelected: 'optimism' | 'base' | 'zora';
   };
-  /**
-   * Was referral copied, and was it link or code
-   */
-  [event.sharedReferralLink]: { linkOrCode: string };
 };

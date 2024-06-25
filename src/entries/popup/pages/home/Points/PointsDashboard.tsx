@@ -66,10 +66,6 @@ const { format: formatNumber } = createNumberFormatter({
   maximumSignificantDigits: 8,
 });
 
-const trackSharedReferralLink = (linkOrCode: string) => {
-  analytics.track(analytics.event.sharedReferralLink, { linkOrCode });
-};
-
 // TODO: Also track amount in USD
 const trackTappedClaimButton = (claimAmount: number) => {
   analytics.track(analytics.event.tappedClaimButton, { claimAmount });
@@ -285,7 +281,7 @@ function TextWithMoreInfo({ children }: PropsWithChildren) {
 }
 
 export const copyReferralLink = (referralCode: string) => {
-  trackSharedReferralLink('link');
+  analytics.track(event.pointsReferralCopied, { type: 'link' });
   copy({
     value: `https://rainbow.me/points?ref=${referralCode}`,
     title: i18n.t('points.copied_referral_link'),
@@ -299,7 +295,7 @@ function ReferralCode() {
   const { currentAddress } = useCurrentAddressStore();
   const { data, isSuccess } = usePoints(currentAddress);
   const copyReferralCode = () => {
-    trackSharedReferralLink('code');
+    analytics.track(event.pointsReferralCopied, { type: 'code' });
     copy({
       value: data?.user.referralCode || '',
       title: i18n.t('points.copied_referral_code'),
