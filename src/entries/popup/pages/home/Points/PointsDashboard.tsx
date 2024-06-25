@@ -14,6 +14,7 @@ import { Address } from 'viem';
 
 import rainbowIcon from 'static/images/icon-16@2x.png';
 import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { PointsQuery } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
@@ -72,14 +73,6 @@ const trackSharedReferralLink = (linkOrCode: string) => {
 // TODO: Also track amount in USD
 const trackTappedClaimButton = (claimAmount: number) => {
   analytics.track(analytics.event.tappedClaimButton, { claimAmount });
-};
-
-const trackViewedRewardsTab = () => {
-  analytics.track(analytics.event.viewedPointsTab);
-};
-
-const trackViewedLeaderboardTab = () => {
-  analytics.track(analytics.event.viewedLeaderboardTab);
 };
 
 function Card({
@@ -1129,10 +1122,11 @@ export function PointsDashboard() {
   );
   useEffect(() => {
     if (displayMode === 'rewards') {
-      trackViewedRewardsTab();
+      analytics.track(event.pointsRewardsViewed);
     } else if (displayMode === 'leaderboard') {
-      trackViewedLeaderboardTab();
+      analytics.track(event.pointsLeaderboardViewed);
     }
+    analytics.track(event.pointsViewed);
   }, [displayMode]);
   return (
     <>

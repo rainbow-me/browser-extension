@@ -145,6 +145,18 @@ export const event = {
    */
   keyboardShortcutTriggered: 'keyboard.shortcut.triggered',
   /**
+   * Called when user views the Leaderboard tab within Points
+   */
+  pointsLeaderboardViewed: 'points.leaderboard.viewed',
+  /**
+   * Called when user views the Rewards tab within Points
+   */
+  pointsRewardsViewed: 'points.rewards.viewed',
+  /**
+   * Called when user views the Points tab
+   */
+  pointsViewed: 'points.viewed',
+  /**
    * Called when the popup entry is opened, including:
    * - extension popup
    * - new window
@@ -201,16 +213,6 @@ export const event = {
    * within the Points / Eth rewards screen
    */
   tappedClaimButton: 'claim.button.tapped',
-  /**
-   * Called when user views Leaderboard tab
-   * within the Points / Eth rewards screen
-   */
-  viewedLeaderboardTab: 'points.leaderboard.viewed',
-  /**
-   * Called when user views Points tab
-   * within the Points / Eth rewards screen
-   */
-  viewedPointsTab: 'points.tab.viewed',
   /**
    * Called when the core wallet Tokens & Activity
    * screen is viewed or opened in the extension popup.
@@ -574,6 +576,9 @@ export type EventProperties = {
      */
     type: KeyboardEventDescription;
   };
+  [event.pointsLeaderboardViewed]: undefined;
+  [event.pointsRewardsViewed]: undefined;
+  [event.pointsViewed]: undefined;
   [event.popupOpened]: undefined;
   [event.settingsAnalyticsTrackingDisabled]: undefined;
   [event.revokeSubmitted]: {
@@ -691,11 +696,6 @@ export type EventProperties = {
     tradeAmountUSD: number;
   };
   [event.walletViewed]: undefined;
-  /**
-   * Was the Leaderboard or Points tab viewed for Eth rewards
-   */
-  [event.viewedLeaderboardTab]: undefined;
-  [event.viewedPointsTab]: undefined;
   /**
    * Claim button tapped for Eth rewards
    */
