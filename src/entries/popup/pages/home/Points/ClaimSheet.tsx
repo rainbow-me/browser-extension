@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
 import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { RapClaimActionParameters } from '~/core/raps/references';
@@ -69,9 +70,9 @@ const trackClaimAndNetwork = (claimAmount: string, chainId: ChainId) => {
   const network = getChainNameFromId(chainId);
   const claimAmountUSD = convertAmountToNativeDisplay(claimAmount, 'USD');
 
-  analytics.track(analytics.event.claimed, {
-    claimAmount,
-    claimAmountUSD,
+  analytics.track(event.pointsRewardsClaimSubmitted, {
+    claimAmount: Number(claimAmount),
+    claimAmountUSD: Number(claimAmountUSD.slice(1)), // remove `$` first
     networkSelected: network as 'optimism' | 'zora' | 'base',
   });
 };

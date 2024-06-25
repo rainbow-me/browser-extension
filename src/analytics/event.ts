@@ -17,11 +17,6 @@ export const event = {
    */
   bridgeSubmitted: 'bridge.submitted',
   /**
-   * Called when user chooses which network to claim rewards on and the
-   * code to claim is executed within the Points / Eth rewards screen
-   */
-  claimed: 'claim.claimed',
-  /**
    * Called when a commandK action is executed
    */
   commandKActionExecuted: 'commandK.actionExecuted',
@@ -158,6 +153,11 @@ export const event = {
    * within the Points / Eth rewards screen
    */
   pointsRewardsClaimButtonClicked: 'points.rewards.claim_button.clicked',
+  /**
+   * Called when user chooses which network to claim rewards on and the
+   * code to claim is executed within the Points / Eth rewards screen
+   */
+  pointsRewardsClaimSubmitted: 'points.rewards.claim.submitted',
   /**
    * Called when user views the Rewards tab within Points
    */
@@ -589,6 +589,20 @@ export type EventProperties = {
      */
     claimAmount: number;
   };
+  [event.pointsRewardsClaimSubmitted]: {
+    /**
+     * claim amount in ETH
+     */
+    claimAmount: number;
+    /**
+     * claim amount in USD
+     */
+    claimAmountUSD: number;
+    /**
+     * which network of the three possible was selected
+     */
+    networkSelected: 'optimism' | 'base' | 'zora';
+  };
   [event.pointsRewardsViewed]: undefined;
   [event.pointsViewed]: undefined;
   [event.popupOpened]: undefined;
@@ -708,22 +722,4 @@ export type EventProperties = {
     tradeAmountUSD: number;
   };
   [event.walletViewed]: undefined;
-  /**
-   * Did user claim, and on what chain for Eth rewards
-   */
-  [event.claimed]: {
-    /**
-     * string amount in Eth of claim
-     * TODO: add USD value
-     */
-    claimAmount: string;
-    /**
-     * string amount in USD of claim
-     */
-    claimAmountUSD: string;
-    /**
-     * which network of the three possible was selected
-     */
-    networkSelected: 'optimism' | 'base' | 'zora';
-  };
 };
