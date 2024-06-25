@@ -907,12 +907,6 @@ function MyEarnings({ earnings = '0' }: { earnings?: string }) {
               {i18n.t('points.rewards.my_earnings')}
             </Text>
           </Inline>
-          <Symbol
-            symbol="questionmark.circle.fill"
-            weight="heavy"
-            size={16}
-            color="labelQuaternary"
-          />
         </Box>
         <Box display="flex" justifyContent="space-between">
           <Inline space="10px" alignVertical="center">
