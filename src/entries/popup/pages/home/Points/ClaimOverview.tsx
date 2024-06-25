@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 import { PointsErrorType } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
@@ -47,7 +47,7 @@ export function ClaimOverview({
   const showSuccess = !waitToDisplay && success && preparingClaim && !error;
 
   useEffect(() => {
-    setTimeout(() => setWaitToDisplay(false), 3000);
+    setTimeout(() => setWaitToDisplay(false), 4000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -186,7 +186,7 @@ function ErrorText({ error }: { error?: string }) {
   );
 }
 
-function RainbowSlant() {
+const RainbowSlant = memo(function () {
   return (
     <Box paddingTop="30px">
       <Stack space="12px">
@@ -208,7 +208,8 @@ function RainbowSlant() {
       </Stack>
     </Box>
   );
-}
+});
+RainbowSlant.displayName = 'RainbowSlant';
 
 function ClaimSummary({ amount, price }: { amount: string; price: string }) {
   return (
