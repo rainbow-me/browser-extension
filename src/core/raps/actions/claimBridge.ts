@@ -11,7 +11,15 @@ import { optimism } from 'viem/chains';
 import { gasStore } from '~/core/state';
 import { TransactionGasParams } from '~/core/types/gas';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
-import { add, addBuffer, lessThan, multiply, subtract } from '~/core/utils/numbers';
+import { calculateL1FeeOptimism } from '~/core/utils/gas';
+import {
+  add,
+  addBuffer,
+  greaterThan,
+  lessThan,
+  multiply,
+  subtract,
+} from '~/core/utils/numbers';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 
@@ -55,18 +63,37 @@ export async function claimBridge({
 
   let bridgeQuote = claimBridgeQuote as CrosschainQuote;
 
+  const provider = getProvider({
+    chainId: optimism.id,
+  });
+
+  const gasPrice = await provider.getGasPrice();
+
+  const l1GasFeeOptimism = await calculateL1FeeOptimism({
+    transactionRequest:
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      {
+        data: bridgeQuote.data,
+        from: bridgeQuote.from,
+        to: bridgeQuote.to,
+        value: bridgeQuote.value,
+      },
+    currentGasPrice: gasPrice.toString(),
+    provider,
+  });
+
   // 2 - We use the default gas limit (already inflated) from the quote to calculate the aproximate gas fee
   const initalGasLimit = bridgeQuote.defaultGasLimit!;
   const { selectedGas } = gasStore.getState();
   const gasParams = selectedGas.transactionGasParams as TransactionGasParams;
   const feeAmount = add(gasParams.maxFeePerGas, gasParams.maxPriorityFeePerGas);
-  const gasFeeInWei = multiply(initalGasLimit!, feeAmount);
+  let gasFeeInWei = multiply(initalGasLimit!, feeAmount);
+  if (l1GasFeeOptimism && greaterThan(l1GasFeeOptimism.toString(), '0')) {
+    gasFeeInWei = add(gasFeeInWei, l1GasFeeOptimism.toString());
+  }
 
   // 3 - Check if the user has enough balance to pay the gas fee
-  const provider = getProvider({
-    chainId: optimism.id,
-  });
-
   const balance = await provider.getBalance(address);
 
   // if the balance minus the sell amount is less than the gas fee we need to make adjustments
@@ -115,11 +142,15 @@ export async function claimBridge({
     });
   } catch (e) {
     // Instead of failing we'll try using the default gas limit + 20% if it exists
-    gasLimit = bridgeQuote.defaultGasLimit ? addBuffer(bridgeQuote.defaultGasLimit) : null;
+    gasLimit = bridgeQuote.defaultGasLimit
+      ? addBuffer(bridgeQuote.defaultGasLimit)
+      : null;
   }
 
   if (!gasLimit) {
-    throw new Error('[CLAIM-BRIDGE]: error estimating gas or using default gas limit');
+    throw new Error(
+      '[CLAIM-BRIDGE]: error estimating gas or using default gas limit',
+    );
   }
 
   // we need to bump the base nonce to next available one
