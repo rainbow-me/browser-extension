@@ -242,7 +242,7 @@ export function ClaimSheet() {
       <ClaimNetworkSelection
         goBack={goBack}
         networkInfo={claimNetworkInfo}
-        onSelect={() => handleNetworkSelection(selectedChainId)}
+        onSelect={handleNetworkSelection}
         show={showNetworkSelection}
       />
       <ClaimOverview
