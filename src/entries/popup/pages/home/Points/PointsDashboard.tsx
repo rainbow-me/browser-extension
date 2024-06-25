@@ -722,7 +722,6 @@ function ClaimYourPointsCta({
       whileFocus={{ scale: 1.02 }}
       whileHover={{ scale: 1.02 }}
       onClick={() => {
-        // TODO: Also track amount in USD
         analytics.track(event.pointsRewardsClaimButtonClicked, {
           claimAmount: Number(
             convertRawAmountToDecimalFormat(claimableReward, 18),
@@ -733,7 +732,9 @@ function ClaimYourPointsCta({
     >
       <RainbowText size="20pt" weight="heavy">
         {i18n.t('points.rewards.claim_reward', {
-          reward: `${convertRawAmountToDecimalFormat(claimableReward, 18)} ETH`,
+          reward: `${parseFloat(
+            convertRawAmountToDecimalFormat(claimableReward, 18),
+          ).toFixed(6)} ETH`,
         })}
       </RainbowText>
       <Box
