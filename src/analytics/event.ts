@@ -140,6 +140,33 @@ export const event = {
    */
   keyboardShortcutTriggered: 'keyboard.shortcut.triggered',
   /**
+   * Called when user views the Leaderboard tab within Points
+   */
+  pointsLeaderboardViewed: 'points.leaderboard.viewed',
+  /**
+   * Called when user copies their referral link
+   * within Points and tracks if it was a code or link
+   */
+  pointsReferralCopied: 'points.referral.copied',
+  /**
+   * Called when user taps the claim button
+   * within the Points / Eth rewards screen
+   */
+  pointsRewardsClaimButtonClicked: 'points.rewards.claim_button.clicked',
+  /**
+   * Called when user chooses which network to claim rewards on and the
+   * code to claim is executed within the Points / Eth rewards screen
+   */
+  pointsRewardsClaimSubmitted: 'points.rewards.claim.submitted',
+  /**
+   * Called when user views the Rewards tab within Points
+   */
+  pointsRewardsViewed: 'points.rewards.viewed',
+  /**
+   * Called when user views the Points tab
+   */
+  pointsViewed: 'points.viewed',
+  /**
    * Called when the popup entry is opened, including:
    * - extension popup
    * - new window
@@ -549,6 +576,35 @@ export type EventProperties = {
      */
     type: KeyboardEventDescription;
   };
+  [event.pointsLeaderboardViewed]: undefined;
+  [event.pointsReferralCopied]: {
+    /**
+     * Was a `link` or `code` copied
+     */
+    type: 'link' | 'code';
+  };
+  [event.pointsRewardsClaimButtonClicked]: {
+    /**
+     * Claim amount in ETH
+     */
+    claimAmount: number;
+  };
+  [event.pointsRewardsClaimSubmitted]: {
+    /**
+     * claim amount in ETH
+     */
+    claimAmount: number;
+    /**
+     * claim amount in USD
+     */
+    claimAmountUSD: number;
+    /**
+     * which network of the three possible was selected
+     */
+    networkSelected: 'optimism' | 'base' | 'zora';
+  };
+  [event.pointsRewardsViewed]: undefined;
+  [event.pointsViewed]: undefined;
   [event.popupOpened]: undefined;
   [event.settingsAnalyticsTrackingDisabled]: undefined;
   [event.revokeSubmitted]: {

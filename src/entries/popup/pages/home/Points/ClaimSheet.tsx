@@ -2,12 +2,14 @@ import { useMutation } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { RapClaimActionParameters } from '~/core/raps/references';
 import { chainsLabel } from '~/core/references/chains';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
-import { ChainId } from '~/core/types/chains';
+import { ChainId, chainIdToNameMapping } from '~/core/types/chains';
 import { GasSpeed } from '~/core/types/gas';
 import {
   convertAmountAndPriceToNativeDisplay,
@@ -150,6 +152,14 @@ export function ClaimSheet() {
     setInitialClaimableAmount(claimableBalance.amount);
     setInitialClaimableDisplay(claimablePriceDisplay.display);
     claimRewards();
+    analytics.track(event.pointsRewardsClaimSubmitted, {
+      claimAmount: Number(claimableBalance.amount),
+      claimAmountUSD: Number(claimablePriceDisplay.display.slice(1)),
+      networkSelected: chainIdToNameMapping[chain] as
+        | 'optimism'
+        | 'zora'
+        | 'base',
+    });
   };
 
   const baseInfo = {
