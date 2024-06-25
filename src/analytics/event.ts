@@ -154,6 +154,11 @@ export const event = {
    */
   pointsReferralCopied: 'points.referral.copied',
   /**
+   * Called when user taps the claim button
+   * within the Points / Eth rewards screen
+   */
+  pointsRewardsClaimButtonClicked: 'points.rewards.claim_button.clicked',
+  /**
    * Called when user views the Rewards tab within Points
    */
   pointsRewardsViewed: 'points.rewards.viewed',
@@ -208,11 +213,6 @@ export const event = {
    * for mapped asset bridge transactions where the `mainnetAddress` is equal.
    */
   swapSubmitted: 'swap.submitted',
-  /**
-   * Called when user taps the claim button
-   * within the Points / Eth rewards screen
-   */
-  tappedClaimButton: 'claim.button.tapped',
   /**
    * Called when the core wallet Tokens & Activity
    * screen is viewed or opened in the extension popup.
@@ -583,6 +583,12 @@ export type EventProperties = {
      */
     type: 'link' | 'code';
   };
+  [event.pointsRewardsClaimButtonClicked]: {
+    /**
+     * Claim amount in ETH
+     */
+    claimAmount: number;
+  };
   [event.pointsRewardsViewed]: undefined;
   [event.pointsViewed]: undefined;
   [event.popupOpened]: undefined;
@@ -702,12 +708,6 @@ export type EventProperties = {
     tradeAmountUSD: number;
   };
   [event.walletViewed]: undefined;
-  /**
-   * Claim button tapped for Eth rewards
-   */
-  [event.tappedClaimButton]: {
-    claimAmount: number;
-  };
   /**
    * Did user claim, and on what chain for Eth rewards
    */

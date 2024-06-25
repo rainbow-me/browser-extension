@@ -66,11 +66,6 @@ const { format: formatNumber } = createNumberFormatter({
   maximumSignificantDigits: 8,
 });
 
-// TODO: Also track amount in USD
-const trackTappedClaimButton = (claimAmount: number) => {
-  analytics.track(analytics.event.tappedClaimButton, { claimAmount });
-};
-
 function Card({
   children,
   ...props
@@ -727,9 +722,12 @@ function ClaimYourPointsCta({
       whileFocus={{ scale: 1.02 }}
       whileHover={{ scale: 1.02 }}
       onClick={() => {
-        trackTappedClaimButton(
-          parseInt(convertRawAmountToDecimalFormat(claimableReward, 18)),
-        );
+        // TODO: Also track amount in USD
+        analytics.track(event.pointsRewardsClaimButtonClicked, {
+          claimAmount: parseInt(
+            convertRawAmountToDecimalFormat(claimableReward, 18),
+          ),
+        });
         showClaimSheet();
       }}
     >
