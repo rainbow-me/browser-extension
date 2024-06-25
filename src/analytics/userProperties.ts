@@ -20,8 +20,12 @@ export interface UserProperties {
   ledgerDevices?: number;
   // whether a recovery phrase or private key has been imported
   hasImported?: boolean;
+  // rewards unclaimed balance in eth for selected wallet
   unclaimedBalance?: number;
+  // rewards unclaimed balance in usd for selected wallet
   unclaimedBalanceUSD?: number;
+  // rewards total claimed balance in eth for selected wallet
   claimedBalance?: number;
+  // rewards total claimed balance in usd for selected wallet
   claimedBalanceUSD?: number;
 }
