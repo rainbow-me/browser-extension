@@ -2,12 +2,14 @@ import { useMutation } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { RapClaimActionParameters } from '~/core/raps/references';
 import { chainsLabel } from '~/core/references/chains';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
-import { ChainId } from '~/core/types/chains';
+import { ChainId, chainIdToNameMapping } from '~/core/types/chains';
 import { GasSpeed } from '~/core/types/gas';
 import {
   convertAmountAndPriceToNativeDisplay,
@@ -58,6 +60,9 @@ export function ClaimSheet() {
   const [claimError, setClaimError] = useState<string | undefined>();
   const [bridgeSuccess, setBridgeSuccess] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
+
+  const [initialClaimableAmount, setInitialClaimableAmount] = useState('');
+  const [initialClaimableDisplay, setInitialClaimableDisplay] = useState('');
 
   const { currentAddress: address } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
@@ -144,24 +149,38 @@ export function ClaimSheet() {
     setShowNetworkSelection(false);
     setShowClaimOverview(true);
     setSelectedChainId(chain);
-    setTimeout(() => claimRewards(), 500);
+    setInitialClaimableAmount(claimableBalance.amount);
+    setInitialClaimableDisplay(claimablePriceDisplay.display);
+    claimRewards();
+    analytics.track(event.pointsRewardsClaimSubmitted, {
+      claimAmount: Number(claimableBalance.amount),
+      claimAmountUSD: Number(claimablePriceDisplay.display.slice(1)),
+      networkSelected: chainIdToNameMapping[chain] as
+        | 'optimism'
+        | 'zora'
+        | 'base',
+    });
+  };
+
+  const baseInfo = {
+    chainId: ChainId.base,
+  };
+
+  const opInfo = {
+    chainId: ChainId.optimism,
   };
 
   const claimNetworkInfo = [
-    {
-      chainId: ChainId.base,
-      fee: i18n.t('points.rewards.has_bridge_fee'),
-    },
-    { chainId: ChainId.optimism, fee: i18n.t('points.rewards.free_to_claim') },
+    config.rewards_bridging_enabled ? baseInfo : opInfo,
+    config.rewards_bridging_enabled ? opInfo : baseInfo,
     {
       chainId: ChainId.zora,
-      fee: i18n.t('points.rewards.has_bridge_fee'),
     },
   ];
 
   useEffect(() => {
     if (showSuccess && !showSummary) {
-      setTimeout(() => setShowSummary(true), 5000);
+      setTimeout(() => setShowSummary(true), 7000);
     }
   }, [showSuccess, showSummary]);
 
@@ -174,8 +193,8 @@ export function ClaimSheet() {
         show={showNetworkSelection}
       />
       <ClaimOverview
-        claimableAmount={claimableBalance.amount}
-        claimableDisplay={claimablePriceDisplay.display}
+        claimableAmount={initialClaimableAmount}
+        claimableDisplay={initialClaimableDisplay}
         error={claimError}
         goBack={backToHome}
         preparingClaim={showPreparingClaim}

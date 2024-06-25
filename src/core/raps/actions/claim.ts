@@ -22,7 +22,7 @@ export async function claim({
       ? CLAIM_MOCK_DATA
       : await metadataPostClient.claimUserRewards({ address });
 
-  // Checking ig we got the tx hash
+  // Checking if we got the tx hash
   const txHash = claimInfo.claimUserRewards?.txHash;
   if (!txHash) {
     // If there's no transaction hash the relayer didn't submit the transaction

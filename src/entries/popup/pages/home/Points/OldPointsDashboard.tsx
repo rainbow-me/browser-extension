@@ -6,6 +6,7 @@ import { MotionProps, motion } from 'framer-motion';
 import { PropsWithChildren, memo, useEffect, useReducer } from 'react';
 import { Address } from 'viem';
 
+import config from '~/core/firebase/remoteConfig';
 import { PointsQuery } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
@@ -244,7 +245,7 @@ function ReferralCode() {
       <TextWithMoreInfo>{i18n.t('points.referral_code')}</TextWithMoreInfo>
 
       <Inline wrap={false} space="12px">
-        {data && isSuccess ? (
+        {data && isSuccess && config.status === 'ready' ? (
           <>
             <Card
               paddingVertical="12px"
@@ -356,7 +357,7 @@ const YourRankAndNextDrop = memo(function YourRankAndNextDrop() {
   const { currentAddress } = useCurrentAddressStore();
   const { data, isSuccess } = usePoints(currentAddress);
 
-  if (!data || !isSuccess)
+  if (!data || !isSuccess || config.status !== 'ready')
     return (
       <Inline wrap={false} space="12px">
         <CardSkeleton height="89px" />
@@ -457,7 +458,7 @@ function YourPoints() {
   const { currentAddress } = useCurrentAddressStore();
   const { data, isSuccess } = usePoints(currentAddress);
 
-  if (!data || !isSuccess)
+  if (!data || !isSuccess || config.status !== 'ready')
     return (
       <Stack space="12px">
         <Skeleton height="18px" width="90px" />
@@ -498,6 +499,11 @@ const cyanAlpha = (alpha: number) =>
   hex(globalColors.cyan50).alpha(alpha).css();
 function YourEarningsLastWeek() {
   const navigate = useRainbowNavigate();
+
+  if (config.status !== 'ready') {
+    return <CardSkeleton height="89px" />;
+  }
+
   return (
     <Card
       flexDirection="row"
@@ -552,12 +558,15 @@ export function OldPointsDashboard() {
   const { currentTheme } = useCurrentThemeStore();
   const { currentAddress } = useCurrentAddressStore();
   const { data: points } = usePoints(currentAddress);
+  const configLoading = config.status !== 'ready';
 
   const hasLastAirdropPoints = points?.user.stats.last_airdrop.differences.some(
     (d) => d && d.earnings.total > 0,
   );
   const shouldShowWeeklyOverview =
-    points && (points.user.earnings.total > 0 || hasLastAirdropPoints);
+    (points && (points.user.earnings.total > 0 || hasLastAirdropPoints)) ||
+    // forcing skeleton to show here while config loads to prevent flicker
+    configLoading;
 
   return (
     <Stack
@@ -573,8 +582,12 @@ export function OldPointsDashboard() {
         {shouldShowWeeklyOverview && <YourEarningsLastWeek />}
       </Stack>
       <YourRankAndNextDrop />
-      <ReferralCode />
-      <Leaderboard />
+      {!configLoading && (
+        <>
+          <ReferralCode />
+          <Leaderboard />
+        </>
+      )}
     </Stack>
   );
 }
