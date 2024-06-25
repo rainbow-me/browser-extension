@@ -1,3 +1,5 @@
+/* eslint sort-keys: "error"*/
+
 import { Address } from 'viem';
 
 import { KeyboardEventDescription } from '~/entries/popup/hooks/useKeyboardAnalytics';
