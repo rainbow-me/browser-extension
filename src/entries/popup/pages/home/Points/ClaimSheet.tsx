@@ -225,7 +225,7 @@ export function ClaimSheet() {
       const claimedBalanceUSD = convertAmountToNativeDisplay(
         parseInt(rewards.claimed),
         'USD',
-      );
+      ).replace('$', '');
       identifyUserClaimedBalance(rewards.claimed, claimedBalanceUSD);
     }
   }, [

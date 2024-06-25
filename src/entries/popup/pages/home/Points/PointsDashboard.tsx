@@ -738,7 +738,9 @@ function ClaimYourPointsCta({
       whileFocus={{ scale: 1.02 }}
       whileHover={{ scale: 1.02 }}
       onClick={() => {
-        trackTappedClaimButton(parseInt(claimableReward));
+        trackTappedClaimButton(
+          parseInt(convertRawAmountToDecimalFormat(claimableReward, 18)),
+        );
         showClaimSheet();
       }}
     >
