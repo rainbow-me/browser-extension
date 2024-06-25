@@ -151,7 +151,7 @@ export function ClaimSheet() {
     setSelectedChainId(chain);
     setInitialClaimableAmount(claimableBalance.amount);
     setInitialClaimableDisplay(claimablePriceDisplay.display);
-    setTimeout(() => claimRewards(), 500);
+    claimRewards();
     analytics.track(event.pointsRewardsClaimSubmitted, {
       claimAmount: Number(claimableBalance.amount),
       claimAmountUSD: Number(claimablePriceDisplay.display.slice(1)),
@@ -180,7 +180,7 @@ export function ClaimSheet() {
 
   useEffect(() => {
     if (showSuccess && !showSummary) {
-      setTimeout(() => setShowSummary(true), 5000);
+      setTimeout(() => setShowSummary(true), 7000);
     }
   }, [showSuccess, showSummary]);
 
