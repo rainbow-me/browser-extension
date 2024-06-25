@@ -724,7 +724,7 @@ function ClaimYourPointsCta({
       onClick={() => {
         // TODO: Also track amount in USD
         analytics.track(event.pointsRewardsClaimButtonClicked, {
-          claimAmount: parseInt(
+          claimAmount: Number(
             convertRawAmountToDecimalFormat(claimableReward, 18),
           ),
         });
