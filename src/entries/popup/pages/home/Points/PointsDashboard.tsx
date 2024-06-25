@@ -27,6 +27,7 @@ import {
   convertAmountAndPriceToNativeDisplay,
   convertRawAmountToBalance,
   convertRawAmountToDecimalFormat,
+  handleSignificantDecimalsWithThreshold,
 } from '~/core/utils/numbers';
 import {
   Box,
@@ -702,6 +703,12 @@ function ClaimYourPointsCta({
     currentTheme === 'dark'
       ? 'linear-gradient(to right, #242529, #242529)'
       : 'linear-gradient(to right, #fff, #fff)';
+
+  const reward = handleSignificantDecimalsWithThreshold(
+    convertRawAmountToDecimalFormat(claimableReward, 18),
+    6,
+    '0.000001',
+  );
   return (
     <Box
       as={motion.div}
@@ -732,9 +739,7 @@ function ClaimYourPointsCta({
     >
       <RainbowText size="20pt" weight="heavy">
         {i18n.t('points.rewards.claim_reward', {
-          reward: `${parseFloat(
-            convertRawAmountToDecimalFormat(claimableReward, 18),
-          ).toFixed(6)} ETH`,
+          reward: `${reward} ETH `,
         })}
       </RainbowText>
       <Box
