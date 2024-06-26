@@ -53,7 +53,7 @@ const DEFAULT_CONFIG = {
   rpc_proxy_enabled: true,
   points_enabled: true,
   defi_positions_enabled: false,
-  rewards_enabled: false,
+  rewards_enabled: true,
   rewards_bridging_enabled: true,
   // SWAPS
   default_slippage_bips: {
