@@ -17,7 +17,6 @@ import {
   findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
-  findElementByXPath,
   getAllWindowHandles,
   getExtensionIdByName,
   getRootUrl,
@@ -92,14 +91,13 @@ describe('App interactions flow', () => {
     });
     expect(button).toBeTruthy();
     await waitAndClick(button, driver);
+
     await delayTime('long');
 
-    // todo: clean this xpath up
-    const rainbowButton = await findElementByXPath(
+    await findElementByTestIdAndClick({
+      id: 'rk-wallet-option-rainbow',
       driver,
-      '/html/body/div[2]/div/div/div[2]/div/div/div/div/div[1]/div[2]/div[2]/div[1]/button/div/div',
-    );
-    await waitAndClick(rainbowButton, driver);
+    });
     await delayTime('long');
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });

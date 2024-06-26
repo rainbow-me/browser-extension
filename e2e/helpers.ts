@@ -242,15 +242,6 @@ export async function findElementByText(driver: WebDriver, text: string) {
   return await driver.wait(until.elementIsVisible(el), waitUntilTime);
 }
 
-export async function findElementByXPath(driver: WebDriver, xpath: string) {
-  await driver.wait(untilDocumentLoaded(), waitUntilTime);
-  const el = await driver.wait(
-    until.elementLocated(By.xpath(xpath)),
-    waitUntilTime,
-  );
-  return await driver.wait(until.elementIsVisible(el), waitUntilTime);
-}
-
 export async function findElementByTextAndClick(
   driver: WebDriver,
   text: string,
