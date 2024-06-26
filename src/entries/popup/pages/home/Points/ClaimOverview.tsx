@@ -4,6 +4,7 @@ import { memo, useEffect, useState } from 'react';
 import { PointsErrorType } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
+import { handleSignificantDecimalsWithThreshold } from '~/core/utils/numbers';
 import {
   Box,
   Button,
@@ -212,6 +213,11 @@ const RainbowSlant = memo(function () {
 RainbowSlant.displayName = 'RainbowSlant';
 
 function ClaimSummary({ amount, price }: { amount: string; price: string }) {
+  const amountWithThreshold = handleSignificantDecimalsWithThreshold(
+    amount,
+    6,
+    '0.000001',
+  );
   return (
     <Box
       display="flex"
@@ -252,7 +258,7 @@ function ClaimSummary({ amount, price }: { amount: string; price: string }) {
                 <Box display="flex" justifyContent="flex-end">
                   <ConsoleText color="label">
                     {i18n.t('points.rewards.amount_in_eth', {
-                      amount,
+                      amountWithThreshold,
                     })}
                   </ConsoleText>
                 </Box>
