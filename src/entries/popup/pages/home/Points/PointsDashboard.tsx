@@ -13,6 +13,8 @@ import {
 import { Address } from 'viem';
 
 import rainbowIcon from 'static/images/icon-16@2x.png';
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { PointsQuery } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
@@ -25,6 +27,7 @@ import {
   convertAmountAndPriceToNativeDisplay,
   convertRawAmountToBalance,
   convertRawAmountToDecimalFormat,
+  handleSignificantDecimalsWithThreshold,
 } from '~/core/utils/numbers';
 import {
   Box,
@@ -273,25 +276,28 @@ function TextWithMoreInfo({ children }: PropsWithChildren) {
   );
 }
 
-export const copyReferralLink = (referralCode: string) =>
+export const copyReferralLink = (referralCode: string) => {
+  analytics.track(event.pointsReferralCopied, { type: 'link' });
   copy({
     value: `https://rainbow.me/points?ref=${referralCode}`,
     title: i18n.t('points.copied_referral_link'),
     description: `rainbow.me/points?ref=${referralCode}`,
   });
+};
 
 const formatReferralCode = (referralCode: string) =>
   referralCode.slice(0, 3) + '-' + referralCode.slice(-3);
 function ReferralCode() {
   const { currentAddress } = useCurrentAddressStore();
   const { data, isSuccess } = usePoints(currentAddress);
-  const copyReferralCode = () =>
+  const copyReferralCode = () => {
+    analytics.track(event.pointsReferralCopied, { type: 'code' });
     copy({
       value: data?.user.referralCode || '',
       title: i18n.t('points.copied_referral_code'),
       description: formatReferralCode(data?.user.referralCode || ''),
     });
-
+  };
   return (
     <Stack gap="12px">
       <Text size="16pt" weight="bold" color="label">
@@ -697,6 +703,12 @@ function ClaimYourPointsCta({
     currentTheme === 'dark'
       ? 'linear-gradient(to right, #242529, #242529)'
       : 'linear-gradient(to right, #fff, #fff)';
+
+  const reward = handleSignificantDecimalsWithThreshold(
+    convertRawAmountToDecimalFormat(claimableReward, 18),
+    6,
+    '0.000001',
+  );
   return (
     <Box
       as={motion.div}
@@ -716,11 +728,18 @@ function ClaimYourPointsCta({
       whileTap={{ scale: 0.98 }}
       whileFocus={{ scale: 1.02 }}
       whileHover={{ scale: 1.02 }}
-      onClick={() => showClaimSheet()}
+      onClick={() => {
+        analytics.track(event.pointsRewardsClaimButtonClicked, {
+          claimAmount: Number(
+            convertRawAmountToDecimalFormat(claimableReward, 18),
+          ),
+        });
+        showClaimSheet();
+      }}
     >
       <RainbowText size="20pt" weight="heavy">
         {i18n.t('points.rewards.claim_reward', {
-          reward: `${convertRawAmountToDecimalFormat(claimableReward, 18)} ETH`,
+          reward: `${reward} ETH `,
         })}
       </RainbowText>
       <Box
@@ -894,12 +913,6 @@ function MyEarnings({ earnings = '0' }: { earnings?: string }) {
               {i18n.t('points.rewards.my_earnings')}
             </Text>
           </Inline>
-          <Symbol
-            symbol="questionmark.circle.fill"
-            weight="heavy"
-            size={16}
-            color="labelQuaternary"
-          />
         </Box>
         <Box display="flex" justifyContent="space-between">
           <Inline space="10px" alignVertical="center">
@@ -1101,6 +1114,14 @@ export function PointsDashboard() {
   const [displayMode, setDisplayMode] = useState<'rewards' | 'leaderboard'>(
     'rewards',
   );
+  useEffect(() => {
+    if (displayMode === 'rewards') {
+      analytics.track(event.pointsRewardsViewed);
+    } else if (displayMode === 'leaderboard') {
+      analytics.track(event.pointsLeaderboardViewed);
+    }
+    analytics.track(event.pointsViewed);
+  }, [displayMode]);
   return (
     <>
       <Stack
