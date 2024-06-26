@@ -11,11 +11,6 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
-import {
-  BNB_BSC_ADDRESS,
-  ETH_ADDRESS,
-  POL_POLYGON_ADDRESS,
-} from '~/core/references';
 import { ChainId } from '~/core/types/chains';
 import {
   SearchAsset,
@@ -23,7 +18,13 @@ import {
   TokenSearchListId,
   TokenSearchThreshold,
 } from '~/core/types/search';
-import { getSupportedChains, isCustomChain } from '~/core/utils/chains';
+import {
+  getSupportedChains,
+  isCustomChain,
+  isNativeAsset,
+} from '~/core/utils/chains';
+
+const ALL_VERIFIED_TOKENS_PARAM = '/?list=verifiedAssets';
 
 // ///////////////////////////////////////////////
 // Query Types
@@ -81,18 +82,35 @@ async function tokenSearchQueryFunction({
     threshold,
     query,
   };
+
   if (fromChainId) {
     queryParams.fromChainId = fromChainId;
   }
-  if (isAddress(query)) {
+
+  const isAddressSearch = query && isAddress(query);
+  if (isAddressSearch) {
     queryParams.keys = `networks.${chainId}.address`;
   }
+
+  const isSearchingVerifiedAssets = queryParams.list === 'verifiedAssets';
   const url = `/${chainId}/?${qs.stringify(queryParams)}`;
-  try {
-    const tokenSearch = await tokenSearchHttp.get<{ data: SearchAsset[] }>(url);
+  const tokenSearch = await tokenSearchHttp.get<{ data: SearchAsset[] }>(url);
+
+  if (isAddressSearch && isSearchingVerifiedAssets) {
+    if (tokenSearch && tokenSearch.data.data.length > 0) {
+      return parseTokenSearch(tokenSearch.data.data, chainId);
+    }
+    const allVerifiedTokens = await tokenSearchHttp.get<{
+      data: SearchAsset[];
+    }>(ALL_VERIFIED_TOKENS_PARAM);
+
+    const addressQuery = query.trim().toLowerCase();
+    const addressMatchesOnOtherChains = allVerifiedTokens.data.data.filter(
+      (a) => Object.values(a.networks).some((n) => n?.address === addressQuery),
+    );
+    return parseTokenSearch(addressMatchesOnOtherChains, chainId);
+  } else {
     return parseTokenSearch(tokenSearch.data.data, chainId);
-  } catch (e) {
-    return [];
   }
 }
 
@@ -100,26 +118,23 @@ function parseTokenSearch(assets: SearchAsset[], chainId: ChainId) {
   return assets
     .map((a) => {
       const networkInfo = a.networks[chainId];
+      const mainnetInfo = a.networks[ChainId.mainnet];
+      const address = networkInfo ? networkInfo.address : a.address;
+      const decimals = networkInfo ? networkInfo.decimals : a.decimals;
+      const uniqueId = `${address}_${chainId}`;
+      const mainnetAddress =
+        mainnetInfo?.address ?? chainId === ChainId.mainnet
+          ? address
+          : ('' as Address);
 
       const asset: SearchAsset = {
         ...a,
-        address: networkInfo ? networkInfo.address : a.address,
+        address,
         chainId,
-        decimals: networkInfo ? networkInfo.decimals : a.decimals,
-        isNativeAsset: [
-          `${ETH_ADDRESS}_${ChainId.mainnet}`,
-          `${ETH_ADDRESS}_${ChainId.optimism}`,
-          `${ETH_ADDRESS}_${ChainId.arbitrum}`,
-          `${BNB_BSC_ADDRESS}_${ChainId.bsc}`,
-          `${POL_POLYGON_ADDRESS}_${ChainId.polygon}`,
-          `${ETH_ADDRESS}_${ChainId.base}`,
-          `${ETH_ADDRESS}_${ChainId.zora}`,
-          `${ETH_ADDRESS}_${ChainId.avalanche}`,
-          `${ETH_ADDRESS}_${ChainId.blast}`,
-          `${ETH_ADDRESS}_${ChainId.degen}`,
-        ].includes(`${a.uniqueId}_${chainId}`),
-        mainnetAddress: a.uniqueId as Address,
-        uniqueId: `${networkInfo?.address || a.uniqueId}_${chainId}`,
+        decimals,
+        isNativeAsset: isNativeAsset(a.address, chainId),
+        mainnetAddress,
+        uniqueId,
       };
 
       return asset;
@@ -178,6 +193,7 @@ export function useTokenSearch(
     }),
     queryFn: tokenSearchQueryFunction,
     ...config,
+    placeholderData: (previousData) => previousData,
   });
 }
 
