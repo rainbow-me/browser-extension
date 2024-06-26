@@ -29,7 +29,7 @@ export type SearchAsset = {
       decimals: number;
     };
   };
-  rainbowMetadataId: number;
+  rainbowMetadataId?: number;
   symbol: string;
   uniqueId: UniqueId;
 };

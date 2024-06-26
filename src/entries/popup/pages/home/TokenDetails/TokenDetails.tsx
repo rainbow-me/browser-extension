@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useReducer } from 'react';
 import { Navigate, To, useParams, useSearchParams } from 'react-router-dom';
+import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { ETH_ADDRESS } from '~/core/references';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useApprovals } from '~/core/resources/approvals/approvals';
+import { useAssetSearchMetadata } from '~/core/resources/assets/assetMetadata';
 import { useTokenSearch } from '~/core/resources/search';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
@@ -496,6 +498,22 @@ export function TokenDetails() {
         enabled: !!queryChainId,
       },
     );
+  const { data: assetMetadata, isFetched: isAssetMetaDataFetched } =
+    useAssetSearchMetadata(
+      {
+        assetAddress: uniqueId as Address,
+        chainId: queryChainId ?? ChainId.mainnet,
+      },
+      {
+        enabled: !!queryChainId,
+        select: (data) => {
+          if (data) {
+            return { ...data, chainId: Number(data.chainId) };
+          }
+          return null;
+        },
+      },
+    );
 
   const { isWatchingWallet } = useWallets();
 
@@ -506,7 +524,7 @@ export function TokenDetails() {
     ? { ...searchedAssets[0], chainId: Number(searchedAssets[0].chainId) }
     : undefined;
 
-  const token = userAsset || customAsset || searchedAsset;
+  const token = userAsset || customAsset || searchedAsset || assetMetadata;
 
   useEffect(() => {
     const app = document.getElementById('app');
@@ -572,14 +590,20 @@ export function TokenDetails() {
     });
   }, [hideExplainerSheet, showExplainerSheet]);
 
+  const isTokenSearchUnavailable =
+    !queryChainId ||
+    (isTokenSearchFetched &&
+      !searchedAsset &&
+      isAssetMetaDataFetched &&
+      !assetMetadata);
+
   if (
     !uniqueId ||
     (isUserAssetFetched &&
       !userAsset &&
       isCustomAssetFetched &&
       !customAsset &&
-      (isTokenSearchFetched || !queryChainId) &&
-      !searchedAsset)
+      isTokenSearchUnavailable)
   ) {
     return <Navigate to={ROUTES.HOME} />;
   }
@@ -590,7 +614,8 @@ export function TokenDetails() {
     getChain({ chainId: token?.chainId }).testnet || !!customAsset
   );
 
-  const isUnownedToken = !userAsset && !customAsset && !!searchedAsset;
+  const isUnownedToken =
+    !userAsset && !customAsset && (!!searchedAsset || !!assetMetadata);
 
   const tokenApprovals = approvals
     ?.map((approval) =>
