@@ -27,6 +27,7 @@ import {
   convertAmountAndPriceToNativeDisplay,
   convertRawAmountToBalance,
   convertRawAmountToDecimalFormat,
+  handleSignificantDecimalsWithThreshold,
 } from '~/core/utils/numbers';
 import {
   Box,
@@ -702,6 +703,12 @@ function ClaimYourPointsCta({
     currentTheme === 'dark'
       ? 'linear-gradient(to right, #242529, #242529)'
       : 'linear-gradient(to right, #fff, #fff)';
+
+  const reward = handleSignificantDecimalsWithThreshold(
+    convertRawAmountToDecimalFormat(claimableReward, 18),
+    6,
+    '0.000001',
+  );
   return (
     <Box
       as={motion.div}
@@ -722,7 +729,6 @@ function ClaimYourPointsCta({
       whileFocus={{ scale: 1.02 }}
       whileHover={{ scale: 1.02 }}
       onClick={() => {
-        // TODO: Also track amount in USD
         analytics.track(event.pointsRewardsClaimButtonClicked, {
           claimAmount: Number(
             convertRawAmountToDecimalFormat(claimableReward, 18),
@@ -733,7 +739,7 @@ function ClaimYourPointsCta({
     >
       <RainbowText size="20pt" weight="heavy">
         {i18n.t('points.rewards.claim_reward', {
-          reward: `${convertRawAmountToDecimalFormat(claimableReward, 18)} ETH`,
+          reward: `${reward} ETH `,
         })}
       </RainbowText>
       <Box

@@ -1,5 +1,7 @@
+import { isAddress } from '@ethersproject/address';
+import { uniqBy } from 'lodash';
 import { useEffect, useMemo } from 'react';
-import { Address, isAddress } from 'viem';
+import { Address } from 'viem';
 
 import {
   selectUserAssetsFilteringSmallBalancesList,
@@ -7,6 +9,7 @@ import {
   selectorFilterByUserChains,
 } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
+import { useAssetSearchMetadataAllNetworks } from '~/core/resources/assets/assetMetadata';
 import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
 import { useTokenSearchAllNetworks } from '~/core/resources/search/tokenSearch';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
@@ -71,6 +74,26 @@ export const useSearchableTokens = ({
     [queryIsAddress],
   );
 
+  const enableSearchChainAssets = isAddress(query) && !testnetMode;
+
+  // All on chain searched assets from all user chains
+  const {
+    data: searchedChainAssets,
+    isFetching: isFetchingSearchAssetMetadata,
+  } = useAssetSearchMetadataAllNetworks(
+    {
+      assetAddress: query as Address,
+    },
+    {
+      select: (data) => {
+        if (!enableSearchChainAssets) return null;
+        return data;
+      },
+      enabled: enableSearchChainAssets,
+      staleTime: 10 * 60 * 1_000, // 10 min
+    },
+  );
+
   const {
     data: verifiedSearchAssets,
     isFetching: isFetchingVerifiedSearchedAssets,
@@ -92,7 +115,7 @@ export const useSearchableTokens = ({
   );
 
   const {
-    data: unverifiedSearcAssets,
+    data: unverifiedSearchAssets,
     isFetching: isFetchingUnverifiedSearchedAssets,
   } = useTokenSearchAllNetworks(
     {
@@ -117,12 +140,16 @@ export const useSearchableTokens = ({
         status: 'verified' as UnownedTokenSearchItem['status'],
         ...asset,
       })),
-      ...unverifiedSearcAssets.map((asset) => ({
+      ...unverifiedSearchAssets.map((asset) => ({
+        status: 'unverified' as UnownedTokenSearchItem['status'],
+        ...asset,
+      })),
+      ...searchedChainAssets.map((asset) => ({
         status: 'unverified' as UnownedTokenSearchItem['status'],
         ...asset,
       })),
     ],
-    [verifiedSearchAssets, unverifiedSearcAssets],
+    [verifiedSearchAssets, unverifiedSearchAssets, searchedChainAssets],
   );
 
   const { data: userAssets = [] } = useUserAssets(
@@ -193,7 +220,7 @@ export const useSearchableTokens = ({
   }, [address, combinedAssets, navigate]);
 
   const unownedSearchableTokens = useMemo(() => {
-    return allSearchedAssets
+    return uniqBy(allSearchedAssets, 'uniqueId')
       .map<UnownedTokenSearchItem>((asset) => ({
         status: asset.status,
         address: asset.address,
@@ -218,7 +245,7 @@ export const useSearchableTokens = ({
 
         return !hasAsset;
       });
-  }, [navigate, ownedSearchableTokens, allSearchedAssets]);
+  }, [navigate, allSearchedAssets, ownedSearchableTokens]);
 
   const combinedSearchableTokens = useMemo(
     () => [...ownedSearchableTokens, ...unownedSearchableTokens],
@@ -239,6 +266,8 @@ export const useSearchableTokens = ({
   return {
     data: combinedSearchableTokens,
     isFetchingSearchAssets:
-      isFetchingVerifiedSearchedAssets || isFetchingUnverifiedSearchedAssets,
+      isFetchingVerifiedSearchedAssets ||
+      isFetchingUnverifiedSearchedAssets ||
+      isFetchingSearchAssetMetadata,
   };
 };

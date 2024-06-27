@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useReducer } from 'react';
 import { Navigate, To, useParams, useSearchParams } from 'react-router-dom';
+import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { ETH_ADDRESS } from '~/core/references';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useApprovals } from '~/core/resources/approvals/approvals';
+import { useAssetSearchMetadata } from '~/core/resources/assets/assetMetadata';
 import { useTokenSearch } from '~/core/resources/search';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
@@ -513,7 +515,6 @@ export function TokenDetails() {
       enabled: !!queryChainId,
     },
   );
-
   const {
     data: unverifiedSearchedAssets,
     isFetched: isUnverifiedTokenSearchFetched,
@@ -532,6 +533,22 @@ export function TokenDetails() {
       enabled: !!queryChainId,
     },
   );
+  const { data: assetMetadata, isFetched: isAssetMetaDataFetched } =
+    useAssetSearchMetadata(
+      {
+        assetAddress: uniqueId as Address,
+        chainId: queryChainId ?? ChainId.mainnet,
+      },
+      {
+        select: (data) => {
+          if (data) {
+            return { ...data, chainId: Number(data.chainId) };
+          }
+          return null;
+        },
+        enabled: !!queryChainId,
+      },
+    );
 
   const { isWatchingWallet } = useWallets();
 
@@ -547,7 +564,8 @@ export function TokenDetails() {
     userAsset ||
     customAsset ||
     verifiedSearchedAsset ||
-    unverifiedSearchedAsset;
+    unverifiedSearchedAsset ||
+    assetMetadata;
 
   useEffect(() => {
     const app = document.getElementById('app');
@@ -618,7 +636,9 @@ export function TokenDetails() {
     (isVerifiedTokenSearchFetched &&
       !verifiedSearchedAsset &&
       isUnverifiedTokenSearchFetched &&
-      !unverifiedSearchedAsset);
+      !unverifiedSearchedAsset &&
+      isAssetMetaDataFetched &&
+      !assetMetadata);
 
   if (
     !uniqueId ||
@@ -640,7 +660,7 @@ export function TokenDetails() {
   const isUnownedToken =
     !userAsset &&
     !customAsset &&
-    (!!verifiedSearchedAsset || !!unverifiedSearchedAsset);
+    (!!verifiedSearchedAsset || !!unverifiedSearchedAsset || !!assetMetadata);
 
   const tokenApprovals = approvals
     ?.map((approval) =>

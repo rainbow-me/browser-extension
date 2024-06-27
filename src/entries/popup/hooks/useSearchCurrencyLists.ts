@@ -1,8 +1,11 @@
 import { isAddress } from '@ethersproject/address';
+import { uniqBy } from 'lodash';
 import { rankings } from 'match-sorter';
 import { useCallback, useMemo } from 'react';
+import { Address } from 'viem';
 
 import { SUPPORTED_CHAINS } from '~/core/references/chains';
+import { useAssetSearchMetadataAllNetworks } from '~/core/resources/assets/assetMetadata';
 import { useTokenSearch } from '~/core/resources/search';
 import { useTokenSearchAllNetworks } from '~/core/resources/search/tokenSearch';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
@@ -260,6 +263,21 @@ export function useSearchCurrencyLists({
     },
   );
 
+  // All on chain searched assets from all user chains
+  const { data: targetAllNetworkMetadataAssets } =
+    useAssetSearchMetadataAllNetworks(
+      {
+        assetAddress: query as Address,
+      },
+      {
+        select: (data) => {
+          if (!enableAllNetworkTokenSearch) return null;
+          return data;
+        },
+        enabled: enableAllNetworkTokenSearch,
+      },
+    );
+
   const { favorites } = useFavoriteAssets();
 
   const favoritesList = useMemo(() => {
@@ -470,6 +488,17 @@ export function useSearchCurrencyLists({
     [favoritesList, filterAssetsFromBridgeAndAssetToSell],
   );
 
+  const filterAssetsFromVerifiedAssets = useCallback(
+    (assets?: SearchAsset[]) =>
+      assets?.filter(
+        (asset) =>
+          !targetAllNetworksVerifiedAssets.some((verifiedAsset) =>
+            isLowerCaseMatch(verifiedAsset.uniqueId, asset.uniqueId),
+          ),
+      ) ?? [],
+    [targetAllNetworksVerifiedAssets],
+  );
+
   // the lists below should be filtered by favorite/bridge asset match
   const results = useMemo(() => {
     const sections: AssetToBuySection[] = [];
@@ -499,21 +528,40 @@ export function useSearchCurrencyLists({
         id: 'verified',
       });
     } else if (enableAllNetworkTokenSearch) {
-      if (targetAllNetworksUnverifiedAssets.length) {
-        sections.push({
-          data: filterAssetsFromFavoritesBridgeAndAssetToSell(
-            targetAllNetworksUnverifiedAssets,
-          ),
-          id: 'unverified',
-        });
-      }
+      const hasVerifiedAssets = targetAllNetworksVerifiedAssets.length > 0;
 
-      if (targetAllNetworksVerifiedAssets.length) {
+      if (hasVerifiedAssets) {
         sections.push({
           data: filterAssetsFromFavoritesBridgeAndAssetToSell(
             targetAllNetworksVerifiedAssets,
           ),
           id: 'verified',
+        });
+      }
+
+      const hasSomeUnverifiedAssets =
+        targetAllNetworksUnverifiedAssets.length > 0 ||
+        targetAllNetworkMetadataAssets.length > 0;
+
+      if (hasSomeUnverifiedAssets) {
+        let allUnverifiedAssets = filterAssetsFromFavoritesBridgeAndAssetToSell(
+          uniqBy(
+            [
+              ...targetAllNetworksUnverifiedAssets,
+              ...targetAllNetworkMetadataAssets,
+            ],
+            'uniqueId',
+          ),
+        );
+
+        if (hasVerifiedAssets) {
+          allUnverifiedAssets =
+            filterAssetsFromVerifiedAssets(allUnverifiedAssets);
+        }
+
+        sections.push({
+          data: allUnverifiedAssets,
+          id: 'unverified',
         });
       }
 
@@ -549,18 +597,20 @@ export function useSearchCurrencyLists({
 
     return sections;
   }, [
-    enableAllNetworkTokenSearch,
     bridge,
     bridgeAsset,
     favoritesList,
     query,
+    enableAllNetworkTokenSearch,
     bridgeList,
-    targetAllNetworksUnverifiedAssets,
-    targetAllNetworksVerifiedAssets,
     filterAssetsFromBridgeAndAssetToSell,
     filterAssetsFromFavoritesBridgeAndAssetToSell,
     curatedAssets,
     outputChainId,
+    targetAllNetworksVerifiedAssets,
+    targetAllNetworksUnverifiedAssets,
+    targetAllNetworkMetadataAssets,
+    filterAssetsFromVerifiedAssets,
     targetVerifiedAssets,
     targetUnverifiedAssets,
     enableUnverifiedSearch,
