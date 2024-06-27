@@ -696,7 +696,7 @@ export const useCommands = (
     currentPage,
     searchQuery,
     assets: searchableTokens,
-    isFetchingSearchAssets: isFetchingSearchAssets,
+    isFetchingSearchAssets,
     setSelectedCommandNeedsUpdate,
   });
   const { searchableNFTs } = useSearchableNFTs();
