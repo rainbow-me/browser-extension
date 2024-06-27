@@ -62,9 +62,49 @@ const filterBridgeAsset = ({
   asset?: SearchAsset;
   filter?: string;
 }) =>
+  filter.length === 0 ||
   asset?.address?.toLowerCase()?.startsWith(filter?.toLowerCase()) ||
   asset?.name?.toLowerCase()?.startsWith(filter?.toLowerCase()) ||
   asset?.symbol?.toLowerCase()?.startsWith(filter?.toLowerCase());
+
+const filterAssetsFromBridgeAndAssetToSell = ({
+  assets,
+  filteredBridgeAssetAddress,
+  assetToSellAddress,
+}: {
+  assets: SearchAsset[] | undefined;
+  filteredBridgeAssetAddress: string | undefined;
+  assetToSellAddress: string | undefined;
+}): SearchAsset[] =>
+  assets?.filter(
+    (curatedAsset) =>
+      !isLowerCaseMatch(curatedAsset?.address, filteredBridgeAssetAddress) &&
+      !isLowerCaseMatch(curatedAsset?.address, assetToSellAddress),
+  ) || [];
+
+const filterAssetsFromFavoritesBridgeAndAssetToSell = ({
+  assets,
+  favoritesList,
+  filteredBridgeAssetAddress,
+  assetToSellAddress,
+}: {
+  assets: SearchAsset[] | undefined;
+  favoritesList: SearchAsset[] | undefined;
+  filteredBridgeAssetAddress: string | undefined;
+  assetToSellAddress: string | undefined;
+}): SearchAsset[] =>
+  filterAssetsFromBridgeAndAssetToSell({
+    assets,
+    filteredBridgeAssetAddress,
+    assetToSellAddress,
+  })?.filter(
+    (curatedAsset) =>
+      !favoritesList?.some(
+        ({ address }) =>
+          curatedAsset.address === address ||
+          curatedAsset.mainnetAddress === address,
+      ),
+  ) || [];
 
 export function useSearchCurrencyLists({
   assetToSell,
@@ -468,27 +508,6 @@ export function useSearchCurrencyLists({
     .flat()
     .filter(Boolean);
 
-  const filterAssetsFromBridgeAndAssetToSell = useCallback(
-    (assets?: SearchAsset[]) =>
-      assets?.filter(
-        (curatedAsset) =>
-          !isLowerCaseMatch(curatedAsset?.address, bridgeAsset?.address) &&
-          !isLowerCaseMatch(curatedAsset?.address, assetToSell?.address),
-      ) || [],
-    [assetToSell?.address, bridgeAsset?.address],
-  );
-
-  const filterAssetsFromFavoritesBridgeAndAssetToSell = useCallback(
-    (assets?: SearchAsset[]) =>
-      filterAssetsFromBridgeAndAssetToSell(assets)?.filter(
-        (curatedAsset) =>
-          !favoritesList
-            ?.map((fav) => fav.address)
-            .includes(curatedAsset.address),
-      ) || [],
-    [favoritesList, filterAssetsFromBridgeAndAssetToSell],
-  );
-
   const filterAssetsFromVerifiedAssets = useCallback(
     (assets?: SearchAsset[]) =>
       assets?.filter(
@@ -516,16 +535,23 @@ export function useSearchCurrencyLists({
     }
     if (favoritesList?.length) {
       sections.push({
-        data: filterAssetsFromBridgeAndAssetToSell(favoritesList),
+        data: filterAssetsFromBridgeAndAssetToSell({
+          assets: favoritesList,
+          filteredBridgeAssetAddress: bridgeAsset?.address,
+          assetToSellAddress: assetToSell?.address,
+        }),
         id: 'favorites',
       });
     }
 
     if (query === '') {
       sections.push({
-        data: filterAssetsFromFavoritesBridgeAndAssetToSell(
-          curatedAssets[outputChainId],
-        ),
+        data: filterAssetsFromFavoritesBridgeAndAssetToSell({
+          assets: curatedAssets[outputChainId],
+          favoritesList,
+          filteredBridgeAssetAddress: bridgeAsset?.address,
+          assetToSellAddress: assetToSell?.address,
+        }),
         id: 'verified',
       });
     } else if (enableAllNetworkTokenSearch) {
@@ -533,9 +559,12 @@ export function useSearchCurrencyLists({
 
       if (hasVerifiedAssets) {
         sections.push({
-          data: filterAssetsFromFavoritesBridgeAndAssetToSell(
-            targetAllNetworksVerifiedAssets,
-          ),
+          data: filterAssetsFromFavoritesBridgeAndAssetToSell({
+            assets: targetAllNetworksVerifiedAssets,
+            favoritesList,
+            filteredBridgeAssetAddress: bridgeAsset?.address,
+            assetToSellAddress: assetToSell?.address,
+          }),
           id: 'verified',
         });
       }
@@ -546,13 +575,18 @@ export function useSearchCurrencyLists({
 
       if (hasSomeUnverifiedAssets) {
         let allUnverifiedAssets = filterAssetsFromFavoritesBridgeAndAssetToSell(
-          uniqBy(
-            [
-              ...targetAllNetworksUnverifiedAssets,
-              ...targetAllNetworkMetadataAssets,
-            ],
-            'uniqueId',
-          ),
+          {
+            assets: uniqBy(
+              [
+                ...targetAllNetworksUnverifiedAssets,
+                ...targetAllNetworkMetadataAssets,
+              ],
+              'uniqueId',
+            ),
+            favoritesList,
+            filteredBridgeAssetAddress: bridgeAsset?.address,
+            assetToSellAddress: assetToSell?.address,
+          },
         );
 
         if (hasVerifiedAssets) {
@@ -570,27 +604,36 @@ export function useSearchCurrencyLists({
     } else {
       if (targetVerifiedAssets?.length) {
         sections.push({
-          data: filterAssetsFromFavoritesBridgeAndAssetToSell(
-            targetVerifiedAssets,
-          ),
+          data: filterAssetsFromFavoritesBridgeAndAssetToSell({
+            assets: targetVerifiedAssets,
+            favoritesList,
+            filteredBridgeAssetAddress: bridgeAsset?.address,
+            assetToSellAddress: assetToSell?.address,
+          }),
           id: 'verified',
         });
       }
 
       if (targetUnverifiedAssets?.length && enableUnverifiedSearch) {
         sections.push({
-          data: filterAssetsFromFavoritesBridgeAndAssetToSell(
-            targetUnverifiedAssets,
-          ),
+          data: filterAssetsFromFavoritesBridgeAndAssetToSell({
+            assets: targetUnverifiedAssets,
+            favoritesList,
+            filteredBridgeAssetAddress: bridgeAsset?.address,
+            assetToSellAddress: assetToSell?.address,
+          }),
           id: 'unverified',
         });
       }
 
       if (!sections.length && crosschainExactMatches?.length) {
         sections.push({
-          data: filterAssetsFromFavoritesBridgeAndAssetToSell(
-            crosschainExactMatches,
-          ),
+          data: filterAssetsFromFavoritesBridgeAndAssetToSell({
+            assets: crosschainExactMatches,
+            favoritesList,
+            filteredBridgeAssetAddress: bridgeAsset?.address,
+            assetToSellAddress: assetToSell?.address,
+          }),
           id: 'other_networks',
         });
       }
@@ -604,8 +647,7 @@ export function useSearchCurrencyLists({
     query,
     enableAllNetworkTokenSearch,
     bridgeList,
-    filterAssetsFromBridgeAndAssetToSell,
-    filterAssetsFromFavoritesBridgeAndAssetToSell,
+    assetToSell?.address,
     curatedAssets,
     outputChainId,
     targetAllNetworksVerifiedAssets,
