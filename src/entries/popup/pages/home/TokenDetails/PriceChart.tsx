@@ -125,10 +125,13 @@ const fetchPriceChart = async (
   const priceChart = await metadataClient
     .priceChart({ address, chainId, ...getChartTimeArg(time) })
     .then((d) => d.token?.priceCharts[time] as PriceChartTimeData);
-  return priceChart?.points?.reduce((result, point) => {
-    result.push({ timestamp: point[0], price: point[1] });
-    return result;
-  }, [] as ChartData[]);
+
+  return (
+    priceChart?.points?.reduce((result, point) => {
+      result.push({ timestamp: point[0], price: point[1] });
+      return result;
+    }, [] as ChartData[]) ?? null
+  );
 };
 const usePriceChart = ({
   mainnetAddress,
@@ -214,7 +217,8 @@ export function PriceChart({
 
   const priceAtBeginningOfSelectedTime = data?.[0]?.price;
   const tokenPriceValue = 'price' in token ? token.price?.value : undefined;
-  const lastPrice = (data && data[data.length - 1]?.price) || tokenPriceValue;
+  const lastPrice =
+    (data && data[data.length - 1]?.price) || tokenPriceValue || 0;
 
   const selectedTimePriceChange = {
     date: chartTimeToTimestamp[selectedTime],

@@ -1,3 +1,5 @@
+import { isAddress } from '@ethersproject/address';
+import { uniqBy } from 'lodash';
 import { useMemo } from 'react';
 import { Address } from 'viem';
 
@@ -7,10 +9,12 @@ import {
   selectorFilterByUserChains,
 } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
+import { useAssetSearchMetadataAllNetworks } from '~/core/resources/assets/assetMetadata';
 import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
 import { useTokenSearchAllNetworks } from '~/core/resources/search/tokenSearch';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ParsedUserAsset } from '~/core/types/assets';
 import {
   TokenSearchAssetKey,
@@ -46,11 +50,34 @@ export const useSearchableTokens = (searchQuery: string) => {
   const { hideSmallBalances } = useHideSmallBalancesStore();
   const navigate = useRainbowNavigate();
 
+  const query = searchQuery.toLowerCase();
+
+  const { testnetMode } = useTestnetModeStore();
+
   const { data: searchedAssets, isFetching: isFetchingSearchedAssets } =
     useTokenSearchAllNetworks({
       ...VERIFIED_ASSETS_PAYLOAD,
-      query: searchQuery,
+      query,
     });
+
+  const enableSearchChainAssets = isAddress(query) && !testnetMode;
+
+  // All on chain searched assets from all user chains
+  const {
+    data: searchedChainAssets,
+    isFetching: isFetchingSearchAssetMetadata,
+  } = useAssetSearchMetadataAllNetworks(
+    {
+      assetAddress: query as Address,
+    },
+    {
+      select: (data) => {
+        if (!enableSearchChainAssets) return null;
+        return data;
+      },
+      enabled: enableSearchChainAssets,
+    },
+  );
 
   const { data: userAssets = [], isFetching: isFetchingUserAssets } =
     useUserAssets(
@@ -124,7 +151,12 @@ export const useSearchableTokens = (searchQuery: string) => {
   }, [address, combinedAssets, navigate]);
 
   const unownedSearchableTokens = useMemo(() => {
-    return searchedAssets
+    const allSearchedAssets = uniqBy(
+      [...searchedAssets, ...searchedChainAssets],
+      'uniqueId',
+    );
+
+    return allSearchedAssets
       .map<UnownedTokenSearchItem>((asset) => ({
         address: asset.address,
         action: () =>
@@ -148,7 +180,7 @@ export const useSearchableTokens = (searchQuery: string) => {
 
         return !hasToken;
       });
-  }, [navigate, ownedSearchableTokens, searchedAssets]);
+  }, [navigate, ownedSearchableTokens, searchedAssets, searchedChainAssets]);
 
   const combinedSearchableTokens = useMemo(
     () => [...ownedSearchableTokens, ...unownedSearchableTokens],
@@ -158,6 +190,7 @@ export const useSearchableTokens = (searchQuery: string) => {
   return {
     data: combinedSearchableTokens,
     isFetching:
+      isFetchingSearchAssetMetadata ||
       isFetchingSearchedAssets ||
       isFetchingUserAssets ||
       isFetchingCustomNetworkAssets,
