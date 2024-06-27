@@ -32,7 +32,7 @@ import {
 import { CommandKPage, PAGES } from './pageConfig';
 import { actionLabels } from './references';
 
-interface UseSearchableTokensProps {
+interface UseSearchableTokensParameters {
   searchQuery: string;
   currentPage: CommandKPage;
   setSelectedCommandNeedsUpdate: (selectedCommandNeedsUpdate: boolean) => void;
@@ -42,7 +42,7 @@ export const useSearchableTokens = ({
   searchQuery,
   currentPage,
   setSelectedCommandNeedsUpdate,
-}: UseSearchableTokensProps) => {
+}: UseSearchableTokensParameters) => {
   const { currentAddress: address } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
   const { hideSmallBalances } = useHideSmallBalancesStore();
