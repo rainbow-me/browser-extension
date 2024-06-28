@@ -61,6 +61,14 @@ export const chainsName: Record<number, string> =
     {} as Record<number, string>,
   );
 
+export const chainsGasUnits = backendNetworks.networks.reduce(
+  (acc, backendNetwork: BackendNetwork) => {
+    acc[parseInt(backendNetwork.id, 10)] = backendNetwork.gasUnits;
+    return acc;
+  },
+  {} as Record<number, BackendNetwork['gasUnits']>,
+);
+
 const filterChainIdsByService = (
   servicePath: (services: BackendNetworkServices) => boolean,
 ): number[] => {

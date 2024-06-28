@@ -4,6 +4,7 @@ import { Contract, PopulatedTransaction } from '@ethersproject/contracts';
 import { parseUnits } from '@ethersproject/units';
 import { Address, Hash, erc20Abi, erc721Abi } from 'viem';
 
+import { chainsGasUnits } from '~/core/references/chains';
 import { gasStore } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
 import {
@@ -15,7 +16,7 @@ import { addNewTransaction } from '~/core/utils/transactions';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import { RainbowError, logger } from '~/logger';
 
-import { ETH_ADDRESS, gasUnits } from '../../references';
+import { ETH_ADDRESS } from '../../references';
 import { ParsedAsset } from '../../types/assets';
 import {
   convertAmountToRawAmount,
@@ -98,12 +99,14 @@ export const estimateApprove = async ({
         from: owner,
       },
     );
-    return gasLimit ? gasLimit.toString() : `${gasUnits.basic_approval}`;
+    return gasLimit
+      ? gasLimit.toString()
+      : `${chainsGasUnits[chainId].basic.approval}`;
   } catch (error) {
     logger.error(new RainbowError('unlock: error estimateApprove'), {
       message: (error as Error)?.message,
     });
-    return `${gasUnits.basic_approval}`;
+    return `${chainsGasUnits[chainId].basic.approval}`;
   }
 };
 
@@ -158,7 +161,9 @@ export const estimateERC721Approval = async ({
         from: owner,
       },
     );
-    return gasLimit ? gasLimit.toString() : `${gasUnits.basic_approval}`;
+    return gasLimit
+      ? gasLimit.toString()
+      : `${chainsGasUnits[chainId].basic.approval}`;
   } catch (error) {
     logger.error(
       new RainbowError('estimateERC721Approval: error estimateApproval'),
@@ -166,7 +171,7 @@ export const estimateERC721Approval = async ({
         message: (error as Error)?.message,
       },
     );
-    return `${gasUnits.basic_approval}`;
+    return `${chainsGasUnits[chainId].basic.approval}`;
   }
 };
 

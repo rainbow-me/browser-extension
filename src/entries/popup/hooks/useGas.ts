@@ -4,8 +4,10 @@ import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'viem';
 
-import { gasUnits } from '~/core/references';
-import { needsL1SecurityFeeChains } from '~/core/references/chains';
+import {
+  chainsGasUnits,
+  needsL1SecurityFeeChains,
+} from '~/core/references/chains';
 import { useEstimateGasLimit, useGasData } from '~/core/resources/gas';
 import { useEstimateApprovalGasLimit } from '~/core/resources/gas/estimateApprovalGasLimit';
 import { useEstimateSwapGasLimit } from '~/core/resources/gas/estimateSwapGasLimit';
@@ -124,7 +126,8 @@ const useGas = ({
       speed: GasSpeed.CUSTOM,
       baseFeeWei: gweiToWei(debouncedMaxBaseFee || '0'),
       blocksToConfirmation,
-      gasLimit: estimatedGasLimit || `${gasUnits.basic_transfer}`,
+      gasLimit:
+        estimatedGasLimit || chainsGasUnits[chainId].basic.tokenTransfer,
       nativeAsset,
       currency: currentCurrency,
       secondsPerNewBlock,
@@ -179,7 +182,8 @@ const useGas = ({
       speed: GasSpeed.CUSTOM,
       baseFeeWei: maxBaseFee,
       blocksToConfirmation,
-      gasLimit: estimatedGasLimit || `${gasUnits.basic_transfer}`,
+      gasLimit:
+        estimatedGasLimit || chainsGasUnits[chainId].basic.tokenTransfer,
       nativeAsset,
       currency: currentCurrency,
       secondsPerNewBlock,
@@ -215,7 +219,8 @@ const useGas = ({
               chainId,
               data: gasData as MeteorologyLegacyResponse | MeteorologyResponse,
               gasLimit:
-                debouncedEstimatedGasLimit || `${gasUnits.basic_transfer}`,
+                debouncedEstimatedGasLimit ||
+                chainsGasUnits[chainId].basic.tokenTransfer,
               nativeAsset,
               currency: currentCurrency,
               optimismL1SecurityFee,
