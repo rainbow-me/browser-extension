@@ -17,7 +17,7 @@ import {
   SupportedCurrencyKey,
   supportedCurrencies,
 } from '../references';
-import { chainsGasUnits } from '../references/chains';
+import { getChainGasUnits } from '../references/chains';
 import {
   MeteorologyLegacyResponse,
   MeteorologyResponse,
@@ -437,8 +437,7 @@ export const estimateGasWithPadding = async ({
       (!contractCallEstimateGas && !to && !data) ||
       (to && !data && (!code || code === '0x'))
     ) {
-      return chainsGasUnits[transactionRequest.chainId || ChainId.mainnet].basic
-        .eoaTransfer;
+      return getChainGasUnits(transactionRequest.chainId).basic.eoaTransfer;
     }
     const saferGasLimit = fraction(gasLimit.toString(), 19, 20);
 
@@ -503,10 +502,8 @@ export const calculateL1FeeOptimism = async ({
       transactionRequest.gasLimit = toHex(
         `${
           transactionRequest.data === '0x'
-            ? chainsGasUnits[txRequest.chainId || ChainId.mainnet].basic
-                .eoaTransfer
-            : chainsGasUnits[txRequest.chainId || ChainId.mainnet].basic
-                .tokenTransfer
+            ? getChainGasUnits(txRequest.chainId).basic.eoaTransfer
+            : getChainGasUnits(txRequest.chainId).basic.tokenTransfer
         }`,
       );
     }

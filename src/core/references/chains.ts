@@ -61,14 +61,6 @@ export const chainsName: Record<number, string> =
     {} as Record<number, string>,
   );
 
-export const chainsGasUnits = backendNetworks.networks.reduce(
-  (acc, backendNetwork: BackendNetwork) => {
-    acc[parseInt(backendNetwork.id, 10)] = backendNetwork.gasUnits;
-    return acc;
-  },
-  {} as Record<number, BackendNetwork['gasUnits']>,
-);
-
 const filterChainIdsByService = (
   servicePath: (services: BackendNetworkServices) => boolean,
 ): number[] => {
@@ -133,4 +125,19 @@ export const oldDefaultRPC: { [key in ChainId]?: string } = {
   [ChainId.blastSepolia]: process.env.BLAST_SEPOLIA_RPC,
   [ChainId.polygonAmoy]: process.env.POLYGON_AMOY_RPC,
   [ChainId.degen]: process.env.DEGEN_MAINNET_RPC,
+};
+
+const chainsGasUnits = backendNetworks.networks.reduce(
+  (acc, backendNetwork: BackendNetwork) => {
+    acc[parseInt(backendNetwork.id, 10)] = backendNetwork.gasUnits;
+    return acc;
+  },
+  {} as Record<number, BackendNetwork['gasUnits']>,
+);
+
+export const getChainGasUnits = (chainId?: number) => {
+  return (
+    (chainId ? chainsGasUnits[chainId] : undefined) ||
+    chainsGasUnits[ChainId.mainnet]
+  );
 };

@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'viem';
 
 import {
-  chainsGasUnits,
+  getChainGasUnits,
   needsL1SecurityFeeChains,
 } from '~/core/references/chains';
 import { useEstimateGasLimit, useGasData } from '~/core/resources/gas';
@@ -127,7 +127,7 @@ const useGas = ({
       baseFeeWei: gweiToWei(debouncedMaxBaseFee || '0'),
       blocksToConfirmation,
       gasLimit:
-        estimatedGasLimit || chainsGasUnits[chainId].basic.tokenTransfer,
+        estimatedGasLimit || getChainGasUnits(chainId).basic.tokenTransfer,
       nativeAsset,
       currency: currentCurrency,
       secondsPerNewBlock,
@@ -183,7 +183,7 @@ const useGas = ({
       baseFeeWei: maxBaseFee,
       blocksToConfirmation,
       gasLimit:
-        estimatedGasLimit || chainsGasUnits[chainId].basic.tokenTransfer,
+        estimatedGasLimit || getChainGasUnits(chainId).basic.tokenTransfer,
       nativeAsset,
       currency: currentCurrency,
       secondsPerNewBlock,
@@ -220,7 +220,7 @@ const useGas = ({
               data: gasData as MeteorologyLegacyResponse | MeteorologyResponse,
               gasLimit:
                 debouncedEstimatedGasLimit ||
-                chainsGasUnits[chainId].basic.tokenTransfer,
+                getChainGasUnits(chainId).basic.tokenTransfer,
               nativeAsset,
               currency: currentCurrency,
               optimismL1SecurityFee,

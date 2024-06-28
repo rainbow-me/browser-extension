@@ -15,7 +15,7 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
-import { chainsGasUnits } from '~/core/references/chains';
+import { getChainGasUnits } from '~/core/references/chains';
 import { ParsedAsset, ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 
@@ -59,7 +59,7 @@ async function estimateSwapGasLimitQueryFunction({
   queryKey: [{ chainId, quote, assetToSell, assetToBuy }],
 }: QueryFunctionArgs<typeof estimateSwapGasLimitQueryKey>) {
   if (!quote || (quote as QuoteError).error || !assetToSell || !assetToBuy) {
-    return chainsGasUnits[chainId].basic.swap;
+    return getChainGasUnits(chainId).basic.swap;
   }
   const q = quote as Quote | CrosschainQuote;
   const gasLimit =
@@ -80,7 +80,7 @@ async function estimateSwapGasLimitQueryFunction({
         });
 
   if (!gasLimit) {
-    return chainsGasUnits[chainId].basic.swap;
+    return getChainGasUnits(chainId).basic.swap;
   }
   return gasLimit;
 }
