@@ -1659,33 +1659,6 @@
         "Buffer": true
       }
     },
-    "web-ext>watchpack": {
-      "builtin": {
-        "events.EventEmitter": true,
-        "fs.readlinkSync": true,
-        "fs.watch": true,
-        "os.platform": true,
-        "path.basename": true,
-        "path.dirname": true,
-        "path.join": true,
-        "path.resolve": true
-      },
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "process.env.WATCHPACK_POLLING": true,
-        "process.env.WATCHPACK_RECURSIVE_WATCHER_LOGGING": true,
-        "process.env.WATCHPACK_WATCHER_LIMIT": true,
-        "process.nextTick": true,
-        "process.platform": true,
-        "process.stderr.write": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "webpack>glob-to-regexp": true,
-        "webpack>graceful-fs": true
-      }
-    },
     "webpack": {
       "builtin": {
         "buffer.constants.MAX_LENGTH": true,
@@ -1772,7 +1745,6 @@
         "html-webpack-plugin": true,
         "mini-css-extract-plugin": true,
         "ts-loader": true,
-        "web-ext>watchpack": true,
         "webpack>@webassemblyjs/ast": true,
         "webpack>@webassemblyjs/wasm-edit": true,
         "webpack>@webassemblyjs/wasm-parser": true,
@@ -1792,6 +1764,7 @@
         "webpack>schema-utils": true,
         "webpack>tapable": true,
         "webpack>terser-webpack-plugin": true,
+        "webpack>watchpack": true,
         "webpack>webpack-sources": true
       }
     },
@@ -2255,6 +2228,33 @@
         "Buffer": true,
         "TextDecoder": true,
         "define": true
+      }
+    },
+    "webpack>watchpack": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "fs.readlinkSync": true,
+        "fs.watch": true,
+        "os.platform": true,
+        "path.basename": true,
+        "path.dirname": true,
+        "path.join": true,
+        "path.resolve": true
+      },
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "process.env.WATCHPACK_POLLING": true,
+        "process.env.WATCHPACK_RECURSIVE_WATCHER_LOGGING": true,
+        "process.env.WATCHPACK_WATCHER_LIMIT": true,
+        "process.nextTick": true,
+        "process.platform": true,
+        "process.stderr.write": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "webpack>glob-to-regexp": true,
+        "webpack>graceful-fs": true
       }
     },
     "webpack>webpack-sources": {
