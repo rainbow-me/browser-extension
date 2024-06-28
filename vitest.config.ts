@@ -11,6 +11,7 @@ export default defineConfig({
     testTimeout: 30_000,
     setupFiles: './src/test/setup.ts',
     watch: false,
+    reporters: ['default', './src/test/sentryReporter.ts'],
   },
   resolve: {
     alias: {
