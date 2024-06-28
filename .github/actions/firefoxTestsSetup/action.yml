@@ -14,7 +14,7 @@ runs:
     - name: Download and Setup Firefox Developer Edition
       shell: bash
       run: |
-        FIREFOX_DEVEDITION_VERSION="122.0b9"
+        FIREFOX_DEVEDITION_VERSION="128.0b9"
         FIREFOX_DEVEDITION_URL="https://ftp.mozilla.org/pub/devedition/releases/$FIREFOX_DEVEDITION_VERSION/linux-x86_64/en-US/firefox-$FIREFOX_DEVEDITION_VERSION.tar.bz2"
         echo "Downloading Firefox Developer Edition $FIREFOX_DEVEDITION_VERSION"
         wget -q -O firefox.tar.bz2 $FIREFOX_DEVEDITION_URL
