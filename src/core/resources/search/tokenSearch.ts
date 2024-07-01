@@ -16,7 +16,6 @@ import {
   ETH_ADDRESS,
   MATIC_POLYGON_ADDRESS,
 } from '~/core/references';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ChainId } from '~/core/types/chains';
 import {
   SearchAsset,
@@ -199,8 +198,6 @@ export function useTokenSearchAllNetworks(
     TokenSearchQueryKey
   > = {},
 ) {
-  const { testnetMode } = useTestnetModeStore();
-
   const rainbowSupportedChains = getSupportedChains({
     testnets: false,
   }).filter(({ id }) => !isCustomChain(id));
@@ -216,14 +213,7 @@ export function useTokenSearchAllNetworks(
           query,
         }),
         queryFn: tokenSearchQueryFunction,
-        select: (data: SearchAsset[]) => {
-          if (!isAddress(query) || testnetMode) return [];
-          return data;
-        },
-        // testnet is not supported at the moment
-        enabled: isAddress(query) && !testnetMode,
         refetchOnWindowFocus: false,
-        staleTime: 10 * 60 * 1_000, // 10 min
         ...config,
       };
     }),

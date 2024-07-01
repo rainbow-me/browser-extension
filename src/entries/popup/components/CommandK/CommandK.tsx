@@ -26,7 +26,8 @@ import {
 } from './utils';
 
 export const CommandK = () => {
-  const { isCommandKVisible, isFetching } = useCommandKStatus();
+  const { isCommandKVisible, isFetching: isFetchingCommandKStatus } =
+    useCommandKStatus();
 
   const inputRef = React.useRef<HTMLInputElement>(null);
   const listRef = React.useRef<HTMLDivElement>(null);
@@ -74,12 +75,14 @@ export const CommandK = () => {
     setSelectedCommand,
   });
 
-  const { commandList } = useCommands(
+  const { commandList, isFetchingSearchAssetsCommands } = useCommands(
     currentPage,
     previousPageState,
     searchQuery,
     setSelectedCommandNeedsUpdate,
   );
+
+  const isFetching = isFetchingCommandKStatus || isFetchingSearchAssetsCommands;
 
   const filteredCommands = React.useMemo(() => {
     return filterAndSortCommands(commandList, currentPage, searchQuery);
