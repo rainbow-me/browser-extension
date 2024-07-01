@@ -120,6 +120,7 @@ export const useInfiniteTransactionList = ({
       },
       [formattedTransactions],
     ),
+    paddingEnd: 64,
   });
   const rows = infiniteRowVirtualizer.getVirtualItems();
 

@@ -134,7 +134,6 @@ const Tabs = memo(function Tabs() {
         style={{ flex: 1, position: 'relative', contentVisibility: 'visible' }}
         height="full"
         paddingTop="20px"
-        paddingBottom={activeTab === 'nfts' ? '20px' : '64px'}
       >
         {activeTab === 'activity' && <Activities />}
         {activeTab === 'tokens' && <Tokens />}

@@ -223,11 +223,14 @@ export function Tokens() {
   );
 
   const containerRef = useContainerRef();
+
   const assetsRowVirtualizer = useVirtualizer({
-    count: filteredAssets?.length || 0,
+    count: filteredAssets.length,
     getScrollElement: () => containerRef.current,
     estimateSize: () => 52,
-    overscan: 20,
+    overscan: 10,
+    paddingEnd: 64,
+    getItemKey: (index) => filteredAssets[index].uniqueId,
   });
 
   useKeyboardShortcut({
@@ -259,6 +262,7 @@ export function Tokens() {
     <Box
       width="full"
       style={{
+        height: `336px`,
         overflow: 'auto',
       }}
       ref={containerRef}
@@ -286,7 +290,7 @@ export function Tokens() {
           position: 'relative',
         }}
       >
-        <Box style={{ overflow: 'auto' }}>
+        <Box>
           {assetsRowVirtualizer.getVirtualItems().map((virtualItem) => {
             const { key, size, start, index } = virtualItem;
             const token = filteredAssets[index];
@@ -295,13 +299,13 @@ export function Tokens() {
 
             return (
               <Box
-                key={`${token.uniqueId}-${key}`}
-                layoutId={`list-${index}`}
+                key={`token-list-${token.uniqueId}-${key}`}
+                layoutId={`token-list-${index}`}
                 as={motion.div}
                 position="absolute"
                 width="full"
                 style={{
-                  height: `${size}px`,
+                  height: size,
                   y: start,
                 }}
               >
