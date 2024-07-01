@@ -1,4 +1,9 @@
-import { moonbaseAlpha, polygonZkEvm, scrollSepolia } from 'viem/chains';
+import {
+  lightlinkPegasus,
+  moonbaseAlpha,
+  polygonZkEvm,
+  scrollSepolia,
+} from 'viem/chains';
 
 import { ChainId } from '../types/chains';
 
@@ -13,6 +18,7 @@ export const TestnetFaucet = {
   [ChainId.avalancheFuji]: 'https://faucet.quicknode.com/avalanche/fuji',
   [ChainId.blastSepolia]: 'https://faucet.quicknode.com/blast/sepolia',
   [ChainId.polygonAmoy]: 'https://faucet.polygon.technology',
+  [lightlinkPegasus.id]: 'https://faucet.pegasus.lightlink.io',
   [moonbaseAlpha.id]: 'https://faucet.paradigm.xyz',
   [scrollSepolia.id]: 'https://faucet.quicknode.com/scroll/sepolia',
   [polygonZkEvm.id]: 'https://faucet.polygon.technology',

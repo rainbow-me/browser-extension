@@ -224,6 +224,28 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'LightLink Pegasus Testnet',
+    networkInfo: {
+      rpcUrl: 'https://replicator.pegasus.lightlink.io/rpc/v1',
+      chainId: 1891,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://pegasus.lightlink.io',
+      testnet: true,
+    },
+  },
+  {
+    name: 'LightLink Phoenix',
+    networkInfo: {
+      rpcUrl: 'https://replicator.phoenix.lightlink.io/rpc/v1',
+      chainId: 1890,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://phoenix.lightlink.io',
+      testnet: false,
+    },
+  },
+  {
     name: 'Linea',
     networkInfo: {
       rpcUrl: 'https://rpc.linea.build',
