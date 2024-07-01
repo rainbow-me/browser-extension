@@ -892,6 +892,11 @@ function MyEarnings({ earnings = '0' }: { earnings?: string }) {
     decimals: 18,
     symbol: eth?.nativeAsset?.symbol,
   });
+  const earningsWithThreshold = handleSignificantDecimalsWithThreshold(
+    convertRawAmountToDecimalFormat(earnings, 18),
+    6,
+    '0.000001',
+  );
   return (
     <Card borderColor="separatorSecondary" display="flex">
       <Stack space="20px">
@@ -922,7 +927,7 @@ function MyEarnings({ earnings = '0' }: { earnings?: string }) {
                 {i18n.t('points.rewards.claimed_earnings')}
               </Text>
               <Text size="14pt" color="label" weight="heavy">
-                {`${convertRawAmountToDecimalFormat(earnings, 18)} ETH`}
+                {`${earningsWithThreshold} ETH`}
               </Text>
             </Stack>
           </Inline>
