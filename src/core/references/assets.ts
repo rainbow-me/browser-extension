@@ -31,7 +31,9 @@ import {
   pgn,
   polygonZkEvm,
   pulsechain,
+  ronin,
   rootstock,
+  saigon,
   scroll,
   zkSync,
 } from 'viem/chains';
@@ -77,6 +79,8 @@ export const customChainIdsToAssetNames: Record<ChainId, string> = {
   690: 'redstone',
   17069: 'redstonegarnet',
   17001: 'redstoneholesky',
+  [ronin.id]: 'ronin',
+  [saigon.id]: 'roninsaigon',
   [rootstock.id]: 'rootstock',
   31: 'rootstocktestnet',
   [scroll.id]: 'scroll',

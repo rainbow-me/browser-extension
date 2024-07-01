@@ -422,6 +422,28 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Ronin',
+    networkInfo: {
+      rpcUrl: 'https://api.roninchain.com/rpc',
+      chainId: 2020,
+      decimals: 18,
+      symbol: 'RON',
+      explorerUrl: 'https://app.roninchain.com',
+      testnet: false,
+    },
+  },
+  {
+    name: 'Ronin Saigon Testnet',
+    networkInfo: {
+      rpcUrl: 'https://saigon-testnet.roninchain.com/rpc',
+      chainId: 2021,
+      decimals: 18,
+      symbol: 'RON',
+      explorerUrl: 'https://saigon-app.roninchain.com',
+      testnet: true,
+    },
+  },
+  {
     name: 'Rootstock',
     networkInfo: {
       rpcUrl: 'https://public-node.rsk.co',
