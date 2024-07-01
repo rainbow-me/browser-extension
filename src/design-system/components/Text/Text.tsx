@@ -65,8 +65,8 @@ export function Text({
         selectionStyle,
       ])}
       testId={testId}
-      marginVertical={webkitBackgroundClip === 'text' ? '-6px' : undefined}
-      paddingVertical={webkitBackgroundClip === 'text' ? '6px' : undefined}
+      marginVertical={webkitBackgroundClip === 'text' ? '-10px' : undefined}
+      paddingVertical={webkitBackgroundClip === 'text' ? '10px' : undefined}
       translate={translate}
     >
       {children}

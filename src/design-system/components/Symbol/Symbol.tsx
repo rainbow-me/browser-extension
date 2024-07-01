@@ -58,6 +58,7 @@ export const Symbol = React.forwardRef<SVGSVGElement, SymbolProps>(
                   alignItems: 'center',
                   display: 'flex',
                   transform: disableSmoothing ? 'none' : 'scale(0.5)',
+                  willChange: 'transform',
                 }
               : {
                   transform: disableSmoothing ? 'none' : 'scale(0.5)',

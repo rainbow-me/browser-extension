@@ -12,6 +12,7 @@ import {
 } from 'react';
 import { Address } from 'viem';
 
+import ethIcon from 'static/assets/ethIcon.png';
 import rainbowIcon from 'static/images/icon-16@2x.png';
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -30,6 +31,7 @@ import {
   handleSignificantDecimalsWithThreshold,
 } from '~/core/utils/numbers';
 import {
+  Bleed,
   Box,
   Column,
   Columns,
@@ -53,7 +55,6 @@ import {
   linearGradients,
 } from '~/design-system/styles/designTokens';
 import { AddressOrEns } from '~/entries/popup/components/AddressOrEns/AddressorEns';
-import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import ExternalImage from '~/entries/popup/components/ExternalImage/ExternalImage';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
 import { useNativeAsset } from '~/entries/popup/hooks/useNativeAsset';
@@ -76,7 +77,6 @@ function Card({
   return (
     <Lens
       onClick={props.onClick}
-      borderRadius="16px"
       width={props.width || 'full'}
       tabIndex={typeof props.tabIndex === 'number' ? props.tabIndex : 0}
     >
@@ -89,8 +89,10 @@ function Card({
         justifyContent="center"
         gap="12px"
         paddingVertical="16px"
-        paddingHorizontal="18px"
-        borderRadius="16px"
+        paddingHorizontal="16px"
+        borderRadius="20px"
+        borderColor="separatorSecondary"
+        borderWidth="1px"
         background="surfaceSecondaryElevated"
         boxShadow="12px surfaceSecondaryElevated"
         {...props}
@@ -299,7 +301,7 @@ function ReferralCode() {
     });
   };
   return (
-    <Stack gap="12px">
+    <Stack gap="16px">
       <Text size="16pt" weight="bold" color="label">
         {i18n.t('points.referral_code')}
       </Text>
@@ -307,19 +309,22 @@ function ReferralCode() {
         {data && isSuccess ? (
           <>
             <Card
+              borderRadius="16px"
               paddingVertical="12px"
               whileTap={{ scale: 0.98 }}
               whileFocus={{ scale: 1.02 }}
               whileHover={{ scale: 1.02 }}
               onTap={copyReferralCode}
               onClick={copyReferralCode}
+              style={{ height: 40, willChange: 'transform' }}
             >
-              <Text size="20pt" weight="bold" align="center">
+              <Text size="16pt" weight="heavy" align="center">
                 {formatReferralCode(data.user.referralCode)}
               </Text>
             </Card>
 
             <Card
+              borderRadius="16px"
               paddingVertical="12px"
               flexDirection="row"
               alignItems="center"
@@ -328,23 +333,26 @@ function ReferralCode() {
               whileHover={{ scale: 1.02 }}
               onTap={() => copyReferralLink(data.user.referralCode)}
               onClick={() => copyReferralLink(data.user.referralCode)}
+              style={{ height: 40, willChange: 'transform' }}
             >
-              <Symbol
-                symbol="square.on.square"
-                color="accent"
-                filter="shadow 12px accent"
-                weight="bold"
-                size={16}
-              />
-              <Text
-                size="16pt"
-                weight="bold"
-                color="accent"
-                textShadow="12px accent"
-                align="center"
-              >
-                {i18n.t('copy_link')}
-              </Text>
+              <Inline alignVertical="center" space="8px">
+                <Symbol
+                  symbol="square.on.square"
+                  color="accent"
+                  filter="shadow 12px accent"
+                  weight="bold"
+                  size={16}
+                />
+                <Text
+                  size="16pt"
+                  weight="bold"
+                  color="accent"
+                  textShadow="12px accent"
+                  align="center"
+                >
+                  {i18n.t('copy_link')}
+                </Text>
+              </Inline>
             </Card>
           </>
         ) : (
@@ -355,7 +363,7 @@ function ReferralCode() {
         )}
       </Inline>
 
-      <Text size="12pt" weight="medium" color="labelQuaternary">
+      <Text size="12pt" weight="semibold" color="labelQuaternary">
         {i18n.t('points.referral_code_description')}
       </Text>
     </Stack>
@@ -402,16 +410,15 @@ function NextDistributionIn({ nextDistribution }: { nextDistribution: Date }) {
   const minuteStr = minutes ? `${minutes}m` : '';
 
   return (
-    <Box padding="12px">
-      <Text
-        size="14pt"
-        weight="heavy"
-        color="labelSecondary"
-        textShadow="16px label"
-      >
-        {`${dayStr} ${hourStr} ${minuteStr}`}
-      </Text>
-    </Box>
+    <Text
+      align="center"
+      size="14pt"
+      weight="heavy"
+      color="labelSecondary"
+      textShadow="16px label"
+    >
+      {`${dayStr} ${hourStr} ${minuteStr}`.trim()}
+    </Text>
   );
 }
 
@@ -464,130 +471,138 @@ const StatsCarousel = memo(function YourRankAndNextDrop() {
 
   const { difference, symbol, color } = getRankDifference(user.stats);
 
-  const MIN_CARD_WIDTH = 130;
-  const CARD_HEIGHT = 100;
-
   return (
-    <Box
-      style={{
-        overflowX: 'scroll',
-        overflowY: 'hidden',
-        whiteSpace: 'nowrap',
-        padding: 12,
-        margin: -12,
-      }}
-    >
-      <Inline wrap={false} space="12px">
-        <Card style={{ height: CARD_HEIGHT, minWidth: MIN_CARD_WIDTH }}>
-          <TextWithMoreInfo>
-            {i18n.t('points.rewards.earned_last_week')}
-          </TextWithMoreInfo>
-          <Text size="20pt" weight="bold">
-            {lastPeriod.earnings.total || 0}
-          </Text>
-          <Inline alignVertical="center" space="4px" wrap={false}>
-            <Symbol
-              size={12}
-              symbol={'trophy.fill'}
-              weight="heavy"
-              color={'accent'}
-              filter={`shadow 12px accent`}
-            />
-            {lastPeriod.position.unranked ? (
-              <Text
-                size="12pt"
-                weight="heavy"
-                color="accent"
-                textShadow="16px accent"
-              >
-                {i18n.t('points.unranked')}
-              </Text>
-            ) : (
-              <Text
-                size="12pt"
-                weight="heavy"
-                color="accent"
-                textShadow="16px accent"
-              >
-                {i18n.t('points.ranking', {
-                  rank: lastPeriod.position.current,
-                })}
-              </Text>
-            )}
-          </Inline>
-        </Card>
-        <Card style={{ height: CARD_HEIGHT, minWidth: MIN_CARD_WIDTH }}>
-          <TextWithMoreInfo>
-            {i18n.t('points.rewards.my_referrals')}
-          </TextWithMoreInfo>
-          <Text size="20pt" weight="bold">
-            {user.stats.referral.total_referees}
-          </Text>
-          <Inline alignVertical="center" space="4px" wrap={false}>
-            <Symbol
-              size={12}
-              symbol={'rays'}
-              weight="bold"
-              color={'accent'}
-              filter={`shadow 12px accent`}
-            />
-            <Text
-              size="12pt"
-              weight="heavy"
-              color="accent"
-              textShadow="16px accent"
-            >
-              {i18n.t('points.referral_earnings', {
-                earnings: earningsFromReferrals,
-              })}
-            </Text>
-          </Inline>
-        </Card>
-        <Card style={{ height: CARD_HEIGHT, minWidth: MIN_CARD_WIDTH }}>
-          <TextWithMoreInfo>{i18n.t('points.your_rank')}</TextWithMoreInfo>
-          {user.stats.position.unranked ? (
-            <>
-              <Text size="20pt" weight="bold" color="labelTertiary">
-                {i18n.t('points.unranked')}
-              </Text>
-              <Text
-                size="12pt"
-                weight="heavy"
-                color="accent"
-                textShadow="16px accent"
-              >
-                {i18n.t('points.points_to_rank', {
-                  rank_cutoff: leaderboard.stats.rank_cutoff,
-                })}
-              </Text>
-            </>
-          ) : (
-            <>
+    <Bleed space="20px">
+      <Box
+        style={{
+          overflowX: 'scroll',
+          overflowY: 'hidden',
+          padding: 20,
+          whiteSpace: 'nowrap',
+        }}
+      >
+        <Columns space="12px">
+          <Column width="content">
+            <Card gap="10px">
+              <TextWithMoreInfo>
+                {i18n.t('points.rewards.earned_last_week')}
+              </TextWithMoreInfo>
               <Text size="20pt" weight="bold">
-                #{formatNumber(currentRank)}
+                {formatNumber(lastPeriod.earnings.total)}
               </Text>
-              <Inline alignVertical="center" space="4px" wrap={false}>
+              <Inline alignVertical="center" space="5px" wrap={false}>
                 <Symbol
                   size={12}
-                  symbol={symbol}
+                  symbol={'trophy.fill'}
                   weight="heavy"
-                  color={color}
-                  filter={`shadow 12px ${color}`}
+                  color={'accent'}
+                  filter={`shadow 12px accent`}
+                />
+                {lastPeriod.position.unranked ? (
+                  <Text
+                    size="12pt"
+                    weight="heavy"
+                    color="accent"
+                    textShadow="16px accent"
+                  >
+                    {i18n.t('points.no_weekly_rank')}
+                  </Text>
+                ) : (
+                  <Text
+                    size="12pt"
+                    weight="heavy"
+                    color="accent"
+                    textShadow="16px accent"
+                  >
+                    {i18n.t('points.ranking', {
+                      rank: formatNumber(lastPeriod.position.current),
+                    })}
+                  </Text>
+                )}
+              </Inline>
+            </Card>
+          </Column>
+          <Column width="content">
+            <Card gap="10px">
+              <TextWithMoreInfo>
+                {i18n.t('points.rewards.my_referrals')}
+              </TextWithMoreInfo>
+              <Text size="20pt" weight="bold">
+                {formatNumber(user.stats.referral.total_referees)}
+              </Text>
+              <Inline alignVertical="center" space="5px" wrap={false}>
+                <Symbol
+                  size={12}
+                  symbol={'rays'}
+                  weight="bold"
+                  color={'accent'}
+                  filter={`shadow 12px accent`}
                 />
                 <Text
                   size="12pt"
                   weight="heavy"
-                  color={color}
-                  textShadow={`16px ${color}`}
+                  color="accent"
+                  textShadow="16px accent"
                 >
-                  {formatNumber(difference)}
+                  {i18n.t('points.referral_earnings', {
+                    earnings: formatNumber(earningsFromReferrals),
+                  })}
                 </Text>
               </Inline>
-            </>
-          )}
-        </Card>
-      </Inline>
-    </Box>
+            </Card>
+          </Column>
+          <Column width="content">
+            <Card gap="10px">
+              <TextWithMoreInfo>{i18n.t('points.your_rank')}</TextWithMoreInfo>
+              {user.stats.position.unranked ? (
+                <>
+                  <Text size="20pt" weight="bold" color="labelTertiary">
+                    {i18n.t('points.unranked')}
+                  </Text>
+                  <Text
+                    size="12pt"
+                    weight="heavy"
+                    color="accent"
+                    textShadow="16px accent"
+                  >
+                    {i18n.t('points.points_to_rank', {
+                      rank_cutoff: leaderboard.stats.rank_cutoff,
+                    })}
+                  </Text>
+                </>
+              ) : (
+                <>
+                  <Text size="20pt" weight="bold">
+                    #{formatNumber(currentRank)}
+                  </Text>
+                  <Inline alignVertical="center" space="5px" wrap={false}>
+                    <Symbol
+                      size={12}
+                      symbol={symbol}
+                      weight="heavy"
+                      color={color}
+                      filter={`shadow 12px ${color}`}
+                    />
+                    <Text
+                      size="12pt"
+                      weight="heavy"
+                      color={color}
+                      textShadow={`16px ${color}`}
+                    >
+                      {formatNumber(difference)}
+                    </Text>
+                  </Inline>
+                </>
+              )}
+            </Card>
+          </Column>
+          <Column width="content">
+            {/* Spacer component */}
+            <Box height="full" style={{ width: 8 }} />
+          </Column>
+        </Columns>
+      </Box>
+    </Bleed>
   );
 });
 
@@ -613,12 +628,12 @@ function YourPoints() {
       animate={{ opacity: 1 }}
       display="flex"
       flexDirection="column"
-      gap="20px"
+      gap="16px"
     >
       <Text size="16pt" weight="bold" color="label">
         {i18n.t('points.my_points')}
       </Text>
-      <RainbowText size="44pt" weight="heavy" inline>
+      <RainbowText size="32pt" weight="heavy" inline>
         {formatNumber(earnings.total)}
       </RainbowText>
     </Box>
@@ -627,18 +642,49 @@ function YourPoints() {
 
 function RainbowText(props: TextProps & { inline?: boolean }) {
   const content = (
-    <Text
-      size={props.size}
-      weight={props.weight}
-      background="points"
-      webkitBackgroundClip="text"
-      webkitTextFillColor="transparent"
-      textShadow={props.textShadow}
-    >
-      {props.children}
-    </Text>
+    <Box style={{ overflow: 'visible', willChange: 'transform' }}>
+      <Text
+        size={props.size}
+        weight={props.weight}
+        background="points"
+        webkitBackgroundClip="text"
+        webkitTextFillColor="transparent"
+        textShadow={props.textShadow}
+      >
+        {props.children}
+      </Text>
+    </Box>
   );
   return props.inline ? <Inline>{content}</Inline> : content;
+}
+
+function EthIcon({
+  enableShadow,
+  size,
+}: {
+  enableShadow?: boolean;
+  size: number;
+}) {
+  const { currentTheme } = useCurrentThemeStore();
+  return (
+    <Box
+      boxShadow={enableShadow ? '12px' : undefined}
+      position="relative"
+      style={{ borderRadius: size / 2, height: size, width: size }}
+    >
+      <img src={ethIcon} style={{ height: '100%', width: '100%' }} />
+      {currentTheme === 'dark' && (
+        <Box
+          background="fillQuaternary"
+          height="full"
+          position="absolute"
+          style={{ borderRadius: size / 2 }}
+          top="0"
+          width="full"
+        />
+      )}
+    </Box>
+  );
 }
 
 function ClaimYourPoints({
@@ -656,10 +702,11 @@ function ClaimYourPoints({
     decimals: 18,
     symbol: eth?.nativeAsset?.symbol,
   });
+
   return (
-    <Card>
-      <Box paddingTop="6px">
-        <Text size="16pt" weight="bold" align="center" textShadow="16px label">
+    <Card borderRadius="28px">
+      <Box paddingTop="4px">
+        <Text size="16pt" weight="heavy" align="center" textShadow="16px label">
           {i18n.t('points.rewards.available_to_claim')}
         </Text>
       </Box>
@@ -667,12 +714,11 @@ function ClaimYourPoints({
         alignItems="center"
         justifyContent="center"
         display="flex"
-        paddingBottom="8px"
-        paddingTop="6px"
+        paddingBottom="14px"
       >
         <Inline alignVertical="center" space="8px">
-          <ChainBadge chainId={ChainId.mainnet} size="45" />
-          <Text size="44pt" weight="heavy" textShadow="16px label">
+          <EthIcon enableShadow size={32} />
+          <Text size="32pt" weight="heavy" textShadow="16px label">
             {
               convertAmountAndPriceToNativeDisplay(
                 claimableBalance.amount,
@@ -710,57 +756,60 @@ function ClaimYourPointsCta({
     '0.000001',
   );
   return (
-    <Box
-      as={motion.div}
-      style={{
-        background: `${buttonBackground}, ${linearGradients.points}`,
-        backgroundClip: 'padding-box, border-box',
-        backgroundOrigin: 'padding-box, border-box',
-        border: '2px solid transparent',
-        textAlign: 'center',
-        height: 56,
-        borderRadius: 20,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'relative',
-      }}
-      whileTap={{ scale: 0.98 }}
-      whileFocus={{ scale: 1.02 }}
-      whileHover={{ scale: 1.02 }}
-      onClick={() => {
-        analytics.track(event.pointsRewardsClaimButtonClicked, {
-          claimAmount: Number(
-            convertRawAmountToDecimalFormat(claimableReward, 18),
-          ),
-        });
-        showClaimSheet();
-      }}
-    >
-      <RainbowText size="20pt" weight="heavy">
-        {i18n.t('points.rewards.claim_reward', {
-          reward: `${reward} ETH `,
-        })}
-      </RainbowText>
+    <Bleed space="8px">
       <Box
+        as={motion.div}
         style={{
-          background: linearGradients.points,
-          position: 'absolute',
-          top: 0,
-          bottom: 0,
-          left: 0,
-          right: 0,
-          opacity: 0.14,
-          filter: 'blur(12px)',
+          background: `${buttonBackground}, ${linearGradients.points}`,
+          backgroundClip: 'padding-box, border-box',
+          backgroundOrigin: 'padding-box, border-box',
+          border: '2px solid transparent',
+          textAlign: 'center',
+          height: 40,
           borderRadius: 20,
-          marginTop: 0,
-          marginBottom: -6,
-          marginLeft: -6,
-          marginRight: -6,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'relative',
         }}
-        className={transparentOnHover}
-      />
-    </Box>
+        whileTap={{ scale: 0.98 }}
+        whileFocus={{ scale: 1.02 }}
+        whileHover={{ scale: 1.02 }}
+        onClick={() => {
+          // TODO: Also track amount in USD
+          analytics.track(event.pointsRewardsClaimButtonClicked, {
+            claimAmount: Number(
+              convertRawAmountToDecimalFormat(claimableReward, 18),
+            ),
+          });
+          showClaimSheet();
+        }}
+      >
+        <RainbowText align="center" size="16pt" weight="heavy">
+          {i18n.t('points.rewards.claim_reward', {
+            reward: `${reward} ETH `,
+          })}
+        </RainbowText>
+        <Box
+          style={{
+            background: linearGradients.points,
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            opacity: 0.14,
+            filter: 'blur(12px)',
+            borderRadius: 20,
+            marginTop: 0,
+            marginBottom: -6,
+            marginLeft: -6,
+            marginRight: -6,
+          }}
+          className={transparentOnHover}
+        />
+      </Box>
+    </Bleed>
   );
 }
 
@@ -774,6 +823,8 @@ function YourEarningsLastWeek() {
       justifyContent="flex-start"
       alignItems="center"
       gap="12px"
+      paddingHorizontal="14px"
+      paddingVertical="14px"
       borderColor="separatorSecondary"
       borderWidth="1px"
       onClick={() =>
@@ -784,27 +835,33 @@ function YourEarningsLastWeek() {
           },
         })
       }
+      style={{ willChange: 'transform' }}
+      whileTap={{ scale: 0.98 }}
+      whileFocus={{ scale: 1.02 }}
+      whileHover={{ scale: 1.02 }}
     >
       <Box
+        alignItems="center"
+        borderRadius="10px"
+        display="flex"
+        justifyContent="center"
         style={{
           height: 36,
           width: 36,
           background: `linear-gradient(315deg, ${cyanAlpha(
             0.2,
           )} -0.69%, ${cyanAlpha(0.4)} 99.31%)`,
-          borderColor: cyanAlpha(0.06),
+          boxShadow: `0 0 0 1px ${cyanAlpha(0.1)} inset`,
         }}
-        borderWidth="1px"
-        borderRadius="10px"
       >
         <AirdropIcon
-          size={50}
+          size={48}
           color={globalColors.cyan50}
-          style={{ marginTop: -8, marginLeft: -8 }}
+          style={{ margin: -8 }}
         />
       </Box>
       <Stack space="10px">
-        <Text size="14pt" weight="heavy">
+        <Text size="14pt" weight="bold">
           {i18n.t('points.weekly_overview.your_earnings')}
         </Text>
         <Text color="labelTertiary" size="12pt" weight="bold">
@@ -828,17 +885,24 @@ function NextDrop() {
   const { meta } = data;
   const nextDistribution = new Date(meta.distribution.next * 1000);
   return (
-    <Card borderRadius="32px">
+    <Card borderRadius="32px" paddingVertical="12px" paddingRight="12px">
       <Box display="flex" justifyContent="space-between">
-        <Inline alignVertical="center" space="12px">
-          <Symbol
-            size={18}
-            symbol="clock"
-            weight="heavy"
-            color="accent"
-            filter="shadow 12px accent"
-          />
-          <Stack gap="10px">
+        <Inline alignVertical="center" space="10px">
+          <Box
+            alignItems="center"
+            display="flex"
+            justifyContent="center"
+            style={{ width: 20 }}
+          >
+            <Symbol
+              size={16}
+              symbol="clock"
+              weight="heavy"
+              color="accent"
+              filter="shadow 12px accent"
+            />
+          </Box>
+          <Stack gap="8px">
             <Text
               size="14pt"
               color="label"
@@ -847,7 +911,7 @@ function NextDrop() {
             >
               {i18n.t('points.next_drop')}
             </Text>
-            <Text size="12pt" color="labelQuaternary" weight="bold">
+            <Text size="12pt" color="labelTertiary" weight="bold">
               {format(nextDistribution, 'cccc p')}
             </Text>
           </Stack>
@@ -859,6 +923,8 @@ function NextDrop() {
           display="flex"
           justifyContent="center"
           alignItems="center"
+          paddingHorizontal="10px"
+          style={{ height: 28 }}
         >
           <NextDistributionIn nextDistribution={nextDistribution} />
         </Box>
@@ -869,14 +935,16 @@ function NextDrop() {
 
 function RainbowUserEarnings({ totalEarnings }: { totalEarnings: string }) {
   return (
-    <Inline alignVertical="center" space="6px" alignHorizontal="center">
+    <Inline alignVertical="center" space="5px" alignHorizontal="center">
       <Text size="12pt" color="labelTertiary" weight="bold">
         {i18n.t('points.rewards.program_earnings')}
       </Text>
-      <ChainBadge chainId={ChainId.mainnet} size={'14'} />
-      <Text size="12pt" color="labelSecondary" weight="heavy">
-        {`${convertRawAmountToDecimalFormat(totalEarnings, 18)} ETH`}
-      </Text>
+      <Inline alignVertical="center" space="4px">
+        <EthIcon size={12} />
+        <Text size="12pt" color="labelSecondary" weight="heavy">
+          {`${convertRawAmountToDecimalFormat(totalEarnings, 18)} ETH`}
+        </Text>
+      </Inline>
     </Inline>
   );
 }
@@ -898,17 +966,26 @@ function MyEarnings({ earnings = '0' }: { earnings?: string }) {
     '0.000001',
   );
   return (
-    <Card borderColor="separatorSecondary" display="flex">
-      <Stack space="20px">
-        <Box display="flex" justifyContent="space-between">
-          <Inline space="12px" alignVertical="center">
-            <Symbol
-              symbol="chart.bar"
-              weight="heavy"
-              size={20}
-              color="accent"
-              filter="shadow 12px accent"
-            />
+    <Card borderRadius="28px" display="flex">
+      <Stack space="16px">
+        <Box display="flex" justifyContent="space-between" paddingTop="2px">
+          <Inline space="10px" alignVertical="center">
+            <Bleed vertical="6px">
+              <Box
+                alignItems="center"
+                display="flex"
+                justifyContent="center"
+                style={{ width: 20 }}
+              >
+                <Symbol
+                  symbol="chart.bar"
+                  weight="heavy"
+                  size={18}
+                  color="accent"
+                  filter="shadow 12px accent"
+                />
+              </Box>
+            </Bleed>
             <Text
               size="14pt"
               color="label"
@@ -921,9 +998,9 @@ function MyEarnings({ earnings = '0' }: { earnings?: string }) {
         </Box>
         <Box display="flex" justifyContent="space-between">
           <Inline space="10px" alignVertical="center">
-            <ChainBadge chainId={ChainId.mainnet} size="32" />
-            <Stack space="10px">
-              <Text size="12pt" color="labelQuaternary" weight="bold">
+            <EthIcon enableShadow size={32} />
+            <Stack space="8px">
+              <Text size="12pt" color="labelTertiary" weight="bold">
                 {i18n.t('points.rewards.claimed_earnings')}
               </Text>
               <Text size="14pt" color="label" weight="heavy">
@@ -932,16 +1009,16 @@ function MyEarnings({ earnings = '0' }: { earnings?: string }) {
             </Stack>
           </Inline>
           {ethPrice && (
-            <Stack space="10px">
+            <Stack space="8px">
               <Text
                 size="12pt"
-                color="labelQuaternary"
+                color="labelTertiary"
                 weight="bold"
                 align="right"
               >
                 {i18n.t('points.rewards.current_value')}
               </Text>
-              <Text size="14pt" color="label" weight="bold" align="right">
+              <Text size="14pt" color="label" weight="heavy" align="right">
                 {`${
                   convertAmountAndPriceToNativeDisplay(
                     earningsBalance.amount,
@@ -960,17 +1037,19 @@ function MyEarnings({ earnings = '0' }: { earnings?: string }) {
 
 function NoHistoricalRewards() {
   return (
-    <Card borderColor="separatorSecondary" display="flex">
-      <Stack space="16px">
+    <Card borderRadius="28px" display="flex" paddingTop="20px">
+      <Stack space="14px">
         <Box display="flex" justifyContent="center" alignItems="center">
-          <Inline space="10px" alignVertical="center">
-            <Symbol
-              symbol="chart.bar"
-              weight="heavy"
-              size={20}
-              color="accent"
-              filter="shadow 12px accent"
-            />
+          <Inline space="8px" alignVertical="center">
+            <Bleed vertical="6px">
+              <Symbol
+                symbol="chart.bar"
+                weight="heavy"
+                size={19}
+                color="accent"
+                filter="shadow 12px accent"
+              />
+            </Bleed>
             <Text
               size="16pt"
               color="label"
@@ -981,9 +1060,14 @@ function NoHistoricalRewards() {
             </Text>
           </Inline>
         </Box>
-        <Box display="flex" justifyContent="center" alignItems="center">
+        <Box
+          alignItems="center"
+          display="flex"
+          justifyContent="center"
+          paddingBottom="6px"
+        >
           <Text
-            weight="bold"
+            weight="semibold"
             color="labelQuaternary"
             size="12pt"
             align="center"
@@ -1009,8 +1093,10 @@ function Rewards() {
   const rewards = points?.user?.rewards;
   const { claimable, claimed } = rewards || {};
   const showClaimYourPoints = claimable && claimable !== '0';
-  const showMyEarnings = showClaimYourPoints || (claimed && claimed !== '0');
+  // const showMyEarnings = claimed && claimed !== '0';
+  const showMyEarnings = true;
   const showNoHistoricalRewards = !showMyEarnings;
+
   return (
     <>
       <Stack gap="20px">
@@ -1033,10 +1119,12 @@ function Rewards() {
           totalEarnings={points?.meta?.rewards?.total || '0'}
         />
         <NextDrop />
-        {shouldShowWeeklyOverview && <YourEarningsLastWeek />}
         <Separator color="separatorTertiary" />
         <YourPoints />
-        <StatsCarousel />
+        <Stack space="16px">
+          {shouldShowWeeklyOverview && <YourEarningsLastWeek />}
+          <StatsCarousel />
+        </Stack>
         <Separator color="separatorTertiary" />
         <ReferralCode />
       </Stack>
@@ -1057,7 +1145,11 @@ function PointsDisplayModeCard({
 }) {
   const { currentTheme } = useCurrentThemeStore();
   const active = mode === currentMode;
-  const title = mode === 'rewards' ? 'Rewards' : 'Leaderboard';
+  const title =
+    mode === 'rewards'
+      ? i18n.t('points.rewards.my_rewards')
+      : i18n.t('points.leaderboard');
+
   const getGradientBackground = () => {
     if (currentTheme === 'dark') {
       return mode === 'rewards'
@@ -1068,17 +1160,18 @@ function PointsDisplayModeCard({
       ? linearGradients.subtleLightRight
       : linearGradients.subtleLightLeft;
   };
+
   return active ? (
     <Card
       borderRadius="20px"
       tabIndex={-1}
       borderColor="separatorSecondary"
       borderWidth="1px"
-      paddingVertical="10px"
-      style={{ flex: 1 }}
+      paddingVertical="0px"
+      style={{ flex: 1, height: 28, marginTop: 6 }}
     >
       <Text
-        size="16pt"
+        size="14pt"
         color={'label'}
         weight="heavy"
         align="center"
@@ -1090,13 +1183,14 @@ function PointsDisplayModeCard({
   ) : (
     <Box
       as={motion.div}
+      display="flex"
       whileTap={{ scale: 0.98 }}
       whileFocus={{ scale: 1.02 }}
       whileHover={{ scale: 1.02 }}
       onTap={onPress}
       onClick={onPress}
       tabIndex={0}
-      paddingVertical="10px"
+      alignItems="center"
       paddingHorizontal="18px"
       borderRadius="20px"
       justifyContent="center"
@@ -1105,9 +1199,11 @@ function PointsDisplayModeCard({
       style={{
         background: getGradientBackground(),
         flex: 1,
+        height: 28,
+        marginTop: 6,
       }}
     >
-      <Text size="16pt" color="labelTertiary" weight="heavy" align="center">
+      <Text size="14pt" color="labelTertiary" weight="heavy" align="center">
         {title}
       </Text>
     </Box>
@@ -1130,7 +1226,7 @@ export function PointsDashboard() {
   return (
     <>
       <Stack
-        gap="24px"
+        gap="20px"
         width="full"
         marginTop="-30px"
         padding="20px"
