@@ -224,6 +224,28 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Kava EVM',
+    networkInfo: {
+      rpcUrl: 'https://evm.kava.io',
+      chainId: 2222,
+      decimals: 18,
+      symbol: 'KAVA',
+      explorerUrl: 'https://kavascan.com',
+      testnet: false,
+    },
+  },
+  {
+    name: 'Kava EVM Testnet',
+    networkInfo: {
+      rpcUrl: 'https://evm.testnet.kava.io',
+      chainId: 2221,
+      decimals: 18,
+      symbol: 'KAVA',
+      explorerUrl: 'https://testnet.kavascan.com',
+      testnet: true,
+    },
+  },
+  {
     name: 'LightLink Pegasus Testnet',
     networkInfo: {
       rpcUrl: 'https://replicator.pegasus.lightlink.io/rpc/v1',
