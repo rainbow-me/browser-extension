@@ -18,6 +18,7 @@ import { useVisibleTokenCount } from '../../hooks/useVisibleTokenCount';
 
 import DisplayModeDropdown from './NFTs/DisplayModeDropdown';
 import SortDropdown from './NFTs/SortDropdown';
+import config from '~/core/firebase/remoteConfig';
 
 export function TabHeader({
   activeTab,
@@ -69,6 +70,18 @@ export function TabHeader({
     [activeTab, currentCurrency, hideAssetBalances, userAssetsBalanceDisplay],
   );
 
+  const tabTitle = useMemo(() => {
+    const rewardsEnabled =
+      config.rewards_enabled || process.env.INTERNAL_BUILD === 'true';
+
+    switch (activeTab) {
+      case 'points':
+        return rewardsEnabled ? i18n.t('tabs.rewards') : i18n.t('tabs.points');
+      default:
+        return i18n.t(`tabs.${activeTab}`);
+    }
+  }, [activeTab]);
+
   const shouldDisplayBalanceComponent =
     activeTab !== 'nfts' && activeTab !== 'points';
 
@@ -92,7 +105,7 @@ export function TabHeader({
             textShadow={activeTab === 'points' ? '12px accent' : undefined}
             color={activeTab === 'points' ? 'accent' : 'label'}
           >
-            {i18n.t(`tabs.${activeTab}`)}
+            {tabTitle}
           </Text>
           {activeTab === 'tokens' && visibleTokenCount > 0 && (
             <Text color="labelQuaternary" size="14pt" weight="bold">
