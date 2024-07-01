@@ -9,6 +9,7 @@ export default mergeConfig(
     test: {
       bail: 1,
       threads: false,
+      reporters: ['default', '../src/test/sentryReporter.ts'],
     },
   }) as UserConfig,
 );

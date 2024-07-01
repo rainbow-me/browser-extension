@@ -20,6 +20,7 @@ export default mergeConfig(
           }
         },
       },
+      reporters: ['default', '../src/test/sentryReporter.ts'],
     },
   }) as UserConfig,
 );

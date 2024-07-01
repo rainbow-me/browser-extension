@@ -11,7 +11,6 @@ export default defineConfig({
     retry: 2,
     bail: 1,
     hookTimeout: 30_000,
-    reporters: ['default', '../src/test/sentryReporter.ts'],
   },
   resolve: {
     alias: {
