@@ -17,6 +17,7 @@ import {
 import { Address } from 'viem';
 
 import { metadataPostClient } from '~/core/graphql';
+import { getChainGasUnits } from '~/core/references/chains';
 import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { add } from '~/core/utils/numbers';
@@ -27,7 +28,7 @@ import { getProvider } from '~/core/wagmi/clientToProvider';
 import { TransactionSimulationResponse } from '~/entries/popup/pages/messages/useSimulateTransaction';
 import { RainbowError, logger } from '~/logger';
 
-import { REFERRER, gasUnits } from '../../references';
+import { REFERRER } from '../../references';
 import { gasStore } from '../../state';
 import {
   TransactionGasParams,
@@ -60,7 +61,7 @@ export const estimateSwapGasLimit = async ({
 }): Promise<string> => {
   const provider = getProvider({ chainId });
   if (!provider || !quote) {
-    return gasUnits.basic_swap[chainId];
+    return getChainGasUnits(chainId).basic.swap;
   }
 
   const { sellTokenAddress, buyTokenAddress } = quote;
@@ -75,8 +76,8 @@ export const estimateSwapGasLimit = async ({
   // Wrap / Unwrap Eth
   if (isWrapNativeAsset || isUnwrapNativeAsset) {
     const default_estimate = isWrapNativeAsset
-      ? gasUnits.weth_wrap
-      : gasUnits.weth_unwrap;
+      ? getChainGasUnits(chainId).wrapped.wrap
+      : getChainGasUnits(chainId).wrapped.unwrap;
     try {
       const gasLimit = await estimateGasWithPadding({
         transactionRequest: {

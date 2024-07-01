@@ -126,3 +126,18 @@ export const oldDefaultRPC: { [key in ChainId]?: string } = {
   [ChainId.polygonAmoy]: process.env.POLYGON_AMOY_RPC,
   [ChainId.degen]: process.env.DEGEN_MAINNET_RPC,
 };
+
+const chainsGasUnits = backendNetworks.networks.reduce(
+  (acc, backendNetwork: BackendNetwork) => {
+    acc[parseInt(backendNetwork.id, 10)] = backendNetwork.gasUnits;
+    return acc;
+  },
+  {} as Record<number, BackendNetwork['gasUnits']>,
+);
+
+export const getChainGasUnits = (chainId?: number) => {
+  return (
+    (chainId ? chainsGasUnits[chainId] : undefined) ||
+    chainsGasUnits[ChainId.mainnet]
+  );
+};

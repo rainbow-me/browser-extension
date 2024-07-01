@@ -3,7 +3,6 @@ import { AddressZero } from '@ethersproject/constants';
 import { ChainId } from '~/core/types/chains';
 
 export { ethUnits } from './ethUnits';
-export { gasUnits } from './gasUnits';
 export { supportedCurrencies } from './supportedCurrencies';
 
 export const smartContractMethods = {
