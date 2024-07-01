@@ -213,6 +213,28 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Hedera',
+    networkInfo: {
+      rpcUrl: 'https://mainnet.hashio.io/api',
+      chainId: 295,
+      decimals: 18,
+      symbol: 'HBAR',
+      explorerUrl: 'https://hashscan.io/mainnet',
+      testnet: false,
+    },
+  },
+  {
+    name: 'Hedera Testnet',
+    networkInfo: {
+      rpcUrl: 'https://testnet.hashio.io/api',
+      chainId: 296,
+      decimals: 18,
+      symbol: 'HBAR',
+      explorerUrl: 'https://hashscan.io/testnet',
+      testnet: true,
+    },
+  },
+  {
     name: 'Immutable zkEVM',
     networkInfo: {
       rpcUrl: 'https://rpc.immutable.com',
