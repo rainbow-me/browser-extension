@@ -79,5 +79,7 @@ export const customChainIdsToAssetNames: Record<ChainId, string> = {
   31: 'rootstocktestnet',
   [scroll.id]: 'scroll',
   100: 'xdai',
+  810180: 'zklink',
+  810181: 'zklinktestnet',
   [zkSync.id]: 'zksync',
 };

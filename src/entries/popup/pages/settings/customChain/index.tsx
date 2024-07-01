@@ -444,6 +444,28 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'zkLink Nova',
+    networkInfo: {
+      rpcUrl: 'https://rpc.zklink.io',
+      chainId: 810180,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://explorer.zklink.io',
+      testnet: false,
+    },
+  },
+  {
+    name: 'zkLink Nova Testnet',
+    networkInfo: {
+      rpcUrl: 'https://sepolia.rpc.zklink.io',
+      chainId: 810181,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://sepolia.explorer.zklink.io',
+      testnet: true,
+    },
+  },
+  {
     name: 'zkSync',
     networkInfo: {
       rpcUrl: 'https://mainnet.era.zksync.io',
