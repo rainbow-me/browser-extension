@@ -131,7 +131,7 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     await typeOnTextInput({
       id: 'confirm-password-input',
       driver,
-      text: 'test1234',
+      text: 'test12345',
     });
     await findElementByTestIdAndClick({ id: 'set-password-button', driver });
     await delayTime('long');
