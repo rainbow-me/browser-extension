@@ -335,7 +335,7 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
-    name: 'Karak Sepolia Testnet',
+    name: 'Karak Sepolia',
     networkInfo: {
       rpcUrl: 'https://rpc.sepolia.karak.network',
       chainId: 8054,
@@ -379,7 +379,7 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
-    name: 'LightLink Pegasus Testnet',
+    name: 'LightLink Pegasus',
     networkInfo: {
       rpcUrl: 'https://replicator.pegasus.lightlink.io/rpc/v1',
       chainId: 1891,
@@ -577,7 +577,7 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
-    name: 'Ronin Saigon Testnet',
+    name: 'Ronin Saigon',
     networkInfo: {
       rpcUrl: 'https://saigon-testnet.roninchain.com/rpc',
       chainId: 2021,
@@ -654,7 +654,7 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
-    name: 'zkSync Sepolia Testnet',
+    name: 'zkSync Sepolia',
     networkInfo: {
       rpcUrl: 'https://sepolia.era.zksync.dev',
       chainId: 300,
