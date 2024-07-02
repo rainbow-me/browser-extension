@@ -31,4 +31,5 @@ export const TestnetFaucet = {
   1123: 'https://bsquared.network/faucet',
   28882: 'https://l2faucet.com',
   7701: 'https://cantofaucet.com',
+  1918988905: 'https://testnet.rarichain.org/faucet',
 } as const;
