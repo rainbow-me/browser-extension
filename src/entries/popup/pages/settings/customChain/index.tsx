@@ -247,6 +247,28 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Karak',
+    networkInfo: {
+      rpcUrl: 'https://rpc.karak.network',
+      chainId: 2410,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://explorer.karak.network',
+      testnet: false,
+    },
+  },
+  {
+    name: 'Karak Sepolia Testnet',
+    networkInfo: {
+      rpcUrl: 'https://rpc.sepolia.karak.network',
+      chainId: 8054,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://explorer.sepolia.karak.network',
+      testnet: true,
+    },
+  },
+  {
     name: 'Kava',
     networkInfo: {
       rpcUrl: 'https://evm.kava.io',
