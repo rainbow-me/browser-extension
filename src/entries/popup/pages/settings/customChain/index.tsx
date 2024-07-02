@@ -555,6 +555,28 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Polygon zkEVM Cardona',
+    networkInfo: {
+      rpcUrl: 'https://rpc.cardona.zkevm-rpc.com',
+      chainId: 2442,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://cardona-zkevm.polygonscan.com',
+      testnet: true,
+    },
+  },
+  {
+    name: 'Polygon zkEVM Testnet',
+    networkInfo: {
+      rpcUrl: 'https://rpc.public.zkevm-test.net',
+      chainId: 1442,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://explorer.public.zkevm-test.net',
+      testnet: true,
+    },
+  },
+  {
     name: 'PulseChain',
     networkInfo: {
       rpcUrl: 'https://rpc.pulsechain.com',

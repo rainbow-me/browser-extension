@@ -4,7 +4,8 @@ import {
   filecoinCalibration,
   lightlinkPegasus,
   moonbaseAlpha,
-  polygonZkEvm,
+  polygonZkEvmCardona,
+  polygonZkEvmTestnet,
   scrollSepolia,
 } from 'viem/chains';
 
@@ -26,7 +27,8 @@ export const TestnetFaucet = {
   [filecoinCalibration.id]: 'https://beryx.io/faucet',
   [lightlinkPegasus.id]: 'https://faucet.pegasus.lightlink.io',
   [moonbaseAlpha.id]: 'https://faucet.paradigm.xyz',
-  [polygonZkEvm.id]: 'https://faucet.polygon.technology',
+  [polygonZkEvmCardona.id]: 'https://faucet.polygon.technology',
+  [polygonZkEvmTestnet.id]: 'https://faucet.polygon.technology',
   [scrollSepolia.id]: 'https://faucet.quicknode.com/scroll/sepolia',
   1123: 'https://bsquared.network/faucet',
   28882: 'https://l2faucet.com',
