@@ -170,6 +170,28 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Fusion',
+    networkInfo: {
+      rpcUrl: 'https://mainnet.fusionnetwork.io',
+      chainId: 32659,
+      decimals: 18,
+      symbol: 'FSN',
+      explorerUrl: 'https://fsnscan.com',
+      testnet: false,
+    },
+  },
+  {
+    name: 'Fusion Testnet',
+    networkInfo: {
+      rpcUrl: 'https://testnet.fusionnetwork.io',
+      chainId: 46688,
+      decimals: 18,
+      symbol: 'FSN',
+      explorerUrl: 'https://testnet.fsnscan.com',
+      testnet: true,
+    },
+  },
+  {
     name: 'Gnosis',
     networkInfo: {
       rpcUrl: 'https://rpc.gnosischain.com',
