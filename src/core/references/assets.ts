@@ -59,6 +59,8 @@ export const customChainIdsToAssetNames: Record<ChainId, string> = {
   [boba.id]: 'boba',
   [celo.id]: 'celo',
   [classic.id]: 'classic',
+  1116: 'core',
+  1115: 'coretestnet',
   [cronos.id]: 'cronos',
   [degen.id]: 'degen',
   [dogechain.id]: 'dogechain',

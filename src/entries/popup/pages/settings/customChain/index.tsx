@@ -49,17 +49,6 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
-    name: 'BOB',
-    networkInfo: {
-      rpcUrl: 'https://rpc.gobob.xyz',
-      chainId: 60808,
-      decimals: 18,
-      symbol: 'ETH',
-      explorerUrl: 'https://explorer.gobob.xyz',
-      testnet: false,
-    },
-  },
-  {
     name: 'Hardhat Mainnet Fork',
     networkInfo: {
       rpcUrl: 'http://127.0.0.1:8545',
@@ -104,6 +93,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'BOB',
+    networkInfo: {
+      rpcUrl: 'https://rpc.gobob.xyz',
+      chainId: 60808,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://explorer.gobob.xyz',
+      testnet: false,
+    },
+  },
+  {
     name: 'Boba Network',
     networkInfo: {
       rpcUrl: 'https://mainnet.boba.network',
@@ -134,6 +134,28 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
       symbol: 'CELO',
       explorerUrl: 'https://explorer.celo.org/mainnet',
       testnet: false,
+    },
+  },
+  {
+    name: 'Core',
+    networkInfo: {
+      rpcUrl: 'https://rpc.coredao.org',
+      chainId: 1116,
+      decimals: 18,
+      symbol: 'CORE',
+      explorerUrl: 'https://scan.coredao.org',
+      testnet: false,
+    },
+  },
+  {
+    name: 'Core Testnet',
+    networkInfo: {
+      rpcUrl: 'https://rpc.test.btcs.network',
+      chainId: 1115,
+      decimals: 18,
+      symbol: 'tCORE',
+      explorerUrl: 'https://scan.test.btcs.network',
+      testnet: true,
     },
   },
   {
