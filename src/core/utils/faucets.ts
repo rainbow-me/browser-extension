@@ -1,4 +1,5 @@
 import {
+  celoAlfajores,
   lightlinkPegasus,
   moonbaseAlpha,
   polygonZkEvm,
@@ -18,10 +19,11 @@ export const TestnetFaucet = {
   [ChainId.avalancheFuji]: 'https://faucet.quicknode.com/avalanche/fuji',
   [ChainId.blastSepolia]: 'https://faucet.quicknode.com/blast/sepolia',
   [ChainId.polygonAmoy]: 'https://faucet.polygon.technology',
+  [celoAlfajores.id]: 'https://faucet.celo.org/alfajores',
   [lightlinkPegasus.id]: 'https://faucet.pegasus.lightlink.io',
   [moonbaseAlpha.id]: 'https://faucet.paradigm.xyz',
-  [scrollSepolia.id]: 'https://faucet.quicknode.com/scroll/sepolia',
   [polygonZkEvm.id]: 'https://faucet.polygon.technology',
+  [scrollSepolia.id]: 'https://faucet.quicknode.com/scroll/sepolia',
   1123: 'https://bsquared.network/faucet',
   28882: 'https://l2faucet.com',
   7701: 'https://cantofaucet.com',

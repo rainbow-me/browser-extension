@@ -192,6 +192,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Celo Alfajores',
+    networkInfo: {
+      rpcUrl: 'https://alfajores-forno.celo-testnet.org',
+      chainId: 44787,
+      decimals: 18,
+      symbol: 'CELO',
+      explorerUrl: 'https://alfajores.celoscan.io',
+      testnet: true,
+    },
+  },
+  {
     name: 'Core',
     networkInfo: {
       rpcUrl: 'https://rpc.coredao.org',
