@@ -258,6 +258,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Fantom Testnet',
+    networkInfo: {
+      rpcUrl: 'https://rpc.testnet.fantom.network',
+      chainId: 4_002,
+      decimals: 18,
+      symbol: 'FTM',
+      explorerUrl: 'https://testnet.ftmscan.com',
+      testnet: true,
+    },
+  },
+  {
     name: 'Filecoin',
     networkInfo: {
       rpcUrl: 'https://api.node.glif.io/rpc/v1',

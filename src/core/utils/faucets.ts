@@ -1,5 +1,6 @@
 import {
   celoAlfajores,
+  fantomTestnet,
   lightlinkPegasus,
   moonbaseAlpha,
   polygonZkEvm,
@@ -20,6 +21,7 @@ export const TestnetFaucet = {
   [ChainId.blastSepolia]: 'https://faucet.quicknode.com/blast/sepolia',
   [ChainId.polygonAmoy]: 'https://faucet.polygon.technology',
   [celoAlfajores.id]: 'https://faucet.celo.org/alfajores',
+  [fantomTestnet.id]: 'https://faucet.fantom.network',
   [lightlinkPegasus.id]: 'https://faucet.pegasus.lightlink.io',
   [moonbaseAlpha.id]: 'https://faucet.paradigm.xyz',
   [polygonZkEvm.id]: 'https://faucet.polygon.technology',
