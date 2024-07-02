@@ -49,6 +49,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'BOB',
+    networkInfo: {
+      rpcUrl: 'https://rpc.gobob.xyz',
+      chainId: 60808,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://explorer.gobob.xyz',
+      testnet: false,
+    },
+  },
+  {
     name: 'Hardhat Mainnet Fork',
     networkInfo: {
       rpcUrl: 'http://127.0.0.1:8545',
