@@ -1,11 +1,12 @@
 import { isEqual } from 'lodash';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
 import { Chain } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { useChainMetadata } from '~/core/resources/chains/chainMetadata';
 import { useRainbowChainsStore } from '~/core/state';
+import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { getDappHostname, isValidUrl } from '~/core/utils/connectedApps';
@@ -92,18 +93,29 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
-    name: 'Blast Testnet',
+    name: 'Aurora Testnet',
     networkInfo: {
-      rpcUrl: 'https://sepolia.blast.io',
-      chainId: 168587773,
+      rpcUrl: 'https://testnet.aurora.dev',
+      chainId: 1313161555,
       decimals: 18,
       symbol: 'ETH',
-      explorerUrl: 'https://testnet.blastscan.io',
+      explorerUrl: 'https://testnet.aurorascan.dev',
       testnet: true,
     },
   },
   {
-    name: 'Boba Network',
+    name: 'BOB',
+    networkInfo: {
+      rpcUrl: 'https://rpc.gobob.xyz',
+      chainId: 60808,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://explorer.gobob.xyz',
+      testnet: false,
+    },
+  },
+  {
+    name: 'Boba',
     networkInfo: {
       rpcUrl: 'https://mainnet.boba.network',
       chainId: 288,
@@ -111,6 +123,39 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
       symbol: 'BOBA',
       explorerUrl: 'https://bobascan.com',
       testnet: false,
+    },
+  },
+  {
+    name: 'Boba Sepolia',
+    networkInfo: {
+      rpcUrl: 'https://sepolia.boba.network',
+      chainId: 28882,
+      decimals: 18,
+      symbol: 'BOBA',
+      explorerUrl: 'https://testnet.bobascan.com',
+      testnet: true,
+    },
+  },
+  {
+    name: 'B²',
+    networkInfo: {
+      rpcUrl: 'https://rpc.bsquared.network',
+      chainId: 223,
+      decimals: 18,
+      symbol: 'BTC',
+      explorerUrl: 'https://explorer.bsquared.network',
+      testnet: false,
+    },
+  },
+  {
+    name: 'B² Testnet',
+    networkInfo: {
+      rpcUrl: 'https://testnet-rpc.bsquared.network',
+      chainId: 1123,
+      decimals: 18,
+      symbol: 'BTC',
+      explorerUrl: 'https://testnet-explorer.bsquared.network',
+      testnet: true,
     },
   },
   {
@@ -125,6 +170,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Canto Testnet',
+    networkInfo: {
+      rpcUrl: 'https://canto-testnet.plexnode.wtf',
+      chainId: 7701,
+      decimals: 18,
+      symbol: 'CANTO',
+      explorerUrl: 'https://testnet.tuber.build',
+      testnet: true,
+    },
+  },
+  {
     name: 'Celo',
     networkInfo: {
       rpcUrl: 'https://forno.celo.org',
@@ -133,6 +189,39 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
       symbol: 'CELO',
       explorerUrl: 'https://explorer.celo.org/mainnet',
       testnet: false,
+    },
+  },
+  {
+    name: 'Celo Alfajores',
+    networkInfo: {
+      rpcUrl: 'https://alfajores-forno.celo-testnet.org',
+      chainId: 44787,
+      decimals: 18,
+      symbol: 'CELO',
+      explorerUrl: 'https://alfajores.celoscan.io',
+      testnet: true,
+    },
+  },
+  {
+    name: 'Core',
+    networkInfo: {
+      rpcUrl: 'https://rpc.coredao.org',
+      chainId: 1116,
+      decimals: 18,
+      symbol: 'CORE',
+      explorerUrl: 'https://scan.coredao.org',
+      testnet: false,
+    },
+  },
+  {
+    name: 'Core Testnet',
+    networkInfo: {
+      rpcUrl: 'https://rpc.test.btcs.network',
+      chainId: 1115,
+      decimals: 18,
+      symbol: 'tCORE',
+      explorerUrl: 'https://scan.test.btcs.network',
+      testnet: true,
     },
   },
   {
@@ -169,25 +258,14 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
-    name: 'Flashbots Protect',
+    name: 'Fantom Testnet',
     networkInfo: {
-      rpcUrl: 'https://rpc.flashbots.net',
-      chainId: 1,
+      rpcUrl: 'https://rpc.testnet.fantom.network',
+      chainId: 4_002,
       decimals: 18,
-      symbol: 'ETH',
-      explorerUrl: 'https://etherscan.io',
-      testnet: false,
-    },
-  },
-  {
-    name: 'Flashbots Protect (Fast)',
-    networkInfo: {
-      rpcUrl: 'https://rpc.flashbots.net/fast',
-      chainId: 1,
-      decimals: 18,
-      symbol: 'ETH',
-      explorerUrl: 'https://etherscan.io',
-      testnet: false,
+      symbol: 'FTM',
+      explorerUrl: 'https://testnet.ftmscan.com',
+      testnet: true,
     },
   },
   {
@@ -202,6 +280,39 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Filecoin Calibration',
+    networkInfo: {
+      rpcUrl: 'https://api.calibration.node.glif.io/rpc/v1',
+      chainId: 314_159,
+      decimals: 18,
+      symbol: 'tFIL',
+      explorerUrl: 'https://calibration.filscan.io',
+      testnet: true,
+    },
+  },
+  {
+    name: 'Fusion',
+    networkInfo: {
+      rpcUrl: 'https://mainnet.fusionnetwork.io',
+      chainId: 32659,
+      decimals: 18,
+      symbol: 'FSN',
+      explorerUrl: 'https://fsnscan.com',
+      testnet: false,
+    },
+  },
+  {
+    name: 'Fusion Testnet',
+    networkInfo: {
+      rpcUrl: 'https://testnet.fusionnetwork.io',
+      chainId: 46688,
+      decimals: 18,
+      symbol: 'FSN',
+      explorerUrl: 'https://testnet.fsnscan.com',
+      testnet: true,
+    },
+  },
+  {
     name: 'Gnosis',
     networkInfo: {
       rpcUrl: 'https://rpc.gnosischain.com',
@@ -213,6 +324,28 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Hedera',
+    networkInfo: {
+      rpcUrl: 'https://mainnet.hashio.io/api',
+      chainId: 295,
+      decimals: 18,
+      symbol: 'HBAR',
+      explorerUrl: 'https://hashscan.io/mainnet',
+      testnet: false,
+    },
+  },
+  {
+    name: 'Hedera Testnet',
+    networkInfo: {
+      rpcUrl: 'https://testnet.hashio.io/api',
+      chainId: 296,
+      decimals: 18,
+      symbol: 'HBAR',
+      explorerUrl: 'https://hashscan.io/testnet',
+      testnet: true,
+    },
+  },
+  {
     name: 'Immutable zkEVM',
     networkInfo: {
       rpcUrl: 'https://rpc.immutable.com',
@@ -221,6 +354,72 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
       symbol: 'IMX',
       explorerUrl: 'https://explorer.immutable.com',
       testnet: false,
+    },
+  },
+  {
+    name: 'Karak',
+    networkInfo: {
+      rpcUrl: 'https://rpc.karak.network',
+      chainId: 2410,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://explorer.karak.network',
+      testnet: false,
+    },
+  },
+  {
+    name: 'Karak Sepolia',
+    networkInfo: {
+      rpcUrl: 'https://rpc.sepolia.karak.network',
+      chainId: 8054,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://explorer.sepolia.karak.network',
+      testnet: true,
+    },
+  },
+  {
+    name: 'Kava',
+    networkInfo: {
+      rpcUrl: 'https://evm.kava.io',
+      chainId: 2222,
+      decimals: 18,
+      symbol: 'KAVA',
+      explorerUrl: 'https://kavascan.com',
+      testnet: false,
+    },
+  },
+  {
+    name: 'Kava Testnet',
+    networkInfo: {
+      rpcUrl: 'https://evm.testnet.kava.io',
+      chainId: 2221,
+      decimals: 18,
+      symbol: 'KAVA',
+      explorerUrl: 'https://testnet.kavascan.com',
+      testnet: true,
+    },
+  },
+  {
+    name: 'LightLink',
+    networkInfo: {
+      rpcUrl: 'https://replicator.phoenix.lightlink.io/rpc/v1',
+      chainId: 1890,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://phoenix.lightlink.io',
+      testnet: false,
+    },
+  },
+  {
+    name: 'LightLink Pegasus',
+    networkInfo: {
+      rpcUrl: 'https://replicator.pegasus.lightlink.io/rpc/v1',
+      chainId: 1891,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://pegasus.lightlink.io',
+      testnet: true,
     },
   },
   {
@@ -264,6 +463,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
       decimals: 18,
       symbol: 'MNT',
       explorerUrl: 'https://explorer.mantle.xyz',
+      testnet: false,
+    },
+  },
+  {
+    name: 'Merlin',
+    networkInfo: {
+      rpcUrl: 'https://rpc.merlinchain.io',
+      chainId: 4200,
+      decimals: 18,
+      symbol: 'BTC',
+      explorerUrl: 'https://scan.merlinchain.io',
       testnet: false,
     },
   },
@@ -345,6 +555,28 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Polygon zkEVM Cardona',
+    networkInfo: {
+      rpcUrl: 'https://rpc.cardona.zkevm-rpc.com',
+      chainId: 2442,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://cardona-zkevm.polygonscan.com',
+      testnet: true,
+    },
+  },
+  {
+    name: 'Polygon zkEVM Testnet',
+    networkInfo: {
+      rpcUrl: 'https://rpc.public.zkevm-test.net',
+      chainId: 1442,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://explorer.public.zkevm-test.net',
+      testnet: true,
+    },
+  },
+  {
     name: 'PulseChain',
     networkInfo: {
       rpcUrl: 'https://rpc.pulsechain.com',
@@ -356,6 +588,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'PulseChain Testnet V4',
+    networkInfo: {
+      rpcUrl: 'https://rpc.v4.testnet.pulsechain.com',
+      chainId: 943,
+      decimals: 18,
+      symbol: 'v4PLS',
+      explorerUrl: 'https://scan.v4.testnet.pulsechain.com',
+      testnet: true,
+    },
+  },
+  {
     name: 'RARI Chain',
     networkInfo: {
       rpcUrl: 'https://mainnet.rpc.rarichain.org/http',
@@ -364,6 +607,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
       symbol: 'ETH',
       explorerUrl: 'https://mainnet.explorer.rarichain.org',
       testnet: false,
+    },
+  },
+  {
+    name: 'RARI Chain Testnet',
+    networkInfo: {
+      rpcUrl: 'https://testnet.rpc.rarichain.org/http',
+      chainId: 1918988905,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://testnet.explorer.rarichain.org',
+      testnet: true,
     },
   },
   {
@@ -385,6 +639,28 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
       decimals: 18,
       symbol: 'ETH',
       explorerUrl: 'https://explorer.garnet.qry.live',
+      testnet: true,
+    },
+  },
+  {
+    name: 'Ronin',
+    networkInfo: {
+      rpcUrl: 'https://api.roninchain.com/rpc',
+      chainId: 2020,
+      decimals: 18,
+      symbol: 'RON',
+      explorerUrl: 'https://app.roninchain.com',
+      testnet: false,
+    },
+  },
+  {
+    name: 'Ronin Saigon',
+    networkInfo: {
+      rpcUrl: 'https://saigon-testnet.roninchain.com/rpc',
+      chainId: 2021,
+      decimals: 18,
+      symbol: 'RON',
+      explorerUrl: 'https://saigon-app.roninchain.com',
       testnet: true,
     },
   },
@@ -422,6 +698,39 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Scroll Sepolia',
+    networkInfo: {
+      rpcUrl: 'https://sepolia-rpc.scroll.io',
+      chainId: 534351,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://sepolia.scrollscan.com',
+      testnet: true,
+    },
+  },
+  {
+    name: 'zkLink Nova',
+    networkInfo: {
+      rpcUrl: 'https://rpc.zklink.io',
+      chainId: 810180,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://explorer.zklink.io',
+      testnet: false,
+    },
+  },
+  {
+    name: 'zkLink Nova Testnet',
+    networkInfo: {
+      rpcUrl: 'https://sepolia.rpc.zklink.io',
+      chainId: 810181,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://sepolia.explorer.zklink.io',
+      testnet: true,
+    },
+  },
+  {
     name: 'zkSync',
     networkInfo: {
       rpcUrl: 'https://mainnet.era.zksync.io',
@@ -432,19 +741,38 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
       testnet: false,
     },
   },
+  {
+    name: 'zkSync Sepolia',
+    networkInfo: {
+      rpcUrl: 'https://sepolia.era.zksync.dev',
+      chainId: 300,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://sepolia.explorer.zksync.io',
+      testnet: true,
+    },
+  },
 ];
-
-const KNOWN_NETWORKS_AUTOCOMPLETE_DICT = {
-  [i18n.t('settings.networks.custom_rpc.networks')]: KNOWN_NETWORKS,
-};
 
 export function SettingsCustomChain() {
   const {
     state: { chain },
   }: { state: { chain?: Chain } } = useLocation();
+  const navigate = useRainbowNavigate();
+
+  const { developerToolsEnabled } = useDeveloperToolsEnabledStore();
+  const knownNetworksAutocomplete = useMemo(
+    () => ({
+      [i18n.t('settings.networks.custom_rpc.networks')]: KNOWN_NETWORKS.filter(
+        (network) =>
+          developerToolsEnabled ? true : !network.networkInfo.testnet,
+      ),
+    }),
+    [developerToolsEnabled],
+  );
+
   const addCustomRPC = useRainbowChainsStore.use.addCustomRPC();
   const setActiveRPC = useRainbowChainsStore.use.setActiveRPC();
-  const navigate = useRainbowNavigate();
   const addUserChain = useUserChainsStore.use.addUserChain();
   const { customNetworkDrafts, saveCustomNetworkDraft } =
     usePopupInstanceStore();
@@ -752,7 +1080,7 @@ export function SettingsCustomChain() {
               customRPC.name && onNameBlur();
               setOpen(false);
             }}
-            data={KNOWN_NETWORKS_AUTOCOMPLETE_DICT}
+            data={knownNetworksAutocomplete}
             value={customRPC.name || ''}
             borderColor={validations.name ? 'transparent' : 'red'}
             placeholder={i18n.t('settings.networks.custom_rpc.network_name')}
