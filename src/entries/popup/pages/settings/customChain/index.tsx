@@ -159,28 +159,6 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
-    name: 'Flashbots Protect',
-    networkInfo: {
-      rpcUrl: 'https://rpc.flashbots.net',
-      chainId: 1,
-      decimals: 18,
-      symbol: 'ETH',
-      explorerUrl: 'https://etherscan.io',
-      testnet: false,
-    },
-  },
-  {
-    name: 'Flashbots Protect (Fast)',
-    networkInfo: {
-      rpcUrl: 'https://rpc.flashbots.net/fast',
-      chainId: 1,
-      decimals: 18,
-      symbol: 'ETH',
-      explorerUrl: 'https://etherscan.io',
-      testnet: false,
-    },
-  },
-  {
     name: 'Filecoin',
     networkInfo: {
       rpcUrl: 'https://api.node.glif.io/rpc/v1',
