@@ -23,4 +23,5 @@ export const TestnetFaucet = {
   [scrollSepolia.id]: 'https://faucet.quicknode.com/scroll/sepolia',
   [polygonZkEvm.id]: 'https://faucet.polygon.technology',
   1123: 'https://bsquared.network/faucet',
+  28882: 'https://l2faucet.com',
 } as const;

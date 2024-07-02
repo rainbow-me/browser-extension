@@ -115,7 +115,7 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
-    name: 'Boba Network',
+    name: 'Boba',
     networkInfo: {
       rpcUrl: 'https://mainnet.boba.network',
       chainId: 288,
@@ -123,6 +123,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
       symbol: 'BOBA',
       explorerUrl: 'https://bobascan.com',
       testnet: false,
+    },
+  },
+  {
+    name: 'Boba Sepolia',
+    networkInfo: {
+      rpcUrl: 'https://sepolia.boba.network',
+      chainId: 28882,
+      decimals: 18,
+      symbol: 'BOBA',
+      explorerUrl: 'https://testnet.bobascan.com',
+      testnet: true,
     },
   },
   {
