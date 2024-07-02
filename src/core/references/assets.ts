@@ -106,6 +106,7 @@ export const customChainIdsToAssetNames: Record<ChainId, string> = {
   [pgn.id]: 'pgn',
   [polygonZkEvm.id]: 'polygonzkevm',
   [pulsechain.id]: 'pulsechain',
+  943: 'pulsechaintestnet',
   1380012617: 'rari',
   1918988905: 'raritestnet',
   [redstone.id]: 'redstone',

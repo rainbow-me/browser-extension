@@ -566,6 +566,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'PulseChain Testnet V4',
+    networkInfo: {
+      rpcUrl: 'https://rpc.v4.testnet.pulsechain.com',
+      chainId: 943,
+      decimals: 18,
+      symbol: 'v4PLS',
+      explorerUrl: 'https://scan.v4.testnet.pulsechain.com',
+      testnet: true,
+    },
+  },
+  {
     name: 'RARI Chain',
     networkInfo: {
       rpcUrl: 'https://mainnet.rpc.rarichain.org/http',
