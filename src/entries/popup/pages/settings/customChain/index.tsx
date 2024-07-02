@@ -115,6 +115,28 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'B²',
+    networkInfo: {
+      rpcUrl: 'https://rpc.bsquared.network',
+      chainId: 223,
+      decimals: 18,
+      symbol: 'BTC',
+      explorerUrl: 'https://explorer.bsquared.network',
+      testnet: false,
+    },
+  },
+  {
+    name: 'B² Testnet',
+    networkInfo: {
+      rpcUrl: 'https://testnet-rpc.bsquared.network',
+      chainId: 1123,
+      decimals: 18,
+      symbol: 'BTC',
+      explorerUrl: 'https://testnet-explorer.bsquared.network',
+      testnet: true,
+    },
+  },
+  {
     name: 'Canto',
     networkInfo: {
       rpcUrl: 'https://canto.gravitychain.io',
