@@ -1,11 +1,12 @@
 import { isEqual } from 'lodash';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router';
 import { Chain } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { useChainMetadata } from '~/core/resources/chains/chainMetadata';
 import { useRainbowChainsStore } from '~/core/state';
+import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { getDappHostname, isValidUrl } from '~/core/utils/connectedApps';
@@ -555,17 +556,25 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
   },
 ];
 
-const KNOWN_NETWORKS_AUTOCOMPLETE_DICT = {
-  [i18n.t('settings.networks.custom_rpc.networks')]: KNOWN_NETWORKS,
-};
-
 export function SettingsCustomChain() {
   const {
     state: { chain },
   }: { state: { chain?: Chain } } = useLocation();
+  const navigate = useRainbowNavigate();
+
+  const { developerToolsEnabled } = useDeveloperToolsEnabledStore();
+  const knownNetworksAutocomplete = useMemo(
+    () => ({
+      [i18n.t('settings.networks.custom_rpc.networks')]: KNOWN_NETWORKS.filter(
+        (network) =>
+          developerToolsEnabled ? true : !network.networkInfo.testnet,
+      ),
+    }),
+    [developerToolsEnabled],
+  );
+
   const addCustomRPC = useRainbowChainsStore.use.addCustomRPC();
   const setActiveRPC = useRainbowChainsStore.use.setActiveRPC();
-  const navigate = useRainbowNavigate();
   const addUserChain = useUserChainsStore.use.addUserChain();
   const { customNetworkDrafts, saveCustomNetworkDraft } =
     usePopupInstanceStore();
@@ -873,7 +882,7 @@ export function SettingsCustomChain() {
               customRPC.name && onNameBlur();
               setOpen(false);
             }}
-            data={KNOWN_NETWORKS_AUTOCOMPLETE_DICT}
+            data={knownNetworksAutocomplete}
             value={customRPC.name || ''}
             borderColor={validations.name ? 'transparent' : 'red'}
             placeholder={i18n.t('settings.networks.custom_rpc.network_name')}
