@@ -120,9 +120,11 @@ export const createUnlockAndSwapRap = async (
     buyTokenAddress: Address;
   };
 
-  const isNativeAssetUnwrapping =
-    isUnwrapEth({ buyTokenAddress, chainId, sellTokenAddress }) &&
-    chainId === ChainId.mainnet;
+  const isNativeAssetUnwrapping = isUnwrapEth({
+    buyTokenAddress,
+    chainId,
+    sellTokenAddress,
+  });
 
   // Aggregators represent native asset as 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE
   const nativeAsset =
