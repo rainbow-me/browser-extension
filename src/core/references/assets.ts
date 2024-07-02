@@ -1,6 +1,7 @@
 import {
   arbitrumNova,
   aurora,
+  auroraTestnet,
   avalanche,
   blast,
   blastSepolia,
@@ -52,6 +53,7 @@ import { ChainId } from '../types/chains';
 export const customChainIdsToAssetNames: Record<ChainId, string> = {
   [arbitrumNova.id]: 'arbitrumnova',
   [aurora.id]: 'aurora',
+  [auroraTestnet.id]: 'auroratestnet',
   [avalanche.id]: 'avalanchex',
   [blast.id]: 'blast',
   [blastSepolia.id]: 'blastsepolia',

@@ -93,6 +93,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Aurora Testnet',
+    networkInfo: {
+      rpcUrl: 'https://testnet.aurora.dev',
+      chainId: 1313161555,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://testnet.aurorascan.dev',
+      testnet: true,
+    },
+  },
+  {
     name: 'BOB',
     networkInfo: {
       rpcUrl: 'https://rpc.gobob.xyz',
