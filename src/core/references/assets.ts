@@ -47,6 +47,7 @@ import {
   rootstockTestnet,
   saigon,
   scroll,
+  scrollSepolia,
   zkSync,
   zkSyncSepoliaTestnet,
 } from 'viem/chains';
@@ -115,6 +116,7 @@ export const customChainIdsToAssetNames: Record<ChainId, string> = {
   [rootstock.id]: 'rootstock',
   [rootstockTestnet.id]: 'rootstocktestnet',
   [scroll.id]: 'scroll',
+  [scrollSepolia.id]: 'scrollsepolia',
   [gnosis.id]: 'xdai',
   810180: 'zklink',
   810181: 'zklinktestnet',

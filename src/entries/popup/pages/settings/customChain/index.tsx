@@ -654,6 +654,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Scroll Sepolia',
+    networkInfo: {
+      rpcUrl: 'https://sepolia-rpc.scroll.io',
+      chainId: 534351,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://sepolia.scrollscan.com',
+      testnet: true,
+    },
+  },
+  {
     name: 'zkLink Nova',
     networkInfo: {
       rpcUrl: 'https://rpc.zklink.io',
