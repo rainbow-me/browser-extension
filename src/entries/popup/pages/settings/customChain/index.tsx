@@ -521,6 +521,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
       testnet: false,
     },
   },
+  {
+    name: 'zkSync Sepolia Testnet',
+    networkInfo: {
+      rpcUrl: 'https://sepolia.era.zksync.dev',
+      chainId: 300,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://sepolia.explorer.zksync.io',
+      testnet: true,
+    },
+  },
 ];
 
 export function SettingsCustomChain() {

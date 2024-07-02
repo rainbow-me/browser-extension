@@ -39,6 +39,7 @@ import {
   saigon,
   scroll,
   zkSync,
+  zkSyncSepoliaTestnet,
 } from 'viem/chains';
 
 import { ChainId } from '../types/chains';
@@ -94,4 +95,5 @@ export const customChainIdsToAssetNames: Record<ChainId, string> = {
   810180: 'zklink',
   810181: 'zklinktestnet',
   [zkSync.id]: 'zksync',
+  [zkSyncSepoliaTestnet.id]: 'zksyncsepolia',
 };
