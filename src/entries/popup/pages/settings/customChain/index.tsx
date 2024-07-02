@@ -247,7 +247,7 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
-    name: 'Kava EVM',
+    name: 'Kava',
     networkInfo: {
       rpcUrl: 'https://evm.kava.io',
       chainId: 2222,
@@ -258,7 +258,7 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
-    name: 'Kava EVM Testnet',
+    name: 'Kava Testnet',
     networkInfo: {
       rpcUrl: 'https://evm.testnet.kava.io',
       chainId: 2221,
@@ -266,6 +266,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
       symbol: 'KAVA',
       explorerUrl: 'https://testnet.kavascan.com',
       testnet: true,
+    },
+  },
+  {
+    name: 'LightLink',
+    networkInfo: {
+      rpcUrl: 'https://replicator.phoenix.lightlink.io/rpc/v1',
+      chainId: 1890,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://phoenix.lightlink.io',
+      testnet: false,
     },
   },
   {
@@ -277,17 +288,6 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
       symbol: 'ETH',
       explorerUrl: 'https://pegasus.lightlink.io',
       testnet: true,
-    },
-  },
-  {
-    name: 'LightLink Phoenix',
-    networkInfo: {
-      rpcUrl: 'https://replicator.phoenix.lightlink.io/rpc/v1',
-      chainId: 1890,
-      decimals: 18,
-      symbol: 'ETH',
-      explorerUrl: 'https://phoenix.lightlink.io',
-      testnet: false,
     },
   },
   {
