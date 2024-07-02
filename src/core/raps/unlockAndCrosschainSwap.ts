@@ -109,8 +109,7 @@ export const createUnlockAndCrosschainSwapRap = async (
 
   const isNativeAssetUnwrapping =
     isLowerCaseMatch(sellTokenAddress, WRAPPED_ASSET[`${chainId}`]) &&
-    isLowerCaseMatch(buyTokenAddress, ETH_ADDRESS) &&
-    chainId === ChainId.mainnet;
+    isLowerCaseMatch(buyTokenAddress, ETH_ADDRESS);
 
   // Aggregators represent native asset as 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE
   const nativeAsset =
