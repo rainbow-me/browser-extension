@@ -170,6 +170,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Canto Testnet',
+    networkInfo: {
+      rpcUrl: 'https://canto-testnet.plexnode.wtf',
+      chainId: 7701,
+      decimals: 18,
+      symbol: 'CANTO',
+      explorerUrl: 'https://testnet.tuber.build',
+      testnet: true,
+    },
+  },
+  {
     name: 'Celo',
     networkInfo: {
       rpcUrl: 'https://forno.celo.org',

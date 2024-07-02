@@ -24,4 +24,5 @@ export const TestnetFaucet = {
   [polygonZkEvm.id]: 'https://faucet.polygon.technology',
   1123: 'https://bsquared.network/faucet',
   28882: 'https://l2faucet.com',
+  7701: 'https://cantofaucet.com',
 } as const;

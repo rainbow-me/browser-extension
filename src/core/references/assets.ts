@@ -93,6 +93,7 @@ export const customChainIdsToAssetNames: Record<ChainId, string> = {
   [mode.id]: 'mode',
   [moonbeam.id]: 'moonbeam',
   [canto.id]: 'nativecanto',
+  7701: 'nativecantotestnet',
   [opBNB.id]: 'opbnb',
   [palm.id]: 'palm',
   [pgn.id]: 'pgn',
