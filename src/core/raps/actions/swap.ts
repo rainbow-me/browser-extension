@@ -81,13 +81,14 @@ export const estimateSwapGasLimit = async ({
       const gasLimit = await estimateGasWithPadding({
         transactionRequest: {
           from: quote.from,
-          value: isWrapNativeAsset ? quote.buyAmount : '0',
+          value: isWrapNativeAsset ? quote.buyAmount.toString() : '0',
         },
         contractCallEstimateGas: getWrappedAssetMethod(
           isWrapNativeAsset ? 'deposit' : 'withdraw',
           provider as StaticJsonRpcProvider,
           chainId as unknown as SwapChainId,
         ),
+        callArguments: isWrapNativeAsset ? [] : [quote.buyAmount.toString()],
         provider,
         paddingFactor: WRAP_GAS_PADDING,
       });
