@@ -93,17 +93,6 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
-    name: 'Blast Testnet',
-    networkInfo: {
-      rpcUrl: 'https://sepolia.blast.io',
-      chainId: 168587773,
-      decimals: 18,
-      symbol: 'ETH',
-      explorerUrl: 'https://testnet.blastscan.io',
-      testnet: true,
-    },
-  },
-  {
     name: 'Boba Network',
     networkInfo: {
       rpcUrl: 'https://mainnet.boba.network',
