@@ -280,6 +280,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Filecoin Calibration',
+    networkInfo: {
+      rpcUrl: 'https://api.calibration.node.glif.io/rpc/v1',
+      chainId: 314_159,
+      decimals: 18,
+      symbol: 'tFIL',
+      explorerUrl: 'https://calibration.filscan.io',
+      testnet: true,
+    },
+  },
+  {
     name: 'Fusion',
     networkInfo: {
       rpcUrl: 'https://mainnet.fusionnetwork.io',

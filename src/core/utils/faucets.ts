@@ -1,6 +1,7 @@
 import {
   celoAlfajores,
   fantomTestnet,
+  filecoinCalibration,
   lightlinkPegasus,
   moonbaseAlpha,
   polygonZkEvm,
@@ -22,6 +23,7 @@ export const TestnetFaucet = {
   [ChainId.polygonAmoy]: 'https://faucet.polygon.technology',
   [celoAlfajores.id]: 'https://faucet.celo.org/alfajores',
   [fantomTestnet.id]: 'https://faucet.fantom.network',
+  [filecoinCalibration.id]: 'https://beryx.io/faucet',
   [lightlinkPegasus.id]: 'https://faucet.pegasus.lightlink.io',
   [moonbaseAlpha.id]: 'https://faucet.paradigm.xyz',
   [polygonZkEvm.id]: 'https://faucet.polygon.technology',
