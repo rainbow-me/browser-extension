@@ -500,6 +500,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Moonbase Alpha',
+    networkInfo: {
+      rpcUrl: 'https://rpc.api.moonbase.moonbeam.network',
+      chainId: 1287,
+      decimals: 18,
+      symbol: 'DEV',
+      explorerUrl: 'https://moonbase.moonscan.io',
+      testnet: true,
+    },
+  },
+  {
     name: 'Moonbeam',
     networkInfo: {
       rpcUrl: 'https://moonbeam.public.blastapi.io',

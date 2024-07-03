@@ -28,7 +28,7 @@ export const TestnetFaucet = {
   [fantomTestnet.id]: 'https://faucet.fantom.network',
   [filecoinCalibration.id]: 'https://beryx.io/faucet',
   [lightlinkPegasus.id]: 'https://faucet.pegasus.lightlink.io',
-  [moonbaseAlpha.id]: 'https://faucet.paradigm.xyz',
+  [moonbaseAlpha.id]: 'https://faucet.moonbeam.network',
   [opBNBTestnet.id]: 'https://www.l2faucet.com/opbnb',
   [palmTestnet.id]: 'https://docs.palm.io/get-started/tokens',
   [polygonZkEvmCardona.id]: 'https://faucet.polygon.technology',
