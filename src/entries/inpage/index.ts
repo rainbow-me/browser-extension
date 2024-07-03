@@ -102,10 +102,7 @@ if (shouldInjectProvider()) {
     rainbow: {
       value: {
         ...rainbowProvider,
-        providers: [
-          rainbowProvider,
-          ...(window.ethereum ? [window.ethereum] : []),
-        ],
+        providers: window.rnbwWalletRouter.providers,
       },
       configurable: false,
       writable: false,
