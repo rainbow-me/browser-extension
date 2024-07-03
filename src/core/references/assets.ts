@@ -80,6 +80,7 @@ export const customChainIdsToAssetNames: Record<ChainId, string> = {
   [celo.id]: 'celo',
   [celoAlfajores.id]: 'celoalfajores',
   [classic.id]: 'classic',
+  63: 'classicmordor',
   1116: 'core',
   1115: 'coretestnet',
   [cronos.id]: 'cronos',

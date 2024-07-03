@@ -269,6 +269,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Ethereum Classic Mordor',
+    networkInfo: {
+      rpcUrl: 'https://rpc.mordor.etccooperative.org',
+      chainId: 63,
+      decimals: 18,
+      symbol: 'METC',
+      explorerUrl: 'https://etc-mordor.blockscout.com',
+      testnet: true,
+    },
+  },
+  {
     name: 'Fantom',
     networkInfo: {
       rpcUrl: 'https://rpc.ankr.com/fantom',
