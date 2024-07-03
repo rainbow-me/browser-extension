@@ -3,6 +3,7 @@ import {
   fantomTestnet,
   filecoinCalibration,
   lightlinkPegasus,
+  mantaSepoliaTestnet,
   mantleSepoliaTestnet,
   modeTestnet,
   moonbaseAlpha,
@@ -30,6 +31,8 @@ export const TestnetFaucet = {
   [fantomTestnet.id]: 'https://faucet.fantom.network',
   [filecoinCalibration.id]: 'https://beryx.io/faucet',
   [lightlinkPegasus.id]: 'https://faucet.pegasus.lightlink.io',
+  [mantaSepoliaTestnet.id]:
+    'https://pacific-info.sepolia-testnet.manta.network',
   [mantleSepoliaTestnet.id]: 'https://faucet.testnet.mantle.xyz',
   [modeTestnet.id]: 'https://docs.mode.network/tools/testnet-faucets',
   [moonbaseAlpha.id]: 'https://faucet.moonbeam.network',

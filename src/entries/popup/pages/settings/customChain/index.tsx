@@ -456,6 +456,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Manta Sepolia',
+    networkInfo: {
+      rpcUrl: 'https://pacific-rpc.sepolia-testnet.manta.network/http',
+      chainId: 3441006,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://pacific-explorer.sepolia-testnet.manta.network',
+      testnet: true,
+    },
+  },
+  {
     name: 'Mantle',
     networkInfo: {
       rpcUrl: 'https://rpc.mantle.xyz',
