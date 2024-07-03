@@ -40,4 +40,5 @@ export const TestnetFaucet = {
   28882: 'https://l2faucet.com',
   7701: 'https://cantofaucet.com',
   1918988905: 'https://testnet.rarichain.org/faucet',
+  59902: 'https://docs.metis.io/dev/readme/getting-test-tokens',
 } as const;

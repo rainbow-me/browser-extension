@@ -489,6 +489,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Metis Sepolia',
+    networkInfo: {
+      rpcUrl: 'https://sepolia.metisdevops.link',
+      chainId: 59902,
+      decimals: 18,
+      symbol: 'tMETIS',
+      explorerUrl: 'https://sepolia-explorer.metisdevops.link',
+      testnet: true,
+    },
+  },
+  {
     name: 'Mode',
     networkInfo: {
       rpcUrl: 'https://mainnet.mode.network',
