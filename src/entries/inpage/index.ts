@@ -63,6 +63,8 @@ const rainbowProvider = new RainbowProvider({
 });
 
 if (shouldInjectProvider()) {
+  const provider = rainbowProvider;
+  provider.isMetaMask = false;
   announceProvider({
     info: {
       icon: RAINBOW_ICON_RAW_SVG,
@@ -70,7 +72,7 @@ if (shouldInjectProvider()) {
       rdns: 'me.rainbow',
       uuid: uuid4(),
     },
-    provider: rainbowProvider as EIP1193Provider,
+    provider: provider as EIP1193Provider,
   });
 
   backgroundMessenger.reply(
@@ -100,10 +102,7 @@ if (shouldInjectProvider()) {
 
   Object.defineProperties(window, {
     rainbow: {
-      value: {
-        ...rainbowProvider,
-        providers: window.rnbwWalletRouter.providers,
-      },
+      value: rainbowProvider,
       configurable: false,
       writable: false,
     },
