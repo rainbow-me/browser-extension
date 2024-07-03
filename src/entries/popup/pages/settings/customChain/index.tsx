@@ -522,6 +522,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'opBNB Testnet',
+    networkInfo: {
+      rpcUrl: 'https://opbnb-testnet-rpc.bnbchain.org',
+      chainId: 5611,
+      decimals: 18,
+      symbol: 'tBNB',
+      explorerUrl: 'https://testnet.opbnbscan.com',
+      testnet: true,
+    },
+  },
+  {
     name: 'Palm',
     networkInfo: {
       rpcUrl: 'https://palm-mainnet.public.blastapi.io',
