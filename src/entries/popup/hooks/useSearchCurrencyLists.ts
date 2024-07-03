@@ -241,6 +241,7 @@ export function useSearchCurrencyLists({
         return data;
       },
       enabled: enableAllNetworkTokenSearch,
+      staleTime: 10 * 60 * 1_000, // 10 min
     },
   );
 
@@ -258,6 +259,7 @@ export function useSearchCurrencyLists({
         return data;
       },
       enabled: enableAllNetworkTokenSearch,
+      staleTime: 10 * 60 * 1_000, // 10 min
     },
   );
 
@@ -273,6 +275,7 @@ export function useSearchCurrencyLists({
           return data;
         },
         enabled: enableAllNetworkTokenSearch,
+        staleTime: 10 * 60 * 1_000, // 10 min
       },
     );
 
