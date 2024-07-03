@@ -63,7 +63,7 @@ const rainbowProvider = new RainbowProvider({
 });
 
 if (shouldInjectProvider()) {
-  const provider = rainbowProvider;
+  const provider = { ...rainbowProvider } as RainbowProvider;
   provider.isMetaMask = false;
   announceProvider({
     info: {
