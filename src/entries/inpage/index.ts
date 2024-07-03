@@ -63,8 +63,6 @@ const rainbowProvider = new RainbowProvider({
 });
 
 if (shouldInjectProvider()) {
-  const provider = { ...rainbowProvider } as RainbowProvider;
-  provider.isMetaMask = false;
   announceProvider({
     info: {
       icon: RAINBOW_ICON_RAW_SVG,
@@ -72,7 +70,10 @@ if (shouldInjectProvider()) {
       rdns: 'me.rainbow',
       uuid: uuid4(),
     },
-    provider: provider as EIP1193Provider,
+    provider: {
+      ...rainbowProvider,
+      isMetaMask: false,
+    } as RainbowProvider as EIP1193Provider,
   });
 
   backgroundMessenger.reply(
