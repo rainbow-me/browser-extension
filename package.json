@@ -155,7 +155,7 @@
     "react-switch": "7.0.0",
     "socket.io-client": "4.5.3",
     "validator": "13.9.0",
-    "viem": "2.16.5",
+    "viem": "2.17.0",
     "wagmi": "2.8.1",
     "word-wrap": "1.2.4",
     "zustand": "4.1.5"
@@ -269,7 +269,6 @@
     "axios": "1.6.1",
     "follow-redirects": "1.15.6",
     "ip": "2.0.1",
-    "viem": "1.21.4",
     "@solana/web3.js": "1.90.2",
     "jose": "4.15.5",
     "phin": "3.7.1",
