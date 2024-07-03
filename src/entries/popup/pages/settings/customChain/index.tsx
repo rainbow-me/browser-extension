@@ -434,6 +434,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Linea Sepolia',
+    networkInfo: {
+      rpcUrl: 'https://rpc.sepolia.linea.build',
+      chainId: 59141,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://sepolia.lineascan.build',
+      testnet: true,
+    },
+  },
+  {
     name: 'Lyra',
     networkInfo: {
       rpcUrl: 'https://rpc.lyra.finance',
