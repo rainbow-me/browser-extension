@@ -533,6 +533,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Palm Testnet',
+    networkInfo: {
+      rpcUrl: 'https://palm-testnet.public.blastapi.io',
+      chainId: 11297108099,
+      decimals: 18,
+      symbol: 'PALM',
+      explorerUrl: 'https://testnet.palm.chainlens.com',
+      testnet: true,
+    },
+  },
+  {
     name: 'Polygon zkEVM',
     networkInfo: {
       rpcUrl: 'https://zkevm-rpc.com',
