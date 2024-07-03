@@ -467,6 +467,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Mantle Sepolia',
+    networkInfo: {
+      rpcUrl: 'https://rpc.sepolia.mantle.xyz',
+      chainId: 5003,
+      decimals: 18,
+      symbol: 'MNT',
+      explorerUrl: 'https://explorer.sepolia.mantle.xyz',
+      testnet: true,
+    },
+  },
+  {
     name: 'Merlin',
     networkInfo: {
       rpcUrl: 'https://rpc.merlinchain.io',
