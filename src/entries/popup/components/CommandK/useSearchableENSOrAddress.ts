@@ -4,6 +4,7 @@ import { truncateAddress } from '~/core/utils/address';
 import { isENSAddressFormat } from '~/core/utils/ethereum';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
+import { useDebounce } from '../../hooks/useDebounce';
 import { useWallets } from '../../hooks/useWallets';
 import { useValidateInput } from '../WatchWallet/WatchWallet';
 
@@ -22,20 +23,22 @@ export const useSearchableENSorAddress = ({
   currentPage,
   searchQuery,
   assets,
-  isFetchingAssets,
+  isFetchingSearchAssets,
   setSelectedCommandNeedsUpdate,
 }: {
   currentPage: CommandKPage;
   searchQuery: string;
   assets: (TokenSearchItem | UnownedTokenSearchItem)[];
-  isFetchingAssets: boolean;
+  isFetchingSearchAssets: boolean;
   setSelectedCommandNeedsUpdate: React.Dispatch<React.SetStateAction<boolean>>;
 }): { searchableENSOrAddress: ENSOrAddressSearchItem[] } => {
   const { isFetching, setIsFetching } = useCommandKStatus();
   const { allWallets } = useWallets();
 
   const query = searchQuery.trim();
-  const validation = useValidateInput(query);
+  const debouncedSearchQuery = useDebounce(query, 250);
+
+  const validation = useValidateInput(debouncedSearchQuery);
 
   const searchableENSOrAddress = React.useMemo<ENSOrAddressSearchItem[]>(() => {
     if (currentPage !== PAGES.HOME) return [];
@@ -43,7 +46,7 @@ export const useSearchableENSorAddress = ({
     if (
       validation.address &&
       !validation.error &&
-      !isFetchingAssets &&
+      !isFetchingSearchAssets &&
       !allWallets.some((wallet) => wallet.address === validation.address) &&
       !assets.some((asset) =>
         isLowerCaseMatch(asset.address, validation.address),
@@ -68,7 +71,7 @@ export const useSearchableENSorAddress = ({
 
     return [];
   }, [
-    isFetchingAssets,
+    isFetchingSearchAssets,
     currentPage,
     assets,
     allWallets,
@@ -82,13 +85,13 @@ export const useSearchableENSorAddress = ({
       currentPage === PAGES.HOME &&
       !validation.address &&
       !validation.error &&
-      isENSAddressFormat(query) &&
+      isENSAddressFormat(debouncedSearchQuery) &&
       !isFetching;
     const shouldStopFetching =
       (currentPage !== PAGES.HOME ||
         validation.address ||
         validation.error ||
-        !isENSAddressFormat(query)) &&
+        !isENSAddressFormat(debouncedSearchQuery)) &&
       !!isFetching;
 
     if (shouldStartFetching) {
@@ -100,7 +103,7 @@ export const useSearchableENSorAddress = ({
   }, [
     currentPage,
     isFetching,
-    query,
+    debouncedSearchQuery,
     setIsFetching,
     setSelectedCommandNeedsUpdate,
     validation,
