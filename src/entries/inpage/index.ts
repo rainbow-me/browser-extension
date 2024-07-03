@@ -63,6 +63,12 @@ const rainbowProvider = new RainbowProvider({
 });
 
 if (shouldInjectProvider()) {
+  // eslint-disable-next-line prefer-object-spread
+  const providerCopy = Object.create(
+    Object.getPrototypeOf(rainbowProvider),
+    Object.getOwnPropertyDescriptors(rainbowProvider),
+  );
+  providerCopy.isMetaMask = false;
   announceProvider({
     info: {
       icon: RAINBOW_ICON_RAW_SVG,
@@ -70,7 +76,7 @@ if (shouldInjectProvider()) {
       rdns: 'me.rainbow',
       uuid: uuid4(),
     },
-    provider: rainbowProvider as EIP1193Provider,
+    provider: providerCopy as RainbowProvider as EIP1193Provider,
   });
 
   backgroundMessenger.reply(
@@ -100,13 +106,7 @@ if (shouldInjectProvider()) {
 
   Object.defineProperties(window, {
     rainbow: {
-      value: {
-        ...rainbowProvider,
-        providers: [
-          rainbowProvider,
-          ...(window.ethereum ? [window.ethereum] : []),
-        ],
-      },
+      value: rainbowProvider,
       configurable: false,
       writable: false,
     },
