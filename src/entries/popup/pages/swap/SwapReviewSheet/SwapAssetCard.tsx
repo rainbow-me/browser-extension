@@ -53,8 +53,6 @@ export const SwapAssetCard = ({
 
   const amountWithAbbreviation = abbreviateNumber(amount);
 
-  console.log('amountWIthAbbreviation: ', amountWithAbbreviation);
-
   return (
     <AccentColorProvider
       color={asset?.colors?.primary || asset?.colors?.fallback}
