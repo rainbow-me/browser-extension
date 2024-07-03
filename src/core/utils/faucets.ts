@@ -2,6 +2,7 @@ import {
   celoAlfajores,
   fantomTestnet,
   filecoinCalibration,
+  immutableZkEvmTestnet,
   lightlinkPegasus,
   lineaSepolia,
   mantaSepoliaTestnet,
@@ -31,6 +32,7 @@ export const TestnetFaucet = {
   [celoAlfajores.id]: 'https://faucet.celo.org/alfajores',
   [fantomTestnet.id]: 'https://faucet.fantom.network',
   [filecoinCalibration.id]: 'https://beryx.io/faucet',
+  [immutableZkEvmTestnet.id]: 'https://hub.immutable.com/faucet',
   [lightlinkPegasus.id]: 'https://faucet.pegasus.lightlink.io',
   [lineaSepolia.id]: 'https://www.infura.io/faucet/linea',
   [mantaSepoliaTestnet.id]:

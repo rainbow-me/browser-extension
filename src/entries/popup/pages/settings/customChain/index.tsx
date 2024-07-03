@@ -357,6 +357,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Immutable zkEVM Testnet',
+    networkInfo: {
+      rpcUrl: 'https://rpc.testnet.immutable.com',
+      chainId: 13473,
+      decimals: 18,
+      symbol: 'IMX',
+      explorerUrl: 'https://explorer.testnet.immutable.com',
+      testnet: true,
+    },
+  },
+  {
     name: 'Karak',
     networkInfo: {
       rpcUrl: 'https://rpc.karak.network',
