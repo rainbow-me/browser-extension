@@ -533,17 +533,6 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
-    name: 'PGN',
-    networkInfo: {
-      rpcUrl: 'https://rpc.publicgoods.network',
-      chainId: 424,
-      decimals: 18,
-      symbol: 'ETH',
-      explorerUrl: 'https://explorer.publicgoods.network',
-      testnet: false,
-    },
-  },
-  {
     name: 'Polygon zkEVM',
     networkInfo: {
       rpcUrl: 'https://zkevm-rpc.com',
