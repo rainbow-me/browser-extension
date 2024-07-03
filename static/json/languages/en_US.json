@@ -1271,6 +1271,7 @@
     "activity": "Activity",
     "nfts": "NFTs",
     "points": "Points",
+    "rewards": "Rewards",
     "tokens": "Tokens"
   },
   "activity": {
@@ -1393,12 +1394,13 @@
     "rank": "Rank",
     "ranking": "Rank #%{rank}",
     "unranked": "Unranked",
+    "no_weekly_rank": "No Weekly Rank",
     "points_to_rank": "%{rank_cutoff} points to rank",
     "top_holders": "Top Points Holders",
     "next_drop": "Next Drop",
     "leaderboard": "Leaderboard",
-    "referral_code": "Referral Code",
-    "referral_code_description": "Earn points for referring friends once they swap $100 through Rainbow",
+    "referral_code": "Refer Friends",
+    "referral_code_description": "Earn points when your referrals swap $100 through Rainbow, plus earn 10% of the points your referrals earn",
     "referral_earnings": "%{earnings} points",
     "copied_referral_code": "Referral code copied!",
     "copied_referral_link": "Referral link copied!",
@@ -1491,13 +1493,13 @@
       "already_claimed": "> Your reward has already been claimed",
       "no_claim": "> You do not have a reward to claim at this time",
       "earned_last_week": "Earned Last Week",
-      "my_referrals": "My Referrals",
+      "my_referrals": "Referrals",
       "claim_reward": "Claim %{reward}",
       "free_to_claim": "Free to Claim",
       "has_bridge_fee": "Has Bridge Fee",
       "claim_failed": "Claim Failed. Please try again.",
-      "claim_success_bridge_failed": "Claim Succeded but funds were not bridged."
-
+      "claim_success_bridge_failed": "Claim Succeded but funds were not bridged.",
+      "my_rewards": "My Rewards"
     }
   },
   "speed_up_and_cancel": {
