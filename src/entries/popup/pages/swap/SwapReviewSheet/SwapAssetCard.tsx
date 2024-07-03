@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import {
+  abbreviateNumber,
   convertRawAmountToBalance,
   convertRawAmountToNativeDisplay,
 } from '~/core/utils/numbers';
@@ -50,6 +51,10 @@ export const SwapAssetCard = ({
     [asset.decimals, asset.price?.value, assetAmount, currentCurrency],
   );
 
+  const amountWithAbbreviation = abbreviateNumber(amount);
+
+  console.log('amountWIthAbbreviation: ', amountWithAbbreviation);
+
   return (
     <AccentColorProvider
       color={asset?.colors?.primary || asset?.colors?.fallback}
@@ -75,7 +80,7 @@ export const SwapAssetCard = ({
                 <Columns space="4px" alignVertical="center">
                   <Column>
                     <TextOverflow color="label" size="14pt" weight="bold">
-                      {`${amount}`}
+                      {`${amountWithAbbreviation}`}
                     </TextOverflow>
                   </Column>
                   <Column width="content">

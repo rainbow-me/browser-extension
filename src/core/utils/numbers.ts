@@ -228,13 +228,68 @@ export const lessOrEqualThan = (
   new BigNumber(numberOne).lt(numberTwo) ||
   new BigNumber(numberOne).eq(numberTwo);
 
+// returns decimal within threshold and trims excess 0's
 export const handleSignificantDecimalsWithThreshold = (
   value: BigNumberish,
   decimals: number,
   threshold = '0.0001',
-) => {
-  const result = toFixedDecimals(value, decimals);
-  return lessThan(result, threshold) ? `< ${threshold}` : result;
+): string => {
+  const cleanValue = value.toString().replace(/,/g, '');
+  const bnValue = new BigNumber(cleanValue);
+  const result = bnValue.toFixed(decimals).replace(/\.?0+$/, '');
+  return new BigNumber(result).lt(threshold) ? `< ${threshold}` : result;
+};
+
+// abbreviate numbers and return abbreivated values
+export const abbreviateNumber = (value: BigNumberish): string => {
+  console.log('abbreviateNumber value: ', value);
+
+  // Remove commas from the input value
+  const cleanValue = value.toString().replace(/,/g, '');
+  const bnValue = new BigNumber(cleanValue);
+  console.log('abbreviateNumber bnValue: ', bnValue);
+
+  if (bnValue.isNaN()) return 'NaN';
+  if (bnValue.isZero()) return '0';
+  const absValue = bnValue.abs();
+  console.log('abbreviateNumber absValue: ', absValue);
+
+  const suffixes = [
+    { value: 1e27, symbol: 'No' },
+    { value: 1e24, symbol: 'Oc' },
+    { value: 1e21, symbol: 'Sp' },
+    { value: 1e18, symbol: 'Sx' },
+    { value: 1e15, symbol: 'Qi' },
+    { value: 1e12, symbol: 'Qa' },
+    { value: 1e9, symbol: 'B' },
+    { value: 1e6, symbol: 'M' },
+    { value: 1e3, symbol: 'K' },
+  ];
+
+  for (let i = 0; i < suffixes.length; i++) {
+    if (absValue.gte(suffixes[i].value)) {
+      const newValue = `${bnValue.dividedBy(suffixes[i].value).toFixed(2)}${
+        suffixes[i].symbol
+      }`;
+      console.log('abbreviateNumber newValue: ', newValue);
+      return newValue;
+    }
+  }
+
+  // Handle small numbers and decimals
+  if (absValue.lt(0.000001)) {
+    return `< 0.000001`;
+  } else if (absValue.lt(1)) {
+    // Ensure up to 8 significant digits
+    let significantValue = bnValue.toPrecision(8);
+    // Trim to ensure maximum 6 characters, considering decimal point
+    if (significantValue.length > 8) {
+      significantValue = significantValue.slice(0, 8);
+    }
+    return significantValue.replace(/\.?0+$/, '');
+  }
+
+  return bnValue.toFixed(2);
 };
 
 export const handleSignificantDecimals = (
