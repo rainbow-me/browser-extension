@@ -500,6 +500,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Mode Testnet',
+    networkInfo: {
+      rpcUrl: 'https://sepolia.mode.network',
+      chainId: 919,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://sepolia.explorer.mode.network',
+      testnet: true,
+    },
+  },
+  {
     name: 'Moonbase Alpha',
     networkInfo: {
       rpcUrl: 'https://rpc.api.moonbase.moonbeam.network',
