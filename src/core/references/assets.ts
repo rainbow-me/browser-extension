@@ -102,6 +102,7 @@ export const customChainIdsToAssetNames: Record<ChainId, string> = {
   [manta.id]: 'manta',
   [mantle.id]: 'mantle',
   [merlin.id]: 'merlin',
+  686868: 'merlintestnet',
   [metis.id]: 'metis',
   59902: 'metissepolia',
   [mode.id]: 'mode',

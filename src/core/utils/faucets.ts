@@ -41,4 +41,6 @@ export const TestnetFaucet = {
   7701: 'https://cantofaucet.com',
   1918988905: 'https://testnet.rarichain.org/faucet',
   59902: 'https://docs.metis.io/dev/readme/getting-test-tokens',
+  686868:
+    'https://docs.merlinchain.io/merlin-docs/developers/builder-guides/networks/testnet#testnet-faucet',
 } as const;

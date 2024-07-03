@@ -478,6 +478,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Merlin Testnet',
+    networkInfo: {
+      rpcUrl: 'https://testnet-rpc.merlinchain.io',
+      chainId: 686868,
+      decimals: 18,
+      symbol: 'BTC',
+      explorerUrl: 'https://testnet-scan.merlinchain.io',
+      testnet: true,
+    },
+  },
+  {
     name: 'Metis',
     networkInfo: {
       rpcUrl: 'https://andromeda.metis.io/?owner=1088',
