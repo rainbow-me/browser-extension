@@ -324,6 +324,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Gnosis Chiado',
+    networkInfo: {
+      rpcUrl: 'https://rpc.chiadochain.net',
+      chainId: 10200,
+      decimals: 18,
+      symbol: 'xDAI',
+      explorerUrl: 'https://blockscout.chiadochain.net',
+      testnet: true,
+    },
+  },
+  {
     name: 'Hedera',
     networkInfo: {
       rpcUrl: 'https://mainnet.hashio.io/api',
