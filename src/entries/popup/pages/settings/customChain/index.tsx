@@ -230,9 +230,31 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
       rpcUrl: 'https://rpc.dogechain.dog',
       chainId: 2_000,
       decimals: 18,
-      symbol: 'DC',
+      symbol: 'DOGE',
       explorerUrl: 'https://explorer.dogechain.dog',
       testnet: false,
+    },
+  },
+  {
+    name: 'Dogechain Testnet',
+    networkInfo: {
+      rpcUrl: 'https://rpc-testnet.dogechain.dog',
+      chainId: 568,
+      decimals: 18,
+      symbol: 'DOGE',
+      explorerUrl: 'https://explorer-testnet.dogechain.dog',
+      testnet: true,
+    },
+  },
+  {
+    name: 'Dogechain zkEVM Testnet',
+    networkInfo: {
+      rpcUrl: 'https://rpc.testnet-cdk.dogechain.dog',
+      chainId: 2024115,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://explorer.testnet-cdk.dogechain.dog',
+      testnet: true,
     },
   },
   {

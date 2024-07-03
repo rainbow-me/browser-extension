@@ -54,4 +54,6 @@ export const TestnetFaucet = {
   59902: 'https://docs.metis.io/dev/readme/getting-test-tokens',
   686868:
     'https://docs.merlinchain.io/merlin-docs/developers/builder-guides/networks/testnet#testnet-faucet',
+  568: 'https://faucet.dogechain.dog',
+  2024115: 'https://dogechain-demo.caldera.dev/faucet',
 } as const;
