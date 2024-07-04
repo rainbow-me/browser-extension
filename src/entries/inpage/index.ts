@@ -62,6 +62,8 @@ const rainbowProvider = new RainbowProvider({
   },
 });
 
+console.log(shouldInjectProvider());
+
 if (shouldInjectProvider()) {
   announceProvider({
     info: {
