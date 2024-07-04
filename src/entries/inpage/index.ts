@@ -100,7 +100,13 @@ if (shouldInjectProvider()) {
 
   Object.defineProperties(window, {
     rainbow: {
-      value: rainbowProvider,
+      value: {
+        ...rainbowProvider,
+        providers: [
+          rainbowProvider,
+          ...(window.ethereum ? [window.ethereum] : []),
+        ],
+      },
       configurable: false,
       writable: false,
     },
