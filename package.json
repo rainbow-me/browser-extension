@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.5.6",
+  "version": "1.5.7",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -162,6 +162,7 @@
   },
   "devDependencies": {
     "@foundry-rs/hardhat-anvil": "0.1.7",
+    "@graphql-eslint/eslint-plugin": "3.10.7",
     "@lavamoat/allow-scripts": "3.0.1",
     "@lavamoat/preinstall-always-fail": "2.0.0",
     "@peculiar/webcrypto": "1.4.1",
@@ -230,8 +231,7 @@
     "webpack-bundle-analyzer": "4.8.0",
     "webpack-cli": "5.1.4",
     "webpack-extension-reloader": "rainbow-me/webpack-extension-reloader#23fc3ed1f59f295702d459ad58aec90d6f0a3551",
-    "worker-loader": "3.0.8",
-    "@graphql-eslint/eslint-plugin": "3.10.7"
+    "worker-loader": "3.0.8"
   },
   "resolutions": {
     "tar": "6.2.1",
