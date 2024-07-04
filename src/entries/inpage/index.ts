@@ -62,12 +62,6 @@ const rainbowProvider = new RainbowProvider({
   },
 });
 
-// Delete the `isMetaMask` property to avoid infinite loops
-// that'll cause memory leak with Coinbase Wallet and other wallets.
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-delete rainbowProvider.isMetaMask;
-
 if (shouldInjectProvider()) {
   announceProvider({
     info: {
