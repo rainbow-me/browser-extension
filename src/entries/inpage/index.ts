@@ -21,7 +21,7 @@ declare global {
     lodash: unknown;
     rainbow: RainbowProvider;
     providers: RainbowProvider[];
-    walletRouter: {
+    rnbwWalletRouter: {
       rainbowProvider: RainbowProvider;
       lastInjectedProvider?: RainbowProvider;
       currentProvider: RainbowProvider;
@@ -61,8 +61,6 @@ const rainbowProvider = new RainbowProvider({
     }
   },
 });
-
-console.log(shouldInjectProvider());
 
 if (shouldInjectProvider()) {
   announceProvider({
@@ -108,14 +106,14 @@ if (shouldInjectProvider()) {
     },
     ethereum: {
       get() {
-        return window.walletRouter.currentProvider;
+        return window.rnbwWalletRouter.currentProvider;
       },
       set(newProvider) {
-        window.walletRouter.addProvider(newProvider);
+        window.rnbwWalletRouter?.addProvider(newProvider);
       },
       configurable: false,
     },
-    walletRouter: {
+    rnbwWalletRouter: {
       value: {
         rainbowProvider,
         lastInjectedProvider: window.ethereum,
@@ -126,19 +124,19 @@ if (shouldInjectProvider()) {
         ],
         setDefaultProvider(rainbowAsDefault: boolean) {
           if (rainbowAsDefault) {
-            window.walletRouter.currentProvider = window.rainbow;
+            window.rnbwWalletRouter.currentProvider = window.rainbow;
           } else {
             const nonDefaultProvider =
-              window.walletRouter.lastInjectedProvider ?? window.ethereum;
-            window.walletRouter.currentProvider = nonDefaultProvider;
+              window.rnbwWalletRouter?.lastInjectedProvider ?? window.ethereum;
+            window.rnbwWalletRouter.currentProvider = nonDefaultProvider;
           }
         },
         addProvider(provider: RainbowProvider) {
-          if (!window.walletRouter.providers.includes(provider)) {
-            window.walletRouter.providers.push(provider);
+          if (!window.rnbwWalletRouter?.providers?.includes(provider)) {
+            window.rnbwWalletRouter?.providers?.push(provider);
           }
           if (rainbowProvider !== provider) {
-            window.walletRouter.lastInjectedProvider = provider;
+            window.rnbwWalletRouter.lastInjectedProvider = provider;
           }
         },
       },
@@ -147,15 +145,12 @@ if (shouldInjectProvider()) {
     },
   });
 
-  // defining `providers` on rainbowProvider, since it's undefined on the object itself
-  window.rainbow.providers = window.walletRouter.providers;
-
   window.dispatchEvent(new Event('ethereum#initialized'));
 
   backgroundMessenger.reply(
     'rainbow_setDefaultProvider',
     async ({ rainbowAsDefault }: { rainbowAsDefault: boolean }) => {
-      window.walletRouter.setDefaultProvider(rainbowAsDefault);
+      window.rnbwWalletRouter?.setDefaultProvider(rainbowAsDefault);
     },
   );
 }
