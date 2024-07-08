@@ -1,5 +1,4 @@
 import * as Sentry from '@sentry/browser';
-import { BrowserTracing } from '@sentry/tracing';
 
 import { version } from '../../../package.json';
 
@@ -15,7 +14,8 @@ const IGNORED_ERRORS = [
 export function initializeSentry(context: 'popup' | 'background') {
   if (process.env.IS_DEV !== 'true' && process.env.SENTRY_DSN) {
     try {
-      const integrations = context === 'popup' ? [new BrowserTracing()] : [];
+      const integrations =
+        context === 'popup' ? [Sentry.browserTracingIntegration()] : [];
       Sentry.init({
         dsn: process.env.SENTRY_DSN,
         integrations,
