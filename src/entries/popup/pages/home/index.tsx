@@ -133,10 +133,9 @@ const Tabs = memo(function Tabs() {
         background="surfacePrimaryElevated"
         style={{ flex: 1, position: 'relative', contentVisibility: 'visible' }}
         height="full"
-        paddingTop="20px"
       >
-        {activeTab === 'activity' && <Activities />}
         {activeTab === 'tokens' && <Tokens />}
+        {activeTab === 'activity' && <Activities />}
         {activeTab === 'nfts' && <NFTs />}
         {activeTab === 'points' && <Points />}
       </Box>
