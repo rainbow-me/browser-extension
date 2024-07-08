@@ -7,6 +7,7 @@ import { Address } from 'viem';
 import { useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { chainsLabel } from '~/core/references/chains';
 import { useEnsRegistration } from '~/core/resources/ens/ensRegistration';
 import { useSelectedNftStore } from '~/core/state/selectedNft';
 import { AddressOrEth } from '~/core/types/assets';

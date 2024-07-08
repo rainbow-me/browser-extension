@@ -35,14 +35,17 @@ export const useSearchableNFTs = () => {
     isFetching,
     isFetchingNextPage,
     isLoading,
-  } = useGalleryNfts({
-    address,
-    sort: 'recent',
-    testnetMode,
-    userChains,
-  });
+  } = useGalleryNfts(
+    {
+      address,
+      sort: 'recent',
+      testnetMode,
+      userChains,
+    },
+    { select: (data) => selectNfts(data) },
+  );
 
-  const nfts = useMemo(() => selectNfts(data) || [], [data]);
+  const nfts = useMemo(() => data || [], [data]);
 
   useEffect(() => {
     if (

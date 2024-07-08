@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { fetchNfts } from '~/core/network/nfts';
 import {
@@ -48,7 +48,7 @@ async function nftsForCollectionQueryFunction({
     address,
     chains: collectionChains,
     collectionIds: [collectionId],
-    nextPage: pageParam,
+    nextPage: pageParam as string | undefined,
   });
   const nfts = filterSimpleHashNFTs(result?.nfts, {})?.map((n) =>
     simpleHashNFTToUniqueAsset(n),
@@ -70,15 +70,18 @@ export function useNftsForCollection<TSelectData = NftsForCollectionResult>(
   { address, collectionId, collectionChains }: NftsForCollectionArgs,
   config: InfiniteQueryConfig<NftsForCollectionResult, Error, TSelectData> = {},
 ) {
-  return useInfiniteQuery(
-    nftsForCollectionQueryKey({ address, collectionId, collectionChains }),
-    nftsForCollectionQueryFunction,
-    {
-      ...config,
-      getNextPageParam: (lastPage) => lastPage?.nextPage,
-      refetchInterval: 600000,
-      retry: 3,
-      staleTime: 600000,
-    },
-  );
+  return useInfiniteQuery({
+    queryKey: nftsForCollectionQueryKey({
+      address,
+      collectionId,
+      collectionChains,
+    }),
+    queryFn: nftsForCollectionQueryFunction,
+    ...config,
+    getNextPageParam: (lastPage) => lastPage?.nextPage,
+    initialPageParam: null,
+    refetchInterval: 60000,
+    retry: 3,
+    staleTime: 60000,
+  });
 }

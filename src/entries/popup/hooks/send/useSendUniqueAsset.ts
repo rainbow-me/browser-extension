@@ -16,13 +16,18 @@ export const useSendUniqueAsset = () => {
 
   const [selectedNft, setSelectedNft] = useState<UniqueAsset>();
   const { chains: userChains } = useUserChains();
-  const { data } = useNftCollections({
-    address,
-    sort: sortMethod,
-    testnetMode,
-    userChains,
-  });
-  const nftCollections = selectNftCollections(data);
+  const { data } = useNftCollections(
+    {
+      address,
+      sort: sortMethod,
+      testnetMode,
+      userChains,
+    },
+    {
+      select: (data) => selectNftCollections(data),
+    },
+  );
+  const nftCollections = data || [];
 
   return {
     selectNft: setSelectedNft,

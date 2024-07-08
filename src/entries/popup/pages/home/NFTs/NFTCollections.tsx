@@ -1,7 +1,7 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion } from 'framer-motion';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Address, Chain } from 'wagmi';
+import { Address, Chain } from 'viem';
 
 import { shortcuts } from '~/core/references/shortcuts';
 import { selectNftCollections } from '~/core/resources/_selectors/nfts';
@@ -57,10 +57,13 @@ export default function NFTCollections({
     isFetchingNextPage,
     isLoading,
     refetch,
-  } = useNftCollections({ address, sort, testnetMode, userChains });
-  const collections = useMemo(() => {
-    return selectNftCollections(data, hiddenNftsForAddress) || [];
-  }, [data, hiddenNftsForAddress]);
+  } = useNftCollections(
+    { address, sort, testnetMode, userChains },
+    {
+      select: (data) => selectNftCollections(data, hiddenNftsForAddress) || [],
+    },
+  );
+  const collections = useMemo(() => data || [], [data]);
   const estimateCollectionGalleryRowSize = useCallback(
     (sectionIndex: number) => {
       const COLLECTION_HEADER_HEIGHT = 30;

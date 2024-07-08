@@ -1,6 +1,8 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { Chain } from 'viem';
-import { Address } from 'wagmi';
+import {
+  UseInfiniteQueryResult,
+  useInfiniteQuery,
+} from '@tanstack/react-query';
+import { Address, Chain } from 'viem';
 
 import { fetchGalleryNfts, fetchPolygonAllowList } from '~/core/network/nfts';
 import {
@@ -14,12 +16,10 @@ import { NftSort } from '~/core/state/nfts';
 import { ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import { PolygonAllowListDictionary } from '~/core/types/nfts';
 import {
-  getSimpleHashSupportedChainNames,
-  getSimpleHashSupportedTestnetChainNames,
-} from '~/core/utils/chains';
-import {
   filterSimpleHashNFTs,
   simpleHashNFTToUniqueAsset,
+  simpleHashSupportedChainNames,
+  simpleHashSupportedTestnetChainNames,
 } from '~/core/utils/nfts';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { NFTS_TEST_DATA } from '~/test/utils';
@@ -71,8 +71,8 @@ async function galleryNftsQueryFunction({
     })
     .map((chain) => chain.id);
   const simplehashChainNames = !testnetMode
-    ? getSimpleHashSupportedChainNames()
-    : getSimpleHashSupportedTestnetChainNames();
+    ? simpleHashSupportedChainNames
+    : simpleHashSupportedTestnetChainNames;
   const chains = simplehashChainNames.filter((simplehashChainName) => {
     const id = chainNameToIdMapping[simplehashChainName];
     return activeChainIds.includes(id) || simplehashChainName === 'gnosis';
@@ -80,7 +80,7 @@ async function galleryNftsQueryFunction({
   const data = await fetchGalleryNfts({
     address,
     chains,
-    nextPage: pageParam,
+    nextPage: pageParam as string | undefined,
     sort: sort === 'alphabetical' ? 'name__asc' : 'last_acquired_date__desc',
   });
   const polygonAllowList = await polygonAllowListFetcher();
@@ -101,18 +101,17 @@ type GalleryNftsResult = QueryFunctionResult<typeof galleryNftsQueryFunction>;
 export function useGalleryNfts<TSelectData = GalleryNftsResult>(
   { address, sort, testnetMode, userChains }: GalleryNftsArgs,
   config: InfiniteQueryConfig<GalleryNftsResult, Error, TSelectData> = {},
-) {
-  return useInfiniteQuery(
-    galleryNftsQueryKey({ address, sort, testnetMode, userChains }),
-    galleryNftsQueryFunction,
-    {
-      ...config,
-      getNextPageParam: (lastPage) => lastPage?.nextPage,
-      refetchInterval: 600000,
-      retry: 3,
-      staleTime: 600000,
-    },
-  );
+): UseInfiniteQueryResult<TSelectData> {
+  return useInfiniteQuery({
+    queryKey: galleryNftsQueryKey({ address, sort, testnetMode, userChains }),
+    queryFn: galleryNftsQueryFunction,
+    ...config,
+    getNextPageParam: (lastPage) => lastPage?.nextPage,
+    initialPageParam: null,
+    refetchInterval: 60000,
+    retry: 3,
+    staleTime: 60000,
+  });
 }
 
 function getGalleryNftsTestData({ sort }: { sort: NftSort }) {
@@ -129,9 +128,9 @@ function getGalleryNftsTestData({ sort }: { sort: NftSort }) {
 // Polygon Allow List Fetcher
 
 function polygonAllowListFetcher() {
-  return queryClient.fetchQuery<PolygonAllowListDictionary>(
-    ['137-allowlist'],
-    async () => await fetchPolygonAllowList(),
-    { staleTime: POLYGON_ALLOWLIST_STALE_TIME },
-  );
+  return queryClient.fetchQuery<PolygonAllowListDictionary>({
+    queryKey: ['137-allowList'],
+    queryFn: async () => await fetchPolygonAllowList(),
+    staleTime: POLYGON_ALLOWLIST_STALE_TIME,
+  });
 }

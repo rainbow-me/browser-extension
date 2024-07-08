@@ -85,14 +85,16 @@ export function NFTCollectionSection({
     },
     {
       enabled: collectionVisible,
+      select: (data) =>
+        selectNfts(data)?.filter((n) => {
+          if (isHiddenSection) {
+            return hiddenNftsForAddress[n.uniqueId];
+          }
+          return !hiddenNftsForAddress[n.uniqueId];
+        }),
     },
   );
-  const nfts = selectNfts(data)?.filter((n) => {
-    if (isHiddenSection) {
-      return hiddenNftsForAddress[n.uniqueId];
-    }
-    return !hiddenNftsForAddress[n.uniqueId];
-  });
+  const nfts = data || [];
   const setCollectionVisible = useCallback(() => {
     toggleGallerySectionOpen({
       address,

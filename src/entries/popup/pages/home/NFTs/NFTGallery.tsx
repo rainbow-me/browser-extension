@@ -1,7 +1,7 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { Address, Chain } from 'wagmi';
+import { Address, Chain } from 'viem';
 
 import { shortcuts } from '~/core/references/shortcuts';
 import { selectNfts } from '~/core/resources/_selectors/nfts';
@@ -47,8 +47,13 @@ export default function NFTGallery({
     isFetchingNextPage,
     isLoading,
     refetch,
-  } = useGalleryNfts({ address, sort, testnetMode, userChains });
-  const allNfts = selectNfts(data);
+  } = useGalleryNfts(
+    { address, sort, testnetMode, userChains },
+    {
+      select: (data) => selectNfts(data),
+    },
+  );
+  const allNfts = data;
   const nfts = allNfts?.filter((nft) => !hiddenNftsForAddress[nft.uniqueId]);
   const nftRowData = chunkArray(nfts || [], 3);
   const rowVirtualizer = useVirtualizer({
