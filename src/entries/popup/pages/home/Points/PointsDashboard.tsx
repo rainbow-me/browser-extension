@@ -1228,8 +1228,9 @@ export function PointsDashboard() {
       <Stack
         gap="20px"
         width="full"
-        marginTop="-30px"
-        padding="20px"
+        paddingTop="12px"
+        paddingBottom="72px"
+        paddingHorizontal="20px"
         background={currentTheme === 'light' ? 'surfaceSecondary' : undefined}
       >
         <Rows>

@@ -230,6 +230,7 @@ export function Tokens() {
     estimateSize: () => 52,
     overscan: 10,
     paddingEnd: 64,
+    paddingStart: 12,
     getItemKey: (index) => filteredAssets[index].uniqueId,
   });
 
