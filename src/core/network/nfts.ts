@@ -1,5 +1,6 @@
 import { RainbowError, logger } from '~/logger';
 
+import { queryClient } from '../react-query';
 import { ChainName } from '../types/chains';
 import {
   PolygonAllowListDictionary,
@@ -157,6 +158,14 @@ export const fetchPolygonAllowList =
     );
     return polygonAllowListDictionary;
   };
+
+export function polygonAllowListFetcher() {
+  return queryClient.fetchQuery<PolygonAllowListDictionary>({
+    queryKey: ['137-allowList'],
+    queryFn: async () => await fetchPolygonAllowList(),
+    staleTime: 60000,
+  });
+}
 
 export const reportNftAsSpam = async (nft: UniqueAsset) => {
   const network =

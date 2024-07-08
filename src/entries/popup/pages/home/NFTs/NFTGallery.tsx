@@ -9,7 +9,10 @@ import { useGalleryNfts } from '~/core/resources/nfts/galleryNfts';
 import { NftSort, useNftsStore } from '~/core/state/nfts';
 import { UniqueAsset } from '~/core/types/nfts';
 import { chunkArray } from '~/core/utils/assets';
-import { getUniqueAssetImageThumbnailURL } from '~/core/utils/nfts';
+import {
+  getUniqueAssetImagePreviewURL,
+  getUniqueAssetImageThumbnailURL,
+} from '~/core/utils/nfts';
 import { Box, Inset } from '~/design-system';
 import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
@@ -40,7 +43,7 @@ export default function NFTGallery({
   const hiddenNftsForAddress = hidden[address] || {};
   const [manuallyRefetching, setManuallyRefetching] = useState(false);
   const {
-    data,
+    data: allNfts,
     fetchNextPage,
     hasNextPage,
     isFetching,
@@ -53,7 +56,6 @@ export default function NFTGallery({
       select: (data) => selectNfts(data),
     },
   );
-  const allNfts = data;
   const nfts = allNfts?.filter((nft) => !hiddenNftsForAddress[nft.uniqueId]);
   const nftRowData = chunkArray(nfts || [], 3);
   const rowVirtualizer = useVirtualizer({
@@ -116,7 +118,7 @@ export default function NFTGallery({
           }}
         >
           <Box style={{ overflow: 'auto' }}>
-            {rowVirtualizer.getVirtualItems().map((virtualItem) => {
+            {virtualRows.map((virtualItem) => {
               const { key, size, start, index } = virtualItem;
               const rowData = nftRowData[index];
               return (
@@ -139,12 +141,17 @@ export default function NFTGallery({
                       }}
                     >
                       {rowData.map((asset, i) => (
-                        <NFTContextMenu key={i} nft={asset}>
+                        <NFTContextMenu
+                          key={`gallery-nft-thumbnail-${asset.uniqueId}`}
+                          nft={asset}
+                        >
                           <NFTThumbnail
                             borderRadius="10px"
                             size={96}
                             imageSrc={getUniqueAssetImageThumbnailURL(asset)}
-                            key={i}
+                            placeholderSrc={getUniqueAssetImagePreviewURL(
+                              asset,
+                            )}
                             onClick={() => onAssetClick(asset)}
                             index={i}
                           />

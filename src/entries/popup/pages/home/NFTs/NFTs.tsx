@@ -5,7 +5,6 @@ import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useNftsStore } from '~/core/state/nfts';
 import { UniqueAsset } from '~/core/types/nfts';
 import { Bleed, Box } from '~/design-system';
-import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { useNftShortcuts } from '~/entries/popup/hooks/useNftShortcuts';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useUserChains } from '~/entries/popup/hooks/useUserChains';
@@ -19,7 +18,6 @@ export function NFTs() {
   const sort = useNftsStore.use.sort();
   const { testnetMode } = useTestnetModeStore();
   const { chains: userChains } = useUserChains();
-  const containerRef = useContainerRef();
   const navigate = useRainbowNavigate();
   const onAssetClick = (asset: UniqueAsset) => {
     navigate(
@@ -42,7 +40,6 @@ export function NFTs() {
         flexDirection="column"
         width="full"
         paddingHorizontal="12px"
-        ref={containerRef}
         paddingBottom="28px"
       >
         <NFTGallery

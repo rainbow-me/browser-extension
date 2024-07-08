@@ -3,27 +3,21 @@ import { Address, Chain } from 'viem';
 
 import {
   fetchNftCollections,
-  fetchPolygonAllowList,
+  polygonAllowListFetcher,
 } from '~/core/network/nfts';
 import {
   InfiniteQueryConfig,
   QueryFunctionArgs,
   QueryFunctionResult,
   createQueryKey,
-  queryClient,
 } from '~/core/react-query';
 import { NftSort } from '~/core/state/nfts';
 import { ChainName, chainNameToIdMapping } from '~/core/types/chains';
-import {
-  PolygonAllowListDictionary,
-  SimpleHashCollectionDetails,
-} from '~/core/types/nfts';
+import { SimpleHashCollectionDetails } from '~/core/types/nfts';
 import {
   simpleHashSupportedChainNames,
   simpleHashSupportedTestnetChainNames,
 } from '~/core/utils/nfts';
-
-const POLYGON_ALLOWLIST_STALE_TIME = 600000; // 10 minutes
 
 // ///////////////////////////////////////////////
 // Query Types
@@ -131,16 +125,5 @@ export function useNftCollections<TSelectData = NftCollectionsResult>(
     initialPageParam: undefined,
     refetchInterval: 60000,
     retry: 3,
-  });
-}
-
-// ///////////////////////////////////////////////
-// Polygon Allow List Fetcher
-
-function polygonAllowListFetcher() {
-  return queryClient.fetchQuery<PolygonAllowListDictionary>({
-    queryKey: ['137-allowList'],
-    queryFn: async () => await fetchPolygonAllowList(),
-    staleTime: POLYGON_ALLOWLIST_STALE_TIME,
   });
 }

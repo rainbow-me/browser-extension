@@ -4,17 +4,15 @@ import {
 } from '@tanstack/react-query';
 import { Address, Chain } from 'viem';
 
-import { fetchGalleryNfts, fetchPolygonAllowList } from '~/core/network/nfts';
+import { fetchGalleryNfts, polygonAllowListFetcher } from '~/core/network/nfts';
 import {
   InfiniteQueryConfig,
   QueryFunctionArgs,
   QueryFunctionResult,
   createQueryKey,
-  queryClient,
 } from '~/core/react-query';
 import { NftSort } from '~/core/state/nfts';
 import { ChainName, chainNameToIdMapping } from '~/core/types/chains';
-import { PolygonAllowListDictionary } from '~/core/types/nfts';
 import {
   filterSimpleHashNFTs,
   simpleHashNFTToUniqueAsset,
@@ -24,7 +22,6 @@ import {
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { NFTS_TEST_DATA } from '~/test/utils';
 
-const POLYGON_ALLOWLIST_STALE_TIME = 600000; // 10 minutes
 const EMPTY_WALLET_ADDRESS = '0x3637f053D542E6D00Eee42D656dD7C59Fa33a62F';
 
 // ///////////////////////////////////////////////
@@ -122,15 +119,4 @@ function getGalleryNftsTestData({ sort }: { sort: NftSort }) {
     };
   }
   return NFTS_TEST_DATA;
-}
-
-// ///////////////////////////////////////////////
-// Polygon Allow List Fetcher
-
-function polygonAllowListFetcher() {
-  return queryClient.fetchQuery<PolygonAllowListDictionary>({
-    queryKey: ['137-allowList'],
-    queryFn: async () => await fetchPolygonAllowList(),
-    staleTime: POLYGON_ALLOWLIST_STALE_TIME,
-  });
 }
