@@ -113,11 +113,19 @@ export function Tokens() {
     offset: ['0px', '64px', '92px'],
   });
 
+  const [isScrollable, setIsScrollable] = useState(false);
   const progressRef = useRef(0);
 
   useEffect(() => {
     return progress.on('change', (value) => {
       progressRef.current = value;
+
+      // Check the progress and set scrollable state
+      if (value >= 1) {
+        setIsScrollable(true);
+      } else {
+        setIsScrollable(false);
+      }
     });
   }, [progress]);
 
@@ -276,7 +284,7 @@ export function Tokens() {
       width="full"
       style={{
         maxHeight: `1000px`,
-        overflow: progressRef.current >= 1 ? 'auto' : 'hidden',
+        overflow: isScrollable || progressRef.current >= 1 ? 'auto' : 'hidden',
       }}
       ref={containerRef}
       paddingBottom="8px"
