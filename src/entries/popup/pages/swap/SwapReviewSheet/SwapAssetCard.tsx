@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 
 import { useCurrentCurrencyStore } from '~/core/state';
 import { ParsedSearchAsset } from '~/core/types/assets';
+import { formatCurrency } from '~/core/utils/formatNumber';
 import {
-  abbreviateNumber,
   convertRawAmountToBalance,
   convertRawAmountToNativeDisplay,
 } from '~/core/utils/numbers';
@@ -50,8 +50,18 @@ export const SwapAssetCard = ({
       ).display,
     [asset.decimals, asset.price?.value, assetAmount, currentCurrency],
   );
+  const cleanNumber = (n: number | string | null | undefined): number => {
+    if (typeof n === 'string') {
+      return parseFloat(n.replace(/,/g, ''));
+    }
+    return n || 0;
+  };
 
-  const amountWithAbbreviation = abbreviateNumber(amount);
+  const formatNumber = (n?: number | string | null) =>
+    formatCurrency(cleanNumber(n), {
+      notation: 'compact',
+      maximumSignificantDigits: 4,
+    });
 
   return (
     <AccentColorProvider
@@ -78,7 +88,7 @@ export const SwapAssetCard = ({
                 <Columns space="4px" alignVertical="center">
                   <Column>
                     <TextOverflow color="label" size="14pt" weight="bold">
-                      {`${amountWithAbbreviation}`}
+                      {`${formatNumber(amount)}`}
                     </TextOverflow>
                   </Column>
                   <Column width="content">
