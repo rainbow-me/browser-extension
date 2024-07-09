@@ -104,6 +104,7 @@ describe('Visit NFTs Gallery and Details Pages', () => {
       id: 'navbar-button-with-back',
       driver,
     });
+    await delayTime('medium');
     await findElementByTestIdAndClick({
       id: 'nft-thumbnail-https://lh3.googleusercontent.com/O_dtxR4ggdzoCNEAZ89s7w5eBiu8rP5TELBQcuFZyIHc-raU2qj48LSkJmEKeN64JaGa7m9X5EFYUreCCJBlx9lXW0rgjrZUL0E=s1000-1',
       driver,
