@@ -54,6 +54,7 @@ export default function NFTGallery({
     { address, sort, testnetMode, userChains },
     {
       select: (data) => selectNfts(data),
+      enabled: displayMode === 'grouped',
     },
   );
   const nfts = allNfts?.filter((nft) => !hiddenNftsForAddress[nft.uniqueId]);
@@ -65,7 +66,6 @@ export default function NFTGallery({
     overscan: 12,
   });
   const virtualRows = rowVirtualizer.getVirtualItems();
-  const isNavigating = virtualRows.length === 0 && nftRowData.length;
   const shouldDisplay = displayMode === 'grouped';
 
   useKeyboardShortcut({
@@ -99,12 +99,17 @@ export default function NFTGallery({
     virtualRows,
   ]);
 
+  useEffect(() => {
+    rowVirtualizer.measure();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [displayMode]);
+
   if (!shouldDisplay) return null;
   if (!isLoading && !nfts?.length) return <NftsEmptyState />;
 
   return (
     <>
-      {isLoading || manuallyRefetching || isNavigating ? (
+      {isLoading || manuallyRefetching ? (
         <Box width="full">
           <Inset horizontal="8px">
             <GroupedNFTsSkeleton />

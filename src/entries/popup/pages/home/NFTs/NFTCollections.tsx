@@ -61,6 +61,7 @@ export default function NFTCollections({
     { address, sort, testnetMode, userChains },
     {
       select: (data) => selectNftCollections(data, hiddenNftsForAddress) || [],
+      enabled: displayMode === 'byCollection',
     },
   );
   const collections = useMemo(() => data || [], [data]);
