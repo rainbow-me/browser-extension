@@ -17,7 +17,6 @@ import {
   Stack,
   Symbol,
 } from '~/design-system';
-import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 
@@ -29,6 +28,7 @@ const COLLECTION_IMAGE_SIZE = 16;
 
 interface NFTGalleryProps {
   address: Address;
+  containerRef: React.RefObject<HTMLDivElement> | null;
   onAssetClick: (asset: UniqueAsset) => void;
   sort: NftSort;
   testnetMode: boolean;
@@ -37,12 +37,12 @@ interface NFTGalleryProps {
 
 export default function NFTCollections({
   address,
+  containerRef,
   onAssetClick,
   sort,
   testnetMode,
   userChains,
 }: NFTGalleryProps) {
-  const containerRef = useContainerRef();
   const { displayMode, hidden, sections } = useNftsStore();
   const [manuallyRefetching, setManuallyRefetching] = useState(false);
   const hiddenNftsForAddress = useMemo(
@@ -107,7 +107,7 @@ export default function NFTCollections({
   );
   const rowVirtualizer = useVirtualizer({
     count: collections.length,
-    getScrollElement: () => containerRef.current,
+    getScrollElement: () => containerRef?.current || null,
     estimateSize: estimateCollectionGalleryRowSize,
     overscan: 12,
   });

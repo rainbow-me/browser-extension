@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 
 import { useCurrentAddressStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
@@ -16,6 +16,7 @@ import NFTGallery from './NFTGallery';
 export function NFTs() {
   const { currentAddress: address } = useCurrentAddressStore();
   const sort = useNftsStore.use.sort();
+  const displayMode = useNftsStore.use.displayMode();
   const { testnetMode } = useTestnetModeStore();
   const { chains: userChains } = useUserChains();
   const navigate = useRainbowNavigate();
@@ -30,33 +31,51 @@ export function NFTs() {
     );
   };
 
+  const groupedContainerRef = useRef<HTMLDivElement>(null);
+  const byCollectionContainerRef = useRef<HTMLDivElement>(null);
   useNftShortcuts();
 
   return (
     <Bleed top="10px">
-      <Box
-        alignItems="center"
-        display="flex"
-        flexDirection="column"
-        width="full"
-        paddingHorizontal="12px"
-        paddingBottom="28px"
-      >
-        <NFTGallery
-          address={address}
-          onAssetClick={onAssetClick}
-          sort={sort}
-          testnetMode={testnetMode}
-          userChains={userChains}
-        />
-        <NFTCollections
-          address={address}
-          onAssetClick={onAssetClick}
-          sort={sort}
-          testnetMode={testnetMode}
-          userChains={userChains}
-        />
-      </Box>
+      {displayMode === 'grouped' ? (
+        <Box
+          alignItems="center"
+          display="flex"
+          flexDirection="column"
+          width="full"
+          paddingHorizontal="12px"
+          paddingBottom="28px"
+          ref={groupedContainerRef}
+        >
+          <NFTGallery
+            address={address}
+            onAssetClick={onAssetClick}
+            sort={sort}
+            testnetMode={testnetMode}
+            userChains={userChains}
+            containerRef={groupedContainerRef}
+          />
+        </Box>
+      ) : (
+        <Box
+          alignItems="center"
+          display="flex"
+          flexDirection="column"
+          width="full"
+          paddingHorizontal="12px"
+          paddingBottom="28px"
+          ref={byCollectionContainerRef}
+        >
+          <NFTCollections
+            address={address}
+            onAssetClick={onAssetClick}
+            sort={sort}
+            testnetMode={testnetMode}
+            userChains={userChains}
+            containerRef={byCollectionContainerRef}
+          />
+        </Box>
+      )}
     </Bleed>
   );
 }

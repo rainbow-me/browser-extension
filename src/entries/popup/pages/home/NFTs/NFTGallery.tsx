@@ -14,7 +14,6 @@ import {
   getUniqueAssetImageThumbnailURL,
 } from '~/core/utils/nfts';
 import { Box, Inset } from '~/design-system';
-import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 
@@ -25,6 +24,7 @@ import { NftsEmptyState } from './NftsEmptyState';
 
 interface NFTGalleryProps {
   address: Address;
+  containerRef: React.RefObject<HTMLDivElement> | null;
   onAssetClick: (asset: UniqueAsset) => void;
   sort: NftSort;
   testnetMode: boolean;
@@ -33,12 +33,12 @@ interface NFTGalleryProps {
 
 export default function NFTGallery({
   address,
+  containerRef,
   onAssetClick,
   sort,
   testnetMode,
   userChains,
 }: NFTGalleryProps) {
-  const containerRef = useContainerRef();
   const { displayMode, hidden } = useNftsStore();
   const hiddenNftsForAddress = hidden[address] || {};
   const [manuallyRefetching, setManuallyRefetching] = useState(false);
@@ -60,13 +60,14 @@ export default function NFTGallery({
   const nftRowData = chunkArray(nfts || [], 3);
   const rowVirtualizer = useVirtualizer({
     count: nftRowData.length,
-    getScrollElement: () => containerRef.current,
+    getScrollElement: () => containerRef?.current || null,
     estimateSize: () => 122,
     overscan: 12,
   });
   const virtualRows = rowVirtualizer.getVirtualItems();
-
+  const isNavigating = virtualRows.length === 0 && nftRowData.length;
   const shouldDisplay = displayMode === 'grouped';
+
   useKeyboardShortcut({
     handler: async (e: KeyboardEvent) => {
       if (e.key === shortcuts.nfts.REFRESH_NFTS.key) {
@@ -103,7 +104,7 @@ export default function NFTGallery({
 
   return (
     <>
-      {isLoading || manuallyRefetching ? (
+      {isLoading || manuallyRefetching || isNavigating ? (
         <Box width="full">
           <Inset horizontal="8px">
             <GroupedNFTsSkeleton />
@@ -118,7 +119,7 @@ export default function NFTGallery({
           }}
         >
           <Box style={{ overflow: 'auto' }}>
-            {virtualRows.map((virtualItem) => {
+            {rowVirtualizer.getVirtualItems().map((virtualItem) => {
               const { key, size, start, index } = virtualItem;
               const rowData = nftRowData[index];
               return (
