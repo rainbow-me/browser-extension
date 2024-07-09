@@ -1,7 +1,7 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion } from 'framer-motion';
 import uniqBy from 'lodash/uniqBy';
-import { memo, useCallback, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
@@ -39,7 +39,6 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
-import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 
@@ -222,7 +221,7 @@ export function Tokens() {
     [unhiddenAssets, computePinnedAssets, computeUniqueAssets],
   );
 
-  const containerRef = useContainerRef();
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const assetsRowVirtualizer = useVirtualizer({
     count: filteredAssets.length,
