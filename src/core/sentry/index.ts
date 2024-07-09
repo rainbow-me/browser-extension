@@ -19,7 +19,7 @@ export function initializeSentry(context: 'popup' | 'background') {
       Sentry.init({
         dsn: process.env.SENTRY_DSN,
         integrations,
-        tracesSampleRate: 1.0,
+        tracesSampleRate: process.env.INTERNAL_BUILD === 'true' ? 1.0 : 0.2, // 20% sampling in prod
         release: version,
         environment:
           process.env.INTERNAL_BUILD === 'true' ? 'internal' : 'production',
