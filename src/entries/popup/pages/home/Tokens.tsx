@@ -1,7 +1,7 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion } from 'framer-motion';
 import uniqBy from 'lodash/uniqBy';
-import { memo, useCallback, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
@@ -48,6 +48,7 @@ import { QuickPromo } from '../../components/QuickPromo/QuickPromo';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { useScroll } from '../../hooks/useScroll';
 import { useSystemSpecificModifierKey } from '../../hooks/useSystemSpecificModifierKey';
 import { useTokenPressMouseEvents } from '../../hooks/useTokenPressMouseEvents';
 import { useTokensShortcuts } from '../../hooks/useTokensShortcuts';
@@ -107,6 +108,18 @@ export function Tokens() {
   const { modifierSymbol } = useSystemSpecificModifierKey();
   const { pinned: pinnedStore } = usePinnedAssetStore();
   const { hidden } = useHiddenAssetStore();
+
+  const { scrollYProgress: progress } = useScroll({
+    offset: ['0px', '64px', '92px'],
+  });
+
+  const progressRef = useRef(0);
+
+  useEffect(() => {
+    return progress.on('change', (value) => {
+      progressRef.current = value;
+    });
+  }, [progress]);
 
   const isHidden = useCallback(
     (asset: ParsedUserAsset) => {
@@ -262,13 +275,11 @@ export function Tokens() {
     <Box
       width="full"
       style={{
-        height: `336px`,
-        overflow: 'auto',
+        maxHeight: `1000px`,
+        overflow: progressRef.current >= 1 ? 'auto' : 'hidden',
       }}
       ref={containerRef}
       paddingBottom="8px"
-      paddingTop="2px"
-      marginTop="-14px"
     >
       <QuickPromo
         text={i18n.t('command_k.quick_promo.text', { modifierSymbol })}
