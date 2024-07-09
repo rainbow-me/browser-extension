@@ -6,7 +6,6 @@ import {
 } from '@rainbow-me/swaps';
 
 import { i18n } from '../languages';
-import { chainsNativeAsset } from '../references/chains';
 import { useConnectedToHardhatStore } from '../state/currentSettings/connectedToHardhat';
 import { ChainId } from '../types/chains';
 
@@ -69,7 +68,7 @@ export const isUnwrapEth = ({
     isLowerCaseMatch(
       sellTokenAddress,
       WRAPPED_ASSET[connectedToHardhat ? ChainId.mainnet : chainId],
-    ) && isLowerCaseMatch(buyTokenAddress, chainsNativeAsset[chainId])
+    ) && isLowerCaseMatch(buyTokenAddress, ETH_ADDRESS)
   );
 };
 

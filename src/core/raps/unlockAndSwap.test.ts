@@ -237,6 +237,7 @@ test('[rap/unlockAndSwap] :: create unwrap eth rap', async () => {
     assetToSell: WETH_MAINNET_ASSET,
     assetToBuy: ETH_MAINNET_ASSET,
   });
+  console.log('-- rap.actions', rap.actions);
   expect(rap.actions.length).toBe(1);
 });
 
