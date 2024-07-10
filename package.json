@@ -131,7 +131,7 @@
     "deepmerge": "4.2.2",
     "ethereum-cryptography": "2.1.2",
     "eventemitter3": "4.0.7",
-    "firebase": "9.18.0",
+    "firebase": "10.12.3",
     "framer-motion": "10.2.3",
     "graphql-request": "5.2.0",
     "graphql-tag": "^2.11.0",
