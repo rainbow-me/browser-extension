@@ -169,6 +169,7 @@ export type Network = {
   defaultExplorer: NetworkExplorer;
   defaultRPC: NetworkRpc;
   enabledServices: NetworkEnabledServices;
+  gasUnits: NetworkGasUnits;
   icons: NetworkIcons;
   id: Scalars['ID'];
   label: Scalars['String'];
@@ -220,6 +221,27 @@ export type NetworkExplorer = {
   tokenURL: Scalars['String'];
   transactionURL: Scalars['String'];
   url: Scalars['String'];
+};
+
+export type NetworkGasBasicUnits = {
+  __typename?: 'NetworkGasBasicUnits';
+  approval: Scalars['String'];
+  eoaTransfer: Scalars['String'];
+  swap: Scalars['String'];
+  swapPermit: Scalars['String'];
+  tokenTransfer: Scalars['String'];
+};
+
+export type NetworkGasUnits = {
+  __typename?: 'NetworkGasUnits';
+  basic: NetworkGasBasicUnits;
+  wrapped: NetworkGasWrappedUnits;
+};
+
+export type NetworkGasWrappedUnits = {
+  __typename?: 'NetworkGasWrappedUnits';
+  unwrap: Scalars['String'];
+  wrap: Scalars['String'];
 };
 
 export type NetworkIcons = {
@@ -1054,6 +1076,15 @@ export type SimulateTransactionsQueryVariables = Exact<{
 
 export type SimulateTransactionsQuery = { __typename?: 'Query', simulateTransactions?: Array<{ __typename?: 'TransactionResult', scanning?: { __typename?: 'TransactionScanningResult', result: TransactionScanResultType, description: string } | null, error?: { __typename?: 'TransactionError', message: string, type: TransactionErrorType } | null, gas?: { __typename?: 'TransactionGasResult', estimate: string } | null, simulation?: { __typename?: 'TransactionSimulationResult', in?: Array<{ __typename?: 'TransactionSimulationChange', quantity: string, asset: { __typename?: 'TransactionSimulationAsset', assetCode: string, decimals: number, iconURL: string, name: string, network: string, symbol: string, type: TransactionAssetType, interface: TransactionAssetInterface, tokenId: string, status: VerificationStatus } } | null> | null, out?: Array<{ __typename?: 'TransactionSimulationChange', quantity: string, asset: { __typename?: 'TransactionSimulationAsset', assetCode: string, decimals: number, iconURL: string, name: string, network: string, symbol: string, type: TransactionAssetType, interface: TransactionAssetInterface, tokenId: string, status: VerificationStatus } } | null> | null, approvals?: Array<{ __typename?: 'TransactionSimulationApproval', quantityAllowed: string, quantityAtRisk: string, expiration?: any | null, asset: { __typename?: 'TransactionSimulationAsset', assetCode: string, decimals: number, iconURL: string, name: string, network: string, symbol: string, type: TransactionAssetType, interface: TransactionAssetInterface, tokenId: string, status: VerificationStatus }, spender: { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: any | null, sourceCodeStatus?: VerificationStatus | null } } | null> | null, meta?: { __typename?: 'TransactionSimulationMeta', transferTo?: { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: any | null, sourceCodeStatus?: VerificationStatus | null } | null, to?: { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: any | null, sourceCodeStatus?: VerificationStatus | null } | null } | null } | null } | null> | null };
 
+export type SimulateTransactionsWithoutGasQueryVariables = Exact<{
+  chainId: Scalars['Int'];
+  transactions: Array<Transaction> | Transaction;
+  domain?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type SimulateTransactionsWithoutGasQuery = { __typename?: 'Query', simulateTransactions?: Array<{ __typename?: 'TransactionResult', scanning?: { __typename?: 'TransactionScanningResult', result: TransactionScanResultType, description: string } | null, error?: { __typename?: 'TransactionError', message: string, type: TransactionErrorType } | null, simulation?: { __typename?: 'TransactionSimulationResult', in?: Array<{ __typename?: 'TransactionSimulationChange', quantity: string, asset: { __typename?: 'TransactionSimulationAsset', assetCode: string, decimals: number, iconURL: string, name: string, network: string, symbol: string, type: TransactionAssetType, interface: TransactionAssetInterface, tokenId: string, status: VerificationStatus } } | null> | null, out?: Array<{ __typename?: 'TransactionSimulationChange', quantity: string, asset: { __typename?: 'TransactionSimulationAsset', assetCode: string, decimals: number, iconURL: string, name: string, network: string, symbol: string, type: TransactionAssetType, interface: TransactionAssetInterface, tokenId: string, status: VerificationStatus } } | null> | null, approvals?: Array<{ __typename?: 'TransactionSimulationApproval', quantityAllowed: string, quantityAtRisk: string, expiration?: any | null, asset: { __typename?: 'TransactionSimulationAsset', assetCode: string, decimals: number, iconURL: string, name: string, network: string, symbol: string, type: TransactionAssetType, interface: TransactionAssetInterface, tokenId: string, status: VerificationStatus }, spender: { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: any | null, sourceCodeStatus?: VerificationStatus | null } } | null> | null, meta?: { __typename?: 'TransactionSimulationMeta', transferTo?: { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: any | null, sourceCodeStatus?: VerificationStatus | null } | null, to?: { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: any | null, sourceCodeStatus?: VerificationStatus | null } | null } | null } | null } | null> | null };
+
 export type SimulateMessageQueryVariables = Exact<{
   chainId: Scalars['Int'];
   address: Scalars['String'];
@@ -1279,6 +1310,53 @@ export const SimulateTransactionsDocument = gql`
     }
     gas {
       estimate
+    }
+    simulation {
+      in {
+        ...change
+      }
+      out {
+        ...change
+      }
+      approvals {
+        asset {
+          ...asset
+        }
+        spender {
+          ...target
+        }
+        quantityAllowed
+        quantityAtRisk
+        expiration
+      }
+      meta {
+        transferTo {
+          ...target
+        }
+        to {
+          ...target
+        }
+      }
+    }
+  }
+}
+    ${ChangeFragmentDoc}
+${AssetFragmentDoc}
+${TargetFragmentDoc}`;
+export const SimulateTransactionsWithoutGasDocument = gql`
+    query simulateTransactionsWithoutGas($chainId: Int!, $transactions: [Transaction!]!, $domain: String) {
+  simulateTransactions(
+    chainID: $chainId
+    transactions: $transactions
+    domain: $domain
+  ) {
+    scanning {
+      result
+      description
+    }
+    error {
+      message
+      type
     }
     simulation {
       in {
@@ -1581,6 +1659,9 @@ export function getSdk<C, E>(requester: Requester<C, E>) {
     },
     simulateTransactions(variables: SimulateTransactionsQueryVariables, options?: C): Promise<SimulateTransactionsQuery> {
       return requester<SimulateTransactionsQuery, SimulateTransactionsQueryVariables>(SimulateTransactionsDocument, variables, options) as Promise<SimulateTransactionsQuery>;
+    },
+    simulateTransactionsWithoutGas(variables: SimulateTransactionsWithoutGasQueryVariables, options?: C): Promise<SimulateTransactionsWithoutGasQuery> {
+      return requester<SimulateTransactionsWithoutGasQuery, SimulateTransactionsWithoutGasQueryVariables>(SimulateTransactionsWithoutGasDocument, variables, options) as Promise<SimulateTransactionsWithoutGasQuery>;
     },
     simulateMessage(variables: SimulateMessageQueryVariables, options?: C): Promise<SimulateMessageQuery> {
       return requester<SimulateMessageQuery, SimulateMessageQueryVariables>(SimulateMessageDocument, variables, options) as Promise<SimulateMessageQuery>;
