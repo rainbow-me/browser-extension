@@ -35,6 +35,15 @@ export const TokenToBuyInfo = ({
   assetToBuyNativeDisplay: { amount: string; display: string } | null;
   assetToSellNativeDisplay: { amount: string; display: string } | null;
 }) => {
+  /*
+   * saw a crash happening sometimes when decimals
+   * returned null... this fallback fixed it, but
+   * unsure why it was happening to begin with and
+   * think my changes in useSwapInputs caused it.
+   */
+
+  const assetToBuyDecimals = assetToBuy?.decimals ?? 18;
+
   const { currentCurrency } = useCurrentCurrencyStore();
 
   const nativeValueDisplay = useMemo(() => {
@@ -126,7 +135,7 @@ export const TokenToBuyInfo = ({
                     {assetToBuy?.balance?.amount &&
                       handleSignificantDecimals(
                         assetToBuy?.balance?.amount,
-                        assetToBuy?.decimals,
+                        assetToBuyDecimals,
                       )}
                   </TextOverflow>
                 </Box>

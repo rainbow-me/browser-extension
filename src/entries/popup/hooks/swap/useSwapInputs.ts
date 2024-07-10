@@ -1,3 +1,4 @@
+import { ChainId } from '@rainbow-me/swaps';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
@@ -247,6 +248,115 @@ export const useSwapInputs = ({
     [assetToBuyValue, independentField],
   );
 
+  interface EthereumToken {
+    address: string;
+    symbol: string;
+    name: string;
+    chainId: ChainId;
+    decimals: number;
+  }
+
+  type EthereumTokenMap = {
+    [key in ChainId]?: EthereumToken;
+  };
+
+  /*
+   * currently only working for mainnet + optimism.
+   * was curious if we have an object like this
+   * anywhere in the app?
+   */
+
+  const ETHEREUM_TOKENS: EthereumTokenMap = {
+    [ChainId.mainnet]: {
+      address: 'eth',
+      symbol: 'ETH',
+      name: 'Ethereum',
+      chainId: ChainId.mainnet,
+      decimals: 18,
+    },
+    [ChainId.optimism]: {
+      address: 'eth',
+      symbol: 'ETH',
+      name: 'Ethereum',
+      chainId: ChainId.optimism,
+      decimals: 18,
+    },
+  };
+
+  /*
+   * is there a better way to find the chains which
+   * have eth as a token? I was thinking mainnet + L2 +
+   * L3 + sidechains? Would just excluding BSC be better?
+   */
+
+  const ethereumBasedChainIds = useMemo(
+    () => [
+      ChainId.mainnet,
+      ChainId.ropsten,
+      ChainId.kovan,
+      ChainId.goerli,
+      ChainId.rinkeby,
+      ChainId.optimism,
+      ChainId.polygon,
+      ChainId.arbitrum,
+      ChainId.zora,
+      ChainId.base,
+      ChainId.avalanche,
+      ChainId.degen,
+    ],
+    [],
+  );
+
+  const determineOutputCurrency = useCallback(
+    (inputCurrency: ParsedSearchAsset | null) => {
+      if (!inputCurrency) return null;
+
+      const currentChainId = inputCurrency.chainId;
+
+      if (ethereumBasedChainIds.includes(currentChainId)) {
+        if (inputCurrency.address !== 'eth') {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          return (ETHEREUM_TOKENS as any)[currentChainId] || null;
+        }
+      }
+      return null;
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+
+  const selectAssetToSell = useCallback(
+    (asset: ParsedSearchAsset | null) => {
+      setAssetToSell(asset);
+
+      const suggestedOutputAsset = determineOutputCurrency(asset);
+      if (suggestedOutputAsset) {
+        setAssetToBuy(suggestedOutputAsset);
+      }
+
+      setAssetToSellValue('');
+      setAssetToBuyValue('');
+      setIndependentField('sellField');
+    },
+    [
+      setAssetToSell,
+      setAssetToBuy,
+      setAssetToSellValue,
+      setAssetToBuyValue,
+      setIndependentField,
+      determineOutputCurrency,
+    ],
+  );
+
+  useEffect(() => {
+    if (assetToSell) {
+      const suggestedOutputAsset = determineOutputCurrency(assetToSell);
+      if (suggestedOutputAsset && !assetToBuy) {
+        setAssetToBuy(suggestedOutputAsset);
+      }
+    }
+  }, [assetToSell, assetToBuy, determineOutputCurrency, setAssetToBuy]);
+
   return {
     assetToBuyInputRef,
     assetToSellInputRef,
@@ -270,5 +380,6 @@ export const useSwapInputs = ({
     setAssetToSellInputNativeValue,
     setAssetToSellMaxValue,
     setIndependentField: setIndependentFieldIfOccupied,
+    selectAssetToSell,
   };
 };

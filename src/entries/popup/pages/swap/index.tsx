@@ -322,6 +322,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     assetToSellMaxValue,
     assetToBuyValue,
     assetToSellValue,
+    selectAssetToSell,
     assetToSellNativeValue,
     assetToSellDisplay,
     assetToSellDropdownClosed,
@@ -447,21 +448,6 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
   }, [onAssetToBuyInputOpen, onAssetToSellInputOpen]);
 
   const tokenToBuyInputRef = useRef<TokenInputRef>();
-
-  const selectAssetToSell = useCallback(
-    (asset: ParsedSearchAsset | null) => {
-      setAssetToSell(asset);
-      if (!assetToBuy) tokenToBuyInputRef.current?.openDropdown();
-      setAssetToSellInputValue('');
-      setAssetToBuyInputValue('');
-    },
-    [
-      setAssetToBuyInputValue,
-      setAssetToSell,
-      setAssetToSellInputValue,
-      assetToBuy,
-    ],
-  );
 
   const {
     swapAmount: savedAmount,
