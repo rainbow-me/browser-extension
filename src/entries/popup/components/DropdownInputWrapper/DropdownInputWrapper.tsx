@@ -46,7 +46,6 @@ interface DropdownInputWrapperProps {
   rightComponent: ReactElement;
   testId?: string;
   zIndex?: number;
-  onDropdownScroll?: () => void;
 }
 
 export const DropdownInputWrapper = ({
@@ -58,7 +57,6 @@ export const DropdownInputWrapper = ({
   dropdownVisible,
   zIndex,
   dropdownHeight,
-  onDropdownScroll,
   testId,
   borderVisible = true,
 }: DropdownInputWrapperProps) => {
@@ -137,9 +135,8 @@ export const DropdownInputWrapper = ({
                   <Box
                     style={{
                       height: dropdownHeight ?? 452,
-                      overflowY: 'scroll',
+                      overflow: 'hidden',
                     }}
-                    onScroll={onDropdownScroll}
                     paddingVertical="16px"
                   >
                     <Stack space="12px">{dropdownComponent}</Stack>

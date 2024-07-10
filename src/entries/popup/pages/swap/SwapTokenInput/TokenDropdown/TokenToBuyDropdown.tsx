@@ -1,10 +1,11 @@
+import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion } from 'framer-motion';
-import { useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 
 import { i18n } from '~/core/languages';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { Box, Inline, Row, Rows, Stack, Symbol, Text } from '~/design-system';
+import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
 import { SwitchNetworkMenu } from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
 import {
@@ -16,7 +17,7 @@ import { useTranslationContext } from '~/entries/popup/hooks/useTranslationConte
 import { dropdownContainerVariant } from '../../../../components/DropdownInputWrapper/DropdownInputWrapper';
 import { BottomNetwork } from '../../../messages/BottomActions';
 
-import { TokenToBuySection } from './TokenToBuySection';
+import { getTokenToBuySectionElements } from './TokenToBuySection';
 
 export type TokenToBuyDropdownProps = {
   asset: ParsedSearchAsset | null;
@@ -43,11 +44,53 @@ export const TokenToBuyDropdown = ({
   );
 
   const assetsCount = useMemo(
-    () => assets?.reduce((count, section) => count + section.data.length, 0),
+    () =>
+      assets?.reduce((count, section) => count + section?.data?.length || 0, 0),
     [assets],
   );
 
   const t = useTranslationContext();
+
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const allAssets = useMemo(
+    () =>
+      assets
+        ?.map((section) =>
+          getTokenToBuySectionElements({
+            assetSection: section,
+            onSelectAsset,
+            onDropdownChange,
+            outputChainId,
+          }),
+        )
+        .flat()
+        .filter(Boolean),
+    [assets, onDropdownChange, onSelectAsset, outputChainId],
+  );
+
+  const getSize = useCallback(
+    (index: number) => {
+      const asset = allAssets?.[index];
+      if (asset?.key === 'header') return 38;
+      console.log('-- asset', asset);
+      return 52;
+    },
+    [allAssets],
+  );
+  console.log('-- allAssets', allAssets);
+
+  const assetsRowVirtualizer = useVirtualizer({
+    count: allAssets?.length || 0,
+    getScrollElement: () => containerRef.current,
+    estimateSize: (i) => getSize(i), // Adjust the size as needed
+    overscan: 10,
+  });
+
+  console.log(
+    'assetsRowVirtualizer.getVirtualItems().map((virtualItem, i)',
+    assetsRowVirtualizer.getVirtualItems().length,
+  );
 
   return (
     <Stack space="20px">
@@ -97,20 +140,40 @@ export const TokenToBuyDropdown = ({
         variants={dropdownContainerVariant}
         initial="hidden"
         animate="show"
+        ref={containerRef}
+        style={{
+          height: '523px',
+          overflow: 'auto',
+        }}
       >
-        <Rows space="16px">
-          {assets?.map((assetSection, i) => (
-            <Row key={i}>
-              <TokenToBuySection
-                key={assetSection.id}
-                assetSection={assetSection}
-                onSelectAsset={onSelectAsset}
-                onDropdownChange={onDropdownChange}
-                outputChainId={outputChainId}
-              />
-            </Row>
-          ))}
-        </Rows>
+        <Box
+          style={{
+            height: `${assetsRowVirtualizer.getTotalSize()}px`,
+            position: 'relative',
+          }}
+        >
+          {assetsRowVirtualizer.getVirtualItems().map((virtualItem) => {
+            const { index, key, size, start } = virtualItem;
+            console.log('-- virtualItem', virtualItem);
+            const assetSection = allAssets?.[index] as JSX.Element;
+            return (
+              <Box
+                key={key}
+                as={motion.div}
+                paddingHorizontal="8px"
+                //   onClick={() => onSelectAsset(asset)}
+                position="absolute"
+                width="full"
+                style={{
+                  height: size,
+                  y: start,
+                }}
+              >
+                {assetSection}
+              </Box>
+            );
+          })}
+        </Box>
 
         {!assetsCount && (
           <Box alignItems="center" style={{ paddingTop: 91 }}>

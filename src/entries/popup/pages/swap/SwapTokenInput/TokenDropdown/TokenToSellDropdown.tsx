@@ -35,7 +35,7 @@ export const TokenToSellDropdown = ({
 }: TokenToSellDropdownProps) => {
   const { containerRef, assetsRowVirtualizer } = useVirtualizedAssets({
     assets,
-    size: 10,
+    size: 52,
   });
 
   const t = useTranslationContext();
@@ -127,59 +127,74 @@ export const TokenToSellDropdown = ({
         </Inline>
       </Box>
       <Box
-        as={motion.div}
-        variants={dropdownContainerVariant}
-        initial="hidden"
-        animate="show"
         ref={containerRef}
         style={{
-          height: `${assetsRowVirtualizer.getTotalSize()}px`,
+          height: `523px`,
+          overflow: 'auto',
         }}
       >
-        {!!assets?.length &&
-          assetsRowVirtualizer?.getVirtualItems().map((virtualItem, i) => {
-            const { index } = virtualItem;
-            const asset = assets?.[index];
-            return (
-              <Box
-                paddingHorizontal="8px"
-                key={`${asset?.uniqueId}-${i}`}
-                onClick={() => onSelectAsset?.(asset as ParsedSearchAsset)}
-                testId={`${asset?.uniqueId}-token-to-sell-row`}
-              >
-                <TokenToSellRow uniqueId={asset?.uniqueId} />
+        <Box
+          as={motion.div}
+          variants={dropdownContainerVariant}
+          initial="hidden"
+          animate="show"
+          style={{
+            height: `${assetsRowVirtualizer.getTotalSize()}px`,
+            position: 'relative',
+          }}
+        >
+          {!!assets?.length &&
+            assetsRowVirtualizer?.getVirtualItems().map((virtualItem, i) => {
+              const { key, index, size, start } = virtualItem;
+              const asset = assets?.[index];
+              return (
+                <Box
+                  as={motion.div}
+                  paddingHorizontal="8px"
+                  key={`${asset?.uniqueId}-${i}-${key}`}
+                  onClick={() => onSelectAsset?.(asset as ParsedSearchAsset)}
+                  testId={`${asset?.uniqueId}-token-to-sell-row`}
+                  position="absolute"
+                  width="full"
+                  style={{
+                    height: size,
+                    y: start,
+                  }}
+                >
+                  <TokenToSellRow uniqueId={asset?.uniqueId} />
+                </Box>
+              );
+            })}
+          {!assets?.length && (
+            <Box alignItems="center" style={{ paddingTop: 121 }}>
+              <Box paddingHorizontal="44px">
+                <Stack space="16px">
+                  <Text color="label" size="26pt" weight="bold" align="center">
+                    {'👻'}
+                  </Text>
+
+                  <Text
+                    color="labelTertiary"
+                    size="20pt"
+                    weight="semibold"
+                    align="center"
+                  >
+                    {t('swap.tokens_input.nothing_found')}
+                  </Text>
+
+                  <Text
+                    color="labelQuaternary"
+                    size="14pt"
+                    weight="regular"
+                    align="center"
+                  >
+                    {t('swap.tokens_input.nothing_found_description')}
+                  </Text>
+                </Stack>
               </Box>
-            );
-          })}
-        {!assets?.length && (
-          <Box alignItems="center" style={{ paddingTop: 121 }}>
-            <Box paddingHorizontal="44px">
-              <Stack space="16px">
-                <Text color="label" size="26pt" weight="bold" align="center">
-                  {'👻'}
-                </Text>
-
-                <Text
-                  color="labelTertiary"
-                  size="20pt"
-                  weight="semibold"
-                  align="center"
-                >
-                  {t('swap.tokens_input.nothing_found')}
-                </Text>
-
-                <Text
-                  color="labelQuaternary"
-                  size="14pt"
-                  weight="regular"
-                  align="center"
-                >
-                  {t('swap.tokens_input.nothing_found_description')}
-                </Text>
-              </Stack>
             </Box>
-          </Box>
-        )}
+          )}
+        </Box>
       </Box>
     </Stack>
   );
