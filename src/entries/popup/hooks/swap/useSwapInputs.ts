@@ -1,9 +1,10 @@
-import { ChainId } from '@rainbow-me/swaps';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+import backendNetworks from 'static/data/networks.json';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
+import { transformBackendNetworksToChains } from '~/core/utils/backendNetworks';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import {
   convertAmountFromNativeValue,
@@ -13,6 +14,8 @@ import {
   lessThan,
   minus,
 } from '~/core/utils/numbers';
+
+import { TokenInputRef } from '../../pages/swap/SwapTokenInput/TokenInput';
 
 const focusOnInput = (inputRef: React.RefObject<HTMLInputElement>) => {
   setTimeout(() => {
@@ -248,114 +251,96 @@ export const useSwapInputs = ({
     [assetToBuyValue, independentField],
   );
 
-  interface EthereumToken {
-    address: string;
-    symbol: string;
-    name: string;
-    chainId: ChainId;
-    decimals: number;
-  }
-
-  type EthereumTokenMap = {
-    [key in ChainId]?: EthereumToken;
-  };
-
-  /*
-   * currently only working for mainnet + optimism.
-   * was curious if we have an object like this
-   * anywhere in the app?
-   */
-
-  const ETHEREUM_TOKENS: EthereumTokenMap = {
-    [ChainId.mainnet]: {
-      address: 'eth',
-      symbol: 'ETH',
-      name: 'Ethereum',
-      chainId: ChainId.mainnet,
-      decimals: 18,
-    },
-    [ChainId.optimism]: {
-      address: 'eth',
-      symbol: 'ETH',
-      name: 'Ethereum',
-      chainId: ChainId.optimism,
-      decimals: 18,
-    },
-  };
-
-  /*
-   * is there a better way to find the chains which
-   * have eth as a token? I was thinking mainnet + L2 +
-   * L3 + sidechains? Would just excluding BSC be better?
-   */
-
-  const ethereumBasedChainIds = useMemo(
-    () => [
-      ChainId.mainnet,
-      ChainId.ropsten,
-      ChainId.kovan,
-      ChainId.goerli,
-      ChainId.rinkeby,
-      ChainId.optimism,
-      ChainId.polygon,
-      ChainId.arbitrum,
-      ChainId.zora,
-      ChainId.base,
-      ChainId.avalanche,
-      ChainId.degen,
-    ],
+  const BACKEND_CHAINS = useMemo(
+    () => transformBackendNetworksToChains(backendNetworks.networks),
     [],
   );
-
   const determineOutputCurrency = useCallback(
     (inputCurrency: ParsedSearchAsset | null) => {
       if (!inputCurrency) return null;
 
       const currentChainId = inputCurrency.chainId;
 
-      if (ethereumBasedChainIds.includes(currentChainId)) {
-        if (inputCurrency.address !== 'eth') {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          return (ETHEREUM_TOKENS as any)[currentChainId] || null;
+      // Find the current chain in BACKEND_CHAINS
+      const currentChain = BACKEND_CHAINS.find(
+        (chain) => chain.id === currentChainId,
+      );
+
+      if (currentChain && currentChain.nativeCurrency.symbol === 'ETH') {
+        if (inputCurrency.symbol.toLowerCase() !== 'eth') {
+          // Return ETH for this chain
+          return {
+            address: 'eth',
+            symbol: 'ETH',
+            name: 'Ethereum',
+            chainId: currentChainId,
+            decimals: currentChain.nativeCurrency.decimals,
+          };
         }
       }
       return null;
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
+    [BACKEND_CHAINS],
   );
+
+  const [hasSetInitialOutput, setHasSetInitialOutput] = useState(false);
+
+  const tokenToBuyInputRef = useRef<TokenInputRef>();
 
   const selectAssetToSell = useCallback(
     (asset: ParsedSearchAsset | null) => {
       setAssetToSell(asset);
+      setHasSetInitialOutput(false);
 
-      const suggestedOutputAsset = determineOutputCurrency(asset);
-      if (suggestedOutputAsset) {
-        setAssetToBuy(suggestedOutputAsset);
+      if (asset && asset?.symbol.toLowerCase() !== 'eth') {
+        const suggestedOutputAsset = determineOutputCurrency(
+          asset,
+        ) as ParsedSearchAsset;
+        if (
+          suggestedOutputAsset &&
+          suggestedOutputAsset.symbol.toLowerCase() !==
+            asset.symbol.toLowerCase()
+        ) {
+          setAssetToBuy(suggestedOutputAsset);
+          setHasSetInitialOutput(true);
+        } else {
+          setAssetToBuy(null);
+        }
+      } else {
+        setAssetToBuy(null);
       }
 
       setAssetToSellValue('');
       setAssetToBuyValue('');
-      setIndependentField('sellField');
+
+      if (!assetToBuy) {
+        tokenToBuyInputRef.current?.openDropdown();
+      }
     },
-    [
-      setAssetToSell,
-      setAssetToBuy,
-      setAssetToSellValue,
-      setAssetToBuyValue,
-      setIndependentField,
-      determineOutputCurrency,
-    ],
+    [setAssetToSell, assetToBuy, determineOutputCurrency, setAssetToBuy],
   );
 
   useEffect(() => {
-    if (assetToSell) {
-      const suggestedOutputAsset = determineOutputCurrency(assetToSell);
-      if (suggestedOutputAsset && !assetToBuy) {
+    if (assetToSell && !assetToBuy && !hasSetInitialOutput) {
+      const suggestedOutputAsset = determineOutputCurrency(
+        assetToSell,
+      ) as ParsedSearchAsset;
+      if (
+        suggestedOutputAsset &&
+        suggestedOutputAsset.address.toLowerCase() !==
+          assetToSell.address.toLowerCase()
+      ) {
         setAssetToBuy(suggestedOutputAsset);
+        setHasSetInitialOutput(true);
       }
     }
-  }, [assetToSell, assetToBuy, determineOutputCurrency, setAssetToBuy]);
+  }, [
+    assetToSell,
+    assetToBuy,
+    determineOutputCurrency,
+    hasSetInitialOutput,
+    setAssetToBuy,
+  ]);
 
   return {
     assetToBuyInputRef,
