@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.5.6",
+  "version": "1.5.9",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -131,7 +131,7 @@
     "deepmerge": "4.2.2",
     "ethereum-cryptography": "2.1.2",
     "eventemitter3": "4.0.7",
-    "firebase": "9.18.0",
+    "firebase": "10.12.3",
     "framer-motion": "10.2.3",
     "graphql-request": "5.2.0",
     "graphql-tag": "^2.11.0",
@@ -155,13 +155,14 @@
     "react-switch": "7.0.0",
     "socket.io-client": "4.5.3",
     "validator": "13.9.0",
-    "viem": "2.10.1",
+    "viem": "2.17.0",
     "wagmi": "2.8.1",
     "word-wrap": "1.2.4",
     "zustand": "4.1.5"
   },
   "devDependencies": {
     "@foundry-rs/hardhat-anvil": "0.1.7",
+    "@graphql-eslint/eslint-plugin": "3.10.7",
     "@lavamoat/allow-scripts": "3.0.1",
     "@lavamoat/preinstall-always-fail": "2.0.0",
     "@peculiar/webcrypto": "1.4.1",
@@ -230,8 +231,7 @@
     "webpack-bundle-analyzer": "4.8.0",
     "webpack-cli": "5.1.4",
     "webpack-extension-reloader": "rainbow-me/webpack-extension-reloader#23fc3ed1f59f295702d459ad58aec90d6f0a3551",
-    "worker-loader": "3.0.8",
-    "@graphql-eslint/eslint-plugin": "3.10.7"
+    "worker-loader": "3.0.8"
   },
   "resolutions": {
     "tar": "6.2.1",
@@ -269,7 +269,6 @@
     "axios": "1.6.1",
     "follow-redirects": "1.15.6",
     "ip": "2.0.1",
-    "viem": "1.21.4",
     "@solana/web3.js": "1.90.2",
     "jose": "4.15.5",
     "phin": "3.7.1",

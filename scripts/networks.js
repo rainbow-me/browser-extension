@@ -28,6 +28,19 @@ async function fetchData() {
         enabledDevices
         url
       }
+      gasUnits {
+        basic {
+          approval
+          swap
+          swapPermit
+          eoaTransfer
+          tokenTransfer
+        }
+        wrapped {
+          wrap
+          unwrap
+        }
+      }
       nativeAsset {
         address
         name
