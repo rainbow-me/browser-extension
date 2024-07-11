@@ -136,6 +136,7 @@ export const getTokenToBuySectionElements = ({
       </Box>
     ) : null,
     <Box
+      testId={`${assetSection.id}-token-to-buy-section`}
       key={`header-${title}`}
       paddingHorizontal="15px"
       paddingVertical="12px"
