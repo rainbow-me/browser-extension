@@ -136,7 +136,7 @@ export const getTokenToBuySectionElements = ({
       </Box>
     ) : null,
     <Box
-      key={'header'}
+      key={`header-${title}`}
       paddingHorizontal="15px"
       paddingVertical="12px"
       style={{ height: '38px' }}
