@@ -72,28 +72,31 @@ export const TokenToBuyDropdown = ({
   const getSize = useCallback(
     (index: number) => {
       const asset = allAssets?.[index];
-      if (asset?.key === 'header') return 38;
-      console.log('-- asset', asset);
+      if (asset?.key?.toString().includes('header')) return 38;
       return 52;
     },
     [allAssets],
   );
-  console.log('-- allAssets', allAssets);
+
+  const getItemKey = useCallback(
+    (index: number) => {
+      const asset = allAssets?.[index];
+      return asset?.key || index;
+    },
+    [allAssets],
+  );
 
   const assetsRowVirtualizer = useVirtualizer({
     count: allAssets?.length || 0,
     getScrollElement: () => containerRef.current,
-    estimateSize: (i) => getSize(i), // Adjust the size as needed
+    estimateSize: getSize,
+    getItemKey: getItemKey,
     overscan: 10,
+    paddingEnd: 12,
   });
 
-  console.log(
-    'assetsRowVirtualizer.getVirtualItems().map((virtualItem, i)',
-    assetsRowVirtualizer.getVirtualItems().length,
-  );
-
   return (
-    <Stack space="20px">
+    <Stack space="10px">
       {setOutputChainId &&
         outputChainId &&
         networkSearchStatus !== AssetToBuyNetworkSearchStatus.all && (
@@ -142,7 +145,7 @@ export const TokenToBuyDropdown = ({
         animate="show"
         ref={containerRef}
         style={{
-          height: '523px',
+          height: '305px',
           overflow: 'auto',
         }}
       >
@@ -153,17 +156,17 @@ export const TokenToBuyDropdown = ({
           }}
         >
           {assetsRowVirtualizer.getVirtualItems().map((virtualItem) => {
-            const { index, key, size, start } = virtualItem;
-            console.log('-- virtualItem', virtualItem);
+            const { index, key, size, start, measureElement } = virtualItem;
             const assetSection = allAssets?.[index] as JSX.Element;
             return (
               <Box
-                key={key}
                 as={motion.div}
                 paddingHorizontal="8px"
-                //   onClick={() => onSelectAsset(asset)}
                 position="absolute"
                 width="full"
+                key={key}
+                data-index={index}
+                ref={measureElement}
                 style={{
                   height: size,
                   y: start,
