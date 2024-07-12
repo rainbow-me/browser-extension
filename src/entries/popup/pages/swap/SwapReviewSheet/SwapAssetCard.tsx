@@ -2,10 +2,10 @@ import { useMemo } from 'react';
 
 import { useCurrentCurrencyStore } from '~/core/state';
 import { ParsedSearchAsset } from '~/core/types/assets';
-import { formatCurrency } from '~/core/utils/formatNumber';
 import {
   convertRawAmountToBalance,
   convertRawAmountToNativeDisplay,
+  formatNumber,
 } from '~/core/utils/numbers';
 import {
   Box,
@@ -50,18 +50,6 @@ export const SwapAssetCard = ({
       ).display,
     [asset.decimals, asset.price?.value, assetAmount, currentCurrency],
   );
-  const cleanNumber = (n: number | string | null | undefined): number => {
-    if (typeof n === 'string') {
-      return parseFloat(n.replace(/,/g, ''));
-    }
-    return n || 0;
-  };
-
-  const formatNumber = (n?: number | string | null) =>
-    formatCurrency(cleanNumber(n), {
-      notation: 'compact',
-      maximumSignificantDigits: 4,
-    });
 
   return (
     <AccentColorProvider
