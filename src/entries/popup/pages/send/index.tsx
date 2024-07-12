@@ -150,7 +150,7 @@ export function Send() {
     [assets, isHidden],
   );
 
-  const { nft, nfts, nftSortMethod, setNftSortMethod, selectNft } =
+  const { nft, collections, nftSortMethod, setNftSortMethod, selectNft } =
     useSendUniqueAsset();
 
   const selectedGas = useGasStore.use.selectedGas();
@@ -504,11 +504,11 @@ export function Send() {
       selectAsset(selectedToken.address, selectedToken.chainId);
       // clear selected token
       setSelectedToken();
-    } else if (selectedNft && selectedNft.collection.collection_id) {
+    } else if (selectedNft) {
       // clear any saved token amounts
       setIndependentAmount('');
       // navigating from nft details
-      selectNft(selectedNft.collection.collection_id, selectedNft.fullUniqueId);
+      selectNft(selectedNft);
       // clear selected nft
       setSelectedNft();
     } else if (sendTokenAddressAndChain) {
@@ -703,7 +703,7 @@ export function Send() {
                     sortMethod={sortMethod}
                     ref={sendTokenInputRef}
                     nft={nft}
-                    nfts={nfts}
+                    collections={collections}
                     nftSortMethod={nftSortMethod}
                     setNftSortMethod={setNftSortMethod}
                     selectNft={selectNft}

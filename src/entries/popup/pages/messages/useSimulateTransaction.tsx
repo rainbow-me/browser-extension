@@ -118,11 +118,13 @@ export const useSimulateTransaction = ({
     }),
     enabled: !!chainId && (!!transaction.value || !!transaction.data),
     queryFn: async () => {
-      const response = (await metadataPostClient.simulateTransactions({
-        chainId,
-        transactions: [{ ...transaction, to: transaction.to || '' }],
-        domain,
-      })) as TransactionSimulationResponse;
+      const response = (await metadataPostClient.simulateTransactionsWithoutGas(
+        {
+          chainId,
+          transactions: [{ ...transaction, to: transaction.to || '' }],
+          domain,
+        },
+      )) as TransactionSimulationResponse;
       return parseSimulation(response.simulateTransactions[0], chainId);
     },
     staleTime: 60 * 1000, // 1 min

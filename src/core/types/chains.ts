@@ -212,6 +212,19 @@ export interface BackendNetwork {
     enabledDevices: string[];
     url: string;
   };
+  gasUnits: {
+    basic: {
+      approval: string;
+      swap: string;
+      swapPermit: string;
+      eoaTransfer: string;
+      tokenTransfer: string;
+    };
+    wrapped: {
+      wrap: string;
+      unwrap: string;
+    };
+  };
   nativeAsset: {
     address: string;
     name: string;
