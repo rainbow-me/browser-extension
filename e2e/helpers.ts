@@ -172,9 +172,6 @@ const addPermissionForAllWebsites = async (driver: WebDriver) => {
     id: 'details-deck-button-permissions',
     driver,
   });
-  await driver.executeScript(
-    `document.querySelectorAll('[class="permission-info"]')[0].children[0].click();`,
-  );
 };
 
 export async function getExtensionIdByName(
