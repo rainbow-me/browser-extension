@@ -1,7 +1,7 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { selectNfts } from '~/core/resources/_selectors/nfts';
-import { useNfts } from '~/core/resources/nfts';
+import { useGalleryNfts } from '~/core/resources/nfts/galleryNfts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 
@@ -12,6 +12,8 @@ import { ROUTES } from '../../urls';
 import { NFTSearchItem, SearchItemType } from './SearchItems';
 import { PAGES } from './pageConfig';
 import { actionLabels } from './references';
+
+const NFT_SEARCH_LIMIT = 2000;
 
 export const parseNftName = (name: string, id: string) => {
   return name
@@ -26,11 +28,43 @@ export const useSearchableNFTs = () => {
   const { testnetMode } = useTestnetModeStore();
   const { chains: userChains } = useUserChains();
 
-  const userChainIds = userChains.map(({ id }) => id);
-  const { data: nfts = [] } = useNfts(
-    { address, testnetMode, userChainIds },
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+    isLoading,
+  } = useGalleryNfts(
+    {
+      address,
+      sort: 'recent',
+      testnetMode,
+      userChains,
+    },
     { select: (data) => selectNfts(data) },
   );
+
+  const nfts = useMemo(() => data || [], [data]);
+
+  useEffect(() => {
+    if (
+      hasNextPage &&
+      !isFetching &&
+      !isFetchingNextPage &&
+      !isLoading &&
+      nfts?.length < NFT_SEARCH_LIMIT
+    ) {
+      fetchNextPage();
+    }
+  }, [
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+    fetchNextPage,
+    isLoading,
+    nfts?.length,
+  ]);
 
   const searchableNFTs = useMemo(() => {
     return nfts.map<NFTSearchItem>((nft) => ({

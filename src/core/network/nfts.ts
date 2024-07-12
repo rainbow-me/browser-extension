@@ -1,5 +1,6 @@
 import { RainbowError, logger } from '~/logger';
 
+import { queryClient } from '../react-query';
 import { ChainName } from '../types/chains';
 import {
   PolygonAllowListDictionary,
@@ -28,29 +29,71 @@ const nftApi = new RainbowFetchClient({
   },
 });
 
-export const fetchNftCollections = async ({
+export const fetchGalleryNfts = async ({
   address,
   chains,
-  cursor,
+  nextPage,
+  sort,
 }: {
   address: string;
   chains: ChainName[];
-  cursor?: string;
+  nextPage?: string;
+  sort: 'name__asc' | 'last_acquired_date__desc';
+}) => {
+  try {
+    const response: {
+      data: SimpleHashNftsResponse;
+      headers: Headers;
+      status: number;
+    } = await nftApi.get('/nfts/owners_v2', {
+      params: {
+        chains: chains.join(','),
+        ...(nextPage ? { cursor: nextPage } : {}),
+        filters: 'spam_score__lte=90',
+        wallet_addresses: address,
+        order_by: sort,
+      },
+    });
+    return {
+      nfts: response?.data?.nfts || [],
+      nextPage: response?.data?.next_cursor,
+    };
+  } catch (e) {
+    logger.error(new RainbowError('Fetch NFT Gallery: '), {
+      message: (e as Error)?.message,
+    });
+  }
+  return {
+    nfts: [],
+  };
+};
+
+export const fetchNftCollections = async ({
+  address,
+  chains,
+  nextPage,
+  sort,
+}: {
+  address: string;
+  chains: ChainName[];
+  nextPage?: string;
+  sort: 'name__asc' | 'last_acquired_date__desc';
 }) => {
   try {
     const response: {
       data: SimpleHashCollectionsResponse;
       headers: Headers;
       status: number;
-    } =
-      // eslint-disable-next-line no-await-in-loop
-      await nftApi.get('/nfts/collections_by_wallets_v2', {
-        params: {
-          chains: chains.join(','),
-          ...(cursor ? { cursor } : {}),
-          wallet_addresses: address,
-        },
-      });
+    } = await nftApi.get('/nfts/collections_by_wallets_v2', {
+      params: {
+        chains: chains.join(','),
+        ...(nextPage ? { cursor: nextPage } : {}),
+        wallet_addresses: address,
+        order_by: sort,
+        spam_score__lte: '90',
+        nft_ids: '1',
+      },
+    });
     return {
       collections: response?.data?.collections || [],
       nextPage: response.data?.next_cursor,
@@ -67,38 +110,37 @@ export const fetchNfts = async ({
   address,
   chains,
   collectionIds,
+  nextPage,
 }: {
   address: string;
   chains: ChainName[];
   collectionIds: string[];
+  nextPage?: string;
 }) => {
   try {
-    let cursor: string | null = 'none';
-    let nfts: SimpleHashNFT[] = [];
-    while (cursor) {
-      const response: {
-        data: SimpleHashNftsResponse;
-        headers: Headers;
-        status: number;
-      } =
-        // eslint-disable-next-line no-await-in-loop
-        await nftApi.get('/nfts/owners', {
-          params: {
-            chains: chains.join(','),
-            collection_ids: collectionIds.join(','),
-            ...(cursor && cursor !== 'none' ? { cursor } : {}),
-            wallet_addresses: address,
-          },
-        });
-      nfts = [...nfts, ...(response.data?.nfts || [])];
-      cursor = response.data?.next_cursor;
-    }
-    return nfts;
+    const response: {
+      data: SimpleHashNftsResponse;
+      headers: Headers;
+      status: number;
+    } = await nftApi.get('/nfts/owners', {
+      params: {
+        chains: chains.join(','),
+        collection_ids: collectionIds.join(','),
+        ...(nextPage ? { cursor: nextPage } : {}),
+        wallet_addresses: address,
+      },
+    });
+    return {
+      nfts: response?.data?.nfts,
+      nextPage: response?.data?.next_cursor,
+    };
   } catch (e) {
     logger.error(new RainbowError('Fetch NFTs: '), {
       message: (e as Error)?.message,
     });
-    return [];
+    return {
+      nfts: [],
+    };
   }
 };
 
@@ -116,6 +158,14 @@ export const fetchPolygonAllowList =
     );
     return polygonAllowListDictionary;
   };
+
+export function polygonAllowListFetcher() {
+  return queryClient.fetchQuery<PolygonAllowListDictionary>({
+    queryKey: ['137-allowList'],
+    queryFn: async () => await fetchPolygonAllowList(),
+    staleTime: 60000,
+  });
+}
 
 export const reportNftAsSpam = async (nft: UniqueAsset) => {
   const network =
