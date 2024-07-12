@@ -17,6 +17,36 @@ export const POAP_NFT_ADDRESS = '0x22c1f6050e56d2876009903609a2cc3fef83b415';
 export const ENS_NFT_CONTRACT_ADDRESS =
   '0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85';
 
+export const simpleHashSupportedChainNames = [
+  'ethereum',
+  ChainName.polygon,
+  ChainName.arbitrum,
+  ChainName.arbitrumNova,
+  ChainName.avalanche,
+  ChainName.base,
+  ChainName.blast,
+  ChainName.bsc,
+  ChainName.celo,
+  ChainName.gnosis,
+  ChainName.linea,
+  ChainName.manta,
+  ChainName.optimism,
+  ChainName.polygonZkEvm,
+  ChainName.rari,
+  ChainName.scroll,
+  ChainName.zora,
+] as (ChainName | 'ethereum' | 'ethereum-sepolia')[];
+
+export const simpleHashSupportedTestnetChainNames = [
+  'ethereum-sepolia',
+  ChainName.arbitrumSepolia,
+  ChainName.baseSepolia,
+  ChainName.blastSepolia,
+  ChainName.optimismSepolia,
+  ChainName.zoraSepolia,
+  ChainName.polygonAmoy,
+] as (ChainName | 'ethereum-sepolia' | 'ethereum')[];
+
 /**
  * Returns an NFT's `UniqueTokenType`.
  * @param contractAddress NFT contract address
@@ -231,9 +261,7 @@ export function simpleHashNFTToUniqueAsset(
     poapDropId,
     predominantColor: nft.previews?.predominant_color ?? undefined,
     traits: nft.extra_metadata?.attributes ?? [],
-    uniqueId: isENS
-      ? nft.name ?? `${nft.contract_address}_${nft.token_id}`
-      : `${nft.contract_address}_${nft.token_id}`,
+    uniqueId: `${nft.contract_address}_${nft.token_id}`,
     urlSuffixForAsset: `${nft.contract_address}/${nft.token_id}`,
     video_url: nft.video_url,
     video_properties: nft.video_properties,
@@ -252,3 +280,10 @@ export const getUniqueAssetImageThumbnailURL = (asset: UniqueAsset) => {
 export const getUniqueAssetImagePreviewURL = (asset: UniqueAsset) => {
   return asset.image_preview_url || getUniqueAssetImageThumbnailURL(asset);
 };
+
+export const isENS = (asset: UniqueAsset) => {
+  const lowercasedContractAddress = asset.asset_contract.address?.toLowerCase();
+  return lowercasedContractAddress === ENS_NFT_CONTRACT_ADDRESS;
+};
+
+export const ENS_COLLECTION_ID = 'e34baafc65deb66d52d11be5d44f523e';

@@ -15,9 +15,9 @@ import { i18n } from '../languages';
 import {
   OVM_GAS_PRICE_ORACLE,
   SupportedCurrencyKey,
-  gasUnits,
   supportedCurrencies,
 } from '../references';
+import { getChainGasUnits } from '../references/chains';
 import {
   MeteorologyLegacyResponse,
   MeteorologyResponse,
@@ -437,10 +437,8 @@ export const estimateGasWithPadding = async ({
       (!contractCallEstimateGas && !to && !data) ||
       (to && !data && (!code || code === '0x'))
     ) {
-      return gasUnits.basic_tx;
+      return getChainGasUnits(transactionRequest.chainId).basic.eoaTransfer;
     }
-
-    // 3 - If it is a contract, call the RPC method `estimateGas` with a safe value
     const saferGasLimit = fraction(gasLimit.toString(), 19, 20);
 
     txPayloadToEstimate[contractCallEstimateGas ? 'gasLimit' : 'gas'] =
@@ -504,8 +502,8 @@ export const calculateL1FeeOptimism = async ({
       transactionRequest.gasLimit = toHex(
         `${
           transactionRequest.data === '0x'
-            ? gasUnits.basic_tx
-            : gasUnits.basic_transfer
+            ? getChainGasUnits(txRequest.chainId).basic.eoaTransfer
+            : getChainGasUnits(txRequest.chainId).basic.tokenTransfer
         }`,
       );
     }

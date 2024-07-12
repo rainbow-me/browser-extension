@@ -116,9 +116,12 @@ export type SimpleHashCollection = {
 
 export interface SimpleHashCollectionDetails {
   collection_id: string;
+  distinct_nfts_owned: number;
+  distinct_nfts_owned_string: string;
   total_copies_owned?: number;
   total_copies_owned_string?: string;
   last_acquired_date?: string;
+  nft_ids: string[];
 
   collection_details: {
     banner_image_url: string;
