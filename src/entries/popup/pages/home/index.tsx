@@ -62,8 +62,10 @@ const Tabs = memo(function Tabs() {
 
   const containerRef = useContainerRef();
   const prevScrollPosition = useRef<number | undefined>(undefined);
+  const { scrollY } = useScroll();
 
   const onSelectTab = (tab: Tab) => {
+    console.log('-- onSelectTab');
     prevScrollPosition.current = containerRef.current?.scrollTop;
     if (activeTab === tab && containerRef.current?.scrollTop !== 0) {
       containerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
@@ -134,7 +136,7 @@ const Tabs = memo(function Tabs() {
         style={{ flex: 1, position: 'relative', contentVisibility: 'visible' }}
         height="full"
       >
-        {activeTab === 'tokens' && <Tokens />}
+        {activeTab === 'tokens' && <Tokens scrollY={scrollY} />}
         {activeTab === 'activity' && <Activities />}
         {activeTab === 'nfts' && <NFTs />}
         {activeTab === 'points' && <Points />}

@@ -1,7 +1,7 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { motion } from 'framer-motion';
+import { MotionValue, motion, useTransform } from 'framer-motion';
 import uniqBy from 'lodash/uniqBy';
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
@@ -48,7 +48,6 @@ import { QuickPromo } from '../../components/QuickPromo/QuickPromo';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
-import { useScroll } from '../../hooks/useScroll';
 import { useSystemSpecificModifierKey } from '../../hooks/useSystemSpecificModifierKey';
 import { useTokenPressMouseEvents } from '../../hooks/useTokenPressMouseEvents';
 import { useTokensShortcuts } from '../../hooks/useTokensShortcuts';
@@ -98,7 +97,7 @@ const TokenRow = memo(function TokenRow({
   );
 });
 
-export function Tokens() {
+export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
   const [manuallyRefetchingTokens, setManuallyRefetchingTokens] =
@@ -109,25 +108,9 @@ export function Tokens() {
   const { pinned: pinnedStore } = usePinnedAssetStore();
   const { hidden } = useHiddenAssetStore();
 
-  const { scrollYProgress: progress } = useScroll({
-    offset: ['0px', '64px', '92px'],
-  });
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const [isScrollable, setIsScrollable] = useState(false);
-  const progressRef = useRef(0);
-
-  useEffect(() => {
-    return progress.on('change', (value) => {
-      progressRef.current = value;
-
-      // Check the progress and set scrollable state
-      if (value >= 1) {
-        setIsScrollable(true);
-      } else {
-        setIsScrollable(false);
-      }
-    });
-  }, [progress]);
+  const overflow = useTransform(scrollY, (p) => (p > 92 ? 'auto' : 'hidden'));
 
   const isHidden = useCallback(
     (asset: ParsedUserAsset) => {
@@ -242,8 +225,6 @@ export function Tokens() {
     [unhiddenAssets, computePinnedAssets, computeUniqueAssets],
   );
 
-  const containerRef = useRef<HTMLDivElement>(null);
-
   const assetsRowVirtualizer = useVirtualizer({
     count: filteredAssets.length,
     getScrollElement: () => containerRef.current,
@@ -281,10 +262,11 @@ export function Tokens() {
 
   return (
     <Box
+      as={motion.div}
       width="full"
       style={{
-        maxHeight: `1000px`,
-        overflow: isScrollable || progressRef.current >= 1 ? 'auto' : 'hidden',
+        maxHeight: `800px`,
+        overflow: overflow,
       }}
       ref={containerRef}
       paddingBottom="8px"
