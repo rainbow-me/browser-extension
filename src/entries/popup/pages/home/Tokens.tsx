@@ -265,7 +265,7 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
       as={motion.div}
       width="full"
       style={{
-        maxHeight: `800px`,
+        maxHeight: `1200px`,
         overflow: overflow,
       }}
       ref={containerRef}

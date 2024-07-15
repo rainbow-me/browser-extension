@@ -65,7 +65,6 @@ const Tabs = memo(function Tabs() {
   const { scrollY } = useScroll();
 
   const onSelectTab = (tab: Tab) => {
-    console.log('-- onSelectTab');
     prevScrollPosition.current = containerRef.current?.scrollTop;
     if (activeTab === tab && containerRef.current?.scrollTop !== 0) {
       containerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
