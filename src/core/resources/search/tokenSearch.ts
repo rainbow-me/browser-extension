@@ -104,7 +104,7 @@ async function tokenSearchQueryFunction({
       data: SearchAsset[];
     }>(ALL_VERIFIED_TOKENS_PARAM);
 
-    const addressQuery = query.trim().toLowerCase();
+    const addressQuery = query?.trim()?.toLowerCase() || '';
     const addressMatchesOnOtherChains = allVerifiedTokens.data.data.filter(
       (a) => Object.values(a.networks).some((n) => n?.address === addressQuery),
     );
