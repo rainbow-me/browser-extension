@@ -231,7 +231,7 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
     estimateSize: () => 52,
     overscan: 10,
     paddingEnd: 64,
-    paddingStart: 12,
+    paddingStart: 8,
     getItemKey: (index) => filteredAssets[index].uniqueId,
   });
 
@@ -452,7 +452,7 @@ function TokensEmptyState({ depositAddress }: EmptyStateProps) {
   }, [depositAddress]);
 
   return (
-    <Inset horizontal="20px">
+    <Inset horizontal="20px" top="20px">
       <Stack space="12px">
         {!testnetMode && (
           <Box
