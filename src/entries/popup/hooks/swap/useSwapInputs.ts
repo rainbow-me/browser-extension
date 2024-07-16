@@ -157,7 +157,7 @@ export const useSwapInputs = ({
     const rawAssetBalanceAmount =
       assetToSell?.isNativeAsset &&
       lessThan(selectedGas?.gasFee?.amount, assetBalanceAmount)
-        ? minus(assetBalanceAmount, addBuffer(selectedGas?.gasFee?.amount, 1.2))
+        ? minus(assetBalanceAmount, addBuffer(selectedGas?.gasFee?.amount, 1.1))
         : assetBalanceAmount;
 
     const assetBalance = convertRawAmountToBalance(rawAssetBalanceAmount, {
