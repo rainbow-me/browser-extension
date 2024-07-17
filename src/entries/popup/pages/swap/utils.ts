@@ -1,9 +1,11 @@
+import { AddressZero } from '@ethersproject/constants';
 import { Source } from '@rainbow-me/swaps';
 
 import Logo0x from 'static/assets/aggregators/0x.png';
 import Logo1Inch from 'static/assets/aggregators/1inch.png';
 import LogoRainbow from 'static/assets/aggregators/rainbow.png';
 import { i18n } from '~/core/languages';
+import { MATIC_POLYGON_ADDRESS } from '~/core/references';
 import { ChainId } from '~/core/types/chains';
 
 export const aggregatorInfo = {
@@ -37,9 +39,7 @@ export const pinnedSwapAssets = {
   ],
   [ChainId.optimism]: [
     // Ethereum - ETH
-    'eth',
-    // Bridged USDC - USDC.E
-    '0x7f5c764cbc14f9669b88837ca1490cca17c31607',
+    AddressZero,
     // Optimism - Op
     '0x4200000000000000000000000000000000000042',
     // USDC - USDC
@@ -56,10 +56,12 @@ export const pinnedSwapAssets = {
     '0xdc6ff44d5d932cbd77b52e5612ba0529dc6226f1',
     // Synthetix Network - SNX
     '0x8700daec35af8ff88c16bdf0418774cb3d7599b4',
+    // Perpetual Protocol - PERP
+    '0x9e1028f5f1d5ede59748ffcee5532509976840e0',
   ],
   [ChainId.bsc]: [
     // BNB - BNB
-    'eth',
+    AddressZero,
     // Binance Bridged USDT (BNB Smart Chain) - USDT
     '0x55d398326f99059ff775485246999027b3197955',
     // WETH - ETH
@@ -80,10 +82,8 @@ export const pinnedSwapAssets = {
     '0x4b0f1812e5df2a09796481ff14017e6005508003',
   ],
   [ChainId.polygon]: [
-    // Bridged USDC - USDC.E
-    '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
     // Matic - MATIC
-    'eth',
+    MATIC_POLYGON_ADDRESS,
     // WETH - WETH
     '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
     // Polygon Bridged USDT (Polygon) - USDT
@@ -100,10 +100,12 @@ export const pinnedSwapAssets = {
     '0x61299774020da444af134c82fa83e3810b309991',
     // Lido DAO - LDO
     '0xc3c7d422809852031b44ab29eec9f1eff2a58756',
+    // Aave - AAVE
+    '0xd6df932a45c0f255f85145f286ea0b292b21c90b',
   ],
   [ChainId.base]: [
     // Ethereum - ETH
-    'eth',
+    AddressZero,
     // USDC - USDC
     '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
     // Bridged USDC - USDBC
@@ -127,11 +129,9 @@ export const pinnedSwapAssets = {
     // Arbitrum Bridged USDT (Arbitrum) - USDT
     '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9',
     // Ethereum - ETH
-    'eth',
+    AddressZero,
     // USD Coin - USDC
     '0xaf88d065e77c8cc2239327c5edb3a432268e5831',
-    // Bridged USDC - USDC.E
-    '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8',
     // Dai - DAI
     '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
     // Arbitrum - ARB
@@ -144,8 +144,11 @@ export const pinnedSwapAssets = {
     '0xeb466342c4d449bc9f53a865d5cb90586f405215',
     // Verified USD - USDV
     '0x323665443cef804a3b5206103304bd4872ea4253',
+    // Pendle - PENDLE
+    '0x0c880f6761f1af8d9aa9c466984b80dab9a8c9e8',
   ],
   [ChainId.avalanche]: [
+    AddressZero,
     // Tether -USDT
     '0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7',
     // USDC - USDC
@@ -160,42 +163,29 @@ export const pinnedSwapAssets = {
     '0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7',
     // Pangolin - PNG
     '0x60781c2586d68229fde47564546784ab3faca982',
-    // C-Chain BloodLoop Shard - BLS
-    '0x46b9144771cb3195d66e4eda643a7493fadcaf9d',
-    // GoGoPool Protocol - GGP
-    '0x69260b9483f9871ca57f81a90d91e2f96c2cd11d',
     // COQINU - COQ
     '0x420fca0121dc28039145009570975747295f2329',
+    // Benqi
+    '0x8729438eb15e2c8b576fcc6aecda6a148776c0f5',
+    // WETH
+    '0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab',
   ],
   [ChainId.blast]: [
     // Ethereum - ETH
-    'eth',
+    AddressZero,
     // USDB - USDB
     '0x4300000000000000000000000000000000000003',
     // Blast - BLAST
     '0xb1a5700fa2358173fe465e6ea4ff52e36e88e2ad',
   ],
   [ChainId.zora]: [
+    AddressZero,
     // Enjoy - ENJOY
     '0xa6b280b42cb0b7c4a4f789ec6ccc3a7609a1bc39',
     // Wrapped Ether - WETH
     '0x4200000000000000000000000000000000000006',
-    // Zora
-    '0x787e73b749607f4afaf086b5bc0a4803900d0bd6',
-    // Merkly OFT - MERK
-    '0xd838d5b87439e17b0194fd43e37300cd99aa3de0',
     // Imagine - Imagine
     '0x078540eecc8b6d89949c9c7d5e8e91eab64f6696',
-    // USD Coin - Bridged from Ethereum
-    '0xcccccccc7021b32ebb4e8c08314bd62f7c653ec4',
-    // RIFT - RiftSwap Token
-    '0xf05585457acdff218713e30d1d108bb8f022e03b',
-    // Marathon OFT - MARA
-    '0x661d1fa0aae29e6608a877627e49a058caae0285',
-    // Zora Pepe - ZOPE
-    '0xb4281a73c06960bcd4373341d4747c5eb8a362d6',
-    // Yeet - YEET
-    '0x418eaae6857c385bde88f93ca935d21eeff0fd76',
   ],
   [ChainId.degen]: [],
 };
