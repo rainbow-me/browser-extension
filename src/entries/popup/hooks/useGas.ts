@@ -20,6 +20,7 @@ import { useCurrentCurrencyStore, useGasStore } from '~/core/state';
 import { ParsedAsset, ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
+  GasFeeLegacyParams,
   GasFeeLegacyParamsBySpeed,
   GasFeeParams,
   GasFeeParamsBySpeed,
@@ -217,19 +218,24 @@ const useGas = ({
   ]);
 
   useEffect(() => {
+    console.log('EFFECTTT', debouncedGasPrice);
     if (
       !gasData ||
       !enabled ||
-      prevDebouncedGasPrice !== debouncedGasPrice ||
+      prevDebouncedGasPrice === debouncedGasPrice ||
       feeType !== 'legacy' ||
       !nativeAsset
     ) {
       return;
     }
+    console.log('EFFECTTT222', storeGasFeeParamsBySpeed?.custom);
+
+    const gasPrice = (storeGasFeeParamsBySpeed?.custom as GasFeeLegacyParams)
+      ?.gasPrice.amount;
 
     const newCustomSpeed = parseCustomGasFeeLegacyParams({
       speed: GasSpeed.CUSTOM,
-      gasPriceWei: gweiToWei(debouncedGasPrice || '0'),
+      gasPriceWei: gweiToWei(gasPrice || '0'),
       gasLimit:
         estimatedGasLimit || getChainGasUnits(chainId).basic.tokenTransfer,
       nativeAsset,
@@ -248,6 +254,7 @@ const useGas = ({
     nativeAsset,
     prevDebouncedGasPrice,
     setCustomLegacySpeed,
+    storeGasFeeParamsBySpeed?.custom,
   ]);
 
   const [selectedSpeed, setSelectedSpeed] = useState<GasSpeed>(defaultSpeed);
