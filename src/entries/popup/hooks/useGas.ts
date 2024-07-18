@@ -156,7 +156,7 @@ const useGas = ({
     )
       return;
     const { data } = gasData as MeteorologyResponse;
-    const currentBaseFee = data.currentBaseFee;
+    const currentBaseFee = data.currentBaseFee ?? 0;
     const secondsPerNewBlock = data.secondsPerNewBlock;
 
     const blocksToConfirmation = {
@@ -305,6 +305,7 @@ const useGas = ({
       (gasData as MeteorologyResponse)?.data?.currentBaseFee,
     ),
     baseFeeTrend: (gasData as MeteorologyResponse)?.data?.baseFeeTrend,
+    feeType: (gasData as MeteorologyResponse)?.meta?.feeType,
   };
 };
 

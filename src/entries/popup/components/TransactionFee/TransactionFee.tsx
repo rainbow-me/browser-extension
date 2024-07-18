@@ -59,6 +59,7 @@ type FeeProps = {
     transactionSpeedClicked: keyof EventProperties;
   };
   speedMenuMarginRight?: Space;
+  feeType: 'legacy' | 'eip1559';
   setSelectedSpeed: React.Dispatch<React.SetStateAction<GasSpeed>>;
   setCustomMaxBaseFee: (maxBaseFee?: string) => void;
   setCustomMaxPriorityFee: (maxPriorityFee?: string) => void;
@@ -76,6 +77,7 @@ function Fee({
   selectedSpeed,
   flashbotsEnabled,
   speedMenuMarginRight,
+  feeType,
   setSelectedSpeed,
   setCustomMaxBaseFee,
   setCustomMaxPriorityFee,
@@ -206,16 +208,14 @@ function Fee({
               onSpeedChanged={onSpeedChanged}
               chainId={chainId}
               gasFeeParamsBySpeed={gasFeeParamsBySpeed}
-              editable={
-                chainId === ChainId.mainnet || chainId === ChainId.polygon
-              }
+              editable
               accentColor={accentColor}
               plainTriggerBorder={plainTriggerBorder}
               onOpenChange={onSpeedOpenChange}
               dropdownContentMarginRight={speedMenuMarginRight}
               ref={switchTransactionSpeedMenuRef}
             />
-            {chainId === ChainId.mainnet ? (
+            {feeType === 'eip1559' ? (
               <CursorTooltip
                 align="end"
                 arrowAlignment="right"
@@ -287,6 +287,7 @@ export function TransactionFee({
     setCustomMaxPriorityFee,
     currentBaseFee,
     baseFeeTrend,
+    feeType,
   } = useTransactionGas({
     chainId,
     address,
@@ -294,6 +295,7 @@ export function TransactionFee({
     transactionRequest,
     flashbotsEnabled: !!flashbotsEnabled,
   });
+
   return (
     <Fee
       analyticsEvents={analyticsEvents}
@@ -309,6 +311,7 @@ export function TransactionFee({
       currentBaseFee={currentBaseFee}
       baseFeeTrend={baseFeeTrend}
       flashbotsEnabled={!!flashbotsEnabled}
+      feeType={feeType}
     />
   );
 }
@@ -350,6 +353,7 @@ export function SwapFee({
     setCustomMaxPriorityFee,
     currentBaseFee,
     baseFeeTrend,
+    feeType,
   } = useSwapGas({
     chainId,
     defaultSpeed: defaultSpeed || defaultTxSpeed,
@@ -376,6 +380,7 @@ export function SwapFee({
       baseFeeTrend={baseFeeTrend}
       flashbotsEnabled={!!flashbotsEnabled}
       speedMenuMarginRight={speedMenuMarginRight}
+      feeType={feeType}
     />
   );
 }
@@ -421,6 +426,7 @@ export function ApprovalFee({
     setCustomMaxPriorityFee,
     currentBaseFee,
     baseFeeTrend,
+    feeType,
   } = useApprovalGas({
     chainId,
     address,
@@ -446,6 +452,7 @@ export function ApprovalFee({
       currentBaseFee={currentBaseFee}
       baseFeeTrend={baseFeeTrend}
       flashbotsEnabled={!!flashbotsEnabled}
+      feeType={feeType}
     />
   );
 }

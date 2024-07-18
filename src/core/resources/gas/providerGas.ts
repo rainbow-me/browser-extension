@@ -55,6 +55,7 @@ async function providerGasQueryFunction({
         safeGasPrice: gweiGasPrice,
       },
       meta: {
+        feeType: 'legacy',
         blockNumber: 0,
         provider: 'provider',
       },

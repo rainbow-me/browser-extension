@@ -180,6 +180,8 @@ export const CustomGasSheet = ({
     setSelectedGas,
   } = useGasStore();
 
+  console.log('currentBaseFee', currentBaseFee);
+
   const [selectedSpeedOption, setSelectedSpeedOption] = useState<GasSpeed>(
     selectedGas?.option,
   );
@@ -490,7 +492,7 @@ export const CustomGasSheet = ({
                         size="14pt"
                         weight="semibold"
                       >
-                        {`${toFixedDecimals(currentBaseFee, 0)} Gwei`}
+                        {`${toFixedDecimals(currentBaseFee, 2)} Gwei`}
                       </Text>
                     </Inline>
                   </Stack>

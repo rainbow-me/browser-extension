@@ -629,21 +629,21 @@ export const parseGasFeeParamsBySpeed = ({
 
     return {
       custom: parseGasFeeParamsSpeed({
-        gwei: response?.data.legacy.fastGasPrice,
+        gwei: multiply(response?.data.legacy.fastGasPrice, 1.2),
         speed: GasSpeed.CUSTOM,
         waitTime: chainWaitTime
           ? chainWaitTime.fastWait + additionalTime
           : null,
       }),
       urgent: parseGasFeeParamsSpeed({
-        gwei: response?.data.legacy.fastGasPrice,
+        gwei: multiply(response?.data.legacy.fastGasPrice, 1.2),
         speed: GasSpeed.URGENT,
         waitTime: chainWaitTime
           ? chainWaitTime.fastWait + additionalTime
           : null,
       }),
       fast: parseGasFeeParamsSpeed({
-        gwei: response?.data.legacy.proposeGasPrice,
+        gwei: multiply(response?.data.legacy.proposeGasPrice, 1.1),
         speed: GasSpeed.FAST,
         waitTime: chainWaitTime
           ? chainWaitTime.proposedWait + additionalTime

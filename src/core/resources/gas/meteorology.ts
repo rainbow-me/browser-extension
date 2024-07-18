@@ -49,6 +49,11 @@ export type MeteorologyResponse = {
       provider: string;
     };
   };
+  meta: {
+    feeType: 'legacy' | 'eip1559';
+    blockNumber: string;
+    provider: string;
+  };
 };
 
 export type MeteorologyLegacyResponse = {
