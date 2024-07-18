@@ -77,6 +77,14 @@ export function App() {
     if (process.env.IS_DEV !== 'true') {
       document.addEventListener('contextmenu', (e) => e.preventDefault());
     }
+
+    // prevent trackpad double tap zoom
+    const app = document.getElementById('app');
+    app?.addEventListener('wheel', (e) => {
+      if (e.ctrlKey) {
+        e.preventDefault();
+      }
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
