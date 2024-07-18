@@ -63,10 +63,11 @@ export type MeteorologyLegacyResponse = {
       proposeGasPrice: string;
       safeGasPrice: string;
     };
-    meta: {
-      blockNumber: number;
-      provider: string;
-    };
+  };
+  meta: {
+    feeType: 'legacy' | 'eip1559';
+    blockNumber: number;
+    provider: string;
   };
 };
 

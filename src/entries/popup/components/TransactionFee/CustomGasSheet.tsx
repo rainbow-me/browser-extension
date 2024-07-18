@@ -180,8 +180,6 @@ export const CustomGasSheet = ({
     setSelectedGas,
   } = useGasStore();
 
-  console.log('currentBaseFee', currentBaseFee);
-
   const [selectedSpeedOption, setSelectedSpeedOption] = useState<GasSpeed>(
     selectedGas?.option,
   );

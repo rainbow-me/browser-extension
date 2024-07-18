@@ -29,6 +29,7 @@ import { gweiToWei, weiToGwei } from '~/core/utils/ethereum';
 import {
   FLASHBOTS_MIN_TIP,
   gasFeeParamsChanged,
+  parseCustomGasFeeLegacyParams,
   parseCustomGasFeeParams,
   parseGasFeeParamsBySpeed,
 } from '~/core/utils/gas';
@@ -63,12 +64,16 @@ const useGas = ({
 
   const [internalMaxPriorityFee, setInternalMaxPriorityFee] = useState('');
   const [internalMaxBaseFee, setInternalMaxBaseFee] = useState('');
+  const [internalGasPrice, setInternalGasPrice] = useState('');
 
+  const feeType = gasData?.meta?.feeType;
   const debouncedEstimatedGasLimit = useDebounce(estimatedGasLimit, 500);
   const debouncedMaxPriorityFee = useDebounce(internalMaxPriorityFee, 300);
   const prevDebouncedMaxPriorityFee = usePrevious(debouncedMaxPriorityFee);
   const debouncedMaxBaseFee = useDebounce(internalMaxBaseFee, 300);
   const prevDebouncedMaxBaseFee = usePrevious(debouncedMaxBaseFee);
+  const debouncedGasPrice = useDebounce(internalGasPrice, 300);
+  const prevDebouncedGasPrice = usePrevious(debouncedGasPrice);
 
   const { data: optimismL1SecurityFee } = useOptimismL1SecurityFee(
     {
@@ -85,6 +90,7 @@ const useGas = ({
     setGasFeeParamsBySpeed,
     customGasModified,
     setCustomSpeed,
+    setCustomLegacySpeed,
     clearCustomGasModified,
   } = useGasStore();
 
@@ -96,12 +102,16 @@ const useGas = ({
     setInternalMaxPriorityFee(maxPriorityFee);
   }, []);
 
+  const setCustomGasPrice = useCallback((gasPrice = '0') => {
+    setInternalGasPrice(gasPrice);
+  }, []);
+
   useEffect(() => {
     if (
       !gasData ||
       prevDebouncedMaxBaseFee === debouncedMaxBaseFee ||
       !enabled ||
-      chainId !== ChainId.mainnet ||
+      feeType !== 'eip1559' ||
       !nativeAsset
     ) {
       return;
@@ -139,6 +149,7 @@ const useGas = ({
     debouncedMaxBaseFee,
     enabled,
     estimatedGasLimit,
+    feeType,
     gasData,
     nativeAsset,
     prevDebouncedMaxBaseFee,
@@ -151,7 +162,7 @@ const useGas = ({
       !gasData ||
       prevDebouncedMaxPriorityFee === debouncedMaxPriorityFee ||
       !enabled ||
-      chainId !== ChainId.mainnet ||
+      feeType !== 'eip1559' ||
       !nativeAsset
     )
       return;
@@ -195,6 +206,7 @@ const useGas = ({
     debouncedMaxPriorityFee,
     enabled,
     estimatedGasLimit,
+    feeType,
     flashbotsEnabled,
     gasData,
     internalMaxPriorityFee,
@@ -202,6 +214,40 @@ const useGas = ({
     prevDebouncedMaxPriorityFee,
     setCustomSpeed,
     storeGasFeeParamsBySpeed?.custom,
+  ]);
+
+  useEffect(() => {
+    if (
+      !gasData ||
+      !enabled ||
+      prevDebouncedGasPrice !== debouncedGasPrice ||
+      feeType !== 'legacy' ||
+      !nativeAsset
+    ) {
+      return;
+    }
+
+    const newCustomSpeed = parseCustomGasFeeLegacyParams({
+      speed: GasSpeed.CUSTOM,
+      gasPriceWei: gweiToWei(debouncedGasPrice || '0'),
+      gasLimit:
+        estimatedGasLimit || getChainGasUnits(chainId).basic.tokenTransfer,
+      nativeAsset,
+      currency: currentCurrency,
+      waitTime: 3600,
+    });
+    setCustomLegacySpeed(newCustomSpeed);
+  }, [
+    chainId,
+    currentCurrency,
+    debouncedGasPrice,
+    enabled,
+    estimatedGasLimit,
+    feeType,
+    gasData,
+    nativeAsset,
+    prevDebouncedGasPrice,
+    setCustomLegacySpeed,
   ]);
 
   const [selectedSpeed, setSelectedSpeed] = useState<GasSpeed>(defaultSpeed);
@@ -300,6 +346,7 @@ const useGas = ({
     isLoading,
     setCustomMaxBaseFee,
     setCustomMaxPriorityFee,
+    setCustomGasPrice,
     clearCustomGasModified,
     currentBaseFee: weiToGwei(
       (gasData as MeteorologyResponse)?.data?.currentBaseFee,

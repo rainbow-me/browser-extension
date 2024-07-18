@@ -198,6 +198,69 @@ export const parseCustomGasFeeParams = ({
   };
 };
 
+export const parseCustomGasFeeLegacyParams = ({
+  speed,
+  gasPriceWei,
+  gasLimit,
+  nativeAsset,
+  currency,
+  waitTime,
+}: {
+  speed: GasSpeed;
+  gasPriceWei: string;
+  gasLimit: string;
+  nativeAsset?: ParsedAsset;
+  currency: SupportedCurrencyKey;
+  waitTime: number | null;
+}): GasFeeLegacyParams => {
+  const gasPrice = parseGasFeeParam({
+    wei: gasPriceWei || '0',
+  });
+  const display = parseGasFeeParam({ wei: gasPriceWei }).display;
+
+  const estimatedTime = {
+    amount: waitTime || 0,
+    display: waitTime
+      ? `${waitTime >= 3600 ? '>' : '~'} ${getMinimalTimeUnitStringForMs(
+          Number(multiply(waitTime, 1000)),
+        )}`
+      : '',
+  };
+  const transactionGasParams = {
+    gasPrice: toHex(gasPrice.amount),
+  };
+
+  const amount = gasPrice.amount;
+  const totalWei = multiply(gasLimit, amount);
+
+  const nativeTotalWei = convertRawAmountToBalance(
+    totalWei,
+    supportedCurrencies[nativeAsset?.symbol as SupportedCurrencyKey],
+  ).amount;
+
+  const nativeDisplay = nativeAsset?.price?.value
+    ? convertAmountAndPriceToNativeDisplayWithThreshold(
+        nativeTotalWei,
+        nativeAsset?.price?.value,
+        currency,
+      )
+    : convertRawAmountToBalance(totalWei, {
+        decimals: nativeAsset?.decimals || 18,
+        symbol: nativeAsset?.symbol,
+      });
+
+  const gasFee = { amount: totalWei, display: nativeDisplay.display };
+
+  return {
+    display,
+    estimatedTime,
+    gasFee,
+    gasPrice,
+    option: speed,
+    transactionGasParams,
+  };
+};
+
 export const parseGasFeeParams = ({
   wei,
   currentBaseFee,
