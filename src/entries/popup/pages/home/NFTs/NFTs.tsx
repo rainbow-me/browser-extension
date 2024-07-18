@@ -44,7 +44,8 @@ export function NFTs() {
           flexDirection="column"
           width="full"
           paddingHorizontal="12px"
-          paddingBottom="28px"
+          paddingTop="20px"
+          paddingBottom="64px"
           ref={groupedContainerRef}
         >
           <NFTGallery
@@ -63,7 +64,8 @@ export function NFTs() {
           flexDirection="column"
           width="full"
           paddingHorizontal="12px"
-          paddingBottom="28px"
+          paddingTop="20px"
+          paddingBottom="64px"
           ref={byCollectionContainerRef}
         >
           <NFTCollections

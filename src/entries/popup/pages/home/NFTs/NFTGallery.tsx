@@ -62,7 +62,7 @@ export default function NFTGallery({
   const rowVirtualizer = useVirtualizer({
     count: nftRowData.length,
     getScrollElement: () => containerRef?.current || null,
-    estimateSize: () => 122,
+    estimateSize: () => 112,
     overscan: 12,
   });
   const virtualRows = rowVirtualizer.getVirtualItems();
@@ -143,7 +143,6 @@ export default function NFTGallery({
                         flexDirection: 'row',
                         justifyContent: 'flex-start',
                         gap: 16,
-                        paddingBottom: 16,
                       }}
                     >
                       {rowData.map((asset, i) => (

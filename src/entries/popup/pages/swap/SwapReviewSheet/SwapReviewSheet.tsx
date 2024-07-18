@@ -20,6 +20,7 @@ import { useSwapAssetsToRefreshStore } from '~/core/state/swapAssetsToRefresh';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
+import { processExchangeRateArray } from '~/core/utils/numbers';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { isUnwrapEth, isWrapEth } from '~/core/utils/swaps';
 import {
@@ -242,6 +243,12 @@ const SwapReviewSheetWithQuote = ({
 
   const { minimumReceived, swappingRoute, includedFee, exchangeRate } =
     useSwapReviewDetails({ quote, assetToBuy, assetToSell });
+
+  const formattedExchangeRate = useMemo(
+    () => processExchangeRateArray(exchangeRate),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [exchangeRate],
+  );
 
   const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
@@ -615,7 +622,7 @@ const SwapReviewSheetWithQuote = ({
                         <CarrouselButton
                           testId="exchange-rate"
                           symbol="arrow.2.squarepath"
-                          textArray={exchangeRate}
+                          textArray={formattedExchangeRate}
                         />
                       </ReviewDetailsRow>
                       {!assetToSell.isNativeAsset && (
