@@ -452,8 +452,12 @@ export const SwapSettings = ({
                   </Text>
                 </Button>
               </Box>
-              <Box style={{ width: '102px' }}>
-                <Separator color="separatorTertiary" strokeWeight="1px" />
+              <Box alignItems="center" justifyContent="center" display="flex">
+                <Separator
+                  color="separatorTertiary"
+                  strokeWeight="1px"
+                  width="102px"
+                />
               </Box>
               <Box width="full" paddingTop="20px">
                 <Button
