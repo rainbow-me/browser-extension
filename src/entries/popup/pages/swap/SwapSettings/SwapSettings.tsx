@@ -130,6 +130,7 @@ interface SwapSettingsProps {
     slippage: string;
     swapFlashbotsEnabled: boolean;
   }) => void;
+  bridge: boolean;
 }
 
 const getFlashbotsExplainerProps = (t: I18n['t']) => ({
@@ -201,6 +202,7 @@ export const SwapSettings = ({
   slippage: defaultSlippage,
   setSettings,
   onDone,
+  bridge,
 }: SwapSettingsProps) => {
   const { currentAddress } = useCurrentAddressStore();
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
@@ -324,66 +326,70 @@ export const SwapSettings = ({
                 </Box>
                 <Box paddingBottom="8px">
                   <Stack space="12px">
-                    <Box
-                      testId="swap-settings-route-row"
-                      style={{ height: '32px' }}
-                    >
-                      <Inline alignVertical="center" alignHorizontal="justify">
-                        <Label
-                          label={t('swap.settings.route')}
-                          onClick={showRoutingExplainer}
-                          testId="swap-settings-route-label"
-                        />
-                        <Lens
-                          onKeyDown={() =>
-                            simulateClick(routesTriggerRef?.current)
-                          }
-                          style={{ borderRadius: 6, padding: 4 }}
+                    {!bridge ? (
+                      <Box
+                        testId="swap-settings-route-row"
+                        style={{ height: '32px' }}
+                      >
+                        <Inline
+                          alignVertical="center"
+                          alignHorizontal="justify"
                         >
-                          <SwapRouteDropdownMenu
-                            accentColor={settingsAccentColor}
-                            source={source}
-                            setSource={setSource}
+                          <Label
+                            label={t('swap.settings.route')}
+                            onClick={showRoutingExplainer}
+                            testId="swap-settings-route-label"
+                          />
+                          <Lens
+                            onKeyDown={() =>
+                              simulateClick(routesTriggerRef?.current)
+                            }
+                            style={{ borderRadius: 6, padding: 4 }}
                           >
-                            <Box
-                              testId={`settings-route-context-trigger-${source}`}
-                              ref={routesTriggerRef}
+                            <SwapRouteDropdownMenu
+                              accentColor={settingsAccentColor}
+                              source={source}
+                              setSource={setSource}
                             >
-                              <ButtonOverflow style={{ height: '23px' }}>
-                                <Inline
-                                  height="full"
-                                  space="4px"
-                                  alignVertical="center"
-                                >
-                                  <Box
-                                    style={{ height: '16px', width: '16px' }}
+                              <Box
+                                testId={`settings-route-context-trigger-${source}`}
+                                ref={routesTriggerRef}
+                              >
+                                <ButtonOverflow style={{ height: '23px' }}>
+                                  <Inline
+                                    height="full"
+                                    space="4px"
+                                    alignVertical="center"
                                   >
-                                    <img
-                                      src={aggregatorInfo[source].logo}
-                                      width="100%"
-                                      height="100%"
+                                    <Box
+                                      style={{ height: '16px', width: '16px' }}
+                                    >
+                                      <img
+                                        src={aggregatorInfo[source].logo}
+                                        width="100%"
+                                        height="100%"
+                                      />
+                                    </Box>
+                                    <Text
+                                      color="label"
+                                      size="14pt"
+                                      weight="semibold"
+                                    >
+                                      {aggregatorInfo[source].name}
+                                    </Text>
+                                    <Symbol
+                                      size={12}
+                                      symbol="chevron.down"
+                                      weight="semibold"
                                     />
-                                  </Box>
-                                  <Text
-                                    color="label"
-                                    size="14pt"
-                                    weight="semibold"
-                                  >
-                                    {aggregatorInfo[source].name}
-                                  </Text>
-                                  <Symbol
-                                    size={12}
-                                    symbol="chevron.down"
-                                    weight="semibold"
-                                  />
-                                </Inline>
-                              </ButtonOverflow>
-                            </Box>
-                          </SwapRouteDropdownMenu>
-                        </Lens>
-                      </Inline>
-                    </Box>
-
+                                  </Inline>
+                                </ButtonOverflow>
+                              </Box>
+                            </SwapRouteDropdownMenu>
+                          </Lens>
+                        </Inline>
+                      </Box>
+                    ) : null}
                     <Box
                       testId="swap-settings-flashbots-row"
                       style={{ height: '32px' }}
@@ -446,8 +452,12 @@ export const SwapSettings = ({
                   </Text>
                 </Button>
               </Box>
-              <Box style={{ width: '102px' }}>
-                <Separator color="separatorTertiary" strokeWeight="1px" />
+              <Box alignItems="center" justifyContent="center" display="flex">
+                <Separator
+                  color="separatorTertiary"
+                  strokeWeight="1px"
+                  width="102px"
+                />
               </Box>
               <Box width="full" paddingTop="20px">
                 <Button

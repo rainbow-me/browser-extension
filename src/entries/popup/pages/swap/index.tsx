@@ -625,6 +625,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
         setSettings={setSettings}
         slippage={slippage}
         chainId={assetToSell?.chainId}
+        bridge={bridge}
       />
       <Box
         background="surfaceSecondary"
