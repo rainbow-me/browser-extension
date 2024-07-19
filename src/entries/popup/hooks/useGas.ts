@@ -20,7 +20,6 @@ import { useCurrentCurrencyStore, useGasStore } from '~/core/state';
 import { ParsedAsset, ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
-  GasFeeLegacyParams,
   GasFeeLegacyParamsBySpeed,
   GasFeeParams,
   GasFeeParamsBySpeed,
@@ -75,6 +74,8 @@ const useGas = ({
   const prevDebouncedMaxBaseFee = usePrevious(debouncedMaxBaseFee);
   const debouncedGasPrice = useDebounce(internalGasPrice, 300);
   const prevDebouncedGasPrice = usePrevious(debouncedGasPrice);
+
+  const prevChainId = usePrevious(chainId);
 
   const { data: optimismL1SecurityFee } = useOptimismL1SecurityFee(
     {
@@ -228,17 +229,16 @@ const useGas = ({
       return;
     }
 
-    const gasPrice = (storeGasFeeParamsBySpeed?.custom as GasFeeLegacyParams)
-      ?.gasPrice?.amount;
+    const gasPrice = gweiToWei(debouncedGasPrice || '0');
 
     const newCustomSpeed = parseCustomGasFeeLegacyParams({
       speed: GasSpeed.CUSTOM,
-      gasPriceWei: gweiToWei(gasPrice || '0'),
+      gasPriceWei: gasPrice,
       gasLimit:
         estimatedGasLimit || getChainGasUnits(chainId).basic.tokenTransfer,
       nativeAsset,
       currency: currentCurrency,
-      waitTime: 3600,
+      waitTime: 0,
     });
     setCustomLegacySpeed(newCustomSpeed);
   }, [
@@ -286,15 +286,15 @@ const useGas = ({
     }
     return newGasFeeParamsBySpeed;
   }, [
-    additionalTime,
     isLoading,
-    chainId,
-    flashbotsEnabled,
     gasData,
-    debouncedEstimatedGasLimit,
     nativeAsset,
+    chainId,
+    debouncedEstimatedGasLimit,
     currentCurrency,
     optimismL1SecurityFee,
+    flashbotsEnabled,
+    additionalTime,
     customGasModified,
     storeGasFeeParamsBySpeed.custom,
   ]);
@@ -343,6 +343,12 @@ const useGas = ({
     setGasFeeParamsBySpeed,
     storeGasFeeParamsBySpeed,
   ]);
+
+  useEffect(() => {
+    if (prevChainId !== chainId) {
+      clearCustomGasModified();
+    }
+  }, [chainId, clearCustomGasModified, prevChainId]);
 
   return {
     gasFeeParamsBySpeed,

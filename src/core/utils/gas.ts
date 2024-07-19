@@ -53,7 +53,9 @@ export const FLASHBOTS_MIN_TIP = 6;
 
 const formatDisplayNumber = (number: number | string) => {
   const n = Number(number);
-  if (n < 1) {
+  if (n === 0) {
+    return '0';
+  } else if (n < 1) {
     return n.toFixed(3);
   } else if (n < 2) {
     return n.toFixed(2);
@@ -396,7 +398,7 @@ export const parseGasFeeLegacyParams = ({
   const gasPrice = parseGasFeeParam({
     wei: new BigNumber(multiply(wei, getBaseFeeMultiplier(speed))).toFixed(0),
   });
-  const display = `${formatDisplayNumber(gasPrice.gwei)}`;
+  const display = `${formatDisplayNumber(gasPrice.gwei)} Gwei`;
 
   const estimatedTime = {
     amount: waitTime || 0,

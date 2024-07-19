@@ -346,7 +346,11 @@ export const CustomGasSheet = ({
     if (show) {
       onSelectedGasChange(selectedGas?.option);
       setTimeout(() => {
-        maxBaseFeeInputRef?.current?.focus();
+        if (feeType === 'eip1559') {
+          maxBaseFeeInputRef?.current?.focus();
+        } else {
+          gasPriceInputRef.current?.focus();
+        }
       }, 500);
     }
 
