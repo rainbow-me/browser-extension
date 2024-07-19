@@ -47,7 +47,6 @@ export const gasStore = createStore<GasStore>(
     },
     setCustomSpeed: (speed: GasFeeParams) => {
       const { gasFeeParamsBySpeed } = get();
-      console.log('setCustomSpeed', speed);
       set({
         gasFeeParamsBySpeed: {
           ...gasFeeParamsBySpeed,
@@ -58,7 +57,6 @@ export const gasStore = createStore<GasStore>(
     },
     setCustomLegacySpeed: (speed: GasFeeLegacyParams) => {
       const { gasFeeParamsBySpeed } = get();
-      console.log('setCustomLegacySpeed', speed);
       set({
         gasFeeParamsBySpeed: {
           ...gasFeeParamsBySpeed,

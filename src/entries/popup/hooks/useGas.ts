@@ -218,7 +218,6 @@ const useGas = ({
   ]);
 
   useEffect(() => {
-    console.log('EFFECTTT', debouncedGasPrice);
     if (
       !gasData ||
       !enabled ||
@@ -228,10 +227,9 @@ const useGas = ({
     ) {
       return;
     }
-    console.log('EFFECTTT222', storeGasFeeParamsBySpeed?.custom);
 
     const gasPrice = (storeGasFeeParamsBySpeed?.custom as GasFeeLegacyParams)
-      ?.gasPrice.amount;
+      ?.gasPrice?.amount;
 
     const newCustomSpeed = parseCustomGasFeeLegacyParams({
       speed: GasSpeed.CUSTOM,

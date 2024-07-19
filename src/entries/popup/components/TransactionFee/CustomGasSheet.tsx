@@ -194,7 +194,6 @@ export const CustomGasSheet = ({
   const maxPriorityFeeInputRef = useRef<HTMLInputElement>(null);
   const gasPriceInputRef = useRef<HTMLInputElement>(null);
 
-  console.log('--- customSpeed', customSpeed);
   const [maxBaseFee, setMaxBaseFee] = useState(
     (customSpeed as GasFeeParams)?.maxBaseFee?.gwei,
   );
@@ -357,7 +356,6 @@ export const CustomGasSheet = ({
   const onSelectedGasChange = useCallback(
     (speed: GasSpeed) => {
       const selectedGas = gasFeeParamsBySpeed[speed];
-      console.log('-- selectedGas', selectedGas);
       setSelectedGas({ selectedGas: gasFeeParamsBySpeed[speed] });
       setMaxBaseFee((selectedGas as GasFeeParams)?.maxBaseFee?.gwei);
       setMaxPriorityFee(
