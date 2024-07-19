@@ -280,8 +280,11 @@ const useGas = ({
             })
           : null
         : null;
-
-    if (customGasModified && newGasFeeParamsBySpeed) {
+    if (
+      customGasModified &&
+      newGasFeeParamsBySpeed &&
+      prevChainId === chainId
+    ) {
       newGasFeeParamsBySpeed.custom = storeGasFeeParamsBySpeed.custom;
     }
     return newGasFeeParamsBySpeed;
@@ -296,6 +299,7 @@ const useGas = ({
     flashbotsEnabled,
     additionalTime,
     customGasModified,
+    prevChainId,
     storeGasFeeParamsBySpeed.custom,
   ]);
 
@@ -309,15 +313,18 @@ const useGas = ({
     if (
       enabled &&
       gasFeeParamsBySpeed?.[selectedSpeed] &&
-      gasFeeParamsChanged(selectedGas, gasFeeParamsBySpeed?.[selectedSpeed])
+      (gasFeeParamsChanged(selectedGas, gasFeeParamsBySpeed?.[selectedSpeed]) ||
+        prevChainId !== chainId)
     ) {
       setSelectedGas({
         selectedGas: gasFeeParamsBySpeed[selectedSpeed],
       });
     }
   }, [
+    chainId,
     enabled,
     gasFeeParamsBySpeed,
+    prevChainId,
     selectedGas,
     selectedSpeed,
     setSelectedGas,
@@ -327,25 +334,28 @@ const useGas = ({
     if (
       enabled &&
       gasFeeParamsBySpeed?.[selectedSpeed] &&
-      gasFeeParamsChanged(
+      (gasFeeParamsChanged(
         storeGasFeeParamsBySpeed[selectedSpeed],
         gasFeeParamsBySpeed[selectedSpeed],
-      )
+      ) ||
+        prevChainId !== chainId)
     ) {
       setGasFeeParamsBySpeed({
         gasFeeParamsBySpeed,
       });
     }
   }, [
+    chainId,
     enabled,
     gasFeeParamsBySpeed,
+    prevChainId,
     selectedSpeed,
     setGasFeeParamsBySpeed,
     storeGasFeeParamsBySpeed,
   ]);
 
   useEffect(() => {
-    if (prevChainId !== chainId) {
+    if (prevChainId !== chainId || !chainId) {
       clearCustomGasModified();
     }
   }, [chainId, clearCustomGasModified, prevChainId]);
