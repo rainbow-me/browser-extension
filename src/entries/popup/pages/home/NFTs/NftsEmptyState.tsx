@@ -13,10 +13,9 @@ export function NftsEmptyState() {
       display="flex"
       flexDirection="column"
       justifyContent="flex-start"
-      marginTop="-20px"
       paddingTop="80px"
       ref={ref}
-      style={{ height: 336 - 64 }}
+      style={{ height: 336 - 80 }}
       width="full"
     >
       <Box paddingBottom="14px">

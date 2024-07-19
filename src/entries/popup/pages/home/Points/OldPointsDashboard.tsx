@@ -573,8 +573,9 @@ export function OldPointsDashboard() {
       gap="20px"
       separator={<Separator color="separatorTertiary" />}
       width="full"
-      marginTop="-20px" // there is a 20px top inset wrapping all tabs, I don't wanna mess with that rn afraid of breaking something somewhere else
-      padding="20px"
+      paddingTop="20px"
+      paddingBottom="72px"
+      paddingHorizontal="20px"
       background={currentTheme === 'light' ? 'surfaceSecondary' : undefined}
     >
       <Stack gap="20px">

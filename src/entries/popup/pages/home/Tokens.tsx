@@ -1,7 +1,7 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { motion } from 'framer-motion';
+import { MotionValue, motion, useTransform } from 'framer-motion';
 import uniqBy from 'lodash/uniqBy';
-import { memo, useCallback, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
@@ -39,7 +39,6 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
-import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 
@@ -98,7 +97,7 @@ const TokenRow = memo(function TokenRow({
   );
 });
 
-export function Tokens() {
+export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
   const [manuallyRefetchingTokens, setManuallyRefetchingTokens] =
@@ -108,6 +107,10 @@ export function Tokens() {
   const { modifierSymbol } = useSystemSpecificModifierKey();
   const { pinned: pinnedStore } = usePinnedAssetStore();
   const { hidden } = useHiddenAssetStore();
+
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const overflow = useTransform(scrollY, (p) => (p > 92 ? 'auto' : 'hidden'));
 
   const isHidden = useCallback(
     (asset: ParsedUserAsset) => {
@@ -222,12 +225,14 @@ export function Tokens() {
     [unhiddenAssets, computePinnedAssets, computeUniqueAssets],
   );
 
-  const containerRef = useContainerRef();
   const assetsRowVirtualizer = useVirtualizer({
-    count: filteredAssets?.length || 0,
+    count: filteredAssets.length,
     getScrollElement: () => containerRef.current,
     estimateSize: () => 52,
-    overscan: 20,
+    overscan: 10,
+    paddingEnd: 64,
+    paddingStart: 8,
+    getItemKey: (index) => filteredAssets[index].uniqueId,
   });
 
   useKeyboardShortcut({
@@ -257,14 +262,14 @@ export function Tokens() {
 
   return (
     <Box
+      as={motion.div}
       width="full"
       style={{
-        overflow: 'auto',
+        maxHeight: `1200px`,
+        overflow: overflow,
       }}
       ref={containerRef}
       paddingBottom="8px"
-      paddingTop="2px"
-      marginTop="-14px"
     >
       <QuickPromo
         text={i18n.t('command_k.quick_promo.text', { modifierSymbol })}
@@ -286,7 +291,7 @@ export function Tokens() {
           position: 'relative',
         }}
       >
-        <Box style={{ overflow: 'auto' }}>
+        <Box>
           {assetsRowVirtualizer.getVirtualItems().map((virtualItem) => {
             const { key, size, start, index } = virtualItem;
             const token = filteredAssets[index];
@@ -295,13 +300,13 @@ export function Tokens() {
 
             return (
               <Box
-                key={`${token.uniqueId}-${key}`}
-                layoutId={`list-${index}`}
+                key={`token-list-${token.uniqueId}-${key}`}
+                layoutId={`token-list-${index}`}
                 as={motion.div}
                 position="absolute"
                 width="full"
                 style={{
-                  height: `${size}px`,
+                  height: size,
                   y: start,
                 }}
               >
@@ -447,7 +452,7 @@ function TokensEmptyState({ depositAddress }: EmptyStateProps) {
   }, [depositAddress]);
 
   return (
-    <Inset horizontal="20px">
+    <Inset horizontal="20px" top="20px">
       <Stack space="12px">
         {!testnetMode && (
           <Box

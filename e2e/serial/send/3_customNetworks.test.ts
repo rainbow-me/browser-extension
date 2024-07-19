@@ -90,7 +90,7 @@ it('should be able to add a custom network', async () => {
   // fill out custom network form
   await typeOnTextInput({ text: 'Cronos Mainnet', driver });
   await executePerformShortcut({ driver, key: 'TAB' });
-  await typeOnTextInput({ text: 'https://cronos-evm.publicnode.com', driver });
+  await typeOnTextInput({ text: 'https://evm.cronos.org', driver });
   await executePerformShortcut({ driver, key: 'TAB' });
   await typeOnTextInput({ text: 'CRO', driver });
   await executePerformShortcut({ driver, key: 'TAB' });

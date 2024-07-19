@@ -114,7 +114,6 @@ export function Activities() {
   return (
     <>
       <Box
-        marginTop="-20px"
         width="full"
         style={{
           // Prevent bottommost coin icon shadow from clipping

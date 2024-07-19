@@ -1,10 +1,9 @@
-import React, { ReactElement, useMemo } from 'react';
+import React, { ReactElement } from 'react';
 
 import { i18n } from '~/core/languages';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { SearchAsset } from '~/core/types/search';
-import { Box, Inline, Inset, Stack, Symbol, Text } from '~/design-system';
+import { Box, Inline, Inset, Symbol, Text } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { rainbowGradient } from '~/design-system/components/Symbol/gradients';
 import { TextStyles } from '~/design-system/styles/core.css';
@@ -14,8 +13,6 @@ import {
   AssetToBuySection,
   AssetToBuySectionId,
 } from '~/entries/popup/hooks/useSearchCurrencyLists';
-import { useTranslationContext } from '~/entries/popup/hooks/useTranslationContext';
-import { useVirtualizedAssets } from '~/entries/popup/hooks/useVirtualizedAssets';
 
 import { TokenToBuyRow } from '../TokenRow/TokenToBuyRow';
 
@@ -104,7 +101,7 @@ const VerifiedWrappedTooltip = ({
   );
 };
 
-export const TokenToBuySection = ({
+export const getTokenToBuySectionElements = ({
   assetSection,
   outputChainId,
   onSelectAsset,
@@ -115,104 +112,76 @@ export const TokenToBuySection = ({
   onSelectAsset?: (asset: ParsedSearchAsset | null) => void;
   onDropdownChange: (open: boolean) => void;
 }) => {
-  const t = useTranslationContext();
-  const { containerRef, assetsRowVirtualizer } = useVirtualizedAssets({
-    assets: assetSection.data,
-    size: 52,
-  });
-
   const { background, gradient, symbol, title, webkitBackgroundClip } =
     sectionProps[assetSection.id];
 
-  const color = useMemo(() => {
-    if (assetSection.id !== 'bridge') {
-      return sectionProps[assetSection.id].color;
-    }
-    return bridgeSectionsColorsByChain[outputChainId || ChainId.mainnet];
-  }, [assetSection.id, outputChainId]);
+  let color = bridgeSectionsColorsByChain[outputChainId || ChainId.mainnet];
+  if (assetSection.id !== 'bridge') {
+    color = sectionProps[assetSection.id].color;
+  }
 
-  if (!assetSection.data.length) return null;
+  if (!assetSection?.data?.length) return null;
 
-  const height =
-    assetsRowVirtualizer.getTotalSize() +
-    14 +
-    (assetSection.id === 'other_networks' ? 52 : 0);
-
-  return (
+  return [
+    assetSection.id === 'other_networks' ? (
+      <Box borderRadius="12px" style={{ height: '52px' }}>
+        <Inset horizontal="20px" vertical="8px">
+          <Inline space="8px" alignVertical="center">
+            <CoinIcon asset={undefined} />
+            <Text size="14pt" weight="semibold" color={'labelQuaternary'}>
+              {i18n.t('swap.tokens_input.nothing_found')}{' '}
+            </Text>
+          </Inline>
+        </Inset>
+      </Box>
+    ) : null,
     <Box
       testId={`${assetSection.id}-token-to-buy-section`}
-      style={{
-        position: 'relative',
-        height,
-      }}
+      key={`header-${title}`}
+      paddingHorizontal="15px"
+      paddingVertical="12px"
+      style={{ height: '38px' }}
     >
-      <Stack space="8px">
-        {assetSection.id === 'other_networks' ? (
-          <Box borderRadius="12px" style={{ height: '52px' }}>
-            <Inset horizontal="20px" vertical="8px">
-              <Inline space="8px" alignVertical="center">
-                <CoinIcon asset={undefined} />
-                <Text size="14pt" weight="semibold" color={'labelQuaternary'}>
-                  {t('swap.tokens_input.nothing_found')}
-                </Text>
-              </Inline>
-            </Inset>
-          </Box>
-        ) : null}
-        <Box paddingHorizontal="15px">
-          <VerifiedWrappedTooltip id={assetSection.id}>
-            <Box paddingHorizontal="5px" width="full">
-              <Inline space="4px" alignVertical="center">
-                <Symbol
-                  symbol={symbol}
-                  color={color}
-                  weight="semibold"
-                  size={14}
-                  gradient={gradient}
-                />
-                <Box style={{ width: 225 }}>
-                  <Text
-                    webkitBackgroundClip={webkitBackgroundClip}
-                    background={background}
-                    size="14pt"
-                    weight="semibold"
-                    color={color}
-                  >
-                    {title}
-                  </Text>
-                </Box>
-              </Inline>
-            </Box>
-          </VerifiedWrappedTooltip>
-        </Box>
-
-        <Box
-          ref={containerRef}
-          style={{
-            position: 'relative',
-            height: `${assetsRowVirtualizer.getTotalSize()}px`,
-          }}
-        >
-          {assetsRowVirtualizer?.getVirtualItems().map((virtualItem, i) => {
-            const { index } = virtualItem;
-            const asset = assetSection.data?.[index] as SearchAsset;
-            return (
-              <Box
-                paddingHorizontal="8px"
-                key={`${asset?.uniqueId}-${i}-${assetSection.id}`}
-                onClick={() => onSelectAsset?.(asset as ParsedSearchAsset)}
-                testId={`${asset?.uniqueId}-${assetSection.id}-token-to-buy-row`}
+      <VerifiedWrappedTooltip id={assetSection.id}>
+        <Box paddingHorizontal="5px" width="full">
+          <Inline space="4px" alignVertical="center">
+            <Symbol
+              symbol={symbol}
+              color={color}
+              weight="semibold"
+              size={14}
+              gradient={gradient}
+            />
+            <Box style={{ width: 225 }}>
+              <Text
+                webkitBackgroundClip={webkitBackgroundClip}
+                background={background}
+                size="14pt"
+                weight="semibold"
+                color={color}
               >
-                <TokenToBuyRow
-                  onDropdownChange={onDropdownChange}
-                  asset={asset}
-                  testId={`${asset?.uniqueId}-${assetSection.id}-token-to-buy-row`}
-                />
-              </Box>
-            );
-          })}
+                {title}
+              </Text>
+            </Box>
+          </Inline>
         </Box>
-      </Stack>
-    </Box>
-  );
+      </VerifiedWrappedTooltip>
+    </Box>,
+    assetSection.data.map((asset, i) => {
+      return (
+        <Box
+          paddingHorizontal="8px"
+          key={`${asset?.uniqueId}-${i}-${assetSection.id}`}
+          onClick={() => onSelectAsset?.(asset as ParsedSearchAsset)}
+          testId={`${asset?.uniqueId}-${assetSection.id}-token-to-buy-row`}
+        >
+          <TokenToBuyRow
+            onDropdownChange={onDropdownChange}
+            asset={asset}
+            testId={`${asset?.uniqueId}-${assetSection.id}-token-to-buy-row`}
+          />
+        </Box>
+      );
+    }),
+  ].flat();
 };
