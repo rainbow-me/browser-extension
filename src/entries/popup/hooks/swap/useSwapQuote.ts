@@ -119,6 +119,7 @@ export const useSwapQuote = ({
     enabled: !!quotesParams,
     refetchInterval: SWAP_POLLING_INTERVAL,
     gcTime: CACHE_INTERVAL,
+    placeholderData: (previousData) => previousData,
   });
 
   const isWrapOrUnwrapEth = useMemo(() => {
