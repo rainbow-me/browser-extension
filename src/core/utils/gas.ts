@@ -51,6 +51,17 @@ import { getMinimalTimeUnitStringForMs } from './time';
 
 export const FLASHBOTS_MIN_TIP = 6;
 
+const formatDisplayNumber = (number: number | string) => {
+  const n = Number(number);
+  if (n < 1) {
+    return n.toFixed(3);
+  } else if (n < 2) {
+    return n.toFixed(2);
+  } else {
+    return n.toFixed(0);
+  }
+};
+
 export const parseGasDataConfirmationTime = ({
   maxBaseFee,
   maxPriorityFee,
@@ -151,11 +162,15 @@ export const parseCustomGasFeeParams = ({
     ? currentBaseFee
     : maxBaseFee.amount;
 
-  const display = `${new BigNumber(
-    weiToGwei(add(baseFee, maxPriorityFeePerGas.amount)),
-  ).toFixed(0)} - ${new BigNumber(
-    weiToGwei(add(baseFeeWei, maxPriorityFeePerGas.amount)),
-  ).toFixed(0)} Gwei`;
+  const display = `${formatDisplayNumber(
+    new BigNumber(
+      weiToGwei(add(baseFee, maxPriorityFeePerGas.amount)),
+    ).toNumber(),
+  )} - ${formatDisplayNumber(
+    new BigNumber(
+      weiToGwei(add(baseFeeWei, maxPriorityFeePerGas.amount)),
+    ).toNumber(),
+  )} Gwei`;
 
   const estimatedTime = parseGasDataConfirmationTime({
     maxBaseFee: maxBaseFee.amount,
@@ -216,7 +231,7 @@ export const parseCustomGasFeeLegacyParams = ({
   const gasPrice = parseGasFeeParam({
     wei: gasPriceWei || '0',
   });
-  const display = parseGasFeeParam({ wei: gasPriceWei }).display;
+  const display = `${formatDisplayNumber(gasPrice.gwei)} Gwei`;
 
   const estimatedTime = {
     amount: waitTime || 0,
@@ -301,11 +316,15 @@ export const parseGasFeeParams = ({
     ? currentBaseFee
     : maxBaseFee.amount;
 
-  const display = `${new BigNumber(
-    weiToGwei(add(baseFee, maxPriorityFeePerGas.amount)),
-  ).toFixed(0)} - ${new BigNumber(
-    weiToGwei(add(maxBaseFee.amount, maxPriorityFeePerGas.amount)),
-  ).toFixed(0)} Gwei`;
+  const display = `${formatDisplayNumber(
+    new BigNumber(
+      weiToGwei(add(baseFee, maxPriorityFeePerGas.amount)),
+    ).toNumber(),
+  )} - ${formatDisplayNumber(
+    new BigNumber(
+      weiToGwei(add(maxBaseFee.amount, maxPriorityFeePerGas.amount)),
+    ).toNumber(),
+  )} Gwei`;
 
   const estimatedTime = parseGasDataConfirmationTime({
     maxBaseFee: maxBaseFee.amount,
@@ -377,7 +396,7 @@ export const parseGasFeeLegacyParams = ({
   const gasPrice = parseGasFeeParam({
     wei: new BigNumber(multiply(wei, getBaseFeeMultiplier(speed))).toFixed(0),
   });
-  const display = parseGasFeeParam({ wei }).display;
+  const display = `${formatDisplayNumber(gasPrice.gwei)}`;
 
   const estimatedTime = {
     amount: waitTime || 0,
