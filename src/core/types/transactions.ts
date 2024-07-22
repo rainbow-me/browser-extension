@@ -62,6 +62,10 @@ type BaseTransaction = {
   gasPrice?: string;
   gasLimit?: string;
   baseFee?: string;
+  explorer?: {
+    name: string;
+    url: string;
+  };
 } & Partial<TransactionGasParams & TransactionLegacyGasParams>;
 
 export type PendingTransaction = BaseTransaction & {
@@ -202,6 +206,8 @@ export type TransactionApiResponse = {
     approval_to?: Address;
     contract_name?: string;
     contract_icon_url?: string;
+    explorer_label?: string;
+    explorer_url?: string;
     type?: TransactionType;
     action?: string;
     asset?: AssetApiResponse;
