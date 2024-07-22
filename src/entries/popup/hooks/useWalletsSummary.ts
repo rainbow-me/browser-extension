@@ -4,7 +4,6 @@ import { Address } from 'viem';
 import {
   AVAX_AVALANCHE_ADDRESS,
   BNB_MAINNET_ADDRESS,
-  ETH_ADDRESS,
   MATIC_MAINNET_ADDRESS,
   SupportedCurrencyKey,
 } from '~/core/references';
@@ -14,6 +13,7 @@ import {
 } from '~/core/resources/addys/addysSummary';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { ParsedAsset } from '~/core/types/assets';
+import { ChainId } from '~/core/types/chains';
 import {
   add,
   convertAmountAndPriceToNativeDisplay,
@@ -61,7 +61,7 @@ const parseAddressSummary = ({
   }).amount;
   const ethCurrencyBalance = convertAmountAndPriceToNativeDisplay(
     ethBalance || 0,
-    nativeAssets?.[`${ETH_ADDRESS}_1`]?.price?.value || 0,
+    nativeAssets?.[ChainId.mainnet]?.price?.value || 0,
     currentCurrency,
   ).amount;
 
