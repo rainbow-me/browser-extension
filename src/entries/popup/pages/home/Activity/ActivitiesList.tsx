@@ -180,8 +180,16 @@ const ActivityDescription = ({
 }: {
   transaction: RainbowTransaction;
 }) => {
-  const { type, to, asset } = transaction;
+  const { type, to, asset, status } = transaction;
   let description = transaction.description;
+  if (type === 'swap' && status === 'pending') {
+    const changes = transaction.changes;
+    const assetIn = changes?.find((c) => c?.direction === 'in')?.asset;
+    const assetOut = changes?.find((c) => c?.direction === 'out')?.asset;
+    if (assetIn && assetOut) {
+      description = `${assetIn.symbol} → ${assetOut.symbol}`;
+    }
+  }
   let tag: string | undefined;
   if (type === 'contract_interaction' && to) {
     description = transaction.contract?.name || truncateAddress(to);
