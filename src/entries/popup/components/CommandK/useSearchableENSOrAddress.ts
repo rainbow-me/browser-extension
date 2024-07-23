@@ -4,6 +4,7 @@ import { truncateAddress } from '~/core/utils/address';
 import { isENSAddressFormat } from '~/core/utils/ethereum';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
+import { useContacts } from '../../hooks/useContacts';
 import { useDebounce } from '../../hooks/useDebounce';
 import { useWallets } from '../../hooks/useWallets';
 import { useValidateInput } from '../WatchWallet/WatchWallet';
@@ -35,6 +36,13 @@ export const useSearchableENSorAddress = ({
   const { isFetching, setIsFetching } = useCommandKStatus();
   const { allWallets } = useWallets();
 
+  const contacts = useContacts();
+
+  const allWalletsWithContacts = React.useMemo(
+    () => [...allWallets, ...contacts],
+    [contacts, allWallets],
+  );
+
   const query = searchQuery.trim();
   const debouncedSearchQuery = useDebounce(query, 250);
 
@@ -47,7 +55,9 @@ export const useSearchableENSorAddress = ({
       validation.address &&
       !validation.error &&
       !isFetchingSearchAssets &&
-      !allWallets.some((wallet) => wallet.address === validation.address) &&
+      !allWalletsWithContacts.some((wallet) =>
+        isLowerCaseMatch(wallet.address, validation.address),
+      ) &&
       !assets.some((asset) =>
         isLowerCaseMatch(asset.address, validation.address),
       )
@@ -74,7 +84,7 @@ export const useSearchableENSorAddress = ({
     isFetchingSearchAssets,
     currentPage,
     assets,
-    allWallets,
+    allWalletsWithContacts,
     validation.address,
     validation.ensName,
     validation.error,
