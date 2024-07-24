@@ -135,7 +135,7 @@ export const DropdownInputWrapper = ({
                   <Box
                     style={{
                       height: dropdownHeight ?? 452,
-                      overflow: 'hidden',
+                      overflow: 'auto',
                     }}
                     paddingVertical="16px"
                   >
