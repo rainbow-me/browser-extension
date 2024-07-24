@@ -90,7 +90,7 @@ const TokenPrice = memo(function TokenPrice({
         justifyContent="center"
         gap="10px"
       >
-        <Text size="16pt" weight="heavy" cursor="text" userSelect="all">
+        <Text size="16pt" weight="heavy" cursor="text" userSelect="text">
           {!isLoading && !hasPriceData && !fallbackPrice
             ? i18n.t('token_details.not_available')
             : formatCurrency(
