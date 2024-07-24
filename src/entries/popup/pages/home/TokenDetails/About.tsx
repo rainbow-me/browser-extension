@@ -88,7 +88,7 @@ export const InfoRow = ({
       size="12pt"
       weight="semibold"
       cursor="text"
-      userSelect="all"
+      userSelect="text"
     >
       {value}
     </TextOverflow>
