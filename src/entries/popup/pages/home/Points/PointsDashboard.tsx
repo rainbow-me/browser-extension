@@ -942,7 +942,9 @@ function RainbowUserEarnings({ totalEarnings }: { totalEarnings: string }) {
       <Inline alignVertical="center" space="4px">
         <EthIcon size={12} />
         <Text size="12pt" color="labelSecondary" weight="heavy">
-          {`${convertRawAmountToDecimalFormat(totalEarnings, 18)} ETH`}
+          {`${parseFloat(
+            convertRawAmountToDecimalFormat(totalEarnings, 18),
+          ).toFixed(3)} ETH`}
         </Text>
       </Inline>
     </Inline>
