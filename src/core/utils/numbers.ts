@@ -5,6 +5,7 @@ import { isNil } from 'lodash';
 
 import { supportedCurrencies } from '~/core/references';
 
+import { formatCurrency } from './formatNumber';
 import { BigNumberish } from './hex';
 
 type nativeCurrencyType = typeof supportedCurrencies;
@@ -473,3 +474,32 @@ export const convertDecimalFormatToRawAmount = (
 
 export const fromWei = (number: BigNumberish): string =>
   convertRawAmountToDecimalFormat(number, 18);
+
+const cleanNumber = (n: number | string | null | undefined): number => {
+  if (typeof n === 'string') {
+    return parseFloat(n.replace(/,/g, ''));
+  }
+  return n || 0;
+};
+
+export const formatNumber = (n?: number | string | null) => {
+  let value = formatCurrency(cleanNumber(n), {
+    notation: 'compact',
+    maximumSignificantDigits: 4,
+  });
+  while (value.charAt(0) === '$') {
+    value = value.substring(1);
+  }
+  return value;
+};
+
+export const processExchangeRateArray = (arr: string[]): string[] => {
+  return arr.map((item) => {
+    const parts = item.split(' ');
+    if (parts.length === 5) {
+      const formattedAmount = formatNumber(parts[3]);
+      return `${parts[0]} ${parts[1]} ${parts[2]} ${formattedAmount} ${parts[4]}`;
+    }
+    return item;
+  });
+};

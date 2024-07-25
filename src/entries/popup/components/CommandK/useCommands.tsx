@@ -110,6 +110,16 @@ export const getStaticCommandInfo = (): CommandInfo => {
       symbolSize: 15.5,
       type: SearchItemType.Shortcut,
     },
+    bridge: {
+      actionLabel: actionLabels.open,
+      hideForWatchedWallets: true,
+      name: getCommandName('bridge'),
+      page: PAGES.HOME,
+      searchTags: getSearchTags('bridge'),
+      symbol: 'arrow.turn.up.right',
+      symbolSize: 15.5,
+      type: SearchItemType.Shortcut,
+    },
     myWallets: {
       actionLabel: actionLabels.view,
       name: getCommandName('my_wallets'),
@@ -899,6 +909,9 @@ export const useCommands = (
       // PAGE: HOME
       swap: {
         action: navigateToSwaps,
+      },
+      bridge: {
+        action: () => navigate(ROUTES.BRIDGE),
       },
       myTokens: {
         name: isWatchingWallet

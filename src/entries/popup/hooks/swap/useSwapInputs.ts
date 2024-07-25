@@ -7,6 +7,7 @@ import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
 import { transformBackendNetworksToChains } from '~/core/utils/backendNetworks';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import {
+  addBuffer,
   convertAmountFromNativeValue,
   convertAmountToRawAmount,
   convertRawAmountToBalance,
@@ -160,7 +161,7 @@ export const useSwapInputs = ({
     const rawAssetBalanceAmount =
       assetToSell?.isNativeAsset &&
       lessThan(selectedGas?.gasFee?.amount, assetBalanceAmount)
-        ? minus(assetBalanceAmount, selectedGas?.gasFee?.amount)
+        ? minus(assetBalanceAmount, addBuffer(selectedGas?.gasFee?.amount, 1.1))
         : assetBalanceAmount;
 
     const assetBalance = convertRawAmountToBalance(rawAssetBalanceAmount, {

@@ -5,6 +5,7 @@ import { ParsedSearchAsset } from '~/core/types/assets';
 import {
   convertRawAmountToBalance,
   convertRawAmountToNativeDisplay,
+  formatNumber,
 } from '~/core/utils/numbers';
 import {
   Box,
@@ -75,7 +76,7 @@ export const SwapAssetCard = ({
                 <Columns space="4px" alignVertical="center">
                   <Column>
                     <TextOverflow color="label" size="14pt" weight="bold">
-                      {`${amount}`}
+                      {`${formatNumber(amount)}`}
                     </TextOverflow>
                   </Column>
                   <Column width="content">
