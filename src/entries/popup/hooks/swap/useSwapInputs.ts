@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import backendNetworks from 'static/data/networks.json';
+import { SUPPORTED_CHAINS } from '~/core/references/chains';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
-import { transformBackendNetworksToChains } from '~/core/utils/backendNetworks';
+import { isNativeAsset } from '~/core/utils/chains';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import {
   addBuffer,
@@ -15,6 +15,7 @@ import {
   lessThan,
   minus,
 } from '~/core/utils/numbers';
+import { isLowerCaseMatch } from '~/core/utils/strings';
 
 import { TokenInputRef } from '../../pages/swap/SwapTokenInput/TokenInput';
 
@@ -252,36 +253,33 @@ export const useSwapInputs = ({
     [assetToBuyValue, independentField],
   );
 
-  const BACKEND_CHAINS = useMemo(
-    () => transformBackendNetworksToChains(backendNetworks.networks),
-    [],
-  );
   const determineOutputCurrency = useCallback(
-    (inputCurrency: ParsedSearchAsset | null) => {
-      if (!inputCurrency) return null;
+    (asset: ParsedSearchAsset | null) => {
+      if (!asset) return null;
 
-      const currentChainId = inputCurrency.chainId;
+      const { chainId } = asset;
 
-      // Find the current chain in BACKEND_CHAINS
-      const currentChain = BACKEND_CHAINS.find(
-        (chain) => chain.id === currentChainId,
+      const supportedChain = SUPPORTED_CHAINS.find(
+        (chain) => chain.id === chainId,
       );
 
-      if (currentChain && currentChain.nativeCurrency.symbol === 'ETH') {
-        if (inputCurrency.symbol.toLowerCase() !== 'eth') {
-          // Return ETH for this chain
-          return {
-            address: 'eth',
-            symbol: 'ETH',
-            name: 'Ethereum',
-            chainId: currentChainId,
-            decimals: currentChain.nativeCurrency.decimals,
-          };
-        }
+      if (!supportedChain) return null;
+
+      const isNativeCurrencyEth =
+        supportedChain.nativeCurrency.symbol === 'ETH';
+
+      if (isNativeCurrencyEth && !isNativeAsset(asset.address, chainId)) {
+        // Return ETH for this chain
+        return {
+          address: 'eth',
+          chainId,
+          isNativeAsset: true,
+          ...supportedChain.nativeCurrency,
+        };
       }
       return null;
     },
-    [BACKEND_CHAINS],
+    [],
   );
 
   const [hasSetInitialOutput, setHasSetInitialOutput] = useState(false);
@@ -293,14 +291,13 @@ export const useSwapInputs = ({
       setAssetToSell(asset);
       setHasSetInitialOutput(false);
 
-      if (asset && asset?.symbol.toLowerCase() !== 'eth') {
+      if (asset && !isNativeAsset(asset.address, asset.chainId)) {
         const suggestedOutputAsset = determineOutputCurrency(
           asset,
         ) as ParsedSearchAsset;
         if (
           suggestedOutputAsset &&
-          suggestedOutputAsset.symbol.toLowerCase() !==
-            asset.symbol.toLowerCase()
+          !isLowerCaseMatch(suggestedOutputAsset.symbol, asset.symbol)
         ) {
           setAssetToBuy(suggestedOutputAsset);
           setHasSetInitialOutput(true);
@@ -328,8 +325,7 @@ export const useSwapInputs = ({
       ) as ParsedSearchAsset;
       if (
         suggestedOutputAsset &&
-        suggestedOutputAsset.address.toLowerCase() !==
-          assetToSell.address.toLowerCase()
+        !isLowerCaseMatch(suggestedOutputAsset.address, assetToSell.address)
       ) {
         setAssetToBuy(suggestedOutputAsset);
         setHasSetInitialOutput(true);
