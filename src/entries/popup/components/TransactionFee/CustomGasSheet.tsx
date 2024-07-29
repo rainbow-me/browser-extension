@@ -206,14 +206,12 @@ export const CustomGasSheet = ({
   );
 
   const [maxBaseFeeWarning, setMaxBaseFeeWarning] = useState<
-    'stuck' | 'fail' | undefined
-  >(undefined);
+    'stuck' | 'fail'
+  >();
   const [maxPriorityFeeWarning, setPriorityBaseFeeWarning] = useState<
-    'stuck' | 'fail' | undefined
-  >(undefined);
-  const [gasPriceWarning, setGasPriceWarning] = useState<
-    'stuck' | 'fail' | undefined
-  >(undefined);
+    'stuck' | 'fail'
+  >();
+  const [gasPriceWarning, setGasPriceWarning] = useState<'stuck' | 'fail'>();
 
   const trend = useMemo(
     () => getBaseFeeTrendParams(baseFeeTrend),
