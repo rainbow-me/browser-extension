@@ -181,6 +181,7 @@ export function AddAsset() {
         chainId,
         rainbowChainAsset: assetToAdd,
       });
+      saveCustomTokenDraft(chainId, undefined);
       navigate(-1);
     }
   }, [
@@ -195,6 +196,7 @@ export function AddAsset() {
     chainId,
     customRPCAssetsForChain,
     navigate,
+    saveCustomTokenDraft,
     validateAddCustomAsset,
   ]);
 

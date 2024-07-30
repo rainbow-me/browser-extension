@@ -51,6 +51,7 @@ const getBasicCommandRelevance = ({
   normalizedShortcutKey,
   commandNameWords,
   queryWords,
+  offset = 0,
 }: {
   command: SearchItem;
   normalizedCommandName: string;
@@ -58,13 +59,14 @@ const getBasicCommandRelevance = ({
   normalizedShortcutKey?: string;
   commandNameWords: string[];
   queryWords: string[];
+  offset?: number;
 }) => {
   // High relevance: Command name starts with query
   if (
     (!command.downrank && normalizedCommandName.startsWith(normalizedQuery)) ||
     (normalizedShortcutKey && normalizedShortcutKey === normalizedQuery)
   ) {
-    return 4;
+    return 4 - offset;
   }
 
   // Medium relevance: Non-leading word in command name starts with query
@@ -73,7 +75,7 @@ const getBasicCommandRelevance = ({
       (word, index) => index !== 0 && word.startsWith(normalizedQuery),
     )
   ) {
-    return 3;
+    return 3 - offset;
   }
 
   // Low-medium relevance: A search tag begins with the query
@@ -81,7 +83,7 @@ const getBasicCommandRelevance = ({
     ? command.searchTags.map((tag) => tag.toLowerCase())
     : [];
   if (normalizedTags.some((tag) => tag.startsWith(normalizedQuery))) {
-    return 2;
+    return 2 - offset;
   }
 
   // Low relevance: Command name or search tags contain the query
@@ -97,7 +99,7 @@ const getBasicCommandRelevance = ({
       return false;
     })
   ) {
-    return 1;
+    return 1 - offset;
   }
 
   return 0;
@@ -241,6 +243,12 @@ const calculateCommandRelevance = (
       });
     }
 
+    let offset = 0;
+
+    if (command.type === SearchItemType.NFT) {
+      offset = 1;
+    }
+
     return getBasicCommandRelevance({
       command,
       normalizedCommandName,
@@ -248,6 +256,7 @@ const calculateCommandRelevance = (
       normalizedShortcutKey,
       commandNameWords,
       queryWords,
+      offset,
     });
   }
 };

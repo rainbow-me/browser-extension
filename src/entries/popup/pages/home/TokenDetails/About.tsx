@@ -88,7 +88,7 @@ export const InfoRow = ({
       size="12pt"
       weight="semibold"
       cursor="text"
-      userSelect="all"
+      userSelect="text"
     >
       {value}
     </TextOverflow>
@@ -208,7 +208,13 @@ function Description({ text = '' }: { text?: string | null }) {
   if (!text) return null;
   const chunks = chunkLinks(text);
   return (
-    <Text color="labelTertiary" size="14pt" weight="regular">
+    <Text
+      color="labelTertiary"
+      size="14pt"
+      weight="regular"
+      cursor="text"
+      userSelect="text"
+    >
       {chunks.map((chunk, i) => {
         if (chunk.type === 'text') {
           return chunk.value;

@@ -85,6 +85,14 @@ export const getWeeklyEarnings = (points: PointsQuery['points']) => {
       !(['retroactive', 'redemption'].includes(d.type) && d.earnings === 0),
   );
 
+  if (!diffs.find((d) => d.type === 'new_referrals')) {
+    diffs.push({ type: 'new_referrals', earnings: 0 });
+  }
+
+  if (!diffs.find((d) => d.type === 'referral_activity')) {
+    diffs.push({ type: 'referral_activity', earnings: 0 });
+  }
+
   return { total, differences: diffs };
 };
 

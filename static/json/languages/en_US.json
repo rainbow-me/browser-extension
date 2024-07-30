@@ -495,10 +495,11 @@
         "disable_flashbots": "Disable Flashbots"
       },
       "search_tags": {
-        "swap": "bridge",
-        "get": "swap",
-        "my_wallets": "switch",
-        "my_contacts": "contact, contacts",
+        "swap": "buy, sell, trade, order, exchange, dex, routes",
+        "bridge": "transfer, chain, routes",
+        "get": "swap, bridge",
+        "my_wallets": "my, switch",
+        "my_contacts": "my",
         "my_tokens_watched": "my",
         "my_nfts_watched": "my",
         "view_profile": "profile, gallery, ens, nfts",

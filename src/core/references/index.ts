@@ -127,7 +127,9 @@ export const DEGEN_DEGEN_ADDRESS = AddressZero;
 export const OVM_GAS_PRICE_ORACLE =
   '0x420000000000000000000000000000000000000F';
 
-export const REFERRER = 'browser-extension';
+export type ReferrerType = 'browser-extension' | 'bx-claim';
+export const REFERRER: ReferrerType = 'browser-extension';
+export const REFERRER_CLAIM: ReferrerType = 'bx-claim';
 
 export const LEGACY_CHAINS_FOR_HW = [
   ChainId.optimism,
