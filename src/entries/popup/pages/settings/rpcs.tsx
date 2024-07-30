@@ -254,7 +254,8 @@ export function SettingsNetworksRPCs() {
                   <ContextMenu>
                     <ContextMenuTrigger
                       disabled={
-                        mainnetChains[index].name === supportedChain?.name
+                        supportedChain?.rpcUrls.default.http[0] ===
+                        chain.rpcUrls.default.http[0]
                       }
                     >
                       <MenuItem
