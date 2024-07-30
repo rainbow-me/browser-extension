@@ -488,7 +488,10 @@
         "send_contact": "发送到联系人",
         "export_addresses_as_csv": "导出地址为CSV",
         "enable_flashbots": "启用Flashbots",
-        "disable_flashbots": "禁用Flashbots"
+        "disable_flashbots": "禁用Flashbots",
+        "bridge": "桥接",
+        "get": "获取",
+        "view_token_details": "查看 %{symbol} 详情"
       },
       "search_tags": {
         "swap": "桥接",
@@ -508,7 +511,9 @@
         "add_hardware_wallet": "Ledger、Trezor、连接",
         "hide_balances": "切换",
         "hide_small_balances": "切换",
-        "wallets_and_keys": "钱包和密钥、设置、偏好设置"
+        "wallets_and_keys": "钱包和密钥、设置、偏好设置",
+        "bridge": "转账, 链, 路由",
+        "get": "交换, 桥接"
       }
     },
     "command_rows": {
@@ -1267,7 +1272,8 @@
     "activity": "活动",
     "nfts": "NFTs",
     "points": "积分",
-    "tokens": "代币"
+    "tokens": "代币",
+    "rewards": "奖励"
   },
   "activity": {
     "today": "今天",
@@ -1455,7 +1461,47 @@
       "your_earnings": "上周收益",
       "view_breakdown": "查看您的每周收益明细",
       "view_now": "立即查看"
-    }
+    },
+    "my_points": "我的积分",
+    "no_weekly_rank": "无周排名",
+    "rank": "排名",
+    "ranking": "排名 #%{rank}",
+    "referral_earnings": "%{earnings} 积分",
+    "rewards": {
+      "allocating_earnings": "> 正在分配您的收益...",
+      "already_claimed": "> 您的奖励已经被领取",
+      "amount_in_eth": "+ %{amount} ETH",
+      "available_to_claim": "可领取",
+      "calculating_referrals": "> 正在计算您的推荐...",
+      "choose_claim_network": "选择领取网络",
+      "claim_complete": "> 领取完成",
+      "claim_failed": "领取失败。请再试一次。",
+      "claim_reward": "领取 %{reward}",
+      "claim_success_bridge_failed": "领取成功，但资金未被桥接。",
+      "claimed_earnings": "已领取收益",
+      "claiming_your_reward": "领取您的奖励",
+      "coming_soon": "即将推出",
+      "counting_points": "> 正在计算已赚取的积分...",
+      "current_value": "当前价值",
+      "done": "完成",
+      "earn_eth_rewards": "赚取 ETH 奖励",
+      "earned_last_week": "上周赚取",
+      "free_to_claim": "免费领取",
+      "has_bridge_fee": "有桥接费用",
+      "in_eth": "以 ETH 计算",
+      "keep_earning": "继续通过交换、桥接、铸造、推荐朋友等方式赚取积分和 Rainbow 奖励",
+      "my_earnings": "我的收益",
+      "my_referrals": "推荐",
+      "my_rewards": "我的奖励",
+      "no_claim": "> 目前没有奖励可领取",
+      "points_explanation": "每周积分排名前列的用户将获得 Rainbow 自家辛苦赚取的 ETH 的每周空投。通过在 Rainbow 上交换或交易、使用 dapps 或推荐朋友来收集积分。",
+      "program_earnings": "Rainbow 用户已赚取",
+      "ready_to_spend": "您的 ETH 已经在钱包中，随时可以使用。您已经准备好了。",
+      "use_rainbow": "使用 Rainbow 的越多，获得的奖励就越多",
+      "your_reward_is_ready": "> 您的奖励已准备好",
+      "your_rewards": "您的奖励"
+    },
+    "top_holders": "积分排名前列的用户"
   },
   "speed_up_and_cancel": {
     "speed_up": "加快",

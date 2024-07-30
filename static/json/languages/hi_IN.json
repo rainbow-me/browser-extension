@@ -488,7 +488,10 @@
         "send_contact": "संपर्क को भेजें",
         "export_addresses_as_csv": "CSV के रूप में पते निर्यात करें",
         "enable_flashbots": "Flashbots सक्षम करें",
-        "disable_flashbots": "Flashbots अक्षम करें"
+        "disable_flashbots": "Flashbots अक्षम करें",
+        "bridge": "ब्रिज",
+        "get": "प्राप्त करें",
+        "view_token_details": "%{symbol} विवरण देखें"
       },
       "search_tags": {
         "swap": "सेतु",
@@ -508,7 +511,9 @@
         "add_hardware_wallet": "लेजर, त्रेजोर, कनेक्ट",
         "hide_balances": "टॉगल करें",
         "hide_small_balances": "टॉगल करें",
-        "wallets_and_keys": "वॉलेट और कुंजी, सेटिंग्स, प्राथमिकताएं"
+        "wallets_and_keys": "वॉलेट और कुंजी, सेटिंग्स, प्राथमिकताएं",
+        "bridge": "ट्रांसफर, चेन, रूट्स",
+        "get": "स्वैप, ब्रिज"
       }
     },
     "command_rows": {
@@ -1267,7 +1272,8 @@
     "activity": "गतिविधि",
     "nfts": "NFTs",
     "points": "अंक",
-    "tokens": "टोकन"
+    "tokens": "टोकन",
+    "rewards": "इनाम"
   },
   "activity": {
     "today": "आज",
@@ -1455,7 +1461,47 @@
       "your_earnings": "आपकी पिछले सप्ताह की कमाई",
       "view_breakdown": "अपनी साप्ताहिक कमाई का विवरण देखें",
       "view_now": "अभी देखें"
-    }
+    },
+    "my_points": "मेरे अंक",
+    "no_weekly_rank": "कोई साप्ताहिक रैंक नहीं",
+    "rank": "रैंक",
+    "ranking": "रैंक #%{rank}",
+    "referral_earnings": "%{earnings} अंक",
+    "rewards": {
+      "allocating_earnings": "> आपके लाभों को आवंटित किया जा रहा है...",
+      "already_claimed": "> आपकी इनाम पहले ही दावा की जा चुकी है",
+      "amount_in_eth": "+ %{amount} ETH",
+      "available_to_claim": "दावा करने के लिए उपलब्ध",
+      "calculating_referrals": "> आपकी संदर्भों की गणना की जा रही है...",
+      "choose_claim_network": "दावा नेटवर्क चुनें",
+      "claim_complete": "> दावा पूरा",
+      "claim_failed": "दावा विफल। कृपया पुनः प्रयास करें।",
+      "claim_reward": "%{reward} दावा करें",
+      "claim_success_bridge_failed": "दावा सफल लेकिन फंड्स ब्रिज नहीं हुए।",
+      "claimed_earnings": "दावा किए गए लाभ",
+      "claiming_your_reward": "आपके इनाम का दावा",
+      "coming_soon": "जल्द ही आ रहा है",
+      "counting_points": "> अर्जित अंकों की गणना की जा रही है...",
+      "current_value": "वर्तमान मूल्य",
+      "done": "हो गया",
+      "earn_eth_rewards": "ETH इनाम कमाएँ",
+      "earned_last_week": "पिछले सप्ताह अर्जित",
+      "free_to_claim": "दावा करने के लिए मुफ्त",
+      "has_bridge_fee": "ब्रिज शुल्क है",
+      "in_eth": "ETH में",
+      "keep_earning": "स्वैप, ब्रिज, मिंटिंग, मित्रों को संदर्भित करने और अधिक द्वारा अंक अर्जित करना जारी रखें और Rainbow इनामों में अपना हिस्सा प्राप्त करें",
+      "my_earnings": "मेरे लाभ",
+      "my_referrals": "संदर्भ",
+      "my_rewards": "मेरे इनाम",
+      "no_claim": "> इस समय आपके पास कोई इनाम दावा करने के लिए नहीं है",
+      "points_explanation": "साप्ताहिक अंक अर्जक शीर्ष स्थान प्राप्तकर्ता को Rainbow के स्वयं के कठिन से कमाए गए ETH का साप्ताहिक एयरड्रॉप प्राप्त होगा। Rainbow में स्वैपिंग या लेनदेन करके, dapps का उपयोग करके, या दोस्तों को संदर्भित करके अंक एकत्र करें।",
+      "program_earnings": "Rainbow उपयोगकर्ताओं ने अर्जित किया है",
+      "ready_to_spend": "आपका ETH आपके वॉलेट में है और खर्च करने के लिए तैयार है। आप तैयार हैं।",
+      "use_rainbow": "जितना अधिक आप Rainbow का उपयोग करेंगे, उतना ही अधिक इनाम प्राप्त करेंगे",
+      "your_reward_is_ready": "> आपका इनाम तैयार है",
+      "your_rewards": "आपके इनाम"
+    },
+    "top_holders": "शीर्ष अंक धारक"
   },
   "speed_up_and_cancel": {
     "speed_up": "गति बढ़ाएं",

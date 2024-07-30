@@ -488,7 +488,10 @@
         "send_contact": "Kişiye Gönder",
         "export_addresses_as_csv": "CSV olarak Adresleri Dışa Aktar",
         "enable_flashbots": "Flashbots'i etkinleştir",
-        "disable_flashbots": "Flashbots'i devre dışı bırak"
+        "disable_flashbots": "Flashbots'i devre dışı bırak",
+        "bridge": "Köprü",
+        "get": "Al",
+        "view_token_details": "%{symbol} Detaylarını Gör"
       },
       "search_tags": {
         "swap": "köprü",
@@ -508,7 +511,9 @@
         "add_hardware_wallet": "ledger, trezor, bağlan",
         "hide_balances": "aç/kapa",
         "hide_small_balances": "aç/kapa",
-        "wallets_and_keys": "cüzdanlar ve anahtarlar, ayarlar, tercihler"
+        "wallets_and_keys": "cüzdanlar ve anahtarlar, ayarlar, tercihler",
+        "bridge": "transfer, zincir, yollar",
+        "get": "değişim, köprü"
       }
     },
     "command_rows": {
@@ -1267,7 +1272,8 @@
     "activity": "Aktivite",
     "nfts": "NFT'ler",
     "points": "Puanlar",
-    "tokens": "Tokenler"
+    "tokens": "Tokenler",
+    "rewards": "Ödüller"
   },
   "activity": {
     "today": "Bugün",
@@ -1455,7 +1461,47 @@
       "your_earnings": "Geçen Haftaki Kazancınız",
       "view_breakdown": "Haftalık kazanç detaylarınızı görüntüleyin",
       "view_now": "Şimdi Görüntüle"
-    }
+    },
+    "my_points": "Puanlarım",
+    "no_weekly_rank": "Haftalık Sıralama Yok",
+    "rank": "Sıralama",
+    "ranking": "Sıralama #%{rank}",
+    "referral_earnings": "%{earnings} puan",
+    "rewards": {
+      "allocating_earnings": "> Kazançlarınızı tahsis ediliyor...",
+      "already_claimed": "> Ödülünüz zaten talep edildi",
+      "amount_in_eth": "+ %{amount} ETH",
+      "available_to_claim": "Talep Edilmeye Uygun",
+      "calculating_referrals": "> Referanslarınız hesaplanıyor...",
+      "choose_claim_network": "Talep Ağı Seçin",
+      "claim_complete": "> Talep Tamamlandı",
+      "claim_failed": "Talep Başarısız. Lütfen tekrar deneyin.",
+      "claim_reward": "%{reward} Talep Et",
+      "claim_success_bridge_failed": "Talep Başarılı ama fonlar köprülenmedi.",
+      "claimed_earnings": "Talep Edilen Kazançlar",
+      "claiming_your_reward": "ÖDÜLÜNÜZÜ TALEP EDİYOR",
+      "coming_soon": "Yakında",
+      "counting_points": "> Kazanılan puanlar hesaplanıyor...",
+      "current_value": "Mevcut Değer",
+      "done": "Tamam",
+      "earn_eth_rewards": "ETH Ödülleri Kazanın",
+      "earned_last_week": "Geçen Hafta Kazanıldı",
+      "free_to_claim": "Talep Etmek Ücretsiz",
+      "has_bridge_fee": "Köprü Ücreti Var",
+      "in_eth": "ETH Cinsinden",
+      "keep_earning": "Puan kazanmaya ve Rainbow ödüllerinden payınızı almaya devam edin. Değişim, köprüleme, minting, arkadaşları referans gösterme ve daha fazlası ile puan kazanın.",
+      "my_earnings": "Kazançlarım",
+      "my_referrals": "Referanslar",
+      "my_rewards": "Ödüllerim",
+      "no_claim": "> Şu anda talep edilecek bir ödülünüz yok",
+      "points_explanation": "Haftalık puan kazananlar, Rainbow'un kendi zorlu şekilde kazandığı ETH'sinin haftalık hava droplarını alacaklar. Puan toplamak için Rainbow'da değişim yaparak, işlem yaparak, dapp'leri kullanarak veya arkadaşları referans göstererek puan toplayın.",
+      "program_earnings": "Rainbow kullanıcıları kazandı",
+      "ready_to_spend": "ETH'niz cüzdanınızda ve harcamaya hazır. Her şey tamam.",
+      "use_rainbow": "Rainbow'u ne kadar çok kullanırsanız, ödülleriniz o kadar fazla olacaktır.",
+      "your_reward_is_ready": "> Ödülünüz hazır",
+      "your_rewards": "Ödülleriniz"
+    },
+    "top_holders": "En Yüksek Puan Sahipleri"
   },
   "speed_up_and_cancel": {
     "speed_up": "Hızlandır",

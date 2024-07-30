@@ -488,7 +488,10 @@
         "send_contact": "Envoyer au contact",
         "export_addresses_as_csv": "Exporter les adresses au format CSV",
         "enable_flashbots": "Activer Flashbots",
-        "disable_flashbots": "Désactiver Flashbots"
+        "disable_flashbots": "Désactiver Flashbots",
+        "bridge": "Pont",
+        "get": "Obtenir",
+        "view_token_details": "Voir les détails de %{symbol}"
       },
       "search_tags": {
         "swap": "pont",
@@ -508,7 +511,9 @@
         "add_hardware_wallet": "ledger, trezor, connecter",
         "hide_balances": "basculer",
         "hide_small_balances": "basculer",
-        "wallets_and_keys": "portefeuilles et clés, paramètres, préférences"
+        "wallets_and_keys": "portefeuilles et clés, paramètres, préférences",
+        "bridge": "transfert, chaîne, itinéraires",
+        "get": "échange, pont"
       }
     },
     "command_rows": {
@@ -1267,7 +1272,8 @@
     "activity": "Activité",
     "nfts": "NFTs",
     "points": "Points",
-    "tokens": "Jetons"
+    "tokens": "Jetons",
+    "rewards": "Récompenses"
   },
   "activity": {
     "today": "Aujourd'hui",
@@ -1455,7 +1461,47 @@
       "your_earnings": "Vos gains de la semaine dernière",
       "view_breakdown": "Voir le détail de vos gains hebdomadaires",
       "view_now": "Voir maintenant"
-    }
+    },
+    "my_points": "Mes Points",
+    "no_weekly_rank": "Pas de Classement Hebdomadaire",
+    "rank": "Rang",
+    "ranking": "Rang #%{rank}",
+    "referral_earnings": "%{earnings} points",
+    "rewards": {
+      "allocating_earnings": "> Attribution de vos gains...",
+      "already_claimed": "> Votre récompense a déjà été réclamée",
+      "amount_in_eth": "+ %{amount} ETH",
+      "available_to_claim": "Disponible à Réclamer",
+      "calculating_referrals": "> Calcul des vos références...",
+      "choose_claim_network": "Choisir le Réseau pour Réclamer",
+      "claim_complete": "> Réclamation Complète",
+      "claim_failed": "Échec de la Réclamation. Veuillez réessayer.",
+      "claim_reward": "Réclamer %{reward}",
+      "claim_success_bridge_failed": "Réclamation Réussie mais les fonds n'ont pas été transférés.",
+      "claimed_earnings": "Gains Réclamés",
+      "claiming_your_reward": "RÉCLAMATION DE VOTRE RÉCOMPENSE",
+      "coming_soon": "Bientôt Disponible",
+      "counting_points": "> Comptage des points gagnés...",
+      "current_value": "Valeur Actuelle",
+      "done": "Fait",
+      "earn_eth_rewards": "Gagnez des Récompenses en ETH",
+      "earned_last_week": "Gagné la Semaine Dernière",
+      "free_to_claim": "Gratuit à Réclamer",
+      "has_bridge_fee": "A des Frais de Pont",
+      "in_eth": "En ETH",
+      "keep_earning": "Continuez à gagner des points et votre part des récompenses Rainbow en échangeant, transférant, frappant, en référant des amis, et plus encore",
+      "my_earnings": "Mes Gains",
+      "my_referrals": "Références",
+      "my_rewards": "Mes Récompenses",
+      "no_claim": "> Vous n'avez pas de récompense à réclamer pour le moment",
+      "points_explanation": "Les meilleurs gagnants de points hebdomadaires recevront un airdrop hebdomadaire de l'ETH durement gagné par Rainbow. Collectez des points en échangeant ou en transactant dans Rainbow, en utilisant des dapps, ou en référant des amis.",
+      "program_earnings": "Les utilisateurs de Rainbow ont gagné",
+      "ready_to_spend": "Votre ETH est dans votre portefeuille et prêt à être dépensé. Vous êtes prêt.",
+      "use_rainbow": "Plus vous utilisez Rainbow, plus vous serez récompensé",
+      "your_reward_is_ready": "> Votre récompense est prête",
+      "your_rewards": "Vos récompenses"
+    },
+    "top_holders": "Principaux Détenteurs de Points"
   },
   "speed_up_and_cancel": {
     "speed_up": "Accélérer",

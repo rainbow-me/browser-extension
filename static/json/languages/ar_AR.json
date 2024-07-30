@@ -488,7 +488,10 @@
         "send_contact": "إرسال إلى جهة اتصال",
         "export_addresses_as_csv": "تصدير العناوين كملف CSV",
         "enable_flashbots": "تمكين Flashbots",
-        "disable_flashbots": "تعطيل Flashbots"
+        "disable_flashbots": "تعطيل Flashbots",
+        "bridge": "الجسر",
+        "get": "احصل على",
+        "view_token_details": "عرض تفاصيل %{symbol}"
       },
       "search_tags": {
         "swap": "الجسر",
@@ -508,7 +511,9 @@
         "add_hardware_wallet": "ledger, trezor, الاتصال",
         "hide_balances": "تبديل",
         "hide_small_balances": "تبديل",
-        "wallets_and_keys": "المحافظ والمفاتيح, الإعدادات, التفضيلات"
+        "wallets_and_keys": "المحافظ والمفاتيح, الإعدادات, التفضيلات",
+        "bridge": "نقل، سلسلة، طرق",
+        "get": "تبديل، جسر"
       }
     },
     "command_rows": {
@@ -1267,7 +1272,8 @@
     "activity": "النشاط",
     "nfts": "NFTs",
     "points": "النقاط",
-    "tokens": "رموز"
+    "tokens": "رموز",
+    "rewards": "المكافآت"
   },
   "activity": {
     "today": "اليوم",
@@ -1455,7 +1461,47 @@
       "your_earnings": "أرباحك الأسبوع الماضي",
       "view_breakdown": "اعرض تفاصيل أرباحك الأسبوعية",
       "view_now": "اعرض الآن"
-    }
+    },
+    "my_points": "نقاطي",
+    "no_weekly_rank": "لا تصنيف أسبوعي",
+    "rank": "الرتبة",
+    "ranking": "الرتبة #%{rank}",
+    "referral_earnings": "%{earnings} نقطة",
+    "rewards": {
+      "allocating_earnings": "> يتم تخصيص أرباحك...",
+      "already_claimed": "> تم المطالبة بمكافأتك بالفعل",
+      "amount_in_eth": "+ %{amount} ETH",
+      "available_to_claim": "متاح للمطالبة",
+      "calculating_referrals": "> يتم حساب إحالاتك...",
+      "choose_claim_network": "اختر شبكة المطالبة",
+      "claim_complete": "> تمت المطالبة بنجاح",
+      "claim_failed": "فشلت المطالبة. يرجى المحاولة مرة أخرى.",
+      "claim_reward": "المطالبة بـ %{reward}",
+      "claim_success_bridge_failed": "تمت المطالبة بنجاح ولكن لم يتم جسر الأموال.",
+      "claimed_earnings": "الأرباح المطالب بها",
+      "claiming_your_reward": "جارٍ المطالبة بمكافأتك",
+      "coming_soon": "قريبًا",
+      "counting_points": "> يتم حساب النقاط المكتسبة...",
+      "current_value": "القيمة الحالية",
+      "done": "تم",
+      "earn_eth_rewards": "اكسب مكافآت ETH",
+      "earned_last_week": "مكتسبات الأسبوع الماضي",
+      "free_to_claim": "مجاني للمطالبة",
+      "has_bridge_fee": "يحتوي على رسوم جسر",
+      "in_eth": "بـ ETH",
+      "keep_earning": "استمر في كسب النقاط ونصيبك من مكافآت Rainbow من خلال التبديل، والجسر، والصك، وإحالة الأصدقاء، والمزيد",
+      "my_earnings": "أرباحي",
+      "my_referrals": "الإحالات",
+      "my_rewards": "مكافآتي",
+      "no_claim": "> لا توجد مكافأة للمطالبة في الوقت الحالي",
+      "points_explanation": "سيحصل أعلى كاسبي النقاط الأسبوعية على توزيع أسبوعي من ETH الذي كسبته Rainbow بجد. اجمع النقاط من خلال التبديل أو إجراء المعاملات في Rainbow، أو استخدام التطبيقات اللامركزية، أو إحالة الأصدقاء.",
+      "program_earnings": "لقد كسب مستخدمو Rainbow",
+      "ready_to_spend": "ETH الخاص بك في محفظتك وجاهز للإنفاق. أنت جاهز.",
+      "use_rainbow": "كلما استخدمت Rainbow أكثر، زادت مكافآتك",
+      "your_reward_is_ready": "> مكافأتك جاهزة",
+      "your_rewards": "مكافآتك"
+    },
+    "top_holders": "أعلى حاملي النقاط"
   },
   "speed_up_and_cancel": {
     "speed_up": "تسريع العملية",
