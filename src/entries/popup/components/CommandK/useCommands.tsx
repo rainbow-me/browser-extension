@@ -110,6 +110,16 @@ export const getStaticCommandInfo = (): CommandInfo => {
       symbolSize: 15.5,
       type: SearchItemType.Shortcut,
     },
+    bridge: {
+      actionLabel: actionLabels.open,
+      hideForWatchedWallets: true,
+      name: getCommandName('bridge'),
+      page: PAGES.HOME,
+      searchTags: getSearchTags('bridge'),
+      symbol: 'arrow.turn.up.right',
+      symbolSize: 15.5,
+      type: SearchItemType.Shortcut,
+    },
     myWallets: {
       actionLabel: actionLabels.view,
       name: getCommandName('my_wallets'),
@@ -213,6 +223,17 @@ export const getStaticCommandInfo = (): CommandInfo => {
       symbol: 'square.on.square.dashed',
       symbolSize: 15,
       to: ROUTES.CONNECTED,
+      type: SearchItemType.Shortcut,
+    },
+    approvals: {
+      actionLabel: actionLabels.open,
+      hideForWatchedWallets: true,
+      name: getCommandName('approvals'),
+      page: PAGES.HOME,
+      searchTags: getSearchTags('approvals'),
+      symbol: 'checkmark.seal.fill',
+      symbolSize: 14.5,
+      to: ROUTES.SETTINGS__APPROVALS,
       type: SearchItemType.Shortcut,
     },
     settings: {
@@ -899,6 +920,9 @@ export const useCommands = (
       // PAGE: HOME
       swap: {
         action: navigateToSwaps,
+      },
+      bridge: {
+        action: () => navigate(ROUTES.BRIDGE),
       },
       myTokens: {
         name: isWatchingWallet

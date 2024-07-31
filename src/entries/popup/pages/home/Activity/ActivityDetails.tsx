@@ -486,7 +486,9 @@ function MoreOptions({
   revoke?: boolean;
   onRevoke: () => void;
 }) {
-  const explorer = getTransactionBlockExplorer(transaction);
+  const explorer = transaction?.explorer?.name
+    ? transaction.explorer
+    : getTransactionBlockExplorer(transaction);
   const hash = transaction.hash;
   return (
     <DropdownMenu>

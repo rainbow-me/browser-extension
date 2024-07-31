@@ -143,7 +143,7 @@ function BalanceValue({
             weight="semibold"
             color={color}
             cursor="text"
-            userSelect="all"
+            userSelect="text"
           >
             {hideAssetBalances ? <HiddenValue /> : balance.value}{' '}
             {balance.symbol}
@@ -161,7 +161,7 @@ function BalanceValue({
             color={color}
             align="right"
             cursor="text"
-            userSelect="all"
+            userSelect="text"
           >
             {getPrice(nativeBalance, chainId)}
           </TextOverflow>
