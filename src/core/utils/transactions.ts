@@ -301,6 +301,12 @@ export function parseTransaction({
     iconUrl: meta.contract_icon_url,
   };
 
+  const explorer = meta.explorer_label &&
+    meta.explorer_url && {
+      name: meta.explorer_label,
+      url: meta.explorer_url,
+    };
+
   return {
     from: tx.address_from,
     to: addressTo,
@@ -322,6 +328,7 @@ export function parseTransaction({
     confirmations: tx.block_confirmations,
     contract,
     native,
+    explorer,
     ...fee,
   } as RainbowTransaction;
 }

@@ -942,7 +942,9 @@ function RainbowUserEarnings({ totalEarnings }: { totalEarnings: string }) {
       <Inline alignVertical="center" space="4px">
         <EthIcon size={12} />
         <Text size="12pt" color="labelSecondary" weight="heavy">
-          {`${convertRawAmountToDecimalFormat(totalEarnings, 18)} ETH`}
+          {`${parseFloat(
+            convertRawAmountToDecimalFormat(totalEarnings, 18),
+          ).toFixed(3)} ETH`}
         </Text>
       </Inline>
     </Inline>
@@ -1228,8 +1230,9 @@ export function PointsDashboard() {
       <Stack
         gap="20px"
         width="full"
-        marginTop="-30px"
-        padding="20px"
+        paddingTop="10px"
+        paddingBottom="80px"
+        paddingHorizontal="20px"
         background={currentTheme === 'light' ? 'surfaceSecondary' : undefined}
       >
         <Rows>

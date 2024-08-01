@@ -228,7 +228,7 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({
         driver,
         key: 'ARROW_DOWN',
-        timesToPress: 2,
+        timesToPress: 3,
       });
       await executePerformShortcut({ driver, key: 'ENTER' });
       await findElementByText(driver, 'Switch to Wallet');

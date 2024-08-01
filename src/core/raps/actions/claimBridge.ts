@@ -8,6 +8,7 @@ import {
 import { Address } from 'viem';
 import { optimism } from 'viem/chains';
 
+import { REFERRER_CLAIM } from '~/core/references';
 import { gasStore } from '~/core/state';
 import { TransactionGasParams } from '~/core/types/gas';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
@@ -164,6 +165,7 @@ export async function claimBridge({
     quote: bridgeQuote,
     wallet,
     gasParams,
+    referrer: REFERRER_CLAIM,
   };
 
   let swap;
