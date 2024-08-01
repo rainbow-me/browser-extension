@@ -1,13 +1,13 @@
 import { Provider, TransactionResponse } from '@ethersproject/providers';
 import { formatUnits } from '@ethersproject/units';
 import { QueryClient, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Hash, getProvider } from '@wagmi/core';
-import { Address } from 'wagmi';
+import { Address, Hash } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { addysHttp } from '~/core/network/addys';
 import { QueryFunctionResult, createQueryKey } from '~/core/react-query';
-import { SUPPORTED_CHAIN_IDS, SupportedCurrencyKey } from '~/core/references';
+import { SupportedCurrencyKey } from '~/core/references';
+import { supportedTransactionsChainIds } from '~/core/references/chains';
 import {
   consolidatedTransactionsQueryFunction,
   consolidatedTransactionsQueryKey,
@@ -25,6 +25,7 @@ import {
   TxHash,
 } from '~/core/types/transactions';
 import { parseTransaction } from '~/core/utils/transactions';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 import { useUserChains } from '~/entries/popup/hooks/useUserChains';
 import { RainbowError, logger } from '~/logger';
 
@@ -51,7 +52,7 @@ export const fetchTransaction = async ({
   currency: SupportedCurrencyKey;
   chainId: ChainId;
 }) => {
-  if (!SUPPORTED_CHAIN_IDS.includes(chainId)) {
+  if (!supportedTransactionsChainIds.includes(chainId)) {
     return fetchTransactionDataFromProvider({
       chainId,
       hash,
@@ -243,7 +244,7 @@ export const useTransaction = ({
     initialData: () => {
       if (!hash || !chainId) return;
 
-      const tx = SUPPORTED_CHAIN_IDS.includes(chainId)
+      const tx = supportedTransactionsChainIds.includes(chainId)
         ? findTransactionInConsolidatedBEQueryCache(
             queryClient,
             consolidatedTransactionsKey,
@@ -257,7 +258,8 @@ export const useTransaction = ({
       if (tx) return tx;
     },
     initialDataUpdatedAt: () => {
-      if (!chainId || !SUPPORTED_CHAIN_IDS.includes(chainId)) return undefined;
+      if (!chainId || !supportedTransactionsChainIds.includes(chainId))
+        return undefined;
       return queryClient.getQueryState(consolidatedTransactionsKey)
         ?.dataUpdatedAt;
     },

@@ -1,3 +1,4 @@
+import { Address } from 'viem';
 import create from 'zustand';
 
 import { ParsedUserAsset } from '~/core/types/assets';
@@ -6,16 +7,12 @@ import { SearchAsset } from '~/core/types/search';
 import { createStore } from '../internal/createStore';
 import { withSelectors } from '../internal/withSelectors';
 
-type UpdateHiddenAssetArgs = {
-  uniqueId: string;
-};
-
-type UpdateHiddenAssetFn = ({ uniqueId }: UpdateHiddenAssetArgs) => void;
+type HiddenAssetDict = Record<string, boolean>;
+type HiddenAssetsByAddress = Record<Address, HiddenAssetDict>;
 
 export interface HiddenAssetState {
-  hiddenAssets: string[];
-  addHiddenAsset: UpdateHiddenAssetFn;
-  removeHiddenAsset: UpdateHiddenAssetFn;
+  hidden: HiddenAssetsByAddress;
+  toggleHideAsset: (address: Address, uniqueId: string) => void;
 }
 
 export const computeUniqueIdForHiddenAsset = (
@@ -26,26 +23,24 @@ export const computeUniqueIdForHiddenAsset = (
 
 export const hiddenAssetsStore = createStore<HiddenAssetState>(
   (set, get) => ({
-    hiddenAssets: [],
-    addHiddenAsset: ({ uniqueId }: UpdateHiddenAssetArgs) => {
-      const { hiddenAssets } = get();
+    hidden: {},
+    toggleHideAsset: (address: Address, uniqueId: string) => {
+      const { hidden } = get();
       set({
-        hiddenAssets: [...hiddenAssets, uniqueId],
-      });
-    },
-    removeHiddenAsset: ({ uniqueId }: UpdateHiddenAssetArgs) => {
-      const { hiddenAssets } = get();
-      set({
-        hiddenAssets: hiddenAssets.filter(
-          (_uniqueId) => _uniqueId !== uniqueId,
-        ),
+        hidden: {
+          ...hidden,
+          [address]: {
+            ...(hidden[address] ?? {}),
+            [uniqueId]: !hidden[address]?.[uniqueId],
+          },
+        },
       });
     },
   }),
   {
     persist: {
       name: 'hidden_assets',
-      version: 1,
+      version: 2,
     },
   },
 );

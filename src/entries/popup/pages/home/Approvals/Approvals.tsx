@@ -1,9 +1,9 @@
 import clsx from 'clsx';
 import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
-import { Address, Chain } from 'wagmi';
+import { Address, Chain } from 'viem';
 
 import { i18n } from '~/core/languages';
-import { SUPPORTED_MAINNET_CHAINS } from '~/core/references';
+import { SUPPORTED_MAINNET_CHAINS } from '~/core/references/chains';
 import { shortcuts } from '~/core/references/shortcuts';
 import {
   Approval,
@@ -13,7 +13,6 @@ import {
 import { useConsolidatedTransactions } from '~/core/resources/transactions/consolidatedTransactions';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
-import { useUserChainsStore } from '~/core/state/userChains';
 import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction, TxHash } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
@@ -56,6 +55,7 @@ import { HomeMenuRow } from '~/entries/popup/components/HomeMenuRow/HomeMenuRow'
 import { ShortcutHint } from '~/entries/popup/components/ShortcutHint/ShortcutHint';
 import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
+import { useUserChains } from '~/entries/popup/hooks/useUserChains';
 import { simulateContextClick } from '~/entries/popup/utils/simulateClick';
 
 import { CoinIcon } from '../../../components/CoinIcon/CoinIcon';
@@ -324,7 +324,7 @@ const sortApprovals = (
 export const Approvals = () => {
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency } = useCurrentCurrencyStore();
-  const { userChains } = useUserChainsStore();
+  const { chains } = useUserChains();
   const [showRevokeSheet, setShowRevokeSheet] = useState(false);
   const [revokeApproval, setRevokeApproval] = useState<{
     approval: Approval | null;
@@ -343,7 +343,7 @@ export const Approvals = () => {
   const revokeTransactions = useMemo(
     () =>
       data?.pages
-        .map((p) => p.transactions)
+        ?.map((p) => p.transactions)
         .flat()
         .filter(
           (tx) =>
@@ -355,14 +355,10 @@ export const Approvals = () => {
     [activeTab, data?.pages],
   );
 
-  const chainIds = Object.keys(userChains)
-    .filter((id) => supportedMainnetIds.includes(Number(id)))
-    .map(Number);
-
   const { data: approvals, isLoading } = useApprovals(
     {
       address: currentAddress,
-      chainIds: chainIds,
+      chainIds: chains.map((c) => c.id),
       currency: currentCurrency,
     },
     {

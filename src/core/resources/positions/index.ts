@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { addysHttp } from '~/core/network/addys';
 import {
@@ -10,13 +10,11 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
+import { supportedPositionsChainIds } from '~/core/references/chains';
 import { AssetApiResponse, ParsedUserAsset } from '~/core/types/assets';
-import { ChainId, ChainName } from '~/core/types/chains';
+import { ChainId, ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import { parseUserAsset } from '~/core/utils/assets';
-import {
-  chainIdFromChainName,
-  getBackendSupportedChains,
-} from '~/core/utils/chains';
+import { getSupportedChains } from '~/core/utils/chains';
 import { RainbowError, logger } from '~/logger';
 
 const POSITIONS_TIMEOUT_DURATION = 20000;
@@ -108,9 +106,12 @@ async function positionsQueryFunction({
 }: QueryFunctionArgs<typeof positionsQueryKey>) {
   if (!address) return {} as ParsedPositionsByChain;
   try {
-    const supportedChainIds = getBackendSupportedChains({ testnetMode }).map(
-      ({ id }) => id,
-    );
+    const supportedChainIds = getSupportedChains({
+      testnets: testnetMode,
+    })
+      .map(({ id }) => id)
+      .filter((id) => supportedPositionsChainIds.includes(id));
+
     const response = await addysHttp.get<AddysPositionsResponse>(
       `/${supportedChainIds.join(',')}/${address}/positions`,
       {
@@ -154,8 +155,9 @@ async function positionsQueryFunctionRetryByChain({
   try {
     const cache = queryClient.getQueryCache();
     const cachedPositions =
-      (cache.find(positionsQueryKey({ address, currency, testnetMode }))?.state
-        ?.data as ParsedPositionsByChain) || {};
+      (cache.find({
+        queryKey: positionsQueryKey({ address, currency, testnetMode }),
+      })?.state?.data as ParsedPositionsByChain) || {};
     const retries = [];
     for (const chainIdWithError of chainIds) {
       retries.push(
@@ -237,11 +239,11 @@ export async function fetchPositions(
     PositionsQueryKey
   > = {},
 ) {
-  return await queryClient.fetchQuery(
-    positionsQueryKey({ address, currency, testnetMode }),
-    positionsQueryFunction,
-    config,
-  );
+  return await queryClient.fetchQuery({
+    queryKey: positionsQueryKey({ address, currency, testnetMode }),
+    queryFn: positionsQueryFunction,
+    ...config,
+  });
 }
 
 // ///////////////////////////////////////////////
@@ -256,11 +258,11 @@ export function usePositions(
     PositionsQueryKey
   > = {},
 ) {
-  return useQuery(
-    positionsQueryKey({ address, currency, testnetMode }),
-    positionsQueryFunction,
-    config,
-  );
+  return useQuery({
+    queryKey: positionsQueryKey({ address, currency, testnetMode }),
+    queryFn: positionsQueryFunction,
+    ...config,
+  });
 }
 
 function parsePositions(
@@ -305,6 +307,6 @@ function parsePosition(
     stakes: position.stakes?.map((s) =>
       parseUserAsset({ asset: s.asset, balance: s.quantity, currency }),
     ),
-    chainId: chainIdFromChainName(position?.network),
+    chainId: chainNameToIdMapping[position?.network],
   };
 }

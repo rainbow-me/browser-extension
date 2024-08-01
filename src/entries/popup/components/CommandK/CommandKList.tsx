@@ -19,7 +19,6 @@ import {
   SearchItem,
   SearchItemType,
   ShortcutSearchItem,
-  TokenSearchItem,
 } from './SearchItems';
 import { CommandKPage, PAGES } from './pageConfig';
 import { timingConfig } from './references';
@@ -203,10 +202,13 @@ export const CommandKList = React.forwardRef<
                       selected={isSelected}
                     />
                   );
-                } else if (command.type === SearchItemType.Token) {
+                } else if (
+                  command.type === SearchItemType.Token ||
+                  command.type === SearchItemType.UnownedToken
+                ) {
                   row = (
                     <TokenRow
-                      command={command as TokenSearchItem}
+                      command={command}
                       handleExecuteCommand={handleExecuteCommand}
                       key={command.id}
                       selected={isSelected}

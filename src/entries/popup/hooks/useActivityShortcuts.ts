@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -8,8 +8,10 @@ import { useSelectedTransactionStore } from '~/core/state/selectedTransaction';
 import { truncateAddress } from '~/core/utils/address';
 import { goToNewTab } from '~/core/utils/tabs';
 import { getTransactionBlockExplorer } from '~/core/utils/transactions';
+import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 
 import { triggerToast } from '../components/Toast/Toast';
+import { simulateClick } from '../utils/simulateClick';
 
 import useKeyboardAnalytics from './useKeyboardAnalytics';
 import { useKeyboardShortcut } from './useKeyboardShortcut';
@@ -23,6 +25,7 @@ export function useActivityShortcuts() {
     [selectedTransaction],
   );
 
+  const containerRef = useContainerRef();
   const trimmedHash = selectedTransaction?.hash?.replace(/-.*/g, '') || '';
   const truncatedAddress = truncateAddress(trimmedHash as Address);
   const handleCopy = useCallback(() => {
@@ -61,6 +64,7 @@ export function useActivityShortcuts() {
         }
       }
       if (e.key === shortcuts.activity.COPY_TRANSACTION.key) {
+        simulateClick(containerRef.current);
         trackShortcut({
           key: shortcuts.activity.COPY_TRANSACTION.display,
           type: 'activity.copyTransactionAddress',
@@ -68,6 +72,7 @@ export function useActivityShortcuts() {
         handleCopy();
       }
       if (e.key === shortcuts.activity.VIEW_TRANSACTION.key) {
+        simulateClick(containerRef.current);
         trackShortcut({
           key: shortcuts.activity.VIEW_TRANSACTION.display,
           type: 'activity.viewTransactionOnExplorer',
@@ -76,6 +81,7 @@ export function useActivityShortcuts() {
       }
     },
     [
+      containerRef,
       handleCopy,
       selectedTransaction,
       setCurrentHomeSheet,

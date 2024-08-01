@@ -216,6 +216,27 @@ describe.runIf(browser !== 'firefox')(
       expect(txHash).toBe(false);
     });
 
+    it('should navigate to send page using Cmd+K', async () => {
+      await executePerformShortcut({ driver, key: 'k' });
+      await executePerformShortcut({ driver, key: 'ENTER' });
+      await checkExtensionURL(driver, 'send');
+    });
+
+    it('should navigate to my wallets section in Cmd+K', async () => {
+      await goToPopup(driver, rootURL);
+      await executePerformShortcut({ driver, key: 'k' });
+      await executePerformShortcut({
+        driver,
+        key: 'ARROW_DOWN',
+        timesToPress: 3,
+      });
+      await executePerformShortcut({ driver, key: 'ENTER' });
+      await findElementByText(driver, 'Switch to Wallet');
+      await executePerformShortcut({ driver, key: 'BACK_SPACE' });
+      await findElementByText(driver, 'Suggestions');
+      await executePerformShortcut({ driver, key: 'ESCAPE' });
+    });
+
     it('should be able to lock extension with keyboard', async () => {
       await executePerformShortcut({ driver, key: 'DECIMAL' });
       await executePerformShortcut({ driver, key: 'l' });

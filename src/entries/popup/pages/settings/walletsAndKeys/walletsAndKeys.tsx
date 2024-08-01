@@ -7,7 +7,7 @@ import {
   useState,
 } from 'react';
 import { useLocation } from 'react-router';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';

@@ -2,15 +2,17 @@ import {
   AddEthereumChainProposedChain,
   handleProviderRequest as rnbwHandleProviderRequest,
 } from '@rainbow-me/provider';
-import { Chain, getProvider } from '@wagmi/core';
-import { UserRejectedRequestError } from 'wagmi';
+import { Chain, UserRejectedRequestError } from 'viem';
 
 import { event } from '~/analytics/event';
 import { queueEventTracking } from '~/analytics/queueEvent';
 import { hasVault, isInitialized, isPasswordSet } from '~/core/keychain';
 import { Messenger } from '~/core/messengers';
 import { CallbackOptions } from '~/core/messengers/internal/createMessenger';
-import { SUPPORTED_CHAINS } from '~/core/references';
+import {
+  SUPPORTED_CHAINS,
+  SUPPORTED_CHAIN_IDS,
+} from '~/core/references/chains';
 import {
   appSessionsStore,
   notificationWindowStore,
@@ -22,10 +24,11 @@ import { userChainsStore } from '~/core/state/userChains';
 import { SessionStorage } from '~/core/storage';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
-import { isCustomChain, isSupportedChainId } from '~/core/utils/chains';
+import { isCustomChain } from '~/core/utils/chains';
 import { getDappHost, isValidUrl } from '~/core/utils/connectedApps';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { WELCOME_URL, goToNewTab } from '~/core/utils/tabs';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 import { IN_DAPP_NOTIFICATION_STATUS } from '~/entries/iframe/notification';
 import { RainbowError, logger } from '~/logger';
 
@@ -125,7 +128,7 @@ const messengerProviderRequest = async (
     ),
   );
   if (!payload) {
-    throw new UserRejectedRequestError('User rejected the request.');
+    throw new UserRejectedRequestError(Error('User rejected the request.'));
   }
   return payload;
 };
@@ -244,11 +247,14 @@ export const handleProviderRequest = ({
   rnbwHandleProviderRequest({
     providerRequestTransport: providerRequestTransport,
     isSupportedChain: (chainId: number) =>
-      isSupportedChainId(chainId) || isCustomChain(chainId),
+      SUPPORTED_CHAIN_IDS.includes(chainId) || isCustomChain(chainId),
     getActiveSession: ({ host }: { host: string }) =>
       appSessionsStore.getState().getActiveSession({ host }),
-    getChain: (chainId: number) =>
-      SUPPORTED_CHAINS.find((chain) => chain.id === Number(chainId)),
+    removeAppSession: ({ host }: { host: string }) =>
+      appSessionsStore.getState().removeAppSession({ host }),
+    getChainNativeCurrency: (chainId: number) =>
+      SUPPORTED_CHAINS.find((chain) => chain.id === Number(chainId))
+        ?.nativeCurrency,
     getFeatureFlags: () => featureFlagsStore.getState().featureFlags,
     getProvider: getProvider,
     messengerProviderRequest: (request: ProviderRequestPayload) =>
@@ -279,7 +285,6 @@ export const handleProviderRequest = ({
           id: Number(chainId),
           nativeCurrency: { name, symbol, decimals },
           name: proposedChain.chainName,
-          network: proposedChain.chainName,
           rpcUrls: {
             default: { http: [rpcUrl] },
             public: { http: [rpcUrl] },
@@ -358,7 +363,8 @@ export const handleProviderRequest = ({
         .getState()
         .getActiveChain({ chainId: proposedChainId });
       const supportedChainId =
-        isCustomChain(proposedChainId) || isSupportedChainId(proposedChainId);
+        isCustomChain(proposedChainId) ||
+        SUPPORTED_CHAIN_IDS.includes(proposedChainId);
       inpageMessenger?.send('rainbow_ethereumChainEvent', {
         chainId: proposedChainId,
         chainName: chain?.name || 'NO NAME',

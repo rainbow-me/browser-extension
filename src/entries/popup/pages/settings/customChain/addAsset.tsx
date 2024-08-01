@@ -2,7 +2,7 @@ import { isValidAddress } from '@ethereumjs/util';
 import { isEqual } from 'lodash';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { useAssetMetadata } from '~/core/resources/assets/assetMetadata';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
@@ -181,6 +181,7 @@ export function AddAsset() {
         chainId,
         rainbowChainAsset: assetToAdd,
       });
+      saveCustomTokenDraft(chainId, undefined);
       navigate(-1);
     }
   }, [
@@ -195,6 +196,7 @@ export function AddAsset() {
     chainId,
     customRPCAssetsForChain,
     navigate,
+    saveCustomTokenDraft,
     validateAddCustomAsset,
   ]);
 

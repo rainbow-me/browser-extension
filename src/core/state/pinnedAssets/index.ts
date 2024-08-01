@@ -1,49 +1,47 @@
+import { Address } from 'viem';
 import create from 'zustand';
 
 import { createStore } from '../internal/createStore';
 
 type PinnedAsset = {
-  uniqueId: string;
+  pinned: boolean;
   createdAt: number;
 };
 
-type UpdatePinnedAssetArgs = {
-  uniqueId: string;
-};
-
-type UpdatePinnedAssetFn = ({ uniqueId }: UpdatePinnedAssetArgs) => void;
+type PinnedAssetDict = Record<string, PinnedAsset>;
+type PinnedAssetsByAddress = Record<Address, PinnedAssetDict>;
 
 export interface PinnedAssetState {
-  pinnedAssets: PinnedAsset[];
-  addPinnedAsset: UpdatePinnedAssetFn;
-  removedPinnedAsset: UpdatePinnedAssetFn;
+  pinned: PinnedAssetsByAddress;
+  togglePinAsset: (address: Address, uniqueId: string) => void;
 }
 
 export const pinnedAssets = createStore<PinnedAssetState>(
   (set, get) => ({
-    pinnedAssets: [],
-    addPinnedAsset: ({ uniqueId }: UpdatePinnedAssetArgs) => {
-      const { pinnedAssets } = get();
+    pinned: {},
+    togglePinAsset: (address: Address, uniqueId: string) => {
+      const { pinned } = get();
+      const isPinned = pinned[address]?.[uniqueId]?.pinned;
       set({
-        pinnedAssets: [
-          ...pinnedAssets,
-          { uniqueId, createdAt: new Date().getTime() },
-        ],
-      });
-    },
-    removedPinnedAsset: ({ uniqueId }: UpdatePinnedAssetArgs) => {
-      const { pinnedAssets } = get();
-      set({
-        pinnedAssets: pinnedAssets.filter(
-          ({ uniqueId: _uniqueId }) => _uniqueId !== uniqueId,
-        ),
+        pinned: {
+          ...pinned,
+          [address]: {
+            ...(pinned[address] ?? {}),
+            [uniqueId]: {
+              pinned: !isPinned,
+              createdAt: isPinned
+                ? pinned[address][uniqueId].createdAt
+                : Date.now(),
+            },
+          },
+        },
       });
     },
   }),
   {
     persist: {
       name: 'pinned_assets',
-      version: 1,
+      version: 2,
     },
   },
 );

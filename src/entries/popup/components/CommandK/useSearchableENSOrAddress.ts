@@ -2,41 +2,65 @@ import * as React from 'react';
 
 import { truncateAddress } from '~/core/utils/address';
 import { isENSAddressFormat } from '~/core/utils/ethereum';
+import { isLowerCaseMatch } from '~/core/utils/strings';
 
+import { useContacts } from '../../hooks/useContacts';
+import { useDebounce } from '../../hooks/useDebounce';
 import { useWallets } from '../../hooks/useWallets';
 import { useValidateInput } from '../WatchWallet/WatchWallet';
 
-import { ENSOrAddressSearchItem, SearchItemType } from './SearchItems';
+import {
+  ENSOrAddressSearchItem,
+  SearchItemType,
+  TokenSearchItem,
+  UnownedTokenSearchItem,
+} from './SearchItems';
 import { CommandKPage, PAGES } from './pageConfig';
 import { actionLabels } from './references';
 import { useCommandKStatus } from './useCommandKStatus';
 import { truncateName } from './useSearchableWallets';
 
-export const useSearchableENSorAddress = (
-  currentPage: CommandKPage,
-  searchQuery: string,
-  setSelectedCommandNeedsUpdate: React.Dispatch<React.SetStateAction<boolean>>,
-): { searchableENSOrAddress: ENSOrAddressSearchItem[] } => {
+export const useSearchableENSorAddress = ({
+  currentPage,
+  searchQuery,
+  assets,
+  isFetchingSearchAssets,
+  setSelectedCommandNeedsUpdate,
+}: {
+  currentPage: CommandKPage;
+  searchQuery: string;
+  assets: (TokenSearchItem | UnownedTokenSearchItem)[];
+  isFetchingSearchAssets: boolean;
+  setSelectedCommandNeedsUpdate: React.Dispatch<React.SetStateAction<boolean>>;
+}): { searchableENSOrAddress: ENSOrAddressSearchItem[] } => {
   const { isFetching, setIsFetching } = useCommandKStatus();
   const { allWallets } = useWallets();
 
+  const contacts = useContacts();
+
+  const allWalletsWithContacts = React.useMemo(
+    () => [...allWallets, ...contacts],
+    [contacts, allWallets],
+  );
+
   const query = searchQuery.trim();
-  const validation = useValidateInput(query);
-  const [cache, setCache] = React.useState<
-    Record<string, ENSOrAddressSearchItem[]>
-  >({});
+  const debouncedSearchQuery = useDebounce(query, 250);
+
+  const validation = useValidateInput(debouncedSearchQuery);
 
   const searchableENSOrAddress = React.useMemo<ENSOrAddressSearchItem[]>(() => {
     if (currentPage !== PAGES.HOME) return [];
 
-    if (cache[query]) {
-      return cache[query];
-    }
-
     if (
       validation.address &&
       !validation.error &&
-      !allWallets.some((wallet) => wallet.address === validation.address)
+      !isFetchingSearchAssets &&
+      !allWalletsWithContacts.some((wallet) =>
+        isLowerCaseMatch(wallet.address, validation.address),
+      ) &&
+      !assets.some((asset) =>
+        isLowerCaseMatch(asset.address, validation.address),
+      )
     ) {
       const ensName = validation.ensName || null;
       return [
@@ -56,20 +80,28 @@ export const useSearchableENSorAddress = (
     }
 
     return [];
-  }, [allWallets, cache, currentPage, query, validation]);
+  }, [
+    isFetchingSearchAssets,
+    currentPage,
+    assets,
+    allWalletsWithContacts,
+    validation.address,
+    validation.ensName,
+    validation.error,
+  ]);
 
   React.useLayoutEffect(() => {
     const shouldStartFetching =
       currentPage === PAGES.HOME &&
       !validation.address &&
       !validation.error &&
-      isENSAddressFormat(query) &&
+      isENSAddressFormat(debouncedSearchQuery) &&
       !isFetching;
     const shouldStopFetching =
       (currentPage !== PAGES.HOME ||
         validation.address ||
         validation.error ||
-        !isENSAddressFormat(query)) &&
+        !isENSAddressFormat(debouncedSearchQuery)) &&
       !!isFetching;
 
     if (shouldStartFetching) {
@@ -81,20 +113,11 @@ export const useSearchableENSorAddress = (
   }, [
     currentPage,
     isFetching,
-    query,
+    debouncedSearchQuery,
     setIsFetching,
     setSelectedCommandNeedsUpdate,
     validation,
   ]);
-
-  React.useEffect(() => {
-    if (
-      searchableENSOrAddress.length &&
-      searchableENSOrAddress !== cache[query]
-    ) {
-      setCache((prev) => ({ ...prev, [query]: searchableENSOrAddress }));
-    }
-  }, [cache, query, searchableENSOrAddress]);
 
   return { searchableENSOrAddress };
 };

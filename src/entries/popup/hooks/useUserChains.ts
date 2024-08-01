@@ -3,10 +3,7 @@ import { useMemo } from 'react';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { ChainId } from '~/core/types/chains';
-import {
-  getSupportedChainsWithHardhat,
-  getSupportedTestnetChains,
-} from '~/core/utils/chains';
+import { getSupportedChains } from '~/core/utils/chains';
 import { chainIdMap, sortNetworks } from '~/core/utils/userChains';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
@@ -16,9 +13,9 @@ export const useUserChains = () => {
   const { testnetMode } = useTestnetModeStore();
 
   const availableChains = useMemo(() => {
-    const supportedChains = testnetMode
-      ? getSupportedTestnetChains()
-      : getSupportedChainsWithHardhat();
+    const supportedChains = getSupportedChains({
+      testnets: testnetMode,
+    });
 
     const availableChains = Object.keys(userChains)
       .filter((chainId) => userChains[Number(chainId)] === true)

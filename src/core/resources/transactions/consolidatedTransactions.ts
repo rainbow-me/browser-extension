@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { addysHttp } from '~/core/network/addys';
 import {
@@ -11,10 +11,10 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
-import { ChainName } from '~/core/types/chains';
+import { supportedTransactionsChainIds } from '~/core/references/chains';
+import { ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import { TransactionsReceivedMessage } from '~/core/types/refraction';
 import { RainbowTransaction } from '~/core/types/transactions';
-import { chainIdFromChainName } from '~/core/utils/chains';
 import { parseTransaction } from '~/core/utils/transactions';
 import { RainbowError, logger } from '~/logger';
 
@@ -62,15 +62,15 @@ export async function fetchConsolidatedTransactions<
     ConsolidatedTransactionsQueryKey
   >,
 ) {
-  return await queryClient.fetchQuery(
-    consolidatedTransactionsQueryKey({
+  return await queryClient.fetchQuery({
+    queryKey: consolidatedTransactionsQueryKey({
       address,
       currency,
       userChainIds,
     }),
-    consolidatedTransactionsQueryFunction,
-    config,
-  );
+    queryFn: consolidatedTransactionsQueryFunction,
+    ...config,
+  });
 }
 
 // ///////////////////////////////////////////////
@@ -79,6 +79,7 @@ export async function fetchConsolidatedTransactions<
 type _QueryResult = {
   cutoff?: number;
   nextPage?: string;
+  pages?: { cutoff: number; transactions: RainbowTransaction[] }[];
   transactions: RainbowTransaction[];
 };
 
@@ -89,13 +90,16 @@ export async function consolidatedTransactionsQueryFunction({
   typeof consolidatedTransactionsQueryKey
 >): Promise<_QueryResult> {
   try {
+    const chainIds = userChainIds.filter((id) =>
+      supportedTransactionsChainIds.includes(id),
+    );
     const response = await addysHttp.get<TransactionsReceivedMessage>(
-      `/${userChainIds.join(',')}/${address}/transactions`,
+      `/${chainIds.join(',')}/${address}/transactions`,
       {
         params: {
           currency: currency.toLowerCase(),
           // passing empty value to pageParam breaks request
-          ...(pageParam ? { pageCursor: pageParam } : {}),
+          ...(pageParam ? { pageCursor: pageParam as string } : {}),
         },
         timeout: CONSOLIDATED_TRANSACTIONS_TIMEOUT,
       },
@@ -133,7 +137,7 @@ async function parseConsolidatedTransactions(
       parseTransaction({
         tx,
         currency,
-        chainId: chainIdFromChainName(tx?.network ?? ChainName.mainnet),
+        chainId: chainNameToIdMapping[tx?.network ?? ChainName.mainnet],
       }),
     )
     .filter(Boolean);
@@ -152,18 +156,17 @@ export function useConsolidatedTransactions<
     TSelectData
   > = {},
 ) {
-  return useInfiniteQuery(
-    consolidatedTransactionsQueryKey({
+  return useInfiniteQuery({
+    queryKey: consolidatedTransactionsQueryKey({
       address,
       currency,
       userChainIds,
     }),
-    consolidatedTransactionsQueryFunction,
-    {
-      ...config,
-      getNextPageParam: (lastPage) => lastPage?.nextPage,
-      refetchInterval: CONSOLIDATED_TRANSACTIONS_INTERVAL,
-      retry: 3,
-    },
-  );
+    queryFn: consolidatedTransactionsQueryFunction,
+    ...config,
+    getNextPageParam: (lastPage) => lastPage?.nextPage,
+    initialPageParam: null,
+    refetchInterval: CONSOLIDATED_TRANSACTIONS_INTERVAL,
+    retry: 3,
+  });
 }

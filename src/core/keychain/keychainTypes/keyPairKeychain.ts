@@ -2,10 +2,11 @@
 import { Signer } from '@ethersproject/abstract-signer';
 import { Mnemonic } from '@ethersproject/hdnode';
 import { Wallet } from '@ethersproject/wallet';
-import { getProvider } from '@wagmi/core';
-import { Address, mainnet } from 'wagmi';
+import { Address } from 'viem';
+import { mainnet } from 'viem/chains';
 
 import { KeychainType } from '~/core/types/keychainTypes';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 
 import { IKeychain, PrivateKey, TWallet } from '../IKeychain';
 import { RainbowSigner } from '../RainbowSigner';

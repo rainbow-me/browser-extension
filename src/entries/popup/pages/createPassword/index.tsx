@@ -146,9 +146,8 @@ export function CreatePassword() {
                                 'labelTertiary'
                               }
                             >
-                              {(strength && strengthMeta[strength].text) || (
-                                <>{i18n.t('passwords.8_chars_min')}</>
-                              )}
+                              {(strength && strengthMeta[strength].text) ||
+                                i18n.t('passwords.8_chars_min')}
                             </Text>
                             {strength && strengthMeta[strength].symbol ? (
                               <>

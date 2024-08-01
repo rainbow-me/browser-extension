@@ -1,14 +1,13 @@
 import chroma from 'chroma-js';
 import { useCallback, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Address, Chain } from 'wagmi';
+import { Address, Chain } from 'viem';
 
 import { i18n } from '~/core/languages';
 import {
   SUPPORTED_CHAINS,
   SUPPORTED_CHAIN_IDS,
-  getDefaultRPC,
-} from '~/core/references';
+} from '~/core/references/chains';
 import { selectUserAssetsDictByChain } from '~/core/resources/_selectors/assets';
 import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
 import {
@@ -21,7 +20,8 @@ import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/deve
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
 import { useUserChainsStore } from '~/core/state/userChains';
-import { getSupportedTestnetChains } from '~/core/utils/chains';
+import { getSupportedChains } from '~/core/utils/chains';
+import { getDappHost } from '~/core/utils/connectedApps';
 import { chainIdMap } from '~/core/utils/userChains';
 import {
   Box,
@@ -57,9 +57,10 @@ import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
 const isDefaultRPC = (chain: Chain) => {
-  const defaultRPC = getDefaultRPC(chain.id);
-  if (!defaultRPC) return false;
-  return chain.rpcUrls.default.http[0] === defaultRPC.http;
+  const rpc = SUPPORTED_CHAINS.find((c) => c.id === chain.id)?.rpcUrls.default
+    .http[0];
+  if (!rpc) return false;
+  return chain.rpcUrls.default.http[0] === rpc;
 };
 
 export function SettingsNetworksRPCs() {
@@ -166,11 +167,11 @@ export function SettingsNetworksRPCs() {
       rainbowChains[Number(chainId)]?.chains?.filter(
         (chain) => chain.testnet,
       ) || [];
-    const supportedTestnetChains = getSupportedTestnetChains().filter(
-      (chain) => {
-        return chainIdMap[chainId]?.includes(chain.id) && chain.id !== chainId;
-      },
-    );
+    const supportedTestnetChains = getSupportedChains({
+      testnets: true,
+    }).filter((chain) => {
+      return chainIdMap[chainId]?.includes(chain.id) && chain.id !== chainId;
+    });
     return [...customTestnetChains, ...supportedTestnetChains];
   }, [chainId, rainbowChains]);
 
@@ -331,7 +332,7 @@ export function SettingsNetworksRPCs() {
                                 ? i18n.t(
                                     'settings.networks.custom_rpc.rainbow_default_rpc',
                                   )
-                                : chain.rpcUrls.default.http[0]}
+                                : getDappHost(chain.rpcUrls.default.http[0])}
                             </TextOverflow>
                           </Box>
                         }

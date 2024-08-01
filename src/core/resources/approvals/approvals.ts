@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { addysHttp } from '~/core/network/addys';
 import {
@@ -10,6 +10,7 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
+import { supportedApprovalsChainIds } from '~/core/references/chains';
 import { AssetApiResponse } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { TxHash } from '~/core/types/transactions';
@@ -80,8 +81,11 @@ export async function approvalsQueryFunction({
   queryKey: [{ address, chainIds, currency }],
 }: QueryFunctionArgs<typeof approvalsQueryKey>): Promise<Approval[] | null> {
   try {
+    const supportedChainIds = chainIds.filter((chainId) =>
+      supportedApprovalsChainIds.includes(chainId),
+    );
     const response = await addysHttp.get(
-      `/${chainIds.join(',')}/${address}/approvals`,
+      `/${supportedChainIds.join(',')}/${address}/approvals`,
       {
         params: {
           currency: currency.toLowerCase(),
@@ -112,11 +116,11 @@ export async function fetchApprovals(
     AprovalsQueryKey
   > = {},
 ) {
-  return await queryClient.fetchQuery(
-    approvalsQueryKey({ address, chainIds, currency }),
-    approvalsQueryFunction,
-    config,
-  );
+  return await queryClient.fetchQuery({
+    queryKey: approvalsQueryKey({ address, chainIds, currency }),
+    queryFn: approvalsQueryFunction,
+    ...config,
+  });
 }
 
 // ///////////////////////////////////////////////
@@ -131,9 +135,9 @@ export function useApprovals(
     AprovalsQueryKey
   > = {},
 ) {
-  return useQuery(
-    approvalsQueryKey({ address, chainIds, currency }),
-    approvalsQueryFunction,
-    config,
-  );
+  return useQuery({
+    queryKey: approvalsQueryKey({ address, chainIds, currency }),
+    queryFn: approvalsQueryFunction,
+    ...config,
+  });
 }

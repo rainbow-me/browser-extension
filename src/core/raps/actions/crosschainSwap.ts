@@ -1,11 +1,13 @@
 import { Signer } from '@ethersproject/abstract-signer';
 import { CrosschainQuote, fillCrosschainQuote } from '@rainbow-me/swaps';
-import { Address, getProvider } from '@wagmi/core';
+import { Address } from 'viem';
 
-import { REFERRER, gasUnits } from '~/core/references';
+import { REFERRER, ReferrerType } from '~/core/references';
+import { getChainGasUnits } from '~/core/references/chains';
 import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 import { RainbowError, logger } from '~/logger';
 
 import { gasStore } from '../../state';
@@ -38,7 +40,7 @@ export const estimateCrosschainSwapGasLimit = async ({
 }): Promise<string> => {
   const provider = getProvider({ chainId });
   if (!provider || !quote) {
-    return gasUnits.basic_swap[chainId];
+    return getChainGasUnits(chainId).basic.swap;
   }
   try {
     if (requiresApprove) {
@@ -86,12 +88,14 @@ export const executeCrosschainSwap = async ({
   nonce,
   quote,
   wallet,
+  referrer = REFERRER,
 }: {
   gasLimit: string;
   gasParams: TransactionGasParams | TransactionLegacyGasParams;
   nonce?: number;
   quote: CrosschainQuote;
   wallet: Signer;
+  referrer?: ReferrerType;
 }) => {
   if (!wallet || !quote) return null;
 
@@ -100,7 +104,7 @@ export const executeCrosschainSwap = async ({
     nonce: nonce ? toHex(String(nonce)) : undefined,
     ...gasParams,
   };
-  return fillCrosschainQuote(quote, transactionParams, wallet, REFERRER);
+  return fillCrosschainQuote(quote, transactionParams, wallet, referrer);
 };
 
 export const crosschainSwap = async ({
@@ -121,7 +125,6 @@ export const crosschainSwap = async ({
       gasFeeParamsBySpeed,
     });
   }
-
   let gasLimit;
   try {
     gasLimit = await estimateCrosschainSwapGasLimit({
@@ -138,7 +141,6 @@ export const crosschainSwap = async ({
     );
     throw e;
   }
-
   const nonce = baseNonce ? baseNonce + index : undefined;
 
   const swapParams = {
@@ -160,7 +162,6 @@ export const crosschainSwap = async ({
     );
     throw e;
   }
-
   if (!swap)
     throw new RainbowError('crosschainSwap: error executeCrosschainSwap');
 

@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -12,6 +13,7 @@ import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useSelectedNftStore } from '~/core/state/selectedNft';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { useSelectedTransactionStore } from '~/core/state/selectedTransaction';
+import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import { getProfileUrl, goToNewTab } from '~/core/utils/tabs';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
@@ -41,7 +43,7 @@ import { useWallets } from './useWallets';
 
 export function useHomeShortcuts() {
   const { currentAddress: address } = useCurrentAddressStore();
-  const { data: ensName } = useEnsName({ address });
+  const { data: ensName } = useEnsName({ address, chainId: ChainId.mainnet });
   const { selectedToken } = useSelectedTokenStore();
   const { selectedTransaction } = useSelectedTransactionStore();
   const { sheet } = useCurrentHomeSheetStore();
@@ -55,10 +57,16 @@ export function useHomeShortcuts() {
   const { testnetMode, setTestnetMode } = useTestnetModeStore();
   const { developerToolsEnabled } = useDeveloperToolsEnabledStore();
   const { selectedNft } = useSelectedNftStore();
+  const location = useLocation();
 
   const allowSend = useMemo(
     () => !isWatchingWallet || featureFlags.full_watching_wallets,
     [featureFlags.full_watching_wallets, isWatchingWallet],
+  );
+
+  const isTokenDetailsPage = useMemo(
+    () => location.pathname.startsWith('/home/token-details'),
+    [location],
   );
 
   const alertWatchingWallet = useCallback(() => {
@@ -117,7 +125,7 @@ export function useHomeShortcuts() {
           navigate(ROUTES.BUY);
           break;
         case shortcuts.home.COPY_ADDRESS.key:
-          if (!selectedNft && !selectedToken) {
+          if (!selectedNft && !selectedToken && !isTokenDetailsPage) {
             trackShortcut({
               key: shortcuts.home.COPY_ADDRESS.display,
               type: 'home.copyAddress',
@@ -158,7 +166,7 @@ export function useHomeShortcuts() {
           navigateToSwaps();
           break;
         case shortcuts.home.GO_TO_PROFILE.key:
-          if (!selectedToken) {
+          if (!selectedToken && !isTokenDetailsPage) {
             trackShortcut({
               key: shortcuts.home.GO_TO_PROFILE.display,
               type: 'home.goToProfile',
@@ -228,6 +236,7 @@ export function useHomeShortcuts() {
       }
     },
     [
+      isTokenDetailsPage,
       trackShortcut,
       navigate,
       selectedNft,

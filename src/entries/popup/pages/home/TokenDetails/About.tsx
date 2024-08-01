@@ -3,6 +3,7 @@ import { ReactNode, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { ParsedUserAsset } from '~/core/types/assets';
+import { SearchAsset } from '~/core/types/search';
 import { truncateAddress } from '~/core/utils/address';
 import { isNativeAsset } from '~/core/utils/chains';
 import { formatCurrency } from '~/core/utils/formatNumber';
@@ -31,7 +32,7 @@ import { ExplainerSheet } from '~/entries/popup/components/ExplainerSheet/Explai
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import chunkLinks from '~/entries/popup/utils/chunkLinks';
 
-import { useTokenInfo } from './useTokenInfo';
+import { ParsedTokenInfo } from './useTokenInfo';
 
 export const CopyableValue = ({
   value,
@@ -87,7 +88,7 @@ export const InfoRow = ({
       size="12pt"
       weight="semibold"
       cursor="text"
-      userSelect="all"
+      userSelect="text"
     >
       {value}
     </TextOverflow>
@@ -207,7 +208,13 @@ function Description({ text = '' }: { text?: string | null }) {
   if (!text) return null;
   const chunks = chunkLinks(text);
   return (
-    <Text color="labelTertiary" size="14pt" weight="regular">
+    <Text
+      color="labelTertiary"
+      size="14pt"
+      weight="regular"
+      cursor="text"
+      userSelect="text"
+    >
       {chunks.map((chunk, i) => {
         if (chunk.type === 'text') {
           return chunk.value;
@@ -224,9 +231,13 @@ function Description({ text = '' }: { text?: string | null }) {
 }
 
 const placeholder = <Skeleton width="40px" height="12px" />;
-export function About({ token }: { token: ParsedUserAsset }) {
-  const { data } = useTokenInfo(token);
-
+export function About({
+  token,
+  tokenInfo,
+}: {
+  token: ParsedUserAsset | SearchAsset;
+  tokenInfo: ParsedTokenInfo;
+}) {
   const {
     volume1d = placeholder,
     allTime = { high: placeholder, low: placeholder },
@@ -236,7 +247,7 @@ export function About({ token }: { token: ParsedUserAsset }) {
     totalSupply = placeholder,
     description = '',
     links = {},
-  } = data || {};
+  } = tokenInfo || {};
 
   const explorer = getTokenBlockExplorer(token);
 
@@ -248,7 +259,7 @@ export function About({ token }: { token: ParsedUserAsset }) {
     >
       <Box display="flex" flexDirection="column" gap="20px">
         <AccordionItem value="about">
-          <AccordionTrigger>
+          <AccordionTrigger testId={`about-${token.address}`}>
             {i18n.t(`token_details.about.about_token`, { name: token.name })}
           </AccordionTrigger>
           <AccordionContent gap="20px">
@@ -256,7 +267,11 @@ export function About({ token }: { token: ParsedUserAsset }) {
             <InfoRow
               symbol="dollarsign.square"
               label={i18n.t(`token_details.about.price`)}
-              value={formatCurrency(token.native.price?.amount)}
+              value={formatCurrency(
+                'native' in token
+                  ? token.native.price?.amount
+                  : tokenInfo?.price?.value ?? undefined,
+              )}
             />
             <InfoRow
               symbol="clock.arrow.circlepath"

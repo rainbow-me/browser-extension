@@ -11,11 +11,11 @@ import HardhatBadge from 'static/assets/badges/hardhatBadge@3x.png';
 import OptimismBadge from 'static/assets/badges/optimismBadge@3x.png';
 import PolygonBadge from 'static/assets/badges/polygonBadge@3x.png';
 import ZoraBadge from 'static/assets/badges/zoraBadge@3x.png';
+import { customChainIdsToAssetNames } from '~/core/references/assets';
 import { rainbowChainsStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { ChainId } from '~/core/types/chains';
 import { getCustomChainIconUrl } from '~/core/utils/assets';
-import { customChainIdsToAssetNames } from '~/core/utils/chains';
 import { Box, Text } from '~/design-system';
 import { colors as emojiColors } from '~/entries/popup/utils/emojiAvatarBackgroundColors';
 
@@ -25,6 +25,7 @@ import ExternalImage from '../ExternalImage/ExternalImage';
 const chainBadgeSize = {
   '60': 60,
   '45': 45,
+  '32': 32,
   '18': 18,
   '16': 16,
   '14': 14,

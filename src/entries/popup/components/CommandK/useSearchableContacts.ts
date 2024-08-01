@@ -1,7 +1,8 @@
 import { useCallback, useMemo } from 'react';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
+import { useCurrentAddressStore } from '~/core/state';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
@@ -35,6 +36,8 @@ export const useSearchableContacts = ({
   const isFullScreen = useIsFullScreen();
 
   const { type, vendor } = useCurrentWalletTypeAndVendor();
+
+  const { currentAddress } = useCurrentAddressStore();
 
   const isTrezor =
     type === KeychainType.HardwareWalletKeychain && vendor === 'Trezor';
@@ -73,21 +76,37 @@ export const useSearchableContacts = ({
   );
 
   const searchableContacts = useMemo(() => {
-    return contacts.map<ContactSearchItem>((account) => ({
-      action: () => handleSelectAddress(account.address),
-      actionLabel: actionLabels.sendToWallet,
-      actionPage: PAGES.CONTACT_DETAIL,
-      address: account.address,
-      ensName: account.ensName,
-      id: `contact-${account.address}`,
-      walletName: account.name,
-      name: account.name || account.ensName || truncateAddress(account.address),
-      page: PAGES.MY_CONTACTS,
-      truncatedName: truncateName(account.name || account.ensName),
-      label: showLabel ? 'contact' : undefined,
-      type: SearchItemType.Contact,
-    }));
-  }, [showLabel, contacts, handleSelectAddress]);
+    return contacts.map<ContactSearchItem>((account) => {
+      const hideAction = isWatchingWallet || currentAddress === account.address;
+
+      return {
+        action: !hideAction
+          ? () => handleSelectAddress(account.address)
+          : undefined,
+        actionLabel: !hideAction
+          ? actionLabels.sendToContact
+          : actionLabels.view,
+        toPage: hideAction ? PAGES.CONTACT_DETAIL : undefined,
+        actionPage: !hideAction ? PAGES.CONTACT_DETAIL : undefined,
+        address: account.address,
+        ensName: account.ensName,
+        id: `contact-${account.address}`,
+        walletName: account.name,
+        name:
+          account.name || account.ensName || truncateAddress(account.address),
+        page: PAGES.MY_CONTACTS,
+        truncatedName: truncateName(account.name || account.ensName),
+        label: showLabel ? 'contact' : undefined,
+        type: SearchItemType.Contact,
+      };
+    });
+  }, [
+    contacts,
+    isWatchingWallet,
+    currentAddress,
+    showLabel,
+    handleSelectAddress,
+  ]);
 
   return { searchableContacts };
 };

@@ -14,19 +14,21 @@ import {
   unwrapNativeAsset,
   wrapNativeAsset,
 } from '@rainbow-me/swaps';
-import { Address, getProvider } from '@wagmi/core';
+import { Address } from 'viem';
 
 import { metadataPostClient } from '~/core/graphql';
+import { getChainGasUnits } from '~/core/references/chains';
 import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { add } from '~/core/utils/numbers';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { isUnwrapEth, isWrapEth } from '~/core/utils/swaps';
 import { addNewTransaction } from '~/core/utils/transactions';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 import { TransactionSimulationResponse } from '~/entries/popup/pages/messages/useSimulateTransaction';
 import { RainbowError, logger } from '~/logger';
 
-import { REFERRER, gasUnits } from '../../references';
+import { REFERRER } from '../../references';
 import { gasStore } from '../../state';
 import {
   TransactionGasParams,
@@ -59,7 +61,7 @@ export const estimateSwapGasLimit = async ({
 }): Promise<string> => {
   const provider = getProvider({ chainId });
   if (!provider || !quote) {
-    return gasUnits.basic_swap[chainId];
+    return getChainGasUnits(chainId).basic.swap;
   }
 
   const { sellTokenAddress, buyTokenAddress } = quote;
@@ -74,19 +76,20 @@ export const estimateSwapGasLimit = async ({
   // Wrap / Unwrap Eth
   if (isWrapNativeAsset || isUnwrapNativeAsset) {
     const default_estimate = isWrapNativeAsset
-      ? gasUnits.weth_wrap
-      : gasUnits.weth_unwrap;
+      ? getChainGasUnits(chainId).wrapped.wrap
+      : getChainGasUnits(chainId).wrapped.unwrap;
     try {
       const gasLimit = await estimateGasWithPadding({
         transactionRequest: {
           from: quote.from,
-          value: isWrapNativeAsset ? quote.buyAmount : '0',
+          value: isWrapNativeAsset ? quote.buyAmount.toString() : '0',
         },
         contractCallEstimateGas: getWrappedAssetMethod(
           isWrapNativeAsset ? 'deposit' : 'withdraw',
           provider as StaticJsonRpcProvider,
           chainId as unknown as SwapChainId,
         ),
+        callArguments: isWrapNativeAsset ? [] : [quote.buyAmount.toString()],
         provider,
         paddingFactor: WRAP_GAS_PADDING,
       });

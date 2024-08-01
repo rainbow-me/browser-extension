@@ -1,8 +1,8 @@
 import { isAddress } from '@ethersproject/address';
-import { Address } from '@wagmi/core';
 import { motion } from 'framer-motion';
 import { ChangeEvent, useCallback, useMemo, useReducer, useState } from 'react';
-import { useEnsAddress, useEnsName } from 'wagmi';
+import { Address } from 'viem';
+import { useEnsAddress } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
@@ -77,7 +77,7 @@ function RecommendedAccountRow({
   onToggle: (address: Address) => void;
   selected: Record<Address, boolean>;
 }) {
-  const { data: address } = useEnsAddress({ name });
+  const { data: address } = useEnsAddress({ name, chainId: ChainId.mainnet });
   return (
     <Box onClick={() => address && onToggle(address)}>
       <Columns>
@@ -166,7 +166,7 @@ function RecommendedWatchWallets({
 }
 
 const getError = (
-  address: string,
+  address: Address,
   input: string,
   allWallets: AddressAndType[],
   savedNames: Record<Address, string>,
@@ -203,14 +203,17 @@ export const useValidateInput = (input: string) => {
 
   const { data: addressFromEns, isFetching: isFetchingEns } = useEnsAddress({
     name: input,
-    enabled: isInputEns,
     chainId: ChainId.mainnet,
+    query: {
+      enabled: isInputEns,
+    },
   });
+
   const savedNames = useSavedEnsNames.use.savedNames();
 
   const isLoading = isFetchingEns;
 
-  const inputAddress = addressFromEns || input;
+  const inputAddress = (addressFromEns || input) as Address;
   const address = isAddress(inputAddress) ? inputAddress : undefined;
 
   const { allWallets } = useWallets();
@@ -255,7 +258,6 @@ export const WatchWallet = ({
     isLoading,
     isValid: inputIsValid,
     error,
-    isInputEns,
   } = useValidateInput(input.trim());
 
   const addressesToImport = useMemo(
@@ -267,16 +269,9 @@ export const WatchWallet = ({
   const save = useSavedEnsNames.use.save();
 
   const [renameAccount, setRenameAccount] = useState<Address>();
-  const { data: ensFromAddress, isFetching: isFetchingAddressEns } = useEnsName(
-    {
-      address,
-      enabled: !isInputEns && !!address,
-      chainId: ChainId.mainnet,
-    },
-  );
 
   const isValid = input
-    ? inputIsValid && !isFetchingAddressEns
+    ? inputIsValid && !isLoading
     : !!addressesToImport.length;
 
   const handleWatchWallet = useCallback(async () => {
@@ -291,13 +286,12 @@ export const WatchWallet = ({
         save(ensName, address);
       }
       setCurrentAddress(importedAddresses[0]);
-      if (!onboarding && !ensName && !ensFromAddress) setRenameAccount(address);
+      if (!onboarding && !ensName) setRenameAccount(address);
       else onFinishImporting?.();
     }
   }, [
     addressesToImport,
     ensName,
-    ensFromAddress,
     address,
     setCurrentAddress,
     onboarding,
@@ -392,7 +386,7 @@ export const WatchWallet = ({
                         marginTop="-24px"
                         paddingLeft="12px"
                       >
-                        {(isLoading || isFetchingAddressEns) && (
+                        {isLoading && (
                           <Box
                             width="fit"
                             alignItems="center"

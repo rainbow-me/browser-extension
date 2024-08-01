@@ -1,9 +1,8 @@
-/* eslint-disable no-nested-ternary */
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { motion } from 'framer-motion';
+import { MotionValue, motion, useTransform } from 'framer-motion';
 import uniqBy from 'lodash/uniqBy';
-import { memo, useCallback, useMemo, useState } from 'react';
-import { Address } from 'wagmi';
+import { memo, useCallback, useMemo, useRef, useState } from 'react';
+import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
@@ -40,7 +39,6 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
-import { useContainerRef } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 
@@ -99,7 +97,7 @@ const TokenRow = memo(function TokenRow({
   );
 });
 
-export function Tokens() {
+export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
   const [manuallyRefetchingTokens, setManuallyRefetchingTokens] =
@@ -107,20 +105,24 @@ export function Tokens() {
   const { hideSmallBalances } = useHideSmallBalancesStore();
   const { trackShortcut } = useKeyboardAnalytics();
   const { modifierSymbol } = useSystemSpecificModifierKey();
-  const { pinnedAssets } = usePinnedAssetStore();
-  const { hiddenAssets } = useHiddenAssetStore();
+  const { pinned: pinnedStore } = usePinnedAssetStore();
+  const { hidden } = useHiddenAssetStore();
+
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const overflow = useTransform(scrollY, (p) => (p > 92 ? 'auto' : 'hidden'));
 
   const isHidden = useCallback(
-    (asset: ParsedUserAsset) =>
-      hiddenAssets.some(
-        (uniqueId) => uniqueId === computeUniqueIdForHiddenAsset(asset),
-      ),
-    [hiddenAssets],
+    (asset: ParsedUserAsset) => {
+      return !!hidden[currentAddress]?.[computeUniqueIdForHiddenAsset(asset)];
+    },
+    [currentAddress, hidden],
   );
 
   const {
     data: assets = [],
-    isInitialLoading,
+    isFetching,
+    isPending,
     refetch: refetchUserAssets,
   } = useUserAssets(
     {
@@ -159,8 +161,8 @@ export function Tokens() {
 
   const isPinned = useCallback(
     (assetUniqueId: string) =>
-      pinnedAssets.some(({ uniqueId }) => uniqueId === assetUniqueId),
-    [pinnedAssets],
+      !!pinnedStore[currentAddress]?.[assetUniqueId]?.pinned,
+    [currentAddress, pinnedStore],
   );
 
   const combinedAssets = useMemo(
@@ -200,13 +202,8 @@ export function Tokens() {
       const filteredAssets = assets.filter((asset) => isPinned(asset.uniqueId));
 
       const sortedAssets = filteredAssets.sort((a, b) => {
-        const pinnedFirstAsset = pinnedAssets.find(
-          ({ uniqueId }) => uniqueId === a.uniqueId,
-        );
-
-        const pinnedSecondAsset = pinnedAssets.find(
-          ({ uniqueId }) => uniqueId === b.uniqueId,
-        );
+        const pinnedFirstAsset = pinnedStore[currentAddress]?.[a.uniqueId];
+        const pinnedSecondAsset = pinnedStore[currentAddress]?.[b.uniqueId];
 
         // This won't happen, but we'll just return to it's
         // default sorted order just in case it will happen
@@ -217,7 +214,7 @@ export function Tokens() {
 
       return sortedAssets;
     },
-    [isPinned, pinnedAssets],
+    [currentAddress, pinnedStore, isPinned],
   );
 
   const filteredAssets = useMemo(
@@ -228,12 +225,14 @@ export function Tokens() {
     [unhiddenAssets, computePinnedAssets, computeUniqueAssets],
   );
 
-  const containerRef = useContainerRef();
   const assetsRowVirtualizer = useVirtualizer({
-    count: filteredAssets?.length || 0,
+    count: filteredAssets.length,
     getScrollElement: () => containerRef.current,
     estimateSize: () => 52,
-    overscan: 20,
+    overscan: 10,
+    paddingEnd: 64,
+    paddingStart: 8,
+    getItemKey: (index) => filteredAssets[index].uniqueId,
   });
 
   useKeyboardShortcut({
@@ -253,7 +252,7 @@ export function Tokens() {
 
   useTokensShortcuts();
 
-  if (isInitialLoading || manuallyRefetchingTokens) {
+  if ((isFetching && isPending) || manuallyRefetchingTokens) {
     return <TokensSkeleton />;
   }
 
@@ -263,14 +262,14 @@ export function Tokens() {
 
   return (
     <Box
+      as={motion.div}
       width="full"
       style={{
-        // Prevent bottommost coin icon shadow from clipping
-        overflow: 'visible',
+        maxHeight: `1200px`,
+        overflow: overflow,
       }}
+      ref={containerRef}
       paddingBottom="8px"
-      paddingTop="2px"
-      marginTop="-14px"
     >
       <QuickPromo
         text={i18n.t('command_k.quick_promo.text', { modifierSymbol })}
@@ -288,27 +287,28 @@ export function Tokens() {
       <Box
         width="full"
         style={{
-          height: assetsRowVirtualizer.getTotalSize(),
+          height: `${assetsRowVirtualizer.getTotalSize()}px`,
           position: 'relative',
         }}
       >
-        <Box style={{ overflow: 'auto' }}>
+        <Box>
           {assetsRowVirtualizer.getVirtualItems().map((virtualItem) => {
             const { key, size, start, index } = virtualItem;
             const token = filteredAssets[index];
-            const pinned = pinnedAssets.some(
-              ({ uniqueId }) => uniqueId === token.uniqueId,
-            );
+            const pinned =
+              !!pinnedStore[currentAddress]?.[token.uniqueId]?.pinned;
 
             return (
               <Box
-                key={`${token.uniqueId}-${key}`}
+                key={`token-list-${token.uniqueId}-${key}`}
+                layoutId={`token-list-${index}`}
                 as={motion.div}
                 position="absolute"
                 width="full"
-                initial={{ x: 4 }}
-                animate={{ x: 0 }}
-                style={{ height: size, y: start }}
+                style={{
+                  height: size,
+                  y: start,
+                }}
               >
                 {pinned && <TokenMarkedHighlighter />}
                 <TokenRow token={token} testId={`coin-row-item-${index}`} />
@@ -359,6 +359,7 @@ export const AssetRow = memo(function AssetRow({
 
   const nativeBalanceDisplay = useMemo(
     () =>
+      // eslint-disable-next-line no-nested-ternary
       hideAssetBalances ? (
         <Inline alignHorizontal="right">
           <TextOverflow size="14pt" weight="semibold" align="right">
@@ -451,7 +452,7 @@ function TokensEmptyState({ depositAddress }: EmptyStateProps) {
   }, [depositAddress]);
 
   return (
-    <Inset horizontal="20px">
+    <Inset horizontal="20px" top="20px">
       <Stack space="12px">
         {!testnetMode && (
           <Box

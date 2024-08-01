@@ -13,7 +13,12 @@ import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 import { triggerToast } from '../Toast/Toast';
 
-import { SearchItem, SearchItemType } from './SearchItems';
+import {
+  SearchItem,
+  SearchItemType,
+  TokenSearchItem,
+  UnownedTokenSearchItem,
+} from './SearchItems';
 import { CommandKPage, PAGES } from './pageConfig';
 import { useCommandKStatus } from './useCommandKStatus';
 
@@ -38,6 +43,141 @@ const shouldHideCommand = (
     command.type === SearchItemType.Wallet) ||
   (currentPage === PAGES.HOME && command.hideFromMainSearch) ||
   (currentPage !== PAGES.HOME && currentPage !== command.page);
+
+const getBasicCommandRelevance = ({
+  command,
+  normalizedCommandName,
+  normalizedQuery,
+  normalizedShortcutKey,
+  commandNameWords,
+  queryWords,
+  offset = 0,
+}: {
+  command: SearchItem;
+  normalizedCommandName: string;
+  normalizedQuery: string;
+  normalizedShortcutKey?: string;
+  commandNameWords: string[];
+  queryWords: string[];
+  offset?: number;
+}) => {
+  // High relevance: Command name starts with query
+  if (
+    (!command.downrank && normalizedCommandName.startsWith(normalizedQuery)) ||
+    (normalizedShortcutKey && normalizedShortcutKey === normalizedQuery)
+  ) {
+    return 4 - offset;
+  }
+
+  // Medium relevance: Non-leading word in command name starts with query
+  if (
+    commandNameWords.some(
+      (word, index) => index !== 0 && word.startsWith(normalizedQuery),
+    )
+  ) {
+    return 3 - offset;
+  }
+
+  // Low-medium relevance: A search tag begins with the query
+  const normalizedTags = command.searchTags
+    ? command.searchTags.map((tag) => tag.toLowerCase())
+    : [];
+  if (normalizedTags.some((tag) => tag.startsWith(normalizedQuery))) {
+    return 2 - offset;
+  }
+
+  // Low relevance: Command name or search tags contain the query
+  const checkSet = new Set([...commandNameWords, ...normalizedTags]);
+  if (
+    queryWords.every((word) => {
+      for (const item of checkSet) {
+        if (item.includes(word)) {
+          checkSet.delete(item);
+          return true;
+        }
+      }
+      return false;
+    })
+  ) {
+    return 1 - offset;
+  }
+
+  return 0;
+};
+
+const getTokenCommandRelevance = ({
+  command,
+  normalizedCommandName,
+  normalizedQuery,
+  normalizedShortcutKey,
+  commandNameWords,
+  queryWords,
+}: {
+  command: TokenSearchItem | UnownedTokenSearchItem;
+  normalizedCommandName: string;
+  normalizedQuery: string;
+  normalizedShortcutKey?: string;
+  commandNameWords: string[];
+  queryWords: string[];
+}) => {
+  if (
+    (!command.downrank && normalizedCommandName.startsWith(normalizedQuery)) ||
+    (normalizedShortcutKey && normalizedShortcutKey === normalizedQuery)
+  ) {
+    if ('status' in command) {
+      if (command.status === 'verified') return 2;
+      return 1;
+    }
+    return 3;
+  }
+
+  // Medium relevance: Non-leading word in command name starts with query
+  if (
+    commandNameWords.some(
+      (word, index) => index !== 0 && word.startsWith(normalizedQuery),
+    )
+  ) {
+    if ('status' in command) {
+      if (command.status === 'verified') return 1;
+      return 0.5;
+    }
+    return 2;
+  }
+
+  // Low-medium relevance: A search tag begins with the query
+  const normalizedTags = command.searchTags
+    ? command.searchTags.map((tag) => tag.toLowerCase())
+    : [];
+  if (normalizedTags.some((tag) => tag.startsWith(normalizedQuery))) {
+    if ('status' in command) {
+      if (command.status === 'verified') return 0.5;
+      return 0.25;
+    }
+    return 1;
+  }
+
+  // Low relevance: Command name or search tags contain the query
+  const checkSet = new Set([...commandNameWords, ...normalizedTags]);
+  if (
+    queryWords.every((word) => {
+      for (const item of checkSet) {
+        if (item.includes(word)) {
+          checkSet.delete(item);
+          return true;
+        }
+      }
+      return false;
+    })
+  ) {
+    if ('status' in command) {
+      if (command.status === 'verified') return 0.35;
+      return 0.15;
+    }
+    return 0.75;
+  }
+
+  return 0;
+};
 
 const calculateCommandRelevance = (
   command: SearchItem,
@@ -89,50 +229,35 @@ const calculateCommandRelevance = (
     } else if (command.type === SearchItemType.ENSOrAddressResult) {
       // Only a single exact match is possible
       return 4;
-    } else {
-      // High relevance: Command name starts with query
-      if (
-        (!command.downrank &&
-          normalizedCommandName.startsWith(normalizedQuery)) ||
-        (normalizedShortcutKey && normalizedShortcutKey === normalizedQuery)
-      ) {
-        return 4;
-      }
-
-      // Medium relevance: Non-leading word in command name starts with query
-      if (
-        commandNameWords.some(
-          (word, index) => index !== 0 && word.startsWith(normalizedQuery),
-        )
-      ) {
-        return 3;
-      }
-
-      // Low-medium relevance: A search tag begins with the query
-      const normalizedTags = command.searchTags
-        ? command.searchTags.map((tag) => tag.toLowerCase())
-        : [];
-      if (normalizedTags.some((tag) => tag.startsWith(normalizedQuery))) {
-        return 2;
-      }
-
-      // Low relevance: Command name or search tags contain the query
-      const checkSet = new Set([...commandNameWords, ...normalizedTags]);
-      if (
-        queryWords.every((word) => {
-          for (const item of checkSet) {
-            if (item.includes(word)) {
-              checkSet.delete(item);
-              return true;
-            }
-          }
-          return false;
-        })
-      ) {
-        return 1;
-      }
+    } else if (
+      command.type === SearchItemType.UnownedToken ||
+      command.type === SearchItemType.Token
+    ) {
+      return getTokenCommandRelevance({
+        command,
+        normalizedCommandName,
+        normalizedQuery,
+        normalizedShortcutKey,
+        commandNameWords,
+        queryWords,
+      });
     }
-    return 0;
+
+    let offset = 0;
+
+    if (command.type === SearchItemType.NFT) {
+      offset = 1;
+    }
+
+    return getBasicCommandRelevance({
+      command,
+      normalizedCommandName,
+      normalizedQuery,
+      normalizedShortcutKey,
+      commandNameWords,
+      queryWords,
+      offset,
+    });
   }
 };
 
@@ -185,7 +310,7 @@ const memoize = (
       commandListVersion = currentVersion;
     }
 
-    if (!resultsCache.has(query)) {
+    if (!resultsCache.has(query) || commandListVersion === currentVersion) {
       const result = search(commandList, currentPage, query);
       const cacheItem: CacheItem = {};
       result.forEach(

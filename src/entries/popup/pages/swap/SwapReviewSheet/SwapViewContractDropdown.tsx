@@ -1,10 +1,10 @@
 import React, { ReactNode, useCallback } from 'react';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
-import { getBlockExplorerHostForChain, isL2Chain } from '~/core/utils/chains';
+import { getBlockExplorerHostForChain } from '~/core/utils/chains';
 import { getExplorerUrl, goToNewTab } from '~/core/utils/tabs';
 import { Bleed, Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
@@ -82,7 +82,7 @@ export const SwapViewContractDropdown = ({
                       <Text size="14pt" weight="semibold">
                         {i18n.t(
                           `contacts.${
-                            chainId && isL2Chain(chainId)
+                            chainId && explorer !== 'etherscan'
                               ? 'view_on_explorer'
                               : 'view_on_etherscan'
                           }`,

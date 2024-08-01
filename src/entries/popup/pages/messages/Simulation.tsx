@@ -129,13 +129,13 @@ export function SimulationOverview({
   error,
 }: {
   simulation: TransactionSimulation | undefined;
-  status: 'loading' | 'error' | 'success';
+  status: 'pending' | 'error' | 'success';
   error: SimulationError | null;
 }) {
   const isMalicious = simulation?.scanning.result !== 'OK';
   return (
     <>
-      {status === 'loading' && (
+      {status === 'pending' && (
         <Inline alignVertical="center" space="8px">
           <Spinner size={16} color="blue" />
           <Text size="14pt" weight="semibold" color="blue">

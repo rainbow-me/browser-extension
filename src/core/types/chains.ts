@@ -1,17 +1,12 @@
-import * as chain from 'viem/chains';
-import type { Chain } from 'wagmi';
+import { Chain } from 'viem/chains';
+import * as chains from 'viem/chains';
 
 const HARDHAT_CHAIN_ID = 1337;
-const BLAST_CHAIN_ID = 81457;
-const BLAST_SEPOLIA_CHAIN_ID = 168587773;
-const POLYGON_AMOY_CHAIN_ID = 80002;
-
 const HARDHAT_OP_CHAIN_ID = 1338;
 
 export const chainHardhat: Chain = {
   id: HARDHAT_CHAIN_ID,
   name: 'Hardhat',
-  network: 'hardhat',
   nativeCurrency: {
     decimals: 18,
     name: 'Hardhat',
@@ -27,7 +22,6 @@ export const chainHardhat: Chain = {
 export const chainHardhatOptimism: Chain = {
   id: HARDHAT_OP_CHAIN_ID,
   name: 'Hardhat OP',
-  network: 'hardhat-optimism',
   nativeCurrency: {
     decimals: 18,
     name: 'Hardhat OP',
@@ -38,77 +32,6 @@ export const chainHardhatOptimism: Chain = {
     default: { http: ['http://127.0.0.1:8545'] },
   },
   testnet: true,
-};
-
-export const chainBlast: Chain = {
-  id: BLAST_CHAIN_ID,
-  name: 'Blast',
-  network: 'blast',
-  rpcUrls: {
-    public: { http: [process.env.BLAST_MAINNET_RPC as string] },
-    default: {
-      http: [process.env.BLAST_MAINNET_RPC as string],
-    },
-  },
-  blockExplorers: {
-    default: { name: 'Blastscan', url: 'https://blastscan.io/' },
-  },
-  nativeCurrency: {
-    name: 'Blast',
-    symbol: 'BLAST',
-    decimals: 18,
-  },
-};
-
-export const chainBlastSepolia: Chain = {
-  id: BLAST_SEPOLIA_CHAIN_ID,
-  name: 'Blast Sepolia',
-  network: 'blast-sepolia',
-  nativeCurrency: {
-    decimals: 18,
-    name: 'Ether',
-    symbol: 'ETH',
-  },
-  rpcUrls: {
-    public: { http: ['https://sepolia.blast.io'] },
-    default: { http: ['https://sepolia.blast.io'] },
-  },
-  testnet: true,
-};
-
-export const chainPolygonAmoy: Chain = {
-  id: POLYGON_AMOY_CHAIN_ID,
-  name: 'Polygon Amoy',
-  network: 'polygon-amoy',
-  nativeCurrency: {
-    decimals: 18,
-    name: 'MATIC',
-    symbol: 'MATIC',
-  },
-  rpcUrls: {
-    public: { http: ['https://rpc-amoy.polygon.technology'] },
-    default: { http: ['https://rpc-amoy.polygon.technology'] },
-  },
-  testnet: true,
-};
-
-export const chainDegen: Chain = {
-  id: 666666666,
-  name: 'Degen Chain',
-  network: 'degen',
-  nativeCurrency: {
-    decimals: 18,
-    name: 'Degen',
-    symbol: 'DEGEN',
-  },
-  rpcUrls: {
-    public: { http: ['https://rpc.degen.tips'] },
-    default: { http: ['https://rpc.degen.tips'] },
-  },
-  blockExplorers: {
-    default: { name: 'Degen Explorer', url: 'https://explorer.degen.tips/' },
-  },
-  testnet: false,
 };
 
 export enum ChainName {
@@ -145,36 +68,36 @@ export enum ChainName {
 }
 
 export enum ChainId {
-  arbitrum = chain.arbitrum.id,
-  arbitrumNova = chain.arbitrumNova.id,
-  avalanche = chain.avalanche.id,
-  avalancheFuji = chain.avalancheFuji.id,
-  base = chain.base.id,
-  blast = BLAST_CHAIN_ID,
-  blastSepolia = BLAST_SEPOLIA_CHAIN_ID,
-  bsc = chain.bsc.id,
-  celo = chain.celo.id,
-  gnosis = chain.gnosis.id,
-  linea = chain.linea.id,
-  manta = chain.manta.id,
-  optimism = chain.optimism.id,
-  mainnet = chain.mainnet.id,
-  polygon = chain.polygon.id,
-  polygonZkEvm = chain.polygonZkEvm.id,
+  arbitrum = chains.arbitrum.id,
+  arbitrumNova = chains.arbitrumNova.id,
+  avalanche = chains.avalanche.id,
+  avalancheFuji = chains.avalancheFuji.id,
+  base = chains.base.id,
+  blast = chains.blast.id,
+  blastSepolia = chains.blastSepolia.id,
+  bsc = chains.bsc.id,
+  celo = chains.celo.id,
+  gnosis = chains.gnosis.id,
+  linea = chains.linea.id,
+  manta = chains.manta.id,
+  optimism = chains.optimism.id,
+  mainnet = chains.mainnet.id,
+  polygon = chains.polygon.id,
+  polygonZkEvm = chains.polygonZkEvm.id,
   rari = 1380012617,
-  zora = chain.zora.id,
-  hardhat = HARDHAT_CHAIN_ID,
+  zora = chains.zora.id,
+  hardhat = chainHardhat.id,
   hardhatOptimism = chainHardhatOptimism.id,
-  sepolia = chain.sepolia.id,
-  scroll = chain.scroll.id,
-  holesky = chain.holesky.id,
-  optimismSepolia = chain.optimismSepolia.id,
-  bscTestnet = chain.bscTestnet.id,
-  arbitrumSepolia = chain.arbitrumSepolia.id,
-  baseSepolia = chain.baseSepolia.id,
-  zoraSepolia = chain.zoraSepolia.id,
-  polygonAmoy = chainPolygonAmoy.id,
-  degen = chainDegen.id,
+  sepolia = chains.sepolia.id,
+  scroll = chains.scroll.id,
+  holesky = chains.holesky.id,
+  optimismSepolia = chains.optimismSepolia.id,
+  bscTestnet = chains.bscTestnet.id,
+  arbitrumSepolia = chains.arbitrumSepolia.id,
+  baseSepolia = chains.baseSepolia.id,
+  zoraSepolia = chains.zoraSepolia.id,
+  polygonAmoy = chains.polygonAmoy.id,
+  degen = chains.degen.id,
 }
 
 export const chainNameToIdMapping: {
@@ -249,34 +172,82 @@ export const chainIdToNameMapping: {
   [ChainId.degen]: ChainName.degen,
 };
 
-export const ChainNameDisplay = {
-  [ChainId.arbitrum]: 'Arbitrum',
-  [ChainId.arbitrumNova]: chain.arbitrumNova.name,
-  [ChainId.avalanche]: 'Avalanche',
-  [ChainId.avalancheFuji]: 'Avalanche Fuji',
-  [ChainId.base]: 'Base',
-  [ChainId.blast]: 'Blast',
-  [ChainId.blastSepolia]: 'Blast Sepolia',
-  [ChainId.bsc]: 'BSC',
-  [ChainId.celo]: chain.celo.name,
-  [ChainId.linea]: 'Linea',
-  [ChainId.manta]: 'Manta',
-  [ChainId.optimism]: 'Optimism',
-  [ChainId.polygon]: 'Polygon',
-  [ChainId.polygonZkEvm]: chain.polygonZkEvm.name,
-  [ChainId.rari]: 'RARI Chain',
-  [ChainId.scroll]: chain.scroll.name,
-  [ChainId.zora]: 'Zora',
-  [ChainId.mainnet]: 'Ethereum',
-  [ChainId.hardhat]: 'Hardhat',
-  [ChainId.hardhatOptimism]: chainHardhatOptimism.name,
-  [ChainId.sepolia]: chain.sepolia.name,
-  [ChainId.holesky]: chain.holesky.name,
-  [ChainId.optimismSepolia]: chain.optimismSepolia.name,
-  [ChainId.bscTestnet]: 'BSC Testnet',
-  [ChainId.arbitrumSepolia]: chain.arbitrumSepolia.name,
-  [ChainId.baseSepolia]: chain.baseSepolia.name,
-  [ChainId.zoraSepolia]: 'Zora Sepolia',
-  [ChainId.polygonAmoy]: 'Polygon Amoy',
-  [ChainId.degen]: 'Degen',
-} as const;
+export interface BackendNetworkServices {
+  meteorology: {
+    enabled: boolean;
+  };
+  swap: {
+    enabled: boolean;
+  };
+  addys: {
+    approvals: boolean;
+    transactions: boolean;
+    assets: boolean;
+    positions: boolean;
+  };
+  tokenSearch: {
+    enabled: boolean;
+  };
+  nftProxy: {
+    enabled: boolean;
+  };
+}
+
+export interface BackendNetwork {
+  id: string;
+  name: string;
+  label: string;
+  icons: {
+    badgeURL: string;
+  };
+  testnet: boolean;
+  opStack: boolean;
+  defaultExplorer: {
+    url: string;
+    label: string;
+    transactionURL: string;
+    tokenURL: string;
+  };
+  defaultRPC: {
+    enabledDevices: string[];
+    url: string;
+  };
+  gasUnits: {
+    basic: {
+      approval: string;
+      swap: string;
+      swapPermit: string;
+      eoaTransfer: string;
+      tokenTransfer: string;
+    };
+    wrapped: {
+      wrap: string;
+      unwrap: string;
+    };
+  };
+  nativeAsset: {
+    address: string;
+    name: string;
+    symbol: string;
+    decimals: number;
+    iconURL: string;
+    colors: {
+      primary: string;
+      fallback: string;
+      shadow: string;
+    };
+  };
+  nativeWrappedAsset: {
+    address: string;
+    name: string;
+    symbol: string;
+    decimals: number;
+    iconURL: string;
+    colors: {
+      primary: string;
+      fallback: string;
+      shadow: string;
+    };
+  };
+  enabledServices: BackendNetworkServices;
+}

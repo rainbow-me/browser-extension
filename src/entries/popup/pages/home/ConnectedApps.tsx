@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
-import { Address, useEnsName } from 'wagmi';
+import { Address } from 'viem';
+import { useEnsName } from 'wagmi';
 
 import appsConnectedImageMask from 'static/assets/appsConnectedImageMask.svg';
 import { i18n } from '~/core/languages';
@@ -167,7 +168,7 @@ const ConnectedApp = ({
   address: Address;
 }) => {
   const [disconnectButtonVisible, setDisconnectButtonVisible] = useState(false);
-  const { data: ensName } = useEnsName({ address });
+  const { data: ensName } = useEnsName({ address, chainId: ChainId.mainnet });
   const { disconnectAppSession, activeSession } = useAppSession({
     host,
   });

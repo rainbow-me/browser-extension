@@ -1,6 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import { getProvider } from '@wagmi/core';
-import { Chain } from 'wagmi';
 
 import {
   QueryConfig,
@@ -9,15 +7,25 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
+import { ChainId } from '~/core/types/chains';
 import { weiToGwei } from '~/core/utils/ethereum';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 
 import { MeteorologyLegacyResponse } from './meteorology';
+
+export const BASE_FEE_BLOCKS_TO_CONFIRMATION_MULTIPLIERS = {
+  120: 0.75,
+  240: 0.72,
+  4: 0.92,
+  40: 0.79,
+  8: 0.88,
+};
 
 // ///////////////////////////////////////////////
 // Query Types
 
 export type ProviderGasArgs = {
-  chainId: Chain['id'];
+  chainId: ChainId;
 };
 
 // ///////////////////////////////////////////////
@@ -35,6 +43,7 @@ async function providerGasQueryFunction({
   queryKey: [{ chainId }],
 }: QueryFunctionArgs<typeof providerGasQueryKey>) {
   const provider = getProvider({ chainId });
+
   const gasPrice = await provider.getGasPrice();
   const gweiGasPrice = weiToGwei(gasPrice.toString());
 
@@ -70,11 +79,11 @@ export async function getProviderGas(
     ProviderGasQueryKey
   > = {},
 ) {
-  return await queryClient.fetchQuery(
-    providerGasQueryKey({ chainId }),
-    providerGasQueryFunction,
-    config,
-  );
+  return await queryClient.fetchQuery({
+    queryKey: providerGasQueryKey({ chainId }),
+    queryFn: providerGasQueryFunction,
+    ...config,
+  });
 }
 
 // ///////////////////////////////////////////////
@@ -89,9 +98,9 @@ export function useProviderGas(
     ProviderGasQueryKey
   > = {},
 ) {
-  return useQuery(
-    providerGasQueryKey({ chainId }),
-    providerGasQueryFunction,
-    config,
-  );
+  return useQuery({
+    queryKey: providerGasQueryKey({ chainId }),
+    queryFn: providerGasQueryFunction,
+    ...config,
+  });
 }

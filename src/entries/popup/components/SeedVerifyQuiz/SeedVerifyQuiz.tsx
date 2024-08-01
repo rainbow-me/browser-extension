@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { useWalletBackupsStore } from '~/core/state/walletBackups';
@@ -119,7 +119,13 @@ const SeedWordRow = ({
         </Box>
 
         <Box style={{ width: 57 + additionalWidth }}>
-          <Text size="14pt" weight="bold" color="label" align="left">
+          <Text
+            size="14pt"
+            weight="bold"
+            color="label"
+            align="left"
+            translate="no"
+          >
             {word}
           </Text>
         </Box>

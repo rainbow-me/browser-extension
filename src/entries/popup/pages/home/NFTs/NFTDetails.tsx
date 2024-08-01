@@ -2,24 +2,19 @@ import { DropdownMenuRadioGroup } from '@radix-ui/react-dropdown-menu';
 import clsx from 'clsx';
 import { format, formatDistanceStrict } from 'date-fns';
 import { ReactNode, useCallback, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
-import { Address, useEnsName } from 'wagmi';
+import { useLocation } from 'react-router-dom';
+import { Address } from 'viem';
+import { useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { selectNftCollections } from '~/core/resources/_selectors/nfts';
+import { chainsLabel } from '~/core/references/chains';
 import { useEnsRegistration } from '~/core/resources/ens/ensRegistration';
-import { useNfts } from '~/core/resources/nfts';
-import { useCurrentAddressStore } from '~/core/state';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useSelectedNftStore } from '~/core/state/selectedNft';
 import { AddressOrEth } from '~/core/types/assets';
-import { ChainName, ChainNameDisplay } from '~/core/types/chains';
+import { ChainId, ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import { UniqueAsset } from '~/core/types/nfts';
 import { truncateAddress } from '~/core/utils/address';
-import {
-  chainIdFromChainName,
-  getBlockExplorerHostForChain,
-} from '~/core/utils/chains';
+import { getBlockExplorerHostForChain } from '~/core/utils/chains';
 import { copyAddress } from '~/core/utils/copy';
 import {
   getUniqueAssetImagePreviewURL,
@@ -77,34 +72,22 @@ import { useDominantColor } from '~/entries/popup/hooks/useDominantColor';
 import { useEns } from '~/entries/popup/hooks/useEns';
 import { useNftShortcuts } from '~/entries/popup/hooks/useNftShortcuts';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
-import { useUserChains } from '~/entries/popup/hooks/useUserChains';
+import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
 import chunkLinks from '~/entries/popup/utils/chunkLinks';
 
 import { BirdIcon } from './BirdIcon';
 import NFTContextMenu from './NFTContextMenu';
 import NFTDropdownMenu from './NFTDropdownMenu';
-import { getOpenseaUrl } from './utils';
+import { getOpenseaUrl, getRaribleUrl } from './utils';
 
 export default function NFTDetails() {
-  const { currentAddress: address } = useCurrentAddressStore();
-  const { collectionId, nftId } = useParams<{
-    collectionId: string;
-    nftId: string;
-  }>();
-  const { testnetMode } = useTestnetModeStore();
-  const { chains: userChains } = useUserChains();
-  const { data } = useNfts({ address, testnetMode, userChains });
-  const navigate = useRainbowNavigate();
-  const setSelectedNft = useSelectedNftStore.use.setSelectedNft();
-  const collections = selectNftCollections(data);
-  const nft = useMemo(() => {
-    if (!collectionId || !nftId) return null;
-    return collections?.[collectionId]?.assets?.find(
-      (asset: UniqueAsset) => asset.id === nftId,
-    );
-  }, [collectionId, collections, nftId]);
+  const { state } = useLocation();
+  const nft = state?.nft;
   const isPOAP = nft?.familyName === 'POAP';
+  const navigate = useRainbowNavigate();
+  const { isWatchingWallet } = useWallets();
+  const { setSelectedNft } = useSelectedNftStore();
   const {
     ensAddress,
     ensBio,
@@ -175,7 +158,7 @@ export default function NFTDetails() {
                 borderRadius="16px"
                 style={{ height: 320, width: 320 }}
               >
-                <NFTContextMenu nft={nft} offsetOverride={true}>
+                <NFTContextMenu nft={nft} offset={0}>
                   <ExternalImage
                     src={nft ? getUniqueAssetImageThumbnailURL(nft) : ''}
                     placeholderSrc={
@@ -282,7 +265,25 @@ export default function NFTDetails() {
                       </Button>
                     </Column>
                   )}
-                  {nft?.isSendable && (
+                  {!isPOAP && isWatchingWallet && (
+                    <Column>
+                      <Button
+                        width="full"
+                        color="accent"
+                        height="36px"
+                        variant="flat"
+                        borderRadius="round"
+                        symbol="arrow.up.right.square.fill"
+                        onClick={() =>
+                          goToNewTab({ url: getRaribleUrl({ nft }) })
+                        }
+                        tabIndex={0}
+                      >
+                        {'Rarible'}
+                      </Button>
+                    </Column>
+                  )}
+                  {!isWatchingWallet && nft?.isSendable && (
                     <Column>
                       <Button
                         width="full"
@@ -675,11 +676,12 @@ const NFTAccordionAboutSection = ({
   showFloorPriceExplainerSheet: () => void;
 }) => {
   const networkDisplay = nft?.network
-    ? ChainNameDisplay[chainIdFromChainName(nft?.network)]
+    ? chainsLabel[chainNameToIdMapping[nft?.network]]
     : '';
   const deployedBy = nft?.asset_contract?.deployed_by;
   const { data: creatorEnsName } = useEnsName({
     address: (deployedBy as Address) || undefined,
+    chainId: ChainId.mainnet,
   });
   const goToDeployerURL = useCallback(
     (deployedBy: string) =>
@@ -777,9 +779,9 @@ const NFTAccordionAboutSection = ({
             </Inline>
             <Inline alignVertical="center" space="6px">
               <ChainBadge
-                chainId={chainIdFromChainName(
-                  nft?.network || ChainName.mainnet,
-                )}
+                chainId={
+                  chainNameToIdMapping[nft?.network || ChainName.mainnet]
+                }
                 size={12}
               />
               <TextOverflow
@@ -1056,7 +1058,7 @@ const NFTEtherscanLinkButton = ({
   }
 
   const blockExplorerUrl = `https://${getBlockExplorerHostForChain(
-    chainIdFromChainName(network as ChainName),
+    chainNameToIdMapping[network as ChainName],
   )}/token/${contractAddress}`;
   const title =
     network === 'mainnet' ? 'Etherscan' : i18n.t('nfts.details.explorer');

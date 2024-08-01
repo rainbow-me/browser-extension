@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Address } from 'wagmi';
-import { getProvider } from 'wagmi/actions';
+import { Address } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -17,6 +16,7 @@ import {
   getCustomChainIconUrl,
 } from '~/core/utils/assets';
 import { getChain } from '~/core/utils/chains';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 import { Row, Rows, Separator } from '~/design-system';
 import { RainbowError, logger } from '~/logger';
 
@@ -73,8 +73,8 @@ export const WatchAsset = ({
     () => ({
       address: assetAddress,
       chainId: Number(selectedChainId),
-      chainName: (getChain({ chainId: Number(selectedChainId) }).name ||
-        '') as ChainName,
+      chainName: getChain({ chainId: Number(selectedChainId) })
+        .name as ChainName,
       decimals: assetMetadata?.decimals || decimals,
       symbol: assetMetadata?.symbol || symbol,
       isNativeAsset: false,
@@ -110,7 +110,6 @@ export const WatchAsset = ({
   }, [asset, wrongNetwork]);
 
   const fetchAssetData = useCallback(async () => {
-    const provider = getProvider({ chainId: Number(selectedChainId) });
     const assetWithMetadata = asset;
 
     // Get the balance onchain
@@ -118,7 +117,7 @@ export const WatchAsset = ({
       parsedAsset: assetWithMetadata,
       currentAddress,
       currency: currentCurrency,
-      provider,
+      provider: getProvider({ chainId: Number(selectedChainId) }),
     });
 
     // Attempt to get the price through the backend

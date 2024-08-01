@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React from 'react';
+import React, { HTMLAttributes } from 'react';
 
 import { TextStyles, textStyles } from '../../styles/core.css';
 import { Box } from '../Box/Box';
@@ -16,11 +16,13 @@ export interface TextProps {
   testId?: string;
   background?: TextStyles['background'];
   webkitBackgroundClip?: TextStyles['WebkitBackgroundClip'];
+  webkitTextFillColor?: TextStyles['WebkitTextFillColor'];
   cursor?: TextStyles['cursor'];
   userSelect?: TextStyles['userSelect'];
   whiteSpace?: TextStyles['whiteSpace'];
   textShadow?: TextStyles['textShadow'];
   fontFamily?: TextStyles['fontFamily'];
+  translate?: HTMLAttributes<unknown>['translate'];
 }
 
 export function Text({
@@ -33,11 +35,13 @@ export function Text({
   weight,
   testId,
   webkitBackgroundClip,
+  webkitTextFillColor,
   cursor = 'default',
   userSelect = 'none',
   whiteSpace,
   textShadow,
   fontFamily = 'rounded',
+  translate,
 }: TextProps) {
   return (
     <Box
@@ -53,6 +57,7 @@ export function Text({
           background,
           userSelect,
           WebkitBackgroundClip: webkitBackgroundClip,
+          WebkitTextFillColor: webkitTextFillColor,
           transition: 'color 200ms ease-out, text-shadow 1s ease',
           whiteSpace,
           textShadow,
@@ -60,8 +65,9 @@ export function Text({
         selectionStyle,
       ])}
       testId={testId}
-      marginVertical={webkitBackgroundClip === 'text' ? '-6px' : undefined}
-      paddingVertical={webkitBackgroundClip === 'text' ? '6px' : undefined}
+      marginVertical={webkitBackgroundClip === 'text' ? '-10px' : undefined}
+      paddingVertical={webkitBackgroundClip === 'text' ? '10px' : undefined}
+      translate={translate}
     >
       {children}
     </Box>

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { metadataPostClient } from '~/core/graphql';
 import { Message, Transaction } from '~/core/graphql/__generated__/metadata';
@@ -118,11 +118,13 @@ export const useSimulateTransaction = ({
     }),
     enabled: !!chainId && (!!transaction.value || !!transaction.data),
     queryFn: async () => {
-      const response = (await metadataPostClient.simulateTransactions({
-        chainId,
-        transactions: [{ ...transaction, to: transaction.to || '' }],
-        domain,
-      })) as TransactionSimulationResponse;
+      const response = (await metadataPostClient.simulateTransactionsWithoutGas(
+        {
+          chainId,
+          transactions: [{ ...transaction, to: transaction.to || '' }],
+          domain,
+        },
+      )) as TransactionSimulationResponse;
       return parseSimulation(response.simulateTransactions[0], chainId);
     },
     staleTime: 60 * 1000, // 1 min

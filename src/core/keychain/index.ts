@@ -11,7 +11,7 @@ import {
   TypedMessage,
   signTypedData as signTypedDataSigUtil,
 } from '@metamask/eth-sig-util';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import {
   SignMessageArguments,
@@ -255,11 +255,14 @@ export const executeRap = async ({
   type,
   provider,
 }: {
-  rapActionParameters: RapSwapActionParameters<'swap' | 'crosschainSwap'>;
+  rapActionParameters: RapSwapActionParameters<
+    'swap' | 'crosschainSwap' | 'claimBridge'
+  >;
   type: RapTypes;
   provider: Provider;
 }): Promise<{ nonce: number | undefined }> => {
-  const from = rapActionParameters.quote.from as Address;
+  const from = (rapActionParameters.address ||
+    rapActionParameters.quote?.from) as Address;
   if (typeof from === 'undefined') {
     throw new Error('Missing from address');
   }

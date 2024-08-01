@@ -1,10 +1,13 @@
 import { fetchEnsAddress } from '@wagmi/core';
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
-import { Address, useAccount, useEnsName } from 'wagmi';
+import { Address } from 'viem';
+import { useEnsName } from 'wagmi';
 
 import { useCurrentAddressStore } from '~/core/state';
+import { ChainId } from '~/core/types/chains';
 import { WalletAction } from '~/core/types/walletActions';
 import { EthereumWalletSeed, isENSAddressFormat } from '~/core/utils/ethereum';
+import { wagmiConfig } from '~/core/wagmi';
 import { Box, Separator, Text } from '~/design-system';
 
 import * as wallet from '../../handlers/wallet';
@@ -267,8 +270,8 @@ export function Wallets() {
   const [password, setPassword] = useState<string>('');
   const [isUnlocked, setIsUnlocked] = useState<boolean>(true);
   const [isNewUser, setIsNewUser] = useState<boolean>(true);
-  const { address } = useAccount();
-  const { data: ensName } = useEnsName({ address });
+  const { currentAddress: address } = useCurrentAddressStore();
+  const { data: ensName } = useEnsName({ address, chainId: ChainId.mainnet });
   const setCurrentAddress = useCurrentAddressStore.use.setCurrentAddress();
 
   const updatePassword = useCallback((pwd: string) => {
@@ -297,7 +300,9 @@ export function Wallets() {
     let seed = secret;
     if (isENSAddressFormat(secret)) {
       try {
-        seed = (await fetchEnsAddress({ name: secret })) as Address;
+        seed = (await fetchEnsAddress(wagmiConfig, {
+          name: secret,
+        })) as Address;
       } catch (e) {
         console.log('error', e);
         alert('Invalid ENS name');

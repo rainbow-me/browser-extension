@@ -1,11 +1,11 @@
 /* eslint-disable no-nested-ternary */
 import { motion, useTransform } from 'framer-motion';
 import * as React from 'react';
-import { useAccount } from 'wagmi';
 
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
+import { useCurrentAddressStore } from '~/core/state';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
@@ -46,7 +46,7 @@ export const Header = React.memo(function Header() {
   const y = useTransform(progress, [0, 1], [0, 2]);
   const avatarOpacityValue = useTransform(progress, [0, 0.25, 1], [0, 0, 1]);
 
-  const { address } = useAccount();
+  const { currentAddress: address } = useCurrentAddressStore();
 
   return (
     <WalletContextMenu account={address}>
@@ -116,7 +116,7 @@ export const Header = React.memo(function Header() {
 });
 
 export function AvatarSection() {
-  const { address } = useAccount();
+  const { currentAddress: address } = useCurrentAddressStore();
   const { data: avatar } = useAvatar({ addressOrName: address });
 
   return (
@@ -134,7 +134,7 @@ export function AvatarSection() {
 }
 
 function ActionButtonsSection() {
-  const { address } = useAccount();
+  const { currentAddress: address } = useCurrentAddressStore();
   const { data: avatar } = useAvatar({ addressOrName: address });
 
   const { isWatchingWallet } = useWallets();

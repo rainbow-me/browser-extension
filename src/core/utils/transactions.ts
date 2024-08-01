@@ -6,9 +6,10 @@ import {
   TransactionResponse,
 } from '@ethersproject/providers';
 import { formatUnits } from '@ethersproject/units';
-import { getProvider } from '@wagmi/core';
 import { isString } from 'lodash';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
+
+import RainbowIcon from 'static/images/icon-16@2x.png';
 
 import { i18n } from '../languages';
 import { createHttpClient } from '../network/internal/createHttpClient';
@@ -35,6 +36,7 @@ import {
   isValidTransactionType,
   transactionTypeShouldHaveChanges,
 } from '../types/transactions';
+import { getProvider } from '../wagmi/clientToProvider';
 
 import { parseAsset, parseUserAsset, parseUserAssetBalances } from './assets';
 import { getBlockExplorerHostForChain, isNativeAsset } from './chains';
@@ -173,6 +175,22 @@ const getAssetFromChanges = (
   return changes[0]?.asset;
 };
 
+const getAddressTo = (
+  meta: PaginatedTransactionsApiResponse['meta'],
+  changes: {
+    direction: TransactionDirection;
+    asset: ParsedUserAsset;
+    address_to: Address;
+  }[],
+) => {
+  if (meta.type === 'approve') {
+    return meta?.approval_to;
+  }
+  if (meta.type === 'sale')
+    return changes?.find((c) => c?.direction === 'out')?.address_to;
+  return changes[0]?.address_to;
+};
+
 const getDescription = (
   asset: ParsedAsset | undefined,
   type: TransactionType,
@@ -253,6 +271,8 @@ export function parseTransaction({
     ? parseAsset({ asset: meta.asset, currency })
     : getAssetFromChanges(changes, type);
 
+  const addressTo = asset ? getAddressTo(meta, changes) : tx.address_to;
+
   const direction = tx.direction || getDirection(type);
 
   const description = getDescription(asset, type, meta);
@@ -278,14 +298,30 @@ export function parseTransaction({
     value: valueInNative,
   };
 
-  const contract = meta.contract_name && {
-    name: meta.contract_name,
-    iconUrl: meta.contract_icon_url,
-  };
+  let contract;
+  if (meta.contract_name) {
+    if (meta.external_subtype === 'rewards_claim') {
+      contract = {
+        name: 'Rainbow',
+        iconUrl: RainbowIcon,
+      };
+    } else {
+      contract = {
+        name: meta.contract_name,
+        iconUrl: meta.contract_icon_url,
+      };
+    }
+  }
+
+  const explorer = meta.explorer_label &&
+    meta.explorer_url && {
+      name: meta.explorer_label,
+      url: meta.explorer_url,
+    };
 
   return {
     from: tx.address_from,
-    to: tx.address_to,
+    to: addressTo,
     title: i18n.t(`transactions.${type}.${status}`),
     description,
     hash,
@@ -304,6 +340,7 @@ export function parseTransaction({
     confirmations: tx.block_confirmations,
     contract,
     native,
+    explorer,
     ...fee,
   } as RainbowTransaction;
 }
@@ -624,7 +661,8 @@ export const getAdditionalDetails = (transaction: RainbowTransaction) => {
     !exchangeRate &&
     !collection &&
     !standard &&
-    !approval
+    !approval &&
+    contract?.name !== 'Rainbow'
   )
     return;
 

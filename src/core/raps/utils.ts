@@ -9,10 +9,10 @@ import {
   getQuoteExecutionDetails,
   getRainbowRouterContractAddress,
 } from '@rainbow-me/swaps';
+import { erc20Abi } from 'viem';
 import { mainnet } from 'viem/chains';
-import { Chain, erc20ABI } from 'wagmi';
 
-import { gasUnits } from '../references';
+import { getChainGasUnits } from '../references/chains';
 import { ChainId } from '../types/chains';
 import {
   GasFeeLegacyParams,
@@ -101,7 +101,7 @@ const getStateDiff = async (
     quote.swapType === 'normal'
       ? getRainbowRouterContractAddress(chainId)
       : (quote as CrosschainQuote).allowanceTarget;
-  const tokenContract = new Contract(tokenAddress, erc20ABI, provider);
+  const tokenContract = new Contract(tokenAddress, erc20Abi, provider);
 
   const { number: blockNumber } = await (
     provider.getBlock as () => Promise<Block>
@@ -205,7 +205,7 @@ const getClosestGasEstimate = async (
 
 export const getDefaultGasLimitForTrade = (
   quote: Quote,
-  chainId: Chain['id'],
+  chainId: ChainId,
 ): string => {
   const allowsPermit =
     chainId === mainnet.id &&
@@ -216,11 +216,14 @@ export const getDefaultGasLimitForTrade = (
   if (allowsPermit) {
     defaultGasLimit = Math.max(
       Number(defaultGasLimit),
-      Number(multiply(gasUnits.basic_swap_permit, EXTRA_GAS_PADDING)),
+      Number(
+        multiply(getChainGasUnits(chainId).basic.swapPermit, EXTRA_GAS_PADDING),
+      ),
     ).toString();
   }
   return (
-    defaultGasLimit || multiply(gasUnits.basic_swap[chainId], EXTRA_GAS_PADDING)
+    defaultGasLimit ||
+    multiply(getChainGasUnits(chainId).basic.swap, EXTRA_GAS_PADDING)
   );
 };
 
@@ -270,10 +273,7 @@ export const estimateSwapGasLimitWithFakeApproval = async (
         return false;
       }
     });
-    if (
-      gasLimit &&
-      greaterThan(gasLimit, gasUnits.basic_swap[ChainId.mainnet])
-    ) {
+    if (gasLimit && greaterThan(gasLimit, getChainGasUnits().basic.swap)) {
       return gasLimit;
     }
   } catch (e) {

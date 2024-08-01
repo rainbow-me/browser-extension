@@ -2,9 +2,12 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
-import { gasUnits } from '~/core/references';
+import {
+  getChainGasUnits,
+  needsL1SecurityFeeChains,
+} from '~/core/references/chains';
 import { useEstimateGasLimit, useGasData } from '~/core/resources/gas';
 import { useEstimateApprovalGasLimit } from '~/core/resources/gas/estimateApprovalGasLimit';
 import { useEstimateSwapGasLimit } from '~/core/resources/gas/estimateSwapGasLimit';
@@ -14,7 +17,7 @@ import {
 } from '~/core/resources/gas/meteorology';
 import { useOptimismL1SecurityFee } from '~/core/resources/gas/optimismL1SecurityFee';
 import { useCurrentCurrencyStore, useGasStore } from '~/core/state';
-import { ParsedSearchAsset } from '~/core/types/assets';
+import { ParsedAsset, ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
   GasFeeLegacyParamsBySpeed,
@@ -25,7 +28,6 @@ import {
 import { gweiToWei, weiToGwei } from '~/core/utils/ethereum';
 import {
   FLASHBOTS_MIN_TIP,
-  chainNeedsL1SecurityFee,
   gasFeeParamsChanged,
   parseCustomGasFeeParams,
   parseGasFeeParamsBySpeed,
@@ -73,7 +75,7 @@ const useGas = ({
       transactionRequest: useDebounce(transactionRequest || {}, 500),
       chainId,
     },
-    { enabled: chainNeedsL1SecurityFee(chainId) },
+    { enabled: needsL1SecurityFeeChains.includes(chainId) },
   );
 
   const {
@@ -124,7 +126,8 @@ const useGas = ({
       speed: GasSpeed.CUSTOM,
       baseFeeWei: gweiToWei(debouncedMaxBaseFee || '0'),
       blocksToConfirmation,
-      gasLimit: estimatedGasLimit || `${gasUnits.basic_transfer}`,
+      gasLimit:
+        estimatedGasLimit || getChainGasUnits(chainId).basic.tokenTransfer,
       nativeAsset,
       currency: currentCurrency,
       secondsPerNewBlock,
@@ -179,7 +182,8 @@ const useGas = ({
       speed: GasSpeed.CUSTOM,
       baseFeeWei: maxBaseFee,
       blocksToConfirmation,
-      gasLimit: estimatedGasLimit || `${gasUnits.basic_transfer}`,
+      gasLimit:
+        estimatedGasLimit || getChainGasUnits(chainId).basic.tokenTransfer,
       nativeAsset,
       currency: currentCurrency,
       secondsPerNewBlock,
@@ -215,7 +219,8 @@ const useGas = ({
               chainId,
               data: gasData as MeteorologyLegacyResponse | MeteorologyResponse,
               gasLimit:
-                debouncedEstimatedGasLimit || `${gasUnits.basic_transfer}`,
+                debouncedEstimatedGasLimit ||
+                getChainGasUnits(chainId).basic.tokenTransfer,
               nativeAsset,
               currency: currentCurrency,
               optimismL1SecurityFee,
@@ -344,8 +349,8 @@ export const useSwapGas = ({
   chainId: ChainId;
   defaultSpeed?: GasSpeed;
   quote?: Quote | CrosschainQuote | QuoteError;
-  assetToSell?: ParsedSearchAsset;
-  assetToBuy?: ParsedSearchAsset;
+  assetToSell?: ParsedSearchAsset | ParsedAsset;
+  assetToBuy?: ParsedSearchAsset | ParsedAsset;
   enabled?: boolean;
   flashbotsEnabled?: boolean;
   quoteServiceTime?: number;

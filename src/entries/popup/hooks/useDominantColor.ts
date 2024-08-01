@@ -25,14 +25,12 @@ export const fetchDominantColor = async ({
 };
 export function useDominantColor({ imageUrl }: { imageUrl?: string }) {
   const { colorCache } = useColorCacheStore();
-  return useQuery(
-    ['color', imageUrl],
-    async () => fetchDominantColor({ imageUrl }),
-    {
-      enabled: !!imageUrl,
-      initialData: () => {
-        return imageUrl ? colorCache[imageUrl] : undefined;
-      },
+  return useQuery({
+    queryKey: ['color', imageUrl],
+    queryFn: async () => fetchDominantColor({ imageUrl }),
+    enabled: !!imageUrl,
+    initialData: () => {
+      return imageUrl ? colorCache[imageUrl] : undefined;
     },
-  );
+  });
 }

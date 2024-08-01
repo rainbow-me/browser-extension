@@ -21,6 +21,64 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.4.122](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.122)
+
+### Changed
+
+- You can now search for a Token Contract Address in Swaps to more quickly find a token #1561
+
+### Fixed
+
+- Resolved gas estimation issues for Blast and Degen chain #1559 #1566
+- Fixed the `To` field in Activity Details for a transaction to better reflect a transaction recipient #1567
+- Resolved `NaN` balances displayed on the Tokens tab while reloading balances #1562
+- Fixed text overflows for alternative languages on the Tip Banner on the Tokens tab #1563
+
+### Internal
+
+- Consolidated chains info to prepare for new Chains Metadata endpoint #1554
+
+## [v1.4.111](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.111)
+
+### Changed
+
+- You can now search for Token Contract Addresses in the Magic Menu with Cmd+K to easily find and get an asset #1547
+
+### Fixed
+
+- Resolved accuracy of Ethereum Sepolia and additional testnet gas estimates #1546
+- Fixed a crash for some browsers that attempted to translate the Onboarding flow #1548
+
+### Internal
+
+- Translations for Magic Menu, Contacts, Report NFTs, and Speed up and Cancel Txs #1550
+- Upgraded Wagmi and Viem to v2, and included React Query #1541
+
+## [v1.4.97](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.97)
+
+### Added
+
+- You can now add, remove, and manage Contacts in the Magic Menu with Cmd+K #1526 #1539 #1542 #1543
+- Instant bridging routes are now available in Rainbow for many core tokens and networks via the Relay Protocol #1531
+
+### Changed
+
+- Search result priority ordering improvements in the Magic Menu for commands, tokens, and more #1543
+- Improved translation coverage for the Magic Menu #1537
+
+### Fixed
+
+- Resolved an issue where pending transactions could visually overlap in Activity #1532
+- Blocking auto-translation attempts in some browsers while interacting with your Secret Recovery Phrase #1544
+- Fixed an issue with `ESC` keyboard dismissals for the Token Details card #1521
+- Fixed an issue for some dApps like Etherscan that required triggering a connection request upon switching networks #1536
+- Resolved interaction consistency with right-click menus and action menus in NFT Details #1425
+
+### Internal
+
+- Optimized home screen renders with wrapper component for listeners #1535
+- Optimized Zustand selector use to improve performance #1513
+
 ## [v1.4.84](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.84)
 
 ### Fixed

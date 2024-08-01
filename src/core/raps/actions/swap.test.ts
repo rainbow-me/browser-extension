@@ -6,20 +6,21 @@ import {
   SwapType,
   getQuote,
 } from '@rainbow-me/swaps';
-import { getProvider } from '@wagmi/core';
 import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test } from 'vitest';
 
+import { connectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { updateWagmiConfig } from '~/core/wagmi';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 import { TEST_ADDRESS_2, TEST_PK_2, delay } from '~/test/utils';
-
-import { createTestWagmiClient } from '../../wagmi/createTestWagmiClient';
 
 import { estimateSwapGasLimit, executeSwap } from './swap';
 
 let quote: Quote | QuoteError | null;
 
 beforeAll(async () => {
-  createTestWagmiClient();
+  connectedToHardhatStore.setState({ connectedToHardhat: true });
+  updateWagmiConfig([mainnet]);
   await delay(3000);
   quote = await getQuote({
     chainId: 1,

@@ -10,7 +10,7 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
-import { gasUnits } from '~/core/references/gasUnits';
+import { getChainGasUnits } from '~/core/references/chains';
 import { ChainId } from '~/core/types/chains';
 
 // ///////////////////////////////////////////////
@@ -52,7 +52,8 @@ async function estimateApprovalGasLimitQueryFunction({
     { chainId, ownerAddress, assetAddress, spenderAddress, assetType },
   ],
 }: QueryFunctionArgs<typeof estimateApprovalGasLimitQueryKey>) {
-  if (!assetAddress || !spenderAddress) return gasUnits.basic_approval[chainId];
+  if (!assetAddress || !spenderAddress)
+    return getChainGasUnits(chainId).basic.approval;
   if (assetType === 'erc20') {
     const gasLimit = await estimateApprove({
       owner: ownerAddress,
@@ -94,17 +95,17 @@ export async function fetchEstimateSwapGasLimit(
     EstimateApprovalGasLimitQueryKey
   > = {},
 ) {
-  return await queryClient.fetchQuery(
-    estimateApprovalGasLimitQueryKey({
+  return await queryClient.fetchQuery({
+    queryKey: estimateApprovalGasLimitQueryKey({
       chainId,
       ownerAddress,
       assetAddress,
       spenderAddress,
       assetType,
     }),
-    estimateApprovalGasLimitQueryFunction,
-    config,
-  );
+    queryFn: estimateApprovalGasLimitQueryFunction,
+    ...config,
+  });
 }
 
 // ///////////////////////////////////////////////
@@ -125,15 +126,16 @@ export function useEstimateApprovalGasLimit(
     EstimateApprovalGasLimitQueryKey
   > = {},
 ) {
-  return useQuery(
-    estimateApprovalGasLimitQueryKey({
+  return useQuery({
+    queryKey: estimateApprovalGasLimitQueryKey({
       chainId,
       ownerAddress,
       assetAddress,
       spenderAddress,
       assetType,
     }),
-    estimateApprovalGasLimitQueryFunction,
-    { keepPreviousData: true, ...config },
-  );
+    queryFn: estimateApprovalGasLimitQueryFunction,
+    ...config,
+    placeholderData: (previousData) => previousData,
+  });
 }

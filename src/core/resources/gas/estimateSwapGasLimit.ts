@@ -15,8 +15,8 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
-import { gasUnits } from '~/core/references/gasUnits';
-import { ParsedSearchAsset } from '~/core/types/assets';
+import { getChainGasUnits } from '~/core/references/chains';
+import { ParsedAsset, ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 
 // ///////////////////////////////////////////////
@@ -29,8 +29,8 @@ export type EstimateSwapGasLimitResponse = {
 export type EstimateSwapGasLimitArgs = {
   chainId: ChainId;
   quote?: Quote | CrosschainQuote | QuoteError;
-  assetToSell?: ParsedSearchAsset;
-  assetToBuy?: ParsedSearchAsset;
+  assetToSell?: ParsedSearchAsset | ParsedAsset;
+  assetToBuy?: ParsedSearchAsset | ParsedAsset;
 };
 
 // ///////////////////////////////////////////////
@@ -59,7 +59,7 @@ async function estimateSwapGasLimitQueryFunction({
   queryKey: [{ chainId, quote, assetToSell, assetToBuy }],
 }: QueryFunctionArgs<typeof estimateSwapGasLimitQueryKey>) {
   if (!quote || (quote as QuoteError).error || !assetToSell || !assetToBuy) {
-    return gasUnits.basic_swap[chainId];
+    return getChainGasUnits(chainId).basic.swap;
   }
   const q = quote as Quote | CrosschainQuote;
   const gasLimit =
@@ -80,7 +80,7 @@ async function estimateSwapGasLimitQueryFunction({
         });
 
   if (!gasLimit) {
-    return gasUnits.basic_swap[chainId];
+    return getChainGasUnits(chainId).basic.swap;
   }
   return gasLimit;
 }
@@ -101,16 +101,16 @@ export async function fetchEstimateSwapGasLimit(
     EstimateSwapGasLimitQueryKey
   > = {},
 ) {
-  return await queryClient.fetchQuery(
-    estimateSwapGasLimitQueryKey({
+  return await queryClient.fetchQuery({
+    queryKey: estimateSwapGasLimitQueryKey({
       chainId,
       quote,
       assetToSell,
       assetToBuy,
     }),
-    estimateSwapGasLimitQueryFunction,
-    config,
-  );
+    queryFn: estimateSwapGasLimitQueryFunction,
+    ...config,
+  });
 }
 
 // ///////////////////////////////////////////////
@@ -125,14 +125,15 @@ export function useEstimateSwapGasLimit(
     EstimateSwapGasLimitQueryKey
   > = {},
 ) {
-  return useQuery(
-    estimateSwapGasLimitQueryKey({
+  return useQuery({
+    queryKey: estimateSwapGasLimitQueryKey({
       chainId,
       quote,
       assetToSell,
       assetToBuy,
     }),
-    estimateSwapGasLimitQueryFunction,
-    { keepPreviousData: true, ...config },
-  );
+    queryFn: estimateSwapGasLimitQueryFunction,
+    ...config,
+    placeholderData: (previousData) => previousData,
+  });
 }

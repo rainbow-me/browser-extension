@@ -89,11 +89,11 @@ export async function fetchAssets(
     AssetsQueryKey
   > = {},
 ) {
-  return await queryClient.fetchQuery(
-    assetsQueryKey({ assets, currency }),
-    assetsQueryFunction,
-    config,
-  );
+  return await queryClient.fetchQuery({
+    queryKey: assetsQueryKey({ assets, currency }),
+    queryFn: assetsQueryFunction,
+    ...config,
+  });
 }
 
 function parseAssets(
@@ -134,7 +134,9 @@ export function useAssets<TSelectData = AssetsQueryResult>(
     AssetsQueryKey
   > = {},
 ) {
-  return useQuery(assetsQueryKey({ assets, currency }), assetsQueryFunction, {
+  return useQuery({
+    queryKey: assetsQueryKey({ assets, currency }),
+    queryFn: assetsQueryFunction,
     ...config,
     refetchInterval: ASSETS_REFETCH_INTERVAL,
   });

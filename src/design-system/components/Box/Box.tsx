@@ -1,6 +1,6 @@
 import type * as Polymorphic from '@radix-ui/react-polymorphic';
 import clsx, { ClassValue } from 'clsx';
-import React, { forwardRef } from 'react';
+import React, { HTMLAttributes, forwardRef } from 'react';
 
 import {
   BoxStyles,
@@ -41,6 +41,7 @@ export type BoxProps = Omit<BoxStyles, 'background'> & {
   isModal?: boolean;
   isExplainerSheet?: boolean;
   testId?: string;
+  translate?: HTMLAttributes<unknown>['translate'];
   onKeyDown?: React.KeyboardEventHandler;
   tabIndex?: number;
 };
@@ -54,19 +55,21 @@ export const Box = forwardRef(function Box(
     isModal,
     isExplainerSheet,
     testId,
+    translate,
     ...props
   },
   ref,
 ) {
   let hasBoxStyles = false;
-  const boxStyleOptions: BoxStyles = {};
+  // attempting to use the keyof operator on BoxStyles is too cumbersome for TypeScript because <Box /> has become quite bloated, so we're typing this obj as any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const boxStyleOptions: any = {};
   const restProps: Record<string, unknown> = {};
 
   for (const key in props) {
     if (boxStyles.properties.has(key as keyof BoxStyles)) {
       hasBoxStyles = true;
-      boxStyleOptions[key as keyof BoxStyles] =
-        props[key as keyof typeof props];
+      boxStyleOptions[key] = props[key as keyof typeof props];
     } else {
       restProps[key] = props[key as keyof typeof props];
     }
@@ -123,6 +126,7 @@ export const Box = forwardRef(function Box(
       data-is-modally-presented={isModal || undefined}
       data-is-explainer-sheet={isExplainerSheet || undefined}
       data-testid={testId}
+      translate={translate}
       // Since Box is a primitive component, it needs to spread props
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...restProps}

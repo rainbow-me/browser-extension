@@ -58,9 +58,12 @@ export function getFetchRequester(config: Config) {
       });
     }
 
-    requestOptions.headers = {
-      Authorization: `Bearer ${process.env.RAINBOW_METADATA_API_TOKEN}`,
-    };
+    // the graph ens subgraph rejects requests with an Authorization header
+    if (config.url.includes('rainbow.me')) {
+      requestOptions.headers = {
+        Authorization: `Bearer ${process.env.RAINBOW_METADATA_API_TOKEN}`,
+      };
+    }
 
     const { data } = await rainbowFetch<{ data: TResponse }>(
       requestUrl,

@@ -3,8 +3,8 @@ import 'geckodriver';
 import { Contract } from '@ethersproject/contracts';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { WebDriver } from 'selenium-webdriver';
+import { erc20Abi } from 'viem';
 import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
-import { erc20ABI } from 'wagmi';
 
 import { ChainId } from '~/core/types/chains';
 
@@ -153,7 +153,7 @@ it('should be able to execute unlock and swap', async () => {
   await delayTime('short');
   const tokenContract = new Contract(
     SWAP_VARIABLES.USDC_MAINNET_ADDRESS,
-    erc20ABI,
+    erc20Abi,
     provider,
   );
   const usdcBalanceBeforeSwap = await tokenContract.balanceOf(
@@ -189,8 +189,13 @@ it('should be able to execute unlock and swap', async () => {
   });
   await delayTime('long');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
+
+  // wait for swap to complete
   await delayTime('very-long');
   await delayTime('very-long');
+  await delayTime('very-long');
+  await delayTime('very-long');
+
   const usdcBalanceAfterSwap = await tokenContract.balanceOf(
     WALLET_TO_USE_ADDRESS,
   );

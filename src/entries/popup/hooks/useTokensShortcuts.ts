@@ -1,10 +1,11 @@
 import { useCallback, useMemo } from 'react';
 import { useLocation } from 'react-router';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
+import { useCurrentAddressStore } from '~/core/state';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import {
   computeUniqueIdForHiddenAsset,
@@ -36,14 +37,14 @@ export function useTokensShortcuts() {
   const { featureFlags } = useFeatureFlagsStore();
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
   const { trackShortcut } = useKeyboardAnalytics();
+  const { currentAddress: address } = useCurrentAddressStore();
   const navigate = useRainbowNavigate();
   const navigateToSwaps = useNavigateToSwaps();
 
   const containerRef = useContainerRef();
 
-  const { pinnedAssets, removedPinnedAsset, addPinnedAsset } =
-    usePinnedAssetStore();
-  const addHiddenAsset = useHiddenAssetStore.use.addHiddenAsset();
+  const { pinned: pinnedStore, togglePinAsset } = usePinnedAssetStore();
+  const toggleHideAsset = useHiddenAssetStore.use.toggleHideAsset();
   const location = useLocation();
   const isHomeRoute = location.pathname === ROUTES.HOME;
 
@@ -51,10 +52,9 @@ export function useTokensShortcuts() {
     selectedToken &&
     !isNativeAsset(selectedToken?.address, selectedToken?.chainId);
 
-  const pinned = pinnedAssets.some(({ uniqueId }) => {
-    if (!selectedToken) return false;
-    return uniqueId === selectedToken.uniqueId;
-  });
+  const pinned = selectedToken
+    ? !!pinnedStore[address]?.[selectedToken.uniqueId]?.pinned
+    : false;
 
   const allowSwap = useMemo(
     () =>
@@ -65,10 +65,9 @@ export function useTokensShortcuts() {
 
   const hideToken = useCallback(
     (_selectedToken: ParsedUserAsset) => {
-      addHiddenAsset({
-        uniqueId: computeUniqueIdForHiddenAsset(_selectedToken),
-      });
-      if (pinned) removedPinnedAsset({ uniqueId: _selectedToken.uniqueId });
+      simulateClick(containerRef.current);
+      toggleHideAsset(address, computeUniqueIdForHiddenAsset(_selectedToken));
+      if (pinned) togglePinAsset(address, _selectedToken.uniqueId);
       setSelectedToken();
       triggerToast({
         title: i18n.t('token_details.toast.hide_token', {
@@ -76,30 +75,35 @@ export function useTokensShortcuts() {
         }),
       });
     },
-    [pinned, addHiddenAsset, removedPinnedAsset, setSelectedToken],
+    [
+      containerRef,
+      address,
+      pinned,
+      toggleHideAsset,
+      togglePinAsset,
+      setSelectedToken,
+    ],
   );
 
   const togglePinToken = useCallback(
     (_selectedToken: ParsedUserAsset) => {
+      simulateClick(containerRef.current);
+      togglePinAsset(address, _selectedToken.uniqueId);
       if (pinned) {
-        removedPinnedAsset({ uniqueId: _selectedToken.uniqueId });
         triggerToast({
           title: i18n.t('token_details.toast.unpin_token', {
             name: _selectedToken.symbol,
           }),
         });
-        simulateClick(containerRef.current);
         return;
       }
-      addPinnedAsset({ uniqueId: _selectedToken.uniqueId });
       triggerToast({
         title: i18n.t('token_details.toast.pin_token', {
           name: _selectedToken.symbol,
         }),
       });
-      simulateClick(containerRef.current);
     },
-    [pinned, containerRef, addPinnedAsset, removedPinnedAsset],
+    [containerRef, address, togglePinAsset, pinned],
   );
 
   const copyTokenAddress = useCallback(
@@ -149,7 +153,7 @@ export function useTokensShortcuts() {
           navigate(ROUTES.BRIDGE);
         }
 
-        if (e.key === shortcuts.tokens.SEND_ASSET.key) {
+        if (e.key === shortcuts.tokens.SEND_ASSET.key && !isWatchingWallet) {
           trackShortcut({
             key: shortcuts.tokens.SEND_ASSET.display,
             type: 'tokens.goToSend',
@@ -163,7 +167,6 @@ export function useTokensShortcuts() {
           });
           hasExplorerLink && viewOnExplorer();
         }
-
         if (e.key === shortcuts.tokens.PIN_ASSET.key) {
           trackShortcut({
             key: shortcuts.tokens.PIN_ASSET.display,
@@ -171,7 +174,7 @@ export function useTokensShortcuts() {
           });
           togglePinToken(selectedToken);
         }
-        if (e.key === shortcuts.tokens.HIDE_ASSET.key) {
+        if (e.key === shortcuts.tokens.HIDE_ASSET.key && !isWatchingWallet) {
           trackShortcut({
             key: shortcuts.tokens.HIDE_ASSET.display,
             type: 'tokenDetailsMenu.hide',
@@ -188,18 +191,19 @@ export function useTokensShortcuts() {
       }
     },
     [
-      isHomeRoute,
-      allowSwap,
-      copyTokenAddress,
-      hasExplorerLink,
-      hideToken,
-      navigate,
-      navigateToSwaps,
       selectedToken,
-      setSelectedToken,
-      togglePinToken,
+      isHomeRoute,
+      isWatchingWallet,
+      allowSwap,
       trackShortcut,
+      navigateToSwaps,
+      setSelectedToken,
+      navigate,
+      hasExplorerLink,
       viewOnExplorer,
+      togglePinToken,
+      hideToken,
+      copyTokenAddress,
     ],
   );
   useKeyboardShortcut({

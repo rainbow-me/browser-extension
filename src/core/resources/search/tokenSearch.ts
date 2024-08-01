@@ -1,7 +1,7 @@
 import { isAddress } from '@ethersproject/address';
-import { useQuery } from '@tanstack/react-query';
+import { useQueries, useQuery } from '@tanstack/react-query';
 import qs from 'qs';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { tokenSearchHttp } from '~/core/network/tokenSearch';
 import {
@@ -23,6 +23,7 @@ import {
   TokenSearchListId,
   TokenSearchThreshold,
 } from '~/core/types/search';
+import { getSupportedChains, isCustomChain } from '~/core/utils/chains';
 
 // ///////////////////////////////////////////////
 // Query Types
@@ -30,6 +31,13 @@ import {
 export type TokenSearchArgs = {
   chainId: ChainId;
   fromChainId?: ChainId | '';
+  keys: TokenSearchAssetKey[];
+  list: TokenSearchListId;
+  threshold: TokenSearchThreshold;
+  query: string;
+};
+
+export type TokenSearchAllNetworksArgs = {
   keys: TokenSearchAssetKey[];
   list: TokenSearchListId;
   threshold: TokenSearchThreshold;
@@ -50,7 +58,7 @@ const tokenSearchQueryKey = ({
   createQueryKey(
     'TokenSearch',
     { chainId, fromChainId, keys, list, threshold, query },
-    { persisterVersion: 1 },
+    { persisterVersion: 2 },
   );
 
 type TokenSearchQueryKey = ReturnType<typeof tokenSearchQueryKey>;
@@ -92,7 +100,8 @@ function parseTokenSearch(assets: SearchAsset[], chainId: ChainId) {
   return assets
     .map((a) => {
       const networkInfo = a.networks[chainId];
-      return {
+
+      const asset: SearchAsset = {
         ...a,
         address: networkInfo ? networkInfo.address : a.address,
         chainId,
@@ -112,6 +121,8 @@ function parseTokenSearch(assets: SearchAsset[], chainId: ChainId) {
         mainnetAddress: a.uniqueId as Address,
         uniqueId: `${networkInfo?.address || a.uniqueId}_${chainId}`,
       };
+
+      return asset;
     })
     .filter(Boolean);
 }
@@ -130,11 +141,18 @@ export async function fetchTokenSearch(
     TokenSearchQueryKey
   > = {},
 ) {
-  return await queryClient.fetchQuery(
-    tokenSearchQueryKey({ chainId, fromChainId, keys, list, threshold, query }),
-    tokenSearchQueryFunction,
-    config,
-  );
+  return await queryClient.fetchQuery({
+    queryKey: tokenSearchQueryKey({
+      chainId,
+      fromChainId,
+      keys,
+      list,
+      threshold,
+      query,
+    }),
+    queryFn: tokenSearchQueryFunction,
+    ...config,
+  });
 }
 
 // ///////////////////////////////////////////////
@@ -149,9 +167,60 @@ export function useTokenSearch(
     TokenSearchQueryKey
   > = {},
 ) {
-  return useQuery(
-    tokenSearchQueryKey({ chainId, fromChainId, keys, list, threshold, query }),
-    tokenSearchQueryFunction,
-    config,
-  );
+  return useQuery({
+    queryKey: tokenSearchQueryKey({
+      chainId,
+      fromChainId,
+      keys,
+      list,
+      threshold,
+      query,
+    }),
+    queryFn: tokenSearchQueryFunction,
+    ...config,
+  });
+}
+
+// ///////////////////////////////////////////////
+// Query Hook
+
+export function useTokenSearchAllNetworks(
+  {
+    keys,
+    list,
+    threshold,
+    query,
+  }: Omit<TokenSearchArgs, 'chainId' | 'fromChainId'>,
+  config: QueryConfig<
+    TokenSearchResult,
+    Error,
+    TokenSearchResult,
+    TokenSearchQueryKey
+  > = {},
+) {
+  const rainbowSupportedChains = getSupportedChains({
+    testnets: false,
+  }).filter(({ id }) => !isCustomChain(id));
+
+  const queries = useQueries({
+    queries: rainbowSupportedChains.map(({ id: chainId }) => {
+      return {
+        queryKey: tokenSearchQueryKey({
+          chainId,
+          keys,
+          list,
+          threshold,
+          query,
+        }),
+        queryFn: tokenSearchQueryFunction,
+        refetchOnWindowFocus: false,
+        ...config,
+      };
+    }),
+  });
+
+  return {
+    data: queries.map(({ data: assets }) => assets || []).flat(),
+    isFetching: queries.some(({ isFetching }) => isFetching),
+  };
 }

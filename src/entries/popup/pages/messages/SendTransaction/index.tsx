@@ -1,13 +1,13 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { getAddress } from '@ethersproject/address';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
-import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
+import { chainsNativeAsset } from '~/core/references/chains';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useFlashbotsEnabledStore, useGasStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
@@ -89,7 +89,7 @@ export function SendTransaction({
       );
       const txData = {
         from: selectedWallet,
-        to: txRequest?.to ? getAddress(txRequest?.to) : undefined,
+        to: txRequest?.to ? (getAddress(txRequest?.to) as Address) : undefined,
         value: txRequest.value || '0x0',
         data: txRequest.data ?? '0x',
         chainId: activeChainId,
@@ -195,7 +195,7 @@ export function SendTransaction({
         activeSession?.chainId,
       );
       selectAssetAddressAndChain(
-        NATIVE_ASSETS_PER_CHAIN[activeChainId] as Address,
+        chainsNativeAsset[activeChainId] as Address,
         activeChainId,
       );
     }

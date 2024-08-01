@@ -1,7 +1,7 @@
 import { getSlippage } from '@rainbow-me/swaps';
 import { useQuery } from '@tanstack/react-query';
 import { BigNumberish } from 'ethers';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import {
   QueryConfig,
@@ -100,8 +100,8 @@ export function useSwapSlippage(
     SwapSlippageQueryKey
   > = {},
 ) {
-  return useQuery(
-    swapSlippageQueryKey({
+  return useQuery({
+    queryKey: swapSlippageQueryKey({
       chainId,
       toChainId,
       sellTokenAddress,
@@ -109,11 +109,9 @@ export function useSwapSlippage(
       sellAmount,
       buyAmount,
     }),
-    swapSlippageQueryFunction,
-    {
-      ...config,
-      retry: true,
-      staleTime: 10 * 60 * 1_000, // 10 min
-    },
-  );
+    queryFn: swapSlippageQueryFunction,
+    ...config,
+    retry: true,
+    staleTime: 10 * 60 * 1_000, // 10 min
+  });
 }

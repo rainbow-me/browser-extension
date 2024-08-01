@@ -12,15 +12,18 @@ import {
   useState,
 } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { isAddress } from 'viem';
-import { Address } from 'wagmi';
+import { Address, isAddress } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useFlashbotsEnabledStore, useGasStore } from '~/core/state';
+import {
+  useCurrentAddressStore,
+  useFlashbotsEnabledStore,
+  useGasStore,
+} from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import {
@@ -35,14 +38,14 @@ import {
   ParsedAsset,
   ParsedUserAsset,
 } from '~/core/types/assets';
-import { ChainId } from '~/core/types/chains';
+import { ChainId, chainNameToIdMapping } from '~/core/types/chains';
 import {
   TransactionGasParams,
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
 import { UniqueAsset } from '~/core/types/nfts';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
-import { chainIdFromChainName, chainIdToUse } from '~/core/utils/chains';
+import { chainIdToUse } from '~/core/utils/chains';
 import {
   getUniqueAssetImagePreviewURL,
   getUniqueAssetImageThumbnailURL,
@@ -109,10 +112,11 @@ export function Send() {
   const [toAddressDropdownOpen, setToAddressDropdownOpen] = useState(false);
 
   const navigate = useRainbowNavigate();
+  const { currentAddress: address } = useCurrentAddressStore();
 
   const isContact = useContactsStore.use.isContact();
   const { allWallets } = useWallets();
-  const { hiddenAssets } = useHiddenAssetStore();
+  const { hidden } = useHiddenAssetStore();
   const [urlSearchParams] = useSearchParams();
 
   const queryToAddress = urlSearchParams.get('to');
@@ -121,11 +125,10 @@ export function Send() {
     : null;
 
   const isHidden = useCallback(
-    (asset: ParsedUserAsset) =>
-      hiddenAssets.some(
-        (uniqueId) => uniqueId === computeUniqueIdForHiddenAsset(asset),
-      ),
-    [hiddenAssets],
+    (asset: ParsedUserAsset) => {
+      return !!hidden[address]?.[computeUniqueIdForHiddenAsset(asset)];
+    },
+    [address, hidden],
   );
 
   const isMyWallet = (address: Address) =>
@@ -147,7 +150,7 @@ export function Send() {
     [assets, isHidden],
   );
 
-  const { nft, nfts, nftSortMethod, setNftSortMethod, selectNft } =
+  const { nft, collections, nftSortMethod, setNftSortMethod, selectNft } =
     useSendUniqueAsset();
 
   const selectedGas = useGasStore.use.selectedGas();
@@ -280,14 +283,14 @@ export function Send() {
   const buildNftAssetObject = useCallback((nft: UniqueAsset) => {
     return {
       address: (nft.asset_contract.address || '') as AddressOrEth,
-      chainId: chainIdFromChainName(nft.network),
+      chainId: chainNameToIdMapping[nft.network],
       chainName: nft.network,
       isNativeAsset: false,
       name: nft.name,
       symbol: nft.collection.name,
-      uniqueId: `${nft.asset_contract.address || ''}_${chainIdFromChainName(
-        nft.network,
-      )}`,
+      uniqueId: `${nft.asset_contract.address || ''}_${
+        chainNameToIdMapping[nft.network]
+      }`,
       decimals: 0,
       native: {
         price: {
@@ -318,7 +321,7 @@ export function Send() {
         from: fromAddress,
         to: txToAddress,
         hash: result.hash as TxHash,
-        chainId,
+        chainId: activeChainId,
         status: 'pending',
         type: 'send',
         nonce: result.nonce,
@@ -333,10 +336,10 @@ export function Send() {
       } as NewTransaction;
     },
     [
+      activeChainId,
       asset,
       assetAmount,
       buildNftAssetObject,
-      chainId,
       flashbotsEnabledGlobally,
       fromAddress,
       nft,
@@ -368,7 +371,7 @@ export function Send() {
             const transaction: NewTransaction = buildPendingTransaction(result);
             addNewTransaction({
               address: fromAddress,
-              chainId,
+              chainId: activeChainId,
               transaction,
             });
             callback?.();
@@ -400,7 +403,7 @@ export function Send() {
             const transaction: NewTransaction = buildPendingTransaction(result);
             addNewTransaction({
               address: fromAddress,
-              chainId,
+              chainId: activeChainId,
               transaction,
             });
             callback?.();
@@ -501,11 +504,11 @@ export function Send() {
       selectAsset(selectedToken.address, selectedToken.chainId);
       // clear selected token
       setSelectedToken();
-    } else if (selectedNft && selectedNft.collection.collection_id) {
+    } else if (selectedNft) {
       // clear any saved token amounts
       setIndependentAmount('');
       // navigating from nft details
-      selectNft(selectedNft.collection.collection_id, selectedNft.fullUniqueId);
+      selectNft(selectedNft);
       // clear selected nft
       setSelectedNft();
     } else if (sendTokenAddressAndChain) {
@@ -700,7 +703,7 @@ export function Send() {
                     sortMethod={sortMethod}
                     ref={sendTokenInputRef}
                     nft={nft}
-                    nfts={nfts}
+                    collections={collections}
                     nftSortMethod={nftSortMethod}
                     setNftSortMethod={setNftSortMethod}
                     selectNft={selectNft}

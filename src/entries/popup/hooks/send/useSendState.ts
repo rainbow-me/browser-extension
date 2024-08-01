@@ -1,12 +1,12 @@
 import { useMemo, useState } from 'react';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { ParsedUserAsset } from '~/core/types/assets';
-import { ChainId } from '~/core/types/chains';
+import { ChainId, chainNameToIdMapping } from '~/core/types/chains';
 import { UniqueAsset } from '~/core/types/nfts';
-import { chainIdFromChainName, isNativeAsset } from '~/core/utils/chains';
+import { isNativeAsset } from '~/core/utils/chains';
 import { toWei } from '~/core/utils/ethereum';
 import { toHex } from '~/core/utils/hex';
 import { convertAmountToRawAmount } from '~/core/utils/numbers';
@@ -39,7 +39,7 @@ export const useSendState = ({
     if (asset) {
       return asset?.chainId ?? ChainId.mainnet;
     } else if (nft) {
-      return nft?.network ? chainIdFromChainName(nft.network) : ChainId.mainnet;
+      return nft?.network ? chainNameToIdMapping[nft.network] : ChainId.mainnet;
     }
     return ChainId.mainnet;
   };
@@ -108,8 +108,8 @@ export const useSendState = ({
     toAddressOrName,
     chainId,
     data,
-    fromAddress,
-    toAddress,
+    fromAddress: fromAddress as Address,
+    toAddress: toAddress as Address | undefined,
     toEnsName,
     txToAddress,
     value,

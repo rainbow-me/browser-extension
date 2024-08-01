@@ -1,25 +1,29 @@
+import { useVirtualizer } from '@tanstack/react-virtual';
 import { motion } from 'framer-motion';
-import { useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 
 import { i18n } from '~/core/languages';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { isL2Chain } from '~/core/utils/chains';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
 import { SwitchNetworkMenu } from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
-import { AssetToBuySection } from '~/entries/popup/hooks/useSearchCurrencyLists';
+import {
+  AssetToBuyNetworkSearchStatus,
+  AssetToBuySection,
+} from '~/entries/popup/hooks/useSearchCurrencyLists';
 import { useTranslationContext } from '~/entries/popup/hooks/useTranslationContext';
 
 import { dropdownContainerVariant } from '../../../../components/DropdownInputWrapper/DropdownInputWrapper';
 import { BottomNetwork } from '../../../messages/BottomActions';
 
-import { TokenToBuySection } from './TokenToBuySection';
+import { getTokenToBuySectionElements } from './TokenToBuySection';
 
 export type TokenToBuyDropdownProps = {
   asset: ParsedSearchAsset | null;
   assets?: AssetToBuySection[];
   outputChainId?: ChainId;
+  networkSearchStatus: AssetToBuyNetworkSearchStatus;
   onSelectAsset?: (asset: ParsedSearchAsset | null) => void;
   setOutputChainId?: (chainId: ChainId) => void;
   onDropdownChange: (open: boolean) => void;
@@ -29,80 +33,150 @@ export const TokenToBuyDropdown = ({
   asset,
   assets,
   outputChainId,
+  networkSearchStatus,
   onSelectAsset,
   setOutputChainId,
   onDropdownChange,
 }: TokenToBuyDropdownProps) => {
   const isL2 = useMemo(
-    () => outputChainId && isL2Chain(outputChainId),
+    () => outputChainId && outputChainId !== ChainId.mainnet,
     [outputChainId],
   );
 
   const assetsCount = useMemo(
-    () => assets?.reduce((count, section) => count + section.data.length, 0),
+    () =>
+      assets?.reduce((count, section) => count + section?.data?.length || 0, 0),
     [assets],
   );
 
   const t = useTranslationContext();
 
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const allAssets = useMemo(
+    () =>
+      assets
+        ?.map((section) =>
+          getTokenToBuySectionElements({
+            assetSection: section,
+            onSelectAsset,
+            onDropdownChange,
+            outputChainId,
+          }),
+        )
+        .flat()
+        .filter(Boolean),
+    [assets, onDropdownChange, onSelectAsset, outputChainId],
+  );
+
+  const getSize = useCallback(
+    (index: number) => {
+      const asset = allAssets?.[index];
+      if (asset?.key?.toString().includes('header')) return 38;
+      return 52;
+    },
+    [allAssets],
+  );
+
+  const getItemKey = useCallback(
+    (index: number) => {
+      const asset = allAssets?.[index];
+      return asset?.key || index;
+    },
+    [allAssets],
+  );
+
+  const assetsRowVirtualizer = useVirtualizer({
+    count: allAssets?.length || 0,
+    getScrollElement: () => containerRef.current,
+    estimateSize: getSize,
+    getItemKey: getItemKey,
+    overscan: 10,
+    paddingEnd: 12,
+  });
+
   return (
-    <Stack space="20px">
-      {setOutputChainId && outputChainId && (
-        <Box paddingHorizontal="20px">
-          <Inline alignHorizontal="justify">
-            <Inline space="4px" alignVertical="center">
-              <Symbol
-                symbol="network"
-                color="labelTertiary"
-                weight="semibold"
-                size={14}
+    <Stack space="10px">
+      {setOutputChainId &&
+        outputChainId &&
+        networkSearchStatus !== AssetToBuyNetworkSearchStatus.all && (
+          <Box paddingHorizontal="20px">
+            <Inline alignHorizontal="justify">
+              <Inline space="4px" alignVertical="center">
+                <Symbol
+                  symbol="network"
+                  color="labelTertiary"
+                  weight="semibold"
+                  size={14}
+                />
+                <Text size="14pt" weight="semibold" color="labelTertiary">
+                  {i18n.t('swap.tokens_input.filter_by_network')}
+                </Text>
+              </Inline>
+              <SwitchNetworkMenu
+                onOpenChange={onDropdownChange}
+                marginRight="20px"
+                accentColor={asset?.colors?.primary || asset?.colors?.fallback}
+                type="dropdown"
+                chainId={outputChainId}
+                onChainChanged={(chainId) => {
+                  setOutputChainId(chainId);
+                }}
+                triggerComponent={
+                  <ButtonOverflow testId="token-to-buy-networks-trigger">
+                    <BottomNetwork
+                      selectedChainId={outputChainId}
+                      displaySymbol
+                      symbolSize={12}
+                      symbol="chevron.down"
+                    />
+                  </ButtonOverflow>
+                }
+                onlySwapSupportedNetworks
               />
-              <Text size="14pt" weight="semibold" color="labelTertiary">
-                {i18n.t('swap.tokens_input.filter_by_network')}
-              </Text>
             </Inline>
-            <SwitchNetworkMenu
-              onOpenChange={onDropdownChange}
-              marginRight="20px"
-              accentColor={asset?.colors?.primary || asset?.colors?.fallback}
-              type="dropdown"
-              chainId={outputChainId}
-              onChainChanged={(chainId) => {
-                setOutputChainId(chainId);
-              }}
-              triggerComponent={
-                <ButtonOverflow testId="token-to-buy-networks-trigger">
-                  <BottomNetwork
-                    selectedChainId={outputChainId}
-                    displaySymbol
-                    symbolSize={12}
-                    symbol="chevron.down"
-                  />
-                </ButtonOverflow>
-              }
-              onlySwapSupportedNetworks
-            />
-          </Inline>
-        </Box>
-      )}
+          </Box>
+        )}
 
       <Box
         as={motion.div}
         variants={dropdownContainerVariant}
         initial="hidden"
         animate="show"
+        ref={containerRef}
+        style={{
+          height: '305px',
+          overflow: 'auto',
+        }}
       >
-        <Stack space="16px">
-          {assets?.map((assetSection) => (
-            <TokenToBuySection
-              key={assetSection.id}
-              assetSection={assetSection}
-              onSelectAsset={onSelectAsset}
-              onDropdownChange={onDropdownChange}
-              outputChainId={outputChainId}
-            />
-          ))}
-        </Stack>
+        <Box
+          style={{
+            height: `${assetsRowVirtualizer.getTotalSize()}px`,
+            position: 'relative',
+          }}
+        >
+          {assetsRowVirtualizer.getVirtualItems().map((virtualItem) => {
+            const { index, key, size, start, measureElement } = virtualItem;
+            const assetSection = allAssets?.[index] as JSX.Element;
+            return (
+              <Box
+                as={motion.div}
+                paddingHorizontal="8px"
+                position="absolute"
+                width="full"
+                key={key}
+                data-index={index}
+                ref={measureElement}
+                style={{
+                  height: size,
+                  y: start,
+                }}
+              >
+                {assetSection}
+              </Box>
+            );
+          })}
+        </Box>
 
         {!assetsCount && (
           <Box alignItems="center" style={{ paddingTop: 91 }}>

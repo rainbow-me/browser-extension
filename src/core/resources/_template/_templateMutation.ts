@@ -47,9 +47,9 @@ export function useTemplateMutation(
     TemplateMutationArgs
   > = {},
 ) {
-  return useMutation(
-    ['templateMutation'],
-    templateMutationMutationFunction,
-    mutationConfig,
-  );
+  return useMutation({
+    mutationKey: ['templateMutation'],
+    mutationFn: templateMutationMutationFunction,
+    ...mutationConfig,
+  });
 }

@@ -1,6 +1,5 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { useQuery } from '@tanstack/react-query';
-import { getProvider } from '@wagmi/core';
 
 import {
   QueryConfig,
@@ -9,11 +8,10 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
+import { needsL1SecurityFeeChains } from '~/core/references/chains';
 import { ChainId } from '~/core/types/chains';
-import {
-  calculateL1FeeOptimism,
-  chainNeedsL1SecurityFee,
-} from '~/core/utils/gas';
+import { calculateL1FeeOptimism } from '~/core/utils/gas';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 
 // ///////////////////////////////////////////////
 // Query Types
@@ -50,7 +48,7 @@ type OptimismL1SecurityFeeQueryKey = ReturnType<
 async function optimismL1SecurityFeeQueryFunction({
   queryKey: [{ transactionRequest, chainId }],
 }: QueryFunctionArgs<typeof optimismL1SecurityFeeQueryKey>) {
-  if (chainNeedsL1SecurityFee(chainId)) {
+  if (needsL1SecurityFeeChains.includes(chainId)) {
     const provider = getProvider({ chainId: ChainId.optimism });
     const gasPrice = await provider.getGasPrice();
     const l1Fee = await calculateL1FeeOptimism({
@@ -81,11 +79,11 @@ export async function fetchOptimismL1SecurityFee(
     OptimismL1SecurityFeeQueryKey
   > = {},
 ) {
-  return await queryClient.fetchQuery(
-    optimismL1SecurityFeeQueryKey({ transactionRequest, chainId }),
-    optimismL1SecurityFeeQueryFunction,
-    config,
-  );
+  return await queryClient.fetchQuery({
+    queryKey: optimismL1SecurityFeeQueryKey({ transactionRequest, chainId }),
+    queryFn: optimismL1SecurityFeeQueryFunction,
+    ...config,
+  });
 }
 
 // ///////////////////////////////////////////////
@@ -100,12 +98,11 @@ export function useOptimismL1SecurityFee(
     OptimismL1SecurityFeeQueryKey
   > = {},
 ) {
-  return useQuery(
-    optimismL1SecurityFeeQueryKey({ transactionRequest, chainId }),
-    optimismL1SecurityFeeQueryFunction,
-    {
-      keepPreviousData: chainNeedsL1SecurityFee(chainId),
-      ...config,
-    },
-  );
+  return useQuery({
+    queryKey: optimismL1SecurityFeeQueryKey({ transactionRequest, chainId }),
+    queryFn: optimismL1SecurityFeeQueryFunction,
+    ...config,
+    placeholderData: (previousData) =>
+      needsL1SecurityFeeChains.includes(chainId) ? previousData : null,
+  });
 }

@@ -1,4 +1,4 @@
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { AddressOrEth, ParsedAsset, UniqueId } from './assets';
 import { ChainId } from './chains';
@@ -29,7 +29,7 @@ export type SearchAsset = {
       decimals: number;
     };
   };
-  rainbowMetadataId: number;
+  rainbowMetadataId?: number;
   symbol: string;
   uniqueId: UniqueId;
 };

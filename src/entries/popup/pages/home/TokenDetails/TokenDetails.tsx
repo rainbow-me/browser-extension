@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useReducer } from 'react';
-import { Navigate, To, useParams } from 'react-router-dom';
+import { Navigate, To, useParams, useSearchParams } from 'react-router-dom';
+import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { ETH_ADDRESS } from '~/core/references';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useApprovals } from '~/core/resources/approvals/approvals';
+import { useAssetSearchMetadata } from '~/core/resources/assets/assetMetadata';
+import { useTokenSearch } from '~/core/resources/search';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useFavoritesStore } from '~/core/state/favorites';
@@ -16,17 +19,19 @@ import { usePinnedAssetStore } from '~/core/state/pinnedAssets';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedUserAsset, UniqueId } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { truncateAddress } from '~/core/utils/address';
 import {
-  getChainName,
-  isCustomChain,
-  isNativeAsset,
-  isTestnetChainId,
-} from '~/core/utils/chains';
+  SearchAsset,
+  TokenSearchAssetKey,
+  TokenSearchListId,
+  TokenSearchThreshold,
+} from '~/core/types/search';
+import { truncateAddress } from '~/core/utils/address';
+import { getChain, isCustomChain, isNativeAsset } from '~/core/utils/chains';
 import { copyAddress } from '~/core/utils/copy';
 import {
   FormattedCurrencyParts,
   formatCurrencyParts,
+  formatNumber,
 } from '~/core/utils/formatNumber';
 import { convertRawAmountToDecimalFormat } from '~/core/utils/numbers';
 import { isLowerCaseMatch } from '~/core/utils/strings';
@@ -72,6 +77,27 @@ import { triggerRevokeApproval } from '../Approvals/utils';
 
 import { About } from './About';
 import { PriceChart } from './PriceChart';
+import { useTokenInfo } from './useTokenInfo';
+
+const VERIFIED_ASSETS_PAYLOAD: {
+  keys: TokenSearchAssetKey[];
+  list: TokenSearchListId;
+  threshold: TokenSearchThreshold;
+} = {
+  keys: ['address'],
+  list: 'verifiedAssets',
+  threshold: 'CASE_SENSITIVE_EQUAL',
+};
+
+const UNVERIFIED_ASSETS_PAYLOAD: {
+  keys: TokenSearchAssetKey[];
+  list: TokenSearchListId;
+  threshold: TokenSearchThreshold;
+} = {
+  keys: ['address'],
+  list: 'highLiquidityAssets',
+  threshold: 'CASE_SENSITIVE_EQUAL',
+};
 
 const HiddenValue = () => <Asterisks color="labelTertiary" size={10} />;
 
@@ -117,7 +143,7 @@ function BalanceValue({
             weight="semibold"
             color={color}
             cursor="text"
-            userSelect="all"
+            userSelect="text"
           >
             {hideAssetBalances ? <HiddenValue /> : balance.value}{' '}
             {balance.symbol}
@@ -135,7 +161,7 @@ function BalanceValue({
             color={color}
             align="right"
             cursor="text"
-            userSelect="all"
+            userSelect="text"
           >
             {getPrice(nativeBalance, chainId)}
           </TextOverflow>
@@ -210,7 +236,7 @@ function NetworkBanner({
   chainId: ChainId;
 }) {
   const [isExplainerOpen, toggleExplainer] = useReducer((s) => !s, false);
-  const chainName = getChainName({ chainId });
+  const chainName = getChain({ chainId }).name;
 
   if (chainId === ChainId.mainnet) return null;
 
@@ -252,7 +278,7 @@ function NetworkBanner({
   );
 }
 
-function FavoriteButton({ token }: { token: ParsedUserAsset }) {
+function FavoriteButton({ token }: { token: ParsedUserAsset | SearchAsset }) {
   const { favorites, addFavorite, removeFavorite } = useFavoritesStore();
   const isFavorite = favorites[token.chainId]?.includes(token.address);
   return (
@@ -270,7 +296,7 @@ function FavoriteButton({ token }: { token: ParsedUserAsset }) {
 export const getCoingeckoUrl = ({
   address,
   mainnetAddress,
-}: Pick<ParsedUserAsset, 'address' | 'mainnetAddress'>) => {
+}: Pick<ParsedUserAsset | SearchAsset, 'address' | 'mainnetAddress'>) => {
   if ([mainnetAddress, address].includes(ETH_ADDRESS))
     return `https://www.coingecko.com/en/coins/ethereum`;
   return `https://www.coingecko.com/en/coins/${mainnetAddress || address}`;
@@ -278,46 +304,40 @@ export const getCoingeckoUrl = ({
 
 function MoreOptions({
   token,
+  unownedToken,
   swappable,
 }: {
-  token: ParsedUserAsset;
+  token: ParsedUserAsset | SearchAsset;
+  unownedToken: boolean;
   swappable: boolean;
 }) {
-  const { hiddenAssets, removeHiddenAsset, addHiddenAsset } =
-    useHiddenAssetStore();
+  const { toggleHideAsset, hidden: hiddenStore } = useHiddenAssetStore();
 
-  const { pinnedAssets, removedPinnedAsset, addPinnedAsset } =
-    usePinnedAssetStore();
+  const { currentAddress: address } = useCurrentAddressStore();
 
-  const { selectedToken, setSelectedToken } = useSelectedTokenStore();
+  const { pinned: pinnedStore, togglePinAsset } = usePinnedAssetStore();
 
-  const resetSelectedToken = useCallback(() => {
-    if (selectedToken) setSelectedToken();
-  }, [setSelectedToken, selectedToken]);
+  const { setSelectedToken } = useSelectedTokenStore();
 
-  useEffect(() => {
-    // When component unmounts reset the selectedToken
-    return resetSelectedToken;
-  }, [resetSelectedToken]);
+  const { isWatchingWallet } = useWallets();
 
   const isHidden = useCallback(
-    (asset: ParsedUserAsset) =>
-      hiddenAssets.some(
-        (uniqueId) => uniqueId === computeUniqueIdForHiddenAsset(asset),
-      ),
-    [hiddenAssets],
+    (asset: ParsedUserAsset | SearchAsset) => {
+      return !!hiddenStore[address]?.[computeUniqueIdForHiddenAsset(asset)];
+    },
+    [address, hiddenStore],
   );
 
   const hidden = isHidden(token);
   const explorer = getTokenBlockExplorer(token);
   const isNative = isNativeAsset(token.address, token.chainId);
-  const pinned = pinnedAssets.some(
-    ({ uniqueId }) => uniqueId === token.uniqueId,
-  );
+
+  const pinned = !!pinnedStore[address]?.[token.uniqueId]?.pinned;
 
   const toggleHideToken = useCallback(() => {
+    if (pinned) togglePinAsset(address, token.uniqueId);
+    toggleHideAsset(address, computeUniqueIdForHiddenAsset(token));
     if (hidden) {
-      removeHiddenAsset({ uniqueId: computeUniqueIdForHiddenAsset(token) });
       triggerToast({
         title: i18n.t('token_details.toast.unhide_token', {
           name: token.symbol,
@@ -325,25 +345,17 @@ function MoreOptions({
       });
       return;
     }
-    if (pinned) removedPinnedAsset({ uniqueId: token.uniqueId });
-    addHiddenAsset({ uniqueId: computeUniqueIdForHiddenAsset(token) });
     triggerToast({
       title: i18n.t('token_details.toast.hide_token', {
         name: token.symbol,
       }),
     });
-  }, [
-    token,
-    hidden,
-    pinned,
-    removedPinnedAsset,
-    addHiddenAsset,
-    removeHiddenAsset,
-  ]);
+  }, [token, hidden, pinned, togglePinAsset, toggleHideAsset, address]);
 
   const togglePinToken = useCallback(() => {
+    if (hidden) return;
+    togglePinAsset(address, token.uniqueId);
     if (pinned) {
-      removedPinnedAsset({ uniqueId: token.uniqueId });
       triggerToast({
         title: i18n.t('token_details.toast.unpin_token', {
           name: token.symbol,
@@ -351,13 +363,12 @@ function MoreOptions({
       });
       return;
     }
-    addPinnedAsset({ uniqueId: token.uniqueId });
     triggerToast({
       title: i18n.t('token_details.toast.pin_token', {
         name: token.symbol,
       }),
     });
-  }, [token, pinned, addPinnedAsset, removedPinnedAsset]);
+  }, [token.uniqueId, token.symbol, togglePinAsset, hidden, address, pinned]);
 
   const copyTokenAddress = useCallback(() => {
     copyAddress(token.address);
@@ -370,10 +381,13 @@ function MoreOptions({
     toggleHideToken,
     togglePinToken,
     copyTokenAddress,
+    unownedToken,
   });
 
   const onOpenChange = (open: boolean) => {
-    setSelectedToken(open ? token : undefined);
+    if ('native' in token) {
+      setSelectedToken(open ? token : undefined);
+    }
   };
 
   return (
@@ -393,7 +407,7 @@ function MoreOptions({
         <AccentColorProvider
           color={token.colors?.primary || token.colors?.fallback}
         >
-          {!hidden && (
+          {!hidden && !unownedToken && (
             <DropdownMenuItem
               symbolLeft="pin.fill"
               onSelect={togglePinToken}
@@ -410,21 +424,23 @@ function MoreOptions({
               </TextOverflow>
             </DropdownMenuItem>
           )}
-          <DropdownMenuItem
-            symbolLeft="eye.slash.fill"
-            onSelect={toggleHideToken}
-            shortcut={shortcuts.tokens.HIDE_ASSET.display}
-          >
-            <TextOverflow weight="semibold" size="14pt">
-              {hidden
-                ? i18n.t('token_details.more_options.unhide_token', {
-                    name: token.symbol,
-                  })
-                : i18n.t('token_details.more_options.hide_token', {
-                    name: token.symbol,
-                  })}
-            </TextOverflow>
-          </DropdownMenuItem>
+          {!isWatchingWallet && !unownedToken && (
+            <DropdownMenuItem
+              symbolLeft="eye.slash.fill"
+              onSelect={toggleHideToken}
+              shortcut={shortcuts.tokens.HIDE_ASSET.display}
+            >
+              <TextOverflow weight="semibold" size="14pt">
+                {hidden
+                  ? i18n.t('token_details.more_options.unhide_token', {
+                      name: token.symbol,
+                    })
+                  : i18n.t('token_details.more_options.hide_token', {
+                      name: token.symbol,
+                    })}
+              </TextOverflow>
+            </DropdownMenuItem>
+          )}
           {swappable && (
             <>
               {!isNative && (
@@ -441,7 +457,11 @@ function MoreOptions({
                   </Text>
                 </DropdownMenuItem>
               )}
-              <DropdownMenuSeparator />
+              {!isNative ||
+              (!hidden && !unownedToken) ||
+              (!isWatchingWallet && !unownedToken) ? (
+                <DropdownMenuSeparator />
+              ) : null}
               <DropdownMenuItem
                 symbolLeft="safari"
                 external
@@ -470,15 +490,83 @@ export function TokenDetails() {
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency } = useCurrentCurrencyStore();
   const { uniqueId } = useParams<{ uniqueId: UniqueId }>();
+  const [urlSearchParams] = useSearchParams();
 
-  const { data: userAsset, isFetched } = useUserAsset(uniqueId);
+  const queryChainId = urlSearchParams.get('chainId') as ChainId | null;
+
+  const { data: userAsset, isFetched: isUserAssetFetched } =
+    useUserAsset(uniqueId);
   const { data: customAsset, isFetched: isCustomAssetFetched } =
     useCustomNetworkAsset({ uniqueId });
+  const {
+    data: verifiedSearchedAssets,
+    isFetched: isVerifiedTokenSearchFetched,
+  } = useTokenSearch(
+    {
+      ...VERIFIED_ASSETS_PAYLOAD,
+      chainId: queryChainId ?? ChainId.mainnet,
+      query: uniqueId ?? '',
+    },
+    {
+      select: (data) =>
+        data.map((asset) => ({
+          ...asset,
+          chainId: Number(asset.chainId),
+        })),
+      enabled: !!queryChainId,
+    },
+  );
+  const {
+    data: unverifiedSearchedAssets,
+    isFetched: isUnverifiedTokenSearchFetched,
+  } = useTokenSearch(
+    {
+      ...UNVERIFIED_ASSETS_PAYLOAD,
+      chainId: queryChainId ?? ChainId.mainnet,
+      query: uniqueId ?? '',
+    },
+    {
+      select: (data) =>
+        data.map((asset) => ({
+          ...asset,
+          chainId: Number(asset.chainId),
+        })),
+      enabled: !!queryChainId,
+    },
+  );
+  const { data: assetMetadata, isFetched: isAssetMetaDataFetched } =
+    useAssetSearchMetadata(
+      {
+        assetAddress: uniqueId as Address,
+        chainId: queryChainId ?? ChainId.mainnet,
+      },
+      {
+        select: (data) => {
+          if (data) {
+            return { ...data, chainId: Number(data.chainId) };
+          }
+          return null;
+        },
+        enabled: !!queryChainId,
+      },
+    );
 
   const { isWatchingWallet } = useWallets();
 
   const navigate = useRainbowNavigate();
-  const token = userAsset || customAsset;
+
+  // First available verified search asset
+  const [verifiedSearchedAsset] = verifiedSearchedAssets || [];
+
+  // First available unverified search asset
+  const [unverifiedSearchedAsset] = unverifiedSearchedAssets || [];
+
+  const token =
+    userAsset ||
+    customAsset ||
+    verifiedSearchedAsset ||
+    unverifiedSearchedAsset ||
+    assetMetadata;
 
   useEffect(() => {
     const app = document.getElementById('app');
@@ -506,6 +594,8 @@ export function TokenDetails() {
       },
     },
   );
+
+  const { data: tokenInfo } = useTokenInfo(token ?? null);
 
   const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
@@ -542,9 +632,22 @@ export function TokenDetails() {
     });
   }, [hideExplainerSheet, showExplainerSheet]);
 
+  const isTokenSearchUnavailable =
+    !queryChainId ||
+    (isVerifiedTokenSearchFetched &&
+      !verifiedSearchedAsset &&
+      isUnverifiedTokenSearchFetched &&
+      !unverifiedSearchedAsset &&
+      isAssetMetaDataFetched &&
+      !assetMetadata);
+
   if (
     !uniqueId ||
-    (isFetched && !userAsset && isCustomAssetFetched && !customAsset)
+    (isUserAssetFetched &&
+      !userAsset &&
+      isCustomAssetFetched &&
+      !customAsset &&
+      isTokenSearchUnavailable)
   ) {
     return <Navigate to={ROUTES.HOME} />;
   }
@@ -552,14 +655,13 @@ export function TokenDetails() {
   if (!token) return null;
 
   const isSwappable = !(
-    isTestnetChainId({ chainId: token?.chainId }) || !!customAsset
+    getChain({ chainId: token?.chainId }).testnet || !!customAsset
   );
 
-  const tokenBalance = {
-    ...formatCurrencyParts(token.balance.amount),
-    symbol: token.symbol,
-  };
-  const tokenNativeBalance = formatCurrencyParts(token.native.balance.amount);
+  const isUnownedToken =
+    !userAsset &&
+    !customAsset &&
+    (!!verifiedSearchedAsset || !!unverifiedSearchedAsset || !!assetMetadata);
 
   const tokenApprovals = approvals
     ?.map((approval) =>
@@ -596,24 +698,35 @@ export function TokenDetails() {
           rightComponent={
             <Inline alignVertical="center" space="7px">
               {isSwappable && <FavoriteButton token={token} />}
-              <MoreOptions swappable={isSwappable} token={token} />
+              <MoreOptions
+                swappable={isSwappable}
+                unownedToken={isUnownedToken}
+                token={token}
+              />
             </Inline>
           }
         />
         <Box padding="20px" gap="16px" display="flex" flexDirection="column">
-          <PriceChart token={token} />
+          <PriceChart token={token} tokenInfo={tokenInfo} />
 
           <Separator color="separatorTertiary" />
 
-          <BalanceValue
-            balance={tokenBalance}
-            nativeBalance={tokenNativeBalance}
-            chainId={token.chainId}
-          />
-
-          {!isWatchingWallet && token.balance.amount !== '0' && (
-            <SwapSend token={token} isSwappable={isSwappable} />
+          {'balance' in token && 'native' in token && (
+            <BalanceValue
+              balance={{
+                ...formatCurrencyParts(token.balance.amount),
+                symbol: token.symbol,
+              }}
+              nativeBalance={formatCurrencyParts(token.native.balance.amount)}
+              chainId={token.chainId}
+            />
           )}
+
+          {!isWatchingWallet &&
+            'balance' in token &&
+            token.balance.amount !== '0' && (
+              <SwapSend token={token} isSwappable={isSwappable} />
+            )}
 
           <NetworkBanner tokenSymbol={token.symbol} chainId={token.chainId} />
         </Box>
@@ -654,35 +767,39 @@ export function TokenDetails() {
                       key={i}
                       alignHorizontal="justify"
                       alignVertical="center"
+                      wrap={false}
                     >
-                      <Inline space="12px" alignVertical="center">
+                      <Inline space="12px" alignVertical="center" wrap={false}>
                         <Symbol
                           weight="regular"
                           size={16}
                           symbol="doc.plaintext"
                           color="labelTertiary"
                         />
-                        <Text
+                        <TextOverflow
                           size="12pt"
                           weight="semibold"
                           color="labelTertiary"
                         >
                           {approval.spender.contract_name ||
                             truncateAddress(approval.spender.contract_address)}
-                        </Text>
+                        </TextOverflow>
                       </Inline>
-                      <Inline space="12px" alignVertical="center">
+                      <Inline space="12px" alignVertical="center" wrap={false}>
                         <Text
                           size="12pt"
                           weight="semibold"
                           color="labelTertiary"
+                          whiteSpace="nowrap"
                         >
                           {approval.spender?.quantity_allowed.toLowerCase() ===
                           'unlimited'
                             ? approval.spender?.quantity_allowed
-                            : `${convertRawAmountToDecimalFormat(
-                                approval.spender?.quantity_allowed || '0',
-                                approval?.approval.asset.decimals,
+                            : `${formatNumber(
+                                convertRawAmountToDecimalFormat(
+                                  approval.spender?.quantity_allowed || '0',
+                                  approval?.approval.asset.decimals,
+                                ),
                               )} ${approval?.approval.asset.symbol}`}
                         </Text>
                         <TokenApprovalContextMenu
@@ -714,7 +831,7 @@ export function TokenDetails() {
             </Box>
           ) : null}
           <Separator color="separatorTertiary" />
-          <About token={token} />
+          <About token={token} tokenInfo={tokenInfo} />
         </Box>
       )}
       <ExplainerSheet

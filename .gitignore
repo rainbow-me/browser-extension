@@ -13,9 +13,11 @@ yarn-error.log
 build/
 screenshots/
 
-src/core/graphql/__generated__/
-
 # Anvil logs
 anvil*.log
 
 rainbowbx.xpi
+
+.idea/**
+
+static/data

@@ -1,7 +1,7 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ReactNode, memo, useState } from 'react';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
@@ -12,7 +12,7 @@ import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
-import { getChainName, isTestnetChainId } from '~/core/utils/chains';
+import { getChain } from '~/core/utils/chains';
 import { copy, copyAddress } from '~/core/utils/copy';
 import { TestnetFaucet } from '~/core/utils/faucets';
 import { formatDate } from '~/core/utils/formatDate';
@@ -109,7 +109,7 @@ const Overview = memo(function Overview({
 }: {
   chainId: ChainId;
   simulation: TransactionSimulation | undefined;
-  status: 'loading' | 'error' | 'success';
+  status: 'pending' | 'error' | 'success';
   error: SimulationError | null;
   metadata: DappMetadata | null;
 }) {
@@ -117,7 +117,7 @@ const Overview = memo(function Overview({
     metadata?.status || DAppStatus.Unverified,
     { size: 12 },
   );
-  const chainName = getChainName({ chainId });
+  const chainName = getChain({ chainId }).name;
 
   return (
     <Stack space="16px" paddingTop="14px">
@@ -339,7 +339,7 @@ function TransactionInfo({
           <Overview
             chainId={chainId}
             simulation={simulation}
-            status={status === 'error' && isRefetching ? 'loading' : status}
+            status={status === 'error' && isRefetching ? 'pending' : status}
             error={error}
             metadata={dappMetadata}
           />
@@ -380,10 +380,10 @@ function InsuficientGasFunds({
   }) => void;
 }) {
   const { testnetMode } = useTestnetModeStore();
-  const isTestnet = testnetMode || isTestnetChainId({ chainId });
+  const isTestnet = testnetMode || getChain({ chainId }).testnet;
 
   const { nativeAsset } = useNativeAsset({ chainId, address });
-  const chainName = getChainName({ chainId });
+  const chainName = getChain({ chainId }).name;
 
   const { currentCurrency } = useCurrentCurrencyStore();
   const { data: hasBridgeableBalance } = useUserAssets(

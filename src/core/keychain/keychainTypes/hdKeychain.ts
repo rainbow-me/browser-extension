@@ -4,12 +4,13 @@ import { BytesLike } from '@ethersproject/bytes';
 import { Wallet } from '@ethersproject/wallet';
 import * as bip39 from '@scure/bip39';
 import { wordlist as englishWordlist } from '@scure/bip39/wordlists/english';
-import { getProvider } from '@wagmi/core';
 import { HDKey } from 'ethereum-cryptography/hdkey';
 import { bytesToHex } from 'ethereum-cryptography/utils';
-import { Address, mainnet } from 'wagmi';
+import { Address } from 'viem';
+import { mainnet } from 'viem/chains';
 
 import { KeychainType } from '~/core/types/keychainTypes';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 
 import { IKeychain, PrivateKey, TWallet } from '../IKeychain';
 import { keychainManager } from '../KeychainManager';
@@ -114,6 +115,7 @@ export class HdKeychain implements IKeychain {
 
   getSigner(address: Address): Signer {
     const _privates = privates.get(this)!;
+
     const provider = getProvider({ chainId: mainnet.id });
     const wallet = _privates!.getWalletForAddress(address) as TWallet;
     if (!wallet) throw new Error('Account not found');

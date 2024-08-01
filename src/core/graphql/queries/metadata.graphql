@@ -50,6 +50,9 @@ query aboutToken($chainId: Int!, $address: String!, $currency: String) {
     networks
     volume1d
     description
+    price {
+      value
+    }
     links {
       homepage {
         url
@@ -163,6 +166,54 @@ query simulateTransactions(
     }
     gas {
       estimate
+    }
+    simulation {
+      in {
+        ...change
+      }
+      out {
+        ...change
+      }
+      approvals {
+        asset {
+          ...asset
+        }
+        spender {
+          ...target
+        }
+        quantityAllowed
+        quantityAtRisk
+        expiration
+      }
+      meta {
+        transferTo {
+          ...target
+        }
+        to {
+          ...target
+        }
+      }
+    }
+  }
+}
+
+query simulateTransactionsWithoutGas(
+  $chainId: Int!
+  $transactions: [Transaction!]!
+  $domain: String
+) {
+  simulateTransactions(
+    chainID: $chainId
+    transactions: $transactions
+    domain: $domain
+  ) {
+    scanning {
+      result
+      description
+    }
+    error {
+      message
+      type
     }
     simulation {
       in {
@@ -339,6 +390,9 @@ query points($address: String!) {
         next
       }
       status
+      rewards {
+        total
+      }
     }
     leaderboard {
       stats {
@@ -357,17 +411,36 @@ query points($address: String!) {
     }
     user {
       referralCode
+      earnings_by_type {
+        type
+        earnings {
+          total
+        }
+      }
       earnings {
         total
+      }
+      rewards {
+        total
+        claimable
+        claimed
       }
       stats {
         position {
           unranked
           current
         }
+        referral {
+          total_referees
+          qualified_referees
+        }
         last_airdrop {
           position {
+            unranked
             current
+          }
+          earnings {
+            total
           }
           differences {
             type
@@ -375,6 +448,15 @@ query points($address: String!) {
             earnings {
               total
             }
+          }
+        }
+        last_period {
+          position {
+            unranked
+            current
+          }
+          earnings {
+            total
           }
         }
       }
@@ -394,5 +476,17 @@ mutation redeemCodeForPoints($address: String!, $redemptionCode: String!) {
       type
       message
     }
+  }
+}
+
+mutation claimUserRewards($address: String!) {
+  claimUserRewards(address: $address) {
+    error {
+        type
+        message
+    }
+    chainID
+    uoHash
+    txHash
   }
 }

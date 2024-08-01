@@ -432,16 +432,18 @@
       "open": "Open",
       "open_in_new_tab": "Open in New Tab",
       "switch_to_wallet": "Switch to Wallet",
-      "send_to_wallet": "Send to Wallet",
-      "add_contact": "Add Contact",
+      "send_to_contact": "Send to Contact",
       "view": "View"
     },
     "commands": {
       "names": {
         "send": "Send",
         "swap": "Swap",
+        "bridge": "Bridge",
+        "get": "Get",
         "my_wallets": "My Wallets",
         "my_contacts": "My Contacts",
+        "approvals": "Approvals",
         "my_tokens": "My Tokens",
         "my_tokens_watched": "Tokens",
         "my_nfts": "My NFTs",
@@ -474,6 +476,7 @@
         "wallets_and_keys": "Wallets & Keys",
         "view_full_screen": "View Full Screen",
         "view_token": "View Token",
+        "view_token_details": "View %{symbol} Details",
         "send_token": "Send Token",
         "swap_token": "Swap Token",
         "copy_token_address": "Copy Token Contract Address",
@@ -481,7 +484,8 @@
         "add_as_watched_wallet": "Watch This Wallet",
         "view_on_ens": "View on ENS",
         "switch_to_wallet": "Switch to This Wallet",
-        "add_contact": "Add Contact",
+        "send_to_wallet": "Send to This Wallet",
+        "add_contact": "Add as Contact",
         "remove_contact": "Remove Contact",
         "copy_wallet_address": "Copy Address",
         "view_wallet_on_etherscan": "View on Etherscan",
@@ -491,14 +495,17 @@
         "disable_flashbots": "Disable Flashbots"
       },
       "search_tags": {
-        "swap": "bridge",
-        "my_wallets": "switch",
-        "my_contacts": "contact, contacts",
+        "swap": "buy, sell, trade, order, exchange, dex, routes",
+        "bridge": "transfer, chain, routes",
+        "get": "swap, bridge",
+        "my_wallets": "my, switch",
+        "my_contacts": "my",
         "my_tokens_watched": "my",
         "my_nfts_watched": "my",
         "view_profile": "profile, gallery, ens, nfts",
         "testnet_mode": "toggle, networks, testnets",
         "developer_tools": "toggle, networks, developer, testnets",
+        "approvals": "revoke, tokens, nfts, contracts",
         "settings": "preferences",
         "network_settings": "testnets, developer, networks",
         "my_qr_code_watched": "my",
@@ -532,7 +539,8 @@
       "title_revealed": "Showing Small Balances"
     },
     "contact_toast": {
-      "title_added": "Added to Contacts"
+      "title_added": "Contact Added",
+      "title_removed": "Contact Removed"
     },
     "no_results": "No results",
     "pages": {
@@ -560,7 +568,7 @@
         "section_title": "My Wallets"
       },
       "my_contacts": {
-        "search_placeholder": "Select a your contact wallet",
+        "search_placeholder": "Select a contact to send to…",
         "section_title": "My Contacts"
       },
       "token_detail": {
@@ -1267,6 +1275,7 @@
     "activity": "Activity",
     "nfts": "NFTs",
     "points": "Points",
+    "rewards": "Rewards",
     "tokens": "Tokens"
   },
   "activity": {
@@ -1324,6 +1333,8 @@
   "nfts": {
     "empty_state_header": "NFTs",
     "empty_state_description": "Your NFTs will appear here!",
+    "report_nft_action_text": "Report",
+    "report_nft_confirm_description": "Confirm report of NFT?",
     "view_on_web": "View on Web",
     "display_mode_gallery": "Gallery",
     "display_mode_collections": "Collections",
@@ -1374,19 +1385,27 @@
       "view_gallery": "View Gallery"
     },
     "toast": {
-      "spam_reported": "Your report has been received!"
+      "spam_reported": "Your report has been received!",
+      "hidden": "NFT hidden",
+      "unhidden": "NFT unhidden"
     }
   },
   "points": {
     "check_back_soon_header": "Check Back Soon",
     "check_back_soon_description": "Points are currently unavailable.\nCheck back soon to continue using Rainbow Points.",
     "your_rank": "Your Rank",
+    "my_points": "My Points",
+    "rank": "Rank",
+    "ranking": "Rank #%{rank}",
     "unranked": "Unranked",
+    "no_weekly_rank": "No Weekly Rank",
     "points_to_rank": "%{rank_cutoff} points to rank",
+    "top_holders": "Top Points Holders",
     "next_drop": "Next Drop",
     "leaderboard": "Leaderboard",
-    "referral_code": "Referral Code",
-    "referral_code_description": "Earn points for referring friends once they swap $100 through Rainbow",
+    "referral_code": "Refer Friends",
+    "referral_code_description": "Earn points when your referrals swap $100 through Rainbow, plus earn 10% of the points your referrals earn",
+    "referral_earnings": "%{earnings} points",
     "copied_referral_code": "Referral code copied!",
     "copied_referral_link": "Referral link copied!",
     "out_of_current_total_points": "Out of %{total} current total points",
@@ -1448,10 +1467,43 @@
       "weekly_counted": "> Weekly earnings counted",
       "you_have": "You have:",
       "none": "None",
-
       "your_earnings": "Your Earnings Last Week",
       "view_breakdown": "View your weekly earnings breakdown",
       "view_now": "View Now"
+    },
+    "rewards": {
+      "counting_points": "> Counting earned points...",
+      "calculating_referrals": "> Calculating your referrals...",
+      "allocating_earnings": "> Allocating your earnings...",
+      "claiming_your_reward": "CLAIMING YOUR REWARD",
+      "done": "Done",
+      "in_eth": "In ETH",
+      "your_rewards": "Your rewards",
+      "amount_in_eth": "+ %{amount} ETH",
+      "ready_to_spend": "Your ETH is in your wallet and ready to spend. You're all set.",
+      "keep_earning": "Keep earning points and your share of Rainbow rewards by swapping, bridging, minting, referring friends, and more",
+      "use_rainbow": "The more you use Rainbow, the more you'll be rewarded",
+      "choose_claim_network": "Choose Claim Network",
+      "coming_soon": "Coming Soon",
+      "available_to_claim": "Available to Claim",
+      "program_earnings": "Rainbow users have earned",
+      "my_earnings": "My Earnings",
+      "claimed_earnings": "Claimed Earnings",
+      "current_value": "Current Value",
+      "earn_eth_rewards": "Earn ETH Rewards",
+      "points_explanation": "The top weekly points earners will receive a weekly airdrop of Rainbow's own hard earned ETH. Collect points by swapping or transacting in Rainbow, using dapps, or referring friends.",
+      "your_reward_is_ready": "> Your reward is ready",
+      "claim_complete": "> Claim Complete",
+      "already_claimed": "> Your reward has already been claimed",
+      "no_claim": "> You do not have a reward to claim at this time",
+      "earned_last_week": "Earned Last Week",
+      "my_referrals": "Referrals",
+      "claim_reward": "Claim %{reward}",
+      "free_to_claim": "Free to Claim",
+      "has_bridge_fee": "Has Bridge Fee",
+      "claim_failed": "Claim Failed. Please try again.",
+      "claim_success_bridge_failed": "Claim Succeded but funds were not bridged.",
+      "my_rewards": "My Rewards"
     }
   },
   "speed_up_and_cancel": {
@@ -1644,6 +1696,7 @@
   },
   "alert": {
     "ok": "Ok",
+    "cancel": "Cancel",
     "wallet_watching_mode": "This wallet is currently Watched. Import the Secret Recovery Phrase, Private Key, or pair your device.",
     "wallet_testing_mode": "Testnets are not supported by Swap. Disable Testnet Mode to continue.",
     "coming_soon": "Coming Soon!",

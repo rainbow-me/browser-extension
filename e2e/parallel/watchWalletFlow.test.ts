@@ -127,10 +127,8 @@ describe('Watch wallet then add more and switch between them', () => {
     });
     await delayTime('medium');
 
-    it('should display seed account wallet name', async () => {
-      const account = await getTextFromText({ id: 'account-name', driver });
-      expect(account).toBe(shortenAddress(TEST_VARIABLES.EMPTY_WALLET.ADDRESS));
-    });
+    const account = await getTextFromText({ id: 'account-name', driver });
+    expect(account).toBe(shortenAddress(TEST_VARIABLES.EMPTY_WALLET.ADDRESS));
   });
 
   it('should be able to add a new wallet via watch', async () => {
@@ -152,32 +150,24 @@ describe('Watch wallet then add more and switch between them', () => {
       text: TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS,
     });
 
-    await waitUntilElementByTestIdIsPresent({
-      id: 'watch-wallets-button-ready',
-      driver,
-    });
-
     await findElementByTestIdAndClick({
       id: 'watch-wallets-button-ready',
       driver,
     });
 
     await delayTime('medium');
+    await goToPopup(driver, rootURL);
+    const label = await querySelector(
+      driver,
+      '[data-testid="header"] [data-testid="account-name"]',
+    );
 
-    it('should display watched account name', async () => {
-      await goToPopup(driver, rootURL);
-      const label = await querySelector(
-        driver,
-        '[data-testid="header"] [data-testid="account-name"]',
-      );
-
-      const actual = await label.getText();
-      const expected = [
-        '0x089b...be9E',
-        TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS,
-      ];
-      expect(expected.includes(actual)).toEqual(true);
-    });
+    const actual = await label.getText();
+    const expected = [
+      '0x089b...be9E',
+      TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS,
+    ];
+    expect(expected.includes(actual)).toEqual(true);
   });
 
   it('should be able to add a new wallet via pk', async () => {

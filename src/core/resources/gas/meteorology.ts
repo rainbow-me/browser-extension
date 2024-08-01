@@ -8,28 +8,9 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
+import { chainsName } from '~/core/references/chains';
 import { ChainId } from '~/core/types/chains';
 
-const getMeteorologyNetworkFromChainId = (chainId: ChainId) => {
-  switch (chainId) {
-    case ChainId.polygon:
-      return 'polygon';
-    case ChainId.bsc:
-      return 'bsc';
-    case ChainId.base:
-      return 'base';
-    case ChainId.optimism:
-      return 'optimism';
-    case ChainId.arbitrum:
-      return 'arbitrum';
-    case ChainId.zora:
-      return 'zora';
-    case ChainId.avalanche:
-      return 'avalanche';
-    default:
-      return 'mainnet';
-  }
-};
 // ///////////////////////////////////////////////
 // Query Types
 
@@ -50,7 +31,7 @@ export type MeteorologyResponse = {
       '3': string;
       '4': string;
     };
-    confirmationTimeByPriorityFee: {
+    confirmationTimeByPriorityFee?: {
       '15': string;
       '30': string;
       '45': string;
@@ -102,7 +83,7 @@ type MeteorologyQueryKey = ReturnType<typeof meteorologyQueryKey>;
 async function meteorologyQueryFunction({
   queryKey: [{ chainId }],
 }: QueryFunctionArgs<typeof meteorologyQueryKey>) {
-  const network = getMeteorologyNetworkFromChainId(chainId);
+  const network = chainsName[chainId];
   const parsedResponse = await meteorologyHttp.get(`/${network}`);
   const meteorologyData = parsedResponse.data as
     | MeteorologyResponse
@@ -124,11 +105,11 @@ export async function fetchMeteorology(
     MeteorologyQueryKey
   > = {},
 ) {
-  return await queryClient.fetchQuery(
-    meteorologyQueryKey({ chainId }),
-    meteorologyQueryFunction,
-    config,
-  );
+  return await queryClient.fetchQuery({
+    queryKey: meteorologyQueryKey({ chainId }),
+    queryFn: meteorologyQueryFunction,
+    ...config,
+  });
 }
 
 // ///////////////////////////////////////////////
@@ -143,9 +124,9 @@ export function useMeteorology(
     MeteorologyQueryKey
   > = {},
 ) {
-  return useQuery(
-    meteorologyQueryKey({ chainId }),
-    meteorologyQueryFunction,
-    config,
-  );
+  return useQuery({
+    queryKey: meteorologyQueryKey({ chainId }),
+    queryFn: meteorologyQueryFunction,
+    ...config,
+  });
 }

@@ -38,6 +38,7 @@ import {
   SearchItemType,
   ShortcutSearchItem,
   TokenSearchItem,
+  UnownedTokenSearchItem,
   WalletSearchItem,
 } from './SearchItems';
 
@@ -112,7 +113,12 @@ export const CommandRow = ({
             >
               <Inline alignVertical="center" space="8px" wrap={false}>
                 <Inline alignVertical="bottom" space="8px" wrap={false}>
-                  <TextOverflow color="label" size="14pt" weight="semibold">
+                  <TextOverflow
+                    color="label"
+                    size="14pt"
+                    weight="semibold"
+                    testId={`command-name-${name || command.name}`}
+                  >
                     {name || command.name}
                   </TextOverflow>
                   {description && (
@@ -210,11 +216,13 @@ export const ShortcutRow = ({
   selected,
 }: ShortcutRowProps) => {
   const isAddAsWatchedWalletRow =
-    command.address && command.id === 'addAsWatchedWallet';
+    command.address && command.id === 'watchUnownedWallet';
   const isSwitchToWalletRow =
     command.address && command.id === 'switchToWallet';
   const isContactWalletRow = command.address && command.id === 'contactWallet';
-  const isViewTokenRow = command.asset && command.id === 'viewToken';
+  const isViewTokenRow =
+    command.asset &&
+    (command.id === 'viewToken' || command.id === 'viewUnownedToken');
 
   const LeftComponent = React.useMemo(() => {
     if (isAddAsWatchedWalletRow || isSwitchToWalletRow || isContactWalletRow) {
@@ -279,7 +287,7 @@ export const ShortcutRow = ({
 };
 
 type TokenRowProps = {
-  command: TokenSearchItem;
+  command: TokenSearchItem | UnownedTokenSearchItem;
   handleExecuteCommand: (command: SearchItem, e?: KeyboardEvent) => void;
   selected: boolean;
 };
@@ -306,7 +314,11 @@ export const TokenRow = ({
   );
 
   const TokenBalanceBadge = React.useMemo(() => {
-    const hasValue = command.price && command.price?.value > 0;
+    const hasValue =
+      command.type === SearchItemType.Token &&
+      command.price &&
+      command.price?.value > 0;
+
     return (
       <Box
         alignItems="center"
@@ -341,18 +353,13 @@ export const TokenRow = ({
             weight="semibold"
           >
             {hasValue
-              ? command.nativeTokenBalance
+              ? (command as TokenSearchItem).nativeTokenBalance
               : i18n.t('command_k.command_rows.no_value')}
           </Text>
         )}
       </Box>
     );
-  }, [
-    command.nativeTokenBalance,
-    command.price,
-    currentCurrency,
-    hideAssetBalances,
-  ]);
+  }, [command, currentCurrency, hideAssetBalances]);
 
   return (
     <CommandRow
@@ -361,7 +368,9 @@ export const TokenRow = ({
       name={command.name}
       selected={selected}
       LeftComponent={TokenIcon}
-      RightComponent={TokenBalanceBadge}
+      RightComponent={
+        command.type === SearchItemType.Token ? TokenBalanceBadge : undefined
+      }
     />
   );
 };

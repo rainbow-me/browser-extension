@@ -49,6 +49,7 @@ export default function SeedPhraseTable({ seed }: { seed: string }) {
                       color="label"
                       align="center"
                       testId={`seed_word_${index + 1}`}
+                      translate="no"
                     >
                       {word}
                     </Text>
@@ -105,6 +106,7 @@ export default function SeedPhraseTable({ seed }: { seed: string }) {
                       color="label"
                       align="center"
                       testId={`seed_word_${index + 7}`}
+                      translate="no"
                     >
                       {word}
                     </Text>

@@ -19,7 +19,7 @@ export const ETH_MAINNET_ASSET = {
   address: 'eth',
   balance: { amount: '10000', display: '10,000.00 ETH' },
   chainId: 1,
-  chainName: 'mainnet' as ChainName,
+  chainName: ChainName.mainnet,
   colors: { primary: '#808088', fallback: '#E8EAF5' },
   decimals: 18,
   icon_url: '',
@@ -42,7 +42,7 @@ export const DAI_MAINNET_ASSET = {
   address: '0x6b175474e89094c44da98b954eedeac495271d0f',
   balance: { amount: '0', display: '0 DAI' },
   chainId: 1,
-  chainName: 'mainnet' as ChainName,
+  chainName: ChainName.mainnet,
   colors: { primary: '#808088', fallback: '#E8EAF5' },
   decimals: 18,
   icon_url:
@@ -94,7 +94,7 @@ export const OPTIMISM_MAINNET_ASSET = {
   address: '0x0000000000000000000000000000000000000000',
   balance: { amount: '10000', display: '10,000.00 ETH' },
   chainId: 10,
-  chainName: 'optimism' as ChainName,
+  chainName: ChainName.optimism,
   colors: { primary: '#808088', fallback: '#E8EAF5' },
   decimals: 18,
   icon_url:
@@ -111,7 +111,7 @@ export const OPTIMISM_MAINNET_ASSET = {
     relative_change_24h: 0.14646492502099484,
   },
   symbol: 'ETH',
-  uniqueId: 'eth_10',
+  uniqueId: '0x0000000000000000000000000000000000000000_10',
 } satisfies ParsedUserAsset;
 
 export const ENS_MAINNET_ASSET = {
@@ -160,7 +160,7 @@ export const USDC_ARBITRUM_ASSET = {
 export const WETH_MAINNET_ASSET = {
   address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
   chainId: 1,
-  chainName: 'mainnet' as ChainName,
+  chainName: ChainName.mainnet,
   colors: { primary: '#25292E', fallback: '#B6B6B7' },
   decimals: 18,
   icon_url:

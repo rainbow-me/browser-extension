@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useCallback, useMemo, useState } from 'react';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import appConnectionWalletItemImageMask from 'static/assets/appConnectionWalletItemImageMask.svg';
 import { i18n } from '~/core/languages';
@@ -16,7 +16,7 @@ import {
 } from '~/core/state/hiddenAssets/hiddenAssets';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { getChainName } from '~/core/utils/chains';
+import { getChain } from '~/core/utils/chains';
 import { convertAmountToNativeDisplay } from '~/core/utils/numbers';
 import {
   Box,
@@ -53,17 +53,15 @@ export const AppConnectionWalletItem = React.forwardRef(
     const { address, onClick, chainId, active, connected } = props;
     const [hovering, setHovering] = useState(false);
     const { displayName } = useWalletName({ address });
-    const chainName = getChainName({ chainId });
-    const { hiddenAssets } = useHiddenAssetStore();
+    const chainName = getChain({ chainId }).name;
+    const { hidden } = useHiddenAssetStore();
     const showChainBadge = !!chainId && chainId !== ChainId.mainnet;
     const isHidden = useCallback(
-      (asset: ParsedUserAsset) =>
-        hiddenAssets.some(
-          (uniqueId) => uniqueId === computeUniqueIdForHiddenAsset(asset),
-        ),
-      [hiddenAssets],
+      (asset: ParsedUserAsset) => {
+        return !!hidden[address]?.[computeUniqueIdForHiddenAsset(asset)];
+      },
+      [address, hidden],
     );
-
     const { currentCurrency: currency } = useCurrentCurrencyStore();
     const { data: totalAssetsBalance } = useUserAssets(
       { address, currency },

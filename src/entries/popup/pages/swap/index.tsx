@@ -6,7 +6,7 @@ import { Address } from 'viem';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useGasStore } from '~/core/state';
+import { useCurrentAddressStore, useGasStore } from '~/core/state';
 import {
   computeUniqueIdForHiddenAsset,
   useHiddenAssetStore,
@@ -241,17 +241,16 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     useExplainerSheetParams();
   const { selectedGas, clearCustomGasModified } = useGasStore();
   const { trackShortcut } = useKeyboardAnalytics();
-
+  const { currentAddress: address } = useCurrentAddressStore();
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
   const [urlSearchParams] = useSearchParams();
-  const { hiddenAssets } = useHiddenAssetStore();
+  const { hidden } = useHiddenAssetStore();
 
   const isHidden = useCallback(
-    (asset: ParsedUserAsset | SearchAsset) =>
-      hiddenAssets.some(
-        (uniqueId) => uniqueId === computeUniqueIdForHiddenAsset(asset),
-      ),
-    [hiddenAssets],
+    (asset: ParsedUserAsset | SearchAsset) => {
+      return !!hidden[address]?.[computeUniqueIdForHiddenAsset(asset)];
+    },
+    [address, hidden],
   );
 
   const hideBackButton = urlSearchParams.get('hideBack') === 'true';
@@ -273,6 +272,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     sortMethod,
     assetToBuy,
     assetToSell,
+    assetsToBuySearchNetworkStatus,
     outputChainId,
     setSortMethod,
     setOutputChainId,
@@ -625,6 +625,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
         setSettings={setSettings}
         slippage={slippage}
         chainId={assetToSell?.chainId}
+        bridge={bridge}
       />
       <Box
         background="surfaceSecondary"
@@ -725,6 +726,9 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                   ref={tokenToBuyInputRef}
                   dropdownHeight={toBuyInputHeight}
                   assetToBuy={assetToBuy}
+                  assetsToBuyNetworkSearchStatus={
+                    assetsToBuySearchNetworkStatus
+                  }
                   assetToSell={assetToSell}
                   assets={unhiddenAssetsToBuy}
                   selectAsset={setAssetToBuy}

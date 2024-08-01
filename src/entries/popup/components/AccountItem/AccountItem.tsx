@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { supportedCurrencies } from '~/core/references';
 import {
@@ -7,7 +7,7 @@ import {
   selectorFilterByUserChains,
 } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
-import { useCurrentCurrencyStore } from '~/core/state';
+import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import {
   computeUniqueIdForHiddenAsset,
@@ -40,14 +40,14 @@ export enum LabelOption {
 }
 
 const TotalAssetsBalance = ({ account }: { account: Address }) => {
-  const { hiddenAssets } = useHiddenAssetStore();
+  const { hidden } = useHiddenAssetStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
+  const { currentAddress: address } = useCurrentAddressStore();
   const isHidden = useCallback(
-    (asset: ParsedUserAsset) =>
-      hiddenAssets.some(
-        (uniqueId) => uniqueId === computeUniqueIdForHiddenAsset(asset),
-      ),
-    [hiddenAssets],
+    (asset: ParsedUserAsset) => {
+      return !!hidden[address]?.[computeUniqueIdForHiddenAsset(asset)];
+    },
+    [address, hidden],
   );
   const { data: totalAssetsBalance, isLoading } = useUserAssets(
     { address: account, currency },

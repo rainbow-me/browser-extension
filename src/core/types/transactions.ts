@@ -1,5 +1,5 @@
 import { TransactionResponse } from '@ethersproject/providers';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import {
   AssetApiResponse,
@@ -62,6 +62,10 @@ type BaseTransaction = {
   gasPrice?: string;
   gasLimit?: string;
   baseFee?: string;
+  explorer?: {
+    name: string;
+    url: string;
+  };
 } & Partial<TransactionGasParams & TransactionLegacyGasParams>;
 
 export type PendingTransaction = BaseTransaction & {
@@ -199,13 +203,17 @@ export type TransactionApiResponse = {
   };
   block_confirmations?: number; // also only available on the tx by hash endpoint
   meta: {
+    approval_to?: Address;
     contract_name?: string;
     contract_icon_url?: string;
+    explorer_label?: string;
+    explorer_url?: string;
     type?: TransactionType;
     action?: string;
     asset?: AssetApiResponse;
     quantity?: 'UNLIMITED' | string;
     status: string;
+    external_subtype?: 'rewards_claim';
   };
   block_number?: number;
   mined_at?: number;

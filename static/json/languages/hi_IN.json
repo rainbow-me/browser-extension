@@ -419,6 +419,11 @@
       "pending": "बोली लगाना",
       "confirmed": "बोली",
       "failed": "बोली विफल रही"
+    },
+    "speed_up": {
+      "pending": "गति बढ़ाना",
+      "confirmed": "स्पीड अप किया",
+      "failed": "गति बढ़ाना विफल"
     }
   },
   "command_k": {
@@ -427,6 +432,7 @@
       "open": "खोलें",
       "open_in_new_tab": "नई टैब में खोलें",
       "switch_to_wallet": "वॉलेट में स्विच करें",
+      "send_to_contact": "संपर्क को भेजें",
       "view": "देखें"
     },
     "commands": {
@@ -434,6 +440,7 @@
         "send": "भेजें",
         "swap": "स्वैप करें",
         "my_wallets": "मेरे वॉलेट",
+        "my_contacts": "मेरे संपर्क",
         "my_tokens": "मेरे टोकन",
         "my_tokens_watched": "टोकन्स",
         "my_nfts": "मेरे NFTs",
@@ -473,8 +480,12 @@
         "add_as_watched_wallet": "इस वॉलेट को देखें",
         "view_on_ens": "ENS पर देखें",
         "switch_to_wallet": "इस वॉलेट में स्विच करें",
+        "send_to_wallet": "इस वॉलेट को भेजें",
+        "add_contact": "संपर्क जोड़ें",
+        "remove_contact": "संपर्क हटाएं",
         "copy_wallet_address": "पता कॉपी करें",
         "view_wallet_on_etherscan": "Etherscan पर देखें",
+        "send_contact": "संपर्क को भेजें",
         "export_addresses_as_csv": "CSV के रूप में पते निर्यात करें",
         "enable_flashbots": "Flashbots सक्षम करें",
         "disable_flashbots": "Flashbots अक्षम करें"
@@ -482,6 +493,7 @@
       "search_tags": {
         "swap": "सेतु",
         "my_wallets": "स्विच",
+        "my_contacts": "संपर्क, संपर्क",
         "my_tokens_watched": "मेरा",
         "my_nfts_watched": "मेरा",
         "view_profile": "प्रोफ़ाइल, गैलरी, ENS, NFTs",
@@ -519,6 +531,10 @@
       "title_hidden": "सामान्य संतुलन छिपा हुआ",
       "title_revealed": "छोटे संतुलन दिखा रहे हैं"
     },
+    "contact_toast": {
+      "title_added": "संपर्क जोड़ा गया",
+      "title_removed": "संपर्क हटाया गया"
+    },
     "no_results": "कोई परिणाम नहीं मिला",
     "pages": {
       "add_wallet": {
@@ -544,6 +560,10 @@
         "search_placeholder": "स्विच करने के लिए वॉलेट का चयन करें…",
         "section_title": "मेरे वॉलेट"
       },
+      "my_contacts": {
+        "search_placeholder": "भेजने के लिए एक संपर्क चुनें...",
+        "section_title": "मेरे संपर्क"
+      },
       "token_detail": {
         "search_placeholder": "खोज टोकन कार्रवाई…",
         "section_title": "कार्रवाइयाँ"
@@ -556,6 +576,9 @@
         "search_placeholder": "खोज वॉलेट कार्रवाइयाँ…",
         "section_title": "कार्रवाइयाँ"
       }
+    },
+    "labels": {
+      "contact": "संपर्क करें"
     },
     "quick_promo": {
       "text": "मैजिक मेन्यू खोलने के लिए %{modifierSymbol}K दबाएं",
@@ -1301,6 +1324,8 @@
   "nfts": {
     "empty_state_header": "NFTs",
     "empty_state_description": "आपके NFTs यहां दिखाई देंगे!",
+    "report_nft_action_text": "रिपोर्ट करें",
+    "report_nft_confirm_description": "NFT की रिपोर्ट की पुष्टि करें?",
     "view_on_web": "वेब पर देखें",
     "display_mode_gallery": "गैलरी",
     "display_mode_collections": "संग्रह",
@@ -1351,7 +1376,9 @@
       "view_gallery": "गैलरी देखें"
     },
     "toast": {
-      "spam_reported": "आपकी रिपोर्ट प्राप्त हो गई है!"
+      "spam_reported": "आपकी रिपोर्ट प्राप्त हो गई है!",
+      "hidden": "NFT छुपाया गया",
+      "unhidden": "NFT अनहाइड किया गया"
     }
   },
   "points": {
@@ -1447,7 +1474,11 @@
     "speed_up_transaction": "ट्रांजैक्शन तेज़ करें",
     "close_cta": "रद्द करें",
     "handle_copy_title": "ट्रांजैक्शन हैश कॉपी हो गया",
-    "revoke_approval": "अनुमति रद्द करें"
+    "revoke_approval": "अनुमति रद्द करें",
+    "speed_up_failed": {
+      "title": "स्पीड अप विफल",
+      "description": "नेटवर्क भीड़भाड़, गैस लिमिट बढ़ने, या मूल लेन-देन के पहले पुष्टि होने पर लेन-देन की गति बढ़ाने के प्रयास विफल हो सकते हैं"
+    }
   },
   "token_details": {
     "swap": "स्वैप",
@@ -1616,6 +1647,7 @@
   },
   "alert": {
     "ok": "ठीक है",
+    "cancel": "रद्द करें",
     "wallet_watching_mode": "यह वॉलेट वर्तमान में 'देख रहा है' मोड में है",
     "wallet_testing_mode": "टेस्टनेट्स का समर्थन स्व्याप नहीं करता। जारी रखने के लिए टेस्टनेट मोड को अक्षम करें।",
     "coming_soon": "जल्द ही आ रहा है!",

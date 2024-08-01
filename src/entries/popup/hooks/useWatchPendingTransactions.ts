@@ -1,6 +1,6 @@
-import { getProvider, mainnet } from '@wagmi/core';
 import { useCallback, useMemo } from 'react';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
+import { mainnet } from 'viem/chains';
 
 import { queryClient } from '~/core/react-query';
 import { userAssetsFetchQuery } from '~/core/resources/assets/userAssets';
@@ -23,6 +23,7 @@ import {
   getTransactionFlashbotStatus,
   getTransactionReceiptStatus,
 } from '~/core/utils/transactions';
+import { getProvider } from '~/core/wagmi/clientToProvider';
 import { RainbowError, logger } from '~/logger';
 
 import { useSwapRefreshAssets } from './swap/useSwapAssetsRefresh';

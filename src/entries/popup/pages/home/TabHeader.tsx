@@ -1,12 +1,10 @@
 import { useMemo } from 'react';
-import { useBalance } from 'wagmi';
 
+import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
-import { getNftCount } from '~/core/resources/nfts/nfts';
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import { useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { Box, Inline, Inset, Text } from '~/design-system';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 
@@ -14,7 +12,6 @@ import { Asterisks } from '../../components/Asterisks/Asterisks';
 import { Tab } from '../../components/Tabs/TabBar';
 import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { useUserAssetsBalance } from '../../hooks/useUserAssetsBalance';
-import { useUserChains } from '../../hooks/useUserChains';
 import { useVisibleTokenCount } from '../../hooks/useVisibleTokenCount';
 
 import DisplayModeDropdown from './NFTs/DisplayModeDropdown';
@@ -26,19 +23,11 @@ export function TabHeader({
   activeTab: Tab;
   onSelectTab: (tab: Tab) => void;
 }) {
-  const { currentAddress: address } = useCurrentAddressStore();
   const { hideAssetBalances } = useHideAssetBalancesStore();
-  const { data: balance, isLoading } = useBalance({ address });
-  const { display: userAssetsBalanceDisplay } = useUserAssetsBalance();
+  const { display: userAssetsBalanceDisplay, isLoading } =
+    useUserAssetsBalance();
   const { currentCurrency } = useCurrentCurrencyStore();
   const { visibleTokenCount } = useVisibleTokenCount();
-  const { testnetMode } = useTestnetModeStore();
-  const { chains: userChains } = useUserChains();
-  const nftCount = getNftCount({
-    address,
-    testnetMode,
-    userChains,
-  });
 
   const displayBalanceComponent = useMemo(
     () =>
@@ -63,11 +52,26 @@ export function TabHeader({
           userSelect="all"
           cursor="text"
         >
-          {userAssetsBalanceDisplay}
+          {userAssetsBalanceDisplay || ''}
         </Text>
       ),
     [activeTab, currentCurrency, hideAssetBalances, userAssetsBalanceDisplay],
   );
+
+  const tabTitle = useMemo(() => {
+    const rewardsEnabled =
+      config.rewards_enabled || process.env.INTERNAL_BUILD === 'true';
+
+    switch (activeTab) {
+      case 'points':
+        return rewardsEnabled ? i18n.t('tabs.rewards') : i18n.t('tabs.points');
+      default:
+        return i18n.t(`tabs.${activeTab}`);
+    }
+  }, [activeTab]);
+
+  const shouldDisplayBalanceComponent =
+    activeTab !== 'nfts' && activeTab !== 'points';
 
   return (
     <Inset bottom="20px" top="8px">
@@ -89,16 +93,11 @@ export function TabHeader({
             textShadow={activeTab === 'points' ? '12px accent' : undefined}
             color={activeTab === 'points' ? 'accent' : 'label'}
           >
-            {i18n.t(`tabs.${activeTab}`)}
+            {tabTitle}
           </Text>
           {activeTab === 'tokens' && visibleTokenCount > 0 && (
             <Text color="labelQuaternary" size="14pt" weight="bold">
               {visibleTokenCount}
-            </Text>
-          )}
-          {activeTab === 'nfts' && nftCount > 0 && (
-            <Text color="labelQuaternary" size="14pt" weight="bold">
-              {nftCount}
             </Text>
           )}
         </Inline>
@@ -108,7 +107,7 @@ export function TabHeader({
           </Inline>
         )}
 
-        {activeTab !== 'nfts' && balance && (
+        {shouldDisplayBalanceComponent && (
           <CursorTooltip
             align="end"
             arrowAlignment="right"

@@ -26,6 +26,7 @@ import { useCoolMode } from '../../../hooks/useCoolMode';
 import { useRainbowNavigate } from '../../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../../urls';
 
+import { OldPointsDashboard } from './OldPointsDashboard';
 import { PointsDashboard } from './PointsDashboard';
 import { usePoints } from './usePoints';
 
@@ -213,7 +214,7 @@ function ClaimYourPoints() {
       display="flex"
       flexDirection="column"
       justifyContent="flex-start"
-      marginTop="-20px"
+      paddingBottom="64px"
       paddingTop={config.points_enabled ? '40px' : '80px'}
       ref={ref}
       style={{ height: 336 - (testnetMode ? TESTNET_MODE_BAR_HEIGHT : 0) }}
@@ -282,7 +283,12 @@ export function Points() {
 
   if (isInitialLoading) return null;
 
-  if (!config.points_enabled || data?.error?.type === 'NON_EXISTING_USER')
+  if (!config.points_enabled || data?.error?.type === 'NON_EXISTING_USER') {
     return <ClaimYourPoints />;
-  return <PointsDashboard />;
+  }
+  return config.rewards_enabled || process.env.INTERNAL_BUILD === 'true' ? (
+    <PointsDashboard />
+  ) : (
+    <OldPointsDashboard />
+  );
 }

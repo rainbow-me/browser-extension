@@ -5,7 +5,7 @@ import { useFavoritesStore } from '~/core/state/favorites';
 import { ChainId } from '~/core/types/chains';
 import { SearchAsset } from '~/core/types/search';
 import { truncateAddress } from '~/core/utils/address';
-import { getBlockExplorerHostForChain, isL2Chain } from '~/core/utils/chains';
+import { getBlockExplorerHostForChain } from '~/core/utils/chains';
 import { getExplorerUrl, goToNewTab } from '~/core/utils/tabs';
 import {
   Bleed,
@@ -202,9 +202,7 @@ export function TokenToBuyRow({
                                   <Text size="14pt" weight="semibold">
                                     {i18n.t(
                                       `contacts.${
-                                        isL2Chain(
-                                          asset?.chainId || ChainId.mainnet,
-                                        )
+                                        explorer !== 'etherscan'
                                           ? 'view_on_explorer'
                                           : 'view_on_etherscan'
                                       }`,
@@ -257,7 +255,6 @@ export function TokenToBuyRow({
       asset?.name,
       asset?.symbol,
       asset?.address,
-      asset?.chainId,
       onDropdownChange,
       testId,
       onValueChange,

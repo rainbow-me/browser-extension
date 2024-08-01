@@ -9,10 +9,9 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
-import { ChainId, ChainName } from '~/core/types/chains';
+import { ChainId, ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import { TransactionsReceivedMessage } from '~/core/types/refraction';
 import { RainbowTransaction } from '~/core/types/transactions';
-import { chainIdFromChainName } from '~/core/utils/chains';
 import { parseTransaction } from '~/core/utils/transactions';
 import { RainbowError, logger } from '~/logger';
 
@@ -57,11 +56,16 @@ export async function fetchTransactions<TSelectData = TransactionsResult>(
     TransactionsQueryKey
   >,
 ) {
-  return await queryClient.fetchQuery(
-    transactionsQueryKey({ address, chainId, currency, transactionsLimit }),
-    transactionsQueryFunction,
-    config,
-  );
+  return await queryClient.fetchQuery({
+    queryKey: transactionsQueryKey({
+      address,
+      chainId,
+      currency,
+      transactionsLimit,
+    }),
+    queryFn: transactionsQueryFunction,
+    ...config,
+  });
 }
 
 // ///////////////////////////////////////////////
@@ -86,9 +90,14 @@ async function transactionsQueryFunction({
     return parseTransactions(response?.data, currency);
   } catch (e) {
     const cache = queryClient.getQueryCache();
-    const cachedTransactions = cache.find(
-      transactionsQueryKey({ address, chainId, currency, transactionsLimit }),
-    )?.state?.data as RainbowTransaction[];
+    const cachedTransactions = cache.find({
+      queryKey: transactionsQueryKey({
+        address,
+        chainId,
+        currency,
+        transactionsLimit,
+      }),
+    })?.state?.data as RainbowTransaction[];
     logger.error(new RainbowError('transactionsQueryFunction: '), {
       message: (e as Error)?.message,
     });
@@ -108,9 +117,8 @@ async function parseTransactions(
       parseTransaction({
         tx,
         currency,
-        chainId: chainIdFromChainName(
-          (message?.meta?.chain_id as ChainName) ?? ChainName.mainnet,
-        ),
+        chainId:
+          chainNameToIdMapping[message?.meta?.chain_id || ChainName.mainnet],
       }),
     )
     .filter(Boolean);
@@ -128,12 +136,15 @@ export function useTransactions<TSelectData = TransactionsResult>(
     TransactionsQueryKey
   > = {},
 ) {
-  return useQuery(
-    transactionsQueryKey({ address, currency, chainId, transactionsLimit }),
-    transactionsQueryFunction,
-    {
-      ...config,
-      refetchInterval: TRANSACTIONS_REFETCH_INTERVAL,
-    },
-  );
+  return useQuery({
+    queryKey: transactionsQueryKey({
+      address,
+      currency,
+      chainId,
+      transactionsLimit,
+    }),
+    queryFn: transactionsQueryFunction,
+    ...config,
+    refetchInterval: TRANSACTIONS_REFETCH_INTERVAL,
+  });
 }

@@ -1,13 +1,15 @@
 import React, { useCallback, useImperativeHandle, useRef } from 'react';
-import { Address, useBalance } from 'wagmi';
+import { Address } from 'viem';
+import { useBalance } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
+import { chainsLabel } from '~/core/references/chains';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
-import { ChainId, ChainNameDisplay } from '~/core/types/chains';
+import { ChainId } from '~/core/types/chains';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
 import {
   Box,
@@ -247,7 +249,7 @@ export const BottomNetwork = ({
             weight="semibold"
             color="labelSecondary"
           >
-            {ChainNameDisplay[selectedChainId]}
+            {chainsLabel[selectedChainId]}
           </Text>
           {displaySymbol && (
             <Symbol

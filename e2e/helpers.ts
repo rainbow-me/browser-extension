@@ -18,8 +18,8 @@ import {
 } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
 import firefox from 'selenium-webdriver/firefox';
+import { erc20Abi } from 'viem';
 import { expect } from 'vitest';
-import { erc20ABI } from 'wagmi';
 
 import { RAINBOW_TEST_DAPP } from '~/core/references/links';
 
@@ -476,6 +476,36 @@ export async function performShortcutWithNormalKey(
   }
 }
 
+export async function executeMultipleShortcuts({
+  driver,
+  keyDown,
+  key,
+}: {
+  driver: WebDriver;
+  keyDown: keyof typeof Key | string;
+  key: keyof typeof Key | string;
+}) {
+  try {
+    await delayTime('short');
+    const keyDownAction =
+      keyDown in Key ? (Key[keyDown as keyof typeof Key] as string) : keyDown;
+    const keyAction =
+      key in Key ? (Key[key as keyof typeof Key] as string) : key;
+    await driver
+      .actions()
+      .keyDown(keyDownAction)
+      .sendKeys(keyAction)
+      .keyUp(keyDownAction)
+      .perform();
+  } catch (error) {
+    console.error(
+      `Error occurred while attempting multiple shortcuts with the keydown '${keyDown}' and key '${key}':`,
+      error,
+    );
+    throw error;
+  }
+}
+
 export async function performShortcutWithSpecialKey(
   driver: WebDriver,
   specialKey: keyof typeof Key,
@@ -709,7 +739,7 @@ export async function connectToTestDapp(driver: WebDriver) {
 
   const mmButton = await querySelector(
     driver,
-    '[data-testid="rk-wallet-option-rainbow"]',
+    '[data-testid="rk-wallet-option-me.rainbow"]',
   );
   await waitAndClick(mmButton, driver);
 
@@ -726,7 +756,7 @@ export async function connectToTestDapp(driver: WebDriver) {
 export async function getOnchainBalance(addy: string, contract: string) {
   try {
     const provider = getDefaultProvider('http://127.0.0.1:8545');
-    const testContract = new Contract(contract, erc20ABI, provider);
+    const testContract = new Contract(contract, erc20Abi, provider);
     const balance = await testContract.balanceOf(addy);
 
     return balance;
@@ -1111,5 +1141,55 @@ export async function takeScreenshotOnFailure(context: any) {
     } catch (error) {
       console.error('Error occurred while taking screenshot:', error);
     }
+  });
+}
+
+export async function performSearchTokenAddressActionsCmdK({
+  driver,
+  tokenAddress,
+  tokenName,
+  rootURL,
+}: {
+  driver: WebDriver;
+  tokenAddress: string;
+  tokenName: string;
+  rootURL: string;
+}) {
+  await goToPopup(driver, rootURL, '#/home');
+
+  // Open Cmd+K menu
+  await executePerformShortcut({ driver, key: 'k' });
+
+  await clearInput({ id: 'command-k-input', driver });
+
+  await typeOnTextInput({
+    id: 'command-k-input',
+    driver,
+    text: tokenAddress,
+  });
+
+  await waitUntilElementByTestIdIsPresent({
+    id: `command-name-${tokenName}`,
+    driver,
+  });
+
+  await executePerformShortcut({
+    driver,
+    key: 'ARROW_DOWN',
+  });
+
+  // Go to token details
+  await executePerformShortcut({ driver, key: 'ENTER' });
+
+  await checkExtensionURL(driver, 'token-details');
+
+  await waitUntilElementByTestIdIsPresent({
+    id: `about-${tokenAddress}`,
+    driver,
+  });
+
+  await waitUntilElementByTestIdIsPresent({
+    id: `token-price-name-${tokenAddress}`,
+    driver,
   });
 }

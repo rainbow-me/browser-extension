@@ -11,7 +11,7 @@ import {
   ValidatePointsSignatureMutation,
 } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
-import { SUPPORTED_MAINNET_CHAINS } from '~/core/references';
+import { SUPPORTED_MAINNET_CHAINS } from '~/core/references/chains';
 import { useCurrentAddressStore } from '~/core/state';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { formatNumber } from '~/core/utils/formatNumber';
@@ -342,7 +342,7 @@ export const PointsOnboardingSheet = () => {
     data: validSignatureResponse,
     error,
     mutate: validateSignature,
-    isLoading: validatingSignature,
+    isPending: validatingSignature,
     isSuccess: accessGranted,
   } = useMutation<
     ValidatePointsSignatureMutation['onboardPoints'],
@@ -370,7 +370,7 @@ export const PointsOnboardingSheet = () => {
 
   const userOnboarding = validSignatureResponse?.user.onboarding;
 
-  const { mutate: signChallenge, isLoading: isWaitingForSignature } =
+  const { mutate: signChallenge, isPending: isWaitingForSignature } =
     useMutation({
       mutationFn: async () => {
         if (!data) return;

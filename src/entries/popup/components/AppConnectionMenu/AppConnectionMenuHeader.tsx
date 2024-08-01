@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion';
 import React from 'react';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
-import { ChainNameDisplay } from '~/core/types/chains';
+import { chainsLabel } from '~/core/references/chains';
 import { getChain } from '~/core/utils/chains';
 import {
   Box,
@@ -59,7 +59,7 @@ export const AppConnectionMenuHeader = ({
                   <Text size="11pt" weight="bold">
                     {!activeSession
                       ? i18n.t('menu.app_connection_menu.not_connected')
-                      : ChainNameDisplay[activeSession.chainId] ||
+                      : chainsLabel[activeSession.chainId] ||
                         getChain({ chainId: activeSession.chainId }).name ||
                         ''}
                   </Text>

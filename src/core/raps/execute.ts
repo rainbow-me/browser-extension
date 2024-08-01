@@ -5,8 +5,10 @@ import { Signer } from '@ethersproject/abstract-signer';
 
 import { RainbowError, logger } from '~/logger';
 
-import { swap, unlock } from './actions';
+import { claim, swap, unlock } from './actions';
+import { claimBridge } from './actions/claimBridge';
 import { crosschainSwap } from './actions/crosschainSwap';
+import { createClaimAndBridgeRap } from './claimAndBridge';
 import {
   ActionProps,
   Rap,
@@ -25,6 +27,10 @@ export function createSwapRapByType<T extends RapTypes>(
   swapParameters: RapSwapActionParameters<T>,
 ) {
   switch (type) {
+    case 'claimBridge':
+      return createClaimAndBridgeRap(
+        swapParameters as RapSwapActionParameters<'claimBridge'>,
+      );
     case 'crosschainSwap':
       return createUnlockAndCrosschainSwapRap(
         swapParameters as RapSwapActionParameters<'crosschainSwap'>,
@@ -40,12 +46,16 @@ export function createSwapRapByType<T extends RapTypes>(
 
 function typeAction<T extends RapActionTypes>(type: T, props: ActionProps<T>) {
   switch (type) {
+    case 'claim':
+      return () => claim(props as ActionProps<'claim'>);
     case 'unlock':
       return () => unlock(props as ActionProps<'unlock'>);
     case 'swap':
       return () => swap(props as ActionProps<'swap'>);
     case 'crosschainSwap':
       return () => crosschainSwap(props as ActionProps<'crosschainSwap'>);
+    case 'claimBridge':
+      return () => claimBridge(props as ActionProps<'claimBridge'>);
     default:
       // eslint-disable-next-line react/display-name
       return () => null;
@@ -124,7 +134,9 @@ const waitForNodeAck = async (
 export const walletExecuteRap = async (
   wallet: Signer,
   type: RapTypes,
-  parameters: RapSwapActionParameters<'swap' | 'crosschainSwap'>,
+  parameters: RapSwapActionParameters<
+    'swap' | 'crosschainSwap' | 'claimBridge'
+  >,
 ): Promise<{ nonce: number | undefined; errorMessage: string | null }> => {
   const rap: Rap = await createSwapRapByType(type, parameters);
 
@@ -143,13 +155,11 @@ export const walletExecuteRap = async (
       rapName,
       flashbots: parameters?.flashbots,
     };
-
     const {
       baseNonce,
       errorMessage: error,
       hash,
     } = await executeAction(actionParams);
-
     if (typeof baseNonce === 'number') {
       actions.length > 1 &&
         hash &&

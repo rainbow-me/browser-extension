@@ -1,6 +1,5 @@
 import { i18n } from '~/core/languages';
-import { ChainId } from '~/core/types/chains';
-import { chainNameFromChainId } from '~/core/utils/chains';
+import { ChainId, chainIdToNameMapping } from '~/core/types/chains';
 
 import { ChainBadge } from './ChainBadge/ChainBadge';
 import {
@@ -22,7 +21,7 @@ export const getSideChainExplainerParams = (
   chainId: ChainId,
   onDismiss: VoidFunction,
 ) => {
-  const chainName = chainNameFromChainId(chainId);
+  const chainName = chainIdToNameMapping[chainId];
   const specificChains = {
     [ChainId.polygon]: 'polygon',
     [ChainId.bsc]: 'bsc',

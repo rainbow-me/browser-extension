@@ -5,7 +5,7 @@ import {
   WRAPPED_ASSET,
   getRainbowRouterContractAddress,
 } from '@rainbow-me/swaps';
-import { Address } from 'wagmi';
+import { Address } from 'viem';
 
 import { ETH_ADDRESS } from '../references';
 import { ChainId } from '../types/chains';
@@ -120,9 +120,11 @@ export const createUnlockAndSwapRap = async (
     buyTokenAddress: Address;
   };
 
-  const isNativeAssetUnwrapping =
-    isUnwrapEth({ buyTokenAddress, chainId, sellTokenAddress }) &&
-    chainId === ChainId.mainnet;
+  const isNativeAssetUnwrapping = isUnwrapEth({
+    buyTokenAddress,
+    chainId,
+    sellTokenAddress,
+  });
 
   // Aggregators represent native asset as 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE
   const nativeAsset =

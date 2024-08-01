@@ -1,11 +1,12 @@
 import { AddressZero } from '@ethersproject/constants';
-import { Address, useNetwork } from 'wagmi';
+import { Address } from 'viem';
+import { useConfig } from 'wagmi';
 
 import { useUserTestnetNativeAsset } from '~/core/resources/assets/userTestnetNativeAsset';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { ParsedUserAsset } from '~/core/types/assets';
-import { ChainId } from '~/core/types/chains';
-import { chainNameFromChainId, isCustomChain } from '~/core/utils/chains';
+import { ChainId, chainIdToNameMapping } from '~/core/types/chains';
+import { isCustomChain } from '~/core/utils/chains';
 
 import { useCustomNetworkAsset } from './useCustomNetworkAsset';
 import {
@@ -21,7 +22,7 @@ const useMockNativeAsset = ({
   chainId: ChainId;
 }): ParsedUserAsset | undefined | null => {
   const nativeAssets = useNativeAssets();
-  const { chains } = useNetwork();
+  const { chains } = useConfig();
   const chain = chains.find((c) => c.id === chainId);
   if (!nativeAssets || !chain) return null;
   const nativeAssetMetadataChainId = getNetworkNativeAssetChainId({ chainId });
@@ -29,7 +30,7 @@ const useMockNativeAsset = ({
   return {
     ...nativeAsset,
     chainId: chain.id,
-    chainName: chainNameFromChainId(chain.id),
+    chainName: chainIdToNameMapping[chain.id],
     native: {
       balance: { amount: '0', display: `0 ${nativeAsset?.symbol}` },
     },
@@ -46,7 +47,7 @@ export const useNativeAsset = ({
 }): { nativeAsset?: ParsedUserAsset | null } => {
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency } = useCurrentCurrencyStore();
-  const { chains } = useNetwork();
+  const { chains } = useConfig();
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
     chainId: chainId || ChainId.mainnet,
   });

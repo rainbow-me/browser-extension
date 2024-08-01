@@ -37,7 +37,7 @@ function Overview({
   message: string | undefined;
   typedData: boolean;
   simulation: TransactionSimulation | undefined;
-  status: 'loading' | 'error' | 'success';
+  status: 'pending' | 'error' | 'success';
   error: SimulationError | null;
 }) {
   return (
@@ -176,7 +176,7 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
             message={message}
             typedData={!!typedData}
             simulation={simulation}
-            status={status === 'error' && isRefetching ? 'loading' : status}
+            status={status === 'error' && isRefetching ? 'pending' : status}
             error={error}
           />
           <CopyButton
