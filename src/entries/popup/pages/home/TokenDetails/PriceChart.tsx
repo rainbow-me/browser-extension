@@ -47,14 +47,20 @@ const PriceChange = memo(function PriceChange({
   const { color, symbol } = parsePriceChange(+changePercentage.toFixed(2));
   return (
     <Box display="flex" flexDirection="column" gap="10px" alignItems="flex-end">
-      <Text size="16pt" weight="heavy" color={color}>
-        <Inline alignVertical="center" space="4px">
-          {symbol && (
-            <Symbol color={color} size={12} symbol={symbol} weight="heavy" />
-          )}{' '}
+      <Inline alignVertical="center" space="4px">
+        {symbol && (
+          <Symbol color={color} size={12} symbol={symbol} weight="heavy" />
+        )}
+        <Text
+          size="16pt"
+          weight="heavy"
+          color={color}
+          cursor="text"
+          userSelect="text"
+        >
           {Math.abs(changePercentage).toFixed(2)} %
-        </Inline>
-      </Text>
+        </Text>
+      </Inline>
       <Text size="14pt" weight="heavy" color={color}>
         {formatDate(date)}
       </Text>
@@ -84,7 +90,7 @@ const TokenPrice = memo(function TokenPrice({
         justifyContent="center"
         gap="10px"
       >
-        <Text size="16pt" weight="heavy" cursor="text" userSelect="all">
+        <Text size="16pt" weight="heavy" cursor="text" userSelect="text">
           {!isLoading && !hasPriceData && !fallbackPrice
             ? i18n.t('token_details.not_available')
             : formatCurrency(

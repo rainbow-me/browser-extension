@@ -9,6 +9,8 @@ import { formatUnits } from '@ethersproject/units';
 import { isString } from 'lodash';
 import { Address } from 'viem';
 
+import RainbowIcon from 'static/images/icon-16@2x.png';
+
 import { i18n } from '../languages';
 import { createHttpClient } from '../network/internal/createHttpClient';
 import {
@@ -296,10 +298,26 @@ export function parseTransaction({
     value: valueInNative,
   };
 
-  const contract = meta.contract_name && {
-    name: meta.contract_name,
-    iconUrl: meta.contract_icon_url,
-  };
+  let contract;
+  if (meta.contract_name) {
+    if (meta.external_subtype === 'rewards_claim') {
+      contract = {
+        name: 'Rainbow',
+        iconUrl: RainbowIcon,
+      };
+    } else {
+      contract = {
+        name: meta.contract_name,
+        iconUrl: meta.contract_icon_url,
+      };
+    }
+  }
+
+  const explorer = meta.explorer_label &&
+    meta.explorer_url && {
+      name: meta.explorer_label,
+      url: meta.explorer_url,
+    };
 
   return {
     from: tx.address_from,
@@ -322,6 +340,7 @@ export function parseTransaction({
     confirmations: tx.block_confirmations,
     contract,
     native,
+    explorer,
     ...fee,
   } as RainbowTransaction;
 }
@@ -642,7 +661,8 @@ export const getAdditionalDetails = (transaction: RainbowTransaction) => {
     !exchangeRate &&
     !collection &&
     !standard &&
-    !approval
+    !approval &&
+    contract?.name !== 'Rainbow'
   )
     return;
 

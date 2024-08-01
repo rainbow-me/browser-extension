@@ -72,7 +72,7 @@ jobs:
   # FIREFOX TESTS
   firefox-e2e-parallel:
     runs-on: ubuntu-latest
-    timeout-minutes: 16
+    timeout-minutes: 18
     needs: [build]
     env:
       DISPLAY: :0
@@ -193,7 +193,7 @@ jobs:
   # CHROME TESTS
   chrome-e2e-parallel:
     runs-on: ubuntu-latest
-    timeout-minutes: 16
+    timeout-minutes: 18
     needs: [build]
     env:
       DISPLAY: :0
@@ -251,7 +251,7 @@ jobs:
         run: exit 1
   chrome-e2e-send:
     runs-on: send-runner-bx
-    timeout-minutes: 25
+    timeout-minutes: 16
     needs: [build]
     env:
       DISPLAY: :0
