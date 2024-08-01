@@ -4,7 +4,6 @@ import create from 'zustand';
 import { ChainId } from '~/core/types/chains';
 
 import { createStore } from '../internal/createStore';
-import { withSelectors } from '../internal/withSelectors';
 
 const TIME_TO_WATCH = 600000;
 
@@ -68,12 +67,6 @@ export const staleBalancesStore = createStore<StaleBalancesState>(
         ...staleBalancesForUser,
         [chainId]: newStaleBalancesForChain,
       };
-      console.log(
-        'ADDING STALE BALANCES INTERNAL: ',
-        staleBalances,
-        newStaleBalancesForUser,
-      );
-      console.log('setting 3', staleBalances, newStaleBalancesForUser);
       set({
         staleBalances: {
           ...staleBalances,
@@ -131,7 +124,7 @@ export const staleBalancesStore = createStore<StaleBalancesState>(
       const staleBalancesForUser = staleBalances[address] || {};
       const staleBalancesForChain = staleBalancesForUser[chainId] || {};
       const staleBalanceToUpdate = staleBalancesForChain[assetAddress];
-      if (staleBalanceToUpdate) {
+      if (staleBalanceToUpdate && !staleBalanceToUpdate.expirationTime) {
         const newStaleBalance = {
           ...staleBalanceToUpdate,
           expirationTime: Date.now() + TIME_TO_WATCH,
@@ -144,7 +137,6 @@ export const staleBalancesStore = createStore<StaleBalancesState>(
           ...staleBalancesForUser,
           [chainId]: newStaleBalancesForChain,
         };
-        console.log('setting 1');
         set({
           staleBalances: {
             ...staleBalances,
@@ -155,10 +147,9 @@ export const staleBalancesStore = createStore<StaleBalancesState>(
     },
     getStaleBalancesQueryParam: (address: Address) => {
       let queryStringFragment = '';
-      const { staleBalances: beforeSB } = get();
-      console.log('BEFORE SB: ', beforeSB);
-      //   get().clearExpiredData(address);
+      get().clearExpiredData(address);
       const { staleBalances } = get();
+      console.log('stale balances in query param: ', staleBalances);
       const staleBalancesForUser = staleBalances[address];
       for (const c of Object.keys(staleBalancesForUser)) {
         const chainId = parseInt(c);
@@ -181,4 +172,4 @@ export const staleBalancesStore = createStore<StaleBalancesState>(
   },
 );
 
-export const useStaleBalancesStore = withSelectors(create(staleBalancesStore));
+export const useStaleBalancesStore = create(staleBalancesStore);

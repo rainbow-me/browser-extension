@@ -235,7 +235,7 @@ export function useUserAssets<TSelectResult = UserAssetsResult>(
   > = {},
 ) {
   const { testnetMode } = useTestnetModeStore();
-  const staleBalances = useStaleBalancesStore.use.staleBalances();
+  const { staleBalances } = useStaleBalancesStore();
   console.log('stale balances in user assets: ', staleBalances);
   return useQuery({
     queryKey: userAssetsQueryKey({ address, currency, testnetMode }),

@@ -281,7 +281,7 @@ export function Send() {
     flashbotsEnabled &&
     asset?.chainId === ChainId.mainnet;
 
-  const addStaleBalance = useStaleBalancesStore.use.addStaleBalance();
+  const { addStaleBalance } = useStaleBalancesStore();
 
   const buildNftAssetObject = useCallback((nft: UniqueAsset) => {
     return {
