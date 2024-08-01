@@ -1,8 +1,10 @@
+import clsx from 'clsx';
 import React, { CSSProperties } from 'react';
 
 import { TextStyles, textStyles } from '../../styles/core.css';
 import { Box } from '../Box/Box';
 import { Inset } from '../Inset/Inset';
+import { selectionStyle } from '../Text/Text.css';
 
 interface TextOverflowProps {
   align?: TextStyles['textAlign'];
@@ -37,12 +39,10 @@ export function TextOverflow({
         marginVertical="-8px"
         className={textStyles({
           color,
-          cursor,
           fontFamily: 'rounded',
           fontSize: size,
           fontWeight: weight,
           textAlign: align,
-          userSelect,
           textOverflow: 'ellipsis',
           overflow: 'hidden',
           whiteSpace: 'nowrap',
@@ -53,11 +53,16 @@ export function TextOverflow({
         <Inset vertical="8px">
           <Box
             as={as}
-            style={{
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            }}
+            className={clsx([
+              textStyles({
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                userSelect,
+                cursor,
+              }),
+              selectionStyle,
+            ])}
           >
             {children}
           </Box>

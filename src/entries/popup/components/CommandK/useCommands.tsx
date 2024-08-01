@@ -225,6 +225,17 @@ export const getStaticCommandInfo = (): CommandInfo => {
       to: ROUTES.CONNECTED,
       type: SearchItemType.Shortcut,
     },
+    approvals: {
+      actionLabel: actionLabels.open,
+      hideForWatchedWallets: true,
+      name: getCommandName('approvals'),
+      page: PAGES.HOME,
+      searchTags: getSearchTags('approvals'),
+      symbol: 'checkmark.seal.fill',
+      symbolSize: 14.5,
+      to: ROUTES.SETTINGS__APPROVALS,
+      type: SearchItemType.Shortcut,
+    },
     settings: {
       actionLabel: actionLabels.open,
       name: getCommandName('settings'),
