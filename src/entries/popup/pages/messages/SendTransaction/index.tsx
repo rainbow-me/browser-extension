@@ -71,7 +71,7 @@ export function SendTransaction({
     flashbotsEnabled &&
     activeSession?.chainId === ChainId.mainnet;
 
-  const addStaleBalance = useStaleBalancesStore.use.addStaleBalance();
+  const { addStaleBalance } = useStaleBalancesStore();
 
   const onAcceptRequest = useCallback(async () => {
     if (!config.tx_requests_enabled) return;

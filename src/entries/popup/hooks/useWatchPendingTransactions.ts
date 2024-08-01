@@ -46,11 +46,15 @@ export const useWatchPendingTransactions = ({
   const addCustomNetworkTransactions =
     useCustomNetworkTransactionsStore.use.addCustomNetworkTransactions();
   const { userChains } = useUserChainsStore();
-  const addStaleBalanceExpiration =
-    useStaleBalancesStore.use.createStaleBalanceExpiration();
   const { testnetMode } = useTestnetModeStore.getState();
-  const staleBalances = useStaleBalancesStore.use.staleBalances();
-  const staleBalancesForUser = staleBalances[address] || {};
+  const {
+    staleBalances,
+    createStaleBalanceExpiration: addStaleBalanceExpiration,
+  } = useStaleBalancesStore();
+  const staleBalancesForUser = useMemo(
+    () => staleBalances[address] || {},
+    [staleBalances, address],
+  );
 
   const pendingTransactions = useMemo(
     () => storePendingTransactions[address] || [],
@@ -268,7 +272,10 @@ export const useWatchPendingTransactions = ({
         const staleAssetsToUpdateWithExpirationForChain = Object.values(
           staleBalancesForChain,
         ).filter((a) => {
-          return a.transactionHash === minedTransaction.hash;
+          return (
+            a.transactionHash === minedTransaction.hash &&
+            typeof a.expirationTime !== 'number'
+          );
         });
         staleAssetsToUpdateWithExpiration = {
           ...staleAssetsToUpdateWithExpiration,
@@ -303,11 +310,6 @@ export const useWatchPendingTransactions = ({
           staleAssetsToUpdateWithExpiration[parseInt(chain)],
         )) {
           addStaleBalanceExpiration({
-            address,
-            chainId: parseInt(chain),
-            assetAddress: staleBalance.address,
-          });
-          console.log('ADDING STALE BALANCE EXP: ', {
             address,
             chainId: parseInt(chain),
             assetAddress: staleBalance.address,
