@@ -12,6 +12,7 @@ import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useFlashbotsEnabledStore, useGasStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import { useStaleBalancesStore } from '~/core/state/staleBalances';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
@@ -70,6 +71,8 @@ export function SendTransaction({
     flashbotsEnabled &&
     activeSession?.chainId === ChainId.mainnet;
 
+  const addStaleBalance = useStaleBalancesStore.use.addStaleBalance();
+
   const onAcceptRequest = useCallback(async () => {
     if (!config.tx_requests_enabled) return;
     if (!selectedWallet || !activeSession) return;
@@ -112,10 +115,21 @@ export function SendTransaction({
         } satisfies NewTransaction;
 
         addNewTransaction({
-          address: txData.from as Address,
-          chainId: txData.chainId as ChainId,
+          address: txData.from,
+          chainId: txData.chainId,
           transaction,
         });
+        if (result?.hash && asset) {
+          addStaleBalance({
+            address: txData.from,
+            chainId: asset.chainId,
+            info: {
+              address: asset.address as Address,
+              transactionHash: result.hash,
+              nonce: result.nonce,
+            },
+          });
+        }
         approveRequest(result.hash);
         setWaitingForDevice(false);
 
@@ -146,6 +160,7 @@ export function SendTransaction({
   }, [
     selectedWallet,
     activeSession,
+    addStaleBalance,
     request?.params,
     connectedToHardhat,
     connectedToHardhatOp,
