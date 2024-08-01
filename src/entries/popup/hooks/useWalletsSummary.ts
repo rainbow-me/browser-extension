@@ -1,12 +1,7 @@
 import { useMemo } from 'react';
 import { Address } from 'viem';
 
-import {
-  AVAX_AVALANCHE_ADDRESS,
-  BNB_MAINNET_ADDRESS,
-  MATIC_MAINNET_ADDRESS,
-  SupportedCurrencyKey,
-} from '~/core/references';
+import { SupportedCurrencyKey } from '~/core/references';
 import {
   AddySummary,
   useAddysSummary,
@@ -70,7 +65,7 @@ const parseAddressSummary = ({
   }).amount;
   const bnbCurrencyBalance = convertAmountAndPriceToNativeDisplay(
     bnbBalance || 0,
-    nativeAssets?.[`${BNB_MAINNET_ADDRESS}_1`]?.price?.value || 0,
+    nativeAssets?.[ChainId.bsc]?.price?.value || 0,
     currentCurrency,
   ).amount;
 
@@ -82,7 +77,7 @@ const parseAddressSummary = ({
   ).amount;
   const maticCurrencyBalance = convertAmountAndPriceToNativeDisplay(
     maticBalance || 0,
-    nativeAssets?.[`${MATIC_MAINNET_ADDRESS}_1`]?.price?.value || 0,
+    nativeAssets?.[ChainId.polygon]?.price?.value || 0,
     currentCurrency,
   ).amount;
 
@@ -91,7 +86,7 @@ const parseAddressSummary = ({
   }).amount;
   const avaxCurrencyBalance = convertAmountAndPriceToNativeDisplay(
     avaxBalance || 0,
-    nativeAssets?.[`${AVAX_AVALANCHE_ADDRESS}_1`]?.price?.value || 0,
+    nativeAssets?.[ChainId.avalanche]?.price?.value || 0,
     currentCurrency,
   ).amount;
 
