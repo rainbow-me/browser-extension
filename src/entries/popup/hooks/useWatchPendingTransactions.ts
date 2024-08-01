@@ -3,6 +3,7 @@ import { Address } from 'viem';
 import { mainnet } from 'viem/chains';
 
 import { queryClient } from '~/core/react-query';
+import { userAssetsQueryKey } from '~/core/resources/assets/common';
 import { userAssetsFetchQuery } from '~/core/resources/assets/userAssets';
 import { consolidatedTransactionsQueryKey } from '~/core/resources/transactions/consolidatedTransactions';
 import { fetchTransaction } from '~/core/resources/transactions/transaction';
@@ -11,6 +12,8 @@ import {
   useNonceStore,
   usePendingTransactionsStore,
 } from '~/core/state';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useStaleBalancesStore } from '~/core/state/staleBalances';
 import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
 import { useUserChainsStore } from '~/core/state/userChains';
 import {
@@ -43,6 +46,11 @@ export const useWatchPendingTransactions = ({
   const addCustomNetworkTransactions =
     useCustomNetworkTransactionsStore.use.addCustomNetworkTransactions();
   const { userChains } = useUserChainsStore();
+  const addStaleBalanceExpiration =
+    useStaleBalancesStore.use.createStaleBalanceExpiration();
+  const { testnetMode } = useTestnetModeStore.getState();
+  const staleBalances = useStaleBalancesStore.use.staleBalances();
+  const staleBalancesForUser = staleBalances[address] || {};
 
   const pendingTransactions = useMemo(
     () => storePendingTransactions[address] || [],
@@ -244,6 +252,77 @@ export const useWatchPendingTransactions = ({
         },
       );
 
+    let staleAssetsToUpdateWithExpiration: Record<
+      number,
+      {
+        address: Address;
+        transactionHash: string;
+        expirationTime?: number;
+      }[]
+    > = [];
+    minedTransactions.forEach((minedTransaction) => {
+      const staleBalancesForChain =
+        staleBalancesForUser[minedTransaction.chainId];
+      console.log('STALE BALANCES FOR CHAIN: ', staleBalancesForChain);
+      if (staleBalancesForChain) {
+        const staleAssetsToUpdateWithExpirationForChain = Object.values(
+          staleBalancesForChain,
+        ).filter((a) => {
+          return a.transactionHash === minedTransaction.hash;
+        });
+        staleAssetsToUpdateWithExpiration = {
+          ...staleAssetsToUpdateWithExpiration,
+          [minedTransaction.chainId]: {
+            ...(staleAssetsToUpdateWithExpiration[minedTransaction.chainId] ||
+              {}),
+            ...staleAssetsToUpdateWithExpirationForChain,
+          },
+        };
+        console.log(
+          'STALE ASSETS TO UPDATE WITH EXP: ',
+          staleAssetsToUpdateWithExpirationForChain,
+        );
+      }
+      if (isCustomChain(minedTransaction.chainId)) {
+        addCustomNetworkTransactions({
+          address,
+          chainId: minedTransaction.chainId,
+          transaction: minedTransaction,
+        });
+      }
+    });
+
+    console.log(
+      'stale assets to update with expiration: ',
+      staleAssetsToUpdateWithExpiration,
+    );
+
+    if (Object.keys(staleAssetsToUpdateWithExpiration).length) {
+      for (const chain of Object.keys(staleAssetsToUpdateWithExpiration)) {
+        for (const staleBalance of Object.values(
+          staleAssetsToUpdateWithExpiration[parseInt(chain)],
+        )) {
+          addStaleBalanceExpiration({
+            address,
+            chainId: parseInt(chain),
+            assetAddress: staleBalance.address,
+          });
+          console.log('ADDING STALE BALANCE EXP: ', {
+            address,
+            chainId: parseInt(chain),
+            assetAddress: staleBalance.address,
+          });
+        }
+      }
+      await queryClient.refetchQueries({
+        queryKey: userAssetsQueryKey({
+          address,
+          currency: currentCurrency,
+          testnetMode,
+        }),
+      });
+    }
+
     if (minedTransactions.length) {
       await queryClient.refetchQueries({
         queryKey: consolidatedTransactionsQueryKey({
@@ -254,28 +333,21 @@ export const useWatchPendingTransactions = ({
       });
     }
 
-    minedTransactions.forEach((minedTransaction) => {
-      if (isCustomChain(minedTransaction.chainId)) {
-        addCustomNetworkTransactions({
-          address,
-          chainId: minedTransaction.chainId,
-          transaction: minedTransaction,
-        });
-      }
-    });
-
     setPendingTransactions({
       address,
       pendingTransactions: newPendingTransactions,
     });
   }, [
     addCustomNetworkTransactions,
+    addStaleBalanceExpiration,
     address,
     currentCurrency,
     pendingTransactions,
     processNonces,
     processPendingTransaction,
     setPendingTransactions,
+    staleBalancesForUser,
+    testnetMode,
     userChains,
   ]);
 

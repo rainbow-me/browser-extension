@@ -9,6 +9,7 @@ import {
   useCurrentCurrencyStore,
 } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { staleBalancesStore } from '~/core/state/staleBalances';
 import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { getSupportedChains, useSupportedChains } from '~/core/utils/chains';
@@ -76,11 +77,45 @@ function watchForPendingTransactionsReportedByRainbowBackend({
   const supportedChainIds = getSupportedChains({
     testnets: false,
   }).map(({ id }) => id);
+  // const { testnetMode } = testnetModeStore.getState();
+  const { createStaleBalanceExpiration, staleBalances } =
+    staleBalancesStore.getState();
+  const staleBalancesForUser = staleBalances[currentAddress];
+  let staleAssetsToUpdateWithExpiration: Record<
+    number,
+    {
+      address: Address;
+      transactionHash: string;
+      expirationTime?: number;
+    }[]
+  > = [];
   for (const supportedChainId of supportedChainIds) {
     const latestTxConfirmedByBackend = latestTransactions.get(supportedChainId);
     if (latestTxConfirmedByBackend) {
       const latestNonceConfirmedByBackend =
         latestTxConfirmedByBackend.nonce || 0;
+      const staleBalancesForChain =
+        staleBalancesForUser[supportedChainId] || {};
+      const staleAssetsToUpdateWithExpirationForChain = Object.values(
+        staleBalancesForChain,
+      ).filter((a) => {
+        return a.nonce <= latestNonceConfirmedByBackend;
+      });
+      staleAssetsToUpdateWithExpiration = {
+        ...staleAssetsToUpdateWithExpiration,
+        [supportedChainId]: {
+          ...(staleAssetsToUpdateWithExpiration[supportedChainId] || {}),
+          ...staleAssetsToUpdateWithExpirationForChain,
+        },
+      };
+      console.log(
+        'STALE ASSETS TO UPDATE WITH EXP: IN LIST FOR PENDING TX',
+        staleAssetsToUpdateWithExpirationForChain,
+        latestTxConfirmedByBackend,
+        staleBalancesForUser,
+        staleBalances,
+        currentAddress,
+      );
       const [latestPendingTx] = pendingTransactions.filter(
         (tx) => tx?.chainId === supportedChainId,
       );
@@ -96,6 +131,33 @@ function watchForPendingTransactionsReportedByRainbowBackend({
       } else {
         currentNonce = latestNonceConfirmedByBackend;
       }
+
+      if (Object.keys(staleAssetsToUpdateWithExpiration).length) {
+        for (const chain of Object.keys(staleAssetsToUpdateWithExpiration)) {
+          for (const staleBalance of Object.values(
+            staleAssetsToUpdateWithExpiration[parseInt(chain)],
+          )) {
+            createStaleBalanceExpiration({
+              address: currentAddress,
+              chainId: parseInt(chain),
+              assetAddress: staleBalance.address,
+            });
+            console.log('ADDING STALE BALANCE EXP: ', {
+              address: currentAddress,
+              chainId: parseInt(chain),
+              assetAddress: staleBalance.address,
+            });
+          }
+        }
+      }
+
+      // await queryClient.refetchQueries({
+      //   queryKey: userAssetsQueryKey({
+      //     address: currentAddress,
+      //     currency,
+      //     testnetMode,
+      //   }),
+      // });
 
       setNonce({
         address: currentAddress,

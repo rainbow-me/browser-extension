@@ -18,6 +18,7 @@ import { Address } from 'viem';
 
 import { metadataPostClient } from '~/core/graphql';
 import { getChainGasUnits } from '~/core/references/chains';
+import { staleBalancesStore } from '~/core/state/staleBalances';
 import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { add } from '~/core/utils/numbers';
@@ -359,6 +360,27 @@ export const swap = async ({
     chainId: parameters.chainId as ChainId,
     transaction,
   });
+
+  if (swap?.hash) {
+    staleBalancesStore.getState().addStaleBalance({
+      address: parameters.quote.from as Address,
+      chainId: parameters.assetToSell.chainId,
+      info: {
+        address: parameters.assetToSell.address as Address,
+        transactionHash: swap?.hash,
+        nonce: swap?.nonce,
+      },
+    });
+    staleBalancesStore.getState().addStaleBalance({
+      address: parameters.quote.from as Address,
+      chainId: parameters.assetToBuy.chainId,
+      info: {
+        address: parameters.assetToBuy.address as Address,
+        transactionHash: swap?.hash,
+        nonce: swap?.nonce,
+      },
+    });
+  }
 
   return {
     nonce: swap.nonce,

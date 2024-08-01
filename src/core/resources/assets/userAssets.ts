@@ -12,6 +12,10 @@ import {
 import { SupportedCurrencyKey } from '~/core/references';
 import { supportedAssetsChainIds } from '~/core/references/chains';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import {
+  staleBalancesStore,
+  useStaleBalancesStore,
+} from '~/core/state/staleBalances';
 import { ParsedAssetsDictByChain, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { AddressAssetsReceivedMessage } from '~/core/types/refraction';
@@ -116,6 +120,9 @@ async function userAssetsQueryFunction({
   const cachedUserAssets = (cache.find({
     queryKey: userAssetsQueryKey({ address, currency, testnetMode }),
   })?.state?.data || {}) as ParsedAssetsDictByChain;
+  const staleBalancesQueryParam = address
+    ? staleBalancesStore.getState().getStaleBalancesQueryParam(address)
+    : '';
   try {
     const supportedChainIds = getSupportedChains({
       testnets: testnetMode,
@@ -123,11 +130,10 @@ async function userAssetsQueryFunction({
       .map(({ id }) => id)
       .filter((id) => supportedAssetsChainIds.includes(id));
 
-    const url = `/${supportedChainIds.join(',')}/${address}/assets`;
+    const url = `/${supportedChainIds.join(
+      ',',
+    )}/${address}/assets/?currency=${currency.toLowerCase()}${staleBalancesQueryParam}`;
     const res = await addysHttp.get<AddressAssetsReceivedMessage>(url, {
-      params: {
-        currency: currency.toLowerCase(),
-      },
       timeout: USER_ASSETS_TIMEOUT_DURATION,
     });
     const chainIdsInResponse = res?.data?.meta?.chain_ids || [];
@@ -229,6 +235,8 @@ export function useUserAssets<TSelectResult = UserAssetsResult>(
   > = {},
 ) {
   const { testnetMode } = useTestnetModeStore();
+  const staleBalances = useStaleBalancesStore.use.staleBalances();
+  console.log('stale balances in user assets: ', staleBalances);
   return useQuery({
     queryKey: userAssetsQueryKey({ address, currency, testnetMode }),
     queryFn: userAssetsQueryFunction,

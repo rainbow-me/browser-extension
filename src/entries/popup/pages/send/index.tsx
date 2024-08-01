@@ -33,6 +33,7 @@ import {
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSelectedNftStore } from '~/core/state/selectedNft';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
+import { useStaleBalancesStore } from '~/core/state/staleBalances';
 import {
   AddressOrEth,
   ParsedAsset,
@@ -280,6 +281,8 @@ export function Send() {
     flashbotsEnabled &&
     asset?.chainId === ChainId.mainnet;
 
+  const addStaleBalance = useStaleBalancesStore.use.addStaleBalance();
+
   const buildNftAssetObject = useCallback((nft: UniqueAsset) => {
     return {
       address: (nft.asset_contract.address || '') as AddressOrEth,
@@ -373,6 +376,15 @@ export function Send() {
               address: fromAddress,
               chainId: activeChainId,
               transaction,
+            });
+            addStaleBalance({
+              address: fromAddress,
+              chainId: asset.chainId,
+              info: {
+                address: asset.address as Address,
+                transactionHash: result.hash,
+                nonce: result.nonce,
+              },
             });
             callback?.();
             navigate(ROUTES.HOME, {
