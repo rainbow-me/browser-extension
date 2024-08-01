@@ -2,7 +2,7 @@ import { Signer } from '@ethersproject/abstract-signer';
 import { CrosschainQuote, fillCrosschainQuote } from '@rainbow-me/swaps';
 import { Address } from 'viem';
 
-import { REFERRER } from '~/core/references';
+import { REFERRER, ReferrerType } from '~/core/references';
 import { getChainGasUnits } from '~/core/references/chains';
 import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
@@ -88,12 +88,14 @@ export const executeCrosschainSwap = async ({
   nonce,
   quote,
   wallet,
+  referrer = REFERRER,
 }: {
   gasLimit: string;
   gasParams: TransactionGasParams | TransactionLegacyGasParams;
   nonce?: number;
   quote: CrosschainQuote;
   wallet: Signer;
+  referrer?: ReferrerType;
 }) => {
   if (!wallet || !quote) return null;
 
@@ -102,7 +104,7 @@ export const executeCrosschainSwap = async ({
     nonce: nonce ? toHex(String(nonce)) : undefined,
     ...gasParams,
   };
-  return fillCrosschainQuote(quote, transactionParams, wallet, REFERRER);
+  return fillCrosschainQuote(quote, transactionParams, wallet, referrer);
 };
 
 export const crosschainSwap = async ({

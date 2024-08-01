@@ -50,7 +50,7 @@ describe('Command+K behaviours', () => {
     await executePerformShortcut({
       driver,
       key: 'ARROW_DOWN',
-      timesToPress: 2,
+      timesToPress: 3,
     });
     await executePerformShortcut({ driver, key: 'ENTER' });
 
@@ -107,7 +107,7 @@ describe('Command+K behaviours', () => {
     await executePerformShortcut({
       driver,
       key: 'ARROW_DOWN',
-      timesToPress: 3,
+      timesToPress: 4,
     });
     await executePerformShortcut({ driver, key: 'ENTER' });
     await executePerformShortcut({ driver, key: 'ENTER' });
