@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { SUPPORTED_CHAINS } from '~/core/references/chains';
+import { SUPPORTED_CHAINS, chainsNativeAsset } from '~/core/references/chains';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
@@ -265,13 +265,10 @@ export const useSwapInputs = ({
 
       if (!supportedChain) return null;
 
-      const isNativeCurrencyEth =
-        supportedChain.nativeCurrency.symbol === 'ETH';
-
-      if (isNativeCurrencyEth && !isNativeAsset(asset.address, chainId)) {
-        // Return ETH for this chain
+      if (!isNativeAsset(asset.address, chainId)) {
+        // Return native asset for this chain
         return {
-          address: 'eth',
+          address: chainsNativeAsset[chainId],
           chainId,
           isNativeAsset: true,
           ...supportedChain.nativeCurrency,
@@ -291,7 +288,7 @@ export const useSwapInputs = ({
       setAssetToSell(asset);
       setHasSetInitialOutput(false);
 
-      if (asset && !isNativeAsset(asset.address, asset.chainId)) {
+      if (asset && !bridge && !isNativeAsset(asset.address, asset.chainId)) {
         const suggestedOutputAsset = determineOutputCurrency(
           asset,
         ) as ParsedSearchAsset;
@@ -315,11 +312,17 @@ export const useSwapInputs = ({
         tokenToBuyInputRef.current?.openDropdown();
       }
     },
-    [setAssetToSell, assetToBuy, determineOutputCurrency, setAssetToBuy],
+    [
+      setAssetToSell,
+      bridge,
+      assetToBuy,
+      determineOutputCurrency,
+      setAssetToBuy,
+    ],
   );
 
   useEffect(() => {
-    if (assetToSell && !assetToBuy && !hasSetInitialOutput) {
+    if (assetToSell && !assetToBuy && !bridge && !hasSetInitialOutput) {
       const suggestedOutputAsset = determineOutputCurrency(
         assetToSell,
       ) as ParsedSearchAsset;
@@ -332,6 +335,7 @@ export const useSwapInputs = ({
       }
     }
   }, [
+    bridge,
     assetToSell,
     assetToBuy,
     determineOutputCurrency,
