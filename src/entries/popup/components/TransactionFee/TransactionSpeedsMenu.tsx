@@ -3,7 +3,6 @@ import { Chain } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { txSpeedEmoji } from '~/core/references/txSpeed';
-import { ChainId } from '~/core/types/chains';
 import {
   GasFeeLegacyParamsBySpeed,
   GasFeeParamsBySpeed,
@@ -38,33 +37,27 @@ export const SwitchSpeedMenuSelector = ({
 }) => {
   return (
     <>
-      {ChainId.mainnet === chainId ? (
-        <DropdownMenuRadioItem value={'custom'} selectedValue={selectedValue}>
-          <Box width="full" testId={`switch-network-item-${chainId}`}>
-            <Inline
-              space="8px"
-              alignVertical="center"
-              alignHorizontal="justify"
-            >
-              <Inline space="8px" alignVertical="center">
-                <Text weight="semibold" size="14pt">
-                  {txSpeedEmoji[GasSpeed.CUSTOM]}
-                </Text>
-                <Text color="label" size="14pt" weight="semibold">
-                  {i18n.t(`transaction_fee.custom`)}
-                </Text>
-              </Inline>
-
-              <Symbol
-                weight="medium"
-                size={12}
-                symbol="arrow.up.forward.circle"
-                color="labelTertiary"
-              />
+      <DropdownMenuRadioItem value={'custom'} selectedValue={selectedValue}>
+        <Box width="full" testId={`switch-network-item-${chainId}`}>
+          <Inline space="8px" alignVertical="center" alignHorizontal="justify">
+            <Inline space="8px" alignVertical="center">
+              <Text weight="semibold" size="14pt">
+                {txSpeedEmoji[GasSpeed.CUSTOM]}
+              </Text>
+              <Text color="label" size="14pt" weight="semibold">
+                {i18n.t(`transaction_fee.custom`)}
+              </Text>
             </Inline>
-          </Box>
-        </DropdownMenuRadioItem>
-      ) : null}
+
+            <Symbol
+              weight="medium"
+              size={12}
+              symbol="arrow.up.forward.circle"
+              color="labelTertiary"
+            />
+          </Inline>
+        </Box>
+      </DropdownMenuRadioItem>
       {speeds.map((speed, i) => {
         return (
           <DropdownMenuRadioItem

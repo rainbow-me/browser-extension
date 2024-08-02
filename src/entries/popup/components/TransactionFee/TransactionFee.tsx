@@ -59,9 +59,11 @@ type FeeProps = {
     transactionSpeedClicked: keyof EventProperties;
   };
   speedMenuMarginRight?: Space;
+  feeType: 'legacy' | 'eip1559';
   setSelectedSpeed: React.Dispatch<React.SetStateAction<GasSpeed>>;
   setCustomMaxBaseFee: (maxBaseFee?: string) => void;
   setCustomMaxPriorityFee: (maxPriorityFee?: string) => void;
+  setCustomGasPrice: (gasPrice?: string) => void;
 };
 
 function Fee({
@@ -76,9 +78,11 @@ function Fee({
   selectedSpeed,
   flashbotsEnabled,
   speedMenuMarginRight,
+  feeType,
   setSelectedSpeed,
   setCustomMaxBaseFee,
   setCustomMaxPriorityFee,
+  setCustomGasPrice,
 }: FeeProps) {
   const { trackShortcut } = useKeyboardAnalytics();
   const [showCustomGasSheet, setShowCustomGasSheet] = useState(false);
@@ -154,8 +158,10 @@ function Fee({
         currentBaseFee={currentBaseFee}
         baseFeeTrend={baseFeeTrend}
         show={showCustomGasSheet}
+        feeType={feeType}
         setCustomMaxBaseFee={setCustomMaxBaseFee}
         setCustomMaxPriorityFee={setCustomMaxPriorityFee}
+        setCustomGasPrice={setCustomGasPrice}
         closeCustomGasSheet={closeCustomGasSheet}
         setSelectedSpeed={setSelectedSpeed}
       />
@@ -206,45 +212,41 @@ function Fee({
               onSpeedChanged={onSpeedChanged}
               chainId={chainId}
               gasFeeParamsBySpeed={gasFeeParamsBySpeed}
-              editable={
-                chainId === ChainId.mainnet || chainId === ChainId.polygon
-              }
+              editable
               accentColor={accentColor}
               plainTriggerBorder={plainTriggerBorder}
               onOpenChange={onSpeedOpenChange}
               dropdownContentMarginRight={speedMenuMarginRight}
               ref={switchTransactionSpeedMenuRef}
             />
-            {chainId === ChainId.mainnet ? (
-              <CursorTooltip
-                align="end"
-                arrowAlignment="right"
-                arrowCentered
-                text={i18n.t('tooltip.gwei_settings')}
-                textWeight="bold"
-                textSize="12pt"
-                textColor="labelSecondary"
-                hint={shortcuts.global.OPEN_CUSTOM_GAS_MENU.display}
+            <CursorTooltip
+              align="end"
+              arrowAlignment="right"
+              arrowCentered
+              text={i18n.t('tooltip.gwei_settings')}
+              textWeight="bold"
+              textSize="12pt"
+              textColor="labelSecondary"
+              hint={shortcuts.global.OPEN_CUSTOM_GAS_MENU.display}
+            >
+              <Lens
+                borderRadius="round"
+                boxShadow="12px accent"
+                borderWidth="2px"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                borderColor="fillSecondary"
+                style={{ height: 28, width: 28 }}
+                onClick={openCustomGasSheet}
               >
-                <Lens
-                  borderRadius="round"
-                  boxShadow="12px accent"
-                  borderWidth="2px"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  borderColor="fillSecondary"
-                  style={{ height: 28, width: 28 }}
-                  onClick={openCustomGasSheet}
-                >
-                  <Symbol
-                    weight="medium"
-                    symbol="slider.horizontal.3"
-                    size={12}
-                  />
-                </Lens>
-              </CursorTooltip>
-            ) : null}
+                <Symbol
+                  weight="medium"
+                  symbol="slider.horizontal.3"
+                  size={12}
+                />
+              </Lens>
+            </CursorTooltip>
           </Inline>
         </Column>
       </Columns>
@@ -285,8 +287,10 @@ export function TransactionFee({
     isLoading,
     setCustomMaxBaseFee,
     setCustomMaxPriorityFee,
+    setCustomGasPrice,
     currentBaseFee,
     baseFeeTrend,
+    feeType,
   } = useTransactionGas({
     chainId,
     address,
@@ -294,6 +298,7 @@ export function TransactionFee({
     transactionRequest,
     flashbotsEnabled: !!flashbotsEnabled,
   });
+
   return (
     <Fee
       analyticsEvents={analyticsEvents}
@@ -306,9 +311,11 @@ export function TransactionFee({
       isLoading={isLoading}
       setCustomMaxBaseFee={setCustomMaxBaseFee}
       setCustomMaxPriorityFee={setCustomMaxPriorityFee}
+      setCustomGasPrice={setCustomGasPrice}
       currentBaseFee={currentBaseFee}
       baseFeeTrend={baseFeeTrend}
       flashbotsEnabled={!!flashbotsEnabled}
+      feeType={feeType}
     />
   );
 }
@@ -348,8 +355,10 @@ export function SwapFee({
     isLoading,
     setCustomMaxBaseFee,
     setCustomMaxPriorityFee,
+    setCustomGasPrice,
     currentBaseFee,
     baseFeeTrend,
+    feeType,
   } = useSwapGas({
     chainId,
     defaultSpeed: defaultSpeed || defaultTxSpeed,
@@ -372,10 +381,12 @@ export function SwapFee({
       isLoading={isLoading}
       setCustomMaxBaseFee={setCustomMaxBaseFee}
       setCustomMaxPriorityFee={setCustomMaxPriorityFee}
+      setCustomGasPrice={setCustomGasPrice}
       currentBaseFee={currentBaseFee}
       baseFeeTrend={baseFeeTrend}
       flashbotsEnabled={!!flashbotsEnabled}
       speedMenuMarginRight={speedMenuMarginRight}
+      feeType={feeType}
     />
   );
 }
@@ -419,8 +430,10 @@ export function ApprovalFee({
     isLoading,
     setCustomMaxBaseFee,
     setCustomMaxPriorityFee,
+    setCustomGasPrice,
     currentBaseFee,
     baseFeeTrend,
+    feeType,
   } = useApprovalGas({
     chainId,
     address,
@@ -443,9 +456,11 @@ export function ApprovalFee({
       isLoading={isLoading}
       setCustomMaxBaseFee={setCustomMaxBaseFee}
       setCustomMaxPriorityFee={setCustomMaxPriorityFee}
+      setCustomGasPrice={setCustomGasPrice}
       currentBaseFee={currentBaseFee}
       baseFeeTrend={baseFeeTrend}
       flashbotsEnabled={!!flashbotsEnabled}
+      feeType={feeType}
     />
   );
 }
