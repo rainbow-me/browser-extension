@@ -295,11 +295,10 @@ export const handleProviderRequest = ({
         };
         const rainbowChain = rainbowChains[chainObject.id];
         const alreadyAddedRpcUrl = rainbowChain.chains.find(
-          (chain: Chain) =>
-            chain.rpcUrls.default.http[0] === rpcUrl &&
-            rainbowChain.activeRpcUrl === rpcUrl,
+          (chain: Chain) => chain.rpcUrls.default.http[0] === rpcUrl,
         );
-        const activeRpc = rainbowChain.activeRpcUrl === rpcUrl;
+        const isActiveRpc = rainbowChain.activeRpcUrl === rpcUrl;
+
         if (!alreadyAddedRpcUrl) {
           addCustomRPC({ chain: chainObject });
           addUserChain({ chainId: chainObject.id });
@@ -311,7 +310,7 @@ export const handleProviderRequest = ({
 
         let rpcStatus;
         if (alreadyAddedRpcUrl) {
-          if (activeRpc) {
+          if (isActiveRpc) {
             rpcStatus = IN_DAPP_NOTIFICATION_STATUS.already_active;
           } else {
             rpcStatus = IN_DAPP_NOTIFICATION_STATUS.already_added;
