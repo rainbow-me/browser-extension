@@ -1,3 +1,5 @@
+import { RequestArguments } from '@rainbow-me/provider';
+
 import {
   CallbackFunction,
   ReplyMessage,
@@ -9,7 +11,10 @@ import { isValidSend } from './isValidSend';
 
 let activeTab: chrome.tabs.Tab;
 
-function getActiveTabs() {
+const shouldNotifyAllTabs = (method: string) =>
+  ['eth_requestAccounts'].includes(method);
+
+function getCurrentActiveTab() {
   if (!chrome.tabs) return Promise.resolve([]);
   return chrome.tabs
     .query({ active: true, lastFocusedWindow: true })
@@ -18,6 +23,11 @@ function getActiveTabs() {
       activeTab = tab;
       return [tab];
     });
+}
+
+function getAllActiveTabs() {
+  if (!chrome.tabs) return Promise.resolve([]);
+  return chrome.tabs.query({});
 }
 
 function sendMessage<TPayload>(
@@ -71,11 +81,18 @@ export const tabMessenger = createMessenger({
         sendResponse({});
         return true;
       };
+
       chrome.runtime.onMessage?.addListener(listener);
 
-      getActiveTabs().then(([tab]) => {
-        sendMessage({ topic: `> ${topic}`, payload, id }, { tabId: tab?.id });
-      });
+      const message = { topic: `> ${topic}`, payload, id };
+
+      if (shouldNotifyAllTabs((payload as RequestArguments)?.method)) {
+        sendMessage(message, { tabId: undefined });
+      } else {
+        getCurrentActiveTab().then(([tab]) =>
+          sendMessage(message, { tabId: tab?.id }),
+        );
+      }
     });
   },
   reply<TPayload, TResponse>(
@@ -91,7 +108,13 @@ export const tabMessenger = createMessenger({
 
       const repliedTopic = message.topic.replace('>', '<');
 
-      const [tab] = await getActiveTabs();
+      let tabs: chrome.tabs.Tab[] = [];
+
+      if (shouldNotifyAllTabs((message.payload as RequestArguments)?.method)) {
+        tabs = await getAllActiveTabs();
+      } else {
+        tabs = await getCurrentActiveTab();
+      }
 
       try {
         const response = await callback(message.payload, {
@@ -99,14 +122,19 @@ export const tabMessenger = createMessenger({
           sender,
           topic: message.topic,
         });
-        sendMessage(
-          {
-            topic: repliedTopic,
-            payload: { response },
-            id: message.id,
-          },
-          { tabId: tab?.id },
-        );
+
+        for (const tab of tabs) {
+          sendMessage(
+            {
+              topic: repliedTopic,
+              payload: { response },
+              id: message.id,
+            },
+            {
+              tabId: tab?.id,
+            },
+          );
+        }
       } catch (error_) {
         // Errors do not serialize properly over `chrome.runtime.sendMessage`, so
         // we are manually serializing it to an object.
@@ -114,16 +142,18 @@ export const tabMessenger = createMessenger({
         for (const key of Object.getOwnPropertyNames(error_)) {
           error[key] = (<Error>error_)[<keyof Error>key];
         }
-        sendMessage(
-          {
-            topic: repliedTopic,
-            payload: { error },
-            id: message.id,
-          },
-          {
-            tabId: tab?.id,
-          },
-        );
+        for (const tab of tabs) {
+          sendMessage(
+            {
+              topic: repliedTopic,
+              payload: { error },
+              id: message.id,
+            },
+            {
+              tabId: tab?.id,
+            },
+          );
+        }
       }
       sendResponse({});
       return true;
