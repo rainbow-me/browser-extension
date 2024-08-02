@@ -162,18 +162,24 @@ export function SettingsNetworksRPCs() {
     },
   ];
 
+  const supportedTestnetChains = useMemo(
+    () =>
+      getSupportedChains({
+        testnets: true,
+      }).filter((chain) => {
+        return chainIdMap[chainId]?.includes(chain.id) && chain.id !== chainId;
+      }),
+    [chainId],
+  );
+
   const testnetChains = useMemo(() => {
     const customTestnetChains =
       rainbowChains[Number(chainId)]?.chains?.filter(
         (chain) => chain.testnet,
       ) || [];
-    const supportedTestnetChains = getSupportedChains({
-      testnets: true,
-    }).filter((chain) => {
-      return chainIdMap[chainId]?.includes(chain.id) && chain.id !== chainId;
-    });
+
     return [...customTestnetChains, ...supportedTestnetChains];
-  }, [chainId, rainbowChains]);
+  }, [chainId, rainbowChains, supportedTestnetChains]);
 
   const handleRemoveRPC = useCallback(
     (chain: Chain) => {
@@ -181,10 +187,10 @@ export function SettingsNetworksRPCs() {
         rpcUrl: chain.rpcUrls.default.http[0],
       });
       removeRainbowChainAssets({ chainId });
-      removeUserChain({ chainId });
       // If there's no default chain & only had one chain, go back
       const allChainsCount = [...mainnetChains, ...testnetChains].length;
       if (!supportedChain && allChainsCount === 1) {
+        removeUserChain({ chainId });
         navigate(-1);
       }
     },
@@ -254,7 +260,8 @@ export function SettingsNetworksRPCs() {
                   <ContextMenu>
                     <ContextMenuTrigger
                       disabled={
-                        mainnetChains[index].name === supportedChain?.name
+                        supportedChain?.rpcUrls.default.http[0] ===
+                        chain.rpcUrls.default.http[0]
                       }
                     >
                       <MenuItem
@@ -517,7 +524,14 @@ export function SettingsNetworksRPCs() {
                     testId={`network-row-${chain.name}`}
                   >
                     <ContextMenu>
-                      <ContextMenuTrigger>
+                      <ContextMenuTrigger
+                        disabled={
+                          supportedTestnetChains.find(
+                            (testNetChain) => testNetChain.id === chain.id,
+                          )?.rpcUrls.default.http[0] ===
+                          chain.rpcUrls.default.http[0]
+                        }
+                      >
                         <MenuItem
                           first={!supportedChain && index === 0}
                           leftComponent={
