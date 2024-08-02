@@ -364,7 +364,7 @@ it('should be able to open press max on token to sell input', async () => {
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
-  expect(ethValueBeforeGas.startsWith('9999.99')).toBe(true);
+  expect(ethValueBeforeGas).toEqual('10000');
   const fiatValueTextAfterMax = await getTextFromTextInput({
     id: 'token-to-sell-info-fiat-value-input',
     driver,

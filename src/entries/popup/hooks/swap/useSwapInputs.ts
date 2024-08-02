@@ -279,14 +279,11 @@ export const useSwapInputs = ({
     [],
   );
 
-  const [hasSetInitialOutput, setHasSetInitialOutput] = useState(false);
-
   const tokenToBuyInputRef = useRef<TokenInputRef>();
 
   const selectAssetToSell = useCallback(
     (asset: ParsedSearchAsset | null) => {
       setAssetToSell(asset);
-      setHasSetInitialOutput(false);
 
       if (asset && !bridge && !isNativeAsset(asset.address, asset.chainId)) {
         const suggestedOutputAsset = determineOutputCurrency(
@@ -297,12 +294,7 @@ export const useSwapInputs = ({
           !isLowerCaseMatch(suggestedOutputAsset.symbol, asset.symbol)
         ) {
           setAssetToBuy(suggestedOutputAsset);
-          setHasSetInitialOutput(true);
-        } else {
-          setAssetToBuy(null);
         }
-      } else {
-        setAssetToBuy(null);
       }
 
       setAssetToSellValue('');
@@ -320,28 +312,6 @@ export const useSwapInputs = ({
       setAssetToBuy,
     ],
   );
-
-  useEffect(() => {
-    if (assetToSell && !assetToBuy && !bridge && !hasSetInitialOutput) {
-      const suggestedOutputAsset = determineOutputCurrency(
-        assetToSell,
-      ) as ParsedSearchAsset;
-      if (
-        suggestedOutputAsset &&
-        !isLowerCaseMatch(suggestedOutputAsset.address, assetToSell.address)
-      ) {
-        setAssetToBuy(suggestedOutputAsset);
-        setHasSetInitialOutput(true);
-      }
-    }
-  }, [
-    bridge,
-    assetToSell,
-    assetToBuy,
-    determineOutputCurrency,
-    hasSetInitialOutput,
-    setAssetToBuy,
-  ]);
 
   return {
     assetToBuyInputRef,
