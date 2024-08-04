@@ -24,6 +24,10 @@ import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow
 import { Lens } from '~/design-system/components/Lens/Lens';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { TextStyles } from '~/design-system/styles/core.css';
+import {
+  toggleDegenMode,
+  useDegenMode,
+} from '~/entries/popup/hooks/swap/useSwapDegenMode';
 import { useTranslationContext } from '~/entries/popup/hooks/useTranslationContext';
 import { simulateClick } from '~/entries/popup/utils/simulateClick';
 
@@ -195,6 +199,35 @@ const getSlippageExplainerProps = (t: I18n['t']) => ({
   },
 });
 
+function DegenModeCard() {
+  const { isDegenModeEnabled } = useDegenMode();
+  return (
+    <Box
+      paddingVertical="16px"
+      paddingLeft="16px"
+      paddingRight="12px"
+      background="fillTertiary"
+      borderWidth="1.5px"
+      borderRadius="16px"
+      borderColor="separatorSecondary"
+      display="flex"
+      flexDirection="row"
+      alignItems="center"
+      justifyContent="space-between"
+    >
+      <Stack space="8px">
+        <Text size="14pt" weight="heavy" color="label">
+          Degen Mode
+        </Text>
+        <Text size="12pt" weight="bold" color="labelSecondary">
+          Skip the review sheet to swap faster
+        </Text>
+      </Stack>
+      <Toggle checked={isDegenModeEnabled} handleChange={toggleDegenMode} />
+    </Box>
+  );
+}
+
 export const SwapSettings = ({
   accentColor,
   chainId = ChainId.mainnet,
@@ -324,6 +357,10 @@ export const SwapSettings = ({
                     </Text>
                   </Inline>
                 </Box>
+                <Stack marginHorizontal="-8px" space="16px" paddingBottom="8px">
+                  <DegenModeCard />
+                  <Separator color="separatorTertiary" />
+                </Stack>
                 <Box paddingBottom="8px">
                   <Stack space="12px">
                     {!bridge ? (
