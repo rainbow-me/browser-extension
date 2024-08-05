@@ -237,7 +237,6 @@ function SwapButton({
 }) {
   const { showExplainerSheet, hideExplainerSheet } = useExplainerSheetParams();
   const { selectedGas } = useGasStore();
-  const t = useTranslationContext();
 
   const {
     buttonLabel: validationButtonLabel,
@@ -271,7 +270,6 @@ function SwapButton({
     showSwapReviewSheet() {
       if (readyForReview) showSwapReviewSheet();
     },
-    t,
     isDegenModeEnabled,
     timeEstimate,
   });

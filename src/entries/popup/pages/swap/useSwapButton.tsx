@@ -1,7 +1,6 @@
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import React, { useState } from 'react';
 
-import { i18n } from '~/core/languages';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { Bleed, Box, Inline, Symbol } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
@@ -15,8 +14,11 @@ import { ChevronRightDouble } from '../../components/ChevronRightDouble';
 import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
 import { ExplainerSheetProps } from '../../components/ExplainerSheet/ExplainerSheet';
 import { Spinner } from '../../components/Spinner/Spinner';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { useTranslationContext } from '../../hooks/useTranslationContext';
+import { ROUTES } from '../../urls';
 
-import { executeSwap } from './executeSwap';
+import { onSwap } from './onSwap';
 import { SwapTimeEstimate } from './swapTimeEstimate';
 
 interface UseSwapButtonArgs {
@@ -30,7 +32,6 @@ interface UseSwapButtonArgs {
   hideExplainerSheet: () => void;
   showExplainerSheet: (params: ExplainerSheetProps) => void;
   showSwapReviewSheet: () => void;
-  t: typeof i18n.t;
   isDegenModeEnabled: boolean;
   timeEstimate: SwapTimeEstimate | null;
 }
@@ -55,11 +56,12 @@ export const useSwapButton = ({
   hideExplainerSheet,
   showExplainerSheet,
   showSwapReviewSheet,
-  t,
   isDegenModeEnabled,
   timeEstimate,
 }: UseSwapButtonArgs): SwapButton => {
   const [status, setStatus] = useState<'idle' | 'degen_swapping'>('idle');
+  const t = useTranslationContext();
+  const navigate = useRainbowNavigate();
 
   if (isLoading) {
     return {
@@ -137,8 +139,15 @@ export const useSwapButton = ({
         buttonIcon: null,
         buttonAction: async () => {
           setStatus('degen_swapping');
-          await executeSwap({ quote, assetToSell, assetToBuy });
+          const swapExecutedSuccessfully = await onSwap({
+            quote,
+            assetToSell,
+            assetToBuy,
+          });
           setStatus('idle');
+          if (swapExecutedSuccessfully) {
+            navigate(ROUTES.HOME, { state: { tab: 'activity' } });
+          }
         },
         status: 'ready',
       };

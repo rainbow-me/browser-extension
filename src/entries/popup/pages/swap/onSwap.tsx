@@ -16,7 +16,7 @@ import { RainbowError, logger } from '~/logger';
 
 import * as wallet from '../../handlers/wallet';
 
-export const executeSwap = async ({
+export const onSwap = async ({
   assetToSell,
   assetToBuy,
   quote,

@@ -52,7 +52,7 @@ import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 import { ROUTES } from '~/entries/popup/urls';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
-import { executeSwap } from '../executeSwap';
+import { onSwap } from '../onSwap';
 
 import { SwapAssetCard } from './SwapAssetCard';
 import { SwapRoutes } from './SwapRoutes';
@@ -271,7 +271,7 @@ const SwapReviewSheetWithQuote = ({
     }
 
     setSendingSwap(true);
-    const swapExecutedSuccessfully = await executeSwap({
+    const swapExecutedSuccessfully = await onSwap({
       assetToSell,
       assetToBuy,
       quote,
