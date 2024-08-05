@@ -225,6 +225,8 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
   >(null);
   const [defaultAssetWasSet, setDefaultAssetWasSet] = useState<boolean>(false);
   const [defaultValueWasSet, setDefaultValueWasSet] = useState<boolean>(false);
+  const [hasRequestedMaxValueAssetToSell, setHasRequestedMaxValueAssetToSell] =
+    useState<boolean>(false);
   const { isFirefox } = useBrowser();
 
   // translate based on the context, bridge or swap
@@ -454,8 +456,12 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
       if (!assetToBuy) tokenToBuyInputRef.current?.openDropdown();
       setAssetToSellInputValue('');
       setAssetToBuyInputValue('');
+      if (asset) {
+        setHasRequestedMaxValueAssetToSell(true);
+      }
     },
     [
+      setHasRequestedMaxValueAssetToSell,
       setAssetToBuyInputValue,
       setAssetToSell,
       setAssetToSellInputValue,
@@ -544,6 +550,14 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
       clearCustomGasModified();
     };
   }, [clearCustomGasModified]);
+
+  useEffect(() => {
+    if (hasRequestedMaxValueAssetToSell) {
+      setAssetToSellMaxValue();
+      setHasRequestedMaxValueAssetToSell(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasRequestedMaxValueAssetToSell]);
 
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
