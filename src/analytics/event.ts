@@ -287,6 +287,10 @@ export type EventProperties = {
      * The estimated USD value of the swap.
      */
     tradeAmountUSD: number;
+    /**
+     * Whether Degen Mode was used for the swap.
+     */
+    degenMode: boolean;
   };
   [event.commandKActionExecuted]: {
     id?: string;
@@ -720,6 +724,10 @@ export type EventProperties = {
      * The estimated USD value of the swap.
      */
     tradeAmountUSD: number;
+    /**
+     * Whether Degen Mode was used for the swap.
+     */
+    degenMode: boolean;
   };
   [event.walletViewed]: undefined;
 };

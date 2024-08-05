@@ -20,10 +20,12 @@ export const onSwap = async ({
   assetToSell,
   assetToBuy,
   quote,
+  degenMode,
 }: {
   assetToSell: ParsedSearchAsset | undefined | null;
   assetToBuy: ParsedSearchAsset | undefined | null;
   quote: Quote | CrosschainQuote | QuoteError;
+  degenMode: boolean;
 }): Promise<boolean> => {
   if (!assetToSell || !assetToBuy || !quote || 'error' in quote) {
     return false;
@@ -87,6 +89,7 @@ export const onSwap = async ({
     flashbots,
     tradeAmountUSD: q.tradeAmountUSD,
     crosschain: assetToSell.chainId !== assetToBuy.chainId,
+    degenMode,
   });
 
   playSound('SendSound');

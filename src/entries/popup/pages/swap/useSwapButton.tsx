@@ -143,6 +143,7 @@ export const useSwapButton = ({
             quote,
             assetToSell,
             assetToBuy,
+            degenMode: true,
           });
           setStatus('idle');
           if (swapExecutedSuccessfully) {

@@ -275,6 +275,7 @@ const SwapReviewSheetWithQuote = ({
       assetToSell,
       assetToBuy,
       quote,
+      degenMode: false,
     });
     setSendingSwap(false);
 
