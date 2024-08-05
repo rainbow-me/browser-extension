@@ -3,8 +3,10 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { I18n } from 'i18n-js';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore, useFlashbotsEnabledStore } from '~/core/state';
+import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { ChainId } from '~/core/types/chains';
 import { divide } from '~/core/utils/numbers';
 import {
@@ -201,30 +203,38 @@ const getSlippageExplainerProps = (t: I18n['t']) => ({
 
 function DegenModeCard() {
   const { isDegenModeEnabled } = useDegenMode();
+
+  const { featureFlags } = useFeatureFlagsStore();
+
+  if (!featureFlags.degen_mode && !config.degen_mode) return null;
+
   return (
-    <Box
-      paddingVertical="16px"
-      paddingLeft="16px"
-      paddingRight="12px"
-      background="fillTertiary"
-      borderWidth="1.5px"
-      borderRadius="16px"
-      borderColor="separatorSecondary"
-      display="flex"
-      flexDirection="row"
-      alignItems="center"
-      justifyContent="space-between"
-    >
-      <Stack space="8px">
-        <Text size="14pt" weight="heavy" color="label">
-          Degen Mode
-        </Text>
-        <Text size="12pt" weight="bold" color="labelSecondary">
-          Skip the review sheet to swap faster
-        </Text>
-      </Stack>
-      <Toggle checked={isDegenModeEnabled} handleChange={toggleDegenMode} />
-    </Box>
+    <Stack marginHorizontal="-8px" space="16px" paddingBottom="8px">
+      <Box
+        paddingVertical="16px"
+        paddingLeft="16px"
+        paddingRight="12px"
+        background="fillTertiary"
+        borderWidth="1.5px"
+        borderRadius="16px"
+        borderColor="separatorSecondary"
+        display="flex"
+        flexDirection="row"
+        alignItems="center"
+        justifyContent="space-between"
+      >
+        <Stack space="8px">
+          <Text size="14pt" weight="heavy" color="label">
+            {i18n.t('swap.settings.degen_mode.title')}
+          </Text>
+          <Text size="12pt" weight="bold" color="labelSecondary">
+            {i18n.t('swap.settings.degen_mode.description')}
+          </Text>
+        </Stack>
+        <Toggle checked={isDegenModeEnabled} handleChange={toggleDegenMode} />
+      </Box>
+      <Separator color="separatorTertiary" />
+    </Stack>
   );
 }
 
@@ -357,10 +367,9 @@ export const SwapSettings = ({
                     </Text>
                   </Inline>
                 </Box>
-                <Stack marginHorizontal="-8px" space="16px" paddingBottom="8px">
-                  <DegenModeCard />
-                  <Separator color="separatorTertiary" />
-                </Stack>
+
+                <DegenModeCard />
+
                 <Box paddingBottom="8px">
                   <Stack space="12px">
                     {!bridge ? (
