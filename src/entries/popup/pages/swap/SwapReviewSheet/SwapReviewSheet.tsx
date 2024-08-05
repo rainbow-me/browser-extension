@@ -9,17 +9,11 @@ import React, {
 } from 'react';
 import { Address } from 'viem';
 
-import { analytics } from '~/analytics';
-import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
-import { QuoteTypeMap } from '~/core/raps/references';
-import { useFlashbotsEnabledStore, useGasStore } from '~/core/state';
-import { usePopupInstanceStore } from '~/core/state/popupInstances';
-import { useSwapAssetsToRefreshStore } from '~/core/state/swapAssetsToRefresh';
+import { useGasStore } from '~/core/state';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
-import { isSameAssetInDiffChains } from '~/core/utils/assets';
 import { processExchangeRateArray } from '~/core/utils/numbers';
 import { isUnwrapEth, isWrapEth } from '~/core/utils/swaps';
 import {
@@ -35,7 +29,6 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
-import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { AccentColorProvider } from '~/design-system/components/Box/ColorContext';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
@@ -57,11 +50,9 @@ import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useTranslationContext } from '~/entries/popup/hooks/useTranslationContext';
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 import { ROUTES } from '~/entries/popup/urls';
-import playSound from '~/entries/popup/utils/playSound';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
-import { RainbowError, logger } from '~/logger';
 
-import * as wallet from '../../../handlers/wallet';
+import { executeSwap } from '../executeSwap';
 
 import { SwapAssetCard } from './SwapAssetCard';
 import { SwapRoutes } from './SwapRoutes';
@@ -206,84 +197,6 @@ type SwapReviewSheetWithQuoteProps = {
   quote: Quote | CrosschainQuote;
   flashbotsEnabled: boolean;
   hideSwapReview: () => void;
-};
-
-export const executeSwap = async ({
-  assetToSell,
-  assetToBuy,
-  quote,
-}: {
-  assetToSell: ParsedSearchAsset | undefined | null;
-  assetToBuy: ParsedSearchAsset | undefined | null;
-  quote: Quote | CrosschainQuote | QuoteError;
-}): Promise<boolean> => {
-  if (!assetToSell || !assetToBuy || !quote || 'error' in quote) {
-    return false;
-  }
-
-  const type =
-    assetToSell.chainId !== assetToBuy.chainId ? 'crosschainSwap' : 'swap';
-  const q = quote as QuoteTypeMap[typeof type];
-
-  const flashbots =
-    assetToSell.chainId === ChainId.mainnet &&
-    useFlashbotsEnabledStore.getState().swapFlashbotsEnabled;
-
-  const { errorMessage, nonce } = await wallet.executeRap<typeof type>({
-    rapActionParameters: {
-      sellAmount: q.sellAmount?.toString(),
-      buyAmount: q.buyAmount?.toString(),
-      chainId: assetToSell.chainId,
-      assetToSell: assetToSell,
-      assetToBuy: assetToBuy,
-      quote: q,
-      flashbots,
-    },
-    type,
-  });
-
-  if (errorMessage) {
-    if (errorMessage !== 'handled') {
-      logger.error(new RainbowError('swap: error executing swap'), {
-        message: errorMessage,
-      });
-      triggerAlert({
-        text: i18n.t('errors.executing_swap'),
-        description: errorMessage.split('[')[0],
-      });
-    }
-
-    return false;
-  }
-
-  usePopupInstanceStore.getState().resetSwapValues();
-  useSwapAssetsToRefreshStore
-    .getState()
-    .setSwapAssetsToRefresh({ nonce, assetToBuy, assetToSell });
-
-  const isBridge = isSameAssetInDiffChains(assetToSell, assetToBuy);
-
-  analytics.track(isBridge ? event.bridgeSubmitted : event.swapSubmitted, {
-    inputAssetSymbol: assetToSell.symbol,
-    inputAssetName: assetToSell.name,
-    inputAssetAddress: assetToSell.address,
-    inputAssetChainId: assetToSell.chainId,
-    inputAssetAmount: q.sellAmount as number,
-    outputAssetSymbol: assetToBuy.symbol,
-    outputAssetName: assetToBuy.name,
-    outputAssetAddress: assetToBuy.address,
-    outputAssetChainId: assetToBuy.chainId,
-    outputAssetAmount: q.buyAmount as number,
-    mainnetAddress:
-      assetToBuy?.chainId === ChainId.mainnet ? 'address' : 'mainnetAddress',
-    flashbots,
-    tradeAmountUSD: q.tradeAmountUSD,
-    crosschain: assetToSell.chainId !== assetToBuy.chainId,
-  });
-
-  playSound('SendSound');
-
-  return true;
 };
 
 const SwapReviewSheetWithQuote = ({

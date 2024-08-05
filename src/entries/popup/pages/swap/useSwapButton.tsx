@@ -16,7 +16,7 @@ import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
 import { ExplainerSheetProps } from '../../components/ExplainerSheet/ExplainerSheet';
 import { Spinner } from '../../components/Spinner/Spinner';
 
-import { executeSwap } from './SwapReviewSheet/SwapReviewSheet';
+import { executeSwap } from './executeSwap';
 import { SwapTimeEstimate } from './swapTimeEstimate';
 
 interface UseSwapButtonArgs {
@@ -108,13 +108,31 @@ export const useSwapButton = ({
     }
 
     if (isDegenModeEnabled) {
+      if (status === 'degen_swapping') {
+        return {
+          buttonColor: 'surfaceSecondary',
+          buttonDisabled: true,
+          buttonLabel: t('swap.actions.degen_swapping'),
+          buttonLabelColor: 'labelQuaternary',
+          buttonIcon: (
+            <Box
+              width="fit"
+              alignItems="center"
+              justifyContent="center"
+              style={{ margin: 'auto' }}
+            >
+              <Spinner size={16} color="labelQuaternary" />
+            </Box>
+          ),
+          buttonAction: () => null,
+          status: 'ready',
+        };
+      }
+
       return {
         buttonColor: 'accent',
-        buttonDisabled: status === 'degen_swapping',
-        buttonLabel:
-          status === 'degen_swapping'
-            ? t('swap.actions.degen_swapping')
-            : t('swap.actions.degen_swap'),
+        buttonDisabled: false,
+        buttonLabel: t('swap.actions.degen_swap'),
         buttonLabelColor: 'label',
         buttonIcon: null,
         buttonAction: async () => {
