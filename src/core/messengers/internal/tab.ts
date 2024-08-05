@@ -1,5 +1,7 @@
 import { RequestArguments } from '@rainbow-me/provider';
 
+import { rpcMethods } from '~/core/types/rpcMethods';
+
 import {
   CallbackFunction,
   ReplyMessage,
@@ -13,18 +15,9 @@ let activeTab: chrome.tabs.Tab;
 
 const shouldNotifyAllTabs = (method: string) =>
   [
-    'eth_chainId',
-    'eth_accounts',
-    'eth_sendTransaction',
-    'eth_signTransaction',
-    'personal_sign',
-    'eth_signTypedData',
-    'eth_signTypedData_v3',
-    'eth_signTypedData_v4',
-    'wallet_watchAsset',
-    'wallet_addEthereumChain',
-    'wallet_switchEthereumChain',
-    'eth_requestAccounts',
+    rpcMethods.eth_requestAccounts,
+    rpcMethods.eth_accounts,
+    rpcMethods.eth_chainId,
   ].includes(method);
 
 function getCurrentActiveTab() {
