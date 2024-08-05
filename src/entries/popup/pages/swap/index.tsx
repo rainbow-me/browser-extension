@@ -218,6 +218,90 @@ const MissingPriceExplanation = ({
   );
 };
 
+function SwapButton({
+  quote,
+  assetToSell,
+  assetToSellValue,
+  assetToBuy,
+  timeEstimate,
+  isLoadingQuote,
+  showSwapReviewSheet,
+}: {
+  quote: Quote | CrosschainQuote | QuoteError | undefined;
+  assetToSell: ParsedSearchAsset | null;
+  assetToSellValue: string;
+  assetToBuy: ParsedSearchAsset | null;
+  timeEstimate: SwapTimeEstimate | null;
+  isLoadingQuote: boolean;
+  showSwapReviewSheet: () => void;
+}) {
+  const { showExplainerSheet, hideExplainerSheet } = useExplainerSheetParams();
+  const { selectedGas } = useGasStore();
+  const t = useTranslationContext();
+
+  const {
+    buttonLabel: validationButtonLabel,
+    enoughAssetsForSwap,
+    readyForReview,
+  } = useSwapValidations({
+    assetToSell,
+    assetToSellValue,
+    selectedGas,
+  });
+
+  const isDegenModeEnabled = useDegenMode((s) => s.isDegenModeEnabled);
+
+  const {
+    buttonLabel,
+    buttonLabelColor,
+    buttonDisabled,
+    buttonIcon,
+    buttonColor,
+    buttonAction,
+    status,
+  } = useSwapButton({
+    quote,
+    isLoading: isLoadingQuote,
+    assetToSell,
+    assetToBuy,
+    enoughAssetsForSwap,
+    validationButtonLabel,
+    showExplainerSheet,
+    hideExplainerSheet,
+    showSwapReviewSheet() {
+      if (readyForReview) showSwapReviewSheet();
+    },
+    t,
+    isDegenModeEnabled,
+    timeEstimate,
+  });
+
+  return (
+    <Button
+      onClick={buttonAction}
+      height="44px"
+      variant="flat"
+      color={buttonColor}
+      width="full"
+      testId="swap-review-button"
+      disabled={buttonDisabled}
+      tabIndex={0}
+    >
+      <Inline space="8px" alignVertical="center">
+        {buttonIcon}
+        <Text
+          testId={`swap-confirmation-button-${status}`}
+          color={buttonLabelColor}
+          size="16pt"
+          weight="bold"
+        >
+          {buttonLabel}
+        </Text>
+      </Inline>
+    </Button>
+  );
+}
+
 export function Swap({ bridge = false }: { bridge?: boolean }) {
   const [showSwapSettings, setShowSwapSettings] = useState(false);
   const [showSwapReview, setShowSwapReview] = useState(false);
@@ -239,8 +323,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
   };
   const t = useTranslationContext(translationContext);
 
-  const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
-    useExplainerSheetParams();
+  const { explainerSheetParams } = useExplainerSheetParams();
   const { selectedGas, clearCustomGasModified } = useGasStore();
   const { trackShortcut } = useKeyboardAnalytics();
   const { currentAddress: address } = useCurrentAddressStore();
@@ -394,49 +477,12 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     assetToBuyNativeValue: assetToBuyNativeDisplay,
   });
 
-  const {
-    buttonLabel: validationButtonLabel,
-    enoughAssetsForSwap,
-    readyForReview,
-  } = useSwapValidations({
-    assetToSell,
-    assetToSellValue,
-    selectedGas,
-  });
-
   const showSwapReviewSheet = useCallback(() => {
-    if (readyForReview) {
-      setShowSwapReview(true);
-      setInReviewSheet(true);
-    }
-  }, [readyForReview]);
-
-  const isDegenModeEnabled = useDegenMode((s) => s.isDegenModeEnabled);
+    setShowSwapReview(true);
+    setInReviewSheet(true);
+  }, []);
 
   const timeEstimate = getSwapTimeEstimate(quote);
-
-  const {
-    buttonLabel,
-    buttonLabelColor,
-    buttonDisabled,
-    buttonIcon,
-    buttonColor,
-    buttonAction,
-    status,
-  } = useSwapButton({
-    quote,
-    isLoading: isLoadingQuote,
-    assetToSell,
-    assetToBuy,
-    enoughAssetsForSwap,
-    validationButtonLabel,
-    showExplainerSheet,
-    hideExplainerSheet,
-    showSwapReviewSheet,
-    t,
-    isDegenModeEnabled,
-    timeEstimate,
-  });
 
   useSwapQuoteHandler({
     assetToBuy,
@@ -793,28 +839,15 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                       />
                     </Row>
                     <Row>
-                      <Button
-                        onClick={buttonAction}
-                        height="44px"
-                        variant="flat"
-                        color={buttonColor}
-                        width="full"
-                        testId="swap-review-button"
-                        disabled={buttonDisabled}
-                        tabIndex={0}
-                      >
-                        <Inline space="8px" alignVertical="center">
-                          {buttonIcon}
-                          <Text
-                            testId={`swap-confirmation-button-${status}`}
-                            color={buttonLabelColor}
-                            size="16pt"
-                            weight="bold"
-                          >
-                            {buttonLabel}
-                          </Text>
-                        </Inline>
-                      </Button>
+                      <SwapButton
+                        showSwapReviewSheet={showSwapReviewSheet}
+                        quote={quote}
+                        isLoadingQuote={isLoadingQuote}
+                        assetToSell={assetToSell}
+                        assetToSellValue={assetToSellValue}
+                        assetToBuy={assetToBuy}
+                        timeEstimate={timeEstimate}
+                      />
                     </Row>
                   </Rows>
                 </Box>
