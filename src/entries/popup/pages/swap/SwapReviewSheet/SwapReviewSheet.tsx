@@ -221,20 +221,6 @@ export const executeSwap = async ({
     return false;
   }
 
-  // const selectedGas = useGasStore.getState().selectedGas
-  // const enoughNativeAssetBalanceForGas = (() => {
-  //   if (assetToSell?.isNativeAsset) {
-  //     return lessOrEqualThan(
-  //       add(toWei(assetToSellValue || '0'), selectedGas?.gasFee?.amount || '0'),
-  //       toWei(userNativeAsset?.balance?.amount || '0'),
-  //     );
-  //   }
-  //   return lessThan(
-  //     selectedGas?.gasFee?.amount || '0',
-  //     toWei(userNativeAsset?.balance?.amount || '0'),
-  //   );
-  // })()
-
   const type =
     assetToSell.chainId !== assetToBuy.chainId ? 'crosschainSwap' : 'swap';
   const q = quote as QuoteTypeMap[typeof type];
@@ -314,11 +300,7 @@ const SwapReviewSheetWithQuote = ({
   const [showMoreDetails, setShowDetails] = useState(false);
   const [sendingSwap, setSendingSwap] = useState(false);
   const selectedGas = useGasStore.use.selectedGas();
-  // const setSwapAssetsToRefresh =
-  //   useSwapAssetsToRefreshStore.use.setSwapAssetsToRefresh();
   const confirmSwapButtonRef = useRef<HTMLButtonElement>(null);
-  // const resetSwapValues = usePopupInstanceStore.use.resetSwapValues();
-  // const { connectedToHardhat } = useConnectedToHardhatStore();
 
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
     chainId: assetToSell?.chainId || ChainId.mainnet,
@@ -376,17 +358,16 @@ const SwapReviewSheetWithQuote = ({
     }
 
     setSendingSwap(true);
-
     const swapExecutedSuccessfully = await executeSwap({
       assetToSell,
       assetToBuy,
       quote,
     });
+    setSendingSwap(false);
+
     if (swapExecutedSuccessfully) {
       navigate(ROUTES.HOME, { state: { tab: 'activity' } });
     }
-
-    setSendingSwap(false);
   }, [
     assetToBuy,
     assetToSell,

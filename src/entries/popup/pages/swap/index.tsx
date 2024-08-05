@@ -74,7 +74,8 @@ import { SwapSettings } from './SwapSettings/SwapSettings';
 import { TokenInputRef } from './SwapTokenInput/TokenInput';
 import { TokenToBuyInput } from './SwapTokenInput/TokenToBuyInput';
 import { TokenToSellInput } from './SwapTokenInput/TokenToSellInput';
-import { SwapTimeEstimate, getSwapActions } from './getSwapActions';
+import { SwapTimeEstimate, getSwapTimeEstimate } from './swapTimeEstimate';
+import { useSwapButton } from './useSwapButton';
 
 const SwapWarning = ({
   timeEstimate,
@@ -410,7 +411,9 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     }
   }, [readyForReview]);
 
-  const { isDegenModeEnabled } = useDegenMode();
+  const isDegenModeEnabled = useDegenMode((s) => s.isDegenModeEnabled);
+
+  const timeEstimate = getSwapTimeEstimate(quote);
 
   const {
     buttonLabel,
@@ -418,10 +421,9 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     buttonDisabled,
     buttonIcon,
     buttonColor,
-    timeEstimate,
     buttonAction,
     status,
-  } = getSwapActions({
+  } = useSwapButton({
     quote,
     isLoading: isLoadingQuote,
     assetToSell,
@@ -433,6 +435,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     showSwapReviewSheet,
     t,
     isDegenModeEnabled,
+    timeEstimate,
   });
 
   useSwapQuoteHandler({

@@ -1,12 +1,8 @@
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
-import React from 'react';
+import React, { useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { ParsedSearchAsset } from '~/core/types/assets';
-import {
-  getCrossChainTimeEstimate,
-  getQuoteServiceTime,
-} from '~/core/utils/swaps';
 import { Bleed, Box, Inline, Symbol } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
 import {
@@ -21,14 +17,9 @@ import { ExplainerSheetProps } from '../../components/ExplainerSheet/ExplainerSh
 import { Spinner } from '../../components/Spinner/Spinner';
 
 import { executeSwap } from './SwapReviewSheet/SwapReviewSheet';
+import { SwapTimeEstimate } from './swapTimeEstimate';
 
-export interface SwapTimeEstimate {
-  isLongWait: boolean;
-  timeEstimate?: number;
-  timeEstimateDisplay: string;
-}
-
-interface GetSwapActionsProps {
+interface UseSwapButtonArgs {
   quote?: Quote | CrosschainQuote | QuoteError;
   isLoading: boolean;
   assetToSell?: ParsedSearchAsset | null;
@@ -41,20 +32,20 @@ interface GetSwapActionsProps {
   showSwapReviewSheet: () => void;
   t: typeof i18n.t;
   isDegenModeEnabled: boolean;
+  timeEstimate: SwapTimeEstimate | null;
 }
 
-interface SwapActions {
+interface SwapButton {
   buttonColor: BackgroundColor | ButtonColor | TextColor;
   buttonLabelColor: TextStyles['color'];
   buttonDisabled: boolean;
   buttonLabel: string;
   buttonIcon: React.ReactElement | null;
   status: 'loading' | 'ready' | 'error';
-  timeEstimate?: SwapTimeEstimate | null;
   buttonAction: () => void;
 }
 
-export const getSwapActions = ({
+export const useSwapButton = ({
   quote,
   isLoading,
   assetToSell,
@@ -66,7 +57,10 @@ export const getSwapActions = ({
   showSwapReviewSheet,
   t,
   isDegenModeEnabled,
-}: GetSwapActionsProps): SwapActions => {
+  timeEstimate,
+}: UseSwapButtonArgs): SwapButton => {
+  const [status, setStatus] = useState<'idle' | 'degen_swapping'>('idle');
+
   if (isLoading) {
     return {
       buttonColor: 'surfaceSecondary',
@@ -101,15 +95,6 @@ export const getSwapActions = ({
   }
 
   if (!(quote as QuoteError).error) {
-    const serviceTime = getQuoteServiceTime({
-      quote: quote as CrosschainQuote,
-    });
-    const timeEstimate = serviceTime
-      ? getCrossChainTimeEstimate({
-          serviceTime,
-        })
-      : null;
-
     if (!enoughAssetsForSwap) {
       return {
         buttonColor: 'fillSecondary',
@@ -118,7 +103,6 @@ export const getSwapActions = ({
         buttonLabelColor: 'label',
         buttonIcon: null,
         buttonAction: () => null,
-        timeEstimate,
         status: 'ready',
       };
     }
@@ -126,18 +110,18 @@ export const getSwapActions = ({
     if (isDegenModeEnabled) {
       return {
         buttonColor: 'accent',
-        buttonDisabled: false,
-        buttonLabel: t('swap.actions.degen_swap'),
+        buttonDisabled: status === 'degen_swapping',
+        buttonLabel:
+          status === 'degen_swapping'
+            ? t('swap.actions.degen_swapping')
+            : t('swap.actions.degen_swap'),
         buttonLabelColor: 'label',
         buttonIcon: null,
-        buttonAction: () => {
-          executeSwap({
-            quote,
-            assetToSell,
-            assetToBuy,
-          });
+        buttonAction: async () => {
+          setStatus('degen_swapping');
+          await executeSwap({ quote, assetToSell, assetToBuy });
+          setStatus('idle');
         },
-        timeEstimate,
         status: 'ready',
       };
     }
@@ -191,7 +175,6 @@ export const getSwapActions = ({
         : () => {
             showSwapReviewSheet();
           },
-      timeEstimate,
       status: 'ready',
     };
   }

@@ -791,7 +791,8 @@
       "no_route": "No route found",
       "no_quote": "No quote available",
       "enter_an_amount": "Enter an amount",
-      "degen_swap": "%{Action}"
+      "degen_swap": "%{Action}",
+      "degen_swapping": "%{Actioning}"
     },
     "review": {
       "title": "Review & %{Action}",
