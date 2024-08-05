@@ -20,6 +20,8 @@ import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
 import { ExplainerSheetProps } from '../../components/ExplainerSheet/ExplainerSheet';
 import { Spinner } from '../../components/Spinner/Spinner';
 
+import { executeSwap } from './SwapReviewSheet/SwapReviewSheet';
+
 export interface SwapTimeEstimate {
   isLongWait: boolean;
   timeEstimate?: number;
@@ -38,6 +40,7 @@ interface GetSwapActionsProps {
   showExplainerSheet: (params: ExplainerSheetProps) => void;
   showSwapReviewSheet: () => void;
   t: typeof i18n.t;
+  isDegenModeEnabled: boolean;
 }
 
 interface SwapActions {
@@ -62,6 +65,7 @@ export const getSwapActions = ({
   showExplainerSheet,
   showSwapReviewSheet,
   t,
+  isDegenModeEnabled,
 }: GetSwapActionsProps): SwapActions => {
   if (isLoading) {
     return {
@@ -106,16 +110,46 @@ export const getSwapActions = ({
         })
       : null;
 
+    if (!enoughAssetsForSwap) {
+      return {
+        buttonColor: 'fillSecondary',
+        buttonDisabled: true,
+        buttonLabel: validationButtonLabel,
+        buttonLabelColor: 'label',
+        buttonIcon: null,
+        buttonAction: () => null,
+        timeEstimate,
+        status: 'ready',
+      };
+    }
+
+    if (isDegenModeEnabled) {
+      return {
+        buttonColor: 'accent',
+        buttonDisabled: false,
+        buttonLabel: t('swap.actions.degen_swap'),
+        buttonLabelColor: 'label',
+        buttonIcon: null,
+        buttonAction: () => {
+          executeSwap({
+            quote,
+            assetToSell,
+            assetToBuy,
+          });
+        },
+        timeEstimate,
+        status: 'ready',
+      };
+    }
+
     return {
-      buttonColor: enoughAssetsForSwap ? 'accent' : 'fillSecondary',
-      buttonDisabled: !enoughAssetsForSwap,
-      buttonLabel: enoughAssetsForSwap
-        ? t('swap.actions.review')
-        : validationButtonLabel,
+      buttonColor: 'accent',
+      buttonDisabled: false,
+      buttonLabel: t('swap.actions.review'),
       buttonLabelColor: 'label',
-      buttonIcon: enoughAssetsForSwap ? (
+      buttonIcon: (
         <Symbol symbol="doc.text.magnifyingglass" weight="bold" size={16} />
-      ) : null,
+      ),
       buttonAction: timeEstimate?.isLongWait
         ? () =>
             showExplainerSheet({

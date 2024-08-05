@@ -53,6 +53,7 @@ import {
   useSwapSlippage,
   useSwapValidations,
 } from '../../hooks/swap';
+import { useDegenMode } from '../../hooks/swap/useSwapDegenMode';
 import { useSwapNativeAmounts } from '../../hooks/swap/useSwapNativeAmounts';
 import {
   SwapPriceImpact,
@@ -358,7 +359,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
 
   const {
     data: quote,
-    isLoading,
+    isLoading: isLoadingQuote,
     isCrosschainSwap,
     isWrapOrUnwrapEth,
   } = useSwapQuote({
@@ -387,7 +388,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     });
 
   const { priceImpact } = useSwapPriceImpact({
-    isLoading,
+    isLoading: isLoadingQuote,
     assetToSellNativeValue: assetToSellNativeDisplay,
     assetToBuyNativeValue: assetToBuyNativeDisplay,
   });
@@ -409,6 +410,8 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     }
   }, [readyForReview]);
 
+  const { isDegenModeEnabled } = useDegenMode();
+
   const {
     buttonLabel,
     buttonLabelColor,
@@ -420,7 +423,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     status,
   } = getSwapActions({
     quote,
-    isLoading,
+    isLoading: isLoadingQuote,
     assetToSell,
     assetToBuy,
     enoughAssetsForSwap,
@@ -429,6 +432,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     hideExplainerSheet,
     showSwapReviewSheet,
     t,
+    isDegenModeEnabled,
   });
 
   useSwapQuoteHandler({

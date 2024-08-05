@@ -13,15 +13,14 @@ import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { QuoteTypeMap } from '~/core/raps/references';
-import { useGasStore } from '~/core/state';
-import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { useFlashbotsEnabledStore, useGasStore } from '~/core/state';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSwapAssetsToRefreshStore } from '~/core/state/swapAssetsToRefresh';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
+import { isSameAssetInDiffChains } from '~/core/utils/assets';
 import { processExchangeRateArray } from '~/core/utils/numbers';
-import { isLowerCaseMatch } from '~/core/utils/strings';
 import { isUnwrapEth, isWrapEth } from '~/core/utils/swaps';
 import {
   Bleed,
@@ -209,6 +208,98 @@ type SwapReviewSheetWithQuoteProps = {
   hideSwapReview: () => void;
 };
 
+export const executeSwap = async ({
+  assetToSell,
+  assetToBuy,
+  quote,
+}: {
+  assetToSell: ParsedSearchAsset | undefined | null;
+  assetToBuy: ParsedSearchAsset | undefined | null;
+  quote: Quote | CrosschainQuote | QuoteError;
+}): Promise<boolean> => {
+  if (!assetToSell || !assetToBuy || !quote || 'error' in quote) {
+    return false;
+  }
+
+  // const selectedGas = useGasStore.getState().selectedGas
+  // const enoughNativeAssetBalanceForGas = (() => {
+  //   if (assetToSell?.isNativeAsset) {
+  //     return lessOrEqualThan(
+  //       add(toWei(assetToSellValue || '0'), selectedGas?.gasFee?.amount || '0'),
+  //       toWei(userNativeAsset?.balance?.amount || '0'),
+  //     );
+  //   }
+  //   return lessThan(
+  //     selectedGas?.gasFee?.amount || '0',
+  //     toWei(userNativeAsset?.balance?.amount || '0'),
+  //   );
+  // })()
+
+  const type =
+    assetToSell.chainId !== assetToBuy.chainId ? 'crosschainSwap' : 'swap';
+  const q = quote as QuoteTypeMap[typeof type];
+
+  const flashbots =
+    assetToSell.chainId === ChainId.mainnet &&
+    useFlashbotsEnabledStore.getState().swapFlashbotsEnabled;
+
+  const { errorMessage, nonce } = await wallet.executeRap<typeof type>({
+    rapActionParameters: {
+      sellAmount: q.sellAmount?.toString(),
+      buyAmount: q.buyAmount?.toString(),
+      chainId: assetToSell.chainId,
+      assetToSell: assetToSell,
+      assetToBuy: assetToBuy,
+      quote: q,
+      flashbots,
+    },
+    type,
+  });
+
+  if (errorMessage) {
+    if (errorMessage !== 'handled') {
+      logger.error(new RainbowError('swap: error executing swap'), {
+        message: errorMessage,
+      });
+      triggerAlert({
+        text: i18n.t('errors.executing_swap'),
+        description: errorMessage.split('[')[0],
+      });
+    }
+
+    return false;
+  }
+
+  usePopupInstanceStore.getState().resetSwapValues();
+  useSwapAssetsToRefreshStore
+    .getState()
+    .setSwapAssetsToRefresh({ nonce, assetToBuy, assetToSell });
+
+  const isBridge = isSameAssetInDiffChains(assetToSell, assetToBuy);
+
+  analytics.track(isBridge ? event.bridgeSubmitted : event.swapSubmitted, {
+    inputAssetSymbol: assetToSell.symbol,
+    inputAssetName: assetToSell.name,
+    inputAssetAddress: assetToSell.address,
+    inputAssetChainId: assetToSell.chainId,
+    inputAssetAmount: q.sellAmount as number,
+    outputAssetSymbol: assetToBuy.symbol,
+    outputAssetName: assetToBuy.name,
+    outputAssetAddress: assetToBuy.address,
+    outputAssetChainId: assetToBuy.chainId,
+    outputAssetAmount: q.buyAmount as number,
+    mainnetAddress:
+      assetToBuy?.chainId === ChainId.mainnet ? 'address' : 'mainnetAddress',
+    flashbots,
+    tradeAmountUSD: q.tradeAmountUSD,
+    crosschain: assetToSell.chainId !== assetToBuy.chainId,
+  });
+
+  playSound('SendSound');
+
+  return true;
+};
+
 const SwapReviewSheetWithQuote = ({
   show,
   assetToSell,
@@ -223,11 +314,11 @@ const SwapReviewSheetWithQuote = ({
   const [showMoreDetails, setShowDetails] = useState(false);
   const [sendingSwap, setSendingSwap] = useState(false);
   const selectedGas = useGasStore.use.selectedGas();
-  const setSwapAssetsToRefresh =
-    useSwapAssetsToRefreshStore.use.setSwapAssetsToRefresh();
+  // const setSwapAssetsToRefresh =
+  //   useSwapAssetsToRefreshStore.use.setSwapAssetsToRefresh();
   const confirmSwapButtonRef = useRef<HTMLButtonElement>(null);
-  const resetSwapValues = usePopupInstanceStore.use.resetSwapValues();
-  const { connectedToHardhat } = useConnectedToHardhatStore();
+  // const resetSwapValues = usePopupInstanceStore.use.resetSwapValues();
+  // const { connectedToHardhat } = useConnectedToHardhatStore();
 
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
     chainId: assetToSell?.chainId || ChainId.mainnet,
@@ -253,21 +344,6 @@ const SwapReviewSheetWithQuote = ({
   const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
 
-  const isBridge = useMemo(() => {
-    const assetToSellAddressToCompare =
-      assetToSell?.[
-        assetToSell?.chainId === ChainId.mainnet ? 'address' : 'mainnetAddress'
-      ];
-    const assetToBuyAddressToCompare =
-      assetToBuy?.[
-        assetToBuy?.chainId === ChainId.mainnet ? 'address' : 'mainnetAddress'
-      ];
-    return isLowerCaseMatch(
-      assetToSellAddressToCompare,
-      assetToBuyAddressToCompare,
-    );
-  }, [assetToBuy, assetToSell]);
-
   // translate based on the context, bridge or swap
   const t = useTranslationContext();
 
@@ -289,91 +365,7 @@ const SwapReviewSheetWithQuote = ({
   const openMoreDetails = useCallback(() => setShowDetails(true), []);
   const closeMoreDetails = useCallback(() => setShowDetails(false), []);
 
-  const executeSwap = useCallback(async () => {
-    if (!assetToSell || !assetToBuy || !quote || sendingSwap) return;
-    const type =
-      assetToSell.chainId !== assetToBuy.chainId ? 'crosschainSwap' : 'swap';
-    const q = quote as QuoteTypeMap[typeof type];
-    const flashbots =
-      assetToSell.chainId === ChainId.mainnet ? flashbotsEnabled : false;
-    setSendingSwap(true);
-    const { errorMessage, nonce } = await wallet.executeRap<typeof type>({
-      rapActionParameters: {
-        sellAmount: q.sellAmount?.toString(),
-        buyAmount: q.buyAmount?.toString(),
-        chainId: connectedToHardhat ? ChainId.hardhat : assetToSell.chainId,
-        assetToSell: assetToSell,
-        assetToBuy: assetToBuy,
-        quote: q,
-        flashbots,
-      },
-      type,
-    });
-    if (errorMessage) {
-      setSendingSwap(false);
-      if (errorMessage !== 'handled') {
-        logger.error(new RainbowError('swap: error executing swap'), {
-          message: errorMessage,
-        });
-        const extractedError = errorMessage.split('[')[0];
-        triggerAlert({
-          text: i18n.t('errors.executing_swap'),
-          description: extractedError,
-        });
-      }
-    } else {
-      setSwapAssetsToRefresh({ nonce, assetToBuy, assetToSell });
-      navigate(ROUTES.HOME, {
-        state: { tab: 'activity' },
-      });
-    }
-    isBridge
-      ? analytics.track(event.bridgeSubmitted, {
-          inputAssetSymbol: assetToSell.symbol,
-          inputAssetName: assetToSell.name,
-          inputAssetAddress: assetToSell.address,
-          inputAssetChainId: assetToSell.chainId,
-          inputAssetAmount: q.sellAmount as number,
-          outputAssetSymbol: assetToBuy.symbol,
-          outputAssetName: assetToBuy.name,
-          outputAssetAddress: assetToBuy.address,
-          outputAssetChainId: assetToBuy.chainId,
-          outputAssetAmount: q.buyAmount as number,
-          mainnetAddress:
-            assetToBuy?.chainId === ChainId.mainnet
-              ? 'address'
-              : 'mainnetAddress',
-          flashbots,
-          tradeAmountUSD: q.tradeAmountUSD,
-        })
-      : analytics.track(event.swapSubmitted, {
-          inputAssetSymbol: assetToSell.symbol,
-          inputAssetName: assetToSell.name,
-          inputAssetAddress: assetToSell.address,
-          inputAssetChainId: assetToSell.chainId,
-          inputAssetAmount: q.sellAmount as number,
-          outputAssetSymbol: assetToBuy.symbol,
-          outputAssetName: assetToBuy.name,
-          outputAssetAddress: assetToBuy.address,
-          outputAssetChainId: assetToBuy.chainId,
-          outputAssetAmount: q.buyAmount as number,
-          crosschain: assetToSell.chainId !== assetToBuy.chainId,
-          flashbots,
-          tradeAmountUSD: q.tradeAmountUSD,
-        });
-  }, [
-    assetToSell,
-    assetToBuy,
-    quote,
-    sendingSwap,
-    flashbotsEnabled,
-    connectedToHardhat,
-    isBridge,
-    setSwapAssetsToRefresh,
-    navigate,
-  ]);
-
-  const handleSwap = useCallback(() => {
+  const handleSwap = useCallback(async () => {
     if (!enoughNativeAssetBalanceForGas) {
       alert(
         i18n.t('send.button_label.insufficient_native_asset_for_gas', {
@@ -382,14 +374,26 @@ const SwapReviewSheetWithQuote = ({
       );
       return;
     }
-    resetSwapValues();
-    executeSwap();
-    playSound('SendSound');
+
+    setSendingSwap(true);
+
+    const swapExecutedSuccessfully = await executeSwap({
+      assetToSell,
+      assetToBuy,
+      quote,
+    });
+    if (swapExecutedSuccessfully) {
+      navigate(ROUTES.HOME, { state: { tab: 'activity' } });
+    }
+
+    setSendingSwap(false);
   }, [
+    assetToBuy,
+    assetToSell,
     enoughNativeAssetBalanceForGas,
-    executeSwap,
     nativeAsset?.symbol,
-    resetSwapValues,
+    navigate,
+    quote,
   ]);
 
   const goBack = useCallback(() => {

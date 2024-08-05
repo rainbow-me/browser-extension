@@ -785,7 +785,8 @@
       "fee_on_transfer_token": "Fee on Transfer Token",
       "no_route": "No route found",
       "no_quote": "No quote available",
-      "enter_an_amount": "Enter an amount"
+      "enter_an_amount": "Enter an amount",
+      "degen_swap": "%{Action}"
     },
     "review": {
       "title": "Review & %{Action}",
