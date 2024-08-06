@@ -780,7 +780,7 @@
       },
       "degen_mode": {
         "title": "Degen Mode",
-        "description": "Skip the review sheet to swap faster"
+        "description": "Skip the review step to swap faster"
       }
     },
     "actions": {
