@@ -144,6 +144,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Internal build configurations #1587 #1582 #1577
 - Bumping `ws` to resolve CI resolution #1583
 
+## [v1.4.130](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.130)
+
+### Fixed
+
+- Resolved issue with bridge route discovery for certain native assets #1570
+- Improved metadata for Approvals to properly list Contract Addresses that have been approved #1573
+- Resolved `@grpc/grpc-js` and `braces` audit #1574
+
+### Internal
+
+- Reducing the number of internal builds with a new commit check #1557
+- ENV cleanup, deprecated unused ENV keys #1552
+
 ## [v1.4.122](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.122)
 
 ### Changed
