@@ -21,6 +21,36 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.5.21](https://github.com/rainbow-me/browser-extension/releases/tag/v1.5.21)
+
+### Added
+
+- Gas Speed defaults and Custom Gas settings are now available for all networks #1631
+
+### Changed
+
+- You can now more easily access Approvals and Bridging with shortcuts in the Cmd+K Magic Menu #1637 #1629
+- Transaction explorer links are now more accurate for each network, including support for RelayScan for bridges #1635
+- You can now highlight and copy text and numeric values for Tokens and Activity transactions #1644
+
+### Fixed
+
+- Rainbow ETH Rewards claims are now properly labeled as Rainbow interactions in Activity Details #1633
+- Resolved an issue with accurate balance discovery during wallet import #1634
+- Resolved issues with RPC management for networks. You can now right-click on a custom RPC added for a particular network to remove it. Default RPCs provided by Rainbow remain persistent. #1647
+- Fixed an issue where dApps that requested the addition of an RPC could override your RPC selection. Your selection now remains persistent. #1647
+- Approval amounts are now rounded for contract approvals in Token Details #1648
+- Duplicate search results for Watched wallets and Contacts are now hidden in the Magic Menu search #1636
+- Total ETH Rewards earnings displaying in the Rewards Leaderboard are now rounded #1641
+- Resolved an issue where saved input for the Custom Token form in Network settings was not cleared after a successful token addition. #1639
+- Your weekly Points drop will now include line items for New Referrals and Referral Activity #1642
+- Resolved shortcut registration for Token Details to make shortcuts active only when menus are visible #1640
+- Amended Custom Network autofill metadata and the explorer for the PulseChain network #1638
+
+### Internal
+
+- Properly attributing Bridges from Rainbow's ETH Rewards claim and bridge flow #1643
+
 ## [v1.4.122](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.122)
 
 ### Changed
