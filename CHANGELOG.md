@@ -84,6 +84,28 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Resolved an issue with the reliability of Rainbow's injected provider #1613
 
+## [v1.5.7](https://github.com/rainbow-me/browser-extension/releases/tag/v1.5.7)
+
+### Internal
+
+- Reverted changes to provider for Coinbase Wallet window clash #1599
+
+## [v1.5.6](https://github.com/rainbow-me/browser-extension/releases/tag/v1.5.6)
+
+### Changed
+
+- You can now search for even more tokens in the Magic Menu with Cmd+K. Just enter a token name or contract address to find it across all supported networks #1584 #1579
+
+### Fixed
+
+- Improved rounding for ETH Rewards earnings #1600
+- Polished Rainbow ETH Rewards interface and styling #1605
+- Fixed an issue that caused a clash with Coinbase Wallet on dApps when both wallets are installed #1599
+
+### Internal
+
+- Amended `rewards_enabled` default after ETH Rewards launch #1601
+
 ## [v1.4.122](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.122)
 
 ### Changed
