@@ -106,6 +106,28 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Amended `rewards_enabled` default after ETH Rewards launch #1601
 
+## [v1.5.3](https://github.com/rainbow-me/browser-extension/releases/tag/v1.5.3)
+
+### Fixed
+
+- Improved rounding for ETH Rewards earnings during Claims #1598
+
+## [v1.5.2](https://github.com/rainbow-me/browser-extension/releases/tag/v1.5.2)
+
+### Added
+
+- Rainbow Points now earn you ETH Rewards. Use Ethereum, earn Rewards. Claim your ETH each week on Tuesday for free on Optimism, Base, and Zora chains. #1576 #1595 #1591 #1592 #1593
+
+### Fixed
+
+- Resolved an issue with shortcuts not be unregistered in Token Details, clashing with keyboard shortcuts to copy text #1580
+
+### Internal
+
+- Analytics coverage for ETH Rewards #1596
+- Added a missing state migration for chains after the refactor #1581
+- Migrated ENS endpoints, adopted static GraphQL generated clients in the codebase #1588
+
 ## [v1.4.122](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.122)
 
 ### Changed
