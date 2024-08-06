@@ -51,6 +51,33 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Properly attributing Bridges from Rainbow's ETH Rewards claim and bridge flow #1643
 
+## [v1.5.14](https://github.com/rainbow-me/browser-extension/releases/tag/v1.5.14)
+
+### Changed
+
+- New networks are available in the Add Network flow, including Ronin, KavaEVM, Hedera, Merlin, zkLink, LightLink, Fusion, Bob, Karak, Core, and B² #1606
+- Testnet coverage has also expanded. Ensure that you have Developer Tools enabled to add testnets #1606
+
+### Fixed
+
+- Improved performance, loading times, and frame drops for the Token and Activity lists for large wallets #1565
+- Improved NFT loading performance and paginated scroll #1540
+- More reliable gas estimates for supported networks #1603
+- Improved jittery Swap quote refreshes while adjusting input values and reviewing a swap #1625
+- Improved gas estimation padding for Swap quotes to reduce "out of gas" errors #1626
+- Reduced unecessary approvals for Wrappedd ETH unwrapping on L2s #1608
+- Resolved an issue with token selection scrolling in the Send flow #1630
+- No longer displaying route preferences for Bridges in Bridge Settings #1624
+- Rounding large numbers for Swap pairs while reviewing a swap #1612
+- Blocking touchpad double-tap zoom behavior when interacting with the extension #1621
+- Preventing errors on Firefox during interaction sounds when audio permissions are rejected #1620
+
+### Internal
+
+- Upgraded `@sentry/browser` with the goal of mitigating unexpected 429 errors, and reduced sampling rate for prod builds to reduce performance unit usage #1617
+- Reduced requests for gas estimation when it's not used in transaction simulations #1618
+- Upgraded Firebase SDK to reduce Sentry errors related to `chrome.storage` clals in Ingonito mode upon initialization #1619
+
 ## [v1.4.122](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.122)
 
 ### Changed
