@@ -78,6 +78,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Reduced requests for gas estimation when it's not used in transaction simulations #1618
 - Upgraded Firebase SDK to reduce Sentry errors related to `chrome.storage` clals in Ingonito mode upon initialization #1619
 
+## [v1.5.8](https://github.com/rainbow-me/browser-extension/releases/tag/v1.5.8)
+
+### Fixed
+
+- Resolved an issue with the reliability of Rainbow's injected provider #1613
+
 ## [v1.4.122](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.122)
 
 ### Changed
