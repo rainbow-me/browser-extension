@@ -1,5 +1,6 @@
 import create from 'zustand';
 
+import { analytics } from '~/analytics';
 import { createStore } from '~/core/state/internal/createStore';
 
 export const degenModeStore = createStore(
@@ -16,4 +17,9 @@ export const degenModeStore = createStore(
 
 export const useDegenMode = create(degenModeStore);
 export const toggleDegenMode = () =>
-  useDegenMode.setState((s) => ({ isDegenModeEnabled: !s.isDegenModeEnabled }));
+  useDegenMode.setState((s) => {
+    analytics.track(analytics.event.toggledDegenMode, {
+      enabled: !s.isDegenModeEnabled,
+    });
+    return { isDegenModeEnabled: !s.isDegenModeEnabled };
+  });
