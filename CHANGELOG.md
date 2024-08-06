@@ -128,6 +128,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Added a missing state migration for chains after the refactor #1581
 - Migrated ENS endpoints, adopted static GraphQL generated clients in the codebase #1588
 
+## [v1.4.131](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.131)
+
+### Changed
+
+- dApps can now leverage the `wallet_revokePermissions` RPC call to disconnect from Rainbow programatically. When disconnecting from a dApp, the wallet will now remember your preference on the next visit.  #1575
+
+### Fixed
+
+- Improved gas estimations for Custom Networks #1578
+
+### Internal
+
+- Now fetching chain information from the backend at build-time to reduce constants that need maintenance #1564
+- Internal build configurations #1587 #1582 #1577
+- Bumping `ws` to resolve CI resolution #1583
+
 ## [v1.4.122](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.122)
 
 ### Changed
