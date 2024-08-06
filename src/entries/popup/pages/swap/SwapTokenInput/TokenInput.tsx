@@ -22,28 +22,51 @@ import { SwapInputActionButton } from '../SwapInputActionButton';
 
 const SwapInputMaskWrapper = ({
   inputDisabled,
+  value,
+  symbol,
+  showAssetTooltip,
   children,
 }: {
   inputDisabled?: boolean;
+  value?: string;
+  symbol?: string;
+  showAssetTooltip: boolean;
   children: ReactElement;
 }) => {
-  return inputDisabled ? (
-    <CursorTooltip
-      text={i18n.t('swap.tokens_input.output_quotes_disabled')}
-      textWeight="semibold"
-      textSize="12pt"
-      textColor="labelSecondary"
-    >
-      {children}
-    </CursorTooltip>
-  ) : (
-    children
-  );
+  if (inputDisabled) {
+    return (
+      <CursorTooltip
+        text={i18n.t('swap.tokens_input.output_quotes_disabled')}
+        textWeight="semibold"
+        textSize="12pt"
+        textColor="labelSecondary"
+      >
+        {children}
+      </CursorTooltip>
+    );
+  }
+
+  if (value && symbol && showAssetTooltip) {
+    return (
+      <CursorTooltip
+        text={`${value} ${symbol}`}
+        textWeight="semibold"
+        textSize="12pt"
+        textColor="labelSecondary"
+      >
+        {children}
+      </CursorTooltip>
+    );
+  }
+
+  return children;
 };
 
 interface TokenInputProps {
   accentCaretColor?: boolean;
   asset: ParsedSearchAsset | null;
+  showAssetTooltipOnBlur?: boolean;
+  assetTooltipValue?: string;
   assetFilter: string;
   dropdownHeight?: number;
   dropdownComponent: ReactElement;
@@ -74,6 +97,8 @@ export const TokenInput = React.forwardRef<
   {
     accentCaretColor,
     asset,
+    showAssetTooltipOnBlur = false,
+    assetTooltipValue,
     assetFilter,
     dropdownHeight,
     dropdownComponent,
@@ -96,7 +121,9 @@ export const TokenInput = React.forwardRef<
   }: TokenInputProps,
   forwardedRef,
 ) {
+  const [showAssetTooltip, setShowAssetTooltip] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
+
   const prevDropdownVisible = usePrevious(dropdownVisible);
 
   useImperativeHandle(forwardedRef, () => ({
@@ -191,7 +218,12 @@ export const TokenInput = React.forwardRef<
           </Box>
         ) : (
           <Box>
-            <SwapInputMaskWrapper inputDisabled={inputDisabled}>
+            <SwapInputMaskWrapper
+              symbol={asset.symbol}
+              value={assetTooltipValue}
+              inputDisabled={inputDisabled}
+              showAssetTooltip={showAssetTooltip}
+            >
               <Box marginVertical="-20px">
                 <SwapInputMask
                   testId={`${testId}-swap-token-input`}
@@ -206,6 +238,12 @@ export const TokenInput = React.forwardRef<
                   paddingHorizontal={0}
                   innerRef={inputRef}
                   disabled={inputDisabled}
+                  onFocus={() =>
+                    showAssetTooltipOnBlur && setShowAssetTooltip(false)
+                  }
+                  onBlur={() =>
+                    showAssetTooltipOnBlur && setShowAssetTooltip(true)
+                  }
                 />
               </Box>
             </SwapInputMaskWrapper>
