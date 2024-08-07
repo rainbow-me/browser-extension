@@ -37,6 +37,7 @@ import { TextStyles } from '~/design-system/styles/core.css';
 import { ChevronDown } from '../../components/ChevronDown/ChevronDown';
 import {
   ExplainerSheet,
+  ExplainerSheetProps,
   useExplainerSheetParams,
 } from '../../components/ExplainerSheet/ExplainerSheet';
 import { SWAP_INPUT_MASK_ID } from '../../components/InputMask/SwapInputMask/SwapInputMask';
@@ -226,6 +227,8 @@ function SwapButton({
   timeEstimate,
   isLoadingQuote,
   showSwapReviewSheet,
+  showExplainerSheet,
+  hideExplainerSheet,
 }: {
   quote: Quote | CrosschainQuote | QuoteError | undefined;
   assetToSell: ParsedSearchAsset | null;
@@ -234,8 +237,9 @@ function SwapButton({
   timeEstimate: SwapTimeEstimate | null;
   isLoadingQuote: boolean;
   showSwapReviewSheet: () => void;
+  showExplainerSheet: (p: ExplainerSheetProps) => void;
+  hideExplainerSheet: () => void;
 }) {
-  const { showExplainerSheet, hideExplainerSheet } = useExplainerSheetParams();
   const { selectedGas } = useGasStore();
 
   const {
@@ -321,7 +325,8 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
   };
   const t = useTranslationContext(translationContext);
 
-  const { explainerSheetParams } = useExplainerSheetParams();
+  const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
+    useExplainerSheetParams();
   const { selectedGas, clearCustomGasModified } = useGasStore();
   const { trackShortcut } = useKeyboardAnalytics();
   const { currentAddress: address } = useCurrentAddressStore();
@@ -845,6 +850,8 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                         assetToSellValue={assetToSellValue}
                         assetToBuy={assetToBuy}
                         timeEstimate={timeEstimate}
+                        showExplainerSheet={showExplainerSheet}
+                        hideExplainerSheet={hideExplainerSheet}
                       />
                     </Row>
                   </Rows>
