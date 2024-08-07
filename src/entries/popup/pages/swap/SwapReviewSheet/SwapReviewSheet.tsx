@@ -13,6 +13,7 @@ import { i18n } from '~/core/languages';
 import { useGasStore } from '~/core/state';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { processExchangeRateArray } from '~/core/utils/numbers';
 import { isUnwrapEth, isWrapEth } from '~/core/utils/swaps';
@@ -45,6 +46,7 @@ import {
   useSwapReviewDetails,
   useSwapValidations,
 } from '~/entries/popup/hooks/swap';
+import { useCurrentWalletTypeAndVendor } from '~/entries/popup/hooks/useCurrentWalletType';
 import { getNetworkNativeAssetUniqueId } from '~/entries/popup/hooks/useNativeAssetForNetwork';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useTranslationContext } from '~/entries/popup/hooks/useTranslationContext';
@@ -214,6 +216,8 @@ const SwapReviewSheetWithQuote = ({
   const [sendingSwap, setSendingSwap] = useState(false);
   const selectedGas = useGasStore.use.selectedGas();
   const confirmSwapButtonRef = useRef<HTMLButtonElement>(null);
+  const { type } = useCurrentWalletTypeAndVendor();
+  const isHardwareWallet = type === KeychainType.HardwareWalletKeychain;
 
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
     chainId: assetToSell?.chainId || ChainId.mainnet,
@@ -336,6 +340,11 @@ const SwapReviewSheetWithQuote = ({
     if (!enoughNativeAssetBalanceForGas) {
       return validationButtonLabel;
     }
+    if (sendingSwap) {
+      if (isHardwareWallet) return t('swap.actions.waiting_signature');
+      return t('swap.actions.swapping');
+    }
+
     return t('swap.review.confirmation', {
       sellSymbol: assetToSell.symbol,
       buySymbol: assetToBuy.symbol,
@@ -346,6 +355,8 @@ const SwapReviewSheetWithQuote = ({
     enoughNativeAssetBalanceForGas,
     validationButtonLabel,
     t,
+    sendingSwap,
+    isHardwareWallet,
   ]);
 
   const buttonColor = useMemo(
@@ -623,7 +634,7 @@ const SwapReviewSheetWithQuote = ({
                     tabIndex={0}
                     ref={confirmSwapButtonRef}
                   >
-                    {sendingSwap ? (
+                    {sendingSwap && (
                       <Box
                         width="fit"
                         alignItems="center"
@@ -632,16 +643,15 @@ const SwapReviewSheetWithQuote = ({
                       >
                         <Spinner size={16} color="label" />
                       </Box>
-                    ) : (
-                      <Text
-                        testId="swap-review-confirmation-text"
-                        color="label"
-                        size="16pt"
-                        weight="bold"
-                      >
-                        {buttonLabel}
-                      </Text>
                     )}
+                    <Text
+                      testId="swap-review-confirmation-text"
+                      color="label"
+                      size="16pt"
+                      weight="bold"
+                    >
+                      {buttonLabel}
+                    </Text>
                   </Button>
                 </Row>
               </Rows>

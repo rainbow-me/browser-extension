@@ -2,6 +2,7 @@ import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import React, { useState } from 'react';
 
 import { ParsedSearchAsset } from '~/core/types/assets';
+import { KeychainType } from '~/core/types/keychainTypes';
 import { Bleed, Box, Inline, Symbol } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
 import {
@@ -14,6 +15,7 @@ import { ChevronRightDouble } from '../../components/ChevronRightDouble';
 import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
 import { ExplainerSheetProps } from '../../components/ExplainerSheet/ExplainerSheet';
 import { Spinner } from '../../components/Spinner/Spinner';
+import { useCurrentWalletTypeAndVendor } from '../../hooks/useCurrentWalletType';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useTranslationContext } from '../../hooks/useTranslationContext';
 import { ROUTES } from '../../urls';
@@ -62,6 +64,8 @@ export const useSwapButton = ({
   const [status, setStatus] = useState<'idle' | 'degen_swapping'>('idle');
   const t = useTranslationContext();
   const navigate = useRainbowNavigate();
+  const { type } = useCurrentWalletTypeAndVendor();
+  const isHardwareWallet = type === KeychainType.HardwareWalletKeychain;
 
   if (isLoading) {
     return {
@@ -114,7 +118,9 @@ export const useSwapButton = ({
         return {
           buttonColor: 'surfaceSecondary',
           buttonDisabled: true,
-          buttonLabel: t('swap.actions.degen_swapping'),
+          buttonLabel: isHardwareWallet
+            ? t('swap.actions.waiting_signature')
+            : t('swap.actions.swapping'),
           buttonLabelColor: 'labelQuaternary',
           buttonIcon: (
             <Box
@@ -134,7 +140,7 @@ export const useSwapButton = ({
       return {
         buttonColor: 'accent',
         buttonDisabled: false,
-        buttonLabel: t('swap.actions.degen_swap'),
+        buttonLabel: t('swap.actions.swap'),
         buttonLabelColor: 'label',
         buttonIcon: null,
         buttonAction: async () => {
