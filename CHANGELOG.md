@@ -21,6 +21,152 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.5.23](https://github.com/rainbow-me/browser-extension/releases/tag/v1.5.23)
+
+### Fixed
+
+- Resolved an issue with failing transactions when switching to an alternate RPC for a default network #1657
+
+## [v1.5.21](https://github.com/rainbow-me/browser-extension/releases/tag/v1.5.21)
+
+### Added
+
+- Gas Speed defaults and Custom Gas settings are now available for all networks #1631
+
+### Internal
+
+- Translations for ETH Rewards, Bridge, Approvals, and Contacts in CmdK, and Points leaderboard and referral changes #1651
+
+### Changed
+
+- You can now more easily access Approvals and Bridging with shortcuts in the Cmd+K Magic Menu #1637 #1629
+- Transaction explorer links are now more accurate for each network, including support for RelayScan for bridges #1635
+- You can now highlight and copy text and numeric values for Tokens and Activity transactions #1644
+
+### Fixed
+
+- Rainbow ETH Rewards claims are now properly labeled as Rainbow interactions in Activity Details #1633
+- Resolved an issue with accurate balance discovery during wallet import #1634
+- Resolved issues with RPC management for networks. You can now right-click on a custom RPC added for a particular network to remove it. Default RPCs provided by Rainbow remain persistent. #1647
+- Fixed an issue where dApps that requested the addition of an RPC could override your RPC selection. Your selection now remains persistent. #1647
+- Approval amounts are now rounded for contract approvals in Token Details #1648
+- Duplicate search results for Watched wallets and Contacts are now hidden in the Magic Menu search #1636
+- Total ETH Rewards earnings displaying in the Rewards Leaderboard are now rounded #1641
+- Resolved an issue where saved input for the Custom Token form in Network settings was not cleared after a successful token addition. #1639
+- Your weekly Points drop will now include line items for New Referrals and Referral Activity #1642
+- Resolved shortcut registration for Token Details to make shortcuts active only when menus are visible #1640
+- Amended Custom Network autofill metadata and the explorer for the PulseChain network #1638
+
+### Internal
+
+- Properly attributing Bridges from Rainbow's ETH Rewards claim and bridge flow #1643
+
+## [v1.5.14](https://github.com/rainbow-me/browser-extension/releases/tag/v1.5.14)
+
+### Changed
+
+- New networks are available in the Add Network flow, including Ronin, KavaEVM, Hedera, Merlin, zkLink, LightLink, Fusion, Bob, Karak, Core, and B² #1606
+- Testnet coverage has also expanded. Ensure that you have Developer Tools enabled to add testnets #1606
+
+### Fixed
+
+- Improved performance, loading times, and frame drops for the Token and Activity lists for large wallets #1565
+- Improved NFT loading performance and paginated scroll #1540
+- More reliable gas estimates for supported networks #1603
+- Improved jittery Swap quote refreshes while adjusting input values and reviewing a swap #1625
+- Improved gas estimation padding for Swap quotes to reduce "out of gas" errors #1626
+- Reduced unecessary approvals for Wrappedd ETH unwrapping on L2s #1608
+- Resolved an issue with token selection scrolling in the Send flow #1630
+- No longer displaying route preferences for Bridges in Bridge Settings #1624
+- Rounding large numbers for Swap pairs while reviewing a swap #1612
+- Blocking touchpad double-tap zoom behavior when interacting with the extension #1621
+- Preventing errors on Firefox during interaction sounds when audio permissions are rejected #1620
+
+### Internal
+
+- Upgraded `@sentry/browser` with the goal of mitigating unexpected 429 errors, and reduced sampling rate for prod builds to reduce performance unit usage #1617
+- Reduced requests for gas estimation when it's not used in transaction simulations #1618
+- Upgraded Firebase SDK to reduce Sentry errors related to `chrome.storage` clals in Ingonito mode upon initialization #1619
+
+## [v1.5.8](https://github.com/rainbow-me/browser-extension/releases/tag/v1.5.8)
+
+### Fixed
+
+- Resolved an issue with the reliability of Rainbow's injected provider #1613
+
+## [v1.5.7](https://github.com/rainbow-me/browser-extension/releases/tag/v1.5.7)
+
+### Internal
+
+- Reverted changes to provider for Coinbase Wallet window clash #1599
+
+## [v1.5.6](https://github.com/rainbow-me/browser-extension/releases/tag/v1.5.6)
+
+### Changed
+
+- You can now search for even more tokens in the Magic Menu with Cmd+K. Just enter a token name or contract address to find it across all supported networks #1584 #1579
+
+### Fixed
+
+- Improved rounding for ETH Rewards earnings #1600
+- Polished Rainbow ETH Rewards interface and styling #1605
+- Fixed an issue that caused a clash with Coinbase Wallet on dApps when both wallets are installed #1599
+
+### Internal
+
+- Amended `rewards_enabled` default after ETH Rewards launch #1601
+
+## [v1.5.3](https://github.com/rainbow-me/browser-extension/releases/tag/v1.5.3)
+
+### Fixed
+
+- Improved rounding for ETH Rewards earnings during Claims #1598
+
+## [v1.5.2](https://github.com/rainbow-me/browser-extension/releases/tag/v1.5.2)
+
+### Added
+
+- Rainbow Points now earn you ETH Rewards. Use Ethereum, earn Rewards. Claim your ETH each week on Tuesday for free on Optimism, Base, and Zora chains. #1576 #1595 #1591 #1592 #1593
+
+### Fixed
+
+- Resolved an issue with shortcuts not be unregistered in Token Details, clashing with keyboard shortcuts to copy text #1580
+
+### Internal
+
+- Analytics coverage for ETH Rewards #1596
+- Added a missing state migration for chains after the refactor #1581
+- Migrated ENS endpoints, adopted static GraphQL generated clients in the codebase #1588
+
+## [v1.4.131](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.131)
+
+### Changed
+
+- dApps can now leverage the `wallet_revokePermissions` RPC call to disconnect from Rainbow programatically. When disconnecting from a dApp, the wallet will now remember your preference on the next visit.  #1575
+
+### Fixed
+
+- Improved gas estimations for Custom Networks #1578
+
+### Internal
+
+- Now fetching chain information from the backend at build-time to reduce constants that need maintenance #1564
+- Internal build configurations #1587 #1582 #1577
+- Bumping `ws` to resolve CI resolution #1583
+
+## [v1.4.130](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.130)
+
+### Fixed
+
+- Resolved issue with bridge route discovery for certain native assets #1570
+- Improved metadata for Approvals to properly list Contract Addresses that have been approved #1573
+- Resolved `@grpc/grpc-js` and `braces` audit #1574
+
+### Internal
+
+- Reducing the number of internal builds with a new commit check #1557
+- ENV cleanup, deprecated unused ENV keys #1552
+
 ## [v1.4.122](https://github.com/rainbow-me/browser-extension/releases/tag/v1.4.122)
 
 ### Changed
