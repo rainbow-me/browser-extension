@@ -21,11 +21,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.5.23](https://github.com/rainbow-me/browser-extension/releases/tag/v1.5.23)
+
+### Fixed
+
+- Resolved an issue with failing transactions when switching to an alternate RPC for a default network #1657
+
 ## [v1.5.21](https://github.com/rainbow-me/browser-extension/releases/tag/v1.5.21)
 
 ### Added
 
 - Gas Speed defaults and Custom Gas settings are now available for all networks #1631
+
+### Internal
+
+- Translations for ETH Rewards, Bridge, Approvals, and Contacts in CmdK, and Points leaderboard and referral changes #1651
 
 ### Changed
 
