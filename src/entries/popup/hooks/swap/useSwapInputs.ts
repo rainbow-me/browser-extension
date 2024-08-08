@@ -62,6 +62,15 @@ export const useSwapInputs = ({
   const [assetToSellValueRounded, setAssetToSellValueRounded] = useState('');
   const [assetToBuyValueRounded, setAssetToBuyValueRounded] = useState('');
 
+  const maxCharacters = useMemo(
+    () =>
+      (assetToSell?.symbol?.length || 0) > 3
+        ? // In case an asset symbol is 4 characters or more (e.g WETH)
+          MAX_INPUT_CHARACTERS - 1
+        : MAX_INPUT_CHARACTERS,
+    [assetToSell],
+  );
+
   const {
     saveSwapAmount,
     saveSwapField,
@@ -88,15 +97,21 @@ export const useSwapInputs = ({
     [assetToBuy, assetToSell, saveSwapField],
   );
 
-  const setAssetToSellValue = useCallback((value: string) => {
-    setAssetToSellValueRounded(truncateNumber(value, MAX_INPUT_CHARACTERS));
-    setAssetToSellValueState(value);
-  }, []);
+  const setAssetToSellValue = useCallback(
+    (value: string) => {
+      setAssetToSellValueRounded(truncateNumber(value, maxCharacters));
+      setAssetToSellValueState(value);
+    },
+    [maxCharacters],
+  );
 
-  const setAssetToBuyValue = useCallback((value: string) => {
-    setAssetToBuyValueRounded(truncateNumber(value, MAX_INPUT_CHARACTERS));
-    setAssetToBuyValueState(value);
-  }, []);
+  const setAssetToBuyValue = useCallback(
+    (value: string) => {
+      setAssetToBuyValueRounded(truncateNumber(value, maxCharacters));
+      setAssetToBuyValueState(value);
+    },
+    [maxCharacters],
+  );
 
   useEffect(() => {
     if (savedSwapField) {
@@ -110,14 +125,19 @@ export const useSwapInputs = ({
       setAssetToSellDropdownClosed(true);
       setIndependentFieldIfOccupied('sellField');
       let inputValue = value;
-      if (isInput && isExceedingMaxCharacters(value, MAX_INPUT_CHARACTERS)) {
-        inputValue = truncateNumber(value, MAX_INPUT_CHARACTERS);
+      if (isInput && isExceedingMaxCharacters(value, maxCharacters)) {
+        inputValue = truncateNumber(value, maxCharacters);
       }
       saveSwapAmount({ amount: inputValue });
       setAssetToSellValue(inputValue);
       setIndependentValue(inputValue);
     },
-    [saveSwapAmount, setAssetToSellValue, setIndependentFieldIfOccupied],
+    [
+      maxCharacters,
+      saveSwapAmount,
+      setAssetToSellValue,
+      setIndependentFieldIfOccupied,
+    ],
   );
 
   const setAssetToSellInputNativeValue = useCallback(
@@ -151,14 +171,19 @@ export const useSwapInputs = ({
       setAssetToBuyDropdownClosed(true);
       setIndependentFieldIfOccupied('buyField');
       let inputValue = value;
-      if (isInput && isExceedingMaxCharacters(value, MAX_INPUT_CHARACTERS)) {
-        inputValue = truncateNumber(value, MAX_INPUT_CHARACTERS);
+      if (isInput && isExceedingMaxCharacters(value, maxCharacters)) {
+        inputValue = truncateNumber(value, maxCharacters);
       }
       setAssetToBuyValue(inputValue);
       setIndependentValue(inputValue);
       saveSwapAmount({ amount: inputValue });
     },
-    [saveSwapAmount, setAssetToBuyValue, setIndependentFieldIfOccupied],
+    [
+      maxCharacters,
+      saveSwapAmount,
+      setAssetToBuyValue,
+      setIndependentFieldIfOccupied,
+    ],
   );
 
   const onAssetToSellInputOpen = useCallback(
@@ -269,8 +294,8 @@ export const useSwapInputs = ({
         ? assetToSellValue && handleSignificantDecimals(assetToSellValue, 5)
         : assetToSellValue;
 
-    return { amount, display: truncateNumber(amount, MAX_INPUT_CHARACTERS) };
-  }, [assetToSellValue, independentField]);
+    return { amount, display: truncateNumber(amount, maxCharacters) };
+  }, [maxCharacters, assetToSellValue, independentField]);
 
   const assetToBuyDisplay = useMemo(
     () =>
