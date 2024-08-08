@@ -9,7 +9,7 @@ import { useAssetSearchMetadataAllNetworks } from '~/core/resources/assets/asset
 import { useTokenSearch } from '~/core/resources/search';
 import { useTokenSearchAllNetworks } from '~/core/resources/search/tokenSearch';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
-import { ParsedSearchAsset } from '~/core/types/assets';
+import { AddressOrEth, ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
   SearchAsset,
@@ -22,6 +22,7 @@ import { getChain, isNativeAsset } from '~/core/utils/chains';
 import { addHexPrefix } from '~/core/utils/hex';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
+import { pinnedSwapAssets } from '../pages/swap/utils';
 import { filterList } from '../utils/search';
 
 import { useFavoriteAssets } from './useFavoriteAssets';
@@ -65,6 +66,38 @@ const filterBridgeAsset = ({
   asset?.address?.toLowerCase()?.startsWith(filter?.toLowerCase()) ||
   asset?.name?.toLowerCase()?.startsWith(filter?.toLowerCase()) ||
   asset?.symbol?.toLowerCase()?.startsWith(filter?.toLowerCase());
+
+const isPinnedToken = ({
+  address,
+  chainId,
+}: {
+  address: AddressOrEth;
+  chainId: ChainId;
+}) => {
+  const pinnedTokens = pinnedSwapAssets[chainId] || [];
+  return pinnedTokens.includes(address.toLowerCase());
+};
+
+const pinVerifiedAssets = ({
+  data,
+  chainId,
+}: {
+  data: SearchAsset[];
+  chainId: ChainId;
+}) =>
+  data.sort((a, b) => {
+    if (
+      isPinnedToken({ address: a.address, chainId }) &&
+      !isPinnedToken({ address: b.address, chainId })
+    )
+      return -1;
+    if (
+      !isPinnedToken({ address: a.address, chainId }) &&
+      isPinnedToken({ address: b.address, chainId })
+    )
+      return 1;
+    return 0;
+  });
 
 export function useSearchCurrencyLists({
   assetToSell,
@@ -118,82 +151,132 @@ export function useSearchCurrencyLists({
   const {
     data: mainnetVerifiedAssets,
     isLoading: mainnetVerifiedAssetsLoading,
-  } = useTokenSearch({
-    chainId: ChainId.mainnet,
-    ...VERIFIED_ASSETS_PAYLOAD,
-    fromChainId,
-  });
+  } = useTokenSearch(
+    {
+      chainId: ChainId.mainnet,
+      ...VERIFIED_ASSETS_PAYLOAD,
+      fromChainId,
+    },
+    {
+      select: (data) => pinVerifiedAssets({ data, chainId: ChainId.mainnet }),
+    },
+  );
 
   const {
     data: optimismVerifiedAssets,
     isLoading: optimismVerifiedAssetsLoading,
-  } = useTokenSearch({
-    chainId: ChainId.optimism,
-    ...VERIFIED_ASSETS_PAYLOAD,
-    fromChainId,
-  });
-
-  const { data: bscVerifiedAssets, isLoading: bscVerifiedAssetsLoading } =
-    useTokenSearch({
-      chainId: ChainId.bsc,
+  } = useTokenSearch(
+    {
+      chainId: ChainId.optimism,
       ...VERIFIED_ASSETS_PAYLOAD,
       fromChainId,
-    });
+    },
+    {
+      select: (data) => pinVerifiedAssets({ data, chainId: ChainId.optimism }),
+    },
+  );
+
+  const { data: bscVerifiedAssets, isLoading: bscVerifiedAssetsLoading } =
+    useTokenSearch(
+      {
+        chainId: ChainId.bsc,
+        ...VERIFIED_ASSETS_PAYLOAD,
+        fromChainId,
+      },
+      {
+        select: (data) => pinVerifiedAssets({ data, chainId: ChainId.bsc }),
+      },
+    );
 
   const {
     data: polygonVerifiedAssets,
     isLoading: polygonVerifiedAssetsLoading,
-  } = useTokenSearch({
-    chainId: ChainId.polygon,
-    ...VERIFIED_ASSETS_PAYLOAD,
-    fromChainId,
-  });
+  } = useTokenSearch(
+    {
+      chainId: ChainId.polygon,
+      ...VERIFIED_ASSETS_PAYLOAD,
+      fromChainId,
+    },
+    {
+      select: (data) => pinVerifiedAssets({ data, chainId: ChainId.polygon }),
+    },
+  );
 
   const {
     data: arbitrumVerifiedAssets,
     isLoading: arbitrumVerifiedAssetsLoading,
-  } = useTokenSearch({
-    chainId: ChainId.arbitrum,
-    ...VERIFIED_ASSETS_PAYLOAD,
-    fromChainId,
-  });
+  } = useTokenSearch(
+    {
+      chainId: ChainId.arbitrum,
+      ...VERIFIED_ASSETS_PAYLOAD,
+      fromChainId,
+    },
+    {
+      select: (data) => pinVerifiedAssets({ data, chainId: ChainId.arbitrum }),
+    },
+  );
 
   const { data: baseVerifiedAssets, isLoading: baseVerifiedAssetsLoading } =
-    useTokenSearch({
-      chainId: ChainId.base,
-      ...VERIFIED_ASSETS_PAYLOAD,
-      fromChainId,
-    });
+    useTokenSearch(
+      {
+        chainId: ChainId.base,
+        ...VERIFIED_ASSETS_PAYLOAD,
+        fromChainId,
+      },
+      {
+        select: (data) => pinVerifiedAssets({ data, chainId: ChainId.base }),
+      },
+    );
 
   const { data: zoraVerifiedAssets, isLoading: zoraVerifiedAssetsLoading } =
-    useTokenSearch({
-      chainId: ChainId.zora,
-      ...VERIFIED_ASSETS_PAYLOAD,
-      fromChainId,
-    });
+    useTokenSearch(
+      {
+        chainId: ChainId.zora,
+        ...VERIFIED_ASSETS_PAYLOAD,
+        fromChainId,
+      },
+      {
+        select: (data) => pinVerifiedAssets({ data, chainId: ChainId.zora }),
+      },
+    );
 
   const {
     data: avalancheVerifiedAssets,
     isLoading: avalancheVerifiedAssetsLoading,
-  } = useTokenSearch({
-    chainId: ChainId.avalanche,
-    ...VERIFIED_ASSETS_PAYLOAD,
-    fromChainId,
-  });
+  } = useTokenSearch(
+    {
+      chainId: ChainId.avalanche,
+      ...VERIFIED_ASSETS_PAYLOAD,
+      fromChainId,
+    },
+    {
+      select: (data) => pinVerifiedAssets({ data, chainId: ChainId.avalanche }),
+    },
+  );
 
   const { data: blastVerifiedAssets, isLoading: blastVerifiedAssetsLoading } =
-    useTokenSearch({
-      chainId: ChainId.blast,
-      ...VERIFIED_ASSETS_PAYLOAD,
-      fromChainId,
-    });
+    useTokenSearch(
+      {
+        chainId: ChainId.blast,
+        ...VERIFIED_ASSETS_PAYLOAD,
+        fromChainId,
+      },
+      {
+        select: (data) => pinVerifiedAssets({ data, chainId: ChainId.blast }),
+      },
+    );
 
   const { data: degenVerifiedAssets, isLoading: degenVerifiedAssetsLoading } =
-    useTokenSearch({
-      chainId: ChainId.degen,
-      ...VERIFIED_ASSETS_PAYLOAD,
-      fromChainId,
-    });
+    useTokenSearch(
+      {
+        chainId: ChainId.degen,
+        ...VERIFIED_ASSETS_PAYLOAD,
+        fromChainId,
+      },
+      {
+        select: (data) => pinVerifiedAssets({ data, chainId: ChainId.degen }),
+      },
+    );
 
   // current search
   const { data: targetVerifiedAssets, isLoading: targetVerifiedAssetsLoading } =
