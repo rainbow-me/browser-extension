@@ -346,6 +346,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Ham',
+    networkInfo: {
+      rpcUrl: 'https://rpc.ham.fun',
+      chainId: 5112,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://explorer.ham.fun',
+      testnet: false,
+    },
+  },
+  {
     name: 'Gnosis',
     networkInfo: {
       rpcUrl: 'https://rpc.gnosischain.com',
