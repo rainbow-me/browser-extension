@@ -29,14 +29,11 @@ import {
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import { RainbowError, logger } from '~/logger';
 
-import { useSwapRefreshAssets } from './swap/useSwapAssetsRefresh';
-
 export const useWatchPendingTransactions = ({
   address,
 }: {
   address: Address;
 }) => {
-  const { swapRefreshAssets } = useSwapRefreshAssets();
   const {
     pendingTransactions: storePendingTransactions,
     setPendingTransactions,
@@ -47,33 +44,19 @@ export const useWatchPendingTransactions = ({
     useCustomNetworkTransactionsStore.use.addCustomNetworkTransactions();
   const { userChains } = useUserChainsStore();
   const { testnetMode } = useTestnetModeStore.getState();
-  const {
-    staleBalances,
-    createStaleBalanceExpiration: addStaleBalanceExpiration,
-  } = useStaleBalancesStore();
-  const staleBalancesForUser = useMemo(
-    () => staleBalances[address] || {},
-    [staleBalances, address],
-  );
+  const { staleBalances, addStaleBalance } = useStaleBalancesStore();
 
   const pendingTransactions = useMemo(
     () => storePendingTransactions[address] || [],
     [address, storePendingTransactions],
   );
 
-  const refreshAssets = useCallback(
-    (tx: RainbowTransaction) => {
-      if (tx.type === 'swap') {
-        swapRefreshAssets(tx.nonce);
-      } else {
-        userAssetsFetchQuery({
-          address,
-          currency: currentCurrency,
-        });
-      }
-    },
-    [address, currentCurrency, swapRefreshAssets],
-  );
+  const refreshAssets = useCallback(() => {
+    userAssetsFetchQuery({
+      address,
+      currency: currentCurrency,
+    });
+  }, [address, currentCurrency]);
 
   const processFlashbotsTransaction = useCallback(
     async (tx: RainbowTransaction): Promise<RainbowTransaction> => {
@@ -160,7 +143,7 @@ export const useWatchPendingTransactions = ({
       }
 
       if (updatedTransaction?.status !== 'pending') {
-        refreshAssets(tx);
+        refreshAssets();
       }
       return updatedTransaction;
     },
@@ -256,39 +239,45 @@ export const useWatchPendingTransactions = ({
         },
       );
 
-    let staleAssetsToUpdateWithExpiration: Record<
-      number,
-      {
-        address: Address;
-        transactionHash: string;
-        expirationTime?: number;
-      }[]
-    > = [];
     minedTransactions.forEach((minedTransaction) => {
-      const staleBalancesForChain =
-        staleBalancesForUser[minedTransaction.chainId];
-      console.log('STALE BALANCES FOR CHAIN: ', staleBalancesForChain);
-      if (staleBalancesForChain) {
-        const staleAssetsToUpdateWithExpirationForChain = Object.values(
-          staleBalancesForChain,
-        ).filter((a) => {
-          return (
-            a.transactionHash === minedTransaction.hash &&
-            typeof a.expirationTime !== 'number'
-          );
+      if (minedTransaction.changes?.length) {
+        minedTransaction.changes?.forEach((change) => {
+          const changedAsset = change?.asset;
+          const changedAssetAddress = changedAsset?.address as Address;
+          if (changedAsset) {
+            if (
+              staleBalances?.[address]?.[changedAsset.chainId]?.[
+                changedAsset?.address as Address
+              ]
+            ) {
+              addStaleBalance({
+                address,
+                chainId: changedAsset?.chainId,
+                info: {
+                  address: changedAssetAddress,
+                  transactionHash: minedTransaction.hash,
+                },
+              });
+            }
+          }
         });
-        staleAssetsToUpdateWithExpiration = {
-          ...staleAssetsToUpdateWithExpiration,
-          [minedTransaction.chainId]: {
-            ...(staleAssetsToUpdateWithExpiration[minedTransaction.chainId] ||
-              {}),
-            ...staleAssetsToUpdateWithExpirationForChain,
-          },
-        };
-        console.log(
-          'STALE ASSETS TO UPDATE WITH EXP: ',
-          staleAssetsToUpdateWithExpirationForChain,
-        );
+      } else if (minedTransaction.asset) {
+        const changedAsset = minedTransaction.asset;
+        const changedAssetAddress = changedAsset?.address as Address;
+        if (
+          staleBalances?.[address]?.[changedAsset.chainId]?.[
+            changedAsset?.address as Address
+          ]
+        ) {
+          addStaleBalance({
+            address,
+            chainId: changedAsset?.chainId,
+            info: {
+              address: changedAssetAddress,
+              transactionHash: minedTransaction.hash,
+            },
+          });
+        }
       }
       if (isCustomChain(minedTransaction.chainId)) {
         addCustomNetworkTransactions({
@@ -299,23 +288,14 @@ export const useWatchPendingTransactions = ({
       }
     });
 
-    console.log(
-      'stale assets to update with expiration: ',
-      staleAssetsToUpdateWithExpiration,
-    );
-
-    if (Object.keys(staleAssetsToUpdateWithExpiration).length) {
-      for (const chain of Object.keys(staleAssetsToUpdateWithExpiration)) {
-        for (const staleBalance of Object.values(
-          staleAssetsToUpdateWithExpiration[parseInt(chain)],
-        )) {
-          addStaleBalanceExpiration({
-            address,
-            chainId: parseInt(chain),
-            assetAddress: staleBalance.address,
-          });
-        }
-      }
+    if (minedTransactions.length) {
+      await queryClient.refetchQueries({
+        queryKey: consolidatedTransactionsQueryKey({
+          address,
+          currency: currentCurrency,
+          userChainIds: Object.keys(userChains).map(Number),
+        }),
+      });
       await queryClient.refetchQueries({
         queryKey: userAssetsQueryKey({
           address,
@@ -325,30 +305,20 @@ export const useWatchPendingTransactions = ({
       });
     }
 
-    if (minedTransactions.length) {
-      await queryClient.refetchQueries({
-        queryKey: consolidatedTransactionsQueryKey({
-          address,
-          currency: currentCurrency,
-          userChainIds: Object.keys(userChains).map(Number),
-        }),
-      });
-    }
-
     setPendingTransactions({
       address,
       pendingTransactions: newPendingTransactions,
     });
   }, [
+    addStaleBalance,
     addCustomNetworkTransactions,
-    addStaleBalanceExpiration,
     address,
     currentCurrency,
     pendingTransactions,
     processNonces,
     processPendingTransaction,
     setPendingTransactions,
-    staleBalancesForUser,
+    staleBalances,
     testnetMode,
     userChains,
   ]);

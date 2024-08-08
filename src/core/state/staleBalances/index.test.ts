@@ -3,7 +3,7 @@ import { expect, test } from 'vitest';
 
 import { DAI_ADDRESS, ETH_ADDRESS, OP_ADDRESS } from '~/core/references';
 import { ChainId } from '~/core/types/chains';
-import { TEST_ADDRESS_1, TEST_ADDRESS_2, TEST_ADDRESS_3 } from '~/test/utils';
+import { TEST_ADDRESS_1, TEST_ADDRESS_2 } from '~/test/utils';
 
 import { staleBalancesStore } from '.';
 
@@ -139,28 +139,6 @@ test('should generate accurate stale balance query params and clear expired data
   const { getStaleBalancesQueryParam } = staleBalancesStore.getState();
   const queryParam = getStaleBalancesQueryParam(TEST_ADDRESS_2);
   expect(queryParam).toStrictEqual(`&token=${ChainId.mainnet}.${ETH_ADDRESS}`);
-});
-
-test('should be able to add updated expiration data to stale balance info', async () => {
-  const { addStaleBalance, createStaleBalanceExpiration } =
-    staleBalancesStore.getState();
-  addStaleBalance({
-    address: TEST_ADDRESS_3,
-    chainId: ChainId.mainnet,
-    info: {
-      address: DAI_ADDRESS,
-      transactionHash: '0xFOOBAR',
-    },
-  });
-  createStaleBalanceExpiration({
-    address: TEST_ADDRESS_3,
-    chainId: ChainId.mainnet,
-    assetAddress: DAI_ADDRESS,
-  });
-  const newStaleBalances = staleBalancesStore.getState().staleBalances;
-  const newTest3StaleBalances = newStaleBalances[TEST_ADDRESS_3];
-  const newDAI = newTest3StaleBalances[ChainId.mainnet][DAI_ADDRESS];
-  expect(newDAI?.expirationTime !== undefined).toEqual(true);
 });
 
 test('should generate accurate stale balance query params and clear expired data - case #3', async () => {

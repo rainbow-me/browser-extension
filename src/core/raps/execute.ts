@@ -92,6 +92,7 @@ export async function executeAction<T extends RapActionTypes>({
       type,
       actionProps,
     )()) as RapActionResult;
+    console.log('execute action: ', hash);
     return { baseNonce: nonce, errorMessage: null, hash };
   } catch (error) {
     logger.error(new RainbowError(`rap: ${rapName} - error execute action`), {
@@ -137,13 +138,18 @@ export const walletExecuteRap = async (
   parameters: RapSwapActionParameters<
     'swap' | 'crosschainSwap' | 'claimBridge'
   >,
-): Promise<{ nonce: number | undefined; errorMessage: string | null }> => {
+): Promise<{
+  nonce: number | undefined;
+  errorMessage: string | null;
+  hash?: string | null;
+}> => {
   const rap: Rap = await createSwapRapByType(type, parameters);
 
   const { actions } = rap;
   const rapName = getRapFullName(rap.actions);
   let nonce = parameters?.nonce;
   let errorMessage = null;
+  let txHash = null;
   if (actions.length) {
     const firstAction = actions[0];
     const actionParams = {
@@ -177,11 +183,14 @@ export const walletExecuteRap = async (
         };
         const { hash } = await executeAction(actionParams);
         hash && (await waitForNodeAck(hash, wallet.provider));
+        if (index === actions.length - 1) {
+          txHash = hash;
+        }
       }
       nonce = baseNonce + actions.length - 1;
     } else {
       errorMessage = error;
     }
   }
-  return { nonce, errorMessage };
+  return { nonce, errorMessage, hash: txHash };
 };

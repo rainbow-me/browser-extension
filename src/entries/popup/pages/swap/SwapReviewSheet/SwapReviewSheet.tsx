@@ -16,7 +16,6 @@ import { QuoteTypeMap } from '~/core/raps/references';
 import { useGasStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
-import { useSwapAssetsToRefreshStore } from '~/core/state/swapAssetsToRefresh';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
@@ -223,8 +222,6 @@ const SwapReviewSheetWithQuote = ({
   const [showMoreDetails, setShowDetails] = useState(false);
   const [sendingSwap, setSendingSwap] = useState(false);
   const selectedGas = useGasStore.use.selectedGas();
-  const setSwapAssetsToRefresh =
-    useSwapAssetsToRefreshStore.use.setSwapAssetsToRefresh();
   const confirmSwapButtonRef = useRef<HTMLButtonElement>(null);
   const resetSwapValues = usePopupInstanceStore.use.resetSwapValues();
   const { connectedToHardhat } = useConnectedToHardhatStore();
@@ -297,7 +294,7 @@ const SwapReviewSheetWithQuote = ({
     const flashbots =
       assetToSell.chainId === ChainId.mainnet ? flashbotsEnabled : false;
     setSendingSwap(true);
-    const { errorMessage, nonce } = await wallet.executeRap<typeof type>({
+    const tx = await wallet.executeRap<typeof type>({
       rapActionParameters: {
         sellAmount: q.sellAmount?.toString(),
         buyAmount: q.buyAmount?.toString(),
@@ -309,20 +306,19 @@ const SwapReviewSheetWithQuote = ({
       },
       type,
     });
-    if (errorMessage) {
+    if (tx.errorMessage) {
       setSendingSwap(false);
-      if (errorMessage !== 'handled') {
+      if (tx.errorMessage !== 'handled') {
         logger.error(new RainbowError('swap: error executing swap'), {
-          message: errorMessage,
+          message: tx.errorMessage,
         });
-        const extractedError = errorMessage.split('[')[0];
+        const extractedError = tx.errorMessage.split('[')[0];
         triggerAlert({
           text: i18n.t('errors.executing_swap'),
           description: extractedError,
         });
       }
     } else {
-      setSwapAssetsToRefresh({ nonce, assetToBuy, assetToSell });
       navigate(ROUTES.HOME, {
         state: { tab: 'activity' },
       });
@@ -369,7 +365,6 @@ const SwapReviewSheetWithQuote = ({
     flashbotsEnabled,
     connectedToHardhat,
     isBridge,
-    setSwapAssetsToRefresh,
     navigate,
   ]);
 
