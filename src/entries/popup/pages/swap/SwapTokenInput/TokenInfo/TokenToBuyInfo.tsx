@@ -126,7 +126,7 @@ export const TokenToBuyInfo = ({
                     {assetToBuy?.balance?.amount &&
                       handleSignificantDecimals(
                         assetToBuy?.balance?.amount,
-                        assetToBuy?.decimals,
+                        assetToBuy?.decimals ?? 18,
                       )}
                   </TextOverflow>
                 </Box>
