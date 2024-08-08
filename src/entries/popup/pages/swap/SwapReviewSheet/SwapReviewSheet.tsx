@@ -268,7 +268,6 @@ const SwapReviewSheetWithQuote = ({
     );
   }, [assetToBuy, assetToSell]);
 
-  // translate based on the context, bridge or swap
   const t = useTranslationContext();
 
   const isWrapOrUnwrapEth = useMemo(() => {
@@ -306,6 +305,7 @@ const SwapReviewSheetWithQuote = ({
         assetToBuy: assetToBuy,
         quote: q,
         flashbots,
+        isBridge,
       },
       type,
     });

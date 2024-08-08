@@ -18,10 +18,13 @@
 */
 
 import { i18n } from '~/core/languages';
+import { chainsLabel } from '~/core/references/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { formatCurrency, formatNumber } from '~/core/utils/formatNumber';
+import { formatNumber as formatLargeNumber } from '~/core/utils/numbers';
 import { getApprovalLabel } from '~/core/utils/transactions';
 import { Box, Inline, Text, TextOverflow } from '~/design-system';
+import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { ContractIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
 
 const approvalTypeValues = (transaction: RainbowTransaction) => {
@@ -71,11 +74,45 @@ const swapTypeValues = (changes: RainbowTransaction['changes']) => {
   return [valueOut, valueIn];
 };
 
+const bridgeTypeValues = (transaction: RainbowTransaction) => {
+  const { changes } = transaction;
+  const finalChange = changes?.find((c) => c?.direction === 'in');
+  if (finalChange) {
+    const incomingAsset = finalChange.asset;
+    const destinationChainId = incomingAsset.chainId;
+    return [
+      <Inline alignVertical="center" space="4px" key="activity-row-top-value">
+        <TextOverflow color="labelTertiary" size="12pt" weight="semibold">
+          {`to ${chainsLabel[destinationChainId]}`}
+        </TextOverflow>
+        <ChainBadge chainId={destinationChainId} size={'12'} />
+      </Inline>,
+      <TextOverflow
+        size="14pt"
+        weight="semibold"
+        align="right"
+        color={'labelSecondary'}
+        key="activity-row-bottom-value"
+      >
+        {`${formatLargeNumber(incomingAsset.balance.amount)} ${
+          incomingAsset.symbol
+        }`}
+      </TextOverflow>,
+    ];
+  }
+};
+
 const activityValues = (transaction: RainbowTransaction) => {
-  const { changes, direction, type } = transaction;
-  if (['swap', 'wrap', 'unwrap'].includes(type)) return swapTypeValues(changes);
-  if (['approve', 'revoke'].includes(type))
+  const { changes, direction, status, type } = transaction;
+  if (type === 'bridge' && status !== 'confirmed') {
+    return bridgeTypeValues(transaction);
+  }
+  if (['swap', 'wrap', 'unwrap'].includes(type)) {
+    return swapTypeValues(changes);
+  }
+  if (['approve', 'revoke'].includes(type)) {
     return approvalTypeValues(transaction);
+  }
 
   const asset = changes?.filter(
     (c) => c?.direction === direction && c?.asset.type !== 'nft',
@@ -121,10 +158,12 @@ export const ActivityValue = ({
       justifyContent="center"
       gap="8px"
     >
-      {topValue && (
+      {typeof topValue === 'string' ? (
         <TextOverflow color="labelTertiary" size="12pt" weight="semibold">
           {topValue}
         </TextOverflow>
+      ) : (
+        topValue || null
       )}
       {typeof bottomValue === 'string' ? (
         <TextOverflow

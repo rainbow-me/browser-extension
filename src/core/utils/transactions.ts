@@ -468,6 +468,7 @@ export function addNewTransaction({
   const { setNonce } = nonceStore.getState();
   const { addPendingTransaction } = pendingTransactionsStore.getState();
   const { currentCurrency } = currentCurrencyStore.getState();
+
   const newPendingTransaction = parseNewTransaction(
     transaction,
     currentCurrency,
