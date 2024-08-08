@@ -449,9 +449,11 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
   const tokenToBuyInputRef = useRef<TokenInputRef>();
 
   const selectAssetToSell = useCallback(
-    (asset: ParsedSearchAsset | null) => {
+    (asset: ParsedSearchAsset | null, openAssetToBuyDropdown = true) => {
       setAssetToSell(asset);
-      if (!assetToBuy) tokenToBuyInputRef.current?.openDropdown();
+      if (!assetToBuy && openAssetToBuyDropdown) {
+        tokenToBuyInputRef.current?.openDropdown();
+      }
       setAssetToSellInputValue('');
       setAssetToBuyInputValue('');
     },
@@ -482,11 +484,13 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
         (asset) => asset?.uniqueId === selectedTokenId,
       );
       if (selectedSearchAsset) {
-        selectAssetToSell(selectedSearchAsset);
+        selectAssetToSell(selectedSearchAsset, !bridge);
         // clear selected token
         setSelectedToken();
       }
-      setInputToOpenOnMount('buy');
+      if (!bridge) {
+        setInputToOpenOnMount('buy');
+      }
     } else {
       if (!didPopulateSavedTokens) {
         if (savedTokenToBuy) {
