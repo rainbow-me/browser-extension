@@ -10,7 +10,6 @@ const TIME_TO_WATCH = 600000;
 interface StaleBalanceInfo {
   address: Address;
   expirationTime?: number;
-  nonce: number;
   transactionHash: string;
 }
 
@@ -32,15 +31,6 @@ export interface StaleBalancesState {
     info: StaleBalanceInfo;
   }) => void;
   clearExpiredData: (address: Address) => void;
-  createStaleBalanceExpiration: ({
-    address,
-    chainId,
-    assetAddress,
-  }: {
-    address: Address;
-    chainId: ChainId;
-    assetAddress: Address;
-  }) => void;
   getStaleBalancesQueryParam: (address: Address) => string;
   staleBalances: Record<Address, StaleBalancesByChainId>;
 }
@@ -56,33 +46,45 @@ export const staleBalancesStore = createStore<StaleBalancesState>(
       chainId: ChainId;
       info: StaleBalanceInfo;
     }) => {
-      const staleBalances = { ...get().staleBalances };
-      const staleBalancesForUser = staleBalances[address] || {};
-      const staleBalancesForChain = staleBalancesForUser[chainId] || {};
-      const newStaleBalancesForChain = {
-        ...staleBalancesForChain,
-        [info.address]: info,
-      };
-      const newStaleBalancesForUser = {
-        ...staleBalancesForUser,
-        [chainId]: newStaleBalancesForChain,
-      };
-      set({
-        staleBalances: {
-          ...staleBalances,
-          [address]: newStaleBalancesForUser,
-        },
+      set((state) => {
+        const { staleBalances } = state;
+        const staleBalancesForUser = staleBalances[address] || {};
+        const staleBalancesForChain = staleBalancesForUser[chainId] || {};
+        const newStaleBalancesForChain = {
+          ...staleBalancesForChain,
+          [info.address]: {
+            ...info,
+            expirationTime: info.expirationTime || Date.now() + TIME_TO_WATCH,
+          },
+        };
+        const newStaleBalancesForUser = {
+          ...staleBalancesForUser,
+          [chainId]: newStaleBalancesForChain,
+        };
+        console.log('STEP ONE ---: ', address, info);
+        console.log('ADD STALE BALANCE: STALE BALANCES: ', staleBalances);
+        console.log('ADD STALE BALANCE: NEW FOR USER: ', {
+          staleBalances: {
+            ...staleBalances,
+            [address]: newStaleBalancesForUser,
+          },
+        });
+        return {
+          staleBalances: {
+            ...staleBalances,
+            [address]: newStaleBalancesForUser,
+          },
+        };
       });
     },
     clearExpiredData: (address: Address) => {
       set((state) => {
-        const staleBalances = state.staleBalances;
+        const { staleBalances } = state;
+        console.log('STALE BALANCES IN CLEAR EXPIRED DATA: ', staleBalances);
         const staleBalancesForUser = staleBalances[address] || {};
         const newStaleBalancesForUser: StaleBalancesByChainId = {
           ...staleBalancesForUser,
         };
-        console.log('clear expired data: ', address);
-        console.log('stale balances in clear expired data: ', staleBalances);
         for (const c of Object.keys(staleBalancesForUser)) {
           const chainId = parseInt(c);
           const newStaleBalancesForChain = {
@@ -93,16 +95,11 @@ export const staleBalancesStore = createStore<StaleBalancesState>(
               typeof staleBalance.expirationTime === 'number' &&
               staleBalance.expirationTime <= Date.now()
             ) {
-              console.log(
-                'DELETING: ',
-                newStaleBalancesForChain[staleBalance.address],
-              );
               delete newStaleBalancesForChain[staleBalance.address];
             }
           }
           newStaleBalancesForUser[chainId] = newStaleBalancesForChain;
         }
-        console.log('setting 2', newStaleBalancesForUser);
         return {
           staleBalances: {
             ...staleBalances,
@@ -111,45 +108,9 @@ export const staleBalancesStore = createStore<StaleBalancesState>(
         };
       });
     },
-    createStaleBalanceExpiration: ({
-      address,
-      chainId,
-      assetAddress,
-    }: {
-      address: Address;
-      chainId: ChainId;
-      assetAddress: Address;
-    }) => {
-      const staleBalances = { ...get().staleBalances };
-      const staleBalancesForUser = staleBalances[address] || {};
-      const staleBalancesForChain = staleBalancesForUser[chainId] || {};
-      const staleBalanceToUpdate = staleBalancesForChain[assetAddress];
-      if (staleBalanceToUpdate && !staleBalanceToUpdate.expirationTime) {
-        const newStaleBalance = {
-          ...staleBalanceToUpdate,
-          expirationTime: Date.now() + TIME_TO_WATCH,
-        };
-        const newStaleBalancesForChain = {
-          ...staleBalancesForChain,
-          [assetAddress]: newStaleBalance,
-        };
-        const newStaleBalancesForUser = {
-          ...staleBalancesForUser,
-          [chainId]: newStaleBalancesForChain,
-        };
-        set({
-          staleBalances: {
-            ...staleBalances,
-            [address]: newStaleBalancesForUser,
-          },
-        });
-      }
-    },
     getStaleBalancesQueryParam: (address: Address) => {
       let queryStringFragment = '';
-      get().clearExpiredData(address);
       const { staleBalances } = get();
-      console.log('stale balances in query param: ', staleBalances);
       const staleBalancesForUser = staleBalances[address];
       for (const c of Object.keys(staleBalancesForUser)) {
         const chainId = parseInt(c);

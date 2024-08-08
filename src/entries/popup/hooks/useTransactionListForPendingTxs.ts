@@ -77,45 +77,13 @@ function watchForPendingTransactionsReportedByRainbowBackend({
   const supportedChainIds = getSupportedChains({
     testnets: false,
   }).map(({ id }) => id);
-  // const { testnetMode } = testnetModeStore.getState();
-  const { createStaleBalanceExpiration, staleBalances } =
-    staleBalancesStore.getState();
-  const staleBalancesForUser = staleBalances[currentAddress];
-  let staleAssetsToUpdateWithExpiration: Record<
-    number,
-    {
-      address: Address;
-      transactionHash: string;
-      expirationTime?: number;
-    }[]
-  > = [];
+  const { addStaleBalance, staleBalances } = staleBalancesStore.getState();
   for (const supportedChainId of supportedChainIds) {
     const latestTxConfirmedByBackend = latestTransactions.get(supportedChainId);
     if (latestTxConfirmedByBackend) {
       const latestNonceConfirmedByBackend =
         latestTxConfirmedByBackend.nonce || 0;
-      const staleBalancesForChain =
-        staleBalancesForUser[supportedChainId] || {};
-      const staleAssetsToUpdateWithExpirationForChain = Object.values(
-        staleBalancesForChain,
-      ).filter((a) => {
-        return a.nonce <= latestNonceConfirmedByBackend;
-      });
-      staleAssetsToUpdateWithExpiration = {
-        ...staleAssetsToUpdateWithExpiration,
-        [supportedChainId]: {
-          ...(staleAssetsToUpdateWithExpiration[supportedChainId] || {}),
-          ...staleAssetsToUpdateWithExpirationForChain,
-        },
-      };
-      console.log(
-        'STALE ASSETS TO UPDATE WITH EXP: IN LIST FOR PENDING TX',
-        staleAssetsToUpdateWithExpirationForChain,
-        latestTxConfirmedByBackend,
-        staleBalancesForUser,
-        staleBalances,
-        currentAddress,
-      );
+
       const [latestPendingTx] = pendingTransactions.filter(
         (tx) => tx?.chainId === supportedChainId,
       );
@@ -132,33 +100,6 @@ function watchForPendingTransactionsReportedByRainbowBackend({
         currentNonce = latestNonceConfirmedByBackend;
       }
 
-      if (Object.keys(staleAssetsToUpdateWithExpiration).length) {
-        for (const chain of Object.keys(staleAssetsToUpdateWithExpiration)) {
-          for (const staleBalance of Object.values(
-            staleAssetsToUpdateWithExpiration[parseInt(chain)],
-          )) {
-            createStaleBalanceExpiration({
-              address: currentAddress,
-              chainId: parseInt(chain),
-              assetAddress: staleBalance.address,
-            });
-            console.log('ADDING STALE BALANCE EXP: ', {
-              address: currentAddress,
-              chainId: parseInt(chain),
-              assetAddress: staleBalance.address,
-            });
-          }
-        }
-      }
-
-      // await queryClient.refetchQueries({
-      //   queryKey: userAssetsQueryKey({
-      //     address: currentAddress,
-      //     currency,
-      //     testnetMode,
-      //   }),
-      // });
-
       setNonce({
         address: currentAddress,
         chainId: supportedChainId,
@@ -168,13 +109,63 @@ function watchForPendingTransactionsReportedByRainbowBackend({
     }
   }
 
-  const updatedPendingTransactions = pendingTransactions?.filter((tx) => {
+  let newlyConfirmedTransactions: RainbowTransaction[] = [];
+  let updatedPendingTransactions: RainbowTransaction[] = [];
+
+  pendingTransactions.forEach((tx) => {
     const txNonce = tx.nonce || 0;
     const latestTx = latestTransactions.get(tx.chainId);
     const latestTxNonce = latestTx?.nonce || 0;
     // still pending or backend is not returning confirmation yet
     // if !latestTx means that is the first tx of the wallet
-    return !latestTx || txNonce > latestTxNonce;
+    const newlyConfirmed = !latestTx || txNonce > latestTxNonce;
+    if (newlyConfirmed) {
+      newlyConfirmedTransactions = [...newlyConfirmedTransactions, tx];
+    } else {
+      updatedPendingTransactions = [...updatedPendingTransactions, tx];
+    }
+  });
+
+  newlyConfirmedTransactions.forEach((tx) => {
+    if (tx.changes?.length) {
+      tx.changes?.forEach((change) => {
+        const changedAsset = change?.asset;
+        const changedAssetAddress = changedAsset?.address as Address;
+        if (changedAsset) {
+          if (
+            staleBalances?.[currentAddress]?.[changedAsset.chainId]?.[
+              changedAsset?.address as Address
+            ]
+          ) {
+            addStaleBalance({
+              address: currentAddress,
+              chainId: changedAsset?.chainId,
+              info: {
+                address: changedAssetAddress,
+                transactionHash: tx.hash,
+              },
+            });
+          }
+        }
+      });
+    } else if (tx.asset) {
+      const changedAsset = tx.asset;
+      const changedAssetAddress = changedAsset?.address as Address;
+      if (
+        staleBalances?.[currentAddress]?.[changedAsset.chainId]?.[
+          changedAsset?.address as Address
+        ]
+      ) {
+        addStaleBalance({
+          address: currentAddress,
+          chainId: changedAsset?.chainId,
+          info: {
+            address: changedAssetAddress,
+            transactionHash: tx.hash,
+          },
+        });
+      }
+    }
   });
 
   setPendingTransactions({

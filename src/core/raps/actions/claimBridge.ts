@@ -10,7 +10,6 @@ import { optimism } from 'viem/chains';
 
 import { REFERRER_CLAIM } from '~/core/references';
 import { gasStore } from '~/core/state';
-import { staleBalancesStore } from '~/core/state/staleBalances';
 import { TransactionGasParams } from '~/core/types/gas';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { calculateL1FeeOptimism } from '~/core/utils/gas';
@@ -213,27 +212,6 @@ export async function claimBridge({
     chainId,
     transaction,
   });
-
-  if (swap?.hash) {
-    staleBalancesStore.getState().addStaleBalance({
-      address,
-      chainId,
-      info: {
-        address: AddressZero,
-        transactionHash: swap.hash,
-        nonce: swap.nonce,
-      },
-    });
-    staleBalancesStore.getState().addStaleBalance({
-      address,
-      chainId: toChainId,
-      info: {
-        address: AddressZero,
-        transactionHash: swap?.hash,
-        nonce: swap.nonce,
-      },
-    });
-  }
 
   return {
     nonce: swap.nonce,
