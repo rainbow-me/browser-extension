@@ -225,6 +225,39 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
     },
   },
   {
+    name: 'Cronos',
+    networkInfo: {
+      rpcUrl: 'https://evm.cronos.org',
+      chainId: 25,
+      decimals: 18,
+      symbol: 'CRO',
+      explorerUrl: 'https://explorer.cronos.org',
+      testnet: false,
+    },
+  },
+  {
+    name: 'Cronos Testnet',
+    networkInfo: {
+      rpcUrl: 'https://evm-t3.cronos.org',
+      chainId: 338,
+      decimals: 18,
+      symbol: 'tCRO',
+      explorerUrl: 'https://cronos.org/explorer/testnet3',
+      testnet: true,
+    },
+  },
+  {
+    name: 'Cronos zkEVM Testnet',
+    networkInfo: {
+      rpcUrl: 'https://testnet.zkevm.cronos.org',
+      chainId: 282,
+      decimals: 18,
+      symbol: 'zkTCRO',
+      explorerUrl: 'https://explorer.zkevm.cronos.org/testnet',
+      testnet: true,
+    },
+  },
+  {
     name: 'Dogechain',
     networkInfo: {
       rpcUrl: 'https://rpc.dogechain.dog',
@@ -343,6 +376,17 @@ const KNOWN_NETWORKS: { name: string; networkInfo: customNetworkInfo }[] = [
       symbol: 'FSN',
       explorerUrl: 'https://testnet.fsnscan.com',
       testnet: true,
+    },
+  },
+  {
+    name: 'Ham',
+    networkInfo: {
+      rpcUrl: 'https://rpc.ham.fun',
+      chainId: 5112,
+      decimals: 18,
+      symbol: 'ETH',
+      explorerUrl: 'https://explorer.ham.fun',
+      testnet: false,
     },
   },
   {
