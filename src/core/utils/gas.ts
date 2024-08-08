@@ -51,6 +51,19 @@ import { getMinimalTimeUnitStringForMs } from './time';
 
 export const FLASHBOTS_MIN_TIP = 6;
 
+const formatDisplayNumber = (number: number | string) => {
+  const n = Number(number);
+  if (n === 0) {
+    return '0';
+  } else if (n < 1) {
+    return n.toFixed(3);
+  } else if (n < 2) {
+    return n.toFixed(2);
+  } else {
+    return n.toFixed(0);
+  }
+};
+
 export const parseGasDataConfirmationTime = ({
   maxBaseFee,
   maxPriorityFee,
@@ -151,11 +164,15 @@ export const parseCustomGasFeeParams = ({
     ? currentBaseFee
     : maxBaseFee.amount;
 
-  const display = `${new BigNumber(
-    weiToGwei(add(baseFee, maxPriorityFeePerGas.amount)),
-  ).toFixed(0)} - ${new BigNumber(
-    weiToGwei(add(baseFeeWei, maxPriorityFeePerGas.amount)),
-  ).toFixed(0)} Gwei`;
+  const display = `${formatDisplayNumber(
+    new BigNumber(
+      weiToGwei(add(baseFee, maxPriorityFeePerGas.amount)),
+    ).toNumber(),
+  )} - ${formatDisplayNumber(
+    new BigNumber(
+      weiToGwei(add(baseFeeWei, maxPriorityFeePerGas.amount)),
+    ).toNumber(),
+  )} Gwei`;
 
   const estimatedTime = parseGasDataConfirmationTime({
     maxBaseFee: maxBaseFee.amount,
@@ -193,6 +210,69 @@ export const parseCustomGasFeeParams = ({
     gasFee,
     maxBaseFee,
     maxPriorityFeePerGas,
+    option: speed,
+    transactionGasParams,
+  };
+};
+
+export const parseCustomGasFeeLegacyParams = ({
+  speed,
+  gasPriceWei,
+  gasLimit,
+  nativeAsset,
+  currency,
+  waitTime,
+}: {
+  speed: GasSpeed;
+  gasPriceWei: string;
+  gasLimit: string;
+  nativeAsset?: ParsedAsset;
+  currency: SupportedCurrencyKey;
+  waitTime: number | null;
+}): GasFeeLegacyParams => {
+  const gasPrice = parseGasFeeParam({
+    wei: gasPriceWei || '0',
+  });
+  const display = `${formatDisplayNumber(gasPrice.gwei)} Gwei`;
+
+  const estimatedTime = {
+    amount: waitTime || 0,
+    display: waitTime
+      ? `${waitTime >= 3600 ? '>' : '~'} ${getMinimalTimeUnitStringForMs(
+          Number(multiply(waitTime, 1000)),
+        )}`
+      : '',
+  };
+  const transactionGasParams = {
+    gasPrice: toHex(gasPrice.amount),
+  };
+
+  const amount = gasPrice.amount;
+  const totalWei = multiply(gasLimit, amount);
+
+  const nativeTotalWei = convertRawAmountToBalance(
+    totalWei,
+    supportedCurrencies[nativeAsset?.symbol as SupportedCurrencyKey],
+  ).amount;
+
+  const nativeDisplay = nativeAsset?.price?.value
+    ? convertAmountAndPriceToNativeDisplayWithThreshold(
+        nativeTotalWei,
+        nativeAsset?.price?.value,
+        currency,
+      )
+    : convertRawAmountToBalance(totalWei, {
+        decimals: nativeAsset?.decimals || 18,
+        symbol: nativeAsset?.symbol,
+      });
+
+  const gasFee = { amount: totalWei, display: nativeDisplay.display };
+
+  return {
+    display,
+    estimatedTime,
+    gasFee,
+    gasPrice,
     option: speed,
     transactionGasParams,
   };
@@ -238,11 +318,15 @@ export const parseGasFeeParams = ({
     ? currentBaseFee
     : maxBaseFee.amount;
 
-  const display = `${new BigNumber(
-    weiToGwei(add(baseFee, maxPriorityFeePerGas.amount)),
-  ).toFixed(0)} - ${new BigNumber(
-    weiToGwei(add(maxBaseFee.amount, maxPriorityFeePerGas.amount)),
-  ).toFixed(0)} Gwei`;
+  const display = `${formatDisplayNumber(
+    new BigNumber(
+      weiToGwei(add(baseFee, maxPriorityFeePerGas.amount)),
+    ).toNumber(),
+  )} - ${formatDisplayNumber(
+    new BigNumber(
+      weiToGwei(add(maxBaseFee.amount, maxPriorityFeePerGas.amount)),
+    ).toNumber(),
+  )} Gwei`;
 
   const estimatedTime = parseGasDataConfirmationTime({
     maxBaseFee: maxBaseFee.amount,
@@ -314,7 +398,7 @@ export const parseGasFeeLegacyParams = ({
   const gasPrice = parseGasFeeParam({
     wei: new BigNumber(multiply(wei, getBaseFeeMultiplier(speed))).toFixed(0),
   });
-  const display = parseGasFeeParam({ wei }).display;
+  const display = `${formatDisplayNumber(gasPrice.gwei)} Gwei`;
 
   const estimatedTime = {
     amount: waitTime || 0,

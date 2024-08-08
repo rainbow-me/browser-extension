@@ -31,6 +31,7 @@ import { copyAddress } from '~/core/utils/copy';
 import {
   FormattedCurrencyParts,
   formatCurrencyParts,
+  formatNumber,
 } from '~/core/utils/formatNumber';
 import { convertRawAmountToDecimalFormat } from '~/core/utils/numbers';
 import { isLowerCaseMatch } from '~/core/utils/strings';
@@ -766,35 +767,39 @@ export function TokenDetails() {
                       key={i}
                       alignHorizontal="justify"
                       alignVertical="center"
+                      wrap={false}
                     >
-                      <Inline space="12px" alignVertical="center">
+                      <Inline space="12px" alignVertical="center" wrap={false}>
                         <Symbol
                           weight="regular"
                           size={16}
                           symbol="doc.plaintext"
                           color="labelTertiary"
                         />
-                        <Text
+                        <TextOverflow
                           size="12pt"
                           weight="semibold"
                           color="labelTertiary"
                         >
                           {approval.spender.contract_name ||
                             truncateAddress(approval.spender.contract_address)}
-                        </Text>
+                        </TextOverflow>
                       </Inline>
-                      <Inline space="12px" alignVertical="center">
+                      <Inline space="12px" alignVertical="center" wrap={false}>
                         <Text
                           size="12pt"
                           weight="semibold"
                           color="labelTertiary"
+                          whiteSpace="nowrap"
                         >
                           {approval.spender?.quantity_allowed.toLowerCase() ===
                           'unlimited'
                             ? approval.spender?.quantity_allowed
-                            : `${convertRawAmountToDecimalFormat(
-                                approval.spender?.quantity_allowed || '0',
-                                approval?.approval.asset.decimals,
+                            : `${formatNumber(
+                                convertRawAmountToDecimalFormat(
+                                  approval.spender?.quantity_allowed || '0',
+                                  approval?.approval.asset.decimals,
+                                ),
                               )} ${approval?.approval.asset.symbol}`}
                         </Text>
                         <TokenApprovalContextMenu

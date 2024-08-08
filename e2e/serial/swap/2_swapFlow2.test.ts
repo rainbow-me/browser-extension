@@ -189,8 +189,13 @@ it('should be able to execute unlock and swap', async () => {
   });
   await delayTime('long');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
+
+  // wait for swap to complete
   await delayTime('very-long');
   await delayTime('very-long');
+  await delayTime('very-long');
+  await delayTime('very-long');
+
   const usdcBalanceAfterSwap = await tokenContract.balanceOf(
     WALLET_TO_USE_ADDRESS,
   );

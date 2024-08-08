@@ -7,7 +7,7 @@ import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { txSpeedEmoji } from '~/core/references/txSpeed';
 import { useGasStore } from '~/core/state';
-import { GasFeeParams, GasSpeed } from '~/core/types/gas';
+import { GasFeeLegacyParams, GasFeeParams, GasSpeed } from '~/core/types/gas';
 import { getBaseFeeTrendParams } from '~/core/utils/gas';
 import { isZero, lessThan, toFixedDecimals } from '~/core/utils/numbers';
 import {
@@ -47,7 +47,7 @@ const GasLabel = ({
 }: {
   label: string;
   warning?: 'stuck' | 'fail';
-  onClick: () => void;
+  onClick?: () => void;
 }) => (
   <Box as={motion.div} layout="position">
     <Stack space="8px">
@@ -159,8 +159,10 @@ export const CustomGasSheet = ({
   currentBaseFee,
   baseFeeTrend,
   flashbotsEnabled,
+  feeType,
   setCustomMaxBaseFee,
   setCustomMaxPriorityFee,
+  setCustomGasPrice,
   closeCustomGasSheet,
   setSelectedSpeed,
 }: {
@@ -168,8 +170,10 @@ export const CustomGasSheet = ({
   currentBaseFee: string;
   baseFeeTrend: number;
   flashbotsEnabled: boolean;
+  feeType: 'legacy' | 'eip1559';
   setCustomMaxBaseFee: (maxBaseFee: string) => void;
   setCustomMaxPriorityFee: (maxPriorityFee: string) => void;
+  setCustomGasPrice: (maxPrice: string) => void;
   closeCustomGasSheet: () => void;
   setSelectedSpeed: (speed: GasSpeed) => void;
 }) => {
@@ -188,6 +192,7 @@ export const CustomGasSheet = ({
 
   const maxBaseFeeInputRef = useRef<HTMLInputElement>(null);
   const maxPriorityFeeInputRef = useRef<HTMLInputElement>(null);
+  const gasPriceInputRef = useRef<HTMLInputElement>(null);
 
   const [maxBaseFee, setMaxBaseFee] = useState(
     (customSpeed as GasFeeParams)?.maxBaseFee?.gwei,
@@ -196,12 +201,17 @@ export const CustomGasSheet = ({
     (customSpeed as GasFeeParams)?.maxPriorityFeePerGas?.gwei,
   );
 
+  const [gasPrice, setGasPrice] = useState(
+    (customSpeed as GasFeeLegacyParams)?.gasPrice?.gwei,
+  );
+
   const [maxBaseFeeWarning, setMaxBaseFeeWarning] = useState<
-    'stuck' | 'fail' | undefined
-  >(undefined);
+    'stuck' | 'fail'
+  >();
   const [maxPriorityFeeWarning, setPriorityBaseFeeWarning] = useState<
-    'stuck' | 'fail' | undefined
-  >(undefined);
+    'stuck' | 'fail'
+  >();
+  const [gasPriceWarning, setGasPriceWarning] = useState<'stuck' | 'fail'>();
 
   const trend = useMemo(
     () => getBaseFeeTrendParams(baseFeeTrend),
@@ -291,6 +301,23 @@ export const CustomGasSheet = ({
     ],
   );
 
+  const updateCustomGasPrice = useCallback(
+    (gasPrice: string) => {
+      setSelectedSpeedOption(GasSpeed.CUSTOM);
+      setCustomGasPrice(gasPrice);
+      setGasPrice(gasPrice);
+      const normalSpeed = gasFeeParamsBySpeed?.normal as GasFeeLegacyParams;
+      if (!gasPrice || isZero(maxPriorityFee)) {
+        setGasPriceWarning('fail');
+      } else if (lessThan(gasPrice, normalSpeed?.gasPrice?.gwei)) {
+        setGasPriceWarning('stuck');
+      } else {
+        setGasPriceWarning(undefined);
+      }
+    },
+    [gasFeeParamsBySpeed, maxPriorityFee, setCustomGasPrice],
+  );
+
   const setCustomGas = useCallback(() => {
     setSelectedSpeed(selectedSpeedOption);
     closeCustomGasSheet();
@@ -317,7 +344,11 @@ export const CustomGasSheet = ({
     if (show) {
       onSelectedGasChange(selectedGas?.option);
       setTimeout(() => {
-        maxBaseFeeInputRef?.current?.focus();
+        if (feeType === 'eip1559') {
+          maxBaseFeeInputRef?.current?.focus();
+        } else {
+          gasPriceInputRef.current?.focus();
+        }
       }, 500);
     }
 
@@ -326,10 +357,13 @@ export const CustomGasSheet = ({
 
   const onSelectedGasChange = useCallback(
     (speed: GasSpeed) => {
-      const selectedGas = gasFeeParamsBySpeed[speed] as GasFeeParams;
+      const selectedGas = gasFeeParamsBySpeed[speed];
       setSelectedGas({ selectedGas: gasFeeParamsBySpeed[speed] });
-      setMaxBaseFee(selectedGas?.maxBaseFee?.gwei);
-      setMaxPriorityFee(selectedGas?.maxPriorityFeePerGas?.gwei);
+      setMaxBaseFee((selectedGas as GasFeeParams)?.maxBaseFee?.gwei);
+      setMaxPriorityFee(
+        (selectedGas as GasFeeParams)?.maxPriorityFeePerGas?.gwei,
+      );
+      setGasPrice((selectedGas as GasFeeLegacyParams)?.gasPrice?.gwei);
       setSelectedSpeedOption(speed);
       maxBaseFeeInputRef?.current?.focus();
     },
@@ -434,115 +468,146 @@ export const CustomGasSheet = ({
           </Box>
           <Box paddingBottom="8px">
             <Stack space="12px">
-              <Box paddingBottom="12px">
-                <Box height="full">
-                  <Stack space="12px">
-                    <Inline
-                      alignHorizontal="right"
-                      space="4px"
-                      alignVertical="center"
-                    >
-                      <Symbol
-                        symbol={trend.symbol as SymbolName}
-                        color={trend.color as SymbolStyles['color']}
-                        weight="bold"
-                        size={11}
-                      />
-                      <Text
-                        color={trend.color as TextStyles['color']}
-                        align="center"
-                        size="11pt"
-                        weight="bold"
+              {feeType === 'eip1559' ? (
+                <Box paddingBottom="12px">
+                  <Box height="full">
+                    <Stack space="12px">
+                      <Inline
+                        alignHorizontal="right"
+                        space="4px"
+                        alignVertical="center"
                       >
-                        {trend.label}
-                      </Text>
-                    </Inline>
-                    <Inline
-                      height="full"
-                      alignHorizontal="justify"
-                      alignVertical="center"
-                    >
-                      <Inline space="4px" alignVertical="center">
+                        <Symbol
+                          symbol={trend.symbol as SymbolName}
+                          color={trend.color as SymbolStyles['color']}
+                          weight="bold"
+                          size={11}
+                        />
+                        <Text
+                          color={trend.color as TextStyles['color']}
+                          align="center"
+                          size="11pt"
+                          weight="bold"
+                        >
+                          {trend.label}
+                        </Text>
+                      </Inline>
+                      <Inline
+                        height="full"
+                        alignHorizontal="justify"
+                        alignVertical="center"
+                      >
+                        <Inline space="4px" alignVertical="center">
+                          <Text
+                            color="label"
+                            align="left"
+                            size="14pt"
+                            weight="semibold"
+                          >
+                            {i18n.t('custom_gas.current_base_fee')}
+                          </Text>
+                          <Box>
+                            <Bleed vertical="6px" horizontal="6px">
+                              <ButtonSymbol
+                                symbol="info.circle.fill"
+                                color="labelQuaternary"
+                                height="28px"
+                                variant="transparent"
+                                onClick={showCurrentBaseFeeExplainer}
+                              />
+                            </Bleed>
+                          </Box>
+                        </Inline>
+
                         <Text
                           color="label"
-                          align="left"
+                          align="right"
                           size="14pt"
                           weight="semibold"
                         >
-                          {i18n.t('custom_gas.current_base_fee')}
+                          {`${toFixedDecimals(currentBaseFee, 2)} Gwei`}
                         </Text>
-                        <Box>
-                          <Bleed vertical="6px" horizontal="6px">
-                            <ButtonSymbol
-                              symbol="info.circle.fill"
-                              color="labelQuaternary"
-                              height="28px"
-                              variant="transparent"
-                              onClick={showCurrentBaseFeeExplainer}
-                            />
-                          </Bleed>
-                        </Box>
                       </Inline>
-
-                      <Text
-                        color="label"
-                        align="right"
-                        size="14pt"
-                        weight="semibold"
-                      >
-                        {`${toFixedDecimals(currentBaseFee, 0)} Gwei`}
-                      </Text>
-                    </Inline>
-                  </Stack>
+                    </Stack>
+                  </Box>
                 </Box>
-              </Box>
-              <Box>
-                <Inline
-                  height="fit"
-                  alignHorizontal="justify"
-                  alignVertical="center"
-                >
-                  <Box>
-                    <GasLabel
-                      label={i18n.t('custom_gas.max_base_fee')}
-                      warning={maxBaseFeeWarning}
-                      onClick={showMaxBaseFeeExplainer}
-                    />
-                  </Box>
+              ) : null}
+              {feeType === 'eip1559' ? (
+                <Box>
+                  <Inline
+                    height="fit"
+                    alignHorizontal="justify"
+                    alignVertical="center"
+                  >
+                    <Box>
+                      <GasLabel
+                        label={i18n.t('custom_gas.max_base_fee')}
+                        warning={maxBaseFeeWarning}
+                        onClick={showMaxBaseFeeExplainer}
+                      />
+                    </Box>
 
-                  <Box style={{ width: 98 }} marginRight="-4px">
-                    <GweiInputMask
-                      inputRef={maxBaseFeeInputRef}
-                      value={maxBaseFee}
-                      variant="surface"
-                      onChange={updateCustomMaxBaseFee}
-                    />
-                  </Box>
-                </Inline>
-              </Box>
-              <Box>
-                <Inline
-                  height="full"
-                  alignHorizontal="justify"
-                  alignVertical="center"
-                >
-                  <Box>
-                    <GasLabel
-                      label={i18n.t('custom_gas.miner_tip')}
-                      warning={maxPriorityFeeWarning}
-                      onClick={showMaxPriorityFeeExplainer}
-                    />
-                  </Box>
-                  <Box style={{ width: 98 }} marginRight="-4px">
-                    <GweiInputMask
-                      inputRef={maxPriorityFeeInputRef}
-                      value={maxPriorityFee}
-                      variant="surface"
-                      onChange={updateCustomMaxPriorityFee}
-                    />
-                  </Box>
-                </Inline>
-              </Box>
+                    <Box style={{ width: 98 }} marginRight="-4px">
+                      <GweiInputMask
+                        inputRef={maxBaseFeeInputRef}
+                        value={maxBaseFee}
+                        variant="surface"
+                        onChange={updateCustomMaxBaseFee}
+                      />
+                    </Box>
+                  </Inline>
+                </Box>
+              ) : null}
+              {feeType === 'eip1559' ? (
+                <Box>
+                  <Inline
+                    height="full"
+                    alignHorizontal="justify"
+                    alignVertical="center"
+                  >
+                    <Box>
+                      <GasLabel
+                        label={i18n.t('custom_gas.miner_tip')}
+                        warning={maxPriorityFeeWarning}
+                        onClick={showMaxPriorityFeeExplainer}
+                      />
+                    </Box>
+                    <Box style={{ width: 98 }} marginRight="-4px">
+                      <GweiInputMask
+                        inputRef={maxPriorityFeeInputRef}
+                        value={maxPriorityFee}
+                        variant="surface"
+                        onChange={updateCustomMaxPriorityFee}
+                      />
+                    </Box>
+                  </Inline>
+                </Box>
+              ) : null}
+              {feeType === 'legacy' ? (
+                <Box>
+                  <Inline
+                    height="full"
+                    alignHorizontal="justify"
+                    alignVertical="center"
+                  >
+                    <Box>
+                      <GasLabel
+                        label={i18n.t('custom_gas.gas_price')}
+                        warning={gasPriceWarning}
+                        onClick={showMaxPriorityFeeExplainer}
+                      />
+                    </Box>
+                    <Box style={{ width: 98 }} marginRight="-4px">
+                      <GweiInputMask
+                        inputRef={gasPriceInputRef}
+                        value={gasPrice}
+                        variant="surface"
+                        onChange={updateCustomGasPrice}
+                      />
+                    </Box>
+                  </Inline>
+                </Box>
+              ) : null}
               <Box paddingVertical="12px">
                 <Columns alignHorizontal="justify" alignVertical="center">
                   <Column>
