@@ -264,6 +264,9 @@ export const updatePassword = async (password: string, newPassword: string) => {
 export const deriveAccountsFromSecret = async (secret: string) =>
   walletAction<Address[]>('derive_accounts_from_secret', secret);
 
+export const isMnemonicInVault = async (secret: string) =>
+  walletAction<boolean>('is_mnemonic_in_vault', secret);
+
 export const verifyPassword = async (password: string) =>
   walletAction<boolean>('verify_password', password);
 
