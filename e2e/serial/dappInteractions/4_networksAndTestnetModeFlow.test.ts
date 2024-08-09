@@ -52,12 +52,10 @@ describe.runIf(browser !== 'firefox')('Networks & Testnet Mode flows', () => {
   });
   afterAll(async () => await driver.quit());
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   beforeEach<{ driver: WebDriver }>(async (context) => {
     context.driver = driver;
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   afterEach<{ driver: WebDriver }>(async (context) => {
     await takeScreenshotOnFailure(context);
   });
