@@ -321,6 +321,8 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     assetToBuyInputRef,
     assetToSellMaxValue,
     assetToBuyValue,
+    assetToSellValueRounded,
+    assetToBuyValueRounded,
     assetToSellValue,
     selectAssetToSell,
     assetToSellNativeValue,
@@ -490,9 +492,9 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
         const field = savedField || 'sellField';
         if (savedAmount) {
           if (field === 'buyField') {
-            setAssetToBuyInputValue(savedAmount);
+            setAssetToBuyInputValue(savedAmount, false);
           } else if (field === 'sellField') {
-            setAssetToSellInputValue(savedAmount);
+            setAssetToSellInputValue(savedAmount, false);
           } else {
             setAssetToSellInputNativeValue(savedAmount);
           }
@@ -644,7 +646,12 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                   setAssetToSellMaxValue={setAssetToSellMaxValue}
                   assetToSellValue={
                     independentField === 'sellNativeField'
-                      ? assetToSellDisplay
+                      ? assetToSellDisplay.display
+                      : assetToSellValueRounded
+                  }
+                  assetToSellFullValue={
+                    independentField === 'sellNativeField'
+                      ? assetToSellDisplay.amount
                       : assetToSellValue
                   }
                   setAssetToSellInputValue={setAssetToSellInputValue}
@@ -727,6 +734,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                   assetFilter={assetToBuyFilter}
                   setAssetFilter={setAssetToBuyFilter}
                   assetToBuyValue={assetToBuyValue}
+                  assetToBuyInputValue={assetToBuyValueRounded}
                   assetToSellValue={assetToSellValue}
                   setAssetToBuyInputValue={setAssetToBuyInputValue}
                   inputRef={assetToBuyInputRef}

@@ -15,6 +15,7 @@ interface SwapTokenInputProps {
   assetToSellMaxValue: { display: string; amount: string };
   assetToSellValue: string;
   asset: ParsedSearchAsset | null;
+  assetToSellFullValue: string;
   assetFilter: string;
   assets?: ParsedSearchAsset[];
   dropdownClosed: boolean;
@@ -40,6 +41,7 @@ interface SwapTokenInputProps {
 export const TokenToSellInput = ({
   assetToSellMaxValue,
   asset,
+  assetToSellFullValue,
   assetFilter,
   assets,
   dropdownClosed = false,
@@ -134,6 +136,8 @@ export const TokenToSellInput = ({
       placeholder={placeholder}
       zIndex={zIndex}
       variant="tinted"
+      showAssetTooltipOnBlur={true}
+      assetTooltipValue={assetToSellFullValue}
       value={assetToSellValue}
       onDropdownOpen={onDropdownOpen}
       setOnSelectAsset={setOnSelectAsset}
