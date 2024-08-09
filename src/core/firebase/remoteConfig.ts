@@ -29,6 +29,7 @@ export interface RainbowConfig extends Record<string, any> {
   defi_positions_enabled: boolean;
   rewards_enabled: boolean;
   rewards_bridging_enabled: boolean;
+  degen_mode: boolean;
   // SWAPS
   default_slippage_bips: {
     [ChainName.mainnet]: number;
@@ -55,6 +56,7 @@ const DEFAULT_CONFIG = {
   defi_positions_enabled: false,
   rewards_enabled: true,
   rewards_bridging_enabled: true,
+  degen_mode: false,
   // SWAPS
   default_slippage_bips: {
     arbitrum: 200,
@@ -117,7 +119,8 @@ export const init = async () => {
             key === 'BX_points_enabled' ||
             key === 'BX_defi_positions_enabled' ||
             key === 'BX_rewards_enabled' ||
-            key === 'BX_rewards_bridging_enabled'
+            key === 'BX_rewards_bridging_enabled' ||
+            key === 'BX_degen_mode'
           ) {
             config[realKey] = entry.asBoolean();
           } else {

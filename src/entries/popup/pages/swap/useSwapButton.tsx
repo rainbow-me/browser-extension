@@ -1,12 +1,8 @@
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
-import React from 'react';
+import React, { useState } from 'react';
 
-import { i18n } from '~/core/languages';
 import { ParsedSearchAsset } from '~/core/types/assets';
-import {
-  getCrossChainTimeEstimate,
-  getQuoteServiceTime,
-} from '~/core/utils/swaps';
+import { KeychainType } from '~/core/types/keychainTypes';
 import { Bleed, Box, Inline, Symbol } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
 import {
@@ -19,14 +15,15 @@ import { ChevronRightDouble } from '../../components/ChevronRightDouble';
 import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
 import { ExplainerSheetProps } from '../../components/ExplainerSheet/ExplainerSheet';
 import { Spinner } from '../../components/Spinner/Spinner';
+import { useCurrentWalletTypeAndVendor } from '../../hooks/useCurrentWalletType';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { useTranslationContext } from '../../hooks/useTranslationContext';
+import { ROUTES } from '../../urls';
 
-export interface SwapTimeEstimate {
-  isLongWait: boolean;
-  timeEstimate?: number;
-  timeEstimateDisplay: string;
-}
+import { onSwap } from './onSwap';
+import { SwapTimeEstimate } from './swapTimeEstimate';
 
-interface GetSwapActionsProps {
+interface UseSwapButtonArgs {
   quote?: Quote | CrosschainQuote | QuoteError;
   isLoading: boolean;
   assetToSell?: ParsedSearchAsset | null;
@@ -37,21 +34,21 @@ interface GetSwapActionsProps {
   hideExplainerSheet: () => void;
   showExplainerSheet: (params: ExplainerSheetProps) => void;
   showSwapReviewSheet: () => void;
-  t: typeof i18n.t;
+  isDegenModeEnabled: boolean;
+  timeEstimate: SwapTimeEstimate | null;
 }
 
-interface SwapActions {
+interface SwapButton {
   buttonColor: BackgroundColor | ButtonColor | TextColor;
   buttonLabelColor: TextStyles['color'];
   buttonDisabled: boolean;
   buttonLabel: string;
   buttonIcon: React.ReactElement | null;
   status: 'loading' | 'ready' | 'error';
-  timeEstimate?: SwapTimeEstimate | null;
   buttonAction: () => void;
 }
 
-export const getSwapActions = ({
+export const useSwapButton = ({
   quote,
   isLoading,
   assetToSell,
@@ -61,8 +58,15 @@ export const getSwapActions = ({
   hideExplainerSheet,
   showExplainerSheet,
   showSwapReviewSheet,
-  t,
-}: GetSwapActionsProps): SwapActions => {
+  isDegenModeEnabled,
+  timeEstimate,
+}: UseSwapButtonArgs): SwapButton => {
+  const [status, setStatus] = useState<'idle' | 'degen_swapping'>('idle');
+  const t = useTranslationContext();
+  const navigate = useRainbowNavigate();
+  const { type } = useCurrentWalletTypeAndVendor();
+  const isHardwareWallet = type === KeychainType.HardwareWalletKeychain;
+
   if (isLoading) {
     return {
       buttonColor: 'surfaceSecondary',
@@ -97,25 +101,73 @@ export const getSwapActions = ({
   }
 
   if (!(quote as QuoteError).error) {
-    const serviceTime = getQuoteServiceTime({
-      quote: quote as CrosschainQuote,
-    });
-    const timeEstimate = serviceTime
-      ? getCrossChainTimeEstimate({
-          serviceTime,
-        })
-      : null;
+    if (!enoughAssetsForSwap) {
+      return {
+        buttonColor: 'fillSecondary',
+        buttonDisabled: true,
+        buttonLabel: validationButtonLabel,
+        buttonLabelColor: 'label',
+        buttonIcon: null,
+        buttonAction: () => null,
+        status: 'ready',
+      };
+    }
+
+    if (isDegenModeEnabled) {
+      if (status === 'degen_swapping') {
+        return {
+          buttonColor: 'surfaceSecondary',
+          buttonDisabled: true,
+          buttonLabel: isHardwareWallet
+            ? t('swap.actions.waiting_signature')
+            : t('swap.actions.swapping'),
+          buttonLabelColor: 'labelQuaternary',
+          buttonIcon: (
+            <Box
+              width="fit"
+              alignItems="center"
+              justifyContent="center"
+              style={{ margin: 'auto' }}
+            >
+              <Spinner size={16} color="labelQuaternary" />
+            </Box>
+          ),
+          buttonAction: () => null,
+          status: 'ready',
+        };
+      }
+
+      return {
+        buttonColor: 'accent',
+        buttonDisabled: false,
+        buttonLabel: t('swap.actions.swap'),
+        buttonLabelColor: 'label',
+        buttonIcon: null,
+        buttonAction: async () => {
+          setStatus('degen_swapping');
+          const swapExecutedSuccessfully = await onSwap({
+            quote,
+            assetToSell,
+            assetToBuy,
+            degenMode: true,
+          });
+          setStatus('idle');
+          if (swapExecutedSuccessfully) {
+            navigate(ROUTES.HOME, { state: { tab: 'activity' } });
+          }
+        },
+        status: 'ready',
+      };
+    }
 
     return {
-      buttonColor: enoughAssetsForSwap ? 'accent' : 'fillSecondary',
-      buttonDisabled: !enoughAssetsForSwap,
-      buttonLabel: enoughAssetsForSwap
-        ? t('swap.actions.review')
-        : validationButtonLabel,
+      buttonColor: 'accent',
+      buttonDisabled: false,
+      buttonLabel: t('swap.actions.review'),
       buttonLabelColor: 'label',
-      buttonIcon: enoughAssetsForSwap ? (
+      buttonIcon: (
         <Symbol symbol="doc.text.magnifyingglass" weight="bold" size={16} />
-      ) : null,
+      ),
       buttonAction: timeEstimate?.isLongWait
         ? () =>
             showExplainerSheet({
@@ -157,7 +209,6 @@ export const getSwapActions = ({
         : () => {
             showSwapReviewSheet();
           },
-      timeEstimate,
       status: 'ready',
     };
   }

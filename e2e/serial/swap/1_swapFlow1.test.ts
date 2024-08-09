@@ -1,6 +1,6 @@
+import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import 'chromedriver';
 import 'geckodriver';
-import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
 
@@ -1025,7 +1025,7 @@ it('should be able to execute swap', async () => {
   await delayTime('very-long');
   // Adding delay to make sure the provider gets the balance after the swap
   // Because CI is slow so this triggers a race condition most of the time.
-  await delay(5000);
+  await delay(35000);
   const ethBalanceAfterSwap = await provider.getBalance(WALLET_TO_USE_ADDRESS);
 
   const balanceDifference = subtract(
