@@ -12,6 +12,7 @@ import {
 import { SupportedCurrencyKey } from '~/core/references';
 import { supportedAssetsChainIds } from '~/core/references/chains';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { staleBalancesStore } from '~/core/state/staleBalances';
 import { ParsedAssetsDictByChain, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { AddressAssetsReceivedMessage } from '~/core/types/refraction';
@@ -78,7 +79,11 @@ export const userAssetsFetchQuery = ({
   testnetMode,
 }: FetchUserAssetsArgs) => {
   queryClient.fetchQuery({
-    queryKey: userAssetsQueryKey({ address, currency, testnetMode }),
+    queryKey: userAssetsQueryKey({
+      address,
+      currency,
+      testnetMode,
+    }),
     queryFn: userAssetsQueryFunction,
   });
 };
@@ -114,7 +119,11 @@ async function userAssetsQueryFunction({
 }: QueryFunctionArgs<typeof userAssetsQueryKey>) {
   const cache = queryClient.getQueryCache();
   const cachedUserAssets = (cache.find({
-    queryKey: userAssetsQueryKey({ address, currency, testnetMode }),
+    queryKey: userAssetsQueryKey({
+      address,
+      currency,
+      testnetMode,
+    }),
   })?.state?.data || {}) as ParsedAssetsDictByChain;
   try {
     const supportedChainIds = getSupportedChains({
@@ -122,12 +131,14 @@ async function userAssetsQueryFunction({
     })
       .map(({ id }) => id)
       .filter((id) => supportedAssetsChainIds.includes(id));
-
-    const url = `/${supportedChainIds.join(',')}/${address}/assets`;
+    staleBalancesStore.getState().clearExpiredData(address as Address);
+    const staleBalancesParam = staleBalancesStore
+      .getState()
+      .getStaleBalancesQueryParam(address as Address);
+    const url = `/${supportedChainIds.join(
+      ',',
+    )}/${address}/assets/?currency=${currency.toLowerCase()}${staleBalancesParam}`;
     const res = await addysHttp.get<AddressAssetsReceivedMessage>(url, {
-      params: {
-        currency: currency.toLowerCase(),
-      },
       timeout: USER_ASSETS_TIMEOUT_DURATION,
     });
     const chainIdsInResponse = res?.data?.meta?.chain_ids || [];
@@ -183,7 +194,11 @@ async function userAssetsQueryFunctionRetryByChain({
     const cache = queryClient.getQueryCache();
     const cachedUserAssets =
       (cache.find({
-        queryKey: userAssetsQueryKey({ address, currency, testnetMode }),
+        queryKey: userAssetsQueryKey({
+          address,
+          currency,
+          testnetMode,
+        }),
       })?.state?.data as ParsedAssetsDictByChain) || {};
     const retries = [];
     for (const chainIdWithError of chainIds) {
@@ -206,7 +221,11 @@ async function userAssetsQueryFunctionRetryByChain({
       }
     }
     queryClient.setQueryData(
-      userAssetsQueryKey({ address, currency, testnetMode }),
+      userAssetsQueryKey({
+        address,
+        currency,
+        testnetMode,
+      }),
       cachedUserAssets,
     );
   } catch (e) {
@@ -230,7 +249,11 @@ export function useUserAssets<TSelectResult = UserAssetsResult>(
 ) {
   const { testnetMode } = useTestnetModeStore();
   return useQuery({
-    queryKey: userAssetsQueryKey({ address, currency, testnetMode }),
+    queryKey: userAssetsQueryKey({
+      address,
+      currency,
+      testnetMode,
+    }),
     queryFn: userAssetsQueryFunction,
     ...config,
     refetchInterval: USER_ASSETS_REFETCH_INTERVAL,
