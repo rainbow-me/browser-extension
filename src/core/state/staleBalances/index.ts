@@ -61,14 +61,6 @@ export const staleBalancesStore = createStore<StaleBalancesState>(
           ...staleBalancesForUser,
           [chainId]: newStaleBalancesForChain,
         };
-        console.log('STEP ONE ---: ', address, info);
-        console.log('ADD STALE BALANCE: STALE BALANCES: ', staleBalances);
-        console.log('ADD STALE BALANCE: NEW FOR USER: ', {
-          staleBalances: {
-            ...staleBalances,
-            [address]: newStaleBalancesForUser,
-          },
-        });
         return {
           staleBalances: {
             ...staleBalances,
@@ -80,7 +72,6 @@ export const staleBalancesStore = createStore<StaleBalancesState>(
     clearExpiredData: (address: Address) => {
       set((state) => {
         const { staleBalances } = state;
-        console.log('STALE BALANCES IN CLEAR EXPIRED DATA: ', staleBalances);
         const staleBalancesForUser = staleBalances[address] || {};
         const newStaleBalancesForUser: StaleBalancesByChainId = {
           ...staleBalancesForUser,

@@ -44,7 +44,7 @@ export const useWatchPendingTransactions = ({
     useCustomNetworkTransactionsStore.use.addCustomNetworkTransactions();
   const { userChains } = useUserChainsStore();
   const { testnetMode } = useTestnetModeStore.getState();
-  const { staleBalances, addStaleBalance } = useStaleBalancesStore();
+  const { addStaleBalance } = useStaleBalancesStore();
 
   const pendingTransactions = useMemo(
     () => storePendingTransactions[address] || [],
@@ -239,45 +239,35 @@ export const useWatchPendingTransactions = ({
         },
       );
 
+    console.log('MINED TX: ', minedTransactions);
+
     minedTransactions.forEach((minedTransaction) => {
       if (minedTransaction.changes?.length) {
         minedTransaction.changes?.forEach((change) => {
           const changedAsset = change?.asset;
           const changedAssetAddress = changedAsset?.address as Address;
           if (changedAsset) {
-            if (
-              staleBalances?.[address]?.[changedAsset.chainId]?.[
-                changedAsset?.address as Address
-              ]
-            ) {
-              addStaleBalance({
-                address,
-                chainId: changedAsset?.chainId,
-                info: {
-                  address: changedAssetAddress,
-                  transactionHash: minedTransaction.hash,
-                },
-              });
-            }
+            addStaleBalance({
+              address,
+              chainId: changedAsset?.chainId,
+              info: {
+                address: changedAssetAddress,
+                transactionHash: minedTransaction.hash,
+              },
+            });
           }
         });
       } else if (minedTransaction.asset) {
         const changedAsset = minedTransaction.asset;
         const changedAssetAddress = changedAsset?.address as Address;
-        if (
-          staleBalances?.[address]?.[changedAsset.chainId]?.[
-            changedAsset?.address as Address
-          ]
-        ) {
-          addStaleBalance({
-            address,
-            chainId: changedAsset?.chainId,
-            info: {
-              address: changedAssetAddress,
-              transactionHash: minedTransaction.hash,
-            },
-          });
-        }
+        addStaleBalance({
+          address,
+          chainId: changedAsset?.chainId,
+          info: {
+            address: changedAssetAddress,
+            transactionHash: minedTransaction.hash,
+          },
+        });
       }
       if (isCustomChain(minedTransaction.chainId)) {
         addCustomNetworkTransactions({
@@ -318,7 +308,6 @@ export const useWatchPendingTransactions = ({
     processNonces,
     processPendingTransaction,
     setPendingTransactions,
-    staleBalances,
     testnetMode,
     userChains,
   ]);

@@ -92,7 +92,6 @@ export async function executeAction<T extends RapActionTypes>({
       type,
       actionProps,
     )()) as RapActionResult;
-    console.log('execute action: ', hash);
     return { baseNonce: nonce, errorMessage: null, hash };
   } catch (error) {
     logger.error(new RainbowError(`rap: ${rapName} - error execute action`), {
