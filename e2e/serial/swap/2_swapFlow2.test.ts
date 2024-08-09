@@ -131,14 +131,6 @@ it('should be able to go to review a unlock and swap', async () => {
     id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-row`,
     driver,
   });
-  await findElementByTestIdAndClick({
-    id: 'token-to-buy-search-token-input',
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-favorites-token-to-buy-row`,
-    driver,
-  });
   await typeOnTextInput({
     id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     text: `\b50`,
