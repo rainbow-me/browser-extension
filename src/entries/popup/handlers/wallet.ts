@@ -98,11 +98,9 @@ export const sendTransaction = async (
   transactionRequest: TransactionRequest,
 ): Promise<TransactionResponse> => {
   const { selectedGas } = gasStore.getState();
-  console.log('get provider', transactionRequest.chainId);
   const provider = getProvider({
     chainId: transactionRequest.chainId,
   });
-  console.log(' provider', provider);
   const gasLimit = await estimateGasWithPadding({
     transactionRequest,
     provider,
@@ -160,7 +158,6 @@ export const sendTransaction = async (
         throw new Error('Unsupported hardware wallet');
     }
   } else {
-    console.log('about to send');
     const transactionResponse = await walletAction<TransactionResponse>(
       'send_transaction',
       params,

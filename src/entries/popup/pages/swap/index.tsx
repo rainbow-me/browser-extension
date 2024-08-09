@@ -324,6 +324,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     assetToSellMaxValue,
     assetToBuyValue,
     assetToSellValue,
+    selectAssetToSell,
     assetToSellNativeValue,
     assetToSellDisplay,
     assetToSellDropdownClosed,
@@ -345,6 +346,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     selectedGas,
     setAssetToSell,
     setAssetToBuy,
+    setHasRequestedMaxValueAssetToSell,
     inputToOpenOnMount,
     bridge,
   });
@@ -449,25 +451,6 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
   }, [onAssetToBuyInputOpen, onAssetToSellInputOpen]);
 
   const tokenToBuyInputRef = useRef<TokenInputRef>();
-
-  const selectAssetToSell = useCallback(
-    (asset: ParsedSearchAsset | null) => {
-      setAssetToSell(asset);
-      if (!assetToBuy) tokenToBuyInputRef.current?.openDropdown();
-      setAssetToSellInputValue('');
-      setAssetToBuyInputValue('');
-      if (asset) {
-        setHasRequestedMaxValueAssetToSell(true);
-      }
-    },
-    [
-      setHasRequestedMaxValueAssetToSell,
-      setAssetToBuyInputValue,
-      setAssetToSell,
-      setAssetToSellInputValue,
-      assetToBuy,
-    ],
-  );
 
   const {
     swapAmount: savedAmount,
