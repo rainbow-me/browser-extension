@@ -1,8 +1,10 @@
 import { useEffect } from 'react';
 import { Address } from 'viem';
 
+import { userAssetsFetchQuery } from '~/core/resources/assets/userAssets';
 import { useConsolidatedTransactions } from '~/core/resources/transactions/consolidatedTransactions';
 import {
+  currentCurrencyStore,
   nonceStore,
   pendingTransactionsStore,
   useCurrentAddressStore,
@@ -77,7 +79,8 @@ function watchForPendingTransactionsReportedByRainbowBackend({
   const supportedChainIds = getSupportedChains({
     testnets: false,
   }).map(({ id }) => id);
-  const { addStaleBalance, staleBalances } = staleBalancesStore.getState();
+  const { addStaleBalance } = staleBalancesStore.getState();
+  const { currentCurrency } = currentCurrencyStore.getState();
   for (const supportedChainId of supportedChainIds) {
     const latestTxConfirmedByBackend = latestTransactions.get(supportedChainId);
     if (latestTxConfirmedByBackend) {
@@ -118,7 +121,7 @@ function watchForPendingTransactionsReportedByRainbowBackend({
     const latestTxNonce = latestTx?.nonce || 0;
     // still pending or backend is not returning confirmation yet
     // if !latestTx means that is the first tx of the wallet
-    const newlyConfirmed = !latestTx || txNonce > latestTxNonce;
+    const newlyConfirmed = latestTxNonce && txNonce <= latestTxNonce;
     if (newlyConfirmed) {
       newlyConfirmedTransactions = [...newlyConfirmedTransactions, tx];
     } else {
@@ -132,41 +135,36 @@ function watchForPendingTransactionsReportedByRainbowBackend({
         const changedAsset = change?.asset;
         const changedAssetAddress = changedAsset?.address as Address;
         if (changedAsset) {
-          if (
-            staleBalances?.[currentAddress]?.[changedAsset.chainId]?.[
-              changedAsset?.address as Address
-            ]
-          ) {
-            addStaleBalance({
-              address: currentAddress,
-              chainId: changedAsset?.chainId,
-              info: {
-                address: changedAssetAddress,
-                transactionHash: tx.hash,
-              },
-            });
-          }
+          addStaleBalance({
+            address: currentAddress,
+            chainId: changedAsset?.chainId,
+            info: {
+              address: changedAssetAddress,
+              transactionHash: tx.hash,
+            },
+          });
         }
       });
     } else if (tx.asset) {
       const changedAsset = tx.asset;
       const changedAssetAddress = changedAsset?.address as Address;
-      if (
-        staleBalances?.[currentAddress]?.[changedAsset.chainId]?.[
-          changedAsset?.address as Address
-        ]
-      ) {
-        addStaleBalance({
-          address: currentAddress,
-          chainId: changedAsset?.chainId,
-          info: {
-            address: changedAssetAddress,
-            transactionHash: tx.hash,
-          },
-        });
-      }
+      addStaleBalance({
+        address: currentAddress,
+        chainId: changedAsset?.chainId,
+        info: {
+          address: changedAssetAddress,
+          transactionHash: tx.hash,
+        },
+      });
     }
   });
+
+  if (newlyConfirmedTransactions.length) {
+    userAssetsFetchQuery({
+      address: currentAddress,
+      currency: currentCurrency,
+    });
+  }
 
   setPendingTransactions({
     address: currentAddress,

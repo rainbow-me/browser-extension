@@ -65,7 +65,7 @@ export const userAssetsQueryKey = ({
   createQueryKey(
     'userAssets',
     { address, currency, testnetMode },
-    { persisterVersion: 4 },
+    { persisterVersion: 3 },
   );
 
 type UserAssetsQueryKey = ReturnType<typeof userAssetsQueryKey>;

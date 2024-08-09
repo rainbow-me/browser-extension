@@ -171,7 +171,6 @@ export async function claimBridge({
   let swap;
   try {
     swap = await executeCrosschainSwap(swapParams);
-    console.log('execute crosschain swap: FOOO BAR', swap);
   } catch (e) {
     throw new Error('[CLAIM-BRIDGE]: crosschainSwap error');
   }
