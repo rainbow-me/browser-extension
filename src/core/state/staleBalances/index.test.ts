@@ -51,7 +51,9 @@ test('should be able to add asset information to the staleBalances object', asyn
 });
 
 test('should generate accurate stale balance query params and clear expired data - case #1', async () => {
-  const { getStaleBalancesQueryParam } = staleBalancesStore.getState();
+  const { getStaleBalancesQueryParam, clearExpiredData } =
+    staleBalancesStore.getState();
+  clearExpiredData(TEST_ADDRESS_1);
   const queryParam = getStaleBalancesQueryParam(TEST_ADDRESS_1);
   expect(queryParam).toStrictEqual(`&token=${ChainId.mainnet}.${ETH_ADDRESS}`);
 });
@@ -136,13 +138,15 @@ test('should preserve data from other addresses when clearing expired data', asy
 });
 
 test('should generate accurate stale balance query params and clear expired data - case #2', async () => {
-  const { getStaleBalancesQueryParam } = staleBalancesStore.getState();
+  const { getStaleBalancesQueryParam, clearExpiredData } =
+    staleBalancesStore.getState();
+  clearExpiredData(TEST_ADDRESS_2);
   const queryParam = getStaleBalancesQueryParam(TEST_ADDRESS_2);
   expect(queryParam).toStrictEqual(`&token=${ChainId.mainnet}.${ETH_ADDRESS}`);
 });
 
 test('should generate accurate stale balance query params and clear expired data - case #3', async () => {
-  const { addStaleBalance, getStaleBalancesQueryParam } =
+  const { addStaleBalance, getStaleBalancesQueryParam, clearExpiredData } =
     staleBalancesStore.getState();
   addStaleBalance({
     address: TEST_ADDRESS_1,
@@ -154,11 +158,13 @@ test('should generate accurate stale balance query params and clear expired data
     },
   });
 
+  clearExpiredData(TEST_ADDRESS_1);
   const queryParam = getStaleBalancesQueryParam(TEST_ADDRESS_1);
   expect(queryParam).toStrictEqual(
     `&token=${ChainId.mainnet}.${ETH_ADDRESS}&token=${ChainId.optimism}.${OP_ADDRESS}`,
   );
 
+  clearExpiredData(TEST_ADDRESS_2);
   const queryParam2 = getStaleBalancesQueryParam(TEST_ADDRESS_2);
   expect(queryParam2).toStrictEqual(`&token=${ChainId.mainnet}.${ETH_ADDRESS}`);
 });

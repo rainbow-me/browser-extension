@@ -92,7 +92,6 @@ export function SignMessage({
         });
       }
       approveRequest(result);
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       showLedgerDisconnectedAlertIfNeeded(e);
