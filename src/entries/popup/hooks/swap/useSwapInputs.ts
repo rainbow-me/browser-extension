@@ -35,6 +35,7 @@ export const useSwapInputs = ({
   assetToBuy,
   setAssetToSell,
   setAssetToBuy,
+  setHasRequestedMaxValueAssetToSell,
   selectedGas,
   inputToOpenOnMount,
   bridge,
@@ -43,6 +44,7 @@ export const useSwapInputs = ({
   assetToBuy: ParsedSearchAsset | null;
   setAssetToSell: (asset: ParsedSearchAsset | null) => void;
   setAssetToBuy: (asset: ParsedSearchAsset | null) => void;
+  setHasRequestedMaxValueAssetToSell: (hasRequestedMaxValue: boolean) => void;
   selectedGas: GasFeeParams | GasFeeLegacyParams;
   inputToOpenOnMount: 'sell' | 'buy' | null;
   bridge: boolean;
@@ -302,11 +304,16 @@ export const useSwapInputs = ({
       setAssetToSellValue('');
       setAssetToBuyValue('');
 
+      if (asset) {
+        setHasRequestedMaxValueAssetToSell(true);
+      }
+
       if (!assetToBuy) {
         tokenToBuyInputRef.current?.openDropdown();
       }
     },
     [
+      setHasRequestedMaxValueAssetToSell,
       setAssetToSell,
       bridge,
       assetToBuy,
