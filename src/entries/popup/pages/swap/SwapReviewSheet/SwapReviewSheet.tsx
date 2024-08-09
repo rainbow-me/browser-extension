@@ -294,7 +294,7 @@ const SwapReviewSheetWithQuote = ({
     const flashbots =
       assetToSell.chainId === ChainId.mainnet ? flashbotsEnabled : false;
     setSendingSwap(true);
-    const tx = await wallet.executeRap<typeof type>({
+    const { errorMessage } = await wallet.executeRap<typeof type>({
       rapActionParameters: {
         sellAmount: q.sellAmount?.toString(),
         buyAmount: q.buyAmount?.toString(),
@@ -306,13 +306,13 @@ const SwapReviewSheetWithQuote = ({
       },
       type,
     });
-    if (tx.errorMessage) {
+    if (errorMessage) {
       setSendingSwap(false);
-      if (tx.errorMessage !== 'handled') {
+      if (errorMessage !== 'handled') {
         logger.error(new RainbowError('swap: error executing swap'), {
-          message: tx.errorMessage,
+          message: errorMessage,
         });
-        const extractedError = tx.errorMessage.split('[')[0];
+        const extractedError = errorMessage.split('[')[0];
         triggerAlert({
           text: i18n.t('errors.executing_swap'),
           description: extractedError,
