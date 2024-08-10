@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+import { SUPPORTED_CHAINS, chainsNativeAsset } from '~/core/references/chains';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
+import { isNativeAsset } from '~/core/utils/chains';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import {
   addBuffer,
@@ -15,6 +17,9 @@ import {
   minus,
   truncateNumber,
 } from '~/core/utils/numbers';
+import { isLowerCaseMatch } from '~/core/utils/strings';
+
+import { TokenInputRef } from '../../pages/swap/SwapTokenInput/TokenInput';
 
 // The maximum number of characters for the input field.
 // This does not include the decimal point.
@@ -36,6 +41,7 @@ export const useSwapInputs = ({
   assetToBuy,
   setAssetToSell,
   setAssetToBuy,
+  setHasRequestedMaxValueAssetToSell,
   selectedGas,
   inputToOpenOnMount,
   bridge,
@@ -44,6 +50,7 @@ export const useSwapInputs = ({
   assetToBuy: ParsedSearchAsset | null;
   setAssetToSell: (asset: ParsedSearchAsset | null) => void;
   setAssetToBuy: (asset: ParsedSearchAsset | null) => void;
+  setHasRequestedMaxValueAssetToSell: (hasRequestedMaxValue: boolean) => void;
   selectedGas: GasFeeParams | GasFeeLegacyParams;
   inputToOpenOnMount: 'sell' | 'buy' | null;
   bridge: boolean;
@@ -305,6 +312,73 @@ export const useSwapInputs = ({
     [assetToBuyValue, independentField],
   );
 
+  const determineOutputCurrency = useCallback(
+    (asset: ParsedSearchAsset | null) => {
+      if (!asset) return null;
+
+      const { chainId } = asset;
+
+      const supportedChain = SUPPORTED_CHAINS.find(
+        (chain) => chain.id === chainId,
+      );
+
+      if (!supportedChain) return null;
+
+      if (!isNativeAsset(asset.address, chainId)) {
+        const chainNativeAddress = chainsNativeAsset[chainId];
+        // Return native asset for this chain
+        return {
+          uniqueId: `${chainNativeAddress}_${chainId}`,
+          address: chainNativeAddress,
+          chainId,
+          isNativeAsset: true,
+          ...supportedChain.nativeCurrency,
+        };
+      }
+      return null;
+    },
+    [],
+  );
+
+  const tokenToBuyInputRef = useRef<TokenInputRef>();
+
+  const selectAssetToSell = useCallback(
+    (asset: ParsedSearchAsset | null) => {
+      setAssetToSell(asset);
+
+      if (asset && !bridge && !isNativeAsset(asset.address, asset.chainId)) {
+        const suggestedOutputAsset = determineOutputCurrency(
+          asset,
+        ) as ParsedSearchAsset;
+        if (
+          suggestedOutputAsset &&
+          !isLowerCaseMatch(suggestedOutputAsset.symbol, asset.symbol)
+        ) {
+          setAssetToBuy(suggestedOutputAsset);
+        }
+      }
+
+      setAssetToSellValue('');
+      setAssetToBuyValue('');
+
+      if (asset) {
+        setHasRequestedMaxValueAssetToSell(true);
+      }
+
+      if (!assetToBuy) {
+        tokenToBuyInputRef.current?.openDropdown();
+      }
+    },
+    [
+      setHasRequestedMaxValueAssetToSell,
+      setAssetToSell,
+      bridge,
+      assetToBuy,
+      determineOutputCurrency,
+      setAssetToBuy,
+    ],
+  );
+
   return {
     assetToBuyInputRef,
     assetToSellInputRef,
@@ -330,5 +404,6 @@ export const useSwapInputs = ({
     setAssetToSellInputNativeValue,
     setAssetToSellMaxValue,
     setIndependentField: setIndependentFieldIfOccupied,
+    selectAssetToSell,
   };
 };

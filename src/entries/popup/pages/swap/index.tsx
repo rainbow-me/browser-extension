@@ -225,6 +225,8 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
   >(null);
   const [defaultAssetWasSet, setDefaultAssetWasSet] = useState<boolean>(false);
   const [defaultValueWasSet, setDefaultValueWasSet] = useState<boolean>(false);
+  const [hasRequestedMaxValueAssetToSell, setHasRequestedMaxValueAssetToSell] =
+    useState<boolean>(false);
   const { isFirefox } = useBrowser();
 
   // translate based on the context, bridge or swap
@@ -324,6 +326,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     assetToSellValueRounded,
     assetToBuyValueRounded,
     assetToSellValue,
+    selectAssetToSell,
     assetToSellNativeValue,
     assetToSellDisplay,
     assetToSellDropdownClosed,
@@ -345,6 +348,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     selectedGas,
     setAssetToSell,
     setAssetToBuy,
+    setHasRequestedMaxValueAssetToSell,
     inputToOpenOnMount,
     bridge,
   });
@@ -450,21 +454,6 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
 
   const tokenToBuyInputRef = useRef<TokenInputRef>();
 
-  const selectAssetToSell = useCallback(
-    (asset: ParsedSearchAsset | null) => {
-      setAssetToSell(asset);
-      if (!assetToBuy) tokenToBuyInputRef.current?.openDropdown();
-      setAssetToSellInputValue('');
-      setAssetToBuyInputValue('');
-    },
-    [
-      setAssetToBuyInputValue,
-      setAssetToSell,
-      setAssetToSellInputValue,
-      assetToBuy,
-    ],
-  );
-
   const {
     swapAmount: savedAmount,
     swapField: savedField,
@@ -546,6 +535,14 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
       clearCustomGasModified();
     };
   }, [clearCustomGasModified]);
+
+  useEffect(() => {
+    if (hasRequestedMaxValueAssetToSell) {
+      setAssetToSellMaxValue();
+      setHasRequestedMaxValueAssetToSell(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasRequestedMaxValueAssetToSell]);
 
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
