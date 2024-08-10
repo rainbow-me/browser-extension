@@ -145,6 +145,7 @@ it('should be able to go to review a unlock and swap', async () => {
     driver,
   });
   await delayTime('very-long');
+  await delayTime('very-long');
 });
 
 it('should be able to execute unlock and swap', async () => {
@@ -187,7 +188,8 @@ it('should be able to execute unlock and swap', async () => {
     id: 'swap-confirmation-button-ready',
     driver,
   });
-  await delayTime('long');
+  await delayTime('very-long');
+  await delayTime('very-long');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
 
   // wait for swap to complete
