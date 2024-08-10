@@ -131,12 +131,21 @@ it('should be able to go to review a unlock and swap', async () => {
     id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-row`,
     driver,
   });
+  await findElementByTestIdAndClick({
+    id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    driver,
+  });
+  await clearInput({
+    id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    driver,
+  });
   await typeOnTextInput({
     id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     text: `\b50`,
     driver,
   });
-  await delayTime('long');
+  await delayTime('very-long');
+  await delayTime('very-long');
 });
 
 it('should be able to execute unlock and swap', async () => {
@@ -179,10 +188,14 @@ it('should be able to execute unlock and swap', async () => {
     id: 'swap-confirmation-button-ready',
     driver,
   });
-  await delayTime('long');
+  await delayTime('very-long');
+  await delayTime('very-long');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
 
   // wait for swap to complete
+  await delayTime('very-long');
+  await delayTime('very-long');
+  await delayTime('very-long');
   await delayTime('very-long');
   await delayTime('very-long');
   await delayTime('very-long');
