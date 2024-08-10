@@ -355,7 +355,7 @@ it('should be able to open press max on token to sell input', async () => {
     id: 'token-to-sell-info-fiat-value-input',
     driver,
   });
-  expect(fiatValueText).toBe('');
+  expect(fiatValueText).not.toBe('');
   await findElementByTestIdAndClick({
     id: 'token-to-sell-info-max-button',
     driver,
@@ -391,7 +391,7 @@ it('should be able to remove token to sell and select it again', async () => {
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
-  expect(ethValueAfterSelection).toEqual('');
+  expect(ethValueAfterSelection).not.toEqual('');
 });
 
 it('should be able to open token to buy input and select assets', async () => {
@@ -419,6 +419,14 @@ it('should be able to open token to buy input and select assets', async () => {
 it('should be able to type native amount on sell input', async () => {
   await findElementByTestIdAndClick({
     id: 'token-to-sell-info-fiat-value-input',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: `token-to-sell-info-fiat-value-input`,
+    driver,
+  });
+  await clearInput({
+    id: `token-to-sell-info-fiat-value-input`,
     driver,
   });
   await typeOnTextInput({
@@ -855,6 +863,14 @@ it('should be able to go to review a swap', async () => {
     driver,
   });
   expect(toBuyInputDaiSelected).toBeTruthy();
+  await findElementByTestIdAndClick({
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    driver,
+  });
+  await clearInput({
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    driver,
+  });
   await typeOnTextInput({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     text: 1,
