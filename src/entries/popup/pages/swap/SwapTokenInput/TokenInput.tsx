@@ -1,5 +1,6 @@
 import React, {
   ChangeEvent,
+  MouseEventHandler,
   ReactElement,
   useCallback,
   useEffect,
@@ -25,12 +26,14 @@ const SwapInputMaskWrapper = ({
   value,
   symbol,
   showAssetTooltip,
+  onTooltipMouseDown,
   children,
 }: {
   inputDisabled?: boolean;
   value?: string;
   symbol?: string;
   showAssetTooltip: boolean;
+  onTooltipMouseDown?: MouseEventHandler<HTMLDivElement>;
   children: ReactElement;
 }) => {
   if (inputDisabled) {
@@ -55,6 +58,7 @@ const SwapInputMaskWrapper = ({
         textColor="labelSecondary"
         arrowAlignment="left"
         align="start"
+        onMouseDown={onTooltipMouseDown}
       >
         {children}
       </CursorTooltip>
@@ -225,6 +229,10 @@ export const TokenInput = React.forwardRef<
               value={assetTooltipValue}
               inputDisabled={inputDisabled}
               showAssetTooltip={showAssetTooltip}
+              onTooltipMouseDown={() => {
+                // Wait for the tooltip to close
+                setTimeout(() => inputRef?.current?.focus(), 400);
+              }}
             >
               <Box marginVertical="-20px">
                 <SwapInputMask
