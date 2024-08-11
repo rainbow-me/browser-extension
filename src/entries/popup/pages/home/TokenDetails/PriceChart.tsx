@@ -12,6 +12,7 @@ import { getChain } from '~/core/utils/chains';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { formatDate } from '~/core/utils/formatDate';
 import { formatCurrency } from '~/core/utils/formatNumber';
+import { lessThan } from '~/core/utils/numbers';
 import {
   Box,
   Button,
@@ -44,7 +45,12 @@ const PriceChange = memo(function PriceChange({
   changePercentage = 0,
   date,
 }: PriceChange) {
-  const { color, symbol } = parsePriceChange(+changePercentage.toFixed(2));
+  const limitedPriceChangePercentage = lessThan(changePercentage, -100)
+    ? -100
+    : changePercentage;
+  const { color, symbol } = parsePriceChange(
+    +limitedPriceChangePercentage.toFixed(2),
+  );
   return (
     <Box display="flex" flexDirection="column" gap="10px" alignItems="flex-end">
       <Inline alignVertical="center" space="4px">
@@ -58,7 +64,7 @@ const PriceChange = memo(function PriceChange({
           cursor="text"
           userSelect="text"
         >
-          {Math.abs(changePercentage).toFixed(2)} %
+          {Math.abs(limitedPriceChangePercentage).toFixed(2)} %
         </Text>
       </Inline>
       <Text size="14pt" weight="heavy" color={color}>
