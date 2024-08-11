@@ -12,6 +12,7 @@ import {
   clearInput,
   delayTime,
   doNotFindElementByTestId,
+  executeMultipleShortcuts,
   fillPrivateKey,
   findElementByTestId,
   findElementByTestIdAndClick,
@@ -22,6 +23,7 @@ import {
   goToPopup,
   goToWelcome,
   initDriverWithOptions,
+  performShortcutWithNormalKey,
   querySelector,
   takeScreenshotOnFailure,
   typeOnTextInput,
@@ -135,10 +137,16 @@ it('should be able to go to review a unlock and swap', async () => {
     id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
-  await clearInput({
+  await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
+  await executeMultipleShortcuts({
+    driver,
+    keyDown: 'COMMAND',
+    key: 'A',
+  });
+  await performShortcutWithNormalKey(driver, 'BACK_SPACE');
   await typeOnTextInput({
     id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     text: `\b50`,
