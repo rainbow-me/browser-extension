@@ -15,6 +15,7 @@ import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
+import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { TESTNET_MODE_BAR_HEIGHT } from '~/core/utils/dimensions';
 import {
@@ -34,10 +35,15 @@ import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverfl
 import { SymbolName } from '~/design-system/styles/designTokens';
 
 import { DropdownInputWrapper } from '../../components/DropdownInputWrapper/DropdownInputWrapper';
+import { LabelPill } from '../../components/LabelPill/LabelPill';
 import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { WalletContextMenu } from '../../components/WalletContextMenu';
-import { useAllFilteredWallets } from '../../hooks/send/useAllFilteredWallets';
+import {
+  VisibleOwnedWallet,
+  VisibleOwnedWallets,
+  useAllFilteredWallets,
+} from '../../hooks/send/useAllFilteredWallets';
 import { useWalletInfo } from '../../hooks/useWalletInfo';
 
 import { InputActionButton } from './InputActionButton';
@@ -51,7 +57,7 @@ const WalletSection = ({
   section,
 }: {
   title: string;
-  wallets: Address[];
+  wallets: Address[] | VisibleOwnedWallets;
   onClickWallet: (address: Address) => void;
   symbol: SymbolName;
   section: 'contacts' | 'my_wallets' | 'watching';
@@ -73,23 +79,30 @@ const WalletSection = ({
       </Box>
 
       <Box>
-        {wallets.map((wallet, i) => (
-          <Bleed horizontal="12px" key={i}>
-            <Lens borderRadius="12px" onKeyDown={() => onClickWallet(wallet)}>
-              <RowHighlightWrapper key={i}>
-                <Inset horizontal="12px" key={i}>
-                  <WalletRow
-                    testId={`wallet-${i + 1}`}
-                    onClick={onClickWallet}
-                    key={wallet}
-                    section={section}
-                    wallet={wallet}
-                  />
-                </Inset>
-              </RowHighlightWrapper>
-            </Lens>
-          </Bleed>
-        ))}
+        {wallets.map((wallet, i) => {
+          const address = typeof wallet === 'string' ? wallet : wallet.address;
+
+          return (
+            <Bleed horizontal="12px" key={i}>
+              <Lens
+                borderRadius="12px"
+                onKeyDown={() => onClickWallet(address)}
+              >
+                <RowHighlightWrapper key={i}>
+                  <Inset horizontal="12px" key={i}>
+                    <WalletRow
+                      testId={`wallet-${i + 1}`}
+                      onClick={onClickWallet}
+                      key={address}
+                      section={section}
+                      wallet={wallet}
+                    />
+                  </Inset>
+                </RowHighlightWrapper>
+              </Lens>
+            </Bleed>
+          );
+        })}
       </Box>
     </Stack>
   ) : null;
@@ -101,30 +114,38 @@ const WalletRow = ({
   section,
   testId,
 }: {
-  wallet: Address;
+  wallet: Address | VisibleOwnedWallet;
   onClick: (address: Address) => void;
   section: 'contacts' | 'my_wallets' | 'watching';
   testId?: string;
 }) => {
+  const address = typeof wallet === 'string' ? wallet : wallet.address;
+
   const { displayName, contactAddress, contactName, isNameDefined } =
     useWalletInfo({
-      address: wallet,
+      address,
     });
   const name =
     section === 'contacts'
       ? contactName || truncateAddress(contactAddress)
       : displayName;
 
+  const hardwareWalletVendor =
+    typeof wallet !== 'string' &&
+    wallet.type === KeychainType.HardwareWalletKeychain
+      ? wallet.vendor
+      : null;
+
   return (
     <Box
       testId={testId}
-      key={wallet}
-      onClick={() => onClick(wallet)}
+      key={address}
+      onClick={() => onClick(address)}
       paddingVertical="8px"
     >
       <Columns alignVertical="center" space="8px">
         <Column width="content">
-          <WalletAvatar size={36} addressOrName={wallet} emojiSize="20pt" />
+          <WalletAvatar size={36} addressOrName={address} emojiSize="20pt" />
         </Column>
         <Column>
           <Stack space="8px">
@@ -134,11 +155,22 @@ const WalletRow = ({
 
             {isNameDefined && (
               <Text weight="semibold" size="12pt" color="labelTertiary">
-                {truncateAddress(wallet)}
+                {truncateAddress(address)}
               </Text>
             )}
           </Stack>
         </Column>
+
+        {!!hardwareWalletVendor && (
+          <Column width="content">
+            <LabelPill
+              dot
+              label={i18n.t(
+                `wallet_switcher.${hardwareWalletVendor.toLowerCase()}`,
+              )}
+            />
+          </Column>
+        )}
       </Columns>
     </Box>
   );
@@ -150,7 +182,7 @@ const DropdownWalletsList = ({
   watchedWallets,
   selectWalletAndCloseDropdown,
 }: {
-  wallets: Address[];
+  wallets: VisibleOwnedWallets;
   contacts: Address[];
   watchedWallets: Address[];
   selectWalletAndCloseDropdown: (address: Address) => void;
@@ -322,7 +354,9 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
       filter: toAddress ? undefined : toAddressOrName,
     });
     const { currentAddress } = useCurrentAddressStore();
-    const selectableWallets = wallets.filter((a) => a !== currentAddress);
+    const selectableWallets = wallets.filter(
+      (w) => w.address !== currentAddress,
+    );
     const { sendAddress: savedSendAddress } = usePopupInstanceStore();
 
     useEffect(() => {
