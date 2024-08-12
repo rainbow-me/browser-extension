@@ -32,7 +32,7 @@ const Toggle = ({
     }
   };
   return (
-    <Box testId={testId}>
+    <Box testId={testId} style={{ height: 23 }}>
       <Switch
         tabIndex={typeof tabIndex === 'number' ? tabIndex : 0}
         onChange={handleChange}

@@ -294,7 +294,8 @@
       "full_watching_wallets": "Full Access to Watched Wallets",
       "hw_wallets_enabled": "Enable Hardware Wallet Support",
       "command_k_internal_shortcuts_enabled": "Enable ⌘K Internal Shortcuts",
-      "custom_rpc": "Custom RPC"
+      "custom_rpc": "Custom RPC",
+      "degen_mode": "Degen Mode"
     }
   },
   "transactions": {
@@ -776,6 +777,10 @@
           }
         },
         "got_it": "Got it"
+      },
+      "degen_mode": {
+        "title": "Degen Mode",
+        "description": "Skip the review step to swap faster"
       }
     },
     "actions": {
@@ -785,7 +790,10 @@
       "fee_on_transfer_token": "Fee on Transfer Token",
       "no_route": "No route found",
       "no_quote": "No quote available",
-      "enter_an_amount": "Enter an amount"
+      "enter_an_amount": "Enter an amount",
+      "swap": "%{Action}",
+      "swapping": "%{Actioning}",
+      "waiting_signature": "Sign on your device"
     },
     "review": {
       "title": "Review & %{Action}",
