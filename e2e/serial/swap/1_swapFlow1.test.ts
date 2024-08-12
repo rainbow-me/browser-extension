@@ -1041,7 +1041,7 @@ it('should be able to execute swap', async () => {
   await delayTime('very-long');
   // Adding delay to make sure the provider gets the balance after the swap
   // Because CI is slow so this triggers a race condition most of the time.
-  await delay(100_000);
+  await delay(5000);
   const ethBalanceAfterSwap = await provider.getBalance(WALLET_TO_USE_ADDRESS);
 
   const balanceDifference = subtract(
