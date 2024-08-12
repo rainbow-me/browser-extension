@@ -41,6 +41,7 @@ beforeAll(async () => {
     destReceiver: TEST_ADDRESS_3,
     swapType: SwapType.crossChain,
     toChainId: ChainId.arbitrum,
+    currency: 'USD',
   });
 }, 20000);
 
