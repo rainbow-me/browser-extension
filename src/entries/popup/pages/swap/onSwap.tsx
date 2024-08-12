@@ -5,6 +5,7 @@ import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { QuoteTypeMap } from '~/core/raps/references';
 import { useFlashbotsEnabledStore } from '~/core/state';
+import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSwapAssetsToRefreshStore } from '~/core/state/swapAssetsToRefresh';
 import { ParsedSearchAsset } from '~/core/types/assets';
@@ -39,11 +40,15 @@ export const onSwap = async ({
     assetToSell.chainId === ChainId.mainnet &&
     useFlashbotsEnabledStore.getState().swapFlashbotsEnabled;
 
+  const isConnectedToHardhat =
+    useConnectedToHardhatStore.getState().connectedToHardhat;
+  const chainId = isConnectedToHardhat ? ChainId.hardhat : assetToSell.chainId;
+
   const { errorMessage, nonce } = await wallet.executeRap<typeof type>({
     rapActionParameters: {
       sellAmount: q.sellAmount?.toString(),
       buyAmount: q.buyAmount?.toString(),
-      chainId: assetToSell.chainId,
+      chainId,
       assetToSell: assetToSell,
       assetToBuy: assetToBuy,
       quote: q,
