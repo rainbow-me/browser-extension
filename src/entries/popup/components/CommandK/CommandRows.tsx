@@ -289,12 +289,14 @@ export const ShortcutRow = ({
 type TokenRowProps = {
   command: TokenSearchItem | UnownedTokenSearchItem;
   handleExecuteCommand: (command: SearchItem, e?: KeyboardEvent) => void;
+  isHidden: boolean;
   selected: boolean;
 };
 
 export const TokenRow = ({
   command,
   handleExecuteCommand,
+  isHidden,
   selected,
 }: TokenRowProps) => {
   const { currentCurrency } = useCurrentCurrencyStore();
@@ -367,6 +369,7 @@ export const TokenRow = ({
       handleExecuteCommand={handleExecuteCommand}
       name={command.name}
       selected={selected}
+      description={isHidden ? i18n.t('command_k.labels.hidden') : undefined}
       LeftComponent={TokenIcon}
       RightComponent={
         command.type === SearchItemType.Token ? TokenBalanceBadge : undefined

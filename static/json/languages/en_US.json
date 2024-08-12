@@ -487,6 +487,8 @@
         "send_to_wallet": "Send to This Wallet",
         "add_contact": "Add as Contact",
         "remove_contact": "Remove Contact",
+        "hide_token": "Hide %{name}",
+        "unhide_token": "Unhide %{name}",
         "copy_wallet_address": "Copy Address",
         "view_wallet_on_etherscan": "View on Etherscan",
         "send_contact": "Send to Contact",
@@ -497,6 +499,7 @@
       "search_tags": {
         "swap": "buy, sell, trade, order, exchange, dex, routes",
         "bridge": "transfer, chain, routes",
+        "hide_token": "hide, unhide",
         "get": "swap, bridge",
         "my_wallets": "my, switch",
         "my_contacts": "my",
@@ -585,7 +588,8 @@
       }
     },
     "labels": {
-      "contact": "Contact"
+      "contact": "Contact",
+      "hidden": "Hidden"
     },
     "quick_promo": {
       "text": "Press %{modifierSymbol}K to open the Magic Menu",

@@ -1,5 +1,5 @@
 import { TranslateOptions } from 'i18n-js';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { To } from 'react-router-dom';
 import { Address } from 'viem';
 import { useEnsName } from 'wagmi';
@@ -14,6 +14,8 @@ import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags'
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useHiddenAssetStore } from '~/core/state/hiddenAssets/hiddenAssets';
+import { usePinnedAssetStore } from '~/core/state/pinnedAssets';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSavedEnsNames } from '~/core/state/savedEnsNames';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
@@ -405,6 +407,18 @@ export const getStaticCommandInfo = (): CommandInfo => {
       symbolSize: 15.5,
       type: SearchItemType.Shortcut,
     },
+    hideToken: {
+      actionLabel: actionLabels.activateCommand,
+      hideForWatchedWallets: true,
+      hideFromMainSearch: true,
+      name: getCommandName('hide_token'),
+      page: PAGES.TOKEN_DETAIL,
+      searchTags: getSearchTags('hide_token'),
+      symbol: 'eye.slash.fill',
+      shouldRemainOnActiveRoute: true,
+      symbolSize: 15.5,
+      type: SearchItemType.Shortcut,
+    },
     copyTokenAddress: {
       hideFromMainSearch: true,
       name: getCommandName('copy_token_address'),
@@ -744,6 +758,18 @@ export const useCommands = (
   const { contacts, deleteContact, saveContact } = useContactsStore();
 
   const { type, vendor } = useCurrentWalletTypeAndVendor();
+  const { pinned: pinnedStore, togglePinAsset } = usePinnedAssetStore();
+
+  const toggleHideAsset = useHiddenAssetStore.use.toggleHideAsset();
+  const hiddenStore = useHiddenAssetStore.use.hidden();
+
+  const isTokenHidden = useCallback(
+    (token: TokenSearchItem) => {
+      const uniqueId = `${token.address}-${token.asset.chainId}`;
+      return !!hiddenStore[address]?.[uniqueId];
+    },
+    [address, hiddenStore],
+  );
 
   const isTrezor =
     type === KeychainType.HardwareWalletKeychain && vendor === 'Trezor';
@@ -913,6 +939,33 @@ export const useCommands = (
       });
     },
     [deleteContact],
+  );
+
+  const toggleHideToken = useCallback(
+    (token: TokenSearchItem) => {
+      const uniqueId = token.id!;
+      const pinned = !!pinnedStore[address]?.[uniqueId]?.pinned;
+
+      const uniqueIdForHiddenToken = `${token.address}-${token.asset.chainId}`;
+      toggleHideAsset(address, uniqueIdForHiddenToken);
+
+      if (pinned) togglePinAsset(address, uniqueId);
+
+      if (isTokenHidden(token)) {
+        triggerToast({
+          title: i18n.t('token_details.toast.unhide_token', {
+            name: token.tokenSymbol,
+          }),
+        });
+      } else {
+        triggerToast({
+          title: i18n.t('token_details.toast.hide_token', {
+            name: token.tokenSymbol,
+          }),
+        });
+      }
+    },
+    [pinnedStore, address, toggleHideAsset, togglePinAsset, isTokenHidden],
   );
 
   const commandOverrides: CommandOverride = React.useMemo(
@@ -1223,6 +1276,23 @@ export const useCommands = (
           isContactCommand(previousPageState.selectedCommand) &&
           currentAddress === previousPageState.selectedCommand.address,
       },
+      hideToken: {
+        ...(isTokenCommand(previousPageState.selectedCommand)
+          ? {
+              name: getCommandName(
+                isTokenHidden(previousPageState.selectedCommand)
+                  ? 'unhide_token'
+                  : 'hide_token',
+                {
+                  name: previousPageState.selectedCommand.tokenSymbol,
+                },
+              ),
+            }
+          : {}),
+        action: () =>
+          isTokenCommand(previousPageState.selectedCommand) &&
+          toggleHideToken(previousPageState.selectedCommand),
+      },
       copyContactAddress: {
         action: () =>
           isContactCommand(previousPageState.selectedCommand) &&
@@ -1303,9 +1373,10 @@ export const useCommands = (
       previousPageState.selectedCommand,
       isContactAdded,
       currentAddress,
+      isTokenHidden,
+      navigate,
       handleCopy,
       sortedAccounts,
-      navigate,
       setFlashbotsEnabled,
       isFirefox,
       selectTokenAndNavigate,
@@ -1317,6 +1388,7 @@ export const useCommands = (
       openENSApp,
       handleSelectAddress,
       handleSendToWallet,
+      toggleHideToken,
       selectSearchTokenAndNavigate,
     ],
   );
