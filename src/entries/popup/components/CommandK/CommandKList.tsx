@@ -76,7 +76,6 @@ export const CommandKList = React.forwardRef<
   const { currentAddress: address } = useCurrentAddressStore();
 
   const hiddenStore = useHiddenAssetStore.use.hidden();
-
   const hidden = useNftsStore.use.hidden();
   const hiddenNftsForAddress = useMemo(
     () => hidden[address] || {},
@@ -223,11 +222,9 @@ export const CommandKList = React.forwardRef<
                       command={command}
                       handleExecuteCommand={handleExecuteCommand}
                       isHidden={
-                        command.type === SearchItemType.Token
-                          ? !!hiddenStore[address]?.[
-                              `${command.address}-${command.asset.chainId}`
-                            ]
-                          : false
+                        !!hiddenStore[address]?.[
+                          `${command.address}-${command.asset.chainId}`
+                        ]
                       }
                       key={command.id}
                       selected={isSelected}
