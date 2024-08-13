@@ -214,6 +214,10 @@ export const event = {
    */
   swapSubmitted: 'swap.submitted',
   /**
+   * Called when the user toggles Degen Mode in the Swap/Bridge flow.
+   */
+  toggledDegenMode: 'degenMode.toggled',
+  /**
    * Called when the core wallet Tokens & Activity
    * screen is viewed or opened in the extension popup.
    */
@@ -287,6 +291,10 @@ export type EventProperties = {
      * The estimated USD value of the swap.
      */
     tradeAmountUSD: number;
+    /**
+     * Whether Degen Mode was used for the swap.
+     */
+    degenMode: boolean;
   };
   [event.commandKActionExecuted]: {
     id?: string;
@@ -720,6 +728,11 @@ export type EventProperties = {
      * The estimated USD value of the swap.
      */
     tradeAmountUSD: number;
+    /**
+     * Whether Degen Mode was used for the swap.
+     */
+    degenMode: boolean;
   };
   [event.walletViewed]: undefined;
+  [event.toggledDegenMode]: { enabled: boolean };
 };

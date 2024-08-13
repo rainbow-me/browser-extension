@@ -37,6 +37,7 @@ import { TextStyles } from '~/design-system/styles/core.css';
 import { ChevronDown } from '../../components/ChevronDown/ChevronDown';
 import {
   ExplainerSheet,
+  ExplainerSheetProps,
   useExplainerSheetParams,
 } from '../../components/ExplainerSheet/ExplainerSheet';
 import { SWAP_INPUT_MASK_ID } from '../../components/InputMask/SwapInputMask/SwapInputMask';
@@ -53,6 +54,7 @@ import {
   useSwapSlippage,
   useSwapValidations,
 } from '../../hooks/swap';
+import { useDegenMode } from '../../hooks/swap/useSwapDegenMode';
 import { useSwapNativeAmounts } from '../../hooks/swap/useSwapNativeAmounts';
 import {
   SwapPriceImpact,
@@ -73,7 +75,8 @@ import { SwapSettings } from './SwapSettings/SwapSettings';
 import { TokenInputRef } from './SwapTokenInput/TokenInput';
 import { TokenToBuyInput } from './SwapTokenInput/TokenToBuyInput';
 import { TokenToSellInput } from './SwapTokenInput/TokenToSellInput';
-import { SwapTimeEstimate, getSwapActions } from './getSwapActions';
+import { SwapTimeEstimate, getSwapTimeEstimate } from './swapTimeEstimate';
+import { useSwapButton } from './useSwapButton';
 
 const SwapWarning = ({
   timeEstimate,
@@ -216,6 +219,91 @@ const MissingPriceExplanation = ({
   );
 };
 
+function SwapButton({
+  quote,
+  assetToSell,
+  assetToSellValue,
+  assetToBuy,
+  timeEstimate,
+  isLoadingQuote,
+  showSwapReviewSheet,
+  showExplainerSheet,
+  hideExplainerSheet,
+}: {
+  quote: Quote | CrosschainQuote | QuoteError | undefined;
+  assetToSell: ParsedSearchAsset | null;
+  assetToSellValue: string;
+  assetToBuy: ParsedSearchAsset | null;
+  timeEstimate: SwapTimeEstimate | null;
+  isLoadingQuote: boolean;
+  showSwapReviewSheet: () => void;
+  showExplainerSheet: (p: ExplainerSheetProps) => void;
+  hideExplainerSheet: () => void;
+}) {
+  const { selectedGas } = useGasStore();
+
+  const {
+    buttonLabel: validationButtonLabel,
+    enoughAssetsForSwap,
+    readyForReview,
+  } = useSwapValidations({
+    assetToSell,
+    assetToSellValue,
+    selectedGas,
+  });
+
+  const isDegenModeEnabled = useDegenMode((s) => s.isDegenModeEnabled);
+
+  const {
+    buttonLabel,
+    buttonLabelColor,
+    buttonDisabled,
+    buttonIcon,
+    buttonColor,
+    buttonAction,
+    status,
+  } = useSwapButton({
+    quote,
+    isLoading: isLoadingQuote,
+    assetToSell,
+    assetToBuy,
+    enoughAssetsForSwap,
+    validationButtonLabel,
+    showExplainerSheet,
+    hideExplainerSheet,
+    showSwapReviewSheet() {
+      if (readyForReview) showSwapReviewSheet();
+    },
+    isDegenModeEnabled,
+    timeEstimate,
+  });
+
+  return (
+    <Button
+      onClick={buttonAction}
+      height="44px"
+      variant="flat"
+      color={buttonColor}
+      width="full"
+      testId="swap-review-button"
+      disabled={buttonDisabled}
+      tabIndex={0}
+    >
+      <Inline space="8px" alignVertical="center">
+        {buttonIcon}
+        <Text
+          testId={`swap-confirmation-button-${status}`}
+          color={buttonLabelColor}
+          size="16pt"
+          weight="bold"
+        >
+          {buttonLabel}
+        </Text>
+      </Inline>
+    </Button>
+  );
+}
+
 export function Swap({ bridge = false }: { bridge?: boolean }) {
   const [showSwapSettings, setShowSwapSettings] = useState(false);
   const [showSwapReview, setShowSwapReview] = useState(false);
@@ -225,6 +313,8 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
   >(null);
   const [defaultAssetWasSet, setDefaultAssetWasSet] = useState<boolean>(false);
   const [defaultValueWasSet, setDefaultValueWasSet] = useState<boolean>(false);
+  const [hasRequestedMaxValueAssetToSell, setHasRequestedMaxValueAssetToSell] =
+    useState<boolean>(false);
   const { isFirefox } = useBrowser();
 
   // translate based on the context, bridge or swap
@@ -322,6 +412,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     assetToSellMaxValue,
     assetToBuyValue,
     assetToSellValue,
+    selectAssetToSell,
     assetToSellNativeValue,
     assetToSellDisplay,
     assetToSellDropdownClosed,
@@ -343,6 +434,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     selectedGas,
     setAssetToSell,
     setAssetToBuy,
+    setHasRequestedMaxValueAssetToSell,
     inputToOpenOnMount,
     bridge,
   });
@@ -358,7 +450,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
 
   const {
     data: quote,
-    isLoading,
+    isLoading: isLoadingQuote,
     isCrosschainSwap,
     isWrapOrUnwrapEth,
   } = useSwapQuote({
@@ -387,49 +479,17 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     });
 
   const { priceImpact } = useSwapPriceImpact({
-    isLoading,
+    isLoading: isLoadingQuote,
     assetToSellNativeValue: assetToSellNativeDisplay,
     assetToBuyNativeValue: assetToBuyNativeDisplay,
   });
 
-  const {
-    buttonLabel: validationButtonLabel,
-    enoughAssetsForSwap,
-    readyForReview,
-  } = useSwapValidations({
-    assetToSell,
-    assetToSellValue,
-    selectedGas,
-  });
-
   const showSwapReviewSheet = useCallback(() => {
-    if (readyForReview) {
-      setShowSwapReview(true);
-      setInReviewSheet(true);
-    }
-  }, [readyForReview]);
+    setShowSwapReview(true);
+    setInReviewSheet(true);
+  }, []);
 
-  const {
-    buttonLabel,
-    buttonLabelColor,
-    buttonDisabled,
-    buttonIcon,
-    buttonColor,
-    timeEstimate,
-    buttonAction,
-    status,
-  } = getSwapActions({
-    quote,
-    isLoading,
-    assetToSell,
-    assetToBuy,
-    enoughAssetsForSwap,
-    validationButtonLabel,
-    showExplainerSheet,
-    hideExplainerSheet,
-    showSwapReviewSheet,
-    t,
-  });
+  const timeEstimate = getSwapTimeEstimate(quote);
 
   useSwapQuoteHandler({
     assetToBuy,
@@ -447,21 +507,6 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
   }, [onAssetToBuyInputOpen, onAssetToSellInputOpen]);
 
   const tokenToBuyInputRef = useRef<TokenInputRef>();
-
-  const selectAssetToSell = useCallback(
-    (asset: ParsedSearchAsset | null) => {
-      setAssetToSell(asset);
-      if (!assetToBuy) tokenToBuyInputRef.current?.openDropdown();
-      setAssetToSellInputValue('');
-      setAssetToBuyInputValue('');
-    },
-    [
-      setAssetToBuyInputValue,
-      setAssetToSell,
-      setAssetToSellInputValue,
-      assetToBuy,
-    ],
-  );
 
   const {
     swapAmount: savedAmount,
@@ -544,6 +589,14 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
       clearCustomGasModified();
     };
   }, [clearCustomGasModified]);
+
+  useEffect(() => {
+    if (hasRequestedMaxValueAssetToSell) {
+      setAssetToSellMaxValue();
+      setHasRequestedMaxValueAssetToSell(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasRequestedMaxValueAssetToSell]);
 
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
@@ -786,28 +839,17 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                       />
                     </Row>
                     <Row>
-                      <Button
-                        onClick={buttonAction}
-                        height="44px"
-                        variant="flat"
-                        color={buttonColor}
-                        width="full"
-                        testId="swap-review-button"
-                        disabled={buttonDisabled}
-                        tabIndex={0}
-                      >
-                        <Inline space="8px" alignVertical="center">
-                          {buttonIcon}
-                          <Text
-                            testId={`swap-confirmation-button-${status}`}
-                            color={buttonLabelColor}
-                            size="16pt"
-                            weight="bold"
-                          >
-                            {buttonLabel}
-                          </Text>
-                        </Inline>
-                      </Button>
+                      <SwapButton
+                        showSwapReviewSheet={showSwapReviewSheet}
+                        quote={quote}
+                        isLoadingQuote={isLoadingQuote}
+                        assetToSell={assetToSell}
+                        assetToSellValue={assetToSellValue}
+                        assetToBuy={assetToBuy}
+                        timeEstimate={timeEstimate}
+                        showExplainerSheet={showExplainerSheet}
+                        hideExplainerSheet={hideExplainerSheet}
+                      />
                     </Row>
                   </Rows>
                 </Box>
