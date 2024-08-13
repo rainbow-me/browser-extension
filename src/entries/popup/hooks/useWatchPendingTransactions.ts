@@ -239,8 +239,6 @@ export const useWatchPendingTransactions = ({
         },
       );
 
-    console.log('MINED TX: ', minedTransactions);
-
     minedTransactions.forEach((minedTransaction) => {
       if (minedTransaction.changes?.length) {
         minedTransaction.changes?.forEach((change) => {
