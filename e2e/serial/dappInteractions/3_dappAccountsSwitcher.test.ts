@@ -44,7 +44,7 @@ let driver: WebDriver;
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 
-describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
+describe('Dapp accounts switcher flow', () => {
   beforeAll(async () => {
     driver = await initDriverWithOptions({
       browser,

@@ -40,7 +40,7 @@ let driver: WebDriver;
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 
-describe.runIf(browser !== 'firefox')('Networks & Testnet Mode flows', () => {
+describe('Networks & Testnet Mode flows', () => {
   beforeAll(async () => {
     driver = await initDriverWithOptions({
       browser,
