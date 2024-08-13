@@ -75,11 +75,12 @@ export const CommandKList = React.forwardRef<
   const { isCommandKVisible } = useCommandKStatus();
   const { currentAddress: address } = useCurrentAddressStore();
 
-  const hiddenStore = useHiddenAssetStore.use.hidden();
-  const hidden = useNftsStore.use.hidden();
+  const hiddenAssets = useHiddenAssetStore.use.hidden();
+
+  const hiddenNfts = useNftsStore.use.hidden();
   const hiddenNftsForAddress = useMemo(
-    () => hidden[address] || {},
-    [address, hidden],
+    () => hiddenNfts[address] || {},
+    [address, hiddenNfts],
   );
 
   const listVirtualizer = useVirtualizer({
@@ -222,7 +223,7 @@ export const CommandKList = React.forwardRef<
                       command={command}
                       handleExecuteCommand={handleExecuteCommand}
                       isHidden={
-                        !!hiddenStore[address]?.[
+                        !!hiddenAssets[address]?.[
                           `${command.address}-${command.asset.chainId}`
                         ]
                       }

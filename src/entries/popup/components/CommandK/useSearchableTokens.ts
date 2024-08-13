@@ -51,13 +51,13 @@ export const useSearchableTokens = ({
   const navigate = useRainbowNavigate();
   const { testnetMode } = useTestnetModeStore();
 
-  const hiddenStore = useHiddenAssetStore.use.hidden();
+  const hiddenAssets = useHiddenAssetStore.use.hidden();
 
   const isTokenHidden = useCallback(
     (asset: ParsedUserAsset) => {
-      return !!hiddenStore[address]?.[`${asset.address}-${asset.chainId}`];
+      return !!hiddenAssets[address]?.[`${asset.address}-${asset.chainId}`];
     },
-    [address, hiddenStore],
+    [address, hiddenAssets],
   );
 
   const query = searchQuery.toLowerCase();

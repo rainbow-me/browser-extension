@@ -737,10 +737,10 @@ export const useCommands = (
   const save = useSavedEnsNames.use.save();
   const toggleHideNFTStore = useNftsStore.use.toggleHideNFT();
 
-  const hidden = useNftsStore.use.hidden();
+  const hiddenNfts = useNftsStore.use.hidden();
   const hiddenNftsForAddress = useMemo(
-    () => hidden[address] || {},
-    [address, hidden],
+    () => hiddenNfts[address] || {},
+    [address, hiddenNfts],
   );
 
   const { data: searchableTokens, isFetchingSearchAssets } =
@@ -784,14 +784,14 @@ export const useCommands = (
   const { pinned: pinnedStore, togglePinAsset } = usePinnedAssetStore();
 
   const toggleHideAsset = useHiddenAssetStore.use.toggleHideAsset();
-  const hiddenStore = useHiddenAssetStore.use.hidden();
+  const hiddenAssetStore = useHiddenAssetStore.use.hidden();
 
   const isTokenHidden = useCallback(
     (token: TokenSearchItem) => {
       const uniqueId = `${token.address}-${token.asset.chainId}`;
-      return !!hiddenStore[address]?.[uniqueId];
+      return !!hiddenAssetStore[address]?.[uniqueId];
     },
-    [address, hiddenStore],
+    [address, hiddenAssetStore],
   );
 
   const isNftHidden = useCallback(
@@ -998,7 +998,7 @@ export const useCommands = (
     [pinnedStore, address, toggleHideAsset, togglePinAsset, isTokenHidden],
   );
 
-  const toggleHideNft = useCallback(
+  const toggleHideNFT = useCallback(
     (nft: NFTSearchItem) => {
       toggleHideNFTStore(address, nft.id!);
 
@@ -1352,7 +1352,7 @@ export const useCommands = (
           : {}),
         action: () =>
           isNftCommand(previousPageState.selectedCommand) &&
-          toggleHideNft(previousPageState.selectedCommand),
+          toggleHideNFT(previousPageState.selectedCommand),
       },
       copyContactAddress: {
         action: () =>
@@ -1451,7 +1451,7 @@ export const useCommands = (
       handleSelectAddress,
       handleSendToWallet,
       toggleHideToken,
-      toggleHideNft,
+      toggleHideNFT,
       selectSearchTokenAndNavigate,
     ],
   );
