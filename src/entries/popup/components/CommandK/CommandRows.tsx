@@ -150,12 +150,14 @@ export const CommandRow = ({
 
 type NFTRowProps = {
   command: NFTSearchItem;
+  isHidden: boolean;
   handleExecuteCommand: (command: SearchItem, e?: KeyboardEvent) => void;
   selected: boolean;
 };
 
 export const NFTRow = ({
   command,
+  isHidden,
   handleExecuteCommand,
   selected,
 }: NFTRowProps) => {
@@ -196,6 +198,7 @@ export const NFTRow = ({
     <CommandRow
       command={command}
       handleExecuteCommand={handleExecuteCommand}
+      description={isHidden ? i18n.t('command_k.labels.hidden') : undefined}
       name={command.name}
       selected={selected}
       LeftComponent={_NftIcon}

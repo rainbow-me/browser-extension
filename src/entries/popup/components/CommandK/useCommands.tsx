@@ -1,5 +1,5 @@
 import { TranslateOptions } from 'i18n-js';
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { To } from 'react-router-dom';
 import { Address } from 'viem';
 import { useEnsName } from 'wagmi';
@@ -15,6 +15,7 @@ import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAsse
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useHiddenAssetStore } from '~/core/state/hiddenAssets/hiddenAssets';
+import { useNftsStore } from '~/core/state/nfts';
 import { usePinnedAssetStore } from '~/core/state/pinnedAssets';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSavedEnsNames } from '~/core/state/savedEnsNames';
@@ -413,7 +414,6 @@ export const getStaticCommandInfo = (): CommandInfo => {
       hideFromMainSearch: true,
       name: getCommandName('hide_token'),
       page: PAGES.TOKEN_DETAIL,
-      searchTags: getSearchTags('hide_token'),
       symbol: 'eye.slash.fill',
       shouldRemainOnActiveRoute: true,
       symbolSize: 15.5,
@@ -435,6 +435,19 @@ export const getStaticCommandInfo = (): CommandInfo => {
       page: PAGES.TOKEN_DETAIL,
       symbol: 'magnifyingglass',
       symbolSize: 14.5,
+      type: SearchItemType.Shortcut,
+    },
+
+    // PAGE: NFT_TOKEN_DETAIL
+    hideNft: {
+      actionLabel: actionLabels.activateCommand,
+      hideForWatchedWallets: true,
+      hideFromMainSearch: true,
+      name: getCommandName('hide'),
+      page: PAGES.NFT_TOKEN_DETAIL,
+      symbol: 'eye.slash.fill',
+      shouldRemainOnActiveRoute: true,
+      symbolSize: 15.5,
       type: SearchItemType.Shortcut,
     },
 
@@ -689,6 +702,8 @@ const isENSOrAddressCommand = (
 const isTokenCommand = (
   command: SearchItem | null,
 ): command is TokenSearchItem => command?.type === SearchItemType.Token;
+const isNftCommand = (command: SearchItem | null): command is NFTSearchItem =>
+  command?.type === SearchItemType.NFT;
 const isUnownedTokenCommand = (
   command: SearchItem | null,
 ): command is UnownedTokenSearchItem =>
@@ -720,6 +735,14 @@ export const useCommands = (
   const navigateToSwaps = useNavigateToSwaps();
   const { isWatchingWallet } = useWallets();
   const save = useSavedEnsNames.use.save();
+  const toggleHideNFTStore = useNftsStore.use.toggleHideNFT();
+
+  const hidden = useNftsStore.use.hidden();
+  const hiddenNftsForAddress = useMemo(
+    () => hidden[address] || {},
+    [address, hidden],
+  );
+
   const { data: searchableTokens, isFetchingSearchAssets } =
     useSearchableTokens({
       searchQuery,
@@ -769,6 +792,13 @@ export const useCommands = (
       return !!hiddenStore[address]?.[uniqueId];
     },
     [address, hiddenStore],
+  );
+
+  const isNftHidden = useCallback(
+    (nft: NFTSearchItem) => {
+      return !!hiddenNftsForAddress[nft.id || ''];
+    },
+    [hiddenNftsForAddress],
   );
 
   const isTrezor =
@@ -966,6 +996,23 @@ export const useCommands = (
       }
     },
     [pinnedStore, address, toggleHideAsset, togglePinAsset, isTokenHidden],
+  );
+
+  const toggleHideNft = useCallback(
+    (nft: NFTSearchItem) => {
+      toggleHideNFTStore(address, nft.id!);
+
+      if (isNftHidden(nft)) {
+        triggerToast({
+          title: i18n.t('nfts.toast.unhidden'),
+        });
+      } else {
+        triggerToast({
+          title: i18n.t('nfts.toast.hidden'),
+        });
+      }
+    },
+    [address, isNftHidden, toggleHideNFTStore],
   );
 
   const commandOverrides: CommandOverride = React.useMemo(
@@ -1293,6 +1340,20 @@ export const useCommands = (
           isTokenCommand(previousPageState.selectedCommand) &&
           toggleHideToken(previousPageState.selectedCommand),
       },
+      hideNft: {
+        ...(isNftCommand(previousPageState.selectedCommand)
+          ? {
+              name: getCommandName(
+                isNftHidden(previousPageState.selectedCommand)
+                  ? 'unhide'
+                  : 'hide',
+              ),
+            }
+          : {}),
+        action: () =>
+          isNftCommand(previousPageState.selectedCommand) &&
+          toggleHideNft(previousPageState.selectedCommand),
+      },
       copyContactAddress: {
         action: () =>
           isContactCommand(previousPageState.selectedCommand) &&
@@ -1374,6 +1435,7 @@ export const useCommands = (
       isContactAdded,
       currentAddress,
       isTokenHidden,
+      isNftHidden,
       navigate,
       handleCopy,
       sortedAccounts,
@@ -1389,6 +1451,7 @@ export const useCommands = (
       handleSelectAddress,
       handleSendToWallet,
       toggleHideToken,
+      toggleHideNft,
       selectSearchTokenAndNavigate,
     ],
   );
