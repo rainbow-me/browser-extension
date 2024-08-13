@@ -192,7 +192,7 @@ jobs:
         run: exit 1
   # CHROME TESTS
   chrome-e2e-parallel:
-    runs-on: ubuntu-latest
+    runs-on: beefy-runner-bx
     timeout-minutes: 18
     needs: [build]
     env:
