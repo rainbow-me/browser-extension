@@ -112,8 +112,8 @@ function watchForPendingTransactionsReportedByRainbowBackend({
     }
   }
 
-  let newlyConfirmedTransactions: RainbowTransaction[] = [];
-  let updatedPendingTransactions: RainbowTransaction[] = [];
+  const newlyConfirmedTransactions: RainbowTransaction[] = [];
+  const updatedPendingTransactions: RainbowTransaction[] = [];
 
   pendingTransactions.forEach((tx) => {
     const txNonce = tx.nonce || 0;
@@ -123,9 +123,9 @@ function watchForPendingTransactionsReportedByRainbowBackend({
     // if !latestTx means that is the first tx of the wallet
     const newlyConfirmed = latestTxNonce && txNonce <= latestTxNonce;
     if (newlyConfirmed) {
-      newlyConfirmedTransactions = [...newlyConfirmedTransactions, tx];
+      newlyConfirmedTransactions.push(tx);
     } else {
-      updatedPendingTransactions = [...updatedPendingTransactions, tx];
+      updatedPendingTransactions.push(tx);
     }
   });
 
