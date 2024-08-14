@@ -168,6 +168,7 @@ const WalletRow = ({
               label={i18n.t(
                 `wallet_switcher.${hardwareWalletVendor.toLowerCase()}`,
               )}
+              background="surfaceSecondary"
             />
           </Column>
         )}
