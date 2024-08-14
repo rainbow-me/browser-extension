@@ -265,7 +265,7 @@
     "crypto-js": "4.2.0",
     "yaml": "2.2.2",
     "browserify-sign": "4.2.2",
-    "axios": "1.6.1",
+    "axios": "1.7.4",
     "follow-redirects": "1.15.6",
     "ip": "2.0.1",
     "@solana/web3.js": "1.90.2",
