@@ -453,7 +453,7 @@ export function useKeyboardNavigation(
   setDidScrollOrNavigate: React.Dispatch<React.SetStateAction<boolean>>,
   setSelectedCommand: React.Dispatch<React.SetStateAction<SearchItem | null>>,
 ) {
-  const scrollTimer = React.useRef<NodeJS.Timeout | null>(null);
+  const scrollTimer = React.useRef<Timer | null>(null);
 
   // Handle arrow key and tab navigation
   const handleKeyboardNavigation = React.useCallback(

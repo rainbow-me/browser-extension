@@ -9,7 +9,7 @@ export const OnboardingKeepAlive = () => {
 
   const { status } = useAuth();
 
-  const timer = useRef<undefined | NodeJS.Timer>(undefined);
+  const timer = useRef<undefined | Timer>(undefined);
 
   const keepAlive = useCallback(async () => {
     await bgMessenger.send('ping', {});

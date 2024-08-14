@@ -31,7 +31,7 @@ export const AppConnectionWatcher = () => {
   const { addSession, activeSession } = useAppSession({
     host: dappMetadata?.appHost || '',
   });
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<Timer | null>(null);
   const bannerHoverRef = useRef<boolean>(false);
   const shouldAnimateOut = useRef<boolean>(false);
 

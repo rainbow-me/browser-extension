@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { SessionStorage } from '~/core/storage';
 
 function debounce(func: CallableFunction, delay: number) {
-  let timeId: NodeJS.Timeout | undefined;
+  let timeId: Timer | undefined;
   return function (...args: unknown[]) {
     if (timeId) {
       clearTimeout(timeId);

@@ -31,7 +31,7 @@ export const Toast = () => {
   const { isCommandKVisible } = useCommandKStatus();
   const location = useLocation();
   const [toastInfo, setToastInfo] = useState<ToastInfo | null>(null);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const timeoutRef = useRef<Timer | null>(null);
 
   useEffect(() => {
     const clearToastListener = toastListener(({ title, description }) => {

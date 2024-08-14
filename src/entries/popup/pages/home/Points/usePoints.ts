@@ -42,7 +42,7 @@ export const fetchPointsQuery = async (address: Address) =>
     queryFn: () => fetchPoints(address),
   });
 
-let nextDropTimeout: NodeJS.Timeout | undefined;
+let nextDropTimeout: Timer | undefined;
 export const usePoints = (address: Address) => {
   const query = useQuery({
     queryKey: ['points', address, PointsDocument.loc?.source.body],

@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import ledgerDeviceEth from 'static/assets/hw/ledger-device-eth.png';
@@ -202,7 +202,7 @@ export function ConnectLedger() {
 
   const navigate = useRainbowNavigate();
   const { state } = useLocation();
-  const timer = useRef<NodeJS.Timeout>();
+  const timer = useRef<Timer>();
 
   const connectLedger = useCallback(async () => {
     const res = await wallet.connectLedger();

@@ -35,7 +35,7 @@ export const useSwapRefreshAssets = () => {
     },
   );
 
-  const timeout = useRef<NodeJS.Timeout>();
+  const timeout = useRef<Timer>();
 
   const swapRefreshAssets = useCallback(
     async (nonce?: number) => {

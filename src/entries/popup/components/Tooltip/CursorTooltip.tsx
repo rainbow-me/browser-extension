@@ -1,5 +1,5 @@
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
-import React, {
+import {
   ReactNode,
   useEffect,
   useLayoutEffect,
@@ -46,7 +46,7 @@ export const CursorTooltip = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
-  const showTimer = useRef<NodeJS.Timeout>();
+  const showTimer = useRef<Timer>();
   const childElementWrapperRef = useRef<HTMLDivElement>(null);
   const [childWidth, setChildWidth] = useState(0);
   const checkChildWidth = () => {

@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from 'react';
 
 export const usePress = (onPressed: () => void) => {
-  const pressTimerRef = useRef<NodeJS.Timeout>();
+  const pressTimerRef = useRef<Timer>();
   const [pressed, setPressed] = useState(false);
 
   const startPress = useCallback(() => {

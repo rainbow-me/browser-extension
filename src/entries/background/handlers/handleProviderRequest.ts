@@ -34,8 +34,8 @@ import { RainbowError, logger } from '~/logger';
 
 const MAX_REQUEST_PER_SECOND = 10;
 const MAX_REQUEST_PER_MINUTE = 90;
-let minuteTimer: NodeJS.Timeout | null = null;
-let secondTimer: NodeJS.Timeout | null = null;
+let minuteTimer: Timer | null = null;
+let secondTimer: Timer | null = null;
 
 const getPopupTitleBarHeight = (platform: string) => {
   if (platform.includes('Mac')) return 28;
