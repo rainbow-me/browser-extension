@@ -136,7 +136,6 @@ export const TokenToSellInput = ({
       placeholder={placeholder}
       zIndex={zIndex}
       variant="tinted"
-      showAssetTooltipOnBlur={true}
       assetTooltipValue={assetToSellFullValue}
       value={assetToSellValue}
       onDropdownOpen={onDropdownOpen}

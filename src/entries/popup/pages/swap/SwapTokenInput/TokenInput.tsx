@@ -1,6 +1,5 @@
 import React, {
   ChangeEvent,
-  MouseEventHandler,
   ReactElement,
   useCallback,
   useEffect,
@@ -25,15 +24,11 @@ const SwapInputMaskWrapper = ({
   inputDisabled,
   value,
   symbol,
-  showAssetTooltip,
-  onTooltipMouseDown,
   children,
 }: {
   inputDisabled?: boolean;
   value?: string;
   symbol?: string;
-  showAssetTooltip: boolean;
-  onTooltipMouseDown?: MouseEventHandler<HTMLDivElement>;
   children: ReactElement;
 }) => {
   if (inputDisabled) {
@@ -49,29 +44,24 @@ const SwapInputMaskWrapper = ({
     );
   }
 
-  if (value && symbol && showAssetTooltip) {
-    return (
-      <CursorTooltip
-        text={`${value} ${symbol}`}
-        textWeight="semibold"
-        textSize="12pt"
-        textColor="labelSecondary"
-        arrowAlignment="left"
-        align="start"
-        onMouseDown={onTooltipMouseDown}
-      >
-        {children}
-      </CursorTooltip>
-    );
-  }
-
-  return children;
+  return (
+    <CursorTooltip
+      text={`${value || '0.00'} ${symbol || ''}`}
+      textWeight="semibold"
+      textSize="12pt"
+      textColor="labelSecondary"
+      arrowAlignment="left"
+      align="start"
+      hideTooltipOnMouseDown
+    >
+      {children}
+    </CursorTooltip>
+  );
 };
 
 interface TokenInputProps {
   accentCaretColor?: boolean;
   asset: ParsedSearchAsset | null;
-  showAssetTooltipOnBlur?: boolean;
   assetTooltipValue?: string;
   assetFilter: string;
   dropdownHeight?: number;
@@ -103,7 +93,6 @@ export const TokenInput = React.forwardRef<
   {
     accentCaretColor,
     asset,
-    showAssetTooltipOnBlur = false,
     assetTooltipValue,
     assetFilter,
     dropdownHeight,
@@ -127,7 +116,6 @@ export const TokenInput = React.forwardRef<
   }: TokenInputProps,
   forwardedRef,
 ) {
-  const [showAssetTooltip, setShowAssetTooltip] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
   const prevDropdownVisible = usePrevious(dropdownVisible);
@@ -228,11 +216,6 @@ export const TokenInput = React.forwardRef<
               symbol={asset.symbol}
               value={assetTooltipValue}
               inputDisabled={inputDisabled}
-              showAssetTooltip={showAssetTooltip}
-              onTooltipMouseDown={() => {
-                // Wait for the tooltip to close
-                setTimeout(() => inputRef?.current?.focus(), 400);
-              }}
             >
               <Box marginVertical="-20px">
                 <SwapInputMask
@@ -248,12 +231,6 @@ export const TokenInput = React.forwardRef<
                   paddingHorizontal={0}
                   innerRef={inputRef}
                   disabled={inputDisabled}
-                  onFocus={() =>
-                    showAssetTooltipOnBlur && setShowAssetTooltip(false)
-                  }
-                  onBlur={() =>
-                    showAssetTooltipOnBlur && setShowAssetTooltip(true)
-                  }
                 />
               </Box>
             </SwapInputMaskWrapper>

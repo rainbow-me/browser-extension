@@ -22,8 +22,6 @@ interface SwapInputMaskProps {
   value: string;
   variant: 'surface' | 'bordered' | 'transparent' | 'tinted';
   onChange: (value: string) => void;
-  onFocus?: () => void;
-  onBlur?: () => void;
   paddingHorizontal?: number;
   placeholder: string;
   accentCaretColor?: boolean;
@@ -44,8 +42,6 @@ export const SwapInputMask = ({
   value,
   variant,
   onChange,
-  onFocus,
-  onBlur,
   paddingHorizontal,
   testId,
 }: SwapInputMaskProps) => {
@@ -94,8 +90,6 @@ export const SwapInputMask = ({
           disabled={disabled}
           tabIndex={disabled ? -1 : 0}
           id={SWAP_INPUT_MASK_ID}
-          onFocus={onFocus}
-          onBlur={onBlur}
         />
       </Box>
     </Box>

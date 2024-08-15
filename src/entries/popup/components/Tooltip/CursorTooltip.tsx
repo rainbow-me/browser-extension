@@ -1,6 +1,5 @@
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import React, {
-  MouseEventHandler,
   ReactNode,
   useEffect,
   useLayoutEffect,
@@ -31,7 +30,7 @@ export const CursorTooltip = ({
   textWeight,
   textSize,
   textColor,
-  onMouseDown,
+  hideTooltipOnMouseDown,
   children,
   hint,
 }: {
@@ -44,7 +43,7 @@ export const CursorTooltip = ({
   textSize?: TextStyles['fontSize'];
   textWeight?: TextStyles['fontWeight'];
   textColor?: TextStyles['color'];
-  onMouseDown?: MouseEventHandler<HTMLDivElement>;
+  hideTooltipOnMouseDown?: boolean;
   hint?: string;
 }) => {
   const [open, setOpen] = useState(false);
@@ -120,7 +119,13 @@ export const CursorTooltip = ({
               setOpen(false);
               showTimer.current && clearTimeout(showTimer.current);
             }}
-            onMouseDown={onMouseDown}
+            onMouseDown={() => {
+              if (hideTooltipOnMouseDown) {
+                setIsHovering(false);
+                setOpen(false);
+                showTimer.current && clearTimeout(showTimer.current);
+              }
+            }}
           >
             {children}
           </Box>

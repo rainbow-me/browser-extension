@@ -146,7 +146,6 @@ export const TokenToBuyInput = forwardRef(function TokenToBuyInput(
       variant="tinted"
       value={assetToBuyInputValue}
       assetTooltipValue={assetToBuyValue}
-      showAssetTooltipOnBlur={true}
       onDropdownOpen={onDropdownOpen}
       setOnSelectAsset={setOnSelectAsset}
       selectAsset={selectAsset}
