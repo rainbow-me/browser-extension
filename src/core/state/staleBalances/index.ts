@@ -77,7 +77,7 @@ export const staleBalancesStore = createStore<StaleBalancesState>(
           ...staleBalancesForUser,
         };
         for (const c of Object.keys(staleBalancesForUser)) {
-          const chainId = parseInt(c);
+          const chainId = parseInt(c, 10);
           const newStaleBalancesForChain = {
             ...(staleBalancesForUser[chainId] || {}),
           };
@@ -104,7 +104,7 @@ export const staleBalancesStore = createStore<StaleBalancesState>(
       const { staleBalances } = get();
       const staleBalancesForUser = staleBalances[address];
       for (const c of Object.keys(staleBalancesForUser)) {
-        const chainId = parseInt(c);
+        const chainId = parseInt(c, 10);
         const staleBalancesForChain = staleBalancesForUser[chainId];
         for (const staleBalance of Object.values(staleBalancesForChain)) {
           if (typeof staleBalance.expirationTime === 'number') {
