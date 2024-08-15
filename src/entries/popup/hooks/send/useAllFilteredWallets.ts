@@ -36,7 +36,7 @@ export const useAllFilteredWallets = ({ filter }: { filter?: string }) => {
 
   return useMemo(
     () => ({
-      wallets: filterWallets(visibleOwnedWallets, filter).map((a) => a.address),
+      wallets: filterWallets(visibleOwnedWallets, filter),
       watchedWallets: filterWallets(watchedWallets, filter).map(
         (a) => a.address,
       ),
@@ -45,3 +45,9 @@ export const useAllFilteredWallets = ({ filter }: { filter?: string }) => {
     [visibleOwnedWallets, watchedWallets, contacts, filter],
   );
 };
+
+export type VisibleOwnedWallets = ReturnType<
+  typeof useAllFilteredWallets
+>['wallets'];
+
+export type VisibleOwnedWallet = VisibleOwnedWallets[number];
