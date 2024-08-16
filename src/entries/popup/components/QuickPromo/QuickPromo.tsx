@@ -58,7 +58,12 @@ export const QuickPromo = ({
               />
             </Column>
 
-            <Box>
+            <Box
+              className={textStyles({
+                fontSize: '12pt',
+                fontFamily: 'rounded',
+              })}
+            >
               <Box
                 as="span"
                 className={textStyles({
