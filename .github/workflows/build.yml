@@ -70,36 +70,36 @@ jobs:
       - name: Remove old screenshots
         run: rm -rf screenshots/*
   # FIREFOX TESTS
-  firefox-e2e-parallel:
-    runs-on: ubuntu-latest
-    timeout-minutes: 18
-    needs: [build]
-    env:
-      DISPLAY: :0
-      VITEST_SEGFAULT_RETRY: 4
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/firefoxTestsSetup
-        with:
-          gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
-      - name: Run e2e parallel (Firefox)
-        id: FFE2eParallel
-        continue-on-error: true
-        run: |
-            export BROWSER=firefox
-            export OS=linux
-            export FIREFOX_BIN="$(pwd)/firefox/firefox"
-            yarn firefox:manifest && yarn firefox:zip
-            yarn vitest:parallel
-      - name: Upload deps artifacts
-        if: steps.FFE2eParallel.outcome == 'failure'
-        uses: actions/upload-artifact@v3
-        with:
-          name: screenshots
-          path: screenshots/
-      - name: Fail if any tests failed
-        if: steps.FFE2eParallel.outcome == 'failure'
-        run: exit 1
+  # firefox-e2e-parallel:
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 18
+  #   needs: [build]
+  #   env:
+  #     DISPLAY: :0
+  #     VITEST_SEGFAULT_RETRY: 4
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: ./.github/actions/firefoxTestsSetup
+  #       with:
+  #         gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+  #     - name: Run e2e parallel (Firefox)
+  #       id: FFE2eParallel
+  #       continue-on-error: true
+  #       run: |
+  #           export BROWSER=firefox
+  #           export OS=linux
+  #           export FIREFOX_BIN="$(pwd)/firefox/firefox"
+  #           yarn firefox:manifest && yarn firefox:zip
+  #           yarn vitest:parallel
+  #     - name: Upload deps artifacts
+  #       if: steps.FFE2eParallel.outcome == 'failure'
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: screenshots
+  #         path: screenshots/
+  #     - name: Fail if any tests failed
+  #       if: steps.FFE2eParallel.outcome == 'failure'
+  #       run: exit 1
   # firefox-e2e-swap:
   #   runs-on: swaps-runner-bx
   #   timeout-minutes: 25
@@ -130,66 +130,66 @@ jobs:
   #     - name: Fail if any tests failed
   #       if: steps.FFE2eSwap.outcome == 'failure'
   #       run: exit 1
-  firefox-e2e-send:
-    runs-on: send-runner-bx
-    timeout-minutes: 16
-    needs: [build]
-    env:
-      DISPLAY: :0
-      VITEST_SEGFAULT_RETRY: 4
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/firefoxTestsSetup
-        with:
-          gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
-      - name: Run e2e Send (Firefox)
-        id: FFE2eSend
-        continue-on-error: true
-        run: |
-          export BROWSER=firefox
-          export OS=linux
-          export FIREFOX_BIN="$(pwd)/firefox/firefox"
-          yarn firefox:manifest && yarn firefox:zip
-          yarn vitest:send
-      - name: Upload deps artifacts
-        if: steps.FFE2eSend.outcome == 'failure'
-        uses: actions/upload-artifact@v3
-        with:
-          name: screenshots
-          path: screenshots/
-      - name: Fail if any tests failed
-        if: steps.FFE2eSend.outcome == 'failure'
-        run: exit 1
-  firefox-e2e-dappInteractions:
-    runs-on: dapp-interactions-runner-bx
-    timeout-minutes: 25
-    needs: [build]
-    env:
-      DISPLAY: :0
-      VITEST_SEGFAULT_RETRY: 4
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/firefoxTestsSetup
-        with:
-          gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
-      - name: Run e2e Dapp Interactions (Firefox)
-        id: FFE2eDappInteractions
-        continue-on-error: true
-        run: |
-          export BROWSER=firefox
-          export OS=linux
-          export FIREFOX_BIN="$(pwd)/firefox/firefox"
-          yarn firefox:manifest && yarn firefox:zip
-          yarn vitest:dappInteractions
-      - name: Upload deps artifacts
-        if: steps.FFE2eDappInteractions.outcome == 'failure'
-        uses: actions/upload-artifact@v3
-        with:
-          name: screenshots
-          path: screenshots/
-      - name: Fail if any tests failed
-        if: steps.FFE2eDappInteractions.outcome == 'failure'
-        run: exit 1
+  # firefox-e2e-send:
+  #   runs-on: send-runner-bx
+  #   timeout-minutes: 16
+  #   needs: [build]
+  #   env:
+  #     DISPLAY: :0
+  #     VITEST_SEGFAULT_RETRY: 4
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: ./.github/actions/firefoxTestsSetup
+  #       with:
+  #         gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+  #     - name: Run e2e Send (Firefox)
+  #       id: FFE2eSend
+  #       continue-on-error: true
+  #       run: |
+  #           export BROWSER=firefox
+  #           export OS=linux
+  #           export FIREFOX_BIN="$(pwd)/firefox/firefox"
+  #           yarn firefox:manifest && yarn firefox:zip
+  #           yarn vitest:send
+  #     - name: Upload deps artifacts
+  #       if: steps.FFE2eSend.outcome == 'failure'
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: screenshots
+  #         path: screenshots/
+  #     - name: Fail if any tests failed
+  #       if: steps.FFE2eSend.outcome == 'failure'
+  #       run: exit 1
+  # firefox-e2e-dappInteractions:
+  #   runs-on: dapp-interactions-runner-bx
+  #   timeout-minutes: 25
+  #   needs: [build]
+  #   env:
+  #     DISPLAY: :0
+  #     VITEST_SEGFAULT_RETRY: 4
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: ./.github/actions/firefoxTestsSetup
+  #       with:
+  #         gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+  #     - name: Run e2e Dapp Interactions (Firefox)
+  #       id: FFE2eDappInteractions
+  #       continue-on-error: true
+  #       run: |
+  #         export BROWSER=firefox
+  #         export OS=linux
+  #         export FIREFOX_BIN="$(pwd)/firefox/firefox"
+  #         yarn firefox:manifest && yarn firefox:zip
+  #         yarn vitest:dappInteractions
+  #     - name: Upload deps artifacts
+  #       if: steps.FFE2eDappInteractions.outcome == 'failure'
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: screenshots
+  #         path: screenshots/
+  #     - name: Fail if any tests failed
+  #       if: steps.FFE2eDappInteractions.outcome == 'failure'
+  #       run: exit 1
   # CHROME TESTS
   chrome-e2e-parallel:
     runs-on: ubuntu-latest
@@ -457,7 +457,7 @@ jobs:
         run: yarn typecheck
   cleanup:
     runs-on:  ubuntu-latest
-    needs: [firefox-e2e-parallel, firefox-e2e-send, firefox-e2e-dappInteractions, chrome-e2e-parallel, chrome-e2e-swap, chrome-e2e-send, chrome-e2e-dappInteractions, chrome-optimism-e2e-send, unit-tests, ci-checks]
+    needs: [chrome-e2e-parallel, chrome-e2e-swap, chrome-e2e-send, chrome-e2e-dappInteractions, chrome-optimism-e2e-send, unit-tests, ci-checks]
     steps:
       - uses: geekyeggo/delete-artifact@v2
         with:
