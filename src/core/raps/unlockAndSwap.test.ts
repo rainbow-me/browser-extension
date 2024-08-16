@@ -72,6 +72,7 @@ beforeAll(async () => {
     destReceiver: TEST_ADDRESS_2,
     swapType: SwapType.normal,
     toChainId: 1,
+    currency: 'USD',
   });
   ethToEnsQuote = await getQuote({
     chainId: 1,
@@ -83,6 +84,7 @@ beforeAll(async () => {
     destReceiver: TEST_ADDRESS_2,
     swapType: SwapType.normal,
     toChainId: 1,
+    currency: 'USD',
   });
   needsUnlockQuote = await getQuote({
     chainId: 1,
@@ -94,6 +96,7 @@ beforeAll(async () => {
     destReceiver: TEST_ADDRESS_2,
     swapType: SwapType.normal,
     toChainId: 1,
+    currency: 'USD',
   });
   wrapEthQuote = await getQuote({
     chainId: 1,
@@ -105,6 +108,7 @@ beforeAll(async () => {
     destReceiver: TEST_ADDRESS_2,
     swapType: SwapType.normal,
     toChainId: 1,
+    currency: 'USD',
   });
   unwrapEthQuote = await getQuote({
     chainId: 1,
@@ -116,6 +120,7 @@ beforeAll(async () => {
     destReceiver: TEST_ADDRESS_2,
     swapType: SwapType.normal,
     toChainId: 1,
+    currency: 'USD',
   });
 }, 10000);
 
