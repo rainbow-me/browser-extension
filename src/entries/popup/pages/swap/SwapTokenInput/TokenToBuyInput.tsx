@@ -19,6 +19,7 @@ import { TokenInput } from './TokenInput';
 interface TokenToBuyProps {
   assetToBuy: ParsedSearchAsset | null;
   assetToSell: ParsedSearchAsset | null;
+  assetToBuyInputValue: string;
   assets?: AssetToBuySection[];
   assetFilter: string;
   dropdownClosed: boolean;
@@ -46,6 +47,7 @@ export const TokenToBuyInput = forwardRef(function TokenToBuyInput(
   {
     assetToBuy,
     assetToSell,
+    assetToBuyInputValue,
     assetFilter,
     assets,
     assetToBuyNativeDisplay,
@@ -142,7 +144,8 @@ export const TokenToBuyInput = forwardRef(function TokenToBuyInput(
       placeholder={placeholder}
       zIndex={zIndex}
       variant="tinted"
-      value={assetToBuyValue}
+      value={assetToBuyInputValue}
+      assetTooltipValue={assetToBuyValue}
       onDropdownOpen={onDropdownOpen}
       setOnSelectAsset={setOnSelectAsset}
       selectAsset={selectAsset}

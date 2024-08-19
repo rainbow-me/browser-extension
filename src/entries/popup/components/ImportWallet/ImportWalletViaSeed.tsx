@@ -25,6 +25,7 @@ import {
   Text,
   textStyles,
 } from '~/design-system';
+import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { accentSelectionStyle } from '~/design-system/components/Input/Input.css';
 import {
   transformScales,
@@ -36,6 +37,7 @@ import {
   removeImportWalletSecrets,
   setImportWalletSecrets,
 } from '../../handlers/importWalletSecrets';
+import { isMnemonicInVault } from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
@@ -166,6 +168,9 @@ const secretsReducer = (
   return newSecrets;
 };
 
+const emptySecrets12 = Array.from({ length: 12 }).map(() => '');
+const emptySecrets24 = Array.from({ length: 24 }).map(() => '');
+
 const ImportWalletViaSeed = () => {
   const navigate = useRainbowNavigate();
   const location = useLocation();
@@ -174,16 +179,13 @@ const ImportWalletViaSeed = () => {
   const [globalError, setGlobalError] = useState(false);
   const [invalidWords, setInvalidWords] = useState<number[]>([]);
   const [visibleInput, setVisibleInput] = useState<number | null>(null);
-  const [secrets, setSecrets] = useReducer(
-    secretsReducer,
-    Array.from({ length: 12 }).map(() => ''),
-  );
+  const [secrets, setSecrets] = useReducer(secretsReducer, emptySecrets12);
 
   const toggleWordLength = useCallback(() => {
     if (secrets.length === 12) {
-      setSecrets(Array.from({ length: 24 }).map(() => ''));
+      setSecrets(emptySecrets12);
     } else {
-      setSecrets(Array.from({ length: 12 }).map(() => ''));
+      setSecrets(emptySecrets24);
     }
     setInvalidWords([]);
     setGlobalError(false);
@@ -228,10 +230,18 @@ const ImportWalletViaSeed = () => {
   );
 
   const handleImportWallet = useCallback(async () => {
+    if (await isMnemonicInVault(secrets.join(' '))) {
+      triggerAlert({
+        text: i18n.t('import_wallet_via_seed.duplicate_seed'),
+      });
+      setSecrets(emptySecrets12);
+      return;
+    }
+
     return navigate(
       onboarding ? ROUTES.IMPORT__SELECT : ROUTES.NEW_IMPORT_WALLET_SELECTION,
     );
-  }, [navigate, onboarding]);
+  }, [navigate, onboarding, secrets]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {

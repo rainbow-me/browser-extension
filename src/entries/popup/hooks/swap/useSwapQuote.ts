@@ -12,7 +12,7 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 
-import { useCurrentAddressStore } from '~/core/state';
+import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { ParsedAsset, ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { convertAmountToRawAmount } from '~/core/utils/numbers';
@@ -46,6 +46,7 @@ export const useSwapQuote = ({
   isClaim,
 }: UseSwapQuotesProps) => {
   const { currentAddress } = useCurrentAddressStore();
+  const currency = useCurrentCurrencyStore((s) => s.currentCurrency);
 
   const isCrosschainSwap = useMemo(
     () =>
@@ -95,6 +96,7 @@ export const useSwapQuote = ({
       swapType: isCrosschainSwap ? SwapType.crossChain : SwapType.normal,
       toChainId: isCrosschainSwap ? assetToBuy.chainId : assetToSell.chainId,
       feePercentageBasisPoints: INTERNAL_BUILD || isClaim ? 0 : undefined,
+      currency,
     };
   }, [
     assetToBuy,
@@ -107,6 +109,7 @@ export const useSwapQuote = ({
     slippage,
     source,
     isClaim,
+    currency,
   ]);
 
   const { data, isLoading, isError, fetchStatus } = useQuery({

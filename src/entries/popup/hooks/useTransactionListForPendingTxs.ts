@@ -1,14 +1,17 @@
 import { useEffect } from 'react';
 import { Address } from 'viem';
 
+import { userAssetsFetchQuery } from '~/core/resources/assets/userAssets';
 import { useConsolidatedTransactions } from '~/core/resources/transactions/consolidatedTransactions';
 import {
+  currentCurrencyStore,
   nonceStore,
   pendingTransactionsStore,
   useCurrentAddressStore,
   useCurrentCurrencyStore,
 } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { staleBalancesStore } from '~/core/state/staleBalances';
 import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { getSupportedChains, useSupportedChains } from '~/core/utils/chains';
@@ -76,11 +79,14 @@ function watchForPendingTransactionsReportedByRainbowBackend({
   const supportedChainIds = getSupportedChains({
     testnets: false,
   }).map(({ id }) => id);
+  const { addStaleBalance } = staleBalancesStore.getState();
+  const { currentCurrency } = currentCurrencyStore.getState();
   for (const supportedChainId of supportedChainIds) {
     const latestTxConfirmedByBackend = latestTransactions.get(supportedChainId);
     if (latestTxConfirmedByBackend) {
       const latestNonceConfirmedByBackend =
         latestTxConfirmedByBackend.nonce || 0;
+
       const [latestPendingTx] = pendingTransactions.filter(
         (tx) => tx?.chainId === supportedChainId,
       );
@@ -106,14 +112,59 @@ function watchForPendingTransactionsReportedByRainbowBackend({
     }
   }
 
-  const updatedPendingTransactions = pendingTransactions?.filter((tx) => {
+  const newlyConfirmedTransactions: RainbowTransaction[] = [];
+  const updatedPendingTransactions: RainbowTransaction[] = [];
+
+  pendingTransactions.forEach((tx) => {
     const txNonce = tx.nonce || 0;
     const latestTx = latestTransactions.get(tx.chainId);
     const latestTxNonce = latestTx?.nonce || 0;
     // still pending or backend is not returning confirmation yet
     // if !latestTx means that is the first tx of the wallet
-    return !latestTx || txNonce > latestTxNonce;
+    const newlyConfirmed = latestTxNonce && txNonce <= latestTxNonce;
+    if (newlyConfirmed) {
+      newlyConfirmedTransactions.push(tx);
+    } else {
+      updatedPendingTransactions.push(tx);
+    }
   });
+
+  newlyConfirmedTransactions.forEach((tx) => {
+    if (tx.changes?.length) {
+      tx.changes?.forEach((change) => {
+        const changedAsset = change?.asset;
+        const changedAssetAddress = changedAsset?.address as Address;
+        if (changedAsset) {
+          addStaleBalance({
+            address: currentAddress,
+            chainId: changedAsset?.chainId,
+            info: {
+              address: changedAssetAddress,
+              transactionHash: tx.hash,
+            },
+          });
+        }
+      });
+    } else if (tx.asset) {
+      const changedAsset = tx.asset;
+      const changedAssetAddress = changedAsset?.address as Address;
+      addStaleBalance({
+        address: currentAddress,
+        chainId: changedAsset?.chainId,
+        info: {
+          address: changedAssetAddress,
+          transactionHash: tx.hash,
+        },
+      });
+    }
+  });
+
+  if (newlyConfirmedTransactions.length) {
+    userAssetsFetchQuery({
+      address: currentAddress,
+      currency: currentCurrency,
+    });
+  }
 
   setPendingTransactions({
     address: currentAddress,

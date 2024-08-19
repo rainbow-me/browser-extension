@@ -1,4 +1,9 @@
-import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
+import {
+  CrosschainQuote,
+  Quote,
+  QuoteError,
+  TokenAsset,
+} from '@rainbow-me/swaps';
 import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test } from 'vitest';
 
@@ -24,6 +29,7 @@ const needsUnlockQuote: Quote | QuoteError | null = {
   chainId: 1,
   buyAmount: '22815411',
   buyAmountDisplay: '22815411',
+  buyAmountDisplayMinimum: '22815411',
   buyAmountInEth: '7674057708816777',
   buyAmountMinusFees: '7674057708816777',
   buyTokenAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -48,12 +54,16 @@ const needsUnlockQuote: Quote | QuoteError | null = {
   to: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
   tradeAmountUSD: 21.84463710898238,
   value: '0',
+  buyTokenAsset: {} as TokenAsset, // not used in this test
+  feeTokenAsset: {} as TokenAsset, // not used in this test
+  sellTokenAsset: {} as TokenAsset, // not used in this test
 };
 
 const doesntNeedUnlockQuote: Quote | QuoteError | null = {
   chainId: 1,
   buyAmount: '2934529154',
   buyAmountDisplay: '2934529154',
+  buyAmountDisplayMinimum: '2934529154',
   buyAmountInEth: '988585673036047522',
   buyAmountMinusFees: '988585673036047522',
   buyTokenAddress: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8',
@@ -82,6 +92,9 @@ const doesntNeedUnlockQuote: Quote | QuoteError | null = {
   to: TEST_ADDRESS_2,
   tradeAmountUSD: 2963.84,
   value: '0x0de0b6b3a7640000',
+  buyTokenAsset: {} as TokenAsset, // not used in this test
+  feeTokenAsset: {} as TokenAsset, // not used in this test
+  sellTokenAsset: {} as TokenAsset, // not used in this test
 };
 
 beforeAll(async () => {
