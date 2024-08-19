@@ -258,7 +258,7 @@ function ClaimSummary({ amount, price }: { amount: string; price: string }) {
                 <Box display="flex" justifyContent="flex-end">
                   <ConsoleText color="label">
                     {i18n.t('points.rewards.amount_in_eth', {
-                      amountWithThreshold,
+                      amount: amountWithThreshold,
                     })}
                   </ConsoleText>
                 </Box>
