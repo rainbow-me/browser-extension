@@ -74,11 +74,20 @@ function Card({
 }: PropsWithChildren<BoxProps & MotionProps> & {
   onClick?: () => void;
 }) {
+  const getTabIndex = () => {
+    if (typeof props.tabIndex === 'number') {
+      return props.tabIndex;
+    } else if (props.onClick) {
+      return 0;
+    }
+    return -1;
+  };
   return (
     <Lens
       onClick={props.onClick}
       width={props.width || 'full'}
-      tabIndex={typeof props.tabIndex === 'number' ? props.tabIndex : 0}
+      tabIndex={getTabIndex()}
+      borderRadius={props.borderRadius || '20px'}
     >
       <Box
         as={motion.div}
@@ -317,6 +326,7 @@ function ReferralCode() {
               onTap={copyReferralCode}
               onClick={copyReferralCode}
               style={{ height: 40, willChange: 'transform' }}
+              tabIndex={-1}
             >
               <Text size="16pt" weight="heavy" align="center">
                 {formatReferralCode(data.user.referralCode)}
@@ -334,6 +344,7 @@ function ReferralCode() {
               onTap={() => copyReferralLink(data.user.referralCode)}
               onClick={() => copyReferralLink(data.user.referralCode)}
               style={{ height: 40, willChange: 'transform' }}
+              tabIndex={-1}
             >
               <Inline alignVertical="center" space="8px">
                 <Symbol
