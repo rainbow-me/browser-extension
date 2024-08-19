@@ -957,7 +957,8 @@
     "import_wallet_group": "Import wallet group",
     "n_words_might_be_wrong": "%{n} words may be misspelled or incorrect.",
     "1_word_might_be_wrong": "1 word may be misspelled or incorrect.",
-    "couldnt_paste": "We couldn’t paste your Secret Recovery Phrase"
+    "couldnt_paste": "We couldn’t paste your Secret Recovery Phrase",
+    "duplicate_seed": "This seed is imported already"
   },
   "import_wallet_via_private_key": {
     "title": "Import Your Wallet",

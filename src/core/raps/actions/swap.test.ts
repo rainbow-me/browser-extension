@@ -32,6 +32,7 @@ beforeAll(async () => {
     destReceiver: TEST_ADDRESS_2,
     swapType: SwapType.normal,
     toChainId: 1,
+    currency: 'USD',
   });
 }, 10000);
 
