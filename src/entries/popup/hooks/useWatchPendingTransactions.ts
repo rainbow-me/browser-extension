@@ -3,6 +3,7 @@ import { Address } from 'viem';
 import { mainnet } from 'viem/chains';
 
 import { queryClient } from '~/core/react-query';
+import { userAssetsQueryKey } from '~/core/resources/assets/common';
 import { userAssetsFetchQuery } from '~/core/resources/assets/userAssets';
 import { consolidatedTransactionsQueryKey } from '~/core/resources/transactions/consolidatedTransactions';
 import { fetchTransaction } from '~/core/resources/transactions/transaction';
@@ -11,6 +12,8 @@ import {
   useNonceStore,
   usePendingTransactionsStore,
 } from '~/core/state';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useStaleBalancesStore } from '~/core/state/staleBalances';
 import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
 import { useUserChainsStore } from '~/core/state/userChains';
 import {
@@ -26,14 +29,11 @@ import {
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import { RainbowError, logger } from '~/logger';
 
-import { useSwapRefreshAssets } from './swap/useSwapAssetsRefresh';
-
 export const useWatchPendingTransactions = ({
   address,
 }: {
   address: Address;
 }) => {
-  const { swapRefreshAssets } = useSwapRefreshAssets();
   const {
     pendingTransactions: storePendingTransactions,
     setPendingTransactions,
@@ -43,25 +43,20 @@ export const useWatchPendingTransactions = ({
   const addCustomNetworkTransactions =
     useCustomNetworkTransactionsStore.use.addCustomNetworkTransactions();
   const { userChains } = useUserChainsStore();
+  const { testnetMode } = useTestnetModeStore.getState();
+  const { addStaleBalance } = useStaleBalancesStore();
 
   const pendingTransactions = useMemo(
     () => storePendingTransactions[address] || [],
     [address, storePendingTransactions],
   );
 
-  const refreshAssets = useCallback(
-    (tx: RainbowTransaction) => {
-      if (tx.type === 'swap') {
-        swapRefreshAssets(tx.nonce);
-      } else {
-        userAssetsFetchQuery({
-          address,
-          currency: currentCurrency,
-        });
-      }
-    },
-    [address, currentCurrency, swapRefreshAssets],
-  );
+  const refreshAssets = useCallback(() => {
+    userAssetsFetchQuery({
+      address,
+      currency: currentCurrency,
+    });
+  }, [address, currentCurrency]);
 
   const processFlashbotsTransaction = useCallback(
     async (tx: RainbowTransaction): Promise<RainbowTransaction> => {
@@ -148,7 +143,7 @@ export const useWatchPendingTransactions = ({
       }
 
       if (updatedTransaction?.status !== 'pending') {
-        refreshAssets(tx);
+        refreshAssets();
       }
       return updatedTransaction;
     },
@@ -244,17 +239,34 @@ export const useWatchPendingTransactions = ({
         },
       );
 
-    if (minedTransactions.length) {
-      await queryClient.refetchQueries({
-        queryKey: consolidatedTransactionsQueryKey({
-          address,
-          currency: currentCurrency,
-          userChainIds: Object.keys(userChains).map(Number),
-        }),
-      });
-    }
-
     minedTransactions.forEach((minedTransaction) => {
+      if (minedTransaction.changes?.length) {
+        minedTransaction.changes?.forEach((change) => {
+          const changedAsset = change?.asset;
+          const changedAssetAddress = changedAsset?.address as Address;
+          if (changedAsset) {
+            addStaleBalance({
+              address,
+              chainId: changedAsset?.chainId,
+              info: {
+                address: changedAssetAddress,
+                transactionHash: minedTransaction.hash,
+              },
+            });
+          }
+        });
+      } else if (minedTransaction.asset) {
+        const changedAsset = minedTransaction.asset;
+        const changedAssetAddress = changedAsset?.address as Address;
+        addStaleBalance({
+          address,
+          chainId: changedAsset?.chainId,
+          info: {
+            address: changedAssetAddress,
+            transactionHash: minedTransaction.hash,
+          },
+        });
+      }
       if (isCustomChain(minedTransaction.chainId)) {
         addCustomNetworkTransactions({
           address,
@@ -264,11 +276,29 @@ export const useWatchPendingTransactions = ({
       }
     });
 
+    if (minedTransactions.length) {
+      await queryClient.refetchQueries({
+        queryKey: consolidatedTransactionsQueryKey({
+          address,
+          currency: currentCurrency,
+          userChainIds: Object.keys(userChains).map(Number),
+        }),
+      });
+      await queryClient.refetchQueries({
+        queryKey: userAssetsQueryKey({
+          address,
+          currency: currentCurrency,
+          testnetMode,
+        }),
+      });
+    }
+
     setPendingTransactions({
       address,
       pendingTransactions: newPendingTransactions,
     });
   }, [
+    addStaleBalance,
     addCustomNetworkTransactions,
     address,
     currentCurrency,
@@ -276,6 +306,7 @@ export const useWatchPendingTransactions = ({
     processNonces,
     processPendingTransaction,
     setPendingTransactions,
+    testnetMode,
     userChains,
   ]);
 

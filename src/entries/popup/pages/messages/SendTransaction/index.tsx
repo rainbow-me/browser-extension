@@ -112,8 +112,8 @@ export function SendTransaction({
         } satisfies NewTransaction;
 
         addNewTransaction({
-          address: txData.from as Address,
-          chainId: txData.chainId as ChainId,
+          address: txData.from,
+          chainId: txData.chainId,
           transaction,
         });
         approveRequest(result.hash);
