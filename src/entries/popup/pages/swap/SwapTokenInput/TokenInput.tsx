@@ -22,28 +22,47 @@ import { SwapInputActionButton } from '../SwapInputActionButton';
 
 const SwapInputMaskWrapper = ({
   inputDisabled,
+  value,
+  symbol,
   children,
 }: {
   inputDisabled?: boolean;
+  value?: string;
+  symbol?: string;
   children: ReactElement;
 }) => {
-  return inputDisabled ? (
+  if (inputDisabled) {
+    return (
+      <CursorTooltip
+        text={i18n.t('swap.tokens_input.output_quotes_disabled')}
+        textWeight="semibold"
+        textSize="12pt"
+        textColor="labelSecondary"
+      >
+        {children}
+      </CursorTooltip>
+    );
+  }
+
+  return (
     <CursorTooltip
-      text={i18n.t('swap.tokens_input.output_quotes_disabled')}
+      text={`${value || '0.00'} ${symbol || ''}`}
       textWeight="semibold"
       textSize="12pt"
       textColor="labelSecondary"
+      arrowAlignment="left"
+      align="start"
+      hideTooltipOnMouseDown
     >
       {children}
     </CursorTooltip>
-  ) : (
-    children
   );
 };
 
 interface TokenInputProps {
   accentCaretColor?: boolean;
   asset: ParsedSearchAsset | null;
+  assetTooltipValue?: string;
   assetFilter: string;
   dropdownHeight?: number;
   dropdownComponent: ReactElement;
@@ -74,6 +93,7 @@ export const TokenInput = React.forwardRef<
   {
     accentCaretColor,
     asset,
+    assetTooltipValue,
     assetFilter,
     dropdownHeight,
     dropdownComponent,
@@ -97,6 +117,7 @@ export const TokenInput = React.forwardRef<
   forwardedRef,
 ) {
   const [dropdownVisible, setDropdownVisible] = useState(false);
+
   const prevDropdownVisible = usePrevious(dropdownVisible);
 
   useImperativeHandle(forwardedRef, () => ({
@@ -191,7 +212,11 @@ export const TokenInput = React.forwardRef<
           </Box>
         ) : (
           <Box>
-            <SwapInputMaskWrapper inputDisabled={inputDisabled}>
+            <SwapInputMaskWrapper
+              symbol={asset.symbol}
+              value={assetTooltipValue}
+              inputDisabled={inputDisabled}
+            >
               <Box marginVertical="-20px">
                 <SwapInputMask
                   testId={`${testId}-swap-token-input`}

@@ -30,6 +30,7 @@ export const CursorTooltip = ({
   textWeight,
   textSize,
   textColor,
+  hideTooltipOnMouseDown,
   children,
   hint,
 }: {
@@ -42,6 +43,7 @@ export const CursorTooltip = ({
   textSize?: TextStyles['fontSize'];
   textWeight?: TextStyles['fontWeight'];
   textColor?: TextStyles['color'];
+  hideTooltipOnMouseDown?: boolean;
   hint?: string;
 }) => {
   const [open, setOpen] = useState(false);
@@ -116,6 +118,13 @@ export const CursorTooltip = ({
               setIsHovering(false);
               setOpen(false);
               showTimer.current && clearTimeout(showTimer.current);
+            }}
+            onMouseDown={() => {
+              if (hideTooltipOnMouseDown) {
+                setIsHovering(false);
+                setOpen(false);
+                showTimer.current && clearTimeout(showTimer.current);
+              }
             }}
           >
             {children}

@@ -9,7 +9,7 @@ import { Address } from 'viem';
 import { optimism } from 'viem/chains';
 
 import { REFERRER_CLAIM } from '~/core/references';
-import { gasStore } from '~/core/state';
+import { currentCurrencyStore, gasStore } from '~/core/state';
 import { TransactionGasParams } from '~/core/types/gas';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { calculateL1FeeOptimism } from '~/core/utils/gas';
@@ -55,6 +55,7 @@ export async function claimBridge({
     sellAmount: sellAmount,
     slippage: 2,
     swapType: SwapType.crossChain,
+    currency: currentCurrencyStore.getState().currentCurrency,
   });
 
   // if we don't get a quote or there's an error we can't continue
@@ -122,6 +123,7 @@ export async function claimBridge({
       sellAmount: maxBridgeableAmount,
       slippage: 2,
       swapType: SwapType.crossChain,
+      currency: currentCurrencyStore.getState().currentCurrency,
     });
 
     if (!newQuote || (newQuote as QuoteError)?.error) {
