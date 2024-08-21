@@ -7,6 +7,7 @@ import {
 
 import { i18n } from '../languages';
 import { useConnectedToHardhatStore } from '../state/currentSettings/connectedToHardhat';
+import { ParsedSearchAsset } from '../types/assets';
 import { ChainId } from '../types/chains';
 
 import { isLowerCaseMatch } from './strings';
@@ -88,5 +89,20 @@ export const isWrapEth = ({
       buyTokenAddress,
       WRAPPED_ASSET[connectedToHardhat ? ChainId.mainnet : chainId],
     )
+  );
+};
+
+export const isWrapOrUnwrapEth = ({
+  assetToBuy,
+  assetToSell,
+}: {
+  assetToBuy: ParsedSearchAsset | null;
+  assetToSell: ParsedSearchAsset | null;
+}) => {
+  return (
+    assetToBuy?.chainId === assetToSell?.chainId &&
+    ((assetToBuy?.type === 'native' &&
+      assetToSell?.type === 'wrapped-native') ||
+      (assetToSell?.type === 'native' && assetToBuy?.type === 'wrapped-native'))
   );
 };
