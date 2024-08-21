@@ -10,7 +10,7 @@ runs:
   steps:
   - uses: actions/setup-node@v3
     with:
-       node-version: "18.18.0"
+       node-version: "20.16.0"
   - name: Download deps cache artifacts
     uses: actions/download-artifact@v3
     with:
