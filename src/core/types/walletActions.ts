@@ -7,6 +7,7 @@ export enum walletActions {
   unlock = 'unlock',
   verify_password = 'verify_password',
   derive_accounts_from_secret = 'derive_accounts_from_secret',
+  is_mnemonic_in_vault = 'is_mnemonic_in_vault',
   create = 'create',
   import = 'import',
   add = 'add',

@@ -4,6 +4,7 @@ import currency from 'currency.js';
 import { isNil } from 'lodash';
 
 import { supportedCurrencies } from '~/core/references';
+import { maskInput } from '~/entries/popup/components/InputMask/utils';
 
 import { formatCurrency } from './formatNumber';
 import { BigNumberish } from './hex';
@@ -502,4 +503,31 @@ export const processExchangeRateArray = (arr: string[]): string[] => {
     }
     return item;
   });
+};
+
+export const truncateNumber = (n: string | number, maxChars = 10): string => {
+  const value = typeof n === 'number' ? n.toString() : n;
+
+  if (!value) return '';
+
+  const parts = value.replace(/,/g, '').split('.');
+  const integers = parts[0] || '';
+
+  if (integers.length > maxChars) {
+    return maskInput({
+      inputValue: value,
+      decimals: 0,
+      integers: maxChars,
+    });
+  }
+
+  return maskInput({
+    inputValue: value,
+    decimals: maxChars - integers.length,
+    integers: maxChars,
+  });
+};
+
+export const isExceedingMaxCharacters = (value: string, maxChars: number) => {
+  return value.replace('.', '').length > maxChars;
 };

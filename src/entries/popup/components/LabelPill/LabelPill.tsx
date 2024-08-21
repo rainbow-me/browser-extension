@@ -1,10 +1,19 @@
 import React from 'react';
 
 import { Box, Inline, Text } from '~/design-system';
+import type { BackgroundColor } from '~/design-system/styles/designTokens';
 
-const LabelPill = ({ label, dot }: { label: string; dot?: boolean }) => (
+const LabelPill = ({
+  label,
+  dot,
+  background,
+}: {
+  label: string;
+  dot?: boolean;
+  background?: BackgroundColor;
+}) => (
   <Box
-    background="surfacePrimaryElevatedSecondary"
+    background={background || 'surfacePrimaryElevatedSecondary'}
     borderRadius="round"
     padding="8px"
   >
