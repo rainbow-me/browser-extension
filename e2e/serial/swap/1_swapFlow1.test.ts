@@ -475,21 +475,21 @@ it('should be able to open remove token to buy and check favorites and verified 
 
 it('should be able to favorite a token and check the info button is present', async () => {
   await findElementByTestIdAndClick({
-    id: `${SWAP_VARIABLES.ZEROX_MAINNET_ID}-verified-token-to-buy-row-favorite-button`,
+    id: `${SWAP_VARIABLES.REKT_MAINNET_ID}-verified-token-to-buy-row-favorite-button`,
     driver,
   });
   await delayTime('short');
   await findElementByTestIdAndClick({
-    id: `${SWAP_VARIABLES.ZEROX_MAINNET_ID}-favorites-token-to-buy-row-info-button`,
+    id: `${SWAP_VARIABLES.REKT_MAINNET_ID}-favorites-token-to-buy-row-info-button`,
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `${SWAP_VARIABLES.ZEROX_MAINNET_ID}-favorites-token-to-buy-row-info-button-copy`,
+    id: `${SWAP_VARIABLES.REKT_MAINNET_ID}-favorites-token-to-buy-row-info-button-copy`,
     driver,
   });
   if (isFirefox) {
     await findElementByTestIdAndClick({
-      id: `${SWAP_VARIABLES.ZEROX_MAINNET_ID}-token-to-buy-token-input-remove`,
+      id: `${SWAP_VARIABLES.REKT_MAINNET_ID}-token-to-buy-token-input-remove`,
       driver,
     });
   }
