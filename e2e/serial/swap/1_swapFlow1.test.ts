@@ -258,6 +258,7 @@ it.skip('should be able to set default values for settings and go back to swap',
     driver,
   });
   expect(routeTriggerAuto).toBeTruthy();
+  await delayTime('very-long');
   const text = await getTextFromTextInput({
     id: 'slippage-input-mask',
     driver,
@@ -434,6 +435,7 @@ it('should be able to type native amount on sell input', async () => {
     text: 1,
     driver,
   });
+  await delayTime('very-long');
   const fiatValueText = await getTextFromTextInput({
     id: 'token-to-sell-info-fiat-value-input',
     driver,
@@ -530,7 +532,7 @@ it('should be able to flip correctly', async () => {
     text: 1,
     driver,
   });
-  isFirefox && (await delay(5000));
+  await delayTime('very-long');
 
   const assetToSellInputText = await getTextFromTextInput({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,

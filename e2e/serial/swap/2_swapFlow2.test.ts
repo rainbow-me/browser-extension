@@ -10,6 +10,7 @@ import { ChainId } from '~/core/types/chains';
 
 import {
   clearInput,
+  delay,
   delayTime,
   doNotFindElementByTestId,
   fillPrivateKey,
@@ -193,13 +194,7 @@ it('should be able to execute unlock and swap', async () => {
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
 
   // wait for swap to complete
-  await delayTime('very-long');
-  await delayTime('very-long');
-  await delayTime('very-long');
-  await delayTime('very-long');
-  await delayTime('very-long');
-  await delayTime('very-long');
-  await delayTime('very-long');
+  await delay(45_000);
 
   const usdcBalanceAfterSwap = await tokenContract.balanceOf(
     WALLET_TO_USE_ADDRESS,
