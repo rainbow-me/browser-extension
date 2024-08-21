@@ -12,6 +12,7 @@ import {
   lessThan,
   subtract,
 } from '~/core/utils/numbers';
+import { isWrapOrUnwrapEth } from '~/core/utils/swaps';
 import {
   Box,
   Column,
@@ -24,6 +25,7 @@ import { CursorTooltip } from '~/entries/popup/components/Tooltip/CursorTooltip'
 
 export const TokenToBuyInfo = ({
   assetToBuy,
+  assetToSell,
   assetToBuyValue,
   assetToBuyNativeDisplay,
   assetToSellNativeDisplay,
@@ -47,13 +49,17 @@ export const TokenToBuyInfo = ({
   }, [assetToBuy?.native?.price?.amount, currentCurrency, assetToBuyValue]);
 
   const nativeValueDifferenceDisplay = useMemo(() => {
+    const isWrapOrUnwrap = isWrapOrUnwrapEth({ assetToBuy, assetToSell });
+
     if (
       !assetToSellNativeDisplay?.amount ||
       assetToSellNativeDisplay?.amount === '0' ||
       !assetToBuyNativeDisplay?.amount ||
-      assetToBuyNativeDisplay?.amount === '0'
-    )
+      assetToBuyNativeDisplay?.amount === '0' ||
+      isWrapOrUnwrap
+    ) {
       return null;
+    }
     const division = divide(
       subtract(assetToBuyNativeDisplay.amount, assetToSellNativeDisplay.amount),
       assetToBuyNativeDisplay.amount,
@@ -62,7 +68,12 @@ export const TokenToBuyInfo = ({
       lessThan(abs(division), 0.01) ? '-0.01' : division,
     );
     return nativeDifference;
-  }, [assetToBuyNativeDisplay, assetToSellNativeDisplay]);
+  }, [
+    assetToBuy,
+    assetToSell,
+    assetToBuyNativeDisplay,
+    assetToSellNativeDisplay,
+  ]);
 
   if (!assetToBuy) return null;
   return (
