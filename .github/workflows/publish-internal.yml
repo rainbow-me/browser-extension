@@ -12,7 +12,7 @@ jobs:
     concurrency: 
       group: ${{ github.workflow }}-${{ github.ref }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.event.pull_request.head.ref }}
@@ -24,13 +24,13 @@ jobs:
             echo "No new commits. Canceling publish..."
             exit 1
           fi
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v4
         with:
           node-version: "20.16.0"
           cache: 'yarn'
       - name: Install deps via Yarn
         run: yarn setup
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           repository: 'rainbow-me/browser-extension-env'
           token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
@@ -50,7 +50,7 @@ jobs:
       - name: Zip it
         run: yarn zip
       - name: Archive the build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: rainbowbx-v${{ env.release_version }}
           path: build/
