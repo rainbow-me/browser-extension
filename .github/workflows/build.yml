@@ -9,23 +9,17 @@ on:
   workflow_dispatch:
 
 jobs:
-
   # INSTALL DEPS
   install:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]  # Add more OS's here
-        node-version: ["18.18.0"]
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
       cancel-in-progress: true
     steps:
       - uses: actions/checkout@v3
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: "18.18.0"
           cache: 'yarn'
       - name: Install deps via Yarn
         run: yarn setup
@@ -41,17 +35,13 @@ jobs:
 
   # BUILD THE EXTENSION
   build:
-    runs-on: ${{ matrix.os }}
-    needs: install
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
+    runs-on: ubuntu-latest
+    needs: [install]
     steps:
       - uses: actions/checkout@v3
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: "18.18.0"
       - name: Download deps cache artifacts
         uses: actions/download-artifact@v3
         with:
@@ -79,9 +69,7 @@ jobs:
           path: build/
       - name: Remove old screenshots
         run: rm -rf screenshots/*
-
   # FIREFOX TESTS
-  #
   # firefox-e2e-parallel:
   #   runs-on: ubuntu-latest
   #   timeout-minutes: 18
@@ -202,16 +190,12 @@ jobs:
   #     - name: Fail if any tests failed
   #       if: steps.FFE2eDappInteractions.outcome == 'failure'
   #       run: exit 1
-
   # CHROME TESTS
-  chrome-e2e-tests:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-        test-type: [onboarding, parallel, swap, send, dappInteractions, optimism-send]
-    needs: [build]
+  
+  chrome-e2e-onboarding:
+    runs-on: ubuntu-latest
     timeout-minutes: 18
+    needs: [build]
     env:
       DISPLAY: :0
       VITEST_SEGFAULT_RETRY: 4
@@ -220,36 +204,230 @@ jobs:
       - uses: ./.github/actions/chromeTestsSetup
         with:
           gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
-      - name: Run e2e ${{ matrix.test-type }} (Chrome)
+      - name: Run e2e onboarding (Chrome)
+        id: ChromeE2EOnboarding
         continue-on-error: true
         run: |
           export BROWSER=chrome
-          export OS=${{ matrix.os }}
+          export OS=linux
           export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
-          yarn vitest:${{ matrix.test-type }}
-      - name: Upload screenshots artifacts
-        if: failure()
+          yarn vitest:onboarding
+      - name: Upload deps artifacts
+        if: steps.ChromeE2EOnboarding.outcome == 'failure'
         uses: actions/upload-artifact@v3
         with:
           name: screenshots
           path: screenshots/
       - name: Fail if any tests failed
-        if: failure()
+        if: steps.ChromeE2EOnboarding.outcome == 'failure'
         run: exit 1
-  
-  # UNIT TESTS
-  unit-tests:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-    needs: install
+  chrome-e2e-parallel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    needs: [build]
+    env:
+      DISPLAY: :0
+      VITEST_SEGFAULT_RETRY: 4
     steps:
       - uses: actions/checkout@v3
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - uses: ./.github/actions/chromeTestsSetup
         with:
-          node-version: ${{ matrix.node-version }}
+          gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+      - name: Run e2e parallel (Chrome)
+        id: ChromeE2EParallel
+        continue-on-error: true
+        run: |
+          export BROWSER=chrome
+          export OS=linux
+          export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
+          yarn vitest:parallel
+      - name: Upload deps artifacts
+        if: steps.ChromeE2EParallel.outcome == 'failure'
+        uses: actions/upload-artifact@v3
+        with:
+          name: screenshots
+          path: screenshots/
+      - name: Fail if any tests failed
+        if: steps.ChromeE2EParallel.outcome == 'failure'
+        run: exit 1
+  chrome-e2e-swap:
+    runs-on: swaps-runner-bx
+    timeout-minutes: 25
+    needs: [build]
+    env:
+      DISPLAY: :0
+      VITEST_SEGFAULT_RETRY: 3
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/chromeTestsSetup
+        with:
+          gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+      - name: Run e2e swap (Chrome)
+        id: ChromeE2ESwaps
+        continue-on-error: true
+        run: |
+          export BROWSER=chrome
+          export OS=linux
+          export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
+          yarn vitest:swap
+      - name: Upload deps artifacts
+        if: steps.ChromeE2ESwaps.outcome == 'failure'
+        uses: actions/upload-artifact@v3
+        with:
+          name: screenshots
+          path: screenshots/
+      - name: Fail if any tests failed
+        if: steps.ChromeE2ESwaps.outcome == 'failure'
+        run: exit 1
+  chrome-e2e-send:
+    runs-on: send-runner-bx
+    timeout-minutes: 16
+    needs: [build]
+    env:
+      DISPLAY: :0
+      VITEST_SEGFAULT_RETRY: 3
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/chromeTestsSetup
+        with:
+          gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+      - name: Run e2e send (Chrome)
+        id: ChromeE2ESend
+        continue-on-error: true
+        run: |
+          export BROWSER=chrome
+          export OS=linux
+          export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
+          yarn vitest:send
+      - name: Upload deps artifacts
+        if: steps.ChromeE2ESend.outcome == 'failure'
+        uses: actions/upload-artifact@v3
+        with:
+          name: screenshots
+          path: screenshots/
+      - name: Fail if any tests failed
+        if: steps.ChromeE2ESend.outcome == 'failure'
+        run: exit 1
+  chrome-optimism-e2e-send:
+    runs-on: send-runner-bx
+    timeout-minutes: 25
+    needs: [build]
+    env:
+      DISPLAY: :0
+      VITEST_SEGFAULT_RETRY: 3
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/chromeTestsSetup
+        with:
+          gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+      - name: Run Optimism e2e send (Chrome)
+        id: ChromeOpE2ESend
+        continue-on-error: true
+        run: |
+          export BROWSER=chrome
+          export OS=linux
+          export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
+          yarn vitest:send:optimism
+      - name: Upload deps artifacts
+        if: steps.ChromeOpE2ESend.outcome == 'failure'
+        uses: actions/upload-artifact@v3
+        with:
+          name: screenshots
+          path: screenshots/
+      - name: Fail if any tests failed
+        if: steps.ChromeOpE2ESend.outcome == 'failure'
+        run: exit 1
+  chrome-e2e-dappInteractions:
+    runs-on: dapp-interactions-runner-bx
+    timeout-minutes: 25
+    needs: [build]
+    env:
+      DISPLAY: :0
+      VITEST_SEGFAULT_RETRY: 3
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/chromeTestsSetup
+        with:
+          gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+      - name: Run e2e dappInteractions (Chrome)
+        id: ChromeE2EDappInteractions
+        continue-on-error: true
+        run: |
+          export BROWSER=chrome
+          export OS=linux
+          export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
+          yarn vitest:dappInteractions
+      - name: Upload deps artifacts
+        if: steps.ChromeE2EDappInteractions.outcome == 'failure'
+        uses: actions/upload-artifact@v3
+        with:
+          name: screenshots
+          path: screenshots/
+      - name: Fail if any tests failed
+        if: steps.ChromeE2EDappInteractions.outcome == 'failure'
+        run: exit 1
+  # BRAVE TESTS
+  # brave-e2e:
+  #   needs: [build]
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 20
+  #   env:
+  #     DISPLAY: :0
+  #     VITEST_SEGFAULT_RETRY: 3
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: actions/setup-node@v3
+  #       with:
+  #         node-version: "18.18.0"
+  #     - name: Download deps cache artifacts
+  #       uses: actions/download-artifact@v3
+  #       with:
+  #         name: node_modules.tar.gz
+  #     - name: Unzip node_modules
+  #       run: tar xzvf node_modules.tar.gz
+  #     - name: Download build artifacts
+  #       uses: actions/download-artifact@v3
+  #       with:
+  #         name: rainbowbx-${{ github.sha }}
+  #         path: build
+  #     - name: Setup xvfb
+  #       run: |
+  #         sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
+  #         # start xvfb in the background
+  #         sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
+  #     - name: Setup Brave browser
+  #       run: |
+  #         sudo apt install apt-transport-https curl
+  #         sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+  #         echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main"|sudo tee /etc/apt/sources.list.d/brave-browser-release.list
+  #         sudo apt update
+  #         sudo apt install brave-browser
+  #     - name: Install Anvil
+  #       uses: foundry-rs/foundry-toolchain@v1
+  #       with:
+  #         version: nightly
+  #     - uses: actions/checkout@v3
+  #       with:
+  #           repository: 'rainbow-me/browser-extension-env'
+  #           token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+  #           path: tmp
+  #     - name: Copy dotenv
+  #       run: cat tmp/dotenv >> .env && rm -rf tmp
+  #     - name: Run e2e (Brave)
+  #       run:  |
+  #        export BROWSER=brave
+  #         export OS=linux
+  #         export BRAVE_BIN='/usr/bin/brave-browser-stable'
+  #         yarn vitest:parallel && yarn vitest:serial
+  # UNIT TESTS
+  unit-tests:
+    runs-on: ubuntu-latest
+    needs: [install]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "18.18.0"
       - name: Download deps cache artifacts
         uses: actions/download-artifact@v3
         with:
@@ -271,9 +449,9 @@ jobs:
           version: nightly
       - uses: actions/checkout@v3
         with:
-          repository: 'rainbow-me/browser-extension-env'
-          token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
-          path: tmp
+            repository: 'rainbow-me/browser-extension-env'
+            token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+            path: tmp
       - name: Copy dotenv
         run: cat tmp/dotenv >> .env && rm -rf tmp
       - name: Set IS_TESTING=true
@@ -284,17 +462,13 @@ jobs:
 
   # LINT, TYPECHECK, AUDIT
   ci-checks:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-    needs: install
+    runs-on: ubuntu-latest
+    needs: [install]
     steps:
       - uses: actions/checkout@v3
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: "18.18.0"
       - name: Download deps cache artifacts
         uses: actions/download-artifact@v3
         with:
@@ -308,12 +482,12 @@ jobs:
       - name: Lint
         run: yarn lint
       - name: Audit CI
-        run: yarn audit:ci
+        run:  yarn audit:ci
       - name: Check types
         run: yarn typecheck
   cleanup:
-    runs-on: ubuntu-latest
-    needs: [chrome-e2e-tests, unit-tests, ci-checks]
+    runs-on:  ubuntu-latest
+    needs: [chrome-e2e-onboarding, chrome-e2e-parallel, chrome-e2e-swap, chrome-e2e-send, chrome-e2e-dappInteractions, chrome-optimism-e2e-send, unit-tests, ci-checks]
     steps:
       - uses: geekyeggo/delete-artifact@v2
         with:
