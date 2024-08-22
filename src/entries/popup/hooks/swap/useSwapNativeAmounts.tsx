@@ -31,12 +31,12 @@ export const useSwapNativeAmounts = ({
     let nativeDisplay = null;
     if (isWrapOrUnwrapEth) {
       nativeDisplay =
-        !quote?.sellAmount || !quote?.sellTokenAsset?.price?.value
+        !quote?.sellAmount || !assetToSell?.price?.value
           ? null
           : convertRawAmountToNativeDisplay(
               quote?.sellAmount?.toString(),
               quote?.sellTokenAsset?.decimals || 18,
-              quote?.sellTokenAsset?.price?.value,
+              assetToSell?.price?.value,
               currentCurrency,
             );
     } else if (assetToSell?.native?.price?.amount && assetToSellValue) {
@@ -69,11 +69,12 @@ export const useSwapNativeAmounts = ({
   }, [
     isWrapOrUnwrapEth,
     assetToSell?.native?.price?.amount,
+    assetToSell?.price?.value,
     assetToSellValue,
     currentCurrency,
     quote?.sellAmount,
-    quote?.sellTokenAsset?.price?.value,
     quote?.sellTokenAsset?.decimals,
+    quote?.sellTokenAsset?.price?.value,
     quote?.sellAmountInEth,
   ]);
 

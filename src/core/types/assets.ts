@@ -159,7 +159,8 @@ export type ProtocolType =
   | 'yearn-v3'
   | 'venus'
   | 'sushiswap'
-  | 'native';
+  | 'native'
+  | 'wrapped-native';
 
 export type AssetMetadata = {
   circulatingSupply: number;
