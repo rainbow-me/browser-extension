@@ -294,7 +294,8 @@
       "full_watching_wallets": "Watched वॉलेट्स का पूरा उपयोग",
       "hw_wallets_enabled": "हार्डवेयर वॉलेट समर्थन सक्षम करें",
       "command_k_internal_shortcuts_enabled": "⌘K आंतरिक शॉर्टकट्स सक्षम करें",
-      "custom_rpc": "कस्टम RPC"
+      "custom_rpc": "कस्टम RPC",
+      "degen_mode": "Degen मोड"
     }
   },
   "transactions": {
@@ -776,6 +777,10 @@
           }
         },
         "got_it": "समझ गया"
+      },
+      "degen_mode": {
+        "title": "Degen मोड",
+        "description": "तेज स्वैप के लिए समीक्षा चरण छोड़ें"
       }
     },
     "actions": {
@@ -785,7 +790,10 @@
       "fee_on_transfer_token": "स्थानांतरण पर शुल्क टोकन",
       "no_route": "कोई मार्ग नहीं मिला",
       "no_quote": "कोई कोट उपलब्ध नहीं",
-      "enter_an_amount": "राशि दर्ज करें"
+      "enter_an_amount": "राशि दर्ज करें",
+      "swap": "%{Action}",
+      "swapping": "%{Actioning} के माध्यम से",
+      "waiting_signature": "अपनी डिवाइस पर पुष्टि करें"
     },
     "review": {
       "title": "समीक्षा और %{Action}",
@@ -942,7 +950,8 @@
     "import_wallet_group": "वॉलेट समूह आयात करें",
     "n_words_might_be_wrong": "%{n} शब्द गलत या गलत हो सकते हैं।",
     "1_word_might_be_wrong": "1 शब्द गलत या गलत हो सकता है।",
-    "couldnt_paste": "हम आपके सीक्रेट रिकवरी फ्रेज़ को पेस्ट नहीं कर सके"
+    "couldnt_paste": "हम आपके सीक्रेट रिकवरी फ्रेज़ को पेस्ट नहीं कर सके",
+    "duplicate_seed": "यह बीज पहले ही आयात हो चुका है"
   },
   "import_wallet_via_private_key": {
     "title": "अपना वॉलेट इम्पोर्ट करें",
