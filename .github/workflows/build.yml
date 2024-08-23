@@ -222,7 +222,7 @@ jobs:
         if: steps.ChromeE2EOnboarding.outcome == 'failure'
         run: exit 1
   chrome-e2e-parallel:
-    runs-on: ubuntu-latest
+    runs-on: beefy-runner-bx
     timeout-minutes: 18
     needs: [build]
     env:
