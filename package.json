@@ -272,7 +272,8 @@
     "jose": "4.15.5",
     "phin": "3.7.1",
     "braces": "3.0.3",
-    "ws": "8.17.1"
+    "ws": "8.17.1",
+    "micromatch": "4.0.8"
   },
   "lavamoat": {
     "allowScripts": {
