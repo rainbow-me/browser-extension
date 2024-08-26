@@ -76,6 +76,9 @@
     "firefox:lint": "yarn web-ext lint --source-dir ./build",
     "firefox:run": "yarn web-ext run --source-dir ./build/ -f='/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox'"
   },
+  "engines": {
+    "node": ">=20.16.0"
+  },
   "dependencies": {
     "@capsizecss/core": "3.0.0",
     "@ethereumjs/tx": "5.0.0",

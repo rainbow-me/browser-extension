@@ -16,10 +16,10 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}
       cancel-in-progress: true
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "18.18.0"
+          node-version: "20.16.0"
           cache: 'yarn'
       - name: Install deps via Yarn
         run: yarn setup
@@ -28,7 +28,7 @@ jobs:
       - name: Zip node_modules
         run: tar czf node_modules.tar.gz node_modules/
       - name: Upload deps artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: node_modules.tar.gz
           path: node_modules.tar.gz
@@ -38,17 +38,17 @@ jobs:
     runs-on: ubuntu-latest
     needs: [install]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "18.18.0"
+          node-version: "20.16.0"
       - name: Download deps cache artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: node_modules.tar.gz
       - name: Unzip node_modules
         run: tar xzf node_modules.tar.gz
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
             repository: 'rainbow-me/browser-extension-env'
             token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
@@ -63,7 +63,7 @@ jobs:
       - name: Build the extension
         run: yarn build:webpack
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: rainbowbx-${{ github.sha }}
           path: build/
@@ -78,7 +78,7 @@ jobs:
   #     DISPLAY: :0
   #     VITEST_SEGFAULT_RETRY: 4
   #   steps:
-  #     - uses: actions/checkout@v3
+  #     - uses: actions/checkout@v4
   #     - uses: ./.github/actions/firefoxTestsSetup
   #       with:
   #         gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
@@ -93,7 +93,7 @@ jobs:
   #           yarn vitest:parallel
   #     - name: Upload deps artifacts
   #       if: steps.FFE2eParallel.outcome == 'failure'
-  #       uses: actions/upload-artifact@v3
+  #       uses: actions/upload-artifact@v4
   #       with:
   #         name: screenshots
   #         path: screenshots/
@@ -108,7 +108,7 @@ jobs:
   #     DISPLAY: :0
   #     VITEST_SEGFAULT_RETRY: 4
   #   steps:
-  #     - uses: actions/checkout@v3
+  #     - uses: actions/checkout@v4
   #     - uses: ./.github/actions/firefoxTestsSetup
   #       with:
   #         gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
@@ -123,7 +123,7 @@ jobs:
   #         yarn vitest:swap
   #     - name: Upload deps artifacts
   #       if: steps.FFE2eSwap.outcome == 'failure'
-  #       uses: actions/upload-artifact@v3
+  #       uses: actions/upload-artifact@v4
   #       with:
   #         name: screenshots
   #         path: screenshots/
@@ -138,7 +138,7 @@ jobs:
   #     DISPLAY: :0
   #     VITEST_SEGFAULT_RETRY: 4
   #   steps:
-  #     - uses: actions/checkout@v3
+  #     - uses: actions/checkout@v4
   #     - uses: ./.github/actions/firefoxTestsSetup
   #       with:
   #         gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
@@ -153,7 +153,7 @@ jobs:
   #           yarn vitest:send
   #     - name: Upload deps artifacts
   #       if: steps.FFE2eSend.outcome == 'failure'
-  #       uses: actions/upload-artifact@v3
+  #       uses: actions/upload-artifact@v4
   #       with:
   #         name: screenshots
   #         path: screenshots/
@@ -168,7 +168,7 @@ jobs:
   #     DISPLAY: :0
   #     VITEST_SEGFAULT_RETRY: 4
   #   steps:
-  #     - uses: actions/checkout@v3
+  #     - uses: actions/checkout@v4
   #     - uses: ./.github/actions/firefoxTestsSetup
   #       with:
   #         gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
@@ -183,7 +183,7 @@ jobs:
   #         yarn vitest:dappInteractions
   #     - name: Upload deps artifacts
   #       if: steps.FFE2eDappInteractions.outcome == 'failure'
-  #       uses: actions/upload-artifact@v3
+  #       uses: actions/upload-artifact@v4
   #       with:
   #         name: screenshots
   #         path: screenshots/
@@ -199,7 +199,7 @@ jobs:
       DISPLAY: :0
       VITEST_SEGFAULT_RETRY: 4
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/chromeTestsSetup
         with:
           gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
@@ -213,7 +213,7 @@ jobs:
           yarn vitest:parallel
       - name: Upload deps artifacts
         if: steps.ChromeE2EParallel.outcome == 'failure'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: screenshots
           path: screenshots/
@@ -228,7 +228,7 @@ jobs:
       DISPLAY: :0
       VITEST_SEGFAULT_RETRY: 3
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/chromeTestsSetup
         with:
           gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
@@ -242,7 +242,7 @@ jobs:
           yarn vitest:swap
       - name: Upload deps artifacts
         if: steps.ChromeE2ESwaps.outcome == 'failure'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: screenshots
           path: screenshots/
@@ -257,7 +257,7 @@ jobs:
       DISPLAY: :0
       VITEST_SEGFAULT_RETRY: 3
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/chromeTestsSetup
         with:
           gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
@@ -271,7 +271,7 @@ jobs:
           yarn vitest:send
       - name: Upload deps artifacts
         if: steps.ChromeE2ESend.outcome == 'failure'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: screenshots
           path: screenshots/
@@ -286,7 +286,7 @@ jobs:
       DISPLAY: :0
       VITEST_SEGFAULT_RETRY: 3
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/chromeTestsSetup
         with:
           gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
@@ -300,7 +300,7 @@ jobs:
           yarn vitest:send:optimism
       - name: Upload deps artifacts
         if: steps.ChromeOpE2ESend.outcome == 'failure'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: screenshots
           path: screenshots/
@@ -315,7 +315,7 @@ jobs:
       DISPLAY: :0
       VITEST_SEGFAULT_RETRY: 3
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/chromeTestsSetup
         with:
           gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
@@ -329,7 +329,7 @@ jobs:
           yarn vitest:dappInteractions
       - name: Upload deps artifacts
         if: steps.ChromeE2EDappInteractions.outcome == 'failure'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: screenshots
           path: screenshots/
@@ -345,18 +345,18 @@ jobs:
   #     DISPLAY: :0
   #     VITEST_SEGFAULT_RETRY: 3
   #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: actions/setup-node@v3
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/setup-node@v4
   #       with:
-  #         node-version: "18.18.0"
+  #         node-version: "20.16.0"
   #     - name: Download deps cache artifacts
-  #       uses: actions/download-artifact@v3
+  #       uses: actions/download-artifact@v4
   #       with:
   #         name: node_modules.tar.gz
   #     - name: Unzip node_modules
   #       run: tar xzvf node_modules.tar.gz
   #     - name: Download build artifacts
-  #       uses: actions/download-artifact@v3
+  #       uses: actions/download-artifact@v4
   #       with:
   #         name: rainbowbx-${{ github.sha }}
   #         path: build
@@ -376,7 +376,7 @@ jobs:
   #       uses: foundry-rs/foundry-toolchain@v1
   #       with:
   #         version: nightly
-  #     - uses: actions/checkout@v3
+  #     - uses: actions/checkout@v4
   #       with:
   #           repository: 'rainbow-me/browser-extension-env'
   #           token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
@@ -394,30 +394,28 @@ jobs:
     runs-on: ubuntu-latest
     needs: [install]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "18.18.0"
+          node-version: "20.16.0"
       - name: Download deps cache artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: node_modules.tar.gz
       - name: Unzip node_modules
         run: tar xzf node_modules.tar.gz
       - name: Install rust
-        uses: actions-rs/toolchain@v1
+        uses: moonrepo/setup-rust@v1.2.1
         with:
-          toolchain: stable
-          target: wasm32-unknown-unknown
+          channel: stable
           profile: minimal
-          override: true
       - name: Fetch networks
         run: yarn fetch:networks
       - name: Install Anvil
         uses: foundry-rs/foundry-toolchain@v1
         with:
           version: nightly
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
             repository: 'rainbow-me/browser-extension-env'
             token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
@@ -435,12 +433,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: [install]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "18.18.0"
+          node-version: "20.16.0"
       - name: Download deps cache artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: node_modules.tar.gz
       - name: Unzip node_modules
@@ -459,9 +457,9 @@ jobs:
     runs-on:  ubuntu-latest
     needs: [chrome-e2e-parallel, chrome-e2e-swap, chrome-e2e-send, chrome-e2e-dappInteractions, chrome-optimism-e2e-send, unit-tests, ci-checks]
     steps:
-      - uses: geekyeggo/delete-artifact@v2
+      - uses: geekyeggo/delete-artifact@v5
         with:
           name: node_modules.tar.gz
-      - uses: geekyeggo/delete-artifact@v2
+      - uses: geekyeggo/delete-artifact@v5
         with:
           name: screenshots
