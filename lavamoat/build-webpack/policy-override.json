@@ -16,7 +16,8 @@
         "eslint>debug": true,
         "eslint>chalk": true,
         "vitest>debug": true,
-        "chalk": true
+        "chalk": true,
+        "msw>chalk": true
       }
     },
     "@vanilla-extract/webpack-plugin>chalk": {

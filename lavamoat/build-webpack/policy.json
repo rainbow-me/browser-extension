@@ -1,42 +1,5 @@
 {
   "resources": {
-    "@testing-library/react>@testing-library/dom>@babel/code-frame": {
-      "globals": {
-        "console.warn": true,
-        "process.emitWarning": true
-      },
-      "packages": {
-        "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight": true
-      }
-    },
-    "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight": {
-      "packages": {
-        "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>chalk": true,
-        "jest>@jest/core>jest-snapshot>@babel/types>@babel/helper-validator-identifier": true,
-        "react>loose-envify>js-tokens": true
-      }
-    },
-    "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>chalk": {
-      "globals": {
-        "process.env.TERM": true,
-        "process.platform": true
-      },
-      "packages": {
-        "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>chalk>ansi-styles": true,
-        "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>chalk>escape-string-regexp": true,
-        "supports-color": true
-      }
-    },
-    "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>chalk>ansi-styles": {
-      "packages": {
-        "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert": true
-      }
-    },
-    "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert": {
-      "packages": {
-        "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert>color-name": true
-      }
-    },
     "@vanilla-extract/css": {
       "globals": {
         "process.env.NODE_ENV": true
@@ -212,6 +175,7 @@
         "eslint>chalk": true,
         "eslint>debug": true,
         "file-loader>loader-utils": true,
+        "msw>chalk": true,
         "vitest>debug": true,
         "webpack": true
       }
@@ -528,8 +492,9 @@
         "process": true
       },
       "packages": {
-        "@testing-library/react>@testing-library/dom>@babel/code-frame": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@ampproject/remapping": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/code-frame": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/generator": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers": true,
@@ -539,7 +504,6 @@
         "eslint>debug": true,
         "file-loader>loader-utils>json5": true,
         "jest>@jest/core>@jest/transform>convert-source-map": true,
-        "jest>@jest/core>jest-snapshot>@babel/generator": true,
         "jest>@jest/core>jest-snapshot>@babel/traverse": true,
         "jest>@jest/core>jest-snapshot>@babel/types": true,
         "semver": true
@@ -561,6 +525,53 @@
       "packages": {
         "jest>@jest/core>@jest/reporters>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
         "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping>@jridgewell/set-array": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/code-frame": {
+      "globals": {
+        "console.warn": true,
+        "process.emitWarning": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/code-frame>@babel/highlight": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/code-frame>@babel/highlight": {
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/code-frame>@babel/highlight>@babel/helper-validator-identifier": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/code-frame>@babel/highlight>chalk": true,
+        "react>loose-envify>js-tokens": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/code-frame>@babel/highlight>chalk": {
+      "globals": {
+        "process.env.TERM": true,
+        "process.platform": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/code-frame>@babel/highlight>chalk>ansi-styles": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/code-frame>@babel/highlight>chalk>escape-string-regexp": true,
+        "supports-color": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/code-frame>@babel/highlight>chalk>ansi-styles": {
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert": {
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert>color-name": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/generator": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping": true,
+        "jest>@jest/core>jest-snapshot>@babel/generator>jsesc": true,
+        "jest>@jest/core>jest-snapshot>@babel/types": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets": {
@@ -619,9 +630,46 @@
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": {
       "packages": {
-        "@testing-library/react>@testing-library/dom>@babel/code-frame": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/parser": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template>@babel/code-frame": true,
         "jest>@jest/core>jest-snapshot>@babel/types": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template>@babel/code-frame": {
+      "globals": {
+        "console.warn": true,
+        "process.emitWarning": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template>@babel/code-frame>@babel/highlight": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template>@babel/code-frame>@babel/highlight": {
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template>@babel/code-frame>@babel/highlight>@babel/helper-validator-identifier": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template>@babel/code-frame>@babel/highlight>chalk": true,
+        "react>loose-envify>js-tokens": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template>@babel/code-frame>@babel/highlight>chalk": {
+      "globals": {
+        "process.env.TERM": true,
+        "process.platform": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template>@babel/code-frame>@babel/highlight>chalk>ansi-styles": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template>@babel/code-frame>@babel/highlight>chalk>escape-string-regexp": true,
+        "supports-color": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template>@babel/code-frame>@babel/highlight>chalk>ansi-styles": {
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template>@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template>@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert": {
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template>@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert>color-name": true
       }
     },
     "eslint>@nodelib/fs.walk": {
@@ -1061,16 +1109,6 @@
         "jest>@jest/core>jest-runner>p-limit>yocto-queue": true
       }
     },
-    "jest>@jest/core>jest-snapshot>@babel/generator": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping": true,
-        "jest>@jest/core>jest-snapshot>@babel/generator>jsesc": true,
-        "jest>@jest/core>jest-snapshot>@babel/types": true
-      }
-    },
     "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping": {
       "globals": {
         "define": true
@@ -1099,13 +1137,13 @@
         "eslint>debug": true,
         "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/code-frame": true,
         "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/generator": true,
+        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-environment-visitor": true,
+        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-function-name": true,
+        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-hoist-variables": true,
+        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-split-export-declaration": true,
         "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/parser": true,
         "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/types": true,
-        "jest>@jest/core>jest-snapshot>@babel/traverse>globals": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-environment-visitor": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-hoist-variables": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-split-export-declaration": true
+        "jest>@jest/core>jest-snapshot>@babel/traverse>globals": true
       }
     },
     "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/code-frame": {
@@ -1174,6 +1212,100 @@
         "define": true
       }
     },
+    "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-function-name": {
+      "packages": {
+        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-function-name>@babel/template": true,
+        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-function-name>@babel/types": true
+      }
+    },
+    "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-function-name>@babel/template": {
+      "packages": {
+        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame": true,
+        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/parser": true,
+        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-function-name>@babel/types": true
+      }
+    },
+    "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame": {
+      "globals": {
+        "console.warn": true,
+        "process.emitWarning": true
+      },
+      "packages": {
+        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>@babel/highlight": true,
+        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk": true
+      }
+    },
+    "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>@babel/highlight": {
+      "packages": {
+        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk": true,
+        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-function-name>@babel/types>@babel/helper-validator-identifier": true,
+        "react>loose-envify>js-tokens": true
+      }
+    },
+    "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk": {
+      "globals": {
+        "process.env.TERM": true,
+        "process.platform": true
+      },
+      "packages": {
+        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk>ansi-styles": true,
+        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk>escape-string-regexp": true,
+        "supports-color": true
+      }
+    },
+    "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk>ansi-styles": {
+      "packages": {
+        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk>ansi-styles>color-convert": true
+      }
+    },
+    "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk>ansi-styles>color-convert": {
+      "packages": {
+        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk>ansi-styles>color-convert>color-name": true
+      }
+    },
+    "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-function-name>@babel/types": {
+      "globals": {
+        "console.warn": true,
+        "process.env.BABEL_TYPES_8_BREAKING": true
+      },
+      "packages": {
+        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-function-name>@babel/types>@babel/helper-string-parser": true,
+        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-function-name>@babel/types>@babel/helper-validator-identifier": true,
+        "lavamoat>lavamoat-core>@babel/types>to-fast-properties": true
+      }
+    },
+    "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-hoist-variables": {
+      "packages": {
+        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-hoist-variables>@babel/types": true
+      }
+    },
+    "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-hoist-variables>@babel/types": {
+      "globals": {
+        "console.warn": true,
+        "process.env.BABEL_TYPES_8_BREAKING": true
+      },
+      "packages": {
+        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-hoist-variables>@babel/types>@babel/helper-string-parser": true,
+        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-hoist-variables>@babel/types>@babel/helper-validator-identifier": true,
+        "lavamoat>lavamoat-core>@babel/types>to-fast-properties": true
+      }
+    },
+    "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-split-export-declaration": {
+      "packages": {
+        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-split-export-declaration>@babel/types": true
+      }
+    },
+    "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-split-export-declaration>@babel/types": {
+      "globals": {
+        "console.warn": true,
+        "process.env.BABEL_TYPES_8_BREAKING": true
+      },
+      "packages": {
+        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-split-export-declaration>@babel/types>@babel/helper-string-parser": true,
+        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/helper-split-export-declaration>@babel/types>@babel/helper-validator-identifier": true,
+        "lavamoat>lavamoat-core>@babel/types>to-fast-properties": true
+      }
+    },
     "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/types": {
       "globals": {
         "console.warn": true,
@@ -1194,100 +1326,6 @@
         "jest>@jest/core>jest-snapshot>@babel/types>@babel/helper-string-parser": true,
         "jest>@jest/core>jest-snapshot>@babel/types>@babel/helper-validator-identifier": true,
         "lavamoat>lavamoat-core>@babel/types>to-fast-properties": true
-      }
-    },
-    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name": {
-      "packages": {
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/types": true
-      }
-    },
-    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template": {
-      "packages": {
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/parser": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/types": true
-      }
-    },
-    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame": {
-      "globals": {
-        "console.warn": true,
-        "process.emitWarning": true
-      },
-      "packages": {
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>@babel/highlight": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk": true
-      }
-    },
-    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>@babel/highlight": {
-      "packages": {
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/types>@babel/helper-validator-identifier": true,
-        "react>loose-envify>js-tokens": true
-      }
-    },
-    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk": {
-      "globals": {
-        "process.env.TERM": true,
-        "process.platform": true
-      },
-      "packages": {
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk>ansi-styles": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk>escape-string-regexp": true,
-        "supports-color": true
-      }
-    },
-    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk>ansi-styles": {
-      "packages": {
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk>ansi-styles>color-convert": true
-      }
-    },
-    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk>ansi-styles>color-convert": {
-      "packages": {
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk>ansi-styles>color-convert>color-name": true
-      }
-    },
-    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/types": {
-      "globals": {
-        "console.warn": true,
-        "process.env.BABEL_TYPES_8_BREAKING": true
-      },
-      "packages": {
-        "lavamoat>lavamoat-core>@babel/types>to-fast-properties": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/types>@babel/helper-string-parser": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/types>@babel/helper-validator-identifier": true
-      }
-    },
-    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-hoist-variables": {
-      "packages": {
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-hoist-variables>@babel/types": true
-      }
-    },
-    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-hoist-variables>@babel/types": {
-      "globals": {
-        "console.warn": true,
-        "process.env.BABEL_TYPES_8_BREAKING": true
-      },
-      "packages": {
-        "lavamoat>lavamoat-core>@babel/types>to-fast-properties": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-hoist-variables>@babel/types>@babel/helper-string-parser": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-hoist-variables>@babel/types>@babel/helper-validator-identifier": true
-      }
-    },
-    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-split-export-declaration": {
-      "packages": {
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-split-export-declaration>@babel/types": true
-      }
-    },
-    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-split-export-declaration>@babel/types": {
-      "globals": {
-        "console.warn": true,
-        "process.env.BABEL_TYPES_8_BREAKING": true
-      },
-      "packages": {
-        "lavamoat>lavamoat-core>@babel/types>to-fast-properties": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-split-export-declaration>@babel/types>@babel/helper-string-parser": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-split-export-declaration>@babel/types>@babel/helper-validator-identifier": true
       }
     },
     "lint-staged>execa>merge-stream": {
@@ -1345,6 +1383,17 @@
       "packages": {
         "eslint>fast-deep-equal": true,
         "mini-css-extract-plugin>schema-utils>ajv": true
+      }
+    },
+    "msw>chalk": {
+      "packages": {
+        "msw>chalk>ansi-styles": true,
+        "supports-color": true
+      }
+    },
+    "msw>chalk>ansi-styles": {
+      "packages": {
+        "msw>chalk>ansi-styles>color-convert": true
       }
     },
     "msw>chalk>ansi-styles>color-convert": {
@@ -1436,22 +1485,11 @@
         "process.stdout": true
       },
       "packages": {
+        "msw>chalk": true,
         "semver": true,
-        "ts-loader>chalk": true,
         "ts-loader>micromatch": true,
         "typescript": true,
         "webpack": true
-      }
-    },
-    "ts-loader>chalk": {
-      "packages": {
-        "supports-color": true,
-        "ts-loader>chalk>ansi-styles": true
-      }
-    },
-    "ts-loader>chalk>ansi-styles": {
-      "packages": {
-        "msw>chalk>ansi-styles>color-convert": true
       }
     },
     "ts-loader>micromatch": {
@@ -1808,10 +1846,10 @@
       },
       "packages": {
         "lodash": true,
+        "msw>chalk": true,
         "viem>ws": true,
         "vitest>acorn-walk": true,
         "webpack-bundle-analyzer>acorn": true,
-        "webpack-bundle-analyzer>chalk": true,
         "webpack-bundle-analyzer>gzip-size": true,
         "webpack-bundle-analyzer>opener": true,
         "webpack-bundle-analyzer>sirv": true,
@@ -1822,17 +1860,6 @@
       "globals": {
         "console": true,
         "define": true
-      }
-    },
-    "webpack-bundle-analyzer>chalk": {
-      "packages": {
-        "supports-color": true,
-        "webpack-bundle-analyzer>chalk>ansi-styles": true
-      }
-    },
-    "webpack-bundle-analyzer>chalk>ansi-styles": {
-      "packages": {
-        "msw>chalk>ansi-styles>color-convert": true
       }
     },
     "webpack-bundle-analyzer>gzip-size": {
