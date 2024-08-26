@@ -8,18 +8,18 @@ inputs:
 runs:
   using: 'composite'
   steps:
-  - uses: actions/setup-node@v3
+  - uses: actions/setup-node@v4
     with:
-       node-version: "18.18.0"
+       node-version: "20.16.0"
   - name: Download deps cache artifacts
-    uses: actions/download-artifact@v3
+    uses: actions/download-artifact@v4
     with:
       name: node_modules.tar.gz
   - name: Unzip node_modules
     shell: 'bash'
     run: tar xzf node_modules.tar.gz
   - name: Download build artifacts
-    uses: actions/download-artifact@v3
+    uses: actions/download-artifact@v4
     with:
         name: rainbowbx-${{ github.sha }}
         path: build
@@ -33,7 +33,7 @@ runs:
     uses: foundry-rs/foundry-toolchain@v1
     with:
        version: nightly
-  - uses: actions/checkout@v3
+  - uses: actions/checkout@v4
     with:
          repository: 'rainbow-me/browser-extension-env'
          token: ${{ inputs.gh-access-token }}

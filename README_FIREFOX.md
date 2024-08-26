@@ -9,12 +9,12 @@
 
 ### 1. Set up Node
 
-Use node v18 (18.18) or if you use nvm follow the instructions below
+Use node v20 (20.16.0) or if you use nvm follow the instructions below
 
 ```bash
-nvm install 18.18
+nvm install 20.16.0
 # or
-nvm use 18.18
+nvm use 20.16.0
 ```
 
 ### 2. Install project dependencies
