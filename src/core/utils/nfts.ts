@@ -19,21 +19,38 @@ export const ENS_NFT_CONTRACT_ADDRESS =
 
 export const simpleHashSupportedChainNames = [
   'ethereum',
-  ChainName.polygon,
   ChainName.arbitrum,
   ChainName.arbitrumNova,
   ChainName.avalanche,
+  ChainName.b3,
   ChainName.base,
   ChainName.blast,
   ChainName.bsc,
+  ChainName.canto,
   ChainName.celo,
+  ChainName.degen,
+  ChainName.fantom,
+  ChainName.forma,
   ChainName.gnosis,
+  ChainName.godwoken,
+  ChainName.immutableZkEvm,
   ChainName.linea,
+  ChainName.loot,
   ChainName.manta,
+  ChainName.mode,
+  ChainName.moonbeam,
   ChainName.optimism,
+  ChainName.opbnb,
+  ChainName.palm,
+  ChainName.polygon,
   ChainName.polygonZkEvm,
+  ChainName.proofOfPlayApex,
+  ChainName.proofOfPlayBoss,
   ChainName.rari,
   ChainName.scroll,
+  ChainName.sei,
+  ChainName.xai,
+  ChainName.zksync,
   ChainName.zora,
 ] as (ChainName | 'ethereum' | 'ethereum-sepolia')[];
 
@@ -41,10 +58,11 @@ export const simpleHashSupportedTestnetChainNames = [
   'ethereum-sepolia',
   ChainName.arbitrumSepolia,
   ChainName.baseSepolia,
+  ChainName.bscTestnet,
   ChainName.blastSepolia,
   ChainName.optimismSepolia,
-  ChainName.zoraSepolia,
   ChainName.polygonAmoy,
+  ChainName.zoraSepolia,
 ] as (ChainName | 'ethereum-sepolia' | 'ethereum')[];
 
 /**
@@ -73,56 +91,92 @@ export function getNetworkFromSimpleHashChain(
   chain: SimpleHashChain,
 ): ChainName {
   switch (chain) {
-    case SimpleHashChain.Ethereum:
-    case SimpleHashChain.Gnosis:
-      return ChainName.mainnet;
-    case SimpleHashChain.Polygon:
-      return ChainName.polygon;
-    case SimpleHashChain.Arbitrum:
-      return ChainName.arbitrum;
-    case SimpleHashChain.Optimism:
-      return ChainName.optimism;
-    case SimpleHashChain.Bsc:
-      return ChainName.bsc;
-    case SimpleHashChain.Zora:
-      return ChainName.zora;
-    case SimpleHashChain.Base:
-      return ChainName.base;
     case SimpleHashChain.Avalanche:
       return ChainName.avalanche;
+    case SimpleHashChain.AvalancheFuji:
+      return ChainName.avalancheFuji;
+    case SimpleHashChain.Arbitrum:
+      return ChainName.arbitrum;
     case SimpleHashChain.ArbitrumNova:
       return ChainName.arbitrumNova;
-    case SimpleHashChain.Celo:
-      return ChainName.celo;
-    case SimpleHashChain.Linea:
-      return ChainName.linea;
-    case SimpleHashChain.Manta:
-      return ChainName.manta;
-    case SimpleHashChain.PolygonZkEVM:
-      return ChainName.polygonZkEvm;
-    case SimpleHashChain.Rari:
-      return ChainName.rari;
-    case SimpleHashChain.Scroll:
-      return ChainName.scroll;
     case SimpleHashChain.ArbitrumSepolia:
       return ChainName.arbitrumSepolia;
+    case SimpleHashChain.Base:
+      return ChainName.base;
     case SimpleHashChain.BaseSepolia:
       return ChainName.baseSepolia;
-    case SimpleHashChain.OptimismSepolia:
-      return ChainName.optimismSepolia;
-    case SimpleHashChain.ZoraSepolia:
-      return ChainName.zoraSepolia;
+    case SimpleHashChain.B3:
+      return ChainName.b3;
     case SimpleHashChain.Blast:
       return ChainName.blast;
     case SimpleHashChain.BlastSepolia:
       return ChainName.blastSepolia;
+    case SimpleHashChain.Bsc:
+      return ChainName.bsc;
+    case SimpleHashChain.BscTestnet:
+      return ChainName.bscTestnet;
+    case SimpleHashChain.Canto:
+      return ChainName.canto;
+    case SimpleHashChain.Celo:
+      return ChainName.celo;
+    case SimpleHashChain.Degen:
+      return ChainName.degen;
+    case SimpleHashChain.Ethereum:
+    case SimpleHashChain.Gnosis:
+      return ChainName.mainnet;
+    case SimpleHashChain.EthereumSepolia:
+      return ChainName.sepolia;
+    case SimpleHashChain.Fantom:
+      return ChainName.fantom;
+    case SimpleHashChain.Forma:
+      return ChainName.forma;
+    case SimpleHashChain.Godwoken:
+      return ChainName.godwoken;
+    case SimpleHashChain.ImmutableZkEvm:
+      return ChainName.immutableZkEvm;
+    case SimpleHashChain.Linea:
+      return ChainName.linea;
+    case SimpleHashChain.Loot:
+      return ChainName.loot;
+    case SimpleHashChain.Manta:
+      return ChainName.manta;
+    case SimpleHashChain.Mode:
+      return ChainName.mode;
+    case SimpleHashChain.Moonbeam:
+      return ChainName.moonbeam;
+    case SimpleHashChain.OpBnb:
+      return ChainName.opbnb;
+    case SimpleHashChain.Optimism:
+      return ChainName.optimism;
+    case SimpleHashChain.OptimismSepolia:
+      return ChainName.optimismSepolia;
+    case SimpleHashChain.Palm:
+      return ChainName.palm;
+    case SimpleHashChain.Polygon:
+      return ChainName.polygon;
     case SimpleHashChain.PolygonAmoy:
       return ChainName.polygonAmoy;
+    case SimpleHashChain.PolygonZkEvm:
+      return ChainName.polygonZkEvm;
+    case SimpleHashChain.ProofOfPlayApex:
+      return ChainName.proofOfPlayApex;
+    case SimpleHashChain.ProofOfPlayBoss:
+      return ChainName.proofOfPlayBoss;
+    case SimpleHashChain.Rari:
+      return ChainName.rari;
+    case SimpleHashChain.Scroll:
+      return ChainName.scroll;
+    case SimpleHashChain.Sei:
+      return ChainName.sei;
+    case SimpleHashChain.Xai:
+      return ChainName.xai;
+    case SimpleHashChain.ZkSync:
+      return ChainName.zksync;
+    case SimpleHashChain.Zora:
+      return ChainName.zora;
+    case SimpleHashChain.ZoraSepolia:
+      return ChainName.zoraSepolia;
     default:
-      /*
-       * Throws here because according to TS types, we should NEVER hit this
-       * default branch in the logic
-       */
       throw new Error(
         `getNetworkFromSimpleHashChain received unknown chain: ${chain}`,
       );
