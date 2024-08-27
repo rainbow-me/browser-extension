@@ -802,7 +802,7 @@ export async function waitForAndCheckTransaction(
     }
 
     attempts++;
-    await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait 2 seconds between attempts
+    await new Promise((resolve) => setTimeout(resolve, 10_000));
   }
 
   return { status: 'timeout', receipt: null };
