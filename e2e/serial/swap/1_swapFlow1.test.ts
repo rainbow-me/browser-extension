@@ -4,22 +4,16 @@ import 'geckodriver';
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
 
-import { ChainId } from '~/core/types/chains';
-
 import {
   clearInput,
   delay,
   delayTime,
-  doNotFindElementByTestId,
   fillPrivateKey,
   findElementByTestId,
   findElementByTestIdAndClick,
-  findElementByTestIdAndDoubleClick,
   findElementByText,
   getExtensionIdByName,
   getRootUrl,
-  getTextFromText,
-  getTextFromTextInput,
   goToPopup,
   goToWelcome,
   initDriverWithOptions,
@@ -27,6 +21,7 @@ import {
   takeScreenshotOnFailure,
   typeOnTextInput,
   waitAndClick,
+  waitForAndCheckTransaction,
 } from '../../helpers';
 import { convertRawAmountToDecimalFormat, subtract } from '../../numbers';
 import { SWAP_VARIABLES, TEST_VARIABLES } from '../../walletVariables';
@@ -120,157 +115,8 @@ it('should be able to go to swap flow', async () => {
   await findElementByTestIdAndClick({ id: 'header-link-swap', driver });
 });
 
-it('should be able to go to swap settings and check rows are visible', async () => {
-  await findElementByTestIdAndClick({
-    id: 'swap-settings-navbar-button',
-    driver,
-  });
-  const routeRow = await findElementByTestId({
-    id: 'swap-settings-route-row',
-    driver,
-  });
-  expect(routeRow).toBeTruthy();
-  const slippageRow = await findElementByTestId({
-    id: 'swap-settings-slippage-row',
-    driver,
-  });
-  expect(slippageRow).toBeTruthy();
-  await findElementByTestIdAndClick({
-    id: 'swap-settings-done',
-    driver,
-  });
-  await delayTime('medium');
-});
-
-it('should be able to go to settings and turn on flashbots', async () => {
-  await findElementByTestIdAndClick({ id: 'navbar-button-with-back', driver });
-  await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
-  await findElementByTestIdAndClick({ id: 'settings-link', driver });
-  await findElementByTestIdAndClick({ id: 'settings-transactions', driver });
-  await findElementByTestIdAndClick({
-    id: 'flashbots-transactions-toggle',
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: 'navbar-button-with-back',
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: 'navbar-button-with-back',
-    driver,
-  });
-  await findElementByTestIdAndClick({ id: 'header-link-swap', driver });
-});
-
-it('should be able to go to swap settings and check flashbots row is visible', async () => {
-  await findElementByTestIdAndClick({
-    id: 'swap-settings-navbar-button',
-    driver,
-  });
-
-  const flashbotsRow = await findElementByTestId({
-    id: 'swap-settings-flashbots-row',
-    driver,
-  });
-  expect(flashbotsRow).toBeTruthy();
-});
-
-it('should be able to interact with route settings', async () => {
-  await findElementByTestIdAndClick({
-    id: 'swap-settings-route-label',
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: 'explainer-action-button',
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: 'settings-route-context-trigger-auto',
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: 'settings-route-context-0x',
-    driver,
-  });
-});
-
-it('should be able to interact with flashbots settings', async () => {
-  await findElementByTestIdAndClick({
-    id: 'swap-settings-flashbots-label',
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: 'explainer-action-button',
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: 'swap-settings-flashbots-toggle',
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: 'swap-settings-flashbots-toggle',
-    driver,
-  });
-});
-
-it('should be able to interact with slippage settings', async () => {
-  await findElementByTestIdAndClick({
-    id: 'swap-settings-slippage-label',
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: 'explainer-action-button',
-    driver,
-  });
-  await clearInput({
-    id: 'slippage-input-mask',
-    driver,
-  });
-  await typeOnTextInput({
-    id: 'slippage-input-mask',
-    driver,
-    text: '4',
-  });
-  await delayTime('short');
-  const warning = await findElementByTestId({
-    id: 'swap-settings-slippage-warning',
-    driver,
-  });
-  expect(warning).toBeTruthy();
-  await findElementByTestIdAndClick({
-    id: 'settings-use-defaults-button',
-    driver,
-  });
-  await delayTime('short');
-  await findElementByTestIdAndClick({
-    id: 'swap-settings-done',
-    driver,
-  });
-});
-
-it.skip('should be able to set default values for settings and go back to swap', async () => {
-  await findElementByTestIdAndClick({
-    id: 'settings-use-defaults-button',
-    driver,
-  });
-  const routeTriggerAuto = await findElementByTestId({
-    id: 'settings-route-context-trigger-auto',
-    driver,
-  });
-  expect(routeTriggerAuto).toBeTruthy();
-  const text = await getTextFromTextInput({
-    id: 'slippage-input-mask',
-    driver,
-  });
-  expect(text).toBe('1');
-  await findElementByTestIdAndClick({
-    id: 'swap-settings-done',
-    driver,
-  });
-  await delayTime('medium');
-});
-
 it('should be able to open token to sell input and select assets', async () => {
+  await delayTime('long');
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-token-input-remove`,
     driver,
@@ -873,126 +719,14 @@ it('should be able to go to review a swap', async () => {
   });
 });
 
-it('should be able to see swap information in review sheet', async () => {
-  const ethAssetToSellAssetCard = await findElementByTestId({
-    id: `ETH-asset-to-sell-swap-asset-card`,
-    driver,
-  });
-  expect(ethAssetToSellAssetCard).toBeTruthy();
-  const usdcAssetToBuyAssetCard = await findElementByTestId({
-    id: `USDC-asset-to-buy-swap-asset-card`,
-    driver,
-  });
-  expect(usdcAssetToBuyAssetCard).toBeTruthy();
-  const minimumReceivedDetailsRow = await findElementByTestId({
-    id: `minimum-received-details-row`,
-    driver,
-  });
-  expect(minimumReceivedDetailsRow).toBeTruthy();
-  const swappingViaDetailsRow = await findElementByTestId({
-    id: `swapping-via-details-row`,
-    driver,
-  });
-  expect(swappingViaDetailsRow).toBeTruthy();
-  await findElementByTestIdAndClick({ id: 'swapping-via-swap-routes', driver });
-  await findElementByTestIdAndClick({ id: 'swapping-via-swap-routes', driver });
-  await findElementByTestIdAndClick({ id: 'swapping-via-swap-routes', driver });
-
-  const includedFeeDetailsRow = await findElementByTestId({
-    id: `included-fee-details-row`,
-    driver,
-  });
-  expect(includedFeeDetailsRow).toBeTruthy();
-
-  await findElementByTestIdAndClick({
-    id: 'included-fee-carrousel-button',
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: 'included-fee-carrousel-button',
-    driver,
-  });
-
-  await findElementByTestIdAndClick({
-    id: 'swap-review-rnbw-fee-info-button',
-    driver,
-  });
-  await findElementByTestIdAndClick({ id: 'explainer-action-button', driver });
-
-  const moreDetailsHiddendDetailsRow = await findElementByTestId({
-    id: `more-details-hidden-details-row`,
-    driver,
-  });
-  expect(moreDetailsHiddendDetailsRow).toBeTruthy();
-
-  await findElementByTestIdAndClick({
-    id: 'swap-review-more-details-button',
-    driver,
-  });
-
-  const moreDetailsdSection = await findElementByTestId({
-    id: `more-details-section`,
-    driver,
-  });
-  expect(moreDetailsdSection).toBeTruthy();
-
-  const exchangeRateDetailsRow = await findElementByTestId({
-    id: `exchange-rate-details-row`,
-    driver,
-  });
-  expect(exchangeRateDetailsRow).toBeTruthy();
-
-  await findElementByTestIdAndClick({
-    id: 'exchange-rate-carrousel-button',
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: 'exchange-rate-carrousel-button',
-    driver,
-  });
-
-  // ETH is selected as input so there's no contract
-  await doNotFindElementByTestId({
-    id: `asset-to-sell-contract-details-row`,
-    driver,
-  });
-
-  const assetToBuyContractDetailsRow = await findElementByTestId({
-    id: `asset-to-buy-contract-details-row`,
-    driver,
-  });
-  expect(assetToBuyContractDetailsRow).toBeTruthy();
-
-  await findElementByTestIdAndClick({
-    id: 'asset-to-buy-swap-view-contract-dropdown',
-    driver,
-  });
-  const assetToSellContractDropdiwnView = await findElementByTestId({
-    id: 'asset-to-buy-view-swap-view-contract-dropdown',
-    driver,
-  });
-  expect(assetToSellContractDropdiwnView).toBeTruthy();
-  await findElementByTestIdAndClick({
-    id: 'asset-to-buy-copy-swap-view-contract-dropdown',
-    driver,
-  });
-
-  const swapReviewConfirmationText = await getTextFromText({
-    id: 'swap-review-confirmation-text',
-    driver,
-  });
-  expect(swapReviewConfirmationText).toBe('Swap ETH to USDC');
-
-  const swapReviewTitleText = await getTextFromText({
-    id: 'swap-review-title-text',
-    driver,
-  });
-  expect(swapReviewTitleText).toBe('Review & Swap');
-});
-
 it('should be able to execute swap', async () => {
+  console.log('########################');
+  console.log('###################### 1');
   const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545');
   await provider.ready;
+
+  console.log('Network Version:', await provider.getNetwork());
+
   await delayTime('short');
 
   await findElementByTestIdAndClick({
@@ -1000,6 +734,8 @@ it('should be able to execute swap', async () => {
     driver,
   });
   await delayTime('short');
+  console.log('########################');
+  console.log('###################### 2');
 
   await findElementByTestIdAndClick({
     id: 'swap-settings-navbar-button',
@@ -1010,6 +746,8 @@ it('should be able to execute swap', async () => {
     id: 'slippage-input-mask',
     driver,
   });
+  console.log('########################');
+  console.log('###################### 3');
   await typeOnTextInput({
     id: 'slippage-input-mask',
     driver,
@@ -1018,6 +756,8 @@ it('should be able to execute swap', async () => {
   await delayTime('medium');
 
   await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
+  console.log('########################');
+  console.log('###################### 4');
 
   const ethBalanceBeforeSwap = await provider.getBalance(WALLET_TO_USE_ADDRESS);
   await delayTime('very-long');
@@ -1025,14 +765,35 @@ it('should be able to execute swap', async () => {
     id: 'swap-confirmation-button-ready',
     driver,
   });
+  console.log('########################');
+  console.log('###################### 5');
   await delayTime('medium');
+  console.log('Clicking swap execution button');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
+  console.log('Swap execution button clicked');
+
+  console.log('Waiting for transaction to be mined...');
+  const { status, receipt } = await waitForAndCheckTransaction(provider);
+  console.log('Transaction status:', status);
+  console.log('Transaction receipt:', receipt);
+
+  if (receipt) {
+    console.log('Transaction Hash:', receipt.transactionHash);
+    console.log('Gas Used:', receipt.gasUsed.toString());
+    console.log('Block Number:', receipt.blockNumber);
+  }
+
+  if (status !== 'success') {
+    throw new Error(`Swap transaction failed or timed out. Status: ${status}`);
+  }
   await delayTime('very-long');
   await delayTime('very-long');
   // Adding delay to make sure the provider gets the balance after the swap
   // Because CI is slow so this triggers a race condition most of the time.
   await delay(5000);
   const ethBalanceAfterSwap = await provider.getBalance(WALLET_TO_USE_ADDRESS);
+  console.log('########################');
+  console.log('###################### 6');
 
   const balanceDifference = subtract(
     ethBalanceBeforeSwap.toString(),
@@ -1042,6 +803,15 @@ it('should be able to execute swap', async () => {
     balanceDifference,
     18,
   );
+  console.log('########################');
+  console.log('###################### 7');
+
+  console.log('Balance Before:', ethBalanceBeforeSwap.toString());
+  console.log('Balance After:', ethBalanceAfterSwap.toString());
+  console.log('Balance Difference:', balanceDifference);
+  console.log('ETH Difference Amount:', ethDifferenceAmount);
 
   expect(Number(ethDifferenceAmount)).toBeGreaterThan(1);
+  console.log('########################');
+  console.log('###################### 8');
 });

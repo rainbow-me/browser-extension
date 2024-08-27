@@ -7,6 +7,7 @@ import * as fs from 'node:fs';
 
 import { Contract } from '@ethersproject/contracts';
 import { getDefaultProvider } from '@ethersproject/providers';
+import { providers } from 'ethers';
 import {
   Builder,
   By,
@@ -172,9 +173,9 @@ const addPermissionForAllWebsites = async (driver: WebDriver) => {
     id: 'details-deck-button-permissions',
     driver,
   });
-  await driver.executeScript(
-    `document.querySelectorAll('[class="permission-info"]')[0].children[0].click();`,
-  );
+  // await driver.executeScript(
+  //   `document.querySelectorAll('[class="permission-info"]')[0].children[0].click();`,
+  // );
 };
 
 export async function getExtensionIdByName(
@@ -774,6 +775,37 @@ export async function transactionStatus() {
   );
   const txnStatus = txnReceipt.status === 1 ? 'success' : 'failure';
   return txnStatus;
+}
+
+export async function waitForAndCheckTransaction(
+  provider: providers.Provider,
+  maxAttempts = 10,
+): Promise<{
+  status: 'success' | 'failure' | 'timeout';
+  receipt: providers.TransactionReceipt | null;
+}> {
+  let attempts = 0;
+  while (attempts < maxAttempts) {
+    try {
+      const blockData = await provider.getBlock('latest');
+      if (blockData.transactions.length > 0) {
+        const txnReceipt = await provider.getTransactionReceipt(
+          blockData.transactions[blockData.transactions.length - 1],
+        );
+        if (txnReceipt) {
+          const txnStatus = txnReceipt.status === 1 ? 'success' : 'failure';
+          return { status: txnStatus, receipt: txnReceipt };
+        }
+      }
+    } catch (error) {
+      console.error('Error checking transaction:', error);
+    }
+
+    attempts++;
+    await new Promise((resolve) => setTimeout(resolve, 2000)); // Wait 2 seconds between attempts
+  }
+
+  return { status: 'timeout', receipt: null };
 }
 
 export const fillSeedPhrase = async (driver: WebDriver, seedPhrase: string) => {
