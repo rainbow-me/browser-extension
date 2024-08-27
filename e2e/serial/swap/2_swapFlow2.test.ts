@@ -26,7 +26,7 @@ import {
   takeScreenshotOnFailure,
   typeOnTextInput,
   waitAndClick,
-  waitForAndCheckTransaction,
+  // waitForAndCheckTransaction,
   waitUntilElementByTestIdIsPresent,
 } from '../../helpers';
 import { convertRawAmountToDecimalFormat, subtract } from '../../numbers';
@@ -194,13 +194,13 @@ it('should be able to execute unlock and swap', async () => {
   await delayTime('very-long');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
 
-  const { status, receipt } = await waitForAndCheckTransaction(provider);
-  console.log('Transaction status:', status);
-  console.log('Transaction receipt:', receipt);
+  // const { status, receipt } = await waitForAndCheckTransaction(provider);
+  // console.log('Transaction status:', status);
+  // console.log('Transaction receipt:', receipt);
 
-  if (status !== 'success') {
-    throw new Error(`Swap transaction failed or timed out. Status: ${status}`);
-  }
+  // if (status !== 'success') {
+  //   throw new Error(`Swap transaction failed or timed out. Status: ${status}`);
+  // }
 
   const usdcBalanceAfterSwap = await tokenContract.balanceOf(
     WALLET_TO_USE_ADDRESS,

@@ -779,6 +779,7 @@ export async function transactionStatus() {
 
 export async function waitForAndCheckTransaction(
   provider: providers.Provider,
+  txHash: string,
   maxAttempts = 20,
 ): Promise<{
   status: 'success' | 'failure' | 'timeout';
@@ -787,16 +788,13 @@ export async function waitForAndCheckTransaction(
   let attempts = 0;
   while (attempts < maxAttempts) {
     try {
-      console.log(`checking transaction status attempt number: ${attempts}`);
-      const blockData = await provider.getBlock('latest');
-      if (blockData.transactions.length > 0) {
-        const txnReceipt = await provider.getTransactionReceipt(
-          blockData.transactions[blockData.transactions.length - 1],
-        );
-        if (txnReceipt) {
-          const txnStatus = txnReceipt.status === 1 ? 'success' : 'failure';
-          return { status: txnStatus, receipt: txnReceipt };
-        }
+      console.log(`Checking transaction status, attempt ${attempts + 1}`);
+      const txnReceipt = await provider.getTransactionReceipt(txHash);
+
+      if (txnReceipt) {
+        const txnStatus = txnReceipt.status === 1 ? 'success' : 'failure';
+        console.log('Transaction receipt:', txnReceipt);
+        return { status: txnStatus, receipt: txnReceipt };
       }
     } catch (error) {
       console.error('Error checking transaction:', error);
@@ -807,6 +805,49 @@ export async function waitForAndCheckTransaction(
   }
 
   return { status: 'timeout', receipt: null };
+}
+
+export async function getLatestTransactionHash(
+  provider: providers.Provider,
+  address: string,
+  maxAttempts = 10,
+  delayMs = 2000,
+): Promise<string | null> {
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    console.log(`Searching for transaction, attempt ${attempt + 1}`);
+    const currentBlock = await provider.getBlockNumber();
+
+    for (let i = 0; i < 5; i++) {
+      // Check last 5 blocks
+      const block = await provider.getBlockWithTransactions(currentBlock - i);
+
+      for (const tx of block.transactions) {
+        if (tx.from.toLowerCase() === address.toLowerCase()) {
+          return tx.hash;
+        }
+      }
+    }
+
+    // If not found, wait before next attempt
+    await new Promise((resolve) => setTimeout(resolve, delayMs));
+  }
+
+  return null;
+}
+
+export async function getPendingTransactionHash(
+  provider: providers.JsonRpcProvider,
+  address: string,
+): Promise<string | null> {
+  const pendingTransactions = await provider.send(
+    'eth_pendingTransactions',
+    [],
+  );
+  const transaction = pendingTransactions.find(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (tx: any) => tx.from.toLowerCase() === address.toLowerCase(),
+  );
+  return transaction ? transaction.hash : null;
 }
 
 export const fillSeedPhrase = async (driver: WebDriver, seedPhrase: string) => {

@@ -17,6 +17,7 @@ import {
   findElementByTestIdAndDoubleClick,
   findElementByText,
   getExtensionIdByName,
+  getLatestTransactionHash,
   getRootUrl,
   getTextFromText,
   getTextFromTextInput,
@@ -120,6 +121,8 @@ it('should be able to connect to hardhat', async () => {
 it('should be able to go to swap flow', async () => {
   await findElementByTestIdAndClick({ id: 'header-link-swap', driver });
 });
+
+// here
 
 it('should be able to go to swap settings and check rows are visible', async () => {
   await findElementByTestIdAndClick({
@@ -271,7 +274,10 @@ it.skip('should be able to set default values for settings and go back to swap',
   await delayTime('medium');
 });
 
+// to here
+
 it('should be able to open token to sell input and select assets', async () => {
+  await delayTime('very-long');
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-token-input-remove`,
     driver,
@@ -314,6 +320,8 @@ it('should be able to open token to sell input and select assets', async () => {
   });
   expect(toBuyInputEthSelected).toBeTruthy();
 });
+
+// and here
 
 it('should be able to select same asset than asset to buy as asset to sell and remove the asset to buy', async () => {
   await findElementByTestIdAndClick({
@@ -837,6 +845,8 @@ it('should be able to find exact match on other networks', async () => {
   });
 });
 
+// to here
+
 it('should be able to go to review a swap', async () => {
   await findElementByTestIdAndClick({
     id: 'token-to-sell-search-token-input',
@@ -1042,7 +1052,25 @@ it('should be able to execute swap', async () => {
   await delayTime('medium');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
 
-  const { status, receipt } = await waitForAndCheckTransaction(provider);
+  console.log('Searching for the transaction hash...');
+  const txHash = await getLatestTransactionHash(
+    provider,
+    WALLET_TO_USE_ADDRESS,
+    20,
+    5000,
+  );
+
+  if (!txHash) {
+    throw new Error('Failed to find the transaction hash');
+  }
+
+  console.log('Transaction hash found:', txHash);
+
+  console.log('Waiting for transaction to be mined...');
+  const { status, receipt } = await waitForAndCheckTransaction(
+    provider,
+    txHash,
+  );
   console.log('Transaction status:', status);
   console.log('Transaction receipt:', receipt);
 
@@ -1060,6 +1088,11 @@ it('should be able to execute swap', async () => {
     balanceDifference,
     18,
   );
+
+  console.log('Balance Before:', ethBalanceBeforeSwap.toString());
+  console.log('Balance After:', ethBalanceAfterSwap.toString());
+  console.log('Balance Difference:', balanceDifference);
+  console.log('ETH Difference Amount:', ethDifferenceAmount);
 
   expect(Number(ethDifferenceAmount)).toBeGreaterThan(1);
 });
