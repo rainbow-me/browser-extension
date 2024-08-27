@@ -779,7 +779,7 @@ export async function transactionStatus() {
 
 export async function waitForAndCheckTransaction(
   provider: providers.Provider,
-  maxAttempts = 10,
+  maxAttempts = 20,
 ): Promise<{
   status: 'success' | 'failure' | 'timeout';
   receipt: providers.TransactionReceipt | null;
@@ -787,6 +787,7 @@ export async function waitForAndCheckTransaction(
   let attempts = 0;
   while (attempts < maxAttempts) {
     try {
+      console.log(`checking transaction status attempt number: ${attempts}`);
       const blockData = await provider.getBlock('latest');
       if (blockData.transactions.length > 0) {
         const txnReceipt = await provider.getTransactionReceipt(

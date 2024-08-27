@@ -1002,8 +1002,6 @@ it('should be able to see swap information in review sheet', async () => {
 });
 
 it('should be able to execute swap', async () => {
-  console.log('########################');
-  console.log('###################### 1');
   const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545');
   await provider.ready;
 
@@ -1016,8 +1014,6 @@ it('should be able to execute swap', async () => {
     driver,
   });
   await delayTime('short');
-  console.log('########################');
-  console.log('###################### 2');
 
   await findElementByTestIdAndClick({
     id: 'swap-settings-navbar-button',
@@ -1028,8 +1024,6 @@ it('should be able to execute swap', async () => {
     id: 'slippage-input-mask',
     driver,
   });
-  console.log('########################');
-  console.log('###################### 3');
   await typeOnTextInput({
     id: 'slippage-input-mask',
     driver,
@@ -1038,8 +1032,6 @@ it('should be able to execute swap', async () => {
   await delayTime('medium');
 
   await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
-  console.log('########################');
-  console.log('###################### 4');
 
   const ethBalanceBeforeSwap = await provider.getBalance(WALLET_TO_USE_ADDRESS);
   await delayTime('very-long');
@@ -1047,35 +1039,18 @@ it('should be able to execute swap', async () => {
     id: 'swap-confirmation-button-ready',
     driver,
   });
-  console.log('########################');
-  console.log('###################### 5');
   await delayTime('medium');
-  console.log('Clicking swap execution button');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
-  console.log('Swap execution button clicked');
 
-  console.log('Waiting for transaction to be mined...');
   const { status, receipt } = await waitForAndCheckTransaction(provider);
   console.log('Transaction status:', status);
   console.log('Transaction receipt:', receipt);
 
-  if (receipt) {
-    console.log('Transaction Hash:', receipt.transactionHash);
-    console.log('Gas Used:', receipt.gasUsed.toString());
-    console.log('Block Number:', receipt.blockNumber);
-  }
-
   if (status !== 'success') {
     throw new Error(`Swap transaction failed or timed out. Status: ${status}`);
   }
-  await delayTime('very-long');
-  await delayTime('very-long');
-  // Adding delay to make sure the provider gets the balance after the swap
-  // Because CI is slow so this triggers a race condition most of the time.
-  await delay(5000);
+
   const ethBalanceAfterSwap = await provider.getBalance(WALLET_TO_USE_ADDRESS);
-  console.log('########################');
-  console.log('###################### 6');
 
   const balanceDifference = subtract(
     ethBalanceBeforeSwap.toString(),
@@ -1085,15 +1060,6 @@ it('should be able to execute swap', async () => {
     balanceDifference,
     18,
   );
-  console.log('########################');
-  console.log('###################### 7');
-
-  console.log('Balance Before:', ethBalanceBeforeSwap.toString());
-  console.log('Balance After:', ethBalanceAfterSwap.toString());
-  console.log('Balance Difference:', balanceDifference);
-  console.log('ETH Difference Amount:', ethDifferenceAmount);
 
   expect(Number(ethDifferenceAmount)).toBeGreaterThan(1);
-  console.log('########################');
-  console.log('###################### 8');
 });

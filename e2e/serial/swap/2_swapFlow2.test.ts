@@ -26,6 +26,7 @@ import {
   takeScreenshotOnFailure,
   typeOnTextInput,
   waitAndClick,
+  waitForAndCheckTransaction,
   waitUntilElementByTestIdIsPresent,
 } from '../../helpers';
 import { convertRawAmountToDecimalFormat, subtract } from '../../numbers';
@@ -123,10 +124,12 @@ it('should be able to go to swap flow', async () => {
 });
 
 it('should be able to go to review a unlock and swap', async () => {
+  await delayTime('very-long');
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-token-input-remove`,
     driver,
   });
+  await delayTime('medium');
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-row`,
     driver,
@@ -145,10 +148,10 @@ it('should be able to go to review a unlock and swap', async () => {
     driver,
   });
   await delayTime('very-long');
-  await delayTime('very-long');
 });
 
 it('should be able to execute unlock and swap', async () => {
+  await delayTime('very-long');
   const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545');
   await provider.ready;
   await delayTime('short');
@@ -175,7 +178,7 @@ it('should be able to execute unlock and swap', async () => {
     driver,
     text: '99',
   });
-  await delayTime('medium');
+  await delayTime('long');
 
   await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
 
@@ -183,7 +186,6 @@ it('should be able to execute unlock and swap', async () => {
     id: 'swap-confirmation-button-ready',
     driver,
   });
-
   await findElementByTestIdAndClick({
     id: 'swap-confirmation-button-ready',
     driver,
@@ -192,14 +194,13 @@ it('should be able to execute unlock and swap', async () => {
   await delayTime('very-long');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
 
-  // wait for swap to complete
-  await delayTime('very-long');
-  await delayTime('very-long');
-  await delayTime('very-long');
-  await delayTime('very-long');
-  await delayTime('very-long');
-  await delayTime('very-long');
-  await delayTime('very-long');
+  const { status, receipt } = await waitForAndCheckTransaction(provider);
+  console.log('Transaction status:', status);
+  console.log('Transaction receipt:', receipt);
+
+  if (status !== 'success') {
+    throw new Error(`Swap transaction failed or timed out. Status: ${status}`);
+  }
 
   const usdcBalanceAfterSwap = await tokenContract.balanceOf(
     WALLET_TO_USE_ADDRESS,
