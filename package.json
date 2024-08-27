@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.5.31",
+  "version": "1.5.34",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -75,6 +75,9 @@
     "firefox:zip": "yarn zip && mv rainbowbx.zip rainbowbx.xpi",
     "firefox:lint": "yarn web-ext lint --source-dir ./build",
     "firefox:run": "yarn web-ext run --source-dir ./build/ -f='/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox'"
+  },
+  "engines": {
+    "node": ">=20.16.0"
   },
   "dependencies": {
     "@capsizecss/core": "3.0.0",
@@ -272,7 +275,8 @@
     "jose": "4.15.5",
     "phin": "3.7.1",
     "braces": "3.0.3",
-    "ws": "8.17.1"
+    "ws": "8.17.1",
+    "micromatch": "4.0.8"
   },
   "lavamoat": {
     "allowScripts": {

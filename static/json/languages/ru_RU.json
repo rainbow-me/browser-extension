@@ -294,7 +294,8 @@
       "full_watching_wallets": "Полный доступ к отслеживаемым кошелькам",
       "hw_wallets_enabled": "Включить поддержку аппаратных кошельков",
       "command_k_internal_shortcuts_enabled": "Включить внутренние ярлыки ⌘K",
-      "custom_rpc": "Пользовательский RPC"
+      "custom_rpc": "Пользовательский RPC",
+      "degen_mode": "Degenмод"
     }
   },
   "transactions": {
@@ -776,6 +777,10 @@
           }
         },
         "got_it": "Понятно"
+      },
+      "degen_mode": {
+        "title": "Degenмод",
+        "description": "Пропустить этап проверки, чтобы быстрее обменять"
       }
     },
     "actions": {
@@ -785,7 +790,10 @@
       "fee_on_transfer_token": "Комиссия на токены при переводе",
       "no_route": "Маршрут не найден",
       "no_quote": "Нет доступного предложения",
-      "enter_an_amount": "Введите сумму"
+      "enter_an_amount": "Введите сумму",
+      "swap": "%{Action}",
+      "swapping": "%{Actioning}",
+      "waiting_signature": "Подтвердите на вашем устройстве"
     },
     "review": {
       "title": "Обзор и %{Action}",
@@ -942,7 +950,8 @@
     "import_wallet_group": "Импортировать группу кошельков",
     "n_words_might_be_wrong": "%{n} слов могут быть написаны с ошибками или некорректными.",
     "1_word_might_be_wrong": "1 слово может быть написано с ошибкой или некорректно.",
-    "couldnt_paste": "Мы не смогли вставить вашу Секретную фразу восстановления"
+    "couldnt_paste": "Мы не смогли вставить вашу Секретную фразу восстановления",
+    "duplicate_seed": "Этот seed уже импортирован"
   },
   "import_wallet_via_private_key": {
     "title": "Импортировать ваш кошелек",

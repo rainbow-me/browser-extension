@@ -294,7 +294,8 @@
       "full_watching_wallets": "الوصول الكامل إلى المحافظ المراقبة",
       "hw_wallets_enabled": "تفعيل دعم المحفظة الأجهزة",
       "command_k_internal_shortcuts_enabled": "تفعيل الاختصارات الداخلية ⌘K",
-      "custom_rpc": "Custom RPC"
+      "custom_rpc": "Custom RPC",
+      "degen_mode": "وضع Degen"
     }
   },
   "transactions": {
@@ -776,6 +777,10 @@
           }
         },
         "got_it": "فهمت"
+      },
+      "degen_mode": {
+        "title": "وضع Degen",
+        "description": "تخطي خطوة المراجعة لتبديل أسرع"
       }
     },
     "actions": {
@@ -785,7 +790,10 @@
       "fee_on_transfer_token": "الرسوم على نقل العملة",
       "no_route": "لم يتم العثور على مسار",
       "no_quote": "لا يوجد عرض متاح",
-      "enter_an_amount": "أدخل كمية"
+      "enter_an_amount": "أدخل كمية",
+      "swap": "%{Action}",
+      "swapping": "%{Actioning} عبر",
+      "waiting_signature": "تأكيد على جهازك"
     },
     "review": {
       "title": "مراجعة و %{Action}",
@@ -942,7 +950,8 @@
     "import_wallet_group": "استيراد مجموعة محفظة",
     "n_words_might_be_wrong": "%{n} الكلمات قد تكون مخطئة أو غير صحيحة.",
     "1_word_might_be_wrong": "1 كلمة قد تكون مخطئة أو غير صحيحة.",
-    "couldnt_paste": "لم نتمكن من لصق عبارة الاسترداد السرية"
+    "couldnt_paste": "لم نتمكن من لصق عبارة الاسترداد السرية",
+    "duplicate_seed": "هذه البذرة مستوردة بالفعل"
   },
   "import_wallet_via_private_key": {
     "title": "استورد محفظتك",
