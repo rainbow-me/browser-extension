@@ -294,7 +294,8 @@
       "full_watching_wallets": "감시 중인 지갑에 대한 완전한 접근",
       "hw_wallets_enabled": "하드웨어 지갑 지원 활성화",
       "command_k_internal_shortcuts_enabled": "⌘K 내부 단축키 활성화",
-      "custom_rpc": "사용자 정의 RPC"
+      "custom_rpc": "사용자 정의 RPC",
+      "degen_mode": "Degen모드"
     }
   },
   "transactions": {
@@ -776,6 +777,10 @@
           }
         },
         "got_it": "확인"
+      },
+      "degen_mode": {
+        "title": "Degen모드",
+        "description": "더 빠르게 교환하기 위해 검토 단계를 건너뜁니다"
       }
     },
     "actions": {
@@ -785,7 +790,10 @@
       "fee_on_transfer_token": "전송 토큰에 대한 수수료",
       "no_route": "경로를 찾을 수 없음",
       "no_quote": "견적을 받을 수 없음",
-      "enter_an_amount": "금액 입력"
+      "enter_an_amount": "금액 입력",
+      "swap": "%{Action}",
+      "swapping": "%{Actioning}",
+      "waiting_signature": "장치에서 확인"
     },
     "review": {
       "title": "검토 및 %{Action}",
@@ -942,7 +950,8 @@
     "import_wallet_group": "지갑 그룹 가져오기",
     "n_words_might_be_wrong": "%{n} 단어가 잘못 입력되었거나 올바르지 않을 수 있습니다",
     "1_word_might_be_wrong": "1개의 단어가 잘못 입력되었거나 올바르지 않을 수 있습니다",
-    "couldnt_paste": "비밀 복구 구문을 붙여넣을 수 없습니다"
+    "couldnt_paste": "비밀 복구 구문을 붙여넣을 수 없습니다",
+    "duplicate_seed": "이 시드는 이미 가져왔습니다"
   },
   "import_wallet_via_private_key": {
     "title": "지갑 가져오기",
