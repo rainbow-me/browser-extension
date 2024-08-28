@@ -57,29 +57,29 @@ const WALLET_TO_USE_ADDRESS = isFirefox
   ? TEST_VARIABLES.PRIVATE_KEY_WALLET_2.ADDRESS
   : TEST_VARIABLES.SEED_WALLET.ADDRESS;
 
-beforeAll(async () => {
-  driver = await initDriverWithOptions({
-    browser,
-    os,
-  });
-  const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-  if (!extensionId) throw new Error('Extension not found');
-  rootURL += extensionId;
-});
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-beforeEach(async (context: any) => {
-  context.driver = driver;
-});
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-afterEach(async (context: any) => {
-  await takeScreenshotOnFailure(context);
-});
-
-afterAll(() => driver.quit());
-
 describe.skip('Go through swaps settings and execute a swap', () => {
+  beforeAll(async () => {
+    driver = await initDriverWithOptions({
+      browser,
+      os,
+    });
+    const extensionId = await getExtensionIdByName(driver, 'Rainbow');
+    if (!extensionId) throw new Error('Extension not found');
+    rootURL += extensionId;
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  beforeEach(async (context: any) => {
+    context.driver = driver;
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  afterEach(async (context: any) => {
+    await takeScreenshotOnFailure(context);
+  });
+
+  afterAll(() => driver.quit());
+
   it('should be able import a wallet via pk', async () => {
     //  Start from welcome screen
     await goToWelcome(driver, rootURL);
