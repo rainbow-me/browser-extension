@@ -276,7 +276,8 @@
     "phin": "3.7.1",
     "braces": "3.0.3",
     "ws": "8.17.1",
-    "micromatch": "4.0.8"
+    "micromatch": "4.0.8",
+    "webpack": "5.94.0"
   },
   "lavamoat": {
     "allowScripts": {

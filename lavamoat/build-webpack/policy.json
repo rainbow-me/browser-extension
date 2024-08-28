@@ -11,8 +11,8 @@
     },
     "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight": {
       "packages": {
-        "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>@babel/helper-validator-identifier": true,
         "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>chalk": true,
+        "jest>@jest/core>jest-snapshot>@babel/types>@babel/helper-validator-identifier": true,
         "react>loose-envify>js-tokens": true
       }
     },
@@ -614,10 +614,10 @@
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-split-export-declaration": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-validator-identifier": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": true,
         "jest>@jest/core>jest-snapshot>@babel/traverse": true,
-        "jest>@jest/core>jest-snapshot>@babel/types": true
+        "jest>@jest/core>jest-snapshot>@babel/types": true,
+        "jest>@jest/core>jest-snapshot>@babel/types>@babel/helper-validator-identifier": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": {
@@ -806,23 +806,6 @@
       "packages": {
         "eslint>ajv": true,
         "webpack>schema-utils>ajv-keywords": true
-      }
-    },
-    "fs-extra>graceful-fs": {
-      "builtin": {
-        "assert.equal": true,
-        "constants.O_SYMLINK": true,
-        "constants.O_WRONLY": true,
-        "constants.hasOwnProperty": true,
-        "fs": true,
-        "stream.Stream.call": true,
-        "util": true
-      },
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "process": true,
-        "setTimeout": true
       }
     },
     "globby>dir-glob": {
@@ -1634,6 +1617,12 @@
         "viem>ws>bufferutil>node-gyp-build": true
       }
     },
+    "vitest>acorn": {
+      "globals": {
+        "console": true,
+        "define": true
+      }
+    },
     "vitest>acorn-walk": {
       "globals": {
         "define": true
@@ -1661,13 +1650,19 @@
       },
       "packages": {
         "vitest>vite>terser>@jridgewell/source-map": true,
-        "webpack>acorn": true
+        "vitest>vite>terser>acorn": true
       }
     },
     "vitest>vite>terser>@jridgewell/source-map": {
       "globals": {
         "Buffer": true,
         "TextDecoder": true,
+        "define": true
+      }
+    },
+    "vitest>vite>terser>acorn": {
+      "globals": {
+        "console": true,
         "define": true
       }
     },
@@ -1831,12 +1826,18 @@
         "lodash": true,
         "viem>ws": true,
         "vitest>acorn-walk": true,
+        "webpack-bundle-analyzer>acorn": true,
         "webpack-bundle-analyzer>chalk": true,
         "webpack-bundle-analyzer>gzip-size": true,
         "webpack-bundle-analyzer>opener": true,
         "webpack-bundle-analyzer>sirv": true,
-        "webpack-cli>@discoveryjs/json-ext": true,
-        "webpack>acorn": true
+        "webpack-cli>@discoveryjs/json-ext": true
+      }
+    },
+    "webpack-bundle-analyzer>acorn": {
+      "globals": {
+        "console": true,
+        "define": true
       }
     },
     "webpack-bundle-analyzer>chalk": {
@@ -2254,20 +2255,14 @@
         "process": true
       },
       "packages": {
-        "webpack>terser-webpack-plugin>terser>@jridgewell/source-map": true,
-        "webpack>terser-webpack-plugin>terser>acorn": true
+        "vitest>acorn": true,
+        "webpack>terser-webpack-plugin>terser>@jridgewell/source-map": true
       }
     },
     "webpack>terser-webpack-plugin>terser>@jridgewell/source-map": {
       "globals": {
         "Buffer": true,
         "TextDecoder": true,
-        "define": true
-      }
-    },
-    "webpack>terser-webpack-plugin>terser>acorn": {
-      "globals": {
-        "console": true,
         "define": true
       }
     },
@@ -2294,8 +2289,25 @@
         "setTimeout": true
       },
       "packages": {
-        "fs-extra>graceful-fs": true,
-        "webpack>glob-to-regexp": true
+        "webpack>glob-to-regexp": true,
+        "webpack>watchpack>graceful-fs": true
+      }
+    },
+    "webpack>watchpack>graceful-fs": {
+      "builtin": {
+        "assert.equal": true,
+        "constants.O_SYMLINK": true,
+        "constants.O_WRONLY": true,
+        "constants.hasOwnProperty": true,
+        "fs": true,
+        "stream.Stream.call": true,
+        "util": true
+      },
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "process": true,
+        "setTimeout": true
       }
     },
     "webpack>webpack-sources": {
