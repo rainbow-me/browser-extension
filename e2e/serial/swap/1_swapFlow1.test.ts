@@ -1044,7 +1044,7 @@ describe('Go through swaps settings and execute a swap', () => {
     expect(swapReviewTitleText).toBe('Review & Swap');
   });
 
-  it('should be able to execute swap', async () => {
+  it('should be able to execute swap of ETH > USDC', async () => {
     const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545');
     await provider.ready;
 
@@ -1173,7 +1173,7 @@ describe('Go through swaps settings and execute a swap', () => {
     await delayTime('very-long');
   });
 
-  it('should be able to execute unlock and swap', async () => {
+  it('should be able to execute unlock and swap of USDC > ETH', async () => {
     await delayTime('very-long');
     const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545');
     await provider.ready;
