@@ -1044,7 +1044,7 @@ describe('Go through swaps settings and execute a swap', () => {
     expect(swapReviewTitleText).toBe('Review & Swap');
   });
 
-  it('should be able to execute swap of ETH > USDC', async () => {
+  it('should be able to execute swap of ETH to USDC', async () => {
     const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545');
     await provider.ready;
 
@@ -1086,10 +1086,8 @@ describe('Go through swaps settings and execute a swap', () => {
     });
     await delayTime('medium');
 
-    // SWAP REVIEW EXECUTE
     await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
 
-    console.log('Searching for the transaction hash...');
     const txHash = await getLatestTransactionHash(
       provider,
       WALLET_TO_USE_ADDRESS,
@@ -1110,12 +1108,6 @@ describe('Go through swaps settings and execute a swap', () => {
     );
     console.log('Transaction status:', status);
     console.log('Transaction receipt:', receipt);
-
-    if (status !== 'success') {
-      throw new Error(
-        `Swap transaction failed or timed out. Status: ${status}`,
-      );
-    }
 
     const ethBalanceAfterSwap = await provider.getBalance(
       WALLET_TO_USE_ADDRESS,
@@ -1173,7 +1165,7 @@ describe('Go through swaps settings and execute a swap', () => {
     await delayTime('very-long');
   });
 
-  it('should be able to execute unlock and swap of USDC > ETH', async () => {
+  it('should be able to execute unlock and swap of USDC to ETH', async () => {
     await delayTime('very-long');
     const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545');
     await provider.ready;
@@ -1216,7 +1208,6 @@ describe('Go through swaps settings and execute a swap', () => {
     await delayTime('very-long');
     await delayTime('very-long');
 
-    // SWAP REVIEW EXECUTE
     await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
 
     console.log('Searching for the transaction hash...');
@@ -1240,12 +1231,6 @@ describe('Go through swaps settings and execute a swap', () => {
     );
     console.log('Transaction status:', status);
     console.log('Transaction receipt:', receipt);
-
-    if (status !== 'success') {
-      throw new Error(
-        `Swap transaction failed or timed out. Status: ${status}`,
-      );
-    }
 
     const usdcBalanceAfterSwap = await tokenContract.balanceOf(
       WALLET_TO_USE_ADDRESS,

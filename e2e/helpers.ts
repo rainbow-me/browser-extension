@@ -794,31 +794,42 @@ export async function waitForAndCheckTransaction(
       if (txnReceipt) {
         const txnStatus = txnReceipt.status === 1 ? 'success' : 'failure';
         console.log('Transaction receipt:', txnReceipt);
+
+        if (txnStatus === 'success') {
+          console.log(
+            'Transaction successful, waiting for 30 seconds to give balances time to update ...',
+          );
+          await new Promise((resolve) => setTimeout(resolve, 30000));
+        } else {
+          throw new Error(`Swap transaction failed. Status: ${txnStatus}`);
+        }
+
         return { status: txnStatus, receipt: txnReceipt };
       }
     } catch (error) {
       console.error('Error checking transaction:', error);
+      throw error; // Re-throw the error to be caught by the caller
     }
 
     attempts++;
     await new Promise((resolve) => setTimeout(resolve, 10_000));
   }
 
-  return { status: 'timeout', receipt: null };
+  throw new Error('Swap transaction timed out');
 }
 
 export async function getLatestTransactionHash(
   provider: providers.Provider,
   address: string,
   maxAttempts = 10,
-  delayMs = 2000,
+  delayMs = 10_000,
 ): Promise<string | null> {
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     console.log(`Searching for transaction, attempt ${attempt + 1}`);
     const currentBlock = await provider.getBlockNumber();
 
-    for (let i = 0; i < 5; i++) {
-      // Check last 5 blocks
+    for (let i = 0; i < 3; i++) {
+      // Check last 3 blocks
       const block = await provider.getBlockWithTransactions(currentBlock - i);
 
       for (const tx of block.transactions) {
