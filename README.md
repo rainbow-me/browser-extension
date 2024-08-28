@@ -60,7 +60,7 @@ Additionally, we're using some well known tools engineered by the MetaMask team:
 
 ### 1. Set up Node
 
-Use node v18 or if you use nvm follow the instructions below
+Use node v20 or if you use nvm follow the instructions below
 
 ```bash
 nvm install
