@@ -21,6 +21,41 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.5.32](https://github.com/rainbow-me/browser-extension/releases/tag/v1.5.32)
+
+### Added
+
+- Degen Mode is here to make Swapping even faster. Turn it on in Swap Settings to skip the review steps #1652
+
+### Changed
+ 
+- Automatically defaulting ETH as the output for Swaps, and using Max values to reduce clicks #1622 #1653
+- Swap values are now rounded to match the Rainbow App. Pasting an exact amount or Maxing will continue to function as expected #1656
+- Added support for Ham and Cronos chains in Custom Networks #1658
+- You'll now see Hardware Wallet identifiers for wallets in the Send flow #1659
+
+### Fixed
+
+- Token balances will now update in realtime alongside relevant transactions #1649
+- Fixed an issue where Pending Transactions would sometimes disappear from Activity between submission and confirmation #1649
+- Fixed an issue where Rainbow Rewards claim confirmations were not properly rendered #1668
+- Fixed percentage difference calculation for Token charts #1660
+- Fixed an issue with keyboard navigation highlights for Rewards #1672
+- Now merging Private Keys and Wallet Groups where possible upon import #1435
+- Fixed an issue with the font for Tip highlights on Firefox #1661
+
+### Internal 
+
+- Reduced artifact noise by deprecating artifact comment links and leveraging persistent artifacts on workflow runs instead #1628
+- Added axios advisory to allowlist #1664
+- Upgraded to Swap SDK v23 #1662
+- Re-adding optional chaining for sellAsset and buyAsset on quote response, related to #1662 (#1673)
+- Fix Wrapping and Unwrapping, related to #1662 (#1675)
+
+### Testing
+
+- Use beefy-runner-bx in the chrome-e2e-parallel suite #1665
+
 ## [v1.5.23](https://github.com/rainbow-me/browser-extension/releases/tag/v1.5.23)
 
 ### Fixed
