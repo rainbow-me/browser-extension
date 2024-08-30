@@ -786,10 +786,12 @@ export async function waitForAndCheckTransaction(
   receipt: providers.TransactionReceipt | null;
 }> {
   let attempts = 0;
+
   while (attempts < maxAttempts) {
     try {
       console.log(`Checking transaction status, attempt ${attempts + 1}`);
-      const txnReceipt = await provider.getTransactionReceipt(txHash);
+
+      const txnReceipt = await provider.waitForTransaction(txHash, 1, 10000); // wait for 1 confirmation, 10-second timeout
 
       if (txnReceipt) {
         const txnStatus = txnReceipt.status === 1 ? 'success' : 'failure';
@@ -808,11 +810,11 @@ export async function waitForAndCheckTransaction(
       }
     } catch (error) {
       console.error('Error checking transaction:', error);
-      throw error; // Re-throw the error to be caught by the caller
+      throw error;
     }
 
     attempts++;
-    await new Promise((resolve) => setTimeout(resolve, 10_000));
+    await new Promise((resolve) => setTimeout(resolve, 10000));
   }
 
   throw new Error('Swap transaction timed out');
