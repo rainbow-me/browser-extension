@@ -177,6 +177,10 @@ export function getNetworkFromSimpleHashChain(
     case SimpleHashChain.ZoraSepolia:
       return ChainName.zoraSepolia;
     default:
+      /*
+       * Throws here because according to TS types, we should NEVER hit this
+       * default branch in the logic
+       */
       throw new Error(
         `getNetworkFromSimpleHashChain received unknown chain: ${chain}`,
       );
