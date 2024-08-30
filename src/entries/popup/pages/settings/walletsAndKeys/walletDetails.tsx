@@ -147,6 +147,7 @@ export function WalletDetails() {
             wallet,
             account,
             password: state?.password,
+            fromChooseGroup: true,
           },
         },
       );
@@ -234,7 +235,12 @@ export function WalletDetails() {
     navigate(
       ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
       {
-        state: { wallet, password: state?.password, showQuiz: !walletBackedUp },
+        state: {
+          wallet,
+          password: state?.password,
+          showQuiz: !walletBackedUp,
+          fromChooseGroup: true,
+        },
       },
     );
   }, [navigate, state?.password, wallet, walletBackedUp]);
