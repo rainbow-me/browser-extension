@@ -6,6 +6,7 @@ export enum promoTypes {
   command_k = 'command_k',
   wallet_switcher = 'wallet_switcher',
   network_settings = 'network_settings',
+  degen_mode = 'degen_mode',
 }
 export type PromoTypes = keyof typeof promoTypes;
 
@@ -20,6 +21,7 @@ export const quickPromoStore = createStore<QuickPromoStore>(
       command_k: false,
       wallet_switcher: false,
       network_settings: false,
+      degen_mode: false,
     },
     setSeenPromo: (key: PromoTypes) => {
       const seenPromos = get().seenPromos;

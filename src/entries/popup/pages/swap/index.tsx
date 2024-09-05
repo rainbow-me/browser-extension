@@ -7,11 +7,13 @@ import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore, useGasStore } from '~/core/state';
+import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import {
   computeUniqueIdForHiddenAsset,
   useHiddenAssetStore,
 } from '~/core/state/hiddenAssets/hiddenAssets';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
+import { promoTypes, useQuickPromoStore } from '~/core/state/quickPromo';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedSearchAsset, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -217,6 +219,80 @@ const MissingPriceExplanation = ({
       </Box>
     </ButtonOverflow>
   );
+};
+
+const DegenModePromo = ({ onClick }: { onClick: () => void }) => {
+  const { featureFlags } = useFeatureFlagsStore();
+  const { seenPromos, setSeenPromo } = useQuickPromoStore();
+  const isDegenModeEnabled = useDegenMode((s) => s.isDegenModeEnabled);
+
+  if (!featureFlags.degen_mode && !config.degen_mode) return null;
+  if (seenPromos.degen_mode || isDegenModeEnabled) return null;
+
+  return (
+    <ButtonOverflow>
+      <Box
+        testId={'swap-promo-degen-mode'}
+        paddingHorizontal="20px"
+        onClick={() => {
+          setSeenPromo(promoTypes.degen_mode);
+          onClick();
+        }}
+      >
+        <Box
+          paddingVertical="10px"
+          paddingHorizontal="12px"
+          borderRadius="round"
+          borderWidth="1px"
+          borderColor="buttonStroke"
+          background="surfacePrimaryElevatedSecondary"
+        >
+          <Inline space="8px" alignVertical="center" alignHorizontal="center">
+            <Inline space="4px" alignVertical="center">
+              <Symbol
+                symbol="bolt.fill"
+                size={16}
+                color={'yellow'}
+                weight="bold"
+              />
+              <Text color="label" size="14pt" weight="bold">
+                {i18n.t('swap.promo.degen_mode.title')}
+              </Text>
+            </Inline>
+          </Inline>
+        </Box>
+      </Box>
+    </ButtonOverflow>
+  );
+};
+
+const SwapAlerts = ({
+  timeEstimate,
+  priceImpact,
+  quote,
+  onClick,
+}: {
+  timeEstimate?: SwapTimeEstimate | null;
+  priceImpact?: SwapPriceImpact;
+  quote: Quote | CrosschainQuote | QuoteError | undefined;
+  onClick: () => void;
+}) => {
+  const showWarning = useMemo(() => {
+    return (
+      priceImpact?.type !== SwapPriceImpactType.none || timeEstimate?.isLongWait
+    );
+  }, [priceImpact?.type, timeEstimate?.isLongWait]);
+
+  const quoteError = (quote as QuoteError)?.error;
+
+  if (showWarning) {
+    return (
+      <SwapWarning timeEstimate={timeEstimate} priceImpact={priceImpact} />
+    );
+  } else if (quote && !quoteError) {
+    return <DegenModePromo onClick={onClick} />;
+  }
+  return null;
 };
 
 function SwapButton({
@@ -813,14 +889,12 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                 />
               </AccentColorProvider>
 
-              <SwapWarning
+              <SwapAlerts
                 timeEstimate={timeEstimate}
                 priceImpact={priceImpact}
+                quote={quote}
+                onClick={openSettings}
               />
-              {/* <MissingPriceExplanation
-                assetToBuy={assetToBuy}
-                assetToSell={assetToSell}
-              /> */}
             </Stack>
           </Row>
           <Row height="content">
