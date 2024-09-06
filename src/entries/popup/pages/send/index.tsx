@@ -550,49 +550,51 @@ export function Send() {
 
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
-      if (e.altKey) {
-        if (e.key === shortcuts.send.FOCUS_TO_ADDRESS.key) {
-          trackShortcut({
-            key: shortcuts.send.FOCUS_TO_ADDRESS.display,
-            type: 'send.focusToAddress',
-          });
-          toAddressInputRef?.current?.focus();
-          sendTokenInputRef?.current?.blur();
-        }
-        if (e.key === shortcuts.send.FOCUS_ASSET.key) {
-          trackShortcut({
-            key: shortcuts.send.FOCUS_ASSET.display,
-            type: 'send.focusAsset',
-          });
-          toAddressInputRef?.current?.blur();
-          sendTokenInputRef.current?.focus();
-        }
-      } else {
-        if (!toAddressInputRef.current?.isFocused?.()) {
-          if (e.key === shortcuts.send.SET_MAX_AMOUNT.key) {
+      if (!explainerSheetParams.show && !contactSaveAction.show) {
+        if (e.altKey) {
+          if (e.key === shortcuts.send.FOCUS_TO_ADDRESS.key) {
             trackShortcut({
-              key: shortcuts.send.SET_MAX_AMOUNT.display,
-              type: 'send.setMax',
+              key: shortcuts.send.FOCUS_TO_ADDRESS.display,
+              type: 'send.focusToAddress',
             });
-            setMaxAssetAmount();
+            toAddressInputRef?.current?.focus();
+            sendTokenInputRef?.current?.blur();
           }
-          if (e.key === shortcuts.send.SWITCH_CURRENCY_LABEL.key) {
+          if (e.key === shortcuts.send.FOCUS_ASSET.key) {
             trackShortcut({
-              key: shortcuts.send.SWITCH_CURRENCY_LABEL.display,
-              type: 'send.switchCurrency',
+              key: shortcuts.send.FOCUS_ASSET.display,
+              type: 'send.focusAsset',
             });
-            switchIndependentField();
+            toAddressInputRef?.current?.blur();
+            sendTokenInputRef.current?.focus();
           }
-        }
-        if (
-          e.key === shortcuts.send.OPEN_CONTACT_MENU.key &&
-          !valueInputRef.current?.isFocused?.()
-        ) {
-          trackShortcut({
-            key: shortcuts.send.OPEN_CONTACT_MENU.display,
-            type: 'send.openContactMenu',
-          });
-          clickHeaderRight();
+        } else {
+          if (!toAddressInputRef.current?.isFocused?.()) {
+            if (e.key === shortcuts.send.SET_MAX_AMOUNT.key) {
+              trackShortcut({
+                key: shortcuts.send.SET_MAX_AMOUNT.display,
+                type: 'send.setMax',
+              });
+              setMaxAssetAmount();
+            }
+            if (e.key === shortcuts.send.SWITCH_CURRENCY_LABEL.key) {
+              trackShortcut({
+                key: shortcuts.send.SWITCH_CURRENCY_LABEL.display,
+                type: 'send.switchCurrency',
+              });
+              switchIndependentField();
+            }
+          }
+          if (
+            e.key === shortcuts.send.OPEN_CONTACT_MENU.key &&
+            !valueInputRef.current?.isFocused?.()
+          ) {
+            trackShortcut({
+              key: shortcuts.send.OPEN_CONTACT_MENU.display,
+              type: 'send.openContactMenu',
+            });
+            clickHeaderRight();
+          }
         }
       }
     },
@@ -753,6 +755,7 @@ export function Send() {
                   <Rows space="20px">
                     <Row>
                       <TransactionFee
+                        disableShortcuts={contactSaveAction.show}
                         chainId={chainId}
                         transactionRequest={transactionRequestForGas}
                         accentColor={assetAccentColor}
