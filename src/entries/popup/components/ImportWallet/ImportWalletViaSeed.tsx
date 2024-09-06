@@ -183,9 +183,9 @@ const ImportWalletViaSeed = () => {
 
   const toggleWordLength = useCallback(() => {
     if (secrets.length === 12) {
-      setSecrets(emptySecrets12);
-    } else {
       setSecrets(emptySecrets24);
+    } else {
+      setSecrets(emptySecrets12);
     }
     setInvalidWords([]);
     setGlobalError(false);
@@ -274,7 +274,7 @@ const ImportWalletViaSeed = () => {
       setSecrets(words);
     } else {
       setGlobalError(true);
-      setSecrets(Array.from({ length: 12 }).map(() => ''));
+      setSecrets(emptySecrets12);
     }
   }, []);
 
