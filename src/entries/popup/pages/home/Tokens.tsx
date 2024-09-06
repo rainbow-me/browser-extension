@@ -1,7 +1,7 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { MotionValue, motion, useTransform } from 'framer-motion';
 import uniqBy from 'lodash/uniqBy';
-import { memo, useCallback, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
@@ -251,6 +251,11 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
   });
 
   useTokensShortcuts();
+
+  useEffect(() => {
+    assetsRowVirtualizer?.measure();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [unhiddenAssets?.length]);
 
   if ((isFetching && isPending) || manuallyRefetchingTokens) {
     return <TokensSkeleton />;
