@@ -31,12 +31,12 @@ export const useSwapNativeAmounts = ({
     let nativeDisplay = null;
     if (isWrapOrUnwrapEth) {
       nativeDisplay =
-        !quote?.sellAmount || !quote.sellTokenAsset.price.value
+        !quote?.sellAmount || !assetToSell?.price?.value
           ? null
           : convertRawAmountToNativeDisplay(
               quote?.sellAmount?.toString(),
-              quote.sellTokenAsset.decimals || 18,
-              quote.sellTokenAsset.price.value,
+              quote?.sellTokenAsset?.decimals || 18,
+              assetToSell?.price?.value,
               currentCurrency,
             );
     } else if (assetToSell?.native?.price?.amount && assetToSellValue) {
@@ -47,12 +47,12 @@ export const useSwapNativeAmounts = ({
       );
     } else {
       nativeDisplay =
-        !quote?.sellAmountInEth || !quote.sellTokenAsset.price.value
+        !quote?.sellAmountInEth || !quote?.sellTokenAsset?.price?.value
           ? null
           : convertRawAmountToNativeDisplay(
-              quote?.sellAmountInEth.toString(),
-              quote.sellTokenAsset.decimals || 18,
-              quote.sellTokenAsset.price?.value,
+              quote?.sellAmountInEth?.toString(),
+              quote?.sellTokenAsset?.decimals || 18,
+              quote?.sellTokenAsset?.price?.value,
               currentCurrency,
             );
     }
@@ -69,11 +69,12 @@ export const useSwapNativeAmounts = ({
   }, [
     isWrapOrUnwrapEth,
     assetToSell?.native?.price?.amount,
+    assetToSell?.price?.value,
     assetToSellValue,
     currentCurrency,
     quote?.sellAmount,
-    quote?.sellTokenAsset.price.value,
-    quote?.sellTokenAsset.decimals,
+    quote?.sellTokenAsset?.decimals,
+    quote?.sellTokenAsset?.price?.value,
     quote?.sellAmountInEth,
   ]);
 
@@ -97,12 +98,12 @@ export const useSwapNativeAmounts = ({
       );
     } else {
       nativeDisplay =
-        !quote?.buyAmountInEth || !quote.buyTokenAsset.price?.value
+        !quote?.buyAmountInEth || !quote?.buyTokenAsset?.price?.value
           ? null
           : convertRawAmountToNativeDisplay(
-              quote?.buyAmountInEth.toString(),
-              quote.buyTokenAsset.decimals || 18,
-              quote.buyTokenAsset.price?.value,
+              quote?.buyAmountInEth?.toString(),
+              quote?.buyTokenAsset?.decimals || 18,
+              quote?.buyTokenAsset?.price?.value,
               currentCurrency,
             );
     }
@@ -124,8 +125,8 @@ export const useSwapNativeAmounts = ({
     quote?.buyAmount,
     quote?.buyAmountInEth,
     currentCurrency,
-    quote?.buyTokenAsset.price?.value,
-    quote?.buyTokenAsset.decimals,
+    quote?.buyTokenAsset?.price?.value,
+    quote?.buyTokenAsset?.decimals,
   ]);
 
   return {

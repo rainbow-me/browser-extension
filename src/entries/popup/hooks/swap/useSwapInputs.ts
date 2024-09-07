@@ -12,12 +12,18 @@ import {
   convertAmountToRawAmount,
   convertRawAmountToBalance,
   handleSignificantDecimals,
+  isExceedingMaxCharacters,
   lessThan,
   minus,
+  truncateNumber,
 } from '~/core/utils/numbers';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
 import { TokenInputRef } from '../../pages/swap/SwapTokenInput/TokenInput';
+
+// The maximum number of characters for the input field.
+// This does not include the decimal point.
+const MAX_INPUT_CHARACTERS = 11;
 
 const focusOnInput = (inputRef: React.RefObject<HTMLInputElement>) => {
   setTimeout(() => {
@@ -55,9 +61,22 @@ export const useSwapInputs = ({
   const [assetToBuyDropdownClosed, setAssetToBuyDropdownClosed] = useState(
     inputToOpenOnMount !== 'buy',
   );
-  const [assetToSellValue, setAssetToSellValue] = useState('');
+  const [assetToSellValue, setAssetToSellValueState] = useState('');
+  const [assetToBuyValue, setAssetToBuyValueState] = useState('');
   const [assetToSellNativeValue, setAssetToSellNativeValue] = useState('');
-  const [assetToBuyValue, setAssetToBuyValue] = useState('');
+
+  // Rounded input values (maximum 12 characters including decimal point)
+  const [assetToSellValueRounded, setAssetToSellValueRounded] = useState('');
+  const [assetToBuyValueRounded, setAssetToBuyValueRounded] = useState('');
+
+  const maxCharacters = useMemo(
+    () =>
+      (assetToSell?.symbol?.length || 0) > 3
+        ? // In case an asset symbol is 4 characters or more (e.g WETH)
+          MAX_INPUT_CHARACTERS - 1
+        : MAX_INPUT_CHARACTERS,
+    [assetToSell],
+  );
 
   const {
     saveSwapAmount,
@@ -85,6 +104,22 @@ export const useSwapInputs = ({
     [assetToBuy, assetToSell, saveSwapField],
   );
 
+  const setAssetToSellValue = useCallback(
+    (value: string) => {
+      setAssetToSellValueRounded(truncateNumber(value, maxCharacters));
+      setAssetToSellValueState(value);
+    },
+    [maxCharacters],
+  );
+
+  const setAssetToBuyValue = useCallback(
+    (value: string) => {
+      setAssetToBuyValueRounded(truncateNumber(value, maxCharacters));
+      setAssetToBuyValueState(value);
+    },
+    [maxCharacters],
+  );
+
   useEffect(() => {
     if (savedSwapField) {
       setIndependentField(savedSwapField);
@@ -93,21 +128,30 @@ export const useSwapInputs = ({
   }, []);
 
   const setAssetToSellInputValue = useCallback(
-    (value: string) => {
+    (value: string, isInput = true) => {
       setAssetToSellDropdownClosed(true);
-      saveSwapAmount({ amount: value });
-      setAssetToSellValue(value);
       setIndependentFieldIfOccupied('sellField');
-      setIndependentValue(value);
+      let inputValue = value;
+      if (isInput && isExceedingMaxCharacters(value, maxCharacters)) {
+        inputValue = truncateNumber(value, maxCharacters);
+      }
+      saveSwapAmount({ amount: inputValue });
+      setAssetToSellValue(inputValue);
+      setIndependentValue(inputValue);
     },
-    [saveSwapAmount, setIndependentFieldIfOccupied],
+    [
+      maxCharacters,
+      saveSwapAmount,
+      setAssetToSellValue,
+      setIndependentFieldIfOccupied,
+    ],
   );
 
   const setAssetToSellInputNativeValue = useCallback(
     (value: string) => {
       setAssetToSellDropdownClosed(true);
-      setAssetToSellNativeValue(value);
       setIndependentFieldIfOccupied('sellNativeField');
+      setAssetToSellNativeValue(value);
       setIndependentValue(value);
       setAssetToSellValue(
         value
@@ -124,19 +168,29 @@ export const useSwapInputs = ({
       assetToSell?.decimals,
       assetToSell?.price?.value,
       saveSwapAmount,
+      setAssetToSellValue,
       setIndependentFieldIfOccupied,
     ],
   );
 
   const setAssetToBuyInputValue = useCallback(
-    (value: string) => {
+    (value: string, isInput = true) => {
       setAssetToBuyDropdownClosed(true);
-      setAssetToBuyValue(value);
       setIndependentFieldIfOccupied('buyField');
-      setIndependentValue(value);
-      saveSwapAmount({ amount: value });
+      let inputValue = value;
+      if (isInput && isExceedingMaxCharacters(value, maxCharacters)) {
+        inputValue = truncateNumber(value, maxCharacters);
+      }
+      setAssetToBuyValue(inputValue);
+      setIndependentValue(inputValue);
+      saveSwapAmount({ amount: inputValue });
     },
-    [saveSwapAmount, setIndependentFieldIfOccupied],
+    [
+      maxCharacters,
+      saveSwapAmount,
+      setAssetToBuyValue,
+      setIndependentFieldIfOccupied,
+    ],
   );
 
   const onAssetToSellInputOpen = useCallback(
@@ -164,7 +218,7 @@ export const useSwapInputs = ({
     const rawAssetBalanceAmount =
       assetToSell?.isNativeAsset &&
       lessThan(selectedGas?.gasFee?.amount, assetBalanceAmount)
-        ? minus(assetBalanceAmount, addBuffer(selectedGas?.gasFee?.amount, 1.1))
+        ? minus(assetBalanceAmount, addBuffer(selectedGas?.gasFee?.amount, 1.3))
         : assetBalanceAmount;
 
     const assetBalance = convertRawAmountToBalance(rawAssetBalanceAmount, {
@@ -185,6 +239,7 @@ export const useSwapInputs = ({
     setIndependentFieldIfOccupied('sellField');
   }, [
     assetToSellMaxValue.amount,
+    setAssetToSellValue,
     saveSwapAmount,
     setIndependentFieldIfOccupied,
   ]);
@@ -226,26 +281,28 @@ export const useSwapInputs = ({
     setAssetToSellDropdownClosed(true);
     setAssetToBuyDropdownClosed(true);
   }, [
-    assetToBuy,
-    assetToBuyValue,
+    bridge,
     assetToSell,
-    assetToSellValue,
+    assetToBuy,
     independentField,
-    independentValue,
-    saveSwapField,
     setAssetToBuy,
     setAssetToSell,
-    setIndependentField,
-    bridge,
+    setAssetToBuyValue,
+    setAssetToSellValue,
+    assetToBuyValue,
+    saveSwapField,
+    independentValue,
+    assetToSellValue,
   ]);
 
-  const assetToSellDisplay = useMemo(
-    () =>
+  const assetToSellDisplay = useMemo(() => {
+    const amount =
       independentField === 'buyField'
         ? assetToSellValue && handleSignificantDecimals(assetToSellValue, 5)
-        : assetToSellValue,
-    [assetToSellValue, independentField],
-  );
+        : assetToSellValue;
+
+    return { amount, display: truncateNumber(amount, maxCharacters) };
+  }, [maxCharacters, assetToSellValue, independentField]);
 
   const assetToBuyDisplay = useMemo(
     () =>
@@ -333,6 +390,8 @@ export const useSwapInputs = ({
     assetToSellDisplay,
     assetToBuyDisplay,
     assetToSellDropdownClosed,
+    assetToSellValueRounded,
+    assetToBuyValueRounded,
     assetToBuyDropdownClosed,
     independentField,
     flipAssets,

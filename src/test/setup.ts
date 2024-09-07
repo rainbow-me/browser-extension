@@ -1,4 +1,3 @@
-import { Crypto } from '@peculiar/webcrypto';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { afterAll, afterEach, beforeAll, vi } from 'vitest';
@@ -24,9 +23,6 @@ vi.stubGlobal('chrome', {
 vi.stubGlobal('window.location', {
   pathname: 'popup.html',
 });
-
-// @ts-ignore
-global.crypto = new Crypto();
 
 const abortFn = vi.fn();
 

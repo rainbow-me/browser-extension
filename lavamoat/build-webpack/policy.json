@@ -571,8 +571,36 @@
       "packages": {
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>@babel/compat-data": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>@babel/helper-validator-option": true,
-        "semver": true,
-        "webpack>browserslist": true
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>browserslist": true,
+        "semver": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>browserslist": {
+      "builtin": {
+        "fs.existsSync": true,
+        "fs.readFileSync": true,
+        "fs.statSync": true,
+        "path.basename": true,
+        "path.dirname": true,
+        "path.join": true,
+        "path.resolve": true
+      },
+      "globals": {
+        "console.warn": true,
+        "process.env.BROWSERSLIST": true,
+        "process.env.BROWSERSLIST_CONFIG": true,
+        "process.env.BROWSERSLIST_DANGEROUS_EXTEND": true,
+        "process.env.BROWSERSLIST_DISABLE_CACHE": true,
+        "process.env.BROWSERSLIST_ENV": true,
+        "process.env.BROWSERSLIST_IGNORE_OLD_DATA": true,
+        "process.env.BROWSERSLIST_STATS": true,
+        "process.env.NODE_ENV": true,
+        "process.versions.node": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>browserslist>caniuse-lite": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>browserslist>electron-to-chromium": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>browserslist>node-releases": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms": {
@@ -1659,33 +1687,6 @@
         "Buffer": true
       }
     },
-    "web-ext>watchpack": {
-      "builtin": {
-        "events.EventEmitter": true,
-        "fs.readlinkSync": true,
-        "fs.watch": true,
-        "os.platform": true,
-        "path.basename": true,
-        "path.dirname": true,
-        "path.join": true,
-        "path.resolve": true
-      },
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "process.env.WATCHPACK_POLLING": true,
-        "process.env.WATCHPACK_RECURSIVE_WATCHER_LOGGING": true,
-        "process.env.WATCHPACK_WATCHER_LIMIT": true,
-        "process.nextTick": true,
-        "process.platform": true,
-        "process.stderr.write": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "webpack>glob-to-regexp": true,
-        "webpack>graceful-fs": true
-      }
-    },
     "webpack": {
       "builtin": {
         "buffer.constants.MAX_LENGTH": true,
@@ -1720,7 +1721,8 @@
         "util.deprecate": true,
         "util.format": true,
         "util.inspect.custom": true,
-        "vm.runInNewContext": true,
+        "vm.createContext": true,
+        "vm.runInContext": true,
         "vm.runInThisContext": true,
         "zlib.constants.BROTLI_MODE_TEXT": true,
         "zlib.constants.BROTLI_PARAM_DISABLE_LITERAL_CONTEXT_MODELING": true,
@@ -1772,12 +1774,11 @@
         "html-webpack-plugin": true,
         "mini-css-extract-plugin": true,
         "ts-loader": true,
-        "web-ext>watchpack": true,
         "webpack>@webassemblyjs/ast": true,
         "webpack>@webassemblyjs/wasm-edit": true,
         "webpack>@webassemblyjs/wasm-parser": true,
         "webpack>acorn": true,
-        "webpack>acorn-import-assertions": true,
+        "webpack>acorn-import-attributes": true,
         "webpack>browserslist": true,
         "webpack>chrome-trace-event": true,
         "webpack>enhanced-resolve": true,
@@ -1792,6 +1793,7 @@
         "webpack>schema-utils": true,
         "webpack>tapable": true,
         "webpack>terser-webpack-plugin": true,
+        "webpack>watchpack": true,
         "webpack>webpack-sources": true
       }
     },
@@ -1939,11 +1941,6 @@
         "webpack>@webassemblyjs/wasm-parser": true
       }
     },
-    "webpack>@webassemblyjs/wasm-edit>@webassemblyjs/helper-buffer": {
-      "globals": {
-        "Buffer.from": true
-      }
-    },
     "webpack>@webassemblyjs/wasm-edit>@webassemblyjs/helper-wasm-section": {
       "packages": {
         "webpack>@webassemblyjs/ast": true,
@@ -1970,7 +1967,6 @@
     },
     "webpack>@webassemblyjs/wasm-parser": {
       "globals": {
-        "Buffer.from": true,
         "console.log": true,
         "console.warn": true
       },
@@ -2005,7 +2001,7 @@
         "define": true
       }
     },
-    "webpack>acorn-import-assertions": {
+    "webpack>acorn-import-attributes": {
       "packages": {
         "webpack>acorn": true
       }
@@ -2018,18 +2014,12 @@
         "path.basename": true,
         "path.dirname": true,
         "path.join": true,
+        "path.relative": true,
         "path.resolve": true
       },
       "globals": {
         "console.warn": true,
-        "process.env.BROWSERSLIST": true,
-        "process.env.BROWSERSLIST_CONFIG": true,
-        "process.env.BROWSERSLIST_DANGEROUS_EXTEND": true,
-        "process.env.BROWSERSLIST_DISABLE_CACHE": true,
-        "process.env.BROWSERSLIST_ENV": true,
-        "process.env.BROWSERSLIST_IGNORE_OLD_DATA": true,
-        "process.env.BROWSERSLIST_STATS": true,
-        "process.env.NODE_ENV": true,
+        "process.env": true,
         "process.versions.node": true
       },
       "packages": {
@@ -2049,20 +2039,39 @@
     },
     "webpack>enhanced-resolve": {
       "builtin": {
+        "module.findPnpApi": true,
         "path.basename": true,
-        "path.join": true,
         "path.posix.normalize": true,
         "path.win32.normalize": true,
         "process.nextTick": true,
         "process.versions.pnp": true
       },
       "globals": {
+        "Buffer.isBuffer": true,
+        "URL": true,
         "clearTimeout": true,
         "setTimeout": true
       },
       "packages": {
-        "webpack>graceful-fs": true,
+        "webpack>enhanced-resolve>graceful-fs": true,
         "webpack>tapable": true
+      }
+    },
+    "webpack>enhanced-resolve>graceful-fs": {
+      "builtin": {
+        "assert.equal": true,
+        "constants.O_SYMLINK": true,
+        "constants.O_WRONLY": true,
+        "constants.hasOwnProperty": true,
+        "fs": true,
+        "stream.Stream.call": true,
+        "util": true
+      },
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "process": true,
+        "setTimeout": true
       }
     },
     "webpack>es-module-lexer": {
@@ -2255,6 +2264,50 @@
         "Buffer": true,
         "TextDecoder": true,
         "define": true
+      }
+    },
+    "webpack>watchpack": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "fs.readlinkSync": true,
+        "fs.watch": true,
+        "os.platform": true,
+        "path.basename": true,
+        "path.dirname": true,
+        "path.join": true,
+        "path.resolve": true
+      },
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "process.env.WATCHPACK_POLLING": true,
+        "process.env.WATCHPACK_RECURSIVE_WATCHER_LOGGING": true,
+        "process.env.WATCHPACK_WATCHER_LIMIT": true,
+        "process.nextTick": true,
+        "process.platform": true,
+        "process.stderr.write": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "webpack>glob-to-regexp": true,
+        "webpack>watchpack>graceful-fs": true
+      }
+    },
+    "webpack>watchpack>graceful-fs": {
+      "builtin": {
+        "assert.equal": true,
+        "constants.O_SYMLINK": true,
+        "constants.O_WRONLY": true,
+        "constants.hasOwnProperty": true,
+        "fs": true,
+        "stream.Stream.call": true,
+        "util": true
+      },
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "process": true,
+        "setTimeout": true
       }
     },
     "webpack>webpack-sources": {

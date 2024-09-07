@@ -740,6 +740,11 @@
         "description": "If you decide to continue, be sure that you are satisfied receiving the quoted amount."
       }
     },
+    "promo": {
+      "degen_mode": {
+        "title": "Try Degen Mode to skip the review"
+      }
+    },
     "aggregators": {
       "rainbow": "Auto"
     },

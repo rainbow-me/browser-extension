@@ -28,11 +28,20 @@ import { ChartData, ChartPoint, LineChart } from './LineChart';
 import { ParsedTokenInfo } from './useTokenInfo';
 
 const parsePriceChange = (
-  value: number,
-): { color: TextProps['color']; symbol: SymbolName | '' } => {
-  if (value < 0) return { color: 'red', symbol: 'arrow.down' };
-  if (value > 0) return { color: 'green', symbol: 'arrow.up' };
-  return { color: 'labelSecondary', symbol: '' };
+  changePercentage: number,
+): { label: string; color: TextProps['color']; symbol: SymbolName | '' } => {
+  const label = Math.abs(changePercentage).toFixed(2) + ' %';
+
+  if (changePercentage === Infinity)
+    return { label: '∞ %', color: 'green', symbol: '' };
+
+  if (changePercentage < 0)
+    return { label, color: 'red', symbol: 'arrow.down' };
+
+  if (changePercentage > 0)
+    return { label, color: 'green', symbol: 'arrow.up' };
+
+  return { label, color: 'labelSecondary', symbol: '' };
 };
 
 type PriceChange = {
@@ -44,7 +53,7 @@ const PriceChange = memo(function PriceChange({
   changePercentage = 0,
   date,
 }: PriceChange) {
-  const { color, symbol } = parsePriceChange(+changePercentage.toFixed(2));
+  const { color, symbol, label } = parsePriceChange(changePercentage);
   return (
     <Box display="flex" flexDirection="column" gap="10px" alignItems="flex-end">
       <Inline alignVertical="center" space="4px">
@@ -58,7 +67,7 @@ const PriceChange = memo(function PriceChange({
           cursor="text"
           userSelect="text"
         >
-          {Math.abs(changePercentage).toFixed(2)} %
+          {label}
         </Text>
       </Inline>
       <Text size="14pt" weight="heavy" color={color}>
@@ -165,7 +174,7 @@ const usePriceChart = ({
 };
 
 const percentDiff = (current = 1, last = 0) =>
-  ((current - last) / current) * 100;
+  ((current - last) / last) * 100 || 0;
 
 const now = new Date();
 const chartTimeToTimestamp = {
