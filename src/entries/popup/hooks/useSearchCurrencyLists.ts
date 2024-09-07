@@ -7,6 +7,7 @@ import { Address } from 'viem';
 import { SUPPORTED_CHAINS } from '~/core/references/chains';
 import { useAssetSearchMetadataAllNetworks } from '~/core/resources/assets/assetMetadata';
 import { useTokenSearch } from '~/core/resources/search';
+import { useTokenDiscovery } from '~/core/resources/search/tokenDiscovery';
 import { useTokenSearchAllNetworks } from '~/core/resources/search/tokenSearch';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ParsedSearchAsset } from '~/core/types/assets';
@@ -43,7 +44,8 @@ export type AssetToBuySectionId =
   | 'favorites'
   | 'verified'
   | 'unverified'
-  | 'other_networks';
+  | 'other_networks'
+  | 'popular';
 
 export interface AssetToBuySection {
   data: SearchAsset[];
@@ -279,6 +281,8 @@ export function useSearchCurrencyLists({
       },
     );
 
+  const { data: popularAssets } = useTokenDiscovery({ chainId: outputChainId });
+
   const { favorites } = useFavoriteAssets();
 
   const favoritesList = useMemo(() => {
@@ -508,6 +512,10 @@ export function useSearchCurrencyLists({
       return sections;
     }
 
+    if (popularAssets) {
+      sections.push({ id: 'popular', data: popularAssets });
+    }
+
     if (bridgeAsset) {
       sections.push({
         data: [bridgeAsset],
@@ -616,6 +624,7 @@ export function useSearchCurrencyLists({
     targetUnverifiedAssets,
     enableUnverifiedSearch,
     crosschainExactMatches,
+    popularAssets,
   ]);
 
   return {
