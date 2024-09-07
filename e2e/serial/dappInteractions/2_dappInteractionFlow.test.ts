@@ -59,13 +59,11 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     rootURL += extensionId;
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  beforeEach(async (context: any) => {
+  beforeEach<{ driver: WebDriver }>(async (context) => {
     context.driver = driver;
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  afterEach(async (context: any) => {
+  afterEach<{ driver: WebDriver }>(async (context) => {
     await takeScreenshotOnFailure(context);
   });
 
