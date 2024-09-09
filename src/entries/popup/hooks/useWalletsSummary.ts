@@ -47,7 +47,7 @@ const parseAddressSummary = ({
   const {
     ETH: ethRawBalance,
     BNB: bnbRawBalance,
-    MATIC: maticRawBalance,
+    POL: polRawBalance,
     AVAX: avaxRawBalance,
   } = addressData?.summary.native_balance_by_symbol || {};
 
@@ -69,14 +69,14 @@ const parseAddressSummary = ({
     currentCurrency,
   ).amount;
 
-  const maticBalance = convertRawAmountToBalance(
-    maticRawBalance?.quantity || 0,
+  const polBalance = convertRawAmountToBalance(
+    polRawBalance?.quantity || 0,
     {
       decimals: 18,
     },
   ).amount;
-  const maticCurrencyBalance = convertAmountAndPriceToNativeDisplay(
-    maticBalance || 0,
+  const polCurrencyBalance = convertAmountAndPriceToNativeDisplay(
+    polBalance || 0,
     nativeAssets?.[ChainId.polygon]?.price?.value || 0,
     currentCurrency,
   ).amount;
@@ -92,7 +92,7 @@ const parseAddressSummary = ({
 
   const balance = add(
     add(ethCurrencyBalance, bnbCurrencyBalance),
-    add(maticCurrencyBalance, avaxCurrencyBalance),
+    add(polCurrencyBalance, avaxCurrencyBalance),
   );
 
   const balanceDisplay = convertAmountToNativeDisplay(balance, currentCurrency);
