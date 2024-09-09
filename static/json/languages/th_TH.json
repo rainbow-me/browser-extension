@@ -1456,7 +1456,7 @@
       "the_more_you_use": "ยิ่งใช้ Rainbow มากเท่าไหร่ ก็ยิ่งได้รับรางวัลมากขึ้น",
       "balance_required": "ต้องมียอดเงินในกระเป๋า",
       "ensure_you_have_a_balance_on": "เพื่อดำเนินการต่อ โปรดตรวจสอบว่าคุณมี ETH ในเครือข่ายต่อไปนี้:",
-      "or_alternatively_balance_on": "หรือมียอดเงิน MATIC บน Polygon หรือ BNB บน BSC",
+      "or_alternatively_balance_on": "หรือมียอดเงิน POL บน Polygon หรือ BNB บน BSC",
       "fund_my_wallet": "เติมเงินเข้ากระเป๋า"
     },
     "error": {
