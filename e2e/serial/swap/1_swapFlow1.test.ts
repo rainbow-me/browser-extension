@@ -1099,15 +1099,16 @@ describe('Go through swaps settings and execute a swap', () => {
       throw new Error('Failed to find the transaction hash');
     }
 
-    console.log('Transaction hash found:', txHash);
-
-    console.log('Waiting for transaction to be mined...');
     const { status, receipt } = await waitForAndCheckTransaction(
       provider,
       txHash,
     );
-    console.log('Transaction status:', status);
-    console.log('Transaction receipt:', receipt);
+
+    if (status !== 'success' || !receipt) {
+      throw new Error(
+        `Swap transaction failed or timed out. Status: ${status}`,
+      );
+    }
 
     const ethBalanceAfterSwap = await provider.getBalance(
       WALLET_TO_USE_ADDRESS,
@@ -1121,11 +1122,6 @@ describe('Go through swaps settings and execute a swap', () => {
       balanceDifference,
       18,
     );
-
-    console.log('Balance Before:', ethBalanceBeforeSwap.toString());
-    console.log('Balance After:', ethBalanceAfterSwap.toString());
-    console.log('Balance Difference:', balanceDifference);
-    console.log('ETH Difference Amount:', ethDifferenceAmount);
 
     expect(Number(ethDifferenceAmount)).toBeGreaterThan(1);
   });
@@ -1210,7 +1206,6 @@ describe('Go through swaps settings and execute a swap', () => {
 
     await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
 
-    console.log('Searching for the transaction hash...');
     const txHash = await getLatestTransactionHash(
       provider,
       WALLET_TO_USE_ADDRESS,
@@ -1222,15 +1217,17 @@ describe('Go through swaps settings and execute a swap', () => {
       throw new Error('Failed to find the transaction hash');
     }
 
-    console.log('Transaction hash found:', txHash);
-
     console.log('Waiting for transaction to be mined...');
     const { status, receipt } = await waitForAndCheckTransaction(
       provider,
       txHash,
     );
-    console.log('Transaction status:', status);
-    console.log('Transaction receipt:', receipt);
+
+    if (status !== 'success' || !receipt) {
+      throw new Error(
+        `Swap transaction failed or timed out. Status: ${status}`,
+      );
+    }
 
     const usdcBalanceAfterSwap = await tokenContract.balanceOf(
       WALLET_TO_USE_ADDRESS,
