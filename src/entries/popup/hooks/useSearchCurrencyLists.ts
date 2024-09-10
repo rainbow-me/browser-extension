@@ -513,7 +513,7 @@ export function useSearchCurrencyLists({
     }
 
     if (popularAssets) {
-      sections.push({ id: 'popular', data: popularAssets });
+      sections.push({ id: 'popular', data: popularAssets.slice(0, 3) });
     }
 
     if (bridgeAsset) {
