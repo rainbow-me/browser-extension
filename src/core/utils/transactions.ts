@@ -222,7 +222,10 @@ const parseFees = (
   const feeValue = FixedNumber.from(
     formatUnits(BigInt(fee.value) + rollupFee, nativeAssetDecimals),
   );
-  const feePrice = FixedNumber.fromString(fee.price.toString());
+  const feePrice = FixedNumber.fromString(
+    fee.price.toFixed(nativeAssetDecimals).toString(),
+    nativeAssetDecimals,
+  );
 
   return {
     fee: feeValue.toString(),
@@ -278,18 +281,22 @@ export function parseTransaction({
   const description = getDescription(asset, type, meta);
 
   const nativeAsset = changes.find((change) => change?.asset.isNativeAsset);
-  const nativeAssetPrice = FixedNumber.fromString(
-    nativeAsset?.price?.toString() || '0',
-  );
 
   const value = FixedNumber.fromValue(
     BigNumber.from(nativeAsset?.value || 0),
     nativeAsset?.asset.decimals || 0,
   );
 
-  const valueInNative = value.mulUnsafe(nativeAssetPrice).toString();
-
   const nativeAssetDecimals = 18; // we only support networks with 18 decimals native assets rn, backend will change when we support more
+
+  const nativeAssetPrice = FixedNumber.fromString(
+    typeof nativeAsset?.price === 'number'
+      ? nativeAsset.price.toFixed(nativeAssetDecimals).toString()
+      : '0',
+    nativeAssetDecimals,
+  );
+
+  const valueInNative = value.mulUnsafe(nativeAssetPrice).toString();
 
   const { feeInNative, ...fee } = parseFees(tx.fee, nativeAssetDecimals);
 
