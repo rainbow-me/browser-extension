@@ -503,7 +503,7 @@ describe('Go through swaps settings and execute a swap', () => {
     expect(verifiedSection).toBeTruthy();
   });
 
-  it.skip('should be able to favorite a token and check the info button is present', async () => {
+  it('should be able to favorite a token and check the info button is present', async () => {
     await findElementByTestIdAndClick({
       id: `${SWAP_VARIABLES.ZEROX_MAINNET_ID}-verified-token-to-buy-row-favorite-button`,
       driver,
@@ -530,7 +530,7 @@ describe('Go through swaps settings and execute a swap', () => {
   });
 
   it('should be able to check price and balance of token to buy', async () => {
-    await delayTime('medium');
+    await delayTime('long');
     const tokenToBuyInfoPrice = await getTextFromText({
       id: 'token-to-buy-info-price',
       driver,
