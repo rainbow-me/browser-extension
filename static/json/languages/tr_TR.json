@@ -1456,7 +1456,7 @@
       "the_more_you_use": "Rainbow’u ne kadar çok kullanırsanız, o kadar çok ödül kazanırsınız",
       "balance_required": "Cüzdan bakiyesi gerekiyor",
       "ensure_you_have_a_balance_on": "Devam etmek için, aşağıdaki ağlardan birinde ETH bakiyeniz olduğundan emin olun:",
-      "or_alternatively_balance_on": "Veya alternatif olarak, Polygon'da MATIC veya BSC'de BNB bakiyeniz olsun",
+      "or_alternatively_balance_on": "Veya alternatif olarak, Polygon'da POL veya BSC'de BNB bakiyeniz olsun",
       "fund_my_wallet": "Cüzdanımı Finanse Et"
     },
     "error": {

@@ -644,12 +644,12 @@ it('should be able to filter assets to buy by network', async () => {
   });
   await delayTime('long');
   await findElementByTestIdAndClick({
-    id: `${SWAP_VARIABLES.MATIC_POLYGON_ID}-favorites-token-to-buy-row`,
+    id: `${SWAP_VARIABLES.POL_POLYGON_ID}-favorites-token-to-buy-row`,
     driver,
   });
   // ARBITRUM
   await findElementByTestIdAndClick({
-    id: `${SWAP_VARIABLES.MATIC_POLYGON_ID}-token-to-buy-token-input-remove`,
+    id: `${SWAP_VARIABLES.POL_POLYGON_ID}-token-to-buy-token-input-remove`,
     driver,
   });
   await findElementByTestIdAndClick({

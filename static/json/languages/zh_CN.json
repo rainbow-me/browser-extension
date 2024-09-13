@@ -1456,7 +1456,7 @@
       "the_more_you_use": "越多使用Rainbow，越多奖励",
       "balance_required": "需要钱包余额",
       "ensure_you_have_a_balance_on": "继续操作前，请确保以下网络中有ETH余额：",
-      "or_alternatively_balance_on": "或者，Polygon上的MATIC余额或BSC上的BNB余额",
+      "or_alternatively_balance_on": "或者，Polygon上的POL余额或BSC上的BNB余额",
       "fund_my_wallet": "资金进入我的钱包"
     },
     "error": {
