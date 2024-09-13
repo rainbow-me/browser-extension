@@ -284,7 +284,7 @@ const SwapReviewSheetWithQuote = ({
     setSendingSwap(false);
 
     if (swapExecutedSuccessfully) {
-      navigate(ROUTES.HOME, { state: { tab: 'activity' } });
+      navigate(ROUTES.HOME, { state: { tab: 'tokens' } });
     }
   }, [
     assetToBuy,

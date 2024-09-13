@@ -28,7 +28,7 @@ export interface AddySummary {
       [key: Address]: {
         summary: {
           native_balance_by_symbol: {
-            [key in 'ETH' | 'MATIC' | 'BNB' | 'AVAX']: {
+            [key in 'ETH' | 'POL' | 'BNB' | 'AVAX']: {
               symbol: string;
               quantity: string;
               decimals: number;

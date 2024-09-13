@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.5.34",
+  "version": "1.5.38",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -158,7 +158,7 @@
     "react-switch": "7.0.0",
     "socket.io-client": "4.5.3",
     "validator": "13.9.0",
-    "viem": "2.17.0",
+    "viem": "2.21.0",
     "wagmi": "2.8.1",
     "word-wrap": "1.2.4",
     "zustand": "4.1.5"
@@ -278,7 +278,9 @@
     "braces": "3.0.3",
     "ws": "8.17.1",
     "micromatch": "4.0.8",
-    "webpack": "5.94.0"
+    "webpack": "5.94.0",
+    "path-to-regexp": "6.3.0",
+    "dset": "3.1.4"
   },
   "lavamoat": {
     "allowScripts": {

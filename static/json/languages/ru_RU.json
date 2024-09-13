@@ -1456,7 +1456,7 @@
       "the_more_you_use": "Чем больше вы используете Rainbow, тем больше будет награда",
       "balance_required": "Требуется баланс кошелька",
       "ensure_you_have_a_balance_on": "Для продолжения убедитесь, что у вас есть баланс ETH на одной из следующих сетей:",
-      "or_alternatively_balance_on": "Или, альтернативно, баланс MATIC на Polygon или баланс BNB на BSC",
+      "or_alternatively_balance_on": "Или, альтернативно, баланс POL на Polygon или баланс BNB на BSC",
       "fund_my_wallet": "Пополнить мой кошелек"
     },
     "error": {
