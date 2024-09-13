@@ -1456,7 +1456,7 @@
       "the_more_you_use": "Quanto mais você usar o Rainbow, mais será recompensado",
       "balance_required": "Saldo da carteira necessário",
       "ensure_you_have_a_balance_on": "Para continuar, verifique se possui saldo em ETH em uma das seguintes redes:",
-      "or_alternatively_balance_on": "Ou alternativamente, saldo em MATIC na Polygon ou saldo em BNB na BSC",
+      "or_alternatively_balance_on": "Ou alternativamente, saldo em POL na Polygon ou saldo em BNB na BSC",
       "fund_my_wallet": "Financiar Minha Carteira"
     },
     "error": {

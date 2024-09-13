@@ -1461,7 +1461,7 @@
       "the_more_you_use": "The more you use Rainbow, the more you’ll be rewarded",
       "balance_required": "Wallet balance required",
       "ensure_you_have_a_balance_on": "To continue, ensure you have an ETH balance on one of the following networks:",
-      "or_alternatively_balance_on": "Or alternatively, a MATIC balance on Polygon or a BNB balance on BSC",
+      "or_alternatively_balance_on": "Or alternatively, a POL balance on Polygon or a BNB balance on BSC",
       "fund_my_wallet": "Fund My Wallet"
     },
     "error": {
