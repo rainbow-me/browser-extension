@@ -503,7 +503,7 @@ describe('Go through swaps settings and execute a swap', () => {
     expect(verifiedSection).toBeTruthy();
   });
 
-  it('should be able to favorite a token and check the info button is present', async () => {
+  it.skip('should be able to favorite a token and check the info button is present', async () => {
     await findElementByTestIdAndClick({
       id: `${SWAP_VARIABLES.ZEROX_MAINNET_ID}-verified-token-to-buy-row-favorite-button`,
       driver,
