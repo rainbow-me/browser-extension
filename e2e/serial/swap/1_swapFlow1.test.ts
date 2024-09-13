@@ -640,7 +640,7 @@ it('should be able to filter assets to buy by network', async () => {
   await typeOnTextInput({
     id: 'token-to-buy-search-token-input',
     driver,
-    text: 'matic',
+    text: 'pol',
   });
   await delayTime('long');
   await findElementByTestIdAndClick({
