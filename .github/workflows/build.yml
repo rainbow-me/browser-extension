@@ -21,8 +21,14 @@ jobs:
         with:
           node-version: "20.16.0"
           # cache: 'yarn'
-      - name: Install deps via Yarn
-        run: yarn setup
+      - name: Clear cache, install deps via Yarn
+        run: |
+          echo "Clearing yarn cache..."
+          yarn cache clean
+          echo "Installing dependencies..."
+          yarn install --frozen-lockfile
+          echo "Running setup..."
+          yarn setup
       - name: Check for frozen lockfile
         run: yarn check-lockfile
       - name: Zip node_modules
@@ -42,12 +48,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20.16.0"
-      # - name: Download deps cache artifacts
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: node_modules.tar.gz
-      # - name: Unzip node_modules
-      #   run: tar xzf node_modules.tar.gz
+      - name: Download deps cache artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: node_modules.tar.gz
+      - name: Unzip node_modules
+        run: tar xzf node_modules.tar.gz
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       - uses: actions/checkout@v4
