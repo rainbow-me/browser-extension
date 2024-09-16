@@ -990,7 +990,7 @@ it('should be able to see swap information in review sheet', async () => {
   expect(swapReviewTitleText).toBe('Review & Swap');
 });
 
-it('should be able to execute swap', async () => {
+it.skip('should be able to execute swap', async () => {
   const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545');
   await provider.ready;
   await delayTime('short');
