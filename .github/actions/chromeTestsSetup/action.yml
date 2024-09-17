@@ -12,4 +12,4 @@ runs:
       gh-access-token: ${{ inputs.gh-access-token }}
   - name: Install chrome
     shell: 'bash'
-    run: npx @puppeteer/browsers install chrome@latest
+    run: npx @puppeteer/browsers install chrome@128
