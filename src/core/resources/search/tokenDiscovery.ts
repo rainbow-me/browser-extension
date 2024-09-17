@@ -42,5 +42,6 @@ export function useTokenDiscovery({ chainId }: TokenDiscoveryArgs) {
     queryFn: tokenSearchQueryFunction,
     staleTime: 15 * 60 * 1000, // 15 min
     gcTime: 24 * 60 * 60 * 1000, // 1 day
+    select: (data) => data.slice(0, 3),
   });
 }

@@ -527,7 +527,7 @@ export function useSearchCurrencyLists({
     }
 
     if (popularAssets?.length) {
-      sections.push({ id: 'popular', data: popularAssets.slice(0, 3) });
+      sections.push({ id: 'popular', data: popularAssets });
     }
 
     if (bridgeAsset) {
