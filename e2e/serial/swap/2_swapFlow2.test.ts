@@ -54,7 +54,7 @@ const WALLET_TO_USE_ADDRESS = isFirefox
   ? TEST_VARIABLES.PRIVATE_KEY_WALLET_2.ADDRESS
   : TEST_VARIABLES.SEED_WALLET.ADDRESS;
 
-describe.skip('App interactions flow', () => {
+describe('Swap Flow 2', () => {
   beforeAll(async () => {
     driver = await initDriverWithOptions({
       browser,
