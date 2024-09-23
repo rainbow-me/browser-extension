@@ -2,7 +2,7 @@ import 'chromedriver';
 import 'geckodriver';
 import { Contract } from '@ethersproject/contracts';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
-import { WebDriver } from 'selenium-webdriver';
+import { Key, WebDriver } from 'selenium-webdriver';
 import { erc20Abi } from 'viem';
 import {
   afterAll,
@@ -181,10 +181,13 @@ describe('Swap Flow 2', () => {
       driver,
     });
     await delayTime('short');
-    await clearInput({
+
+    await typeOnTextInput({
       id: 'slippage-input-mask',
       driver,
+      text: Key.BACK_SPACE,
     });
+    await delayTime('short');
     await typeOnTextInput({
       id: 'slippage-input-mask',
       driver,
