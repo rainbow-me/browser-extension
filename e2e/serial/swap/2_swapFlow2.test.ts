@@ -17,7 +17,6 @@ import {
 import { ChainId } from '~/core/types/chains';
 
 import {
-  clearInput,
   delayTime,
   doNotFindElementByTestId,
   fillPrivateKey,
@@ -150,8 +149,14 @@ describe('Swap Flow 2', () => {
       id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
       driver,
     });
-    await clearInput({
+    await typeOnTextInput({
       id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+      text: Key.BACK_SPACE,
+      driver,
+    });
+    await typeOnTextInput({
+      id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+      text: Key.BACK_SPACE,
       driver,
     });
     await typeOnTextInput({
