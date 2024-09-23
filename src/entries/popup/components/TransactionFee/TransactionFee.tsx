@@ -45,6 +45,7 @@ import { SwitchTransactionSpeedMenu } from './TransactionSpeedsMenu';
 
 type FeeProps = {
   chainId: ChainId;
+  disableShortcuts?: boolean;
   accentColor?: string;
   plainTriggerBorder?: boolean;
   selectedSpeed: GasSpeed;
@@ -71,6 +72,7 @@ function Fee({
   analyticsEvents,
   baseFeeTrend,
   chainId,
+  disableShortcuts,
   currentBaseFee,
   gasFeeParamsBySpeed,
   isLoading,
@@ -130,22 +132,24 @@ function Fee({
 
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
-      if (e.key === shortcuts.global.OPEN_CUSTOM_GAS_MENU.key) {
-        if (chainId === ChainId.mainnet) {
-          trackShortcut({
-            key: shortcuts.global.OPEN_CUSTOM_GAS_MENU.display,
-            type: 'customGasMenu.open',
-          });
-          // hackery preventing GweiInputMask from firing an onChange event when opening the menu with KB
-          setTimeout(() => openCustomGasSheet(), 0);
-        }
-      } else if (e.key === shortcuts.global.OPEN_GAS_MENU.key) {
-        if (chainId === ChainId.mainnet || chainId === ChainId.polygon) {
-          trackShortcut({
-            key: shortcuts.global.OPEN_GAS_MENU.display,
-            type: 'gasMenu.open',
-          });
-          switchTransactionSpeedMenuRef?.current?.open();
+      if (!disableShortcuts) {
+        if (e.key === shortcuts.global.OPEN_CUSTOM_GAS_MENU.key) {
+          if (chainId === ChainId.mainnet) {
+            trackShortcut({
+              key: shortcuts.global.OPEN_CUSTOM_GAS_MENU.display,
+              type: 'customGasMenu.open',
+            });
+            // hackery preventing GweiInputMask from firing an onChange event when opening the menu with KB
+            setTimeout(() => openCustomGasSheet(), 0);
+          }
+        } else if (e.key === shortcuts.global.OPEN_GAS_MENU.key) {
+          if (chainId === ChainId.mainnet || chainId === ChainId.polygon) {
+            trackShortcut({
+              key: shortcuts.global.OPEN_GAS_MENU.display,
+              type: 'gasMenu.open',
+            });
+            switchTransactionSpeedMenuRef?.current?.open();
+          }
         }
       }
     },
@@ -256,6 +260,7 @@ function Fee({
 
 type TransactionFeeProps = {
   chainId: ChainId;
+  disableShortcuts?: boolean;
   address?: Address;
   defaultSpeed?: GasSpeed;
   transactionRequest: TransactionRequest;
@@ -271,6 +276,7 @@ type TransactionFeeProps = {
 
 export function TransactionFee({
   chainId,
+  disableShortcuts,
   address,
   defaultSpeed,
   transactionRequest,
@@ -302,6 +308,7 @@ export function TransactionFee({
   return (
     <Fee
       analyticsEvents={analyticsEvents}
+      disableShortcuts={disableShortcuts}
       chainId={chainId}
       accentColor={accentColor}
       plainTriggerBorder={plainTriggerBorder}

@@ -14,7 +14,7 @@ import {
 import {
   BNB_BSC_ADDRESS,
   ETH_ADDRESS,
-  MATIC_POLYGON_ADDRESS,
+  POL_POLYGON_ADDRESS,
 } from '~/core/references';
 import { ChainId } from '~/core/types/chains';
 import {
@@ -111,7 +111,7 @@ function parseTokenSearch(assets: SearchAsset[], chainId: ChainId) {
           `${ETH_ADDRESS}_${ChainId.optimism}`,
           `${ETH_ADDRESS}_${ChainId.arbitrum}`,
           `${BNB_BSC_ADDRESS}_${ChainId.bsc}`,
-          `${MATIC_POLYGON_ADDRESS}_${ChainId.polygon}`,
+          `${POL_POLYGON_ADDRESS}_${ChainId.polygon}`,
           `${ETH_ADDRESS}_${ChainId.base}`,
           `${ETH_ADDRESS}_${ChainId.zora}`,
           `${ETH_ADDRESS}_${ChainId.avalanche}`,
