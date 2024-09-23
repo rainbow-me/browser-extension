@@ -3,6 +3,9 @@ import { getClient } from '@wagmi/core';
 import { providers } from 'ethers';
 import type { Chain, Client, Transport } from 'viem';
 
+import { connectedToHardhatStore } from '../state/currentSettings/connectedToHardhat';
+import { chainHardhat } from '../types/chains';
+
 import { wagmiConfig } from '.';
 
 export function clientToProvider(client: Client<Transport, Chain>) {
@@ -23,7 +26,10 @@ export function clientToProvider(client: Client<Transport, Chain>) {
 
 /** Action to convert a viem Public Client to an ethers.js Provider. */
 export function getProvider({ chainId }: { chainId?: number } = {}) {
-  const client = getClient(wagmiConfig, { chainId }) as Client<
+  const internalChainId = connectedToHardhatStore.getState().connectedToHardhat
+    ? chainHardhat.id
+    : chainId;
+  const client = getClient(wagmiConfig, { chainId: internalChainId }) as Client<
     Transport,
     Chain
   >;
