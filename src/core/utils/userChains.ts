@@ -10,6 +10,7 @@ import {
   blastSepolia,
   bsc,
   bscTestnet,
+  curtis,
   degen,
   holesky,
   mainnet,
@@ -37,7 +38,8 @@ export const chainIdMap: Record<
   | ChainId.zora
   | ChainId.avalanche
   | ChainId.blast
-  | ChainId.degen,
+  | ChainId.degen
+  | ChainId.apechain,
   ChainId[]
 > = {
   [ChainId.mainnet]: [mainnet.id, sepolia.id, holesky.id],
@@ -50,6 +52,7 @@ export const chainIdMap: Record<
   [ChainId.avalanche]: [avalanche.id, avalancheFuji.id],
   [ChainId.blast]: [blast.id, blastSepolia.id],
   [ChainId.degen]: [degen.id],
+  [ChainId.apechain]: [ChainId.apechain, curtis.id],
 };
 
 export const chainLabelMap: Record<
@@ -61,7 +64,8 @@ export const chainLabelMap: Record<
   | ChainId.zora
   | ChainId.avalanche
   | ChainId.blast
-  | ChainId.degen,
+  | ChainId.degen
+  | ChainId.apechain,
   string[]
 > = {
   [ChainId.mainnet]: [chainsLabel[sepolia.id], chainsLabel[holesky.id]],
@@ -74,6 +78,7 @@ export const chainLabelMap: Record<
   [ChainId.avalanche]: [chainsLabel[avalancheFuji.id]],
   [ChainId.blast]: [chainsLabel[blastSepolia.id]],
   [ChainId.degen]: [],
+  [ChainId.apechain]: [chainsLabel[curtis.id]],
 };
 
 export const sortNetworks = (order: ChainId[], chains: Chain[]) => {
