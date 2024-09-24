@@ -105,7 +105,10 @@ export const AppConnectionNudgeBanner = ({
                     </Inline>
                     <TextOverflow color="label" size="14pt" weight="bold">
                       {i18n.t('app_connection_switcher.banner.connect_to', {
-                        appName: dappMetadata?.appName || dappMetadata?.appHost,
+                        appName:
+                          dappMetadata?.appName ||
+                          dappMetadata?.appHost ||
+                          'dApp',
                       })}
                     </TextOverflow>
                   </Stack>

@@ -58,7 +58,7 @@ export const AppConnectionWatcher = () => {
     if (showNudgeSheet) setShowNudgeSheet(false);
     triggerToast({
       title: i18n.t('app_connection_switcher.banner.app_connected', {
-        appName: dappMetadata?.appName || dappMetadata?.appHostName,
+        appName: dappMetadata?.appName || dappMetadata?.appHostName || 'dApp',
       }),
       description: chainsLabel[activeSession?.chainId || ChainId.mainnet],
     });
