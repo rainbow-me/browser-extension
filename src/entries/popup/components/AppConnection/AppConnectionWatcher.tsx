@@ -117,6 +117,9 @@ export const AppConnectionWatcher = () => {
       clearTimeout(timeoutRef.current);
     }
 
+    // Injection failed, or attempting to connect to `chrome://` url
+    if (url === '') return;
+
     if (
       nudgeSheetEnabled &&
       !appHasInteractedWithNudgeSheet({ host: dappMetadata?.appHost })
@@ -139,6 +142,7 @@ export const AppConnectionWatcher = () => {
     handleBannerTimeout,
     nudgeSheetEnabled,
     setAppHasInteractedWithNudgeSheet,
+    url,
   ]);
 
   const hide = useCallback(() => {
