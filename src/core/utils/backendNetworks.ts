@@ -4,6 +4,7 @@ import { mainnet } from 'viem/chains';
 import { BackendNetwork } from '../types/chains';
 
 const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
+const IS_DEV = process.env.IS_DEV === 'true';
 
 const proxyBackendNetworkRpcEndpoint = (endpoint: string) => {
   return `${endpoint}${process.env.RPC_PROXY_API_KEY}`;
@@ -51,6 +52,6 @@ export function transformBackendNetworksToChains(
   }
   // include all networks for internal builds, otherwise filter out flagged as internal
   return networks
-    .filter((network) => !network.internal || INTERNAL_BUILD)
+    .filter((network) => !network.internal || INTERNAL_BUILD || IS_DEV)
     .map((network) => transformBackendNetworkToChain(network));
 }
