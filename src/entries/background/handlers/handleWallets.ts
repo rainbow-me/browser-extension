@@ -42,7 +42,6 @@ import { flashbotsEnabledStore } from '~/core/state';
 import { WalletAction } from '~/core/types/walletActions';
 import { EthereumWalletSeed } from '~/core/utils/ethereum';
 import { getFlashbotsProvider } from '~/core/utils/flashbots';
-import { wagmiConfig } from '~/core/wagmi';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 
 type WalletActionArguments = {
@@ -192,12 +191,9 @@ export const handleWallets = () =>
             ) {
               provider = getFlashbotsProvider();
             } else {
-              console.log('get background provider');
-              console.log('get background wagmiconfig', wagmiConfig);
               provider = getProvider({
                 chainId: (payload as TransactionRequest).chainId,
               });
-              console.log(' background provider', provider);
             }
             response = await sendTransaction(
               payload as TransactionRequest,
