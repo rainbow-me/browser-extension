@@ -10,6 +10,7 @@ import { serialize } from '@ethersproject/transactions';
 import BigNumber from 'bignumber.js';
 
 import { globalColors } from '~/design-system/styles/designTokens';
+import { RainbowError, logger } from '~/logger';
 
 import { i18n } from '../languages';
 import {
@@ -549,6 +550,7 @@ export const estimateGasWithPadding = async ({
     // otherwise default to the last block gas limit
     return lastBlockGasLimit;
   } catch (error) {
+    logger.error(new RainbowError(`estimateGasWithPadding error: ${error}`));
     return null;
   }
 };
