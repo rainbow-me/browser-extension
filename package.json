@@ -280,7 +280,7 @@
     "webpack": "5.94.0",
     "path-to-regexp": "6.3.0",
     "dset": "3.1.4",
-	"zod": "3.23.8"
+    "zod": "3.23.8"
   },
   "lavamoat": {
     "allowScripts": {
