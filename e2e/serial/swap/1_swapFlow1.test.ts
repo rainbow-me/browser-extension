@@ -1,7 +1,7 @@
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import 'chromedriver';
 import 'geckodriver';
-import { WebDriver } from 'selenium-webdriver';
+import { Key, WebDriver } from 'selenium-webdriver';
 import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
 
 import { ChainId } from '~/core/types/chains';
@@ -222,14 +222,16 @@ it('should be able to interact with slippage settings', async () => {
     id: 'explainer-action-button',
     driver,
   });
-  await clearInput({
-    id: 'slippage-input-mask',
-    driver,
-  });
   await typeOnTextInput({
     id: 'slippage-input-mask',
     driver,
-    text: '4',
+    text: Key.BACK_SPACE,
+  });
+  await delayTime('short');
+  await typeOnTextInput({
+    id: 'slippage-input-mask',
+    driver,
+    text: '5',
   });
   await delayTime('short');
   const warning = await findElementByTestId({
@@ -1005,11 +1007,12 @@ it('should be able to execute swap', async () => {
     id: 'swap-settings-navbar-button',
     driver,
   });
-  await delayTime('short');
-  await clearInput({
+  await typeOnTextInput({
     id: 'slippage-input-mask',
     driver,
+    text: Key.BACK_SPACE,
   });
+  await delayTime('short');
   await typeOnTextInput({
     id: 'slippage-input-mask',
     driver,
