@@ -1456,7 +1456,7 @@
       "the_more_you_use": "Rainbowを使えば使うほど報酬が増えます",
       "balance_required": "ウォレットの残高が必要です",
       "ensure_you_have_a_balance_on": "続行するには、以下のネットワークのいずれかにETH残高があることを確認してください：",
-      "or_alternatively_balance_on": "または、Polygon上のMATIC残高、またはBSC上のBNB残高がある場合",
+      "or_alternatively_balance_on": "または、Polygon上のPOL残高、またはBSC上のBNB残高がある場合",
       "fund_my_wallet": "マイウォレットに資金を入れる"
     },
     "error": {

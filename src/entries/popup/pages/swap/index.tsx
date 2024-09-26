@@ -799,7 +799,9 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                   }
                   setAssetToSellInputValue={setAssetToSellInputValue}
                   inputRef={assetToSellInputRef}
-                  openDropdownOnMount={inputToOpenOnMount === 'sell'}
+                  openDropdownOnMount={
+                    inputToOpenOnMount === 'sell' && !assetToSell
+                  }
                   assetToSellNativeValue={assetToSellNativeValue}
                   assetToSellNativeDisplay={assetToSellNativeDisplay}
                   setAssetToSellInputNativeValue={
@@ -881,7 +883,9 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                   assetToSellValue={assetToSellValue}
                   setAssetToBuyInputValue={setAssetToBuyInputValue}
                   inputRef={assetToBuyInputRef}
-                  openDropdownOnMount={inputToOpenOnMount === 'buy'}
+                  openDropdownOnMount={
+                    inputToOpenOnMount === 'buy' && !assetToBuy
+                  }
                   inputDisabled={isCrosschainSwap}
                   assetToBuyNativeDisplay={assetToBuyNativeDisplay}
                   assetToSellNativeDisplay={assetToSellNativeDisplay}

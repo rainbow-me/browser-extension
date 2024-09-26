@@ -57,12 +57,12 @@ export const useSwapQuote = ({
   );
 
   const quotesParams: QuoteParams | undefined = useMemo(() => {
-    const paramsReady =
-      assetToSell &&
-      assetToBuy &&
-      (independentField === 'buyField'
+    const independentValue =
+      independentField === 'buyField'
         ? Number(assetToBuyValue)
-        : Number(assetToSellValue));
+        : Number(assetToSellValue);
+    const paramsReady =
+      assetToSell && assetToBuy && typeof independentValue === 'number';
     if (!paramsReady) return undefined;
 
     return {

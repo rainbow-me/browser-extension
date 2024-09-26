@@ -149,6 +149,7 @@ const useGas = ({
         secondsPerNewBlock,
       });
       setCustomSpeed(newCustomSpeed);
+      return newCustomSpeed;
     },
     enabled:
       !!gasData &&
@@ -206,6 +207,7 @@ const useGas = ({
         secondsPerNewBlock,
       });
       setCustomSpeed(newCustomSpeed);
+      return newCustomSpeed;
     },
     enabled:
       !!gasData &&
