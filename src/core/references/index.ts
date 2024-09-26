@@ -1,7 +1,5 @@
 import { AddressZero } from '@ethersproject/constants';
 
-import { ChainId } from '~/core/types/chains';
-
 export { ethUnits } from './ethUnits';
 export { supportedCurrencies } from './supportedCurrencies';
 
@@ -50,8 +48,7 @@ export const ETH_ADDRESS = 'eth';
 export const DAI_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f';
 export const USDC_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
 export const WBTC_ADDRESS = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599';
-export const POL_MAINNET_ADDRESS =
-  '0x455e53CBB86018Ac2B8092FdCd39d8444aFFC3F6';
+export const POL_MAINNET_ADDRESS = '0x455e53CBB86018Ac2B8092FdCd39d8444aFFC3F6';
 export const BNB_MAINNET_ADDRESS = '0xb8c77482e45f1f44de1745f52c74426c631bdd52';
 export const SOCKS_ADDRESS = '0x23b608675a2b2fb1890d3abbd85c5775c51691d5';
 export const WETH_ADDRESS = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2';
@@ -84,8 +81,7 @@ export const DAI_BSC_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f';
 export const USDC_BSC_ADDRESS = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
 
 // polygon
-export const POL_POLYGON_ADDRESS =
-  '0x0000000000000000000000000000000000001010';
+export const POL_POLYGON_ADDRESS = '0x0000000000000000000000000000000000001010';
 export const WETH_POLYGON_ADDRESS =
   '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619';
 export const DAI_POLYGON_ADDRESS = '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063';
@@ -130,10 +126,3 @@ export const OVM_GAS_PRICE_ORACLE =
 export type ReferrerType = 'browser-extension' | 'bx-claim';
 export const REFERRER: ReferrerType = 'browser-extension';
 export const REFERRER_CLAIM: ReferrerType = 'bx-claim';
-
-export const LEGACY_CHAINS_FOR_HW = [
-  ChainId.optimism,
-  ChainId.arbitrum,
-  ChainId.zora,
-  ChainId.base,
-];

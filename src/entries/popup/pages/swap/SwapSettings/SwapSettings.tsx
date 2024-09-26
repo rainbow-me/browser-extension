@@ -8,7 +8,6 @@ import { i18n } from '~/core/languages';
 import { useCurrentAddressStore, useFlashbotsEnabledStore } from '~/core/state';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { ChainId } from '~/core/types/chains';
-import { divide } from '~/core/utils/numbers';
 import {
   Bleed,
   Box,
@@ -280,12 +279,12 @@ export const SwapSettings = ({
     try {
       setSettings({
         source,
-        slippage: divide(slippage, 100).toString(),
+        slippage,
         swapFlashbotsEnabled,
       });
       onDone();
     } catch (e) {
-      console.log('DONEEEEEEE e', e);
+      //
     }
   }, [swapFlashbotsEnabled, onDone, setSettings, slippage, source]);
 
