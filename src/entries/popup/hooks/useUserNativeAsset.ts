@@ -5,38 +5,12 @@ import { useConfig } from 'wagmi';
 import { useUserTestnetNativeAsset } from '~/core/resources/assets/userTestnetNativeAsset';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { ParsedUserAsset } from '~/core/types/assets';
-import { ChainId, chainIdToNameMapping } from '~/core/types/chains';
+import { ChainId } from '~/core/types/chains';
 import { isCustomChain } from '~/core/utils/chains';
 
 import { useCustomNetworkAsset } from './useCustomNetworkAsset';
-import {
-  getNetworkNativeAssetChainId,
-  getNetworkNativeAssetUniqueId,
-} from './useNativeAssetForNetwork';
-import { useNativeAssets } from './useNativeAssets';
+import { getNetworkNativeAssetUniqueId } from './useNativeAssetForNetwork';
 import { useUserAsset } from './useUserAsset';
-
-const useMockNativeAsset = ({
-  chainId,
-}: {
-  chainId: ChainId;
-}): ParsedUserAsset | undefined | null => {
-  const nativeAssets = useNativeAssets();
-  const { chains } = useConfig();
-  const chain = chains.find((c) => c.id === chainId);
-  if (!nativeAssets || !chain) return null;
-  const nativeAssetMetadataChainId = getNetworkNativeAssetChainId({ chainId });
-  const nativeAsset = nativeAssets?.[nativeAssetMetadataChainId];
-  return {
-    ...nativeAsset,
-    chainId: chain.id,
-    chainName: chainIdToNameMapping[chain.id],
-    native: {
-      balance: { amount: '0', display: `0 ${nativeAsset?.symbol}` },
-    },
-    balance: { amount: '0', display: `0 ${nativeAsset?.symbol}` },
-  };
-};
 
 export const useUserNativeAsset = ({
   address,
@@ -49,13 +23,12 @@ export const useUserNativeAsset = ({
   const { currentCurrency } = useCurrentCurrencyStore();
   const { chains } = useConfig();
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
-    chainId: chainId || ChainId.mainnet,
+    chainId,
   });
   const { data: userNativeAsset } = useUserAsset(
     nativeAssetUniqueId || '',
     address || currentAddress,
   );
-  const mockNativeAsset = useMockNativeAsset({ chainId });
 
   const { data: testnetNativeAsset } = useUserTestnetNativeAsset({
     address: address || currentAddress,
@@ -78,7 +51,7 @@ export const useUserNativeAsset = ({
   } else if (chain?.testnet) {
     nativeAsset = testnetNativeAsset;
   } else {
-    nativeAsset = userNativeAsset || mockNativeAsset;
+    nativeAsset = userNativeAsset;
   }
   return { nativeAsset };
 };

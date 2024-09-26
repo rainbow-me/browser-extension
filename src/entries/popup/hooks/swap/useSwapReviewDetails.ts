@@ -13,7 +13,7 @@ import {
   multiply,
 } from '~/core/utils/numbers';
 
-import { useNativeAssetForNetwork } from '../useNativeAssetForNetwork';
+import { useNativeAsset } from '../useNativeAsset';
 
 const getExchangeIconUrl = (protocol: string): string | null => {
   if (!protocol) return null;
@@ -46,7 +46,7 @@ export const useSwapReviewDetails = ({
   quote: Quote | CrosschainQuote;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
-  const nativeAsset = useNativeAssetForNetwork({
+  const nativeAsset = useNativeAsset({
     chainId: assetToSell.chainId,
   });
 

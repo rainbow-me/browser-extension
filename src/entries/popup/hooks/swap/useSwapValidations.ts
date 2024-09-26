@@ -26,7 +26,7 @@ export const useSwapValidations = ({
   selectedGas?: GasFeeParams | GasFeeLegacyParams;
 }) => {
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
-    chainId: assetToSell?.chainId || ChainId.mainnet,
+    chainId: assetToSell?.chainId,
   });
   const { data: userNativeAsset } = useUserAsset(nativeAssetUniqueId || '');
 

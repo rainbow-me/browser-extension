@@ -11,11 +11,7 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
-import {
-  AddressOrEth,
-  ParsedAsset,
-  ParsedUserAsset,
-} from '~/core/types/assets';
+import { AddressOrEth, ParsedAsset } from '~/core/types/assets';
 import { ChainId, chainIdToNameMapping } from '~/core/types/chains';
 import { isNativeAsset } from '~/core/utils/chains';
 import {
@@ -165,7 +161,7 @@ export function useExternalToken(
   config: QueryConfig<
     ExternalTokenQueryFunctionResult,
     Error,
-    ParsedUserAsset,
+    ParsedAsset,
     externalTokenQueryKey
   > = {},
 ) {
