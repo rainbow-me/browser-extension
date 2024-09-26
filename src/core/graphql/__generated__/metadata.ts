@@ -51,6 +51,31 @@ export type ContractFunction = {
   text: Scalars['String'];
 };
 
+export type CustomNetwork = {
+  __typename?: 'CustomNetwork';
+  defaultExplorerURL: Scalars['String'];
+  defaultRPCURL: Scalars['String'];
+  iconURL: Scalars['String'];
+  id: Scalars['Int'];
+  name: Scalars['String'];
+  nativeAsset: CustomNetworkNativeAsset;
+  testnet: CustomNetworkTestnet;
+};
+
+export type CustomNetworkNativeAsset = {
+  __typename?: 'CustomNetworkNativeAsset';
+  decimals: Scalars['Int'];
+  iconURL: Scalars['String'];
+  symbol: Scalars['String'];
+};
+
+export type CustomNetworkTestnet = {
+  __typename?: 'CustomNetworkTestnet';
+  FaucetURL: Scalars['String'];
+  isTestnet: Scalars['Boolean'];
+  mainnetChainID: Scalars['Int'];
+};
+
 export type DApp = {
   __typename?: 'DApp';
   colors: DAppColors;
@@ -172,6 +197,7 @@ export type Network = {
   gasUnits: NetworkGasUnits;
   icons: NetworkIcons;
   id: Scalars['ID'];
+  internal: Scalars['Boolean'];
   label: Scalars['String'];
   name: Scalars['String'];
   nativeAsset: NetworkAsset;
@@ -184,6 +210,7 @@ export type NetworkAddys = {
   __typename?: 'NetworkAddys';
   approvals: Scalars['Boolean'];
   assets: Scalars['Boolean'];
+  interactionsWith: Scalars['Boolean'];
   positions: Scalars['Boolean'];
   summary: Scalars['Boolean'];
   transactions: Scalars['Boolean'];
@@ -211,6 +238,7 @@ export type NetworkEnabledServices = {
   addys: NetworkAddys;
   meteorology: NetworkMeteorology;
   nftProxy: NetworkNftProxy;
+  notifications: NetworkNotifications;
   swap: NetworkSwap;
   tokenSearch: NetworkTokenSearch;
 };
@@ -261,6 +289,12 @@ export type NetworkNftProxy = {
   enabled: Scalars['Boolean'];
 };
 
+export type NetworkNotifications = {
+  __typename?: 'NetworkNotifications';
+  enabled: Scalars['Boolean'];
+  transactions: Scalars['Boolean'];
+};
+
 export type NetworkRpc = {
   __typename?: 'NetworkRPC';
   enabledDevices: Array<Maybe<Device>>;
@@ -270,8 +304,10 @@ export type NetworkRpc = {
 export type NetworkSwap = {
   __typename?: 'NetworkSwap';
   bridge: Scalars['Boolean'];
+  bridgeExactOutput: Scalars['Boolean'];
   enabled: Scalars['Boolean'];
   swap: Scalars['Boolean'];
+  swapExactOutput: Scalars['Boolean'];
 };
 
 export type NetworkTokenSearch = {
@@ -474,6 +510,7 @@ export type Query = {
   contract?: Maybe<Contract>;
   contractFunction?: Maybe<ContractFunction>;
   contracts?: Maybe<Array<Maybe<Contract>>>;
+  customNetworks?: Maybe<Array<Maybe<CustomNetwork>>>;
   dApp?: Maybe<DApp>;
   dApps?: Maybe<Array<Maybe<DApp>>>;
   ensMarquee?: Maybe<EnsMarquee>;
@@ -508,6 +545,11 @@ export type QueryContractFunctionArgs = {
   address?: InputMaybe<Scalars['String']>;
   chainID: Scalars['Int'];
   hex: Scalars['String'];
+};
+
+
+export type QueryCustomNetworksArgs = {
+  includeTestnets?: InputMaybe<Scalars['Boolean']>;
 };
 
 
@@ -780,6 +822,7 @@ export type Token = {
   bridging: Scalars['TokenBridging'];
   circulatingSupply?: Maybe<Scalars['Float']>;
   colors: TokenColors;
+  creationDate?: Maybe<Scalars['Time']>;
   decimals: Scalars['Int'];
   description?: Maybe<Scalars['String']>;
   fullyDilutedValuation?: Maybe<Scalars['Float']>;
@@ -790,8 +833,10 @@ export type Token = {
   networks: Scalars['TokenNetworks'];
   price: TokenPrice;
   priceCharts: TokenPriceCharts;
+  status: TokenStatus;
   symbol: Scalars['String'];
   totalSupply?: Maybe<Scalars['Float']>;
+  transferable: Scalars['Boolean'];
   volume1d?: Maybe<Scalars['Float']>;
 };
 
@@ -838,6 +883,8 @@ export type TokenPriceChart = {
    *     where the first element is the timestamp and the second is the price
    */
   points?: Maybe<Array<Maybe<Array<Maybe<Scalars['Any']>>>>>;
+  /** pricePresentAt time when the price is present for the first time */
+  pricePresentAt?: Maybe<Scalars['Time']>;
   timeEnd?: Maybe<Scalars['Time']>;
   timeStart?: Maybe<Scalars['Time']>;
 };
@@ -860,6 +907,13 @@ export type TokenPriceCharts = {
   week?: Maybe<TokenPriceChart>;
   year?: Maybe<TokenPriceChart>;
 };
+
+export enum TokenStatus {
+  Scam = 'SCAM',
+  Unknown = 'UNKNOWN',
+  Unverified = 'UNVERIFIED',
+  Verified = 'VERIFIED'
+}
 
 export type Transaction = {
   data: Scalars['String'];
@@ -936,6 +990,7 @@ export type TransactionSimulationApproval = {
 export type TransactionSimulationAsset = {
   __typename?: 'TransactionSimulationAsset';
   assetCode: Scalars['String'];
+  creationDate?: Maybe<Scalars['Time']>;
   decimals: Scalars['Int'];
   iconURL: Scalars['String'];
   interface: TransactionAssetInterface;
@@ -1149,6 +1204,15 @@ export type ClaimUserRewardsMutationVariables = Exact<{
 
 
 export type ClaimUserRewardsMutation = { __typename?: 'Mutation', claimUserRewards?: { __typename?: 'UserClaimTransaction', chainID: number, uoHash: string, txHash: string, error?: { __typename?: 'PointsError', type: PointsErrorType, message: string } | null } | null };
+
+export type ExternalTokenQueryVariables = Exact<{
+  address: Scalars['String'];
+  chainId: Scalars['Int'];
+  currency?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type ExternalTokenQuery = { __typename?: 'Query', token?: { __typename?: 'Token', decimals: number, iconUrl?: string | null, name: string, networks: any, symbol: string, price: { __typename?: 'TokenPrice', relativeChange24h?: number | null, value?: number | null } } | null };
 
 export const AssetFragmentDoc = gql`
     fragment asset on TransactionSimulationAsset {
@@ -1636,6 +1700,21 @@ export const ClaimUserRewardsDocument = gql`
   }
 }
     `;
+export const ExternalTokenDocument = gql`
+    query externalToken($address: String!, $chainId: Int!, $currency: String) {
+  token(address: $address, chainID: $chainId, currency: $currency) {
+    decimals
+    iconUrl
+    name
+    networks
+    price {
+      relativeChange24h
+      value
+    }
+    symbol
+  }
+}
+    `;
 export type Requester<C = {}, E = unknown> = <R, V>(doc: DocumentNode, vars?: V, options?: C) => Promise<R> | AsyncIterable<R>
 export function getSdk<C, E>(requester: Requester<C, E>) {
   return {
@@ -1686,6 +1765,9 @@ export function getSdk<C, E>(requester: Requester<C, E>) {
     },
     claimUserRewards(variables: ClaimUserRewardsMutationVariables, options?: C): Promise<ClaimUserRewardsMutation> {
       return requester<ClaimUserRewardsMutation, ClaimUserRewardsMutationVariables>(ClaimUserRewardsDocument, variables, options) as Promise<ClaimUserRewardsMutation>;
+    },
+    externalToken(variables: ExternalTokenQueryVariables, options?: C): Promise<ExternalTokenQuery> {
+      return requester<ExternalTokenQuery, ExternalTokenQueryVariables>(ExternalTokenDocument, variables, options) as Promise<ExternalTokenQuery>;
     }
   };
 }
