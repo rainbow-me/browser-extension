@@ -222,7 +222,7 @@ const ImportWalletViaSeed = () => {
   const handleSeedChange = useCallback(
     (e: { target: { value: string } }, index: number) => {
       const newSecrets = [...secrets] as string[];
-      newSecrets[index] = e.target.value;
+      newSecrets[index] = e.target.value.trim().toLowerCase();
       setSecrets(newSecrets);
       setImportWalletSecrets(newSecrets);
     },
@@ -269,7 +269,7 @@ const ImportWalletViaSeed = () => {
   const handlePaste = useCallback((e: React.ClipboardEvent) => {
     const dataToBePasted = e.clipboardData.getData('text').trim();
     e.preventDefault();
-    const words = dataToBePasted.split(' ');
+    const words = dataToBePasted.trim().toLowerCase().split(' ');
     if (words.length === 12 || words.length === 24) {
       setSecrets(words);
     } else {
