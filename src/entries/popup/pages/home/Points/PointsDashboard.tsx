@@ -57,8 +57,8 @@ import {
 import { AddressOrEns } from '~/entries/popup/components/AddressOrEns/AddressorEns';
 import ExternalImage from '~/entries/popup/components/ExternalImage/ExternalImage';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
-import { useNativeAsset } from '~/entries/popup/hooks/useNativeAsset';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
+import { useUserNativeAsset } from '~/entries/popup/hooks/useUserNativeAsset';
 import { ROUTES } from '~/entries/popup/urls';
 
 import { AirdropIcon } from './AirdropIcon';
@@ -705,7 +705,7 @@ function ClaimYourPoints({
   claimableReward?: string;
   showClaimSheet: () => void;
 }) {
-  const eth = useNativeAsset({ chainId: ChainId.mainnet });
+  const eth = useUserNativeAsset({ chainId: ChainId.mainnet });
   const ethPrice = eth?.nativeAsset?.price?.value;
   const { currentCurrency: currency } = useCurrentCurrencyStore();
   if (!claimableReward || claimableReward === '0' || !ethPrice) return null;
@@ -963,7 +963,7 @@ function RainbowUserEarnings({ totalEarnings }: { totalEarnings: string }) {
 }
 
 function MyEarnings({ earnings = '0' }: { earnings?: string }) {
-  const eth = useNativeAsset({ chainId: ChainId.mainnet });
+  const eth = useUserNativeAsset({ chainId: ChainId.mainnet });
   const ethPrice = eth?.nativeAsset?.price?.value;
   const { currentCurrency: currency } = useCurrentCurrencyStore();
 

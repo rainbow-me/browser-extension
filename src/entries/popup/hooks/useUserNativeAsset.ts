@@ -38,7 +38,7 @@ const useMockNativeAsset = ({
   };
 };
 
-export const useNativeAsset = ({
+export const useUserNativeAsset = ({
   address,
   chainId,
 }: {
