@@ -160,16 +160,11 @@ export function SeedVerifyQuiz({
 
   const handleSelect = useCallback(
     ({ word, index }: { word: string; index: number }) => {
-      const alreadySelected = selectedWords.find(
-        (selectedWord) =>
-          selectedWord.index === index && selectedWord.word === word,
+      const selectedIndex = selectedWords.findIndex(
+        (selectedWord) => selectedWord.index === index,
       );
-      if (alreadySelected) {
-        const selectedWordIndex = selectedWords.findIndex(
-          (selectedWord) =>
-            selectedWord.index === index && selectedWord.word === word,
-        );
-        selectedWords.splice(selectedWordIndex, 1);
+      if (selectedIndex !== -1) {
+        selectedWords.splice(selectedIndex, 1);
         setSelectedWords([...selectedWords]);
       } else if (selectedWords.length < 3) {
         selectedWords.push({ word, index });
@@ -182,11 +177,8 @@ export function SeedVerifyQuiz({
           const seedWords = seed.split(' ');
           if (
             seedWords[3] === selectedWords[0]?.word &&
-            selectedWords[0].index === 3 &&
             seedWords[7] === selectedWords[1]?.word &&
-            selectedWords[1].index === 7 &&
-            seedWords[11] === selectedWords[2]?.word &&
-            selectedWords[2].index === 11
+            seedWords[11] === selectedWords[2]?.word
           ) {
             setValidated(true);
             playSound('CorrectSeedQuiz');

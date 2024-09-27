@@ -12,11 +12,9 @@ import {
   serialize,
 } from '@ethersproject/transactions';
 import { SignTypedDataVersion, TypedDataUtils } from '@metamask/eth-sig-util';
-import { ChainId } from '@rainbow-me/swaps';
 import transformTypedDataPlugin from '@trezor/connect-plugin-ethereum';
 import { Address } from 'viem';
 
-import { LEGACY_CHAINS_FOR_HW } from '~/core/references';
 import { addHexPrefix } from '~/core/utils/hex';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import { logger } from '~/logger';
@@ -51,16 +49,10 @@ export async function signTransactionFromTrezor(
         : '0x0',
     };
 
-    let forceLegacy = false;
-
-    // Trezor doesn't support type 2 for these networks yet
-    if (LEGACY_CHAINS_FOR_HW.includes(transaction.chainId as ChainId)) {
-      forceLegacy = true;
-    }
-
     if (transaction.gasPrice) {
       baseTx.gasPrice = transaction.gasPrice;
-    } else if (!forceLegacy) {
+    } else if (transaction.maxFeePerGas || transaction.maxPriorityFeePerGas) {
+      // eip-1559
       baseTx.maxFeePerGas = transaction.maxFeePerGas;
       baseTx.maxPriorityFeePerGas = transaction.maxPriorityFeePerGas;
     } else {
