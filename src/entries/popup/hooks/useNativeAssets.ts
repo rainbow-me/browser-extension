@@ -4,13 +4,10 @@ import { useCurrentCurrencyStore } from '~/core/state';
 import { ParsedAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 
-const NATIVE_ASSETS = [
-  { address: chainsNativeAsset[ChainId.mainnet], chainId: ChainId.mainnet },
-  { address: chainsNativeAsset[ChainId.bsc], chainId: ChainId.bsc },
-  { address: chainsNativeAsset[ChainId.polygon], chainId: ChainId.polygon },
-  { address: chainsNativeAsset[ChainId.avalanche], chainId: ChainId.avalanche },
-  { address: chainsNativeAsset[ChainId.degen], chainId: ChainId.degen },
-];
+const NATIVE_ASSETS = Object.keys(chainsNativeAsset).map((chainId) => ({
+  address: chainsNativeAsset[Number(chainId) as ChainId],
+  chainId: Number(chainId) as ChainId,
+}));
 
 export function useNativeAssets() {
   const { currentCurrency: currency } = useCurrentCurrencyStore();
