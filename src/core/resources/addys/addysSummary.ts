@@ -38,17 +38,17 @@ export interface AddySummary {
           last_activity: number;
           asset_value: number;
         };
-      };
-      summary_by_chain: {
-        [key in keyof typeof SummarySupportedChainId]: {
-          native_balance: {
-            symbol: string;
-            quantity: string;
-            decimals: number;
+        summary_by_chain: {
+          [key in keyof typeof SummarySupportedChainId]: {
+            native_balance: {
+              symbol: string;
+              quantity: string;
+              decimals: number;
+            };
+            num_erc20s: number;
+            last_activity: number;
+            asset_value: number;
           };
-          num_erc20s: number;
-          last_activity: number;
-          asset_value: number;
         };
       };
     };
