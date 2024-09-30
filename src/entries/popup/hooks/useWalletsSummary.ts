@@ -46,15 +46,6 @@ const parseAddressSummary = ({
     addysSummary?.data.addresses[address.toLowerCase() as Address];
   const summaryByChain = addressData?.summary_by_chain;
 
-  console.log('summaryByChain', summaryByChain);
-
-  //   const chainIds = [
-  //     ChainId.mainnet,
-  //     ChainId.bsc,
-  //     ChainId.polygon,
-  //     ChainId.avalanche,
-  //   ];
-
   const chainIds = Object.keys(summaryByChain || {}).map((id) =>
     Number(id),
   ) as ChainId[];
