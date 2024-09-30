@@ -8,6 +8,7 @@ import {
   QueryFunctionArgs,
   QueryFunctionResult,
   createQueryKey,
+  queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
 import { AddressOrEth, ParsedAsset } from '~/core/types/assets';
@@ -31,11 +32,6 @@ type ExternalToken = Pick<
 type ExternalTokenArgs = {
   address: string;
   chainId: ChainId;
-  currency: SupportedCurrencyKey;
-};
-
-type ExternalTokensArgs = {
-  assets: { address: AddressOrEth; chainId: ChainId }[];
   currency: SupportedCurrencyKey;
 };
 
@@ -121,7 +117,21 @@ export type ExternalTokenQueryFunctionResult = QueryFunctionResult<
   typeof externalTokenQueryFunction
 >;
 
-// Query Hook for Token Price
+// Prefetch function for Token Price
+export async function prefetchExternalToken({
+  address,
+  chainId,
+  currency,
+}: ExternalTokenArgs) {
+  await queryClient.prefetchQuery({
+    queryKey: externalTokenQueryKey({ address, chainId, currency }),
+    queryFn: externalTokenQueryFunction,
+    staleTime: EXTERNAL_TOKEN_STALE_TIME,
+    gcTime: EXTERNAL_TOKEN_CACHE_TIME,
+  });
+}
+
+// Query Hook for Single Token Price
 export function useExternalToken(
   { address, chainId, currency }: ExternalTokenArgs,
   config: QueryConfig<
@@ -141,8 +151,11 @@ export function useExternalToken(
   });
 }
 
+// New Hook to handle multiple tokens
 export function useExternalTokens(
-  { assets, currency }: ExternalTokensArgs,
+  addresses: string[],
+  chainId: ChainId,
+  currency: SupportedCurrencyKey,
   config: QueryConfig<
     ExternalTokenQueryFunctionResult,
     Error,
@@ -150,8 +163,9 @@ export function useExternalTokens(
     externalTokenQueryKey
   > = {},
 ) {
+  // Execute a query for each address in the addresses array
   const queries = useQueries({
-    queries: assets.map(({ address, chainId }) => ({
+    queries: addresses.map((address) => ({
       queryKey: externalTokenQueryKey({ address, chainId, currency }),
       queryFn: () => fetchExternalToken({ address, chainId, currency }),
       staleTime: EXTERNAL_TOKEN_STALE_TIME,
@@ -161,5 +175,6 @@ export function useExternalTokens(
     })),
   });
 
+  // Return an array of all query results
   return queries;
 }
