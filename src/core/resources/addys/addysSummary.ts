@@ -11,17 +11,6 @@ import {
 import { SupportedCurrencyKey } from '~/core/references';
 import { ChainId } from '~/core/types/chains';
 
-enum SummarySupportedChainId {
-  mainnet = ChainId.mainnet as number,
-  optimism = ChainId.optimism as number,
-  polygon = ChainId.polygon as number,
-  arbitrum = ChainId.arbitrum as number,
-  base = ChainId.base as number,
-  zora = ChainId.zora as number,
-  bsc = ChainId.bsc as number,
-  avalanche = ChainId.avalanche as number,
-}
-
 export interface AddySummary {
   data: {
     addresses: {
@@ -39,7 +28,7 @@ export interface AddySummary {
           asset_value: number;
         };
         summary_by_chain: {
-          [key in keyof typeof SummarySupportedChainId]: {
+          [key in keyof typeof ChainId]: {
             native_balance: {
               symbol: string;
               quantity: string;
