@@ -8,7 +8,6 @@ import {
   QueryFunctionArgs,
   QueryFunctionResult,
   createQueryKey,
-  queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
 import { AddressOrEth, ParsedAsset } from '~/core/types/assets';
@@ -116,20 +115,6 @@ export async function externalTokenQueryFunction({
 export type ExternalTokenQueryFunctionResult = QueryFunctionResult<
   typeof externalTokenQueryFunction
 >;
-
-// Prefetch function for Token Price
-export async function prefetchExternalToken({
-  address,
-  chainId,
-  currency,
-}: ExternalTokenArgs) {
-  await queryClient.prefetchQuery({
-    queryKey: externalTokenQueryKey({ address, chainId, currency }),
-    queryFn: externalTokenQueryFunction,
-    staleTime: EXTERNAL_TOKEN_STALE_TIME,
-    gcTime: EXTERNAL_TOKEN_CACHE_TIME,
-  });
-}
 
 // Query Hook for Token Price
 export function useExternalToken(
