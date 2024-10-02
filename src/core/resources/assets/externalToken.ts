@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQueries, useQuery } from '@tanstack/react-query';
 import { Address } from 'viem';
 
 import { metadataClient } from '~/core/graphql';
@@ -31,6 +31,11 @@ type ExternalToken = Pick<
 type ExternalTokenArgs = {
   address: string;
   chainId: ChainId;
+  currency: SupportedCurrencyKey;
+};
+
+type ExternalTokensArgs = {
+  assets: { address: AddressOrEth; chainId: ChainId }[];
   currency: SupportedCurrencyKey;
 };
 
@@ -134,4 +139,27 @@ export function useExternalToken(
     enabled: !!address && !!chainId,
     ...config,
   });
+}
+
+export function useExternalTokens(
+  { assets, currency }: ExternalTokensArgs,
+  config: QueryConfig<
+    ExternalTokenQueryFunctionResult,
+    Error,
+    ParsedAsset,
+    externalTokenQueryKey
+  > = {},
+) {
+  const queries = useQueries({
+    queries: assets.map(({ address, chainId }) => ({
+      queryKey: externalTokenQueryKey({ address, chainId, currency }),
+      queryFn: () => fetchExternalToken({ address, chainId, currency }),
+      staleTime: EXTERNAL_TOKEN_STALE_TIME,
+      gcTime: EXTERNAL_TOKEN_CACHE_TIME,
+      enabled: !!address && !!chainId,
+      ...config,
+    })),
+  });
+
+  return queries;
 }
