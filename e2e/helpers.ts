@@ -1196,6 +1196,8 @@ export async function performSearchTokenAddressActionsCmdK({
   });
 }
 
+// send assets to another address. Hardhat wallet index 0
+// is blocked from trading on some platforms
 export async function sendETHtoTestWallet(recipientAddress: string) {
   const provider = getDefaultProvider('http://127.0.0.1:8545');
   // Hardhat account 0 that has 10000 ETH

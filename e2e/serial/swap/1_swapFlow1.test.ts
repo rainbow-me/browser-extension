@@ -24,7 +24,6 @@ import {
   goToWelcome,
   initDriverWithOptions,
   querySelector,
-  sendETHtoTestWallet,
   takeScreenshotOnFailure,
   typeOnTextInput,
   waitAndClick,
@@ -47,7 +46,6 @@ beforeAll(async () => {
   const extensionId = await getExtensionIdByName(driver, 'Rainbow');
   if (!extensionId) throw new Error('Extension not found');
   rootURL += extensionId;
-  await sendETHtoTestWallet(TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS);
   await delayTime('very-long');
 });
 
@@ -63,7 +61,7 @@ afterEach(async (context: any) => {
 
 afterAll(() => driver.quit());
 
-const WALLET_TO_USE_ADDRESS = TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS;
+const WALLET_TO_USE_ADDRESS = TEST_VARIABLES.SEED_WALLET_2.ADDRESS;
 
 it('should be able import a wallet via pk', async () => {
   //  Start from welcome screen
@@ -82,7 +80,7 @@ it('should be able import a wallet via pk', async () => {
     driver,
   });
 
-  await fillPrivateKey(driver, TEST_VARIABLES.PRIVATE_KEY_WALLET.SECRET);
+  await fillPrivateKey(driver, TEST_VARIABLES.SEED_WALLET_2.PK);
 
   await findElementByTestIdAndClick({
     id: 'import-wallets-button',
