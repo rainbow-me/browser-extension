@@ -30,7 +30,7 @@ import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet'
 import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTransparentAccentHighlight.css';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { useSwapGas } from '~/entries/popup/hooks/useGas';
-import { useNativeAssetForNetwork } from '~/entries/popup/hooks/useNativeAssetForNetwork';
+import { useNativeAsset } from '~/entries/popup/hooks/useNativeAsset';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
@@ -70,9 +70,9 @@ export function ClaimSheet() {
   const rewards = data?.user?.rewards;
   const { claimable } = rewards || {};
 
-  const opEth = useNativeAssetForNetwork({ chainId: ChainId.optimism });
+  const opEth = useNativeAsset({ chainId: ChainId.optimism });
   const ethPrice = opEth?.native?.price?.amount;
-  const destinationEth = useNativeAssetForNetwork({ chainId: selectedChainId });
+  const destinationEth = useNativeAsset({ chainId: selectedChainId });
 
   const claimableBalance = convertRawAmountToBalance(claimable || '0', {
     decimals: 18,

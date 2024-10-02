@@ -4,12 +4,12 @@ import { ChainId } from '~/core/types/chains';
 import { toWei } from '~/core/utils/ethereum';
 import { lessThan } from '~/core/utils/numbers';
 
-import { useNativeAsset } from '../../hooks/useNativeAsset';
+import { useUserNativeAsset } from '../../hooks/useUserNativeAsset';
 
 export const useHasEnoughGas = (session: ActiveSession) => {
   const chainId = session?.chainId || ChainId.mainnet;
 
-  const { nativeAsset } = useNativeAsset({
+  const { nativeAsset } = useUserNativeAsset({
     address: session?.address,
     chainId,
   });
