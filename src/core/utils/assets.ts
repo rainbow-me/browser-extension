@@ -132,6 +132,7 @@ export function parseAsset({
         networks: asset.bridging.networks,
       },
     }),
+    transferable: asset.transferable,
   };
 
   return parsedAsset;

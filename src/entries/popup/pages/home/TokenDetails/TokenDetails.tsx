@@ -185,7 +185,9 @@ function SwapSend({
     navigate(to);
   };
   const isBridgeable = token.bridging?.isBridgeable;
+  const isTransferable = token.transferable ?? true;
 
+  if (!isSwappable && !isBridgeable && !isTransferable) return null;
   return (
     <Box display="flex" gap="8px">
       {isSwappable && (
@@ -213,17 +215,19 @@ function SwapSend({
           {i18n.t('token_details.bridge')}
         </Button>
       )}
-      <Button
-        height="32px"
-        variant="flat"
-        width="full"
-        color="accent"
-        symbol="paperplane.fill"
-        onClick={() => selectTokenAndNavigate(ROUTES.SEND)}
-        tabIndex={0}
-      >
-        {i18n.t('token_details.send')}
-      </Button>
+      {isTransferable && (
+        <Button
+          height="32px"
+          variant="flat"
+          width="full"
+          color="accent"
+          symbol="paperplane.fill"
+          onClick={() => selectTokenAndNavigate(ROUTES.SEND)}
+          tabIndex={0}
+        >
+          {i18n.t('token_details.send')}
+        </Button>
+      )}
     </Box>
   );
 }
@@ -828,9 +832,9 @@ export function TokenDetails() {
                   );
                 })}
               </Stack>
+              <Separator color="separatorTertiary" />
             </Box>
           ) : null}
-          <Separator color="separatorTertiary" />
           <About token={token} tokenInfo={tokenInfo} />
         </Box>
       )}
