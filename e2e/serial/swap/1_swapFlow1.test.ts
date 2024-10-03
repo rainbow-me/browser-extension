@@ -499,7 +499,6 @@ it('should be able to check price and balance of token to buy', async () => {
     driver,
   });
   expect(tokenToBuyInfoBalance).not.toBe('');
-  await delayTime('very-long');
 });
 
 it('should be able to flip correctly', async () => {
@@ -557,9 +556,6 @@ it('should be able to flip correctly', async () => {
 });
 
 it('should be able to check insufficient asset for swap', async () => {
-  await delayTime('very-long');
-  await delayTime('very-long');
-
   const confirmButtonText = await getTextFromText({
     id: 'swap-confirmation-button-ready',
     driver,
