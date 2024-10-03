@@ -12,11 +12,9 @@ import AppEth, { ledgerService } from '@ledgerhq/hw-app-eth';
 import type Transport from '@ledgerhq/hw-transport';
 import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import { SignTypedDataVersion, TypedDataUtils } from '@metamask/eth-sig-util';
-import { ChainId } from '@rainbow-me/swaps';
 import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
-import { LEGACY_CHAINS_FOR_HW } from '~/core/references';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import { logger } from '~/logger';
 
@@ -56,15 +54,10 @@ export async function signTransactionFromLedger(
         : undefined,
     };
 
-    let forceLegacy = false;
-    // Ledger doesn't support type 2 for these networks yet
-    if (LEGACY_CHAINS_FOR_HW.includes(transaction.chainId as ChainId)) {
-      forceLegacy = true;
-    }
-
     if (transaction.gasPrice) {
       baseTx.gasPrice = transaction.gasPrice;
-    } else if (!forceLegacy) {
+    } else if (transaction.maxFeePerGas || transaction.maxPriorityFeePerGas) {
+      // eip-1559
       baseTx.maxFeePerGas = transaction.maxFeePerGas || undefined;
       baseTx.maxPriorityFeePerGas =
         transaction.maxPriorityFeePerGas || undefined;

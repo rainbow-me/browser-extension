@@ -2,7 +2,7 @@ import 'chromedriver';
 import 'geckodriver';
 import { Contract } from '@ethersproject/contracts';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
-import { WebDriver } from 'selenium-webdriver';
+import { Key, WebDriver } from 'selenium-webdriver';
 import { erc20Abi } from 'viem';
 import {
   afterAll,
@@ -154,6 +154,7 @@ describe('Swap Flow 2', () => {
       id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
       driver,
     });
+    await delayTime('medium');
     await typeOnTextInput({
       id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
       text: `\b50`,
@@ -181,10 +182,13 @@ describe('Swap Flow 2', () => {
       driver,
     });
     await delayTime('short');
-    await clearInput({
+
+    await typeOnTextInput({
       id: 'slippage-input-mask',
       driver,
+      text: Key.BACK_SPACE,
     });
+    await delayTime('short');
     await typeOnTextInput({
       id: 'slippage-input-mask',
       driver,

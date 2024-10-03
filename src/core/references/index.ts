@@ -1,7 +1,5 @@
 import { AddressZero } from '@ethersproject/constants';
 
-import { ChainId } from '~/core/types/chains';
-
 export { ethUnits } from './ethUnits';
 export { supportedCurrencies } from './supportedCurrencies';
 
@@ -128,10 +126,3 @@ export const OVM_GAS_PRICE_ORACLE =
 export type ReferrerType = 'browser-extension' | 'bx-claim';
 export const REFERRER: ReferrerType = 'browser-extension';
 export const REFERRER_CLAIM: ReferrerType = 'bx-claim';
-
-export const LEGACY_CHAINS_FOR_HW = [
-  ChainId.optimism,
-  ChainId.arbitrum,
-  ChainId.zora,
-  ChainId.base,
-];

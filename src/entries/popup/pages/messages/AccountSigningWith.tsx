@@ -6,7 +6,7 @@ import { Inline, Stack, Text } from '~/design-system';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
 
-import { useNativeAsset } from '../../hooks/useNativeAsset';
+import { useUserNativeAsset } from '../../hooks/useUserNativeAsset';
 
 import { WalletName } from './BottomActions';
 import { useHasEnoughGas } from './useHasEnoughGas';
@@ -20,7 +20,7 @@ export interface SelectedNetwork {
 function WalletNativeBalance({ session }: { session: ActiveSession }) {
   const chainId = session?.chainId || ChainId.mainnet;
   const chainName = getChain({ chainId }).name;
-  const { nativeAsset } = useNativeAsset({
+  const { nativeAsset } = useUserNativeAsset({
     chainId,
     address: session?.address,
   });

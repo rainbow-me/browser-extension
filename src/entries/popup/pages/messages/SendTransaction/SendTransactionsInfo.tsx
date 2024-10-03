@@ -35,8 +35,8 @@ import { DappIcon } from '~/entries/popup/components/DappIcon/DappIcon';
 import { Tag } from '~/entries/popup/components/Tag';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
-import { useNativeAsset } from '~/entries/popup/hooks/useNativeAsset';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
+import { useUserNativeAsset } from '~/entries/popup/hooks/useUserNativeAsset';
 import { ROUTES } from '~/entries/popup/urls';
 
 import {
@@ -382,7 +382,7 @@ function InsuficientGasFunds({
   const { testnetMode } = useTestnetModeStore();
   const isTestnet = testnetMode || getChain({ chainId }).testnet;
 
-  const { nativeAsset } = useNativeAsset({ chainId, address });
+  const { nativeAsset } = useUserNativeAsset({ chainId, address });
   const chainName = getChain({ chainId }).name;
 
   const { currentCurrency } = useCurrentCurrencyStore();
