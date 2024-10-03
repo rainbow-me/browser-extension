@@ -44,56 +44,31 @@ const parseAddressSummary = ({
 }): WalletSummary => {
   const addressData =
     addysSummary?.data.addresses[address.toLowerCase() as Address];
-  const {
-    ETH: ethRawBalance,
-    BNB: bnbRawBalance,
-    MATIC: maticRawBalance,
-    AVAX: avaxRawBalance,
-  } = addressData?.summary.native_balance_by_symbol || {};
+  const summaryByChain = addressData?.summary_by_chain;
 
-  const ethBalance = convertRawAmountToBalance(ethRawBalance?.quantity || 0, {
-    decimals: 18,
-  }).amount;
-  const ethCurrencyBalance = convertAmountAndPriceToNativeDisplay(
-    ethBalance || 0,
-    nativeAssets?.[ChainId.mainnet]?.price?.value || 0,
-    currentCurrency,
-  ).amount;
+  const chainIds = Object.keys(summaryByChain || {}).map((id) =>
+    Number(id),
+  ) as ChainId[];
 
-  const bnbBalance = convertRawAmountToBalance(bnbRawBalance?.quantity || 0, {
-    decimals: 18,
-  }).amount;
-  const bnbCurrencyBalance = convertAmountAndPriceToNativeDisplay(
-    bnbBalance || 0,
-    nativeAssets?.[ChainId.bsc]?.price?.value || 0,
-    currentCurrency,
-  ).amount;
+  const chainBalances = chainIds.map((chainId) => {
+    const chainData = summaryByChain?.[chainId];
+    const chainRawBalance = chainData?.native_balance;
+    const chainBalance = convertRawAmountToBalance(
+      chainRawBalance?.quantity || 0,
+      {
+        decimals: 18,
+      },
+    ).amount;
+    const chainCurrencyBalance = convertAmountAndPriceToNativeDisplay(
+      chainBalance || 0,
+      nativeAssets?.[chainId]?.price?.value || 0,
+      currentCurrency,
+    ).amount;
 
-  const maticBalance = convertRawAmountToBalance(
-    maticRawBalance?.quantity || 0,
-    {
-      decimals: 18,
-    },
-  ).amount;
-  const maticCurrencyBalance = convertAmountAndPriceToNativeDisplay(
-    maticBalance || 0,
-    nativeAssets?.[ChainId.polygon]?.price?.value || 0,
-    currentCurrency,
-  ).amount;
+    return chainCurrencyBalance;
+  });
 
-  const avaxBalance = convertRawAmountToBalance(avaxRawBalance?.quantity || 0, {
-    decimals: 18,
-  }).amount;
-  const avaxCurrencyBalance = convertAmountAndPriceToNativeDisplay(
-    avaxBalance || 0,
-    nativeAssets?.[ChainId.avalanche]?.price?.value || 0,
-    currentCurrency,
-  ).amount;
-
-  const balance = add(
-    add(ethCurrencyBalance, bnbCurrencyBalance),
-    add(maticCurrencyBalance, avaxCurrencyBalance),
-  );
+  const balance = chainBalances.reduce((prev, curr) => add(prev, curr), '0');
 
   const balanceDisplay = convertAmountToNativeDisplay(balance, currentCurrency);
   const lastTx = addressData?.summary.last_activity;
@@ -115,7 +90,6 @@ export const useWalletsSummary = ({ addresses }: { addresses: Address[] }) => {
     addresses,
     currency: currentCurrency,
   });
-
   const walletsSummary: { [key: Address]: WalletSummary } = useMemo(
     () =>
       addresses?.reduce((prev: { [key: Address]: WalletSummary }, address) => {

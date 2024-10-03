@@ -36,7 +36,7 @@ type BaseTransaction = {
   direction?: TransactionDirection;
   flashbots?: boolean;
 
-  value?: string; // network asset amount sent with the tx (like eth or matic)
+  value?: string; // network asset amount sent with the tx (like eth or pol)
   fee?: string;
   native?: {
     // fee and value but in the user prefered currency terms (USD, EUR, etc)

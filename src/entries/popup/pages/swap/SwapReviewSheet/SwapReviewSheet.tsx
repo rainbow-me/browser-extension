@@ -220,7 +220,7 @@ const SwapReviewSheetWithQuote = ({
   const isHardwareWallet = type === KeychainType.HardwareWalletKeychain;
 
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
-    chainId: assetToSell?.chainId || ChainId.mainnet,
+    chainId: assetToSell?.chainId,
   });
   const { data: nativeAsset } = useUserAsset(nativeAssetUniqueId || '');
 
@@ -284,7 +284,7 @@ const SwapReviewSheetWithQuote = ({
     setSendingSwap(false);
 
     if (swapExecutedSuccessfully) {
-      navigate(ROUTES.HOME, { state: { tab: 'activity' } });
+      navigate(ROUTES.HOME, { state: { tab: 'tokens' } });
     }
   }, [
     assetToBuy,

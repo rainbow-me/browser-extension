@@ -36,8 +36,8 @@ import {
 } from '~/core/utils/gas';
 
 import { useDebounce } from './useDebounce';
-import { useNativeAsset } from './useNativeAsset';
 import usePrevious from './usePrevious';
+import { useUserNativeAsset } from './useUserNativeAsset';
 
 const useGas = ({
   chainId,
@@ -60,7 +60,7 @@ const useGas = ({
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
   const { data: gasData, isLoading } = useGasData({ chainId });
-  const { nativeAsset } = useNativeAsset({ chainId, address });
+  const { nativeAsset } = useUserNativeAsset({ chainId, address });
   const prevDefaultSpeed = usePrevious(defaultSpeed);
 
   const [internalMaxPriorityFee, setInternalMaxPriorityFee] = useState('');
@@ -149,6 +149,7 @@ const useGas = ({
         secondsPerNewBlock,
       });
       setCustomSpeed(newCustomSpeed);
+      return newCustomSpeed;
     },
     enabled:
       !!gasData &&
@@ -206,6 +207,7 @@ const useGas = ({
         secondsPerNewBlock,
       });
       setCustomSpeed(newCustomSpeed);
+      return newCustomSpeed;
     },
     enabled:
       !!gasData &&

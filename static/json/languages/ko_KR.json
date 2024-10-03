@@ -1456,7 +1456,7 @@
       "the_more_you_use": "Rainbow를 더 많이 사용할수록 더 많은 보상을 받게 됩니다",
       "balance_required": "지갑 잔액 필요",
       "ensure_you_have_a_balance_on": "계속하려면 다음 네트워크 중 하나에 ETH 잔액이 있는지 확인하세요:",
-      "or_alternatively_balance_on": "또는, Polygon에 MATIC 잔액 또는 BSC에 BNB 잔액",
+      "or_alternatively_balance_on": "또는, Polygon에 POL 잔액 또는 BSC에 BNB 잔액",
       "fund_my_wallet": "지갑에 자금 추가"
     },
     "error": {

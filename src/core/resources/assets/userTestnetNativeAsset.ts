@@ -113,7 +113,7 @@ export function useUserTestnetNativeAsset(
   config: QueryConfig<
     UserAssetsResult,
     Error,
-    UserAssetsResult,
+    ParsedUserAsset,
     UserTestnetNativeAssetQueryKey
   > = {},
 ) {

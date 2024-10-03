@@ -1456,7 +1456,7 @@
       "the_more_you_use": "Plus vous utilisez Rainbow, plus vous serez récompensé",
       "balance_required": "Solde du portefeuille requis",
       "ensure_you_have_a_balance_on": "Pour continuer, assurez-vous d'avoir un solde en ETH sur l'un des réseaux suivants :",
-      "or_alternatively_balance_on": "Ou alternativement, un solde en MATIC sur Polygon ou un solde en BNB sur BSC",
+      "or_alternatively_balance_on": "Ou alternativement, un solde en POL sur Polygon ou un solde en BNB sur BSC",
       "fund_my_wallet": "Financer mon portefeuille"
     },
     "error": {

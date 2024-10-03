@@ -40,6 +40,7 @@ export interface ParsedAsset {
     isBridgeable: boolean;
     networks: { [id in ChainId]?: { bridgeable: boolean } };
   };
+  transferable?: boolean;
 }
 
 export interface ParsedUserAsset extends ParsedAsset {
@@ -101,6 +102,7 @@ export type AssetApiResponse = {
   };
   type?: AssetType;
   interface?: 'erc-721' | 'erc-1155';
+  transferable?: boolean;
 };
 
 type AssetType = ProtocolType | 'nft';

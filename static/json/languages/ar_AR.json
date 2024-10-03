@@ -1456,7 +1456,7 @@
       "the_more_you_use": "كلما استخدمت Rainbow أكثر، كلما حصلت على مكافآت أكبر",
       "balance_required": "مطلوب رصيد في المحفظة",
       "ensure_you_have_a_balance_on": "للمتابعة، تأكد من امتلاكك لرصيد ETH على إحدى الشبكات التالية:",
-      "or_alternatively_balance_on": "أو بديلًا، رصيد MATIC على شبكة Polygon أو رصيد BNB على شبكة BSC",
+      "or_alternatively_balance_on": "أو بديلًا، رصيد POL على شبكة Polygon أو رصيد BNB على شبكة BSC",
       "fund_my_wallet": "تمويل محفظتي"
     },
     "error": {

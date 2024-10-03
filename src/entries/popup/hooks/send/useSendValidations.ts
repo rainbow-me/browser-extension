@@ -17,7 +17,7 @@ import {
 } from '~/core/utils/numbers';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 
-import { useNativeAsset } from '../useNativeAsset';
+import { useUserNativeAsset } from '../useUserNativeAsset';
 
 export const useSendValidations = ({
   asset,
@@ -45,7 +45,7 @@ export const useSendValidations = ({
     }
     return ChainId.mainnet;
   };
-  const { nativeAsset } = useNativeAsset({
+  const { nativeAsset } = useUserNativeAsset({
     chainId: getNativeAssetChainId(),
   });
 

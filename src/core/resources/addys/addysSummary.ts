@@ -11,24 +11,13 @@ import {
 import { SupportedCurrencyKey } from '~/core/references';
 import { ChainId } from '~/core/types/chains';
 
-enum SummarySupportedChainId {
-  mainnet = ChainId.mainnet as number,
-  optimism = ChainId.optimism as number,
-  polygon = ChainId.polygon as number,
-  arbitrum = ChainId.arbitrum as number,
-  base = ChainId.base as number,
-  zora = ChainId.zora as number,
-  bsc = ChainId.bsc as number,
-  avalanche = ChainId.avalanche as number,
-}
-
 export interface AddySummary {
   data: {
     addresses: {
       [key: Address]: {
         summary: {
           native_balance_by_symbol: {
-            [key in 'ETH' | 'MATIC' | 'BNB' | 'AVAX']: {
+            [key in 'ETH' | 'POL' | 'BNB' | 'AVAX']: {
               symbol: string;
               quantity: string;
               decimals: number;
@@ -38,17 +27,17 @@ export interface AddySummary {
           last_activity: number;
           asset_value: number;
         };
-      };
-      summary_by_chain: {
-        [key in keyof typeof SummarySupportedChainId]: {
-          native_balance: {
-            symbol: string;
-            quantity: string;
-            decimals: number;
+        summary_by_chain: {
+          [key in keyof typeof ChainId]: {
+            native_balance: {
+              symbol: string;
+              quantity: string;
+              decimals: number;
+            };
+            num_erc20s: number;
+            last_activity: number;
+            asset_value: number;
           };
-          num_erc20s: number;
-          last_activity: number;
-          asset_value: number;
         };
       };
     };
