@@ -46,7 +46,6 @@ beforeAll(async () => {
   const extensionId = await getExtensionIdByName(driver, 'Rainbow');
   if (!extensionId) throw new Error('Extension not found');
   rootURL += extensionId;
-  await delayTime('very-long');
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -501,7 +500,7 @@ it('should be able to check price and balance of token to buy', async () => {
   await delayTime('very-long');
 });
 
-it.skip('should be able to flip correctly', async () => {
+it('should be able to flip correctly', async () => {
   await findElementByTestIdAndDoubleClick({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
@@ -555,7 +554,7 @@ it.skip('should be able to flip correctly', async () => {
   expect(assetToBuyInputTextAfterFlip).toEqual('1');
 });
 
-it.skip('should be able to check insufficient asset for swap', async () => {
+it('should be able to check insufficient asset for swap', async () => {
   await delayTime('very-long');
   await delayTime('very-long');
 
@@ -566,7 +565,7 @@ it.skip('should be able to check insufficient asset for swap', async () => {
   expect(confirmButtonText).toEqual('Insufficient WBTC');
 });
 
-it.skip('should be able to check insufficient native asset for gas', async () => {
+it('should be able to check insufficient native asset for gas', async () => {
   await findElementByTestIdAndClick({
     id: 'swap-flip-button',
     driver,

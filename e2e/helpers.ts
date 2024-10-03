@@ -7,8 +7,6 @@ import * as fs from 'node:fs';
 
 import { Contract } from '@ethersproject/contracts';
 import { getDefaultProvider } from '@ethersproject/providers';
-import { parseEther } from '@ethersproject/units';
-import { Wallet } from '@ethersproject/wallet';
 import {
   Builder,
   By,
@@ -1194,26 +1192,4 @@ export async function performSearchTokenAddressActionsCmdK({
     id: `token-price-name-${tokenAddress}`,
     driver,
   });
-}
-
-// send assets to another address. Hardhat wallet index 0
-// is blocked from trading on some platforms
-export async function sendETHtoTestWallet(recipientAddress: string) {
-  const provider = getDefaultProvider('http://127.0.0.1:8545');
-  // Hardhat account 0 that has 10000 ETH
-  const wallet = new Wallet(
-    '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
-    provider,
-  );
-  // Sending 20 ETH so we have enough to pay the tx fees even when the gas is too high
-  await wallet.sendTransaction({
-    to: recipientAddress,
-    value: parseEther('20'),
-  });
-  await delayTime('long');
-  const balance = await provider.getBalance(recipientAddress);
-  if (balance.lt(parseEther('20'))) {
-    throw Error('Error sending ETH to test wallet');
-  }
-  return true;
 }
