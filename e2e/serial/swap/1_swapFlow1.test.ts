@@ -60,6 +60,8 @@ afterEach(async (context: any) => {
 
 afterAll(() => driver.quit());
 
+const WALLET_TO_USE_SECRET = TEST_VARIABLES.SEED_WALLET_2.PK;
+
 const WALLET_TO_USE_ADDRESS = TEST_VARIABLES.SEED_WALLET_2.ADDRESS;
 
 it('should be able import a wallet via pk', async () => {
@@ -79,7 +81,7 @@ it('should be able import a wallet via pk', async () => {
     driver,
   });
 
-  await fillPrivateKey(driver, TEST_VARIABLES.SEED_WALLET_2.PK);
+  await fillPrivateKey(driver, WALLET_TO_USE_SECRET);
 
   await findElementByTestIdAndClick({
     id: 'import-wallets-button',
