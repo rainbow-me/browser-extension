@@ -1636,7 +1636,8 @@
       "unverified": "Unverified",
       "verified": "Verified",
       "on_other_networks": "On other networks",
-      "bridge": "Bridge"
+      "bridge": "Bridge",
+      "popular": "Popular in Rainbow"
     },
     "verified_by_rainbow": "Verified by Rainbow"
   },
