@@ -66,6 +66,14 @@ const sectionProps: { [id in AssetToBuySectionId]: SectionProp } = {
     webkitBackgroundClip: undefined,
     background: undefined,
   },
+  popular: {
+    title: i18n.t('token_search.section_header.popular'),
+    symbol: 'flame' as SymbolProps['symbol'],
+    color: 'red' as TextStyles['color'],
+    gradient: undefined,
+    webkitBackgroundClip: undefined,
+    background: undefined,
+  },
 };
 
 const bridgeSectionsColorsByChain = {
@@ -138,7 +146,7 @@ export const getTokenToBuySectionElements = ({
     <Box
       testId={`${assetSection.id}-token-to-buy-section`}
       key={`header-${title}`}
-      paddingHorizontal="15px"
+      paddingHorizontal="6px"
       paddingVertical="12px"
       style={{ height: '38px' }}
     >
@@ -170,7 +178,6 @@ export const getTokenToBuySectionElements = ({
     assetSection.data.map((asset, i) => {
       return (
         <Box
-          paddingHorizontal="8px"
           key={`${asset?.uniqueId}-${i}-${assetSection.id}`}
           onClick={() => onSelectAsset?.(asset as ParsedSearchAsset)}
           testId={`${asset?.uniqueId}-${assetSection.id}-token-to-buy-row`}
