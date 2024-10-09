@@ -459,7 +459,7 @@ function TokensEmptyState({ depositAddress }: EmptyStateProps) {
   return (
     <Inset horizontal="20px" top="20px">
       <Stack space="12px">
-        {!testnetMode && (
+        {/* {!testnetMode && (
           <Box
             background="surfaceSecondaryElevated"
             borderRadius="16px"
@@ -520,9 +520,9 @@ function TokensEmptyState({ depositAddress }: EmptyStateProps) {
               </Stack>
             </Box>
           </Box>
-        )}
+        )} */}
 
-        {!testnetMode && (
+        {/* {!testnetMode && (
           <Box
             borderRadius="16px"
             padding="16px"
@@ -581,7 +581,7 @@ function TokensEmptyState({ depositAddress }: EmptyStateProps) {
               </Box>
             </Stack>
           </Box>
-        )}
+        )} */}
 
         <Box
           borderRadius="16px"

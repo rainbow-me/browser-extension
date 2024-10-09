@@ -58,16 +58,16 @@ const tabConfig: TabConfigType[] = [
     SelectedIcon: ActivitySelected,
     name: 'activity',
   },
-  {
-    Icon: NFTsIcon,
-    SelectedIcon: NFTsSelected,
-    name: 'nfts',
-  },
-  {
-    Icon: PointsIcon,
-    SelectedIcon: PointsSelected,
-    name: 'points',
-  },
+  // {
+  //   Icon: NFTsIcon,
+  //   SelectedIcon: NFTsSelected,
+  //   name: 'nfts',
+  // },
+  // {
+  //   Icon: PointsIcon,
+  //   SelectedIcon: PointsSelected,
+  //   name: 'points',
+  // },
 ];
 
 export const TabBar = memo(function TabBar() {

@@ -250,7 +250,7 @@ function ActionButtonsSection() {
             }}
           />
 
-          <ActionButton
+          {/* <ActionButton
             symbol="creditcard.fill"
             testId="header-link-buy"
             text={i18n.t('wallet_header.buy')}
@@ -258,7 +258,7 @@ function ActionButtonsSection() {
             onClick={() => navigate(ROUTES.BUY)}
             tooltipHint={shortcuts.home.BUY.display}
             tooltipText={i18n.t('tooltip.buy_crypto')}
-          />
+          /> */}
         </Inline>
       )}
     </Box>

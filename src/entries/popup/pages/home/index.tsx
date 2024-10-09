@@ -239,27 +239,27 @@ const TopNav = memo(function TopNav() {
     >
       <Navbar
         leftComponent={<AppConnection />}
-        rightComponent={
-          <MoreMenu>
-            <CursorTooltip
-              align="end"
-              arrowAlignment="right"
-              arrowDirection="up"
-              arrowCentered
-              text={i18n.t('tooltip.more')}
-              textWeight="bold"
-              textSize="12pt"
-              textColor="labelSecondary"
-              hint={shortcuts.home.OPEN_MORE_MENU.display}
-            >
-              <Navbar.SymbolButton
-                symbol="ellipsis"
-                variant="flat"
-                tabIndex={3}
-              />
-            </CursorTooltip>
-          </MoreMenu>
-        }
+        // rightComponent={
+        //   <MoreMenu>
+        //     <CursorTooltip
+        //       align="end"
+        //       arrowAlignment="right"
+        //       arrowDirection="up"
+        //       arrowCentered
+        //       text={i18n.t('tooltip.more')}
+        //       textWeight="bold"
+        //       textSize="12pt"
+        //       textColor="labelSecondary"
+        //       hint={shortcuts.home.OPEN_MORE_MENU.display}
+        //     >
+        //       <Navbar.SymbolButton
+        //         symbol="ellipsis"
+        //         variant="flat"
+        //         tabIndex={3}
+        //       />
+        //     </CursorTooltip>
+        //   </MoreMenu>
+        // }
         titleComponent={
           isCollapsed && (
             <WalletContextMenu account={address}>
