@@ -2,6 +2,8 @@ import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 import { afterAll, afterEach, beforeAll, vi } from 'vitest';
 
+import { startMockServer } from '../../e2e/mockServer';
+
 vi.stubGlobal('chrome', {
   storage: {
     local: {
@@ -26,6 +28,7 @@ vi.stubGlobal('window.location', {
 
 const abortFn = vi.fn();
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 global.AbortController = vi.fn(() => ({
   abort: abortFn,
@@ -159,14 +162,44 @@ export const restHandlers = [
 
 const server = setupServer(...restHandlers);
 
+let mockServer: Awaited<ReturnType<typeof startMockServer>>;
+
 // Start server before all tests
-beforeAll(() => {
+beforeAll(async () => {
   location.replace(`https://aha.rainbow.me/`);
   server.listen({ onUnhandledRequest: 'bypass' });
+
+  // mock server
+  try {
+    mockServer = await startMockServer();
+    console.log('Mock server started successfully');
+  } catch (e) {
+    console.error(`Error setting up test server: ${e}`);
+    throw new Error('Failed to start mock server');
+  }
 });
 
 //  Close server after all tests
-afterAll(() => server.close());
+afterAll(() => {
+  server.close();
+
+  // mock server cleanup
+  return new Promise<void>((resolve, reject) => {
+    if (mockServer) {
+      mockServer.close((err) => {
+        if (err) {
+          console.error('Error shutting down the mock server:', err);
+          reject(err);
+        } else {
+          console.log('Mock server closed successfully');
+          resolve();
+        }
+      });
+    } else {
+      resolve();
+    }
+  });
+});
 
 // Reset handlers after each test `important for test isolation`
 afterEach(() => server.resetHandlers());
