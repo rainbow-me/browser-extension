@@ -539,7 +539,7 @@ const StatsCarousel = memo(function YourRankAndNextDrop() {
                 {i18n.t('points.rewards.my_referrals')}
               </TextWithMoreInfo>
               <Text size="20pt" weight="bold">
-                {formatNumber(user.stats.referral.total_referees)}
+                {formatNumber(user.stats.referral.qualified_referees)}
               </Text>
               <Inline alignVertical="center" space="5px" wrap={false}>
                 <Symbol
