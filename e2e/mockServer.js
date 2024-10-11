@@ -43,13 +43,23 @@ app.use(async (req, res) => {
 
 /**
  * Starts the mock server.
- * @returns {Promise<Server>} A promise that resolves to the HTTP server instance.
+ * @returns {Promise<Server|null>} A promise that resolves to the HTTP server instance or null if the server is already running.
  */
 const startMockServer = () => {
   return new Promise((resolve) => {
     const server = app.listen(PORT, () => {
       console.log(`Mock API server running on http://localhost:${PORT}`);
       resolve(server);
+    });
+
+    server.on('error', (error) => {
+      if (error.code === 'EADDRINUSE') {
+        console.log(`Port ${PORT} already in use, not starting a new server`);
+        resolve(null);
+      } else {
+        console.error('Error starting server:', error);
+        resolve(null);
+      }
     });
   });
 };
