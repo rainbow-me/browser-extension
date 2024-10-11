@@ -3,6 +3,7 @@ import {
   Quote,
   QuoteError,
   SwapType,
+  configureSDK,
 } from '@rainbow-me/swaps';
 import { useQuery } from '@tanstack/react-query';
 
@@ -18,6 +19,10 @@ import {
 import { getChainGasUnits } from '~/core/references/chains';
 import { ParsedAsset, ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+
+const IS_TESTING = process.env.IS_TESTING === 'true';
+
+IS_TESTING && configureSDK({ apiBaseUrl: 'http://127.0.0.1:3001' });
 
 // ///////////////////////////////////////////////
 // Query Types

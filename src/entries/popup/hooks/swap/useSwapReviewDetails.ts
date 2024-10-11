@@ -1,4 +1,4 @@
-import { CrosschainQuote, Quote } from '@rainbow-me/swaps';
+import { CrosschainQuote, Quote, configureSDK } from '@rainbow-me/swaps';
 import { useMemo } from 'react';
 
 import { ParsedSearchAsset } from '~/core/types/assets';
@@ -10,6 +10,10 @@ import {
   handleSignificantDecimals,
   multiply,
 } from '~/core/utils/numbers';
+
+const IS_TESTING = process.env.IS_TESTING === 'true';
+
+IS_TESTING && configureSDK({ apiBaseUrl: 'http://127.0.0.1:3001' });
 
 const getExchangeIconUrl = (protocol: string): string | null => {
   if (!protocol) return null;

@@ -5,7 +5,7 @@ const path = require('path');
 const express = require('express');
 
 const app = express();
-const PORT = 3000;
+const PORT = 3001;
 
 /**
  * @typedef {import('express').Request} Request
@@ -21,7 +21,7 @@ const PORT = 3000;
 app.use(async (req, res) => {
   try {
     const filePath = req.path.slice(1).replace(/\//g, '_');
-    let filename = '_' + filePath; // Add leading underscore to match your file naming
+    let filename = '_' + filePath;
     for (const [key, value] of Object.entries(req.query)) {
       filename += `_${key}_${value}`;
     }
@@ -33,6 +33,7 @@ app.use(async (req, res) => {
     console.log('Attempting to read file:', jsonPath);
 
     const data = await fs.readFile(jsonPath, 'utf8');
+
     res.json(JSON.parse(data));
   } catch (error) {
     console.error(`Error serving request ${req.path}:`, error);

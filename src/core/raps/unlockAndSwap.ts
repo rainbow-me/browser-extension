@@ -3,6 +3,7 @@ import {
   ETH_ADDRESS as ETH_ADDRESS_AGGREGATOR,
   PermitSupportedTokenList,
   WRAPPED_ASSET,
+  configureSDK,
   getRainbowRouterContractAddress,
 } from '@rainbow-me/swaps';
 import { Address } from 'viem';
@@ -26,6 +27,10 @@ import {
   RapSwapActionParameters,
   RapUnlockActionParameters,
 } from './references';
+
+const IS_TESTING = process.env.IS_TESTING === 'true';
+
+IS_TESTING && configureSDK({ apiBaseUrl: 'http://127.0.0.1:3001' });
 
 export const estimateUnlockAndSwap = async (
   swapParameters: RapSwapActionParameters<'swap'>,

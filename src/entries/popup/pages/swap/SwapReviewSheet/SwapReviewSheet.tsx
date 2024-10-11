@@ -1,4 +1,9 @@
-import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
+import {
+  CrosschainQuote,
+  Quote,
+  QuoteError,
+  configureSDK,
+} from '@rainbow-me/swaps';
 import { motion } from 'framer-motion';
 import React, {
   useCallback,
@@ -59,6 +64,10 @@ import { onSwap } from '../onSwap';
 import { SwapAssetCard } from './SwapAssetCard';
 import { SwapRoutes } from './SwapRoutes';
 import { SwapViewContractDropdown } from './SwapViewContractDropdown';
+
+const IS_TESTING = process.env.IS_TESTING === 'true';
+
+IS_TESTING && configureSDK({ apiBaseUrl: 'http://127.0.0.1:3001' });
 
 export const ReviewDetailsRow = ({
   children,

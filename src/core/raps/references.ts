@@ -1,9 +1,13 @@
 import { Signer } from '@ethersproject/abstract-signer';
-import { CrosschainQuote, Quote } from '@rainbow-me/swaps';
+import { CrosschainQuote, Quote, configureSDK } from '@rainbow-me/swaps';
 import { Address } from 'viem';
 
 import { ParsedAsset } from '../types/assets';
 import { ChainId } from '../types/chains';
+
+const IS_TESTING = process.env.IS_TESTING === 'true';
+
+IS_TESTING && configureSDK({ apiBaseUrl: 'http://127.0.0.1:3001' });
 
 export enum SwapModalField {
   input = 'inputAmount',

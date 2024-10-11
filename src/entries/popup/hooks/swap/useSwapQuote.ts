@@ -6,6 +6,7 @@ import {
   QuoteParams,
   Source,
   SwapType,
+  configureSDK,
   getCrosschainQuote,
   getQuote,
 } from '@rainbow-me/swaps';
@@ -19,6 +20,10 @@ import { convertAmountToRawAmount } from '~/core/utils/numbers';
 import { isUnwrapEth, isWrapEth } from '~/core/utils/swaps';
 
 import { IndependentField } from './useSwapInputs';
+
+const IS_TESTING = process.env.IS_TESTING === 'true';
+
+IS_TESTING && configureSDK({ apiBaseUrl: 'http://127.0.0.1:3001' });
 
 const SWAP_POLLING_INTERVAL = 5000;
 const CACHE_INTERVAL = 1000;

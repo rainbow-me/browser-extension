@@ -1,4 +1,9 @@
-import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
+import {
+  CrosschainQuote,
+  Quote,
+  QuoteError,
+  configureSDK,
+} from '@rainbow-me/swaps';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -16,6 +21,10 @@ import playSound from '~/entries/popup/utils/playSound';
 import { RainbowError, logger } from '~/logger';
 
 import * as wallet from '../../handlers/wallet';
+
+const IS_TESTING = process.env.IS_TESTING === 'true';
+
+IS_TESTING && configureSDK({ apiBaseUrl: 'http://127.0.0.1:3001' });
 
 export const onSwap = async ({
   assetToSell,

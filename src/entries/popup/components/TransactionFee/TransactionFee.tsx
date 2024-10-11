@@ -1,6 +1,11 @@
 /* eslint-disable no-nested-ternary */
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
+import {
+  CrosschainQuote,
+  Quote,
+  QuoteError,
+  configureSDK,
+} from '@rainbow-me/swaps';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { Address } from 'viem';
 
@@ -42,6 +47,10 @@ import { CursorTooltip } from '../Tooltip/CursorTooltip';
 
 import { CustomGasSheet } from './CustomGasSheet';
 import { SwitchTransactionSpeedMenu } from './TransactionSpeedsMenu';
+
+const IS_TESTING = process.env.IS_TESTING === 'true';
+
+IS_TESTING && configureSDK({ apiBaseUrl: 'http://127.0.0.1:3001' });
 
 type FeeProps = {
   chainId: ChainId;
