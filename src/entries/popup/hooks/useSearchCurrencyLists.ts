@@ -300,28 +300,20 @@ export function useSearchCurrencyLists({
     chainId: outputChainId,
   });
 
-  const { favorites } = useFavoriteAssets();
+  const { favorites } = useFavoriteAssets(outputChainId);
 
   const favoritesList = useMemo(() => {
-    const favoritesByChain = favorites[outputChainId] || [];
-    if (query === '') {
-      return favoritesByChain;
-    } else {
-      const formattedQuery = queryIsAddress
-        ? addHexPrefix(query).toLowerCase()
-        : query;
-      return filterList<SearchAsset>(
-        favoritesByChain || [],
-        formattedQuery,
-        keys,
-        {
-          threshold: queryIsAddress
-            ? rankings.CASE_SENSITIVE_EQUAL
-            : rankings.CONTAINS,
-        },
-      );
-    }
-  }, [favorites, keys, outputChainId, query, queryIsAddress]);
+    if (!query) return favorites;
+
+    const formattedQuery = queryIsAddress
+      ? addHexPrefix(query).toLowerCase()
+      : query;
+    return filterList<SearchAsset>(favorites || [], formattedQuery, keys, {
+      threshold: queryIsAddress
+        ? rankings.CASE_SENSITIVE_EQUAL
+        : rankings.CONTAINS,
+    });
+  }, [favorites, keys, query, queryIsAddress]);
 
   // static verified asset lists prefetched to display curated lists
   // we only display crosschain exact matches if located here

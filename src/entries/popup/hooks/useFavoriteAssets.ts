@@ -1,91 +1,46 @@
-import { isAddress } from 'ethers/lib/utils';
-import { useCallback, useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
+import { createQueryKey } from '~/core/react-query';
 import { fetchTokenSearch } from '~/core/resources/search/tokenSearch';
 import { useFavoritesStore } from '~/core/state/favorites';
-import { ParsedAsset } from '~/core/types/assets';
+import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { SearchAsset } from '~/core/types/search';
 
-type FavoriteAssets = Record<number, SearchAsset[]>;
-const FAVORITES_EMPTY_STATE = {
-  [ChainId.mainnet]: [],
-  [ChainId.optimism]: [],
-  [ChainId.bsc]: [],
-  [ChainId.polygon]: [],
-  [ChainId.arbitrum]: [],
-  [ChainId.base]: [],
-  [ChainId.zora]: [],
-  [ChainId.avalanche]: [],
-  [ChainId.hardhat]: [],
-  [ChainId.hardhatOptimism]: [],
-};
+async function fetchFavoriteToken(address: AddressOrEth, chain: ChainId) {
+  const results = await fetchTokenSearch({
+    chainId: chain,
+    keys: ['address'],
+    list: 'verifiedAssets',
+    threshold: 'CASE_SENSITIVE_EQUAL',
+    query: address.toLowerCase(),
+  });
+  if (results?.[0]) return results[0];
 
-// expensive hook, only use in top level parent components
-export function useFavoriteAssets() {
-  const { favorites } = useFavoritesStore();
-  const [favoritesData, setFavoritesData] = useState<FavoriteAssets>(
-    FAVORITES_EMPTY_STATE,
-  );
+  const unverifiedSearchResults = await fetchTokenSearch({
+    chainId: chain,
+    keys: ['address'],
+    list: 'highLiquidityAssets',
+    threshold: 'CASE_SENSITIVE_EQUAL',
+    query: address.toLowerCase(),
+  });
+  if (!unverifiedSearchResults?.[0]) return unverifiedSearchResults[0];
+}
 
-  const setFavoriteAssetsData = useCallback(async () => {
-    const chainIds = Object.keys(favorites)
-      .filter((k) => favorites?.[parseInt(k)])
-      .map((c) => +c);
-    const searches: Promise<void>[] = [];
-    const newSearchData = {} as Record<ChainId, SearchAsset[]>;
-    for (const chain of chainIds) {
-      const addressesByChain = favorites[chain];
-      addressesByChain?.forEach((address) => {
-        const searchAddress = async (add: string) => {
-          const query = add.toLocaleLowerCase();
-          const queryIsAddress = isAddress(query);
-          const keys = (
-            queryIsAddress ? ['address'] : ['name', 'symbol']
-          ) as (keyof ParsedAsset)[];
-          const threshold = queryIsAddress
-            ? 'CASE_SENSITIVE_EQUAL'
-            : 'CONTAINS';
-          const results = await fetchTokenSearch({
-            chainId: chain,
-            keys,
-            list: 'verifiedAssets',
-            threshold,
-            query,
-          });
+export function useFavoriteAssets(chainId: ChainId) {
+  const favorites = useFavoritesStore((s) => s.favorites[chainId]);
 
-          const currentFavoritesData = newSearchData[chain] || [];
-          if (results?.[0]) {
-            newSearchData[chain] = [...currentFavoritesData, results[0]];
-          } else {
-            const unverifiedSearchResults = await fetchTokenSearch({
-              chainId: chain,
-              keys,
-              list: 'highLiquidityAssets',
-              threshold,
-              query,
-            });
-            if (unverifiedSearchResults?.[0]) {
-              // eslint-disable-next-line require-atomic-updates
-              newSearchData[chain] = [
-                ...currentFavoritesData,
-                unverifiedSearchResults[0],
-              ];
-            }
-          }
-        };
-        searches.push(searchAddress(address));
-      });
-    }
-    await Promise.all(searches);
-    setFavoritesData(newSearchData);
-  }, [favorites]);
+  const { data = [] } = useQuery({
+    queryKey: createQueryKey('favorites tokens', { chainId, favorites }),
+    queryFn: async () => {
+      if (!favorites) throw new Error('No chain favorites');
+      return (
+        await Promise.all(
+          favorites.map((address) => fetchFavoriteToken(address, chainId)),
+        )
+      ).filter(Boolean);
+    },
+    staleTime: 1000 * 60 * 60, // 1 hour
+  });
 
-  useEffect(() => {
-    setFavoriteAssetsData();
-  }, [setFavoriteAssetsData]);
-
-  return {
-    favorites: favoritesData,
-  };
+  return { favorites: data };
 }
