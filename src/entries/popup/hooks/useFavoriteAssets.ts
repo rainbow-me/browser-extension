@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 
 import { createQueryKey } from '~/core/react-query';
 import { fetchTokenSearch } from '~/core/resources/search/tokenSearch';
@@ -30,7 +30,7 @@ export function useFavoriteAssets(chainId: ChainId) {
   const favorites = useFavoritesStore((s) => s.favorites[chainId]);
 
   const { data = [] } = useQuery({
-    queryKey: createQueryKey('favorites tokens', { chainId, favorites }),
+    queryKey: createQueryKey('favorites assets', { chainId, favorites }),
     queryFn: async () => {
       if (!favorites) throw new Error('No chain favorites');
       return (
@@ -39,7 +39,7 @@ export function useFavoriteAssets(chainId: ChainId) {
         )
       ).filter(Boolean);
     },
-    staleTime: 1000 * 60 * 60, // 1 hour
+    placeholderData: keepPreviousData,
   });
 
   return { favorites: data };
