@@ -1,4 +1,4 @@
-import { getSlippage } from '@rainbow-me/swaps';
+import { configureSDK, getSlippage } from '@rainbow-me/swaps';
 import { useQuery } from '@tanstack/react-query';
 import { BigNumberish } from 'ethers';
 import { Address } from 'viem';
@@ -10,6 +10,10 @@ import {
   createQueryKey,
 } from '~/core/react-query';
 import { ChainId } from '~/core/types/chains';
+
+const IS_TESTING = process.env.IS_TESTING === 'true';
+
+IS_TESTING && configureSDK({ apiBaseUrl: 'http://127.0.0.1:3001' });
 
 export interface SwapSlippage {
   slippagePercent: number;

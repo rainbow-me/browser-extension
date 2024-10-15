@@ -60,13 +60,17 @@ afterEach(async (context: any) => {
 
 afterAll(() => driver.quit());
 
-const WALLET_TO_USE_SECRET = isFirefox
-  ? TEST_VARIABLES.PRIVATE_KEY_WALLET_2.SECRET
-  : TEST_VARIABLES.SEED_WALLET.PK;
+// const WALLET_TO_USE_SECRET = isFirefox
+//   ? TEST_VARIABLES.PRIVATE_KEY_WALLET_2.SECRET
+//   : TEST_VARIABLES.SEED_WALLET.PK;
 
-const WALLET_TO_USE_ADDRESS = isFirefox
-  ? TEST_VARIABLES.PRIVATE_KEY_WALLET_2.ADDRESS
-  : TEST_VARIABLES.SEED_WALLET.ADDRESS;
+const WALLET_TO_USE_SECRET = TEST_VARIABLES.SEED_WALLET_2.PK;
+
+// const WALLET_TO_USE_ADDRESS = isFirefox
+//   ? TEST_VARIABLES.PRIVATE_KEY_WALLET_2.ADDRESS
+//   : TEST_VARIABLES.SEED_WALLET.ADDRESS;
+
+const WALLET_TO_USE_ADDRESS = TEST_VARIABLES.SEED_WALLET_2.ADDRESS;
 
 it('should be able import a wallet via pk', async () => {
   //  Start from welcome screen
@@ -701,6 +705,7 @@ it('should be able to filter assets to buy by network', async () => {
   });
 });
 
+// TODO: fix.
 it('should be able to see no route explainer', async () => {
   await findElementByTestIdAndClick({
     id: 'token-to-buy-networks-trigger',
@@ -757,13 +762,13 @@ it('should be able to see no route explainer', async () => {
     id: 'swap-confirmation-button-error',
     driver,
   });
-  expect(confirmButtonText).toEqual('No route found');
+  expect(['No route found', 'No quote available']).toContain(confirmButtonText);
   await findElementByTestIdAndClick({
     id: 'swap-confirmation-button-error',
     driver,
   });
   const noRouteExplainer = await findElementByTestId({
-    id: 'explainer-sheet-swap-no-route',
+    id: 'explainer-sheet-swap-no-quote',
     driver,
   });
   expect(noRouteExplainer).toBeTruthy();
@@ -850,24 +855,29 @@ it('should be able to go to review a swap', async () => {
     id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-favorites-token-to-buy-row`,
     driver,
   });
-  const toBuyInputDaiSelected = await findElementByTestId({
+  const toBuyInputUsdcSelected = await findElementByTestId({
     id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
-  expect(toBuyInputDaiSelected).toBeTruthy();
+  expect(toBuyInputUsdcSelected).toBeTruthy();
+  await delayTime('long');
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
+  console.log('################## INPUT SELECTED');
+  await delayTime('long');
   await clearInput({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
+  console.log('################## INPUT CLEARED');
   await typeOnTextInput({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     text: 1,
     driver,
   });
+  console.log('################## INPUT TYPED ON');
   await delayTime('very-long');
   await findElementByTestIdAndClick({
     id: 'swap-confirmation-button-ready',

@@ -1,4 +1,4 @@
-import { Source } from '@rainbow-me/swaps';
+import { Source, configureSDK } from '@rainbow-me/swaps';
 import { useCallback, useEffect, useState } from 'react';
 
 import config from '~/core/firebase/remoteConfig';
@@ -6,6 +6,10 @@ import { useFlashbotsEnabledStore } from '~/core/state';
 import { ChainId, ChainName, chainIdToNameMapping } from '~/core/types/chains';
 
 import usePrevious from '../usePrevious';
+
+const IS_TESTING = process.env.IS_TESTING === 'true';
+
+IS_TESTING && configureSDK({ apiBaseUrl: 'http://127.0.0.1:3001' });
 
 export const DEFAULT_SLIPPAGE_BIPS = {
   [ChainId.mainnet]: 100,

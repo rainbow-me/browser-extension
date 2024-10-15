@@ -6,6 +6,7 @@ import {
   ALLOWS_PERMIT,
   CrosschainQuote,
   Quote,
+  configureSDK,
   getQuoteExecutionDetails,
   getRainbowRouterContractAddress,
 } from '@rainbow-me/swaps';
@@ -31,6 +32,10 @@ export const SWAP_GAS_PADDING = 1.1;
 const GAS_LIMIT_INCREMENT = 50000;
 const EXTRA_GAS_PADDING = 1.5;
 const TRACE_CALL_BLOCK_NUMBER_OFFSET = 20;
+
+const IS_TESTING = process.env.IS_TESTING === 'true';
+
+IS_TESTING && configureSDK({ apiBaseUrl: 'http://127.0.0.1:3001' });
 
 /**
  * If gas price is not defined, override with fast speed

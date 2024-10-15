@@ -3,7 +3,6 @@ import {
   CrosschainQuote,
   ETH_ADDRESS as ETH_ADDRESS_AGGREGATORS,
   QuoteError,
-  SwapType,
   getCrosschainQuote,
 } from '@rainbow-me/swaps';
 import { mainnet } from 'viem/chains';
@@ -39,7 +38,6 @@ beforeAll(async () => {
     sellAmount: '1000000000000000000',
     slippage: 5,
     destReceiver: TEST_ADDRESS_3,
-    swapType: SwapType.crossChain,
     toChainId: ChainId.arbitrum,
     currency: 'USD',
   });
@@ -51,7 +49,6 @@ test('[rap/crosschainSwap] :: should estimate crosschain swap gas limit', async 
     requiresApprove: false,
     quote: {
       ...crosschainQuote,
-      fromChainId: mainnet.id,
     } as CrosschainQuote,
   });
   expect(Number(swapGasLimit)).toBeGreaterThan(0);
@@ -67,7 +64,7 @@ test('[rap/crosschainSwap] :: should execute crosschain swap', async () => {
       maxFeePerGas: '2000000000000',
       maxPriorityFeePerGas: '2000000000',
     },
-    quote: { fromChainId: mainnet.id, ...crosschainQuote } as CrosschainQuote,
+    quote: { ...crosschainQuote } as CrosschainQuote,
     wallet,
   });
 
