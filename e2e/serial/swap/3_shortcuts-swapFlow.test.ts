@@ -40,16 +40,11 @@ let rootURL = getRootUrl();
 let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';
-const isFirefox = browser === 'firefox';
 const os = process.env.OS || 'mac';
 
-const WALLET_TO_USE_SECRET = isFirefox
-  ? TEST_VARIABLES.PRIVATE_KEY_WALLET_2.SECRET
-  : TEST_VARIABLES.SEED_WALLET.PK;
+const WALLET_TO_USE_SECRET = TEST_VARIABLES.SEED_WALLET_2.PK;
 
-const WALLET_TO_USE_ADDRESS = isFirefox
-  ? TEST_VARIABLES.PRIVATE_KEY_WALLET_2.ADDRESS
-  : TEST_VARIABLES.SEED_WALLET.ADDRESS;
+const WALLET_TO_USE_ADDRESS = TEST_VARIABLES.SEED_WALLET_2.ADDRESS;
 
 describe('Complete swap flow via shortcuts and keyboard navigation', () => {
   beforeAll(async () => {

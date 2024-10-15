@@ -60,13 +60,9 @@ afterEach(async (context: any) => {
 
 afterAll(() => driver.quit());
 
-const WALLET_TO_USE_SECRET = isFirefox
-  ? TEST_VARIABLES.PRIVATE_KEY_WALLET_2.SECRET
-  : TEST_VARIABLES.SEED_WALLET.PK;
+const WALLET_TO_USE_SECRET = TEST_VARIABLES.SEED_WALLET_2.PK;
 
-const WALLET_TO_USE_ADDRESS = isFirefox
-  ? TEST_VARIABLES.PRIVATE_KEY_WALLET_2.ADDRESS
-  : TEST_VARIABLES.SEED_WALLET.ADDRESS;
+const WALLET_TO_USE_ADDRESS = TEST_VARIABLES.SEED_WALLET_2.ADDRESS;
 
 it('should be able import a wallet via pk', async () => {
   //  Start from welcome screen
@@ -117,6 +113,7 @@ it('should be able to connect to hardhat', async () => {
 });
 
 it('should be able to go to swap flow', async () => {
+  await delayTime('very-long');
   await findElementByTestIdAndClick({ id: 'header-link-swap', driver });
 });
 
@@ -291,6 +288,7 @@ it('should be able to open token to sell input and select assets', async () => {
     id: 'token-to-sell-sort-network',
     driver,
   });
+  await delayTime('long');
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-row`,
     driver,
@@ -552,6 +550,10 @@ it('should be able to flip correctly', async () => {
     id: `${SWAP_VARIABLES.WBTC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
+
+  await delayTime('very-long');
+  await delayTime('very-long');
+  await delayTime('very-long');
 
   expect(assetToSellInputTextAfterFlip).not.toEqual('');
 

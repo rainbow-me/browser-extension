@@ -44,15 +44,10 @@ let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
-const isFirefox = browser === 'firefox';
 
-const WALLET_TO_USE_SECRET = isFirefox
-  ? TEST_VARIABLES.PRIVATE_KEY_WALLET_2.SECRET
-  : TEST_VARIABLES.SEED_WALLET.PK;
+const WALLET_TO_USE_SECRET = TEST_VARIABLES.SEED_WALLET_2.PK;
 
-const WALLET_TO_USE_ADDRESS = isFirefox
-  ? TEST_VARIABLES.PRIVATE_KEY_WALLET_2.ADDRESS
-  : TEST_VARIABLES.SEED_WALLET.ADDRESS;
+const WALLET_TO_USE_ADDRESS = TEST_VARIABLES.SEED_WALLET_2.ADDRESS;
 
 describe('Swap Flow 2', () => {
   beforeAll(async () => {
