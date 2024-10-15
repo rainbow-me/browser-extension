@@ -489,7 +489,7 @@ export function useSearchCurrencyLists({
       return sections;
     }
 
-    if (popularAssets?.length) {
+    if (!query && popularAssets?.length) {
       sections.push({ id: 'popular', data: popularAssets });
     }
 
