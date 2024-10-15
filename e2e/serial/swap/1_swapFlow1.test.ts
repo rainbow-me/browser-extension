@@ -476,15 +476,18 @@ it('should be able to open remove token to buy and check favorites and verified 
 });
 
 it('should be able to favorite a token and check the info button is present', async () => {
-  await delayTime('short');
+  await delayTime('long');
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.WBTC_MAINNET_ID}-favorites-token-to-buy-row-info-button`,
     driver,
   });
+  await delayTime('long');
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.WBTC_MAINNET_ID}-favorites-token-to-buy-row-info-button-copy`,
     driver,
   });
+  await delayTime('very-long');
+
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.WBTC_MAINNET_ID}-favorites-token-to-buy-row`,
     driver,
