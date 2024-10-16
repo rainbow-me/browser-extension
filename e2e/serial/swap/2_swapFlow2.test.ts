@@ -149,7 +149,7 @@ describe('Swap Flow 2', () => {
       id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
       driver,
     });
-    await delayTime('medium');
+    await delayTime('very-long');
     await typeOnTextInput({
       id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
       text: `\b50`,
@@ -171,6 +171,11 @@ describe('Swap Flow 2', () => {
     const usdcBalanceBeforeSwap = await tokenContract.balanceOf(
       WALLET_TO_USE_ADDRESS,
     );
+    console.log('usdcBalanceBeforeSwap');
+    console.log('usdcBalanceBeforeSwap');
+    console.log('usdcBalanceBeforeSwap');
+    console.log('usdcBalanceBeforeSwap');
+    console.log(usdcBalanceBeforeSwap);
 
     await findElementByTestIdAndClick({
       id: 'swap-settings-navbar-button',
@@ -204,6 +209,23 @@ describe('Swap Flow 2', () => {
     });
     await delayTime('very-long');
     await delayTime('very-long');
+    const text = await getTextFromText({ id: 'swap-review-button', driver });
+
+    if (text.toLowerCase().includes('insufficient')) {
+      await clearInput({
+        id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+        driver,
+      });
+      await delayTime('very-long');
+      await typeOnTextInput({
+        id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+        text: `\b50`,
+        driver,
+      });
+      await delayTime('very-long');
+      await delayTime('very-long');
+    }
+
     await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
 
     // wait for swap to complete
@@ -218,14 +240,25 @@ describe('Swap Flow 2', () => {
     const usdcBalanceAfterSwap = await tokenContract.balanceOf(
       WALLET_TO_USE_ADDRESS,
     );
+    console.log('usdcBalanceAfterSwap');
+    console.log('usdcBalanceAfterSwap');
+    console.log('usdcBalanceAfterSwap');
+    console.log('usdcBalanceAfterSwap');
+    console.log(usdcBalanceAfterSwap);
     const balanceDifference = subtract(
       usdcBalanceBeforeSwap.toString(),
       usdcBalanceAfterSwap.toString(),
     );
+
     const usdcBalanceDifference = convertRawAmountToDecimalFormat(
       balanceDifference.toString(),
       6,
     );
+    console.log('usdcBalanceDifference');
+    console.log('usdcBalanceDifference');
+    console.log('usdcBalanceDifference');
+    console.log('usdcBalanceDifference');
+    console.log(usdcBalanceDifference);
 
     expect(Number(usdcBalanceDifference)).toBe(50);
   });
