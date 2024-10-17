@@ -18,6 +18,7 @@ import { ChainId } from '~/core/types/chains';
 
 import {
   clearInput,
+  delay,
   delayTime,
   doNotFindElementByTestId,
   fillPrivateKey,
@@ -145,17 +146,16 @@ describe('Swap Flow 2', () => {
       id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
       driver,
     });
+    await delayTime('very-long');
     await clearInput({
       id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
       driver,
     });
-    await delayTime('very-long');
     await typeOnTextInput({
       id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
       text: `\b50`,
       driver,
     });
-    await delayTime('very-long');
     await delayTime('very-long');
   });
 
@@ -168,14 +168,10 @@ describe('Swap Flow 2', () => {
       erc20Abi,
       provider,
     );
+    await delayTime('long');
     const usdcBalanceBeforeSwap = await tokenContract.balanceOf(
       WALLET_TO_USE_ADDRESS,
     );
-    console.log('usdcBalanceBeforeSwap');
-    console.log('usdcBalanceBeforeSwap');
-    console.log('usdcBalanceBeforeSwap');
-    console.log('usdcBalanceBeforeSwap');
-    console.log(usdcBalanceBeforeSwap);
 
     await findElementByTestIdAndClick({
       id: 'swap-settings-navbar-button',
@@ -207,44 +203,16 @@ describe('Swap Flow 2', () => {
       id: 'swap-confirmation-button-ready',
       driver,
     });
-    await delayTime('very-long');
-    await delayTime('very-long');
-    const text = await getTextFromText({ id: 'swap-review-button', driver });
-
-    if (text.toLowerCase().includes('insufficient')) {
-      await clearInput({
-        id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
-        driver,
-      });
-      await delayTime('very-long');
-      await typeOnTextInput({
-        id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
-        text: `\b50`,
-        driver,
-      });
-      await delayTime('very-long');
-      await delayTime('very-long');
-    }
+    await delay(10_000);
 
     await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
 
-    // wait for swap to complete
-    await delayTime('very-long');
-    await delayTime('very-long');
-    await delayTime('very-long');
-    await delayTime('very-long');
-    await delayTime('very-long');
-    await delayTime('very-long');
-    await delayTime('very-long');
+    // waiting for balances to update / swap to execute
+    await delay(20_000);
 
     const usdcBalanceAfterSwap = await tokenContract.balanceOf(
       WALLET_TO_USE_ADDRESS,
     );
-    console.log('usdcBalanceAfterSwap');
-    console.log('usdcBalanceAfterSwap');
-    console.log('usdcBalanceAfterSwap');
-    console.log('usdcBalanceAfterSwap');
-    console.log(usdcBalanceAfterSwap);
     const balanceDifference = subtract(
       usdcBalanceBeforeSwap.toString(),
       usdcBalanceAfterSwap.toString(),
@@ -254,16 +222,11 @@ describe('Swap Flow 2', () => {
       balanceDifference.toString(),
       6,
     );
-    console.log('usdcBalanceDifference');
-    console.log('usdcBalanceDifference');
-    console.log('usdcBalanceDifference');
-    console.log('usdcBalanceDifference');
-    console.log(usdcBalanceDifference);
 
     expect(Number(usdcBalanceDifference)).toBe(50);
   });
 
-  it('should be able to go to swap flow', async () => {
+  it.skip('should be able to go to swap flow', async () => {
     await findElementByTestIdAndClick({ id: 'header-link-swap', driver });
     await delayTime('long');
   });

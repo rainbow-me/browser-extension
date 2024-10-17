@@ -440,8 +440,7 @@ it('should be able to type native amount on sell input', async () => {
   });
   expect(fiatValueText).toBe('1');
 
-  await delayTime('very-long');
-  await delayTime('very-long');
+  await delay(10_000);
 
   const assetToSellInputText = await getTextFromTextInput({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
@@ -551,9 +550,7 @@ it('should be able to flip correctly', async () => {
     driver,
   });
 
-  await delayTime('very-long');
-  await delayTime('very-long');
-  await delayTime('very-long');
+  await delay(10_000);
 
   expect(assetToSellInputTextAfterFlip).not.toEqual('');
 
@@ -757,8 +754,7 @@ it('should be able to see no route explainer', async () => {
     driver,
     text: 1,
   });
-  await delayTime('very-long');
-  await delayTime('very-long');
+  await delay(10_000);
   const confirmButtonText = await getTextFromText({
     id: 'swap-confirmation-button-error',
     driver,
@@ -804,7 +800,7 @@ it('should be able to find exact match on other networks', async () => {
     id: `switch-network-item-${ChainId.polygon}`,
     driver,
   });
-  // TODO: FIX. ACTUAL PRODUCTION BUG????
+  // UNCOMMENT ONCE #1732 GETS MERGED
 
   // await typeOnTextInput({
   //   id: 'token-to-buy-search-token-input',
@@ -1033,11 +1029,10 @@ it('should be able to execute swap', async () => {
   });
   await delayTime('medium');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
-  await delayTime('very-long');
-  await delayTime('very-long');
-  // Adding delay to make sure the provider gets the balance after the swap
-  // Because CI is slow so this triggers a race condition most of the time.
-  await delay(5000);
+
+  // waiting for balances to update / swap to execute
+  await delay(20_000);
+
   const ethBalanceAfterSwap = await provider.getBalance(WALLET_TO_USE_ADDRESS);
 
   const balanceDifference = subtract(
