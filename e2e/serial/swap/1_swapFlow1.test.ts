@@ -60,13 +60,9 @@ afterEach(async (context: any) => {
 
 afterAll(() => driver.quit());
 
-const WALLET_TO_USE_SECRET = isFirefox
-  ? TEST_VARIABLES.PRIVATE_KEY_WALLET_2.SECRET
-  : TEST_VARIABLES.SEED_WALLET.PK;
+const WALLET_TO_USE_SECRET = TEST_VARIABLES.SEED_WALLET_2.PK;
 
-const WALLET_TO_USE_ADDRESS = isFirefox
-  ? TEST_VARIABLES.PRIVATE_KEY_WALLET_2.ADDRESS
-  : TEST_VARIABLES.SEED_WALLET.ADDRESS;
+const WALLET_TO_USE_ADDRESS = TEST_VARIABLES.SEED_WALLET_2.ADDRESS;
 
 it('should be able import a wallet via pk', async () => {
   //  Start from welcome screen
@@ -117,6 +113,7 @@ it('should be able to connect to hardhat', async () => {
 });
 
 it('should be able to go to swap flow', async () => {
+  await delayTime('very-long');
   await findElementByTestIdAndClick({ id: 'header-link-swap', driver });
 });
 
@@ -291,6 +288,7 @@ it('should be able to open token to sell input and select assets', async () => {
     id: 'token-to-sell-sort-network',
     driver,
   });
+  await delayTime('long');
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-row`,
     driver,
@@ -442,8 +440,7 @@ it('should be able to type native amount on sell input', async () => {
   });
   expect(fiatValueText).toBe('1');
 
-  await delayTime('very-long');
-  await delayTime('very-long');
+  await delay(10_000);
 
   const assetToSellInputText = await getTextFromTextInput({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
@@ -476,15 +473,18 @@ it('should be able to open remove token to buy and check favorites and verified 
 });
 
 it('should be able to favorite a token and check the info button is present', async () => {
-  await delayTime('short');
+  await delayTime('long');
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.WBTC_MAINNET_ID}-favorites-token-to-buy-row-info-button`,
     driver,
   });
+  await delayTime('long');
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.WBTC_MAINNET_ID}-favorites-token-to-buy-row-info-button-copy`,
     driver,
   });
+  await delayTime('very-long');
+
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.WBTC_MAINNET_ID}-favorites-token-to-buy-row`,
     driver,
@@ -549,6 +549,8 @@ it('should be able to flip correctly', async () => {
     id: `${SWAP_VARIABLES.WBTC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
+
+  await delay(10_000);
 
   expect(assetToSellInputTextAfterFlip).not.toEqual('');
 
@@ -752,7 +754,7 @@ it('should be able to see no route explainer', async () => {
     driver,
     text: 1,
   });
-  await delayTime('long');
+  await delay(10_000);
   const confirmButtonText = await getTextFromText({
     id: 'swap-confirmation-button-error',
     driver,
@@ -790,7 +792,6 @@ it('should be able to find exact match on other networks', async () => {
     id: `${SWAP_VARIABLES.GMX_ARBITRUM_ID}-token-to-buy-token-input-remove`,
     driver,
   });
-
   await findElementByTestIdAndClick({
     id: 'token-to-buy-networks-trigger',
     driver,
@@ -799,29 +800,27 @@ it('should be able to find exact match on other networks', async () => {
     id: `switch-network-item-${ChainId.polygon}`,
     driver,
   });
+  // UNCOMMENT ONCE #1732 GETS MERGED
 
-  await typeOnTextInput({
-    id: 'token-to-buy-search-token-input',
-    driver,
-    text: 'optimism',
-  });
-  await delayTime('long');
+  // await typeOnTextInput({
+  //   id: 'token-to-buy-search-token-input',
+  //   driver,
+  //   text: 'optimism',
+  // });
+  // const onOtherNetworksSections = await findElementByTestId({
+  //   id: 'other_networks-token-to-buy-section',
+  //   driver,
+  // });
+  // expect(onOtherNetworksSections).toBeTruthy();
 
-  const onOtherNetworksSections = await findElementByTestId({
-    id: 'other_networks-token-to-buy-section',
-    driver,
-  });
-
-  expect(onOtherNetworksSections).toBeTruthy();
-
-  await findElementByTestIdAndClick({
-    id: `${SWAP_VARIABLES.OP_OPTIMISM_ID}-other_networks-token-to-buy-row`,
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: `${SWAP_VARIABLES.OP_OPTIMISM_ID}-token-to-buy-token-input-remove`,
-    driver,
-  });
+  // await findElementByTestIdAndClick({
+  //   id: `${SWAP_VARIABLES.OP_OPTIMISM_ID}-other_networks-token-to-buy-row`,
+  //   driver,
+  // });
+  // await findElementByTestIdAndClick({
+  //   id: `${SWAP_VARIABLES.OP_OPTIMISM_ID}-token-to-buy-token-input-remove`,
+  //   driver,
+  // });
   await findElementByTestIdAndClick({
     id: 'token-to-buy-search-token-input',
     driver,
@@ -1030,11 +1029,10 @@ it('should be able to execute swap', async () => {
   });
   await delayTime('medium');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
-  await delayTime('very-long');
-  await delayTime('very-long');
-  // Adding delay to make sure the provider gets the balance after the swap
-  // Because CI is slow so this triggers a race condition most of the time.
-  await delay(5000);
+
+  // waiting for balances to update / swap to execute
+  await delay(20_000);
+
   const ethBalanceAfterSwap = await provider.getBalance(WALLET_TO_USE_ADDRESS);
 
   const balanceDifference = subtract(

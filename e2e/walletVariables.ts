@@ -4,6 +4,10 @@ export const TEST_VARIABLES = {
     SECRET: 'test test test test test test test test test test test junk',
     PK: '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
   },
+  SEED_WALLET_2: {
+    ADDRESS: '0xa0Ee7A142d267C1f36714E4a8F75612F20a79720',
+    PK: '0x2a871d0798f97d79848a013d4936a73bf4cc922c825d33c1cf7073dff6d409c6',
+  },
   EMPTY_WALLET: {
     ADDRESS: '0x3637f053D542E6D00Eee42D656dD7C59Fa33a62F',
     SECRET:
