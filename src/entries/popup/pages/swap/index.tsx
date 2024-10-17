@@ -18,6 +18,7 @@ import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedSearchAsset, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { SearchAsset } from '~/core/types/search';
+import { isLowerCaseMatch } from '~/core/utils/strings';
 import { getQuoteServiceTime } from '~/core/utils/swaps';
 import {
   Box,
@@ -393,16 +394,6 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     useState<boolean>(false);
   const { isFirefox } = useBrowser();
 
-  // translate based on the context, bridge or swap
-  const translationContext = {
-    Action: i18n.t(`swap._actions.${bridge ? 'Bridge' : 'Swap'}`),
-    action: i18n.t(`swap._actions.${bridge ? 'bridge' : 'swap'}`),
-    actions: i18n.t(`swap._actions.${bridge ? 'bridges' : 'swaps'}`),
-    Actioning: i18n.t(`swap._actions.${bridge ? 'Bridging' : 'Swapping'}`),
-    actioning: i18n.t(`swap._actions.${bridge ? 'bridging' : 'swapping'}`),
-  };
-  const t = useTranslationContext(translationContext);
-
   const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
   const { selectedGas, clearCustomGasModified } = useGasStore();
@@ -593,6 +584,37 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     swapTokenToSell: savedTokenToSell,
     resetSwapValues,
   } = usePopupInstanceStore();
+
+  const bridgingSelected = useMemo(() => {
+    const assetToSellAddressToCompare =
+      assetToSell?.[
+        assetToSell?.chainId === ChainId.mainnet ? 'address' : 'mainnetAddress'
+      ];
+    const assetToBuyAddressToCompare =
+      assetToBuy?.[
+        assetToBuy?.chainId === ChainId.mainnet ? 'address' : 'mainnetAddress'
+      ];
+    return isLowerCaseMatch(
+      assetToSellAddressToCompare,
+      assetToBuyAddressToCompare,
+    );
+  }, [assetToBuy, assetToSell]);
+
+  const showBridgingCopy = bridge || bridgingSelected;
+
+  // translate based on the context, bridge or swap
+  const translationContext = {
+    Action: i18n.t(`swap._actions.${showBridgingCopy ? 'Bridge' : 'Swap'}`),
+    action: i18n.t(`swap._actions.${showBridgingCopy ? 'bridge' : 'swap'}`),
+    actions: i18n.t(`swap._actions.${showBridgingCopy ? 'bridges' : 'swaps'}`),
+    Actioning: i18n.t(
+      `swap._actions.${showBridgingCopy ? 'Bridging' : 'Swapping'}`,
+    ),
+    actioning: i18n.t(
+      `swap._actions.${showBridgingCopy ? 'bridging' : 'swapping'}`,
+    ),
+  };
+  const t = useTranslationContext(translationContext);
 
   const [didPopulateSavedTokens, setDidPopulateSavedTokens] = useState(false);
   const [didPopulateSavedInputValues, setDidPopulateSavedInputValues] =
