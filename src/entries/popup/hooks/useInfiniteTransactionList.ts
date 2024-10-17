@@ -116,7 +116,7 @@ export const useInfiniteTransactionList = ({
         const txOrLabel = formattedTransactions[i];
         return typeof txOrLabel === 'string'
           ? txOrLabel
-          : txOrLabel.hash + txOrLabel.chainId;
+          : txOrLabel.hash + txOrLabel.chainId + i;
       },
       [formattedTransactions],
     ),
