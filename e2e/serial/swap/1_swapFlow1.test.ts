@@ -688,7 +688,6 @@ it('should be able to filter assets to buy by network', async () => {
   });
 });
 
-// TODO: fix.
 it('should be able to see no route explainer', async () => {
   await findElementByTestIdAndClick({
     id: 'token-to-buy-networks-trigger',
@@ -756,13 +755,13 @@ it('should be able to see no route explainer', async () => {
     id: 'swap-confirmation-button-error',
     driver,
   });
-  expect(['No route found', 'No quote available']).toContain(confirmButtonText);
+  expect(confirmButtonText).toEqual('No route found');
   await findElementByTestIdAndClick({
     id: 'swap-confirmation-button-error',
     driver,
   });
   const noRouteExplainer = await findElementByTestId({
-    id: 'explainer-sheet-swap-no-quote',
+    id: 'explainer-sheet-swap-no-route',
     driver,
   });
   expect(noRouteExplainer).toBeTruthy();
@@ -844,23 +843,19 @@ it('should be able to go to review a swap', async () => {
     id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-favorites-token-to-buy-row`,
     driver,
   });
-  const toBuyInputUsdcSelected = await findElementByTestId({
+  const toBuyInputDaiSelected = await findElementByTestId({
     id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
-  expect(toBuyInputUsdcSelected).toBeTruthy();
-  await delayTime('long');
+  expect(toBuyInputDaiSelected).toBeTruthy();
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
-  console.log('################## INPUT SELECTED');
-  await delayTime('long');
   await clearInput({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
-  console.log('################## INPUT CLEARED');
   await typeOnTextInput({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     text: 1,
