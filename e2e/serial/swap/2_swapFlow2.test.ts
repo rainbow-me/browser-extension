@@ -46,9 +46,9 @@ let driver: WebDriver;
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 
-const WALLET_TO_USE_SECRET = TEST_VARIABLES.SEED_WALLET_2.PK;
+const WALLET_TO_USE_SECRET = TEST_VARIABLES.SWAPS_WALLET.PK;
 
-const WALLET_TO_USE_ADDRESS = TEST_VARIABLES.SEED_WALLET_2.ADDRESS;
+const WALLET_TO_USE_ADDRESS = TEST_VARIABLES.SWAPS_WALLET.ADDRESS;
 
 describe('Swap Flow 2', () => {
   beforeAll(async () => {
