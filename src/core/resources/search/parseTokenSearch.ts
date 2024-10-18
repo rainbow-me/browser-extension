@@ -8,6 +8,7 @@ export function parseTokenSearch(
   chainId: ChainId,
 ): SearchAsset {
   const networkInfo = asset.networks[chainId];
+  const mainnetInfo = asset.networks[ChainId.mainnet];
 
   return {
     ...asset,
@@ -15,7 +16,7 @@ export function parseTokenSearch(
     chainId,
     decimals: networkInfo ? networkInfo.decimals : asset.decimals,
     isNativeAsset: isNativeAsset(asset.address, chainId),
-    mainnetAddress: asset.uniqueId as AddressOrEth,
+    mainnetAddress: mainnetInfo?.address as AddressOrEth,
     uniqueId: `${networkInfo?.address || asset.uniqueId}_${chainId}`,
   };
 }
