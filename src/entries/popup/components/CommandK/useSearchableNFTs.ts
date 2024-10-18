@@ -1,9 +1,12 @@
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 
+import { i18n } from '~/core/languages';
 import { selectNfts } from '~/core/resources/_selectors/nfts';
 import { useGalleryNfts } from '~/core/resources/nfts/galleryNfts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useNftsStore } from '~/core/state/nfts';
+import { UniqueAsset } from '~/core/types/nfts';
 
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useUserChains } from '../../hooks/useUserChains';
@@ -27,6 +30,19 @@ export const useSearchableNFTs = () => {
   const navigate = useRainbowNavigate();
   const { testnetMode } = useTestnetModeStore();
   const { chains: userChains } = useUserChains();
+
+  const hiddenNfts = useNftsStore.use.hidden();
+  const hiddenNftsForAddress = useMemo(
+    () => hiddenNfts[address] || {},
+    [address, hiddenNfts],
+  );
+
+  const isNftHidden = useCallback(
+    (nft: UniqueAsset) => {
+      return !!hiddenNftsForAddress[nft.uniqueId || ''];
+    },
+    [hiddenNftsForAddress],
+  );
 
   const {
     data,
@@ -76,14 +92,20 @@ export const useSearchableNFTs = () => {
       actionPage: PAGES.NFT_TOKEN_DETAIL,
       id: nft.uniqueId,
       name: parseNftName(nft.name, nft.id),
-      searchTags: [nft.name, nft.collection.name],
+      searchTags: [
+        ...(isNftHidden(nft)
+          ? [i18n.t('command_k.commands.search_tags.hide_token')]
+          : []),
+        nft.name,
+        nft.collection.name,
+      ],
       page: PAGES.MY_NFTS,
       selectedWalletAddress: address,
       type: SearchItemType.NFT,
       downrank: true,
       nft,
     }));
-  }, [address, navigate, nfts]);
+  }, [address, isNftHidden, navigate, nfts]);
 
   return { searchableNFTs };
 };

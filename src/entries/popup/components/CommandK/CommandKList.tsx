@@ -1,8 +1,11 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { AnimatePresence, motion } from 'framer-motion';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
+import { useCurrentAddressStore } from '~/core/state';
+import { useHiddenAssetStore } from '~/core/state/hiddenAssets/hiddenAssets';
+import { useNftsStore } from '~/core/state/nfts';
 import { Box, Stack, Symbol, Text, TextOverflow } from '~/design-system';
 
 import { LIST_HEIGHT, MODAL_HEIGHT } from './CommandKModal';
@@ -70,6 +73,15 @@ export const CommandKList = React.forwardRef<
   ref,
 ) {
   const { isCommandKVisible } = useCommandKStatus();
+  const { currentAddress: address } = useCurrentAddressStore();
+
+  const hiddenAssets = useHiddenAssetStore.use.hidden();
+
+  const hiddenNfts = useNftsStore.use.hidden();
+  const hiddenNftsForAddress = useMemo(
+    () => hiddenNfts[address] || {},
+    [address, hiddenNfts],
+  );
 
   const listVirtualizer = useVirtualizer({
     count: (filteredCommands?.length || 0) + 1,
@@ -210,6 +222,11 @@ export const CommandKList = React.forwardRef<
                     <TokenRow
                       command={command}
                       handleExecuteCommand={handleExecuteCommand}
+                      isHidden={
+                        !!hiddenAssets[address]?.[
+                          `${command.address}-${command.asset.chainId}`
+                        ]
+                      }
                       key={command.id}
                       selected={isSelected}
                     />
@@ -218,6 +235,7 @@ export const CommandKList = React.forwardRef<
                   row = (
                     <NFTRow
                       command={command as NFTSearchItem}
+                      isHidden={!!hiddenNftsForAddress[command.id || '']}
                       handleExecuteCommand={handleExecuteCommand}
                       key={command.id}
                       selected={isSelected}

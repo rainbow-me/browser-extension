@@ -150,12 +150,14 @@ export const CommandRow = ({
 
 type NFTRowProps = {
   command: NFTSearchItem;
+  isHidden: boolean;
   handleExecuteCommand: (command: SearchItem, e?: KeyboardEvent) => void;
   selected: boolean;
 };
 
 export const NFTRow = ({
   command,
+  isHidden,
   handleExecuteCommand,
   selected,
 }: NFTRowProps) => {
@@ -196,6 +198,7 @@ export const NFTRow = ({
     <CommandRow
       command={command}
       handleExecuteCommand={handleExecuteCommand}
+      description={isHidden ? i18n.t('command_k.labels.hidden') : undefined}
       name={command.name}
       selected={selected}
       LeftComponent={_NftIcon}
@@ -289,12 +292,14 @@ export const ShortcutRow = ({
 type TokenRowProps = {
   command: TokenSearchItem | UnownedTokenSearchItem;
   handleExecuteCommand: (command: SearchItem, e?: KeyboardEvent) => void;
+  isHidden: boolean;
   selected: boolean;
 };
 
 export const TokenRow = ({
   command,
   handleExecuteCommand,
+  isHidden,
   selected,
 }: TokenRowProps) => {
   const { currentCurrency } = useCurrentCurrencyStore();
@@ -367,6 +372,7 @@ export const TokenRow = ({
       handleExecuteCommand={handleExecuteCommand}
       name={command.name}
       selected={selected}
+      description={isHidden ? i18n.t('command_k.labels.hidden') : undefined}
       LeftComponent={TokenIcon}
       RightComponent={
         command.type === SearchItemType.Token ? TokenBalanceBadge : undefined

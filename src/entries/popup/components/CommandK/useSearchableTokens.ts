@@ -1,8 +1,9 @@
 import { isAddress } from '@ethersproject/address';
 import { uniqBy } from 'lodash';
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { Address } from 'viem';
 
+import { i18n } from '~/core/languages';
 import {
   selectUserAssetsFilteringSmallBalancesList,
   selectUserAssetsList,
@@ -15,6 +16,7 @@ import { useTokenSearchAllNetworks } from '~/core/resources/search/tokenSearch';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useHiddenAssetStore } from '~/core/state/hiddenAssets/hiddenAssets';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { TokenSearchAssetKey, TokenSearchThreshold } from '~/core/types/search';
 import { isENSAddressFormat } from '~/core/utils/ethereum';
@@ -48,6 +50,15 @@ export const useSearchableTokens = ({
   const { hideSmallBalances } = useHideSmallBalancesStore();
   const navigate = useRainbowNavigate();
   const { testnetMode } = useTestnetModeStore();
+
+  const hiddenAssets = useHiddenAssetStore.use.hidden();
+
+  const isTokenHidden = useCallback(
+    (asset: ParsedUserAsset) => {
+      return !!hiddenAssets[address]?.[`${asset.address}-${asset.chainId}`];
+    },
+    [address, hiddenAssets],
+  );
 
   const query = searchQuery.toLowerCase();
 
@@ -208,16 +219,24 @@ export const useSearchableTokens = ({
       name: asset.name,
       nativeTokenBalance: asset.native.balance.display,
       network: asset.chainName,
+      chainId: asset.chainId,
       page: PAGES.MY_TOKENS,
       price: asset.price,
-      searchTags: [asset.symbol, asset.chainName, asset.address],
+      searchTags: [
+        ...(isTokenHidden(asset)
+          ? [i18n.t('command_k.commands.search_tags.hide_token')]
+          : []),
+        asset.symbol,
+        asset.chainName,
+        asset.address,
+      ],
       selectedWalletAddress: address,
       tokenBalanceAmount: asset.balance.amount,
       tokenBalanceDisplay: asset.balance.display,
       tokenSymbol: asset.symbol,
       type: SearchItemType.Token,
     }));
-  }, [address, combinedAssets, navigate]);
+  }, [address, combinedAssets, isTokenHidden, navigate]);
 
   const unownedSearchableTokens = useMemo(() => {
     return uniqBy(allSearchedAssets, 'uniqueId')
