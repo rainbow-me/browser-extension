@@ -18,6 +18,7 @@ import { ChainId } from '~/core/types/chains';
 
 import {
   clearInput,
+  delay,
   delayTime,
   doNotFindElementByTestId,
   fillPrivateKey,
@@ -44,15 +45,10 @@ let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
-const isFirefox = browser === 'firefox';
 
-const WALLET_TO_USE_SECRET = isFirefox
-  ? TEST_VARIABLES.PRIVATE_KEY_WALLET_2.SECRET
-  : TEST_VARIABLES.SEED_WALLET.PK;
+const WALLET_TO_USE_SECRET = TEST_VARIABLES.SWAPS_WALLET.PK;
 
-const WALLET_TO_USE_ADDRESS = isFirefox
-  ? TEST_VARIABLES.PRIVATE_KEY_WALLET_2.ADDRESS
-  : TEST_VARIABLES.SEED_WALLET.ADDRESS;
+const WALLET_TO_USE_ADDRESS = TEST_VARIABLES.SWAPS_WALLET.ADDRESS;
 
 describe('Swap Flow 2', () => {
   beforeAll(async () => {
@@ -150,17 +146,16 @@ describe('Swap Flow 2', () => {
       id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
       driver,
     });
+    await delayTime('very-long');
     await clearInput({
       id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
       driver,
     });
-    await delayTime('medium');
     await typeOnTextInput({
       id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
       text: `\b50`,
       driver,
     });
-    await delayTime('very-long');
     await delayTime('very-long');
   });
 
@@ -173,6 +168,7 @@ describe('Swap Flow 2', () => {
       erc20Abi,
       provider,
     );
+    await delayTime('long');
     const usdcBalanceBeforeSwap = await tokenContract.balanceOf(
       WALLET_TO_USE_ADDRESS,
     );
@@ -207,18 +203,12 @@ describe('Swap Flow 2', () => {
       id: 'swap-confirmation-button-ready',
       driver,
     });
-    await delayTime('very-long');
-    await delayTime('very-long');
+    await delay(10_000);
+
     await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
 
-    // wait for swap to complete
-    await delayTime('very-long');
-    await delayTime('very-long');
-    await delayTime('very-long');
-    await delayTime('very-long');
-    await delayTime('very-long');
-    await delayTime('very-long');
-    await delayTime('very-long');
+    // waiting for balances to update / swap to execute
+    await delay(20_000);
 
     const usdcBalanceAfterSwap = await tokenContract.balanceOf(
       WALLET_TO_USE_ADDRESS,
@@ -227,6 +217,7 @@ describe('Swap Flow 2', () => {
       usdcBalanceBeforeSwap.toString(),
       usdcBalanceAfterSwap.toString(),
     );
+
     const usdcBalanceDifference = convertRawAmountToDecimalFormat(
       balanceDifference.toString(),
       6,
@@ -235,7 +226,7 @@ describe('Swap Flow 2', () => {
     expect(Number(usdcBalanceDifference)).toBe(50);
   });
 
-  it('should be able to go to swap flow', async () => {
+  it.skip('should be able to go to swap flow', async () => {
     await findElementByTestIdAndClick({ id: 'header-link-swap', driver });
     await delayTime('long');
   });

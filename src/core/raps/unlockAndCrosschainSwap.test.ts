@@ -2,6 +2,7 @@ import {
   CrosschainQuote,
   Quote,
   QuoteError,
+  SwapType,
   TokenAsset,
 } from '@rainbow-me/swaps';
 import { mainnet } from 'viem/chains';
@@ -50,13 +51,16 @@ const needsUnlockQuote: Quote | QuoteError | null = {
   sellAmountInEth: '7370383390797876',
   sellAmountMinusFees: '991500000000000000',
   sellTokenAddress: '0xc18360217d8f7ab5e7c516566761ea12ce7f9d72',
-  swapType: 'normal',
+  swapType: SwapType.normal,
   to: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
   tradeAmountUSD: 21.84463710898238,
+  tradeFeeAmountUSD: 0,
   value: '0',
   buyTokenAsset: {} as TokenAsset, // not used in this test
   feeTokenAsset: {} as TokenAsset, // not used in this test
   sellTokenAsset: {} as TokenAsset, // not used in this test
+  allowanceTarget: '0xSomeAllowanceTargetAddress',
+  allowanceNeeded: true,
 };
 
 const doesntNeedUnlockQuote: Quote | QuoteError | null = {
@@ -88,13 +92,16 @@ const doesntNeedUnlockQuote: Quote | QuoteError | null = {
   sellAmountInEth: '1000000000000000000',
   sellAmountMinusFees: '989021250000000000',
   sellTokenAddress: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
-  swapType: 'cross-chain',
+  swapType: SwapType.crossChain,
   to: TEST_ADDRESS_2,
   tradeAmountUSD: 2963.84,
+  tradeFeeAmountUSD: 0,
   value: '0x0de0b6b3a7640000',
   buyTokenAsset: {} as TokenAsset, // not used in this test
   feeTokenAsset: {} as TokenAsset, // not used in this test
   sellTokenAsset: {} as TokenAsset, // not used in this test
+  allowanceTarget: '0xSomeAllowanceTargetAddress',
+  allowanceNeeded: true,
 };
 
 beforeAll(async () => {

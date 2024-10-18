@@ -2,7 +2,6 @@ import { AddressZero } from '@ethersproject/constants';
 import {
   CrosschainQuote,
   QuoteError,
-  SwapType,
   getClaimBridgeQuote,
 } from '@rainbow-me/swaps';
 import { Address } from 'viem';
@@ -54,7 +53,6 @@ export async function claimBridge({
     buyTokenAddress: AddressZero,
     sellAmount: sellAmount,
     slippage: 2,
-    swapType: SwapType.crossChain,
     currency: currentCurrencyStore.getState().currentCurrency,
   });
 
@@ -122,7 +120,6 @@ export async function claimBridge({
       buyTokenAddress: AddressZero,
       sellAmount: maxBridgeableAmount,
       slippage: 2,
-      swapType: SwapType.crossChain,
       currency: currentCurrencyStore.getState().currentCurrency,
     });
 
