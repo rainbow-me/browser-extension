@@ -1,4 +1,4 @@
-import { Source } from '@rainbow-me/swaps';
+import { Source, configureSDK } from '@rainbow-me/swaps';
 import React, { ReactNode, useCallback } from 'react';
 
 import { Box, Inline, Text } from '~/design-system';
@@ -11,6 +11,10 @@ import {
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
 
 import { aggregatorInfo } from '../utils';
+
+const IS_TESTING = process.env.IS_TESTING === 'true';
+
+IS_TESTING && configureSDK({ apiBaseUrl: 'http://127.0.0.1:3001' });
 
 type DropdownSource = Source.Aggregator0x | Source.Aggregator1inch | 'auto';
 

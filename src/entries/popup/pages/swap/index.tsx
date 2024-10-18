@@ -1,4 +1,9 @@
-import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
+import {
+  CrosschainQuote,
+  Quote,
+  QuoteError,
+  configureSDK,
+} from '@rainbow-me/swaps';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Address } from 'viem';
@@ -79,6 +84,10 @@ import { TokenToBuyInput } from './SwapTokenInput/TokenToBuyInput';
 import { TokenToSellInput } from './SwapTokenInput/TokenToSellInput';
 import { SwapTimeEstimate, getSwapTimeEstimate } from './swapTimeEstimate';
 import { useSwapButton } from './useSwapButton';
+
+const IS_TESTING = process.env.IS_TESTING === 'true';
+
+IS_TESTING && configureSDK({ apiBaseUrl: 'http://127.0.0.1:3001' });
 
 const SwapWarning = ({
   timeEstimate,

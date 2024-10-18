@@ -1,0 +1,398 @@
+{
+  "sellTokenAddress": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "sellTokenAsset": {
+    "assetCode": "eth",
+    "decimals": 18,
+    "iconUrl": "https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/ethereum/eth.png",
+    "name": "Ethereum",
+    "network": "mainnet",
+    "symbol": "ETH",
+    "networks": {
+      "1": {
+        "address": "eth",
+        "decimals": 18
+      },
+      "10": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "decimals": 18
+      },
+      "42161": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "decimals": 18
+      },
+      "56": {
+        "address": "0x2170ed0880ac9a755fd29b2688956bd959f933f8",
+        "decimals": 18
+      },
+      "7777777": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "decimals": 18
+      },
+      "81457": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "decimals": 18
+      },
+      "8453": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "decimals": 18
+      }
+    },
+    "chainId": 1,
+    "price": {
+      "value": 2460.76,
+      "available": true
+    },
+    "totalPrice": {
+      "value": 2460.76,
+      "available": true
+    }
+  },
+  "buyTokenAddress": "0xff970a61a04b1ca14834a43f5de4533ebddb5cc8",
+  "buyTokenAsset": {
+    "assetCode": "0xff970a61a04b1ca14834a43f5de4533ebddb5cc8",
+    "decimals": 6,
+    "iconUrl": "https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png",
+    "name": "USD Coin (Bridged)",
+    "network": "arbitrum",
+    "symbol": "USDCe",
+    "networks": {
+      "10": {
+        "address": "0x7f5c764cbc14f9669b88837ca1490cca17c31607",
+        "decimals": 6
+      },
+      "137": {
+        "address": "0x2791bca1f2de4661ed88a30c99a7a9449aa84174",
+        "decimals": 6
+      },
+      "42161": {
+        "address": "0xff970a61a04b1ca14834a43f5de4533ebddb5cc8",
+        "decimals": 6
+      },
+      "43114": {
+        "address": "0xa7d7079b0fead91f3e65f86e8915cb59c1a4c664",
+        "decimals": 6
+      }
+    },
+    "chainId": 42161,
+    "price": {
+      "value": 1.0005602274898475,
+      "available": true
+    },
+    "totalPrice": {
+      "value": 2433.751164889123,
+      "available": true
+    }
+  },
+  "allowanceTarget": "0x3a23F943181408EAC424116Af7b7790c94Cb97a5",
+  "allowanceNeeded": false,
+  "to": "0x3a23F943181408EAC424116Af7b7790c94Cb97a5",
+  "data": "0x37c6145a00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000005a46678f79000000000000000000000000000000000000000000000000000000000000000200000000000000000000000004d5d7b04504530fc2fa5a8a95eafc464861cdf61000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee0000000000000000000000000000000000000000000000000008e1bc9bf04000000000000000000000000000000000000000000000000000000000000000019e00000000000000000000000000000000000000000000000000000000000000e000000000000000000000000000000000000000000000000000000000000001ad000000000000000000000000000000000000000000000000000000000000030000000000000000000000000000000000000000000000000000000000000001e4ee8f0b86000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000dd7d4f70b73c000000000000000000000000000000000000000000000000000000000000000090400000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000001043c2b9a7d000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000111111125421ca6dc452d289314280a0f8842a650000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000001e1f60d1e3ac000000000000000000000000000000000000000000000000000000000000000048a76dfc3b0000000000000000000000000000000000000000000000000000000089bf7ea420000000000000000000000088e6a0c2ddd26feeb64f039a2c41296fcb3f5640d6f2931200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000260000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000c00000000000000000000000000000000000000000000000000000000000000120000000000000000000000000000000000000000000000000000000000000018000000000000000000000000000000000000000000000000000000000000001e00000000000000000000000000000000000000000000000000000000000042a5c000000000000000000000000000000000000000000000000000000000000090400000000000000000000000000000000000000000000000000000000000000020000000000000000000000003c44cdddb6a900fa2b585dd299e03d12fa4293bc0000000000000000000000003c44cdddb6a900fa2b585dd299e03d12fa4293bc0000000000000000000000000000000000000000000000000000000000000002000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000ff970a61a04b1ca14834a43f5de4533ebddb5cc800000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000090fb4d7a000000000000000000000000000000000000000000000000000000000000a4b100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000067097ff3000000000000000000000000000000000000000000000000000000006709d3f900000000000000000000000000000000000000000000000000000000d00dfeeddeadbeef765753be7f7a64d5509974b0d678e1e3149b02f4",
+  "sellAmount": "1000000000000000000",
+  "sellAmountMinusFees": "989021250000000000",
+  "sellAmountDisplay": "1000000000000000000",
+  "sellAmountInEth": "1000000000000000000",
+  "buyAmount": "2432388474",
+  "buyAmountMinusFees": "2432388474",
+  "buyAmountDisplay": "2432388474",
+  "buyAmountDisplayMinimum": "2432388474",
+  "buyAmountInEth": "989024189636178572",
+  "tradeAmountUSD": 2460.76,
+  "tradeFeeAmountUSD": 27.016068850000003,
+  "value": "0x0de0b6b3a7640000",
+  "gasPrice": "",
+  "source": "socket",
+  "protocols": [
+    {
+      "name": "rainbow",
+      "part": 100
+    },
+    {
+      "name": "across",
+      "part": 100
+    }
+  ],
+  "feeTokenAsset": {
+    "assetCode": "eth",
+    "decimals": 18,
+    "iconUrl": "https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/ethereum/eth.png",
+    "name": "Ethereum",
+    "network": "mainnet",
+    "symbol": "ETH",
+    "networks": {
+      "1": {
+        "address": "eth",
+        "decimals": 18
+      },
+      "10": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "decimals": 18
+      },
+      "42161": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "decimals": 18
+      },
+      "56": {
+        "address": "0x2170ed0880ac9a755fd29b2688956bd959f933f8",
+        "decimals": 18
+      },
+      "7777777": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "decimals": 18
+      },
+      "81457": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "decimals": 18
+      },
+      "8453": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "decimals": 18
+      }
+    },
+    "chainId": 1,
+    "price": {
+      "value": 2460.76,
+      "available": true
+    },
+    "totalPrice": {
+      "value": 27.016068850000003,
+      "available": true
+    }
+  },
+  "fee": "10978750000000000",
+  "feeInEth": "10978750000000000",
+  "feePercentageBasisPoints": "10978750000000000",
+  "tradeType": "exact_input",
+  "from": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+  "defaultGasLimit": "488600",
+  "swapType": "cross-chain",
+  "txTarget": "0x3a23F943181408EAC424116Af7b7790c94Cb97a5",
+  "chainId": 1,
+  "routes": [
+    {
+      "routeId": "17fdbc04-d034-40e4-b7e6-f8254d2c181c",
+      "isOnlySwapRoute": false,
+      "fromAmount": "1000000000000000000",
+      "toAmount": "2432388474",
+      "usedBridgeNames": [
+        "across"
+      ],
+      "minimumGasBalances": {
+        "1": "30000000000000000",
+        "42161": "2800000000000000"
+      },
+      "chainGasBalances": {
+        "1": {
+          "minGasBalance": "30000000000000000",
+          "hasGasBalance": false
+        },
+        "42161": {
+          "minGasBalance": "2800000000000000",
+          "hasGasBalance": false
+        }
+      },
+      "totalUserTx": 1,
+      "sender": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+      "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+      "totalGasFeesInUsd": 17.000104106522077,
+      "receivedValueInUsd": 2409.891165893478,
+      "userTxs": [
+        {
+          "userTxType": "fund-movr",
+          "txType": "eth_sendTransaction",
+          "chainId": 1,
+          "toAmount": "2432388474",
+          "toAsset": {
+            "chainId": 42161,
+            "address": "0xff970a61a04b1ca14834a43f5de4533ebddb5cc8",
+            "symbol": "USDC.E",
+            "name": "Bridged USDC",
+            "decimals": 6,
+            "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+            "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+            "chainAgnosticId": "USDC"
+          },
+          "stepCount": 2,
+          "routePath": "414-429",
+          "sender": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+          "approvalData": null,
+          "steps": [
+            {
+              "type": "middleware",
+              "protocol": {
+                "name": "rainbow",
+                "displayName": "Rainbow",
+                "icon": "https://banner2.cleanpng.com/20180329/ddw/kisspng-computer-icons-rainbow-rainbow-5abcd7ebef8553.4712289415223254839811.jpg",
+                "sellAmountMinusFees": "989021250000000000",
+                "buyAmountMinusFees": "2432661462",
+                "feePercentageBasisPoints": "8500000000000000"
+              },
+              "swapSlippage": 5,
+              "chainId": 1,
+              "fromAsset": {
+                "chainId": 1,
+                "address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+                "symbol": "ETH",
+                "name": "Ethereum",
+                "decimals": 18,
+                "icon": "https://assets.polygon.technology/tokenAssets/eth.svg",
+                "logoURI": "https://assets.polygon.technology/tokenAssets/eth.svg",
+                "chainAgnosticId": null
+              },
+              "fromAmount": "997500000000000000",
+              "toAsset": {
+                "chainId": 1,
+                "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+                "symbol": "USDC",
+                "name": "USDCoin",
+                "decimals": 6,
+                "icon": "https://assets.polygon.technology/tokenAssets/usdc.svg",
+                "logoURI": "https://assets.polygon.technology/tokenAssets/usdc.svg",
+                "chainAgnosticId": "USDC"
+              },
+              "toAmount": "2432661462",
+              "minAmountOut": "2311028388",
+              "protocolFees": {
+                "amount": "",
+                "asset": {
+                  "chainId": 0,
+                  "address": "",
+                  "symbol": "",
+                  "name": "",
+                  "decimals": 0,
+                  "icon": "",
+                  "logoURI": "",
+                  "chainAgnosticId": null
+                },
+                "feesInUsd": 0
+              },
+              "gasFees": {
+                "gasAmount": "4947981636500000",
+                "gasLimit": 350000,
+                "asset": {
+                  "chainId": 1,
+                  "address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+                  "symbol": "ETH",
+                  "name": "Ethereum",
+                  "decimals": 18,
+                  "icon": "https://assets.polygon.technology/tokenAssets/eth.svg",
+                  "logoURI": "https://assets.polygon.technology/tokenAssets/eth.svg",
+                  "chainAgnosticId": null
+                },
+                "feesInUsd": 12.177725004671975
+              }
+            },
+            {
+              "type": "bridge",
+              "protocol": {
+                "name": "across",
+                "displayName": "Across",
+                "icon": "https://miro.medium.com/max/800/1*PN_F5yW4VMBgs_xX-fsyzQ.png",
+                "securityScore": 3,
+                "robustnessScore": 4,
+                "sellAmountMinusFees": "",
+                "buyAmountMinusFees": "",
+                "feePercentageBasisPoints": ""
+              },
+              "swapSlippage": 0,
+              "fromChainId": 1,
+              "fromAsset": {
+                "chainId": 1,
+                "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+                "symbol": "USDC",
+                "name": "USDCoin",
+                "decimals": 6,
+                "icon": "https://assets.polygon.technology/tokenAssets/usdc.svg",
+                "logoURI": "https://assets.polygon.technology/tokenAssets/usdc.svg",
+                "chainAgnosticId": "USDC"
+              },
+              "fromAmount": "2432661462",
+              "toChainId": 42161,
+              "toAsset": {
+                "chainId": 42161,
+                "address": "0xff970a61a04b1ca14834a43f5de4533ebddb5cc8",
+                "symbol": "USDC.E",
+                "name": "Bridged USDC",
+                "decimals": 6,
+                "icon": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+                "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+                "chainAgnosticId": "USDC"
+              },
+              "toAmount": "2432388474",
+              "minAmountOut": "2432388474",
+              "protocolFees": {
+                "amount": "272988",
+                "asset": {
+                  "chainId": 1,
+                  "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+                  "symbol": "USDC",
+                  "name": "USDCoin",
+                  "decimals": 6,
+                  "icon": "https://assets.polygon.technology/tokenAssets/usdc.svg",
+                  "logoURI": "https://assets.polygon.technology/tokenAssets/usdc.svg",
+                  "chainAgnosticId": "USDC"
+                },
+                "feesInUsd": 0.272988
+              },
+              "gasFees": {
+                "gasAmount": "1959400728054000",
+                "gasLimit": 138600,
+                "asset": {
+                  "chainId": 1,
+                  "address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+                  "symbol": "ETH",
+                  "name": "Ethereum",
+                  "decimals": 18,
+                  "icon": "https://assets.polygon.technology/tokenAssets/eth.svg",
+                  "logoURI": "https://assets.polygon.technology/tokenAssets/eth.svg",
+                  "chainAgnosticId": null
+                },
+                "feesInUsd": 4.822379101850102
+              },
+              "serviceTime": 60,
+              "maxServiceTime": 18000
+            }
+          ],
+          "gasFees": {
+            "gasAmount": "6907382364554000",
+            "gasLimit": 488600,
+            "asset": {
+              "chainId": 1,
+              "address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+              "symbol": "ETH",
+              "name": "Ethereum",
+              "decimals": 18,
+              "icon": "https://assets.polygon.technology/tokenAssets/eth.svg",
+              "logoURI": "https://assets.polygon.technology/tokenAssets/eth.svg",
+              "chainAgnosticId": null
+            },
+            "feesInUsd": 17.000104106522077
+          },
+          "serviceTime": 60,
+          "recipient": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+          "maxServiceTime": 18000,
+          "bridgeSlippage": 0,
+          "swapSlippage": 5,
+          "userTxIndex": 0
+        }
+      ],
+      "serviceTime": 60,
+      "maxServiceTime": 18000,
+      "integratorFee": {
+        "amount": "2500000000000000",
+        "feeTakerAddress": "0x4D5D7B04504530fc2fa5A8a95Eafc464861cDf61",
+        "asset": {
+          "chainId": 1,
+          "address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+          "symbol": "ETH",
+          "name": "Ethereum",
+          "decimals": 18,
+          "icon": "https://media.socket.tech/tokens/all/ETH",
+          "logoURI": "https://media.socket.tech/tokens/all/ETH",
+          "chainAgnosticId": null
+        }
+      }
+    }
+  ],
+  "refuel": null,
+  "no_approval": false
+}

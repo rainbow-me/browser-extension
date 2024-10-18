@@ -1,3 +1,5 @@
+import path from 'path';
+
 import { UserConfig, mergeConfig } from 'vite';
 import { defineConfig } from 'vitest/config';
 
@@ -20,6 +22,7 @@ export default mergeConfig(
           }
         },
       },
+      setupFiles: [path.resolve(__dirname, '../setup.ts')],
     },
   }) as UserConfig,
 );

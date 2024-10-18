@@ -2,6 +2,7 @@ import { AddressZero } from '@ethersproject/constants';
 import {
   CrosschainQuote,
   QuoteError,
+  configureSDK,
   getClaimBridgeQuote,
 } from '@rainbow-me/swaps';
 import { Address } from 'viem';
@@ -26,6 +27,10 @@ import { getProvider } from '~/core/wagmi/clientToProvider';
 import { ActionProps } from '../references';
 
 import { executeCrosschainSwap } from './crosschainSwap';
+
+const IS_TESTING = process.env.IS_TESTING === 'true';
+
+IS_TESTING && configureSDK({ apiBaseUrl: 'http://127.0.0.1:3001' });
 
 // This action is used to bridge the claimed funds to another chain
 export async function claimBridge({
