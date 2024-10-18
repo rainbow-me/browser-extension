@@ -35,6 +35,8 @@ export const chainHardhatOptimism: Chain = {
 };
 
 export enum ChainName {
+  apechain = 'apechain',
+  apechainCurtis = 'apechain-curtis',
   arbitrum = 'arbitrum',
   arbitrumNova = 'arbitrum-nova',
   arbitrumSepolia = 'arbitrum-sepolia',
@@ -84,6 +86,8 @@ export enum ChainName {
 }
 
 export enum ChainId {
+  apechain = 33139,
+  apechainCurtis = chains.curtis.id,
   arbitrum = chains.arbitrum.id,
   arbitrumNova = chains.arbitrumNova.id,
   arbitrumSepolia = chains.arbitrumSepolia.id,
@@ -137,6 +141,8 @@ export const chainNameToIdMapping: {
 } = {
   ['ethereum']: ChainId.mainnet,
   ['ethereum-sepolia']: ChainId.sepolia,
+  [ChainName.apechain]: ChainId.apechain,
+  [ChainName.apechainCurtis]: ChainId.apechainCurtis,
   [ChainName.arbitrum]: ChainId.arbitrum,
   [ChainName.arbitrumNova]: ChainId.arbitrumNova,
   [ChainName.arbitrumSepolia]: ChainId.arbitrumSepolia,
@@ -188,6 +194,8 @@ export const chainNameToIdMapping: {
 export const chainIdToNameMapping: {
   [key in ChainId]: ChainName;
 } = {
+  [ChainId.apechain]: ChainName.apechain,
+  [ChainId.apechainCurtis]: ChainName.apechainCurtis,
   [ChainId.arbitrum]: ChainName.arbitrum,
   [ChainId.arbitrumNova]: ChainName.arbitrumNova,
   [ChainId.arbitrumSepolia]: ChainName.arbitrumSepolia,

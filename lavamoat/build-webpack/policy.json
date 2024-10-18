@@ -614,10 +614,10 @@
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-split-export-declaration": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-validator-identifier": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": true,
         "jest>@jest/core>jest-snapshot>@babel/traverse": true,
-        "jest>@jest/core>jest-snapshot>@babel/types": true,
-        "jest>@jest/core>jest-snapshot>@babel/types>@babel/helper-validator-identifier": true
+        "jest>@jest/core>jest-snapshot>@babel/types": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": {
@@ -1142,8 +1142,15 @@
         "process.emitWarning": true
       },
       "packages": {
+        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/code-frame>@babel/highlight": true,
+        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/code-frame>chalk": true
+      }
+    },
+    "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/code-frame>@babel/highlight": {
+      "packages": {
         "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/code-frame>chalk": true,
-        "lavamoat>@babel/highlight": true
+        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/types>@babel/helper-validator-identifier": true,
+        "react>loose-envify>js-tokens": true
       }
     },
     "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/code-frame>chalk": {
@@ -1217,34 +1224,6 @@
         "lavamoat>lavamoat-core>@babel/types>to-fast-properties": true
       }
     },
-    "lavamoat>@babel/highlight": {
-      "packages": {
-        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
-        "lavamoat>@babel/highlight>chalk": true,
-        "react>loose-envify>js-tokens": true
-      }
-    },
-    "lavamoat>@babel/highlight>chalk": {
-      "globals": {
-        "process.env.TERM": true,
-        "process.platform": true
-      },
-      "packages": {
-        "lavamoat>@babel/highlight>chalk>ansi-styles": true,
-        "lavamoat>@babel/highlight>chalk>escape-string-regexp": true,
-        "supports-color": true
-      }
-    },
-    "lavamoat>@babel/highlight>chalk>ansi-styles": {
-      "packages": {
-        "lavamoat>@babel/highlight>chalk>ansi-styles>color-convert": true
-      }
-    },
-    "lavamoat>@babel/highlight>chalk>ansi-styles>color-convert": {
-      "packages": {
-        "lavamoat>@babel/highlight>chalk>ansi-styles>color-convert>color-name": true
-      }
-    },
     "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name": {
       "packages": {
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template": true,
@@ -1264,8 +1243,15 @@
         "process.emitWarning": true
       },
       "packages": {
-        "lavamoat>@babel/highlight": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>@babel/highlight": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk": true
+      }
+    },
+    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>@babel/highlight": {
+      "packages": {
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/types>@babel/helper-validator-identifier": true,
+        "react>loose-envify>js-tokens": true
       }
     },
     "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk": {

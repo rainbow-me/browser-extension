@@ -1,5 +1,6 @@
 import { AddressZero } from '@ethersproject/constants';
 
+import ApeChainBadge from 'static/assets/badges/apechainBadge@3x.png';
 import ArbitrumBadge from 'static/assets/badges/arbitrumBadge@3x.png';
 import AvalancheBadge from 'static/assets/badges/avalancheBadge@3x.png';
 import BaseBadge from 'static/assets/badges/baseBadge@3x.png';
@@ -62,6 +63,8 @@ const networkBadges = {
   [ChainId.blast]: BlastBadge,
   [ChainId.blastSepolia]: BlastBadge,
   [ChainId.degen]: DegenBadge,
+  [ChainId.apechain]: ApeChainBadge,
+  [ChainId.apechainCurtis]: ApeChainBadge,
 };
 
 const ChainBadge = ({

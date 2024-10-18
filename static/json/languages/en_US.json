@@ -1666,13 +1666,18 @@
         },
         "blast": {
           "title": "What's Blast?",
-          "description_1": "Blast is an Ethereum Layer-2 (L2) platform created by the same talented team behind Blur, the popular NFT marketplace.",
+          "description_1": "Blast is an Ethereum Layer 2 platform created by the same talented team behind Blur, the popular NFT marketplace.",
           "description_2": "The chain distinguishes itself with the introduction of native yield for ether (ETH) and various stablecoins such as USDC, USDT, and DAI."
         },
         "degen": {
           "title": "What's Degen?",
-          "description_1": "Degen Chain is a Layer 3 network that runs on top of Arbitrum and Ethereum.",
+          "description_1": "Degen Chain is a Layer 3 network that runs on top of Arbitrum Orbit and Ethereum.",
           "description_2": "It offering incredibly fast and cheap transactions denominated in the Farcaster community token $degen."
+        },
+        "apechain": {
+          "title": "What's ApeChain?",
+          "description_1": "ApeChain is a Layer 3 network that runs on top of Arbitrum Orbit and Ethereum.",
+          "description_2": "It significantly enhances ApeCoin's utility, fostering a robust and dynamic economy driven by $APE."
         },
         "custom_network": {
           "title": "What's this Network?",

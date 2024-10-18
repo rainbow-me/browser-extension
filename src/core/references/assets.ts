@@ -15,6 +15,7 @@ import {
   coreDao,
   cronos,
   cronosTestnet,
+  curtis,
   degen,
   dogechain,
   fantom,
@@ -76,6 +77,8 @@ import {
 import { ChainId } from '../types/chains';
 
 export const customChainIdsToAssetNames: Record<ChainId, string> = {
+  33139: 'apechain',
+  [curtis.id]: 'apechaincurtis',
   [arbitrumNova.id]: 'arbitrumnova',
   [aurora.id]: 'aurora',
   [auroraTestnet.id]: 'auroratestnet',
