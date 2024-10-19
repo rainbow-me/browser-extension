@@ -9,18 +9,14 @@ import { ChainId } from '~/core/types/chains';
 async function fetchFavoriteToken(address: AddressOrEth, chain: ChainId) {
   const results = await fetchTokenSearch({
     chainId: chain,
-    keys: ['address'],
     list: 'verifiedAssets',
-    threshold: 'CASE_SENSITIVE_EQUAL',
     query: address.toLowerCase(),
   });
   if (results?.[0]) return results[0];
 
   const unverifiedSearchResults = await fetchTokenSearch({
     chainId: chain,
-    keys: ['address'],
     list: 'highLiquidityAssets',
-    threshold: 'CASE_SENSITIVE_EQUAL',
     query: address.toLowerCase(),
   });
   if (!unverifiedSearchResults?.[0]) return unverifiedSearchResults[0];

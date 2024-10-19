@@ -18,7 +18,6 @@ import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmal
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useHiddenAssetStore } from '~/core/state/hiddenAssets/hiddenAssets';
 import { ParsedUserAsset } from '~/core/types/assets';
-import { TokenSearchAssetKey, TokenSearchThreshold } from '~/core/types/search';
 import { isENSAddressFormat } from '~/core/utils/ethereum';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
@@ -70,21 +69,6 @@ export const useSearchableTokens = ({
     !isENSAddressFormat(debouncedSearchQuery) &&
     !testnetMode;
 
-  const queryIsAddress = useMemo(
-    () => isAddress(debouncedSearchQuery),
-    [debouncedSearchQuery],
-  );
-
-  const keys: TokenSearchAssetKey[] = useMemo(
-    () => (queryIsAddress ? ['address'] : ['name', 'symbol']),
-    [queryIsAddress],
-  );
-
-  const threshold: TokenSearchThreshold = useMemo(
-    () => (queryIsAddress ? 'CASE_SENSITIVE_EQUAL' : 'CONTAINS'),
-    [queryIsAddress],
-  );
-
   const enableSearchChainAssets = isAddress(query) && !testnetMode;
 
   // All on chain searched assets from all user chains
@@ -111,8 +95,6 @@ export const useSearchableTokens = ({
   } = useTokenSearchAllNetworks(
     {
       list: 'verifiedAssets',
-      keys,
-      threshold,
       query: debouncedSearchQuery,
     },
     {
@@ -131,8 +113,6 @@ export const useSearchableTokens = ({
   } = useTokenSearchAllNetworks(
     {
       list: 'highLiquidityAssets',
-      keys,
-      threshold,
       query: debouncedSearchQuery,
     },
     {

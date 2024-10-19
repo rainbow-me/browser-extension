@@ -1,6 +1,5 @@
 import { isAddress } from '@ethersproject/address';
 import { uniqBy } from 'lodash';
-import { rankings } from 'match-sorter';
 import { useCallback, useMemo } from 'react';
 import { Address } from 'viem';
 
@@ -12,30 +11,18 @@ import { useTokenSearchAllNetworks } from '~/core/resources/search/tokenSearch';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import {
-  SearchAsset,
-  TokenSearchAssetKey,
-  TokenSearchListId,
-  TokenSearchThreshold,
-} from '~/core/types/search';
+import { SearchAsset, TokenSearchListId } from '~/core/types/search';
 import { isSameAsset } from '~/core/utils/assets';
 import { getChain, isNativeAsset } from '~/core/utils/chains';
-import { addHexPrefix } from '~/core/utils/hex';
 import { isLowerCaseMatch } from '~/core/utils/strings';
-
-import { filterList } from '../utils/search';
 
 import { useFavoriteAssets } from './useFavoriteAssets';
 
 const VERIFIED_ASSETS_PAYLOAD: {
-  keys: TokenSearchAssetKey[];
   list: TokenSearchListId;
-  threshold: TokenSearchThreshold;
   query: string;
 } = {
-  keys: ['symbol', 'name'],
   list: 'verifiedAssets',
-  threshold: 'CONTAINS',
   query: '',
 };
 
@@ -83,6 +70,18 @@ function difference(
   });
 }
 
+function queryMatchesAsset(
+  query: string,
+  { symbol, name, address, mainnetAddress }: SearchAsset,
+) {
+  return (
+    symbol.toLowerCase().includes(query) ||
+    name.toLowerCase().includes(query) ||
+    isLowerCaseMatch(address, query) ||
+    isLowerCaseMatch(mainnetAddress, query)
+  );
+}
+
 export function useSearchCurrencyLists({
   assetToSell,
   inputChainId,
@@ -102,30 +101,15 @@ export function useSearchCurrencyLists({
   const query = searchQuery?.toLowerCase() || '';
   const enableUnverifiedSearch = query.trim().length > 2;
 
-  const isCrosschainSearch = useMemo(() => {
-    return inputChainId && inputChainId !== outputChainId;
-  }, [inputChainId, outputChainId]);
+  const isCrosschainSearch = inputChainId && inputChainId !== outputChainId;
 
   // provided during swap to filter token search by available routes
-  const fromChainId = useMemo(() => {
-    return isCrosschainSearch ? inputChainId : undefined;
-  }, [inputChainId, isCrosschainSearch]);
-
-  const queryIsAddress = useMemo(() => isAddress(query), [query]);
-
-  const keys: TokenSearchAssetKey[] = useMemo(
-    () => (queryIsAddress ? ['address'] : ['name', 'symbol']),
-    [queryIsAddress],
-  );
-
-  const threshold: TokenSearchThreshold = useMemo(
-    () => (queryIsAddress ? 'CASE_SENSITIVE_EQUAL' : 'CONTAINS'),
-    [queryIsAddress],
-  );
+  const fromChainId = isCrosschainSearch ? inputChainId : undefined;
 
   const { testnetMode } = useTestnetModeStore();
 
-  const enableAllNetworkTokenSearch = queryIsAddress && !testnetMode && !bridge;
+  const enableAllNetworkTokenSearch =
+    isAddress(query) && !testnetMode && !bridge;
 
   const networkSearchStatus = enableAllNetworkTokenSearch
     ? AssetToBuyNetworkSearchStatus.all
@@ -217,9 +201,7 @@ export function useSearchCurrencyLists({
     useTokenSearch(
       {
         chainId: outputChainId,
-        keys,
         list: 'verifiedAssets',
-        threshold,
         query,
         fromChainId,
       },
@@ -233,9 +215,7 @@ export function useSearchCurrencyLists({
   } = useTokenSearch(
     {
       chainId: outputChainId,
-      keys,
       list: 'highLiquidityAssets',
-      threshold,
       query,
       fromChainId,
     },
@@ -246,12 +226,7 @@ export function useSearchCurrencyLists({
 
   // All verified assets from all user chains
   const { data: targetAllNetworksUnverifiedAssets } = useTokenSearchAllNetworks(
-    {
-      keys,
-      list: 'highLiquidityAssets',
-      threshold,
-      query,
-    },
+    { list: 'highLiquidityAssets', query },
     {
       select: (data: SearchAsset[]) => {
         if (!enableAllNetworkTokenSearch) return [];
@@ -264,12 +239,7 @@ export function useSearchCurrencyLists({
 
   // All verified assets from all user chains
   const { data: targetAllNetworksVerifiedAssets } = useTokenSearchAllNetworks(
-    {
-      keys,
-      list: 'verifiedAssets',
-      threshold,
-      query,
-    },
+    { list: 'verifiedAssets', query },
     {
       select: (data: SearchAsset[]) => {
         if (!enableAllNetworkTokenSearch) return [];
@@ -298,22 +268,22 @@ export function useSearchCurrencyLists({
 
   const { data: popularAssets = [] } = useTokenDiscovery({
     chainId: outputChainId,
+    select(popularAssets) {
+      if (!query) return popularAssets.slice(0, 3);
+      const a = popularAssets.filter((asset) =>
+        queryMatchesAsset(query, asset),
+      );
+      console.log('popularAssets', { a });
+      return a;
+    },
   });
 
   const { favorites } = useFavoriteAssets(outputChainId);
 
   const favoritesList = useMemo(() => {
     if (!query) return favorites;
-
-    const formattedQuery = queryIsAddress
-      ? addHexPrefix(query).toLowerCase()
-      : query;
-    return filterList<SearchAsset>(favorites || [], formattedQuery, keys, {
-      threshold: queryIsAddress
-        ? rankings.CASE_SENSITIVE_EQUAL
-        : rankings.CONTAINS,
-    });
-  }, [favorites, keys, query, queryIsAddress]);
+    return favorites.filter((asset) => queryMatchesAsset(query, asset));
+  }, [favorites, query]);
 
   // static verified asset lists prefetched to display curated lists
   // we only display crosschain exact matches if located here
@@ -489,7 +459,7 @@ export function useSearchCurrencyLists({
       return sections;
     }
 
-    if (!query && popularAssets?.length) {
+    if (popularAssets?.length) {
       sections.push({ id: 'popular', data: popularAssets });
     }
 
@@ -585,7 +555,7 @@ export function useSearchCurrencyLists({
 
       if (!sections.length && crosschainExactMatches?.length) {
         sections.push({
-          data: difference(crosschainExactMatches, otherSectionsAssets),
+          data: crosschainExactMatches,
           id: 'other_networks',
         });
       }
