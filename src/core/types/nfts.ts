@@ -9,6 +9,7 @@ export interface PolygonAllowListDictionary {
 export enum SimpleHashChain {
   AlignTestnet = 'align-testnet',
   AnomalyAndromedaTestnet = 'anomaly-andromeda-testnet',
+  Apechain = 'apechain',
   Arbitrum = 'arbitrum',
   ArbitrumNova = 'arbitrum-nova',
   ArbitrumSepolia = 'arbitrum-sepolia',
