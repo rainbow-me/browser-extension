@@ -1,6 +1,11 @@
 /* eslint-disable no-nested-ternary */
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
+import {
+  CrosschainQuote,
+  Quote,
+  QuoteError,
+  configureSDK,
+} from '@rainbow-me/swaps';
 import { useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'viem';
@@ -38,6 +43,10 @@ import {
 import { useDebounce } from './useDebounce';
 import usePrevious from './usePrevious';
 import { useUserNativeAsset } from './useUserNativeAsset';
+
+const IS_TESTING = process.env.IS_TESTING === 'true';
+
+IS_TESTING && configureSDK({ apiBaseUrl: 'http://127.0.0.1:3001' });
 
 const useGas = ({
   chainId,

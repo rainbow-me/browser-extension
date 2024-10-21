@@ -1,5 +1,9 @@
 import { Signer } from '@ethersproject/abstract-signer';
-import { CrosschainQuote, fillCrosschainQuote } from '@rainbow-me/swaps';
+import {
+  CrosschainQuote,
+  configureSDK,
+  fillCrosschainQuote,
+} from '@rainbow-me/swaps';
 import { Address } from 'viem';
 
 import { REFERRER, ReferrerType } from '~/core/references';
@@ -25,6 +29,10 @@ import {
   getDefaultGasLimitForTrade,
   overrideWithFastSpeedIfNeeded,
 } from '../utils';
+
+const IS_TESTING = process.env.IS_TESTING === 'true';
+
+IS_TESTING && configureSDK({ apiBaseUrl: 'http://127.0.0.1:3001' });
 
 const getCrosschainSwapDefaultGasLimit = (quote: CrosschainQuote) =>
   quote?.routes?.[0]?.userTxs?.[0]?.gasFees?.gasLimit;

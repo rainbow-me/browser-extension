@@ -3,6 +3,7 @@ import {
   ETH_ADDRESS,
   Quote,
   WRAPPED_ASSET,
+  configureSDK,
 } from '@rainbow-me/swaps';
 
 import { i18n } from '../languages';
@@ -11,6 +12,10 @@ import { ParsedSearchAsset } from '../types/assets';
 import { ChainId } from '../types/chains';
 
 import { isLowerCaseMatch } from './strings';
+
+const IS_TESTING = process.env.IS_TESTING === 'true';
+
+IS_TESTING && configureSDK({ apiBaseUrl: 'http://127.0.0.1:3001' });
 
 export const getQuoteServiceTime = ({
   quote,

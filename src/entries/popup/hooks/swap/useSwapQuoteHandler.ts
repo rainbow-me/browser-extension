@@ -1,4 +1,9 @@
-import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
+import {
+  CrosschainQuote,
+  Quote,
+  QuoteError,
+  configureSDK,
+} from '@rainbow-me/swaps';
 import { useEffect } from 'react';
 
 import { ParsedSearchAsset } from '~/core/types/assets';
@@ -7,6 +12,10 @@ import { convertRawAmountToBalance } from '~/core/utils/numbers';
 import usePrevious from '../usePrevious';
 
 import { IndependentField } from './useSwapInputs';
+
+const IS_TESTING = process.env.IS_TESTING === 'true';
+
+IS_TESTING && configureSDK({ apiBaseUrl: 'http://127.0.0.1:3001' });
 
 interface SwapQuoteHandlerProps {
   assetToBuy: ParsedSearchAsset | null;
