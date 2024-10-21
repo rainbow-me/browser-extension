@@ -3,7 +3,6 @@ import {
   ETH_ADDRESS as ETH_ADDRESS_AGGREGATORS,
   Quote,
   QuoteError,
-  SwapType,
   getQuote,
 } from '@rainbow-me/swaps';
 import { mainnet } from 'viem/chains';
@@ -30,7 +29,6 @@ beforeAll(async () => {
     sellAmount: '1000000000000000000',
     slippage: 5,
     destReceiver: TEST_ADDRESS_2,
-    swapType: SwapType.normal,
     toChainId: 1,
     currency: 'USD',
   });
