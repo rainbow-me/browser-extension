@@ -1,4 +1,3 @@
-import { isAddress } from '@ethersproject/address';
 import { useQueries, useQuery } from '@tanstack/react-query';
 import qs from 'qs';
 
@@ -27,9 +26,7 @@ import { parseTokenSearch } from './parseTokenSearch';
 export type TokenSearchArgs = {
   chainId: ChainId;
   fromChainId?: ChainId | '';
-  keys: TokenSearchAssetKey[];
   list: TokenSearchListId;
-  threshold: TokenSearchThreshold;
   query: string;
 };
 
@@ -46,14 +43,12 @@ export type TokenSearchAllNetworksArgs = {
 const tokenSearchQueryKey = ({
   chainId,
   fromChainId,
-  keys,
   list,
-  threshold,
   query,
 }: TokenSearchArgs) =>
   createQueryKey(
     'TokenSearch',
-    { chainId, fromChainId, keys, list, threshold, query },
+    { chainId, fromChainId, list, query },
     { persisterVersion: 2 },
   );
 
@@ -63,25 +58,18 @@ type TokenSearchQueryKey = ReturnType<typeof tokenSearchQueryKey>;
 // Query Function
 
 async function tokenSearchQueryFunction({
-  queryKey: [{ chainId, fromChainId, keys, list, threshold, query }],
+  queryKey: [{ chainId, fromChainId, list, query }],
 }: QueryFunctionArgs<typeof tokenSearchQueryKey>) {
   const queryParams: {
-    keys: string;
     list: TokenSearchListId;
-    threshold: TokenSearchThreshold;
     query?: string;
     fromChainId?: number;
   } = {
-    keys: keys.join(','),
     list,
-    threshold,
     query,
   };
   if (fromChainId) {
     queryParams.fromChainId = fromChainId;
-  }
-  if (isAddress(query)) {
-    queryParams.keys = `networks.${chainId}.address`;
   }
   const url = `/${chainId}/?${qs.stringify(queryParams)}`;
   try {
@@ -100,7 +88,7 @@ type TokenSearchResult = QueryFunctionResult<typeof tokenSearchQueryFunction>;
 // Query Fetcher
 
 export async function fetchTokenSearch(
-  { chainId, fromChainId, keys, list, threshold, query }: TokenSearchArgs,
+  { chainId, fromChainId, list, query }: TokenSearchArgs,
   config: QueryConfig<
     TokenSearchResult,
     Error,
@@ -112,9 +100,7 @@ export async function fetchTokenSearch(
     queryKey: tokenSearchQueryKey({
       chainId,
       fromChainId,
-      keys,
       list,
-      threshold,
       query,
     }),
     queryFn: tokenSearchQueryFunction,
@@ -126,7 +112,7 @@ export async function fetchTokenSearch(
 // Query Hook
 
 export function useTokenSearch(
-  { chainId, fromChainId, keys, list, threshold, query }: TokenSearchArgs,
+  { chainId, fromChainId, list, query }: TokenSearchArgs,
   config: QueryConfig<
     TokenSearchResult,
     Error,
@@ -138,9 +124,7 @@ export function useTokenSearch(
     queryKey: tokenSearchQueryKey({
       chainId,
       fromChainId,
-      keys,
       list,
-      threshold,
       query,
     }),
     queryFn: tokenSearchQueryFunction,
@@ -152,12 +136,7 @@ export function useTokenSearch(
 // Query Hook
 
 export function useTokenSearchAllNetworks(
-  {
-    keys,
-    list,
-    threshold,
-    query,
-  }: Omit<TokenSearchArgs, 'chainId' | 'fromChainId'>,
+  { list, query }: Omit<TokenSearchArgs, 'chainId' | 'fromChainId'>,
   config: QueryConfig<
     TokenSearchResult,
     Error,
@@ -172,13 +151,7 @@ export function useTokenSearchAllNetworks(
   const queries = useQueries({
     queries: rainbowSupportedChains.map(({ id: chainId }) => {
       return {
-        queryKey: tokenSearchQueryKey({
-          chainId,
-          keys,
-          list,
-          threshold,
-          query,
-        }),
+        queryKey: tokenSearchQueryKey({ chainId, list, query }),
         queryFn: tokenSearchQueryFunction,
         refetchOnWindowFocus: false,
         ...config,
