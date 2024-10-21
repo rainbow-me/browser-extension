@@ -12,11 +12,7 @@ const tokenSearchDiscoveryHttp = createHttpClient({
   timeout: 30000,
 });
 
-type TokenDiscoveryArgs = {
-  chainId: ChainId;
-};
-
-const tokenDiscoveryQueryKey = ({ chainId }: TokenDiscoveryArgs) =>
+const tokenDiscoveryQueryKey = ({ chainId }: { chainId: ChainId }) =>
   createQueryKey('TokenDiscovery', { chainId }, { persisterVersion: 1 });
 
 async function tokenSearchQueryFunction({
@@ -36,12 +32,18 @@ async function tokenSearchQueryFunction({
   }
 }
 
-export function useTokenDiscovery({ chainId }: TokenDiscoveryArgs) {
+export function useTokenDiscovery<T = SearchAsset[]>({
+  chainId,
+  select,
+}: {
+  chainId: ChainId;
+  select?: (data: SearchAsset[]) => T;
+}) {
   return useQuery({
     queryKey: tokenDiscoveryQueryKey({ chainId }),
     queryFn: tokenSearchQueryFunction,
     staleTime: 15 * 60 * 1000, // 15 min
     gcTime: 24 * 60 * 60 * 1000, // 1 day
-    select: (data) => data.slice(0, 3),
+    select,
   });
 }
