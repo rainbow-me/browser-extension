@@ -122,7 +122,7 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
   {
     persist: persistOptions({
       name: 'rainbowChains',
-      version: 9,
+      version: 10,
       migrations: [
         // v1 didn't need a migration
         function v1(s: RainbowChainsState) {
@@ -131,55 +131,73 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
 
         // version 2 added support for Avalanche and Avalanche Fuji
         function v2(state) {
-          return mergeNewOfficiallySupportedChainsState(state, [
+          const rnbwChainState = state as RainbowChainsState;
+          return mergeNewOfficiallySupportedChainsState(rnbwChainState, [
             ChainId.avalanche,
             ChainId.avalancheFuji,
           ]);
         },
 
         // version 3 added support for Blast
-        function v3(state) {
-          return mergeNewOfficiallySupportedChainsState(state, [ChainId.blast]);
+        function v3(state: unknown) {
+          const rnbwChainState = state as RainbowChainsState;
+          return mergeNewOfficiallySupportedChainsState(rnbwChainState, [
+            ChainId.blast,
+          ]);
         },
 
-        function v4(state) {
+        function v4(state: unknown) {
+          const rnbwChainState = state as RainbowChainsState;
           return removeCustomRPC({
-            state,
+            state: rnbwChainState,
             rpcUrl: 'https://rpc.zora.co',
-            rainbowChains: state.rainbowChains,
+            rainbowChains: rnbwChainState.rainbowChains,
           });
         },
 
         // version 5 added support for Degen
-        function v5(state) {
-          return mergeNewOfficiallySupportedChainsState(state, [ChainId.degen]);
+        function v5(state: unknown) {
+          const rnbwChainState = state as RainbowChainsState;
+          return mergeNewOfficiallySupportedChainsState(rnbwChainState, [
+            ChainId.degen,
+          ]);
         },
 
-        function v6(state) {
+        function v6(state: unknown) {
+          const rnbwChainState = state as RainbowChainsState;
           if (
-            !state.rainbowChains[zora.id] ||
-            state.rainbowChains[zora.id]?.chains.length === 0
+            !rnbwChainState.rainbowChains[zora.id] ||
+            rnbwChainState.rainbowChains[zora.id]?.chains.length === 0
           ) {
-            return addCustomRPC({ chain: zora, state });
+            return addCustomRPC({ chain: zora, state: rnbwChainState });
           }
           return state;
         },
 
-        function v7(state) {
+        function v7(state: unknown) {
           return state;
         },
 
-        function v8(state) {
+        function v8(state: unknown) {
+          const rnbwChainState = state as RainbowChainsState;
           if (
-            !state.rainbowChains[degen.id] ||
-            state.rainbowChains[degen.id]?.chains.length === 0
+            !rnbwChainState.rainbowChains[degen.id] ||
+            rnbwChainState.rainbowChains[degen.id]?.chains.length === 0
           ) {
-            return addCustomRPC({ chain: degen, state });
+            return addCustomRPC({
+              chain: degen,
+              state: state as RainbowChainsState,
+            });
           }
           return state;
         },
-        function v9(state) {
-          return replaceChainsWithInitial(state);
+        function v9(state: unknown) {
+          return replaceChainsWithInitial(state as RainbowChainsState);
+        },
+        function v10(state: unknown) {
+          const rnbwState = state as RainbowChainsState;
+          rnbwState.rainbowChains = getInitialRainbowChains();
+          return rnbwState;
         },
       ],
     }),
