@@ -108,7 +108,7 @@ function ConfirmationData({
     <Stack space="24px">
       <InfoRow
         symbol="number"
-        label="TxHash"
+        label="Hash"
         value={
           <CopyableValue
             title={i18n.t('activity_details.hash_copied')}
