@@ -1,23 +1,17 @@
-import {
-  celoAlfajores,
-  fantomTestnet,
-  filecoinCalibration,
-  gnosisChiado,
-  immutableZkEvmTestnet,
-  lightlinkPegasus,
-  lineaSepolia,
-  mantaSepoliaTestnet,
-  mantleSepoliaTestnet,
-  modeTestnet,
-  moonbaseAlpha,
-  opBNBTestnet,
-  palmTestnet,
-  polygonZkEvmCardona,
-  polygonZkEvmTestnet,
-  scrollSepolia,
-} from 'viem/chains';
+import backendNetworks from 'static/data/networks.json';
 
 import { ChainId } from '../types/chains';
+
+const CUSTOM_NETWORK_FAUCETS = backendNetworks.customNetworks
+  .filter((network) => network.testnet.isTestnet)
+  .reduce(
+    (acc, network) => {
+      if (network.testnet.isTestnet && network.testnet.FaucetURL)
+        acc[network.id] = network.testnet.FaucetURL;
+      return acc;
+    },
+    {} as Record<ChainId, string>,
+  );
 
 export const TestnetFaucet = {
   [ChainId.sepolia]: 'https://sepoliafaucet.com',
@@ -31,31 +25,5 @@ export const TestnetFaucet = {
   [ChainId.blastSepolia]: 'https://faucet.quicknode.com/blast/sepolia',
   [ChainId.polygonAmoy]: 'https://faucet.polygon.technology',
   [ChainId.apechainCurtis]: 'https://curtis.hub.caldera.xyz/',
-  [celoAlfajores.id]: 'https://faucet.celo.org/alfajores',
-  [fantomTestnet.id]: 'https://faucet.fantom.network',
-  [filecoinCalibration.id]: 'https://beryx.io/faucet',
-  [gnosisChiado.id]: 'https://faucet.chiadochain.net',
-  [immutableZkEvmTestnet.id]: 'https://hub.immutable.com/faucet',
-  [lightlinkPegasus.id]: 'https://faucet.pegasus.lightlink.io',
-  [lineaSepolia.id]: 'https://www.infura.io/faucet/linea',
-  [mantaSepoliaTestnet.id]:
-    'https://pacific-info.sepolia-testnet.manta.network',
-  [mantleSepoliaTestnet.id]: 'https://faucet.testnet.mantle.xyz',
-  [modeTestnet.id]: 'https://docs.mode.network/tools/testnet-faucets',
-  [moonbaseAlpha.id]: 'https://faucet.moonbeam.network',
-  [opBNBTestnet.id]: 'https://www.l2faucet.com/opbnb',
-  [palmTestnet.id]: 'https://docs.palm.io/get-started/tokens',
-  [polygonZkEvmCardona.id]: 'https://faucet.polygon.technology',
-  [polygonZkEvmTestnet.id]: 'https://faucet.polygon.technology',
-  [scrollSepolia.id]: 'https://faucet.quicknode.com/scroll/sepolia',
-  1123: 'https://bsquared.network/faucet',
-  28882: 'https://l2faucet.com',
-  7701: 'https://cantofaucet.com',
-  1918988905: 'https://testnet.rarichain.org/faucet',
-  59902: 'https://docs.metis.io/dev/readme/getting-test-tokens',
-  686868:
-    'https://docs.merlinchain.io/merlin-docs/developers/builder-guides/networks/testnet#testnet-faucet',
-  568: 'https://faucet.dogechain.dog',
-  2024115: 'https://dogechain-demo.caldera.dev/faucet',
-  63: 'https://easy.hebeswap.com/#/faucet',
-} as const;
+  ...CUSTOM_NETWORK_FAUCETS,
+};
