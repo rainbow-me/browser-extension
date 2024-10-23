@@ -1,6 +1,9 @@
 import create from 'zustand';
 
 import {
+  APE_APECHAIN_ADDRESS,
+  APEETH_APECHAIN_ADDRESS,
+  APEUSD_APECHAIN_ADDRESS,
   AVAX_AVALANCHE_ADDRESS,
   BNB_BSC_ADDRESS,
   DAI_ADDRESS,
@@ -29,6 +32,7 @@ import {
   USDC_BSC_ADDRESS,
   USDC_OPTIMISM_ADDRESS,
   USDC_POLYGON_ADDRESS,
+  WAPE_APECHAIN_ADDRESS,
   WAVAX_AVALANCHE_ADDRESS,
   WBTC_ADDRESS,
   WBTC_ARBITRUM_ADDRESS,
@@ -107,6 +111,12 @@ const defaultFavorites = {
   ],
   [ChainId.blast]: [ETH_BLAST_ADDRESS, WETH_BLAST_ADDRESS, USDB_BLAST_ADDRESS],
   [ChainId.degen]: [DEGEN_DEGEN_ADDRESS],
+  [ChainId.apechain]: [
+    APE_APECHAIN_ADDRESS,
+    WAPE_APECHAIN_ADDRESS,
+    APEETH_APECHAIN_ADDRESS,
+    APEUSD_APECHAIN_ADDRESS,
+  ],
 } satisfies FavoritesState['favorites'];
 
 const mergeNewOfficiallySupportedChainsState = (
@@ -151,7 +161,7 @@ export const favoritesStore = createStore<FavoritesState>(
   {
     persist: persistOptions({
       name: 'favorites',
-      version: 4,
+      version: 5,
       migrations: [
         // version 1 didn't need a migration
         (state: FavoritesState) => state,
@@ -164,6 +174,9 @@ export const favoritesStore = createStore<FavoritesState>(
         // version 4 added degen
         (state) =>
           mergeNewOfficiallySupportedChainsState(state, [ChainId.degen]),
+        // version 5 added apechain
+        (state) =>
+          mergeNewOfficiallySupportedChainsState(state, [ChainId.apechain]),
       ],
     }),
   },

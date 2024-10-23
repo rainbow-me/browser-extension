@@ -88,6 +88,23 @@ interface PersistOptionsWithMigrations {
       ]
     >,
   ): R<Final>;
+  <Final, A, B, C, D, E, F, G, H, I>(
+    opts: Opts<
+      Final,
+      [
+        (s: any) => A,
+        (s: A) => B,
+        (s: B) => C,
+        (s: C) => D,
+        (s: D) => E,
+        (s: E) => F,
+        (s: F) => G,
+        (s: G) => H,
+        (s: H) => I,
+        (s: I) => Final,
+      ]
+    >,
+  ): R<Final>;
 
   // if you need more migrations, add more overloads here
 }

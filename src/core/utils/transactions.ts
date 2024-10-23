@@ -175,20 +175,18 @@ const getAssetFromChanges = (
   return changes[0]?.asset;
 };
 
-const getAddressTo = (
-  meta: PaginatedTransactionsApiResponse['meta'],
-  changes: {
-    direction: TransactionDirection;
-    asset: ParsedUserAsset;
-    address_to: Address;
-  }[],
-) => {
-  if (meta.type === 'approve') {
-    return meta?.approval_to;
+const getAddressTo = (tx: PaginatedTransactionsApiResponse) => {
+  switch (tx.meta.type) {
+    case 'approve':
+      return tx.meta.approval_to;
+    case 'sale':
+      return tx.changes.find((c) => c?.direction === 'out')?.address_to;
+    case 'receive':
+    case 'airdrop':
+      return tx.changes[0]?.address_to;
+    default:
+      return tx.address_to;
   }
-  if (meta.type === 'sale')
-    return changes?.find((c) => c?.direction === 'out')?.address_to;
-  return changes[0]?.address_to;
 };
 
 const getDescription = (
@@ -274,7 +272,7 @@ export function parseTransaction({
     ? parseAsset({ asset: meta.asset, currency })
     : getAssetFromChanges(changes, type);
 
-  const addressTo = asset ? getAddressTo(meta, changes) : tx.address_to;
+  const addressTo = getAddressTo(tx);
 
   const direction = tx.direction || getDirection(type);
 
