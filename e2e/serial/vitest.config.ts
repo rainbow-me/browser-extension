@@ -1,3 +1,5 @@
+import path from 'path';
+
 import { UserConfig, mergeConfig } from 'vite';
 import { defineConfig } from 'vitest/config';
 
@@ -7,7 +9,8 @@ export default mergeConfig(
   viteConfig,
   defineConfig({
     test: {
-      threads: false,
+      isolate: false,
+      fileParallelism: false,
       bail: 1,
       sequence: {
         shuffle: false,
@@ -20,6 +23,7 @@ export default mergeConfig(
           }
         },
       },
+      setupFiles: [path.resolve(__dirname, '../setup.ts')],
     },
   }) as UserConfig,
 );

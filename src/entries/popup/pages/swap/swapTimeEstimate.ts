@@ -1,9 +1,18 @@
-import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
+import {
+  CrosschainQuote,
+  Quote,
+  QuoteError,
+  configureSDK,
+} from '@rainbow-me/swaps';
 
 import {
   getCrossChainTimeEstimate,
   getQuoteServiceTime,
 } from '~/core/utils/swaps';
+
+const IS_TESTING = process.env.IS_TESTING === 'true';
+
+IS_TESTING && configureSDK({ apiBaseUrl: 'http://127.0.0.1:3001' });
 
 export interface SwapTimeEstimate {
   isLongWait: boolean;

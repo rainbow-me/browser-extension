@@ -1,4 +1,4 @@
-import { Source } from '@rainbow-me/swaps';
+import { Source, configureSDK } from '@rainbow-me/swaps';
 import { AnimatePresence, motion } from 'framer-motion';
 import { I18n } from 'i18n-js';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -43,6 +43,10 @@ import { SlippageInputMask } from '../SlippageInputMask';
 import { aggregatorInfo } from '../utils';
 
 import { SwapRouteDropdownMenu } from './SwapRouteDropdownMenu';
+
+const IS_TESTING = process.env.IS_TESTING === 'true';
+
+IS_TESTING && configureSDK({ apiBaseUrl: 'http://127.0.0.1:3001' });
 
 const Label = ({
   label,

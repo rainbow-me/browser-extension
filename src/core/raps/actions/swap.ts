@@ -7,6 +7,7 @@ import {
   Quote,
   ChainId as SwapChainId,
   WRAPPED_ASSET,
+  configureSDK,
   fillQuote,
   getQuoteExecutionDetails,
   getRainbowRouterContractAddress,
@@ -47,6 +48,10 @@ import {
 } from '../utils';
 
 import { populateApprove } from './unlock';
+
+const IS_TESTING = process.env.IS_TESTING === 'true';
+
+IS_TESTING && configureSDK({ apiBaseUrl: 'http://127.0.0.1:3001' });
 
 const WRAP_GAS_PADDING = 1.002;
 

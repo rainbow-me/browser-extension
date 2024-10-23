@@ -1,0 +1,5 @@
+{
+  "error": "400 Client Error: Bad Request for url: https://swap.p.rainbow.me/v1/quote?bridgeVersion=3&buyToken=0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a&chainId=10&currency=USD&fromAddress=0xa0Ee7A142d267C1f36714E4a8F75612F20a79720&refuel=false&sellAmount=1000000000000000000&sellToken=0x4200000000000000000000000000000000000042&slippage=2&swapType=cross-chain&toChainId=42161",
+  "url": "https://swap.p.rainbow.me/v1/quote?bridgeVersion=3&amp;buyToken=0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a&amp;chainId=10&amp;currency=USD&amp;fromAddress=0xa0Ee7A142d267C1f36714E4a8F75612F20a79720&amp;refuel=false&amp;sellAmount=1000000000000000000&amp;sellToken=0x4200000000000000000000000000000000000042&amp;slippage=2&amp;swapType=cross-chain&amp;toChainId=42161",
+  "details": "{\"error\":true,\"error_code\":504,\"message\":\"no routes found\"}"
+}
