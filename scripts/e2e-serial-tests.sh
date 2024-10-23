@@ -22,7 +22,7 @@ launch_anvil() {
 # Function to run tests
 run_tests() {
   echo "Running Tests..."
-  yarn vitest e2e/serial/$1 --config ./e2e/serial/vitest.config.ts --reporter=verbose --bail 1
+  yarn vitest e2e/serial/$1 --config ./e2e/serial/vitest.config.ts --reporter=verbose --bail 1 --run
 }
 
 # Main loop for retry logic

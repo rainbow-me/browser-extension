@@ -12,7 +12,7 @@
     "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight": {
       "packages": {
         "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>chalk": true,
-        "jest>@jest/core>jest-snapshot>@babel/types>@babel/helper-validator-identifier": true,
+        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
         "react>loose-envify>js-tokens": true
       }
     },
@@ -288,12 +288,37 @@
         "path.sep": true
       },
       "packages": {
+        "copy-webpack-plugin>fast-glob": true,
         "copy-webpack-plugin>glob-parent": true,
         "copy-webpack-plugin>globby": true,
         "copy-webpack-plugin>schema-utils": true,
         "copy-webpack-plugin>serialize-javascript": true,
-        "globby>fast-glob": true,
         "lint-staged>normalize-path": true
+      }
+    },
+    "copy-webpack-plugin>fast-glob": {
+      "builtin": {
+        "fs.lstat": true,
+        "fs.lstatSync": true,
+        "fs.readdir": true,
+        "fs.readdirSync": true,
+        "fs.stat": true,
+        "fs.statSync": true,
+        "os.cpus": true,
+        "path.basename": true,
+        "path.resolve": true,
+        "stream.PassThrough": true,
+        "stream.Readable": true
+      },
+      "globals": {
+        "process.cwd": true
+      },
+      "packages": {
+        "eslint>@nodelib/fs.walk": true,
+        "globby>fast-glob>@nodelib/fs.stat": true,
+        "globby>fast-glob>merge2": true,
+        "msw>chokidar>glob-parent": true,
+        "ts-loader>micromatch": true
       }
     },
     "copy-webpack-plugin>glob-parent": {
@@ -323,12 +348,32 @@
         "process.cwd": true
       },
       "packages": {
+        "copy-webpack-plugin>fast-glob": true,
+        "copy-webpack-plugin>globby>array-union": true,
+        "copy-webpack-plugin>globby>dir-glob": true,
         "eslint>ignore": true,
-        "globby>array-union": true,
-        "globby>dir-glob": true,
-        "globby>fast-glob": true,
-        "globby>merge2": true,
-        "globby>slash": true
+        "globby>fast-glob>merge2": true,
+        "jest>@jest/core>slash": true
+      }
+    },
+    "copy-webpack-plugin>globby>dir-glob": {
+      "builtin": {
+        "path.extname": true,
+        "path.isAbsolute": true,
+        "path.join": true,
+        "path.posix.join": true
+      },
+      "globals": {
+        "process.cwd": true
+      },
+      "packages": {
+        "copy-webpack-plugin>globby>dir-glob>path-type": true
+      }
+    },
+    "copy-webpack-plugin>globby>dir-glob>path-type": {
+      "builtin": {
+        "fs": true,
+        "util.promisify": true
       }
     },
     "copy-webpack-plugin>schema-utils": {
@@ -414,8 +459,8 @@
       },
       "packages": {
         "css-loader>postcss>nanoid": true,
-        "css-loader>postcss>source-map-js": true,
-        "vitest>picocolors": true
+        "css-loader>postcss>picocolors": true,
+        "css-loader>postcss>source-map-js": true
       }
     },
     "css-loader>postcss-modules-local-by-default": {
@@ -439,6 +484,16 @@
     "css-loader>postcss-modules-values": {
       "packages": {
         "css-loader>icss-utils": true
+      }
+    },
+    "css-loader>postcss>picocolors": {
+      "builtin": {
+        "tty.isatty": true
+      },
+      "globals": {
+        "process.argv.includes": true,
+        "process.env": true,
+        "process.platform": true
       }
     },
     "dotenv-webpack": {
@@ -617,7 +672,8 @@
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-validator-identifier": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": true,
         "jest>@jest/core>jest-snapshot>@babel/traverse": true,
-        "jest>@jest/core>jest-snapshot>@babel/types": true
+        "jest>@jest/core>jest-snapshot>@babel/types": true,
+        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": {
@@ -808,51 +864,6 @@
         "webpack>schema-utils>ajv-keywords": true
       }
     },
-    "globby>dir-glob": {
-      "builtin": {
-        "path.extname": true,
-        "path.isAbsolute": true,
-        "path.join": true,
-        "path.posix.join": true
-      },
-      "globals": {
-        "process.cwd": true
-      },
-      "packages": {
-        "globby>dir-glob>path-type": true
-      }
-    },
-    "globby>dir-glob>path-type": {
-      "builtin": {
-        "fs": true,
-        "util.promisify": true
-      }
-    },
-    "globby>fast-glob": {
-      "builtin": {
-        "fs.lstat": true,
-        "fs.lstatSync": true,
-        "fs.readdir": true,
-        "fs.readdirSync": true,
-        "fs.stat": true,
-        "fs.statSync": true,
-        "os.cpus": true,
-        "path.basename": true,
-        "path.resolve": true,
-        "stream.PassThrough": true,
-        "stream.Readable": true
-      },
-      "globals": {
-        "process.cwd": true
-      },
-      "packages": {
-        "eslint>@nodelib/fs.walk": true,
-        "globby>fast-glob>@nodelib/fs.stat": true,
-        "globby>merge2": true,
-        "msw>chokidar>glob-parent": true,
-        "ts-loader>micromatch": true
-      }
-    },
     "globby>fast-glob>@nodelib/fs.stat": {
       "builtin": {
         "fs.lstat": true,
@@ -861,7 +872,7 @@
         "fs.statSync": true
       }
     },
-    "globby>merge2": {
+    "globby>fast-glob>merge2": {
       "builtin": {
         "stream.PassThrough": true
       },
@@ -1149,8 +1160,7 @@
     "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/code-frame>@babel/highlight": {
       "packages": {
         "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/code-frame>chalk": true,
-        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/types>@babel/helper-validator-identifier": true,
-        "react>loose-envify>js-tokens": true
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/code-frame>@babel/highlight": true
       }
     },
     "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/code-frame>chalk": {
@@ -1220,8 +1230,36 @@
       },
       "packages": {
         "jest>@jest/core>jest-snapshot>@babel/types>@babel/helper-string-parser": true,
-        "jest>@jest/core>jest-snapshot>@babel/types>@babel/helper-validator-identifier": true,
+        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
         "lavamoat>lavamoat-core>@babel/types>to-fast-properties": true
+      }
+    },
+    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/code-frame>@babel/highlight": {
+      "packages": {
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/code-frame>@babel/highlight>@babel/helper-validator-identifier": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/code-frame>@babel/highlight>chalk": true,
+        "react>loose-envify>js-tokens": true
+      }
+    },
+    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/code-frame>@babel/highlight>chalk": {
+      "globals": {
+        "process.env.TERM": true,
+        "process.platform": true
+      },
+      "packages": {
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/code-frame>@babel/highlight>chalk>ansi-styles": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/code-frame>@babel/highlight>chalk>escape-string-regexp": true,
+        "supports-color": true
+      }
+    },
+    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/code-frame>@babel/highlight>chalk>ansi-styles": {
+      "packages": {
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert": true
+      }
+    },
+    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert": {
+      "packages": {
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert>color-name": true
       }
     },
     "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name": {
@@ -1243,7 +1281,7 @@
         "process.emitWarning": true
       },
       "packages": {
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>@babel/highlight": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/code-frame>@babel/highlight": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk": true
       }
     },
@@ -1603,27 +1641,6 @@
         "viem>ws>bufferutil>node-gyp-build": true
       }
     },
-    "vitest>acorn": {
-      "globals": {
-        "console": true,
-        "define": true
-      }
-    },
-    "vitest>acorn-walk": {
-      "globals": {
-        "define": true
-      }
-    },
-    "vitest>picocolors": {
-      "builtin": {
-        "tty.isatty": true
-      },
-      "globals": {
-        "process.argv.includes": true,
-        "process.env": true,
-        "process.platform": true
-      }
-    },
     "vitest>vite>terser": {
       "globals": {
         "Buffer.from": true,
@@ -1636,19 +1653,13 @@
       },
       "packages": {
         "vitest>vite>terser>@jridgewell/source-map": true,
-        "vitest>vite>terser>acorn": true
+        "webpack>acorn": true
       }
     },
     "vitest>vite>terser>@jridgewell/source-map": {
       "globals": {
         "Buffer": true,
         "TextDecoder": true,
-        "define": true
-      }
-    },
-    "vitest>vite>terser>acorn": {
-      "globals": {
-        "console": true,
         "define": true
       }
     },
@@ -1811,18 +1822,17 @@
       "packages": {
         "lodash": true,
         "viem>ws": true,
-        "vitest>acorn-walk": true,
-        "webpack-bundle-analyzer>acorn": true,
+        "webpack-bundle-analyzer>acorn-walk": true,
         "webpack-bundle-analyzer>chalk": true,
         "webpack-bundle-analyzer>gzip-size": true,
         "webpack-bundle-analyzer>opener": true,
         "webpack-bundle-analyzer>sirv": true,
-        "webpack-cli>@discoveryjs/json-ext": true
+        "webpack-cli>@discoveryjs/json-ext": true,
+        "webpack>acorn": true
       }
     },
-    "webpack-bundle-analyzer>acorn": {
+    "webpack-bundle-analyzer>acorn-walk": {
       "globals": {
-        "console": true,
         "define": true
       }
     },
@@ -2241,14 +2251,20 @@
         "process": true
       },
       "packages": {
-        "vitest>acorn": true,
-        "webpack>terser-webpack-plugin>terser>@jridgewell/source-map": true
+        "webpack>terser-webpack-plugin>terser>@jridgewell/source-map": true,
+        "webpack>terser-webpack-plugin>terser>acorn": true
       }
     },
     "webpack>terser-webpack-plugin>terser>@jridgewell/source-map": {
       "globals": {
         "Buffer": true,
         "TextDecoder": true,
+        "define": true
+      }
+    },
+    "webpack>terser-webpack-plugin>terser>acorn": {
+      "globals": {
+        "console": true,
         "define": true
       }
     },

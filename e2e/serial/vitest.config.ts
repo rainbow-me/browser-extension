@@ -9,7 +9,8 @@ export default mergeConfig(
   viteConfig,
   defineConfig({
     test: {
-      threads: false,
+      isolate: false,
+      fileParallelism: false,
       bail: 1,
       sequence: {
         shuffle: false,
