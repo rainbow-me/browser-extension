@@ -76,7 +76,7 @@ const KNOWN_NETWORKS: Chain[] = [
     },
     testnet: true,
   },
-  ...BACKEND_CUSTOM_CHAINS,
+  ...BACKEND_CUSTOM_CHAINS.sort((a, b) => a.name.localeCompare(b.name)),
 ];
 
 export function SettingsCustomChain() {
