@@ -68,6 +68,24 @@ export const chainsName: Record<number, string> =
     {} as Record<number, string>,
   );
 
+export const chainsIcon: Record<number, string> = (
+  backendNetworks.networks
+    .map((network) => {
+      return [parseInt(network.id, 10), network.icons.badgeURL];
+    })
+    .concat(
+      backendNetworks.customNetworks.map((network) => {
+        return [network.id, network.iconURL];
+      }),
+    ) as [number, string][]
+).reduce(
+  (acc, [chainId, icon]) => {
+    acc[chainId] = icon;
+    return acc;
+  },
+  {} as Record<number, string>,
+);
+
 const filterChainIdsByService = (
   servicePath: (services: BackendNetworkServices) => boolean,
 ): number[] => {

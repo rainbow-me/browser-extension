@@ -20,6 +20,7 @@ import { ChainId, ChainName, chainIdToNameMapping } from '~/core/types/chains';
 import { requestMetadata } from '../graphql';
 import { i18n } from '../languages';
 import { customChainIdsToAssetNames } from '../references/assets';
+import { chainsIcon } from '../references/chains';
 import { AddysPositionAsset } from '../resources/positions';
 import { SearchAsset } from '../types/search';
 import { wagmiConfig } from '../wagmi';
@@ -52,7 +53,7 @@ export const getCustomChainIconUrl = (
     'https://raw.githubusercontent.com/rainbow-me/assets/master/blockchains/';
 
   if (address === AddressZero || address === ETH_ADDRESS) {
-    return `${baseUrl}${customChainIdsToAssetNames[chainId]}/info/logo.png`;
+    return chainsIcon[chainId];
   } else {
     return `${baseUrl}${customChainIdsToAssetNames[chainId]}/assets/${address}/logo.png`;
   }
