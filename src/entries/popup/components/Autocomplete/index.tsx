@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { Command } from 'cmdk';
 import { motion } from 'framer-motion';
 import { forwardRef } from 'react';
+import type { Chain } from 'viem/chains';
 
 import { getCustomChainIconUrl } from '~/core/utils/assets';
 import { Box, Inline, Text } from '~/design-system';
@@ -24,14 +25,8 @@ import {
 
 import ExternalImage from '../ExternalImage/ExternalImage';
 
-export interface AutocompleteItem {
-  name: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  networkInfo: customNetworkInfo;
-}
-
 export interface AutocompleteData {
-  [key: string]: AutocompleteItem[];
+  [key: string]: Chain[];
 }
 
 export interface AutocompleteProps {
@@ -48,15 +43,6 @@ export interface AutocompleteProps {
   tabIndex: number;
   testId?: string;
 }
-
-export type customNetworkInfo = {
-  rpcUrl: string;
-  chainId: number;
-  decimals: number;
-  symbol: string;
-  explorerUrl: string;
-  testnet: boolean;
-};
 
 export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
   function Autocomplete(
@@ -165,45 +151,36 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
                       }}
                     >
                       <Box>
-                        {data[key].map(
-                          (item: {
-                            name: string;
-                            networkInfo: customNetworkInfo;
-                          }) => (
-                            <Command.Item
-                              className={selectedItem}
-                              key={`${key}_${item.name}`}
-                              style={{
-                                margin: '1px 0',
-                                padding: '6px 8px',
-                                borderRadius: '10px',
-                                outline: 'none',
-                              }}
-                              onSelect={() => onSelect(item.name)}
-                              value={item.name}
-                            >
-                              <Inline alignVertical="center" space="8px">
-                                <ExternalImage
-                                  borderRadius="10px"
-                                  customFallbackSymbol="globe"
-                                  height={20}
-                                  src={getCustomChainIconUrl(
-                                    item.networkInfo.chainId,
-                                    AddressZero,
-                                  )}
-                                  width={20}
-                                />
-                                <Text
-                                  color="label"
-                                  size="14pt"
-                                  weight="semibold"
-                                >
-                                  {item.name}
-                                </Text>
-                              </Inline>
-                            </Command.Item>
-                          ),
-                        )}
+                        {data[key].map((item) => (
+                          <Command.Item
+                            className={selectedItem}
+                            key={`${key}_${item.name}`}
+                            style={{
+                              margin: '1px 0',
+                              padding: '6px 8px',
+                              borderRadius: '10px',
+                              outline: 'none',
+                            }}
+                            onSelect={() => onSelect(item.name)}
+                            value={item.name}
+                          >
+                            <Inline alignVertical="center" space="8px">
+                              <ExternalImage
+                                borderRadius="10px"
+                                customFallbackSymbol="globe"
+                                height={20}
+                                src={getCustomChainIconUrl(
+                                  item.id,
+                                  AddressZero,
+                                )}
+                                width={20}
+                              />
+                              <Text color="label" size="14pt" weight="semibold">
+                                {item.name}
+                              </Text>
+                            </Inline>
+                          </Command.Item>
+                        ))}
                       </Box>
                     </Command.Group>
                   );

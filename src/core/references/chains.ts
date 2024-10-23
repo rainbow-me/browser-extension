@@ -11,12 +11,19 @@ import {
   chainHardhat,
   chainHardhatOptimism,
 } from '../types/chains';
-import { transformBackendNetworksToChains } from '../utils/backendNetworks';
+import {
+  transformBackendCustomNetworksToChains,
+  transformBackendNetworksToChains,
+} from '../utils/backendNetworks';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
 const BACKEND_CHAINS = transformBackendNetworksToChains(
   backendNetworks.networks,
+);
+
+export const BACKEND_CUSTOM_CHAINS = transformBackendCustomNetworksToChains(
+  backendNetworks.customNetworks,
 );
 
 export const SUPPORTED_CHAINS: Chain[] = IS_TESTING
