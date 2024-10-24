@@ -11,12 +11,19 @@ import {
   chainHardhat,
   chainHardhatOptimism,
 } from '../types/chains';
-import { transformBackendNetworksToChains } from '../utils/backendNetworks';
+import {
+  transformBackendCustomNetworksToChains,
+  transformBackendNetworksToChains,
+} from '../utils/backendNetworks';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
 const BACKEND_CHAINS = transformBackendNetworksToChains(
   backendNetworks.networks,
+);
+
+export const BACKEND_CUSTOM_CHAINS = transformBackendCustomNetworksToChains(
+  backendNetworks.customNetworks,
 );
 
 export const SUPPORTED_CHAINS: Chain[] = IS_TESTING
@@ -60,6 +67,24 @@ export const chainsName: Record<number, string> =
     },
     {} as Record<number, string>,
   );
+
+export const chainsIcon: Record<number, string> = (
+  backendNetworks.networks
+    .map((network) => {
+      return [parseInt(network.id, 10), network.icons.badgeURL];
+    })
+    .concat(
+      backendNetworks.customNetworks.map((network) => {
+        return [network.id, network.iconURL];
+      }),
+    ) as [number, string][]
+).reduce(
+  (acc, [chainId, icon]) => {
+    acc[chainId] = icon;
+    return acc;
+  },
+  {} as Record<number, string>,
+);
 
 const filterChainIdsByService = (
   servicePath: (services: BackendNetworkServices) => boolean,
