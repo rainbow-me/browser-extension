@@ -114,7 +114,7 @@ export const crosschainSwap = async ({
   parameters,
   baseNonce,
 }: ActionProps<'crosschainSwap'>): Promise<RapActionResult> => {
-  const { quote, chainId, requiresApprove } = parameters;
+  const { quote, chainId, requiresApprove, isBridge } = parameters;
   const { selectedGas, gasFeeParamsBySpeed } = gasStore.getState();
 
   let gasParams = selectedGas.transactionGasParams;
@@ -187,7 +187,7 @@ export const crosschainSwap = async ({
     chainId: parameters.chainId,
     nonce: swap.nonce,
     status: 'pending',
-    type: 'swap',
+    type: isBridge ? 'bridge' : 'swap',
     flashbots: parameters.flashbots,
     ...gasParams,
   } satisfies NewTransaction;
