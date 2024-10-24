@@ -108,6 +108,11 @@ it('should be able to connect to hardhat', async () => {
   const button = await findElementByText(driver, 'Disconnect from Hardhat');
   expect(button).toBeTruthy();
   await findElementByTestIdAndClick({ id: 'navbar-button-with-back', driver });
+
+  // sometimes hardhat balances take time to display.
+  // If we go straight to swap and they aren't updated,
+  // the swap gets auto-populated with the wrong token.
+  await delay(10_000);
 });
 
 it('should be able to go to swap flow', async () => {
@@ -591,6 +596,7 @@ it('should be able to filter assets to buy by network', async () => {
     driver,
     text: 'op',
   });
+  await delayTime('medium');
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.OP_OPTIMISM_ID}-favorites-token-to-buy-row`,
     driver,
@@ -613,6 +619,7 @@ it('should be able to filter assets to buy by network', async () => {
     driver,
     text: 'pol',
   });
+  await delayTime('medium');
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.POL_POLYGON_ID}-favorites-token-to-buy-row`,
     driver,
@@ -635,10 +642,23 @@ it('should be able to filter assets to buy by network', async () => {
     driver,
     text: 'gmx',
   });
-  await findElementByTestIdAndClick({
-    id: `${SWAP_VARIABLES.GMX_ARBITRUM_ID}-verified-token-to-buy-row`,
-    driver,
-  });
+  await delayTime('medium');
+
+  // this token is occassionally included in 'popular in rainbow.'
+  // tokens are only set to appear in one section at a time, so if
+  // it is in that section, the test will fail without this try / catch.
+  try {
+    await findElementByTestIdAndClick({
+      id: `${SWAP_VARIABLES.GMX_ARBITRUM_ID}-verified-token-to-buy-row`,
+      driver,
+    });
+  } catch {
+    await findElementByTestIdAndClick({
+      id: `${SWAP_VARIABLES.GMX_ARBITRUM_ID}-popular-token-to-buy-row-active-element-item`,
+      driver,
+    });
+  }
+
   // BNB
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.GMX_ARBITRUM_ID}-token-to-buy-token-input-remove`,
@@ -657,6 +677,7 @@ it('should be able to filter assets to buy by network', async () => {
     driver,
     text: 'uni',
   });
+  await delayTime('medium');
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.UNI_BNB_ID}-verified-token-to-buy-row`,
     driver,
@@ -709,10 +730,21 @@ it('should be able to see no route explainer', async () => {
     text: 'gmx',
   });
   await delayTime('long');
-  await findElementByTestIdAndClick({
-    id: `${SWAP_VARIABLES.GMX_ARBITRUM_ID}-verified-token-to-buy-row`,
-    driver,
-  });
+
+  // this token is occassionally included in 'popular in rainbow.'
+  // tokens are only set to appear in one section at a time, so if
+  // it is in that section, the test will fail without this try / catch.
+  try {
+    await findElementByTestIdAndClick({
+      id: `${SWAP_VARIABLES.GMX_ARBITRUM_ID}-verified-token-to-buy-row`,
+      driver,
+    });
+  } catch {
+    await findElementByTestIdAndClick({
+      id: `${SWAP_VARIABLES.GMX_ARBITRUM_ID}-popular-token-to-buy-row-active-element-item`,
+      driver,
+    });
+  }
   await typeOnTextInput({
     id: `${SWAP_VARIABLES.OP_OPTIMISM_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
@@ -764,27 +796,25 @@ it('should be able to find exact match on other networks', async () => {
     id: `switch-network-item-${ChainId.polygon}`,
     driver,
   });
-  // UNCOMMENT ONCE #1732 GETS MERGED
+  await typeOnTextInput({
+    id: 'token-to-buy-search-token-input',
+    driver,
+    text: 'optimism',
+  });
+  const onOtherNetworksSections = await findElementByTestId({
+    id: 'other_networks-token-to-buy-section',
+    driver,
+  });
+  expect(onOtherNetworksSections).toBeTruthy();
 
-  // await typeOnTextInput({
-  //   id: 'token-to-buy-search-token-input',
-  //   driver,
-  //   text: 'optimism',
-  // });
-  // const onOtherNetworksSections = await findElementByTestId({
-  //   id: 'other_networks-token-to-buy-section',
-  //   driver,
-  // });
-  // expect(onOtherNetworksSections).toBeTruthy();
-
-  // await findElementByTestIdAndClick({
-  //   id: `${SWAP_VARIABLES.OP_OPTIMISM_ID}-other_networks-token-to-buy-row`,
-  //   driver,
-  // });
-  // await findElementByTestIdAndClick({
-  //   id: `${SWAP_VARIABLES.OP_OPTIMISM_ID}-token-to-buy-token-input-remove`,
-  //   driver,
-  // });
+  await findElementByTestIdAndClick({
+    id: `${SWAP_VARIABLES.OP_OPTIMISM_ID}-other_networks-token-to-buy-row`,
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: `${SWAP_VARIABLES.OP_OPTIMISM_ID}-token-to-buy-token-input-remove`,
+    driver,
+  });
   await findElementByTestIdAndClick({
     id: 'token-to-buy-search-token-input',
     driver,
