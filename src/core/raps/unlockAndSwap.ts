@@ -1,18 +1,7 @@
-import {
-  ALLOWS_PERMIT,
-  ETH_ADDRESS as ETH_ADDRESS_AGGREGATOR,
-  PermitSupportedTokenList,
-  WRAPPED_ASSET,
-  getRainbowRouterContractAddress,
-} from '@rainbow-me/swaps';
+import { getRainbowRouterContractAddress } from '@rainbow-me/swaps';
 import { Address } from 'viem';
 
-import { ETH_ADDRESS } from '../references';
-import { ChainId } from '../types/chains';
-import { isNativeAsset } from '../utils/chains';
 import { add } from '../utils/numbers';
-import { isLowerCaseMatch } from '../utils/strings';
-import { isUnwrapEth } from '../utils/swaps';
 
 import {
   assetNeedsUnlocking,
@@ -35,26 +24,18 @@ export const estimateUnlockAndSwap = async (
   const {
     from: accountAddress,
     sellTokenAddress,
-    buyTokenAddress,
+    allowanceNeeded,
   } = quote as {
     from: Address;
     sellTokenAddress: Address;
     buyTokenAddress: Address;
+    allowanceNeeded: boolean;
   };
-
-  const isNativeAssetUnwrapping =
-    isLowerCaseMatch(sellTokenAddress, WRAPPED_ASSET?.[chainId]) &&
-    (isLowerCaseMatch(buyTokenAddress, ETH_ADDRESS?.[chainId]) ||
-      isLowerCaseMatch(buyTokenAddress, ETH_ADDRESS_AGGREGATOR?.[chainId]));
 
   let gasLimits: (string | number)[] = [];
   let swapAssetNeedsUnlocking = false;
 
-  const nativeAsset =
-    isLowerCaseMatch(ETH_ADDRESS_AGGREGATOR, sellTokenAddress) ||
-    isNativeAsset(sellTokenAddress, chainId);
-
-  if (!isNativeAssetUnwrapping && !nativeAsset) {
+  if (allowanceNeeded) {
     swapAssetNeedsUnlocking = await assetNeedsUnlocking({
       owner: accountAddress,
       amount: sellAmount,
@@ -110,30 +91,16 @@ export const createUnlockAndSwapRap = async (
   const { sellAmount, quote, chainId, assetToSell, assetToBuy } =
     swapParameters;
 
-  const {
-    from: accountAddress,
-    sellTokenAddress,
-    buyTokenAddress,
-  } = quote as {
+  const { from: accountAddress, allowanceNeeded } = quote as {
     from: Address;
     sellTokenAddress: Address;
     buyTokenAddress: Address;
+    allowanceNeeded: boolean;
   };
-
-  const isNativeAssetUnwrapping = isUnwrapEth({
-    buyTokenAddress,
-    chainId,
-    sellTokenAddress,
-  });
-
-  // Aggregators represent native asset as 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE
-  const nativeAsset =
-    isLowerCaseMatch(ETH_ADDRESS_AGGREGATOR, sellTokenAddress) ||
-    isNativeAsset(sellTokenAddress, chainId);
 
   let swapAssetNeedsUnlocking = false;
 
-  if (!isNativeAssetUnwrapping && !nativeAsset) {
+  if (allowanceNeeded) {
     swapAssetNeedsUnlocking = await assetNeedsUnlocking({
       owner: accountAddress,
       amount: sellAmount as string,
@@ -143,14 +110,7 @@ export const createUnlockAndSwapRap = async (
     });
   }
 
-  const allowsPermit =
-    !nativeAsset &&
-    chainId === ChainId.mainnet &&
-    ALLOWS_PERMIT[
-      assetToSell.address?.toLowerCase() as keyof PermitSupportedTokenList
-    ];
-
-  if (swapAssetNeedsUnlocking && !allowsPermit) {
+  if (swapAssetNeedsUnlocking) {
     const unlock = createNewAction('unlock', {
       fromAddress: accountAddress,
       amount: sellAmount,
@@ -165,8 +125,8 @@ export const createUnlockAndSwapRap = async (
   const swap = createNewAction('swap', {
     chainId,
     sellAmount,
-    permit: swapAssetNeedsUnlocking && allowsPermit,
-    requiresApprove: swapAssetNeedsUnlocking && !allowsPermit,
+    permit: swapAssetNeedsUnlocking,
+    requiresApprove: swapAssetNeedsUnlocking,
     quote,
     meta: swapParameters.meta,
     assetToSell,
