@@ -19,6 +19,7 @@ export const ENS_NFT_CONTRACT_ADDRESS =
 
 export const simpleHashSupportedChainNames = [
   'ethereum',
+  ChainName.apechain,
   ChainName.arbitrum,
   ChainName.arbitrumNova,
   ChainName.avalanche,
@@ -91,6 +92,8 @@ export function getNetworkFromSimpleHashChain(
   chain: SimpleHashChain,
 ): ChainName {
   switch (chain) {
+    case SimpleHashChain.Apechain:
+      return ChainName.apechain;
     case SimpleHashChain.Avalanche:
       return ChainName.avalanche;
     case SimpleHashChain.AvalancheFuji:

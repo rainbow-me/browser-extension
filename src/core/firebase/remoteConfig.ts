@@ -42,6 +42,7 @@ export interface RainbowConfig extends Record<string, any> {
     [ChainName.avalanche]: number;
     [ChainName.blast]: number;
     [ChainName.degen]: number;
+    [ChainName.apechain]: number;
   };
 }
 
@@ -69,6 +70,7 @@ const DEFAULT_CONFIG = {
     avalanche: 200,
     blast: 200,
     degen: 200,
+    apechain: 200,
   },
 };
 

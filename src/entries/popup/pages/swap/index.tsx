@@ -444,6 +444,17 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     [assetsToSell, isHidden],
   );
 
+  const highestEth = useMemo(() => {
+    const eths = unhiddenAssetsToSell.filter((asset) => asset.symbol === 'ETH');
+    return eths?.length
+      ? eths.reduce((highest, next) => {
+          return Number(highest.balance.amount) > Number(next.balance.amount)
+            ? highest
+            : next;
+        })
+      : null;
+  }, [unhiddenAssetsToSell]);
+
   const unhiddenAssetsToBuy = useMemo(() => {
     return assetsToBuy.map((assets) => {
       return {
@@ -640,7 +651,11 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
         if (savedTokenToSell) {
           setAssetToSell(savedTokenToSell);
         } else {
-          setAssetToSell(unhiddenAssetsToSell[0]);
+          if (highestEth) {
+            setAssetToSell(highestEth);
+          } else {
+            setAssetToSell(unhiddenAssetsToSell[0]);
+          }
           setDefaultAssetWasSet(true);
         }
         setDidPopulateSavedTokens(true);
