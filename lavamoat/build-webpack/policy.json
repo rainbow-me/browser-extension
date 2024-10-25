@@ -669,7 +669,6 @@
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-split-export-declaration": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-validator-identifier": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": true,
         "jest>@jest/core>jest-snapshot>@babel/traverse": true,
         "jest>@jest/core>jest-snapshot>@babel/types": true,
@@ -1153,12 +1152,6 @@
         "process.emitWarning": true
       },
       "packages": {
-        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/code-frame>@babel/highlight": true,
-        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/code-frame>chalk": true
-      }
-    },
-    "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/code-frame>@babel/highlight": {
-      "packages": {
         "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/code-frame>chalk": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/code-frame>@babel/highlight": true
       }
@@ -1283,13 +1276,6 @@
       "packages": {
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/code-frame>@babel/highlight": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk": true
-      }
-    },
-    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>@babel/highlight": {
-      "packages": {
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/types>@babel/helper-validator-identifier": true,
-        "react>loose-envify>js-tokens": true
       }
     },
     "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk": {
