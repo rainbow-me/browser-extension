@@ -732,6 +732,10 @@ export type EventProperties = {
      * Whether Degen Mode was used for the swap.
      */
     degenMode: boolean;
+    /**
+     * Whether a hardware wallet was used for the swap.
+     */
+    isHardwareWallet: boolean;
   };
   [event.walletViewed]: undefined;
   [event.toggledDegenMode]: { enabled: boolean };

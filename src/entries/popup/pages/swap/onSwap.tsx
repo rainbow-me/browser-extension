@@ -1,4 +1,5 @@
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
+import { Address } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -10,12 +11,13 @@ import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSwapAssetsToRefreshStore } from '~/core/state/swapAssetsToRefresh';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { KeychainType } from '~/core/types/keychainTypes';
 import { isSameAssetInDiffChains } from '~/core/utils/assets';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import playSound from '~/entries/popup/utils/playSound';
 import { RainbowError, logger } from '~/logger';
 
-import * as wallet from '../../handlers/wallet';
+import { executeRap, getWallet } from '../../handlers/wallet';
 
 export const onSwap = async ({
   assetToSell,
@@ -44,7 +46,9 @@ export const onSwap = async ({
     useConnectedToHardhatStore.getState().connectedToHardhat;
   const chainId = isConnectedToHardhat ? ChainId.hardhat : assetToSell.chainId;
 
-  const { errorMessage, nonce } = await wallet.executeRap<typeof type>({
+  const wallet = getWallet(q.from as Address);
+
+  const { errorMessage, nonce } = await executeRap<typeof type>({
     rapActionParameters: {
       sellAmount: q.sellAmount?.toString(),
       buyAmount: q.buyAmount?.toString(),
@@ -95,6 +99,8 @@ export const onSwap = async ({
     tradeAmountUSD: q.tradeAmountUSD,
     crosschain: assetToSell.chainId !== assetToBuy.chainId,
     degenMode,
+    isHardwareWallet:
+      (await wallet).type === KeychainType.HardwareWalletKeychain,
   });
 
   playSound('SendSound');
