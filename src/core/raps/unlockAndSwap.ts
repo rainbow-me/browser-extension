@@ -1,5 +1,7 @@
-
-import { getRainbowRouterContractAddress } from '@rainbow-me/swaps';
+import {
+  configureSDK,
+  getRainbowRouterContractAddress,
+} from '@rainbow-me/swaps';
 import { Address } from 'viem';
 
 import { add } from '../utils/numbers';
