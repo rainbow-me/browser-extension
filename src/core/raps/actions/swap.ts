@@ -6,6 +6,7 @@ import {
   ETH_ADDRESS as ETH_ADDRESS_AGGREGATORS,
   Quote,
   ChainId as SwapChainId,
+  SwapType,
   WRAPPED_ASSET,
   configureSDK,
   fillQuote,
@@ -23,7 +24,6 @@ import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { add } from '~/core/utils/numbers';
 import { isLowerCaseMatch } from '~/core/utils/strings';
-import { isUnwrapEth, isWrapEth } from '~/core/utils/swaps';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import { TransactionSimulationResponse } from '~/entries/popup/pages/messages/useSimulateTransaction';
@@ -237,23 +237,22 @@ export const executeSwap = async ({
 }): Promise<Transaction | null> => {
   if (!wallet || !quote) return null;
 
-  const { sellTokenAddress, buyTokenAddress } = quote;
   const transactionParams = {
     gasLimit: toHex(gasLimit) || undefined,
     nonce: nonce ? toHex(`${nonce}`) : undefined,
     ...gasParams,
   };
 
-  // Wrap Eth
-  if (isWrapEth({ buyTokenAddress, sellTokenAddress, chainId })) {
+  // Wrap native
+  if (quote.swapType === SwapType.wrap) {
     return wrapNativeAsset(
       quote.buyAmount,
       wallet,
       chainId as unknown as SwapChainId,
       transactionParams,
     );
-    // Unwrap Weth
-  } else if (isUnwrapEth({ buyTokenAddress, sellTokenAddress, chainId })) {
+    // Unwrap native
+  } else if (quote.swapType === SwapType.unwrap) {
     return unwrapNativeAsset(
       quote.sellAmount,
       wallet,
