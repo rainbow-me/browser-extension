@@ -1,0 +1,154 @@
+{
+  "sellTokenAddress": "0xc18360217d8f7ab5e7c516566761ea12ce7f9d72",
+  "sellTokenAsset": {
+    "assetCode": "0xc18360217d8f7ab5e7c516566761ea12ce7f9d72",
+    "decimals": 18,
+    "iconUrl": "https://rainbowme-res.cloudinary.com/image/upload/v1668486691/assets/ethereum/0xc18360217d8f7ab5e7c516566761ea12ce7f9d72.png",
+    "name": "Ethereum Name Service",
+    "network": "mainnet",
+    "symbol": "ENS",
+    "networks": {
+      "1": {
+        "address": "0xc18360217d8f7ab5e7c516566761ea12ce7f9d72",
+        "decimals": 18
+      },
+      "10": {
+        "address": "0x65559aa14915a70190438ef90104769e5e890a00",
+        "decimals": 18
+      },
+      "137": {
+        "address": "0xbd7a5cf51d22930b8b3df6d834f9bcef90ee7c4f",
+        "decimals": 18
+      },
+      "42161": {
+        "address": "0xfea31d704deb0975da8e77bf13e04239e70d7c28",
+        "decimals": 18
+      }
+    },
+    "chainId": 1,
+    "price": {
+      "value": 16.010620449770414,
+      "available": true
+    },
+    "totalPrice": {
+      "value": 16.010620449770414,
+      "available": true
+    }
+  },
+  "buyTokenAddress": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+  "buyTokenAsset": {
+    "assetCode": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    "decimals": 6,
+    "iconUrl": "https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png",
+    "name": "USD Coin",
+    "network": "mainnet",
+    "symbol": "USDC",
+    "networks": {
+      "1": {
+        "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+        "decimals": 6
+      },
+      "10": {
+        "address": "0x0b2c639c533813f4aa9d7837caf62653d097ff85",
+        "decimals": 6
+      },
+      "137": {
+        "address": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+        "decimals": 6
+      },
+      "42161": {
+        "address": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+        "decimals": 6
+      },
+      "43114": {
+        "address": "0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e",
+        "decimals": 6
+      },
+      "56": {
+        "address": "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
+        "decimals": 18
+      },
+      "8453": {
+        "address": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+        "decimals": 6
+      }
+    },
+    "chainId": 1,
+    "price": {
+      "value": 1.0001055272247494,
+      "available": true
+    },
+    "totalPrice": {
+      "value": 15.741228952929795,
+      "available": true
+    }
+  },
+  "allowanceTarget": "0x00000000009726632680fb29d3f7a9734e3010e2",
+  "allowanceNeeded": true,
+  "to": "0x111111125421ca6dc452d289314280a0f8842a65",
+  "data": "0xcc713a046767314a526bbe488460e2696175c7d4d74d7c482a84b1d1ff91abde392cc205000000000000000000000000807cf9a772d5a3f9cefbc1192e939d62f0d9bd380000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000c18360217d8f7ab5e7c516566761ea12ce7f9d720000000000000000000000000000000000000000000000000000000000f02aaf0000000000000000000000000000000000000000000000000dc283ff2eccc000000000000000000000000000000001ae7500671fd99d0000000000000000000000000000000000000000000000000000000000000000000000000000000001600000000000000000000000000000000000000000000000000dc283ff2eccc00020000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000041ff61ab67a38f0d783e7af8ae7ad8e3440db8a4921ddc7b994537356c481e245d57f3127d3796aebd87a2fd4667b5a4d7d1d68370286953ab67b624df5614b9771b00000000000000000000000000000000000000000000000000000000000000d6f29312",
+  "sellAmount": "1000000000000000000",
+  "sellAmountMinusFees": "991500000000000000",
+  "sellAmountDisplay": "1000000000000000000",
+  "sellAmountInEth": "6409811896634445",
+  "buyAmount": "15739568",
+  "buyAmountMinusFees": "15739568",
+  "buyAmountDisplay": "15739568",
+  "buyAmountDisplayMinimum": "14952590",
+  "buyAmountInEth": "6301961683913555",
+  "tradeAmountUSD": 16.010620449770414,
+  "tradeFeeAmountUSD": 0.1360902738230466,
+  "value": "0",
+  "gasPrice": "19730097407",
+  "source": "1inch",
+  "protocols": [
+    {
+      "name": "PMM15",
+      "part": 100
+    }
+  ],
+  "feeTokenAsset": {
+    "assetCode": "0xc18360217d8f7ab5e7c516566761ea12ce7f9d72",
+    "decimals": 18,
+    "iconUrl": "https://rainbowme-res.cloudinary.com/image/upload/v1668486691/assets/ethereum/0xc18360217d8f7ab5e7c516566761ea12ce7f9d72.png",
+    "name": "Ethereum Name Service",
+    "network": "mainnet",
+    "symbol": "ENS",
+    "networks": {
+      "1": {
+        "address": "0xc18360217d8f7ab5e7c516566761ea12ce7f9d72",
+        "decimals": 18
+      },
+      "10": {
+        "address": "0x65559aa14915a70190438ef90104769e5e890a00",
+        "decimals": 18
+      },
+      "137": {
+        "address": "0xbd7a5cf51d22930b8b3df6d834f9bcef90ee7c4f",
+        "decimals": 18
+      },
+      "42161": {
+        "address": "0xfea31d704deb0975da8e77bf13e04239e70d7c28",
+        "decimals": 18
+      }
+    },
+    "chainId": 1,
+    "price": {
+      "value": 16.010620449770187,
+      "available": true
+    },
+    "totalPrice": {
+      "value": 0.1360902738230466,
+      "available": true
+    }
+  },
+  "fee": "8500000000000000",
+  "feeInEth": "54483401121392",
+  "feePercentageBasisPoints": "8500000000000000",
+  "tradeType": "exact_input",
+  "from": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+  "defaultGasLimit": "350000",
+  "swapType": "normal",
+  "txTarget": "0x00000000009726632680fb29d3f7a9734e3010e2",
+  "chainId": 1
+}

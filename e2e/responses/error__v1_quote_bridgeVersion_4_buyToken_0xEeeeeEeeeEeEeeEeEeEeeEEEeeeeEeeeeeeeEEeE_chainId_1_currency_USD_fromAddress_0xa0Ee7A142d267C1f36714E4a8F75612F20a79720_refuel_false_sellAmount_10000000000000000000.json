@@ -1,0 +1,5 @@
+{
+  "error": "500 Server Error: Internal Server Error for url: https://swap.p.rainbow.me/v1/quote?bridgeVersion=4&buyToken=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&chainId=1&currency=USD&fromAddress=0xa0Ee7A142d267C1f36714E4a8F75612F20a79720&refuel=false&sellAmount=10000000000000000000000&sellToken=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&slippage=1&toChainId=137",
+  "url": "https://swap.p.rainbow.me/v1/quote?bridgeVersion=4&buyToken=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&chainId=1&currency=USD&fromAddress=0xa0Ee7A142d267C1f36714E4a8F75612F20a79720&refuel=false&sellAmount=10000000000000000000000&sellToken=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&slippage=1&toChainId=137",
+  "details": "{\"error\":true,\"message\":\"both socket and relay quote requests failed\"}"
+}
