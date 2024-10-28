@@ -39,11 +39,11 @@
     },
     "chainId": 1,
     "price": {
-      "value": 2460.76,
+      "value": 2497.83,
       "available": true
     },
     "totalPrice": {
-      "value": 2460.76,
+      "value": 2497.83,
       "available": true
     }
   },
@@ -87,35 +87,35 @@
     },
     "chainId": 1,
     "price": {
-      "value": 1.003531917880665,
+      "value": 1.0001127139931656,
       "available": true
     },
     "totalPrice": {
-      "value": 2447.3718341876665,
+      "value": 2475.6540094008324,
       "available": true
     }
   },
   "allowanceTarget": "0x00000000009726632680fb29d3f7a9734e3010e2",
   "allowanceNeeded": false,
   "to": "0x111111125421ca6dc452d289314280a0f8842a65",
-  "data": "0xa76dfc3b000000000000000000000000000000000000000000000000000000008a17dfc720000000000000000000000088e6a0c2ddd26feeb64f039a2c41296fcb3f5640d6f29312",
+  "data": "0xa76dfc3b000000000000000000000000000000000000000000000000000000008c2aa9ea00000000000000003b6d0340b4e16d0168e52d35cacd2c6185b44281ec28c9dcd6f29312",
   "sellAmount": "1000000000000000000",
   "sellAmountMinusFees": "991500000000000000",
   "sellAmountDisplay": "1000000000000000000",
   "sellAmountInEth": "1000000000000000000",
-  "buyAmount": "2438758340",
-  "buyAmountMinusFees": "2438758340",
-  "buyAmountDisplay": "2438758340",
-  "buyAmountDisplayMinimum": "2316820423",
-  "buyAmountInEth": "994559337029074915",
-  "tradeAmountUSD": 2460.76,
-  "tradeFeeAmountUSD": 20.91646,
+  "buyAmount": "2475375000",
+  "buyAmountMinusFees": "2475375000",
+  "buyAmountDisplay": "2475375000",
+  "buyAmountDisplayMinimum": "2351606250",
+  "buyAmountInEth": "991121897567421571",
+  "tradeAmountUSD": 2497.83,
+  "tradeFeeAmountUSD": 21.231555,
   "value": "1000000000000000000",
-  "gasPrice": "17228272725",
+  "gasPrice": "19716032844",
   "source": "1inch",
   "protocols": [
     {
-      "name": "UNISWAP_V3",
+      "name": "UNISWAP_V2",
       "part": 100
     }
   ],
@@ -158,11 +158,11 @@
     },
     "chainId": 1,
     "price": {
-      "value": 2460.76,
+      "value": 2497.83,
       "available": true
     },
     "totalPrice": {
-      "value": 20.91646,
+      "value": 21.231555,
       "available": true
     }
   },

@@ -38,13 +38,11 @@ def fetch_json(url, max_retries=3):
             print(f"Attempt {attempt + 1} failed. Retrying in {2 ** attempt} seconds...")
             time.sleep(2 ** attempt)
 
-# ... (rest of the script remains the same)
 def save_json(data, filename):
     with open(filename, 'w') as file:
         json.dump(data, file, indent=2)
 
 def create_filename(url):
-    # First, replace any potential HTML entities
     url = url.replace('&amp;', '&')
     
     parsed_url = urlparse(url)

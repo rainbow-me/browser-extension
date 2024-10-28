@@ -8,7 +8,7 @@ set +a
 
 # Launch anvil in the bg
 yarn anvil:kill
-yarn anvil > anvil-unit.log 2>&1 &
+yarn anvil --chain-id 1337 > anvil-unit.log 2>&1 &
 echo "Launching Anvil..."
 
 # Give it some time to boot

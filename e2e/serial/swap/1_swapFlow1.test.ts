@@ -864,6 +864,11 @@ it('should be able to go to review a swap', async () => {
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
+  await delay(10_000);
+
+  // last test is currently failing bc of insufficent eth
+  // this clear input and type isn't working for some reason
+  // the input is cleared, the output doesn't update then the input repopulates
   await clearInput({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
@@ -873,6 +878,7 @@ it('should be able to go to review a swap', async () => {
     text: 1,
     driver,
   });
+  await delay(30_000);
   await findElementByTestIdAndClick({
     id: 'swap-confirmation-button-ready',
     driver,
@@ -1031,7 +1037,7 @@ it('should be able to execute swap', async () => {
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
 
   // waiting for balances to update / swap to execute
-  await delay(20_000);
+  await delay(25_000);
 
   const ethBalanceAfterSwap = await provider.getBalance(WALLET_TO_USE_ADDRESS);
 

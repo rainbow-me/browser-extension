@@ -13,6 +13,13 @@ const PORT = 3001;
  * @typedef {import('http').Server} Server
  */
 
+// Add request logging middleware
+app.use((req, res, next) => {
+  console.log(`\n�incoming Request: ${req.method} ${req.path}`);
+  console.log('Query Parameters:', req.query);
+  next();
+});
+
 /**
  * Middleware to serve JSON files based on request paths and query parameters.
  * @param {Request} req - Express request object
@@ -30,14 +37,58 @@ app.use(async (req, res) => {
     const dir = path.join(__dirname, 'responses');
     const jsonPath = path.join(dir, filename);
 
-    console.log('Attempting to read file:', jsonPath);
+    console.log('\n📂 File Operation Details:');
+    console.log('Directory:', dir);
+    console.log('Generated Filename:', filename);
+    console.log('Full Path:', jsonPath);
 
-    const data = await fs.readFile(jsonPath, 'utf8');
+    // Check if directory exists
+    try {
+      await fs.access(dir);
+      console.log('✅ Responses directory found');
+    } catch (error) {
+      console.error('❌ Responses directory not found:', error.message);
+      return res.status(500).json({
+        error: 'Server configuration error',
+        details: 'Responses directory not found',
+      });
+    }
 
-    res.json(JSON.parse(data));
+    // Check if file exists before trying to read it
+    try {
+      await fs.access(jsonPath);
+      console.log('✅ Response file found');
+    } catch (error) {
+      console.error('❌ Response file not found:', error.message);
+      return res.status(404).json({
+        error: 'Response not found',
+        details: 'No matching response file found for this request',
+      });
+    }
+
+    // Read and parse the file
+    try {
+      const data = await fs.readFile(jsonPath, 'utf8');
+      console.log('✅ File successfully read');
+
+      const parsedData = JSON.parse(data);
+      console.log('✅ JSON successfully parsed');
+
+      res.json(parsedData);
+      console.log('✅ Response sent successfully');
+    } catch (error) {
+      console.error('❌ Error reading or parsing file:', error.message);
+      return res.status(500).json({
+        error: 'File processing error',
+        details: error.message,
+      });
+    }
   } catch (error) {
-    console.error(`Error serving request ${req.path}:`, error);
-    res.status(404).json({ error: 'Not found', details: error.message });
+    console.error('\n❌ Unexpected error:', error.message);
+    res.status(500).json({
+      error: 'Server error',
+      details: error.message,
+    });
   }
 });
 
@@ -48,16 +99,18 @@ app.use(async (req, res) => {
 const startMockServer = () => {
   return new Promise((resolve) => {
     const server = app.listen(PORT, () => {
-      console.log(`Mock API server running on http://localhost:${PORT}`);
+      console.log('\n🚀 Mock API server running on http://localhost:' + PORT);
       resolve(server);
     });
 
     server.on('error', (error) => {
       if (error.code === 'EADDRINUSE') {
-        console.log(`Port ${PORT} already in use, not starting a new server`);
+        console.error(
+          `\n❌ Port ${PORT} already in use, not starting a new server`,
+        );
         resolve(null);
       } else {
-        console.error('Error starting server:', error);
+        console.error('\n❌ Error starting server:', error);
         resolve(null);
       }
     });
