@@ -94,16 +94,20 @@ export const useInfiniteTransactionList = ({
     return transactionsAfterCutoff;
   }, [currentAddressCustomNetworkTransactions, cutoff, transactions]);
 
-  const formattedTransactions = useMemo(
-    () =>
-      Object.entries(
-        selectTransactionsByDate([
-          ...pendingTransactions,
-          ...transactionsAfterCutoff,
-        ]),
-      ).flat(2),
-    [pendingTransactions, transactionsAfterCutoff],
-  );
+  const formattedTransactions = useMemo(() => {
+    const pendingHashes: string[] = [];
+    pendingTransactions.forEach((tx) =>
+      pendingHashes.push(`${tx.hash}_${tx.chainId}`),
+    );
+    return Object.entries(
+      selectTransactionsByDate([
+        ...pendingTransactions,
+        ...transactionsAfterCutoff.filter(
+          (tx) => !pendingHashes.includes(`${tx.hash}_${tx.chainId}`),
+        ),
+      ]),
+    ).flat(2);
+  }, [pendingTransactions, transactionsAfterCutoff]);
 
   const infiniteRowVirtualizer = useVirtualizer({
     count: formattedTransactions?.length,
@@ -116,7 +120,7 @@ export const useInfiniteTransactionList = ({
         const txOrLabel = formattedTransactions[i];
         return typeof txOrLabel === 'string'
           ? txOrLabel
-          : txOrLabel.hash + txOrLabel.chainId;
+          : txOrLabel.hash + txOrLabel.chainId + txOrLabel.status;
       },
       [formattedTransactions],
     ),
