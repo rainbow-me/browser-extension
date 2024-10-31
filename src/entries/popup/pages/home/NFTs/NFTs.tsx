@@ -1,8 +1,10 @@
 import React, { useRef } from 'react';
+import { Address } from 'viem';
 
 import { useCurrentAddressStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useNftsStore } from '~/core/state/nfts';
+import { ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import { UniqueAsset } from '~/core/types/nfts';
 import { Bleed, Box } from '~/design-system';
 import { useNftShortcuts } from '~/entries/popup/hooks/useNftShortcuts';
@@ -21,14 +23,14 @@ export function NFTs() {
   const { chains: userChains } = useUserChains();
   const navigate = useRainbowNavigate();
   const onAssetClick = (asset: UniqueAsset) => {
-    navigate(
-      ROUTES.NFT_DETAILS(asset?.collection.collection_id || '', asset?.id),
-      {
-        state: {
-          nft: asset,
-        },
-      },
-    );
+    const [chainName, contractAddress, tokenId] = asset.fullUniqueId.split(
+      '_',
+    ) as [ChainName, Address, string];
+    const chainId = chainNameToIdMapping[chainName];
+    if (!chainId) return;
+    navigate(ROUTES.NFT_DETAILS(`${contractAddress}_${chainId}`, tokenId), {
+      state: { nft: asset },
+    });
   };
 
   const groupedContainerRef = useRef<HTMLDivElement>(null);
