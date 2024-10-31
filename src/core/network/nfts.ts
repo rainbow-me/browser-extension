@@ -210,12 +210,6 @@ export const fetchNft = async ({
   chainId: ChainId;
   tokenId: string;
 }) => {
-  console.log({
-    contractAddress,
-    tokenId,
-    chainId,
-  });
-
   const chain = simplehashChainNames.find(
     (chainName) => chainNameToIdMapping[chainName] === chainId,
   );
