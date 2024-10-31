@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'viem';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { useWalletBackupsStore } from '~/core/state/walletBackups';
 import {
@@ -181,6 +183,9 @@ export function SeedVerifyQuiz({
             seedWords[11] === selectedWords[2]?.word
           ) {
             setValidated(true);
+            analytics.track(event.walletBackup, {
+              status: 'completed',
+            });
             playSound('CorrectSeedQuiz');
             setTimeout(() => {
               setWalletBackedUp({ address });
@@ -188,6 +193,9 @@ export function SeedVerifyQuiz({
             }, 1200);
           } else {
             playSound('IncorrectSeedQuiz');
+            analytics.track(event.walletBackup, {
+              status: 'failed',
+            });
             setIncorrect(true);
           }
         }, 100);
@@ -321,7 +329,12 @@ export function SeedVerifyQuiz({
           height="44px"
           variant="transparent"
           width="full"
-          onClick={handleSkip}
+          onClick={() => {
+            analytics.track(event.walletBackup, {
+              status: 'skipped',
+            });
+            handleSkip();
+          }}
           testId="skip-this-button"
           tabIndex={0}
         >

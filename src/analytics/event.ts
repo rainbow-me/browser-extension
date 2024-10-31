@@ -218,6 +218,11 @@ export const event = {
    */
   toggledDegenMode: 'degenMode.toggled',
   /**
+   * Called when user completes or skips the wallet backup flow.
+   * potential outcomes are 'succeeded,' 'failed,' or 'skipped.'
+   */
+  walletBackup: 'walletBackup',
+  /**
    * Called when the core wallet Tokens & Activity
    * screen is viewed or opened in the extension popup.
    */
@@ -732,6 +737,14 @@ export type EventProperties = {
      * Whether Degen Mode was used for the swap.
      */
     degenMode: boolean;
+  };
+  [event.walletBackup]: {
+    /**
+     * Completed: if the user successfully completes the wallet backup quiz.
+     * Failed: if the user fails to complete the backup quiz.
+     * Skipped: if the user opts to skip the backup quiz completely.
+     */
+    status: 'completed' | 'failed' | 'skipped';
   };
   [event.walletViewed]: undefined;
   [event.toggledDegenMode]: { enabled: boolean };
