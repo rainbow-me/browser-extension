@@ -529,10 +529,10 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
   });
 
   const { data: swapSlippage } = useSwapSlippage({
-    chainId: assetToSell?.chainId || ChainId.mainnet,
-    toChainId: assetToBuy?.chainId || ChainId.mainnet,
-    sellTokenAddress: assetToSell?.address as Address,
-    buyTokenAddress: assetToBuy?.address as Address,
+    chainId: assetToSell?.chainId,
+    toChainId: assetToBuy?.chainId,
+    sellTokenAddress: assetToSell?.address,
+    buyTokenAddress: assetToBuy?.address,
     sellAmount: assetToSellValue,
     buyAmount: assetToBuyValue,
   });
