@@ -18,7 +18,7 @@ import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedSearchAsset, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { SearchAsset } from '~/core/types/search';
-import { isLowerCaseMatch } from '~/core/utils/strings';
+import { isSameAssetInDiffChains } from '~/core/utils/assets';
 import { getQuoteServiceTime } from '~/core/utils/swaps';
 import {
   Box,
@@ -596,22 +596,8 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     resetSwapValues,
   } = usePopupInstanceStore();
 
-  const bridgingSelected = useMemo(() => {
-    const assetToSellAddressToCompare =
-      assetToSell?.[
-        assetToSell?.chainId === ChainId.mainnet ? 'address' : 'mainnetAddress'
-      ];
-    const assetToBuyAddressToCompare =
-      assetToBuy?.[
-        assetToBuy?.chainId === ChainId.mainnet ? 'address' : 'mainnetAddress'
-      ];
-    return isLowerCaseMatch(
-      assetToSellAddressToCompare,
-      assetToBuyAddressToCompare,
-    );
-  }, [assetToBuy, assetToSell]);
-
-  const showBridgingCopy = bridge || bridgingSelected;
+  const showBridgingCopy =
+    bridge || isSameAssetInDiffChains(assetToBuy, assetToSell);
 
   // translate based on the context, bridge or swap
   const translationContext = {
