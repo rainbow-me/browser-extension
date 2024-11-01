@@ -6,6 +6,7 @@ import { REFERRER, ReferrerType } from '~/core/references';
 import { getChainGasUnits } from '~/core/references/chains';
 import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
+import { isSameAssetInDiffChains } from '~/core/utils/assets';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import { RainbowError, logger } from '~/logger';
@@ -114,7 +115,7 @@ export const crosschainSwap = async ({
   parameters,
   baseNonce,
 }: ActionProps<'crosschainSwap'>): Promise<RapActionResult> => {
-  const { quote, chainId, requiresApprove, isBridge } = parameters;
+  const { quote, chainId, requiresApprove } = parameters;
   const { selectedGas, gasFeeParamsBySpeed } = gasStore.getState();
 
   let gasParams = selectedGas.transactionGasParams;
@@ -164,6 +165,11 @@ export const crosschainSwap = async ({
   }
   if (!swap)
     throw new RainbowError('crosschainSwap: error executeCrosschainSwap');
+
+  const isBridge = isSameAssetInDiffChains(
+    parameters.assetToBuy,
+    parameters.assetToSell,
+  );
 
   const transaction = {
     data: parameters.quote.data,

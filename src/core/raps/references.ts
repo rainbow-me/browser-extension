@@ -57,7 +57,6 @@ export interface RapSwapActionParameters<
   flashbots?: boolean;
   quote: QuoteTypeMap[T];
   address?: Address;
-  isBridge?: boolean;
 }
 
 export interface RapUnlockActionParameters {

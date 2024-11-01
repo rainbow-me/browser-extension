@@ -54,7 +54,6 @@ export const onSwap = async ({
       assetToBuy: assetToBuy,
       quote: q,
       flashbots,
-      isBridge,
     },
     type,
   });
