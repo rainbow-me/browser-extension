@@ -13,6 +13,9 @@ require('../../core/utils/lockdown');
 initThemingLocal();
 syncStores();
 
+// if (process.env.IS_TESTING === 'true')
+await import('../../../e2e/mockFetch').then((m) => m.mockFetch());
+
 const domContainer = document.querySelector('#app') as Element;
 const root = createRoot(domContainer);
 root.render(createElement(App));

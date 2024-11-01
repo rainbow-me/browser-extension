@@ -1,0 +1,660 @@
+{
+  "meta": {
+    "addresses": ["0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"],
+    "errors": [],
+    "currency": "usd",
+    "status": "ok",
+    "chain_ids": [
+      1, 10, 56, 137, 8453, 33139, 42161, 43114, 81457, 7777777, 666666666
+    ],
+    "addresses_with_errors": [],
+    "chain_ids_with_errors": []
+  },
+  "payload": {
+    "assets": [
+      {
+        "quantity": "400000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xb01bf38d1a93090731afd004e22bd17c0d5fc8dd",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "Mentario",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1730476401,
+            "relative_change_24h": 0
+          },
+          "symbol": "MIO",
+          "colors": { "primary": "#6A87C8" },
+          "networks": {
+            "56": {
+              "address": "0xb01bf38d1a93090731afd004e22bd17c0d5fc8dd",
+              "decimals": 18
+            }
+          },
+          "bridging": { "bridgeable": false, "networks": {} },
+          "probable_spam": false,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x54d7afa7c764e1cf6fbefe9ff8239c0b117fd70d",
+          "decimals": 0,
+          "icon_url": "",
+          "name": "FAST PROFIT",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1730476401,
+            "relative_change_24h": 0
+          },
+          "symbol": "FP",
+          "colors": { "primary": "#FFDD86" },
+          "networks": {
+            "56": {
+              "address": "0x54d7afa7c764e1cf6fbefe9ff8239c0b117fd70d",
+              "decimals": 0
+            }
+          },
+          "bridging": { "bridgeable": false, "networks": {} },
+          "probable_spam": false,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "1200000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x8319d05e9dceecec5a575684b8f30b0c12c904dc",
+          "decimals": 8,
+          "icon_url": "",
+          "name": "FUSE",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1730476401,
+            "relative_change_24h": 0
+          },
+          "symbol": "FUSE",
+          "colors": { "primary": "#FF949A" },
+          "networks": {
+            "56": {
+              "address": "0x8319d05e9dceecec5a575684b8f30b0c12c904dc",
+              "decimals": 8
+            }
+          },
+          "bridging": { "bridgeable": false, "networks": {} },
+          "probable_spam": false,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "16000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x0000000000000000000000000000000000000000",
+          "decimals": 18,
+          "icon_url": "https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/0xb8c77482e45f1f44de1745f52c74426c631bdd52.png",
+          "name": "BNB",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 565.69426719,
+            "changed_at": 1730476401,
+            "relative_change_24h": -2.1192494379933757
+          },
+          "symbol": "BNB",
+          "type": "native",
+          "colors": { "primary": "#f3ba2f", "fallback": "#F8D888" },
+          "networks": {
+            "1": {
+              "address": "0xb8c77482e45f1f44de1745f52c74426c631bdd52",
+              "decimals": 18
+            },
+            "56": {
+              "address": "0x0000000000000000000000000000000000000000",
+              "decimals": 18
+            },
+            "137": {
+              "address": "0x3ba4c387f786bfee076a58914f5bd38d668b42c3",
+              "decimals": 18
+            },
+            "42161": {
+              "address": "0x20865e63b111b2649ef829ec220536c82c58ad7b",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {
+              "1": { "bridgeable": false },
+              "137": { "bridgeable": false },
+              "42161": { "bridgeable": false }
+            }
+          },
+          "probable_spam": false,
+          "verified": true,
+          "transferable": true,
+          "mainnet_address": "0xb8c77482e45f1f44de1745f52c74426c631bdd52"
+        }
+      },
+      {
+        "quantity": "10",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xe253ca0268b0cfeae37ad30972c771b0753e7e05",
+          "decimals": 0,
+          "icon_url": "",
+          "name": "META BNB",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1730476401,
+            "relative_change_24h": 0
+          },
+          "symbol": "MBNB",
+          "colors": { "primary": "#C5DADB" },
+          "networks": {
+            "56": {
+              "address": "0xe253ca0268b0cfeae37ad30972c771b0753e7e05",
+              "decimals": 0
+            }
+          },
+          "bridging": { "bridgeable": false, "networks": {} },
+          "probable_spam": false,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "240000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xafa6bcde9c014699a4aaf1f6e17ca0038f46ff21",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestCoin",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1730476401,
+            "relative_change_24h": 0
+          },
+          "symbol": "TCT",
+          "colors": { "primary": "#6A87C8" },
+          "networks": {
+            "56": {
+              "address": "0xafa6bcde9c014699a4aaf1f6e17ca0038f46ff21",
+              "decimals": 18
+            }
+          },
+          "bridging": { "bridgeable": false, "networks": {} },
+          "probable_spam": false,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "2488",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x0000000000000000000000000000000000001010",
+          "decimals": 18,
+          "icon_url": "https://rainbowme-res.cloudinary.com/image/upload/v1725467104/assets/polygon/POL_xofylx.png",
+          "name": "Polygon Ecosystem Token",
+          "network": "polygon",
+          "chain_id": 137,
+          "price": {
+            "value": 0.3131890240000001,
+            "changed_at": 1730476401,
+            "relative_change_24h": -2.8802961483251233
+          },
+          "symbol": "POL",
+          "type": "native",
+          "colors": { "primary": "#2891F9", "fallback": "#81D5F8" },
+          "networks": {
+            "1": {
+              "address": "0x455e53cbb86018ac2b8092fdcd39d8444affc3f6",
+              "decimals": 18
+            },
+            "137": {
+              "address": "0x0000000000000000000000000000000000001010",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": { "1": { "bridgeable": false } }
+          },
+          "probable_spam": false,
+          "verified": true,
+          "transferable": true,
+          "mainnet_address": "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0"
+        }
+      },
+      {
+        "quantity": "100000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x187578816b28f4a39fc6a889d8bb904a66385324",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "QuantumaraV1",
+          "network": "polygon",
+          "chain_id": 137,
+          "price": {
+            "value": 0,
+            "changed_at": 1730476401,
+            "relative_change_24h": 0
+          },
+          "symbol": "QMA",
+          "colors": { "primary": "#E95D72" },
+          "networks": {
+            "137": {
+              "address": "0x187578816b28f4a39fc6a889d8bb904a66385324",
+              "decimals": 18
+            }
+          },
+          "bridging": { "bridgeable": false, "networks": {} },
+          "probable_spam": false,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "100000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xf5e8f95ffe487e722639eb822093409bff7b3baf",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "Checkem",
+          "network": "polygon",
+          "chain_id": 137,
+          "price": {
+            "value": 0,
+            "changed_at": 1730476401,
+            "relative_change_24h": 0
+          },
+          "symbol": "CHKM",
+          "colors": { "primary": "#FF9A23" },
+          "networks": {
+            "137": {
+              "address": "0xf5e8f95ffe487e722639eb822093409bff7b3baf",
+              "decimals": 18
+            }
+          },
+          "bridging": { "bridgeable": false, "networks": {} },
+          "probable_spam": false,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "200000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x835d1867cf1425789a02f771226677cb491980b7",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "UnitedBlockchainToken",
+          "network": "polygon",
+          "chain_id": 137,
+          "price": {
+            "value": 0,
+            "changed_at": 1730476401,
+            "relative_change_24h": 0
+          },
+          "symbol": "UBT",
+          "colors": { "primary": "#FF9A23" },
+          "networks": {
+            "137": {
+              "address": "0x835d1867cf1425789a02f771226677cb491980b7",
+              "decimals": 18
+            }
+          },
+          "bridging": { "bridgeable": false, "networks": {} },
+          "probable_spam": false,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "150330000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x0000000000000000000000000000000000000000",
+          "decimals": 18,
+          "icon_url": "https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/ethereum/eth.png",
+          "name": "Ethereum",
+          "network": "arbitrum",
+          "chain_id": 42161,
+          "price": {
+            "value": 2487.41,
+            "changed_at": 1730476401,
+            "relative_change_24h": -3.3833343061148935
+          },
+          "symbol": "ETH",
+          "type": "native",
+          "colors": { "primary": "#808088", "fallback": "#E8EAF5" },
+          "networks": {
+            "1": { "address": "eth", "decimals": 18 },
+            "10": {
+              "address": "0x0000000000000000000000000000000000000000",
+              "decimals": 18
+            },
+            "56": {
+              "address": "0x2170ed0880ac9a755fd29b2688956bd959f933f8",
+              "decimals": 18
+            },
+            "8453": {
+              "address": "0x0000000000000000000000000000000000000000",
+              "decimals": 18
+            },
+            "42161": {
+              "address": "0x0000000000000000000000000000000000000000",
+              "decimals": 18
+            },
+            "81457": {
+              "address": "0x0000000000000000000000000000000000000000",
+              "decimals": 18
+            },
+            "7777777": {
+              "address": "0x0000000000000000000000000000000000000000",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": true,
+            "networks": {
+              "1": { "bridgeable": true },
+              "10": { "bridgeable": true },
+              "56": { "bridgeable": true },
+              "8453": { "bridgeable": true },
+              "81457": { "bridgeable": true },
+              "7777777": { "bridgeable": true }
+            }
+          },
+          "probable_spam": false,
+          "verified": true,
+          "transferable": true,
+          "mainnet_address": "eth"
+        }
+      },
+      {
+        "quantity": "1000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x50b4f916b2b68c9288a94df76e29649dafd1c1fb",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TS",
+          "network": "arbitrum",
+          "chain_id": 42161,
+          "price": {
+            "value": 0,
+            "changed_at": 1730476401,
+            "relative_change_24h": 0
+          },
+          "symbol": "TS",
+          "colors": { "primary": "#6A87C8" },
+          "networks": {
+            "42161": {
+              "address": "0x50b4f916b2b68c9288a94df76e29649dafd1c1fb",
+              "decimals": 18
+            }
+          },
+          "bridging": { "bridgeable": false, "networks": {} },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "57400846687",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x0000000000000000000000000000000000000000",
+          "decimals": 18,
+          "icon_url": "https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/ethereum/eth.png",
+          "name": "Ethereum",
+          "network": "blast",
+          "chain_id": 81457,
+          "price": {
+            "value": 2483,
+            "changed_at": 1730476401,
+            "relative_change_24h": -3.3833343061148935
+          },
+          "symbol": "ETH",
+          "type": "native",
+          "colors": { "primary": "#808088", "fallback": "#E8EAF5" },
+          "networks": {
+            "1": { "address": "eth", "decimals": 18 },
+            "10": {
+              "address": "0x0000000000000000000000000000000000000000",
+              "decimals": 18
+            },
+            "56": {
+              "address": "0x2170ed0880ac9a755fd29b2688956bd959f933f8",
+              "decimals": 18
+            },
+            "8453": {
+              "address": "0x0000000000000000000000000000000000000000",
+              "decimals": 18
+            },
+            "42161": {
+              "address": "0x0000000000000000000000000000000000000000",
+              "decimals": 18
+            },
+            "81457": {
+              "address": "0x0000000000000000000000000000000000000000",
+              "decimals": 18
+            },
+            "7777777": {
+              "address": "0x0000000000000000000000000000000000000000",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": true,
+            "networks": {
+              "1": { "bridgeable": true },
+              "10": { "bridgeable": true },
+              "56": { "bridgeable": false },
+              "8453": { "bridgeable": true },
+              "42161": { "bridgeable": true },
+              "7777777": { "bridgeable": true }
+            }
+          },
+          "probable_spam": false,
+          "verified": true,
+          "transferable": true,
+          "mainnet_address": "eth"
+        }
+      },
+      {
+        "quantity": "49792635071",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x0000000000000000000000000000000000000000",
+          "decimals": 18,
+          "icon_url": "https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/ethereum/eth.png",
+          "name": "Ethereum",
+          "network": "base",
+          "chain_id": 8453,
+          "price": {
+            "value": 2483,
+            "changed_at": 1730476401,
+            "relative_change_24h": -3.3833343061148935
+          },
+          "symbol": "ETH",
+          "type": "native",
+          "colors": { "primary": "#808088", "fallback": "#E8EAF5" },
+          "networks": {
+            "1": { "address": "eth", "decimals": 18 },
+            "10": {
+              "address": "0x0000000000000000000000000000000000000000",
+              "decimals": 18
+            },
+            "56": {
+              "address": "0x2170ed0880ac9a755fd29b2688956bd959f933f8",
+              "decimals": 18
+            },
+            "8453": {
+              "address": "0x0000000000000000000000000000000000000000",
+              "decimals": 18
+            },
+            "42161": {
+              "address": "0x0000000000000000000000000000000000000000",
+              "decimals": 18
+            },
+            "81457": {
+              "address": "0x0000000000000000000000000000000000000000",
+              "decimals": 18
+            },
+            "7777777": {
+              "address": "0x0000000000000000000000000000000000000000",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": true,
+            "networks": {
+              "1": { "bridgeable": true },
+              "10": { "bridgeable": true },
+              "56": { "bridgeable": false },
+              "42161": { "bridgeable": true },
+              "81457": { "bridgeable": true },
+              "7777777": { "bridgeable": true }
+            }
+          },
+          "probable_spam": false,
+          "verified": true,
+          "transferable": true,
+          "mainnet_address": "eth"
+        }
+      },
+      {
+        "quantity": "9960",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "eth",
+          "decimals": 18,
+          "icon_url": "https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/ethereum/eth.png",
+          "name": "Ethereum",
+          "network": "mainnet",
+          "chain_id": 1,
+          "price": {
+            "value": 2483,
+            "changed_at": 1730476401,
+            "relative_change_24h": -3.3833343061148935
+          },
+          "symbol": "ETH",
+          "type": "native",
+          "colors": { "primary": "#808088", "fallback": "#E8EAF5" },
+          "networks": {
+            "1": { "address": "eth", "decimals": 18 },
+            "10": {
+              "address": "0x0000000000000000000000000000000000000000",
+              "decimals": 18
+            },
+            "56": {
+              "address": "0x2170ed0880ac9a755fd29b2688956bd959f933f8",
+              "decimals": 18
+            },
+            "8453": {
+              "address": "0x0000000000000000000000000000000000000000",
+              "decimals": 18
+            },
+            "42161": {
+              "address": "0x0000000000000000000000000000000000000000",
+              "decimals": 18
+            },
+            "81457": {
+              "address": "0x0000000000000000000000000000000000000000",
+              "decimals": 18
+            },
+            "7777777": {
+              "address": "0x0000000000000000000000000000000000000000",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": true,
+            "networks": {
+              "10": { "bridgeable": true },
+              "56": { "bridgeable": true },
+              "8453": { "bridgeable": true },
+              "42161": { "bridgeable": true },
+              "81457": { "bridgeable": true },
+              "7777777": { "bridgeable": true }
+            }
+          },
+          "probable_spam": false,
+          "verified": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "45101000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x7d97d9dfa4b4da6c193ce2d73be170c47018543e",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "Extremely Cool Test Token WOOOW",
+          "network": "mainnet",
+          "chain_id": 1,
+          "price": {
+            "value": 0,
+            "changed_at": 1730476401,
+            "relative_change_24h": 0
+          },
+          "symbol": "WOOW",
+          "colors": { "primary": "#9BA1A4" },
+          "networks": {
+            "1": {
+              "address": "0x7d97d9dfa4b4da6c193ce2d73be170c47018543e",
+              "decimals": 18
+            }
+          },
+          "bridging": { "bridgeable": false, "networks": {} },
+          "probable_spam": false,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "3892770690740909226214",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x2145eaec86935b0414754caa4d8c1582d433c73e",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "All your base are belong to us",
+          "network": "mainnet",
+          "chain_id": 1,
+          "price": {
+            "value": 0,
+            "changed_at": 1730476401,
+            "relative_change_24h": 0
+          },
+          "symbol": "AYBABTU",
+          "colors": { "primary": "#71ABFF" },
+          "networks": {
+            "1": {
+              "address": "0x2145eaec86935b0414754caa4d8c1582d433c73e",
+              "decimals": 18
+            }
+          },
+          "bridging": { "bridgeable": false, "networks": {} },
+          "probable_spam": false,
+          "transferable": true
+        }
+      }
+    ]
+  }
+}
