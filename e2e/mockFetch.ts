@@ -17,10 +17,10 @@ export function mockFetch() {
 
       if (!response)
         throw new Error('no response for request', {
-          cause: { url: url.toString(), hash },
+          cause: { url: url.href, hash },
         });
 
-      return Promise.resolve(response);
+      return new Response(response);
     }
 
     return nativeFetch(input, init);
