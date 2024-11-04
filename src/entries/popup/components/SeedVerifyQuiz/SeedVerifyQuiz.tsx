@@ -183,20 +183,20 @@ export function SeedVerifyQuiz({
             seedWords[11] === selectedWords[2]?.word
           ) {
             setValidated(true);
-            analytics.track(event.walletBackup, {
-              status: 'completed',
-            });
             playSound('CorrectSeedQuiz');
             setTimeout(() => {
               setWalletBackedUp({ address });
               onQuizValidated();
             }, 1200);
+            analytics.track(event.walletBackup, {
+              status: 'completed',
+            });
           } else {
             playSound('IncorrectSeedQuiz');
+            setIncorrect(true);
             analytics.track(event.walletBackup, {
               status: 'failed',
             });
-            setIncorrect(true);
           }
         }, 100);
       } else {
@@ -330,10 +330,10 @@ export function SeedVerifyQuiz({
           variant="transparent"
           width="full"
           onClick={() => {
+            handleSkip();
             analytics.track(event.walletBackup, {
               status: 'skipped',
             });
-            handleSkip();
           }}
           testId="skip-this-button"
           tabIndex={0}
