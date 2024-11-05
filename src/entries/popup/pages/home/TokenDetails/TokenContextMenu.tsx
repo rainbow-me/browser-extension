@@ -74,11 +74,11 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
   const onSwap = () => {
     setSelectedToken(token);
     if (allowSwap) {
+      isNavigating = true;
+      navigateToSwaps();
       analytics.track(event.swapOpened, {
         entryPoint: 'token_context_menu',
       });
-      isNavigating = true;
-      navigateToSwaps();
     } else {
       triggerAlert({ text: i18n.t('alert.coming_soon') });
       setSelectedToken(); // clear selected token

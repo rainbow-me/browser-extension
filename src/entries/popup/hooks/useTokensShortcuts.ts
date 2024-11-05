@@ -136,6 +136,7 @@ export function useTokensShortcuts() {
       if (selectedToken && isHomeRoute) {
         if (e.key === shortcuts.tokens.SWAP_ASSET.key) {
           if (allowSwap) {
+            navigateToSwaps();
             analytics.track(event.swapOpened, {
               entryPoint: 'swaps_shortcut_x_key',
             });
@@ -143,7 +144,6 @@ export function useTokensShortcuts() {
               key: shortcuts.tokens.SWAP_ASSET.display,
               type: 'tokens.goToSwap',
             });
-            navigateToSwaps();
           } else {
             triggerAlert({ text: i18n.t('alert.coming_soon') });
             // clear selected token

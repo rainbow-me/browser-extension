@@ -161,6 +161,7 @@ export function useHomeShortcuts() {
           navigate(ROUTES.SETTINGS);
           break;
         case shortcuts.home.GO_TO_SWAP.key:
+          navigateToSwaps();
           analytics.track(event.swapOpened, {
             entryPoint: 'swaps_shortcut_x_key',
           });
@@ -168,7 +169,6 @@ export function useHomeShortcuts() {
             key: shortcuts.home.GO_TO_SWAP.display,
             type: 'home.goToSwap',
           });
-          navigateToSwaps();
           break;
         case shortcuts.home.GO_TO_PROFILE.key:
           if (!selectedToken && !isTokenDetailsPage) {

@@ -200,10 +200,10 @@ function SwapSend({
           color="accent"
           symbol="arrow.triangle.swap"
           onClick={() => {
+            selectTokenAndNavigate(ROUTES.SWAP);
             analytics.track(event.swapOpened, {
               entryPoint: 'token_details',
             });
-            selectTokenAndNavigate(ROUTES.SWAP);
           }}
           tabIndex={0}
         >

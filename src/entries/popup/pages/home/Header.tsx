@@ -229,10 +229,10 @@ function ActionButtonsSection() {
                   alertComingSoon();
                 }
               } else {
+                navigateToSwaps();
                 analytics.track(event.swapOpened, {
                   entryPoint: 'home_header_swap_button',
                 });
-                navigateToSwaps();
               }
             }}
             tooltipHint={shortcuts.home.GO_TO_SWAP.display}

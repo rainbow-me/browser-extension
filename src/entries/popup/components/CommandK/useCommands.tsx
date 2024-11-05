@@ -738,10 +738,10 @@ export const useCommands = (
 
   // Wrapped to add analytics
   const wrappedNavigateToSwaps = React.useCallback(() => {
+    navigateToSwaps();
     analytics.track(event.swapOpened, {
       entryPoint: 'token_shortcuts',
     });
-    navigateToSwaps();
   }, [navigateToSwaps]);
 
   const { isWatchingWallet } = useWallets();
