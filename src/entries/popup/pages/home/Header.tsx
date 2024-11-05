@@ -2,6 +2,8 @@
 import { motion, useTransform } from 'framer-motion';
 import * as React from 'react';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -227,6 +229,9 @@ function ActionButtonsSection() {
                   alertComingSoon();
                 }
               } else {
+                analytics.track(event.swapFlowEntered, {
+                  enteredFrom: 'home_header_swap_button',
+                });
                 navigateToSwaps();
               }
             }}

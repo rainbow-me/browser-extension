@@ -2,6 +2,8 @@ import { useCallback, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useEnsName } from 'wagmi';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
@@ -159,6 +161,9 @@ export function useHomeShortcuts() {
           navigate(ROUTES.SETTINGS);
           break;
         case shortcuts.home.GO_TO_SWAP.key:
+          analytics.track(event.swapFlowEntered, {
+            enteredFrom: 'swaps_shortcut_x_key',
+          });
           trackShortcut({
             key: shortcuts.home.GO_TO_SWAP.display,
             type: 'home.goToSwap',

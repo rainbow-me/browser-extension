@@ -2,6 +2,8 @@ import { useCallback, useMemo } from 'react';
 import { useLocation } from 'react-router';
 import { Address } from 'viem';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -134,6 +136,9 @@ export function useTokensShortcuts() {
       if (selectedToken && isHomeRoute) {
         if (e.key === shortcuts.tokens.SWAP_ASSET.key) {
           if (allowSwap) {
+            analytics.track(event.swapFlowEntered, {
+              enteredFrom: 'swaps_shortcut_x_key',
+            });
             trackShortcut({
               key: shortcuts.tokens.SWAP_ASSET.display,
               type: 'tokens.goToSwap',
