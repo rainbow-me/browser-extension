@@ -738,8 +738,8 @@ export const useCommands = (
 
   // Wrapped to add analytics
   const wrappedNavigateToSwaps = React.useCallback(() => {
-    analytics.track(event.swapFlowEntered, {
-      enteredFrom: 'token_shortcuts',
+    analytics.track(event.swapOpened, {
+      entryPoint: 'token_shortcuts',
     });
     navigateToSwaps();
   }, [navigateToSwaps]);

@@ -136,8 +136,8 @@ export function useTokensShortcuts() {
       if (selectedToken && isHomeRoute) {
         if (e.key === shortcuts.tokens.SWAP_ASSET.key) {
           if (allowSwap) {
-            analytics.track(event.swapFlowEntered, {
-              enteredFrom: 'swaps_shortcut_x_key',
+            analytics.track(event.swapOpened, {
+              entryPoint: 'swaps_shortcut_x_key',
             });
             trackShortcut({
               key: shortcuts.tokens.SWAP_ASSET.display,

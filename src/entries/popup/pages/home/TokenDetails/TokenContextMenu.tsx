@@ -74,8 +74,8 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
   const onSwap = () => {
     setSelectedToken(token);
     if (allowSwap) {
-      analytics.track(event.swapFlowEntered, {
-        enteredFrom: 'token_context_menu',
+      analytics.track(event.swapOpened, {
+        entryPoint: 'token_context_menu',
       });
       isNavigating = true;
       navigateToSwaps();

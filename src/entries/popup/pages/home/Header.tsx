@@ -229,8 +229,8 @@ function ActionButtonsSection() {
                   alertComingSoon();
                 }
               } else {
-                analytics.track(event.swapFlowEntered, {
-                  enteredFrom: 'home_header_swap_button',
+                analytics.track(event.swapOpened, {
+                  entryPoint: 'home_header_swap_button',
                 });
                 navigateToSwaps();
               }

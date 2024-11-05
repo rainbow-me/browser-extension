@@ -210,7 +210,7 @@ export const event = {
   /**
    * Called when a user enters the swaps flow
    */
-  swapFlowEntered: 'swap.flowEntered',
+  swapOpened: 'swap.opened',
   /**
    * Called when the user completes a Swap/Bridge and submits the transaction.
    * This includes cross-chain swaps, while `bridgeSubmitted` is instead called
@@ -669,15 +669,16 @@ export type EventProperties = {
   [event.settingsRainbowDefaultProviderEnabled]: undefined;
   [event.settingsFlashbotsDisabled]: undefined;
   [event.settingsFlashbotsEnabled]: undefined;
-  [event.swapFlowEntered]: {
+  [event.swapOpened]: {
     /**
-     * Current swaps entry points are:
-     * 'X' key shortcut: 'swaps_shortcut_x_key'
-     * Home header swap button: 'home_header_swap_button'
-     * Token context menu: 'token_context_menu'
-     * Token details: 'token_details'
+     * Entrypoint of the swaps flow.
      */
-    enteredFrom: string;
+    entryPoint:
+      | 'token_shortcuts' // 'X' key shortcut
+      | 'swaps_shortcut_x_key' // Home header swap button
+      | 'home_header_swap_button' // Token context menu
+      | 'token_context_menu' // Token context menu
+      | 'token_details'; // Token details
   };
   [event.swapSubmitted]: {
     /**

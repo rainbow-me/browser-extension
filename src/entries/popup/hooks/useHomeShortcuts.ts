@@ -161,8 +161,8 @@ export function useHomeShortcuts() {
           navigate(ROUTES.SETTINGS);
           break;
         case shortcuts.home.GO_TO_SWAP.key:
-          analytics.track(event.swapFlowEntered, {
-            enteredFrom: 'swaps_shortcut_x_key',
+          analytics.track(event.swapOpened, {
+            entryPoint: 'swaps_shortcut_x_key',
           });
           trackShortcut({
             key: shortcuts.home.GO_TO_SWAP.display,
