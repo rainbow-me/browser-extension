@@ -221,7 +221,7 @@ export const event = {
    * Called when user completes or skips the wallet backup flow.
    * potential outcomes are 'succeeded,' 'failed,' or 'skipped.'
    */
-  walletBackup: 'walletBackup',
+  walletBackupQuizSubmitted: 'wallet.backup_quiz.submitted',
   /**
    * Called when the core wallet Tokens & Activity
    * screen is viewed or opened in the extension popup.
@@ -738,13 +738,21 @@ export type EventProperties = {
      */
     degenMode: boolean;
   };
-  [event.walletBackup]: {
+  [event.walletBackupQuizSubmitted]: {
     /**
      * Completed: if the user successfully completes the wallet backup quiz.
      * Failed: if the user fails to complete the backup quiz.
      * Skipped: if the user opts to skip the backup quiz completely.
      */
     status: 'completed' | 'failed' | 'skipped';
+    /**
+     * The entry point of the wallet backup quiz.
+     */
+    entryPoint: 'onboarding' | 'settings';
+    /**
+     * Index of the wallet seed to track how many backups are completed.
+     */
+    index: number;
   };
   [event.walletViewed]: undefined;
   [event.toggledDegenMode]: { enabled: boolean };

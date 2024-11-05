@@ -140,10 +140,12 @@ export function SeedVerifyQuiz({
   address,
   onQuizValidated,
   handleSkip,
+  entryPoint,
 }: {
   address: Address;
   onQuizValidated: () => void;
   handleSkip: () => void;
+  entryPoint: 'onboarding' | 'settings';
 }) {
   const [seed, setSeed] = useState('');
   const [validated, setValidated] = useState(false);
@@ -155,6 +157,8 @@ export function SeedVerifyQuiz({
   const [selectedWords, setSelectedWords] = useState<SeedWord[]>([]);
 
   const setWalletBackedUp = useWalletBackupsStore.use.setWalletBackedUp();
+  const walletBackups = useWalletBackupsStore.use.walletBackups();
+
   const seedBoxBorderColor = useMemo(() => {
     if (validated) return globalColors.green90;
     if (incorrect) return globalColors.red90;
@@ -188,14 +192,18 @@ export function SeedVerifyQuiz({
               setWalletBackedUp({ address });
               onQuizValidated();
             }, 1200);
-            analytics.track(event.walletBackup, {
+            analytics.track(event.walletBackupQuizSubmitted, {
               status: 'completed',
+              entryPoint,
+              index: Object.keys(walletBackups).indexOf(address),
             });
           } else {
             playSound('IncorrectSeedQuiz');
             setIncorrect(true);
-            analytics.track(event.walletBackup, {
+            analytics.track(event.walletBackupQuizSubmitted, {
               status: 'failed',
+              entryPoint,
+              index: Object.keys(walletBackups).indexOf(address),
             });
           }
         }, 100);
@@ -204,7 +212,15 @@ export function SeedVerifyQuiz({
         setIncorrect(false);
       }
     },
-    [address, onQuizValidated, seed, selectedWords, setWalletBackedUp],
+    [
+      address,
+      entryPoint,
+      onQuizValidated,
+      seed,
+      selectedWords,
+      setWalletBackedUp,
+      walletBackups,
+    ],
   );
 
   useEffect(() => {
@@ -331,8 +347,10 @@ export function SeedVerifyQuiz({
           width="full"
           onClick={() => {
             handleSkip();
-            analytics.track(event.walletBackup, {
+            analytics.track(event.walletBackupQuizSubmitted, {
               status: 'skipped',
+              entryPoint,
+              index: Object.keys(walletBackups).indexOf(address),
             });
           }}
           testId="skip-this-button"

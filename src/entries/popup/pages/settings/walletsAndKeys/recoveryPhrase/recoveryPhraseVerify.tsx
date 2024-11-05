@@ -34,6 +34,7 @@ export function RecoveryPhraseVerify() {
                 ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS,
               )
         }
+        entryPoint="settings"
       />
     </Box>
   );
