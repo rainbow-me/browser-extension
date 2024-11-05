@@ -78,6 +78,7 @@ export function SignMessage({
           requestPayload.address,
         );
         analytics.track(event.dappPromptSignMessageApproved, {
+          chainId: activeSession?.chainId,
           dappURL: dappMetadata?.appHost || '',
           dappName: dappMetadata?.appName,
         });
@@ -87,6 +88,7 @@ export function SignMessage({
           requestPayload.address,
         );
         analytics.track(event.dappPromptSignTypedDataApproved, {
+          chainId: activeSession?.chainId,
           dappURL: dappMetadata?.appHost || '',
           dappName: dappMetadata?.appName,
         });
@@ -105,6 +107,7 @@ export function SignMessage({
     approveRequest,
     dappMetadata?.appHost,
     dappMetadata?.appName,
+    activeSession?.chainId,
     request,
     selectedWallet,
   ]);
@@ -114,11 +117,13 @@ export function SignMessage({
     const walletAction = getWalletActionMethod(request?.method);
     if (walletAction === 'personal_sign') {
       analytics.track(event.dappPromptSignMessageRejected, {
+        chainId: activeSession?.chainId || 0,
         dappURL: dappMetadata?.appHost || '',
         dappName: dappMetadata?.appName,
       });
     } else if (walletAction === 'sign_typed_data') {
       analytics.track(event.dappPromptSignTypedDataRejected, {
+        chainId: activeSession?.chainId || 0,
         dappURL: dappMetadata?.appHost || '',
         dappName: dappMetadata?.appName,
       });
@@ -126,6 +131,7 @@ export function SignMessage({
   }, [
     dappMetadata?.appHost,
     dappMetadata?.appName,
+    activeSession?.chainId,
     rejectRequest,
     request?.method,
   ]);

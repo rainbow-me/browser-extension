@@ -508,6 +508,10 @@ export type EventProperties = {
   };
   [event.dappPromptSignMessageApproved]: {
     /**
+     * `chainId` of the network where the transaction is sent.
+     */
+    chainId: number;
+    /**
      * Full url of the dApp requesting a sign message request.
      */
     dappURL: string;
@@ -517,6 +521,10 @@ export type EventProperties = {
     dappName?: string;
   };
   [event.dappPromptSignMessageRejected]: {
+    /**
+     * `chainId` of the network where the transaction is sent.
+     */
+    chainId: number;
     /**
      * Full url of the dApp requesting a sign message request.
      */
@@ -528,6 +536,10 @@ export type EventProperties = {
   };
   [event.dappPromptSignTypedDataApproved]: {
     /**
+     * `chainId` of the network where the transaction is sent.
+     */
+    chainId: number;
+    /**
      * Full url of the dApp requesting a sign typed data request.
      */
     dappURL: string;
@@ -537,6 +549,10 @@ export type EventProperties = {
     dappName?: string;
   };
   [event.dappPromptSignTypedDataRejected]: {
+    /**
+     * `chainId` of the network where the transaction is sent.
+     */
+    chainId: number;
     /**
      * Full url of the dApp requesting a sign typed data request.
      */
