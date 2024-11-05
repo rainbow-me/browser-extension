@@ -321,6 +321,10 @@ export type EventProperties = {
      */
     dappURL: string;
     /**
+     * Domain of the dApp displayed to the user.
+     */
+    dappDomain: string;
+    /**
      * Short name of the dApp displayed to the user.
      * This will help us spot malformed dApp names to add to our overrides.
      */
@@ -343,6 +347,10 @@ export type EventProperties = {
      * Full url of the dApp requesting a connection.
      */
     dappURL: string;
+    /**
+     * Domain of the dApp displayed to the user.
+     */
+    dappDomain: string;
     /**
      * Short name of the dApp displayed to the user.
      * This will help us spot malformed dApp names to add to our overrides.
@@ -371,6 +379,10 @@ export type EventProperties = {
      */
     dappURL: string;
     /**
+     * Domain of the dApp displayed to the user.
+     */
+    dappDomain: string;
+    /**
      * Short name of the dApp displayed to the user.
      * This will help us spot malformed dApp names to add to our overrides.
      */
@@ -385,6 +397,10 @@ export type EventProperties = {
      * Full url of the dApp requesting a connection.
      */
     dappURL: string;
+    /**
+     * Domain of the dApp displayed to the user.
+     */
+    dappDomain: string;
     /**
      * Short name of the dApp displayed to the user.
      * This will help us spot malformed dApp names to add to our overrides.
@@ -420,6 +436,10 @@ export type EventProperties = {
      */
     dappURL: string;
     /**
+     * Domain of the dApp displayed to the user.
+     */
+    dappDomain: string;
+    /**
      * Short name of the dApp displayed to the user.
      * This will help us spot malformed dApp names to add to our overrides.
      */
@@ -434,6 +454,10 @@ export type EventProperties = {
      * Full url of the dApp requesting a connection.
      */
     dappURL: string;
+    /**
+     * Domain of the dApp displayed to the user.
+     */
+    dappDomain: string;
     /**
      * Short name of the dApp displayed to the user.
      * This will help us spot malformed dApp names to add to our overrides.
@@ -451,6 +475,10 @@ export type EventProperties = {
      * Full url of the dApp requesting a to send a transaction.
      */
     dappURL: string;
+    /**
+     * Domain of the dApp displayed to the user.
+     */
+    dappDomain: string;
     /**
      * Short name of the dApp displayed to the user.
      * This will help us spot malformed dApp names to add to our overrides.
@@ -494,6 +522,10 @@ export type EventProperties = {
      */
     dappURL: string;
     /**
+     * Domain of the dApp displayed to the user.
+     */
+    dappDomain: string;
+    /**
      * Short name of the dApp displayed to the user.
      * This will help us spot malformed dApp names to add to our overrides.
      */
@@ -516,6 +548,10 @@ export type EventProperties = {
      */
     dappURL: string;
     /**
+     * Domain of the dApp displayed to the user.
+     */
+    dappDomain: string;
+    /**
      * Short name of the dApp displayed to the user.
      */
     dappName?: string;
@@ -529,6 +565,10 @@ export type EventProperties = {
      * Full url of the dApp requesting a sign message request.
      */
     dappURL: string;
+    /**
+     * Domain of the dApp displayed to the user.
+     */
+    dappDomain: string;
     /**
      * Short name of the dApp displayed to the user.
      */
@@ -544,6 +584,10 @@ export type EventProperties = {
      */
     dappURL: string;
     /**
+     * Domain of the dApp displayed to the user.
+     */
+    dappDomain: string;
+    /**
      * Short name of the dApp displayed to the user.
      */
     dappName?: string;
@@ -558,6 +602,10 @@ export type EventProperties = {
      */
     dappURL: string;
     /**
+     * Domain of the dApp displayed to the user.
+     */
+    dappDomain: string;
+    /**
      * Short name of the dApp displayed to the user.
      */
     dappName?: string;
@@ -568,6 +616,10 @@ export type EventProperties = {
      */
     dappURL: string;
     /**
+     * Domain of the dApp displayed to the user.
+     */
+    dappDomain: string;
+    /**
      * Short name of the dApp displayed to the user.
      */
     dappName?: string;
@@ -575,6 +627,28 @@ export type EventProperties = {
      * `chainId` of the network the dApp requested a switch to.
      */
     chainId: number;
+  };
+  [event.dappProviderRateLimit]: {
+    /**
+     * Full url of the dApp requesting a rate limit.
+     */
+    dappURL: string;
+    /**
+     * Domain of the dApp displayed to the user.
+     */
+    dappDomain: string;
+    /**
+     * Short name of the dApp displayed to the user.
+     */
+    dappName?: string;
+    /**
+     * Type of rate limit that was hit - either per second or per minute
+     */
+    typeOfLimitHit: 'perSecond' | 'perMinute';
+    /**
+     * Number of requests made when rate limit was hit
+     */
+    requests: number;
   };
   [event.keyboardNavigationTriggered]: {
     /**

@@ -170,7 +170,8 @@ export const WatchAsset = ({
         symbol,
         decimals: decimals,
         address: assetAddress,
-        dappURL: dappMetadata?.appHost || '',
+        dappURL: dappMetadata?.url || '',
+        dappDomain: dappMetadata?.appHost || '',
         dappName: dappMetadata?.appName,
       });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -191,6 +192,7 @@ export const WatchAsset = ({
     symbol,
     decimals,
     assetAddress,
+    dappMetadata?.url,
     dappMetadata?.appHost,
     dappMetadata?.appName,
     addRainbowChainAsset,
@@ -203,12 +205,14 @@ export const WatchAsset = ({
       symbol,
       decimals,
       address: assetAddress,
-      dappURL: dappMetadata?.appHost || '',
+      dappURL: dappMetadata?.url || '',
+      dappDomain: dappMetadata?.appHost || '',
       dappName: dappMetadata?.appName,
     });
   }, [
     assetAddress,
     chainId,
+    dappMetadata?.url,
     dappMetadata?.appHost,
     dappMetadata?.appName,
     decimals,

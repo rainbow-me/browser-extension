@@ -80,7 +80,8 @@ export const AddEthereumChain = ({
         chainId: Number(chainId),
         rpcUrl,
         blockExplorerUrl,
-        dappURL: dappMetadata?.appHost || '',
+        dappURL: dappMetadata?.url || '',
+        dappDomain: dappMetadata?.appHost || '',
         dappName: dappMetadata?.appName,
       });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -101,6 +102,7 @@ export const AddEthereumChain = ({
     addUserChain,
     approveRequest,
     blockExplorerUrl,
+    dappMetadata?.url,
     dappMetadata?.appHost,
     dappMetadata?.appName,
   ]);
@@ -111,12 +113,14 @@ export const AddEthereumChain = ({
       chainId: Number(chainId),
       rpcUrl,
       blockExplorerUrl,
-      dappURL: dappMetadata?.appHost || '',
+      dappURL: dappMetadata?.url || '',
+      dappDomain: dappMetadata?.appHost || '',
       dappName: dappMetadata?.appName,
     });
   }, [
     blockExplorerUrl,
     chainId,
+    dappMetadata?.url,
     dappMetadata?.appHost,
     dappMetadata?.appName,
     rejectRequest,

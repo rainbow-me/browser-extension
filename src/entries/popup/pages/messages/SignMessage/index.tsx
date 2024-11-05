@@ -79,7 +79,8 @@ export function SignMessage({
         );
         analytics.track(event.dappPromptSignMessageApproved, {
           chainId: activeSession?.chainId,
-          dappURL: dappMetadata?.appHost || '',
+          dappURL: dappMetadata?.url || '',
+          dappDomain: dappMetadata?.appHost || '',
           dappName: dappMetadata?.appName,
         });
       } else if (walletAction === 'sign_typed_data') {
@@ -89,7 +90,8 @@ export function SignMessage({
         );
         analytics.track(event.dappPromptSignTypedDataApproved, {
           chainId: activeSession?.chainId,
-          dappURL: dappMetadata?.appHost || '',
+          dappURL: dappMetadata?.url || '',
+          dappDomain: dappMetadata?.appHost || '',
           dappName: dappMetadata?.appName,
         });
       }
@@ -105,6 +107,7 @@ export function SignMessage({
     }
   }, [
     approveRequest,
+    dappMetadata?.url,
     dappMetadata?.appHost,
     dappMetadata?.appName,
     activeSession?.chainId,
@@ -118,17 +121,20 @@ export function SignMessage({
     if (walletAction === 'personal_sign') {
       analytics.track(event.dappPromptSignMessageRejected, {
         chainId: activeSession?.chainId || 0,
-        dappURL: dappMetadata?.appHost || '',
+        dappURL: dappMetadata?.url || '',
+        dappDomain: dappMetadata?.appHost || '',
         dappName: dappMetadata?.appName,
       });
     } else if (walletAction === 'sign_typed_data') {
       analytics.track(event.dappPromptSignTypedDataRejected, {
         chainId: activeSession?.chainId || 0,
-        dappURL: dappMetadata?.appHost || '',
+        dappURL: dappMetadata?.url || '',
+        dappDomain: dappMetadata?.appHost || '',
         dappName: dappMetadata?.appName,
       });
     }
   }, [
+    dappMetadata?.url,
     dappMetadata?.appHost,
     dappMetadata?.appName,
     activeSession?.chainId,

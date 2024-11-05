@@ -149,7 +149,15 @@ const resetRateLimit = async (host: string, second: boolean) => {
   return SessionStorage.set('rateLimits', rateLimits);
 };
 
-const checkRateLimit = async (host: string) => {
+const checkRateLimit = async ({
+  url,
+  host,
+  name,
+}: {
+  url: string;
+  host: string;
+  name: string;
+}) => {
   try {
     // Read from session
     let rateLimits = await SessionStorage.get('rateLimits');
@@ -196,7 +204,9 @@ const checkRateLimit = async (host: string) => {
     // Check rate limits
     if (rateLimits[host].perSecond > MAX_REQUEST_PER_SECOND) {
       queueEventTracking(event.dappProviderRateLimit, {
-        dappURL: host,
+        dappURL: url,
+        dappDomain: host,
+        dappName: name,
         typeOfLimitHit: 'perSecond',
         requests: rateLimits[host].perSecond,
       });
@@ -205,7 +215,9 @@ const checkRateLimit = async (host: string) => {
 
     if (rateLimits[host].perMinute > MAX_REQUEST_PER_MINUTE) {
       queueEventTracking(event.dappProviderRateLimit, {
-        dappURL: host,
+        dappURL: url,
+        dappDomain: host,
+        dappName: name,
         typeOfLimitHit: 'perMinute',
         requests: rateLimits[host].perMinute,
       });
@@ -340,8 +352,9 @@ export const handleProviderRequest = ({
     }) => {
       const url = meta?.sender.url || '';
       const host = (isValidUrl(url) && getDappHost(url)) || '';
+      const name = meta?.sender.tab?.title || host;
       if (!skipRateLimitCheck(method)) {
-        const rateLimited = await checkRateLimit(host);
+        const rateLimited = await checkRateLimit({ url, host, name });
         if (rateLimited) {
           return { id, error: <Error>new Error('Rate Limit Exceeded') };
         }
@@ -407,6 +420,7 @@ export const handleProviderRequest = ({
       });
       queueEventTracking(event.dappProviderNetworkSwitched, {
         dappURL: host,
+        dappDomain: host,
         dappName: dappName,
         chainId: proposedChainId,
       });
