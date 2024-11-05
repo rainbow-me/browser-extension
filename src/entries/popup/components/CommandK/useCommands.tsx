@@ -740,7 +740,7 @@ export const useCommands = (
   const wrappedNavigateToSwaps = React.useCallback(() => {
     navigateToSwaps();
     analytics.track(event.swapOpened, {
-      entryPoint: 'token_shortcuts',
+      entryPoint: 'commandk',
     });
   }, [navigateToSwaps]);
 

@@ -674,11 +674,12 @@ export type EventProperties = {
      * Entrypoint of the swaps flow.
      */
     entryPoint:
-      | 'token_shortcuts' // 'X' key shortcut
-      | 'swaps_shortcut_x_key' // Home header swap button
-      | 'home_header_swap_button' // Token context menu
+      | 'commandk' // command k action
+      | 'home_header_swap_button' // Home header swap button
+      | 'home_shortcut_x_key' // 'X' key shortcut
       | 'token_context_menu' // Token context menu
-      | 'token_details'; // Token details
+      | 'token_details' // Token details
+      | 'token_details_shortcut_x_key'; // Token details 'X' key shortcut
   };
   [event.swapSubmitted]: {
     /**
