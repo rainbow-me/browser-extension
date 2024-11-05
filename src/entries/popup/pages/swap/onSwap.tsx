@@ -99,8 +99,7 @@ export const onSwap = async ({
     tradeAmountUSD: q.tradeAmountUSD,
     crosschain: assetToSell.chainId !== assetToBuy.chainId,
     degenMode,
-    isHardwareWallet:
-      (await wallet).type === KeychainType.HardwareWalletKeychain,
+    hardwareWallet: (await wallet).type === KeychainType.HardwareWalletKeychain,
   });
 
   playSound('SendSound');
