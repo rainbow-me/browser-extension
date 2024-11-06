@@ -78,7 +78,9 @@ export function SignMessage({
           requestPayload.address,
         );
         analytics.track(event.dappPromptSignMessageApproved, {
-          dappURL: dappMetadata?.appHost || '',
+          chainId: activeSession?.chainId,
+          dappURL: dappMetadata?.url || '',
+          dappDomain: dappMetadata?.appHost || '',
           dappName: dappMetadata?.appName,
         });
       } else if (walletAction === 'sign_typed_data') {
@@ -87,7 +89,9 @@ export function SignMessage({
           requestPayload.address,
         );
         analytics.track(event.dappPromptSignTypedDataApproved, {
-          dappURL: dappMetadata?.appHost || '',
+          chainId: activeSession?.chainId,
+          dappURL: dappMetadata?.url || '',
+          dappDomain: dappMetadata?.appHost || '',
           dappName: dappMetadata?.appName,
         });
       }
@@ -103,8 +107,10 @@ export function SignMessage({
     }
   }, [
     approveRequest,
+    dappMetadata?.url,
     dappMetadata?.appHost,
     dappMetadata?.appName,
+    activeSession?.chainId,
     request,
     selectedWallet,
   ]);
@@ -114,18 +120,24 @@ export function SignMessage({
     const walletAction = getWalletActionMethod(request?.method);
     if (walletAction === 'personal_sign') {
       analytics.track(event.dappPromptSignMessageRejected, {
-        dappURL: dappMetadata?.appHost || '',
+        chainId: activeSession?.chainId || 0,
+        dappURL: dappMetadata?.url || '',
+        dappDomain: dappMetadata?.appHost || '',
         dappName: dappMetadata?.appName,
       });
     } else if (walletAction === 'sign_typed_data') {
       analytics.track(event.dappPromptSignTypedDataRejected, {
-        dappURL: dappMetadata?.appHost || '',
+        chainId: activeSession?.chainId || 0,
+        dappURL: dappMetadata?.url || '',
+        dappDomain: dappMetadata?.appHost || '',
         dappName: dappMetadata?.appName,
       });
     }
   }, [
+    dappMetadata?.url,
     dappMetadata?.appHost,
     dappMetadata?.appName,
+    activeSession?.chainId,
     rejectRequest,
     request?.method,
   ]);
