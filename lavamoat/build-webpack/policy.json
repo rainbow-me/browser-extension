@@ -1,10 +1,5 @@
 {
   "resources": {
-    "@graphql-eslint/eslint-plugin>@graphql-tools/graphql-tag-pluck>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
-      "globals": {
-        "define": true
-      }
-    },
     "@testing-library/react>@testing-library/dom>@babel/code-frame": {
       "globals": {
         "console.warn": true,
@@ -719,8 +714,8 @@
         "define": true
       },
       "packages": {
-        "@graphql-eslint/eslint-plugin>@graphql-tools/graphql-tag-pluck>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
+        "webpack>terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": {
@@ -840,8 +835,8 @@
         "define": true
       },
       "packages": {
-        "@graphql-eslint/eslint-plugin>@graphql-tools/graphql-tag-pluck>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
+        "webpack>terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": {
@@ -934,8 +929,8 @@
         "define": true
       },
       "packages": {
-        "@graphql-eslint/eslint-plugin>@graphql-tools/graphql-tag-pluck>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
+        "webpack>terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": {
