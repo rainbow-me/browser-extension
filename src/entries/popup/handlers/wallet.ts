@@ -7,6 +7,7 @@ import { HDNode, Mnemonic } from '@ethersproject/hdnode';
 import { keccak256 } from '@ethersproject/keccak256';
 import AppEth from '@ledgerhq/hw-app-eth';
 import TransportWebHID from '@ledgerhq/hw-transport-webhid';
+import TrezorConnect from '@trezor/connect-web';
 import { Address } from 'viem';
 
 import { PrivateKey } from '~/core/keychain/IKeychain';
@@ -342,14 +343,15 @@ export const importAccountAtIndex = async (
     case 'Trezor':
       {
         const path = getHDPathForVendorAndType(index, 'Trezor');
-        const result = await window.TrezorConnect.ethereumGetAddress({
+        // @ts-expect-error --- the type definitons make no sense for this method.
+        // 'address' is required but it should be optional and only used for validation
+        const result = await TrezorConnect.ethereumGetAddress({
           path,
-          coin: 'eth',
           showOnTrezor: false,
         });
 
         if (!result.success) {
-          const e = new RainbowError('window.TrezorConnect.getAddress failed');
+          const e = new RainbowError('TrezorConnect.getAddress failed');
           logger.error(e, {
             result: JSON.stringify(result, null, 2),
           });
@@ -385,16 +387,15 @@ export const connectTrezor = async () => {
     // We don't want the index to be part of the path
     // because we need the public key
     const path = getHDPathForVendorAndType(0, 'Trezor').slice(0, -2);
-    const result = await window.TrezorConnect.ethereumGetPublicKey({
+    const result = await TrezorConnect.ethereumGetPublicKey({
       path,
-      coin: 'eth',
       showOnTrezor: false,
+      suppressBackupWarning: true,
+      chunkify: false,
     });
 
     if (!result.success) {
-      const e = new RainbowError(
-        'window.TrezorConnect.ethereumGetPublicKey failed',
-      );
+      const e = new RainbowError('TrezorConnect.ethereumGetPublicKey failed');
       logger.error(e, {
         result: JSON.stringify(result, null, 2),
       });
