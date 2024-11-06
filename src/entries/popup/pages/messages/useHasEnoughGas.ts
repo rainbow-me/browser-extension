@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import { useGasStore } from '~/core/state';
 import { ActiveSession } from '~/core/state/appSessions';
 import { ChainId } from '~/core/types/chains';
@@ -14,10 +16,11 @@ export const useHasEnoughGas = (session: ActiveSession) => {
     chainId,
   });
   const selectedGas = useGasStore.use.selectedGas();
-
-  console.log('nativeAsset', chainId, nativeAsset);
-  return lessThan(
-    selectedGas?.gasFee?.amount || '0',
-    toWei(nativeAsset?.balance?.amount || '0'),
-  );
+  const hasEnough = useMemo(() => {
+    return lessThan(
+      selectedGas?.gasFee?.amount || '0',
+      toWei(nativeAsset?.balance?.amount || '0'),
+    );
+  }, [selectedGas?.gasFee?.amount, nativeAsset?.balance?.amount]);
+  return hasEnough;
 };
