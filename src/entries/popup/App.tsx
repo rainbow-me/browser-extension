@@ -1,5 +1,6 @@
 import { QueryClientProvider } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
+import TrezorConnect from '@trezor/connect-web';
 import { isEqual } from 'lodash';
 import * as React from 'react';
 import { WagmiProvider } from 'wagmi';
@@ -66,12 +67,14 @@ export function App() {
       setTimeout(() => flushQueuedEvents(), 1000);
     }
     // Init trezor once globally
-    window.TrezorConnect?.init({
+    TrezorConnect?.init({
       manifest: {
         email: 'support@rainbow.me',
         appUrl: 'https://rainbow.me',
       },
       lazyLoad: true,
+      transports: ['BridgeTransport', 'WebUsbTransport'],
+      connectSrc: 'https://connect.trezor.io/9/',
     });
 
     if (process.env.IS_DEV !== 'true') {

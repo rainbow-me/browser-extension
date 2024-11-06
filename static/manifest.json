@@ -29,7 +29,7 @@
     },
     {
       "matches": [
-        "*://connect.trezor.io/9/popup.html"
+        "*://connect.trezor.io/9/*"
       ],
       "js": [
         "./vendor/trezor-content-script.js"
@@ -68,7 +68,7 @@
     "notifications"
   ],
   "short_name": "Rainbow",
-  "version": "1.5.56",
+  "version": "1.5.59",
   "web_accessible_resources": [
     {
       "matches": [
