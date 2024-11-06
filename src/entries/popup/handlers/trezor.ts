@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   TransactionRequest,
   TransactionResponse,
@@ -11,8 +10,9 @@ import {
   parse,
   serialize,
 } from '@ethersproject/transactions';
-import { SignTypedDataVersion, TypedDataUtils } from '@metamask/eth-sig-util';
+import { TypedDataUtils } from '@metamask/eth-sig-util';
 import transformTypedDataPlugin from '@trezor/connect-plugin-ethereum';
+import TrezorConnect from '@trezor/connect-web';
 import { Address } from 'viem';
 
 import { addHexPrefix } from '~/core/utils/hex';
@@ -30,10 +30,6 @@ export async function signTransactionFromTrezor(
 ): Promise<string> {
   try {
     const { from: address } = transaction;
-    const provider = getProvider({
-      chainId: transaction.chainId,
-    });
-
     const path = await getPath(address as Address);
 
     const baseTx: UnsignedTransaction = {
@@ -60,8 +56,9 @@ export async function signTransactionFromTrezor(
     }
 
     const nonceHex = BigNumber.from(transaction.nonce).toHexString();
-    const response = await window.TrezorConnect.ethereumSignTransaction({
+    const response = await TrezorConnect.ethereumSignTransaction({
       path,
+      // @ts-expect-error --- unsure why the ts compiler is displaying 'never' for tx type
       transaction: {
         ...baseTx,
         nonce: nonceHex,
@@ -128,16 +125,18 @@ export async function signMessageByTypeFromTrezor(
 
     const messageHex = hexlify(msgData).substring(2);
 
-    const response = await window.TrezorConnect.ethereumSignMessage({
+    const response = await TrezorConnect.ethereumSignMessage({
       path,
       message: messageHex,
       hex: true,
     });
 
-    if (response.payload.address.toLowerCase() !== address.toLowerCase()) {
-      throw new Error(
-        'Trezor returned a different address than the one requested',
-      );
+    if ('address' in response.payload) {
+      if (response.payload.address.toLowerCase() !== address.toLowerCase()) {
+        throw new Error(
+          'Trezor returned a different address than the one requested',
+        );
+      }
     }
 
     if (!response.success) {
@@ -150,7 +149,6 @@ export async function signMessageByTypeFromTrezor(
   } else if (messageType === 'sign_typed_data') {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const parsedData = msgData as any;
-    const version = SignTypedDataVersion.V4;
     if (
       typeof msgData !== 'object' ||
       !(parsedData.types || parsedData.primaryType || parsedData.domain)
@@ -173,12 +171,12 @@ export async function signMessageByTypeFromTrezor(
       true,
     );
 
-    const response = await window.TrezorConnect.ethereumSignTypedData({
+    const response = await TrezorConnect.ethereumSignTypedData({
       path,
       data: eip712Data,
       metamask_v4_compat: true,
       domain_separator_hash,
-      message_hash,
+      message_hash: message_hash || undefined,
     });
 
     if (!response.success) {
