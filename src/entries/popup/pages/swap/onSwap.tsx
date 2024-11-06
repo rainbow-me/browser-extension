@@ -45,6 +45,7 @@ export const onSwap = async ({
   const isConnectedToHardhat =
     useConnectedToHardhatStore.getState().connectedToHardhat;
   const chainId = isConnectedToHardhat ? ChainId.hardhat : assetToSell.chainId;
+  const isBridge = isSameAssetInDiffChains(assetToSell, assetToBuy);
 
   const wallet = getWallet(q.from as Address);
 
@@ -79,8 +80,6 @@ export const onSwap = async ({
   useSwapAssetsToRefreshStore
     .getState()
     .setSwapAssetsToRefresh({ nonce, assetToBuy, assetToSell });
-
-  const isBridge = isSameAssetInDiffChains(assetToSell, assetToBuy);
 
   analytics.track(isBridge ? event.bridgeSubmitted : event.swapSubmitted, {
     inputAssetSymbol: assetToSell.symbol,
