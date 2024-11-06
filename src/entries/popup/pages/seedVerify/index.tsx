@@ -21,6 +21,7 @@ export function SeedVerify() {
         address={currentAddress}
         onQuizValidated={goToCreatePassword}
         handleSkip={goToCreatePassword}
+        entryPoint="onboarding"
       />
     </FullScreenContainer>
   );
