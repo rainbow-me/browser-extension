@@ -208,6 +208,10 @@ export const event = {
   settingsRainbowDefaultProviderEnabled:
     'settings.rainbow_default_provider.enabled',
   /**
+   * Called when a user enters the swaps flow
+   */
+  swapOpened: 'swap.opened',
+  /**
    * Called when the user completes a Swap/Bridge and submits the transaction.
    * This includes cross-chain swaps, while `bridgeSubmitted` is instead called
    * for mapped asset bridge transactions where the `mainnetAddress` is equal.
@@ -755,6 +759,18 @@ export type EventProperties = {
   [event.settingsRainbowDefaultProviderEnabled]: undefined;
   [event.settingsFlashbotsDisabled]: undefined;
   [event.settingsFlashbotsEnabled]: undefined;
+  [event.swapOpened]: {
+    /**
+     * Entrypoint of the swaps flow.
+     */
+    entryPoint:
+      | 'commandk' // command k action
+      | 'home_header_swap_button' // Home header swap button
+      | 'home_shortcut_x_key' // 'X' key shortcut
+      | 'token_context_menu' // Token context menu
+      | 'token_details' // Token details
+      | 'token_details_shortcut_x_key'; // Token details 'X' key shortcut
+  };
   [event.swapSubmitted]: {
     /**
      * Symbol of the input asset being swapped.
