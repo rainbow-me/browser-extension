@@ -304,6 +304,10 @@ export type EventProperties = {
      * Whether Degen Mode was used for the swap.
      */
     degenMode: boolean;
+    /**
+     * Whether a hardware wallet was used for the swap.
+     */
+    hardwareWallet: boolean;
   };
   [event.commandKActionExecuted]: {
     id?: string;
@@ -843,6 +847,10 @@ export type EventProperties = {
      * Whether Degen Mode was used for the swap.
      */
     degenMode: boolean;
+    /**
+     * Whether a hardware wallet was used for the swap.
+     */
+    hardwareWallet: boolean;
   };
   [event.walletBackupQuizSubmitted]: {
     /**
