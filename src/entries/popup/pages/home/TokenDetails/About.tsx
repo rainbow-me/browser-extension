@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import { ReactNode, useState } from 'react';
+import { getAddress } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { ParsedUserAsset } from '~/core/types/assets';
@@ -348,7 +349,7 @@ export function About({
                   value={
                     <CopyableValue
                       title={i18n.t('wallet_header.copy_toast')}
-                      value={token.address}
+                      value={getAddress(token.address)}
                     >
                       {truncateAddress(token.address)}
                     </CopyableValue>
