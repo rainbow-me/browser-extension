@@ -43,6 +43,7 @@ export const onSwap = async ({
   const isConnectedToHardhat =
     useConnectedToHardhatStore.getState().connectedToHardhat;
   const chainId = isConnectedToHardhat ? ChainId.hardhat : assetToSell.chainId;
+  const isBridge = isSameAssetInDiffChains(assetToSell, assetToBuy);
 
   const { errorMessage, nonce } = await wallet.executeRap<typeof type>({
     rapActionParameters: {
@@ -75,8 +76,6 @@ export const onSwap = async ({
   useSwapAssetsToRefreshStore
     .getState()
     .setSwapAssetsToRefresh({ nonce, assetToBuy, assetToSell });
-
-  const isBridge = isSameAssetInDiffChains(assetToSell, assetToBuy);
 
   analytics.track(isBridge ? event.bridgeSubmitted : event.swapSubmitted, {
     inputAssetSymbol: assetToSell.symbol,
