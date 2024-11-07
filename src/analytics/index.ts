@@ -34,6 +34,7 @@ export class Analytics {
   client?: RudderAnalytics;
   deviceId?: string;
   walletAddressHash?: string;
+  walletType?: 'owned' | 'hardware' | 'watched';
   event = event;
   disabled = true; // to do: check user setting here
 
@@ -124,6 +125,7 @@ export class Analytics {
   private getDefaultMetadata() {
     return {
       walletAddressHash: this.walletAddressHash,
+      walletType: this.walletType,
     };
   }
 
@@ -137,13 +139,21 @@ export class Analytics {
   }
 
   /**
-   * Set `walletAddressHash` for use in events. This DOES NOT call
-   * `identify()`, you must do that on your own.
+   * Set `walletAddressHash` and `walletType` for use in events.
+   * This DOES NOT call `identify()`, you must do that on your own.
    */
-  setWalletAddressHash(walletAddressHash: string) {
+  setWallet({
+    walletAddressHash,
+    walletType,
+  }: {
+    walletAddressHash: string;
+    walletType: 'owned' | 'hardware' | 'watched';
+  }) {
     this.walletAddressHash = walletAddressHash;
-    logger.debug(`Set walletAddressHash on analytics instance`, {
+    this.walletType = walletType;
+    logger.debug(`Set walletAddressHash and walletType on analytics instance`, {
       walletAddressHash,
+      walletType,
     });
   }
 

@@ -1,11 +1,12 @@
 import { SupportedAlgorithm, computeHmac } from '@ethersproject/sha2';
+import { Address } from 'viem';
 
 import { RainbowError, logger } from '~/logger';
 
 const SECURE_WALLET_HASH_KEY = process.env.SECURE_WALLET_HASH_KEY;
 
 export function securelyHashWalletAddress(
-  walletAddress: `0x${string}`,
+  walletAddress: Address | undefined,
 ): string | undefined {
   if (!SECURE_WALLET_HASH_KEY) {
     logger.error(
@@ -15,6 +16,8 @@ export function securelyHashWalletAddress(
     );
     return;
   }
+
+  if (!walletAddress) return;
 
   try {
     const hmac = computeHmac(
