@@ -10,12 +10,11 @@ import { event } from '~/analytics/event';
 import { flushQueuedEvents } from '~/analytics/flushQueuedEvents';
 // !!!! DO NOT REMOVE THE NEXT 2 LINES BELOW !!!!
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { securelyHashWalletAddress } from '~/analytics/util';
+import { getWalletContext } from '~/analytics/util';
 import config from '~/core/firebase/remoteConfig';
 import { initializeMessenger } from '~/core/messengers';
 import { persistOptions, queryClient } from '~/core/react-query';
 import { initializeSentry, setSentryUser } from '~/core/sentry';
-import { KeychainType } from '~/core/types/keychainTypes';
 import {
   useCurrentAddressStore,
   useCurrentLanguageStore,
@@ -35,7 +34,6 @@ import { useExpiryListener } from './hooks/useExpiryListener';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
 import usePrevious from './hooks/usePrevious';
 import { useRainbowChains } from './hooks/useRainbowChains';
-import { useWallets } from './hooks/useWallets';
 
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
@@ -43,7 +41,6 @@ export function App() {
   const { currentLanguage, setCurrentLanguage } = useCurrentLanguageStore();
   const { deviceId } = useDeviceIdStore();
   const { currentAddress } = useCurrentAddressStore();
-  const { allWallets } = useWallets();
   const { rainbowChains } = useRainbowChains();
   const prevChains = usePrevious(rainbowChains);
 
@@ -99,24 +96,20 @@ export function App() {
 
   // Update telemetry wallet each time selected wallet changes
   React.useEffect(() => {
-    if (process.env.IS_TESTING !== 'true' && process.env.IS_DEV !== 'true') {
-      const currentWallet = allWallets.find(wallet => wallet.address === currentAddress);
-      
-      const walletType = currentWallet?.type && ({
-        [KeychainType.HdKeychain]: 'owned',
-        [KeychainType.KeyPairKeychain]: 'owned',
-        [KeychainType.ReadOnlyKeychain]: 'watched',
-        [KeychainType.HardwareWalletKeychain]: 'hardware',
-      } as const)[currentWallet.type];
-      const walletAddressHash = securelyHashWalletAddress(currentWallet?.address);
-
+    const updateTelemetry = async () => {
+      const { walletType, walletAddressHash } =
+        await getWalletContext(currentAddress);
+      setSentryUser({ deviceId, walletAddressHash, walletType });
       // Allows calling telemetry before currentAddress is available (i.e. onboarding)
-      if (walletType && walletAddressHash) analytics.setWallet({ walletAddressHash, walletType });
+      if (walletType && walletAddressHash)
+        analytics.setWallet({ walletAddressHash, walletType });
       analytics.setDeviceId(deviceId);
       analytics.identify();
-      setSentryUser({ deviceId, walletAddressHash, walletType });
+    };
+    if (process.env.IS_TESTING !== 'true' && process.env.IS_DEV !== 'true') {
+      updateTelemetry();
     }
-  }, [allWallets, deviceId, currentAddress]);
+  }, [deviceId, currentAddress]);
 
   React.useEffect(() => {
     setCurrentLanguage(currentLanguage);

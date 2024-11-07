@@ -1,11 +1,13 @@
 import { SupportedAlgorithm, computeHmac } from '@ethersproject/sha2';
 import { Address } from 'viem';
 
+import { getWallet } from '~/core/keychain';
+import { KeychainType } from '~/core/types/keychainTypes';
 import { RainbowError, logger } from '~/logger';
 
 const SECURE_WALLET_HASH_KEY = process.env.SECURE_WALLET_HASH_KEY;
 
-export function securelyHashWalletAddress(
+function securelyHashWalletAddress(
   walletAddress: Address | undefined,
 ): string | undefined {
   if (!SECURE_WALLET_HASH_KEY) {
@@ -39,4 +41,26 @@ export function securelyHashWalletAddress(
       ),
     );
   }
+}
+
+export async function getWalletContext(address: Address): Promise<{
+  walletType?: 'owned' | 'hardware' | 'watched';
+  walletAddressHash?: string;
+}> {
+  // currentAddressStore address is initialized to ''
+  if (!address || address === ('' as Address)) return {};
+
+  const wallet = await getWallet(address);
+  const walletType = ({
+    [KeychainType.HdKeychain]: 'owned',
+    [KeychainType.KeyPairKeychain]: 'owned',
+    [KeychainType.ReadOnlyKeychain]: 'watched',
+    [KeychainType.HardwareWalletKeychain]: 'hardware',
+  } as const)[wallet?.type];
+  const walletAddressHash = securelyHashWalletAddress(address);
+
+  return {
+    walletType,
+    walletAddressHash,
+  };
 }
