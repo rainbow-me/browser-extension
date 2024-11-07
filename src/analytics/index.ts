@@ -75,7 +75,7 @@ export class Analytics {
   identify(userProperties?: UserProperties) {
     if (this.disabled || IS_DEV || IS_TESTING || !this.deviceId) return;
     const metadata = this.getDefaultMetadata();
-    const traits = { ...userProperties, ...metadata };
+    const traits = { ...metadata, ...userProperties };
     this.client?.identify({ userId: this.deviceId, traits, context });
     logger.info('analytics.identify()', {
       userId: this.deviceId,
@@ -89,7 +89,7 @@ export class Analytics {
   screen(name: string, params: Record<string, string> = {}): void {
     if (this.disabled || IS_DEV || IS_TESTING || !this.deviceId) return;
     const metadata = this.getDefaultMetadata();
-    const properties = { ...params, ...metadata };
+    const properties = { ...metadata, ...params };
     this.client?.screen({ userId: this.deviceId, name, properties, context });
     logger.info('analytics.screen()', {
       userId: this.deviceId,
@@ -109,7 +109,7 @@ export class Analytics {
   ) {
     if (this.disabled || IS_DEV || IS_TESTING || !this.deviceId) return;
     const metadata = this.getDefaultMetadata();
-    const properties = Object.assign(metadata, params);
+    const properties = { ...metadata, ...params };
     this.client?.track({ userId: this.deviceId, event, properties, context });
     logger.info('analytics.track()', {
       userId: this.deviceId,
