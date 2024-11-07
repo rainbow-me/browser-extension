@@ -18,9 +18,9 @@ import { initializeSentry, setSentryUser } from '~/core/sentry';
 import {
   useCurrentAddressStore,
   useCurrentLanguageStore,
-  useDeviceIdStore,
+  useCurrentThemeStore,
+  useDeviceIdStore
 } from '~/core/state';
-import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { WagmiConfigUpdater, wagmiConfig } from '~/core/wagmi';
 import { Box, ThemeProvider } from '~/design-system';
