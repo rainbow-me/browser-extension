@@ -38,8 +38,15 @@ export function initializeSentry(context: 'popup' | 'background') {
   }
 }
 
-export function setSentryUser(deviceId: string) {
+export function setSentryUser({
+  deviceId,
+  walletAddressHash,
+}: {
+  deviceId: string;
+  walletAddressHash?: string;
+}) {
   Sentry.setUser({
     id: deviceId,
+    walletAddressHash,
   });
 }

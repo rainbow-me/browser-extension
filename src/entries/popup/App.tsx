@@ -10,11 +10,16 @@ import { event } from '~/analytics/event';
 import { flushQueuedEvents } from '~/analytics/flushQueuedEvents';
 // !!!! DO NOT REMOVE THE NEXT 2 LINES BELOW !!!!
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { securelyHashWalletAddress } from '~/analytics/util';
 import config from '~/core/firebase/remoteConfig';
 import { initializeMessenger } from '~/core/messengers';
 import { persistOptions, queryClient } from '~/core/react-query';
 import { initializeSentry, setSentryUser } from '~/core/sentry';
-import { useCurrentLanguageStore, useDeviceIdStore } from '~/core/state';
+import {
+  useCurrentAddressStore,
+  useCurrentLanguageStore,
+  useDeviceIdStore,
+} from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { WagmiConfigUpdater, wagmiConfig } from '~/core/wagmi';
@@ -35,6 +40,7 @@ const backgroundMessenger = initializeMessenger({ connect: 'background' });
 export function App() {
   const { currentLanguage, setCurrentLanguage } = useCurrentLanguageStore();
   const { deviceId } = useDeviceIdStore();
+  const { currentAddress } = useCurrentAddressStore();
   const { rainbowChains } = useRainbowChains();
   const prevChains = usePrevious(rainbowChains);
 
@@ -60,9 +66,6 @@ export function App() {
     // Disable analytics & sentry for e2e and dev mode
     if (process.env.IS_TESTING !== 'true' && process.env.IS_DEV !== 'true') {
       initializeSentry('popup');
-      setSentryUser(deviceId);
-      analytics.setDeviceId(deviceId);
-      analytics.identify();
       analytics.track(event.popupOpened);
       setTimeout(() => flushQueuedEvents(), 1000);
     }
@@ -90,6 +93,19 @@ export function App() {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Update walletAddressHash each time selected wallet changes
+  React.useEffect(() => {
+    if (process.env.IS_TESTING !== 'true' && process.env.IS_DEV !== 'true') {
+      const walletAddressHash = securelyHashWalletAddress(currentAddress);
+      setSentryUser({ deviceId, walletAddressHash });
+
+      // Allows calling identify before currentAddress is available (i.e. onboarding)
+      if (walletAddressHash) analytics.setWalletAddressHash(walletAddressHash);
+      analytics.setDeviceId(deviceId);
+      analytics.identify();
+    }
+  }, [deviceId, currentAddress]);
 
   React.useEffect(() => {
     setCurrentLanguage(currentLanguage);

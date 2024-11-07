@@ -33,6 +33,7 @@ const context = {
 export class Analytics {
   client?: RudderAnalytics;
   deviceId?: string;
+  walletAddressHash?: string;
   event = event;
   disabled = true; // to do: check user setting here
 
@@ -121,7 +122,9 @@ export class Analytics {
    * This is used in the App for `walletAddressHash`
    */
   private getDefaultMetadata() {
-    return {};
+    return {
+      walletAddressHash: this.walletAddressHash,
+    };
   }
 
   /**
@@ -131,6 +134,17 @@ export class Analytics {
   setDeviceId(deviceId: string) {
     this.deviceId = deviceId;
     logger.debug(`Set deviceId on analytics instance`, { deviceId });
+  }
+
+  /**
+   * Set `walletAddressHash` for use in events. This DOES NOT call
+   * `identify()`, you must do that on your own.
+   */
+  setWalletAddressHash(walletAddressHash: string) {
+    this.walletAddressHash = walletAddressHash;
+    logger.debug(`Set walletAddressHash on analytics instance`, {
+      walletAddressHash,
+    });
   }
 
   /**
