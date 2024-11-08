@@ -101,7 +101,7 @@ export function App() {
         await getWalletContext(currentAddress);
       setSentryUser({ deviceId, walletAddressHash, walletType });
       // Allows calling telemetry before currentAddress is available (i.e. onboarding)
-      if (walletType && walletAddressHash)
+      if (walletType || walletAddressHash)
         analytics.setWalletContext({ walletAddressHash, walletType });
       analytics.setDeviceId(deviceId);
       analytics.identify();
