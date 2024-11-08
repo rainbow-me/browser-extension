@@ -773,7 +773,7 @@ export type EventProperties = {
      */
     entryPoint:
       | 'commandk' // command k action
-      | 'home_header_send_button' // Home header swap button
+      | 'home_header_send_button' // Home header send button
       | 'home_shortcut_x_key' // 'X' key shortcut
       | 'token_context_menu' // Token context menu
       | 'token_details' // Token details
