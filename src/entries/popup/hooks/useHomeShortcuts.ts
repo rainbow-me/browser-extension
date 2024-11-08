@@ -143,12 +143,15 @@ export function useHomeShortcuts() {
           navigate(ROUTES.CONNECTED);
           break;
         case shortcuts.home.GO_TO_SEND.key:
-          trackShortcut({
-            key: shortcuts.home.GO_TO_SEND.display,
-            type: 'home.goToSend',
-          });
           if (allowSend) {
             navigate(ROUTES.SEND);
+            analytics.track(event.sendOpened, {
+              entryPoint: 'home_shortcut_x_key',
+            });
+            trackShortcut({
+              key: shortcuts.home.GO_TO_SEND.display,
+              type: 'home.goToSend',
+            });
           } else {
             alertWatchingWallet();
           }

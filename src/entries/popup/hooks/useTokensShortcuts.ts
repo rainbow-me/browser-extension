@@ -136,6 +136,7 @@ export function useTokensShortcuts() {
       if (selectedToken && isHomeRoute) {
         if (e.key === shortcuts.tokens.SWAP_ASSET.key) {
           if (allowSwap) {
+            // nav + analytics
             navigateToSwaps();
             analytics.track(event.swapOpened, {
               entryPoint: 'token_details_shortcut_x_key',
@@ -159,11 +160,14 @@ export function useTokensShortcuts() {
         }
 
         if (e.key === shortcuts.tokens.SEND_ASSET.key && !isWatchingWallet) {
+          navigate(ROUTES.SEND);
+          analytics.track(event.sendOpened, {
+            entryPoint: 'token_details_shortcut_x_key',
+          });
           trackShortcut({
             key: shortcuts.tokens.SEND_ASSET.display,
             type: 'tokens.goToSend',
           });
-          navigate(ROUTES.SEND);
         }
         if (e.key === shortcuts.tokens.VIEW_ASSET.key) {
           trackShortcut({
