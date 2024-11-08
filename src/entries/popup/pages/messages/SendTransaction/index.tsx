@@ -5,6 +5,7 @@ import { Address } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
+import { getWalletContext } from '~/analytics/util';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { chainsNativeAsset } from '~/core/references/chains';
@@ -120,12 +121,16 @@ export function SendTransaction({
         approveRequest(result.hash);
         setWaitingForDevice(false);
 
-        analytics.track(event.dappPromptSendTransactionApproved, {
-          chainId: txData.chainId,
-          dappURL: dappMetadata?.url || '',
-          dappDomain: dappMetadata?.appHost || '',
-          dappName: dappMetadata?.appName,
-        });
+        analytics.track(
+          event.dappPromptSendTransactionApproved,
+          {
+            chainId: txData.chainId,
+            dappURL: dappMetadata?.url || '',
+            dappDomain: dappMetadata?.appHost || '',
+            dappName: dappMetadata?.appName,
+          },
+          await getWalletContext(activeSession?.address),
+        );
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
@@ -160,15 +165,19 @@ export function SendTransaction({
     dappMetadata?.appName,
   ]);
 
-  const onRejectRequest = useCallback(() => {
+  const onRejectRequest = useCallback(async () => {
     rejectRequest();
     if (activeSession) {
-      analytics.track(event.dappPromptSendTransactionRejected, {
-        chainId: activeSession?.chainId,
-        dappURL: dappMetadata?.url || '',
-        dappDomain: dappMetadata?.appHost || '',
-        dappName: dappMetadata?.appName,
-      });
+      analytics.track(
+        event.dappPromptSendTransactionRejected,
+        {
+          chainId: activeSession?.chainId,
+          dappURL: dappMetadata?.url || '',
+          dappDomain: dappMetadata?.appHost || '',
+          dappName: dappMetadata?.appName,
+        },
+        await getWalletContext(activeSession?.address),
+      );
     }
   }, [
     rejectRequest,
