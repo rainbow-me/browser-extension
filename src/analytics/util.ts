@@ -43,20 +43,26 @@ function securelyHashWalletAddress(
   }
 }
 
-export async function getWalletContext(address: Address): Promise<{
+export type WalletContext = {
   walletType?: 'owned' | 'hardware' | 'watched';
   walletAddressHash?: string;
-}> {
+};
+
+export async function getWalletContext(
+  address: Address,
+): Promise<WalletContext> {
   // currentAddressStore address is initialized to ''
   if (!address || address === ('' as Address)) return {};
 
   const wallet = await getWallet(address);
-  const walletType = ({
-    [KeychainType.HdKeychain]: 'owned',
-    [KeychainType.KeyPairKeychain]: 'owned',
-    [KeychainType.ReadOnlyKeychain]: 'watched',
-    [KeychainType.HardwareWalletKeychain]: 'hardware',
-  } as const)[wallet?.type];
+  const walletType = (
+    {
+      [KeychainType.HdKeychain]: 'owned',
+      [KeychainType.KeyPairKeychain]: 'owned',
+      [KeychainType.ReadOnlyKeychain]: 'watched',
+      [KeychainType.HardwareWalletKeychain]: 'hardware',
+    } as const
+  )[wallet?.type];
   const walletAddressHash = securelyHashWalletAddress(address);
 
   return {
