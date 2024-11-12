@@ -1,9 +1,7 @@
 import 'chromedriver';
 import 'geckodriver';
-import { Contract } from '@ethersproject/contracts';
-import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { Key, WebDriver } from 'selenium-webdriver';
-import { erc20Abi } from 'viem';
+import { Address, createClient, erc20Abi, getContract, http } from 'viem';
 import {
   afterAll,
   afterEach,
@@ -135,7 +133,7 @@ describe('Swap Flow 2', () => {
 
   it('should be able to go to review a unlock and swap', async () => {
     await findElementByTestIdAndClick({
-      id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-token-input-remove`,
+      id: `token-to-sell-token-input-remove`,
       driver,
     });
     await findElementByTestIdAndClick({
@@ -143,16 +141,16 @@ describe('Swap Flow 2', () => {
       driver,
     });
     await findElementByTestIdAndClick({
-      id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+      id: `token-to-sell-swap-token-input-swap-input-mask`,
       driver,
     });
     await delayTime('very-long');
     await clearInput({
-      id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+      id: `token-to-sell-swap-token-input-swap-input-mask`,
       driver,
     });
     await typeOnTextInput({
-      id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+      id: `token-to-sell-swap-token-input-swap-input-mask`,
       text: `\b50`,
       driver,
     });
@@ -160,18 +158,17 @@ describe('Swap Flow 2', () => {
   });
 
   it('should be able to execute unlock and swap', async () => {
-    const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545');
-    await provider.ready;
-    await delayTime('short');
-    const tokenContract = new Contract(
-      SWAP_VARIABLES.USDC_MAINNET_ADDRESS,
-      erc20Abi,
-      provider,
-    );
-    await delayTime('long');
-    const usdcBalanceBeforeSwap = await tokenContract.balanceOf(
-      WALLET_TO_USE_ADDRESS,
-    );
+    const client = createClient({
+      transport: http('http://127.0.0.1:8545'),
+    });
+    const tokenContract = getContract({
+      abi: erc20Abi,
+      address: SWAP_VARIABLES.USDC_MAINNET_ADDRESS as Address,
+      client,
+    });
+    const usdcBalanceBeforeSwap = await tokenContract.read.balanceOf([
+      WALLET_TO_USE_ADDRESS as Address,
+    ]);
 
     await findElementByTestIdAndClick({
       id: 'swap-settings-navbar-button',
@@ -203,16 +200,17 @@ describe('Swap Flow 2', () => {
       id: 'swap-confirmation-button-ready',
       driver,
     });
-    await delay(10_000);
+    await delay(5_000);
 
     await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
 
-    // waiting for balances to update / swap to execute
+    // waiting for balances to update
     await delay(20_000);
 
-    const usdcBalanceAfterSwap = await tokenContract.balanceOf(
-      WALLET_TO_USE_ADDRESS,
-    );
+    const usdcBalanceAfterSwap = await tokenContract.read.balanceOf([
+      WALLET_TO_USE_ADDRESS as Address,
+    ]);
+
     const balanceDifference = subtract(
       usdcBalanceBeforeSwap.toString(),
       usdcBalanceAfterSwap.toString(),
@@ -238,7 +236,7 @@ describe('Swap Flow 2', () => {
     });
     await delayTime('medium');
     const toSellInputDaiSelected = await findElementByTestId({
-      id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+      id: `token-to-sell-swap-token-input-swap-input-mask`,
       driver,
     });
     expect(toSellInputDaiSelected).toBeTruthy();
@@ -270,7 +268,7 @@ describe('Swap Flow 2', () => {
       driver,
     });
     const toBuyInputUsdcSelected = await findElementByTestId({
-      id: `${SWAP_VARIABLES.USDC_ARBITRUM_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+      id: `token-to-buy-swap-token-input-swap-input-mask`,
       driver,
     });
     expect(toBuyInputUsdcSelected).toBeTruthy();
@@ -454,7 +452,7 @@ describe('Swap Flow 2', () => {
 
   it.skip('should be able to go to review a bridge', async () => {
     await findElementByTestIdAndClick({
-      id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-token-input-remove`,
+      id: `token-to-sell-token-input-remove`,
       driver,
     });
     await findElementByTestIdAndClick({
@@ -463,12 +461,12 @@ describe('Swap Flow 2', () => {
     });
     await delayTime('medium');
     const toSellInputEthSelected = await findElementByTestId({
-      id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+      id: `token-to-sell-swap-token-input-swap-input-mask`,
       driver,
     });
     expect(toSellInputEthSelected).toBeTruthy();
     await findElementByTestIdAndClick({
-      id: `${SWAP_VARIABLES.USDC_ARBITRUM_ID}-token-to-buy-token-input-remove`,
+      id: `token-to-buy-token-input-remove`,
       driver,
     });
     await findElementByTestIdAndClick({
@@ -489,12 +487,12 @@ describe('Swap Flow 2', () => {
       driver,
     });
     const toBuyInputEthSelected = await findElementByTestId({
-      id: `${SWAP_VARIABLES.ETH_OPTIMISM_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+      id: `token-to-buy-swap-token-input-swap-input-mask`,
       driver,
     });
     expect(toBuyInputEthSelected).toBeTruthy();
     await typeOnTextInput({
-      id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+      id: `token-to-sell-swap-token-input-swap-input-mask`,
       text: 1,
       driver,
     });
