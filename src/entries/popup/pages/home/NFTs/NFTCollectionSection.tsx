@@ -2,7 +2,10 @@ import { motion } from 'framer-motion';
 import React, { useCallback, useEffect } from 'react';
 
 import { selectNfts } from '~/core/resources/_selectors/nfts';
-import { useNftsForCollection } from '~/core/resources/nfts/nftsForCollection';
+import {
+  MOCK_NFTS_FOR_COLLECTION,
+  useNftsForCollection,
+} from '~/core/resources/nfts/nftsForCollection';
 import { useCurrentAddressStore } from '~/core/state';
 import { useNftsStore } from '~/core/state/nfts';
 import { ChainName } from '~/core/types/chains';
@@ -38,6 +41,7 @@ import { NFTThumbnail } from './NFTThumbnail';
 type NFTCollectionDisplayMode = 'grid' | 'list';
 
 const COLLECTION_IMAGE_SIZE = 16;
+const POAP_COLLECTION_ID = 'f7ff98307273f299b678b13e3f29ac13';
 
 export function NFTCollectionSection({
   collection,
@@ -94,7 +98,10 @@ export function NFTCollectionSection({
         }),
     },
   );
-  const nfts = data || [];
+  const nfts: UniqueAsset[] =
+    process.env.IS_TESTING === 'true' && collectionId === POAP_COLLECTION_ID
+      ? MOCK_NFTS_FOR_COLLECTION
+      : data || [];
   const setCollectionVisible = useCallback(() => {
     toggleGallerySectionOpen({
       address,
