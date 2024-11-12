@@ -3,6 +3,7 @@
 /* eslint-disable no-promise-executor-return */
 import { Signer } from '@ethersproject/abstract-signer';
 
+import { ChainId } from '~/core/types/chains';
 import { RainbowError, logger } from '~/logger';
 
 import { claim, swap, unlock } from './actions';
@@ -111,9 +112,12 @@ function getRapFullName<T extends RapActionTypes>(actions: RapAction<T>[]) {
 
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
+const NODE_ACK_MAX_TRIES = 10;
+
 const waitForNodeAck = async (
   hash: string,
   provider: Signer['provider'],
+  tries = 0,
 ): Promise<void> => {
   return new Promise(async (resolve) => {
     const tx = await provider?.getTransaction(hash);
@@ -125,8 +129,10 @@ const waitForNodeAck = async (
       resolve();
     } else {
       // Wait for 1 second and try again
-      await delay(1000);
-      return waitForNodeAck(hash, provider);
+      if (tries < NODE_ACK_MAX_TRIES) {
+        await delay(1000);
+        return waitForNodeAck(hash, provider, tries + 1);
+      }
     }
   });
 };
@@ -163,13 +169,16 @@ export const walletExecuteRap = async (
     const {
       baseNonce,
       errorMessage: error,
-      hash,
+      hash: firstHash,
     } = await executeAction(actionParams);
+    const shouldWaitForNodeAck = parameters.chainId !== ChainId.mainnet;
+
     if (typeof baseNonce === 'number') {
-      actions.length > 1 &&
-        hash &&
-        (await waitForNodeAck(hash, wallet.provider));
+      let latestHash = firstHash;
       for (let index = 1; index < actions.length; index++) {
+        latestHash &&
+          shouldWaitForNodeAck &&
+          (await waitForNodeAck(latestHash, wallet.provider));
         const action = actions[index];
         const actionParams = {
           action,
@@ -181,7 +190,7 @@ export const walletExecuteRap = async (
           flashbots: parameters?.flashbots,
         };
         const { hash } = await executeAction(actionParams);
-        hash && (await waitForNodeAck(hash, wallet.provider));
+        latestHash = hash;
         if (index === actions.length - 1) {
           txHash = hash;
         }
