@@ -112,9 +112,12 @@ function getRapFullName<T extends RapActionTypes>(actions: RapAction<T>[]) {
 
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
+const NODE_ACK_MAX_TRIES = 10;
+
 const waitForNodeAck = async (
   hash: string,
   provider: Signer['provider'],
+  tries = 0,
 ): Promise<void> => {
   return new Promise(async (resolve) => {
     const tx = await provider?.getTransaction(hash);
@@ -126,8 +129,10 @@ const waitForNodeAck = async (
       resolve();
     } else {
       // Wait for 1 second and try again
-      await delay(1000);
-      return waitForNodeAck(hash, provider);
+      if (tries < NODE_ACK_MAX_TRIES) {
+        await delay(1000);
+        return waitForNodeAck(hash, provider, tries + 1);
+      }
     }
   });
 };
