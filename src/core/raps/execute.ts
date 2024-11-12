@@ -3,6 +3,7 @@
 /* eslint-disable no-promise-executor-return */
 import { Signer } from '@ethersproject/abstract-signer';
 
+import { ChainId } from '~/core/types/chains';
 import { RainbowError, logger } from '~/logger';
 
 import { claim, swap, unlock } from './actions';
@@ -163,13 +164,16 @@ export const walletExecuteRap = async (
     const {
       baseNonce,
       errorMessage: error,
-      hash,
+      hash: firstHash,
     } = await executeAction(actionParams);
+    const shouldWaitForNodeAck = parameters.chainId !== ChainId.mainnet;
+
     if (typeof baseNonce === 'number') {
-      actions.length > 1 &&
-        hash &&
-        (await waitForNodeAck(hash, wallet.provider));
+      let latestHash = firstHash;
       for (let index = 1; index < actions.length; index++) {
+        latestHash &&
+          shouldWaitForNodeAck &&
+          (await waitForNodeAck(latestHash, wallet.provider));
         const action = actions[index];
         const actionParams = {
           action,
@@ -181,7 +185,7 @@ export const walletExecuteRap = async (
           flashbots: parameters?.flashbots,
         };
         const { hash } = await executeAction(actionParams);
-        hash && (await waitForNodeAck(hash, wallet.provider));
+        latestHash = hash;
         if (index === actions.length - 1) {
           txHash = hash;
         }
