@@ -119,14 +119,14 @@ const waitForNodeAck = async (
   provider: Signer['provider'],
   tries = 0,
 ): Promise<void> => {
-  return new Promise(async (resolve) => {
+  try {
     const tx = await provider?.getTransaction(hash);
     // This means the node is aware of the tx, we're good to go
     if (
       (tx && tx.blockNumber === null) ||
       (tx && tx?.blockNumber && tx?.blockNumber > 0)
     ) {
-      resolve();
+      return;
     } else {
       // Wait for 1 second and try again
       if (tries < NODE_ACK_MAX_TRIES) {
@@ -134,7 +134,12 @@ const waitForNodeAck = async (
         return waitForNodeAck(hash, provider, tries + 1);
       }
     }
-  });
+  } catch (error) {
+    if (tries < NODE_ACK_MAX_TRIES) {
+      await delay(1000);
+      return waitForNodeAck(hash, provider, tries + 1);
+    }
+  }
 };
 
 export const walletExecuteRap = async (
