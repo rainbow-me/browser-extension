@@ -12,6 +12,7 @@ import {
 } from 'vitest';
 
 import {
+  delay,
   delayTime,
   doNotFindElementByTestId,
   findElementByTestId,
@@ -110,6 +111,7 @@ describe('should be able to perform the nft send flow', () => {
       driver,
     });
     await assetInput.click();
+    await delay(20_000);
     await assetInput.sendKeys('poap');
     const poapSection = await findElementByTestId({
       id: 'nfts-collection-section-POAP',
