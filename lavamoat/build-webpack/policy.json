@@ -1476,7 +1476,7 @@
         "process.emitWarning": true
       },
       "packages": {
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/code-frame>@babel/highlight": true,
+        "lavamoat>@babel/highlight": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk": true
       }
     },
