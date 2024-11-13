@@ -41,7 +41,7 @@ jobs:
       - name: Zip it
         run: yarn zip
       - name: Submit to the edge add-on store
-        uses: PlasmoHQ/bpp@v3.6.1
+        uses: PlasmoHQ/bpp@v3.7.0
         with:
           artifact: ./rainbowbx.zip
           keys: ${{ secrets.BPP_KEYS_PROD_EDGE }}
