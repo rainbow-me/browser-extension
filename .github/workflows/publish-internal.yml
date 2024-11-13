@@ -1,5 +1,5 @@
 
-name: Publish to Chrome WebStore (Trusted Testers)
+name: Publish to Chrome (Internal)
 
 on:
   schedule:

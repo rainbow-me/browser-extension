@@ -1,5 +1,5 @@
 
-name: Publish to Firefox Add-Ons Store  (Production)
+name: Publish to Firefox (Prod)
 
 on:
   workflow_dispatch:
