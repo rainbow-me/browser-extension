@@ -99,7 +99,14 @@ export class RainbowSigner extends Signer {
     }
 
     const common = Common.custom({ chainId: transaction.chainId });
-    const typedTx = TransactionFactory.fromTxData(txData, { common });
+    const typedTx = TransactionFactory.fromTxData(txData, {
+      // @ts-expect-error --- unsure why this package's own types are reportedly not matching
+      common,
+      // Type 'import("../node_modules/@ethereumjs/common/dist/cjs/common").Common' is not assignable
+      // to type 'import("../node_modules/@ethereumjs/tx/node_modules/@ethereumjs/common/dist/cjs/common").Common'.
+      // Property '_chainParams' is private in type 'Common' but not in type
+    });
+
     const signedTx = typedTx.sign(this.#getPrivateKeyBuffer());
 
     const serializedTx = signedTx.serialize();

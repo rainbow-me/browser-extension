@@ -121,7 +121,8 @@ export function SendTransaction({
 
         analytics.track(event.dappPromptSendTransactionApproved, {
           chainId: txData.chainId,
-          dappURL: dappMetadata?.appHost || '',
+          dappURL: dappMetadata?.url || '',
+          dappDomain: dappMetadata?.appHost || '',
           dappName: dappMetadata?.appName,
         });
       }
@@ -153,6 +154,7 @@ export function SendTransaction({
     flashbotsEnabledGlobally,
     selectedGas.transactionGasParams,
     approveRequest,
+    dappMetadata?.url,
     dappMetadata?.appHost,
     dappMetadata?.appName,
   ]);
@@ -162,13 +164,15 @@ export function SendTransaction({
     if (activeSession) {
       analytics.track(event.dappPromptSendTransactionRejected, {
         chainId: activeSession?.chainId,
-        dappURL: dappMetadata?.appHost || '',
+        dappURL: dappMetadata?.url || '',
+        dappDomain: dappMetadata?.appHost || '',
         dappName: dappMetadata?.appName,
       });
     }
   }, [
     rejectRequest,
     activeSession,
+    dappMetadata?.url,
     dappMetadata?.appHost,
     dappMetadata?.appName,
   ]);

@@ -208,6 +208,10 @@ export const event = {
   settingsRainbowDefaultProviderEnabled:
     'settings.rainbow_default_provider.enabled',
   /**
+   * Called when a user enters the swaps flow
+   */
+  swapOpened: 'swap.opened',
+  /**
    * Called when the user completes a Swap/Bridge and submits the transaction.
    * This includes cross-chain swaps, while `bridgeSubmitted` is instead called
    * for mapped asset bridge transactions where the `mainnetAddress` is equal.
@@ -217,6 +221,11 @@ export const event = {
    * Called when the user toggles Degen Mode in the Swap/Bridge flow.
    */
   toggledDegenMode: 'degenMode.toggled',
+  /**
+   * Called when user completes or skips the wallet backup flow.
+   * potential outcomes are 'succeeded,' 'failed,' or 'skipped.'
+   */
+  walletBackupQuizSubmitted: 'wallet.backup_quiz.submitted',
   /**
    * Called when the core wallet Tokens & Activity
    * screen is viewed or opened in the extension popup.
@@ -295,6 +304,10 @@ export type EventProperties = {
      * Whether Degen Mode was used for the swap.
      */
     degenMode: boolean;
+    /**
+     * Whether a hardware wallet was used for the swap.
+     */
+    hardwareWallet: boolean;
   };
   [event.commandKActionExecuted]: {
     id?: string;
@@ -321,6 +334,10 @@ export type EventProperties = {
      */
     dappURL: string;
     /**
+     * Domain of the dApp displayed to the user.
+     */
+    dappDomain: string;
+    /**
      * Short name of the dApp displayed to the user.
      * This will help us spot malformed dApp names to add to our overrides.
      */
@@ -343,6 +360,10 @@ export type EventProperties = {
      * Full url of the dApp requesting a connection.
      */
     dappURL: string;
+    /**
+     * Domain of the dApp displayed to the user.
+     */
+    dappDomain: string;
     /**
      * Short name of the dApp displayed to the user.
      * This will help us spot malformed dApp names to add to our overrides.
@@ -371,6 +392,10 @@ export type EventProperties = {
      */
     dappURL: string;
     /**
+     * Domain of the dApp displayed to the user.
+     */
+    dappDomain: string;
+    /**
      * Short name of the dApp displayed to the user.
      * This will help us spot malformed dApp names to add to our overrides.
      */
@@ -385,6 +410,10 @@ export type EventProperties = {
      * Full url of the dApp requesting a connection.
      */
     dappURL: string;
+    /**
+     * Domain of the dApp displayed to the user.
+     */
+    dappDomain: string;
     /**
      * Short name of the dApp displayed to the user.
      * This will help us spot malformed dApp names to add to our overrides.
@@ -420,6 +449,10 @@ export type EventProperties = {
      */
     dappURL: string;
     /**
+     * Domain of the dApp displayed to the user.
+     */
+    dappDomain: string;
+    /**
      * Short name of the dApp displayed to the user.
      * This will help us spot malformed dApp names to add to our overrides.
      */
@@ -434,6 +467,10 @@ export type EventProperties = {
      * Full url of the dApp requesting a connection.
      */
     dappURL: string;
+    /**
+     * Domain of the dApp displayed to the user.
+     */
+    dappDomain: string;
     /**
      * Short name of the dApp displayed to the user.
      * This will help us spot malformed dApp names to add to our overrides.
@@ -451,6 +488,10 @@ export type EventProperties = {
      * Full url of the dApp requesting a to send a transaction.
      */
     dappURL: string;
+    /**
+     * Domain of the dApp displayed to the user.
+     */
+    dappDomain: string;
     /**
      * Short name of the dApp displayed to the user.
      * This will help us spot malformed dApp names to add to our overrides.
@@ -494,6 +535,10 @@ export type EventProperties = {
      */
     dappURL: string;
     /**
+     * Domain of the dApp displayed to the user.
+     */
+    dappDomain: string;
+    /**
      * Short name of the dApp displayed to the user.
      * This will help us spot malformed dApp names to add to our overrides.
      */
@@ -508,9 +553,17 @@ export type EventProperties = {
   };
   [event.dappPromptSignMessageApproved]: {
     /**
+     * `chainId` of the network where the transaction is sent.
+     */
+    chainId: number;
+    /**
      * Full url of the dApp requesting a sign message request.
      */
     dappURL: string;
+    /**
+     * Domain of the dApp displayed to the user.
+     */
+    dappDomain: string;
     /**
      * Short name of the dApp displayed to the user.
      */
@@ -518,9 +571,17 @@ export type EventProperties = {
   };
   [event.dappPromptSignMessageRejected]: {
     /**
+     * `chainId` of the network where the transaction is sent.
+     */
+    chainId: number;
+    /**
      * Full url of the dApp requesting a sign message request.
      */
     dappURL: string;
+    /**
+     * Domain of the dApp displayed to the user.
+     */
+    dappDomain: string;
     /**
      * Short name of the dApp displayed to the user.
      */
@@ -528,9 +589,17 @@ export type EventProperties = {
   };
   [event.dappPromptSignTypedDataApproved]: {
     /**
+     * `chainId` of the network where the transaction is sent.
+     */
+    chainId: number;
+    /**
      * Full url of the dApp requesting a sign typed data request.
      */
     dappURL: string;
+    /**
+     * Domain of the dApp displayed to the user.
+     */
+    dappDomain: string;
     /**
      * Short name of the dApp displayed to the user.
      */
@@ -538,9 +607,17 @@ export type EventProperties = {
   };
   [event.dappPromptSignTypedDataRejected]: {
     /**
+     * `chainId` of the network where the transaction is sent.
+     */
+    chainId: number;
+    /**
      * Full url of the dApp requesting a sign typed data request.
      */
     dappURL: string;
+    /**
+     * Domain of the dApp displayed to the user.
+     */
+    dappDomain: string;
     /**
      * Short name of the dApp displayed to the user.
      */
@@ -552,6 +629,10 @@ export type EventProperties = {
      */
     dappURL: string;
     /**
+     * Domain of the dApp displayed to the user.
+     */
+    dappDomain: string;
+    /**
      * Short name of the dApp displayed to the user.
      */
     dappName?: string;
@@ -559,6 +640,28 @@ export type EventProperties = {
      * `chainId` of the network the dApp requested a switch to.
      */
     chainId: number;
+  };
+  [event.dappProviderRateLimit]: {
+    /**
+     * Full url of the dApp requesting a rate limit.
+     */
+    dappURL: string;
+    /**
+     * Domain of the dApp displayed to the user.
+     */
+    dappDomain: string;
+    /**
+     * Short name of the dApp displayed to the user.
+     */
+    dappName?: string;
+    /**
+     * Type of rate limit that was hit - either per second or per minute
+     */
+    typeOfLimitHit: 'perSecond' | 'perMinute';
+    /**
+     * Number of requests made when rate limit was hit
+     */
+    requests: number;
   };
   [event.keyboardNavigationTriggered]: {
     /**
@@ -665,6 +768,18 @@ export type EventProperties = {
   [event.settingsRainbowDefaultProviderEnabled]: undefined;
   [event.settingsFlashbotsDisabled]: undefined;
   [event.settingsFlashbotsEnabled]: undefined;
+  [event.swapOpened]: {
+    /**
+     * Entrypoint of the swaps flow.
+     */
+    entryPoint:
+      | 'commandk' // command k action
+      | 'home_header_swap_button' // Home header swap button
+      | 'home_shortcut_x_key' // 'X' key shortcut
+      | 'token_context_menu' // Token context menu
+      | 'token_details' // Token details
+      | 'token_details_shortcut_x_key'; // Token details 'X' key shortcut
+  };
   [event.swapSubmitted]: {
     /**
      * Symbol of the input asset being swapped.
@@ -732,6 +847,26 @@ export type EventProperties = {
      * Whether Degen Mode was used for the swap.
      */
     degenMode: boolean;
+    /**
+     * Whether a hardware wallet was used for the swap.
+     */
+    hardwareWallet: boolean;
+  };
+  [event.walletBackupQuizSubmitted]: {
+    /**
+     * Completed: if the user successfully completes the wallet backup quiz.
+     * Failed: if the user fails to complete the backup quiz.
+     * Skipped: if the user opts to skip the backup quiz completely.
+     */
+    status: 'completed' | 'failed' | 'skipped';
+    /**
+     * The entry point of the wallet backup quiz.
+     */
+    entryPoint: 'onboarding' | 'settings';
+    /**
+     * Index of the wallet seed to track how many backups are completed.
+     */
+    index: number;
   };
   [event.walletViewed]: undefined;
   [event.toggledDegenMode]: { enabled: boolean };

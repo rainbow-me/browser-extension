@@ -4,6 +4,8 @@ import { To } from 'react-router-dom';
 import { Address } from 'viem';
 import { useEnsName } from 'wagmi';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore, useFlashbotsEnabledStore } from '~/core/state';
@@ -733,6 +735,15 @@ export const useCommands = (
   const isFullScreen = useIsFullScreen();
   const navigate = useRainbowNavigate();
   const navigateToSwaps = useNavigateToSwaps();
+
+  // Wrapped to add analytics
+  const wrappedNavigateToSwaps = React.useCallback(() => {
+    navigateToSwaps();
+    analytics.track(event.swapOpened, {
+      entryPoint: 'commandk',
+    });
+  }, [navigateToSwaps]);
+
   const { isWatchingWallet } = useWallets();
   const save = useSavedEnsNames.use.save();
   const toggleHideNFTStore = useNftsStore.use.toggleHideNFT();
@@ -1019,7 +1030,7 @@ export const useCommands = (
     () => ({
       // PAGE: HOME
       swap: {
-        action: navigateToSwaps,
+        action: wrappedNavigateToSwaps,
       },
       bridge: {
         action: () => navigate(ROUTES.BRIDGE),
@@ -1415,7 +1426,7 @@ export const useCommands = (
       },
     }),
     [
-      navigateToSwaps,
+      wrappedNavigateToSwaps,
       isWatchingWallet,
       ensName,
       address,
