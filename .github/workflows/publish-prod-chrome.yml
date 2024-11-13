@@ -1,5 +1,5 @@
 
-name: Publish to Chrome WebStore (Production)
+name: Publish to Chrome (Prod)
 
 on:
   workflow_dispatch:
