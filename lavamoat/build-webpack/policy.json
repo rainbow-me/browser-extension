@@ -1,85 +1,64 @@
 {
   "resources": {
-    "@graphql-eslint/eslint-plugin>@babel/code-frame": {
+    "@testing-library/react>@testing-library/dom>@babel/code-frame": {
       "globals": {
         "console.warn": true,
-        "exports": true,
-        "process": true,
-        "require": true
+        "process.emitWarning": true
       },
       "packages": {
+        "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight": true
+      }
+    },
+    "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight": {
+      "packages": {
+        "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>chalk": true,
         "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
-        "react>loose-envify>js-tokens": true,
-        "vitest>picocolors": true
+        "react>loose-envify>js-tokens": true
       }
     },
-    "@graphql-eslint/eslint-plugin>@graphql-tools/graphql-tag-pluck>@babel/parser": {
+    "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>chalk": {
       "globals": {
-        "exports": true
-      }
-    },
-    "@graphql-eslint/eslint-plugin>@graphql-tools/graphql-tag-pluck>@babel/traverse": {
-      "globals": {
-        "console.log": true,
-        "exports": true,
-        "require": true
+        "process.env.TERM": true,
+        "process.platform": true
       },
       "packages": {
-        "@graphql-eslint/eslint-plugin>@babel/code-frame": true,
-        "@graphql-eslint/eslint-plugin>@graphql-tools/graphql-tag-pluck>@babel/parser": true,
-        "@graphql-eslint/eslint-plugin>@graphql-tools/graphql-tag-pluck>@babel/traverse>globals": true,
-        "@graphql-eslint/eslint-plugin>@graphql-tools/graphql-tag-pluck>@babel/types": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": true,
-        "eslint>debug": true,
-        "jest>@jest/core>jest-snapshot>@babel/generator": true
+        "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>chalk>ansi-styles": true,
+        "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>chalk>escape-string-regexp": true,
+        "supports-color": true
       }
     },
-    "@graphql-eslint/eslint-plugin>@graphql-tools/graphql-tag-pluck>@babel/traverse>globals": {
-      "globals": {
-        "module.exports": "write",
-        "require": true
+    "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>chalk>ansi-styles": {
+      "packages": {
+        "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert": true
       }
     },
-    "@graphql-eslint/eslint-plugin>@graphql-tools/graphql-tag-pluck>@babel/types": {
+    "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert": {
+      "packages": {
+        "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert>color-name": true
+      }
+    },
+    "@vanilla-extract/css": {
       "globals": {
-        "console.warn": true,
-        "exports": true,
-        "process.env": true,
-        "require": true
+        "process.env.NODE_ENV": true
       },
       "packages": {
-        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
-        "lavamoat>lavamoat-core>@babel/types>@babel/helper-string-parser": true
-      }
-    },
-    "@rudderstack/analytics-js-service-worker>ms": {
-      "globals": {
-        "module.exports": "write"
+        "@vanilla-extract/css>@vanilla-extract/private": true,
+        "@vanilla-extract/css>ahocorasick": true,
+        "@vanilla-extract/css>css-what": true,
+        "@vanilla-extract/css>cssesc": true,
+        "@vanilla-extract/css>media-query-parser": true,
+        "@vanilla-extract/css>outdent": true
       }
     },
     "@vanilla-extract/css>@vanilla-extract/private": {
       "globals": {
         "console.warn": true,
-        "exports": true,
-        "module.exports": "write",
-        "process.env.NODE_ENV": true,
-        "require": true
+        "process.env.NODE_ENV": true
       }
     },
-    "@vanilla-extract/css>cssesc": {
+    "@vanilla-extract/css>ahocorasick": {
       "globals": {
-        "module.exports": "write"
-      }
-    },
-    "@vanilla-extract/css>media-query-parser": {
-      "globals": {
-        "exports": true
-      }
-    },
-    "@vanilla-extract/css>outdent": {
-      "globals": {
-        "exports": true,
-        "module": true
+        "AhoCorasick": "write"
       }
     },
     "@vanilla-extract/vite-plugin>@vanilla-extract/integration": {
@@ -94,82 +73,33 @@
       "globals": {
         "Buffer.from": true,
         "console": true,
-        "exports": true,
-        "module.exports": "write",
-        "process": true,
-        "require": true
+        "process": true
       },
       "packages": {
         "$root$": true,
+        "@vanilla-extract/css": true,
         "@vanilla-extract/css>outdent": true,
         "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@babel/plugin-syntax-typescript": true,
         "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@vanilla-extract/babel-plugin-debug-ids": true,
-        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@vanilla-extract/css": true,
         "@vanilla-extract/vite-plugin>@vanilla-extract/integration>esbuild": true,
         "@vanilla-extract/vite-plugin>@vanilla-extract/integration>eval": true,
         "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up": true,
         "@vanilla-extract/vite-plugin>@vanilla-extract/integration>javascript-stringify": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": true,
-        "lodash": true,
-        "vitest>vite-node>mlly": true
+        "lodash": true
       }
     },
     "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@babel/plugin-syntax-typescript": {
-      "globals": {
-        "exports": true,
-        "require": true
-      },
       "packages": {
         "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@babel/plugin-syntax-typescript>@babel/helper-plugin-utils": true
       }
     },
-    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@babel/plugin-syntax-typescript>@babel/helper-plugin-utils": {
-      "globals": {
-        "exports": true
-      }
-    },
     "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@vanilla-extract/babel-plugin-debug-ids": {
       "globals": {
-        "exports": true,
-        "module.exports": "write",
-        "process.env.NODE_ENV": true,
-        "require": true
+        "process.env.NODE_ENV": true
       },
       "packages": {
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": true
-      }
-    },
-    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@vanilla-extract/css": {
-      "globals": {
-        "exports": true,
-        "module.exports": "write",
-        "process.env.NODE_ENV": true,
-        "require": true
-      },
-      "packages": {
-        "@vanilla-extract/css>@vanilla-extract/private": true,
-        "@vanilla-extract/css>cssesc": true,
-        "@vanilla-extract/css>media-query-parser": true,
-        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@vanilla-extract/css>css-what": true,
-        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@vanilla-extract/css>dedent": true,
-        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@vanilla-extract/css>modern-ahocorasick": true
-      }
-    },
-    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@vanilla-extract/css>css-what": {
-      "globals": {
-        "exports": true,
-        "require": true
-      }
-    },
-    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@vanilla-extract/css>dedent": {
-      "globals": {
-        "exports": true,
-        "module.exports": "write"
-      }
-    },
-    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@vanilla-extract/css>modern-ahocorasick": {
-      "globals": {
-        "module.exports": "write"
       }
     },
     "@vanilla-extract/vite-plugin>@vanilla-extract/integration>esbuild": {
@@ -177,22 +107,17 @@
         "child_process.execFileSync": true,
         "child_process.spawn": true,
         "crypto.randomBytes": true,
-        "fs.chmodSync": true,
-        "fs.copyFileSync": true,
         "fs.existsSync": true,
-        "fs.mkdirSync": true,
         "fs.readFile": true,
         "fs.readFileSync": true,
         "fs.unlink": true,
         "fs.unlinkSync": true,
         "fs.writeFile": true,
         "fs.writeFileSync": true,
-        "os.arch": true,
-        "os.endianness": true,
         "os.tmpdir": true,
         "path.basename": true,
-        "path.dirname": true,
         "path.join": true,
+        "path.resolve": true,
         "tty.isatty": true,
         "worker_threads": true
       },
@@ -200,21 +125,15 @@
         "Buffer": true,
         "TextDecoder": true,
         "TextEncoder": true,
-        "URL": true,
-        "WebAssembly.Module": true,
         "__dirname": true,
         "__filename": true,
+        "console.error": true,
         "console.log": true,
-        "console.warn": true,
-        "module.exports": "write",
         "process.cwd": true,
         "process.env.ESBUILD_BINARY_PATH": true,
         "process.env.ESBUILD_MAX_BUFFER": true,
         "process.env.ESBUILD_WORKER_THREADS": true,
-        "process.platform": true,
-        "process.versions.node.split": true,
-        "require": true,
-        "setTimeout": true
+        "process.platform": true
       }
     },
     "@vanilla-extract/vite-plugin>@vanilla-extract/integration>eval": {
@@ -223,10 +142,9 @@
       },
       "globals": {
         "Buffer.isBuffer": true,
+        "URL": true,
         "console": true,
-        "module.exports": "write",
-        "module.parent": true,
-        "require": true
+        "process": true
       },
       "packages": {
         "@vanilla-extract/vite-plugin>@vanilla-extract/integration>eval>require-like": true
@@ -238,9 +156,7 @@
         "path.dirname": true
       },
       "globals": {
-        "module.exports": "write",
-        "process.mainModule": true,
-        "require": true
+        "process.mainModule": true
       }
     },
     "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up": {
@@ -248,10 +164,6 @@
         "path.dirname": true,
         "path.parse": true,
         "path.resolve": true
-      },
-      "globals": {
-        "module.exports": "write",
-        "require": true
       },
       "packages": {
         "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up>locate-path": true,
@@ -268,28 +180,20 @@
         "util.promisify": true
       },
       "globals": {
-        "module.exports": "write",
-        "process.cwd": true,
-        "require": true
+        "process.cwd": true
       },
       "packages": {
         "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up>locate-path>p-locate": true
       }
     },
     "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up>locate-path>p-locate": {
-      "globals": {
-        "module.exports": "write",
-        "require": true
-      },
       "packages": {
         "jest>@jest/core>jest-runner>p-limit": true
       }
     },
     "@vanilla-extract/vite-plugin>@vanilla-extract/integration>javascript-stringify": {
       "globals": {
-        "Buffer": true,
-        "exports": true,
-        "require": true
+        "Buffer": true
       }
     },
     "@vanilla-extract/webpack-plugin": {
@@ -298,10 +202,7 @@
       },
       "globals": {
         "console.warn": true,
-        "exports": true,
-        "module.exports": "write",
-        "process.env.NODE_ENV": true,
-        "require": true
+        "process.env.NODE_ENV": true
       },
       "packages": {
         "@vanilla-extract/vite-plugin>@vanilla-extract/integration": true,
@@ -351,28 +252,16 @@
     "audit-ci>event-stream>duplexer": {
       "builtin": {
         "stream": true
-      },
-      "globals": {
-        "module.exports": "write",
-        "require": true
       }
     },
     "browserify>crypto-browserify>randombytes": {
       "builtin": {
         "crypto.randomBytes": true
-      },
-      "globals": {
-        "module.exports": "write",
-        "require": true
       }
     },
     "browserify>readable-stream>util-deprecate": {
       "builtin": {
         "util.deprecate": true
-      },
-      "globals": {
-        "module.exports": "write",
-        "require": true
       }
     },
     "circular-dependency-plugin": {
@@ -381,9 +270,7 @@
         "util._extend": true
       },
       "globals": {
-        "module.exports": "write",
-        "process.cwd": true,
-        "require": true
+        "process.cwd": true
       }
     },
     "copy-webpack-plugin": {
@@ -400,17 +287,22 @@
         "path.resolve": true,
         "path.sep": true
       },
-      "globals": {
-        "module.exports": "write",
-        "require": true
-      },
       "packages": {
+        "copy-webpack-plugin>glob-parent": true,
         "copy-webpack-plugin>globby": true,
         "copy-webpack-plugin>schema-utils": true,
         "copy-webpack-plugin>serialize-javascript": true,
-        "eslint>glob-parent": true,
         "globby>fast-glob": true,
         "lint-staged>normalize-path": true
+      }
+    },
+    "copy-webpack-plugin>glob-parent": {
+      "builtin": {
+        "os.platform": true,
+        "path.posix.dirname": true
+      },
+      "packages": {
+        "eslint>is-glob": true
       }
     },
     "copy-webpack-plugin>globby": {
@@ -428,9 +320,7 @@
         "util.promisify": true
       },
       "globals": {
-        "module.exports": "write",
-        "process.cwd": true,
-        "require": true
+        "process.cwd": true
       },
       "packages": {
         "eslint>ignore": true,
@@ -442,12 +332,6 @@
       }
     },
     "copy-webpack-plugin>schema-utils": {
-      "globals": {
-        "exports": true,
-        "module.exports": "write",
-        "process": true,
-        "require": true
-      },
       "packages": {
         "copy-webpack-plugin>schema-utils>ajv": true,
         "copy-webpack-plugin>schema-utils>ajv-formats": true,
@@ -456,51 +340,31 @@
     },
     "copy-webpack-plugin>schema-utils>ajv": {
       "globals": {
-        "console": true,
-        "exports": "write",
-        "module.exports": "write",
-        "require": true
+        "console": true
       },
       "packages": {
-        "copy-webpack-plugin>schema-utils>ajv>fast-uri": true,
+        "eslint>ajv>uri-js": true,
         "eslint>fast-deep-equal": true,
         "web-ext>addons-linter>ajv>json-schema-traverse": true
       }
     },
     "copy-webpack-plugin>schema-utils>ajv-formats": {
-      "globals": {
-        "exports": "write",
-        "module.exports": "write",
-        "require": true
-      },
       "packages": {
         "copy-webpack-plugin>schema-utils>ajv": true
       }
     },
     "copy-webpack-plugin>schema-utils>ajv-keywords": {
       "globals": {
-        "Buffer": true,
-        "exports": true,
-        "module.exports": "write",
-        "require": true
+        "Buffer": true
       },
       "packages": {
         "copy-webpack-plugin>schema-utils>ajv": true,
         "eslint>fast-deep-equal": true
       }
     },
-    "copy-webpack-plugin>schema-utils>ajv>fast-uri": {
-      "globals": {
-        "URL.domainToASCII": true,
-        "module.exports": "write",
-        "require": true
-      }
-    },
     "copy-webpack-plugin>serialize-javascript": {
       "globals": {
-        "URL": true,
-        "module.exports": "write",
-        "require": true
+        "URL": true
       },
       "packages": {
         "browserify>crypto-browserify>randombytes": true
@@ -513,10 +377,7 @@
       },
       "globals": {
         "Buffer.allocUnsafe": true,
-        "Buffer.from": true,
-        "exports": true,
-        "module.exports": "write",
-        "require": true
+        "Buffer.from": true
       },
       "packages": {
         "css-loader>icss-utils": true,
@@ -527,12 +388,6 @@
         "css-loader>postcss-modules-values": true,
         "css-loader>postcss-value-parser": true,
         "semver": true
-      }
-    },
-    "css-loader>icss-utils": {
-      "globals": {
-        "module.exports": "write",
-        "require": true
       }
     },
     "css-loader>postcss": {
@@ -554,10 +409,8 @@
         "atob": true,
         "btoa": true,
         "console": true,
-        "module.exports": "write",
         "process.env.LANG": true,
-        "process.env.NODE_ENV": true,
-        "require": true
+        "process.env.NODE_ENV": true
       },
       "packages": {
         "css-loader>postcss>nanoid": true,
@@ -565,17 +418,7 @@
         "vitest>picocolors": true
       }
     },
-    "css-loader>postcss-modules-extract-imports": {
-      "globals": {
-        "module.exports": "write",
-        "require": true
-      }
-    },
     "css-loader>postcss-modules-local-by-default": {
-      "globals": {
-        "module.exports": "write",
-        "require": true
-      },
       "packages": {
         "css-loader>icss-utils": true,
         "css-loader>postcss-modules-scope>postcss-selector-parser": true,
@@ -583,78 +426,19 @@
       }
     },
     "css-loader>postcss-modules-scope": {
-      "globals": {
-        "module.exports": "write",
-        "require": true
-      },
       "packages": {
         "css-loader>postcss-modules-scope>postcss-selector-parser": true
       }
     },
     "css-loader>postcss-modules-scope>postcss-selector-parser": {
-      "globals": {
-        "exports": true,
-        "module.exports": "write",
-        "require": true
-      },
       "packages": {
         "@vanilla-extract/css>cssesc": true,
         "browserify>readable-stream>util-deprecate": true
       }
     },
     "css-loader>postcss-modules-values": {
-      "globals": {
-        "module.exports": "write",
-        "require": true
-      },
       "packages": {
         "css-loader>icss-utils": true
-      }
-    },
-    "css-loader>postcss-value-parser": {
-      "globals": {
-        "module.exports": "write",
-        "require": true
-      }
-    },
-    "css-loader>postcss>nanoid": {
-      "globals": {
-        "module.exports": "write"
-      }
-    },
-    "css-loader>postcss>source-map-js": {
-      "globals": {
-        "console": true,
-        "exports.ArraySet": "write",
-        "exports.BasicSourceMapConsumer": "write",
-        "exports.GREATEST_LOWER_BOUND": "write",
-        "exports.IndexedSourceMapConsumer": "write",
-        "exports.LEAST_UPPER_BOUND": "write",
-        "exports.MappingList": "write",
-        "exports.SourceMapConsumer": "write",
-        "exports.SourceMapGenerator": "write",
-        "exports.SourceNode": "write",
-        "exports.compareByGeneratedPositionsDeflated": "write",
-        "exports.compareByGeneratedPositionsDeflatedNoLine": "write",
-        "exports.compareByGeneratedPositionsInflated": "write",
-        "exports.compareByOriginalPositions": "write",
-        "exports.compareByOriginalPositionsNoSource": "write",
-        "exports.computeSourceURL": "write",
-        "exports.decode": "write",
-        "exports.encode": "write",
-        "exports.fromSetString": "write",
-        "exports.getArg": "write",
-        "exports.isAbsolute": "write",
-        "exports.join": "write",
-        "exports.normalize": "write",
-        "exports.parseSourceMapInput": "write",
-        "exports.quickSort": "write",
-        "exports.relative": "write",
-        "exports.search": "write",
-        "exports.toSetString": "write",
-        "exports.urlGenerate": "write",
-        "exports.urlParse": "write",
-        "require": true
       }
     },
     "dotenv-webpack": {
@@ -664,11 +448,8 @@
       "globals": {
         "console.log": true,
         "console.warn": true,
-        "exports": true,
-        "module.exports": "write",
         "process.env": true,
-        "process.exit": true,
-        "require": true
+        "process.exit": true
       },
       "packages": {
         "dotenv-webpack>dotenv-defaults": true,
@@ -676,10 +457,6 @@
       }
     },
     "dotenv-webpack>dotenv-defaults": {
-      "globals": {
-        "module.exports": "write",
-        "require": true
-      },
       "packages": {
         "dotenv-webpack>dotenv-defaults>dotenv": true
       }
@@ -691,11 +468,8 @@
       },
       "globals": {
         "console.log": true,
-        "module.exports.config": true,
-        "module.exports.parse": true,
         "process.cwd": true,
-        "process.env": true,
-        "require": true
+        "process.env": true
       }
     },
     "esbuild": {
@@ -731,14 +505,12 @@
         "__filename": true,
         "console.error": true,
         "console.log": true,
-        "module.exports": "write",
         "process.cwd": true,
         "process.env.ESBUILD_BINARY_PATH": true,
         "process.env.ESBUILD_MAX_BUFFER": true,
         "process.env.ESBUILD_WORKER_THREADS": true,
         "process.platform": true,
-        "process.versions.node.split": true,
-        "require": true
+        "process.versions.node.split": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": {
@@ -747,38 +519,27 @@
         "fs": true,
         "module": true,
         "path": true,
-        "process": true,
         "url": true,
-        "util": true,
-        "v8": true
+        "util": true
       },
       "globals": {
-        "URL": true,
         "console.error": true,
         "console.log": true,
-        "exports": true,
-        "module.exports": "write",
-        "process.env.BABEL_ENV": true,
-        "process.env.BABEL_SHOW_CONFIG_FOR": true,
-        "process.env.NODE_ENV": true,
-        "process.versions.node": true,
-        "process.versions.pnp": true,
-        "require": true
+        "process": true
       },
       "packages": {
-        "@graphql-eslint/eslint-plugin>@babel/code-frame": true,
-        "@graphql-eslint/eslint-plugin>@graphql-tools/graphql-tag-pluck>@babel/parser": true,
-        "@graphql-eslint/eslint-plugin>@graphql-tools/graphql-tag-pluck>@babel/traverse": true,
-        "@graphql-eslint/eslint-plugin>@graphql-tools/graphql-tag-pluck>@babel/types": true,
+        "@testing-library/react>@testing-library/dom>@babel/code-frame": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@ampproject/remapping": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/parser": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>gensync": true,
         "eslint>debug": true,
         "file-loader>loader-utils>json5": true,
+        "jest>@jest/core>@jest/transform>convert-source-map": true,
         "jest>@jest/core>jest-snapshot>@babel/generator": true,
         "jest>@jest/core>jest-snapshot>@babel/types": true,
         "semver": true
@@ -786,58 +547,60 @@
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@ampproject/remapping": {
       "globals": {
-        "define": true,
-        "exports": true,
-        "module": true,
-        "require": true
+        "define": true
       },
       "packages": {
-        "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping": true,
-        "webpack>terser-webpack-plugin>@jridgewell/trace-mapping": true
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@ampproject/remapping>@jridgewell/gen-mapping": true,
+        "jest>@jest/core>@jest/reporters>@jridgewell/trace-mapping": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@ampproject/remapping>@jridgewell/gen-mapping": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "jest>@jest/core>@jest/reporters>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
+        "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping>@jridgewell/set-array": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets": {
       "globals": {
         "console.warn": true,
-        "exports": true,
-        "process.env.BROWSERSLIST": true,
-        "process.env.BROWSERSLIST_CONFIG": true,
-        "process.versions.node": true,
-        "require": true
+        "process.versions.node": true
       },
       "packages": {
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>@babel/compat-data": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>@babel/helper-validator-option": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>lru-cache": true,
-        "semver": true,
-        "webpack>browserslist": true
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>browserslist": true,
+        "semver": true
       }
     },
-    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>@babel/compat-data": {
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>browserslist": {
+      "builtin": {
+        "fs.existsSync": true,
+        "fs.readFileSync": true,
+        "fs.statSync": true,
+        "path.basename": true,
+        "path.dirname": true,
+        "path.join": true,
+        "path.resolve": true
+      },
       "globals": {
-        "module.exports": "write",
-        "require": true
-      }
-    },
-    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>@babel/helper-validator-option": {
-      "globals": {
-        "exports": true,
-        "require": true
-      }
-    },
-    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>lru-cache": {
-      "globals": {
-        "module.exports": "write",
-        "require": true
+        "console.warn": true,
+        "process.env.BROWSERSLIST": true,
+        "process.env.BROWSERSLIST_CONFIG": true,
+        "process.env.BROWSERSLIST_DANGEROUS_EXTEND": true,
+        "process.env.BROWSERSLIST_DISABLE_CACHE": true,
+        "process.env.BROWSERSLIST_ENV": true,
+        "process.env.BROWSERSLIST_IGNORE_OLD_DATA": true,
+        "process.env.BROWSERSLIST_STATS": true,
+        "process.env.NODE_ENV": true,
+        "process.versions.node": true
       },
       "packages": {
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>lru-cache>yallist": true
-      }
-    },
-    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>lru-cache>yallist": {
-      "globals": {
-        "module.exports": "write",
-        "require": true
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>browserslist>caniuse-lite": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>browserslist>electron-to-chromium": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>browserslist>node-releases": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms": {
@@ -846,32 +609,33 @@
         "path.basename": true,
         "path.extname": true
       },
-      "globals": {
-        "exports": true,
-        "require": true
-      },
       "packages": {
-        "@graphql-eslint/eslint-plugin>@graphql-tools/graphql-tag-pluck>@babel/traverse": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-environment-visitor": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-split-export-declaration": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": true,
         "jest>@jest/core>jest-snapshot>@babel/types": true,
-        "jest>@jest/core>jest-snapshot>@babel/types>@babel/helper-validator-identifier": true
+        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": {
       "builtin": {
         "assert": true
       },
-      "globals": {
-        "exports": true,
-        "require": true
-      },
       "packages": {
-        "@graphql-eslint/eslint-plugin>@graphql-tools/graphql-tag-pluck>@babel/types": true
+        "jest>@jest/core>jest-snapshot>@babel/types": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": {
+      "packages": {
+        "jest>@jest/core>jest-snapshot>@babel/types": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-split-export-declaration": {
+      "packages": {
+        "jest>@jest/core>jest-snapshot>@babel/types": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse": {
@@ -898,7 +662,7 @@
       },
       "packages": {
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/code-frame>chalk": true,
-        "lavamoat>@babel/highlight": true
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/code-frame>@babel/highlight": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/code-frame>chalk": {
@@ -989,10 +753,6 @@
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers": {
-      "globals": {
-        "exports": true,
-        "require": true
-      },
       "packages": {
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": true,
@@ -1023,7 +783,7 @@
       },
       "packages": {
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/code-frame>chalk": true,
-        "lavamoat>@babel/highlight": true
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/code-frame>@babel/highlight": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/code-frame>chalk": {
@@ -1098,19 +858,10 @@
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": {
-      "globals": {
-        "exports": true,
-        "require": true
-      },
       "packages": {
-        "@graphql-eslint/eslint-plugin>@babel/code-frame": true,
-        "@graphql-eslint/eslint-plugin>@graphql-tools/graphql-tag-pluck>@babel/parser": true,
-        "@graphql-eslint/eslint-plugin>@graphql-tools/graphql-tag-pluck>@babel/types": true
-      }
-    },
-    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>gensync": {
-      "globals": {
-        "module.exports": "write"
+        "@testing-library/react>@testing-library/dom>@babel/code-frame": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/parser": true,
+        "jest>@jest/core>jest-snapshot>@babel/types": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse": {
@@ -1137,7 +888,7 @@
       },
       "packages": {
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse>@babel/code-frame>chalk": true,
-        "lavamoat>@babel/highlight": true
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/code-frame>@babel/highlight": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse>@babel/code-frame>chalk": {
@@ -1207,8 +958,6 @@
         "stream.Readable": true
       },
       "globals": {
-        "exports": true,
-        "require": true,
         "setImmediate": true
       },
       "packages": {
@@ -1227,9 +976,7 @@
         "path.sep": true
       },
       "globals": {
-        "exports": true,
-        "process.versions.node": true,
-        "require": true
+        "process.versions.node": true
       },
       "packages": {
         "eslint>@nodelib/fs.walk>@nodelib/fs.scandir>run-parallel": true,
@@ -1237,40 +984,24 @@
       }
     },
     "eslint>@nodelib/fs.walk>@nodelib/fs.scandir>run-parallel": {
-      "globals": {
-        "module.exports": "write",
-        "require": true
-      },
       "packages": {
         "eslint>@nodelib/fs.walk>@nodelib/fs.scandir>run-parallel>queue-microtask": true
       }
     },
     "eslint>@nodelib/fs.walk>@nodelib/fs.scandir>run-parallel>queue-microtask": {
       "globals": {
-        "module.exports": "write",
         "queueMicrotask": true,
         "setTimeout": true
       }
     },
     "eslint>@nodelib/fs.walk>fastq": {
-      "globals": {
-        "module.exports": "write",
-        "require": true
-      },
       "packages": {
         "eslint>@nodelib/fs.walk>fastq>reusify": true
       }
     },
-    "eslint>@nodelib/fs.walk>fastq>reusify": {
-      "globals": {
-        "module.exports": "write"
-      }
-    },
     "eslint>ajv": {
       "globals": {
-        "console": true,
-        "module.exports": "write",
-        "require": true
+        "console": true
       },
       "packages": {
         "eslint>ajv>fast-json-stable-stringify": true,
@@ -1279,64 +1010,33 @@
         "eslint>fast-deep-equal": true
       }
     },
-    "eslint>ajv>fast-json-stable-stringify": {
-      "globals": {
-        "module.exports": "write"
-      }
-    },
-    "eslint>ajv>json-schema-traverse": {
-      "globals": {
-        "module.exports": "write"
-      }
-    },
     "eslint>ajv>uri-js": {
       "globals": {
-        "define": true,
-        "exports": true,
-        "module": true
+        "define": true
       }
     },
     "eslint>debug": {
       "builtin": {
         "tty.isatty": true,
         "util.deprecate": true,
-        "util.formatWithOptions": true,
+        "util.format": true,
         "util.inspect": true
       },
       "globals": {
         "console": true,
         "document": true,
-        "exports": true,
         "localStorage": true,
-        "module.exports": "write",
         "navigator": true,
-        "process": true,
-        "require": true
+        "process": true
       },
       "packages": {
-        "@rudderstack/analytics-js-service-worker>ms": true,
+        "eslint>debug>ms": true,
         "supports-color": true
       }
     },
     "eslint>eslint-scope>esrecurse": {
-      "globals": {
-        "exports.Visitor": "write",
-        "exports.version": "write",
-        "exports.visit": "write",
-        "require": true
-      },
       "packages": {
         "eslint>esquery>estraverse": true
-      }
-    },
-    "eslint>esquery>estraverse": {
-      "globals": {
-        "exports": true
-      }
-    },
-    "eslint>fast-deep-equal": {
-      "globals": {
-        "module.exports": "write"
       }
     },
     "eslint>find-up>path-exists": {
@@ -1344,71 +1044,30 @@
         "fs.access": true,
         "fs.accessSync": true,
         "util.promisify": true
-      },
-      "globals": {
-        "module.exports": "write",
-        "require": true
-      }
-    },
-    "eslint>glob-parent": {
-      "builtin": {
-        "os.platform": true,
-        "path.posix.dirname": true
-      },
-      "globals": {
-        "module.exports": "write",
-        "require": true
-      },
-      "packages": {
-        "eslint>is-glob": true
       }
     },
     "eslint>ignore": {
       "globals": {
-        "module.exports": "write",
         "process": true
       }
     },
     "eslint>is-glob": {
-      "globals": {
-        "module.exports": "write",
-        "require": true
-      },
       "packages": {
         "eslint>is-glob>is-extglob": true
       }
     },
-    "eslint>is-glob>is-extglob": {
-      "globals": {
-        "module.exports": "write"
-      }
-    },
     "eslint>strip-ansi": {
-      "globals": {
-        "module.exports": "write",
-        "require": true
-      },
       "packages": {
         "eslint>strip-ansi>ansi-regex": true
-      }
-    },
-    "eslint>strip-ansi>ansi-regex": {
-      "globals": {
-        "module.exports": "write"
       }
     },
     "file-loader": {
       "builtin": {
         "path": true
       },
-      "globals": {
-        "exports": true,
-        "module.exports": "write",
-        "require": true
-      },
       "packages": {
         "file-loader>loader-utils": true,
-        "webpack>schema-utils": true
+        "file-loader>schema-utils": true
       }
     },
     "file-loader>loader-utils": {
@@ -1424,19 +1083,7 @@
       "globals": {
         "Buffer.from": true,
         "WebAssembly.Instance": true,
-        "WebAssembly.Module": true,
-        "exports.getCurrentRequest": "write",
-        "exports.getHashDigest": "write",
-        "exports.getOptions": "write",
-        "exports.getRemainingRequest": "write",
-        "exports.interpolateName": "write",
-        "exports.isUrlRequest": "write",
-        "exports.parseQuery": "write",
-        "exports.parseString": "write",
-        "exports.stringifyRequest": "write",
-        "exports.urlToRequest": "write",
-        "module.exports": "write",
-        "require": true
+        "WebAssembly.Module": true
       },
       "packages": {
         "file-loader>loader-utils>big.js": true,
@@ -1446,25 +1093,18 @@
     },
     "file-loader>loader-utils>big.js": {
       "globals": {
-        "define": true,
-        "module": true
-      }
-    },
-    "file-loader>loader-utils>emojis-list": {
-      "globals": {
-        "module.exports": "write"
+        "define": true
       }
     },
     "file-loader>loader-utils>json5": {
       "globals": {
-        "console.warn": true,
-        "module.exports": "write",
-        "require": true
+        "console.warn": true
       }
     },
-    "globby>array-union": {
-      "globals": {
-        "module.exports": "write"
+    "file-loader>schema-utils": {
+      "packages": {
+        "eslint>ajv": true,
+        "webpack>schema-utils>ajv-keywords": true
       }
     },
     "globby>dir-glob": {
@@ -1475,9 +1115,7 @@
         "path.posix.join": true
       },
       "globals": {
-        "module.exports": "write",
-        "process.cwd": true,
-        "require": true
+        "process.cwd": true
       },
       "packages": {
         "globby>dir-glob>path-type": true
@@ -1487,15 +1125,6 @@
       "builtin": {
         "fs": true,
         "util.promisify": true
-      },
-      "globals": {
-        "exports.isDirectory": "write",
-        "exports.isDirectorySync": "write",
-        "exports.isFile": "write",
-        "exports.isFileSync": "write",
-        "exports.isSymlink": "write",
-        "exports.isSymlinkSync": "write",
-        "require": true
       }
     },
     "globby>fast-glob": {
@@ -1507,23 +1136,19 @@
         "fs.stat": true,
         "fs.statSync": true,
         "os.cpus": true,
-        "os.platform": true,
         "path.basename": true,
         "path.resolve": true,
         "stream.PassThrough": true,
         "stream.Readable": true
       },
       "globals": {
-        "exports": true,
-        "module.exports": "write",
-        "process.cwd": true,
-        "require": true
+        "process.cwd": true
       },
       "packages": {
         "eslint>@nodelib/fs.walk": true,
         "globby>fast-glob>@nodelib/fs.stat": true,
-        "globby>fast-glob>glob-parent": true,
         "globby>merge2": true,
+        "msw>chokidar>glob-parent": true,
         "ts-loader>micromatch": true
       }
     },
@@ -1533,23 +1158,6 @@
         "fs.lstatSync": true,
         "fs.stat": true,
         "fs.statSync": true
-      },
-      "globals": {
-        "exports": true,
-        "require": true
-      }
-    },
-    "globby>fast-glob>glob-parent": {
-      "builtin": {
-        "os.platform": true,
-        "path.posix.dirname": true
-      },
-      "globals": {
-        "module.exports": "write",
-        "require": true
-      },
-      "packages": {
-        "eslint>is-glob": true
       }
     },
     "globby>merge2": {
@@ -1557,21 +1165,12 @@
         "stream.PassThrough": true
       },
       "globals": {
-        "module.exports": "write",
-        "process.nextTick": true,
-        "require": true
-      }
-    },
-    "globby>slash": {
-      "globals": {
-        "module.exports": "write"
+        "process.nextTick": true
       }
     },
     "happy-dom>he": {
       "globals": {
-        "define": true,
-        "exports": true,
-        "module": true
+        "define": true
       }
     },
     "html-webpack-plugin": {
@@ -1595,9 +1194,7 @@
       },
       "globals": {
         "__dirname": true,
-        "console.error": true,
-        "module.exports": "write",
-        "require": true
+        "console.error": true
       },
       "packages": {
         "html-webpack-plugin>html-minifier-terser": true,
@@ -1611,17 +1208,7 @@
         "ActiveX": true,
         "ActiveXObject": true,
         "DOMDocument": true,
-        "document": true,
-        "exports.HTMLParser": "write",
-        "exports.HTMLtoDOM": "write",
-        "exports.HTMLtoXML": "write",
-        "exports.createMap": "write",
-        "exports.createMapFromString": "write",
-        "exports.endTag": "write",
-        "exports.minify": "write",
-        "exports.replaceAsync": "write",
-        "module.exports": "write",
-        "require": true
+        "document": true
       },
       "packages": {
         "happy-dom>he": true,
@@ -1648,55 +1235,19 @@
       },
       "globals": {
         "Buffer": true,
-        "module.exports": "write",
         "process.cwd": true,
         "process.env.HTTP_PROXY": true,
         "process.env.http_proxy": true,
         "process.nextTick": true,
-        "process.platform": true,
-        "require": true
+        "process.platform": true
       },
       "packages": {
         "html-webpack-plugin>html-minifier-terser>clean-css>source-map": true
       }
     },
-    "html-webpack-plugin>html-minifier-terser>clean-css>source-map": {
-      "globals": {
-        "exports.ArraySet": "write",
-        "exports.BasicSourceMapConsumer": "write",
-        "exports.GREATEST_LOWER_BOUND": "write",
-        "exports.IndexedSourceMapConsumer": "write",
-        "exports.LEAST_UPPER_BOUND": "write",
-        "exports.MappingList": "write",
-        "exports.SourceMapConsumer": "write",
-        "exports.SourceMapGenerator": "write",
-        "exports.SourceNode": "write",
-        "exports.compareByGeneratedPositionsDeflated": "write",
-        "exports.compareByGeneratedPositionsInflated": "write",
-        "exports.compareByOriginalPositions": "write",
-        "exports.decode": "write",
-        "exports.encode": "write",
-        "exports.fromSetString": "write",
-        "exports.getArg": "write",
-        "exports.isAbsolute": "write",
-        "exports.join": "write",
-        "exports.normalize": "write",
-        "exports.quickSort": "write",
-        "exports.relative": "write",
-        "exports.search": "write",
-        "exports.toSetString": "write",
-        "exports.urlGenerate": "write",
-        "exports.urlParse": "write",
-        "require": true
-      }
-    },
     "html-webpack-plugin>html-minifier-terser>relateurl": {
       "builtin": {
         "url.parse": true
-      },
-      "globals": {
-        "module.exports": "write",
-        "require": true
       }
     },
     "html-webpack-plugin>pretty-error": {
@@ -1704,9 +1255,7 @@
         "path": true
       },
       "globals": {
-        "console.error": true,
-        "module.exports": "write",
-        "require": true
+        "console.error": true
       },
       "packages": {
         "html-webpack-plugin>pretty-error>renderkid": true,
@@ -1719,10 +1268,8 @@
       },
       "globals": {
         "console.log": true,
-        "module.exports": "write",
         "process.stdout.columns": true,
-        "process.stdout.getWindowSize": true,
-        "require": true
+        "process.stdout.getWindowSize": true
       },
       "packages": {
         "eslint>strip-ansi": true,
@@ -1733,31 +1280,19 @@
       }
     },
     "html-webpack-plugin>pretty-error>renderkid>css-select": {
-      "globals": {
-        "exports": true,
-        "require": true
-      },
       "packages": {
-        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@vanilla-extract/css>css-what": true,
         "html-webpack-plugin>pretty-error>renderkid>css-select>domutils": true,
         "html-webpack-plugin>pretty-error>renderkid>css-select>nth-check": true,
-        "web-ext>addons-linter>cheerio>cheerio-select>boolbase": true
+        "web-ext>addons-linter>cheerio>cheerio-select>boolbase": true,
+        "web-ext>addons-linter>cheerio>cheerio-select>css-what": true
       }
     },
     "html-webpack-plugin>pretty-error>renderkid>css-select>domhandler": {
-      "globals": {
-        "exports": true,
-        "require": true
-      },
       "packages": {
         "web-ext>addons-linter>cheerio>domutils>domelementtype": true
       }
     },
     "html-webpack-plugin>pretty-error>renderkid>css-select>domutils": {
-      "globals": {
-        "exports": true,
-        "require": true
-      },
       "packages": {
         "html-webpack-plugin>pretty-error>renderkid>css-select>domhandler": true,
         "html-webpack-plugin>pretty-error>renderkid>css-select>domutils>dom-serializer": true,
@@ -1765,35 +1300,19 @@
       }
     },
     "html-webpack-plugin>pretty-error>renderkid>css-select>domutils>dom-serializer": {
-      "globals": {
-        "exports": true,
-        "require": true
-      },
       "packages": {
         "html-webpack-plugin>pretty-error>renderkid>css-select>domutils>dom-serializer>entities": true,
         "web-ext>addons-linter>cheerio>domutils>domelementtype": true
       }
     },
-    "html-webpack-plugin>pretty-error>renderkid>css-select>domutils>dom-serializer>entities": {
-      "globals": {
-        "exports": true,
-        "require": true
-      }
-    },
     "html-webpack-plugin>pretty-error>renderkid>css-select>nth-check": {
-      "globals": {
-        "exports": true,
-        "require": true
-      },
       "packages": {
         "web-ext>addons-linter>cheerio>cheerio-select>boolbase": true
       }
     },
     "html-webpack-plugin>pretty-error>renderkid>dom-converter": {
       "globals": {
-        "inspect": true,
-        "module.exports": "write",
-        "require": true
+        "inspect": true
       },
       "packages": {
         "html-webpack-plugin>pretty-error>renderkid>dom-converter>utila": true
@@ -1802,16 +1321,10 @@
     "html-webpack-plugin>pretty-error>renderkid>dom-converter>utila": {
       "globals": {
         "clearTimeout": true,
-        "module.exports": "write",
-        "require": true,
         "setTimeout": true
       }
     },
     "html-webpack-plugin>pretty-error>renderkid>htmlparser2": {
-      "globals": {
-        "exports": true,
-        "require": true
-      },
       "packages": {
         "html-webpack-plugin>pretty-error>renderkid>htmlparser2>domhandler": true,
         "html-webpack-plugin>pretty-error>renderkid>htmlparser2>domutils": true,
@@ -1820,19 +1333,11 @@
       }
     },
     "html-webpack-plugin>pretty-error>renderkid>htmlparser2>domhandler": {
-      "globals": {
-        "exports": true,
-        "require": true
-      },
       "packages": {
         "web-ext>addons-linter>cheerio>domutils>domelementtype": true
       }
     },
     "html-webpack-plugin>pretty-error>renderkid>htmlparser2>domutils": {
-      "globals": {
-        "exports": true,
-        "require": true
-      },
       "packages": {
         "html-webpack-plugin>pretty-error>renderkid>htmlparser2>domhandler": true,
         "html-webpack-plugin>pretty-error>renderkid>htmlparser2>domutils>dom-serializer": true,
@@ -1840,73 +1345,76 @@
       }
     },
     "html-webpack-plugin>pretty-error>renderkid>htmlparser2>domutils>dom-serializer": {
-      "globals": {
-        "exports": true,
-        "require": true
-      },
       "packages": {
         "html-webpack-plugin>pretty-error>renderkid>htmlparser2>entities": true,
         "web-ext>addons-linter>cheerio>domutils>domelementtype": true
       }
     },
-    "html-webpack-plugin>pretty-error>renderkid>htmlparser2>entities": {
+    "jest>@jest/core>@jest/reporters>@jridgewell/trace-mapping": {
       "globals": {
-        "exports": true,
-        "require": true
+        "define": true
+      },
+      "packages": {
+        "jest>@jest/core>@jest/reporters>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
+        "jest>@jest/core>@jest/reporters>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
+      }
+    },
+    "jest>@jest/core>@jest/reporters>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
+      "globals": {
+        "define": true
+      }
+    },
+    "jest>@jest/core>@jest/reporters>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "define": true
+      }
+    },
+    "jest>@jest/core>@jest/transform>convert-source-map": {
+      "builtin": {
+        "fs.readFileSync": true,
+        "path.resolve": true
+      },
+      "globals": {
+        "Buffer": true,
+        "atob": true,
+        "btoa": true,
+        "value": true
       }
     },
     "jest>@jest/core>jest-runner>p-limit": {
-      "globals": {
-        "module.exports": "write",
-        "require": true
-      },
       "packages": {
         "jest>@jest/core>jest-runner>p-limit>yocto-queue": true
       }
     },
-    "jest>@jest/core>jest-runner>p-limit>yocto-queue": {
-      "globals": {
-        "module.exports": "write"
-      }
-    },
     "jest>@jest/core>jest-snapshot>@babel/generator": {
       "globals": {
-        "console.error": true,
-        "console.warn": true,
-        "exports": true,
-        "require": true
+        "console.error": true
       },
       "packages": {
-        "@graphql-eslint/eslint-plugin>@graphql-tools/graphql-tag-pluck>@babel/types": true,
         "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping": true,
         "jest>@jest/core>jest-snapshot>@babel/generator>jsesc": true,
-        "webpack>terser-webpack-plugin>@jridgewell/trace-mapping": true
+        "jest>@jest/core>jest-snapshot>@babel/types": true
       }
     },
     "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping": {
       "globals": {
-        "define": true,
-        "exports": true,
-        "module": true,
-        "require": true
+        "define": true
       },
       "packages": {
-        "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping>@jridgewell/set-array": true,
-        "vitest>magic-string>@jridgewell/sourcemap-codec": true,
-        "webpack>terser-webpack-plugin>@jridgewell/trace-mapping": true
+        "jest>@jest/core>@jest/reporters>@jridgewell/trace-mapping": true,
+        "jest>@jest/core>@jest/reporters>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
+        "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping>@jridgewell/set-array": true
       }
     },
     "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping>@jridgewell/set-array": {
       "globals": {
-        "define": true,
-        "exports": true,
-        "module": true
+        "define": true
       }
     },
     "jest>@jest/core>jest-snapshot>@babel/generator>jsesc": {
       "globals": {
-        "Buffer": true,
-        "module.exports": "write"
         "Buffer.isBuffer": true
       }
     },
@@ -1917,50 +1425,133 @@
       },
       "packages": {
         "jest>@jest/core>jest-snapshot>@babel/types>@babel/helper-string-parser": true,
-        "jest>@jest/core>jest-snapshot>@babel/types>@babel/helper-validator-identifier": true,
+        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
         "lavamoat>lavamoat-core>@babel/types>to-fast-properties": true
       }
     },
-    "lavamoat-browserify>convert-source-map": {
-      "globals": {
-        "Buffer": true,
-        "atob": true,
-        "btoa": true,
-        "exports": true,
-        "value": true
+    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/code-frame>@babel/highlight": {
+      "packages": {
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/code-frame>@babel/highlight>@babel/helper-validator-identifier": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/code-frame>@babel/highlight>chalk": true,
+        "react>loose-envify>js-tokens": true
       }
     },
-    "lavamoat>@babel/highlight>@babel/helper-validator-identifier": {
+    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/code-frame>@babel/highlight>chalk": {
       "globals": {
-        "exports": true,
-        "require": true
+        "process.env.TERM": true,
+        "process.platform": true
+      },
+      "packages": {
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/code-frame>@babel/highlight>chalk>ansi-styles": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/code-frame>@babel/highlight>chalk>escape-string-regexp": true,
+        "supports-color": true
       }
     },
-    "lavamoat>lavamoat-core>@babel/types>@babel/helper-string-parser": {
+    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/code-frame>@babel/highlight>chalk>ansi-styles": {
+      "packages": {
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert": true
+      }
+    },
+    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert": {
+      "packages": {
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert>color-name": true
+      }
+    },
+    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name": {
+      "packages": {
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/types": true
+      }
+    },
+    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template": {
+      "packages": {
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/parser": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/types": true
+      }
+    },
+    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame": {
       "globals": {
-        "exports": true
+        "console.warn": true,
+        "process.emitWarning": true
+      },
+      "packages": {
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/code-frame>@babel/highlight": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk": true
+      }
+    },
+    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk": {
+      "globals": {
+        "process.env.TERM": true,
+        "process.platform": true
+      },
+      "packages": {
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk>ansi-styles": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk>escape-string-regexp": true,
+        "supports-color": true
+      }
+    },
+    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk>ansi-styles": {
+      "packages": {
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk>ansi-styles>color-convert": true
+      }
+    },
+    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk>ansi-styles>color-convert": {
+      "packages": {
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/template>@babel/code-frame>chalk>ansi-styles>color-convert>color-name": true
+      }
+    },
+    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/types": {
+      "globals": {
+        "console.warn": true,
+        "process.env.BABEL_TYPES_8_BREAKING": true
+      },
+      "packages": {
+        "lavamoat>lavamoat-core>@babel/types>to-fast-properties": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/types>@babel/helper-string-parser": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name>@babel/types>@babel/helper-validator-identifier": true
+      }
+    },
+    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-hoist-variables": {
+      "packages": {
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-hoist-variables>@babel/types": true
+      }
+    },
+    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-hoist-variables>@babel/types": {
+      "globals": {
+        "console.warn": true,
+        "process.env.BABEL_TYPES_8_BREAKING": true
+      },
+      "packages": {
+        "lavamoat>lavamoat-core>@babel/types>to-fast-properties": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-hoist-variables>@babel/types>@babel/helper-string-parser": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-hoist-variables>@babel/types>@babel/helper-validator-identifier": true
+      }
+    },
+    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-split-export-declaration": {
+      "packages": {
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-split-export-declaration>@babel/types": true
+      }
+    },
+    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-split-export-declaration>@babel/types": {
+      "globals": {
+        "console.warn": true,
+        "process.env.BABEL_TYPES_8_BREAKING": true
+      },
+      "packages": {
+        "lavamoat>lavamoat-core>@babel/types>to-fast-properties": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-split-export-declaration>@babel/types>@babel/helper-string-parser": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-split-export-declaration>@babel/types>@babel/helper-validator-identifier": true
       }
     },
     "lint-staged>execa>merge-stream": {
       "builtin": {
         "stream.PassThrough": true
-      },
-      "globals": {
-        "module.exports": "write",
-        "require": true
-      }
-    },
-    "lint-staged>normalize-path": {
-      "globals": {
-        "module.exports": "write"
       }
     },
     "lodash": {
       "globals": {
-        "define": true,
-        "exports": true,
-        "module": true,
-        "require": true
+        "define": true
       }
     },
     "mini-css-extract-plugin": {
@@ -1973,21 +1564,13 @@
       },
       "globals": {
         "Buffer": true,
-        "__dirname": true,
-        "module.exports": "write",
-        "require": true
+        "__dirname": true
       },
       "packages": {
         "mini-css-extract-plugin>schema-utils": true
       }
     },
     "mini-css-extract-plugin>schema-utils": {
-      "globals": {
-        "exports": true,
-        "module.exports": "write",
-        "process": true,
-        "require": true
-      },
       "packages": {
         "mini-css-extract-plugin>schema-utils>ajv": true,
         "mini-css-extract-plugin>schema-utils>ajv-formats": true,
@@ -1996,33 +1579,22 @@
     },
     "mini-css-extract-plugin>schema-utils>ajv": {
       "globals": {
-        "console": true,
-        "exports": "write",
-        "module.exports": "write",
-        "require": true
+        "console": true
       },
       "packages": {
-        "copy-webpack-plugin>schema-utils>ajv>fast-uri": true,
+        "eslint>ajv>uri-js": true,
         "eslint>fast-deep-equal": true,
         "web-ext>addons-linter>ajv>json-schema-traverse": true
       }
     },
     "mini-css-extract-plugin>schema-utils>ajv-formats": {
-      "globals": {
-        "exports": "write",
-        "module.exports": "write",
-        "require": true
-      },
       "packages": {
         "mini-css-extract-plugin>schema-utils>ajv": true
       }
     },
     "mini-css-extract-plugin>schema-utils>ajv-keywords": {
       "globals": {
-        "Buffer": true,
-        "exports": true,
-        "module.exports": "write",
-        "require": true
+        "Buffer": true
       },
       "packages": {
         "eslint>fast-deep-equal": true,
@@ -2030,33 +1602,13 @@
       }
     },
     "msw>chalk>ansi-styles>color-convert": {
-      "globals": {
-        "module.exports": "write",
-        "require": true
-      },
       "packages": {
         "msw>chalk>ansi-styles>color-convert>color-name": true
       }
     },
-    "msw>chalk>ansi-styles>color-convert>color-name": {
-      "globals": {
-        "module.exports": "write"
-      }
-    },
     "msw>chokidar>braces": {
       "globals": {
-        "console.log": true,
-        "exports.encloseBrace": "write",
-        "exports.escapeNode": "write",
-        "exports.exceedsLimit": "write",
-        "exports.find": "write",
-        "exports.flatten": "write",
-        "exports.isInteger": "write",
-        "exports.isInvalidBrace": "write",
-        "exports.isOpenOrClose": "write",
-        "exports.reduce": "write",
-        "module.exports": "write",
-        "require": true
+        "console.log": true
       },
       "packages": {
         "msw>chokidar>braces>fill-range": true
@@ -2066,58 +1618,36 @@
       "builtin": {
         "util.inspect": true
       },
-      "globals": {
-        "module.exports": "write",
-        "require": true
-      },
       "packages": {
         "msw>chokidar>braces>fill-range>to-regex-range": true
       }
     },
     "msw>chokidar>braces>fill-range>to-regex-range": {
-      "globals": {
-        "module.exports": "write",
-        "require": true
-      },
       "packages": {
         "msw>chokidar>braces>fill-range>to-regex-range>is-number": true
       }
     },
-    "msw>chokidar>braces>fill-range>to-regex-range>is-number": {
-      "globals": {
-        "module.exports": "write"
-      }
-    },
-    "react>loose-envify>js-tokens": {
-      "globals": {
-        "exports": true
+    "msw>chokidar>glob-parent": {
+      "builtin": {
+        "os.platform": true,
+        "path.posix.dirname": true
+      },
+      "packages": {
+        "eslint>is-glob": true
       }
     },
     "semver": {
       "globals": {
         "console.error": true,
-        "exports": "write",
-        "module.exports": "write",
-        "process": true,
-        "require": true
+        "process": true
       },
       "packages": {
         "semver>lru-cache": true
       }
     },
     "semver>lru-cache": {
-      "globals": {
-        "module.exports": "write",
-        "require": true
-      },
       "packages": {
         "semver>lru-cache>yallist": true
-      }
-    },
-    "semver>lru-cache>yallist": {
-      "globals": {
-        "module.exports": "write",
-        "require": true
       }
     },
     "supports-color": {
@@ -2125,13 +1655,11 @@
         "os.release": true
       },
       "globals": {
-        "module.exports": "write",
         "process.env": true,
         "process.platform": true,
         "process.stderr": true,
         "process.stdout": true,
-        "process.versions.node.split": true,
-        "require": true
+        "process.versions.node.split": true
       },
       "packages": {
         "supports-color>has-flag": true
@@ -2139,7 +1667,6 @@
     },
     "supports-color>has-flag": {
       "globals": {
-        "module.exports": "write",
         "process.argv": true
       }
     },
@@ -2159,11 +1686,8 @@
       "globals": {
         "__dirname": true,
         "console.log.call": true,
-        "exports": true,
-        "module.exports": "write",
         "process.stderr": true,
-        "process.stdout": true,
-        "require": true
+        "process.stdout": true
       },
       "packages": {
         "semver": true,
@@ -2174,20 +1698,12 @@
       }
     },
     "ts-loader>chalk": {
-      "globals": {
-        "module.exports": "write",
-        "require": true
-      },
       "packages": {
         "supports-color": true,
         "ts-loader>chalk>ansi-styles": true
       }
     },
     "ts-loader>chalk>ansi-styles": {
-      "globals": {
-        "module": true,
-        "require": true
-      },
       "packages": {
         "msw>chalk>ansi-styles>color-convert": true
       }
@@ -2195,10 +1711,6 @@
     "ts-loader>micromatch": {
       "builtin": {
         "util.inspect": true
-      },
-      "globals": {
-        "module.exports": "write",
-        "require": true
       },
       "packages": {
         "msw>chokidar>braces": true,
@@ -2211,21 +1723,8 @@
         "path.sep": true
       },
       "globals": {
-        "exports.escapeLast": "write",
-        "exports.escapeRegex": "write",
-        "exports.hasRegexChars": "write",
-        "exports.isObject": "write",
-        "exports.isRegexChar": "write",
-        "exports.isWindows": "write",
-        "exports.removeBackslashes": "write",
-        "exports.removePrefix": "write",
-        "exports.supportsLookbehinds": "write",
-        "exports.toPosixSlashes": "write",
-        "exports.wrapOutput": "write",
-        "module.exports": "write",
         "process.platform": true,
-        "process.version.slice": true,
-        "require": true
+        "process.version.slice": true
       }
     },
     "typescript": {
@@ -2250,11 +1749,9 @@
         "clearTimeout": true,
         "console": true,
         "gc": true,
-        "module": true,
         "onProfilerEvent": true,
         "performance": true,
         "process": true,
-        "require": true,
         "setTimeout": true
       },
       "packages": {
@@ -2287,11 +1784,9 @@
       "globals": {
         "Buffer": true,
         "clearTimeout": true,
-        "module.exports": "write",
         "process.env.WS_NO_BUFFER_UTIL": true,
         "process.env.WS_NO_UTF_8_VALIDATE": true,
         "process.nextTick": true,
-        "require": true,
         "setImmediate": true,
         "setTimeout": true
       },
@@ -2302,9 +1797,7 @@
     },
     "viem>ws>bufferutil": {
       "globals": {
-        "__dirname": true,
-        "module.exports": "write",
-        "require": true
+        "__dirname": true
       },
       "native": true,
       "packages": {
@@ -2324,16 +1817,12 @@
       "globals": {
         "__non_webpack_require__": true,
         "__webpack_require__": true,
-        "module.exports": "write",
-        "process": true,
-        "require": true
+        "process": true
       }
     },
     "viem>ws>utf-8-validate": {
       "globals": {
-        "__dirname": true,
-        "module.exports": "write",
-        "require": true
+        "__dirname": true
       },
       "native": true,
       "packages": {
@@ -2343,251 +1832,50 @@
     "vitest>acorn": {
       "globals": {
         "console": true,
-        "define": true,
-        "exports": true,
-        "module": true
+        "define": true
       }
     },
     "vitest>acorn-walk": {
       "globals": {
-        "define": true,
-        "exports": true,
-        "module": true
-      }
-    },
-    "vitest>magic-string>@jridgewell/sourcemap-codec": {
-      "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
-        "define": true,
-        "exports": true,
-        "module": true
-      }
-    },
-    "vitest>pathe": {
-      "globals": {
-        "exports": true,
-        "process": true,
-        "require": true
+        "define": true
       }
     },
     "vitest>picocolors": {
-      "globals": {
-        "module.exports": "write",
-        "process": true
-      }
-    },
-    "vitest>vite-node>mlly": {
       "builtin": {
-        "node:assert": true,
-        "node:fs": true,
-        "node:module.builtinModules": true,
-        "node:module.createRequire": true,
-        "node:path": true,
-        "node:process": true,
-        "node:url.URL": true,
-        "node:url.fileURLToPath": true,
-        "node:url.pathToFileURL": true,
-        "node:util.format": true,
-        "node:util.inspect": true,
-        "node:v8": true
+        "tty.isatty": true
       },
       "globals": {
-        "Buffer.from": true,
-        "URL": true,
-        "exports.DYNAMIC_IMPORT_RE": "write",
-        "exports.ESM_STATIC_IMPORT_RE": "write",
-        "exports.EXPORT_DECAL_RE": "write",
-        "exports.EXPORT_DECAL_TYPE_RE": "write",
-        "exports.createCommonJS": "write",
-        "exports.createResolve": "write",
-        "exports.detectSyntax": "write",
-        "exports.evalModule": "write",
-        "exports.fileURLToPath": "write",
-        "exports.findDynamicImports": "write",
-        "exports.findExportNames": "write",
-        "exports.findExports": "write",
-        "exports.findStaticImports": "write",
-        "exports.findTypeExports": "write",
-        "exports.findTypeImports": "write",
-        "exports.getProtocol": "write",
-        "exports.hasCJSSyntax": "write",
-        "exports.hasESMSyntax": "write",
-        "exports.interopDefault": "write",
-        "exports.isNodeBuiltin": "write",
-        "exports.isValidNodeImport": "write",
-        "exports.loadModule": "write",
-        "exports.loadURL": "write",
-        "exports.lookupNodeModuleSubpath": "write",
-        "exports.normalizeid": "write",
-        "exports.parseNodeModulePath": "write",
-        "exports.parseStaticImport": "write",
-        "exports.parseTypeImport": "write",
-        "exports.pathToFileURL": "write",
-        "exports.resolve": "write",
-        "exports.resolveImports": "write",
-        "exports.resolveModuleExportNames": "write",
-        "exports.resolvePath": "write",
-        "exports.resolvePathSync": "write",
-        "exports.resolveSync": "write",
-        "exports.sanitizeFilePath": "write",
-        "exports.sanitizeURIComponent": "write",
-        "exports.toDataURL": "write",
-        "exports.transformModule": "write",
-        "process.cwd": true,
-        "require": true
-      },
-      "packages": {
-        "vitest>acorn": true,
-        "vitest>pathe": true,
-        "vitest>vite-node>mlly>pkg-types": true,
-        "vitest>vite-node>mlly>ufo": true
-      }
-    },
-    "vitest>vite-node>mlly>pkg-types": {
-      "builtin": {
-        "node:fs.promises.readFile": true,
-        "node:fs.promises.writeFile": true,
-        "node:fs.statSync": true
-      },
-      "globals": {
-        "exports.definePackageJSON": "write",
-        "exports.defineTSConfig": "write",
-        "exports.findFarthestFile": "write",
-        "exports.findFile": "write",
-        "exports.findNearestFile": "write",
-        "exports.findWorkspaceDir": "write",
-        "exports.readPackageJSON": "write",
-        "exports.readTSConfig": "write",
-        "exports.resolveLockfile": "write",
-        "exports.resolvePackageJSON": "write",
-        "exports.resolveTSConfig": "write",
-        "exports.writePackageJSON": "write",
-        "exports.writeTSConfig": "write",
-        "process.cwd": true,
-        "require": true
-      },
-      "packages": {
-        "vitest>pathe": true,
-        "vitest>vite-node>mlly": true,
-        "vitest>vite-node>mlly>pkg-types>confbox": true
-      }
-    },
-    "vitest>vite-node>mlly>pkg-types>confbox": {
-      "globals": {
-        "console.warn": true,
-        "exports.getFormat": "write",
-        "exports.parseJSON": "write",
-        "exports.parseJSON5": "write",
-        "exports.parseJSONC": "write",
-        "exports.parseTOML": "write",
-        "exports.parseYAML": "write",
-        "exports.storeFormat": "write",
-        "exports.stringifyJSON": "write",
-        "exports.stringifyJSON5": "write",
-        "exports.stringifyJSONC": "write",
-        "exports.stringifyTOML": "write",
-        "exports.stringifyYAML": "write",
-        "require": true
-      }
-    },
-    "vitest>vite-node>mlly>ufo": {
-      "globals": {
-        "URLSearchParams": true,
-        "exports.$URL": "write",
-        "exports.cleanDoubleSlashes": "write",
-        "exports.createURL": "write",
-        "exports.decode": "write",
-        "exports.decodePath": "write",
-        "exports.decodeQueryKey": "write",
-        "exports.decodeQueryValue": "write",
-        "exports.encode": "write",
-        "exports.encodeHash": "write",
-        "exports.encodeHost": "write",
-        "exports.encodeParam": "write",
-        "exports.encodePath": "write",
-        "exports.encodeQueryItem": "write",
-        "exports.encodeQueryKey": "write",
-        "exports.encodeQueryValue": "write",
-        "exports.getQuery": "write",
-        "exports.hasLeadingSlash": "write",
-        "exports.hasProtocol": "write",
-        "exports.hasTrailingSlash": "write",
-        "exports.isEmptyURL": "write",
-        "exports.isEqual": "write",
-        "exports.isNonEmptyURL": "write",
-        "exports.isRelative": "write",
-        "exports.isSamePath": "write",
-        "exports.isScriptProtocol": "write",
-        "exports.joinRelativeURL": "write",
-        "exports.joinURL": "write",
-        "exports.normalizeURL": "write",
-        "exports.parseAuth": "write",
-        "exports.parseFilename": "write",
-        "exports.parseHost": "write",
-        "exports.parsePath": "write",
-        "exports.parseQuery": "write",
-        "exports.parseURL": "write",
-        "exports.resolveURL": "write",
-        "exports.stringifyParsedURL": "write",
-        "exports.stringifyQuery": "write",
-        "exports.withBase": "write",
-        "exports.withFragment": "write",
-        "exports.withHttp": "write",
-        "exports.withHttps": "write",
-        "exports.withLeadingSlash": "write",
-        "exports.withProtocol": "write",
-        "exports.withQuery": "write",
-        "exports.withTrailingSlash": "write",
-        "exports.withoutBase": "write",
-        "exports.withoutFragment": "write",
-        "exports.withoutHost": "write",
-        "exports.withoutLeadingSlash": "write",
-        "exports.withoutProtocol": "write",
-        "exports.withoutTrailingSlash": "write"
+        "process.argv.includes": true,
+        "process.env": true,
+        "process.platform": true
       }
     },
     "vitest>vite>terser": {
       "globals": {
-        "Buffer": true,
+        "Buffer.from": true,
         "atob": true,
         "btoa": true,
         "console.log": true,
         "console.warn": true,
         "define": true,
-        "exports": true,
-        "module": true,
-        "process": true,
-        "require": true
+        "process": true
       },
       "packages": {
-        "vitest>acorn": true,
-        "vitest>vite>terser>@jridgewell/source-map": true
+        "vitest>vite>terser>@jridgewell/source-map": true,
+        "vitest>vite>terser>acorn": true
       }
     },
     "vitest>vite>terser>@jridgewell/source-map": {
       "globals": {
-        "exports": true,
-        "require": true
-      },
-      "packages": {
-        "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping": true,
-        "webpack>terser-webpack-plugin>@jridgewell/trace-mapping": true
+        "Buffer": true,
+        "TextDecoder": true,
+        "define": true
       }
     },
-    "web-ext>addons-linter>ajv>json-schema-traverse": {
+    "vitest>vite>terser>acorn": {
       "globals": {
-        "module.exports": "write"
-      }
-    },
-    "web-ext>addons-linter>cheerio>cheerio-select>boolbase": {
-      "globals": {
-        "module.exports": "write"
-      }
-    },
-    "web-ext>addons-linter>cheerio>domutils>domelementtype": {
-      "globals": {
-        "exports": true
+        "console": true,
+        "define": true
       }
     },
     "web-ext>source-map-support": {
@@ -2599,15 +1887,7 @@
       "globals": {
         "XMLHttpRequest": true,
         "console.error": true,
-        "exports.getErrorSource": "write",
-        "exports.install": "write",
-        "exports.mapSourcePosition": "write",
-        "exports.resetRetrieveHandlers": "write",
-        "exports.retrieveSourceMap": "write",
-        "exports.wrapCallSite": "write",
-        "module": true,
-        "process": true,
-        "require": true
+        "process": true
       },
       "packages": {
         "web-ext>source-map-support>buffer-from": true,
@@ -2616,40 +1896,7 @@
     },
     "web-ext>source-map-support>buffer-from": {
       "globals": {
-        "Buffer": true,
-        "module.exports": "write"
-      }
-    },
-    "web-ext>source-map-support>source-map": {
-      "globals": {
-        "exports.ArraySet": "write",
-        "exports.BasicSourceMapConsumer": "write",
-        "exports.GREATEST_LOWER_BOUND": "write",
-        "exports.IndexedSourceMapConsumer": "write",
-        "exports.LEAST_UPPER_BOUND": "write",
-        "exports.MappingList": "write",
-        "exports.SourceMapConsumer": "write",
-        "exports.SourceMapGenerator": "write",
-        "exports.SourceNode": "write",
-        "exports.compareByGeneratedPositionsDeflated": "write",
-        "exports.compareByGeneratedPositionsInflated": "write",
-        "exports.compareByOriginalPositions": "write",
-        "exports.computeSourceURL": "write",
-        "exports.decode": "write",
-        "exports.encode": "write",
-        "exports.fromSetString": "write",
-        "exports.getArg": "write",
-        "exports.isAbsolute": "write",
-        "exports.join": "write",
-        "exports.normalize": "write",
-        "exports.parseSourceMapInput": "write",
-        "exports.quickSort": "write",
-        "exports.relative": "write",
-        "exports.search": "write",
-        "exports.toSetString": "write",
-        "exports.urlGenerate": "write",
-        "exports.urlParse": "write",
-        "require": true
+        "Buffer": true
       }
     },
     "webpack": {
@@ -2722,12 +1969,6 @@
         "console.profile": true,
         "console.profileEnd": true,
         "console.warn": true,
-        "exports.constructor": true,
-        "exports.parseVersionRuntimeCode": "write",
-        "exports.rangeToStringRuntimeCode": "write",
-        "exports.satisfyRuntimeCode": "write",
-        "exports.versionLtRuntimeCode": "write",
-        "module.exports": "write",
         "process.cwd": true,
         "process.env": true,
         "process.hrtime": true,
@@ -2735,7 +1976,6 @@
         "process.stderr": true,
         "process.versions.modules": true,
         "process.versions.pnp": true,
-        "require": true,
         "setImmediate": true,
         "setTimeout": true
       },
@@ -2746,10 +1986,10 @@
         "html-webpack-plugin": true,
         "mini-css-extract-plugin": true,
         "ts-loader": true,
-        "vitest>acorn": true,
         "webpack>@webassemblyjs/ast": true,
         "webpack>@webassemblyjs/wasm-edit": true,
         "webpack>@webassemblyjs/wasm-parser": true,
+        "webpack>acorn": true,
         "webpack>acorn-import-attributes": true,
         "webpack>browserslist": true,
         "webpack>chrome-trace-event": true,
@@ -2790,18 +2030,15 @@
         "Buffer.byteLength": true,
         "__dirname": true,
         "console": true,
-        "exports": true,
-        "module.exports": "write",
         "process.cwd": true,
         "process.env.npm_package_name": true,
-        "require": true,
         "setImmediate": true
       },
       "packages": {
         "lodash": true,
         "viem>ws": true,
-        "vitest>acorn": true,
         "vitest>acorn-walk": true,
+        "webpack-bundle-analyzer>acorn": true,
         "webpack-bundle-analyzer>chalk": true,
         "webpack-bundle-analyzer>gzip-size": true,
         "webpack-bundle-analyzer>opener": true,
@@ -2809,21 +2046,19 @@
         "webpack-cli>@discoveryjs/json-ext": true
       }
     },
-    "webpack-bundle-analyzer>chalk": {
+    "webpack-bundle-analyzer>acorn": {
       "globals": {
-        "module.exports": "write",
-        "require": true
-      },
+        "console": true,
+        "define": true
+      }
+    },
+    "webpack-bundle-analyzer>chalk": {
       "packages": {
         "supports-color": true,
         "webpack-bundle-analyzer>chalk>ansi-styles": true
       }
     },
     "webpack-bundle-analyzer>chalk>ansi-styles": {
-      "globals": {
-        "module": true,
-        "require": true
-      },
       "packages": {
         "msw>chalk>ansi-styles>color-convert": true
       }
@@ -2838,10 +2073,6 @@
         "zlib.gzip": true,
         "zlib.gzipSync": true
       },
-      "globals": {
-        "module.exports": "write",
-        "require": true
-      },
       "packages": {
         "audit-ci>event-stream>duplexer": true
       }
@@ -2852,9 +2083,7 @@
         "os.release": true
       },
       "globals": {
-        "module.exports": "write",
-        "process.platform": true,
-        "require": true
+        "process.platform": true
       }
     },
     "webpack-bundle-analyzer>sirv": {
@@ -2866,10 +2095,6 @@
         "path.normalize": true,
         "path.resolve": true
       },
-      "globals": {
-        "module.exports": "write",
-        "require": true
-      },
       "packages": {
         "webpack-bundle-analyzer>sirv>@polka/url": true,
         "webpack-bundle-analyzer>sirv>mrmime": true,
@@ -2879,16 +2104,6 @@
     "webpack-bundle-analyzer>sirv>@polka/url": {
       "builtin": {
         "querystring.parse": true
-      },
-      "globals": {
-        "exports.parse": "write",
-        "require": true
-      }
-    },
-    "webpack-bundle-analyzer>sirv>mrmime": {
-      "globals": {
-        "exports.lookup": "write",
-        "exports.mimes": "write"
       }
     },
     "webpack-bundle-analyzer>sirv>totalist": {
@@ -2897,27 +2112,17 @@
         "fs.statSync": true,
         "path.join": true,
         "path.resolve": true
-      },
-      "globals": {
-        "module.exports": "write",
-        "require": true
       }
     },
     "webpack-cli>@discoveryjs/json-ext": {
       "builtin": {
         "stream.Readable": true,
         "util.TextDecoder": true
-      },
-      "globals": {
-        "module.exports": "write",
-        "require": true
       }
     },
     "webpack>@webassemblyjs/ast": {
       "globals": {
-        "console.warn": true,
-        "exports": true,
-        "require": true
+        "console.warn": true
       },
       "packages": {
         "webpack>@webassemblyjs/ast>@webassemblyjs/helper-numbers": true,
@@ -2925,39 +2130,19 @@
       }
     },
     "webpack>@webassemblyjs/ast>@webassemblyjs/helper-numbers": {
-      "globals": {
-        "exports": true,
-        "require": true
-      },
       "packages": {
         "webpack>@webassemblyjs/ast>@webassemblyjs/helper-numbers>@webassemblyjs/floating-point-hex-parser": true,
         "webpack>@webassemblyjs/ast>@webassemblyjs/helper-numbers>@xtuc/long": true,
         "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/helper-api-error": true
       }
     },
-    "webpack>@webassemblyjs/ast>@webassemblyjs/helper-numbers>@webassemblyjs/floating-point-hex-parser": {
-      "globals": {
-        "exports": true
-      }
-    },
     "webpack>@webassemblyjs/ast>@webassemblyjs/helper-numbers>@xtuc/long": {
       "globals": {
         "WebAssembly.Instance": true,
-        "WebAssembly.Module": true,
-        "module.exports": "write"
-      }
-    },
-    "webpack>@webassemblyjs/ast>@webassemblyjs/helper-wasm-bytecode": {
-      "globals": {
-        "exports": true,
-        "require": true
+        "WebAssembly.Module": true
       }
     },
     "webpack>@webassemblyjs/wasm-edit": {
-      "globals": {
-        "exports": true,
-        "require": true
-      },
       "packages": {
         "webpack>@webassemblyjs/ast": true,
         "webpack>@webassemblyjs/ast>@webassemblyjs/helper-wasm-bytecode": true,
@@ -2968,16 +2153,7 @@
         "webpack>@webassemblyjs/wasm-parser": true
       }
     },
-    "webpack>@webassemblyjs/wasm-edit>@webassemblyjs/helper-buffer": {
-      "globals": {
-        "exports": true
-      }
-    },
     "webpack>@webassemblyjs/wasm-edit>@webassemblyjs/helper-wasm-section": {
-      "globals": {
-        "exports": true,
-        "require": true
-      },
       "packages": {
         "webpack>@webassemblyjs/ast": true,
         "webpack>@webassemblyjs/ast>@webassemblyjs/helper-wasm-bytecode": true,
@@ -2986,10 +2162,6 @@
       }
     },
     "webpack>@webassemblyjs/wasm-edit>@webassemblyjs/wasm-gen": {
-      "globals": {
-        "exports": true,
-        "require": true
-      },
       "packages": {
         "webpack>@webassemblyjs/ast>@webassemblyjs/helper-wasm-bytecode": true,
         "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/ieee754": true,
@@ -2998,10 +2170,6 @@
       }
     },
     "webpack>@webassemblyjs/wasm-edit>@webassemblyjs/wasm-opt": {
-      "globals": {
-        "exports": true,
-        "require": true
-      },
       "packages": {
         "webpack>@webassemblyjs/ast": true,
         "webpack>@webassemblyjs/wasm-edit>@webassemblyjs/helper-buffer": true,
@@ -3012,9 +2180,7 @@
     "webpack>@webassemblyjs/wasm-parser": {
       "globals": {
         "console.log": true,
-        "console.warn": true,
-        "exports": true,
-        "require": true
+        "console.warn": true
       },
       "packages": {
         "webpack>@webassemblyjs/ast": true,
@@ -3025,47 +2191,31 @@
         "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/utf8": true
       }
     },
-    "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/helper-api-error": {
-      "globals": {
-        "exports": true
-      }
-    },
     "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/ieee754": {
       "globals": {
-        "exports": true,
-        "require": true
+        "Buffer.from": true
       },
       "packages": {
         "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/ieee754>@xtuc/ieee754": true
       }
     },
-    "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/ieee754>@xtuc/ieee754": {
-      "globals": {
-        "exports": true
-      }
-    },
     "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/leb128": {
       "globals": {
-        "exports": true,
-        "require": true
+        "Buffer": true
       },
       "packages": {
         "webpack>@webassemblyjs/ast>@webassemblyjs/helper-numbers>@xtuc/long": true
       }
     },
-    "webpack>@webassemblyjs/wasm-parser>@webassemblyjs/utf8": {
+    "webpack>acorn": {
       "globals": {
-        "exports": true,
-        "require": true
+        "console": true,
+        "define": true
       }
     },
     "webpack>acorn-import-attributes": {
-      "globals": {
-        "exports": true,
-        "require": true
-      },
       "packages": {
-        "vitest>acorn": true
+        "webpack>acorn": true
       }
     },
     "webpack>browserslist": {
@@ -3081,10 +2231,8 @@
       },
       "globals": {
         "console.warn": true,
-        "module.exports": "write",
         "process.env": true,
-        "process.versions.node": true,
-        "require": true
+        "process.versions.node": true
       },
       "packages": {
         "webpack>browserslist>caniuse-lite": true,
@@ -3092,26 +2240,13 @@
         "webpack>browserslist>node-releases": true
       }
     },
-    "webpack>browserslist>caniuse-lite": {
-      "globals": {
-        "module.exports": "write",
-        "require": true
-      }
-    },
-    "webpack>browserslist>electron-to-chromium": {
-      "globals": {
-        "module.exports": "write"
-      }
-    },
     "webpack>chrome-trace-event": {
       "builtin": {
         "stream.Readable": true
       },
       "globals": {
-        "exports": true,
         "process.hrtime": true,
-        "process.pid": true,
-        "require": true
+        "process.pid": true
       }
     },
     "webpack>enhanced-resolve": {
@@ -3127,24 +2262,28 @@
         "Buffer.isBuffer": true,
         "URL": true,
         "clearTimeout": true,
-        "exports.PathType": "write",
-        "exports.cachedJoin": "write",
-        "exports.cdUp": "write",
-        "exports.createResolver": "write",
-        "exports.deprecatedInvalidSegmentRegEx": "write",
-        "exports.getField": "write",
-        "exports.getType": "write",
-        "exports.invalidSegmentRegEx": "write",
-        "exports.join": "write",
-        "exports.loadDescriptionFile": "write",
-        "exports.normalize": "write",
-        "module.exports": "write",
-        "require": true,
         "setTimeout": true
       },
       "packages": {
-        "webpack>graceful-fs": true,
+        "webpack>enhanced-resolve>graceful-fs": true,
         "webpack>tapable": true
+      }
+    },
+    "webpack>enhanced-resolve>graceful-fs": {
+      "builtin": {
+        "assert.equal": true,
+        "constants.O_SYMLINK": true,
+        "constants.O_WRONLY": true,
+        "constants.hasOwnProperty": true,
+        "fs": true,
+        "stream.Stream.call": true,
+        "util": true
+      },
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "process": true,
+        "setTimeout": true
       }
     },
     "webpack>es-module-lexer": {
@@ -3152,34 +2291,16 @@
         "Buffer": true,
         "WebAssembly.compile": true,
         "WebAssembly.instantiate": true,
-        "atob": true,
-        "exports.ImportType": "write",
-        "exports.init": "write",
-        "exports.parse": "write"
+        "atob": true
       }
     },
     "webpack>eslint-scope": {
       "builtin": {
         "assert": true
       },
-      "globals": {
-        "module.exports": "write",
-        "require": true
-      },
       "packages": {
         "eslint>eslint-scope>esrecurse": true,
         "webpack>eslint-scope>estraverse": true
-      }
-    },
-    "webpack>eslint-scope>estraverse": {
-      "globals": {
-        "exports": true,
-        "require": true
-      }
-    },
-    "webpack>glob-to-regexp": {
-      "globals": {
-        "module.exports": "write"
       }
     },
     "webpack>graceful-fs": {
@@ -3195,16 +2316,13 @@
       "globals": {
         "clearTimeout": true,
         "console.error": true,
-        "module.exports": "write",
         "process": true,
-        "require": true,
         "setTimeout": true
       }
     },
     "webpack>json-parse-even-better-errors": {
       "globals": {
-        "Buffer.isBuffer": true,
-        "module.exports": "write"
+        "Buffer.isBuffer": true
       }
     },
     "webpack>loader-runner": {
@@ -3216,11 +2334,7 @@
         "Buffer.from": true,
         "Buffer.isBuffer": true,
         "console.error": true,
-        "exports.getContext": "write",
-        "exports.runLoaders": "write",
-        "module.exports": "write",
         "process.nextTick": true,
-        "require": true,
         "setImmediate": true
       },
       "packages": {
@@ -3236,24 +2350,8 @@
       "builtin": {
         "path.extname": true
       },
-      "globals": {
-        "exports.charset": "write",
-        "exports.charsets": "write",
-        "exports.contentType": "write",
-        "exports.extension": "write",
-        "exports.extensions": "write",
-        "exports.lookup": "write",
-        "exports.types": "write",
-        "require": true
-      },
       "packages": {
         "webpack>mime-types>mime-db": true
-      }
-    },
-    "webpack>mime-types>mime-db": {
-      "globals": {
-        "module.exports": "write",
-        "require": true
       }
     },
     "webpack>neo-async": {
@@ -3261,8 +2359,6 @@
         "clearTimeout": true,
         "console": true,
         "define": true,
-        "exports": true,
-        "module": true,
         "process": true,
         "setImmediate": true,
         "setTimeout": true
@@ -3270,10 +2366,7 @@
     },
     "webpack>schema-utils": {
       "globals": {
-        "exports": true,
-        "module.exports": "write",
-        "process": true,
-        "require": true
+        "process": true
       },
       "packages": {
         "eslint>ajv": true,
@@ -3284,31 +2377,12 @@
       "globals": {
         "Buffer": true,
         "console.error": true,
-        "console.warn": true,
-        "module.exports": "write",
-        "require": true
+        "console.warn": true
       }
     },
     "webpack>tapable": {
       "builtin": {
         "util.deprecate": true
-      },
-      "globals": {
-        "exports.AsyncParallelBailHook": "write",
-        "exports.AsyncParallelHook": "write",
-        "exports.AsyncSeriesBailHook": "write",
-        "exports.AsyncSeriesHook": "write",
-        "exports.AsyncSeriesLoopHook": "write",
-        "exports.AsyncSeriesWaterfallHook": "write",
-        "exports.HookMap": "write",
-        "exports.MultiHook": "write",
-        "exports.SyncBailHook": "write",
-        "exports.SyncHook": "write",
-        "exports.SyncLoopHook": "write",
-        "exports.SyncWaterfallHook": "write",
-        "exports.__esModule": "write",
-        "module.exports": "write",
-        "require": true
       }
     },
     "webpack>terser-webpack-plugin": {
@@ -3321,38 +2395,37 @@
         "Buffer.isBuffer": true,
         "__dirname": true,
         "__filename": true,
-        "exports": true,
-        "module": true,
         "process.stderr.write": true,
-        "process.stdout.write": true,
-        "require": true
+        "process.stdout.write": true
       },
       "packages": {
-        "copy-webpack-plugin>serialize-javascript": true,
         "esbuild": true,
-        "vitest>vite>terser": true,
-        "webpack>schema-utils": true,
+        "file-loader>schema-utils": true,
         "webpack>terser-webpack-plugin>@jridgewell/trace-mapping": true,
-        "webpack>terser-webpack-plugin>jest-worker": true
+        "webpack>terser-webpack-plugin>jest-worker": true,
+        "webpack>terser-webpack-plugin>serialize-javascript": true,
+        "webpack>terser-webpack-plugin>terser": true
       }
     },
     "webpack>terser-webpack-plugin>@jridgewell/trace-mapping": {
       "globals": {
-        "define": true,
-        "exports": true,
-        "module": true,
-        "require": true
+        "define": true
       },
       "packages": {
-        "vitest>magic-string>@jridgewell/sourcemap-codec": true,
-        "webpack>terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true
+        "webpack>terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
+        "webpack>terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
       }
     },
     "webpack>terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
       "globals": {
-        "define": true,
-        "exports": true,
-        "module": true
+        "define": true
+      }
+    },
+    "webpack>terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "define": true
       }
     },
     "webpack>terser-webpack-plugin>jest-worker": {
@@ -3366,15 +2439,43 @@
       "globals": {
         "__dirname": true,
         "clearTimeout": true,
-        "exports": true,
         "process": true,
-        "require": true,
         "setTimeout": true
       },
       "packages": {
         "lint-staged>execa>merge-stream": true,
         "supports-color": true,
         "webpack>terser-webpack-plugin": true
+      }
+    },
+    "webpack>terser-webpack-plugin>serialize-javascript": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "browserify>crypto-browserify>randombytes": true
+      }
+    },
+    "webpack>terser-webpack-plugin>terser": {
+      "globals": {
+        "Buffer": true,
+        "atob": true,
+        "btoa": true,
+        "console.log": true,
+        "console.warn": true,
+        "define": true,
+        "process": true
+      },
+      "packages": {
+        "vitest>acorn": true,
+        "webpack>terser-webpack-plugin>terser>@jridgewell/source-map": true
+      }
+    },
+    "webpack>terser-webpack-plugin>terser>@jridgewell/source-map": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "define": true
       }
     },
     "webpack>watchpack": {
@@ -3391,22 +2492,34 @@
       "globals": {
         "clearTimeout": true,
         "console.error": true,
-        "exports.batch": "write",
-        "exports.getNumberOfWatchers": "write",
-        "exports.watch": "write",
-        "module.exports": "write",
         "process.env.WATCHPACK_POLLING": true,
         "process.env.WATCHPACK_RECURSIVE_WATCHER_LOGGING": true,
         "process.env.WATCHPACK_WATCHER_LIMIT": true,
         "process.nextTick": true,
         "process.platform": true,
         "process.stderr.write": true,
-        "require": true,
         "setTimeout": true
       },
       "packages": {
         "webpack>glob-to-regexp": true,
-        "webpack>graceful-fs": true
+        "webpack>watchpack>graceful-fs": true
+      }
+    },
+    "webpack>watchpack>graceful-fs": {
+      "builtin": {
+        "assert.equal": true,
+        "constants.O_SYMLINK": true,
+        "constants.O_WRONLY": true,
+        "constants.hasOwnProperty": true,
+        "fs": true,
+        "stream.Stream.call": true,
+        "util": true
+      },
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "process": true,
+        "setTimeout": true
       }
     },
     "webpack>webpack-sources": {
@@ -3415,10 +2528,7 @@
         "Buffer.concat": true,
         "Buffer.from": true,
         "Buffer.isBuffer": true,
-        "exports": true,
-        "module.exports": "write",
-        "process": true,
-        "require": true
+        "process": true
       }
     }
   }

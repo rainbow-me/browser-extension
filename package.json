@@ -337,7 +337,7 @@
       "wagmi>@wagmi/connectors>@coinbase/wallet-sdk>keccak": false,
       "wagmi>@wagmi/connectors>@metamask/sdk>eciesjs>secp256k1": false,
       "@vanilla-extract/vite-plugin>vite>esbuild": false,
-      "wagmi>@wagmi/connectors>@walletconnect/ethereum-provider>@walletconnect/types>@walletconnect/keyvaluestorage>unstorage>listhen>@parcel/watcher": false
+      "wagmi>@wagmi/connectors>@walletconnect/ethereum-provider>@walletconnect/types>@walletconnect/keyvaluestorage>unstorage>listhen>@parcel/watcher": false,
       "@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>@solana": false,
       "@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>@solana/web3.js>bigint-buffer": false,
       "@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>@solana/web3.js>rpc-websockets>bufferutil": false,
