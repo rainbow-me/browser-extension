@@ -41,7 +41,7 @@ jobs:
 #     - name: Zip it
 #       run: yarn firefox:zip
 #     - name: Submit to the firefox addons store
-#       uses: PlasmoHQ/bpp@v3.5.0
+#       uses: PlasmoHQ/bpp@v3.6.1
 #       with:
 #         artifact: ./rainbowbx.xpi
 #         keys: ${{ secrets.BPP_KEYS_PROD_FIREFOX }}

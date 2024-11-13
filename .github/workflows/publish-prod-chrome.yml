@@ -41,7 +41,7 @@ jobs:
       - name: Zip it
         run: yarn zip
       - name: Submit to the chrome webstore
-        uses: PlasmoHQ/bpp@v3.5.0
+        uses: PlasmoHQ/bpp@v3.6.1
         with:
           artifact: ./rainbowbx.zip
           keys: ${{ secrets.BPP_KEYS_PROD }}
