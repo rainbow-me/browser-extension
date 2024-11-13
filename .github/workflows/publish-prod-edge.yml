@@ -1,0 +1,61 @@
+
+name: Publish to Edge (Prod)
+
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    concurrency: 
+      group: ${{ github.workflow }}-${{ github.ref }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.REPO_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20.16.0"
+          cache: 'yarn'
+      - name: Install deps via Yarn
+        run: yarn setup
+      - uses: actions/checkout@v4
+        with:
+          repository: 'rainbow-me/browser-extension-env'
+          token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+          path: tmp
+      - name: Copy dotenv
+        run: cat tmp/dotenv >> .env && rm -rf tmp
+      - name: Fetch the current version number
+        run: echo "release_version=$(cat package.json | jq -r .version)" >> $GITHUB_ENV
+      - name: Build the extension ready for the Chrome Webstore
+        run: yarn build:webpack
+      - name: Update the manifest
+        run: yarn update-manifest prod
+      - name: Archive the build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rainbowbx-edge-v${{ env.release_version }}
+          path: build/
+      - name: Zip it
+        run: yarn zip
+      - name: Submit to the edge add-on store
+        uses: PlasmoHQ/bpp@v3.6.1
+        with:
+          artifact: ./rainbowbx.zip
+          keys: ${{ secrets.BPP_KEYS_PROD_EDGE }}
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        with:
+          environment: production
+          finalize: true
+          sourcemaps: ./build
+          version: ${{ env.release_version }}
+          url_prefix: 'chrome-extension://opfgelmcmbiajamepnmloijbpoleiama'
+
+          
