@@ -6,6 +6,9 @@
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
     "devmode:off": "sed -i'' -e 's/IS_DEV.*/IS_DEV=false/g' .env",
+    "//enable test mode": "",
+    "testmode:on": "sed -i'' -e 's/IS_TESTING.*/IS_TESTING=true/g' .env",
+    "testmode:off": "sed -i'' -e 's/IS_TESTING.*/IS_TESTING=false/g' .env",
     "// Bumps the pkg.json version": "",
     "bump": "node scripts/bump.js",
     "// Updates the manifest with the settings of a specific target": "",
@@ -158,7 +161,7 @@
     "react-switch": "7.0.0",
     "socket.io-client": "4.5.3",
     "validator": "13.9.0",
-    "viem": "2.21.0",
+    "viem": "2.21.45",
     "wagmi": "2.8.1",
     "word-wrap": "1.2.4",
     "zustand": "4.1.5"

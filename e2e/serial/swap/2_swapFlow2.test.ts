@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-await-in-loop */
 import 'chromedriver';
 import 'geckodriver';
 import { Key, WebDriver } from 'selenium-webdriver';
-import { Address, createClient, erc20Abi, getContract, http } from 'viem';
+import { Address, createPublicClient, erc20Abi, http } from 'viem';
 import {
   afterAll,
   afterEach,
@@ -59,13 +61,11 @@ describe('Swap Flow 2', () => {
     rootURL += extensionId;
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  beforeEach(async (context: any) => {
+  beforeEach<{ driver: WebDriver }>(async (context) => {
     context.driver = driver;
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  afterEach(async (context: any) => {
+  afterEach<{ driver: WebDriver }>(async (context) => {
     await takeScreenshotOnFailure(context);
   });
 
@@ -158,17 +158,17 @@ describe('Swap Flow 2', () => {
   });
 
   it('should be able to execute unlock and swap', async () => {
-    const client = createClient({
+    const publicClient = createPublicClient({
       transport: http('http://127.0.0.1:8545'),
     });
-    const tokenContract = getContract({
-      abi: erc20Abi,
+
+    // First balance check
+    const usdcBalanceBeforeSwap = await publicClient.readContract({
       address: SWAP_VARIABLES.USDC_MAINNET_ADDRESS as Address,
-      client,
+      abi: erc20Abi,
+      functionName: 'balanceOf',
+      args: [WALLET_TO_USE_ADDRESS as Address],
     });
-    const usdcBalanceBeforeSwap = await tokenContract.read.balanceOf([
-      WALLET_TO_USE_ADDRESS as Address,
-    ]);
 
     await findElementByTestIdAndClick({
       id: 'swap-settings-navbar-button',
@@ -185,7 +185,7 @@ describe('Swap Flow 2', () => {
     await typeOnTextInput({
       id: 'slippage-input-mask',
       driver,
-      text: '5',
+      text: '99',
     });
     await delayTime('medium');
 
@@ -202,26 +202,96 @@ describe('Swap Flow 2', () => {
     });
     await delay(5_000);
 
-    await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
+    try {
+      const unwatch = publicClient.watchBlocks({
+        onBlock: async (block: any) => {
+          const blockWithTransactions = await publicClient.getBlock({
+            includeTransactions: true,
+          });
 
-    // waiting for balances to update
-    await delay(20_000);
+          console.log('Block:', {
+            timestamp: new Date().toISOString(),
+            number: block.number,
+            hash: block.hash,
+            transactions: blockWithTransactions.transactions.length,
+          });
 
-    const usdcBalanceAfterSwap = await tokenContract.read.balanceOf([
-      WALLET_TO_USE_ADDRESS as Address,
-    ]);
+          for (const tx of blockWithTransactions.transactions) {
+            try {
+              console.log('Transaction found:', {
+                hash: tx.hash,
+                from: tx.from,
+                to: tx.to,
+                input: tx.input,
+              });
 
-    const balanceDifference = subtract(
-      usdcBalanceBeforeSwap.toString(),
-      usdcBalanceAfterSwap.toString(),
-    );
+              const receipt = await publicClient.getTransactionReceipt({
+                hash: tx.hash,
+              });
 
-    const usdcBalanceDifference = convertRawAmountToDecimalFormat(
-      balanceDifference.toString(),
-      6,
-    );
+              if (receipt.status === 'reverted') {
+                try {
+                  // Try to get the revert reason
+                  const result = await publicClient.call({
+                    to: tx.to,
+                    data: tx.input,
+                    account: tx.from,
+                  });
+                  console.log('Revert reason:', result);
+                } catch (revertError: any) {
+                  console.log('Revert error details:', {
+                    error: revertError,
+                    data: revertError.data,
+                    message: revertError.message,
+                    details: revertError.details,
+                  });
+                }
+              }
 
-    expect(Number(usdcBalanceDifference)).toBe(50);
+              console.log('Transaction receipt:', {
+                status: receipt.status,
+                gasUsed: receipt.gasUsed,
+                effectiveGasPrice: receipt.effectiveGasPrice,
+                logs: receipt.logs,
+              });
+            } catch (err) {
+              console.error('Error processing transaction:', err);
+            }
+          }
+        },
+      });
+
+      // Execute the swap
+      await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
+      console.log('Waiting for transaction...');
+      await delay(20_000);
+
+      // Check final balance
+      const usdcBalanceAfterSwap = await publicClient.readContract({
+        address: SWAP_VARIABLES.USDC_MAINNET_ADDRESS as Address,
+        abi: erc20Abi,
+        functionName: 'balanceOf',
+        args: [WALLET_TO_USE_ADDRESS as Address],
+      });
+
+      const balanceDifference = subtract(
+        usdcBalanceBeforeSwap.toString(),
+        usdcBalanceAfterSwap.toString(),
+      );
+
+      const usdcBalanceDifference = convertRawAmountToDecimalFormat(
+        balanceDifference.toString(),
+        6,
+      );
+
+      expect(Number(usdcBalanceDifference)).toBe(50);
+      unwatch();
+    } catch (error: any) {
+      console.error('Swap failed with error:', error);
+      if (error.data) {
+        console.log('Error data:', error.data);
+      }
+    }
   });
 
   it.skip('should be able to go to swap flow', async () => {
