@@ -679,10 +679,21 @@ it('should be able to filter assets to buy by network', async () => {
     text: 'uni',
   });
   await delayTime('medium');
-  await findElementByTestIdAndClick({
-    id: `${SWAP_VARIABLES.UNI_BNB_ID}-verified-token-to-buy-row`,
-    driver,
-  });
+
+  // this token is occassionally included in 'popular in rainbow.'
+  // tokens are only set to appear in one section at a time, so if
+  // it is in that section, the test will fail without this try / catch.
+  try {
+    await findElementByTestIdAndClick({
+      id: `${SWAP_VARIABLES.UNI_BNB_ID}-verified-token-to-buy-row`,
+      driver,
+    });
+  } catch {
+    await findElementByTestIdAndClick({
+      id: `${SWAP_VARIABLES.UNI_BNB_ID}-popular-token-to-buy-row-active-element-item`,
+      driver,
+    });
+  }
   await findElementByTestIdAndClick({
     id: `token-to-buy-token-input-remove`,
     driver,

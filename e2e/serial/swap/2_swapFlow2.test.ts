@@ -185,7 +185,7 @@ describe('Swap Flow 2', () => {
     await typeOnTextInput({
       id: 'slippage-input-mask',
       driver,
-      text: '99',
+      text: '5',
     });
     await delayTime('medium');
 
