@@ -65,7 +65,8 @@ export const RequestAccounts = ({
       });
       analytics.track(event.dappPromptConnectApproved, {
         chainId: selectedChainId,
-        dappURL: dappMetadata?.appHost || '',
+        dappURL: dappMetadata?.url || '',
+        dappDomain: dappMetadata?.appHost || '',
         dappName: dappMetadata?.appName,
       });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -80,6 +81,7 @@ export const RequestAccounts = ({
     selectedWallet,
     selectedChainId,
     addSession,
+    dappMetadata?.url,
     dappMetadata?.appHost,
     dappMetadata?.appHostName,
     dappMetadata?.appName,
@@ -90,10 +92,12 @@ export const RequestAccounts = ({
     rejectRequest();
     analytics.track(event.dappPromptConnectRejected, {
       chainId: selectedChainId,
-      dappURL: dappMetadata?.appHost || '',
+      dappURL: dappMetadata?.url || '',
+      dappDomain: dappMetadata?.appHost || '',
       dappName: dappMetadata?.appName,
     });
   }, [
+    dappMetadata?.url,
     dappMetadata?.appHost,
     dappMetadata?.appName,
     rejectRequest,

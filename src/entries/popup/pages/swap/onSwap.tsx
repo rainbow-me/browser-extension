@@ -4,6 +4,7 @@ import {
   QuoteError,
   configureSDK,
 } from '@rainbow-me/swaps';
+import { Address } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -15,12 +16,13 @@ import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSwapAssetsToRefreshStore } from '~/core/state/swapAssetsToRefresh';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { KeychainType } from '~/core/types/keychainTypes';
 import { isSameAssetInDiffChains } from '~/core/utils/assets';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import playSound from '~/entries/popup/utils/playSound';
 import { RainbowError, logger } from '~/logger';
 
-import * as wallet from '../../handlers/wallet';
+import { executeRap, getWallet } from '../../handlers/wallet';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
@@ -52,8 +54,11 @@ export const onSwap = async ({
   const isConnectedToHardhat =
     useConnectedToHardhatStore.getState().connectedToHardhat;
   const chainId = isConnectedToHardhat ? ChainId.hardhat : assetToSell.chainId;
+  const isBridge = isSameAssetInDiffChains(assetToSell, assetToBuy);
 
-  const { errorMessage, nonce } = await wallet.executeRap<typeof type>({
+  const wallet = getWallet(q.from as Address);
+
+  const { errorMessage, nonce } = await executeRap<typeof type>({
     rapActionParameters: {
       sellAmount: q.sellAmount?.toString(),
       buyAmount: q.buyAmount?.toString(),
@@ -85,8 +90,6 @@ export const onSwap = async ({
     .getState()
     .setSwapAssetsToRefresh({ nonce, assetToBuy, assetToSell });
 
-  const isBridge = isSameAssetInDiffChains(assetToSell, assetToBuy);
-
   analytics.track(isBridge ? event.bridgeSubmitted : event.swapSubmitted, {
     inputAssetSymbol: assetToSell.symbol,
     inputAssetName: assetToSell.name,
@@ -104,6 +107,7 @@ export const onSwap = async ({
     tradeAmountUSD: q.tradeAmountUSD,
     crosschain: assetToSell.chainId !== assetToBuy.chainId,
     degenMode,
+    hardwareWallet: (await wallet).type === KeychainType.HardwareWalletKeychain,
   });
 
   playSound('SendSound');

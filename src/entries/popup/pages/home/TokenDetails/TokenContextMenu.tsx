@@ -1,5 +1,7 @@
 import { ReactNode, useCallback } from 'react';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -74,6 +76,9 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
     if (allowSwap) {
       isNavigating = true;
       navigateToSwaps();
+      analytics.track(event.swapOpened, {
+        entryPoint: 'token_context_menu',
+      });
     } else {
       triggerAlert({ text: i18n.t('alert.coming_soon') });
       setSelectedToken(); // clear selected token

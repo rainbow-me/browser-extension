@@ -56,7 +56,6 @@ test('[rap/swap] :: should execute swap', async () => {
     },
     quote: quote as Quote,
     wallet,
-    permit: false,
   });
 
   expect(swapTx?.hash).toBeDefined();

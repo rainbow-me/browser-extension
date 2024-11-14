@@ -10,6 +10,7 @@ import { REFERRER, ReferrerType } from '~/core/references';
 import { getChainGasUnits } from '~/core/references/chains';
 import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
+import { isSameAssetInDiffChains } from '~/core/utils/assets';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import { RainbowError, logger } from '~/logger';
@@ -173,6 +174,11 @@ export const crosschainSwap = async ({
   if (!swap)
     throw new RainbowError('crosschainSwap: error executeCrosschainSwap');
 
+  const isBridge = isSameAssetInDiffChains(
+    parameters.assetToBuy,
+    parameters.assetToSell,
+  );
+
   const transaction = {
     data: parameters.quote.data,
     value: parameters.quote.value?.toString(),
@@ -195,7 +201,7 @@ export const crosschainSwap = async ({
     chainId: parameters.chainId,
     nonce: swap.nonce,
     status: 'pending',
-    type: 'swap',
+    type: isBridge ? 'bridge' : 'swap',
     flashbots: parameters.flashbots,
     ...gasParams,
   } satisfies NewTransaction;

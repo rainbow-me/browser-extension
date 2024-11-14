@@ -132,7 +132,6 @@ export const createUnlockAndSwapRap = async (
   const swap = createNewAction('swap', {
     chainId,
     sellAmount,
-    permit: swapAssetNeedsUnlocking,
     requiresApprove: swapAssetNeedsUnlocking,
     quote,
     meta: swapParameters.meta,
