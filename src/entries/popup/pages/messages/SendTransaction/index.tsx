@@ -17,6 +17,7 @@ import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { chainIdToUse } from '~/core/utils/chains';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
+import { isLowerCaseMatch } from '~/core/utils/strings';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Bleed, Box, Separator, Stack } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
@@ -61,7 +62,7 @@ export function SendTransaction({
   const { connectedToHardhat, connectedToHardhatOp } =
     useConnectedToHardhatStore();
   const { asset, selectAssetAddressAndChain } = useSendAsset();
-  const { watchedWallets } = useWallets();
+  const { allWallets, watchedWallets } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
 
   const { flashbotsEnabled } = useFlashbotsEnabledStore();
@@ -182,6 +183,13 @@ export function SendTransaction({
     return selectedWallet && watchedAddresses?.includes(selectedWallet);
   }, [selectedWallet, watchedWallets]);
 
+  const isSigningWithDevice = useMemo(() => {
+    const signingWithDevice =
+      allWallets.find((w) => isLowerCaseMatch(w.address, selectedWallet))
+        ?.type === 'HardwareWalletKeychain';
+    return signingWithDevice;
+  }, [allWallets, selectedWallet]);
+
   useEffect(() => {
     if (!featureFlags.full_watching_wallets && isWatchingWallet) {
       triggerAlert({
@@ -243,6 +251,7 @@ export function SendTransaction({
           onRejectRequest={onRejectRequest}
           loading={loading}
           dappStatus={dappMetadata?.status}
+          signingWithDevice={isSigningWithDevice}
         />
       </Stack>
     </Box>

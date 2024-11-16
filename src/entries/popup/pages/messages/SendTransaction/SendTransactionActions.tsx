@@ -16,6 +16,7 @@ export const SendTransactionActions = ({
   waitingForDevice,
   loading = false,
   dappStatus,
+  signingWithDevice,
 }: {
   session: ActiveSession;
   onAcceptRequest: () => void;
@@ -23,9 +24,10 @@ export const SendTransactionActions = ({
   waitingForDevice: boolean;
   loading: boolean;
   dappStatus?: DAppStatus;
+  signingWithDevice: boolean;
 }) => {
   const { enoughNativeAssetForGas, buttonLabel } =
-    useApproveAppRequestValidations({ session, dappStatus });
+    useApproveAppRequestValidations({ session, dappStatus, signingWithDevice });
 
   const { trackShortcut } = useKeyboardAnalytics();
   useKeyboardShortcut({
@@ -47,6 +49,7 @@ export const SendTransactionActions = ({
         onClick={onRejectRequest}
         label={i18n.t('common_actions.cancel')}
         dappStatus={dappStatus}
+        waitingForDevice={signingWithDevice}
       />
       {enoughNativeAssetForGas && (
         <AcceptRequestButton
