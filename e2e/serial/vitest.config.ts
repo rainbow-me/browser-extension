@@ -7,7 +7,6 @@ export default mergeConfig(
   viteConfig,
   defineConfig({
     test: {
-      retry: 0,
       bail: 1,
       threads: false,
       sequence: {
