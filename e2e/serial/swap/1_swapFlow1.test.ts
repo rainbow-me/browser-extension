@@ -435,10 +435,7 @@ it('should be able to type native amount on sell input', async () => {
     id: 'token-to-sell-info-fiat-value-input',
     driver,
   });
-  // await delayTime('very-long');
   expect(fiatValueText).toBe('1');
-
-  // await delay(10_000);
 
   const assetToSellInputText = await getTextFromTextInput({
     id: `token-to-sell-swap-token-input-swap-input-mask`,
@@ -836,14 +833,6 @@ it.skip('should be able to find exact match on other networks', async () => {
 });
 
 it('should be able to go to review a swap', async () => {
-  // await findElementByTestIdAndClick({
-  //   id: 'token-to-sell-search-token-input',
-  //   driver,
-  // });
-  // await findElementByTestIdAndClick({
-  //   id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-row`,
-  //   driver,
-  // });
   const toSellInputEthSelected = await findElementByTestId({
     id: `token-to-sell-swap-token-input-swap-input-mask`,
     driver,
@@ -881,20 +870,7 @@ it('should be able to go to review a swap', async () => {
   await delay(2000);
 
   toSellInputEthSelected.clear();
-  // await findElementByTestIdAndClick({
-  //   id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
-  //   driver,
-  // });
-  // await clearInput({
-  //   id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
-  //   driver,
-  // });
   toSellInputEthSelected.sendKeys('1');
-  // await typeOnTextInput({
-  //   id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
-  //   text: 1,
-  //   driver,
-  // });
   await findElementByTestIdAndClick({
     id: 'swap-confirmation-button-ready',
     driver,

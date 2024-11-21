@@ -200,7 +200,6 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
     await navigateToElementWithTestId({ driver, testId: 'send-review-button' });
     const reviewText = await findElementByText(driver, 'Review & Send');
     expect(reviewText).toBeTruthy();
-    await delay(10_000);
     await navigateToElementWithTestId({
       driver,
       testId: 'review-confirm-button',
