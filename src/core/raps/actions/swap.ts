@@ -220,7 +220,6 @@ export const executeSwap = async ({
   quote,
   gasParams,
   wallet,
-  permit = false,
 }: {
   chainId: ChainId;
   gasLimit: string;
@@ -228,7 +227,6 @@ export const executeSwap = async ({
   nonce?: number;
   quote: Quote;
   wallet: Signer;
-  permit: boolean;
 }): Promise<Transaction | null> => {
   if (!wallet || !quote) return null;
 
@@ -260,7 +258,7 @@ export const executeSwap = async ({
       quote,
       transactionParams,
       wallet,
-      permit,
+      false,
       chainId as unknown as SwapChainId,
       REFERRER,
     );
@@ -276,7 +274,7 @@ export const swap = async ({
 }: ActionProps<'swap'>): Promise<RapActionResult> => {
   const { selectedGas, gasFeeParamsBySpeed } = gasStore.getState();
 
-  const { quote, permit, chainId, requiresApprove } = parameters;
+  const { quote, chainId, requiresApprove } = parameters;
   let gasParams = selectedGas.transactionGasParams;
   // if swap isn't the last action, use fast gas or custom (whatever is faster)
 
@@ -312,7 +310,6 @@ export const swap = async ({
       chainId,
       gasLimit,
       nonce,
-      permit: !!permit,
       quote,
       wallet,
     };

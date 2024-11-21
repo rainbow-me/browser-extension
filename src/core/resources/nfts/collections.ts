@@ -19,6 +19,48 @@ import {
   simpleHashSupportedTestnetChainNames,
 } from '~/core/utils/nfts';
 
+export const MOCK_NFT_COLLECTION = [
+  {
+    collection_id: 'f7ff98307273f299b678b13e3f29ac13',
+    distinct_nfts_owned: 4,
+    distinct_nfts_owned_string: '4',
+    total_copies_owned: 4,
+    total_copies_owned_string: '4',
+    last_acquired_date: '2024-03-03T15:07:30Z',
+    nft_ids: [
+      'gnosis.0x22c1f6050e56d2876009903609a2cc3fef83b415.6682088',
+      'gnosis.0x22c1f6050e56d2876009903609a2cc3fef83b415.6707380',
+      'gnosis.0x22c1f6050e56d2876009903609a2cc3fef83b415.6945644',
+      'gnosis.0x22c1f6050e56d2876009903609a2cc3fef83b415.7054159',
+    ],
+    collection_details: {
+      name: 'POAP',
+      description: 'The Proof of Attendance Protocol',
+      image_url:
+        'https://lh3.googleusercontent.com/tOzkCPkfPuwnhNfb4thFA_6xiojAFHTNEPuCYnZS3q3GF4zNneOxowGQNpOI5Gr_-fVYC5eBFIf79HQvtsyEDpVRW2olLdlnPg',
+      banner_image_url: '',
+      category: null,
+      is_nsfw: false,
+      external_url: 'https://www.poap.xyz/',
+      twitter_username: '',
+      discord_url: '',
+      instagram_username: null,
+      medium_username: null,
+      telegram_url: null,
+      marketplace_pages: [],
+      metaplex_mint: null,
+      metaplex_first_verified_creator: null,
+      spam_score: 0,
+      floor_prices: [],
+      distinct_owner_count: 1336860,
+      distinct_nft_count: 7131380,
+      total_quantity: 7131380,
+      chains: ['gnosis'],
+      top_contracts: ['gnosis.0x22c1f6050e56d2876009903609a2cc3fef83b415'],
+    },
+  },
+];
+
 // ///////////////////////////////////////////////
 // Query Types
 
