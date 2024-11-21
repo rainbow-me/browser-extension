@@ -56,7 +56,7 @@
     "// Build and zip": "",
     "bundle": "yarn build && yarn zip",
     "// Runs tests": "",
-    "anvil": "ETH_MAINNET_RPC=$(grep ETH_MAINNET_RPC .env | cut -d '=' -f2) && anvil --fork-url $ETH_MAINNET_RPC --fork-block-number 21174436",
+    "anvil": "ETH_MAINNET_RPC=$(grep ETH_MAINNET_RPC .env | cut -d '=' -f2) && anvil --fork-url $ETH_MAINNET_RPC --fork-block-number 21065950",
     "anvil:optimism": "OPTIMISM_MAINNET_RPC=$(grep OPTIMISM_MAINNET_RPC .env | cut -d '=' -f2) && anvil --fork-url $OPTIMISM_MAINNET_RPC",
     "anvil:kill": "lsof -i :8545|tail -n +2|awk '{print $2}'|xargs -r kill -s SIGINT",
     "test": "./scripts/unit-tests.sh",

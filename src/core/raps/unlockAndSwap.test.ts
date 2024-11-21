@@ -1,12 +1,10 @@
 import { Wallet } from '@ethersproject/wallet';
 import {
-  ChainId,
   ETH_ADDRESS as ETH_ADDRESS_AGGREGATORS,
   Quote,
   QuoteError,
   getQuote,
 } from '@rainbow-me/swaps';
-import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test } from 'vitest';
 
 import {
@@ -21,6 +19,7 @@ import {
 
 import { gasStore } from '../state';
 import { connectedToHardhatStore } from '../state/currentSettings/connectedToHardhat';
+import { chainHardhat } from '../types/chains';
 import { GasSpeed } from '../types/gas';
 import { updateWagmiConfig } from '../wagmi';
 import { getProvider } from '../wagmi/clientToProvider';
@@ -59,7 +58,7 @@ const SELECTED_GAS = {
 
 beforeAll(async () => {
   connectedToHardhatStore.setState({ connectedToHardhat: true });
-  updateWagmiConfig([mainnet]);
+  updateWagmiConfig([chainHardhat]);
   await delay(3000);
   doesntNeedUnlockQuote = await getQuote({
     chainId: 1,
@@ -154,7 +153,7 @@ test('[rap/unlockAndSwap] :: create unlock and swap rap without unlock', async (
 });
 
 test('[rap/unlockAndSwap] :: create unlock and swap rap without unlock and execute it', async () => {
-  const provider = getProvider({ chainId: ChainId.mainnet });
+  const provider = getProvider({ chainId: chainHardhat.id });
   const wallet = new Wallet(TEST_PK_1, provider);
   const swap = await walletExecuteRap(wallet, 'swap', {
     quote: doesntNeedUnlockQuote as Quote,
@@ -182,7 +181,7 @@ test('[rap/unlockAndSwap] :: create swap rap and execute it', async () => {
   setSelectedGas({
     selectedGas: SELECTED_GAS,
   });
-  const provider = getProvider({ chainId: ChainId.mainnet });
+  const provider = getProvider({ chainId: chainHardhat.id });
   const wallet = new Wallet(TEST_PK_1, provider);
   const swap = await walletExecuteRap(wallet, 'swap', {
     quote: ethToEnsQuote as Quote,
@@ -199,7 +198,7 @@ test('[rap/unlockAndSwap] :: create unlock and swap rap with unlock and execute 
   setSelectedGas({
     selectedGas: SELECTED_GAS,
   });
-  const provider = getProvider({ chainId: ChainId.mainnet });
+  const provider = getProvider({ chainId: chainHardhat.id });
   const wallet = new Wallet(TEST_PK_1, provider);
   const swap = await walletExecuteRap(wallet, 'swap', {
     quote: needsUnlockQuote as Quote,
@@ -216,7 +215,7 @@ test('[rap/unlockAndSwap] :: create unlock and wrap eth rap with unlock and exec
   setSelectedGas({
     selectedGas: SELECTED_GAS,
   });
-  const provider = getProvider({ chainId: ChainId.mainnet });
+  const provider = getProvider({ chainId: chainHardhat.id });
   const wallet = new Wallet(TEST_PK_1, provider);
   const swap = await walletExecuteRap(wallet, 'swap', {
     quote: wrapEthQuote as Quote,
@@ -244,7 +243,7 @@ test('[rap/unlockAndSwap] :: create unwrap weth rap and execute it', async () =>
   setSelectedGas({
     selectedGas: SELECTED_GAS,
   });
-  const provider = getProvider({ chainId: ChainId.mainnet });
+  const provider = getProvider({ chainId: chainHardhat.id });
   const wallet = new Wallet(TEST_PK_1, provider);
   const swap = await walletExecuteRap(wallet, 'swap', {
     quote: unwrapEthQuote as Quote,
