@@ -376,6 +376,7 @@ export const parseNewTransaction = (
     changes,
     hash: tx.hash,
     chainId: tx.chainId,
+    lastSubmittedTimestamp: Date.now(),
     nonce: tx.nonce,
     protocol: tx.protocol,
     to: tx.to,
