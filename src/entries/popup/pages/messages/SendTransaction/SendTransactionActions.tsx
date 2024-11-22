@@ -49,7 +49,7 @@ export const SendTransactionActions = ({
         onClick={onRejectRequest}
         label={i18n.t('common_actions.cancel')}
         dappStatus={dappStatus}
-        waitingForDevice={signingWithDevice}
+        waitingForDevice={signingWithDevice && enoughNativeAssetForGas}
       />
       {enoughNativeAssetForGas && (
         <AcceptRequestButton
