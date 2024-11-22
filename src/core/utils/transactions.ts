@@ -10,6 +10,7 @@ import { isString } from 'lodash';
 import { Address } from 'viem';
 
 import RainbowIcon from 'static/images/icon-16@2x.png';
+import { chainsPrivateMempoolTimeout } from '~/core/references/chains';
 
 import { i18n } from '../languages';
 import { createHttpClient } from '../network/internal/createHttpClient';
@@ -36,7 +37,7 @@ import {
   isValidTransactionType,
   transactionTypeShouldHaveChanges,
 } from '../types/transactions';
-import { getProvider } from '../wagmi/clientToProvider';
+import { getBatchedProvider } from '../wagmi/clientToProvider';
 
 import { parseAsset, parseUserAsset, parseUserAssetBalances } from './assets';
 import { getBlockExplorerHostForChain, isNativeAsset } from './chains';
@@ -452,14 +453,56 @@ export async function getNextNonce({
   const { getNonce } = nonceStore.getState();
   const localNonceData = getNonce({ address, chainId });
   const localNonce = localNonceData?.currentNonce || 0;
-  const provider = getProvider({ chainId });
-  const txCountIncludingPending = await provider.getTransactionCount(
+  const provider = getBatchedProvider({ chainId });
+  const privateMempoolTimeout = chainsPrivateMempoolTimeout[chainId];
+
+  const pendingTxCountRequest = provider.getTransactionCount(
     address,
     'pending',
   );
-  if (!localNonce && !txCountIncludingPending) return 0;
-  const ret = Math.max(localNonce + 1, txCountIncludingPending);
-  return ret;
+  const latestTxCountRequest = provider.getTransactionCount(address, 'latest');
+  const [pendingTxCountFromPublicRpc, latestTxCountFromPublicRpc] =
+    await Promise.all([pendingTxCountRequest, latestTxCountRequest]);
+
+  const numPendingPublicTx =
+    pendingTxCountFromPublicRpc - latestTxCountFromPublicRpc;
+  const numPendingLocalTx = Math.max(localNonce - latestTxCountFromPublicRpc);
+  if (numPendingLocalTx === numPendingPublicTx)
+    return pendingTxCountFromPublicRpc; // nothing in private mempool, proceed normally
+  if (numPendingLocalTx === 0 && numPendingPublicTx > 0)
+    return latestTxCountFromPublicRpc; // catch up with public
+
+  const { pendingTransactions: storePendingTransactions } =
+    pendingTransactionsStore.getState();
+  const pendingTransactions: RainbowTransaction[] =
+    storePendingTransactions[address]?.filter(
+      (txn) => txn.chainId === chainId,
+    ) || [];
+
+  let nextNonce = localNonce + 1;
+  for (const pendingTx of pendingTransactions) {
+    if (!pendingTx.nonce || pendingTx.nonce < pendingTxCountFromPublicRpc) {
+      continue;
+    } else {
+      if (!pendingTx.lastSubmittedTimestamp) continue;
+      if (pendingTx.nonce === pendingTxCountFromPublicRpc) {
+        if (
+          Date.now() - pendingTx.lastSubmittedTimestamp >
+          privateMempoolTimeout
+        ) {
+          nextNonce = pendingTxCountFromPublicRpc;
+          break;
+        } else {
+          nextNonce = localNonce + 1;
+          break;
+        }
+      } else {
+        nextNonce = pendingTxCountFromPublicRpc;
+        break;
+      }
+    }
+  }
+  return nextNonce;
 }
 
 export function addNewTransaction({
