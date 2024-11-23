@@ -282,7 +282,8 @@
     "path-to-regexp": "6.3.0",
     "dset": "3.1.4",
     "zod": "3.23.8",
-    "rollup": "4.22.4"
+    "rollup": "4.22.4",
+    "cross-spawn": "6.0.6"
   },
   "lavamoat": {
     "allowScripts": {
