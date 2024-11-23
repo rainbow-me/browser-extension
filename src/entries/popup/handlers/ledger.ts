@@ -32,6 +32,9 @@ export async function signTransactionFromLedger(
     const { from: address } = transaction;
     try {
       transport = await TransportWebHID.openConnected();
+      if (transport === null) {
+        transport = await TransportWebHID.create();
+      }
     } catch (e) {
       transport = await TransportWebHID.create();
     }
@@ -131,6 +134,9 @@ export async function signMessageByTypeFromLedger(
   let transport;
   try {
     transport = await TransportWebHID.openConnected();
+    if (transport === null) {
+      transport = await TransportWebHID.create();
+    }
   } catch (e) {
     transport = await TransportWebHID.create();
   }
