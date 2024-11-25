@@ -54,16 +54,20 @@ export async function getWalletContext(
   // currentAddressStore address is initialized to ''
   if (!address || address === ('' as Address)) return {};
 
-  const wallet = await getWallet(address);
-  const walletType = (
-    {
+  const walletAddressHash = securelyHashWalletAddress(address);
+
+  // walletType is unavailable when keychain is locked
+  let walletType;
+  try {
+    // expect getWallet error when keychain is locked
+    const wallet = await getWallet(address);
+    walletType = ({
       [KeychainType.HdKeychain]: 'owned',
       [KeychainType.KeyPairKeychain]: 'owned',
       [KeychainType.ReadOnlyKeychain]: 'watched',
       [KeychainType.HardwareWalletKeychain]: 'hardware',
-    } as const
-  )[wallet?.type];
-  const walletAddressHash = securelyHashWalletAddress(address);
+    } as const)[wallet?.type];
+  } catch (e) {}
 
   return {
     walletType,
