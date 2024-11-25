@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.5.62",
+  "version": "1.5.63",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -282,7 +282,8 @@
     "path-to-regexp": "6.3.0",
     "dset": "3.1.4",
     "zod": "3.23.8",
-    "rollup": "4.22.4"
+    "rollup": "4.22.4",
+    "cross-spawn": "6.0.6"
   },
   "lavamoat": {
     "allowScripts": {
