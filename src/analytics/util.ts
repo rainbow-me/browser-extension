@@ -1,7 +1,7 @@
 import { SupportedAlgorithm, computeHmac } from '@ethersproject/sha2';
 import { Address } from 'viem';
 
-import { getWallet } from '~/core/keychain';
+import { getWallet } from '~/entries/popup/handlers/wallet';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { RainbowError, logger } from '~/logger';
 
