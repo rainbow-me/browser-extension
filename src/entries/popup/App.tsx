@@ -10,17 +10,12 @@ import { event } from '~/analytics/event';
 import { flushQueuedEvents } from '~/analytics/flushQueuedEvents';
 // !!!! DO NOT REMOVE THE NEXT 2 LINES BELOW !!!!
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { getWalletContext } from '~/analytics/util';
 import config from '~/core/firebase/remoteConfig';
 import { initializeMessenger } from '~/core/messengers';
 import { persistOptions, queryClient } from '~/core/react-query';
-import { initializeSentry, setSentryUser } from '~/core/sentry';
-import {
-  useCurrentAddressStore,
-  useCurrentLanguageStore,
-  useCurrentThemeStore,
-  useDeviceIdStore,
-} from '~/core/state';
+import { initializeSentry } from '~/core/sentry';
+import { useCurrentLanguageStore, useCurrentThemeStore } from '~/core/state';
+import { TelemetryIdentifier } from '~/core/telemetry';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { WagmiConfigUpdater, wagmiConfig } from '~/core/wagmi';
 import { Box, ThemeProvider } from '~/design-system';
@@ -39,8 +34,6 @@ const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
 export function App() {
   const { currentLanguage, setCurrentLanguage } = useCurrentLanguageStore();
-  const { deviceId } = useDeviceIdStore();
-  const { currentAddress } = useCurrentAddressStore();
   const { rainbowChains } = useRainbowChains();
   const prevChains = usePrevious(rainbowChains);
 
@@ -94,23 +87,6 @@ export function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Update telemetry wallet each time selected wallet changes
-  React.useEffect(() => {
-    const updateTelemetry = async () => {
-      const { walletType, walletAddressHash } =
-        await getWalletContext(currentAddress);
-      setSentryUser({ deviceId, walletAddressHash, walletType });
-      // Allows calling telemetry before currentAddress is available (i.e. onboarding)
-      if (walletType || walletAddressHash)
-        analytics.setWalletContext({ walletAddressHash, walletType });
-      analytics.setDeviceId(deviceId);
-      analytics.identify();
-    };
-    if (process.env.IS_TESTING !== 'true' && process.env.IS_DEV !== 'true') {
-      updateTelemetry();
-    }
-  }, [deviceId, currentAddress]);
-
   React.useEffect(() => {
     setCurrentLanguage(currentLanguage);
   }, [currentLanguage, setCurrentLanguage]);
@@ -142,6 +118,7 @@ export function App() {
                 <IdleTimer />
                 <OnboardingKeepAlive />
                 <WagmiConfigUpdater />
+                <TelemetryIdentifier />
               </AuthProvider>
             </ThemeProvider>
           </QueryClientProvider>
