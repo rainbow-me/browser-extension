@@ -2,6 +2,7 @@ import { Analytics as RudderAnalytics } from '@rudderstack/analytics-js-service-
 
 import { EventProperties, event } from '~/analytics/event';
 import { UserProperties } from '~/analytics/userProperties';
+import { type WalletContext } from '~/analytics/util';
 import { analyticsDisabledStore } from '~/core/state/currentSettings/analyticsDisabled';
 import { logger } from '~/logger';
 
@@ -33,6 +34,8 @@ const context = {
 export class Analytics {
   client?: RudderAnalytics;
   deviceId?: string;
+  walletAddressHash?: WalletContext['walletAddressHash'];
+  walletType?: WalletContext['walletType'];
   event = event;
   disabled = true; // to do: check user setting here
 
@@ -73,7 +76,7 @@ export class Analytics {
   identify(userProperties?: UserProperties) {
     if (this.disabled || IS_DEV || IS_TESTING || !this.deviceId) return;
     const metadata = this.getDefaultMetadata();
-    const traits = { ...userProperties, ...metadata };
+    const traits = { ...metadata, ...userProperties };
     this.client?.identify({ userId: this.deviceId, traits, context });
     logger.info('analytics.identify()', {
       userId: this.deviceId,
@@ -84,10 +87,14 @@ export class Analytics {
   /**
    * Sends a `screen` event to RudderStack.
    */
-  screen(name: string, params: Record<string, string> = {}): void {
+  screen(
+    name: string,
+    params?: Record<string, string>,
+    walletContext?: WalletContext,
+  ) {
     if (this.disabled || IS_DEV || IS_TESTING || !this.deviceId) return;
     const metadata = this.getDefaultMetadata();
-    const properties = { ...params, ...metadata };
+    const properties = { ...metadata, ...walletContext, ...params };
     this.client?.screen({ userId: this.deviceId, name, properties, context });
     logger.info('analytics.screen()', {
       userId: this.deviceId,
@@ -104,10 +111,11 @@ export class Analytics {
   track<T extends keyof EventProperties>(
     event: T,
     params?: EventProperties[T],
+    walletContext?: WalletContext,
   ) {
     if (this.disabled || IS_DEV || IS_TESTING || !this.deviceId) return;
     const metadata = this.getDefaultMetadata();
-    const properties = Object.assign(metadata, params);
+    const properties = { ...metadata, ...walletContext, ...params };
     this.client?.track({ userId: this.deviceId, event, properties, context });
     logger.info('analytics.track()', {
       userId: this.deviceId,
@@ -118,10 +126,13 @@ export class Analytics {
 
   /**
    * Scaffolding for Default Metadata params
-   * This is used in the App for `walletAddressHash`
+   * This is used in the App for `walletAddressHash` and `walletType`
    */
   private getDefaultMetadata() {
-    return {};
+    return {
+      walletAddressHash: this.walletAddressHash,
+      walletType: this.walletType,
+    };
   }
 
   /**
@@ -131,6 +142,19 @@ export class Analytics {
   setDeviceId(deviceId: string) {
     this.deviceId = deviceId;
     logger.debug(`Set deviceId on analytics instance`, { deviceId });
+  }
+
+  /**
+   * Set `walletAddressHash` and `walletType` for use in events.
+   * This DOES NOT call `identify()`, you must do that on your own.
+   */
+  setWalletContext(walletContext: WalletContext) {
+    this.walletAddressHash = walletContext.walletAddressHash;
+    this.walletType = walletContext.walletType;
+    logger.debug(
+      `Set walletAddressHash and walletType on analytics instance`,
+      walletContext,
+    );
   }
 
   /**

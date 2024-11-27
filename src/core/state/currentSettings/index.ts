@@ -9,6 +9,10 @@ export {
   useCurrentLanguageStore,
 } from './currentLanguage';
 export {
+  currentThemeStore,
+  useCurrentThemeStore,
+} from './currentTheme';
+export {
   flashbotsEnabledStore,
   useFlashbotsEnabledStore,
 } from './flashbotsEnabled';

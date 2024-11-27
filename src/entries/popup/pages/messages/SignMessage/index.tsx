@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
+import { getWalletContext } from '~/analytics/util';
 import { i18n } from '~/core/languages';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
@@ -78,23 +79,31 @@ export function SignMessage({
           requestPayload.msgData,
           requestPayload.address,
         );
-        analytics.track(event.dappPromptSignMessageApproved, {
-          chainId: activeSession?.chainId,
-          dappURL: dappMetadata?.url || '',
-          dappDomain: dappMetadata?.appHost || '',
-          dappName: dappMetadata?.appName,
-        });
+        analytics.track(
+          event.dappPromptSignMessageApproved,
+          {
+            chainId: activeSession?.chainId,
+            dappURL: dappMetadata?.url || '',
+            dappDomain: dappMetadata?.appHost || '',
+            dappName: dappMetadata?.appName,
+          },
+          await getWalletContext(activeSession?.address),
+        );
       } else if (walletAction === 'sign_typed_data') {
         result = await wallet.signTypedData(
           requestPayload.msgData,
           requestPayload.address,
         );
-        analytics.track(event.dappPromptSignTypedDataApproved, {
-          chainId: activeSession?.chainId,
-          dappURL: dappMetadata?.url || '',
-          dappDomain: dappMetadata?.appHost || '',
-          dappName: dappMetadata?.appName,
-        });
+        analytics.track(
+          event.dappPromptSignTypedDataApproved,
+          {
+            chainId: activeSession?.chainId,
+            dappURL: dappMetadata?.url || '',
+            dappDomain: dappMetadata?.appHost || '',
+            dappName: dappMetadata?.appName,
+          },
+          await getWalletContext(activeSession?.address),
+        );
       }
       approveRequest(result);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -112,33 +121,44 @@ export function SignMessage({
     dappMetadata?.appHost,
     dappMetadata?.appName,
     activeSession?.chainId,
+    activeSession?.address,
     request,
     selectedWallet,
   ]);
 
-  const onRejectRequest = useCallback(() => {
+  const onRejectRequest = useCallback(async () => {
     rejectRequest();
+    if (!activeSession?.address) return;
     const walletAction = getWalletActionMethod(request?.method);
     if (walletAction === 'personal_sign') {
-      analytics.track(event.dappPromptSignMessageRejected, {
-        chainId: activeSession?.chainId || 0,
-        dappURL: dappMetadata?.url || '',
-        dappDomain: dappMetadata?.appHost || '',
-        dappName: dappMetadata?.appName,
-      });
+      analytics.track(
+        event.dappPromptSignMessageRejected,
+        {
+          chainId: activeSession?.chainId || 0,
+          dappURL: dappMetadata?.url || '',
+          dappDomain: dappMetadata?.appHost || '',
+          dappName: dappMetadata?.appName,
+        },
+        await getWalletContext(activeSession?.address),
+      );
     } else if (walletAction === 'sign_typed_data') {
-      analytics.track(event.dappPromptSignTypedDataRejected, {
-        chainId: activeSession?.chainId || 0,
-        dappURL: dappMetadata?.url || '',
-        dappDomain: dappMetadata?.appHost || '',
-        dappName: dappMetadata?.appName,
-      });
+      analytics.track(
+        event.dappPromptSignTypedDataRejected,
+        {
+          chainId: activeSession?.chainId || 0,
+          dappURL: dappMetadata?.url || '',
+          dappDomain: dappMetadata?.appHost || '',
+          dappName: dappMetadata?.appName,
+        },
+        await getWalletContext(activeSession?.address),
+      );
     }
   }, [
     dappMetadata?.url,
     dappMetadata?.appHost,
     dappMetadata?.appName,
     activeSession?.chainId,
+    activeSession?.address,
     rejectRequest,
     request?.method,
   ]);
