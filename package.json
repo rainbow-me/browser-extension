@@ -97,6 +97,7 @@
     "@ethersproject/units": "5.7.0",
     "@ethersproject/wallet": "5.7.0",
     "@ledgerhq/hw-app-eth": "6.38.1",
+    "@ethersproject/sha2": "5.7.0",
     "@ledgerhq/hw-transport-webhid": "6.29.3",
     "@metamask/browser-passworder": "4.1.0",
     "@metamask/eth-sig-util": "7.0.1",
