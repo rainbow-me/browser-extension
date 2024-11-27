@@ -88,6 +88,9 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
   const onSend = () => {
     isNavigating = true;
     navigate(ROUTES.SEND);
+    analytics.track(event.sendOpened, {
+      entryPoint: 'token_context_menu',
+    });
   };
 
   const onBridge = () => {
