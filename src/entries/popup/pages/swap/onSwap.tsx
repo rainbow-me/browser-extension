@@ -37,8 +37,6 @@ export const onSwap = async ({
     assetToSell.chainId !== assetToBuy.chainId ? 'crosschainSwap' : 'swap';
   const q = quote as QuoteTypeMap[typeof type];
 
-  const flashbots = assetToSell.chainId === ChainId.mainnet;
-
   const isConnectedToHardhat =
     useConnectedToHardhatStore.getState().connectedToHardhat;
   const chainId = isConnectedToHardhat ? ChainId.hardhat : assetToSell.chainId;
@@ -54,7 +52,6 @@ export const onSwap = async ({
       assetToSell: assetToSell,
       assetToBuy: assetToBuy,
       quote: q,
-      flashbots,
     },
     type,
   });
