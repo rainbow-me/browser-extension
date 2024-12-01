@@ -13,10 +13,6 @@ export {
   useCurrentThemeStore,
 } from './currentTheme';
 export {
-  flashbotsEnabledStore,
-  useFlashbotsEnabledStore,
-} from './flashbotsEnabled';
-export {
   isDefaultWalletStore,
   useIsDefaultWalletStore,
 } from './isDefaultWallet';
