@@ -19,11 +19,7 @@ import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import {
-  useCurrentAddressStore,
-  useFlashbotsEnabledStore,
-  useGasStore,
-} from '~/core/state';
+import { useCurrentAddressStore, useGasStore } from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import {
@@ -274,12 +270,6 @@ export function Send() {
     chainId,
   );
 
-  const { flashbotsEnabled } = useFlashbotsEnabledStore();
-  const flashbotsEnabledGlobally =
-    config.flashbots_enabled &&
-    flashbotsEnabled &&
-    asset?.chainId === ChainId.mainnet;
-
   const buildNftAssetObject = useCallback((nft: UniqueAsset) => {
     return {
       address: (nft.asset_contract.address || '') as AddressOrEth,
@@ -316,7 +306,6 @@ export function Send() {
         ],
         asset: nft ? buildNftAssetObject(nft) : asset,
         data: result.data,
-        flashbots: flashbotsEnabledGlobally,
         value: result.value.toString(),
         from: fromAddress,
         to: txToAddress,
@@ -340,7 +329,6 @@ export function Send() {
       asset,
       assetAmount,
       buildNftAssetObject,
-      flashbotsEnabledGlobally,
       fromAddress,
       nft,
       selectedGas.transactionGasParams,
