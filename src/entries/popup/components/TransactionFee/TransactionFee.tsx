@@ -53,7 +53,6 @@ type FeeProps = {
   isLoading: boolean;
   currentBaseFee: string;
   baseFeeTrend: number;
-  flashbotsEnabled: boolean;
   analyticsEvents?: {
     customGasClicked: keyof EventProperties;
     transactionSpeedSwitched: keyof EventProperties;
@@ -78,7 +77,6 @@ function Fee({
   isLoading,
   plainTriggerBorder,
   selectedSpeed,
-  flashbotsEnabled,
   speedMenuMarginRight,
   feeType,
   setSelectedSpeed,
@@ -158,7 +156,6 @@ function Fee({
   return (
     <Box>
       <CustomGasSheet
-        flashbotsEnabled={flashbotsEnabled}
         currentBaseFee={currentBaseFee}
         baseFeeTrend={baseFeeTrend}
         show={showCustomGasSheet}
@@ -321,7 +318,6 @@ export function TransactionFee({
       setCustomGasPrice={setCustomGasPrice}
       currentBaseFee={currentBaseFee}
       baseFeeTrend={baseFeeTrend}
-      flashbotsEnabled={!!flashbotsEnabled}
       feeType={feeType}
     />
   );
@@ -391,7 +387,6 @@ export function SwapFee({
       setCustomGasPrice={setCustomGasPrice}
       currentBaseFee={currentBaseFee}
       baseFeeTrend={baseFeeTrend}
-      flashbotsEnabled={!!flashbotsEnabled}
       speedMenuMarginRight={speedMenuMarginRight}
       feeType={feeType}
     />
@@ -466,7 +461,6 @@ export function ApprovalFee({
       setCustomGasPrice={setCustomGasPrice}
       currentBaseFee={currentBaseFee}
       baseFeeTrend={baseFeeTrend}
-      flashbotsEnabled={!!flashbotsEnabled}
       feeType={feeType}
     />
   );

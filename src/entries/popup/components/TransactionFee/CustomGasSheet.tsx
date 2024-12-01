@@ -158,7 +158,6 @@ export const CustomGasSheet = ({
   show,
   currentBaseFee,
   baseFeeTrend,
-  flashbotsEnabled,
   feeType,
   setCustomMaxBaseFee,
   setCustomMaxPriorityFee,
@@ -169,7 +168,6 @@ export const CustomGasSheet = ({
   show: boolean;
   currentBaseFee: string;
   baseFeeTrend: number;
-  flashbotsEnabled: boolean;
   feeType: 'legacy' | 'eip1559';
   setCustomMaxBaseFee: (maxBaseFee: string) => void;
   setCustomMaxPriorityFee: (maxPriorityFee: string) => void;
@@ -266,9 +264,6 @@ export const CustomGasSheet = ({
 
   const updateCustomMaxPriorityFee = useCallback(
     (maxPriorityFee: string) => {
-      if (flashbotsEnabled && Number(maxPriorityFee) < 6) {
-        return;
-      }
       if (prevSelectedGasOption !== GasSpeed.CUSTOM && prevSelectedGasOption) {
         const prevSelectedGas = gasFeeParamsBySpeed[
           prevSelectedGasOption
@@ -293,7 +288,6 @@ export const CustomGasSheet = ({
       }
     },
     [
-      flashbotsEnabled,
       gasFeeParamsBySpeed,
       prevSelectedGasOption,
       setCustomMaxPriorityFee,
