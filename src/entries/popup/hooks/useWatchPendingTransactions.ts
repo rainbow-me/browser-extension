@@ -22,10 +22,7 @@ import {
 } from '~/core/types/transactions';
 import { isCustomChain } from '~/core/utils/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
-import {
-  getTransactionFlashbotStatus,
-  getTransactionReceiptStatus,
-} from '~/core/utils/transactions';
+import { getTransactionReceiptStatus } from '~/core/utils/transactions';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import { RainbowError, logger } from '~/logger';
 
@@ -57,25 +54,6 @@ export const useWatchPendingTransactions = ({
       currency: currentCurrency,
     });
   }, [address, currentCurrency]);
-
-  const processFlashbotsTransaction = useCallback(
-    async (tx: RainbowTransaction): Promise<RainbowTransaction> => {
-      const flashbotsTxStatus = await getTransactionFlashbotStatus(tx, tx.hash);
-      if (flashbotsTxStatus) {
-        const { flashbotsStatus, status, minedAt, title } = flashbotsTxStatus;
-
-        return {
-          ...tx,
-          status,
-          minedAt,
-          title,
-          flashbotsStatus,
-        } as RainbowTransaction;
-      }
-      return tx;
-    },
-    [],
-  );
 
   const processCustomNetworkTransaction = useCallback(
     async (tx: RainbowTransaction) => {
@@ -121,11 +99,6 @@ export const useWatchPendingTransactions = ({
           } else {
             updatedTransaction =
               await processSupportedNetworkTransaction(updatedTransaction);
-            // if flashbots tx and no blockNumber, check if it failed
-            if (!(tx as MinedTransaction).blockNumber && tx.flashbots) {
-              updatedTransaction =
-                await processFlashbotsTransaction(updatedTransaction);
-            }
           }
         } else {
           throw new Error('Pending transaction missing chain id');
@@ -150,7 +123,6 @@ export const useWatchPendingTransactions = ({
     [
       address,
       processCustomNetworkTransaction,
-      processFlashbotsTransaction,
       processSupportedNetworkTransaction,
       refreshAssets,
     ],
