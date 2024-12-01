@@ -4,7 +4,6 @@ import {
   TypedDataField,
 } from '@ethersproject/abstract-signer';
 import { Bytes } from '@ethersproject/bytes';
-import { ChainId } from '@rainbow-me/swaps';
 import { Address } from 'viem';
 
 import {
@@ -38,10 +37,8 @@ import {
 } from '~/core/keychain';
 import { initializeMessenger } from '~/core/messengers';
 import { WalletExecuteRapProps } from '~/core/raps/references';
-import { flashbotsEnabledStore } from '~/core/state';
 import { WalletAction } from '~/core/types/walletActions';
 import { EthereumWalletSeed } from '~/core/utils/ethereum';
-import { getFlashbotsProvider } from '~/core/utils/flashbots';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 
 type WalletActionArguments = {
@@ -184,17 +181,9 @@ export const handleWallets = () =>
             break;
           }
           case 'send_transaction': {
-            let provider;
-            if (
-              flashbotsEnabledStore.getState().flashbotsEnabled &&
-              (payload as TransactionRequest).chainId === ChainId.mainnet
-            ) {
-              provider = getFlashbotsProvider();
-            } else {
-              provider = getProvider({
-                chainId: (payload as TransactionRequest).chainId,
-              });
-            }
+            const provider = getProvider({
+              chainId: (payload as TransactionRequest).chainId,
+            });
             response = await sendTransaction(
               payload as TransactionRequest,
               provider,
@@ -203,17 +192,9 @@ export const handleWallets = () =>
           }
           case 'execute_rap': {
             const p = payload as WalletExecuteRapProps;
-            let provider;
-            if (
-              p.rapActionParameters.flashbots &&
-              p.rapActionParameters.chainId === ChainId.mainnet
-            ) {
-              provider = getFlashbotsProvider();
-            } else {
-              provider = getProvider({
-                chainId: p.rapActionParameters.chainId,
-              });
-            }
+            const provider = getProvider({
+              chainId: p.rapActionParameters.chainId,
+            });
             response = await executeRap({
               ...p,
               provider,
