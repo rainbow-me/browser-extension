@@ -94,7 +94,6 @@ export const onSwap = async ({
     outputAssetAmount: q.buyAmount as number,
     mainnetAddress:
       assetToBuy?.chainId === ChainId.mainnet ? 'address' : 'mainnetAddress',
-    flashbots,
     tradeAmountUSD: q.tradeAmountUSD,
     crosschain: assetToSell.chainId !== assetToBuy.chainId,
     degenMode,
