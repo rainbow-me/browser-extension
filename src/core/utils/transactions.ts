@@ -13,7 +13,6 @@ import RainbowIcon from 'static/images/icon-16@2x.png';
 import { chainsPrivateMempoolTimeout } from '~/core/references/chains';
 
 import { i18n } from '../languages';
-import { createHttpClient } from '../network/internal/createHttpClient';
 import {
   ETH_ADDRESS,
   SupportedCurrencyKey,
@@ -597,44 +596,6 @@ export const getTokenBlockExplorer = ({
     url: getTokenBlockExplorerUrl({ address, chainId }),
     name: getBlockExplorerName(chainId),
   };
-};
-
-const flashbotsApi = createHttpClient({
-  baseUrl: 'https://protect.flashbots.net',
-});
-
-type FlashbotsStatus =
-  | 'PENDING'
-  | 'INCLUDED'
-  | 'FAILED'
-  | 'CANCELLED'
-  | 'UNKNOWN';
-
-export const getTransactionFlashbotStatus = async (
-  transaction: RainbowTransaction,
-  txHash: string,
-): Promise<{
-  flashbotsStatus: 'FAILED' | 'CANCELLED';
-  status: 'failed';
-  minedAt: number;
-  title: string;
-} | null> => {
-  try {
-    const fbStatus = await flashbotsApi.get<{ status: FlashbotsStatus }>(
-      `/tx/${txHash}`,
-    );
-    const flashbotsStatus = fbStatus.data.status;
-    // Make sure it wasn't dropped after 25 blocks or never made it
-    if (flashbotsStatus === 'FAILED' || flashbotsStatus === 'CANCELLED') {
-      const status = 'failed';
-      const minedAt = Math.floor(Date.now() / 1000);
-      const title = i18n.t(`transactions.${transaction.type}.failed`);
-      return { flashbotsStatus, status, minedAt, title };
-    }
-  } catch (e) {
-    //
-  }
-  return null;
 };
 
 const TransactionOutTypes = [
