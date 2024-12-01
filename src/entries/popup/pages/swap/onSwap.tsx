@@ -5,7 +5,6 @@ import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { QuoteTypeMap } from '~/core/raps/references';
-import { useFlashbotsEnabledStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSwapAssetsToRefreshStore } from '~/core/state/swapAssetsToRefresh';
@@ -38,9 +37,7 @@ export const onSwap = async ({
     assetToSell.chainId !== assetToBuy.chainId ? 'crosschainSwap' : 'swap';
   const q = quote as QuoteTypeMap[typeof type];
 
-  const flashbots =
-    assetToSell.chainId === ChainId.mainnet &&
-    useFlashbotsEnabledStore.getState().swapFlashbotsEnabled;
+  const flashbots = assetToSell.chainId === ChainId.mainnet;
 
   const isConnectedToHardhat =
     useConnectedToHardhatStore.getState().connectedToHardhat;
