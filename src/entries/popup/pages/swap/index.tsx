@@ -758,7 +758,6 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
         assetToBuy={assetToBuy}
         assetToSell={assetToSell}
         quote={quote}
-        flashbotsEnabled={flashbotsEnabledGlobally}
         hideSwapReview={hideSwapReviewSheet}
         assetToSellValue={assetToSellValue}
       />
