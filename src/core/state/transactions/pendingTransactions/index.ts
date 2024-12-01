@@ -15,13 +15,6 @@ export interface PendingTransactionsStateV1 {
 
 export interface PendingTransactionsState {
   pendingTransactions: Record<Address, RainbowTransaction[]>;
-  addPendingTransaction: ({
-    address,
-    pendingTransaction,
-  }: {
-    address: Address;
-    pendingTransaction: RainbowTransaction;
-  }) => void;
   updatePendingTransaction: ({
     address,
     pendingTransaction,
@@ -42,17 +35,6 @@ export interface PendingTransactionsState {
 export const pendingTransactionsStore = createStore<PendingTransactionsState>(
   (set, get) => ({
     pendingTransactions: {},
-    addPendingTransaction: ({ address, pendingTransaction }) => {
-      const { pendingTransactions: currentPendingTransactions } = get();
-      const addressPendingTransactions =
-        currentPendingTransactions[address] || [];
-      set({
-        pendingTransactions: {
-          ...currentPendingTransactions,
-          [address]: [...addressPendingTransactions, pendingTransaction],
-        },
-      });
-    },
     updatePendingTransaction: ({ address, pendingTransaction }) => {
       const { pendingTransactions: currentPendingTransactions } = get();
       const addressPendingTransactions =

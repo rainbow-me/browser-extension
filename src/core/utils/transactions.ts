@@ -515,14 +515,14 @@ export function addNewTransaction({
   transaction: NewTransaction;
 }) {
   const { setNonce } = nonceStore.getState();
-  const { addPendingTransaction } = pendingTransactionsStore.getState();
+  const { updatePendingTransaction } = pendingTransactionsStore.getState();
   const { currentCurrency } = currentCurrencyStore.getState();
   const newPendingTransaction = parseNewTransaction(
     transaction,
     currentCurrency,
   );
 
-  addPendingTransaction({
+  updatePendingTransaction({
     address,
     pendingTransaction: newPendingTransaction,
   });
