@@ -624,7 +624,6 @@ export const parseGasFeeParamsBySpeed = ({
   nativeAsset,
   currency,
   optimismL1SecurityFee,
-  flashbotsEnabled,
   additionalTime = 0,
 }: {
   chainId: ChainId;
@@ -633,7 +632,6 @@ export const parseGasFeeParamsBySpeed = ({
   nativeAsset?: ParsedAsset;
   currency: SupportedCurrencyKey;
   optimismL1SecurityFee?: string | null;
-  flashbotsEnabled?: boolean;
   additionalTime?: number;
 }) => {
   if ((data as MeteorologyResponse)?.data?.currentBaseFee) {
@@ -651,16 +649,6 @@ export const parseGasFeeParamsBySpeed = ({
       byBaseFee: response.data.blocksToConfirmationByBaseFee,
       byPriorityFee: response.data.blocksToConfirmationByPriorityFee,
     };
-
-    if (flashbotsEnabled) {
-      for (const speed in maxPriorityFeeSuggestions) {
-        type gasSpeed = 'fast' | 'normal' | 'urgent';
-        maxPriorityFeeSuggestions[speed as gasSpeed] = Math.max(
-          Number(gweiToWei(FLASHBOTS_MIN_TIP.toString())),
-          Number(maxPriorityFeeSuggestions[speed as gasSpeed]),
-        ).toString();
-      }
-    }
 
     const parseGasFeeParamsSpeed = ({ speed }: { speed: GasSpeed }) =>
       parseGasFeeParams({

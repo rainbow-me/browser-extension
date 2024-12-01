@@ -263,7 +263,6 @@ type TransactionFeeProps = {
   transactionRequest: TransactionRequest;
   accentColor?: string;
   plainTriggerBorder?: boolean;
-  flashbotsEnabled?: boolean;
   analyticsEvents?: {
     customGasClicked: keyof EventProperties;
     transactionSpeedSwitched: keyof EventProperties;
@@ -280,7 +279,6 @@ export function TransactionFee({
   accentColor,
   plainTriggerBorder,
   analyticsEvents,
-  flashbotsEnabled,
 }: TransactionFeeProps) {
   const { defaultTxSpeed } = useDefaultTxSpeed({ chainId });
   const {
@@ -299,7 +297,6 @@ export function TransactionFee({
     address,
     defaultSpeed: defaultSpeed || defaultTxSpeed,
     transactionRequest,
-    flashbotsEnabled: !!flashbotsEnabled,
   });
 
   return (
@@ -332,7 +329,6 @@ type SwapFeeProps = {
   assetToSell?: ParsedSearchAsset;
   assetToBuy?: ParsedSearchAsset;
   enabled?: boolean;
-  flashbotsEnabled?: boolean;
   speedMenuMarginRight?: Space;
   quoteServiceTime?: number;
 };
@@ -346,7 +342,6 @@ export function SwapFee({
   assetToSell,
   assetToBuy,
   enabled = true,
-  flashbotsEnabled,
   speedMenuMarginRight,
   quoteServiceTime,
 }: SwapFeeProps) {
@@ -369,7 +364,6 @@ export function SwapFee({
     assetToSell,
     assetToBuy,
     enabled,
-    flashbotsEnabled,
     quoteServiceTime,
   });
 
@@ -402,7 +396,6 @@ type ApprovalFeeProps = {
   transactionRequest: TransactionRequest;
   accentColor?: string;
   plainTriggerBorder?: boolean;
-  flashbotsEnabled?: boolean;
   analyticsEvents?: {
     customGasClicked: keyof EventProperties;
     transactionSpeedSwitched: keyof EventProperties;
@@ -421,7 +414,6 @@ export function ApprovalFee({
   accentColor,
   plainTriggerBorder,
   analyticsEvents,
-  flashbotsEnabled,
   assetType,
 }: ApprovalFeeProps) {
   const { defaultTxSpeed } = useDefaultTxSpeed({ chainId });
@@ -443,7 +435,6 @@ export function ApprovalFee({
     spenderAddress,
     defaultSpeed: defaultSpeed || defaultTxSpeed,
     transactionRequest,
-    flashbotsEnabled: !!flashbotsEnabled,
     assetType,
   });
   return (

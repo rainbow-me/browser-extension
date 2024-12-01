@@ -759,7 +759,6 @@ export function Send() {
                         chainId={chainId}
                         transactionRequest={transactionRequestForGas}
                         accentColor={assetAccentColor}
-                        flashbotsEnabled={flashbotsEnabledGlobally}
                       />
                     </Row>
                     <Row>
