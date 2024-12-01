@@ -58,18 +58,24 @@ export const pendingTransactionsStore = createStore<PendingTransactionsState>(
       const addressPendingTransactions =
         currentPendingTransactions[address] || [];
 
+      const updatedPendingTransactions = [
+        ...addressPendingTransactions.filter((tx) => {
+          if (tx.chainId === pendingTransaction.chainId) {
+            return tx.nonce !== pendingTransaction.nonce;
+          }
+          return true;
+        }),
+        pendingTransaction,
+      ];
+      const orderedPendingTransactions = updatedPendingTransactions.sort(
+        (a, b) => {
+          return (a.nonce || 0) - (b.nonce || 0);
+        },
+      );
       set({
         pendingTransactions: {
           ...currentPendingTransactions,
-          [address]: [
-            ...addressPendingTransactions.filter((tx) => {
-              if (tx.chainId === pendingTransaction.chainId) {
-                return tx.nonce !== pendingTransaction.nonce;
-              }
-              return true;
-            }),
-            pendingTransaction,
-          ],
+          [address]: orderedPendingTransactions,
         },
       });
     },
