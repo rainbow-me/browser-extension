@@ -50,8 +50,6 @@ import {
 } from './numbers';
 import { getMinimalTimeUnitStringForMs } from './time';
 
-export const FLASHBOTS_MIN_TIP = 6;
-
 const formatDisplayNumber = (number: number | string) => {
   const n = Number(number);
   if (n === 0) {
