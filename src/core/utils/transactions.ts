@@ -381,7 +381,6 @@ export const parseNewTransaction = (
     protocol: tx.protocol,
     to: tx.to,
     type: tx.type,
-    flashbots: tx.flashbots,
     feeType: 'maxFeePerGas' in tx ? 'eip-1559' : 'legacy',
     gasPrice: tx.gasPrice,
     maxFeePerGas: tx.maxFeePerGas,
