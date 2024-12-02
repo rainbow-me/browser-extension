@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from 'react';
 import { Address } from 'viem';
-import { mainnet } from 'viem/chains';
 
 import { queryClient } from '~/core/react-query';
 import { userAssetsQueryKey } from '~/core/resources/assets/common';
@@ -9,7 +8,6 @@ import { consolidatedTransactionsQueryKey } from '~/core/resources/transactions/
 import { fetchTransaction } from '~/core/resources/transactions/transaction';
 import {
   useCurrentCurrencyStore,
-  useNonceStore,
   usePendingTransactionsStore,
 } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
@@ -21,7 +19,6 @@ import {
   RainbowTransaction,
 } from '~/core/types/transactions';
 import { isCustomChain } from '~/core/utils/chains';
-import { isLowerCaseMatch } from '~/core/utils/strings';
 import { getTransactionReceiptStatus } from '~/core/utils/transactions';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import { RainbowError, logger } from '~/logger';
@@ -35,7 +32,6 @@ export const useWatchPendingTransactions = ({
     pendingTransactions: storePendingTransactions,
     setPendingTransactions,
   } = usePendingTransactionsStore();
-  const setNonce = useNonceStore.use.setNonce();
   const { currentCurrency } = useCurrentCurrencyStore();
   const addCustomNetworkTransactions =
     useCustomNetworkTransactionsStore.use.addCustomNetworkTransactions();
@@ -128,72 +124,11 @@ export const useWatchPendingTransactions = ({
     ],
   );
 
-  const processNonces = useCallback(
-    (txs: RainbowTransaction[]) => {
-      const userTxs = txs.filter((tx) => isLowerCaseMatch(address, tx.from));
-      const chainIds = [
-        ...new Set(
-          userTxs.reduce((acc, tx) => {
-            acc.add(tx.chainId);
-            return acc;
-          }, new Set<number>()),
-        ),
-      ];
-      let flashbotsTxFailed = false;
-      const highestNoncePerChainId = userTxs.reduce((acc, tx) => {
-        // if tx is not on mainnet, we don't care about the nonce
-        if (tx.chainId !== mainnet.id) {
-          acc.set(tx.chainId, tx.nonce);
-          return acc;
-        }
-        // if tx is flashbots and failed, we want to use the lowest nonce
-        if (
-          tx.flashbots &&
-          (tx as MinedTransaction)?.flashbotsStatus === 'FAILED'
-        ) {
-          // if we already have a failed flashbots tx, we want to use the lowest nonce
-          if (flashbotsTxFailed && tx.nonce < acc.get(tx.chainId)) {
-            acc.set(tx.chainId, tx.nonce);
-          } else {
-            acc.set(tx.chainId, tx.nonce);
-            flashbotsTxFailed = true;
-          }
-          // if tx succeeded, we want to use the highest nonce
-        } else if (!flashbotsTxFailed && tx.nonce > acc.get(tx.chainId)) {
-          acc.set(tx.chainId, tx.nonce);
-        }
-        return acc;
-      }, new Map());
-
-      chainIds.map(async (chainId) => {
-        const provider = getProvider({ chainId });
-        const providerTransactionCount = await provider.getTransactionCount(
-          address,
-          'latest',
-        );
-        const currentProviderNonce = providerTransactionCount - 1;
-        const currentNonceForChainId = highestNoncePerChainId.get(chainId) - 1;
-        setNonce({
-          address,
-          chainId,
-          currentNonce:
-            currentProviderNonce > currentNonceForChainId
-              ? currentProviderNonce
-              : currentNonceForChainId,
-          latestConfirmedNonce: currentProviderNonce,
-        });
-      });
-    },
-    [address, setNonce],
-  );
-
   const watchPendingTransactions = useCallback(async () => {
     if (!pendingTransactions?.length) return;
     const updatedPendingTransactions = await Promise.all(
       pendingTransactions.map((tx) => processPendingTransaction(tx)),
     );
-
-    processNonces(updatedPendingTransactions);
 
     const { newPendingTransactions, minedTransactions } =
       updatedPendingTransactions.reduce(
@@ -275,7 +210,6 @@ export const useWatchPendingTransactions = ({
     address,
     currentCurrency,
     pendingTransactions,
-    processNonces,
     processPendingTransaction,
     setPendingTransactions,
     testnetMode,
