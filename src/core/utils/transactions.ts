@@ -530,7 +530,7 @@ export function updateTransaction({
   chainId: ChainId;
   transaction: NewTransaction;
 }) {
-  const { setNonce } = nonceStore.getState();
+  const { getNonce, setNonce } = nonceStore.getState();
   const { updatePendingTransaction } = pendingTransactionsStore.getState();
   const { currentCurrency } = currentCurrencyStore.getState();
   const updatedPendingTransaction = parseNewTransaction(
@@ -541,11 +541,15 @@ export function updateTransaction({
     address,
     pendingTransaction: updatedPendingTransaction,
   });
-  setNonce({
-    address,
-    chainId,
-    currentNonce: updatedPendingTransaction?.nonce,
-  });
+  const localNonceData = getNonce({ address, chainId });
+  const localNonce = localNonceData?.currentNonce || 0;
+  if (transaction.nonce > localNonce) {
+    setNonce({
+      address,
+      chainId,
+      currentNonce: updatedPendingTransaction?.nonce,
+    });
+  }
 }
 
 export function getTransactionBlockExplorer({
