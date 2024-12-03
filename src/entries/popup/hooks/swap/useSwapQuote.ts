@@ -18,6 +18,7 @@ import { ChainId } from '~/core/types/chains';
 import { convertAmountToRawAmount } from '~/core/utils/numbers';
 import { isUnwrapEth, isWrapEth } from '~/core/utils/swaps';
 
+import { analyticsTrackQuoteFailed } from './analyticsTrackQuoteFailed';
 import { IndependentField } from './useSwapInputs';
 
 const SWAP_POLLING_INTERVAL = 5000;
@@ -113,11 +114,21 @@ export const useSwapQuote = ({
   ]);
 
   const { data, isLoading, isError, fetchStatus } = useQuery({
-    queryFn: () =>
-      quotesParams &&
-      ((isCrosschainSwap ? getCrosschainQuote : getQuote)(
+    queryFn: async () => {
+      if (!quotesParams) return;
+      const quote = await (isCrosschainSwap ? getCrosschainQuote : getQuote)(
         quotesParams,
-      ) as Promise<Quote | CrosschainQuote | QuoteError>),
+      );
+      if (quote && 'error' in quote) {
+        analyticsTrackQuoteFailed(quote, {
+          inputAsset: assetToSell,
+          outputAsset: assetToBuy,
+          inputAmount: assetToSellValue,
+          outputAmount: assetToBuyValue,
+        });
+      }
+      return quote;
+    },
     queryKey: ['getSwapQuote', quotesParams],
     enabled: !!quotesParams,
     refetchInterval: SWAP_POLLING_INTERVAL,

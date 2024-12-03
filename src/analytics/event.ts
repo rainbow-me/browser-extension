@@ -2,6 +2,7 @@
 
 import { Address } from 'viem';
 
+import { ChainId } from '~/core/types/chains';
 import { KeyboardEventDescription } from '~/entries/popup/hooks/useKeyboardAnalytics';
 
 import { screen } from './screen';
@@ -219,6 +220,10 @@ export const event = {
    * Called when a user enters the swaps flow
    */
   swapOpened: 'swap.opened',
+  /**
+   * Called when the quote fails 'Insufficient funds' 'Out of gas' 'No routes found' and 'No quotes found'
+   */
+  swapQuoteFailed: 'swap.quote.failed',
   /**
    * Called when the user completes a Swap/Bridge and submits the transaction.
    * This includes cross-chain swaps, while `bridgeSubmitted` is instead called
@@ -893,4 +898,12 @@ export type EventProperties = {
   };
   [event.walletViewed]: undefined;
   [event.toggledDegenMode]: { enabled: boolean };
+  [event.swapQuoteFailed]: {
+    error_code: number | undefined;
+    reason: string;
+    inputAsset: { symbol: string; address: string; chainId: ChainId };
+    inputAmount: string | number;
+    outputAsset: { symbol: string; address: string; chainId: ChainId };
+    outputAmount: string | number | undefined;
+  };
 };
