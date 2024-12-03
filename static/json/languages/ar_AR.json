@@ -488,6 +488,10 @@
         "send_to_wallet": "إرسال إلى هذه المحفظة",
         "add_contact": "إضافة كجهة اتصال",
         "remove_contact": "إزالة الاتصال",
+        "hide_token": "إخفاء %{name}",
+        "unhide_token": "إظهار %{name}",
+        "hide": "إخفاء",
+        "unhide": "إظهار",
         "copy_wallet_address": "نسخ العنوان",
         "view_wallet_on_etherscan": "عرض على Etherscan",
         "send_contact": "إرسال إلى جهة اتصال",
@@ -498,6 +502,8 @@
       "search_tags": {
         "swap": "شراء, بيع, تداول, طلب, تبادل, دكس, طرق",
         "bridge": "تحويل, سلسلة, طرق",
+        "hide_token": "مخفي",
+        "hide_nft": "مخفي",
         "get": "مبادلة, جسر",
         "my_wallets": "ماي, التبديل",
         "my_contacts": "يا",
@@ -586,7 +592,8 @@
       }
     },
     "labels": {
-      "contact": "اتصال"
+      "contact": "اتصال",
+      "hidden": "مخفي"
     },
     "quick_promo": {
       "text": "اضغط %{modifierSymbol}ك لفتح القائمة السحرية",
@@ -731,6 +738,11 @@
       "unknown_price": {
         "title": "قيمة السوق %{symbol} غير معروفة",
         "description": "إذا قررت المتابعة، تأكد من رضاك عن الكمية المقتبسة"
+      }
+    },
+    "promo": {
+      "degen_mode": {
+        "title": "جرب وضع درست للتخطي المراجعة"
       }
     },
     "aggregators": {
@@ -1624,7 +1636,8 @@
       "unverified": "غير متحقق منه",
       "verified": "تم التحقق منه",
       "on_other_networks": "على شبكات أخرى",
-      "bridge": "جسر"
+      "bridge": "جسر",
+      "popular": "شائع في Rainbow"
     },
     "verified_by_rainbow": "تم التحقق من قبل رينبو"
   },
@@ -1660,6 +1673,11 @@
           "title": "ما هو Degen؟",
           "description_1": "Degen Chain هي شبكة الطبقة 3 التي تعمل فوق Arbitrum وEthereum",
           "description_2": "تقدم معاملات سريعة ورخيصة للغاية بالعملة المجتمعية $degen من Farcaster"
+        },
+        "apechain": {
+          "title": "ما هي ApeChain؟",
+          "description_1": "ApeChain هي شبكة الطبقة <b>٣</b> التي تعمل فوق Arbitrum Orbit وEthereum.",
+          "description_2": "إنها تعزز بشكل كبير فائدة ApeCoin، مما يدعم اقتصادًا قويًا وديناميكيًا مدفوعًا بواسطة $APE."
         },
         "custom_network": {
           "title": "ما هذه الشبكة؟",

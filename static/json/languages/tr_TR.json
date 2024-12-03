@@ -488,6 +488,10 @@
         "send_to_wallet": "Bu Cüzdana Gönder",
         "add_contact": "Kişi Olarak Ekle",
         "remove_contact": "Kişiyi Kaldır",
+        "hide_token": "%{name}adımını gizle",
+        "unhide_token": "%{name} Gizlemeyi Kaldır",
+        "hide": "Gizle",
+        "unhide": "Gizleme",
         "copy_wallet_address": "Adresi Kopyala",
         "view_wallet_on_etherscan": "Etherscan'da Görüntüle",
         "send_contact": "Kişiye Gönder",
@@ -498,6 +502,8 @@
       "search_tags": {
         "swap": "satın al, sat, takas, sipariş, değişim, dex, rotalar",
         "bridge": "transfer, zincir, rotalar",
+        "hide_token": "gizli",
+        "hide_nft": "gizli",
         "get": "takas, köprü",
         "my_wallets": "benim, değiştir",
         "my_contacts": "benim",
@@ -586,7 +592,8 @@
       }
     },
     "labels": {
-      "contact": "İletişim"
+      "contact": "İletişim",
+      "hidden": "Gizli"
     },
     "quick_promo": {
       "text": "Sihirli Menü'yü açmak için %{modifierSymbol}K tuşuna basın",
@@ -731,6 +738,11 @@
       "unknown_price": {
         "title": "%{symbol} Piyasa Değeri Bilinmiyor",
         "description": "Devam etmeye karar verirseniz, alacağınız miktarın sizin için uygun olduğundan emin olun."
+      }
+    },
+    "promo": {
+      "degen_mode": {
+        "title": "İncelemeyi atlamak için Degen Modu'nu deneyin"
       }
     },
     "aggregators": {
@@ -1624,7 +1636,8 @@
       "unverified": "Doğrulanmamış",
       "verified": "Doğrulanmış",
       "on_other_networks": "Diğer ağlarda",
-      "bridge": "Bridge"
+      "bridge": "Bridge",
+      "popular": "Rainbow'da Popüler"
     },
     "verified_by_rainbow": "Rainbow tarafından doğrulandı"
   },
@@ -1660,6 +1673,11 @@
           "title": "Degen nedir?",
           "description_1": "Degen Chain, Arbitrum ve Ethereum'un üzerinde çalışan bir Katman 3 ağıdır.",
           "description_2": "Farcaster topluluk tokeni $degen ile ölçülen inanılmaz hızlı ve ucuz işlemler sunar."
+        },
+        "apechain": {
+          "title": "ApeChain nedir?",
+          "description_1": "ApeChain, Arbitrum Orbit ve Ethereum'un üzerinde çalışan bir Katman <b>3</b> ağıdır.",
+          "description_2": "Bu, ApeCoin'in faydasını önemli ölçüde artırır ve $APE tarafından yönlendirilen sağlam ve dinamik bir ekonomiyi teşvik eder."
         },
         "custom_network": {
           "title": "Bu Ağ nedir?",

@@ -488,6 +488,10 @@
         "send_to_wallet": "Enviar para esta Carteira",
         "add_contact": "Adicionar como Contato",
         "remove_contact": "Remover contato",
+        "hide_token": "Ocultar %{name}",
+        "unhide_token": "Reexibir %{name}",
+        "hide": "Ocultar",
+        "unhide": "Reexibir",
         "copy_wallet_address": "Copiar Endereço",
         "view_wallet_on_etherscan": "Ver no Etherscan",
         "send_contact": "Enviar para Contato",
@@ -498,6 +502,8 @@
       "search_tags": {
         "swap": "comprar, vender, negociar, encomendar, trocar, dex, rotas",
         "bridge": "transferir, cadeia, rotas",
+        "hide_token": "oculto",
+        "hide_nft": "oculto",
         "get": "trocar, ponte",
         "my_wallets": "meu, alternar",
         "my_contacts": "meus",
@@ -586,7 +592,8 @@
       }
     },
     "labels": {
-      "contact": "Contato"
+      "contact": "Contato",
+      "hidden": "Oculto"
     },
     "quick_promo": {
       "text": "Pressione %{modifierSymbol}K para abrir o Menu Mágico",
@@ -731,6 +738,11 @@
       "unknown_price": {
         "title": "Valor de Mercado de %{symbol} Desconhecido",
         "description": "Se decidir continuar, certifique-se de que está satisfeito com o valor cotado"
+      }
+    },
+    "promo": {
+      "degen_mode": {
+        "title": "Experimente o Modo Degen para pular a revisão"
       }
     },
     "aggregators": {
@@ -1624,7 +1636,8 @@
       "unverified": "Não verificado",
       "verified": "Verificado",
       "on_other_networks": "Em outras redes",
-      "bridge": "Bridge"
+      "bridge": "Bridge",
+      "popular": "Popular no Rainbow"
     },
     "verified_by_rainbow": "Verificado pelo Rainbow"
   },
@@ -1660,6 +1673,11 @@
           "title": "O que é Degen?",
           "description_1": "Degen Chain é uma rede Layer 3 que funciona em cima do Arbitrum e Ethereum.",
           "description_2": "Oferece transações incrivelmente rápidas e baratas denominadas no token comunitário Farcaster $degen."
+        },
+        "apechain": {
+          "title": "O que é ApeChain?",
+          "description_1": "ApeChain é uma rede Layer <b>3</b> que funciona em cima do Arbitrum Orbit e Ethereum.",
+          "description_2": "Melhora significativamente a utilidade do ApeCoin, fomentando uma economia robusta e dinâmica impulsionada pelo $APE."
         },
         "custom_network": {
           "title": "O que é esta Rede?",

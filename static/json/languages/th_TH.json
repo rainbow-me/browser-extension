@@ -488,6 +488,10 @@
         "send_to_wallet": "ส่งถึงกระเป๋าสตางค์นี้",
         "add_contact": "เพิ่มเป็นผู้ติดต่อ",
         "remove_contact": "ลบผู้ติดต่อ",
+        "hide_token": "ซ่อน %{name}",
+        "unhide_token": "เลิกซ่อน %{name}",
+        "hide": "ซ่อน",
+        "unhide": "เลิกซ่อน",
         "copy_wallet_address": "คัดลอกที่อยู่",
         "view_wallet_on_etherscan": "ดูบน Etherscan",
         "send_contact": "ส่งถึงผู้ติดต่อ",
@@ -498,6 +502,8 @@
       "search_tags": {
         "swap": "ซื้อ, ขาย, แลกเปลี่ยน, สั่งซื้อ, เปลี่ยน, dex, เส้นทาง",
         "bridge": "โอนย้าย, เครือข่าย, เส้นทาง",
+        "hide_token": "ซ่อน",
+        "hide_nft": "ซ่อน",
         "get": "เปลี่ยน, โอนย้าย",
         "my_wallets": "ของฉัน, สลับ",
         "my_contacts": "ของฉัน",
@@ -586,7 +592,8 @@
       }
     },
     "labels": {
-      "contact": "ติดต่อ"
+      "contact": "ติดต่อ",
+      "hidden": "ซ่อน"
     },
     "quick_promo": {
       "text": "กด %{modifierSymbol}K เพื่อเปิดเมนูวิเศษ",
@@ -731,6 +738,11 @@
       "unknown_price": {
         "title": "มูลค่าตลาดของ %{symbol} ไม่ทราบ",
         "description": "หากคุณตัดสินใจดำเนินการต่อ โปรดตรวจสอบว่าคุณพอใจกับจำนวนที่ได้รับ"
+      }
+    },
+    "promo": {
+      "degen_mode": {
+        "title": "ลองใช้โหมด Degen เพื่อข้ามการตรวจสอบ"
       }
     },
     "aggregators": {
@@ -1624,7 +1636,8 @@
       "unverified": "ไม่ได้รับการตรวจสอบ",
       "verified": "ได้รับการตรวจสอบ",
       "on_other_networks": "ในเครือข่ายอื่น ๆ",
-      "bridge": "สะพาน"
+      "bridge": "สะพาน",
+      "popular": "ยอดนิยมใน Rainbow"
     },
     "verified_by_rainbow": "ตรวจสอบโดย Rainbow"
   },
@@ -1660,6 +1673,11 @@
           "title": "Degen คืออะไร",
           "description_1": "Degen Chain เป็นเครือข่าย Layer 3 ที่ทำงานบน Arbitrum และ Ethereum",
           "description_2": "มีการทำธุรกรรมที่เร็วและถูกมาก โดยใช้เหรียญชุมชน Farcaster ว่า $degen"
+        },
+        "apechain": {
+          "title": "ApeChain คืออะไร?",
+          "description_1": "ApeChain เป็นเครือข่าย Layer 3 ที่ทำงานบน Arbitrum Orbit และ Ethereum",
+          "description_2": "มันเพิ่มประสิทธิภาพของ ApeCoin อย่างมาก ส่งเสริมเศรษฐกิจที่แข็งแกร่งและมีการเคลื่อนไหวโดย $APE"
         },
         "custom_network": {
           "title": "เครือข่ายนี้คืออะไร",

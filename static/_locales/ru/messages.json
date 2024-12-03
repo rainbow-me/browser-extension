@@ -8,7 +8,7 @@
     "description": "The short name of the extension, displayed in the toolbar."
   },
   "appDescription": {
-    "message": "Rainbow - это веселый, простой и безопасный кошелек Ethereum, который делает управление вашими активами радостью",
+    "message": "Rainbow — это весёлый, простой и безопасный кошелёк Ethereum, который делает управление вашими активами радостью.",
     "description": "The description of the extension, displayed in the web store."
   }
 }
