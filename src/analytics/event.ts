@@ -235,6 +235,14 @@ export const event = {
    */
   toggledDegenMode: 'degenMode.toggled',
   /**
+   * Called when the user views the token details screen
+   */
+  tokenDetailsErc20: 'token.details.erc20',
+  /**
+   * Called when the user views the NFT details screen
+   */
+  tokenDetailsNFT: 'token.details.nft',
+  /**
    * Called when user completes or skips the wallet backup flow.
    * potential outcomes are 'succeeded,' 'failed,' or 'skipped.'
    */
@@ -250,9 +258,7 @@ export const event = {
  * Properties corresponding to each event
  */
 export type EventProperties = {
-  [event.appCrash]: {
-    error: string;
-  };
+  [event.appCrash]: { error: string };
   [event.bridgeSubmitted]: {
     /**
      * Symbol of the input asset being swapped.
@@ -905,5 +911,32 @@ export type EventProperties = {
     inputAmount: string | number;
     outputAsset: { symbol: string; address: string; chainId: ChainId };
     outputAmount: string | number | undefined;
+  };
+  [event.tokenDetailsErc20]: {
+    token: { address: string; chainId: ChainId; symbol: string };
+    eventSentAfterMs: number;
+    available_data: {
+      chart: boolean;
+      description: boolean;
+      iconUrl: boolean;
+      price: boolean;
+    };
+  };
+  [event.tokenDetailsNFT]: {
+    token: {
+      isPoap: boolean;
+      isParty: boolean;
+      isENS: boolean;
+      address: string;
+      chainId: ChainId;
+      name: string;
+      image_url: string | null | undefined;
+    };
+    eventSentAfterMs: number;
+    available_data: {
+      description: boolean;
+      image_url: boolean;
+      floorPrice: boolean;
+    };
   };
 };
