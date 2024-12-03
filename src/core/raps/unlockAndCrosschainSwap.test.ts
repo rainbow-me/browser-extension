@@ -5,7 +5,6 @@ import {
   SwapType,
   TokenAsset,
 } from '@rainbow-me/swaps';
-import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test } from 'vitest';
 
 import {
@@ -17,6 +16,7 @@ import {
 } from '~/test/utils';
 
 import { connectedToHardhatStore } from '../state/currentSettings/connectedToHardhat';
+import { chainHardhat } from '../types/chains';
 import { updateWagmiConfig } from '../wagmi';
 
 import {
@@ -106,7 +106,7 @@ const doesntNeedUnlockQuote: Quote | QuoteError | null = {
 
 beforeAll(async () => {
   connectedToHardhatStore.setState({ connectedToHardhat: true });
-  updateWagmiConfig([mainnet]);
+  updateWagmiConfig([chainHardhat]);
   await delay(3000);
 });
 
