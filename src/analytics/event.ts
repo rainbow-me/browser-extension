@@ -11,6 +11,10 @@ import { screen } from './screen';
  */
 export const event = {
   /**
+   * Called when the app crashes for any reason
+   */
+  appCrash: 'app.crash',
+  /**
    * Called when the user completes the Swap/Bridge flow and submits a bridge transaction.
    * This event is only called when the user is bridging a mapped asset, whereas
    * `swapSubmitted` is called when the user is completing a cross-chain swap.
@@ -241,6 +245,9 @@ export const event = {
  * Properties corresponding to each event
  */
 export type EventProperties = {
+  [event.appCrash]: {
+    error: string;
+  };
   [event.bridgeSubmitted]: {
     /**
      * Symbol of the input asset being swapped.
