@@ -8,22 +8,59 @@ const { createClient, http, sha256 } = require('viem');
 const { getBlockNumber } = require('viem/actions');
 
 const urls = require('./mocks/mock_swap_quotes_urls.json');
+const FETCH_TIMEOUT = 5000; // 5 seconds
+
+const fetchWithTimeout = (
+  url: RequestInfo | URL,
+  timeout: number,
+): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => {
+      reject(new Error('Fetch timed out'));
+    }, timeout);
+
+    fetch(url)
+      .then((response) => {
+        clearTimeout(timer);
+        if (!response.ok) {
+          reject(new Error(`Failed to fetch: ${response.statusText}`));
+        }
+        return response.text();
+      })
+      .then(resolve)
+      .catch(reject);
+  });
+};
 
 (async () => {
   const client = createClient({ transport: http(process.env.ETH_MAINNET_RPC) });
-  const blockNumber = await getBlockNumber(client);
+  const blockNumberInitial = await getBlockNumber(client);
 
-  // check initial blockNumber
-  console.log('OUTSIDE FUNCTION', blockNumber.toString());
+  console.log('INITIAL BLOCK NUMBER', blockNumberInitial.toString());
 
-  await Promise.all(
-    urls.map(async (url: RequestInfo | URL) => {
-      const res = await fetch(url).then((r) => r.text());
-      const hash = sha256(url);
-
-      // check if blockNumber is the same the entire time
-      console.log('INSIDE FUNCTION', blockNumber.toString());
+  const fetchAndWritePromises = urls.map(async (url: RequestInfo | URL) => {
+    const hash = sha256(url);
+    try {
+      const res = await fetchWithTimeout(url, FETCH_TIMEOUT);
       await writeFile(`e2e/mocks/swap_quotes/${hash}.json`, res);
-    }),
-  );
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.error(`Error fetching ${url}:`, error.message);
+      const errorMessage = JSON.stringify({
+        error: true,
+        message: error.message,
+      });
+      await writeFile(`e2e/mocks/swap_quotes/${hash}.json`, errorMessage);
+    }
+  });
+
+  await Promise.all(fetchAndWritePromises);
+
+  const blockNumberFinal = await getBlockNumber(client);
+
+  console.log('FINAL BLOCK NUMBER', blockNumberFinal.toString());
+
+  if (blockNumberInitial === blockNumberFinal)
+    console.log('✅✅✅ REQUESTS SPAN SINGLE BLOCK');
+  else console.log('❌❌❌ REQUESTS SPAN MULTIPLE BLOCKS');
 })();
