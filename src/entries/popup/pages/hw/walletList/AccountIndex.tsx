@@ -17,7 +17,6 @@ export const AccountIndex = ({ index }: { index: number }) => {
       borderWidth="2px"
       borderColor={'separatorSecondary'}
       padding={'6px'}
-      marginTop={'-5px'}
       className={accountIndexHoverContainerStyle}
     >
       <Inline space="2px">

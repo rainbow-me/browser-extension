@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.5.62",
+  "version": "1.5.64",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -100,6 +100,7 @@
     "@ethersproject/units": "5.7.0",
     "@ethersproject/wallet": "5.7.0",
     "@ledgerhq/hw-app-eth": "6.38.1",
+    "@ethersproject/sha2": "5.7.0",
     "@ledgerhq/hw-transport-webhid": "6.29.3",
     "@metamask/browser-passworder": "4.1.0",
     "@metamask/eth-sig-util": "7.0.1",
@@ -286,7 +287,7 @@
     "dset": "3.1.4",
     "zod": "3.23.8",
     "rollup": "4.22.4",
-    "cross-spawn": "7.0.5"
+    "cross-spawn": "6.0.6"
   },
   "lavamoat": {
     "allowScripts": {

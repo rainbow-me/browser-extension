@@ -159,11 +159,14 @@ export function useTokensShortcuts() {
         }
 
         if (e.key === shortcuts.tokens.SEND_ASSET.key && !isWatchingWallet) {
+          navigate(ROUTES.SEND);
+          analytics.track(event.sendOpened, {
+            entryPoint: 'token_details_shortcut_x_key',
+          });
           trackShortcut({
             key: shortcuts.tokens.SEND_ASSET.display,
             type: 'tokens.goToSend',
           });
-          navigate(ROUTES.SEND);
         }
         if (e.key === shortcuts.tokens.VIEW_ASSET.key) {
           trackShortcut({

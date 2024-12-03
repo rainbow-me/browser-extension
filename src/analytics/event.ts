@@ -178,6 +178,10 @@ export const event = {
    */
   revokeSubmitted: 'revoke.submitted',
   /**
+   * Called when a user enters the send flow
+   */
+  sendOpened: 'send.opened',
+  /**
    * Called when the user completes a Send flow and submits the transaction.
    */
   sendSubmitted: 'send.submitted',
@@ -762,6 +766,18 @@ export type EventProperties = {
      * `chainId` of the send transaction.
      */
     chainId: number;
+  };
+  [event.sendOpened]: {
+    /**
+     * Entrypoint of the send flow.
+     */
+    entryPoint:
+      | 'commandk' // command k action
+      | 'home_header_send_button' // Home header send button
+      | 'home_shortcut_x_key' // 'X' key shortcut
+      | 'token_context_menu' // Token context menu
+      | 'token_details' // Token details
+      | 'token_details_shortcut_x_key'; // Token details 'X' key shortcut
   };
   [event.settingsAnalyticsTrackingEnabled]: undefined;
   [event.settingsRainbowDefaultProviderDisabled]: undefined;

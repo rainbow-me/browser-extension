@@ -5,7 +5,6 @@ import { Address } from 'viem';
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import {
-  Bleed,
   Box,
   Button,
   Column,
@@ -66,6 +65,7 @@ const WalletListHW = () => {
   );
 
   const handleAddWallets = useCallback(async () => {
+    const existingWallets = await wallet.getAccounts();
     if (isLoading) return;
     if (selectedAccounts === 0) return;
     setIsLoading(true);
@@ -73,7 +73,8 @@ const WalletListHW = () => {
     // Import all the secrets
     const filteredAccounts = accountsToImport.filter(
       (account: { address: Address }) =>
-        !accountsIgnored.includes(account.address),
+        !accountsIgnored.includes(account.address) &&
+        !existingWallets.includes(account.address),
     );
 
     const address = (await wallet.importAccountsFromHW(
@@ -169,11 +170,11 @@ const WalletListHW = () => {
                     >
                       {selectedAccounts === 1
                         ? i18n.t(
-                          'edit_import_wallet_selection.importing_your_wallet.one',
-                        )
+                            'edit_import_wallet_selection.importing_your_wallet.one',
+                          )
                         : i18n.t(
-                          'edit_import_wallet_selection.importing_your_wallet.other',
-                        )}
+                            'edit_import_wallet_selection.importing_your_wallet.other',
+                          )}
                     </Text>
                     <Box
                       width="fit"
@@ -206,12 +207,12 @@ const WalletListHW = () => {
                         >
                           {accountsToImport?.length > 1
                             ? i18n.t('hw.connect_wallets_found', {
-                              count: accountsToImport?.length,
-                              vendor: state.vendor,
-                            })
+                                count: accountsToImport?.length,
+                                vendor: state.vendor,
+                              })
                             : i18n.t('hw.connect_wallets_not_found', {
-                              vendor: state.vendor,
-                            })}
+                                vendor: state.vendor,
+                              })}
                         </Text>
                       </Box>
                     </Stack>
@@ -330,9 +331,7 @@ const WalletListHW = () => {
                                                   color="label"
                                                   address={address as Address}
                                                 />
-                                                <Bleed vertical="8px">
-                                                  <AccountIndex index={index} />
-                                                </Bleed>
+                                                <AccountIndex index={index} />
                                               </Inline>
                                               <Box style={{ height: 9 }}>
                                                 {!walletsSummaryIsLoading ? (
@@ -426,8 +425,8 @@ const WalletListHW = () => {
                   >
                     {selectedAccounts > 1
                       ? i18n.t('hw.connect_n_wallets', {
-                        count: selectedAccounts,
-                      })
+                          count: selectedAccounts,
+                        })
                       : i18n.t('hw.connect_wallet')}
                   </Button>
                 </Box>

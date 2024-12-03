@@ -953,6 +953,9 @@ export const useCommands = (
     (address: Address) => {
       if (shouldNavigateToSend) {
         navigate(`${ROUTES.SEND}?to=${address}`);
+        analytics.track(event.sendOpened, {
+          entryPoint: 'commandk',
+        });
       } else {
         handleSendFallback(address);
       }
