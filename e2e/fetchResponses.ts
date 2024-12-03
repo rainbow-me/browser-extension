@@ -33,7 +33,7 @@ const fetchWithTimeout = (
 };
 
 (async () => {
-  const client = createClient({ transport: http(process.env.ETH_MAINNET_RPC) });
+  const client = createClient({ transport: http('http://127.0.0.1:8545') });
   const blockNumberInitial = await getBlockNumber(client);
 
   console.log('INITIAL BLOCK NUMBER', blockNumberInitial.toString());
