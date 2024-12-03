@@ -3,6 +3,7 @@ import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client
 import TrezorConnect from '@trezor/connect-web';
 import { isEqual } from 'lodash';
 import * as React from 'react';
+import { scan } from 'react-scan';
 import { WagmiProvider } from 'wagmi';
 
 import { analytics } from '~/analytics';
@@ -29,6 +30,15 @@ import { useExpiryListener } from './hooks/useExpiryListener';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
 import usePrevious from './hooks/usePrevious';
 import { useRainbowChains } from './hooks/useRainbowChains';
+import { isFullScreen } from './utils/windows';
+
+if (process.env.IS_DEV === 'true') {
+  scan({
+    showToolbar: isFullScreen,
+    report: true,
+    log: true,
+  });
+}
 
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
