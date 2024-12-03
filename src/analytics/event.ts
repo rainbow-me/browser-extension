@@ -2,6 +2,7 @@
 
 import { Address } from 'viem';
 
+import { ChainId } from '~/core/types/chains';
 import { KeyboardEventDescription } from '~/entries/popup/hooks/useKeyboardAnalytics';
 
 import { screen } from './screen';
@@ -10,6 +11,10 @@ import { screen } from './screen';
  * All events, used by `analytics.track()`
  */
 export const event = {
+  /**
+   * Called when the app crashes for any reason
+   */
+  appCrash: 'app.crash',
   /**
    * Called when the user completes the Swap/Bridge flow and submits a bridge transaction.
    * This event is only called when the user is bridging a mapped asset, whereas
@@ -216,6 +221,10 @@ export const event = {
    */
   swapOpened: 'swap.opened',
   /**
+   * Called when the quote fails 'Insufficient funds' 'Out of gas' 'No routes found' and 'No quotes found'
+   */
+  swapQuoteFailed: 'swap.quote.failed',
+  /**
    * Called when the user completes a Swap/Bridge and submits the transaction.
    * This includes cross-chain swaps, while `bridgeSubmitted` is instead called
    * for mapped asset bridge transactions where the `mainnetAddress` is equal.
@@ -225,6 +234,14 @@ export const event = {
    * Called when the user toggles Degen Mode in the Swap/Bridge flow.
    */
   toggledDegenMode: 'degenMode.toggled',
+  /**
+   * Called when the user views the token details screen
+   */
+  tokenDetailsErc20: 'token.details.erc20',
+  /**
+   * Called when the user views the NFT details screen
+   */
+  tokenDetailsNFT: 'token.details.nft',
   /**
    * Called when user completes or skips the wallet backup flow.
    * potential outcomes are 'succeeded,' 'failed,' or 'skipped.'
@@ -241,6 +258,7 @@ export const event = {
  * Properties corresponding to each event
  */
 export type EventProperties = {
+  [event.appCrash]: { error: string };
   [event.bridgeSubmitted]: {
     /**
      * Symbol of the input asset being swapped.
@@ -886,4 +904,39 @@ export type EventProperties = {
   };
   [event.walletViewed]: undefined;
   [event.toggledDegenMode]: { enabled: boolean };
+  [event.swapQuoteFailed]: {
+    error_code: number | undefined;
+    reason: string;
+    inputAsset: { symbol: string; address: string; chainId: ChainId };
+    inputAmount: string | number;
+    outputAsset: { symbol: string; address: string; chainId: ChainId };
+    outputAmount: string | number | undefined;
+  };
+  [event.tokenDetailsErc20]: {
+    token: { address: string; chainId: ChainId; symbol: string };
+    eventSentAfterMs: number;
+    available_data: {
+      chart: boolean;
+      description: boolean;
+      iconUrl: boolean;
+      price: boolean;
+    };
+  };
+  [event.tokenDetailsNFT]: {
+    token: {
+      isPoap: boolean;
+      isParty: boolean;
+      isENS: boolean;
+      address: string;
+      chainId: ChainId;
+      name: string;
+      image_url: string | null | undefined;
+    };
+    eventSentAfterMs: number;
+    available_data: {
+      description: boolean;
+      image_url: boolean;
+      floorPrice: boolean;
+    };
+  };
 };
