@@ -87,9 +87,9 @@ function watchForPendingTransactionsReportedByRainbowBackend({
       const latestNonceConfirmedByBackend =
         latestTxConfirmedByBackend.nonce || 0;
 
-      const [latestPendingTx] = pendingTransactions.filter(
+      const latestPendingTx = pendingTransactions.filter(
         (tx) => tx?.chainId === supportedChainId,
-      );
+      )[-1];
 
       let currentNonce;
       if (latestPendingTx) {
