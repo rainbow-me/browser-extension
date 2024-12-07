@@ -466,7 +466,10 @@ export async function getNextNonce({
 
   const numPendingPublicTx =
     pendingTxCountFromPublicRpc - latestTxCountFromPublicRpc;
-  const numPendingLocalTx = Math.max(localNonce - latestTxCountFromPublicRpc);
+  const numPendingLocalTx = Math.max(
+    localNonce - latestTxCountFromPublicRpc,
+    0,
+  );
   if (numPendingLocalTx === numPendingPublicTx)
     return pendingTxCountFromPublicRpc; // nothing in private mempool, proceed normally
   if (numPendingLocalTx === 0 && numPendingPublicTx > 0)
