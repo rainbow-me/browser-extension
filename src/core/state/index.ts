@@ -5,14 +5,12 @@ export {
   currentCurrencyStore,
   currentLanguageStore,
   currentThemeStore,
-  flashbotsEnabledStore,
   isDefaultWalletStore,
   useCurrentAddressStore,
   useCurrentChainIdStore,
   useCurrentCurrencyStore,
   useCurrentLanguageStore,
   useCurrentThemeStore,
-  useFlashbotsEnabledStore,
   useIsDefaultWalletStore,
 } from './currentSettings';
 export { deviceIdStore, useDeviceIdStore } from './device';

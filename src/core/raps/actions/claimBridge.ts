@@ -201,7 +201,6 @@ export async function claimBridge({
     nonce: swap.nonce,
     status: 'pending',
     type: 'bridge',
-    flashbots: false,
     ...gasParams,
   } satisfies NewTransaction;
 

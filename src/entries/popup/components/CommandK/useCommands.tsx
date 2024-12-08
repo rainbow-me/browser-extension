@@ -8,7 +8,7 @@ import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useCurrentAddressStore, useFlashbotsEnabledStore } from '~/core/state';
+import { useCurrentAddressStore } from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
@@ -306,14 +306,6 @@ export const getStaticCommandInfo = (): CommandInfo => {
       page: PAGES.HOME,
       symbol: 'arrow.up.left.and.arrow.down.right',
       symbolSize: 14,
-      type: SearchItemType.Shortcut,
-    },
-    flashbots: {
-      actionLabel: actionLabels.activateCommand,
-      shouldRemainOnActiveRoute: true,
-      name: getCommandName('enable_flashbots'),
-      symbol: 'bolt.shield.fill',
-      symbolSize: 15,
       type: SearchItemType.Shortcut,
     },
     exportAddresses: {
@@ -787,8 +779,6 @@ export const useCommands = (
 
   const { currentAddress } = useCurrentAddressStore();
 
-  const { flashbotsEnabled, setFlashbotsEnabled } = useFlashbotsEnabledStore();
-
   const { contacts, deleteContact, saveContact } = useContactsStore();
 
   const { type, vendor } = useCurrentWalletTypeAndVendor();
@@ -1115,13 +1105,6 @@ export const useCommands = (
       viewFullScreen: {
         action: () => goToNewTab({ url: POPUP_URL }),
       },
-      flashbots: {
-        action: () => setFlashbotsEnabled(!flashbotsEnabled),
-        name: flashbotsEnabled
-          ? getCommandName('disable_flashbots')
-          : getCommandName('enable_flashbots'),
-        symbol: flashbotsEnabled ? 'bolt.shield' : 'bolt.shield.fill',
-      },
 
       // PAGE: ADD_WALLET
       createWallet: {
@@ -1443,7 +1426,6 @@ export const useCommands = (
       hideAssetBalances,
       handleToggleHiddenSmallBalances,
       hideSmallBalances,
-      flashbotsEnabled,
       currentTheme,
       previousPageState.selectedCommand,
       isContactAdded,
@@ -1453,7 +1435,6 @@ export const useCommands = (
       navigate,
       handleCopy,
       sortedAccounts,
-      setFlashbotsEnabled,
       isFirefox,
       selectTokenAndNavigate,
       viewTokenOnExplorer,

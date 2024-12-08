@@ -34,7 +34,6 @@ type BaseTransaction = {
     | undefined
   >;
   direction?: TransactionDirection;
-  flashbots?: boolean;
 
   value?: string; // network asset amount sent with the tx (like eth or pol)
   fee?: string;
@@ -74,7 +73,6 @@ export type PendingTransaction = BaseTransaction & {
 
 export type MinedTransaction = BaseTransaction & {
   status: 'confirmed' | 'failed';
-  flashbotsStatus?: 'CANCELLED' | 'FAILED' | 'INCLUDED';
   blockNumber: number;
   minedAt: number;
   confirmations: number;
