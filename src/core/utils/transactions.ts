@@ -467,7 +467,7 @@ export async function getNextNonce({
   const numPendingPublicTx =
     pendingTxCountFromPublicRpc - latestTxCountFromPublicRpc;
   const numPendingLocalTx = Math.max(
-    localNonce - latestTxCountFromPublicRpc,
+    localNonce + 1 - latestTxCountFromPublicRpc,
     0,
   );
   if (numPendingLocalTx === numPendingPublicTx)
