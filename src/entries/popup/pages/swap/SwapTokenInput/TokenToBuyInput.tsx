@@ -112,7 +112,7 @@ export const TokenToBuyInput = forwardRef(function TokenToBuyInput(
 
   return (
     <TokenInput
-      testId={`token-to-buy`}
+      testId={`${assetToBuy ? `${assetToBuy.uniqueId}-` : ''}token-to-buy`}
       inputRef={inputRef}
       accentCaretColor
       asset={assetToBuy}
