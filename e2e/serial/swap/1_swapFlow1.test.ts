@@ -134,10 +134,6 @@ it('should be able to go to swap settings and check rows are visible', async () 
     driver,
   });
   expect(slippageRow).toBeTruthy();
-  await findElementByTestIdAndClick({
-    id: 'swap-settings-done',
-    driver,
-  });
 });
 
 it('should be able to interact with route settings', async () => {
