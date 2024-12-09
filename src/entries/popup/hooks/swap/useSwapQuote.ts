@@ -115,7 +115,7 @@ export const useSwapQuote = ({
 
   const { data, isLoading, isError, fetchStatus } = useQuery({
     queryFn: async () => {
-      if (!quotesParams) return;
+      if (!quotesParams) throw 'unreacheable';
       const quote = await (isCrosschainSwap ? getCrosschainQuote : getQuote)(
         quotesParams,
       );
@@ -127,7 +127,7 @@ export const useSwapQuote = ({
           outputAmount: assetToBuyValue,
         });
       }
-      return quote;
+      return quote as Quote | CrosschainQuote | QuoteError;
     },
     queryKey: ['getSwapQuote', quotesParams],
     enabled: !!quotesParams,

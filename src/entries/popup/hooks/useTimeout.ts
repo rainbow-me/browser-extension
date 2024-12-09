@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useRef } from 'react';
 
 export function useTimeoutEffect(
   onTimeout: (e: { cancelled: boolean; elapsedTime: number }) => void,
-  delay: number,
+  { timeout, enabled = true }: { timeout: number; enabled?: boolean },
 ) {
   const callback = useRef(onTimeout);
   useLayoutEffect(() => {
@@ -11,22 +11,21 @@ export function useTimeoutEffect(
 
   const timeoutRef = useRef<NodeJS.Timeout>();
   useEffect(() => {
+    if (!enabled) return;
     const startedAt = Date.now();
-    timeoutRef.current = setTimeout(
-      () =>
-        callback.current({
-          cancelled: false,
-          elapsedTime: Date.now() - startedAt,
-        }),
-      delay,
-    );
-    const timeout = timeoutRef.current;
+    timeoutRef.current = setTimeout(() => {
+      callback.current({
+        cancelled: false,
+        elapsedTime: Date.now() - startedAt,
+      });
+    }, timeout);
     return () => {
-      clearTimeout(timeout);
+      if (!timeoutRef.current) return;
+      clearTimeout(timeoutRef.current);
       const elapsedTime = Date.now() - startedAt;
-      if (elapsedTime < delay) {
+      if (elapsedTime < timeout) {
         callback.current({ cancelled: true, elapsedTime });
       }
     };
-  }, [delay]);
+  }, [timeout, enabled]);
 }

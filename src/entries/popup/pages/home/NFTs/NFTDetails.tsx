@@ -166,7 +166,7 @@ export default function NFTDetails() {
         },
       });
     },
-    5 * 1000, // 5s
+    { timeout: 2 * 1000, enabled: !!nft },
   );
 
   return (

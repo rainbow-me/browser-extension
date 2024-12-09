@@ -629,7 +629,7 @@ export function TokenDetails() {
         },
       });
     },
-    5 * 1000, // 5s
+    { timeout: 2 * 1000, enabled: !!token },
   );
 
   const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
