@@ -3,7 +3,7 @@ import { memo, useReducer, useState } from 'react';
 
 import { metadataClient } from '~/core/graphql';
 import { i18n } from '~/core/languages';
-import { createQueryKey } from '~/core/react-query';
+import { createQueryKey, queryClient } from '~/core/react-query';
 import { SUPPORTED_CHAIN_IDS } from '~/core/references/chains';
 import { AddressOrEth, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -148,6 +148,35 @@ const fetchPriceChart = async (
     }, [] as ChartData[]) ?? null
   );
 };
+type PriceChartQueryKeyArgs = {
+  address: AddressOrEth;
+  chainId: ChainId;
+  time?: ChartTime;
+};
+const priceChartQueryKey = ({
+  address,
+  chainId,
+  time,
+}: PriceChartQueryKeyArgs) => ['price chart', { address, chainId, time }];
+export function getPriceChartQueryCache({
+  address,
+  chainId,
+  time,
+}: PriceChartQueryKeyArgs) {
+  return queryClient.getQueriesData({
+    queryKey: ['price chart'],
+    predicate(query) {
+      const queryArgs = query.queryKey[1] as PriceChartQueryKeyArgs;
+      if (queryArgs.address !== address || queryArgs.chainId !== chainId) {
+        return false;
+      }
+      if (!time) return true;
+      if (queryArgs.time === time) return true;
+      return false;
+    },
+    exact: false,
+  })[0];
+}
 const usePriceChart = ({
   mainnetAddress,
   address,
@@ -166,7 +195,7 @@ const usePriceChart = ({
         return fetchPriceChart(time, ChainId.mainnet, mainnetAddress);
       return chart || null;
     },
-    queryKey: createQueryKey('price chart', { address, chainId, time }),
+    queryKey: priceChartQueryKey({ address, chainId, time }),
     placeholderData: (previousData) => previousData,
     staleTime: 1 * 60 * 1000, // 1min
     enabled: SUPPORTED_CHAIN_IDS.includes(chainId),
