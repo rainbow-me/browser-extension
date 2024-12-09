@@ -140,39 +140,6 @@ it('should be able to go to swap settings and check rows are visible', async () 
   });
 });
 
-it('should be able to go to settings and turn on flashbots', async () => {
-  await findElementByTestIdAndClick({ id: 'navbar-button-with-back', driver });
-  await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
-  await findElementByTestIdAndClick({ id: 'settings-link', driver });
-  await findElementByTestIdAndClick({ id: 'settings-transactions', driver });
-  await findElementByTestIdAndClick({
-    id: 'flashbots-transactions-toggle',
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: 'navbar-button-with-back',
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: 'navbar-button-with-back',
-    driver,
-  });
-  await findElementByTestIdAndClick({ id: 'header-link-swap', driver });
-});
-
-it('should be able to go to swap settings and check flashbots row is visible', async () => {
-  await findElementByTestIdAndClick({
-    id: 'swap-settings-navbar-button',
-    driver,
-  });
-
-  const flashbotsRow = await findElementByTestId({
-    id: 'swap-settings-flashbots-row',
-    driver,
-  });
-  expect(flashbotsRow).toBeTruthy();
-});
-
 it('should be able to interact with route settings', async () => {
   await findElementByTestIdAndClick({
     id: 'swap-settings-route-label',
@@ -188,25 +155,6 @@ it('should be able to interact with route settings', async () => {
   });
   await findElementByTestIdAndClick({
     id: 'settings-route-context-0x',
-    driver,
-  });
-});
-
-it('should be able to interact with flashbots settings', async () => {
-  await findElementByTestIdAndClick({
-    id: 'swap-settings-flashbots-label',
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: 'explainer-action-button',
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: 'swap-settings-flashbots-toggle',
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: 'swap-settings-flashbots-toggle',
     driver,
   });
 });
