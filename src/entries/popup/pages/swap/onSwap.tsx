@@ -5,7 +5,6 @@ import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { QuoteTypeMap } from '~/core/raps/references';
-import { useFlashbotsEnabledStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSwapAssetsToRefreshStore } from '~/core/state/swapAssetsToRefresh';
@@ -38,10 +37,6 @@ export const onSwap = async ({
     assetToSell.chainId !== assetToBuy.chainId ? 'crosschainSwap' : 'swap';
   const q = quote as QuoteTypeMap[typeof type];
 
-  const flashbots =
-    assetToSell.chainId === ChainId.mainnet &&
-    useFlashbotsEnabledStore.getState().swapFlashbotsEnabled;
-
   const isConnectedToHardhat =
     useConnectedToHardhatStore.getState().connectedToHardhat;
   const chainId = isConnectedToHardhat ? ChainId.hardhat : assetToSell.chainId;
@@ -57,7 +52,6 @@ export const onSwap = async ({
       assetToSell: assetToSell,
       assetToBuy: assetToBuy,
       quote: q,
-      flashbots,
     },
     type,
   });
@@ -94,7 +88,6 @@ export const onSwap = async ({
     outputAssetAmount: q.buyAmount as number,
     mainnetAddress:
       assetToBuy?.chainId === ChainId.mainnet ? 'address' : 'mainnetAddress',
-    flashbots,
     tradeAmountUSD: q.tradeAmountUSD,
     crosschain: assetToSell.chainId !== assetToBuy.chainId,
     degenMode,
