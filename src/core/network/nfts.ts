@@ -1,13 +1,19 @@
 import { RainbowError, logger } from '~/logger';
 
 import { queryClient } from '../react-query';
-import { ChainName } from '../types/chains';
+import { ChainId, ChainName, chainNameToIdMapping } from '../types/chains';
 import {
   PolygonAllowListDictionary,
   SimpleHashCollectionDetails,
   SimpleHashNFT,
   UniqueAsset,
 } from '../types/nfts';
+import {
+  simpleHashNFTToUniqueAsset,
+  simpleHashSupportedChainNames,
+  simpleHashSupportedTestnetChainNames,
+  validateSimpleHashNFT,
+} from '../utils/nfts';
 
 import { RainbowFetchClient } from './internal/rainbowFetch';
 import { nftAllowListClient } from './nftAllowList';
@@ -183,5 +189,43 @@ export const reportNftAsSpam = async (nft: UniqueAsset) => {
     logger.error(new RainbowError('reportNftAsSpam: failed to report nft'), {
       message: (error as Error).message,
     });
+  }
+};
+
+const simplehashChainNames = [
+  ...simpleHashSupportedChainNames,
+  ...simpleHashSupportedTestnetChainNames,
+];
+
+/**
+ * @throws when chain is not supported
+ * @throws when fetching simplehash fails for some reason
+ */
+export const fetchNft = async ({
+  contractAddress,
+  tokenId,
+  chainId,
+}: {
+  contractAddress: string;
+  chainId: ChainId;
+  tokenId: string;
+}) => {
+  const chain = simplehashChainNames.find(
+    (chainName) => chainNameToIdMapping[chainName] === chainId,
+  );
+  if (!chain) throw new Error('Chain not supported');
+
+  try {
+    const response = await nftApi.get<SimpleHashNFT>(
+      `/nfts/${chain}/${contractAddress}/${tokenId}`,
+    );
+    const validatedNft = validateSimpleHashNFT(response.data);
+    if (!validatedNft) throw new Error('Invalid NFT');
+    return simpleHashNFTToUniqueAsset(validatedNft);
+  } catch (e) {
+    logger.error(new RainbowError('Fetch NFT: '), {
+      message: (e as Error)?.message,
+    });
+    throw new Error('Failed to fetch Nft');
   }
 };
