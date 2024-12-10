@@ -469,20 +469,10 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     assetToBuy,
   });
 
-  const {
-    source,
-    slippage,
-    setSettings,
-    swapFlashbotsEnabled,
-    slippageManuallyUpdated,
-  } = useSwapSettings({
-    chainId: assetToSell?.chainId || ChainId.mainnet,
-  });
-
-  const flashbotsEnabledGlobally =
-    config.flashbots_enabled &&
-    swapFlashbotsEnabled &&
-    assetToSell?.chainId === ChainId.mainnet;
+  const { source, slippage, setSettings, slippageManuallyUpdated } =
+    useSwapSettings({
+      chainId: assetToSell?.chainId || ChainId.mainnet,
+    });
 
   const {
     assetToSellInputRef,
@@ -758,7 +748,6 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
         assetToBuy={assetToBuy}
         assetToSell={assetToSell}
         quote={quote}
-        flashbotsEnabled={flashbotsEnabledGlobally}
         hideSwapReview={hideSwapReviewSheet}
         assetToSellValue={assetToSellValue}
       />
@@ -941,7 +930,6 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                         assetToBuy={assetToBuy}
                         enabled={!inReviewSheet}
                         defaultSpeed={selectedGas.option}
-                        flashbotsEnabled={flashbotsEnabledGlobally}
                         quoteServiceTime={getQuoteServiceTime({
                           quote: quote as CrosschainQuote,
                         })}

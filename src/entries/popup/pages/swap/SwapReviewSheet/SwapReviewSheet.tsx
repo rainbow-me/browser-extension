@@ -163,7 +163,6 @@ export type SwapReviewSheetProps = {
   assetToSellValue?: string;
   assetToBuy?: ParsedSearchAsset | null;
   quote?: Quote | CrosschainQuote | QuoteError;
-  flashbotsEnabled: boolean;
   hideSwapReview: () => void;
 };
 
@@ -173,7 +172,6 @@ export const SwapReviewSheet = ({
   assetToSellValue,
   assetToBuy,
   quote,
-  flashbotsEnabled,
   hideSwapReview,
 }: SwapReviewSheetProps) => {
   if (!quote || !assetToBuy || !assetToSell || (quote as QuoteError)?.error)
@@ -185,7 +183,6 @@ export const SwapReviewSheet = ({
       assetToSellValue={assetToSellValue}
       assetToBuy={assetToBuy}
       quote={quote as Quote | CrosschainQuote}
-      flashbotsEnabled={flashbotsEnabled}
       hideSwapReview={hideSwapReview}
     />
   );
@@ -197,7 +194,6 @@ type SwapReviewSheetWithQuoteProps = {
   assetToSellValue?: string;
   assetToBuy: ParsedSearchAsset;
   quote: Quote | CrosschainQuote;
-  flashbotsEnabled: boolean;
   hideSwapReview: () => void;
 };
 
@@ -207,7 +203,6 @@ const SwapReviewSheetWithQuote = ({
   assetToSellValue,
   assetToBuy,
   quote,
-  flashbotsEnabled,
   hideSwapReview,
 }: SwapReviewSheetWithQuoteProps) => {
   const navigate = useRainbowNavigate();
@@ -299,22 +294,6 @@ const SwapReviewSheetWithQuote = ({
     hideSwapReview();
     closeMoreDetails();
   }, [closeMoreDetails, hideSwapReview]);
-
-  const openFlashbotsExplainer = useCallback(() => {
-    showExplainerSheet({
-      show: true,
-      header: { emoji: '🤖' },
-      title: t('swap.explainers.flashbots.title'),
-      description: [t('swap.explainers.flashbots.description')],
-      actionButton: {
-        label: t('swap.explainers.flashbots.action_label'),
-        variant: 'tinted',
-        labelColor: 'blue',
-        action: hideExplainerSheet,
-      },
-      testId: 'swap-review-flashbots',
-    });
-  }, [hideExplainerSheet, showExplainerSheet, t]);
 
   const openFeeExplainer = useCallback(() => {
     showExplainerSheet({
@@ -491,31 +470,6 @@ const SwapReviewSheetWithQuote = ({
                   />
                 </ReviewDetailsRow>
 
-                {flashbotsEnabled && (
-                  <ReviewDetailsRow testId="flashbots-enabled">
-                    <Label
-                      label={t('swap.review.use_flashbots')}
-                      testId="swap-review-flashbots-info-button"
-                      infoButton
-                      onClick={openFlashbotsExplainer}
-                    />
-                    <Inline
-                      space="4px"
-                      alignHorizontal="center"
-                      alignVertical="center"
-                    >
-                      <Text size="14pt" weight="semibold" color="label">
-                        {t('swap.review.flashbots_on')}
-                      </Text>
-                      <Symbol
-                        symbol="checkmark.shield.fill"
-                        weight="semibold"
-                        color="green"
-                        size={12}
-                      />
-                    </Inline>
-                  </ReviewDetailsRow>
-                )}
                 <Box as={motion.div} key="more-details" layout>
                   {showMoreDetails && (
                     <Box
