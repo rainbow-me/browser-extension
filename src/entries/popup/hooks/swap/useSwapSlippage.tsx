@@ -1,7 +1,6 @@
 import { getSlippage } from '@rainbow-me/swaps';
 import { useQuery } from '@tanstack/react-query';
 import { BigNumberish } from 'ethers';
-import { Address } from 'viem';
 
 import {
   QueryConfig,
@@ -9,6 +8,7 @@ import {
   QueryFunctionResult,
   createQueryKey,
 } from '~/core/react-query';
+import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 
 export interface SwapSlippage {
@@ -19,10 +19,10 @@ export interface SwapSlippage {
 // Query Types
 
 export type SwapSlippageArgs = {
-  chainId: ChainId;
-  toChainId: ChainId;
-  sellTokenAddress: Address;
-  buyTokenAddress: Address;
+  chainId: ChainId | undefined;
+  toChainId: ChainId | undefined;
+  sellTokenAddress: AddressOrEth | undefined;
+  buyTokenAddress: AddressOrEth | undefined;
   sellAmount: BigNumberish;
   buyAmount: BigNumberish;
 };
@@ -68,6 +68,9 @@ async function swapSlippageQueryFunction({
     },
   ],
 }: QueryFunctionArgs<typeof swapSlippageQueryKey>) {
+  if (!chainId || !sellTokenAddress || !buyTokenAddress)
+    throw new Error('Invalid params');
+
   const slippage = await getSlippage({
     chainId,
     toChainId,
@@ -110,6 +113,7 @@ export function useSwapSlippage(
       buyAmount,
     }),
     queryFn: swapSlippageQueryFunction,
+    enabled: !!chainId && !!sellTokenAddress && !!buyTokenAddress,
     ...config,
     retry: true,
     staleTime: 10 * 60 * 1_000, // 10 min

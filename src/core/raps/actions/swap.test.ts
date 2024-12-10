@@ -5,10 +5,10 @@ import {
   QuoteError,
   getQuote,
 } from '@rainbow-me/swaps';
-import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test } from 'vitest';
 
 import { connectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { chainHardhat } from '~/core/types/chains';
 import { updateWagmiConfig } from '~/core/wagmi';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import { TEST_ADDRESS_2, TEST_PK_2, delay } from '~/test/utils';
@@ -19,7 +19,7 @@ let quote: Quote | QuoteError | null;
 
 beforeAll(async () => {
   connectedToHardhatStore.setState({ connectedToHardhat: true });
-  updateWagmiConfig([mainnet]);
+  updateWagmiConfig([chainHardhat]);
   await delay(3000);
   quote = await getQuote({
     chainId: 1,
@@ -36,7 +36,7 @@ beforeAll(async () => {
 
 test('[rap/swap] :: should estimate swap gas limit', async () => {
   const swapGasLimit = await estimateSwapGasLimit({
-    chainId: mainnet.id,
+    chainId: chainHardhat.id,
     requiresApprove: false,
     quote: quote as Quote,
   });
@@ -45,10 +45,10 @@ test('[rap/swap] :: should estimate swap gas limit', async () => {
 });
 
 test('[rap/swap] :: should execute swap', async () => {
-  const provider = getProvider({ chainId: mainnet.id });
+  const provider = getProvider({ chainId: chainHardhat.id });
   const wallet = new Wallet(TEST_PK_2, provider);
   const swapTx = await executeSwap({
-    chainId: mainnet.id,
+    chainId: chainHardhat.id,
     gasLimit: '600000',
     gasParams: {
       maxFeePerGas: '800000000000',

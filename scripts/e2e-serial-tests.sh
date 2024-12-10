@@ -1,13 +1,13 @@
 #!/bin/bash
 ANVIL_PORT=8545
-MAX_RETRIES=5
+MAX_RETRIES=3
 RETRY_COUNT=0
 
 # Function to launch and verify Anvil
 launch_anvil() {
   # Launch anvil in the bg
   yarn anvil:kill
-  yarn anvil --chain-id 1337 &
+  yarn anvil --chain-id 1337  &
   echo "Launching Anvil..."
 
   # Give it some time to boot

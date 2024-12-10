@@ -7,21 +7,21 @@ import { SearchAsset } from '~/core/types/search';
 
 import { parseTokenSearch } from './parseTokenSearch';
 
-const tokenSearchDiscoveryHttp = createHttpClient({
+const popularInRainbowHttp = createHttpClient({
   baseUrl: 'https://token-search.rainbow.me/v3/discovery',
   timeout: 30000,
 });
 
-const tokenDiscoveryQueryKey = ({ chainId }: { chainId: ChainId }) =>
+const popularInRainbowQueryKey = ({ chainId }: { chainId: ChainId }) =>
   createQueryKey('TokenDiscovery', { chainId }, { persisterVersion: 1 });
 
-async function tokenSearchQueryFunction({
+async function popularInRainbowQueryFunction({
   queryKey: [{ chainId }],
-}: QueryFunctionArgs<typeof tokenDiscoveryQueryKey>) {
+}: QueryFunctionArgs<typeof popularInRainbowQueryKey>) {
   const url = `/${chainId}`;
 
   try {
-    const tokenSearch = await tokenSearchDiscoveryHttp.get<{
+    const tokenSearch = await popularInRainbowHttp.get<{
       data: SearchAsset[];
     }>(url);
     return tokenSearch.data.data.map((asset) =>
@@ -32,7 +32,7 @@ async function tokenSearchQueryFunction({
   }
 }
 
-export function useTokenDiscovery<T = SearchAsset[]>({
+export function usePopularInRainbow<T = SearchAsset[]>({
   chainId,
   select,
 }: {
@@ -40,8 +40,8 @@ export function useTokenDiscovery<T = SearchAsset[]>({
   select?: (data: SearchAsset[]) => T;
 }) {
   return useQuery({
-    queryKey: tokenDiscoveryQueryKey({ chainId }),
-    queryFn: tokenSearchQueryFunction,
+    queryKey: popularInRainbowQueryKey({ chainId }),
+    queryFn: popularInRainbowQueryFunction,
     staleTime: 15 * 60 * 1000, // 15 min
     gcTime: 24 * 60 * 60 * 1000, // 1 day
     select,
