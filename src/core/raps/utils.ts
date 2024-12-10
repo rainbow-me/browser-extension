@@ -3,7 +3,6 @@ import { MaxUint256 } from '@ethersproject/constants';
 import { Contract, PopulatedTransaction } from '@ethersproject/contracts';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import {
-  ALLOWS_PERMIT,
   CrosschainQuote,
   Quote,
   getQuoteExecutionDetails,
@@ -207,22 +206,8 @@ export const getDefaultGasLimitForTrade = (
   quote: Quote,
   chainId: ChainId,
 ): string => {
-  const allowsPermit =
-    chainId === mainnet.id &&
-    ALLOWS_PERMIT[quote?.sellTokenAddress?.toLowerCase()];
-
-  let defaultGasLimit = quote?.defaultGasLimit;
-
-  if (allowsPermit) {
-    defaultGasLimit = Math.max(
-      Number(defaultGasLimit),
-      Number(
-        multiply(getChainGasUnits(chainId).basic.swapPermit, EXTRA_GAS_PADDING),
-      ),
-    ).toString();
-  }
   return (
-    defaultGasLimit ||
+    quote?.defaultGasLimit ||
     multiply(getChainGasUnits(chainId).basic.swap, EXTRA_GAS_PADDING)
   );
 };

@@ -1,5 +1,6 @@
 import { QueryClientProvider } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
+import TrezorConnect from '@trezor/connect-web';
 import { isEqual } from 'lodash';
 import * as React from 'react';
 import { WagmiProvider } from 'wagmi';
@@ -12,9 +13,9 @@ import { flushQueuedEvents } from '~/analytics/flushQueuedEvents';
 import config from '~/core/firebase/remoteConfig';
 import { initializeMessenger } from '~/core/messengers';
 import { persistOptions, queryClient } from '~/core/react-query';
-import { initializeSentry, setSentryUser } from '~/core/sentry';
-import { useCurrentLanguageStore, useDeviceIdStore } from '~/core/state';
-import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { initializeSentry } from '~/core/sentry';
+import { useCurrentLanguageStore, useCurrentThemeStore } from '~/core/state';
+import { TelemetryIdentifier } from '~/core/telemetry';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { WagmiConfigUpdater, wagmiConfig } from '~/core/wagmi';
 import { Box, ThemeProvider } from '~/design-system';
@@ -33,7 +34,6 @@ const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
 export function App() {
   const { currentLanguage, setCurrentLanguage } = useCurrentLanguageStore();
-  const { deviceId } = useDeviceIdStore();
   const { rainbowChains } = useRainbowChains();
   const prevChains = usePrevious(rainbowChains);
 
@@ -59,19 +59,18 @@ export function App() {
     // Disable analytics & sentry for e2e and dev mode
     if (process.env.IS_TESTING !== 'true' && process.env.IS_DEV !== 'true') {
       initializeSentry('popup');
-      setSentryUser(deviceId);
-      analytics.setDeviceId(deviceId);
-      analytics.identify();
       analytics.track(event.popupOpened);
       setTimeout(() => flushQueuedEvents(), 1000);
     }
     // Init trezor once globally
-    window.TrezorConnect?.init({
+    TrezorConnect?.init({
       manifest: {
         email: 'support@rainbow.me',
         appUrl: 'https://rainbow.me',
       },
       lazyLoad: true,
+      transports: ['BridgeTransport', 'WebUsbTransport'],
+      connectSrc: 'https://connect.trezor.io/9/',
     });
 
     if (process.env.IS_DEV !== 'true') {
@@ -119,6 +118,7 @@ export function App() {
                 <IdleTimer />
                 <OnboardingKeepAlive />
                 <WagmiConfigUpdater />
+                <TelemetryIdentifier />
               </AuthProvider>
             </ThemeProvider>
           </QueryClientProvider>

@@ -1,11 +1,14 @@
 import { useState } from 'react';
 
 import { selectNftCollections } from '~/core/resources/_selectors/nfts';
-import { useNftCollections } from '~/core/resources/nfts/collections';
+import {
+  MOCK_NFT_COLLECTION,
+  useNftCollections,
+} from '~/core/resources/nfts/collections';
 import { useCurrentAddressStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { NftSort } from '~/core/state/nfts';
-import { UniqueAsset } from '~/core/types/nfts';
+import { SimpleHashCollectionDetails, UniqueAsset } from '~/core/types/nfts';
 
 import { useUserChains } from '../useUserChains';
 
@@ -27,7 +30,8 @@ export const useSendUniqueAsset = () => {
       select: (data) => selectNftCollections(data),
     },
   );
-  const nftCollections = data || [];
+  const nftCollections: SimpleHashCollectionDetails[] =
+    process.env.IS_TESTING === 'true' ? MOCK_NFT_COLLECTION : data || [];
 
   return {
     selectNft: setSelectedNft,

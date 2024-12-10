@@ -2,6 +2,8 @@
 import { motion, useTransform } from 'framer-motion';
 import * as React from 'react';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -228,6 +230,9 @@ function ActionButtonsSection() {
                 }
               } else {
                 navigateToSwaps();
+                analytics.track(event.swapOpened, {
+                  entryPoint: 'home_header_swap_button',
+                });
               }
             }}
             tooltipHint={shortcuts.home.GO_TO_SWAP.display}
@@ -244,6 +249,9 @@ function ActionButtonsSection() {
             onClick={() => {
               if (shouldNavigateToSend) {
                 navigate(ROUTES.SEND);
+                analytics.track(event.sendOpened, {
+                  entryPoint: 'home_header_send_button',
+                });
               } else {
                 handleSendFallback();
               }

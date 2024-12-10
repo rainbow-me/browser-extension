@@ -48,18 +48,13 @@ declare global {
       RUDDERSTACK_DATA_PLANE: string;
       RUDDERSTACK_WRITE_KEY: string;
       SENTRY_DSN: string;
+      SECURE_WALLET_HASH_KEY: string;
       // Development
       IS_DEV: 'true' | 'false';
       IS_TESTING: 'true' | 'false';
       LOG_DEBUG?: string;
       LOG_LEVEL: 'debug' | 'info' | 'warn' | 'error';
     }
-  }
-}
-
-declare global {
-  interface Window {
-    TrezorConnect: typeof Window.TrezorConnect;
   }
 }
 

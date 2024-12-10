@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
+import { getWalletContext } from '~/analytics/util';
 import { i18n } from '~/core/languages';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
@@ -9,6 +10,7 @@ import { ProviderRequestPayload } from '~/core/transports/providerRequestTranspo
 import { RPCMethod } from '~/core/types/rpcMethods';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { getSigningRequestDisplayDetails } from '~/core/utils/signMessages';
+import { isLowerCaseMatch } from '~/core/utils/strings';
 import { Bleed, Box, Stack } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { showLedgerDisconnectedAlertIfNeeded } from '~/entries/popup/handlers/ledger';
@@ -53,7 +55,7 @@ export function SignMessage({
   });
   const { featureFlags } = useFeatureFlagsStore();
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
-  const { watchedWallets } = useWallets();
+  const { allWallets, watchedWallets } = useWallets();
 
   const selectedWallet = activeSession?.address;
 
@@ -77,19 +79,31 @@ export function SignMessage({
           requestPayload.msgData,
           requestPayload.address,
         );
-        analytics.track(event.dappPromptSignMessageApproved, {
-          dappURL: dappMetadata?.appHost || '',
-          dappName: dappMetadata?.appName,
-        });
+        analytics.track(
+          event.dappPromptSignMessageApproved,
+          {
+            chainId: activeSession?.chainId,
+            dappURL: dappMetadata?.url || '',
+            dappDomain: dappMetadata?.appHost || '',
+            dappName: dappMetadata?.appName,
+          },
+          await getWalletContext(activeSession?.address),
+        );
       } else if (walletAction === 'sign_typed_data') {
         result = await wallet.signTypedData(
           requestPayload.msgData,
           requestPayload.address,
         );
-        analytics.track(event.dappPromptSignTypedDataApproved, {
-          dappURL: dappMetadata?.appHost || '',
-          dappName: dappMetadata?.appName,
-        });
+        analytics.track(
+          event.dappPromptSignTypedDataApproved,
+          {
+            chainId: activeSession?.chainId,
+            dappURL: dappMetadata?.url || '',
+            dappDomain: dappMetadata?.appHost || '',
+            dappName: dappMetadata?.appName,
+          },
+          await getWalletContext(activeSession?.address),
+        );
       }
       approveRequest(result);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -103,29 +117,48 @@ export function SignMessage({
     }
   }, [
     approveRequest,
+    dappMetadata?.url,
     dappMetadata?.appHost,
     dappMetadata?.appName,
+    activeSession?.chainId,
+    activeSession?.address,
     request,
     selectedWallet,
   ]);
 
-  const onRejectRequest = useCallback(() => {
+  const onRejectRequest = useCallback(async () => {
     rejectRequest();
+    if (!activeSession?.address) return;
     const walletAction = getWalletActionMethod(request?.method);
     if (walletAction === 'personal_sign') {
-      analytics.track(event.dappPromptSignMessageRejected, {
-        dappURL: dappMetadata?.appHost || '',
-        dappName: dappMetadata?.appName,
-      });
+      analytics.track(
+        event.dappPromptSignMessageRejected,
+        {
+          chainId: activeSession?.chainId || 0,
+          dappURL: dappMetadata?.url || '',
+          dappDomain: dappMetadata?.appHost || '',
+          dappName: dappMetadata?.appName,
+        },
+        await getWalletContext(activeSession?.address),
+      );
     } else if (walletAction === 'sign_typed_data') {
-      analytics.track(event.dappPromptSignTypedDataRejected, {
-        dappURL: dappMetadata?.appHost || '',
-        dappName: dappMetadata?.appName,
-      });
+      analytics.track(
+        event.dappPromptSignTypedDataRejected,
+        {
+          chainId: activeSession?.chainId || 0,
+          dappURL: dappMetadata?.url || '',
+          dappDomain: dappMetadata?.appHost || '',
+          dappName: dappMetadata?.appName,
+        },
+        await getWalletContext(activeSession?.address),
+      );
     }
   }, [
+    dappMetadata?.url,
     dappMetadata?.appHost,
     dappMetadata?.appName,
+    activeSession?.chainId,
+    activeSession?.address,
     rejectRequest,
     request?.method,
   ]);
@@ -134,6 +167,13 @@ export function SignMessage({
     const watchedAddresses = watchedWallets?.map(({ address }) => address);
     return selectedWallet && watchedAddresses?.includes(selectedWallet);
   }, [selectedWallet, watchedWallets]);
+
+  const isSigningWithDevice = useMemo(() => {
+    const signingWithDevice =
+      allWallets.find((w) => isLowerCaseMatch(w.address, selectedWallet))
+        ?.type === 'HardwareWalletKeychain';
+    return signingWithDevice;
+  }, [allWallets, selectedWallet]);
 
   useEffect(() => {
     if (!featureFlags.full_watching_wallets && isWatchingWallet) {
@@ -157,6 +197,7 @@ export function SignMessage({
         </Bleed>
         <SignMessageActions
           waitingForDevice={waitingForDevice}
+          signingWithDevice={isSigningWithDevice}
           onAcceptRequest={onAcceptRequest}
           onRejectRequest={onRejectRequest}
           loading={loading}

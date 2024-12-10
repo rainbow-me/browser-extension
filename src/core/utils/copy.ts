@@ -1,4 +1,5 @@
 import { AddressZero } from '@ethersproject/constants';
+import { getAddress } from 'viem';
 
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 
@@ -26,6 +27,6 @@ export const copyAddress = (address: AddressOrEth) => {
   copy({
     title: i18n.t('wallet_header.copy_toast'),
     description: truncateAddress(address),
-    value: address,
+    value: getAddress(address),
   });
 };

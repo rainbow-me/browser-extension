@@ -3,6 +3,7 @@ import { Address } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
+import { getWalletContext } from '~/analytics/util';
 import { initializeMessenger } from '~/core/messengers';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useAppSessionsStore, useCurrentAddressStore } from '~/core/state';
@@ -46,7 +47,7 @@ export const RequestAccounts = ({
   );
   const [selectedWallet, setSelectedWallet] = useState<Address>(currentAddress);
 
-  const onAcceptRequest = useCallback(() => {
+  const onAcceptRequest = useCallback(async () => {
     try {
       setLoading(true);
       approveRequest({
@@ -63,11 +64,16 @@ export const RequestAccounts = ({
         address: selectedWallet,
         chainId: selectedChainId,
       });
-      analytics.track(event.dappPromptConnectApproved, {
-        chainId: selectedChainId,
-        dappURL: dappMetadata?.appHost || '',
-        dappName: dappMetadata?.appName,
-      });
+      analytics.track(
+        event.dappPromptConnectApproved,
+        {
+          chainId: selectedChainId,
+          dappURL: dappMetadata?.url || '',
+          dappDomain: dappMetadata?.appHost || '',
+          dappName: dappMetadata?.appName,
+        },
+        await getWalletContext(selectedWallet),
+      );
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       logger.info('error connecting to dapp');
@@ -80,24 +86,32 @@ export const RequestAccounts = ({
     selectedWallet,
     selectedChainId,
     addSession,
+    dappMetadata?.url,
     dappMetadata?.appHost,
     dappMetadata?.appHostName,
     dappMetadata?.appName,
     dappUrl,
   ]);
 
-  const onRejectRequest = useCallback(() => {
+  const onRejectRequest = useCallback(async () => {
     rejectRequest();
-    analytics.track(event.dappPromptConnectRejected, {
-      chainId: selectedChainId,
-      dappURL: dappMetadata?.appHost || '',
-      dappName: dappMetadata?.appName,
-    });
+    analytics.track(
+      event.dappPromptConnectRejected,
+      {
+        chainId: selectedChainId,
+        dappURL: dappMetadata?.url || '',
+        dappDomain: dappMetadata?.appHost || '',
+        dappName: dappMetadata?.appName,
+      },
+      await getWalletContext(selectedWallet),
+    );
   }, [
+    dappMetadata?.url,
     dappMetadata?.appHost,
     dappMetadata?.appName,
     rejectRequest,
     selectedChainId,
+    selectedWallet,
   ]);
 
   return (

@@ -2,6 +2,8 @@ import { useCallback, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useEnsName } from 'wagmi';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
@@ -141,12 +143,15 @@ export function useHomeShortcuts() {
           navigate(ROUTES.CONNECTED);
           break;
         case shortcuts.home.GO_TO_SEND.key:
-          trackShortcut({
-            key: shortcuts.home.GO_TO_SEND.display,
-            type: 'home.goToSend',
-          });
           if (allowSend) {
             navigate(ROUTES.SEND);
+            analytics.track(event.sendOpened, {
+              entryPoint: 'home_shortcut_x_key',
+            });
+            trackShortcut({
+              key: shortcuts.home.GO_TO_SEND.display,
+              type: 'home.goToSend',
+            });
           } else {
             alertWatchingWallet();
           }
@@ -159,11 +164,14 @@ export function useHomeShortcuts() {
           navigate(ROUTES.SETTINGS);
           break;
         case shortcuts.home.GO_TO_SWAP.key:
+          navigateToSwaps();
+          analytics.track(event.swapOpened, {
+            entryPoint: 'home_shortcut_x_key',
+          });
           trackShortcut({
             key: shortcuts.home.GO_TO_SWAP.display,
             type: 'home.goToSwap',
           });
-          navigateToSwaps();
           break;
         case shortcuts.home.GO_TO_PROFILE.key:
           if (!selectedToken && !isTokenDetailsPage) {

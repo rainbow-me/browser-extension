@@ -2,6 +2,8 @@ import { useCallback, useEffect, useReducer } from 'react';
 import { Navigate, To, useParams, useSearchParams } from 'react-router-dom';
 import { Address } from 'viem';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { ETH_ADDRESS } from '~/core/references';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -197,7 +199,12 @@ function SwapSend({
           width="full"
           color="accent"
           symbol="arrow.triangle.swap"
-          onClick={() => selectTokenAndNavigate(ROUTES.SWAP)}
+          onClick={() => {
+            selectTokenAndNavigate(ROUTES.SWAP);
+            analytics.track(event.swapOpened, {
+              entryPoint: 'token_details',
+            });
+          }}
           tabIndex={0}
         >
           {i18n.t('token_details.swap')}
@@ -222,7 +229,12 @@ function SwapSend({
           width="full"
           color="accent"
           symbol="paperplane.fill"
-          onClick={() => selectTokenAndNavigate(ROUTES.SEND)}
+          onClick={() => {
+            selectTokenAndNavigate(ROUTES.SEND);
+            analytics.track(event.sendOpened, {
+              entryPoint: 'token_details',
+            });
+          }}
           tabIndex={0}
         >
           {i18n.t('token_details.send')}

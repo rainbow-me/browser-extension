@@ -535,12 +535,12 @@
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/parser": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>gensync": true,
         "eslint>debug": true,
         "file-loader>loader-utils>json5": true,
         "jest>@jest/core>@jest/transform>convert-source-map": true,
         "jest>@jest/core>jest-snapshot>@babel/generator": true,
-        "jest>@jest/core>jest-snapshot>@babel/traverse": true,
         "jest>@jest/core>jest-snapshot>@babel/types": true,
         "semver": true
       }
@@ -614,8 +614,8 @@
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-split-export-declaration": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": true,
-        "jest>@jest/core>jest-snapshot>@babel/traverse": true,
         "jest>@jest/core>jest-snapshot>@babel/types": true,
         "jest>@jest/core>jest-snapshot>@babel/types>@babel/helper-validator-identifier": true
       }
@@ -638,11 +638,223 @@
         "jest>@jest/core>jest-snapshot>@babel/types": true
       }
     },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse": {
+      "globals": {
+        "console.log": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/code-frame": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/helper-environment-visitor": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/helper-split-export-declaration": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/parser": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/types": true,
+        "eslint>debug": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-hoist-variables": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>globals": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/code-frame": {
+      "globals": {
+        "console.warn": true,
+        "process.emitWarning": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/code-frame>chalk": true,
+        "lavamoat>@babel/highlight": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/code-frame>chalk": {
+      "globals": {
+        "process.env.TERM": true,
+        "process.platform": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/code-frame>chalk>ansi-styles": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/code-frame>chalk>escape-string-regexp": true,
+        "supports-color": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/code-frame>chalk>ansi-styles": {
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/code-frame>chalk>ansi-styles>color-convert": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/code-frame>chalk>ansi-styles>color-convert": {
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/code-frame>chalk>ansi-styles>color-convert>color-name": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator": {
+      "globals": {
+        "console.error": true,
+        "console.warn": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>@babel/types": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>@jridgewell/trace-mapping": true,
+        "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping": true,
+        "jest>@jest/core>jest-snapshot>@babel/generator>jsesc": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>@babel/types": {
+      "globals": {
+        "console.warn": true,
+        "process.env.BABEL_TYPES_8_BREAKING": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>@babel/types>@babel/helper-validator-identifier": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/types>@babel/helper-string-parser": true,
+        "lavamoat>lavamoat-core>@babel/types>to-fast-properties": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>@jridgewell/trace-mapping": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
+        "webpack>terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "define": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/helper-split-export-declaration": {
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/helper-split-export-declaration>@babel/types": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/helper-split-export-declaration>@babel/types": {
+      "globals": {
+        "console.warn": true,
+        "process.env.BABEL_TYPES_8_BREAKING": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/helper-split-export-declaration>@babel/types>@babel/helper-string-parser": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/helper-split-export-declaration>@babel/types>@babel/helper-validator-identifier": true,
+        "lavamoat>lavamoat-core>@babel/types>to-fast-properties": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/types": {
+      "globals": {
+        "console.warn": true,
+        "process.env.BABEL_TYPES_8_BREAKING": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/types>@babel/helper-string-parser": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/types>@babel/helper-validator-identifier": true,
+        "lavamoat>lavamoat-core>@babel/types>to-fast-properties": true
+      }
+    },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers": {
       "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": true,
-        "jest>@jest/core>jest-snapshot>@babel/traverse": true,
         "jest>@jest/core>jest-snapshot>@babel/types": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse": {
+      "globals": {
+        "console.log": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/code-frame": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/generator": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/parser": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/types": true,
+        "eslint>debug": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-environment-visitor": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-hoist-variables": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-split-export-declaration": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>globals": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/code-frame": {
+      "globals": {
+        "console.warn": true,
+        "process.emitWarning": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/code-frame>chalk": true,
+        "lavamoat>@babel/highlight": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/code-frame>chalk": {
+      "globals": {
+        "process.env.TERM": true,
+        "process.platform": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/code-frame>chalk>ansi-styles": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/code-frame>chalk>escape-string-regexp": true,
+        "supports-color": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/code-frame>chalk>ansi-styles": {
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/code-frame>chalk>ansi-styles>color-convert": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/code-frame>chalk>ansi-styles>color-convert": {
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/code-frame>chalk>ansi-styles>color-convert>color-name": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/generator": {
+      "globals": {
+        "console.error": true,
+        "console.warn": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/generator>@babel/types": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/generator>@jridgewell/trace-mapping": true,
+        "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping": true,
+        "jest>@jest/core>jest-snapshot>@babel/generator>jsesc": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/generator>@babel/types": {
+      "globals": {
+        "console.warn": true,
+        "process.env.BABEL_TYPES_8_BREAKING": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/types>@babel/helper-string-parser": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/types>@babel/helper-validator-identifier": true,
+        "lavamoat>lavamoat-core>@babel/types>to-fast-properties": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/generator>@jridgewell/trace-mapping": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
+        "webpack>terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "define": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/types": {
+      "globals": {
+        "console.warn": true,
+        "process.env.BABEL_TYPES_8_BREAKING": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/types>@babel/helper-string-parser": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/types>@babel/helper-validator-identifier": true,
+        "lavamoat>lavamoat-core>@babel/types>to-fast-properties": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": {
@@ -650,6 +862,93 @@
         "@testing-library/react>@testing-library/dom>@babel/code-frame": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/parser": true,
         "jest>@jest/core>jest-snapshot>@babel/types": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse": {
+      "globals": {
+        "console.log": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse>@babel/code-frame": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse>@babel/generator": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse>@babel/parser": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse>@babel/types": true,
+        "eslint>debug": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-environment-visitor": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-hoist-variables": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-split-export-declaration": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>globals": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse>@babel/code-frame": {
+      "globals": {
+        "console.warn": true,
+        "process.emitWarning": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse>@babel/code-frame>chalk": true,
+        "lavamoat>@babel/highlight": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse>@babel/code-frame>chalk": {
+      "globals": {
+        "process.env.TERM": true,
+        "process.platform": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse>@babel/code-frame>chalk>ansi-styles": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse>@babel/code-frame>chalk>escape-string-regexp": true,
+        "supports-color": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse>@babel/code-frame>chalk>ansi-styles": {
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse>@babel/code-frame>chalk>ansi-styles>color-convert": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse>@babel/code-frame>chalk>ansi-styles>color-convert": {
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse>@babel/code-frame>chalk>ansi-styles>color-convert>color-name": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse>@babel/generator": {
+      "globals": {
+        "console.error": true,
+        "console.warn": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse>@babel/generator>@jridgewell/trace-mapping": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse>@babel/types": true,
+        "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping": true,
+        "jest>@jest/core>jest-snapshot>@babel/generator>jsesc": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse>@babel/generator>@jridgewell/trace-mapping": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
+        "webpack>terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "define": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse>@babel/types": {
+      "globals": {
+        "console.warn": true,
+        "process.env.BABEL_TYPES_8_BREAKING": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse>@babel/types>@babel/helper-string-parser": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse>@babel/types>@babel/helper-validator-identifier": true,
+        "lavamoat>lavamoat-core>@babel/types>to-fast-properties": true
       }
     },
     "eslint>@nodelib/fs.walk": {
@@ -1117,93 +1416,6 @@
     "jest>@jest/core>jest-snapshot>@babel/generator>jsesc": {
       "globals": {
         "Buffer.isBuffer": true
-      }
-    },
-    "jest>@jest/core>jest-snapshot>@babel/traverse": {
-      "globals": {
-        "console.log": true
-      },
-      "packages": {
-        "eslint>debug": true,
-        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/code-frame": true,
-        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/generator": true,
-        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/parser": true,
-        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/types": true,
-        "jest>@jest/core>jest-snapshot>@babel/traverse>globals": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-environment-visitor": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-hoist-variables": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-split-export-declaration": true
-      }
-    },
-    "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/code-frame": {
-      "globals": {
-        "console.warn": true,
-        "process.emitWarning": true
-      },
-      "packages": {
-        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/code-frame>chalk": true,
-        "lavamoat>@babel/highlight": true
-      }
-    },
-    "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/code-frame>chalk": {
-      "globals": {
-        "process.env.TERM": true,
-        "process.platform": true
-      },
-      "packages": {
-        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/code-frame>chalk>ansi-styles": true,
-        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/code-frame>chalk>escape-string-regexp": true,
-        "supports-color": true
-      }
-    },
-    "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/code-frame>chalk>ansi-styles": {
-      "packages": {
-        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/code-frame>chalk>ansi-styles>color-convert": true
-      }
-    },
-    "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/code-frame>chalk>ansi-styles>color-convert": {
-      "packages": {
-        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/code-frame>chalk>ansi-styles>color-convert>color-name": true
-      }
-    },
-    "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/generator": {
-      "globals": {
-        "console.error": true,
-        "console.warn": true
-      },
-      "packages": {
-        "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping": true,
-        "jest>@jest/core>jest-snapshot>@babel/generator>jsesc": true,
-        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/generator>@jridgewell/trace-mapping": true,
-        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/types": true
-      }
-    },
-    "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/generator>@jridgewell/trace-mapping": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
-        "webpack>terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true
-      }
-    },
-    "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": {
-      "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
-        "define": true
-      }
-    },
-    "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/types": {
-      "globals": {
-        "console.warn": true,
-        "process.env.BABEL_TYPES_8_BREAKING": true
-      },
-      "packages": {
-        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/types>@babel/helper-string-parser": true,
-        "jest>@jest/core>jest-snapshot>@babel/traverse>@babel/types>@babel/helper-validator-identifier": true,
-        "lavamoat>lavamoat-core>@babel/types>to-fast-properties": true
       }
     },
     "jest>@jest/core>jest-snapshot>@babel/types": {

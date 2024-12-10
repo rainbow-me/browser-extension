@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.5.56",
+  "version": "1.5.64",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -97,6 +97,7 @@
     "@ethersproject/units": "5.7.0",
     "@ethersproject/wallet": "5.7.0",
     "@ledgerhq/hw-app-eth": "6.38.1",
+    "@ethersproject/sha2": "5.7.0",
     "@ledgerhq/hw-transport-webhid": "6.29.3",
     "@metamask/browser-passworder": "4.1.0",
     "@metamask/eth-sig-util": "7.0.1",
@@ -117,6 +118,7 @@
     "@tanstack/react-query-persist-client": "5.35.1",
     "@tanstack/react-virtual": "3.8.1",
     "@trezor/connect-plugin-ethereum": "9.0.2",
+    "@trezor/connect-web": "9.4.2",
     "@types/qs": "6.9.7",
     "@vanilla-extract/css": "1.9.1",
     "@vanilla-extract/css-utils": "0.1.2",
@@ -281,7 +283,8 @@
     "path-to-regexp": "6.3.0",
     "dset": "3.1.4",
     "zod": "3.23.8",
-    "rollup": "4.22.4"
+    "rollup": "4.22.4",
+    "cross-spawn": "6.0.6"
   },
   "lavamoat": {
     "allowScripts": {
@@ -334,7 +337,15 @@
       "viem>ws>bufferutil": false,
       "viem>ws>utf-8-validate": false,
       "wagmi>@wagmi/connectors>@coinbase/wallet-sdk>keccak": false,
-      "wagmi>@wagmi/connectors>@metamask/sdk>eciesjs>secp256k1": false
+      "wagmi>@wagmi/connectors>@metamask/sdk>eciesjs>secp256k1": false,
+      "@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>@solana": false,
+      "@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>@solana/web3.js>bigint-buffer": false,
+      "@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>@solana/web3.js>rpc-websockets>bufferutil": false,
+      "@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>@solana/web3.js>rpc-websockets>utf-8-validate": false,
+      "@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false,
+      "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-has": false,
+      "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>tiny-secp256k1": false,
+      "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-hash": false
     }
   }
 }
