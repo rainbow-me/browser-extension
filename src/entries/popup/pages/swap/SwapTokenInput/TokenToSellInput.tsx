@@ -103,7 +103,7 @@ export const TokenToSellInput = ({
 
   return (
     <TokenInput
-      testId={`token-to-sell`}
+      testId={`${asset ? `${asset.uniqueId}-` : ''}token-to-sell`}
       inputRef={inputRef}
       accentCaretColor
       asset={asset}
