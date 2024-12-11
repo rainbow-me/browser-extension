@@ -16,7 +16,6 @@ import {
 import {
   useCurrentAddressStore,
   useCurrentCurrencyStore,
-  useFlashbotsEnabledStore,
   useGasStore,
 } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
@@ -77,12 +76,7 @@ export const RevokeApprovalSheet = ({
   const { currentAddress } = useCurrentAddressStore();
   const [sending, setSending] = useState(false);
   const confirmSendButtonRef = useRef<HTMLButtonElement>(null);
-  const { flashbotsEnabled } = useFlashbotsEnabledStore();
   const previousShow = usePrevious(show);
-  const flashbotsEnabledGlobally =
-    config.flashbots_enabled &&
-    flashbotsEnabled &&
-    approval?.chain_id === ChainId.mainnet;
 
   const [waitingForDevice, setWaitingForDevice] = useState(false);
 
@@ -181,7 +175,6 @@ export const RevokeApprovalSheet = ({
             },
           ],
           data: result.data,
-          flashbots: flashbotsEnabledGlobally,
           value: result.value.toString(),
           from: currentAddress,
           to: assetAddress,
@@ -240,7 +233,6 @@ export const RevokeApprovalSheet = ({
     approvalChainId,
     revokeApproveTransaction?.data,
     currentCurrency,
-    flashbotsEnabledGlobally,
     selectedGas.transactionGasParams,
     onRevoke,
     navigate,
@@ -441,7 +433,6 @@ export const RevokeApprovalSheet = ({
                 approval?.asset.colors?.primary ||
                 approval?.asset.colors?.fallback
               }
-              flashbotsEnabled={flashbotsEnabledGlobally}
             />
           </Box>
 
