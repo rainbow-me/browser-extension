@@ -2,7 +2,7 @@ import { DropdownMenuRadioGroup } from '@radix-ui/react-dropdown-menu';
 import clsx from 'clsx';
 import { format, formatDistanceStrict } from 'date-fns';
 import { ReactNode, useCallback, useMemo, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Navigate, useLocation, useParams } from 'react-router-dom';
 import { Address } from 'viem';
 import { useEnsName } from 'wagmi';
 
@@ -10,8 +10,9 @@ import { analytics } from '~/analytics';
 import { i18n } from '~/core/languages';
 import { chainsLabel } from '~/core/references/chains';
 import { useEnsRegistration } from '~/core/resources/ens/ensRegistration';
+import { useNft } from '~/core/resources/nfts/useNft';
 import { useSelectedNftStore } from '~/core/state/selectedNft';
-import { AddressOrEth } from '~/core/types/assets';
+import { AddressOrEth, UniqueId } from '~/core/types/assets';
 import { ChainId, ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import { UniqueAsset } from '~/core/types/nfts';
 import {
@@ -86,13 +87,27 @@ import NFTContextMenu from './NFTContextMenu';
 import NFTDropdownMenu from './NFTDropdownMenu';
 import { getOpenseaUrl, getRaribleUrl } from './utils';
 
-export default function NFTDetails() {
-  const { state } = useLocation();
-  const nft: UniqueAsset | undefined = state?.nft;
+function NFTDetails({
+  chainId,
+  contractAddress,
+  tokenId,
+  initialData,
+}: {
+  chainId: ChainId;
+  contractAddress: Address;
+  tokenId: string;
+  initialData: UniqueAsset;
+}) {
+  const { data: nft } = useNft(
+    { contractAddress, chainId, tokenId },
+    { initialData },
+  );
+
   const isPOAP = nft?.familyName === 'POAP';
   const navigate = useRainbowNavigate();
   const { isWatchingWallet } = useWallets();
   const { setSelectedNft } = useSelectedNftStore();
+
   const {
     ensAddress,
     ensBio,
@@ -135,8 +150,7 @@ export default function NFTDetails() {
         labelColor: 'label',
       },
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [showExplainerSheet, hideExplainerSheet]);
 
   useNftShortcuts(nft);
 
@@ -1313,3 +1327,26 @@ export const NFTInfoRow = ({
     </Box>
   </Box>
 );
+
+const parseUniqueId = (uniqueId: string | undefined) =>
+  (uniqueId?.split('_') || []) as [address?: Address, chainId?: ChainId];
+export function NftDetailsRoute() {
+  const { state } = useLocation();
+  const { collectionUniqueId, tokenId } = useParams<{
+    collectionUniqueId: UniqueId;
+    tokenId: string;
+  }>();
+  const [contractAddress, chainId] = parseUniqueId(collectionUniqueId);
+
+  if (!contractAddress || !chainId || !tokenId) {
+    return <Navigate to={ROUTES.HOME} state={{ tab: 'nfts' }} replace />;
+  }
+  return (
+    <NFTDetails
+      chainId={+chainId}
+      contractAddress={contractAddress}
+      tokenId={tokenId}
+      initialData={state.nft}
+    />
+  );
+}

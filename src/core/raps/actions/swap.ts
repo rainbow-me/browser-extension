@@ -346,7 +346,6 @@ export const swap = async ({
     nonce: swap.nonce,
     status: 'pending',
     type: 'swap',
-    flashbots: parameters.flashbots,
     ...gasParams,
   } satisfies NewTransaction;
 

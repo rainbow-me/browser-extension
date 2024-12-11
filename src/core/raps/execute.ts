@@ -70,7 +70,6 @@ export async function executeAction<T extends RapActionTypes>({
   index,
   baseNonce,
   rapName,
-  flashbots,
 }: {
   action: RapAction<T>;
   wallet: Signer;
@@ -78,7 +77,6 @@ export async function executeAction<T extends RapActionTypes>({
   index: number;
   baseNonce?: number;
   rapName: string;
-  flashbots?: boolean;
 }): Promise<RapActionResponse> {
   const { type, parameters } = action;
   try {
@@ -86,7 +84,7 @@ export async function executeAction<T extends RapActionTypes>({
       wallet,
       currentRap: rap,
       index,
-      parameters: { ...parameters, flashbots },
+      parameters,
       baseNonce,
     };
     const { nonce, hash } = (await typeAction<T>(
@@ -169,7 +167,6 @@ export const walletExecuteRap = async (
       index: 0,
       baseNonce: nonce,
       rapName,
-      flashbots: parameters?.flashbots,
     };
     const {
       baseNonce,
@@ -192,7 +189,6 @@ export const walletExecuteRap = async (
           index,
           baseNonce,
           rapName,
-          flashbots: parameters?.flashbots,
         };
         const { hash } = await executeAction(actionParams);
         latestHash = hash;
