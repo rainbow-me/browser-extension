@@ -450,7 +450,7 @@ export async function getNextNonce({
 }) {
   const { getNonce } = nonceStore.getState();
   const localNonceData = getNonce({ address, chainId });
-  const localNonce = localNonceData?.currentNonce || 0;
+  const localNonce = localNonceData?.currentNonce || -1;
   const provider = getBatchedProvider({ chainId });
   const privateMempoolTimeout = chainsPrivateMempoolTimeout[chainId];
 
@@ -543,7 +543,7 @@ export function updateTransaction({
     pendingTransaction: updatedPendingTransaction,
   });
   const localNonceData = getNonce({ address, chainId });
-  const localNonce = localNonceData?.currentNonce || 0;
+  const localNonce = localNonceData?.currentNonce || -1;
   if (transaction.nonce > localNonce) {
     setNonce({
       address,
