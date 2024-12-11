@@ -6,7 +6,6 @@ import { Address, Hash, erc20Abi, erc721Abi } from 'viem';
 
 import { getChainGasUnits } from '~/core/references/chains';
 import { gasStore } from '~/core/state';
-import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ChainId } from '~/core/types/chains';
 import {
   TransactionGasParams,
@@ -39,10 +38,7 @@ export const getAssetRawAllowance = async ({
   chainId: ChainId;
 }) => {
   try {
-    const { connectedToHardhat } = useConnectedToHardhatStore.getState();
-    const provider = await getProvider({
-      chainId: connectedToHardhat ? ChainId.hardhat : chainId,
-    });
+    const provider = getProvider({ chainId });
     const tokenContract = new Contract(assetAddress, erc20Abi, provider);
     const allowance = await tokenContract.allowance(owner, spender);
     return allowance.toString();
@@ -94,10 +90,7 @@ export const estimateApprove = async ({
   chainId: ChainId;
 }): Promise<string> => {
   try {
-    const { connectedToHardhat } = useConnectedToHardhatStore.getState();
-    const provider = getProvider({
-      chainId: connectedToHardhat ? ChainId.hardhat : chainId,
-    });
+    const provider = getProvider({ chainId });
     const tokenContract = new Contract(tokenAddress, erc20Abi, provider);
     const gasLimit = await tokenContract.estimateGas.approve(
       spender,
@@ -129,10 +122,7 @@ export const populateApprove = async ({
   chainId: ChainId;
 }): Promise<PopulatedTransaction | null> => {
   try {
-    const { connectedToHardhat } = useConnectedToHardhatStore.getState();
-    const provider = getProvider({
-      chainId: connectedToHardhat ? ChainId.hardhat : chainId,
-    });
+    const provider = getProvider({ chainId });
     const tokenContract = new Contract(tokenAddress, erc20Abi, provider);
     const approveTransaction = await tokenContract.populateTransaction.approve(
       spender,

@@ -430,6 +430,7 @@ it('should be able to type native amount on sell input', async () => {
     text: 1,
     driver,
   });
+  await delay(5_000);
   const fiatValueText = await getTextFromTextInput({
     id: 'token-to-sell-info-fiat-value-input',
     driver,
