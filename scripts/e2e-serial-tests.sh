@@ -7,7 +7,7 @@ RETRY_COUNT=0
 launch_anvil() {
   # Launch anvil in the bg
   yarn anvil:kill
-  yarn anvil --chain-id 1337  &
+  yarn anvil --chain-id 1337 &
   echo "Launching Anvil..."
 
   # Give it some time to boot

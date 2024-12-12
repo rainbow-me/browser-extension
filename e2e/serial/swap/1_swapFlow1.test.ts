@@ -124,6 +124,7 @@ it('should be able to go to swap settings and check rows are visible', async () 
     id: 'swap-settings-navbar-button',
     driver,
   });
+  await delay(1_000);
   const routeRow = await findElementByTestId({
     id: 'swap-settings-route-row',
     driver,
@@ -430,7 +431,7 @@ it('should be able to type native amount on sell input', async () => {
     text: 1,
     driver,
   });
-  await delay(5_000);
+  await delay(10_000);
   const fiatValueText = await getTextFromTextInput({
     id: 'token-to-sell-info-fiat-value-input',
     driver,

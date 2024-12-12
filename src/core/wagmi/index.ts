@@ -37,7 +37,6 @@ const updateWagmiConfig = (chains: Chain[]) => {
   wagmiConfig = createConfig({
     chains: createChains(chains),
     transports: createTransports(chains),
-    syncConnectedChain: true,
   });
 };
 
