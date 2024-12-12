@@ -2,6 +2,7 @@ import 'chromedriver';
 import 'geckodriver';
 import { Contract } from '@ethersproject/contracts';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
+import { ChainId } from '@rainbow-me/swaps';
 import { Key, WebDriver } from 'selenium-webdriver';
 import { erc20Abi } from 'viem';
 import {
@@ -18,11 +19,14 @@ import {
   clearInput,
   delay,
   delayTime,
+  doNotFindElementByTestId,
   fillPrivateKey,
+  findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
   getExtensionIdByName,
   getRootUrl,
+  getTextFromText,
   goToPopup,
   goToWelcome,
   initDriverWithOptions,
