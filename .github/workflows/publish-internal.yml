@@ -13,6 +13,10 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.REPO_TOKEN }}
       - name: Check for new commits
         run: |
           last_commit=$(git log -1 --pretty=%B)
