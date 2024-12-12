@@ -83,10 +83,11 @@ export enum ChainName {
   zksync = 'zksync-era',
   zora = 'zora',
   zoraSepolia = 'zora-sepolia',
+  ink = 'ink',
 }
 
 export enum ChainId {
-  apechain = 33139,
+  apechain = chains.apeChain.id,
   apechainCurtis = chains.curtis.id,
   arbitrum = chains.arbitrum.id,
   arbitrumNova = chains.arbitrumNova.id,
@@ -134,6 +135,7 @@ export enum ChainId {
   zksync = chains.zksync.id,
   zora = chains.zora.id,
   zoraSepolia = chains.zoraSepolia.id,
+  ink = 57073,
 }
 
 export const chainNameToIdMapping: {
@@ -189,6 +191,7 @@ export const chainNameToIdMapping: {
   [ChainName.zksync]: ChainId.zksync,
   [ChainName.zora]: ChainId.zora,
   [ChainName.zoraSepolia]: ChainId.zoraSepolia,
+  [ChainName.ink]: ChainId.ink,
 };
 
 export const chainIdToNameMapping: {
@@ -240,6 +243,7 @@ export const chainIdToNameMapping: {
   [ChainId.zksync]: ChainName.zksync,
   [ChainId.zora]: ChainName.zora,
   [ChainId.zoraSepolia]: ChainName.zoraSepolia,
+  [ChainId.ink]: ChainName.ink,
 };
 
 export interface BackendNetworkServices {

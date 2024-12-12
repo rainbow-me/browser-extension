@@ -547,7 +547,8 @@ export type ForegroundColor =
   | 'base'
   | 'zora'
   | 'bsc'
-  | 'avalanche';
+  | 'avalanche'
+  | 'ink';
 
 export const foregroundColors: Record<
   ForegroundColor,
@@ -640,6 +641,10 @@ export const foregroundColors: Record<
   avalanche: {
     light: '#EBAF09',
     dark: '#FF5D5E',
+  },
+  ink: {
+    light: '#8049F2',
+    dark: '#8049F2',
   },
 };
 
