@@ -128,7 +128,7 @@ describe('Swap Flow 2', () => {
 
   it('should be able to go to review a unlock and swap', async () => {
     await findElementByTestIdAndClick({
-      id: `token-to-sell-token-input-remove`,
+      id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-token-input-remove`,
       driver,
     });
     await findElementByTestIdAndClick({
@@ -136,16 +136,16 @@ describe('Swap Flow 2', () => {
       driver,
     });
     await findElementByTestIdAndClick({
-      id: `token-to-sell-swap-token-input-swap-input-mask`,
+      id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
       driver,
     });
     await delayTime('very-long');
     await clearInput({
-      id: `token-to-sell-swap-token-input-swap-input-mask`,
+      id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
       driver,
     });
     await typeOnTextInput({
-      id: `token-to-sell-swap-token-input-swap-input-mask`,
+      id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
       text: `\b50`,
       driver,
     });

@@ -128,7 +128,7 @@ describe('Complete swap flow via shortcuts and keyboard navigation', () => {
     });
 
     const inputCurrency = await findElementByTestId({
-      id: `input-wrapper-dropdown-token-to-sell-token-input`,
+      id: `input-wrapper-dropdown-${ethId}-token-to-sell-token-input`,
       driver,
     });
     expect(inputCurrency).toBeTruthy();
@@ -147,7 +147,7 @@ describe('Complete swap flow via shortcuts and keyboard navigation', () => {
     });
 
     const outputCurrency = await findElementByTestId({
-      id: `input-wrapper-dropdown-token-to-buy-token-input`,
+      id: `input-wrapper-dropdown-${usdcId}-token-to-buy-token-input`,
       driver,
     });
     expect(outputCurrency).toBeTruthy();
@@ -156,7 +156,7 @@ describe('Complete swap flow via shortcuts and keyboard navigation', () => {
   it('should be able to set max amount with shortcut', async () => {
     await executePerformShortcut({ driver, key: 'm' });
     const inputItem = await findElementByTestId({
-      id: `token-to-sell-swap-token-input-swap-input-mask`,
+      id: `${ethId}-token-to-sell-swap-token-input-swap-input-mask`,
       driver,
     });
     const inputAmount = await inputItem.getAttribute('value');
@@ -169,10 +169,10 @@ describe('Complete swap flow via shortcuts and keyboard navigation', () => {
       driver,
     });
     expect(switchNetworkLabel).toBe(false);
-    // open swap field by removing usdc output
+    // open swap field by removing dai output
     await navigateToElementWithTestId({
       driver,
-      testId: `token-to-buy-token-input-remove`,
+      testId: `${usdcId}-token-to-buy-token-input-remove`,
     });
     // input is focussed, so have to tab out to use shortcut 'n'
     await executePerformShortcut({ driver, key: 'TAB' });
@@ -208,7 +208,7 @@ describe('Complete swap flow via shortcuts and keyboard navigation', () => {
     await executePerformShortcut({ driver, key: 'x' });
     await checkExtensionURL(driver, 'swap');
     const inputCurrency = await findElementByTestId({
-      id: `input-wrapper-dropdown-token-to-sell-token-input`,
+      id: `input-wrapper-dropdown-${ethId}-token-to-sell-token-input`,
       driver,
     });
     expect(inputCurrency).toBeTruthy();
@@ -246,7 +246,7 @@ describe('Complete swap flow via shortcuts and keyboard navigation', () => {
     });
 
     const outputCurrency = await findElementByTestId({
-      id: `input-wrapper-dropdown-token-to-buy-token-input`,
+      id: `input-wrapper-dropdown-${usdcId}-token-to-buy-token-input`,
       driver,
     });
     expect(outputCurrency).toBeTruthy();

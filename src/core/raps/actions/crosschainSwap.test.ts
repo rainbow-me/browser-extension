@@ -5,10 +5,11 @@ import {
   QuoteError,
   getCrosschainQuote,
 } from '@rainbow-me/swaps';
+import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test } from 'vitest';
 
 import { connectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
-import { ChainId, chainHardhat } from '~/core/types/chains';
+import { ChainId } from '~/core/types/chains';
 import { updateWagmiConfig } from '~/core/wagmi';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import {
@@ -27,7 +28,7 @@ let crosschainQuote: CrosschainQuote | QuoteError | null;
 
 beforeAll(async () => {
   connectedToHardhatStore.setState({ connectedToHardhat: true });
-  updateWagmiConfig([chainHardhat]);
+  updateWagmiConfig([mainnet]);
   await delay(3000);
   crosschainQuote = await getCrosschainQuote({
     chainId: 1,
@@ -44,7 +45,7 @@ beforeAll(async () => {
 
 test('[rap/crosschainSwap] :: should estimate crosschain swap gas limit', async () => {
   const swapGasLimit = await estimateCrosschainSwapGasLimit({
-    chainId: chainHardhat.id,
+    chainId: mainnet.id,
     requiresApprove: false,
     quote: {
       ...crosschainQuote,
@@ -54,7 +55,7 @@ test('[rap/crosschainSwap] :: should estimate crosschain swap gas limit', async 
 });
 
 test('[rap/crosschainSwap] :: should execute crosschain swap', async () => {
-  const provider = getProvider({ chainId: chainHardhat.id });
+  const provider = getProvider({ chainId: mainnet.id });
   const wallet = new Wallet(TEST_PK_3, provider);
 
   const swapTx = await executeCrosschainSwap({
