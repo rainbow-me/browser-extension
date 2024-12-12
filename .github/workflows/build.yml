@@ -460,6 +460,8 @@ jobs:
       - uses: geekyeggo/delete-artifact@v5
         with:
           name: node_modules.tar.gz
+          failOnError: false
       - uses: geekyeggo/delete-artifact@v5
         with:
           name: screenshots
+          failOnError: false
