@@ -28,7 +28,6 @@ import {
 } from '~/core/types/gas';
 import { gweiToWei, weiToGwei } from '~/core/utils/ethereum';
 import {
-  FLASHBOTS_MIN_TIP,
   gasFeeParamsChanged,
   parseCustomGasFeeLegacyParams,
   parseCustomGasFeeParams,
@@ -46,7 +45,6 @@ const useGas = ({
   estimatedGasLimit,
   transactionRequest,
   enabled,
-  flashbotsEnabled,
   additionalTime,
 }: {
   chainId: ChainId;
@@ -55,7 +53,6 @@ const useGas = ({
   estimatedGasLimit?: string;
   transactionRequest: TransactionRequest | null;
   enabled?: boolean;
-  flashbotsEnabled?: boolean;
   additionalTime?: number;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
@@ -168,7 +165,6 @@ const useGas = ({
       enabled,
       feeType,
       nativeAsset,
-      flashbotsEnabled,
       chainId,
       currentCurrency,
       estimatedGasLimit,
@@ -186,13 +182,7 @@ const useGas = ({
       const maxBaseFee = (storeGasFeeParamsBySpeed?.custom as GasFeeParams)
         ?.maxBaseFee?.amount;
 
-      let maxPriorityFeeWei = gweiToWei(debouncedMaxPriorityFee || '0');
-      if (
-        flashbotsEnabled &&
-        Number(debouncedMaxPriorityFee) < FLASHBOTS_MIN_TIP
-      ) {
-        maxPriorityFeeWei = gweiToWei(FLASHBOTS_MIN_TIP.toString());
-      }
+      const maxPriorityFeeWei = gweiToWei(debouncedMaxPriorityFee || '0');
 
       const newCustomSpeed = parseCustomGasFeeParams({
         currentBaseFee,
@@ -271,7 +261,6 @@ const useGas = ({
               nativeAsset,
               currency: currentCurrency,
               optimismL1SecurityFee,
-              flashbotsEnabled,
               additionalTime,
             })
           : null
@@ -292,7 +281,6 @@ const useGas = ({
     debouncedEstimatedGasLimit,
     currentCurrency,
     optimismL1SecurityFee,
-    flashbotsEnabled,
     additionalTime,
     customGasModified,
     prevChainId,
@@ -378,13 +366,11 @@ export const useTransactionGas = ({
   address,
   defaultSpeed,
   transactionRequest,
-  flashbotsEnabled,
 }: {
   chainId: ChainId;
   address?: Address;
   defaultSpeed?: GasSpeed;
   transactionRequest: TransactionRequest;
-  flashbotsEnabled?: boolean;
 }) => {
   const { data: estimatedGasLimit } = useEstimateGasLimit({
     chainId,
@@ -396,7 +382,6 @@ export const useTransactionGas = ({
     defaultSpeed,
     estimatedGasLimit,
     transactionRequest,
-    flashbotsEnabled,
     enabled: true,
   });
 };
@@ -408,7 +393,6 @@ export const useSwapGas = ({
   assetToSell,
   assetToBuy,
   enabled,
-  flashbotsEnabled,
   quoteServiceTime,
 }: {
   chainId: ChainId;
@@ -417,7 +401,6 @@ export const useSwapGas = ({
   assetToSell?: ParsedSearchAsset | ParsedAsset;
   assetToBuy?: ParsedSearchAsset | ParsedAsset;
   enabled?: boolean;
-  flashbotsEnabled?: boolean;
   quoteServiceTime?: number;
 }) => {
   const { data: estimatedGasLimit } = useEstimateSwapGasLimit({
@@ -449,7 +432,6 @@ export const useSwapGas = ({
     estimatedGasLimit,
     transactionRequest,
     enabled,
-    flashbotsEnabled,
     additionalTime: quoteServiceTime,
   });
 };
@@ -461,7 +443,6 @@ export const useApprovalGas = ({
   spenderAddress,
   defaultSpeed,
   transactionRequest,
-  flashbotsEnabled,
   assetType,
 }: {
   chainId: ChainId;
@@ -470,7 +451,6 @@ export const useApprovalGas = ({
   spenderAddress?: Address;
   defaultSpeed?: GasSpeed;
   transactionRequest: TransactionRequest;
-  flashbotsEnabled?: boolean;
   assetType: 'erc20' | 'nft';
 }) => {
   const { data: estimatedGasLimit } = useEstimateApprovalGasLimit({
@@ -487,7 +467,6 @@ export const useApprovalGas = ({
     defaultSpeed,
     estimatedGasLimit,
     transactionRequest,
-    flashbotsEnabled,
     enabled: true,
   });
 };

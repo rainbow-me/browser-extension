@@ -190,47 +190,50 @@ export function getNetworkFromSimpleHashChain(
   }
 }
 
+export function validateSimpleHashNFT(
+  nft: SimpleHashNFT,
+  allowList?: PolygonAllowListDictionary,
+): ValidatedSimpleHashNFT | undefined {
+  const lowercasedContractAddress = nft.contract_address?.toLowerCase();
+  const network = getNetworkFromSimpleHashChain(nft.chain);
+
+  const isMissingRequiredFields =
+    !nft.name ||
+    !nft.collection?.name ||
+    !nft.contract_address ||
+    !nft.token_id ||
+    !network;
+  const isPolygonAndNotAllowed =
+    allowList &&
+    nft.chain === SimpleHashChain.Polygon &&
+    !allowList[lowercasedContractAddress];
+  const isGnosisAndNotPOAP =
+    nft.chain === SimpleHashChain.Gnosis &&
+    lowercasedContractAddress !== POAP_NFT_ADDRESS;
+
+  if (isMissingRequiredFields || isPolygonAndNotAllowed || isGnosisAndNotPOAP) {
+    return undefined;
+  }
+
+  return {
+    ...nft,
+    name: nft.name || '',
+    contract_address: nft.contract_address,
+    chain: getNetworkFromSimpleHashChain(nft.chain),
+    collection: { ...nft.collection, name: nft.collection.name || '' },
+    token_id: nft.token_id || '',
+  };
+}
+
 export function filterSimpleHashNFTs(
   nfts: SimpleHashNFT[],
   allowList: PolygonAllowListDictionary,
 ): ValidatedSimpleHashNFT[] {
-  return nfts
-    .filter((nft) => {
-      const lowercasedContractAddress = nft.contract_address?.toLowerCase();
-      const network = getNetworkFromSimpleHashChain(nft.chain);
-
-      const isMissingRequiredFields =
-        !nft.name ||
-        !nft.collection?.name ||
-        !nft.contract_address ||
-        !nft.token_id ||
-        !network;
-      const isPolygonAndNotAllowed =
-        allowList &&
-        nft.chain === SimpleHashChain.Polygon &&
-        !allowList[lowercasedContractAddress];
-      const isGnosisAndNotPOAP =
-        nft.chain === SimpleHashChain.Gnosis &&
-        lowercasedContractAddress !== POAP_NFT_ADDRESS;
-
-      if (
-        isMissingRequiredFields ||
-        isPolygonAndNotAllowed ||
-        isGnosisAndNotPOAP
-      ) {
-        return false;
-      }
-
-      return true;
-    })
-    .map((nft) => ({
-      ...nft,
-      name: nft.name || '',
-      contract_address: nft.contract_address,
-      chain: getNetworkFromSimpleHashChain(nft.chain),
-      collection: { ...nft.collection, name: nft.collection.name || '' },
-      token_id: nft.token_id || '',
-    }));
+  return nfts.reduce((validatedNfts, nft) => {
+    const validatedNft = validateSimpleHashNFT(nft, allowList);
+    if (validatedNft) validatedNfts.push(validatedNft);
+    return validatedNfts;
+  }, [] as ValidatedSimpleHashNFT[]);
 }
 
 export function extractPoapDropId(externalUrl: string) {

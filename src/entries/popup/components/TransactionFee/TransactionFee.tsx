@@ -53,7 +53,6 @@ type FeeProps = {
   isLoading: boolean;
   currentBaseFee: string;
   baseFeeTrend: number;
-  flashbotsEnabled: boolean;
   analyticsEvents?: {
     customGasClicked: keyof EventProperties;
     transactionSpeedSwitched: keyof EventProperties;
@@ -78,7 +77,6 @@ function Fee({
   isLoading,
   plainTriggerBorder,
   selectedSpeed,
-  flashbotsEnabled,
   speedMenuMarginRight,
   feeType,
   setSelectedSpeed,
@@ -158,7 +156,6 @@ function Fee({
   return (
     <Box>
       <CustomGasSheet
-        flashbotsEnabled={flashbotsEnabled}
         currentBaseFee={currentBaseFee}
         baseFeeTrend={baseFeeTrend}
         show={showCustomGasSheet}
@@ -266,7 +263,6 @@ type TransactionFeeProps = {
   transactionRequest: TransactionRequest;
   accentColor?: string;
   plainTriggerBorder?: boolean;
-  flashbotsEnabled?: boolean;
   analyticsEvents?: {
     customGasClicked: keyof EventProperties;
     transactionSpeedSwitched: keyof EventProperties;
@@ -283,7 +279,6 @@ export function TransactionFee({
   accentColor,
   plainTriggerBorder,
   analyticsEvents,
-  flashbotsEnabled,
 }: TransactionFeeProps) {
   const { defaultTxSpeed } = useDefaultTxSpeed({ chainId });
   const {
@@ -302,7 +297,6 @@ export function TransactionFee({
     address,
     defaultSpeed: defaultSpeed || defaultTxSpeed,
     transactionRequest,
-    flashbotsEnabled: !!flashbotsEnabled,
   });
 
   return (
@@ -321,7 +315,6 @@ export function TransactionFee({
       setCustomGasPrice={setCustomGasPrice}
       currentBaseFee={currentBaseFee}
       baseFeeTrend={baseFeeTrend}
-      flashbotsEnabled={!!flashbotsEnabled}
       feeType={feeType}
     />
   );
@@ -336,7 +329,6 @@ type SwapFeeProps = {
   assetToSell?: ParsedSearchAsset;
   assetToBuy?: ParsedSearchAsset;
   enabled?: boolean;
-  flashbotsEnabled?: boolean;
   speedMenuMarginRight?: Space;
   quoteServiceTime?: number;
 };
@@ -350,7 +342,6 @@ export function SwapFee({
   assetToSell,
   assetToBuy,
   enabled = true,
-  flashbotsEnabled,
   speedMenuMarginRight,
   quoteServiceTime,
 }: SwapFeeProps) {
@@ -373,7 +364,6 @@ export function SwapFee({
     assetToSell,
     assetToBuy,
     enabled,
-    flashbotsEnabled,
     quoteServiceTime,
   });
 
@@ -391,7 +381,6 @@ export function SwapFee({
       setCustomGasPrice={setCustomGasPrice}
       currentBaseFee={currentBaseFee}
       baseFeeTrend={baseFeeTrend}
-      flashbotsEnabled={!!flashbotsEnabled}
       speedMenuMarginRight={speedMenuMarginRight}
       feeType={feeType}
     />
@@ -407,7 +396,6 @@ type ApprovalFeeProps = {
   transactionRequest: TransactionRequest;
   accentColor?: string;
   plainTriggerBorder?: boolean;
-  flashbotsEnabled?: boolean;
   analyticsEvents?: {
     customGasClicked: keyof EventProperties;
     transactionSpeedSwitched: keyof EventProperties;
@@ -426,7 +414,6 @@ export function ApprovalFee({
   accentColor,
   plainTriggerBorder,
   analyticsEvents,
-  flashbotsEnabled,
   assetType,
 }: ApprovalFeeProps) {
   const { defaultTxSpeed } = useDefaultTxSpeed({ chainId });
@@ -448,7 +435,6 @@ export function ApprovalFee({
     spenderAddress,
     defaultSpeed: defaultSpeed || defaultTxSpeed,
     transactionRequest,
-    flashbotsEnabled: !!flashbotsEnabled,
     assetType,
   });
   return (
@@ -466,7 +452,6 @@ export function ApprovalFee({
       setCustomGasPrice={setCustomGasPrice}
       currentBaseFee={currentBaseFee}
       baseFeeTrend={baseFeeTrend}
-      flashbotsEnabled={!!flashbotsEnabled}
       feeType={feeType}
     />
   );

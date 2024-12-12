@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore, useFlashbotsEnabledStore } from '~/core/state';
+import { useCurrentAddressStore } from '~/core/state';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { ChainId } from '~/core/types/chains';
 import {
@@ -129,35 +129,12 @@ interface SwapSettingsProps {
   setSettings: ({
     source,
     slippage,
-    swapFlashbotsEnabled,
   }: {
     source: Source | 'auto';
     slippage: string;
-    swapFlashbotsEnabled: boolean;
   }) => void;
   bridge: boolean;
 }
-
-const getFlashbotsExplainerProps = (t: I18n['t']) => ({
-  show: true,
-  header: {
-    emoji: '🤖',
-  },
-  description: [t('swap.settings.explainers.flashbots.description')],
-  title: t('swap.settings.explainers.flashbots.title'),
-  actionButton: {
-    label: t('swap.settings.explainers.got_it'),
-    labelColor: 'label' as TextStyles['color'],
-  },
-  footerLinkText: {
-    openText: t('swap.settings.explainers.flashbots.read_more.open_text'),
-    linkText: t('swap.settings.explainers.flashbots.read_more.link_text'),
-    closeText: i18n.t(
-      'swap.settings.explainers.flashbots.read_more.close_text',
-    ),
-    link: 'https://learn.rainbow.me/protecting-transactions-with-flashbots',
-  },
-});
 
 const getRoutingExplainerProps = (t: I18n['t']) => ({
   show: true,
@@ -249,9 +226,6 @@ export const SwapSettings = ({
   const { currentAddress } = useCurrentAddressStore();
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
 
-  const { swapFlashbotsEnabled, setSwapFlashbotsEnabled } =
-    useFlashbotsEnabledStore();
-
   const prevChainId = usePrevious(chainId);
   const [source, setSource] = useState<
     Source.Aggregator0x | Source.Aggregator1inch | 'auto'
@@ -280,13 +254,12 @@ export const SwapSettings = ({
       setSettings({
         source,
         slippage,
-        swapFlashbotsEnabled,
       });
       onDone();
     } catch (e) {
       //
     }
-  }, [swapFlashbotsEnabled, onDone, setSettings, slippage, source]);
+  }, [onDone, setSettings, slippage, source]);
 
   const slippageWarning = useMemo(
     () => (Number(slippage) >= 3 ? 'loss' : undefined),
@@ -308,18 +281,6 @@ export const SwapSettings = ({
         action: hideExplainerSheet,
       },
       testId: 'swap-slippage',
-    });
-  }, [hideExplainerSheet, showExplainerSheet, t]);
-
-  const showFlashbotsExplainer = useCallback(() => {
-    const flashbotsExplainerProps = getFlashbotsExplainerProps(t);
-    showExplainerSheet({
-      ...flashbotsExplainerProps,
-      actionButton: {
-        ...flashbotsExplainerProps.actionButton,
-        action: hideExplainerSheet,
-      },
-      testId: 'swap-flashbots',
     });
   }, [hideExplainerSheet, showExplainerSheet, t]);
 
@@ -435,25 +396,6 @@ export const SwapSettings = ({
                         </Inline>
                       </Box>
                     ) : null}
-                    <Box
-                      testId="swap-settings-flashbots-row"
-                      style={{ height: '32px' }}
-                    >
-                      <Inline alignVertical="center" alignHorizontal="justify">
-                        <Label
-                          label={t('swap.settings.use_flashbots')}
-                          onClick={showFlashbotsExplainer}
-                          testId="swap-settings-flashbots-label"
-                        />
-                        <Toggle
-                          accentColor={settingsAccentColor}
-                          checked={swapFlashbotsEnabled}
-                          handleChange={setSwapFlashbotsEnabled}
-                          testId="swap-settings-flashbots-toggle"
-                          tabIndex={0}
-                        />
-                      </Inline>
-                    </Box>
 
                     <Box
                       testId="swap-settings-slippage-row"

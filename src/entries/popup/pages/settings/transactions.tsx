@@ -2,19 +2,13 @@ import { useCallback, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { txSpeedEmoji } from '~/core/references/txSpeed';
-import {
-  useFlashbotsEnabledStore,
-  useNonceStore,
-  usePendingTransactionsStore,
-} from '~/core/state';
+import { useNonceStore, usePendingTransactionsStore } from '~/core/state';
 import { useDefaultTxSpeedStore } from '~/core/state/currentSettings/defaultTxSpeed';
 import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
 import { GasSpeed } from '~/core/types/gas';
 import { DefaultTxSpeedOption } from '~/core/types/settings';
-import { goToNewTab } from '~/core/utils/tabs';
 import { Box, Inline, Symbol, Text } from '~/design-system';
 import { Lens } from '~/design-system/components/Lens/Lens';
-import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
@@ -24,7 +18,6 @@ import { triggerToast } from '../../components/Toast/Toast';
 
 export function Transactions() {
   const { defaultTxSpeed, setDefaultTxSpeed } = useDefaultTxSpeedStore();
-  const { flashbotsEnabled, setFlashbotsEnabled } = useFlashbotsEnabledStore();
   const clearNonces = useNonceStore.use.clearNonces();
   const clearPendingTransactions =
     usePendingTransactionsStore.use.clearPendingTransactions();
@@ -114,33 +107,6 @@ export function Transactions() {
               }}
             />
           </Lens>
-        </Menu>
-        <Menu>
-          <MenuItem
-            first
-            rightComponent={
-              <Toggle
-                tabIndex={-1}
-                testId="flashbots-transactions-toggle"
-                checked={flashbotsEnabled}
-                handleChange={setFlashbotsEnabled}
-              />
-            }
-            titleComponent={
-              <MenuItem.Title
-                text={i18n.t('settings.transactions.use_flashbots')}
-              />
-            }
-            onToggle={() => setFlashbotsEnabled(!flashbotsEnabled)}
-          />
-          <MenuItem.Description
-            text={`${i18n.t('settings.transactions.flashbots_description')} `}
-            onClickLink={() =>
-              goToNewTab({
-                url: 'https://learn.rainbow.me/protecting-transactions-with-flashbots',
-              })
-            }
-          />
         </Menu>
         <Menu>
           <MenuItem
