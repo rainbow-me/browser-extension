@@ -116,6 +116,7 @@ export const customChainIdsToAssetNames: Record<ChainId, string> = {
   [hederaTestnet.id]: 'hederatestnet',
   [immutableZkEvm.id]: 'immutablezkevm',
   [immutableZkEvmTestnet.id]: 'immutablezkevmtestnet',
+  57073: 'ink',
   2410: 'karak',
   8054: 'karaksepolia',
   [kava.id]: 'kavaevm',
