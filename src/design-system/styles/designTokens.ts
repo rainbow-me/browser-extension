@@ -643,8 +643,8 @@ export const foregroundColors: Record<
     dark: '#FF5D5E',
   },
   ink: {
-    light: '#8049F2',
-    dark: '#8049F2',
+    light: '#7132F5',
+    dark: '#864DFF',
   },
 };
 
