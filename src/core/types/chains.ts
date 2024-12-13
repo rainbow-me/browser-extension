@@ -60,6 +60,8 @@ export enum ChainName {
   hardhatOptimism = 'hardhat-optimism',
   holesky = 'holesky',
   immutableZkEvm = 'immutable-zkevm',
+  ink = 'ink',
+  inkSepolia = 'ink-sepolia',
   linea = 'linea',
   loot = 'loot',
   mainnet = 'mainnet',
@@ -83,7 +85,6 @@ export enum ChainName {
   zksync = 'zksync-era',
   zora = 'zora',
   zoraSepolia = 'zora-sepolia',
-  ink = 'ink',
 }
 
 export enum ChainId {
@@ -112,6 +113,8 @@ export enum ChainId {
   hardhatOptimism = chainHardhatOptimism.id,
   holesky = chains.holesky.id,
   immutableZkEvm = chains.immutableZkEvm.id,
+  ink = 57073,
+  inkSepolia = 763373,
   linea = chains.linea.id,
   loot = 5151706,
   mainnet = chains.mainnet.id,
@@ -135,7 +138,6 @@ export enum ChainId {
   zksync = chains.zksync.id,
   zora = chains.zora.id,
   zoraSepolia = chains.zoraSepolia.id,
-  ink = 57073,
 }
 
 export const chainNameToIdMapping: {
@@ -168,6 +170,8 @@ export const chainNameToIdMapping: {
   [ChainName.hardhatOptimism]: ChainId.hardhatOptimism,
   [ChainName.holesky]: ChainId.holesky,
   [ChainName.immutableZkEvm]: ChainId.immutableZkEvm,
+  [ChainName.ink]: ChainId.ink,
+  [ChainName.inkSepolia]: ChainId.inkSepolia,
   [ChainName.linea]: ChainId.linea,
   [ChainName.loot]: ChainId.loot,
   [ChainName.mainnet]: ChainId.mainnet,
@@ -191,7 +195,6 @@ export const chainNameToIdMapping: {
   [ChainName.zksync]: ChainId.zksync,
   [ChainName.zora]: ChainId.zora,
   [ChainName.zoraSepolia]: ChainId.zoraSepolia,
-  [ChainName.ink]: ChainId.ink,
 };
 
 export const chainIdToNameMapping: {
@@ -220,6 +223,8 @@ export const chainIdToNameMapping: {
   [ChainId.hardhatOptimism]: ChainName.hardhatOptimism,
   [ChainId.holesky]: ChainName.holesky,
   [ChainId.immutableZkEvm]: ChainName.immutableZkEvm,
+  [ChainId.ink]: ChainName.ink,
+  [ChainId.inkSepolia]: ChainName.inkSepolia,
   [ChainId.linea]: ChainName.linea,
   [ChainId.loot]: ChainName.loot,
   [ChainId.mainnet]: ChainName.mainnet,
@@ -243,7 +248,6 @@ export const chainIdToNameMapping: {
   [ChainId.zksync]: ChainName.zksync,
   [ChainId.zora]: ChainName.zora,
   [ChainId.zoraSepolia]: ChainName.zoraSepolia,
-  [ChainId.ink]: ChainName.ink,
 };
 
 export interface BackendNetworkServices {

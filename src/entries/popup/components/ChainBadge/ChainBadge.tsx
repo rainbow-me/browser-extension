@@ -67,6 +67,7 @@ const networkBadges = {
   [ChainId.apechain]: ApeChainBadge,
   [ChainId.apechainCurtis]: ApeChainBadge,
   [ChainId.ink]: InkBadge,
+  [ChainId.inkSepolia]: InkBadge,
 };
 
 const ChainBadge = ({
