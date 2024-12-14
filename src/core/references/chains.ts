@@ -1,5 +1,5 @@
 import { Address } from 'viem';
-import { Chain } from 'viem/chains';
+import { type Chain, curtis, inkSepolia } from 'viem/chains';
 
 import backendNetworks from 'static/data/networks.json';
 
@@ -19,11 +19,13 @@ const BACKEND_CHAINS = transformBackendNetworksToChains(
   backendNetworks.networks,
 );
 
+const LOCAL_CHAINS: Chain[] = [curtis, inkSepolia];
+
 const DEFAULT_PRIVATE_MEMPOOL_TIMEOUT = 2 * 60 * 1_000; // 2 minutes
 
 export const SUPPORTED_CHAINS: Chain[] = IS_TESTING
-  ? [...BACKEND_CHAINS, chainHardhat, chainHardhatOptimism]
-  : BACKEND_CHAINS;
+  ? [...BACKEND_CHAINS, ...LOCAL_CHAINS, chainHardhat, chainHardhatOptimism]
+  : BACKEND_CHAINS.concat(LOCAL_CHAINS);
 
 export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map((chain) => chain.id);
 
