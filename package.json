@@ -284,7 +284,8 @@
     "dset": "3.1.4",
     "zod": "3.23.8",
     "rollup": "4.22.4",
-    "cross-spawn": "6.0.6"
+    "cross-spawn": "6.0.6",
+    "nanoid": "3.3.8"
   },
   "lavamoat": {
     "allowScripts": {
