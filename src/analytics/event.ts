@@ -178,6 +178,10 @@ export const event = {
    */
   revokeSubmitted: 'revoke.submitted',
   /**
+   * Called when a user enters the send flow
+   */
+  sendOpened: 'send.opened',
+  /**
    * Called when the user completes a Send flow and submits the transaction.
    */
   sendSubmitted: 'send.submitted',
@@ -189,14 +193,6 @@ export const event = {
    * Called when user enables tracking in Settings.
    */
   settingsAnalyticsTrackingEnabled: 'settings.analytics_tracking.enabled',
-  /**
-   * Called when user disables global Flashbots setting in Settings.
-   */
-  settingsFlashbotsDisabled: 'settings.flashbots.disabled',
-  /**
-   * Called when user enables global Flashbots setting in Settings.
-   */
-  settingsFlashbotsEnabled: 'settings.flashbots.enabled',
   /**
    * Called when user disables Rainbow as default provider in Settings.
    */
@@ -292,10 +288,6 @@ export type EventProperties = {
      * Mainnet contract address of the mapped assets.
      */
     mainnetAddress: string;
-    /**
-     * Whether Flashbots was used for the swap.
-     */
-    flashbots: boolean;
     /**
      * The estimated USD value of the swap.
      */
@@ -763,11 +755,21 @@ export type EventProperties = {
      */
     chainId: number;
   };
+  [event.sendOpened]: {
+    /**
+     * Entrypoint of the send flow.
+     */
+    entryPoint:
+      | 'commandk' // command k action
+      | 'home_header_send_button' // Home header send button
+      | 'home_shortcut_x_key' // 'X' key shortcut
+      | 'token_context_menu' // Token context menu
+      | 'token_details' // Token details
+      | 'token_details_shortcut_x_key'; // Token details 'X' key shortcut
+  };
   [event.settingsAnalyticsTrackingEnabled]: undefined;
   [event.settingsRainbowDefaultProviderDisabled]: undefined;
   [event.settingsRainbowDefaultProviderEnabled]: undefined;
-  [event.settingsFlashbotsDisabled]: undefined;
-  [event.settingsFlashbotsEnabled]: undefined;
   [event.swapOpened]: {
     /**
      * Entrypoint of the swaps flow.
@@ -835,10 +837,6 @@ export type EventProperties = {
      * Whether the swap was a cross-chain swap.
      */
     crosschain: boolean;
-    /**
-     * Whether Flashbots was used for the swap.
-     */
-    flashbots: boolean;
     /**
      * The estimated USD value of the swap.
      */

@@ -10,12 +10,14 @@ export const SignMessageActions = ({
   onRejectRequest,
   loading = false,
   dappStatus,
+  signingWithDevice,
 }: {
   waitingForDevice: boolean;
   onAcceptRequest: () => void;
   onRejectRequest: () => void;
   loading?: boolean;
   dappStatus?: DAppStatus;
+  signingWithDevice?: boolean;
 }) => {
   const isScamDapp = dappStatus === DAppStatus.Scam;
   return (
@@ -24,13 +26,13 @@ export const SignMessageActions = ({
         dappStatus={dappStatus}
         onClick={onRejectRequest}
         label={i18n.t('common_actions.cancel')}
-        waitingForDevice={waitingForDevice}
+        waitingForDevice={signingWithDevice}
       />
       <AcceptRequestButton
         dappStatus={dappStatus}
         onClick={onAcceptRequest}
         label={
-          waitingForDevice
+          signingWithDevice
             ? i18n.t('approve_request.confirm_hw')
             : i18n.t(
                 `approve_request.sign_message${isScamDapp ? '_anyway' : ''}`,

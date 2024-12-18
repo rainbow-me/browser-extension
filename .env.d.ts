@@ -48,6 +48,7 @@ declare global {
       RUDDERSTACK_DATA_PLANE: string;
       RUDDERSTACK_WRITE_KEY: string;
       SENTRY_DSN: string;
+      SECURE_WALLET_HASH_KEY: string;
       // Development
       IS_DEV: 'true' | 'false';
       IS_TESTING: 'true' | 'false';

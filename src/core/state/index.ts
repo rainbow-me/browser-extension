@@ -4,13 +4,13 @@ export {
   currentChainIdStore,
   currentCurrencyStore,
   currentLanguageStore,
-  flashbotsEnabledStore,
+  currentThemeStore,
   isDefaultWalletStore,
   useCurrentAddressStore,
   useCurrentChainIdStore,
   useCurrentCurrencyStore,
   useCurrentLanguageStore,
-  useFlashbotsEnabledStore,
+  useCurrentThemeStore,
   useIsDefaultWalletStore,
 } from './currentSettings';
 export { deviceIdStore, useDeviceIdStore } from './device';

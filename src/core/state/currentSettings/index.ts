@@ -9,9 +9,9 @@ export {
   useCurrentLanguageStore,
 } from './currentLanguage';
 export {
-  flashbotsEnabledStore,
-  useFlashbotsEnabledStore,
-} from './flashbotsEnabled';
+  currentThemeStore,
+  useCurrentThemeStore,
+} from './currentTheme';
 export {
   isDefaultWalletStore,
   useIsDefaultWalletStore,

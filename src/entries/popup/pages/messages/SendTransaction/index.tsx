@@ -5,11 +5,12 @@ import { Address } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
+import { getWalletContext } from '~/analytics/util';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { chainsNativeAsset } from '~/core/references/chains';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
-import { useFlashbotsEnabledStore, useGasStore } from '~/core/state';
+import { useGasStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
@@ -17,6 +18,7 @@ import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { chainIdToUse } from '~/core/utils/chains';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
+import { isLowerCaseMatch } from '~/core/utils/strings';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Bleed, Box, Separator, Stack } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
@@ -61,14 +63,8 @@ export function SendTransaction({
   const { connectedToHardhat, connectedToHardhatOp } =
     useConnectedToHardhatStore();
   const { asset, selectAssetAddressAndChain } = useSendAsset();
-  const { watchedWallets } = useWallets();
+  const { allWallets, watchedWallets } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
-
-  const { flashbotsEnabled } = useFlashbotsEnabledStore();
-  const flashbotsEnabledGlobally =
-    config.flashbots_enabled &&
-    flashbotsEnabled &&
-    activeSession?.chainId === ChainId.mainnet;
 
   const onAcceptRequest = useCallback(async () => {
     if (!config.tx_requests_enabled) return;
@@ -100,7 +96,6 @@ export function SendTransaction({
           asset: asset || undefined,
           value: result.value.toString(),
           data: result.data,
-          flashbots: flashbotsEnabledGlobally,
           from: txData.from,
           to: txData.to,
           hash: result.hash as TxHash,
@@ -119,12 +114,16 @@ export function SendTransaction({
         approveRequest(result.hash);
         setWaitingForDevice(false);
 
-        analytics.track(event.dappPromptSendTransactionApproved, {
-          chainId: txData.chainId,
-          dappURL: dappMetadata?.url || '',
-          dappDomain: dappMetadata?.appHost || '',
-          dappName: dappMetadata?.appName,
-        });
+        analytics.track(
+          event.dappPromptSendTransactionApproved,
+          {
+            chainId: txData.chainId,
+            dappURL: dappMetadata?.url || '',
+            dappDomain: dappMetadata?.appHost || '',
+            dappName: dappMetadata?.appName,
+          },
+          await getWalletContext(activeSession?.address),
+        );
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
@@ -151,7 +150,6 @@ export function SendTransaction({
     connectedToHardhat,
     connectedToHardhatOp,
     asset,
-    flashbotsEnabledGlobally,
     selectedGas.transactionGasParams,
     approveRequest,
     dappMetadata?.url,
@@ -159,15 +157,19 @@ export function SendTransaction({
     dappMetadata?.appName,
   ]);
 
-  const onRejectRequest = useCallback(() => {
+  const onRejectRequest = useCallback(async () => {
     rejectRequest();
     if (activeSession) {
-      analytics.track(event.dappPromptSendTransactionRejected, {
-        chainId: activeSession?.chainId,
-        dappURL: dappMetadata?.url || '',
-        dappDomain: dappMetadata?.appHost || '',
-        dappName: dappMetadata?.appName,
-      });
+      analytics.track(
+        event.dappPromptSendTransactionRejected,
+        {
+          chainId: activeSession?.chainId,
+          dappURL: dappMetadata?.url || '',
+          dappDomain: dappMetadata?.appHost || '',
+          dappName: dappMetadata?.appName,
+        },
+        await getWalletContext(activeSession?.address),
+      );
     }
   }, [
     rejectRequest,
@@ -181,6 +183,13 @@ export function SendTransaction({
     const watchedAddresses = watchedWallets?.map(({ address }) => address);
     return selectedWallet && watchedAddresses?.includes(selectedWallet);
   }, [selectedWallet, watchedWallets]);
+
+  const isSigningWithDevice = useMemo(() => {
+    const signingWithDevice =
+      allWallets.find((w) => isLowerCaseMatch(w.address, selectedWallet))
+        ?.type === 'HardwareWalletKeychain';
+    return signingWithDevice;
+  }, [allWallets, selectedWallet]);
 
   useEffect(() => {
     if (!featureFlags.full_watching_wallets && isWatchingWallet) {
@@ -234,7 +243,6 @@ export function SendTransaction({
           address={activeSession?.address}
           transactionRequest={request?.params?.[0] as TransactionRequest}
           plainTriggerBorder
-          flashbotsEnabled={flashbotsEnabledGlobally}
         />
         <SendTransactionActions
           session={activeSession}
@@ -243,6 +251,7 @@ export function SendTransaction({
           onRejectRequest={onRejectRequest}
           loading={loading}
           dappStatus={dappMetadata?.status}
+          signingWithDevice={isSigningWithDevice}
         />
       </Stack>
     </Box>

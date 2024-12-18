@@ -38,8 +38,18 @@ export function initializeSentry(context: 'popup' | 'background') {
   }
 }
 
-export function setSentryUser(deviceId: string) {
+export function setSentryUser({
+  deviceId,
+  walletAddressHash,
+  walletType,
+}: {
+  deviceId: string;
+  walletAddressHash?: string;
+  walletType?: 'owned' | 'hardware' | 'watched';
+}) {
   Sentry.setUser({
     id: deviceId,
+    walletAddressHash,
+    walletType,
   });
 }

@@ -15,13 +15,6 @@ export interface PendingTransactionsStateV1 {
 
 export interface PendingTransactionsState {
   pendingTransactions: Record<Address, RainbowTransaction[]>;
-  addPendingTransaction: ({
-    address,
-    pendingTransaction,
-  }: {
-    address: Address;
-    pendingTransaction: RainbowTransaction;
-  }) => void;
   updatePendingTransaction: ({
     address,
     pendingTransaction,
@@ -42,34 +35,29 @@ export interface PendingTransactionsState {
 export const pendingTransactionsStore = createStore<PendingTransactionsState>(
   (set, get) => ({
     pendingTransactions: {},
-    addPendingTransaction: ({ address, pendingTransaction }) => {
-      const { pendingTransactions: currentPendingTransactions } = get();
-      const addressPendingTransactions =
-        currentPendingTransactions[address] || [];
-      set({
-        pendingTransactions: {
-          ...currentPendingTransactions,
-          [address]: [...addressPendingTransactions, pendingTransaction],
-        },
-      });
-    },
     updatePendingTransaction: ({ address, pendingTransaction }) => {
       const { pendingTransactions: currentPendingTransactions } = get();
       const addressPendingTransactions =
         currentPendingTransactions[address] || [];
 
+      const updatedPendingTransactions = [
+        ...addressPendingTransactions.filter((tx) => {
+          if (tx.chainId === pendingTransaction.chainId) {
+            return tx.nonce !== pendingTransaction.nonce;
+          }
+          return true;
+        }),
+        pendingTransaction,
+      ];
+      const orderedPendingTransactions = updatedPendingTransactions.sort(
+        (a, b) => {
+          return (a.nonce || 0) - (b.nonce || 0);
+        },
+      );
       set({
         pendingTransactions: {
           ...currentPendingTransactions,
-          [address]: [
-            ...addressPendingTransactions.filter((tx) => {
-              if (tx.chainId === pendingTransaction.chainId) {
-                return tx.nonce !== pendingTransaction.nonce;
-              }
-              return true;
-            }),
-            pendingTransaction,
-          ],
+          [address]: orderedPendingTransactions,
         },
       });
     },

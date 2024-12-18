@@ -249,6 +249,9 @@ function ActionButtonsSection() {
             onClick={() => {
               if (shouldNavigateToSend) {
                 navigate(ROUTES.SEND);
+                analytics.track(event.sendOpened, {
+                  entryPoint: 'home_header_send_button',
+                });
               } else {
                 handleSendFallback();
               }

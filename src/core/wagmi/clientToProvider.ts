@@ -21,6 +21,16 @@ export function clientToProvider(client: Client<Transport, Chain>) {
   return new providers.JsonRpcProvider(transport.url, network) as Provider;
 }
 
+export function clientToBatchedProvider(client: Client<Transport, Chain>) {
+  const { chain, transport } = client;
+  const network = {
+    chainId: chain.id,
+    name: chain.name,
+    ensAddress: chain.contracts?.ensRegistry?.address,
+  };
+  return new providers.JsonRpcBatchProvider(transport.url, network);
+}
+
 /** Action to convert a viem Public Client to an ethers.js Provider. */
 export function getProvider({ chainId }: { chainId?: number } = {}) {
   const client = getClient(wagmiConfig, { chainId }) as Client<
@@ -28,4 +38,13 @@ export function getProvider({ chainId }: { chainId?: number } = {}) {
     Chain
   >;
   return clientToProvider(client);
+}
+
+/** Action to convert a viem Public Client to an ethers.js Batched Provider. */
+export function getBatchedProvider({ chainId }: { chainId?: number } = {}) {
+  const client = getClient(wagmiConfig, { chainId }) as Client<
+    Transport,
+    Chain
+  >;
+  return clientToBatchedProvider(client);
 }

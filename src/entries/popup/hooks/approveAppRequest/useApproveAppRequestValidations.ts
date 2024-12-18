@@ -12,9 +12,11 @@ import { useHasEnoughGas } from '../../pages/messages/useHasEnoughGas';
 export const useApproveAppRequestValidations = ({
   session,
   dappStatus,
+  signingWithDevice,
 }: {
   session: ActiveSession;
   dappStatus?: DAppStatus;
+  signingWithDevice?: boolean;
 }) => {
   const { connectedToHardhat, connectedToHardhatOp } =
     useConnectedToHardhatStore();
@@ -35,6 +37,10 @@ export const useApproveAppRequestValidations = ({
         symbol: getChain({ chainId: activeChainId }).nativeCurrency.name,
       });
 
+    if (signingWithDevice) {
+      return i18n.t('approve_request.confirm_hw');
+    }
+
     return i18n.t('approve_request.send_transaction');
   }, [
     connectedToHardhat,
@@ -42,6 +48,7 @@ export const useApproveAppRequestValidations = ({
     session?.chainId,
     dappStatus,
     enoughNativeAssetForGas,
+    signingWithDevice,
   ]);
 
   return {

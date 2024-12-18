@@ -229,7 +229,12 @@ function SwapSend({
           width="full"
           color="accent"
           symbol="paperplane.fill"
-          onClick={() => selectTokenAndNavigate(ROUTES.SEND)}
+          onClick={() => {
+            selectTokenAndNavigate(ROUTES.SEND);
+            analytics.track(event.sendOpened, {
+              entryPoint: 'token_details',
+            });
+          }}
           tabIndex={0}
         >
           {i18n.t('token_details.send')}
