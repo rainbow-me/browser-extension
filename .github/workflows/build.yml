@@ -51,7 +51,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
             repository: 'rainbow-me/browser-extension-env'
-            token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+            token: ${{ secrets.GITHUB_TOKEN }}
             path: tmp
       - name: Copy dotenv
         run: cat tmp/dotenv >> .env && rm -rf tmp
@@ -83,7 +83,7 @@ jobs:
   #     - uses: actions/checkout@v4
   #     - uses: ./.github/actions/firefoxTestsSetup
   #       with:
-  #         gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+  #         gh-access-token: ${{ secrets.GITHUB_TOKEN }}
   #     - name: Run e2e parallel (Firefox)
   #       id: FFE2eParallel
   #       continue-on-error: true
@@ -113,7 +113,7 @@ jobs:
   #     - uses: actions/checkout@v4
   #     - uses: ./.github/actions/firefoxTestsSetup
   #       with:
-  #         gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+  #         gh-access-token: ${{ secrets.GITHUB_TOKEN }}
   #     - name: Run e2e Swap (Firefox)
   #       id: FFE2eSwap
   #       continue-on-error: true
@@ -143,7 +143,7 @@ jobs:
   #     - uses: actions/checkout@v4
   #     - uses: ./.github/actions/firefoxTestsSetup
   #       with:
-  #         gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+  #         gh-access-token: ${{ secrets.GITHUB_TOKEN }}
   #     - name: Run e2e Send (Firefox)
   #       id: FFE2eSend
   #       continue-on-error: true
@@ -173,7 +173,7 @@ jobs:
   #     - uses: actions/checkout@v4
   #     - uses: ./.github/actions/firefoxTestsSetup
   #       with:
-  #         gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+  #         gh-access-token: ${{ secrets.GITHUB_TOKEN }}
   #     - name: Run e2e Dapp Interactions (Firefox)
   #       id: FFE2eDappInteractions
   #       continue-on-error: true
@@ -204,7 +204,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/chromeTestsSetup
         with:
-          gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+          gh-access-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Run e2e parallel (Chrome)
         id: ChromeE2EParallel
         continue-on-error: true
@@ -233,7 +233,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/chromeTestsSetup
         with:
-          gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+          gh-access-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Run e2e swap (Chrome)
         id: ChromeE2ESwaps
         continue-on-error: true
@@ -262,7 +262,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/chromeTestsSetup
         with:
-          gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+          gh-access-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Run e2e send (Chrome)
         id: ChromeE2ESend
         continue-on-error: true
@@ -291,7 +291,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/chromeTestsSetup
         with:
-          gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+          gh-access-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Run Optimism e2e send (Chrome)
         id: ChromeOpE2ESend
         continue-on-error: true
@@ -320,7 +320,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/chromeTestsSetup
         with:
-          gh-access-token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+          gh-access-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Run e2e dappInteractions (Chrome)
         id: ChromeE2EDappInteractions
         continue-on-error: true
@@ -381,7 +381,7 @@ jobs:
   #     - uses: actions/checkout@v4
   #       with:
   #           repository: 'rainbow-me/browser-extension-env'
-  #           token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+  #           token: ${{ secrets.GITHUB_TOKEN }}
   #           path: tmp
   #     - name: Copy dotenv
   #       run: cat tmp/dotenv >> .env && rm -rf tmp
@@ -420,7 +420,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
             repository: 'rainbow-me/browser-extension-env'
-            token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+            token: ${{ secrets.GITHUB_TOKEN }}
             path: tmp
       - name: Copy dotenv
         run: cat tmp/dotenv >> .env && rm -rf tmp
