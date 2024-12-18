@@ -1,5 +1,5 @@
 import { Address } from 'viem';
-import { type Chain, curtis, inkSepolia } from 'viem/chains';
+import { type Chain, avalancheFuji, curtis, inkSepolia } from 'viem/chains';
 
 import backendNetworks from 'static/data/networks.json';
 
@@ -19,7 +19,7 @@ const BACKEND_CHAINS = transformBackendNetworksToChains(
   backendNetworks.networks,
 );
 
-const LOCAL_CHAINS: Chain[] = [curtis, inkSepolia];
+const LOCAL_CHAINS: Chain[] = [avalancheFuji, curtis, inkSepolia];
 
 const DEFAULT_PRIVATE_MEMPOOL_TIMEOUT = 2 * 60 * 1_000; // 2 minutes
 
@@ -53,7 +53,11 @@ export const chainsLabel: Record<number, string> =
       acc[parseInt(backendNetwork.id, 10)] = backendNetwork.label;
       return acc;
     },
-    {} as Record<number, string>,
+    {
+      [ChainId.avalancheFuji]: 'Avalanche Fuji',
+      [ChainId.apechainCurtis]: 'Apechain Curtis',
+      [ChainId.inkSepolia]: 'Ink Sepolia',
+    } as Record<number, string>,
   );
 
 export const chainsPrivateMempoolTimeout: Record<number, number> =
@@ -72,7 +76,11 @@ export const chainsName: Record<number, string> =
       acc[parseInt(backendNetwork.id, 10)] = backendNetwork.name;
       return acc;
     },
-    {} as Record<number, string>,
+    {
+      [ChainId.avalancheFuji]: 'avalanche-fuji',
+      [ChainId.apechainCurtis]: 'apechain-curtis',
+      [ChainId.inkSepolia]: 'ink-sepolia',
+    } as Record<number, string>,
   );
 
 const filterChainIdsByService = (
