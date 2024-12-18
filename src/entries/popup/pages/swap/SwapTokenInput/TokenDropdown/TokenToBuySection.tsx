@@ -85,6 +85,7 @@ const bridgeSectionsColorsByChain = {
   [ChainId.zora]: 'zora' as TextStyles['color'],
   [ChainId.bsc]: 'bsc' as TextStyles['color'],
   [ChainId.avalanche]: 'avalanche' as TextStyles['color'],
+  [ChainId.ink]: 'ink' as TextStyles['color'],
 };
 
 const VerifiedWrappedTooltip = ({
