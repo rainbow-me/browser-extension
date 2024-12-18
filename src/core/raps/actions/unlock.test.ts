@@ -28,12 +28,14 @@ beforeAll(async () => {
 });
 
 test('[rap/unlock] :: get raw allowance', async () => {
-  const rawAllowance = await getAssetRawAllowance({
-    owner: RAINBOW_WALLET_ADDRESS,
-    assetAddress: USDC_MAINNET_ASSET.address as Address,
+  const params = {
+    owner: RAINBOW_WALLET_ADDRESS as `0x${string}`,
+    assetAddress: USDC_MAINNET_ASSET.address as `0x${string}`,
     spender: getRainbowRouterContractAddress(mainnet.id),
     chainId: mainnet.id,
-  });
+  };
+
+  const rawAllowance = await getAssetRawAllowance(params);
   expect(rawAllowance).toBe('0');
 });
 
