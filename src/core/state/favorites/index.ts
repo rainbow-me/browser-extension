@@ -42,6 +42,7 @@ import {
   WBTC_POLYGON_ADDRESS,
   WETH_BASE_ADDRESS,
   WETH_BLAST_ADDRESS,
+  WETH_INK_ADDRESS,
   WETH_OPTIMISM_ADDRESS,
   WETH_POLYGON_ADDRESS,
   WETH_ZORA_ADDRESS,
@@ -118,7 +119,7 @@ const defaultFavorites = {
     APEETH_APECHAIN_ADDRESS,
     APEUSD_APECHAIN_ADDRESS,
   ],
-  [ChainId.ink]: [ETH_INK_ADDRESS],
+  [ChainId.ink]: [ETH_INK_ADDRESS, WETH_INK_ADDRESS],
 } satisfies FavoritesState['favorites'];
 
 const mergeNewOfficiallySupportedChainsState = (
