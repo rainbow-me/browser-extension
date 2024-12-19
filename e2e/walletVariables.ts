@@ -38,6 +38,11 @@ export const TEST_VARIABLES = {
   DAPP_RECIPIENT: {
     ADDRESS: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
   },
+  SEED_PHRASE_24: {
+    SECRET:
+      'pattern timber trouble emotion promote dignity south screen black resource churn noise famous junk gym slam author sense perfect shoulder disorder company rain spawn',
+    ADDRESS: '0x9979527b7ff3f05BC08800A0Dc8d216f080bA016',
+  },
 };
 
 export const SWAP_VARIABLES = {
