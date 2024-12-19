@@ -462,6 +462,7 @@ export const getChainWaitTime = (chainId: ChainId) => {
     case ChainId.avalanche:
       return { safeWait: 6, proposedWait: 3, fastWait: 3 };
     case ChainId.optimism:
+    case ChainId.ink:
       return { safeWait: 20, proposedWait: 20, fastWait: 20 };
     case ChainId.base:
       return { safeWait: 20, proposedWait: 20, fastWait: 20 };

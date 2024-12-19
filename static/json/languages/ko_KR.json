@@ -488,6 +488,10 @@
         "send_to_wallet": "이 지갑으로 보내기",
         "add_contact": "연락처로 추가",
         "remove_contact": "연락처 제거",
+        "hide_token": "%{name}숨기기",
+        "unhide_token": "%{name} 숨김 해제",
+        "hide": "숨기기",
+        "unhide": "숨김 해제",
         "copy_wallet_address": "주소 복사",
         "view_wallet_on_etherscan": "Etherscan에서 보기",
         "send_contact": "연락처에 보내기",
@@ -498,6 +502,8 @@
       "search_tags": {
         "swap": "구매, 판매, 거래, 주문, 교환, 덱스, 경로",
         "bridge": "전송, 체인, 경로",
+        "hide_token": "숨김",
+        "hide_nft": "숨김",
         "get": "교환, 브릿지",
         "my_wallets": "내, 스위치",
         "my_contacts": "나의",
@@ -586,7 +592,8 @@
       }
     },
     "labels": {
-      "contact": "연락처"
+      "contact": "연락처",
+      "hidden": "숨김"
     },
     "quick_promo": {
       "text": "%{modifierSymbol}K를 눌러 매직 메뉴를 엽니다",
@@ -731,6 +738,11 @@
       "unknown_price": {
         "title": "%{symbol} 시장 가치 알 수 없음",
         "description": "계속하기로 결정하신다면, 제시된 금액에 만족하는지 확인하세요."
+      }
+    },
+    "promo": {
+      "degen_mode": {
+        "title": "리뷰를 건너뛰려면 Degen 모드를 시도하세요"
       }
     },
     "aggregators": {
@@ -1624,7 +1636,8 @@
       "unverified": "인증되지 않음",
       "verified": "인증됨",
       "on_other_networks": "다른 네트워크에서",
-      "bridge": "브릿지"
+      "bridge": "브릿지",
+      "popular": "Rainbow에서 인기"
     },
     "verified_by_rainbow": "Rainbow에 의해 인증됨"
   },
@@ -1660,6 +1673,11 @@
           "title": "디젠이란 무엇인가요?",
           "description_1": "디젠 체인은 아비트럼과 이더리움 위에서 운영되는 레이어 3 네트워크입니다.",
           "description_2": "파캐스터 커뮤니티 토큰 $degen으로 표시된 놀라울 정도로 빠르고 저렴한 거래를 제공합니다."
+        },
+        "apechain": {
+          "title": "ApeChain이 무엇인가요?",
+          "description_1": "ApeChain은 아비트럼 오르빗과 이더리움 위에서 운영되는 레이어 <b>3</b> 네트워크입니다.",
+          "description_2": "이것은 ApeCoin의 유용성을 크게 향상시키며, $APE에 의해 구동되는 강력하고 역동적인 경제를 조성합니다."
         },
         "custom_network": {
           "title": "이 네트워크란 무엇인가요?",

@@ -488,6 +488,10 @@
         "send_to_wallet": "Envoyer à ce portefeuille",
         "add_contact": "Ajouter comme contact",
         "remove_contact": "Supprimer le contact",
+        "hide_token": "Masquer %{name}",
+        "unhide_token": "Afficher %{name}",
+        "hide": "Masquer",
+        "unhide": "Afficher",
         "copy_wallet_address": "Copier l'adresse",
         "view_wallet_on_etherscan": "Afficher sur Etherscan",
         "send_contact": "Envoyer au contact",
@@ -498,6 +502,8 @@
       "search_tags": {
         "swap": "acheter, vendre, échanger, commander, échange, dex, itinéraires",
         "bridge": "transférer, chaîne, itinéraires",
+        "hide_token": "masqué",
+        "hide_nft": "masqué",
         "get": "échanger, transférer",
         "my_wallets": "mon, changer",
         "my_contacts": "mes",
@@ -586,7 +592,8 @@
       }
     },
     "labels": {
-      "contact": "Contactez"
+      "contact": "Contactez",
+      "hidden": "Masqué"
     },
     "quick_promo": {
       "text": "Appuyez sur %{modifierSymbol}K pour ouvrir le Menu Magique",
@@ -731,6 +738,11 @@
       "unknown_price": {
         "title": "Valeur marchande de %{symbol} inconnue",
         "description": "Si vous décidez de continuer, assurez-vous que le montant indiqué vous convient."
+      }
+    },
+    "promo": {
+      "degen_mode": {
+        "title": "Essayez le mode Degen pour sauter la révision"
       }
     },
     "aggregators": {
@@ -1624,7 +1636,8 @@
       "unverified": "Non vérifié",
       "verified": "Vérifié",
       "on_other_networks": "Sur d'autres réseaux",
-      "bridge": "Pont"
+      "bridge": "Pont",
+      "popular": "Populaire dans Rainbow"
     },
     "verified_by_rainbow": "Vérifié par Rainbow"
   },
@@ -1660,6 +1673,11 @@
           "title": "C'est quoi Degen ?",
           "description_1": "Degen Chain est un réseau de couche 3 qui fonctionne au-dessus d'Arbitrum et d'Ethereum.",
           "description_2": "Il offre des transactions incroyablement rapides et bon marché dénommées dans le token communautaire Farcaster $degen."
+        },
+        "apechain": {
+          "title": "C'est quoi ApeChain ?",
+          "description_1": "ApeChain est un réseau de couche <b>3</b> qui fonctionne au-dessus d'Arbitrum Orbit et d'Ethereum.",
+          "description_2": "Elle améliore considérablement l'utilité d'ApeCoin, favorisant une économie robuste et dynamique alimentée par $APE."
         },
         "custom_network": {
           "title": "C'est quoi ce réseau ?",
