@@ -1,5 +1,5 @@
 
-name: Publish to Chrome (Prod)
+name: Publish to Edge (Prod)
 
 on:
   workflow_dispatch:
@@ -36,15 +36,15 @@ jobs:
       - name: Archive the build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: rainbowbx-chrome-v${{ env.release_version }}
+          name: rainbowbx-edge-v${{ env.release_version }}
           path: build/
       - name: Zip it
         run: yarn zip
-      - name: Submit to the chrome webstore
+      - name: Submit to the edge add-on store
         uses: PlasmoHQ/bpp@v3.7.0
         with:
           artifact: ./rainbowbx.zip
-          keys: ${{ secrets.BPP_KEYS_PROD }}
+          keys: ${{ secrets.BPP_KEYS_PROD_EDGE }}
       - name: Create Sentry release
         uses: getsentry/action-release@v1
         env:
