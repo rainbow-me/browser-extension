@@ -1075,7 +1075,7 @@ function Rerouter() {
 
   React.useEffect(() => {
     setError(error);
-    analytics.track(analytics.event.appCrash, { error: error.message });
+    analytics.track(analytics.event.appCrashed, { error: error.message });
     navigate(ROUTES.HOME, { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

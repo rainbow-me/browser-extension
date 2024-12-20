@@ -618,7 +618,7 @@ export function TokenDetails() {
     ({ elapsedTime }) => {
       const { address, chainId, symbol } = token;
       const chartData = getPriceChartQueryCache({ address, chainId });
-      analytics.track(analytics.event.tokenDetailsErc20, {
+      analytics.track(analytics.event.tokenDetailsViewed, {
         eventSentAfterMs: elapsedTime,
         token: { address, chainId, symbol },
         available_data: {

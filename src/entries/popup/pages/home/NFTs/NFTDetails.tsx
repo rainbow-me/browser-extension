@@ -1,7 +1,7 @@
 import { DropdownMenuRadioGroup } from '@radix-ui/react-dropdown-menu';
 import clsx from 'clsx';
 import { format, formatDistanceStrict } from 'date-fns';
-import { ReactNode, useCallback, useMemo, useRef } from 'react';
+import { ReactNode, useCallback, useMemo } from 'react';
 import { Navigate, useLocation, useParams } from 'react-router-dom';
 import { Address } from 'viem';
 import { useEnsName } from 'wagmi';
@@ -162,7 +162,7 @@ function NFTDetails({
         nft.uniqueId,
       );
       const isParty = !!nft.external_link?.includes('party.app');
-      analytics.track(analytics.event.tokenDetailsNFT, {
+      analytics.track(analytics.event.nftDetailsViewed, {
         eventSentAfterMs: elapsedTime,
         token: {
           isENS,
