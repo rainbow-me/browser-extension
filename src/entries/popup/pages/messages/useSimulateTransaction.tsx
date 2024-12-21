@@ -166,6 +166,8 @@ export const useSimulateMessage = ({
         currency,
       })) as MessageSimulationResponse;
 
+      if (!response?.simulateMessage) throw 'UNSUPPORTED';
+
       return parseSimulation(response.simulateMessage, chainId);
     },
     staleTime: 60 * 1000, // 1 min
