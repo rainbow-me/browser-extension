@@ -125,6 +125,9 @@ export const useSimulateTransaction = ({
           domain,
         },
       )) as TransactionSimulationResponse;
+
+      if (!response?.simulateTransactions?.[0]) throw 'UNSUPPORTED';
+
       return parseSimulation(response.simulateTransactions[0], chainId);
     },
     staleTime: 60 * 1000, // 1 min
@@ -162,6 +165,8 @@ export const useSimulateMessage = ({
         domain,
         currency,
       })) as MessageSimulationResponse;
+
+      if (!response?.simulateMessage) throw 'UNSUPPORTED';
 
       return parseSimulation(response.simulateMessage, chainId);
     },
