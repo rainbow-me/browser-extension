@@ -54,6 +54,8 @@ export class HdKeychain implements IKeychain {
   constructor() {
     this.imported = false;
 
+    console.log('contruct HdKeychain');
+
     privates.set(this, {
       wallets: [],
       mnemonic: null,
