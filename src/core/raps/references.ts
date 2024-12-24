@@ -54,7 +54,6 @@ export interface RapSwapActionParameters<
   assetToSell: ParsedAsset;
   assetToBuy: ParsedAsset;
   nonce?: number;
-  flashbots?: boolean;
   quote: QuoteTypeMap[T];
   address?: Address;
 }

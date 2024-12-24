@@ -488,6 +488,10 @@
         "send_to_wallet": "このウォレットに送金",
         "add_contact": "連絡先として追加",
         "remove_contact": "連絡先を削除する",
+        "hide_token": "%{name}を非表示にする",
+        "unhide_token": "%{name}の非表示を解除",
+        "hide": "非表示",
+        "unhide": "非表示解除",
         "copy_wallet_address": "アドレスをコピー",
         "view_wallet_on_etherscan": "Etherscanで表示",
         "send_contact": "連絡先に送信",
@@ -498,6 +502,8 @@
       "search_tags": {
         "swap": "購入、販売、取引、注文、交換、dex、ルート",
         "bridge": "送金、チェーン、ルート",
+        "hide_token": "非表示",
+        "hide_nft": "非表示",
         "get": "スワップ、ブリッジ",
         "my_wallets": "自分の、切り替え",
         "my_contacts": "マイ",
@@ -586,7 +592,8 @@
       }
     },
     "labels": {
-      "contact": "お問い合わせ"
+      "contact": "お問い合わせ",
+      "hidden": "非表示"
     },
     "quick_promo": {
       "text": "マジックメニューを開くには %{modifierSymbol}K を押します",
@@ -731,6 +738,11 @@
       "unknown_price": {
         "title": "%{symbol}の市場価値不明",
         "description": "続行する場合は、提示された数量に満足していることを確認してください"
+      }
+    },
+    "promo": {
+      "degen_mode": {
+        "title": "レビュースキップのため、Degenモードを試してください"
       }
     },
     "aggregators": {
@@ -1624,7 +1636,8 @@
       "unverified": "未確認",
       "verified": "確認済み",
       "on_other_networks": "他のネットワーク上で",
-      "bridge": "ブリッジ"
+      "bridge": "ブリッジ",
+      "popular": "Rainbowで人気"
     },
     "verified_by_rainbow": "レインボー認証済み"
   },
@@ -1660,6 +1673,11 @@
           "title": "ディージェンとは何ですか？",
           "description_1": "ディージェンチェーンは、アービトラムとイーサリアムの上で動作するレイヤー3ネットワークです。",
           "description_2": "非常に速く、安価な取引を提供し、Farcasterコミュニティトークン$degenで決済されます。"
+        },
+        "apechain": {
+          "title": "ApeChainとは何ですか？",
+          "description_1": "ApeChainは、Arbitrum OrbitとEthereumの上で動作するレイヤー<b>3</b>ネットワークです。",
+          "description_2": "これにより、ApeCoinの実用性が大幅に向上し、$APEによって駆動される強力でダイナミックな経済が促進されます。"
         },
         "custom_network": {
           "title": "このネットワークとは何ですか？",

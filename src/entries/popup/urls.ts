@@ -9,8 +9,8 @@ export const ROUTES = {
     `/home/token-details/${uniqueId}`,
   ACTIVITY_DETAILS: (chainId: ChainId | ':chainId', hash: TxHash | ':hash') =>
     `/home/activity-details/${chainId}/${hash}`,
-  NFT_DETAILS: (collectionId: string, nftId: string) =>
-    `/home/nft-details/${collectionId}/${nftId}`,
+  NFT_DETAILS: (collectionUniqueId: UniqueId, tokenId: string) =>
+    `/home/nft-details/${collectionUniqueId}/${tokenId}`,
   POINTS_REFERRAL: '/home/points-referral',
   POINTS_ONBOARDING: '/home/points-onboarding',
   POINTS_WEEKLY_OVERVIEW: '/home/points-weekly-overview',

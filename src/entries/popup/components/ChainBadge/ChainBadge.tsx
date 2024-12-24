@@ -9,6 +9,7 @@ import BscBadge from 'static/assets/badges/bscBadge@3x.png';
 import DegenBadge from 'static/assets/badges/degenBadge@3x.png';
 import EthereumBadge from 'static/assets/badges/ethereumBadge@3x.png';
 import HardhatBadge from 'static/assets/badges/hardhatBadge@3x.png';
+import InkBadge from 'static/assets/badges/inkBadge@3x.png';
 import OptimismBadge from 'static/assets/badges/optimismBadge@3x.png';
 import PolygonBadge from 'static/assets/badges/polygonBadge@3x.png';
 import ZoraBadge from 'static/assets/badges/zoraBadge@3x.png';
@@ -65,6 +66,8 @@ const networkBadges = {
   [ChainId.degen]: DegenBadge,
   [ChainId.apechain]: ApeChainBadge,
   [ChainId.apechainCurtis]: ApeChainBadge,
+  [ChainId.ink]: InkBadge,
+  [ChainId.inkSepolia]: InkBadge,
 };
 
 const ChainBadge = ({

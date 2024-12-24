@@ -328,26 +328,6 @@ describe.runIf(browser !== 'firefox')(
       expect(fastGasLabel).toBe(true);
     });
 
-    it('should be able to toggle flashbots', async () => {
-      const defaultToggleStatus = await toggleStatus(
-        'flashbots-transactions-toggle',
-        driver,
-      );
-      expect(defaultToggleStatus).toBe('false');
-      await executePerformShortcut({
-        driver,
-        key: 'TAB',
-        timesToPress: 3,
-      });
-      await executePerformShortcut({ driver, key: 'ENTER' });
-      await delayTime('long');
-      const changedToggleStatus = await toggleStatus(
-        'flashbots-transactions-toggle',
-        driver,
-      );
-      expect(changedToggleStatus).toBe('true');
-    });
-
     it('should be able navigate to currencies', async () => {
       await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
       await executePerformShortcut({

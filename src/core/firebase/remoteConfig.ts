@@ -23,7 +23,6 @@ export interface RainbowConfig extends Record<string, any> {
   send_enabled: boolean;
   swaps_enabled: boolean;
   tx_requests_enabled: boolean;
-  flashbots_enabled: boolean;
   rpc_proxy_enabled: boolean;
   points_enabled: boolean;
   defi_positions_enabled: boolean;
@@ -43,6 +42,7 @@ export interface RainbowConfig extends Record<string, any> {
     [ChainName.blast]: number;
     [ChainName.degen]: number;
     [ChainName.apechain]: number;
+    [ChainName.ink]: number;
   };
 }
 
@@ -51,7 +51,6 @@ const DEFAULT_CONFIG = {
   send_enabled: true,
   swaps_enabled: true,
   tx_requests_enabled: true,
-  flashbots_enabled: true,
   rpc_proxy_enabled: true,
   points_enabled: true,
   defi_positions_enabled: false,
@@ -71,6 +70,7 @@ const DEFAULT_CONFIG = {
     blast: 200,
     degen: 200,
     apechain: 200,
+    ink: 200,
   },
 };
 
@@ -116,7 +116,6 @@ export const init = async () => {
             key === 'BX_send_enabled' ||
             key === 'BX_swaps_enabled' ||
             key === 'BX_tx_requests_enabled' ||
-            key === 'BX_flashbots_enabled' ||
             key === 'BX_rpc_proxy_enabled' ||
             key === 'BX_points_enabled' ||
             key === 'BX_defi_positions_enabled' ||

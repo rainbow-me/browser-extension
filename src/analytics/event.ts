@@ -199,14 +199,6 @@ export const event = {
    */
   settingsAnalyticsTrackingEnabled: 'settings.analytics_tracking.enabled',
   /**
-   * Called when user disables global Flashbots setting in Settings.
-   */
-  settingsFlashbotsDisabled: 'settings.flashbots.disabled',
-  /**
-   * Called when user enables global Flashbots setting in Settings.
-   */
-  settingsFlashbotsEnabled: 'settings.flashbots.enabled',
-  /**
    * Called when user disables Rainbow as default provider in Settings.
    */
   settingsRainbowDefaultProviderDisabled:
@@ -314,10 +306,6 @@ export type EventProperties = {
      * Mainnet contract address of the mapped assets.
      */
     mainnetAddress: string;
-    /**
-     * Whether Flashbots was used for the swap.
-     */
-    flashbots: boolean;
     /**
      * The estimated USD value of the swap.
      */
@@ -800,8 +788,6 @@ export type EventProperties = {
   [event.settingsAnalyticsTrackingEnabled]: undefined;
   [event.settingsRainbowDefaultProviderDisabled]: undefined;
   [event.settingsRainbowDefaultProviderEnabled]: undefined;
-  [event.settingsFlashbotsDisabled]: undefined;
-  [event.settingsFlashbotsEnabled]: undefined;
   [event.swapOpened]: {
     /**
      * Entrypoint of the swaps flow.
@@ -869,10 +855,6 @@ export type EventProperties = {
      * Whether the swap was a cross-chain swap.
      */
     crosschain: boolean;
-    /**
-     * Whether Flashbots was used for the swap.
-     */
-    flashbots: boolean;
     /**
      * The estimated USD value of the swap.
      */

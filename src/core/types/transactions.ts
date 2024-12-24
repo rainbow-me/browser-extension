@@ -34,16 +34,15 @@ type BaseTransaction = {
     | undefined
   >;
   direction?: TransactionDirection;
-  flashbots?: boolean;
 
   value?: string; // network asset amount sent with the tx (like eth or pol)
   fee?: string;
+  lastSubmittedTimestamp?: number;
   native?: {
     // fee and value but in the user prefered currency terms (USD, EUR, etc)
     value?: string;
     fee?: string;
   };
-
   type: TransactionType;
   typeOverride?: 'speed_up' | 'cancel'; // we keep the tx metadata like type "swap" and add this override to indicate it's a speed up or cancel
 
@@ -74,7 +73,6 @@ export type PendingTransaction = BaseTransaction & {
 
 export type MinedTransaction = BaseTransaction & {
   status: 'confirmed' | 'failed';
-  flashbotsStatus?: 'CANCELLED' | 'FAILED' | 'INCLUDED';
   blockNumber: number;
   minedAt: number;
   confirmations: number;

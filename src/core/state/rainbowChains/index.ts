@@ -122,7 +122,7 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
   {
     persist: persistOptions({
       name: 'rainbowChains',
-      version: 10,
+      version: 11,
       migrations: [
         // v1 didn't need a migration
         function v1(s: RainbowChainsState) {
@@ -163,6 +163,7 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
           ]);
         },
 
+        // version 6 added support for Zora
         function v6(state: unknown) {
           const rnbwChainState = state as RainbowChainsState;
           if (
@@ -178,6 +179,7 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
           return state;
         },
 
+        // version 8 added support for Degen
         function v8(state: unknown) {
           const rnbwChainState = state as RainbowChainsState;
           if (
@@ -191,13 +193,36 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
           }
           return state;
         },
+
+        // This migration intended to resolve issues where we
+        // inadvertently added RPCs supplied by the dApp provider
+        // (i.e. Wagmi add network calls) that replaced the default
+        // RPCs for our supported chains.
         function v9(state: unknown) {
           return replaceChainsWithInitial(state as RainbowChainsState);
         },
+
+        // The previous version of this migration #1738 returned
+        // `getInitialRainbowChains` which reset user custom networks,
+        // RPCs, and active status toggles for all chains.
+        // Now we merge Apechain into the default chains for users
+        // that haven't yet migrated to v10.
         function v10(state: unknown) {
-          const rnbwState = state as RainbowChainsState;
-          rnbwState.rainbowChains = getInitialRainbowChains();
-          return rnbwState;
+          const rnbwChainState = state as RainbowChainsState;
+          return mergeNewOfficiallySupportedChainsState(rnbwChainState, [
+            ChainId.apechain,
+            // not adding `apechainCurtis` because most users already migrated
+          ]);
+        },
+
+        // version 11 added support for Ink and fixed `apechainCurtis`
+        function v11(state: unknown) {
+          const rnbwChainState = state as RainbowChainsState;
+          return mergeNewOfficiallySupportedChainsState(rnbwChainState, [
+            ChainId.apechainCurtis,
+            ChainId.ink,
+            ChainId.inkSepolia,
+          ]);
         },
       ],
     }),

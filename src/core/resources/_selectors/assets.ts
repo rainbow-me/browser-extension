@@ -69,6 +69,7 @@ export function selectUserAssetsListByChainId(assets: ParsedAssetsDictByChain) {
     assets?.[ChainId.zora],
     assets?.[ChainId.bsc],
     assets?.[ChainId.avalanche],
+    assets?.[ChainId.ink],
   ].flat();
   return assetsByNetwork
     .map((chainAssets) =>
@@ -95,6 +96,7 @@ export function selectUserAssetAddressMapByChainId(
     [ChainId.base]: mapAddresses(assets[ChainId.base]) || [],
     [ChainId.zora]: mapAddresses(assets[ChainId.zora]) || [],
     [ChainId.avalanche]: mapAddresses(assets[ChainId.avalanche]) || [],
+    [ChainId.ink]: mapAddresses(assets[ChainId.ink]) || [],
   };
 }
 

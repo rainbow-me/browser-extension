@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'react';
+import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { selectNfts } from '~/core/resources/_selectors/nfts';
@@ -6,6 +7,7 @@ import { useGalleryNfts } from '~/core/resources/nfts/galleryNfts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useNftsStore } from '~/core/state/nfts';
+import { ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import { UniqueAsset } from '~/core/types/nfts';
 
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
@@ -84,10 +86,17 @@ export const useSearchableNFTs = () => {
 
   const searchableNFTs = useMemo(() => {
     return nfts.map<NFTSearchItem>((nft) => ({
-      action: () =>
-        navigate(
-          ROUTES.NFT_DETAILS(nft.collection.collection_id || '', nft.id),
-        ),
+      action: () => {
+        const [chainName, contractAddress, tokenId] = nft.fullUniqueId.split(
+          '_',
+        ) as [ChainName, Address, string];
+        const chainId = chainNameToIdMapping[chainName];
+        if (!chainId) return;
+        return navigate(
+          ROUTES.NFT_DETAILS(`${contractAddress}_${chainId}`, tokenId),
+          { state: { nft } },
+        );
+      },
       actionLabel: actionLabels.open,
       actionPage: PAGES.NFT_TOKEN_DETAIL,
       id: nft.uniqueId,

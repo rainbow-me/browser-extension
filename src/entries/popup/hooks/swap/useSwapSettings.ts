@@ -2,7 +2,6 @@ import { Source } from '@rainbow-me/swaps';
 import { useCallback, useEffect, useState } from 'react';
 
 import config from '~/core/firebase/remoteConfig';
-import { useFlashbotsEnabledStore } from '~/core/state';
 import { ChainId, ChainName, chainIdToNameMapping } from '~/core/types/chains';
 
 import usePrevious from '../usePrevious';
@@ -19,6 +18,7 @@ export const DEFAULT_SLIPPAGE_BIPS = {
   [ChainId.blast]: 200,
   [ChainId.degen]: 200,
   [ChainId.apechain]: 200,
+  [ChainId.ink]: 200,
 };
 
 export const DEFAULT_SLIPPAGE = {
@@ -33,6 +33,7 @@ export const DEFAULT_SLIPPAGE = {
   [ChainId.blast]: '2',
   [ChainId.degen]: '2',
   [ChainId.apechain]: '2',
+  [ChainId.ink]: '2',
 };
 
 const slippageInBipsToString = (slippageInBips: number) =>
@@ -50,7 +51,8 @@ export const getDefaultSlippage = (chainId: ChainId) => {
     | ChainName.avalanche
     | ChainName.blast
     | ChainName.degen
-    | ChainName.apechain;
+    | ChainName.apechain
+    | ChainName.ink;
   return slippageInBipsToString(
     config.default_slippage_bips[chainName] || DEFAULT_SLIPPAGE_BIPS[chainId],
   );
@@ -63,8 +65,6 @@ export const useSwapSettings = ({ chainId }: { chainId: ChainId }) => {
   const [internalSlippage, setInternalSlippage] = useState<string>(
     getDefaultSlippage(chainId),
   );
-  const { swapFlashbotsEnabled, setSwapFlashbotsEnabled } =
-    useFlashbotsEnabledStore();
   const prevChainId = usePrevious(chainId);
 
   const setSlippage = useCallback((slippage: string) => {
@@ -73,20 +73,11 @@ export const useSwapSettings = ({ chainId }: { chainId: ChainId }) => {
   }, []);
 
   const setSettings = useCallback(
-    ({
-      source,
-      slippage,
-      swapFlashbotsEnabled,
-    }: {
-      source: Source | 'auto';
-      slippage: string;
-      swapFlashbotsEnabled: boolean;
-    }) => {
+    ({ source, slippage }: { source: Source | 'auto'; slippage: string }) => {
       setSource(source);
       setSlippage(slippage);
-      setSwapFlashbotsEnabled(swapFlashbotsEnabled);
     },
-    [setSlippage, setSwapFlashbotsEnabled],
+    [setSlippage],
   );
 
   useEffect(() => {
@@ -99,10 +90,8 @@ export const useSwapSettings = ({ chainId }: { chainId: ChainId }) => {
   return {
     source,
     slippage: internalSlippage,
-    swapFlashbotsEnabled,
     setSource,
     setSlippage,
-    setSwapFlashbotsEnabled,
     setSettings,
     slippageManuallyUpdated,
   };

@@ -10,7 +10,7 @@ import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { chainsNativeAsset } from '~/core/references/chains';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
-import { useFlashbotsEnabledStore, useGasStore } from '~/core/state';
+import { useGasStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
@@ -66,12 +66,6 @@ export function SendTransaction({
   const { allWallets, watchedWallets } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
 
-  const { flashbotsEnabled } = useFlashbotsEnabledStore();
-  const flashbotsEnabledGlobally =
-    config.flashbots_enabled &&
-    flashbotsEnabled &&
-    activeSession?.chainId === ChainId.mainnet;
-
   const onAcceptRequest = useCallback(async () => {
     if (!config.tx_requests_enabled) return;
     if (!selectedWallet || !activeSession) return;
@@ -102,7 +96,6 @@ export function SendTransaction({
           asset: asset || undefined,
           value: result.value.toString(),
           data: result.data,
-          flashbots: flashbotsEnabledGlobally,
           from: txData.from,
           to: txData.to,
           hash: result.hash as TxHash,
@@ -157,7 +150,6 @@ export function SendTransaction({
     connectedToHardhat,
     connectedToHardhatOp,
     asset,
-    flashbotsEnabledGlobally,
     selectedGas.transactionGasParams,
     approveRequest,
     dappMetadata?.url,
@@ -251,7 +243,6 @@ export function SendTransaction({
           address={activeSession?.address}
           transactionRequest={request?.params?.[0] as TransactionRequest}
           plainTriggerBorder
-          flashbotsEnabled={flashbotsEnabledGlobally}
         />
         <SendTransactionActions
           session={activeSession}

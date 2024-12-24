@@ -22,7 +22,7 @@ Rainbow is a fun, simple, and secure Ethereum wallet that makes managing your as
 
 [Chromium](https://chrome.google.com/webstore/detail/rainbow/opfgelmcmbiajamepnmloijbpoleiama) including Chrome, Brave and Arc
 
-<img align="left" width="20" height="20" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Edge_Logo_2019.svg/200px-Edge_Logo_2019.svg.png" alt="Edge">
+<img align="left" width="20" height="20" src="https://cdn.jsdelivr.net/npm/@browser-logos/edge/edge.png" alt="Edge">
 
 [Edge](https://chrome.google.com/webstore/detail/opfgelmcmbiajamepnmloijbpoleiama)
 

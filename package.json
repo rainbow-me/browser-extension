@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.5.64",
+  "version": "1.5.68",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -53,8 +53,8 @@
     "// Build and zip": "",
     "bundle": "yarn build && yarn zip",
     "// Runs tests": "",
-    "anvil": "ETH_MAINNET_RPC=$(grep ETH_MAINNET_RPC .env | cut -d '=' -f2) && anvil --fork-url $ETH_MAINNET_RPC",
-    "anvil:optimism": "OPTIMISM_MAINNET_RPC=$(grep OPTIMISM_MAINNET_RPC .env | cut -d '=' -f2) && anvil --fork-url $OPTIMISM_MAINNET_RPC",
+    "anvil": "anvil --fork-url $(./scripts/get-rpc-url.sh mainnet)",
+    "anvil:optimism": "anvil --fork-url $(./scripts/get-rpc-url.sh optimism)",
     "anvil:kill": "lsof -i :8545|tail -n +2|awk '{print $2}'|xargs -r kill -s SIGINT",
     "test": "./scripts/unit-tests.sh",
     "test:watch": "yarn anvil & vitest --watch",
@@ -92,12 +92,12 @@
     "@ethersproject/hdnode": "5.7.0",
     "@ethersproject/keccak256": "5.7.0",
     "@ethersproject/providers": "5.7.2",
+    "@ethersproject/sha2": "5.7.0",
     "@ethersproject/strings": "5.7.0",
     "@ethersproject/transactions": "5.7.0",
     "@ethersproject/units": "5.7.0",
     "@ethersproject/wallet": "5.7.0",
     "@ledgerhq/hw-app-eth": "6.38.1",
-    "@ethersproject/sha2": "5.7.0",
     "@ledgerhq/hw-transport-webhid": "6.29.3",
     "@metamask/browser-passworder": "4.1.0",
     "@metamask/eth-sig-util": "7.0.1",
@@ -109,7 +109,7 @@
     "@radix-ui/react-tabs": "1.0.4",
     "@radix-ui/react-tooltip": "1.0.3",
     "@rainbow-me/provider": "0.1.1",
-    "@rainbow-me/swaps": "0.29.0",
+    "@rainbow-me/swaps": "0.30.1",
     "@rudderstack/analytics-js-service-worker": "3.0.6",
     "@scure/bip39": "1.2.1",
     "@sentry/browser": "8.33.0",
@@ -159,7 +159,7 @@
     "react-switch": "7.0.0",
     "socket.io-client": "4.5.3",
     "validator": "13.9.0",
-    "viem": "2.21.0",
+    "viem": "2.21.55",
     "wagmi": "2.8.1",
     "word-wrap": "1.2.4",
     "zustand": "4.1.5"
@@ -284,7 +284,8 @@
     "dset": "3.1.4",
     "zod": "3.23.8",
     "rollup": "4.22.4",
-    "cross-spawn": "6.0.6"
+    "cross-spawn": "6.0.6",
+    "nanoid": "3.3.8"
   },
   "lavamoat": {
     "allowScripts": {

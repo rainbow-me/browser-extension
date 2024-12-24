@@ -488,6 +488,10 @@
         "send_to_wallet": "Kirim ke Dompet Ini",
         "add_contact": "Tambahkan sebagai Kontak",
         "remove_contact": "Hapus kontak",
+        "hide_token": "Sembunyikan %{name}",
+        "unhide_token": "Tampilkan %{name}",
+        "hide": "Sembunyikan",
+        "unhide": "Tampilkan",
         "copy_wallet_address": "Salin Alamat",
         "view_wallet_on_etherscan": "Lihat di Etherscan",
         "send_contact": "Kirim ke Kontak",
@@ -498,6 +502,8 @@
       "search_tags": {
         "swap": "beli, jual, perdagangan, pesanan, pertukaran, dex, rute",
         "bridge": "transfer, rantai, rute",
+        "hide_token": "tersembunyi",
+        "hide_nft": "tersembunyi",
         "get": "pertukaran, jembatan",
         "my_wallets": "saya, beralih",
         "my_contacts": "saya",
@@ -586,7 +592,8 @@
       }
     },
     "labels": {
-      "contact": "Kontak"
+      "contact": "Kontak",
+      "hidden": "Tersembunyi"
     },
     "quick_promo": {
       "text": "Tekan %{modifierSymbol}K untuk membuka Menu Sihir",
@@ -731,6 +738,11 @@
       "unknown_price": {
         "title": "Nilai Pasar %{symbol} Tidak Diketahui",
         "description": "Jika Anda memutuskan untuk melanjutkan, pastikan Anda puas dengan jumlah yang dikutip."
+      }
+    },
+    "promo": {
+      "degen_mode": {
+        "title": "Coba Mode Degen untuk melewati ulasan"
       }
     },
     "aggregators": {
@@ -1624,7 +1636,8 @@
       "unverified": "Tidak Terverifikasi",
       "verified": "Terverifikasi",
       "on_other_networks": "Di jaringan lain",
-      "bridge": "Jembatan"
+      "bridge": "Jembatan",
+      "popular": "Populer di Rainbow"
     },
     "verified_by_rainbow": "Diverifikasi oleh Rainbow"
   },
@@ -1660,6 +1673,11 @@
           "title": "Apa itu Degen?",
           "description_1": "Degen Chain adalah jaringan Layer 3 yang berjalan di atas Arbitrum dan Ethereum.",
           "description_2": "Menawarkan transaksi yang sangat cepat dan murah dengan denominasi token komunitas Farcaster $degen."
+        },
+        "apechain": {
+          "title": "Apa itu ApeChain?",
+          "description_1": "ApeChain adalah jaringan Layer 3 yang berjalan di atas Arbitrum Orbit dan Ethereum.",
+          "description_2": "Ini secara signifikan meningkatkan utilitas ApeCoin, mendorong ekonomi yang kuat dan dinamis yang didorong oleh $APE."
         },
         "custom_network": {
           "title": "Apa itu Jaringan ini?",
