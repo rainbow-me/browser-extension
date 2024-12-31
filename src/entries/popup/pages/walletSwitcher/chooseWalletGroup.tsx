@@ -2,6 +2,7 @@ import { ReactElement, useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Address } from 'viem';
 
+import { analytics } from '~/analytics';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { SessionStorage } from '~/core/storage';
@@ -281,6 +282,10 @@ const ChooseWalletGroup = () => {
       imported: false,
       type: KeychainType.HdKeychain,
     };
+    analytics.track('wallet.added', {
+      type: KeychainType.HdKeychain,
+      isNewGroup: true,
+    });
     navigate(
       ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
       {
@@ -302,6 +307,10 @@ const ChooseWalletGroup = () => {
       if (goHomeOnWalletCreation) {
         setFromChooseGroup(true);
       }
+      analytics.track('wallet.added', {
+        type: KeychainType.HdKeychain,
+        isNewGroup: false,
+      });
     },
     [wallets, goHomeOnWalletCreation],
   );

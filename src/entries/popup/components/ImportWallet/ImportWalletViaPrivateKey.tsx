@@ -5,8 +5,10 @@ import { KeyboardEvent, useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Address } from 'viem';
 
+import { analytics } from '~/analytics';
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
+import { KeychainType } from '~/core/types/keychainTypes';
 import { isValidPrivateKey } from '~/core/utils/ethereum';
 import { addHexPrefix } from '~/core/utils/hex';
 import {
@@ -127,6 +129,10 @@ const ImportWalletViaPrivateKey = () => {
               });
             else navigate(ROUTES.HOME);
           }, 1);
+
+          analytics.track('wallet.added', {
+            type: KeychainType.ReadOnlyKeychain,
+          });
 
           setIsAddingWallets(false);
           removeImportWalletSecrets();
