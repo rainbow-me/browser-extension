@@ -1,5 +1,7 @@
 import React, { useCallback } from 'react';
 
+import { analytics } from '~/analytics';
+import { KeychainType } from '~/core/types/keychainTypes';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
 
@@ -12,6 +14,7 @@ const NewWatchWallet = () => {
 
   const onFinishImporting = useCallback(async () => {
     navigate(-3);
+    analytics.track('wallet.added', { type: KeychainType.ReadOnlyKeychain });
   }, [navigate]);
 
   return (

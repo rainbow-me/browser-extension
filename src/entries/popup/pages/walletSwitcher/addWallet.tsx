@@ -18,9 +18,41 @@ const AddWallet = () => {
   const { featureFlags } = useFeatureFlagsStore();
 
   const handleCreateWallet = useCallback(async () => {
-    navigate(ROUTES.CHOOSE_WALLET_GROUP),
-      { state: { goHomeOnWalletCreation: true } };
+    console.log('tapped create new wallet');
+    navigate(ROUTES.CHOOSE_WALLET_GROUP, {
+      state: { goHomeOnWalletCreation: true },
+    });
   }, [navigate]);
+
+  const onImportWallet = () => {
+    console.log('tapped import wallet');
+    navigate(ROUTES.NEW_IMPORT_WALLET, {
+      state: {
+        // Force isBack to false because the onBack function otherwise
+        // causes this to be interpreted as a backward navigation
+        isBack: false,
+        onBack: () => removeImportWalletSecrets(),
+      },
+    });
+  };
+
+  const onAddHardwareWallet = () => {
+    if (featureFlags.hw_wallets_enabled) {
+      triggerAlert({ text: i18n.t('alert.coming_soon') });
+      return;
+    }
+    if (isFirefox) {
+      triggerAlert({ text: i18n.t('alert.no_hw_ff') });
+      return;
+    }
+    console.log('tapped import hardware wallet');
+    navigate(ROUTES.HW_CHOOSE);
+  };
+
+  const onWatchWallet = () => {
+    console.log('tapped watch wallet');
+    navigate(ROUTES.NEW_WATCH_WALLET);
+  };
 
   return (
     <Box height="full">
@@ -44,16 +76,7 @@ const AddWallet = () => {
           />
           <OnboardMenu.Separator />
           <OnboardMenu.Item
-            onClick={() =>
-              navigate(ROUTES.NEW_IMPORT_WALLET, {
-                state: {
-                  // Force isBack to false because the onBack function otherwise
-                  // causes this to be interpreted as a backward navigation
-                  isBack: false,
-                  onBack: () => removeImportWalletSecrets(),
-                },
-              })
-            }
+            onClick={onImportWallet}
             title={i18n.t('add_wallet.import_wallet')}
             subtitle={i18n.t('add_wallet.import_wallet_description')}
             symbolColor="purple"
@@ -62,13 +85,7 @@ const AddWallet = () => {
           />
           <OnboardMenu.Separator />
           <OnboardMenu.Item
-            onClick={() =>
-              featureFlags.hw_wallets_enabled
-                ? isFirefox
-                  ? triggerAlert({ text: i18n.t('alert.no_hw_ff') })
-                  : navigate(ROUTES.HW_CHOOSE)
-                : triggerAlert({ text: i18n.t('alert.coming_soon') })
-            }
+            onClick={onAddHardwareWallet}
             title={i18n.t('add_wallet.hardware_wallet')}
             subtitle={i18n.t('add_wallet.hardware_wallet_description')}
             symbolColor="blue"
@@ -77,7 +94,7 @@ const AddWallet = () => {
           />
           <OnboardMenu.Separator />
           <OnboardMenu.Item
-            onClick={() => navigate(ROUTES.NEW_WATCH_WALLET)}
+            onClick={onWatchWallet}
             title={i18n.t('add_wallet.watch_address')}
             subtitle={i18n.t('add_wallet.watch_address_description')}
             symbolColor="green"

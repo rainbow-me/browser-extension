@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react';
 
 import trezorDevice from 'static/assets/hw/trezor-device.png';
+import { analytics } from '~/analytics';
 import { i18n } from '~/core/languages';
+import { KeychainType } from '~/core/types/keychainTypes';
 import { goToNewTab } from '~/core/utils/tabs';
 import { Box, Separator, Text } from '~/design-system';
 import { TextLink } from '~/design-system/components/TextLink/TextLink';
@@ -23,6 +25,10 @@ export function ConnectTrezor() {
             ...res,
             vendor: 'Trezor',
           },
+        });
+        analytics.track('wallet.added', {
+          type: KeychainType.HardwareWalletKeychain,
+          vendor: 'Trezor',
         });
       }
     }, 1500);
