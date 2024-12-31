@@ -18,14 +18,12 @@ const AddWallet = () => {
   const { featureFlags } = useFeatureFlagsStore();
 
   const handleCreateWallet = useCallback(async () => {
-    console.log('tapped create new wallet');
     navigate(ROUTES.CHOOSE_WALLET_GROUP, {
       state: { goHomeOnWalletCreation: true },
     });
   }, [navigate]);
 
   const onImportWallet = () => {
-    console.log('tapped import wallet');
     navigate(ROUTES.NEW_IMPORT_WALLET, {
       state: {
         // Force isBack to false because the onBack function otherwise
@@ -45,12 +43,10 @@ const AddWallet = () => {
       triggerAlert({ text: i18n.t('alert.no_hw_ff') });
       return;
     }
-    console.log('tapped import hardware wallet');
     navigate(ROUTES.HW_CHOOSE);
   };
 
   const onWatchWallet = () => {
-    console.log('tapped watch wallet');
     navigate(ROUTES.NEW_WATCH_WALLET);
   };
 
