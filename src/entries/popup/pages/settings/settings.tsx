@@ -37,6 +37,7 @@ import { logger } from '~/logger';
 
 import packageJson from '../../../../../package.json';
 import { testSandbox } from '../../handlers/wallet';
+import { useDeviceUUID } from '../../hooks/useDeviceUUID';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
@@ -51,6 +52,7 @@ export function Settings() {
   const { soundsEnabled, toggleSoundsEnabled } = useSoundStore();
   const { featureFlags, setFeatureFlag } = useFeatureFlagsStore();
   const { isWatchingWallet } = useWallets();
+  const { getAppUUID, handleUUIDCopy } = useDeviceUUID();
 
   const { currentUserSelectedTheme, currentTheme, setCurrentTheme } =
     useCurrentThemeStore();
@@ -529,7 +531,12 @@ export function Settings() {
             />
           </Menu>
         )}
-        <Box padding="10px" alignItems="center" justifyContent="center">
+        <Box
+          padding="10px"
+          alignItems="center"
+          justifyContent="center"
+          onDoubleClick={async () => handleUUIDCopy(await getAppUUID())}
+        >
           <Text
             size="12pt"
             weight="semibold"
