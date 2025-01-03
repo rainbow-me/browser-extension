@@ -36,4 +36,20 @@ describe('Import wallet with a secret phrase flow', () => {
   it('should display account name', async () => {
     await checkWalletName(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.ADDRESS);
   });
+  it('should be able import a wallet with a 24 word seed phrase', async () => {
+    await importWalletFlow(
+      driver,
+      rootURL,
+      TEST_VARIABLES.SEED_PHRASE_24.SECRET,
+      true,
+      true,
+    );
+  });
+  it('should display account name of the 24 word seed phrase wallet', async () => {
+    await checkWalletName(
+      driver,
+      rootURL,
+      TEST_VARIABLES.SEED_PHRASE_24.ADDRESS,
+    );
+  });
 });

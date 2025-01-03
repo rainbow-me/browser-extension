@@ -447,6 +447,7 @@ const ImportWalletViaSeed = () => {
                   height="24px"
                   variant="transparent"
                   onClick={toggleWordLength}
+                  testId="toggle-24-word-seed-phrase"
                 >
                   {i18n.t(
                     `import_wallet_via_seed.${
