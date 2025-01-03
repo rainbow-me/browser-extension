@@ -44,6 +44,7 @@ import { ROUTES } from '~/entries/popup/urls';
 
 import { useBrowser } from '../../hooks/useBrowser';
 import { useCurrentWalletTypeAndVendor } from '../../hooks/useCurrentWalletType';
+import { useDeviceUUID } from '../../hooks/useDeviceUUID';
 import { useIsFullScreen } from '../../hooks/useIsFullScreen';
 import { triggerToast } from '../Toast/Toast';
 
@@ -169,6 +170,13 @@ export const getStaticCommandInfo = (): CommandInfo => {
       page: PAGES.HOME,
       shortcut: shortcuts.home.COPY_ADDRESS,
       shouldRemainOnActiveRoute: true,
+      symbol: 'square.on.square',
+      symbolSize: 15,
+      type: SearchItemType.Shortcut,
+    },
+    copyAppUUID: {
+      name: getCommandName('diagnostics'),
+      page: PAGES.HOME,
       symbol: 'square.on.square',
       symbolSize: 15,
       type: SearchItemType.Shortcut,
@@ -727,6 +735,7 @@ export const useCommands = (
   const isFullScreen = useIsFullScreen();
   const navigate = useRainbowNavigate();
   const navigateToSwaps = useNavigateToSwaps();
+  const { getAppUUID, handleUUIDCopy } = useDeviceUUID();
 
   // Wrapped to add analytics
   const wrappedNavigateToSwaps = React.useCallback(() => {
@@ -1410,6 +1419,12 @@ export const useCommands = (
           !previousPageState.selectedCommand?.asset?.address ||
           isETHAddress(previousPageState.selectedCommand?.asset?.address),
       },
+      copyAppUUID: {
+        action: async () => handleUUIDCopy(await getAppUUID()),
+        hidden:
+          searchQuery.toLowerCase() !==
+          getCommandName('diagnostics').toLowerCase(),
+      },
     }),
     [
       wrappedNavigateToSwaps,
@@ -1432,6 +1447,7 @@ export const useCommands = (
       currentAddress,
       isTokenHidden,
       isNftHidden,
+      searchQuery,
       navigate,
       handleCopy,
       sortedAccounts,
@@ -1448,6 +1464,8 @@ export const useCommands = (
       toggleHideToken,
       toggleHideNFT,
       selectSearchTokenAndNavigate,
+      handleUUIDCopy,
+      getAppUUID,
     ],
   );
 
