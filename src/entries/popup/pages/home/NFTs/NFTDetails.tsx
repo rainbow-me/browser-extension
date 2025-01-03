@@ -6,6 +6,7 @@ import { Navigate, useLocation, useParams } from 'react-router-dom';
 import { Address } from 'viem';
 import { useEnsName } from 'wagmi';
 
+import { analytics } from '~/analytics';
 import { i18n } from '~/core/languages';
 import { chainsLabel } from '~/core/references/chains';
 import { useEnsRegistration } from '~/core/resources/ens/ensRegistration';
@@ -14,7 +15,10 @@ import { useSelectedNftStore } from '~/core/state/selectedNft';
 import { AddressOrEth, UniqueId } from '~/core/types/assets';
 import { ChainId, ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import { UniqueAsset } from '~/core/types/nfts';
-import { truncateAddress } from '~/core/utils/address';
+import {
+  deriveAddressAndChainWithUniqueId,
+  truncateAddress,
+} from '~/core/utils/address';
 import { getBlockExplorerHostForChain } from '~/core/utils/chains';
 import { copyAddress } from '~/core/utils/copy';
 import {
@@ -73,6 +77,7 @@ import { useDominantColor } from '~/entries/popup/hooks/useDominantColor';
 import { useEns } from '~/entries/popup/hooks/useEns';
 import { useNftShortcuts } from '~/entries/popup/hooks/useNftShortcuts';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
+import { useTimeoutEffect } from '~/entries/popup/hooks/useTimeout';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
 import chunkLinks from '~/entries/popup/utils/chunkLinks';
@@ -148,6 +153,35 @@ function NFTDetails({
   }, [showExplainerSheet, hideExplainerSheet]);
 
   useNftShortcuts(nft);
+
+  useTimeoutEffect(
+    ({ elapsedTime }) => {
+      if (!nft) return;
+      const isENS = nft.familyName === 'ENS';
+      const { address, chain: chainId } = deriveAddressAndChainWithUniqueId(
+        nft.uniqueId,
+      );
+      const isParty = !!nft.external_link?.includes('party.app');
+      analytics.track(analytics.event.nftDetailsViewed, {
+        eventSentAfterMs: elapsedTime,
+        token: {
+          isENS,
+          isParty,
+          isPoap: !!nft.isPoap,
+          image_url: nft.image_url,
+          name: nft.name,
+          address,
+          chainId,
+        },
+        available_data: {
+          description: !!nft.description,
+          floorPrice: !!nft.floorPriceEth,
+          image_url: !!nft.image_url,
+        },
+      });
+    },
+    { timeout: 2 * 1000, enabled: !!nft },
+  );
 
   return (
     <Box background="surfacePrimary">

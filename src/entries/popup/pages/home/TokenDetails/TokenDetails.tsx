@@ -69,6 +69,7 @@ import { SideChainExplainerSheet } from '~/entries/popup/components/SideChainExp
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { useCustomNetworkAsset } from '~/entries/popup/hooks/useCustomNetworkAsset';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
+import { useTimeoutEffect } from '~/entries/popup/hooks/useTimeout';
 import { useTokenDetailsShortcuts } from '~/entries/popup/hooks/useTokenDetailsShortcuts';
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
@@ -78,7 +79,7 @@ import { TokenApprovalContextMenu } from '../Approvals/Approvals';
 import { triggerRevokeApproval } from '../Approvals/utils';
 
 import { About } from './About';
-import { PriceChart } from './PriceChart';
+import { PriceChart, getPriceChartQueryCache } from './PriceChart';
 import { useTokenInfo } from './useTokenInfo';
 
 const VERIFIED_ASSETS_PAYLOAD: {
@@ -612,6 +613,24 @@ export function TokenDetails() {
   );
 
   const { data: tokenInfo } = useTokenInfo(token ?? null);
+
+  useTimeoutEffect(
+    ({ elapsedTime }) => {
+      const { address, chainId, symbol } = token;
+      const chartData = getPriceChartQueryCache({ address, chainId });
+      analytics.track(analytics.event.tokenDetailsViewed, {
+        eventSentAfterMs: elapsedTime,
+        token: { address, chainId, symbol },
+        available_data: {
+          chart: !!chartData,
+          description: !!tokenInfo?.description,
+          iconUrl: !!token.icon_url,
+          price: !!tokenInfo?.price,
+        },
+      });
+    },
+    { timeout: 2 * 1000, enabled: !!token },
+  );
 
   const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
