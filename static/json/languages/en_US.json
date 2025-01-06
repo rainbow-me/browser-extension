@@ -499,7 +499,7 @@
         "export_addresses_as_csv": "Export Addresses as CSV",
         "enable_flashbots": "Enable Flashbots",
         "disable_flashbots": "Disable Flashbots",
-        "diagnostics": "Diagnostics"
+        "copy_uuid": "Copy UUID"
       },
       "search_tags": {
         "swap": "buy, sell, trade, order, exchange, dex, routes",
@@ -524,7 +524,8 @@
         "add_hardware_wallet": "ledger, trezor, connect",
         "hide_balances": "toggle",
         "hide_small_balances": "toggle",
-        "wallets_and_keys": "wallets and keys, settings, preferences"
+        "wallets_and_keys": "wallets and keys, settings, preferences",
+        "diagnostics": "diagnostics"
       }
     },
     "command_rows": {

@@ -174,13 +174,6 @@ export const getStaticCommandInfo = (): CommandInfo => {
       symbolSize: 15,
       type: SearchItemType.Shortcut,
     },
-    copyAppUUID: {
-      name: getCommandName('diagnostics'),
-      page: PAGES.HOME,
-      symbol: 'square.on.square',
-      symbolSize: 15,
-      type: SearchItemType.Shortcut,
-    },
     viewProfile: {
       actionLabel: actionLabels.openInNewTab,
       name: getCommandName('view_profile'),
@@ -652,6 +645,16 @@ export const getStaticCommandInfo = (): CommandInfo => {
       page: PAGES.UNOWNED_TOKEN_DETAIL,
       symbol: 'magnifyingglass',
       symbolSize: 14.5,
+      type: SearchItemType.Shortcut,
+    },
+
+    // PAGE: DIAGNOSTICS
+    copyUUID: {
+      name: getCommandName('copy_uuid'),
+      searchTags: getSearchTags('diagnostics'),
+      page: PAGES.HOME,
+      symbol: 'square.on.square',
+      symbolSize: 15,
       type: SearchItemType.Shortcut,
     },
   };
@@ -1419,11 +1422,11 @@ export const useCommands = (
           !previousPageState.selectedCommand?.asset?.address ||
           isETHAddress(previousPageState.selectedCommand?.asset?.address),
       },
-      copyAppUUID: {
+
+      // PAGE: DIAGNOSTICS
+      copyUUID: {
         action: async () => handleUUIDCopy(await getAppUUID()),
-        hidden:
-          searchQuery.toLowerCase() !==
-          getCommandName('diagnostics').toLowerCase(),
+        hidden: searchQuery.toLowerCase() !== getSearchTags('diagnostics')[0],
       },
     }),
     [
