@@ -3,14 +3,13 @@ import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { Transaction } from '@ethersproject/transactions';
 import {
   CrosschainQuote,
-  ETH_ADDRESS as ETH_ADDRESS_AGGREGATORS,
   Quote,
   ChainId as SwapChainId,
   SwapType,
-  WRAPPED_ASSET,
   fillQuote,
   getQuoteExecutionDetails,
   getRainbowRouterContractAddress,
+  getWrappedAssetAddress,
   getWrappedAssetMethod,
   unwrapNativeAsset,
   wrapNativeAsset,
@@ -22,7 +21,6 @@ import { getChainGasUnits } from '~/core/references/chains';
 import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { add } from '~/core/utils/numbers';
-import { isLowerCaseMatch } from '~/core/utils/strings';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import { TransactionSimulationResponse } from '~/entries/popup/pages/messages/useSimulateTransaction';
@@ -65,14 +63,8 @@ export const estimateSwapGasLimit = async ({
     return getChainGasUnits(chainId).basic.swap;
   }
 
-  const { sellTokenAddress, buyTokenAddress } = quote;
-  const isWrapNativeAsset =
-    isLowerCaseMatch(sellTokenAddress, ETH_ADDRESS_AGGREGATORS) &&
-    isLowerCaseMatch(buyTokenAddress, WRAPPED_ASSET[chainId]);
-
-  const isUnwrapNativeAsset =
-    isLowerCaseMatch(sellTokenAddress, WRAPPED_ASSET[chainId]) &&
-    isLowerCaseMatch(buyTokenAddress, ETH_ADDRESS_AGGREGATORS);
+  const isWrapNativeAsset = quote.swapType === SwapType.wrap;
+  const isUnwrapNativeAsset = quote.swapType === SwapType.unwrap;
 
   // Wrap / Unwrap Eth
   if (isWrapNativeAsset || isUnwrapNativeAsset) {
@@ -88,7 +80,7 @@ export const estimateSwapGasLimit = async ({
         contractCallEstimateGas: getWrappedAssetMethod(
           isWrapNativeAsset ? 'deposit' : 'withdraw',
           provider as StaticJsonRpcProvider,
-          chainId as unknown as SwapChainId,
+          getWrappedAssetAddress(quote),
         ),
         callArguments: isWrapNativeAsset ? [] : [quote.buyAmount.toString()],
         provider,
@@ -242,7 +234,7 @@ export const executeSwap = async ({
     return wrapNativeAsset(
       quote.buyAmount,
       wallet,
-      chainId as unknown as SwapChainId,
+      getWrappedAssetAddress(quote),
       transactionParams,
     );
     // Unwrap native
@@ -250,7 +242,7 @@ export const executeSwap = async ({
     return unwrapNativeAsset(
       quote.sellAmount,
       wallet,
-      chainId as unknown as SwapChainId,
+      getWrappedAssetAddress(quote),
       transactionParams,
     );
     // Swap

@@ -1,9 +1,9 @@
 import create from 'zustand';
 
 import {
-  APE_APECHAIN_ADDRESS,
   APEETH_APECHAIN_ADDRESS,
   APEUSD_APECHAIN_ADDRESS,
+  APE_APECHAIN_ADDRESS,
   AVAX_AVALANCHE_ADDRESS,
   BNB_BSC_ADDRESS,
   DAI_ADDRESS,
@@ -18,6 +18,7 @@ import {
   ETH_ARBITRUM_ADDRESS,
   ETH_BASE_ADDRESS,
   ETH_BLAST_ADDRESS,
+  ETH_INK_ADDRESS,
   ETH_OPTIMISM_ADDRESS,
   ETH_ZORA_ADDRESS,
   OP_ADDRESS,
@@ -41,6 +42,7 @@ import {
   WBTC_POLYGON_ADDRESS,
   WETH_BASE_ADDRESS,
   WETH_BLAST_ADDRESS,
+  WETH_INK_ADDRESS,
   WETH_OPTIMISM_ADDRESS,
   WETH_POLYGON_ADDRESS,
   WETH_ZORA_ADDRESS,
@@ -117,6 +119,7 @@ const defaultFavorites = {
     APEETH_APECHAIN_ADDRESS,
     APEUSD_APECHAIN_ADDRESS,
   ],
+  [ChainId.ink]: [ETH_INK_ADDRESS, WETH_INK_ADDRESS],
 } satisfies FavoritesState['favorites'];
 
 const mergeNewOfficiallySupportedChainsState = (
@@ -161,7 +164,7 @@ export const favoritesStore = createStore<FavoritesState>(
   {
     persist: persistOptions({
       name: 'favorites',
-      version: 5,
+      version: 6,
       migrations: [
         // version 1 didn't need a migration
         (state: FavoritesState) => state,
@@ -177,6 +180,8 @@ export const favoritesStore = createStore<FavoritesState>(
         // version 5 added apechain
         (state) =>
           mergeNewOfficiallySupportedChainsState(state, [ChainId.apechain]),
+        // version 6 added ink
+        (state) => mergeNewOfficiallySupportedChainsState(state, [ChainId.ink]),
       ],
     }),
   },

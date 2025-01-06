@@ -1,4 +1,9 @@
-import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
+import {
+  CrosschainQuote,
+  Quote,
+  QuoteError,
+  SwapType,
+} from '@rainbow-me/swaps';
 import { motion } from 'framer-motion';
 import React, {
   useCallback,
@@ -16,7 +21,6 @@ import { ChainId } from '~/core/types/chains';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { processExchangeRateArray } from '~/core/utils/numbers';
-import { isUnwrapEth, isWrapEth } from '~/core/utils/swaps';
 import {
   Bleed,
   Box,
@@ -243,18 +247,9 @@ const SwapReviewSheetWithQuote = ({
 
   const isWrapOrUnwrapEth = useMemo(() => {
     return (
-      isWrapEth({
-        buyTokenAddress: quote.buyTokenAddress,
-        sellTokenAddress: quote.sellTokenAddress,
-        chainId: assetToSell.chainId,
-      }) ||
-      isUnwrapEth({
-        buyTokenAddress: quote.buyTokenAddress,
-        sellTokenAddress: quote.sellTokenAddress,
-        chainId: assetToSell.chainId,
-      })
+      quote.swapType === SwapType.wrap || quote.swapType === SwapType.unwrap
     );
-  }, [assetToSell.chainId, quote.buyTokenAddress, quote.sellTokenAddress]);
+  }, [quote]);
 
   const openMoreDetails = useCallback(() => setShowDetails(true), []);
   const closeMoreDetails = useCallback(() => setShowDetails(false), []);

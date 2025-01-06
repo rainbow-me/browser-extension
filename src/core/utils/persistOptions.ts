@@ -88,7 +88,7 @@ interface PersistOptionsWithMigrations {
       ]
     >,
   ): R<Final>;
-  <Final, A, B, C, D, E, F, G, H, I>(
+  <Final, A, B, C, D, E, F, G, H, I, J>(
     opts: Opts<
       Final,
       [
@@ -101,7 +101,8 @@ interface PersistOptionsWithMigrations {
         (s: F) => G,
         (s: G) => H,
         (s: H) => I,
-        (s: I) => Final,
+        (s: I) => J,
+        (s: J) => Final,
       ]
     >,
   ): R<Final>;

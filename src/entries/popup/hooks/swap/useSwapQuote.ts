@@ -14,10 +14,9 @@ import { useMemo } from 'react';
 
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { ParsedAsset, ParsedSearchAsset } from '~/core/types/assets';
-import { ChainId } from '~/core/types/chains';
 import { convertAmountToRawAmount } from '~/core/utils/numbers';
-import { isUnwrapEth, isWrapEth } from '~/core/utils/swaps';
 
+import { analyticsTrackQuoteFailed } from './analyticsTrackQuoteFailed';
 import { IndependentField } from './useSwapInputs';
 
 const SWAP_POLLING_INTERVAL = 5000;
@@ -113,11 +112,21 @@ export const useSwapQuote = ({
   ]);
 
   const { data, isLoading, isError, fetchStatus } = useQuery({
-    queryFn: () =>
-      quotesParams &&
-      ((isCrosschainSwap ? getCrosschainQuote : getQuote)(
+    queryFn: async () => {
+      if (!quotesParams) throw 'unreacheable';
+      const quote = await (isCrosschainSwap ? getCrosschainQuote : getQuote)(
         quotesParams,
-      ) as Promise<Quote | CrosschainQuote | QuoteError>),
+      );
+      if (quote && 'error' in quote) {
+        analyticsTrackQuoteFailed(quote, {
+          inputAsset: assetToSell,
+          outputAsset: assetToBuy,
+          inputAmount: assetToSellValue,
+          outputAmount: assetToBuyValue,
+        });
+      }
+      return quote as Quote | CrosschainQuote | QuoteError;
+    },
     queryKey: ['getSwapQuote', quotesParams],
     enabled: !!quotesParams,
     refetchInterval: SWAP_POLLING_INTERVAL,
@@ -128,19 +137,8 @@ export const useSwapQuote = ({
   const isWrapOrUnwrapEth = useMemo(() => {
     if (!data || (data as QuoteError).error) return false;
     const quote = data as Quote | CrosschainQuote;
-    return (
-      isWrapEth({
-        buyTokenAddress: quote?.buyTokenAddress,
-        sellTokenAddress: quote?.sellTokenAddress,
-        chainId: assetToSell?.chainId || ChainId.mainnet,
-      }) ||
-      isUnwrapEth({
-        buyTokenAddress: quote?.buyTokenAddress,
-        sellTokenAddress: quote?.sellTokenAddress,
-        chainId: assetToSell?.chainId || ChainId.mainnet,
-      })
-    );
-  }, [assetToSell?.chainId, data]);
+    return quote.swapType == SwapType.wrap || quote.swapType == SwapType.unwrap;
+  }, [data]);
 
   const quote = useMemo(() => {
     if (!data || (data as QuoteError)?.error) return data;

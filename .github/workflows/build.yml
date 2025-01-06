@@ -58,6 +58,8 @@ jobs:
       - name: Set IS_TESTING=true
         run: |
           sed -i 's/IS_TESTING.*/IS_TESTING=true/g' .env
+      - name: Yarn setup again
+        run: yarn setup
       - name: Fetch networks
         run: yarn fetch:networks
       - name: Build the extension
