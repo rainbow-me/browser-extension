@@ -2,6 +2,7 @@
 
 import { Address } from 'viem';
 
+import { ChainId } from '~/core/types/chains';
 import { KeyboardEventDescription } from '~/entries/popup/hooks/useKeyboardAnalytics';
 
 import { screen } from './screen';
@@ -10,6 +11,10 @@ import { screen } from './screen';
  * All events, used by `analytics.track()`
  */
 export const event = {
+  /**
+   * Called when the app crashes for any reason
+   */
+  appCrashed: 'app.crashed',
   /**
    * Called when the user completes the Swap/Bridge flow and submits a bridge transaction.
    * This event is only called when the user is bridging a mapped asset, whereas
@@ -140,6 +145,10 @@ export const event = {
    */
   keyboardShortcutTriggered: 'keyboard.shortcut.triggered',
   /**
+   * Called when the user views the NFT details screen
+   */
+  nftDetailsViewed: 'nft_details.viewed',
+  /**
    * Called when user views the Leaderboard tab within Points
    */
   pointsLeaderboardViewed: 'points.leaderboard.viewed',
@@ -208,6 +217,10 @@ export const event = {
    */
   swapOpened: 'swap.opened',
   /**
+   * Called when the quote fails 'Insufficient funds' 'Out of gas' 'No routes found' and 'No quotes found'
+   */
+  swapQuoteFailed: 'swap.quote.failed',
+  /**
    * Called when the user completes a Swap/Bridge and submits the transaction.
    * This includes cross-chain swaps, while `bridgeSubmitted` is instead called
    * for mapped asset bridge transactions where the `mainnetAddress` is equal.
@@ -217,6 +230,10 @@ export const event = {
    * Called when the user toggles Degen Mode in the Swap/Bridge flow.
    */
   toggledDegenMode: 'degenMode.toggled',
+  /**
+   * Called when the user views the token details screen
+   */
+  tokenDetailsViewed: 'token_details.viewed',
   /**
    * Called when user completes or skips the wallet backup flow.
    * potential outcomes are 'succeeded,' 'failed,' or 'skipped.'
@@ -233,6 +250,7 @@ export const event = {
  * Properties corresponding to each event
  */
 export type EventProperties = {
+  [event.appCrashed]: { error: string };
   [event.bridgeSubmitted]: {
     /**
      * Symbol of the input asset being swapped.
@@ -679,6 +697,32 @@ export type EventProperties = {
      */
     type: KeyboardEventDescription;
   };
+  [event.nftDetailsViewed]: {
+    /**
+     * Token metadata.
+     */
+    token: {
+      isPoap: boolean;
+      isParty: boolean;
+      isENS: boolean;
+      address: string;
+      chainId: ChainId;
+      name: string;
+      image_url: string | null | undefined;
+    };
+    /**
+     * Time elapsed since the event was sent.
+     */
+    eventSentAfterMs: number;
+    /**
+     * Available data for the token.
+     */
+    available_data: {
+      description: boolean;
+      image_url: boolean;
+      floorPrice: boolean;
+    };
+  };
   [event.pointsLeaderboardViewed]: undefined;
   [event.pointsReferralCopied]: {
     /**
@@ -850,6 +894,57 @@ export type EventProperties = {
      */
     hardwareWallet: boolean;
   };
+  [event.swapQuoteFailed]: {
+    /**
+     * Error code returned from the swap quote request.
+     */
+    error_code: number | undefined;
+    /**
+     * Reason for the swap quote failure.
+     */
+    reason: string;
+    /**
+     * Input asset details.
+     */
+    inputAsset: { symbol: string; address: string; chainId: ChainId };
+    /**
+     * Input amount.
+     */
+    inputAmount: string | number;
+    /**
+     * Output asset details.
+     */
+    outputAsset: { symbol: string; address: string; chainId: ChainId };
+    /**
+     * Output amount.
+     */
+    outputAmount: string | number | undefined;
+  };
+  [event.toggledDegenMode]: {
+    /**
+     * Whether Degen Mode is enabled.
+     */
+    enabled: boolean;
+  };
+  [event.tokenDetailsViewed]: {
+    /**
+     * Token details.
+     */
+    token: { address: string; chainId: ChainId; symbol: string };
+    /**
+     * Time elapsed since the event was sent.
+     */
+    eventSentAfterMs: number;
+    /**
+     * Available data for the token.
+     */
+    available_data: {
+      chart: boolean;
+      description: boolean;
+      iconUrl: boolean;
+      price: boolean;
+    };
+  };
   [event.walletBackupQuizSubmitted]: {
     /**
      * Completed: if the user successfully completes the wallet backup quiz.
@@ -867,5 +962,4 @@ export type EventProperties = {
     index: number;
   };
   [event.walletViewed]: undefined;
-  [event.toggledDegenMode]: { enabled: boolean };
 };

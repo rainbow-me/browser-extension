@@ -16,6 +16,7 @@ import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { ParsedAsset, ParsedSearchAsset } from '~/core/types/assets';
 import { convertAmountToRawAmount } from '~/core/utils/numbers';
 
+import { analyticsTrackQuoteFailed } from './analyticsTrackQuoteFailed';
 import { IndependentField } from './useSwapInputs';
 
 const SWAP_POLLING_INTERVAL = 5000;
@@ -111,11 +112,21 @@ export const useSwapQuote = ({
   ]);
 
   const { data, isLoading, isError, fetchStatus } = useQuery({
-    queryFn: () =>
-      quotesParams &&
-      ((isCrosschainSwap ? getCrosschainQuote : getQuote)(
+    queryFn: async () => {
+      if (!quotesParams) throw 'unreacheable';
+      const quote = await (isCrosschainSwap ? getCrosschainQuote : getQuote)(
         quotesParams,
-      ) as Promise<Quote | CrosschainQuote | QuoteError>),
+      );
+      if (quote && 'error' in quote) {
+        analyticsTrackQuoteFailed(quote, {
+          inputAsset: assetToSell,
+          outputAsset: assetToBuy,
+          inputAmount: assetToSellValue,
+          outputAmount: assetToBuyValue,
+        });
+      }
+      return quote as Quote | CrosschainQuote | QuoteError;
+    },
     queryKey: ['getSwapQuote', quotesParams],
     enabled: !!quotesParams,
     refetchInterval: SWAP_POLLING_INTERVAL,
