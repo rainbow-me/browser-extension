@@ -19,7 +19,7 @@ import { handleWallets } from './handlers/handleWallets';
 require('../../core/utils/lockdown');
 
 initializeSentry('background');
-await localStorageRecycler();
+localStorageRecycler();
 
 const popupMessenger = initializeMessenger({ connect: 'popup' });
 const inpageMessenger = initializeMessenger({ connect: 'inpage' });
