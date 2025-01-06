@@ -4,6 +4,7 @@ import { initFCM } from '~/core/firebase/fcm';
 import { initializeMessenger } from '~/core/messengers';
 import { initializeSentry } from '~/core/sentry';
 import { syncStores } from '~/core/state/internal/syncStores';
+import { LocalStorageRecycler } from '~/core/storage/localStorageRecycler';
 import { getRainbowChains } from '~/core/utils/rainbowChains';
 import { updateWagmiConfig } from '~/core/wagmi';
 
@@ -18,6 +19,12 @@ import { handleWallets } from './handlers/handleWallets';
 require('../../core/utils/lockdown');
 
 initializeSentry('background');
+
+try {
+  await LocalStorageRecycler.getInstance().cleanup();
+} catch (error) {
+  console.error('Failed to clean up storage:', error);
+}
 
 const popupMessenger = initializeMessenger({ connect: 'popup' });
 const inpageMessenger = initializeMessenger({ connect: 'inpage' });
