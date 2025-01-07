@@ -327,6 +327,7 @@ it('should be able to remove token to sell and select it again', async () => {
     driver,
   });
   expect(toSellInputEthSelected).toBeTruthy();
+  await delay(5_000);
   // should clear input value
   const ethValueAfterSelection = await getTextFromTextInput({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
@@ -366,6 +367,7 @@ it('should be able to type native amount on sell input', async () => {
     id: `token-to-sell-info-fiat-value-input`,
     driver,
   });
+  await delay(5_000);
   await clearInput({
     id: `token-to-sell-info-fiat-value-input`,
     driver,
@@ -800,7 +802,7 @@ it('should be able to go to review a swap', async () => {
     driver,
   });
 
-  await delay(5_000);
+  await delay(10_000);
 
   toSellInputEthSelected.clear();
   toSellInputEthSelected.sendKeys('1');
