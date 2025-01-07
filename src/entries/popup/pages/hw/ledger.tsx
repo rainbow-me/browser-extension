@@ -5,7 +5,9 @@ import { useLocation } from 'react-router-dom';
 import ledgerDeviceEth from 'static/assets/hw/ledger-device-eth.png';
 import ledgerDeviceUnlock from 'static/assets/hw/ledger-device-unlock.png';
 import ledgerDevice from 'static/assets/hw/ledger-device.png';
+import { analytics } from '~/analytics';
 import { i18n } from '~/core/languages';
+import { KeychainType } from '~/core/types/keychainTypes';
 import { goToNewTab } from '~/core/utils/tabs';
 import { Box, Separator, Stack, Text } from '~/design-system';
 import { TextLink } from '~/design-system/components/TextLink/TextLink';
@@ -214,6 +216,10 @@ export function ConnectLedger() {
           direction: state?.direction,
           navbarIcon: state?.navbarIcon,
         },
+      });
+      analytics.track('wallet.added', {
+        type: KeychainType.HardwareWalletKeychain,
+        vendor: 'Ledger',
       });
     } else if (res.error) {
       setConnectingState(
