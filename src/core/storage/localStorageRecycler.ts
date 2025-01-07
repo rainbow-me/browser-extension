@@ -1,5 +1,3 @@
-import * as Sentry from '@sentry/browser';
-
 import { RainbowError, logger } from '~/logger';
 
 const OBSOLETE_KEYS = ['rainbow.wagmi'];
@@ -27,7 +25,6 @@ export async function localStorageRecycler(): Promise<void> {
       freedSpaceKB: beforeSize.toFixed(2),
     });
   } catch (error) {
-    Sentry.captureException(error);
     logger.error(new RainbowError('Failed to clean up obsolete storage'), {
       message: (error as Error)?.message,
     });
