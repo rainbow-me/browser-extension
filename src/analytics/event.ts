@@ -3,6 +3,7 @@
 import { Address } from 'viem';
 
 import { ChainId } from '~/core/types/chains';
+import { KeychainType } from '~/core/types/keychainTypes';
 import { KeyboardEventDescription } from '~/entries/popup/hooks/useKeyboardAnalytics';
 
 import { screen } from './screen';
@@ -234,6 +235,10 @@ export const event = {
    * Called when the user views the token details screen
    */
   tokenDetailsViewed: 'token_details.viewed',
+  /**
+   * Called when a wallet is created/imported/watched or a hardware wallet is connected
+   */
+  walletAdded: 'wallet.added',
   /**
    * Called when user completes or skips the wallet backup flow.
    * potential outcomes are 'succeeded,' 'failed,' or 'skipped.'
@@ -961,5 +966,17 @@ export type EventProperties = {
      */
     index: number;
   };
+  [event.walletAdded]:
+    | {
+        type: KeychainType;
+      }
+    | {
+        type: KeychainType.HardwareWalletKeychain;
+        vendor: 'Ledger' | 'Trezor';
+      }
+    | {
+        type: KeychainType.HdKeychain;
+        isNewGroup: boolean;
+      };
   [event.walletViewed]: undefined;
 };
