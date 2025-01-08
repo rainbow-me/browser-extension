@@ -777,8 +777,17 @@ export async function transactionStatus() {
 }
 
 export const fillSeedPhrase = async (driver: WebDriver, seedPhrase: string) => {
-  const words = seedPhrase.split(' ');
-  for (let i = 0; i < 12; i++) {
+  const words = seedPhrase.trim().split(/\s+/);
+
+  // Validate word count
+  if (words.length !== 12 && words.length !== 24) {
+    throw new Error(
+      `Invalid seed phrase length: ${words.length}. Must be either 12 or 24 words.`,
+    );
+  }
+
+  // Fill each word input dynamically based on the phrase length
+  for (let i = 0; i < words.length; i++) {
     await typeOnTextInput({
       id: `secret-input-${i + 1}`,
       driver,
@@ -942,6 +951,7 @@ export async function importWalletFlow(
   rootURL: string,
   walletSecret: string,
   secondaryWallet = false as boolean,
+  is24WordSeedPhrase = false as boolean,
 ) {
   if (secondaryWallet) {
     await goToPopup(driver, rootURL);
@@ -974,9 +984,19 @@ export async function importWalletFlow(
     driver,
   });
 
-  isPrivateKey
-    ? await fillPrivateKey(driver, walletSecret)
-    : await fillSeedPhrase(driver, walletSecret);
+  if (is24WordSeedPhrase) {
+    findElementByTestIdAndClick({
+      id: 'toggle-24-word-seed-phrase',
+      driver,
+    });
+    await delayTime('medium');
+  }
+
+  if (isPrivateKey) {
+    await fillPrivateKey(driver, walletSecret);
+  } else {
+    await fillSeedPhrase(driver, walletSecret);
+  }
 
   await findElementByTestIdAndClick({
     id: 'import-wallets-button',
@@ -991,7 +1011,7 @@ export async function importWalletFlow(
   }
 
   if (secondaryWallet) {
-    await delayTime('medium');
+    await delayTime('very-long');
 
     const accountHeader = await findElementById({
       id: 'header-account-name-shuffle',
