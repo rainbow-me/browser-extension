@@ -44,7 +44,10 @@ popupMessenger.reply('rainbow_updateWagmiClient', async () => {
 chrome.commands.onCommand.addListener((command: string) => {
   if (command === 'open_rainbow') {
     chrome.action.openPopup();
-    // Now you can add your analytics here!
+    console.log('####################');
     console.log('Opened via shortcut!');
+    console.log('####################');
+
+    // analytics.track('open_rainbow_shortcut');
   }
 });
