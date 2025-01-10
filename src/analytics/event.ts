@@ -682,12 +682,7 @@ export type EventProperties = {
      */
     requests: number;
   };
-  [event.extensionOpenViaShortcut]: {
-    /**
-     * Browser used while opening the extension
-     */
-    userAgent: string;
-  };
+  [event.extensionOpenViaShortcut]: undefined;
   [event.keyboardNavigationTriggered]: {
     /**
      * The key pressed to navigate
