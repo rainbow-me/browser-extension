@@ -1,5 +1,6 @@
 import { uuid4 } from '@sentry/utils';
 
+import { analytics } from '~/analytics';
 import { initFCM } from '~/core/firebase/fcm';
 import { initializeMessenger } from '~/core/messengers';
 import { initializeSentry } from '~/core/sentry';
@@ -44,10 +45,6 @@ popupMessenger.reply('rainbow_updateWagmiClient', async () => {
 chrome.commands.onCommand.addListener((command: string) => {
   if (command === 'open_rainbow') {
     chrome.action.openPopup();
-    console.log('####################');
-    console.log('Opened via shortcut!');
-    console.log('####################');
-
-    // analytics.track('open_rainbow_shortcut');
+    analytics.track(analytics.event.extensionOpenViaShortcut);
   }
 });

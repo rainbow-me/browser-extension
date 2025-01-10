@@ -138,6 +138,10 @@ export const event = {
    */
   dappProviderRateLimit: 'dapp.provider.rate_limit',
   /**
+   * Tracks when the extension popup is opened via keyboard shortcut (Alt+Shift+R)
+   */
+  extensionOpenViaShortcut: 'extension.open.shortcut',
+  /**
    * Called when keyboard navigation is triggered
    */
   keyboardNavigationTriggered: 'keyboard.navigation.triggered',
@@ -677,6 +681,12 @@ export type EventProperties = {
      * Number of requests made when rate limit was hit
      */
     requests: number;
+  };
+  [event.extensionOpenViaShortcut]: {
+    /**
+     * Browser used while opening the extension
+     */
+    userAgent: string;
   };
   [event.keyboardNavigationTriggered]: {
     /**
