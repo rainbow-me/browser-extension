@@ -19,7 +19,6 @@ import { handleWallets } from './handlers/handleWallets';
 require('../../core/utils/lockdown');
 
 initializeSentry('background');
-localStorageRecycler();
 
 const popupMessenger = initializeMessenger({ connect: 'popup' });
 const inpageMessenger = initializeMessenger({ connect: 'inpage' });
@@ -40,3 +39,6 @@ popupMessenger.reply('rainbow_updateWagmiClient', async () => {
   const { rainbowChains } = getRainbowChains();
   updateWagmiConfig(rainbowChains);
 });
+
+// low priority storage management
+localStorageRecycler();
