@@ -33,15 +33,20 @@ jobs:
         run: yarn firefox:build
       - name: Update the manifest
         run: yarn update-manifest prod
+      - name: Zip source
+        run: yarn zip:source
+      - name: Archive the source artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rainbowbx-firefox-v${{ env.release_version }}-source
+          path: ./rainbowbx-source.zip
+      - name: Zip build
+        run: yarn firefox:zip
       - name: Archive the build artifact
         uses: actions/upload-artifact@v4
         with:
           name: rainbowbx-firefox-v${{ env.release_version }}
-          path: build/
-      - name: Zip source
-        run: yarn zip:source
-      - name: Zip build
-        run: yarn firefox:zip
+          path: ./rainbowbx.xpi
       - name: Submit to the firefox addons store
         uses: PlasmoHQ/bpp@v3.7.0
         with:
