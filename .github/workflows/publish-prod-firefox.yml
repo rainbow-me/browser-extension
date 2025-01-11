@@ -46,7 +46,7 @@ jobs:
         uses: PlasmoHQ/bpp@v3.7.0
         with:
           file: ./rainbowbx.xpi
-          sourceFile: ./rainbowbx-source.zip
+          source: ./rainbowbx-source.zip
           keys: ${{ secrets.BPP_KEYS_PROD_FIREFOX }}
       - name: Create Sentry release
         uses: getsentry/action-release@v1
