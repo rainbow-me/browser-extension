@@ -35,7 +35,7 @@ jobs:
         run: yarn update-manifest prod
       - name: Zip source
         run: yarn zip:source
-      - name: Archive the build artifact
+      - name: Archive the source artifact
         uses: actions/upload-artifact@v4
         with:
           name: rainbowbx-firefox-v${{ env.release_version }}-source
