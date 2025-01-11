@@ -53,6 +53,7 @@ jobs:
           file: ./rainbowbx.xpi
           source: ./rainbowbx-source.zip
           keys: ${{ secrets.BPP_KEYS_PROD_FIREFOX }}
+          verbose: true
       - name: Create Sentry release
         uses: getsentry/action-release@v1
         env:
