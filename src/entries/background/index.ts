@@ -4,6 +4,7 @@ import { initFCM } from '~/core/firebase/fcm';
 import { initializeMessenger } from '~/core/messengers';
 import { initializeSentry } from '~/core/sentry';
 import { syncStores } from '~/core/state/internal/syncStores';
+import { analyzeStorage } from '~/core/storage/analyzeStorage';
 import { localStorageRecycler } from '~/core/storage/localStorageRecycler';
 import { getRainbowChains } from '~/core/utils/rainbowChains';
 import { updateWagmiConfig } from '~/core/wagmi';
@@ -42,3 +43,4 @@ popupMessenger.reply('rainbow_updateWagmiClient', async () => {
 
 // low priority storage management
 localStorageRecycler();
+analyzeStorage();
