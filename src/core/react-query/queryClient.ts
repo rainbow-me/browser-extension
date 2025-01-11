@@ -25,6 +25,7 @@ const asyncStoragePersister = createAsyncStoragePersister({
     setItem: LocalStorage.set,
     removeItem: LocalStorage.remove,
   },
+  throttleTime: 10000,
 });
 
 export const persistOptions: Omit<PersistQueryClientOptions, 'queryClient'> = {
