@@ -138,6 +138,10 @@ export const event = {
    */
   dappProviderRateLimit: 'dapp.provider.rate_limit',
   /**
+   * Tracks when the extension popup is opened via keyboard shortcut (Alt+Shift+R)
+   */
+  extensionOpenViaShortcut: 'extension.open.shortcut',
+  /**
    * Called when keyboard navigation is triggered
    */
   keyboardNavigationTriggered: 'keyboard.navigation.triggered',
@@ -678,6 +682,7 @@ export type EventProperties = {
      */
     requests: number;
   };
+  [event.extensionOpenViaShortcut]: undefined;
   [event.keyboardNavigationTriggered]: {
     /**
      * The key pressed to navigate
