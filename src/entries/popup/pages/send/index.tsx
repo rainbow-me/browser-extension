@@ -3,7 +3,6 @@ import {
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
 import { useAnimationControls } from 'framer-motion';
-import _ from 'lodash';
 import {
   ChangeEvent,
   useCallback,
@@ -42,7 +41,7 @@ import {
 } from '~/core/types/gas';
 import { UniqueAsset } from '~/core/types/nfts';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
-import { chainIdToUse, isCustomChain } from '~/core/utils/chains';
+import { chainIdToUse } from '~/core/utils/chains';
 import {
   getUniqueAssetImagePreviewURL,
   getUniqueAssetImageThumbnailURL,
@@ -81,6 +80,7 @@ import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import usePrevious from '../../hooks/usePrevious';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { useTokenAnalytics } from '../../hooks/useTokenAnalytics';
 import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 import { clickHeaderRight } from '../../utils/clickHeader';
@@ -146,41 +146,7 @@ export function Send() {
     () => assets.filter((asset) => !isHidden(asset)),
     [assets, isHidden],
   );
-  const prevAnalyticsRef = useRef<typeof analyticsCategories | null>(null);
-
-  const analyticsCategories = useMemo(() => {
-    const noPrice = assets.filter(
-      (asset) => !asset.native?.price?.amount,
-    ).length;
-
-    const noIcon = assets.filter((asset) => !asset.icon_url).length;
-
-    const custom = assets.filter((asset) =>
-      isCustomChain(asset.chainId),
-    ).length;
-
-    return {
-      totalTokens: assets.length,
-      noPrice,
-      noIcon,
-      custom,
-      entrypoint: 'send' as const,
-    };
-  }, [assets]);
-
-  // Only log if values have changed
-  useEffect(() => {
-    if (
-      !prevAnalyticsRef.current ||
-      !_.isEqual(prevAnalyticsRef.current, analyticsCategories)
-    ) {
-      console.log('#### SEND SHEET:');
-      console.log('Analytics changed:', analyticsCategories);
-      // Report to analytics here
-      prevAnalyticsRef.current = analyticsCategories;
-      analytics.track(analytics.event.tokenMetadata, analyticsCategories);
-    }
-  }, [analyticsCategories]);
+  useTokenAnalytics(unhiddenAssets, 'send');
 
   const { nft, collections, nftSortMethod, setNftSortMethod, selectNft } =
     useSendUniqueAsset();
