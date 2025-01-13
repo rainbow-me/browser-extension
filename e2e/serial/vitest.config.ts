@@ -7,8 +7,8 @@ export default mergeConfig(
   viteConfig,
   defineConfig({
     test: {
-      threads: false,
       bail: 1,
+      threads: false,
       sequence: {
         shuffle: false,
         sequencer: class Sequencer {
