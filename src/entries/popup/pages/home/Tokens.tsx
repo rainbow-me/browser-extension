@@ -1,9 +1,11 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { MotionValue, motion, useTransform } from 'framer-motion';
+import _ from 'lodash';
 import uniqBy from 'lodash/uniqBy';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Address } from 'viem';
 
+import { analytics } from '~/analytics';
 import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -251,6 +253,41 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
   });
 
   useTokensShortcuts();
+  const prevAnalyticsRef = useRef<typeof analyticsCategories | null>(null);
+
+  const analyticsCategories = useMemo(() => {
+    const noPrice = filteredAssets.filter(
+      (asset) => !asset.native?.price?.amount,
+    ).length;
+
+    const noIcon = filteredAssets.filter((asset) => !asset.icon_url).length;
+
+    const custom = filteredAssets.filter((asset) =>
+      isCustomChain(asset.chainId),
+    ).length;
+
+    return {
+      totalTokens: filteredAssets.length,
+      noPrice,
+      noIcon,
+      custom,
+      entrypoint: 'home' as const,
+    };
+  }, [filteredAssets]);
+
+  // Only log if values have changed
+  useEffect(() => {
+    if (
+      !prevAnalyticsRef.current ||
+      !_.isEqual(prevAnalyticsRef.current, analyticsCategories)
+    ) {
+      console.log('#### WALLET SHEET:');
+      console.log('Analytics changed:', analyticsCategories);
+      // Report to analytics here
+      prevAnalyticsRef.current = analyticsCategories;
+      analytics.track(analytics.event.tokenMetadata, analyticsCategories);
+    }
+  }, [analyticsCategories]);
 
   useEffect(() => {
     assetsRowVirtualizer?.measure();
@@ -297,6 +334,7 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
         }}
       >
         <Box>
+          {/* <Text size={undefined} weight={undefined}>Hello!!!</Text> */}
           {assetsRowVirtualizer.getVirtualItems().map((virtualItem) => {
             const { key, size, start, index } = virtualItem;
             const token = filteredAssets[index];
