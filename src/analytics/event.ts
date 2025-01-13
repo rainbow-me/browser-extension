@@ -236,6 +236,10 @@ export const event = {
    */
   tokenDetailsViewed: 'token_details.viewed',
   /**
+   * Called when the user loads a token list
+   */
+  tokenMetadata: 'token_metadata',
+  /**
    * Called when a wallet is created/imported/watched or a hardware wallet is connected
    */
   walletAdded: 'wallet.added',
@@ -949,6 +953,28 @@ export type EventProperties = {
       iconUrl: boolean;
       price: boolean;
     };
+  };
+  [event.tokenMetadata]: {
+    /**
+     * Total number of tokens in wallet
+     */
+    totalTokens: number;
+    /**
+     * Number of tokens out of tokenTokens without price data
+     */
+    noPrice: number;
+    /**
+     * Number of tokens out of totalTokens without an icon
+     */
+    noIcon: number;
+    /**
+     * Number of custom chain tokens out of totalTokens
+     */
+    custom: number;
+    /**
+     * Entrypoint of the token metadata event
+     */
+    entrypoint: 'home' | 'send' | 'swap';
   };
   [event.walletBackupQuizSubmitted]: {
     /**
