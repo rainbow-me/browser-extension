@@ -1,10 +1,8 @@
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
-import _ from 'lodash';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Address } from 'viem';
 
-import { analytics } from '~/analytics';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -21,7 +19,6 @@ import { ParsedSearchAsset, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { SearchAsset } from '~/core/types/search';
 import { isSameAssetInDiffChains } from '~/core/utils/assets';
-import { isCustomChain } from '~/core/utils/chains';
 import { getQuoteServiceTime } from '~/core/utils/swaps';
 import {
   Box,
@@ -446,43 +443,6 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     () => assetsToSell.filter((asset) => !isHidden(asset)),
     [assetsToSell, isHidden],
   );
-  const prevAnalyticsRef = useRef<typeof analyticsCategories | null>(null);
-
-  const analyticsCategories = useMemo(() => {
-    const noPrice = unhiddenAssetsToSell.filter(
-      (asset) => !asset.native?.price?.amount,
-    ).length;
-
-    const noIcon = unhiddenAssetsToSell.filter(
-      (asset) => !asset.icon_url,
-    ).length;
-
-    const custom = unhiddenAssetsToSell.filter((asset) =>
-      isCustomChain(asset.chainId),
-    ).length;
-
-    return {
-      totalTokens: unhiddenAssetsToSell.length,
-      noPrice,
-      noIcon,
-      custom,
-      entrypoint: 'swap' as const,
-    };
-  }, [unhiddenAssetsToSell]);
-
-  // Only log if values have changed
-  useEffect(() => {
-    if (
-      !prevAnalyticsRef.current ||
-      !_.isEqual(prevAnalyticsRef.current, analyticsCategories)
-    ) {
-      console.log('#### SWAP SHEET:');
-      console.log('Analytics changed:', analyticsCategories);
-      // Report to analytics here
-      prevAnalyticsRef.current = analyticsCategories;
-      analytics.track(analytics.event.tokenMetadata, analyticsCategories);
-    }
-  }, [analyticsCategories]);
 
   const highestEth = useMemo(() => {
     const eths = unhiddenAssetsToSell.filter((asset) => asset.symbol === 'ETH');
