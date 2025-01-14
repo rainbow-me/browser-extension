@@ -320,9 +320,12 @@ export type EventProperties = {
      */
     degenMode: boolean;
     /**
-     * Whether a hardware wallet was used for the swap.
+     * Info about the hardware wallet that was used for a transaction
      */
-    hardwareWallet: boolean;
+    hardwareWallet: {
+      isHardwareWallet: boolean;
+      vendor?: 'Ledger' | 'Trezor' | undefined;
+    };
   };
   [event.commandKActionExecuted]: {
     id?: string;
@@ -803,6 +806,13 @@ export type EventProperties = {
      * `chainId` of the send transaction.
      */
     chainId: number;
+    /**
+     * Info about the hardware wallet that was used for a transaction
+     */
+    hardwareWallet: {
+      isHardwareWallet: boolean;
+      vendor?: 'Ledger' | 'Trezor' | undefined;
+    };
   };
   [event.sendOpened]: {
     /**
@@ -895,9 +905,11 @@ export type EventProperties = {
      */
     degenMode: boolean;
     /**
-     * Whether a hardware wallet was used for the swap.
+     * Info about the hardware wallet that was used for a transaction
      */
-    hardwareWallet: boolean;
+    hardwareWallet: {
+      vendor: 'Ledger' | 'Trezor' | undefined;
+    };
   };
   [event.swapQuoteFailed]: {
     /**
