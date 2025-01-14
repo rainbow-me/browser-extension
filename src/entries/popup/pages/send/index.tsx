@@ -342,7 +342,7 @@ export function Send() {
 
       try {
         if (asset) {
-          const { type } = await getWallet(fromAddress);
+          const { type, vendor } = await getWallet(fromAddress);
           // Change the label while we wait for confirmation
           if (type === 'HardwareWalletKeychain') {
             setWaitingForDevice(true);
@@ -372,10 +372,14 @@ export function Send() {
               assetAddress: asset?.address,
               assetAmount,
               chainId,
+              hardwareWallet: {
+                isHardwareWallet: !!vendor,
+                vendor: vendor,
+              },
             });
           }
         } else if (nft) {
-          const { type } = await getWallet(fromAddress);
+          const { type, vendor } = await getWallet(fromAddress);
           // Change the label while we wait for confirmation
           if (type === 'HardwareWalletKeychain') {
             setWaitingForDevice(true);
@@ -404,6 +408,10 @@ export function Send() {
               assetAddress: nft.asset_contract.address,
               assetAmount: '0',
               chainId,
+              hardwareWallet: {
+                isHardwareWallet: !!vendor,
+                vendor: vendor,
+              },
             });
           }
         }
