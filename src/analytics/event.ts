@@ -699,13 +699,12 @@ export type EventProperties = {
      */
     action: 'personal_sign' | 'sign_typed_data' | undefined;
     /**
-     * Whether the transaction was sent from a hardware wallet.
+     * Info about the hardware wallet that was used for the transaction
      */
-    isHardwareWallet: boolean;
-    /**
-     * Vendor of the hardware wallet.
-     */
-    vendor?: 'Ledger' | 'Trezor' | undefined;
+    hardwareWallet: {
+      isHardwareWallet: boolean;
+      vendor?: 'Ledger' | 'Trezor' | undefined;
+    };
   };
   [event.keyboardNavigationTriggered]: {
     /**

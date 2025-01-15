@@ -76,8 +76,10 @@ export function SignMessage({
           dappURL: dappMetadata?.url || '',
           dappDomain: dappMetadata?.appHost || '',
           action: walletAction,
-          isHardwareWallet: true,
-          vendor: vendor,
+          hardwareWallet: {
+            isHardwareWallet: true,
+            vendor: vendor,
+          },
         });
       }
 
