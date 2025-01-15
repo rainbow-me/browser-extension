@@ -324,7 +324,7 @@ export type EventProperties = {
      */
     degenMode: boolean;
     /**
-     * Info about the hardware wallet that was used for a transaction
+     * Info about the hardware wallet that was used for the transaction
      */
     hardwareWallet: {
       isHardwareWallet: boolean;
@@ -833,7 +833,7 @@ export type EventProperties = {
      */
     chainId: number;
     /**
-     * Info about the hardware wallet that was used for a transaction
+     * Info about the hardware wallet that was used for the transaction
      */
     hardwareWallet: {
       isHardwareWallet: boolean;
@@ -931,7 +931,7 @@ export type EventProperties = {
      */
     degenMode: boolean;
     /**
-     * Info about the hardware wallet that was used for a transaction
+     * Info about the hardware wallet that was used for the transaction
      */
     hardwareWallet: {
       isHardwareWallet: boolean;
