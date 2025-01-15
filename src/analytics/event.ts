@@ -138,6 +138,10 @@ export const event = {
    */
   dappProviderRateLimit: 'dapp.provider.rate_limit',
   /**
+   * Called when the user submits a transaction from a dApp.
+   */
+  dappTransactionSubmitted: 'dapp.transaction.submitted',
+  /**
    * Called when keyboard navigation is triggered
    */
   keyboardNavigationTriggered: 'keyboard.navigation.triggered',
@@ -681,6 +685,28 @@ export type EventProperties = {
      */
     requests: number;
   };
+  [event.dappTransactionSubmitted]: {
+    /**
+     * Full url of the dApp requesting a transaction.
+     */
+    dappURL: string;
+    /**
+     * Domain of the dApp displayed to the user.
+     */
+    dappDomain: string;
+    /**
+     * Action of the dApp requesting a transaction.
+     */
+    action: 'personal_sign' | 'sign_typed_data' | undefined;
+    /**
+     * Whether the transaction was sent from a hardware wallet.
+     */
+    isHardwareWallet: boolean;
+    /**
+     * Vendor of the hardware wallet.
+     */
+    vendor?: 'Ledger' | 'Trezor' | undefined;
+  };
   [event.keyboardNavigationTriggered]: {
     /**
      * The key pressed to navigate
@@ -908,6 +934,7 @@ export type EventProperties = {
      * Info about the hardware wallet that was used for a transaction
      */
     hardwareWallet: {
+      isHardwareWallet: boolean;
       vendor: 'Ledger' | 'Trezor' | undefined;
     };
   };

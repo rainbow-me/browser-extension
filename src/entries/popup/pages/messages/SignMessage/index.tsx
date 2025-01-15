@@ -64,7 +64,7 @@ export function SignMessage({
     const requestPayload = getSigningRequestDisplayDetails(request);
     if (!requestPayload.msgData || !requestPayload.address || !selectedWallet)
       return;
-    const { type } = await wallet.getWallet(selectedWallet);
+    const { type, vendor } = await wallet.getWallet(selectedWallet);
     let result = null;
 
     setLoading(true);
@@ -72,6 +72,13 @@ export function SignMessage({
       // Change the label while we wait for confirmation
       if (type === 'HardwareWalletKeychain') {
         setWaitingForDevice(true);
+        analytics.track(event.dappTransactionSubmitted, {
+          dappURL: dappMetadata?.url || '',
+          dappDomain: dappMetadata?.appHost || '',
+          action: walletAction,
+          isHardwareWallet: true,
+          vendor: vendor,
+        });
       }
 
       if (walletAction === 'personal_sign') {
