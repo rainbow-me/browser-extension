@@ -1,9 +1,11 @@
+import { debounce } from 'lodash';
 import React, {
   ChangeEvent,
   ReactElement,
   useCallback,
   useEffect,
   useImperativeHandle,
+  useRef,
   useState,
 } from 'react';
 
@@ -117,6 +119,8 @@ export const TokenInput = React.forwardRef<
   forwardedRef,
 ) {
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [lastLoggedValue, setLastLoggedValue] = useState('');
+  const debouncedLogRef = useRef<ReturnType<typeof debounce>>();
 
   const prevDropdownVisible = usePrevious(dropdownVisible);
 
@@ -147,9 +151,25 @@ export const TokenInput = React.forwardRef<
     dropdownVisible ? inputRef?.current?.blur() : inputRef?.current?.focus();
   }, [dropdownVisible, inputRef, onDropdownOpen, selectAsset]);
 
+  useEffect(() => {
+    debouncedLogRef.current = debounce((value: string) => {
+      if (value !== lastLoggedValue && value.trim() !== '') {
+        // analytics here
+        console.log('Debounced value:', value);
+        setLastLoggedValue(value);
+      }
+    }, 500);
+
+    return () => {
+      debouncedLogRef.current?.cancel();
+    };
+  }, [lastLoggedValue]);
+
   const onInputValueChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setAssetFilter(e.target.value);
+      const newValue = e.target.value;
+      setAssetFilter(newValue);
+      debouncedLogRef.current?.(newValue);
     },
     [setAssetFilter],
   );

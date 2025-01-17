@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { debounce } from 'lodash';
 import React, {
   ChangeEvent,
   Dispatch,
@@ -248,6 +249,8 @@ export const SendTokenInput = React.forwardRef<
   const [inputValue, setInputValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const { testnetMode } = useTestnetModeStore();
+  const [lastLoggedValue, setLastLoggedValue] = useState('');
+  const debouncedLogRef = useRef<ReturnType<typeof debounce>>();
 
   useImperativeHandle(forwardedRef, () => ({
     blur: () => {
@@ -283,9 +286,25 @@ export const SendTokenInput = React.forwardRef<
     [selectAssetAddressAndChain, selectNft],
   );
 
+  useEffect(() => {
+    debouncedLogRef.current = debounce((value: string) => {
+      if (value !== lastLoggedValue && value.trim() !== '') {
+        // analytics here
+        console.log('Debounced value:', value);
+        setLastLoggedValue(value);
+      }
+    }, 500);
+
+    return () => {
+      debouncedLogRef.current?.cancel();
+    };
+  }, [lastLoggedValue]);
+
   const onInputValueChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
+      const newValue = e.target.value;
       setInputValue(e.target.value);
+      debouncedLogRef.current?.(newValue);
     },
     [setInputValue],
   );

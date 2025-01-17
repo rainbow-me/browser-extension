@@ -187,6 +187,10 @@ export const event = {
    * Called when the user completes a Revoke Approcal flow and submits the transaction.
    */
   revokeSubmitted: 'revoke.submitted',
+  /*
+   * Called when the user searches in swap, send or command K
+   */
+  searchQuery: 'search_query',
   /**
    * Called when token list metrics are sampled during list loading
    */
@@ -762,6 +766,21 @@ export type EventProperties = {
   [event.pointsRewardsViewed]: undefined;
   [event.pointsViewed]: undefined;
   [event.popupOpened]: undefined;
+  [event.searchQuery]: {
+    /**
+     * Where the search was initiated from
+     */
+    location: 'swap' | 'send' | 'commandk';
+    /**
+     * The query string that was searched.
+     */
+    query: string;
+    /**
+     * The length of the query string.
+     */
+    queryLength: number;
+  };
+  [event.settingsAnalyticsTrackingDisabled]: undefined;
   [event.revokeSubmitted]: {
     /**
      * Symbol of the asset being sent.
