@@ -38,7 +38,7 @@ export const getAssetRawAllowance = async ({
   chainId: ChainId;
 }) => {
   try {
-    const provider = await getProvider({ chainId });
+    const provider = getProvider({ chainId });
     const tokenContract = new Contract(assetAddress, erc20Abi, provider);
     const allowance = await tokenContract.allowance(owner, spender);
     return allowance.toString();

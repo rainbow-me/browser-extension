@@ -6,7 +6,6 @@ set -a
 source .env
 set +a 
 
-# Launch anvil in the bg
 yarn anvil:kill
 yarn anvil > anvil-unit.log 2>&1 &
 echo "Launching Anvil..."
