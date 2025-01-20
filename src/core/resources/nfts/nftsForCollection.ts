@@ -27,7 +27,7 @@ export const MOCK_NFTS_FOR_COLLECTION = [
     background: null,
     collection: {
       description: 'The Proof of Attendance Protocol',
-      discord_url: null,
+      discord_url: 'https://discord.com/invite/fcxW4yR',
       external_url: 'https://www.poap.xyz/',
       image_url:
         'https://lh3.googleusercontent.com/tOzkCPkfPuwnhNfb4thFA_6xiojAFHTNEPuCYnZS3q3GF4zNneOxowGQNpOI5Gr_-fVYC5eBFIf79HQvtsyEDpVRW2olLdlnPg',

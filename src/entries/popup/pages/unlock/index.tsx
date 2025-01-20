@@ -185,7 +185,7 @@ export function Unlock() {
               {i18n.t('unlock.having_trouble')} <br />
               {i18n.t('unlock.contact')}&nbsp;
               <a
-                href="https://twitter.com/rainbowdotme"
+                href="https://x.com/rainbowdotme"
                 target="_blank"
                 style={{ color: accentColorAsHsl, cursor: 'pointer' }}
                 rel="noreferrer"

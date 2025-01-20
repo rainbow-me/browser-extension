@@ -792,7 +792,7 @@ export const PointsOnboardingSheet = () => {
       },
     );
     goToNewTab({
-      url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}`,
+      url: `https://x.com/intent/tweet?text=${encodeURIComponent(tweet)}`,
     });
     copyReferralLink(referralCode);
   };

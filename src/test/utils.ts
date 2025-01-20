@@ -197,7 +197,7 @@ export const NFTS_TEST_DATA = {
       collection: {
         description:
           'Generative. Interactive. Customizable. Enter the Character Creator to bring your Citizen to life at [https://adworld.game/create](https://adworld.game/create)',
-        discord_url: 'https://discord.gg/adworld',
+        discord_url: 'https://discord.com/invite/adworld',
         external_url: 'https://adworld.game',
         image_url:
           'https://i.seadn.io/gcs/files/600f3a5b99c5c525550c907de03cd9a8.gif?auto=format&w=3840',
@@ -318,7 +318,7 @@ export const NFTS_TEST_DATA = {
       collection: {
         description:
           'Ethereum Name Service (ENS) domains are secure domain names for the decentralized world. ENS domains provide a way for users to map human readable names to blockchain and non-blockchain resources, like Ethereum addresses, IPFS hashes, or website URLs. ENS domains can be bought and sold on secondary markets.',
-        discord_url: null,
+        discord_url: 'https://discord.com/invite/qz3jQpy',
         external_url: 'https://ens.domains',
         image_url:
           'https://lh3.googleusercontent.com/yXNjPUCCTHyvYNarrb81ln31I6hUIaoPzlGU8kki-OohiWuqxfrIkMaOdLzcO4iGuXcvE5mgCZ-ds9tZotEJi3hdkNusheEK_w2V',

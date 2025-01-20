@@ -923,7 +923,7 @@ const NFTCollectionDropdownMenu = ({
         goToNewTab({ url: externalUrl || '' });
         break;
       case 'twitter':
-        goToNewTab({ url: `https://www.twitter.com/${twitterUrl}` || '' });
+        goToNewTab({ url: `https://www.x.com/${twitterUrl}` || '' });
         break;
       case 'discord':
         goToNewTab({ url: discordUrl || '' });
