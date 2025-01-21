@@ -1,6 +1,9 @@
 import { AnimatePresence, motion, useAnimation } from 'framer-motion';
-import React from 'react';
+import { debounce } from 'lodash';
+import React, { useEffect, useRef } from 'react';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { Box, Separator, Symbol } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
@@ -265,6 +268,33 @@ export const CommandKInput = React.memo(function CommandKInput({
   setSkipBackAnimation,
 }: CommandKInputProps) {
   const { currentTheme } = useCurrentThemeStore();
+  const [lastLoggedValue, setLastLoggedValue] = React.useState('');
+  const debouncedLogRef = React.useRef<ReturnType<typeof debounce>>();
+  const hasLoggedLatestRef = useRef(false);
+
+  // debounce the input value to log to analytics to reduce useless analytics requests
+  useEffect(() => {
+    debouncedLogRef.current = debounce((value: string) => {
+      if (value !== lastLoggedValue && value.trim()) {
+        analytics.track(event.searchQuery, {
+          query: value,
+          queryLength: value.length,
+          location: 'commandk',
+        });
+        console.log('analytics: ', {
+          query: value,
+          queryLength: value.length,
+          location: 'commandK',
+        });
+        setLastLoggedValue(value);
+        hasLoggedLatestRef.current = true;
+      }
+    }, 1000);
+
+    return () => {
+      debouncedLogRef.current?.cancel();
+    };
+  }, [lastLoggedValue]);
 
   const onSearchQueryChange = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -278,6 +308,7 @@ export const CommandKInput = React.memo(function CommandKInput({
         top: 0,
         behavior: SCROLL_TO_BEHAVIOR,
       });
+      debouncedLogRef.current?.(updatedSearchQuery);
     },
     [
       didScrollOrNavigate,

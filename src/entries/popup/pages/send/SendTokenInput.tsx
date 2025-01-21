@@ -12,6 +12,8 @@ import React, {
   useState,
 } from 'react';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { NftSort } from '~/core/state/nfts';
@@ -42,7 +44,6 @@ import { AssetRow } from '../home/Tokens';
 
 import { InputActionButton } from './InputActionButton';
 import { RowHighlightWrapper } from './RowHighlightWrapper';
-
 const TokenSortMenu = ({
   asset,
   setSortDropdownOpen,
@@ -268,6 +269,29 @@ export const SendTokenInput = React.forwardRef<
     dropdownVisible ? inputRef?.current?.blur() : inputRef?.current?.focus();
   }, [dropdownVisible, inputRef]);
 
+  // debounce the input value to log to analytics to reduce useless analytics requests
+  useEffect(() => {
+    debouncedLogRef.current = debounce((value: string) => {
+      if (value !== lastLoggedValue && value.trim()) {
+        analytics.track(event.searchQuery, {
+          query: value,
+          queryLength: value.length,
+          location: 'send',
+        });
+        console.log('analytics: ', {
+          query: value,
+          queryLength: value.length,
+          location: 'send',
+        });
+        setLastLoggedValue(value);
+      }
+    }, 1000);
+
+    return () => {
+      debouncedLogRef.current?.cancel();
+    };
+  }, [lastLoggedValue]);
+
   const onSelectAsset = useCallback(
     (address: AddressOrEth | '', chainId: ChainId) => {
       selectNft();
@@ -285,20 +309,6 @@ export const SendTokenInput = React.forwardRef<
     },
     [selectAssetAddressAndChain, selectNft],
   );
-
-  useEffect(() => {
-    debouncedLogRef.current = debounce((value: string) => {
-      if (value !== lastLoggedValue && value.trim() !== '') {
-        // analytics here
-        console.log('Debounced value:', value);
-        setLastLoggedValue(value);
-      }
-    }, 500);
-
-    return () => {
-      debouncedLogRef.current?.cancel();
-    };
-  }, [lastLoggedValue]);
 
   const onInputValueChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {

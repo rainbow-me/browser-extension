@@ -9,6 +9,8 @@ import React, {
   useState,
 } from 'react';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { Box } from '~/design-system';
@@ -153,12 +155,20 @@ export const TokenInput = React.forwardRef<
 
   useEffect(() => {
     debouncedLogRef.current = debounce((value: string) => {
-      if (value !== lastLoggedValue && value.trim() !== '') {
-        // analytics here
-        console.log('Debounced value:', value);
+      if (value !== lastLoggedValue && value.trim()) {
+        analytics.track(event.searchQuery, {
+          query: value,
+          queryLength: value.length,
+          location: 'swap',
+        });
+        console.log('analytics: ', {
+          query: value,
+          queryLength: value.length,
+          location: 'swap',
+        });
         setLastLoggedValue(value);
       }
-    }, 500);
+    }, 1000);
 
     return () => {
       debouncedLogRef.current?.cancel();
