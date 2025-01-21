@@ -138,9 +138,6 @@ const displayDappNames: {
   'opensea.io': {
     name: 'OpenSea',
   },
-  'optimism.io': {
-    name: 'Optimism Gateway',
-  },
   'partybid.app': {
     name: 'PartyBid',
   },
