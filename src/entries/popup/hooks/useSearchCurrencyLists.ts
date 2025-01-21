@@ -6,7 +6,7 @@ import { Address } from 'viem';
 import { SUPPORTED_CHAINS } from '~/core/references/chains';
 import { useAssetSearchMetadataAllNetworks } from '~/core/resources/assets/assetMetadata';
 import { useTokenSearch } from '~/core/resources/search';
-import { useTokenDiscovery } from '~/core/resources/search/tokenDiscovery';
+import { usePopularInRainbow } from '~/core/resources/search/popularInRainbow';
 import { useTokenSearchAllNetworks } from '~/core/resources/search/tokenSearch';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ParsedSearchAsset } from '~/core/types/assets';
@@ -282,14 +282,13 @@ export function useSearchCurrencyLists({
       },
     );
 
-  const { data: popularAssets = [] } = useTokenDiscovery({
+  const { data: popularAssets = [] } = usePopularInRainbow({
     chainId: outputChainId,
     select(popularAssets) {
       if (!query) return popularAssets.slice(0, 3);
       const a = popularAssets.filter((asset) =>
         queryMatchesAsset(query, asset),
       );
-      console.log('popularAssets', { a });
       return a;
     },
   });
