@@ -115,9 +115,11 @@ export async function initDriverWithOptions(opts: {
   let driver;
   const args = [
     'load-extension=build/',
-    // '--auto-open-devtools-for-tabs',
     '--log-level=0',
     '--enable-logging',
+    '--no-sandbox',
+    '--disable-dev-shm-usage',
+    '--disable-extensions-except=build/',
   ];
 
   if (opts.browser === 'firefox') {
