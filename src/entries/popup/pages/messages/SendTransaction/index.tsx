@@ -72,7 +72,7 @@ export function SendTransaction({
     setLoading(true);
     try {
       const txRequest = request?.params?.[0] as TransactionRequest;
-      const { type } = await wallet.getWallet(selectedWallet);
+      const { type, vendor } = await wallet.getWallet(selectedWallet);
 
       // Change the label while we wait for confirmation
       if (type === 'HardwareWalletKeychain') {
@@ -121,6 +121,8 @@ export function SendTransaction({
             dappURL: dappMetadata?.url || '',
             dappDomain: dappMetadata?.appHost || '',
             dappName: dappMetadata?.appName,
+            isHardwareWallet: !!vendor,
+            vendor: vendor,
           },
           await getWalletContext(activeSession?.address),
         );
@@ -160,6 +162,7 @@ export function SendTransaction({
   const onRejectRequest = useCallback(async () => {
     rejectRequest();
     if (activeSession) {
+      const { vendor } = await wallet.getWallet(activeSession.address);
       analytics.track(
         event.dappPromptSendTransactionRejected,
         {
@@ -167,6 +170,8 @@ export function SendTransaction({
           dappURL: dappMetadata?.url || '',
           dappDomain: dappMetadata?.appHost || '',
           dappName: dappMetadata?.appName,
+          isHardwareWallet: !!vendor,
+          vendor: vendor,
         },
         await getWalletContext(activeSession?.address),
       );
