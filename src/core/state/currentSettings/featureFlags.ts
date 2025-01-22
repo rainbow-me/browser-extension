@@ -21,7 +21,7 @@ export const featureFlagsStore = createStore<FeatureFlagsStore>(
       full_watching_wallets: false,
       command_k_internal_shortcuts_enabled: true,
       custom_rpc: true,
-      degen_mode: true,
+      degen_mode: false,
     },
     setFeatureFlag: (key, value) => {
       const { featureFlags } = get();
