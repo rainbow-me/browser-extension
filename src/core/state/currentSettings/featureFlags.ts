@@ -19,7 +19,7 @@ export const featureFlagsStore = createStore<FeatureFlagsStore>(
   (set, get) => ({
     featureFlags: {
       full_watching_wallets: false,
-      command_k_internal_shortcuts_enabled: true,
+      command_k_internal_shortcuts_enabled: false,
       custom_rpc: true,
       degen_mode: false,
     },
@@ -35,7 +35,7 @@ export const featureFlagsStore = createStore<FeatureFlagsStore>(
   {
     persist: {
       name: 'featureFlagsStore',
-      version: 11,
+      version: 10,
       merge(_persistedState, currentState) {
         const persistedState = _persistedState as FeatureFlagsStore; // fair to assume no one is gonna mess with this in inspect element
         return {
