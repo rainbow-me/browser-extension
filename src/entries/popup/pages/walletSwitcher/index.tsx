@@ -6,7 +6,6 @@ import { Address } from 'viem';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
-import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { useWalletNamesStore } from '~/core/state/walletNames';
 import { useWalletOrderStore } from '~/core/state/walletOrder';
@@ -195,7 +194,6 @@ export function WalletSwitcher() {
   const navigate = useRainbowNavigate();
   const { visibleWallets: accounts, fetchWallets } = useWallets();
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
-  const { featureFlags } = useFeatureFlagsStore();
   const { trackShortcut } = useKeyboardAnalytics();
 
   const isLastWallet = accounts?.length === 1;
@@ -421,7 +419,7 @@ export function WalletSwitcher() {
             {i18n.t('wallet_switcher.add_another_wallet')}
           </Button>
         </Link>
-        {featureFlags.hw_wallets_enabled && !isFirefox && (
+        {!isFirefox && (
           <Link to={ROUTES.HW_CHOOSE}>
             <Button
               color="fillSecondary"

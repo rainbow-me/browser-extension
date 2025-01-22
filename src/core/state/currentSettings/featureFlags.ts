@@ -4,7 +4,6 @@ import { createStore } from '~/core/state/internal/createStore';
 
 export enum featureFlagTypes {
   full_watching_wallets = 'full_watching_wallets',
-  hw_wallets_enabled = 'hw_wallets_enabled',
   command_k_internal_shortcuts_enabled = 'command_k_internal_shortcuts_enabled',
   custom_rpc = 'custom_rpc',
   degen_mode = 'degen_mode',
@@ -20,7 +19,6 @@ export const featureFlagsStore = createStore<FeatureFlagsStore>(
   (set, get) => ({
     featureFlags: {
       full_watching_wallets: false,
-      hw_wallets_enabled: true,
       command_k_internal_shortcuts_enabled: false,
       custom_rpc: true,
       degen_mode: false,
@@ -37,7 +35,7 @@ export const featureFlagsStore = createStore<FeatureFlagsStore>(
   {
     persist: {
       name: 'featureFlagsStore',
-      version: 10,
+      version: 11,
       merge(_persistedState, currentState) {
         const persistedState = _persistedState as FeatureFlagsStore; // fair to assume no one is gonna mess with this in inspect element
         return {
