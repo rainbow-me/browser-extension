@@ -76,10 +76,8 @@ export function SignMessage({
           dappURL: dappMetadata?.url || '',
           dappDomain: dappMetadata?.appHost || '',
           action: walletAction,
-          hardwareWallet: {
-            isHardwareWallet: true,
-            vendor: vendor,
-          },
+          isHardwareWallet: true,
+          vendor: vendor,
         });
       }
 
@@ -95,6 +93,8 @@ export function SignMessage({
             dappURL: dappMetadata?.url || '',
             dappDomain: dappMetadata?.appHost || '',
             dappName: dappMetadata?.appName,
+            isHardwareWallet: !!vendor,
+            vendor: vendor,
           },
           await getWalletContext(activeSession?.address),
         );
@@ -110,6 +110,8 @@ export function SignMessage({
             dappURL: dappMetadata?.url || '',
             dappDomain: dappMetadata?.appHost || '',
             dappName: dappMetadata?.appName,
+            isHardwareWallet: !!vendor,
+            vendor: vendor,
           },
           await getWalletContext(activeSession?.address),
         );
@@ -137,7 +139,8 @@ export function SignMessage({
 
   const onRejectRequest = useCallback(async () => {
     rejectRequest();
-    if (!activeSession?.address) return;
+    if (!selectedWallet) return;
+    const { vendor } = await wallet.getWallet(selectedWallet);
     const walletAction = getWalletActionMethod(request?.method);
     if (walletAction === 'personal_sign') {
       analytics.track(
@@ -147,8 +150,10 @@ export function SignMessage({
           dappURL: dappMetadata?.url || '',
           dappDomain: dappMetadata?.appHost || '',
           dappName: dappMetadata?.appName,
+          isHardwareWallet: !!vendor,
+          vendor: vendor,
         },
-        await getWalletContext(activeSession?.address),
+        await getWalletContext(selectedWallet),
       );
     } else if (walletAction === 'sign_typed_data') {
       analytics.track(
@@ -158,18 +163,20 @@ export function SignMessage({
           dappURL: dappMetadata?.url || '',
           dappDomain: dappMetadata?.appHost || '',
           dappName: dappMetadata?.appName,
+          isHardwareWallet: !!vendor,
+          vendor: vendor,
         },
-        await getWalletContext(activeSession?.address),
+        await getWalletContext(selectedWallet),
       );
     }
   }, [
+    rejectRequest,
+    selectedWallet,
+    request?.method,
+    activeSession?.chainId,
     dappMetadata?.url,
     dappMetadata?.appHost,
     dappMetadata?.appName,
-    activeSession?.chainId,
-    activeSession?.address,
-    rejectRequest,
-    request?.method,
   ]);
 
   const isWatchingWallet = useMemo(() => {
