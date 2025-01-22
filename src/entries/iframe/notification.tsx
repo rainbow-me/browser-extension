@@ -1,9 +1,9 @@
 /* eslint-disable no-nested-ternary */
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { i18n } from '~/core/languages';
-import { chainsLabel } from '~/core/references/chains';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { ChainId } from '~/core/types/chains';
 import { isDarkColor } from '~/core/utils/colors';
 import { INJECTED_NOTIFICATION_DIMENSIONS } from '~/core/utils/dimensions';
@@ -260,6 +260,9 @@ const NotificationComponent = ({
   iframeLoaded: boolean;
   onDismiss: () => void;
 }) => {
+  const chainsLabel = useBackendNetworksStore((state) =>
+    state.getChainsLabel(),
+  );
   const { title, description } = useMemo(() => {
     switch (status) {
       case IN_DAPP_NOTIFICATION_STATUS.success:
@@ -294,7 +297,7 @@ const NotificationComponent = ({
           description: i18n.t('injected_notifications.no_active_session'),
         };
     }
-  }, [chainId, chainName, status]);
+  }, [chainId, chainsLabel, chainName, status]);
 
   return iframeLoaded ? (
     <ThemeProvider theme={siteTheme}>

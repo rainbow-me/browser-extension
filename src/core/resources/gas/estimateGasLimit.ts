@@ -8,7 +8,7 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
-import { getChainGasUnits } from '~/core/references/chains';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { ChainId } from '~/core/types/chains';
 import { estimateGas } from '~/core/utils/gas';
 import { getProvider } from '~/core/wagmi/clientToProvider';
@@ -53,12 +53,15 @@ async function estimateGasLimitQueryFunction({
   });
 
   if (!gasLimit) {
+    const gasUnits = useBackendNetworksStore
+      .getState()
+      .getChainGasUnits(chainId);
     if (chainId === ChainId.arbitrum) {
-      return `${getChainGasUnits(chainId).basic.eoaTransfer}`;
+      return `${gasUnits.basic.eoaTransfer}`;
     }
     return transactionRequest?.data === '0x'
-      ? `${getChainGasUnits(chainId).basic.eoaTransfer}`
-      : `${getChainGasUnits(chainId).basic.tokenTransfer}`;
+      ? `${gasUnits.basic.eoaTransfer}`
+      : `${gasUnits.basic.tokenTransfer}`;
   }
   return gasLimit;
 }

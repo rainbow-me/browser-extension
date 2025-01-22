@@ -7,7 +7,6 @@ import { i18n } from '~/core/languages';
 import { addysHttp } from '~/core/network/addys';
 import { QueryFunctionResult, createQueryKey } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
-import { supportedTransactionsChainIds } from '~/core/references/chains';
 import {
   consolidatedTransactionsQueryFunction,
   consolidatedTransactionsQueryKey,
@@ -17,6 +16,7 @@ import {
   useCurrentAddressStore,
   useCurrentCurrencyStore,
 } from '~/core/state';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { customNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
 import { ChainId } from '~/core/types/chains';
 import {
@@ -52,7 +52,12 @@ export const fetchTransaction = async ({
   currency: SupportedCurrencyKey;
   chainId: ChainId;
 }) => {
-  if (!supportedTransactionsChainIds.includes(chainId)) {
+  if (
+    !useBackendNetworksStore
+      .getState()
+      .getTransactionsSupportedChainIds()
+      .includes(chainId)
+  ) {
     return fetchTransactionDataFromProvider({
       chainId,
       hash,
@@ -236,6 +241,10 @@ export const useTransaction = ({
     currency,
     userChainIds: chains.map((chain) => chain.id),
   });
+
+  const supportedTransactionsChainIds = useBackendNetworksStore
+    .getState()
+    .getTransactionsSupportedChainIds();
 
   return useQuery({
     queryKey: createQueryKey('transaction', params),

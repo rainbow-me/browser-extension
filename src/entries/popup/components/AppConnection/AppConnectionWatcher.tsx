@@ -2,11 +2,11 @@ import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
-import { chainsLabel } from '~/core/references/chains';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCurrentAddressStore } from '~/core/state';
 import { useAppConnectionWalletSwitcherStore } from '~/core/state/appConnectionWalletSwitcher/appConnectionSwitcher';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { ChainId } from '~/core/types/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { Box } from '~/design-system';
@@ -25,6 +25,9 @@ import { AppConnectionNudgeSheet } from './AppConnectionNudgeSheet';
 
 export const AppConnectionWatcher = () => {
   const { currentAddress } = useCurrentAddressStore();
+  const chainsLabel = useBackendNetworksStore((state) =>
+    state.getChainsLabel(),
+  );
   const { url } = useActiveTab();
   const { data: dappMetadata } = useDappMetadata({ url });
   const location = useLocation();
@@ -63,6 +66,7 @@ export const AppConnectionWatcher = () => {
       description: chainsLabel[activeSession?.chainId || ChainId.mainnet],
     });
   }, [
+    chainsLabel,
     activeSession?.chainId,
     addSession,
     currentAddress,

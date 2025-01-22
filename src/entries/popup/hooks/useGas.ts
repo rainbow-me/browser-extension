@@ -5,10 +5,6 @@ import { useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'viem';
 
-import {
-  getChainGasUnits,
-  needsL1SecurityFeeChains,
-} from '~/core/references/chains';
 import { useEstimateGasLimit, useGasData } from '~/core/resources/gas';
 import { useEstimateApprovalGasLimit } from '~/core/resources/gas/estimateApprovalGasLimit';
 import { useEstimateSwapGasLimit } from '~/core/resources/gas/estimateSwapGasLimit';
@@ -18,6 +14,7 @@ import {
 } from '~/core/resources/gas/meteorology';
 import { useOptimismL1SecurityFee } from '~/core/resources/gas/optimismL1SecurityFee';
 import { useCurrentCurrencyStore, useGasStore } from '~/core/state';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { ParsedAsset, ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
@@ -59,6 +56,13 @@ const useGas = ({
   const { data: gasData, isLoading } = useGasData({ chainId });
   const { nativeAsset } = useUserNativeAsset({ chainId, address });
   const prevDefaultSpeed = usePrevious(defaultSpeed);
+
+  const needsL1SecurityFeeChains = useBackendNetworksStore((state) =>
+    state.getNeedsL1SecurityFeeChains(),
+  );
+  const chainGasUnits = useBackendNetworksStore((state) =>
+    state.getChainGasUnits(chainId),
+  );
 
   const [internalMaxPriorityFee, setInternalMaxPriorityFee] = useState('');
   const [internalMaxBaseFee, setInternalMaxBaseFee] = useState('');
@@ -139,8 +143,7 @@ const useGas = ({
         speed: GasSpeed.CUSTOM,
         baseFeeWei: gweiToWei(debouncedMaxBaseFee || '0'),
         blocksToConfirmation,
-        gasLimit:
-          estimatedGasLimit || getChainGasUnits(chainId).basic.tokenTransfer,
+        gasLimit: estimatedGasLimit || chainGasUnits.basic.tokenTransfer,
         nativeAsset: nativeAsset as ParsedAsset,
         currency: currentCurrency,
         secondsPerNewBlock,
@@ -190,8 +193,7 @@ const useGas = ({
         speed: GasSpeed.CUSTOM,
         baseFeeWei: maxBaseFee,
         blocksToConfirmation,
-        gasLimit:
-          estimatedGasLimit || getChainGasUnits(chainId).basic.tokenTransfer,
+        gasLimit: estimatedGasLimit || chainGasUnits.basic.tokenTransfer,
         nativeAsset: nativeAsset as ParsedAsset,
         currency: currentCurrency,
         secondsPerNewBlock,
@@ -225,8 +227,7 @@ const useGas = ({
       const newCustomSpeed = parseCustomGasFeeLegacyParams({
         speed: GasSpeed.CUSTOM,
         gasPriceWei: gasPrice,
-        gasLimit:
-          estimatedGasLimit || getChainGasUnits(chainId).basic.tokenTransfer,
+        gasLimit: estimatedGasLimit || chainGasUnits.basic.tokenTransfer,
         nativeAsset: nativeAsset as ParsedAsset,
         currency: currentCurrency,
         waitTime: 0,
@@ -256,8 +257,7 @@ const useGas = ({
               chainId,
               data: gasData as MeteorologyLegacyResponse | MeteorologyResponse,
               gasLimit:
-                debouncedEstimatedGasLimit ||
-                getChainGasUnits(chainId).basic.tokenTransfer,
+                debouncedEstimatedGasLimit || chainGasUnits.basic.tokenTransfer,
               nativeAsset,
               currency: currentCurrency,
               optimismL1SecurityFee,
@@ -285,6 +285,7 @@ const useGas = ({
     customGasModified,
     prevChainId,
     storeGasFeeParamsBySpeed.custom,
+    chainGasUnits.basic.tokenTransfer,
   ]);
 
   useEffect(() => {

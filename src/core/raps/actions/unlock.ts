@@ -4,8 +4,8 @@ import { Contract, PopulatedTransaction } from '@ethersproject/contracts';
 import { parseUnits } from '@ethersproject/units';
 import { Address, Hash, erc20Abi, erc721Abi } from 'viem';
 
-import { getChainGasUnits } from '~/core/references/chains';
 import { gasStore } from '~/core/state';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { ChainId } from '~/core/types/chains';
 import {
   TransactionGasParams,
@@ -89,6 +89,8 @@ export const estimateApprove = async ({
   spender: Address;
   chainId: ChainId;
 }): Promise<string> => {
+  const gasUnits = useBackendNetworksStore.getState().getChainGasUnits(chainId);
+
   try {
     const provider = getProvider({ chainId });
     const tokenContract = new Contract(tokenAddress, erc20Abi, provider);
@@ -99,14 +101,12 @@ export const estimateApprove = async ({
         from: owner,
       },
     );
-    return gasLimit
-      ? gasLimit.toString()
-      : `${getChainGasUnits(chainId).basic.approval}`;
+    return gasLimit ? gasLimit.toString() : `${gasUnits.basic.approval}`;
   } catch (error) {
     logger.error(new RainbowError('unlock: error estimateApprove'), {
       message: (error as Error)?.message,
     });
-    return `${getChainGasUnits(chainId).basic.approval}`;
+    return `${gasUnits.basic.approval}`;
   }
 };
 
@@ -151,6 +151,8 @@ export const estimateERC721Approval = async ({
   spender: Address;
   chainId: ChainId;
 }): Promise<string> => {
+  const gasUnits = useBackendNetworksStore.getState().getChainGasUnits(chainId);
+
   try {
     const provider = getProvider({ chainId });
     const tokenContract = new Contract(tokenAddress, erc721Abi, provider);
@@ -161,9 +163,7 @@ export const estimateERC721Approval = async ({
         from: owner,
       },
     );
-    return gasLimit
-      ? gasLimit.toString()
-      : `${getChainGasUnits(chainId).basic.approval}`;
+    return gasLimit ? gasLimit.toString() : `${gasUnits.basic.approval}`;
   } catch (error) {
     logger.error(
       new RainbowError('estimateERC721Approval: error estimateApproval'),
@@ -171,7 +171,7 @@ export const estimateERC721Approval = async ({
         message: (error as Error)?.message,
       },
     );
-    return `${getChainGasUnits(chainId).basic.approval}`;
+    return `${gasUnits.basic.approval}`;
   }
 };
 

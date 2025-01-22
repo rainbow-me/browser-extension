@@ -2,8 +2,8 @@ import React, { useCallback, useMemo, useRef } from 'react';
 import { Chain } from 'viem';
 
 import { i18n } from '~/core/languages';
-import { supportedSwapChainIds } from '~/core/references/chains';
 import { shortcuts } from '~/core/references/shortcuts';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { ChainId } from '~/core/types/chains';
 import {
   Box,
@@ -67,6 +67,9 @@ export const SwitchNetworkMenuSelector = ({
 }) => {
   const { trackShortcut } = useKeyboardAnalytics();
   const { chains: userChains } = useUserChains();
+  const supportedSwapChainIds = useBackendNetworksStore((state) =>
+    state.getSwapSupportedChainIds(),
+  );
 
   const chains = useMemo(
     () =>
@@ -75,7 +78,7 @@ export const SwitchNetworkMenuSelector = ({
           ? supportedSwapChainIds.includes(chain.id)
           : true,
       ),
-    [onlySwapSupportedNetworks, userChains],
+    [onlySwapSupportedNetworks, userChains, supportedSwapChainIds],
   );
 
   const { MenuRadioItem } = useMemo(() => {

@@ -24,11 +24,12 @@ import {
   zoraSepolia,
 } from 'viem/chains';
 
-import { chainsLabel } from '../references/chains';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
+
 import { ChainId } from '../types/chains';
 
-import { getSupportedChains } from './chains';
-
+// TODO: Need to figure out what to do with these mappings
+// Should default order come from the backend?
 export const chainIdMap: Record<
   | ChainId.mainnet
   | ChainId.optimism
@@ -58,6 +59,7 @@ export const chainIdMap: Record<
   [ChainId.ink]: [ChainId.ink, inkSepolia.id],
 };
 
+// FIXME: This is a temporary solution to get the chain labels to not throw a lint error
 export const chainLabelMap: Record<
   | ChainId.mainnet
   | ChainId.optimism
@@ -72,18 +74,41 @@ export const chainLabelMap: Record<
   | ChainId.ink,
   string[]
 > = {
-  [ChainId.mainnet]: [chainsLabel[sepolia.id], chainsLabel[holesky.id]],
-  [ChainId.optimism]: [chainsLabel[optimismSepolia.id]],
-  [ChainId.arbitrum]: [chainsLabel[arbitrumSepolia.id]],
-  [ChainId.polygon]: [chainsLabel[polygonAmoy.id]],
-  [ChainId.base]: [chainsLabel[baseSepolia.id]],
-  [ChainId.bsc]: [chainsLabel[bscTestnet.id]],
-  [ChainId.zora]: [chainsLabel[zoraSepolia.id]],
-  [ChainId.avalanche]: [chainsLabel[avalancheFuji.id]],
-  [ChainId.blast]: [chainsLabel[blastSepolia.id]],
+  [ChainId.mainnet]: [
+    useBackendNetworksStore.getState().getChainsLabel()[sepolia.id],
+    useBackendNetworksStore.getState().getChainsLabel()[holesky.id],
+  ],
+  [ChainId.optimism]: [
+    useBackendNetworksStore.getState().getChainsLabel()[optimismSepolia.id],
+  ],
+  [ChainId.arbitrum]: [
+    useBackendNetworksStore.getState().getChainsLabel()[arbitrumSepolia.id],
+  ],
+  [ChainId.polygon]: [
+    useBackendNetworksStore.getState().getChainsLabel()[polygonAmoy.id],
+  ],
+  [ChainId.base]: [
+    useBackendNetworksStore.getState().getChainsLabel()[baseSepolia.id],
+  ],
+  [ChainId.bsc]: [
+    useBackendNetworksStore.getState().getChainsLabel()[bscTestnet.id],
+  ],
+  [ChainId.zora]: [
+    useBackendNetworksStore.getState().getChainsLabel()[zoraSepolia.id],
+  ],
+  [ChainId.avalanche]: [
+    useBackendNetworksStore.getState().getChainsLabel()[avalancheFuji.id],
+  ],
+  [ChainId.blast]: [
+    useBackendNetworksStore.getState().getChainsLabel()[blastSepolia.id],
+  ],
   [ChainId.degen]: [],
-  [ChainId.apechain]: [chainsLabel[curtis.id]],
-  [ChainId.ink]: [chainsLabel[inkSepolia.id]],
+  [ChainId.apechain]: [
+    useBackendNetworksStore.getState().getChainsLabel()[curtis.id],
+  ],
+  [ChainId.ink]: [
+    useBackendNetworksStore.getState().getChainsLabel()[inkSepolia.id],
+  ],
 };
 
 export const sortNetworks = (order: ChainId[], chains: Chain[]) => {
@@ -101,17 +126,15 @@ export const sortNetworks = (order: ChainId[], chains: Chain[]) => {
 };
 
 export const filterUserNetworks = ({
-  testnetMode,
   userChains,
   userChainsOrder,
 }: {
-  testnetMode: boolean;
   userChains: Record<ChainId, boolean>;
   userChainsOrder: ChainId[];
 }) => {
-  const supportedChains: Chain[] = getSupportedChains({
-    testnets: testnetMode,
-  });
+  const supportedChains = useBackendNetworksStore
+    .getState()
+    .getSupportedChains();
 
   const availableChains = Object.keys(userChains)
     .filter((chainId) => userChains[Number(chainId)] === true)

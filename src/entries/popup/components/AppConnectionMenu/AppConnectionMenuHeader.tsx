@@ -3,7 +3,7 @@ import React from 'react';
 import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
-import { chainsLabel } from '~/core/references/chains';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { getChain } from '~/core/utils/chains';
 import {
   Box,
@@ -36,6 +36,9 @@ export const AppConnectionMenuHeader = ({
   appHost,
   appName,
 }: AppConnectionMenuHeaderProps) => {
+  const chainsLabel = useBackendNetworksStore((state) =>
+    state.getChainsLabel(),
+  );
   return (
     <Box as={motion.div} initial={false} animate={{ opacity: opacity }}>
       <Inset top="10px" bottom="14px">

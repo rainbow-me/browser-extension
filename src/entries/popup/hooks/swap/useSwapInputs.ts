@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { SUPPORTED_CHAINS, chainsNativeAsset } from '~/core/references/chains';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
@@ -68,6 +68,13 @@ export const useSwapInputs = ({
   // Rounded input values (maximum 12 characters including decimal point)
   const [assetToSellValueRounded, setAssetToSellValueRounded] = useState('');
   const [assetToBuyValueRounded, setAssetToBuyValueRounded] = useState('');
+
+  const supportedChains = useBackendNetworksStore((state) =>
+    state.getSupportedChains(),
+  );
+  const chainsNativeAsset = useBackendNetworksStore((state) =>
+    state.getChainsNativeAsset(),
+  );
 
   const maxCharacters = useMemo(
     () =>
@@ -318,7 +325,7 @@ export const useSwapInputs = ({
 
       const { chainId } = asset;
 
-      const supportedChain = SUPPORTED_CHAINS.find(
+      const supportedChain = supportedChains.find(
         (chain) => chain.id === chainId,
       );
 
@@ -329,7 +336,7 @@ export const useSwapInputs = ({
         // Return native asset for this chain
         return {
           uniqueId: `${chainNativeAddress}_${chainId}`,
-          address: chainNativeAddress,
+          address: chainNativeAddress.address,
           chainId,
           isNativeAsset: true,
           ...supportedChain.nativeCurrency,
@@ -337,7 +344,7 @@ export const useSwapInputs = ({
       }
       return null;
     },
-    [],
+    [chainsNativeAsset, supportedChains],
   );
 
   const tokenToBuyInputRef = useRef<TokenInputRef>();
@@ -347,14 +354,13 @@ export const useSwapInputs = ({
       setAssetToSell(asset);
 
       if (asset && !bridge && !isNativeAsset(asset.address, asset.chainId)) {
-        const suggestedOutputAsset = determineOutputCurrency(
-          asset,
-        ) as ParsedSearchAsset;
+        const suggestedOutputAsset = determineOutputCurrency(asset);
+
         if (
           suggestedOutputAsset &&
           !isLowerCaseMatch(suggestedOutputAsset.symbol, asset.symbol)
         ) {
-          setAssetToBuy(suggestedOutputAsset);
+          setAssetToBuy(suggestedOutputAsset as ParsedSearchAsset);
         }
       }
 
@@ -370,6 +376,8 @@ export const useSwapInputs = ({
       }
     },
     [
+      setAssetToSellValue,
+      setAssetToBuyValue,
       setHasRequestedMaxValueAssetToSell,
       setAssetToSell,
       bridge,

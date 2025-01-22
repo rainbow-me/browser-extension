@@ -8,7 +8,7 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
-import { needsL1SecurityFeeChains } from '~/core/references/chains';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { ChainId } from '~/core/types/chains';
 import { calculateL1FeeOptimism } from '~/core/utils/gas';
 import { getProvider } from '~/core/wagmi/clientToProvider';
@@ -48,6 +48,9 @@ type OptimismL1SecurityFeeQueryKey = ReturnType<
 async function optimismL1SecurityFeeQueryFunction({
   queryKey: [{ transactionRequest, chainId }],
 }: QueryFunctionArgs<typeof optimismL1SecurityFeeQueryKey>) {
+  const needsL1SecurityFeeChains = useBackendNetworksStore
+    .getState()
+    .getNeedsL1SecurityFeeChains();
   if (needsL1SecurityFeeChains.includes(chainId)) {
     const provider = getProvider({ chainId: ChainId.optimism });
     const gasPrice = await provider.getGasPrice();
@@ -98,6 +101,9 @@ export function useOptimismL1SecurityFee(
     OptimismL1SecurityFeeQueryKey
   > = {},
 ) {
+  const needsL1SecurityFeeChains = useBackendNetworksStore
+    .getState()
+    .getNeedsL1SecurityFeeChains();
   return useQuery({
     queryKey: optimismL1SecurityFeeQueryKey({ transactionRequest, chainId }),
     queryFn: optimismL1SecurityFeeQueryFunction,

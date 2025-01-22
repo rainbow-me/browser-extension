@@ -10,7 +10,7 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
-import { getChainGasUnits } from '~/core/references/chains';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { ChainId } from '~/core/types/chains';
 
 // ///////////////////////////////////////////////
@@ -53,7 +53,8 @@ async function estimateApprovalGasLimitQueryFunction({
   ],
 }: QueryFunctionArgs<typeof estimateApprovalGasLimitQueryKey>) {
   if (!assetAddress || !spenderAddress)
-    return getChainGasUnits(chainId).basic.approval;
+    return useBackendNetworksStore.getState().getChainGasUnits(chainId).basic
+      .approval;
   if (assetType === 'erc20') {
     const gasLimit = await estimateApprove({
       owner: ownerAddress,

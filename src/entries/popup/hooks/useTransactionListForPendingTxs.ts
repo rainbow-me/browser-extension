@@ -9,17 +9,21 @@ import {
   useCurrentAddressStore,
   useCurrentCurrencyStore,
 } from '~/core/state';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { staleBalancesStore } from '~/core/state/staleBalances';
 import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
-import { getSupportedChains, useSupportedChains } from '~/core/utils/chains';
+import { useSupportedChains } from '~/core/utils/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
 export const useTransactionListForPendingTxs = () => {
   const { currentAddress: address } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
   const { testnetMode } = useTestnetModeStore();
+  const supportedChains = useBackendNetworksStore((state) =>
+    state.getSupportedChains(),
+  );
 
   const supportedChainIds = useSupportedChains({
     testnets: testnetMode,
@@ -49,7 +53,7 @@ export const useTransactionListForPendingTxs = () => {
           return latestTxMap;
         },
         new Map(
-          getSupportedChains({ testnets: false }).map((chain) => [
+          supportedChains.map((chain) => [
             chain.id,
             null as RainbowTransaction | null,
           ]),
@@ -59,7 +63,7 @@ export const useTransactionListForPendingTxs = () => {
       currentAddress: address,
       latestTransactions,
     });
-  }, [address, data?.pages]);
+  }, [address, data?.pages, supportedChains]);
 };
 
 function watchForPendingTransactionsReportedByRainbowBackend({

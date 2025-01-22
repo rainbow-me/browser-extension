@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
-import { chainsLabel } from '~/core/references/chains';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
@@ -47,6 +47,9 @@ export const TestnetModeWatcher = ({
   });
   const dappHost = dappMetadata?.appHost || '';
 
+  const chainsLabel = useBackendNetworksStore((state) =>
+    state.getChainsLabel(),
+  );
   const { testnetMode, setTestnetMode } = useTestnetModeStore();
   const { activeSession } = useAppSession({
     host: dappHost,

@@ -2,9 +2,8 @@ import { useEffect } from 'react';
 import { Chain, HttpTransport, Transport, http } from 'viem';
 import { createConfig } from 'wagmi';
 
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { useRainbowChains } from '~/entries/popup/hooks/useRainbowChains';
-
-import { SUPPORTED_CHAINS } from '../references/chains';
 
 import { handleRpcUrl } from './clientRpc';
 
@@ -29,8 +28,10 @@ const createTransports = (chains: Chain[]): Record<number, Transport> => {
 };
 
 let wagmiConfig = createConfig({
-  chains: createChains(SUPPORTED_CHAINS),
-  transports: createTransports(SUPPORTED_CHAINS),
+  chains: createChains(useBackendNetworksStore.getState().getSupportedChains()),
+  transports: createTransports(
+    useBackendNetworksStore.getState().getSupportedChains(),
+  ),
 });
 
 const updateWagmiConfig = (chains: Chain[]) => {

@@ -3,8 +3,8 @@ import { memo, useReducer, useState } from 'react';
 
 import { metadataClient } from '~/core/graphql';
 import { i18n } from '~/core/languages';
-import { createQueryKey, queryClient } from '~/core/react-query';
-import { SUPPORTED_CHAIN_IDS } from '~/core/references/chains';
+import { queryClient } from '~/core/react-query';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { AddressOrEth, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { SearchAsset } from '~/core/types/search';
@@ -188,6 +188,9 @@ const usePriceChart = ({
   chainId: ChainId;
   time: ChartTime;
 }) => {
+  const supportedChainIds = useBackendNetworksStore((state) =>
+    state.getSupportedChainIds(),
+  );
   return useQuery({
     queryFn: async () => {
       const chart = await fetchPriceChart(time, chainId, address);
@@ -198,7 +201,7 @@ const usePriceChart = ({
     queryKey: priceChartQueryKey({ address, chainId, time }),
     placeholderData: (previousData) => previousData,
     staleTime: 1 * 60 * 1000, // 1min
-    enabled: SUPPORTED_CHAIN_IDS.includes(chainId),
+    enabled: supportedChainIds.includes(chainId),
   });
 };
 

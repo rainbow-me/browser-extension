@@ -10,13 +10,12 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
-import { supportedAssetsChainIds } from '~/core/references/chains';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { staleBalancesStore } from '~/core/state/staleBalances';
 import { ParsedAssetsDictByChain, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { AddressAssetsReceivedMessage } from '~/core/types/refraction';
-import { getSupportedChains } from '~/core/utils/chains';
 import { RainbowError, logger } from '~/logger';
 
 import { parseUserAssets } from './common';
@@ -117,6 +116,9 @@ export const userAssetsSetQueryData = ({
 async function userAssetsQueryFunction({
   queryKey: [{ address, currency, testnetMode }],
 }: QueryFunctionArgs<typeof userAssetsQueryKey>) {
+  const backendSupportedChainIds = useBackendNetworksStore
+    .getState()
+    .getSupportedChainIds();
   const cache = queryClient.getQueryCache();
   const cachedUserAssets = (cache.find({
     queryKey: userAssetsQueryKey({
@@ -126,11 +128,12 @@ async function userAssetsQueryFunction({
     }),
   })?.state?.data || {}) as ParsedAssetsDictByChain;
   try {
-    const supportedChainIds = getSupportedChains({
-      testnets: testnetMode,
-    })
-      .map(({ id }) => id)
-      .filter((id) => supportedAssetsChainIds.includes(id));
+    const supportedAssetsChainIds = useBackendNetworksStore
+      .getState()
+      .getSupportedAssetsChainIds();
+    const supportedChainIds = backendSupportedChainIds.filter((chainId) =>
+      supportedAssetsChainIds.includes(chainId),
+    );
     staleBalancesStore.getState().clearExpiredData(address as Address);
     const staleBalancesParam = staleBalancesStore
       .getState()

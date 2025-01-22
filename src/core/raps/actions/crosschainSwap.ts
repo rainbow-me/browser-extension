@@ -3,7 +3,7 @@ import { CrosschainQuote, fillCrosschainQuote } from '@rainbow-me/swaps';
 import { Address } from 'viem';
 
 import { REFERRER, ReferrerType } from '~/core/references';
-import { getChainGasUnits } from '~/core/references/chains';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { isSameAssetInDiffChains } from '~/core/utils/assets';
@@ -41,7 +41,8 @@ export const estimateCrosschainSwapGasLimit = async ({
 }): Promise<string> => {
   const provider = getProvider({ chainId });
   if (!provider || !quote) {
-    return getChainGasUnits(chainId).basic.swap;
+    return useBackendNetworksStore.getState().getChainGasUnits(chainId).basic
+      .swap;
   }
   try {
     if (requiresApprove) {

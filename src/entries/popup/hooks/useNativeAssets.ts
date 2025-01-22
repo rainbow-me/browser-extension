@@ -1,15 +1,24 @@
-import { chainsNativeAsset } from '~/core/references/chains';
+import { useMemo } from 'react';
+
 import { useExternalTokens } from '~/core/resources/assets/externalToken';
 import { useCurrentCurrencyStore } from '~/core/state';
-import { ParsedAsset } from '~/core/types/assets';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
+import { AddressOrEth, ParsedAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 
-const NATIVE_ASSETS = Object.keys(chainsNativeAsset).map((chainId) => ({
-  address: chainsNativeAsset[Number(chainId) as ChainId],
-  chainId: Number(chainId) as ChainId,
-}));
-
 export function useNativeAssets() {
+  const chainsNativeAsset = useBackendNetworksStore((state) =>
+    state.getChainsNativeAsset(),
+  );
+  const NATIVE_ASSETS = useMemo(
+    () =>
+      Object.keys(chainsNativeAsset).map((chainId) => ({
+        address: chainsNativeAsset[+chainId].address as AddressOrEth,
+        chainId: +chainId,
+      })),
+    [chainsNativeAsset],
+  );
+
   const { currentCurrency: currency } = useCurrentCurrencyStore();
   const response = useExternalTokens({
     assets: NATIVE_ASSETS,

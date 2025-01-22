@@ -4,11 +4,7 @@ import { useConfig } from 'wagmi';
 
 import { ChainId } from '~/core/types/chains';
 
-import {
-  SUPPORTED_CHAINS,
-  SUPPORTED_MAINNET_CHAINS,
-  chainsNativeAsset,
-} from '../references/chains';
+import { useBackendNetworksStore } from '../state/backendNetworks/backendNetworks';
 import { AddressOrEth } from '../types/assets';
 import { wagmiConfig } from '../wagmi';
 
@@ -19,14 +15,14 @@ import { isLowerCaseMatch } from './strings';
 // Main chains for chain settings
 
 const getMainChainsHelper = (chains: readonly [Chain, ...Chain[]]) => {
-  // All the mainnets we support
-  const mainSupportedChains = SUPPORTED_MAINNET_CHAINS.filter(
-    (chain) => !chain.testnet,
-  );
+  const mainnetChains = useBackendNetworksStore
+    .getState()
+    .getSupportedMainnetChains();
+  const allSupportedChainIds = useBackendNetworksStore
+    .getState()
+    .getSupportedChainIds();
   // The chain ID of all the mainnets we support
-  const supportedChainIds = new Set(
-    mainSupportedChains.map((chain) => chain.id),
-  );
+  const supportedChainIds = new Set(mainnetChains.map((chain) => chain.id));
 
   // All the chains that the user added
   const customMainChains = chains?.filter(
@@ -40,12 +36,10 @@ const getMainChainsHelper = (chains: readonly [Chain, ...Chain[]]) => {
       !chain.testnet ||
       (chain.testnet &&
         !supportedChainIds.has(chain.id) &&
-        !SUPPORTED_CHAINS.some(
-          (supportedChain) => supportedChain.id === chain.id,
-        )),
+        !allSupportedChainIds.some((chainId) => chainId === chain.id)),
   );
 
-  return mainSupportedChains.concat(customChainsIncludingTestnets);
+  return mainnetChains.concat(customChainsIncludingTestnets);
 };
 
 export const useMainChains = () => {
@@ -68,18 +62,6 @@ export const useSupportedChains = ({ testnets }: { testnets?: boolean }) => {
   );
 };
 
-export const getSupportedChains = ({ testnets }: { testnets?: boolean }) => {
-  const { chains } = wagmiConfig;
-  return chains.filter((chain) =>
-    testnets
-      ? !!chain.testnet
-      : !chain.testnet ||
-        (process.env.IS_TESTING === 'true' &&
-          (chain.id === ChainId.hardhat ||
-            chain.id === ChainId.hardhatOptimism)),
-  );
-};
-
 // Chain helpers
 
 export function getChain({ chainId }: { chainId?: ChainId }) {
@@ -89,14 +71,20 @@ export function getChain({ chainId }: { chainId?: ChainId }) {
 }
 
 export const isCustomChain = (chainId: number) =>
-  !SUPPORTED_CHAINS.map((chain) => chain.id).includes(chainId) &&
-  !!findRainbowChainForChainId(chainId);
+  !useBackendNetworksStore
+    .getState()
+    .getSupportedChainIds()
+    .includes(chainId) && !!findRainbowChainForChainId(chainId);
 
 export function isNativeAsset(address: AddressOrEth, chainId: ChainId) {
   if (isCustomChain(chainId)) {
     return AddressZero === address;
   }
-  return isLowerCaseMatch(chainsNativeAsset[chainId], address);
+
+  const nativeAsset = useBackendNetworksStore.getState().getChainsNativeAsset()[
+    chainId
+  ];
+  return isLowerCaseMatch(nativeAsset.address, address);
 }
 
 export function getBlockExplorerHostForChain(chainId: ChainId) {

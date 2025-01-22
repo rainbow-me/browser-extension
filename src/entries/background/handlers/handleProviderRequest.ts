@@ -10,15 +10,12 @@ import { hasVault, isInitialized, isPasswordSet } from '~/core/keychain';
 import { Messenger } from '~/core/messengers';
 import { CallbackOptions } from '~/core/messengers/internal/createMessenger';
 import {
-  SUPPORTED_CHAINS,
-  SUPPORTED_CHAIN_IDS,
-} from '~/core/references/chains';
-import {
   appSessionsStore,
   notificationWindowStore,
   pendingRequestStore,
   rainbowChainsStore,
 } from '~/core/state';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { featureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { userChainsStore } from '~/core/state/userChains';
 import { SessionStorage } from '~/core/storage';
@@ -255,17 +252,21 @@ export const handleProviderRequest = ({
 }: {
   popupMessenger: Messenger;
   inpageMessenger: Messenger;
-}) =>
-  rnbwHandleProviderRequest({
+}) => {
+  const supportedChains = useBackendNetworksStore
+    .getState()
+    .getSupportedChains();
+  const supportedChainIds = supportedChains.map(({ id }) => id);
+  return rnbwHandleProviderRequest({
     providerRequestTransport: providerRequestTransport,
     isSupportedChain: (chainId: number) =>
-      SUPPORTED_CHAIN_IDS.includes(chainId) || isCustomChain(chainId),
+      supportedChainIds.includes(chainId) || isCustomChain(chainId),
     getActiveSession: ({ host }: { host: string }) =>
       appSessionsStore.getState().getActiveSession({ host }),
     removeAppSession: ({ host }: { host: string }) =>
       appSessionsStore.getState().removeAppSession({ host }),
     getChainNativeCurrency: (chainId: number) =>
-      SUPPORTED_CHAINS.find((chain) => chain.id === Number(chainId))
+      supportedChains.find((chain) => chain.id === Number(chainId))
         ?.nativeCurrency,
     getFeatureFlags: () => featureFlagsStore.getState().featureFlags,
     getProvider: getProvider,
@@ -376,7 +377,7 @@ export const handleProviderRequest = ({
         .getActiveChain({ chainId: proposedChainId });
       const supportedChainId =
         isCustomChain(proposedChainId) ||
-        SUPPORTED_CHAIN_IDS.includes(proposedChainId);
+        supportedChainIds.includes(proposedChainId);
       inpageMessenger?.send('rainbow_ethereumChainEvent', {
         chainId: proposedChainId,
         chainName: chain?.name || 'NO NAME',
@@ -427,3 +428,4 @@ export const handleProviderRequest = ({
       inpageMessenger.send(`chainChanged:${host}`, proposedChainId);
     },
   });
+};

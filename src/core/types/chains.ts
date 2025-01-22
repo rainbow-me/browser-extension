@@ -108,6 +108,7 @@ export enum ChainId {
   fantom = chains.fantom.id,
   forma = chains.forma.id,
   gnosis = chains.gnosis.id,
+  goerli = chains.goerli.id,
   godwoken = 71402,
   hardhat = chainHardhat.id,
   hardhatOptimism = chainHardhatOptimism.id,

@@ -1,13 +1,10 @@
-import React, { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { DropResult } from 'react-beautiful-dnd';
 import { Chain } from 'viem';
 
 import { i18n } from '~/core/languages';
-import {
-  SUPPORTED_CHAINS,
-  SUPPORTED_CHAIN_IDS,
-} from '~/core/references/chains';
 import { useRainbowChainsStore } from '~/core/state';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { promoTypes, useQuickPromoStore } from '~/core/state/quickPromo';
@@ -16,7 +13,7 @@ import { useUserChainsStore } from '~/core/state/userChains';
 import { ChainId } from '~/core/types/chains';
 import { useMainChains } from '~/core/utils/chains';
 import { reorder } from '~/core/utils/draggable';
-import { chainLabelMap, sortNetworks } from '~/core/utils/userChains';
+import { sortNetworks } from '~/core/utils/userChains';
 import { Box, Inset, Separator, Symbol, Text } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
@@ -36,9 +33,11 @@ import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
 const chainLabel = ({
+  allChainLabels,
   chainId,
   testnet,
 }: {
+  allChainLabels: Record<ChainId, string>;
   chainId: ChainId;
   testnet?: boolean;
 }) => {
@@ -47,8 +46,8 @@ const chainLabel = ({
       ? i18n.t('settings.networks.testnet')
       : i18n.t('settings.networks.mainnet'),
   ];
-  if (chainLabelMap[chainId]) {
-    chainLabels.push(...chainLabelMap[chainId]);
+  if (allChainLabels[chainId]) {
+    chainLabels.push(allChainLabels[chainId]);
   }
   return chainLabels.join(', ');
 };
@@ -69,6 +68,13 @@ export function SettingsNetworks() {
   } = useUserChainsStore();
   const { rainbowChains, removeCustomRPC } = useRainbowChainsStore();
   const { removeRainbowChainAssets } = useRainbowChainAssetsStore();
+  const supportedChains = useBackendNetworksStore((state) =>
+    state.getSupportedChains(),
+  );
+  const [supportedChainIds] = useState(supportedChains.map(({ id }) => id));
+  const allChainLabels = useBackendNetworksStore((state) =>
+    state.getChainsLabel(),
+  );
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source } = result;
@@ -97,11 +103,11 @@ export function SettingsNetworks() {
         return {
           ...chain,
           name:
-            SUPPORTED_CHAINS.find(({ id }) => id === chainId)?.name ||
+            supportedChains.find(({ id }) => id === chainId)?.name ||
             chain.name,
         };
       }),
-    [mainChains, userChainsOrder],
+    [mainChains, userChainsOrder, supportedChains],
   );
 
   const enableNetwork = useCallback(
@@ -235,6 +241,7 @@ export function SettingsNetworks() {
                                 >
                                   {userChains[chain.id]
                                     ? chainLabel({
+                                        allChainLabels,
                                         chainId: chain.id,
                                         testnet: chain.testnet,
                                       })
@@ -260,7 +267,7 @@ export function SettingsNetworks() {
                                 : i18n.t('settings.networks.enable')}
                             </Text>
                           </ContextMenuItem>
-                          {!SUPPORTED_CHAIN_IDS.includes(chain.id) ? (
+                          {!supportedChainIds.includes(chain.id) ? (
                             <ContextMenuItem
                               symbolLeft="trash.fill"
                               color="red"

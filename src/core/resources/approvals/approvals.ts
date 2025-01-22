@@ -10,7 +10,7 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
-import { supportedApprovalsChainIds } from '~/core/references/chains';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { AssetApiResponse } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { TxHash } from '~/core/types/transactions';
@@ -81,6 +81,9 @@ export async function approvalsQueryFunction({
   queryKey: [{ address, chainIds, currency }],
 }: QueryFunctionArgs<typeof approvalsQueryKey>): Promise<Approval[] | null> {
   try {
+    const supportedApprovalsChainIds = useBackendNetworksStore
+      .getState()
+      .getApprovalsSupportedChainIds();
     const supportedChainIds = chainIds.filter((chainId) =>
       supportedApprovalsChainIds.includes(chainId),
     );

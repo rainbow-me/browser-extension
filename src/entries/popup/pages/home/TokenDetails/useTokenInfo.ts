@@ -4,8 +4,8 @@ import { Address } from 'viem';
 import { metadataClient } from '~/core/graphql';
 import { AboutTokenQuery } from '~/core/graphql/__generated__/metadata';
 import { createQueryKey } from '~/core/react-query';
-import { SUPPORTED_CHAIN_IDS } from '~/core/references/chains';
 import { useCurrentCurrencyStore } from '~/core/state';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { formatCurrency } from '~/core/utils/formatNumber';
@@ -44,6 +44,9 @@ export const useTokenInfo = <Select = ParsedTokenInfo>(
   options?: { select: (t: ParsedTokenInfo) => Select },
 ) => {
   const { currentCurrency } = useCurrentCurrencyStore();
+  const supportedChainIds = useBackendNetworksStore((state) =>
+    state.getSupportedChainIds(),
+  );
   const args = token && { ...token, currency: currentCurrency };
   return useQuery({
     queryFn: () => {
@@ -57,7 +60,7 @@ export const useTokenInfo = <Select = ParsedTokenInfo>(
       { ...(args ? { args } : {}) },
       { persisterVersion: 2 },
     ),
-    enabled: !!token && SUPPORTED_CHAIN_IDS.includes(token.chainId),
+    enabled: !!token && supportedChainIds.includes(token.chainId),
     ...options,
   });
 };

@@ -11,7 +11,7 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
-import { supportedTransactionsChainIds } from '~/core/references/chains';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import { TransactionsReceivedMessage } from '~/core/types/refraction';
 import { RainbowTransaction } from '~/core/types/transactions';
@@ -91,7 +91,10 @@ export async function consolidatedTransactionsQueryFunction({
 >): Promise<_QueryResult> {
   try {
     const chainIds = userChainIds.filter((id) =>
-      supportedTransactionsChainIds.includes(id),
+      useBackendNetworksStore
+        .getState()
+        .getTransactionsSupportedChainIds()
+        .includes(id),
     );
     const response = await addysHttp.get<TransactionsReceivedMessage>(
       `/${chainIds.join(',')}/${address}/transactions`,

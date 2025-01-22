@@ -11,7 +11,7 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { ETH_ADDRESS, SupportedCurrencyKey } from '~/core/references';
-import { SUPPORTED_MAINNET_CHAINS } from '~/core/references/chains';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import {
   RainbowChainAsset,
@@ -183,6 +183,9 @@ async function customNetworkAssetsFunction({
     }),
   })?.state?.data || {}) as Record<ChainId | number, ParsedAssetsDict>;
 
+  const mainnetChainIds = useBackendNetworksStore
+    .getState()
+    .getSupportedMainnetChainIds();
   const { rainbowChains: chains } = getRainbowChains();
 
   const customChains = chains.filter((chain) =>
@@ -193,10 +196,7 @@ async function customNetworkAssetsFunction({
   }
   try {
     const assetsPromises = customChains
-      .filter(
-        (chain) =>
-          !SUPPORTED_MAINNET_CHAINS.map((chain) => chain.id).includes(chain.id),
-      )
+      .filter((chain) => !mainnetChainIds.includes(chain.id))
       .map(async (chain) => {
         const provider = getProvider({ chainId: chain.id });
         const nativeAssetBalance = (

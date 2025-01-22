@@ -8,9 +8,9 @@ import { useEnsName } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { i18n } from '~/core/languages';
-import { chainsLabel } from '~/core/references/chains';
 import { useEnsRegistration } from '~/core/resources/ens/ensRegistration';
 import { useNft } from '~/core/resources/nfts/useNft';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { useSelectedNftStore } from '~/core/state/selectedNft';
 import { AddressOrEth, UniqueId } from '~/core/types/assets';
 import { ChainId, ChainName, chainNameToIdMapping } from '~/core/types/chains';
@@ -723,6 +723,9 @@ const NFTAccordionAboutSection = ({
   nft?: UniqueAsset | null;
   showFloorPriceExplainerSheet: () => void;
 }) => {
+  const chainsLabel = useBackendNetworksStore((state) =>
+    state.getChainsLabel(),
+  );
   const networkDisplay = nft?.network
     ? chainsLabel[chainNameToIdMapping[nft?.network]]
     : '';

@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { ChainId } from '~/core/types/chains';
-import { getSupportedChains } from '~/core/utils/chains';
 import { chainIdMap, sortNetworks } from '~/core/utils/userChains';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
@@ -11,12 +11,11 @@ const IS_TESTING = process.env.IS_TESTING === 'true';
 export const useUserChains = () => {
   const { userChainsOrder, userChains } = useUserChainsStore();
   const { testnetMode } = useTestnetModeStore();
+  const supportedChains = useBackendNetworksStore((state) =>
+    state.getSupportedChains(),
+  );
 
   const availableChains = useMemo(() => {
-    const supportedChains = getSupportedChains({
-      testnets: testnetMode,
-    });
-
     const availableChains = Object.keys(userChains)
       .filter((chainId) => userChains[Number(chainId)] === true)
       .map((chainId) => Number(chainId));
@@ -35,12 +34,11 @@ export const useUserChains = () => {
     };
 
     const chains = supportedChains.filter(
-      (chain) =>
-        allAvailableUserChains.includes(chain.id) || checkIfTesting(chain.id),
+      ({ id }) => allAvailableUserChains.includes(id) || checkIfTesting(id),
     );
 
     return sortNetworks(userChainsOrder, chains);
-  }, [testnetMode, userChains, userChainsOrder]);
+  }, [testnetMode, userChains, userChainsOrder, supportedChains]);
 
   return { chains: availableChains };
 };

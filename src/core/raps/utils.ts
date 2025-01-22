@@ -11,7 +11,8 @@ import {
 import { erc20Abi } from 'viem';
 import { mainnet } from 'viem/chains';
 
-import { getChainGasUnits } from '../references/chains';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
+
 import { ChainId } from '../types/chains';
 import {
   GasFeeLegacyParams,
@@ -206,9 +207,10 @@ export const getDefaultGasLimitForTrade = (
   quote: Quote,
   chainId: ChainId,
 ): string => {
+  const gasUnits = useBackendNetworksStore.getState().getChainGasUnits(chainId);
+
   return (
-    quote?.defaultGasLimit ||
-    multiply(getChainGasUnits(chainId).basic.swap, EXTRA_GAS_PADDING)
+    quote?.defaultGasLimit || multiply(gasUnits.basic.swap, EXTRA_GAS_PADDING)
   );
 };
 
@@ -258,7 +260,11 @@ export const estimateSwapGasLimitWithFakeApproval = async (
         return false;
       }
     });
-    if (gasLimit && greaterThan(gasLimit, getChainGasUnits().basic.swap)) {
+
+    const gasUnits = useBackendNetworksStore
+      .getState()
+      .getChainGasUnits(chainId);
+    if (gasLimit && greaterThan(gasLimit, gasUnits.basic.swap)) {
       return gasLimit;
     }
   } catch (e) {

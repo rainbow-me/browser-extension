@@ -1,19 +1,18 @@
 import { Chain } from 'viem';
 
-import { SUPPORTED_CHAINS, oldDefaultRPC } from '~/core/references/chains';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { ChainId } from '~/core/types/chains';
 
 import { RainbowChain, RainbowChainsState } from '.';
 
 export const getInitialRainbowChains = () => {
-  const rainbowChains: Record<number, RainbowChain> = {};
-  SUPPORTED_CHAINS.forEach((chain) => {
-    rainbowChains[chain.id] = {
-      activeRpcUrl: chain.rpcUrls.default.http[0],
-      chains: [chain],
-    };
-  });
-  return rainbowChains;
+  const supportedChains = useBackendNetworksStore
+    .getState()
+    .getSupportedChains();
+  return supportedChains.map((chain) => ({
+    activeRpcUrl: chain.rpcUrls.default.http[0],
+    chains: [chain],
+  }));
 };
 
 export const mergeNewOfficiallySupportedChainsState = (
@@ -51,7 +50,7 @@ export const removeCustomRPC = ({
 }: {
   state: RainbowChainsState;
   rpcUrl: string;
-  rainbowChains: Record<number, RainbowChain>;
+  rainbowChains: Record<ChainId, RainbowChain>;
 }) => {
   const updatedrainbowChains = { ...rainbowChains };
 
@@ -102,13 +101,14 @@ export const addCustomRPC = ({
 export const replaceChainsWithInitial = (state: RainbowChainsState) => {
   const initialRainbowChains = getInitialRainbowChains();
   const updatedRainbowChains = { ...state.rainbowChains };
+  const defaultRpcs = useBackendNetworksStore.getState().getDefaultChains();
 
   Object.entries(updatedRainbowChains).forEach(
     ([chainId, currentRainbowChain]) => {
       const rainbowChain = initialRainbowChains[Number(chainId)];
+      const oldRpcUrl = defaultRpcs[Number(chainId)].rpcUrls.default.http[0];
 
       if (rainbowChain) {
-        const oldRpcUrl = oldDefaultRPC[Number(chainId)];
         const newRainbowChain = rainbowChain.chains[0];
         const activeRpcUrl = currentRainbowChain.activeRpcUrl;
         const newRpcUrl = newRainbowChain.rpcUrls.default.http[0];
@@ -117,7 +117,7 @@ export const replaceChainsWithInitial = (state: RainbowChainsState) => {
         // Otherwise, add the new chain to the chains array
         const existingChainIndex = currentRainbowChain.chains.findIndex(
           (chain) =>
-            chain.rpcUrls.default.http[0] === oldDefaultRPC ||
+            chain.rpcUrls.default.http[0] === oldRpcUrl ||
             chain.rpcUrls.default.http[0] === newRpcUrl,
         );
 

@@ -5,10 +5,10 @@ import { useMemo } from 'react';
 import { Navigate, useParams, useSearchParams } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
-import { chainsLabel } from '~/core/references/chains';
 import { useApprovals } from '~/core/resources/approvals/approvals';
 import { useTransaction } from '~/core/resources/transactions/transaction';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { ChainId } from '~/core/types/chains';
 import {
   PendingTransaction,
@@ -262,6 +262,9 @@ const formatValue = (transaction: RainbowTransaction) => {
 function NetworkData({ transaction: tx }: { transaction: RainbowTransaction }) {
   const chain = findRainbowChainForChainId(tx.chainId);
   const value = formatValue(tx);
+  const chainsLabel = useBackendNetworksStore((state) =>
+    state.getChainsLabel(),
+  );
 
   return (
     <Stack space="24px">

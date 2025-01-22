@@ -3,11 +3,11 @@ import { uniqBy } from 'lodash';
 import { useCallback, useMemo } from 'react';
 import { Address } from 'viem';
 
-import { SUPPORTED_CHAINS } from '~/core/references/chains';
 import { useAssetSearchMetadataAllNetworks } from '~/core/resources/assets/assetMetadata';
 import { useTokenSearch } from '~/core/resources/search';
 import { useTokenDiscovery } from '~/core/resources/search/tokenDiscovery';
 import { useTokenSearchAllNetworks } from '~/core/resources/search/tokenSearch';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -100,7 +100,9 @@ export function useSearchCurrencyLists({
 }) {
   const query = searchQuery?.toLowerCase() || '';
   const enableUnverifiedSearch = query.trim().length > 2;
-
+  const supportedChainIds = useBackendNetworksStore((state) =>
+    state.getSupportedChainIds(),
+  );
   const isCrosschainSearch = inputChainId && inputChainId !== outputChainId;
 
   // provided during swap to filter token search by available routes
@@ -453,7 +455,7 @@ export function useSearchCurrencyLists({
             // filter out the asset we're selling already
             if (
               isSameAsset(assetToSell, { chainId, address }) ||
-              !SUPPORTED_CHAINS.some((n) => n.id === chainId)
+              !supportedChainIds.includes(chainId)
             )
               return;
             return {

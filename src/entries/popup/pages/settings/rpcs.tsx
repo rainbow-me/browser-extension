@@ -4,10 +4,6 @@ import { useLocation } from 'react-router-dom';
 import { Address, Chain } from 'viem';
 
 import { i18n } from '~/core/languages';
-import {
-  SUPPORTED_CHAINS,
-  SUPPORTED_CHAIN_IDS,
-} from '~/core/references/chains';
 import { selectUserAssetsDictByChain } from '~/core/resources/_selectors/assets';
 import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
 import {
@@ -15,12 +11,12 @@ import {
   useCurrentCurrencyStore,
   useRainbowChainsStore,
 } from '~/core/state';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
 import { useUserChainsStore } from '~/core/state/userChains';
-import { getSupportedChains } from '~/core/utils/chains';
 import { getDappHost } from '~/core/utils/connectedApps';
 import { chainIdMap } from '~/core/utils/userChains';
 import {
@@ -56,8 +52,8 @@ import {
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
-const isDefaultRPC = (chain: Chain) => {
-  const rpc = SUPPORTED_CHAINS.find((c) => c.id === chain.id)?.rpcUrls.default
+const isDefaultRPC = (chain: Chain, supportedChains: Chain[]) => {
+  const rpc = supportedChains.find((c) => c.id === chain.id)?.rpcUrls.default
     .http[0];
   if (!rpc) return false;
   return chain.rpcUrls.default.http[0] === rpc;
@@ -68,6 +64,11 @@ export function SettingsNetworksRPCs() {
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency } = useCurrentCurrencyStore();
   const { currentTheme } = useCurrentThemeStore();
+
+  const supportedChains = useBackendNetworksStore((state) =>
+    state.getSupportedChains(),
+  );
+
   const {
     state: { chainId },
   } = useLocation();
@@ -131,8 +132,8 @@ export function SettingsNetworksRPCs() {
   );
 
   const supportedChain = useMemo(
-    () => SUPPORTED_CHAINS.find(({ id }) => id === chainId),
-    [chainId],
+    () => supportedChains.find(({ id }) => id === chainId),
+    [chainId, supportedChains],
   );
 
   const mainnetChains = useMemo(
@@ -140,11 +141,11 @@ export function SettingsNetworksRPCs() {
       rainbowChain?.chains
         .filter((chain) => !chain.testnet)
         .sort((a, b) => {
-          if (isDefaultRPC(a)) return -1;
-          if (isDefaultRPC(b)) return 1;
+          if (isDefaultRPC(a, supportedChains)) return -1;
+          if (isDefaultRPC(b, supportedChains)) return 1;
           return 0;
         }) || [],
-    [rainbowChain],
+    [rainbowChain, supportedChains],
   );
 
   const options = ({ address }: { address: Address }): MoreInfoOption[] => [
@@ -164,12 +165,10 @@ export function SettingsNetworksRPCs() {
 
   const supportedTestnetChains = useMemo(
     () =>
-      getSupportedChains({
-        testnets: true,
-      }).filter((chain) => {
+      supportedChains.filter((chain) => {
         return chainIdMap[chainId]?.includes(chain.id) && chain.id !== chainId;
       }),
-    [chainId],
+    [chainId, supportedChains],
   );
 
   const testnetChains = useMemo(() => {
@@ -335,7 +334,7 @@ export function SettingsNetworksRPCs() {
                               size="11pt"
                               weight={'medium'}
                             >
-                              {isDefaultRPC(chain)
+                              {isDefaultRPC(chain, supportedChains)
                                 ? i18n.t(
                                     'settings.networks.custom_rpc.rainbow_default_rpc',
                                   )
@@ -575,7 +574,7 @@ export function SettingsNetworksRPCs() {
           </>
         ) : null}
 
-        {!SUPPORTED_CHAIN_IDS.includes(chainId) ? (
+        {!supportedChains.map((chain) => chain.id).includes(chainId) ? (
           <Menu>
             <MenuItem
               first

@@ -1,60 +1,67 @@
 import create from 'zustand';
 
-import { SUPPORTED_MAINNET_CHAINS } from '~/core/references/chains';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
+import { createStore } from '~/core/state/internal/createStore';
+import { withSelectors } from '~/core/state/internal/withSelectors';
 import { ChainId } from '~/core/types/chains';
 import { persistOptions } from '~/core/utils/persistOptions';
-
-import { createStore } from '../internal/createStore';
-import { withSelectors } from '../internal/withSelectors';
 
 export interface UserChainsState {
   /**
    * Mainnet chains in network settings
    */
-  userChains: Record<number, boolean>;
+  userChains: Record<ChainId, boolean>;
   /**
    * Mainnet chains ordered from network settings
    */
-  userChainsOrder: (number | number)[];
+  userChainsOrder: ChainId[];
   updateUserChain: ({
     chainId,
     enabled,
   }: {
-    chainId: number;
+    chainId: ChainId;
     enabled: boolean;
   }) => void;
   updateUserChains: ({
     chainIds,
     enabled,
   }: {
-    chainIds: number[];
+    chainIds: ChainId[];
     enabled: boolean;
   }) => void;
   updateUserChainsOrder: ({
     userChainsOrder,
   }: {
-    userChainsOrder: (number | number)[];
+    userChainsOrder: ChainId[];
   }) => void;
   addUserChain: ({ chainId }: { chainId: ChainId }) => void;
   removeUserChain: ({ chainId }: { chainId: ChainId }) => void;
 }
 
-const initialChains = SUPPORTED_MAINNET_CHAINS.reduce(
-  (acc, chain) => ({
-    ...acc,
-    [chain.id]: true,
-  }),
-  {} as Record<number, boolean>,
-);
+const initialChains = () => {
+  const supportedChainIds = useBackendNetworksStore
+    .getState()
+    .getSupportedChainIds();
+  return supportedChainIds.reduce(
+    (acc, chainId) => ({
+      ...acc,
+      [chainId]: true,
+    }),
+    {} as Record<ChainId, boolean>,
+  );
+};
 
-const initialUserChainsOrder = SUPPORTED_MAINNET_CHAINS.map(
-  (id) => Number(id) as number,
-);
+const initialUserChainsOrder = () => {
+  const supportedMainnetChainIds = useBackendNetworksStore
+    .getState()
+    .getSupportedMainnetChainIds();
+  return supportedMainnetChainIds;
+};
 
 export const userChainsStore = createStore<UserChainsState>(
   (set, get) => ({
-    userChains: initialChains,
-    userChainsOrder: initialUserChainsOrder,
+    userChains: initialChains(),
+    userChainsOrder: initialUserChainsOrder(),
     updateUserChains: ({ chainIds, enabled }) => {
       const { userChains } = get();
       const chainsUpdated = chainIds.reduce(
@@ -62,8 +69,8 @@ export const userChainsStore = createStore<UserChainsState>(
           acc[chainId] = enabled;
           return acc;
         },
-        {} as Record<number, boolean>,
-      ) satisfies Record<number, boolean>;
+        {} as Record<ChainId, boolean>,
+      ) satisfies Record<ChainId, boolean>;
       set({
         userChains: {
           ...userChains,
@@ -119,32 +126,32 @@ export const userChainsStore = createStore<UserChainsState>(
         function v1(state: UserChainsState) {
           return {
             ...state,
-            userChains: initialChains,
-            userChainsOrder: initialUserChainsOrder,
+            userChains: initialChains(),
+            userChainsOrder: initialUserChainsOrder(),
           };
         },
 
         function v2(state: UserChainsState) {
           return {
             ...state,
-            userChains: initialChains,
-            userChainsOrder: initialUserChainsOrder,
+            userChains: initialChains(),
+            userChainsOrder: initialUserChainsOrder(),
           };
         },
 
         function v3(state: UserChainsState) {
           return {
             ...state,
-            userChains: initialChains,
-            userChainsOrder: initialUserChainsOrder,
+            userChains: initialChains(),
+            userChainsOrder: initialUserChainsOrder(),
           };
         },
 
         function v4(state: UserChainsState) {
           return {
             ...state,
-            userChains: initialChains,
-            userChainsOrder: initialUserChainsOrder,
+            userChains: initialChains(),
+            userChainsOrder: initialUserChainsOrder(),
           };
         },
 

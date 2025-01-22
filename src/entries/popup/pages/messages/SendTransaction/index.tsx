@@ -8,12 +8,13 @@ import { event } from '~/analytics/event';
 import { getWalletContext } from '~/analytics/util';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
-import { chainsNativeAsset } from '~/core/references/chains';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useGasStore } from '~/core/state';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
+import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { chainIdToUse } from '~/core/utils/chains';
@@ -65,6 +66,9 @@ export function SendTransaction({
   const { asset, selectAssetAddressAndChain } = useSendAsset();
   const { allWallets, watchedWallets } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
+  const chainsNativeAsset = useBackendNetworksStore((state) =>
+    state.getChainsNativeAsset(),
+  );
 
   const onAcceptRequest = useCallback(async () => {
     if (!config.tx_requests_enabled) return;
@@ -208,7 +212,7 @@ export function SendTransaction({
         activeSession?.chainId,
       );
       selectAssetAddressAndChain(
-        chainsNativeAsset[activeChainId] as Address,
+        chainsNativeAsset[activeChainId]?.address as AddressOrEth,
         activeChainId,
       );
     }
@@ -217,6 +221,7 @@ export function SendTransaction({
     connectedToHardhat,
     selectAssetAddressAndChain,
     connectedToHardhatOp,
+    chainsNativeAsset,
   ]);
 
   return (

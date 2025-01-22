@@ -1,9 +1,8 @@
 import clsx from 'clsx';
 import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
-import { Address, Chain } from 'viem';
+import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
-import { SUPPORTED_MAINNET_CHAINS } from '~/core/references/chains';
 import { shortcuts } from '~/core/references/shortcuts';
 import {
   Approval,
@@ -12,6 +11,7 @@ import {
 } from '~/core/resources/approvals/approvals';
 import { useConsolidatedTransactions } from '~/core/resources/transactions/consolidatedTransactions';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction, TxHash } from '~/core/types/transactions';
@@ -325,19 +325,23 @@ export const Approvals = () => {
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency } = useCurrentCurrencyStore();
   const { chains } = useUserChains();
+
+  const supportedMainnetChainIds = useBackendNetworksStore((state) =>
+    state.getSupportedMainnetChainIds(),
+  );
+
   const [showRevokeSheet, setShowRevokeSheet] = useState(false);
   const [revokeApproval, setRevokeApproval] = useState<{
     approval: Approval | null;
     spender: ApprovalSpender | null;
   }>({ approval: null, spender: null });
-  const supportedMainnetIds = SUPPORTED_MAINNET_CHAINS.map((c: Chain) => c.id);
   const [sort, setSort] = useState<SortType>('recent');
   const [activeTab, setActiveTab] = useState<Tab>('tokens');
 
   const { data } = useConsolidatedTransactions({
     address: currentAddress,
     currency: currentCurrency,
-    userChainIds: supportedMainnetIds,
+    userChainIds: supportedMainnetChainIds,
   });
 
   const revokeTransactions = useMemo(

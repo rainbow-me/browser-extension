@@ -1,19 +1,17 @@
 import { Chain, degen, zora } from 'viem/chains';
 import create from 'zustand';
 
-import { ChainId } from '~/core/types/chains';
-import { persistOptions } from '~/core/utils/persistOptions';
-
-import { createStore } from '../internal/createStore';
-import { withSelectors } from '../internal/withSelectors';
-
+import { createStore } from '~/core/state/internal/createStore';
+import { withSelectors } from '~/core/state/internal/withSelectors';
 import {
   addCustomRPC,
   getInitialRainbowChains,
   mergeNewOfficiallySupportedChainsState,
   removeCustomRPC,
   replaceChainsWithInitial,
-} from './utils';
+} from '~/core/state/rainbowChains/utils';
+import { ChainId } from '~/core/types/chains';
+import { persistOptions } from '~/core/utils/persistOptions';
 
 export interface RainbowChain {
   activeRpcUrl: string;
@@ -22,7 +20,7 @@ export interface RainbowChain {
 
 export interface RainbowChainsState {
   rainbowChains: Record<number, RainbowChain>;
-  getActiveChain: ({ chainId }: { chainId: number }) => Chain | undefined;
+  getActiveChain: ({ chainId }: { chainId: ChainId }) => Chain | undefined;
   addCustomRPC: ({ chain }: { chain: Chain }) => boolean;
   updateCustomRPC: ({ chain }: { chain: Chain }) => void;
   setActiveRPC: ({

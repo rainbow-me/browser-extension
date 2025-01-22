@@ -17,7 +17,7 @@ import {
 import { Address } from 'viem';
 
 import { metadataPostClient } from '~/core/graphql';
-import { getChainGasUnits } from '~/core/references/chains';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { add } from '~/core/utils/numbers';
@@ -57,9 +57,11 @@ export const estimateSwapGasLimit = async ({
   requiresApprove?: boolean;
   quote: Quote;
 }): Promise<string> => {
+  const gasUnits = useBackendNetworksStore.getState().getChainGasUnits(chainId);
+
   const provider = getProvider({ chainId });
   if (!provider || !quote) {
-    return getChainGasUnits(chainId).basic.swap;
+    return gasUnits.basic.swap;
   }
 
   const isWrapNativeAsset = quote.swapType === SwapType.wrap;
@@ -68,8 +70,8 @@ export const estimateSwapGasLimit = async ({
   // Wrap / Unwrap Eth
   if (isWrapNativeAsset || isUnwrapNativeAsset) {
     const default_estimate = isWrapNativeAsset
-      ? getChainGasUnits(chainId).wrapped.wrap
-      : getChainGasUnits(chainId).wrapped.unwrap;
+      ? gasUnits.wrapped.wrap
+      : gasUnits.wrapped.unwrap;
     try {
       const gasLimit = await estimateGasWithPadding({
         transactionRequest: {
