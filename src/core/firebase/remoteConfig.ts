@@ -9,7 +9,7 @@ import {
 
 import { RainbowError, logger } from '~/logger';
 
-import { ChainName } from '../types/chains';
+import { ChainId } from '../types/chains';
 
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY_BX,
@@ -30,23 +30,18 @@ export interface RainbowConfig extends Record<string, any> {
   rewards_bridging_enabled: boolean;
   degen_mode: boolean;
   // SWAPS
-  default_slippage_bips: {
-    [ChainName.mainnet]: number;
-    [ChainName.optimism]: number;
-    [ChainName.polygon]: number;
-    [ChainName.arbitrum]: number;
-    [ChainName.base]: number;
-    [ChainName.zora]: number;
-    [ChainName.bsc]: number;
-    [ChainName.avalanche]: number;
-    [ChainName.blast]: number;
-    [ChainName.degen]: number;
-    [ChainName.apechain]: number;
-    [ChainName.ink]: number;
-  };
+  default_slippage_bips: Partial<Record<ChainId, number>>;
 }
 
-const DEFAULT_CONFIG = {
+const buildDefaultSlippage = () =>
+  Object.fromEntries(
+    Object.entries(ChainId).map(([chainId]) => [
+      chainId,
+      +chainId === 1 ? 100 : 200,
+    ]),
+  );
+
+export const DEFAULT_CONFIG = {
   // features
   send_enabled: true,
   swaps_enabled: true,
@@ -58,20 +53,7 @@ const DEFAULT_CONFIG = {
   rewards_bridging_enabled: true,
   degen_mode: false,
   // SWAPS
-  default_slippage_bips: {
-    arbitrum: 200,
-    mainnet: 100,
-    optimism: 200,
-    polygon: 200,
-    base: 200,
-    zora: 200,
-    bsc: 200,
-    avalanche: 200,
-    blast: 200,
-    degen: 200,
-    apechain: 200,
-    ink: 200,
-  },
+  default_slippage_bips: buildDefaultSlippage(),
 };
 
 // Initialize with defaults in case firebase doesn't respond
@@ -108,7 +90,7 @@ export const init = async () => {
         const realKey = key.replace('BX_', '');
         // Ignore non BX keys
         if (key.startsWith('BX_')) {
-          if (key === 'BX_default_slippage_bips') {
+          if (key === 'BX_default_slippage_bips_chainId') {
             config[realKey] = JSON.parse(
               entry.asString(),
             ) as RainbowConfig['default_slippage_bips'];
