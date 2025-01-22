@@ -1,4 +1,4 @@
-export const BACKEND_NETWORKS_QUERY = `
+const BACKEND_NETWORKS_QUERY = `
   query getNetworks($device: Device!, $includeTestnets: Boolean!) {
     networks(device: $device, includeTestnets: $includeTestnets) {
       id
@@ -80,3 +80,7 @@ export const BACKEND_NETWORKS_QUERY = `
     }
   }
 `;
+
+module.exports = {
+  BACKEND_NETWORKS_QUERY,
+};

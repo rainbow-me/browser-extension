@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
-const { BACKEND_NETWORKS_QUERY } = require('../src/core/state/backendNetworks/sharedQueries.js');
+const { BACKEND_NETWORKS_QUERY } = require('../src/core/resources/backendNetworks/sharedQueries');
 
 const fs = require('fs-extra');
 

@@ -1,5 +1,6 @@
-import { BACKEND_NETWORKS_QUERY } from '~/core/resources/backendNetworks/sharedQueries';
 import { BackendNetwork } from '~/core/types/chains';
+
+const { BACKEND_NETWORKS_QUERY } = require('./sharedQueries');
 
 export interface BackendNetworksResponse {
   networks: BackendNetwork[];

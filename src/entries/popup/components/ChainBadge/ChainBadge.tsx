@@ -1,18 +1,5 @@
 import { AddressZero } from '@ethersproject/constants';
 
-import ApeChainBadge from 'static/assets/badges/apechainBadge@3x.png';
-import ArbitrumBadge from 'static/assets/badges/arbitrumBadge@3x.png';
-import AvalancheBadge from 'static/assets/badges/avalancheBadge@3x.png';
-import BaseBadge from 'static/assets/badges/baseBadge@3x.png';
-import BlastBadge from 'static/assets/badges/blastBadge@3x.png';
-import BscBadge from 'static/assets/badges/bscBadge@3x.png';
-import DegenBadge from 'static/assets/badges/degenBadge@3x.png';
-import EthereumBadge from 'static/assets/badges/ethereumBadge@3x.png';
-import HardhatBadge from 'static/assets/badges/hardhatBadge@3x.png';
-import InkBadge from 'static/assets/badges/inkBadge@3x.png';
-import OptimismBadge from 'static/assets/badges/optimismBadge@3x.png';
-import PolygonBadge from 'static/assets/badges/polygonBadge@3x.png';
-import ZoraBadge from 'static/assets/badges/zoraBadge@3x.png';
 import { customChainIdsToAssetNames } from '~/core/references/assets';
 import { rainbowChainsStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
@@ -23,6 +10,7 @@ import { colors as emojiColors } from '~/entries/popup/utils/emojiAvatarBackgrou
 
 import { pseudoRandomArrayItemFromString } from '../../utils/pseudoRandomArrayItemFromString';
 import ExternalImage from '../ExternalImage/ExternalImage';
+import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
 
 const chainBadgeSize = {
   '60': 60,
@@ -41,41 +29,13 @@ export interface ChainIconProps {
   size: keyof typeof chainBadgeSize | number;
 }
 
-const networkBadges = {
-  [ChainId.mainnet]: EthereumBadge,
-  [ChainId.polygon]: PolygonBadge,
-  [ChainId.optimism]: OptimismBadge,
-  [ChainId.arbitrum]: ArbitrumBadge,
-  [ChainId.base]: BaseBadge,
-  [ChainId.zora]: ZoraBadge,
-  [ChainId.bsc]: BscBadge,
-  [ChainId.avalanche]: AvalancheBadge,
-  [ChainId.hardhat]: HardhatBadge,
-  [ChainId.hardhatOptimism]: HardhatBadge,
-  [ChainId.sepolia]: EthereumBadge,
-  [ChainId.holesky]: EthereumBadge,
-  [ChainId.optimismSepolia]: OptimismBadge,
-  [ChainId.bscTestnet]: BscBadge,
-  [ChainId.polygonAmoy]: PolygonBadge,
-  [ChainId.arbitrumSepolia]: ArbitrumBadge,
-  [ChainId.baseSepolia]: BaseBadge,
-  [ChainId.zoraSepolia]: ZoraBadge,
-  [ChainId.avalancheFuji]: AvalancheBadge,
-  [ChainId.blast]: BlastBadge,
-  [ChainId.blastSepolia]: BlastBadge,
-  [ChainId.degen]: DegenBadge,
-  [ChainId.apechain]: ApeChainBadge,
-  [ChainId.apechainCurtis]: ApeChainBadge,
-  [ChainId.ink]: InkBadge,
-  [ChainId.inkSepolia]: InkBadge,
-};
-
 const ChainBadge = ({
   chainId,
   shadow = false,
   size = '18',
 }: ChainIconProps) => {
   const { currentTheme } = useCurrentThemeStore();
+  const badgeUrls = useBackendNetworksStore(state => state.getChainsBadge());
 
   let boxShadow;
   if (shadow) {
@@ -87,7 +47,7 @@ const ChainBadge = ({
   const iconSize = typeof size === 'number' ? size : chainBadgeSize[size];
 
   if (
-    !Object.keys(networkBadges).includes(`${chainId}`) &&
+    !badgeUrls[chainId] &&
     !customChainIdsToAssetNames[chainId]
   ) {
     const chain = rainbowChainsStore.getState().getActiveChain({ chainId });
@@ -156,7 +116,7 @@ const ChainBadge = ({
         />
       ) : (
         <img
-          src={networkBadges[chainId]}
+          src={badgeUrls[chainId]}
           width={iconSize}
           height={iconSize}
           loading="lazy"
