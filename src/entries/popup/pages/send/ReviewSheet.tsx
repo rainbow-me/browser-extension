@@ -331,9 +331,9 @@ export const ReviewSheet = ({
     useExplainerSheetParams();
 
   const showL2Explainer = useCallback(() => {
-    if (!chain?.id || !isSideChain(chain?.id as ChainId)) return;
+    if (!chain?.id || !isSideChain(chain.id)) return;
     showExplainerSheet({
-      ...getSideChainExplainerParams(chain?.id as ChainId, hideExplainerSheet),
+      ...getSideChainExplainerParams(chain.id, hideExplainerSheet),
       show: true,
     });
   }, [chain?.id, hideExplainerSheet, showExplainerSheet]);
