@@ -80,7 +80,7 @@ let driver: WebDriver;
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 
-describe.runIf(browser !== 'firefox')('App interactions flow', () => {
+describe('App interactions flow', () => {
   beforeAll(async () => {
     driver = await initDriverWithOptions({
       browser,
@@ -222,9 +222,11 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
 
     // switch account
     await findElementByTestIdAndClick({ id: 'switch-wallet-menu', driver });
+    await delayTime('medium');
     await findElementByTestIdAndClick({ id: 'switch-wallet-item-2', driver });
     // switch network
     await findElementByTestIdAndClick({ id: 'switch-network-menu', driver });
+    await delayTime('medium');
     await findElementByTestIdAndClick({
       id: `switch-network-item-${ChainId.mainnet}`,
       driver,
