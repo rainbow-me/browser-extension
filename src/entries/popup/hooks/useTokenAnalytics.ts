@@ -43,7 +43,7 @@ export function useTokenAnalytics(tokens: ParsedUserAsset[], screen: Screen) {
       !_.isEqual(prevAnalyticsRef.current, analyticsCategories)
     ) {
       prevAnalyticsRef.current = analyticsCategories;
-      analytics.track(analytics.event.tokenMetadata, analyticsCategories);
+      analytics.track(analytics.event.samplesTokenList, analyticsCategories);
     }
   }, [analyticsCategories, screen]);
 }

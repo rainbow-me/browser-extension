@@ -188,6 +188,10 @@ export const event = {
    */
   revokeSubmitted: 'revoke.submitted',
   /**
+   * Called when token list metrics are sampled during list loading
+   */
+  samplesTokenList: 'samples.token_list',
+  /**
    * Called when a user enters the send flow
    */
   sendOpened: 'send.opened',
@@ -235,10 +239,6 @@ export const event = {
    * Called when the user views the token details screen
    */
   tokenDetailsViewed: 'token_details.viewed',
-  /**
-   * Called when the user loads a token list
-   */
-  tokenMetadata: 'token_metadata',
   /**
    * Called when a wallet is created/imported/watched or a hardware wallet is connected
    */
@@ -762,7 +762,6 @@ export type EventProperties = {
   [event.pointsRewardsViewed]: undefined;
   [event.pointsViewed]: undefined;
   [event.popupOpened]: undefined;
-  [event.settingsAnalyticsTrackingDisabled]: undefined;
   [event.revokeSubmitted]: {
     /**
      * Symbol of the asset being sent.
@@ -781,6 +780,29 @@ export type EventProperties = {
      */
     chainId: number;
   };
+  [event.samplesTokenList]: {
+    /**
+     * Entrypoint of the token list sampling
+     */
+    screen: 'wallet' | 'send' | 'swap';
+    /**
+     * Total number of tokens in wallet
+     */
+    totalTokens: number;
+    /**
+     * Number of tokens out of totalTokens without price data
+     */
+    noPrice: number;
+    /**
+     * Number of tokens out of totalTokens without an icon
+     */
+    noIcon: number;
+    /**
+     * Number of custom chain tokens out of totalTokens
+     */
+    custom: number;
+  };
+  [event.settingsAnalyticsTrackingDisabled]: undefined;
   [event.sendSubmitted]: {
     /**
      * Native amount of the asset being sent.
@@ -953,28 +975,6 @@ export type EventProperties = {
       iconUrl: boolean;
       price: boolean;
     };
-  };
-  [event.tokenMetadata]: {
-    /**
-     * Total number of tokens in wallet
-     */
-    totalTokens: number;
-    /**
-     * Number of tokens out of tokenTokens without price data
-     */
-    noPrice: number;
-    /**
-     * Number of tokens out of totalTokens without an icon
-     */
-    noIcon: number;
-    /**
-     * Number of custom chain tokens out of totalTokens
-     */
-    custom: number;
-    /**
-     * Entrypoint of the token metadata event
-     */
-    screen: 'wallet' | 'send' | 'swap';
   };
   [event.walletBackupQuizSubmitted]: {
     /**
