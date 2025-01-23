@@ -974,7 +974,7 @@ export type EventProperties = {
     /**
      * Entrypoint of the token metadata event
      */
-    entrypoint: 'home' | 'send' | 'swap';
+    screen: 'wallet' | 'send' | 'swap';
   };
   [event.walletBackupQuizSubmitted]: {
     /**

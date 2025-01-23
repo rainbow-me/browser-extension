@@ -5,18 +5,15 @@ import { analytics } from '~/analytics';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { isCustomChain } from '~/core/utils/chains';
 
-type Entrypoint = 'home' | 'send' | 'swap';
+type Screen = 'wallet' | 'send' | 'swap';
 
-export function useTokenAnalytics(
-  tokens: ParsedUserAsset[],
-  entrypoint: Entrypoint,
-) {
+export function useTokenAnalytics(tokens: ParsedUserAsset[], screen: Screen) {
   const prevAnalyticsRef = useRef<{
+    screen: Screen;
     totalTokens: number;
     noPrice: number;
     noIcon: number;
     custom: number;
-    entrypoint: Entrypoint;
   } | null>(null);
 
   const analyticsCategories = useMemo(() => {
@@ -31,13 +28,13 @@ export function useTokenAnalytics(
     ).length;
 
     return {
+      screen,
       totalTokens: tokens.length,
       noPrice,
       noIcon,
       custom,
-      entrypoint,
     } as const;
-  }, [tokens, entrypoint]);
+  }, [tokens, screen]);
 
   // only report if values have changed (reduces reporting with rerenders)
   useEffect(() => {
@@ -48,5 +45,5 @@ export function useTokenAnalytics(
       prevAnalyticsRef.current = analyticsCategories;
       analytics.track(analytics.event.tokenMetadata, analyticsCategories);
     }
-  }, [analyticsCategories, entrypoint]);
+  }, [analyticsCategories, screen]);
 }

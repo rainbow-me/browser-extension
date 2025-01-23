@@ -252,7 +252,7 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
   });
 
   useTokensShortcuts();
-  useTokenAnalytics(filteredAssets, 'home');
+  useTokenAnalytics(filteredAssets, 'wallet');
 
   useEffect(() => {
     assetsRowVirtualizer?.measure();
