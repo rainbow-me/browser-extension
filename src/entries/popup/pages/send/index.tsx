@@ -80,6 +80,7 @@ import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import usePrevious from '../../hooks/usePrevious';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { useTokenListSampling } from '../../hooks/useTokenListSampling';
 import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 import { clickHeaderRight } from '../../utils/clickHeader';
@@ -145,6 +146,7 @@ export function Send() {
     () => assets.filter((asset) => !isHidden(asset)),
     [assets, isHidden],
   );
+  useTokenListSampling(unhiddenAssets, 'send');
 
   const { nft, collections, nftSortMethod, setNftSortMethod, selectNft } =
     useSendUniqueAsset();

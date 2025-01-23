@@ -49,6 +49,7 @@ import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useSystemSpecificModifierKey } from '../../hooks/useSystemSpecificModifierKey';
+import { useTokenListSampling } from '../../hooks/useTokenListSampling';
 import { useTokenPressMouseEvents } from '../../hooks/useTokenPressMouseEvents';
 import { useTokensShortcuts } from '../../hooks/useTokensShortcuts';
 import { ROUTES } from '../../urls';
@@ -251,6 +252,7 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
   });
 
   useTokensShortcuts();
+  useTokenListSampling(filteredAssets, 'wallet');
 
   useEffect(() => {
     assetsRowVirtualizer?.measure();
