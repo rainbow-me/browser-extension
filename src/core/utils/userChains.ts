@@ -59,58 +59,6 @@ export const chainIdMap: Record<
   [ChainId.ink]: [ChainId.ink, inkSepolia.id],
 };
 
-// FIXME: This is a temporary solution to get the chain labels to not throw a lint error
-export const chainLabelMap: Record<
-  | ChainId.mainnet
-  | ChainId.optimism
-  | ChainId.polygon
-  | ChainId.base
-  | ChainId.bsc
-  | ChainId.zora
-  | ChainId.avalanche
-  | ChainId.blast
-  | ChainId.degen
-  | ChainId.apechain
-  | ChainId.ink,
-  string[]
-> = {
-  [ChainId.mainnet]: [
-    useBackendNetworksStore.getState().getChainsLabel()[sepolia.id],
-    useBackendNetworksStore.getState().getChainsLabel()[holesky.id],
-  ],
-  [ChainId.optimism]: [
-    useBackendNetworksStore.getState().getChainsLabel()[optimismSepolia.id],
-  ],
-  [ChainId.arbitrum]: [
-    useBackendNetworksStore.getState().getChainsLabel()[arbitrumSepolia.id],
-  ],
-  [ChainId.polygon]: [
-    useBackendNetworksStore.getState().getChainsLabel()[polygonAmoy.id],
-  ],
-  [ChainId.base]: [
-    useBackendNetworksStore.getState().getChainsLabel()[baseSepolia.id],
-  ],
-  [ChainId.bsc]: [
-    useBackendNetworksStore.getState().getChainsLabel()[bscTestnet.id],
-  ],
-  [ChainId.zora]: [
-    useBackendNetworksStore.getState().getChainsLabel()[zoraSepolia.id],
-  ],
-  [ChainId.avalanche]: [
-    useBackendNetworksStore.getState().getChainsLabel()[avalancheFuji.id],
-  ],
-  [ChainId.blast]: [
-    useBackendNetworksStore.getState().getChainsLabel()[blastSepolia.id],
-  ],
-  [ChainId.degen]: [],
-  [ChainId.apechain]: [
-    useBackendNetworksStore.getState().getChainsLabel()[curtis.id],
-  ],
-  [ChainId.ink]: [
-    useBackendNetworksStore.getState().getChainsLabel()[inkSepolia.id],
-  ],
-};
-
 export const sortNetworks = (order: ChainId[], chains: Chain[]) => {
   const allChainsOrder = order
     ?.map((chainId) => chainIdMap[chainId] || [chainId])

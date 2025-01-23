@@ -7,6 +7,7 @@ import {
   fetchBackendNetworks,
 } from '~/core/resources/backendNetworks/backendNetworks';
 import { transformBackendNetworksToChains } from '~/core/state/backendNetworks/utils';
+import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { createQueryStore } from '~/core/state/internal/createQueryStore';
 import {
   BackendNetwork,
@@ -17,7 +18,6 @@ import {
 } from '~/core/types/chains';
 import { GasSpeed } from '~/core/types/gas';
 
-const IS_TEST = process.env.IS_TESTING === 'true';
 const INITIAL_BACKEND_NETWORKS = buildTimeNetworks;
 const DEFAULT_PRIVATE_MEMPOOL_TIMEOUT = 2 * 60 * 1_000;
 const LOCAL_CHAINS: Chain[] = [
@@ -71,28 +71,43 @@ export interface BackendNetworksState {
 }
 
 let lastNetworks: BackendNetworksResponse | null = null;
+let lastTestnetMode: boolean | null = null;
 
 function createSelector<T>(
-  selectorFn: (networks: BackendNetworksResponse, transformed: Chain[]) => T,
+  selectorFn: (
+    networks: BackendNetworksResponse,
+    transformed: Chain[],
+    testnetMode: boolean,
+  ) => T,
 ): () => T {
   const uninitialized = Symbol();
   let cachedResult: T | typeof uninitialized = uninitialized;
   let memoizedFn:
-    | ((networks: BackendNetworksResponse, transformed: Chain[]) => T)
+    | ((
+        networks: BackendNetworksResponse,
+        transformed: Chain[],
+        testnetMode: boolean,
+      ) => T)
     | null = null;
 
   return () => {
     const { backendChains, backendNetworks } =
       useBackendNetworksStore.getState();
+    const { testnetMode } = useTestnetModeStore.getState();
 
-    if (cachedResult !== uninitialized && lastNetworks === backendNetworks) {
+    if (
+      cachedResult !== uninitialized &&
+      lastNetworks === backendNetworks &&
+      lastTestnetMode === testnetMode
+    ) {
       return cachedResult;
     }
 
     if (lastNetworks !== backendNetworks) lastNetworks = backendNetworks;
+    if (lastTestnetMode !== testnetMode) lastTestnetMode = testnetMode;
     if (!memoizedFn) memoizedFn = selectorFn;
 
-    cachedResult = memoizedFn(backendNetworks, backendChains);
+    cachedResult = memoizedFn(backendNetworks, backendChains, testnetMode);
     return cachedResult;
   };
 }
@@ -160,21 +175,23 @@ export const useBackendNetworksStore = createQueryStore<
     ),
     backendNetworks: INITIAL_BACKEND_NETWORKS,
 
-    getSupportedChains: createSelector((_, transformed) => {
-      return IS_TEST ? [...transformed, ...LOCAL_CHAINS] : transformed;
+    getSupportedChains: createSelector((_, transformed, testnetMode) => {
+      return testnetMode ? [...transformed, ...LOCAL_CHAINS] : transformed;
     }),
 
-    getSortedSupportedChainIds: createSelector((_, transformed) => {
-      const allChains = IS_TEST
-        ? [...transformed, ...LOCAL_CHAINS]
-        : transformed;
-      return allChains
-        .sort((a, b) => a.name.localeCompare(b.name))
-        .map((c) => c.id);
-    }),
+    getSortedSupportedChainIds: createSelector(
+      (_, transformed, testnetMode) => {
+        const allChains = testnetMode
+          ? [...transformed, ...LOCAL_CHAINS]
+          : transformed;
+        return allChains
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map((c) => c.id);
+      },
+    ),
 
-    getDefaultChains: createSelector((_, transformed) => {
-      const allChains = IS_TEST
+    getDefaultChains: createSelector((_, transformed, testnetMode) => {
+      const allChains = testnetMode
         ? [...transformed, ...LOCAL_CHAINS]
         : transformed;
       return allChains.reduce(
@@ -186,28 +203,30 @@ export const useBackendNetworksStore = createQueryStore<
       );
     }),
 
-    getSupportedChainIds: createSelector((_, transformed) => {
-      const allChains = IS_TEST
+    getSupportedChainIds: createSelector((_, transformed, testnetMode) => {
+      const allChains = testnetMode
         ? [...transformed, ...LOCAL_CHAINS]
         : transformed;
       return allChains.map((chain) => chain.id);
     }),
 
-    getSupportedMainnetChains: createSelector((_, transformed) => {
-      const allChains = IS_TEST
+    getSupportedMainnetChains: createSelector((_, transformed, testnetMode) => {
+      const allChains = testnetMode
         ? [...transformed, ...LOCAL_CHAINS]
         : transformed;
       return allChains.filter((chain) => !chain.testnet);
     }),
 
-    getSupportedMainnetChainIds: createSelector((_, transformed) => {
-      const allChains = IS_TEST
-        ? [...transformed, ...LOCAL_CHAINS]
-        : transformed;
-      return allChains
-        .filter((chain) => !chain.testnet)
-        .map((chain) => chain.id);
-    }),
+    getSupportedMainnetChainIds: createSelector(
+      (_, transformed, testnetMode) => {
+        const allChains = testnetMode
+          ? [...transformed, ...LOCAL_CHAINS]
+          : transformed;
+        return allChains
+          .filter((chain) => !chain.testnet)
+          .map((chain) => chain.id);
+      },
+    ),
 
     getNeedsL1SecurityFeeChains: createSelector((networks) =>
       networks.networks
