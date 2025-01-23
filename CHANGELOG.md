@@ -177,7 +177,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
-- dApps can now leverage the `wallet_revokePermissions` RPC call to disconnect from Rainbow programatically. When disconnecting from a dApp, the wallet will now remember your preference on the next visit.  #1575
+- dApps can now leverage the `wallet_revokePermissions` RPC call to disconnect from Rainbow programmatically. When disconnecting from a dApp, the wallet will now remember your preference on the next visit.  #1575
 
 ### Fixed
 
