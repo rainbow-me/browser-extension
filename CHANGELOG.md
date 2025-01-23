@@ -1362,7 +1362,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Fixed React implementation issue with symbols that caused some console warnings in Settings #736
 - Error handling for Trezor SDK initialization #770
 - Improved Trezor integration logging to get error visibility #771 #765
-- Improved Meterology integration to prevent bad gas data crashes #731
+- Improved Meteorology integration to prevent bad gas data crashes #731
 
 ## [v1.1.17](https://github.com/rainbow-me/browser-extension/releases/tag/v1.1.17)
 
