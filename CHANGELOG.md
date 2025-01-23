@@ -110,7 +110,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - More reliable gas estimates for supported networks #1603
 - Improved jittery Swap quote refreshes while adjusting input values and reviewing a swap #1625
 - Improved gas estimation padding for Swap quotes to reduce "out of gas" errors #1626
-- Reduced unecessary approvals for Wrappedd ETH unwrapping on L2s #1608
+- Reduced unnecessary approvals for Wrappedd ETH unwrapping on L2s #1608
 - Resolved an issue with token selection scrolling in the Send flow #1630
 - No longer displaying route preferences for Bridges in Bridge Settings #1624
 - Rounding large numbers for Swap pairs while reviewing a swap #1612
