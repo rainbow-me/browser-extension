@@ -7,7 +7,10 @@ import { isCustomChain } from '~/core/utils/chains';
 
 type Screen = 'wallet' | 'send' | 'swap';
 
-export function useTokenAnalytics(tokens: ParsedUserAsset[], screen: Screen) {
+export function useTokenListSampling(
+  tokens: ParsedUserAsset[],
+  screen: Screen,
+) {
   const prevAnalyticsRef = useRef<{
     screen: Screen;
     totalTokens: number;

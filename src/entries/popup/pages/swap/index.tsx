@@ -67,7 +67,7 @@ import {
 import { useBrowser } from '../../hooks/useBrowser';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
-import { useTokenAnalytics } from '../../hooks/useTokenAnalytics';
+import { useTokenListSampling } from '../../hooks/useTokenListSampling';
 import {
   TranslationContext,
   useTranslationContext,
@@ -444,7 +444,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     () => assetsToSell.filter((asset) => !isHidden(asset)),
     [assetsToSell, isHidden],
   );
-  useTokenAnalytics(unhiddenAssetsToSell, 'swap');
+  useTokenListSampling(unhiddenAssetsToSell, 'swap');
 
   const highestEth = useMemo(() => {
     const eths = unhiddenAssetsToSell.filter((asset) => asset.symbol === 'ETH');
