@@ -58,6 +58,7 @@ export const estimateSwapGasLimit = async ({
   quote: Quote;
 }): Promise<string> => {
   const provider = getProvider({ chainId });
+
   if (!provider || !quote) {
     return getChainGasUnits(chainId).basic.swap;
   }

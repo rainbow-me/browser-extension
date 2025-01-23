@@ -297,8 +297,7 @@ export const ReviewSheet = ({
     [chain?.id],
   );
 
-  const chainName =
-    chainsLabel[asset?.chainId || ChainId.mainnet] || chain?.name;
+  const chainName = chainsLabel[asset?.chainId || chain?.id || ChainId.mainnet];
 
   const isToWalletOwner = useMemo(
     () =>
@@ -332,12 +331,12 @@ export const ReviewSheet = ({
     useExplainerSheetParams();
 
   const showL2Explainer = useCallback(() => {
-    if (!asset?.chainId || !isSideChain(asset.chainId)) return;
+    if (!chain?.id || !isSideChain(chain.id)) return;
     showExplainerSheet({
-      ...getSideChainExplainerParams(asset.chainId, hideExplainerSheet),
+      ...getSideChainExplainerParams(chain.id, hideExplainerSheet),
       show: true,
     });
-  }, [asset?.chainId, hideExplainerSheet, showExplainerSheet]);
+  }, [chain?.id, hideExplainerSheet, showExplainerSheet]);
 
   useEffect(() => {
     if (prevShow && !show) {
@@ -496,7 +495,7 @@ export const ReviewSheet = ({
 
                                 <Box>
                                   <EditContactDropdown
-                                    chainId={asset?.chainId}
+                                    chainId={chain?.id}
                                     toAddress={toAddress}
                                     closeReview={onCancel}
                                     onEdit={onSaveContactAction}
@@ -564,7 +563,7 @@ export const ReviewSheet = ({
                   <Inline alignVertical="center" alignHorizontal="justify">
                     <Inline alignVertical="center" space="8px" wrap={false}>
                       <ChainBadge
-                        chainId={asset?.chainId || ChainId.mainnet}
+                        chainId={chain?.id || ChainId.mainnet}
                         size="16"
                       />
                       <Text size="12pt" weight="bold" color="labelSecondary">

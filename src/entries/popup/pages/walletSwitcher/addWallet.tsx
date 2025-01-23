@@ -35,7 +35,7 @@ const AddWallet = () => {
   };
 
   const onAddHardwareWallet = () => {
-    if (featureFlags.hw_wallets_enabled) {
+    if (!featureFlags.hw_wallets_enabled) {
       triggerAlert({ text: i18n.t('alert.coming_soon') });
       return;
     }
