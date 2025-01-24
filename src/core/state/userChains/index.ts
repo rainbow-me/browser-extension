@@ -52,10 +52,10 @@ const initialChains = () => {
 };
 
 const initialUserChainsOrder = () => {
-  const supportedMainnetChainIds = useBackendNetworksStore
+  const sortedSupportedChainIds = useBackendNetworksStore
     .getState()
-    .getSupportedMainnetChainIds();
-  return supportedMainnetChainIds;
+    .getSortedSupportedChainIds();
+  return sortedSupportedChainIds;
 };
 
 export const userChainsStore = createStore<UserChainsState>(
