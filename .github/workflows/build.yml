@@ -310,7 +310,7 @@ jobs:
         if: steps.ChromeOpE2ESend.outcome == 'failure'
         run: exit 1
   chrome-e2e-dappInteractions:
-    runs-on: dapp-interactions-runner-bx
+    runs-on: beefy-runner-bx
     timeout-minutes: 25
     needs: [build]
     env:
