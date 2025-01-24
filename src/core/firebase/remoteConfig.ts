@@ -59,18 +59,18 @@ const DEFAULT_CONFIG = {
   degen_mode: false,
   // SWAPS
   default_slippage_bips: {
-    arbitrum: 200,
+    arbitrum: 500,
     mainnet: 100,
-    optimism: 200,
+    optimism: 500,
     polygon: 200,
-    base: 200,
-    zora: 200,
+    base: 500,
+    zora: 500,
     bsc: 200,
-    avalanche: 200,
-    blast: 200,
-    degen: 200,
-    apechain: 200,
-    ink: 200,
+    avalanche: 500,
+    blast: 500,
+    degen: 500,
+    apechain: 500,
+    ink: 500,
   },
 };
 
