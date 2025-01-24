@@ -802,9 +802,10 @@ it('should be able to go to review a swap', async () => {
     driver,
   });
 
-  await delay(10_000);
-
+  await delay(5_000);
   toSellInputEthSelected.clear();
+  toSellInputEthSelected.clear();
+  await delay(5_000);
   toSellInputEthSelected.sendKeys('1');
   await findElementByTestIdAndClick({
     id: 'swap-confirmation-button-ready',

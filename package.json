@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.5.77",
+  "version": "1.5.79",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -57,7 +57,7 @@
     "// Build and zip": "",
     "bundle": "yarn build && yarn zip",
     "// Runs tests": "",
-    "anvil": "anvil --fork-url $(./scripts/get-rpc-url.sh mainnet) --fork-block-number 21574102",
+    "anvil": "anvil --fork-url $(./scripts/get-rpc-url.sh mainnet) --fork-block-number 21574102 --block-base-fee-per-gas 5000000000 --block-gas-limit 30000000",
     "anvil:optimism": "anvil --fork-url $(./scripts/get-rpc-url.sh optimism)",
     "anvil:kill": "lsof -i :8545|tail -n +2|awk '{print $2}'|xargs -r kill -s SIGINT",
     "test": "./scripts/unit-tests.sh",
