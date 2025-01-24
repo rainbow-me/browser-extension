@@ -23,6 +23,10 @@ export const event = {
    */
   bridgeSubmitted: 'bridge.submitted',
   /**
+   * Tracks when the extension popup is opened via keyboard shortcut (Alt+Shift+R)
+   */
+  browserCommandTriggered: 'browser_command_triggered',
+  /**
    * Called when a commandK action is executed
    */
   commandKActionExecuted: 'commandK.actionExecuted',
@@ -137,10 +141,6 @@ export const event = {
    * Called when the dapps hits the rate limit per second or minute.
    */
   dappProviderRateLimit: 'dapp.provider.rate_limit',
-  /**
-   * Tracks when the extension popup is opened via keyboard shortcut (Alt+Shift+R)
-   */
-  extensionOpenViaShortcut: 'extension.open.shortcut',
   /**
    * Called when keyboard navigation is triggered
    */
@@ -682,7 +682,12 @@ export type EventProperties = {
      */
     requests: number;
   };
-  [event.extensionOpenViaShortcut]: undefined;
+  [event.browserCommandTriggered]: {
+    /**
+     * The command that was triggered
+     */
+    command: 'launched';
+  };
   [event.keyboardNavigationTriggered]: {
     /**
      * The key pressed to navigate

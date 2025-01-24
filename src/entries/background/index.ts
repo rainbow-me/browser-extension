@@ -1,5 +1,4 @@
 import { uuid4 } from '@sentry/utils';
-import type { Browser } from 'webextension-polyfill';
 
 import { analytics } from '~/analytics';
 import { initFCM } from '~/core/firebase/fcm';
@@ -19,26 +18,6 @@ import { handleSetupInpage } from './handlers/handleSetupInpage';
 import { handleTabAndWindowUpdates } from './handlers/handleTabAndWindowUpdates';
 import { handleWallets } from './handlers/handleWallets';
 require('../../core/utils/lockdown');
-
-declare const browser: Browser;
-
-const browserType = process.env.BROWSER;
-
-const browserAPI = (() => {
-  switch (browserType) {
-    case 'firefox':
-      return {
-        commands: browser.commands,
-        openPopup: () => browser.browserAction.openPopup(),
-      };
-    case 'chrome':
-    default:
-      return {
-        commands: chrome.commands,
-        openPopup: () => chrome.action.openPopup(),
-      };
-  }
-})();
 
 initializeSentry('background');
 localStorageRecycler();
@@ -63,9 +42,15 @@ popupMessenger.reply('rainbow_updateWagmiClient', async () => {
   updateWagmiConfig(rainbowChains);
 });
 
-browserAPI.commands.onCommand.addListener((command: string) => {
+// firefox maps chrome > browser, but it does still use
+// `browserAction` for manifest v2 & v3. in v3 chrome uses `action`
+const openPopup = () => (chrome.action || chrome.browserAction).openPopup();
+
+chrome.commands.onCommand.addListener((command) => {
   if (command === 'open_rainbow') {
-    browserAPI.openPopup();
-    analytics.track(analytics.event.extensionOpenViaShortcut);
+    openPopup();
+    analytics.track(analytics.event.browserCommandTriggered, {
+      command: 'launched',
+    });
   }
 });
