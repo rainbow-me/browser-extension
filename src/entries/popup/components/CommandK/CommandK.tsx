@@ -1,5 +1,4 @@
 import { AnimatePresence, motion, useAnimation } from 'framer-motion';
-import { debounce } from 'lodash';
 import React, { useEffect, useRef } from 'react';
 
 import { analytics } from '~/analytics';
@@ -268,33 +267,50 @@ export const CommandKInput = React.memo(function CommandKInput({
   setSkipBackAnimation,
 }: CommandKInputProps) {
   const { currentTheme } = useCurrentThemeStore();
-  const [lastLoggedValue, setLastLoggedValue] = React.useState('');
-  const debouncedLogRef = React.useRef<ReturnType<typeof debounce>>();
-  const hasLoggedLatestRef = useRef(false);
+  const lastSearchRef = useRef(searchQuery);
 
-  // debounce the input value to log to analytics to reduce useless analytics requests
+  // Track search when component unmounts if there was a search
   useEffect(() => {
-    debouncedLogRef.current = debounce((value: string) => {
-      if (value !== lastLoggedValue && value.trim()) {
+    return () => {
+      if (lastSearchRef.current.trim()) {
         analytics.track(event.searchQuery, {
-          query: value,
-          queryLength: value.length,
+          query: lastSearchRef.current,
+          queryLength: lastSearchRef.current.length,
           location: 'commandk',
         });
         console.log('analytics: ', {
-          query: value,
-          queryLength: value.length,
-          location: 'commandK',
+          query: lastSearchRef.current,
+          queryLength: lastSearchRef.current.length,
+          location: 'commandk',
         });
-        setLastLoggedValue(value);
-        hasLoggedLatestRef.current = true;
       }
-    }, 1000);
-
-    return () => {
-      debouncedLogRef.current?.cancel();
     };
-  }, [lastLoggedValue]);
+  }, []);
+
+  // Update last search ref when search changes
+  useEffect(() => {
+    lastSearchRef.current = searchQuery;
+  }, [searchQuery]);
+
+  const trackSearchAndExecute = React.useCallback(
+    (command: SearchItem | null) => {
+      // Track search if there was one when executing a command
+      if (searchQuery.trim()) {
+        analytics.track(event.searchQuery, {
+          query: searchQuery,
+          queryLength: searchQuery.length,
+          location: 'commandk',
+        });
+        console.log('analytics: ', {
+          query: searchQuery,
+          queryLength: searchQuery.length,
+          location: 'commandk',
+        });
+      }
+      handleExecuteCommand(command);
+    },
+    [searchQuery, handleExecuteCommand],
+  );
 
   const onSearchQueryChange = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -308,7 +324,6 @@ export const CommandKInput = React.memo(function CommandKInput({
         top: 0,
         behavior: SCROLL_TO_BEHAVIOR,
       });
-      debouncedLogRef.current?.(updatedSearchQuery);
     },
     [
       didScrollOrNavigate,
@@ -322,7 +337,7 @@ export const CommandKInput = React.memo(function CommandKInput({
   useKeyboardNavigation(
     didScrollOrNavigate,
     filteredCommands,
-    handleExecuteCommand,
+    trackSearchAndExecute,
     listRef,
     selectedCommand,
     selectedCommandIndex,

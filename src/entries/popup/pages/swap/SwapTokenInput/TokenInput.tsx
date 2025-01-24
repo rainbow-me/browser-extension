@@ -1,11 +1,9 @@
-import { debounce } from 'lodash';
 import React, {
   ChangeEvent,
   ReactElement,
   useCallback,
   useEffect,
   useImperativeHandle,
-  useRef,
   useState,
 } from 'react';
 
@@ -121,8 +119,6 @@ export const TokenInput = React.forwardRef<
   forwardedRef,
 ) {
   const [dropdownVisible, setDropdownVisible] = useState(false);
-  const [lastLoggedValue, setLastLoggedValue] = useState('');
-  const debouncedLogRef = useRef<ReturnType<typeof debounce>>();
 
   const prevDropdownVisible = usePrevious(dropdownVisible);
 
@@ -144,7 +140,19 @@ export const TokenInput = React.forwardRef<
     setDropdownVisible(false);
     setAssetFilter('');
     setTimeout(() => inputRef?.current?.focus(), 300);
-  }, [inputRef, onDropdownOpen, setAssetFilter]);
+    if (assetFilter.trim()) {
+      analytics.track(event.searchQuery, {
+        query: assetFilter,
+        queryLength: assetFilter.length,
+        location: 'swap',
+      });
+      console.log('analytics: ', {
+        query: assetFilter,
+        queryLength: assetFilter.length,
+        location: 'swap',
+      });
+    }
+  }, [assetFilter, inputRef, onDropdownOpen, setAssetFilter]);
 
   const onClose = useCallback(() => {
     selectAsset(null);
@@ -153,33 +161,10 @@ export const TokenInput = React.forwardRef<
     dropdownVisible ? inputRef?.current?.blur() : inputRef?.current?.focus();
   }, [dropdownVisible, inputRef, onDropdownOpen, selectAsset]);
 
-  useEffect(() => {
-    debouncedLogRef.current = debounce((value: string) => {
-      if (value !== lastLoggedValue && value.trim()) {
-        analytics.track(event.searchQuery, {
-          query: value,
-          queryLength: value.length,
-          location: 'swap',
-        });
-        console.log('analytics: ', {
-          query: value,
-          queryLength: value.length,
-          location: 'swap',
-        });
-        setLastLoggedValue(value);
-      }
-    }, 1000);
-
-    return () => {
-      debouncedLogRef.current?.cancel();
-    };
-  }, [lastLoggedValue]);
-
   const onInputValueChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const newValue = e.target.value;
       setAssetFilter(newValue);
-      debouncedLogRef.current?.(newValue);
     },
     [setAssetFilter],
   );

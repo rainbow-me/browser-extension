@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion';
-import { debounce } from 'lodash';
 import React, {
   ChangeEvent,
   Dispatch,
@@ -250,8 +249,6 @@ export const SendTokenInput = React.forwardRef<
   const [inputValue, setInputValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const { testnetMode } = useTestnetModeStore();
-  const [lastLoggedValue, setLastLoggedValue] = useState('');
-  const debouncedLogRef = useRef<ReturnType<typeof debounce>>();
 
   useImperativeHandle(forwardedRef, () => ({
     blur: () => {
@@ -269,36 +266,27 @@ export const SendTokenInput = React.forwardRef<
     dropdownVisible ? inputRef?.current?.blur() : inputRef?.current?.focus();
   }, [dropdownVisible, inputRef]);
 
-  // debounce the input value to log to analytics to reduce useless analytics requests
-  useEffect(() => {
-    debouncedLogRef.current = debounce((value: string) => {
-      if (value !== lastLoggedValue && value.trim()) {
-        analytics.track(event.searchQuery, {
-          query: value,
-          queryLength: value.length,
-          location: 'send',
-        });
-        console.log('analytics: ', {
-          query: value,
-          queryLength: value.length,
-          location: 'send',
-        });
-        setLastLoggedValue(value);
-      }
-    }, 1000);
-
-    return () => {
-      debouncedLogRef.current?.cancel();
-    };
-  }, [lastLoggedValue]);
-
   const onSelectAsset = useCallback(
     (address: AddressOrEth | '', chainId: ChainId) => {
       selectNft();
       selectAssetAddressAndChain(address, chainId);
       setDropdownVisible(false);
+      console.log('inputValue: ', inputValue);
+      console.log('inputValue.trim(): ', inputValue.trim());
+      if (inputValue.trim()) {
+        console.log('analytics: ', {
+          query: inputValue,
+          queryLength: inputValue.length,
+          location: 'send',
+        });
+        analytics.track(event.searchQuery, {
+          query: inputValue,
+          queryLength: inputValue.length,
+          location: 'send',
+        });
+      }
     },
-    [selectAssetAddressAndChain, selectNft],
+    [inputValue, selectAssetAddressAndChain, selectNft],
   );
 
   const onSelectNft = useCallback(
@@ -306,15 +294,27 @@ export const SendTokenInput = React.forwardRef<
       selectNft(nft);
       selectAssetAddressAndChain('', ChainId.mainnet);
       setDropdownVisible(false);
+      console.log('inputValue: ', inputValue);
+      console.log('inputValue.trim(): ', inputValue.trim());
+      if (inputValue.trim()) {
+        console.log('analytics: ', {
+          query: inputValue,
+          queryLength: inputValue.length,
+          location: 'send',
+        });
+        analytics.track(event.searchQuery, {
+          query: inputValue,
+          queryLength: inputValue.length,
+          location: 'send',
+        });
+      }
     },
-    [selectAssetAddressAndChain, selectNft],
+    [inputValue, selectAssetAddressAndChain, selectNft],
   );
 
   const onInputValueChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      const newValue = e.target.value;
       setInputValue(e.target.value);
-      debouncedLogRef.current?.(newValue);
     },
     [setInputValue],
   );
