@@ -11,6 +11,8 @@ import { colors as emojiColors } from '~/entries/popup/utils/emojiAvatarBackgrou
 import { pseudoRandomArrayItemFromString } from '../../utils/pseudoRandomArrayItemFromString';
 import ExternalImage from '../ExternalImage/ExternalImage';
 import { useBackendNetworksStore } from '~/core/state/backendNetworks/backendNetworks';
+import { useCustomNetworksStore } from '~/core/state/backendNetworks/customNetworks';
+import { useMemo } from 'react';
 
 const chainBadgeSize = {
   '60': 60,
@@ -35,7 +37,13 @@ const ChainBadge = ({
   size = '18',
 }: ChainIconProps) => {
   const { currentTheme } = useCurrentThemeStore();
-  const badgeUrls = useBackendNetworksStore(state => state.getChainsBadge());
+  const backendNetworksBadgeUrls = useBackendNetworksStore(state => state.getChainsBadge());
+  const customChainsBadgeUrls = useCustomNetworksStore(state => state.getChainsBadge());
+        
+  const badgeUrls = useMemo(() => ({
+    ...backendNetworksBadgeUrls,
+    ...customChainsBadgeUrls,
+  }), [backendNetworksBadgeUrls, customChainsBadgeUrls]);
 
   let boxShadow;
   if (shadow) {

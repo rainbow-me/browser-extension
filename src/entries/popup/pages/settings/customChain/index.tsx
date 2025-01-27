@@ -30,7 +30,7 @@ export function SettingsCustomChain() {
     state: { chain },
   }: { state: { chain?: Chain } } = useLocation();
   const navigate = useRainbowNavigate();
-  const customChains = useCustomNetworksStore(state => state.customChains);
+  const customChains = useCustomNetworksStore(state => state.getSortedSupportedChains());
 
   const { developerToolsEnabled } = useDeveloperToolsEnabledStore();
   const knownNetworksAutocomplete = useMemo(
@@ -40,7 +40,7 @@ export function SettingsCustomChain() {
           developerToolsEnabled ? true : !network.testnet,
       ),
     }),
-    [developerToolsEnabled],
+    [developerToolsEnabled, customChains],
   );
 
   const addCustomRPC = useRainbowChainsStore.use.addCustomRPC();
@@ -191,7 +191,7 @@ export function SettingsCustomChain() {
 
   const validateAddCustomRpc = useCallback(() => {
     if (customChains.some((n) => n.rpcUrls.default.http[0] === customRPC.rpcUrl)) {
-      return true; // if customRPC is a customNetwork, we can skip validation
+      return true; // if customRPC is a verified customChain, we can skip validation
     }
 
     const validRpcUrl = validateRpcUrl();
@@ -220,6 +220,7 @@ export function SettingsCustomChain() {
     validateName,
     validateSymbol,
     customRPC,
+    customChains
   ]);
 
   const validateCustomRpcMetadata = useCallback(() => {
@@ -337,7 +338,7 @@ export function SettingsCustomChain() {
       }
       open && setOpen(false);
     },
-    [open],
+    [open, customChains],
   );
 
   return (

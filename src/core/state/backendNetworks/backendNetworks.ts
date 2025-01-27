@@ -7,7 +7,7 @@ import {
   fetchNetworks,
 } from '~/core/resources/backendNetworks/backendNetworks';
 
-import { transformBackendNetworksToChains } from '~/core/state/backendNetworks/utils';
+import { transformBackendNetworksToChains, toChainId } from '~/core/state/backendNetworks/utils';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { createQueryStore } from '~/core/state/internal/createQueryStore';
 import {
@@ -434,9 +434,6 @@ export const useBackendNetworksStore = createQueryStore<
  *  Some of these defaults, e.g. gas speeds, should eventually come from the backend.
  * ------------------------------------------------------------------------------------*/
 
-function toChainId(id: string): ChainId {
-  return parseInt(id, 10);
-}
 
 function getDefaultGasSpeeds(chainId: ChainId): GasSpeed[] {
   switch (chainId) {

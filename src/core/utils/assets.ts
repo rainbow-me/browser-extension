@@ -35,6 +35,8 @@ import {
   convertRawAmountToDecimalFormat,
 } from './numbers';
 import { isLowerCaseMatch } from './strings';
+import { useBackendNetworksStore } from '../state/backendNetworks/backendNetworks';
+import { useCustomNetworksStore } from '../state/backendNetworks/customNetworks';
 
 const get24HrChange = (priceData?: ZerionAssetPrice) => {
   const twentyFourHrChange = priceData?.relative_change_24h;
@@ -52,7 +54,9 @@ export const getCustomChainIconUrl = (
     'https://raw.githubusercontent.com/rainbow-me/assets/master/blockchains/';
 
   if (address === AddressZero || address === ETH_ADDRESS) {
-    return `${baseUrl}${customChainIdsToAssetNames[chainId]}/info/logo.png`;
+    const badgeUrls = useBackendNetworksStore.getState().getChainsBadge();
+    const customBadgeUrls = useCustomNetworksStore.getState().getChainsBadge();
+    return badgeUrls[chainId] || customBadgeUrls[chainId] || `${baseUrl}${customChainIdsToAssetNames[chainId]}/info/logo.png`;
   } else {
     return `${baseUrl}${customChainIdsToAssetNames[chainId]}/assets/${address}/logo.png`;
   }

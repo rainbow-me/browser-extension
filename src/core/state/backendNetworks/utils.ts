@@ -1,7 +1,8 @@
 import { Chain } from 'viem';
 import { mainnet } from 'viem/chains';
+import { i18n } from '~/core/languages';
 
-import { BackendNetwork, CustomNetwork } from '~/core/types/chains';
+import { BackendNetwork, ChainId, CustomNetwork } from '~/core/types/chains';
 
 const IS_DEV = process.env.IS_DEV === 'true';
 const RPC_PROXY_API_KEY = process.env.RPC_PROXY_API_KEY;
@@ -66,11 +67,12 @@ export const transformCustomNetworkToBackendNetwork = (customNetwork: CustomNetw
       badgeURL: customNetwork.iconURL,
     },
     testnet: customNetwork.testnet.isTestnet,
+    testnetFaucet: customNetwork.testnet.FaucetURL,
     internal: false,
     opStack: undefined,
     defaultExplorer: {
       url: customNetwork.defaultExplorerURL,
-      label: undefined,
+      label: i18n.t('settings.custom_rpc.block_explorer_url'),
       transactionURL: undefined,
       tokenURL: undefined,
     },
@@ -92,3 +94,7 @@ export const transformCustomNetworkToBackendNetwork = (customNetwork: CustomNetw
     enabledServices: undefined,
   };
 };
+
+export function toChainId(id: string): ChainId {
+  return parseInt(id, 10);
+}

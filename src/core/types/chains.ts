@@ -1,26 +1,22 @@
 import { Chain } from 'viem/chains';
 import * as chains from 'viem/chains';
 
-const HARDHAT_CHAIN_ID = 1337;
-const HARDHAT_OP_CHAIN_ID = 1338;
-
 export const chainHardhat: Chain = {
-  id: HARDHAT_CHAIN_ID,
+  id: 1337,
   name: 'Hardhat',
   nativeCurrency: {
     decimals: 18,
-    name: 'Hardhat',
+    name: 'Hardhat ETH',
     symbol: 'ETH',
   },
   rpcUrls: {
-    public: { http: ['http://127.0.0.1:8545'] },
     default: { http: ['http://127.0.0.1:8545'] },
   },
   testnet: true,
 };
 
 export const chainHardhatOptimism: Chain = {
-  id: HARDHAT_OP_CHAIN_ID,
+  id: 1338,
   name: 'Hardhat OP',
   nativeCurrency: {
     decimals: 18,
@@ -28,7 +24,6 @@ export const chainHardhatOptimism: Chain = {
     symbol: 'ETH',
   },
   rpcUrls: {
-    public: { http: ['http://127.0.0.1:8545'] },
     default: { http: ['http://127.0.0.1:8545'] },
   },
   testnet: true,
@@ -280,6 +275,7 @@ export interface BackendNetwork<B extends boolean = false> {
     badgeURL: string;
   };
   testnet: boolean;
+  testnetFaucet?: string;
   internal: boolean;
   opStack: B extends true ? boolean | undefined : boolean;
   defaultExplorer: {
