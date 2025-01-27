@@ -3,7 +3,6 @@ import { create } from 'zustand';
 import { createStore } from '~/core/state/internal/createStore';
 import { withSelectors } from '~/core/state/internal/withSelectors';
 import { ChainId } from '~/core/types/chains';
-import { persistOptions } from '~/core/utils/persistOptions';
 
 import { RainbowChain, useRainbowChainsStore } from '../rainbowChains';
 import { useUserChainsStore } from '../userChains';
@@ -129,34 +128,36 @@ export const chainPreferencesStore = createStore<ChainPreferencesState>(
     },
   }),
   {
-    persist: persistOptions({
-      name: 'chainPreferences',
+    persist: {
       version: 1,
-      migrations: [
-        function migrateUserChainsAndRainbowChains(
-          state: ChainPreferencesState,
-        ) {
-          const newState = { ...state };
+      name: 'chainPreferences',
+      merge: (persistedState, currentState) => {
+        if (!persistedState) {
           // If chainOrder is empty, populate it from userChainsStore
-          if (newState.chainOrder.length === 0) {
-            newState.chainOrder = useUserChainsStore.use.userChainsOrder();
+          if (currentState.chainOrder.length === 0) {
+            const userChainsOrder = useUserChainsStore.use.userChainsOrder();
+
+            currentState.chainOrder = userChainsOrder;
           }
 
           // If enabledChains is empty, populate it from userChainsStore
-          if (Object.keys(newState.enabledChains).length === 0) {
-            newState.enabledChains = { ...useUserChainsStore.use.userChains() };
+          if (Object.keys(currentState.enabledChains).length === 0) {
+            currentState.enabledChains = {
+              ...useUserChainsStore.use.userChains(),
+            };
           }
 
           // If customRPCs is empty, populate it from rainbowChainsStore
-          if (Object.keys(newState.customRPCs).length === 0) {
+          if (Object.keys(currentState.customRPCs).length === 0) {
             const rainbowChains = useRainbowChainsStore.use.rainbowChains();
-            newState.customRPCs = convertChainsToCustomRPCs(rainbowChains);
+            currentState.customRPCs = convertChainsToCustomRPCs(rainbowChains);
           }
 
-          return newState;
-        },
-      ],
-    }),
+          return currentState;
+        }
+        return { ...currentState, ...persistedState };
+      },
+    },
   },
 );
 
