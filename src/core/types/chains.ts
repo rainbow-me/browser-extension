@@ -272,27 +272,39 @@ export interface BackendNetworkServices {
   };
 }
 
-export interface BackendNetwork {
+export interface BackendNetwork<B extends boolean = false> {
   id: string;
   name: string;
-  label: string;
+  label: B extends true ? string | undefined : string;
   icons: {
     badgeURL: string;
   };
   testnet: boolean;
   internal: boolean;
-  opStack: boolean;
+  opStack: B extends true ? boolean | undefined : boolean;
   defaultExplorer: {
     url: string;
-    label: string;
-    transactionURL: string;
-    tokenURL: string;
+    label: B extends true ? string | undefined : string;
+    transactionURL: B extends true ? string | undefined : string;
+    tokenURL: B extends true ? string | undefined : string;
   };
   defaultRPC: {
     enabledDevices: string[];
     url: string;
   };
-  gasUnits: {
+  gasUnits: B extends true ? {
+    basic: {
+      approval: string;
+      swap: string;
+      swapPermit: string;
+      eoaTransfer: string;
+      tokenTransfer: string;
+    };
+    wrapped: {
+      wrap: string;
+      unwrap: string;
+    };
+  } | undefined : {
     basic: {
       approval: string;
       swap: string;
@@ -306,6 +318,33 @@ export interface BackendNetwork {
     };
   };
   nativeAsset: {
+    address: B extends true ? string | undefined : string;
+    name: B extends true ? string | undefined : string;
+    symbol: string;
+    decimals: number;
+    iconURL: string;
+    colors: B extends true ? {
+      primary: string;
+      fallback: string;
+      shadow: string;
+    } | undefined : {
+      primary: string;
+      fallback: string;
+      shadow: string;
+    };
+  };
+  nativeWrappedAsset: B extends true ? {
+    address: string;
+    name: string;
+    symbol: string;
+    decimals: number;
+    iconURL: string;
+    colors: {
+      primary: string;
+      fallback: string;
+      shadow: string;
+    };
+  } | undefined : {
     address: string;
     name: string;
     symbol: string;
@@ -317,18 +356,24 @@ export interface BackendNetwork {
       shadow: string;
     };
   };
-  nativeWrappedAsset: {
-    address: string;
-    name: string;
+  privateMempoolTimeout?: B extends true ? number | undefined : number;
+  enabledServices: B extends true ? BackendNetworkServices | undefined : BackendNetworkServices;
+}
+
+export interface CustomNetwork {
+  id: number;
+  name: string;
+  iconURL: string;
+  nativeAsset: {
     symbol: string;
     decimals: number;
     iconURL: string;
-    colors: {
-      primary: string;
-      fallback: string;
-      shadow: string;
-    };
   };
-  privateMempoolTimeout?: number;
-  enabledServices: BackendNetworkServices;
+  defaultRPCURL: string;
+  defaultExplorerURL: string;
+  testnet: {
+    FaucetURL: string;
+    isTestnet: boolean;
+    mainnetChainID: number;
+  };
 }

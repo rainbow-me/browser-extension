@@ -4,8 +4,9 @@ import { type Chain, avalancheFuji, curtis, inkSepolia } from 'viem/chains';
 import buildTimeNetworks from 'static/data/networks.json';
 import {
   BackendNetworksResponse,
-  fetchBackendNetworks,
+  fetchNetworks,
 } from '~/core/resources/backendNetworks/backendNetworks';
+
 import { transformBackendNetworksToChains } from '~/core/state/backendNetworks/utils';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { createQueryStore } from '~/core/state/internal/createQueryStore';
@@ -18,10 +19,9 @@ import {
 } from '~/core/types/chains';
 import { GasSpeed } from '~/core/types/gas';
 
-import { useRainbowChainsStore } from '../rainbowChains';
-import { useUserChainsStore } from '../userChains';
+const { BACKEND_NETWORKS_QUERY } = require('../../resources/backendNetworks/sharedQueries');
 
-const INITIAL_BACKEND_NETWORKS = buildTimeNetworks;
+const INITIAL_BACKEND_NETWORKS = buildTimeNetworks.backendNetworks;
 const DEFAULT_PRIVATE_MEMPOOL_TIMEOUT = 2 * 60 * 1_000;
 const LOCAL_CHAINS: Chain[] = [
   avalancheFuji,
@@ -153,93 +153,16 @@ function createParameterizedSelector<T, Args extends unknown[]>(
   };
 }
 
-/**
- * Get the diff of userChains and backend networks and append any missing new chains to userChains.
- * Also update the userChainsOrder to put the new chains at the end of the array.
- *
- * @param networks - backend driven networks data
- * @returns void
- */
-const handleUpdateUserChains = (networks: BackendNetwork[]) => {
-  const { userChains, addUserChain } = useUserChainsStore.getState();
-
-  const newChains = networks.filter((network) => !userChains[+network.id]);
-  // if there are no new chains, then we don't need to update anything
-  if (!newChains.length) return;
-
-  newChains.forEach((chain) => addUserChain({ chainId: +chain.id }));
-};
-
-const handleDiffAndMergeRainbowChains = (networks: BackendNetwork[]) => {
-  const { rainbowChains, addCustomRPC, updateCustomRPC, setActiveRPC } =
-    useRainbowChainsStore.getState();
-
-  for (const newChain of networks) {
-    const existingChain = rainbowChains[+newChain.id];
-
-    const chain: Chain = {
-      id: +newChain.id,
-      nativeCurrency: {
-        name: newChain.nativeAsset.name,
-        symbol: newChain.nativeAsset.symbol,
-        decimals: newChain.nativeAsset.decimals,
-      },
-      name: newChain.name,
-      rpcUrls: {
-        default: {
-          http: [newChain.defaultRPC.url],
-        },
-        public: {
-          http: [newChain.defaultRPC.url],
-        },
-      },
-      blockExplorers: {
-        default: {
-          url: newChain.defaultExplorer.url,
-          name: newChain.defaultExplorer.label,
-        },
-      },
-    };
-
-    // if we don't have an existing chain, then we can simply add a new rainbow chain
-    if (
-      !existingChain ||
-      (existingChain &&
-        !existingChain.chains.find(
-          (chain) => chain.rpcUrls.default.http[0] === newChain.defaultRPC.url,
-        ))
-    ) {
-      addCustomRPC({ chain });
-      setActiveRPC({
-        chainId: +chain.id,
-        rpcUrl: chain.rpcUrls.default.http[0],
-      });
-      return;
-    }
-
-    // if we have an existing chain, then we update the existing chain
-    // and set the active RPC url to the backend network provided RPC url
-    updateCustomRPC({ chain });
-    setActiveRPC({ chainId: +chain.id, rpcUrl: chain.rpcUrls.default.http[0] });
-    return;
-  }
-};
-
 export const useBackendNetworksStore = createQueryStore<
   BackendNetworksResponse,
   never,
   BackendNetworksState
 >(
   {
-    fetcher: fetchBackendNetworks,
+    fetcher: () => fetchNetworks(BACKEND_NETWORKS_QUERY),
     setData: ({ data, set }) => {
       set((state) => {
         if (isEqual(state.backendNetworks, data)) return state;
-
-        void Promise.all([
-          handleUpdateUserChains(data.networks),
-          handleDiffAndMergeRainbowChains(data.networks),
-        ]);
 
         return {
           backendChains: transformBackendNetworksToChains(data.networks),

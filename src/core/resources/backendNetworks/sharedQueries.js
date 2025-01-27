@@ -81,6 +81,29 @@ const BACKEND_NETWORKS_QUERY = `
   }
 `;
 
+const CUSTOM_NETWORKS_QUERY = `
+  query GetCustomNetworks($includeTestnets: Boolean) {
+    customNetworks(includeTestnets: $includeTestnets) {
+      id
+      name
+      iconURL
+      nativeAsset {
+        symbol
+        decimals
+        iconURL
+      }
+      defaultRPCURL
+      defaultExplorerURL
+      testnet {
+        FaucetURL
+        isTestnet
+        mainnetChainID
+      }
+    }
+  }
+`;
+
 module.exports = {
   BACKEND_NETWORKS_QUERY,
+  CUSTOM_NETWORKS_QUERY,
 };

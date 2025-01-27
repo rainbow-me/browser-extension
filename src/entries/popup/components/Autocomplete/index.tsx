@@ -23,15 +23,10 @@ import {
 } from '~/design-system/styles/designTokens';
 
 import ExternalImage from '../ExternalImage/ExternalImage';
-
-export interface AutocompleteItem {
-  name: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  networkInfo: customNetworkInfo;
-}
+import { Chain } from 'viem';
 
 export interface AutocompleteData {
-  [key: string]: AutocompleteItem[];
+  [title: string]: Chain[];
 }
 
 export interface AutocompleteProps {
@@ -166,10 +161,7 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
                     >
                       <Box>
                         {data[key].map(
-                          (item: {
-                            name: string;
-                            networkInfo: customNetworkInfo;
-                          }) => (
+                          (item: Chain) => (
                             <Command.Item
                               className={selectedItem}
                               key={`${key}_${item.name}`}
@@ -188,7 +180,7 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
                                   customFallbackSymbol="globe"
                                   height={20}
                                   src={getCustomChainIconUrl(
-                                    item.networkInfo.chainId,
+                                    item.id,
                                     AddressZero,
                                   )}
                                   width={20}
