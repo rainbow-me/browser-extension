@@ -36,6 +36,8 @@ export enum SimpleHashChain {
   Godwoken = 'godwoken',
   GodwokenTestnet = 'godwoken-testnet',
   Gnosis = 'gnosis',
+  Gravity = 'gravity',
+  GravitySepolia = 'gravity-sepolia',
   ImmutableZkEvm = 'immutable-zkevm',
   ImmutableZkEvmTestnet = 'immutable-zkevm-testnet',
   LensSepolia = 'lens-sepolia',

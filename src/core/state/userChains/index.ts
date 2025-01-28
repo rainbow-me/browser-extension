@@ -185,8 +185,8 @@ export const userChainsStore = createStore<UserChainsState>(
           const newChains = [
             ChainId.sanko,
             ChainId.sankoTestnet,
-            ChainId.gnosis,
-            ChainId.gnosisChiado,
+            ChainId.gravity,
+            ChainId.gravitySepolia,
           ];
           return {
             ...state,

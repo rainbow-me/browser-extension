@@ -219,12 +219,14 @@ export function useSearchCurrencyLists({
       fromChainId,
     });
 
-  const { data: gnosisVerifiedAssets, isLoading: gnosisVerifiedAssetsLoading } =
-    useTokenSearch({
-      chainId: ChainId.gnosis,
-      ...VERIFIED_ASSETS_PAYLOAD,
-      fromChainId,
-    });
+  const {
+    data: gravityVerifiedAssets,
+    isLoading: gravityVerifiedAssetsLoading,
+  } = useTokenSearch({
+    chainId: ChainId.gravity,
+    ...VERIFIED_ASSETS_PAYLOAD,
+    fromChainId,
+  });
 
   // current search
   const { data: targetVerifiedAssets, isLoading: targetVerifiedAssetsLoading } =
@@ -370,9 +372,9 @@ export function useSearchCurrencyLists({
         assets: sankoVerifiedAssets,
         loading: sankoVerifiedAssetsLoading,
       },
-      [ChainId.gnosis]: {
-        assets: gnosisVerifiedAssets,
-        loading: gnosisVerifiedAssetsLoading,
+      [ChainId.gravity]: {
+        assets: gravityVerifiedAssets,
+        loading: gravityVerifiedAssetsLoading,
       },
     }),
     [
@@ -402,8 +404,8 @@ export function useSearchCurrencyLists({
       inkVerifiedAssetsLoading,
       sankoVerifiedAssets,
       sankoVerifiedAssetsLoading,
-      gnosisVerifiedAssets,
-      gnosisVerifiedAssetsLoading,
+      gravityVerifiedAssets,
+      gravityVerifiedAssetsLoading,
     ],
   );
 

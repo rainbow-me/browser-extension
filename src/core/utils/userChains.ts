@@ -44,7 +44,7 @@ export const chainIdMap: Record<
   | ChainId.apechain
   | ChainId.ink
   | ChainId.sanko
-  | ChainId.gnosis,
+  | ChainId.gravity,
   ChainId[]
 > = {
   [ChainId.mainnet]: [mainnet.id, sepolia.id, holesky.id],
@@ -60,7 +60,7 @@ export const chainIdMap: Record<
   [ChainId.apechain]: [apeChain.id, curtis.id],
   [ChainId.ink]: [ChainId.ink, inkSepolia.id],
   [ChainId.sanko]: [ChainId.sanko, ChainId.sankoTestnet],
-  [ChainId.gnosis]: [ChainId.gnosis, ChainId.gnosisChiado],
+  [ChainId.gravity]: [ChainId.gravity, ChainId.gravitySepolia],
 };
 
 export const chainLabelMap: Record<
@@ -74,7 +74,9 @@ export const chainLabelMap: Record<
   | ChainId.blast
   | ChainId.degen
   | ChainId.apechain
-  | ChainId.ink,
+  | ChainId.ink
+  | ChainId.sanko
+  | ChainId.gravity,
   string[]
 > = {
   [ChainId.mainnet]: [chainsLabel[sepolia.id], chainsLabel[holesky.id]],
@@ -93,9 +95,9 @@ export const chainLabelMap: Record<
     chainsLabel[ChainId.sanko],
     chainsLabel[ChainId.sankoTestnet],
   ],
-  [ChainId.gnosis]: [
-    chainsLabel[ChainId.gnosis],
-    chainsLabel[ChainId.gnosisChiado],
+  [ChainId.gravity]: [
+    chainsLabel[ChainId.gravity],
+    chainsLabel[ChainId.gravitySepolia],
   ],
 };
 

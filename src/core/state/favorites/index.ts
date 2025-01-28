@@ -22,7 +22,7 @@ import {
   ETH_INK_ADDRESS,
   ETH_OPTIMISM_ADDRESS,
   ETH_ZORA_ADDRESS,
-  GNO_GNOSIS_ADDRESS,
+  G_GRAVITY_ADDRESS,
   OP_ADDRESS,
   POL_POLYGON_ADDRESS,
   SOCKS_ADDRESS,
@@ -33,7 +33,7 @@ import {
   USDC_AVALANCHE_ADDRESS,
   USDC_BASE_ADDRESS,
   USDC_BSC_ADDRESS,
-  USDC_GNOSIS_ADDRESS,
+  USDC_GRAVITY_ADDRESS,
   USDC_OPTIMISM_ADDRESS,
   USDC_POLYGON_ADDRESS,
   USDC_SANKO_ADDRESS,
@@ -42,13 +42,13 @@ import {
   WBTC_ADDRESS,
   WBTC_ARBITRUM_ADDRESS,
   WBTC_AVALANCHE_ADDRESS,
-  WBTC_GNOSIS_ADDRESS,
+  WBTC_GRAVITY_ADDRESS,
   WBTC_OPTIMISM_ADDRESS,
   WBTC_POLYGON_ADDRESS,
   WDMT_SANKO_ADDRESS,
   WETH_BASE_ADDRESS,
   WETH_BLAST_ADDRESS,
-  WETH_GNOSIS_ADDRESS,
+  WETH_GRAVITY_ADDRESS,
   WETH_INK_ADDRESS,
   WETH_OPTIMISM_ADDRESS,
   WETH_POLYGON_ADDRESS,
@@ -134,11 +134,11 @@ const defaultFavorites = {
     USDC_SANKO_ADDRESS,
     WETH_SANKO_ADDRESS,
   ],
-  [ChainId.gnosis]: [
-    GNO_GNOSIS_ADDRESS,
-    WETH_GNOSIS_ADDRESS,
-    USDC_GNOSIS_ADDRESS,
-    WBTC_GNOSIS_ADDRESS,
+  [ChainId.gravity]: [
+    G_GRAVITY_ADDRESS,
+    WETH_GRAVITY_ADDRESS,
+    USDC_GRAVITY_ADDRESS,
+    WBTC_GRAVITY_ADDRESS,
   ],
 } satisfies FavoritesState['favorites'];
 
@@ -202,11 +202,11 @@ export const favoritesStore = createStore<FavoritesState>(
           mergeNewOfficiallySupportedChainsState(state, [ChainId.apechain]),
         // version 6 added ink
         (state) => mergeNewOfficiallySupportedChainsState(state, [ChainId.ink]),
-        // version 7 added sanko & gnosis
+        // version 7 added sanko & gravity
         (state) =>
           mergeNewOfficiallySupportedChainsState(state, [
             ChainId.sanko,
-            ChainId.gnosis,
+            ChainId.gravity,
           ]),
       ],
     }),

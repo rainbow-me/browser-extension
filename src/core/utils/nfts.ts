@@ -34,6 +34,7 @@ export const simpleHashSupportedChainNames = [
   ChainName.forma,
   ChainName.gnosis,
   ChainName.godwoken,
+  ChainName.gravity,
   ChainName.immutableZkEvm,
   ChainName.linea,
   ChainName.loot,
@@ -83,6 +84,7 @@ export function getUniqueTokenType(contractAddress: string): UniqueTokenType {
   }
 }
 
+// TODO: Replace this with simplehash API call to available chains and verify via `eip155_network_id` https://docs.simplehash.com/reference/chains
 /**
  * Returns a `ChainName` from a `SimpleHashChain`. If an invalid value is
  * forcably passed in, it will throw.
@@ -126,7 +128,6 @@ export function getNetworkFromSimpleHashChain(
     case SimpleHashChain.Degen:
       return ChainName.degen;
     case SimpleHashChain.Ethereum:
-    case SimpleHashChain.Gnosis:
       return ChainName.mainnet;
     case SimpleHashChain.EthereumSepolia:
       return ChainName.sepolia;
@@ -136,6 +137,12 @@ export function getNetworkFromSimpleHashChain(
       return ChainName.forma;
     case SimpleHashChain.Godwoken:
       return ChainName.godwoken;
+    case SimpleHashChain.Gnosis:
+      return ChainName.gnosis;
+    case SimpleHashChain.Gravity:
+      return ChainName.gravity;
+    case SimpleHashChain.GravitySepolia:
+      return ChainName.gravitySepolia;
     case SimpleHashChain.ImmutableZkEvm:
       return ChainName.immutableZkEvm;
     case SimpleHashChain.Linea:

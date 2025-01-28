@@ -43,7 +43,7 @@ export interface RainbowConfig extends Record<string, any> {
     [ChainName.degen]: number;
     [ChainName.apechain]: number;
     [ChainName.ink]: number;
-    [ChainName.gnosis]: number;
+    [ChainName.gravity]: number;
     [ChainName.sanko]: number;
   };
 }
@@ -73,7 +73,7 @@ const DEFAULT_CONFIG = {
     degen: 500,
     apechain: 500,
     ink: 500,
-    gnosis: 500,
+    gravity: 500,
     sanko: 500,
   },
 };

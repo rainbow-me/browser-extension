@@ -8,7 +8,7 @@ import BlastBadge from 'static/assets/badges/blastBadge@3x.png';
 import BscBadge from 'static/assets/badges/bscBadge@3x.png';
 import DegenBadge from 'static/assets/badges/degenBadge@3x.png';
 import EthereumBadge from 'static/assets/badges/ethereumBadge@3x.png';
-import GnosisBadge from 'static/assets/badges/gnosisBadge@3x.png';
+import GravityBadge from 'static/assets/badges/gravityBadge@3x.png';
 import HardhatBadge from 'static/assets/badges/hardhatBadge@3x.png';
 import InkBadge from 'static/assets/badges/inkBadge@3x.png';
 import OptimismBadge from 'static/assets/badges/optimismBadge@3x.png';
@@ -52,8 +52,8 @@ const networkBadges = {
   [ChainId.zora]: ZoraBadge,
   [ChainId.bsc]: BscBadge,
   [ChainId.avalanche]: AvalancheBadge,
-  [ChainId.gnosis]: GnosisBadge,
-  [ChainId.gnosisChiado]: GnosisBadge,
+  [ChainId.gravity]: GravityBadge,
+  [ChainId.gravitySepolia]: GravityBadge,
   [ChainId.hardhat]: HardhatBadge,
   [ChainId.hardhatOptimism]: HardhatBadge,
   [ChainId.sanko]: SankoBadge,

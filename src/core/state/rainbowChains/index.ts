@@ -231,8 +231,8 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
           return mergeNewOfficiallySupportedChainsState(rnbwChainState, [
             ChainId.sanko,
             ChainId.sankoTestnet,
-            ChainId.gnosis,
-            ChainId.gnosisChiado,
+            ChainId.gravity,
+            ChainId.gravitySepolia,
           ]);
         },
       ],

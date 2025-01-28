@@ -1692,10 +1692,10 @@
           "description_1": "Sanko is a Layer 2 network that runs on top of Arbitrum.",
           "description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, Sanko has its own security and consensus mechanisms that differ from Ethereum."
         },
-        "gnosis": {
-          "title": "What's Gnosis?",
-          "description_1": "Gnosis is a Layer 2 network that runs on top of Ethereum.",
-          "description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, Gnosis has its own security and consensus mechanisms that differ from Ethereum."
+        "gravity": {
+          "title": "What's Gravity?",
+          "description_1": "Gravity is a Layer-1 blockchain designed for mass adoption and an omnichain future.",
+          "description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, Gravity has its own security and consensus mechanisms that differ from Ethereum."
         },
         "custom_network": {
           "title": "What's this Network?",

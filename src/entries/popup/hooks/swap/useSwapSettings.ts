@@ -20,7 +20,7 @@ export const DEFAULT_SLIPPAGE_BIPS = {
   [ChainId.apechain]: 500,
   [ChainId.ink]: 500,
   [ChainId.sanko]: 500,
-  [ChainId.gnosis]: 500,
+  [ChainId.gravity]: 500,
 };
 
 export const DEFAULT_SLIPPAGE = {
@@ -37,7 +37,7 @@ export const DEFAULT_SLIPPAGE = {
   [ChainId.apechain]: '5',
   [ChainId.ink]: '5',
   [ChainId.sanko]: '5',
-  [ChainId.gnosis]: '5',
+  [ChainId.gravity]: '5',
 };
 
 const slippageInBipsToString = (slippageInBips: number) =>
@@ -58,7 +58,7 @@ export const getDefaultSlippage = (chainId: ChainId) => {
     | ChainName.apechain
     | ChainName.ink
     | ChainName.sanko
-    | ChainName.gnosis;
+    | ChainName.gravity;
   return slippageInBipsToString(
     config.default_slippage_bips[chainName] || DEFAULT_SLIPPAGE_BIPS[chainId],
   );

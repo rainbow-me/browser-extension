@@ -30,7 +30,7 @@ export const getSideChainExplainerParams = (
     [ChainId.degen]: 'degen',
     [ChainId.apechain]: 'apechain',
     [ChainId.sanko]: 'sanko',
-    [ChainId.gnosis]: 'gnosis',
+    [ChainId.gravity]: 'gravity',
     // add new chains here with unique i18n explainer keys
   };
 
