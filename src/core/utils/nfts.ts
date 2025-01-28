@@ -177,6 +177,8 @@ export function getNetworkFromSimpleHashChain(
       return ChainName.rari;
     case SimpleHashChain.Sanko:
       return ChainName.sanko;
+    case SimpleHashChain.SankoTestnet:
+      return ChainName.sankoTestnet;
     case SimpleHashChain.Scroll:
       return ChainName.scroll;
     case SimpleHashChain.Sei:

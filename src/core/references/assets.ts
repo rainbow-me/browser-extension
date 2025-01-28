@@ -168,7 +168,7 @@ export const customChainIdsToAssetNames: Record<ChainId, string> = {
   [rootstock.id]: 'rootstock',
   [rootstockTestnet.id]: 'rootstocktestnet',
   [sanko.id]: 'sanko',
-  1992: 'sankotestnet',
+  [ChainId.sankoTestnet]: 'sankotestnet',
   [scroll.id]: 'scroll',
   [scrollSepolia.id]: 'scrollsepolia',
   [shapeSepolia.id]: 'shapesepolia',

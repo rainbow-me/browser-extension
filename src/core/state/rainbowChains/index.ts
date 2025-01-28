@@ -225,7 +225,7 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
           ]);
         },
 
-        // version 12 added support for Sanko and Gnosis
+        // version 12 added support for Sanko and Gravity
         function v12(state: unknown) {
           const rnbwChainState = state as RainbowChainsState;
           return mergeNewOfficiallySupportedChainsState(rnbwChainState, [

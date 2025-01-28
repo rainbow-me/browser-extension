@@ -180,7 +180,7 @@ export const userChainsStore = createStore<UserChainsState>(
           };
         },
 
-        // v7 adds sanko and gnosis support
+        // v7 adds sanko and gravity support
         function v7(state: UserChainsState) {
           const newChains = [
             ChainId.sanko,

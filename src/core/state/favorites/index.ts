@@ -54,6 +54,7 @@ import {
   WETH_POLYGON_ADDRESS,
   WETH_SANKO_ADDRESS,
   WETH_ZORA_ADDRESS,
+  WG_GRAVITY_ADDRESS,
 } from '~/core/references';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -136,6 +137,7 @@ const defaultFavorites = {
   ],
   [ChainId.gravity]: [
     G_GRAVITY_ADDRESS,
+    WG_GRAVITY_ADDRESS,
     WETH_GRAVITY_ADDRESS,
     USDC_GRAVITY_ADDRESS,
     WBTC_GRAVITY_ADDRESS,

@@ -60,6 +60,7 @@ export enum SimpleHashChain {
   Rari = 'rari',
   RariTestnet = 'rari-testnet',
   Sanko = 'sanko',
+  SankoTestnet = 'sanko-testnet',
   Scroll = 'scroll',
   ScrollSepolia = 'scroll-sepolia',
   Sei = 'sei',
