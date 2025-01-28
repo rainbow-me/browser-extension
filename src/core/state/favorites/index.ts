@@ -14,6 +14,7 @@ import {
   DAI_OPTIMISM_ADDRESS,
   DAI_POLYGON_ADDRESS,
   DEGEN_DEGEN_ADDRESS,
+  DMT_SANKO_ADDRESS,
   ETH_ADDRESS,
   ETH_ARBITRUM_ADDRESS,
   ETH_BASE_ADDRESS,
@@ -21,6 +22,7 @@ import {
   ETH_INK_ADDRESS,
   ETH_OPTIMISM_ADDRESS,
   ETH_ZORA_ADDRESS,
+  GNO_GNOSIS_ADDRESS,
   OP_ADDRESS,
   POL_POLYGON_ADDRESS,
   SOCKS_ADDRESS,
@@ -31,20 +33,26 @@ import {
   USDC_AVALANCHE_ADDRESS,
   USDC_BASE_ADDRESS,
   USDC_BSC_ADDRESS,
+  USDC_GNOSIS_ADDRESS,
   USDC_OPTIMISM_ADDRESS,
   USDC_POLYGON_ADDRESS,
+  USDC_SANKO_ADDRESS,
   WAPE_APECHAIN_ADDRESS,
   WAVAX_AVALANCHE_ADDRESS,
   WBTC_ADDRESS,
   WBTC_ARBITRUM_ADDRESS,
   WBTC_AVALANCHE_ADDRESS,
+  WBTC_GNOSIS_ADDRESS,
   WBTC_OPTIMISM_ADDRESS,
   WBTC_POLYGON_ADDRESS,
+  WDMT_SANKO_ADDRESS,
   WETH_BASE_ADDRESS,
   WETH_BLAST_ADDRESS,
+  WETH_GNOSIS_ADDRESS,
   WETH_INK_ADDRESS,
   WETH_OPTIMISM_ADDRESS,
   WETH_POLYGON_ADDRESS,
+  WETH_SANKO_ADDRESS,
   WETH_ZORA_ADDRESS,
 } from '~/core/references';
 import { AddressOrEth } from '~/core/types/assets';
@@ -120,6 +128,18 @@ const defaultFavorites = {
     APEUSD_APECHAIN_ADDRESS,
   ],
   [ChainId.ink]: [ETH_INK_ADDRESS, WETH_INK_ADDRESS],
+  [ChainId.sanko]: [
+    DMT_SANKO_ADDRESS,
+    WDMT_SANKO_ADDRESS,
+    USDC_SANKO_ADDRESS,
+    WETH_SANKO_ADDRESS,
+  ],
+  [ChainId.gnosis]: [
+    GNO_GNOSIS_ADDRESS,
+    WETH_GNOSIS_ADDRESS,
+    USDC_GNOSIS_ADDRESS,
+    WBTC_GNOSIS_ADDRESS,
+  ],
 } satisfies FavoritesState['favorites'];
 
 const mergeNewOfficiallySupportedChainsState = (
@@ -164,7 +184,7 @@ export const favoritesStore = createStore<FavoritesState>(
   {
     persist: persistOptions({
       name: 'favorites',
-      version: 6,
+      version: 7,
       migrations: [
         // version 1 didn't need a migration
         (state: FavoritesState) => state,
@@ -182,6 +202,12 @@ export const favoritesStore = createStore<FavoritesState>(
           mergeNewOfficiallySupportedChainsState(state, [ChainId.apechain]),
         // version 6 added ink
         (state) => mergeNewOfficiallySupportedChainsState(state, [ChainId.ink]),
+        // version 7 added sanko & gnosis
+        (state) =>
+          mergeNewOfficiallySupportedChainsState(state, [
+            ChainId.sanko,
+            ChainId.gnosis,
+          ]),
       ],
     }),
   },

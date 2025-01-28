@@ -1,5 +1,6 @@
 import {
   Chain,
+  apeChain,
   arbitrum,
   arbitrumSepolia,
   avalanche,
@@ -41,7 +42,9 @@ export const chainIdMap: Record<
   | ChainId.blast
   | ChainId.degen
   | ChainId.apechain
-  | ChainId.ink,
+  | ChainId.ink
+  | ChainId.sanko
+  | ChainId.gnosis,
   ChainId[]
 > = {
   [ChainId.mainnet]: [mainnet.id, sepolia.id, holesky.id],
@@ -54,8 +57,10 @@ export const chainIdMap: Record<
   [ChainId.avalanche]: [avalanche.id, avalancheFuji.id],
   [ChainId.blast]: [blast.id, blastSepolia.id],
   [ChainId.degen]: [degen.id],
-  [ChainId.apechain]: [ChainId.apechain, curtis.id],
+  [ChainId.apechain]: [apeChain.id, curtis.id],
   [ChainId.ink]: [ChainId.ink, inkSepolia.id],
+  [ChainId.sanko]: [ChainId.sanko, ChainId.sankoTestnet],
+  [ChainId.gnosis]: [ChainId.gnosis, ChainId.gnosisChiado],
 };
 
 export const chainLabelMap: Record<
@@ -84,6 +89,14 @@ export const chainLabelMap: Record<
   [ChainId.degen]: [],
   [ChainId.apechain]: [chainsLabel[curtis.id]],
   [ChainId.ink]: [chainsLabel[inkSepolia.id]],
+  [ChainId.sanko]: [
+    chainsLabel[ChainId.sanko],
+    chainsLabel[ChainId.sankoTestnet],
+  ],
+  [ChainId.gnosis]: [
+    chainsLabel[ChainId.gnosis],
+    chainsLabel[ChainId.gnosisChiado],
+  ],
 };
 
 export const sortNetworks = (order: ChainId[], chains: Chain[]) => {

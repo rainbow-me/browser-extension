@@ -57,6 +57,7 @@ export enum SimpleHashChain {
   ProofOfPlayBoss = 'proof-of-play-boss',
   Rari = 'rari',
   RariTestnet = 'rari-testnet',
+  Sanko = 'sanko',
   Scroll = 'scroll',
   ScrollSepolia = 'scroll-sepolia',
   Sei = 'sei',

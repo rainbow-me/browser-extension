@@ -49,6 +49,10 @@ const ASSET_SOURCE = {
   [ChainId.apechainCurtis]: 'assets/badges/apechainBadge@3x.png',
   [ChainId.ink]: 'assets/badges/inkBadge@3x.png',
   [ChainId.inkSepolia]: 'assets/badges/inkBadge@3x.png',
+  [ChainId.sanko]: 'assets/badges/sankoBadge@3x.png',
+  [ChainId.sankoTestnet]: 'assets/badges/sankoBadge@3x.png',
+  [ChainId.gnosis]: 'assets/badges/gnosisBadge@3x.png',
+  [ChainId.gnosisChiado]: 'assets/badges/gnosisBadge@3x.png',
 };
 
 export enum IN_DAPP_NOTIFICATION_STATUS {

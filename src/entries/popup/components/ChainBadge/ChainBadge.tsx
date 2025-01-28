@@ -8,10 +8,12 @@ import BlastBadge from 'static/assets/badges/blastBadge@3x.png';
 import BscBadge from 'static/assets/badges/bscBadge@3x.png';
 import DegenBadge from 'static/assets/badges/degenBadge@3x.png';
 import EthereumBadge from 'static/assets/badges/ethereumBadge@3x.png';
+import GnosisBadge from 'static/assets/badges/gnosisBadge@3x.png';
 import HardhatBadge from 'static/assets/badges/hardhatBadge@3x.png';
 import InkBadge from 'static/assets/badges/inkBadge@3x.png';
 import OptimismBadge from 'static/assets/badges/optimismBadge@3x.png';
 import PolygonBadge from 'static/assets/badges/polygonBadge@3x.png';
+import SankoBadge from 'static/assets/badges/sankoBadge@3x.png';
 import ZoraBadge from 'static/assets/badges/zoraBadge@3x.png';
 import { customChainIdsToAssetNames } from '~/core/references/assets';
 import { rainbowChainsStore } from '~/core/state';
@@ -50,8 +52,12 @@ const networkBadges = {
   [ChainId.zora]: ZoraBadge,
   [ChainId.bsc]: BscBadge,
   [ChainId.avalanche]: AvalancheBadge,
+  [ChainId.gnosis]: GnosisBadge,
+  [ChainId.gnosisChiado]: GnosisBadge,
   [ChainId.hardhat]: HardhatBadge,
   [ChainId.hardhatOptimism]: HardhatBadge,
+  [ChainId.sanko]: SankoBadge,
+  [ChainId.sankoTestnet]: SankoBadge,
   [ChainId.sepolia]: EthereumBadge,
   [ChainId.holesky]: EthereumBadge,
   [ChainId.optimismSepolia]: OptimismBadge,

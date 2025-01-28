@@ -48,6 +48,7 @@ export const simpleHashSupportedChainNames = [
   ChainName.proofOfPlayApex,
   ChainName.proofOfPlayBoss,
   ChainName.rari,
+  ChainName.sanko,
   ChainName.scroll,
   ChainName.sei,
   ChainName.xai,
@@ -167,6 +168,8 @@ export function getNetworkFromSimpleHashChain(
       return ChainName.proofOfPlayBoss;
     case SimpleHashChain.Rari:
       return ChainName.rari;
+    case SimpleHashChain.Sanko:
+      return ChainName.sanko;
     case SimpleHashChain.Scroll:
       return ChainName.scroll;
     case SimpleHashChain.Sei:
