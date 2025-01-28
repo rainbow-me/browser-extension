@@ -1,9 +1,12 @@
 import { Address } from 'viem';
 import { expect, test } from 'vitest';
 
-import { DAI_ADDRESS, ETH_ADDRESS, OP_ADDRESS } from '~/core/references';
+import { ETH_ADDRESS } from '~/core/references';
 import { ChainId } from '~/core/types/chains';
 import { TEST_ADDRESS_1, TEST_ADDRESS_2 } from '~/test/utils';
+
+const DAI_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f';
+const OP_ADDRESS = '0x4200000000000000000000000000000000000042';
 
 import { staleBalancesStore } from '.';
 

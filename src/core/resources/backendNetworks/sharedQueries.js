@@ -77,6 +77,9 @@ const BACKEND_NETWORKS_QUERY = `
           enabled
         }
       }
+      favorites {
+        address
+      }
     }
   }
 `;

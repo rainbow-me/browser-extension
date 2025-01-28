@@ -92,6 +92,7 @@ export const transformCustomNetworkToBackendNetwork = (customNetwork: CustomNetw
     nativeWrappedAsset: undefined,
     privateMempoolTimeout: undefined,
     enabledServices: undefined,
+    favorites: [],
   };
 };
 

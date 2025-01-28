@@ -354,6 +354,9 @@ export interface BackendNetwork<B extends boolean = false> {
   };
   privateMempoolTimeout?: B extends true ? number | undefined : number;
   enabledServices: B extends true ? BackendNetworkServices | undefined : BackendNetworkServices;
+  favorites: {
+    address: string;
+  }[];
 }
 
 export interface CustomNetwork {

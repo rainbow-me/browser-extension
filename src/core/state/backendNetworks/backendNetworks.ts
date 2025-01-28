@@ -18,6 +18,7 @@ import {
   chainHardhatOptimism,
 } from '~/core/types/chains';
 import { GasSpeed } from '~/core/types/gas';
+import { AddressOrEth } from '~/core/types/assets';
 
 const { BACKEND_NETWORKS_QUERY } = require('../../resources/backendNetworks/sharedQueries');
 
@@ -54,6 +55,7 @@ export interface BackendNetworksState {
   getChainsPollingInterval: () => Record<ChainId, number>;
 
   getChainsSimplehashNetwork: () => Record<ChainId, string>;
+  getChainsFavorites: () => Record<ChainId, AddressOrEth[]>;
   filterChainIdsByService: (
     servicePath: (services: BackendNetworkServices) => boolean,
   ) => ChainId[];
@@ -330,6 +332,14 @@ export const useBackendNetworksStore = createQueryStore<
           return acc;
         },
         {} as Record<ChainId, string>,
+      ),
+    ),
+
+    getChainsFavorites: createSelector((networks) => networks.networks.reduce((acc, backendNetwork) => {
+      acc[toChainId(backendNetwork.id)] = backendNetwork.favorites.map(favorite => favorite.address as AddressOrEth);
+          return acc;
+        },
+        {} as Record<ChainId, AddressOrEth[]>,
       ),
     ),
 
