@@ -113,7 +113,7 @@ export const userChainsStore = createStore<UserChainsState>(
   {
     persist: persistOptions({
       name: 'userChains',
-      version: 6,
+      version: 7,
       migrations: [
         // previous naive migrations reset user custom networks and ordering
         function v1(state: UserChainsState) {
@@ -167,6 +167,26 @@ export const userChainsStore = createStore<UserChainsState>(
             ChainId.apechainCurtis,
             ChainId.ink,
             ChainId.inkSepolia,
+          ];
+          return {
+            ...state,
+            userChains: {
+              ...state.userChains,
+              ...Object.fromEntries(newChains.map((id) => [id, true])),
+            },
+            userChainsOrder: state.userChainsOrder.concat(
+              newChains.filter((id) => !state.userChainsOrder.includes(id)),
+            ),
+          };
+        },
+
+        // v7 adds sanko and gnosis support
+        function v7(state: UserChainsState) {
+          const newChains = [
+            ChainId.sanko,
+            ChainId.sankoTestnet,
+            ChainId.gnosis,
+            ChainId.gnosisChiado,
           ];
           return {
             ...state,
