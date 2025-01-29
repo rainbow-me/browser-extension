@@ -63,6 +63,8 @@ export const chainIdMap: Record<
   [ChainId.gravity]: [ChainId.gravity, ChainId.gravitySepolia],
 };
 
+// Used to display the chain label in the settings networks page
+// Only need to include testnets as 'Mainnet' is always pre-pended
 export const chainLabelMap: Record<
   | ChainId.mainnet
   | ChainId.optimism
@@ -91,14 +93,8 @@ export const chainLabelMap: Record<
   [ChainId.degen]: [],
   [ChainId.apechain]: [chainsLabel[curtis.id]],
   [ChainId.ink]: [chainsLabel[inkSepolia.id]],
-  [ChainId.sanko]: [
-    chainsLabel[ChainId.sanko],
-    chainsLabel[ChainId.sankoTestnet],
-  ],
-  [ChainId.gravity]: [
-    chainsLabel[ChainId.gravity],
-    chainsLabel[ChainId.gravitySepolia],
-  ],
+  [ChainId.sanko]: [chainsLabel[ChainId.sankoTestnet]],
+  [ChainId.gravity]: [chainsLabel[ChainId.gravitySepolia]],
 };
 
 export const sortNetworks = (order: ChainId[], chains: Chain[]) => {
