@@ -314,9 +314,12 @@ export const getCoingeckoUrl = ({
   address,
   mainnetAddress,
 }: Pick<ParsedUserAsset | SearchAsset, 'address' | 'mainnetAddress'>) => {
+  console.log(mainnetAddress, address, ETH_ADDRESS);
   if ([mainnetAddress, address].includes(ETH_ADDRESS))
     return `https://www.coingecko.com/en/coins/ethereum`;
-  return `https://www.coingecko.com/en/coins/${mainnetAddress || address}`;
+
+  const slug = (mainnetAddress || address).toLowerCase();
+  return `https://www.coingecko.com/en/coins/${slug}`;
 };
 
 function MoreOptions({

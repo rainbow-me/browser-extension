@@ -1,5 +1,7 @@
 import { Chain } from 'viem/chains';
 import * as chains from 'viem/chains';
+import { BackendNetworks, CustomNetworks } from '~/core/resources/backendNetworks/backendNetworks';
+import { RainbowChainAsset } from '../state/rainbowChainAssets';
 
 export const chainHardhat: Chain = {
   id: 1337,
@@ -246,133 +248,24 @@ export const chainIdToNameMapping: {
   [ChainId.zoraSepolia]: ChainName.zoraSepolia,
 };
 
-export interface BackendNetworkServices {
-  meteorology: {
-    enabled: boolean;
-  };
-  swap: {
-    enabled: boolean;
-  };
-  addys: {
-    approvals: boolean;
-    transactions: boolean;
-    assets: boolean;
-    positions: boolean;
-  };
-  tokenSearch: {
-    enabled: boolean;
-  };
-  nftProxy: {
-    enabled: boolean;
-  };
-}
-
-export interface BackendNetwork<B extends boolean = false> {
-  id: string;
-  name: string;
-  label: B extends true ? string | undefined : string;
-  icons: {
-    badgeURL: string;
-  };
-  testnet: boolean;
-  testnetFaucet?: string;
-  internal: boolean;
-  opStack: B extends true ? boolean | undefined : boolean;
-  defaultExplorer: {
-    url: string;
-    label: B extends true ? string | undefined : string;
-    transactionURL: B extends true ? string | undefined : string;
-    tokenURL: B extends true ? string | undefined : string;
-  };
-  defaultRPC: {
-    enabledDevices: string[];
-    url: string;
-  };
-  gasUnits: B extends true ? {
-    basic: {
-      approval: string;
-      swap: string;
-      swapPermit: string;
-      eoaTransfer: string;
-      tokenTransfer: string;
-    };
-    wrapped: {
-      wrap: string;
-      unwrap: string;
-    };
-  } | undefined : {
-    basic: {
-      approval: string;
-      swap: string;
-      swapPermit: string;
-      eoaTransfer: string;
-      tokenTransfer: string;
-    };
-    wrapped: {
-      wrap: string;
-      unwrap: string;
-    };
-  };
-  nativeAsset: {
-    address: B extends true ? string | undefined : string;
-    name: B extends true ? string | undefined : string;
-    symbol: string;
-    decimals: number;
-    iconURL: string;
-    colors: B extends true ? {
-      primary: string;
-      fallback: string;
-      shadow: string;
-    } | undefined : {
-      primary: string;
-      fallback: string;
-      shadow: string;
-    };
-  };
-  nativeWrappedAsset: B extends true ? {
-    address: string;
-    name: string;
-    symbol: string;
-    decimals: number;
-    iconURL: string;
-    colors: {
-      primary: string;
-      fallback: string;
-      shadow: string;
-    };
-  } | undefined : {
-    address: string;
-    name: string;
-    symbol: string;
-    decimals: number;
-    iconURL: string;
-    colors: {
-      primary: string;
-      fallback: string;
-      shadow: string;
-    };
-  };
-  privateMempoolTimeout?: B extends true ? number | undefined : number;
-  enabledServices: B extends true ? BackendNetworkServices | undefined : BackendNetworkServices;
-  favorites: {
-    address: string;
-  }[];
-}
-
-export interface CustomNetwork {
-  id: number;
-  name: string;
-  iconURL: string;
-  nativeAsset: {
-    symbol: string;
-    decimals: number;
-    iconURL: string;
-  };
-  defaultRPCURL: string;
-  defaultExplorerURL: string;
-  testnet: {
-    FaucetURL: string;
-    isTestnet: boolean;
-    mainnetChainID: number;
-  };
+export interface ExtendedChainMetadata {
+  isBackendDriven: boolean;
+  isCustom: boolean;
+  enabled: boolean;
+  order?: number;
+  label?: string;
+  badgeUrl?: string;
+  faucetUrl?: string;
+  opStack?: boolean;
+  internal?: boolean;
+  defaultExplorer?: BackendNetworks['networks'][number]['defaultExplorer'];
+  defaultRPC?: string;
+  customRPCs?: string[];
+  assets?: RainbowChainAsset[];
+  gasUnits?: BackendNetworks['networks'][number]['gasUnits'];
+  nativeAsset?: BackendNetworks['networks'][number]['nativeAsset'];
+  nativeWrappedAsset?: BackendNetworks['networks'][number]['nativeWrappedAsset'];
+  privateMempoolTimeout?: number;
+  enabledServices?: BackendNetworks['networks'][number]['enabledServices'];
+  favorites?: BackendNetworks['networks'][number]['favorites'];
 }

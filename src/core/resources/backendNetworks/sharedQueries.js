@@ -85,7 +85,7 @@ const BACKEND_NETWORKS_QUERY = `
 `;
 
 const CUSTOM_NETWORKS_QUERY = `
-  query GetCustomNetworks($includeTestnets: Boolean) {
+  query getCustomNetworks($includeTestnets: Boolean) {
     customNetworks(includeTestnets: $includeTestnets) {
       id
       name

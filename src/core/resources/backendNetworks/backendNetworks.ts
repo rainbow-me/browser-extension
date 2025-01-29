@@ -1,30 +1,49 @@
-import { BackendNetwork } from '~/core/types/chains';
-import { transformCustomNetworkToBackendNetwork } from '~/core/state/backendNetworks/utils';
+import buildTimeNetworks from 'static/data/networks.json';
 
-export interface BackendNetworksResponse<B extends boolean = false> {
-  networks: BackendNetwork<B>[];
-}
+const { BACKEND_NETWORKS_QUERY, CUSTOM_NETWORKS_QUERY } = require('../../resources/backendNetworks/sharedQueries');
 
-export async function fetchNetworks<B extends boolean = false>(
-  query: string,
-  customNetworks?: B
-): Promise<BackendNetworksResponse<B>> {
+export type Networks = typeof buildTimeNetworks;
+export type BackendNetworks = Networks['backendNetworks'];
+export type CustomNetworks = Networks['customNetworks'];
+
+export async function fetchBackendNetworks(): Promise<BackendNetworks> {
   const response = await fetch('https://metadata.p.rainbow.me/v1/graph', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      query,
+      query: BACKEND_NETWORKS_QUERY,
       variables: { device: 'BX', includeTestnets: true },
     }),
   });
 
   const { data } = await response.json();
 
-  if (customNetworks) {
-    return {
-      networks: data.networks.map(transformCustomNetworkToBackendNetwork),
-    };
-  }
+  return data;
+}
+
+export async function fetchCustomNetworks(): Promise<CustomNetworks> {
+  const response = await fetch('https://metadata.p.rainbow.me/v1/graph', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      query: CUSTOM_NETWORKS_QUERY,
+      variables: { device: 'BX', includeTestnets: true },
+    }),
+  });
+
+  const { data } = await response.json();
 
   return data;
+}
+
+export async function fetchNetworks(): Promise<Networks> {
+  const [backendNetworks, customNetworks] = await Promise.all([
+    fetchBackendNetworks(),
+    fetchCustomNetworks(),
+  ]);
+
+  return {
+    backendNetworks,
+    customNetworks
+  };
 }
