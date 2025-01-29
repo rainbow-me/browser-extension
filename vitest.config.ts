@@ -4,7 +4,8 @@ import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
-  plugins: [vanillaExtractPlugin()],
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  plugins: [[vanillaExtractPlugin()] as any],
   test: {
     environment: 'happy-dom',
     include: ['src/**/*.test.(ts|tsx)'],

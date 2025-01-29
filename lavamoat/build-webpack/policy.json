@@ -11,8 +11,8 @@
     },
     "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight": {
       "packages": {
+        "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>@babel/helper-validator-identifier": true,
         "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>chalk": true,
-        "jest>@jest/core>jest-snapshot>@babel/types>@babel/helper-validator-identifier": true,
         "react>loose-envify>js-tokens": true
       }
     },
@@ -62,6 +62,45 @@
       }
     },
     "@vanilla-extract/vite-plugin>@vanilla-extract/integration": {
+      "packages": {
+        "$root$": true
+      }
+    },
+    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>eval>require-like": {
+      "builtin": {
+        "module": true,
+        "path.dirname": true
+      },
+      "globals": {
+        "process.mainModule": true
+      }
+    },
+    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>javascript-stringify": {
+      "globals": {
+        "Buffer": true
+      }
+    },
+    "@vanilla-extract/webpack-plugin": {
+      "builtin": {
+        "path": true
+      },
+      "globals": {
+        "console.warn": true,
+        "process.env.NODE_ENV": true
+      },
+      "packages": {
+        "@vanilla-extract/webpack-plugin>@vanilla-extract/integration": true,
+        "@vanilla-extract/webpack-plugin>chalk": true,
+        "@vanilla-extract/webpack-plugin>loader-utils": true,
+        "chalk": true,
+        "eslint>chalk": true,
+        "eslint>debug": true,
+        "file-loader>loader-utils": true,
+        "vitest>debug": true,
+        "webpack": true
+      }
+    },
+    "@vanilla-extract/webpack-plugin>@vanilla-extract/integration": {
       "builtin": {
         "crypto": true,
         "fs.promises.readFile": true,
@@ -79,22 +118,22 @@
         "$root$": true,
         "@vanilla-extract/css": true,
         "@vanilla-extract/css>outdent": true,
-        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@babel/plugin-syntax-typescript": true,
-        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@vanilla-extract/babel-plugin-debug-ids": true,
-        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>esbuild": true,
-        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>eval": true,
-        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up": true,
         "@vanilla-extract/vite-plugin>@vanilla-extract/integration>javascript-stringify": true,
+        "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>@babel/plugin-syntax-typescript": true,
+        "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>@vanilla-extract/babel-plugin-debug-ids": true,
+        "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>esbuild": true,
+        "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>eval": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": true,
+        "eslint>find-up": true,
         "lodash": true
       }
     },
-    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@babel/plugin-syntax-typescript": {
+    "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>@babel/plugin-syntax-typescript": {
       "packages": {
-        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@babel/plugin-syntax-typescript>@babel/helper-plugin-utils": true
+        "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>@babel/plugin-syntax-typescript>@babel/helper-plugin-utils": true
       }
     },
-    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@vanilla-extract/babel-plugin-debug-ids": {
+    "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>@vanilla-extract/babel-plugin-debug-ids": {
       "globals": {
         "process.env.NODE_ENV": true
       },
@@ -102,7 +141,7 @@
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": true
       }
     },
-    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>esbuild": {
+    "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>esbuild": {
       "builtin": {
         "child_process.execFileSync": true,
         "child_process.spawn": true,
@@ -136,7 +175,7 @@
         "process.platform": true
       }
     },
-    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>eval": {
+    "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>eval": {
       "builtin": {
         "vm.Script": true
       },
@@ -148,77 +187,6 @@
       },
       "packages": {
         "@vanilla-extract/vite-plugin>@vanilla-extract/integration>eval>require-like": true
-      }
-    },
-    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>eval>require-like": {
-      "builtin": {
-        "module": true,
-        "path.dirname": true
-      },
-      "globals": {
-        "process.mainModule": true
-      }
-    },
-    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up": {
-      "builtin": {
-        "path.dirname": true,
-        "path.parse": true,
-        "path.resolve": true
-      },
-      "packages": {
-        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up>locate-path": true,
-        "eslint>find-up>path-exists": true
-      }
-    },
-    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up>locate-path": {
-      "builtin": {
-        "fs.lstat": true,
-        "fs.lstatSync": true,
-        "fs.stat": true,
-        "fs.statSync": true,
-        "path.resolve": true,
-        "util.promisify": true
-      },
-      "globals": {
-        "process.cwd": true
-      },
-      "packages": {
-        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up>locate-path>p-locate": true
-      }
-    },
-    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up>locate-path>p-locate": {
-      "packages": {
-        "jest>@jest/core>jest-runner>p-limit": true
-      }
-    },
-    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>javascript-stringify": {
-      "globals": {
-        "Buffer": true
-      }
-    },
-    "@vanilla-extract/webpack-plugin": {
-      "builtin": {
-        "path": true
-      },
-      "globals": {
-        "console.warn": true,
-        "process.env.NODE_ENV": true
-      },
-      "packages": {
-        "@vanilla-extract/vite-plugin>@vanilla-extract/integration": true,
-        "@vanilla-extract/webpack-plugin>chalk": true,
-        "@vanilla-extract/webpack-plugin>loader-utils": true,
-        "chalk": true,
-        "eslint>chalk": true,
-        "eslint>debug": true,
-        "file-loader>loader-utils": true,
-        "vitest>debug": true,
-        "webpack": true
-      }
-    },
-    "@vanilla-extract/webpack-plugin>@vanilla-extract/integration": {
-      "packages": {
-        "$root$": true
       }
     },
     "@vanilla-extract/webpack-plugin>chalk": {
@@ -614,10 +582,10 @@
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-split-export-declaration": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-validator-identifier": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": true,
-        "jest>@jest/core>jest-snapshot>@babel/types": true,
-        "jest>@jest/core>jest-snapshot>@babel/types>@babel/helper-validator-identifier": true
+        "jest>@jest/core>jest-snapshot>@babel/types": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": {
@@ -1039,6 +1007,38 @@
         "eslint>esquery>estraverse": true
       }
     },
+    "eslint>find-up": {
+      "builtin": {
+        "path.dirname": true,
+        "path.parse": true,
+        "path.resolve": true
+      },
+      "packages": {
+        "eslint>find-up>locate-path": true,
+        "eslint>find-up>path-exists": true
+      }
+    },
+    "eslint>find-up>locate-path": {
+      "builtin": {
+        "fs.lstat": true,
+        "fs.lstatSync": true,
+        "fs.stat": true,
+        "fs.statSync": true,
+        "path.resolve": true,
+        "util.promisify": true
+      },
+      "globals": {
+        "process.cwd": true
+      },
+      "packages": {
+        "eslint>find-up>locate-path>p-locate": true
+      }
+    },
+    "eslint>find-up>locate-path>p-locate": {
+      "packages": {
+        "jest>@jest/core>jest-runner>p-limit": true
+      }
+    },
     "eslint>find-up>path-exists": {
       "builtin": {
         "fs.access": true,
@@ -1281,10 +1281,10 @@
     },
     "html-webpack-plugin>pretty-error>renderkid>css-select": {
       "packages": {
+        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@vanilla-extract/css>css-what": true,
         "html-webpack-plugin>pretty-error>renderkid>css-select>domutils": true,
         "html-webpack-plugin>pretty-error>renderkid>css-select>nth-check": true,
-        "web-ext>addons-linter>cheerio>cheerio-select>boolbase": true,
-        "web-ext>addons-linter>cheerio>cheerio-select>css-what": true
+        "web-ext>addons-linter>cheerio>cheerio-select>boolbase": true
       }
     },
     "html-webpack-plugin>pretty-error>renderkid>css-select>domhandler": {
