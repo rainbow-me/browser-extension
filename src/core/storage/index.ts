@@ -5,8 +5,29 @@ export const LocalStorage = {
     await chrome?.storage?.local?.clear();
   },
   async set(key: string, value: unknown) {
-    await chrome?.storage?.local?.set({ [key]: value });
+    try {
+      // If value is already a string, use it directly
+      // Otherwise, it should have already been stringified by React Query
+      const valueToStore = value;
+
+      // Debug log to verify what we're storing
+      console.log('Storing to chrome.storage:', {
+        key,
+        valueType: typeof valueToStore,
+        valueLength:
+          typeof valueToStore === 'string' ? valueToStore.length : 'n/a',
+      });
+
+      // Store as a single key-value pair
+      await chrome?.storage?.local?.set({
+        [key]: valueToStore,
+      });
+    } catch (e) {
+      console.error('Error storing data:', e);
+      throw e;
+    }
   },
+
   async get(key: string) {
     const result = await chrome?.storage?.local?.get(key);
     return result[key];

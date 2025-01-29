@@ -36,7 +36,7 @@ export const assetMetadataQueryKey = ({
   createQueryKey(
     'assetMetadata',
     { assetAddress, chainId },
-    { persisterVersion: 1 },
+    { persisterVersion: 2 },
   );
 
 type AssetMetadataQueryKey = ReturnType<typeof assetMetadataQueryKey>;
@@ -48,7 +48,7 @@ export const assetSearchMetadataQueryKey = ({
   createQueryKey(
     'assetSearchMetadata',
     { assetAddress, chainId },
-    { persisterVersion: 1 },
+    { persisterVersion: 2 },
   );
 
 type AssetSearchMetadataQueryKey = ReturnType<
@@ -78,7 +78,12 @@ async function assetMetadataQueryFunction({
 async function assetSearchMetadataQueryFunction({
   queryKey: [{ assetAddress, chainId }],
 }: QueryFunctionArgs<typeof assetSearchMetadataQueryKey>) {
-  if (assetAddress && isAddress(assetAddress)) {
+  // Skip invalid addresses immediately
+  if (!assetAddress || !isAddress(assetAddress)) {
+    return null;
+  }
+
+  try {
     const metadata = await getAssetMetadata({
       address: assetAddress,
       chainId: Number(chainId),
@@ -86,18 +91,21 @@ async function assetSearchMetadataQueryFunction({
 
     const { decimals, symbol, name } = metadata || {};
 
-    if (decimals && symbol && name) {
-      return parseSearchAssetMetadata({
-        address: assetAddress,
-        decimals,
-        symbol,
-        name,
-        chainId,
-      });
+    if (!decimals || !symbol || !name) {
+      return null;
     }
-  }
 
-  return null;
+    return parseSearchAssetMetadata({
+      address: assetAddress,
+      decimals,
+      symbol,
+      name,
+      chainId,
+    });
+  } catch (error) {
+    // Don't cache errors
+    return null;
+  }
 }
 
 export type AssetMetadataResult = QueryFunctionResult<
@@ -174,6 +182,9 @@ export function useAssetSearchMetadata(
       chainId,
     }),
     queryFn: assetSearchMetadataQueryFunction,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: false,
+    enabled: Boolean(assetAddress && chainId),
     ...config,
   });
 }
@@ -196,6 +207,11 @@ export function useAssetSearchMetadataAllNetworks(
         chainId: chain.id,
       }),
       queryFn: assetSearchMetadataQueryFunction,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      cacheTime: 30 * 60 * 1000, // 30 minutes
+      retry: false,
+      enabled: Boolean(assetAddress),
+      gcTime: 0,
       ...config,
     })),
   });

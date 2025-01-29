@@ -1,6 +1,9 @@
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import { QueryClient } from '@tanstack/react-query';
-import { PersistQueryClientOptions } from '@tanstack/react-query-persist-client';
+import {
+  PersistQueryClientOptions,
+  PersistedClient,
+} from '@tanstack/react-query-persist-client';
 
 import { LocalStorage } from '../storage';
 
@@ -25,6 +28,10 @@ const asyncStoragePersister = createAsyncStoragePersister({
     setItem: LocalStorage.set,
     removeItem: LocalStorage.remove,
   },
+  // Add throttling to prevent too frequent updates
+  throttleTime: 2000,
+  serialize: (data) => JSON.stringify(data),
+  deserialize: (data: string) => JSON.parse(data) as PersistedClient,
 });
 
 export const persistOptions: Omit<PersistQueryClientOptions, 'queryClient'> = {
@@ -36,4 +43,7 @@ export const persistOptions: Omit<PersistQueryClientOptions, 'queryClient'> = {
         query.gcTime !== 0,
       ),
   },
+  // Add buster to clear old data
+  buster: '1',
+  maxAge: 1000 * 60 * 60 * 1, // 1 hour
 };
