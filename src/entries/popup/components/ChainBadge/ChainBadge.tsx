@@ -144,19 +144,7 @@ const ChainBadge = ({
         ...(customChainIdsToAssetNames[chainId] ? {} : { boxShadow }),
       }}
     >
-      {networkBadges[chainId] ? (
-        <img
-          src={networkBadges[chainId]}
-          width={iconSize}
-          height={iconSize}
-          loading="lazy"
-          style={{
-            borderRadius: iconSize,
-            userSelect: 'none',
-          }}
-          draggable={false}
-        />
-      ) : (
+      {customChainIdsToAssetNames[chainId] ? (
         <ExternalImage
           src={getCustomChainIconUrl(chainId, AddressZero)}
           borderRadius={iconSize}
@@ -169,6 +157,18 @@ const ChainBadge = ({
             userSelect: 'none',
             height: iconSize,
             width: iconSize,
+          }}
+          draggable={false}
+        />
+      ) : (
+        <img
+          src={networkBadges[chainId]}
+          width={iconSize}
+          height={iconSize}
+          loading="lazy"
+          style={{
+            borderRadius: iconSize,
+            userSelect: 'none',
           }}
           draggable={false}
         />
