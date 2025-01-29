@@ -1,5 +1,6 @@
 import {
   Chain,
+  apeChain,
   arbitrum,
   arbitrumSepolia,
   avalanche,
@@ -41,7 +42,9 @@ export const chainIdMap: Record<
   | ChainId.blast
   | ChainId.degen
   | ChainId.apechain
-  | ChainId.ink,
+  | ChainId.ink
+  | ChainId.sanko
+  | ChainId.gravity,
   ChainId[]
 > = {
   [ChainId.mainnet]: [mainnet.id, sepolia.id, holesky.id],
@@ -54,10 +57,14 @@ export const chainIdMap: Record<
   [ChainId.avalanche]: [avalanche.id, avalancheFuji.id],
   [ChainId.blast]: [blast.id, blastSepolia.id],
   [ChainId.degen]: [degen.id],
-  [ChainId.apechain]: [ChainId.apechain, curtis.id],
+  [ChainId.apechain]: [apeChain.id, curtis.id],
   [ChainId.ink]: [ChainId.ink, inkSepolia.id],
+  [ChainId.sanko]: [ChainId.sanko, ChainId.sankoTestnet],
+  [ChainId.gravity]: [ChainId.gravity, ChainId.gravitySepolia],
 };
 
+// Used to display the chain label in the settings networks page
+// Only need to include testnets as 'Mainnet' is always pre-pended
 export const chainLabelMap: Record<
   | ChainId.mainnet
   | ChainId.optimism
@@ -69,7 +76,9 @@ export const chainLabelMap: Record<
   | ChainId.blast
   | ChainId.degen
   | ChainId.apechain
-  | ChainId.ink,
+  | ChainId.ink
+  | ChainId.sanko
+  | ChainId.gravity,
   string[]
 > = {
   [ChainId.mainnet]: [chainsLabel[sepolia.id], chainsLabel[holesky.id]],
@@ -84,6 +93,8 @@ export const chainLabelMap: Record<
   [ChainId.degen]: [],
   [ChainId.apechain]: [chainsLabel[curtis.id]],
   [ChainId.ink]: [chainsLabel[inkSepolia.id]],
+  [ChainId.sanko]: [chainsLabel[ChainId.sankoTestnet]],
+  [ChainId.gravity]: [chainsLabel[ChainId.gravitySepolia]],
 };
 
 export const sortNetworks = (order: ChainId[], chains: Chain[]) => {

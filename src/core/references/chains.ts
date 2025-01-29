@@ -57,6 +57,8 @@ export const chainsLabel: Record<number, string> =
       [ChainId.avalancheFuji]: 'Avalanche Fuji',
       [ChainId.apechainCurtis]: 'Apechain Curtis',
       [ChainId.inkSepolia]: 'Ink Sepolia',
+      [ChainId.sankoTestnet]: 'Sanko Testnet',
+      [ChainId.gravitySepolia]: 'Gravity Sepolia',
     } as Record<number, string>,
   );
 
@@ -80,6 +82,8 @@ export const chainsName: Record<number, string> =
       [ChainId.avalancheFuji]: 'avalanche-fuji',
       [ChainId.apechainCurtis]: 'apechain-curtis',
       [ChainId.inkSepolia]: 'ink-sepolia',
+      [ChainId.sankoTestnet]: 'sanko-testnet',
+      [ChainId.gravitySepolia]: 'gravity-sepolia',
     } as Record<number, string>,
   );
 
