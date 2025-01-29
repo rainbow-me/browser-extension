@@ -1,5 +1,7 @@
 import { Chain } from 'viem/chains';
 import * as chains from 'viem/chains';
+import buildTimeNetworks from 'static/data/networks.json';
+import { RainbowChainAsset } from '~/core/state/rainbowChainAssets';
 
 const HARDHAT_CHAIN_ID = 1337;
 const HARDHAT_OP_CHAIN_ID = 1338;
@@ -250,84 +252,34 @@ export const chainIdToNameMapping: {
   [ChainId.zoraSepolia]: ChainName.zoraSepolia,
 };
 
-export interface BackendNetworkServices {
-  meteorology: {
-    enabled: boolean;
-  };
-  swap: {
-    enabled: boolean;
-  };
-  addys: {
-    approvals: boolean;
-    transactions: boolean;
-    assets: boolean;
-    positions: boolean;
-  };
-  tokenSearch: {
-    enabled: boolean;
-  };
-  nftProxy: {
-    enabled: boolean;
-  };
-}
 
-export interface BackendNetwork {
-  id: string;
-  name: string;
+export type Networks = typeof buildTimeNetworks;
+export type BackendNetworks = Networks['backendNetworks'];
+export type CustomNetworks = Networks['customNetworks'];
+
+export interface ExtendedChain extends Chain {
   label: string;
-  icons: {
-    badgeURL: string;
-  };
-  testnet: boolean;
-  internal: boolean;
-  opStack: boolean;
-  defaultExplorer: {
-    url: string;
-    label: string;
-    transactionURL: string;
-    tokenURL: string;
-  };
-  defaultRPC: {
-    enabledDevices: string[];
-    url: string;
-  };
-  gasUnits: {
-    basic: {
-      approval: string;
-      swap: string;
-      swapPermit: string;
-      eoaTransfer: string;
-      tokenTransfer: string;
-    };
-    wrapped: {
-      wrap: string;
-      unwrap: string;
-    };
-  };
-  nativeAsset: {
-    address: string;
-    name: string;
-    symbol: string;
-    decimals: number;
-    iconURL: string;
-    colors: {
-      primary: string;
-      fallback: string;
-      shadow: string;
-    };
-  };
-  nativeWrappedAsset: {
-    address: string;
-    name: string;
-    symbol: string;
-    decimals: number;
-    iconURL: string;
-    colors: {
-      primary: string;
-      fallback: string;
-      shadow: string;
-    };
-  };
+  metadata: ExtendedChainMetadata;
+};
+
+export interface ExtendedChainMetadata {
+  isBackendDriven: boolean;
+  isCustom: boolean;
+  enabled: boolean;
+  order?: number;
+  label?: string;
+  badgeUrl?: string;
+  faucetUrl?: string;
+  opStack?: boolean;
+  internal?: boolean;
+  defaultExplorer?: BackendNetworks['networks'][number]['defaultExplorer'];
+  defaultRPC?: string;
+  customRPCs?: string[];
+  assets?: RainbowChainAsset[];
+  gasUnits?: BackendNetworks['networks'][number]['gasUnits'];
+  nativeAsset?: BackendNetworks['networks'][number]['nativeAsset'];
+  nativeWrappedAsset?: BackendNetworks['networks'][number]['nativeWrappedAsset'];
   privateMempoolTimeout?: number;
-  enabledServices: BackendNetworkServices;
-}
+  enabledServices?: BackendNetworks['networks'][number]['enabledServices'];
+  favorites?: BackendNetworks['networks'][number]['favorites'];
+};

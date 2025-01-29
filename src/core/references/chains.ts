@@ -11,7 +11,7 @@ import {
   chainHardhat,
   chainHardhatOptimism,
 } from '../types/chains';
-import { transformBackendNetworksToChains } from '../utils/backendNetworks';
+import { transformBackendNetworksToChains } from '../utils/networks';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
