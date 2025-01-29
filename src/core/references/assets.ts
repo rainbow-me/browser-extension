@@ -72,6 +72,7 @@ import {
 
 import { ChainId } from '../types/chains';
 
+// @ts-expect-error Type inference false alarms - only needs backend unsupported chain ids
 export const customChainIdsToAssetNames: Record<ChainId, string> = {
   [curtis.id]: 'apechaincurtis',
   [arbitrumNova.id]: 'arbitrumnova',
