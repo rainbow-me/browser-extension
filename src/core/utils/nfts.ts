@@ -138,10 +138,6 @@ export function getNetworkFromSimpleHashChain(
       return ChainName.forma;
     case SimpleHashChain.Godwoken:
       return ChainName.godwoken;
-    case SimpleHashChain.Gravity:
-      return ChainName.gravity;
-    case SimpleHashChain.GravitySepolia:
-      return ChainName.gravitySepolia;
     case SimpleHashChain.ImmutableZkEvm:
       return ChainName.immutableZkEvm;
     case SimpleHashChain.Linea:
@@ -174,10 +170,6 @@ export function getNetworkFromSimpleHashChain(
       return ChainName.proofOfPlayBoss;
     case SimpleHashChain.Rari:
       return ChainName.rari;
-    case SimpleHashChain.Sanko:
-      return ChainName.sanko;
-    case SimpleHashChain.SankoTestnet:
-      return ChainName.sankoTestnet;
     case SimpleHashChain.Scroll:
       return ChainName.scroll;
     case SimpleHashChain.Sei:
