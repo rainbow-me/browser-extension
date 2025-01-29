@@ -128,6 +128,7 @@ export function getNetworkFromSimpleHashChain(
     case SimpleHashChain.Degen:
       return ChainName.degen;
     case SimpleHashChain.Ethereum:
+    case SimpleHashChain.Gnosis:
       return ChainName.mainnet;
     case SimpleHashChain.EthereumSepolia:
       return ChainName.sepolia;
@@ -137,8 +138,6 @@ export function getNetworkFromSimpleHashChain(
       return ChainName.forma;
     case SimpleHashChain.Godwoken:
       return ChainName.godwoken;
-    case SimpleHashChain.Gnosis:
-      return ChainName.gnosis;
     case SimpleHashChain.Gravity:
       return ChainName.gravity;
     case SimpleHashChain.GravitySepolia:
