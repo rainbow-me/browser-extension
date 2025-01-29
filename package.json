@@ -164,6 +164,7 @@
     "socket.io-client": "4.5.3",
     "validator": "13.9.0",
     "viem": "2.21.55",
+    "vite": "6.0.11",
     "wagmi": "2.8.1",
     "word-wrap": "1.2.4",
     "zustand": "4.1.5"
@@ -233,7 +234,7 @@
     "svg-path-commander": "1.0.5",
     "ts-loader": "9.4.1",
     "typescript": "5.2.2",
-    "vitest": "0.34.6",
+    "vitest": "3.0.4",
     "web-ext": "7.6.2",
     "webpack": "5.94.0",
     "webpack-bundle-analyzer": "4.8.0",
@@ -353,7 +354,10 @@
       "@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false,
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-has": false,
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>tiny-secp256k1": false,
-      "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-hash": false
+      "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-hash": false,
+      "vite>esbuild": false,
+      "vitest>@vitest/mocker>vite>esbuild": false,
+      "vitest>vite-node>vite>esbuild": false
     }
   }
 }

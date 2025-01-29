@@ -349,41 +349,13 @@
       },
       "packages": {
         "css-loader>icss-utils": true,
-        "css-loader>postcss": true,
         "css-loader>postcss-modules-extract-imports": true,
         "css-loader>postcss-modules-local-by-default": true,
         "css-loader>postcss-modules-scope": true,
         "css-loader>postcss-modules-values": true,
         "css-loader>postcss-value-parser": true,
-        "semver": true
-      }
-    },
-    "css-loader>postcss": {
-      "builtin": {
-        "fs.existsSync": true,
-        "fs.readFileSync": true,
-        "path.dirname": true,
-        "path.isAbsolute": true,
-        "path.join": true,
-        "path.relative": true,
-        "path.resolve": true,
-        "path.sep": true,
-        "url.fileURLToPath": true,
-        "url.pathToFileURL": true
-      },
-      "globals": {
-        "Buffer": true,
-        "URL": true,
-        "atob": true,
-        "btoa": true,
-        "console": true,
-        "process.env.LANG": true,
-        "process.env.NODE_ENV": true
-      },
-      "packages": {
-        "css-loader>postcss>nanoid": true,
-        "css-loader>postcss>source-map-js": true,
-        "vitest>picocolors": true
+        "semver": true,
+        "vite>postcss": true
       }
     },
     "css-loader>postcss-modules-local-by-default": {
@@ -528,7 +500,7 @@
       },
       "packages": {
         "jest>@jest/core>@jest/reporters>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
-        "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping>@jridgewell/set-array": true
+        "vite>terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets": {
@@ -662,8 +634,8 @@
       "packages": {
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>@babel/types": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>@jridgewell/trace-mapping": true,
-        "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping": true,
-        "jest>@jest/core>jest-snapshot>@babel/generator>jsesc": true
+        "jest>@jest/core>jest-snapshot>@babel/generator>jsesc": true,
+        "vite>terser>@jridgewell/source-map>@jridgewell/gen-mapping": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>@babel/types": {
@@ -783,8 +755,8 @@
       "packages": {
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/generator>@babel/types": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/generator>@jridgewell/trace-mapping": true,
-        "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping": true,
-        "jest>@jest/core>jest-snapshot>@babel/generator>jsesc": true
+        "jest>@jest/core>jest-snapshot>@babel/generator>jsesc": true,
+        "vite>terser>@jridgewell/source-map>@jridgewell/gen-mapping": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/traverse>@babel/generator>@babel/types": {
@@ -888,8 +860,8 @@
       "packages": {
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse>@babel/generator>@jridgewell/trace-mapping": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse>@babel/types": true,
-        "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping": true,
-        "jest>@jest/core>jest-snapshot>@babel/generator>jsesc": true
+        "jest>@jest/core>jest-snapshot>@babel/generator>jsesc": true,
+        "vite>terser>@jridgewell/source-map>@jridgewell/gen-mapping": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse>@babel/generator>@jridgewell/trace-mapping": {
@@ -1214,7 +1186,7 @@
         "happy-dom>he": true,
         "html-webpack-plugin>html-minifier-terser>clean-css": true,
         "html-webpack-plugin>html-minifier-terser>relateurl": true,
-        "vitest>vite>terser": true
+        "vite>terser": true
       }
     },
     "html-webpack-plugin>html-minifier-terser>clean-css": {
@@ -1393,24 +1365,9 @@
         "console.error": true
       },
       "packages": {
-        "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping": true,
         "jest>@jest/core>jest-snapshot>@babel/generator>jsesc": true,
-        "jest>@jest/core>jest-snapshot>@babel/types": true
-      }
-    },
-    "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "jest>@jest/core>@jest/reporters>@jridgewell/trace-mapping": true,
-        "jest>@jest/core>@jest/reporters>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
-        "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping>@jridgewell/set-array": true
-      }
-    },
-    "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping>@jridgewell/set-array": {
-      "globals": {
-        "define": true
+        "jest>@jest/core>jest-snapshot>@babel/types": true,
+        "vite>terser>@jridgewell/source-map>@jridgewell/gen-mapping": true
       }
     },
     "jest>@jest/core>jest-snapshot>@babel/generator>jsesc": {
@@ -1829,18 +1786,35 @@
         "viem>ws>bufferutil>node-gyp-build": true
       }
     },
-    "vitest>acorn": {
+    "vite>postcss": {
+      "builtin": {
+        "fs.existsSync": true,
+        "fs.readFileSync": true,
+        "path.dirname": true,
+        "path.isAbsolute": true,
+        "path.join": true,
+        "path.relative": true,
+        "path.resolve": true,
+        "path.sep": true,
+        "url.fileURLToPath": true,
+        "url.pathToFileURL": true
+      },
       "globals": {
+        "Buffer": true,
+        "URL": true,
+        "atob": true,
+        "btoa": true,
         "console": true,
-        "define": true
+        "process.env.LANG": true,
+        "process.env.NODE_ENV": true
+      },
+      "packages": {
+        "vite>postcss>nanoid": true,
+        "vite>postcss>picocolors": true,
+        "vite>postcss>source-map-js": true
       }
     },
-    "vitest>acorn-walk": {
-      "globals": {
-        "define": true
-      }
-    },
-    "vitest>picocolors": {
+    "vite>postcss>picocolors": {
       "builtin": {
         "tty.isatty": true
       },
@@ -1850,7 +1824,7 @@
         "process.platform": true
       }
     },
-    "vitest>vite>terser": {
+    "vite>terser": {
       "globals": {
         "Buffer.from": true,
         "atob": true,
@@ -1861,20 +1835,29 @@
         "process": true
       },
       "packages": {
-        "vitest>vite>terser>@jridgewell/source-map": true,
-        "vitest>vite>terser>acorn": true
+        "vite>terser>@jridgewell/source-map": true,
+        "webpack>acorn": true
       }
     },
-    "vitest>vite>terser>@jridgewell/source-map": {
+    "vite>terser>@jridgewell/source-map": {
       "globals": {
         "Buffer": true,
         "TextDecoder": true,
         "define": true
       }
     },
-    "vitest>vite>terser>acorn": {
+    "vite>terser>@jridgewell/source-map>@jridgewell/gen-mapping": {
       "globals": {
-        "console": true,
+        "define": true
+      },
+      "packages": {
+        "jest>@jest/core>@jest/reporters>@jridgewell/trace-mapping": true,
+        "jest>@jest/core>@jest/reporters>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
+        "vite>terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": true
+      }
+    },
+    "vite>terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": {
+      "globals": {
         "define": true
       }
     },
@@ -2037,18 +2020,17 @@
       "packages": {
         "lodash": true,
         "viem>ws": true,
-        "vitest>acorn-walk": true,
-        "webpack-bundle-analyzer>acorn": true,
+        "webpack-bundle-analyzer>acorn-walk": true,
         "webpack-bundle-analyzer>chalk": true,
         "webpack-bundle-analyzer>gzip-size": true,
         "webpack-bundle-analyzer>opener": true,
         "webpack-bundle-analyzer>sirv": true,
-        "webpack-cli>@discoveryjs/json-ext": true
+        "webpack-cli>@discoveryjs/json-ext": true,
+        "webpack>acorn": true
       }
     },
-    "webpack-bundle-analyzer>acorn": {
+    "webpack-bundle-analyzer>acorn-walk": {
       "globals": {
-        "console": true,
         "define": true
       }
     },
@@ -2467,14 +2449,20 @@
         "process": true
       },
       "packages": {
-        "vitest>acorn": true,
-        "webpack>terser-webpack-plugin>terser>@jridgewell/source-map": true
+        "webpack>terser-webpack-plugin>terser>@jridgewell/source-map": true,
+        "webpack>terser-webpack-plugin>terser>acorn": true
       }
     },
     "webpack>terser-webpack-plugin>terser>@jridgewell/source-map": {
       "globals": {
         "Buffer": true,
         "TextDecoder": true,
+        "define": true
+      }
+    },
+    "webpack>terser-webpack-plugin>terser>acorn": {
+      "globals": {
+        "console": true,
         "define": true
       }
     },
