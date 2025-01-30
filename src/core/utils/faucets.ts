@@ -48,6 +48,9 @@ export const TestnetFaucet = {
   [palmTestnet.id]: 'https://docs.palm.io/get-started/tokens',
   [polygonZkEvmCardona.id]: 'https://faucet.polygon.technology',
   [polygonZkEvmTestnet.id]: 'https://faucet.polygon.technology',
+  [ChainId.gravitySepolia]:
+    'https://thirdweb.com/gravity-alpha-testnet-sepolia',
+  1992: 'https://sanko-arb-sepolia.hub.caldera.xyz', // testnet faucet for sanko
   [scrollSepolia.id]: 'https://faucet.quicknode.com/scroll/sepolia',
   1123: 'https://bsquared.network/faucet',
   28882: 'https://l2faucet.com',

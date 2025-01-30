@@ -212,6 +212,22 @@ export function useSearchCurrencyLists({
     fromChainId,
   });
 
+  const { data: sankoVerifiedAssets, isLoading: sankoVerifiedAssetsLoading } =
+    useTokenSearch({
+      chainId: ChainId.sanko,
+      ...VERIFIED_ASSETS_PAYLOAD,
+      fromChainId,
+    });
+
+  const {
+    data: gravityVerifiedAssets,
+    isLoading: gravityVerifiedAssetsLoading,
+  } = useTokenSearch({
+    chainId: ChainId.gravity,
+    ...VERIFIED_ASSETS_PAYLOAD,
+    fromChainId,
+  });
+
   // current search
   const { data: targetVerifiedAssets, isLoading: targetVerifiedAssetsLoading } =
     useTokenSearch(
@@ -352,6 +368,14 @@ export function useSearchCurrencyLists({
         assets: inkVerifiedAssets,
         loading: inkVerifiedAssetsLoading,
       },
+      [ChainId.sanko]: {
+        assets: sankoVerifiedAssets,
+        loading: sankoVerifiedAssetsLoading,
+      },
+      [ChainId.gravity]: {
+        assets: gravityVerifiedAssets,
+        loading: gravityVerifiedAssetsLoading,
+      },
     }),
     [
       mainnetVerifiedAssets,
@@ -378,6 +402,10 @@ export function useSearchCurrencyLists({
       apechainVerifiedAssetsLoading,
       inkVerifiedAssets,
       inkVerifiedAssetsLoading,
+      sankoVerifiedAssets,
+      sankoVerifiedAssetsLoading,
+      gravityVerifiedAssets,
+      gravityVerifiedAssetsLoading,
     ],
   );
 
@@ -436,6 +464,8 @@ export function useSearchCurrencyLists({
       [ChainId.degen]: getVerifiedAssets(ChainId.degen),
       [ChainId.apechain]: getVerifiedAssets(ChainId.apechain),
       [ChainId.ink]: getVerifiedAssets(ChainId.ink),
+      [ChainId.sanko]: getVerifiedAssets(ChainId.sanko),
+      [ChainId.gnosis]: getVerifiedAssets(ChainId.gnosis),
     }),
     [getVerifiedAssets],
   );
