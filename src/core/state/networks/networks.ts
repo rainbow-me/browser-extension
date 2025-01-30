@@ -1,35 +1,29 @@
 import { create } from 'zustand';
 import equal from 'react-fast-compare';
+import buildTimeNetworks from 'static/data/networks.json';
+import { Chain } from 'viem';
 
 import { fetchNetworks } from '~/core/resources/networks/networks';
 import { createQueryStore } from '~/core/state/internal/createQueryStore';
-import { ChainId, ExtendedChain, Networks } from '~/core/types/chains';  
-import buildTimeNetworks from 'static/data/networks.json';
-import { transformNetworksToExtendedChains } from './utils';
+import { ChainId, CustomRPC, ExtendedChain, Networks } from '~/core/types/chains';  
+import { differenceOrUnionOf, mergeArrays, mergePrimitive, transformNetworksToExtendedChains } from './utils';
 import { GasSpeed } from '~/core/types/gas';
 import { DEFAULT_PRIVATE_MEMPOOL_TIMEOUT } from '~/core/utils/networks';
-import { RainbowChainAsset } from '../rainbowChainAssets';
+import { RainbowChainAsset, useRainbowChainAssetsStore } from '../rainbowChainAssets';
 import { logger } from '~/logger';
-import { Chain } from 'viem';
+import { useFavoritesStore } from '../favorites';
+import { RainbowChain, useRainbowChainsStore } from '../rainbowChains';
+import { useUserChainsStore } from '../userChains';
+import { AddressOrEth } from '~/core/types/assets';
 
 interface NetworkState {
 	// encapsulates backend networks and custom networks (just backend driven custom networks)
-  networks: Networks; 
+  networks: Networks;
   // backend driven, custom networks, and user-added networks
   chains: ExtendedChain[];
 }
 
 interface NetworkActions {
-  addCustomChain: (chain: ExtendedChain) => void;
-  updateCustomChain: (chainId: ExtendedChain['id'], updates: Partial<ExtendedChain>) => void;
-  removeCustomChain: (chainId: ExtendedChain['id']) => void;
-  addRpcUrl: (chainId: ExtendedChain['id'], rpcUrl: string) => void;
-  removeRpcUrl: (chainId: ExtendedChain['id'], rpcUrl: string) => void;
-  addCustomAsset: (chainId: ExtendedChain['id'], asset: RainbowChainAsset) => void;
-  updateCustomAsset: (chainId: ExtendedChain['id'], asset: Partial<RainbowChainAsset>) => void;
-  removeCustomAsset: (chainId: ExtendedChain['id'], asset: RainbowChainAsset) => void;
-  
-
   getEnabledChains: () => ExtendedChain[];
   getEnabledChainIds: () => ExtendedChain['id'][];
   getBackendDrivenChains: () => ExtendedChain[];
@@ -61,13 +55,166 @@ interface NetworkActions {
   getTokenSearchSupportedChainIds: () => ExtendedChain['id'][];
   getNftSupportedChainIds: () => ExtendedChain['id'][];
   getChainGasUnits: (chainId: ExtendedChain['id']) => ExtendedChain['metadata']['gasUnits'];
+
+  addCustomChain: (chain: ExtendedChain) => void;
+  updateCustomChain: (chainId: ExtendedChain['id'], updates: Partial<ExtendedChain>) => void;
+  removeCustomChain: (chainId: ExtendedChain['id']) => void;
+  addRpcUrl: (chainId: ExtendedChain['id'], rpcUrl: string) => void;
+  removeRpcUrl: (chainId: ExtendedChain['id'], rpcUrl: string) => void;
+  addCustomAsset: (chainId: ExtendedChain['id'], asset: RainbowChainAsset) => void;
+  updateCustomAsset: (chainId: ExtendedChain['id'], asset: Partial<RainbowChainAsset>) => void;
+  removeCustomAsset: (chainId: ExtendedChain['id'], asset: RainbowChainAsset) => void;
 }
 
 type NetworkStore = NetworkState & NetworkActions;
 
+let lastNetworks: Networks | null = null;
+
+function createSelector<T>(selectorFn: (networks: Networks, transformed: ExtendedChain[]) => T): () => T {
+  const uninitialized = Symbol();
+  let cachedResult: T | typeof uninitialized = uninitialized;
+  let memoizedFn: ((networks: Networks, transformed: ExtendedChain[]) => T) | null = null;
+
+  return () => {
+    const { chains, networks } = useNetworkStore.getState();
+
+    if (cachedResult !== uninitialized && lastNetworks === networks) {
+      return cachedResult;
+    }
+
+    if (lastNetworks !== networks) lastNetworks = networks;
+    if (!memoizedFn) memoizedFn = selectorFn;
+
+    cachedResult = memoizedFn(networks, chains);
+    return cachedResult;
+  };
+}
+
+function createParameterizedSelector<T, Args extends unknown[]>(
+  selectorFn: (networks: Networks, transformed: ExtendedChain[]) => (...args: Args) => T
+): (...args: Args) => T {
+  const uninitialized = Symbol();
+  let cachedResult: T | typeof uninitialized = uninitialized;
+  let lastArgs: Args | null = null;
+  let memoizedFn: ((...args: Args) => T) | null = null;
+
+  return (...args: Args) => {
+    const { chains, networks } = useNetworkStore.getState();
+    const argsChanged = !lastArgs || args.length !== lastArgs.length || args.some((arg, i) => arg !== lastArgs?.[i]);
+
+    if (cachedResult !== uninitialized && lastNetworks === networks && !argsChanged) {
+      return cachedResult;
+    }
+
+    if (!memoizedFn || lastNetworks !== networks) {
+      lastNetworks = networks;
+      memoizedFn = selectorFn(networks, chains);
+    }
+
+    lastArgs = args;
+    cachedResult = memoizedFn(...args);
+    return cachedResult;
+  };
+}
+
+function transformExistingStoresToExtendedChains({
+  favorites, 
+  rainbowChainAssets,
+  rainbowChains,
+  userChains,
+  userChainsOrder,
+}: {
+  favorites: Partial<Record<ChainId, AddressOrEth[]>>;
+  rainbowChainAssets: Partial<Record<ChainId, RainbowChainAsset[]>>;
+  rainbowChains: Record<number, RainbowChain>;
+  userChains: Record<number, boolean>;
+  userChainsOrder: (number | number)[];
+}): ExtendedChain[] {
+  let chains: ExtendedChain[] = [];
+
+  for (const rainbowChain of Object.values(rainbowChains)) {
+    const defaultRpcUrl: string = rainbowChain.activeRpcUrl;
+    let rpcs: Set<CustomRPC> = new Set();
+    let chainId: number | null = null;
+    let label: string | null = null;
+    let chain: Chain | null = null;
+
+    for (const chainData of rainbowChain.chains) {
+      if (!chain) {
+        chain = chainData;
+      }
+      rpcs.add({
+        name: chain.name,
+        blockExplorerUrl: chain.blockExplorers?.default.url || '',
+        rpcUrl: chain.rpcUrls.default.http[0],
+        symbol: chain.nativeCurrency.symbol,
+        testnet: chain.testnet || false,
+      });
+      chainId = chain.id;
+      label = chain.name;
+    }
+
+    if (chain && rpcs.size > 0 && chainId && label) {
+      const extendedChain: ExtendedChain = {
+        ...chain,
+        label,
+        metadata: {
+          isBackendDriven: false, // infer false, this gets overwritten in `transformNetworksToExtendedChains` anyway
+          enabled: userChains[chainId] || false,
+          favorites: favorites[chainId]?.map(f => ({ address: f })) || [],
+          assets: rainbowChainAssets[chainId] || [],
+          order: userChainsOrder.indexOf(chainId) || undefined,
+          defaultRPC: defaultRpcUrl,
+          customRPCs: Array.from(rpcs),
+          isCustom: true,
+        }
+      }
+      chains.push(extendedChain);
+    }
+  }
+  
+  return chains;
+}
+
+const getInitialChainsState = (): ExtendedChain[] => {
+  const currentFavorites = useFavoritesStore.getState().favorites;
+  const currentRainbowChains = useRainbowChainsStore.getState().rainbowChains;
+  const currentRainbowChainAssets = useRainbowChainAssetsStore.getState().rainbowChainAssets;
+  const { userChains, userChainsOrder } = useUserChainsStore.getState();
+
+  // construct ExtendedChain objects from existing stores
+  const existingChains = transformExistingStoresToExtendedChains({
+    favorites: currentFavorites,
+    rainbowChainAssets: currentRainbowChainAssets,
+    rainbowChains: currentRainbowChains,
+    userChains: userChains,
+    userChainsOrder: userChainsOrder,
+  });
+
+  // merge any chains that overlap with backend driven chains
+  let chains = transformNetworksToExtendedChains(buildTimeNetworks, existingChains);
+  
+  // Then, we need to add any chains that weren't in backend driven chains but locally stored
+  // as user-added custom chains
+  for (const chainId of differenceOrUnionOf({
+    existing: chains,
+    incoming: existingChains,
+    valueKey: 'id',
+    method: 'difference'
+  }).values()) {
+    const origin = existingChains.find(c => c.id === chainId);
+    if (!origin) continue;
+    origin.metadata.isBackendDriven = false;
+    origin.metadata.isCustom = true;
+    chains.push(origin);
+  }
+
+  return chains;
+}
+
 const initialState: NetworkState = {
   networks: buildTimeNetworks,
-  chains: transformNetworksToExtendedChains(buildTimeNetworks),
+  chains: getInitialChainsState(),
 };
 
 // TODO: Things that need to be done when a change is detected:
@@ -107,9 +254,13 @@ export const networkStore = createQueryStore<Networks, never, NetworkStore>(
     fetcher: fetchNetworks,
     setData: ({ data, set }) => {
       set((state) => {
+
+        console.log("setting data", state.networks, data.backendNetworks);
         let newState = { ...state };
         // TODO: Diff and merge backend networks
-        if (!equal(state.networks.backendNetworks, data.backendNetworks)) {}
+        if (!equal(state.networks.backendNetworks, data.backendNetworks)) {
+          // TODO: We also need to cross-check custom networks here too in case we now support a chain that was not supported before
+        }
 
         // TODO: Diff and merge custom networks
         if (!equal(state.networks.customNetworks, data.customNetworks)) {}
@@ -121,7 +272,7 @@ export const networkStore = createQueryStore<Networks, never, NetworkStore>(
     staleTime: 10 * 60 * 1000
   },
   
-  (set, get) => ({
+  (set) => ({
     ...initialState,
 
     addCustomChain: (chain: Chain) => {
@@ -331,161 +482,138 @@ export const networkStore = createQueryStore<Networks, never, NetworkStore>(
       });
     },
 
-    getEnabledChains: () => {
-      const { chains } = get();
+    getEnabledChains: createSelector((_, chains) => {
       return chains.filter(chain => {
         if (chain.metadata.isCustom) {
           return chain.metadata.enabled;
         }
         return chain.metadata.isBackendDriven && !chain.metadata.internal;
       })
-    },
+    }),
 
-    getEnabledChainIds: () => {
-      const { getEnabledChains } = get();
-      return getEnabledChains().map(chain => chain.id);
-    },
+    getEnabledChainIds: createSelector((_, chains) => {
+      return chains.filter(chain => chain.metadata.enabled).map(chain => chain.id);
+    }),
 
-    getBackendDrivenChains: () => {
-      const { chains } = get();
+    getBackendDrivenChains: createSelector((_, chains) => {
       return chains.filter(chain => chain.metadata.isBackendDriven);
-    },
+    }),
 
-    getBackendDrivenChainIds: () => {
-      const { getBackendDrivenChains } = get();
-      return getBackendDrivenChains().map(chain => chain.id);
-    },
+    getBackendDrivenChainIds: createSelector((_, chains) => {
+      return chains.filter(chain => chain.metadata.isBackendDriven).map(chain => chain.id);
+    }),
 
-    getCustomChains: () => {
-      const { chains } = get();
+    getCustomChains: createSelector((_, chains) => {
       return chains.filter(chain => chain.metadata.isCustom);
-    },
+    }),
 
-    getCustomChainIds: () => {
-      const { getCustomChains } = get();
-      return getCustomChains().map(chain => chain.id);
-    },
+    getCustomChainIds: createSelector((_, chains) => {
+      return chains.filter(chain => chain.metadata.isCustom).map(chain => chain.id);
+    }),
 
-    getMainnetChains: () => {
-      const { chains } = get();
+    getMainnetChains: createSelector((_, chains) => {
       return chains.filter(chain => !chain.testnet);
-    },
+    }),
 
-    getMainnetChainIds: () => {
-      const { getMainnetChains } = get();
-      return getMainnetChains().map(chain => chain.id);
-    },
+    getMainnetChainIds: createSelector((_, chains) => {
+      return chains.filter(chain => !chain.testnet).map(chain => chain.id);
+    }),
 
-    getChainById: (chainId: ExtendedChain['id']) => {
-      return get().chains.find(chain => chain.id === chainId);
-    },
+    getChainById: createParameterizedSelector((_, chains) => {
+      return (chainId: ExtendedChain['id']) => {
+        return chains.find(chain => chain.id === chainId);
+      }
+    }),
 
-    getNeedsL1SecurityFeeChains: () => {
-      const { chains } = get();
-      return chains.filter(chain => chain.metadata.label).map(chain => chain.id);
-    },
+    getNeedsL1SecurityFeeChains: createSelector((_, chains) => {
+      return chains.filter(chain => chain.metadata.opStack).map(chain => chain.id);
+    }),
 
-    getChainsNativeAsset: () => {
-      const { chains } = get();
+    getChainsNativeAsset: createSelector((_, chains) => {
       return chains.map(chain => chain.metadata.nativeAsset);
-    },
+    }),
 
-    getChainsLabel: () => {
-      const { chains } = get();
+    getChainsLabel: createSelector((_, chains) => {
       return chains.map(chain => chain.label);
-    },
+    }),
 
-    getChainsName: () => {
-      const { chains } = get();
+    getChainsName: createSelector((_, chains) => {
       return chains.map(chain => chain.name);
-    },
+    }),
 
-    getChainsBadge: () => {
-      const { chains } = get();
+    getChainsBadge: createSelector((_, chains) => {
       return chains.map(chain => chain.metadata.badgeUrl);
-    },
+    }),
 
-    getChainsPrivateMempoolTimeout: () => {
-      const { chains } = get();
+    getChainsPrivateMempoolTimeout: createSelector((_, chains) => {
       return chains.map(chain => chain.metadata.privateMempoolTimeout || DEFAULT_PRIVATE_MEMPOOL_TIMEOUT);
-    },
+    }),
 
-    getChainsIdByName: () => {
-      const { chains } = get();
+    getChainsIdByName: createSelector((_, chains) => {
       return chains.reduce((acc, chain) => {
         acc[chain.name] = chain.id;
         return acc;
       }, {} as Record<string, ExtendedChain['id']>);
-    },
+    }),
 
-    getChainsGasSpeeds: () => {
-      const { chains } = get();
+    getChainsGasSpeeds: createSelector((_, chains) => {
       return chains.reduce((acc, chain) => {
         acc[chain.id] = getDefaultGasSpeeds(chain.id);
         return acc;
       }, {} as Record<ExtendedChain['id'], GasSpeed[]>);
-    },
+    }),
 
-    getChainsPollingInterval: () => {
-      const { chains } = get();
+    getChainsPollingInterval: createSelector((_, chains) => {
       return chains.reduce((acc, chain) => {
         acc[chain.id] = getDefaultPollingInterval(chain.id);
         return acc;
       }, {} as Record<ExtendedChain['id'], number>);
-    },
+    }),
 
-    getChainsFavorites: () => {
-      const { chains } = get();
+    getChainsFavorites: createSelector((_, chains) => {
       return chains.reduce((acc, chain) => {
         acc[chain.id] = chain.metadata.favorites?.map(favorite => favorite.address) ?? [];
         return acc;
       }, {} as Record<ExtendedChain['id'], string[]>);
-    },
+    }),
 
-    getMeteorologySupportedChainIds: () => {
-      const { chains } = get();
+    getMeteorologySupportedChainIds: createSelector((_, chains) => {
       return chains.filter(chain => chain.metadata.enabledServices?.meteorology.enabled).map(chain => chain.id);
-    },
+    }),
 
-    getSwapSupportedChainIds: () => {
-      const { chains } = get();
+    getSwapSupportedChainIds: createSelector((_, chains) => {
       return chains.filter(chain => chain.metadata.enabledServices?.swap.enabled).map(chain => chain.id);
-    },
+    }),
 
-    getApprovalsSupportedChainIds: () => {
-      const { chains } = get();
+    getApprovalsSupportedChainIds: createSelector((_, chains) => {
       return chains.filter(chain => chain.metadata.enabledServices?.addys.approvals).map(chain => chain.id);
-    },
+    }),
 
-    getTransactionsSupportedChainIds: () => {
-      const { chains } = get();
+    getTransactionsSupportedChainIds: createSelector((_, chains) => {
       return chains.filter(chain => chain.metadata.enabledServices?.addys.transactions).map(chain => chain.id);
-    },
+    }),
 
-    getAssetsSupportedChainIds: () => {
-      const { chains } = get();
+    getAssetsSupportedChainIds: createSelector((_, chains) => {
       return chains.filter(chain => chain.metadata.enabledServices?.addys.assets).map(chain => chain.id);
-    },
+    }),
 
-    getPositionsSupportedChainIds: () => {
-      const { chains } = get();
+    getPositionsSupportedChainIds: createSelector((_, chains) => {
       return chains.filter(chain => chain.metadata.enabledServices?.addys.positions).map(chain => chain.id);
-    },
+    }),
 
-    getTokenSearchSupportedChainIds: () => {
-      const { chains } = get();
+    getTokenSearchSupportedChainIds: createSelector((_, chains) => {
       return chains.filter(chain => chain.metadata.enabledServices?.tokenSearch.enabled).map(chain => chain.id);
-    },
+    }),
 
-    getNftSupportedChainIds: () => {
-      const { chains } = get();
+    getNftSupportedChainIds: createSelector((_, chains) => {
       return chains.filter(chain => chain.metadata.enabledServices?.nftProxy.enabled).map(chain => chain.id);
-    },
+    }),
 
-    getChainGasUnits: (chainId: ExtendedChain['id']) => {
-      const { chains } = get();
-      return chains.find(chain => chain.id === chainId)?.metadata.gasUnits;
-    },
+    getChainGasUnits: createParameterizedSelector((_, chains) => {
+      return (chainId: ExtendedChain['id']) => {
+        return chains.find(chain => chain.id === chainId)?.metadata.gasUnits;
+      }
+    }),
   }),
   {
     partialize: (state) => ({
@@ -528,31 +656,37 @@ function getDefaultPollingInterval(chainId: ChainId): number {
   }
 }
 
-function mergeChain(existing: ExtendedChain, updates: Partial<ExtendedChain>): ExtendedChain {
+/**
+ * Things that can be modified by the user:
+ * 1. RPC URLs (including setting the active RPC URL)
+ * 2. Custom Assets
+ * 3. Favorites
+ * 4. Enabling / Disabling
+ */
+function mergeChain(existing: ExtendedChain, incoming: Partial<ExtendedChain>): ExtendedChain {
+  if (!incoming.metadata) return existing;
+  
   return {
     ...existing,
-    ...updates,
     metadata: {
       ...existing.metadata,
-      ...updates.metadata,
+      ...incoming.metadata,
+      assets: mergeArrays(existing.metadata.assets, incoming.metadata.assets, 'address'),
+      defaultRPC: mergePrimitive(existing.metadata.defaultRPC, incoming.metadata.defaultRPC),
+      customRPCs: mergeArrays(existing.metadata.customRPCs, incoming.metadata.customRPCs),
+      favorites: mergeArrays(existing.metadata.favorites, incoming.metadata.favorites, 'address'),
     },
-  };
+  }
 }
 
 function updateChainInList(chains: ExtendedChain[], chainId: ExtendedChain['id'], updates: Partial<ExtendedChain>, mergeFn: (existing: ExtendedChain, updates: Partial<ExtendedChain>) => ExtendedChain): ExtendedChain[] {
   const existingIndex = chains.findIndex(c => c.id === chainId);
-  if (existingIndex === -1) {
-    logger.warn(`[updateChainInList]: Chain ${chainId} not found in list`);
-    return chains;
-  }
-
-  const existingChain = chains[existingIndex];
-  if (!existingChain) {
+  if (existingIndex === -1 || !chains[existingIndex]) {
     logger.warn(`[updateChainInList]: Chain ${chainId} not found in list`);
     return chains;
   }
 
   const updated = [...chains];
-  updated[existingIndex] = mergeFn(existingChain, updates);
+  updated[existingIndex] = mergeFn(chains[existingIndex], updates);
   return updated;
 }

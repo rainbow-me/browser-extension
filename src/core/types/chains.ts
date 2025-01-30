@@ -262,19 +262,26 @@ export interface ExtendedChain extends Chain {
   metadata: ExtendedChainMetadata;
 };
 
+export interface CustomRPC {
+  rpcUrl: string;
+  name: string;
+  symbol: string;
+  blockExplorerUrl: string;
+  testnet: boolean;
+}
+
 export interface ExtendedChainMetadata {
   isBackendDriven: boolean;
   isCustom: boolean;
   enabled: boolean;
   order?: number;
-  label?: string;
   badgeUrl?: string;
   faucetUrl?: string;
   opStack?: boolean;
   internal?: boolean;
   defaultExplorer?: BackendNetworks['networks'][number]['defaultExplorer'];
   defaultRPC?: string;
-  customRPCs?: string[];
+  customRPCs?: CustomRPC[];
   assets?: RainbowChainAsset[];
   gasUnits?: BackendNetworks['networks'][number]['gasUnits'];
   nativeAsset?: BackendNetworks['networks'][number]['nativeAsset'];

@@ -5,18 +5,20 @@ import backendNetworks from 'static/data/networks.json';
 
 import { AddressOrEth } from '../types/assets';
 import {
-  BackendNetwork,
-  BackendNetworkServices,
   ChainId,
+  ExtendedChain,
   chainHardhat,
   chainHardhatOptimism,
 } from '../types/chains';
-import { transformBackendNetworksToChains } from '../utils/networks';
+import { transformBackendNetworksToExtendedChains } from '../utils/networks';
+import { BackendNetworks } from '../types/chains';
+
+type BackendNetwork = BackendNetworks['networks'][number];
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
-const BACKEND_CHAINS = transformBackendNetworksToChains(
-  backendNetworks.networks,
+const BACKEND_CHAINS = transformBackendNetworksToExtendedChains(
+  backendNetworks.backendNetworks,
 );
 
 const LOCAL_CHAINS: Chain[] = [avalancheFuji, curtis, inkSepolia];
@@ -25,7 +27,7 @@ const DEFAULT_PRIVATE_MEMPOOL_TIMEOUT = 2 * 60 * 1_000; // 2 minutes
 
 export const SUPPORTED_CHAINS: Chain[] = IS_TESTING
   ? [...BACKEND_CHAINS, ...LOCAL_CHAINS, chainHardhat, chainHardhatOptimism]
-  : BACKEND_CHAINS.concat(LOCAL_CHAINS);
+  : BACKEND_CHAINS.concat(LOCAL_CHAINS as ExtendedChain[]);
 
 export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map((chain) => chain.id);
 
@@ -33,12 +35,12 @@ export const SUPPORTED_MAINNET_CHAINS: Chain[] = SUPPORTED_CHAINS.filter(
   (chain) => !chain.testnet,
 );
 
-export const needsL1SecurityFeeChains = backendNetworks.networks
+export const needsL1SecurityFeeChains = backendNetworks.backendNetworks.networks
   .filter((backendNetwork: BackendNetwork) => backendNetwork.opStack)
   .map((backendNetwork: BackendNetwork) => parseInt(backendNetwork.id, 10));
 
 export const chainsNativeAsset: Record<number, AddressOrEth> =
-  backendNetworks.networks.reduce(
+  backendNetworks.backendNetworks.networks.reduce(
     (acc, backendNetwork: BackendNetwork) => {
       acc[parseInt(backendNetwork.id, 10)] = backendNetwork.nativeAsset
         .address as Address;
@@ -48,7 +50,7 @@ export const chainsNativeAsset: Record<number, AddressOrEth> =
   );
 
 export const chainsLabel: Record<number, string> =
-  backendNetworks.networks.reduce(
+  backendNetworks.backendNetworks.networks.reduce(
     (acc, backendNetwork: BackendNetwork) => {
       acc[parseInt(backendNetwork.id, 10)] = backendNetwork.label;
       return acc;
@@ -61,17 +63,17 @@ export const chainsLabel: Record<number, string> =
   );
 
 export const chainsPrivateMempoolTimeout: Record<number, number> =
-  backendNetworks.networks.reduce(
+  backendNetworks.backendNetworks.networks.reduce(
     (acc, backendNetwork: BackendNetwork) => {
       acc[parseInt(backendNetwork.id, 10)] =
-        backendNetwork.privateMempoolTimeout || DEFAULT_PRIVATE_MEMPOOL_TIMEOUT;
+        (backendNetwork as any).privateMempoolTimeout || DEFAULT_PRIVATE_MEMPOOL_TIMEOUT;
       return acc;
     },
     {} as Record<number, number>,
   );
 
 export const chainsName: Record<number, string> =
-  backendNetworks.networks.reduce(
+  backendNetworks.backendNetworks.networks.reduce(
     (acc, backendNetwork: BackendNetwork) => {
       acc[parseInt(backendNetwork.id, 10)] = backendNetwork.name;
       return acc;
@@ -84,9 +86,9 @@ export const chainsName: Record<number, string> =
   );
 
 const filterChainIdsByService = (
-  servicePath: (services: BackendNetworkServices) => boolean,
+  servicePath: (services: BackendNetwork['enabledServices']) => boolean,
 ): number[] => {
-  return backendNetworks.networks
+  return backendNetworks.backendNetworks.networks
     .filter((network: BackendNetwork) => {
       const services = network?.enabledServices;
       return services && servicePath(services);
@@ -149,7 +151,7 @@ export const oldDefaultRPC: { [key in ChainId]?: string } = {
   [ChainId.degen]: process.env.DEGEN_MAINNET_RPC,
 };
 
-const chainsGasUnits = backendNetworks.networks.reduce(
+const chainsGasUnits = backendNetworks.backendNetworks.networks.reduce(
   (acc, backendNetwork: BackendNetwork) => {
     acc[parseInt(backendNetwork.id, 10)] = backendNetwork.gasUnits;
     return acc;

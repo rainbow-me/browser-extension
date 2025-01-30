@@ -1,8 +1,8 @@
 import { mainnet } from 'viem/chains';
 
-import { BackendNetworks, CustomNetworks, Networks } from '~/core/resources/networks/networks';
 import { ChainId } from '~/core/types/chains';
-import { ExtendedChain } from '~/core/state/networks/networks';
+
+import { BackendNetworks, CustomNetworks, Networks, ExtendedChain } from '~/core/types/chains';
 
 const IS_DEV = process.env.IS_DEV === 'true';
 const RPC_PROXY_API_KEY = process.env.RPC_PROXY_API_KEY;
@@ -32,6 +32,7 @@ export function transformBackendNetworkToExtendedChain({
   return {
     id: parseInt(network.id, 10),
     name: network.label ?? '',
+    label: network.label ?? '',
     testnet: network.testnet,
     nativeCurrency: {
       name: network.nativeAsset.name ?? '',
@@ -116,6 +117,7 @@ export function transformCustomNetworkToExtendedChain({
   return {
     id: network.id,
     name: network.name,
+    label: network.name,
     testnet: network.testnet.isTestnet,
     nativeCurrency: {
       name: '',
