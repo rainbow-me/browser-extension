@@ -7,13 +7,13 @@ import { createQueryStore } from '~/core/state/internal/createQueryStore';
 import { ChainId, CustomRPC, ExtendedChain, Networks } from '~/core/types/chains';  
 import { differenceOrUnionOf, mergeArrays, mergePrimitive, transformBackendNetworkToExtendedChain, transformCustomNetworkToExtendedChain, transformNetworksToExtendedChains } from './utils';
 import { GasSpeed } from '~/core/types/gas';
-import { DEFAULT_PRIVATE_MEMPOOL_TIMEOUT } from '~/core/utils/backendNetworks';
 import { logger } from '~/logger';
 import { useFavoritesStore } from '~/core/state/favorites';
 import { RainbowChain, useRainbowChainsStore } from '~/core/state/rainbowChains';
 import { RainbowChainAsset, useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { AddressOrEth } from '~/core/types/assets';
+import { DEFAULT_PRIVATE_MEMPOOL_TIMEOUT } from './utils';
 
 interface NetworkState {
 	// encapsulates backend networks and custom networks (just backend driven custom networks)

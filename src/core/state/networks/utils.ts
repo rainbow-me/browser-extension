@@ -9,8 +9,7 @@ const IS_DEV = process.env.IS_DEV === 'true';
 const RPC_PROXY_API_KEY = process.env.RPC_PROXY_API_KEY;
 const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
 
-// TODO: Uncomment this once we have the `privateMempoolTimeout` field on the schema
-// const DEFAULT_PRIVATE_MEMPOOL_TIMEOUT = 2 * 60 * 1_000;
+export const DEFAULT_PRIVATE_MEMPOOL_TIMEOUT = 2 * 60 * 1_000;
 
 const proxyBackendNetworkRpcEndpoint = (endpoint: string) => {
   return `${endpoint}${RPC_PROXY_API_KEY}`;
