@@ -1,19 +1,18 @@
 import { create } from 'zustand';
-import equal from 'react-fast-compare';
-import buildTimeNetworks from 'static/data/networks.json';
 import { Chain } from 'viem';
+import buildTimeNetworks from 'static/data/networks.json';
 
 import { fetchNetworks } from '~/core/resources/networks/networks';
 import { createQueryStore } from '~/core/state/internal/createQueryStore';
 import { ChainId, CustomRPC, ExtendedChain, Networks } from '~/core/types/chains';  
-import { differenceOrUnionOf, mergeArrays, mergePrimitive, transformNetworksToExtendedChains } from './utils';
+import { differenceOrUnionOf, mergeArrays, mergePrimitive, transformBackendNetworkToExtendedChain, transformCustomNetworkToExtendedChain, transformNetworksToExtendedChains } from './utils';
 import { GasSpeed } from '~/core/types/gas';
 import { DEFAULT_PRIVATE_MEMPOOL_TIMEOUT } from '~/core/utils/networks';
-import { RainbowChainAsset, useRainbowChainAssetsStore } from '../rainbowChainAssets';
 import { logger } from '~/logger';
-import { useFavoritesStore } from '../favorites';
-import { RainbowChain, useRainbowChainsStore } from '../rainbowChains';
-import { useUserChainsStore } from '../userChains';
+import { useFavoritesStore } from '~/core/state/favorites';
+import { RainbowChain, useRainbowChainsStore } from '~/core/state/rainbowChains';
+import { RainbowChainAsset, useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
+import { useUserChainsStore } from '~/core/state/userChains';
 import { AddressOrEth } from '~/core/types/assets';
 
 interface NetworkState {
@@ -56,14 +55,14 @@ interface NetworkActions {
   getNftSupportedChainIds: () => ExtendedChain['id'][];
   getChainGasUnits: (chainId: ExtendedChain['id']) => ExtendedChain['metadata']['gasUnits'];
 
-  addCustomChain: (chain: ExtendedChain) => void;
-  updateCustomChain: (chainId: ExtendedChain['id'], updates: Partial<ExtendedChain>) => void;
-  removeCustomChain: (chainId: ExtendedChain['id']) => void;
-  addRpcUrl: (chainId: ExtendedChain['id'], rpcUrl: string) => void;
-  removeRpcUrl: (chainId: ExtendedChain['id'], rpcUrl: string) => void;
-  addCustomAsset: (chainId: ExtendedChain['id'], asset: RainbowChainAsset) => void;
-  updateCustomAsset: (chainId: ExtendedChain['id'], asset: Partial<RainbowChainAsset>) => void;
-  removeCustomAsset: (chainId: ExtendedChain['id'], asset: RainbowChainAsset) => void;
+  addChain: (chain: ExtendedChain, enable: boolean) => void;
+  removeChain: (chainId: ExtendedChain['id']) => void;
+  addRpc: (chainId: ExtendedChain['id'], rpc: CustomRPC, setAsDefault: boolean) => void;
+  setDefaultRpc: (chainId: ExtendedChain['id'], rpcUrl: string) => void;
+  removeRpc: (chainId: ExtendedChain['id'], rpcUrl: string) => void;
+  addAsset: (chainId: ExtendedChain['id'], asset: RainbowChainAsset) => void;
+  updateAsset: (chainId: ExtendedChain['id'], asset: Partial<RainbowChainAsset>) => void;
+  removeAsset: (chainId: ExtendedChain['id'], asset: RainbowChainAsset) => void;
 }
 
 type NetworkStore = NetworkState & NetworkActions;
@@ -176,7 +175,7 @@ function transformExistingStoresToExtendedChains({
   return chains;
 }
 
-const getInitialChainsState = (): ExtendedChain[] => {
+export const getInitialChainsState = (): ExtendedChain[] => {
   const currentFavorites = useFavoritesStore.getState().favorites;
   const currentRainbowChains = useRainbowChainsStore.getState().rainbowChains;
   const currentRainbowChainAssets = useRainbowChainAssetsStore.getState().rainbowChainAssets;
@@ -254,18 +253,30 @@ export const networkStore = createQueryStore<Networks, never, NetworkStore>(
     fetcher: fetchNetworks,
     setData: ({ data, set }) => {
       set((state) => {
-
-        console.log("setting data", state.networks, data.backendNetworks);
         let newState = { ...state };
-        // TODO: Diff and merge backend networks
-        if (!equal(state.networks.backendNetworks, data.backendNetworks)) {
-          // TODO: We also need to cross-check custom networks here too in case we now support a chain that was not supported before
+
+        const backendChains = new Map(data.backendNetworks.networks.map(c => [+c.id, c]));
+        const customChains = new Map(data.customNetworks.customNetworks.map(c => [+c.id, c]));
+        const incomingChainIds = new Set([...backendChains.keys(), ...customChains.keys()]);
+        
+        for (const chainId of incomingChainIds.values()) {
+          const backendNetwork = backendChains.get(+chainId);
+          const customNetwork = customChains.get(+chainId);
+          
+          // the following two functions take care of merging data with state
+          if (backendNetwork) {
+            newState.chains.push(transformBackendNetworkToExtendedChain({
+              network: backendNetwork,
+              chains: state.chains,
+            }));
+          } else if (customNetwork) {
+            newState.chains.push(transformCustomNetworkToExtendedChain({
+              network: customNetwork,
+              chains: state.chains,
+            }));
+          }
         }
 
-        // TODO: Diff and merge custom networks
-        if (!equal(state.networks.customNetworks, data.customNetworks)) {}
-
-        // no state changes, just return state
         return newState;
       });
     },
@@ -275,44 +286,41 @@ export const networkStore = createQueryStore<Networks, never, NetworkStore>(
   (set) => ({
     ...initialState,
 
-    addCustomChain: (chain: Chain) => {
-      set((state) => {        
-        return {
-          ...state,
-          chains: updateChainInList(state.chains, chain.id, chain, mergeChain)
-        };
-      });
-    },
+    addChain: (chain, enable) => {
+      set((state) => {       
+        const newChains = [...state.chains];
+        if (newChains.some(c => c.id === chain.id)) {
+          logger.warn(`[Chain ${chain.id} already exists`);
+          return state;
+        }
 
-    updateCustomChain: (chainId: ExtendedChain['id'], updates: Partial<ExtendedChain>) => {
-      set((state) => {
-        const existingChain = state.chains.find(c => c.id === chainId);
+        // TODO: Need to fill out more metadata fields here
+        const newChain: ExtendedChain = {
+          ...chain,
+          label: chain.name,
+          metadata: {
+            isBackendDriven: false,
+            enabled: enable,
+            isCustom: true,
+          }
+        };
         
-        // Don't allow updating backend-driven chains
-        if (existingChain?.metadata.isBackendDriven) {
-          console.warn(`Cannot update backend-driven chain ${chainId}`);
-          return state;
-        }
-
-        if (!existingChain) {
-          console.warn(`Chain ${chainId} not found`);
-          return state;
-        }
+        newChains.push(newChain);
 
         return {
           ...state,
-          chains: updateChainInList(state.chains, chainId, updates, mergeChain)
+          chains: newChains
         };
       });
     },
 
-    removeCustomChain: (chainId: ExtendedChain['id']) => {
+    removeChain: (chainId) => {
       set((state) => {
         const chain = state.chains.find(c => c.id === chainId);
         
         // Don't allow removing backend-driven chains
         if (chain?.metadata.isBackendDriven) {
-          console.warn(`Cannot remove backend-driven chain ${chainId}`);
+          logger.warn(`[removeChain]: Cannot remove backend-driven chain ${chainId}`);
           return state;
         }
 
@@ -323,80 +331,95 @@ export const networkStore = createQueryStore<Networks, never, NetworkStore>(
       });
     },
 
-    addRpcUrl: (chainId: ExtendedChain['id'], rpcUrl: string) => {
+    addRpc: (chainId, customRpc, setAsDefault) => {
       set((state) => {
-        const chain = state.chains.find(c => c.id === chainId);
-        if (!chain) {
-          console.warn(`Chain ${chainId} not found`);
+        const newChains = [...state.chains];
+
+        const chainIndex = newChains.findIndex(c => c.id === chainId);
+        if (chainIndex === -1) {
+          logger.warn(`[addRpcUrl]: Chain ${chainId} not found`);
           return state;
         }
 
-        // Don't add duplicate URLs
-        if (chain.rpcUrls.default.http.includes(rpcUrl)) {
+        const chain = newChains[chainIndex];
+
+        const alreadyExists = chain.metadata.customRPCs?.some(rpc => rpc.rpcUrl === customRpc.rpcUrl);
+        if (alreadyExists) {
+          logger.warn(`[addRpcUrl]: RPC ${customRpc.rpcUrl} already exists on chain ${chainId}`);
           return state;
         }
 
-        const updates = {
-          rpcUrls: {
-            ...chain.rpcUrls,
-            default: {
-              ...chain.rpcUrls.default,
-              http: [...chain.rpcUrls.default.http, rpcUrl]
-            }
-          }
-        };
+        chain.metadata.customRPCs?.push(customRpc);
+        if (setAsDefault) {
+          const newChain: ExtendedChain = { ...chain, rpcUrls: { default: { http: [customRpc.rpcUrl] } } };
+          newChain.metadata.defaultRPC = customRpc.rpcUrl;
+          newChains[chainIndex] = newChain;
+        }
 
         return {
           ...state,
-          chains: updateChainInList(state.chains, chainId, updates, mergeChain)
+          chains: newChains
         };
       });
     },
 
-    removeRpcUrl: (chainId: ExtendedChain['id'], rpcUrl: string) => {
+    setDefaultRpc: (chainId, rpcUrl) => {
       set((state) => {
-        const chain = state.chains.find(c => c.id === chainId);
-        if (!chain) {
-          console.warn(`Chain ${chainId} not found`);
+        const chainIndex = state.chains.findIndex(c => c.id === chainId);
+        if (chainIndex === -1) {
+          logger.warn(`[setDefaultRpc]: Chain ${chainId} not found`);
           return state;
         }
 
-        // Don't remove if URL doesn't exist
-        if (!chain.rpcUrls.default.http.includes(rpcUrl)) {
+        const chain = state.chains[chainIndex];
+        if (!chain.metadata.customRPCs?.some(rpc => rpc.rpcUrl === rpcUrl)) {
+          logger.warn(`[setDefaultRpc]: RPC ${rpcUrl} not found on chain ${chainId}`);
           return state;
         }
 
-        // If it's the last RPC url, let's remove the chain (if it's custom)
-        if (chain.rpcUrls.default.http.length <= 1) {
-          if (!chain.metadata.isCustom) {
-            logger.warn(`[removeRpcUrl]: Cannot remove last RPC URL for backend-driven chain ${chainId}`);
-            return state;
-          }
+        const newChain: ExtendedChain = { ...chain, rpcUrls: { default: { http: [rpcUrl] } } };
+        newChain.metadata.defaultRPC = rpcUrl;
+        state.chains[chainIndex] = newChain;
+        return state;
+      });
+    },
 
+    removeRpc: (chainId, rpcUrl) => {
+      set((state) => {
+        const newChains = [...state.chains];
+
+        const chainIndex = newChains.findIndex(c => c.id === chainId);
+        if (chainIndex === -1) {
+          logger.warn(`[removeRpc]: Chain ${chainId} not found`);
+          return state;
+        }
+
+        const chain = newChains[chainIndex];
+
+        const rpcIndex = chain.metadata.customRPCs?.findIndex(rpc => rpc.rpcUrl === rpcUrl);
+        if (!rpcIndex || rpcIndex === -1) {
+          logger.warn(`[removeRpc]: RPC ${rpcUrl} not found on chain ${chainId}`);
+          return state;
+        }
+
+        chain.metadata.customRPCs?.splice(rpcIndex, 1);
+        if (chain.metadata.customRPCs?.length === 0 && chain.metadata.isCustom) {
+          // if there are no RPCs left, we should remove the chain
+          newChains.splice(chainIndex, 1);
           return {
             ...state,
-            chains: state.chains.filter(c => c.id !== chainId)
+            chains: newChains
           };
         }
 
-        const updates = {
-          rpcUrls: {
-            ...chain.rpcUrls,
-            default: {
-              ...chain.rpcUrls.default,
-              http: chain.rpcUrls.default.http.filter(url => url !== rpcUrl)
-            }
-          }
-        };
-
         return {
           ...state,
-          chains: updateChainInList(state.chains, chainId, updates, mergeChain)
+          chains: newChains
         };
       });
     },
 
-    addCustomAsset: (chainId: ExtendedChain['id'], asset: RainbowChainAsset) => {
+    addAsset: (chainId: ExtendedChain['id'], asset: RainbowChainAsset) => {
       set((state) => {
         const chain = state.chains.find(c => c.id === chainId);
         if (!chain) {
@@ -424,7 +447,7 @@ export const networkStore = createQueryStore<Networks, never, NetworkStore>(
       });
     },
 
-    updateCustomAsset: (chainId: ExtendedChain['id'], updates: Partial<RainbowChainAsset>) => {
+    updateAsset: (chainId: ExtendedChain['id'], updates: Partial<RainbowChainAsset>) => {
       set((state) => {
         const chain = state.chains.find(c => c.id === chainId);
         if (!chain) {
@@ -455,7 +478,7 @@ export const networkStore = createQueryStore<Networks, never, NetworkStore>(
       });
     },
 
-    removeCustomAsset: (chainId: ExtendedChain['id'], asset: RainbowChainAsset) => {
+    removeAsset: (chainId: ExtendedChain['id'], asset: RainbowChainAsset) => {
       set((state) => {
         const chain = state.chains.find(c => c.id === chainId);
         if (!chain) {

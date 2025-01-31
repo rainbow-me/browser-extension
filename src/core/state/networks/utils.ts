@@ -27,10 +27,11 @@ export function transformBackendNetworkToExtendedChain({
     throw new Error('Invalid network data');
   }
   const defaultRpcUrl = proxyBackendNetworkRpcEndpoint(network.defaultRPC.url);
-  const existingChain = chains?.find((chain) => chain.id === +network.id);
+  const existingChain = chains?.find((chain) => chain.id === toChainId(network.id));
+  const mergedFavorites = new Set([...existingChain?.metadata.favorites || [], ...network.favorites || []]);
 
   return {
-    id: parseInt(network.id, 10),
+    id: toChainId(network.id),
     name: network.name ?? '',
     label: network.label ?? '',
     testnet: network.testnet,
@@ -59,19 +60,22 @@ export function transformBackendNetworkToExtendedChain({
       isBackendDriven: true,
       isCustom: false,
       enabled: true,
-      order: undefined,
+      order: existingChain?.metadata.order || undefined,
       badgeUrl: network.icons.badgeURL,
       opStack: network.opStack,
       internal: network.internal,
       defaultExplorer: network.defaultExplorer,
-      defaultRPC: network.defaultRPC.url,
+      defaultRPC: defaultRpcUrl,
+      customRPCs: existingChain?.metadata.customRPCs || [],
+      assets: existingChain?.metadata.assets || [],
+      faucetUrl: existingChain?.metadata.faucetUrl || undefined,
       gasUnits: network.gasUnits,
       nativeAsset: network.nativeAsset,
       nativeWrappedAsset: network.nativeWrappedAsset,
       // TODO: This doesn't exist on the schema?
       // privateMempoolTimeout: network.privateMempoolTimeout || DEFAULT_PRIVATE_MEMPOOL_TIMEOUT,
       enabledServices: network.enabledServices,
-      favorites: network.favorites,
+      favorites: Array.from(mergedFavorites),
     },
   };
 }
@@ -110,7 +114,7 @@ export function transformCustomNetworkToExtendedChain({
     blockExplorerUrl: network.defaultExplorerURL,
     name: getDappHostname(network.defaultExplorerURL),
     rpcUrl: network.defaultRPCURL,
-    symbol: network.nativeAsset.symbol ?? '',
+    symbol: network.nativeAsset.symbol,
     testnet: network.testnet.isTestnet,
   });
 
