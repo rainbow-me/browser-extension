@@ -246,7 +246,7 @@ export const executeSwap = async ({
       transactionParams,
     );
     // Swap
-  } else {
+  } else if (quote.swapType === SwapType.normal) {
     return fillQuote(
       quote,
       transactionParams,
@@ -256,6 +256,7 @@ export const executeSwap = async ({
       REFERRER,
     );
   }
+  return null;
 };
 
 export const swap = async ({
