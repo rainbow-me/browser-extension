@@ -34,6 +34,7 @@ export const simpleHashSupportedChainNames = [
   ChainName.forma,
   ChainName.gnosis,
   ChainName.godwoken,
+  ChainName.gravity,
   ChainName.immutableZkEvm,
   ChainName.linea,
   ChainName.loot,
@@ -48,6 +49,7 @@ export const simpleHashSupportedChainNames = [
   ChainName.proofOfPlayApex,
   ChainName.proofOfPlayBoss,
   ChainName.rari,
+  ChainName.sanko,
   ChainName.scroll,
   ChainName.sei,
   ChainName.xai,
@@ -82,6 +84,7 @@ export function getUniqueTokenType(contractAddress: string): UniqueTokenType {
   }
 }
 
+// TODO: Replace this with simplehash API call to available chains and verify via `eip155_network_id` https://docs.simplehash.com/reference/chains
 /**
  * Returns a `ChainName` from a `SimpleHashChain`. If an invalid value is
  * forcably passed in, it will throw.
