@@ -29,7 +29,7 @@ const asyncStoragePersister = createAsyncStoragePersister({
     removeItem: LocalStorage.remove,
   },
   // Add throttling to prevent too frequent updates
-  throttleTime: 2000,
+  throttleTime: 8000,
   serialize: (data) => JSON.stringify(data),
   deserialize: (data: string) => JSON.parse(data) as PersistedClient,
 });
