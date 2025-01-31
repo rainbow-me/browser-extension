@@ -6,19 +6,19 @@ import backendNetworks from 'static/data/networks.json';
 import { AddressOrEth } from '../types/assets';
 import {
   ChainId,
-  ExtendedChain,
   chainHardhat,
   chainHardhatOptimism,
 } from '../types/chains';
-import { transformBackendNetworksToExtendedChains } from '../utils/networks';
+import { transformBackendNetworksToChains } from '../utils/backendNetworks';
 import { BackendNetworks } from '../types/chains';
-
-type BackendNetwork = BackendNetworks['networks'][number];
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
-const BACKEND_CHAINS = transformBackendNetworksToExtendedChains(
-  backendNetworks.backendNetworks,
+type BackendNetwork = BackendNetworks['networks'][number];
+type BackendNetworkServices = BackendNetwork['enabledServices'];
+
+const BACKEND_CHAINS = transformBackendNetworksToChains(
+  backendNetworks.backendNetworks.networks,
 );
 
 const LOCAL_CHAINS: Chain[] = [avalancheFuji, curtis, inkSepolia];
@@ -27,7 +27,7 @@ const DEFAULT_PRIVATE_MEMPOOL_TIMEOUT = 2 * 60 * 1_000; // 2 minutes
 
 export const SUPPORTED_CHAINS: Chain[] = IS_TESTING
   ? [...BACKEND_CHAINS, ...LOCAL_CHAINS, chainHardhat, chainHardhatOptimism]
-  : BACKEND_CHAINS.concat(LOCAL_CHAINS as ExtendedChain[]);
+  : BACKEND_CHAINS.concat(LOCAL_CHAINS);
 
 export const SUPPORTED_CHAIN_IDS = SUPPORTED_CHAINS.map((chain) => chain.id);
 
@@ -59,6 +59,8 @@ export const chainsLabel: Record<number, string> =
       [ChainId.avalancheFuji]: 'Avalanche Fuji',
       [ChainId.apechainCurtis]: 'Apechain Curtis',
       [ChainId.inkSepolia]: 'Ink Sepolia',
+      [ChainId.sankoTestnet]: 'Sanko Testnet',
+      [ChainId.gravitySepolia]: 'Gravity Sepolia',
     } as Record<number, string>,
   );
 
@@ -66,7 +68,7 @@ export const chainsPrivateMempoolTimeout: Record<number, number> =
   backendNetworks.backendNetworks.networks.reduce(
     (acc, backendNetwork: BackendNetwork) => {
       acc[parseInt(backendNetwork.id, 10)] =
-        (backendNetwork as any).privateMempoolTimeout || DEFAULT_PRIVATE_MEMPOOL_TIMEOUT;
+        backendNetwork.privateMempoolTimeout || DEFAULT_PRIVATE_MEMPOOL_TIMEOUT;
       return acc;
     },
     {} as Record<number, number>,
@@ -82,11 +84,13 @@ export const chainsName: Record<number, string> =
       [ChainId.avalancheFuji]: 'avalanche-fuji',
       [ChainId.apechainCurtis]: 'apechain-curtis',
       [ChainId.inkSepolia]: 'ink-sepolia',
+      [ChainId.sankoTestnet]: 'sanko-testnet',
+      [ChainId.gravitySepolia]: 'gravity-sepolia',
     } as Record<number, string>,
   );
 
 const filterChainIdsByService = (
-  servicePath: (services: BackendNetwork['enabledServices']) => boolean,
+  servicePath: (services: BackendNetworkServices) => boolean,
 ): number[] => {
   return backendNetworks.backendNetworks.networks
     .filter((network: BackendNetwork) => {
