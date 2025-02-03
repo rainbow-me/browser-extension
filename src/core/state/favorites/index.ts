@@ -144,7 +144,7 @@ const defaultFavorites = {
   ],
 } satisfies FavoritesState['favorites'];
 
-const mergeNewOfficiallySupportedChainsState = (
+export const mergeNewOfficiallySupportedChainsState = (
   state: FavoritesState,
   newChains: ChainId[],
 ) => {

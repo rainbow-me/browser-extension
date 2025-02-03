@@ -1,7 +1,6 @@
 import { Chain } from 'viem/chains';
 import * as chains from 'viem/chains';
 import buildTimeNetworks from 'static/data/networks.json';
-import { RainbowChainAsset } from '~/core/state/rainbowChainAssets';
 
 const HARDHAT_CHAIN_ID = 1337;
 const HARDHAT_OP_CHAIN_ID = 1338;
@@ -273,36 +272,9 @@ export type Networks = typeof buildTimeNetworks;
 export type BackendNetworks = Networks['backendNetworks'];
 export type CustomNetworks = Networks['customNetworks'];
 
-export interface ExtendedChain extends Chain {
-  label: string;
-  metadata: ExtendedChainMetadata;
-};
-
-export interface CustomRPC {
-  rpcUrl: string;
-  name: string;
-  symbol: string;
-  blockExplorerUrl: string;
-  testnet: boolean;
-}
-
-export interface ExtendedChainMetadata {
-  isBackendDriven: boolean;
-  isCustom: boolean;
+export interface UserPreferences {
   enabled: boolean;
-  order?: number;
-  badgeUrl?: string;
-  faucetUrl?: string;
-  opStack?: boolean;
-  internal?: boolean;
-  defaultExplorer?: BackendNetworks['networks'][number]['defaultExplorer'];
-  defaultRPC?: string;
-  customRPCs?: CustomRPC[];
-  assets?: RainbowChainAsset[];
-  gasUnits?: BackendNetworks['networks'][number]['gasUnits'];
-  nativeAsset?: BackendNetworks['networks'][number]['nativeAsset'];
-  nativeWrappedAsset?: BackendNetworks['networks'][number]['nativeWrappedAsset'];
-  privateMempoolTimeout?: number;
-  enabledServices?: BackendNetworks['networks'][number]['enabledServices'];
-  favorites?: BackendNetworks['networks'][number]['favorites'];
-};
+  order: number;
+  activeRpcUrl: string;
+  rpcs: Record<string, Chain>;
+}

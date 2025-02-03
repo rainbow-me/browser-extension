@@ -157,6 +157,7 @@
     "react": "18.2.0",
     "react-beautiful-dnd": "13.1.1",
     "react-dom": "18.2.0",
+    "react-fast-compare": "3.2.2",
     "react-flatten-children": "1.1.2",
     "react-image": "4.1.0",
     "react-router-dom": "6.4.2",

@@ -1,21 +1,28 @@
 import { expect, test, describe, beforeEach } from 'vitest';
+import buildTimeNetworks from 'static/data/networks.json';
 
-import { getInitialChainsState, networkStore } from '../networks';
-import { networks } from './mocks.data';
+import { networkStore } from '../networks';
+import { buildInitialUserPreferences } from '../utils';
+import { getFactoryData, Factories } from './__mocks__';
 
 describe('networkStore', () => {
   beforeEach(() => {
     networkStore.setState({
-      networks,
-      chains: getInitialChainsState(),
+      networks: buildTimeNetworks,
+      userOverrides: buildInitialUserPreferences(),
     });
-  })
-
-  test('Initial networks data should be build time data', async () => {
-    expect(networkStore.getState().networks).toEqual(networks);
   });
 
-  test('Initial state should keep user data intact', async () => {
-    // TODO: Add test
-  })
+  describe('Initial state', () => {
+    Factories.forEach(factory => {
+      test(`${factory} chain order should be kept`, async () => {
+        const factoryData = getFactoryData(factory);
+        const { userOverrides } = networkStore.getState();
+
+        for (let i = 0; i < factoryData.userChainOrder.length; i++) {
+          expect(userOverrides[factoryData.userChainOrder[i]]?.order).toEqual(i);
+        }
+      });
+    });
+  });
 });
