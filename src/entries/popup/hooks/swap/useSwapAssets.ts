@@ -125,7 +125,7 @@ export const useSwapAssets = ({ bridge }: { bridge: boolean }) => {
       Object.values(sellPriceData || {})?.find(
         (asset) => asset.uniqueId === assetToSell?.uniqueId,
       ),
-    [assetToSell?.uniqueId, sellPriceData],
+    [assetToSell, sellPriceData],
   );
 
   const parsedAssetToBuy = useMemo(() => {
