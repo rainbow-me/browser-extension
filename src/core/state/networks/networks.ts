@@ -1,5 +1,3 @@
-import create from 'zustand';
-
 import buildTimeNetworks from 'static/data/networks.json';
 import { fetchNetworks } from '~/core/resources/networks/networks';
 import { createQueryStore } from '~/core/state/internal/createQueryStore';
@@ -60,7 +58,7 @@ function createSelector<T>(
     | null = null;
 
   return () => {
-    const { networks, userOverrides } = useNetworkStore.getState();
+    const { networks, userOverrides } = networkStore.getState();
 
     if (cachedResult !== uninitialized && lastNetworks === networks) {
       return cachedResult;
@@ -86,7 +84,7 @@ function createParameterizedSelector<T, Args extends unknown[]>(
   let memoizedFn: ((...args: Args) => T) | null = null;
 
   return (...args: Args) => {
-    const { networks, userOverrides } = useNetworkStore.getState();
+    const { networks, userOverrides } = networkStore.getState();
     const argsChanged =
       !lastArgs ||
       args.length !== lastArgs.length ||
@@ -261,5 +259,3 @@ export const networkStore = createQueryStore<
     version: 1,
   },
 );
-
-export const useNetworkStore = create(networkStore);

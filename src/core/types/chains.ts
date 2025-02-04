@@ -271,7 +271,7 @@ export type CustomNetwork = CustomNetworks['customNetworks'][number];
 
 export type UserPreferences = {
   enabled: boolean;
-  order: number;
+  order: number | undefined;
   activeRpcUrl: string;
   rpcs: Record<string, Chain>;
 } & (

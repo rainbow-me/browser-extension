@@ -47,9 +47,7 @@ const initialChains = SUPPORTED_MAINNET_CHAINS.reduce(
   {} as Record<number, boolean>,
 );
 
-const initialUserChainsOrder = SUPPORTED_MAINNET_CHAINS.map(
-  (id) => Number(id) as number,
-);
+const initialUserChainsOrder = SUPPORTED_MAINNET_CHAINS.map(({ id }) => id);
 
 export const userChainsStore = createStore<UserChainsState>(
   (set, get) => ({

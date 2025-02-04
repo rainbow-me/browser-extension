@@ -13,6 +13,7 @@ import {
   UserPreferences,
 } from '~/core/types/chains';
 import { GasSpeed } from '~/core/types/gas';
+import { logger } from '~/logger';
 
 import { NetworkState } from './networks';
 
@@ -86,14 +87,34 @@ export function differenceOrUnionOf<
   return entries as Map<string, K extends keyof T ? T[K] : T>;
 }
 
+const isUserChainOrderMalformed = (userChainsOrder: number[]) => {
+  return userChainsOrder.some((id) => id == null || Number.isNaN(id));
+};
+
 export const buildInitialUserPreferences = (): Record<
   number,
   UserPreferences
 > => {
   const userOverrides: Record<number, UserPreferences> = {};
 
-  const rainbowChains = useRainbowChainsStore.getState().rainbowChains;
+  const { rainbowChains } = useRainbowChainsStore.getState();
   const { userChains, userChainsOrder } = useUserChainsStore.getState();
+
+  let order = userChainsOrder;
+  if (isUserChainOrderMalformed(order)) {
+    const defaultInitialOrder =
+      useUserChainsStore.getInitialState().userChainsOrder;
+    logger.warn(
+      '[buildInitialUserPreferences] User chain order is malformed, using default order',
+      {
+        userChainsOrder,
+        defaultInitialOrder,
+      },
+    );
+    order = defaultInitialOrder;
+  }
+
+  const orderWithDuplicatesRemoved = [...new Set(order)];
 
   for (const chainId of Object.keys(rainbowChains)) {
     const chainIdNum = toChainId(chainId);
@@ -105,7 +126,14 @@ export const buildInitialUserPreferences = (): Record<
 
     userOverrides[chainIdNum].activeRpcUrl = chain.activeRpcUrl;
     userOverrides[chainIdNum].enabled = userChains[chainIdNum] ?? false;
-    userOverrides[chainIdNum].order = userChainsOrder[chainIdNum];
+
+    const desiredOrder = orderWithDuplicatesRemoved.findIndex(
+      (id) => id === chainIdNum,
+    );
+    userOverrides[chainIdNum].order =
+      userOverrides[chainIdNum].order ?? desiredOrder === -1
+        ? undefined
+        : desiredOrder;
 
     const rpcs: Record<string, Chain> = {};
     // construct RPCs

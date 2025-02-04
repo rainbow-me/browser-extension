@@ -1,7 +1,10 @@
 import { resolve } from 'path';
 
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
+import dotenv from 'dotenv';
 import { defineConfig } from 'vitest/config';
+
+dotenv.config({ path: '.env' });
 
 export default defineConfig({
   plugins: [vanillaExtractPlugin()],
