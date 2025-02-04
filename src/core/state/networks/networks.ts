@@ -23,7 +23,7 @@ const IS_DEV = process.env.IS_DEV === 'true';
 const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
-const LOCALS = IS_TESTING ? LOCAL_NETWORKS : [];
+const LOCAL_TESTING_NETWORKS = IS_TESTING ? LOCAL_NETWORKS : [];
 
 export interface NetworkState {
   // NOTE: Now backend-driven networks and backend-driven custom networks are stored in the same networks object
@@ -39,7 +39,7 @@ interface NetworkActions {
     chainId: number,
   ) => string | undefined;
 
-  getAllNetworkIconUrls: () => Record<number, string>;
+  getSupportNetworksIconUrls: () => Record<number, string>;
 }
 
 let lastNetworks: Networks | null = null;
@@ -158,13 +158,17 @@ export const networkStore = createQueryStore<
     ...initialState,
 
     getSupportedCustomNetworks: createSelector((networks) => {
-      return [...networks.customNetworks.customNetworks, ...LOCALS].sort(
-        (a, b) => a.name.localeCompare(b.name),
-      );
+      return [
+        ...networks.customNetworks.customNetworks,
+        ...LOCAL_TESTING_NETWORKS,
+      ].sort((a, b) => a.name.localeCompare(b.name));
     }),
 
     getSupportedCustomNetworksIconUrl: createSelector((networks) => {
-      return [...networks.customNetworks.customNetworks, ...LOCALS].reduce(
+      return [
+        ...networks.customNetworks.customNetworks,
+        ...LOCAL_TESTING_NETWORKS,
+      ].reduce(
         (acc, network) => ({
           ...acc,
           [network.id]: network.iconURL,
@@ -174,7 +178,10 @@ export const networkStore = createQueryStore<
     }),
 
     getSupportedCustomNetworksTestnetFaucet: createSelector((networks) => {
-      return [...networks.customNetworks.customNetworks, ...LOCALS].reduce(
+      return [
+        ...networks.customNetworks.customNetworks,
+        ...LOCAL_TESTING_NETWORKS,
+      ].reduce(
         (acc, network) => ({
           ...acc,
           [network.id]: network.testnet.FaucetURL,
@@ -188,30 +195,20 @@ export const networkStore = createQueryStore<
         return (chainId: ChainId) => {
           const network = [
             ...networks.customNetworks.customNetworks,
-            ...LOCALS,
+            ...LOCAL_TESTING_NETWORKS,
           ].find((network) => network.id === chainId);
           return network?.testnet.FaucetURL;
         };
       },
     ),
 
-    getAllNetworkIconUrls: createSelector((networks) => {
-      return [
-        ...networks.customNetworks.customNetworks,
-        ...LOCALS,
-        ...networks.backendNetworks.networks,
-      ].reduce((acc, network) => {
-        if (
-          'internal' in network &&
-          network.internal &&
-          !(INTERNAL_BUILD || IS_DEV)
-        )
-          return acc;
+    getSupportNetworksIconUrls: createSelector((networks) => {
+      return networks.backendNetworks.networks.reduce((acc, network) => {
+        if (network.internal && !(INTERNAL_BUILD || IS_DEV)) return acc;
 
         return {
           ...acc,
-          [network.id]:
-            'iconURL' in network ? network.iconURL : network.icons.badgeURL,
+          [network.id]: network.icons.badgeURL,
         };
       }, {});
     }),

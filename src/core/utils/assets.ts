@@ -51,10 +51,17 @@ export const getCustomChainIconUrl = (
   if (!chainId) return '';
 
   if (address === AddressZero || address === ETH_ADDRESS) {
-    const chainIconUrl = networkStore.getState().getAllNetworkIconUrls()[
-      chainId
-    ];
-    if (chainIconUrl) return chainIconUrl;
+    const supportNetworksIconUrls = networkStore
+      .getState()
+      .getSupportNetworksIconUrls()[chainId];
+    const customChainIconUrl = networkStore
+      .getState()
+      .getSupportedCustomNetworksIconUrl()[chainId];
+
+    if (supportNetworksIconUrls) return supportNetworksIconUrls;
+    if (customChainIconUrl) return customChainIconUrl;
+
+    // NOTE: Falls through to old logic if we don't have it from backend driven network data
   }
 
   const name = customChainIdsToAssetNames[chainId];
