@@ -1,9 +1,11 @@
 import buildTimeNetworks from 'static/data/networks.json';
 import { fetchNetworks } from '~/core/resources/networks/networks';
 import { createQueryStore } from '~/core/state/internal/createQueryStore';
+import { AddressOrEth } from '~/core/types/assets';
 import {
   ChainId,
   CustomNetwork,
+  MergedChainData,
   Networks,
   UserPreferences,
 } from '~/core/types/chains';
@@ -12,9 +14,9 @@ import {
   LOCAL_NETWORKS,
   buildInitialUserPreferences,
   differenceOrUnionOf,
+  mergeChainData,
   modifyUserPreferencesForNewlySupportedNetworks,
   syncDefaultFavoritesForNewlySupportedNetworks,
-  toChainId,
 } from './utils';
 
 const IS_DEV = process.env.IS_DEV === 'true';
@@ -38,14 +40,19 @@ interface NetworkActions {
   ) => string | undefined;
 
   getSupportNetworksIconUrls: () => Record<number, string>;
+
+  getDefaultFavorites: () => Record<number, AddressOrEth[]>;
 }
 
 let lastNetworks: Networks | null = null;
+let lastUserOverrides: Record<number, UserPreferences> | null = null;
+let mergedChainData: Record<number, MergedChainData> | null = null;
 
 function createSelector<T>(
   selectorFn: (
     networks: Networks,
     userOverrides: Record<number, UserPreferences>,
+    mergedChainData: Record<number, MergedChainData>,
   ) => T,
 ): () => T {
   const uninitialized = Symbol();
@@ -54,20 +61,38 @@ function createSelector<T>(
     | ((
         networks: Networks,
         userOverrides: Record<number, UserPreferences>,
+        mergedChainData: Record<number, MergedChainData>,
       ) => T)
     | null = null;
 
   return () => {
     const { networks, userOverrides } = networkStore.getState();
 
-    if (cachedResult !== uninitialized && lastNetworks === networks) {
+    const didNetworksChange = lastNetworks !== networks;
+    const didUserOverridesChange = lastUserOverrides !== userOverrides;
+
+    if (
+      cachedResult !== uninitialized &&
+      !didNetworksChange &&
+      !didUserOverridesChange
+    ) {
       return cachedResult;
     }
 
-    if (lastNetworks !== networks) lastNetworks = networks;
+    if (
+      didNetworksChange ||
+      didUserOverridesChange ||
+      mergedChainData === null
+    ) {
+      if (didNetworksChange) lastNetworks = networks;
+      if (didUserOverridesChange) lastUserOverrides = userOverrides;
+
+      mergedChainData = mergeChainData(networks, userOverrides);
+    }
+
     if (!memoizedFn) memoizedFn = selectorFn;
 
-    cachedResult = memoizedFn(networks, userOverrides);
+    cachedResult = memoizedFn(networks, userOverrides, mergedChainData);
     return cachedResult;
   };
 }
@@ -76,6 +101,7 @@ function createParameterizedSelector<T, Args extends unknown[]>(
   selectorFn: (
     networks: Networks,
     userOverrides: Partial<Record<ChainId, UserPreferences>>,
+    mergedChainData: Record<number, MergedChainData>,
   ) => (...args: Args) => T,
 ): (...args: Args) => T {
   const uninitialized = Symbol();
@@ -90,17 +116,29 @@ function createParameterizedSelector<T, Args extends unknown[]>(
       args.length !== lastArgs.length ||
       args.some((arg, i) => arg !== lastArgs?.[i]);
 
+    const didNetworksChange = lastNetworks !== networks;
+    const didUserOverridesChange = lastUserOverrides !== userOverrides;
+
     if (
       cachedResult !== uninitialized &&
-      lastNetworks === networks &&
+      !didNetworksChange &&
+      !didUserOverridesChange &&
       !argsChanged
     ) {
       return cachedResult;
     }
 
-    if (!memoizedFn || lastNetworks !== networks) {
-      lastNetworks = networks;
-      memoizedFn = selectorFn(networks, userOverrides);
+    if (
+      !memoizedFn ||
+      didNetworksChange ||
+      didUserOverridesChange ||
+      mergedChainData === null
+    ) {
+      if (didNetworksChange) lastNetworks = networks;
+      if (didUserOverridesChange) lastUserOverrides = userOverrides;
+
+      mergedChainData = mergeChainData(networks, userOverrides);
+      memoizedFn = selectorFn(networks, userOverrides, mergedChainData);
     }
 
     lastArgs = args;
@@ -135,9 +173,7 @@ export const networkStore = createQueryStore<
           };
         }
 
-        void syncDefaultFavoritesForNewlySupportedNetworks(
-          Array.from(newNetworks.keys()).map(toChainId),
-        );
+        void syncDefaultFavoritesForNewlySupportedNetworks(newNetworks);
 
         return {
           ...state,
@@ -207,6 +243,17 @@ export const networkStore = createQueryStore<
         return {
           ...acc,
           [network.id]: network.icons.badgeURL,
+        };
+      }, {});
+    }),
+
+    getDefaultFavorites: createSelector((networks) => {
+      return networks.backendNetworks.networks.reduce((acc, network) => {
+        if (network.internal && !(INTERNAL_BUILD || IS_DEV)) return acc;
+
+        return {
+          ...acc,
+          [network.id]: network.favorites.map((f) => f.address as AddressOrEth),
         };
       }, {});
     }),

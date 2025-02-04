@@ -8,12 +8,16 @@ import {
 import { useRainbowChainsStore } from '~/core/state/rainbowChains';
 import { useUserChainsStore } from '~/core/state/userChains';
 import {
+  BackendNetwork,
   BackendNetworks,
   ChainId,
   CustomNetwork,
+  MergedChainData,
+  Networks,
   UserPreferences,
 } from '~/core/types/chains';
 import { GasSpeed } from '~/core/types/gas';
+import { transformBackendNetworksToChains } from '~/core/utils/backendNetworks';
 import { logger } from '~/logger';
 
 import { NetworkState } from './networks';
@@ -232,11 +236,11 @@ export function getDefaultPollingInterval(chainId: ChainId): number {
 }
 
 export const syncDefaultFavoritesForNewlySupportedNetworks = (
-  newlySupportedNetworks: ChainId[],
+  newNetworks: Map<string, BackendNetwork>,
 ) => {
   return mergeNewOfficiallySupportedChainsState(
     useFavoritesStore.getState(),
-    newlySupportedNetworks,
+    newNetworks,
   );
 };
 
@@ -361,3 +365,36 @@ export const LOCAL_NETWORKS: CustomNetwork[] = [
     },
   },
 ];
+
+export const mergeChainData = (
+  networks: Networks,
+  userOverrides: Record<number, UserPreferences>,
+): Record<number, MergedChainData> => {
+  const mergedChainData: Record<number, MergedChainData> = {};
+  const backendNetworks = transformBackendNetworksToChains(
+    networks.backendNetworks.networks,
+  );
+
+  const backendNetworksMap = Object.fromEntries(
+    backendNetworks.map((chain) => [chain.id, chain]),
+  );
+
+  for (const [key, override] of Object.entries(userOverrides)) {
+    const chainId = toChainId(key);
+    const baseChain = backendNetworksMap[chainId] || {};
+    mergedChainData[chainId] = {
+      ...baseChain,
+      ...override,
+    };
+  }
+
+  for (const chain of backendNetworks) {
+    mergedChainData[chain.id] = {
+      ...mergedChainData[chain.id],
+      ...chain,
+      ...userOverrides[chain.id],
+    };
+  }
+
+  return mergedChainData;
+};

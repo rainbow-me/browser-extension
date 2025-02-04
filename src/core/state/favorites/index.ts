@@ -1,66 +1,11 @@
 import create from 'zustand';
 
-import {
-  APEETH_APECHAIN_ADDRESS,
-  APEUSD_APECHAIN_ADDRESS,
-  APE_APECHAIN_ADDRESS,
-  AVAX_AVALANCHE_ADDRESS,
-  BNB_BSC_ADDRESS,
-  DAI_ADDRESS,
-  DAI_ARBITRUM_ADDRESS,
-  DAI_AVALANCHE_ADDRESS,
-  DAI_BASE_ADDRESS,
-  DAI_BSC_ADDRESS,
-  DAI_OPTIMISM_ADDRESS,
-  DAI_POLYGON_ADDRESS,
-  DEGEN_DEGEN_ADDRESS,
-  DMT_SANKO_ADDRESS,
-  ETH_ADDRESS,
-  ETH_ARBITRUM_ADDRESS,
-  ETH_BASE_ADDRESS,
-  ETH_BLAST_ADDRESS,
-  ETH_INK_ADDRESS,
-  ETH_OPTIMISM_ADDRESS,
-  ETH_ZORA_ADDRESS,
-  G_GRAVITY_ADDRESS,
-  OP_ADDRESS,
-  POL_POLYGON_ADDRESS,
-  SOCKS_ADDRESS,
-  SOCKS_ARBITRUM_ADDRESS,
-  USDB_BLAST_ADDRESS,
-  USDC_ADDRESS,
-  USDC_ARBITRUM_ADDRESS,
-  USDC_AVALANCHE_ADDRESS,
-  USDC_BASE_ADDRESS,
-  USDC_BSC_ADDRESS,
-  USDC_GRAVITY_ADDRESS,
-  USDC_OPTIMISM_ADDRESS,
-  USDC_POLYGON_ADDRESS,
-  USDC_SANKO_ADDRESS,
-  WAPE_APECHAIN_ADDRESS,
-  WAVAX_AVALANCHE_ADDRESS,
-  WBTC_ADDRESS,
-  WBTC_ARBITRUM_ADDRESS,
-  WBTC_AVALANCHE_ADDRESS,
-  WBTC_GRAVITY_ADDRESS,
-  WBTC_OPTIMISM_ADDRESS,
-  WBTC_POLYGON_ADDRESS,
-  WDMT_SANKO_ADDRESS,
-  WETH_BASE_ADDRESS,
-  WETH_BLAST_ADDRESS,
-  WETH_GRAVITY_ADDRESS,
-  WETH_INK_ADDRESS,
-  WETH_OPTIMISM_ADDRESS,
-  WETH_POLYGON_ADDRESS,
-  WETH_SANKO_ADDRESS,
-  WETH_ZORA_ADDRESS,
-  WG_GRAVITY_ADDRESS,
-} from '~/core/references';
 import { AddressOrEth } from '~/core/types/assets';
-import { ChainId } from '~/core/types/chains';
-import { persistOptions } from '~/core/utils/persistOptions';
+import { BackendNetwork, ChainId } from '~/core/types/chains';
 
 import { createStore } from '../internal/createStore';
+import { networkStore } from '../networks/networks';
+import { toChainId } from '../networks/utils';
 
 type UpdateFavoritesArgs = {
   address: AddressOrEth;
@@ -75,83 +20,19 @@ export interface FavoritesState {
   removeFavorite: UpdateFavoritesFn;
 }
 
-const defaultFavorites = {
-  [ChainId.mainnet]: [
-    ETH_ADDRESS,
-    DAI_ADDRESS,
-    USDC_ADDRESS,
-    WBTC_ADDRESS,
-    SOCKS_ADDRESS,
-  ],
-  [ChainId.arbitrum]: [
-    ETH_ARBITRUM_ADDRESS,
-    DAI_ARBITRUM_ADDRESS,
-    USDC_ARBITRUM_ADDRESS,
-    WBTC_ARBITRUM_ADDRESS,
-    SOCKS_ARBITRUM_ADDRESS,
-  ],
-  [ChainId.bsc]: [BNB_BSC_ADDRESS, DAI_BSC_ADDRESS, USDC_BSC_ADDRESS],
-  [ChainId.polygon]: [
-    POL_POLYGON_ADDRESS,
-    WETH_POLYGON_ADDRESS,
-    DAI_POLYGON_ADDRESS,
-    USDC_POLYGON_ADDRESS,
-    WBTC_POLYGON_ADDRESS,
-  ],
-  [ChainId.optimism]: [
-    ETH_OPTIMISM_ADDRESS,
-    OP_ADDRESS,
-    WETH_OPTIMISM_ADDRESS,
-    DAI_OPTIMISM_ADDRESS,
-    USDC_OPTIMISM_ADDRESS,
-    WBTC_OPTIMISM_ADDRESS,
-  ],
-  [ChainId.base]: [
-    ETH_BASE_ADDRESS,
-    WETH_BASE_ADDRESS,
-    DAI_BASE_ADDRESS,
-    USDC_BASE_ADDRESS,
-  ],
-  [ChainId.zora]: [ETH_ZORA_ADDRESS, WETH_ZORA_ADDRESS],
-  [ChainId.avalanche]: [
-    AVAX_AVALANCHE_ADDRESS,
-    WAVAX_AVALANCHE_ADDRESS,
-    DAI_AVALANCHE_ADDRESS,
-    USDC_AVALANCHE_ADDRESS,
-    WBTC_AVALANCHE_ADDRESS,
-  ],
-  [ChainId.blast]: [ETH_BLAST_ADDRESS, WETH_BLAST_ADDRESS, USDB_BLAST_ADDRESS],
-  [ChainId.degen]: [DEGEN_DEGEN_ADDRESS],
-  [ChainId.apechain]: [
-    APE_APECHAIN_ADDRESS,
-    WAPE_APECHAIN_ADDRESS,
-    APEETH_APECHAIN_ADDRESS,
-    APEUSD_APECHAIN_ADDRESS,
-  ],
-  [ChainId.ink]: [ETH_INK_ADDRESS, WETH_INK_ADDRESS],
-  [ChainId.sanko]: [
-    DMT_SANKO_ADDRESS,
-    WDMT_SANKO_ADDRESS,
-    USDC_SANKO_ADDRESS,
-    WETH_SANKO_ADDRESS,
-  ],
-  [ChainId.gravity]: [
-    G_GRAVITY_ADDRESS,
-    WG_GRAVITY_ADDRESS,
-    WETH_GRAVITY_ADDRESS,
-    USDC_GRAVITY_ADDRESS,
-    WBTC_GRAVITY_ADDRESS,
-  ],
-} satisfies FavoritesState['favorites'];
-
 export const mergeNewOfficiallySupportedChainsState = (
   state: FavoritesState,
-  newChains: ChainId[],
+  newNetworks: Map<string, BackendNetwork>,
 ) => {
-  for (const chainId of newChains) {
+  for (const [key, network] of newNetworks) {
+    const chainId = toChainId(key);
     const stateChainFavorites = state.favorites[chainId] || [];
     state.favorites[chainId] = [
-      ...new Set(stateChainFavorites.concat(defaultFavorites[chainId])), // Set to remove duplicates if any
+      ...new Set(
+        stateChainFavorites.concat(
+          network.favorites.map((f) => f.address as AddressOrEth),
+        ),
+      ),
     ];
   }
   return state;
@@ -159,7 +40,7 @@ export const mergeNewOfficiallySupportedChainsState = (
 
 export const favoritesStore = createStore<FavoritesState>(
   (set, get) => ({
-    favorites: defaultFavorites,
+    favorites: networkStore.getState().getDefaultFavorites(),
     addFavorite: ({ address, chainId }: UpdateFavoritesArgs) => {
       const { favorites } = get();
       const currentFavorites = favorites[chainId] || [];
@@ -184,34 +65,10 @@ export const favoritesStore = createStore<FavoritesState>(
     },
   }),
   {
-    persist: persistOptions({
+    persist: {
       name: 'favorites',
       version: 7,
-      migrations: [
-        // version 1 didn't need a migration
-        (state: FavoritesState) => state,
-        // version 2 added avalanche
-        (state) =>
-          mergeNewOfficiallySupportedChainsState(state, [ChainId.avalanche]),
-        // version 3 added blast
-        (state) =>
-          mergeNewOfficiallySupportedChainsState(state, [ChainId.blast]),
-        // version 4 added degen
-        (state) =>
-          mergeNewOfficiallySupportedChainsState(state, [ChainId.degen]),
-        // version 5 added apechain
-        (state) =>
-          mergeNewOfficiallySupportedChainsState(state, [ChainId.apechain]),
-        // version 6 added ink
-        (state) => mergeNewOfficiallySupportedChainsState(state, [ChainId.ink]),
-        // version 7 added sanko & gravity
-        (state) =>
-          mergeNewOfficiallySupportedChainsState(state, [
-            ChainId.sanko,
-            ChainId.gravity,
-          ]),
-      ],
-    }),
+    },
   },
 );
 
