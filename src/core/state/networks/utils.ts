@@ -1,5 +1,6 @@
 import { type Chain, avalancheFuji, curtis, inkSepolia } from 'viem/chains';
 
+import buildTimeNetworks from 'static/data/networks.json';
 import {
   mergeNewOfficiallySupportedChainsState,
   useFavoritesStore,
@@ -91,10 +92,9 @@ const isUserChainOrderMalformed = (userChainsOrder: number[]) => {
   return userChainsOrder.some((id) => id == null || Number.isNaN(id));
 };
 
-export const buildInitialUserPreferences = (): Record<
-  number,
-  UserPreferences
-> => {
+export const buildInitialUserPreferences = (
+  initialSupportedNetworks = buildTimeNetworks,
+): Record<number, UserPreferences> => {
   const userOverrides: Record<number, UserPreferences> = {};
 
   const { rainbowChains } = useRainbowChainsStore.getState();
@@ -143,6 +143,25 @@ export const buildInitialUserPreferences = (): Record<
     }
 
     userOverrides[chainIdNum].rpcs = rpcs;
+
+    const isSupported = initialSupportedNetworks.backendNetworks.networks.some(
+      (n) => +n.id === chainIdNum,
+    );
+    if (isSupported) {
+      userOverrides[chainIdNum].type = 'supported';
+    } else {
+      // for user-added custom networks, we need chain info attached to the userOverride
+      userOverrides[chainIdNum].type = 'custom';
+      const activeChain = chain.chains.find(
+        (c) => c.rpcUrls.default.http[0] === chain.activeRpcUrl,
+      );
+      if (activeChain) {
+        userOverrides[chainIdNum] = {
+          ...userOverrides[chainIdNum],
+          ...activeChain,
+        };
+      }
+    }
   }
 
   return userOverrides;

@@ -280,5 +280,5 @@ export type UserPreferences = {
     }
   | ({
       type: 'custom';
-    } & BackendNetwork)
+    } & Chain)
 );
