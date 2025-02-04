@@ -34,57 +34,6 @@ interface UseSwapQuotesProps {
   isClaim?: boolean;
 }
 
-const logQuoteRequest = (params: QuoteParams, isCrosschain: boolean) => {
-  console.log(
-    `[Swap Quote] Fetching ${isCrosschain ? 'crosschain' : 'regular'} quote:`,
-    {
-      requestTime: new Date().toISOString(),
-      chainId: params.chainId,
-      toChainId: params.toChainId,
-      sellToken: params.sellTokenAddress,
-      buyToken: params.buyTokenAddress,
-      sellAmount: params.sellAmount,
-      buyAmount: params.buyAmount,
-      slippage: params.slippage,
-    },
-  );
-};
-
-const logQuoteResponse = (
-  result: Quote | CrosschainQuote | QuoteError | null,
-  startTime: number,
-  isCrosschain: boolean,
-) => {
-  const durationMs = Date.now() - startTime;
-  const responseTime = new Date().toISOString();
-
-  if (!result || 'error' in result) {
-    console.error(
-      `[Swap Quote] Failed to fetch ${
-        isCrosschain ? 'crosschain' : 'regular'
-      } quote:`,
-      {
-        durationMs,
-        error: result?.error,
-        responseTime,
-        startTime: new Date(startTime).toISOString(),
-      },
-    );
-  } else {
-    console.log(
-      `[Swap Quote] Received ${isCrosschain ? 'crosschain' : 'regular'} quote:`,
-      {
-        durationMs,
-        buyAmount: result.buyAmount,
-        sellAmount: result.sellAmount,
-        source: result?.source,
-        responseTime,
-        startTime: new Date(startTime).toISOString(),
-      },
-    );
-  }
-};
-
 export const useSwapQuote = ({
   assetToSell,
   assetToBuy,
@@ -115,7 +64,7 @@ export const useSwapQuote = ({
       assetToSell && assetToBuy && typeof independentValue === 'number';
     if (!paramsReady) return undefined;
 
-    const params = {
+    return {
       source: source === 'auto' ? undefined : source,
       chainId: assetToSell.chainId,
       fromAddress: currentAddress,
@@ -148,8 +97,6 @@ export const useSwapQuote = ({
       feePercentageBasisPoints: INTERNAL_BUILD || isClaim ? 0 : undefined,
       currency,
     };
-
-    return params;
   }, [
     assetToBuy,
     assetToBuyValue,
@@ -167,18 +114,9 @@ export const useSwapQuote = ({
   const { data, isLoading, isError, fetchStatus } = useQuery({
     queryFn: async () => {
       if (!quotesParams) throw 'unreacheable';
-
-      // Log the quote request
-      logQuoteRequest(quotesParams, isCrosschainSwap);
-      const startTime = Date.now();
-
       const quote = await (isCrosschainSwap ? getCrosschainQuote : getQuote)(
         quotesParams,
       );
-
-      // Log the quote response
-      logQuoteResponse(quote, startTime, isCrosschainSwap);
-
       if (quote && 'error' in quote) {
         analyticsTrackQuoteFailed(quote, {
           inputAsset: assetToSell,
