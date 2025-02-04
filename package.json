@@ -61,6 +61,7 @@
     "anvil:optimism": "anvil --fork-url $(./scripts/get-rpc-url.sh optimism)",
     "anvil:kill": "lsof -i :8545|tail -n +2|awk '{print $2}'|xargs -r kill -s SIGINT",
     "test": "./scripts/unit-tests.sh",
+    "test:file": "vitest",
     "test:watch": "yarn anvil & vitest --watch",
     "// Runs e2e": "",
     "vitest:parallel": "./scripts/e2e-parallel-tests.sh",

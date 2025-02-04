@@ -21,6 +21,7 @@ import { requestMetadata } from '../graphql';
 import { i18n } from '../languages';
 import { customChainIdsToAssetNames } from '../references/assets';
 import { AddysPositionAsset } from '../resources/positions';
+import { networkStore } from '../state/networks/networks';
 import { SearchAsset } from '../types/search';
 import { wagmiConfig } from '../wagmi';
 import { getProvider } from '../wagmi/clientToProvider';
@@ -47,15 +48,19 @@ export const getCustomChainIconUrl = (
   chainId: ChainId,
   address: AddressOrEth,
 ) => {
-  if (!chainId || !customChainIdsToAssetNames[chainId]) return '';
-  const baseUrl =
-    'https://raw.githubusercontent.com/rainbow-me/assets/master/blockchains/';
+  if (!chainId) return '';
 
   if (address === AddressZero || address === ETH_ADDRESS) {
-    return `${baseUrl}${customChainIdsToAssetNames[chainId]}/info/logo.png`;
-  } else {
-    return `${baseUrl}${customChainIdsToAssetNames[chainId]}/assets/${address}/logo.png`;
+    const chainIconUrl = networkStore.getState().getAllNetworkIconUrls()[
+      chainId
+    ];
+    if (chainIconUrl) return chainIconUrl;
   }
+
+  const name = customChainIdsToAssetNames[chainId];
+  if (!name) return '';
+
+  return `https://raw.githubusercontent.com/rainbow-me/assets/master/blockchains/${name}/assets/${address}/logo.png`;
 };
 
 export const getNativeAssetPrice = ({

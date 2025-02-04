@@ -17,9 +17,14 @@ import {
   scrollSepolia,
 } from 'viem/chains';
 
-import { ChainId } from '../types/chains';
+import { networkStore } from '~/core/state/networks/networks';
+import { ChainId } from '~/core/types/chains';
 
-export const TestnetFaucet = {
+/**
+ * @deprecated - DO NOT USE THIS DIRECTLY.
+ * Use `getFaucetsUrl` instead below.
+ */
+export const FALLBACK_FAUCETS = {
   [ChainId.sepolia]: 'https://sepoliafaucet.com',
   [ChainId.holesky]: 'https://faucet.quicknode.com/ethereum/holesky',
   [ChainId.optimismSepolia]: 'https://app.optimism.io/faucet',
@@ -63,3 +68,12 @@ export const TestnetFaucet = {
   2024115: 'https://dogechain-demo.caldera.dev/faucet',
   63: 'https://easy.hebeswap.com/#/faucet',
 } as const;
+
+export const getFaucetsUrl = (chainId: number): string | undefined => {
+  const backendDrivenFaucet = networkStore
+    .getState()
+    .getSupportedCustomNetworkTestnetFaucet(chainId);
+  if (backendDrivenFaucet) return backendDrivenFaucet;
+
+  return FALLBACK_FAUCETS[chainId];
+};

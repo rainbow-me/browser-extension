@@ -1,31 +1,63 @@
-import { create } from 'zustand';
-import buildTimeNetworks from 'static/data/networks.json';
+import create from 'zustand';
 
+import buildTimeNetworks from 'static/data/networks.json';
 import { fetchNetworks } from '~/core/resources/networks/networks';
 import { createQueryStore } from '~/core/state/internal/createQueryStore';
-import { ChainId, Networks, UserPreferences } from '~/core/types/chains';  
-import { differenceOrUnionOf, modifyUserPreferencesForNewlySupportedNetworks, buildInitialUserPreferences, toChainId } from './utils';
-import { mergeNewOfficiallySupportedChainsState, useFavoritesStore } from '~/core/state/favorites';
+import {
+  ChainId,
+  CustomNetwork,
+  Networks,
+  UserPreferences,
+} from '~/core/types/chains';
+
+import {
+  LOCAL_NETWORKS,
+  buildInitialUserPreferences,
+  differenceOrUnionOf,
+  modifyUserPreferencesForNewlySupportedNetworks,
+  syncDefaultFavoritesForNewlySupportedNetworks,
+  toChainId,
+} from './utils';
 
 const IS_DEV = process.env.IS_DEV === 'true';
 const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
+const IS_TESTING = process.env.IS_TESTING === 'true';
+
+const LOCALS = IS_TESTING ? LOCAL_NETWORKS : [];
 
 export interface NetworkState {
-	// NOTE: Now backend-driven networks and backend-driven custom networks are stored in the same networks object
+  // NOTE: Now backend-driven networks and backend-driven custom networks are stored in the same networks object
   networks: Networks;
-  userOverrides: Partial<Record<ChainId, UserPreferences>>;
+  userOverrides: Record<number, UserPreferences>;
 }
 
 interface NetworkActions {
-  // TODO: Add actions
+  getSupportedCustomNetworks: () => CustomNetwork[];
+  getSupportedCustomNetworksIconUrl: () => Record<number, string>;
+  getSupportedCustomNetworksTestnetFaucet: () => Record<number, string>;
+  getSupportedCustomNetworkTestnetFaucet: (
+    chainId: number,
+  ) => string | undefined;
+
+  getAllNetworkIconUrls: () => Record<number, string>;
 }
 
 let lastNetworks: Networks | null = null;
 
-function createSelector<T>(selectorFn: (networks: Networks, userOverrides: Partial<Record<ChainId, UserPreferences>>) => T): () => T {
+function createSelector<T>(
+  selectorFn: (
+    networks: Networks,
+    userOverrides: Record<number, UserPreferences>,
+  ) => T,
+): () => T {
   const uninitialized = Symbol();
   let cachedResult: T | typeof uninitialized = uninitialized;
-  let memoizedFn: ((networks: Networks, userOverrides: Partial<Record<ChainId, UserPreferences>>) => T) | null = null;
+  let memoizedFn:
+    | ((
+        networks: Networks,
+        userOverrides: Record<number, UserPreferences>,
+      ) => T)
+    | null = null;
 
   return () => {
     const { networks, userOverrides } = useNetworkStore.getState();
@@ -43,7 +75,10 @@ function createSelector<T>(selectorFn: (networks: Networks, userOverrides: Parti
 }
 
 function createParameterizedSelector<T, Args extends unknown[]>(
-  selectorFn: (networks: Networks, userOverrides: Partial<Record<ChainId, UserPreferences>>) => (...args: Args) => T
+  selectorFn: (
+    networks: Networks,
+    userOverrides: Partial<Record<ChainId, UserPreferences>>,
+  ) => (...args: Args) => T,
 ): (...args: Args) => T {
   const uninitialized = Symbol();
   let cachedResult: T | typeof uninitialized = uninitialized;
@@ -52,9 +87,16 @@ function createParameterizedSelector<T, Args extends unknown[]>(
 
   return (...args: Args) => {
     const { networks, userOverrides } = useNetworkStore.getState();
-    const argsChanged = !lastArgs || args.length !== lastArgs.length || args.some((arg, i) => arg !== lastArgs?.[i]);
+    const argsChanged =
+      !lastArgs ||
+      args.length !== lastArgs.length ||
+      args.some((arg, i) => arg !== lastArgs?.[i]);
 
-    if (cachedResult !== uninitialized && lastNetworks === networks && !argsChanged) {
+    if (
+      cachedResult !== uninitialized &&
+      lastNetworks === networks &&
+      !argsChanged
+    ) {
       return cachedResult;
     }
 
@@ -74,7 +116,11 @@ const initialState: NetworkState = {
   userOverrides: buildInitialUserPreferences(),
 };
 
-export const networkStore = createQueryStore<Networks, never, NetworkState & NetworkActions>(
+export const networkStore = createQueryStore<
+  Networks,
+  never,
+  NetworkState & NetworkActions
+>(
   {
     fetcher: fetchNetworks,
     setData: ({ data, set }) => {
@@ -84,30 +130,130 @@ export const networkStore = createQueryStore<Networks, never, NetworkState & Net
           incoming: data.backendNetworks.networks,
         });
 
-        // we don't need to check any newly supported networks
         if (newNetworks.size === 0) {
           return {
             ...state,
-            networks: data
-          }
+            networks: data,
+          };
         }
 
-        // kick off a favorites store sync
-        void syncNewDefaultFavorites(Array.from(newNetworks.keys()).map(toChainId));
+        void syncDefaultFavoritesForNewlySupportedNetworks(
+          Array.from(newNetworks.keys()).map(toChainId),
+        );
 
         return {
           ...state,
           networks: data,
-          userOverrides: modifyUserPreferencesForNewlySupportedNetworks(state, newNetworks)
+          userOverrides: modifyUserPreferencesForNewlySupportedNetworks(
+            state,
+            newNetworks,
+          ),
         };
-      }); 
+      });
     },
-    staleTime: 10 * 60 * 1000
+    staleTime: 10 * 60 * 1000,
   },
-  
+
   () => ({
     ...initialState,
 
+    getSupportedCustomNetworks: createSelector((networks) => {
+      return [...networks.customNetworks.customNetworks, ...LOCALS].sort(
+        (a, b) => a.name.localeCompare(b.name),
+      );
+    }),
+
+    getSupportedCustomNetworksIconUrl: createSelector((networks) => {
+      return [...networks.customNetworks.customNetworks, ...LOCALS].reduce(
+        (acc, network) => ({
+          ...acc,
+          [network.id]: network.iconURL,
+        }),
+        {},
+      );
+    }),
+
+    getSupportedCustomNetworksTestnetFaucet: createSelector((networks) => {
+      return [...networks.customNetworks.customNetworks, ...LOCALS].reduce(
+        (acc, network) => ({
+          ...acc,
+          [network.id]: network.testnet.FaucetURL,
+        }),
+        {},
+      );
+    }),
+
+    getSupportedCustomNetworkTestnetFaucet: createParameterizedSelector(
+      (networks) => {
+        return (chainId: ChainId) => {
+          const network = [
+            ...networks.customNetworks.customNetworks,
+            ...LOCALS,
+          ].find((network) => network.id === chainId);
+          return network?.testnet.FaucetURL;
+        };
+      },
+    ),
+
+    getAllNetworkIconUrls: createSelector((networks) => {
+      return [
+        ...networks.customNetworks.customNetworks,
+        ...LOCALS,
+        ...networks.backendNetworks.networks,
+      ].reduce((acc, network) => {
+        if (
+          'internal' in network &&
+          network.internal &&
+          !(INTERNAL_BUILD || IS_DEV)
+        )
+          return acc;
+
+        return {
+          ...acc,
+          [network.id]:
+            'iconURL' in network ? network.iconURL : network.icons.badgeURL,
+        };
+      }, {});
+    }),
+
+    // getSupportedChains: createSelector((networks, userOverrides) => {
+    //   const supported = networks.backendNetworks.networks.filter((network) => {
+    //     return !network.internal || INTERNAL_BUILD || IS_DEV;
+    //   });
+
+    //   for (const [chainId, override] of Object.entries(userOverrides)) {
+    //     const index = supported.findIndex((network) => network.id === chainId);
+    //     if (index === -1 && override.type === 'custom') {
+    //       supported.push(override);
+    //     } else if (override.type === 'supported') {
+    //       supported[index] = {
+    //         ...supported[index],
+    //         ...override,
+    //       }
+    //     }
+    //   }
+
+    //   return supported;
+    // }),
+
+    // getSupportedChainIds: createSelector((networks, userOverrides) => {
+    //   const supported = networks.backendNetworks.networks.filter((network) => {
+    //     return !network.internal || INTERNAL_BUILD || IS_DEV;
+    //   })
+
+    //   const supportedChainIds = new Set<number>();
+
+    //   for (const [chainId, override] of Object.entries(userOverrides)) {
+    //     const index = supported.findIndex((network) => network.id === chainId);
+    //     if (index === -1 && override.type === 'custom') {
+    //       supportedChainIds.add(+override.id);
+    //     } else {
+    //       supportedChainIds.add(+chainId);
+    //     }
+    //   }
+
+    //   return supported;
+    // }),
   }),
   {
     partialize: (state) => ({
@@ -115,12 +261,8 @@ export const networkStore = createQueryStore<Networks, never, NetworkState & Net
       userOverrides: state.userOverrides,
     }),
     storageKey: 'networkStore',
-    version: 1
-  }
+    version: 1,
+  },
 );
 
 export const useNetworkStore = create(networkStore);
-
-const syncNewDefaultFavorites = (newlySupportedNetworks: ChainId[]) => {
-  return mergeNewOfficiallySupportedChainsState(useFavoritesStore.getState(), newlySupportedNetworks);
-};
