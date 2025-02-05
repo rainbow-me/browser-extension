@@ -91,6 +91,7 @@ const CUSTOM_NETWORKS_QUERY = `
       name
       iconURL
       nativeAsset {
+        address
         symbol
         decimals
         iconURL
