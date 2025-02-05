@@ -1,11 +1,8 @@
 import create from 'zustand';
 
+import { createStore } from '~/core/state/internal/createStore';
 import { AddressOrEth } from '~/core/types/assets';
-import { BackendNetwork, ChainId } from '~/core/types/chains';
-
-import { createStore } from '../internal/createStore';
-import { networkStore } from '../networks/networks';
-import { toChainId } from '../networks/utils';
+import { ChainId } from '~/core/types/chains';
 
 type UpdateFavoritesArgs = {
   address: AddressOrEth;
@@ -16,31 +13,15 @@ type UpdateFavoritesFn = ({ address, chainId }: UpdateFavoritesArgs) => void;
 
 export interface FavoritesState {
   favorites: Partial<Record<ChainId, AddressOrEth[]>>;
+  setFavorites: (favorites: Partial<Record<ChainId, AddressOrEth[]>>) => void;
   addFavorite: UpdateFavoritesFn;
   removeFavorite: UpdateFavoritesFn;
 }
 
-export const mergeNewOfficiallySupportedChainsState = (
-  state: FavoritesState,
-  newNetworks: Map<string, BackendNetwork>,
-) => {
-  for (const [key, network] of newNetworks) {
-    const chainId = toChainId(key);
-    const stateChainFavorites = state.favorites[chainId] || [];
-    state.favorites[chainId] = [
-      ...new Set(
-        stateChainFavorites.concat(
-          network.favorites.map((f) => f.address as AddressOrEth),
-        ),
-      ),
-    ];
-  }
-  return state;
-};
-
 export const favoritesStore = createStore<FavoritesState>(
   (set, get) => ({
-    favorites: networkStore.getState().getDefaultFavorites(),
+    favorites: {},
+    setFavorites: (favorites) => set({ favorites }),
     addFavorite: ({ address, chainId }: UpdateFavoritesArgs) => {
       const { favorites } = get();
       const currentFavorites = favorites[chainId] || [];

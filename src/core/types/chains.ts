@@ -269,8 +269,7 @@ export type BackendNetwork = BackendNetworks['networks'][number];
 export type CustomNetworks = Networks['customNetworks'];
 export type CustomNetwork = CustomNetworks['customNetworks'][number];
 
-export type MergedChainData = Chain &
-  Pick<UserPreferences, 'type' | 'enabled' | 'order' | 'activeRpcUrl' | 'rpcs'>;
+export type MergedChain = Chain & UserPreferences;
 
 export type UserPreferences = {
   enabled: boolean;

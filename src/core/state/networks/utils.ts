@@ -1,26 +1,20 @@
 import { type Chain, avalancheFuji, curtis, inkSepolia } from 'viem/chains';
 
 import buildTimeNetworks from 'static/data/networks.json';
-import {
-  mergeNewOfficiallySupportedChainsState,
-  useFavoritesStore,
-} from '~/core/state/favorites';
+import { NetworkState } from '~/core/state/networks/networks';
 import { useRainbowChainsStore } from '~/core/state/rainbowChains';
 import { useUserChainsStore } from '~/core/state/userChains';
 import {
-  BackendNetwork,
   BackendNetworks,
   ChainId,
   CustomNetwork,
-  MergedChainData,
+  MergedChain,
   Networks,
   UserPreferences,
 } from '~/core/types/chains';
 import { GasSpeed } from '~/core/types/gas';
 import { transformBackendNetworksToChains } from '~/core/utils/backendNetworks';
 import { logger } from '~/logger';
-
-import { NetworkState } from './networks';
 
 const RPC_PROXY_API_KEY = process.env.RPC_PROXY_API_KEY;
 
@@ -235,15 +229,6 @@ export function getDefaultPollingInterval(chainId: ChainId): number {
   }
 }
 
-export const syncDefaultFavoritesForNewlySupportedNetworks = (
-  newNetworks: Map<string, BackendNetwork>,
-) => {
-  return mergeNewOfficiallySupportedChainsState(
-    useFavoritesStore.getState(),
-    newNetworks,
-  );
-};
-
 export const LOCAL_NETWORKS: CustomNetwork[] = [
   {
     id: 1337,
@@ -369,8 +354,8 @@ export const LOCAL_NETWORKS: CustomNetwork[] = [
 export const mergeChainData = (
   networks: Networks,
   userOverrides: Record<number, UserPreferences>,
-): Record<number, MergedChainData> => {
-  const mergedChainData: Record<number, MergedChainData> = {};
+): Record<number, MergedChain> => {
+  const mergedChainData: Record<number, MergedChain> = {};
   const backendNetworks = transformBackendNetworksToChains(
     networks.backendNetworks.networks,
   );

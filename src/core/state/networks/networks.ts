@@ -1,23 +1,24 @@
 import buildTimeNetworks from 'static/data/networks.json';
 import { fetchNetworks } from '~/core/resources/networks/networks';
+import { favoritesStore } from '~/core/state/favorites';
 import { createQueryStore } from '~/core/state/internal/createQueryStore';
-import { AddressOrEth } from '~/core/types/assets';
-import {
-  ChainId,
-  CustomNetwork,
-  MergedChainData,
-  Networks,
-  UserPreferences,
-} from '~/core/types/chains';
-
 import {
   LOCAL_NETWORKS,
   buildInitialUserPreferences,
   differenceOrUnionOf,
   mergeChainData,
   modifyUserPreferencesForNewlySupportedNetworks,
-  syncDefaultFavoritesForNewlySupportedNetworks,
-} from './utils';
+  toChainId,
+} from '~/core/state/networks/utils';
+import { AddressOrEth } from '~/core/types/assets';
+import {
+  BackendNetwork,
+  ChainId,
+  CustomNetwork,
+  MergedChain,
+  Networks,
+  UserPreferences,
+} from '~/core/types/chains';
 
 const IS_DEV = process.env.IS_DEV === 'true';
 const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
@@ -26,9 +27,8 @@ const IS_TESTING = process.env.IS_TESTING === 'true';
 const LOCAL_TESTING_NETWORKS = IS_TESTING ? LOCAL_NETWORKS : [];
 
 export interface NetworkState {
-  // NOTE: Now backend-driven networks and backend-driven custom networks are stored in the same networks object
-  networks: Networks;
-  userOverrides: Record<number, UserPreferences>;
+  networks: Networks; // contains backend-driven networks and backend-driven custom networks
+  userOverrides: Record<number, UserPreferences>; // contains user-driven overrides for backend-driven networks AND user added custom networks
 }
 
 interface NetworkActions {
@@ -46,13 +46,13 @@ interface NetworkActions {
 
 let lastNetworks: Networks | null = null;
 let lastUserOverrides: Record<number, UserPreferences> | null = null;
-let mergedChainData: Record<number, MergedChainData> | null = null;
+let mergedChainData: Record<number, MergedChain> | null = null;
 
 function createSelector<T>(
   selectorFn: (
     networks: Networks,
     userOverrides: Record<number, UserPreferences>,
-    mergedChainData: Record<number, MergedChainData>,
+    mergedChainData: Record<number, MergedChain>,
   ) => T,
 ): () => T {
   const uninitialized = Symbol();
@@ -61,7 +61,7 @@ function createSelector<T>(
     | ((
         networks: Networks,
         userOverrides: Record<number, UserPreferences>,
-        mergedChainData: Record<number, MergedChainData>,
+        mergedChainData: Record<number, MergedChain>,
       ) => T)
     | null = null;
 
@@ -101,7 +101,7 @@ function createParameterizedSelector<T, Args extends unknown[]>(
   selectorFn: (
     networks: Networks,
     userOverrides: Partial<Record<ChainId, UserPreferences>>,
-    mergedChainData: Record<number, MergedChainData>,
+    mergedChainData: Record<number, MergedChain>,
   ) => (...args: Args) => T,
 ): (...args: Args) => T {
   const uninitialized = Symbol();
@@ -258,44 +258,23 @@ export const networkStore = createQueryStore<
       }, {});
     }),
 
-    // getSupportedChains: createSelector((networks, userOverrides) => {
-    //   const supported = networks.backendNetworks.networks.filter((network) => {
-    //     return !network.internal || INTERNAL_BUILD || IS_DEV;
-    //   });
+    getSupportedChains: createSelector((_, __, mergedChainData) => {
+      return Object.values(mergedChainData);
+    }),
 
-    //   for (const [chainId, override] of Object.entries(userOverrides)) {
-    //     const index = supported.findIndex((network) => network.id === chainId);
-    //     if (index === -1 && override.type === 'custom') {
-    //       supported.push(override);
-    //     } else if (override.type === 'supported') {
-    //       supported[index] = {
-    //         ...supported[index],
-    //         ...override,
-    //       }
-    //     }
-    //   }
+    getSupportedChainIds: createSelector((_, __, mergedChainData) => {
+      return Object.keys(mergedChainData).map(toChainId);
+    }),
 
-    //   return supported;
-    // }),
+    getSupportedMainnetChains: createSelector((_, __, mergedChainData) => {
+      return Object.values(mergedChainData).filter((chain) => !chain.testnet);
+    }),
 
-    // getSupportedChainIds: createSelector((networks, userOverrides) => {
-    //   const supported = networks.backendNetworks.networks.filter((network) => {
-    //     return !network.internal || INTERNAL_BUILD || IS_DEV;
-    //   })
-
-    //   const supportedChainIds = new Set<number>();
-
-    //   for (const [chainId, override] of Object.entries(userOverrides)) {
-    //     const index = supported.findIndex((network) => network.id === chainId);
-    //     if (index === -1 && override.type === 'custom') {
-    //       supportedChainIds.add(+override.id);
-    //     } else {
-    //       supportedChainIds.add(+chainId);
-    //     }
-    //   }
-
-    //   return supported;
-    // }),
+    getSupportedMainnetChainIds: createSelector((_, __, mergedChainData) => {
+      return Object.values(mergedChainData)
+        .filter((chain) => !chain.testnet)
+        .map(({ id }) => id);
+    }),
   }),
   {
     partialize: (state) => ({
@@ -306,3 +285,23 @@ export const networkStore = createQueryStore<
     version: 1,
   },
 );
+
+export const syncDefaultFavoritesForNewlySupportedNetworks = (
+  newNetworks: Map<string, BackendNetwork>,
+) => {
+  const { favorites } = favoritesStore.getState();
+  const newFavorites = { ...favorites };
+  for (const [key, network] of newNetworks) {
+    const chainId = toChainId(key);
+    const stateChainFavorites = favorites[chainId] || [];
+    newFavorites[chainId] = [
+      ...new Set(
+        stateChainFavorites.concat(
+          network.favorites.map((f) => f.address as AddressOrEth),
+        ),
+      ),
+    ];
+  }
+
+  favoritesStore.getState().setFavorites(newFavorites);
+};
