@@ -122,7 +122,7 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
   {
     persist: persistOptions({
       name: 'rainbowChains',
-      version: 12,
+      version: 13,
       migrations: [
         // v1 didn't need a migration
         function v1(s: RainbowChainsState) {
@@ -233,6 +233,14 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
             ChainId.sankoTestnet,
             ChainId.gravity,
             ChainId.gravitySepolia,
+          ]);
+        },
+
+        // version 13 added support for Berachain
+        function v13(state: unknown) {
+          const rnbwChainState = state as RainbowChainsState;
+          return mergeNewOfficiallySupportedChainsState(rnbwChainState, [
+            ChainId.berachain,
           ]);
         },
       ],

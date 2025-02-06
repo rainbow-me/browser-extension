@@ -44,7 +44,8 @@ export const chainIdMap: Record<
   | ChainId.apechain
   | ChainId.ink
   | ChainId.sanko
-  | ChainId.gravity,
+  | ChainId.gravity
+  | ChainId.berachain,
   ChainId[]
 > = {
   [ChainId.mainnet]: [mainnet.id, sepolia.id, holesky.id],
@@ -61,6 +62,7 @@ export const chainIdMap: Record<
   [ChainId.ink]: [ChainId.ink, inkSepolia.id],
   [ChainId.sanko]: [ChainId.sanko, ChainId.sankoTestnet],
   [ChainId.gravity]: [ChainId.gravity, ChainId.gravitySepolia],
+  [ChainId.berachain]: [ChainId.berachain],
 };
 
 // Used to display the chain label in the settings networks page
@@ -78,7 +80,8 @@ export const chainLabelMap: Record<
   | ChainId.apechain
   | ChainId.ink
   | ChainId.sanko
-  | ChainId.gravity,
+  | ChainId.gravity
+  | ChainId.berachain,
   string[]
 > = {
   [ChainId.mainnet]: [chainsLabel[sepolia.id], chainsLabel[holesky.id]],
@@ -95,6 +98,7 @@ export const chainLabelMap: Record<
   [ChainId.ink]: [chainsLabel[inkSepolia.id]],
   [ChainId.sanko]: [chainsLabel[ChainId.sankoTestnet]],
   [ChainId.gravity]: [chainsLabel[ChainId.gravitySepolia]],
+  [ChainId.berachain]: [],
 };
 
 export const sortNetworks = (order: ChainId[], chains: Chain[]) => {
