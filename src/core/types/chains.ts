@@ -269,6 +269,11 @@ export type BackendNetwork = BackendNetworks['networks'][number];
 export type CustomNetworks = Networks['customNetworks'];
 export type CustomNetwork = CustomNetworks['customNetworks'][number];
 
+// FIXME: Delete this eventually one privateMempoolTimeout is added to the backend
+export type BackendNetworkWithPrivateMempoolTimeout = BackendNetwork & {
+  privateMempoolTimeout: number;
+};
+
 /**
  * MergedChain is a type that combines a transformation of BackendNetwork -> Chain
  * with any additional user preferences for that chain.

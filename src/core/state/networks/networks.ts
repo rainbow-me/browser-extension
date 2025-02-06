@@ -16,6 +16,7 @@ import {
 import { AddressOrEth } from '~/core/types/assets';
 import {
   BackendNetwork,
+  BackendNetworkWithPrivateMempoolTimeout,
   ChainId,
   CustomNetwork,
   MergedChain,
@@ -27,6 +28,7 @@ const IS_DEV = process.env.IS_DEV === 'true';
 const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
+const DEFAULT_PRIVATE_MEMPOOL_TIMEOUT = 2 * 60 * 1_000; // 2 minutes
 const LOCAL_TESTING_NETWORKS = IS_TESTING ? LOCAL_NETWORKS : [];
 
 export interface NetworkState {
@@ -60,16 +62,33 @@ interface NetworkActions {
   ) => string | undefined;
 
   // supported networks store methods
-  getSupportedNetworks: (
+  getSupportedChains: (
     includeTestnets?: boolean,
   ) => Record<number, MergedChain>;
-  getOrderSortedSupportedNetworks: (includeTestnets?: boolean) => MergedChain[];
-  getSupportedNetwork: (chainId: number) => MergedChain | undefined;
-  getSupportedNetworksIds: (includeTestnets?: boolean) => number[];
-  getSupportedNetworksBadgeUrls: (
-    includeTestnets?: boolean,
-  ) => Record<number, string>;
-  getSupportedNetworkBadgeUrl: (chainId: number) => string | undefined;
+  getOrderSortedSupportedChains: (includeTestnets?: boolean) => MergedChain[];
+  getSupportedChain: (chainId: number) => MergedChain | undefined;
+  getSupportedChainIds: (includeTestnets?: boolean) => number[];
+  getNeedsL1SecurityFeeNetworks: () => number[];
+  getNetworksNativeAsset: () => Record<number, string>;
+  getNetworksLabel: () => Record<number, string>;
+  getNetworksPrivateMempoolTimeout: () => Record<number, number>;
+  getNetworksName: () => Record<number, string>;
+  filterChainIdsByService: (
+    servicePath: (services: BackendNetwork['enabledServices']) => boolean,
+  ) => number[];
+  getMeteorologySupportedChainIds: () => number[];
+  getSupportedSwapChainIds: () => number[];
+  getSupportedApprovalsChainIds: () => number[];
+  getSupportedTransactionsChainIds: () => number[];
+  getSupportedAssetsChainIds: () => number[];
+  getSupportedPositionsChainIds: () => number[];
+  getSupportedTokenSearchChainIds: () => number[];
+  getSupportedNftChainIds: () => number[];
+  getChainGasUnits: (
+    chainId?: number,
+  ) => BackendNetwork['gasUnits'] | undefined;
+  getNetworksBadgeUrls: () => Record<number, string>;
+  getNetworkBadgeUrl: (chainId: number) => string | undefined;
   getDefaultFavorites: () => Record<number, AddressOrEth[]>;
 }
 
@@ -222,7 +241,7 @@ export const networkStore = createQueryStore<
     staleTime: 10 * 60 * 1000,
   },
 
-  (set) => ({
+  (set, get) => ({
     ...initialState,
 
     getActiveRpcForChain: createParameterizedSelector(({ mergedChainData }) => {
@@ -374,7 +393,7 @@ export const networkStore = createQueryStore<
       },
     ),
 
-    getSupportedNetworks: createParameterizedSelector(({ mergedChainData }) => {
+    getSupportedChains: createParameterizedSelector(({ mergedChainData }) => {
       return (includeTestnets = false) => {
         return Object.values(mergedChainData).reduce((acc, chain) => {
           if (!includeTestnets && chain.testnet) return acc;
@@ -386,7 +405,7 @@ export const networkStore = createQueryStore<
       };
     }),
 
-    getOrderSortedSupportedNetworks: createParameterizedSelector(
+    getOrderSortedSupportedChains: createParameterizedSelector(
       ({ mergedChainData }) => {
         return (includeTestnets = false) => {
           return Object.values(mergedChainData)
@@ -403,41 +422,162 @@ export const networkStore = createQueryStore<
       },
     ),
 
-    getSupportedNetwork: createParameterizedSelector(({ mergedChainData }) => {
+    getSupportedChain: createParameterizedSelector(({ mergedChainData }) => {
       return (chainId) => {
         return mergedChainData[chainId];
       };
     }),
 
-    getSupportedNetworksIds: createParameterizedSelector(
-      ({ mergedChainData }) => {
-        return (includeTestnets = false) => {
-          return Object.values(mergedChainData).reduce<number[]>(
-            (acc, chain) => {
-              if (!includeTestnets && chain.testnet) return acc;
-              return [...acc, chain.id];
-            },
-            [],
-          );
+    getSupportedChainIds: createParameterizedSelector(({ mergedChainData }) => {
+      return (includeTestnets = false) => {
+        return Object.values(mergedChainData).reduce<number[]>((acc, chain) => {
+          if (!includeTestnets && chain.testnet) return acc;
+          return [...acc, chain.id];
+        }, []);
+      };
+    }),
+
+    getNeedsL1SecurityFeeNetworks: createSelector(({ networks }) => {
+      return networks.backendNetworks.networks
+        .filter((chain) => chain.opStack)
+        .map((chain) => toChainId(chain.id));
+    }),
+
+    getNetworksNativeAsset: createSelector(({ networks }) => {
+      return networks.backendNetworks.networks.reduce((acc, chain) => {
+        return {
+          ...acc,
+          [chain.id]: chain.nativeAsset,
         };
-      },
+      }, {});
+    }),
+
+    getNetworksLabel: createSelector(({ networks }) => {
+      return networks.backendNetworks.networks.reduce(
+        (acc, chain) => {
+          return {
+            ...acc,
+            [chain.id]: chain.label,
+          };
+        },
+        {
+          [ChainId.avalancheFuji]: 'Avalanche Fuji',
+          [ChainId.apechainCurtis]: 'Apechain Curtis',
+          [ChainId.inkSepolia]: 'Ink Sepolia',
+          [ChainId.sankoTestnet]: 'Sanko Testnet',
+          [ChainId.gravitySepolia]: 'Gravity Sepolia',
+        },
+      );
+    }),
+
+    getNetworksPrivateMempoolTimeout: createSelector(({ networks }) => {
+      return networks.backendNetworks.networks.reduce((acc, chain) => {
+        return {
+          ...acc,
+          [chain.id]:
+            (chain as BackendNetworkWithPrivateMempoolTimeout)
+              .privateMempoolTimeout || DEFAULT_PRIVATE_MEMPOOL_TIMEOUT,
+        };
+      }, {});
+    }),
+
+    getNetworksName: createSelector(({ networks }) => {
+      return networks.backendNetworks.networks.reduce(
+        (acc, chain) => {
+          return { ...acc, [chain.id]: chain.name };
+        },
+        {
+          [ChainId.avalancheFuji]: 'avalanche-fuji',
+          [ChainId.apechainCurtis]: 'apechain-curtis',
+          [ChainId.inkSepolia]: 'ink-sepolia',
+          [ChainId.sankoTestnet]: 'sanko-testnet',
+          [ChainId.gravitySepolia]: 'gravity-sepolia',
+        },
+      );
+    }),
+
+    filterChainIdsByService: createParameterizedSelector(({ networks }) => {
+      return (
+        servicePath: (services: BackendNetwork['enabledServices']) => boolean,
+      ) => {
+        return networks.backendNetworks.networks
+          .filter((chain) => servicePath(chain.enabledServices))
+          .map((chain) => toChainId(chain.id));
+      };
+    }),
+
+    getMeteorologySupportedChainIds: createSelector(() => {
+      return get().filterChainIdsByService(
+        (services) => services.meteorology.enabled,
+      );
+    }),
+
+    getSupportedSwapChainIds: createSelector(() => {
+      return get().filterChainIdsByService((services) => services.swap.enabled);
+    }),
+
+    getSupportedApprovalsChainIds: createSelector(() => {
+      return get().filterChainIdsByService(
+        (services) => services.addys.approvals,
+      );
+    }),
+
+    getSupportedTransactionsChainIds: createSelector(() => {
+      return get().filterChainIdsByService(
+        (services) => services.addys.transactions,
+      );
+    }),
+
+    getSupportedAssetsChainIds: createSelector(() => {
+      return get().filterChainIdsByService((services) => services.addys.assets);
+    }),
+
+    getSupportedPositionsChainIds: createSelector(() => {
+      return get().filterChainIdsByService(
+        (services) => services.addys.positions,
+      );
+    }),
+
+    getSupportedTokenSearchChainIds: createSelector(() => {
+      return get().filterChainIdsByService(
+        (services) => services.tokenSearch.enabled,
+      );
+    }),
+
+    getSupportedNftChainIds: createSelector(() => {
+      return get().filterChainIdsByService(
+        (services) => services.nftProxy.enabled,
+      );
+    }),
+
+    getChainGasUnits: createParameterizedSelector(
+      ({ networks }) =>
+        (chainId?: number) => {
+          const chainsGasUnits = networks.backendNetworks.networks.reduce(
+            (acc, backendNetwork) => {
+              acc[toChainId(backendNetwork.id)] = backendNetwork.gasUnits;
+              return acc;
+            },
+            {} as Record<number, BackendNetwork['gasUnits']>,
+          );
+
+          return (
+            (chainId ? chainsGasUnits[chainId] : undefined) ||
+            chainsGasUnits[ChainId.mainnet]
+          );
+        },
     ),
 
-    getSupportedNetworksBadgeUrls: createParameterizedSelector(
-      ({ networks }) => {
-        return (includeTestnets = false) => {
-          return Object.values(networks.backendNetworks.networks).reduce(
-            (acc, chain) => {
-              if (!includeTestnets && chain.testnet) return acc;
-              return { ...acc, [chain.id]: chain.icons.badgeURL };
-            },
-            {},
-          );
-        };
-      },
-    ),
+    getNetworksBadgeUrls: createSelector(({ networks }) => {
+      return Object.values(networks.backendNetworks.networks).reduce(
+        (acc, chain) => {
+          return { ...acc, [chain.id]: chain.icons.badgeURL };
+        },
+        {},
+      );
+    }),
 
-    getSupportedNetworkBadgeUrl: createParameterizedSelector(({ networks }) => {
+    getNetworkBadgeUrl: createParameterizedSelector(({ networks }) => {
       return (chainId: number) => {
         return networks.backendNetworks.networks[chainId].icons.badgeURL;
       };
