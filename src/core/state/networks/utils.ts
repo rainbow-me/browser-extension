@@ -190,10 +190,15 @@ export const modifyUserPreferencesForNewlySupportedNetworks = (
       incoming.defaultRPC.url,
     );
 
+    const previousPrefs = userOverrides[chainIdNum];
+
+    // we want to trim off the chain info from the previously 'custom' network
     userOverrides[chainIdNum] = {
-      ...userOverrides[chainIdNum],
-      enabled: true,
+      type: 'supported',
       activeRpcUrl: defaultRpcUrl,
+      enabled: true,
+      order: previousPrefs.order,
+      rpcs: previousPrefs.rpcs,
     };
   }
 
@@ -351,6 +356,12 @@ export const LOCAL_NETWORKS: CustomNetwork[] = [
   },
 ];
 
+/**
+ * Merges backend network data with user-defined network preferences to create a unified chain configuration
+ * @param networks - Backend-provided network configurations
+ * @param userOverrides - User-defined network preferences and custom networks
+ * @returns A record mapping chain IDs to merged chain configurations that combine backend data with user overrides
+ */
 export const mergeChainData = (
   networks: Networks,
   userOverrides: Record<number, UserPreferences>,
@@ -360,24 +371,13 @@ export const mergeChainData = (
     networks.backendNetworks.networks,
   );
 
-  const backendNetworksMap = Object.fromEntries(
-    backendNetworks.map((chain) => [chain.id, chain]),
-  );
-
-  for (const [key, override] of Object.entries(userOverrides)) {
-    const chainId = toChainId(key);
-    const baseChain = backendNetworksMap[chainId] || {};
-    mergedChainData[chainId] = {
-      ...baseChain,
-      ...override,
-    };
-  }
-
   for (const chain of backendNetworks) {
-    mergedChainData[chain.id] = {
-      ...mergedChainData[chain.id],
+    const chainId = chain.id;
+    const userPrefs = userOverrides[chainId];
+    if (userPrefs.type === 'custom') continue;
+    mergedChainData[chainId] = {
       ...chain,
-      ...userOverrides[chain.id],
+      ...userPrefs,
     };
   }
 

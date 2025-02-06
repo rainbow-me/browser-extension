@@ -1,6 +1,9 @@
-import { beforeEach, describe, expect, test } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 import buildTimeNetworks from 'static/data/networks.json';
+import { fetchNetworks } from '~/core/resources/networks/networks';
+import { favoritesStore } from '~/core/state/favorites';
+import { AddressOrEth } from '~/core/types/assets';
 
 import { RainbowChainsState, rainbowChainsStore } from '../../rainbowChains';
 import { UserChainsState, userChainsStore } from '../../userChains';
@@ -8,6 +11,11 @@ import { networkStore } from '../networks';
 import { buildInitialUserPreferences, toChainId } from '../utils';
 
 import { Factories, getFactoryData } from './data';
+
+// Mock the network fetching
+vi.mock('~/core/resources/networks/networks', () => ({
+  fetchNetworks: vi.fn(),
+}));
 
 describe('networkStore', () => {
   Factories.forEach((factory) => {
@@ -104,6 +112,130 @@ describe('networkStore', () => {
             expect(userOverride.testnet).toEqual(activeChain.testnet);
           }
         }
+      });
+    });
+
+    describe('On new supported network', () => {
+      const mockFetchedNetworks = {
+        backendNetworks: {
+          networks: [
+            ...buildTimeNetworks.backendNetworks.networks.slice(0, -1),
+          ],
+        },
+        customNetworks: {
+          customNetworks: [],
+        },
+      };
+
+      const mockNewNetwork =
+        buildTimeNetworks.backendNetworks.networks[
+          buildTimeNetworks.backendNetworks.networks.length - 1
+        ];
+
+      beforeEach(async () => {
+        await networkStore.getState().fetch();
+
+        // Mock initial fetch
+        vi.mocked(fetchNetworks).mockResolvedValueOnce(mockFetchedNetworks);
+
+        const expected = networkStore
+          .getState()
+          .networks.backendNetworks.networks.reduce((acc, network) => {
+            return {
+              ...acc,
+              [network.id]: network.favorites.map(
+                (f) => f.address as AddressOrEth,
+              ),
+            };
+          }, {});
+
+        favoritesStore.setState({
+          favorites: expected,
+        });
+      });
+
+      test('should sync default favorites when new networks are added', async () => {
+        // Mock second fetch with new network
+        vi.mocked(fetchNetworks).mockResolvedValueOnce({
+          ...mockFetchedNetworks,
+          backendNetworks: {
+            networks: [
+              ...mockFetchedNetworks.backendNetworks.networks,
+              mockNewNetwork,
+            ],
+          },
+        });
+
+        // Trigger second fetch
+        await networkStore.getState().fetch();
+
+        const expected = networkStore
+          .getState()
+          .networks.backendNetworks.networks.reduce((acc, network) => {
+            return {
+              ...acc,
+              [network.id]: network.favorites.map(
+                (f) => f.address as AddressOrEth,
+              ),
+            };
+          }, {});
+
+        // Verify favorites were synced with new network
+        expect(favoritesStore.getState().favorites).toEqual(expected);
+      });
+
+      test('should not duplicate existing favorites when syncing', async () => {
+        await networkStore.getState().fetch();
+
+        let expected = networkStore
+          .getState()
+          .networks.backendNetworks.networks.reduce((acc, network) => {
+            return {
+              ...acc,
+              [network.id]: network.favorites.map(
+                (f) => f.address as AddressOrEth,
+              ),
+            };
+          }, {});
+
+        // populate favorites with new network early
+        // so we can verify that each address isn't duplicated
+        favoritesStore.setState({
+          favorites: {
+            ...expected,
+            [mockNewNetwork.id]: mockNewNetwork.favorites.map(
+              (f) => f.address as AddressOrEth,
+            ),
+          },
+        });
+
+        // Mock fetch with new network
+        vi.mocked(fetchNetworks).mockResolvedValueOnce({
+          ...mockFetchedNetworks,
+          backendNetworks: {
+            networks: [
+              ...mockFetchedNetworks.backendNetworks.networks,
+              mockNewNetwork,
+            ],
+          },
+        });
+
+        // Trigger fetch
+        await networkStore.getState().fetch();
+
+        expected = networkStore
+          .getState()
+          .networks.backendNetworks.networks.reduce((acc, network) => {
+            return {
+              ...acc,
+              [network.id]: network.favorites.map(
+                (f) => f.address as AddressOrEth,
+              ),
+            };
+          }, {});
+
+        // Verify favorites were merged without duplicates
+        expect(favoritesStore.getState().favorites).toEqual(expected);
       });
     });
   });

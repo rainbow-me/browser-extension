@@ -21,7 +21,6 @@ import { requestMetadata } from '../graphql';
 import { i18n } from '../languages';
 import { customChainIdsToAssetNames } from '../references/assets';
 import { AddysPositionAsset } from '../resources/positions';
-import { networkStore } from '../state/networks/networks';
 import { SearchAsset } from '../types/search';
 import { wagmiConfig } from '../wagmi';
 import { getProvider } from '../wagmi/clientToProvider';
@@ -48,26 +47,15 @@ export const getCustomChainIconUrl = (
   chainId: ChainId,
   address: AddressOrEth,
 ) => {
-  if (!chainId) return '';
+  if (!chainId || !customChainIdsToAssetNames[chainId]) return '';
+  const baseUrl =
+    'https://raw.githubusercontent.com/rainbow-me/assets/master/blockchains/';
 
   if (address === AddressZero || address === ETH_ADDRESS) {
-    const supportNetworksIconUrls = networkStore
-      .getState()
-      .getSupportNetworksIconUrls()[chainId];
-    const customChainIconUrl = networkStore
-      .getState()
-      .getSupportedCustomNetworksIconUrl()[chainId];
-
-    if (supportNetworksIconUrls) return supportNetworksIconUrls;
-    if (customChainIconUrl) return customChainIconUrl;
-
-    // NOTE: Falls through to old logic if we don't have it from backend driven network data
+    return `${baseUrl}${customChainIdsToAssetNames[chainId]}/info/logo.png`;
+  } else {
+    return `${baseUrl}${customChainIdsToAssetNames[chainId]}/assets/${address}/logo.png`;
   }
-
-  const name = customChainIdsToAssetNames[chainId];
-  if (!name) return '';
-
-  return `https://raw.githubusercontent.com/rainbow-me/assets/master/blockchains/${name}/assets/${address}/logo.png`;
 };
 
 export const getNativeAssetPrice = ({

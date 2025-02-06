@@ -269,7 +269,17 @@ export type BackendNetwork = BackendNetworks['networks'][number];
 export type CustomNetworks = Networks['customNetworks'];
 export type CustomNetwork = CustomNetworks['customNetworks'][number];
 
-export type MergedChain = Chain & UserPreferences;
+/**
+ * MergedChain is a type that combines a transformation of BackendNetwork -> Chain
+ * with any additional user preferences for that chain.
+ */
+export type MergedChain = Chain & {
+  type: 'supported';
+  enabled: boolean;
+  order: number | undefined;
+  activeRpcUrl: string;
+  rpcs: Record<string, Chain>;
+};
 
 export type UserPreferences = {
   enabled: boolean;
