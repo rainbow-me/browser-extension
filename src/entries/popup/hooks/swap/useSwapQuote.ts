@@ -116,7 +116,7 @@ export const useSwapQuote = ({
       if (!quotesParams) throw 'unreacheable';
       const quote = await (isCrosschainSwap ? getCrosschainQuote : getQuote)(
         quotesParams,
-        signal
+        signal,
       );
       if (quote && 'error' in quote) {
         analyticsTrackQuoteFailed(quote, {
