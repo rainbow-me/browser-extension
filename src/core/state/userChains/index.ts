@@ -200,7 +200,7 @@ export const userChainsStore = createStore<UserChainsState>(
 
         // v8 adds berachain support
         function v8(state: UserChainsState) {
-          const newChains = [ChainId.berachain];
+          const newChains = [ChainId.berachain, ChainId.berachainbArtio];
           return {
             ...state,
             userChains: {

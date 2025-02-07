@@ -51,6 +51,7 @@ const networkBadges = {
   [ChainId.arbitrum]: ArbitrumBadge,
   [ChainId.base]: BaseBadge,
   [ChainId.berachain]: BerachainBadge,
+  [ChainId.berachainbArtio]: BerachainBadge,
   [ChainId.zora]: ZoraBadge,
   [ChainId.bsc]: BscBadge,
   [ChainId.avalanche]: AvalancheBadge,

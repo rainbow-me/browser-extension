@@ -241,6 +241,7 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
           const rnbwChainState = state as RainbowChainsState;
           return mergeNewOfficiallySupportedChainsState(rnbwChainState, [
             ChainId.berachain,
+            ChainId.berachainbArtio,
           ]);
         },
       ],

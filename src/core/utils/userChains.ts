@@ -62,7 +62,7 @@ export const chainIdMap: Record<
   [ChainId.ink]: [ChainId.ink, inkSepolia.id],
   [ChainId.sanko]: [ChainId.sanko, ChainId.sankoTestnet],
   [ChainId.gravity]: [ChainId.gravity, ChainId.gravitySepolia],
-  [ChainId.berachain]: [ChainId.berachain],
+  [ChainId.berachain]: [ChainId.berachain, ChainId.berachainbArtio],
 };
 
 // Used to display the chain label in the settings networks page
@@ -98,7 +98,7 @@ export const chainLabelMap: Record<
   [ChainId.ink]: [chainsLabel[inkSepolia.id]],
   [ChainId.sanko]: [chainsLabel[ChainId.sankoTestnet]],
   [ChainId.gravity]: [chainsLabel[ChainId.gravitySepolia]],
-  [ChainId.berachain]: [],
+  [ChainId.berachain]: [chainsLabel[ChainId.berachainbArtio]],
 };
 
 export const sortNetworks = (order: ChainId[], chains: Chain[]) => {
