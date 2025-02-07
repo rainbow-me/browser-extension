@@ -69,7 +69,7 @@ interface NetworkActions {
   getSupportedChain: (chainId: number) => MergedChain | undefined;
   getSupportedChainIds: (includeTestnets?: boolean) => number[];
   getNeedsL1SecurityFeeNetworks: () => number[];
-  getNetworksNativeAsset: () => Record<number, string>;
+  getNetworksNativeAsset: () => Record<number, BackendNetwork['nativeAsset']>;
   getNetworksLabel: () => Record<number, string>;
   getNetworksPrivateMempoolTimeout: () => Record<number, number>;
   getNetworksName: () => Record<number, string>;
@@ -84,9 +84,7 @@ interface NetworkActions {
   getSupportedPositionsChainIds: () => number[];
   getSupportedTokenSearchChainIds: () => number[];
   getSupportedNftChainIds: () => number[];
-  getChainGasUnits: (
-    chainId?: number,
-  ) => BackendNetwork['gasUnits'] | undefined;
+  getChainGasUnits: (chainId?: number) => BackendNetwork['gasUnits'];
   getNetworksBadgeUrls: () => Record<number, string>;
   getNetworkBadgeUrl: (chainId: number) => string | undefined;
   getDefaultFavorites: () => Record<number, AddressOrEth[]>;

@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
-import { chainsLabel } from '~/core/references/chains';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { networkStore } from '~/core/state/networks/networks';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
 import { getChain } from '~/core/utils/chains';
@@ -42,6 +42,7 @@ export const TestnetModeWatcher = ({
   pendingRequest?: ProviderRequestPayload;
   rejectRequest?: () => void;
 }) => {
+  const chainsLabel = networkStore((state) => state.getNetworksLabel());
   const { data: dappMetadata } = useDappMetadata({
     url: pendingRequest?.meta?.sender.url,
   });

@@ -3,12 +3,12 @@ import { uniqBy } from 'lodash';
 import { useCallback, useMemo } from 'react';
 import { Address } from 'viem';
 
-import { SUPPORTED_CHAINS } from '~/core/references/chains';
 import { useAssetSearchMetadataAllNetworks } from '~/core/resources/assets/assetMetadata';
 import { useTokenSearch } from '~/core/resources/search';
 import { usePopularInRainbow } from '~/core/resources/search/popularInRainbow';
 import { useTokenSearchAllNetworks } from '~/core/resources/search/tokenSearch';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { networkStore } from '~/core/state/networks/networks';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { SearchAsset, TokenSearchListId } from '~/core/types/search';
@@ -107,6 +107,9 @@ export function useSearchCurrencyLists({
   const fromChainId = isCrosschainSearch ? inputChainId : undefined;
 
   const { testnetMode } = useTestnetModeStore();
+  const supportedChains = networkStore((state) =>
+    state.getSupportedChains(true),
+  );
 
   const enableAllNetworkTokenSearch =
     isAddress(query) && !testnetMode && !bridge;
@@ -482,7 +485,7 @@ export function useSearchCurrencyLists({
             // filter out the asset we're selling already
             if (
               isSameAsset(assetToSell, { chainId, address }) ||
-              !SUPPORTED_CHAINS.some((n) => n.id === chainId)
+              !supportedChains[chainId]
             )
               return;
             return {

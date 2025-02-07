@@ -1,13 +1,15 @@
 import { Chain } from 'viem';
 
-import { SUPPORTED_CHAINS, oldDefaultRPC } from '~/core/references/chains';
+import { networkStore } from '~/core/state/networks/networks';
+import { oldDefaultRPC } from '~/core/state/networks/utils';
 import { ChainId } from '~/core/types/chains';
 
 import { RainbowChain, RainbowChainsState } from '.';
 
 export const getInitialRainbowChains = () => {
   const rainbowChains: Record<number, RainbowChain> = {};
-  SUPPORTED_CHAINS.forEach((chain) => {
+  const supportedChains = networkStore.getState().getSupportedChains(true);
+  Object.values(supportedChains).forEach((chain) => {
     rainbowChains[chain.id] = {
       activeRpcUrl: chain.rpcUrls.default.http[0],
       chains: [chain],

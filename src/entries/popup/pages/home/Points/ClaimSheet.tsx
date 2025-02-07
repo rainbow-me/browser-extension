@@ -7,8 +7,8 @@ import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { RapClaimActionParameters } from '~/core/raps/references';
-import { chainsLabel } from '~/core/references/chains';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import { networkStore } from '~/core/state/networks/networks';
 import { ChainId, chainIdToNameMapping } from '~/core/types/chains';
 import { GasSpeed } from '~/core/types/gas';
 import {
@@ -282,6 +282,7 @@ function ClaimSheetRow({
   chain: ChainId;
   onSelect: (chainId: ChainId) => void;
 }) {
+  const chainsLabel = networkStore((state) => state.getNetworksLabel());
   const disableBridging =
     chain !== ChainId.optimism &&
     !config.rewards_bridging_enabled &&

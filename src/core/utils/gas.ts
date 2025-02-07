@@ -9,6 +9,7 @@ import { Contract, ContractInterface } from '@ethersproject/contracts';
 import { serialize } from '@ethersproject/transactions';
 import BigNumber from 'bignumber.js';
 
+import { networkStore } from '~/core/state/networks/networks';
 import { globalColors } from '~/design-system/styles/designTokens';
 import { RainbowError, logger } from '~/logger';
 
@@ -18,7 +19,6 @@ import {
   SupportedCurrencyKey,
   supportedCurrencies,
 } from '../references';
-import { getChainGasUnits } from '../references/chains';
 import {
   MeteorologyLegacyResponse,
   MeteorologyResponse,
@@ -521,7 +521,10 @@ export const estimateGasWithPadding = async ({
       (!contractCallEstimateGas && !to && !data) ||
       (to && !data && (!code || code === '0x'))
     ) {
-      return getChainGasUnits(transactionRequest.chainId).basic.eoaTransfer;
+      const chainGasUnits = networkStore
+        .getState()
+        .getChainGasUnits(transactionRequest.chainId);
+      return chainGasUnits.basic.eoaTransfer;
     }
     const saferGasLimit = fraction(gasLimit.toString(), 19, 20);
 
@@ -584,11 +587,14 @@ export const calculateL1FeeOptimism = async ({
       transactionRequest.to = getAddress(transactionRequest.to);
     }
     if (!transactionRequest.gasLimit) {
+      const chainGasUnits = networkStore
+        .getState()
+        .getChainGasUnits(txRequest.chainId);
       transactionRequest.gasLimit = toHex(
         `${
           transactionRequest.data === '0x'
-            ? getChainGasUnits(txRequest.chainId).basic.eoaTransfer
-            : getChainGasUnits(txRequest.chainId).basic.tokenTransfer
+            ? chainGasUnits.basic.eoaTransfer
+            : chainGasUnits.basic.tokenTransfer
         }`,
       );
     }

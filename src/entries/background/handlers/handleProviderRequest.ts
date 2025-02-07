@@ -10,16 +10,13 @@ import { hasVault, isInitialized, isPasswordSet } from '~/core/keychain';
 import { Messenger } from '~/core/messengers';
 import { CallbackOptions } from '~/core/messengers/internal/createMessenger';
 import {
-  SUPPORTED_CHAINS,
-  SUPPORTED_CHAIN_IDS,
-} from '~/core/references/chains';
-import {
   appSessionsStore,
   notificationWindowStore,
   pendingRequestStore,
   rainbowChainsStore,
 } from '~/core/state';
 import { featureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import { networkStore } from '~/core/state/networks/networks';
 import { userChainsStore } from '~/core/state/userChains';
 import { SessionStorage } from '~/core/storage';
 import { providerRequestTransport } from '~/core/transports';
@@ -259,14 +256,14 @@ export const handleProviderRequest = ({
   rnbwHandleProviderRequest({
     providerRequestTransport: providerRequestTransport,
     isSupportedChain: (chainId: number) =>
-      SUPPORTED_CHAIN_IDS.includes(chainId) || isCustomChain(chainId),
+      !!networkStore.getState().getSupportedChain(chainId) ||
+      isCustomChain(chainId),
     getActiveSession: ({ host }: { host: string }) =>
       appSessionsStore.getState().getActiveSession({ host }),
     removeAppSession: ({ host }: { host: string }) =>
       appSessionsStore.getState().removeAppSession({ host }),
     getChainNativeCurrency: (chainId: number) =>
-      SUPPORTED_CHAINS.find((chain) => chain.id === Number(chainId))
-        ?.nativeCurrency,
+      networkStore.getState().getSupportedChains(true)[chainId].nativeCurrency,
     getFeatureFlags: () => featureFlagsStore.getState().featureFlags,
     getProvider: getProvider,
     messengerProviderRequest: (request: ProviderRequestPayload) =>
@@ -374,13 +371,14 @@ export const handleProviderRequest = ({
       const chain = rainbowChainsStore
         .getState()
         .getActiveChain({ chainId: proposedChainId });
-      const supportedChainId =
+      const supportedChain =
         isCustomChain(proposedChainId) ||
-        SUPPORTED_CHAIN_IDS.includes(proposedChainId);
+        !!networkStore.getState().getSupportedChain(proposedChainId);
+
       inpageMessenger?.send('rainbow_ethereumChainEvent', {
         chainId: proposedChainId,
         chainName: chain?.name || 'NO NAME',
-        status: !supportedChainId
+        status: !supportedChain
           ? IN_DAPP_NOTIFICATION_STATUS.unsupported_network
           : IN_DAPP_NOTIFICATION_STATUS.no_active_session,
         extensionUrl,

@@ -25,10 +25,13 @@ import {
   zoraSepolia,
 } from 'viem/chains';
 
-import { chainsLabel } from '../references/chains';
+import { networkStore } from '~/core/state/networks/networks';
+
 import { ChainId } from '../types/chains';
 
 import { getSupportedChains } from './chains';
+
+const labels = networkStore.getState().getNetworksLabel();
 
 export const chainIdMap: Record<
   | ChainId.mainnet
@@ -81,20 +84,20 @@ export const chainLabelMap: Record<
   | ChainId.gravity,
   string[]
 > = {
-  [ChainId.mainnet]: [chainsLabel[sepolia.id], chainsLabel[holesky.id]],
-  [ChainId.optimism]: [chainsLabel[optimismSepolia.id]],
-  [ChainId.arbitrum]: [chainsLabel[arbitrumSepolia.id]],
-  [ChainId.polygon]: [chainsLabel[polygonAmoy.id]],
-  [ChainId.base]: [chainsLabel[baseSepolia.id]],
-  [ChainId.bsc]: [chainsLabel[bscTestnet.id]],
-  [ChainId.zora]: [chainsLabel[zoraSepolia.id]],
-  [ChainId.avalanche]: [chainsLabel[avalancheFuji.id]],
-  [ChainId.blast]: [chainsLabel[blastSepolia.id]],
+  [ChainId.mainnet]: [labels[sepolia.id], labels[holesky.id]],
+  [ChainId.optimism]: [labels[optimismSepolia.id]],
+  [ChainId.arbitrum]: [labels[arbitrumSepolia.id]],
+  [ChainId.polygon]: [labels[polygonAmoy.id]],
+  [ChainId.base]: [labels[baseSepolia.id]],
+  [ChainId.bsc]: [labels[bscTestnet.id]],
+  [ChainId.zora]: [labels[zoraSepolia.id]],
+  [ChainId.avalanche]: [labels[avalancheFuji.id]],
+  [ChainId.blast]: [labels[blastSepolia.id]],
   [ChainId.degen]: [],
-  [ChainId.apechain]: [chainsLabel[curtis.id]],
-  [ChainId.ink]: [chainsLabel[inkSepolia.id]],
-  [ChainId.sanko]: [chainsLabel[ChainId.sankoTestnet]],
-  [ChainId.gravity]: [chainsLabel[ChainId.gravitySepolia]],
+  [ChainId.apechain]: [labels[curtis.id]],
+  [ChainId.ink]: [labels[inkSepolia.id]],
+  [ChainId.sanko]: [labels[ChainId.sankoTestnet]],
+  [ChainId.gravity]: [labels[ChainId.gravitySepolia]],
 };
 
 export const sortNetworks = (order: ChainId[], chains: Chain[]) => {

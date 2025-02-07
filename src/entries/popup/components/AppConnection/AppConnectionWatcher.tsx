@@ -2,11 +2,11 @@ import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
-import { chainsLabel } from '~/core/references/chains';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCurrentAddressStore } from '~/core/state';
 import { useAppConnectionWalletSwitcherStore } from '~/core/state/appConnectionWalletSwitcher/appConnectionSwitcher';
+import { networkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { Box } from '~/design-system';
@@ -24,6 +24,7 @@ import { AppConnectionNudgeBanner } from './AppConnectionNudgeBanner';
 import { AppConnectionNudgeSheet } from './AppConnectionNudgeSheet';
 
 export const AppConnectionWatcher = () => {
+  const chainsLabel = networkStore((state) => state.getNetworksLabel());
   const { currentAddress } = useCurrentAddressStore();
   const { url } = useActiveTab();
   const { data: dappMetadata } = useDappMetadata({ url });
@@ -72,6 +73,7 @@ export const AppConnectionWatcher = () => {
     showNudgeBanner,
     showNudgeSheet,
     url,
+    chainsLabel,
   ]);
 
   const nudgeSheetEnabled =

@@ -11,8 +11,8 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { ETH_ADDRESS, SupportedCurrencyKey } from '~/core/references';
-import { SUPPORTED_MAINNET_CHAINS } from '~/core/references/chains';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { networkStore } from '~/core/state/networks/networks';
 import {
   RainbowChainAsset,
   useRainbowChainAssetsStore,
@@ -185,6 +185,10 @@ async function customNetworkAssetsFunction({
 
   const { rainbowChains: chains } = getRainbowChains();
 
+  const supportedMainnetChains = networkStore((state) =>
+    state.getSupportedChains(),
+  );
+
   const customChains = chains.filter((chain) =>
     testnetMode ? chain.testnet : !chain.testnet,
   );
@@ -193,10 +197,7 @@ async function customNetworkAssetsFunction({
   }
   try {
     const assetsPromises = customChains
-      .filter(
-        (chain) =>
-          !SUPPORTED_MAINNET_CHAINS.map((chain) => chain.id).includes(chain.id),
-      )
+      .filter((chain) => !supportedMainnetChains[chain.id])
       .map(async (chain) => {
         const provider = getProvider({ chainId: chain.id });
         const nativeAssetBalance = (

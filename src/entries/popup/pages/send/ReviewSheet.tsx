@@ -9,7 +9,7 @@ import React, {
 import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
-import { chainsLabel } from '~/core/references/chains';
+import { networkStore } from '~/core/state/networks/networks';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId, ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import { UniqueAsset } from '~/core/types/nfts';
@@ -270,6 +270,7 @@ export const ReviewSheet = ({
     }>
   >;
 }) => {
+  const chainsLabel = networkStore((state) => state.getNetworksLabel());
   const { visibleOwnedWallets } = useWallets();
   const [notSendingOnEthereumChecks, setNotSendingOnEthereumChecks] =
     useState(false);

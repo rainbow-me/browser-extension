@@ -1,6 +1,6 @@
 import create from 'zustand';
 
-import { SUPPORTED_MAINNET_CHAINS } from '~/core/references/chains';
+import { networkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 import { persistOptions } from '~/core/utils/persistOptions';
 
@@ -39,15 +39,18 @@ export interface UserChainsState {
   removeUserChain: ({ chainId }: { chainId: ChainId }) => void;
 }
 
-const initialChains = SUPPORTED_MAINNET_CHAINS.reduce(
-  (acc, chain) => ({
-    ...acc,
-    [chain.id]: true,
-  }),
-  {} as Record<number, boolean>,
-);
+const initialChains = networkStore
+  .getState()
+  .getSupportedChainIds()
+  .reduce<Record<number, boolean>>(
+    (acc, id) => ({
+      ...acc,
+      [id]: true,
+    }),
+    {},
+  );
 
-const initialUserChainsOrder = SUPPORTED_MAINNET_CHAINS.map(({ id }) => id);
+const initialUserChainsOrder = Object.keys(initialChains).map(Number);
 
 export const userChainsStore = createStore<UserChainsState>(
   (set, get) => ({

@@ -1,15 +1,12 @@
-import React, { useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { DropResult } from 'react-beautiful-dnd';
 import { Chain } from 'viem';
 
 import { i18n } from '~/core/languages';
-import {
-  SUPPORTED_CHAINS,
-  SUPPORTED_CHAIN_IDS,
-} from '~/core/references/chains';
 import { useRainbowChainsStore } from '~/core/state';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import { networkStore } from '~/core/state/networks/networks';
 import { promoTypes, useQuickPromoStore } from '~/core/state/quickPromo';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
 import { useUserChainsStore } from '~/core/state/userChains';
@@ -69,6 +66,9 @@ export function SettingsNetworks() {
   } = useUserChainsStore();
   const { rainbowChains, removeCustomRPC } = useRainbowChainsStore();
   const { removeRainbowChainAssets } = useRainbowChainAssetsStore();
+  const supportedChains = networkStore((state) =>
+    state.getSupportedChains(true),
+  );
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source } = result;
@@ -96,12 +96,10 @@ export function SettingsNetworks() {
         // Always use the name of the supported network if it exists
         return {
           ...chain,
-          name:
-            SUPPORTED_CHAINS.find(({ id }) => id === chainId)?.name ||
-            chain.name,
+          name: supportedChains[chainId]?.name || chain.name,
         };
       }),
-    [mainChains, userChainsOrder],
+    [mainChains, userChainsOrder, supportedChains],
   );
 
   const enableNetwork = useCallback(
@@ -260,7 +258,7 @@ export function SettingsNetworks() {
                                 : i18n.t('settings.networks.enable')}
                             </Text>
                           </ContextMenuItem>
-                          {!SUPPORTED_CHAIN_IDS.includes(chain.id) ? (
+                          {!supportedChains[chain.id] ? (
                             <ContextMenuItem
                               symbolLeft="trash.fill"
                               color="red"

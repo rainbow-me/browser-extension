@@ -1,3 +1,4 @@
+import { AddressZero } from '@ethersproject/constants';
 import { type Chain, avalancheFuji, curtis, inkSepolia } from 'viem/chains';
 
 import buildTimeNetworks from 'static/data/networks.json';
@@ -86,6 +87,39 @@ export function differenceOrUnionOf<
   return entries as Map<string, K extends keyof T ? T[K] : T>;
 }
 
+/**
+ * Merges backend network data with user-defined network preferences to create a unified chain configuration
+ * @param networks - Backend-provided network configurations
+ * @param userOverrides - User-defined network preferences and custom networks
+ * @returns A record mapping chain IDs to merged chain configurations that combine backend data with user overrides
+ */
+export const mergeChainData = (
+  networks: Networks,
+  userOverrides: Record<number, UserPreferences>,
+): Record<number, MergedChain> => {
+  const mergedChainData: Record<number, MergedChain> = {};
+  const backendNetworks = transformBackendNetworksToChains(
+    networks.backendNetworks.networks,
+  );
+
+  for (const chain of backendNetworks) {
+    const chainId = chain.id;
+    const userPrefs = userOverrides[chainId];
+    if (userPrefs.type === 'custom') continue;
+    mergedChainData[chainId] = {
+      ...chain,
+      ...userPrefs,
+    };
+  }
+
+  return mergedChainData;
+};
+
+export const mergedChainToViemChain = (mergedChain: MergedChain): Chain => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { type, enabled, order, activeRpcUrl, rpcs, ...chain } = mergedChain;
+  return chain;
+};
 const isUserChainOrderMalformed = (userChainsOrder: number[]) => {
   return userChainsOrder.some((id) => id == null || Number.isNaN(id));
 };
@@ -224,13 +258,19 @@ export function getDefaultGasSpeeds(chainId: ChainId): GasSpeed[] {
 
 export function getDefaultPollingInterval(chainId: ChainId): number {
   switch (chainId) {
-    case ChainId.polygon:
-      return 2_000;
     case ChainId.arbitrum:
+    case ChainId.mainnet:
+    case ChainId.hardhat:
+      return 5000;
+    case ChainId.base:
     case ChainId.bsc:
-      return 3_000;
+    case ChainId.optimism:
+    case ChainId.polygon:
+    case ChainId.zora:
+    case ChainId.avalanche:
+    case ChainId.hardhatOptimism:
     default:
-      return 5_000;
+      return 2000;
   }
 }
 
@@ -240,6 +280,7 @@ export const LOCAL_NETWORKS: CustomNetwork[] = [
     name: 'Hardhat',
     iconURL: '',
     nativeAsset: {
+      address: AddressZero,
       decimals: 18,
       symbol: 'ETH',
       iconURL: '',
@@ -257,6 +298,7 @@ export const LOCAL_NETWORKS: CustomNetwork[] = [
     name: 'Hardhat OP',
     iconURL: '',
     nativeAsset: {
+      address: AddressZero,
       decimals: 18,
       symbol: 'ETH',
       iconURL: '',
@@ -274,6 +316,7 @@ export const LOCAL_NETWORKS: CustomNetwork[] = [
     name: 'Mainnet Fork',
     iconURL: '',
     nativeAsset: {
+      address: AddressZero,
       decimals: 18,
       symbol: 'ETH',
       iconURL: '',
@@ -291,6 +334,7 @@ export const LOCAL_NETWORKS: CustomNetwork[] = [
     name: 'Mainnet (Dev)',
     iconURL: '',
     nativeAsset: {
+      address: AddressZero,
       decimals: 18,
       symbol: 'ETH',
       iconURL: '',
@@ -308,6 +352,7 @@ export const LOCAL_NETWORKS: CustomNetwork[] = [
     name: avalancheFuji.name,
     iconURL: '',
     nativeAsset: {
+      address: AddressZero,
       decimals: avalancheFuji.nativeCurrency.decimals,
       symbol: avalancheFuji.nativeCurrency.symbol,
       iconURL: '',
@@ -325,6 +370,7 @@ export const LOCAL_NETWORKS: CustomNetwork[] = [
     name: curtis.name,
     iconURL: '',
     nativeAsset: {
+      address: AddressZero,
       decimals: curtis.nativeCurrency.decimals,
       symbol: curtis.nativeCurrency.symbol,
       iconURL: '',
@@ -342,6 +388,7 @@ export const LOCAL_NETWORKS: CustomNetwork[] = [
     name: inkSepolia.name,
     iconURL: '',
     nativeAsset: {
+      address: AddressZero,
       decimals: inkSepolia.nativeCurrency.decimals,
       symbol: inkSepolia.nativeCurrency.symbol,
       iconURL: '',
@@ -356,30 +403,25 @@ export const LOCAL_NETWORKS: CustomNetwork[] = [
   },
 ];
 
-/**
- * Merges backend network data with user-defined network preferences to create a unified chain configuration
- * @param networks - Backend-provided network configurations
- * @param userOverrides - User-defined network preferences and custom networks
- * @returns A record mapping chain IDs to merged chain configurations that combine backend data with user overrides
- */
-export const mergeChainData = (
-  networks: Networks,
-  userOverrides: Record<number, UserPreferences>,
-): Record<number, MergedChain> => {
-  const mergedChainData: Record<number, MergedChain> = {};
-  const backendNetworks = transformBackendNetworksToChains(
-    networks.backendNetworks.networks,
-  );
-
-  for (const chain of backendNetworks) {
-    const chainId = chain.id;
-    const userPrefs = userOverrides[chainId];
-    if (userPrefs.type === 'custom') continue;
-    mergedChainData[chainId] = {
-      ...chain,
-      ...userPrefs,
-    };
-  }
-
-  return mergedChainData;
+export const oldDefaultRPC: { [key in ChainId]?: string } = {
+  [ChainId.mainnet]: process.env.ETH_MAINNET_RPC,
+  [ChainId.optimism]: process.env.OPTIMISM_MAINNET_RPC,
+  [ChainId.arbitrum]: process.env.ARBITRUM_MAINNET_RPC,
+  [ChainId.polygon]: process.env.POLYGON_MAINNET_RPC,
+  [ChainId.base]: process.env.BASE_MAINNET_RPC,
+  [ChainId.zora]: process.env.ZORA_MAINNET_RPC,
+  [ChainId.bsc]: process.env.BSC_MAINNET_RPC,
+  [ChainId.sepolia]: process.env.ETH_SEPOLIA_RPC,
+  [ChainId.holesky]: process.env.ETH_HOLESKY_RPC,
+  [ChainId.optimismSepolia]: process.env.OPTIMISM_SEPOLIA_RPC,
+  [ChainId.bscTestnet]: process.env.BSC_TESTNET_RPC,
+  [ChainId.arbitrumSepolia]: process.env.ARBITRUM_SEPOLIA_RPC,
+  [ChainId.baseSepolia]: process.env.BASE_SEPOLIA_RPC,
+  [ChainId.zoraSepolia]: process.env.ZORA_SEPOLIA_RPC,
+  [ChainId.avalanche]: process.env.AVALANCHE_MAINNET_RPC,
+  [ChainId.avalancheFuji]: process.env.AVALANCHE_FUJI_RPC,
+  [ChainId.blast]: process.env.BLAST_MAINNET_RPC,
+  [ChainId.blastSepolia]: process.env.BLAST_SEPOLIA_RPC,
+  [ChainId.polygonAmoy]: process.env.POLYGON_AMOY_RPC,
+  [ChainId.degen]: process.env.DEGEN_MAINNET_RPC,
 };

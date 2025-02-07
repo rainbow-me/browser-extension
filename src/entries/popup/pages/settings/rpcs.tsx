@@ -4,10 +4,6 @@ import { useLocation } from 'react-router-dom';
 import { Address, Chain } from 'viem';
 
 import { i18n } from '~/core/languages';
-import {
-  SUPPORTED_CHAINS,
-  SUPPORTED_CHAIN_IDS,
-} from '~/core/references/chains';
 import { selectUserAssetsDictByChain } from '~/core/resources/_selectors/assets';
 import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
 import {
@@ -18,8 +14,10 @@ import {
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import { networkStore } from '~/core/state/networks/networks';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
 import { useUserChainsStore } from '~/core/state/userChains';
+import { MergedChain } from '~/core/types/chains';
 import { getSupportedChains } from '~/core/utils/chains';
 import { getDappHost } from '~/core/utils/connectedApps';
 import { chainIdMap } from '~/core/utils/userChains';
@@ -56,11 +54,13 @@ import {
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
-const isDefaultRPC = (chain: Chain) => {
-  const rpc = SUPPORTED_CHAINS.find((c) => c.id === chain.id)?.rpcUrls.default
-    .http[0];
-  if (!rpc) return false;
-  return chain.rpcUrls.default.http[0] === rpc;
+const isDefaultRPC = (
+  chain: Chain,
+  supportedChains: Record<number, MergedChain>,
+) => {
+  const defaultBackendRpc = supportedChains[chain.id].rpcUrls.default.http[0];
+  if (!defaultBackendRpc) return false;
+  return chain.rpcUrls.default.http[0] === defaultBackendRpc;
 };
 
 export function SettingsNetworksRPCs() {
@@ -73,6 +73,11 @@ export function SettingsNetworksRPCs() {
   } = useLocation();
   const { removeRainbowChainAsset, removeRainbowChainAssets } =
     useRainbowChainAssetsStore();
+
+  const supportedChains = networkStore((state) =>
+    state.getSupportedChains(true),
+  );
+  const supportedChain = supportedChains[chainId];
 
   const { data: customNetworkAssets = {} } = useCustomNetworkAssets(
     {
@@ -130,21 +135,16 @@ export function SettingsNetworksRPCs() {
     [chainId, setActiveRPC],
   );
 
-  const supportedChain = useMemo(
-    () => SUPPORTED_CHAINS.find(({ id }) => id === chainId),
-    [chainId],
-  );
-
   const mainnetChains = useMemo(
     () =>
       rainbowChain?.chains
         .filter((chain) => !chain.testnet)
         .sort((a, b) => {
-          if (isDefaultRPC(a)) return -1;
-          if (isDefaultRPC(b)) return 1;
+          if (isDefaultRPC(a, supportedChains)) return -1;
+          if (isDefaultRPC(b, supportedChains)) return 1;
           return 0;
         }) || [],
-    [rainbowChain],
+    [rainbowChain, supportedChains],
   );
 
   const options = ({ address }: { address: Address }): MoreInfoOption[] => [
@@ -335,7 +335,7 @@ export function SettingsNetworksRPCs() {
                               size="11pt"
                               weight={'medium'}
                             >
-                              {isDefaultRPC(chain)
+                              {isDefaultRPC(chain, supportedChains)
                                 ? i18n.t(
                                     'settings.networks.custom_rpc.rainbow_default_rpc',
                                   )
@@ -575,7 +575,7 @@ export function SettingsNetworksRPCs() {
           </>
         ) : null}
 
-        {!SUPPORTED_CHAIN_IDS.includes(chainId) ? (
+        {!supportedChains[chainId] ? (
           <Menu>
             <MenuItem
               first
