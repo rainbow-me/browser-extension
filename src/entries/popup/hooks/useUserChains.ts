@@ -4,13 +4,15 @@ import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { ChainId } from '~/core/types/chains';
 import { getSupportedChains } from '~/core/utils/chains';
-import { chainIdMap, sortNetworks } from '~/core/utils/userChains';
+import { networkStore } from '~/core/state/networks/networks';
+import { sortNetworks } from '~/core/utils/userChains';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
 export const useUserChains = () => {
   const { userChainsOrder, userChains } = useUserChainsStore();
   const { testnetMode } = useTestnetModeStore();
+  const chainIdsBasedOnMainnetId = networkStore.getState().getChainIdsBasedOnMainnetId();
 
   const availableChains = useMemo(() => {
     const supportedChains = getSupportedChains({
@@ -22,7 +24,7 @@ export const useUserChains = () => {
       .map((chainId) => Number(chainId));
 
     const allAvailableUserChains = availableChains
-      .map((chainId) => chainIdMap[chainId] || [chainId])
+      .map((chainId) => chainIdsBasedOnMainnetId[chainId] || [chainId])
       .flat();
 
     const checkIfTesting = (chainId: ChainId) => {

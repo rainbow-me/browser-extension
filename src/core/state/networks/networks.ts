@@ -60,6 +60,8 @@ interface NetworkActions {
   getSupportedCustomNetworkTestnetFaucet: (
     chainId: number,
   ) => string | undefined;
+  getChainIdsBasedOnMainnetId: () => Record<number, number[]>;
+  getChainsBasedOnMainnetId: () => Record<number, BackendNetwork[]>;
 
   // supported networks store methods
   getSupportedChains: (
@@ -392,6 +394,28 @@ export const networkStore = createQueryStore<
         };
       },
     ),
+
+    getChainIdsBasedOnMainnetId: createSelector(({ networks }) => {
+      return networks.backendNetworks.networks.reduce((acc, curr) => {
+        const mainnetId = +curr.mainnetId;
+        if (!acc[mainnetId]) {
+          acc[mainnetId] = [];
+        }
+        acc[mainnetId].push(+curr.id);
+        return acc;
+      }, {} as Record<number, number[]>);
+    }),
+
+    getChainsBasedOnMainnetId: createSelector(({ networks }) => {
+      return networks.backendNetworks.networks.reduce((acc, curr) => {
+        const mainnetId = +curr.mainnetId;
+        if (!acc[mainnetId]) {
+          acc[mainnetId] = [];
+        }
+        acc[mainnetId].push(curr);
+        return acc;
+      }, {} as Record<number, BackendNetwork[]>);
+    }),
 
     getSupportedChains: createParameterizedSelector(({ mergedChainData }) => {
       return (includeTestnets = false) => {

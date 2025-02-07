@@ -22,6 +22,8 @@ export const getSideChainExplainerParams = (
   onDismiss: VoidFunction,
 ) => {
   const chainName = chainIdToNameMapping[chainId];
+
+  // FIXME: https://linear.app/rainbow/issue/BACK-1452/provide-locale-copy-from-the-backendnetworks-for-explainers-so-that-we
   const specificChains = {
     [ChainId.polygon]: 'polygon',
     [ChainId.bsc]: 'bsc',

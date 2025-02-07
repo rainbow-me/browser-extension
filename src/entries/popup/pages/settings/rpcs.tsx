@@ -22,7 +22,7 @@ import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { getSupportedChains } from '~/core/utils/chains';
 import { getDappHost } from '~/core/utils/connectedApps';
-import { chainIdMap } from '~/core/utils/userChains';
+import { networkStore } from '~/core/state/networks/networks';
 import {
   Box,
   Column,
@@ -109,6 +109,7 @@ export function SettingsNetworksRPCs() {
   const userChains = useUserChainsStore.use.userChains();
   const updateUserChain = useUserChainsStore.use.updateUserChain();
   const removeUserChain = useUserChainsStore.use.removeUserChain();
+  const chainIdsBasedOnMainnetId = networkStore(state => state.getChainIdsBasedOnMainnetId());
 
   const handleToggleChain = useCallback(
     (newVal: boolean) => {
@@ -167,7 +168,7 @@ export function SettingsNetworksRPCs() {
       getSupportedChains({
         testnets: true,
       }).filter((chain) => {
-        return chainIdMap[chainId]?.includes(chain.id) && chain.id !== chainId;
+        return chainIdsBasedOnMainnetId[chainId]?.includes(chain.id) && chain.id !== chainId;
       }),
     [chainId],
   );
@@ -545,7 +546,7 @@ export function SettingsNetworksRPCs() {
                               size="11pt"
                               weight={'medium'}
                             >
-                              {chainIdMap[chainId]?.includes(chain.id) &&
+                              {chainIdsBasedOnMainnetId[chainId]?.includes(chain.id) &&
                               chain.id !== chainId
                                 ? i18n.t(
                                     'settings.networks.custom_rpc.rainbow_default',
