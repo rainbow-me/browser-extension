@@ -24,6 +24,7 @@ export const simpleHashSupportedChainNames = [
   ChainName.arbitrumNova,
   ChainName.avalanche,
   ChainName.b3,
+  ChainName.berachain,
   ChainName.base,
   ChainName.blast,
   ChainName.bsc,
