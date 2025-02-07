@@ -1,16 +1,21 @@
 import { Address } from 'viem';
 
-import { AddressOrEth, ParsedAsset, UniqueId } from './assets';
+import { AddressOrEth, AssetType, ParsedAsset, UniqueId } from './assets';
 import { ChainId } from './chains';
 
 export type TokenSearchAssetKey = keyof ParsedAsset;
 
 export type TokenSearchThreshold = 'CONTAINS' | 'CASE_SENSITIVE_EQUAL';
 
-export type TokenSearchListId =
-  | 'highLiquidityAssets'
-  | 'lowLiquidityAssets'
-  | 'verifiedAssets';
+export type TokenSearchListId = 'highLiquidityAssets' | 'lowLiquidityAssets' | 'verifiedAssets';
+
+interface Market {
+  market_cap: {
+    value: number;
+  };
+  volume_24h: number;
+  circulating_supply: number;
+}
 
 export type SearchAsset = {
   address: AddressOrEth;
@@ -18,10 +23,13 @@ export type SearchAsset = {
   colors?: { primary?: string; fallback?: string };
   decimals: number;
   highLiquidity: boolean;
-  icon_url: string;
-  isNativeAsset: boolean;
+  icon_url?: string;
+  isPopular?: boolean;
+  isRainbowCurated: boolean;
+  isNativeAsset?: boolean;
   isVerified: boolean;
   mainnetAddress: AddressOrEth;
+  market?: Market;
   name: string;
   networks: {
     [chainId in ChainId]?: {
@@ -30,6 +38,19 @@ export type SearchAsset = {
     };
   };
   rainbowMetadataId?: number;
+  sectionId?: AssetToBuySectionId;
   symbol: string;
+  type?: AssetType;
   uniqueId: UniqueId;
 };
+
+export type AssetToBuySectionId = 'bridge' | 'recent' | 'favorites' | 'verified' | 'unverified' | 'other_networks' | 'popular';
+
+export interface AssetToBuySection {
+  data: SearchAsset[];
+  id: AssetToBuySectionId;
+}
+
+export type HeaderItem = { listItemType: 'header'; id: AssetToBuySectionId; data: SearchAsset[] };
+export type CoinRowItem = SearchAsset & { listItemType: 'coinRow'; sectionId: AssetToBuySectionId };
+export type TokenToBuyListItem = HeaderItem | CoinRowItem;

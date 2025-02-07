@@ -253,6 +253,11 @@ export const event = {
    * screen is viewed or opened in the extension popup.
    */
   walletViewed: 'wallet.viewed',
+
+  /**
+   * Called in useSearchCurrencyLists hook when we receive search results
+   */
+  tokenList: 'token_list',
 } as const;
 
 /**
@@ -1005,4 +1010,12 @@ export type EventProperties = {
         isNewGroup: boolean;
       };
   [event.walletViewed]: undefined;
+
+  [event.tokenList]: {
+    screen: 'wallet' | 'swap' | 'send';
+    total_tokens: number;
+    no_icon: number;
+    no_price?: number;
+    query?: string; // query is only sent for the swap screen
+  };
 };

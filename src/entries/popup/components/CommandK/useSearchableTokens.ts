@@ -12,7 +12,7 @@ import {
 import { useUserAssets } from '~/core/resources/assets';
 import { useAssetSearchMetadataAllNetworks } from '~/core/resources/assets/assetMetadata';
 import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
-import { useTokenSearchAllNetworks } from '~/core/resources/search/tokenSearch';
+import { useTokenSearchAllNetworks } from '~/core/resources/search/tokenSearchV2';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';

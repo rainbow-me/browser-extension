@@ -8,6 +8,10 @@ export function truncateAddress(address?: AddressOrEth) {
   return `${address?.slice(0, 6)}…${address?.slice(-4)}`;
 }
 
+export function getUniqueId(address: AddressOrEth, chainId: ChainId) {
+  return `${address}_${chainId}`;
+}
+
 export function deriveAddressAndChainWithUniqueId(uniqueId: UniqueId) {
   const fragments = uniqueId.split('_');
   const address = fragments[0] as Address;
