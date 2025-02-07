@@ -28,8 +28,8 @@ export function useSearchCurrencyLists({
   searchQuery,
   bridge,
 }: {
-  inputAsset: ParsedSearchAsset | null;
-  outputAsset: ParsedSearchAsset | null;
+  inputAsset: ParsedSearchAsset | SearchAsset | null;
+  outputAsset: ParsedSearchAsset | SearchAsset | null;
   searchQuery: string;
   bridge: boolean;
 }) {

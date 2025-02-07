@@ -91,9 +91,8 @@ export const useSwapAssets = ({ bridge }: { bridge: boolean }) => {
     networkSearchStatus: searchAssetsToBuyNetworkStatus,
     results: searchAssetsToBuySections,
   } = useSearchCurrencyLists({
-    inputChainId: assetToSell?.chainId,
-    outputChainId,
-    assetToSell,
+    inputAsset: assetToSell,
+    outputAsset: assetToBuy,
     searchQuery: debouncedAssetToBuyFilter,
     bridge,
   });

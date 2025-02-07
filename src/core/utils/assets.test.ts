@@ -57,6 +57,8 @@ const ETH_FROM_SEARCH: SearchAsset = {
   name: 'Ethereum',
   symbol: 'ETH',
   uniqueId: 'eth_1',
+  isRainbowCurated: false,
+  isPopular: false,
   colors: { primary: '#808088', fallback: '#E8EAF5' },
   icon_url:
     'https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/smartchain/0x2170ed0880ac9a755fd29b2688956bd959f933f8.png',
@@ -212,6 +214,8 @@ const OPTIMISM_USD_FROM_SEARCH = {
   highLiquidity: true,
   name: 'USD Coin',
   symbol: 'USDC',
+  isRainbowCurated: false,
+  isPopular: false,
   uniqueId: '0x7f5c764cbc14f9669b88837ca1490cca17c31607_10',
   colors: {
     primary: '#2775CA',
