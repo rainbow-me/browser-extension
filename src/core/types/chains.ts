@@ -278,17 +278,15 @@ export type BackendNetworkWithPrivateMempoolTimeout = BackendNetwork & {
  * MergedChain is a type that combines a transformation of BackendNetwork -> Chain
  * with any additional user preferences for that chain.
  */
-export type MergedChain = Chain & {
+export type MergedBackendNetworkWithChainPreferences = Chain & {
   type: 'supported';
-  enabled: boolean;
   order: number | undefined;
+  enabled: boolean;
   activeRpcUrl: string;
   rpcs: Record<string, Chain>;
 };
 
-export type UserPreferences = {
-  enabled: boolean;
-  order: number | undefined;
+export type ChainPreferences = {
   activeRpcUrl: string;
   rpcs: Record<string, Chain>;
 } & (

@@ -37,32 +37,28 @@ describe('networkStore', () => {
         });
         networkStore.setState({
           networks: buildTimeNetworks,
-          userOverrides: buildInitialUserPreferences(),
+          ...buildInitialUserPreferences(),
         });
       });
 
-      test(`${factory} chain order should be kept`, async () => {
+      test(`${factory} chain order should be kept with duplicates removed`, async () => {
         const orderWithDuplicatesRemoved = [...new Set(userChainsOrder)];
-        const { userOverrides } = networkStore.getState();
+        const { chainOrder } = networkStore.getState();
 
         for (let i = 0; i < orderWithDuplicatesRemoved.length; i++) {
           const chainId = orderWithDuplicatesRemoved[i];
-          if (!userOverrides[chainId]) {
-            continue;
-          }
-          if (typeof userOverrides[chainId].order === 'number') {
-            expect(userOverrides[chainId].order).toEqual(i);
-          }
+          console.log(chainOrder, chainId, chainOrder.indexOf(chainId), i);
+          expect(chainOrder.indexOf(chainId)).toEqual(i);
         }
       });
 
       test(`${factory} should keep the enabled state of chains`, async () => {
-        const { userOverrides } = networkStore.getState();
+        const { enabledChainIds } = networkStore.getState();
 
-        for (const chainId in userOverrides) {
+        for (const chainId of enabledChainIds) {
           // explicitly if it's true, it's true, otherwise disable it
           const expected = userChains[chainId] ?? false;
-          expect(userOverrides[chainId].enabled).toEqual(expected);
+          expect(enabledChainIds.has(chainId)).toEqual(expected);
         }
       });
 
@@ -79,9 +75,6 @@ describe('networkStore', () => {
 
           // preserve activeRpcUrl
           expect(userOverride.activeRpcUrl).toEqual(chain.activeRpcUrl);
-
-          // preserve enabled state
-          expect(userOverride.enabled).toEqual(userChains[chainIdNum] ?? false);
 
           // preserve rpcs
           for (const rpcUrl in userOverride.rpcs) {

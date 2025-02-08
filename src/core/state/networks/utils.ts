@@ -1,3 +1,4 @@
+import { AddressZero } from '@ethersproject/constants';
 import { type Chain, avalancheFuji, curtis, inkSepolia } from 'viem/chains';
 
 import buildTimeNetworks from 'static/data/networks.json';
@@ -7,10 +8,10 @@ import { useUserChainsStore } from '~/core/state/userChains';
 import {
   BackendNetworks,
   ChainId,
+  ChainPreferences,
   CustomNetwork,
-  MergedChain,
+  MergedBackendNetworkWithChainPreferences,
   Networks,
-  UserPreferences,
 } from '~/core/types/chains';
 import { GasSpeed } from '~/core/types/gas';
 import { transformBackendNetworksToChains } from '~/core/utils/backendNetworks';
@@ -92,8 +93,9 @@ const isUserChainOrderMalformed = (userChainsOrder: number[]) => {
 
 export const buildInitialUserPreferences = (
   initialSupportedNetworks = buildTimeNetworks,
-): Record<number, UserPreferences> => {
-  const userOverrides: Record<number, UserPreferences> = {};
+): Pick<NetworkState, 'userOverrides' | 'chainOrder' | 'enabledChainIds'> => {
+  const userOverrides: Record<number, ChainPreferences> = {};
+  const enabledChainIds = new Set<number>();
 
   const { rainbowChains } = useRainbowChainsStore.getState();
   const { userChains, userChainsOrder } = useUserChainsStore.getState();
@@ -112,26 +114,20 @@ export const buildInitialUserPreferences = (
     order = defaultInitialOrder;
   }
 
-  const orderWithDuplicatesRemoved = [...new Set(order)];
+  const chainOrder = [...new Set(order)];
 
   for (const chainId of Object.keys(rainbowChains)) {
     const chainIdNum = toChainId(chainId);
     const chain = rainbowChains[chainIdNum];
 
     if (!userOverrides[chainIdNum]) {
-      userOverrides[chainIdNum] = {} as UserPreferences;
+      userOverrides[chainIdNum] = {} as ChainPreferences;
     }
 
     userOverrides[chainIdNum].activeRpcUrl = chain.activeRpcUrl;
-    userOverrides[chainIdNum].enabled = userChains[chainIdNum] ?? false;
-
-    const desiredOrder = orderWithDuplicatesRemoved.findIndex(
-      (id) => id === chainIdNum,
-    );
-    userOverrides[chainIdNum].order =
-      userOverrides[chainIdNum].order ?? desiredOrder === -1
-        ? undefined
-        : desiredOrder;
+    if (userChains[chainIdNum]) {
+      enabledChainIds.add(chainIdNum);
+    }
 
     const rpcs: Record<string, Chain> = {};
     // construct RPCs
@@ -162,7 +158,11 @@ export const buildInitialUserPreferences = (
     }
   }
 
-  return userOverrides;
+  return {
+    userOverrides,
+    chainOrder,
+    enabledChainIds,
+  };
 };
 
 /**
@@ -177,8 +177,9 @@ export const buildInitialUserPreferences = (
 export const modifyUserPreferencesForNewlySupportedNetworks = (
   state: NetworkState,
   diff: Map<string, BackendNetworks['networks'][number]>,
-) => {
+): Pick<NetworkState, 'userOverrides' | 'enabledChainIds'> => {
   const userOverrides = { ...state.userOverrides };
+  const enabledChainIds = new Set<number>(state.enabledChainIds);
 
   for (const chainId of diff.keys()) {
     const chainIdNum = toChainId(chainId);
@@ -196,13 +197,15 @@ export const modifyUserPreferencesForNewlySupportedNetworks = (
     userOverrides[chainIdNum] = {
       type: 'supported',
       activeRpcUrl: defaultRpcUrl,
-      enabled: true,
-      order: previousPrefs.order,
       rpcs: previousPrefs.rpcs,
     };
+    enabledChainIds.add(chainIdNum);
   }
 
-  return userOverrides;
+  return {
+    userOverrides,
+    enabledChainIds,
+  };
 };
 
 /** -----------------------------------------------------------------------------------
@@ -354,7 +357,10 @@ export const LOCAL_NETWORKS: CustomNetwork[] = [
       mainnetChainID: inkSepolia.id,
     },
   },
-];
+].map((n) => ({
+  ...n,
+  nativeAsset: { ...n.nativeAsset, address: AddressZero },
+}));
 
 /**
  * Merges backend network data with user-defined network preferences to create a unified chain configuration
@@ -364,9 +370,14 @@ export const LOCAL_NETWORKS: CustomNetwork[] = [
  */
 export const mergeChainData = (
   networks: Networks,
-  userOverrides: Record<number, UserPreferences>,
-): Record<number, MergedChain> => {
-  const mergedChainData: Record<number, MergedChain> = {};
+  userOverrides: Record<number, ChainPreferences>,
+  chainOrder: Array<number>,
+  enabledChainIds: Set<number>,
+): Record<number, MergedBackendNetworkWithChainPreferences> => {
+  const mergedChainData: Record<
+    number,
+    MergedBackendNetworkWithChainPreferences
+  > = {};
   const backendNetworks = transformBackendNetworksToChains(
     networks.backendNetworks.networks,
   );
@@ -375,9 +386,12 @@ export const mergeChainData = (
     const chainId = chain.id;
     const userPrefs = userOverrides[chainId];
     if (userPrefs.type === 'custom') continue;
+    const order = chainOrder.indexOf(chainId);
     mergedChainData[chainId] = {
       ...chain,
       ...userPrefs,
+      order: order === -1 ? undefined : order,
+      enabled: enabledChainIds.has(chainId),
     };
   }
 
