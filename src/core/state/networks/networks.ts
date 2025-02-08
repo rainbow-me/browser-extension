@@ -52,8 +52,10 @@ interface NetworkActions {
     success: boolean;
     newRpcsLength: number;
   };
+  getUserAddedNetworks: () => Record<number, UserPreferences>;
+  getUserAddedNetworkIds: () => number[];
 
-  // custom networks store methods
+  // custom backend driven networks store methods
   getSupportedCustomNetworks: () => CustomNetwork[];
   getSupportedCustomNetworksIconUrls: () => Record<number, string>;
   getSupportedCustomNetworksTestnetFaucets: () => Record<number, string>;
@@ -90,6 +92,9 @@ interface NetworkActions {
   getNetworksBadgeUrls: () => Record<number, string>;
   getNetworkBadgeUrl: (chainId: number) => string | undefined;
   getDefaultFavorites: () => Record<number, AddressOrEth[]>;
+
+  // unified network store methods
+  getAllNetworks: () => Record<number, Omit<MergedChain, 'type'> & { type: 'custom' | 'supported' }>;
 }
 
 let lastNetworks: Networks | null = null;
@@ -347,6 +352,24 @@ export const networkStore = createQueryStore<
       };
     }),
 
+    getUserAddedNetworks: createSelector(({ networks, userOverrides }) => {
+      return Object.values(userOverrides).reduce((acc, chain) => {
+        if (chain.type === 'custom' && !networks.backendNetworks.networks.find(c => +c.id === chain.id)) {
+          acc[chain.id] = chain;
+        }
+        return acc;
+      }, {} as Record<number, UserPreferences>);
+    }),
+
+    getUserAddedNetworkIds: createSelector(({ userOverrides }) => {
+      return Object.values(userOverrides).reduce<number[]>((acc, chain) => {
+        if (chain.type === 'custom') {
+          acc.push(chain.id);
+        }
+        return acc;
+      }, []);
+    }),
+
     // TODO: Would like to remove already added custom networks from this list
     getSupportedCustomNetworks: createSelector(({ networks }) => {
       return [
@@ -592,6 +615,23 @@ export const networkStore = createQueryStore<
           [network.id]: network.favorites.map((f) => f.address as AddressOrEth),
         };
       }, {});
+    }),
+
+    getAllNetworks: createSelector(({ userOverrides, mergedChainData }) => {
+      const uesrOverridesToMergedChains = Object.values(userOverrides).reduce((acc, chain) => {
+        if (chain.type === 'custom') {
+          acc[chain.id] = {
+            ...chain,
+            type: 'custom',
+          }
+        }
+        return acc;
+      }, {} as Record<number, Omit<MergedChain, 'type'> & { type: 'custom' }>);
+
+      return {
+        ...mergedChainData,
+        ...uesrOverridesToMergedChains,
+      };
     }),
   }),
   {
