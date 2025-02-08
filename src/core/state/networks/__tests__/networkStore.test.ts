@@ -62,13 +62,13 @@ describe('networkStore', () => {
         }
       });
 
-      test(`${factory} should have a valid userOverrides entry for pre-existing chains in rainbowChains store`, async () => {
-        const { userOverrides } = networkStore.getState();
+      test(`${factory} should have a valid userPreferences entry for pre-existing chains in rainbowChains store`, async () => {
+        const { userPreferences } = networkStore.getState();
 
         for (const chainId in rainbowChains) {
           const chainIdNum = toChainId(chainId);
           const chain = rainbowChains[chainIdNum];
-          const userOverride = userOverrides[chainIdNum];
+          const userOverride = userPreferences[chainIdNum];
 
           // userOverride should exist
           expect(userOverride).toBeDefined();
