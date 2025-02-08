@@ -1,3 +1,4 @@
+import { AddressZero } from '@ethersproject/constants';
 import { type Chain, avalancheFuji, curtis, inkSepolia } from 'viem/chains';
 
 import buildTimeNetworks from 'static/data/networks.json';
@@ -7,10 +8,10 @@ import { useUserChainsStore } from '~/core/state/userChains';
 import {
   BackendNetworks,
   ChainId,
+  ChainPreferences,
   CustomNetwork,
-  MergedChain,
   Networks,
-  UserPreferences,
+  TransformedChain,
 } from '~/core/types/chains';
 import { GasSpeed } from '~/core/types/gas';
 import { transformBackendNetworksToChains } from '~/core/utils/backendNetworks';
@@ -92,8 +93,9 @@ const isUserChainOrderMalformed = (userChainsOrder: number[]) => {
 
 export const buildInitialUserPreferences = (
   initialSupportedNetworks = buildTimeNetworks,
-): Record<number, UserPreferences> => {
-  const userOverrides: Record<number, UserPreferences> = {};
+): Pick<NetworkState, 'userPreferences' | 'chainOrder' | 'enabledChainIds'> => {
+  const userPreferences: Record<number, ChainPreferences> = {};
+  const enabledChainIds = new Set<number>();
 
   const { rainbowChains } = useRainbowChainsStore.getState();
   const { userChains, userChainsOrder } = useUserChainsStore.getState();
@@ -112,26 +114,20 @@ export const buildInitialUserPreferences = (
     order = defaultInitialOrder;
   }
 
-  const orderWithDuplicatesRemoved = [...new Set(order)];
+  const chainOrder = [...new Set(order)];
 
   for (const chainId of Object.keys(rainbowChains)) {
     const chainIdNum = toChainId(chainId);
     const chain = rainbowChains[chainIdNum];
 
-    if (!userOverrides[chainIdNum]) {
-      userOverrides[chainIdNum] = {} as UserPreferences;
+    if (!userPreferences[chainIdNum]) {
+      userPreferences[chainIdNum] = {} as ChainPreferences;
     }
 
-    userOverrides[chainIdNum].activeRpcUrl = chain.activeRpcUrl;
-    userOverrides[chainIdNum].enabled = userChains[chainIdNum] ?? false;
-
-    const desiredOrder = orderWithDuplicatesRemoved.findIndex(
-      (id) => id === chainIdNum,
-    );
-    userOverrides[chainIdNum].order =
-      userOverrides[chainIdNum].order ?? desiredOrder === -1
-        ? undefined
-        : desiredOrder;
+    userPreferences[chainIdNum].activeRpcUrl = chain.activeRpcUrl;
+    if (userChains[chainIdNum]) {
+      enabledChainIds.add(chainIdNum);
+    }
 
     const rpcs: Record<string, Chain> = {};
     // construct RPCs
@@ -140,29 +136,33 @@ export const buildInitialUserPreferences = (
       rpcs[rpcUrl] = c;
     }
 
-    userOverrides[chainIdNum].rpcs = rpcs;
+    userPreferences[chainIdNum].rpcs = rpcs;
 
     const isSupported = initialSupportedNetworks.backendNetworks.networks.some(
       (n) => +n.id === chainIdNum,
     );
     if (isSupported) {
-      userOverrides[chainIdNum].type = 'supported';
+      userPreferences[chainIdNum].type = 'supported';
     } else {
       // for user-added custom networks, we need chain info attached to the userOverride
-      userOverrides[chainIdNum].type = 'custom';
+      userPreferences[chainIdNum].type = 'custom';
       const activeChain = chain.chains.find(
         (c) => c.rpcUrls.default.http[0] === chain.activeRpcUrl,
       );
       if (activeChain) {
-        userOverrides[chainIdNum] = {
-          ...userOverrides[chainIdNum],
+        userPreferences[chainIdNum] = {
+          ...userPreferences[chainIdNum],
           ...activeChain,
         };
       }
     }
   }
 
-  return userOverrides;
+  return {
+    userPreferences,
+    chainOrder,
+    enabledChainIds,
+  };
 };
 
 /**
@@ -177,32 +177,35 @@ export const buildInitialUserPreferences = (
 export const modifyUserPreferencesForNewlySupportedNetworks = (
   state: NetworkState,
   diff: Map<string, BackendNetworks['networks'][number]>,
-) => {
-  const userOverrides = { ...state.userOverrides };
+): Pick<NetworkState, 'userPreferences' | 'enabledChainIds'> => {
+  const userPreferences = { ...state.userPreferences };
+  const enabledChainIds = new Set<number>(state.enabledChainIds);
 
   for (const chainId of diff.keys()) {
     const chainIdNum = toChainId(chainId);
     const incoming = diff.get(chainId);
 
-    if (!incoming || !userOverrides[chainIdNum]) continue;
+    if (!incoming || !userPreferences[chainIdNum]) continue;
 
     const defaultRpcUrl = proxyBackendNetworkRpcEndpoint(
       incoming.defaultRPC.url,
     );
 
-    const previousPrefs = userOverrides[chainIdNum];
+    const previousPrefs = userPreferences[chainIdNum];
 
     // we want to trim off the chain info from the previously 'custom' network
-    userOverrides[chainIdNum] = {
+    userPreferences[chainIdNum] = {
       type: 'supported',
       activeRpcUrl: defaultRpcUrl,
-      enabled: true,
-      order: previousPrefs.order,
       rpcs: previousPrefs.rpcs,
     };
+    enabledChainIds.add(chainIdNum);
   }
 
-  return userOverrides;
+  return {
+    userPreferences,
+    enabledChainIds,
+  };
 };
 
 /** -----------------------------------------------------------------------------------
@@ -354,30 +357,51 @@ export const LOCAL_NETWORKS: CustomNetwork[] = [
       mainnetChainID: inkSepolia.id,
     },
   },
-];
+].map((n) => ({
+  ...n,
+  nativeAsset: { ...n.nativeAsset, address: AddressZero },
+}));
 
 /**
  * Merges backend network data with user-defined network preferences to create a unified chain configuration
  * @param networks - Backend-provided network configurations
- * @param userOverrides - User-defined network preferences and custom networks
+ * @param userPreferences - User-defined network preferences and custom networks
  * @returns A record mapping chain IDs to merged chain configurations that combine backend data with user overrides
  */
 export const mergeChainData = (
   networks: Networks,
-  userOverrides: Record<number, UserPreferences>,
-): Record<number, MergedChain> => {
-  const mergedChainData: Record<number, MergedChain> = {};
+  userPreferences: Record<number, ChainPreferences>,
+  chainOrder: Array<number>,
+  enabledChainIds: Set<number>,
+): Record<number, TransformedChain> => {
+  const mergedChainData: Record<number, TransformedChain> = {};
   const backendNetworks = transformBackendNetworksToChains(
     networks.backendNetworks.networks,
   );
 
   for (const chain of backendNetworks) {
     const chainId = chain.id;
-    const userPrefs = userOverrides[chainId];
+    const userPrefs = userPreferences[chainId];
     if (userPrefs.type === 'custom') continue;
+    const order = chainOrder.indexOf(chainId);
     mergedChainData[chainId] = {
       ...chain,
       ...userPrefs,
+      order: order === -1 ? undefined : order,
+      enabled: enabledChainIds.has(chainId),
+    };
+  }
+
+  for (const chainId of Object.keys(userPreferences)) {
+    const chainIdNum = toChainId(chainId);
+    const userPrefs = userPreferences[chainIdNum];
+    if (userPrefs.type === 'supported') continue;
+    const order = chainOrder.indexOf(chainIdNum);
+    mergedChainData[chainIdNum] = {
+      ...userPrefs,
+      type: 'custom',
+      order: order === -1 ? undefined : order,
+      enabled: enabledChainIds.has(chainIdNum),
     };
   }
 

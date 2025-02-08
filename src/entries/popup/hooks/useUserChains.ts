@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { networkStore } from '~/core/state/networks/networks';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { ChainId } from '~/core/types/chains';
 import { getSupportedChains } from '~/core/utils/chains';
-import { networkStore } from '~/core/state/networks/networks';
 import { sortNetworks } from '~/core/utils/userChains';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
@@ -12,7 +12,9 @@ const IS_TESTING = process.env.IS_TESTING === 'true';
 export const useUserChains = () => {
   const { userChainsOrder, userChains } = useUserChainsStore();
   const { testnetMode } = useTestnetModeStore();
-  const chainIdsBasedOnMainnetId = networkStore.getState().getChainIdsBasedOnMainnetId();
+  const chainIdsBasedOnMainnetId = networkStore((state) =>
+    state.getBackendChainIdsByMainnetId(),
+  );
 
   const availableChains = useMemo(() => {
     const supportedChains = getSupportedChains({
@@ -42,7 +44,7 @@ export const useUserChains = () => {
     );
 
     return sortNetworks(userChainsOrder, chains);
-  }, [testnetMode, userChains, userChainsOrder]);
+  }, [testnetMode, userChains, userChainsOrder, chainIdsBasedOnMainnetId]);
 
   return { chains: availableChains };
 };

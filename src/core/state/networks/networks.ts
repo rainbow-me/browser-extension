@@ -18,10 +18,10 @@ import {
   BackendNetwork,
   BackendNetworkWithPrivateMempoolTimeout,
   ChainId,
+  ChainPreferences,
   CustomNetwork,
-  MergedChain,
   Networks,
-  UserPreferences,
+  TransformedChain,
 } from '~/core/types/chains';
 
 const IS_DEV = process.env.IS_DEV === 'true';
@@ -33,48 +33,52 @@ const LOCAL_TESTING_NETWORKS = IS_TESTING ? LOCAL_NETWORKS : [];
 
 export interface NetworkState {
   networks: Networks; // contains backend-driven networks and backend-driven custom networks
-  userOverrides: Record<number, UserPreferences>; // contains user-driven overrides for backend-driven networks AND user added custom networks
+  userPreferences: Record<number, ChainPreferences>; // contains user-driven overrides for backend-driven networks AND user added custom networks
+
+  chainOrder: Array<number>;
+  enabledChainIds: Set<number>;
 }
 
 interface NetworkActions {
   // user-added custom networks store methods
   getActiveRpcForChain: (chainId: number) => Chain | null;
-  addCustomNetwork: (chainId: number, userPreferences: UserPreferences) => void;
-  updateCustomNetwork: (
+  addCustomChain: (chainId: number, userPreferences: ChainPreferences) => void;
+  updateCustomChain: (
     chainId: number,
-    userPreferences: Partial<UserPreferences>,
+    userPreferences: Partial<ChainPreferences>,
   ) => void;
-  removeCustomNetwork: (chainId: number) => boolean;
-  removeRpcFromNetwork: (
+  removeCustomChain: (chainId: number) => boolean;
+  removeRpcFromChain: (
     chainId: number,
     rpcUrl: string,
   ) => {
     success: boolean;
     newRpcsLength: number;
   };
+  getUserAddedChains: (
+    includeTestnets?: boolean,
+  ) => Record<number, TransformedChain>;
+  getUserAddedChainIds: (includeTestnets?: boolean) => number[];
 
-  // custom networks store methods
+  // custom backend driven networks store methods
   getSupportedCustomNetworks: () => CustomNetwork[];
   getSupportedCustomNetworksIconUrls: () => Record<number, string>;
   getSupportedCustomNetworksTestnetFaucets: () => Record<number, string>;
   getSupportedCustomNetworkTestnetFaucet: (
     chainId: number,
   ) => string | undefined;
-  getChainIdsBasedOnMainnetId: () => Record<number, number[]>;
-  getChainsBasedOnMainnetId: () => Record<number, BackendNetwork[]>;
 
-  // supported networks store methods
-  getSupportedChains: (
+  // supported backend driven networks store methods
+  getBackendSupportedChains: (
     includeTestnets?: boolean,
-  ) => Record<number, MergedChain>;
-  getOrderSortedSupportedChains: (includeTestnets?: boolean) => MergedChain[];
-  getSupportedChain: (chainId: number) => MergedChain | undefined;
-  getSupportedChainIds: (includeTestnets?: boolean) => number[];
-  getNeedsL1SecurityFeeNetworks: () => number[];
-  getNetworksNativeAsset: () => Record<number, string>;
-  getNetworksLabel: () => Record<number, string>;
-  getNetworksPrivateMempoolTimeout: () => Record<number, number>;
-  getNetworksName: () => Record<number, string>;
+  ) => Record<number, TransformedChain>;
+  getBackendSupportedChainIds: (includeTestnets?: boolean) => number[];
+  getBackendSupportedChain: (chainId: number) => TransformedChain | undefined;
+  getNeedsL1SecurityFeeChainIds: () => number[];
+  getChainsNativeAsset: () => Record<number, string>;
+  getChainsLabel: () => Record<number, string>;
+  getChainsPrivateMempoolTimeout: () => Record<number, number>;
+  getChainsName: () => Record<number, string>;
   filterChainIdsByService: (
     servicePath: (services: BackendNetwork['enabledServices']) => boolean,
   ) => number[];
@@ -89,24 +93,32 @@ interface NetworkActions {
   getChainGasUnits: (
     chainId?: number,
   ) => BackendNetwork['gasUnits'] | undefined;
-  getNetworksBadgeUrls: () => Record<number, string>;
-  getNetworkBadgeUrl: (chainId: number) => string | undefined;
+  getChainsBadgeUrls: () => Record<number, string>;
+  getChainBadgeUrl: (chainId: number) => string | undefined;
+  getBackendChainsByMainnetId: () => Record<number, BackendNetwork[]>;
+  getBackendChainIdsByMainnetId: () => Record<number, number[]>;
   getDefaultFavorites: () => Record<number, AddressOrEth[]>;
+  getAllChains: (includeTestnets?: boolean) => Record<number, TransformedChain>;
+  getAllChainsSortedByOrder: (includeTestnets?: boolean) => TransformedChain[];
 }
 
 let lastNetworks: Networks | null = null;
-let lastUserOverrides: Record<number, UserPreferences> | null = null;
-let mergedChainData: Record<number, MergedChain> | null = null;
+let lastUserOverrides: Record<number, ChainPreferences> | null = null;
+let mergedChainData: Record<number, TransformedChain> | null = null;
+let lastChainOrder: Array<number> | null = null;
+let lastEnabledChainIds: Set<number> | null = null;
 
 function createSelector<T>(
   selectorFn: ({
     networks,
-    userOverrides,
+    userPreferences,
     mergedChainData,
   }: {
     networks: Networks;
-    userOverrides: Record<number, UserPreferences>;
-    mergedChainData: Record<number, MergedChain>;
+    userPreferences: Record<number, ChainPreferences>;
+    chainOrder: Array<number>;
+    enabledChainIds: Set<number>;
+    mergedChainData: Record<number, TransformedChain>;
   }) => T,
 ): () => T {
   const uninitialized = Symbol();
@@ -114,21 +126,28 @@ function createSelector<T>(
   let memoizedFn:
     | ((params: {
         networks: Networks;
-        userOverrides: Record<number, UserPreferences>;
-        mergedChainData: Record<number, MergedChain>;
+        userPreferences: Record<number, ChainPreferences>;
+        chainOrder: Array<number>;
+        enabledChainIds: Set<number>;
+        mergedChainData: Record<number, TransformedChain>;
       }) => T)
     | null = null;
 
   return () => {
-    const { networks, userOverrides } = networkStore.getState();
+    const { networks, userPreferences, chainOrder, enabledChainIds } =
+      networkStore.getState();
 
     const didNetworksChange = lastNetworks !== networks;
-    const didUserOverridesChange = lastUserOverrides !== userOverrides;
+    const didUserOverridesChange = lastUserOverrides !== userPreferences;
+    const didChainOrderChange = lastChainOrder !== chainOrder;
+    const didEnabledChainIdsChange = lastEnabledChainIds !== enabledChainIds;
 
     if (
       cachedResult !== uninitialized &&
       !didNetworksChange &&
       !didUserOverridesChange &&
+      !didChainOrderChange &&
+      !didEnabledChainIdsChange &&
       mergedChainData !== null
     ) {
       return cachedResult;
@@ -137,17 +156,32 @@ function createSelector<T>(
     if (
       didNetworksChange ||
       didUserOverridesChange ||
+      didChainOrderChange ||
+      didEnabledChainIdsChange ||
       mergedChainData === null
     ) {
       if (didNetworksChange) lastNetworks = networks;
-      if (didUserOverridesChange) lastUserOverrides = userOverrides;
+      if (didUserOverridesChange) lastUserOverrides = userPreferences;
+      if (didChainOrderChange) lastChainOrder = chainOrder;
+      if (didEnabledChainIdsChange) lastEnabledChainIds = enabledChainIds;
 
-      mergedChainData = mergeChainData(networks, userOverrides);
+      mergedChainData = mergeChainData(
+        networks,
+        userPreferences,
+        chainOrder,
+        enabledChainIds,
+      );
     }
 
     if (!memoizedFn) memoizedFn = selectorFn;
 
-    cachedResult = memoizedFn({ networks, userOverrides, mergedChainData });
+    cachedResult = memoizedFn({
+      networks,
+      userPreferences,
+      mergedChainData,
+      chainOrder,
+      enabledChainIds,
+    });
     return cachedResult;
   };
 }
@@ -155,8 +189,10 @@ function createSelector<T>(
 function createParameterizedSelector<T, Args extends unknown[]>(
   selectorFn: (params: {
     networks: Networks;
-    userOverrides: Record<ChainId, UserPreferences>;
-    mergedChainData: Record<number, MergedChain>;
+    userPreferences: Record<ChainId, ChainPreferences>;
+    chainOrder: Array<number>;
+    enabledChainIds: Set<number>;
+    mergedChainData: Record<number, TransformedChain>;
   }) => (...args: Args) => T,
 ): (...args: Args) => T {
   const uninitialized = Symbol();
@@ -165,19 +201,24 @@ function createParameterizedSelector<T, Args extends unknown[]>(
   let memoizedFn: ((...args: Args) => T) | null = null;
 
   return (...args: Args) => {
-    const { networks, userOverrides } = networkStore.getState();
+    const { networks, userPreferences, chainOrder, enabledChainIds } =
+      networkStore.getState();
     const argsChanged =
       !lastArgs ||
       args.length !== lastArgs.length ||
       args.some((arg, i) => arg !== lastArgs?.[i]);
 
     const didNetworksChange = lastNetworks !== networks;
-    const didUserOverridesChange = lastUserOverrides !== userOverrides;
+    const didUserOverridesChange = lastUserOverrides !== userPreferences;
+    const didChainOrderChange = lastChainOrder !== chainOrder;
+    const didEnabledChainIdsChange = lastEnabledChainIds !== enabledChainIds;
 
     if (
       cachedResult !== uninitialized &&
       !didNetworksChange &&
       !didUserOverridesChange &&
+      !didChainOrderChange &&
+      !didEnabledChainIdsChange &&
       !argsChanged
     ) {
       return cachedResult;
@@ -187,13 +228,28 @@ function createParameterizedSelector<T, Args extends unknown[]>(
       !memoizedFn ||
       didNetworksChange ||
       didUserOverridesChange ||
+      didChainOrderChange ||
+      didEnabledChainIdsChange ||
       mergedChainData === null
     ) {
       if (didNetworksChange) lastNetworks = networks;
-      if (didUserOverridesChange) lastUserOverrides = userOverrides;
+      if (didUserOverridesChange) lastUserOverrides = userPreferences;
+      if (didChainOrderChange) lastChainOrder = chainOrder;
+      if (didEnabledChainIdsChange) lastEnabledChainIds = enabledChainIds;
 
-      mergedChainData = mergeChainData(networks, userOverrides);
-      memoizedFn = selectorFn({ networks, userOverrides, mergedChainData });
+      mergedChainData = mergeChainData(
+        networks,
+        userPreferences,
+        chainOrder,
+        enabledChainIds,
+      );
+      memoizedFn = selectorFn({
+        networks,
+        userPreferences,
+        mergedChainData,
+        chainOrder,
+        enabledChainIds,
+      });
     }
 
     lastArgs = args;
@@ -204,7 +260,7 @@ function createParameterizedSelector<T, Args extends unknown[]>(
 
 const initialState: NetworkState = {
   networks: buildTimeNetworks,
-  userOverrides: buildInitialUserPreferences(),
+  ...buildInitialUserPreferences(),
 };
 
 export const networkStore = createQueryStore<
@@ -233,10 +289,7 @@ export const networkStore = createQueryStore<
         return {
           ...state,
           networks: data,
-          userOverrides: modifyUserPreferencesForNewlySupportedNetworks(
-            state,
-            newNetworks,
-          ),
+          ...modifyUserPreferencesForNewlySupportedNetworks(state, newNetworks),
         };
       });
     },
@@ -254,14 +307,14 @@ export const networkStore = createQueryStore<
       };
     }),
 
-    addCustomNetwork: (chainId, userPreferences) => {
+    addCustomChain: (chainId, userPreferences) => {
       set((state) => {
-        const existing = state.userOverrides[chainId];
+        const existing = state.userPreferences[chainId];
         if (existing) {
           return {
             ...state,
-            userOverrides: {
-              ...state.userOverrides,
+            userPreferences: {
+              ...state.userPreferences,
               [chainId]: merge(existing, userPreferences),
             },
           };
@@ -269,44 +322,44 @@ export const networkStore = createQueryStore<
 
         return {
           ...state,
-          userOverrides: {
-            ...state.userOverrides,
+          userPreferences: {
+            ...state.userPreferences,
             [chainId]: userPreferences,
           },
         };
       });
     },
 
-    updateCustomNetwork: createParameterizedSelector(({ userOverrides }) => {
-      return (chainId: number, updates: Partial<UserPreferences>) => {
-        const existing = userOverrides[chainId];
+    updateCustomChain: createParameterizedSelector(({ userPreferences }) => {
+      return (chainId: number, updates: Partial<ChainPreferences>) => {
+        const existing = userPreferences[chainId];
         if (!existing) return;
 
         const newUserPreferences = merge(existing, updates);
 
         set({
-          userOverrides: {
-            ...userOverrides,
+          userPreferences: {
+            ...userPreferences,
             [chainId]: newUserPreferences,
           },
         });
       };
     }),
 
-    removeCustomNetwork: createParameterizedSelector(({ userOverrides }) => {
+    removeCustomChain: createParameterizedSelector(({ userPreferences }) => {
       return (chainId: number) => {
-        const preferences = userOverrides[chainId];
+        const preferences = userPreferences[chainId];
         if (preferences?.type !== 'custom') return false;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { [chainId]: _, ...newUserOverrides } = userOverrides;
-        set({ userOverrides: newUserOverrides });
+        const { [chainId]: _, ...newUserOverrides } = userPreferences;
+        set({ userPreferences: newUserOverrides });
         return true;
       };
     }),
 
-    removeRpcFromNetwork: createParameterizedSelector(({ userOverrides }) => {
+    removeRpcFromChain: createParameterizedSelector(({ userPreferences }) => {
       return (chainId: number, rpcUrl: string) => {
-        const preferences = userOverrides[chainId];
+        const preferences = userPreferences[chainId];
         if (!preferences) return { success: false, newRpcsLength: -1 };
 
         const isActiveRpc = preferences.activeRpcUrl === rpcUrl;
@@ -314,8 +367,8 @@ export const networkStore = createQueryStore<
         // we need to delete the network if there are no RPCs left
         if (isActiveRpc && Object.keys(preferences.rpcs).length === 1) {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { [chainId]: _, ...newUserOverrides } = userOverrides;
-          set({ userOverrides: newUserOverrides });
+          const { [chainId]: _, ...newUserOverrides } = userPreferences;
+          set({ userPreferences: newUserOverrides });
           return {
             success: true,
             newRpcsLength: 0,
@@ -329,15 +382,15 @@ export const networkStore = createQueryStore<
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { [rpcUrl]: _, ...newRpcs } = preferences.rpcs;
-        const newUserOverridesForChain: UserPreferences = {
+        const newUserOverridesForChain: ChainPreferences = {
           ...preferences,
           activeRpcUrl: otherRpcUrl.rpcUrls.default.http[0],
           rpcs: newRpcs,
         };
 
         set({
-          userOverrides: {
-            ...userOverrides,
+          userPreferences: {
+            ...userPreferences,
             [chainId]: newUserOverridesForChain,
           },
         });
@@ -349,7 +402,52 @@ export const networkStore = createQueryStore<
       };
     }),
 
-    // TODO: Would like to remove already added custom networks from this list
+    getUserAddedChains: createParameterizedSelector(
+      ({ networks, mergedChainData }) => {
+        return (includeTestnets = false) => {
+          return Object.values(mergedChainData).reduce<
+            Record<number, TransformedChain>
+          >((acc, chain) => {
+            if (
+              chain.type === 'custom' &&
+              !networks.backendNetworks.networks.find(
+                (c) => +c.id === chain.id,
+              ) &&
+              chain.testnet &&
+              includeTestnets
+            ) {
+              acc[chain.id] = chain;
+            }
+            return acc;
+          }, {});
+        };
+      },
+    ),
+
+    getUserAddedChainIds: createParameterizedSelector(
+      ({ networks, mergedChainData }) => {
+        return (includeTestnets = false) => {
+          return Object.values(mergedChainData).reduce<number[]>(
+            (acc, chain) => {
+              if (
+                chain.type === 'custom' &&
+                chain.testnet &&
+                includeTestnets &&
+                !networks.backendNetworks.networks.find(
+                  (c) => +c.id === chain.id,
+                )
+              ) {
+                acc.push(chain.id);
+              }
+              return acc;
+            },
+            [],
+          );
+        };
+      },
+    ),
+
+    // TODO: remove already added custom networks from this list
     getSupportedCustomNetworks: createSelector(({ networks }) => {
       return [
         ...networks.customNetworks.customNetworks,
@@ -395,79 +493,59 @@ export const networkStore = createQueryStore<
       },
     ),
 
-    getChainIdsBasedOnMainnetId: createSelector(({ networks }) => {
-      return networks.backendNetworks.networks.reduce((acc, curr) => {
-        const mainnetId = +curr.mainnetId;
-        if (!acc[mainnetId]) {
-          acc[mainnetId] = [];
-        }
-        acc[mainnetId].push(+curr.id);
-        return acc;
-      }, {} as Record<number, number[]>);
-    }),
-
-    getChainsBasedOnMainnetId: createSelector(({ networks }) => {
-      return networks.backendNetworks.networks.reduce((acc, curr) => {
-        const mainnetId = +curr.mainnetId;
-        if (!acc[mainnetId]) {
-          acc[mainnetId] = [];
-        }
-        acc[mainnetId].push(curr);
-        return acc;
-      }, {} as Record<number, BackendNetwork[]>);
-    }),
-
-    getSupportedChains: createParameterizedSelector(({ mergedChainData }) => {
-      return (includeTestnets = false) => {
-        return Object.values(mergedChainData).reduce((acc, chain) => {
-          if (!includeTestnets && chain.testnet) return acc;
-          return {
-            ...acc,
-            [chain.id]: chain,
-          };
-        }, {});
-      };
-    }),
-
-    getOrderSortedSupportedChains: createParameterizedSelector(
+    getBackendSupportedChains: createParameterizedSelector(
       ({ mergedChainData }) => {
         return (includeTestnets = false) => {
-          return Object.values(mergedChainData)
-            .filter((chain) => !includeTestnets || !chain.testnet)
-            .sort((a, b) => {
-              // If either order is undefined, put it at the end
-              if (a.order === undefined && b.order === undefined) return 0;
-              if (a.order === undefined) return 1;
-              if (b.order === undefined) return -1;
-              // Otherwise sort by order
-              return a.order - b.order;
-            });
+          return Object.values(mergedChainData).reduce((acc, chain) => {
+            if (
+              (!includeTestnets && chain.testnet) ||
+              chain.type !== 'supported'
+            )
+              return acc;
+            return {
+              ...acc,
+              [chain.id]: chain,
+            };
+          }, {});
         };
       },
     ),
 
-    getSupportedChain: createParameterizedSelector(({ mergedChainData }) => {
-      return (chainId) => {
-        return mergedChainData[chainId];
-      };
-    }),
+    getBackendSupportedChainIds: createParameterizedSelector(
+      ({ mergedChainData }) => {
+        return (includeTestnets = false) => {
+          return Object.values(mergedChainData).reduce<number[]>(
+            (acc, chain) => {
+              if (
+                (!includeTestnets && chain.testnet) ||
+                chain.type !== 'supported'
+              )
+                return acc;
+              return [...acc, chain.id];
+            },
+            [],
+          );
+        };
+      },
+    ),
 
-    getSupportedChainIds: createParameterizedSelector(({ mergedChainData }) => {
-      return (includeTestnets = false) => {
-        return Object.values(mergedChainData).reduce<number[]>((acc, chain) => {
-          if (!includeTestnets && chain.testnet) return acc;
-          return [...acc, chain.id];
-        }, []);
-      };
-    }),
+    getBackendSupportedChain: createParameterizedSelector(
+      ({ mergedChainData }) => {
+        return (chainId) => {
+          const chain = mergedChainData[chainId];
+          if (chain.type !== 'supported') return undefined;
+          return chain;
+        };
+      },
+    ),
 
-    getNeedsL1SecurityFeeNetworks: createSelector(({ networks }) => {
+    getNeedsL1SecurityFeeChainIds: createSelector(({ networks }) => {
       return networks.backendNetworks.networks
         .filter((chain) => chain.opStack)
         .map((chain) => toChainId(chain.id));
     }),
 
-    getNetworksNativeAsset: createSelector(({ networks }) => {
+    getChainsNativeAsset: createSelector(({ networks }) => {
       return networks.backendNetworks.networks.reduce((acc, chain) => {
         return {
           ...acc,
@@ -476,7 +554,7 @@ export const networkStore = createQueryStore<
       }, {});
     }),
 
-    getNetworksLabel: createSelector(({ networks }) => {
+    getChainsLabel: createSelector(({ networks }) => {
       return networks.backendNetworks.networks.reduce(
         (acc, chain) => {
           return {
@@ -494,7 +572,7 @@ export const networkStore = createQueryStore<
       );
     }),
 
-    getNetworksPrivateMempoolTimeout: createSelector(({ networks }) => {
+    getChainsPrivateMempoolTimeout: createSelector(({ networks }) => {
       return networks.backendNetworks.networks.reduce((acc, chain) => {
         return {
           ...acc,
@@ -505,7 +583,7 @@ export const networkStore = createQueryStore<
       }, {});
     }),
 
-    getNetworksName: createSelector(({ networks }) => {
+    getChainsName: createSelector(({ networks }) => {
       return networks.backendNetworks.networks.reduce(
         (acc, chain) => {
           return { ...acc, [chain.id]: chain.name };
@@ -592,7 +670,7 @@ export const networkStore = createQueryStore<
         },
     ),
 
-    getNetworksBadgeUrls: createSelector(({ networks }) => {
+    getChainsBadgeUrls: createSelector(({ networks }) => {
       return Object.values(networks.backendNetworks.networks).reduce(
         (acc, chain) => {
           return { ...acc, [chain.id]: chain.icons.badgeURL };
@@ -601,10 +679,38 @@ export const networkStore = createQueryStore<
       );
     }),
 
-    getNetworkBadgeUrl: createParameterizedSelector(({ networks }) => {
+    getChainBadgeUrl: createParameterizedSelector(({ networks }) => {
       return (chainId: number) => {
         return networks.backendNetworks.networks[chainId].icons.badgeURL;
       };
+    }),
+
+    getBackendChainIdsByMainnetId: createSelector(({ networks }) => {
+      return networks.backendNetworks.networks.reduce(
+        (acc, curr) => {
+          const mainnetId = +curr.mainnetId;
+          if (!acc[mainnetId]) {
+            acc[mainnetId] = [];
+          }
+          acc[mainnetId].push(+curr.id);
+          return acc;
+        },
+        {} as Record<number, number[]>,
+      );
+    }),
+
+    getBackendChainsByMainnetId: createSelector(({ networks }) => {
+      return networks.backendNetworks.networks.reduce(
+        (acc, curr) => {
+          const mainnetId = +curr.mainnetId;
+          if (!acc[mainnetId]) {
+            acc[mainnetId] = [];
+          }
+          acc[mainnetId].push(curr);
+          return acc;
+        },
+        {} as Record<number, BackendNetwork[]>,
+      );
     }),
 
     getDefaultFavorites: createSelector(({ networks }) => {
@@ -617,11 +723,38 @@ export const networkStore = createQueryStore<
         };
       }, {});
     }),
+
+    getAllChains: createParameterizedSelector(({ mergedChainData }) => {
+      return (includeTestnets = false) => {
+        return Object.values(mergedChainData).reduce((acc, chain) => {
+          if (!includeTestnets && chain.testnet) return acc;
+          return {
+            ...acc,
+            [chain.id]: chain,
+          };
+        }, {});
+      };
+    }),
+
+    getAllChainsSortedByOrder: createParameterizedSelector(
+      ({ mergedChainData }) => {
+        return (includeTestnets = false) => {
+          return Object.values(mergedChainData)
+            .filter((chain) => includeTestnets || !chain.testnet)
+            .sort((a, b) => {
+              if (a.order === undefined && b.order === undefined) return 0;
+              if (a.order === undefined) return 1;
+              if (b.order === undefined) return -1;
+              return a.order - b.order;
+            });
+        };
+      },
+    ),
   }),
   {
     partialize: (state) => ({
       networks: state.networks,
-      userOverrides: state.userOverrides,
+      userPreferences: state.userPreferences,
     }),
     storageKey: 'networkStore',
     version: 1,

@@ -10,6 +10,7 @@ import {
 import { useRainbowChainsStore } from '~/core/state';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import { networkStore } from '~/core/state/networks/networks';
 import { promoTypes, useQuickPromoStore } from '~/core/state/quickPromo';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
 import { useUserChainsStore } from '~/core/state/userChains';
@@ -33,7 +34,6 @@ import { DraggableContext, DraggableItem } from '../../components/Draggable';
 import { QuickPromo } from '../../components/QuickPromo/QuickPromo';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
-import { networkStore } from '~/core/state/networks/networks';
 
 const chainLabel = ({
   testnet,
@@ -69,7 +69,9 @@ export function SettingsNetworks() {
   } = useUserChainsStore();
   const { rainbowChains, removeCustomRPC } = useRainbowChainsStore();
   const { removeRainbowChainAssets } = useRainbowChainAssetsStore();
-  const chainsBasedOnMainnetId = networkStore(state => state.getChainsBasedOnMainnetId());
+  const chainsBasedOnMainnetId = networkStore((state) =>
+    state.getBackendChainsByMainnetId(),
+  );
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source } = result;
@@ -236,7 +238,9 @@ export function SettingsNetworks() {
                                 >
                                   {userChains[chain.id]
                                     ? chainLabel({
-                                        labels: chainsBasedOnMainnetId[chain.id].map(chain => chain.label),
+                                        labels: chainsBasedOnMainnetId[
+                                          chain.id
+                                        ].map((chain) => chain.label),
                                         testnet: chain.testnet,
                                       })
                                     : i18n.t('settings.networks.disabled')}

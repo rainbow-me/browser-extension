@@ -18,11 +18,11 @@ import {
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import { networkStore } from '~/core/state/networks/networks';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
 import { useUserChainsStore } from '~/core/state/userChains';
 import { getSupportedChains } from '~/core/utils/chains';
 import { getDappHost } from '~/core/utils/connectedApps';
-import { networkStore } from '~/core/state/networks/networks';
 import {
   Box,
   Column,
@@ -109,7 +109,9 @@ export function SettingsNetworksRPCs() {
   const userChains = useUserChainsStore.use.userChains();
   const updateUserChain = useUserChainsStore.use.updateUserChain();
   const removeUserChain = useUserChainsStore.use.removeUserChain();
-  const chainIdsBasedOnMainnetId = networkStore(state => state.getChainIdsBasedOnMainnetId());
+  const chainIdsBasedOnMainnetId = networkStore((state) =>
+    state.getBackendChainIdsByMainnetId(),
+  );
 
   const handleToggleChain = useCallback(
     (newVal: boolean) => {
@@ -168,9 +170,12 @@ export function SettingsNetworksRPCs() {
       getSupportedChains({
         testnets: true,
       }).filter((chain) => {
-        return chainIdsBasedOnMainnetId[chainId]?.includes(chain.id) && chain.id !== chainId;
+        return (
+          chainIdsBasedOnMainnetId[chainId]?.includes(chain.id) &&
+          chain.id !== chainId
+        );
       }),
-    [chainId],
+    [chainId, chainIdsBasedOnMainnetId],
   );
 
   const testnetChains = useMemo(() => {
@@ -546,8 +551,9 @@ export function SettingsNetworksRPCs() {
                               size="11pt"
                               weight={'medium'}
                             >
-                              {chainIdsBasedOnMainnetId[chainId]?.includes(chain.id) &&
-                              chain.id !== chainId
+                              {chainIdsBasedOnMainnetId[chainId]?.includes(
+                                chain.id,
+                              ) && chain.id !== chainId
                                 ? i18n.t(
                                     'settings.networks.custom_rpc.rainbow_default',
                                   )

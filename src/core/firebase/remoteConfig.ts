@@ -9,8 +9,8 @@ import {
 
 import { RainbowError, logger } from '~/logger';
 
-import { ChainId } from '../types/chains';
 import { networkStore } from '../state/networks/networks';
+import { ChainId } from '../types/chains';
 
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY_BX,
@@ -44,7 +44,7 @@ export const defaultslippagInBips = (chainId: ChainId) => {
     default:
       return 500;
   }
-}
+};
 
 const DEFAULT_CONFIG = {
   // features
@@ -58,7 +58,9 @@ const DEFAULT_CONFIG = {
   rewards_bridging_enabled: true,
   degen_mode: false,
   // SWAPS
-  default_slippage_bips: Object.values(networkStore.getState().getSupportedChains(true)).reduce<Partial<Record<ChainId, number>>>((acc, chain) => {
+  default_slippage_bips: Object.values(
+    networkStore.getState().getBackendSupportedChains(true),
+  ).reduce<Partial<Record<ChainId, number>>>((acc, chain) => {
     acc[chain.id] = defaultslippagInBips(chain.id);
     return acc;
   }, {}),
