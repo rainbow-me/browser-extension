@@ -6,7 +6,7 @@ import { BackendNetwork, ChainId } from '~/core/types/chains';
 
 export function useNativeAssets() {
   const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const nativeAssets = networkStore((state) => state.getNetworksNativeAsset());
+  const nativeAssets = networkStore((state) => state.getChainsNativeAsset());
 
   // NOTE: We only fetch the native asset for mainnet and chains that don't use ETH as their native token
   const { chainsToFetch, ethNativeChains } = Object.entries(

@@ -50,7 +50,7 @@ async function optimismL1SecurityFeeQueryFunction({
 }: QueryFunctionArgs<typeof optimismL1SecurityFeeQueryKey>) {
   const needsL1SecurityFeeChains = networkStore
     .getState()
-    .getNeedsL1SecurityFeeNetworks();
+    .getNeedsL1SecurityFeeChainIds();
   if (needsL1SecurityFeeChains.includes(chainId)) {
     const provider = getProvider({ chainId: ChainId.optimism });
     const gasPrice = await provider.getGasPrice();
@@ -102,7 +102,7 @@ export function useOptimismL1SecurityFee(
   > = {},
 ) {
   const needsL1SecurityFeeChains = networkStore((state) =>
-    state.getNeedsL1SecurityFeeNetworks(),
+    state.getNeedsL1SecurityFeeChainIds(),
   );
   return useQuery({
     queryKey: optimismL1SecurityFeeQueryKey({ transactionRequest, chainId }),

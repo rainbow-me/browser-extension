@@ -8,7 +8,9 @@ import { RainbowChain, RainbowChainsState } from '.';
 
 export const getInitialRainbowChains = () => {
   const rainbowChains: Record<number, RainbowChain> = {};
-  const supportedChains = networkStore.getState().getSupportedChains(true);
+  const supportedChains = networkStore
+    .getState()
+    .getBackendSupportedChains(true);
   Object.values(supportedChains).forEach((chain) => {
     rainbowChains[chain.id] = {
       activeRpcUrl: chain.rpcUrls.default.http[0],

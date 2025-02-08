@@ -227,7 +227,7 @@ export const BottomNetwork = ({
   symbolSize?: number;
   symbol?: SymbolProps['symbol'];
 }) => {
-  const chainsLabel = networkStore((state) => state.getNetworksLabel());
+  const chainsLabel = networkStore((state) => state.getChainsLabel());
   return (
     <Box testId="switch-network-menu">
       <Inline alignHorizontal="right" alignVertical="center">

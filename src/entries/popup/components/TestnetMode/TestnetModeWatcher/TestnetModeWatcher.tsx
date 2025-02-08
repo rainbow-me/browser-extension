@@ -42,7 +42,7 @@ export const TestnetModeWatcher = ({
   pendingRequest?: ProviderRequestPayload;
   rejectRequest?: () => void;
 }) => {
-  const chainsLabel = networkStore((state) => state.getNetworksLabel());
+  const chainsLabel = networkStore((state) => state.getChainsLabel());
   const { data: dappMetadata } = useDappMetadata({
     url: pendingRequest?.meta?.sender.url,
   });

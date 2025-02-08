@@ -21,8 +21,8 @@ export const getNativeAssetMock = ({ chainId }: { chainId: ChainId }) => {
   const chain = getChain({ chainId });
   const { address: nativeAssetAddress } = networkStore
     .getState()
-    .getNetworksNativeAsset()[chainId];
-  const chainLabel = networkStore.getState().getNetworksLabel()[chainId];
+    .getChainsNativeAsset()[chainId];
+  const chainLabel = networkStore.getState().getChainsLabel()[chainId];
   const nativeAssetMock = {
     address: nativeAssetAddress as AddressOrEth,
     balance: { amount: '', display: '' },

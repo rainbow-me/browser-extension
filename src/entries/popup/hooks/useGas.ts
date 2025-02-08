@@ -56,7 +56,7 @@ const useGas = ({
   const { data: gasData, isLoading } = useGasData({ chainId });
   const { nativeAsset } = useUserNativeAsset({ chainId, address });
   const needsSecurityFee = networkStore((state) =>
-    state.getNeedsL1SecurityFeeNetworks(),
+    state.getNeedsL1SecurityFeeChainIds(),
   ).includes(chainId);
   const chainGasUnits = networkStore((state) =>
     state.getChainGasUnits(chainId),

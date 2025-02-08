@@ -4,7 +4,7 @@ import { useConfig } from 'wagmi';
 
 import { networkStore } from '~/core/state/networks/networks';
 import { mergedChainToViemChain } from '~/core/state/networks/utils';
-import { ChainId, MergedChain } from '~/core/types/chains';
+import { ChainId, TransformedChain } from '~/core/types/chains';
 
 import { AddressOrEth } from '../types/assets';
 import { wagmiConfig } from '../wagmi';
@@ -16,7 +16,7 @@ import { isLowerCaseMatch } from './strings';
 // Main chains for chain settings
 const getMainChainsHelper = (
   chains: readonly [Chain, ...Chain[]],
-  backendSupportedChains: Record<number, MergedChain>,
+  backendSupportedChains: Record<number, TransformedChain>,
 ) => {
   // All the mainnets we support
   const mainnetChains = Object.values(backendSupportedChains).reduce(
@@ -26,7 +26,7 @@ const getMainChainsHelper = (
       }
       return acc;
     },
-    {} as Record<number, MergedChain>,
+    {} as Record<number, TransformedChain>,
   );
 
   const customMainChains = chains?.filter(
@@ -51,7 +51,7 @@ const getMainChainsHelper = (
 export const useMainChains = () => {
   const { chains } = useConfig();
   const backendSupportedChains = networkStore((state) =>
-    state.getSupportedChains(true),
+    state.getBackendSupportedChains(true),
   );
   return getMainChainsHelper(chains, backendSupportedChains);
 };
@@ -60,7 +60,7 @@ export const getMainChains = () => {
   const { chains } = wagmiConfig;
   return getMainChainsHelper(
     chains,
-    networkStore.getState().getSupportedChains(true),
+    networkStore.getState().getBackendSupportedChains(true),
   );
 };
 
@@ -95,7 +95,7 @@ export function getChain({ chainId }: { chainId?: ChainId }) {
 }
 
 export const isCustomChain = (chainId: number) =>
-  !networkStore.getState().getSupportedChains()[chainId] &&
+  !networkStore.getState().getBackendSupportedChains(true)[chainId] &&
   !!findRainbowChainForChainId(chainId);
 
 export function isNativeAsset(address: AddressOrEth, chainId: ChainId) {
@@ -104,7 +104,7 @@ export function isNativeAsset(address: AddressOrEth, chainId: ChainId) {
   }
 
   return isLowerCaseMatch(
-    networkStore.getState().getNetworksNativeAsset()[chainId].address,
+    networkStore.getState().getChainsNativeAsset()[chainId].address,
     address,
   );
 }

@@ -17,7 +17,7 @@ import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags'
 import { networkStore } from '~/core/state/networks/networks';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
 import { useUserChainsStore } from '~/core/state/userChains';
-import { MergedChain } from '~/core/types/chains';
+import { TransformedChain } from '~/core/types/chains';
 import { getSupportedChains } from '~/core/utils/chains';
 import { getDappHost } from '~/core/utils/connectedApps';
 import { chainIdMap } from '~/core/utils/userChains';
@@ -56,7 +56,7 @@ import { ROUTES } from '../../urls';
 
 const isDefaultRPC = (
   chain: Chain,
-  supportedChains: Record<number, MergedChain>,
+  supportedChains: Record<number, TransformedChain>,
 ) => {
   const defaultBackendRpc = supportedChains[chain.id].rpcUrls.default.http[0];
   if (!defaultBackendRpc) return false;
@@ -75,7 +75,7 @@ export function SettingsNetworksRPCs() {
     useRainbowChainAssetsStore();
 
   const supportedChains = networkStore((state) =>
-    state.getSupportedChains(true),
+    state.getBackendSupportedChains(true),
   );
   const supportedChain = supportedChains[chainId];
 

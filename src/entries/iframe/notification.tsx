@@ -232,10 +232,8 @@ const NotificationComponent = ({
   iframeLoaded: boolean;
   onDismiss: () => void;
 }) => {
-  const chainsLabel = networkStore((state) => state.getNetworksLabel());
-  const chainsBadge = networkStore((state) =>
-    state.getNetworkBadgeUrl(chainId),
-  );
+  const chainsLabel = networkStore((state) => state.getChainsLabel());
+  const chainsBadge = networkStore((state) => state.getChainBadgeUrl(chainId));
 
   const { title, description } = useMemo(() => {
     switch (status) {

@@ -189,7 +189,7 @@ const usePriceChart = ({
   time: ChartTime;
 }) => {
   const supportedChains = networkStore((state) =>
-    state.getSupportedChains(true),
+    state.getBackendSupportedChains(true),
   );
   return useQuery({
     queryFn: async () => {

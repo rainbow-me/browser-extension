@@ -260,7 +260,7 @@ const formatValue = (transaction: RainbowTransaction) => {
   return formattedValue;
 };
 function NetworkData({ transaction: tx }: { transaction: RainbowTransaction }) {
-  const chainsLabel = networkStore((state) => state.getNetworksLabel());
+  const chainsLabel = networkStore((state) => state.getChainsLabel());
   const chain = findRainbowChainForChainId(tx.chainId);
   const value = formatValue(tx);
 

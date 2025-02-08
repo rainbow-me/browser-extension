@@ -35,7 +35,7 @@ export const AppConnectionMenuHeader = ({
   appHost,
   appName,
 }: AppConnectionMenuHeaderProps) => {
-  const chainsLabel = networkStore((state) => state.getNetworksLabel());
+  const chainsLabel = networkStore((state) => state.getChainsLabel());
   return (
     <Box as={motion.div} initial={false} animate={{ opacity: opacity }}>
       <Inset top="10px" bottom="14px">

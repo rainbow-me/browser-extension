@@ -24,7 +24,7 @@ import { AppConnectionNudgeBanner } from './AppConnectionNudgeBanner';
 import { AppConnectionNudgeSheet } from './AppConnectionNudgeSheet';
 
 export const AppConnectionWatcher = () => {
-  const chainsLabel = networkStore((state) => state.getNetworksLabel());
+  const chainsLabel = networkStore((state) => state.getChainsLabel());
   const { currentAddress } = useCurrentAddressStore();
   const { url } = useActiveTab();
   const { data: dappMetadata } = useDappMetadata({ url });

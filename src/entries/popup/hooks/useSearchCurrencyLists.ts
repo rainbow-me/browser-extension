@@ -108,7 +108,7 @@ export function useSearchCurrencyLists({
 
   const { testnetMode } = useTestnetModeStore();
   const supportedChains = networkStore((state) =>
-    state.getSupportedChains(true),
+    state.getBackendSupportedChains(true),
   );
 
   const enableAllNetworkTokenSearch =

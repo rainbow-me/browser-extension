@@ -28,7 +28,7 @@ const createTransports = (chains: Chain[]): Record<number, Transport> => {
 };
 
 const supportedChains = Object.values(
-  networkStore.getState().getSupportedChains(true),
+  networkStore.getState().getBackendSupportedChains(true),
 );
 let wagmiConfig = createConfig({
   chains: createChains(supportedChains),

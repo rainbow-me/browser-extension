@@ -723,7 +723,7 @@ const NFTAccordionAboutSection = ({
   nft?: UniqueAsset | null;
   showFloorPriceExplainerSheet: () => void;
 }) => {
-  const chainsLabel = networkStore((state) => state.getNetworksLabel());
+  const chainsLabel = networkStore((state) => state.getChainsLabel());
   const networkDisplay = nft?.network
     ? chainsLabel[chainNameToIdMapping[nft?.network]]
     : '';

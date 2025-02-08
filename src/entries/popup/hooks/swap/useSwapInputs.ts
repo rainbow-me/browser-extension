@@ -85,10 +85,10 @@ export const useSwapInputs = ({
   } = usePopupInstanceStore();
 
   const supportedChains = networkStore((state) =>
-    state.getSupportedChains(true),
+    state.getBackendSupportedChains(true),
   );
   const nativeAssetsAddresses = networkStore((state) =>
-    state.getNetworksNativeAsset(),
+    state.getChainsNativeAsset(),
   );
 
   const assetToSellInputRef = useRef<HTMLInputElement>(null);

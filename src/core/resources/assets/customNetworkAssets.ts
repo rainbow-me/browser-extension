@@ -186,7 +186,7 @@ async function customNetworkAssetsFunction({
   const { rainbowChains: chains } = getRainbowChains();
 
   const supportedMainnetChains = networkStore((state) =>
-    state.getSupportedChains(),
+    state.getBackendSupportedChains(),
   );
 
   const customChains = chains.filter((chain) =>

@@ -270,7 +270,7 @@ export const ReviewSheet = ({
     }>
   >;
 }) => {
-  const chainsLabel = networkStore((state) => state.getNetworksLabel());
+  const chainsLabel = networkStore((state) => state.getChainsLabel());
   const { visibleOwnedWallets } = useWallets();
   const [notSendingOnEthereumChecks, setNotSendingOnEthereumChecks] =
     useState(false);

@@ -360,7 +360,7 @@ export const PointsOnboardingSheet = () => {
   );
 
   const supportedMainnetChains = networkStore((state) =>
-    state.getSupportedChains(),
+    state.getBackendSupportedChains(),
   );
 
   const noBalanceRowsText = useMemo(

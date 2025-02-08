@@ -61,7 +61,7 @@ export function SendTransaction({
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
   const selectedGas = useGasStore.use.selectedGas();
   const chainsNativeAsset = networkStore((state) =>
-    state.getNetworksNativeAsset(),
+    state.getChainsNativeAsset(),
   );
   const selectedWallet = activeSession?.address || '';
   const { connectedToHardhat, connectedToHardhatOp } =

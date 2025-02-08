@@ -453,7 +453,7 @@ export async function getNextNonce({
   const localNonce = localNonceData?.currentNonce || -1;
   const provider = getBatchedProvider({ chainId });
   const privateMempoolTimeout = networkStore((state) =>
-    state.getNetworksPrivateMempoolTimeout(),
+    state.getChainsPrivateMempoolTimeout(),
   )[chainId];
 
   const pendingTxCountRequest = provider.getTransactionCount(

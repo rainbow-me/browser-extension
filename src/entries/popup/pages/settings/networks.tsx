@@ -67,7 +67,7 @@ export function SettingsNetworks() {
   const { rainbowChains, removeCustomRPC } = useRainbowChainsStore();
   const { removeRainbowChainAssets } = useRainbowChainAssetsStore();
   const supportedChains = networkStore((state) =>
-    state.getSupportedChains(true),
+    state.getBackendSupportedChains(true),
   );
 
   const onDragEnd = (result: DropResult) => {

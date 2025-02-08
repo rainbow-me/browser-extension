@@ -45,7 +45,7 @@ export const useTokenInfo = <Select = ParsedTokenInfo>(
 ) => {
   const { currentCurrency } = useCurrentCurrencyStore();
   const supportedChains = networkStore((state) =>
-    state.getSupportedChains(true),
+    state.getBackendSupportedChains(true),
   );
   const args = token && { ...token, currency: currentCurrency };
   return useQuery({

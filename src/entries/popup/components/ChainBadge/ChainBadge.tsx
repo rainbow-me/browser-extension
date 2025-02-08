@@ -36,7 +36,7 @@ const ChainBadge = ({
 }: ChainIconProps) => {
   const { currentTheme } = useCurrentThemeStore();
   const chainBadgeUrl = networkStore((state) =>
-    state.getNetworkBadgeUrl(chainId),
+    state.getChainBadgeUrl(chainId),
   );
 
   let boxShadow;

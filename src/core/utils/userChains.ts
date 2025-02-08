@@ -31,7 +31,7 @@ import { ChainId } from '../types/chains';
 
 import { getSupportedChains } from './chains';
 
-const labels = networkStore.getState().getNetworksLabel();
+const labels = networkStore.getState().getChainsLabel();
 
 export const chainIdMap: Record<
   | ChainId.mainnet

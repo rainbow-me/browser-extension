@@ -326,7 +326,7 @@ export const Approvals = () => {
   const { currentCurrency } = useCurrentCurrencyStore();
   const { chains } = useUserChains();
   const supportedMainnetChainIds = networkStore((state) =>
-    state.getSupportedChainIds(),
+    state.getBackendSupportedChainIds(),
   );
   const [showRevokeSheet, setShowRevokeSheet] = useState(false);
   const [revokeApproval, setRevokeApproval] = useState<{

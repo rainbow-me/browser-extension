@@ -256,14 +256,15 @@ export const handleProviderRequest = ({
   rnbwHandleProviderRequest({
     providerRequestTransport: providerRequestTransport,
     isSupportedChain: (chainId: number) =>
-      !!networkStore.getState().getSupportedChain(chainId) ||
+      !!networkStore.getState().getBackendSupportedChain(chainId) ||
       isCustomChain(chainId),
     getActiveSession: ({ host }: { host: string }) =>
       appSessionsStore.getState().getActiveSession({ host }),
     removeAppSession: ({ host }: { host: string }) =>
       appSessionsStore.getState().removeAppSession({ host }),
     getChainNativeCurrency: (chainId: number) =>
-      networkStore.getState().getSupportedChains(true)[chainId].nativeCurrency,
+      networkStore.getState().getBackendSupportedChains(true)[chainId]
+        .nativeCurrency,
     getFeatureFlags: () => featureFlagsStore.getState().featureFlags,
     getProvider: getProvider,
     messengerProviderRequest: (request: ProviderRequestPayload) =>
@@ -373,7 +374,7 @@ export const handleProviderRequest = ({
         .getActiveChain({ chainId: proposedChainId });
       const supportedChain =
         isCustomChain(proposedChainId) ||
-        !!networkStore.getState().getSupportedChain(proposedChainId);
+        !!networkStore.getState().getBackendSupportedChain(proposedChainId);
 
       inpageMessenger?.send('rainbow_ethereumChainEvent', {
         chainId: proposedChainId,

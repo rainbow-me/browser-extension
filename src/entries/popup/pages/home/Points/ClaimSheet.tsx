@@ -282,7 +282,7 @@ function ClaimSheetRow({
   chain: ChainId;
   onSelect: (chainId: ChainId) => void;
 }) {
-  const chainsLabel = networkStore((state) => state.getNetworksLabel());
+  const chainsLabel = networkStore((state) => state.getChainsLabel());
   const disableBridging =
     chain !== ChainId.optimism &&
     !config.rewards_bridging_enabled &&

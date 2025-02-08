@@ -41,7 +41,7 @@ export interface UserChainsState {
 
 const initialChains = networkStore
   .getState()
-  .getSupportedChainIds()
+  .getBackendSupportedChainIds()
   .reduce<Record<number, boolean>>(
     (acc, id) => ({
       ...acc,
