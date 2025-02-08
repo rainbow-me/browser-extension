@@ -10,8 +10,8 @@ import {
   ChainId,
   ChainPreferences,
   CustomNetwork,
-  MergedBackendNetworkWithChainPreferences,
   Networks,
+  TransformedChain,
 } from '~/core/types/chains';
 import { GasSpeed } from '~/core/types/gas';
 import { transformBackendNetworksToChains } from '~/core/utils/backendNetworks';
@@ -373,11 +373,8 @@ export const mergeChainData = (
   userPreferences: Record<number, ChainPreferences>,
   chainOrder: Array<number>,
   enabledChainIds: Set<number>,
-): Record<number, MergedBackendNetworkWithChainPreferences> => {
-  const mergedChainData: Record<
-    number,
-    MergedBackendNetworkWithChainPreferences
-  > = {};
+): Record<number, TransformedChain> => {
+  const mergedChainData: Record<number, TransformedChain> = {};
   const backendNetworks = transformBackendNetworksToChains(
     networks.backendNetworks.networks,
   );
@@ -392,6 +389,19 @@ export const mergeChainData = (
       ...userPrefs,
       order: order === -1 ? undefined : order,
       enabled: enabledChainIds.has(chainId),
+    };
+  }
+
+  for (const chainId of Object.keys(userPreferences)) {
+    const chainIdNum = toChainId(chainId);
+    const userPrefs = userPreferences[chainIdNum];
+    if (userPrefs.type === 'supported') continue;
+    const order = chainOrder.indexOf(chainIdNum);
+    mergedChainData[chainIdNum] = {
+      ...userPrefs,
+      type: 'custom',
+      order: order === -1 ? undefined : order,
+      enabled: enabledChainIds.has(chainIdNum),
     };
   }
 
