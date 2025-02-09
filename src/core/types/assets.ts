@@ -105,7 +105,7 @@ export type AssetApiResponse = {
   transferable?: boolean;
 };
 
-type AssetType = ProtocolType | 'nft';
+export type AssetType = ProtocolType | 'nft';
 
 export interface ZerionAsset {
   asset_code: AddressOrEth;

@@ -130,6 +130,7 @@ export function parseSearchAssetMetadata({
     decimals,
     highLiquidity: false,
     isVerified: false,
+    isRainbowCurated: false,
     isNativeAsset: isNativeAsset(address, chainId),
     mainnetAddress: address,
     uniqueId: `${address}_${chainId}`,
