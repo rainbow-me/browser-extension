@@ -19,7 +19,6 @@ import { truncateAddress } from '~/core/utils/address';
 import { copy } from '~/core/utils/copy';
 import { formatDate } from '~/core/utils/formatDate';
 import { formatCurrency, formatNumber } from '~/core/utils/formatNumber';
-import { findRainbowChainForChainId } from '~/core/utils/rainbowChains';
 import { isLowerCaseMatch, truncateString } from '~/core/utils/strings';
 import {
   getAdditionalDetails,
@@ -166,8 +165,9 @@ const formatFee = (transaction: RainbowTransaction) => {
     return `${+feeInNative <= 0.01 ? '<' : ''}${formatCurrency(feeInNative)}`;
   }
 
-  const nativeCurrencySymbol = findRainbowChainForChainId(transaction.chainId)
-    ?.nativeCurrency.symbol;
+  const nativeCurrencySymbol = networkStore
+    .getState()
+    .getActiveRpcForChain(transaction.chainId)?.nativeCurrency.symbol;
 
   if (!transaction.fee || !nativeCurrencySymbol) return;
 
@@ -248,8 +248,9 @@ const formatValue = (transaction: RainbowTransaction) => {
 
   if (formattedValueInNative) return formattedValueInNative;
 
-  const nativeCurrencySymbol = findRainbowChainForChainId(transaction.chainId)
-    ?.nativeCurrency.symbol;
+  const nativeCurrencySymbol = networkStore
+    .getState()
+    .getActiveRpcForChain(transaction.chainId)?.nativeCurrency.symbol;
 
   if (!nativeCurrencySymbol) return;
 
@@ -261,7 +262,7 @@ const formatValue = (transaction: RainbowTransaction) => {
 };
 function NetworkData({ transaction: tx }: { transaction: RainbowTransaction }) {
   const chainsLabel = networkStore((state) => state.getChainsLabel());
-  const chain = findRainbowChainForChainId(tx.chainId);
+  const chain = networkStore((state) => state.getActiveRpcForChain(tx.chainId));
   const value = formatValue(tx);
 
   return (

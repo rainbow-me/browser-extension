@@ -1,5 +1,11 @@
 import { AddressZero } from '@ethersproject/constants';
-import { type Chain, avalancheFuji, curtis, inkSepolia } from 'viem/chains';
+import {
+  type Chain,
+  avalancheFuji,
+  curtis,
+  inkSepolia,
+  mainnet,
+} from 'viem/chains';
 
 import buildTimeNetworks from 'static/data/networks.json';
 import { NetworkState } from '~/core/state/networks/networks';
@@ -14,16 +20,65 @@ import {
   TransformedChain,
 } from '~/core/types/chains';
 import { GasSpeed } from '~/core/types/gas';
-import { transformBackendNetworksToChains } from '~/core/utils/backendNetworks';
 import { logger } from '~/logger';
 
 const RPC_PROXY_API_KEY = process.env.RPC_PROXY_API_KEY;
+const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
+const IS_DEV = process.env.IS_DEV === 'true';
 
 export const DEFAULT_PRIVATE_MEMPOOL_TIMEOUT = 2 * 60 * 1_000;
 
 const proxyBackendNetworkRpcEndpoint = (endpoint: string) => {
   return `${endpoint}${RPC_PROXY_API_KEY}`;
 };
+
+export function transformBackendNetworkToChain(
+  network: BackendNetworks['networks'][number],
+): Chain {
+  if (!network) {
+    throw new Error('Invalid network data');
+  }
+  const defaultRpcUrl = proxyBackendNetworkRpcEndpoint(network.defaultRPC.url);
+
+  return {
+    id: parseInt(network.id, 10),
+    name: network.label,
+    testnet: network.testnet,
+    nativeCurrency: {
+      name: network.nativeAsset.name,
+      symbol: network.nativeAsset.symbol,
+      decimals: network.nativeAsset.decimals,
+    },
+    rpcUrls: {
+      default: {
+        http: [defaultRpcUrl],
+      },
+      public: {
+        http: [defaultRpcUrl],
+      },
+    },
+    blockExplorers: {
+      default: {
+        url: network.defaultExplorer.url,
+        name: network.defaultExplorer.label,
+      },
+    },
+    contracts:
+      parseInt(network.id, 10) === mainnet.id ? mainnet.contracts : undefined,
+  };
+}
+
+export function transformBackendNetworksToChains(
+  networks?: BackendNetworks['networks'],
+): Chain[] {
+  if (!networks) {
+    return [];
+  }
+  // include all networks for internal builds, otherwise filter out flagged as internal
+  return networks
+    .filter((network) => !network.internal || INTERNAL_BUILD || IS_DEV)
+    .map((network) => transformBackendNetworkToChain(network));
+}
 
 export function toChainId(id: string): ChainId {
   return parseInt(id, 10);

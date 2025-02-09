@@ -29,8 +29,6 @@ import { networkStore } from '~/core/state/networks/networks';
 
 import { ChainId } from '../types/chains';
 
-import { getSupportedChains } from './chains';
-
 const labels = networkStore.getState().getChainsLabel();
 
 export const chainIdMap: Record<
@@ -112,32 +110,4 @@ export const sortNetworks = (order: ChainId[], chains: Chain[]) => {
     return aIndex - bIndex;
   });
   return ordered;
-};
-
-export const filterUserNetworks = ({
-  testnetMode,
-  userChains,
-  userChainsOrder,
-}: {
-  testnetMode: boolean;
-  userChains: Record<ChainId, boolean>;
-  userChainsOrder: ChainId[];
-}) => {
-  const supportedChains: Chain[] = getSupportedChains({
-    testnets: testnetMode,
-  });
-
-  const availableChains = Object.keys(userChains)
-    .filter((chainId) => userChains[Number(chainId)] === true)
-    .map((chainId) => Number(chainId));
-
-  const allAvailableUserChains = availableChains
-    .map((chainId) => chainIdMap[chainId])
-    .flat();
-
-  const chains = supportedChains.filter((chain) =>
-    allAvailableUserChains.includes(chain.id),
-  );
-
-  return sortNetworks(userChainsOrder, chains);
 };

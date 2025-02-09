@@ -33,7 +33,6 @@ import {
   parseUserAssetBalances,
 } from '~/core/utils/assets';
 import { convertDecimalFormatToRawAmount, isZero } from '~/core/utils/numbers';
-import { getRainbowChains } from '~/core/utils/rainbowChains';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import { RainbowError, logger } from '~/logger';
 
@@ -183,13 +182,13 @@ async function customNetworkAssetsFunction({
     }),
   })?.state?.data || {}) as Record<ChainId | number, ParsedAssetsDict>;
 
-  const { rainbowChains: chains } = getRainbowChains();
+  const activeChains = networkStore.getState().getAllActiveRpcChains();
 
   const supportedMainnetChains = networkStore((state) =>
     state.getBackendSupportedChains(),
   );
 
-  const customChains = chains.filter((chain) =>
+  const customChains = activeChains.filter((chain) =>
     testnetMode ? chain.testnet : !chain.testnet,
   );
   if (customChains.length === 0) {

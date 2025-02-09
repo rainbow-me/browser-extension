@@ -59,6 +59,8 @@ interface NetworkActions {
     includeTestnets?: boolean,
   ) => Record<number, TransformedChain>;
   getUserAddedChainIds: (includeTestnets?: boolean) => number[];
+  updateChainOrder: (sourceIdx: number, destinationIdx: number) => void;
+  updateEnabledChains: (chainIds: number[], enabled: boolean) => void;
 
   // custom backend driven networks store methods
   getSupportedCustomNetworks: () => CustomNetwork[];
@@ -95,6 +97,7 @@ interface NetworkActions {
   getChainBadgeUrl: (chainId: number) => string | undefined;
   getDefaultFavorites: () => Record<number, AddressOrEth[]>;
   getAllChains: (includeTestnets?: boolean) => Record<number, TransformedChain>;
+  getAllActiveRpcChains: (includeTestnets?: boolean) => Chain[];
   getAllChainsSortedByOrder: (includeTestnets?: boolean) => TransformedChain[];
 }
 
@@ -358,10 +361,11 @@ export const networkStore = createQueryStore<
         const preferences = userPreferences[chainId];
         if (!preferences) return { success: false, newRpcsLength: -1 };
 
-        const isActiveRpc = preferences.activeRpcUrl === rpcUrl;
-        // handle case where we're removing last RPC
-        // we need to delete the network if there are no RPCs left
-        if (isActiveRpc && Object.keys(preferences.rpcs).length === 1) {
+        // we need to delete the custom chain if there are no RPCs left
+        if (
+          Object.keys(preferences.rpcs).length === 1 &&
+          preferences.type === 'custom'
+        ) {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { [chainId]: _, ...newUserOverrides } = userPreferences;
           set({ userPreferences: newUserOverrides });
@@ -371,18 +375,25 @@ export const networkStore = createQueryStore<
           };
         }
 
-        const otherRpcUrl = Object.values(preferences.rpcs).find(
-          (rpc) => rpc.rpcUrls.default.http[0] !== rpcUrl,
-        );
-        if (!otherRpcUrl) return { success: false, newRpcsLength: -1 };
+        const newUserOverridesForChain: ChainPreferences = {
+          ...preferences,
+        };
+
+        const isActiveRpc = preferences.activeRpcUrl === rpcUrl;
+
+        // if the active RPC is being removed, we need to set the active RPC to a different one
+        if (isActiveRpc) {
+          const otherRpcUrl = Object.values(preferences.rpcs).find(
+            (rpc) => rpc.rpcUrls.default.http[0] !== rpcUrl,
+          );
+          if (!otherRpcUrl) return { success: false, newRpcsLength: -1 };
+          newUserOverridesForChain.activeRpcUrl =
+            otherRpcUrl.rpcUrls.default.http[0];
+        }
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { [rpcUrl]: _, ...newRpcs } = preferences.rpcs;
-        const newUserOverridesForChain: ChainPreferences = {
-          ...preferences,
-          activeRpcUrl: otherRpcUrl.rpcUrls.default.http[0],
-          rpcs: newRpcs,
-        };
+        newUserOverridesForChain.rpcs = newRpcs;
 
         set({
           userPreferences: {
@@ -442,6 +453,30 @@ export const networkStore = createQueryStore<
         };
       },
     ),
+
+    updateChainOrder: (sourceIdx: number, destinationIdx: number) => {
+      set((state) => {
+        const currentOrder = [...state.chainOrder];
+        const [removed] = currentOrder.splice(sourceIdx, 1);
+        currentOrder.splice(destinationIdx, 0, removed);
+        const newOrder = Array.from(new Set(currentOrder));
+        return { chainOrder: newOrder };
+      });
+    },
+
+    updateEnabledChains: (chainIds: number[], enabled: boolean) => {
+      set((state) => {
+        const newEnabledChainIds = new Set(state.enabledChainIds);
+        chainIds.forEach((chainId) => {
+          if (enabled) {
+            newEnabledChainIds.add(chainId);
+          } else {
+            newEnabledChainIds.delete(chainId);
+          }
+        });
+        return { enabledChainIds: newEnabledChainIds };
+      });
+    },
 
     // TODO: remove already added custom networks from this list
     getSupportedCustomNetworks: createSelector(({ networks }) => {
@@ -702,6 +737,12 @@ export const networkStore = createQueryStore<
           };
         }, {});
       };
+    }),
+
+    getAllActiveRpcChains: createSelector(({ mergedChainData }) => {
+      return Object.values(mergedChainData).map((chain) => {
+        return chain.rpcs[chain.activeRpcUrl];
+      });
     }),
 
     getAllChainsSortedByOrder: createParameterizedSelector(

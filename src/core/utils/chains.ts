@@ -10,7 +10,6 @@ import { AddressOrEth } from '../types/assets';
 import { wagmiConfig } from '../wagmi';
 
 import { getDappHost } from './connectedApps';
-import { findRainbowChainForChainId } from './rainbowChains';
 import { isLowerCaseMatch } from './strings';
 
 // Main chains for chain settings
@@ -96,7 +95,7 @@ export function getChain({ chainId }: { chainId?: ChainId }) {
 
 export const isCustomChain = (chainId: number) =>
   !networkStore.getState().getBackendSupportedChains(true)[chainId] &&
-  !!findRainbowChainForChainId(chainId);
+  !!networkStore.getState().getActiveRpcForChain(chainId);
 
 export function isNativeAsset(address: AddressOrEth, chainId: ChainId) {
   if (isCustomChain(chainId)) {

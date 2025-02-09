@@ -1,4 +1,4 @@
-import { userChainsStore } from '~/core/state/userChains';
+import { networkStore } from '~/core/state/networks/networks';
 import {
   ParsedAssetsDict,
   ParsedAssetsDictByChain,
@@ -20,12 +20,9 @@ export function selectorFilterByUserChains<T>({
   selector: (data: ParsedAssetsDictByChain) => T;
   chain?: ChainId;
 }): T {
-  const { userChains } = userChainsStore.getState();
-  const allUserChainIds = Object.keys(userChains)
-    .map((chainId) => {
-      const id = Number(chainId);
-      return userChains[id] ? chainIdMap[id] || id : undefined;
-    })
+  const { enabledChainIds } = networkStore.getState();
+  const allUserChainIds = Array.from(enabledChainIds)
+    .map((id) => chainIdMap[id] || id)
     .flat()
     .filter(Boolean);
   const filteredAssetsDictByChain = Object.keys(data).reduce((acc, key) => {
@@ -60,17 +57,10 @@ export function selectUserAssetsDictByChain(assets: ParsedAssetsDictByChain) {
 }
 
 export function selectUserAssetsListByChainId(assets: ParsedAssetsDictByChain) {
-  const assetsByNetwork = [
-    assets?.[ChainId.mainnet],
-    assets?.[ChainId.optimism],
-    assets?.[ChainId.polygon],
-    assets?.[ChainId.arbitrum],
-    assets?.[ChainId.base],
-    assets?.[ChainId.zora],
-    assets?.[ChainId.bsc],
-    assets?.[ChainId.avalanche],
-    assets?.[ChainId.ink],
-  ].flat();
+  const assetsByNetwork = Object.values(
+    networkStore.getState().getAllChains(true),
+  ).map((chain) => assets?.[chain.id]);
+
   return assetsByNetwork
     .map((chainAssets) =>
       Object.values(chainAssets).sort(

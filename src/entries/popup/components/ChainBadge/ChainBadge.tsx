@@ -1,7 +1,6 @@
 import { AddressZero } from '@ethersproject/constants';
 
 import { customChainIdsToAssetNames } from '~/core/references/assets';
-import { rainbowChainsStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { networkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
@@ -39,6 +38,8 @@ const ChainBadge = ({
     state.getChainBadgeUrl(chainId),
   );
 
+  const chain = networkStore((state) => state.getActiveRpcForChain(chainId));
+
   let boxShadow;
   if (shadow) {
     boxShadow =
@@ -49,7 +50,6 @@ const ChainBadge = ({
   const iconSize = typeof size === 'number' ? size : chainBadgeSize[size];
 
   if (!chainBadgeUrl && !customChainIdsToAssetNames[chainId]) {
-    const chain = rainbowChainsStore.getState().getActiveChain({ chainId });
     return (
       <Box
         borderRadius="round"

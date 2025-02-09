@@ -6,17 +6,12 @@ import { Address, Chain } from 'viem';
 import { i18n } from '~/core/languages';
 import { selectUserAssetsDictByChain } from '~/core/resources/_selectors/assets';
 import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
-import {
-  useCurrentAddressStore,
-  useCurrentCurrencyStore,
-  useRainbowChainsStore,
-} from '~/core/state';
+import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { networkStore } from '~/core/state/networks/networks';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
-import { useUserChainsStore } from '~/core/state/userChains';
 import { TransformedChain } from '~/core/types/chains';
 import { getSupportedChains } from '~/core/utils/chains';
 import { getDappHost } from '~/core/utils/connectedApps';
@@ -102,42 +97,32 @@ export function SettingsNetworksRPCs() {
 
   const navigate = useRainbowNavigate();
   const { developerToolsEnabled } = useDeveloperToolsEnabledStore();
-  const { rainbowChains, setActiveRPC, removeCustomRPC } =
-    useRainbowChainsStore();
+  const allChains = networkStore((state) => state.getAllChains(true));
+  const updateCustomChain = networkStore((state) => state.updateCustomChain);
+  const enabledChainIds = networkStore((state) => state.enabledChainIds);
 
-  const rainbowChain = rainbowChains[Number(chainId)];
-
-  const activeCustomRPC = rainbowChain?.chains.find(
-    (chain) => chain.rpcUrls.default.http[0] === rainbowChain.activeRpcUrl,
-  );
-
-  const userChains = useUserChainsStore.use.userChains();
-  const updateUserChain = useUserChainsStore.use.updateUserChain();
-  const removeUserChain = useUserChainsStore.use.removeUserChain();
+  const rainbowChain = allChains[+chainId];
+  const activeCustomRPC = rainbowChain?.rpcs[rainbowChain.activeRpcUrl];
 
   const handleToggleChain = useCallback(
     (newVal: boolean) => {
-      updateUserChain({
-        chainId: chainId,
-        enabled: newVal,
-      });
+      networkStore.getState().updateEnabledChains([chainId], newVal);
     },
-    [chainId, updateUserChain],
+    [chainId],
   );
 
   const handleRPCClick = useCallback(
     (rpcUrl: string): void => {
-      setActiveRPC({
-        rpcUrl,
-        chainId: chainId,
+      updateCustomChain(chainId, {
+        activeRpcUrl: rpcUrl,
       });
     },
-    [chainId, setActiveRPC],
+    [chainId, updateCustomChain],
   );
 
   const mainnetChains = useMemo(
     () =>
-      rainbowChain?.chains
+      Object.values(rainbowChain?.rpcs || {})
         .filter((chain) => !chain.testnet)
         .sort((a, b) => {
           if (isDefaultRPC(a, supportedChains)) return -1;
@@ -174,52 +159,38 @@ export function SettingsNetworksRPCs() {
 
   const testnetChains = useMemo(() => {
     const customTestnetChains =
-      rainbowChains[Number(chainId)]?.chains?.filter(
+      Object.values(allChains[chainId]?.rpcs || {}).filter(
         (chain) => chain.testnet,
       ) || [];
 
     return [...customTestnetChains, ...supportedTestnetChains];
-  }, [chainId, rainbowChains, supportedTestnetChains]);
+  }, [chainId, allChains, supportedTestnetChains]);
 
   const handleRemoveRPC = useCallback(
     (chain: Chain) => {
-      removeCustomRPC({
-        rpcUrl: chain.rpcUrls.default.http[0],
-      });
+      const chainId = chain.id;
+      const { success, newRpcsLength } = networkStore
+        .getState()
+        .removeRpcFromChain(chainId, chain.rpcUrls.default.http[0]);
+      if (!success) return;
+
       removeRainbowChainAssets({ chainId });
-      // If there's no default chain & only had one chain, go back
-      const allChainsCount = [...mainnetChains, ...testnetChains].length;
-      if (!supportedChain && allChainsCount === 1) {
-        removeUserChain({ chainId });
+      if (!supportedChain && newRpcsLength === 0) {
         navigate(-1);
       }
     },
-    [
-      chainId,
-      mainnetChains,
-      navigate,
-      removeCustomRPC,
-      removeRainbowChainAssets,
-      removeUserChain,
-      supportedChain,
-      testnetChains,
-    ],
+    [navigate, removeRainbowChainAssets, supportedChain],
   );
 
   const handleRemoveNetwork = useCallback(
     ({ chainId }: { chainId: number }) => {
-      const rainbowChain = rainbowChains[chainId];
-      if (rainbowChain) {
-        rainbowChain.chains.forEach((chain) => {
-          removeCustomRPC({
-            rpcUrl: chain.rpcUrls.default.http[0],
-          });
-          removeRainbowChainAssets({ chainId });
-        });
+      const removed = networkStore.getState().removeCustomChain(chainId);
+      if (removed) {
+        removeRainbowChainAssets({ chainId });
+        navigate(-1);
       }
-      navigate(-1);
     },
-    [navigate, rainbowChains, removeCustomRPC, removeRainbowChainAssets],
+    [navigate, removeRainbowChainAssets],
   );
 
   return (
@@ -235,12 +206,12 @@ export function SettingsNetworksRPCs() {
             rightComponent={
               <Toggle
                 testId="disable-network-toggle"
-                checked={userChains[chainId]}
+                checked={enabledChainIds.has(chainId)}
                 handleChange={handleToggleChain}
                 tabIndex={-1}
               />
             }
-            onToggle={() => handleToggleChain(!userChains[chainId])}
+            onToggle={() => handleToggleChain(!enabledChainIds.has(chainId))}
           />
         </Menu>
         {supportedChain || mainnetChains?.length ? (

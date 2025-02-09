@@ -3,7 +3,6 @@ import { Chain, HttpTransport, Transport, http } from 'viem';
 import { createConfig } from 'wagmi';
 
 import { networkStore } from '~/core/state/networks/networks';
-import { useRainbowChains } from '~/entries/popup/hooks/useRainbowChains';
 
 import { handleRpcUrl } from './clientRpc';
 
@@ -43,10 +42,10 @@ const updateWagmiConfig = (chains: Chain[]) => {
 };
 
 const WagmiConfigUpdater = () => {
-  const { rainbowChains: chains } = useRainbowChains();
+  const activeChains = networkStore((state) => state.getAllActiveRpcChains());
   useEffect(() => {
-    updateWagmiConfig(chains);
-  }, [chains]);
+    updateWagmiConfig(activeChains);
+  }, [activeChains]);
 
   return null;
 };
