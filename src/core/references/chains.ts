@@ -1,5 +1,11 @@
 import { Address } from 'viem';
-import { type Chain, avalancheFuji, curtis, inkSepolia } from 'viem/chains';
+import {
+  type Chain,
+  avalancheFuji,
+  berachainTestnetbArtio,
+  curtis,
+  inkSepolia,
+} from 'viem/chains';
 
 import backendNetworks from 'static/data/networks.json';
 
@@ -21,7 +27,12 @@ const BACKEND_CHAINS = transformBackendNetworksToChains(
   backendNetworks.backendNetworks.networks,
 );
 
-const LOCAL_CHAINS: Chain[] = [avalancheFuji, curtis, inkSepolia];
+const LOCAL_CHAINS: Chain[] = [
+  avalancheFuji,
+  curtis,
+  inkSepolia,
+  berachainTestnetbArtio,
+];
 
 const DEFAULT_PRIVATE_MEMPOOL_TIMEOUT = 2 * 60 * 1_000; // 2 minutes
 
@@ -61,6 +72,7 @@ export const chainsLabel: Record<number, string> =
       [ChainId.inkSepolia]: 'Ink Sepolia',
       [ChainId.sankoTestnet]: 'Sanko Testnet',
       [ChainId.gravitySepolia]: 'Gravity Sepolia',
+      [ChainId.berachainbArtio]: 'Berachain bArtio',
     } as Record<number, string>,
   );
 
@@ -86,6 +98,7 @@ export const chainsName: Record<number, string> =
       [ChainId.inkSepolia]: 'ink-sepolia',
       [ChainId.sankoTestnet]: 'sanko-testnet',
       [ChainId.gravitySepolia]: 'gravity-sepolia',
+      [ChainId.berachainbArtio]: 'berachain-bartio',
     } as Record<number, string>,
   );
 

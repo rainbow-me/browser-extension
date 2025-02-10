@@ -1,6 +1,7 @@
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import React, { useState } from 'react';
 
+import { RAINBOW_LEARN_URL } from '~/core/references/links';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { Bleed, Box, Inline, Symbol } from '~/design-system';
@@ -246,7 +247,7 @@ export const useSwapButton = ({
               closeText: t(
                 'explainers.insufficient_liquidity.footer_text.close_text',
               ),
-              link: 'https://learn.rainbow.me/a-beginners-guide-to-liquidity-providing',
+              link: `${RAINBOW_LEARN_URL}/a-beginners-guide-to-liquidity-providing`,
             },
             actionButton: {
               label: t('swap.explainers.insufficient_liquidity.action_label'),

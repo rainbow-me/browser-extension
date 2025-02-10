@@ -111,7 +111,7 @@ export const userChainsStore = createStore<UserChainsState>(
   {
     persist: persistOptions({
       name: 'userChains',
-      version: 7,
+      version: 8,
       migrations: [
         // previous naive migrations reset user custom networks and ordering
         function v1(state: UserChainsState) {
@@ -186,6 +186,21 @@ export const userChainsStore = createStore<UserChainsState>(
             ChainId.gravity,
             ChainId.gravitySepolia,
           ];
+          return {
+            ...state,
+            userChains: {
+              ...state.userChains,
+              ...Object.fromEntries(newChains.map((id) => [id, true])),
+            },
+            userChainsOrder: state.userChainsOrder.concat(
+              newChains.filter((id) => !state.userChainsOrder.includes(id)),
+            ),
+          };
+        },
+
+        // v8 adds berachain support
+        function v8(state: UserChainsState) {
+          const newChains = [ChainId.berachain, ChainId.berachainbArtio];
           return {
             ...state,
             userChains: {
