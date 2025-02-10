@@ -1,4 +1,4 @@
-import merge from 'lodash/merge';
+import assign from 'lodash/assign';
 import { Chain } from 'viem';
 
 import buildTimeNetworks from 'static/data/networks.json';
@@ -47,11 +47,8 @@ interface NetworkActions {
     userPreferences: ChainPreferences,
     active: boolean,
   ) => void;
-  updateCustomChain: (
-    chainId: number,
-    userPreferences: Partial<ChainPreferences>,
-  ) => void;
   removeCustomChain: (chainId: number) => boolean;
+  selectRpcForChain: (chainId: number, rpcUrl: string) => void;
   removeRpcFromChain: (
     chainId: number,
     rpcUrl: string,
@@ -98,7 +95,6 @@ interface NetworkActions {
   getSupportedNftChainIds: () => number[];
   getChainGasUnits: (chainId?: number) => BackendNetwork['gasUnits'];
   getChainsBadgeUrls: () => Record<number, string>;
-  getChainBadgeUrl: (chainId: number) => string | undefined;
   getBackendChainsByMainnetId: () => Record<number, BackendNetwork[]>;
   getBackendChainIdsByMainnetId: () => Record<number, number[]>;
   getDefaultFavorites: () => Record<number, AddressOrEth[]>;
@@ -219,6 +215,8 @@ function createParameterizedSelector<T, Args extends unknown[]>(
     const didChainOrderChange = lastChainOrder !== chainOrder;
     const didEnabledChainIdsChange = lastEnabledChainIds !== enabledChainIds;
 
+    console.log({ didUserOverridesChange });
+
     if (
       cachedResult !== uninitialized &&
       !didNetworksChange &&
@@ -313,113 +311,109 @@ export const networkStore = createQueryStore<
       };
     }),
 
-    addCustomChain: createParameterizedSelector(
-      ({ userPreferences, chainOrder }) => {
-        return (
-          chainId: number,
-          newChainPreferences: ChainPreferences,
-          active: boolean,
-        ) => {
-          if (newChainPreferences.type !== 'custom') return;
+    addCustomChain: (
+      chainId: number,
+      newChainPreferences: ChainPreferences,
+      active: boolean,
+    ) => {
+      if (newChainPreferences.type !== 'custom') return;
 
-          const order = [...chainOrder].indexOf(chainId);
-          const existing = userPreferences[chainId] || {};
+      const { chainOrder, userPreferences } = get();
 
-          const enabledChainIds = new Set(
-            active ? [...chainOrder, chainId] : [...chainOrder],
-          );
+      const order = [...chainOrder].indexOf(chainId);
+      const existing = userPreferences[chainId] || {};
 
-          set({
-            chainOrder: order === -1 ? [...chainOrder, chainId] : chainOrder,
-            enabledChainIds,
-            userPreferences: {
-              ...userPreferences,
-              [chainId]: merge(existing, newChainPreferences),
-            },
-          });
-        };
-      },
-    ),
+      const enabledChainIds = new Set(
+        active ? [...chainOrder, chainId] : [...chainOrder],
+      );
 
-    updateCustomChain: createParameterizedSelector(({ userPreferences }) => {
-      return (chainId: number, updates: Partial<ChainPreferences>) => {
-        const existing = userPreferences[chainId];
-        if (!existing) return;
+      set({
+        chainOrder: order === -1 ? [...chainOrder, chainId] : chainOrder,
+        enabledChainIds,
+        userPreferences: {
+          ...userPreferences,
+          [chainId]: assign({}, existing, newChainPreferences),
+        },
+      });
+    },
 
-        const newUserPreferences = merge(existing, updates);
+    removeCustomChain: (chainId: number) => {
+      const { userPreferences } = get();
+      const preferences = userPreferences[chainId];
+      if (preferences?.type !== 'custom') return false;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [chainId]: _, ...newUserOverrides } = userPreferences;
+      set({ userPreferences: newUserOverrides });
+      return true;
+    },
 
-        set({
-          userPreferences: {
-            ...userPreferences,
-            [chainId]: newUserPreferences,
+    selectRpcForChain: (chainId: number, rpcUrl: string) => {
+      const { userPreferences } = get();
+      const preferences = userPreferences[chainId];
+      if (!preferences) return;
+
+      set({
+        userPreferences: {
+          ...userPreferences,
+          [chainId]: {
+            ...userPreferences[chainId],
+            activeRpcUrl: rpcUrl,
           },
-        });
-      };
-    }),
+        },
+      });
+    },
 
-    removeCustomChain: createParameterizedSelector(({ userPreferences }) => {
-      return (chainId: number) => {
-        const preferences = userPreferences[chainId];
-        if (preferences?.type !== 'custom') return false;
+    removeRpcFromChain: (chainId: number, rpcUrl: string) => {
+      const { userPreferences } = get();
+      const preferences = userPreferences[chainId];
+      if (!preferences) return { success: false, newRpcsLength: -1 };
+
+      // we need to delete the custom chain if there are no RPCs left
+      if (
+        Object.keys(preferences.rpcs).length === 1 &&
+        preferences.type === 'custom'
+      ) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { [chainId]: _, ...newUserOverrides } = userPreferences;
         set({ userPreferences: newUserOverrides });
-        return true;
-      };
-    }),
-
-    removeRpcFromChain: createParameterizedSelector(({ userPreferences }) => {
-      return (chainId: number, rpcUrl: string) => {
-        const preferences = userPreferences[chainId];
-        if (!preferences) return { success: false, newRpcsLength: -1 };
-
-        // we need to delete the custom chain if there are no RPCs left
-        if (
-          Object.keys(preferences.rpcs).length === 1 &&
-          preferences.type === 'custom'
-        ) {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { [chainId]: _, ...newUserOverrides } = userPreferences;
-          set({ userPreferences: newUserOverrides });
-          return {
-            success: true,
-            newRpcsLength: 0,
-          };
-        }
-
-        const newUserOverridesForChain: ChainPreferences = {
-          ...preferences,
-        };
-
-        const isActiveRpc = preferences.activeRpcUrl === rpcUrl;
-
-        // if the active RPC is being removed, we need to set the active RPC to a different one
-        if (isActiveRpc) {
-          const otherRpcUrl = Object.values(preferences.rpcs).find(
-            (rpc) => rpc.rpcUrls.default.http[0] !== rpcUrl,
-          );
-          if (!otherRpcUrl) return { success: false, newRpcsLength: -1 };
-          newUserOverridesForChain.activeRpcUrl =
-            otherRpcUrl.rpcUrls.default.http[0];
-        }
-
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { [rpcUrl]: _, ...newRpcs } = preferences.rpcs;
-        newUserOverridesForChain.rpcs = newRpcs;
-
-        set({
-          userPreferences: {
-            ...userPreferences,
-            [chainId]: newUserOverridesForChain,
-          },
-        });
-
         return {
           success: true,
-          newRpcsLength: Object.keys(newRpcs).length,
+          newRpcsLength: 0,
         };
+      }
+
+      const newUserOverridesForChain: ChainPreferences = {
+        ...preferences,
       };
-    }),
+
+      const isActiveRpc = preferences.activeRpcUrl === rpcUrl;
+
+      // if the active RPC is being removed, we need to set the active RPC to a different one
+      if (isActiveRpc) {
+        const otherRpcUrl = Object.values(preferences.rpcs).find(
+          (rpc) => rpc.rpcUrls.default.http[0] !== rpcUrl,
+        );
+        if (!otherRpcUrl) return { success: false, newRpcsLength: -1 };
+        newUserOverridesForChain.activeRpcUrl =
+          otherRpcUrl.rpcUrls.default.http[0];
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [rpcUrl]: _, ...newRpcs } = preferences.rpcs;
+      newUserOverridesForChain.rpcs = newRpcs;
+
+      set({
+        userPreferences: {
+          ...userPreferences,
+          [chainId]: newUserOverridesForChain,
+        },
+      });
+
+      return {
+        success: true,
+        newRpcsLength: Object.keys(newRpcs).length,
+      };
+    },
 
     getUserAddedChains: createParameterizedSelector(
       ({ networks, mergedChainData }) => {
@@ -466,37 +460,39 @@ export const networkStore = createQueryStore<
       },
     ),
 
-    updateChainOrder: createParameterizedSelector(({ chainOrder }) => {
-      return (sourceIdx: number, destinationIdx: number) => {
-        const currentOrder = [...chainOrder];
-        const [removed] = currentOrder.splice(sourceIdx, 1);
-        currentOrder.splice(destinationIdx, 0, removed);
-        const newOrder = Array.from(new Set(currentOrder));
-        set({ chainOrder: newOrder });
-      };
-    }),
+    updateChainOrder: (sourceIdx: number, destinationIdx: number) => {
+      const { chainOrder } = get();
+      const currentOrder = [...chainOrder];
+      const [removed] = currentOrder.splice(sourceIdx, 1);
+      currentOrder.splice(destinationIdx, 0, removed);
+      const newOrder = Array.from(new Set(currentOrder));
+      set({ chainOrder: newOrder });
+    },
 
-    updateEnabledChains: createParameterizedSelector(({ enabledChainIds }) => {
-      return (chainIds: number[], enabled: boolean) => {
-        const newEnabledChainIds = new Set(enabledChainIds);
-        chainIds.forEach((chainId) => {
-          if (enabled) {
-            newEnabledChainIds.add(chainId);
-          } else {
-            newEnabledChainIds.delete(chainId);
-          }
-        });
-        set({ enabledChainIds: newEnabledChainIds });
-      };
-    }),
+    updateEnabledChains: (chainIds: number[], enabled: boolean) => {
+      const { enabledChainIds } = get();
+      const newEnabledChainIds = new Set(enabledChainIds);
+      chainIds.forEach((chainId) => {
+        if (enabled) {
+          newEnabledChainIds.add(chainId);
+        } else {
+          newEnabledChainIds.delete(chainId);
+        }
+      });
+      set({ enabledChainIds: newEnabledChainIds });
+    },
 
-    // TODO: remove already added custom networks from this list
-    getSupportedCustomNetworks: createSelector(({ networks }) => {
-      return [
-        ...networks.customNetworks.customNetworks,
-        ...LOCAL_TESTING_NETWORKS,
-      ].sort((a, b) => a.name.localeCompare(b.name));
-    }),
+    getSupportedCustomNetworks: createSelector(
+      ({ networks, mergedChainData }) => {
+        const existingNetworks = Object.keys(mergedChainData).map(Number);
+        return [
+          ...networks.customNetworks.customNetworks,
+          ...LOCAL_TESTING_NETWORKS,
+        ]
+          .filter((network) => !existingNetworks.includes(network.id))
+          .sort((a, b) => a.name.localeCompare(b.name));
+      },
+    ),
 
     getSupportedCustomNetworksIconUrls: createSelector(({ networks }) => {
       return [
@@ -720,12 +716,6 @@ export const networkStore = createQueryStore<
         },
         {},
       );
-    }),
-
-    getChainBadgeUrl: createParameterizedSelector(({ networks }) => {
-      return (chainId: number) => {
-        return networks.backendNetworks.networks[chainId].icons.badgeURL;
-      };
     }),
 
     getBackendChainIdsByMainnetId: createSelector(({ networks }) => {

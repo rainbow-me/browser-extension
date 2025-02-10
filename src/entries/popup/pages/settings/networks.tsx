@@ -1,6 +1,5 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { DropResult } from 'react-beautiful-dnd';
-import { Chain } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
@@ -8,9 +7,6 @@ import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags'
 import { networkStore } from '~/core/state/networks/networks';
 import { promoTypes, useQuickPromoStore } from '~/core/state/quickPromo';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
-import { ChainId } from '~/core/types/chains';
-import { useMainChains } from '~/core/utils/chains';
-import { sortNetworks } from '~/core/utils/userChains';
 import { Box, Inset, Separator, Symbol, Text } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
@@ -49,14 +45,12 @@ const chainLabel = ({
 
 export function SettingsNetworks() {
   const navigate = useRainbowNavigate();
-  const mainChains = useMainChains();
   const { seenPromos, setSeenPromo } = useQuickPromoStore();
   const { developerToolsEnabled, setDeveloperToolsEnabled } =
     useDeveloperToolsEnabledStore();
   const { featureFlags } = useFeatureFlagsStore();
   const removeCustomChain = networkStore((state) => state.removeCustomChain);
-  const allChains = networkStore((state) => state.getAllChains());
-  const { chainOrder, enabledChainIds } = networkStore((state) => ({
+  const { enabledChainIds } = networkStore((state) => ({
     chainOrder: state.chainOrder,
     enabledChainIds: state.enabledChainIds,
   }));
@@ -68,6 +62,8 @@ export function SettingsNetworks() {
     state.getBackendSupportedChains(true),
   );
 
+  const allChains = networkStore((state) => state.getAllChainsSortedByOrder());
+
   const onDragEnd = (result: DropResult) => {
     const { destination, source } = result;
     if (!seenPromos[promoTypes.network_settings])
@@ -76,21 +72,6 @@ export function SettingsNetworks() {
     if (destination.index === source.index) return;
     networkStore.getState().updateChainOrder(source.index, destination.index);
   };
-
-  const allNetworks = useMemo(
-    () =>
-      sortNetworks(chainOrder, mainChains).map((chain) => {
-        const chainId = chain.id;
-        // Always use the name of the supported network if it exists
-        return {
-          ...chain,
-          name: supportedChains[chainId]?.name || chain.name,
-        };
-      }),
-    [mainChains, chainOrder, supportedChains],
-  );
-
-  console.log(mainChains, allChains, allNetworks);
 
   const enableNetwork = useCallback(
     ({ chainId, enabled }: { chainId: number; enabled: boolean }) => {
@@ -167,7 +148,7 @@ export function SettingsNetworks() {
         <Menu>
           <DraggableContext onDragEnd={onDragEnd} height="fixed">
             <Box>
-              {allNetworks.map((chain: Chain, index) => (
+              {allChains.map((chain, index) => (
                 <Box
                   alignItems="center"
                   justifyContent="center"
@@ -262,7 +243,7 @@ export function SettingsNetworks() {
                           ) : null}
                         </ContextMenuContent>
                       </ContextMenu>
-                      {index !== allNetworks.length - 1 && (
+                      {index !== allChains.length - 1 && (
                         <Box
                           paddingHorizontal="14px"
                           position="absolute"

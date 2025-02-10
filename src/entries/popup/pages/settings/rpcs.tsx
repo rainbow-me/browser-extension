@@ -97,12 +97,13 @@ export function SettingsNetworksRPCs() {
 
   const navigate = useRainbowNavigate();
   const { developerToolsEnabled } = useDeveloperToolsEnabledStore();
-  const updateCustomChain = networkStore((state) => state.updateCustomChain);
+  const selectRpcForChain = networkStore((state) => state.selectRpcForChain);
   const updateEnabledChains = networkStore(
     (state) => state.updateEnabledChains,
   );
   const enabledChainIds = networkStore((state) => state.enabledChainIds);
   const chain = networkStore((state) => state.getChain(chainId));
+  console.log(chain);
 
   const chainIdsBasedOnMainnetId = networkStore((state) =>
     state.getBackendChainIdsByMainnetId(),
@@ -136,7 +137,10 @@ export function SettingsNetworksRPCs() {
   const supportedTestnetChains = getSupportedChains({
     testnets: true,
   }).filter((chain) => {
-    return chainIdsBasedOnMainnetId[chainId]?.includes(chain.id) && chain.id !== chainId;
+    return (
+      chainIdsBasedOnMainnetId[chainId]?.includes(chain.id) &&
+      chain.id !== chainId
+    );
   });
 
   const testnetChains = () => {
@@ -228,11 +232,12 @@ export function SettingsNetworksRPCs() {
                             shadow
                           />
                         }
-                        onClick={() => {
-                          updateCustomChain(chainId, {
-                            activeRpcUrl: mainnetChain.rpcUrls.default.http[0],
-                          });
-                        }}
+                        onClick={() =>
+                          selectRpcForChain(
+                            chainId,
+                            mainnetChain.rpcUrls.default.http[0],
+                          )
+                        }
                         key={mainnetChain.name}
                         rightComponent={
                           mainnetChain.rpcUrls.default.http[0] ===

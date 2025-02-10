@@ -276,7 +276,7 @@ export const handleProviderRequest = ({
     }): { chainAlreadyAdded: boolean } => {
       const url = callbackOptions?.sender.url || '';
       const host = (isValidUrl(url) && getDappHost(url)) || '';
-      const { getAllChains, updateCustomChain } = networkStore.getState();
+      const { getAllChains, addCustomChain } = networkStore.getState();
 
       const allChains = getAllChains(true);
       const alreadyAddedChain = allChains[+proposedChain.chainId];
@@ -304,12 +304,18 @@ export const handleProviderRequest = ({
         const isActiveRpc = rainbowChain.activeRpcUrl === rpcUrl;
 
         if (!alreadyAddedRpcUrl) {
-          updateCustomChain(chainObject.id, {
-            activeRpcUrl: rpcUrl,
-            rpcs: {
-              [rpcUrl]: chainObject,
+          addCustomChain(
+            chainObject.id,
+            {
+              ...chainObject,
+              type: 'custom',
+              activeRpcUrl: rpcUrl,
+              rpcs: {
+                [rpcUrl]: chainObject,
+              },
             },
-          });
+            true,
+          );
         }
 
         let rpcStatus;
