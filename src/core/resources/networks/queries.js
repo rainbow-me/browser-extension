@@ -2,6 +2,7 @@ const BACKEND_NETWORKS_QUERY = `
   query getNetworks($device: Device!, $includeTestnets: Boolean!) {
     networks(device: $device, includeTestnets: $includeTestnets) {
       id
+      mainnetId
       name
       label
       icons {

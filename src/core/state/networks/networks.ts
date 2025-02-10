@@ -99,6 +99,8 @@ interface NetworkActions {
   getChainGasUnits: (chainId?: number) => BackendNetwork['gasUnits'];
   getChainsBadgeUrls: () => Record<number, string>;
   getChainBadgeUrl: (chainId: number) => string | undefined;
+  getBackendChainsByMainnetId: () => Record<number, BackendNetwork[]>;
+  getBackendChainIdsByMainnetId: () => Record<number, number[]>;
   getDefaultFavorites: () => Record<number, AddressOrEth[]>;
   getChain: (chainId: number) => TransformedChain | undefined;
   getAllChains: (includeTestnets?: boolean) => Record<number, TransformedChain>;
@@ -733,6 +735,34 @@ export const networkStore = createQueryStore<
       return (chainId: number) => {
         return networks.backendNetworks.networks[chainId].icons.badgeURL;
       };
+    }),
+
+    getBackendChainIdsByMainnetId: createSelector(({ networks }) => {
+      return networks.backendNetworks.networks.reduce(
+        (acc, curr) => {
+          const mainnetId = +curr.mainnetId;
+          if (!acc[mainnetId]) {
+            acc[mainnetId] = [];
+          }
+          acc[mainnetId].push(+curr.id);
+          return acc;
+        },
+        {} as Record<number, number[]>,
+      );
+    }),
+
+    getBackendChainsByMainnetId: createSelector(({ networks }) => {
+      return networks.backendNetworks.networks.reduce(
+        (acc, curr) => {
+          const mainnetId = +curr.mainnetId;
+          if (!acc[mainnetId]) {
+            acc[mainnetId] = [];
+          }
+          acc[mainnetId].push(curr);
+          return acc;
+        },
+        {} as Record<number, BackendNetwork[]>,
+      );
     }),
 
     getDefaultFavorites: createSelector(({ networks }) => {

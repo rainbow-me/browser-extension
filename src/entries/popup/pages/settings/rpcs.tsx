@@ -15,7 +15,6 @@ import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
 import { TransformedChain } from '~/core/types/chains';
 import { getSupportedChains } from '~/core/utils/chains';
 import { getDappHost } from '~/core/utils/connectedApps';
-import { chainIdMap } from '~/core/utils/userChains';
 import {
   Box,
   Column,
@@ -105,6 +104,9 @@ export function SettingsNetworksRPCs() {
   const enabledChainIds = networkStore((state) => state.enabledChainIds);
   const chain = networkStore((state) => state.getChain(chainId));
 
+  const chainIdsBasedOnMainnetId = networkStore((state) =>
+    state.getBackendChainIdsByMainnetId(),
+  );
   const activeChain = chain?.rpcs[chain.activeRpcUrl];
 
   const mainnetChains =
@@ -134,7 +136,7 @@ export function SettingsNetworksRPCs() {
   const supportedTestnetChains = getSupportedChains({
     testnets: true,
   }).filter((chain) => {
-    return chainIdMap[chainId]?.includes(chain.id) && chain.id !== chainId;
+    return chainIdsBasedOnMainnetId[chainId]?.includes(chain.id) && chain.id !== chainId;
   });
 
   const testnetChains = () => {
@@ -507,8 +509,9 @@ export function SettingsNetworksRPCs() {
                               size="11pt"
                               weight={'medium'}
                             >
-                              {chainIdMap[chainId]?.includes(chain.id) &&
-                              chain.id !== chainId
+                              {chainIdsBasedOnMainnetId[chainId]?.includes(
+                                chain.id,
+                              ) && chain.id !== chainId
                                 ? i18n.t(
                                     'settings.networks.custom_rpc.rainbow_default',
                                   )

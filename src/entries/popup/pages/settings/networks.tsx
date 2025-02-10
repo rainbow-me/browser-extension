@@ -10,7 +10,7 @@ import { promoTypes, useQuickPromoStore } from '~/core/state/quickPromo';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
 import { ChainId } from '~/core/types/chains';
 import { useMainChains } from '~/core/utils/chains';
-import { chainLabelMap, sortNetworks } from '~/core/utils/userChains';
+import { sortNetworks } from '~/core/utils/userChains';
 import { Box, Inset, Separator, Symbol, Text } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
@@ -30,19 +30,19 @@ import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
 const chainLabel = ({
-  chainId,
   testnet,
+  labels,
 }: {
-  chainId: ChainId;
   testnet?: boolean;
+  labels?: string[];
 }) => {
   const chainLabels = [
     testnet
       ? i18n.t('settings.networks.testnet')
       : i18n.t('settings.networks.mainnet'),
   ];
-  if (chainLabelMap[chainId]) {
-    chainLabels.push(...chainLabelMap[chainId]);
+  if (labels) {
+    chainLabels.push(...labels);
   }
   return chainLabels.join(', ');
 };
@@ -61,6 +61,9 @@ export function SettingsNetworks() {
     enabledChainIds: state.enabledChainIds,
   }));
   const { removeRainbowChainAssets } = useRainbowChainAssetsStore();
+  const chainsBasedOnMainnetId = networkStore((state) =>
+    state.getBackendChainsByMainnetId(),
+  );
   const supportedChains = networkStore((state) =>
     state.getBackendSupportedChains(true),
   );
@@ -215,7 +218,9 @@ export function SettingsNetworks() {
                                 >
                                   {enabledChainIds.has(chain.id)
                                     ? chainLabel({
-                                        chainId: chain.id,
+                                        labels: chainsBasedOnMainnetId[
+                                          chain.id
+                                        ].map((chain) => chain.label),
                                         testnet: chain.testnet,
                                       })
                                     : i18n.t('settings.networks.disabled')}

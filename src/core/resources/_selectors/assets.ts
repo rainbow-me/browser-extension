@@ -1,6 +1,5 @@
 import { networkStore } from '~/core/state/networks/networks';
 import {
-  ParsedAssetsDict,
   ParsedAssetsDictByChain,
   ParsedUserAsset,
   UniqueId,
@@ -8,7 +7,6 @@ import {
 import { ChainId } from '~/core/types/chains';
 import { deriveAddressAndChainWithUniqueId } from '~/core/utils/address';
 import { add } from '~/core/utils/numbers';
-import { chainIdMap } from '~/core/utils/userChains';
 
 // selectors
 export function selectorFilterByUserChains<T>({
@@ -20,6 +18,9 @@ export function selectorFilterByUserChains<T>({
   selector: (data: ParsedAssetsDictByChain) => T;
   chain?: ChainId;
 }): T {
+  const chainIdsBasedOnMainnetId = networkStore
+    .getState()
+    .getBackendChainIdsByMainnetId();
   const { enabledChainIds } = networkStore.getState();
   const allUserChainIds = Array.from(enabledChainIds)
     .map((id) => chainIdMap[id] || id)
@@ -70,24 +71,6 @@ export function selectUserAssetsListByChainId(assets: ParsedAssetsDictByChain) {
       ),
     )
     .flat();
-}
-
-export function selectUserAssetAddressMapByChainId(
-  assets: ParsedAssetsDictByChain,
-) {
-  const mapAddresses = (list: ParsedAssetsDict = {}) =>
-    Object.values(list).map((i) => i.address);
-  return {
-    [ChainId.mainnet]: mapAddresses(assets[ChainId.mainnet]) || [],
-    [ChainId.optimism]: mapAddresses(assets[ChainId.optimism]) || [],
-    [ChainId.bsc]: mapAddresses(assets[ChainId.bsc]) || [],
-    [ChainId.polygon]: mapAddresses(assets[ChainId.polygon]) || [],
-    [ChainId.arbitrum]: mapAddresses(assets[ChainId.arbitrum]) || [],
-    [ChainId.base]: mapAddresses(assets[ChainId.base]) || [],
-    [ChainId.zora]: mapAddresses(assets[ChainId.zora]) || [],
-    [ChainId.avalanche]: mapAddresses(assets[ChainId.avalanche]) || [],
-    [ChainId.ink]: mapAddresses(assets[ChainId.ink]) || [],
-  };
 }
 
 // selector generators
