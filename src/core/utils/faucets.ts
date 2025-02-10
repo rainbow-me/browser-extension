@@ -32,6 +32,7 @@ export const TestnetFaucet = {
   [ChainId.polygonAmoy]: 'https://faucet.polygon.technology',
   [ChainId.apechainCurtis]: 'https://curtis.hub.caldera.xyz/',
   [ChainId.inkSepolia]: 'https://inkonchain.com/faucet',
+  [ChainId.berachainbArtio]: 'https://bartio.faucet.berachain.com',
   [celoAlfajores.id]: 'https://faucet.celo.org/alfajores',
   [fantomTestnet.id]: 'https://faucet.fantom.network',
   [filecoinCalibration.id]: 'https://beryx.io/faucet',
