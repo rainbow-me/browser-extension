@@ -1,4 +1,5 @@
 import { i18n } from '~/core/languages';
+import { RAINBOW_LEARN_URL } from '~/core/references/links';
 import { ChainId, chainIdToNameMapping } from '~/core/types/chains';
 
 import { ChainBadge } from './ChainBadge/ChainBadge';
@@ -33,6 +34,7 @@ export const getSideChainExplainerParams = (
     [ChainId.apechain]: 'apechain',
     [ChainId.sanko]: 'sanko',
     [ChainId.gravity]: 'gravity',
+    [ChainId.berachain]: 'berachain',
     // add new chains here with unique i18n explainer keys
   };
 
@@ -53,7 +55,7 @@ export const getSideChainExplainerParams = (
       ] as string[],
       header: { icon: <ChainBadge chainId={chainId} size="45" /> },
       linkButton: {
-        url: 'https://learn.rainbow.me/a-beginners-guide-to-layer-2-networks',
+        url: `${RAINBOW_LEARN_URL}/layer-2-and-layer-3-networks`,
         label: i18n.t(`explainers.sidechains.link_button_label`),
       },
       actionButton: {
@@ -75,7 +77,7 @@ export const getSideChainExplainerParams = (
     ] as string[],
     header: { icon: <ChainBadge chainId={chainId} size="45" /> },
     linkButton: {
-      url: 'https://learn.rainbow.me/a-beginners-guide-to-layer-2-networks',
+      url: `${RAINBOW_LEARN_URL}/layer-2-and-layer-3-networks`,
       label: i18n.t(`explainers.sidechains.link_button_label`),
     },
     actionButton: {

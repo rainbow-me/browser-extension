@@ -1697,6 +1697,11 @@
           "description_1": "Gravity is a Layer-1 blockchain designed for mass adoption and an omnichain future.",
           "description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, Gravity has its own security and consensus mechanisms that differ from Ethereum."
         },
+        "berachain": {
+          "title": "What's Berachain?",
+          "description_1": "Berachain is a Layer-1 blockchain built on top of proof of liquidity using BeaconKit.",
+          "description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, Berachain has its own security and consensus mechanisms that differ from Ethereum."
+        },
         "custom_network": {
           "title": "What's this Network?",
           "description_1": "This is a custom network added by you! Custom networks can be tailored to meet specific needs, offering unique features and capabilities.",

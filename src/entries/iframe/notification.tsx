@@ -233,7 +233,9 @@ const NotificationComponent = ({
   onDismiss: () => void;
 }) => {
   const chainsLabel = networkStore((state) => state.getChainsLabel());
-  const chainsBadge = networkStore((state) => state.getChainBadgeUrl(chainId));
+  const chainsBadge = networkStore((state) => state.getChainsBadgeUrls())[
+    chainId
+  ];
 
   const { title, description } = useMemo(() => {
     switch (status) {

@@ -231,6 +231,15 @@ export function useSearchCurrencyLists({
     fromChainId,
   });
 
+  const {
+    data: berachainVerifiedAssets,
+    isLoading: berachainVerifiedAssetsLoading,
+  } = useTokenSearch({
+    chainId: ChainId.berachain,
+    ...VERIFIED_ASSETS_PAYLOAD,
+    fromChainId,
+  });
+
   // current search
   const { data: targetVerifiedAssets, isLoading: targetVerifiedAssetsLoading } =
     useTokenSearch(
@@ -379,6 +388,10 @@ export function useSearchCurrencyLists({
         assets: gravityVerifiedAssets,
         loading: gravityVerifiedAssetsLoading,
       },
+      [ChainId.berachain]: {
+        assets: berachainVerifiedAssets,
+        loading: berachainVerifiedAssetsLoading,
+      },
     }),
     [
       mainnetVerifiedAssets,
@@ -409,6 +422,8 @@ export function useSearchCurrencyLists({
       sankoVerifiedAssetsLoading,
       gravityVerifiedAssets,
       gravityVerifiedAssetsLoading,
+      berachainVerifiedAssets,
+      berachainVerifiedAssetsLoading,
     ],
   );
 
@@ -469,6 +484,7 @@ export function useSearchCurrencyLists({
       [ChainId.ink]: getVerifiedAssets(ChainId.ink),
       [ChainId.sanko]: getVerifiedAssets(ChainId.sanko),
       [ChainId.gnosis]: getVerifiedAssets(ChainId.gnosis),
+      [ChainId.berachain]: getVerifiedAssets(ChainId.berachain),
     }),
     [getVerifiedAssets],
   );
