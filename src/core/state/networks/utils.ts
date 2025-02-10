@@ -157,7 +157,13 @@ export const buildInitialUserPreferences = (
   initialSupportedNetworks = buildTimeNetworks,
 ): Pick<NetworkState, 'userPreferences' | 'chainOrder' | 'enabledChainIds'> => {
   const userPreferences: Record<number, ChainPreferences> = {};
-  const enabledChainIds = new Set<number>();
+  const initialNonInternalNetworks =
+    initialSupportedNetworks.backendNetworks.networks.filter(
+      (n) => !n.internal,
+    );
+  const enabledChainIds = new Set<number>(
+    initialNonInternalNetworks.map(({ id }) => toChainId(id)),
+  );
 
   const { rainbowChains } = useRainbowChainsStore.getState();
   const { userChains, userChainsOrder } = useUserChainsStore.getState();
@@ -187,7 +193,7 @@ export const buildInitialUserPreferences = (
     }
 
     userPreferences[chainIdNum].activeRpcUrl = chain.activeRpcUrl;
-    if (userChains[chainIdNum]) {
+    if (userChains[chainIdNum] && !enabledChainIds.has(chainIdNum)) {
       enabledChainIds.add(chainIdNum);
     }
 
@@ -200,7 +206,7 @@ export const buildInitialUserPreferences = (
 
     userPreferences[chainIdNum].rpcs = rpcs;
 
-    const isSupported = initialSupportedNetworks.backendNetworks.networks.some(
+    const isSupported = initialNonInternalNetworks.some(
       (n) => +n.id === chainIdNum,
     );
     if (isSupported) {
@@ -247,19 +253,21 @@ export const modifyUserPreferencesForNewlySupportedNetworks = (
     const chainIdNum = toChainId(chainId);
     const incoming = diff.get(chainId);
 
-    if (!incoming || !userPreferences[chainIdNum]) continue;
+    if (!incoming) continue;
 
     const defaultRpcUrl = proxyBackendNetworkRpcEndpoint(
       incoming.defaultRPC.url,
     );
 
     const previousPrefs = userPreferences[chainIdNum];
-
-    // we want to trim off the chain info from the previously 'custom' network
+    const chain = transformBackendNetworkToChain(incoming);
     userPreferences[chainIdNum] = {
       type: 'supported',
       activeRpcUrl: defaultRpcUrl,
-      rpcs: previousPrefs.rpcs,
+      rpcs: {
+        ...(previousPrefs?.rpcs || {}),
+        [defaultRpcUrl]: chain,
+      },
     };
     enabledChainIds.add(chainIdNum);
   }
@@ -473,16 +481,34 @@ export const mergeChainData = (
   for (const chain of backendNetworks) {
     const chainId = chain.id;
     const userPrefs = userPreferences[chainId];
-    if (userPrefs.type === 'custom') continue;
     const order = chainOrder.indexOf(chainId);
+
+    // case where we have backend networks with no user preferences on top
+    if (!userPrefs) {
+      mergedChainData[chainId] = {
+        ...chain,
+        rpcs: {
+          [chain.rpcUrls.default.http[0]]: chain,
+        },
+        enabled: enabledChainIds.has(chainId),
+        type: 'supported',
+        order: order === -1 ? undefined : order,
+        activeRpcUrl: chain.rpcUrls.default.http[0],
+      };
+      continue;
+    }
+
+    // case where we have user preferences on top of backend networks
     mergedChainData[chainId] = {
       ...chain,
       ...userPrefs,
+      type: 'supported',
       order: order === -1 ? undefined : order,
       enabled: enabledChainIds.has(chainId),
     };
   }
 
+  // case where we ONLY have user preferences (aka custom user-added chains)
   for (const chainId of Object.keys(userPreferences)) {
     const chainIdNum = toChainId(chainId);
     const userPrefs = userPreferences[chainIdNum];

@@ -1,25 +1,5 @@
 import { UserChainsState } from '~/core/state/userChains';
 
-export const DEFAULT_DATA: UserChainsState['userChains'] = {
-  '1': true,
-  '10': true,
-  '56': true,
-  '100': true,
-  '137': true,
-  '324': true,
-  '1625': true,
-  '1996': true,
-  '8453': false,
-  '33139': false,
-  '42161': false,
-  '43114': true,
-  '57073': true,
-  '59144': true,
-  '81457': true,
-  '534352': true,
-  '7777777': true,
-  '666666666': true,
-};
 export const GRANT_DATA: UserChainsState['userChains'] = {
   '1': true,
   '10': true,

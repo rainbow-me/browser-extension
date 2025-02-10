@@ -55,7 +55,7 @@ export function SettingsNetworks() {
     useDeveloperToolsEnabledStore();
   const { featureFlags } = useFeatureFlagsStore();
   const removeCustomChain = networkStore((state) => state.removeCustomChain);
-  const allChains = networkStore((state) => state.getAllChains(true));
+  const allChains = networkStore((state) => state.getAllChains());
   const { chainOrder, enabledChainIds } = networkStore((state) => ({
     chainOrder: state.chainOrder,
     enabledChainIds: state.enabledChainIds,
@@ -86,6 +86,8 @@ export function SettingsNetworks() {
       }),
     [mainChains, chainOrder, supportedChains],
   );
+
+  console.log(mainChains, allChains, allNetworks);
 
   const enableNetwork = useCallback(
     ({ chainId, enabled }: { chainId: number; enabled: boolean }) => {

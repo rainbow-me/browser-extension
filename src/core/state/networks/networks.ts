@@ -42,7 +42,11 @@ export interface NetworkState {
 interface NetworkActions {
   // user-added custom networks store methods
   getActiveRpcForChain: (chainId: number) => Chain | null;
-  addCustomChain: (chainId: number, userPreferences: ChainPreferences) => void;
+  addCustomChain: (
+    chainId: number,
+    userPreferences: ChainPreferences,
+    active: boolean,
+  ) => void;
   updateCustomChain: (
     chainId: number,
     userPreferences: Partial<ChainPreferences>,
@@ -96,6 +100,7 @@ interface NetworkActions {
   getChainsBadgeUrls: () => Record<number, string>;
   getChainBadgeUrl: (chainId: number) => string | undefined;
   getDefaultFavorites: () => Record<number, AddressOrEth[]>;
+  getChain: (chainId: number) => TransformedChain | undefined;
   getAllChains: (includeTestnets?: boolean) => Record<number, TransformedChain>;
   getAllActiveRpcChains: (includeTestnets?: boolean) => Chain[];
   getAllChainsSortedByOrder: (includeTestnets?: boolean) => TransformedChain[];
@@ -306,12 +311,23 @@ export const networkStore = createQueryStore<
       };
     }),
 
-    addCustomChain: (chainId, userPreferences) => {
+    addCustomChain: (chainId, userPreferences, active) => {
       set((state) => {
+        if (userPreferences.type !== 'custom') return state;
+
+        const order = [...state.chainOrder].indexOf(chainId);
         const existing = state.userPreferences[chainId];
+        const enabledChainIds = new Set(
+          active
+            ? [...state.enabledChainIds, chainId]
+            : [...state.enabledChainIds],
+        );
         if (existing) {
           return {
             ...state,
+            chainOrder:
+              order === -1 ? [...state.chainOrder, chainId] : state.chainOrder,
+            enabledChainIds,
             userPreferences: {
               ...state.userPreferences,
               [chainId]: merge(existing, userPreferences),
@@ -321,6 +337,9 @@ export const networkStore = createQueryStore<
 
         return {
           ...state,
+          chainOrder:
+            order === -1 ? [...state.chainOrder, chainId] : state.chainOrder,
+          enabledChainIds,
           userPreferences: {
             ...state.userPreferences,
             [chainId]: userPreferences,
@@ -454,19 +473,19 @@ export const networkStore = createQueryStore<
       },
     ),
 
-    updateChainOrder: (sourceIdx: number, destinationIdx: number) => {
-      set((state) => {
-        const currentOrder = [...state.chainOrder];
+    updateChainOrder: createParameterizedSelector(({ chainOrder }) => {
+      return (sourceIdx: number, destinationIdx: number) => {
+        const currentOrder = [...chainOrder];
         const [removed] = currentOrder.splice(sourceIdx, 1);
         currentOrder.splice(destinationIdx, 0, removed);
         const newOrder = Array.from(new Set(currentOrder));
-        return { chainOrder: newOrder };
-      });
-    },
+        set({ chainOrder: newOrder });
+      };
+    }),
 
-    updateEnabledChains: (chainIds: number[], enabled: boolean) => {
-      set((state) => {
-        const newEnabledChainIds = new Set(state.enabledChainIds);
+    updateEnabledChains: createParameterizedSelector(({ enabledChainIds }) => {
+      return (chainIds: number[], enabled: boolean) => {
+        const newEnabledChainIds = new Set(enabledChainIds);
         chainIds.forEach((chainId) => {
           if (enabled) {
             newEnabledChainIds.add(chainId);
@@ -474,9 +493,9 @@ export const networkStore = createQueryStore<
             newEnabledChainIds.delete(chainId);
           }
         });
-        return { enabledChainIds: newEnabledChainIds };
-      });
-    },
+        set({ enabledChainIds: newEnabledChainIds });
+      };
+    }),
 
     // TODO: remove already added custom networks from this list
     getSupportedCustomNetworks: createSelector(({ networks }) => {
@@ -727,6 +746,12 @@ export const networkStore = createQueryStore<
       }, {});
     }),
 
+    getChain: createParameterizedSelector(({ mergedChainData }) => {
+      return (chainId: number) => {
+        return mergedChainData[chainId];
+      };
+    }),
+
     getAllChains: createParameterizedSelector(({ mergedChainData }) => {
       return (includeTestnets = false) => {
         return Object.values(mergedChainData).reduce((acc, chain) => {
@@ -764,6 +789,8 @@ export const networkStore = createQueryStore<
     partialize: (state) => ({
       networks: state.networks,
       userPreferences: state.userPreferences,
+      chainOrder: state.chainOrder,
+      enabledChainIds: state.enabledChainIds,
     }),
     storageKey: 'networkStore',
     version: 1,

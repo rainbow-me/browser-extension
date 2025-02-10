@@ -260,14 +260,18 @@ export function SettingsCustomChain() {
         },
         testnet: customRPC.testnet,
       };
-      addCustomChain(chainId, {
-        ...chain,
-        type: 'custom',
-        activeRpcUrl: rpcUrl, // TODO: Should this be based off customRPC.active?
-        rpcs: {
-          [rpcUrl]: chain,
+      addCustomChain(
+        chainId,
+        {
+          ...chain,
+          type: 'custom',
+          activeRpcUrl: rpcUrl,
+          rpcs: {
+            [rpcUrl]: chain,
+          },
         },
-      });
+        customRPC.active ?? false,
+      );
       triggerToast({
         title: i18n.t('settings.networks.custom_rpc.network_added'),
         description: i18n.t(
@@ -280,13 +284,7 @@ export function SettingsCustomChain() {
     }
   }, [
     chainMetadata?.chainId,
-    // customRPC.active,
-    customRPC.chainId,
-    customRPC.explorerUrl,
-    customRPC.name,
-    customRPC.rpcUrl,
-    customRPC.symbol,
-    customRPC.testnet,
+    customRPC,
     navigate,
     validateAddCustomRpc,
     addCustomChain,

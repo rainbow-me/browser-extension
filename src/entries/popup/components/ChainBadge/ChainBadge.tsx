@@ -34,10 +34,7 @@ const ChainBadge = ({
   size = '18',
 }: ChainIconProps) => {
   const { currentTheme } = useCurrentThemeStore();
-  const chainBadgeUrl = networkStore((state) =>
-    state.getChainBadgeUrl(chainId),
-  );
-
+  const chainBadges = networkStore((state) => state.getChainsBadgeUrls());
   const chain = networkStore((state) => state.getActiveRpcForChain(chainId));
 
   let boxShadow;
@@ -49,7 +46,7 @@ const ChainBadge = ({
   }
   const iconSize = typeof size === 'number' ? size : chainBadgeSize[size];
 
-  if (!chainBadgeUrl && !customChainIdsToAssetNames[chainId]) {
+  if (!chainBadges[chainId] && !customChainIdsToAssetNames[chainId]) {
     return (
       <Box
         borderRadius="round"
@@ -115,7 +112,7 @@ const ChainBadge = ({
         />
       ) : (
         <img
-          src={chainBadgeUrl}
+          src={chainBadges[chainId]}
           width={iconSize}
           height={iconSize}
           loading="lazy"
