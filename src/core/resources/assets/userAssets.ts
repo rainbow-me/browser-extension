@@ -10,8 +10,8 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
-import { supportedAssetsChainIds } from '~/core/references/chains';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { networkStore } from '~/core/state/networks/networks';
 import { staleBalancesStore } from '~/core/state/staleBalances';
 import { ParsedAssetsDictByChain, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -126,6 +126,9 @@ async function userAssetsQueryFunction({
     }),
   })?.state?.data || {}) as ParsedAssetsDictByChain;
   try {
+    const supportedAssetsChainIds = networkStore
+      .getState()
+      .getSupportedAssetsChainIds();
     const supportedChainIds = getSupportedChains({
       testnets: testnetMode,
     })

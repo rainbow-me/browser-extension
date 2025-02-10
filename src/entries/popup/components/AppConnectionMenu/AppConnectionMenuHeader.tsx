@@ -1,9 +1,8 @@
 import { motion } from 'framer-motion';
-import React from 'react';
 import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
-import { chainsLabel } from '~/core/references/chains';
+import { networkStore } from '~/core/state/networks/networks';
 import { getChain } from '~/core/utils/chains';
 import {
   Box,
@@ -36,6 +35,7 @@ export const AppConnectionMenuHeader = ({
   appHost,
   appName,
 }: AppConnectionMenuHeaderProps) => {
+  const chainsLabel = networkStore((state) => state.getChainsLabel());
   return (
     <Box as={motion.div} initial={false} animate={{ opacity: opacity }}>
       <Inset top="10px" bottom="14px">

@@ -5,11 +5,9 @@ import { Chain } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { useChainMetadata } from '~/core/resources/chains/chainMetadata';
-import { useRainbowChainsStore } from '~/core/state';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { networkStore } from '~/core/state/networks/networks';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
-import { useUserChainsStore } from '~/core/state/userChains';
 import { getDappHostname, isValidUrl } from '~/core/utils/connectedApps';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
 import { Autocomplete } from '~/entries/popup/components/Autocomplete';
@@ -33,6 +31,8 @@ export function SettingsCustomChain() {
     state.getSupportedCustomNetworks(),
   );
 
+  const addCustomChain = networkStore((state) => state.addCustomChain);
+
   const { developerToolsEnabled } = useDeveloperToolsEnabledStore();
   const knownNetworksAutocomplete = useMemo(
     () => ({
@@ -44,9 +44,6 @@ export function SettingsCustomChain() {
     [developerToolsEnabled, customNetworks],
   );
 
-  const addCustomRPC = useRainbowChainsStore.use.addCustomRPC();
-  const setActiveRPC = useRainbowChainsStore.use.setActiveRPC();
-  const addUserChain = useUserChainsStore.use.addUserChain();
   const { customNetworkDrafts, saveCustomNetworkDraft } =
     usePopupInstanceStore();
   const draftKey = chain?.id ?? 'new';
@@ -263,10 +260,18 @@ export function SettingsCustomChain() {
         },
         testnet: customRPC.testnet,
       };
-      addCustomRPC({
-        chain,
-      });
-      addUserChain({ chainId });
+      addCustomChain(
+        chainId,
+        {
+          ...chain,
+          type: 'custom',
+          activeRpcUrl: rpcUrl,
+          rpcs: {
+            [rpcUrl]: chain,
+          },
+        },
+        customRPC.active ?? false,
+      );
       triggerToast({
         title: i18n.t('settings.networks.custom_rpc.network_added'),
         description: i18n.t(
@@ -274,29 +279,15 @@ export function SettingsCustomChain() {
           { networkName: name },
         ),
       });
-      if (customRPC.active) {
-        setActiveRPC({
-          rpcUrl,
-          chainId,
-        });
-      }
       setCustomRPC({});
       navigate(-1);
     }
   }, [
-    addCustomRPC,
-    addUserChain,
     chainMetadata?.chainId,
-    customRPC.active,
-    customRPC.chainId,
-    customRPC.explorerUrl,
-    customRPC.name,
-    customRPC.rpcUrl,
-    customRPC.symbol,
-    customRPC.testnet,
+    customRPC,
     navigate,
-    setActiveRPC,
     validateAddCustomRpc,
+    addCustomChain,
   ]);
 
   useEffect(() => {

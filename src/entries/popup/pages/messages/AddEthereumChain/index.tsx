@@ -4,8 +4,7 @@ import { Chain } from 'viem';
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
-import { useRainbowChainsStore } from '~/core/state';
-import { useUserChainsStore } from '~/core/state/userChains';
+import { networkStore } from '~/core/state/networks/networks';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { Row, Rows, Separator } from '~/design-system';
 import { RainbowError, logger } from '~/logger';
@@ -52,8 +51,7 @@ export const AddEthereumChain = ({
     chainName.toLowerCase().includes('testnet'),
   );
 
-  const addCustomRPC = useRainbowChainsStore.use.addCustomRPC();
-  const addUserChain = useUserChainsStore.use.addUserChain();
+  const addCustomChain = networkStore((state) => state.addCustomChain);
 
   const onAcceptRequest = useCallback(() => {
     try {
@@ -70,10 +68,18 @@ export const AddEthereumChain = ({
         rpcUrls: { default: { http: [rpcUrl] }, public: { http: [rpcUrl] } },
         testnet,
       };
-      addCustomRPC({
-        chain,
-      });
-      addUserChain({ chainId: Number(chainId) });
+      addCustomChain(
+        +chainId,
+        {
+          ...chain,
+          type: 'custom',
+          activeRpcUrl: rpcUrl,
+          rpcs: {
+            [rpcUrl]: chain,
+          },
+        },
+        true,
+      );
 
       approveRequest(true);
       analytics.track(event.dappAddEthereumChainPromptApproved, {
@@ -98,8 +104,7 @@ export const AddEthereumChain = ({
     symbol,
     rpcUrl,
     testnet,
-    addCustomRPC,
-    addUserChain,
+    addCustomChain,
     approveRequest,
     blockExplorerUrl,
     dappMetadata?.url,

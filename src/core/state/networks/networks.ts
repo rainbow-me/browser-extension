@@ -42,7 +42,11 @@ export interface NetworkState {
 interface NetworkActions {
   // user-added custom networks store methods
   getActiveRpcForChain: (chainId: number) => Chain | null;
-  addCustomChain: (chainId: number, userPreferences: ChainPreferences) => void;
+  addCustomChain: (
+    chainId: number,
+    userPreferences: ChainPreferences,
+    active: boolean,
+  ) => void;
   updateCustomChain: (
     chainId: number,
     userPreferences: Partial<ChainPreferences>,
@@ -59,6 +63,8 @@ interface NetworkActions {
     includeTestnets?: boolean,
   ) => Record<number, TransformedChain>;
   getUserAddedChainIds: (includeTestnets?: boolean) => number[];
+  updateChainOrder: (sourceIdx: number, destinationIdx: number) => void;
+  updateEnabledChains: (chainIds: number[], enabled: boolean) => void;
 
   // custom backend driven networks store methods
   getSupportedCustomNetworks: () => CustomNetwork[];
@@ -75,7 +81,7 @@ interface NetworkActions {
   getBackendSupportedChainIds: (includeTestnets?: boolean) => number[];
   getBackendSupportedChain: (chainId: number) => TransformedChain | undefined;
   getNeedsL1SecurityFeeChainIds: () => number[];
-  getChainsNativeAsset: () => Record<number, string>;
+  getChainsNativeAsset: () => Record<number, BackendNetwork['nativeAsset']>;
   getChainsLabel: () => Record<number, string>;
   getChainsPrivateMempoolTimeout: () => Record<number, number>;
   getChainsName: () => Record<number, string>;
@@ -90,15 +96,15 @@ interface NetworkActions {
   getSupportedPositionsChainIds: () => number[];
   getSupportedTokenSearchChainIds: () => number[];
   getSupportedNftChainIds: () => number[];
-  getChainGasUnits: (
-    chainId?: number,
-  ) => BackendNetwork['gasUnits'] | undefined;
+  getChainGasUnits: (chainId?: number) => BackendNetwork['gasUnits'];
   getChainsBadgeUrls: () => Record<number, string>;
   getChainBadgeUrl: (chainId: number) => string | undefined;
   getBackendChainsByMainnetId: () => Record<number, BackendNetwork[]>;
   getBackendChainIdsByMainnetId: () => Record<number, number[]>;
   getDefaultFavorites: () => Record<number, AddressOrEth[]>;
+  getChain: (chainId: number) => TransformedChain | undefined;
   getAllChains: (includeTestnets?: boolean) => Record<number, TransformedChain>;
+  getAllActiveRpcChains: (includeTestnets?: boolean) => Chain[];
   getAllChainsSortedByOrder: (includeTestnets?: boolean) => TransformedChain[];
 }
 
@@ -307,12 +313,23 @@ export const networkStore = createQueryStore<
       };
     }),
 
-    addCustomChain: (chainId, userPreferences) => {
+    addCustomChain: (chainId, userPreferences, active) => {
       set((state) => {
+        if (userPreferences.type !== 'custom') return state;
+
+        const order = [...state.chainOrder].indexOf(chainId);
         const existing = state.userPreferences[chainId];
+        const enabledChainIds = new Set(
+          active
+            ? [...state.enabledChainIds, chainId]
+            : [...state.enabledChainIds],
+        );
         if (existing) {
           return {
             ...state,
+            chainOrder:
+              order === -1 ? [...state.chainOrder, chainId] : state.chainOrder,
+            enabledChainIds,
             userPreferences: {
               ...state.userPreferences,
               [chainId]: merge(existing, userPreferences),
@@ -322,6 +339,9 @@ export const networkStore = createQueryStore<
 
         return {
           ...state,
+          chainOrder:
+            order === -1 ? [...state.chainOrder, chainId] : state.chainOrder,
+          enabledChainIds,
           userPreferences: {
             ...state.userPreferences,
             [chainId]: userPreferences,
@@ -362,10 +382,11 @@ export const networkStore = createQueryStore<
         const preferences = userPreferences[chainId];
         if (!preferences) return { success: false, newRpcsLength: -1 };
 
-        const isActiveRpc = preferences.activeRpcUrl === rpcUrl;
-        // handle case where we're removing last RPC
-        // we need to delete the network if there are no RPCs left
-        if (isActiveRpc && Object.keys(preferences.rpcs).length === 1) {
+        // we need to delete the custom chain if there are no RPCs left
+        if (
+          Object.keys(preferences.rpcs).length === 1 &&
+          preferences.type === 'custom'
+        ) {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const { [chainId]: _, ...newUserOverrides } = userPreferences;
           set({ userPreferences: newUserOverrides });
@@ -375,18 +396,25 @@ export const networkStore = createQueryStore<
           };
         }
 
-        const otherRpcUrl = Object.values(preferences.rpcs).find(
-          (rpc) => rpc.rpcUrls.default.http[0] !== rpcUrl,
-        );
-        if (!otherRpcUrl) return { success: false, newRpcsLength: -1 };
+        const newUserOverridesForChain: ChainPreferences = {
+          ...preferences,
+        };
+
+        const isActiveRpc = preferences.activeRpcUrl === rpcUrl;
+
+        // if the active RPC is being removed, we need to set the active RPC to a different one
+        if (isActiveRpc) {
+          const otherRpcUrl = Object.values(preferences.rpcs).find(
+            (rpc) => rpc.rpcUrls.default.http[0] !== rpcUrl,
+          );
+          if (!otherRpcUrl) return { success: false, newRpcsLength: -1 };
+          newUserOverridesForChain.activeRpcUrl =
+            otherRpcUrl.rpcUrls.default.http[0];
+        }
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { [rpcUrl]: _, ...newRpcs } = preferences.rpcs;
-        const newUserOverridesForChain: ChainPreferences = {
-          ...preferences,
-          activeRpcUrl: otherRpcUrl.rpcUrls.default.http[0],
-          rpcs: newRpcs,
-        };
+        newUserOverridesForChain.rpcs = newRpcs;
 
         set({
           userPreferences: {
@@ -446,6 +474,30 @@ export const networkStore = createQueryStore<
         };
       },
     ),
+
+    updateChainOrder: createParameterizedSelector(({ chainOrder }) => {
+      return (sourceIdx: number, destinationIdx: number) => {
+        const currentOrder = [...chainOrder];
+        const [removed] = currentOrder.splice(sourceIdx, 1);
+        currentOrder.splice(destinationIdx, 0, removed);
+        const newOrder = Array.from(new Set(currentOrder));
+        set({ chainOrder: newOrder });
+      };
+    }),
+
+    updateEnabledChains: createParameterizedSelector(({ enabledChainIds }) => {
+      return (chainIds: number[], enabled: boolean) => {
+        const newEnabledChainIds = new Set(enabledChainIds);
+        chainIds.forEach((chainId) => {
+          if (enabled) {
+            newEnabledChainIds.add(chainId);
+          } else {
+            newEnabledChainIds.delete(chainId);
+          }
+        });
+        set({ enabledChainIds: newEnabledChainIds });
+      };
+    }),
 
     // TODO: remove already added custom networks from this list
     getSupportedCustomNetworks: createSelector(({ networks }) => {
@@ -724,6 +776,12 @@ export const networkStore = createQueryStore<
       }, {});
     }),
 
+    getChain: createParameterizedSelector(({ mergedChainData }) => {
+      return (chainId: number) => {
+        return mergedChainData[chainId];
+      };
+    }),
+
     getAllChains: createParameterizedSelector(({ mergedChainData }) => {
       return (includeTestnets = false) => {
         return Object.values(mergedChainData).reduce((acc, chain) => {
@@ -734,6 +792,12 @@ export const networkStore = createQueryStore<
           };
         }, {});
       };
+    }),
+
+    getAllActiveRpcChains: createSelector(({ mergedChainData }) => {
+      return Object.values(mergedChainData).map((chain) => {
+        return chain.rpcs[chain.activeRpcUrl];
+      });
     }),
 
     getAllChainsSortedByOrder: createParameterizedSelector(
@@ -755,6 +819,8 @@ export const networkStore = createQueryStore<
     partialize: (state) => ({
       networks: state.networks,
       userPreferences: state.userPreferences,
+      chainOrder: state.chainOrder,
+      enabledChainIds: state.enabledChainIds,
     }),
     storageKey: 'networkStore',
     version: 1,

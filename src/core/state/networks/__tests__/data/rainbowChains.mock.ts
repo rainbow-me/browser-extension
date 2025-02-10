@@ -1,9 +1,4 @@
-import {
-  RainbowChainsState,
-  rainbowChainsStore,
-} from '~/core/state/rainbowChains';
-export const DEFAULT_DATA: RainbowChainsState['rainbowChains'] =
-  rainbowChainsStore.getInitialState()['rainbowChains'];
+import { RainbowChainsState } from '~/core/state/rainbowChains';
 export const GRANT_DATA: RainbowChainsState['rainbowChains'] = {
   '1': {
     activeRpcUrl:

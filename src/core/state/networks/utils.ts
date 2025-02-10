@@ -1,5 +1,11 @@
 import { AddressZero } from '@ethersproject/constants';
-import { type Chain, avalancheFuji, curtis, inkSepolia } from 'viem/chains';
+import {
+  type Chain,
+  avalancheFuji,
+  curtis,
+  inkSepolia,
+  mainnet,
+} from 'viem/chains';
 
 import buildTimeNetworks from 'static/data/networks.json';
 import { NetworkState } from '~/core/state/networks/networks';
@@ -14,16 +20,65 @@ import {
   TransformedChain,
 } from '~/core/types/chains';
 import { GasSpeed } from '~/core/types/gas';
-import { transformBackendNetworksToChains } from '~/core/utils/backendNetworks';
 import { logger } from '~/logger';
 
 const RPC_PROXY_API_KEY = process.env.RPC_PROXY_API_KEY;
+const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
+const IS_DEV = process.env.IS_DEV === 'true';
 
 export const DEFAULT_PRIVATE_MEMPOOL_TIMEOUT = 2 * 60 * 1_000;
 
 const proxyBackendNetworkRpcEndpoint = (endpoint: string) => {
   return `${endpoint}${RPC_PROXY_API_KEY}`;
 };
+
+export function transformBackendNetworkToChain(
+  network: BackendNetworks['networks'][number],
+): Chain {
+  if (!network) {
+    throw new Error('Invalid network data');
+  }
+  const defaultRpcUrl = proxyBackendNetworkRpcEndpoint(network.defaultRPC.url);
+
+  return {
+    id: parseInt(network.id, 10),
+    name: network.label,
+    testnet: network.testnet,
+    nativeCurrency: {
+      name: network.nativeAsset.name,
+      symbol: network.nativeAsset.symbol,
+      decimals: network.nativeAsset.decimals,
+    },
+    rpcUrls: {
+      default: {
+        http: [defaultRpcUrl],
+      },
+      public: {
+        http: [defaultRpcUrl],
+      },
+    },
+    blockExplorers: {
+      default: {
+        url: network.defaultExplorer.url,
+        name: network.defaultExplorer.label,
+      },
+    },
+    contracts:
+      parseInt(network.id, 10) === mainnet.id ? mainnet.contracts : undefined,
+  };
+}
+
+export function transformBackendNetworksToChains(
+  networks?: BackendNetworks['networks'],
+): Chain[] {
+  if (!networks) {
+    return [];
+  }
+  // include all networks for internal builds, otherwise filter out flagged as internal
+  return networks
+    .filter((network) => !network.internal || INTERNAL_BUILD || IS_DEV)
+    .map((network) => transformBackendNetworkToChain(network));
+}
 
 export function toChainId(id: string): ChainId {
   return parseInt(id, 10);
@@ -87,6 +142,13 @@ export function differenceOrUnionOf<
   return entries as Map<string, K extends keyof T ? T[K] : T>;
 }
 
+export const mergedChainToViemChain = (
+  mergedChain: TransformedChain,
+): Chain => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { type, enabled, order, activeRpcUrl, rpcs, ...chain } = mergedChain;
+  return chain;
+};
 const isUserChainOrderMalformed = (userChainsOrder: number[]) => {
   return userChainsOrder.some((id) => id == null || Number.isNaN(id));
 };
@@ -95,7 +157,13 @@ export const buildInitialUserPreferences = (
   initialSupportedNetworks = buildTimeNetworks,
 ): Pick<NetworkState, 'userPreferences' | 'chainOrder' | 'enabledChainIds'> => {
   const userPreferences: Record<number, ChainPreferences> = {};
-  const enabledChainIds = new Set<number>();
+  const initialNonInternalNetworks =
+    initialSupportedNetworks.backendNetworks.networks.filter(
+      (n) => !n.internal,
+    );
+  const enabledChainIds = new Set<number>(
+    initialNonInternalNetworks.map(({ id }) => toChainId(id)),
+  );
 
   const { rainbowChains } = useRainbowChainsStore.getState();
   const { userChains, userChainsOrder } = useUserChainsStore.getState();
@@ -125,7 +193,7 @@ export const buildInitialUserPreferences = (
     }
 
     userPreferences[chainIdNum].activeRpcUrl = chain.activeRpcUrl;
-    if (userChains[chainIdNum]) {
+    if (userChains[chainIdNum] && !enabledChainIds.has(chainIdNum)) {
       enabledChainIds.add(chainIdNum);
     }
 
@@ -138,7 +206,7 @@ export const buildInitialUserPreferences = (
 
     userPreferences[chainIdNum].rpcs = rpcs;
 
-    const isSupported = initialSupportedNetworks.backendNetworks.networks.some(
+    const isSupported = initialNonInternalNetworks.some(
       (n) => +n.id === chainIdNum,
     );
     if (isSupported) {
@@ -185,19 +253,21 @@ export const modifyUserPreferencesForNewlySupportedNetworks = (
     const chainIdNum = toChainId(chainId);
     const incoming = diff.get(chainId);
 
-    if (!incoming || !userPreferences[chainIdNum]) continue;
+    if (!incoming) continue;
 
     const defaultRpcUrl = proxyBackendNetworkRpcEndpoint(
       incoming.defaultRPC.url,
     );
 
     const previousPrefs = userPreferences[chainIdNum];
-
-    // we want to trim off the chain info from the previously 'custom' network
+    const chain = transformBackendNetworkToChain(incoming);
     userPreferences[chainIdNum] = {
       type: 'supported',
       activeRpcUrl: defaultRpcUrl,
-      rpcs: previousPrefs.rpcs,
+      rpcs: {
+        ...(previousPrefs?.rpcs || {}),
+        [defaultRpcUrl]: chain,
+      },
     };
     enabledChainIds.add(chainIdNum);
   }
@@ -227,13 +297,19 @@ export function getDefaultGasSpeeds(chainId: ChainId): GasSpeed[] {
 
 export function getDefaultPollingInterval(chainId: ChainId): number {
   switch (chainId) {
-    case ChainId.polygon:
-      return 2_000;
     case ChainId.arbitrum:
+    case ChainId.mainnet:
+    case ChainId.hardhat:
+      return 5000;
+    case ChainId.base:
     case ChainId.bsc:
-      return 3_000;
+    case ChainId.optimism:
+    case ChainId.polygon:
+    case ChainId.zora:
+    case ChainId.avalanche:
+    case ChainId.hardhatOptimism:
     default:
-      return 5_000;
+      return 2000;
   }
 }
 
@@ -362,6 +438,29 @@ export const LOCAL_NETWORKS: CustomNetwork[] = [
   nativeAsset: { ...n.nativeAsset, address: AddressZero },
 }));
 
+export const oldDefaultRPC: { [key in ChainId]?: string } = {
+  [ChainId.mainnet]: process.env.ETH_MAINNET_RPC,
+  [ChainId.optimism]: process.env.OPTIMISM_MAINNET_RPC,
+  [ChainId.arbitrum]: process.env.ARBITRUM_MAINNET_RPC,
+  [ChainId.polygon]: process.env.POLYGON_MAINNET_RPC,
+  [ChainId.base]: process.env.BASE_MAINNET_RPC,
+  [ChainId.zora]: process.env.ZORA_MAINNET_RPC,
+  [ChainId.bsc]: process.env.BSC_MAINNET_RPC,
+  [ChainId.sepolia]: process.env.ETH_SEPOLIA_RPC,
+  [ChainId.holesky]: process.env.ETH_HOLESKY_RPC,
+  [ChainId.optimismSepolia]: process.env.OPTIMISM_SEPOLIA_RPC,
+  [ChainId.bscTestnet]: process.env.BSC_TESTNET_RPC,
+  [ChainId.arbitrumSepolia]: process.env.ARBITRUM_SEPOLIA_RPC,
+  [ChainId.baseSepolia]: process.env.BASE_SEPOLIA_RPC,
+  [ChainId.zoraSepolia]: process.env.ZORA_SEPOLIA_RPC,
+  [ChainId.avalanche]: process.env.AVALANCHE_MAINNET_RPC,
+  [ChainId.avalancheFuji]: process.env.AVALANCHE_FUJI_RPC,
+  [ChainId.blast]: process.env.BLAST_MAINNET_RPC,
+  [ChainId.blastSepolia]: process.env.BLAST_SEPOLIA_RPC,
+  [ChainId.polygonAmoy]: process.env.POLYGON_AMOY_RPC,
+  [ChainId.degen]: process.env.DEGEN_MAINNET_RPC,
+};
+
 /**
  * Merges backend network data with user-defined network preferences to create a unified chain configuration
  * @param networks - Backend-provided network configurations
@@ -382,16 +481,34 @@ export const mergeChainData = (
   for (const chain of backendNetworks) {
     const chainId = chain.id;
     const userPrefs = userPreferences[chainId];
-    if (userPrefs.type === 'custom') continue;
     const order = chainOrder.indexOf(chainId);
+
+    // case where we have backend networks with no user preferences on top
+    if (!userPrefs) {
+      mergedChainData[chainId] = {
+        ...chain,
+        rpcs: {
+          [chain.rpcUrls.default.http[0]]: chain,
+        },
+        enabled: enabledChainIds.has(chainId),
+        type: 'supported',
+        order: order === -1 ? undefined : order,
+        activeRpcUrl: chain.rpcUrls.default.http[0],
+      };
+      continue;
+    }
+
+    // case where we have user preferences on top of backend networks
     mergedChainData[chainId] = {
       ...chain,
       ...userPrefs,
+      type: 'supported',
       order: order === -1 ? undefined : order,
       enabled: enabledChainIds.has(chainId),
     };
   }
 
+  // case where we ONLY have user preferences (aka custom user-added chains)
   for (const chainId of Object.keys(userPreferences)) {
     const chainIdNum = toChainId(chainId);
     const userPrefs = userPreferences[chainIdNum];

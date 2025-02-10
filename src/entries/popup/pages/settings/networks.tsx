@@ -3,19 +3,13 @@ import { DropResult } from 'react-beautiful-dnd';
 import { Chain } from 'viem';
 
 import { i18n } from '~/core/languages';
-import {
-  SUPPORTED_CHAINS,
-  SUPPORTED_CHAIN_IDS,
-} from '~/core/references/chains';
-import { useRainbowChainsStore } from '~/core/state';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { networkStore } from '~/core/state/networks/networks';
 import { promoTypes, useQuickPromoStore } from '~/core/state/quickPromo';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
-import { useUserChainsStore } from '~/core/state/userChains';
+import { ChainId } from '~/core/types/chains';
 import { useMainChains } from '~/core/utils/chains';
-import { reorder } from '~/core/utils/draggable';
 import { sortNetworks } from '~/core/utils/userChains';
 import { Box, Inset, Separator, Symbol, Text } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
@@ -60,17 +54,18 @@ export function SettingsNetworks() {
   const { developerToolsEnabled, setDeveloperToolsEnabled } =
     useDeveloperToolsEnabledStore();
   const { featureFlags } = useFeatureFlagsStore();
-  const {
-    userChains,
-    userChainsOrder,
-    updateUserChain,
-    updateUserChainsOrder,
-    removeUserChain,
-  } = useUserChainsStore();
-  const { rainbowChains, removeCustomRPC } = useRainbowChainsStore();
+  const removeCustomChain = networkStore((state) => state.removeCustomChain);
+  const allChains = networkStore((state) => state.getAllChains());
+  const { chainOrder, enabledChainIds } = networkStore((state) => ({
+    chainOrder: state.chainOrder,
+    enabledChainIds: state.enabledChainIds,
+  }));
   const { removeRainbowChainAssets } = useRainbowChainAssetsStore();
   const chainsBasedOnMainnetId = networkStore((state) =>
     state.getBackendChainsByMainnetId(),
+  );
+  const supportedChains = networkStore((state) =>
+    state.getBackendSupportedChains(true),
   );
 
   const onDragEnd = (result: DropResult) => {
@@ -79,58 +74,42 @@ export function SettingsNetworks() {
       setSeenPromo(promoTypes.network_settings);
     if (!destination) return;
     if (destination.index === source.index) return;
-    const newUserChainsOrder = reorder(
-      userChainsOrder,
-      source.index,
-      destination.index,
-    );
-    // clean non existing and repeated ids
-    const rainbowChainsIds = Object.keys(rainbowChains).map((i) => Number(i));
-    const filteredChainsOrder = Array.from(
-      new Set(newUserChainsOrder.filter((id) => rainbowChainsIds.includes(id))),
-    );
-    updateUserChainsOrder({ userChainsOrder: filteredChainsOrder });
+    networkStore.getState().updateChainOrder(source.index, destination.index);
   };
 
   const allNetworks = useMemo(
     () =>
-      sortNetworks(userChainsOrder, mainChains).map((chain) => {
+      sortNetworks(chainOrder, mainChains).map((chain) => {
         const chainId = chain.id;
         // Always use the name of the supported network if it exists
         return {
           ...chain,
-          name:
-            SUPPORTED_CHAINS.find(({ id }) => id === chainId)?.name ||
-            chain.name,
+          name: supportedChains[chainId]?.name || chain.name,
         };
       }),
-    [mainChains, userChainsOrder],
+    [mainChains, chainOrder, supportedChains],
   );
+
+  console.log(mainChains, allChains, allNetworks);
 
   const enableNetwork = useCallback(
     ({ chainId, enabled }: { chainId: number; enabled: boolean }) => {
-      updateUserChain({
-        chainId,
-        enabled,
-      });
+      networkStore.getState().updateEnabledChains([chainId], enabled);
     },
-    [updateUserChain],
+    [],
   );
 
   const handleRemoveNetwork = useCallback(
     ({ chainId }: { chainId: number }) => {
-      const customChain = rainbowChains[chainId];
-      if (customChain) {
-        customChain.chains.forEach((chain) => {
-          removeCustomRPC({
-            rpcUrl: chain.rpcUrls.default.http[0],
-          });
+      const chain = allChains[chainId];
+      if (chain.type === 'custom') {
+        const removed = removeCustomChain(chainId);
+        if (removed) {
           removeRainbowChainAssets({ chainId });
-          removeUserChain({ chainId });
-        });
+        }
       }
     },
-    [rainbowChains, removeCustomRPC, removeRainbowChainAssets, removeUserChain],
+    [removeCustomChain, removeRainbowChainAssets, allChains],
   );
 
   return (
@@ -210,7 +189,7 @@ export function SettingsNetworks() {
                       <ContextMenu>
                         <ContextMenuTrigger>
                           <MenuItem
-                            disabled={!userChains[chain.id]}
+                            disabled={!enabledChainIds.has(chain.id)}
                             first={index === 0}
                             leftComponent={
                               <ChainBadge chainId={chain.id} size="18" shadow />
@@ -230,13 +209,14 @@ export function SettingsNetworks() {
                               <MenuItem.Title text={chain.name} />
                             }
                             labelComponent={
-                              developerToolsEnabled || !userChains[chain.id] ? (
+                              developerToolsEnabled ||
+                              !enabledChainIds.has(chain.id) ? (
                                 <Text
                                   color="labelQuaternary"
                                   size="11pt"
                                   weight="medium"
                                 >
-                                  {userChains[chain.id]
+                                  {enabledChainIds.has(chain.id)
                                     ? chainLabel({
                                         labels: chainsBasedOnMainnetId[
                                           chain.id
@@ -255,17 +235,17 @@ export function SettingsNetworks() {
                             onSelect={() =>
                               enableNetwork({
                                 chainId: chain.id,
-                                enabled: !userChains[chain.id],
+                                enabled: !enabledChainIds.has(chain.id),
                               })
                             }
                           >
                             <Text size="14pt" weight="semibold">
-                              {userChains[chain.id]
+                              {enabledChainIds.has(chain.id)
                                 ? i18n.t('settings.networks.disable')
                                 : i18n.t('settings.networks.enable')}
                             </Text>
                           </ContextMenuItem>
-                          {!SUPPORTED_CHAIN_IDS.includes(chain.id) ? (
+                          {!supportedChains[chain.id] ? (
                             <ContextMenuItem
                               symbolLeft="trash.fill"
                               color="red"

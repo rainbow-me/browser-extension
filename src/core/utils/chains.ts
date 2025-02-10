@@ -2,60 +2,46 @@ import { AddressZero } from '@ethersproject/constants';
 import { Chain, mainnet } from 'viem/chains';
 import { useConfig } from 'wagmi';
 
-import { ChainId } from '~/core/types/chains';
+import { networkStore } from '~/core/state/networks/networks';
+import { mergedChainToViemChain } from '~/core/state/networks/utils';
+import { ChainId, TransformedChain } from '~/core/types/chains';
 
-import {
-  SUPPORTED_CHAINS,
-  SUPPORTED_MAINNET_CHAINS,
-  chainsNativeAsset,
-} from '../references/chains';
 import { AddressOrEth } from '../types/assets';
 import { wagmiConfig } from '../wagmi';
 
 import { getDappHost } from './connectedApps';
-import { findRainbowChainForChainId } from './rainbowChains';
 import { isLowerCaseMatch } from './strings';
 
 // Main chains for chain settings
-
-const getMainChainsHelper = (chains: readonly [Chain, ...Chain[]]) => {
-  // All the mainnets we support
-  const mainSupportedChains = SUPPORTED_MAINNET_CHAINS.filter(
-    (chain) => !chain.testnet,
-  );
-  // The chain ID of all the mainnets we support
-  const supportedChainIds = new Set(
-    mainSupportedChains.map((chain) => chain.id),
-  );
-
-  // All the chains that the user added
+const getMainChainsHelper = (
+  chains: readonly [Chain, ...Chain[]],
+  mainnetSuportedChains: Record<number, TransformedChain>,
+) => {
   const customMainChains = chains?.filter(
     (chain) =>
-      !supportedChainIds.has(chain.id) &&
+      !mainnetSuportedChains[chain.id] &&
       !(chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism),
   );
 
   const customChainsIncludingTestnets = customMainChains.filter(
     (chain) =>
-      !chain.testnet ||
-      (chain.testnet &&
-        !supportedChainIds.has(chain.id) &&
-        !SUPPORTED_CHAINS.some(
-          (supportedChain) => supportedChain.id === chain.id,
-        )),
+      !chain.testnet || (chain.testnet && mainnetSuportedChains[chain.id]),
   );
 
-  return mainSupportedChains.concat(customChainsIncludingTestnets);
+  return Object.values(mainnetSuportedChains)
+    .map(mergedChainToViemChain)
+    .concat(customChainsIncludingTestnets);
 };
 
 export const useMainChains = () => {
   const { chains } = useConfig();
-  return getMainChainsHelper(chains);
+  const supportedChains = networkStore((state) => state.getAllChains());
+  return getMainChainsHelper(chains, supportedChains);
 };
 
 export const getMainChains = () => {
   const { chains } = wagmiConfig;
-  return getMainChainsHelper(chains);
+  return getMainChainsHelper(chains, networkStore.getState().getAllChains());
 };
 
 // All the chains we support
@@ -89,14 +75,18 @@ export function getChain({ chainId }: { chainId?: ChainId }) {
 }
 
 export const isCustomChain = (chainId: number) =>
-  !SUPPORTED_CHAINS.map((chain) => chain.id).includes(chainId) &&
-  !!findRainbowChainForChainId(chainId);
+  !networkStore.getState().getBackendSupportedChains(true)[chainId] &&
+  !!networkStore.getState().getActiveRpcForChain(chainId);
 
 export function isNativeAsset(address: AddressOrEth, chainId: ChainId) {
   if (isCustomChain(chainId)) {
     return AddressZero === address;
   }
-  return isLowerCaseMatch(chainsNativeAsset[chainId], address);
+
+  return isLowerCaseMatch(
+    networkStore.getState().getChainsNativeAsset()[chainId].address,
+    address,
+  );
 }
 
 export function getBlockExplorerHostForChain(chainId: ChainId) {
