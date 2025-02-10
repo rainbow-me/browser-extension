@@ -1,6 +1,7 @@
 import create from 'zustand';
 
 import { createStore } from '~/core/state/internal/createStore';
+import { networkStore } from '~/core/state/networks/networks';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 
@@ -20,7 +21,7 @@ export interface FavoritesState {
 
 export const favoritesStore = createStore<FavoritesState>(
   (set, get) => ({
-    favorites: {},
+    favorites: networkStore.getState().getDefaultFavorites(),
     setFavorites: (favorites) => set({ favorites }),
     addFavorite: ({ address, chainId }: UpdateFavoritesArgs) => {
       const { favorites } = get();
