@@ -23,7 +23,7 @@ export function selectorFilterByUserChains<T>({
     .getBackendChainIdsByMainnetId();
   const { enabledChainIds } = networkStore.getState();
   const allUserChainIds = Array.from(enabledChainIds)
-    .map((id) => chainIdMap[id] || id)
+    .map((id) => chainIdsBasedOnMainnetId[id] || id)
     .flat()
     .filter(Boolean);
   const filteredAssetsDictByChain = Object.keys(data).reduce((acc, key) => {

@@ -313,42 +313,33 @@ export const networkStore = createQueryStore<
       };
     }),
 
-    addCustomChain: (chainId, userPreferences, active) => {
-      set((state) => {
-        if (userPreferences.type !== 'custom') return state;
+    addCustomChain: createParameterizedSelector(
+      ({ userPreferences, chainOrder }) => {
+        return (
+          chainId: number,
+          newChainPreferences: ChainPreferences,
+          active: boolean,
+        ) => {
+          if (newChainPreferences.type !== 'custom') return;
 
-        const order = [...state.chainOrder].indexOf(chainId);
-        const existing = state.userPreferences[chainId];
-        const enabledChainIds = new Set(
-          active
-            ? [...state.enabledChainIds, chainId]
-            : [...state.enabledChainIds],
-        );
-        if (existing) {
-          return {
-            ...state,
-            chainOrder:
-              order === -1 ? [...state.chainOrder, chainId] : state.chainOrder,
+          const order = [...chainOrder].indexOf(chainId);
+          const existing = userPreferences[chainId] || {};
+
+          const enabledChainIds = new Set(
+            active ? [...chainOrder, chainId] : [...chainOrder],
+          );
+
+          set({
+            chainOrder: order === -1 ? [...chainOrder, chainId] : chainOrder,
             enabledChainIds,
             userPreferences: {
-              ...state.userPreferences,
-              [chainId]: merge(existing, userPreferences),
+              ...userPreferences,
+              [chainId]: merge(existing, newChainPreferences),
             },
-          };
-        }
-
-        return {
-          ...state,
-          chainOrder:
-            order === -1 ? [...state.chainOrder, chainId] : state.chainOrder,
-          enabledChainIds,
-          userPreferences: {
-            ...state.userPreferences,
-            [chainId]: userPreferences,
-          },
+          });
         };
-      });
-    },
+      },
+    ),
 
     updateCustomChain: createParameterizedSelector(({ userPreferences }) => {
       return (chainId: number, updates: Partial<ChainPreferences>) => {
