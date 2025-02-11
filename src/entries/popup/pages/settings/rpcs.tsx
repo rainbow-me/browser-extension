@@ -97,7 +97,6 @@ export function SettingsNetworksRPCs() {
 
   const navigate = useRainbowNavigate();
   const { developerToolsEnabled } = useDeveloperToolsEnabledStore();
-  const selectRpcForChain = networkStore((state) => state.selectRpcForChain);
   const updateEnabledChains = networkStore(
     (state) => state.updateEnabledChains,
   );
@@ -233,10 +232,12 @@ export function SettingsNetworksRPCs() {
                           />
                         }
                         onClick={() =>
-                          selectRpcForChain(
-                            chainId,
-                            mainnetChain.rpcUrls.default.http[0],
-                          )
+                          networkStore
+                            .getState()
+                            .selectRpcForChain(
+                              chainId,
+                              mainnetChain.rpcUrls.default.http[0],
+                            )
                         }
                         key={mainnetChain.name}
                         rightComponent={

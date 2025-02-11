@@ -1,4 +1,4 @@
-import assign from 'lodash/assign';
+import merge from 'lodash/merge';
 import { Chain } from 'viem';
 
 import buildTimeNetworks from 'static/data/networks.json';
@@ -44,7 +44,7 @@ interface NetworkActions {
   getActiveRpcForChain: (chainId: number) => Chain | null;
   addCustomChain: (
     chainId: number,
-    userPreferences: ChainPreferences,
+    newChainPreferences: ChainPreferences,
     active: boolean,
   ) => void;
   removeCustomChain: (chainId: number) => boolean;
@@ -105,7 +105,7 @@ interface NetworkActions {
 }
 
 let lastNetworks: Networks | null = null;
-let lastUserOverrides: Record<number, ChainPreferences> | null = null;
+let lastUserPreferences: Record<number, ChainPreferences> | null = null;
 let mergedChainData: Record<number, TransformedChain> | null = null;
 let lastChainOrder: Array<number> | null = null;
 let lastEnabledChainIds: Set<number> | null = null;
@@ -140,14 +140,14 @@ function createSelector<T>(
       networkStore.getState();
 
     const didNetworksChange = lastNetworks !== networks;
-    const didUserOverridesChange = lastUserOverrides !== userPreferences;
+    const didUserPreferencesChange = lastUserPreferences !== userPreferences;
     const didChainOrderChange = lastChainOrder !== chainOrder;
     const didEnabledChainIdsChange = lastEnabledChainIds !== enabledChainIds;
 
     if (
       cachedResult !== uninitialized &&
       !didNetworksChange &&
-      !didUserOverridesChange &&
+      !didUserPreferencesChange &&
       !didChainOrderChange &&
       !didEnabledChainIdsChange &&
       mergedChainData !== null
@@ -157,13 +157,13 @@ function createSelector<T>(
 
     if (
       didNetworksChange ||
-      didUserOverridesChange ||
+      didUserPreferencesChange ||
       didChainOrderChange ||
       didEnabledChainIdsChange ||
       mergedChainData === null
     ) {
       if (didNetworksChange) lastNetworks = networks;
-      if (didUserOverridesChange) lastUserOverrides = userPreferences;
+      if (didUserPreferencesChange) lastUserPreferences = userPreferences;
       if (didChainOrderChange) lastChainOrder = chainOrder;
       if (didEnabledChainIdsChange) lastEnabledChainIds = enabledChainIds;
 
@@ -205,22 +205,31 @@ function createParameterizedSelector<T, Args extends unknown[]>(
   return (...args: Args) => {
     const { networks, userPreferences, chainOrder, enabledChainIds } =
       networkStore.getState();
+
     const argsChanged =
       !lastArgs ||
       args.length !== lastArgs.length ||
       args.some((arg, i) => arg !== lastArgs?.[i]);
 
     const didNetworksChange = lastNetworks !== networks;
-    const didUserOverridesChange = lastUserOverrides !== userPreferences;
+    const didUserPreferencesChange = lastUserPreferences !== userPreferences;
     const didChainOrderChange = lastChainOrder !== chainOrder;
     const didEnabledChainIdsChange = lastEnabledChainIds !== enabledChainIds;
 
-    console.log({ didUserOverridesChange });
+    console.log({
+      didNetworksChange,
+      didUserPreferencesChange,
+      didChainOrderChange,
+      didEnabledChainIdsChange,
+      argsChanged,
+    });
+
+    console.log(userPreferences[8453]);
 
     if (
       cachedResult !== uninitialized &&
       !didNetworksChange &&
-      !didUserOverridesChange &&
+      !didUserPreferencesChange &&
       !didChainOrderChange &&
       !didEnabledChainIdsChange &&
       !argsChanged
@@ -231,13 +240,13 @@ function createParameterizedSelector<T, Args extends unknown[]>(
     if (
       !memoizedFn ||
       didNetworksChange ||
-      didUserOverridesChange ||
+      didUserPreferencesChange ||
       didChainOrderChange ||
       didEnabledChainIdsChange ||
       mergedChainData === null
     ) {
       if (didNetworksChange) lastNetworks = networks;
-      if (didUserOverridesChange) lastUserOverrides = userPreferences;
+      if (didUserPreferencesChange) lastUserPreferences = userPreferences;
       if (didChainOrderChange) lastChainOrder = chainOrder;
       if (didEnabledChainIdsChange) lastEnabledChainIds = enabledChainIds;
 
@@ -247,6 +256,7 @@ function createParameterizedSelector<T, Args extends unknown[]>(
         chainOrder,
         enabledChainIds,
       );
+
       memoizedFn = selectorFn({
         networks,
         userPreferences,
@@ -332,7 +342,7 @@ export const networkStore = createQueryStore<
         enabledChainIds,
         userPreferences: {
           ...userPreferences,
-          [chainId]: assign({}, existing, newChainPreferences),
+          [chainId]: merge({}, existing, newChainPreferences),
         },
       });
     },
@@ -348,18 +358,21 @@ export const networkStore = createQueryStore<
     },
 
     selectRpcForChain: (chainId: number, rpcUrl: string) => {
-      const { userPreferences } = get();
-      const preferences = userPreferences[chainId];
-      if (!preferences) return;
+      set((state) => {
+        console.log({ chainId, rpcUrl });
+        const preferences = state.userPreferences[chainId];
+        if (!preferences) return state;
 
-      set({
-        userPreferences: {
-          ...userPreferences,
+        const newUserPreferences = {
+          ...state.userPreferences,
           [chainId]: {
-            ...userPreferences[chainId],
+            ...state.userPreferences[chainId],
             activeRpcUrl: rpcUrl,
           },
-        },
+        };
+
+        console.log(newUserPreferences === state.userPreferences);
+        return { ...state, userPreferences: newUserPreferences };
       });
     },
 
@@ -758,7 +771,7 @@ export const networkStore = createQueryStore<
     }),
 
     getChain: createParameterizedSelector(({ mergedChainData }) => {
-      return (chainId: number) => {
+      return (chainId) => {
         return mergedChainData[chainId];
       };
     }),

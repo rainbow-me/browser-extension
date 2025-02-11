@@ -478,6 +478,8 @@ export const mergeChainData = (
     networks.backendNetworks.networks,
   );
 
+  console.log('called mergeChainData');
+
   for (const chain of backendNetworks) {
     const chainId = chain.id;
     const userPrefs = userPreferences[chainId];
@@ -511,8 +513,11 @@ export const mergeChainData = (
   // case where we ONLY have user preferences (aka custom user-added chains)
   for (const chainId of Object.keys(userPreferences)) {
     const chainIdNum = toChainId(chainId);
+    if (mergedChainData[chainIdNum]) continue;
+
     const userPrefs = userPreferences[chainIdNum];
     if (userPrefs.type === 'supported') continue;
+
     const order = chainOrder.indexOf(chainIdNum);
     mergedChainData[chainIdNum] = {
       ...userPrefs,
@@ -521,6 +526,8 @@ export const mergeChainData = (
       enabled: enabledChainIds.has(chainIdNum),
     };
   }
+
+  console.log('mergedChainData', mergedChainData);
 
   return mergedChainData;
 };
