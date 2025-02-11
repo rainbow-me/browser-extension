@@ -355,7 +355,6 @@ export const networkStore = createQueryStore<
 
     selectRpcForChain: (chainId: number, rpcUrl: string) => {
       set((state) => {
-        console.log({ chainId, rpcUrl });
         const preferences = state.userPreferences[chainId];
         if (!preferences) return state;
 
@@ -367,7 +366,6 @@ export const networkStore = createQueryStore<
           },
         };
 
-        console.log(newUserPreferences === state.userPreferences);
         return { ...state, userPreferences: newUserPreferences };
       });
     },

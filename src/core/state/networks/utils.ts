@@ -195,6 +195,8 @@ export const buildInitialUserPreferences = (
     userPreferences[chainIdNum].activeRpcUrl = chain.activeRpcUrl;
     if (userChains[chainIdNum] && !enabledChainIds.has(chainIdNum)) {
       enabledChainIds.add(chainIdNum);
+    } else if (!userChains[chainIdNum] && enabledChainIds.has(chainIdNum)) {
+      enabledChainIds.delete(chainIdNum);
     }
 
     const rpcs: Record<string, Chain> = {};

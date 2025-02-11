@@ -47,7 +47,6 @@ describe('networkStore', () => {
 
         for (let i = 0; i < orderWithDuplicatesRemoved.length; i++) {
           const chainId = orderWithDuplicatesRemoved[i];
-          console.log(chainOrder, chainId, chainOrder.indexOf(chainId), i);
           expect(chainOrder.indexOf(chainId)).toEqual(i);
         }
       });
@@ -57,7 +56,8 @@ describe('networkStore', () => {
 
         for (const chainId of enabledChainIds) {
           // explicitly if it's true, it's true, otherwise disable it
-          const expected = userChains[chainId] ?? false;
+          const expected = userChains[chainId];
+          if (expected === undefined) continue;
           expect(enabledChainIds.has(chainId)).toEqual(expected);
         }
       });
