@@ -1,4 +1,4 @@
-import assign from 'lodash/assign';
+import merge from 'lodash/merge';
 import { Chain } from 'viem';
 
 import buildTimeNetworks from 'static/data/networks.json';
@@ -44,7 +44,7 @@ interface NetworkActions {
   getActiveRpcForChain: (chainId: number) => Chain | null;
   addCustomChain: (
     chainId: number,
-    userPreferences: ChainPreferences,
+    newChainPreferences: ChainPreferences,
     active: boolean,
   ) => void;
   removeCustomChain: (chainId: number) => boolean;
@@ -105,84 +105,96 @@ interface NetworkActions {
 }
 
 let lastNetworks: Networks | null = null;
-let lastUserOverrides: Record<number, ChainPreferences> | null = null;
-let mergedChainData: Record<number, TransformedChain> | null = null;
-let lastChainOrder: Array<number> | null = null;
+let lastUserPreferences: Record<number, ChainPreferences> | null = null;
+let lastChainOrder: number[] | null = null;
 let lastEnabledChainIds: Set<number> | null = null;
+let mergedChainData: Record<number, TransformedChain> | null = null;
 
-function createSelector<T>(
-  selectorFn: ({
+/**
+ * Returns the shared mergedChainData.
+ * Only recomputes if one of the input references has changed.
+ */
+function getMergedChainData(
+  networks: Networks,
+  userPreferences: Record<number, ChainPreferences>,
+  chainOrder: number[],
+  enabledChainIds: Set<number>,
+): Record<number, TransformedChain> {
+  if (
+    mergedChainData &&
+    lastNetworks === networks &&
+    lastUserPreferences === userPreferences &&
+    lastChainOrder === chainOrder &&
+    lastEnabledChainIds === enabledChainIds
+  ) {
+    return mergedChainData;
+  }
+  // Update all global references
+  lastNetworks = networks;
+  lastUserPreferences = userPreferences;
+  lastChainOrder = chainOrder;
+  lastEnabledChainIds = enabledChainIds;
+  mergedChainData = mergeChainData(
     networks,
     userPreferences,
-    mergedChainData,
-  }: {
+    chainOrder,
+    enabledChainIds,
+  );
+  return mergedChainData;
+}
+
+function createSelector<T>(
+  selectorFn: (params: {
     networks: Networks;
     userPreferences: Record<number, ChainPreferences>;
-    chainOrder: Array<number>;
+    chainOrder: number[];
     enabledChainIds: Set<number>;
     mergedChainData: Record<number, TransformedChain>;
   }) => T,
 ): () => T {
   const uninitialized = Symbol();
   let cachedResult: T | typeof uninitialized = uninitialized;
-  let memoizedFn:
-    | ((params: {
-        networks: Networks;
-        userPreferences: Record<number, ChainPreferences>;
-        chainOrder: Array<number>;
-        enabledChainIds: Set<number>;
-        mergedChainData: Record<number, TransformedChain>;
-      }) => T)
-    | null = null;
+  let lastInputs: {
+    networks: Networks;
+    userPreferences: Record<number, ChainPreferences>;
+    chainOrder: number[];
+    enabledChainIds: Set<number>;
+  } | null = null;
 
   return () => {
     const { networks, userPreferences, chainOrder, enabledChainIds } =
       networkStore.getState();
 
-    const didNetworksChange = lastNetworks !== networks;
-    const didUserOverridesChange = lastUserOverrides !== userPreferences;
-    const didChainOrderChange = lastChainOrder !== chainOrder;
-    const didEnabledChainIdsChange = lastEnabledChainIds !== enabledChainIds;
-
+    // If the inputs haven't changed (by reference), return the cached result
     if (
-      cachedResult !== uninitialized &&
-      !didNetworksChange &&
-      !didUserOverridesChange &&
-      !didChainOrderChange &&
-      !didEnabledChainIdsChange &&
-      mergedChainData !== null
+      lastInputs &&
+      lastInputs.networks === networks &&
+      lastInputs.userPreferences === userPreferences &&
+      lastInputs.chainOrder === chainOrder &&
+      lastInputs.enabledChainIds === enabledChainIds &&
+      cachedResult !== uninitialized
     ) {
       return cachedResult;
     }
 
-    if (
-      didNetworksChange ||
-      didUserOverridesChange ||
-      didChainOrderChange ||
-      didEnabledChainIdsChange ||
-      mergedChainData === null
-    ) {
-      if (didNetworksChange) lastNetworks = networks;
-      if (didUserOverridesChange) lastUserOverrides = userPreferences;
-      if (didChainOrderChange) lastChainOrder = chainOrder;
-      if (didEnabledChainIdsChange) lastEnabledChainIds = enabledChainIds;
+    // Save the new inputs
+    lastInputs = { networks, userPreferences, chainOrder, enabledChainIds };
 
-      mergedChainData = mergeChainData(
-        networks,
-        userPreferences,
-        chainOrder,
-        enabledChainIds,
-      );
-    }
-
-    if (!memoizedFn) memoizedFn = selectorFn;
-
-    cachedResult = memoizedFn({
+    // Retrieve (or compute) the shared merged data
+    const sharedMergedChainData = getMergedChainData(
       networks,
       userPreferences,
-      mergedChainData,
       chainOrder,
       enabledChainIds,
+    );
+
+    // Compute and cache the result for this selector
+    cachedResult = selectorFn({
+      networks,
+      userPreferences,
+      chainOrder,
+      enabledChainIds,
+      mergedChainData: sharedMergedChainData,
     });
     return cachedResult;
   };
@@ -191,8 +203,8 @@ function createSelector<T>(
 function createParameterizedSelector<T, Args extends unknown[]>(
   selectorFn: (params: {
     networks: Networks;
-    userPreferences: Record<ChainId, ChainPreferences>;
-    chainOrder: Array<number>;
+    userPreferences: Record<number, ChainPreferences>;
+    chainOrder: number[];
     enabledChainIds: Set<number>;
     mergedChainData: Record<number, TransformedChain>;
   }) => (...args: Args) => T,
@@ -200,63 +212,57 @@ function createParameterizedSelector<T, Args extends unknown[]>(
   const uninitialized = Symbol();
   let cachedResult: T | typeof uninitialized = uninitialized;
   let lastArgs: Args | null = null;
+  let lastInputs: {
+    networks: Networks;
+    userPreferences: Record<number, ChainPreferences>;
+    chainOrder: number[];
+    enabledChainIds: Set<number>;
+  } | null = null;
   let memoizedFn: ((...args: Args) => T) | null = null;
 
   return (...args: Args) => {
     const { networks, userPreferences, chainOrder, enabledChainIds } =
       networkStore.getState();
+
+    // Determine if the additional arguments have changed
     const argsChanged =
       !lastArgs ||
       args.length !== lastArgs.length ||
-      args.some((arg, i) => arg !== lastArgs?.[i]);
+      args.some((arg, i) => arg !== lastArgs![i]);
 
-    const didNetworksChange = lastNetworks !== networks;
-    const didUserOverridesChange = lastUserOverrides !== userPreferences;
-    const didChainOrderChange = lastChainOrder !== chainOrder;
-    const didEnabledChainIdsChange = lastEnabledChainIds !== enabledChainIds;
+    // Check if the state inputs have changed
+    const inputsUnchanged =
+      lastInputs &&
+      lastInputs.networks === networks &&
+      lastInputs.userPreferences === userPreferences &&
+      lastInputs.chainOrder === chainOrder &&
+      lastInputs.enabledChainIds === enabledChainIds;
 
-    console.log({ didUserOverridesChange });
-
-    if (
-      cachedResult !== uninitialized &&
-      !didNetworksChange &&
-      !didUserOverridesChange &&
-      !didChainOrderChange &&
-      !didEnabledChainIdsChange &&
-      !argsChanged
-    ) {
+    // If inputs and args are unchanged, return the cached result
+    if (cachedResult !== uninitialized && inputsUnchanged && !argsChanged) {
       return cachedResult;
     }
 
-    if (
-      !memoizedFn ||
-      didNetworksChange ||
-      didUserOverridesChange ||
-      didChainOrderChange ||
-      didEnabledChainIdsChange ||
-      mergedChainData === null
-    ) {
-      if (didNetworksChange) lastNetworks = networks;
-      if (didUserOverridesChange) lastUserOverrides = userPreferences;
-      if (didChainOrderChange) lastChainOrder = chainOrder;
-      if (didEnabledChainIdsChange) lastEnabledChainIds = enabledChainIds;
-
-      mergedChainData = mergeChainData(
-        networks,
-        userPreferences,
-        chainOrder,
-        enabledChainIds,
-      );
-      memoizedFn = selectorFn({
-        networks,
-        userPreferences,
-        mergedChainData,
-        chainOrder,
-        enabledChainIds,
-      });
-    }
-
+    // Update state inputs and args
+    lastInputs = { networks, userPreferences, chainOrder, enabledChainIds };
     lastArgs = args;
+
+    // Get the shared merged data
+    const sharedMergedChainData = getMergedChainData(
+      networks,
+      userPreferences,
+      chainOrder,
+      enabledChainIds,
+    );
+
+    // Recompute the memoized function if needed
+    memoizedFn = selectorFn({
+      networks,
+      userPreferences,
+      chainOrder,
+      enabledChainIds,
+      mergedChainData: sharedMergedChainData,
+    });
     cachedResult = memoizedFn(...args);
     return cachedResult;
   };
@@ -332,7 +338,7 @@ export const networkStore = createQueryStore<
         enabledChainIds,
         userPreferences: {
           ...userPreferences,
-          [chainId]: assign({}, existing, newChainPreferences),
+          [chainId]: merge({}, existing, newChainPreferences),
         },
       });
     },
@@ -348,18 +354,21 @@ export const networkStore = createQueryStore<
     },
 
     selectRpcForChain: (chainId: number, rpcUrl: string) => {
-      const { userPreferences } = get();
-      const preferences = userPreferences[chainId];
-      if (!preferences) return;
+      set((state) => {
+        console.log({ chainId, rpcUrl });
+        const preferences = state.userPreferences[chainId];
+        if (!preferences) return state;
 
-      set({
-        userPreferences: {
-          ...userPreferences,
+        const newUserPreferences = {
+          ...state.userPreferences,
           [chainId]: {
-            ...userPreferences[chainId],
+            ...state.userPreferences[chainId],
             activeRpcUrl: rpcUrl,
           },
-        },
+        };
+
+        console.log(newUserPreferences === state.userPreferences);
+        return { ...state, userPreferences: newUserPreferences };
       });
     },
 
@@ -758,7 +767,7 @@ export const networkStore = createQueryStore<
     }),
 
     getChain: createParameterizedSelector(({ mergedChainData }) => {
-      return (chainId: number) => {
+      return (chainId) => {
         return mergedChainData[chainId];
       };
     }),

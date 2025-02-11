@@ -103,8 +103,6 @@ export function SettingsNetworksRPCs() {
   );
   const enabledChainIds = networkStore((state) => state.enabledChainIds);
   const chain = networkStore((state) => state.getChain(chainId));
-  console.log(chain);
-
   const chainIdsBasedOnMainnetId = networkStore((state) =>
     state.getBackendChainIdsByMainnetId(),
   );
