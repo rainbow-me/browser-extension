@@ -11,6 +11,7 @@ import {
   delay,
   delayTime,
   doNotFindElementByTestId,
+  executePerformShortcut,
   fillPrivateKey,
   findElementByTestId,
   findElementByTestIdAndClick,
@@ -358,10 +359,7 @@ it('should be able to open token to buy input and select assets', async () => {
   expect(toBuyInputDaiSelected).toBeTruthy();
 });
 
-// TODO: broken as of #1830. The behavior isn't reproducable
-// on prod. I tried regenerating our mocks and this didn't fix
-// the issue. skipping for now but should be readdressed.
-it.skip('should be able to type native amount on sell input', async () => {
+it('should be able to type native amount on sell input', async () => {
   await findElementByTestIdAndClick({
     id: 'token-to-sell-info-fiat-value-input',
     driver,
@@ -430,7 +428,7 @@ it('should be able to favorite a token and check the info button is present', as
   await delayTime('very-long');
 
   await findElementByTestIdAndClick({
-    id: `${SWAP_VARIABLES.WBTC_MAINNET_ID}-favorites-token-to-buy-row`,
+    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-favorites-token-to-buy-row`,
     driver,
   });
 });
@@ -456,7 +454,7 @@ it('should be able to flip correctly', async () => {
 
   await typeOnTextInput({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
-    text: 1,
+    text: 1000,
     driver,
   });
 
@@ -464,10 +462,10 @@ it('should be able to flip correctly', async () => {
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
-  expect(assetToSellInputText).toBe('1');
+  expect(assetToSellInputText).toBe('1000');
 
   const assetToBuyInputText = await getTextFromTextInput({
-    id: `${SWAP_VARIABLES.WBTC_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(assetToBuyInputText).not.toBe('');
@@ -476,6 +474,8 @@ it('should be able to flip correctly', async () => {
     id: 'swap-flip-button',
     driver,
   });
+
+  await delay(5_000);
 
   const assetToSellInputTextAfterFlip = await getTextFromTextInput({
     id: `${SWAP_VARIABLES.WBTC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
@@ -496,6 +496,7 @@ it('should be able to check insufficient asset for swap', async () => {
     id: 'swap-confirmation-button-ready',
     driver,
   });
+  await delay(5_000);
   expect(confirmButtonText).toEqual('Insufficient WBTC');
 });
 
@@ -805,11 +806,21 @@ it('should be able to go to review a swap', async () => {
     driver,
   });
 
-  await delay(5_000);
-  toSellInputEthSelected.clear();
-  toSellInputEthSelected.clear();
-  await delay(5_000);
+  // click the input to focus it
+  await findElementByTestIdAndClick({
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    driver,
+  });
+  // clear the input
+  await executePerformShortcut({
+    driver,
+    key: Key.BACK_SPACE,
+    timesToPress: 10,
+  });
+  // type the amount
   toSellInputEthSelected.sendKeys('1');
+  await delay(5_000);
+  // click the confirm button
   await findElementByTestIdAndClick({
     id: 'swap-confirmation-button-ready',
     driver,
