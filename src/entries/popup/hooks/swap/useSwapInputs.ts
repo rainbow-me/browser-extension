@@ -330,11 +330,11 @@ export const useSwapInputs = ({
       if (!supportedChain) return null;
 
       if (!isNativeAsset(asset.address, chainId)) {
-        const chainNativeAddress = nativeAssetsAddresses[chainId];
+        const chainNativeAddress = nativeAssetsAddresses[chainId].address;
         // Return native asset for this chain
         return {
           uniqueId: `${chainNativeAddress}_${chainId}`,
-          address: chainNativeAddress.address,
+          address: chainNativeAddress,
           chainId,
           isNativeAsset: true,
           ...supportedChain.nativeCurrency,
