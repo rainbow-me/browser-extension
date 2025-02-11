@@ -110,6 +110,12 @@ let mergedChainData: Record<number, TransformedChain> | null = null;
 let lastChainOrder: Array<number> | null = null;
 let lastEnabledChainIds: Set<number> | null = null;
 
+// Track which selector last processed a state change
+let lastUpdatedSelector:
+  | 'createSelector'
+  | 'createParameterizedSelector'
+  | null = null;
+
 function createSelector<T>(
   selectorFn: ({
     networks,
@@ -144,28 +150,28 @@ function createSelector<T>(
     const didChainOrderChange = lastChainOrder !== chainOrder;
     const didEnabledChainIdsChange = lastEnabledChainIds !== enabledChainIds;
 
-    if (
-      cachedResult !== uninitialized &&
-      !didNetworksChange &&
-      !didUserPreferencesChange &&
-      !didChainOrderChange &&
-      !didEnabledChainIdsChange &&
-      mergedChainData !== null
-    ) {
-      return cachedResult;
-    }
-
-    if (
+    const detectedChange =
       didNetworksChange ||
       didUserPreferencesChange ||
       didChainOrderChange ||
-      didEnabledChainIdsChange ||
-      mergedChainData === null
-    ) {
+      didEnabledChainIdsChange;
+
+    const needsUpdate =
+      detectedChange || lastUpdatedSelector === 'createParameterizedSelector';
+
+    if (cachedResult !== uninitialized && !needsUpdate) {
+      return cachedResult;
+    }
+
+    if (needsUpdate || mergedChainData === null) {
       if (didNetworksChange) lastNetworks = networks;
       if (didUserPreferencesChange) lastUserPreferences = userPreferences;
       if (didChainOrderChange) lastChainOrder = chainOrder;
       if (didEnabledChainIdsChange) lastEnabledChainIds = enabledChainIds;
+
+      if (detectedChange) {
+        lastUpdatedSelector = 'createSelector';
+      }
 
       mergedChainData = mergeChainData(
         networks,
@@ -216,39 +222,29 @@ function createParameterizedSelector<T, Args extends unknown[]>(
     const didChainOrderChange = lastChainOrder !== chainOrder;
     const didEnabledChainIdsChange = lastEnabledChainIds !== enabledChainIds;
 
-    console.log({
-      didNetworksChange,
-      didUserPreferencesChange,
-      didChainOrderChange,
-      didEnabledChainIdsChange,
-      argsChanged,
-    });
-
-    console.log(userPreferences[8453]);
-
-    if (
-      cachedResult !== uninitialized &&
-      !didNetworksChange &&
-      !didUserPreferencesChange &&
-      !didChainOrderChange &&
-      !didEnabledChainIdsChange &&
-      !argsChanged
-    ) {
-      return cachedResult;
-    }
-
-    if (
-      !memoizedFn ||
+    const detectedChange =
       didNetworksChange ||
       didUserPreferencesChange ||
       didChainOrderChange ||
       didEnabledChainIdsChange ||
-      mergedChainData === null
-    ) {
+      argsChanged;
+
+    const needsUpdate =
+      detectedChange || argsChanged || lastUpdatedSelector === 'createSelector';
+
+    if (cachedResult !== uninitialized && !needsUpdate) {
+      return cachedResult;
+    }
+
+    if (needsUpdate || !memoizedFn) {
       if (didNetworksChange) lastNetworks = networks;
       if (didUserPreferencesChange) lastUserPreferences = userPreferences;
       if (didChainOrderChange) lastChainOrder = chainOrder;
       if (didEnabledChainIdsChange) lastEnabledChainIds = enabledChainIds;
+
+      if (detectedChange) {
+        lastUpdatedSelector = 'createParameterizedSelector';
+      }
 
       mergedChainData = mergeChainData(
         networks,
