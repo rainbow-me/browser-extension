@@ -15513,11 +15513,6 @@ react-dom@18.2.0, react-dom@^18.2.0:
     loose-envify "^1.1.0"
     scheduler "^0.23.0"
 
-react-fast-compare@3.2.2:
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-3.2.2.tgz#929a97a532304ce9fee4bcae44234f1ce2c21d49"
-  integrity sha512-nsO+KSNgo1SbJqJEYRE9ERzo7YtYbou/OqjSQKxV7jcKox7+usiUVZOAC+XnDOABXggQTno0Y1CpVnuWEc1boQ==
-
 react-flatten-children@1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/react-flatten-children/-/react-flatten-children-1.1.2.tgz#8e843b1080c7fd6ccf5ab2877fa6c2e9aa3cf473"
