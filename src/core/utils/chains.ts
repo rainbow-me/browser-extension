@@ -23,14 +23,9 @@ const getMainChainsHelper = (
       !(chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism),
   );
 
-  const customChainsIncludingTestnets = customMainChains.filter(
-    (chain) =>
-      !chain.testnet || (chain.testnet && mainnetSuportedChains[chain.id]),
-  );
-
   return Object.values(mainnetSuportedChains)
     .map(mergedChainToViemChain)
-    .concat(customChainsIncludingTestnets);
+    .concat(customMainChains);
 };
 
 export const useMainChains = () => {
@@ -72,7 +67,6 @@ export const getSupportedChains = ({ testnets }: { testnets?: boolean }) => {
 };
 
 // Chain helpers
-
 export function getChain({ chainId }: { chainId?: ChainId }) {
   const { chains } = wagmiConfig;
   const chain = chains.find((chain) => chain.id === chainId);
