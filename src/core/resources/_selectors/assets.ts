@@ -23,9 +23,16 @@ export function selectorFilterByUserChains<T>({
     .getBackendChainIdsByMainnetId();
   const { enabledChainIds } = networkStore.getState();
   const allUserChainIds = Array.from(enabledChainIds)
-    .map((id) => chainIdsBasedOnMainnetId[id] || id)
+    .map((id) => {
+      const backendChainIds = chainIdsBasedOnMainnetId[id];
+      if (backendChainIds) {
+        return [...backendChainIds, id];
+      }
+      return [id];
+    })
     .flat()
     .filter(Boolean);
+
   const filteredAssetsDictByChain = Object.keys(data).reduce((acc, key) => {
     const chainKey = Number(key);
     if (chain === chainKey || (!chain && allUserChainIds.includes(chainKey))) {
@@ -58,9 +65,10 @@ export function selectUserAssetsDictByChain(assets: ParsedAssetsDictByChain) {
 }
 
 export function selectUserAssetsListByChainId(assets: ParsedAssetsDictByChain) {
-  const assetsByNetwork = Object.values(
-    networkStore.getState().getAllChains(true),
-  ).map((chain) => assets?.[chain.id]);
+  const assetsByNetwork = Object.values(networkStore.getState().getAllChains())
+    .map((chain) => assets?.[chain.id])
+    .filter(Boolean)
+    .flat();
 
   return assetsByNetwork
     .map((chainAssets) =>
