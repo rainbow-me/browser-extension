@@ -6,7 +6,10 @@ const BACKEND_NETWORKS_QUERY = `
       name
       label
       icons {
-        badgeURL
+        uncropped {
+          largeURL
+          smallURL
+        }
       }
       testnet
       internal

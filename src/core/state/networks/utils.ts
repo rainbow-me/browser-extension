@@ -12,6 +12,7 @@ import { NetworkState } from '~/core/state/networks/networks';
 import { useRainbowChainsStore } from '~/core/state/rainbowChains';
 import { useUserChainsStore } from '~/core/state/userChains';
 import {
+  BackendNetwork,
   BackendNetworks,
   ChainId,
   ChainPreferences,
@@ -27,6 +28,17 @@ const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
 const IS_DEV = process.env.IS_DEV === 'true';
 
 export const DEFAULT_PRIVATE_MEMPOOL_TIMEOUT = 2 * 60 * 1_000;
+
+export function getBadgeUrl({
+  chainBadges,
+  size,
+}: {
+  chainBadges: BackendNetwork['icons']['uncropped'] | undefined;
+  size: number;
+}): string | undefined {
+  if (!chainBadges) return undefined;
+  return size > 20 ? chainBadges.largeURL : chainBadges.smallURL;
+}
 
 const proxyBackendNetworkRpcEndpoint = (endpoint: string) => {
   return `${endpoint}${RPC_PROXY_API_KEY}`;

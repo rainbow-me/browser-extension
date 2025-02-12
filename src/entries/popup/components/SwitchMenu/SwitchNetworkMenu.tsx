@@ -254,6 +254,8 @@ export const SwitchNetworkMenu = ({
   const triggerRef = useRef<HTMLDivElement>(null);
   const { chains } = useUserChains();
 
+  console.log({ chains });
+
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
       if (e.key === shortcuts.swap.OPEN_NETWORK_MENU.key) {

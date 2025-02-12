@@ -3,7 +3,6 @@ import { useMemo } from 'react';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { networkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
-import { getSupportedChains } from '~/core/utils/chains';
 import { sortNetworks } from '~/core/utils/userChains';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
@@ -11,20 +10,15 @@ const IS_TESTING = process.env.IS_TESTING === 'true';
 export const useUserChains = () => {
   const { enabledChainIds, chainOrder } = networkStore.getState();
   const { testnetMode } = useTestnetModeStore();
+  const supportedChains = networkStore((state) =>
+    state.getAllChainsSortedByOrder(testnetMode),
+  );
   const chainIdsBasedOnMainnetId = networkStore((state) =>
     state.getBackendChainIdsByMainnetId(),
   );
 
-  const availableChains = useMemo(() => {
-    const supportedChains = getSupportedChains({
-      testnets: testnetMode,
-    });
-
-    const availableChains = Array.from(enabledChainIds).map((chainId) =>
-      Number(chainId),
-    );
-
-    const allAvailableUserChains = availableChains
+  const chains = useMemo(() => {
+    const allAvailableUserChains = Array.from(enabledChainIds)
       .map((chainId) => chainIdsBasedOnMainnetId[chainId] || [chainId])
       .flat();
 
@@ -38,12 +32,17 @@ export const useUserChains = () => {
     };
 
     const chains = supportedChains.filter(
-      (chain) =>
-        allAvailableUserChains.includes(chain.id) || checkIfTesting(chain.id),
+      ({ id }) => !allAvailableUserChains.includes(id) || checkIfTesting(id),
     );
 
     return sortNetworks(chainOrder, chains);
-  }, [testnetMode, enabledChainIds, chainOrder, chainIdsBasedOnMainnetId]);
+  }, [
+    enabledChainIds,
+    chainIdsBasedOnMainnetId,
+    chainOrder,
+    testnetMode,
+    supportedChains,
+  ]);
 
-  return { chains: availableChains };
+  return { chains };
 };

@@ -94,7 +94,10 @@ interface NetworkActions {
   getSupportedTokenSearchChainIds: () => number[];
   getSupportedNftChainIds: () => number[];
   getChainGasUnits: (chainId?: number) => BackendNetwork['gasUnits'];
-  getChainsBadgeUrls: () => Record<number, string>;
+  getChainsBadgeUrls: () => Record<
+    number,
+    BackendNetwork['icons']['uncropped']
+  >;
   getBackendChainsByMainnetId: () => Record<number, BackendNetwork[]>;
   getBackendChainIdsByMainnetId: () => Record<number, number[]>;
   getDefaultFavorites: () => Record<number, AddressOrEth[]>;
@@ -741,7 +744,7 @@ export const networkStore = createQueryStore<
     getChainsBadgeUrls: createSelector(({ networks }) => {
       return Object.values(networks.backendNetworks.networks).reduce(
         (acc, chain) => {
-          return { ...acc, [chain.id]: chain.icons.badgeURL };
+          return { ...acc, [chain.id]: chain.icons.uncropped };
         },
         {},
       );

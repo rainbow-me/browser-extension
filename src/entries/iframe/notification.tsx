@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom';
 
 import { i18n } from '~/core/languages';
 import { networkStore } from '~/core/state/networks/networks';
+import { getBadgeUrl } from '~/core/state/networks/utils';
 import { ChainId } from '~/core/types/chains';
 import { isDarkColor } from '~/core/utils/colors';
 import { INJECTED_NOTIFICATION_DIMENSIONS } from '~/core/utils/dimensions';
@@ -233,9 +234,8 @@ const NotificationComponent = ({
   onDismiss: () => void;
 }) => {
   const chainsLabel = networkStore((state) => state.getChainsLabel());
-  const chainsBadge = networkStore((state) => state.getChainsBadgeUrls())[
-    chainId
-  ];
+  const chainBadges = networkStore((state) => state.getChainsBadgeUrls());
+  const badgeUrl = getBadgeUrl({ chainBadges: chainBadges[chainId], size: 24 });
 
   const { title, description } = useMemo(() => {
     switch (status) {
@@ -303,11 +303,14 @@ const NotificationComponent = ({
                 {status === IN_DAPP_NOTIFICATION_STATUS.success ||
                 status === IN_DAPP_NOTIFICATION_STATUS.already_added ||
                 status === IN_DAPP_NOTIFICATION_STATUS.set_as_active ? (
-                  chainsBadge ? (
+                  badgeUrl ? (
                     <img
-                      src={`${extensionUrl}${chainsBadge}`}
+                      src={`${extensionUrl}${badgeUrl}`}
                       width={24}
                       height={24}
+                      style={{
+                        borderRadius: '50%',
+                      }}
                     />
                   ) : (
                     <ChainBadge chainId={chainId} size={24} />

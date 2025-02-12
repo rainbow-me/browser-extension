@@ -3,6 +3,7 @@ import { AddressZero } from '@ethersproject/constants';
 import { customChainIdsToAssetNames } from '~/core/references/assets';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { networkStore } from '~/core/state/networks/networks';
+import { getBadgeUrl } from '~/core/state/networks/utils';
 import { ChainId } from '~/core/types/chains';
 import { getCustomChainIconUrl } from '~/core/utils/assets';
 import { Box, Text } from '~/design-system';
@@ -45,8 +46,12 @@ const ChainBadge = ({
         : '0px 2px 6px 0px rgba(0, 0, 0, 0.02), 0px 4px 12px 0px rgba(37, 41, 46, 0.08)';
   }
   const iconSize = typeof size === 'number' ? size : chainBadgeSize[size];
+  const badgeUrl = getBadgeUrl({
+    chainBadges: chainBadges[chainId],
+    size: iconSize,
+  });
 
-  if (!chainBadges[chainId] && !customChainIdsToAssetNames[chainId]) {
+  if (!badgeUrl && !customChainIdsToAssetNames[chainId]) {
     return (
       <Box
         borderRadius="round"
@@ -112,12 +117,12 @@ const ChainBadge = ({
         />
       ) : (
         <img
-          src={chainBadges[chainId]}
+          src={badgeUrl}
           width={iconSize}
           height={iconSize}
           loading="lazy"
           style={{
-            borderRadius: iconSize,
+            borderRadius: '50%',
             userSelect: 'none',
           }}
           draggable={false}
