@@ -17,7 +17,7 @@ const getMainChainsHelper = (
   chains: readonly [Chain, ...Chain[]],
   mainnetSuportedChains: Record<number, TransformedChain>,
 ) => {
-  const customMainChains = chains?.filter(
+  const customMainChains = chains.filter(
     (chain) =>
       !mainnetSuportedChains[chain.id] &&
       !(chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism),
@@ -35,13 +35,18 @@ const getMainChainsHelper = (
 
 export const useMainChains = () => {
   const { chains } = useConfig();
-  const supportedChains = networkStore((state) => state.getAllChains());
+  const supportedChains = networkStore((state) =>
+    state.getBackendSupportedChains(),
+  );
   return getMainChainsHelper(chains, supportedChains);
 };
 
 export const getMainChains = () => {
   const { chains } = wagmiConfig;
-  return getMainChainsHelper(chains, networkStore.getState().getAllChains());
+  return getMainChainsHelper(
+    chains,
+    networkStore.getState().getBackendSupportedChains(),
+  );
 };
 
 // All the chains we support
