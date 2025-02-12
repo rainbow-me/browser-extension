@@ -101,7 +101,7 @@ export const init = async () => {
         // Ignore non BX keys
         if (key.startsWith('BX_')) {
           if (key === 'BX_default_slippage_bips_chainId') {
-            config[realKey] = JSON.parse(
+            config['default_slippage_bips'] = JSON.parse(
               entry.asString(),
             ) as RainbowConfig['default_slippage_bips'];
           } else if (
