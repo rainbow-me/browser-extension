@@ -11,9 +11,9 @@ import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme'
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { networkStore } from '~/core/state/networks/networks';
+import { transformBackendNetworkToChain } from '~/core/state/networks/utils';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
 import { TransformedChain } from '~/core/types/chains';
-import { getSupportedChains } from '~/core/utils/chains';
 import { getDappHost } from '~/core/utils/connectedApps';
 import {
   Box,
@@ -103,7 +103,10 @@ export function SettingsNetworksRPCs() {
   );
   const enabledChainIds = networkStore((state) => state.enabledChainIds);
   const chain = networkStore((state) => state.getChain(chainId));
-  const chainIdsBasedOnMainnetId = networkStore((state) =>
+  const chainsByMainnetId = networkStore((state) =>
+    state.getBackendChainsByMainnetId(),
+  );
+  const chainIdsByMainnetId = networkStore((state) =>
     state.getBackendChainIdsByMainnetId(),
   );
   const activeChain = chain?.rpcs[chain.activeRpcUrl];
@@ -132,14 +135,10 @@ export function SettingsNetworksRPCs() {
     },
   ];
 
-  const supportedTestnetChains = getSupportedChains({
-    testnets: true,
-  }).filter((chain) => {
-    return (
-      chainIdsBasedOnMainnetId[chainId]?.includes(chain.id) &&
-      chain.id !== chainId
-    );
-  });
+  const supportedTestnetChains =
+    chainsByMainnetId[chainId]
+      ?.filter((c) => c.id !== chainId)
+      .map((c) => transformBackendNetworkToChain(c)) || [];
 
   const testnetChains = () => {
     const customTestnetChains =
@@ -476,7 +475,7 @@ export function SettingsNetworksRPCs() {
           </>
         )}
 
-        {developerToolsEnabled && testnetChains.length ? (
+        {developerToolsEnabled && testnetChains().length ? (
           <>
             <Menu>
               <MenuItem.Description
@@ -512,7 +511,7 @@ export function SettingsNetworksRPCs() {
                               size="11pt"
                               weight={'medium'}
                             >
-                              {chainIdsBasedOnMainnetId[chainId]?.includes(
+                              {chainIdsByMainnetId[chainId]?.includes(
                                 chain.id,
                               ) && chain.id !== chainId
                                 ? i18n.t(

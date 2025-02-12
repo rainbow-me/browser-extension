@@ -60,7 +60,7 @@ interface NetworkActions {
     includeTestnets?: boolean,
   ) => Record<number, TransformedChain>;
   getUserAddedChainIds: (includeTestnets?: boolean) => number[];
-  updateChainOrder: (sourceIdx: number, destinationIdx: number) => void;
+  updateChainOrder: (chainId: number, destinationIdx: number) => void;
   updateEnabledChains: (chainIds: number[], enabled: boolean) => void;
 
   // custom backend driven networks store methods
@@ -344,12 +344,27 @@ export const networkStore = createQueryStore<
     },
 
     removeCustomChain: (chainId: number) => {
-      const { userPreferences } = get();
+      const { userPreferences, chainOrder, enabledChainIds } = get();
       const preferences = userPreferences[chainId];
       if (preferences?.type !== 'custom') return false;
+
+      // Remove from userPreferences
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { [chainId]: _, ...newUserOverrides } = userPreferences;
-      set({ userPreferences: newUserOverrides });
+
+      // Remove from chainOrder
+      const newChainOrder = chainOrder.filter((id) => id !== chainId);
+
+      // Remove from enabledChainIds
+      const newEnabledChainIds = new Set(enabledChainIds);
+      newEnabledChainIds.delete(chainId);
+
+      set({
+        userPreferences: newUserOverrides,
+        chainOrder: newChainOrder,
+        enabledChainIds: newEnabledChainIds,
+      });
+
       return true;
     },
 
@@ -371,7 +386,7 @@ export const networkStore = createQueryStore<
     },
 
     removeRpcFromChain: (chainId: number, rpcUrl: string) => {
-      const { userPreferences } = get();
+      const { userPreferences, removeCustomChain } = get();
       const preferences = userPreferences[chainId];
       if (!preferences) return { success: false, newRpcsLength: -1 };
 
@@ -380,12 +395,10 @@ export const networkStore = createQueryStore<
         Object.keys(preferences.rpcs).length === 1 &&
         preferences.type === 'custom'
       ) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { [chainId]: _, ...newUserOverrides } = userPreferences;
-        set({ userPreferences: newUserOverrides });
+        const success = removeCustomChain(chainId);
         return {
-          success: true,
-          newRpcsLength: 0,
+          success,
+          newRpcsLength: success ? 0 : -1,
         };
       }
 
@@ -467,13 +480,22 @@ export const networkStore = createQueryStore<
       },
     ),
 
-    updateChainOrder: (sourceIdx: number, destinationIdx: number) => {
+    updateChainOrder: (chainId: number, destinationIdx: number) => {
       const { chainOrder } = get();
-      const currentOrder = [...chainOrder];
-      const [removed] = currentOrder.splice(sourceIdx, 1);
-      currentOrder.splice(destinationIdx, 0, removed);
-      const newOrder = Array.from(new Set(currentOrder));
-      set({ chainOrder: newOrder });
+      const index = chainOrder.indexOf(chainId);
+      if (index === -1) {
+        // perform insertion at that index and shift everything else down
+        const currentOrder = [...chainOrder];
+        currentOrder.splice(destinationIdx + 1, 0, chainId);
+        const newOrder = Array.from(new Set(currentOrder));
+        set({ chainOrder: newOrder });
+      } else {
+        const currentOrder = [...chainOrder];
+        const [removed] = currentOrder.splice(index, 1);
+        currentOrder.splice(destinationIdx, 0, removed);
+        const newOrder = Array.from(new Set(currentOrder));
+        set({ chainOrder: newOrder });
+      }
     },
 
     updateEnabledChains: (chainIds: number[], enabled: boolean) => {
@@ -732,6 +754,7 @@ export const networkStore = createQueryStore<
           if (!acc[mainnetId]) {
             acc[mainnetId] = [];
           }
+          if (+curr.id === mainnetId) return acc;
           acc[mainnetId].push(+curr.id);
           return acc;
         },
@@ -746,6 +769,7 @@ export const networkStore = createQueryStore<
           if (!acc[mainnetId]) {
             acc[mainnetId] = [];
           }
+          if (+curr.id === mainnetId) return acc;
           acc[mainnetId].push(curr);
           return acc;
         },

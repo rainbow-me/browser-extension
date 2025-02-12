@@ -65,12 +65,11 @@ export function SettingsNetworks() {
   const allChains = networkStore((state) => state.getAllChainsSortedByOrder());
 
   const onDragEnd = (result: DropResult) => {
-    const { destination, source } = result;
+    const { destination, draggableId } = result;
     if (!seenPromos[promoTypes.network_settings])
       setSeenPromo(promoTypes.network_settings);
     if (!destination) return;
-    if (destination.index === source.index) return;
-    networkStore.getState().updateChainOrder(source.index, destination.index);
+    networkStore.getState().updateChainOrder(+draggableId, destination.index);
   };
 
   const enableNetwork = useCallback(
@@ -201,7 +200,7 @@ export function SettingsNetworks() {
                                     ? chainLabel({
                                         labels: chainsBasedOnMainnetId[
                                           chain.id
-                                        ].map((chain) => chain.label),
+                                        ]?.map((chain) => chain.label),
                                         testnet: chain.testnet,
                                       })
                                     : i18n.t('settings.networks.disabled')}

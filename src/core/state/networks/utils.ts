@@ -159,8 +159,9 @@ export const buildInitialUserPreferences = (
   const userPreferences: Record<number, ChainPreferences> = {};
   const initialNonInternalNetworks =
     initialSupportedNetworks.backendNetworks.networks.filter(
-      (n) => !n.internal,
+      (network) => !network.internal || INTERNAL_BUILD || IS_DEV,
     );
+
   const enabledChainIds = new Set<number>(
     initialNonInternalNetworks.map(({ id }) => toChainId(id)),
   );
@@ -170,8 +171,10 @@ export const buildInitialUserPreferences = (
 
   let order = userChainsOrder;
   if (isUserChainOrderMalformed(order)) {
-    const defaultInitialOrder =
-      useUserChainsStore.getInitialState().userChainsOrder;
+    // sort by network id ascending (e.g. - 1, 10, 56, 97)
+    const defaultInitialOrder = initialNonInternalNetworks
+      .map(({ id }) => toChainId(id))
+      .sort((a, b) => a - b);
     logger.warn(
       '[buildInitialUserPreferences] User chain order is malformed, using default order',
       {
@@ -182,7 +185,13 @@ export const buildInitialUserPreferences = (
     order = defaultInitialOrder;
   }
 
-  const chainOrder = [...new Set(order)];
+  const chainOrder = new Set<number>(order);
+  for (const supportedNetwork of initialNonInternalNetworks) {
+    const chainIdNum = toChainId(supportedNetwork.id);
+    if (!chainOrder.has(chainIdNum)) {
+      chainOrder.add(chainIdNum);
+    }
+  }
 
   for (const chainId of Object.keys(rainbowChains)) {
     const chainIdNum = toChainId(chainId);
@@ -190,6 +199,10 @@ export const buildInitialUserPreferences = (
 
     if (!userPreferences[chainIdNum]) {
       userPreferences[chainIdNum] = {} as ChainPreferences;
+    }
+
+    if (!chainOrder.has(chainIdNum)) {
+      chainOrder.add(chainIdNum);
     }
 
     userPreferences[chainIdNum].activeRpcUrl = chain.activeRpcUrl;
@@ -230,7 +243,7 @@ export const buildInitialUserPreferences = (
 
   return {
     userPreferences,
-    chainOrder,
+    chainOrder: Array.from(chainOrder),
     enabledChainIds,
   };
 };
@@ -247,9 +260,10 @@ export const buildInitialUserPreferences = (
 export const modifyUserPreferencesForNewlySupportedNetworks = (
   state: NetworkState,
   diff: Map<string, BackendNetworks['networks'][number]>,
-): Pick<NetworkState, 'userPreferences' | 'enabledChainIds'> => {
+): Pick<NetworkState, 'userPreferences' | 'enabledChainIds' | 'chainOrder'> => {
   const userPreferences = { ...state.userPreferences };
   const enabledChainIds = new Set<number>(state.enabledChainIds);
+  const chainOrder = [...new Set(state.chainOrder)];
 
   for (const chainId of diff.keys()) {
     const chainIdNum = toChainId(chainId);
@@ -272,11 +286,13 @@ export const modifyUserPreferencesForNewlySupportedNetworks = (
       },
     };
     enabledChainIds.add(chainIdNum);
+    chainOrder.push(chainIdNum);
   }
 
   return {
     userPreferences,
     enabledChainIds,
+    chainOrder,
   };
 };
 
