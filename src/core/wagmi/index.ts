@@ -36,7 +36,6 @@ let wagmiConfig = createConfig({
 });
 
 const updateWagmiConfig = (chains: Chain[]) => {
-  console.log('updateWagmiConfig', chains);
   wagmiConfig = createConfig({
     chains: createChains(chains),
     transports: createTransports(chains),

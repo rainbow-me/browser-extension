@@ -262,7 +262,7 @@ export const handleProviderRequest = ({
       appSessionsStore.getState().removeAppSession({ host }),
     getChainNativeCurrency: (chainId: number) =>
       networkStore.getState().getBackendSupportedChains(true)[chainId]
-        .nativeCurrency,
+        ?.nativeCurrency,
     getFeatureFlags: () => featureFlagsStore.getState().featureFlags,
     getProvider: getProvider,
     messengerProviderRequest: (request: ProviderRequestPayload) =>

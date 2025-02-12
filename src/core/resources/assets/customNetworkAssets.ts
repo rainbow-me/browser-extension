@@ -183,14 +183,16 @@ async function customNetworkAssetsFunction({
   })?.state?.data || {}) as Record<ChainId | number, ParsedAssetsDict>;
 
   const activeChains = networkStore.getState().getAllActiveRpcChains();
+  const supportedMainnetChains = networkStore
+    .getState()
+    .getBackendSupportedChains();
 
-  const supportedMainnetChains = networkStore((state) =>
-    state.getBackendSupportedChains(),
+  const customChains = activeChains.filter(
+    (chain) =>
+      (testnetMode ? chain.testnet : !chain.testnet) &&
+      !supportedMainnetChains[chain.id],
   );
 
-  const customChains = activeChains.filter((chain) =>
-    testnetMode ? chain.testnet : !chain.testnet,
-  );
   if (customChains.length === 0) {
     return cachedCustomNetworkAssets;
   }
