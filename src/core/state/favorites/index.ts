@@ -1,5 +1,6 @@
 import create from 'zustand';
 
+import buildTimeNetworks from 'static/data/networks.json';
 import { createStore } from '~/core/state/internal/createStore';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -7,6 +8,23 @@ import { ChainId } from '~/core/types/chains';
 type UpdateFavoritesArgs = {
   address: AddressOrEth;
   chainId: ChainId;
+};
+
+const IS_DEV = process.env.IS_DEV === 'true';
+const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
+
+const getInitialFavorites = () => {
+  return buildTimeNetworks.backendNetworks.networks.reduce(
+    (acc, network) => {
+      if (network.internal && !(INTERNAL_BUILD || IS_DEV)) return acc;
+
+      return {
+        ...acc,
+        [network.id]: network.favorites.map((f) => f.address as AddressOrEth),
+      };
+    },
+    {} as Record<number, AddressOrEth[]>,
+  );
 };
 
 type UpdateFavoritesFn = ({ address, chainId }: UpdateFavoritesArgs) => void;
@@ -20,7 +38,7 @@ export interface FavoritesState {
 
 export const favoritesStore = createStore<FavoritesState>(
   (set, get) => ({
-    favorites: {},
+    favorites: getInitialFavorites(),
     setFavorites: (favorites) => set({ favorites }),
     addFavorite: ({ address, chainId }: UpdateFavoritesArgs) => {
       const { favorites } = get();
@@ -48,7 +66,7 @@ export const favoritesStore = createStore<FavoritesState>(
   {
     persist: {
       name: 'favorites',
-      version: 7,
+      version: 8,
     },
   },
 );

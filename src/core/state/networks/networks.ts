@@ -22,9 +22,6 @@ import {
   TransformedChain,
 } from '~/core/types/chains';
 
-const IS_DEV = process.env.IS_DEV === 'true';
-const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
-
 const DEFAULT_PRIVATE_MEMPOOL_TIMEOUT = 2 * 60 * 1_000; // 2 minutes
 
 export interface NetworkState {
@@ -97,7 +94,6 @@ interface NetworkActions {
   >;
   getBackendChainsByMainnetId: () => Record<number, BackendNetwork[]>;
   getBackendChainIdsByMainnetId: () => Record<number, number[]>;
-  getDefaultFavorites: () => Record<number, AddressOrEth[]>;
   getChain: (chainId: number) => TransformedChain | undefined;
   getAllChains: (includeTestnets?: boolean) => Record<number, TransformedChain>;
   getAllActiveRpcChains: (includeTestnets?: boolean) => Chain[];
@@ -786,17 +782,6 @@ export const networkStore = createQueryStore<
         },
         {} as Record<number, BackendNetwork[]>,
       );
-    }),
-
-    getDefaultFavorites: createSelector(({ networks }) => {
-      return networks.backendNetworks.networks.reduce((acc, network) => {
-        if (network.internal && !(INTERNAL_BUILD || IS_DEV)) return acc;
-
-        return {
-          ...acc,
-          [network.id]: network.favorites.map((f) => f.address as AddressOrEth),
-        };
-      }, {});
     }),
 
     getChain: createParameterizedSelector(({ mergedChainData }) => {
