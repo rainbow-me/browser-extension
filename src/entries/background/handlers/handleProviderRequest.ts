@@ -304,18 +304,7 @@ export const handleProviderRequest = ({
         const isActiveRpc = rainbowChain.activeRpcUrl === rpcUrl;
 
         if (!alreadyAddedRpcUrl) {
-          addCustomChain(
-            chainObject.id,
-            {
-              ...chainObject,
-              type: 'custom',
-              activeRpcUrl: rpcUrl,
-              rpcs: {
-                [rpcUrl]: chainObject,
-              },
-            },
-            true,
-          );
+          addCustomChain(chainObject.id, chainObject, rpcUrl, true);
         }
 
         let rpcStatus;

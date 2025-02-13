@@ -68,18 +68,7 @@ export const AddEthereumChain = ({
         rpcUrls: { default: { http: [rpcUrl] }, public: { http: [rpcUrl] } },
         testnet,
       };
-      addCustomChain(
-        +chainId,
-        {
-          ...chain,
-          type: 'custom',
-          activeRpcUrl: rpcUrl,
-          rpcs: {
-            [rpcUrl]: chain,
-          },
-        },
-        true,
-      );
+      addCustomChain(+chainId, chain, rpcUrl, true);
 
       approveRequest(true);
       analytics.track(event.dappAddEthereumChainPromptApproved, {

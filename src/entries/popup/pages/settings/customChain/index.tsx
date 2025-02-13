@@ -260,18 +260,7 @@ export function SettingsCustomChain() {
         },
         testnet: customRPC.testnet,
       };
-      addCustomChain(
-        chainId,
-        {
-          ...chain,
-          type: 'custom',
-          activeRpcUrl: rpcUrl,
-          rpcs: {
-            [rpcUrl]: chain,
-          },
-        },
-        customRPC.active ?? false,
-      );
+      addCustomChain(chainId, chain, rpcUrl, customRPC.active ?? false);
       triggerToast({
         title: i18n.t('settings.networks.custom_rpc.network_added'),
         description: i18n.t(

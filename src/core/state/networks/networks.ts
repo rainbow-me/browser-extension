@@ -1,4 +1,3 @@
-import merge from 'lodash/merge';
 import { Chain } from 'viem';
 
 import buildTimeNetworks from 'static/data/networks.json';
@@ -41,7 +40,8 @@ interface NetworkActions {
   getActiveRpcForChain: (chainId: number) => Chain | null;
   addCustomChain: (
     chainId: number,
-    newChainPreferences: ChainPreferences,
+    chain: Chain,
+    rpcUrl: string,
     active: boolean,
   ) => void;
   removeCustomChain: (chainId: number) => boolean;
@@ -317,30 +317,50 @@ export const networkStore = createQueryStore<
       };
     }),
 
-    addCustomChain: (
-      chainId: number,
-      newChainPreferences: ChainPreferences,
-      active: boolean,
-    ) => {
-      if (newChainPreferences.type !== 'custom') return;
-
+    addCustomChain: (chainId, chain, rpcUrl, active) => {
       const { chainOrder, userPreferences } = get();
 
       const order = [...chainOrder].indexOf(chainId);
-      const existing = userPreferences[chainId] || {};
+      const existing = userPreferences[chainId];
 
-      const enabledChainIds = new Set(
-        active ? [...chainOrder, chainId] : [...chainOrder],
-      );
+      const enabledChainIds = new Set([...chainOrder, chainId]);
 
-      set({
-        chainOrder: order === -1 ? [...chainOrder, chainId] : chainOrder,
-        enabledChainIds,
-        userPreferences: {
+      // add the rpc url to the chain if it exists
+      if (existing) {
+        const newUserPrferences = {
           ...userPreferences,
-          [chainId]: merge({}, existing, newChainPreferences),
-        },
-      });
+          [chainId]: {
+            ...existing,
+            activeRpcUrl: active ? rpcUrl : existing.activeRpcUrl,
+            rpcs: {
+              ...existing.rpcs,
+              [rpcUrl]: chain,
+            },
+          },
+        };
+
+        set({
+          chainOrder: order === -1 ? [...chainOrder, chainId] : chainOrder,
+          enabledChainIds,
+          userPreferences: newUserPrferences,
+        });
+      } else {
+        set({
+          chainOrder: order === -1 ? [...chainOrder, chainId] : chainOrder,
+          enabledChainIds,
+          userPreferences: {
+            ...userPreferences,
+            [chainId]: {
+              ...chain,
+              type: 'custom',
+              activeRpcUrl: rpcUrl,
+              rpcs: {
+                [rpcUrl]: chain,
+              },
+            },
+          },
+        });
+      }
     },
 
     removeCustomChain: (chainId: number) => {
