@@ -17,40 +17,27 @@ const getMainChainsHelper = (
   chains: readonly [Chain, ...Chain[]],
   allSupportedChains: Record<number, TransformedChain>,
 ) => {
-  const mainnetSupportedChains = Object.values(allSupportedChains).filter(
-    (chain) => !chain.testnet,
-  );
-
-  const supportedChainIds = new Set(
-    mainnetSupportedChains.map((chain) => chain.id),
-  );
-
-  // All the chains that the user added
-  const customMainChains = chains?.filter(
+  const allMainnetSupportedChainsOrCustomChains = Object.values(
+    allSupportedChains,
+  ).filter(
     (chain) =>
-      !supportedChainIds.has(chain.id) &&
-      !(chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism),
+      (!chain.testnet && chain.type === 'supported') || chain.type === 'custom',
   );
 
-  const customChainsIncludingTestnets = customMainChains.filter(
-    (chain) =>
-      !chain.testnet ||
-      (chain.testnet &&
-        !supportedChainIds.has(chain.id) &&
-        !allSupportedChains[chain.id]),
+  const allCustomWagmiChains = chains.filter(
+    (c) =>
+      !c.testnet &&
+      !allMainnetSupportedChainsOrCustomChains.find((c2) => c2.id === c.id),
   );
 
-  return mainnetSupportedChains
+  return [...allMainnetSupportedChainsOrCustomChains]
     .map(mergedChainToViemChain)
-    .concat(customChainsIncludingTestnets);
+    .concat(allCustomWagmiChains);
 };
 
 export const useMainChains = () => {
   const { chains } = useConfig();
-  console.log(chains);
-  const allSupportedChains = networkStore((state) =>
-    state.getBackendSupportedChains(true),
-  );
+  const allSupportedChains = networkStore((state) => state.getAllChains(true));
 
   return getMainChainsHelper(chains, allSupportedChains);
 };
