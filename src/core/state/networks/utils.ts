@@ -1,10 +1,4 @@
-import {
-  type Chain,
-  avalancheFuji,
-  curtis,
-  inkSepolia,
-  mainnet,
-} from 'viem/chains';
+import { type Chain, mainnet } from 'viem/chains';
 
 import buildTimeNetworks from 'static/data/networks.json';
 import { NetworkState } from '~/core/state/networks/networks';
@@ -370,90 +364,6 @@ export const LOCAL_TESTNETS: Chain[] = [
     rpcUrls: {
       default: {
         http: ['http://127.0.0.1:8545'],
-      },
-    },
-  },
-  {
-    id: avalancheFuji.id,
-    name: avalancheFuji.name,
-    testnet: true,
-    nativeCurrency: {
-      name: avalancheFuji.nativeCurrency.name,
-      symbol: avalancheFuji.nativeCurrency.symbol,
-      decimals: avalancheFuji.nativeCurrency.decimals,
-    },
-    rpcUrls: {
-      default: {
-        http: [avalancheFuji.rpcUrls.default.http[0]],
-      },
-    },
-    blockExplorers: {
-      default: {
-        url: avalancheFuji.blockExplorers.default.url,
-        name: avalancheFuji.blockExplorers.default.name,
-      },
-    },
-  },
-  {
-    id: curtis.id,
-    name: curtis.name,
-    testnet: true,
-    nativeCurrency: {
-      name: curtis.nativeCurrency.name,
-      symbol: curtis.nativeCurrency.symbol,
-      decimals: curtis.nativeCurrency.decimals,
-    },
-    rpcUrls: {
-      default: {
-        http: [curtis.rpcUrls.default.http[0]],
-      },
-    },
-    blockExplorers: {
-      default: {
-        url: curtis.blockExplorers.default.url,
-        name: curtis.blockExplorers.default.name,
-      },
-    },
-  },
-  {
-    id: inkSepolia.id,
-    name: inkSepolia.name,
-    testnet: true,
-    nativeCurrency: {
-      name: inkSepolia.nativeCurrency.name,
-      symbol: inkSepolia.nativeCurrency.symbol,
-      decimals: inkSepolia.nativeCurrency.decimals,
-    },
-    rpcUrls: {
-      default: {
-        http: [inkSepolia.rpcUrls.default.http[0]],
-      },
-    },
-    blockExplorers: {
-      default: {
-        url: inkSepolia.blockExplorers.default.url,
-        name: inkSepolia.blockExplorers.default.name,
-      },
-    },
-  },
-  {
-    id: inkSepolia.id,
-    name: inkSepolia.name,
-    testnet: true,
-    nativeCurrency: {
-      name: inkSepolia.nativeCurrency.name,
-      symbol: inkSepolia.nativeCurrency.symbol,
-      decimals: inkSepolia.nativeCurrency.decimals,
-    },
-    rpcUrls: {
-      default: {
-        http: [inkSepolia.rpcUrls.default.http[0]],
-      },
-    },
-    blockExplorers: {
-      default: {
-        url: inkSepolia.blockExplorers.default.url,
-        name: inkSepolia.blockExplorers.default.name,
       },
     },
   },

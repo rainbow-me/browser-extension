@@ -7,6 +7,7 @@ import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags'
 import { networkStore } from '~/core/state/networks/networks';
 import { promoTypes, useQuickPromoStore } from '~/core/state/quickPromo';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
+import { useMainChains } from '~/core/utils/chains';
 import { Box, Inset, Separator, Symbol, Text } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
@@ -45,6 +46,7 @@ const chainLabel = ({
 
 export function SettingsNetworks() {
   const navigate = useRainbowNavigate();
+  const chains = useMainChains();
   const { seenPromos, setSeenPromo } = useQuickPromoStore();
   const { developerToolsEnabled, setDeveloperToolsEnabled } =
     useDeveloperToolsEnabledStore();
@@ -62,7 +64,7 @@ export function SettingsNetworks() {
     state.getBackendSupportedChains(true),
   );
 
-  const allChains = networkStore((state) => state.getAllChainsSortedByOrder());
+  const allChains = networkStore((state) => state.getAllChains(true));
 
   const onDragEnd = (result: DropResult) => {
     const { destination, draggableId } = result;
@@ -147,7 +149,7 @@ export function SettingsNetworks() {
         <Menu>
           <DraggableContext onDragEnd={onDragEnd} height="fixed">
             <Box>
-              {allChains.map((chain, index) => (
+              {chains.map((chain, index) => (
                 <Box
                   alignItems="center"
                   justifyContent="center"
@@ -242,7 +244,7 @@ export function SettingsNetworks() {
                           ) : null}
                         </ContextMenuContent>
                       </ContextMenu>
-                      {index !== allChains.length - 1 && (
+                      {index !== chains.length - 1 && (
                         <Box
                           paddingHorizontal="14px"
                           position="absolute"

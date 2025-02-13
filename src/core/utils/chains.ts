@@ -15,32 +15,51 @@ import { isLowerCaseMatch } from './strings';
 // Main chains for chain settings
 const getMainChainsHelper = (
   chains: readonly [Chain, ...Chain[]],
-  mainnetSuportedChains: Record<number, TransformedChain>,
+  allSupportedChains: Record<number, TransformedChain>,
 ) => {
-  const customMainChains = chains.filter(
+  const mainnetSupportedChains = Object.values(allSupportedChains).filter(
+    (chain) => !chain.testnet,
+  );
+
+  const supportedChainIds = new Set(
+    mainnetSupportedChains.map((chain) => chain.id),
+  );
+
+  // All the chains that the user added
+  const customMainChains = chains?.filter(
     (chain) =>
-      !mainnetSuportedChains[chain.id] &&
+      !supportedChainIds.has(chain.id) &&
       !(chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism),
   );
 
-  return Object.values(mainnetSuportedChains)
+  const customChainsIncludingTestnets = customMainChains.filter(
+    (chain) =>
+      !chain.testnet ||
+      (chain.testnet &&
+        !supportedChainIds.has(chain.id) &&
+        !allSupportedChains[chain.id]),
+  );
+
+  return mainnetSupportedChains
     .map(mergedChainToViemChain)
-    .concat(customMainChains);
+    .concat(customChainsIncludingTestnets);
 };
 
 export const useMainChains = () => {
   const { chains } = useConfig();
-  const supportedChains = networkStore((state) =>
-    state.getBackendSupportedChains(),
+  console.log(chains);
+  const allSupportedChains = networkStore((state) =>
+    state.getBackendSupportedChains(true),
   );
-  return getMainChainsHelper(chains, supportedChains);
+
+  return getMainChainsHelper(chains, allSupportedChains);
 };
 
 export const getMainChains = () => {
   const { chains } = wagmiConfig;
   return getMainChainsHelper(
     chains,
-    networkStore.getState().getBackendSupportedChains(),
+    networkStore.getState().getBackendSupportedChains(true),
   );
 };
 
