@@ -318,49 +318,50 @@ export const networkStore = createQueryStore<
     }),
 
     addCustomChain: (chainId, chain, rpcUrl, active) => {
-      const { chainOrder, userPreferences } = get();
+      set((state) => {
+        const { chainOrder, userPreferences } = state;
 
-      const order = [...chainOrder].indexOf(chainId);
-      const existing = userPreferences[chainId];
+        const order = [...chainOrder].indexOf(chainId);
+        const existing = userPreferences[chainId];
+        const enabledChainIds = new Set([...chainOrder, chainId]);
 
-      const enabledChainIds = new Set([...chainOrder, chainId]);
-
-      // add the rpc url to the chain if it exists
-      if (existing) {
-        const newUserPrferences = {
-          ...userPreferences,
-          [chainId]: {
-            ...existing,
-            activeRpcUrl: active ? rpcUrl : existing.activeRpcUrl,
-            rpcs: {
-              ...existing.rpcs,
-              [rpcUrl]: chain,
-            },
-          },
-        };
-
-        set({
-          chainOrder: order === -1 ? [...chainOrder, chainId] : chainOrder,
-          enabledChainIds,
-          userPreferences: newUserPrferences,
-        });
-      } else {
-        set({
-          chainOrder: order === -1 ? [...chainOrder, chainId] : chainOrder,
-          enabledChainIds,
-          userPreferences: {
+        // add the rpc url to the chain if it exists
+        if (existing) {
+          const newUserPrferences = {
             ...userPreferences,
             [chainId]: {
-              ...chain,
-              type: 'custom',
-              activeRpcUrl: rpcUrl,
+              ...existing,
+              activeRpcUrl: active ? rpcUrl : existing.activeRpcUrl,
               rpcs: {
+                ...existing.rpcs,
                 [rpcUrl]: chain,
               },
             },
-          },
-        });
-      }
+          };
+
+          return {
+            chainOrder: order === -1 ? [...chainOrder, chainId] : chainOrder,
+            enabledChainIds,
+            userPreferences: newUserPrferences,
+          };
+        } else {
+          return {
+            chainOrder: order === -1 ? [...chainOrder, chainId] : chainOrder,
+            enabledChainIds,
+            userPreferences: {
+              ...userPreferences,
+              [chainId]: {
+                ...chain,
+                type: 'custom',
+                activeRpcUrl: rpcUrl,
+                rpcs: {
+                  [rpcUrl]: chain,
+                },
+              },
+            },
+          };
+        }
+      });
     },
 
     removeCustomChain: (chainId: number) => {
