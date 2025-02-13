@@ -8,7 +8,7 @@ import {
 import { useUserAssets } from '~/core/resources/assets';
 import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
-import { AddressOrEth, ParsedUserAsset } from '~/core/types/assets';
+import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
@@ -24,7 +24,7 @@ const sortBy = (by: SortMethod) => {
 };
 
 export const useSendAsset = () => {
-  const { currentAddress: address } = useCurrentAddressStore();
+  const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency } = useCurrentCurrencyStore();
   const [sortMethod, setSortMethod] = useState<SortMethod>('token');
 
@@ -34,20 +34,23 @@ export const useSendAsset = () => {
   const [selectedAssetChain, setSelectedAssetChain] = useState<ChainId>(
     ChainId.mainnet,
   );
-  const { data: assets = [] } = useUserAssets(
+  const { data: userAssets = [] } = useUserAssets(
     {
-      address,
+      address: currentAddress,
       currency: currentCurrency,
     },
     {
       select: (data) =>
-        selectorFilterByUserChains({ data, selector: sortBy(sortMethod) }),
+        selectorFilterByUserChains({
+          data,
+          selector: sortBy(sortMethod),
+        }),
     },
   );
 
   const { data: customNetworkAssets = [] } = useCustomNetworkAssets(
     {
-      address,
+      address: currentAddress,
       currency: currentCurrency,
     },
     {
@@ -64,27 +67,17 @@ export const useSendAsset = () => {
     [],
   );
 
-  const combinedAssets = useMemo(
+  const allAssets = useMemo(
     () =>
       Array.from(
         new Map(
-          [...customNetworkAssets, ...assets].map((item) => [
+          [...customNetworkAssets, ...userAssets].map((item) => [
             item.uniqueId,
             item,
           ]),
         ).values(),
       ),
-    [assets, customNetworkAssets],
-  );
-
-  const allAssets = useMemo(
-    () =>
-      combinedAssets.sort(
-        (a: ParsedUserAsset, b: ParsedUserAsset) =>
-          parseFloat(b?.native?.balance?.amount) -
-          parseFloat(a?.native?.balance?.amount),
-      ),
-    [combinedAssets],
+    [userAssets, customNetworkAssets],
   );
 
   const asset = useMemo(
