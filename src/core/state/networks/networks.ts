@@ -6,7 +6,6 @@ import { fetchNetworks } from '~/core/resources/networks/networks';
 import { favoritesStore } from '~/core/state/favorites';
 import { createQueryStore } from '~/core/state/internal/createQueryStore';
 import {
-  LOCAL_NETWORKS,
   buildInitialUserPreferences,
   differenceOrUnionOf,
   mergeChainData,
@@ -26,10 +25,8 @@ import {
 
 const IS_DEV = process.env.IS_DEV === 'true';
 const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
-const IS_TESTING = process.env.IS_TESTING === 'true';
 
 const DEFAULT_PRIVATE_MEMPOOL_TIMEOUT = 2 * 60 * 1_000; // 2 minutes
-const LOCAL_TESTING_NETWORKS = IS_TESTING ? LOCAL_NETWORKS : [];
 
 export interface NetworkState {
   networks: Networks; // contains backend-driven networks and backend-driven custom networks
@@ -517,20 +514,14 @@ export const networkStore = createQueryStore<
     getSupportedCustomNetworks: createSelector(
       ({ networks, mergedChainData }) => {
         const existingNetworks = Object.keys(mergedChainData).map(Number);
-        return [
-          ...networks.customNetworks.customNetworks,
-          ...LOCAL_TESTING_NETWORKS,
-        ]
+        return networks.customNetworks.customNetworks
           .filter((network) => !existingNetworks.includes(network.id))
           .sort((a, b) => a.name.localeCompare(b.name));
       },
     ),
 
     getSupportedCustomNetworksIconUrls: createSelector(({ networks }) => {
-      return [
-        ...networks.customNetworks.customNetworks,
-        ...LOCAL_TESTING_NETWORKS,
-      ].reduce(
+      return networks.customNetworks.customNetworks.reduce(
         (acc, network) => ({
           ...acc,
           [network.id]: network.iconURL,
@@ -540,10 +531,7 @@ export const networkStore = createQueryStore<
     }),
 
     getSupportedCustomNetworksTestnetFaucets: createSelector(({ networks }) => {
-      return [
-        ...networks.customNetworks.customNetworks,
-        ...LOCAL_TESTING_NETWORKS,
-      ].reduce(
+      return networks.customNetworks.customNetworks.reduce(
         (acc, network) => ({
           ...acc,
           [network.id]: network.testnet.FaucetURL,
@@ -555,10 +543,9 @@ export const networkStore = createQueryStore<
     getSupportedCustomNetworkTestnetFaucet: createParameterizedSelector(
       ({ networks }) => {
         return (chainId: ChainId) => {
-          const network = [
-            ...networks.customNetworks.customNetworks,
-            ...LOCAL_TESTING_NETWORKS,
-          ].find((network) => network.id === chainId);
+          const network = networks.customNetworks.customNetworks.find(
+            (network) => network.id === chainId,
+          );
           return network?.testnet.FaucetURL;
         };
       },

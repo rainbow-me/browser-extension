@@ -1,4 +1,3 @@
-import { AddressZero } from '@ethersproject/constants';
 import {
   type Chain,
   avalancheFuji,
@@ -16,7 +15,6 @@ import {
   BackendNetworks,
   ChainId,
   ChainPreferences,
-  CustomNetwork,
   Networks,
   TransformedChain,
 } from '~/core/types/chains';
@@ -26,6 +24,7 @@ import { logger } from '~/logger';
 const RPC_PROXY_API_KEY = process.env.RPC_PROXY_API_KEY;
 const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
 const IS_DEV = process.env.IS_DEV === 'true';
+const IS_TESTING = process.env.IS_TESTING === 'true';
 
 export const DEFAULT_PRIVATE_MEMPOOL_TIMEOUT = 2 * 60 * 1_000;
 
@@ -343,130 +342,122 @@ export function getDefaultPollingInterval(chainId: ChainId): number {
   }
 }
 
-export const LOCAL_NETWORKS: CustomNetwork[] = [
+export const LOCAL_TESTNETS: Chain[] = [
   {
     id: 1337,
     name: 'Hardhat',
-    iconURL: '',
-    nativeAsset: {
-      decimals: 18,
+    testnet: true,
+    nativeCurrency: {
+      name: 'Hardhat ETH',
       symbol: 'ETH',
-      iconURL: '',
+      decimals: 18,
     },
-    defaultRPCURL: 'http://127.0.0.1:8545',
-    defaultExplorerURL: '',
-    testnet: {
-      FaucetURL: '',
-      isTestnet: true,
-      mainnetChainID: 1,
+    rpcUrls: {
+      default: {
+        http: ['http://127.0.0.1:8545'],
+      },
     },
   },
   {
     id: 1338,
     name: 'Hardhat OP',
-    iconURL: '',
-    nativeAsset: {
-      decimals: 18,
+    testnet: true,
+    nativeCurrency: {
+      name: 'Hardhat OP',
       symbol: 'ETH',
-      iconURL: '',
-    },
-    defaultRPCURL: 'http://127.0.0.1:8545',
-    defaultExplorerURL: '',
-    testnet: {
-      FaucetURL: '',
-      isTestnet: true,
-      mainnetChainID: 1,
-    },
-  },
-  {
-    id: 1,
-    name: 'Mainnet Fork',
-    iconURL: '',
-    nativeAsset: {
       decimals: 18,
-      symbol: 'ETH',
-      iconURL: '',
     },
-    defaultRPCURL: 'http://127.0.0.1:8545',
-    defaultExplorerURL: '',
-    testnet: {
-      FaucetURL: '',
-      isTestnet: true,
-      mainnetChainID: 1,
-    },
-  },
-  {
-    id: 31337,
-    name: 'Mainnet (Dev)',
-    iconURL: '',
-    nativeAsset: {
-      decimals: 18,
-      symbol: 'ETH',
-      iconURL: '',
-    },
-    defaultRPCURL: 'http://127.0.0.1:8545',
-    defaultExplorerURL: '',
-    testnet: {
-      FaucetURL: '',
-      isTestnet: true,
-      mainnetChainID: 1,
+    rpcUrls: {
+      default: {
+        http: ['http://127.0.0.1:8545'],
+      },
     },
   },
   {
     id: avalancheFuji.id,
     name: avalancheFuji.name,
-    iconURL: '',
-    nativeAsset: {
-      decimals: avalancheFuji.nativeCurrency.decimals,
+    testnet: true,
+    nativeCurrency: {
+      name: avalancheFuji.nativeCurrency.name,
       symbol: avalancheFuji.nativeCurrency.symbol,
-      iconURL: '',
+      decimals: avalancheFuji.nativeCurrency.decimals,
     },
-    defaultRPCURL: avalancheFuji.rpcUrls.default.http[0],
-    defaultExplorerURL: avalancheFuji.blockExplorers.default.name,
-    testnet: {
-      FaucetURL: '',
-      isTestnet: avalancheFuji.testnet,
-      mainnetChainID: avalancheFuji.id,
+    rpcUrls: {
+      default: {
+        http: [avalancheFuji.rpcUrls.default.http[0]],
+      },
+    },
+    blockExplorers: {
+      default: {
+        url: avalancheFuji.blockExplorers.default.url,
+        name: avalancheFuji.blockExplorers.default.name,
+      },
     },
   },
   {
     id: curtis.id,
     name: curtis.name,
-    iconURL: '',
-    nativeAsset: {
-      decimals: curtis.nativeCurrency.decimals,
+    testnet: true,
+    nativeCurrency: {
+      name: curtis.nativeCurrency.name,
       symbol: curtis.nativeCurrency.symbol,
-      iconURL: '',
+      decimals: curtis.nativeCurrency.decimals,
     },
-    defaultRPCURL: curtis.rpcUrls.default.http[0],
-    defaultExplorerURL: curtis.blockExplorers.default.name,
-    testnet: {
-      FaucetURL: '',
-      isTestnet: curtis.testnet,
-      mainnetChainID: curtis.id,
+    rpcUrls: {
+      default: {
+        http: [curtis.rpcUrls.default.http[0]],
+      },
+    },
+    blockExplorers: {
+      default: {
+        url: curtis.blockExplorers.default.url,
+        name: curtis.blockExplorers.default.name,
+      },
     },
   },
   {
     id: inkSepolia.id,
     name: inkSepolia.name,
-    iconURL: '',
-    nativeAsset: {
-      decimals: inkSepolia.nativeCurrency.decimals,
+    testnet: true,
+    nativeCurrency: {
+      name: inkSepolia.nativeCurrency.name,
       symbol: inkSepolia.nativeCurrency.symbol,
-      iconURL: '',
+      decimals: inkSepolia.nativeCurrency.decimals,
     },
-    defaultRPCURL: inkSepolia.rpcUrls.default.http[0],
-    defaultExplorerURL: inkSepolia.blockExplorers.default.name,
-    testnet: {
-      FaucetURL: '',
-      isTestnet: inkSepolia.testnet,
-      mainnetChainID: inkSepolia.id,
+    rpcUrls: {
+      default: {
+        http: [inkSepolia.rpcUrls.default.http[0]],
+      },
+    },
+    blockExplorers: {
+      default: {
+        url: inkSepolia.blockExplorers.default.url,
+        name: inkSepolia.blockExplorers.default.name,
+      },
     },
   },
-].map((n) => ({
-  ...n,
-  nativeAsset: { ...n.nativeAsset, address: AddressZero },
-}));
+  {
+    id: inkSepolia.id,
+    name: inkSepolia.name,
+    testnet: true,
+    nativeCurrency: {
+      name: inkSepolia.nativeCurrency.name,
+      symbol: inkSepolia.nativeCurrency.symbol,
+      decimals: inkSepolia.nativeCurrency.decimals,
+    },
+    rpcUrls: {
+      default: {
+        http: [inkSepolia.rpcUrls.default.http[0]],
+      },
+    },
+    blockExplorers: {
+      default: {
+        url: inkSepolia.blockExplorers.default.url,
+        name: inkSepolia.blockExplorers.default.name,
+      },
+    },
+  },
+];
 
 export const oldDefaultRPC: { [key in ChainId]?: string } = {
   [ChainId.mainnet]: process.env.ETH_MAINNET_RPC,
@@ -508,7 +499,11 @@ export const mergeChainData = (
     networks.backendNetworks.networks,
   );
 
-  for (const chain of backendNetworks) {
+  const LOCAL_TEST_NETWORKS = IS_TESTING ? LOCAL_TESTNETS : [];
+
+  const allNetworks = [...LOCAL_TEST_NETWORKS, ...backendNetworks];
+
+  for (const chain of allNetworks) {
     const chainId = chain.id;
     const userPrefs = userPreferences[chainId];
     const order = chainOrder.indexOf(chainId);
