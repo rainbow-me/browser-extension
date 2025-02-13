@@ -19,6 +19,7 @@ export enum SimpleHashChain {
   B3Sepolia = 'b3-sepolia',
   Base = 'base',
   BaseSepolia = 'base-sepolia',
+  Berachain = 'berachain',
   Blast = 'blast',
   BlastSepolia = 'blast-sepolia',
   Bsc = 'bsc',

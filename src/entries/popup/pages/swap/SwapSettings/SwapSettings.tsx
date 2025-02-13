@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
+import { RAINBOW_LEARN_URL } from '~/core/references/links';
 import { useCurrentAddressStore } from '~/core/state';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { ChainId } from '~/core/types/chains';
@@ -151,7 +152,7 @@ const getRoutingExplainerProps = (t: I18n['t']) => ({
     openText: t('swap.settings.explainers.routing.read_more.open_text'),
     linkText: t('swap.settings.explainers.routing.read_more.link_text'),
     closeText: t('swap.settings.explainers.routing.read_more.close_text'),
-    link: 'https://learn.rainbow.me/swap-with-confidence-with-rainbow',
+    link: `${RAINBOW_LEARN_URL}/swap-with-confidence-with-rainbow`,
   },
 });
 

@@ -45,6 +45,7 @@ export interface RainbowConfig extends Record<string, any> {
     [ChainName.ink]: number;
     [ChainName.gravity]: number;
     [ChainName.sanko]: number;
+    [ChainName.berachain]: number;
   };
 }
 
@@ -75,6 +76,7 @@ const DEFAULT_CONFIG = {
     ink: 500,
     gravity: 500,
     sanko: 500,
+    berachain: 500,
   },
 };
 
