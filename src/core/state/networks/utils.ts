@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import { type Chain, mainnet } from 'viem/chains';
 
 import buildTimeNetworks from 'static/data/networks.json';
@@ -158,6 +159,35 @@ const isUserChainOrderMalformed = (userChainsOrder: number[]) => {
   return userChainsOrder.some((id) => id == null || Number.isNaN(id));
 };
 
+const buildNewUserPreferences = (
+  initialNonInternalNetworks: BackendNetworks['networks'],
+  enabledChainIds: Set<number>,
+) => {
+  const userPreferences: Record<number, ChainPreferences> = {};
+  const chainOrder = initialNonInternalNetworks
+    .map(({ id }) => toChainId(id))
+    .sort((a, b) => a - b);
+
+  for (const supportedNetwork of initialNonInternalNetworks) {
+    const chainIdNum = toChainId(supportedNetwork.id);
+    userPreferences[chainIdNum] = {} as ChainPreferences;
+    const defaultRpcUrl = proxyBackendNetworkRpcEndpoint(
+      supportedNetwork.defaultRPC.url,
+    );
+    userPreferences[chainIdNum].activeRpcUrl = defaultRpcUrl;
+    userPreferences[chainIdNum].rpcs = {
+      [defaultRpcUrl]: transformBackendNetworkToChain(supportedNetwork),
+    };
+    userPreferences[chainIdNum].type = 'supported';
+  }
+
+  return {
+    userPreferences,
+    chainOrder,
+    enabledChainIds,
+  };
+};
+
 export const buildInitialUserPreferences = (
   initialSupportedNetworks = buildTimeNetworks,
 ): Pick<NetworkState, 'userPreferences' | 'chainOrder' | 'enabledChainIds'> => {
@@ -173,6 +203,10 @@ export const buildInitialUserPreferences = (
 
   const { rainbowChains } = useRainbowChainsStore.getState();
   const { userChains, userChainsOrder } = useUserChainsStore.getState();
+
+  if (isEmpty(rainbowChains) || isEmpty(userChains)) {
+    return buildNewUserPreferences(initialNonInternalNetworks, enabledChainIds);
+  }
 
   let order = userChainsOrder;
   if (isUserChainOrderMalformed(order)) {

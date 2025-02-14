@@ -321,6 +321,8 @@ export const networkStore = createQueryStore<
         const existing = userPreferences[chainId];
         const enabledChainIds = new Set([...chainOrder, chainId]);
 
+        console.log(chainId, existing);
+
         // add the rpc url to the chain if it exists
         if (existing) {
           const newUserPrferences = {
@@ -335,13 +337,17 @@ export const networkStore = createQueryStore<
             },
           };
 
+          console.log(newUserPrferences);
+
           return {
+            ...state,
             chainOrder: order === -1 ? [...chainOrder, chainId] : chainOrder,
             enabledChainIds,
             userPreferences: newUserPrferences,
           };
         } else {
           return {
+            ...state,
             chainOrder: order === -1 ? [...chainOrder, chainId] : chainOrder,
             enabledChainIds,
             userPreferences: {
