@@ -16,6 +16,7 @@ import { staleBalancesStore } from '~/core/state/staleBalances';
 import { ParsedAssetsDictByChain, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { AddressAssetsReceivedMessage } from '~/core/types/refraction';
+import { getSupportedChains } from '~/core/utils/chains';
 import { RainbowError, logger } from '~/logger';
 
 import { parseUserAssets } from './common';
@@ -128,11 +129,18 @@ async function userAssetsQueryFunction({
     const supportedAssetsChainIds = networkStore
       .getState()
       .getSupportedAssetsChainIds();
+
+    const supportedChainIds = getSupportedChains({
+      testnets: testnetMode,
+    })
+      .map(({ id }) => id)
+      .filter((id) => supportedAssetsChainIds.includes(id));
+
     staleBalancesStore.getState().clearExpiredData(address as Address);
     const staleBalancesParam = staleBalancesStore
       .getState()
       .getStaleBalancesQueryParam(address as Address);
-    const url = `/${supportedAssetsChainIds.join(
+    const url = `/${supportedChainIds.join(
       ',',
     )}/${address}/assets/?currency=${currency.toLowerCase()}${staleBalancesParam}`;
     const res = await addysHttp.get<AddressAssetsReceivedMessage>(url, {
