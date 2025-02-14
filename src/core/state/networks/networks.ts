@@ -81,6 +81,8 @@ interface NetworkActions {
   ) => number[];
   getMeteorologySupportedChainIds: () => number[];
   getSupportedSwapChainIds: () => number[];
+  getSupportedSwapExactOutputChainIds: () => number[];
+  getSupportedBridgeExactOutputChainIds: () => number[];
   getSupportedApprovalsChainIds: () => number[];
   getSupportedTransactionsChainIds: () => number[];
   getSupportedAssetsChainIds: () => number[];
@@ -693,6 +695,18 @@ export const networkStore = createQueryStore<
 
     getSupportedSwapChainIds: createSelector(() => {
       return get().filterChainIdsByService((services) => services.swap.enabled);
+    }),
+
+    getSupportedSwapExactOutputChainIds: createSelector(() => {
+      return get().filterChainIdsByService(
+        (services) => services.swap.swapExactOutput,
+      );
+    }),
+
+    getSupportedBridgeExactOutputChainIds: createSelector(() => {
+      return get().filterChainIdsByService(
+        (services) => services.swap.bridgeExactOutput,
+      );
     }),
 
     getSupportedApprovalsChainIds: createSelector(() => {
