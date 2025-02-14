@@ -13,11 +13,15 @@ async function fetchData() {
       id
       name
       label
+      colors {
+        light
+        dark
+      }
       icons {
         badgeURL
       }
-      testnet
       internal
+      testnet
       opStack
       defaultExplorer {
         url
@@ -55,12 +59,12 @@ async function fetchData() {
         }
       }
       nativeWrappedAsset {
-          address
-          name
-          symbol
-          decimals
-          iconURL
-          colors {
+        address
+        name
+        symbol
+        decimals
+        iconURL
+        colors {
           primary
           fallback
           shadow
@@ -70,8 +74,15 @@ async function fetchData() {
         meteorology {
           enabled
         }
+        notifications {
+          enabled
+        }
         swap {
           enabled
+          swap
+          swapExactOutput
+          bridge
+          bridgeExactOutput
         }
         addys {
           approvals

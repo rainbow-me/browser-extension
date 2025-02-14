@@ -1,10 +1,13 @@
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Address } from 'viem';
 
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
+import {
+  supportedBridgeExactOutputChainIds,
+  supportedSwapExactOutputChainIds,
+} from '~/core/references/chains';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore, useGasStore } from '~/core/state';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
@@ -726,6 +729,18 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
   const assetToBuyAccentColor =
     assetToBuy?.colors?.primary || assetToBuy?.colors?.fallback;
 
+  const tokenToBuyInputEnabled = useMemo(() => {
+    if (!assetToBuy?.chainId) return false;
+    if (isCrosschainSwap) return false;
+    if (
+      assetToSell?.chainId === assetToBuy?.chainId &&
+      supportedBridgeExactOutputChainIds.includes(assetToBuy?.chainId)
+    ) {
+      return true;
+    }
+    return supportedSwapExactOutputChainIds.includes(assetToBuy?.chainId);
+  }, [assetToBuy?.chainId, isCrosschainSwap, assetToSell?.chainId]);
+
   return (
     <TranslationContext value={translationContext}>
       <Navbar
@@ -900,7 +915,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                   openDropdownOnMount={
                     inputToOpenOnMount === 'buy' && !assetToBuy
                   }
-                  inputDisabled={isCrosschainSwap}
+                  inputDisabled={!tokenToBuyInputEnabled}
                   assetToBuyNativeDisplay={assetToBuyNativeDisplay}
                   assetToSellNativeDisplay={assetToSellNativeDisplay}
                   setIndependentField={setIndependentField}
