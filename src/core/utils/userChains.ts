@@ -7,7 +7,12 @@ export const sortNetworks = (order: number[], chains: Chain[]) => {
     .getState()
     .getBackendChainIdsByMainnetId();
   const allChainsOrder = order
-    ?.map((chainId) => chainIdsBasedOnMainnetId[chainId] || [chainId])
+    ?.map((chainId) => {
+      if (chainIdsBasedOnMainnetId[chainId]) {
+        return [...chainIdsBasedOnMainnetId[chainId], chainId];
+      }
+      return [chainId];
+    })
     ?.flat();
   const ordered = chains.sort((a, b) => {
     const aIndex = allChainsOrder.indexOf(a.id);

@@ -235,9 +235,9 @@ export function SettingsCustomChain() {
 
   const addCustomRpc = useCallback(async () => {
     const rpcUrl = customRPC.rpcUrl;
-    const chainId = customRPC.chainId || chainMetadata?.chainId;
-    const name = customRPC.name;
-    const symbol = customRPC.symbol;
+    const chainId = customRPC.chainId || chainMetadata?.chainId || chain?.id;
+    const name = customRPC.name || chain?.name;
+    const symbol = customRPC.symbol || chain?.nativeCurrency.symbol;
     const valid = validateAddCustomRpc();
 
     if (valid && rpcUrl && chainId && name && symbol) {
@@ -272,6 +272,7 @@ export function SettingsCustomChain() {
       navigate(-1);
     }
   }, [
+    chain,
     chainMetadata?.chainId,
     customRPC,
     navigate,

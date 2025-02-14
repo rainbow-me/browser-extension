@@ -9,7 +9,7 @@ export const getNetworkNativeAssetUniqueId = ({
   chainId?: ChainId;
 }): UniqueId => {
   const nativeAssetAddress =
-    networkStore.getState().getChainsNativeAsset()[chainId].address ||
+    networkStore.getState().getChainsNativeAsset()[chainId]?.address ||
     ETH_ADDRESS;
   return `${nativeAssetAddress}_${chainId}`;
 };

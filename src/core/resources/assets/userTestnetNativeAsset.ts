@@ -1,3 +1,4 @@
+import { ETH_ADDRESS } from '@rainbow-me/swaps';
 import { useQuery } from '@tanstack/react-query';
 import { Address } from 'viem';
 
@@ -19,9 +20,9 @@ const USER_ASSETS_REFETCH_INTERVAL = 60000;
 
 export const getNativeAssetMock = ({ chainId }: { chainId: ChainId }) => {
   const chain = getChain({ chainId });
-  const { address: nativeAssetAddress } = networkStore
-    .getState()
-    .getChainsNativeAsset()[chainId];
+  const nativeAssetAddress =
+    networkStore.getState().getChainsNativeAsset()[chainId]?.address ||
+    ETH_ADDRESS;
   const chainLabel = networkStore.getState().getChainsLabel()[chainId];
   const nativeAssetMock = {
     address: nativeAssetAddress as AddressOrEth,
@@ -43,7 +44,7 @@ export const getNativeAssetMock = ({ chainId }: { chainId: ChainId }) => {
       relative_change_24h: 0,
     },
     symbol: chain.nativeCurrency.symbol,
-    uniqueId: `native_asset_${chain.id}`,
+    uniqueId: `${nativeAssetAddress}_${chain.id}`,
   } satisfies ParsedUserAsset;
   return nativeAssetMock;
 };

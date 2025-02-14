@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+import { ETH_ADDRESS } from '~/core/references';
 import { networkStore } from '~/core/state/networks/networks';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { ParsedSearchAsset } from '~/core/types/assets';
@@ -330,7 +331,8 @@ export const useSwapInputs = ({
       if (!supportedChain) return null;
 
       if (!isNativeAsset(asset.address, chainId)) {
-        const chainNativeAddress = nativeAssetsAddresses[chainId].address;
+        const chainNativeAddress =
+          nativeAssetsAddresses[chainId]?.address || ETH_ADDRESS;
         // Return native asset for this chain
         return {
           uniqueId: `${chainNativeAddress}_${chainId}`,

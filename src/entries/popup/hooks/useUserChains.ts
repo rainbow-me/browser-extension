@@ -7,42 +7,64 @@ import { sortNetworks } from '~/core/utils/userChains';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
+const checkIfTesting = (chainId: ChainId, testnetMode: boolean) => {
+  if (IS_TESTING) {
+    return testnetMode
+      ? chainId === ChainId.hardhatOptimism
+      : chainId === ChainId.hardhat;
+  }
+  return false;
+};
+
 export const useUserChains = () => {
-  const { enabledChainIds, chainOrder } = networkStore.getState();
+  const { enabledChainIds, chainOrder } = networkStore((state) => ({
+    enabledChainIds: state.enabledChainIds,
+    chainOrder: state.chainOrder,
+  }));
   const { testnetMode } = useTestnetModeStore();
-  const supportedChains = networkStore((state) =>
-    state.getAllChainsSortedByOrder(testnetMode),
-  );
-  const chainIdsBasedOnMainnetId = networkStore((state) =>
+
+  const allSupportedChains = networkStore((state) => state.getAllChains(true));
+  const chainIdsByMainnetId = networkStore((state) =>
     state.getBackendChainIdsByMainnetId(),
   );
 
-  const chains = useMemo(() => {
-    const allAvailableUserChains = Array.from(enabledChainIds)
-      .map((chainId) => chainIdsBasedOnMainnetId[chainId] || [chainId])
+  const availableChains = useMemo(() => {
+    const disabledChains = Object.values(allSupportedChains).filter(
+      (chain) => !enabledChainIds.has(chain.id),
+    );
+    const allDisabledChains = disabledChains
+      .filter(
+        (chain) =>
+          chain.id !== ChainId.hardhat && chain.id !== ChainId.hardhatOptimism,
+      )
+      .map((chain) => {
+        if (chainIdsByMainnetId[chain.id]) {
+          return [...chainIdsByMainnetId[chain.id], chain.id];
+        }
+        return [chain.id];
+      })
       .flat();
 
-    const checkIfTesting = (chainId: ChainId) => {
-      if (IS_TESTING) {
-        return testnetMode
-          ? chainId === ChainId.hardhatOptimism
-          : chainId === ChainId.hardhat;
-      }
-      return false;
-    };
-
-    const chains = supportedChains.filter(
-      ({ id }) => !allAvailableUserChains.includes(id) || checkIfTesting(id),
+    const chains = Object.values(allSupportedChains).filter(
+      (chain) =>
+        (checkIfTesting(chain.id, testnetMode) ||
+          !allDisabledChains.includes(chain.id)) &&
+        (testnetMode
+          ? !!chain.testnet
+          : !chain.testnet ||
+            (IS_TESTING &&
+              (chain.id === ChainId.hardhat ||
+                chain.id === ChainId.hardhatOptimism))),
     );
 
     return sortNetworks(chainOrder, chains);
   }, [
-    enabledChainIds,
-    chainIdsBasedOnMainnetId,
-    chainOrder,
     testnetMode,
-    supportedChains,
+    enabledChainIds,
+    chainOrder,
+    chainIdsByMainnetId,
+    allSupportedChains,
   ]);
 
-  return { chains };
+  return { chains: availableChains };
 };

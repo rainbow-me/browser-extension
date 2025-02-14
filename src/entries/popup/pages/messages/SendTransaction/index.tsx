@@ -212,7 +212,7 @@ export function SendTransaction({
         activeSession?.chainId,
       );
       selectAssetAddressAndChain(
-        chainsNativeAsset[activeChainId].address as AddressOrEth,
+        chainsNativeAsset[activeChainId]?.address as AddressOrEth,
         activeChainId,
       );
     }

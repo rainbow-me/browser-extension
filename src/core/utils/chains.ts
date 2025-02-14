@@ -30,7 +30,7 @@ const getMainChainsHelper = (
       !allMainnetSupportedChainsOrCustomChains.find((c2) => c2.id === c.id),
   );
 
-  return [...allMainnetSupportedChainsOrCustomChains]
+  return allMainnetSupportedChainsOrCustomChains
     .map(mergedChainToViemChain)
     .concat(allCustomWagmiChains);
 };
@@ -89,7 +89,7 @@ export function isNativeAsset(address: AddressOrEth, chainId: ChainId) {
   }
 
   return isLowerCaseMatch(
-    networkStore.getState().getChainsNativeAsset()[chainId].address,
+    networkStore.getState().getChainsNativeAsset()[chainId]?.address,
     address,
   );
 }
