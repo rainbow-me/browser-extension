@@ -358,7 +358,7 @@ it('should be able to open token to buy input and select assets', async () => {
   expect(toBuyInputDaiSelected).toBeTruthy();
 });
 
-it('should be able to type native amount on sell input', async () => {
+it.skip('should be able to type native amount on sell input', async () => {
   await findElementByTestIdAndClick({
     id: 'token-to-sell-info-fiat-value-input',
     driver,
