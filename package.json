@@ -204,7 +204,7 @@
     "css-loader": "6.7.1",
     "dotenv-webpack": "8.0.1",
     "esbuild": "0.25.0",
-    "esbuild-register": "3.4.1",
+    "esbuild-register": "3.6.0",
     "eslint": "8.48.0",
     "eslint-config-prettier": "9.0.0",
     "eslint-config-rainbow": "4.4.0",
