@@ -74,13 +74,6 @@ const InfoButtonOptions = ({
       subLabel: truncateAddress(account),
       symbol: 'doc.on.doc.fill',
     },
-    {
-      label: i18n.t('wallet.edit_appearance'),
-      symbol: 'paintbrush.pointed.fill',
-      onSelect: () => void {},
-      disabled: true,
-      separator: true,
-    },
     ...(unhideWallet
       ? [
           {
