@@ -88,13 +88,6 @@ const infoButtonOptions = ({
       symbol: 'doc.on.doc.fill',
     },
     {
-      label: i18n.t('wallet.edit_appearance'),
-      symbol: 'paintbrush.pointed.fill',
-      onSelect: () => void {},
-      disabled: true,
-      separator: true,
-    },
-    {
       onSelect: () => setRemoveAccount(account),
       label: i18n.t(
         `wallet_switcher.${isWatchedWallet ? 'remove_wallet' : 'hide_wallet'}`,
