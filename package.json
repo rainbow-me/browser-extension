@@ -289,7 +289,9 @@
     "zod": "3.23.8",
     "rollup": "4.22.4",
     "cross-spawn": "6.0.6",
-    "nanoid": "3.3.8"
+    "nanoid": "3.3.8",
+    "elliptic": "6.6.1",
+    "esbuild": "0.25.0"
   },
   "lavamoat": {
     "allowScripts": {
@@ -352,7 +354,8 @@
       "@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false,
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-has": false,
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>tiny-secp256k1": false,
-      "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-hash": false
+      "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-hash": false,
+      "esbuild-register>esbuild": false
     }
   }
 }

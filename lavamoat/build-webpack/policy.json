@@ -11,8 +11,8 @@
     },
     "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight": {
       "packages": {
+        "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>@babel/helper-validator-identifier": true,
         "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>chalk": true,
-        "jest>@jest/core>jest-snapshot>@babel/types>@babel/helper-validator-identifier": true,
         "react>loose-envify>js-tokens": true
       }
     },
@@ -107,17 +107,22 @@
         "child_process.execFileSync": true,
         "child_process.spawn": true,
         "crypto.randomBytes": true,
+        "fs.chmodSync": true,
+        "fs.copyFileSync": true,
         "fs.existsSync": true,
+        "fs.mkdirSync": true,
         "fs.readFile": true,
         "fs.readFileSync": true,
         "fs.unlink": true,
         "fs.unlinkSync": true,
         "fs.writeFile": true,
         "fs.writeFileSync": true,
+        "os.arch": true,
+        "os.endianness": true,
         "os.tmpdir": true,
         "path.basename": true,
+        "path.dirname": true,
         "path.join": true,
-        "path.resolve": true,
         "tty.isatty": true,
         "worker_threads": true
       },
@@ -125,15 +130,19 @@
         "Buffer": true,
         "TextDecoder": true,
         "TextEncoder": true,
+        "URL": true,
+        "WebAssembly.Module": true,
         "__dirname": true,
         "__filename": true,
-        "console.error": true,
         "console.log": true,
+        "console.warn": true,
         "process.cwd": true,
         "process.env.ESBUILD_BINARY_PATH": true,
         "process.env.ESBUILD_MAX_BUFFER": true,
         "process.env.ESBUILD_WORKER_THREADS": true,
-        "process.platform": true
+        "process.platform": true,
+        "process.versions.node.split": true,
+        "setTimeout": true
       }
     },
     "@vanilla-extract/vite-plugin>@vanilla-extract/integration>eval": {
@@ -614,10 +623,10 @@
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-split-export-declaration": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-validator-identifier": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": true,
-        "jest>@jest/core>jest-snapshot>@babel/types": true,
-        "jest>@jest/core>jest-snapshot>@babel/types>@babel/helper-validator-identifier": true
+        "jest>@jest/core>jest-snapshot>@babel/types": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": {
