@@ -240,6 +240,23 @@ export const event = {
    */
   tokenDetailsViewed: 'token_details.viewed',
   /**
+   * Called when a user favorites a token from any entry point
+   */
+  tokenFavorited: 'token.favorited',
+  /**
+   * Called when a user hides a token from any entry point
+   */
+  tokenHidden: 'token.hidden',
+  /**
+   * Called when a user unfavorites a token from any entry point
+   */
+
+  tokenUnfavorited: 'token.unfavorited',
+  /**
+   * Called when a user unhides a token from any entry point
+   */
+  tokenUnhidden: 'token.unhidden',
+  /**
    * Called when a wallet is created/imported/watched or a hardware wallet is connected
    */
   walletAdded: 'wallet.added',
@@ -974,6 +991,46 @@ export type EventProperties = {
       description: boolean;
       iconUrl: boolean;
       price: boolean;
+    };
+  };
+  [event.tokenFavorited]: {
+    /**
+     * Token details.
+     */
+    token: {
+      address: string;
+      chainId: ChainId;
+      symbol: string;
+    };
+  };
+  [event.tokenHidden]: {
+    /**
+     * Token details.
+     */
+    token: {
+      address: string;
+      chainId: ChainId;
+      symbol: string;
+    };
+  };
+  [event.tokenUnfavorited]: {
+    /**
+     * Token details.
+     */
+    token: {
+      address: string;
+      chainId: ChainId;
+      symbol: string;
+    };
+  };
+  [event.tokenUnhidden]: {
+    /**
+     * Token details.
+     */
+    token: {
+      address: string;
+      chainId: ChainId;
+      symbol: string;
     };
   };
   [event.walletBackupQuizSubmitted]: {
