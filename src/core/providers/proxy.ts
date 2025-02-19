@@ -1,5 +1,8 @@
 import { ChainId } from '../types/chains';
 
+const RPC_PROXY_BASE_URL = process.env.RPC_PROXY_BASE_URL;
+const RPC_PROXY_API_KEY = process.env.RPC_PROXY_API_KEY;
+
 const getHost = (endpoint: string) => {
   try {
     const host = new URL(endpoint).host;
@@ -25,9 +28,11 @@ export const proxyRpcEndpoint = (endpoint: string, chainId: ChainId) => {
     !endpoint.match(/http:\/\/172.(1[6-9]|2[0-9]|3[0-1])./) &&
     !isRainbowEndpoint(endpoint)
   ) {
-    return `${process.env.RPC_PROXY_BASE_URL}/${chainId}/${
-      process.env.RPC_PROXY_API_KEY
-    }?custom_rpc=${encodeURIComponent(endpoint)}`;
+    return `${RPC_PROXY_BASE_URL}/${chainId}/${RPC_PROXY_API_KEY}?custom_rpc=${encodeURIComponent(
+      endpoint,
+    )}`;
   }
+
+  // NOTE: backend network endpoints are already proxied
   return endpoint;
 };

@@ -14,7 +14,7 @@ import { ProviderRequestPayload } from '~/core/transports/providerRequestTranspo
 import { ChainId } from '~/core/types/chains';
 import { getChain } from '~/core/utils/chains';
 import { copy, copyAddress } from '~/core/utils/copy';
-import { TestnetFaucet } from '~/core/utils/faucets';
+import { getFaucetsUrl } from '~/core/utils/faucets';
 import { formatDate } from '~/core/utils/formatDate';
 import { truncateString } from '~/core/utils/strings';
 import { goToNewTab } from '~/core/utils/tabs';
@@ -407,7 +407,7 @@ function InsuficientGasFunds({
 
   const token = `${chainName} ${nativeAsset?.symbol}`;
   const faucet =
-    TestnetFaucet[chainId] ||
+    getFaucetsUrl(chainId) ||
     'https://www.alchemy.com/list-of/crypto-faucets-on-ethereum';
 
   const navigate = useRainbowNavigate();

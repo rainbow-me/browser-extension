@@ -10,17 +10,12 @@ import { hasVault, isInitialized, isPasswordSet } from '~/core/keychain';
 import { Messenger } from '~/core/messengers';
 import { CallbackOptions } from '~/core/messengers/internal/createMessenger';
 import {
-  SUPPORTED_CHAINS,
-  SUPPORTED_CHAIN_IDS,
-} from '~/core/references/chains';
-import {
   appSessionsStore,
   notificationWindowStore,
   pendingRequestStore,
-  rainbowChainsStore,
 } from '~/core/state';
 import { featureFlagsStore } from '~/core/state/currentSettings/featureFlags';
-import { userChainsStore } from '~/core/state/userChains';
+import { networkStore } from '~/core/state/networks/networks';
 import { SessionStorage } from '~/core/storage';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
@@ -259,13 +254,14 @@ export const handleProviderRequest = ({
   rnbwHandleProviderRequest({
     providerRequestTransport: providerRequestTransport,
     isSupportedChain: (chainId: number) =>
-      SUPPORTED_CHAIN_IDS.includes(chainId) || isCustomChain(chainId),
+      !!networkStore.getState().getBackendSupportedChain(chainId) ||
+      isCustomChain(chainId),
     getActiveSession: ({ host }: { host: string }) =>
       appSessionsStore.getState().getActiveSession({ host }),
     removeAppSession: ({ host }: { host: string }) =>
       appSessionsStore.getState().removeAppSession({ host }),
     getChainNativeCurrency: (chainId: number) =>
-      SUPPORTED_CHAINS.find((chain) => chain.id === Number(chainId))
+      networkStore.getState().getBackendSupportedChains(true)[chainId]
         ?.nativeCurrency,
     getFeatureFlags: () => featureFlagsStore.getState().featureFlags,
     getProvider: getProvider,
@@ -280,12 +276,10 @@ export const handleProviderRequest = ({
     }): { chainAlreadyAdded: boolean } => {
       const url = callbackOptions?.sender.url || '';
       const host = (isValidUrl(url) && getDappHost(url)) || '';
-      const { rainbowChains, addCustomRPC, setActiveRPC } =
-        rainbowChainsStore.getState();
-      const { addUserChain } = userChainsStore.getState();
-      const alreadyAddedChain = Object.keys(rainbowChains).find(
-        (id) => Number(id) === Number(proposedChain.chainId),
-      );
+      const { getAllChains, addCustomChain } = networkStore.getState();
+
+      const allChains = getAllChains(true);
+      const alreadyAddedChain = allChains[+proposedChain.chainId];
       if (alreadyAddedChain) {
         const {
           chainId,
@@ -305,19 +299,12 @@ export const handleProviderRequest = ({
             default: { name: '', url: blockExplorerUrl },
           },
         };
-        const rainbowChain = rainbowChains[chainObject.id];
-        const alreadyAddedRpcUrl = rainbowChain.chains.find(
-          (chain: Chain) => chain.rpcUrls.default.http[0] === rpcUrl,
-        );
+        const rainbowChain = allChains[chainObject.id];
+        const alreadyAddedRpcUrl = rainbowChain.rpcs[rpcUrl];
         const isActiveRpc = rainbowChain.activeRpcUrl === rpcUrl;
 
         if (!alreadyAddedRpcUrl) {
-          addCustomRPC({ chain: chainObject });
-          addUserChain({ chainId: chainObject.id });
-          setActiveRPC({
-            rpcUrl: rpcUrl,
-            chainId: chainObject.id,
-          });
+          addCustomChain(chainObject.id, chainObject, rpcUrl, true);
         }
 
         let rpcStatus;
@@ -371,16 +358,17 @@ export const handleProviderRequest = ({
       const host = (isValidUrl(url || '') && getDappHost(url)) || '';
       const extensionUrl = chrome.runtime.getURL('');
       const proposedChainId = Number(proposedChain.chainId);
-      const chain = rainbowChainsStore
+      const chain = networkStore
         .getState()
-        .getActiveChain({ chainId: proposedChainId });
-      const supportedChainId =
+        .getActiveRpcForChain(proposedChainId);
+      const supportedChain =
         isCustomChain(proposedChainId) ||
-        SUPPORTED_CHAIN_IDS.includes(proposedChainId);
+        !!networkStore.getState().getBackendSupportedChain(proposedChainId);
+
       inpageMessenger?.send('rainbow_ethereumChainEvent', {
         chainId: proposedChainId,
         chainName: chain?.name || 'NO NAME',
-        status: !supportedChainId
+        status: !supportedChain
           ? IN_DAPP_NOTIFICATION_STATUS.unsupported_network
           : IN_DAPP_NOTIFICATION_STATUS.no_active_session,
         extensionUrl,
@@ -408,9 +396,9 @@ export const handleProviderRequest = ({
         chainId: proposedChainId,
         host,
       });
-      const chain = rainbowChainsStore
+      const chain = networkStore
         .getState()
-        .getActiveChain({ chainId: proposedChainId });
+        .getActiveRpcForChain(proposedChainId);
       inpageMessenger?.send('rainbow_ethereumChainEvent', {
         chainId: proposedChainId,
         chainName: chain?.name,

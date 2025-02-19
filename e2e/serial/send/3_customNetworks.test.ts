@@ -120,7 +120,7 @@ it('should be able to add a custom testnet network', async () => {
   await typeOnTextInput({ text: 'Telos EVM Testnet', driver });
   await executePerformShortcut({ driver, key: 'TAB' });
   await typeOnTextInput({
-    text: 'https://testnet.telos.net/evm',
+    text: 'https://rpc.testnet.telos.net',
     driver,
   });
   await executePerformShortcut({ driver, key: 'TAB' });

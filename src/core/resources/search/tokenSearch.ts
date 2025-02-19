@@ -9,6 +9,7 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
+import { networkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 import {
   SearchAsset,
@@ -16,7 +17,6 @@ import {
   TokenSearchListId,
   TokenSearchThreshold,
 } from '~/core/types/search';
-import { getSupportedChains, isCustomChain } from '~/core/utils/chains';
 
 import { parseTokenSearch } from './parseTokenSearch';
 
@@ -40,7 +40,7 @@ export type TokenSearchAllNetworksArgs = {
 // ///////////////////////////////////////////////
 // Query Key
 
-const tokenSearchQueryKey = ({
+export const tokenSearchQueryKey = ({
   chainId,
   fromChainId,
   list,
@@ -57,7 +57,7 @@ type TokenSearchQueryKey = ReturnType<typeof tokenSearchQueryKey>;
 // ///////////////////////////////////////////////
 // Query Function
 
-async function tokenSearchQueryFunction({
+export async function tokenSearchQueryFunction({
   queryKey: [{ chainId, fromChainId, list, query }],
 }: QueryFunctionArgs<typeof tokenSearchQueryKey>) {
   const queryParams: {
@@ -144,12 +144,12 @@ export function useTokenSearchAllNetworks(
     TokenSearchQueryKey
   > = {},
 ) {
-  const rainbowSupportedChains = getSupportedChains({
-    testnets: false,
-  }).filter(({ id }) => !isCustomChain(id));
+  const backendSupportedChains = networkStore((state) =>
+    state.getBackendSupportedChainIds(),
+  );
 
   const queries = useQueries({
-    queries: rainbowSupportedChains.map(({ id: chainId }) => {
+    queries: backendSupportedChains.map((chainId) => {
       return {
         queryKey: tokenSearchQueryKey({ chainId, list, query }),
         queryFn: tokenSearchQueryFunction,

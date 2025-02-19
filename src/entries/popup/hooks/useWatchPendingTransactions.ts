@@ -11,9 +11,9 @@ import {
   usePendingTransactionsStore,
 } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { networkStore } from '~/core/state/networks/networks';
 import { useStaleBalancesStore } from '~/core/state/staleBalances';
 import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
-import { useUserChainsStore } from '~/core/state/userChains';
 import {
   MinedTransaction,
   RainbowTransaction,
@@ -35,7 +35,7 @@ export const useWatchPendingTransactions = ({
   const { currentCurrency } = useCurrentCurrencyStore();
   const addCustomNetworkTransactions =
     useCustomNetworkTransactionsStore.use.addCustomNetworkTransactions();
-  const { userChains } = useUserChainsStore();
+  const enabledChainIds = networkStore((state) => state.enabledChainIds);
   const { testnetMode } = useTestnetModeStore.getState();
   const { addStaleBalance } = useStaleBalancesStore();
 
@@ -188,7 +188,7 @@ export const useWatchPendingTransactions = ({
         queryKey: consolidatedTransactionsQueryKey({
           address,
           currency: currentCurrency,
-          userChainIds: Object.keys(userChains).map(Number),
+          userChainIds: Array.from(enabledChainIds),
         }),
       });
       await queryClient.refetchQueries({
@@ -213,7 +213,7 @@ export const useWatchPendingTransactions = ({
     processPendingTransaction,
     setPendingTransactions,
     testnetMode,
-    userChains,
+    enabledChainIds,
   ]);
 
   return { watchPendingTransactions };

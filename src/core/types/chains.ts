@@ -1,26 +1,24 @@
 import { Chain } from 'viem/chains';
 import * as chains from 'viem/chains';
 
-const HARDHAT_CHAIN_ID = 1337;
-const HARDHAT_OP_CHAIN_ID = 1338;
+import buildTimeNetworks from 'static/data/networks.json';
 
 export const chainHardhat: Chain = {
-  id: HARDHAT_CHAIN_ID,
+  id: 1337,
   name: 'Hardhat',
   nativeCurrency: {
     decimals: 18,
-    name: 'Hardhat',
+    name: 'Hardhat ETH',
     symbol: 'ETH',
   },
   rpcUrls: {
-    public: { http: ['http://127.0.0.1:8545'] },
     default: { http: ['http://127.0.0.1:8545'] },
   },
   testnet: true,
 };
 
 export const chainHardhatOptimism: Chain = {
-  id: HARDHAT_OP_CHAIN_ID,
+  id: 1338,
   name: 'Hardhat OP',
   nativeCurrency: {
     decimals: 18,
@@ -28,7 +26,6 @@ export const chainHardhatOptimism: Chain = {
     symbol: 'ETH',
   },
   rpcUrls: {
-    public: { http: ['http://127.0.0.1:8545'] },
     default: { http: ['http://127.0.0.1:8545'] },
   },
   testnet: true,
@@ -274,84 +271,41 @@ export const chainIdToNameMapping: {
   [ChainId.zoraSepolia]: ChainName.zoraSepolia,
 };
 
-export interface BackendNetworkServices {
-  meteorology: {
-    enabled: boolean;
-  };
-  swap: {
-    enabled: boolean;
-  };
-  addys: {
-    approvals: boolean;
-    transactions: boolean;
-    assets: boolean;
-    positions: boolean;
-  };
-  tokenSearch: {
-    enabled: boolean;
-  };
-  nftProxy: {
-    enabled: boolean;
-  };
-}
+export type Networks = typeof buildTimeNetworks;
+export type BackendNetworks = Networks['backendNetworks'];
+export type BackendNetwork = BackendNetworks['networks'][number];
+export type CustomNetworks = Networks['customNetworks'];
+export type CustomNetwork = CustomNetworks['customNetworks'][number];
 
-export interface BackendNetwork {
-  id: string;
-  name: string;
-  label: string;
-  icons: {
-    badgeURL: string;
-  };
-  testnet: boolean;
-  internal: boolean;
-  opStack: boolean;
-  defaultExplorer: {
-    url: string;
-    label: string;
-    transactionURL: string;
-    tokenURL: string;
-  };
-  defaultRPC: {
-    enabledDevices: string[];
-    url: string;
-  };
-  gasUnits: {
-    basic: {
-      approval: string;
-      swap: string;
-      swapPermit: string;
-      eoaTransfer: string;
-      tokenTransfer: string;
-    };
-    wrapped: {
-      wrap: string;
-      unwrap: string;
-    };
-  };
-  nativeAsset: {
-    address: string;
-    name: string;
-    symbol: string;
-    decimals: number;
-    iconURL: string;
-    colors: {
-      primary: string;
-      fallback: string;
-      shadow: string;
-    };
-  };
-  nativeWrappedAsset: {
-    address: string;
-    name: string;
-    symbol: string;
-    decimals: number;
-    iconURL: string;
-    colors: {
-      primary: string;
-      fallback: string;
-      shadow: string;
-    };
-  };
-  privateMempoolTimeout?: number;
-  enabledServices: BackendNetworkServices;
-}
+// FIXME: Delete this eventually one privateMempoolTimeout is added to the backend
+export type BackendNetworkWithPrivateMempoolTimeout = BackendNetwork & {
+  privateMempoolTimeout: number;
+};
+
+/**
+ * MergedChain is a type that combines a transformation of BackendNetwork -> Chain
+ * with any additional user preferences for that chain.
+ */
+export type TransformedChain = Chain & {
+  type: 'supported' | 'custom';
+  order: number | undefined;
+  enabled: boolean;
+  activeRpcUrl: string;
+  rpcs: Record<string, Chain>;
+};
+
+/**
+ * We only store chain data with preferences for user-added custom networks.
+ * For supported chains, we receive that info from the backend so no need to store it here.
+ */
+export type ChainPreferences = {
+  activeRpcUrl: string;
+  rpcs: Record<string, Chain>;
+} & (
+  | {
+      type: 'supported';
+    }
+  | ({
+      type: 'custom';
+    } & Chain)
+);

@@ -57,7 +57,7 @@
     "// Build and zip": "",
     "bundle": "yarn build && yarn zip",
     "// Runs tests": "",
-    "anvil": "anvil --fork-url $(./scripts/get-rpc-url.sh mainnet) --fork-block-number 21574102 --block-base-fee-per-gas 5000000000 --block-gas-limit 30000000",
+    "anvil": "anvil --fork-url $(./scripts/get-rpc-url.sh mainnet) --fork-block-number 21574102 --block-base-fee-per-gas 1000000000 --block-gas-limit 30000000",
     "anvil:optimism": "anvil --fork-url $(./scripts/get-rpc-url.sh optimism)",
     "anvil:kill": "lsof -i :8545|tail -n +2|awk '{print $2}'|xargs -r kill -s SIGINT",
     "test": "./scripts/unit-tests.sh",
@@ -166,7 +166,7 @@
     "viem": "2.21.55",
     "wagmi": "2.8.1",
     "word-wrap": "1.2.4",
-    "zustand": "4.1.5"
+    "zustand": "4.5.5"
   },
   "devDependencies": {
     "@foundry-rs/hardhat-anvil": "0.1.7",
