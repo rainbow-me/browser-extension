@@ -500,17 +500,19 @@
         "Buffer": true,
         "TextDecoder": true,
         "TextEncoder": true,
+        "URL": true,
         "WebAssembly.Module": true,
         "__dirname": true,
         "__filename": true,
-        "console.error": true,
         "console.log": true,
+        "console.warn": true,
         "process.cwd": true,
         "process.env.ESBUILD_BINARY_PATH": true,
         "process.env.ESBUILD_MAX_BUFFER": true,
         "process.env.ESBUILD_WORKER_THREADS": true,
         "process.platform": true,
-        "process.versions.node.split": true
+        "process.versions.node.split": true,
+        "setTimeout": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": {
