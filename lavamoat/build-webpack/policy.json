@@ -1092,11 +1092,6 @@
         "process.nextTick": true
       }
     },
-    "happy-dom>he": {
-      "globals": {
-        "define": true
-      }
-    },
     "html-webpack-plugin": {
       "builtin": {
         "console.assert": true,
@@ -1135,8 +1130,8 @@
         "document": true
       },
       "packages": {
-        "happy-dom>he": true,
         "html-webpack-plugin>html-minifier-terser>clean-css": true,
+        "html-webpack-plugin>html-minifier-terser>he": true,
         "html-webpack-plugin>html-minifier-terser>relateurl": true,
         "vitest>vite>terser": true
       }
@@ -1167,6 +1162,11 @@
       },
       "packages": {
         "html-webpack-plugin>html-minifier-terser>clean-css>source-map": true
+      }
+    },
+    "html-webpack-plugin>html-minifier-terser>he": {
+      "globals": {
+        "define": true
       }
     },
     "html-webpack-plugin>html-minifier-terser>relateurl": {
