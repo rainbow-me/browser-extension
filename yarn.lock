@@ -4202,10 +4202,10 @@
     eventemitter3 "5.0.1"
     viem "1.21.4"
 
-"@rainbow-me/swaps@0.30.1":
-  version "0.30.1"
-  resolved "https://registry.yarnpkg.com/@rainbow-me/swaps/-/swaps-0.30.1.tgz#e598c01933cbba5c1360380511a54668ce4d6921"
-  integrity sha512-ppigkIdaP08VvoCWLRsbHZubAsUMJ3mGmufm8CIfH62YGunV+LFQY+lsiOsmYMfRXDsrw9h50EW+ILByb1EltQ==
+"@rainbow-me/swaps@0.32.0":
+  version "0.32.0"
+  resolved "https://registry.yarnpkg.com/@rainbow-me/swaps/-/swaps-0.32.0.tgz#0783e43053db130c47ac5634f7eb5fa6bebb263e"
+  integrity sha512-lh+VRFR6XE2rOklJoARiy6wxIrwgNxvv+MM4kx8JgDmrE6z9BQ9jILcTeFQ7oZzxUg6A0gqplSQ85bp3WZnxvw==
   dependencies:
     "@ethereumjs/util" "9.0.0"
     "@ethersproject/abi" "5.7.0"
@@ -16271,17 +16271,10 @@ semver@7.3.8, semver@7.5.2, semver@^5.5.0, semver@^5.6.0, semver@^6.0.0, semver@
   dependencies:
     lru-cache "^6.0.0"
 
-serialize-javascript@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/serialize-javascript/-/serialize-javascript-6.0.0.tgz#efae5d88f45d7924141da8b5c3a7a7e663fefeb8"
-  integrity sha512-Qr3TosvguFt8ePWqsvRfrKyQXIiW+nGbYpy8XK24NQHE83caxWt+mIymTT19DGFbNWNLfEwsrkSmN64lVWB9ag==
-  dependencies:
-    randombytes "^2.1.0"
-
-serialize-javascript@^6.0.1:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/serialize-javascript/-/serialize-javascript-6.0.1.tgz#b206efb27c3da0b0ab6b52f48d170b7996458e5c"
-  integrity sha512-owoXEFjWRllis8/M1Q+Cw5k8ZH40e3zhp/ovX+Xr/vi1qj6QesbyXXViFbpNvWvPNAD62SutwEXavefrLJWj7w==
+serialize-javascript@^6.0.0, serialize-javascript@^6.0.1:
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/serialize-javascript/-/serialize-javascript-6.0.2.tgz#defa1e055c83bf6d59ea805d8da862254eb6a6c2"
+  integrity sha512-Saa1xPByTTq2gdeFZYLLo+RFE35NHZkAbqZeWNd3BpzppeVisAqpDjcp8dyf6uIvEqJRd46jemmyA4iFIeVk8g==
   dependencies:
     randombytes "^2.1.0"
 

@@ -2399,11 +2399,11 @@
         "process.stdout.write": true
       },
       "packages": {
+        "copy-webpack-plugin>serialize-javascript": true,
         "esbuild": true,
         "file-loader>schema-utils": true,
         "webpack>terser-webpack-plugin>@jridgewell/trace-mapping": true,
         "webpack>terser-webpack-plugin>jest-worker": true,
-        "webpack>terser-webpack-plugin>serialize-javascript": true,
         "webpack>terser-webpack-plugin>terser": true
       }
     },
@@ -2446,14 +2446,6 @@
         "lint-staged>execa>merge-stream": true,
         "supports-color": true,
         "webpack>terser-webpack-plugin": true
-      }
-    },
-    "webpack>terser-webpack-plugin>serialize-javascript": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "browserify>crypto-browserify>randombytes": true
       }
     },
     "webpack>terser-webpack-plugin>terser": {

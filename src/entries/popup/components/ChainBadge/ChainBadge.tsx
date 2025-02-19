@@ -4,6 +4,7 @@ import ApeChainBadge from 'static/assets/badges/apechainBadge@3x.png';
 import ArbitrumBadge from 'static/assets/badges/arbitrumBadge@3x.png';
 import AvalancheBadge from 'static/assets/badges/avalancheBadge@3x.png';
 import BaseBadge from 'static/assets/badges/baseBadge@3x.png';
+import BerachainBadge from 'static/assets/badges/berachainBadge@3x.png';
 import BlastBadge from 'static/assets/badges/blastBadge@3x.png';
 import BscBadge from 'static/assets/badges/bscBadge@3x.png';
 import DegenBadge from 'static/assets/badges/degenBadge@3x.png';
@@ -49,6 +50,8 @@ const networkBadges = {
   [ChainId.optimism]: OptimismBadge,
   [ChainId.arbitrum]: ArbitrumBadge,
   [ChainId.base]: BaseBadge,
+  [ChainId.berachain]: BerachainBadge,
+  [ChainId.berachainbArtio]: BerachainBadge,
   [ChainId.zora]: ZoraBadge,
   [ChainId.bsc]: BscBadge,
   [ChainId.avalanche]: AvalancheBadge,
