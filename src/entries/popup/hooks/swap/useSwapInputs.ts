@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { SUPPORTED_CHAINS, chainsNativeAsset } from '~/core/references/chains';
+import { ETH_ADDRESS } from '~/core/references';
+import { networkStore } from '~/core/state/networks/networks';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
@@ -83,6 +84,13 @@ export const useSwapInputs = ({
     saveSwapField,
     swapField: savedSwapField,
   } = usePopupInstanceStore();
+
+  const supportedChains = networkStore((state) =>
+    state.getBackendSupportedChains(true),
+  );
+  const nativeAssetsAddresses = networkStore((state) =>
+    state.getChainsNativeAsset(),
+  );
 
   const assetToSellInputRef = useRef<HTMLInputElement>(null);
   const assetToSellNativeInputRef = useRef<HTMLInputElement>(null);
@@ -318,14 +326,13 @@ export const useSwapInputs = ({
 
       const { chainId } = asset;
 
-      const supportedChain = SUPPORTED_CHAINS.find(
-        (chain) => chain.id === chainId,
-      );
+      const supportedChain = supportedChains[chainId];
 
       if (!supportedChain) return null;
 
       if (!isNativeAsset(asset.address, chainId)) {
-        const chainNativeAddress = chainsNativeAsset[chainId];
+        const chainNativeAddress =
+          nativeAssetsAddresses[chainId]?.address || ETH_ADDRESS;
         // Return native asset for this chain
         return {
           uniqueId: `${chainNativeAddress}_${chainId}`,
@@ -337,7 +344,7 @@ export const useSwapInputs = ({
       }
       return null;
     },
-    [],
+    [supportedChains, nativeAssetsAddresses],
   );
 
   const tokenToBuyInputRef = useRef<TokenInputRef>();
@@ -376,6 +383,8 @@ export const useSwapInputs = ({
       assetToBuy,
       determineOutputCurrency,
       setAssetToBuy,
+      setAssetToSellValue,
+      setAssetToBuyValue,
     ],
   );
 

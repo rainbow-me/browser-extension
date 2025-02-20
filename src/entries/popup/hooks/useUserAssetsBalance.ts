@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Address } from 'viem';
 
 import { SupportedCurrencyKey } from '~/core/references';
@@ -71,15 +71,28 @@ export function useUserAssetsBalance(args?: {
     },
   );
 
-  const totalAssetsBalance =
-    totalAssetsBalanceKnownNetworks && totalAssetsBalanceCustomNetworks
-      ? add(totalAssetsBalanceKnownNetworks, totalAssetsBalanceCustomNetworks)
-      : undefined;
+  const totalAssetsBalance = useMemo(() => {
+    if (totalAssetsBalanceKnownNetworks && totalAssetsBalanceCustomNetworks) {
+      return add(
+        totalAssetsBalanceKnownNetworks,
+        totalAssetsBalanceCustomNetworks,
+      );
+    }
+    if (totalAssetsBalanceKnownNetworks || totalAssetsBalanceCustomNetworks) {
+      return (
+        totalAssetsBalanceKnownNetworks || totalAssetsBalanceCustomNetworks
+      );
+    }
+    return undefined;
+  }, [totalAssetsBalanceKnownNetworks, totalAssetsBalanceCustomNetworks]);
 
   return {
     amount: totalAssetsBalance,
     display: totalAssetsBalance
-      ? convertAmountToNativeDisplay(totalAssetsBalance, currency || currentCurrency)
+      ? convertAmountToNativeDisplay(
+          totalAssetsBalance,
+          currency || currentCurrency,
+        )
       : undefined,
     isLoading: knownNetworksIsLoading || customNetworksIsLoading,
   };

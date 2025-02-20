@@ -1,4 +1,5 @@
 import { i18n } from '~/core/languages';
+import { RAINBOW_LEARN_URL } from '~/core/references/links';
 import { ChainId, chainIdToNameMapping } from '~/core/types/chains';
 
 import { ChainBadge } from './ChainBadge/ChainBadge';
@@ -22,6 +23,8 @@ export const getSideChainExplainerParams = (
   onDismiss: VoidFunction,
 ) => {
   const chainName = chainIdToNameMapping[chainId];
+
+  // FIXME: https://linear.app/rainbow/issue/BACK-1452/provide-locale-copy-from-the-backendnetworks-for-explainers-so-that-we
   const specificChains = {
     [ChainId.polygon]: 'polygon',
     [ChainId.bsc]: 'bsc',
@@ -29,6 +32,9 @@ export const getSideChainExplainerParams = (
     [ChainId.blast]: 'blast',
     [ChainId.degen]: 'degen',
     [ChainId.apechain]: 'apechain',
+    [ChainId.sanko]: 'sanko',
+    [ChainId.gravity]: 'gravity',
+    [ChainId.berachain]: 'berachain',
     // add new chains here with unique i18n explainer keys
   };
 
@@ -49,7 +55,7 @@ export const getSideChainExplainerParams = (
       ] as string[],
       header: { icon: <ChainBadge chainId={chainId} size="45" /> },
       linkButton: {
-        url: 'https://learn.rainbow.me/a-beginners-guide-to-layer-2-networks',
+        url: `${RAINBOW_LEARN_URL}/layer-2-and-layer-3-networks`,
         label: i18n.t(`explainers.sidechains.link_button_label`),
       },
       actionButton: {
@@ -71,7 +77,7 @@ export const getSideChainExplainerParams = (
     ] as string[],
     header: { icon: <ChainBadge chainId={chainId} size="45" /> },
     linkButton: {
-      url: 'https://learn.rainbow.me/a-beginners-guide-to-layer-2-networks',
+      url: `${RAINBOW_LEARN_URL}/layer-2-and-layer-3-networks`,
       label: i18n.t(`explainers.sidechains.link_button_label`),
     },
     actionButton: {

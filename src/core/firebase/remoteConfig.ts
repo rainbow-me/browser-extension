@@ -9,7 +9,8 @@ import {
 
 import { RainbowError, logger } from '~/logger';
 
-import { ChainName } from '../types/chains';
+import { networkStore } from '../state/networks/networks';
+import { ChainId } from '../types/chains';
 
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY_BX,
@@ -30,21 +31,20 @@ export interface RainbowConfig extends Record<string, any> {
   rewards_bridging_enabled: boolean;
   degen_mode: boolean;
   // SWAPS
-  default_slippage_bips: {
-    [ChainName.mainnet]: number;
-    [ChainName.optimism]: number;
-    [ChainName.polygon]: number;
-    [ChainName.arbitrum]: number;
-    [ChainName.base]: number;
-    [ChainName.zora]: number;
-    [ChainName.bsc]: number;
-    [ChainName.avalanche]: number;
-    [ChainName.blast]: number;
-    [ChainName.degen]: number;
-    [ChainName.apechain]: number;
-    [ChainName.ink]: number;
-  };
+  default_slippage_bips: Partial<Record<ChainId, number>>;
 }
+
+export const defaultslippagInBips = (chainId: ChainId) => {
+  switch (chainId) {
+    case ChainId.mainnet:
+      return 100;
+    case ChainId.bsc:
+    case ChainId.polygon:
+      return 200;
+    default:
+      return 500;
+  }
+};
 
 const DEFAULT_CONFIG = {
   // features
@@ -58,20 +58,12 @@ const DEFAULT_CONFIG = {
   rewards_bridging_enabled: true,
   degen_mode: false,
   // SWAPS
-  default_slippage_bips: {
-    arbitrum: 200,
-    mainnet: 100,
-    optimism: 200,
-    polygon: 200,
-    base: 200,
-    zora: 200,
-    bsc: 200,
-    avalanche: 200,
-    blast: 200,
-    degen: 200,
-    apechain: 200,
-    ink: 200,
-  },
+  default_slippage_bips: Object.values(
+    networkStore.getState().getBackendSupportedChains(true),
+  ).reduce<Partial<Record<ChainId, number>>>((acc, chain) => {
+    acc[chain.id] = defaultslippagInBips(chain.id);
+    return acc;
+  }, {}),
 };
 
 // Initialize with defaults in case firebase doesn't respond
@@ -108,8 +100,8 @@ export const init = async () => {
         const realKey = key.replace('BX_', '');
         // Ignore non BX keys
         if (key.startsWith('BX_')) {
-          if (key === 'BX_default_slippage_bips') {
-            config[realKey] = JSON.parse(
+          if (key === 'BX_default_slippage_bips_chainId') {
+            config['default_slippage_bips'] = JSON.parse(
               entry.asString(),
             ) as RainbowConfig['default_slippage_bips'];
           } else if (

@@ -1,21 +1,9 @@
 import { AddressZero } from '@ethersproject/constants';
 
-import ApeChainBadge from 'static/assets/badges/apechainBadge@3x.png';
-import ArbitrumBadge from 'static/assets/badges/arbitrumBadge@3x.png';
-import AvalancheBadge from 'static/assets/badges/avalancheBadge@3x.png';
-import BaseBadge from 'static/assets/badges/baseBadge@3x.png';
-import BlastBadge from 'static/assets/badges/blastBadge@3x.png';
-import BscBadge from 'static/assets/badges/bscBadge@3x.png';
-import DegenBadge from 'static/assets/badges/degenBadge@3x.png';
-import EthereumBadge from 'static/assets/badges/ethereumBadge@3x.png';
-import HardhatBadge from 'static/assets/badges/hardhatBadge@3x.png';
-import InkBadge from 'static/assets/badges/inkBadge@3x.png';
-import OptimismBadge from 'static/assets/badges/optimismBadge@3x.png';
-import PolygonBadge from 'static/assets/badges/polygonBadge@3x.png';
-import ZoraBadge from 'static/assets/badges/zoraBadge@3x.png';
 import { customChainIdsToAssetNames } from '~/core/references/assets';
-import { rainbowChainsStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { networkStore } from '~/core/state/networks/networks';
+import { getBadgeUrl } from '~/core/state/networks/utils';
 import { ChainId } from '~/core/types/chains';
 import { getCustomChainIconUrl } from '~/core/utils/assets';
 import { Box, Text } from '~/design-system';
@@ -41,41 +29,14 @@ export interface ChainIconProps {
   size: keyof typeof chainBadgeSize | number;
 }
 
-const networkBadges = {
-  [ChainId.mainnet]: EthereumBadge,
-  [ChainId.polygon]: PolygonBadge,
-  [ChainId.optimism]: OptimismBadge,
-  [ChainId.arbitrum]: ArbitrumBadge,
-  [ChainId.base]: BaseBadge,
-  [ChainId.zora]: ZoraBadge,
-  [ChainId.bsc]: BscBadge,
-  [ChainId.avalanche]: AvalancheBadge,
-  [ChainId.hardhat]: HardhatBadge,
-  [ChainId.hardhatOptimism]: HardhatBadge,
-  [ChainId.sepolia]: EthereumBadge,
-  [ChainId.holesky]: EthereumBadge,
-  [ChainId.optimismSepolia]: OptimismBadge,
-  [ChainId.bscTestnet]: BscBadge,
-  [ChainId.polygonAmoy]: PolygonBadge,
-  [ChainId.arbitrumSepolia]: ArbitrumBadge,
-  [ChainId.baseSepolia]: BaseBadge,
-  [ChainId.zoraSepolia]: ZoraBadge,
-  [ChainId.avalancheFuji]: AvalancheBadge,
-  [ChainId.blast]: BlastBadge,
-  [ChainId.blastSepolia]: BlastBadge,
-  [ChainId.degen]: DegenBadge,
-  [ChainId.apechain]: ApeChainBadge,
-  [ChainId.apechainCurtis]: ApeChainBadge,
-  [ChainId.ink]: InkBadge,
-  [ChainId.inkSepolia]: InkBadge,
-};
-
 const ChainBadge = ({
   chainId,
   shadow = false,
   size = '18',
 }: ChainIconProps) => {
   const { currentTheme } = useCurrentThemeStore();
+  const chainBadges = networkStore((state) => state.getChainsBadgeUrls());
+  const chain = networkStore((state) => state.getActiveRpcForChain(chainId));
 
   let boxShadow;
   if (shadow) {
@@ -85,12 +46,12 @@ const ChainBadge = ({
         : '0px 2px 6px 0px rgba(0, 0, 0, 0.02), 0px 4px 12px 0px rgba(37, 41, 46, 0.08)';
   }
   const iconSize = typeof size === 'number' ? size : chainBadgeSize[size];
+  const badgeUrl = getBadgeUrl({
+    chainBadges: chainBadges[chainId],
+    size: iconSize,
+  });
 
-  if (
-    !Object.keys(networkBadges).includes(`${chainId}`) &&
-    !customChainIdsToAssetNames[chainId]
-  ) {
-    const chain = rainbowChainsStore.getState().getActiveChain({ chainId });
+  if (!badgeUrl && !customChainIdsToAssetNames[chainId]) {
     return (
       <Box
         borderRadius="round"
@@ -156,12 +117,12 @@ const ChainBadge = ({
         />
       ) : (
         <img
-          src={networkBadges[chainId]}
+          src={badgeUrl}
           width={iconSize}
           height={iconSize}
           loading="lazy"
           style={{
-            borderRadius: iconSize,
+            borderRadius: '50%',
             userSelect: 'none',
           }}
           draggable={false}

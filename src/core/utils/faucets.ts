@@ -17,9 +17,14 @@ import {
   scrollSepolia,
 } from 'viem/chains';
 
-import { ChainId } from '../types/chains';
+import { networkStore } from '~/core/state/networks/networks';
+import { ChainId } from '~/core/types/chains';
 
-export const TestnetFaucet = {
+/**
+ * @deprecated - DO NOT USE THIS DIRECTLY.
+ * Use `getFaucetsUrl` instead below.
+ */
+export const FALLBACK_FAUCETS = {
   [ChainId.sepolia]: 'https://sepoliafaucet.com',
   [ChainId.holesky]: 'https://faucet.quicknode.com/ethereum/holesky',
   [ChainId.optimismSepolia]: 'https://app.optimism.io/faucet',
@@ -32,6 +37,7 @@ export const TestnetFaucet = {
   [ChainId.polygonAmoy]: 'https://faucet.polygon.technology',
   [ChainId.apechainCurtis]: 'https://curtis.hub.caldera.xyz/',
   [ChainId.inkSepolia]: 'https://inkonchain.com/faucet',
+  [ChainId.berachainbArtio]: 'https://bartio.faucet.berachain.com',
   [celoAlfajores.id]: 'https://faucet.celo.org/alfajores',
   [fantomTestnet.id]: 'https://faucet.fantom.network',
   [filecoinCalibration.id]: 'https://beryx.io/faucet',
@@ -48,6 +54,9 @@ export const TestnetFaucet = {
   [palmTestnet.id]: 'https://docs.palm.io/get-started/tokens',
   [polygonZkEvmCardona.id]: 'https://faucet.polygon.technology',
   [polygonZkEvmTestnet.id]: 'https://faucet.polygon.technology',
+  [ChainId.gravitySepolia]:
+    'https://thirdweb.com/gravity-alpha-testnet-sepolia',
+  1992: 'https://sanko-arb-sepolia.hub.caldera.xyz', // testnet faucet for sanko
   [scrollSepolia.id]: 'https://faucet.quicknode.com/scroll/sepolia',
   1123: 'https://bsquared.network/faucet',
   28882: 'https://l2faucet.com',
@@ -60,3 +69,12 @@ export const TestnetFaucet = {
   2024115: 'https://dogechain-demo.caldera.dev/faucet',
   63: 'https://easy.hebeswap.com/#/faucet',
 } as const;
+
+export const getFaucetsUrl = (chainId: number): string | undefined => {
+  const backendDrivenFaucet = networkStore
+    .getState()
+    .getSupportedCustomNetworkTestnetFaucet(chainId);
+  if (backendDrivenFaucet) return backendDrivenFaucet;
+
+  return FALLBACK_FAUCETS[chainId];
+};

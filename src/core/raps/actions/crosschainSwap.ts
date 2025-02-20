@@ -1,9 +1,13 @@
 import { Signer } from '@ethersproject/abstract-signer';
-import { CrosschainQuote, fillCrosschainQuote } from '@rainbow-me/swaps';
+import {
+  CrosschainQuote,
+  SwapType,
+  fillCrosschainQuote,
+} from '@rainbow-me/swaps';
 import { Address } from 'viem';
 
 import { REFERRER, ReferrerType } from '~/core/references';
-import { getChainGasUnits } from '~/core/references/chains';
+import { networkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { isSameAssetInDiffChains } from '~/core/utils/assets';
@@ -41,7 +45,8 @@ export const estimateCrosschainSwapGasLimit = async ({
 }): Promise<string> => {
   const provider = getProvider({ chainId });
   if (!provider || !quote) {
-    return getChainGasUnits(chainId).basic.swap;
+    const chainGasUnits = networkStore.getState().getChainGasUnits(chainId);
+    return chainGasUnits.basic.swap;
   }
   try {
     if (requiresApprove) {
@@ -98,7 +103,7 @@ export const executeCrosschainSwap = async ({
   wallet: Signer;
   referrer?: ReferrerType;
 }) => {
-  if (!wallet || !quote) return null;
+  if (!wallet || !quote || quote.swapType !== SwapType.crossChain) return null;
 
   const transactionParams = {
     gasLimit: toHex(gasLimit) || undefined,

@@ -500,17 +500,19 @@
         "Buffer": true,
         "TextDecoder": true,
         "TextEncoder": true,
+        "URL": true,
         "WebAssembly.Module": true,
         "__dirname": true,
         "__filename": true,
-        "console.error": true,
         "console.log": true,
+        "console.warn": true,
         "process.cwd": true,
         "process.env.ESBUILD_BINARY_PATH": true,
         "process.env.ESBUILD_MAX_BUFFER": true,
         "process.env.ESBUILD_WORKER_THREADS": true,
         "process.platform": true,
-        "process.versions.node.split": true
+        "process.versions.node.split": true,
+        "setTimeout": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": {
@@ -1168,11 +1170,6 @@
         "process.nextTick": true
       }
     },
-    "happy-dom>he": {
-      "globals": {
-        "define": true
-      }
-    },
     "html-webpack-plugin": {
       "builtin": {
         "console.assert": true,
@@ -1211,8 +1208,8 @@
         "document": true
       },
       "packages": {
-        "happy-dom>he": true,
         "html-webpack-plugin>html-minifier-terser>clean-css": true,
+        "html-webpack-plugin>html-minifier-terser>he": true,
         "html-webpack-plugin>html-minifier-terser>relateurl": true,
         "vitest>vite>terser": true
       }
@@ -1243,6 +1240,11 @@
       },
       "packages": {
         "html-webpack-plugin>html-minifier-terser>clean-css>source-map": true
+      }
+    },
+    "html-webpack-plugin>html-minifier-terser>he": {
+      "globals": {
+        "define": true
       }
     },
     "html-webpack-plugin>html-minifier-terser>relateurl": {
@@ -2399,11 +2401,11 @@
         "process.stdout.write": true
       },
       "packages": {
+        "copy-webpack-plugin>serialize-javascript": true,
         "esbuild": true,
         "file-loader>schema-utils": true,
         "webpack>terser-webpack-plugin>@jridgewell/trace-mapping": true,
         "webpack>terser-webpack-plugin>jest-worker": true,
-        "webpack>terser-webpack-plugin>serialize-javascript": true,
         "webpack>terser-webpack-plugin>terser": true
       }
     },
@@ -2446,14 +2448,6 @@
         "lint-staged>execa>merge-stream": true,
         "supports-color": true,
         "webpack>terser-webpack-plugin": true
-      }
-    },
-    "webpack>terser-webpack-plugin>serialize-javascript": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "browserify>crypto-browserify>randombytes": true
       }
     },
     "webpack>terser-webpack-plugin>terser": {

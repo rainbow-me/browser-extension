@@ -1,19 +1,10 @@
-import { Chain, degen, zora } from 'viem/chains';
+import { Chain } from 'viem/chains';
 import create from 'zustand';
 
 import { ChainId } from '~/core/types/chains';
-import { persistOptions } from '~/core/utils/persistOptions';
 
 import { createStore } from '../internal/createStore';
 import { withSelectors } from '../internal/withSelectors';
-
-import {
-  addCustomRPC,
-  getInitialRainbowChains,
-  mergeNewOfficiallySupportedChainsState,
-  removeCustomRPC,
-  replaceChainsWithInitial,
-} from './utils';
 
 export interface RainbowChain {
   activeRpcUrl: string;
@@ -37,7 +28,7 @@ export interface RainbowChainsState {
 
 export const rainbowChainsStore = createStore<RainbowChainsState>(
   (set, get) => ({
-    rainbowChains: getInitialRainbowChains(),
+    rainbowChains: {},
     getActiveChain: ({ chainId }) => {
       const rainbowChains = get().rainbowChains;
       const rainbowChain = rainbowChains[chainId];
@@ -120,112 +111,10 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
     },
   }),
   {
-    persist: persistOptions({
+    persist: {
       name: 'rainbowChains',
-      version: 11,
-      migrations: [
-        // v1 didn't need a migration
-        function v1(s: RainbowChainsState) {
-          return s;
-        },
-
-        // version 2 added support for Avalanche and Avalanche Fuji
-        function v2(state) {
-          const rnbwChainState = state as RainbowChainsState;
-          return mergeNewOfficiallySupportedChainsState(rnbwChainState, [
-            ChainId.avalanche,
-            ChainId.avalancheFuji,
-          ]);
-        },
-
-        // version 3 added support for Blast
-        function v3(state: unknown) {
-          const rnbwChainState = state as RainbowChainsState;
-          return mergeNewOfficiallySupportedChainsState(rnbwChainState, [
-            ChainId.blast,
-          ]);
-        },
-
-        function v4(state: unknown) {
-          const rnbwChainState = state as RainbowChainsState;
-          return removeCustomRPC({
-            state: rnbwChainState,
-            rpcUrl: 'https://rpc.zora.co',
-            rainbowChains: rnbwChainState.rainbowChains,
-          });
-        },
-
-        // version 5 added support for Degen
-        function v5(state: unknown) {
-          const rnbwChainState = state as RainbowChainsState;
-          return mergeNewOfficiallySupportedChainsState(rnbwChainState, [
-            ChainId.degen,
-          ]);
-        },
-
-        // version 6 added support for Zora
-        function v6(state: unknown) {
-          const rnbwChainState = state as RainbowChainsState;
-          if (
-            !rnbwChainState.rainbowChains[zora.id] ||
-            rnbwChainState.rainbowChains[zora.id]?.chains.length === 0
-          ) {
-            return addCustomRPC({ chain: zora, state: rnbwChainState });
-          }
-          return state;
-        },
-
-        function v7(state: unknown) {
-          return state;
-        },
-
-        // version 8 added support for Degen
-        function v8(state: unknown) {
-          const rnbwChainState = state as RainbowChainsState;
-          if (
-            !rnbwChainState.rainbowChains[degen.id] ||
-            rnbwChainState.rainbowChains[degen.id]?.chains.length === 0
-          ) {
-            return addCustomRPC({
-              chain: degen,
-              state: state as RainbowChainsState,
-            });
-          }
-          return state;
-        },
-
-        // This migration intended to resolve issues where we
-        // inadvertently added RPCs supplied by the dApp provider
-        // (i.e. Wagmi add network calls) that replaced the default
-        // RPCs for our supported chains.
-        function v9(state: unknown) {
-          return replaceChainsWithInitial(state as RainbowChainsState);
-        },
-
-        // The previous version of this migration #1738 returned
-        // `getInitialRainbowChains` which reset user custom networks,
-        // RPCs, and active status toggles for all chains.
-        // Now we merge Apechain into the default chains for users
-        // that haven't yet migrated to v10.
-        function v10(state: unknown) {
-          const rnbwChainState = state as RainbowChainsState;
-          return mergeNewOfficiallySupportedChainsState(rnbwChainState, [
-            ChainId.apechain,
-            // not adding `apechainCurtis` because most users already migrated
-          ]);
-        },
-
-        // version 11 added support for Ink and fixed `apechainCurtis`
-        function v11(state: unknown) {
-          const rnbwChainState = state as RainbowChainsState;
-          return mergeNewOfficiallySupportedChainsState(rnbwChainState, [
-            ChainId.apechainCurtis,
-            ChainId.ink,
-            ChainId.inkSepolia,
-          ]);
-        },
-      ],
-    }),
+      version: 13,
+    },
   },
 );
 

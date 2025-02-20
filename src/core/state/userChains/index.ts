@@ -1,8 +1,6 @@
 import create from 'zustand';
 
-import { SUPPORTED_MAINNET_CHAINS } from '~/core/references/chains';
 import { ChainId } from '~/core/types/chains';
-import { persistOptions } from '~/core/utils/persistOptions';
 
 import { createStore } from '../internal/createStore';
 import { withSelectors } from '../internal/withSelectors';
@@ -39,22 +37,10 @@ export interface UserChainsState {
   removeUserChain: ({ chainId }: { chainId: ChainId }) => void;
 }
 
-const initialChains = SUPPORTED_MAINNET_CHAINS.reduce(
-  (acc, chain) => ({
-    ...acc,
-    [chain.id]: true,
-  }),
-  {} as Record<number, boolean>,
-);
-
-const initialUserChainsOrder = SUPPORTED_MAINNET_CHAINS.map(
-  (id) => Number(id) as number,
-);
-
 export const userChainsStore = createStore<UserChainsState>(
   (set, get) => ({
-    userChains: initialChains,
-    userChainsOrder: initialUserChainsOrder,
+    userChains: {},
+    userChainsOrder: [],
     updateUserChains: ({ chainIds, enabled }) => {
       const { userChains } = get();
       const chainsUpdated = chainIds.reduce(
@@ -111,76 +97,10 @@ export const userChainsStore = createStore<UserChainsState>(
     },
   }),
   {
-    persist: persistOptions({
+    persist: {
       name: 'userChains',
-      version: 6,
-      migrations: [
-        // previous naive migrations reset user custom networks and ordering
-        function v1(state: UserChainsState) {
-          return {
-            ...state,
-            userChains: initialChains,
-            userChainsOrder: initialUserChainsOrder,
-          };
-        },
-
-        function v2(state: UserChainsState) {
-          return {
-            ...state,
-            userChains: initialChains,
-            userChainsOrder: initialUserChainsOrder,
-          };
-        },
-
-        function v3(state: UserChainsState) {
-          return {
-            ...state,
-            userChains: initialChains,
-            userChainsOrder: initialUserChainsOrder,
-          };
-        },
-
-        function v4(state: UserChainsState) {
-          return {
-            ...state,
-            userChains: initialChains,
-            userChainsOrder: initialUserChainsOrder,
-          };
-        },
-
-        // v5 adds apechain support
-        function v5(state: UserChainsState) {
-          // previous october migration #1738 inadvertenly reset state
-          // this will only apply to users who have not yet migrated to v5
-          return {
-            ...state,
-            userChains: { ...state.userChains, [ChainId.apechain]: true },
-            userChainsOrder: state.userChainsOrder.includes(ChainId.apechain)
-              ? state.userChainsOrder
-              : [...state.userChainsOrder, ChainId.apechain],
-          };
-        },
-
-        // v6 adds apechainCurtis, ink, inkSepolia support
-        function v6(state: UserChainsState) {
-          const newChains = [
-            ChainId.apechainCurtis,
-            ChainId.ink,
-            ChainId.inkSepolia,
-          ];
-          return {
-            ...state,
-            userChains: {
-              ...state.userChains,
-              ...Object.fromEntries(newChains.map((id) => [id, true])),
-            },
-            userChainsOrder: state.userChainsOrder.concat(
-              newChains.filter((id) => !state.userChainsOrder.includes(id)),
-            ),
-          };
-        },
-      ],
-    }),
+      version: 8,
+    },
   },
 );
 

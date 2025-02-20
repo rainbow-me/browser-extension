@@ -50,7 +50,11 @@ export function ConnectTrezor() {
             {i18n.t('hw.connect_trezor_description')}{' '}
             <TextLink
               color="blue"
-              onClick={() => goToNewTab({ url: 'https://learn.rainbow.me/' })}
+              onClick={() =>
+                goToNewTab({
+                  url: 'https://rainbow.me/support/extension/connect-your-hardware-wallet',
+                })
+              }
             >
               {i18n.t('hw.learn_more')}
             </TextLink>

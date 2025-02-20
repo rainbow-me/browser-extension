@@ -5,8 +5,8 @@ import { initFCM } from '~/core/firebase/fcm';
 import { initializeMessenger } from '~/core/messengers';
 import { initializeSentry } from '~/core/sentry';
 import { syncStores } from '~/core/state/internal/syncStores';
+import { networkStore } from '~/core/state/networks/networks';
 import { localStorageRecycler } from '~/core/storage/localStorageRecycler';
-import { getRainbowChains } from '~/core/utils/rainbowChains';
 import { updateWagmiConfig } from '~/core/wagmi';
 
 import { handleDisconnect } from './handlers/handleDisconnect';
@@ -38,8 +38,8 @@ initFCM();
 handleKeepAlive();
 
 popupMessenger.reply('rainbow_updateWagmiClient', async () => {
-  const { rainbowChains } = getRainbowChains();
-  updateWagmiConfig(rainbowChains);
+  const activeChains = networkStore.getState().getAllActiveRpcChains();
+  updateWagmiConfig(activeChains);
 });
 
 // firefox maps chrome > browser, but it does still use

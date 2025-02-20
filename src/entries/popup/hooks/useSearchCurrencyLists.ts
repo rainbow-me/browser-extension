@@ -1,14 +1,19 @@
 import { isAddress } from '@ethersproject/address';
+import { useQueries } from '@tanstack/react-query';
 import { uniqBy } from 'lodash';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { Address } from 'viem';
 
-import { SUPPORTED_CHAINS } from '~/core/references/chains';
 import { useAssetSearchMetadataAllNetworks } from '~/core/resources/assets/assetMetadata';
 import { useTokenSearch } from '~/core/resources/search';
 import { usePopularInRainbow } from '~/core/resources/search/popularInRainbow';
-import { useTokenSearchAllNetworks } from '~/core/resources/search/tokenSearch';
+import {
+  tokenSearchQueryFunction,
+  tokenSearchQueryKey,
+  useTokenSearchAllNetworks,
+} from '~/core/resources/search/tokenSearch';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { networkStore } from '~/core/state/networks/networks';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { SearchAsset, TokenSearchListId } from '~/core/types/search';
@@ -17,6 +22,7 @@ import { getChain, isNativeAsset } from '~/core/utils/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
 import { useFavoriteAssets } from './useFavoriteAssets';
+import { useUserChains } from './useUserChains';
 
 const VERIFIED_ASSETS_PAYLOAD: {
   list: TokenSearchListId;
@@ -70,6 +76,35 @@ function difference(
   });
 }
 
+function useVerifiedAssetsForSupportedChains(fromChainId?: number) {
+  const { chains } = useUserChains();
+
+  const queries = chains.map(({ id }) => ({
+    queryKey: tokenSearchQueryKey({
+      ...VERIFIED_ASSETS_PAYLOAD,
+      chainId: id,
+      fromChainId,
+    }),
+    queryFn: tokenSearchQueryFunction,
+    refetchOnWindowFocus: false,
+  }));
+
+  const results = useQueries({
+    queries,
+  });
+
+  return {
+    data: chains.reduce(
+      (acc, { id }, index) => {
+        acc[id] = results[index].data || [];
+        return acc;
+      },
+      {} as Record<ChainId, SearchAsset[]>,
+    ),
+    isLoading: results.some((result) => result.isLoading),
+  };
+}
+
 function queryMatchesAsset(
   query: string,
   { symbol, name, address, mainnetAddress }: SearchAsset,
@@ -107,6 +142,9 @@ export function useSearchCurrencyLists({
   const fromChainId = isCrosschainSearch ? inputChainId : undefined;
 
   const { testnetMode } = useTestnetModeStore();
+  const supportedChains = networkStore((state) =>
+    state.getBackendSupportedChains(true),
+  );
 
   const enableAllNetworkTokenSearch =
     isAddress(query) && !testnetMode && !bridge;
@@ -115,102 +153,8 @@ export function useSearchCurrencyLists({
     ? AssetToBuyNetworkSearchStatus.all
     : AssetToBuyNetworkSearchStatus.single;
 
-  // static search data
-  const {
-    data: mainnetVerifiedAssets,
-    isLoading: mainnetVerifiedAssetsLoading,
-  } = useTokenSearch({
-    chainId: ChainId.mainnet,
-    ...VERIFIED_ASSETS_PAYLOAD,
-    fromChainId,
-  });
-
-  const {
-    data: optimismVerifiedAssets,
-    isLoading: optimismVerifiedAssetsLoading,
-  } = useTokenSearch({
-    chainId: ChainId.optimism,
-    ...VERIFIED_ASSETS_PAYLOAD,
-    fromChainId,
-  });
-
-  const { data: bscVerifiedAssets, isLoading: bscVerifiedAssetsLoading } =
-    useTokenSearch({
-      chainId: ChainId.bsc,
-      ...VERIFIED_ASSETS_PAYLOAD,
-      fromChainId,
-    });
-
-  const {
-    data: polygonVerifiedAssets,
-    isLoading: polygonVerifiedAssetsLoading,
-  } = useTokenSearch({
-    chainId: ChainId.polygon,
-    ...VERIFIED_ASSETS_PAYLOAD,
-    fromChainId,
-  });
-
-  const {
-    data: arbitrumVerifiedAssets,
-    isLoading: arbitrumVerifiedAssetsLoading,
-  } = useTokenSearch({
-    chainId: ChainId.arbitrum,
-    ...VERIFIED_ASSETS_PAYLOAD,
-    fromChainId,
-  });
-
-  const { data: baseVerifiedAssets, isLoading: baseVerifiedAssetsLoading } =
-    useTokenSearch({
-      chainId: ChainId.base,
-      ...VERIFIED_ASSETS_PAYLOAD,
-      fromChainId,
-    });
-
-  const { data: zoraVerifiedAssets, isLoading: zoraVerifiedAssetsLoading } =
-    useTokenSearch({
-      chainId: ChainId.zora,
-      ...VERIFIED_ASSETS_PAYLOAD,
-      fromChainId,
-    });
-
-  const {
-    data: avalancheVerifiedAssets,
-    isLoading: avalancheVerifiedAssetsLoading,
-  } = useTokenSearch({
-    chainId: ChainId.avalanche,
-    ...VERIFIED_ASSETS_PAYLOAD,
-    fromChainId,
-  });
-
-  const { data: blastVerifiedAssets, isLoading: blastVerifiedAssetsLoading } =
-    useTokenSearch({
-      chainId: ChainId.blast,
-      ...VERIFIED_ASSETS_PAYLOAD,
-      fromChainId,
-    });
-
-  const { data: degenVerifiedAssets, isLoading: degenVerifiedAssetsLoading } =
-    useTokenSearch({
-      chainId: ChainId.degen,
-      ...VERIFIED_ASSETS_PAYLOAD,
-      fromChainId,
-    });
-
-  const { data: inkVerifiedAssets, isLoading: inkVerifiedAssetsLoading } =
-    useTokenSearch({
-      chainId: ChainId.ink,
-      ...VERIFIED_ASSETS_PAYLOAD,
-      fromChainId,
-    });
-
-  const {
-    data: apechainVerifiedAssets,
-    isLoading: apechainVerifiedAssetsLoading,
-  } = useTokenSearch({
-    chainId: ChainId.apechain,
-    ...VERIFIED_ASSETS_PAYLOAD,
-    fromChainId,
-  });
+  const { data: verifiedAssets, isLoading: verifiedAssetsLoading } =
+    useVerifiedAssetsForSupportedChains(fromChainId);
 
   // current search
   const { data: targetVerifiedAssets, isLoading: targetVerifiedAssetsLoading } =
@@ -300,96 +244,8 @@ export function useSearchCurrencyLists({
     return favorites.filter((asset) => queryMatchesAsset(query, asset));
   }, [favorites, query]);
 
-  // static verified asset lists prefetched to display curated lists
-  // we only display crosschain exact matches if located here
-  const verifiedAssets = useMemo(
-    () => ({
-      [ChainId.mainnet]: {
-        assets: mainnetVerifiedAssets,
-        loading: mainnetVerifiedAssetsLoading,
-      },
-      [ChainId.optimism]: {
-        assets: optimismVerifiedAssets,
-        loading: optimismVerifiedAssetsLoading,
-      },
-      [ChainId.bsc]: {
-        assets: bscVerifiedAssets,
-        loading: bscVerifiedAssetsLoading,
-      },
-      [ChainId.polygon]: {
-        assets: polygonVerifiedAssets,
-        loading: polygonVerifiedAssetsLoading,
-      },
-      [ChainId.arbitrum]: {
-        assets: arbitrumVerifiedAssets,
-        loading: arbitrumVerifiedAssetsLoading,
-      },
-      [ChainId.base]: {
-        assets: baseVerifiedAssets,
-        loading: baseVerifiedAssetsLoading,
-      },
-      [ChainId.zora]: {
-        assets: zoraVerifiedAssets,
-        loading: zoraVerifiedAssetsLoading,
-      },
-      [ChainId.avalanche]: {
-        assets: avalancheVerifiedAssets,
-        loading: avalancheVerifiedAssetsLoading,
-      },
-      [ChainId.blast]: {
-        assets: blastVerifiedAssets,
-        loading: blastVerifiedAssetsLoading,
-      },
-      [ChainId.degen]: {
-        assets: degenVerifiedAssets,
-        loading: degenVerifiedAssetsLoading,
-      },
-      [ChainId.apechain]: {
-        assets: apechainVerifiedAssets,
-        loading: apechainVerifiedAssetsLoading,
-      },
-      [ChainId.ink]: {
-        assets: inkVerifiedAssets,
-        loading: inkVerifiedAssetsLoading,
-      },
-    }),
-    [
-      mainnetVerifiedAssets,
-      mainnetVerifiedAssetsLoading,
-      optimismVerifiedAssets,
-      optimismVerifiedAssetsLoading,
-      bscVerifiedAssets,
-      bscVerifiedAssetsLoading,
-      polygonVerifiedAssets,
-      polygonVerifiedAssetsLoading,
-      arbitrumVerifiedAssets,
-      arbitrumVerifiedAssetsLoading,
-      baseVerifiedAssets,
-      baseVerifiedAssetsLoading,
-      zoraVerifiedAssets,
-      zoraVerifiedAssetsLoading,
-      avalancheVerifiedAssets,
-      avalancheVerifiedAssetsLoading,
-      blastVerifiedAssets,
-      blastVerifiedAssetsLoading,
-      degenVerifiedAssets,
-      degenVerifiedAssetsLoading,
-      apechainVerifiedAssets,
-      apechainVerifiedAssetsLoading,
-      inkVerifiedAssets,
-      inkVerifiedAssetsLoading,
-    ],
-  );
-
-  // temporarily limiting the number of assets to display
-  // for performance after deprecating `isRainbowCurated`
-  const getVerifiedAssets = useCallback(
-    (chainId: ChainId) => verifiedAssets[chainId]?.assets,
-    [verifiedAssets],
-  );
-
   const bridgeAsset = useMemo(() => {
-    const curatedAssets = getVerifiedAssets(outputChainId);
+    const curatedAssets = verifiedAssets[outputChainId];
     const bridgeAsset = curatedAssets?.find((asset) =>
       isLowerCaseMatch(
         asset.mainnetAddress,
@@ -407,38 +263,18 @@ export function useSearchCurrencyLists({
       ? bridgeAsset
       : null;
     return outputChainId === assetToSell?.chainId ? null : filteredBridgeAsset;
-  }, [assetToSell, getVerifiedAssets, outputChainId, query]);
+  }, [assetToSell, verifiedAssets, outputChainId, query]);
 
   const loading = useMemo(() => {
     return query === ''
-      ? verifiedAssets[outputChainId]?.loading
+      ? verifiedAssetsLoading
       : targetVerifiedAssetsLoading || targetUnverifiedAssetsLoading;
   }, [
-    outputChainId,
     targetUnverifiedAssetsLoading,
     targetVerifiedAssetsLoading,
     query,
-    verifiedAssets,
+    verifiedAssetsLoading,
   ]);
-
-  // displayed when no search query is present
-  const curatedAssets = useMemo(
-    () => ({
-      [ChainId.mainnet]: getVerifiedAssets(ChainId.mainnet),
-      [ChainId.optimism]: getVerifiedAssets(ChainId.optimism),
-      [ChainId.bsc]: getVerifiedAssets(ChainId.bsc),
-      [ChainId.polygon]: getVerifiedAssets(ChainId.polygon),
-      [ChainId.arbitrum]: getVerifiedAssets(ChainId.arbitrum),
-      [ChainId.base]: getVerifiedAssets(ChainId.base),
-      [ChainId.zora]: getVerifiedAssets(ChainId.zora),
-      [ChainId.avalanche]: getVerifiedAssets(ChainId.avalanche),
-      [ChainId.blast]: getVerifiedAssets(ChainId.blast),
-      [ChainId.degen]: getVerifiedAssets(ChainId.degen),
-      [ChainId.apechain]: getVerifiedAssets(ChainId.apechain),
-      [ChainId.ink]: getVerifiedAssets(ChainId.ink),
-    }),
-    [getVerifiedAssets],
-  );
 
   const bridgeList = (
     bridge && assetToSell?.networks
@@ -452,7 +288,7 @@ export function useSearchCurrencyLists({
             // filter out the asset we're selling already
             if (
               isSameAsset(assetToSell, { chainId, address }) ||
-              !SUPPORTED_CHAINS.some((n) => n.id === chainId)
+              !supportedChains[chainId]
             )
               return;
             return {
@@ -471,7 +307,7 @@ export function useSearchCurrencyLists({
 
   const crosschainExactMatches = Object.values(verifiedAssets)
     ?.map((verifiedList) => {
-      return verifiedList?.assets?.filter((t) => {
+      return verifiedList?.filter((t) => {
         const symbolMatch = isLowerCaseMatch(t?.symbol, query);
         const nameMatch = isLowerCaseMatch(t?.name, query);
         return symbolMatch || nameMatch;
@@ -519,7 +355,7 @@ export function useSearchCurrencyLists({
     if (query === '') {
       sections.push({
         data: difference(
-          curatedAssets[outputChainId] || [],
+          verifiedAssets[outputChainId] || [],
           otherSectionsAssets,
         ),
         id: 'verified',
@@ -600,7 +436,7 @@ export function useSearchCurrencyLists({
     query,
     enableAllNetworkTokenSearch,
     bridgeList,
-    curatedAssets,
+    verifiedAssets,
     outputChainId,
     targetAllNetworksVerifiedAssets,
     targetAllNetworksUnverifiedAssets,

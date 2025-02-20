@@ -11,8 +11,8 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { ETH_ADDRESS, SupportedCurrencyKey } from '~/core/references';
-import { SUPPORTED_MAINNET_CHAINS } from '~/core/references/chains';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { networkStore } from '~/core/state/networks/networks';
 import {
   RainbowChainAsset,
   useRainbowChainAssetsStore,
@@ -33,7 +33,6 @@ import {
   parseUserAssetBalances,
 } from '~/core/utils/assets';
 import { convertDecimalFormatToRawAmount, isZero } from '~/core/utils/numbers';
-import { getRainbowChains } from '~/core/utils/rainbowChains';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import { RainbowError, logger } from '~/logger';
 
@@ -183,20 +182,23 @@ async function customNetworkAssetsFunction({
     }),
   })?.state?.data || {}) as Record<ChainId | number, ParsedAssetsDict>;
 
-  const { rainbowChains: chains } = getRainbowChains();
+  const activeChains = networkStore.getState().getAllActiveRpcChains();
+  const supportedMainnetChains = networkStore
+    .getState()
+    .getBackendSupportedChains();
 
-  const customChains = chains.filter((chain) =>
-    testnetMode ? chain.testnet : !chain.testnet,
+  const customChains = activeChains.filter(
+    (chain) =>
+      (testnetMode ? chain.testnet : !chain.testnet) &&
+      !supportedMainnetChains[chain.id],
   );
+
   if (customChains.length === 0) {
     return cachedCustomNetworkAssets;
   }
   try {
     const assetsPromises = customChains
-      .filter(
-        (chain) =>
-          !SUPPORTED_MAINNET_CHAINS.map((chain) => chain.id).includes(chain.id),
-      )
+      .filter((chain) => !supportedMainnetChains[chain.id])
       .map(async (chain) => {
         const provider = getProvider({ chainId: chain.id });
         const nativeAssetBalance = (

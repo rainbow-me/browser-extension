@@ -1687,6 +1687,21 @@
           "description_1": "Ink is a cutting-edge Layer 2 (L2) blockchain built on the Superchain and released by Kraken.",
           "description_2": "As a natural evolution of their mission, Ink will serve as a seamless bridge to DeFi, empowering users to move onchain with confidence and ease"
         },
+        "sanko": {
+          "title": "What's Sanko?",
+          "description_1": "Sanko is a Layer 2 network that runs on top of Arbitrum.",
+          "description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, Sanko has its own security and consensus mechanisms that differ from Ethereum."
+        },
+        "gravity": {
+          "title": "What's Gravity?",
+          "description_1": "Gravity is a Layer-1 blockchain designed for mass adoption and an omnichain future.",
+          "description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, Gravity has its own security and consensus mechanisms that differ from Ethereum."
+        },
+        "berachain": {
+          "title": "What's Berachain?",
+          "description_1": "Berachain is a Layer-1 blockchain built on top of proof of liquidity using BeaconKit.",
+          "description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, Berachain has its own security and consensus mechanisms that differ from Ethereum."
+        },
         "custom_network": {
           "title": "What's this Network?",
           "description_1": "This is a custom network added by you! Custom networks can be tailored to meet specific needs, offering unique features and capabilities.",
