@@ -328,7 +328,7 @@ export type EventProperties = {
      */
     degenMode: boolean;
     /**
-     * Info about the hardware wallet that was used for the transaction
+     * Whether a hardware wallet was used for the swap.
      */
     hardwareWallet: boolean;
     /**
