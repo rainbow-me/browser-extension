@@ -72,13 +72,6 @@ export function SignMessage({
       // Change the label while we wait for confirmation
       if (type === 'HardwareWalletKeychain') {
         setWaitingForDevice(true);
-        analytics.track(event.dappTransactionSubmitted, {
-          dappURL: dappMetadata?.url || '',
-          dappDomain: dappMetadata?.appHost || '',
-          action: walletAction,
-          isHardwareWallet: true,
-          vendor: vendor,
-        });
       }
 
       if (walletAction === 'personal_sign') {
