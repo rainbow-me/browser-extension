@@ -533,16 +533,7 @@ export type EventProperties = {
      */
     hardwareWalletVendor?: 'Ledger' | 'Trezor' | undefined;
   };
-  [event.dappPromptSendTransactionCustomGasClicked]: {
-    /**
-     * Is the user using a hardware wallet
-     */
-    hardwareWallet?: boolean;
-    /**
-     * The vendor of the hardware wallet
-     */
-    hardwareWalletVendor?: 'Ledger' | 'Trezor' | undefined;
-  };
+  [event.dappPromptSendTransactionCustomGasClicked]: undefined;
   [event.dappPromptSendTransactionCustomGasSet]: {
     /**
      * Gas base fee in Gwei.
@@ -604,16 +595,7 @@ export type EventProperties = {
      */
     hardwareWalletVendor?: 'Ledger' | 'Trezor' | undefined;
   };
-  [event.dappPromptSendTransactionSpeedClicked]: {
-    /**
-     * Is the user using a hardware wallet
-     */
-    hardwareWallet?: boolean;
-    /**
-     * The vendor of the hardware wallet
-     */
-    hardwareWalletVendor?: 'Ledger' | 'Trezor' | undefined;
-  };
+  [event.dappPromptSendTransactionSpeedClicked]: undefined;
   [event.dappPromptSendTransactionSpeedSwitched]: {
     /**
      * Select speed setting.
