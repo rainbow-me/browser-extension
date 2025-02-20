@@ -5,6 +5,10 @@ const BACKEND_NETWORKS_QUERY = `
       mainnetId
       name
       label
+      colors {
+        light
+        dark
+      }
       icons {
         uncropped {
           largeURL
@@ -50,12 +54,12 @@ const BACKEND_NETWORKS_QUERY = `
         }
       }
       nativeWrappedAsset {
-          address
-          name
-          symbol
-          decimals
-          iconURL
-          colors {
+        address
+        name
+        symbol
+        decimals
+        iconURL
+        colors {
           primary
           fallback
           shadow
@@ -65,8 +69,15 @@ const BACKEND_NETWORKS_QUERY = `
         meteorology {
           enabled
         }
+        notifications {
+          enabled
+        }
         swap {
           enabled
+          swap
+          swapExactOutput
+          bridge
+          bridgeExactOutput
         }
         addys {
           approvals

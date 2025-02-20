@@ -64,6 +64,7 @@ export type CustomNetwork = {
 
 export type CustomNetworkNativeAsset = {
   __typename?: 'CustomNetworkNativeAsset';
+  address: Scalars['String'];
   decimals: Scalars['Int'];
   iconURL: Scalars['String'];
   symbol: Scalars['String'];
@@ -191,14 +192,17 @@ export type NftAllowlist = {
 
 export type Network = {
   __typename?: 'Network';
+  colors: NetworkColors;
   defaultExplorer: NetworkExplorer;
   defaultRPC: NetworkRpc;
   enabledServices: NetworkEnabledServices;
+  favorites: Array<Maybe<NetworkTokenFavorites>>;
   gasUnits: NetworkGasUnits;
   icons: NetworkIcons;
   id: Scalars['ID'];
   internal: Scalars['Boolean'];
   label: Scalars['String'];
+  mainnetId: Scalars['ID'];
   name: Scalars['String'];
   nativeAsset: NetworkAsset;
   nativeWrappedAsset: NetworkAsset;
@@ -231,6 +235,12 @@ export type NetworkAssetColors = {
   fallback: Scalars['String'];
   primary: Scalars['String'];
   shadow: Scalars['String'];
+};
+
+export type NetworkColors = {
+  __typename?: 'NetworkColors';
+  dark: Scalars['String'];
+  light: Scalars['String'];
 };
 
 export type NetworkEnabledServices = {
@@ -272,9 +282,19 @@ export type NetworkGasWrappedUnits = {
   wrap: Scalars['String'];
 };
 
+export type NetworkIcon = {
+  __typename?: 'NetworkIcon';
+  largeURL: Scalars['String'];
+  smallURL: Scalars['String'];
+};
+
 export type NetworkIcons = {
   __typename?: 'NetworkIcons';
+  badge: NetworkIcon;
   badgeURL: Scalars['String'];
+  dark: NetworkIcon;
+  light: NetworkIcon;
+  uncropped: NetworkIcon;
 };
 
 export type NetworkMeteorology = {
@@ -308,6 +328,11 @@ export type NetworkSwap = {
   enabled: Scalars['Boolean'];
   swap: Scalars['Boolean'];
   swapExactOutput: Scalars['Boolean'];
+};
+
+export type NetworkTokenFavorites = {
+  __typename?: 'NetworkTokenFavorites';
+  address: Scalars['String'];
 };
 
 export type NetworkTokenSearch = {
@@ -526,6 +551,7 @@ export type Query = {
   simulateMessage?: Maybe<MessageResult>;
   simulateTransactions?: Maybe<Array<Maybe<TransactionResult>>>;
   token?: Maybe<Token>;
+  tokenInteractions?: Maybe<Array<Maybe<TokenInteraction>>>;
   validateReferral?: Maybe<ValidatedReferral>;
 };
 
@@ -545,6 +571,12 @@ export type QueryContractFunctionArgs = {
   address?: InputMaybe<Scalars['String']>;
   chainID: Scalars['Int'];
   hex: Scalars['String'];
+};
+
+
+export type QueryContractsArgs = {
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -638,6 +670,14 @@ export type QueryTokenArgs = {
   address: Scalars['String'];
   chainID: Scalars['Int'];
   currency?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryTokenInteractionsArgs = {
+  address: Scalars['String'];
+  chainID: Scalars['Int'];
+  currency?: InputMaybe<Scalars['String']>;
+  tokenAddress: Scalars['String'];
 };
 
 
@@ -855,6 +895,33 @@ export type TokenColors = {
   shadow?: Maybe<Scalars['String']>;
 };
 
+export type TokenInteraction = {
+  __typename?: 'TokenInteraction';
+  amount: Scalars['String'];
+  chainID: Scalars['Int'];
+  direction: TokenInteractionDirection;
+  explorerLabel: Scalars['String'];
+  explorerURL: Scalars['String'];
+  interactedAt: Scalars['Int'];
+  price: Scalars['Float'];
+  transactionHash: Scalars['String'];
+  type: TokenInteractionType;
+};
+
+export enum TokenInteractionDirection {
+  In = 'IN',
+  Out = 'OUT',
+  Unknown = 'UNKNOWN'
+}
+
+export enum TokenInteractionType {
+  Bought = 'BOUGHT',
+  Received = 'RECEIVED',
+  Sent = 'SENT',
+  Sold = 'SOLD',
+  Unknown = 'UNKNOWN'
+}
+
 export type TokenLink = {
   __typename?: 'TokenLink';
   url: Scalars['String'];
@@ -862,6 +929,7 @@ export type TokenLink = {
 
 export type TokenLinks = {
   __typename?: 'TokenLinks';
+  coingecko?: Maybe<TokenLink>;
   facebook?: Maybe<TokenLink>;
   homepage?: Maybe<TokenLink>;
   reddit?: Maybe<TokenLink>;
