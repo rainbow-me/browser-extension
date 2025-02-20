@@ -187,14 +187,14 @@ export const event = {
    * Called when the user completes a Revoke Approcal flow and submits the transaction.
    */
   revokeSubmitted: 'revoke.submitted',
-  /*
-   * Called when the user searches in swap, send or command K
-   */
-  searchQuery: 'search_query',
   /**
    * Called when token list metrics are sampled during list loading
    */
   samplesTokenList: 'samples.token_list',
+  /*
+   * Called when the user searches in swap, send or command K
+   */
+  searchQueried: 'search.queried',
   /**
    * Called when a user enters the send flow
    */
@@ -766,7 +766,7 @@ export type EventProperties = {
   [event.pointsRewardsViewed]: undefined;
   [event.pointsViewed]: undefined;
   [event.popupOpened]: undefined;
-  [event.searchQuery]: {
+  [event.searchQueried]: {
     /**
      * Where the search was initiated from
      */

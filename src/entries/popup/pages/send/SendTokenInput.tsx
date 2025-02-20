@@ -273,7 +273,7 @@ export const SendTokenInput = React.forwardRef<
       selectAssetAddressAndChain(address, chainId);
       setDropdownVisible(false);
       if (inputValue.trim()) {
-        analytics.track(event.searchQuery, {
+        analytics.track(event.searchQueried, {
           query: inputValue,
           queryLength: inputValue.length,
           location: 'send',
@@ -289,7 +289,7 @@ export const SendTokenInput = React.forwardRef<
       selectAssetAddressAndChain('', ChainId.mainnet);
       setDropdownVisible(false);
       if (inputValue.trim()) {
-        analytics.track(event.searchQuery, {
+        analytics.track(event.searchQueried, {
           query: inputValue,
           queryLength: inputValue.length,
           location: 'send',

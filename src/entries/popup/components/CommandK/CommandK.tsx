@@ -273,7 +273,7 @@ export const CommandKInput = React.memo(function CommandKInput({
   useEffect(() => {
     return () => {
       if (lastSearchRef.current.trim()) {
-        analytics.track(event.searchQuery, {
+        analytics.track(event.searchQueried, {
           query: lastSearchRef.current,
           queryLength: lastSearchRef.current.length,
           location: 'commandk',
@@ -291,7 +291,7 @@ export const CommandKInput = React.memo(function CommandKInput({
     (command: SearchItem | null) => {
       // Track search if there was one when executing a command
       if (searchQuery.trim()) {
-        analytics.track(event.searchQuery, {
+        analytics.track(event.searchQueried, {
           query: searchQuery,
           queryLength: searchQuery.length,
           location: 'commandk',

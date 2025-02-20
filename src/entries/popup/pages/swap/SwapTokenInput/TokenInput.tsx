@@ -141,7 +141,7 @@ export const TokenInput = React.forwardRef<
     setAssetFilter('');
     setTimeout(() => inputRef?.current?.focus(), 300);
     if (assetFilter.trim()) {
-      analytics.track(event.searchQuery, {
+      analytics.track(event.searchQueried, {
         query: assetFilter,
         queryLength: assetFilter.length,
         location: 'swap',
