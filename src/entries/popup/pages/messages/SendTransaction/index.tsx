@@ -125,8 +125,8 @@ export function SendTransaction({
             dappURL: dappMetadata?.url || '',
             dappDomain: dappMetadata?.appHost || '',
             dappName: dappMetadata?.appName,
-            isHardwareWallet: !!vendor,
-            vendor: vendor,
+            hardwareWallet: !!vendor,
+            hardwareWalletVendor: vendor,
           },
           await getWalletContext(activeSession?.address),
         );
@@ -174,8 +174,8 @@ export function SendTransaction({
           dappURL: dappMetadata?.url || '',
           dappDomain: dappMetadata?.appHost || '',
           dappName: dappMetadata?.appName,
-          isHardwareWallet: !!vendor,
-          vendor: vendor,
+          hardwareWallet: !!vendor,
+          hardwareWalletVendor: vendor,
         },
         await getWalletContext(activeSession?.address),
       );

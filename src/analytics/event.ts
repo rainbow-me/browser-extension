@@ -330,10 +330,11 @@ export type EventProperties = {
     /**
      * Info about the hardware wallet that was used for the transaction
      */
-    hardwareWallet: {
-      isHardwareWallet: boolean;
-      vendor?: 'Ledger' | 'Trezor' | undefined;
-    };
+    hardwareWallet: boolean;
+    /**
+     * The vendor of the hardware wallet
+     */
+    hardwareWalletVendor?: 'Ledger' | 'Trezor' | undefined;
   };
   [event.commandKActionExecuted]: {
     id?: string;
@@ -526,21 +527,21 @@ export type EventProperties = {
     /**
      * Is the user using a hardware wallet
      */
-    isHardwareWallet?: boolean;
+    hardwareWallet?: boolean;
     /**
      * The vendor of the hardware wallet
      */
-    vendor?: 'Ledger' | 'Trezor' | undefined;
+    hardwareWalletVendor?: 'Ledger' | 'Trezor' | undefined;
   };
   [event.dappPromptSendTransactionCustomGasClicked]: {
     /**
      * Is the user using a hardware wallet
      */
-    isHardwareWallet?: boolean;
+    hardwareWallet?: boolean;
     /**
      * The vendor of the hardware wallet
      */
-    vendor?: 'Ledger' | 'Trezor' | undefined;
+    hardwareWalletVendor?: 'Ledger' | 'Trezor' | undefined;
   };
   [event.dappPromptSendTransactionCustomGasSet]: {
     /**
@@ -570,11 +571,11 @@ export type EventProperties = {
     /**
      * Is the user using a hardware wallet
      */
-    isHardwareWallet?: boolean;
+    hardwareWallet?: boolean;
     /**
      * The vendor of the hardware wallet
      */
-    vendor?: 'Ledger' | 'Trezor' | undefined;
+    hardwareWalletVendor?: 'Ledger' | 'Trezor' | undefined;
   };
   [event.dappPromptSendTransactionRejected]: {
     /**
@@ -597,21 +598,21 @@ export type EventProperties = {
     /**
      * Is the user using a hardware wallet
      */
-    isHardwareWallet?: boolean;
+    hardwareWallet?: boolean;
     /**
      * The vendor of the hardware wallet
      */
-    vendor?: 'Ledger' | 'Trezor' | undefined;
+    hardwareWalletVendor?: 'Ledger' | 'Trezor' | undefined;
   };
   [event.dappPromptSendTransactionSpeedClicked]: {
     /**
      * Is the user using a hardware wallet
      */
-    isHardwareWallet?: boolean;
+    hardwareWallet?: boolean;
     /**
      * The vendor of the hardware wallet
      */
-    vendor?: 'Ledger' | 'Trezor' | undefined;
+    hardwareWalletVendor?: 'Ledger' | 'Trezor' | undefined;
   };
   [event.dappPromptSendTransactionSpeedSwitched]: {
     /**
@@ -621,11 +622,11 @@ export type EventProperties = {
     /**
      * Is the user using a hardware wallet
      */
-    isHardwareWallet?: boolean;
+    hardwareWallet?: boolean;
     /**
      * The vendor of the hardware wallet
      */
-    vendor?: 'Ledger' | 'Trezor' | undefined;
+    hardwareWalletVendor?: 'Ledger' | 'Trezor' | undefined;
   };
   [event.dappPromptSignMessageApproved]: {
     /**
@@ -647,11 +648,11 @@ export type EventProperties = {
     /**
      * Is the user using a hardware wallet
      */
-    isHardwareWallet?: boolean;
+    hardwareWallet?: boolean;
     /**
      * The vendor of the hardware wallet
      */
-    vendor?: 'Ledger' | 'Trezor' | undefined;
+    hardwareWalletVendor?: 'Ledger' | 'Trezor' | undefined;
   };
   [event.dappPromptSignMessageRejected]: {
     /**
@@ -673,11 +674,11 @@ export type EventProperties = {
     /**
      * Is the user using a hardware wallet
      */
-    isHardwareWallet?: boolean;
+    hardwareWallet?: boolean;
     /**
      * The vendor of the hardware wallet
      */
-    vendor?: 'Ledger' | 'Trezor' | undefined;
+    hardwareWalletVendor?: 'Ledger' | 'Trezor' | undefined;
   };
   [event.dappPromptSignTypedDataApproved]: {
     /**
@@ -699,11 +700,11 @@ export type EventProperties = {
     /**
      * Is the user using a hardware wallet
      */
-    isHardwareWallet?: boolean;
+    hardwareWallet?: boolean;
     /**
      * The vendor of the hardware wallet
      */
-    vendor?: 'Ledger' | 'Trezor' | undefined;
+    hardwareWalletVendor?: 'Ledger' | 'Trezor' | undefined;
   };
   [event.dappPromptSignTypedDataRejected]: {
     /**
@@ -725,11 +726,11 @@ export type EventProperties = {
     /**
      * Is the user using a hardware wallet
      */
-    isHardwareWallet?: boolean;
+    hardwareWallet?: boolean;
     /**
      * The vendor of the hardware wallet
      */
-    vendor?: 'Ledger' | 'Trezor' | undefined;
+    hardwareWalletVendor?: 'Ledger' | 'Trezor' | undefined;
   };
   [event.dappProviderNetworkSwitched]: {
     /**
@@ -936,11 +937,11 @@ export type EventProperties = {
     /**
      * Is the user using a hardware wallet
      */
-    isHardwareWallet?: boolean;
+    hardwareWallet?: boolean;
     /**
      * The vendor of the hardware wallet
      */
-    vendor?: 'Ledger' | 'Trezor' | undefined;
+    hardwareWalletVendor?: 'Ledger' | 'Trezor' | undefined;
   };
   [event.sendOpened]: {
     /**
@@ -1035,11 +1036,11 @@ export type EventProperties = {
     /**
      * Is the user using a hardware wallet
      */
-    isHardwareWallet?: boolean;
+    hardwareWallet?: boolean;
     /**
      * The vendor of the hardware wallet
      */
-    vendor?: 'Ledger' | 'Trezor' | undefined;
+    hardwareWalletVendor?: 'Ledger' | 'Trezor' | undefined;
   };
   [event.swapQuoteFailed]: {
     /**

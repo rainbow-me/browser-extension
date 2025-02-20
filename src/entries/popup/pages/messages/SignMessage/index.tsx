@@ -86,8 +86,8 @@ export function SignMessage({
             dappURL: dappMetadata?.url || '',
             dappDomain: dappMetadata?.appHost || '',
             dappName: dappMetadata?.appName,
-            isHardwareWallet: !!vendor,
-            vendor: vendor,
+            hardwareWallet: !!vendor,
+            hardwareWalletVendor: vendor,
           },
           await getWalletContext(activeSession?.address),
         );
@@ -103,8 +103,8 @@ export function SignMessage({
             dappURL: dappMetadata?.url || '',
             dappDomain: dappMetadata?.appHost || '',
             dappName: dappMetadata?.appName,
-            isHardwareWallet: !!vendor,
-            vendor: vendor,
+            hardwareWallet: !!vendor,
+            hardwareWalletVendor: vendor,
           },
           await getWalletContext(activeSession?.address),
         );
@@ -143,8 +143,8 @@ export function SignMessage({
           dappURL: dappMetadata?.url || '',
           dappDomain: dappMetadata?.appHost || '',
           dappName: dappMetadata?.appName,
-          isHardwareWallet: !!vendor,
-          vendor: vendor,
+          hardwareWallet: !!vendor,
+          hardwareWalletVendor: vendor,
         },
         await getWalletContext(selectedWallet),
       );
@@ -156,8 +156,8 @@ export function SignMessage({
           dappURL: dappMetadata?.url || '',
           dappDomain: dappMetadata?.appHost || '',
           dappName: dappMetadata?.appName,
-          isHardwareWallet: !!vendor,
-          vendor: vendor,
+          hardwareWallet: !!vendor,
+          hardwareWalletVendor: vendor,
         },
         await getWalletContext(selectedWallet),
       );

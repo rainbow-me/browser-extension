@@ -335,8 +335,8 @@ export const CustomGasSheet = ({
       maxFee: Number(maxBaseFee) + Number(maxPriorityFee),
       minerTipWarning: maxPriorityFeeWarning,
       maxBaseFeeWarning,
-      isHardwareWallet: !!hardwareVendor(vendor),
-      vendor: hardwareVendor(vendor),
+      hardwareWallet: !!hardwareVendor(vendor),
+      hardwareWalletVendor: hardwareVendor(vendor),
     });
   }, [
     closeCustomGasSheet,

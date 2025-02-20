@@ -374,8 +374,8 @@ export function Send() {
               assetAddress: asset?.address,
               assetAmount,
               chainId,
-              isHardwareWallet: !!vendor,
-              vendor: vendor,
+              hardwareWallet: !!vendor,
+              hardwareWalletVendor: vendor,
             });
           }
         } else if (nft) {
@@ -408,8 +408,8 @@ export function Send() {
               assetAddress: nft.asset_contract.address,
               assetAmount: '0',
               chainId,
-              isHardwareWallet: !!vendor,
-              vendor: vendor,
+              hardwareWallet: !!vendor,
+              hardwareWalletVendor: vendor,
             });
           }
         }
