@@ -29,6 +29,7 @@ import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverfl
 import { SymbolStyles, TextStyles } from '~/design-system/styles/core.css';
 import { SymbolName } from '~/design-system/styles/designTokens';
 
+import { useCurrentWalletTypeAndVendor } from '../../hooks/useCurrentWalletType';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import usePrevious from '../../hooks/usePrevious';
 import { zIndexes } from '../../utils/zIndexes';
@@ -312,6 +313,18 @@ export const CustomGasSheet = ({
     [gasFeeParamsBySpeed, maxPriorityFee, setCustomGasPrice],
   );
 
+  const { vendor } = useCurrentWalletTypeAndVendor();
+
+  const hardwareVendor = (vendor: string | undefined) => {
+    if (vendor === 'Ledger') {
+      return 'Ledger';
+    } else if (vendor === 'Trezor') {
+      return 'Trezor';
+    } else {
+      return undefined;
+    }
+  };
+
   const setCustomGas = useCallback(() => {
     setSelectedSpeed(selectedSpeedOption);
     closeCustomGasSheet();
@@ -322,6 +335,8 @@ export const CustomGasSheet = ({
       maxFee: Number(maxBaseFee) + Number(maxPriorityFee),
       minerTipWarning: maxPriorityFeeWarning,
       maxBaseFeeWarning,
+      hardwareWallet: !!hardwareVendor(vendor),
+      hardwareWalletVendor: hardwareVendor(vendor),
     });
   }, [
     closeCustomGasSheet,
@@ -332,6 +347,7 @@ export const CustomGasSheet = ({
     maxPriorityFeeWarning,
     selectedSpeedOption,
     setSelectedSpeed,
+    vendor,
   ]);
 
   useEffect(() => {
