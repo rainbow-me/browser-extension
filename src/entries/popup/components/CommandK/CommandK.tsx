@@ -278,11 +278,6 @@ export const CommandKInput = React.memo(function CommandKInput({
           queryLength: lastSearchRef.current.length,
           location: 'commandk',
         });
-        console.log('analytics: ', {
-          query: lastSearchRef.current,
-          queryLength: lastSearchRef.current.length,
-          location: 'commandk',
-        });
       }
     };
   }, []);
@@ -297,11 +292,6 @@ export const CommandKInput = React.memo(function CommandKInput({
       // Track search if there was one when executing a command
       if (searchQuery.trim()) {
         analytics.track(event.searchQuery, {
-          query: searchQuery,
-          queryLength: searchQuery.length,
-          location: 'commandk',
-        });
-        console.log('analytics: ', {
           query: searchQuery,
           queryLength: searchQuery.length,
           location: 'commandk',

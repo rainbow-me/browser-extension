@@ -146,11 +146,6 @@ export const TokenInput = React.forwardRef<
         queryLength: assetFilter.length,
         location: 'swap',
       });
-      console.log('analytics: ', {
-        query: assetFilter,
-        queryLength: assetFilter.length,
-        location: 'swap',
-      });
     }
   }, [assetFilter, inputRef, onDropdownOpen, setAssetFilter]);
 
@@ -163,8 +158,7 @@ export const TokenInput = React.forwardRef<
 
   const onInputValueChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      const newValue = e.target.value;
-      setAssetFilter(newValue);
+      setAssetFilter(e.target.value);
     },
     [setAssetFilter],
   );

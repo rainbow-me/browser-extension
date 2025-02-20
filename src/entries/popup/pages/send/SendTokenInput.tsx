@@ -43,6 +43,7 @@ import { AssetRow } from '../home/Tokens';
 
 import { InputActionButton } from './InputActionButton';
 import { RowHighlightWrapper } from './RowHighlightWrapper';
+
 const TokenSortMenu = ({
   asset,
   setSortDropdownOpen,
@@ -271,14 +272,7 @@ export const SendTokenInput = React.forwardRef<
       selectNft();
       selectAssetAddressAndChain(address, chainId);
       setDropdownVisible(false);
-      console.log('inputValue: ', inputValue);
-      console.log('inputValue.trim(): ', inputValue.trim());
       if (inputValue.trim()) {
-        console.log('analytics: ', {
-          query: inputValue,
-          queryLength: inputValue.length,
-          location: 'send',
-        });
         analytics.track(event.searchQuery, {
           query: inputValue,
           queryLength: inputValue.length,
@@ -294,14 +288,7 @@ export const SendTokenInput = React.forwardRef<
       selectNft(nft);
       selectAssetAddressAndChain('', ChainId.mainnet);
       setDropdownVisible(false);
-      console.log('inputValue: ', inputValue);
-      console.log('inputValue.trim(): ', inputValue.trim());
       if (inputValue.trim()) {
-        console.log('analytics: ', {
-          query: inputValue,
-          queryLength: inputValue.length,
-          location: 'send',
-        });
         analytics.track(event.searchQuery, {
           query: inputValue,
           queryLength: inputValue.length,
