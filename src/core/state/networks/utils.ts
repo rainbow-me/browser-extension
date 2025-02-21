@@ -443,9 +443,9 @@ export const mergeChainData = (
     networks.backendNetworks.networks,
   );
 
-  const LOCAL_TEST_NETWORKS = IS_TESTING ? LOCAL_TESTNETS : [];
-
-  const allNetworks = [...LOCAL_TEST_NETWORKS, ...backendNetworks];
+  const allNetworks = IS_TESTING
+    ? [...LOCAL_TESTNETS, ...backendNetworks]
+    : [...backendNetworks];
 
   for (const chain of allNetworks) {
     const chainId = chain.id;

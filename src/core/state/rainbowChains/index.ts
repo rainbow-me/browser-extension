@@ -5,6 +5,7 @@ import { ChainId } from '~/core/types/chains';
 
 import { createStore } from '../internal/createStore';
 import { withSelectors } from '../internal/withSelectors';
+import { DANIEL_DATA } from '../networks/__tests__/data/rainbowChains.mock';
 
 export interface RainbowChain {
   activeRpcUrl: string;
@@ -28,7 +29,7 @@ export interface RainbowChainsState {
 
 export const rainbowChainsStore = createStore<RainbowChainsState>(
   (set, get) => ({
-    rainbowChains: {},
+    rainbowChains: DANIEL_DATA,
     getActiveChain: ({ chainId }) => {
       const rainbowChains = get().rainbowChains;
       const rainbowChain = rainbowChains[chainId];

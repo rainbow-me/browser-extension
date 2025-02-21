@@ -15,31 +15,44 @@ import { isLowerCaseMatch } from './strings';
 // Main chains for chain settings
 const getMainChainsHelper = (
   chains: readonly [Chain, ...Chain[]],
-  allSupportedChains: Record<number, TransformedChain>,
+  supportedChains: Record<number, TransformedChain>,
 ) => {
-  const allMainnetSupportedChainsOrCustomChains = Object.values(
-    allSupportedChains,
-  ).filter(
+  const mainSupportedChains = Object.values(supportedChains).filter(
+    (chain) => !chain.testnet,
+  );
+
+  // The chain ID of all the mainnets we support
+  const supportedChainIds = new Set(
+    mainSupportedChains.map((chain) => chain.id),
+  );
+
+  // All the chains that the user added
+  const customMainChains = chains?.filter(
     (chain) =>
-      (!chain.testnet && chain.type === 'supported') || chain.type === 'custom',
+      !supportedChainIds.has(chain.id) &&
+      !(chain.id === ChainId.hardhat || chain.id === ChainId.hardhatOptimism),
   );
 
-  const allCustomWagmiChains = chains.filter(
-    (c) =>
-      !c.testnet &&
-      !allMainnetSupportedChainsOrCustomChains.find((c2) => c2.id === c.id),
+  const customChainsIncludingTestnets = customMainChains.filter(
+    (chain) =>
+      !chain.testnet ||
+      (chain.testnet &&
+        !supportedChainIds.has(chain.id) &&
+        !supportedChains[chain.id]),
   );
-
-  return allMainnetSupportedChainsOrCustomChains
+  const result = mainSupportedChains
     .map(mergedChainToViemChain)
-    .concat(allCustomWagmiChains);
+    .concat(customChainsIncludingTestnets);
+  return result;
 };
 
 export const useMainChains = () => {
   const { chains } = useConfig();
-  const allSupportedChains = networkStore((state) => state.getAllChains(true));
+  const supportedChains = networkStore((state) =>
+    state.getBackendSupportedChains(true),
+  );
 
-  return getMainChainsHelper(chains, allSupportedChains);
+  return getMainChainsHelper(chains, supportedChains);
 };
 
 export const getMainChains = () => {

@@ -4,7 +4,8 @@ import { ChainId } from '~/core/types/chains';
 
 import { createStore } from '../internal/createStore';
 import { withSelectors } from '../internal/withSelectors';
-
+import { DANIEL_DATA as USER_CHAINS_DATA } from '../networks/__tests__/data/userChains.mock';
+import { DANIEL_DATA as USER_CHAINS_ORDER_DATA } from '../networks/__tests__/data/userChainsOrder.mock';
 export interface UserChainsState {
   /**
    * Mainnet chains in network settings
@@ -39,8 +40,8 @@ export interface UserChainsState {
 
 export const userChainsStore = createStore<UserChainsState>(
   (set, get) => ({
-    userChains: {},
-    userChainsOrder: [],
+    userChains: USER_CHAINS_DATA,
+    userChainsOrder: USER_CHAINS_ORDER_DATA,
     updateUserChains: ({ chainIds, enabled }) => {
       const { userChains } = get();
       const chainsUpdated = chainIds.reduce(
