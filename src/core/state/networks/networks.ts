@@ -22,6 +22,8 @@ import {
   TransformedChain,
 } from '~/core/types/chains';
 
+import { networksStoreMigrationStore } from './runNetworksMigrationIfNeeded';
+
 const DEFAULT_PRIVATE_MEMPOOL_TIMEOUT = 2 * 60 * 1_000; // 2 minutes
 
 export interface NetworkState {
@@ -278,6 +280,7 @@ export const networkStore = createQueryStore<
 >(
   {
     fetcher: fetchNetworks,
+    enabled: ($) => $(networksStoreMigrationStore).didCompleteNetworksMigration,
     setData: ({ data, set }) => {
       set((state) => {
         const newNetworks = differenceOrUnionOf({
@@ -870,3 +873,15 @@ export const syncDefaultFavoritesForNewlySupportedNetworks = (
 
   favoritesStore.getState().setFavorites(newFavorites);
 };
+
+// // NOTE: This is used to initialize the network store once the dependent stores are ready
+// // this is an async operation because the dependent stores need to perform migrations and rehydrate first
+// (async () => {
+//   await waitForDependentStores();
+//   const initialState: NetworkState = {
+//     networks: buildTimeNetworks,
+//     ...buildInitialUserPreferences(),
+//   };
+
+//   networkStore.setState(initialState);
+// })();

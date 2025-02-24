@@ -5,7 +5,7 @@ import { ChainId } from '~/core/types/chains';
 
 import { createStore } from '../internal/createStore';
 import { withSelectors } from '../internal/withSelectors';
-import { DANIEL_DATA } from '../networks/__tests__/data/rainbowChains.mock';
+import { runNetworksMigrationIfNeeded } from '../networks/runNetworksMigrationIfNeeded';
 
 export interface RainbowChain {
   activeRpcUrl: string;
@@ -27,9 +27,12 @@ export interface RainbowChainsState {
   removeCustomRPC: ({ rpcUrl }: { rpcUrl: string }) => void;
 }
 
+/**
+ * @deprecated use `networkStore` instead
+ */
 export const rainbowChainsStore = createStore<RainbowChainsState>(
   (set, get) => ({
-    rainbowChains: DANIEL_DATA,
+    rainbowChains: {},
     getActiveChain: ({ chainId }) => {
       const rainbowChains = get().rainbowChains;
       const rainbowChain = rainbowChains[chainId];
@@ -115,8 +118,18 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
     persist: {
       name: 'rainbowChains',
       version: 13,
+      onRehydrateStorage: () => {
+        return (_, error) => {
+          if (!error) {
+            runNetworksMigrationIfNeeded('rainbowChains');
+          }
+        };
+      },
     },
   },
 );
 
+/**
+ * @deprecated use `networkStore` instead
+ */
 export const useRainbowChainsStore = withSelectors(create(rainbowChainsStore));

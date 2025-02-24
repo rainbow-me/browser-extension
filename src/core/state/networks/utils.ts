@@ -164,9 +164,7 @@ const buildNewUserPreferences = (
   enabledChainIds: Set<number>,
 ) => {
   const userPreferences: Record<number, ChainPreferences> = {};
-  const chainOrder = initialNonInternalNetworks
-    .map(({ id }) => toChainId(id))
-    .sort((a, b) => a - b);
+  const chainOrder = initialNonInternalNetworks.map(({ id }) => toChainId(id));
 
   for (const supportedNetwork of initialNonInternalNetworks) {
     const chainIdNum = toChainId(supportedNetwork.id);
@@ -191,11 +189,23 @@ const buildNewUserPreferences = (
 export const buildInitialUserPreferences = (
   initialSupportedNetworks = buildTimeNetworks,
 ): Pick<NetworkState, 'userPreferences' | 'chainOrder' | 'enabledChainIds'> => {
+  console.log('buildInitialUserPreferences');
+  logger.debug(
+    '[buildInitialUserPreferences] Building initial user preferences',
+    {
+      initialSupportedNetworks,
+    },
+  );
+
   const userPreferences: Record<number, ChainPreferences> = {};
   const initialNonInternalNetworks =
     initialSupportedNetworks.backendNetworks.networks.filter(
       (network) => !network.internal || INTERNAL_BUILD || IS_DEV,
     );
+
+  logger.debug('[buildInitialUserPreferences] Filtered non-internal networks', {
+    initialNonInternalNetworks,
+  });
 
   const enabledChainIds = new Set<number>(
     initialNonInternalNetworks.map(({ id }) => toChainId(id)),
@@ -204,16 +214,25 @@ export const buildInitialUserPreferences = (
   const { rainbowChains } = useRainbowChainsStore.getState();
   const { userChains, userChainsOrder } = useUserChainsStore.getState();
 
+  logger.debug('[buildInitialUserPreferences] Current store state', {
+    rainbowChains,
+    userChains,
+    userChainsOrder,
+  });
+
   if (isEmpty(rainbowChains) || isEmpty(userChains)) {
+    logger.debug(
+      '[buildInitialUserPreferences] No existing chains found, building new preferences',
+    );
     return buildNewUserPreferences(initialNonInternalNetworks, enabledChainIds);
   }
 
   let order = userChainsOrder;
   if (isUserChainOrderMalformed(order)) {
-    // sort by network id ascending (e.g. - 1, 10, 56, 97)
-    const defaultInitialOrder = initialNonInternalNetworks
-      .map(({ id }) => toChainId(id))
-      .sort((a, b) => a - b);
+    const defaultInitialOrder = initialNonInternalNetworks.map(({ id }) =>
+      toChainId(id),
+    );
+
     logger.warn(
       '[buildInitialUserPreferences] User chain order is malformed, using default order',
       {
@@ -232,9 +251,18 @@ export const buildInitialUserPreferences = (
     }
   }
 
+  logger.debug('[buildInitialUserPreferences] Processing rainbow chains', {
+    chainIds: Object.keys(rainbowChains),
+  });
+
   for (const chainId of Object.keys(rainbowChains)) {
     const chainIdNum = toChainId(chainId);
     const chain = rainbowChains[chainIdNum];
+
+    logger.debug('[buildInitialUserPreferences] Processing chain', {
+      chainId: chainIdNum,
+      chain,
+    });
 
     if (!userPreferences[chainIdNum]) {
       userPreferences[chainIdNum] = {} as ChainPreferences;
@@ -279,6 +307,12 @@ export const buildInitialUserPreferences = (
       }
     }
   }
+
+  logger.debug('[buildInitialUserPreferences] Final preferences built', {
+    userPreferences,
+    chainOrder: Array.from(chainOrder),
+    enabledChainIds: Array.from(enabledChainIds),
+  });
 
   return {
     userPreferences,
@@ -493,3 +527,20 @@ export const mergeChainData = (
 
   return mergedChainData;
 };
+
+// export const waitForDependentStores = async () => {
+//   return new Promise<void>((resolve) => {
+//     const check = () => {
+//       if (
+//         storeSyncStore
+//           .getState()
+//           .areStoresReady(['userChains', 'rainbowChains'])
+//       ) {
+//         resolve();
+//       } else {
+//         setTimeout(check, 50); // Poll every 50ms
+//       }
+//     };
+//     check();
+//   });
+// };

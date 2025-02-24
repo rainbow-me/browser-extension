@@ -158,7 +158,7 @@ function createPersistStorage<S, PersistedState extends Partial<S>>(
       params: LazyPersistParams<S, PersistedState>,
     ): Promise<void> {
       try {
-        const key = `${params.storageKey}:${params.name}`;
+        const key = `rainbow.zustand.${params.name}`;
         const serializedValue = params.serializer(
           params.partialize(params.value.state as S),
           params.value.version ?? 0,
