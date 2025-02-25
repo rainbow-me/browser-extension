@@ -1,6 +1,8 @@
 import { AnimatePresence, motion, useAnimation } from 'framer-motion';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { Box, Separator, Symbol } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
@@ -265,6 +267,40 @@ export const CommandKInput = React.memo(function CommandKInput({
   setSkipBackAnimation,
 }: CommandKInputProps) {
   const { currentTheme } = useCurrentThemeStore();
+  const lastSearchRef = useRef(searchQuery);
+
+  // Track search when component unmounts if there was a search
+  useEffect(() => {
+    return () => {
+      if (lastSearchRef.current.trim()) {
+        analytics.track(event.searchQueried, {
+          query: lastSearchRef.current,
+          queryLength: lastSearchRef.current.length,
+          location: 'commandk',
+        });
+      }
+    };
+  }, []);
+
+  // Update last search ref when search changes
+  useEffect(() => {
+    lastSearchRef.current = searchQuery;
+  }, [searchQuery]);
+
+  const trackSearchAndExecute = React.useCallback(
+    (command: SearchItem | null) => {
+      // Track search if there was one when executing a command
+      if (searchQuery.trim()) {
+        analytics.track(event.searchQueried, {
+          query: searchQuery,
+          queryLength: searchQuery.length,
+          location: 'commandk',
+        });
+      }
+      handleExecuteCommand(command);
+    },
+    [searchQuery, handleExecuteCommand],
+  );
 
   const onSearchQueryChange = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -291,7 +327,7 @@ export const CommandKInput = React.memo(function CommandKInput({
   useKeyboardNavigation(
     didScrollOrNavigate,
     filteredCommands,
-    handleExecuteCommand,
+    trackSearchAndExecute,
     listRef,
     selectedCommand,
     selectedCommandIndex,

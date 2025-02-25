@@ -11,6 +11,8 @@ import React, {
   useState,
 } from 'react';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { NftSort } from '~/core/state/nfts';
@@ -270,8 +272,15 @@ export const SendTokenInput = React.forwardRef<
       selectNft();
       selectAssetAddressAndChain(address, chainId);
       setDropdownVisible(false);
+      if (inputValue.trim()) {
+        analytics.track(event.searchQueried, {
+          query: inputValue,
+          queryLength: inputValue.length,
+          location: 'send',
+        });
+      }
     },
-    [selectAssetAddressAndChain, selectNft],
+    [inputValue, selectAssetAddressAndChain, selectNft],
   );
 
   const onSelectNft = useCallback(
@@ -279,8 +288,15 @@ export const SendTokenInput = React.forwardRef<
       selectNft(nft);
       selectAssetAddressAndChain('', ChainId.mainnet);
       setDropdownVisible(false);
+      if (inputValue.trim()) {
+        analytics.track(event.searchQueried, {
+          query: inputValue,
+          queryLength: inputValue.length,
+          location: 'send',
+        });
+      }
     },
-    [selectAssetAddressAndChain, selectNft],
+    [inputValue, selectAssetAddressAndChain, selectNft],
   );
 
   const onInputValueChange = useCallback(

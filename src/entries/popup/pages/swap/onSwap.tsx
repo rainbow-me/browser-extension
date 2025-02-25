@@ -75,6 +75,8 @@ export const onSwap = async ({
     .getState()
     .setSwapAssetsToRefresh({ nonce, assetToBuy, assetToSell });
 
+  playSound('SendSound');
+
   analytics.track(isBridge ? event.bridgeSubmitted : event.swapSubmitted, {
     inputAssetSymbol: assetToSell.symbol,
     inputAssetName: assetToSell.name,
@@ -92,9 +94,8 @@ export const onSwap = async ({
     crosschain: assetToSell.chainId !== assetToBuy.chainId,
     degenMode,
     hardwareWallet: (await wallet).type === KeychainType.HardwareWalletKeychain,
+    hardwareWalletVendor: (await wallet).vendor,
   });
-
-  playSound('SendSound');
 
   return true;
 };
