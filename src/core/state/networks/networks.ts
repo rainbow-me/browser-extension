@@ -280,6 +280,7 @@ export const networkStore = createQueryStore<
 >(
   {
     fetcher: fetchNetworks,
+    debugMode: process.env.DEBUG_NETWORKS_STORE === 'true',
     enabled: ($) => $(networksStoreMigrationStore).didCompleteNetworksMigration,
     setData: ({ data, set }) => {
       set((state) => {
@@ -873,15 +874,3 @@ export const syncDefaultFavoritesForNewlySupportedNetworks = (
 
   favoritesStore.getState().setFavorites(newFavorites);
 };
-
-// // NOTE: This is used to initialize the network store once the dependent stores are ready
-// // this is an async operation because the dependent stores need to perform migrations and rehydrate first
-// (async () => {
-//   await waitForDependentStores();
-//   const initialState: NetworkState = {
-//     networks: buildTimeNetworks,
-//     ...buildInitialUserPreferences(),
-//   };
-
-//   networkStore.setState(initialState);
-// })();

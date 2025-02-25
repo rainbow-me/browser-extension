@@ -527,20 +527,3 @@ export const mergeChainData = (
 
   return mergedChainData;
 };
-
-// export const waitForDependentStores = async () => {
-//   return new Promise<void>((resolve) => {
-//     const check = () => {
-//       if (
-//         storeSyncStore
-//           .getState()
-//           .areStoresReady(['userChains', 'rainbowChains'])
-//       ) {
-//         resolve();
-//       } else {
-//         setTimeout(check, 50); // Poll every 50ms
-//       }
-//     };
-//     check();
-//   });
-// };

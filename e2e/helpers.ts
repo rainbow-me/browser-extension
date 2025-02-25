@@ -20,8 +20,12 @@ import chrome from 'selenium-webdriver/chrome';
 import firefox from 'selenium-webdriver/firefox';
 import { erc20Abi } from 'viem';
 import { expect } from 'vitest';
+import { StorageValue } from 'zustand/middleware';
 
 import { RAINBOW_TEST_DAPP } from '~/core/references/links';
+import { NetworkState } from '~/core/state/networks/networks';
+import { RainbowChainsState } from '~/core/state/rainbowChains';
+import { UserChainsState } from '~/core/state/userChains';
 
 const browser = process.env.BROWSER || 'chrome';
 const isFirefox = browser === 'firefox';
@@ -200,6 +204,8 @@ export async function getExtensionIdByName(
       .getText();
     return text;
   } else {
+    return 'lccajkdjonnokmddpnclgcihidkeklij';
+
     await driver.get('chrome://extensions');
     return await driver.executeScript(`
         const extensions = document.querySelector("extensions-manager").shadowRoot
@@ -1214,4 +1220,264 @@ export async function performSearchTokenAddressActionsCmdK({
     id: `token-price-name-${tokenAddress}`,
     driver,
   });
+}
+
+/**
+ * Injects data into local storage for testing store migrations
+ * @param driver WebDriver instance
+ * @param rootURL Extension root URL
+ * @param storeData Object containing data for different stores
+ */
+export async function injectStoreData(
+  driver: WebDriver,
+  storeData: {
+    rainbowChains?: RainbowChainsState['rainbowChains'];
+    userChains?: UserChainsState['userChains'];
+    userChainsOrder?: UserChainsState['userChainsOrder'];
+  },
+) {
+  // Inject rainbowChains data into chrome storage
+  if (storeData.rainbowChains) {
+    const error = await driver.executeAsyncScript(
+      `
+      const state = arguments[0];
+      const callback = arguments[arguments.length - 1];
+      chrome.storage.local.set({
+        'rainbow.zustand.rainbowChains': {
+          state: {
+            rainbowChains: state
+          },
+          version: 13
+        }
+      }).then(() => {
+        callback(null);
+      }).catch((error) => {
+        callback(error.toString());
+      });
+    `,
+      storeData.rainbowChains,
+    );
+
+    if (error) {
+      throw new Error(
+        'Error injecting rainbowChains data into chrome storage, error: ' +
+          error,
+      );
+    }
+  }
+
+  // Inject userChains data into chrome storage
+  if (storeData.userChains) {
+    const error = await driver.executeAsyncScript(
+      `
+      const userChains = arguments[0];
+      const userChainsOrder = arguments[1];
+      const callback = arguments[arguments.length - 1];
+      chrome.storage.local.set({
+        'rainbow.zustand.userChains': {
+          state: {
+            userChains: userChains,
+            userChainsOrder: userChainsOrder || []
+          },
+          version: 8
+        }
+      }).then(() => {
+        callback(null);
+      }).catch((error) => {
+        callback(error.toString());
+      });
+    `,
+      storeData.userChains,
+      storeData.userChainsOrder,
+    );
+
+    if (error) {
+      throw new Error(
+        'Error injecting userChains data into chrome storage, error: ' + error,
+      );
+    }
+  }
+}
+
+/**
+ * Clears all local storage data
+ * @param driver WebDriver instance
+ * @param rootURL Extension root URL
+ */
+export async function clearStorage(driver: WebDriver, rootURL: string) {
+  await driver.get(rootURL + '/popup.html');
+  await driver.wait(untilDocumentLoaded(), waitUntilTime);
+  await driver.executeAsyncScript(`
+    const callback = arguments[arguments.length - 1];
+    chrome.storage.local.clear().then(() => {
+      callback(null);
+    }).catch((error) => {
+      callback(error.toString());
+    });
+  `);
+  await driver.navigate().refresh();
+  await driver.wait(untilDocumentLoaded(), waitUntilTime);
+  await delayTime('very-long');
+}
+
+/**
+ * Checks if a store exists in local storage
+ * @param driver WebDriver instance
+ * @param storeName Name of the store to check
+ * @returns Boolean indicating if the store exists
+ */
+export async function checkStoreExists(
+  driver: WebDriver,
+  storeName: string,
+): Promise<boolean> {
+  const result = await driver.executeAsyncScript<boolean>(
+    `
+    const key = arguments[0];
+    const callback = arguments[arguments.length - 1];
+    chrome.storage.local.get(key, (result) => {
+      callback(!!result && !!result[key]);
+    });
+  `,
+    `rainbow.zustand.${storeName}`,
+  );
+  return result;
+}
+
+/**
+ * Gets the value of a store from chrome storage
+ * @param driver WebDriver instance
+ * @param storeName Name of the store to get
+ * @returns The store data or undefined if it doesn't exist
+ */
+export async function getStoreValue<T, S = StorageValue<T>>(
+  driver: WebDriver,
+  storeName: string,
+): Promise<S | undefined> {
+  const result = await driver.executeAsyncScript<S>(
+    `
+    const key = arguments[0];
+    const callback = arguments[arguments.length - 1];
+    chrome.storage.local.get(key, (result) => {
+      if (!result || !result[key]) {
+        callback(undefined);
+        return;
+      }
+      try {
+        // If it's already a string, parse it, otherwise return as is
+        const value = typeof result[key] === 'string' 
+          ? JSON.parse(result[key]) 
+          : result[key];
+        callback(value);
+      } catch (e) {
+        // If parsing fails, return the raw value
+        callback(result[key]);
+      }
+    });
+  `,
+    `rainbow.zustand.${storeName}`,
+  );
+  return result;
+}
+
+/**
+ * Verifies that the network migration was successful by comparing original data with migrated data
+ * @param driver WebDriver instance
+ * @param originalData Original data from rainbowChains and userChains
+ * @returns Object with verification results
+ */
+export async function verifyNetworkMigration(
+  driver: WebDriver,
+  originalData: {
+    rainbowChains: RainbowChainsState['rainbowChains'];
+    userChains: UserChainsState['userChains'];
+    userChainsOrder: UserChainsState['userChainsOrder'];
+  },
+): Promise<{
+  success: boolean;
+  details: {
+    chainsPreserved: boolean;
+    enabledChainIdsPreserved: boolean;
+    orderPreserved: boolean;
+  };
+}> {
+  // Get the migrated network store data
+  const networkStore = await getStoreValue<NetworkState>(
+    driver,
+    'networkStore',
+  );
+  if (!networkStore || !networkStore.state) {
+    return {
+      success: false,
+      details: {
+        chainsPreserved: false,
+        enabledChainIdsPreserved: false,
+        orderPreserved: false,
+      },
+    };
+  }
+
+  // Check if chains were preserved
+  const chainsPreserved = Object.keys(originalData.rainbowChains).every(
+    (chainId) => {
+      const rainbowChain = originalData.rainbowChains[+chainId];
+      const isBackendSupported =
+        networkStore.state.networks.backendNetworks.networks.some(
+          (network) => network.id === chainId,
+        );
+
+      const hasChain = !!networkStore.state.userPreferences[+chainId];
+      const maintainedActiveRpc =
+        rainbowChain.activeRpcUrl ===
+        networkStore.state.userPreferences[+chainId].activeRpcUrl;
+      const maintainedRpcs = rainbowChain.chains.every((chain) => {
+        return !!networkStore.state.userPreferences[+chainId].rpcs[
+          chain.rpcUrls.default.http[0]
+        ];
+      });
+
+      const isMarkedCorrectly = isBackendSupported
+        ? networkStore.state.userPreferences[+chainId].type === 'supported'
+        : networkStore.state.userPreferences[+chainId].type === 'custom';
+
+      return (
+        hasChain && maintainedActiveRpc && maintainedRpcs && isMarkedCorrectly
+      );
+    },
+  );
+
+  console.log(
+    'networkStore.state.enabledChainIds',
+    typeof networkStore.state.enabledChainIds,
+  );
+
+  // Check if chain enabled status was preserved
+  const enabledChainIdsPreserved = Object.keys(originalData.userChains).every(
+    (chainId) => {
+      const wasEnabled = originalData.userChains[+chainId];
+      if (wasEnabled) {
+        return networkStore.state.enabledChainIds.has(+chainId);
+      } else {
+        return !networkStore.state.enabledChainIds.has(+chainId);
+      }
+    },
+  );
+
+  // Check if chain order was preserved
+  const orderPreserved = originalData.userChainsOrder.every(
+    (chainId, index) => {
+      // Find the position of this chain in the migrated order
+      const migratedIndex = networkStore.state.chainOrder.indexOf(chainId);
+      // If the chain was in the original order, it should be in the migrated order
+      return migratedIndex === index;
+    },
+  );
+
+  return {
+    success: chainsPreserved && enabledChainIdsPreserved && orderPreserved,
+    details: {
+      chainsPreserved,
+      enabledChainIdsPreserved,
+      orderPreserved,
+    },
+  };
 }

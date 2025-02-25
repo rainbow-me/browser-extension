@@ -1,4 +1,5 @@
 import buildTimeNetworks from 'static/data/networks.json';
+import { logger } from '~/logger';
 
 import { createStore } from '../internal/createStore';
 
@@ -9,7 +10,7 @@ let isRainbowChainsReady = false;
 let isUserChainsReady = false;
 let isMigrationManagerReady = false;
 
-type NetworksStoreMigrationState = {
+export type NetworksStoreMigrationState = {
   didCompleteNetworksMigration: boolean;
 };
 
@@ -43,16 +44,21 @@ export const runNetworksMigrationIfNeeded = (
   if (isRainbowChainsReady && isUserChainsReady && isMigrationManagerReady) {
     const { didCompleteNetworksMigration } =
       networksStoreMigrationStore.getState();
-    if (didCompleteNetworksMigration) return;
+    if (didCompleteNetworksMigration) {
+      logger.debug('[networks] networks store migration already completed', {
+        storeKey,
+      });
+      return;
+    }
 
-    console.log('running networkStore migration');
+    logger.debug('[networks] initializing networks store');
 
     const initialState: NetworkState = {
       networks: buildTimeNetworks,
       ...buildInitialUserPreferences(),
     };
-    networkStore.setState(initialState);
 
+    networkStore.setState(initialState);
     networksStoreMigrationStore.setState({
       didCompleteNetworksMigration: true,
     });
