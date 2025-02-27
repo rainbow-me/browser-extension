@@ -57,7 +57,7 @@
     "// Build and zip": "",
     "bundle": "yarn build && yarn zip",
     "// Runs tests": "",
-    "anvil": "anvil --fork-url $(./scripts/get-rpc-url.sh mainnet) --block-base-fee-per-gas 100000000 --block-gas-limit 30000000",
+    "anvil": "anvil --fork-url $(./scripts/get-rpc-url.sh mainnet) --fork-block-number 21939175 --block-base-fee-per-gas 100000000 --block-gas-limit 30000000",
     "anvil:optimism": "anvil --fork-url $(./scripts/get-rpc-url.sh optimism)",
     "anvil:kill": "lsof -i :8545|tail -n +2|awk '{print $2}'|xargs -r kill -s SIGINT",
     "test": "./scripts/unit-tests.sh",
