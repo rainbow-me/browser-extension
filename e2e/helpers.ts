@@ -204,8 +204,6 @@ export async function getExtensionIdByName(
       .getText();
     return text;
   } else {
-    return 'lccajkdjonnokmddpnclgcihidkeklij';
-
     await driver.get('chrome://extensions');
     return await driver.executeScript(`
         const extensions = document.querySelector("extensions-manager").shadowRoot
