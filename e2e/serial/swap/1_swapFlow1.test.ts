@@ -509,6 +509,8 @@ it('should be able to check insufficient asset for swap', async () => {
     driver,
   });
 
+  await delay(10_000);
+
   const confirmButtonText = await getTextFromText({
     id: 'swap-confirmation-button-ready',
     driver,
