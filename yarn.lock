@@ -4305,10 +4305,10 @@
   dependencies:
     "@babel/runtime" "^7.13.10"
 
-"@rainbow-me/provider@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@rainbow-me/provider/-/provider-0.1.1.tgz#41e786798bc032327d1f5de582eceb14dddb556d"
-  integrity sha512-VLISTlu3waIByb3D6izLUB/XbNDZ4VKH8L78fwIwyiC2+Npel8ghGiM/xAlzb/CDgAmA7duWplb/mAzCYWg2fw==
+"@rainbow-me/provider@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@rainbow-me/provider/-/provider-0.1.2.tgz#bdf18cdf97bbe7a1a42d4f6d5fcb2eadc9233fb3"
+  integrity sha512-MLEtDK0Cn/68dwMrx1Yi3jf1i6wSdwHxd12Clyos77yRr5mXq4nPVHkq/L9rNQMtzYG9lLcxcSoiTeqJAkvngg==
   dependencies:
     "@ethersproject/abstract-provider" "5.7.0"
     "@ethersproject/bignumber" "5.7.0"

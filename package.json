@@ -112,7 +112,7 @@
     "@radix-ui/react-select": "1.2.1",
     "@radix-ui/react-tabs": "1.0.4",
     "@radix-ui/react-tooltip": "1.0.3",
-    "@rainbow-me/provider": "0.1.1",
+    "@rainbow-me/provider": "0.1.2",
     "@rainbow-me/swaps": "0.32.0",
     "@rudderstack/analytics-js-service-worker": "3.0.6",
     "@scure/bip39": "1.2.1",
