@@ -18,6 +18,7 @@ export const TelemetryIdentifier = () => {
     const identify = async () => {
       const { walletType, walletAddressHash } =
         await getWalletContext(currentAddress);
+      console.log('identify', { deviceId, walletAddressHash, walletType });
       setSentryUser({ deviceId, walletAddressHash, walletType });
       // allows calling telemetry before currentAddress is available (i.e. onboarding)
       if (walletType || walletAddressHash)

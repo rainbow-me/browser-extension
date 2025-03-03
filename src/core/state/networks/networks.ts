@@ -844,7 +844,7 @@ export const networkStore = createQueryStore<
       chainOrder: state.chainOrder,
       enabledChainIds: state.enabledChainIds,
     }),
-    storageKey: 'rainbow.zustand',
+    storageKey: 'networks',
     version: 1,
   },
 );
