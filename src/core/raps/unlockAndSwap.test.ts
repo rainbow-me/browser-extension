@@ -195,43 +195,6 @@ test('[rap/unlockAndSwap] :: create unlock and swap rap with unlock', async () =
     assetToSell: ENS_MAINNET_ASSET,
     assetToBuy: USDC_MAINNET_ASSET,
   });
-
-  /*
-    We aren't getting the unlock action here
-    
-    currently returns:
-
-    #########################
-    RAP:
-
-    rap {
-    actions: [ { parameters: [Object], transaction: [Object], type: 'swap' } ]
-    }
-
-    #########################
-    RAP.ACTIONS:
-
-    rap.actions [
-      {
-        parameters: {
-          chainId: 1,
-          sellAmount: '1000000000000000000',
-          requiresApprove: false,
-          quote: [Object],
-          meta: undefined,
-          assetToSell: [Object],
-          assetToBuy: [Object]
-        },
-        transaction: { confirmed: null, hash: null },
-        type: 'swap'
-      }
-    ]
-
-    #########################
-    RAP.ACTIONS.LENGTH:
-
-    rap.actions.length 1
-  */
   expect(rap.actions.length).toBe(2);
 });
 

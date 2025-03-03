@@ -275,8 +275,6 @@ test('[keychain/index] :: should be able to send transactions', async () => {
     });
   }
 
-  console.log('GETS HERE 3 ###########');
-
   const tx = {
     from: accounts[0],
     to: accounts[0],
