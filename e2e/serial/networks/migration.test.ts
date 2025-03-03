@@ -13,8 +13,10 @@ import {
 } from 'vitest';
 
 import { getFactoryData } from '~/core/state/networks/__tests__/data';
-import { NetworkState } from '~/core/state/networks/networks';
-import { NetworksStoreMigrationState } from '~/core/state/networks/runNetworksMigrationIfNeeded';
+import {
+  NetworkState,
+  NetworksStoreMigrationState,
+} from '~/core/state/networks/types';
 import { RainbowChainsState } from '~/core/state/rainbowChains';
 import { UserChainsState } from '~/core/state/userChains';
 

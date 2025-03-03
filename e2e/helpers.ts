@@ -23,7 +23,7 @@ import { expect } from 'vitest';
 import { StorageValue } from 'zustand/middleware';
 
 import { RAINBOW_TEST_DAPP } from '~/core/references/links';
-import { NetworkState } from '~/core/state/networks/networks';
+import { NetworkState } from '~/core/state/networks/types';
 import { RainbowChainsState } from '~/core/state/rainbowChains';
 import { UserChainsState } from '~/core/state/userChains';
 

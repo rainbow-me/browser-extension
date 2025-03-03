@@ -1,10 +1,6 @@
 import { isEmpty } from 'lodash';
 import { type Chain, mainnet } from 'viem/chains';
 
-import buildTimeNetworks from 'static/data/networks.json';
-import { NetworkState } from '~/core/state/networks/networks';
-import { useRainbowChainsStore } from '~/core/state/rainbowChains';
-import { useUserChainsStore } from '~/core/state/userChains';
 import {
   BackendNetwork,
   BackendNetworks,
@@ -16,12 +12,18 @@ import {
 import { GasSpeed } from '~/core/types/gas';
 import { logger } from '~/logger';
 
-const RPC_PROXY_API_KEY = process.env.RPC_PROXY_API_KEY;
-const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
-const IS_DEV = process.env.IS_DEV === 'true';
-const IS_TESTING = process.env.IS_TESTING === 'true';
+import {
+  DEFAULT_PRIVATE_MEMPOOL_TIMEOUT,
+  INTERNAL_BUILD,
+  IS_DEV,
+  IS_TESTING,
+  RPC_PROXY_API_KEY,
+  buildTimeNetworks,
+} from './constants';
+import { NetworkState } from './types';
 
-export const DEFAULT_PRIVATE_MEMPOOL_TIMEOUT = 2 * 60 * 1_000;
+// Export the constant for backward compatibility
+export { DEFAULT_PRIVATE_MEMPOOL_TIMEOUT };
 
 export function getBadgeUrl({
   chainBadges,
@@ -155,6 +157,7 @@ export const mergedChainToViemChain = (
   const { type, enabled, order, activeRpcUrl, rpcs, ...chain } = mergedChain;
   return chain;
 };
+
 const isUserChainOrderMalformed = (userChainsOrder: number[]) => {
   return userChainsOrder.some((id) => id == null || Number.isNaN(id));
 };
@@ -186,8 +189,12 @@ const buildNewUserPreferences = (
   };
 };
 
+// This function now takes rainbowChains and userChains as parameters instead of importing them
 export const buildInitialUserPreferences = (
   initialSupportedNetworks = buildTimeNetworks,
+  rainbowChains: Record<number, { activeRpcUrl: string; chains: Chain[] }> = {},
+  userChains: Record<number, boolean> = {},
+  userChainsOrder: number[] = [],
 ): Pick<NetworkState, 'userPreferences' | 'chainOrder' | 'enabledChainIds'> => {
   console.log('buildInitialUserPreferences');
   logger.debug(
@@ -210,9 +217,6 @@ export const buildInitialUserPreferences = (
   const enabledChainIds = new Set<number>(
     initialNonInternalNetworks.map(({ id }) => toChainId(id)),
   );
-
-  const { rainbowChains } = useRainbowChainsStore.getState();
-  const { userChains, userChainsOrder } = useUserChainsStore.getState();
 
   logger.debug('[buildInitialUserPreferences] Current store state', {
     rainbowChains,

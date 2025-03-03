@@ -1,6 +1,5 @@
 import { Chain } from 'viem';
 
-import buildTimeNetworks from 'static/data/networks.json';
 import { fetchNetworks } from '~/core/resources/networks/networks';
 import { favoritesStore } from '~/core/state/favorites';
 import { createQueryStore } from '~/core/state/internal/createQueryStore';
@@ -22,17 +21,12 @@ import {
   TransformedChain,
 } from '~/core/types/chains';
 
-import { networksStoreMigrationStore } from './runNetworksMigrationIfNeeded';
-
-const DEFAULT_PRIVATE_MEMPOOL_TIMEOUT = 2 * 60 * 1_000; // 2 minutes
-
-export interface NetworkState {
-  networks: Networks; // contains backend-driven networks and backend-driven custom networks
-  userPreferences: Record<number, ChainPreferences>; // contains user-driven overrides for backend-driven networks AND user added custom networks
-
-  chainOrder: Array<number>;
-  enabledChainIds: Set<number>;
-}
+import {
+  DEFAULT_PRIVATE_MEMPOOL_TIMEOUT,
+  buildTimeNetworks,
+} from './constants';
+import { networksStoreMigrationStore } from './migration';
+import { NetworkState } from './types';
 
 interface NetworkActions {
   // user-added custom networks store methods
