@@ -56,12 +56,18 @@ const SELECTED_GAS = {
   },
 };
 
-// Mock just the action functions used during execution
-vi.mock('./actions', () => ({
-  swap: vi.fn().mockResolvedValue({ nonce: 1, hash: '0x123456' }),
-  unlock: vi.fn().mockResolvedValue({ nonce: 1, hash: '0x123456' }),
-  // Leave the other functions like assetNeedsUnlocking unmocked to use real implementations
-}));
+vi.mock('./actions', async () => {
+  const actual = (await vi.importActual('./actions')) as Record<
+    string,
+    unknown
+  >;
+
+  return {
+    ...actual,
+    swap: vi.fn().mockResolvedValue({ nonce: 1, hash: '0x123456' }),
+    unlock: vi.fn().mockResolvedValue({ nonce: 1, hash: '0x123456' }),
+  };
+});
 
 // Minimal mock for the wallet to handle provider requests
 vi.mock('@ethersproject/wallet', () => ({
@@ -181,7 +187,7 @@ test('[rap/unlockAndSwap] :: create unlock and swap rap without unlock and execu
   expect(swap.nonce).toBeDefined();
 });
 
-test.skip('[rap/unlockAndSwap] :: create unlock and swap rap with unlock', async () => {
+test('[rap/unlockAndSwap] :: create unlock and swap rap with unlock', async () => {
   const rap = await createUnlockAndSwapRap({
     quote: needsUnlockQuote as Quote,
     chainId: 1,

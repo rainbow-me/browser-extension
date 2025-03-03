@@ -157,6 +157,16 @@ const restHandlers = [
     const address = url.searchParams.get('address') || '';
     return HttpResponse.json(apiResponses?.[address], { status: 200 });
   }),
+  http.options('*', () => {
+    return new Response(null, {
+      status: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE',
+        'Access-Control-Allow-Headers': '*',
+      },
+    });
+  }),
 ];
 
 const server = setupServer(...restHandlers);
