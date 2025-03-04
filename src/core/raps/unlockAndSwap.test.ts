@@ -139,29 +139,35 @@ beforeAll(async () => {
   });
 }, 10000);
 
-test.skip('[rap/unlockAndSwap] :: estimate unlock and swap rap without unlock', async () => {
-  const gasLimit = await estimateUnlockAndSwap({
-    quote: doesntNeedUnlockQuote as Quote,
-    chainId: 1,
-    assetToSell: ETH_MAINNET_ASSET,
-    sellAmount: '1000000000000000000',
-    assetToBuy: USDC_MAINNET_ASSET,
-  });
-  expect(Number(gasLimit)).toBeGreaterThan(0);
-  swapGasLimit = Number(gasLimit);
-});
+test.todo(
+  '[rap/unlockAndSwap] :: estimate unlock and swap rap without unlock',
+  async () => {
+    const gasLimit = await estimateUnlockAndSwap({
+      quote: doesntNeedUnlockQuote as Quote,
+      chainId: 1,
+      assetToSell: ETH_MAINNET_ASSET,
+      sellAmount: '1000000000000000000',
+      assetToBuy: USDC_MAINNET_ASSET,
+    });
+    expect(Number(gasLimit)).toBeGreaterThan(0);
+    swapGasLimit = Number(gasLimit);
+  },
+);
 
-test.skip('[rap/unlockAndSwap] :: estimate unlock and swap rap with unlock', async () => {
-  const gasLimit = await estimateUnlockAndSwap({
-    quote: needsUnlockQuote as Quote,
-    chainId: 1,
-    assetToSell: ENS_MAINNET_ASSET,
-    sellAmount: '1000000000000000000',
-    assetToBuy: USDC_MAINNET_ASSET,
-  });
-  expect(Number(gasLimit)).toBeGreaterThan(0);
-  expect(Number(gasLimit)).toBeGreaterThan(swapGasLimit);
-});
+test.todo(
+  '[rap/unlockAndSwap] :: estimate unlock and swap rap with unlock',
+  async () => {
+    const gasLimit = await estimateUnlockAndSwap({
+      quote: needsUnlockQuote as Quote,
+      chainId: 1,
+      assetToSell: ENS_MAINNET_ASSET,
+      sellAmount: '1000000000000000000',
+      assetToBuy: USDC_MAINNET_ASSET,
+    });
+    expect(Number(gasLimit)).toBeGreaterThan(0);
+    expect(Number(gasLimit)).toBeGreaterThan(swapGasLimit);
+  },
+);
 
 test('[rap/unlockAndSwap] :: create unlock and swap rap without unlock', async () => {
   const rap = await createUnlockAndSwapRap({
