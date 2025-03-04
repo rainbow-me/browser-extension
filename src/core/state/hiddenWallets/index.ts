@@ -1,5 +1,4 @@
 import { Address } from 'viem';
-import { create } from 'zustand';
 
 import { createStore } from '../internal/createStore';
 
@@ -34,4 +33,4 @@ export const hiddenWalletsStore = createStore<HiddenWalletsStore>(
   },
 );
 
-export const useHiddenWalletsStore = create(hiddenWalletsStore);
+export const useHiddenWalletsStore = hiddenWalletsStore;

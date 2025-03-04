@@ -1,5 +1,3 @@
-import { create } from 'zustand';
-
 import { Language, changeI18nLanguage, i18n } from '~/core/languages';
 import { createStore } from '~/core/state/internal/createStore';
 import { fetchJsonLocally } from '~/core/utils/localJson';
@@ -34,4 +32,4 @@ export const currentLanguageStore = createStore<CurrentLanguageState>(
   },
 );
 
-export const useCurrentLanguageStore = create(currentLanguageStore);
+export const useCurrentLanguageStore = currentLanguageStore;

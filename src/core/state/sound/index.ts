@@ -1,5 +1,3 @@
-import { create } from 'zustand';
-
 import { createStore } from '../internal/createStore';
 
 export interface SoundState {
@@ -20,4 +18,4 @@ export const soundStore = createStore<SoundState>(
   },
 );
 
-export const useSoundStore = create(soundStore);
+export const useSoundStore = soundStore;

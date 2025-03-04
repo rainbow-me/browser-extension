@@ -1,5 +1,3 @@
-import { create } from 'zustand';
-
 import { createStore } from '../internal/createStore';
 
 export enum promoTypes {
@@ -42,4 +40,4 @@ export const quickPromoStore = createStore<QuickPromoStore>(
   },
 );
 
-export const useQuickPromoStore = create(quickPromoStore);
+export const useQuickPromoStore = quickPromoStore;

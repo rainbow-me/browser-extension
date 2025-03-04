@@ -1,5 +1,3 @@
-import { create } from 'zustand';
-
 import { createStore } from '~/core/state/internal/createStore';
 import { getBrowser } from '~/entries/popup/hooks/useBrowser';
 
@@ -22,4 +20,4 @@ export const analyticsDisabledStore = createStore<AnalyticsDisabledState>(
   },
 );
 
-export const useAnalyticsDisabledStore = create(analyticsDisabledStore);
+export const useAnalyticsDisabledStore = analyticsDisabledStore;

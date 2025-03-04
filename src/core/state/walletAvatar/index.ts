@@ -1,5 +1,3 @@
-import { create } from 'zustand';
-
 import { createStore } from '~/core/state/internal/createStore';
 
 export interface WalletAvatar {
@@ -40,4 +38,4 @@ export const walletAvatarStore = createStore<WalletAvatarStore>(
   },
 );
 
-export const useWalletAvatarStore = create(walletAvatarStore);
+export const useWalletAvatarStore = walletAvatarStore;

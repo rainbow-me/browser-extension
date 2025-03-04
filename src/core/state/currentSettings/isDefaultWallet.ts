@@ -1,5 +1,3 @@
-import { create } from 'zustand';
-
 import { createStore } from '~/core/state/internal/createStore';
 
 export interface IsDefaultWalletState {
@@ -21,4 +19,4 @@ export const isDefaultWalletStore = createStore<IsDefaultWalletState>(
   },
 );
 
-export const useIsDefaultWalletStore = create(isDefaultWalletStore);
+export const useIsDefaultWalletStore = isDefaultWalletStore;

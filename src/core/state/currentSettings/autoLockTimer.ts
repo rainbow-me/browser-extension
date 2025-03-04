@@ -1,5 +1,3 @@
-import { create } from 'zustand';
-
 import { createStore } from '~/core/state/internal/createStore';
 import { AutoLockTimerOption } from '~/core/types/settings';
 
@@ -22,4 +20,4 @@ export const autoLockTimerStore = createStore<AutoLockTimerState>(
   },
 );
 
-export const useAutoLockTimerStore = create(autoLockTimerStore);
+export const useAutoLockTimerStore = autoLockTimerStore;

@@ -1,5 +1,3 @@
-import { create } from 'zustand';
-
 import { createStore } from '~/core/state/internal/createStore';
 
 export interface DeveloperToolsEnabledState {
@@ -22,4 +20,4 @@ export const developerToolsEnabledStore =
     },
   );
 
-export const useDeveloperToolsEnabledStore = create(developerToolsEnabledStore);
+export const useDeveloperToolsEnabledStore = developerToolsEnabledStore;

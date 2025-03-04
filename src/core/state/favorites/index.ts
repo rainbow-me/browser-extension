@@ -1,5 +1,3 @@
-import { create } from 'zustand';
-
 import buildTimeNetworks from 'static/data/networks.json';
 import { createStore } from '~/core/state/internal/createStore';
 import { AddressOrEth } from '~/core/types/assets';
@@ -71,4 +69,4 @@ export const favoritesStore = createStore<FavoritesState>(
   },
 );
 
-export const useFavoritesStore = create(favoritesStore);
+export const useFavoritesStore = favoritesStore;

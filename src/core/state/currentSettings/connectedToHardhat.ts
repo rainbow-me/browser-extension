@@ -1,5 +1,3 @@
-import { create } from 'zustand';
-
 import { createStore } from '~/core/state/internal/createStore';
 
 export interface ConnectedToHardhatState {
@@ -30,4 +28,4 @@ export const connectedToHardhatStore = createStore<ConnectedToHardhatState>(
   },
 );
 
-export const useConnectedToHardhatStore = create(connectedToHardhatStore);
+export const useConnectedToHardhatStore = connectedToHardhatStore;

@@ -1,6 +1,5 @@
 import { isAddress } from '@ethersproject/address';
 import { Address } from 'viem';
-import { create } from 'zustand';
 
 import { RainbowTransaction } from '~/core/types/transactions';
 
@@ -135,5 +134,5 @@ export const pendingTransactionsStore = createStore<PendingTransactionsState>(
 );
 
 export const usePendingTransactionsStore = withSelectors(
-  create(pendingTransactionsStore),
+  pendingTransactionsStore,
 );

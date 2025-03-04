@@ -1,5 +1,3 @@
-import { create } from 'zustand';
-
 import { createStore } from '../internal/createStore';
 
 type SheetMode = 'cancel' | 'none' | 'speedUp';
@@ -18,4 +16,4 @@ export const currentHomeSheetStore = createStore<CurrentSheetState>(
   }),
 );
 
-export const useCurrentHomeSheetStore = create(currentHomeSheetStore);
+export const useCurrentHomeSheetStore = currentHomeSheetStore;
