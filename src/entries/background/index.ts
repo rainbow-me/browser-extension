@@ -22,6 +22,8 @@ require('../../core/utils/lockdown');
 initializeSentry('background');
 localStorageRecycler();
 
+handleOpenExtensionShortcut();
+
 const popupMessenger = initializeMessenger({ connect: 'popup' });
 const inpageMessenger = initializeMessenger({ connect: 'inpage' });
 
@@ -36,7 +38,6 @@ syncStores();
 uuid4();
 initFCM();
 handleKeepAlive();
-handleOpenExtensionShortcut();
 
 popupMessenger.reply('rainbow_updateWagmiClient', async () => {
   const activeChains = networkStore.getState().getAllActiveRpcChains();
