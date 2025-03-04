@@ -1,5 +1,4 @@
 import { Address } from 'viem';
-import create from 'zustand';
 
 import { ParsedUserAsset } from '~/core/types/assets';
 import { SearchAsset } from '~/core/types/search';
@@ -45,4 +44,4 @@ export const hiddenAssetsStore = createStore<HiddenAssetState>(
   },
 );
 
-export const useHiddenAssetStore = withSelectors(create(hiddenAssetsStore));
+export const useHiddenAssetStore = withSelectors(hiddenAssetsStore);

@@ -1,5 +1,5 @@
 import { Address } from 'viem';
-import create from 'zustand';
+import { create } from 'zustand';
 
 import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
 
@@ -102,4 +102,4 @@ export const walletBackupsStore = createStore<WalletBackupsStore>(
   },
 );
 
-export const useWalletBackupsStore = withSelectors(create(walletBackupsStore));
+export const useWalletBackupsStore = withSelectors(walletBackupsStore);

@@ -32,6 +32,7 @@ async function syncStore({ store }: { store: StoreWithPersist<unknown> }) {
 export function syncStores() {
   Object.values(stores).forEach((store) => {
     if (typeof store === 'function') return;
-    if (store.persist) syncStore({ store: store as StoreWithPersist<unknown> });
+    if ('persist' in store)
+      syncStore({ store: store as StoreWithPersist<unknown> });
   });
 }

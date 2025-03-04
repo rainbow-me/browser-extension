@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 
 import { createStore } from '~/core/state/internal/createStore';
 import { GasSpeed } from '~/core/types/gas';

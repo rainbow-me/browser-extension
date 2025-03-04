@@ -1,5 +1,3 @@
-import create from 'zustand';
-
 import { createStore } from '../internal/createStore';
 import { withSelectors } from '../internal/withSelectors';
 
@@ -13,4 +11,4 @@ export const errorStore = createStore<ErrorState>((set) => ({
   setError: (error) => set({ error }),
 }));
 
-export const useErrorStore = withSelectors(create(errorStore));
+export const useErrorStore = withSelectors(errorStore);

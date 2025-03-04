@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 
 import { DappMetadata } from '~/core/resources/metadata/dapp';
 

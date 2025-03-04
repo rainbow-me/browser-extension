@@ -1,5 +1,4 @@
 import { Address } from 'viem';
-import create from 'zustand';
 
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -167,7 +166,7 @@ export const popupInstanceStore = createStore<PopupInstanceStore>(
   },
 );
 
-export const usePopupInstanceStore = withSelectors(create(popupInstanceStore));
+export const usePopupInstanceStore = withSelectors(popupInstanceStore);
 
 // creates handlers that only work in popup context and passes through callback types
 function popupInstanceHandlerFactory<
@@ -180,7 +179,7 @@ function popupInstanceHandlerFactory<
   ): Promise<void | ReturnType<THandler>> => {
     const isPopup = await isNativePopup();
     if (isPopup) {
-      return handler(...(<[]>args));
+      return handler(...(<unknown[]>args));
     }
   };
 }

@@ -1,5 +1,5 @@
 import { uuid4 } from '@sentry/utils';
-import create from 'zustand';
+import { create } from 'zustand';
 
 import { createStore } from '~/core/state/internal/createStore';
 

@@ -1,5 +1,4 @@
 import { Address } from 'viem';
-import create from 'zustand';
 
 import { ChainId } from '~/core/types/chains';
 
@@ -243,4 +242,4 @@ export const appSessionsStore = createStore<AppSessionsStore<AppSession>>(
   },
 );
 
-export const useAppSessionsStore = withSelectors(create(appSessionsStore));
+export const useAppSessionsStore = withSelectors(appSessionsStore);

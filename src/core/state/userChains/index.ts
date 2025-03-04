@@ -1,5 +1,3 @@
-import create from 'zustand';
-
 import { ChainId } from '~/core/types/chains';
 
 import { createStore } from '../internal/createStore';
@@ -122,4 +120,4 @@ export const userChainsStore = createStore<UserChainsState>(
 /**
  * @deprecated use `networkStore` instead
  */
-export const useUserChainsStore = withSelectors(create(userChainsStore));
+export const useUserChainsStore = withSelectors(userChainsStore);

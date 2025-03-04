@@ -1,5 +1,3 @@
-import create from 'zustand';
-
 import { UniqueAsset } from '~/core/types/nfts';
 
 import { createStore } from '../internal/createStore';
@@ -17,4 +15,4 @@ export const selectedNftStore = createStore<SelectedNftState>((set) => ({
   selectedNft: null,
 }));
 
-export const useSelectedNftStore = withSelectors(create(selectedNftStore));
+export const useSelectedNftStore = withSelectors(selectedNftStore);

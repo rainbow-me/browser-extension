@@ -1,5 +1,5 @@
 import { Address } from 'viem';
-import create from 'zustand';
+import { create } from 'zustand';
 
 import { RainbowTransaction } from '~/core/types/transactions';
 

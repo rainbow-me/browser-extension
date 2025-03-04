@@ -1,5 +1,5 @@
 import isEqual from 'lodash/isEqual';
-import create, { StateCreator, StoreApi, UseBoundStore } from 'zustand';
+import { StateCreator, StoreApi, UseBoundStore, create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
 
 import { RainbowError, logger } from '~/logger';

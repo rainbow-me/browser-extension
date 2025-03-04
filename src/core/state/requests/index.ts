@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 
 import { ProviderRequestPayload } from '../../transports/providerRequestTransport';
 import { createStore } from '../internal/createStore';
