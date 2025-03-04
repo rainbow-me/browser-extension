@@ -1,6 +1,5 @@
 import { uuid4 } from '@sentry/utils';
 
-import { analytics } from '~/analytics';
 import { initFCM } from '~/core/firebase/fcm';
 import { initializeMessenger } from '~/core/messengers';
 import { initializeSentry } from '~/core/sentry';
@@ -12,6 +11,7 @@ import { updateWagmiConfig } from '~/core/wagmi';
 import { handleDisconnect } from './handlers/handleDisconnect';
 import { handleInstallExtension } from './handlers/handleInstallExtension';
 import { handleKeepAlive } from './handlers/handleKeepAlive';
+import { handleOpenExtensionShortcut } from './handlers/handleOpenExtensionShortcut';
 import { handlePrefetchDappMetadata } from './handlers/handlePrefetchMetadata';
 import { handleProviderRequest } from './handlers/handleProviderRequest';
 import { handleSetupInpage } from './handlers/handleSetupInpage';
@@ -36,21 +36,9 @@ syncStores();
 uuid4();
 initFCM();
 handleKeepAlive();
+handleOpenExtensionShortcut();
 
 popupMessenger.reply('rainbow_updateWagmiClient', async () => {
   const activeChains = networkStore.getState().getAllActiveRpcChains();
   updateWagmiConfig(activeChains);
-});
-
-// firefox maps chrome > browser, but it does still use
-// `browserAction` for manifest v2 & v3. in v3 chrome uses `action`
-const openPopup = () => (chrome.action || chrome.browserAction).openPopup();
-
-chrome.commands.onCommand.addListener((command) => {
-  if (command === 'open_rainbow') {
-    openPopup();
-    analytics.track(analytics.event.browserCommandTriggered, {
-      command: 'launched',
-    });
-  }
 });
