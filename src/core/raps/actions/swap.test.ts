@@ -47,7 +47,7 @@ beforeAll(async () => {
     toChainId: 1,
     currency: 'USD',
   });
-}, 10000);
+}, 20_000);
 
 test('[rap/swap] :: should estimate swap gas limit', async () => {
   const swapGasLimit = await estimateSwapGasLimit({

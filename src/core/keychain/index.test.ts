@@ -49,7 +49,7 @@ beforeAll(async () => {
   connectedToHardhatStore.setState({ connectedToHardhat: true });
   updateWagmiConfig([mainnet]);
   await delay(3000);
-});
+}, 20_000);
 
 test('[keychain/index] :: should be able to create an HD wallet', async () => {
   await createWallet();

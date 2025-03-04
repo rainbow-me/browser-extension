@@ -137,7 +137,7 @@ beforeAll(async () => {
     toChainId: 1,
     currency: 'USD',
   });
-}, 10000);
+}, 20_000);
 
 test.todo(
   '[rap/unlockAndSwap] :: estimate unlock and swap rap without unlock',
