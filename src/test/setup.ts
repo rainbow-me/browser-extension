@@ -15,9 +15,7 @@ vi.stubGlobal('chrome', {
       remove: vi.fn(),
     },
   },
-  runtime: {
-    getURL: (url: string) => `https://local.io/${url}`,
-  },
+  runtime: {},
 });
 
 vi.stubGlobal('window.location', {
