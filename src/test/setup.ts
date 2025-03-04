@@ -155,7 +155,8 @@ const restHandlers = [
     const address = url.searchParams.get('address') || '';
     return HttpResponse.json(apiResponses?.[address], { status: 200 });
   }),
-  http.options('*', () => {
+  http.options('https://swap.p.rainbow.me/*', ({ request }) => {
+    console.warn(`CORS request detected to: ${request.url}`);
     return new Response(null, {
       status: 200,
       headers: {
