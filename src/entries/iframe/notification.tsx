@@ -1,9 +1,10 @@
 /* eslint-disable no-nested-ternary */
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { i18n } from '~/core/languages';
-import { chainsLabel } from '~/core/references/chains';
+import { networkStore } from '~/core/state/networks/networks';
+import { getBadgeUrl } from '~/core/state/networks/utils';
 import { ChainId } from '~/core/types/chains';
 import { isDarkColor } from '~/core/utils/colors';
 import { INJECTED_NOTIFICATION_DIMENSIONS } from '~/core/utils/dimensions';
@@ -22,40 +23,6 @@ import {
 import { ChainBadge } from '../popup/components/ChainBadge/ChainBadge';
 
 const HTML_COLOR_SCHEME_PATTERN = /color-scheme:\s*(\w+);/;
-
-const ASSET_SOURCE = {
-  [ChainId.mainnet]: 'assets/badges/ethereumBadge@3x.png',
-  [ChainId.optimism]: 'assets/badges/optimismBadge@3x.png',
-  [ChainId.arbitrum]: 'assets/badges/arbitrumBadge@3x.png',
-  [ChainId.polygon]: 'assets/badges/polygonBadge@3x.png',
-  [ChainId.base]: 'assets/badges/baseBadge@3x.png',
-  [ChainId.berachain]: 'assets/badges/berachainBadge@3x.png',
-  [ChainId.berachainbArtio]: 'assets/badges/berachainBadge@3x.png',
-  [ChainId.zora]: 'assets/badges/zoraBadge@3x.png',
-  [ChainId.bsc]: 'assets/badges/bscBadge@3x.png',
-  [ChainId.avalanche]: 'assets/badges/avalancheBadge@3x.png',
-  [ChainId.hardhat]: 'assets/badges/hardhatBadge@3x.png',
-  [ChainId.hardhatOptimism]: 'assets/badges/hardhatBadge@3x.png',
-  [ChainId.sepolia]: 'assets/badges/ethereumBadge@3x.png',
-  [ChainId.holesky]: 'assets/badges/ethereumBadge@3x.png',
-  [ChainId.optimismSepolia]: 'assets/badges/optimismBadge@3x.png',
-  [ChainId.bscTestnet]: 'assets/badges/bscBadge@3x.png',
-  [ChainId.polygonAmoy]: 'assets/badges/polygonBadge@3x.png',
-  [ChainId.arbitrumSepolia]: 'assets/badges/arbitrumBadge@3x.png',
-  [ChainId.baseSepolia]: 'assets/badges/baseBadge@3x.png',
-  [ChainId.zoraSepolia]: 'assets/badges/zoraBadge@3x.png',
-  [ChainId.avalancheFuji]: 'assets/badges/avalancheBadge@3x.png',
-  [ChainId.blast]: 'assets/badges/blastBadge@3x.png',
-  [ChainId.blastSepolia]: 'assets/badges/blastBadge@3x.png',
-  [ChainId.apechain]: 'assets/badges/apechainBadge@3x.png',
-  [ChainId.apechainCurtis]: 'assets/badges/apechainBadge@3x.png',
-  [ChainId.ink]: 'assets/badges/inkBadge@3x.png',
-  [ChainId.inkSepolia]: 'assets/badges/inkBadge@3x.png',
-  [ChainId.sanko]: 'assets/badges/sankoBadge@3x.png',
-  [ChainId.sankoTestnet]: 'assets/badges/sankoBadge@3x.png',
-  [ChainId.gravity]: 'assets/badges/gravityBadge@3x.png',
-  [ChainId.gravitySepolia]: 'assets/badges/gravityBadge@3x.png',
-};
 
 export enum IN_DAPP_NOTIFICATION_STATUS {
   'success' = 'success',
@@ -266,6 +233,10 @@ const NotificationComponent = ({
   iframeLoaded: boolean;
   onDismiss: () => void;
 }) => {
+  const chainsLabel = networkStore((state) => state.getChainsLabel());
+  const chainBadges = networkStore((state) => state.getChainsBadgeUrls());
+  const badgeUrl = getBadgeUrl({ chainBadges: chainBadges[chainId], size: 24 });
+
   const { title, description } = useMemo(() => {
     switch (status) {
       case IN_DAPP_NOTIFICATION_STATUS.success:
@@ -300,7 +271,7 @@ const NotificationComponent = ({
           description: i18n.t('injected_notifications.no_active_session'),
         };
     }
-  }, [chainId, chainName, status]);
+  }, [chainId, chainName, status, chainsLabel]);
 
   return iframeLoaded ? (
     <ThemeProvider theme={siteTheme}>
@@ -332,11 +303,14 @@ const NotificationComponent = ({
                 {status === IN_DAPP_NOTIFICATION_STATUS.success ||
                 status === IN_DAPP_NOTIFICATION_STATUS.already_added ||
                 status === IN_DAPP_NOTIFICATION_STATUS.set_as_active ? (
-                  ASSET_SOURCE[chainId] ? (
+                  badgeUrl ? (
                     <img
-                      src={`${extensionUrl}${ASSET_SOURCE[chainId]}`}
+                      src={`${extensionUrl}${badgeUrl}`}
                       width={24}
                       height={24}
+                      style={{
+                        borderRadius: '50%',
+                      }}
                     />
                   ) : (
                     <ChainBadge chainId={chainId} size={24} />

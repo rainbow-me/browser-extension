@@ -6,9 +6,9 @@ import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
-import { chainsLabel } from '~/core/references/chains';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
+import { networkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
 import {
@@ -227,6 +227,7 @@ export const BottomNetwork = ({
   symbolSize?: number;
   symbol?: SymbolProps['symbol'];
 }) => {
+  const chainsLabel = networkStore((state) => state.getChainsLabel());
   return (
     <Box testId="switch-network-menu">
       <Inline alignHorizontal="right" alignVertical="center">

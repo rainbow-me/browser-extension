@@ -1,6 +1,5 @@
-import { userChainsStore } from '~/core/state/userChains';
+import { networkStore } from '~/core/state/networks/networks';
 import {
-  ParsedAssetsDict,
   ParsedAssetsDictByChain,
   ParsedUserAsset,
   UniqueId,
@@ -8,7 +7,6 @@ import {
 import { ChainId } from '~/core/types/chains';
 import { deriveAddressAndChainWithUniqueId } from '~/core/utils/address';
 import { add } from '~/core/utils/numbers';
-import { chainIdMap } from '~/core/utils/userChains';
 
 // selectors
 export function selectorFilterByUserChains<T>({
@@ -20,14 +18,23 @@ export function selectorFilterByUserChains<T>({
   selector: (data: ParsedAssetsDictByChain) => T;
   chain?: ChainId;
 }): T {
-  const { userChains } = userChainsStore.getState();
-  const allUserChainIds = Object.keys(userChains)
+  const chainIdsBasedOnMainnetId = networkStore
+    .getState()
+    .getBackendChainIdsByMainnetId();
+  const { enabledChainIds } = networkStore.getState();
+  const allUserChainIds = Array.from(enabledChainIds)
     .map((chainId) => {
-      const id = Number(chainId);
-      return userChains[id] ? chainIdMap[id] || id : undefined;
+      const backendChainIds = chainIdsBasedOnMainnetId[chainId];
+      if (!enabledChainIds.has(chainId)) return [];
+
+      if (backendChainIds) {
+        return [...backendChainIds, chainId];
+      }
+      return [chainId];
     })
     .flat()
     .filter(Boolean);
+
   const filteredAssetsDictByChain = Object.keys(data).reduce((acc, key) => {
     const chainKey = Number(key);
     if (chain === chainKey || (!chain && allUserChainIds.includes(chainKey))) {
@@ -35,6 +42,7 @@ export function selectorFilterByUserChains<T>({
     }
     return acc;
   }, {} as ParsedAssetsDictByChain);
+
   return selector(filteredAssetsDictByChain);
 }
 
@@ -60,17 +68,13 @@ export function selectUserAssetsDictByChain(assets: ParsedAssetsDictByChain) {
 }
 
 export function selectUserAssetsListByChainId(assets: ParsedAssetsDictByChain) {
-  const assetsByNetwork = [
-    assets?.[ChainId.mainnet],
-    assets?.[ChainId.optimism],
-    assets?.[ChainId.polygon],
-    assets?.[ChainId.arbitrum],
-    assets?.[ChainId.base],
-    assets?.[ChainId.zora],
-    assets?.[ChainId.bsc],
-    assets?.[ChainId.avalanche],
-    assets?.[ChainId.ink],
-  ].flat();
+  const assetsByNetwork = networkStore
+    .getState()
+    .getSupportedAssetsChainIds()
+    .map((chain) => assets?.[chain])
+    .filter(Boolean)
+    .filter((chainAssets) => Object.keys(chainAssets).length > 0);
+
   return assetsByNetwork
     .map((chainAssets) =>
       Object.values(chainAssets).sort(
@@ -80,24 +84,6 @@ export function selectUserAssetsListByChainId(assets: ParsedAssetsDictByChain) {
       ),
     )
     .flat();
-}
-
-export function selectUserAssetAddressMapByChainId(
-  assets: ParsedAssetsDictByChain,
-) {
-  const mapAddresses = (list: ParsedAssetsDict = {}) =>
-    Object.values(list).map((i) => i.address);
-  return {
-    [ChainId.mainnet]: mapAddresses(assets[ChainId.mainnet]) || [],
-    [ChainId.optimism]: mapAddresses(assets[ChainId.optimism]) || [],
-    [ChainId.bsc]: mapAddresses(assets[ChainId.bsc]) || [],
-    [ChainId.polygon]: mapAddresses(assets[ChainId.polygon]) || [],
-    [ChainId.arbitrum]: mapAddresses(assets[ChainId.arbitrum]) || [],
-    [ChainId.base]: mapAddresses(assets[ChainId.base]) || [],
-    [ChainId.zora]: mapAddresses(assets[ChainId.zora]) || [],
-    [ChainId.avalanche]: mapAddresses(assets[ChainId.avalanche]) || [],
-    [ChainId.ink]: mapAddresses(assets[ChainId.ink]) || [],
-  };
 }
 
 // selector generators

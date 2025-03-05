@@ -2,15 +2,15 @@ import { Chain } from 'viem';
 
 import { proxyRpcEndpoint } from '../providers/proxy';
 import { connectedToHardhatStore } from '../state/currentSettings/connectedToHardhat';
+import { networkStore } from '../state/networks/networks';
 import { ChainId, chainHardhat, chainHardhatOptimism } from '../types/chains';
-import { findRainbowChainForChainId } from '../utils/rainbowChains';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
 const getOriginalRpcEndpoint = (chain: Chain) => {
-  const userAddedNetwork = findRainbowChainForChainId(chain.id);
-  if (userAddedNetwork) {
-    return userAddedNetwork.rpcUrls.default.http[0];
+  const userAddedChain = networkStore.getState().getActiveRpcForChain(chain.id);
+  if (userAddedChain) {
+    return userAddedChain.rpcUrls.default.http[0];
   }
   return chain.rpcUrls.default.http[0];
 };

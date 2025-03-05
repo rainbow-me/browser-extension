@@ -63,10 +63,6 @@ export const WalletContextMenu = ({
           >
             {i18n.t('wallet.view_on', { explorer: 'Etherscan' })}
           </ContextMenuItem>
-
-          <ContextMenuItem symbolLeft="paintbrush.pointed.fill" disabled>
-            {i18n.t('wallet.edit_appearance')}
-          </ContextMenuItem>
         </ContextMenuContent>
       </ContextMenu>
     </>

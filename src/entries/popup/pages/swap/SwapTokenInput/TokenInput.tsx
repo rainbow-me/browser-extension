@@ -7,6 +7,8 @@ import React, {
   useState,
 } from 'react';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { Box } from '~/design-system';
@@ -138,7 +140,14 @@ export const TokenInput = React.forwardRef<
     setDropdownVisible(false);
     setAssetFilter('');
     setTimeout(() => inputRef?.current?.focus(), 300);
-  }, [inputRef, onDropdownOpen, setAssetFilter]);
+    if (assetFilter.trim()) {
+      analytics.track(event.searchQueried, {
+        query: assetFilter,
+        queryLength: assetFilter.length,
+        location: 'swap',
+      });
+    }
+  }, [assetFilter, inputRef, onDropdownOpen, setAssetFilter]);
 
   const onClose = useCallback(() => {
     selectAsset(null);
