@@ -4,6 +4,8 @@ import { createStore } from '../internal/createStore';
 
 import { NetworksStoreMigrationState } from './types';
 
+const IS_TESTING = process.env.IS_TESTING === 'true';
+
 // Migration store
 export const networksStoreMigrationStore =
   createStore<NetworksStoreMigrationState>(
@@ -16,7 +18,7 @@ export const networksStoreMigrationStore =
         version: 0,
         onRehydrateStorage: () => {
           return (_, error) => {
-            if (!error) {
+            if (!error && !IS_TESTING) {
               // Import the runNetworksMigrationIfNeeded function dynamically to avoid circular dependencies
               import('./runNetworksMigrationIfNeeded')
                 .then(({ runNetworksMigrationIfNeeded }) => {
