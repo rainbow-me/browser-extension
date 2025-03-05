@@ -275,7 +275,11 @@ export const networkStore = createQueryStore<
   {
     fetcher: fetchNetworks,
     debugMode: process.env.DEBUG_NETWORKS_STORE === 'true',
-    enabled: ($) => $(networksStoreMigrationStore).didCompleteNetworksMigration,
+    enabled: ($) =>
+      $(
+        networksStoreMigrationStore,
+        (state) => state.didCompleteNetworksMigration,
+      ),
     setData: ({ data, set }) => {
       set((state) => {
         const newNetworks = differenceOrUnionOf({
@@ -315,11 +319,12 @@ export const networkStore = createQueryStore<
 
     addCustomChain: (chainId, chain, rpcUrl, active) => {
       set((state) => {
-        const { chainOrder, userPreferences } = state;
+        const { chainOrder, enabledChainIds, userPreferences } = state;
 
         const order = [...chainOrder].indexOf(chainId);
         const existing = userPreferences[chainId];
-        const enabledChainIds = new Set([...chainOrder, chainId]);
+        const newEnabledChainIds = new Set(enabledChainIds);
+        newEnabledChainIds.add(chainId);
 
         // add the rpc url to the chain if it exists
         if (existing) {
@@ -338,14 +343,14 @@ export const networkStore = createQueryStore<
           return {
             ...state,
             chainOrder: order === -1 ? [...chainOrder, chainId] : chainOrder,
-            enabledChainIds,
+            enabledChainIds: newEnabledChainIds,
             userPreferences: newUserPrferences,
           };
         } else {
           return {
             ...state,
             chainOrder: order === -1 ? [...chainOrder, chainId] : chainOrder,
-            enabledChainIds,
+            enabledChainIds: newEnabledChainIds,
             userPreferences: {
               ...userPreferences,
               [chainId]: {

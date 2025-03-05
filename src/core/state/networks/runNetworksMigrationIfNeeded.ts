@@ -31,35 +31,22 @@ export const runNetworksMigrationIfNeeded = (
     setMigrationManagerReady(true);
   }
 
-  console.log('runNetworksMigrationIfNeeded', {
-    storeKey,
-    areAllStoresReady: areAllStoresReady(),
-  });
-
   // Only proceed if all required stores are ready
   if (areAllStoresReady()) {
     const { didCompleteNetworksMigration } =
       networksStoreMigrationStore.getState();
     if (didCompleteNetworksMigration) {
-      console.log('networks store migration already completed', {
-        storeKey,
-      });
       logger.debug('[networks] networks store migration already completed', {
         storeKey,
       });
       return;
     }
 
-    console.log('initializing networks store');
     logger.debug('[networks] initializing networks store');
 
     // Get the current state from the stores
     const { rainbowChains } = useRainbowChainsStore.getState();
     const { userChains, userChainsOrder } = useUserChainsStore.getState();
-
-    console.log('rainbowChains', rainbowChains);
-    console.log('userChains', userChains);
-    console.log('userChainsOrder', userChainsOrder);
 
     // Initialize the network store with the current state
     const initialState: NetworkState = {
@@ -72,17 +59,13 @@ export const runNetworksMigrationIfNeeded = (
       ),
     };
 
-    console.log('initialState', initialState);
-
     // We'll import the networkStore dynamically to avoid circular dependencies
     // This is a bit of a hack, but it's necessary to break the circular dependency
     import('./networks').then(({ networkStore }) => {
       networkStore.setState(initialState);
-      console.log('networkStore setState happened');
       networksStoreMigrationStore.setState({
         didCompleteNetworksMigration: true,
       });
-      console.log('networksStoreMigrationStore marking as true');
     });
   }
 };

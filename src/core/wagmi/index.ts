@@ -45,9 +45,6 @@ const updateWagmiConfig = (chains: Chain[]) => {
 const WagmiConfigUpdater = () => {
   const activeChains = networkStore((state) => state.getAllActiveRpcChains());
   useEffect(() => {
-    console.log('WagmiConfigUpdater', {
-      activeChains,
-    });
     updateWagmiConfig(activeChains);
   }, [activeChains]);
 

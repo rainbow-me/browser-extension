@@ -80,10 +80,6 @@ export function SettingsNetworks() {
     [chains, chainOrder, supportedChains],
   );
 
-  console.log('chains', chains);
-  console.log('allChains', allChains);
-  console.log('allNetworks', allNetworks);
-
   const onDragEnd = (result: DropResult) => {
     const { destination, draggableId } = result;
     if (!seenPromos[promoTypes.network_settings])

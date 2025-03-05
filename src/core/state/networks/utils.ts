@@ -196,7 +196,6 @@ export const buildInitialUserPreferences = (
   userChains: Record<number, boolean> = {},
   userChainsOrder: number[] = [],
 ): Pick<NetworkState, 'userPreferences' | 'chainOrder' | 'enabledChainIds'> => {
-  console.log('buildInitialUserPreferences');
   logger.debug(
     '[buildInitialUserPreferences] Building initial user preferences',
     {
