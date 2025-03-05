@@ -1,3 +1,5 @@
+import create from 'zustand';
+
 import { createStore } from './internal/createStore';
 
 export type NotificationWindow = chrome.windows.Window;
@@ -35,4 +37,4 @@ export const notificationWindowStore = createStore<NotificationWindowsState>(
   },
 );
 
-export const useNotificationWindowStore = notificationWindowStore;
+export const useNotificationWindowStore = create(notificationWindowStore);

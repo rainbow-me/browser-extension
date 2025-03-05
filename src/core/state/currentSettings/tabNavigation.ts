@@ -1,3 +1,5 @@
+import create from 'zustand';
+
 import { createStore } from '~/core/state/internal/createStore';
 import { Tab } from '~/entries/popup/components/Tabs/TabBar';
 
@@ -19,4 +21,4 @@ const tabNavigationStore = createStore<TabNavigationState>(
   },
 );
 
-export const useTabNavigation = tabNavigationStore;
+export const useTabNavigation = create(tabNavigationStore);

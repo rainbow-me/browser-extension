@@ -1,3 +1,5 @@
+import create from 'zustand';
+
 import {
   GasFeeLegacyParams,
   GasFeeLegacyParamsBySpeed,
@@ -75,4 +77,4 @@ export const gasStore = createStore<GasStore>(
   },
 );
 
-export const useGasStore = withSelectors(gasStore);
+export const useGasStore = withSelectors(create(gasStore));

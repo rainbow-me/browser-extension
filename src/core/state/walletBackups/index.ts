@@ -1,4 +1,5 @@
 import { Address } from 'viem';
+import create from 'zustand';
 
 import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
 
@@ -19,7 +20,7 @@ export const walletBackupReminderStore = createStore<WalletBackupReminderStore>(
   }),
 );
 
-export const useWalletBackupReminderStore = walletBackupReminderStore;
+export const useWalletBackupReminderStore = create(walletBackupReminderStore);
 
 export interface WalletBackupsStore {
   needsInitialization: boolean;
@@ -101,4 +102,4 @@ export const walletBackupsStore = createStore<WalletBackupsStore>(
   },
 );
 
-export const useWalletBackupsStore = withSelectors(walletBackupsStore);
+export const useWalletBackupsStore = withSelectors(create(walletBackupsStore));

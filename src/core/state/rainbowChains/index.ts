@@ -1,4 +1,5 @@
 import { Chain } from 'viem/chains';
+import create from 'zustand';
 
 import { ChainId } from '~/core/types/chains';
 
@@ -137,4 +138,4 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
 /**
  * @deprecated use `networkStore` instead
  */
-export const useRainbowChainsStore = withSelectors(rainbowChainsStore);
+export const useRainbowChainsStore = withSelectors(create(rainbowChainsStore));

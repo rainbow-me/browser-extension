@@ -1,3 +1,5 @@
+import create from 'zustand';
+
 import { createStore } from '~/core/state/internal/createStore';
 import { GasSpeed } from '~/core/types/gas';
 import { DefaultTxSpeedOption } from '~/core/types/settings';
@@ -21,4 +23,4 @@ export const defaultTxSpeedStore = createStore<DefaultTxSpeedState>(
   },
 );
 
-export const useDefaultTxSpeedStore = defaultTxSpeedStore;
+export const useDefaultTxSpeedStore = create(defaultTxSpeedStore);

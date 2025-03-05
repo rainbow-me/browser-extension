@@ -1,4 +1,5 @@
 import { Address } from 'viem';
+import create from 'zustand';
 
 import { ChainId } from '~/core/types/chains';
 
@@ -67,4 +68,4 @@ export const nonceStore = createStore<CurrentNonceState>(
   },
 );
 
-export const useNonceStore = withSelectors(nonceStore);
+export const useNonceStore = withSelectors(create(nonceStore));

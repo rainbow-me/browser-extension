@@ -1,7 +1,9 @@
 import { Address } from 'viem';
+import create from 'zustand';
 
-import { createStore } from '~/core/state/internal/createStore';
 import { ChainId } from '~/core/types/chains';
+
+import { createStore } from '../internal/createStore';
 
 const TIME_TO_WATCH = 600000;
 
@@ -122,4 +124,4 @@ export const staleBalancesStore = createStore<StaleBalancesState>(
   },
 );
 
-export const useStaleBalancesStore = staleBalancesStore;
+export const useStaleBalancesStore = create(staleBalancesStore);
