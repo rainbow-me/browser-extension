@@ -3,6 +3,8 @@ import { ChainId } from '~/core/types/chains';
 import { createStore } from '../internal/createStore';
 import { withSelectors } from '../internal/withSelectors';
 
+const IS_TESTING = process.env.IS_TESTING === 'true';
+
 export interface UserChainsState {
   /**
    * Mainnet chains in network settings
@@ -103,7 +105,7 @@ export const userChainsStore = createStore<UserChainsState>(
       version: 8,
       onRehydrateStorage: () => {
         return (_, error) => {
-          if (!error) {
+          if (!error && !IS_TESTING) {
             // Import the runNetworksMigrationIfNeeded function dynamically to avoid circular dependencies
             import('../networks/runNetworksMigrationIfNeeded').then(
               ({ runNetworksMigrationIfNeeded }) => {
