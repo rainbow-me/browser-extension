@@ -47,7 +47,7 @@ const getMainChainsHelper = (
 };
 
 export const useMainChains = () => {
-  const { chains } = wagmiConfig;
+  const { chains } = useConfig();
   const supportedChains = networkStore((state) =>
     state.getBackendSupportedChains(true),
   );
