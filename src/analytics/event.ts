@@ -16,6 +16,15 @@ export const event = {
    * Called when the app crashes for any reason
    */
   appCrashed: 'app.crashed',
+
+  /**
+   * Called when a user hides a token from any entry point
+   */
+  assetHidden: 'token.hidden',
+  /**
+   * Called when a user unhides a token from any entry point
+   */
+  assetUnhidden: 'token.unhidden',
   /**
    * Called when the user completes the Swap/Bridge flow and submits a bridge transaction.
    * This event is only called when the user is bridging a mapped asset, whereas
@@ -244,18 +253,9 @@ export const event = {
    */
   tokenFavorited: 'token.favorited',
   /**
-   * Called when a user hides a token from any entry point
-   */
-  tokenHidden: 'token.hidden',
-  /**
    * Called when a user unfavorites a token from any entry point
    */
-
   tokenUnfavorited: 'token.unfavorited',
-  /**
-   * Called when a user unhides a token from any entry point
-   */
-  tokenUnhidden: 'token.unhidden',
   /**
    * Called when a wallet is created/imported/watched or a hardware wallet is connected
    */
@@ -1000,17 +1000,28 @@ export type EventProperties = {
     token: {
       address: string;
       chainId: ChainId;
-      symbol: string;
+    };
+    /**
+     * Details about user favorites.
+     */
+    favorites: {
+      favoritesLength: number;
     };
   };
-  [event.tokenHidden]: {
+  [event.assetHidden]: {
     /**
      * Token details.
      */
     token: {
       address: string;
       chainId: ChainId;
-      symbol: string;
+      walletAddress: Address;
+    };
+    /**
+     * Details about hidden assets.
+     */
+    hiddenAssets: {
+      totalHidden: number;
     };
   };
   [event.tokenUnfavorited]: {
@@ -1020,17 +1031,28 @@ export type EventProperties = {
     token: {
       address: string;
       chainId: ChainId;
-      symbol: string;
+    };
+    /**
+     * Details about user favorites.
+     */
+    favorites: {
+      favoritesLength: number;
     };
   };
-  [event.tokenUnhidden]: {
+  [event.assetUnhidden]: {
     /**
      * Token details.
      */
     token: {
       address: string;
       chainId: ChainId;
-      symbol: string;
+      walletAddress: Address;
+    };
+    /**
+     * Details about hidden assets.
+     */
+    hiddenAssets: {
+      totalHidden: number;
     };
   };
   [event.walletBackupQuizSubmitted]: {
