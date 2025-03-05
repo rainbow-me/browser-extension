@@ -41,14 +41,7 @@ export function App() {
 
   React.useEffect(() => {
     if (!isEqual(prevChains, activeChains)) {
-      backgroundMessenger.send('rainbow_updateWagmiClient', {
-        rpcProxyEnabled: config.rpc_proxy_enabled,
-      });
-    }
-  }, [prevChains, activeChains]);
-
-  React.useEffect(() => {
-    if (!isEqual(prevChains, activeChains)) {
+      console.log('inequal chains, sending to background script', activeChains);
       backgroundMessenger.send('rainbow_updateWagmiClient', {
         rpcProxyEnabled: config.rpc_proxy_enabled,
       });
