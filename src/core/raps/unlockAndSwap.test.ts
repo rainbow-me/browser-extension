@@ -56,12 +56,18 @@ const SELECTED_GAS = {
   },
 };
 
-// Mock just the action functions used during execution
-vi.mock('./actions', () => ({
-  swap: vi.fn().mockResolvedValue({ nonce: 1, hash: '0x123456' }),
-  unlock: vi.fn().mockResolvedValue({ nonce: 1, hash: '0x123456' }),
-  // Leave the other functions like assetNeedsUnlocking unmocked to use real implementations
-}));
+vi.mock('./actions', async () => {
+  const actual = (await vi.importActual('./actions')) as Record<
+    string,
+    unknown
+  >;
+
+  return {
+    ...actual,
+    swap: vi.fn().mockResolvedValue({ nonce: 1, hash: '0x123456' }),
+    unlock: vi.fn().mockResolvedValue({ nonce: 1, hash: '0x123456' }),
+  };
+});
 
 // Minimal mock for the wallet to handle provider requests
 vi.mock('@ethersproject/wallet', () => ({
@@ -131,31 +137,37 @@ beforeAll(async () => {
     toChainId: 1,
     currency: 'USD',
   });
-}, 10000);
+}, 20_000);
 
-test.skip('[rap/unlockAndSwap] :: estimate unlock and swap rap without unlock', async () => {
-  const gasLimit = await estimateUnlockAndSwap({
-    quote: doesntNeedUnlockQuote as Quote,
-    chainId: 1,
-    assetToSell: ETH_MAINNET_ASSET,
-    sellAmount: '1000000000000000000',
-    assetToBuy: USDC_MAINNET_ASSET,
-  });
-  expect(Number(gasLimit)).toBeGreaterThan(0);
-  swapGasLimit = Number(gasLimit);
-});
+test.todo(
+  '[rap/unlockAndSwap] :: estimate unlock and swap rap without unlock',
+  async () => {
+    const gasLimit = await estimateUnlockAndSwap({
+      quote: doesntNeedUnlockQuote as Quote,
+      chainId: 1,
+      assetToSell: ETH_MAINNET_ASSET,
+      sellAmount: '1000000000000000000',
+      assetToBuy: USDC_MAINNET_ASSET,
+    });
+    expect(Number(gasLimit)).toBeGreaterThan(0);
+    swapGasLimit = Number(gasLimit);
+  },
+);
 
-test.skip('[rap/unlockAndSwap] :: estimate unlock and swap rap with unlock', async () => {
-  const gasLimit = await estimateUnlockAndSwap({
-    quote: needsUnlockQuote as Quote,
-    chainId: 1,
-    assetToSell: ENS_MAINNET_ASSET,
-    sellAmount: '1000000000000000000',
-    assetToBuy: USDC_MAINNET_ASSET,
-  });
-  expect(Number(gasLimit)).toBeGreaterThan(0);
-  expect(Number(gasLimit)).toBeGreaterThan(swapGasLimit);
-});
+test.todo(
+  '[rap/unlockAndSwap] :: estimate unlock and swap rap with unlock',
+  async () => {
+    const gasLimit = await estimateUnlockAndSwap({
+      quote: needsUnlockQuote as Quote,
+      chainId: 1,
+      assetToSell: ENS_MAINNET_ASSET,
+      sellAmount: '1000000000000000000',
+      assetToBuy: USDC_MAINNET_ASSET,
+    });
+    expect(Number(gasLimit)).toBeGreaterThan(0);
+    expect(Number(gasLimit)).toBeGreaterThan(swapGasLimit);
+  },
+);
 
 test('[rap/unlockAndSwap] :: create unlock and swap rap without unlock', async () => {
   const rap = await createUnlockAndSwapRap({
@@ -181,7 +193,7 @@ test('[rap/unlockAndSwap] :: create unlock and swap rap without unlock and execu
   expect(swap.nonce).toBeDefined();
 });
 
-test.skip('[rap/unlockAndSwap] :: create unlock and swap rap with unlock', async () => {
+test('[rap/unlockAndSwap] :: create unlock and swap rap with unlock', async () => {
   const rap = await createUnlockAndSwapRap({
     quote: needsUnlockQuote as Quote,
     chainId: 1,
@@ -189,43 +201,6 @@ test.skip('[rap/unlockAndSwap] :: create unlock and swap rap with unlock', async
     assetToSell: ENS_MAINNET_ASSET,
     assetToBuy: USDC_MAINNET_ASSET,
   });
-
-  /*
-    We aren't getting the unlock action here
-    
-    currently returns:
-
-    #########################
-    RAP:
-
-    rap {
-    actions: [ { parameters: [Object], transaction: [Object], type: 'swap' } ]
-    }
-
-    #########################
-    RAP.ACTIONS:
-
-    rap.actions [
-      {
-        parameters: {
-          chainId: 1,
-          sellAmount: '1000000000000000000',
-          requiresApprove: false,
-          quote: [Object],
-          meta: undefined,
-          assetToSell: [Object],
-          assetToBuy: [Object]
-        },
-        transaction: { confirmed: null, hash: null },
-        type: 'swap'
-      }
-    ]
-
-    #########################
-    RAP.ACTIONS.LENGTH:
-
-    rap.actions.length 1
-  */
   expect(rap.actions.length).toBe(2);
 });
 

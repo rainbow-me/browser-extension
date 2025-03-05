@@ -15,9 +15,7 @@ vi.stubGlobal('chrome', {
       remove: vi.fn(),
     },
   },
-  runtime: {
-    getURL: (url: string) => `https://local.io/${url}`,
-  },
+  runtime: {},
 });
 
 vi.stubGlobal('window.location', {
@@ -156,6 +154,17 @@ const restHandlers = [
     const url = new URL(request.url);
     const address = url.searchParams.get('address') || '';
     return HttpResponse.json(apiResponses?.[address], { status: 200 });
+  }),
+  http.options('https://swap.p.rainbow.me/*', ({ request }) => {
+    console.warn(`CORS request detected to: ${request.url}`);
+    return new Response(null, {
+      status: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE',
+        'Access-Control-Allow-Headers': '*',
+      },
+    });
   }),
 ];
 
