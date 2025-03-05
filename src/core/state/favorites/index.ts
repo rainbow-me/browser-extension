@@ -1,7 +1,7 @@
 import create from 'zustand';
 
-import { analytics } from '~/analytics';
 import buildTimeNetworks from 'static/data/networks.json';
+import { analytics } from '~/analytics';
 import { createStore } from '~/core/state/internal/createStore';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -67,15 +67,15 @@ export const favoritesStore = createStore<FavoritesState>(
     };
 
     return {
-  favorites: getInitialFavorites(),
-    setFavorites: (favorites) => set({ favorites }),
-    addFavorite: ({ address, chainId }: UpdateFavoritesArgs) => {
-      const { favorites } = get();
-      const currentFavorites = favorites[chainId] || [];
-      set({
-        favorites: {
-          ...favorites,
-          [chainId]: [...currentFavorites, address],
+      favorites: getInitialFavorites(),
+      setFavorites: (favorites) => set({ favorites }),
+      addFavorite: ({ address, chainId }: UpdateFavoritesArgs) => {
+        const { favorites } = get();
+        const currentFavorites = favorites[chainId] || [];
+        set({
+          favorites: {
+            ...favorites,
+            [chainId]: [...currentFavorites, address],
           },
         });
 
