@@ -11,8 +11,8 @@
     },
     "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight": {
       "packages": {
-        "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>@babel/helper-validator-identifier": true,
         "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>chalk": true,
+        "jest>@jest/core>jest-snapshot>@babel/types>@babel/helper-validator-identifier": true,
         "react>loose-envify>js-tokens": true
       }
     },
@@ -500,17 +500,19 @@
         "Buffer": true,
         "TextDecoder": true,
         "TextEncoder": true,
+        "URL": true,
         "WebAssembly.Module": true,
         "__dirname": true,
         "__filename": true,
-        "console.error": true,
         "console.log": true,
+        "console.warn": true,
         "process.cwd": true,
         "process.env.ESBUILD_BINARY_PATH": true,
         "process.env.ESBUILD_MAX_BUFFER": true,
         "process.env.ESBUILD_WORKER_THREADS": true,
         "process.platform": true,
-        "process.versions.node.split": true
+        "process.versions.node.split": true,
+        "setTimeout": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": {
@@ -614,10 +616,10 @@
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-split-export-declaration": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-validator-identifier": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": true,
-        "jest>@jest/core>jest-snapshot>@babel/types": true
+        "jest>@jest/core>jest-snapshot>@babel/types": true,
+        "jest>@jest/core>jest-snapshot>@babel/types>@babel/helper-validator-identifier": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": {
@@ -1168,11 +1170,6 @@
         "process.nextTick": true
       }
     },
-    "happy-dom>he": {
-      "globals": {
-        "define": true
-      }
-    },
     "html-webpack-plugin": {
       "builtin": {
         "console.assert": true,
@@ -1211,8 +1208,8 @@
         "document": true
       },
       "packages": {
-        "happy-dom>he": true,
         "html-webpack-plugin>html-minifier-terser>clean-css": true,
+        "html-webpack-plugin>html-minifier-terser>he": true,
         "html-webpack-plugin>html-minifier-terser>relateurl": true,
         "vitest>vite>terser": true
       }
@@ -1243,6 +1240,11 @@
       },
       "packages": {
         "html-webpack-plugin>html-minifier-terser>clean-css>source-map": true
+      }
+    },
+    "html-webpack-plugin>html-minifier-terser>he": {
+      "globals": {
+        "define": true
       }
     },
     "html-webpack-plugin>html-minifier-terser>relateurl": {
