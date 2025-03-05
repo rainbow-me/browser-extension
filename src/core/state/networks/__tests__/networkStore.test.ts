@@ -52,8 +52,6 @@ describe('networkStore', () => {
 
         for (let i = 0; i < orderWithDuplicatesRemoved.length; i++) {
           const chainId = orderWithDuplicatesRemoved[i];
-          console.log('chainId', chainId);
-          console.log('chainOrder', chainOrder, chainOrder.indexOf(chainId), i);
           expect(chainOrder.indexOf(chainId)).toEqual(i);
         }
       });
