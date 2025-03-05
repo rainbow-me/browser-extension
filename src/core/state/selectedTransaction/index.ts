@@ -1,3 +1,5 @@
+import create from 'zustand';
+
 import { RainbowTransaction } from '~/core/types/transactions';
 
 import { createStore } from '../internal/createStore';
@@ -20,5 +22,5 @@ export const selectedTransactionStore = createStore<SelectedTransactionState>(
 );
 
 export const useSelectedTransactionStore = withSelectors(
-  selectedTransactionStore,
+  create(selectedTransactionStore),
 );

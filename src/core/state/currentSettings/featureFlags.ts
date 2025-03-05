@@ -1,3 +1,5 @@
+import create from 'zustand';
+
 import { createStore } from '~/core/state/internal/createStore';
 
 export enum featureFlagTypes {
@@ -51,4 +53,4 @@ export const featureFlagsStore = createStore<FeatureFlagsStore>(
   },
 );
 
-export const useFeatureFlagsStore = featureFlagsStore;
+export const useFeatureFlagsStore = create(featureFlagsStore);

@@ -1,3 +1,5 @@
+import create from 'zustand';
+
 import { createStore } from '~/core/state/internal/createStore';
 
 export interface HideAssetBalancesState {
@@ -19,4 +21,4 @@ export const hideAssetBalancesStore = createStore<HideAssetBalancesState>(
   },
 );
 
-export const useHideAssetBalancesStore = hideAssetBalancesStore;
+export const useHideAssetBalancesStore = create(hideAssetBalancesStore);

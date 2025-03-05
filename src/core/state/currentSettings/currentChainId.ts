@@ -1,3 +1,5 @@
+import create from 'zustand';
+
 import { ChainId } from '~/core/types/chains';
 
 import { createStore } from '../internal/createStore';
@@ -20,4 +22,4 @@ export const currentChainIdStore = createStore<CurrentChainIdState>(
   },
 );
 
-export const useCurrentChainIdStore = currentChainIdStore;
+export const useCurrentChainIdStore = create(currentChainIdStore);

@@ -1,4 +1,5 @@
 import { Address } from 'viem';
+import create from 'zustand';
 
 import { createStore } from '../internal/createStore';
 
@@ -45,4 +46,4 @@ export const pinnedAssets = createStore<PinnedAssetState>(
   },
 );
 
-export const usePinnedAssetStore = pinnedAssets;
+export const usePinnedAssetStore = create(pinnedAssets);

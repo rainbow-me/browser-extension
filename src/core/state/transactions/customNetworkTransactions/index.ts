@@ -1,4 +1,5 @@
 import { Address } from 'viem';
+import create from 'zustand';
 
 import { RainbowTransaction } from '~/core/types/transactions';
 
@@ -86,5 +87,5 @@ export const customNetworkTransactionsStore =
   );
 
 export const useCustomNetworkTransactionsStore = withSelectors(
-  customNetworkTransactionsStore,
+  create(customNetworkTransactionsStore),
 );

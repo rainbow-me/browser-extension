@@ -1,3 +1,5 @@
+import create from 'zustand';
+
 import { createStore } from '~/core/state/internal/createStore';
 
 type HomePrompt = 'app-connection' | 'wallet-backup';
@@ -17,4 +19,4 @@ export const homePromptsQueueStore = createStore<HomePromptsQueue>(
   }),
 );
 
-export const useHomeQueueStackStore = homePromptsQueueStore;
+export const useHomeQueueStackStore = create(homePromptsQueueStore);

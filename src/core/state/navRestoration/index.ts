@@ -1,3 +1,5 @@
+import create from 'zustand';
+
 import { isNativePopup } from '~/core/utils/tabs';
 
 import { createStore } from '../internal/createStore';
@@ -51,4 +53,6 @@ export const navRestorationStore = createStore<NavRestorationStore>(
   },
 );
 
-export const useNavRestorationStore = withSelectors(navRestorationStore);
+export const useNavRestorationStore = withSelectors(
+  create(navRestorationStore),
+);

@@ -1,3 +1,5 @@
+import create from 'zustand';
+
 import { createStore } from '~/core/state/internal/createStore';
 
 type ColorCacheStore = {
@@ -21,4 +23,4 @@ export const colorCacheStore = createStore<ColorCacheStore>(
   },
 );
 
-export const useColorCacheStore = colorCacheStore;
+export const useColorCacheStore = create(colorCacheStore);

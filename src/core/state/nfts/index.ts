@@ -1,4 +1,5 @@
 import { Address } from 'viem';
+import create from 'zustand';
 
 import { createStore } from '../internal/createStore';
 import { withSelectors } from '../internal/withSelectors';
@@ -69,4 +70,4 @@ export const nftsStore = createStore<NftsState>(
   },
 );
 
-export const useNftsStore = withSelectors(nftsStore);
+export const useNftsStore = withSelectors(create(nftsStore));
