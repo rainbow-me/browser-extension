@@ -11,7 +11,6 @@ import {
   delay,
   delayTime,
   doNotFindElementByTestId,
-  executePerformShortcut,
   fillPrivateKey,
   findElementByTestId,
   findElementByTestIdAndClick,
@@ -446,10 +445,7 @@ it('should be able to check price and balance of token to buy', async () => {
   expect(tokenToBuyInfoBalance).not.toBe('');
 });
 
-// we fixed a preexisting issue with output swaps, which breaks
-// this test. Need to rethink if we even want this test anymore.
-// keeping it here for now but skipping the validations.
-it.skip('should be able to flip correctly', async () => {
+it('should be able to flip correctly', async () => {
   await findElementByTestIdAndDoubleClick({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
@@ -493,24 +489,6 @@ it.skip('should be able to flip correctly', async () => {
 });
 
 it('should be able to check insufficient asset for swap', async () => {
-  await findElementByTestIdAndDoubleClick({
-    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
-    driver,
-  });
-
-  await findElementByTestIdAndClick({
-    id: 'swap-flip-button',
-    driver,
-  });
-
-  await typeOnTextInput({
-    id: `${SWAP_VARIABLES.WBTC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
-    text: 1,
-    driver,
-  });
-
-  await delay(10_000);
-
   const confirmButtonText = await getTextFromText({
     id: 'swap-confirmation-button-ready',
     driver,
@@ -522,17 +500,6 @@ it('should be able to check insufficient native asset for gas', async () => {
   await findElementByTestIdAndClick({
     id: 'swap-flip-button',
     driver,
-  });
-
-  await findElementByTestIdAndClick({
-    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
-    driver,
-  });
-
-  await executePerformShortcut({
-    driver,
-    timesToPress: 10,
-    key: Key.BACK_SPACE,
   });
 
   await typeOnTextInput({
@@ -836,16 +803,8 @@ it('should be able to go to review a swap', async () => {
   });
 
   await delay(5_000);
-  await findElementByTestIdAndClick({
-    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
-    driver,
-  });
-  await delay(1_000);
-  await executePerformShortcut({
-    driver,
-    timesToPress: 10,
-    key: Key.BACK_SPACE,
-  });
+  toSellInputEthSelected.clear();
+  toSellInputEthSelected.clear();
   await delay(5_000);
   toSellInputEthSelected.sendKeys('1');
   await findElementByTestIdAndClick({
@@ -1002,12 +961,14 @@ it('should be able to execute swap', async () => {
     id: 'swap-confirmation-button-ready',
     driver,
   });
+  await delayTime('medium');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
 
   // waiting for balances to update / swap to execute
   await delay(10_000);
 
   const ethBalanceAfterSwap = await provider.getBalance(WALLET_TO_USE_ADDRESS);
+
   const balanceDifference = subtract(
     ethBalanceBeforeSwap.toString(),
     ethBalanceAfterSwap.toString(),

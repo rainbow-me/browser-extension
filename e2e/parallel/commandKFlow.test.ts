@@ -2,16 +2,14 @@
 import 'chromedriver';
 import 'geckodriver';
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, it } from 'vitest';
 
 import { TokenNames, tokenAddresses, tokenNames } from 'e2e/tokenVariables';
 
 import {
   checkExtensionURL,
-  delayTime,
   executeMultipleShortcuts,
   executePerformShortcut,
-  findElementByText,
   getExtensionIdByName,
   getRootUrl,
   goToPopup,
@@ -48,23 +46,13 @@ describe('Command+K behaviours', () => {
   it('should send to an owned wallet in my wallets menu', async () => {
     await goToPopup(driver, rootURL);
 
-    await delayTime('medium');
-
     await executePerformShortcut({ driver, key: 'k' });
-
-    await delayTime('medium');
-
-    const myWalletsText = await findElementByText(driver, 'My Wallets');
-    expect(myWalletsText).toBeTruthy();
-
     await executePerformShortcut({
       driver,
       key: 'ARROW_DOWN',
       timesToPress: 3,
     });
     await executePerformShortcut({ driver, key: 'ENTER' });
-
-    await delayTime('medium');
 
     // Select 2nd wallet
     await executePerformShortcut({
@@ -81,7 +69,7 @@ describe('Command+K behaviours', () => {
     });
 
     // Send to wallet
-    await executePerformShortcut({ driver, key: 's' });
+    await executePerformShortcut({ driver, key: 'ENTER' });
     await checkExtensionURL(driver, 'send');
   });
 

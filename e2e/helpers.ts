@@ -179,21 +179,6 @@ const addPermissionForAllWebsites = async (driver: WebDriver) => {
   );
 };
 
-interface ExtensionInfo {
-  name: string | undefined;
-  id: string | null;
-  rawName: string | undefined;
-}
-
-interface ExtensionsResponse {
-  extensionsFound: ExtensionInfo[];
-  searchingFor: string;
-}
-
-interface ErrorResponse {
-  error: string;
-}
-
 export async function getExtensionIdByName(
   driver: WebDriver,
   extensionName: string,
@@ -216,51 +201,19 @@ export async function getExtensionIdByName(
     return text;
   } else {
     await driver.get('chrome://extensions');
-
-    const result = (await driver.executeScript(`
-    return new Promise((resolve) => {
-      const extensions = document.querySelector("extensions-manager")?.shadowRoot
-        ?.querySelector("extensions-item-list")?.shadowRoot
-        ?.querySelectorAll("extensions-item");
-      
-      if (!extensions) {
-        resolve({ error: "No extensions found" });
-        return;
-      }
-
-      const extensionsList = Array.from(extensions).map(extension => ({
-        name: extension.shadowRoot?.querySelector('#name')?.textContent?.trim(),
-        id: extension.getAttribute("id"),
-        rawName: extension.shadowRoot?.querySelector('#name')?.textContent
-      }));
-
-      resolve({
-        extensionsFound: extensionsList,
-        searchingFor: "${extensionName}"
-      });
-    });
-  `)) as ExtensionsResponse | ErrorResponse;
-
-    console.log('Debug info:', JSON.stringify(result, null, 2));
-
-    if ('error' in result) {
-      console.log('Error:', result.error);
-      return undefined;
-    }
-
-    const matchingExtension = result.extensionsFound.find(
-      (ext) => ext.name?.toLowerCase().includes(extensionName.toLowerCase()),
-    );
-
-    if (matchingExtension) {
-      console.log(
-        `Found matching extension: "${matchingExtension.name}" with ID: ${matchingExtension.id}`,
-      );
-      return matchingExtension.id;
-    }
-
-    console.log('No matching extension found');
-    return undefined;
+    return await driver.executeScript(`
+        const extensions = document.querySelector("extensions-manager").shadowRoot
+          .querySelector("extensions-item-list").shadowRoot
+          .querySelectorAll("extensions-item")
+        for (let i = 0; i < extensions.length; i++) {
+          const extension = extensions[i].shadowRoot
+          const name = extension.querySelector('#name').textContent
+          if (name.startsWith("${extensionName}")) {
+            return extensions[i].getAttribute("id")
+          }
+        }
+        return undefined
+      `);
   }
 }
 
