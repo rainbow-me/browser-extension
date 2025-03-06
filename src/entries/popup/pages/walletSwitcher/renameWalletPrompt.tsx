@@ -17,8 +17,7 @@ const RenameWallet = ({
   onClose: () => void;
   account: Address;
 }) => {
-  const walletNames = useWalletNamesStore.use.walletNames();
-  const saveWalletName = useWalletNamesStore.use.saveWalletName();
+  const { walletNames, saveWalletName } = useWalletNamesStore();
   const [newName, setNewName] = useState(walletNames[account]);
 
   const isValid = newName?.trim().length > 0;
