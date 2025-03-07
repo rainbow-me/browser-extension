@@ -263,7 +263,7 @@ export const SwapSettings = ({
   }, [onDone, setSettings, slippage, source]);
 
   const slippageWarning = useMemo(
-    () => (Number(slippage) >= 3 ? 'loss' : undefined),
+    () => (Number(slippage) >= 6 ? 'loss' : undefined),
     [slippage],
   );
 
