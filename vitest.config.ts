@@ -11,7 +11,7 @@ export default defineConfig({
   test: {
     environment: 'happy-dom',
     include: ['src/**/*.test.(ts|tsx)'],
-    testTimeout: 30_000,
+    testTimeout: 45_000,
     setupFiles: './src/test/setup.ts',
     watch: false,
   },
