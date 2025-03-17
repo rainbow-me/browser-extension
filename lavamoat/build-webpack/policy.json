@@ -11,8 +11,8 @@
     },
     "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight": {
       "packages": {
+        "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>@babel/helper-validator-identifier": true,
         "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>chalk": true,
-        "jest>@jest/core>jest-snapshot>@babel/types>@babel/helper-validator-identifier": true,
         "react>loose-envify>js-tokens": true
       }
     },
@@ -616,10 +616,10 @@
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-split-export-declaration": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-validator-identifier": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": true,
-        "jest>@jest/core>jest-snapshot>@babel/types": true,
-        "jest>@jest/core>jest-snapshot>@babel/types>@babel/helper-validator-identifier": true
+        "jest>@jest/core>jest-snapshot>@babel/types": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": {
@@ -1017,6 +1017,11 @@
         "define": true
       }
     },
+    "eslint>chalk>ansi-styles>color-convert": {
+      "packages": {
+        "eslint>chalk>ansi-styles>color-convert>color-name": true
+      }
+    },
     "eslint>debug": {
       "builtin": {
         "tty.isatty": true,
@@ -1149,8 +1154,8 @@
       "packages": {
         "eslint>@nodelib/fs.walk": true,
         "globby>fast-glob>@nodelib/fs.stat": true,
+        "globby>fast-glob>glob-parent": true,
         "globby>merge2": true,
-        "msw>chokidar>glob-parent": true,
         "ts-loader>micromatch": true
       }
     },
@@ -1160,6 +1165,15 @@
         "fs.lstatSync": true,
         "fs.stat": true,
         "fs.statSync": true
+      }
+    },
+    "globby>fast-glob>glob-parent": {
+      "builtin": {
+        "os.platform": true,
+        "path.posix.dirname": true
+      },
+      "packages": {
+        "eslint>is-glob": true
       }
     },
     "globby>merge2": {
@@ -1603,41 +1617,6 @@
         "mini-css-extract-plugin>schema-utils>ajv": true
       }
     },
-    "msw>chalk>ansi-styles>color-convert": {
-      "packages": {
-        "msw>chalk>ansi-styles>color-convert>color-name": true
-      }
-    },
-    "msw>chokidar>braces": {
-      "globals": {
-        "console.log": true
-      },
-      "packages": {
-        "msw>chokidar>braces>fill-range": true
-      }
-    },
-    "msw>chokidar>braces>fill-range": {
-      "builtin": {
-        "util.inspect": true
-      },
-      "packages": {
-        "msw>chokidar>braces>fill-range>to-regex-range": true
-      }
-    },
-    "msw>chokidar>braces>fill-range>to-regex-range": {
-      "packages": {
-        "msw>chokidar>braces>fill-range>to-regex-range>is-number": true
-      }
-    },
-    "msw>chokidar>glob-parent": {
-      "builtin": {
-        "os.platform": true,
-        "path.posix.dirname": true
-      },
-      "packages": {
-        "eslint>is-glob": true
-      }
-    },
     "semver": {
       "globals": {
         "console.error": true,
@@ -1707,7 +1686,7 @@
     },
     "ts-loader>chalk>ansi-styles": {
       "packages": {
-        "msw>chalk>ansi-styles>color-convert": true
+        "eslint>chalk>ansi-styles>color-convert": true
       }
     },
     "ts-loader>micromatch": {
@@ -1715,8 +1694,29 @@
         "util.inspect": true
       },
       "packages": {
-        "msw>chokidar>braces": true,
+        "ts-loader>micromatch>braces": true,
         "ts-loader>micromatch>picomatch": true
+      }
+    },
+    "ts-loader>micromatch>braces": {
+      "globals": {
+        "console.log": true
+      },
+      "packages": {
+        "ts-loader>micromatch>braces>fill-range": true
+      }
+    },
+    "ts-loader>micromatch>braces>fill-range": {
+      "builtin": {
+        "util.inspect": true
+      },
+      "packages": {
+        "ts-loader>micromatch>braces>fill-range>to-regex-range": true
+      }
+    },
+    "ts-loader>micromatch>braces>fill-range>to-regex-range": {
+      "packages": {
+        "ts-loader>micromatch>braces>fill-range>to-regex-range>is-number": true
       }
     },
     "ts-loader>micromatch>picomatch": {
@@ -2062,7 +2062,7 @@
     },
     "webpack-bundle-analyzer>chalk>ansi-styles": {
       "packages": {
-        "msw>chalk>ansi-styles>color-convert": true
+        "eslint>chalk>ansi-styles>color-convert": true
       }
     },
     "webpack-bundle-analyzer>gzip-size": {

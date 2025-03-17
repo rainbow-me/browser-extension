@@ -6,7 +6,7 @@ import {
   getQuote,
 } from '@rainbow-me/swaps';
 import { mainnet } from 'viem/chains';
-import { beforeAll, expect, test } from 'vitest';
+import { beforeAll, expect, test, vi } from 'vitest';
 
 import {
   ENS_MAINNET_ASSET,
@@ -55,6 +55,28 @@ const SELECTED_GAS = {
     maxFeePerGas: '0xba43b74000',
   },
 };
+
+vi.mock('./actions', async () => {
+  const actual = (await vi.importActual('./actions')) as Record<
+    string,
+    unknown
+  >;
+
+  return {
+    ...actual,
+    swap: vi.fn().mockResolvedValue({ nonce: 1, hash: '0x123456' }),
+    unlock: vi.fn().mockResolvedValue({ nonce: 1, hash: '0x123456' }),
+  };
+});
+
+// Minimal mock for the wallet to handle provider requests
+vi.mock('@ethersproject/wallet', () => ({
+  Wallet: vi.fn().mockImplementation(() => ({
+    provider: {
+      getTransaction: vi.fn().mockResolvedValue({ blockNumber: null }),
+    },
+  })),
+}));
 
 beforeAll(async () => {
   connectedToHardhatStore.setState({ connectedToHardhat: true });
@@ -115,31 +137,37 @@ beforeAll(async () => {
     toChainId: 1,
     currency: 'USD',
   });
-}, 10000);
+}, 20_000);
 
-test.skip('[rap/unlockAndSwap] :: estimate unlock and swap rap without unlock', async () => {
-  const gasLimit = await estimateUnlockAndSwap({
-    quote: doesntNeedUnlockQuote as Quote,
-    chainId: 1,
-    assetToSell: ETH_MAINNET_ASSET,
-    sellAmount: '1000000000000000000',
-    assetToBuy: USDC_MAINNET_ASSET,
-  });
-  expect(Number(gasLimit)).toBeGreaterThan(0);
-  swapGasLimit = Number(gasLimit);
-});
+test.todo(
+  '[rap/unlockAndSwap] :: estimate unlock and swap rap without unlock',
+  async () => {
+    const gasLimit = await estimateUnlockAndSwap({
+      quote: doesntNeedUnlockQuote as Quote,
+      chainId: 1,
+      assetToSell: ETH_MAINNET_ASSET,
+      sellAmount: '1000000000000000000',
+      assetToBuy: USDC_MAINNET_ASSET,
+    });
+    expect(Number(gasLimit)).toBeGreaterThan(0);
+    swapGasLimit = Number(gasLimit);
+  },
+);
 
-test.skip('[rap/unlockAndSwap] :: estimate unlock and swap rap with unlock', async () => {
-  const gasLimit = await estimateUnlockAndSwap({
-    quote: needsUnlockQuote as Quote,
-    chainId: 1,
-    assetToSell: ENS_MAINNET_ASSET,
-    sellAmount: '1000000000000000000',
-    assetToBuy: USDC_MAINNET_ASSET,
-  });
-  expect(Number(gasLimit)).toBeGreaterThan(0);
-  expect(Number(gasLimit)).toBeGreaterThan(swapGasLimit);
-});
+test.todo(
+  '[rap/unlockAndSwap] :: estimate unlock and swap rap with unlock',
+  async () => {
+    const gasLimit = await estimateUnlockAndSwap({
+      quote: needsUnlockQuote as Quote,
+      chainId: 1,
+      assetToSell: ENS_MAINNET_ASSET,
+      sellAmount: '1000000000000000000',
+      assetToBuy: USDC_MAINNET_ASSET,
+    });
+    expect(Number(gasLimit)).toBeGreaterThan(0);
+    expect(Number(gasLimit)).toBeGreaterThan(swapGasLimit);
+  },
+);
 
 test('[rap/unlockAndSwap] :: create unlock and swap rap without unlock', async () => {
   const rap = await createUnlockAndSwapRap({

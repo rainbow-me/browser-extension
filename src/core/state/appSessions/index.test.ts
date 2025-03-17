@@ -177,7 +177,7 @@ test('should be able to update session chain id', async () => {
   });
 });
 
-test.skip('should be able to update session address', async () => {
+test.todo('should be able to update session address', async () => {
   const { updateActiveSession } = appSessionsStore.getState();
   updateActiveSession({ host: UNISWAP_HOST, address: ADDRESS_2 });
   expect(appSessionsStore.getState().appSessions).toStrictEqual({

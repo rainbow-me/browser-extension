@@ -142,7 +142,7 @@ describe('App interactions flow', () => {
     await findElementByTestIdAndClick({ id: 'settings-link', driver });
   });
 
-  it.skip('should be able to set rainbow as default wallet', async () => {
+  it.todo('should be able to set rainbow as default wallet', async () => {
     await findElementByTestIdAndClick({
       id: 'set-rainbow-default-toggle',
       driver,

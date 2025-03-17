@@ -159,7 +159,7 @@ describe('Swap Flow 2', () => {
   // TODO: fix. with mocking set up, currently this swap fails. You can see in the anvil logs that it is reverted.
   // My best guess is its on the provider level bc its throwing a custom error. Ideally we can un-skip this
   // bc its our only token > ETH swap we have on e2e. To see behavior just un-skip and run tests.
-  it.skip('should be able to execute unlock and swap', async () => {
+  it.todo('should be able to execute unlock and swap', async () => {
     const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545');
     await provider.ready;
     await delayTime('short');
@@ -226,12 +226,12 @@ describe('Swap Flow 2', () => {
     expect(Number(usdcBalanceDifference)).toBe(50);
   });
 
-  it.skip('should be able to go to swap flow', async () => {
+  it.todo('should be able to go to swap flow', async () => {
     await findElementByTestIdAndClick({ id: 'header-link-swap', driver });
     await delayTime('long');
   });
 
-  it.skip('should be able to go to review a crosschain swap', async () => {
+  it.todo('should be able to go to review a crosschain swap', async () => {
     await findElementByTestIdAndClick({
       id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-row`,
       driver,
@@ -302,157 +302,160 @@ describe('Swap Flow 2', () => {
     }
   });
 
-  it.skip('should be able to see crosschain swap information in review sheet', async () => {
-    await delayTime('long');
-    const daiAssetToSellAssetCard = await findElementByTestId({
-      id: `DAI-asset-to-sell-swap-asset-card`,
-      driver,
-    });
-    expect(daiAssetToSellAssetCard).toBeTruthy();
-    const usdcAssetToBuyAssetCard = await findElementByTestId({
-      id: `USDC-asset-to-buy-swap-asset-card`,
-      driver,
-    });
-    expect(usdcAssetToBuyAssetCard).toBeTruthy();
-    const minimumReceivedDetailsRow = await findElementByTestId({
-      id: `minimum-received-details-row`,
-      driver,
-    });
-    expect(minimumReceivedDetailsRow).toBeTruthy();
-    const swappingViaDetailsRow = await findElementByTestId({
-      id: `swapping-via-details-row`,
-      driver,
-    });
-    expect(swappingViaDetailsRow).toBeTruthy();
-    await findElementByTestIdAndClick({
-      id: 'swapping-via-swap-routes',
-      driver,
-    });
-    await findElementByTestIdAndClick({
-      id: 'swapping-via-swap-routes',
-      driver,
-    });
-    await findElementByTestIdAndClick({
-      id: 'swapping-via-swap-routes',
-      driver,
-    });
+  it.todo(
+    'should be able to see crosschain swap information in review sheet',
+    async () => {
+      await delayTime('long');
+      const daiAssetToSellAssetCard = await findElementByTestId({
+        id: `DAI-asset-to-sell-swap-asset-card`,
+        driver,
+      });
+      expect(daiAssetToSellAssetCard).toBeTruthy();
+      const usdcAssetToBuyAssetCard = await findElementByTestId({
+        id: `USDC-asset-to-buy-swap-asset-card`,
+        driver,
+      });
+      expect(usdcAssetToBuyAssetCard).toBeTruthy();
+      const minimumReceivedDetailsRow = await findElementByTestId({
+        id: `minimum-received-details-row`,
+        driver,
+      });
+      expect(minimumReceivedDetailsRow).toBeTruthy();
+      const swappingViaDetailsRow = await findElementByTestId({
+        id: `swapping-via-details-row`,
+        driver,
+      });
+      expect(swappingViaDetailsRow).toBeTruthy();
+      await findElementByTestIdAndClick({
+        id: 'swapping-via-swap-routes',
+        driver,
+      });
+      await findElementByTestIdAndClick({
+        id: 'swapping-via-swap-routes',
+        driver,
+      });
+      await findElementByTestIdAndClick({
+        id: 'swapping-via-swap-routes',
+        driver,
+      });
 
-    const includedFeeDetailsRow = await findElementByTestId({
-      id: `included-fee-details-row`,
-      driver,
-    });
-    expect(includedFeeDetailsRow).toBeTruthy();
+      const includedFeeDetailsRow = await findElementByTestId({
+        id: `included-fee-details-row`,
+        driver,
+      });
+      expect(includedFeeDetailsRow).toBeTruthy();
 
-    await findElementByTestIdAndClick({
-      id: 'included-fee-carrousel-button',
-      driver,
-    });
-    await findElementByTestIdAndClick({
-      id: 'included-fee-carrousel-button',
-      driver,
-    });
+      await findElementByTestIdAndClick({
+        id: 'included-fee-carrousel-button',
+        driver,
+      });
+      await findElementByTestIdAndClick({
+        id: 'included-fee-carrousel-button',
+        driver,
+      });
 
-    await findElementByTestIdAndClick({
-      id: 'swap-review-rnbw-fee-info-button',
-      driver,
-    });
-    await findElementByTestIdAndClick({
-      id: 'explainer-action-button',
-      driver,
-    });
+      await findElementByTestIdAndClick({
+        id: 'swap-review-rnbw-fee-info-button',
+        driver,
+      });
+      await findElementByTestIdAndClick({
+        id: 'explainer-action-button',
+        driver,
+      });
 
-    const moreDetailsHiddendDetailsRow = await findElementByTestId({
-      id: `more-details-hidden-details-row`,
-      driver,
-    });
-    expect(moreDetailsHiddendDetailsRow).toBeTruthy();
+      const moreDetailsHiddendDetailsRow = await findElementByTestId({
+        id: `more-details-hidden-details-row`,
+        driver,
+      });
+      expect(moreDetailsHiddendDetailsRow).toBeTruthy();
 
-    await findElementByTestIdAndClick({
-      id: 'swap-review-more-details-button',
-      driver,
-    });
+      await findElementByTestIdAndClick({
+        id: 'swap-review-more-details-button',
+        driver,
+      });
 
-    const moreDetailsdSection = await findElementByTestId({
-      id: `more-details-section`,
-      driver,
-    });
-    expect(moreDetailsdSection).toBeTruthy();
+      const moreDetailsdSection = await findElementByTestId({
+        id: `more-details-section`,
+        driver,
+      });
+      expect(moreDetailsdSection).toBeTruthy();
 
-    const exchangeRateDetailsRow = await findElementByTestId({
-      id: `exchange-rate-details-row`,
-      driver,
-    });
-    expect(exchangeRateDetailsRow).toBeTruthy();
+      const exchangeRateDetailsRow = await findElementByTestId({
+        id: `exchange-rate-details-row`,
+        driver,
+      });
+      expect(exchangeRateDetailsRow).toBeTruthy();
 
-    await findElementByTestIdAndClick({
-      id: 'exchange-rate-carrousel-button',
-      driver,
-    });
-    await findElementByTestIdAndClick({
-      id: 'exchange-rate-carrousel-button',
-      driver,
-    });
+      await findElementByTestIdAndClick({
+        id: 'exchange-rate-carrousel-button',
+        driver,
+      });
+      await findElementByTestIdAndClick({
+        id: 'exchange-rate-carrousel-button',
+        driver,
+      });
 
-    const assetToSellContractDetailsRow = await findElementByTestId({
-      id: `asset-to-sell-contract-details-row`,
-      driver,
-    });
-    expect(assetToSellContractDetailsRow).toBeTruthy();
+      const assetToSellContractDetailsRow = await findElementByTestId({
+        id: `asset-to-sell-contract-details-row`,
+        driver,
+      });
+      expect(assetToSellContractDetailsRow).toBeTruthy();
 
-    const assetToBuyContractDetailsRow = await findElementByTestId({
-      id: `asset-to-buy-contract-details-row`,
-      driver,
-    });
-    expect(assetToBuyContractDetailsRow).toBeTruthy();
+      const assetToBuyContractDetailsRow = await findElementByTestId({
+        id: `asset-to-buy-contract-details-row`,
+        driver,
+      });
+      expect(assetToBuyContractDetailsRow).toBeTruthy();
 
-    await findElementByTestIdAndClick({
-      id: 'asset-to-sell-swap-view-contract-dropdown',
-      driver,
-    });
-    const assetToSellContractDropdownView = await findElementByTestId({
-      id: 'asset-to-sell-view-swap-view-contract-dropdown',
-      driver,
-    });
-    expect(assetToSellContractDropdownView).toBeTruthy();
-    await findElementByTestIdAndClick({
-      id: 'asset-to-sell-copy-swap-view-contract-dropdown',
-      driver,
-    });
+      await findElementByTestIdAndClick({
+        id: 'asset-to-sell-swap-view-contract-dropdown',
+        driver,
+      });
+      const assetToSellContractDropdownView = await findElementByTestId({
+        id: 'asset-to-sell-view-swap-view-contract-dropdown',
+        driver,
+      });
+      expect(assetToSellContractDropdownView).toBeTruthy();
+      await findElementByTestIdAndClick({
+        id: 'asset-to-sell-copy-swap-view-contract-dropdown',
+        driver,
+      });
 
-    await findElementByTestIdAndClick({
-      id: 'asset-to-buy-swap-view-contract-dropdown',
-      driver,
-    });
-    const assetToBuyContractDropdownView = await findElementByTestId({
-      id: 'asset-to-buy-view-swap-view-contract-dropdown',
-      driver,
-    });
-    expect(assetToBuyContractDropdownView).toBeTruthy();
-    await findElementByTestIdAndClick({
-      id: 'asset-to-buy-copy-swap-view-contract-dropdown',
-      driver,
-    });
+      await findElementByTestIdAndClick({
+        id: 'asset-to-buy-swap-view-contract-dropdown',
+        driver,
+      });
+      const assetToBuyContractDropdownView = await findElementByTestId({
+        id: 'asset-to-buy-view-swap-view-contract-dropdown',
+        driver,
+      });
+      expect(assetToBuyContractDropdownView).toBeTruthy();
+      await findElementByTestIdAndClick({
+        id: 'asset-to-buy-copy-swap-view-contract-dropdown',
+        driver,
+      });
 
-    const swapReviewConfirmationText = await getTextFromText({
-      id: 'swap-review-confirmation-text',
-      driver,
-    });
-    expect(swapReviewConfirmationText).toBe('Swap DAI to USDC');
+      const swapReviewConfirmationText = await getTextFromText({
+        id: 'swap-review-confirmation-text',
+        driver,
+      });
+      expect(swapReviewConfirmationText).toBe('Swap DAI to USDC');
 
-    const swapReviewTitleText = await getTextFromText({
-      id: 'swap-review-title-text',
-      driver,
-    });
-    expect(swapReviewTitleText).toBe('Review & Swap');
+      const swapReviewTitleText = await getTextFromText({
+        id: 'swap-review-title-text',
+        driver,
+      });
+      expect(swapReviewTitleText).toBe('Review & Swap');
 
-    await findElementByTestIdAndClick({
-      id: 'navbar-button-with-back-swap-review',
-      driver,
-    });
-    await delayTime('long');
-  });
+      await findElementByTestIdAndClick({
+        id: 'navbar-button-with-back-swap-review',
+        driver,
+      });
+      await delayTime('long');
+    },
+  );
 
-  it.skip('should be able to go to review a bridge', async () => {
+  it.todo('should be able to go to review a bridge', async () => {
     await findElementByTestIdAndClick({
       id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-token-input-remove`,
       driver,
@@ -524,108 +527,111 @@ describe('Swap Flow 2', () => {
     await delayTime('long');
   });
 
-  it.skip('should be able to see bridge information in review sheet', async () => {
-    const ethAssetToSellAssetCard = await findElementByTestId({
-      id: `ETH-asset-to-sell-swap-asset-card`,
-      driver,
-    });
-    expect(ethAssetToSellAssetCard).toBeTruthy();
-    const ethAssetToBuyAssetCard = await findElementByTestId({
-      id: `ETH-asset-to-buy-swap-asset-card`,
-      driver,
-    });
-    expect(ethAssetToBuyAssetCard).toBeTruthy();
-    const minimumReceivedDetailsRow = await findElementByTestId({
-      id: `minimum-received-details-row`,
-      driver,
-    });
-    expect(minimumReceivedDetailsRow).toBeTruthy();
-    const swappingViaDetailsRow = await findElementByTestId({
-      id: `swapping-via-details-row`,
-      driver,
-    });
-    expect(swappingViaDetailsRow).toBeTruthy();
-    await findElementByTestIdAndClick({
-      id: 'swapping-via-swap-routes',
-      driver,
-    });
+  it.todo(
+    'should be able to see bridge information in review sheet',
+    async () => {
+      const ethAssetToSellAssetCard = await findElementByTestId({
+        id: `ETH-asset-to-sell-swap-asset-card`,
+        driver,
+      });
+      expect(ethAssetToSellAssetCard).toBeTruthy();
+      const ethAssetToBuyAssetCard = await findElementByTestId({
+        id: `ETH-asset-to-buy-swap-asset-card`,
+        driver,
+      });
+      expect(ethAssetToBuyAssetCard).toBeTruthy();
+      const minimumReceivedDetailsRow = await findElementByTestId({
+        id: `minimum-received-details-row`,
+        driver,
+      });
+      expect(minimumReceivedDetailsRow).toBeTruthy();
+      const swappingViaDetailsRow = await findElementByTestId({
+        id: `swapping-via-details-row`,
+        driver,
+      });
+      expect(swappingViaDetailsRow).toBeTruthy();
+      await findElementByTestIdAndClick({
+        id: 'swapping-via-swap-routes',
+        driver,
+      });
 
-    const includedFeeDetailsRow = await findElementByTestId({
-      id: `included-fee-details-row`,
-      driver,
-    });
-    expect(includedFeeDetailsRow).toBeTruthy();
+      const includedFeeDetailsRow = await findElementByTestId({
+        id: `included-fee-details-row`,
+        driver,
+      });
+      expect(includedFeeDetailsRow).toBeTruthy();
 
-    await findElementByTestIdAndClick({
-      id: 'included-fee-carrousel-button',
-      driver,
-    });
+      await findElementByTestIdAndClick({
+        id: 'included-fee-carrousel-button',
+        driver,
+      });
 
-    await findElementByTestIdAndClick({
-      id: 'swap-review-rnbw-fee-info-button',
-      driver,
-    });
-    await findElementByTestIdAndClick({
-      id: 'explainer-action-button',
-      driver,
-    });
+      await findElementByTestIdAndClick({
+        id: 'swap-review-rnbw-fee-info-button',
+        driver,
+      });
+      await findElementByTestIdAndClick({
+        id: 'explainer-action-button',
+        driver,
+      });
 
-    const moreDetailsHiddendDetailsRow = await findElementByTestId({
-      id: `more-details-hidden-details-row`,
-      driver,
-    });
-    expect(moreDetailsHiddendDetailsRow).toBeTruthy();
+      const moreDetailsHiddendDetailsRow = await findElementByTestId({
+        id: `more-details-hidden-details-row`,
+        driver,
+      });
+      expect(moreDetailsHiddendDetailsRow).toBeTruthy();
 
-    await findElementByTestIdAndClick({
-      id: 'swap-review-more-details-button',
-      driver,
-    });
+      await findElementByTestIdAndClick({
+        id: 'swap-review-more-details-button',
+        driver,
+      });
 
-    const moreDetailsdSection = await findElementByTestId({
-      id: `more-details-section`,
-      driver,
-    });
-    expect(moreDetailsdSection).toBeTruthy();
+      const moreDetailsdSection = await findElementByTestId({
+        id: `more-details-section`,
+        driver,
+      });
+      expect(moreDetailsdSection).toBeTruthy();
 
-    const exchangeRateDetailsRow = await findElementByTestId({
-      id: `exchange-rate-details-row`,
-      driver,
-    });
-    expect(exchangeRateDetailsRow).toBeTruthy();
+      const exchangeRateDetailsRow = await findElementByTestId({
+        id: `exchange-rate-details-row`,
+        driver,
+      });
+      expect(exchangeRateDetailsRow).toBeTruthy();
 
-    await findElementByTestIdAndClick({
-      id: 'exchange-rate-carrousel-button',
-      driver,
-    });
+      await findElementByTestIdAndClick({
+        id: 'exchange-rate-carrousel-button',
+        driver,
+      });
 
-    const assetToSellContractRow = await doNotFindElementByTestId({
-      id: `asset-to-sell-contract-details-row`,
-      driver,
-    });
-    expect(assetToSellContractRow).toBeFalsy();
+      const assetToSellContractRow = await doNotFindElementByTestId({
+        id: `asset-to-sell-contract-details-row`,
+        driver,
+      });
+      expect(assetToSellContractRow).toBeFalsy();
 
-    const assetToBuyContractRow = await doNotFindElementByTestId({
-      id: `asset-to-buy-contract-details-row`,
-      driver,
-    });
-    expect(assetToBuyContractRow).toBeFalsy();
+      const assetToBuyContractRow = await doNotFindElementByTestId({
+        id: `asset-to-buy-contract-details-row`,
+        driver,
+      });
+      expect(assetToBuyContractRow).toBeFalsy();
 
-    const swapReviewConfirmationText = await getTextFromText({
-      id: 'swap-review-confirmation-text',
-      driver,
-    });
-    expect(swapReviewConfirmationText).toBe('Bridge ETH');
+      const swapReviewConfirmationText = await getTextFromText({
+        id: 'swap-review-confirmation-text',
+        driver,
+      });
+      expect(swapReviewConfirmationText).toBe('Bridge ETH');
 
-    const swapReviewTitleText = await getTextFromText({
-      id: 'swap-review-title-text',
-      driver,
-    });
-    expect(swapReviewTitleText).toBe('Review & Bridge');
+      const swapReviewTitleText = await getTextFromText({
+        id: 'swap-review-title-text',
+        driver,
+      });
+      expect(swapReviewTitleText).toBe('Review & Bridge');
 
-    await findElementByTestIdAndClick({
-      id: 'navbar-button-with-back-swap-review',
-      driver,
-    });
-    await delayTime('very-long');
-  });
+      await findElementByTestIdAndClick({
+        id: 'navbar-button-with-back-swap-review',
+        driver,
+      });
+      await delayTime('very-long');
+    },
+  );
 });
