@@ -82,7 +82,10 @@
         "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/core>@babel/generator>@babel/types": true,
         "jest>@jest/core>@jest/reporters>@jridgewell/trace-mapping": true,
         "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping": true,
-        "jest>@jest/core>jest-snapshot>@babel/generator>jsesc": true
+        "jest>@jest/core>jest-snapshot>@babel/generator>jsesc": true,
+        "@testing-library/react>@testing-library/dom>@babel/code-frame>@babel/highlight>chalk": true,
+        "jest>@jest/core>jest-snapshot>@babel/types>@babel/helper-validator-identifier": true,
+        "react>loose-envify>js-tokens": true
       }
     },
     "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/core>@babel/generator>@babel/types": {
@@ -1179,7 +1182,12 @@
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-validator-identifier": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse": true
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-split-export-declaration": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": true,
+        "jest>@jest/core>jest-snapshot>@babel/types": true,
+        "jest>@jest/core>jest-snapshot>@babel/types>@babel/helper-validator-identifier": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": {
