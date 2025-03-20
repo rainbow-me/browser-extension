@@ -1,10 +1,6 @@
 import { isEmpty } from 'lodash';
 import { type Chain, mainnet } from 'viem/chains';
 
-import buildTimeNetworks from 'static/data/networks.json';
-import { NetworkState } from '~/core/state/networks/networks';
-import { useRainbowChainsStore } from '~/core/state/rainbowChains';
-import { useUserChainsStore } from '~/core/state/userChains';
 import {
   BackendNetwork,
   BackendNetworks,
@@ -16,12 +12,18 @@ import {
 import { GasSpeed } from '~/core/types/gas';
 import { logger } from '~/logger';
 
-const RPC_PROXY_API_KEY = process.env.RPC_PROXY_API_KEY;
-const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
-const IS_DEV = process.env.IS_DEV === 'true';
-const IS_TESTING = process.env.IS_TESTING === 'true';
+import {
+  DEFAULT_PRIVATE_MEMPOOL_TIMEOUT,
+  INTERNAL_BUILD,
+  IS_DEV,
+  IS_TESTING,
+  RPC_PROXY_API_KEY,
+  buildTimeNetworks,
+} from './constants';
+import { NetworkState } from './types';
 
-export const DEFAULT_PRIVATE_MEMPOOL_TIMEOUT = 2 * 60 * 1_000;
+// Export the constant for backward compatibility
+export { DEFAULT_PRIVATE_MEMPOOL_TIMEOUT };
 
 export function getBadgeUrl({
   chainBadges,
@@ -155,6 +157,7 @@ export const mergedChainToViemChain = (
   const { type, enabled, order, activeRpcUrl, rpcs, ...chain } = mergedChain;
   return chain;
 };
+
 const isUserChainOrderMalformed = (userChainsOrder: number[]) => {
   return userChainsOrder.some((id) => id == null || Number.isNaN(id));
 };
@@ -164,9 +167,7 @@ const buildNewUserPreferences = (
   enabledChainIds: Set<number>,
 ) => {
   const userPreferences: Record<number, ChainPreferences> = {};
-  const chainOrder = initialNonInternalNetworks
-    .map(({ id }) => toChainId(id))
-    .sort((a, b) => a - b);
+  const chainOrder = initialNonInternalNetworks.map(({ id }) => toChainId(id));
 
   for (const supportedNetwork of initialNonInternalNetworks) {
     const chainIdNum = toChainId(supportedNetwork.id);
@@ -188,32 +189,53 @@ const buildNewUserPreferences = (
   };
 };
 
+// This function now takes rainbowChains and userChains as parameters instead of importing them
 export const buildInitialUserPreferences = (
   initialSupportedNetworks = buildTimeNetworks,
+  rainbowChains: Record<number, { activeRpcUrl: string; chains: Chain[] }> = {},
+  userChains: Record<number, boolean> = {},
+  userChainsOrder: number[] = [],
 ): Pick<NetworkState, 'userPreferences' | 'chainOrder' | 'enabledChainIds'> => {
+  logger.debug(
+    '[buildInitialUserPreferences] Building initial user preferences',
+    {
+      initialSupportedNetworks,
+    },
+  );
+
   const userPreferences: Record<number, ChainPreferences> = {};
   const initialNonInternalNetworks =
     initialSupportedNetworks.backendNetworks.networks.filter(
       (network) => !network.internal || INTERNAL_BUILD || IS_DEV,
     );
 
+  logger.debug('[buildInitialUserPreferences] Filtered non-internal networks', {
+    initialNonInternalNetworks,
+  });
+
   const enabledChainIds = new Set<number>(
     initialNonInternalNetworks.map(({ id }) => toChainId(id)),
   );
 
-  const { rainbowChains } = useRainbowChainsStore.getState();
-  const { userChains, userChainsOrder } = useUserChainsStore.getState();
+  logger.debug('[buildInitialUserPreferences] Current store state', {
+    rainbowChains,
+    userChains,
+    userChainsOrder,
+  });
 
   if (isEmpty(rainbowChains) || isEmpty(userChains)) {
+    logger.debug(
+      '[buildInitialUserPreferences] No existing chains found, building new preferences',
+    );
     return buildNewUserPreferences(initialNonInternalNetworks, enabledChainIds);
   }
 
   let order = userChainsOrder;
   if (isUserChainOrderMalformed(order)) {
-    // sort by network id ascending (e.g. - 1, 10, 56, 97)
-    const defaultInitialOrder = initialNonInternalNetworks
-      .map(({ id }) => toChainId(id))
-      .sort((a, b) => a - b);
+    const defaultInitialOrder = initialNonInternalNetworks.map(({ id }) =>
+      toChainId(id),
+    );
+
     logger.warn(
       '[buildInitialUserPreferences] User chain order is malformed, using default order',
       {
@@ -232,9 +254,18 @@ export const buildInitialUserPreferences = (
     }
   }
 
+  logger.debug('[buildInitialUserPreferences] Processing rainbow chains', {
+    chainIds: Object.keys(rainbowChains),
+  });
+
   for (const chainId of Object.keys(rainbowChains)) {
     const chainIdNum = toChainId(chainId);
     const chain = rainbowChains[chainIdNum];
+
+    logger.debug('[buildInitialUserPreferences] Processing chain', {
+      chainId: chainIdNum,
+      chain,
+    });
 
     if (!userPreferences[chainIdNum]) {
       userPreferences[chainIdNum] = {} as ChainPreferences;
@@ -279,6 +310,12 @@ export const buildInitialUserPreferences = (
       }
     }
   }
+
+  logger.debug('[buildInitialUserPreferences] Final preferences built', {
+    userPreferences,
+    chainOrder: Array.from(chainOrder),
+    enabledChainIds: Array.from(enabledChainIds),
+  });
 
   return {
     userPreferences,
@@ -443,9 +480,9 @@ export const mergeChainData = (
     networks.backendNetworks.networks,
   );
 
-  const LOCAL_TEST_NETWORKS = IS_TESTING ? LOCAL_TESTNETS : [];
-
-  const allNetworks = [...LOCAL_TEST_NETWORKS, ...backendNetworks];
+  const allNetworks = IS_TESTING
+    ? [...LOCAL_TESTNETS, ...backendNetworks]
+    : [...backendNetworks];
 
   for (const chain of allNetworks) {
     const chainId = chain.id;

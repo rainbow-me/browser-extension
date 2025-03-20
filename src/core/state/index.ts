@@ -25,3 +25,7 @@ export {
   usePendingTransactionsStore,
 } from './transactions/pendingTransactions';
 export { pendingRequestStore, usePendingRequestStore } from './requests';
+export { rainbowChainsStore, useRainbowChainsStore } from './rainbowChains';
+export { userChainsStore, useUserChainsStore } from './userChains';
+export { networksStoreMigrationStore } from './networks/migration';
+export { networkStore } from './networks/networks';

@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/browser';
 
-import { version } from '../../../package.json';
+import pkg from '../../../package.json';
 
 // Any error that we don't wanna send to sentry should be added here
 // via partial match
@@ -20,7 +20,7 @@ export function initializeSentry(context: 'popup' | 'background') {
         dsn: process.env.SENTRY_DSN,
         integrations,
         tracesSampleRate: process.env.INTERNAL_BUILD === 'true' ? 1.0 : 0.2, // 20% sampling in prod
-        release: version,
+        release: pkg.version,
         environment:
           process.env.INTERNAL_BUILD === 'true' ? 'internal' : 'production',
         beforeSend(event) {

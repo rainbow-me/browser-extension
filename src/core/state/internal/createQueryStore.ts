@@ -1,6 +1,11 @@
+/* eslint-disable no-nested-ternary */
 import isEqual from 'lodash/isEqual';
-import create, { StateCreator, StoreApi, UseBoundStore } from 'zustand';
+import { StateCreator, StoreApi } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
+import {
+  UseBoundStoreWithEqualityFn,
+  createWithEqualityFn,
+} from 'zustand/traditional';
 
 import { RainbowError, logger } from '~/logger';
 
@@ -57,36 +62,51 @@ export type QueryStatusInfo = {
  */
 interface FetchOptions {
   /**
-   * Overrides the default cache duration for this fetch, in milliseconds.
-   * If data in the cache is older than this duration, it will be considered expired and
-   * will be pruned following a successful fetch.
+   * Overrides the store's default cacheTime for this fetch, which dictates when the data fetched in this operation
+   * will become eligible for pruning.
+   *
+   * Has no effect if `skipStoreUpdates` is set to `true`.
    */
   cacheTime?: number;
   /**
-   * Forces a fetch request even if the current data is fresh and not stale.
-   * If `true`, the fetch operation bypasses existing cached data.
+   * Forces a fetch request even if there is fresh data available in the cache.
+   *
+   * Note: If a pending fetch matches the forced fetch's params, the pending promise *will* be returned.
+   * @default false
    */
   force?: boolean;
   /**
    * If `true`, the fetch will simply return the data without any internal handling or side effects,
    * running in parallel with any other ongoing fetches. Use together with `force: true` if you want to
    * guarantee that a fresh fetch is triggered regardless of the current store state.
+   *
+   * ---
+   * If set to `'withCache'`, the fetch will similarly run in parallel without affecting the store, but the
+   * fetched data will be stored in the cache, as long as the store's config doesn't contain `disableCache: true`.
    * @default false
    */
-  skipStoreUpdates?: boolean;
+  skipStoreUpdates?: boolean | 'withCache';
   /**
-   * Overrides the default stale duration for this fetch, in milliseconds.
-   * If the fetch is successful, the subsequently scheduled refetch will occur after
-   * the specified duration.
+   * Overrides the store's default staleTime for this fetch, which dictates how fresh data must be to be returned
+   * from the cache.
    */
   staleTime?: number;
+  /**
+   * Dictates whether the store's `queryKey` should be updated based on the params used in the fetch operation.
+   * Useful if for instance you want to cache the manually fetched data, but skip updating the store's current
+   * `queryKey` (which determines where `getData()` points to).
+   *
+   * ---
+   * Defaults to `true` unless `skipStoreUpdates: true` is specified, in which case the default is `false`.
+   */
+  updateQueryKey?: boolean;
 }
 
 /**
  * Represents an entry in the query cache, which stores fetched data along with metadata, and error information
  * in the event the most recent fetch failed.
  */
-type CacheEntry<TData> = {
+export type CacheEntry<TData> = {
   cacheTime: number;
   data: TData | null;
 } & (
@@ -125,7 +145,7 @@ export interface QueryStore<
   TData,
   TParams extends Record<string, unknown>,
   S extends Omit<StoreState<TData, TParams>, keyof PrivateStoreState>,
-> extends UseBoundStore<StoreApi<S>> {
+> extends UseBoundStoreWithEqualityFn<StoreApi<S>> {
   /**
    * Indicates whether the store should actively fetch data.
    * When `false`, the store won't automatically refetch data.
@@ -142,7 +162,10 @@ export interface QueryStore<
    * @param options - Optional {@link FetchOptions} to customize the fetch behavior.
    * @returns A promise that resolves when the fetch operation completes.
    */
-  fetch: (params?: TParams, options?: FetchOptions) => Promise<TData | null>;
+  fetch: (
+    params?: TParams | Partial<TParams>,
+    options?: FetchOptions,
+  ) => Promise<TData | null>;
   /**
    * Returns the cached data, if available, for the current query params.
    * @returns The cached data, or `null` if no data is available.
@@ -215,18 +238,17 @@ export type QueryStoreConfig<
 > = {
   /**
    * **A function responsible for fetching data from a remote source.**
-   * Receives parameters of type TParams and optional abort/cancel controls.
+   * Receives parameters of type TParams and optionally an abort controller.
    * Returns either a promise or a raw data value of type TQueryFnData.
    *
    * ---
-   * `abortController` and `cancel` are by default available, unless either:
+   * `abortController` is by default available, unless either:
    * - `abortInterruptedFetches` is set to `false` in the store's config
    * - The fetch was manually triggered with `skipStoreUpdates: true`
    */
   fetcher: (
     params: TParams,
     abortController: AbortController | null,
-    cancel: (() => void) | null,
   ) => TQueryFnData | Promise<TQueryFnData>;
   /**
    * **A callback invoked whenever a fetch operation fails.**
@@ -239,7 +261,10 @@ export type QueryStoreConfig<
    */
   onFetched?: (info: {
     data: TData;
-    fetch: (params?: TParams, options?: FetchOptions) => Promise<TData | null>;
+    fetch: (
+      params?: TParams | Partial<TParams>,
+      options?: FetchOptions,
+    ) => Promise<TData | null>;
     params: TParams;
     set: (partial: S | Partial<S> | ((state: S) => S | Partial<S>)) => void;
   }) => void;
@@ -315,7 +340,7 @@ export type QueryStoreConfig<
   keepPreviousData?: boolean;
   /**
    * The maximum number of times to retry a failed fetch operation.
-   * @default 3
+   * @default 5
    */
   maxRetries?: number;
   /**
@@ -328,7 +353,11 @@ export type QueryStoreConfig<
   /**
    * The delay between retries after a fetch error occurs, in milliseconds, defined as a number or a function that
    * receives the error and current retry count and returns a number.
-   * @default time.seconds(5)
+   *
+   * @default Exponential backoff starting at 5s, doubling each retry, capped at 5m:
+   * ```ts
+   * retryCount => Math.min(time.seconds(5) * Math.pow(2, retryCount), time.minutes(5))
+   * ```
    */
   retryDelay?: number | ((retryCount: number, error: Error) => number);
   /**
@@ -361,7 +390,7 @@ type ParamResolvable<
   | T
   | ((
       $: SignalFunction,
-      store: QueryStore<TData, TParams, S>,
+      store: UseBoundStoreWithEqualityFn<StoreApi<S>>,
     ) => AttachValue<T>);
 
 interface ResolvedEnabledResult {
@@ -394,6 +423,13 @@ interface ResolvedParamsResult<TParams> {
   resolvedParams: TParams;
 }
 
+type CustomStateCreator<Q, U> = StateCreator<
+  Q,
+  [],
+  [['zustand/subscribeWithSelector', never]],
+  U
+>;
+
 /**
  * The keys that make up the internal state of the store.
  */
@@ -404,7 +440,6 @@ const [persist, discard] = [true, false];
 
 const SHOULD_PERSIST_INTERNAL_STATE_MAP: Record<string, boolean> = {
   /* Internal state to persist if the store is persisted */
-  enabled: persist,
   error: persist,
   lastFetchedAt: persist,
   queryCache: persist,
@@ -412,6 +447,7 @@ const SHOULD_PERSIST_INTERNAL_STATE_MAP: Record<string, boolean> = {
   status: persist,
 
   /* Internal state and methods to discard */
+  enabled: discard,
   fetch: discard,
   getData: discard,
   getStatus: discard,
@@ -428,7 +464,7 @@ const MIN_STALE_TIME = 5_000;
 
 export function createQueryStore<
   TQueryFnData,
-  TParams extends Record<string, unknown> = Record<string, unknown>,
+  TParams extends Record<string, unknown> = Record<string, never>,
   U = unknown,
   TData = TQueryFnData,
 >(
@@ -437,51 +473,52 @@ export function createQueryStore<
     TParams,
     TData,
     StoreState<TData, TParams> & PrivateStoreState & U
-  > & {
-    params?: {
-      [K in keyof TParams]: ParamResolvable<
-        TParams[K],
-        TParams,
-        StoreState<TData, TParams> & PrivateStoreState & U,
-        TData
-      >;
-    };
-  },
-  customStateCreator: StateCreator<
-    U,
-    [],
-    [['zustand/subscribeWithSelector', never]]
-  >,
+  > &
+    ([TParams] extends [Record<string, never>]
+      ? { params?: undefined }
+      : {
+          params: {
+            [K in keyof TParams]: ParamResolvable<
+              TParams[K],
+              TParams,
+              StoreState<TData, TParams> & PrivateStoreState & U,
+              TData
+            >;
+          };
+        }),
+  customStateCreator: CustomStateCreator<StoreState<TData, TParams> & U, U>,
   persistConfig?: RainbowPersistConfig<
     StoreState<TData, TParams> & PrivateStoreState & U
   >,
-): QueryStore<TData, TParams, StoreState<TData, TParams> & U>;
+): UseBoundStoreWithEqualityFn<StoreApi<StoreState<TData, TParams> & U>>;
 
 export function createQueryStore<
   TQueryFnData,
-  TParams extends Record<string, unknown> = Record<string, unknown>,
-  U = unknown,
+  TParams extends Record<string, unknown> = Record<string, never>,
   TData = TQueryFnData,
 >(
   config: QueryStoreConfig<
     TQueryFnData,
     TParams,
     TData,
-    StoreState<TData, TParams> & PrivateStoreState & U
-  > & {
-    params?: {
-      [K in keyof TParams]: ParamResolvable<
-        TParams[K],
-        TParams,
-        StoreState<TData, TParams> & PrivateStoreState & U,
-        TData
-      >;
-    };
-  },
+    StoreState<TData, TParams> & PrivateStoreState
+  > &
+    ([TParams] extends [Record<string, never>]
+      ? { params?: undefined }
+      : {
+          params: {
+            [K in keyof TParams]: ParamResolvable<
+              TParams[K],
+              TParams,
+              StoreState<TData, TParams> & PrivateStoreState,
+              TData
+            >;
+          };
+        }),
   persistConfig?: RainbowPersistConfig<
-    StoreState<TData, TParams> & PrivateStoreState & U
+    StoreState<TData, TParams> & PrivateStoreState
   >,
-): QueryStore<TData, TParams, StoreState<TData, TParams> & U>;
+): UseBoundStoreWithEqualityFn<StoreApi<StoreState<TData, TParams>>>;
 
 /**
  * Creates a query-enabled Rainbow store with data fetching capabilities.
@@ -492,7 +529,7 @@ export function createQueryStore<
  */
 export function createQueryStore<
   TQueryFnData,
-  TParams extends Record<string, unknown> = Record<string, unknown>,
+  TParams extends Record<string, unknown> = Record<string, never>,
   U = unknown,
   TData = TQueryFnData,
 >(
@@ -501,23 +538,26 @@ export function createQueryStore<
     TParams,
     TData,
     StoreState<TData, TParams> & PrivateStoreState & U
-  > & {
-    params?: {
-      [K in keyof TParams]: ParamResolvable<
-        TParams[K],
-        TParams,
-        StoreState<TData, TParams> & PrivateStoreState & U,
-        TData
-      >;
-    };
-  },
+  > &
+    ([TParams] extends [Record<string, never>]
+      ? { params?: undefined }
+      : {
+          params: {
+            [K in keyof TParams]: ParamResolvable<
+              TParams[K],
+              TParams,
+              StoreState<TData, TParams> & PrivateStoreState & U,
+              TData
+            >;
+          };
+        }),
   arg1?:
-    | StateCreator<U, [], [['zustand/subscribeWithSelector', never]]>
+    | CustomStateCreator<StoreState<TData, TParams> & U, U>
     | RainbowPersistConfig<StoreState<TData, TParams> & PrivateStoreState & U>,
   arg2?: RainbowPersistConfig<
     StoreState<TData, TParams> & PrivateStoreState & U
   >,
-): QueryStore<TData, TParams, StoreState<TData, TParams> & U> {
+): UseBoundStoreWithEqualityFn<StoreApi<StoreState<TData, TParams> & U>> {
   type S = StoreState<TData, TParams> & PrivateStoreState & U;
 
   /* If arg1 is a function, it's the customStateCreator; otherwise, it's the persistConfig. */
@@ -530,18 +570,18 @@ export function createQueryStore<
     fetcher,
     onFetched,
     transform,
-    cacheTime = 7 * 24 * 60 * 60 * 1000,
+    cacheTime = 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
     debugMode = false,
     disableAutoRefetching = false,
     disableCache = false,
     enabled = true,
     keepPreviousData = false,
-    maxRetries = 3,
+    maxRetries = 5,
     onError,
     params,
-    retryDelay = 5_000,
+    retryDelay = defaultRetryDelay,
     setData,
-    staleTime = 2 * 60 * 1000,
+    staleTime = 2 * 60 * 1000, // 2 minutes in milliseconds
     suppressStaleTimeWarning = false,
   } = config;
 
@@ -551,9 +591,15 @@ export function createQueryStore<
         persistConfig?.storageKey ? `: ${persistConfig.storageKey}` : ''
       }] ❌ Stale times under ${
         MIN_STALE_TIME / 1000
-      } seconds are not recommended.`,
+      } seconds are not recommended. Provided staleTime: ${
+        staleTime / 1000
+      } seconds`,
     );
   }
+
+  const cacheTimeIsFunction = typeof cacheTime === 'function';
+  const enableLogs = IS_DEV && debugMode;
+  const paramKeys: (keyof TParams)[] = Object.keys(config.params ?? {});
 
   let attachVals: {
     enabled: AttachValue<boolean> | null;
@@ -571,9 +617,7 @@ export function createQueryStore<
     null;
   let activeRefetchTimeout: NodeJS.Timeout | null = null;
   let lastFetchKey: string | null = null;
-
-  const cacheTimeIsFunction = typeof cacheTime === 'function';
-  const enableLogs = IS_DEV && debugMode;
+  let lastHandledEnabled: boolean | null = null;
 
   const initialData = {
     enabled: typeof enabled === 'function' ? false : enabled,
@@ -610,9 +654,7 @@ export function createQueryStore<
           { once: true },
         );
 
-        Promise.resolve(
-          fetcher(params, abortController, abortController.abort),
-        ).then(resolve, reject);
+        Promise.resolve(fetcher(params, abortController)).then(resolve, reject);
       });
     } finally {
       if (activeAbortController === abortController) {
@@ -626,14 +668,64 @@ export function createQueryStore<
     [],
     [['zustand/subscribeWithSelector', never]]
   > = (set, get, api) => {
+    const originalSet = api.setState;
+    const handleEnabledChange = (prevEnabled: boolean, newEnabled: boolean) => {
+      if (prevEnabled !== newEnabled && lastHandledEnabled !== newEnabled) {
+        lastHandledEnabled = newEnabled;
+        subscriptionManager.setEnabled(newEnabled);
+        if (newEnabled) {
+          api.getState().fetch(undefined, { updateQueryKey: true });
+        } else if (activeRefetchTimeout || abortInterruptedFetches) {
+          if (abortInterruptedFetches) abortActiveFetch();
+          if (activeRefetchTimeout) {
+            clearTimeout(activeRefetchTimeout);
+            activeRefetchTimeout = null;
+          }
+        }
+      }
+    };
+
+    const setStateWithEnabledHandling: typeof originalSet = (
+      partial,
+      replace,
+    ) => {
+      const isPartialFunction = typeof partial === 'function';
+      if (isPartialFunction || partial.enabled !== undefined) {
+        let handleNewEnabled: (() => void) | undefined;
+        originalSet((state) => {
+          const newPartial = isPartialFunction ? partial(state) : partial;
+          const newEnabled =
+            newPartial.enabled !== undefined
+              ? newPartial.enabled
+              : state.enabled;
+          if (newEnabled !== state.enabled)
+            handleNewEnabled = () =>
+              handleEnabledChange(state.enabled, newEnabled);
+          return newPartial;
+        }, replace);
+        handleNewEnabled?.();
+      } else {
+        originalSet(partial, replace);
+      }
+    };
+
+    // Override the store's setState method
+    api.setState = setStateWithEnabledHandling;
+
     subscriptionManager.init({
       onSubscribe: (enabled, isFirstSubscription, shouldThrottle) => {
-        if (!directValues && !attachVals && params !== undefined)
-          return (fetchAfterParamCreation = true);
+        if (
+          !directValues &&
+          !attachVals &&
+          (params || typeof config.enabled === 'function')
+        ) {
+          fetchAfterParamCreation = true;
+          return;
+        }
         if (!enabled) return;
 
         if (isFirstSubscription) {
-          const { fetch, isStale, queryKey: storeQueryKey } = get();
+          const { isStale, queryKey: storeQueryKey } = get();
           const currentParams = getCurrentResolvedParams(
             attachVals,
             directValues,
@@ -644,12 +736,12 @@ export function createQueryStore<
             set((state) => ({ ...state, queryKey: currentQueryKey }));
 
           if (isStale()) {
-            fetch(currentParams);
+            baseMethods.fetch(currentParams, undefined, true);
           } else {
             scheduleNextFetch(currentParams, undefined);
           }
         } else if (disableAutoRefetching && !shouldThrottle) {
-          get().fetch();
+          baseMethods.fetch(undefined, undefined, true);
         }
       },
 
@@ -666,9 +758,8 @@ export function createQueryStore<
       params: TParams,
       options: FetchOptions | undefined,
     ) => {
-      if (disableAutoRefetching) return;
-      const effectiveStaleTime = options?.staleTime ?? staleTime;
-      if (effectiveStaleTime <= 0 || effectiveStaleTime === Infinity) return;
+      if (disableAutoRefetching || options?.skipStoreUpdates) return;
+      if (staleTime <= 0 || staleTime === Infinity) return;
 
       if (activeRefetchTimeout) {
         clearTimeout(activeRefetchTimeout);
@@ -681,42 +772,71 @@ export function createQueryStore<
           ? lastFetchKey === currentQueryKey && get().lastFetchedAt
           : get().queryCache[currentQueryKey]?.lastFetchedAt) || null;
       const timeUntilRefetch = lastFetchedAt
-        ? effectiveStaleTime - (Date.now() - lastFetchedAt)
-        : effectiveStaleTime;
+        ? staleTime - (Date.now() - lastFetchedAt)
+        : staleTime;
 
       activeRefetchTimeout = setTimeout(() => {
         const { enabled, subscriptionCount } = subscriptionManager.get();
         if (enabled && subscriptionCount > 0) {
-          get().fetch(params, { force: true });
+          baseMethods.fetch(params, { force: true }, true);
         }
       }, timeUntilRefetch);
     };
 
     const baseMethods = {
+      ...customStateCreator(set, get, api),
+      ...initialData,
+
       async fetch(
-        params: TParams | undefined,
+        params: TParams | Partial<TParams> | undefined,
         options: FetchOptions | undefined,
+        isInternalFetch = false,
       ) {
-        if (!options?.force && !subscriptionManager.get().enabled) return null;
+        if (
+          !options?.force &&
+          !options?.skipStoreUpdates &&
+          !subscriptionManager.get().enabled
+        )
+          return null;
 
         const { error, status } = get();
-
-        const effectiveParams =
-          params ?? getCurrentResolvedParams(attachVals, directValues);
+        const effectiveParams = getCompleteParams(
+          attachVals,
+          directValues,
+          paramKeys,
+          params,
+        );
         const currentQueryKey = getQueryKey(effectiveParams);
         const isLoading = status === QueryStatuses.Loading;
         const skipStoreUpdates = !!options?.skipStoreUpdates;
+        const shouldUpdateQueryKey =
+          typeof options?.updateQueryKey === 'boolean'
+            ? options.updateQueryKey
+            : isInternalFetch
+            ? keepPreviousData
+            : // Manual fetch call default
+              !skipStoreUpdates;
 
         if (
           activeFetch?.promise &&
           activeFetch.key === currentQueryKey &&
-          isLoading &&
-          !options?.force
+          isLoading
         ) {
+          if (enableLogs)
+            console.log(
+              '[🔄 Using Active Fetch 🔄] for params:',
+              JSON.stringify(effectiveParams),
+            );
           return activeFetch.promise;
         }
 
-        if (abortInterruptedFetches && !skipStoreUpdates) abortActiveFetch();
+        if (
+          abortInterruptedFetches &&
+          !skipStoreUpdates &&
+          options?.updateQueryKey !== false
+        ) {
+          abortActiveFetch();
+        }
 
         if (!options?.force) {
           /* Check for valid cached data */
@@ -738,8 +858,12 @@ export function createQueryStore<
             !lastFetchedAt ||
             Date.now() - lastFetchedAt >= (options?.staleTime ?? staleTime);
 
-          if (!isStale && (!errorInfo || errorRetriesExhausted)) {
+          if (
+            !isStale &&
+            (!errorInfo || errorRetriesExhausted || skipStoreUpdates)
+          ) {
             if (
+              !skipStoreUpdates &&
               !activeRefetchTimeout &&
               subscriptionManager.get().subscriptionCount > 0 &&
               staleTime !== 0 &&
@@ -747,18 +871,22 @@ export function createQueryStore<
             ) {
               scheduleNextFetch(effectiveParams, options);
             }
+            if (shouldUpdateQueryKey && storeQueryKey !== currentQueryKey)
+              set((state) => ({ ...state, queryKey: currentQueryKey }));
             if (enableLogs)
               console.log(
                 '[💾 Returning Cached Data 💾] for params:',
                 JSON.stringify(effectiveParams),
               );
-            if (keepPreviousData && storeQueryKey !== currentQueryKey)
-              set((state) => ({ ...state, queryKey: currentQueryKey }));
             return cacheEntry?.data ?? null;
           }
         }
 
         if (!skipStoreUpdates) {
+          if (activeRefetchTimeout) {
+            clearTimeout(activeRefetchTimeout);
+            activeRefetchTimeout = null;
+          }
           if (error || !isLoading)
             set((state) => ({
               ...state,
@@ -768,17 +896,43 @@ export function createQueryStore<
           activeFetch = { key: currentQueryKey };
         }
 
+        const effectiveCacheTime =
+          options?.cacheTime ??
+          (cacheTimeIsFunction ? cacheTime(effectiveParams) : cacheTime);
+
         const fetchOperation = async () => {
           try {
-            if (enableLogs)
-              console.log(
-                '[🔄 Fetching 🔄] for params:',
-                JSON.stringify(effectiveParams),
-              );
+            if (enableLogs) {
+              if (
+                !isInternalFetch &&
+                params &&
+                !hasAllRequiredParams(params, paramKeys)
+              ) {
+                console.log(
+                  '[🔄 Fetching with Partial Params 🔄]\n',
+                  '- Provided params:',
+                  `${JSON.stringify(params)}\n`,
+                  '- Filled in params:',
+                  `${JSON.stringify(
+                    Object.fromEntries(
+                      Object.keys(effectiveParams)
+                        .filter((key) => !(key in params))
+                        .map((key) => [key, effectiveParams[key]]),
+                    ),
+                  )}`,
+                );
+              } else {
+                console.log(
+                  '[🔄 Fetching 🔄] for params:',
+                  JSON.stringify(effectiveParams),
+                );
+              }
+            }
+
             const rawResult = await (abortInterruptedFetches &&
             !skipStoreUpdates
               ? fetchWithAbortControl(effectiveParams)
-              : fetcher(effectiveParams, null, null));
+              : fetcher(effectiveParams, null));
 
             const lastFetchedAt = Date.now();
             if (enableLogs)
@@ -809,6 +963,20 @@ export function createQueryStore<
                   '[🥷 Successful Parallel Fetch 🥷] for params:',
                   JSON.stringify(effectiveParams),
                 );
+              if (options.skipStoreUpdates === 'withCache' && !disableCache) {
+                set((state) => ({
+                  ...state,
+                  queryCache: {
+                    ...state.queryCache,
+                    [currentQueryKey]: {
+                      cacheTime: effectiveCacheTime,
+                      data: transformedData,
+                      errorInfo: null,
+                      lastFetchedAt,
+                    } satisfies CacheEntry<TData>,
+                  },
+                }));
+              }
               return transformedData;
             }
 
@@ -817,7 +985,9 @@ export function createQueryStore<
                 ...state,
                 error: null,
                 lastFetchedAt,
-                queryKey: keepPreviousData ? currentQueryKey : state.queryKey,
+                queryKey: shouldUpdateQueryKey
+                  ? currentQueryKey
+                  : state.queryKey,
                 status: QueryStatuses.Success,
               };
 
@@ -832,9 +1002,7 @@ export function createQueryStore<
                 newState.queryCache = {
                   ...newState.queryCache,
                   [currentQueryKey]: {
-                    cacheTime: cacheTimeIsFunction
-                      ? cacheTime(effectiveParams)
-                      : cacheTime,
+                    cacheTime: effectiveCacheTime,
                     data: transformedData,
                     errorInfo: null,
                     lastFetchedAt,
@@ -863,9 +1031,7 @@ export function createQueryStore<
                   newState.queryCache = {
                     ...newState.queryCache,
                     [currentQueryKey]: {
-                      cacheTime: cacheTimeIsFunction
-                        ? cacheTime(effectiveParams)
-                        : cacheTime,
+                      cacheTime: effectiveCacheTime,
                       data: null,
                       errorInfo: null,
                       lastFetchedAt,
@@ -956,7 +1122,7 @@ export function createQueryStore<
                     const { enabled, subscriptionCount } =
                       subscriptionManager.get();
                     if (enabled && subscriptionCount > 0) {
-                      get().fetch(params, { force: true });
+                      baseMethods.fetch(params, { force: true }, true);
                     }
                   }, errorRetryDelay);
                 }
@@ -968,11 +1134,7 @@ export function createQueryStore<
                 queryCache: {
                   ...state.queryCache,
                   [currentQueryKey]: {
-                    cacheTime:
-                      entry?.cacheTime ??
-                      (cacheTimeIsFunction
-                        ? cacheTime(effectiveParams)
-                        : cacheTime),
+                    cacheTime: entry?.cacheTime ?? effectiveCacheTime,
                     data: entry?.data ?? null,
                     lastFetchedAt: entry?.lastFetchedAt ?? null,
                     errorInfo: {
@@ -982,7 +1144,9 @@ export function createQueryStore<
                     },
                   } satisfies CacheEntry<TData>,
                 },
-                queryKey: keepPreviousData ? currentQueryKey : state.queryKey,
+                queryKey: shouldUpdateQueryKey
+                  ? currentQueryKey
+                  : state.queryKey,
                 status: QueryStatuses.Error,
               }));
             } else {
@@ -993,11 +1157,7 @@ export function createQueryStore<
                 queryCache: {
                   ...state.queryCache,
                   [currentQueryKey]: {
-                    cacheTime:
-                      entry?.cacheTime ??
-                      (cacheTimeIsFunction
-                        ? cacheTime(effectiveParams)
-                        : cacheTime),
+                    cacheTime: entry?.cacheTime ?? effectiveCacheTime,
                     data: entry?.data ?? null,
                     lastFetchedAt: entry?.lastFetchedAt ?? null,
                     errorInfo: {
@@ -1007,7 +1167,9 @@ export function createQueryStore<
                     },
                   } satisfies CacheEntry<TData>,
                 },
-                queryKey: keepPreviousData ? currentQueryKey : state.queryKey,
+                queryKey: shouldUpdateQueryKey
+                  ? currentQueryKey
+                  : state.queryKey,
                 status: QueryStatuses.Error,
               }));
             }
@@ -1044,7 +1206,7 @@ export function createQueryStore<
         if (keepPreviousData) return cacheEntry?.data ?? null;
         const isExpired =
           !!cacheEntry?.lastFetchedAt &&
-          Date.now() - cacheEntry.lastFetchedAt > cacheEntry.cacheTime;
+          Date.now() - cacheEntry.lastFetchedAt >= cacheEntry.cacheTime;
         return isExpired ? null : cacheEntry?.data ?? null;
       },
 
@@ -1080,7 +1242,7 @@ export function createQueryStore<
         const effectiveCacheTime = cacheTimeOverride ?? cacheEntry?.cacheTime;
         return (
           effectiveCacheTime === undefined ||
-          Date.now() - lastFetchedAt > effectiveCacheTime
+          Date.now() - lastFetchedAt >= effectiveCacheTime
         );
       },
 
@@ -1093,10 +1255,12 @@ export function createQueryStore<
 
         if (!lastFetchedAt) return true;
         const effectiveStaleTime = staleTimeOverride ?? staleTime;
-        return Date.now() - lastFetchedAt > effectiveStaleTime;
+        return Date.now() - lastFetchedAt >= effectiveStaleTime;
       },
 
       reset() {
+        for (const unsub of paramUnsubscribes) unsub();
+        paramUnsubscribes = [];
         if (activeRefetchTimeout) {
           clearTimeout(activeRefetchTimeout);
           activeRefetchTimeout = null;
@@ -1114,39 +1278,12 @@ export function createQueryStore<
       },
     };
 
-    let lastHandledEnabled: boolean | null = null;
-    const handleSetEnabled = (state: S, prevState: S) => {
-      if (
-        state.enabled !== prevState.enabled &&
-        lastHandledEnabled !== state.enabled
-      ) {
-        lastHandledEnabled = state.enabled;
-        subscriptionManager.setEnabled(state.enabled);
-        if (state.enabled) {
-          const currentParams = getCurrentResolvedParams(
-            attachVals,
-            directValues,
-          );
-          const currentKey = state.queryKey;
-          if (currentKey !== lastFetchKey || state.isStale()) {
-            state.fetch(currentParams);
-          } else {
-            scheduleNextFetch(currentParams, undefined);
-          }
-        } else if (activeRefetchTimeout) {
-          clearTimeout(activeRefetchTimeout);
-          activeRefetchTimeout = null;
-        }
-      }
-    };
-
     const subscribeWithSelector = api.subscribe;
 
     api.subscribe = (listener: (state: S, prevState: S) => void) => {
       const internalUnsubscribe = subscriptionManager.subscribe();
       const unsubscribe = subscribeWithSelector((state: S, prevState: S) => {
         listener(state, prevState);
-        handleSetEnabled(state, prevState);
       });
       return () => {
         internalUnsubscribe();
@@ -1154,14 +1291,7 @@ export function createQueryStore<
       };
     };
 
-    const userState = customStateCreator?.(set, get, api) ?? ({} as U);
-
-    /* Merge base data, user state, and methods into the final store state */
-    return {
-      ...initialData,
-      ...userState,
-      ...baseMethods,
-    };
+    return baseMethods;
   };
 
   const combinedPersistConfig = persistConfig
@@ -1174,44 +1304,24 @@ export function createQueryStore<
       }
     : undefined;
 
-  const baseStore = persistConfig?.storageKey
-    ? createRainbowStore(createState, combinedPersistConfig)
-    : create<S>()(subscribeWithSelector(createState));
+  const queryStore = persistConfig?.storageKey
+    ? createRainbowStore<S>(createState, combinedPersistConfig)
+    : createWithEqualityFn<S>()(subscribeWithSelector(createState), Object.is);
 
-  const queryCapableStore = Object.assign(baseStore, {
-    enabled: baseStore.getState().enabled,
-    queryKey: baseStore.getState().queryKey,
-    fetch: (params?: TParams, options?: FetchOptions) =>
-      baseStore.getState().fetch(params, options),
-    getData: () => baseStore.getState().getData(),
-    getStatus: () => baseStore.getState().getStatus(),
-    isDataExpired: (override?: number) =>
-      baseStore.getState().isDataExpired(override),
-    isStale: (override?: number) => baseStore.getState().isStale(override),
-    reset: () => {
-      for (const unsub of paramUnsubscribes) unsub();
-      paramUnsubscribes = [];
-      queryCapableStore.getState().reset();
-      queryCapableStore.setState((state) => ({
-        ...state,
-        ...initialData,
-        queryKey: getQueryKey(
-          getCurrentResolvedParams(attachVals, directValues),
-        ),
-      }));
-    },
-  });
-
-  const { error, queryKey } = queryCapableStore.getState();
+  const {
+    enabled: initialStoreEnabled,
+    error,
+    queryKey,
+  } = queryStore.getState();
   if (queryKey && !error) lastFetchKey = queryKey;
 
-  if (params) {
+  if (params || typeof config.enabled === 'function') {
     const {
       directValues: resolvedDirectValues,
       enabledAttachVal: resolvedEnabledAttachVal,
       enabledDirectValue: resolvedEnabledDirectValue,
       attachVals: resolvedAttachVals,
-    } = resolveParams<TParams, S, TData>(enabled, params, queryCapableStore);
+    } = resolveParams<TParams, S, TData>(enabled, params, queryStore);
     attachVals = {
       enabled: resolvedEnabledAttachVal,
       params: resolvedAttachVals,
@@ -1226,12 +1336,11 @@ export function createQueryStore<
     const newParams = getCurrentResolvedParams(attachVals, directValues);
     if (!keepPreviousData) {
       const newQueryKey = getQueryKey(newParams);
-      queryCapableStore.setState((state) => ({
-        ...state,
-        queryKey: newQueryKey,
-      }));
+      queryStore.setState((state) => ({ ...state, queryKey: newQueryKey }));
     }
-    queryCapableStore.fetch(newParams);
+    queryStore
+      .getState()
+      .fetch(newParams, { updateQueryKey: keepPreviousData });
   };
 
   if (attachVals?.enabled) {
@@ -1240,10 +1349,10 @@ export function createQueryStore<
 
     if (subscribeFn) {
       let oldVal = attachVal.value;
-      if (oldVal) {
-        queryCapableStore.setState((state) => ({ ...state, enabled: true }));
-        subscriptionManager.setEnabled(true);
-      }
+      if (initialStoreEnabled !== oldVal)
+        queryStore.setState((state) => ({ ...state, enabled: oldVal }));
+      if (oldVal) subscriptionManager.setEnabled(oldVal);
+
       if (enableLogs)
         console.log('[🌀 Enabled Subscription 🌀] Initial value:', oldVal);
 
@@ -1258,14 +1367,16 @@ export function createQueryStore<
               newVal,
             );
           oldVal = newVal;
-          queryCapableStore.setState((state) => ({
-            ...state,
-            enabled: newVal,
-          }));
+          queryStore.setState((state) => ({ ...state, enabled: newVal }));
         }
       });
       paramUnsubscribes.push(unsub);
     }
+  } else if (initialStoreEnabled !== initialData.enabled) {
+    queryStore.setState((state) => ({
+      ...state,
+      enabled: initialData.enabled,
+    }));
   }
 
   for (const k in attachVals?.params) {
@@ -1300,10 +1411,10 @@ export function createQueryStore<
 
   if (fetchAfterParamCreation) onParamChange();
 
-  return queryCapableStore;
+  return queryStore;
 }
 
-function getQueryKey<TParams extends Record<string, unknown>>(
+export function getQueryKey<TParams extends Record<string, unknown>>(
   params: TParams,
 ): string {
   return JSON.stringify(
@@ -1311,6 +1422,29 @@ function getQueryKey<TParams extends Record<string, unknown>>(
       .sort()
       .map((key) => params[key]),
   );
+}
+
+function defaultRetryDelay(retryCount: number) {
+  const baseDelay = 5_000;
+  const multiplier = Math.pow(2, retryCount);
+  return Math.min(baseDelay * multiplier, 5 * 60 * 1000);
+}
+
+function getCompleteParams<TParams extends Record<string, unknown>>(
+  attachVals: {
+    enabled: AttachValue<boolean> | null;
+    params: Partial<Record<keyof TParams, AttachValue<unknown>>>;
+  } | null,
+  directValues: { enabled: boolean | null; params: Partial<TParams> } | null,
+  paramKeys: (keyof TParams)[],
+  params?: Partial<TParams>,
+): TParams {
+  const effectiveParams = !params
+    ? getCurrentResolvedParams(attachVals, directValues)
+    : hasAllRequiredParams(params, paramKeys)
+    ? params
+    : { ...getCurrentResolvedParams(attachVals, directValues), ...params };
+  return effectiveParams;
 }
 
 function getCurrentResolvedParams<TParams extends Record<string, unknown>>(
@@ -1328,6 +1462,17 @@ function getCurrentResolvedParams<TParams extends Record<string, unknown>>(
       attachVal.value as TParams[keyof TParams];
   }
   return currentParams as TParams;
+}
+
+function hasAllRequiredParams<TParams extends Record<string, unknown>>(
+  params: Partial<TParams> | TParams,
+  requiredKeys: (keyof TParams)[],
+): params is TParams {
+  if (!params) return false;
+  for (const key of requiredKeys) {
+    if (!(key in params)) return false;
+  }
+  return true;
 }
 
 function pruneCache<
@@ -1351,11 +1496,24 @@ function pruneCache<
     const entry = state.queryCache[key];
     const isValid =
       !!entry &&
-      (pruneTime - (entry.lastFetchedAt ?? entry.errorInfo.lastFailedAt) <=
+      (pruneTime - (entry.lastFetchedAt ?? entry.errorInfo.lastFailedAt) <
         entry.cacheTime ||
         key === preserve);
-    if (isValid) newCache[key] = entry;
-    else prunedSomething = true;
+    if (!isValid) {
+      prunedSomething = true;
+    } else if (
+      !keyToPreserve &&
+      entry.errorInfo &&
+      entry.errorInfo.retryCount > 0
+    ) {
+      newCache[key] = {
+        ...entry,
+        errorInfo: { ...entry.errorInfo, retryCount: 0 },
+      } satisfies CacheEntry<TData>;
+      prunedSomething = true;
+    } else {
+      newCache[key] = entry;
+    }
   }
 
   if (!prunedSomething) return state;
@@ -1372,7 +1530,7 @@ function isResolvableParam<
   param: ParamResolvable<T, TParams, S, TData>,
 ): param is (
   $: SignalFunction,
-  store: QueryStore<TData, TParams, S>,
+  store: UseBoundStoreWithEqualityFn<StoreApi<S>>,
 ) => AttachValue<T> {
   return typeof param === 'function';
 }
@@ -1405,10 +1563,10 @@ function resolveParams<
   U = unknown,
 >(
   enabled: boolean | ParamResolvable<boolean, TParams, S, TData>,
-  params: {
-    [K in keyof TParams]: ParamResolvable<TParams[K], TParams, S, TData>;
-  },
-  store: QueryStore<TData, TParams, S>,
+  params:
+    | { [K in keyof TParams]: ParamResolvable<TParams[K], TParams, S, TData> }
+    | undefined,
+  store: UseBoundStoreWithEqualityFn<StoreApi<S>>,
 ): ResolvedParamsResult<TParams> & ResolvedEnabledResult {
   const attachVals: Partial<Record<keyof TParams, AttachValue<unknown>>> = {};
   const directValues: Partial<TParams> = {};
