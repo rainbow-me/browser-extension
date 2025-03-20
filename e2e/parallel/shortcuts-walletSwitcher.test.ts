@@ -149,17 +149,20 @@ describe.runIf(browser !== 'firefox')(
     });
 
     // bug currently on this flow. will un-skip once its fixed.
-    it.skip('open wallet context menu with navigation + SPACE (Broken)', async () => {
-      await executePerformShortcut({ driver, key: 'w' });
-      await executePerformShortcut({ driver, key: 'TAB', timesToPress: 3 });
-      await executePerformShortcut({ driver, key: 'SPACE' });
-      await findElementByText(driver, 'Rename Wallet');
-      await executePerformShortcut({ driver, key: 'ESCAPE' });
-      const renameWallet = await isElementFoundByText({
-        text: 'Rename Wallet',
-        driver,
-      });
-      expect(renameWallet).toBe(false);
-    });
+    it.todo(
+      'open wallet context menu with navigation + SPACE (Broken)',
+      async () => {
+        await executePerformShortcut({ driver, key: 'w' });
+        await executePerformShortcut({ driver, key: 'TAB', timesToPress: 3 });
+        await executePerformShortcut({ driver, key: 'SPACE' });
+        await findElementByText(driver, 'Rename Wallet');
+        await executePerformShortcut({ driver, key: 'ESCAPE' });
+        const renameWallet = await isElementFoundByText({
+          text: 'Rename Wallet',
+          driver,
+        });
+        expect(renameWallet).toBe(false);
+      },
+    );
   },
 );

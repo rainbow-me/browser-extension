@@ -11,8 +11,8 @@ import {
   ValidatePointsSignatureMutation,
 } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
-import { SUPPORTED_MAINNET_CHAINS } from '~/core/references/chains';
 import { useCurrentAddressStore } from '~/core/state';
+import { networkStore } from '~/core/state/networks/networks';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { formatNumber } from '~/core/utils/formatNumber';
 import { convertAmountToNativeDisplay } from '~/core/utils/numbers';
@@ -167,62 +167,6 @@ const OnboardingButton = ({
     </Box>
   );
 };
-
-const noBalanceRowsText = [
-  `> ${i18n.t('points.onboarding.balance_required')}`,
-  `${i18n.t('points.onboarding.ensure_you_have_a_balance_on')}`,
-  ...SUPPORTED_MAINNET_CHAINS.filter(
-    (c) => c.nativeCurrency.symbol === 'ETH',
-  ).map((c) => `- ${c.name}`),
-  `${i18n.t('points.onboarding.or_alternatively_balance_on')}`,
-];
-const noBalanceRows = [
-  <AnimatedText
-    textShadow="12px red"
-    key={noBalanceRowsText[0]}
-    align="left"
-    size="14pt mono"
-    weight="bold"
-    color="red"
-    delay={0}
-  >
-    {noBalanceRowsText[0]}
-  </AnimatedText>,
-  <AnimatedText
-    textShadow="12px labelTertiary"
-    key={noBalanceRowsText[1]}
-    align="left"
-    size="14pt mono"
-    weight="bold"
-    color="labelTertiary"
-  >
-    {noBalanceRowsText[1]}
-  </AnimatedText>,
-  <Stack space="12px" key="chains">
-    {...noBalanceRowsText.slice(2, -1).map((text) => (
-      <AnimatedText
-        textShadow="12px labelTertiary"
-        key={text}
-        align="left"
-        size="14pt mono"
-        weight="bold"
-        color="labelTertiary"
-      >
-        {text}
-      </AnimatedText>
-    ))}
-  </Stack>,
-  <AnimatedText
-    textShadow="12px labelTertiary"
-    key={noBalanceRowsText.at(-1)}
-    align="left"
-    size="14pt mono"
-    weight="bold"
-    color="labelTertiary"
-  >
-    {noBalanceRowsText.at(-1)}
-  </AnimatedText>,
-];
 
 const shareRowsText = [
   `> ${i18n.t('points.onboarding.referral_link_ready')}`,
@@ -413,6 +357,73 @@ export const PointsOnboardingSheet = () => {
         `> ${getErrorString(error)}`,
       ].filter(Boolean),
     [error],
+  );
+
+  const supportedMainnetChains = networkStore((state) =>
+    state.getBackendSupportedChains(),
+  );
+
+  const noBalanceRowsText = useMemo(
+    () => [
+      `> ${i18n.t('points.onboarding.balance_required')}`,
+      `${i18n.t('points.onboarding.ensure_you_have_a_balance_on')}`,
+      ...Object.values(supportedMainnetChains)
+        .filter((c) => c.nativeCurrency.symbol === 'ETH')
+        .map((c) => `- ${c.name}`),
+      `${i18n.t('points.onboarding.or_alternatively_balance_on')}`,
+    ],
+    [supportedMainnetChains],
+  );
+
+  const noBalanceRows = useMemo(
+    () => [
+      <AnimatedText
+        textShadow="12px red"
+        key={noBalanceRowsText[0]}
+        align="left"
+        size="14pt mono"
+        weight="bold"
+        color="red"
+        delay={0}
+      >
+        {noBalanceRowsText[0]}
+      </AnimatedText>,
+      <AnimatedText
+        textShadow="12px labelTertiary"
+        key={noBalanceRowsText[1]}
+        align="left"
+        size="14pt mono"
+        weight="bold"
+        color="labelTertiary"
+      >
+        {noBalanceRowsText[1]}
+      </AnimatedText>,
+      <Stack space="12px" key="chains">
+        {...noBalanceRowsText.slice(2, -1).map((text) => (
+          <AnimatedText
+            textShadow="12px labelTertiary"
+            key={text}
+            align="left"
+            size="14pt mono"
+            weight="bold"
+            color="labelTertiary"
+          >
+            {text}
+          </AnimatedText>
+        ))}
+      </Stack>,
+      <AnimatedText
+        textShadow="12px labelTertiary"
+        key={noBalanceRowsText.at(-1)}
+        align="left"
+        size="14pt mono"
+        weight="bold"
+        color="labelTertiary"
+      >
+        {noBalanceRowsText.at(-1)}
+      </AnimatedText>,
+    ],
+    [noBalanceRowsText],
   );
 
   const rainbowText = useMemo(() => {

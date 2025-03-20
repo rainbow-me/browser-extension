@@ -191,6 +191,10 @@ export const event = {
    * Called when token list metrics are sampled during list loading
    */
   samplesTokenList: 'samples.token_list',
+  /*
+   * Called when the user searches in swap, send or command K
+   */
+  searchQueried: 'search.queried',
   /**
    * Called when a user enters the send flow
    */
@@ -327,6 +331,10 @@ export type EventProperties = {
      * Whether a hardware wallet was used for the swap.
      */
     hardwareWallet: boolean;
+    /**
+     * The vendor of the hardware wallet
+     */
+    hardwareWalletVendor?: 'Ledger' | 'Trezor' | undefined;
   };
   [event.commandKActionExecuted]: {
     id?: string;
@@ -516,6 +524,14 @@ export type EventProperties = {
      * This will help us spot malformed dApp names to add to our overrides.
      */
     dappName?: string;
+    /**
+     * Is the user using a hardware wallet
+     */
+    hardwareWallet?: boolean;
+    /**
+     * The vendor of the hardware wallet
+     */
+    hardwareWalletVendor?: 'Ledger' | 'Trezor' | undefined;
   };
   [event.dappPromptSendTransactionCustomGasClicked]: undefined;
   [event.dappPromptSendTransactionCustomGasSet]: {
@@ -543,6 +559,14 @@ export type EventProperties = {
      * Warning message for Max base fee input.
      */
     maxBaseFeeWarning?: 'stuck' | 'fail';
+    /**
+     * Is the user using a hardware wallet
+     */
+    hardwareWallet?: boolean;
+    /**
+     * The vendor of the hardware wallet
+     */
+    hardwareWalletVendor?: 'Ledger' | 'Trezor' | undefined;
   };
   [event.dappPromptSendTransactionRejected]: {
     /**
@@ -562,6 +586,14 @@ export type EventProperties = {
      * This will help us spot malformed dApp names to add to our overrides.
      */
     dappName?: string;
+    /**
+     * Is the user using a hardware wallet
+     */
+    hardwareWallet?: boolean;
+    /**
+     * The vendor of the hardware wallet
+     */
+    hardwareWalletVendor?: 'Ledger' | 'Trezor' | undefined;
   };
   [event.dappPromptSendTransactionSpeedClicked]: undefined;
   [event.dappPromptSendTransactionSpeedSwitched]: {
@@ -569,6 +601,14 @@ export type EventProperties = {
      * Select speed setting.
      */
     speed: 'normal' | 'fast' | 'urgent' | 'custom';
+    /**
+     * Is the user using a hardware wallet
+     */
+    hardwareWallet?: boolean;
+    /**
+     * The vendor of the hardware wallet
+     */
+    hardwareWalletVendor?: 'Ledger' | 'Trezor' | undefined;
   };
   [event.dappPromptSignMessageApproved]: {
     /**
@@ -587,6 +627,14 @@ export type EventProperties = {
      * Short name of the dApp displayed to the user.
      */
     dappName?: string;
+    /**
+     * Is the user using a hardware wallet
+     */
+    hardwareWallet?: boolean;
+    /**
+     * The vendor of the hardware wallet
+     */
+    hardwareWalletVendor?: 'Ledger' | 'Trezor' | undefined;
   };
   [event.dappPromptSignMessageRejected]: {
     /**
@@ -605,6 +653,14 @@ export type EventProperties = {
      * Short name of the dApp displayed to the user.
      */
     dappName?: string;
+    /**
+     * Is the user using a hardware wallet
+     */
+    hardwareWallet?: boolean;
+    /**
+     * The vendor of the hardware wallet
+     */
+    hardwareWalletVendor?: 'Ledger' | 'Trezor' | undefined;
   };
   [event.dappPromptSignTypedDataApproved]: {
     /**
@@ -623,6 +679,14 @@ export type EventProperties = {
      * Short name of the dApp displayed to the user.
      */
     dappName?: string;
+    /**
+     * Is the user using a hardware wallet
+     */
+    hardwareWallet?: boolean;
+    /**
+     * The vendor of the hardware wallet
+     */
+    hardwareWalletVendor?: 'Ledger' | 'Trezor' | undefined;
   };
   [event.dappPromptSignTypedDataRejected]: {
     /**
@@ -641,6 +705,14 @@ export type EventProperties = {
      * Short name of the dApp displayed to the user.
      */
     dappName?: string;
+    /**
+     * Is the user using a hardware wallet
+     */
+    hardwareWallet?: boolean;
+    /**
+     * The vendor of the hardware wallet
+     */
+    hardwareWalletVendor?: 'Ledger' | 'Trezor' | undefined;
   };
   [event.dappProviderNetworkSwitched]: {
     /**
@@ -762,6 +834,21 @@ export type EventProperties = {
   [event.pointsRewardsViewed]: undefined;
   [event.pointsViewed]: undefined;
   [event.popupOpened]: undefined;
+  [event.searchQueried]: {
+    /**
+     * Where the search was initiated from
+     */
+    location: 'swap' | 'send' | 'commandk';
+    /**
+     * The query string that was searched.
+     */
+    query: string;
+    /**
+     * The length of the query string.
+     */
+    queryLength: number;
+  };
+  [event.settingsAnalyticsTrackingDisabled]: undefined;
   [event.revokeSubmitted]: {
     /**
      * Symbol of the asset being sent.
@@ -829,6 +916,14 @@ export type EventProperties = {
      * `chainId` of the send transaction.
      */
     chainId: number;
+    /**
+     * Is the user using a hardware wallet
+     */
+    hardwareWallet?: boolean;
+    /**
+     * The vendor of the hardware wallet
+     */
+    hardwareWalletVendor?: 'Ledger' | 'Trezor' | undefined;
   };
   [event.sendOpened]: {
     /**
@@ -921,9 +1016,13 @@ export type EventProperties = {
      */
     degenMode: boolean;
     /**
-     * Whether a hardware wallet was used for the swap.
+     * Is the user using a hardware wallet
      */
-    hardwareWallet: boolean;
+    hardwareWallet?: boolean;
+    /**
+     * The vendor of the hardware wallet
+     */
+    hardwareWalletVendor?: 'Ledger' | 'Trezor' | undefined;
   };
   [event.swapQuoteFailed]: {
     /**

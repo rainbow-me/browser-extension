@@ -8,12 +8,13 @@ import { event } from '~/analytics/event';
 import { getWalletContext } from '~/analytics/util';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
-import { chainsNativeAsset } from '~/core/references/chains';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useGasStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import { networkStore } from '~/core/state/networks/networks';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
+import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { chainIdToUse } from '~/core/utils/chains';
@@ -59,6 +60,9 @@ export function SendTransaction({
   });
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
   const selectedGas = useGasStore.use.selectedGas();
+  const chainsNativeAsset = networkStore((state) =>
+    state.getChainsNativeAsset(),
+  );
   const selectedWallet = activeSession?.address || '';
   const { connectedToHardhat, connectedToHardhatOp } =
     useConnectedToHardhatStore();
@@ -72,7 +76,7 @@ export function SendTransaction({
     setLoading(true);
     try {
       const txRequest = request?.params?.[0] as TransactionRequest;
-      const { type } = await wallet.getWallet(selectedWallet);
+      const { type, vendor } = await wallet.getWallet(selectedWallet);
 
       // Change the label while we wait for confirmation
       if (type === 'HardwareWalletKeychain') {
@@ -121,6 +125,8 @@ export function SendTransaction({
             dappURL: dappMetadata?.url || '',
             dappDomain: dappMetadata?.appHost || '',
             dappName: dappMetadata?.appName,
+            hardwareWallet: !!vendor,
+            hardwareWalletVendor: vendor,
           },
           await getWalletContext(activeSession?.address),
         );
@@ -160,6 +166,7 @@ export function SendTransaction({
   const onRejectRequest = useCallback(async () => {
     rejectRequest();
     if (activeSession) {
+      const { vendor } = await wallet.getWallet(activeSession.address);
       analytics.track(
         event.dappPromptSendTransactionRejected,
         {
@@ -167,6 +174,8 @@ export function SendTransaction({
           dappURL: dappMetadata?.url || '',
           dappDomain: dappMetadata?.appHost || '',
           dappName: dappMetadata?.appName,
+          hardwareWallet: !!vendor,
+          hardwareWalletVendor: vendor,
         },
         await getWalletContext(activeSession?.address),
       );
@@ -208,7 +217,7 @@ export function SendTransaction({
         activeSession?.chainId,
       );
       selectAssetAddressAndChain(
-        chainsNativeAsset[activeChainId] as Address,
+        chainsNativeAsset[activeChainId]?.address as AddressOrEth,
         activeChainId,
       );
     }
@@ -217,6 +226,7 @@ export function SendTransaction({
     connectedToHardhat,
     selectAssetAddressAndChain,
     connectedToHardhatOp,
+    chainsNativeAsset,
   ]);
 
   return (

@@ -10,7 +10,7 @@ import { isString } from 'lodash';
 import { Address } from 'viem';
 
 import RainbowIcon from 'static/images/icon-16@2x.png';
-import { chainsPrivateMempoolTimeout } from '~/core/references/chains';
+import { networkStore } from '~/core/state/networks/networks';
 
 import { i18n } from '../languages';
 import {
@@ -452,7 +452,9 @@ export async function getNextNonce({
   const localNonceData = getNonce({ address, chainId });
   const localNonce = localNonceData?.currentNonce || -1;
   const provider = getBatchedProvider({ chainId });
-  const privateMempoolTimeout = chainsPrivateMempoolTimeout[chainId];
+  const privateMempoolTimeout = networkStore
+    .getState()
+    .getChainsPrivateMempoolTimeout()[chainId];
 
   const pendingTxCountRequest = provider.getTransactionCount(
     address,

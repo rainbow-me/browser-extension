@@ -15,6 +15,7 @@ import { initializeMessenger } from '~/core/messengers';
 import { persistOptions, queryClient } from '~/core/react-query';
 import { initializeSentry } from '~/core/sentry';
 import { useCurrentLanguageStore, useCurrentThemeStore } from '~/core/state';
+import { networkStore } from '~/core/state/networks/networks';
 import { TelemetryIdentifier } from '~/core/telemetry';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { WagmiConfigUpdater, wagmiConfig } from '~/core/wagmi';
@@ -28,32 +29,31 @@ import { AuthProvider } from './hooks/useAuth';
 import { useExpiryListener } from './hooks/useExpiryListener';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
 import usePrevious from './hooks/usePrevious';
-import { useRainbowChains } from './hooks/useRainbowChains';
 
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
 export function App() {
   const { currentLanguage, setCurrentLanguage } = useCurrentLanguageStore();
-  const { rainbowChains } = useRainbowChains();
-  const prevChains = usePrevious(rainbowChains);
+  const activeChains = networkStore((state) => state.getAllActiveRpcChains());
+  const prevChains = usePrevious(activeChains);
 
   useExpiryListener();
 
   React.useEffect(() => {
-    if (!isEqual(prevChains, rainbowChains)) {
+    if (!isEqual(prevChains, activeChains)) {
       backgroundMessenger.send('rainbow_updateWagmiClient', {
         rpcProxyEnabled: config.rpc_proxy_enabled,
       });
     }
-  }, [prevChains, rainbowChains]);
+  }, [prevChains, activeChains]);
 
   React.useEffect(() => {
-    if (!isEqual(prevChains, rainbowChains)) {
+    if (!isEqual(prevChains, activeChains)) {
       backgroundMessenger.send('rainbow_updateWagmiClient', {
         rpcProxyEnabled: config.rpc_proxy_enabled,
       });
     }
-  }, [prevChains, rainbowChains]);
+  }, [prevChains, activeChains]);
 
   React.useEffect(() => {
     // Disable analytics & sentry for e2e and dev mode
