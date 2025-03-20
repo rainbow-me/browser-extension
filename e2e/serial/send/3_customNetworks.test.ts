@@ -167,13 +167,15 @@ it('should be able to add a custom ETH RPC and switch to it', async () => {
 
   await findElementByTestIdAndClick({ id: 'rpc-row-item-1', driver });
 
+  await delayTime('long');
+
   const activeRPC = await findElementByTestId({ id: 'rpc-row-item-1', driver });
 
   expect(await activeRPC.getText()).toContain('Active');
 });
 
 it('should be able to add a custom token', async () => {
-  await delayTime('long');
+  await delayTime('very-long');
   await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
   await delayTime('very-long');
   await findElementByTestIdAndClick({ driver, id: 'network-row-25' });

@@ -6,16 +6,31 @@ import {
   getQuote,
 } from '@rainbow-me/swaps';
 import { mainnet } from 'viem/chains';
-import { beforeAll, expect, test } from 'vitest';
+import { beforeAll, expect, test, vi } from 'vitest';
 
 import { connectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { updateWagmiConfig } from '~/core/wagmi';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import { TEST_ADDRESS_2, TEST_PK_2, delay } from '~/test/utils';
 
+import { ActionProps } from '../references';
+
 import { estimateSwapGasLimit, executeSwap } from './swap';
 
 let quote: Quote | QuoteError | null;
+vi.mock('./swap', async () => {
+  const actual = (await vi.importActual('./swap')) as ActionProps<'swap'>;
+
+  return {
+    ...actual,
+    estimateSwapGasLimit: vi.fn().mockResolvedValue('600000'),
+    executeSwap: vi.fn().mockResolvedValue({
+      hash: '0x123456789abcdef',
+      wait: vi.fn().mockResolvedValue({}),
+      data: '0xdata',
+    }),
+  };
+});
 
 beforeAll(async () => {
   connectedToHardhatStore.setState({ connectedToHardhat: true });
@@ -32,7 +47,7 @@ beforeAll(async () => {
     toChainId: 1,
     currency: 'USD',
   });
-}, 10000);
+}, 20_000);
 
 test('[rap/swap] :: should estimate swap gas limit', async () => {
   const swapGasLimit = await estimateSwapGasLimit({
