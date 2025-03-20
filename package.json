@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.5.90",
+  "version": "1.5.91",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -274,7 +274,7 @@
     "crypto-js": "4.2.0",
     "yaml": "2.2.2",
     "browserify-sign": "4.2.2",
-    "axios": "1.7.4",
+    "axios": "1.8.2",
     "follow-redirects": "1.15.6",
     "ip": "2.0.1",
     "@solana/web3.js": "1.90.2",
@@ -290,7 +290,10 @@
     "rollup": "4.22.4",
     "cross-spawn": "6.0.6",
     "nanoid": "3.3.8",
-    "elliptic": "6.6.1"
+    "elliptic": "6.6.1",
+    "@babel/helpers": "7.26.10",
+    "@babel/runtime": "7.26.10",
+    "@babel/runtime-corejs3": "7.26.10"
   },
   "lavamoat": {
     "allowScripts": {
