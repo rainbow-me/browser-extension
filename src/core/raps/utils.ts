@@ -6,9 +6,9 @@ import {
   CrosschainQuote,
   Quote,
   getQuoteExecutionDetails,
-  getRainbowRouterContractAddress,
+  getTargetAddress,
 } from '@rainbow-me/swaps';
-import { erc20Abi } from 'viem';
+import { Address, erc20Abi } from 'viem';
 import { mainnet } from 'viem/chains';
 
 import { networkStore } from '~/core/state/networks/networks';
@@ -96,22 +96,27 @@ const getStateDiff = async (
 ): Promise<unknown> => {
   const tokenAddress = quote.sellTokenAddress;
   const fromAddr = quote.from;
-  const { chainId } = await provider.getNetwork();
-  const toAddr =
-    quote.swapType === 'normal'
-      ? getRainbowRouterContractAddress(chainId)
-      : (quote as CrosschainQuote).allowanceTarget;
+  const toAddr = getTargetAddressForQuote(quote);
   const tokenContract = new Contract(tokenAddress, erc20Abi, provider);
 
   const { number: blockNumber } = await (
     provider.getBlock as () => Promise<Block>
   )();
 
-  // Get data
-  const { data } = await tokenContract.populateTransaction.approve(
-    toAddr,
-    MaxUint256.toHexString(),
-  );
+  let data: string;
+
+  if (quote.fallback && quote.data) {
+    data = quote.data;
+  } else {
+    const result = await tokenContract.populateTransaction.approve(
+      toAddr,
+      MaxUint256.toHexString(),
+    );
+    if (!result.data) {
+      return;
+    }
+    data = result.data;
+  }
 
   // trace_call default params
   const callParams = [
@@ -243,7 +248,7 @@ export const estimateSwapGasLimitWithFakeApproval = async (
           gasPrice: toHexNoLeadingZeros(`100000000000`),
           to:
             quote.swapType === 'normal'
-              ? getRainbowRouterContractAddress
+              ? getTargetAddressForQuote(quote)
               : (quote as CrosschainQuote).allowanceTarget,
           value: '0x0', // 100 gwei
         },
@@ -291,4 +296,12 @@ export const populateSwap = async ({
   } catch (e) {
     return null;
   }
+};
+
+export const getTargetAddressForQuote = (quote: Quote | CrosschainQuote) => {
+  const targetAddress = getTargetAddress(quote);
+  if (!targetAddress) {
+    throw new Error('Target address not found for quote');
+  }
+  return targetAddress as Address;
 };
