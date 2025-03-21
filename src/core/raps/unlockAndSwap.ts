@@ -1,4 +1,4 @@
-import { getRainbowRouterContractAddress } from '@rainbow-me/swaps';
+import { isAllowedTargetContract } from '@rainbow-me/swaps';
 import { Address } from 'viem';
 
 import { add } from '../utils/numbers';
@@ -15,6 +15,7 @@ import {
   RapSwapActionParameters,
   RapUnlockActionParameters,
 } from './references';
+import { getTargetAddressForQuote } from './utils';
 
 export const estimateUnlockAndSwap = async (
   swapParameters: RapSwapActionParameters<'swap'>,
@@ -40,7 +41,7 @@ export const estimateUnlockAndSwap = async (
       owner: accountAddress,
       amount: sellAmount,
       assetToUnlock: assetToSell,
-      spender: getRainbowRouterContractAddress(chainId),
+      spender: getTargetAddressForQuote(quote),
       chainId,
     });
   }
@@ -61,10 +62,15 @@ export const estimateUnlockAndSwap = async (
   let unlockGasLimit;
 
   if (swapAssetNeedsUnlocking) {
+    const targetAddress = getTargetAddressForQuote(quote);
+    const isAllowedTarget = isAllowedTargetContract(targetAddress, chainId);
+    if (!isAllowedTarget) {
+      throw new Error('Target contract is not allowed');
+    }
     unlockGasLimit = await estimateApprove({
       owner: accountAddress,
       tokenAddress: sellTokenAddress,
-      spender: getRainbowRouterContractAddress(chainId),
+      spender: getTargetAddressForQuote(quote),
       chainId,
     });
     gasLimits = gasLimits.concat(unlockGasLimit);
@@ -105,7 +111,7 @@ export const createUnlockAndSwapRap = async (
       owner: accountAddress,
       amount: sellAmount as string,
       assetToUnlock: assetToSell,
-      spender: getRainbowRouterContractAddress(chainId),
+      spender: getTargetAddressForQuote(quote),
       chainId,
     });
   }
@@ -116,7 +122,7 @@ export const createUnlockAndSwapRap = async (
       amount: sellAmount,
       assetToUnlock: assetToSell,
       chainId,
-      contractAddress: getRainbowRouterContractAddress(chainId),
+      contractAddress: getTargetAddressForQuote(quote),
     } as RapUnlockActionParameters);
     actions = actions.concat(unlock);
   }
