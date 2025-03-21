@@ -6,7 +6,7 @@ import { type WalletContext } from '~/analytics/util';
 import { analyticsDisabledStore } from '~/core/state/currentSettings/analyticsDisabled';
 import { logger } from '~/logger';
 
-import { version } from '../../package.json';
+import pkg from '../../package.json';
 
 const IS_DEV = process.env.IS_DEV === 'true';
 const IS_TESTING = process.env.IS_TESTING === 'true';
@@ -17,7 +17,7 @@ const IS_TESTING = process.env.IS_TESTING === 'true';
  */
 const context = {
   direct: true /* collect ip address for geoip */,
-  app: { version },
+  app: { version: pkg.version },
   timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
   locale: window?.navigator?.language,
   screen: {

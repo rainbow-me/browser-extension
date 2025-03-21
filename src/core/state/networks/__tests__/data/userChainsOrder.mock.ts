@@ -9,3 +9,7 @@ export const MIKE_DATA: UserChainsState['userChainsOrder'] = [
   763373, 11155111, 2020, 42161, 8333, 80094, 80085, 80084, 80084, 1996, 1992,
   13505,
 ];
+export const DANIEL_DATA: UserChainsState['userChainsOrder'] = [
+  1, 8453, 10, 137, 666666666, 42161, 56, 33139, 43114, 81457, 7777777, 1996,
+  80094, 534352, 33111, 57073, 763373, 1625, 80084, 314, 1, 999,
+];

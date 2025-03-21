@@ -179,7 +179,7 @@ const getSlippageExplainerProps = (t: I18n['t']) => ({
 });
 
 function DegenModeCard() {
-  const { isDegenModeEnabled } = useDegenMode();
+  const isDegenModeEnabled = useDegenMode((state) => state.isDegenModeEnabled);
 
   const { featureFlags } = useFeatureFlagsStore();
 

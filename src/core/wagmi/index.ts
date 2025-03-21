@@ -6,7 +6,7 @@ import { networkStore } from '~/core/state/networks/networks';
 
 import { handleRpcUrl } from './clientRpc';
 
-const createChains = (chains: Chain[]): [Chain, ...Chain[]] => {
+export const createChains = (chains: Chain[]): [Chain, ...Chain[]] => {
   return chains.map((chain) => {
     const rpcUrl = handleRpcUrl(chain);
     return {
@@ -19,7 +19,9 @@ const createChains = (chains: Chain[]): [Chain, ...Chain[]] => {
   }) as [Chain, ...Chain[]];
 };
 
-const createTransports = (chains: Chain[]): Record<number, Transport> => {
+export const createTransports = (
+  chains: Chain[],
+): Record<number, Transport> => {
   return chains.reduce((acc: Record<number, HttpTransport>, chain) => {
     acc[chain.id] = http(handleRpcUrl(chain));
     return acc;

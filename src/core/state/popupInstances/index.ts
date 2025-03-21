@@ -180,7 +180,7 @@ function popupInstanceHandlerFactory<
   ): Promise<void | ReturnType<THandler>> => {
     const isPopup = await isNativePopup();
     if (isPopup) {
-      return handler(...(<[]>args));
+      return handler(...(<unknown[]>args));
     }
   };
 }
