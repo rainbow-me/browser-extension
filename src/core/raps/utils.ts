@@ -96,7 +96,10 @@ const getStateDiff = async (
 ): Promise<unknown> => {
   const tokenAddress = quote.sellTokenAddress;
   const fromAddr = quote.from;
-  const toAddr = getTargetAddressForQuote(quote);
+  const toAddr =
+    quote.swapType === 'normal'
+      ? getTargetAddressForQuote(quote)
+      : (quote as CrosschainQuote).allowanceTarget;
   const tokenContract = new Contract(tokenAddress, erc20Abi, provider);
 
   const { number: blockNumber } = await (
