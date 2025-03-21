@@ -148,11 +148,11 @@ it('should be able to add a custom ETH RPC and switch to it', async () => {
 
   await findElementByTestIdAndClick({ driver, id: 'custom-rpc-button' });
 
-  // name
+  // fill out custom network form
   await findElementByTestIdAndClick({ driver, id: 'network-name-field' });
   await typeOnTextInput({ text: 'Mainnet (alt RPC)', driver });
 
-  // sometimes certain RPCs can fail to validate, so this is a fallback
+  // sometimes certain RPCs can fail to validate, adding a fallback
   try {
     // RPC URL
     await findElementByTestIdAndClick({ driver, id: 'custom-network-rpc-url' });
@@ -163,7 +163,6 @@ it('should be able to add a custom ETH RPC and switch to it', async () => {
 
     // needs a couple seconds to validate the custom RPC
     await delayTime('very-long');
-
     await findElementByTestIdAndClick({
       driver,
       id: 'add-custom-network-button',
@@ -198,8 +197,6 @@ it('should be able to add a custom ETH RPC and switch to it', async () => {
       driver,
       id: 'add-custom-network-button',
     });
-
-    // this will fail if the RPC URL is not valid
     await findElementByTestIdAndClick({ id: 'rpc-row-item-1', driver });
   }
 
