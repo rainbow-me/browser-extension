@@ -1,4 +1,4 @@
-import { rest } from 'msw';
+import { HttpResponse, http } from 'msw';
 import { setupServer } from 'msw/node';
 import { afterAll, afterEach, beforeAll, vi } from 'vitest';
 
@@ -15,9 +15,7 @@ vi.stubGlobal('chrome', {
       remove: vi.fn(),
     },
   },
-  runtime: {
-    getURL: (url: string) => `https://local.io/${url}`,
-  },
+  runtime: {},
 });
 
 vi.stubGlobal('window.location', {
@@ -26,6 +24,7 @@ vi.stubGlobal('window.location', {
 
 const abortFn = vi.fn();
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 global.AbortController = vi.fn(() => ({
   abort: abortFn,
@@ -150,10 +149,22 @@ const apiResponses: ApiResponses = {
     },
   },
 };
-export const restHandlers = [
-  rest.all('https://aha.rainbow.me/', (req, res, ctx) => {
-    const address = req.url.searchParams.get('address') || '';
-    return res(ctx.status(200), ctx.json(apiResponses?.[address]));
+const restHandlers = [
+  http.all('https://aha.rainbow.me/', ({ request }) => {
+    const url = new URL(request.url);
+    const address = url.searchParams.get('address') || '';
+    return HttpResponse.json(apiResponses?.[address], { status: 200 });
+  }),
+  http.options('https://swap.p.rainbow.me/*', ({ request }) => {
+    console.warn(`CORS request detected to: ${request.url}`);
+    return new Response(null, {
+      status: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE',
+        'Access-Control-Allow-Headers': '*',
+      },
+    });
   }),
 ];
 
