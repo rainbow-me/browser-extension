@@ -1,6 +1,7 @@
 import { LocalStorage } from '~/core/storage';
 
 import * as stores from '../index';
+import { networksStoreMigrationStore } from '../index';
 
 import { StoreWithPersist } from './createStore';
 
@@ -9,6 +10,19 @@ async function syncStore({ store }: { store: StoreWithPersist<unknown> }) {
 
   const persistOptions = store.persist.getOptions();
   const storageName = persistOptions.name || '';
+
+  // DO NOT REMOVE THIS
+  // This is to prevent the networks store from being synced before the migration is complete
+  if (storageName === 'networks') {
+    const { didCompleteNetworksMigration } =
+      networksStoreMigrationStore.getState();
+    if (!didCompleteNetworksMigration) {
+      console.log(
+        '[syncStores] skipping networkStore sync until migration completes',
+      );
+      return;
+    }
+  }
 
   const listener = async (changedStore: StoreWithPersist<unknown>) => {
     if (changedStore === undefined) {
