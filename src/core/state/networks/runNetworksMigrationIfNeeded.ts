@@ -62,7 +62,9 @@ export const runNetworksMigrationIfNeeded = (
     // We'll import the networkStore dynamically to avoid circular dependencies
     // This is a bit of a hack, but it's necessary to break the circular dependency
     import('./networks').then(({ networkStore }) => {
+      console.log('setting initialState', initialState);
       networkStore.setState(initialState);
+      console.log('setting didCompleteNetworksMigration to true');
       networksStoreMigrationStore.setState({
         didCompleteNetworksMigration: true,
       });

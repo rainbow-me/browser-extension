@@ -4,6 +4,7 @@ import { initFCM } from '~/core/firebase/fcm';
 import { initializeMessenger } from '~/core/messengers';
 import { initializeSentry } from '~/core/sentry';
 import { syncStores } from '~/core/state/internal/syncStores';
+import { networksStoreMigrationStore } from '~/core/state/networks/migration';
 import { networkStore } from '~/core/state/networks/networks';
 import { localStorageRecycler } from '~/core/storage/localStorageRecycler';
 import { updateWagmiConfig } from '~/core/wagmi';
@@ -16,6 +17,7 @@ import { handleProviderRequest } from './handlers/handleProviderRequest';
 import { handleSetupInpage } from './handlers/handleSetupInpage';
 import { handleTabAndWindowUpdates } from './handlers/handleTabAndWindowUpdates';
 import { handleWallets } from './handlers/handleWallets';
+
 require('../../core/utils/lockdown');
 
 initializeSentry('background');
@@ -31,7 +33,18 @@ handlePrefetchDappMetadata();
 handleSetupInpage();
 handleWallets();
 handleDisconnect();
-syncStores();
+
+const initialNetworksMigrationState = networksStoreMigrationStore.getState();
+if (initialNetworksMigrationState.didCompleteNetworksMigration) {
+  syncStores();
+} else {
+  networksStoreMigrationStore.subscribe((state) => {
+    if (state.didCompleteNetworksMigration) {
+      syncStores();
+    }
+  });
+}
+
 uuid4();
 initFCM();
 handleKeepAlive();

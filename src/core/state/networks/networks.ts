@@ -25,7 +25,6 @@ import {
   DEFAULT_PRIVATE_MEMPOOL_TIMEOUT,
   buildTimeNetworks,
 } from './constants';
-import { networksStoreMigrationStore } from './migration';
 import { NetworkState } from './types';
 
 interface NetworkActions {
@@ -275,11 +274,7 @@ export const networkStore = createQueryStore<
   {
     fetcher: fetchNetworks,
     debugMode: process.env.DEBUG_NETWORKS_STORE === 'true',
-    enabled: ($) =>
-      $(
-        networksStoreMigrationStore,
-        (state) => state.didCompleteNetworksMigration,
-      ),
+    enabled: false,
     setData: ({ data, set }) => {
       set((state) => {
         const newNetworks = differenceOrUnionOf({
@@ -289,7 +284,6 @@ export const networkStore = createQueryStore<
 
         if (newNetworks.size === 0) {
           return {
-            ...state,
             networks: data,
           };
         }
@@ -297,7 +291,6 @@ export const networkStore = createQueryStore<
         void syncDefaultFavoritesForNewlySupportedNetworks(newNetworks);
 
         return {
-          ...state,
           networks: data,
           ...modifyUserPreferencesForNewlySupportedNetworks(state, newNetworks),
         };
@@ -849,6 +842,13 @@ export const networkStore = createQueryStore<
       chainOrder: state.chainOrder,
       enabledChainIds: state.enabledChainIds,
     }),
+    onRehydrateStorage(state) {
+      console.log('onRehydrateStorage initialized networks', state);
+      return (state, error) => {
+        console.log('onRehydrateStorage finished networks state', state);
+        console.log('onRehydrateStorage finished networks error', error);
+      };
+    },
     storageKey: 'networks',
     version: 1,
   },
