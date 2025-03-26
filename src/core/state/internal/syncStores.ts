@@ -1,6 +1,10 @@
+import { isEqual } from 'lodash';
+
 import { LocalStorage } from '~/core/storage';
 
 import * as stores from '../index';
+import { networksStoreMigrationStore } from '../networks/migration';
+import { networkStore } from '../networks/networks';
 
 import { StoreWithPersist } from './createStore';
 
@@ -9,6 +13,8 @@ async function syncStore({ store }: { store: StoreWithPersist<unknown> }) {
 
   const persistOptions = store.persist.getOptions();
   const storageName = persistOptions.name || '';
+
+  console.log('[syncStores] syncStore called', { storageName });
 
   const listener = async (changedStore: StoreWithPersist<unknown>) => {
     if (changedStore === undefined) {
@@ -34,4 +40,28 @@ export function syncStores() {
     if (typeof store === 'function') return;
     if (store.persist) syncStore({ store: store as StoreWithPersist<unknown> });
   });
+}
+
+export function syncNetworksStore() {
+  const subscriber = () =>
+    networkStore.subscribe((state, prevState) => {
+      if (isEqual(state, prevState)) return;
+      console.log(
+        `[syncNetworksStore] subscriber called for ${networkStore.name}`,
+        { state, prevState },
+      );
+      LocalStorage.set(networkStore.name, JSON.stringify(state));
+    });
+
+  const initialMigrationState =
+    networksStoreMigrationStore.getState().didCompleteNetworksMigration;
+  if (initialMigrationState) {
+    return subscriber();
+  } else {
+    networksStoreMigrationStore.subscribe((state) => {
+      if (state.didCompleteNetworksMigration) {
+        return subscriber();
+      }
+    });
+  }
 }

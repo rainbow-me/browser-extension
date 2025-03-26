@@ -1,6 +1,7 @@
 import { useRainbowChainsStore } from '~/core/state/rainbowChains';
 import { useUserChainsStore } from '~/core/state/userChains';
-import { logger } from '~/logger';
+import { isNativePopup } from '~/core/utils/tabs';
+import { RainbowError, logger } from '~/logger';
 
 import { buildTimeNetworks } from './constants';
 import {
@@ -13,14 +14,9 @@ import {
 import { NetworkState } from './types';
 import { buildInitialUserPreferences } from './utils';
 
-// Re-export for backward compatibility
-export { networksStoreMigrationStore };
-
-// This function needs to be defined here to avoid circular dependencies
-export const runNetworksMigrationIfNeeded = (
+export const runNetworksMigrationIfNeeded = async (
   storeKey: 'networksMigration' | 'rainbowChains' | 'userChains',
 ) => {
-  // Update the appropriate flag based on which store is ready
   if (storeKey === 'rainbowChains') {
     setRainbowChainsReady(true);
   }
@@ -31,43 +27,53 @@ export const runNetworksMigrationIfNeeded = (
     setMigrationManagerReady(true);
   }
 
-  // Only proceed if all required stores are ready
   if (areAllStoresReady()) {
-    const { didCompleteNetworksMigration } =
-      networksStoreMigrationStore.getState();
-    if (didCompleteNetworksMigration) {
-      logger.debug('[networks] networks store migration already completed', {
-        storeKey,
-      });
+    if (networksStoreMigrationStore.getState().didCompleteNetworksMigration) {
+      console.log('[networks] Migration already completed');
       return;
     }
 
-    logger.debug('[networks] initializing networks store');
+    const isPopup = (await isNativePopup()) as boolean;
+
+    console.log('[networks] Context detection:', {
+      isPopup,
+      location: window.location.href,
+    });
+
+    // If we're not in background, just update our state to match storage but don't migrate
+    if (isPopup) {
+      console.log('[networks] In popup context, exi for background migration');
+      return;
+    }
+
+    console.log('[networks] initializing networks store');
 
     // Get the current state from the stores
     const { rainbowChains } = useRainbowChainsStore.getState();
     const { userChains, userChainsOrder } = useUserChainsStore.getState();
 
-    // Initialize the network store with the current state
-    const initialState: NetworkState = {
-      networks: buildTimeNetworks,
-      ...buildInitialUserPreferences(
-        buildTimeNetworks,
-        rainbowChains,
-        userChains,
-        userChainsOrder,
-      ),
-    };
+    try {
+      const { networkStore } = await import('./networks');
 
-    // We'll import the networkStore dynamically to avoid circular dependencies
-    // This is a bit of a hack, but it's necessary to break the circular dependency
-    import('./networks').then(({ networkStore }) => {
-      console.log('setting initialState', initialState);
+      // Initialize the network store with the current state
+      const initialState: NetworkState = {
+        networks: buildTimeNetworks,
+        ...buildInitialUserPreferences(
+          buildTimeNetworks,
+          rainbowChains,
+          userChains,
+          userChainsOrder,
+        ),
+      };
+
       networkStore.setState(initialState);
-      console.log('setting didCompleteNetworksMigration to true');
       networksStoreMigrationStore.setState({
         didCompleteNetworksMigration: true,
       });
-    });
+    } catch (error) {
+      logger.error(new RainbowError('Failed to migrate networks store'), {
+        error,
+      });
+    }
   }
 };

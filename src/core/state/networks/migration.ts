@@ -6,7 +6,6 @@ import { NetworksStoreMigrationState } from './types';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
-// Migration store
 export const networksStoreMigrationStore =
   createStore<NetworksStoreMigrationState>(
     () => ({
@@ -17,7 +16,7 @@ export const networksStoreMigrationStore =
         name: 'networksStoreMigration',
         version: 0,
         onRehydrateStorage: () => {
-          return (_, error) => {
+          return async (_, error) => {
             if (!error && !IS_TESTING) {
               // Import the runNetworksMigrationIfNeeded function dynamically to avoid circular dependencies
               import('./runNetworksMigrationIfNeeded')
@@ -45,7 +44,6 @@ let isMigrationManagerReady = false;
 // Getter functions
 export const getIsRainbowChainsReady = () => isRainbowChainsReady;
 export const getIsUserChainsReady = () => isUserChainsReady;
-export const getIsMigrationManagerReady = () => isMigrationManagerReady;
 
 // Setter functions
 export const setRainbowChainsReady = (value: boolean) => {
@@ -63,11 +61,4 @@ export const setMigrationManagerReady = (value: boolean) => {
 // Check if all required stores are ready
 export const areAllStoresReady = () => {
   return isRainbowChainsReady && isUserChainsReady && isMigrationManagerReady;
-};
-
-// Reset migration state (useful for testing)
-export const resetMigrationState = () => {
-  isRainbowChainsReady = false;
-  isUserChainsReady = false;
-  isMigrationManagerReady = false;
 };
