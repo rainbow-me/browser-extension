@@ -14,8 +14,6 @@ async function syncStore({ store }: { store: StoreWithPersist<unknown> }) {
   const persistOptions = store.persist.getOptions();
   const storageName = persistOptions.name || '';
 
-  console.log('[syncStores] syncStore called', { storageName });
-
   const listener = async (changedStore: StoreWithPersist<unknown>) => {
     if (changedStore === undefined) {
       // Retrieve the default state from the store initializer.
@@ -46,11 +44,7 @@ export function syncNetworksStore() {
   const subscriber = () =>
     networkStore.subscribe((state, prevState) => {
       if (isEqual(state, prevState)) return;
-      console.log(
-        `[syncNetworksStore] subscriber called for ${networkStore.name}`,
-        { state, prevState },
-      );
-      LocalStorage.set(networkStore.name, JSON.stringify(state));
+      LocalStorage.set('networks.networks', JSON.stringify(state));
     });
 
   const initialMigrationState =

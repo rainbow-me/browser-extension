@@ -1,8 +1,7 @@
-import { logger } from '~/logger';
-
 import { createStore } from '../internal/createStore';
 
 import { NetworksStoreMigrationState } from './types';
+import { runNetworksMigrationIfNeeded } from './runNetworksMigrationIfNeeded';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
@@ -18,17 +17,7 @@ export const networksStoreMigrationStore =
         onRehydrateStorage: () => {
           return async (_, error) => {
             if (!error && !IS_TESTING) {
-              // Import the runNetworksMigrationIfNeeded function dynamically to avoid circular dependencies
-              import('./runNetworksMigrationIfNeeded')
-                .then(({ runNetworksMigrationIfNeeded }) => {
-                  runNetworksMigrationIfNeeded('networksMigration');
-                })
-                .catch(() => {
-                  // Just log that there was an error without trying to pass the error object
-                  logger.debug(
-                    '[networks] Failed to import runNetworksMigrationIfNeeded',
-                  );
-                });
+              runNetworksMigrationIfNeeded('networksMigration');
             }
           };
         },
