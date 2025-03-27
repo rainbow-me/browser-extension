@@ -30,27 +30,27 @@ export const runNetworksMigrationIfNeeded = async (
 
   if (areAllStoresReady()) {
     if (networksStoreMigrationStore.getState().didCompleteNetworksMigration) {
-      console.log('[networks] Migration already completed');
+      logger.debug('[networks] Migration already completed');
       return;
     }
 
-    console.log('[networks] detectScriptType');
+    logger.debug('[networks] detectScriptType');
 
     const scriptType = detectScriptType();
 
-    console.log('[networks] Context detection:', {
+    logger.debug('[networks] Context detection:', {
       scriptType,
     });
 
     // If we're not in background, just update our state to match storage but don't migrate
     if (scriptType !== 'background') {
-      console.log(
+      logger.debug(
         '[networks] In popup context, exiting for background migration',
       );
       return;
     }
 
-    console.log('[networks] initializing networks store');
+    logger.debug('[networks] initializing networks store');
 
     // Get the current state from the stores
     const { rainbowChains } = useRainbowChainsStore.getState();

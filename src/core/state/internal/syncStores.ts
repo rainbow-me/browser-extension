@@ -1,6 +1,7 @@
 import { isEmpty, isEqual } from 'lodash';
 
 import { LocalStorage } from '~/core/storage';
+import { RainbowError, logger } from '~/logger';
 
 import * as stores from '../index';
 import { networksStoreMigrationStore } from '../networks/migration';
@@ -65,14 +66,15 @@ export function syncNetworksStore(context: 'popup' | 'background') {
     if (state === lastSyncedState) return;
 
     try {
-      console.log(
+      logger.debug(
         `${context}: detected state change from ${
           context === 'popup' ? 'background' : 'popup'
-        }: `,
-        state,
+        }: ${JSON.stringify(state)}`,
       );
       const { state: deserializedState } = deserializeNetworkState(state);
-      console.log(`${context}: deserialized state: `, deserializedState);
+      logger.debug(
+        `${context}: deserialized state: ${JSON.stringify(deserializedState)}`,
+      );
       if (isEmpty(deserializedState)) return;
 
       // Update last synced state before setting state to prevent loops
@@ -81,14 +83,18 @@ export function syncNetworksStore(context: 'popup' | 'background') {
 
       // For popup: after receiving first sync from background, setup subscription
       if (context === 'popup' && !hasReceivedFirstSync) {
-        console.log(
+        logger.debug(
           'popup: received first sync from background, now setting up subscription',
         );
         hasReceivedFirstSync = true;
         networkStore.subscribe(handleStoreUpdate);
       }
     } catch (error) {
-      console.error(`${context}: error deserializing network state: `, error);
+      logger.error(
+        new RainbowError(
+          `${context}: error deserializing network state: ${error}`,
+        ),
+      );
     }
   };
 
@@ -100,7 +106,7 @@ export function syncNetworksStore(context: 'popup' | 'background') {
     // Skip if we're seeing our own update
     if (serializedState === lastSyncedState) return;
 
-    console.log(
+    logger.debug(
       `${context}: sending state update to ${
         context === 'popup' ? 'background' : 'popup'
       }`,
@@ -120,15 +126,15 @@ export function syncNetworksStore(context: 'popup' | 'background') {
       networksStoreMigrationStore.getState().didCompleteNetworksMigration;
 
     if (initialMigrationState) {
-      console.log(
+      logger.debug(
         'background: migration already complete, subscribing to network store changes',
       );
       networkStore.subscribe(handleStoreUpdate);
     } else {
-      console.log('background: waiting for network migration to complete');
+      logger.debug('background: waiting for network migration to complete');
       networksStoreMigrationStore.subscribe((state) => {
         if (state.didCompleteNetworksMigration) {
-          console.log(
+          logger.debug(
             'background: migration complete, subscribing to network store changes',
           );
           networkStore.subscribe(handleStoreUpdate);
