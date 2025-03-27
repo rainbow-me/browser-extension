@@ -36,7 +36,7 @@ handleSetupInpage();
 handleWallets();
 handleDisconnect();
 
-syncNetworksStore();
+syncNetworksStore('background');
 syncStores();
 
 uuid4();

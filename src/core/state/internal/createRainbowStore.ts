@@ -208,7 +208,7 @@ function createPersistStorage<S, PersistedState extends Partial<S>>(
  * @param version - The version of the state.
  * @returns The serialized state as a JSON string.
  */
-function defaultSerializeState<PersistedState>(
+export function defaultSerializeState<PersistedState>(
   state: StorageValue<PersistedState>['state'],
   version: StorageValue<PersistedState>['version'],
   shouldUseReplacer: boolean,
@@ -234,7 +234,7 @@ function defaultSerializeState<PersistedState>(
  * @param serializedState - The serialized state as a JSON string.
  * @returns An object containing the deserialized state and version.
  */
-function defaultDeserializeState<PersistedState>(
+export function defaultDeserializeState<PersistedState>(
   serializedState: string,
   shouldUseReviver: boolean,
 ): StorageValue<PersistedState> {
