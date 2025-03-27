@@ -6,7 +6,7 @@ import {
   getCrosschainQuote,
 } from '@rainbow-me/swaps';
 import { mainnet } from 'viem/chains';
-import { beforeAll, expect, test } from 'vitest';
+import { beforeAll, expect, test, vi } from 'vitest';
 
 import { connectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ChainId } from '~/core/types/chains';
@@ -19,12 +19,26 @@ import {
   delay,
 } from '~/test/utils';
 
+import { ActionProps } from '../references';
+
 import {
   estimateCrosschainSwapGasLimit,
   executeCrosschainSwap,
 } from './crosschainSwap';
 
 let crosschainQuote: CrosschainQuote | QuoteError | null;
+
+vi.mock('./crosschainSwap', async () => {
+  const actual = (await vi.importActual(
+    './crosschainSwap',
+  )) as ActionProps<'crosschainSwap'>;
+
+  return {
+    ...actual,
+    estimateCrosschainSwapGasLimit: vi.fn().mockResolvedValue('600000'),
+    executeCrosschainSwap: vi.fn().mockResolvedValue({ hash: '0x123456' }),
+  };
+});
 
 beforeAll(async () => {
   connectedToHardhatStore.setState({ connectedToHardhat: true });

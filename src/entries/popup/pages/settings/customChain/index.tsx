@@ -369,6 +369,7 @@ export function SettingsCustomChain() {
             loading={chainMetadataIsFetching}
             spellCheck={false}
             tabIndex={2}
+            testId={'custom-network-rpc-url'}
           />
           <FormInput
             onChange={(t) => {
