@@ -150,22 +150,55 @@ it('should be able to add a custom ETH RPC and switch to it', async () => {
 
   // fill out custom network form
   await findElementByTestIdAndClick({ driver, id: 'network-name-field' });
-  await typeOnTextInput({ text: 'Mainnet (Flashbots)', driver });
-  await executePerformShortcut({ driver, key: 'TAB' });
-  await typeOnTextInput({
-    text: 'https://rpc.flashbots.net/fast',
-    driver,
-  });
+  await typeOnTextInput({ text: 'Mainnet (alt RPC)', driver });
 
-  // needs a couple seconds to validate the custom RPC
-  await delayTime('very-long');
+  // sometimes certain RPCs can fail to validate, adding a fallback
+  try {
+    // RPC URL
+    await findElementByTestIdAndClick({ driver, id: 'custom-network-rpc-url' });
+    await typeOnTextInput({
+      text: 'https://rpc.ankr.com/eth',
+      driver,
+    });
 
-  await findElementByTestIdAndClick({
-    driver,
-    id: 'add-custom-network-button',
-  });
+    // needs a couple seconds to validate the custom RPC
+    await delayTime('very-long');
+    await findElementByTestIdAndClick({
+      driver,
+      id: 'add-custom-network-button',
+    });
 
-  await findElementByTestIdAndClick({ id: 'rpc-row-item-1', driver });
+    // this will fail if the RPC URL is not valid
+    await findElementByTestIdAndClick({ id: 'rpc-row-item-1', driver });
+  } catch {
+    // RPC URL
+    await findElementByTestIdAndClick({ driver, id: 'custom-network-rpc-url' });
+
+    // clear the input
+    await executePerformShortcut({
+      driver,
+      key: 'ARROW_RIGHT',
+      timesToPress: 10,
+    });
+    await executePerformShortcut({
+      driver,
+      key: 'BACK_SPACE',
+      timesToPress: 30,
+    });
+    await typeOnTextInput({
+      text: 'https://eth.llamarpc.com',
+      driver,
+    });
+
+    // needs a couple seconds to validate the custom RPC
+    await delayTime('very-long');
+
+    await findElementByTestIdAndClick({
+      driver,
+      id: 'add-custom-network-button',
+    });
+    await findElementByTestIdAndClick({ id: 'rpc-row-item-1', driver });
+  }
 
   await delayTime('long');
 
