@@ -170,8 +170,7 @@ const OnboardingButton = ({
 
 const shareRowsText = [
   `> ${i18n.t('points.onboarding.referral_link_ready')}`,
-  `${i18n.t('points.onboarding.share_and_earn')}`,
-  `${i18n.t('points.onboarding.plus_percent_of_refers')}`,
+  `${i18n.t('points.onboarding.referral_link_bonus_text')}`,
 ];
 const shareRows = [
   <AnimatedText
@@ -194,16 +193,6 @@ const shareRows = [
     color="accent"
   >
     {shareRowsText[1]}
-  </AnimatedText>,
-  <AnimatedText
-    textShadow="12px accent"
-    key={shareRowsText[2]}
-    align="left"
-    size="14pt mono"
-    weight="bold"
-    color="accent"
-  >
-    {shareRowsText[2]}
   </AnimatedText>,
 ];
 
@@ -779,10 +768,6 @@ export const PointsOnboardingSheet = () => {
   const onShare = () => {
     if (!validSignatureResponse || !userOnboarding) return;
     setStep('done');
-    metadataPostClient.redeemCodeForPoints({
-      address: currentAddress,
-      redemptionCode: 'TWITTERSHARED',
-    });
     const referralCode = validSignatureResponse.user.referralCode;
     const metamaskBonus =
       userOnboarding.categories?.find((c) => c.type === 'metamask-swaps')
