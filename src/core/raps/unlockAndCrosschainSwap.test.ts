@@ -110,29 +110,35 @@ beforeAll(async () => {
   await delay(3000);
 });
 
-test.skip('[rap/unlockAndCrosschainSwap] :: estimate unlock and crosschain swap rap without unlock', async () => {
-  const gasLimit = await estimateUnlockAndCrosschainSwap({
-    quote: doesntNeedUnlockQuote as CrosschainQuote,
-    chainId: 1,
-    assetToSell: ETH_MAINNET_ASSET,
-    sellAmount: '1000000000000000000',
-    assetToBuy: USDC_ARBITRUM_ASSET,
-  });
-  swapGasLimit = Number(gasLimit);
-  expect(swapGasLimit).toBeGreaterThan(0);
-});
+test.todo(
+  '[rap/unlockAndCrosschainSwap] :: estimate unlock and crosschain swap rap without unlock',
+  async () => {
+    const gasLimit = await estimateUnlockAndCrosschainSwap({
+      quote: doesntNeedUnlockQuote as CrosschainQuote,
+      chainId: 1,
+      assetToSell: ETH_MAINNET_ASSET,
+      sellAmount: '1000000000000000000',
+      assetToBuy: USDC_ARBITRUM_ASSET,
+    });
+    swapGasLimit = Number(gasLimit);
+    expect(swapGasLimit).toBeGreaterThan(0);
+  },
+);
 
-test.skip('[rap/unlockAndCrosschainSwap] :: estimate unlock and crosschain swap rap with unlock', async () => {
-  const gasLimit = await estimateUnlockAndCrosschainSwap({
-    quote: needsUnlockQuote as CrosschainQuote,
-    chainId: 1,
-    assetToSell: ENS_MAINNET_ASSET,
-    sellAmount: '1000000000000000000',
-    assetToBuy: USDC_ARBITRUM_ASSET,
-  });
-  expect(Number(gasLimit)).toBeGreaterThan(0);
-  expect(Number(gasLimit)).toBeGreaterThan(swapGasLimit);
-});
+test.todo(
+  '[rap/unlockAndCrosschainSwap] :: estimate unlock and crosschain swap rap with unlock',
+  async () => {
+    const gasLimit = await estimateUnlockAndCrosschainSwap({
+      quote: needsUnlockQuote as CrosschainQuote,
+      chainId: 1,
+      assetToSell: ENS_MAINNET_ASSET,
+      sellAmount: '1000000000000000000',
+      assetToBuy: USDC_ARBITRUM_ASSET,
+    });
+    expect(Number(gasLimit)).toBeGreaterThan(0);
+    expect(Number(gasLimit)).toBeGreaterThan(swapGasLimit);
+  },
+);
 
 test('[rap/unlockAndCrosschainSwap] :: create unlock and crosschain swap rap without unlock', async () => {
   const rap = await createUnlockAndCrosschainSwapRap({
