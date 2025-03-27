@@ -150,10 +150,10 @@ it('should be able to add a custom ETH RPC and switch to it', async () => {
 
   // fill out custom network form
   await findElementByTestIdAndClick({ driver, id: 'network-name-field' });
-  await typeOnTextInput({ text: 'Mainnet (Ankr)', driver });
+  await typeOnTextInput({ text: 'Mainnet (Flashbots)', driver });
   await executePerformShortcut({ driver, key: 'TAB' });
   await typeOnTextInput({
-    text: 'https://rpc.ankr.com/eth',
+    text: 'https://rpc.flashbots.net/fast',
     driver,
   });
 
