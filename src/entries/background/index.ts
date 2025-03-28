@@ -14,6 +14,7 @@ import { updateWagmiConfig } from '~/core/wagmi';
 import { handleDisconnect } from './handlers/handleDisconnect';
 import { handleInstallExtension } from './handlers/handleInstallExtension';
 import { handleKeepAlive } from './handlers/handleKeepAlive';
+import { handleOpenExtensionShortcut } from './handlers/handleOpenExtensionShortcut';
 import { handlePrefetchDappMetadata } from './handlers/handlePrefetchMetadata';
 import { handleProviderRequest } from './handlers/handleProviderRequest';
 import { handleSetupInpage } from './handlers/handleSetupInpage';
@@ -24,6 +25,8 @@ require('../../core/utils/lockdown');
 
 initializeSentry('background');
 localStorageRecycler();
+
+handleOpenExtensionShortcut();
 
 const popupMessenger = initializeMessenger({ connect: 'popup' });
 const inpageMessenger = initializeMessenger({ connect: 'inpage' });
