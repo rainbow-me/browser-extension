@@ -1,6 +1,5 @@
 import { Chain } from 'viem';
 
-import buildTimeNetworks from 'static/data/networks.json';
 import { fetchNetworks } from '~/core/resources/networks/networks';
 import { favoritesStore } from '~/core/state/favorites';
 import { createQueryStore } from '~/core/state/internal/createQueryStore';
@@ -22,15 +21,12 @@ import {
   TransformedChain,
 } from '~/core/types/chains';
 
-const DEFAULT_PRIVATE_MEMPOOL_TIMEOUT = 2 * 60 * 1_000; // 2 minutes
-
-export interface NetworkState {
-  networks: Networks; // contains backend-driven networks and backend-driven custom networks
-  userPreferences: Record<number, ChainPreferences>; // contains user-driven overrides for backend-driven networks AND user added custom networks
-
-  chainOrder: Array<number>;
-  enabledChainIds: Set<number>;
-}
+import {
+  DEFAULT_PRIVATE_MEMPOOL_TIMEOUT,
+  buildTimeNetworks,
+} from './constants';
+import { networksStoreMigrationStore } from './migration';
+import { NetworkState } from './types';
 
 interface NetworkActions {
   // user-added custom networks store methods
@@ -278,6 +274,12 @@ export const networkStore = createQueryStore<
 >(
   {
     fetcher: fetchNetworks,
+    debugMode: process.env.DEBUG_NETWORKS_STORE === 'true',
+    enabled: ($) =>
+      $(
+        networksStoreMigrationStore,
+        (state) => state.didCompleteNetworksMigration,
+      ),
     setData: ({ data, set }) => {
       set((state) => {
         const newNetworks = differenceOrUnionOf({
@@ -287,7 +289,6 @@ export const networkStore = createQueryStore<
 
         if (newNetworks.size === 0) {
           return {
-            ...state,
             networks: data,
           };
         }
@@ -295,7 +296,6 @@ export const networkStore = createQueryStore<
         void syncDefaultFavoritesForNewlySupportedNetworks(newNetworks);
 
         return {
-          ...state,
           networks: data,
           ...modifyUserPreferencesForNewlySupportedNetworks(state, newNetworks),
         };
@@ -317,11 +317,12 @@ export const networkStore = createQueryStore<
 
     addCustomChain: (chainId, chain, rpcUrl, active) => {
       set((state) => {
-        const { chainOrder, userPreferences } = state;
+        const { chainOrder, enabledChainIds, userPreferences } = state;
 
         const order = [...chainOrder].indexOf(chainId);
         const existing = userPreferences[chainId];
-        const enabledChainIds = new Set([...chainOrder, chainId]);
+        const newEnabledChainIds = new Set(enabledChainIds);
+        newEnabledChainIds.add(chainId);
 
         // add the rpc url to the chain if it exists
         if (existing) {
@@ -340,14 +341,14 @@ export const networkStore = createQueryStore<
           return {
             ...state,
             chainOrder: order === -1 ? [...chainOrder, chainId] : chainOrder,
-            enabledChainIds,
+            enabledChainIds: newEnabledChainIds,
             userPreferences: newUserPrferences,
           };
         } else {
           return {
             ...state,
             chainOrder: order === -1 ? [...chainOrder, chainId] : chainOrder,
-            enabledChainIds,
+            enabledChainIds: newEnabledChainIds,
             userPreferences: {
               ...userPreferences,
               [chainId]: {
@@ -846,7 +847,7 @@ export const networkStore = createQueryStore<
       chainOrder: state.chainOrder,
       enabledChainIds: state.enabledChainIds,
     }),
-    storageKey: 'networkStore',
+    storageKey: 'networks',
     version: 1,
   },
 );

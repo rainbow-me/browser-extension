@@ -837,7 +837,7 @@
       "no_quote": {
         "title": "No quote available",
         "description": "We couldn’t find quotes for this %{action}. This could be because there isn’t enough liqudity to %{action} or because of problems with how the  token is implemented.",
-        "action_label": "Continue anyway"
+        "action_label": "Got it"
       },
       "insufficient_liquidity": {
         "title": "Insufficient liquidity",

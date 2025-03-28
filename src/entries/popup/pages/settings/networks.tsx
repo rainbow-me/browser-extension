@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { DropResult } from 'react-beautiful-dnd';
 
 import { i18n } from '~/core/languages';
@@ -8,6 +8,7 @@ import { networkStore } from '~/core/state/networks/networks';
 import { promoTypes, useQuickPromoStore } from '~/core/state/quickPromo';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
 import { useMainChains } from '~/core/utils/chains';
+import { sortNetworks } from '~/core/utils/userChains';
 import { Box, Inset, Separator, Symbol, Text } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
@@ -52,7 +53,7 @@ export function SettingsNetworks() {
     useDeveloperToolsEnabledStore();
   const { featureFlags } = useFeatureFlagsStore();
   const removeCustomChain = networkStore((state) => state.removeCustomChain);
-  const { enabledChainIds } = networkStore((state) => ({
+  const { enabledChainIds, chainOrder } = networkStore((state) => ({
     chainOrder: state.chainOrder,
     enabledChainIds: state.enabledChainIds,
   }));
@@ -65,6 +66,19 @@ export function SettingsNetworks() {
   );
 
   const allChains = networkStore((state) => state.getAllChains(true));
+
+  const allNetworks = useMemo(
+    () =>
+      sortNetworks(chainOrder, chains).map((chain) => {
+        const chainId = chain.id;
+        // Always use the name of the supported network if it exists
+        return {
+          ...chain,
+          name: supportedChains[chainId]?.name || chain.name,
+        };
+      }),
+    [chains, chainOrder, supportedChains],
+  );
 
   const onDragEnd = (result: DropResult) => {
     const { destination, draggableId } = result;
@@ -149,7 +163,7 @@ export function SettingsNetworks() {
         <Menu>
           <DraggableContext onDragEnd={onDragEnd} height="fixed">
             <Box>
-              {chains.map((chain, index) => (
+              {allNetworks.map((chain, index) => (
                 <Box
                   alignItems="center"
                   justifyContent="center"
