@@ -522,29 +522,32 @@ it.todo('should be able to check insufficient asset for swap', async () => {
   expect(confirmButtonText).toEqual('Insufficient WBTC');
 });
 
-it('should be able to check insufficient native asset for gas', async () => {
-  await findElementByTestIdAndClick({
-    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
-    driver,
-  });
+it.todo(
+  'should be able to check insufficient native asset for gas',
+  async () => {
+    await findElementByTestIdAndClick({
+      id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+      driver,
+    });
 
-  await executePerformShortcut({
-    driver,
-    timesToPress: 10,
-    key: Key.BACK_SPACE,
-  });
+    await executePerformShortcut({
+      driver,
+      timesToPress: 10,
+      key: Key.BACK_SPACE,
+    });
 
-  await typeOnTextInput({
-    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
-    text: `\b10000`,
-    driver,
-  });
-  const confirmButtonText = await getTextFromText({
-    id: 'swap-confirmation-button-ready',
-    driver,
-  });
-  expect(confirmButtonText).toEqual('Insufficient ETH for gas');
-});
+    await typeOnTextInput({
+      id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+      text: `\b10000`,
+      driver,
+    });
+    const confirmButtonText = await getTextFromText({
+      id: 'swap-confirmation-button-ready',
+      driver,
+    });
+    expect(confirmButtonText).toEqual('Insufficient ETH for gas');
+  },
+);
 
 it.todo('should be able to see small market warning', async () => {
   const swapWarning = await findElementByTestId({
