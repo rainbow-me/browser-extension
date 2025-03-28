@@ -434,7 +434,8 @@
       "open_in_new_tab": "Yeni Sekmede Aç",
       "switch_to_wallet": "Cüzdana Geçiş Yap",
       "send_to_contact": "Kişiye Gönder",
-      "view": "Görüntüle"
+      "view": "Görüntüle",
+      "uuid_copied": "UUID kopyalandı"
     },
     "commands": {
       "names": {
@@ -497,7 +498,8 @@
         "send_contact": "Kişiye Gönder",
         "export_addresses_as_csv": "CSV olarak Adresleri Dışa Aktar",
         "enable_flashbots": "Flashbots'i etkinleştir",
-        "disable_flashbots": "Flashbots'i devre dışı bırak"
+        "disable_flashbots": "Flashbots'i devre dışı bırak",
+        "copy_uuid": "UUID'yi kopyala"
       },
       "search_tags": {
         "swap": "satın al, sat, takas, sipariş, değişim, dex, rotalar",
@@ -522,7 +524,8 @@
         "add_hardware_wallet": "ledger, trezor, bağlan",
         "hide_balances": "aç/kapa",
         "hide_small_balances": "aç/kapa",
-        "wallets_and_keys": "cüzdanlar ve anahtarlar, ayarlar, tercihler"
+        "wallets_and_keys": "cüzdanlar ve anahtarlar, ayarlar, tercihler",
+        "diagnostics": "teşhisler"
       }
     },
     "command_rows": {
@@ -834,7 +837,7 @@
       "no_quote": {
         "title": "Teklif mevcut değil",
         "description": "Bu %{action}için teklif bulamadık. Bu, yeterli likidite olmaması nedeniyle %{action} ya da tokenin nasıl uygulandığına dair problemler nedeniyle olabilir.",
-        "action_label": "Yine de devam et"
+        "action_label": "Anladım"
       },
       "insufficient_liquidity": {
         "title": "Yetersiz likidite",
@@ -1457,8 +1460,7 @@
       "get_eth": "Biraz ETH Al",
       "try_swap": "Bir Takas Dene",
       "referral_link_ready": "Referans linkiniz hazır",
-      "share_and_earn": "Referans linkinizi tweetleyerek ekstra 250 puan kazanın",
-      "plus_percent_of_refers": "Üstelik, referans olarak gönderdiğiniz kişilerin kazandığı puanların %10'unu kazanacaksınız",
+      "referral_link_bonus_text": "Tavsiye bağlantınızı tweetleyin ve yönlendirdiğiniz herkesin kazandığı puanların %10'unu kazanacaksınız.",
       "share": "X ile paylaş",
       "share_tweet": "Cüzdanıma %{points} Rainbow Puan düştü\nHerkesin en az 100 puanı var, seninki daha da fazla olabilir!\n\nHemen talep et: https://rainbow.me/points?ref=%{referralCode}",
       "share_tweet_with_metamask_bonus": "Cüzdanıma %{points} Rainbow Puan düştü — ve MetaMask cüzdanımı Rainbow'a taşıdığım için ekstra %{metamaskBonus} Puan bonusu kazandım 🦊 🔫\n\nHerkesin en az 100 puanı var, seninki daha da fazla olabilir! Hemen talep et: https://rainbow.me/points?ref=%{referralCode}",
@@ -1678,6 +1680,26 @@
           "title": "ApeChain nedir?",
           "description_1": "ApeChain, Arbitrum Orbit ve Ethereum'un üzerinde çalışan bir Katman <b>3</b> ağıdır.",
           "description_2": "Bu, ApeCoin'in faydasını önemli ölçüde artırır ve $APE tarafından yönlendirilen sağlam ve dinamik bir ekonomiyi teşvik eder."
+        },
+        "ink": {
+          "title": "Ink nedir?",
+          "description_1": "Ink, Superchain üzerinde inşa edilen ve Kraken tarafından yayımlanan son teknoloji bir Katman 2 (L2) blok zinciridir.",
+          "description_2": "Doğal misyonlarının bir evrimi olarak Ink, kullanıcıların zinciri güvenle ve kolaylıkla harekete geçmesini sağlamak için DeFi'ye sorunsuz bir köprü görevi görecek"
+        },
+        "sanko": {
+          "title": "Sanko nedir?",
+          "description_1": "Sanko, Arbitrum üzerinde çalışan bir Katman 2 ağıdır.",
+          "description_2": "Daha ucuz ve hızlı işlemlere izin verir, ancak Layer 2 ağlarından farklı olarak, Sanko'nun kendi güvenlik ve uzlaşma mekanizmaları vardır."
+        },
+        "gravity": {
+          "title": "Gravity nedir?",
+          "description_1": "Gravity, kitle kabulü ve küresel bir zincirler arası gelecek için tasarlanmış bir Katman-1 blok zinciridir.",
+          "description_2": "Daha ucuz ve hızlı işlemlere izin verir, ancak Layer 2 ağlarından farklı olarak, Gravity'nin kendi güvenlik ve uzlaşma mekanizmaları vardır."
+        },
+        "berachain": {
+          "title": "Berachain nedir?",
+          "description_1": "Berachain, BeaconKit kullanarak likidite ispatı üzerinde inşa edilen bir Katman-1 blok zinciridir.",
+          "description_2": "Daha ucuz ve hızlı işlemlere izin verir, ancak Layer 2 ağlarından farklı olarak, Berachain'in kendi güvenlik ve uzlaşma mekanizmaları vardır."
         },
         "custom_network": {
           "title": "Bu Ağ nedir?",

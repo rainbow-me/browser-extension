@@ -434,7 +434,8 @@
       "open_in_new_tab": "新しいタブで開く",
       "switch_to_wallet": "ウォレットに切り替える",
       "send_to_contact": "連絡先に送信",
-      "view": "表示"
+      "view": "表示",
+      "uuid_copied": "UUIDがコピーされました"
     },
     "commands": {
       "names": {
@@ -497,7 +498,8 @@
         "send_contact": "連絡先に送信",
         "export_addresses_as_csv": "アドレスをCSVとしてエクスポート",
         "enable_flashbots": "Flashbotsを有効にする",
-        "disable_flashbots": "Flashbotsを無効にする"
+        "disable_flashbots": "Flashbotsを無効にする",
+        "copy_uuid": "UUIDをコピー"
       },
       "search_tags": {
         "swap": "購入、販売、取引、注文、交換、dex、ルート",
@@ -522,7 +524,8 @@
         "add_hardware_wallet": "レジャー、トレゾール、接続",
         "hide_balances": "切り替える",
         "hide_small_balances": "切り替える",
-        "wallets_and_keys": "ウォレットとキー、設定、設定"
+        "wallets_and_keys": "ウォレットとキー、設定、設定",
+        "diagnostics": "診断"
       }
     },
     "command_rows": {
@@ -834,7 +837,7 @@
       "no_quote": {
         "title": "見積もりは利用できません",
         "description": "この %{action}の引用を見つけることができませんでした。これは、 %{action} するための十分な流動性がないか、トークンの実装に問題があるためかもしれません",
-        "action_label": "続行する"
+        "action_label": "了解"
       },
       "insufficient_liquidity": {
         "title": "流動性が不足しています",
@@ -1457,8 +1460,7 @@
       "get_eth": "ETHを獲得",
       "try_swap": "スワップを試す",
       "referral_link_ready": "紹介リンクの準備ができました",
-      "share_and_earn": "紹介リンクをツイートしてさらに250ポイントを獲得",
-      "plus_percent_of_refers": "さらに、紹介した人が獲得したポイントの10％を獲得します",
+      "referral_link_bonus_text": "リファラルリンクをツイートすると、お友達の獲得ポイントの10%を獲得できます。",
       "share": "Xに共有",
       "share_tweet": "ウォレットにレインボーポイントが %{points} 点追加されました\n皆には最低でも100点が待っていますが、あなたはそれ以上かもしれません！\n\nドロップを請求: https://rainbow.me/points?ref=%{referralCode}",
       "share_tweet_with_metamask_bonus": "ウォレットにレインボーポイントが %{points} 点追加されました — そして MetaMaskウォレットをレインボーに移行したボーナスで追加 %{metamaskBonus} 点 🦊 🔫\n\n皆には最低でも100点が待っていますが、あなたはそれ以上かもしれません！ドロップを請求: https://rainbow.me/points?ref=%{referralCode}",
@@ -1678,6 +1680,26 @@
           "title": "ApeChainとは何ですか？",
           "description_1": "ApeChainは、Arbitrum OrbitとEthereumの上で動作するレイヤー<b>3</b>ネットワークです。",
           "description_2": "これにより、ApeCoinの実用性が大幅に向上し、$APEによって駆動される強力でダイナミックな経済が促進されます。"
+        },
+        "ink": {
+          "title": "Inkとは？",
+          "description_1": "InkはKrakenによってリリースされた、Superchain上で構築された最先端のレイヤー2 (L2) ブロックチェーンです。",
+          "description_2": "そのミッションの自然な進化として、InkはDeFiへのシームレスな橋渡しを行い、ユーザーが自信を持って簡単にオンチェーンに移行できるようにします"
+        },
+        "sanko": {
+          "title": "Sankoとは？",
+          "description_1": "SankoはArbitrum上で動作するレイヤー2 (L2) ネットワークです。",
+          "description_2": "より安価かつ高速なトランザクションが可能ですが、Layer 2 (L2) ネットワークとは異なり、Sankoには独自のセキュリティとコンセンサスメカニズムがあります。"
+        },
+        "gravity": {
+          "title": "Gravityとは？",
+          "description_1": "Gravityは大量採用とオムニチェインの未来を目指したレイヤー1ブロックチェーンです。",
+          "description_2": "より安価かつ高速なトランザクションが可能ですが、Layer 2 (L2) ネットワークとは異なり、Gravityには独自のセキュリティとコンセンサスメカニズムがあります。"
+        },
+        "berachain": {
+          "title": "Berachainとは？",
+          "description_1": "Berachainは、BeaconKitを使用した流動性の証明に基づいて構築されたレイヤー1ブロックチェーンです。",
+          "description_2": "より安価かつ高速なトランザクションが可能ですが、Layer 2 (L2) ネットワークとは異なり、Berachainには独自のセキュリティとコンセンサスメカニズムがあります。"
         },
         "custom_network": {
           "title": "このネットワークとは何ですか？",

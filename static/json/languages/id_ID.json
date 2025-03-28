@@ -434,7 +434,8 @@
       "open_in_new_tab": "Buka di Tab Baru",
       "switch_to_wallet": "Pindah ke Wallet",
       "send_to_contact": "Kirim ke Kontak",
-      "view": "Lihat"
+      "view": "Lihat",
+      "uuid_copied": "UUID disalin"
     },
     "commands": {
       "names": {
@@ -497,7 +498,8 @@
         "send_contact": "Kirim ke Kontak",
         "export_addresses_as_csv": "Ekspor Alamat sebagai CSV",
         "enable_flashbots": "Aktifkan Flashbots",
-        "disable_flashbots": "Nonaktifkan Flashbots"
+        "disable_flashbots": "Nonaktifkan Flashbots",
+        "copy_uuid": "Salin UUID"
       },
       "search_tags": {
         "swap": "beli, jual, perdagangan, pesanan, pertukaran, dex, rute",
@@ -522,7 +524,8 @@
         "add_hardware_wallet": "ledger, trezor, hubungkan",
         "hide_balances": "buka tutup",
         "hide_small_balances": "buka tutup",
-        "wallets_and_keys": "dompet dan kunci, pengaturan, preferensi"
+        "wallets_and_keys": "dompet dan kunci, pengaturan, preferensi",
+        "diagnostics": "diagnostik"
       }
     },
     "command_rows": {
@@ -834,7 +837,7 @@
       "no_quote": {
         "title": "Tidak ada kutipan yang tersedia",
         "description": "Kami tidak dapat menemukan kutipan untuk ini %{action}. Ini mungkin karena tidak cukup likuiditas untuk %{action} atau karena permasalahan dalam implementasi token tersebut",
-        "action_label": "Lanjutkan saja"
+        "action_label": "Mengerti"
       },
       "insufficient_liquidity": {
         "title": "Kekurangan likuiditas",
@@ -1457,8 +1460,7 @@
       "get_eth": "Dapatkan ETH",
       "try_swap": "Coba Swap",
       "referral_link_ready": "Link rujukan Anda siap",
-      "share_and_earn": "Tweet link rujukan dan dapatkan 250 poin tambahan",
-      "plus_percent_of_refers": "Plus Anda akan mendapatkan 10% poin dari setiap orang yang Anda rujuk",
+      "referral_link_bonus_text": "Cuit tautan referal Anda dan Anda akan mendapatkan 10% dari poin yang didapatkan oleh siapa pun yang Anda referensikan",
       "share": "Bagikan ke X",
       "share_tweet": "Saya baru saja mendapat %{points} Rainbow Points masuk ke dompet saya\nSetiap orang memiliki setidaknya 100 poin yang menunggu, tapi mungkin kamu memiliki lebih!\n\nKlaim drop kamu: https://rainbow.me/points?ref=%{referralCode}",
       "share_tweet_with_metamask_bonus": "Saya baru saja mendapat %{points} Rainbow Points masuk ke dalam dompet saya — dan tambahan %{metamaskBonus} Points sebagai bonus karena memindahkan dompet MetaMask saya ke Rainbow 🦊 🔫\n\nSetiap orang memiliki setidaknya 100 poin yang menunggu, tapi mungkin kamu memiliki lebih! Klaim drop kamu: https://rainbow.me/points?ref=%{referralCode}",
@@ -1678,6 +1680,26 @@
           "title": "Apa itu ApeChain?",
           "description_1": "ApeChain adalah jaringan Layer 3 yang berjalan di atas Arbitrum Orbit dan Ethereum.",
           "description_2": "Ini secara signifikan meningkatkan utilitas ApeCoin, mendorong ekonomi yang kuat dan dinamis yang didorong oleh $APE."
+        },
+        "ink": {
+          "title": "Apa itu Ink?",
+          "description_1": "Ink adalah blockchain Layer 2 (L2) mutakhir yang dibangun di atas Superchain dan dirilis oleh Kraken.",
+          "description_2": "Sebagai evolusi alami dari misi mereka, Ink akan menjadi jembatan mulus ke DeFi, memberdayakan pengguna untuk bertransaksi onchain dengan kepercayaan dan kemudahan"
+        },
+        "sanko": {
+          "title": "Apa itu Sanko?",
+          "description_1": "Sanko adalah jaringan Layer 2 yang berjalan di atas Arbitrum.",
+          "description_2": "Ini memungkinkan transaksi yang lebih murah dan cepat, tetapi tidak seperti jaringan Layer 2, Sanko memiliki mekanisme keamanan dan konsensus sendiri yang berbeda dari Ethereum."
+        },
+        "gravity": {
+          "title": "Apa itu Gravity?",
+          "description_1": "Gravity adalah blockchain Layer-1 yang dirancang untuk adopsi massal dan masa depan omnichain.",
+          "description_2": "Ini memungkinkan transaksi yang lebih murah dan cepat, tetapi tidak seperti jaringan Layer 2, Gravity memiliki mekanisme keamanan dan konsensus sendiri yang berbeda dari Ethereum."
+        },
+        "berachain": {
+          "title": "Apa itu Berachain?",
+          "description_1": "Berachain adalah blockchain Layer-1 yang dibangun di atas proof of liquidity menggunakan BeaconKit.",
+          "description_2": "Ini memungkinkan transaksi yang lebih murah dan cepat, tetapi tidak seperti jaringan Layer 2, Berachain memiliki mekanisme keamanan dan konsensus sendiri yang berbeda dari Ethereum."
         },
         "custom_network": {
           "title": "Apa itu Jaringan ini?",
