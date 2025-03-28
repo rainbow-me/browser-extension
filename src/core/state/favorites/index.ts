@@ -1,6 +1,7 @@
 import create from 'zustand';
 
 import buildTimeNetworks from 'static/data/networks.json';
+import { analytics } from '~/analytics';
 import { createStore } from '~/core/state/internal/createStore';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -37,32 +38,65 @@ export interface FavoritesState {
 }
 
 export const favoritesStore = createStore<FavoritesState>(
-  (set, get) => ({
-    favorites: getInitialFavorites(),
-    setFavorites: (favorites) => set({ favorites }),
-    addFavorite: ({ address, chainId }: UpdateFavoritesArgs) => {
-      const { favorites } = get();
-      const currentFavorites = favorites[chainId] || [];
-      set({
-        favorites: {
-          ...favorites,
-          [chainId]: [...currentFavorites, address],
+  (set, get) => {
+    const trackFavoriteChange = (
+      address: AddressOrEth,
+      chainId: ChainId,
+      isAdding: boolean,
+      favoritesLength: number,
+    ) => {
+      const analyticsData = {
+        token: {
+          address,
+          chainId,
         },
-      });
-    },
-    removeFavorite: ({ address, chainId }: UpdateFavoritesArgs) => {
-      const { favorites } = get();
-      const currentFavorites = favorites[chainId] || [];
-      set({
         favorites: {
-          ...favorites,
-          [chainId]: currentFavorites.filter(
-            (favoriteAddress) => favoriteAddress !== address,
-          ),
+          favoritesLength,
         },
-      });
-    },
-  }),
+      };
+
+      const eventType = isAdding
+        ? analytics.event.tokenFavorited
+        : analytics.event.tokenUnfavorited;
+
+      analytics.track(eventType, analyticsData);
+    };
+
+    return {
+      favorites: getInitialFavorites(),
+      setFavorites: (favorites) => set({ favorites }),
+      addFavorite: ({ address, chainId }: UpdateFavoritesArgs) => {
+        const { favorites } = get();
+        const currentFavorites = favorites[chainId] || [];
+        const updatedFavorites = [...currentFavorites, address];
+        set({
+          favorites: {
+            ...favorites,
+            [chainId]: updatedFavorites,
+          },
+        });
+
+        trackFavoriteChange(address, chainId, true, updatedFavorites.length);
+      },
+
+      removeFavorite: ({ address, chainId }: UpdateFavoritesArgs) => {
+        const { favorites } = get();
+        const currentFavorites = favorites[chainId] || [];
+        const updatedFavorites = currentFavorites.filter(
+          (favoriteAddress) => favoriteAddress !== address,
+        );
+
+        set({
+          favorites: {
+            ...favorites,
+            [chainId]: updatedFavorites,
+          },
+        });
+
+        trackFavoriteChange(address, chainId, false, updatedFavorites.length);
+      },
+    };
+  },
   {
     persist: {
       name: 'favorites',
