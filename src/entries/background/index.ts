@@ -3,7 +3,10 @@ import { uuid4 } from '@sentry/utils';
 import { initFCM } from '~/core/firebase/fcm';
 import { initializeMessenger } from '~/core/messengers';
 import { initializeSentry } from '~/core/sentry';
-import { syncStores } from '~/core/state/internal/syncStores';
+import {
+  syncNetworksStore,
+  syncStores,
+} from '~/core/state/internal/syncStores';
 import { networkStore } from '~/core/state/networks/networks';
 import { localStorageRecycler } from '~/core/storage/localStorageRecycler';
 import { updateWagmiConfig } from '~/core/wagmi';
@@ -16,6 +19,7 @@ import { handleProviderRequest } from './handlers/handleProviderRequest';
 import { handleSetupInpage } from './handlers/handleSetupInpage';
 import { handleTabAndWindowUpdates } from './handlers/handleTabAndWindowUpdates';
 import { handleWallets } from './handlers/handleWallets';
+
 require('../../core/utils/lockdown');
 
 initializeSentry('background');
@@ -31,7 +35,10 @@ handlePrefetchDappMetadata();
 handleSetupInpage();
 handleWallets();
 handleDisconnect();
+
+syncNetworksStore('background');
 syncStores();
+
 uuid4();
 initFCM();
 handleKeepAlive();
