@@ -5,6 +5,8 @@ import { ChainId } from '~/core/types/chains';
 
 import { createStore } from '../internal/createStore';
 import { withSelectors } from '../internal/withSelectors';
+import { runNetworksMigrationIfNeeded } from '../networks/runNetworksMigrationIfNeeded';
+const IS_TESTING = process.env.IS_TESTING === 'true';
 
 export interface RainbowChain {
   activeRpcUrl: string;
@@ -26,6 +28,9 @@ export interface RainbowChainsState {
   removeCustomRPC: ({ rpcUrl }: { rpcUrl: string }) => void;
 }
 
+/**
+ * @deprecated use `networkStore` instead
+ */
 export const rainbowChainsStore = createStore<RainbowChainsState>(
   (set, get) => ({
     rainbowChains: {},
@@ -114,8 +119,18 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
     persist: {
       name: 'rainbowChains',
       version: 13,
+      onRehydrateStorage: () => {
+        return (_, error) => {
+          if (!error && !IS_TESTING) {
+            runNetworksMigrationIfNeeded('rainbowChains');
+          }
+        };
+      },
     },
   },
 );
 
+/**
+ * @deprecated use `networkStore` instead
+ */
 export const useRainbowChainsStore = withSelectors(create(rainbowChainsStore));

@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 
 import { analytics } from '~/analytics';
 import { createStore } from '~/core/state/internal/createStore';

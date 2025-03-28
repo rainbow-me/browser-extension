@@ -37,7 +37,12 @@ describe('networkStore', () => {
         });
         networkStore.setState({
           networks: buildTimeNetworks,
-          ...buildInitialUserPreferences(),
+          ...buildInitialUserPreferences(
+            buildTimeNetworks,
+            rainbowChains,
+            userChains,
+            userChainsOrder,
+          ),
         });
       });
 
