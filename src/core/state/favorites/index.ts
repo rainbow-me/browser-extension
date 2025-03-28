@@ -39,23 +39,19 @@ export interface FavoritesState {
 
 export const favoritesStore = createStore<FavoritesState>(
   (set, get) => {
-    // Helper function for tracking analytics
     const trackFavoriteChange = (
       address: AddressOrEth,
       chainId: ChainId,
       isAdding: boolean,
+      favoritesLength: number,
     ) => {
-      const updatedState = get();
-      const updatedFavorites = updatedState.favorites[chainId] || [];
-      const afterLength = updatedFavorites.length;
-
       const analyticsData = {
         token: {
           address,
           chainId,
         },
         favorites: {
-          favoritesLength: afterLength,
+          favoritesLength,
         },
       };
 
@@ -72,30 +68,32 @@ export const favoritesStore = createStore<FavoritesState>(
       addFavorite: ({ address, chainId }: UpdateFavoritesArgs) => {
         const { favorites } = get();
         const currentFavorites = favorites[chainId] || [];
+        const updatedFavorites = [...currentFavorites, address];
         set({
           favorites: {
             ...favorites,
-            [chainId]: [...currentFavorites, address],
+            [chainId]: updatedFavorites,
           },
         });
 
-        trackFavoriteChange(address, chainId, true);
+        trackFavoriteChange(address, chainId, true, updatedFavorites.length);
       },
 
       removeFavorite: ({ address, chainId }: UpdateFavoritesArgs) => {
         const { favorites } = get();
         const currentFavorites = favorites[chainId] || [];
+        const updatedFavorites = currentFavorites.filter(
+          (favoriteAddress) => favoriteAddress !== address,
+        );
 
         set({
           favorites: {
             ...favorites,
-            [chainId]: currentFavorites.filter(
-              (favoriteAddress) => favoriteAddress !== address,
-            ),
+            [chainId]: updatedFavorites,
           },
         });
 
-        trackFavoriteChange(address, chainId, false);
+        trackFavoriteChange(address, chainId, false, updatedFavorites.length);
       },
     };
   },
