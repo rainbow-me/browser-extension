@@ -37,31 +37,31 @@ export interface FavoritesState {
   removeFavorite: UpdateFavoritesFn;
 }
 
+const trackFavoriteChange = (
+  address: AddressOrEth,
+  chainId: ChainId,
+  isAdding: boolean,
+  favoritesLength: number,
+) => {
+  const analyticsData = {
+    token: {
+      address,
+      chainId,
+    },
+    favorites: {
+      favoritesLength,
+    },
+  };
+
+  const eventType = isAdding
+    ? analytics.event.tokenFavorited
+    : analytics.event.tokenUnfavorited;
+
+  analytics.track(eventType, analyticsData);
+};
+
 export const favoritesStore = createStore<FavoritesState>(
   (set, get) => {
-    const trackFavoriteChange = (
-      address: AddressOrEth,
-      chainId: ChainId,
-      isAdding: boolean,
-      favoritesLength: number,
-    ) => {
-      const analyticsData = {
-        token: {
-          address,
-          chainId,
-        },
-        favorites: {
-          favoritesLength,
-        },
-      };
-
-      const eventType = isAdding
-        ? analytics.event.tokenFavorited
-        : analytics.event.tokenUnfavorited;
-
-      analytics.track(eventType, analyticsData);
-    };
-
     return {
       favorites: getInitialFavorites(),
       setFavorites: (favorites) => set({ favorites }),

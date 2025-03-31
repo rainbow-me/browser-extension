@@ -1124,7 +1124,6 @@ export type EventProperties = {
     token: {
       address: string;
       chainId: ChainId;
-      walletAddress: Address;
     };
     /**
      * Details about hidden assets.
@@ -1155,7 +1154,6 @@ export type EventProperties = {
     token: {
       address: string;
       chainId: ChainId;
-      walletAddress: Address;
     };
     /**
      * Details about hidden assets.

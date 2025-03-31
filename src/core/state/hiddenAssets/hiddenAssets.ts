@@ -49,7 +49,6 @@ export const hiddenAssetsStore = createStore<HiddenAssetState>(
         token: {
           address: assetAddress,
           chainId: parseInt(chainIdStr),
-          walletAddress: address,
         },
         hiddenAssets: {
           totalHidden: totalHiddenForAddress,
