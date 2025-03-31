@@ -434,7 +434,8 @@
       "open_in_new_tab": "새 탭에서 열기",
       "switch_to_wallet": "지갑으로 전환",
       "send_to_contact": "연락처에 보내기",
-      "view": "보기"
+      "view": "보기",
+      "uuid_copied": "UUID 복사됨"
     },
     "commands": {
       "names": {
@@ -497,7 +498,8 @@
         "send_contact": "연락처에 보내기",
         "export_addresses_as_csv": "주소를 CSV로 내보내기",
         "enable_flashbots": "플래시봇 활성화",
-        "disable_flashbots": "플래시봇 비활성화"
+        "disable_flashbots": "플래시봇 비활성화",
+        "copy_uuid": "UUID 복사"
       },
       "search_tags": {
         "swap": "구매, 판매, 거래, 주문, 교환, 덱스, 경로",
@@ -522,7 +524,8 @@
         "add_hardware_wallet": "렛저, 트레저, 연결",
         "hide_balances": "토글",
         "hide_small_balances": "토글",
-        "wallets_and_keys": "지갑 및 키, 설정, 환경설정"
+        "wallets_and_keys": "지갑 및 키, 설정, 환경설정",
+        "diagnostics": "진단"
       }
     },
     "command_rows": {
@@ -834,7 +837,7 @@
       "no_quote": {
         "title": "견적이 없습니다",
         "description": "이 %{action}에 대한 견적을 찾을 수 없습니다. 이는 %{action} 에 충분한 유동성이 없거나 토큰 구현에 문제가 있기 때문일 수 있습니다.",
-        "action_label": "그래도 계속"
+        "action_label": "확인"
       },
       "insufficient_liquidity": {
         "title": "충분하지 않은 유동성",
@@ -1457,8 +1460,7 @@
       "get_eth": "ETH 구하기",
       "try_swap": "스왑 시도",
       "referral_link_ready": "추천 링크가 준비되었습니다",
-      "share_and_earn": "추천 링크를 트윗하고 추가로 250 포인트를 얻으세요",
-      "plus_percent_of_refers": "추천인을 통해 얻은 포인트의 10%도 얻을 수 있습니다",
+      "referral_link_bonus_text": "추천 링크를 트윗하면 초대받은 사람이 얻은 포인트의 10%를 얻습니다",
       "share": "X에 공유",
       "share_tweet": "내 지갑에 레인보우 포인트 %{points} 가 추가되었어요\n모든 사용자는 최소 100포인트를 받을 수 있지만, 더 많을 수도 있어요!\n\n포인트 받기: https://rainbow.me/points?ref=%{referralCode}",
       "share_tweet_with_metamask_bonus": "내 지갑에 레인보우 포인트 %{points} 가 추가되었고, 레인보우로 메타마스크 지갑을 이전한 보너스로 %{metamaskBonus} 포인트를 더 받았어요 🦊 🔫\n\n모든 사용자는 최소 100포인트를 받을 수 있지만, 더 많을 수도 있어요! 포인트 받기: https://rainbow.me/points?ref=%{referralCode}",
@@ -1678,6 +1680,26 @@
           "title": "ApeChain이 무엇인가요?",
           "description_1": "ApeChain은 아비트럼 오르빗과 이더리움 위에서 운영되는 레이어 <b>3</b> 네트워크입니다.",
           "description_2": "이것은 ApeCoin의 유용성을 크게 향상시키며, $APE에 의해 구동되는 강력하고 역동적인 경제를 조성합니다."
+        },
+        "ink": {
+          "title": "잉크란 무엇인가요?",
+          "description_1": "잉크는 슈퍼체인 위에서 크라켄이 출시한 최첨단 레이어 2(L2) 블록체인입니다.",
+          "description_2": "이들의 미션의 자연스러운 진화로서 Ink는 사용자가 온체인으로 자신감 있고 쉽게 이동할 수 있도록 하는 DeFi로의 매끄러운 다리 역할을 합니다"
+        },
+        "sanko": {
+          "title": "상코란 무엇인가요?",
+          "description_1": "상코는 아비트럼 위에서 운영되는 레이어 2 네트워크입니다.",
+          "description_2": "저렴하고 빠른 거래를 가능하게 하지만, 레이어 2 네트워크와 달리 상코에는 이더리움과 다른 자체 보안 및 합의 메커니즘이 있습니다."
+        },
+        "gravity": {
+          "title": "그래비티란 무엇인가요?",
+          "description_1": "Gravity는 대중 채택과 옴니체인 미래를 위한 Layer-1 블록체인입니다.",
+          "description_2": "저렴하고 빠른 거래를 가능하게 하지만, 레이어 2 네트워크와 달리 그래비티에는 이더리움과 다른 자체 보안 및 합의 메커니즘이 있습니다."
+        },
+        "berachain": {
+          "title": "베라체인이란 무엇인가요?",
+          "description_1": "Berachain은 BeaconKit을 사용하여 유동성 증명 위에 구축된 Layer-1 블록체인입니다.",
+          "description_2": "저렴하고 빠른 거래를 가능하게 하지만, 레이어 2 네트워크와 달리 베라체인에는 이더리움과 다른 자체 보안 및 합의 메커니즘이 있습니다."
         },
         "custom_network": {
           "title": "이 네트워크란 무엇인가요?",
