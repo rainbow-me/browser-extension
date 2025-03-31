@@ -179,7 +179,7 @@ const getSlippageExplainerProps = (t: I18n['t']) => ({
 });
 
 function DegenModeCard() {
-  const { isDegenModeEnabled } = useDegenMode();
+  const isDegenModeEnabled = useDegenMode((state) => state.isDegenModeEnabled);
 
   const { featureFlags } = useFeatureFlagsStore();
 
@@ -263,7 +263,7 @@ export const SwapSettings = ({
   }, [onDone, setSettings, slippage, source]);
 
   const slippageWarning = useMemo(
-    () => (Number(slippage) >= 3 ? 'loss' : undefined),
+    () => (Number(slippage) >= 6 ? 'loss' : undefined),
     [slippage],
   );
 

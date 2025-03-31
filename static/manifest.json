@@ -68,7 +68,7 @@
     "notifications"
   ],
   "short_name": "Rainbow",
-  "version": "1.5.92",
+  "version": "1.5.94",
   "web_accessible_resources": [
     {
       "matches": [
@@ -83,14 +83,14 @@
     }
   ],
   "commands": {
-    "_execute_action": {
+    "open_rainbow": {
       "suggested_key": {
         "windows": "Alt+Shift+R",
         "mac": "Alt+Shift+R",
         "chromeos": "Alt+Shift+R",
         "linux": "Alt+Shift+R"
       },
-      "description": "Open the Rainbow Wallet extension"
+      "description": "Shortcut to open Rainbow Wallet"
     }
   }
 }

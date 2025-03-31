@@ -3,7 +3,7 @@ import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client
 import TrezorConnect from '@trezor/connect-web';
 import { isEqual } from 'lodash';
 import * as React from 'react';
-import { WagmiProvider } from 'wagmi';
+import { WagmiProvider, createConfig } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -18,7 +18,12 @@ import { useCurrentLanguageStore, useCurrentThemeStore } from '~/core/state';
 import { networkStore } from '~/core/state/networks/networks';
 import { TelemetryIdentifier } from '~/core/telemetry';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
-import { WagmiConfigUpdater, wagmiConfig } from '~/core/wagmi';
+import {
+  WagmiConfigUpdater,
+  wagmiConfig as _wagmiConfig,
+  createChains,
+  createTransports,
+} from '~/core/wagmi';
 import { Box, ThemeProvider } from '~/design-system';
 
 import { Routes } from './Routes';
@@ -37,6 +42,9 @@ export function App() {
   const activeChains = networkStore((state) => state.getAllActiveRpcChains());
   const prevChains = usePrevious(activeChains);
 
+  const [wagmiConfig, setWagmiConfig] =
+    React.useState<ReturnType<typeof createConfig>>(_wagmiConfig);
+
   useExpiryListener();
 
   React.useEffect(() => {
@@ -44,14 +52,12 @@ export function App() {
       backgroundMessenger.send('rainbow_updateWagmiClient', {
         rpcProxyEnabled: config.rpc_proxy_enabled,
       });
-    }
-  }, [prevChains, activeChains]);
-
-  React.useEffect(() => {
-    if (!isEqual(prevChains, activeChains)) {
-      backgroundMessenger.send('rainbow_updateWagmiClient', {
-        rpcProxyEnabled: config.rpc_proxy_enabled,
-      });
+      setWagmiConfig(
+        createConfig({
+          chains: createChains(activeChains),
+          transports: createTransports(activeChains),
+        }),
+      );
     }
   }, [prevChains, activeChains]);
 

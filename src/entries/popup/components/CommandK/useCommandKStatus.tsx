@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 
 import { EventProperties, event } from '~/analytics/event';
 import { promoTypes, quickPromoStore } from '~/core/state/quickPromo';
