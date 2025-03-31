@@ -1,5 +1,5 @@
 import { debounce } from 'lodash';
-import create, { StateCreator } from 'zustand';
+import { StateCreator, create } from 'zustand';
 import {
   PersistOptions,
   PersistStorage,
@@ -158,7 +158,7 @@ function createPersistStorage<S, PersistedState extends Partial<S>>(
       params: LazyPersistParams<S, PersistedState>,
     ): Promise<void> {
       try {
-        const key = `${params.storageKey}:${params.name}`;
+        const key = `${params.storageKey}.${params.name}`;
         const serializedValue = params.serializer(
           params.partialize(params.value.state as S),
           params.value.version ?? 0,
@@ -179,7 +179,7 @@ function createPersistStorage<S, PersistedState extends Partial<S>>(
 
   const persistStorage: PersistStorage<PersistedState> = {
     getItem: async (name: string) => {
-      const key = `${storageKey}:${name}`;
+      const key = `${storageKey}.${name}`;
       const serializedValue = await rainbowStorage.getItem(key);
       if (!serializedValue) return null;
       return deserializer(serializedValue);
@@ -194,7 +194,7 @@ function createPersistStorage<S, PersistedState extends Partial<S>>(
       });
     },
     removeItem: async (name: string) => {
-      const key = `${storageKey}:${name}`;
+      const key = `${storageKey}.${name}`;
       await rainbowStorage.removeItem(key);
     },
   };
@@ -208,7 +208,7 @@ function createPersistStorage<S, PersistedState extends Partial<S>>(
  * @param version - The version of the state.
  * @returns The serialized state as a JSON string.
  */
-function defaultSerializeState<PersistedState>(
+export function defaultSerializeState<PersistedState>(
   state: StorageValue<PersistedState>['state'],
   version: StorageValue<PersistedState>['version'],
   shouldUseReplacer: boolean,
@@ -234,7 +234,7 @@ function defaultSerializeState<PersistedState>(
  * @param serializedState - The serialized state as a JSON string.
  * @returns An object containing the deserialized state and version.
  */
-function defaultDeserializeState<PersistedState>(
+export function defaultDeserializeState<PersistedState>(
   serializedState: string,
   shouldUseReviver: boolean,
 ): StorageValue<PersistedState> {

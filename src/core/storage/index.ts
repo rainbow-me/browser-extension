@@ -4,12 +4,12 @@ export const LocalStorage = {
   async clear() {
     await chrome?.storage?.local?.clear();
   },
-  async set(key: string, value: unknown) {
+  async set<TValue = unknown>(key: string, value: TValue) {
     await chrome?.storage?.local?.set({ [key]: value });
   },
-  async get(key: string) {
+  async get<TValue = unknown>(key: string) {
     const result = await chrome?.storage?.local?.get(key);
-    return result[key];
+    return result[key] as TValue;
   },
   async remove(key: string) {
     await chrome?.storage?.local?.remove(key);

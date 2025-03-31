@@ -32,6 +32,10 @@ export const event = {
    */
   bridgeSubmitted: 'bridge.submitted',
   /**
+   * Tracks when the extension popup is opened via keyboard shortcut (Alt+Shift+R)
+   */
+  browserCommandTriggered: 'browser_command_triggered',
+  /**
    * Called when a commandK action is executed
    */
   commandKActionExecuted: 'commandK.actionExecuted',
@@ -770,6 +774,12 @@ export type EventProperties = {
      * Number of requests made when rate limit was hit
      */
     requests: number;
+  };
+  [event.browserCommandTriggered]: {
+    /**
+     * The command that was triggered
+     */
+    command: 'launched';
   };
   [event.keyboardNavigationTriggered]: {
     /**

@@ -174,7 +174,7 @@ it('should be able to interact with slippage settings', async () => {
   await typeOnTextInput({
     id: 'slippage-input-mask',
     driver,
-    text: '5',
+    text: '6',
   });
   const warning = await findElementByTestId({
     id: 'swap-settings-slippage-warning',

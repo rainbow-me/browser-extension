@@ -4,6 +4,8 @@ import { ChainId } from '~/core/types/chains';
 
 import { createStore } from '../internal/createStore';
 import { withSelectors } from '../internal/withSelectors';
+import { runNetworksMigrationIfNeeded } from '../networks/runNetworksMigrationIfNeeded';
+const IS_TESTING = process.env.IS_TESTING === 'true';
 
 export interface UserChainsState {
   /**
@@ -37,6 +39,9 @@ export interface UserChainsState {
   removeUserChain: ({ chainId }: { chainId: ChainId }) => void;
 }
 
+/**
+ * @deprecated use `networkStore` instead
+ */
 export const userChainsStore = createStore<UserChainsState>(
   (set, get) => ({
     userChains: {},
@@ -100,8 +105,18 @@ export const userChainsStore = createStore<UserChainsState>(
     persist: {
       name: 'userChains',
       version: 8,
+      onRehydrateStorage: () => {
+        return (_, error) => {
+          if (!error && !IS_TESTING) {
+            runNetworksMigrationIfNeeded('userChains');
+          }
+        };
+      },
     },
   },
 );
 
+/**
+ * @deprecated use `networkStore` instead
+ */
 export const useUserChainsStore = withSelectors(create(userChainsStore));
