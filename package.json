@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.5.94",
+  "version": "1.5.95",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -293,7 +293,8 @@
     "elliptic": "6.6.1",
     "@babel/helpers": "7.26.10",
     "@babel/runtime": "7.26.10",
-    "@babel/runtime-corejs3": "7.26.10"
+    "@babel/runtime-corejs3": "7.26.10",
+    "tar-fs": "3.0.8"
   },
   "lavamoat": {
     "allowScripts": {

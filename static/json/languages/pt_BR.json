@@ -434,7 +434,8 @@
       "open_in_new_tab": "Abrir em Nova Aba",
       "switch_to_wallet": "Alternar para Carteira",
       "send_to_contact": "Enviar para Contato",
-      "view": "Visualizar"
+      "view": "Visualizar",
+      "uuid_copied": "UUID copiado"
     },
     "commands": {
       "names": {
@@ -497,7 +498,8 @@
         "send_contact": "Enviar para Contato",
         "export_addresses_as_csv": "Exportar endereços como CSV",
         "enable_flashbots": "Ativar Flashbots",
-        "disable_flashbots": "Desativar Flashbots"
+        "disable_flashbots": "Desativar Flashbots",
+        "copy_uuid": "Copiar UUID"
       },
       "search_tags": {
         "swap": "comprar, vender, negociar, encomendar, trocar, dex, rotas",
@@ -522,7 +524,8 @@
         "add_hardware_wallet": "ledger, trezor, conectar",
         "hide_balances": "alternar",
         "hide_small_balances": "alternar",
-        "wallets_and_keys": "carteiras e chaves, configurações, preferências"
+        "wallets_and_keys": "carteiras e chaves, configurações, preferências",
+        "diagnostics": "diagnóstico"
       }
     },
     "command_rows": {
@@ -834,7 +837,7 @@
       "no_quote": {
         "title": "Nenhuma cotação disponível",
         "description": "Não conseguimos encontrar cotações para este %{action}. Isso pode ser devido à falta de liquidez para %{action} ou devido a problemas com a implementação do token",
-        "action_label": "Continuar mesmo assim"
+        "action_label": "Entendi"
       },
       "insufficient_liquidity": {
         "title": "Liquidez insuficiente",
@@ -1457,8 +1460,7 @@
       "get_eth": "Comprar ETH",
       "try_swap": "Experimente uma Troca",
       "referral_link_ready": "Seu link de referência está pronto",
-      "share_and_earn": "Tuite seu link de referência e ganhe 250 pontos extras",
-      "plus_percent_of_refers": "Além disso, você ganha 10% dos pontos de cada pessoa que indicar",
+      "referral_link_bonus_text": "Compartilhe seu link de referência no Twitter e você ganhará 10% dos pontos ganhos por qualquer pessoa que você indicar",
       "share": "Compartilhar em X",
       "share_tweet": "Acabei de receber %{points} Rainbow Points na minha carteira\nTodos têm pelo menos 100 pontos à espera, mas você pode ter mais!\n\nReivindique seu prêmio: https://rainbow.me/points?ref=%{referralCode}",
       "share_tweet_with_metamask_bonus": "Acabei de receber %{points} Rainbow Points na minha carteira — e um bônus extra de %{metamaskBonus} Pontos por migrar minha carteira MetaMask para Rainbow 🦊 🔫\n\nTodos têm pelo menos 100 pontos à espera, mas você pode ter mais! Reivindique seu prêmio: https://rainbow.me/points?ref=%{referralCode}",
@@ -1678,6 +1680,26 @@
           "title": "O que é ApeChain?",
           "description_1": "ApeChain é uma rede Layer <b>3</b> que funciona em cima do Arbitrum Orbit e Ethereum.",
           "description_2": "Melhora significativamente a utilidade do ApeCoin, fomentando uma economia robusta e dinâmica impulsionada pelo $APE."
+        },
+        "ink": {
+          "title": "O que é Ink?",
+          "description_1": "Ink é uma blockchain de camada 2 (L2) de ponta construída sobre a Superchain e lançada pela Kraken.",
+          "description_2": "Como uma evolução natural de sua missão, o Ink servirá como uma ponte perfeita para o DeFi, capacitando os usuários a migrar para o blockchain com confiança e facilidade"
+        },
+        "sanko": {
+          "title": "O que é Sanko?",
+          "description_1": "Sanko é uma rede Layer 2 que opera em cima do Arbitrum.",
+          "description_2": "Permite transações mais baratas e rápidas, mas, ao contrário das redes de Camada 2, Sanko tem seus próprios mecanismos de segurança e consenso que diferem do Ethereum."
+        },
+        "gravity": {
+          "title": "O que é Gravity?",
+          "description_1": "Gravity é uma blockchain Layer-1 projetada para adoção em massa e um futuro omni-chain.",
+          "description_2": "Permite transações mais baratas e rápidas, mas, ao contrário das redes de Camada 2, Gravity tem seus próprios mecanismos de segurança e consenso que diferem do Ethereum."
+        },
+        "berachain": {
+          "title": "O que é Berachain?",
+          "description_1": "Berachain é uma blockchain Layer-1 construída sobre a prova de liquidez usando o BeaconKit.",
+          "description_2": "Permite transações mais baratas e rápidas, mas, ao contrário das redes de Camada 2, Berachain tem seus próprios mecanismos de segurança e consenso que diferem do Ethereum."
         },
         "custom_network": {
           "title": "O que é esta Rede?",
