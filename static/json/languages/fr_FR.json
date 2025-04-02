@@ -434,7 +434,8 @@
       "open_in_new_tab": "Ouvrir dans un nouvel onglet",
       "switch_to_wallet": "Changer de portefeuille",
       "send_to_contact": "Envoyer au contact",
-      "view": "Voir"
+      "view": "Voir",
+      "uuid_copied": "UUID copié"
     },
     "commands": {
       "names": {
@@ -497,7 +498,8 @@
         "send_contact": "Envoyer au contact",
         "export_addresses_as_csv": "Exporter les adresses au format CSV",
         "enable_flashbots": "Activer Flashbots",
-        "disable_flashbots": "Désactiver Flashbots"
+        "disable_flashbots": "Désactiver Flashbots",
+        "copy_uuid": "Copier UUID"
       },
       "search_tags": {
         "swap": "acheter, vendre, échanger, commander, échange, dex, itinéraires",
@@ -522,7 +524,8 @@
         "add_hardware_wallet": "ledger, trezor, connecter",
         "hide_balances": "basculer",
         "hide_small_balances": "basculer",
-        "wallets_and_keys": "portefeuilles et clés, paramètres, préférences"
+        "wallets_and_keys": "portefeuilles et clés, paramètres, préférences",
+        "diagnostics": "diagnostics"
       }
     },
     "command_rows": {
@@ -834,7 +837,7 @@
       "no_quote": {
         "title": "Aucune offre disponible",
         "description": "Nous n'avons pas pu trouver de devis pour ce %{action}. Cela pourrait être dû à un manque de liquidité pour %{action} ou à des problèmes liés à la mise en œuvre du token",
-        "action_label": "Continuer quand même"
+        "action_label": "Compris"
       },
       "insufficient_liquidity": {
         "title": "Liquidité insuffisante",
@@ -1457,8 +1460,7 @@
       "get_eth": "Obtenir des ETH",
       "try_swap": "Essayer un échange",
       "referral_link_ready": "Votre lien de parrainage est prêt",
-      "share_and_earn": "Tweetez votre lien de parrainage et obtenez 250 points supplémentaires",
-      "plus_percent_of_refers": "De plus, gagnez 10% des points obtenus par chaque personne que vous parrainez",
+      "referral_link_bonus_text": "Tweetez votre lien de parrainage et vous gagnerez 10% des points gagnés par toute personne que vous parrainez",
       "share": "Partager sur X",
       "share_tweet": "Je viens de recevoir %{points} Points Rainbow déposés dans mon portefeuille\nTout le monde a au moins 100 points en attente, mais vous pourriez en avoir plus !\n\nRéclamez votre drop : https://rainbow.me/points?ref=%{referralCode}",
       "share_tweet_with_metamask_bonus": "Je viens de recevoir %{points} Points Rainbow dans mon portefeuille — et %{metamaskBonus} points supplémentaires en bonus pour avoir migré mon portefeuille MetaMask vers Rainbow 🦊 🔫\n\nTout le monde a au moins 100 points en attente, mais vous pourriez en avoir plus ! Réclamez votre drop : https://rainbow.me/points?ref=%{referralCode}",
@@ -1678,6 +1680,26 @@
           "title": "C'est quoi ApeChain ?",
           "description_1": "ApeChain est un réseau de couche <b>3</b> qui fonctionne au-dessus d'Arbitrum Orbit et d'Ethereum.",
           "description_2": "Elle améliore considérablement l'utilité d'ApeCoin, favorisant une économie robuste et dynamique alimentée par $APE."
+        },
+        "ink": {
+          "title": "Qu'est-ce qu'Ink?",
+          "description_1": "Ink est une blockchain de pointe de couche 2 (L2) construite sur la Superchaîne et publiée par Kraken.",
+          "description_2": "En tant qu'évolution naturelle de leur mission, Ink servira de pont sans couture vers DeFi, permettant aux utilisateurs de passer en chaîne avec confiance et facilité."
+        },
+        "sanko": {
+          "title": "Qu'est-ce que Sanko?",
+          "description_1": "Sanko est un réseau de couche 2 qui fonctionne au-dessus d'Arbitrum.",
+          "description_2": "Il permet des transactions moins chères et plus rapides, mais contrairement aux réseaux de couche 2, Sanko possède ses propres mécanismes de sécurité et de consensus qui diffèrent d'Ethereum."
+        },
+        "gravity": {
+          "title": "Qu'est-ce que Gravity?",
+          "description_1": "Gravity est une blockchain Layer-1 conçue pour une adoption massive et un futur omnichaîne.",
+          "description_2": "Il permet des transactions moins chères et plus rapides, mais contrairement aux réseaux de couche 2, Gravity possède ses propres mécanismes de sécurité et de consensus qui diffèrent d'Ethereum."
+        },
+        "berachain": {
+          "title": "Qu'est-ce que Berachain?",
+          "description_1": "Berachain est une blockchain Layer-1 construite sur la preuve de liquidité utilisant BeaconKit.",
+          "description_2": "Il permet des transactions moins chères et plus rapides, mais contrairement aux réseaux de couche 2, Berachain possède ses propres mécanismes de sécurité et de consensus qui diffèrent d'Ethereum."
         },
         "custom_network": {
           "title": "C'est quoi ce réseau ?",
