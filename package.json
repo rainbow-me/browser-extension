@@ -79,7 +79,7 @@
     "firefox:zip": "yarn zip && mv rainbowbx.zip rainbowbx.xpi",
     "firefox:lint": "yarn web-ext lint --source-dir ./build",
     "firefox:run": "yarn web-ext run --source-dir ./build/ -f='/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox'",
-    "tag-release": "git tag -a v$(node -p \"require('./package.json').version\") -m \"Release v$(node -p \"require('./package.json').version\")\" && git push --tags"
+    "tag-version": "git tag -a v$(node -p \"require('./package.json').version\") -m \"Release v$(node -p \"require('./package.json').version\")\" && git push --tags"
   },
   "engines": {
     "node": ">=20.16.0"
