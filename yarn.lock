@@ -4365,10 +4365,10 @@
     eventemitter3 "5.0.1"
     viem "1.21.4"
 
-"@rainbow-me/swaps@0.35.0":
-  version "0.35.0"
-  resolved "https://registry.yarnpkg.com/@rainbow-me/swaps/-/swaps-0.35.0.tgz#0e9a04ada7a137b0f73c89144e25de4e37c5743c"
-  integrity sha512-yIXyQwfhcYIwHdJvGUU6GXjD49yXtshtNnutQGOqYcqS4DdbnHwYLfSyMJ44mSKdBf1vJdHWR+Du+IOOMuTZjw==
+"@rainbow-me/swaps@0.36.0":
+  version "0.36.0"
+  resolved "https://registry.yarnpkg.com/@rainbow-me/swaps/-/swaps-0.36.0.tgz#2e6d83291cc8072c2d0659fbc98a4621475a0576"
+  integrity sha512-NlKaqnXMcg14ieexb/d5vCZP4vr+AVUl0RfHz1DXVPdj3T7/54QzeSwXcXPBJox6znngMwotlm027ka2xaDF8Q==
   dependencies:
     "@ethereumjs/util" "9.0.0"
     "@ethersproject/abi" "5.7.0"
