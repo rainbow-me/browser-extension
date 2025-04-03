@@ -17,6 +17,7 @@ import {
   findElementByTestIdAndClick,
   findElementByTestIdAndDoubleClick,
   findElementByText,
+  findElementByTextAndClick,
   getExtensionIdByName,
   getRootUrl,
   getTextFromText,
@@ -988,12 +989,15 @@ it('should be able to execute swap', async () => {
     driver,
     text: Key.BACK_SPACE,
   });
+  await delayTime('short');
   await typeOnTextInput({
     id: 'slippage-input-mask',
     driver,
-    text: '99',
+    text: '15',
   });
-
+  await findElementByTextAndClick(driver, 'Auto');
+  await findElementByTextAndClick(driver, '1inch');
+  await delayTime('medium');
   await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
 
   const ethBalanceBeforeSwap = await provider.getBalance(WALLET_TO_USE_ADDRESS);
@@ -1004,7 +1008,7 @@ it('should be able to execute swap', async () => {
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
 
   // waiting for balances to update / swap to execute
-  await delay(10_000);
+  await delay(30_000);
 
   const ethBalanceAfterSwap = await provider.getBalance(WALLET_TO_USE_ADDRESS);
   const balanceDifference = subtract(
