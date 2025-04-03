@@ -17,6 +17,7 @@ import {
   findElementByTestIdAndClick,
   findElementByTestIdAndDoubleClick,
   findElementByText,
+  findElementByTextAndClick,
   getExtensionIdByName,
   getRootUrl,
   getTextFromText,
@@ -522,7 +523,7 @@ it.todo('should be able to check insufficient asset for swap', async () => {
   expect(confirmButtonText).toEqual('Insufficient WBTC');
 });
 
-it.skip('should be able to check insufficient native asset for gas', async () => {
+it('should be able to check insufficient native asset for gas', async () => {
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
@@ -988,12 +989,15 @@ it('should be able to execute swap', async () => {
     driver,
     text: Key.BACK_SPACE,
   });
+  await delayTime('short');
   await typeOnTextInput({
     id: 'slippage-input-mask',
     driver,
-    text: '99',
+    text: '15',
   });
-
+  await findElementByTextAndClick(driver, 'Auto');
+  await findElementByTextAndClick(driver, '1inch');
+  await delayTime('medium');
   await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
 
   const ethBalanceBeforeSwap = await provider.getBalance(WALLET_TO_USE_ADDRESS);
