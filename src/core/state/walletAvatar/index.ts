@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 
 import { createStore } from '~/core/state/internal/createStore';
 
@@ -40,4 +40,4 @@ export const walletAvatarStore = createStore<WalletAvatarStore>(
   },
 );
 
-export const useWalletAvatarStore = create(walletAvatarStore);
+export const useWalletAvatarStore = create(() => walletAvatarStore.getState());

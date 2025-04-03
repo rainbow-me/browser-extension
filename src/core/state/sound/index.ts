@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 
 import { createStore } from '../internal/createStore';
 
@@ -20,4 +20,4 @@ export const soundStore = createStore<SoundState>(
   },
 );
 
-export const useSoundStore = create(soundStore);
+export const useSoundStore = create(() => soundStore.getState());

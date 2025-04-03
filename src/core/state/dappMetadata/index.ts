@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 
 import { DappMetadata } from '~/core/resources/metadata/dapp';
 
@@ -53,4 +53,4 @@ export const dappMetadataStore = createStore<DappMetadataState>(
   },
 );
 
-export const useDappMetadataStore = create(dappMetadataStore);
+export const useDappMetadataStore = create(() => dappMetadataStore.getState());

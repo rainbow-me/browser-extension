@@ -80,5 +80,5 @@ export const appConnectionWalletSwitcherStore =
   );
 
 export const useAppConnectionWalletSwitcherStore = withSelectors(
-  create(appConnectionWalletSwitcherStore),
+  create(() => appConnectionWalletSwitcherStore.getState()),
 );

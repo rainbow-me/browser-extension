@@ -1,5 +1,5 @@
 import { uuid4 } from '@sentry/utils';
-import create from 'zustand';
+import { create } from 'zustand';
 
 import { createStore } from '~/core/state/internal/createStore';
 
@@ -21,4 +21,4 @@ export const deviceIdStore = createStore<DeviceIdStore>(
   },
 );
 
-export const useDeviceIdStore = create(deviceIdStore);
+export const useDeviceIdStore = create(() => deviceIdStore.getState());

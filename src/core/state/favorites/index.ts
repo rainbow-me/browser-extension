@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 
 import buildTimeNetworks from 'static/data/networks.json';
 import { createStore } from '~/core/state/internal/createStore';
@@ -71,4 +71,4 @@ export const favoritesStore = createStore<FavoritesState>(
   },
 );
 
-export const useFavoritesStore = create(favoritesStore);
+export const useFavoritesStore = create(() => favoritesStore.getState());

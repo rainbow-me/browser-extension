@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 
 import { createStore } from '~/core/state/internal/createStore';
 
@@ -23,4 +23,4 @@ export const colorCacheStore = createStore<ColorCacheStore>(
   },
 );
 
-export const useColorCacheStore = create(colorCacheStore);
+export const useColorCacheStore = create(() => colorCacheStore.getState());

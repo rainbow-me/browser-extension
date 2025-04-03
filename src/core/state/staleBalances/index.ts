@@ -1,5 +1,5 @@
 import { Address } from 'viem';
-import create from 'zustand';
+import { create } from 'zustand';
 
 import { ChainId } from '~/core/types/chains';
 
@@ -124,4 +124,6 @@ export const staleBalancesStore = createStore<StaleBalancesState>(
   },
 );
 
-export const useStaleBalancesStore = create(staleBalancesStore);
+export const useStaleBalancesStore = create(() =>
+  staleBalancesStore.getState(),
+);

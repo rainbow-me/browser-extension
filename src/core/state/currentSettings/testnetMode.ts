@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 
 import { createStore } from '~/core/state/internal/createStore';
 
@@ -20,4 +20,4 @@ export const testnetModeStore = createStore<TestnetModeState>(
   },
 );
 
-export const useTestnetModeStore = create(testnetModeStore);
+export const useTestnetModeStore = create(() => testnetModeStore.getState());

@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 
 import {
   GasFeeLegacyParams,
@@ -77,4 +77,4 @@ export const gasStore = createStore<GasStore>(
   },
 );
 
-export const useGasStore = withSelectors(create(gasStore));
+export const useGasStore = withSelectors(create(() => gasStore.getState()));

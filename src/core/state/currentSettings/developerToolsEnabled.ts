@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 
 import { createStore } from '~/core/state/internal/createStore';
 
@@ -22,4 +22,6 @@ export const developerToolsEnabledStore =
     },
   );
 
-export const useDeveloperToolsEnabledStore = create(developerToolsEnabledStore);
+export const useDeveloperToolsEnabledStore = create(() =>
+  developerToolsEnabledStore.getState(),
+);

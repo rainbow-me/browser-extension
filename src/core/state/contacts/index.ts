@@ -1,5 +1,5 @@
 import { Address } from 'viem';
-import create from 'zustand';
+import { create } from 'zustand';
 
 import { createStore } from '../internal/createStore';
 import { withSelectors } from '../internal/withSelectors';
@@ -53,4 +53,6 @@ export const contactsStore = createStore<ContactsStore>(
   },
 );
 
-export const useContactsStore = withSelectors(create(contactsStore));
+export const useContactsStore = withSelectors(
+  create(() => contactsStore.getState()),
+);

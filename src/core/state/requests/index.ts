@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 
 import { ProviderRequestPayload } from '../../transports/providerRequestTransport';
 import { createStore } from '../internal/createStore';
@@ -31,4 +31,6 @@ export const pendingRequestStore = createStore<PendingRequestsStore>(
   },
 );
 
-export const usePendingRequestStore = create(pendingRequestStore);
+export const usePendingRequestStore = create(() =>
+  pendingRequestStore.getState(),
+);

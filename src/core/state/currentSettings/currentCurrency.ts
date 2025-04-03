@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 
 import { SupportedCurrencyKey } from '~/core/references';
 import { createStore } from '~/core/state/internal/createStore';
@@ -21,4 +21,6 @@ export const currentCurrencyStore = createStore<CurrentCurrencyState>(
   },
 );
 
-export const useCurrentCurrencyStore = create(currentCurrencyStore);
+export const useCurrentCurrencyStore = create(() =>
+  currentCurrencyStore.getState(),
+);

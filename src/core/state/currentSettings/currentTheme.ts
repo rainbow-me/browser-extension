@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 
 import { createStore } from '~/core/state/internal/createStore';
 import { ThemeOption } from '~/core/types/settings';
@@ -40,4 +40,6 @@ export const currentThemeStore = createStore<CurrentThemeState>(
   },
 );
 
-export const useCurrentThemeStore = withSelectors(create(currentThemeStore));
+export const useCurrentThemeStore = withSelectors(
+  create(() => currentThemeStore.getState()),
+);

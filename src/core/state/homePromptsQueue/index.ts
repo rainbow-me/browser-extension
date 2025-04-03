@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 
 import { createStore } from '~/core/state/internal/createStore';
 
@@ -19,4 +19,6 @@ export const homePromptsQueueStore = createStore<HomePromptsQueue>(
   }),
 );
 
-export const useHomeQueueStackStore = create(homePromptsQueueStore);
+export const useHomeQueueStackStore = create(() =>
+  homePromptsQueueStore.getState(),
+);

@@ -1,5 +1,5 @@
 import { Address } from 'viem';
-import create from 'zustand';
+import { create } from 'zustand';
 
 import { createStore } from '../internal/createStore';
 import { withSelectors } from '../internal/withSelectors';
@@ -50,4 +50,6 @@ export const walletNamesStore = createStore<WalletNamesStore>(
   },
 );
 
-export const useWalletNamesStore = withSelectors(create(walletNamesStore));
+export const useWalletNamesStore = withSelectors(
+  create(() => walletNamesStore.getState()),
+);

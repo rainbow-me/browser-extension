@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 
 import { createStore } from '../internal/createStore';
 
@@ -42,4 +42,4 @@ export const quickPromoStore = createStore<QuickPromoStore>(
   },
 );
 
-export const useQuickPromoStore = create(quickPromoStore);
+export const useQuickPromoStore = create(() => quickPromoStore.getState());

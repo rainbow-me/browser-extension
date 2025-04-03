@@ -15,7 +15,7 @@ export const degenModeStore = createStore(
   },
 );
 
-export const useDegenMode = create(degenModeStore);
+export const useDegenMode = create(() => degenModeStore.getState());
 export const toggleDegenMode = () =>
   useDegenMode.setState((s) => {
     analytics.track(analytics.event.toggledDegenMode, {

@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 
 import { createStore } from './internal/createStore';
 
@@ -37,4 +37,6 @@ export const notificationWindowStore = createStore<NotificationWindowsState>(
   },
 );
 
-export const useNotificationWindowStore = create(notificationWindowStore);
+export const useNotificationWindowStore = create(() =>
+  notificationWindowStore.getState(),
+);

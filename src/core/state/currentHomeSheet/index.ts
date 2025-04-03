@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 
 import { createStore } from '../internal/createStore';
 
@@ -18,4 +18,6 @@ export const currentHomeSheetStore = createStore<CurrentSheetState>(
   }),
 );
 
-export const useCurrentHomeSheetStore = create(currentHomeSheetStore);
+export const useCurrentHomeSheetStore = create(() =>
+  currentHomeSheetStore.getState(),
+);
