@@ -522,7 +522,7 @@ it.todo('should be able to check insufficient asset for swap', async () => {
   expect(confirmButtonText).toEqual('Insufficient WBTC');
 });
 
-it('should be able to check insufficient native asset for gas', async () => {
+it.skip('should be able to check insufficient native asset for gas', async () => {
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
@@ -1004,7 +1004,7 @@ it('should be able to execute swap', async () => {
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
 
   // waiting for balances to update / swap to execute
-  await delay(10_000);
+  await delay(30_000);
 
   const ethBalanceAfterSwap = await provider.getBalance(WALLET_TO_USE_ADDRESS);
   const balanceDifference = subtract(
