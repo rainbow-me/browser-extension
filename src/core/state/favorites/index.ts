@@ -1,7 +1,7 @@
 import create from 'zustand';
 
 import buildTimeNetworks from 'static/data/networks.json';
-import { analytics } from '~/analytics';
+import { queueEventTracking } from '~/analytics/queueEvent';
 import { createStore } from '~/core/state/internal/createStore';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -13,6 +13,23 @@ type UpdateFavoritesArgs = {
 
 const IS_DEV = process.env.IS_DEV === 'true';
 const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
+
+interface analyticsEvent {
+  token: {
+    address: string;
+    chainId: ChainId;
+  };
+  favorites: {
+    favoritesLength: number;
+  };
+}
+export const handleFavoritesTracking = (
+  analyticsData: analyticsEvent,
+  eventType: string,
+) => {
+  const analyticsEvent = 'analytics.event.' + eventType;
+  queueEventTracking(analyticsEvent, analyticsData);
+};
 
 const getInitialFavorites = () => {
   return buildTimeNetworks.backendNetworks.networks.reduce(
@@ -52,12 +69,8 @@ const trackFavoriteChange = (
       favoritesLength,
     },
   };
-
-  const eventType = isAdding
-    ? analytics.event.tokenFavorited
-    : analytics.event.tokenUnfavorited;
-
-  analytics.track(eventType, analyticsData);
+  const eventType = isAdding ? 'tokenFavorited' : 'tokenUnfavorited';
+  handleFavoritesTracking(analyticsData, eventType);
 };
 
 export const favoritesStore = createStore<FavoritesState>(
