@@ -24,6 +24,7 @@ import {
   findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
+  findElementByTextAndClick,
   getExtensionIdByName,
   getRootUrl,
   getTextFromText,
@@ -188,8 +189,10 @@ describe('Swap Flow 2', () => {
     await typeOnTextInput({
       id: 'slippage-input-mask',
       driver,
-      text: '99',
+      text: '15',
     });
+    await findElementByTextAndClick(driver, 'Auto');
+    await findElementByTextAndClick(driver, '1inch');
     await delayTime('medium');
 
     await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
