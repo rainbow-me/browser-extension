@@ -1,7 +1,6 @@
-import create from 'zustand';
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 
 import { ProviderRequestPayload } from '../../transports/providerRequestTransport';
-import { createStore } from '../internal/createStore';
 
 export interface PendingRequestsStore {
   pendingRequests: ProviderRequestPayload[];
@@ -9,7 +8,7 @@ export interface PendingRequestsStore {
   removePendingRequest: (id: number) => void;
 }
 
-export const pendingRequestStore = createStore<PendingRequestsStore>(
+export const pendingRequestStore = createRainbowStore<PendingRequestsStore>(
   (set, get) => ({
     pendingRequests: [],
     addPendingRequest: (newRequest) => {
@@ -24,11 +23,9 @@ export const pendingRequestStore = createStore<PendingRequestsStore>(
     },
   }),
   {
-    persist: {
-      name: 'pendingRequestStore',
-      version: 0,
-    },
+    storageKey: 'pendingRequestStore',
+    version: 0,
   },
 );
 
-export const usePendingRequestStore = create(pendingRequestStore);
+export const usePendingRequestStore = pendingRequestStore;

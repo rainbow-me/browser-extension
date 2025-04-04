@@ -1,8 +1,6 @@
-import create from 'zustand';
-
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { ParsedUserAsset } from '~/core/types/assets';
 
-import { createStore } from '../internal/createStore';
 import { withSelectors } from '../internal/withSelectors';
 
 export interface SelectedTokenState {
@@ -11,7 +9,7 @@ export interface SelectedTokenState {
   selectedToken: ParsedUserAsset | null;
 }
 
-export const selectedTokenStore = createStore<SelectedTokenState>(
+export const selectedTokenStore = createRainbowStore<SelectedTokenState>(
   (set, get) => ({
     getSelectedToken: () => get()?.selectedToken,
     setSelectedToken: (selectedToken?: ParsedUserAsset) => {
@@ -21,4 +19,4 @@ export const selectedTokenStore = createStore<SelectedTokenState>(
   }),
 );
 
-export const useSelectedTokenStore = withSelectors(create(selectedTokenStore));
+export const useSelectedTokenStore = withSelectors(selectedTokenStore);

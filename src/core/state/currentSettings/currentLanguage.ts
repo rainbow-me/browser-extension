@@ -1,7 +1,5 @@
-import create from 'zustand';
-
 import { Language, changeI18nLanguage, i18n } from '~/core/languages';
-import { createStore } from '~/core/state/internal/createStore';
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { fetchJsonLocally } from '~/core/utils/localJson';
 
 export interface CurrentLanguageState {
@@ -17,7 +15,7 @@ const loadTranslation = async (language: Language) => {
   i18n.translations[language] = newLangDict;
 };
 
-export const currentLanguageStore = createStore<CurrentLanguageState>(
+export const currentLanguageStore = createRainbowStore<CurrentLanguageState>(
   (set) => ({
     currentLanguage: Language.EN_US,
     setCurrentLanguage: async (newLanguage) => {
@@ -27,11 +25,9 @@ export const currentLanguageStore = createStore<CurrentLanguageState>(
     },
   }),
   {
-    persist: {
-      name: 'currentLanguage',
-      version: 1,
-    },
+    storageKey: 'currentLanguage',
+    version: 1,
   },
 );
 
-export const useCurrentLanguageStore = create(currentLanguageStore);
+export const useCurrentLanguageStore = currentLanguageStore;

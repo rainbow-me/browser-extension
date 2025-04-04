@@ -1,6 +1,5 @@
-import create from 'zustand';
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 
-import { createStore } from '../internal/createStore';
 import { withSelectors } from '../internal/withSelectors';
 
 export interface ErrorState {
@@ -8,9 +7,9 @@ export interface ErrorState {
   setError: (e: Error | null) => void;
 }
 
-export const errorStore = createStore<ErrorState>((set) => ({
+export const errorStore = createRainbowStore<ErrorState>((set) => ({
   error: null,
   setError: (error) => set({ error }),
 }));
 
-export const useErrorStore = withSelectors(create(errorStore));
+export const useErrorStore = withSelectors(errorStore);

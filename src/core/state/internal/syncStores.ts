@@ -14,35 +14,59 @@ import {
 } from './createRainbowStore';
 import { StoreWithPersist } from './createStore';
 
-async function syncStore({ store }: { store: StoreWithPersist<unknown> }) {
-  if (!store.persist) return;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isStoreWithPersist(store: any): store is StoreWithPersist<unknown> {
+  return (
+    store &&
+    typeof store === 'function' &&
+    'persist' in store &&
+    typeof store.persist === 'object' &&
+    store.persist !== null &&
+    'getOptions' in store.persist &&
+    typeof store.persist.getOptions === 'function' &&
+    'rehydrate' in store.persist &&
+    typeof store.persist.rehydrate === 'function'
+  );
+}
 
+async function syncStore({ store }: { store: StoreWithPersist<unknown> }) {
   const persistOptions = store.persist.getOptions();
-  const storageName = persistOptions.name || '';
+  const storageName = persistOptions.name
+    ? `rainbow.zustand.${persistOptions.name}`
+    : undefined;
+
+  console.debug(`syncStore: initializing for store ${storageName}`);
 
   const listener = async (changedStore: StoreWithPersist<unknown>) => {
+    if (!storageName) return;
+
     if (changedStore === undefined) {
-      // Retrieve the default state from the store initializer.
-      const state = store.initializer(
-        () => undefined,
-        () => null,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        {} as any,
-      );
+      const state = store.getInitialState();
       const version = persistOptions.version;
-      const newStore = persistOptions.serialize?.({ state, version });
-      await LocalStorage.set(storageName, newStore);
+      const serializedState = persistOptions?.serialize?.({ state, version });
+      console.log('serializedState', serializedState);
+      await LocalStorage.set(storageName, serializedState);
     }
     store.persist.rehydrate();
   };
 
-  LocalStorage.listen(storageName, listener);
+  if (storageName) {
+    console.debug(
+      `syncStore: setting up LocalStorage listener for ${storageName}`,
+    );
+    LocalStorage.listen(storageName, listener);
+  } else {
+    console.debug(
+      `syncStore: skipping listener setup, storageName is undefined`,
+    );
+  }
 }
 
 export function syncStores() {
   Object.values(stores).forEach((store) => {
-    if (typeof store === 'function') return;
-    if (store.persist) syncStore({ store: store as StoreWithPersist<unknown> });
+    if (isStoreWithPersist(store)) {
+      syncStore({ store });
+    }
   });
 }
 

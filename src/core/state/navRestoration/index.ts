@@ -1,8 +1,6 @@
-import create from 'zustand';
-
 import { isNativePopup } from '~/core/utils/tabs';
 
-import { createStore } from '../internal/createStore';
+import { createRainbowStore } from '../internal/createRainbowStore';
 import { withSelectors } from '../internal/withSelectors';
 
 export interface NavRestorationStore {
@@ -15,7 +13,7 @@ export interface NavRestorationStore {
   shouldRestoreNavigation: boolean;
 }
 
-export const navRestorationStore = createStore<NavRestorationStore>(
+export const navRestorationStore = createRainbowStore<NavRestorationStore>(
   (set) => ({
     clearLastPage: async () => {
       const isPopup = await isNativePopup();
@@ -46,13 +44,9 @@ export const navRestorationStore = createStore<NavRestorationStore>(
     shouldRestoreNavigation: false,
   }),
   {
-    persist: {
-      name: 'navRestoration',
-      version: 0,
-    },
+    storageKey: 'navRestoration',
+    version: 0,
   },
 );
 
-export const useNavRestorationStore = withSelectors(
-  create(navRestorationStore),
-);
+export const useNavRestorationStore = withSelectors(navRestorationStore);

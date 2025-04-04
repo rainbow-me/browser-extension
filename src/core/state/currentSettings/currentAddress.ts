@@ -1,7 +1,6 @@
 import { Address } from 'viem';
-import create from 'zustand';
 
-import { createStore } from '~/core/state/internal/createStore';
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 
 import { withSelectors } from '../internal/withSelectors';
 
@@ -10,16 +9,14 @@ interface PersistedAddressState {
   setCurrentAddress: (address: Address) => void;
 }
 
-const persistedAddressStore = createStore<PersistedAddressState>(
+const persistedAddressStore = createRainbowStore<PersistedAddressState>(
   (set) => ({
     currentAddress: '' as Address,
     setCurrentAddress: (newAddress) => set({ currentAddress: newAddress }),
   }),
   {
-    persist: {
-      name: 'currentAddress',
-      version: 0,
-    },
+    storageKey: 'currentAddress',
+    version: 0,
   },
 );
 
@@ -28,18 +25,20 @@ interface RapidAddressState {
   setCurrentAddress: (address: Address) => void;
 }
 
-export const currentAddressStore = create<RapidAddressState>((set) => ({
-  currentAddress:
-    // Default to the persisted current address
-    persistedAddressStore.getState().currentAddress || ('' as Address),
-  setCurrentAddress: (newAddress) => {
-    if (newAddress !== persistedAddressStore.getState().currentAddress) {
-      set({ currentAddress: newAddress });
-      // Automatically persist in the background to the persisted store
-      persistedAddressStore.getState().setCurrentAddress(newAddress);
-    }
-  },
-}));
+export const currentAddressStore = createRainbowStore<RapidAddressState>(
+  (set) => ({
+    currentAddress:
+      // Default to the persisted current address
+      persistedAddressStore.getState().currentAddress || ('' as Address),
+    setCurrentAddress: (newAddress) => {
+      if (newAddress !== persistedAddressStore.getState().currentAddress) {
+        set({ currentAddress: newAddress });
+        // Automatically persist in the background to the persisted store
+        persistedAddressStore.getState().setCurrentAddress(newAddress);
+      }
+    },
+  }),
+);
 
 // Synchronize currentAddress with persistedAddress once rehydrated
 persistedAddressStore.subscribe((state) => {

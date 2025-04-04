@@ -1,6 +1,4 @@
-import create from 'zustand';
-
-import { createStore } from '../internal/createStore';
+import { createRainbowStore } from '../internal/createRainbowStore';
 
 type SheetMode = 'cancel' | 'none' | 'speedUp';
 
@@ -10,7 +8,7 @@ export interface CurrentSheetState {
   sheet: SheetMode;
 }
 
-export const currentHomeSheetStore = createStore<CurrentSheetState>(
+export const currentHomeSheetStore = createRainbowStore<CurrentSheetState>(
   (set, get) => ({
     getCurrentHomeSheet: () => get().sheet,
     setCurrentHomeSheet: (sheetMode: SheetMode) => set({ sheet: sheetMode }),
@@ -18,4 +16,4 @@ export const currentHomeSheetStore = createStore<CurrentSheetState>(
   }),
 );
 
-export const useCurrentHomeSheetStore = create(currentHomeSheetStore);
+export const useCurrentHomeSheetStore = currentHomeSheetStore;
