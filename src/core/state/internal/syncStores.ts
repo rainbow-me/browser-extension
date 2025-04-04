@@ -31,9 +31,7 @@ function isStoreWithPersist(store: any): store is StoreWithPersist<unknown> {
 
 async function syncStore({ store }: { store: StoreWithPersist<unknown> }) {
   const persistOptions = store.persist.getOptions();
-  const storageName = persistOptions.name
-    ? `rainbow.zustand.${persistOptions.name}`
-    : undefined;
+  const storageName = persistOptions.name;
 
   console.debug(`syncStore: initializing for store ${storageName}`);
 
@@ -41,7 +39,9 @@ async function syncStore({ store }: { store: StoreWithPersist<unknown> }) {
     if (!storageName) return;
 
     if (changedStore === undefined) {
+      console.log('setting up initial state for ', storageName);
       const state = store.getInitialState();
+      console.log('initial state for ', storageName, state);
       const version = persistOptions.version;
       const serializedState = persistOptions?.serialize?.({ state, version });
       console.log('serializedState', serializedState);

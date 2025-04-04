@@ -848,6 +848,7 @@ export const networkStore = createQueryStore<
       enabledChainIds: state.enabledChainIds,
     }),
     storageKey: 'networks',
+    useRainbowNamingSchema: false,
     version: 1,
   },
 );

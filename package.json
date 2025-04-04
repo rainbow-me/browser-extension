@@ -167,7 +167,7 @@
     "viem": "2.21.55",
     "wagmi": "2.8.1",
     "word-wrap": "1.2.4",
-    "zustand": "4.5.5"
+    "zustand": "4.5.4"
   },
   "devDependencies": {
     "@foundry-rs/hardhat-anvil": "0.1.7",

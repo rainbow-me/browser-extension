@@ -22,14 +22,14 @@ export interface RainbowPersistConfig<S, PersistedState = Partial<S>> {
    */
   deserializer?: (serializedState: string) => StorageValue<PersistedState>;
   /**
-   * A function to merge the persisted state with the current state.
-   */
-  merge?: PersistOptions<S, PersistedState>['merge'];
-  /**
    * A function to perform persisted state migration.
    * This function will be called when persisted state versions mismatch with the one specified here.
    */
   migrate?: PersistOptions<S, PersistedState>['migrate'];
+  /**
+   * A function to merge the persisted state with the current state.
+   */
+  merge?: PersistOptions<S, PersistedState>['merge'];
   /**
    * A function returning another (optional) function.
    * The main function will be called before the state rehydration.
@@ -59,6 +59,11 @@ export interface RainbowPersistConfig<S, PersistedState = Partial<S>> {
    */
   storageKey: string;
   /**
+   * Whether to use the Rainbow naming schema for the persisted store.
+   * @default true
+   */
+  useRainbowNamingSchema?: boolean;
+  /**
    * The version of the store's schema.
    * Useful for handling schema changes across app versions.
    * @default 0
@@ -81,15 +86,19 @@ export function createRainbowStore<
 ) {
   if (!persistConfig) return create<S>()(subscribeWithSelector(createState));
 
-  const { persistStorage, version } = createPersistStorage<S, PersistedState>(
-    persistConfig,
-  );
+  const { persistStorage, version } = createPersistStorage<S, PersistedState>({
+    ...persistConfig,
+    useRainbowNamingSchema: persistConfig.useRainbowNamingSchema ?? true,
+  });
 
   return create<S>()(
     subscribeWithSelector(
       persist(createState, {
-        ...persistConfig,
-        name: persistConfig.storageKey,
+        migrate: persistConfig.migrate,
+        name: persistConfig.useRainbowNamingSchema
+          ? `rainbow.zustand.${persistConfig.storageKey}`
+          : persistConfig.storageKey,
+        onRehydrateStorage: persistConfig.onRehydrateStorage,
         storage: persistStorage,
         version,
       }),
@@ -124,6 +133,8 @@ interface LazyPersistParams<S, PersistedState extends Partial<S>> {
   serializer: NonNullable<
     RainbowPersistConfig<S, PersistedState>['serializer']
   >;
+  storageKey: string;
+  useRainbowNamingSchema?: boolean;
   value: StorageValue<S> | StorageValue<PersistedState>;
 }
 
@@ -151,6 +162,7 @@ function createPersistStorage<S, PersistedState extends Partial<S>>(
         enableMapSetHandling,
       ),
     persistThrottleMs = DEFAULT_PERSIST_THROTTLE_MS,
+    storageKey,
     version = 0,
   } = config;
 
@@ -159,7 +171,9 @@ function createPersistStorage<S, PersistedState extends Partial<S>>(
       params: LazyPersistParams<S, PersistedState>,
     ): Promise<void> {
       try {
-        const key = `rainbow.zustand.${params.name}`;
+        const key = !params.useRainbowNamingSchema
+          ? `${params.storageKey}.${params.name}`
+          : `rainbow.zustand.${params.name}`;
         const serializedValue = params.serializer(
           params.partialize(params.value.state as S),
           params.value.version ?? 0,
@@ -180,7 +194,9 @@ function createPersistStorage<S, PersistedState extends Partial<S>>(
 
   const persistStorage: PersistStorage<PersistedState> = {
     getItem: async (name: string) => {
-      const key = `rainbow.zustand.${name}`;
+      const key = !config.useRainbowNamingSchema
+        ? `${storageKey}.${name}`
+        : `rainbow.zustand.${name}`;
       const serializedValue = await rainbowStorage.getItem(key);
       if (!serializedValue) return null;
       return deserializer(serializedValue);
@@ -189,12 +205,16 @@ function createPersistStorage<S, PersistedState extends Partial<S>>(
       await lazyPersist({
         partialize: config.partialize ?? omitStoreMethods<S, PersistedState>,
         serializer,
+        storageKey,
+        useRainbowNamingSchema: config.useRainbowNamingSchema,
         name,
         value,
       });
     },
     removeItem: async (name: string) => {
-      const key = `rainbow.zustand.${name}`;
+      const key = !config.useRainbowNamingSchema
+        ? `${storageKey}.${name}`
+        : `rainbow.zustand.${name}`;
       await rainbowStorage.removeItem(key);
     },
   };
@@ -239,12 +259,8 @@ export function defaultDeserializeState<PersistedState>(
   shouldUseReviver: boolean,
 ): StorageValue<PersistedState> {
   try {
-    let state = serializedState;
-    if (typeof serializedState === 'object') {
-      state = JSON.stringify(serializedState);
-    }
     return JSON.parse(
-      state,
+      serializedState,
       shouldUseReviver ? reviver : undefined,
     ) as StorageValue<PersistedState>;
   } catch (error) {
