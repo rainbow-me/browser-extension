@@ -8,7 +8,6 @@ import {
   SwapType,
   fillQuote,
   getQuoteExecutionDetails,
-  getRainbowRouterContractAddress,
   getWrappedAssetAddress,
   getWrappedAssetMethod,
   unwrapNativeAsset,
@@ -40,6 +39,7 @@ import {
   SWAP_GAS_PADDING,
   estimateSwapGasLimitWithFakeApproval,
   getDefaultGasLimitForTrade,
+  getTargetAddressForQuote,
   overrideWithFastSpeedIfNeeded,
   populateSwap,
 } from '../utils';
@@ -155,7 +155,7 @@ export const estimateUnlockAndSwapFromMetadata = async ({
     const approveTransaction = await populateApprove({
       owner: accountAddress,
       tokenAddress: sellTokenAddress,
-      spender: getRainbowRouterContractAddress(chainId as number),
+      spender: getTargetAddressForQuote(quote),
       chainId,
     });
     const swapTransaction = await populateSwap({
