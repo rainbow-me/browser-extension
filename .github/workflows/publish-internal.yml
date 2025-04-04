@@ -55,7 +55,7 @@ jobs:
           name: rainbowbx-v${{ env.release_version }}
           path: build/
       - name: Submit to the chrome webstore
-        uses: PlasmoHQ/bpp@v3.7.0
+        uses: PlasmoHQ/bpp@v3.8.0
         with:
           artifact: ./rainbowbx.zip
           keys: ${{ secrets.BPP_KEYS_INTERNAL }}
