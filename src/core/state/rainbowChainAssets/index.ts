@@ -1,9 +1,7 @@
 import { Address } from 'viem';
-import create from 'zustand';
 
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { ChainId } from '~/core/types/chains';
-
-import { createStore } from '../internal/createStore';
 
 const mergeNewOfficiallySupportedChainsAssetState = (
   state: RainbowChainAssetsState,
@@ -52,68 +50,70 @@ export interface RainbowChainAssetsState {
   removeRainbowChainAssets: ({ chainId }: { chainId: number }) => void;
 }
 
-export const rainbowChainAssetsStore = createStore<RainbowChainAssetsState>(
-  (set, get) => ({
-    rainbowChainAssets: {},
-    addRainbowChainAsset: ({ chainId, rainbowChainAsset }) => {
-      const { rainbowChainAssets } = get();
-      const chainIdcustomRPCAsset = rainbowChainAssets[chainId] || [];
-      const newCustomRPCAssets = chainIdcustomRPCAsset.concat([
-        rainbowChainAsset,
-      ]);
-      set({
-        rainbowChainAssets: {
-          ...rainbowChainAssets,
-          [chainId]: newCustomRPCAssets,
-        },
-      });
-    },
-    updateRainbowChainAsset: ({ chainId, rainbowChainAsset }) => {
-      const { rainbowChainAssets } = get();
-      const assets = rainbowChainAssets[chainId] || [];
-      const index = assets.findIndex(
-        (asset) => asset.address === rainbowChainAsset.address,
-      );
-      if (index !== -1) {
-        assets[index] = rainbowChainAsset;
-        set({
-          rainbowChainAssets: { ...rainbowChainAssets, [chainId]: assets },
-        });
-      }
-    },
-    removeRainbowChainAsset: ({ chainId, address }) => {
-      const { rainbowChainAssets } = get();
-      const assets = rainbowChainAssets[chainId] || [];
-      const updatedAssets = assets.filter((asset) => asset.address !== address);
-      if (updatedAssets.length) {
+export const rainbowChainAssetsStore =
+  createRainbowStore<RainbowChainAssetsState>(
+    (set, get) => ({
+      rainbowChainAssets: {},
+      addRainbowChainAsset: ({ chainId, rainbowChainAsset }) => {
+        const { rainbowChainAssets } = get();
+        const chainIdcustomRPCAsset = rainbowChainAssets[chainId] || [];
+        const newCustomRPCAssets = chainIdcustomRPCAsset.concat([
+          rainbowChainAsset,
+        ]);
         set({
           rainbowChainAssets: {
             ...rainbowChainAssets,
-            [chainId]: updatedAssets,
+            [chainId]: newCustomRPCAssets,
           },
         });
-      } else {
+      },
+      updateRainbowChainAsset: ({ chainId, rainbowChainAsset }) => {
+        const { rainbowChainAssets } = get();
+        const assets = rainbowChainAssets[chainId] || [];
+        const index = assets.findIndex(
+          (asset) => asset.address === rainbowChainAsset.address,
+        );
+        if (index !== -1) {
+          assets[index] = rainbowChainAsset;
+          set({
+            rainbowChainAssets: { ...rainbowChainAssets, [chainId]: assets },
+          });
+        }
+      },
+      removeRainbowChainAsset: ({ chainId, address }) => {
+        const { rainbowChainAssets } = get();
+        const assets = rainbowChainAssets[chainId] || [];
+        const updatedAssets = assets.filter(
+          (asset) => asset.address !== address,
+        );
+        if (updatedAssets.length) {
+          set({
+            rainbowChainAssets: {
+              ...rainbowChainAssets,
+              [chainId]: updatedAssets,
+            },
+          });
+        } else {
+          delete rainbowChainAssets[chainId];
+          set({
+            rainbowChainAssets: {
+              ...rainbowChainAssets,
+            },
+          });
+        }
+      },
+      removeRainbowChainAssets: ({ chainId }) => {
+        const { rainbowChainAssets } = get();
         delete rainbowChainAssets[chainId];
         set({
           rainbowChainAssets: {
             ...rainbowChainAssets,
           },
         });
-      }
-    },
-    removeRainbowChainAssets: ({ chainId }) => {
-      const { rainbowChainAssets } = get();
-      delete rainbowChainAssets[chainId];
-      set({
-        rainbowChainAssets: {
-          ...rainbowChainAssets,
-        },
-      });
-    },
-  }),
-  {
-    persist: {
-      name: 'rainbowChainAssets',
+      },
+    }),
+    {
+      storageKey: 'rainbowChainAssets',
       version: 2,
       migrate(persistedState, version) {
         const state = persistedState as RainbowChainAssetsState;
@@ -136,7 +136,6 @@ export const rainbowChainAssetsStore = createStore<RainbowChainAssetsState>(
         return state;
       },
     },
-  },
-);
+  );
 
-export const useRainbowChainAssetsStore = create(rainbowChainAssetsStore);
+export const useRainbowChainAssetsStore = rainbowChainAssetsStore;

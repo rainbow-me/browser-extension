@@ -1,9 +1,7 @@
 import { Address } from 'viem';
-import create from 'zustand';
 
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { ChainId } from '~/core/types/chains';
-
-import { createStore } from '../internal/createStore';
 
 const TIME_TO_WATCH = 600000;
 
@@ -35,7 +33,7 @@ export interface StaleBalancesState {
   staleBalances: Record<Address, StaleBalancesByChainId>;
 }
 
-export const staleBalancesStore = createStore<StaleBalancesState>(
+export const staleBalancesStore = createRainbowStore<StaleBalancesState>(
   (set, get) => ({
     addStaleBalance: ({
       address,
@@ -117,11 +115,9 @@ export const staleBalancesStore = createStore<StaleBalancesState>(
     staleBalances: {},
   }),
   {
-    persist: {
-      name: 'staleBalances',
-      version: 0,
-    },
+    storageKey: 'staleBalances',
+    version: 0,
   },
 );
 
-export const useStaleBalancesStore = create(staleBalancesStore);
+export const useStaleBalancesStore = staleBalancesStore;

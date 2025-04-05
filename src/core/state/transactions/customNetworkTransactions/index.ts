@@ -1,9 +1,8 @@
 import { Address } from 'viem';
-import create from 'zustand';
 
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { RainbowTransaction } from '~/core/types/transactions';
 
-import { createStore } from '../../internal/createStore';
 import { withSelectors } from '../../internal/withSelectors';
 
 export interface CustomNetworkTransactionsState {
@@ -36,7 +35,7 @@ export interface CustomNetworkTransactionsState {
 }
 
 export const customNetworkTransactionsStore =
-  createStore<CustomNetworkTransactionsState>(
+  createRainbowStore<CustomNetworkTransactionsState>(
     (set, get) => ({
       customNetworkTransactions: {},
       getCustomNetworkTransactions: ({ address }) => {
@@ -79,13 +78,11 @@ export const customNetworkTransactionsStore =
       },
     }),
     {
-      persist: {
-        name: 'customNetworkTransactions',
-        version: 0,
-      },
+      storageKey: 'customNetworkTransactions',
+      version: 0,
     },
   );
 
 export const useCustomNetworkTransactionsStore = withSelectors(
-  create(customNetworkTransactionsStore),
+  customNetworkTransactionsStore,
 );

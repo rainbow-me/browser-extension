@@ -1,9 +1,8 @@
 import { Chain } from 'viem/chains';
-import create from 'zustand';
 
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { ChainId } from '~/core/types/chains';
 
-import { createStore } from '../internal/createStore';
 import { withSelectors } from '../internal/withSelectors';
 import { runNetworksMigrationIfNeeded } from '../networks/runNetworksMigrationIfNeeded';
 const IS_TESTING = process.env.IS_TESTING === 'true';
@@ -31,7 +30,7 @@ export interface RainbowChainsState {
 /**
  * @deprecated use `networkStore` instead
  */
-export const rainbowChainsStore = createStore<RainbowChainsState>(
+export const rainbowChainsStore = createRainbowStore<RainbowChainsState>(
   (set, get) => ({
     rainbowChains: {},
     getActiveChain: ({ chainId }) => {
@@ -116,16 +115,14 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
     },
   }),
   {
-    persist: {
-      name: 'rainbowChains',
-      version: 13,
-      onRehydrateStorage: () => {
-        return (_, error) => {
-          if (!error && !IS_TESTING) {
-            runNetworksMigrationIfNeeded('rainbowChains');
-          }
-        };
-      },
+    storageKey: 'rainbowChains',
+    version: 13,
+    onRehydrateStorage: () => {
+      return (_, error) => {
+        if (!error && !IS_TESTING) {
+          runNetworksMigrationIfNeeded('rainbowChains');
+        }
+      };
     },
   },
 );
@@ -133,4 +130,4 @@ export const rainbowChainsStore = createStore<RainbowChainsState>(
 /**
  * @deprecated use `networkStore` instead
  */
-export const useRainbowChainsStore = withSelectors(create(rainbowChainsStore));
+export const useRainbowChainsStore = withSelectors(rainbowChainsStore);

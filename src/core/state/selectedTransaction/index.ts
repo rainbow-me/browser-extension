@@ -1,8 +1,6 @@
-import create from 'zustand';
-
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { RainbowTransaction } from '~/core/types/transactions';
 
-import { createStore } from '../internal/createStore';
 import { withSelectors } from '../internal/withSelectors';
 
 export interface SelectedTransactionState {
@@ -11,16 +9,15 @@ export interface SelectedTransactionState {
   selectedTransaction: RainbowTransaction | null;
 }
 
-export const selectedTransactionStore = createStore<SelectedTransactionState>(
-  (set, get) => ({
+export const selectedTransactionStore =
+  createRainbowStore<SelectedTransactionState>((set, get) => ({
     getSelectedTransaction: () => get()?.selectedTransaction,
     setSelectedTransaction: (selectedTransaction?: RainbowTransaction) => {
       set({ selectedTransaction });
     },
     selectedTransaction: null,
-  }),
-);
+  }));
 
 export const useSelectedTransactionStore = withSelectors(
-  create(selectedTransactionStore),
+  selectedTransactionStore,
 );

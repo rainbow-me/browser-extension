@@ -1,24 +1,21 @@
-import create from 'zustand';
-
 import { SupportedCurrencyKey } from '~/core/references';
-import { createStore } from '~/core/state/internal/createStore';
+
+import { createRainbowStore } from '../internal/createRainbowStore';
 
 export interface CurrentCurrencyState {
   currentCurrency: SupportedCurrencyKey;
   setCurrentCurrency: (currency: SupportedCurrencyKey) => void;
 }
 
-export const currentCurrencyStore = createStore<CurrentCurrencyState>(
+export const currentCurrencyStore = createRainbowStore<CurrentCurrencyState>(
   (set) => ({
     currentCurrency: 'USD',
     setCurrentCurrency: (newCurrency) => set({ currentCurrency: newCurrency }),
   }),
   {
-    persist: {
-      name: 'currentCurrency',
-      version: 0,
-    },
+    storageKey: 'currentCurrency',
+    version: 0,
   },
 );
 
-export const useCurrentCurrencyStore = create(currentCurrencyStore);
+export const useCurrentCurrencyStore = currentCurrencyStore;

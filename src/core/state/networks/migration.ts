@@ -1,26 +1,24 @@
-import { createStore } from '../internal/createStore';
+import { createRainbowStore } from '../internal/createRainbowStore';
 
-import { NetworksStoreMigrationState } from './types';
 import { runNetworksMigrationIfNeeded } from './runNetworksMigrationIfNeeded';
+import { NetworksStoreMigrationState } from './types';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
 export const networksStoreMigrationStore =
-  createStore<NetworksStoreMigrationState>(
+  createRainbowStore<NetworksStoreMigrationState>(
     () => ({
       didCompleteNetworksMigration: false,
     }),
     {
-      persist: {
-        name: 'networksStoreMigration',
-        version: 0,
-        onRehydrateStorage: () => {
-          return async (_, error) => {
-            if (!error && !IS_TESTING) {
-              runNetworksMigrationIfNeeded('networksMigration');
-            }
-          };
-        },
+      storageKey: 'networksStoreMigration',
+      version: 0,
+      onRehydrateStorage: () => {
+        return async (_, error) => {
+          if (!error && !IS_TESTING) {
+            runNetworksMigrationIfNeeded('networksMigration');
+          }
+        };
       },
     },
   );

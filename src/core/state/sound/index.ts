@@ -1,23 +1,21 @@
-import create from 'zustand';
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 
-import { createStore } from '../internal/createStore';
+import { withSelectors } from '../internal/withSelectors';
 
 export interface SoundState {
   soundsEnabled: boolean;
   toggleSoundsEnabled: (enabled: boolean) => void;
 }
 
-export const soundStore = createStore<SoundState>(
+export const soundStore = createRainbowStore<SoundState>(
   (set) => ({
     soundsEnabled: true,
     toggleSoundsEnabled: (soundsEnabled) => set({ soundsEnabled }),
   }),
   {
-    persist: {
-      name: 'sound',
-      version: 0,
-    },
+    storageKey: 'sound',
+    version: 0,
   },
 );
 
-export const useSoundStore = create(soundStore);
+export const useSoundStore = withSelectors(soundStore);

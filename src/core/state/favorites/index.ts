@@ -1,7 +1,5 @@
-import create from 'zustand';
-
 import buildTimeNetworks from 'static/data/networks.json';
-import { createStore } from '~/core/state/internal/createStore';
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 
@@ -36,7 +34,7 @@ export interface FavoritesState {
   removeFavorite: UpdateFavoritesFn;
 }
 
-export const favoritesStore = createStore<FavoritesState>(
+export const favoritesStore = createRainbowStore<FavoritesState>(
   (set, get) => ({
     favorites: getInitialFavorites(),
     setFavorites: (favorites) => set({ favorites }),
@@ -64,11 +62,9 @@ export const favoritesStore = createStore<FavoritesState>(
     },
   }),
   {
-    persist: {
-      name: 'favorites',
-      version: 8,
-    },
+    storageKey: 'favorites',
+    version: 8,
   },
 );
 
-export const useFavoritesStore = create(favoritesStore);
+export const useFavoritesStore = favoritesStore;

@@ -1,8 +1,6 @@
-import create from 'zustand';
-
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { UniqueAsset } from '~/core/types/nfts';
 
-import { createStore } from '../internal/createStore';
 import { withSelectors } from '../internal/withSelectors';
 
 export interface SelectedNftState {
@@ -10,11 +8,11 @@ export interface SelectedNftState {
   selectedNft: UniqueAsset | null;
 }
 
-export const selectedNftStore = createStore<SelectedNftState>((set) => ({
+export const selectedNftStore = createRainbowStore<SelectedNftState>((set) => ({
   setSelectedNft: (selectedNft?: UniqueAsset) => {
     set({ selectedNft });
   },
   selectedNft: null,
 }));
 
-export const useSelectedNftStore = withSelectors(create(selectedNftStore));
+export const useSelectedNftStore = withSelectors(selectedNftStore);

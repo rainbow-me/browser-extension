@@ -1,9 +1,8 @@
 import { Address } from 'viem';
-import create from 'zustand';
 
 import { ChainId } from '~/core/types/chains';
 
-import { createStore } from '../internal/createStore';
+import { createRainbowStore } from '../internal/createRainbowStore';
 import { withSelectors } from '../internal/withSelectors';
 
 export interface AppSession {
@@ -71,7 +70,9 @@ export interface AppSessionsStore<T extends AppSession | V0AppSession> {
   clearSessions: () => void;
 }
 
-export const appSessionsStore = createStore<AppSessionsStore<AppSession>>(
+export const appSessionsStore = createRainbowStore<
+  AppSessionsStore<AppSession>
+>(
   (set, get) => ({
     appSessions: {},
     getActiveSession: ({ host }) => {
@@ -215,32 +216,30 @@ export const appSessionsStore = createStore<AppSessionsStore<AppSession>>(
     clearSessions: () => set({ appSessions: {} }),
   }),
   {
-    persist: {
-      name: 'appSessions',
-      version: 1,
-      migrate: (persistedState: unknown, version: number) => {
-        if (version === 0) {
-          const v0PersistedState =
-            persistedState as AppSessionsStore<V0AppSession>;
-          const appSessions: Record<string, AppSession> = {};
-          Object.values(v0PersistedState.appSessions).forEach((appSession) => {
-            appSessions[appSession.host] = {
-              sessions: { [appSession.address]: appSession.chainId },
-              activeSessionAddress: appSession.address,
-              url: appSession.url,
-              host: appSession.host,
-            };
-          });
+    storageKey: 'appSessions',
+    version: 1,
+    migrate: (persistedState: unknown, version: number) => {
+      if (version === 0) {
+        const v0PersistedState =
+          persistedState as AppSessionsStore<V0AppSession>;
+        const appSessions: Record<string, AppSession> = {};
+        Object.values(v0PersistedState.appSessions).forEach((appSession) => {
+          appSessions[appSession.host] = {
+            sessions: { [appSession.address]: appSession.chainId },
+            activeSessionAddress: appSession.address,
+            url: appSession.url,
+            host: appSession.host,
+          };
+        });
 
-          return {
-            ...v0PersistedState,
-            appSessions,
-          } as AppSessionsStore<AppSession>;
-        }
-        return persistedState as AppSessionsStore<AppSession>;
-      },
+        return {
+          ...v0PersistedState,
+          appSessions,
+        } as AppSessionsStore<AppSession>;
+      }
+      return persistedState as AppSessionsStore<AppSession>;
     },
   },
 );
 
-export const useAppSessionsStore = withSelectors(create(appSessionsStore));
+export const useAppSessionsStore = withSelectors(appSessionsStore);

@@ -1,10 +1,9 @@
 import { isAddress } from '@ethersproject/address';
 import { Address } from 'viem';
-import create from 'zustand';
 
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { RainbowTransaction } from '~/core/types/transactions';
 
-import { createStore } from '../../internal/createStore';
 import { withSelectors } from '../../internal/withSelectors';
 
 export interface PendingTransactionsStateV1 {
@@ -32,56 +31,53 @@ export interface PendingTransactionsState {
   clearPendingTransactions: () => void;
 }
 
-export const pendingTransactionsStore = createStore<PendingTransactionsState>(
-  (set, get) => ({
-    pendingTransactions: {},
-    updatePendingTransaction: ({ address, pendingTransaction }) => {
-      const { pendingTransactions: currentPendingTransactions } = get();
-      const addressPendingTransactions =
-        currentPendingTransactions[address] || [];
+export const pendingTransactionsStore =
+  createRainbowStore<PendingTransactionsState>(
+    (set, get) => ({
+      pendingTransactions: {},
+      updatePendingTransaction: ({ address, pendingTransaction }) => {
+        const { pendingTransactions: currentPendingTransactions } = get();
+        const addressPendingTransactions =
+          currentPendingTransactions[address] || [];
 
-      const updatedPendingTransactions = [
-        ...addressPendingTransactions.filter((tx) => {
-          if (tx.chainId === pendingTransaction.chainId) {
-            return tx.nonce !== pendingTransaction.nonce;
-          }
-          return true;
-        }),
-        pendingTransaction,
-      ];
-      const orderedPendingTransactions = updatedPendingTransactions.sort(
-        (a, b) => {
-          return (a.nonce || 0) - (b.nonce || 0);
-        },
-      );
-      set({
-        pendingTransactions: {
-          ...currentPendingTransactions,
-          [address]: orderedPendingTransactions,
-        },
-      });
-    },
-    setPendingTransactions: ({ address, pendingTransactions }) => {
-      const { pendingTransactions: currentPendingTransactions } = get();
-      set({
-        pendingTransactions: {
-          ...currentPendingTransactions,
-          [address]: [...pendingTransactions],
-        },
-      });
-    },
-    clearPendingTransactions: () => {
-      set({ pendingTransactions: {} });
-    },
-  }),
-  {
-    persist: {
-      name: 'pendingTransactions',
+        const updatedPendingTransactions = [
+          ...addressPendingTransactions.filter((tx) => {
+            if (tx.chainId === pendingTransaction.chainId) {
+              return tx.nonce !== pendingTransaction.nonce;
+            }
+            return true;
+          }),
+          pendingTransaction,
+        ];
+        const orderedPendingTransactions = updatedPendingTransactions.sort(
+          (a, b) => {
+            return (a.nonce || 0) - (b.nonce || 0);
+          },
+        );
+        set({
+          pendingTransactions: {
+            ...currentPendingTransactions,
+            [address]: orderedPendingTransactions,
+          },
+        });
+      },
+      setPendingTransactions: ({ address, pendingTransactions }) => {
+        const { pendingTransactions: currentPendingTransactions } = get();
+        set({
+          pendingTransactions: {
+            ...currentPendingTransactions,
+            [address]: [...pendingTransactions],
+          },
+        });
+      },
+      clearPendingTransactions: () => {
+        set({ pendingTransactions: {} });
+      },
+    }),
+    {
+      storageKey: 'pendingTransactions',
       version: 2,
-      migrate(
-        persistedState,
-        version,
-      ): PendingTransactionsState | Promise<PendingTransactionsState> {
+      migrate(persistedState, version) {
         const state = persistedState as PendingTransactionsState;
         if (version === 0) {
           const oldState = persistedState as PendingTransactionsStateV1;
@@ -131,9 +127,8 @@ export const pendingTransactionsStore = createStore<PendingTransactionsState>(
         return state;
       },
     },
-  },
-);
+  );
 
 export const usePendingTransactionsStore = withSelectors(
-  create(pendingTransactionsStore),
+  pendingTransactionsStore,
 );

@@ -1,7 +1,7 @@
 import { Address } from 'viem';
-import create from 'zustand';
 
-import { createStore } from '../internal/createStore';
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
+
 import { withSelectors } from '../internal/withSelectors';
 
 type SavedNamesStore = {
@@ -9,7 +9,7 @@ type SavedNamesStore = {
   save: (name: string, address: Address) => void;
 };
 
-export const savedEnsNamesStore = createStore<SavedNamesStore>(
+export const savedEnsNamesStore = createRainbowStore<SavedNamesStore>(
   (set, get) => ({
     savedNames: {},
     save(name, address) {
@@ -18,7 +18,7 @@ export const savedEnsNamesStore = createStore<SavedNamesStore>(
       set({ savedNames });
     },
   }),
-  { persist: { name: 'ensSavedNames', version: 0 } },
+  { storageKey: 'ensSavedNames', version: 0 },
 );
 
-export const useSavedEnsNames = withSelectors(create(savedEnsNamesStore));
+export const useSavedEnsNames = withSelectors(savedEnsNamesStore);
