@@ -33,32 +33,20 @@ async function syncStore({ store }: { store: StoreWithPersist<unknown> }) {
   const persistOptions = store.persist.getOptions();
   const storageName = persistOptions.name;
 
-  console.debug(`syncStore: initializing for store ${storageName}`);
-
   const listener = async (changedStore: StoreWithPersist<unknown>) => {
     if (!storageName) return;
 
     if (changedStore === undefined) {
-      console.log('setting up initial state for ', storageName);
       const state = store.getInitialState();
-      console.log('initial state for ', storageName, state);
       const version = persistOptions.version;
       const serializedState = persistOptions?.serialize?.({ state, version });
-      console.log('serializedState', serializedState);
       await LocalStorage.set(storageName, serializedState);
     }
     store.persist.rehydrate();
   };
 
   if (storageName) {
-    console.debug(
-      `syncStore: setting up LocalStorage listener for ${storageName}`,
-    );
     LocalStorage.listen(storageName, listener);
-  } else {
-    console.debug(
-      `syncStore: skipping listener setup, storageName is undefined`,
-    );
   }
 }
 
