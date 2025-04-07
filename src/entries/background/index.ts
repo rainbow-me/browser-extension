@@ -43,7 +43,10 @@ syncNetworksStore('background');
 syncStores();
 
 uuid4();
-initFCM();
+// wait until the page is active to initialize FCM
+self.addEventListener('activate', () => {
+  initFCM();
+});
 handleKeepAlive();
 
 popupMessenger.reply('rainbow_updateWagmiClient', async () => {
