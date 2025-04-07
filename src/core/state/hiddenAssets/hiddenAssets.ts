@@ -1,7 +1,6 @@
 import { Address } from 'viem';
 import create from 'zustand';
 
-import { analytics } from '~/analytics';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { SearchAsset } from '~/core/types/search';
 
@@ -37,28 +36,6 @@ export const hiddenAssetsStore = createStore<HiddenAssetState>(
           },
         },
       });
-      const updatedState = get();
-      const isNowHidden = updatedState.hidden[address]?.[uniqueId] || false;
-      const totalHiddenForAddress = Object.values(
-        updatedState.hidden[address] || {},
-      ).filter((isHidden) => isHidden).length;
-
-      const [assetAddress, chainIdStr] = uniqueId.split('-');
-
-      const assetHiddenAnalytics = {
-        token: {
-          address: assetAddress,
-          chainId: parseInt(chainIdStr),
-        },
-        hiddenAssets: {
-          totalHidden: totalHiddenForAddress,
-        },
-      };
-
-      const event = isNowHidden
-        ? analytics.event.assetHidden
-        : analytics.event.assetUnhidden;
-      analytics.track(event, assetHiddenAnalytics);
     },
   }),
   {

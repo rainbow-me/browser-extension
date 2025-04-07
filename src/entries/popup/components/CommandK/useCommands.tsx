@@ -6,6 +6,7 @@ import { useEnsName } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
+import { trackHiddenAsset } from '~/analytics/util';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
@@ -1010,8 +1011,23 @@ export const useCommands = (
           }),
         });
       }
+      trackHiddenAsset(
+        token.address,
+        token.asset.chainId,
+        isTokenHidden(token),
+        Object.values(hiddenAssetStore[address] || {}).filter(
+          (isHidden) => isHidden,
+        ).length,
+      );
     },
-    [pinnedStore, address, toggleHideAsset, togglePinAsset, isTokenHidden],
+    [
+      pinnedStore,
+      address,
+      toggleHideAsset,
+      togglePinAsset,
+      isTokenHidden,
+      hiddenAssetStore,
+    ],
   );
 
   const toggleHideNFT = useCallback(

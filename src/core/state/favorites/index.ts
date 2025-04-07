@@ -1,7 +1,6 @@
 import create from 'zustand';
 
 import buildTimeNetworks from 'static/data/networks.json';
-import { queueEventTracking } from '~/analytics/queueEvent';
 import { createStore } from '~/core/state/internal/createStore';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -13,23 +12,6 @@ type UpdateFavoritesArgs = {
 
 const IS_DEV = process.env.IS_DEV === 'true';
 const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
-
-interface analyticsEvent {
-  token: {
-    address: string;
-    chainId: ChainId;
-  };
-  favorites: {
-    favoritesLength: number;
-  };
-}
-export const handleFavoritesTracking = (
-  analyticsData: analyticsEvent,
-  eventType: string,
-) => {
-  const analyticsEvent = 'analytics.event.' + eventType;
-  queueEventTracking(analyticsEvent, analyticsData);
-};
 
 const getInitialFavorites = () => {
   return buildTimeNetworks.backendNetworks.networks.reduce(
@@ -54,25 +36,6 @@ export interface FavoritesState {
   removeFavorite: UpdateFavoritesFn;
 }
 
-const trackFavoriteChange = (
-  address: AddressOrEth,
-  chainId: ChainId,
-  isAdding: boolean,
-  favoritesLength: number,
-) => {
-  const analyticsData = {
-    token: {
-      address,
-      chainId,
-    },
-    favorites: {
-      favoritesLength,
-    },
-  };
-  const eventType = isAdding ? 'tokenFavorited' : 'tokenUnfavorited';
-  handleFavoritesTracking(analyticsData, eventType);
-};
-
 export const favoritesStore = createStore<FavoritesState>(
   (set, get) => {
     return {
@@ -88,8 +51,6 @@ export const favoritesStore = createStore<FavoritesState>(
             [chainId]: updatedFavorites,
           },
         });
-
-        trackFavoriteChange(address, chainId, true, updatedFavorites.length);
       },
 
       removeFavorite: ({ address, chainId }: UpdateFavoritesArgs) => {
@@ -105,8 +66,6 @@ export const favoritesStore = createStore<FavoritesState>(
             [chainId]: updatedFavorites,
           },
         });
-
-        trackFavoriteChange(address, chainId, false, updatedFavorites.length);
       },
     };
   },

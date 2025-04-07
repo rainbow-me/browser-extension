@@ -4,6 +4,7 @@ import { Address } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
+import { trackFavorite, trackHiddenAsset } from '~/analytics/util';
 import { i18n } from '~/core/languages';
 import { ETH_ADDRESS } from '~/core/references';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -298,13 +299,33 @@ function NetworkBanner({
 function FavoriteButton({ token }: { token: ParsedUserAsset | SearchAsset }) {
   const { favorites, addFavorite, removeFavorite } = useFavoritesStore();
   const isFavorite = favorites[token.chainId]?.includes(token.address);
+  const handleClick = () => {
+    if (isFavorite) {
+      removeFavorite(token);
+      trackFavorite(
+        token.address,
+        token.chainId,
+        false,
+        favorites[token.chainId]?.length || 0,
+      );
+    } else {
+      addFavorite(token);
+      trackFavorite(
+        token.address,
+        token.chainId,
+        true,
+        favorites[token.chainId]?.length || 0,
+      );
+    }
+  };
+
   return (
     <ButtonSymbol
       symbol="star.fill"
       height="32px"
       variant="transparentHover"
       color={isFavorite ? 'yellow' : 'labelSecondary'}
-      onClick={() => (isFavorite ? removeFavorite(token) : addFavorite(token))}
+      onClick={handleClick}
       tabIndex={0}
     />
   );
@@ -367,7 +388,22 @@ function MoreOptions({
         name: token.symbol,
       }),
     });
-  }, [token, hidden, pinned, togglePinAsset, toggleHideAsset, address]);
+    trackHiddenAsset(
+      token.address,
+      token.chainId,
+      true,
+      Object.values(hiddenStore[address] || {}).filter((isHidden) => isHidden)
+        .length,
+    );
+  }, [
+    pinned,
+    togglePinAsset,
+    address,
+    token,
+    toggleHideAsset,
+    hidden,
+    hiddenStore,
+  ]);
 
   const togglePinToken = useCallback(() => {
     if (hidden) return;
