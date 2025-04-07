@@ -1,3 +1,4 @@
+import { debounce } from 'lodash';
 import { StateCreator, create } from 'zustand';
 import {
   PersistOptions,
@@ -124,6 +125,20 @@ export function omitStoreMethods<S, PersistedState extends Partial<S>>(
   return state as unknown as PersistedState;
 }
 
+interface LazyPersistParams<S, PersistedState extends Partial<S>> {
+  name: string;
+  partialize: NonNullable<
+    RainbowPersistConfig<S, PersistedState>['partialize']
+  >;
+  serializer: NonNullable<
+    RainbowPersistConfig<S, PersistedState>['serializer']
+  >;
+  storageKey: string;
+  value: StorageValue<S> | StorageValue<PersistedState>;
+}
+
+const DEFAULT_PERSIST_THROTTLE_MS = 0;
+
 /**
  * Creates a persist storage object for the Rainbow store.
  * @param config - The configuration options for the persistable Rainbow store.
@@ -145,9 +160,36 @@ function createPersistStorage<S, PersistedState extends Partial<S>>(
         version,
         enableMapSetHandling,
       ),
+    persistThrottleMs = DEFAULT_PERSIST_THROTTLE_MS,
     storageKey,
     version = 0,
   } = config;
+
+  const lazyPersist = debounce(
+    async function persist(
+      params: LazyPersistParams<S, PersistedState>,
+    ): Promise<void> {
+      try {
+        const key = !config.useRainbowNamingSchema
+          ? `${storageKey}.${params.name}`
+          : `rainbow.zustand.${params.name}`;
+        const serializedValue = params.serializer(
+          params.partialize(params.value.state as S),
+          params.value.version ?? 0,
+        );
+        await rainbowStorage.setItem(key, serializedValue);
+      } catch (error) {
+        logger.error(
+          new RainbowError(
+            `[createRainbowStore]: Failed to serialize persisted store data`,
+          ),
+          { error },
+        );
+      }
+    },
+    persistThrottleMs,
+    { leading: false, trailing: true, maxWait: persistThrottleMs },
+  );
 
   const persistStorage: PersistStorage<PersistedState> = {
     getItem: async (name: string) => {
@@ -159,21 +201,13 @@ function createPersistStorage<S, PersistedState extends Partial<S>>(
       return deserializer(serializedValue);
     },
     setItem: async (name, value) => {
-      const key = !config.useRainbowNamingSchema
-        ? `${storageKey}.${name}`
-        : `rainbow.zustand.${name}`;
-
-      try {
-        const serializedValue = serializer(value.state, value.version ?? 0);
-        await rainbowStorage.setItem(key, serializedValue);
-      } catch (error) {
-        logger.error(
-          new RainbowError(
-            `[createRainbowStore]: Failed to serialize or set item '${key}'`,
-          ),
-          { error },
-        );
-      }
+      await lazyPersist({
+        name,
+        partialize: config.partialize ?? omitStoreMethods<S, PersistedState>,
+        serializer,
+        storageKey,
+        value,
+      });
     },
     removeItem: async (name: string) => {
       const key = !config.useRainbowNamingSchema

@@ -1,8 +1,10 @@
 import { Address } from 'viem';
+import { create } from 'zustand';
+import { createJSONStorage, persist } from 'zustand/middleware';
 
+import { persistStorage } from '~/core/state/internal/persistStorage';
 import { ChainId } from '~/core/types/chains';
 
-import { createRainbowStore } from '../internal/createRainbowStore';
 import { withSelectors } from '../internal/withSelectors';
 
 export interface AppSession {
@@ -70,176 +72,178 @@ export interface AppSessionsStore<T extends AppSession | V0AppSession> {
   clearSessions: () => void;
 }
 
-export const appSessionsStore = createRainbowStore<
-  AppSessionsStore<AppSession>
->(
-  (set, get) => ({
-    appSessions: {},
-    getActiveSession: ({ host }) => {
-      const appSessions = get().appSessions;
-      const activeSessionAddress = appSessions[host]?.activeSessionAddress;
-      const sessions = appSessions[host]?.sessions;
-      return activeSessionAddress
-        ? {
-            address: activeSessionAddress,
-            chainId: sessions[activeSessionAddress],
-          }
-        : null;
-    },
-    removeAddressSessions: ({ address }) => {
-      const appSessions = get().appSessions;
-      for (const [host, session] of Object.entries(appSessions)) {
-        if (!session.sessions[address]) continue;
-        delete appSessions[host].sessions[address];
-        if (session.activeSessionAddress !== address) continue;
-        const newActiveSessionAddress = Object.keys(session.sessions)[0];
-        if (newActiveSessionAddress) {
-          appSessions[host].activeSessionAddress =
-            newActiveSessionAddress as Address;
-        } else {
-          delete appSessions[host];
-        }
-      }
-      set({ appSessions: { ...appSessions } });
-    },
-    addSession: ({ host, address, chainId, url }) => {
-      const appSessions = get().appSessions;
-      const existingSession = appSessions[host];
-      if (!existingSession) {
-        appSessions[host] = {
-          host,
-          sessions: { [address]: chainId },
-          activeSessionAddress: address,
-          url,
+const persistOptions = {
+  name: 'rainbow.zustand.appSessions',
+  version: 1,
+  storage: createJSONStorage(() => persistStorage),
+  migrate: (persistedState: unknown, version: number) => {
+    if (version === 0) {
+      const v0PersistedState = persistedState as AppSessionsStore<V0AppSession>;
+      const appSessions: Record<string, AppSession> = {};
+      Object.values(v0PersistedState.appSessions).forEach((appSession) => {
+        appSessions[appSession.host] = {
+          sessions: { [appSession.address]: appSession.chainId },
+          activeSessionAddress: appSession.address,
+          url: appSession.url,
+          host: appSession.host,
         };
-      } else {
-        appSessions[host].sessions[address] = chainId;
-        appSessions[host].activeSessionAddress = address;
-      }
-      set({
-        appSessions: {
-          ...appSessions,
-        },
       });
-      return appSessions[host].sessions;
-    },
-    removeAppSession: ({ host }) => {
-      const appSessions = get().appSessions;
-      delete appSessions[host];
-      set({
-        appSessions: {
-          ...appSessions,
-        },
-      });
-    },
-    removeSession: ({ host, address }) => {
-      const appSessions = get().appSessions;
-      const appSession = appSessions[host];
-      let newActiveSession = null;
-      if (
-        appSession.sessions &&
-        Object.keys(appSession.sessions).length === 1
-      ) {
+
+      return {
+        ...v0PersistedState,
+        appSessions,
+      } as AppSessionsStore<AppSession>;
+    }
+    return persistedState as AppSessionsStore<AppSession>;
+  },
+};
+
+export const appSessionsStore = create<AppSessionsStore<AppSession>>()(
+  persist(
+    (set, get) => ({
+      appSessions: {},
+      getActiveSession: ({ host }) => {
+        const appSessions = get().appSessions;
+        const activeSessionAddress = appSessions[host]?.activeSessionAddress;
+        const sessions = appSessions[host]?.sessions;
+        return activeSessionAddress
+          ? {
+              address: activeSessionAddress,
+              chainId: sessions[activeSessionAddress],
+            }
+          : null;
+      },
+      removeAddressSessions: ({ address }) => {
+        const appSessions = get().appSessions;
+        for (const [host, session] of Object.entries(appSessions)) {
+          if (!session.sessions[address]) continue;
+          delete appSessions[host].sessions[address];
+          if (session.activeSessionAddress !== address) continue;
+          const newActiveSessionAddress = Object.keys(session.sessions)[0];
+          if (newActiveSessionAddress) {
+            appSessions[host].activeSessionAddress =
+              newActiveSessionAddress as Address;
+          } else {
+            delete appSessions[host];
+          }
+        }
+        set({ appSessions: { ...appSessions } });
+      },
+      addSession: ({ host, address, chainId, url }) => {
+        const appSessions = get().appSessions;
+        const existingSession = appSessions[host];
+        if (!existingSession) {
+          appSessions[host] = {
+            host,
+            sessions: { [address]: chainId },
+            activeSessionAddress: address,
+            url,
+          };
+        } else {
+          appSessions[host].sessions[address] = chainId;
+          appSessions[host].activeSessionAddress = address;
+        }
+        set({
+          appSessions: {
+            ...appSessions,
+          },
+        });
+        return appSessions[host].sessions;
+      },
+      removeAppSession: ({ host }) => {
+        const appSessions = get().appSessions;
         delete appSessions[host];
         set({
           appSessions: {
             ...appSessions,
           },
         });
-      } else if (appSession.sessions) {
-        delete appSession.sessions[address];
-        const newActiveSessionAddress = Object.keys(
-          appSession.sessions,
-        )[0] as Address;
-        appSession.activeSessionAddress = newActiveSessionAddress;
-        newActiveSession = {
-          address: newActiveSessionAddress,
-          chainId: appSession.sessions[newActiveSessionAddress],
-        };
+      },
+      removeSession: ({ host, address }) => {
+        const appSessions = get().appSessions;
+        const appSession = appSessions[host];
+        let newActiveSession = null;
+        if (
+          appSession.sessions &&
+          Object.keys(appSession.sessions).length === 1
+        ) {
+          delete appSessions[host];
+          set({
+            appSessions: {
+              ...appSessions,
+            },
+          });
+        } else if (appSession.sessions) {
+          delete appSession.sessions[address];
+          const newActiveSessionAddress = Object.keys(
+            appSession.sessions,
+          )[0] as Address;
+          appSession.activeSessionAddress = newActiveSessionAddress;
+          newActiveSession = {
+            address: newActiveSessionAddress,
+            chainId: appSession.sessions[newActiveSessionAddress],
+          };
+          set({
+            appSessions: {
+              ...appSessions,
+              [host]: {
+                ...appSession,
+              },
+            },
+          });
+        }
+
+        return newActiveSession;
+      },
+      updateActiveSession: ({ host, address }) => {
+        const appSessions = get().appSessions;
+        const appSession = appSessions[host];
         set({
           appSessions: {
             ...appSessions,
             [host]: {
               ...appSession,
+              activeSessionAddress: address,
             },
           },
         });
-      }
-
-      return newActiveSession;
-    },
-    updateActiveSession: ({ host, address }) => {
-      const appSessions = get().appSessions;
-      const appSession = appSessions[host];
-      set({
-        appSessions: {
-          ...appSessions,
-          [host]: {
-            ...appSession,
-            activeSessionAddress: address,
-          },
-        },
-      });
-    },
-    updateActiveSessionChainId: ({ host, chainId }) => {
-      const appSessions = get().appSessions;
-      const appSession = appSessions[host];
-      set({
-        appSessions: {
-          ...appSessions,
-          [host]: {
-            ...appSession,
-            sessions: {
-              ...appSession.sessions,
-              [appSession.activeSessionAddress]: chainId,
+      },
+      updateActiveSessionChainId: ({ host, chainId }) => {
+        const appSessions = get().appSessions;
+        const appSession = appSessions[host];
+        set({
+          appSessions: {
+            ...appSessions,
+            [host]: {
+              ...appSession,
+              sessions: {
+                ...appSession.sessions,
+                [appSession.activeSessionAddress]: chainId,
+              },
             },
           },
-        },
-      });
-    },
-    updateSessionChainId: ({ host, address, chainId }) => {
-      const appSessions = get().appSessions;
-      const appSession = appSessions[host];
-      set({
-        appSessions: {
-          ...appSessions,
-          [host]: {
-            ...appSession,
-            sessions: {
-              ...appSession.sessions,
-              [address]: chainId,
-            },
-          },
-        },
-      });
-    },
-    clearSessions: () => set({ appSessions: {} }),
-  }),
-  {
-    storageKey: 'appSessions',
-    version: 1,
-    migrate: (persistedState: unknown, version: number) => {
-      if (version === 0) {
-        const v0PersistedState =
-          persistedState as AppSessionsStore<V0AppSession>;
-        const appSessions: Record<string, AppSession> = {};
-        Object.values(v0PersistedState.appSessions).forEach((appSession) => {
-          appSessions[appSession.host] = {
-            sessions: { [appSession.address]: appSession.chainId },
-            activeSessionAddress: appSession.address,
-            url: appSession.url,
-            host: appSession.host,
-          };
         });
-
-        return {
-          ...v0PersistedState,
-          appSessions,
-        } as AppSessionsStore<AppSession>;
-      }
-      return persistedState as AppSessionsStore<AppSession>;
-    },
-  },
+      },
+      updateSessionChainId: ({ host, address, chainId }) => {
+        const appSessions = get().appSessions;
+        const appSession = appSessions[host];
+        set({
+          appSessions: {
+            ...appSessions,
+            [host]: {
+              ...appSession,
+              sessions: {
+                ...appSession.sessions,
+                [address]: chainId,
+              },
+            },
+          },
+        });
+      },
+      clearSessions: () => set({ appSessions: {} }),
+    }),
+    persistOptions,
+  ),
 );
 
 export const useAppSessionsStore = withSelectors(appSessionsStore);

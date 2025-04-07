@@ -20,6 +20,7 @@ import {
   Networks,
   TransformedChain,
 } from '~/core/types/chains';
+import { detectScriptType } from '~/core/utils/detectScriptType';
 
 import {
   DEFAULT_PRIVATE_MEMPOOL_TIMEOUT,
@@ -278,7 +279,9 @@ export const networkStore = createQueryStore<
     enabled: ($) =>
       $(
         networksStoreMigrationStore,
-        (state) => state.didCompleteNetworksMigration,
+        (state) =>
+          state.didCompleteNetworksMigration &&
+          detectScriptType() === 'background',
       ),
     setData: ({ data, set }) => {
       set((state) => {
@@ -847,6 +850,7 @@ export const networkStore = createQueryStore<
       chainOrder: state.chainOrder,
       enabledChainIds: state.enabledChainIds,
     }),
+    persistThrottleMs: 5_000,
     storageKey: 'networks',
     useRainbowNamingSchema: false,
     version: 1,
