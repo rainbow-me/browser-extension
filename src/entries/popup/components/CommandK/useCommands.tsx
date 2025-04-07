@@ -1011,13 +1011,15 @@ export const useCommands = (
           }),
         });
       }
+      const isHidden = isTokenHidden(token);
+      const hiddenCount = Object.values(hiddenAssetStore[address] || {}).filter(
+        (isHidden) => isHidden,
+      ).length;
       trackHiddenAsset(
         token.address,
         token.asset.chainId,
-        isTokenHidden(token),
-        Object.values(hiddenAssetStore[address] || {}).filter(
-          (isHidden) => isHidden,
-        ).length,
+        isHidden,
+        hiddenCount,
       );
     },
     [

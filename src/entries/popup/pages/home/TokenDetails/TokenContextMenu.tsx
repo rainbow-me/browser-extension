@@ -134,14 +134,14 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
         name: token.symbol,
       }),
     });
-    trackHiddenAsset(
-      token.address,
-      token.chainId,
-      true,
-      Object.values(
-        useHiddenAssetStore.getState().hidden[address] || {},
-      ).filter((isHidden) => isHidden).length,
-    );
+    const isHidden =
+      useHiddenAssetStore.getState().hidden[address]?.[
+        computeUniqueIdForHiddenAsset(token)
+      ];
+    const hiddenCount = Object.values(
+      useHiddenAssetStore.getState().hidden[address] || {},
+    ).filter((isHidden) => isHidden).length;
+    trackHiddenAsset(token.address, token.chainId, isHidden, hiddenCount);
   }, [
     token,
     containerRef,

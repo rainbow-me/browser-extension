@@ -26,13 +26,12 @@ export const hiddenAssetsStore = createStore<HiddenAssetState>(
     hidden: {},
     toggleHideAsset: (address: Address, uniqueId: string) => {
       const { hidden } = get();
-      const wasHidden = hidden[address]?.[uniqueId] || false;
       set({
         hidden: {
           ...hidden,
           [address]: {
             ...(hidden[address] ?? {}),
-            [uniqueId]: !wasHidden,
+            [uniqueId]: !hidden[address]?.[uniqueId],
           },
         },
       });

@@ -381,20 +381,21 @@ function MoreOptions({
           name: token.symbol,
         }),
       });
-      return;
+    } else {
+      triggerToast({
+        title: i18n.t('token_details.toast.hide_token', {
+          name: token.symbol,
+        }),
+      });
     }
-    triggerToast({
-      title: i18n.t('token_details.toast.hide_token', {
-        name: token.symbol,
-      }),
-    });
-    trackHiddenAsset(
-      token.address,
-      token.chainId,
-      true,
-      Object.values(hiddenStore[address] || {}).filter((isHidden) => isHidden)
-        .length,
-    );
+    const isHidden =
+      useHiddenAssetStore.getState().hidden[address]?.[
+        computeUniqueIdForHiddenAsset(token)
+      ];
+    const hiddenCount = Object.values(hiddenStore[address] || {}).filter(
+      (isHidden) => isHidden,
+    ).length;
+    trackHiddenAsset(token.address, token.chainId, isHidden, hiddenCount);
   }, [
     pinned,
     togglePinAsset,

@@ -11,11 +11,6 @@ import { analytics } from '.';
 
 const SECURE_WALLET_HASH_KEY = process.env.SECURE_WALLET_HASH_KEY;
 
-/**
- * Securely hashes a wallet address using HMAC SHA-256
- * @param walletAddress The wallet address to hash
- * @returns The hashed wallet address or undefined if hashing fails
- */
 function securelyHashWalletAddress(
   walletAddress: Address | undefined,
 ): string | undefined {

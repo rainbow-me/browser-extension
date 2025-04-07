@@ -37,38 +37,32 @@ export interface FavoritesState {
 }
 
 export const favoritesStore = createStore<FavoritesState>(
-  (set, get) => {
-    return {
-      favorites: getInitialFavorites(),
-      setFavorites: (favorites) => set({ favorites }),
-      addFavorite: ({ address, chainId }: UpdateFavoritesArgs) => {
-        const { favorites } = get();
-        const currentFavorites = favorites[chainId] || [];
-        const updatedFavorites = [...currentFavorites, address];
-        set({
-          favorites: {
-            ...favorites,
-            [chainId]: updatedFavorites,
-          },
-        });
-      },
-
-      removeFavorite: ({ address, chainId }: UpdateFavoritesArgs) => {
-        const { favorites } = get();
-        const currentFavorites = favorites[chainId] || [];
-        const updatedFavorites = currentFavorites.filter(
-          (favoriteAddress) => favoriteAddress !== address,
-        );
-
-        set({
-          favorites: {
-            ...favorites,
-            [chainId]: updatedFavorites,
-          },
-        });
-      },
-    };
-  },
+  (set, get) => ({
+    favorites: getInitialFavorites(),
+    setFavorites: (favorites) => set({ favorites }),
+    addFavorite: ({ address, chainId }: UpdateFavoritesArgs) => {
+      const { favorites } = get();
+      const currentFavorites = favorites[chainId] || [];
+      set({
+        favorites: {
+          ...favorites,
+          [chainId]: [...currentFavorites, address],
+        },
+      });
+    },
+    removeFavorite: ({ address, chainId }: UpdateFavoritesArgs) => {
+      const { favorites } = get();
+      const currentFavorites = favorites[chainId] || [];
+      set({
+        favorites: {
+          ...favorites,
+          [chainId]: currentFavorites.filter(
+            (favoriteAddress) => favoriteAddress !== address,
+          ),
+        },
+      });
+    },
+  }),
   {
     persist: {
       name: 'favorites',

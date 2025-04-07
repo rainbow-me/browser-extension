@@ -77,13 +77,18 @@ export function useTokensShortcuts() {
           name: _selectedToken.symbol,
         }),
       });
+      const isHidden =
+        useHiddenAssetStore.getState().hidden[address]?.[
+          computeUniqueIdForHiddenAsset(_selectedToken)
+        ];
+      const hiddenCount = Object.values(
+        useHiddenAssetStore.getState().hidden[address] || {},
+      ).filter((isHidden) => isHidden).length;
       trackHiddenAsset(
         _selectedToken.address,
         _selectedToken.chainId,
-        true,
-        Object.values(
-          useHiddenAssetStore.getState().hidden[address] || {},
-        ).filter((isHidden) => isHidden).length,
+        isHidden,
+        hiddenCount,
       );
     },
     [
