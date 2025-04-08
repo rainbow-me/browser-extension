@@ -1,4 +1,4 @@
-import { useCurrentThemeStore } from '~/core/state';
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 
 export function initThemingLocal() {
   const localTheme = localStorage.getItem('theme');

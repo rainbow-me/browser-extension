@@ -1,4 +1,4 @@
-import { useCurrentThemeStore } from '~/core/state';
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 
 import { ColorContext } from './designTokens';
 import { getTheme, rootThemeClasses } from './theme';
