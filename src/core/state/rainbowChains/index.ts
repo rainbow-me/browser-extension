@@ -3,7 +3,6 @@ import { Chain } from 'viem/chains';
 import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { ChainId } from '~/core/types/chains';
 
-import { withSelectors } from '../internal/withSelectors';
 import { runNetworksMigrationIfNeeded } from '../networks/runNetworksMigrationIfNeeded';
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
@@ -28,9 +27,9 @@ export interface RainbowChainsState {
 }
 
 /**
- * @deprecated use `networkStore` instead
+ * @deprecated use `useNetworkStore` instead
  */
-export const rainbowChainsStore = createRainbowStore<RainbowChainsState>(
+export const useRainbowChainsStore = createRainbowStore<RainbowChainsState>(
   (set, get) => ({
     rainbowChains: {},
     getActiveChain: ({ chainId }) => {
@@ -126,8 +125,3 @@ export const rainbowChainsStore = createRainbowStore<RainbowChainsState>(
     },
   },
 );
-
-/**
- * @deprecated use `networkStore` instead
- */
-export const useRainbowChainsStore = withSelectors(rainbowChainsStore);

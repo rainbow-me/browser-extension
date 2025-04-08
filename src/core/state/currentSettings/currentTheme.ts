@@ -1,7 +1,6 @@
 import { ThemeOption } from '~/core/types/settings';
 
 import { createRainbowStore } from '../internal/createRainbowStore';
-import { withSelectors } from '../internal/withSelectors';
 
 export interface CurrentThemeState {
   currentTheme: Exclude<ThemeOption, 'system'>;
@@ -9,7 +8,7 @@ export interface CurrentThemeState {
   setCurrentTheme: (theme: ThemeOption) => void;
 }
 
-export const currentThemeStore = createRainbowStore<CurrentThemeState>(
+export const useCurrentThemeStore = createRainbowStore<CurrentThemeState>(
   (set) => ({
     currentTheme: 'dark',
     currentUserSelectedTheme: 'dark',
@@ -35,5 +34,3 @@ export const currentThemeStore = createRainbowStore<CurrentThemeState>(
     version: 0,
   },
 );
-
-export const useCurrentThemeStore = withSelectors(currentThemeStore);

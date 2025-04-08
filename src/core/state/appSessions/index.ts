@@ -5,8 +5,6 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 import { persistStorage } from '~/core/state/internal/persistStorage';
 import { ChainId } from '~/core/types/chains';
 
-import { withSelectors } from '../internal/withSelectors';
-
 export interface AppSession {
   activeSessionAddress: Address;
   host: string;
@@ -98,7 +96,7 @@ const persistOptions = {
   },
 };
 
-export const appSessionsStore = create<AppSessionsStore<AppSession>>()(
+export const useAppSessionsStore = create<AppSessionsStore<AppSession>>()(
   persist(
     (set, get) => ({
       appSessions: {},
@@ -245,5 +243,3 @@ export const appSessionsStore = create<AppSessionsStore<AppSession>>()(
     persistOptions,
   ),
 );
-
-export const useAppSessionsStore = withSelectors(appSessionsStore);

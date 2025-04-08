@@ -37,7 +37,7 @@ const SaveOrEditContact = ({
     }>
   >;
 }) => {
-  const saveContact = useContactsStore.use.saveContact();
+  const saveContact = useContactsStore((state) => state.saveContact);
   const contact = useContact({ address });
   const [name, setName] = useState(contact?.display || '');
 
@@ -144,7 +144,7 @@ const DeleteContact = ({
     }>
   >;
 }) => {
-  const deleteContact = useContactsStore.use.deleteContact();
+  const deleteContact = useContactsStore((state) => state.deleteContact);
 
   const onRemove = useCallback(() => {
     deleteContact({ address });

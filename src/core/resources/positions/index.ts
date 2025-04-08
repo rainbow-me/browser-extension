@@ -10,7 +10,7 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { AssetApiResponse, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId, ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import { parseUserAsset } from '~/core/utils/assets';
@@ -106,7 +106,7 @@ async function positionsQueryFunction({
 }: QueryFunctionArgs<typeof positionsQueryKey>) {
   if (!address) return {} as ParsedPositionsByChain;
   try {
-    const supportedPositionsChainIds = networkStore
+    const supportedPositionsChainIds = useNetworkStore
       .getState()
       .getSupportedPositionsChainIds();
     const supportedChainIds = getSupportedChains({

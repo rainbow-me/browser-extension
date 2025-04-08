@@ -50,7 +50,7 @@ export interface RainbowChainAssetsState {
   removeRainbowChainAssets: ({ chainId }: { chainId: number }) => void;
 }
 
-export const rainbowChainAssetsStore =
+export const useRainbowChainAssetsStore =
   createRainbowStore<RainbowChainAssetsState>(
     (set, get) => ({
       rainbowChainAssets: {},
@@ -137,5 +137,3 @@ export const rainbowChainAssetsStore =
       },
     },
   );
-
-export const useRainbowChainAssetsStore = rainbowChainAssetsStore;

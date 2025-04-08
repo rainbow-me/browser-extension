@@ -1,7 +1,6 @@
 import { Address } from 'viem';
 
 import { createRainbowStore } from '../internal/createRainbowStore';
-import { withSelectors } from '../internal/withSelectors';
 
 export interface AppConnectionWalletSwitcherStore {
   nudgeSheetEnabled: boolean;
@@ -23,7 +22,7 @@ export interface AppConnectionWalletSwitcherStore {
   disableNudgeSheet: () => void;
 }
 
-export const appConnectionWalletSwitcherStore =
+export const useAppConnectionWalletSwitcherStore =
   createRainbowStore<AppConnectionWalletSwitcherStore>(
     (set, get) => ({
       nudgeSheetEnabled: true,
@@ -75,7 +74,3 @@ export const appConnectionWalletSwitcherStore =
       version: 1,
     },
   );
-
-export const useAppConnectionWalletSwitcherStore = withSelectors(
-  appConnectionWalletSwitcherStore,
-);

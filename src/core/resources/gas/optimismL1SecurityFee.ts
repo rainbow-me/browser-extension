@@ -8,7 +8,7 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 import { calculateL1FeeOptimism } from '~/core/utils/gas';
 import { getProvider } from '~/core/wagmi/clientToProvider';
@@ -48,7 +48,7 @@ type OptimismL1SecurityFeeQueryKey = ReturnType<
 async function optimismL1SecurityFeeQueryFunction({
   queryKey: [{ transactionRequest, chainId }],
 }: QueryFunctionArgs<typeof optimismL1SecurityFeeQueryKey>) {
-  const needsL1SecurityFeeChains = networkStore
+  const needsL1SecurityFeeChains = useNetworkStore
     .getState()
     .getNeedsL1SecurityFeeChainIds();
   if (needsL1SecurityFeeChains.includes(chainId)) {
@@ -101,7 +101,7 @@ export function useOptimismL1SecurityFee(
     OptimismL1SecurityFeeQueryKey
   > = {},
 ) {
-  const needsL1SecurityFeeChains = networkStore((state) =>
+  const needsL1SecurityFeeChains = useNetworkStore((state) =>
     state.getNeedsL1SecurityFeeChainIds(),
   );
   return useQuery({

@@ -14,7 +14,9 @@ import { ROUTES } from '~/entries/popup/urls';
 export function RecoveryPhrase() {
   const { state } = useLocation();
   const navigate = useRainbowNavigate();
-  const setWalletBackedUp = useWalletBackupsStore.use.setWalletBackedUp();
+  const setWalletBackedUp = useWalletBackupsStore(
+    (state) => state.setWalletBackedUp,
+  );
 
   const [seed, setSeed] = useState('');
 

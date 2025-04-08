@@ -6,12 +6,12 @@ import { RainbowError, logger } from '~/logger';
 import { buildTimeNetworks } from './constants';
 import {
   areAllStoresReady,
-  networksStoreMigrationStore,
   setMigrationManagerReady,
   setRainbowChainsReady,
   setUserChainsReady,
+  useNetworksStoreMigrationStore,
 } from './migration';
-import { networkStore } from './networks';
+import { useNetworkStore } from './networks';
 import { NetworkState } from './types';
 import { buildInitialUserPreferences } from './utils';
 
@@ -29,7 +29,9 @@ export const runNetworksMigrationIfNeeded = async (
   }
 
   if (areAllStoresReady()) {
-    if (networksStoreMigrationStore.getState().didCompleteNetworksMigration) {
+    if (
+      useNetworksStoreMigrationStore.getState().didCompleteNetworksMigration
+    ) {
       logger.debug('[networks] Migration already completed');
       return;
     }
@@ -68,8 +70,8 @@ export const runNetworksMigrationIfNeeded = async (
         ),
       };
 
-      networkStore.setState(initialState);
-      networksStoreMigrationStore.setState({
+      useNetworkStore.setState(initialState);
+      useNetworksStoreMigrationStore.setState({
         didCompleteNetworksMigration: true,
       });
     } catch (error) {

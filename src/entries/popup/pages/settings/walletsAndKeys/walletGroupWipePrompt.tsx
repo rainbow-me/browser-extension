@@ -2,10 +2,10 @@ import { useCallback } from 'react';
 import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
-import { appSessionsStore, useCurrentAddressStore } from '~/core/state';
-import { hiddenWalletsStore } from '~/core/state/hiddenWallets';
-import { walletBackupsStore } from '~/core/state/walletBackups';
-import { walletNamesStore } from '~/core/state/walletNames';
+import { useAppSessionsStore, useCurrentAddressStore } from '~/core/state';
+import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
+import { useWalletBackupsStore } from '~/core/state/walletBackups';
+import { useWalletNamesStore } from '~/core/state/walletNames';
 import { getSettingWallets } from '~/core/utils/settings';
 import {
   Box,
@@ -26,10 +26,10 @@ import { ROUTES } from '~/entries/popup/urls';
 const t = (s: string) =>
   i18n.t(s, { scope: 'settings.privacy_and_security.wallets_and_keys' });
 
-const { deleteWalletName } = walletNamesStore.getState();
-const { deleteWalletBackup } = walletBackupsStore.getState();
-const { removeAddressSessions } = appSessionsStore.getState();
-const { unhideWallet } = hiddenWalletsStore.getState();
+const { deleteWalletName } = useWalletNamesStore.getState();
+const { deleteWalletBackup } = useWalletBackupsStore.getState();
+const { removeAddressSessions } = useAppSessionsStore.getState();
+const { unhideWallet } = useHiddenWalletsStore.getState();
 
 async function removeWallet(address: Address) {
   await remove(address);
@@ -63,7 +63,7 @@ export const WipeWalletGroupPrompt = ({
           return;
         }
 
-        const { hiddenWallets } = hiddenWalletsStore.getState();
+        const { hiddenWallets } = useHiddenWalletsStore.getState();
         const visibleWallets = allAccounts.filter((acc) => !hiddenWallets[acc]);
         // if no more visible wallets, force unhide one and set as current
         if (visibleWallets.length === 0) {

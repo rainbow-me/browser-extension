@@ -2,14 +2,12 @@ import { Address } from 'viem';
 
 import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 
-import { withSelectors } from '../internal/withSelectors';
-
 interface PersistedAddressState {
   currentAddress: Address;
   setCurrentAddress: (address: Address) => void;
 }
 
-const persistedAddressStore = createRainbowStore<PersistedAddressState>(
+const usePersistedAddressStore = createRainbowStore<PersistedAddressState>(
   (set) => ({
     currentAddress: '' as Address,
     setCurrentAddress: (newAddress) => set({ currentAddress: newAddress }),
@@ -25,27 +23,25 @@ interface RapidAddressState {
   setCurrentAddress: (address: Address) => void;
 }
 
-export const currentAddressStore = createRainbowStore<RapidAddressState>(
+export const useCurrentAddressStore = createRainbowStore<RapidAddressState>(
   (set) => ({
     currentAddress:
       // Default to the persisted current address
-      persistedAddressStore.getState().currentAddress || ('' as Address),
+      usePersistedAddressStore.getState().currentAddress || ('' as Address),
     setCurrentAddress: (newAddress) => {
-      if (newAddress !== persistedAddressStore.getState().currentAddress) {
+      if (newAddress !== usePersistedAddressStore.getState().currentAddress) {
         set({ currentAddress: newAddress });
         // Automatically persist in the background to the persisted store
-        persistedAddressStore.getState().setCurrentAddress(newAddress);
+        usePersistedAddressStore.getState().setCurrentAddress(newAddress);
       }
     },
   }),
 );
 
 // Synchronize currentAddress with persistedAddress once rehydrated
-persistedAddressStore.subscribe((state) => {
+usePersistedAddressStore.subscribe((state) => {
   // If persistedAddress changes and currentAddress is still the default, update it
-  if (currentAddressStore.getState().currentAddress === ('' as Address)) {
-    currentAddressStore.setState({ currentAddress: state.currentAddress });
+  if (useCurrentAddressStore.getState().currentAddress === ('' as Address)) {
+    useCurrentAddressStore.setState({ currentAddress: state.currentAddress });
   }
 });
-
-export const useCurrentAddressStore = withSelectors(currentAddressStore);

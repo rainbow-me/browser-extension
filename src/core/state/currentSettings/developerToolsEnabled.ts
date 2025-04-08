@@ -5,7 +5,7 @@ export interface DeveloperToolsEnabledState {
   setDeveloperToolsEnabled: (developerToolsEnabled: boolean) => void;
 }
 
-export const developerToolsEnabledStore =
+export const useDeveloperToolsEnabledStore =
   createRainbowStore<DeveloperToolsEnabledState>(
     (set) => ({
       developerToolsEnabled: false,
@@ -17,5 +17,3 @@ export const developerToolsEnabledStore =
       version: 0,
     },
   );
-
-export const useDeveloperToolsEnabledStore = developerToolsEnabledStore;

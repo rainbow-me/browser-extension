@@ -5,7 +5,7 @@ export interface HideSmallBalancesState {
   setHideSmallBalances: (hideSmallBalances: boolean) => void;
 }
 
-export const hideSmallBalancesStore =
+export const useHideSmallBalancesStore =
   createRainbowStore<HideSmallBalancesState>(
     (set) => ({
       hideSmallBalances: false,
@@ -17,5 +17,3 @@ export const hideSmallBalancesStore =
       version: 0,
     },
   );
-
-export const useHideSmallBalancesStore = hideSmallBalancesStore;

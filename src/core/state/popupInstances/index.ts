@@ -6,8 +6,6 @@ import { ChainId } from '~/core/types/chains';
 import { isNativePopup } from '~/core/utils/tabs';
 import { IndependentField } from '~/entries/popup/hooks/swap/useSwapInputs';
 
-import { withSelectors } from '../internal/withSelectors';
-
 type SendAddress = Address | 'eth' | '';
 interface CustomNetworkDraft {
   active?: boolean;
@@ -86,7 +84,7 @@ export interface PopupInstanceStore extends PopupInstance {
   setupPort: () => void;
 }
 
-export const popupInstanceStore = createRainbowStore<PopupInstanceStore>(
+export const usePopupInstanceStore = createRainbowStore<PopupInstanceStore>(
   (set, get) => ({
     ...DEFAULT_POPUP_INSTANCE_VALUES,
     resetValues: popupInstanceHandlerFactory(() =>
@@ -163,8 +161,6 @@ export const popupInstanceStore = createRainbowStore<PopupInstanceStore>(
     version: 1,
   },
 );
-
-export const usePopupInstanceStore = withSelectors(popupInstanceStore);
 
 // creates handlers that only work in popup context and passes through callback types
 function popupInstanceHandlerFactory<

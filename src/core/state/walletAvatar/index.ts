@@ -17,7 +17,7 @@ type WalletAvatarStore = {
   }) => void;
 };
 
-export const walletAvatarStore = createRainbowStore<WalletAvatarStore>(
+export const useWalletAvatarStore = createRainbowStore<WalletAvatarStore>(
   (set, get) => ({
     walletAvatar: {},
     setWalletAvatar: ({ addressOrName, walletAvatar }) => {
@@ -35,5 +35,3 @@ export const walletAvatarStore = createRainbowStore<WalletAvatarStore>(
     version: 0,
   },
 );
-
-export const useWalletAvatarStore = walletAvatarStore;

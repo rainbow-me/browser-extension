@@ -6,7 +6,7 @@ export interface AnalyticsDisabledState {
   setAnalyticsDisabled: (analyticsDisabled: boolean) => void;
 }
 
-export const analyticsDisabledStore =
+export const useAnalyticsDisabledStore =
   createRainbowStore<AnalyticsDisabledState>(
     (set) => ({
       analyticsDisabled: getBrowser() === 'Firefox',
@@ -18,5 +18,3 @@ export const analyticsDisabledStore =
       version: 1,
     },
   );
-
-export const useAnalyticsDisabledStore = analyticsDisabledStore;

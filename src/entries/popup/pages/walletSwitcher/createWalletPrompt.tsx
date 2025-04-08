@@ -43,8 +43,10 @@ export const CreateWalletPrompt = ({
   const { state } = useLocation();
   const [walletName, setWalletName] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const saveWalletName = useWalletNamesStore.use.saveWalletName();
-  const setCurrentAddress = useCurrentAddressStore.use.setCurrentAddress();
+  const saveWalletName = useWalletNamesStore((state) => state.saveWalletName);
+  const setCurrentAddress = useCurrentAddressStore(
+    (state) => state.setCurrentAddress,
+  );
   const [newWallet, setNewWallet] = useState<KeychainWallet | null>();
 
   useEffect(() => {

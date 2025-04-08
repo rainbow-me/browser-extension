@@ -296,6 +296,7 @@
         "path": true
       },
       "globals": {
+        "TextEncoder": true,
         "console.warn": true,
         "process.env.NODE_ENV": true
       },

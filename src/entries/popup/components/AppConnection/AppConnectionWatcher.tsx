@@ -6,7 +6,7 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCurrentAddressStore } from '~/core/state';
 import { useAppConnectionWalletSwitcherStore } from '~/core/state/appConnectionWalletSwitcher/appConnectionSwitcher';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { Box } from '~/design-system';
@@ -24,7 +24,7 @@ import { AppConnectionNudgeBanner } from './AppConnectionNudgeBanner';
 import { AppConnectionNudgeSheet } from './AppConnectionNudgeSheet';
 
 export const AppConnectionWatcher = () => {
-  const chainsLabel = networkStore((state) => state.getChainsLabel());
+  const chainsLabel = useNetworkStore((state) => state.getChainsLabel());
   const { currentAddress } = useCurrentAddressStore();
   const { url } = useActiveTab();
   const { data: dappMetadata } = useDappMetadata({ url });
@@ -76,12 +76,15 @@ export const AppConnectionWatcher = () => {
     chainsLabel,
   ]);
 
-  const nudgeSheetEnabled =
-    useAppConnectionWalletSwitcherStore.use.nudgeSheetEnabled();
-  const appHasInteractedWithNudgeSheet =
-    useAppConnectionWalletSwitcherStore.use.appHasInteractedWithNudgeSheet();
-  const setAppHasInteractedWithNudgeSheet =
-    useAppConnectionWalletSwitcherStore.use.setAppHasInteractedWithNudgeSheet();
+  const nudgeSheetEnabled = useAppConnectionWalletSwitcherStore(
+    (state) => state.nudgeSheetEnabled,
+  );
+  const appHasInteractedWithNudgeSheet = useAppConnectionWalletSwitcherStore(
+    (state) => state.appHasInteractedWithNudgeSheet,
+  );
+  const setAppHasInteractedWithNudgeSheet = useAppConnectionWalletSwitcherStore(
+    (state) => state.setAppHasInteractedWithNudgeSheet,
+  );
 
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {

@@ -7,7 +7,7 @@ export interface CurrentCurrencyState {
   setCurrentCurrency: (currency: SupportedCurrencyKey) => void;
 }
 
-export const currentCurrencyStore = createRainbowStore<CurrentCurrencyState>(
+export const useCurrentCurrencyStore = createRainbowStore<CurrentCurrencyState>(
   (set) => ({
     currentCurrency: 'USD',
     setCurrentCurrency: (newCurrency) => set({ currentCurrency: newCurrency }),
@@ -17,5 +17,3 @@ export const currentCurrencyStore = createRainbowStore<CurrentCurrencyState>(
     version: 0,
   },
 );
-
-export const useCurrentCurrencyStore = currentCurrencyStore;

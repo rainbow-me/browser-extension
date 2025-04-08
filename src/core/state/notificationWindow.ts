@@ -14,7 +14,7 @@ export interface NotificationWindowsState {
   ) => void;
 }
 
-export const notificationWindowStore =
+export const useNotificationWindowStore =
   createRainbowStore<NotificationWindowsState>(
     (set, get) => ({
       notificationWindows: {},
@@ -33,5 +33,3 @@ export const notificationWindowStore =
       version: 0,
     },
   );
-
-export const useNotificationWindowStore = notificationWindowStore;

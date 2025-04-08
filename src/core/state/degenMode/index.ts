@@ -1,7 +1,7 @@
 import { analytics } from '~/analytics';
 import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 
-export const degenModeStore = createRainbowStore(
+export const useDegenMode = createRainbowStore(
   () => ({
     isDegenModeEnabled: false,
   }),
@@ -11,7 +11,6 @@ export const degenModeStore = createRainbowStore(
   },
 );
 
-export const useDegenMode = degenModeStore;
 export const toggleDegenMode = () =>
   useDegenMode.setState((s) => {
     analytics.track(analytics.event.toggledDegenMode, {

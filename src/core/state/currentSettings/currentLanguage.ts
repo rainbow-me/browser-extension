@@ -15,7 +15,7 @@ const loadTranslation = async (language: Language) => {
   i18n.translations[language] = newLangDict;
 };
 
-export const currentLanguageStore = createRainbowStore<CurrentLanguageState>(
+export const useCurrentLanguageStore = createRainbowStore<CurrentLanguageState>(
   (set) => ({
     currentLanguage: Language.EN_US,
     setCurrentLanguage: async (newLanguage) => {
@@ -29,5 +29,3 @@ export const currentLanguageStore = createRainbowStore<CurrentLanguageState>(
     version: 1,
   },
 );
-
-export const useCurrentLanguageStore = currentLanguageStore;

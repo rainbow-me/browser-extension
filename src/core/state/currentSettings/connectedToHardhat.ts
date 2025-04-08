@@ -8,7 +8,7 @@ export interface ConnectedToHardhatState {
   setConnectedToHardhatOp: (connectedToHardhatOp: boolean) => void;
 }
 
-export const connectedToHardhatStore =
+export const useConnectedToHardhatStore =
   createRainbowStore<ConnectedToHardhatState>(
     (set) => ({
       connectedToHardhat: false,
@@ -26,5 +26,3 @@ export const connectedToHardhatStore =
       version: 0,
     },
   );
-
-export const useConnectedToHardhatStore = connectedToHardhatStore;

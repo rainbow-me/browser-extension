@@ -1,7 +1,6 @@
 import { Address } from 'viem';
 
 import { createRainbowStore } from '../internal/createRainbowStore';
-import { withSelectors } from '../internal/withSelectors';
 
 export interface Contact {
   name: string;
@@ -20,7 +19,7 @@ export interface ContactsStore {
   deleteContact: ({ address }: { address: Address }) => void;
 }
 
-export const contactsStore = createRainbowStore<ContactsStore>(
+export const useContactsStore = createRainbowStore<ContactsStore>(
   (set, get) => ({
     contacts: {},
     getContact: ({ address }) => {
@@ -49,5 +48,3 @@ export const contactsStore = createRainbowStore<ContactsStore>(
     version: 0,
   },
 );
-
-export const useContactsStore = withSelectors(contactsStore);

@@ -8,7 +8,7 @@ export interface HiddenWalletsStore {
   unhideWallet: ({ address }: { address: Address }) => void;
 }
 
-export const hiddenWalletsStore = createRainbowStore<HiddenWalletsStore>(
+export const useHiddenWalletsStore = createRainbowStore<HiddenWalletsStore>(
   (set, get) => ({
     hiddenWallets: {},
     hideWallet: ({ address }) => {
@@ -30,5 +30,3 @@ export const hiddenWalletsStore = createRainbowStore<HiddenWalletsStore>(
     version: 0,
   },
 );
-
-export const useHiddenWalletsStore = hiddenWalletsStore;

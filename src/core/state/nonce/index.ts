@@ -3,8 +3,6 @@ import { Address } from 'viem';
 import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { ChainId } from '~/core/types/chains';
 
-import { withSelectors } from '../internal/withSelectors';
-
 type NonceData = {
   currentNonce?: number;
   latestConfirmedNonce?: number;
@@ -29,7 +27,7 @@ export interface CurrentNonceState {
   clearNonces: () => void;
 }
 
-export const nonceStore = createRainbowStore<CurrentNonceState>(
+export const useNonceStore = createRainbowStore<CurrentNonceState>(
   (set, get) => ({
     nonces: {},
     setNonce: ({ address, currentNonce, latestConfirmedNonce, chainId }) => {
@@ -64,5 +62,3 @@ export const nonceStore = createRainbowStore<CurrentNonceState>(
     version: 0,
   },
 );
-
-export const useNonceStore = withSelectors(nonceStore);

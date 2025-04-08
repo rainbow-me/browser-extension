@@ -6,7 +6,7 @@ export interface AutoLockTimerState {
   setAutoLockTimer: (autoLockTimer: AutoLockTimerOption) => void;
 }
 
-export const autoLockTimerStore = createRainbowStore<AutoLockTimerState>(
+export const useAutoLockTimerStore = createRainbowStore<AutoLockTimerState>(
   (set) => ({
     autoLockTimer: 'none',
     setAutoLockTimer: (newAutoLockTimer) =>
@@ -17,5 +17,3 @@ export const autoLockTimerStore = createRainbowStore<AutoLockTimerState>(
     version: 0,
   },
 );
-
-export const useAutoLockTimerStore = autoLockTimerStore;

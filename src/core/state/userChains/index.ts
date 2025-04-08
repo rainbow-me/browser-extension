@@ -1,7 +1,6 @@
 import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { ChainId } from '~/core/types/chains';
 
-import { withSelectors } from '../internal/withSelectors';
 import { runNetworksMigrationIfNeeded } from '../networks/runNetworksMigrationIfNeeded';
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
@@ -38,9 +37,9 @@ export interface UserChainsState {
 }
 
 /**
- * @deprecated use `networkStore` instead
+ * @deprecated use `useNetworkStore` instead
  */
-export const userChainsStore = createRainbowStore<UserChainsState>(
+export const useUserChainsStore = createRainbowStore<UserChainsState>(
   (set, get) => ({
     userChains: {},
     userChainsOrder: [],
@@ -111,8 +110,3 @@ export const userChainsStore = createRainbowStore<UserChainsState>(
     },
   },
 );
-
-/**
- * @deprecated use `networkStore` instead
- */
-export const useUserChainsStore = withSelectors(userChainsStore);

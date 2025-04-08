@@ -15,7 +15,7 @@ export interface PinnedAssetState {
   togglePinAsset: (address: Address, uniqueId: string) => void;
 }
 
-export const pinnedAssets = createRainbowStore<PinnedAssetState>(
+export const usePinnedAssetStore = createRainbowStore<PinnedAssetState>(
   (set, get) => ({
     pinned: {},
     togglePinAsset: (address: Address, uniqueId: string) => {
@@ -42,5 +42,3 @@ export const pinnedAssets = createRainbowStore<PinnedAssetState>(
     version: 2,
   },
 );
-
-export const usePinnedAssetStore = pinnedAssets;

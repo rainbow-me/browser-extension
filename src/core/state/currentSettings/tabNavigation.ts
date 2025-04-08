@@ -6,7 +6,7 @@ interface TabNavigationState {
   setSelectedTab: (newSelectedTab: Tab) => void;
 }
 
-const tabNavigationStore = createRainbowStore<TabNavigationState>(
+export const useTabNavigation = createRainbowStore<TabNavigationState>(
   (set) => ({
     selectedTab: 'tokens',
     setSelectedTab: (newSelectedTab) => set({ selectedTab: newSelectedTab }),
@@ -16,5 +16,3 @@ const tabNavigationStore = createRainbowStore<TabNavigationState>(
     version: 0,
   },
 );
-
-export const useTabNavigation = tabNavigationStore;

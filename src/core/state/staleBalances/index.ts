@@ -33,7 +33,7 @@ export interface StaleBalancesState {
   staleBalances: Record<Address, StaleBalancesByChainId>;
 }
 
-export const staleBalancesStore = createRainbowStore<StaleBalancesState>(
+export const useStaleBalancesStore = createRainbowStore<StaleBalancesState>(
   (set, get) => ({
     addStaleBalance: ({
       address,
@@ -119,5 +119,3 @@ export const staleBalancesStore = createRainbowStore<StaleBalancesState>(
     version: 0,
   },
 );
-
-export const useStaleBalancesStore = staleBalancesStore;

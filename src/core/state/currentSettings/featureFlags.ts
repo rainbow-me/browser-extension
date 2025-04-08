@@ -14,7 +14,7 @@ export interface FeatureFlagsStore {
   setFeatureFlag: (key: FeatureFlagTypes, value: boolean) => void;
 }
 
-export const featureFlagsStore = createRainbowStore<FeatureFlagsStore>(
+export const useFeatureFlagsStore = createRainbowStore<FeatureFlagsStore>(
   (set, get) => ({
     featureFlags: {
       full_watching_wallets: false,
@@ -48,5 +48,3 @@ export const featureFlagsStore = createRainbowStore<FeatureFlagsStore>(
     },
   },
 );
-
-export const useFeatureFlagsStore = featureFlagsStore;

@@ -1,8 +1,8 @@
 import { initializeMessenger } from '~/core/messengers';
 import {
-  isDefaultWalletStore,
-  notificationWindowStore,
-  pendingRequestStore,
+  useIsDefaultWalletStore,
+  useNotificationWindowStore,
+  usePendingRequestStore,
 } from '~/core/state';
 
 const bridgeMessenger = initializeMessenger({ connect: 'inpage' });
@@ -12,7 +12,7 @@ export const handleTabAndWindowUpdates = () => {
   // if that's the case then we need to remove the pending requests
   const clearPendingRequestsOnUpdate = (tabId: number) => {
     const { pendingRequests, removePendingRequest } =
-      pendingRequestStore.getState();
+      usePendingRequestStore.getState();
     pendingRequests.forEach((request) => {
       if (request.meta?.sender?.tab?.id === tabId) {
         bridgeMessenger.send(`message:${request?.id}`, null);
@@ -28,13 +28,13 @@ export const handleTabAndWindowUpdates = () => {
 
   chrome.tabs.onActivated.addListener(() => {
     bridgeMessenger.send('rainbow_setDefaultProvider', {
-      rainbowAsDefault: isDefaultWalletStore.getState().isDefaultWallet,
+      rainbowAsDefault: useIsDefaultWalletStore.getState().isDefaultWallet,
     });
   });
 
   chrome.windows.onRemoved.addListener((id) => {
     const { setNotificationWindow, notificationWindows } =
-      notificationWindowStore.getState();
+      useNotificationWindowStore.getState();
 
     for (const [tabId, notificationWindow] of Object.entries(
       notificationWindows,

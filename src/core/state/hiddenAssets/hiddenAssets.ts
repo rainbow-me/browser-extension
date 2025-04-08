@@ -4,8 +4,6 @@ import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { SearchAsset } from '~/core/types/search';
 
-import { withSelectors } from '../internal/withSelectors';
-
 type HiddenAssetDict = Record<string, boolean>;
 type HiddenAssetsByAddress = Record<Address, HiddenAssetDict>;
 
@@ -20,7 +18,7 @@ export const computeUniqueIdForHiddenAsset = (
   return `${asset.address}-${asset.chainId}`;
 };
 
-export const hiddenAssetsStore = createRainbowStore<HiddenAssetState>(
+export const useHiddenAssetStore = createRainbowStore<HiddenAssetState>(
   (set, get) => ({
     hidden: {},
     toggleHideAsset: (address: Address, uniqueId: string) => {
@@ -41,5 +39,3 @@ export const hiddenAssetsStore = createRainbowStore<HiddenAssetState>(
     version: 2,
   },
 );
-
-export const useHiddenAssetStore = withSelectors(hiddenAssetsStore);

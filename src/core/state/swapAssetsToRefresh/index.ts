@@ -1,8 +1,6 @@
 import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { ParsedSearchAsset } from '~/core/types/assets';
 
-import { withSelectors } from '../internal/withSelectors';
-
 export interface SwapAssetsToRefreshState {
   setSwapAssetsToRefresh: (assetsToRefresh: {
     nonce: number;
@@ -13,7 +11,7 @@ export interface SwapAssetsToRefreshState {
   swapAssetsToRefresh: { [nonce: number]: ParsedSearchAsset[] };
 }
 
-export const swapAssetsToRefreshStore =
+export const useSwapAssetsToRefreshStore =
   createRainbowStore<SwapAssetsToRefreshState>((set, get) => ({
     setSwapAssetsToRefresh: ({ nonce, assetToBuy, assetToSell }) => {
       const swapAssetsToRefresh = get().swapAssetsToRefresh;
@@ -27,7 +25,3 @@ export const swapAssetsToRefreshStore =
     },
     swapAssetsToRefresh: {},
   }));
-
-export const useSwapAssetsToRefreshStore = withSelectors(
-  swapAssetsToRefreshStore,
-);

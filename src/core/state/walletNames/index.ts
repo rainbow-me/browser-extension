@@ -2,8 +2,6 @@ import { Address } from 'viem';
 
 import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 
-import { withSelectors } from '../internal/withSelectors';
-
 export interface WalletNamesStore {
   walletNames: { [address: Address]: string };
   getWalletName: ({
@@ -21,7 +19,7 @@ export interface WalletNamesStore {
   deleteWalletName: ({ address }: { address: Address }) => void;
 }
 
-export const walletNamesStore = createRainbowStore<WalletNamesStore>(
+export const useWalletNamesStore = createRainbowStore<WalletNamesStore>(
   (set, get) => ({
     walletNames: {},
     getWalletName: ({ address }) => {
@@ -47,5 +45,3 @@ export const walletNamesStore = createRainbowStore<WalletNamesStore>(
     version: 0,
   },
 );
-
-export const useWalletNamesStore = withSelectors(walletNamesStore);

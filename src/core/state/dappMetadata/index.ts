@@ -13,7 +13,7 @@ export interface DappMetadataState {
   getDappMetadata: ({ host }: { host: string }) => DappMetadata | null;
 }
 
-export const dappMetadataStore = createRainbowStore<DappMetadataState>(
+export const useDappMetadataStore = createRainbowStore<DappMetadataState>(
   (set, get) => ({
     dappMetadata: {},
     setDappMetadata: ({ host, dappMetadata }) => {
@@ -47,5 +47,3 @@ export const dappMetadataStore = createRainbowStore<DappMetadataState>(
     version: 0,
   },
 );
-
-export const useDappMetadataStore = dappMetadataStore;

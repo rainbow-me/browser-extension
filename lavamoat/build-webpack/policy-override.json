@@ -9,6 +9,9 @@
       "builtin": {
         "path": true
       },
+      "globals": {
+        "TextEncoder": true
+      },
       "packages": {
         "@vanilla-extract/webpack-plugin>loader-utils": true,
         "@vanilla-extract/webpack-plugin>chalk": true,

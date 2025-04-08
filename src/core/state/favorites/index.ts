@@ -34,7 +34,7 @@ export interface FavoritesState {
   removeFavorite: UpdateFavoritesFn;
 }
 
-export const favoritesStore = createRainbowStore<FavoritesState>(
+export const useFavoritesStore = createRainbowStore<FavoritesState>(
   (set, get) => ({
     favorites: getInitialFavorites(),
     setFavorites: (favorites) => set({ favorites }),
@@ -66,5 +66,3 @@ export const favoritesStore = createRainbowStore<FavoritesState>(
     version: 8,
   },
 );
-
-export const useFavoritesStore = favoritesStore;

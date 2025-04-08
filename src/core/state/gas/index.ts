@@ -7,8 +7,6 @@ import {
   GasSpeed,
 } from '~/core/types/gas';
 
-import { withSelectors } from '../internal/withSelectors';
-
 export interface GasStore {
   selectedGas: GasFeeParams | GasFeeLegacyParams;
   gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed;
@@ -28,7 +26,7 @@ export interface GasStore {
   clearCustomGasModified: () => void;
 }
 
-export const gasStore = createRainbowStore<GasStore>(
+export const useGasStore = createRainbowStore<GasStore>(
   (set, get) => ({
     selectedGas: {} as GasFeeParams | GasFeeLegacyParams,
     gasFeeParamsBySpeed: {} as GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed,
@@ -72,5 +70,3 @@ export const gasStore = createRainbowStore<GasStore>(
     version: 0,
   },
 );
-
-export const useGasStore = withSelectors(gasStore);

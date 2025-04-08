@@ -4,8 +4,8 @@ import { LocalStorage } from '~/core/storage';
 import { RainbowError, logger } from '~/logger';
 
 import * as stores from '../index';
-import { networksStoreMigrationStore } from '../networks/migration';
-import { networkStore } from '../networks/networks';
+import { useNetworksStoreMigrationStore } from '../networks/migration';
+import { useNetworkStore } from '../networks/networks';
 import { NetworkState } from '../networks/types';
 
 import {
@@ -91,7 +91,7 @@ export function syncNetworksStore(context: 'popup' | 'background') {
 
       // Update last synced state before setting state to prevent loops
       lastSyncedState = state;
-      networkStore.setState(deserializedState);
+      useNetworkStore.setState(deserializedState);
 
       // For popup: after receiving first sync from background, setup subscription
       if (context === 'popup' && !hasReceivedFirstSync) {
@@ -99,7 +99,7 @@ export function syncNetworksStore(context: 'popup' | 'background') {
           'popup: received first sync from background, now setting up subscription',
         );
         hasReceivedFirstSync = true;
-        networkStore.subscribe(handleStoreUpdate);
+        useNetworkStore.subscribe(handleStoreUpdate);
       }
     } catch (error) {
       logger.error(
@@ -110,7 +110,7 @@ export function syncNetworksStore(context: 'popup' | 'background') {
     }
   };
 
-  // Common function to handle networkStore changes
+  // Common function to handle useNetworkStore changes
   const handleStoreUpdate = (state: NetworkState, prevState: NetworkState) => {
     if (isEqual(state, prevState)) return;
 
@@ -135,21 +135,21 @@ export function syncNetworksStore(context: 'popup' | 'background') {
   // Popup will wait for first sync from background before subscribing
   if (context === 'background') {
     const initialMigrationState =
-      networksStoreMigrationStore.getState().didCompleteNetworksMigration;
+      useNetworksStoreMigrationStore.getState().didCompleteNetworksMigration;
 
     if (initialMigrationState) {
       logger.debug(
         'background: migration already complete, subscribing to network store changes',
       );
-      networkStore.subscribe(handleStoreUpdate);
+      useNetworkStore.subscribe(handleStoreUpdate);
     } else {
       logger.debug('background: waiting for network migration to complete');
-      networksStoreMigrationStore.subscribe((state) => {
+      useNetworksStoreMigrationStore.subscribe((state) => {
         if (state.didCompleteNetworksMigration) {
           logger.debug(
             'background: migration complete, subscribing to network store changes',
           );
-          networkStore.subscribe(handleStoreUpdate);
+          useNetworkStore.subscribe(handleStoreUpdate);
         }
       });
     }

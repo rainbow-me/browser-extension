@@ -8,6 +8,7 @@ import {
 import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test, vi } from 'vitest';
 
+import { useConnectedToHardhatStore, useGasStore } from '~/core/state';
 import {
   ENS_MAINNET_ASSET,
   ETH_MAINNET_ASSET,
@@ -18,8 +19,6 @@ import {
   delay,
 } from '~/test/utils';
 
-import { gasStore } from '../state';
-import { connectedToHardhatStore } from '../state/currentSettings/connectedToHardhat';
 import { GasSpeed } from '../types/gas';
 import { updateWagmiConfig } from '../wagmi';
 import { getProvider } from '../wagmi/clientToProvider';
@@ -79,7 +78,7 @@ vi.mock('@ethersproject/wallet', () => ({
 }));
 
 beforeAll(async () => {
-  connectedToHardhatStore.setState({ connectedToHardhat: true });
+  useConnectedToHardhatStore.setState({ connectedToHardhat: true });
   updateWagmiConfig([mainnet]);
   await delay(3000);
   doesntNeedUnlockQuote = await getQuote({
@@ -205,7 +204,7 @@ test('[rap/unlockAndSwap] :: create unlock and swap rap with unlock', async () =
 });
 
 test('[rap/unlockAndSwap] :: create swap rap and execute it', async () => {
-  const { setSelectedGas } = gasStore.getState();
+  const { setSelectedGas } = useGasStore.getState();
   setSelectedGas({
     selectedGas: SELECTED_GAS,
   });
@@ -222,7 +221,7 @@ test('[rap/unlockAndSwap] :: create swap rap and execute it', async () => {
 });
 
 test('[rap/unlockAndSwap] :: create unlock and swap rap with unlock and execute it', async () => {
-  const { setSelectedGas } = gasStore.getState();
+  const { setSelectedGas } = useGasStore.getState();
   setSelectedGas({
     selectedGas: SELECTED_GAS,
   });
@@ -239,7 +238,7 @@ test('[rap/unlockAndSwap] :: create unlock and swap rap with unlock and execute 
 });
 
 test('[rap/unlockAndSwap] :: create unlock and wrap eth rap with unlock and execute it', async () => {
-  const { setSelectedGas } = gasStore.getState();
+  const { setSelectedGas } = useGasStore.getState();
   setSelectedGas({
     selectedGas: SELECTED_GAS,
   });
@@ -267,7 +266,7 @@ test('[rap/unlockAndSwap] :: create unwrap eth rap', async () => {
 });
 
 test('[rap/unlockAndSwap] :: create unwrap weth rap and execute it', async () => {
-  const { setSelectedGas } = gasStore.getState();
+  const { setSelectedGas } = useGasStore.getState();
   setSelectedGas({
     selectedGas: SELECTED_GAS,
   });

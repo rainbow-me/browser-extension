@@ -11,7 +11,7 @@ export const useWalletInfo = ({
 }: {
   address?: Address;
 }) => {
-  const contacts = useContactsStore.use.contacts();
+  const contacts = useContactsStore((state) => state.contacts);
   const { walletNames } = useWalletNamesStore();
   const { data: ensName } = useEnsName({ address, chainId: ChainId.mainnet });
 

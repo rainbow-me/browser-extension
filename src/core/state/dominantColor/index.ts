@@ -5,7 +5,7 @@ type ColorCacheStore = {
   setColorCache: (imageUrl: string, color: string | null) => void;
 };
 
-export const colorCacheStore = createRainbowStore<ColorCacheStore>(
+export const useColorCacheStore = createRainbowStore<ColorCacheStore>(
   (set) => ({
     colorCache: {},
     setColorCache: (imageUrl, color) =>
@@ -18,5 +18,3 @@ export const colorCacheStore = createRainbowStore<ColorCacheStore>(
     version: 0,
   },
 );
-
-export const useColorCacheStore = colorCacheStore;

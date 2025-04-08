@@ -2,8 +2,6 @@ import { Address } from 'viem';
 
 import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 
-import { withSelectors } from '../internal/withSelectors';
-
 type NftDisplayMode = 'byCollection' | 'grouped';
 export type NftSort = 'alphabetical' | 'recent';
 type IsOpenDictByCollection = Record<string, boolean>;
@@ -27,7 +25,7 @@ export interface NftsState {
   toggleHideNFT: (address: Address, uniqueId: string) => void;
 }
 
-export const nftsStore = createRainbowStore<NftsState>(
+export const useNftsStore = createRainbowStore<NftsState>(
   (set, get) => ({
     displayMode: 'grouped',
     hidden: {},
@@ -67,5 +65,3 @@ export const nftsStore = createRainbowStore<NftsState>(
     version: 1,
   },
 );
-
-export const useNftsStore = withSelectors(nftsStore);

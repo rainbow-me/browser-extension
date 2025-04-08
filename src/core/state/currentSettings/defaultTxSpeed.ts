@@ -8,7 +8,7 @@ export interface DefaultTxSpeedState {
   setDefaultTxSpeed: (defaultTxSpeed: DefaultTxSpeedOption) => void;
 }
 
-export const defaultTxSpeedStore = createRainbowStore<DefaultTxSpeedState>(
+export const useDefaultTxSpeedStore = createRainbowStore<DefaultTxSpeedState>(
   (set) => ({
     defaultTxSpeed: GasSpeed.NORMAL,
     setDefaultTxSpeed: (newDefaultTxSpeed) =>
@@ -19,5 +19,3 @@ export const defaultTxSpeedStore = createRainbowStore<DefaultTxSpeedState>(
     version: 0,
   },
 );
-
-export const useDefaultTxSpeedStore = defaultTxSpeedStore;

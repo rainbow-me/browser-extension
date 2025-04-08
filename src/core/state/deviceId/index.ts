@@ -7,7 +7,7 @@ export interface DeviceIdStore {
   setDeviceId: (deviceId: string) => void;
 }
 
-export const deviceIdStore = createRainbowStore<DeviceIdStore>(
+export const useDeviceIdStore = createRainbowStore<DeviceIdStore>(
   (set) => ({
     deviceId: uuid4(),
     setDeviceId: (newDeviceId) => set({ deviceId: newDeviceId }),
@@ -17,5 +17,3 @@ export const deviceIdStore = createRainbowStore<DeviceIdStore>(
     version: 0,
   },
 );
-
-export const useDeviceIdStore = deviceIdStore;

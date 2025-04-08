@@ -6,7 +6,7 @@ export interface HomePromptsQueue {
   popQueue: () => void;
 }
 
-export const homePromptsQueueStore = createRainbowStore<HomePromptsQueue>(
+export const useHomePromptsQueueStore = createRainbowStore<HomePromptsQueue>(
   (set, get) => ({
     queue: ['wallet-backup', 'app-connection'],
     popQueue: () => {
@@ -16,5 +16,3 @@ export const homePromptsQueueStore = createRainbowStore<HomePromptsQueue>(
     },
   }),
 );
-
-export const useHomeQueueStackStore = homePromptsQueueStore;

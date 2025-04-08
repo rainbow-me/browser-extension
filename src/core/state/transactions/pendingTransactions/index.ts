@@ -4,8 +4,6 @@ import { Address } from 'viem';
 import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { RainbowTransaction } from '~/core/types/transactions';
 
-import { withSelectors } from '../../internal/withSelectors';
-
 export interface PendingTransactionsStateV1 {
   [key: Address]: {
     pendingTransactions: RainbowTransaction[];
@@ -31,7 +29,7 @@ export interface PendingTransactionsState {
   clearPendingTransactions: () => void;
 }
 
-export const pendingTransactionsStore =
+export const usePendingTransactionsStore =
   createRainbowStore<PendingTransactionsState>(
     (set, get) => ({
       pendingTransactions: {},
@@ -128,7 +126,3 @@ export const pendingTransactionsStore =
       },
     },
   );
-
-export const usePendingTransactionsStore = withSelectors(
-  pendingTransactionsStore,
-);

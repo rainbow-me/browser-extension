@@ -7,7 +7,7 @@ import {
   syncNetworksStore,
   syncStores,
 } from '~/core/state/internal/syncStores';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { localStorageRecycler } from '~/core/storage/localStorageRecycler';
 import { updateWagmiConfig } from '~/core/wagmi';
 
@@ -50,6 +50,6 @@ self.addEventListener('activate', () => {
 handleKeepAlive();
 
 popupMessenger.reply('rainbow_updateWagmiClient', async () => {
-  const activeChains = networkStore.getState().getAllActiveRpcChains();
+  const activeChains = useNetworkStore.getState().getAllActiveRpcChains();
   updateWagmiConfig(activeChains);
 });

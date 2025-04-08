@@ -11,8 +11,8 @@ import {
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
-import { networkStore } from '~/core/state/networks/networks';
-import { staleBalancesStore } from '~/core/state/staleBalances';
+import { useNetworkStore } from '~/core/state/networks/networks';
+import { useStaleBalancesStore } from '~/core/state/staleBalances';
 import { ParsedAssetsDictByChain, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { AddressAssetsReceivedMessage } from '~/core/types/refraction';
@@ -126,7 +126,7 @@ async function userAssetsQueryFunction({
     }),
   })?.state?.data || {}) as ParsedAssetsDictByChain;
   try {
-    const supportedAssetsChainIds = networkStore
+    const supportedAssetsChainIds = useNetworkStore
       .getState()
       .getSupportedAssetsChainIds();
 
@@ -136,8 +136,8 @@ async function userAssetsQueryFunction({
       .map(({ id }) => id)
       .filter((id) => supportedAssetsChainIds.includes(id));
 
-    staleBalancesStore.getState().clearExpiredData(address as Address);
-    const staleBalancesParam = staleBalancesStore
+    useStaleBalancesStore.getState().clearExpiredData(address as Address);
+    const staleBalancesParam = useStaleBalancesStore
       .getState()
       .getStaleBalancesQueryParam(address as Address);
     const url = `/${supportedChainIds.join(

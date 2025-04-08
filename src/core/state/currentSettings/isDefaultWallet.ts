@@ -5,7 +5,7 @@ export interface IsDefaultWalletState {
   setIsDefaultWallet: (isDefaultWallet: boolean) => void;
 }
 
-export const isDefaultWalletStore = createRainbowStore<IsDefaultWalletState>(
+export const useIsDefaultWalletStore = createRainbowStore<IsDefaultWalletState>(
   (set) => ({
     isDefaultWallet: true,
     setIsDefaultWallet: (newIsDefaultWallet) =>
@@ -16,5 +16,3 @@ export const isDefaultWalletStore = createRainbowStore<IsDefaultWalletState>(
     version: 0,
   },
 );
-
-export const useIsDefaultWalletStore = isDefaultWalletStore;

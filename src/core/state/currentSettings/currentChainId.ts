@@ -7,7 +7,7 @@ export interface CurrentChainIdState {
   setCurrentChainId: (chainId: number) => void;
 }
 
-export const currentChainIdStore = createRainbowStore<CurrentChainIdState>(
+export const useCurrentChainIdStore = createRainbowStore<CurrentChainIdState>(
   (set) => ({
     currentChainId: ChainId.mainnet,
     setCurrentChainId: (newChainId) => set({ currentChainId: newChainId }),
@@ -17,5 +17,3 @@ export const currentChainIdStore = createRainbowStore<CurrentChainIdState>(
     version: 0,
   },
 );
-
-export const useCurrentChainIdStore = currentChainIdStore;

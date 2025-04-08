@@ -5,7 +5,7 @@ export interface TestnetModeState {
   setTestnetMode: (testnetMode: boolean) => void;
 }
 
-export const testnetModeStore = createRainbowStore<TestnetModeState>(
+export const useTestnetModeStore = createRainbowStore<TestnetModeState>(
   (set) => ({
     testnetMode: false,
     setTestnetMode: (testnetMode) => set({ testnetMode }),
@@ -15,5 +15,3 @@ export const testnetModeStore = createRainbowStore<TestnetModeState>(
     version: 0,
   },
 );
-
-export const useTestnetModeStore = testnetModeStore;

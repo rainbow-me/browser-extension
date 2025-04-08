@@ -4,7 +4,7 @@ import { memo, useReducer, useState } from 'react';
 import { metadataClient } from '~/core/graphql';
 import { i18n } from '~/core/languages';
 import { queryClient } from '~/core/react-query';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { AddressOrEth, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { SearchAsset } from '~/core/types/search';
@@ -188,7 +188,7 @@ const usePriceChart = ({
   chainId: ChainId;
   time: ChartTime;
 }) => {
-  const supportedChains = networkStore((state) =>
+  const supportedChains = useNetworkStore((state) =>
     state.getBackendSupportedChains(true),
   );
   return useQuery({

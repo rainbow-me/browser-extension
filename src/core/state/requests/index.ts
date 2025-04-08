@@ -8,7 +8,7 @@ export interface PendingRequestsStore {
   removePendingRequest: (id: number) => void;
 }
 
-export const pendingRequestStore = createRainbowStore<PendingRequestsStore>(
+export const usePendingRequestStore = createRainbowStore<PendingRequestsStore>(
   (set, get) => ({
     pendingRequests: [],
     addPendingRequest: (newRequest) => {
@@ -27,5 +27,3 @@ export const pendingRequestStore = createRainbowStore<PendingRequestsStore>(
     version: 0,
   },
 );
-
-export const usePendingRequestStore = pendingRequestStore;

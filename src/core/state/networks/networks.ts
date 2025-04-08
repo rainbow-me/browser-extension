@@ -1,7 +1,7 @@
 import { Chain } from 'viem';
 
 import { fetchNetworks } from '~/core/resources/networks/networks';
-import { favoritesStore } from '~/core/state/favorites';
+import { useFavoritesStore } from '~/core/state/favorites';
 import { createQueryStore } from '~/core/state/internal/createQueryStore';
 import {
   buildInitialUserPreferences,
@@ -26,7 +26,7 @@ import {
   DEFAULT_PRIVATE_MEMPOOL_TIMEOUT,
   buildTimeNetworks,
 } from './constants';
-import { networksStoreMigrationStore } from './migration';
+import { useNetworksStoreMigrationStore } from './migration';
 import { NetworkState } from './types';
 
 interface NetworkActions {
@@ -158,7 +158,7 @@ function createSelector<T>(
 
   return () => {
     const { networks, userPreferences, chainOrder, enabledChainIds } =
-      networkStore.getState();
+      useNetworkStore.getState();
 
     // If the inputs haven't changed (by reference), return the cached result
     if (
@@ -217,7 +217,7 @@ function createParameterizedSelector<T, Args extends unknown[]>(
 
   return (...args: Args) => {
     const { networks, userPreferences, chainOrder, enabledChainIds } =
-      networkStore.getState();
+      useNetworkStore.getState();
 
     // Determine if the additional arguments have changed
     const argsChanged =
@@ -268,7 +268,7 @@ const initialState: NetworkState = {
   ...buildInitialUserPreferences(),
 };
 
-export const networkStore = createQueryStore<
+export const useNetworkStore = createQueryStore<
   Networks,
   never,
   NetworkState & NetworkActions
@@ -278,7 +278,7 @@ export const networkStore = createQueryStore<
     debugMode: process.env.DEBUG_NETWORKS_STORE === 'true',
     enabled: ($) =>
       $(
-        networksStoreMigrationStore,
+        useNetworksStoreMigrationStore,
         (state) =>
           state.didCompleteNetworksMigration &&
           detectScriptType() === 'background',
@@ -860,7 +860,7 @@ export const networkStore = createQueryStore<
 export const syncDefaultFavoritesForNewlySupportedNetworks = (
   newNetworks: Map<string, BackendNetwork>,
 ) => {
-  const { favorites } = favoritesStore.getState();
+  const { favorites } = useFavoritesStore.getState();
   const newFavorites = { ...favorites };
   for (const [key, network] of newNetworks) {
     const chainId = toChainId(key);
@@ -874,5 +874,5 @@ export const syncDefaultFavoritesForNewlySupportedNetworks = (
     ];
   }
 
-  favoritesStore.getState().setFavorites(newFavorites);
+  useFavoritesStore.getState().setFavorites(newFavorites);
 };

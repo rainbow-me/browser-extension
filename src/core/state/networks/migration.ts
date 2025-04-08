@@ -5,7 +5,7 @@ import { NetworksStoreMigrationState } from './types';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
-export const networksStoreMigrationStore =
+export const useNetworksStoreMigrationStore =
   createRainbowStore<NetworksStoreMigrationState>(
     () => ({
       didCompleteNetworksMigration: false,

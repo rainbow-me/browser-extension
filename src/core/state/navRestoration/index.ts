@@ -1,7 +1,6 @@
 import { isNativePopup } from '~/core/utils/tabs';
 
 import { createRainbowStore } from '../internal/createRainbowStore';
-import { withSelectors } from '../internal/withSelectors';
 
 export interface NavRestorationStore {
   clearLastPage: () => Promise<void>;
@@ -13,7 +12,7 @@ export interface NavRestorationStore {
   shouldRestoreNavigation: boolean;
 }
 
-export const navRestorationStore = createRainbowStore<NavRestorationStore>(
+export const useNavRestorationStore = createRainbowStore<NavRestorationStore>(
   (set) => ({
     clearLastPage: async () => {
       const isPopup = await isNativePopup();
@@ -48,5 +47,3 @@ export const navRestorationStore = createRainbowStore<NavRestorationStore>(
     version: 0,
   },
 );
-
-export const useNavRestorationStore = withSelectors(navRestorationStore);

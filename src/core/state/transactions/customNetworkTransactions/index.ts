@@ -3,8 +3,6 @@ import { Address } from 'viem';
 import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { RainbowTransaction } from '~/core/types/transactions';
 
-import { withSelectors } from '../../internal/withSelectors';
-
 export interface CustomNetworkTransactionsState {
   customNetworkTransactions: Record<
     Address,
@@ -34,7 +32,7 @@ export interface CustomNetworkTransactionsState {
   clearAllCustomNetworkTransactions: () => void;
 }
 
-export const customNetworkTransactionsStore =
+export const useCustomNetworkTransactionsStore =
   createRainbowStore<CustomNetworkTransactionsState>(
     (set, get) => ({
       customNetworkTransactions: {},
@@ -82,7 +80,3 @@ export const customNetworkTransactionsStore =
       version: 0,
     },
   );
-
-export const useCustomNetworkTransactionsStore = withSelectors(
-  customNetworkTransactionsStore,
-);

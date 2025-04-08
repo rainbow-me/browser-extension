@@ -13,7 +13,7 @@ export interface QuickPromoStore {
   setSeenPromo: (key: PromoTypes) => void;
 }
 
-export const quickPromoStore = createRainbowStore<QuickPromoStore>(
+export const useQuickPromoStore = createRainbowStore<QuickPromoStore>(
   (set, get) => ({
     seenPromos: {
       command_k: false,
@@ -37,5 +37,3 @@ export const quickPromoStore = createRainbowStore<QuickPromoStore>(
     version: 1,
   },
 );
-
-export const useQuickPromoStore = quickPromoStore;

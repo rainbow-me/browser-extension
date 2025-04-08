@@ -6,7 +6,7 @@ import { Chain } from 'viem';
 import { i18n } from '~/core/languages';
 import { useChainMetadata } from '~/core/resources/chains/chainMetadata';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { getDappHostname, isValidUrl } from '~/core/utils/connectedApps';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
@@ -27,11 +27,11 @@ export function SettingsCustomChain() {
   }: { state: { chain?: Chain } } = useLocation();
   const navigate = useRainbowNavigate();
 
-  const customNetworks = networkStore((state) =>
+  const customNetworks = useNetworkStore((state) =>
     state.getSupportedCustomNetworks(),
   );
 
-  const addCustomChain = networkStore((state) => state.addCustomChain);
+  const addCustomChain = useNetworkStore((state) => state.addCustomChain);
 
   const { developerToolsEnabled } = useDeveloperToolsEnabledStore();
   const knownNetworksAutocomplete = useMemo(
