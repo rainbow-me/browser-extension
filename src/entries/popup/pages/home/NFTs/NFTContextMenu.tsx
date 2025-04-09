@@ -39,8 +39,8 @@ export default function NFTContextMenu({
 }) {
   const { currentAddress: address } = useCurrentAddressStore();
   const containerRef = useContainerRef();
-  const hidden = useNftsStore.use.hidden();
-  const toggleHideNFT = useNftsStore.use.toggleHideNFT();
+  const hidden = useNftsStore((state) => state.hidden);
+  const toggleHideNFT = useNftsStore((state) => state.toggleHideNFT);
   const { selectedNft, setSelectedNft } = useSelectedNftStore();
   const navigate = useRainbowNavigate();
   const hiddenNftsForAddress = hidden[address] || {};

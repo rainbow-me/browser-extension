@@ -4,8 +4,8 @@ import { Contract, PopulatedTransaction } from '@ethersproject/contracts';
 import { parseUnits } from '@ethersproject/units';
 import { Address, Hash, erc20Abi, erc721Abi } from 'viem';
 
-import { gasStore } from '~/core/state';
-import { networkStore } from '~/core/state/networks/networks';
+import { useGasStore } from '~/core/state';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 import {
   TransactionGasParams,
@@ -89,7 +89,7 @@ export const estimateApprove = async ({
   spender: Address;
   chainId: ChainId;
 }): Promise<string> => {
-  const chainGasUnits = networkStore.getState().getChainGasUnits(chainId);
+  const chainGasUnits = useNetworkStore.getState().getChainGasUnits(chainId);
   try {
     const provider = getProvider({ chainId });
     const tokenContract = new Contract(tokenAddress, erc20Abi, provider);
@@ -150,7 +150,7 @@ export const estimateERC721Approval = async ({
   spender: Address;
   chainId: ChainId;
 }): Promise<string> => {
-  const chainGasUnits = networkStore.getState().getChainGasUnits(chainId);
+  const chainGasUnits = useNetworkStore.getState().getChainGasUnits(chainId);
   try {
     const provider = getProvider({ chainId });
     const tokenContract = new Contract(tokenAddress, erc721Abi, provider);
@@ -237,7 +237,7 @@ export const unlock = async ({
   parameters,
   wallet,
 }: ActionProps<'unlock'>): Promise<RapActionResult> => {
-  const { selectedGas, gasFeeParamsBySpeed } = gasStore.getState();
+  const { selectedGas, gasFeeParamsBySpeed } = useGasStore.getState();
 
   const { assetToUnlock, contractAddress, chainId } = parameters;
 

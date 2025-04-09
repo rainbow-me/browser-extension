@@ -9,7 +9,7 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 import {
   SearchAsset,
@@ -144,7 +144,7 @@ export function useTokenSearchAllNetworks(
     TokenSearchQueryKey
   > = {},
 ) {
-  const backendSupportedChains = networkStore((state) =>
+  const backendSupportedChains = useNetworkStore((state) =>
     state.getBackendSupportedChainIds(),
   );
 

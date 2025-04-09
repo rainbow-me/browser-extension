@@ -2,12 +2,12 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 import buildTimeNetworks from 'static/data/networks.json';
 import { fetchNetworks } from '~/core/resources/networks/networks';
-import { favoritesStore } from '~/core/state/favorites';
+import { useFavoritesStore } from '~/core/state/favorites';
 import { AddressOrEth } from '~/core/types/assets';
 
-import { RainbowChainsState, rainbowChainsStore } from '../../rainbowChains';
-import { UserChainsState, userChainsStore } from '../../userChains';
-import { networkStore } from '../networks';
+import { RainbowChainsState, useRainbowChainsStore } from '../../rainbowChains';
+import { UserChainsState, useUserChainsStore } from '../../userChains';
+import { useNetworkStore } from '../networks';
 import { buildInitialUserPreferences, toChainId } from '../utils';
 
 import { Factories, getFactoryData } from './data';
@@ -17,7 +17,7 @@ vi.mock('~/core/resources/networks/networks', () => ({
   fetchNetworks: vi.fn(),
 }));
 
-describe('networkStore', () => {
+describe('useNetworkStore', () => {
   Factories.forEach((factory) => {
     let rainbowChains: RainbowChainsState['rainbowChains'];
     let userChainsOrder: UserChainsState['userChainsOrder'];
@@ -28,14 +28,14 @@ describe('networkStore', () => {
         ({ rainbowChains, userChainsOrder, userChains } =
           getFactoryData(factory));
 
-        rainbowChainsStore.setState({
+        useRainbowChainsStore.setState({
           rainbowChains,
         });
-        userChainsStore.setState({
+        useUserChainsStore.setState({
           userChains,
           userChainsOrder,
         });
-        networkStore.setState({
+        useNetworkStore.setState({
           networks: buildTimeNetworks,
           ...buildInitialUserPreferences(
             buildTimeNetworks,
@@ -48,7 +48,7 @@ describe('networkStore', () => {
 
       test(`${factory} chain order should be kept with duplicates removed`, async () => {
         const orderWithDuplicatesRemoved = [...new Set(userChainsOrder)];
-        const { chainOrder } = networkStore.getState();
+        const { chainOrder } = useNetworkStore.getState();
 
         for (let i = 0; i < orderWithDuplicatesRemoved.length; i++) {
           const chainId = orderWithDuplicatesRemoved[i];
@@ -57,7 +57,7 @@ describe('networkStore', () => {
       });
 
       test(`${factory} should keep the enabled state of chains`, async () => {
-        const { enabledChainIds } = networkStore.getState();
+        const { enabledChainIds } = useNetworkStore.getState();
 
         for (const chainId of enabledChainIds) {
           // explicitly if it's true, it's true, otherwise disable it
@@ -68,7 +68,7 @@ describe('networkStore', () => {
       });
 
       test(`${factory} should have a valid userPreferences entry for pre-existing chains in rainbowChains store`, async () => {
-        const { userPreferences } = networkStore.getState();
+        const { userPreferences } = useNetworkStore.getState();
 
         for (const chainId in rainbowChains) {
           const chainIdNum = toChainId(chainId);
@@ -131,12 +131,12 @@ describe('networkStore', () => {
         ];
 
       beforeEach(async () => {
-        await networkStore.getState().fetch();
+        await useNetworkStore.getState().fetch();
 
         // Mock initial fetch
         vi.mocked(fetchNetworks).mockResolvedValueOnce(mockFetchedNetworks);
 
-        const expected = networkStore
+        const expected = useNetworkStore
           .getState()
           .networks.backendNetworks.networks.reduce((acc, network) => {
             return {
@@ -147,7 +147,7 @@ describe('networkStore', () => {
             };
           }, {});
 
-        favoritesStore.setState({
+        useFavoritesStore.setState({
           favorites: expected,
         });
       });
@@ -165,9 +165,9 @@ describe('networkStore', () => {
         });
 
         // Trigger second fetch
-        await networkStore.getState().fetch();
+        await useNetworkStore.getState().fetch();
 
-        const expected = networkStore
+        const expected = useNetworkStore
           .getState()
           .networks.backendNetworks.networks.reduce((acc, network) => {
             return {
@@ -179,13 +179,13 @@ describe('networkStore', () => {
           }, {});
 
         // Verify favorites were synced with new network
-        expect(favoritesStore.getState().favorites).toEqual(expected);
+        expect(useFavoritesStore.getState().favorites).toEqual(expected);
       });
 
       test('should not duplicate existing favorites when syncing', async () => {
-        await networkStore.getState().fetch();
+        await useNetworkStore.getState().fetch();
 
-        let expected = networkStore
+        let expected = useNetworkStore
           .getState()
           .networks.backendNetworks.networks.reduce((acc, network) => {
             return {
@@ -198,7 +198,7 @@ describe('networkStore', () => {
 
         // populate favorites with new network early
         // so we can verify that each address isn't duplicated
-        favoritesStore.setState({
+        useFavoritesStore.setState({
           favorites: {
             ...expected,
             [mockNewNetwork.id]: mockNewNetwork.favorites.map(
@@ -219,9 +219,9 @@ describe('networkStore', () => {
         });
 
         // Trigger fetch
-        await networkStore.getState().fetch();
+        await useNetworkStore.getState().fetch();
 
-        expected = networkStore
+        expected = useNetworkStore
           .getState()
           .networks.backendNetworks.networks.reduce((acc, network) => {
             return {
@@ -233,7 +233,7 @@ describe('networkStore', () => {
           }, {});
 
         // Verify favorites were merged without duplicates
-        expect(favoritesStore.getState().favorites).toEqual(expected);
+        expect(useFavoritesStore.getState().favorites).toEqual(expected);
       });
     });
   });

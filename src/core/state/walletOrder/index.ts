@@ -1,8 +1,6 @@
 import { Address } from 'viem';
-import create from 'zustand';
 
-import { createStore } from '../internal/createStore';
-import { withSelectors } from '../internal/withSelectors';
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 
 export interface WalletOrderStore {
   walletOrder: Address[];
@@ -10,7 +8,7 @@ export interface WalletOrderStore {
   deleteWalletOrder: ({ removedAddress }: { removedAddress: Address }) => void;
 }
 
-export const walletOrderStore = createStore<WalletOrderStore>(
+export const useWalletOrderStore = createRainbowStore<WalletOrderStore>(
   (set, get) => ({
     walletOrder: [],
     saveWalletOrder: (newWalletOrder) => {
@@ -25,11 +23,7 @@ export const walletOrderStore = createStore<WalletOrderStore>(
     },
   }),
   {
-    persist: {
-      name: 'walletOrder',
-      version: 0,
-    },
+    storageKey: 'walletOrder',
+    version: 0,
   },
 );
-
-export const useWalletOrderStore = withSelectors(create(walletOrderStore));

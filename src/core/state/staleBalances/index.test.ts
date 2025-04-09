@@ -5,13 +5,13 @@ import { DAI_ADDRESS, ETH_ADDRESS, OP_ADDRESS } from '~/core/references';
 import { ChainId } from '~/core/types/chains';
 import { TEST_ADDRESS_1, TEST_ADDRESS_2 } from '~/test/utils';
 
-import { staleBalancesStore } from '.';
+import { useStaleBalancesStore } from '.';
 
 const THEN = Date.now() - 700000;
 const WHEN = Date.now() + 60000;
 
 test('should be able to add asset information to the staleBalances object', async () => {
-  const { addStaleBalance, staleBalances } = staleBalancesStore.getState();
+  const { addStaleBalance, staleBalances } = useStaleBalancesStore.getState();
   expect(staleBalances).toStrictEqual({});
   addStaleBalance({
     address: TEST_ADDRESS_1,
@@ -31,7 +31,7 @@ test('should be able to add asset information to the staleBalances object', asyn
       expirationTime: WHEN,
     },
   });
-  const newStaleBalances = staleBalancesStore.getState().staleBalances;
+  const newStaleBalances = useStaleBalancesStore.getState().staleBalances;
   expect(newStaleBalances).toStrictEqual({
     [TEST_ADDRESS_1]: {
       [ChainId.mainnet]: {
@@ -52,14 +52,15 @@ test('should be able to add asset information to the staleBalances object', asyn
 
 test('should generate accurate stale balance query params and clear expired data - case #1', async () => {
   const { getStaleBalancesQueryParam, clearExpiredData } =
-    staleBalancesStore.getState();
+    useStaleBalancesStore.getState();
   clearExpiredData(TEST_ADDRESS_1);
   const queryParam = getStaleBalancesQueryParam(TEST_ADDRESS_1);
   expect(queryParam).toStrictEqual(`&token=${ChainId.mainnet}.${ETH_ADDRESS}`);
 });
 
 test('should be able to remove expired stale balance and preserve unexpired data', async () => {
-  const { addStaleBalance, clearExpiredData } = staleBalancesStore.getState();
+  const { addStaleBalance, clearExpiredData } =
+    useStaleBalancesStore.getState();
   addStaleBalance({
     address: TEST_ADDRESS_1,
     chainId: ChainId.mainnet,
@@ -79,7 +80,7 @@ test('should be able to remove expired stale balance and preserve unexpired data
     },
   });
   clearExpiredData(TEST_ADDRESS_1);
-  const newStaleBalances = staleBalancesStore.getState().staleBalances;
+  const newStaleBalances = useStaleBalancesStore.getState().staleBalances;
   expect(newStaleBalances).toStrictEqual({
     [TEST_ADDRESS_1]: {
       [ChainId.mainnet]: {
@@ -94,7 +95,8 @@ test('should be able to remove expired stale balance and preserve unexpired data
 });
 
 test('should preserve data from other addresses when clearing expired data', async () => {
-  const { addStaleBalance, clearExpiredData } = staleBalancesStore.getState();
+  const { addStaleBalance, clearExpiredData } =
+    useStaleBalancesStore.getState();
   addStaleBalance({
     address: TEST_ADDRESS_1,
     chainId: ChainId.mainnet,
@@ -114,7 +116,7 @@ test('should preserve data from other addresses when clearing expired data', asy
     },
   });
   clearExpiredData(TEST_ADDRESS_1);
-  const newStaleBalances = staleBalancesStore.getState().staleBalances;
+  const newStaleBalances = useStaleBalancesStore.getState().staleBalances;
   expect(newStaleBalances).toStrictEqual({
     [TEST_ADDRESS_1]: {
       [ChainId.mainnet]: {
@@ -139,7 +141,7 @@ test('should preserve data from other addresses when clearing expired data', asy
 
 test('should generate accurate stale balance query params and clear expired data - case #2', async () => {
   const { getStaleBalancesQueryParam, clearExpiredData } =
-    staleBalancesStore.getState();
+    useStaleBalancesStore.getState();
   clearExpiredData(TEST_ADDRESS_2);
   const queryParam = getStaleBalancesQueryParam(TEST_ADDRESS_2);
   expect(queryParam).toStrictEqual(`&token=${ChainId.mainnet}.${ETH_ADDRESS}`);
@@ -147,7 +149,7 @@ test('should generate accurate stale balance query params and clear expired data
 
 test('should generate accurate stale balance query params and clear expired data - case #3', async () => {
   const { addStaleBalance, getStaleBalancesQueryParam, clearExpiredData } =
-    staleBalancesStore.getState();
+    useStaleBalancesStore.getState();
   addStaleBalance({
     address: TEST_ADDRESS_1,
     chainId: ChainId.optimism,

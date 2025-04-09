@@ -1,21 +1,16 @@
-import { create } from 'zustand';
-
 import { analytics } from '~/analytics';
-import { createStore } from '~/core/state/internal/createStore';
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 
-export const degenModeStore = createStore(
+export const useDegenMode = createRainbowStore(
   () => ({
     isDegenModeEnabled: false,
   }),
   {
-    persist: {
-      name: 'degenMode',
-      version: 1,
-    },
+    storageKey: 'degenMode',
+    version: 1,
   },
 );
 
-export const useDegenMode = create(degenModeStore);
 export const toggleDegenMode = () =>
   useDegenMode.setState((s) => {
     analytics.track(analytics.event.toggledDegenMode, {

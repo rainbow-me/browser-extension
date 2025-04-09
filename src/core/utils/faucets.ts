@@ -17,7 +17,7 @@ import {
   scrollSepolia,
 } from 'viem/chains';
 
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 
 /**
@@ -71,7 +71,7 @@ export const FALLBACK_FAUCETS = {
 } as const;
 
 export const getFaucetsUrl = (chainId: number): string | undefined => {
-  const backendDrivenFaucet = networkStore
+  const backendDrivenFaucet = useNetworkStore
     .getState()
     .getSupportedCustomNetworkTestnetFaucet(chainId);
   if (backendDrivenFaucet) return backendDrivenFaucet;

@@ -8,7 +8,7 @@ import { i18n } from '~/core/languages';
 import { useApprovals } from '~/core/resources/approvals/approvals';
 import { useTransaction } from '~/core/resources/transactions/transaction';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 import {
   PendingTransaction,
@@ -165,7 +165,7 @@ const formatFee = (transaction: RainbowTransaction) => {
     return `${+feeInNative <= 0.01 ? '<' : ''}${formatCurrency(feeInNative)}`;
   }
 
-  const nativeCurrencySymbol = networkStore
+  const nativeCurrencySymbol = useNetworkStore
     .getState()
     .getActiveRpcForChain(transaction.chainId)?.nativeCurrency.symbol;
 
@@ -248,7 +248,7 @@ const formatValue = (transaction: RainbowTransaction) => {
 
   if (formattedValueInNative) return formattedValueInNative;
 
-  const nativeCurrencySymbol = networkStore
+  const nativeCurrencySymbol = useNetworkStore
     .getState()
     .getActiveRpcForChain(transaction.chainId)?.nativeCurrency.symbol;
 
@@ -261,8 +261,10 @@ const formatValue = (transaction: RainbowTransaction) => {
   return formattedValue;
 };
 function NetworkData({ transaction: tx }: { transaction: RainbowTransaction }) {
-  const chainsLabel = networkStore((state) => state.getChainsLabel());
-  const chain = networkStore((state) => state.getActiveRpcForChain(tx.chainId));
+  const chainsLabel = useNetworkStore((state) => state.getChainsLabel());
+  const chain = useNetworkStore((state) =>
+    state.getActiveRpcForChain(tx.chainId),
+  );
   const value = formatValue(tx);
 
   return (

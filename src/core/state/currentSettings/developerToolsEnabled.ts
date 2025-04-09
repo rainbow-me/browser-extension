@@ -1,25 +1,19 @@
-import create from 'zustand';
-
-import { createStore } from '~/core/state/internal/createStore';
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 
 export interface DeveloperToolsEnabledState {
   developerToolsEnabled: boolean;
   setDeveloperToolsEnabled: (developerToolsEnabled: boolean) => void;
 }
 
-export const developerToolsEnabledStore =
-  createStore<DeveloperToolsEnabledState>(
+export const useDeveloperToolsEnabledStore =
+  createRainbowStore<DeveloperToolsEnabledState>(
     (set) => ({
       developerToolsEnabled: false,
       setDeveloperToolsEnabled: (developerToolsEnabled) =>
         set({ developerToolsEnabled }),
     }),
     {
-      persist: {
-        name: 'developerTools',
-        version: 0,
-      },
+      storageKey: 'developerTools',
+      version: 0,
     },
   );
-
-export const useDeveloperToolsEnabledStore = create(developerToolsEnabledStore);

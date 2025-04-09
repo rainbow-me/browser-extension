@@ -106,7 +106,9 @@ export const useImportWalletsFromSecrets = () => {
 
 export const ImportWalletSelection = ({ onboarding = false }) => {
   const navigate = useRainbowNavigate();
-  const setCurrentAddress = useCurrentAddressStore.use.setCurrentAddress();
+  const setCurrentAddress = useCurrentAddressStore(
+    (state) => state.setCurrentAddress,
+  );
 
   const secrets = useImportWalletSessionSecrets();
 

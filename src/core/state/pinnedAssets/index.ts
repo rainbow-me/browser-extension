@@ -1,7 +1,6 @@
 import { Address } from 'viem';
-import create from 'zustand';
 
-import { createStore } from '../internal/createStore';
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 
 type PinnedAsset = {
   pinned: boolean;
@@ -16,7 +15,7 @@ export interface PinnedAssetState {
   togglePinAsset: (address: Address, uniqueId: string) => void;
 }
 
-export const pinnedAssets = createStore<PinnedAssetState>(
+export const usePinnedAssetStore = createRainbowStore<PinnedAssetState>(
   (set, get) => ({
     pinned: {},
     togglePinAsset: (address: Address, uniqueId: string) => {
@@ -39,11 +38,7 @@ export const pinnedAssets = createStore<PinnedAssetState>(
     },
   }),
   {
-    persist: {
-      name: 'pinned_assets',
-      version: 2,
-    },
+    storageKey: 'pinned_assets',
+    version: 2,
   },
 );
-
-export const usePinnedAssetStore = create(pinnedAssets);

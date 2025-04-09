@@ -20,15 +20,15 @@ import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import { gradientBorderDark, gradientBorderLight } from './NFTs.css';
 
 export default function SortdDropdown() {
-  const sort = useNftsStore.use.sort();
-  const setNftSort = useNftsStore.use.setNftSort();
+  const sort = useNftsStore((state) => state.sort);
+  const setNftSort = useNftsStore((state) => state.setNftSort);
   const onValueChange = useCallback(
     (value: typeof sort) => {
       setNftSort(value);
     },
     [setNftSort],
   );
-  const currentTheme = useCurrentThemeStore.use.currentTheme();
+  const currentTheme = useCurrentThemeStore((state) => state.currentTheme);
   const [open, setIsOpen] = useState(false);
 
   useKeyboardShortcut({

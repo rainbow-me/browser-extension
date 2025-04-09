@@ -1,9 +1,9 @@
 import { type Chain } from 'viem/chains';
 
-import { networkStore } from '../state/networks/networks';
+import { useNetworkStore } from '../state/networks/networks';
 
 export const sortNetworks = (order: number[], chains: Chain[]) => {
-  const chainIdsBasedOnMainnetId = networkStore
+  const chainIdsBasedOnMainnetId = useNetworkStore
     .getState()
     .getBackendChainIdsByMainnetId();
   const allChainsOrder = order

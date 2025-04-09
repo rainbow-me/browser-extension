@@ -15,7 +15,7 @@ export const useHasEnoughGas = (session: ActiveSession) => {
     address: session?.address,
     chainId,
   });
-  const selectedGas = useGasStore.use.selectedGas();
+  const selectedGas = useGasStore((state) => state.selectedGas);
   const hasEnough = useMemo(() => {
     return lessThan(
       selectedGas?.gasFee?.amount || '0',

@@ -8,7 +8,7 @@ import { Address } from 'viem';
 import { optimism } from 'viem/chains';
 
 import { REFERRER_CLAIM } from '~/core/references';
-import { currentCurrencyStore, gasStore } from '~/core/state';
+import { useCurrentCurrencyStore, useGasStore } from '~/core/state';
 import { TransactionGasParams } from '~/core/types/gas';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { calculateL1FeeOptimism } from '~/core/utils/gas';
@@ -53,7 +53,7 @@ export async function claimBridge({
     buyTokenAddress: AddressZero,
     sellAmount: sellAmount,
     slippage: 2,
-    currency: currentCurrencyStore.getState().currentCurrency,
+    currency: useCurrentCurrencyStore.getState().currentCurrency,
   });
 
   // if we don't get a quote or there's an error we can't continue
@@ -85,7 +85,7 @@ export async function claimBridge({
 
   // 2 - We use the default gas limit (already inflated) from the quote to calculate the aproximate gas fee
   const initalGasLimit = bridgeQuote.defaultGasLimit!;
-  const { selectedGas } = gasStore.getState();
+  const { selectedGas } = useGasStore.getState();
   const gasParams = selectedGas.transactionGasParams as TransactionGasParams;
   const feeAmount = add(gasParams.maxFeePerGas, gasParams.maxPriorityFeePerGas);
   let gasFeeInWei = multiply(initalGasLimit!, feeAmount);
@@ -120,7 +120,7 @@ export async function claimBridge({
       buyTokenAddress: AddressZero,
       sellAmount: maxBridgeableAmount,
       slippage: 2,
-      currency: currentCurrencyStore.getState().currentCurrency,
+      currency: useCurrentCurrencyStore.getState().currentCurrency,
     });
 
     if (!newQuote || (newQuote as QuoteError)?.error) {

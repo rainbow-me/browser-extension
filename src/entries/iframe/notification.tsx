@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { i18n } from '~/core/languages';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 import { isDarkColor } from '~/core/utils/colors';
 import { INJECTED_NOTIFICATION_DIMENSIONS } from '~/core/utils/dimensions';
@@ -229,7 +229,7 @@ const NotificationComponent = ({
   iframeLoaded: boolean;
   onDismiss: () => void;
 }) => {
-  const chainsLabel = networkStore((state) => state.getChainsLabel());
+  const chainsLabel = useNetworkStore((state) => state.getChainsLabel());
 
   const { title, description } = useMemo(() => {
     switch (status) {

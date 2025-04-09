@@ -1,6 +1,4 @@
-import create from 'zustand';
-
-import { createStore } from './internal/createStore';
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 
 export type NotificationWindow = chrome.windows.Window;
 
@@ -16,25 +14,22 @@ export interface NotificationWindowsState {
   ) => void;
 }
 
-export const notificationWindowStore = createStore<NotificationWindowsState>(
-  (set, get) => ({
-    notificationWindows: {},
-    setNotificationWindow: (tabId, newNotificationWindow) => {
-      const notificationWindows = get().notificationWindows;
-      set({
-        notificationWindows: {
-          ...notificationWindows,
-          [tabId.toString()]: newNotificationWindow,
-        },
-      });
-    },
-  }),
-  {
-    persist: {
-      name: 'notificationWindowStore',
+export const useNotificationWindowStore =
+  createRainbowStore<NotificationWindowsState>(
+    (set, get) => ({
+      notificationWindows: {},
+      setNotificationWindow: (tabId, newNotificationWindow) => {
+        const notificationWindows = get().notificationWindows;
+        set({
+          notificationWindows: {
+            ...notificationWindows,
+            [tabId.toString()]: newNotificationWindow,
+          },
+        });
+      },
+    }),
+    {
+      storageKey: 'notificationWindowStore',
       version: 0,
     },
-  },
-);
-
-export const useNotificationWindowStore = create(notificationWindowStore);
+  );

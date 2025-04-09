@@ -1,14 +1,17 @@
 import { Chain } from 'viem';
 
+import { useConnectedToHardhatStore } from '~/core/state';
+
 import { proxyRpcEndpoint } from '../providers/proxy';
-import { connectedToHardhatStore } from '../state/currentSettings/connectedToHardhat';
-import { networkStore } from '../state/networks/networks';
+import { useNetworkStore } from '../state/networks/networks';
 import { ChainId, chainHardhat, chainHardhatOptimism } from '../types/chains';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
 const getOriginalRpcEndpoint = (chain: Chain) => {
-  const userAddedChain = networkStore.getState().getActiveRpcForChain(chain.id);
+  const userAddedChain = useNetworkStore
+    .getState()
+    .getActiveRpcForChain(chain.id);
   if (userAddedChain) {
     return userAddedChain.rpcUrls.default.http[0];
   }
@@ -19,9 +22,9 @@ export const handleRpcUrl = (chain: Chain) => {
   if (
     (IS_TESTING &&
       ((chain.id === ChainId.mainnet &&
-        connectedToHardhatStore.getState().connectedToHardhat) ||
+        useConnectedToHardhatStore.getState().connectedToHardhat) ||
         (chain.id === ChainId.optimism &&
-          connectedToHardhatStore.getState().connectedToHardhatOp))) ||
+          useConnectedToHardhatStore.getState().connectedToHardhatOp))) ||
     chain.id === chainHardhat.id ||
     chain.id === chainHardhatOptimism.id
   ) {

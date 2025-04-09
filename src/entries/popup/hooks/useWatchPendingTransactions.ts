@@ -11,7 +11,7 @@ import {
   usePendingTransactionsStore,
 } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { useStaleBalancesStore } from '~/core/state/staleBalances';
 import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
 import {
@@ -33,10 +33,11 @@ export const useWatchPendingTransactions = ({
     setPendingTransactions,
   } = usePendingTransactionsStore();
   const { currentCurrency } = useCurrentCurrencyStore();
-  const addCustomNetworkTransactions =
-    useCustomNetworkTransactionsStore.use.addCustomNetworkTransactions();
-  const enabledChainIds = networkStore((state) => state.enabledChainIds);
-  const { testnetMode } = useTestnetModeStore.getState();
+  const addCustomNetworkTransactions = useCustomNetworkTransactionsStore(
+    (state) => state.addCustomNetworkTransactions,
+  );
+  const enabledChainIds = useNetworkStore((state) => state.enabledChainIds);
+  const { testnetMode } = useTestnetModeStore();
   const { addStaleBalance } = useStaleBalancesStore();
 
   const pendingTransactions = useMemo(

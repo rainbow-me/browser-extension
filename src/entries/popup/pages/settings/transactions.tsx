@@ -18,11 +18,13 @@ import { triggerToast } from '../../components/Toast/Toast';
 
 export function Transactions() {
   const { defaultTxSpeed, setDefaultTxSpeed } = useDefaultTxSpeedStore();
-  const clearNonces = useNonceStore.use.clearNonces();
-  const clearPendingTransactions =
-    usePendingTransactionsStore.use.clearPendingTransactions();
-  const clearAllCustomNetworkTransactions =
-    useCustomNetworkTransactionsStore.use.clearAllCustomNetworkTransactions();
+  const clearNonces = useNonceStore((state) => state.clearNonces);
+  const clearPendingTransactions = usePendingTransactionsStore(
+    (state) => state.clearPendingTransactions,
+  );
+  const clearAllCustomNetworkTransactions = useCustomNetworkTransactionsStore(
+    (state) => state.clearAllCustomNetworkTransactions,
+  );
   const filteredTxSpeedOptionKeys = Object.values(GasSpeed).filter(
     (opt) => opt !== GasSpeed.CUSTOM,
   );

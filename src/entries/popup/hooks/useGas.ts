@@ -14,7 +14,7 @@ import {
 } from '~/core/resources/gas/meteorology';
 import { useOptimismL1SecurityFee } from '~/core/resources/gas/optimismL1SecurityFee';
 import { useCurrentCurrencyStore, useGasStore } from '~/core/state';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { ParsedAsset, ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
@@ -55,10 +55,10 @@ const useGas = ({
   const { currentCurrency } = useCurrentCurrencyStore();
   const { data: gasData, isLoading } = useGasData({ chainId });
   const { nativeAsset } = useUserNativeAsset({ chainId, address });
-  const needsSecurityFee = networkStore((state) =>
+  const needsSecurityFee = useNetworkStore((state) =>
     state.getNeedsL1SecurityFeeChainIds(),
   ).includes(chainId);
-  const chainGasUnits = networkStore((state) =>
+  const chainGasUnits = useNetworkStore((state) =>
     state.getChainGasUnits(chainId),
   );
   const prevDefaultSpeed = usePrevious(defaultSpeed);

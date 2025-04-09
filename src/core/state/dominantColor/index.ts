@@ -1,13 +1,11 @@
-import create from 'zustand';
-
-import { createStore } from '~/core/state/internal/createStore';
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 
 type ColorCacheStore = {
   colorCache: Record<string, string | null>;
   setColorCache: (imageUrl: string, color: string | null) => void;
 };
 
-export const colorCacheStore = createStore<ColorCacheStore>(
+export const useColorCacheStore = createRainbowStore<ColorCacheStore>(
   (set) => ({
     colorCache: {},
     setColorCache: (imageUrl, color) =>
@@ -16,11 +14,7 @@ export const colorCacheStore = createStore<ColorCacheStore>(
       })),
   }),
   {
-    persist: {
-      name: 'dominantColorStore',
-      version: 0,
-    },
+    storageKey: 'dominantColorStore',
+    version: 0,
   },
 );
-
-export const useColorCacheStore = create(colorCacheStore);

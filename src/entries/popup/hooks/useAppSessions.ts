@@ -8,11 +8,15 @@ import { getDappHost, isValidUrl } from '~/core/utils/connectedApps';
 const messenger = initializeMessenger({ connect: 'inpage' });
 
 export function useAppSessions() {
-  const appSessions = useAppSessionsStore.use.appSessions();
-  const clearSessions = useAppSessionsStore.use.clearSessions();
-  const removeAppSession = useAppSessionsStore.use.removeAppSession();
+  const appSessions = useAppSessionsStore((state) => state.appSessions);
+  const clearSessions = useAppSessionsStore((state) => state.clearSessions);
+  const removeAppSession = useAppSessionsStore(
+    (state) => state.removeAppSession,
+  );
   const clearAppHasInteractedWithNudgeSheet =
-    useAppConnectionWalletSwitcherStore.use.clearAppHasInteractedWithNudgeSheet();
+    useAppConnectionWalletSwitcherStore(
+      (state) => state.clearAppHasInteractedWithNudgeSheet,
+    );
 
   const disconnectAppSessions = useCallback(() => {
     Object.values(appSessions).map((session) => {

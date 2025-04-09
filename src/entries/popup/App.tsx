@@ -15,7 +15,7 @@ import { initializeMessenger } from '~/core/messengers';
 import { persistOptions, queryClient } from '~/core/react-query';
 import { initializeSentry } from '~/core/sentry';
 import { useCurrentLanguageStore, useCurrentThemeStore } from '~/core/state';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { TelemetryIdentifier } from '~/core/telemetry';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import {
@@ -39,7 +39,9 @@ const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
 export function App() {
   const { currentLanguage, setCurrentLanguage } = useCurrentLanguageStore();
-  const activeChains = networkStore((state) => state.getAllActiveRpcChains());
+  const activeChains = useNetworkStore((state) =>
+    state.getAllActiveRpcChains(),
+  );
   const prevChains = usePrevious(activeChains);
 
   const [wagmiConfig, setWagmiConfig] =

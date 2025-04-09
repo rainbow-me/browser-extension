@@ -41,8 +41,9 @@ export const AppConnectionNudgeSheet = ({
   const { displayName } = useWalletName({ address: currentAddress || '0x' });
   const { url } = useActiveTab();
   const { data: dappMetadata } = useDappMetadata({ url });
-  const setNudgeSheetDisabled =
-    useAppConnectionWalletSwitcherStore.use.setNudgeSheetDisabled();
+  const setNudgeSheetDisabled = useAppConnectionWalletSwitcherStore(
+    (state) => state.setNudgeSheetDisabled,
+  );
 
   const previousShow = usePrevious(show);
   const name = useDebounce(displayName, 500);

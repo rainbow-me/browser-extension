@@ -4,7 +4,7 @@ import { DropResult } from 'react-beautiful-dnd';
 import { i18n } from '~/core/languages';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { promoTypes, useQuickPromoStore } from '~/core/state/quickPromo';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
 import { useMainChains } from '~/core/utils/chains';
@@ -52,20 +52,20 @@ export function SettingsNetworks() {
   const { developerToolsEnabled, setDeveloperToolsEnabled } =
     useDeveloperToolsEnabledStore();
   const { featureFlags } = useFeatureFlagsStore();
-  const removeCustomChain = networkStore((state) => state.removeCustomChain);
-  const { enabledChainIds, chainOrder } = networkStore((state) => ({
+  const removeCustomChain = useNetworkStore((state) => state.removeCustomChain);
+  const { enabledChainIds, chainOrder } = useNetworkStore((state) => ({
     chainOrder: state.chainOrder,
     enabledChainIds: state.enabledChainIds,
   }));
   const { removeRainbowChainAssets } = useRainbowChainAssetsStore();
-  const chainsBasedOnMainnetId = networkStore((state) =>
+  const chainsBasedOnMainnetId = useNetworkStore((state) =>
     state.getBackendChainsByMainnetId(),
   );
-  const supportedChains = networkStore((state) =>
+  const supportedChains = useNetworkStore((state) =>
     state.getBackendSupportedChains(true),
   );
 
-  const allChains = networkStore((state) => state.getAllChains(true));
+  const allChains = useNetworkStore((state) => state.getAllChains(true));
 
   const allNetworks = useMemo(
     () =>
@@ -85,12 +85,14 @@ export function SettingsNetworks() {
     if (!seenPromos[promoTypes.network_settings])
       setSeenPromo(promoTypes.network_settings);
     if (!destination) return;
-    networkStore.getState().updateChainOrder(+draggableId, destination.index);
+    useNetworkStore
+      .getState()
+      .updateChainOrder(+draggableId, destination.index);
   };
 
   const enableNetwork = useCallback(
     ({ chainId, enabled }: { chainId: number; enabled: boolean }) => {
-      networkStore.getState().updateEnabledChains([chainId], enabled);
+      useNetworkStore.getState().updateEnabledChains([chainId], enabled);
     },
     [],
   );

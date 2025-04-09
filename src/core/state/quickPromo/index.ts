@@ -1,6 +1,4 @@
-import create from 'zustand';
-
-import { createStore } from '../internal/createStore';
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 
 export enum promoTypes {
   command_k = 'command_k',
@@ -15,7 +13,7 @@ export interface QuickPromoStore {
   setSeenPromo: (key: PromoTypes) => void;
 }
 
-export const quickPromoStore = createStore<QuickPromoStore>(
+export const useQuickPromoStore = createRainbowStore<QuickPromoStore>(
   (set, get) => ({
     seenPromos: {
       command_k: false,
@@ -35,11 +33,7 @@ export const quickPromoStore = createStore<QuickPromoStore>(
     },
   }),
   {
-    persist: {
-      name: 'quickPromoStore',
-      version: 1,
-    },
+    storageKey: 'quickPromoStore',
+    version: 1,
   },
 );
-
-export const useQuickPromoStore = create(quickPromoStore);

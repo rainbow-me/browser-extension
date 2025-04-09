@@ -9,7 +9,7 @@ import { Contract, ContractInterface } from '@ethersproject/contracts';
 import { serialize } from '@ethersproject/transactions';
 import BigNumber from 'bignumber.js';
 
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { globalColors } from '~/design-system/styles/designTokens';
 import { RainbowError, logger } from '~/logger';
 
@@ -521,7 +521,7 @@ export const estimateGasWithPadding = async ({
       (!contractCallEstimateGas && !to && !data) ||
       (to && !data && (!code || code === '0x'))
     ) {
-      const chainGasUnits = networkStore
+      const chainGasUnits = useNetworkStore
         .getState()
         .getChainGasUnits(transactionRequest.chainId);
       return chainGasUnits.basic.eoaTransfer;
@@ -587,7 +587,7 @@ export const calculateL1FeeOptimism = async ({
       transactionRequest.to = getAddress(transactionRequest.to);
     }
     if (!transactionRequest.gasLimit) {
-      const chainGasUnits = networkStore
+      const chainGasUnits = useNetworkStore
         .getState()
         .getChainGasUnits(txRequest.chainId);
       transactionRequest.gasLimit = toHex(

@@ -12,7 +12,7 @@ import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useGasStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -59,8 +59,8 @@ export function SendTransaction({
     url: request?.meta?.sender?.url,
   });
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
-  const selectedGas = useGasStore.use.selectedGas();
-  const chainsNativeAsset = networkStore((state) =>
+  const selectedGas = useGasStore((state) => state.selectedGas);
+  const chainsNativeAsset = useNetworkStore((state) =>
     state.getChainsNativeAsset(),
   );
   const selectedWallet = activeSession?.address || '';

@@ -7,11 +7,12 @@ import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore, useGasStore } from '~/core/state';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import { useDegenMode } from '~/core/state/degenMode';
 import {
   computeUniqueIdForHiddenAsset,
   useHiddenAssetStore,
 } from '~/core/state/hiddenAssets/hiddenAssets';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { promoTypes, useQuickPromoStore } from '~/core/state/quickPromo';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
@@ -57,7 +58,6 @@ import {
   useSwapSlippage,
   useSwapValidations,
 } from '../../hooks/swap';
-import { useDegenMode } from '../../hooks/swap/useSwapDegenMode';
 import { useSwapNativeAmounts } from '../../hooks/swap/useSwapNativeAmounts';
 import {
   SwapPriceImpact,
@@ -727,10 +727,10 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     assetToBuy?.colors?.primary || assetToBuy?.colors?.fallback;
 
   const tokenToBuyInputEnabled = useMemo(() => {
-    const supportedBridgeExactOutputChainIds = networkStore
+    const supportedBridgeExactOutputChainIds = useNetworkStore
       .getState()
       .getSupportedBridgeExactOutputChainIds();
-    const supportedSwapExactOutputChainIds = networkStore
+    const supportedSwapExactOutputChainIds = useNetworkStore
       .getState()
       .getSupportedSwapExactOutputChainIds();
 

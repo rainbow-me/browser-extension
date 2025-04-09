@@ -15,7 +15,7 @@ import {
 } from 'date-fns/locale';
 
 import { Language } from '../languages';
-import { currentLanguageStore } from '../state';
+import { useCurrentLanguageStore } from '../state';
 
 /**
  * Maps our `Language` string to `date-fns/locale` Locale values
@@ -43,6 +43,6 @@ export const locales: Record<Language, Locale> = {
 
 // return date-fns Locale object based on currentLanguage
 export function getLocale(): Locale {
-  const { currentLanguage } = currentLanguageStore.getState();
+  const { currentLanguage } = useCurrentLanguageStore.getState();
   return locales[currentLanguage];
 }

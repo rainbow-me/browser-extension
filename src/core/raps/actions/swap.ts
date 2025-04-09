@@ -16,7 +16,8 @@ import {
 import { Address } from 'viem';
 
 import { metadataPostClient } from '~/core/graphql';
-import { networkStore } from '~/core/state/networks/networks';
+import { useGasStore } from '~/core/state';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { add } from '~/core/utils/numbers';
@@ -26,7 +27,6 @@ import { TransactionSimulationResponse } from '~/entries/popup/pages/messages/us
 import { RainbowError, logger } from '~/logger';
 
 import { REFERRER } from '../../references';
-import { gasStore } from '../../state';
 import {
   TransactionGasParams,
   TransactionLegacyGasParams,
@@ -60,7 +60,7 @@ export const estimateSwapGasLimit = async ({
   const provider = getProvider({ chainId });
 
   if (!provider || !quote) {
-    const chainGasUnits = networkStore.getState().getChainGasUnits(chainId);
+    const chainGasUnits = useNetworkStore.getState().getChainGasUnits(chainId);
     return chainGasUnits.basic.swap;
   }
 
@@ -69,7 +69,7 @@ export const estimateSwapGasLimit = async ({
 
   // Wrap / Unwrap Eth
   if (isWrapNativeAsset || isUnwrapNativeAsset) {
-    const chainGasUnits = networkStore.getState().getChainGasUnits(chainId);
+    const chainGasUnits = useNetworkStore.getState().getChainGasUnits(chainId);
 
     const default_estimate = isWrapNativeAsset
       ? chainGasUnits.wrapped.wrap
@@ -269,7 +269,7 @@ export const swap = async ({
   parameters,
   baseNonce,
 }: ActionProps<'swap'>): Promise<RapActionResult> => {
-  const { selectedGas, gasFeeParamsBySpeed } = gasStore.getState();
+  const { selectedGas, gasFeeParamsBySpeed } = useGasStore.getState();
 
   const { quote, chainId, requiresApprove } = parameters;
   let gasParams = selectedGas.transactionGasParams;

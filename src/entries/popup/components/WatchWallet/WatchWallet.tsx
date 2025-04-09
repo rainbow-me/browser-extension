@@ -5,8 +5,7 @@ import { Address } from 'viem';
 import { useEnsAddress } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
-import { useSavedEnsNames } from '~/core/state/savedEnsNames';
+import { useCurrentAddressStore, useSavedEnsNamesStore } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
 import { isENSAddressFormat } from '~/core/utils/ethereum';
 import {
@@ -209,7 +208,7 @@ export const useValidateInput = (input: string) => {
     },
   });
 
-  const savedNames = useSavedEnsNames.use.savedNames();
+  const savedNames = useSavedEnsNamesStore((state) => state.savedNames);
 
   const isLoading = isFetchingEns;
 
@@ -265,8 +264,10 @@ export const WatchWallet = ({
     [address, selectedAddresses],
   );
 
-  const setCurrentAddress = useCurrentAddressStore.use.setCurrentAddress();
-  const save = useSavedEnsNames.use.save();
+  const setCurrentAddress = useCurrentAddressStore(
+    (state) => state.setCurrentAddress,
+  );
+  const save = useSavedEnsNamesStore((state) => state.save);
 
   const [renameAccount, setRenameAccount] = useState<Address>();
 

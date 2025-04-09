@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { ETH_ADDRESS } from '~/core/references';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
@@ -85,10 +85,10 @@ export const useSwapInputs = ({
     swapField: savedSwapField,
   } = usePopupInstanceStore();
 
-  const supportedChains = networkStore((state) =>
+  const supportedChains = useNetworkStore((state) =>
     state.getBackendSupportedChains(true),
   );
-  const nativeAssetsAddresses = networkStore((state) =>
+  const nativeAssetsAddresses = useNetworkStore((state) =>
     state.getChainsNativeAsset(),
   );
 

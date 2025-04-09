@@ -1,6 +1,6 @@
 import { initializeMessenger } from '~/core/messengers';
 import { setupBridgeMessengerRelay } from '~/core/messengers/internal/bridge';
-import { isDefaultWalletStore } from '~/core/state';
+import { useIsDefaultWalletStore } from '~/core/state';
 require('../../core/utils/lockdown');
 
 const insertInpageScriptIfNeeded = () => {
@@ -22,6 +22,6 @@ const inpageMessenger = initializeMessenger({ connect: 'inpage' });
 
 setTimeout(() => {
   inpageMessenger.send('rainbow_setDefaultProvider', {
-    rainbowAsDefault: isDefaultWalletStore.getState().isDefaultWallet,
+    rainbowAsDefault: useIsDefaultWalletStore.getState().isDefaultWallet,
   });
 }, 1);

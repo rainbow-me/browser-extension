@@ -10,7 +10,7 @@ import { analytics } from '~/analytics';
 import { i18n } from '~/core/languages';
 import { useEnsRegistration } from '~/core/resources/ens/ensRegistration';
 import { useNft } from '~/core/resources/nfts/useNft';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { useSelectedNftStore } from '~/core/state/selectedNft';
 import { AddressOrEth, UniqueId } from '~/core/types/assets';
 import { ChainId, ChainName, chainNameToIdMapping } from '~/core/types/chains';
@@ -723,7 +723,7 @@ const NFTAccordionAboutSection = ({
   nft?: UniqueAsset | null;
   showFloorPriceExplainerSheet: () => void;
 }) => {
-  const chainsLabel = networkStore((state) => state.getChainsLabel());
+  const chainsLabel = useNetworkStore((state) => state.getChainsLabel());
   const networkDisplay = nft?.network
     ? chainsLabel[chainNameToIdMapping[nft?.network]]
     : '';

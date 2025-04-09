@@ -62,7 +62,7 @@ export function Settings() {
     connectedToHardhatOp,
     setConnectedToHardhatOp,
   } = useConnectedToHardhatStore();
-  const clearNonces = useNonceStore.use.clearNonces();
+  const clearNonces = useNonceStore((state) => state.clearNonces);
 
   const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
 

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 import { sortNetworks } from '~/core/utils/userChains';
 
@@ -17,14 +17,16 @@ const checkIfTesting = (chainId: ChainId, testnetMode: boolean) => {
 };
 
 export const useUserChains = () => {
-  const { enabledChainIds, chainOrder } = networkStore((state) => ({
+  const { enabledChainIds, chainOrder } = useNetworkStore((state) => ({
     enabledChainIds: state.enabledChainIds,
     chainOrder: state.chainOrder,
   }));
   const { testnetMode } = useTestnetModeStore();
 
-  const allSupportedChains = networkStore((state) => state.getAllChains(true));
-  const chainIdsByMainnetId = networkStore((state) =>
+  const allSupportedChains = useNetworkStore((state) =>
+    state.getAllChains(true),
+  );
+  const chainIdsByMainnetId = useNetworkStore((state) =>
     state.getBackendChainIdsByMainnetId(),
   );
 

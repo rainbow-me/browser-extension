@@ -1,6 +1,4 @@
-import create from 'zustand';
-
-import { createStore } from '~/core/state/internal/createStore';
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 
 type HomePrompt = 'app-connection' | 'wallet-backup';
 export interface HomePromptsQueue {
@@ -8,7 +6,7 @@ export interface HomePromptsQueue {
   popQueue: () => void;
 }
 
-export const homePromptsQueueStore = createStore<HomePromptsQueue>(
+export const useHomePromptsQueueStore = createRainbowStore<HomePromptsQueue>(
   (set, get) => ({
     queue: ['wallet-backup', 'app-connection'],
     popQueue: () => {
@@ -18,5 +16,3 @@ export const homePromptsQueueStore = createStore<HomePromptsQueue>(
     },
   }),
 );
-
-export const useHomeQueueStackStore = create(homePromptsQueueStore);

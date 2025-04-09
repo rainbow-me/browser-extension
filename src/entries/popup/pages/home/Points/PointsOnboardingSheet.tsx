@@ -12,7 +12,7 @@ import {
 } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { formatNumber } from '~/core/utils/formatNumber';
 import { convertAmountToNativeDisplay } from '~/core/utils/numbers';
@@ -348,7 +348,7 @@ export const PointsOnboardingSheet = () => {
     [error],
   );
 
-  const supportedMainnetChains = networkStore((state) =>
+  const supportedMainnetChains = useNetworkStore((state) =>
     state.getBackendSupportedChains(),
   );
 

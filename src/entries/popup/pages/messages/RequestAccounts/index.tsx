@@ -38,7 +38,7 @@ export const RequestAccounts = ({
     dappMetadata?.appName || (dappUrl ? getDappHostname(dappUrl) : '');
   const requestedChainId = (request.params?.[0] as { chainId?: string })
     ?.chainId;
-  const addSession = useAppSessionsStore.use.addSession();
+  const addSession = useAppSessionsStore((state) => state.addSession);
 
   const { testnetMode } = useTestnetModeStore();
   const [selectedChainId, setSelectedChainId] = useState<ChainId>(

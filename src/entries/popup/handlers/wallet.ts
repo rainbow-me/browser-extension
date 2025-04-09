@@ -17,7 +17,7 @@ import {
   RapTypes,
   WalletExecuteRapProps,
 } from '~/core/raps/references';
-import { gasStore } from '~/core/state';
+import { useGasStore } from '~/core/state';
 import { SessionStorage } from '~/core/storage';
 import {
   TransactionGasParams,
@@ -63,7 +63,7 @@ export const signTransactionFromHW = async (
   transactionRequest: TransactionRequest,
   vendor: string,
 ): Promise<string | undefined> => {
-  const { selectedGas } = gasStore.getState();
+  const { selectedGas } = useGasStore.getState();
   const provider = getProvider({
     chainId: transactionRequest.chainId,
   });
@@ -98,7 +98,7 @@ export const signTransactionFromHW = async (
 export const sendTransaction = async (
   transactionRequest: TransactionRequest,
 ): Promise<TransactionResponse> => {
-  const { selectedGas } = gasStore.getState();
+  const { selectedGas } = useGasStore.getState();
   const provider = getProvider({
     chainId: transactionRequest.chainId,
   });

@@ -213,7 +213,7 @@ const SwapReviewSheetWithQuote = ({
 
   const [showMoreDetails, setShowDetails] = useState(false);
   const [sendingSwap, setSendingSwap] = useState(false);
-  const selectedGas = useGasStore.use.selectedGas();
+  const selectedGas = useGasStore((state) => state.selectedGas);
   const confirmSwapButtonRef = useRef<HTMLButtonElement>(null);
   const { type } = useCurrentWalletTypeAndVendor();
   const isHardwareWallet = type === KeychainType.HardwareWalletKeychain;

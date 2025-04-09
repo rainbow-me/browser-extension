@@ -60,7 +60,9 @@ const addOrRemoveAddy = (addresses: Address[], address: Address) => {
 const emptyArray: unknown[] = [];
 export function ImportWalletSelectionEdit({ onboarding = false }) {
   const navigate = useRainbowNavigate();
-  const setCurrentAddress = useCurrentAddressStore.use.setCurrentAddress();
+  const setCurrentAddress = useCurrentAddressStore(
+    (state) => state.setCurrentAddress,
+  );
 
   const { state } = useLocation();
   const accountsToImport: Address[] = state.accountsToImport || emptyArray;

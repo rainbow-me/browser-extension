@@ -11,7 +11,7 @@ import {
 import { Address, erc20Abi } from 'viem';
 import { mainnet } from 'viem/chains';
 
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 
 import { ChainId } from '../types/chains';
 import {
@@ -215,7 +215,7 @@ export const getDefaultGasLimitForTrade = (
   quote: Quote,
   chainId: ChainId,
 ): string => {
-  const chainGasUnits = networkStore.getState().getChainGasUnits(chainId);
+  const chainGasUnits = useNetworkStore.getState().getChainGasUnits(chainId);
   return (
     quote?.defaultGasLimit ||
     multiply(chainGasUnits.basic.swap, EXTRA_GAS_PADDING)
@@ -268,7 +268,7 @@ export const estimateSwapGasLimitWithFakeApproval = async (
         return false;
       }
     });
-    const chainGasUnits = networkStore.getState().getChainGasUnits(chainId);
+    const chainGasUnits = useNetworkStore.getState().getChainGasUnits(chainId);
     if (gasLimit && greaterThan(gasLimit, chainGasUnits.basic.swap)) {
       return gasLimit;
     }

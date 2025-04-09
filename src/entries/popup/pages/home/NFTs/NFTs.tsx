@@ -17,8 +17,10 @@ import NFTGallery from './NFTGallery';
 
 export function NFTs() {
   const { currentAddress: address } = useCurrentAddressStore();
-  const sort = useNftsStore.use.sort();
-  const displayMode = useNftsStore.use.displayMode();
+  const { sort, displayMode } = useNftsStore((state) => ({
+    sort: state.sort,
+    displayMode: state.displayMode,
+  }));
   const { testnetMode } = useTestnetModeStore();
   const { chains: userChains } = useUserChains();
   const navigate = useRainbowNavigate();

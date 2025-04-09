@@ -4,7 +4,7 @@ import { Chain } from 'viem';
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { Row, Rows, Separator } from '~/design-system';
 import { RainbowError, logger } from '~/logger';
@@ -51,7 +51,7 @@ export const AddEthereumChain = ({
     chainName.toLowerCase().includes('testnet'),
   );
 
-  const addCustomChain = networkStore((state) => state.addCustomChain);
+  const addCustomChain = useNetworkStore((state) => state.addCustomChain);
 
   const onAcceptRequest = useCallback(() => {
     try {

@@ -2,7 +2,7 @@ import { AddressZero } from '@ethersproject/constants';
 
 import { customChainIdsToAssetNames } from '~/core/references/assets';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { getBadgeUrl } from '~/core/state/networks/utils';
 import { ChainId } from '~/core/types/chains';
 import { getCustomChainIconUrl } from '~/core/utils/assets';
@@ -35,8 +35,8 @@ const ChainBadge = ({
   size = '18',
 }: ChainIconProps) => {
   const { currentTheme } = useCurrentThemeStore();
-  const chainBadges = networkStore((state) => state.getChainsBadgeUrls());
-  const chain = networkStore((state) => state.getActiveRpcForChain(chainId));
+  const chainBadges = useNetworkStore((state) => state.getChainsBadgeUrls());
+  const chain = useNetworkStore((state) => state.getActiveRpcForChain(chainId));
 
   let boxShadow;
   if (shadow) {

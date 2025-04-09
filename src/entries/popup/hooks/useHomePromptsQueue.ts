@@ -1,7 +1,7 @@
-import { useHomeQueueStackStore } from '~/core/state/homePromptsQueue';
+import { useHomePromptsQueueStore } from '~/core/state';
 
 export const useHomePromptQueue = () => {
-  const { queue, popQueue } = useHomeQueueStackStore();
+  const { queue, popQueue } = useHomePromptsQueueStore();
 
   const nextInQueue = queue[0];
 

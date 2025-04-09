@@ -50,7 +50,7 @@ export const useSearchableTokens = ({
   const navigate = useRainbowNavigate();
   const { testnetMode } = useTestnetModeStore();
 
-  const hiddenAssets = useHiddenAssetStore.use.hidden();
+  const hiddenAssets = useHiddenAssetStore((state) => state.hidden);
 
   const isTokenHidden = useCallback(
     (asset: ParsedUserAsset) => {

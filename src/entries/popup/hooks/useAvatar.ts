@@ -1,11 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { resolveEnsAvatar } from '~/core/resources/metadata/ensAvatar';
-import {
-  WalletAvatar,
-  useWalletAvatarStore,
-  walletAvatarStore,
-} from '~/core/state/walletAvatar';
+import { WalletAvatar, useWalletAvatarStore } from '~/core/state/walletAvatar';
 
 import { emojiAvatarForAddress } from '../utils/emojiAvatarForAddress';
 
@@ -18,7 +14,7 @@ const fetchWalletAvatar = async ({
   addressOrName: string;
   avatarUrl?: string | null;
 }): Promise<WalletAvatar> => {
-  const { setWalletAvatar } = walletAvatarStore.getState();
+  const { setWalletAvatar } = useWalletAvatarStore.getState();
   const ensAvatar =
     avatarUrl === null
       ? null

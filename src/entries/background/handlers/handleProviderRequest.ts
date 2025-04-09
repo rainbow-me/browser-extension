@@ -10,12 +10,12 @@ import { hasVault, isInitialized, isPasswordSet } from '~/core/keychain';
 import { Messenger } from '~/core/messengers';
 import { CallbackOptions } from '~/core/messengers/internal/createMessenger';
 import {
-  appSessionsStore,
-  notificationWindowStore,
-  pendingRequestStore,
+  useAppSessionsStore,
+  useFeatureFlagsStore,
+  useNotificationWindowStore,
+  usePendingRequestStore,
 } from '~/core/state';
-import { featureFlagsStore } from '~/core/state/currentSettings/featureFlags';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { SessionStorage } from '~/core/storage';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
@@ -40,7 +40,7 @@ const getPopupTitleBarHeight = (platform: string) => {
 };
 
 const createNewWindow = async (tabId: string) => {
-  const { setNotificationWindow } = notificationWindowStore.getState();
+  const { setNotificationWindow } = useNotificationWindowStore.getState();
   const currentWindow = await chrome.windows.getCurrent();
   const window = await chrome.windows.create({
     url: chrome.runtime.getURL('popup.html') + '?tabId=' + tabId,
@@ -64,7 +64,7 @@ const focusOnWindow = (windowId: number) => {
 };
 
 const openWindowForTabId = async (tabId: string) => {
-  const { notificationWindows } = notificationWindowStore.getState();
+  const { notificationWindows } = useNotificationWindowStore.getState();
   const notificationWindow = notificationWindows[tabId];
   if (notificationWindow) {
     chrome.windows.get(
@@ -95,7 +95,7 @@ const messengerProviderRequest = async (
   messenger: Messenger,
   request: ProviderRequestPayload,
 ) => {
-  const { addPendingRequest } = pendingRequestStore.getState();
+  const { addPendingRequest } = usePendingRequestStore.getState();
   // Add pending request to global background state.
   addPendingRequest(request);
 
@@ -254,16 +254,16 @@ export const handleProviderRequest = ({
   rnbwHandleProviderRequest({
     providerRequestTransport: providerRequestTransport,
     isSupportedChain: (chainId: number) =>
-      !!networkStore.getState().getBackendSupportedChain(chainId) ||
+      !!useNetworkStore.getState().getBackendSupportedChain(chainId) ||
       isCustomChain(chainId),
     getActiveSession: ({ host }: { host: string }) =>
-      appSessionsStore.getState().getActiveSession({ host }),
+      useAppSessionsStore.getState().getActiveSession({ host }),
     removeAppSession: ({ host }: { host: string }) =>
-      appSessionsStore.getState().removeAppSession({ host }),
+      useAppSessionsStore.getState().removeAppSession({ host }),
     getChainNativeCurrency: (chainId: number) =>
-      networkStore.getState().getBackendSupportedChains(true)[chainId]
+      useNetworkStore.getState().getBackendSupportedChains(true)[chainId]
         ?.nativeCurrency,
-    getFeatureFlags: () => featureFlagsStore.getState().featureFlags,
+    getFeatureFlags: () => useFeatureFlagsStore.getState().featureFlags,
     getProvider: getProvider,
     messengerProviderRequest: (request: ProviderRequestPayload) =>
       messengerProviderRequest(popupMessenger, request),
@@ -276,7 +276,7 @@ export const handleProviderRequest = ({
     }): { chainAlreadyAdded: boolean } => {
       const url = callbackOptions?.sender.url || '';
       const host = (isValidUrl(url) && getDappHost(url)) || '';
-      const { getAllChains, addCustomChain } = networkStore.getState();
+      const { getAllChains, addCustomChain } = useNetworkStore.getState();
 
       const allChains = getAllChains(true);
       const alreadyAddedChain = allChains[+proposedChain.chainId];
@@ -358,12 +358,12 @@ export const handleProviderRequest = ({
       const host = (isValidUrl(url || '') && getDappHost(url)) || '';
       const extensionUrl = chrome.runtime.getURL('');
       const proposedChainId = Number(proposedChain.chainId);
-      const chain = networkStore
+      const chain = useNetworkStore
         .getState()
         .getActiveRpcForChain(proposedChainId);
       const supportedChain =
         isCustomChain(proposedChainId) ||
-        !!networkStore.getState().getBackendSupportedChain(proposedChainId);
+        !!useNetworkStore.getState().getBackendSupportedChain(proposedChainId);
 
       inpageMessenger?.send('rainbow_ethereumChainEvent', {
         chainId: proposedChainId,
@@ -391,12 +391,12 @@ export const handleProviderRequest = ({
       const dappName = callbackOptions?.sender.tab?.title || host;
       const extensionUrl = chrome.runtime.getURL('');
       const proposedChainId = Number(proposedChain.chainId);
-      const { updateActiveSessionChainId } = appSessionsStore.getState();
+      const { updateActiveSessionChainId } = useAppSessionsStore.getState();
       updateActiveSessionChainId({
         chainId: proposedChainId,
         host,
       });
-      const chain = networkStore
+      const chain = useNetworkStore
         .getState()
         .getActiveRpcForChain(proposedChainId);
       inpageMessenger?.send('rainbow_ethereumChainEvent', {

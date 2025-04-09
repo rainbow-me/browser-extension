@@ -272,7 +272,9 @@ export function Wallets() {
   const [isNewUser, setIsNewUser] = useState<boolean>(true);
   const { currentAddress: address } = useCurrentAddressStore();
   const { data: ensName } = useEnsName({ address, chainId: ChainId.mainnet });
-  const setCurrentAddress = useCurrentAddressStore.use.setCurrentAddress();
+  const setCurrentAddress = useCurrentAddressStore(
+    (state) => state.setCurrentAddress,
+  );
 
   const updatePassword = useCallback((pwd: string) => {
     setPassword(pwd);

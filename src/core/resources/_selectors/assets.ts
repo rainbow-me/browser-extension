@@ -1,4 +1,4 @@
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import {
   ParsedAssetsDictByChain,
   ParsedUserAsset,
@@ -18,10 +18,10 @@ export function selectorFilterByUserChains<T>({
   selector: (data: ParsedAssetsDictByChain) => T;
   chain?: ChainId;
 }): T {
-  const chainIdsBasedOnMainnetId = networkStore
+  const chainIdsBasedOnMainnetId = useNetworkStore
     .getState()
     .getBackendChainIdsByMainnetId();
-  const { enabledChainIds } = networkStore.getState();
+  const { enabledChainIds } = useNetworkStore.getState();
   const allUserChainIds = Array.from(enabledChainIds)
     .map((chainId) => {
       const backendChainIds = chainIdsBasedOnMainnetId[chainId];
@@ -68,7 +68,7 @@ export function selectUserAssetsDictByChain(assets: ParsedAssetsDictByChain) {
 }
 
 export function selectUserAssetsListByChainId(assets: ParsedAssetsDictByChain) {
-  const assetsByNetwork = networkStore
+  const assetsByNetwork = useNetworkStore
     .getState()
     .getSupportedAssetsChainIds()
     .map((chain) => assets?.[chain])

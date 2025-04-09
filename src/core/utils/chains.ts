@@ -2,7 +2,7 @@ import { AddressZero } from '@ethersproject/constants';
 import { Chain, mainnet } from 'viem/chains';
 import { useConfig } from 'wagmi';
 
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { mergedChainToViemChain } from '~/core/state/networks/utils';
 import { ChainId, TransformedChain } from '~/core/types/chains';
 
@@ -48,7 +48,7 @@ const getMainChainsHelper = (
 
 export const useMainChains = () => {
   const { chains } = useConfig();
-  const supportedChains = networkStore((state) =>
+  const supportedChains = useNetworkStore((state) =>
     state.getBackendSupportedChains(true),
   );
 
@@ -59,7 +59,7 @@ export const getMainChains = () => {
   const { chains } = wagmiConfig;
   return getMainChainsHelper(
     chains,
-    networkStore.getState().getBackendSupportedChains(true),
+    useNetworkStore.getState().getBackendSupportedChains(true),
   );
 };
 
@@ -93,8 +93,8 @@ export function getChain({ chainId }: { chainId?: ChainId }) {
 }
 
 export const isCustomChain = (chainId: number) =>
-  !networkStore.getState().getBackendSupportedChains(true)[chainId] &&
-  !!networkStore.getState().getActiveRpcForChain(chainId);
+  !useNetworkStore.getState().getBackendSupportedChains(true)[chainId] &&
+  !!useNetworkStore.getState().getActiveRpcForChain(chainId);
 
 export function isNativeAsset(address: AddressOrEth, chainId: ChainId) {
   if (isCustomChain(chainId)) {
@@ -102,7 +102,7 @@ export function isNativeAsset(address: AddressOrEth, chainId: ChainId) {
   }
 
   return isLowerCaseMatch(
-    networkStore.getState().getChainsNativeAsset()[chainId]?.address,
+    useNetworkStore.getState().getChainsNativeAsset()[chainId]?.address,
     address,
   );
 }

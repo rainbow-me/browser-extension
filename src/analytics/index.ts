@@ -3,7 +3,7 @@ import { Analytics as RudderAnalytics } from '@rudderstack/analytics-js-service-
 import { EventProperties, event } from '~/analytics/event';
 import { UserProperties } from '~/analytics/userProperties';
 import { type WalletContext } from '~/analytics/util';
-import { analyticsDisabledStore } from '~/core/state/currentSettings/analyticsDisabled';
+import { useAnalyticsDisabledStore } from '~/core/state/currentSettings/analyticsDisabled';
 import { logger } from '~/logger';
 
 import pkg from '../../package.json';
@@ -49,7 +49,7 @@ export class Analytics {
 
     // wait for analyticsDisabledStore to be initialized and turn it on if enabled
     setTimeout(() => {
-      if (analyticsDisabledStore.getState().analyticsDisabled !== true) {
+      if (useAnalyticsDisabledStore.getState().analyticsDisabled !== true) {
         this.disabled = false;
       }
     }, 10);

@@ -11,7 +11,9 @@ import { useKeyboardShortcut } from './useKeyboardShortcut';
 
 export function useSwitchWalletShortcuts(disable?: boolean) {
   const { sortedAccounts } = useAccounts();
-  const setCurrentAddress = useCurrentAddressStore.use.setCurrentAddress();
+  const setCurrentAddress = useCurrentAddressStore(
+    (state) => state.setCurrentAddress,
+  );
   const { trackShortcut } = useKeyboardAnalytics();
 
   useKeyboardShortcut({

@@ -12,7 +12,7 @@ import {
 import { useConsolidatedTransactions } from '~/core/resources/transactions/consolidatedTransactions';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction, TxHash } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
@@ -325,7 +325,7 @@ export const Approvals = () => {
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency } = useCurrentCurrencyStore();
   const { chains } = useUserChains();
-  const supportedMainnetChainIds = networkStore((state) =>
+  const supportedMainnetChainIds = useNetworkStore((state) =>
     state.getBackendSupportedChainIds(),
   );
   const [showRevokeSheet, setShowRevokeSheet] = useState(false);

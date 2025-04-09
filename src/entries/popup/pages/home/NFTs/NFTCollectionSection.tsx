@@ -56,9 +56,11 @@ export function NFTCollectionSection({
 }) {
   const { currentAddress: address } = useCurrentAddressStore();
   const { isWatchingWallet } = useWallets();
-  const sections = useNftsStore.use.sections();
-  const toggleGallerySectionOpen = useNftsStore.use.toggleGallerySectionOpen();
-  const hidden = useNftsStore.use.hidden();
+  const sections = useNftsStore((state) => state.sections);
+  const toggleGallerySectionOpen = useNftsStore(
+    (state) => state.toggleGallerySectionOpen,
+  );
+  const hidden = useNftsStore((state) => state.hidden);
   const hiddenNftsForAddress = hidden[address] || {};
   const sectionsForAddress = sections[address] || {};
   const collectionId = collection?.collection_id;

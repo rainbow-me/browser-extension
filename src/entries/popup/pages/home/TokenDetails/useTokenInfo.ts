@@ -5,7 +5,7 @@ import { metadataClient } from '~/core/graphql';
 import { AboutTokenQuery } from '~/core/graphql/__generated__/metadata';
 import { createQueryKey } from '~/core/react-query';
 import { useCurrentCurrencyStore } from '~/core/state';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { formatCurrency } from '~/core/utils/formatNumber';
@@ -44,7 +44,7 @@ export const useTokenInfo = <Select = ParsedTokenInfo>(
   options?: { select: (t: ParsedTokenInfo) => Select },
 ) => {
   const { currentCurrency } = useCurrentCurrencyStore();
-  const supportedChains = networkStore((state) =>
+  const supportedChains = useNetworkStore((state) =>
     state.getBackendSupportedChains(true),
   );
   const args = token && { ...token, currency: currentCurrency };

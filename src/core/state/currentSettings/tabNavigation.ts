@@ -1,6 +1,4 @@
-import create from 'zustand';
-
-import { createStore } from '~/core/state/internal/createStore';
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { Tab } from '~/entries/popup/components/Tabs/TabBar';
 
 interface TabNavigationState {
@@ -8,17 +6,13 @@ interface TabNavigationState {
   setSelectedTab: (newSelectedTab: Tab) => void;
 }
 
-const tabNavigationStore = createStore<TabNavigationState>(
+export const useTabNavigation = createRainbowStore<TabNavigationState>(
   (set) => ({
     selectedTab: 'tokens',
     setSelectedTab: (newSelectedTab) => set({ selectedTab: newSelectedTab }),
   }),
   {
-    persist: {
-      name: 'tabNavigation',
-      version: 0,
-    },
+    storageKey: 'tabNavigation',
+    version: 0,
   },
 );
-
-export const useTabNavigation = create(tabNavigationStore);

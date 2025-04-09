@@ -11,7 +11,7 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import { TransactionsReceivedMessage } from '~/core/types/refraction';
 import { RainbowTransaction } from '~/core/types/transactions';
@@ -90,7 +90,7 @@ export async function consolidatedTransactionsQueryFunction({
   typeof consolidatedTransactionsQueryKey
 >): Promise<_QueryResult> {
   try {
-    const supportedTransactionsChainIds = networkStore
+    const supportedTransactionsChainIds = useNetworkStore
       .getState()
       .getSupportedTransactionsChainIds();
     const chainIds = userChainIds.filter((id) =>
