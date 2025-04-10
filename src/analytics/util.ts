@@ -1,9 +1,13 @@
 import { SupportedAlgorithm, computeHmac } from '@ethersproject/sha2';
 import { Address } from 'viem';
 
-import { getWallet } from '~/entries/popup/handlers/wallet';
+import { AddressOrEth } from '~/core/types/assets';
+import { ChainId } from '~/core/types/chains';
 import { KeychainType } from '~/core/types/keychainTypes';
+import { getWallet } from '~/entries/popup/handlers/wallet';
 import { RainbowError, logger } from '~/logger';
+
+import { analytics } from '.';
 
 const SECURE_WALLET_HASH_KEY = process.env.SECURE_WALLET_HASH_KEY;
 
@@ -61,16 +65,62 @@ export async function getWalletContext(
   try {
     // expect getWallet error when keychain is locked
     const wallet = await getWallet(address);
-    walletType = ({
-      [KeychainType.HdKeychain]: 'owned',
-      [KeychainType.KeyPairKeychain]: 'owned',
-      [KeychainType.ReadOnlyKeychain]: 'watched',
-      [KeychainType.HardwareWalletKeychain]: 'hardware',
-    } as const)[wallet?.type];
-  } catch (e) {}
+    walletType = (
+      {
+        [KeychainType.HdKeychain]: 'owned',
+        [KeychainType.KeyPairKeychain]: 'owned',
+        [KeychainType.ReadOnlyKeychain]: 'watched',
+        [KeychainType.HardwareWalletKeychain]: 'hardware',
+      } as const
+    )[wallet?.type];
+  } catch (e: unknown) {
+    logger.error(
+      new RainbowError(`[getWalletContext]: Wallet address hashing failed`, {
+        cause: e,
+      }),
+    );
+  }
 
   return {
     walletType,
     walletAddressHash,
   };
 }
+
+/**
+ * Track favorite asset-related events
+ */
+export const trackFavorite = (
+  address: AddressOrEth,
+  chainId: ChainId,
+  isAdding: boolean,
+  favoritesLength: number,
+) => {
+  analytics.track(
+    isAdding
+      ? analytics.event.tokenFavorited
+      : analytics.event.tokenUnfavorited,
+    {
+      token: { address, chainId },
+      favorites: { favoritesLength },
+    },
+  );
+};
+
+/**
+ * Track hidden asset-related events
+ */
+export const trackHiddenAsset = (
+  address: string,
+  chainId: ChainId,
+  isHidden: boolean,
+  totalHidden: number,
+) => {
+  analytics.track(
+    isHidden ? analytics.event.assetHidden : analytics.event.assetUnhidden,
+    {
+      token: { address, chainId },
+      hiddenAssets: { totalHidden },
+    },
+  );
+};
