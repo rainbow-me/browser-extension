@@ -3,72 +3,80 @@ import { useMemo } from 'react';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { networkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
+import { isCustomChain } from '~/core/utils/chains';
 import { sortNetworks } from '~/core/utils/userChains';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
-const checkIfTesting = (chainId: ChainId, testnetMode: boolean) => {
-  if (IS_TESTING) {
-    return testnetMode
-      ? chainId === ChainId.hardhatOptimism
-      : chainId === ChainId.hardhat;
-  }
-  return false;
-};
+const isHardhatChain = (chainId: ChainId) =>
+  chainId === ChainId.hardhat || chainId === ChainId.hardhatOptimism;
 
 export const useUserChains = () => {
   const { enabledChainIds, chainOrder } = networkStore((state) => ({
     enabledChainIds: state.enabledChainIds,
     chainOrder: state.chainOrder,
   }));
+
   const { testnetMode } = useTestnetModeStore();
 
-  const allSupportedChains = networkStore((state) => state.getAllChains(true));
-  const mainnetSupportedChains = Object.values(allSupportedChains).filter(
-    (chain) => !chain.testnet,
+  const allTransformedChainsMap = networkStore((state) =>
+    state.getAllChains(true),
   );
+  const allTransformedChains = useMemo(
+    () => Object.values(allTransformedChainsMap),
+    [allTransformedChainsMap],
+  );
+
   const chainIdsByMainnetId = networkStore((state) =>
     state.getBackendChainIdsByMainnetId(),
   );
 
   const availableChains = useMemo(() => {
-    const disabledChains = Object.values(mainnetSupportedChains).filter(
-      (chain) => !enabledChainIds.has(chain.id),
-    );
-    const allDisabledChains = disabledChains
-      .filter(
-        (chain) =>
-          chain.id !== ChainId.hardhat && chain.id !== ChainId.hardhatOptimism,
-      )
-      .map((chain) => {
-        if (chainIdsByMainnetId[chain.id]) {
-          return [...chainIdsByMainnetId[chain.id], chain.id];
-        }
-        return [chain.id];
-      })
-      .flat();
+    const disabledStandardTestnetIds = new Set<number>();
+    for (const mainnetIdStr in chainIdsByMainnetId) {
+      const mainnetId = parseInt(mainnetIdStr, 10);
+      if (!enabledChainIds.has(mainnetId)) {
+        chainIdsByMainnetId[mainnetId]?.forEach((testnetId) => {
+          disabledStandardTestnetIds.add(testnetId);
+        });
+      }
+    }
 
-    const chains = Object.values(allSupportedChains).filter((chain) => {
-      const isTestingChain = checkIfTesting(chain.id, testnetMode);
-      const isNotDisabled = !allDisabledChains.includes(chain.id);
-      const matchesTestnetMode = testnetMode
-        ? !!chain.testnet
-        : !chain.testnet ||
-          (IS_TESTING &&
-            (chain.id === ChainId.hardhat ||
-              chain.id === ChainId.hardhatOptimism));
+    const enabledFilteredChains = allTransformedChains.filter((chain) => {
+      let matchesMode = false;
+      if (isHardhatChain(chain.id)) {
+        if (!IS_TESTING) return false;
+        matchesMode = testnetMode
+          ? chain.id === ChainId.hardhatOptimism
+          : chain.id === ChainId.hardhat;
+      } else {
+        matchesMode = testnetMode ? !!chain.testnet : !chain.testnet;
+      }
 
-      return (isTestingChain || isNotDisabled) && matchesTestnetMode;
+      if (!matchesMode) {
+        return false;
+      }
+
+      if (isHardhatChain(chain.id)) {
+        return true;
+      }
+
+      const isChainCustom = isCustomChain(chain.id);
+      if (isChainCustom || !chain.testnet) {
+        return enabledChainIds.has(chain.id);
+      } else {
+        const isDisabled = disabledStandardTestnetIds.has(chain.id);
+        return !isDisabled;
+      }
     });
 
-    return sortNetworks(chainOrder, chains);
+    return sortNetworks(chainOrder, enabledFilteredChains);
   }, [
     testnetMode,
     enabledChainIds,
     chainOrder,
     chainIdsByMainnetId,
-    allSupportedChains,
-    mainnetSupportedChains,
+    allTransformedChains,
   ]);
 
   return { chains: availableChains };
