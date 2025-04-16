@@ -2,6 +2,7 @@ import { ReactNode, useCallback } from 'react';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
+import { trackHiddenAsset } from '~/analytics/util';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -135,6 +136,14 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
         name: token.symbol,
       }),
     });
+    const isHidden =
+      useHiddenAssetStore.getState().hidden[address]?.[
+        computeUniqueIdForHiddenAsset(token)
+      ];
+    const hiddenCount = Object.values(
+      useHiddenAssetStore.getState().hidden[address] || {},
+    ).filter((isHidden) => isHidden).length;
+    trackHiddenAsset(token.address, token.chainId, isHidden, hiddenCount);
   }, [
     token,
     containerRef,
