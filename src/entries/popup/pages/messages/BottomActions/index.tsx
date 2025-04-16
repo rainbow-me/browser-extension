@@ -8,7 +8,7 @@ import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
 import {
@@ -142,7 +142,9 @@ export const BottomSwitchWallet = ({
   selectedWallet: Address;
   setSelectedWallet: (selected: Address) => void;
 }) => {
-  const setCurrentAddress = useCurrentAddressStore.use.setCurrentAddress();
+  const setCurrentAddress = useCurrentAddressStore(
+    (state) => state.setCurrentAddress,
+  );
   const { sortedAccounts } = useAccounts();
   const { trackShortcut } = useKeyboardAnalytics();
   const menuTriggerRef = useRef<{ triggerMenu: () => void }>(null);
@@ -227,7 +229,7 @@ export const BottomNetwork = ({
   symbolSize?: number;
   symbol?: SymbolProps['symbol'];
 }) => {
-  const chainsLabel = networkStore((state) => state.getChainsLabel());
+  const chainsLabel = useNetworkStore((state) => state.getChainsLabel());
   return (
     <Box testId="switch-network-menu">
       <Inline alignHorizontal="right" alignVertical="center">

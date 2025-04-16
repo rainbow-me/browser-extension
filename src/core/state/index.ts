@@ -1,11 +1,7 @@
-export { appSessionsStore, useAppSessionsStore } from './appSessions';
+export { useAppSessionsStore } from './appSessions';
+export { useHomePromptsQueueStore } from './homePromptsQueue';
+
 export {
-  currentAddressStore,
-  currentChainIdStore,
-  currentCurrencyStore,
-  currentLanguageStore,
-  currentThemeStore,
-  isDefaultWalletStore,
   useCurrentAddressStore,
   useCurrentChainIdStore,
   useCurrentCurrencyStore,
@@ -13,17 +9,16 @@ export {
   useCurrentThemeStore,
   useIsDefaultWalletStore,
 } from './currentSettings';
-export { deviceIdStore, useDeviceIdStore } from './device';
-export { gasStore, useGasStore } from './gas';
-export { nonceStore, useNonceStore } from './nonce';
-export {
-  notificationWindowStore,
-  useNotificationWindowStore,
-} from './notificationWindow';
-export {
-  pendingTransactionsStore,
-  usePendingTransactionsStore,
-} from './transactions/pendingTransactions';
-export { pendingRequestStore, usePendingRequestStore } from './requests';
-export { rainbowChainsStore, useRainbowChainsStore } from './rainbowChains';
-export { userChainsStore, useUserChainsStore } from './userChains';
+export { useColorCacheStore } from './dominantColor';
+export { useSavedEnsNamesStore } from './savedEnsNames';
+export { useStaleBalancesStore } from './staleBalances';
+export { useDeviceIdStore } from './deviceId';
+export { useGasStore } from './gas';
+export { useNonceStore } from './nonce';
+export { useNotificationWindowStore } from './notificationWindow';
+export { usePendingTransactionsStore } from './transactions/pendingTransactions';
+export { usePendingRequestStore } from './requests';
+export { useRainbowChainsStore } from './rainbowChains';
+export { useUserChainsStore } from './userChains';
+export { useFeatureFlagsStore } from './currentSettings/featureFlags';
+export { useConnectedToHardhatStore } from './currentSettings/connectedToHardhat';

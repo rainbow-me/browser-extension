@@ -10,7 +10,7 @@ import { isString } from 'lodash';
 import { Address } from 'viem';
 
 import RainbowIcon from 'static/images/icon-16@2x.png';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 
 import { i18n } from '../languages';
 import {
@@ -19,9 +19,9 @@ import {
   smartContractMethods,
 } from '../references';
 import {
-  currentCurrencyStore,
-  nonceStore,
-  pendingTransactionsStore,
+  useCurrentCurrencyStore,
+  useNonceStore,
+  usePendingTransactionsStore,
 } from '../state';
 import { AddressOrEth, ParsedAsset, ParsedUserAsset } from '../types/assets';
 import { ChainId, ChainName } from '../types/chains';
@@ -448,11 +448,11 @@ export async function getNextNonce({
   address: Address;
   chainId: ChainId;
 }) {
-  const { getNonce } = nonceStore.getState();
+  const { getNonce } = useNonceStore.getState();
   const localNonceData = getNonce({ address, chainId });
   const localNonce = localNonceData?.currentNonce || -1;
   const provider = getBatchedProvider({ chainId });
-  const privateMempoolTimeout = networkStore
+  const privateMempoolTimeout = useNetworkStore
     .getState()
     .getChainsPrivateMempoolTimeout()[chainId];
 
@@ -476,7 +476,7 @@ export async function getNextNonce({
     return latestTxCountFromPublicRpc; // catch up with public
 
   const { pendingTransactions: storePendingTransactions } =
-    pendingTransactionsStore.getState();
+    usePendingTransactionsStore.getState();
   const pendingTransactions: RainbowTransaction[] =
     storePendingTransactions[address]?.filter(
       (txn) => txn.chainId === chainId,
@@ -533,9 +533,9 @@ export function updateTransaction({
   chainId: ChainId;
   transaction: NewTransaction;
 }) {
-  const { getNonce, setNonce } = nonceStore.getState();
-  const { updatePendingTransaction } = pendingTransactionsStore.getState();
-  const { currentCurrency } = currentCurrencyStore.getState();
+  const { getNonce, setNonce } = useNonceStore.getState();
+  const { updatePendingTransaction } = usePendingTransactionsStore.getState();
+  const { currentCurrency } = useCurrentCurrencyStore.getState();
   const updatedPendingTransaction = parseNewTransaction(
     transaction,
     currentCurrency,

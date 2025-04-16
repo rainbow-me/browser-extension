@@ -1,26 +1,21 @@
-import create from 'zustand';
-
-import { createStore } from '~/core/state/internal/createStore';
 import { GasSpeed } from '~/core/types/gas';
 import { DefaultTxSpeedOption } from '~/core/types/settings';
+
+import { createRainbowStore } from '../internal/createRainbowStore';
 
 export interface DefaultTxSpeedState {
   defaultTxSpeed: DefaultTxSpeedOption;
   setDefaultTxSpeed: (defaultTxSpeed: DefaultTxSpeedOption) => void;
 }
 
-export const defaultTxSpeedStore = createStore<DefaultTxSpeedState>(
+export const useDefaultTxSpeedStore = createRainbowStore<DefaultTxSpeedState>(
   (set) => ({
     defaultTxSpeed: GasSpeed.NORMAL,
     setDefaultTxSpeed: (newDefaultTxSpeed) =>
       set({ defaultTxSpeed: newDefaultTxSpeed }),
   }),
   {
-    persist: {
-      name: 'defaultTxSpeed',
-      version: 0,
-    },
+    storageKey: 'defaultTxSpeed',
+    version: 0,
   },
 );
-
-export const useDefaultTxSpeedStore = create(defaultTxSpeedStore);

@@ -2,7 +2,7 @@ import { expect, test } from 'vitest';
 
 import { ChainId } from '~/core/types/chains';
 
-import { appSessionsStore } from '.';
+import { useAppSessionsStore } from '.';
 
 const UNISWAP_HOST = 'uniswap.org';
 const UNISWAP_URL = 'www.uniswap.org';
@@ -12,7 +12,7 @@ const ADDRESS_1 = '0x123';
 const ADDRESS_2 = '0x321';
 
 test('should be able to add session', async () => {
-  const { appSessions, addSession } = appSessionsStore.getState();
+  const { appSessions, addSession } = useAppSessionsStore.getState();
   expect(appSessions).toStrictEqual({});
   addSession({
     url: UNISWAP_URL,
@@ -20,7 +20,7 @@ test('should be able to add session', async () => {
     address: ADDRESS_1,
     chainId: ChainId.mainnet,
   });
-  expect(appSessionsStore.getState().appSessions).toStrictEqual({
+  expect(useAppSessionsStore.getState().appSessions).toStrictEqual({
     [UNISWAP_HOST]: {
       url: UNISWAP_URL,
       host: UNISWAP_HOST,
@@ -31,14 +31,14 @@ test('should be able to add session', async () => {
 });
 
 test('should be able to add session to an existent host', async () => {
-  const { addSession } = appSessionsStore.getState();
+  const { addSession } = useAppSessionsStore.getState();
   addSession({
     url: UNISWAP_URL,
     host: UNISWAP_HOST,
     address: ADDRESS_2,
     chainId: ChainId.arbitrum,
   });
-  expect(appSessionsStore.getState().appSessions).toStrictEqual({
+  expect(useAppSessionsStore.getState().appSessions).toStrictEqual({
     [UNISWAP_HOST]: {
       url: UNISWAP_URL,
       host: UNISWAP_HOST,
@@ -49,14 +49,14 @@ test('should be able to add session to an existent host', async () => {
 });
 
 test('should be able to add session to a new host', async () => {
-  const { addSession } = appSessionsStore.getState();
+  const { addSession } = useAppSessionsStore.getState();
   addSession({
     url: OPENSEA_URL,
     host: OPENSEA_HOST,
     address: ADDRESS_2,
     chainId: ChainId.arbitrum,
   });
-  expect(appSessionsStore.getState().appSessions).toStrictEqual({
+  expect(useAppSessionsStore.getState().appSessions).toStrictEqual({
     [UNISWAP_HOST]: {
       url: UNISWAP_URL,
       host: UNISWAP_HOST,
@@ -73,9 +73,9 @@ test('should be able to add session to a new host', async () => {
 });
 
 test('should be able to remove app session', async () => {
-  const { removeAppSession } = appSessionsStore.getState();
+  const { removeAppSession } = useAppSessionsStore.getState();
   removeAppSession({ host: OPENSEA_HOST });
-  expect(appSessionsStore.getState().appSessions).toStrictEqual({
+  expect(useAppSessionsStore.getState().appSessions).toStrictEqual({
     [UNISWAP_HOST]: {
       url: UNISWAP_URL,
       host: UNISWAP_HOST,
@@ -86,9 +86,9 @@ test('should be able to remove app session', async () => {
 });
 
 test('should be able to remove a session', async () => {
-  const { removeSession } = appSessionsStore.getState();
+  const { removeSession } = useAppSessionsStore.getState();
   removeSession({ host: UNISWAP_HOST, address: ADDRESS_2 });
-  expect(appSessionsStore.getState().appSessions).toStrictEqual({
+  expect(useAppSessionsStore.getState().appSessions).toStrictEqual({
     [UNISWAP_HOST]: {
       url: UNISWAP_URL,
       host: UNISWAP_HOST,
@@ -99,7 +99,7 @@ test('should be able to remove a session', async () => {
 });
 
 test('should be able to update active session', async () => {
-  const { addSession, updateActiveSession } = appSessionsStore.getState();
+  const { addSession, updateActiveSession } = useAppSessionsStore.getState();
   addSession({
     url: UNISWAP_URL,
     host: UNISWAP_HOST,
@@ -108,25 +108,27 @@ test('should be able to update active session', async () => {
   });
   updateActiveSession({ host: UNISWAP_HOST, address: ADDRESS_1 });
   expect(
-    appSessionsStore.getState().appSessions[UNISWAP_HOST].activeSessionAddress,
+    useAppSessionsStore.getState().appSessions[UNISWAP_HOST]
+      .activeSessionAddress,
   ).toStrictEqual(ADDRESS_1);
 });
 
 test('should be able to update active session chainId', async () => {
-  const { updateActiveSessionChainId } = appSessionsStore.getState();
+  const { updateActiveSessionChainId } = useAppSessionsStore.getState();
 
   updateActiveSessionChainId({ host: UNISWAP_HOST, chainId: ChainId.base });
   const activeSessionAddress =
-    appSessionsStore.getState().appSessions[UNISWAP_HOST].activeSessionAddress;
+    useAppSessionsStore.getState().appSessions[UNISWAP_HOST]
+      .activeSessionAddress;
   expect(
-    appSessionsStore.getState().appSessions[UNISWAP_HOST].sessions[
+    useAppSessionsStore.getState().appSessions[UNISWAP_HOST].sessions[
       activeSessionAddress
     ],
   ).toStrictEqual(ChainId.base);
 });
 
 test('should be able to update session chainId', async () => {
-  const { updateSessionChainId } = appSessionsStore.getState();
+  const { updateSessionChainId } = useAppSessionsStore.getState();
 
   updateSessionChainId({
     host: UNISWAP_HOST,
@@ -134,19 +136,21 @@ test('should be able to update session chainId', async () => {
     chainId: ChainId.zora,
   });
   expect(
-    appSessionsStore.getState().appSessions[UNISWAP_HOST].sessions[ADDRESS_1],
+    useAppSessionsStore.getState().appSessions[UNISWAP_HOST].sessions[
+      ADDRESS_1
+    ],
   ).toStrictEqual(ChainId.zora);
 });
 
 test('should be able to clear all sessions', async () => {
-  const { clearSessions } = appSessionsStore.getState();
+  const { clearSessions } = useAppSessionsStore.getState();
   clearSessions();
-  expect(appSessionsStore.getState().appSessions).toStrictEqual({});
+  expect(useAppSessionsStore.getState().appSessions).toStrictEqual({});
 });
 
 test('should be able to check if host has an active session', async () => {
-  const { addSession, getActiveSession } = appSessionsStore.getState();
-  expect(appSessionsStore.getState().appSessions).toStrictEqual({});
+  const { addSession, getActiveSession } = useAppSessionsStore.getState();
+  expect(useAppSessionsStore.getState().appSessions).toStrictEqual({});
   addSession({
     url: UNISWAP_URL,
     host: UNISWAP_HOST,
@@ -161,13 +165,13 @@ test('should be able to check if host has an active session', async () => {
 });
 
 test('should be able to update session chain id', async () => {
-  const { updateSessionChainId } = appSessionsStore.getState();
+  const { updateSessionChainId } = useAppSessionsStore.getState();
   updateSessionChainId({
     host: UNISWAP_HOST,
     address: ADDRESS_1,
     chainId: ChainId.arbitrum,
   });
-  expect(appSessionsStore.getState().appSessions).toStrictEqual({
+  expect(useAppSessionsStore.getState().appSessions).toStrictEqual({
     [UNISWAP_HOST]: {
       url: UNISWAP_URL,
       host: UNISWAP_HOST,
@@ -178,9 +182,9 @@ test('should be able to update session chain id', async () => {
 });
 
 test.todo('should be able to update session address', async () => {
-  const { updateActiveSession } = appSessionsStore.getState();
+  const { updateActiveSession } = useAppSessionsStore.getState();
   updateActiveSession({ host: UNISWAP_HOST, address: ADDRESS_2 });
-  expect(appSessionsStore.getState().appSessions).toStrictEqual({
+  expect(useAppSessionsStore.getState().appSessions).toStrictEqual({
     [UNISWAP_HOST]: {
       url: UNISWAP_URL,
       host: UNISWAP_HOST,

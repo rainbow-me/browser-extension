@@ -976,10 +976,12 @@ const ROUTE_DATA = [
 
 const RootLayout = () => {
   const { pathname, state } = useLocation();
-  const setLastPage = useNavRestorationStore.use.setLastPage();
-  const setLastState = useNavRestorationStore.use.setLastState();
-  const shouldRestoreNavigation =
-    useNavRestorationStore.use.shouldRestoreNavigation();
+  const { setLastPage, setLastState, shouldRestoreNavigation } =
+    useNavRestorationStore((state) => ({
+      setLastPage: state.setLastPage,
+      setLastState: state.setLastState,
+      shouldRestoreNavigation: state.shouldRestoreNavigation,
+    }));
 
   React.useLayoutEffect(() => {
     window.scrollTo(0, 0);
@@ -1071,7 +1073,7 @@ const useGlobalShortcuts = () => {
 function Rerouter() {
   const error = useRouteError() as Error;
   const navigate = useRainbowNavigate();
-  const setError = useErrorStore.use.setError();
+  const setError = useErrorStore((state) => state.setError);
 
   React.useEffect(() => {
     setError(error);

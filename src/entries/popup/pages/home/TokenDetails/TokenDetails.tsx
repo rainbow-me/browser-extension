@@ -182,7 +182,9 @@ function SwapSend({
   isSwappable: boolean;
 }) {
   const navigate = useRainbowNavigate();
-  const setSelectedToken = useSelectedTokenStore.use.setSelectedToken();
+  const setSelectedToken = useSelectedTokenStore(
+    (state) => state.setSelectedToken,
+  );
   const selectTokenAndNavigate = (to: To) => {
     setSelectedToken(token);
     navigate(to);

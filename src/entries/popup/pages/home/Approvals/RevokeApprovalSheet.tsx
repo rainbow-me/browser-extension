@@ -80,8 +80,10 @@ export const RevokeApprovalSheet = ({
 
   const [waitingForDevice, setWaitingForDevice] = useState(false);
 
-  const selectedGas = useGasStore.use.selectedGas();
-  const clearCustomGasModified = useGasStore.use.clearCustomGasModified();
+  const selectedGas = useGasStore((state) => state.selectedGas);
+  const clearCustomGasModified = useGasStore(
+    (state) => state.clearCustomGasModified,
+  );
 
   const navigate = useRainbowNavigate();
   const { currentCurrency } = useCurrentCurrencyStore();

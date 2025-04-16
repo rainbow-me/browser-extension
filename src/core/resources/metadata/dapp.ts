@@ -7,7 +7,7 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
-import { dappMetadataStore } from '~/core/state/dappMetadata';
+import { useDappMetadataStore } from '~/core/state/dappMetadata';
 import {
   getDappHost,
   getDappHostname,
@@ -89,7 +89,7 @@ export async function dappMetadataQueryFunction({
   typeof DappMetadataQueryKey
 >): Promise<DappMetadata | null> {
   if (!url) return null;
-  const { setDappMetadata } = dappMetadataStore.getState();
+  const { setDappMetadata } = useDappMetadataStore.getState();
   const appHost = url && isValidUrl(url) ? getDappHost(url) : '';
   const dappMetadata = await fetchDappMetadata({ url, status: true });
   setDappMetadata({ host: appHost, dappMetadata });
@@ -97,7 +97,7 @@ export async function dappMetadataQueryFunction({
 }
 
 export async function prefetchDappMetadata({ url }: { url: string }) {
-  const { dappMetadata } = dappMetadataStore.getState();
+  const { dappMetadata } = useDappMetadataStore.getState();
   const appHost = url && isValidUrl(url) ? getDappHost(url) : '';
   if (!dappMetadata[appHost]) {
     queryClient.prefetchQuery({
@@ -118,7 +118,7 @@ export function useDappMetadata({ url }: DappMetadataArgs) {
     gcTime: 1000 * 60 * 60 * 24,
     initialData: () => {
       const appHost = url && isValidUrl(url) ? getDappHost(url) : '';
-      const { getDappMetadata } = dappMetadataStore.getState();
+      const { getDappMetadata } = useDappMetadataStore.getState();
       return getDappMetadata({ host: appHost });
     },
     enabled: !!url,

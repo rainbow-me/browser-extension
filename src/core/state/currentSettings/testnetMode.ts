@@ -1,23 +1,17 @@
-import create from 'zustand';
-
-import { createStore } from '~/core/state/internal/createStore';
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 
 export interface TestnetModeState {
   testnetMode: boolean;
   setTestnetMode: (testnetMode: boolean) => void;
 }
 
-export const testnetModeStore = createStore<TestnetModeState>(
+export const useTestnetModeStore = createRainbowStore<TestnetModeState>(
   (set) => ({
     testnetMode: false,
     setTestnetMode: (testnetMode) => set({ testnetMode }),
   }),
   {
-    persist: {
-      name: 'testnetMode',
-      version: 0,
-    },
+    storageKey: 'testnetMode',
+    version: 0,
   },
 );
-
-export const useTestnetModeStore = create(testnetModeStore);

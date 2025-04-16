@@ -7,7 +7,8 @@ import {
 import { Address } from 'viem';
 
 import { REFERRER, ReferrerType } from '~/core/references';
-import { networkStore } from '~/core/state/networks/networks';
+import { useGasStore } from '~/core/state';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { isSameAssetInDiffChains } from '~/core/utils/assets';
@@ -15,7 +16,6 @@ import { addNewTransaction } from '~/core/utils/transactions';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import { RainbowError, logger } from '~/logger';
 
-import { gasStore } from '../../state';
 import {
   TransactionGasParams,
   TransactionLegacyGasParams,
@@ -45,7 +45,7 @@ export const estimateCrosschainSwapGasLimit = async ({
 }): Promise<string> => {
   const provider = getProvider({ chainId });
   if (!provider || !quote) {
-    const chainGasUnits = networkStore.getState().getChainGasUnits(chainId);
+    const chainGasUnits = useNetworkStore.getState().getChainGasUnits(chainId);
     return chainGasUnits.basic.swap;
   }
   try {
@@ -121,7 +121,7 @@ export const crosschainSwap = async ({
   baseNonce,
 }: ActionProps<'crosschainSwap'>): Promise<RapActionResult> => {
   const { quote, chainId, requiresApprove } = parameters;
-  const { selectedGas, gasFeeParamsBySpeed } = gasStore.getState();
+  const { selectedGas, gasFeeParamsBySpeed } = useGasStore.getState();
 
   let gasParams = selectedGas.transactionGasParams;
   if (currentRap.actions.length - 1 > index) {

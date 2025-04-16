@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Chain, HttpTransport, Transport, http } from 'viem';
 import { createConfig } from 'wagmi';
 
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 
 import { handleRpcUrl } from './clientRpc';
 
@@ -29,7 +29,7 @@ export const createTransports = (
 };
 
 const supportedChains = Object.values(
-  networkStore.getState().getBackendSupportedChains(true),
+  useNetworkStore.getState().getBackendSupportedChains(true),
 );
 
 let wagmiConfig = createConfig({
@@ -45,7 +45,9 @@ const updateWagmiConfig = (chains: Chain[]) => {
 };
 
 const WagmiConfigUpdater = () => {
-  const activeChains = networkStore((state) => state.getAllActiveRpcChains());
+  const activeChains = useNetworkStore((state) =>
+    state.getAllActiveRpcChains(),
+  );
   useEffect(() => {
     updateWagmiConfig(activeChains);
   }, [activeChains]);

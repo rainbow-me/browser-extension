@@ -12,7 +12,7 @@ import {
 } from '~/core/react-query';
 import { ETH_ADDRESS, SupportedCurrencyKey } from '~/core/references';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import {
   RainbowChainAsset,
   useRainbowChainAssetsStore,
@@ -182,8 +182,8 @@ async function customNetworkAssetsFunction({
     }),
   })?.state?.data || {}) as Record<ChainId | number, ParsedAssetsDict>;
 
-  const activeChains = networkStore.getState().getAllActiveRpcChains();
-  const supportedMainnetChains = networkStore
+  const activeChains = useNetworkStore.getState().getAllActiveRpcChains();
+  const supportedMainnetChains = useNetworkStore
     .getState()
     .getBackendSupportedChains();
 

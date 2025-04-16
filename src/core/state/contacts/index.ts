@@ -1,8 +1,6 @@
 import { Address } from 'viem';
-import create from 'zustand';
 
-import { createStore } from '../internal/createStore';
-import { withSelectors } from '../internal/withSelectors';
+import { createRainbowStore } from '../internal/createRainbowStore';
 
 export interface Contact {
   name: string;
@@ -21,7 +19,7 @@ export interface ContactsStore {
   deleteContact: ({ address }: { address: Address }) => void;
 }
 
-export const contactsStore = createStore<ContactsStore>(
+export const useContactsStore = createRainbowStore<ContactsStore>(
   (set, get) => ({
     contacts: {},
     getContact: ({ address }) => {
@@ -46,11 +44,7 @@ export const contactsStore = createStore<ContactsStore>(
     },
   }),
   {
-    persist: {
-      name: 'contacts',
-      version: 0,
-    },
+    storageKey: 'contacts',
+    version: 0,
   },
 );
-
-export const useContactsStore = withSelectors(create(contactsStore));

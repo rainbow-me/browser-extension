@@ -10,7 +10,7 @@ import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { transformBackendNetworkToChain } from '~/core/state/networks/utils';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
 import { TransformedChain } from '~/core/types/chains';
@@ -69,7 +69,7 @@ export function SettingsNetworksRPCs() {
   const { removeRainbowChainAsset, removeRainbowChainAssets } =
     useRainbowChainAssetsStore();
 
-  const supportedChains = networkStore((state) =>
+  const supportedChains = useNetworkStore((state) =>
     state.getBackendSupportedChains(true),
   );
   const supportedChain = supportedChains[chainId];
@@ -97,16 +97,16 @@ export function SettingsNetworksRPCs() {
 
   const navigate = useRainbowNavigate();
   const { developerToolsEnabled } = useDeveloperToolsEnabledStore();
-  const selectRpcForChain = networkStore((state) => state.selectRpcForChain);
-  const updateEnabledChains = networkStore(
+  const selectRpcForChain = useNetworkStore((state) => state.selectRpcForChain);
+  const updateEnabledChains = useNetworkStore(
     (state) => state.updateEnabledChains,
   );
-  const enabledChainIds = networkStore((state) => state.enabledChainIds);
-  const chain = networkStore((state) => state.getChain(chainId));
-  const chainsByMainnetId = networkStore((state) =>
+  const enabledChainIds = useNetworkStore((state) => state.enabledChainIds);
+  const chain = useNetworkStore((state) => state.getChain(chainId));
+  const chainsByMainnetId = useNetworkStore((state) =>
     state.getBackendChainsByMainnetId(),
   );
-  const chainIdsByMainnetId = networkStore((state) =>
+  const chainIdsByMainnetId = useNetworkStore((state) =>
     state.getBackendChainIdsByMainnetId(),
   );
   const activeChain = chain?.rpcs[chain.activeRpcUrl];
@@ -150,7 +150,7 @@ export function SettingsNetworksRPCs() {
   const handleRemoveRPC = useCallback(
     (chain: Chain) => {
       const chainId = chain.id;
-      const { success, newRpcsLength } = networkStore
+      const { success, newRpcsLength } = useNetworkStore
         .getState()
         .removeRpcFromChain(chainId, chain.rpcUrls.default.http[0]);
       if (!success) return;
@@ -165,7 +165,7 @@ export function SettingsNetworksRPCs() {
 
   const handleRemoveNetwork = useCallback(
     ({ chainId }: { chainId: number }) => {
-      const removed = networkStore.getState().removeCustomChain(chainId);
+      const removed = useNetworkStore.getState().removeCustomChain(chainId);
       if (removed) {
         removeRainbowChainAssets({ chainId });
         navigate(-1);

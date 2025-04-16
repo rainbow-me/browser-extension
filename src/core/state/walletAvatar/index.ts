@@ -1,6 +1,4 @@
-import create from 'zustand';
-
-import { createStore } from '~/core/state/internal/createStore';
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 
 export interface WalletAvatar {
   color?: string;
@@ -19,7 +17,7 @@ type WalletAvatarStore = {
   }) => void;
 };
 
-export const walletAvatarStore = createStore<WalletAvatarStore>(
+export const useWalletAvatarStore = createRainbowStore<WalletAvatarStore>(
   (set, get) => ({
     walletAvatar: {},
     setWalletAvatar: ({ addressOrName, walletAvatar }) => {
@@ -33,11 +31,7 @@ export const walletAvatarStore = createStore<WalletAvatarStore>(
     },
   }),
   {
-    persist: {
-      name: 'walletAvatarStore',
-      version: 0,
-    },
+    storageKey: 'walletAvatarStore',
+    version: 0,
   },
 );
-
-export const useWalletAvatarStore = create(walletAvatarStore);

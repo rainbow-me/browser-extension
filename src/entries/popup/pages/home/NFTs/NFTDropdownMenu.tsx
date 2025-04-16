@@ -46,9 +46,9 @@ export default function NFTDropdownMenu({
 }) {
   const { currentAddress: address } = useCurrentAddressStore();
   const nftUniqueId = nft?.uniqueId || '';
-  const hidden = useNftsStore.use.hidden();
-  const toggleHideNFT = useNftsStore.use.toggleHideNFT();
-  const setSelectedNft = useSelectedNftStore.use.setSelectedNft();
+  const hidden = useNftsStore((state) => state.hidden);
+  const toggleHideNFT = useNftsStore((state) => state.toggleHideNFT);
+  const setSelectedNft = useSelectedNftStore((state) => state.setSelectedNft);
   const navigate = useRainbowNavigate();
   const hiddenNftsForAddress = hidden[address] || {};
   const displayed = !hiddenNftsForAddress[nftUniqueId];

@@ -1,8 +1,5 @@
-import create from 'zustand';
-
 import { DappMetadata } from '~/core/resources/metadata/dapp';
-
-import { createStore } from '../internal/createStore';
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 
 export interface DappMetadataState {
   dappMetadata: Record<string, DappMetadata>;
@@ -16,7 +13,7 @@ export interface DappMetadataState {
   getDappMetadata: ({ host }: { host: string }) => DappMetadata | null;
 }
 
-export const dappMetadataStore = createStore<DappMetadataState>(
+export const useDappMetadataStore = createRainbowStore<DappMetadataState>(
   (set, get) => ({
     dappMetadata: {},
     setDappMetadata: ({ host, dappMetadata }) => {
@@ -46,11 +43,7 @@ export const dappMetadataStore = createStore<DappMetadataState>(
     },
   }),
   {
-    persist: {
-      name: 'dappMetadata',
-      version: 0,
-    },
+    storageKey: 'dappMetadata',
+    version: 0,
   },
 );
-
-export const useDappMetadataStore = create(dappMetadataStore);

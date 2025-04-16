@@ -1,6 +1,4 @@
-import create from 'zustand';
-
-import { createStore } from '~/core/state/internal/createStore';
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { getBrowser } from '~/entries/popup/hooks/useBrowser';
 
 export interface AnalyticsDisabledState {
@@ -8,18 +6,15 @@ export interface AnalyticsDisabledState {
   setAnalyticsDisabled: (analyticsDisabled: boolean) => void;
 }
 
-export const analyticsDisabledStore = createStore<AnalyticsDisabledState>(
-  (set) => ({
-    analyticsDisabled: getBrowser() === 'Firefox',
-    setAnalyticsDisabled: (newanalyticsDisabled) =>
-      set({ analyticsDisabled: newanalyticsDisabled }),
-  }),
-  {
-    persist: {
-      name: 'analyticsDisabled',
+export const useAnalyticsDisabledStore =
+  createRainbowStore<AnalyticsDisabledState>(
+    (set) => ({
+      analyticsDisabled: getBrowser() === 'Firefox',
+      setAnalyticsDisabled: (newanalyticsDisabled) =>
+        set({ analyticsDisabled: newanalyticsDisabled }),
+    }),
+    {
+      storageKey: 'analyticsDisabled',
       version: 1,
     },
-  },
-);
-
-export const useAnalyticsDisabledStore = create(analyticsDisabledStore);
+  );

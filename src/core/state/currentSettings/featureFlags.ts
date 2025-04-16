@@ -1,6 +1,4 @@
-import create from 'zustand';
-
-import { createStore } from '~/core/state/internal/createStore';
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 
 export enum featureFlagTypes {
   full_watching_wallets = 'full_watching_wallets',
@@ -16,7 +14,7 @@ export interface FeatureFlagsStore {
   setFeatureFlag: (key: FeatureFlagTypes, value: boolean) => void;
 }
 
-export const featureFlagsStore = createStore<FeatureFlagsStore>(
+export const useFeatureFlagsStore = createRainbowStore<FeatureFlagsStore>(
   (set, get) => ({
     featureFlags: {
       full_watching_wallets: false,
@@ -35,22 +33,18 @@ export const featureFlagsStore = createStore<FeatureFlagsStore>(
     },
   }),
   {
-    persist: {
-      name: 'featureFlagsStore',
-      version: 10,
-      merge(_persistedState, currentState) {
-        const persistedState = _persistedState as FeatureFlagsStore; // fair to assume no one is gonna mess with this in inspect element
-        return {
-          ...currentState,
-          ...persistedState,
-          featureFlags: {
-            ...currentState.featureFlags,
-            ...persistedState.featureFlags,
-          },
-        };
-      },
+    storageKey: 'featureFlagsStore',
+    version: 10,
+    merge(_persistedState, currentState) {
+      const persistedState = _persistedState as FeatureFlagsStore; // fair to assume no one is gonna mess with this in inspect element
+      return {
+        ...currentState,
+        ...persistedState,
+        featureFlags: {
+          ...currentState.featureFlags,
+          ...persistedState.featureFlags,
+        },
+      };
     },
   },
 );
-
-export const useFeatureFlagsStore = create(featureFlagsStore);

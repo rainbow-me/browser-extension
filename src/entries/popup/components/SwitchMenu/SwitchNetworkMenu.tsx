@@ -3,7 +3,7 @@ import { Chain } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 import {
   Box,
@@ -67,7 +67,7 @@ export const SwitchNetworkMenuSelector = ({
 }) => {
   const { trackShortcut } = useKeyboardAnalytics();
   const { chains: userChains } = useUserChains();
-  const supportedSwapChainIds = networkStore((state) =>
+  const supportedSwapChainIds = useNetworkStore((state) =>
     state.getSupportedSwapChainIds(),
   );
 

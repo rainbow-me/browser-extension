@@ -1,8 +1,6 @@
 import { Address } from 'viem';
-import { create } from 'zustand';
 
-import { createStore } from '../internal/createStore';
-import { withSelectors } from '../internal/withSelectors';
+import { createRainbowStore } from '../internal/createRainbowStore';
 
 export interface AppConnectionWalletSwitcherStore {
   nudgeSheetEnabled: boolean;
@@ -24,8 +22,8 @@ export interface AppConnectionWalletSwitcherStore {
   disableNudgeSheet: () => void;
 }
 
-export const appConnectionWalletSwitcherStore =
-  createStore<AppConnectionWalletSwitcherStore>(
+export const useAppConnectionWalletSwitcherStore =
+  createRainbowStore<AppConnectionWalletSwitcherStore>(
     (set, get) => ({
       nudgeSheetEnabled: true,
       nudgeSheetInteractionsByAddressByApp: {},
@@ -72,13 +70,7 @@ export const appConnectionWalletSwitcherStore =
       },
     }),
     {
-      persist: {
-        name: 'appConnectionWalletSwitcherStore',
-        version: 1,
-      },
+      storageKey: `appConnectionWalletSwitcherStore`,
+      version: 1,
     },
   );
-
-export const useAppConnectionWalletSwitcherStore = withSelectors(
-  create(appConnectionWalletSwitcherStore),
-);

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 import { isCustomChain } from '~/core/utils/chains';
 import { sortNetworks } from '~/core/utils/userChains';
@@ -12,14 +12,14 @@ const isHardhatChain = (chainId: ChainId) =>
   chainId === ChainId.hardhat || chainId === ChainId.hardhatOptimism;
 
 export const useUserChains = () => {
-  const { enabledChainIds, chainOrder } = networkStore((state) => ({
+  const { enabledChainIds, chainOrder } = useNetworkStore((state) => ({
     enabledChainIds: state.enabledChainIds,
     chainOrder: state.chainOrder,
   }));
 
   const { testnetMode } = useTestnetModeStore();
 
-  const allTransformedChainsMap = networkStore((state) =>
+  const allTransformedChainsMap = useNetworkStore((state) =>
     state.getAllChains(true),
   );
   const allTransformedChains = useMemo(
@@ -27,7 +27,7 @@ export const useUserChains = () => {
     [allTransformedChainsMap],
   );
 
-  const chainIdsByMainnetId = networkStore((state) =>
+  const chainIdsByMainnetId = useNetworkStore((state) =>
     state.getBackendChainIdsByMainnetId(),
   );
 
