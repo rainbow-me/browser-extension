@@ -50,6 +50,7 @@ export const tabMessenger = createMessenger({
     typeof chrome !== 'undefined' && chrome.runtime?.id && chrome.tabs,
   ),
   name: 'tabMessenger',
+  _listeners: {},
   async send<TPayload, TResponse>(
     topic: string,
     payload: TPayload,
@@ -82,6 +83,13 @@ export const tabMessenger = createMessenger({
     topic: string,
     callback: CallbackFunction<TPayload, TResponse>,
   ) {
+    if (this._listeners[topic]) {
+      this._listeners[topic].forEach((listener) => {
+        chrome.runtime.onMessage.removeListener(listener);
+      });
+      this._listeners[topic] = [];
+    }
+
     const listener = async (
       message: SendMessage<TPayload>,
       sender: chrome.runtime.MessageSender,
@@ -128,7 +136,16 @@ export const tabMessenger = createMessenger({
       sendResponse({});
       return true;
     };
+
     chrome.runtime.onMessage?.addListener(listener);
-    return () => chrome.runtime.onMessage?.removeListener(listener);
+    this._listeners[topic].push(listener);
+
+    return () => {
+      chrome.runtime.onMessage?.removeListener(listener);
+      const index = this._listeners[topic].indexOf(listener);
+      if (index > -1) {
+        this._listeners[topic].splice(index, 1);
+      }
+    };
   },
 });
