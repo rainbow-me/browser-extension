@@ -23,6 +23,7 @@ const messenger = tabMessenger.available ? tabMessenger : windowMessenger;
 export const bridgeMessenger = createMessenger({
   available: messenger.available,
   name: 'bridgeMessenger',
+  _listeners: {}, // NOTE: Not used for this proxy messenger, but internally used by tab and window messengers
   async send(topic, payload, { id } = {}) {
     return messenger.send(topic, payload, { id });
   },

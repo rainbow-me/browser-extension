@@ -5,7 +5,18 @@ export const LocalStorage = {
     await chrome?.storage?.local?.clear();
   },
   async set<TValue = unknown>(key: string, value: TValue) {
-    await chrome?.storage?.local?.set({ [key]: value });
+    try {
+      await chrome?.storage?.local?.set({ [key]: value });
+    } catch (e) {
+      const chromeError = chrome.runtime.lastError?.message;
+      logger.error(new RainbowError('LocalStorage write error'), {
+        message:
+          e instanceof Error
+            ? e.message
+            : `Unknown error: ${JSON.stringify(e)}`,
+        extra: { chromeError },
+      });
+    }
   },
   async get<TValue = unknown>(key: string) {
     const result = await chrome?.storage?.local?.get(key);

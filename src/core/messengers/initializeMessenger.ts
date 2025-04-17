@@ -30,5 +30,16 @@ export function initializeMessenger({ connect }: InitializeMessengerArgs) {
     throw new Error(
       `No messenger found for connection ${source} <-> ${connect}.`,
     );
-  return messengersForConnection[connection];
+
+  const messenger = messengersForConnection[connection];
+
+  if (typeof window !== 'undefined') {
+    window.addEventListener('pageshow', (event) => {
+      if (event.persisted) {
+        Object.assign(messenger, messengersForConnection[connection]);
+      }
+    });
+  }
+
+  return messenger;
 }

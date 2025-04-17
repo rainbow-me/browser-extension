@@ -25,6 +25,7 @@ import { isValidSend } from './isValidSend';
 export const windowMessenger = createMessenger({
   available: typeof window !== 'undefined',
   name: 'windowMessenger',
+  _listeners: {},
   async send(topic, payload, { id } = {}) {
     // Since the window messenger cannot reply asynchronously, we must include the direction in our message ('> {topic}')...
     window.postMessage({ topic: `> ${topic}`, payload, id }, '*');
@@ -47,6 +48,15 @@ export const windowMessenger = createMessenger({
     topic: string,
     callback: CallbackFunction<TPayload, TResponse>,
   ) {
+    if (this._listeners[topic]) {
+      this._listeners[topic].forEach((listener) => {
+        window.removeEventListener('message', listener);
+      });
+      this._listeners[topic] = [];
+    } else {
+      this._listeners[topic] = [];
+    }
+
     const listener = async (event: MessageEvent<SendMessage<TPayload>>) => {
       if (!isValidSend({ message: event.data, topic })) return;
 
@@ -72,7 +82,16 @@ export const windowMessenger = createMessenger({
         id: event.data.id,
       });
     };
+
     window.addEventListener('message', listener, false);
-    return () => window.removeEventListener('message', listener);
+    this._listeners[topic].push(listener);
+
+    return () => {
+      window.removeEventListener('message', listener);
+      const index = this._listeners[topic].indexOf(listener);
+      if (index > -1) {
+        this._listeners[topic].splice(index, 1);
+      }
+    };
   },
 });
