@@ -88,6 +88,8 @@ export const tabMessenger = createMessenger({
         chrome.runtime.onMessage.removeListener(listener);
       });
       this._listeners[topic] = [];
+    } else {
+      this._listeners[topic] = [];
     }
 
     const listener = async (
