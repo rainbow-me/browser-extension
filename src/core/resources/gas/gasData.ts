@@ -1,4 +1,4 @@
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { getDefaultPollingInterval } from '~/core/state/networks/utils';
 import { ChainId } from '~/core/types/chains';
 
@@ -6,7 +6,7 @@ import { useMeteorology } from './meteorology';
 import { useProviderGas } from './providerGas';
 
 export const useGasData = ({ chainId }: { chainId: ChainId }) => {
-  const meteorologySupportedChainIds = networkStore((state) =>
+  const meteorologySupportedChainIds = useNetworkStore((state) =>
     state.getMeteorologySupportedChainIds(),
   );
   const meteorologySupportsChainId =

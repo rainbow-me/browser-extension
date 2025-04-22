@@ -1,6 +1,4 @@
-import create from 'zustand';
-
-import { createStore } from '~/core/state/internal/createStore';
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { AutoLockTimerOption } from '~/core/types/settings';
 
 export interface AutoLockTimerState {
@@ -8,18 +6,14 @@ export interface AutoLockTimerState {
   setAutoLockTimer: (autoLockTimer: AutoLockTimerOption) => void;
 }
 
-export const autoLockTimerStore = createStore<AutoLockTimerState>(
+export const useAutoLockTimerStore = createRainbowStore<AutoLockTimerState>(
   (set) => ({
     autoLockTimer: 'none',
     setAutoLockTimer: (newAutoLockTimer) =>
       set({ autoLockTimer: newAutoLockTimer }),
   }),
   {
-    persist: {
-      name: 'autoLockTimer',
-      version: 0,
-    },
+    storageKey: 'autoLockTimer',
+    version: 0,
   },
 );
-
-export const useAutoLockTimerStore = create(autoLockTimerStore);

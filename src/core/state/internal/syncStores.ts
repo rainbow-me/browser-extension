@@ -4,8 +4,8 @@ import { LocalStorage } from '~/core/storage';
 import { RainbowError, logger } from '~/logger';
 
 import * as stores from '../index';
-import { networksStoreMigrationStore } from '../networks/migration';
-import { networkStore } from '../networks/networks';
+import { useNetworksStoreMigrationStore } from '../networks/migration';
+import { useNetworkStore } from '../networks/networks';
 import { NetworkState } from '../networks/types';
 
 import {
@@ -14,35 +14,47 @@ import {
 } from './createRainbowStore';
 import { StoreWithPersist } from './createStore';
 
-async function syncStore({ store }: { store: StoreWithPersist<unknown> }) {
-  if (!store.persist) return;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isStoreWithPersist(store: any): store is StoreWithPersist<unknown> {
+  return (
+    store &&
+    typeof store === 'function' &&
+    'persist' in store &&
+    typeof store.persist === 'object' &&
+    store.persist !== null &&
+    'getOptions' in store.persist &&
+    typeof store.persist.getOptions === 'function' &&
+    'rehydrate' in store.persist &&
+    typeof store.persist.rehydrate === 'function'
+  );
+}
 
+async function syncStore({ store }: { store: StoreWithPersist<unknown> }) {
   const persistOptions = store.persist.getOptions();
-  const storageName = persistOptions.name || '';
+  const storageName = persistOptions.name;
 
   const listener = async (changedStore: StoreWithPersist<unknown>) => {
+    if (!storageName) return;
+
     if (changedStore === undefined) {
-      // Retrieve the default state from the store initializer.
-      const state = store.initializer(
-        () => undefined,
-        () => null,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        {} as any,
-      );
+      const state = store.getInitialState();
       const version = persistOptions.version;
-      const newStore = persistOptions.serialize?.({ state, version });
-      await LocalStorage.set(storageName, newStore);
+      const serializedState = persistOptions?.serialize?.({ state, version });
+      await LocalStorage.set(storageName, serializedState);
     }
     store.persist.rehydrate();
   };
 
-  LocalStorage.listen(storageName, listener);
+  if (storageName) {
+    LocalStorage.listen(storageName, listener);
+  }
 }
 
 export function syncStores() {
   Object.values(stores).forEach((store) => {
-    if (typeof store === 'function') return;
-    if (store.persist) syncStore({ store: store as StoreWithPersist<unknown> });
+    if (isStoreWithPersist(store)) {
+      syncStore({ store });
+    }
   });
 }
 
@@ -79,7 +91,7 @@ export function syncNetworksStore(context: 'popup' | 'background') {
 
       // Update last synced state before setting state to prevent loops
       lastSyncedState = state;
-      networkStore.setState(deserializedState);
+      useNetworkStore.setState(deserializedState);
 
       // For popup: after receiving first sync from background, setup subscription
       if (context === 'popup' && !hasReceivedFirstSync) {
@@ -87,7 +99,7 @@ export function syncNetworksStore(context: 'popup' | 'background') {
           'popup: received first sync from background, now setting up subscription',
         );
         hasReceivedFirstSync = true;
-        networkStore.subscribe(handleStoreUpdate);
+        useNetworkStore.subscribe(handleStoreUpdate);
       }
     } catch (error) {
       logger.error(
@@ -98,7 +110,7 @@ export function syncNetworksStore(context: 'popup' | 'background') {
     }
   };
 
-  // Common function to handle networkStore changes
+  // Common function to handle useNetworkStore changes
   const handleStoreUpdate = (state: NetworkState, prevState: NetworkState) => {
     if (isEqual(state, prevState)) return;
 
@@ -123,21 +135,21 @@ export function syncNetworksStore(context: 'popup' | 'background') {
   // Popup will wait for first sync from background before subscribing
   if (context === 'background') {
     const initialMigrationState =
-      networksStoreMigrationStore.getState().didCompleteNetworksMigration;
+      useNetworksStoreMigrationStore.getState().didCompleteNetworksMigration;
 
     if (initialMigrationState) {
       logger.debug(
         'background: migration already complete, subscribing to network store changes',
       );
-      networkStore.subscribe(handleStoreUpdate);
+      useNetworkStore.subscribe(handleStoreUpdate);
     } else {
       logger.debug('background: waiting for network migration to complete');
-      networksStoreMigrationStore.subscribe((state) => {
+      useNetworksStoreMigrationStore.subscribe((state) => {
         if (state.didCompleteNetworksMigration) {
           logger.debug(
             'background: migration complete, subscribing to network store changes',
           );
-          networkStore.subscribe(handleStoreUpdate);
+          useNetworkStore.subscribe(handleStoreUpdate);
         }
       });
     }

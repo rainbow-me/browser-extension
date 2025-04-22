@@ -8,7 +8,7 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 
 // ///////////////////////////////////////////////
@@ -89,7 +89,7 @@ type MeteorologyQueryKey = ReturnType<typeof meteorologyQueryKey>;
 async function meteorologyQueryFunction({
   queryKey: [{ chainId }],
 }: QueryFunctionArgs<typeof meteorologyQueryKey>) {
-  const network = networkStore.getState().getChainsName()[chainId];
+  const network = useNetworkStore.getState().getChainsName()[chainId];
   const parsedResponse = await meteorologyHttp.get(`/${network}`);
   const meteorologyData = parsedResponse.data as
     | MeteorologyResponse

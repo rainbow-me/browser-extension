@@ -47,7 +47,7 @@ export function useTokensShortcuts() {
   const containerRef = useContainerRef();
 
   const { pinned: pinnedStore, togglePinAsset } = usePinnedAssetStore();
-  const toggleHideAsset = useHiddenAssetStore.use.toggleHideAsset();
+  const toggleHideAsset = useHiddenAssetStore((state) => state.toggleHideAsset);
   const location = useLocation();
   const isHomeRoute = location.pathname === ROUTES.HOME;
 

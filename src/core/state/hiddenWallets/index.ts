@@ -1,7 +1,6 @@
 import { Address } from 'viem';
-import create from 'zustand';
 
-import { createStore } from '../internal/createStore';
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 
 export interface HiddenWalletsStore {
   hiddenWallets: { [address: Address]: boolean };
@@ -9,7 +8,7 @@ export interface HiddenWalletsStore {
   unhideWallet: ({ address }: { address: Address }) => void;
 }
 
-export const hiddenWalletsStore = createStore<HiddenWalletsStore>(
+export const useHiddenWalletsStore = createRainbowStore<HiddenWalletsStore>(
   (set, get) => ({
     hiddenWallets: {},
     hideWallet: ({ address }) => {
@@ -27,11 +26,7 @@ export const hiddenWalletsStore = createStore<HiddenWalletsStore>(
     },
   }),
   {
-    persist: {
-      name: 'hiddenWallets',
-      version: 0,
-    },
+    storageKey: 'hiddenWallets',
+    version: 0,
   },
 );
-
-export const useHiddenWalletsStore = create(hiddenWalletsStore);

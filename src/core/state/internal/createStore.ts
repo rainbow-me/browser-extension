@@ -1,5 +1,5 @@
-import { PersistOptions, persist } from 'zustand/middleware';
-import create, { Mutate, StoreApi } from 'zustand/vanilla';
+import { PersistOptions, createJSONStorage, persist } from 'zustand/middleware';
+import { Mutate, StoreApi, createStore as create } from 'zustand/vanilla';
 
 import { noopStorage, persistStorage } from './persistStorage';
 
@@ -11,6 +11,13 @@ export type StoreWithPersist<TState> = Mutate<
   initializer: Initializer<TState>;
 };
 
+/**
+ * @deprecated Use `createRainbowStore` instead.
+ * Creates a store with persistence.
+ * @param initializer - The initializer function for the store.
+ * @param persistOptions - The persistence options for the store.
+ * @returns A store with persistence.
+ */
 export function createStore<TState>(
   initializer: Initializer<TState>,
   { persist: persistOptions }: { persist?: PersistOptions<TState> } = {},
@@ -21,7 +28,9 @@ export function createStore<TState>(
       persist(initializer, {
         ...persistOptions,
         name,
-        getStorage: () => (persistOptions ? persistStorage : noopStorage),
+        storage: createJSONStorage(() =>
+          persistOptions ? persistStorage : noopStorage,
+        ),
       }),
     ),
     { initializer },

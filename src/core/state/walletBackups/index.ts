@@ -1,26 +1,20 @@
 import { Address } from 'viem';
-import create from 'zustand';
 
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
-
-import { createStore } from '../internal/createStore';
-import { withSelectors } from '../internal/withSelectors';
 
 export interface WalletBackupReminderStore {
   reminded: boolean;
   setReminded: () => void;
 }
 
-export const walletBackupReminderStore = createStore<WalletBackupReminderStore>(
-  (set) => ({
+export const useWalletBackupReminderStore =
+  createRainbowStore<WalletBackupReminderStore>((set) => ({
     reminded: false,
     setReminded: () => {
       set({ reminded: true });
     },
-  }),
-);
-
-export const useWalletBackupReminderStore = create(walletBackupReminderStore);
+  }));
 
 export interface WalletBackupsStore {
   needsInitialization: boolean;
@@ -40,7 +34,7 @@ export interface WalletBackupsStore {
   clear: () => void;
 }
 
-export const walletBackupsStore = createStore<WalletBackupsStore>(
+export const useWalletBackupsStore = createRainbowStore<WalletBackupsStore>(
   (set, get) => ({
     needsInitialization: true,
     walletBackups: {},
@@ -95,11 +89,7 @@ export const walletBackupsStore = createStore<WalletBackupsStore>(
     },
   }),
   {
-    persist: {
-      name: 'walletBackups',
-      version: 0,
-    },
+    storageKey: 'walletBackups',
+    version: 0,
   },
 );
-
-export const useWalletBackupsStore = withSelectors(create(walletBackupsStore));

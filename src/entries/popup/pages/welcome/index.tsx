@@ -17,8 +17,9 @@ export function Welcome() {
   const [showOnboardBeforeConnectSheet, setShowOnboardBeforeConnectSheet] =
     useState(!!pendingRequests.length);
   const headerControls = useAnimationControls();
-  const setNeedsInitialization =
-    useWalletBackupsStore.use.setNeedsInitialization();
+  const setNeedsInitialization = useWalletBackupsStore(
+    (state) => state.setNeedsInitialization,
+  );
 
   useEffect(() => {
     setNeedsInitialization(false);

@@ -41,7 +41,9 @@ const WalletListHW = () => {
   const { state } = useLocation();
   const [accountsIgnored, setAccountsIgnored] = useState<Address[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const setCurrentAddress = useCurrentAddressStore.use.setCurrentAddress();
+  const setCurrentAddress = useCurrentAddressStore(
+    (state) => state.setCurrentAddress,
+  );
 
   const [accountsToImport, setAccountsToImport] = useState<
     { address: Address; index: number; hdPath?: string }[]

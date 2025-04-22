@@ -72,12 +72,12 @@ export const CommandKList = React.forwardRef<
   },
   ref,
 ) {
-  const { isCommandKVisible } = useCommandKStatus();
-  const { currentAddress: address } = useCurrentAddressStore();
-
-  const hiddenAssets = useHiddenAssetStore.use.hidden();
-
-  const hiddenNfts = useNftsStore.use.hidden();
+  const isCommandKVisible = useCommandKStatus(
+    (state) => state.isCommandKVisible,
+  );
+  const address = useCurrentAddressStore((state) => state.currentAddress);
+  const hiddenAssets = useHiddenAssetStore((state) => state.hidden);
+  const hiddenNfts = useNftsStore((state) => state.hidden);
   const hiddenNftsForAddress = useMemo(
     () => hiddenNfts[address] || {},
     [address, hiddenNfts],

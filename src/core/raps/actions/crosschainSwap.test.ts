@@ -8,7 +8,7 @@ import {
 import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test, vi } from 'vitest';
 
-import { connectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ChainId } from '~/core/types/chains';
 import { updateWagmiConfig } from '~/core/wagmi';
 import { getProvider } from '~/core/wagmi/clientToProvider';
@@ -41,7 +41,7 @@ vi.mock('./crosschainSwap', async () => {
 });
 
 beforeAll(async () => {
-  connectedToHardhatStore.setState({ connectedToHardhat: true });
+  useConnectedToHardhatStore.setState({ connectedToHardhat: true });
   updateWagmiConfig([mainnet]);
   await delay(3000);
   crosschainQuote = await getCrosschainQuote({

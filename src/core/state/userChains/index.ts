@@ -1,9 +1,6 @@
-import create from 'zustand';
-
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { ChainId } from '~/core/types/chains';
 
-import { createStore } from '../internal/createStore';
-import { withSelectors } from '../internal/withSelectors';
 import { runNetworksMigrationIfNeeded } from '../networks/runNetworksMigrationIfNeeded';
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
@@ -40,9 +37,9 @@ export interface UserChainsState {
 }
 
 /**
- * @deprecated use `networkStore` instead
+ * @deprecated use `useNetworkStore` instead
  */
-export const userChainsStore = createStore<UserChainsState>(
+export const useUserChainsStore = createRainbowStore<UserChainsState>(
   (set, get) => ({
     userChains: {},
     userChainsOrder: [],
@@ -102,21 +99,14 @@ export const userChainsStore = createStore<UserChainsState>(
     },
   }),
   {
-    persist: {
-      name: 'userChains',
-      version: 8,
-      onRehydrateStorage: () => {
-        return (_, error) => {
-          if (!error && !IS_TESTING) {
-            runNetworksMigrationIfNeeded('userChains');
-          }
-        };
-      },
+    storageKey: 'userChains',
+    version: 8,
+    onRehydrateStorage: () => {
+      return (_, error) => {
+        if (!error && !IS_TESTING) {
+          runNetworksMigrationIfNeeded('userChains');
+        }
+      };
     },
   },
 );
-
-/**
- * @deprecated use `networkStore` instead
- */
-export const useUserChainsStore = withSelectors(create(userChainsStore));

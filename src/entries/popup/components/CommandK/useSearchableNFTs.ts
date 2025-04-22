@@ -33,7 +33,7 @@ export const useSearchableNFTs = () => {
   const { testnetMode } = useTestnetModeStore();
   const { chains: userChains } = useUserChains();
 
-  const hiddenNfts = useNftsStore.use.hidden();
+  const hiddenNfts = useNftsStore((state) => state.hidden);
   const hiddenNftsForAddress = useMemo(
     () => hiddenNfts[address] || {},
     [address, hiddenNfts],

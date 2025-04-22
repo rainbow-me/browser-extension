@@ -21,7 +21,7 @@ import { useHiddenAssetStore } from '~/core/state/hiddenAssets/hiddenAssets';
 import { useNftsStore } from '~/core/state/nfts';
 import { usePinnedAssetStore } from '~/core/state/pinnedAssets';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
-import { useSavedEnsNames } from '~/core/state/savedEnsNames';
+import { useSavedEnsNamesStore } from '~/core/state/savedEnsNames';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedSearchAsset, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -750,10 +750,10 @@ export const useCommands = (
   }, [navigateToSwaps]);
 
   const { isWatchingWallet } = useWallets();
-  const save = useSavedEnsNames.use.save();
-  const toggleHideNFTStore = useNftsStore.use.toggleHideNFT();
+  const save = useSavedEnsNamesStore((state) => state.save);
+  const toggleHideNFTStore = useNftsStore((state) => state.toggleHideNFT);
 
-  const hiddenNfts = useNftsStore.use.hidden();
+  const hiddenNfts = useNftsStore((state) => state.hidden);
   const hiddenNftsForAddress = useMemo(
     () => hiddenNfts[address] || {},
     [address, hiddenNfts],
@@ -775,8 +775,12 @@ export const useCommands = (
   });
   const { searchableNFTs } = useSearchableNFTs();
   const { searchableWallets } = useSearchableWallets(currentPage);
-  const setSelectedToken = useSelectedTokenStore.use.setSelectedToken();
-  const saveSwapTokenToBuy = usePopupInstanceStore.use.saveSwapTokenToBuy();
+  const setSelectedToken = useSelectedTokenStore(
+    (state) => state.setSelectedToken,
+  );
+  const saveSwapTokenToBuy = usePopupInstanceStore(
+    (state) => state.saveSwapTokenToBuy,
+  );
   const { searchableContacts } = useSearchableContacts({
     showLabel: !!searchQuery && currentPage === PAGES.HOME,
   });
@@ -797,8 +801,8 @@ export const useCommands = (
   const { type, vendor } = useCurrentWalletTypeAndVendor();
   const { pinned: pinnedStore, togglePinAsset } = usePinnedAssetStore();
 
-  const toggleHideAsset = useHiddenAssetStore.use.toggleHideAsset();
-  const hiddenAssetStore = useHiddenAssetStore.use.hidden();
+  const toggleHideAsset = useHiddenAssetStore((state) => state.toggleHideAsset);
+  const hiddenAssetStore = useHiddenAssetStore((state) => state.hidden);
 
   const isTokenHidden = useCallback(
     (token: TokenSearchItem) => {

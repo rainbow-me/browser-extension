@@ -12,12 +12,12 @@ import {
   consolidatedTransactionsQueryKey,
 } from '~/core/resources/transactions/consolidatedTransactions';
 import {
-  pendingTransactionsStore,
   useCurrentAddressStore,
   useCurrentCurrencyStore,
+  usePendingTransactionsStore,
 } from '~/core/state';
-import { networkStore } from '~/core/state/networks/networks';
-import { customNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
+import { useNetworkStore } from '~/core/state/networks/networks';
+import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
 import { ChainId } from '~/core/types/chains';
 import {
   RainbowTransaction,
@@ -34,7 +34,7 @@ type ConsolidatedTransactionsResult = QueryFunctionResult<
 >;
 
 const searchInLocalPendingTransactions = (userAddress: Address, hash: Hash) => {
-  const { pendingTransactions } = pendingTransactionsStore.getState();
+  const { pendingTransactions } = usePendingTransactionsStore.getState();
   const localPendingTx = pendingTransactions[userAddress]?.find(
     (tx) => tx.hash === hash,
   );
@@ -52,7 +52,7 @@ export const fetchTransaction = async ({
   currency: SupportedCurrencyKey;
   chainId: ChainId;
 }) => {
-  const supportedTransactionsChainIds = networkStore
+  const supportedTransactionsChainIds = useNetworkStore
     .getState()
     .getSupportedTransactionsChainIds();
   if (!supportedTransactionsChainIds.includes(chainId)) {
@@ -208,7 +208,7 @@ const findTransactionInCustomNetworkTransactionsStore = (
   { hash, chainId }: { hash: Hash; chainId: ChainId },
 ) => {
   const { getCustomNetworkTransactions } =
-    customNetworkTransactionsStore.getState();
+    useCustomNetworkTransactionsStore.getState();
   return getCustomNetworkTransactions({ address: account }).find(
     (tx) => tx.hash === hash && tx.chainId === chainId,
   );
@@ -223,7 +223,7 @@ export const useTransaction = ({
 }) => {
   const queryClient = useQueryClient();
 
-  const supportedTransactionsChainIds = networkStore((state) =>
+  const supportedTransactionsChainIds = useNetworkStore((state) =>
     state.getSupportedTransactionsChainIds(),
   );
   const { currentAddress: address } = useCurrentAddressStore();

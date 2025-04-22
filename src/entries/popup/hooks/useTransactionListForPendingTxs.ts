@@ -4,13 +4,12 @@ import { Address } from 'viem';
 import { userAssetsFetchQuery } from '~/core/resources/assets/userAssets';
 import { useConsolidatedTransactions } from '~/core/resources/transactions/consolidatedTransactions';
 import {
-  currentCurrencyStore,
-  pendingTransactionsStore,
   useCurrentAddressStore,
   useCurrentCurrencyStore,
+  usePendingTransactionsStore,
+  useStaleBalancesStore,
 } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
-import { staleBalancesStore } from '~/core/state/staleBalances';
 import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { getSupportedChains, useSupportedChains } from '~/core/utils/chains';
@@ -72,10 +71,10 @@ function watchForPendingTransactionsReportedByRainbowBackend({
   const {
     setPendingTransactions,
     pendingTransactions: storePendingTransactions,
-  } = pendingTransactionsStore.getState();
+  } = usePendingTransactionsStore.getState();
   const pendingTransactions = storePendingTransactions[currentAddress] || [];
-  const { addStaleBalance } = staleBalancesStore.getState();
-  const { currentCurrency } = currentCurrencyStore.getState();
+  const { addStaleBalance } = useStaleBalancesStore.getState();
+  const { currentCurrency } = useCurrentCurrencyStore.getState();
 
   const newlyConfirmedTransactions: RainbowTransaction[] = [];
   const updatedPendingTransactions: RainbowTransaction[] = [];

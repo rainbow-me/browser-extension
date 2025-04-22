@@ -8,6 +8,7 @@ import { i18n } from '~/core/languages';
 import { RAINBOW_LEARN_URL } from '~/core/references/links';
 import { useCurrentAddressStore } from '~/core/state';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import { toggleDegenMode, useDegenMode } from '~/core/state/degenMode';
 import { ChainId } from '~/core/types/chains';
 import {
   Bleed,
@@ -26,10 +27,6 @@ import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow
 import { Lens } from '~/design-system/components/Lens/Lens';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { TextStyles } from '~/design-system/styles/core.css';
-import {
-  toggleDegenMode,
-  useDegenMode,
-} from '~/entries/popup/hooks/swap/useSwapDegenMode';
 import { useTranslationContext } from '~/entries/popup/hooks/useTranslationContext';
 import { simulateClick } from '~/entries/popup/utils/simulateClick';
 

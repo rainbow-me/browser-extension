@@ -255,7 +255,7 @@ export function WalletSwitcher() {
 
   const isSearching = !!searchQuery;
 
-  const saveWalletOrder = useWalletOrderStore.use.saveWalletOrder();
+  const saveWalletOrder = useWalletOrderStore((state) => state.saveWalletOrder);
 
   const { filteredAndSortedAccounts, sortedAccounts } = useAccounts(
     ({ sortedAccounts }) => ({

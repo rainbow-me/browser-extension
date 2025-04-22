@@ -9,7 +9,7 @@ import {
 
 import { RainbowError, logger } from '~/logger';
 
-import { networkStore } from '../state/networks/networks';
+import { useNetworkStore } from '../state/networks/networks';
 import { ChainId } from '../types/chains';
 
 const firebaseConfig = {
@@ -59,7 +59,7 @@ const DEFAULT_CONFIG = {
   degen_mode: false,
   // SWAPS
   default_slippage_bips: Object.values(
-    networkStore.getState().getBackendSupportedChains(true),
+    useNetworkStore.getState().getBackendSupportedChains(true),
   ).reduce<Partial<Record<ChainId, number>>>((acc, chain) => {
     acc[chain.id] = defaultslippagInBips(chain.id);
     return acc;

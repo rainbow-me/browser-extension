@@ -2,17 +2,14 @@ import { useQuery } from '@tanstack/react-query';
 import makeColorMoreChill from 'make-color-more-chill';
 import Vibrant from 'node-vibrant/lib/bundle';
 
-import {
-  colorCacheStore,
-  useColorCacheStore,
-} from '~/core/state/dominantColor';
+import { useColorCacheStore } from '~/core/state';
 
 export const fetchDominantColor = async ({
   imageUrl,
 }: {
   imageUrl?: string | null;
 }) => {
-  const { colorCache, setColorCache } = colorCacheStore.getState();
+  const { colorCache, setColorCache } = useColorCacheStore.getState();
   if (!imageUrl) return null;
   if (colorCache[imageUrl]) {
     return colorCache[imageUrl];
@@ -24,7 +21,7 @@ export const fetchDominantColor = async ({
   return chillColor;
 };
 export function useDominantColor({ imageUrl }: { imageUrl?: string }) {
-  const { colorCache } = useColorCacheStore();
+  const colorCache = useColorCacheStore((state) => state.colorCache);
   return useQuery({
     queryKey: ['color', imageUrl],
     queryFn: async () => fetchDominantColor({ imageUrl }),

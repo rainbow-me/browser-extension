@@ -1,25 +1,20 @@
 import { Address } from 'viem';
-import create from 'zustand';
 
-import { createStore } from '~/core/state/internal/createStore';
-
-import { withSelectors } from '../internal/withSelectors';
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 
 interface PersistedAddressState {
   currentAddress: Address;
   setCurrentAddress: (address: Address) => void;
 }
 
-const persistedAddressStore = createStore<PersistedAddressState>(
+const usePersistedAddressStore = createRainbowStore<PersistedAddressState>(
   (set) => ({
     currentAddress: '' as Address,
     setCurrentAddress: (newAddress) => set({ currentAddress: newAddress }),
   }),
   {
-    persist: {
-      name: 'currentAddress',
-      version: 0,
-    },
+    storageKey: 'currentAddress',
+    version: 0,
   },
 );
 
@@ -28,25 +23,25 @@ interface RapidAddressState {
   setCurrentAddress: (address: Address) => void;
 }
 
-export const currentAddressStore = create<RapidAddressState>((set) => ({
-  currentAddress:
-    // Default to the persisted current address
-    persistedAddressStore.getState().currentAddress || ('' as Address),
-  setCurrentAddress: (newAddress) => {
-    if (newAddress !== persistedAddressStore.getState().currentAddress) {
-      set({ currentAddress: newAddress });
-      // Automatically persist in the background to the persisted store
-      persistedAddressStore.getState().setCurrentAddress(newAddress);
-    }
-  },
-}));
+export const useCurrentAddressStore = createRainbowStore<RapidAddressState>(
+  (set) => ({
+    currentAddress:
+      // Default to the persisted current address
+      usePersistedAddressStore.getState().currentAddress || ('' as Address),
+    setCurrentAddress: (newAddress) => {
+      if (newAddress !== usePersistedAddressStore.getState().currentAddress) {
+        set({ currentAddress: newAddress });
+        // Automatically persist in the background to the persisted store
+        usePersistedAddressStore.getState().setCurrentAddress(newAddress);
+      }
+    },
+  }),
+);
 
 // Synchronize currentAddress with persistedAddress once rehydrated
-persistedAddressStore.subscribe((state) => {
+usePersistedAddressStore.subscribe((state) => {
   // If persistedAddress changes and currentAddress is still the default, update it
-  if (currentAddressStore.getState().currentAddress === ('' as Address)) {
-    currentAddressStore.setState({ currentAddress: state.currentAddress });
+  if (useCurrentAddressStore.getState().currentAddress === ('' as Address)) {
+    useCurrentAddressStore.setState({ currentAddress: state.currentAddress });
   }
 });
-
-export const useCurrentAddressStore = withSelectors(currentAddressStore);

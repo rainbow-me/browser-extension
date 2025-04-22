@@ -6,7 +6,7 @@ import { Message, Transaction } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { createQueryKey } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
-import { currentCurrencyStore } from '~/core/state';
+import { useCurrentCurrencyStore } from '~/core/state';
 import { AddressOrEth, ParsedAsset } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
 import { parseAsset } from '~/core/utils/assets';
@@ -45,7 +45,7 @@ const parseSimulationAsset = (asset: SimulationAsset, chainId: ChainId) => {
         networks: {},
       },
     },
-    currency: currentCurrencyStore.getState().currentCurrency,
+    currency: useCurrentCurrencyStore.getState().currentCurrency,
   });
 };
 

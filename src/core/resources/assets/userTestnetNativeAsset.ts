@@ -9,7 +9,7 @@ import {
   createQueryKey,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
-import { networkStore } from '~/core/state/networks/networks';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { AddressOrEth, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
 import { fetchAssetBalanceViaProvider } from '~/core/utils/assets';
@@ -21,9 +21,9 @@ const USER_ASSETS_REFETCH_INTERVAL = 60000;
 export const getNativeAssetMock = ({ chainId }: { chainId: ChainId }) => {
   const chain = getChain({ chainId });
   const nativeAssetAddress =
-    networkStore.getState().getChainsNativeAsset()[chainId]?.address ||
+    useNetworkStore.getState().getChainsNativeAsset()[chainId]?.address ||
     ETH_ADDRESS;
-  const chainLabel = networkStore.getState().getChainsLabel()[chainId];
+  const chainLabel = useNetworkStore.getState().getChainsLabel()[chainId];
   const nativeAssetMock = {
     address: nativeAssetAddress as AddressOrEth,
     balance: { amount: '', display: '' },

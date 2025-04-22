@@ -3,12 +3,12 @@ import {
   fetchExternalToken,
   useExternalToken,
 } from '~/core/resources/assets/externalToken';
-import { currentCurrencyStore, useCurrentCurrencyStore } from '~/core/state';
-import { networkStore } from '~/core/state/networks/networks';
+import { useCurrentCurrencyStore } from '~/core/state';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 
 export const useNativeAsset = ({ chainId }: { chainId: ChainId }) => {
-  const nativeAssetAddress = networkStore(
+  const nativeAssetAddress = useNetworkStore(
     (state) => state.getChainsNativeAsset()[chainId]?.address || ETH_ADDRESS,
   );
   const { currentCurrency } = useCurrentCurrencyStore();
@@ -23,9 +23,9 @@ export const useNativeAsset = ({ chainId }: { chainId: ChainId }) => {
 };
 
 export const fetchNativeAsset = async ({ chainId }: { chainId: ChainId }) => {
-  const currentCurrency = currentCurrencyStore.getState().currentCurrency;
+  const currentCurrency = useCurrentCurrencyStore.getState().currentCurrency;
   const nativeAssetAddress =
-    networkStore.getState().getChainsNativeAsset()[chainId]?.address ||
+    useNetworkStore.getState().getChainsNativeAsset()[chainId]?.address ||
     ETH_ADDRESS;
   return await fetchExternalToken({
     address: nativeAssetAddress,

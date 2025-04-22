@@ -1,5 +1,4 @@
-import create from 'zustand';
-
+import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import {
   GasFeeLegacyParams,
   GasFeeLegacyParamsBySpeed,
@@ -7,9 +6,6 @@ import {
   GasFeeParamsBySpeed,
   GasSpeed,
 } from '~/core/types/gas';
-
-import { createStore } from '../internal/createStore';
-import { withSelectors } from '../internal/withSelectors';
 
 export interface GasStore {
   selectedGas: GasFeeParams | GasFeeLegacyParams;
@@ -30,7 +26,7 @@ export interface GasStore {
   clearCustomGasModified: () => void;
 }
 
-export const gasStore = createStore<GasStore>(
+export const useGasStore = createRainbowStore<GasStore>(
   (set, get) => ({
     selectedGas: {} as GasFeeParams | GasFeeLegacyParams,
     gasFeeParamsBySpeed: {} as GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed,
@@ -70,11 +66,7 @@ export const gasStore = createStore<GasStore>(
     },
   }),
   {
-    persist: {
-      name: 'gas',
-      version: 0,
-    },
+    storageKey: 'gas',
+    version: 0,
   },
 );
-
-export const useGasStore = withSelectors(create(gasStore));
