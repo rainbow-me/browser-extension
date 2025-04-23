@@ -18,14 +18,30 @@ export const getSigningRequestDisplayDetails = (
   try {
     switch (payload.method) {
       case 'personal_sign': {
-        let message = payload?.params?.[0] as string;
-        let address = payload?.params?.[1] as Address;
-        // While this is technically incorrect
-        // we'll support anyways for compatibility purposes
-        // since other wallets do it
-        if (isAddress(message)) {
-          message = payload?.params?.[1] as string;
-          address = payload?.params?.[0] as Address;
+        // Get both parameters from the request
+        const param0 = payload?.params?.[0] as string;
+        const param1 = payload?.params?.[1] as string;
+
+        let message, address;
+
+        // BUGFIX: Previous implementation used isAddress() which can incorrectly
+        // identify hex-encoded messages as addresses when they happen to match
+        // the address format (starting with 0x and passing hex validation).
+        //
+        // Instead, we now use stricter validation for Ethereum addresses
+        // and only swap parameters if param0 is definitely an address
+        // and param1 is not a hex string.
+        if (
+          param0?.startsWith('0x') &&
+          param0?.length === 42 &&
+          /^0x[0-9a-fA-F]{40}$/.test(param0) &&
+          !param1?.startsWith('0x')
+        ) {
+          message = param1;
+          address = param0;
+        } else {
+          message = param0;
+          address = param1;
         }
 
         try {
