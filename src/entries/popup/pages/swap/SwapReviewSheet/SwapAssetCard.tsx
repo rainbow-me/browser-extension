@@ -50,8 +50,6 @@ export const SwapAssetCard = ({
     [asset.decimals, asset.price?.value, assetAmount, currentCurrency],
   );
 
-  // 🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹
-
   return (
     <AccentColorProvider
       color={asset?.colors?.primary || asset?.colors?.fallback}
