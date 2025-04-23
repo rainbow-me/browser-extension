@@ -24,12 +24,7 @@ export const getSigningRequestDisplayDetails = (
 
         let message, address;
 
-        // BUGFIX: Previous implementation used isAddress() which can incorrectly
-        // identify hex-encoded messages as addresses when they happen to match
-        // the address format (starting with 0x and passing hex validation).
-        //
-        // Instead, we now use stricter validation for Ethereum addresses
-        // and only swap parameters if param0 is definitely an address
+        // Only swap parameters if param0 is definitely an address
         // and param1 is not a hex string.
         if (
           param0?.startsWith('0x') &&
