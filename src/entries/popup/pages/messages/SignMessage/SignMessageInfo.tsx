@@ -40,6 +40,15 @@ function Overview({
   status: 'pending' | 'error' | 'success';
   error: SimulationError | null;
 }) {
+  function formatJSON(jsonString: string | undefined) {
+    try {
+      if (jsonString === undefined) return jsonString;
+      const parsed = JSON.parse(jsonString);
+      return JSON.stringify(parsed, null, 2);
+    } catch (e) {
+      return jsonString;
+    }
+  }
   return (
     <Stack space="16px" paddingTop="14px" marginTop="-14px">
       {typedData && (
@@ -66,7 +75,12 @@ function Overview({
           </Text>
         </Inline>
         <Box
-          style={{ overflowX: 'scroll', overflowY: 'hidden' }}
+          style={{
+            overflowX: 'auto',
+            overflowY: 'hidden',
+            wordBreak: 'break-all',
+            overflowWrap: 'break-word',
+          }}
           paddingHorizontal="20px"
           marginHorizontal="-20px"
           paddingVertical="8px" // this is to not clip the ending of the message
@@ -80,7 +94,7 @@ function Overview({
             color="labelTertiary"
             whiteSpace="pre-wrap"
           >
-            {message}
+            {formatJSON(message)}
           </Text>
         </Box>
       </Stack>
