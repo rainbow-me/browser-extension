@@ -117,7 +117,7 @@ export const trackHiddenAsset = (
   totalHidden: number,
 ) => {
   analytics.track(
-    isHidden ? analytics.event.assetHidden : analytics.event.assetUnhidden,
+    isHidden ? analytics.event.tokenHidden : analytics.event.tokenUnhidden,
     {
       token: { address, chainId },
       hiddenAssets: { totalHidden },
