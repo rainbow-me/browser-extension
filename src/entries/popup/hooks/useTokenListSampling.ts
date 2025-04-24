@@ -2,6 +2,7 @@ import _ from 'lodash';
 import { useEffect, useMemo, useRef } from 'react';
 
 import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { isCustomChain } from '~/core/utils/chains';
 
@@ -46,7 +47,7 @@ export function useTokenListSampling(
       !_.isEqual(prevAnalyticsRef.current, analyticsCategories)
     ) {
       prevAnalyticsRef.current = analyticsCategories;
-      analytics.track(analytics.event.samplesTokenList, analyticsCategories);
+      analytics.track(event.samplesTokenList, analyticsCategories);
     }
   }, [analyticsCategories, screen]);
 }
