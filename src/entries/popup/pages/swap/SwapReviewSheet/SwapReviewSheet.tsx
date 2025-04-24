@@ -33,6 +33,7 @@ import {
   Stack,
   Symbol,
   Text,
+  TextOverflow,
 } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { AccentColorProvider } from '~/design-system/components/Box/ColorContext';
@@ -434,9 +435,11 @@ const SwapReviewSheetWithQuote = ({
                     label={t('swap.review.minimum_received')}
                     testId="swap-review-swapping-route"
                   />
-                  <Text size="14pt" weight="semibold" color="label">
-                    {minimumReceived}
-                  </Text>
+                  <Box style={{ maxWidth: '150px' }}>
+                    <TextOverflow size="14pt" weight="semibold" color="label">
+                      {minimumReceived}
+                    </TextOverflow>
+                  </Box>
                 </ReviewDetailsRow>
                 {!isWrapOrUnwrapEth && (
                   <ReviewDetailsRow testId="swapping-via">
@@ -593,14 +596,14 @@ const SwapReviewSheetWithQuote = ({
                         <Spinner size={16} color="label" />
                       </Box>
                     )}
-                    <Text
+                    <TextOverflow
                       testId="swap-review-confirmation-text"
                       color="label"
                       size="16pt"
                       weight="bold"
                     >
                       {buttonLabel}
-                    </Text>
+                    </TextOverflow>
                   </Button>
                 </Row>
               </Rows>
