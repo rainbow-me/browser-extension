@@ -87,6 +87,8 @@ export function useTokensShortcuts() {
         token: {
           address: _selectedToken.address,
           chainId: _selectedToken.chainId,
+          symbol: _selectedToken.symbol,
+          name: _selectedToken.name,
         },
         hiddenTokens: hiddenCount,
       });

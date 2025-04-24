@@ -110,13 +110,13 @@ export function TokenToBuyRow({
       if (isFavorite) {
         removeFavorite({ address, chainId });
         analytics.track(event.tokenUnfavorited, {
-          token: { address, chainId },
+          token: { address, chainId, symbol: asset.symbol, name: asset.name },
           favorites: favorites[chainId]?.length || 0,
         });
       } else {
         addFavorite({ address, chainId });
         analytics.track(event.tokenFavorited, {
-          token: { address, chainId },
+          token: { address, chainId, symbol: asset.symbol, name: asset.name },
           favorites: favorites[chainId]?.length || 0,
         });
       }

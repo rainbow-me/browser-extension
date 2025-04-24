@@ -1019,7 +1019,12 @@ export const useCommands = (
         (isHidden) => isHidden,
       ).length;
       analytics.track(isHidden ? event.tokenHidden : event.tokenUnhidden, {
-        token: { address: token.address, chainId: token.asset.chainId },
+        token: {
+          address: token.address,
+          chainId: token.asset.chainId,
+          symbol: token.tokenSymbol,
+          name: token.asset.name,
+        },
         hiddenTokens: hiddenCount,
       });
     },

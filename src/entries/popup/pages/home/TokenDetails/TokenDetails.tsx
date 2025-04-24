@@ -304,13 +304,23 @@ function FavoriteButton({ token }: { token: ParsedUserAsset | SearchAsset }) {
     if (isFavorite) {
       removeFavorite(token);
       analytics.track(event.tokenUnfavorited, {
-        token: { address: token.address, chainId: token.chainId },
+        token: {
+          address: token.address,
+          chainId: token.chainId,
+          symbol: token.symbol,
+          name: token.name,
+        },
         favorites: favorites[token.chainId]?.length || 0,
       });
     } else {
       addFavorite(token);
       analytics.track(event.tokenFavorited, {
-        token: { address: token.address, chainId: token.chainId },
+        token: {
+          address: token.address,
+          chainId: token.chainId,
+          symbol: token.symbol,
+          name: token.name,
+        },
         favorites: favorites[token.chainId]?.length || 0,
       });
     }
@@ -393,7 +403,12 @@ function MoreOptions({
       (isHidden) => isHidden,
     ).length;
     analytics.track(isHidden ? event.tokenHidden : event.tokenUnhidden, {
-      token: { address: token.address, chainId: token.chainId },
+      token: {
+        address: token.address,
+        chainId: token.chainId,
+        symbol: token.symbol,
+        name: token.name,
+      },
       hiddenTokens: hiddenCount,
     });
   }, [

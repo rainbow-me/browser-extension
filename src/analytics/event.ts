@@ -1107,6 +1107,8 @@ export type EventProperties = {
      */
     token: {
       address: string;
+      symbol: string;
+      name: string;
       chainId: ChainId;
     };
     /**
@@ -1120,6 +1122,8 @@ export type EventProperties = {
      */
     token: {
       address: string;
+      symbol: string;
+      name: string;
       chainId: ChainId;
     };
     /**
@@ -1133,6 +1137,8 @@ export type EventProperties = {
      */
     token: {
       address: string;
+      symbol: string;
+      name: string;
       chainId: ChainId;
     };
     /**
@@ -1146,6 +1152,8 @@ export type EventProperties = {
      */
     token: {
       address: string;
+      symbol: string;
+      name: string;
       chainId: ChainId;
     };
     /**
