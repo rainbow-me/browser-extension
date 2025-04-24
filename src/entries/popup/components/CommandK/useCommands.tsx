@@ -1014,8 +1014,28 @@ export const useCommands = (
           }),
         });
       }
+      const isHidden = isTokenHidden(token);
+      const hiddenCount = Object.values(hiddenAssetStore[address] || {}).filter(
+        (isHidden) => isHidden,
+      ).length;
+      analytics.track(isHidden ? event.tokenHidden : event.tokenUnhidden, {
+        token: {
+          address: token.address,
+          chainId: token.asset.chainId,
+          symbol: token.tokenSymbol,
+          name: token.asset.name,
+        },
+        hiddenTokens: hiddenCount,
+      });
     },
-    [pinnedStore, address, toggleHideAsset, togglePinAsset, isTokenHidden],
+    [
+      pinnedStore,
+      address,
+      toggleHideAsset,
+      togglePinAsset,
+      isTokenHidden,
+      hiddenAssetStore,
+    ],
   );
 
   const toggleHideNFT = useCallback(

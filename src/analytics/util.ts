@@ -1,8 +1,8 @@
 import { SupportedAlgorithm, computeHmac } from '@ethersproject/sha2';
 import { Address } from 'viem';
 
-import { getWallet } from '~/entries/popup/handlers/wallet';
 import { KeychainType } from '~/core/types/keychainTypes';
+import { getWallet } from '~/entries/popup/handlers/wallet';
 import { RainbowError, logger } from '~/logger';
 
 const SECURE_WALLET_HASH_KEY = process.env.SECURE_WALLET_HASH_KEY;

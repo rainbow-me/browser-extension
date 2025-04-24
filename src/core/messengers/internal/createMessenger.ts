@@ -21,6 +21,9 @@ export type Messenger = {
   available: boolean;
   /** Name of the messenger */
   name: string;
+  /** Listeners for topics */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _listeners: Record<string, ((...args: any[]) => any)[]>;
   /** Sends a message to the `reply` handler. */
   send: <TPayload, TResponse>(
     /** A scoped topic that the `reply` will listen for. */

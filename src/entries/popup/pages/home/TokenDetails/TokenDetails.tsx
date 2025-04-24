@@ -300,13 +300,39 @@ function NetworkBanner({
 function FavoriteButton({ token }: { token: ParsedUserAsset | SearchAsset }) {
   const { favorites, addFavorite, removeFavorite } = useFavoritesStore();
   const isFavorite = favorites[token.chainId]?.includes(token.address);
+  const handleClick = () => {
+    if (isFavorite) {
+      removeFavorite(token);
+      analytics.track(event.tokenUnfavorited, {
+        token: {
+          address: token.address,
+          chainId: token.chainId,
+          symbol: token.symbol,
+          name: token.name,
+        },
+        favorites: favorites[token.chainId]?.length || 0,
+      });
+    } else {
+      addFavorite(token);
+      analytics.track(event.tokenFavorited, {
+        token: {
+          address: token.address,
+          chainId: token.chainId,
+          symbol: token.symbol,
+          name: token.name,
+        },
+        favorites: favorites[token.chainId]?.length || 0,
+      });
+    }
+  };
+
   return (
     <ButtonSymbol
       symbol="star.fill"
       height="32px"
       variant="transparentHover"
       color={isFavorite ? 'yellow' : 'labelSecondary'}
-      onClick={() => (isFavorite ? removeFavorite(token) : addFavorite(token))}
+      onClick={handleClick}
       tabIndex={0}
     />
   );
@@ -362,14 +388,38 @@ function MoreOptions({
           name: token.symbol,
         }),
       });
-      return;
+    } else {
+      triggerToast({
+        title: i18n.t('token_details.toast.hide_token', {
+          name: token.symbol,
+        }),
+      });
     }
-    triggerToast({
-      title: i18n.t('token_details.toast.hide_token', {
-        name: token.symbol,
-      }),
+    const isHidden =
+      useHiddenAssetStore.getState().hidden[address]?.[
+        computeUniqueIdForHiddenAsset(token)
+      ];
+    const hiddenCount = Object.values(hiddenStore[address] || {}).filter(
+      (isHidden) => isHidden,
+    ).length;
+    analytics.track(isHidden ? event.tokenHidden : event.tokenUnhidden, {
+      token: {
+        address: token.address,
+        chainId: token.chainId,
+        symbol: token.symbol,
+        name: token.name,
+      },
+      hiddenTokens: hiddenCount,
     });
-  }, [token, hidden, pinned, togglePinAsset, toggleHideAsset, address]);
+  }, [
+    pinned,
+    togglePinAsset,
+    address,
+    token,
+    toggleHideAsset,
+    hidden,
+    hiddenStore,
+  ]);
 
   const togglePinToken = useCallback(() => {
     if (hidden) return;
@@ -620,7 +670,7 @@ export function TokenDetails() {
     ({ elapsedTime }) => {
       const { address, chainId, symbol } = token;
       const chartData = getPriceChartQueryCache({ address, chainId });
-      analytics.track(analytics.event.tokenDetailsViewed, {
+      analytics.track(event.tokenDetailsViewed, {
         eventSentAfterMs: elapsedTime,
         token: { address, chainId, symbol },
         available_data: {
