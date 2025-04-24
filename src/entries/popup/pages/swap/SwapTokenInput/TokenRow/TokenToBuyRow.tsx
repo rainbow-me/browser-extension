@@ -109,22 +109,16 @@ export function TokenToBuyRow({
       const { address, chainId } = asset;
       if (isFavorite) {
         removeFavorite({ address, chainId });
-        analytics.track(
-          event.tokenUnfavorited,
-          {
-            token: { address, chainId },
-            favorites: { favoritesLength: favorites[chainId]?.length || 0 },
-          },
-        );
+        analytics.track(event.tokenUnfavorited, {
+          token: { address, chainId },
+          favorites: favorites[chainId]?.length || 0,
+        });
       } else {
         addFavorite({ address, chainId });
-        analytics.track(
-          event.tokenFavorited,
-          {
-            token: { address, chainId },
-            favorites: { favoritesLength: favorites[chainId]?.length || 0 },
-          },
-        );
+        analytics.track(event.tokenFavorited, {
+          token: { address, chainId },
+          favorites: favorites[chainId]?.length || 0,
+        });
       }
     },
     [addFavorite, asset, favorites, isFavorite, removeFavorite],

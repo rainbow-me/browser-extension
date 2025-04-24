@@ -303,22 +303,16 @@ function FavoriteButton({ token }: { token: ParsedUserAsset | SearchAsset }) {
   const handleClick = () => {
     if (isFavorite) {
       removeFavorite(token);
-      analytics.track(
-        event.tokenUnfavorited,
-        {
-          token: { address: token.address, chainId: token.chainId },
-          favorites: { favoritesLength: favorites[token.chainId]?.length || 0 },
-        },
-      );
+      analytics.track(event.tokenUnfavorited, {
+        token: { address: token.address, chainId: token.chainId },
+        favorites: favorites[token.chainId]?.length || 0,
+      });
     } else {
       addFavorite(token);
-      analytics.track(
-        event.tokenFavorited,
-        {
-          token: { address: token.address, chainId: token.chainId },
-          favorites: { favoritesLength: favorites[token.chainId]?.length || 0 },
-        },
-      );
+      analytics.track(event.tokenFavorited, {
+        token: { address: token.address, chainId: token.chainId },
+        favorites: favorites[token.chainId]?.length || 0,
+      });
     }
   };
 
@@ -398,13 +392,10 @@ function MoreOptions({
     const hiddenCount = Object.values(hiddenStore[address] || {}).filter(
       (isHidden) => isHidden,
     ).length;
-    analytics.track(
-      isHidden ? event.tokenHidden : event.tokenUnhidden,
-      {
-        token: { address: token.address, chainId: token.chainId },
-        hiddenAssets: { totalHidden: hiddenCount },
-      },
-    );
+    analytics.track(isHidden ? event.tokenHidden : event.tokenUnhidden, {
+      token: { address: token.address, chainId: token.chainId },
+      hiddenTokens: hiddenCount,
+    });
   }, [
     pinned,
     togglePinAsset,

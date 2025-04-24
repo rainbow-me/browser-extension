@@ -1112,9 +1112,7 @@ export type EventProperties = {
     /**
      * Details about user favorites.
      */
-    favorites: {
-      favoritesLength: number;
-    };
+    favorites: number;
   };
   [event.tokenHidden]: {
     /**
@@ -1127,9 +1125,7 @@ export type EventProperties = {
     /**
      * Details about hidden assets.
      */
-    hiddenAssets: {
-      totalHidden: number;
-    };
+    hiddenTokens: number;
   };
   [event.tokenUnfavorited]: {
     /**
@@ -1142,9 +1138,7 @@ export type EventProperties = {
     /**
      * Details about user favorites.
      */
-    favorites: {
-      favoritesLength: number;
-    };
+    favorites: number;
   };
   [event.tokenUnhidden]: {
     /**
@@ -1157,9 +1151,7 @@ export type EventProperties = {
     /**
      * Details about hidden assets.
      */
-    hiddenAssets: {
-      totalHidden: number;
-    };
+    hiddenTokens: number;
   };
   [event.walletBackupQuizSubmitted]: {
     /**

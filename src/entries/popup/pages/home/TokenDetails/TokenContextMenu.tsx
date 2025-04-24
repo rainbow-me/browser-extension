@@ -142,13 +142,10 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
     const hiddenCount = Object.values(
       useHiddenAssetStore.getState().hidden[address] || {},
     ).filter((isHidden) => isHidden).length;
-    analytics.track(
-      isHidden ? event.tokenHidden : event.tokenUnhidden,
-      {
-        token: { address: token.address, chainId: token.chainId },
-        hiddenAssets: { totalHidden: hiddenCount },
-      },
-    );
+    analytics.track(isHidden ? event.tokenHidden : event.tokenUnhidden, {
+      token: { address: token.address, chainId: token.chainId },
+      hiddenTokens: hiddenCount,
+    });
   }, [
     token,
     containerRef,

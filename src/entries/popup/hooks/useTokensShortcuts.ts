@@ -83,13 +83,13 @@ export function useTokensShortcuts() {
       const hiddenCount = Object.values(
         useHiddenAssetStore.getState().hidden[address] || {},
       ).filter((isHidden) => isHidden).length;
-      analytics.track(
-        isHidden ? event.tokenHidden : event.tokenUnhidden,
-        {
-          token: { address: _selectedToken.address, chainId: _selectedToken.chainId },
-          hiddenAssets: { totalHidden: hiddenCount },
+      analytics.track(isHidden ? event.tokenHidden : event.tokenUnhidden, {
+        token: {
+          address: _selectedToken.address,
+          chainId: _selectedToken.chainId,
         },
-      );
+        hiddenTokens: hiddenCount,
+      });
     },
     [
       containerRef,

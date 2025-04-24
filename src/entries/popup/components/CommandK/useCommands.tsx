@@ -1018,13 +1018,10 @@ export const useCommands = (
       const hiddenCount = Object.values(hiddenAssetStore[address] || {}).filter(
         (isHidden) => isHidden,
       ).length;
-      analytics.track(
-        isHidden ? event.tokenHidden : event.tokenUnhidden,
-        {
-          token: { address: token.address, chainId: token.asset.chainId },
-          hiddenAssets: { totalHidden: hiddenCount },
-        },
-      );
+      analytics.track(isHidden ? event.tokenHidden : event.tokenUnhidden, {
+        token: { address: token.address, chainId: token.asset.chainId },
+        hiddenTokens: hiddenCount,
+      });
     },
     [
       pinnedStore,
