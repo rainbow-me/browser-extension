@@ -20,10 +20,11 @@ export const getSigningRequestDisplayDetails = (
       case 'personal_sign': {
         let message = payload?.params?.[0] as string;
         let address = payload?.params?.[1] as Address;
-        // While this is technically incorrect
-        // we'll support anyways for compatibility purposes
-        // since other wallets do it
-        if (isAddress(message)) {
+
+        // Only swap parameters when the first param is an address
+        // AND the second param is NOT an address
+        // This prevents incorrect swapping when both params could be interpreted as addresses
+        if (isAddress(message) && !isAddress(address)) {
           message = payload?.params?.[1] as string;
           address = payload?.params?.[0] as Address;
         }
@@ -35,7 +36,14 @@ export const getSigningRequestDisplayDetails = (
           const buffer = Buffer.from(strippedMessage, 'hex');
           message = buffer.length === 32 ? message : buffer.toString('utf8');
         } catch (error) {
-          // TODO error handling
+          logger.error(
+            new RainbowError('Error decoding personal_sign message'),
+            {
+              error: (error as Error)?.message,
+              originalMessage: message,
+              method: payload.method,
+            },
+          );
         }
         return {
           message,
