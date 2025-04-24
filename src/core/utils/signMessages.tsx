@@ -18,25 +18,15 @@ export const getSigningRequestDisplayDetails = (
   try {
     switch (payload.method) {
       case 'personal_sign': {
-        // Get both parameters from the request
-        const param0 = payload?.params?.[0] as string;
-        const param1 = payload?.params?.[1] as string;
+        let message = payload?.params?.[0] as string;
+        let address = payload?.params?.[1] as Address;
 
-        let message, address;
-
-        // Only swap parameters if param0 is definitely an address
-        // and param1 is not a hex string.
-        if (
-          param0?.startsWith('0x') &&
-          param0?.length === 42 &&
-          /^0x[0-9a-fA-F]{40}$/.test(param0) &&
-          !param1?.startsWith('0x')
-        ) {
-          message = param1;
-          address = param0;
-        } else {
-          message = param0;
-          address = param1;
+        // Only swap parameters when the first param is an address
+        // AND the second param is NOT an address
+        // This prevents incorrect swapping when both params could be interpreted as addresses
+        if (isAddress(message) && !isAddress(address)) {
+          message = payload?.params?.[1] as string;
+          address = payload?.params?.[0] as Address;
         }
 
         try {
@@ -46,7 +36,14 @@ export const getSigningRequestDisplayDetails = (
           const buffer = Buffer.from(strippedMessage, 'hex');
           message = buffer.length === 32 ? message : buffer.toString('utf8');
         } catch (error) {
-          // TODO error handling
+          logger.error(
+            new RainbowError('Error decoding personal_sign message'),
+            {
+              error: (error as Error)?.message,
+              originalMessage: message,
+              method: payload.method,
+            },
+          );
         }
         return {
           message,
