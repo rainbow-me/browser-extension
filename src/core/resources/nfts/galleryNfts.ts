@@ -106,8 +106,10 @@ export function useGalleryNfts<TSelectData = GalleryNftsResult>(
     getNextPageParam: (lastPage) => lastPage?.nextPage,
     initialPageParam: null,
     refetchInterval: 60000,
-    retry: 3,
-    staleTime: 60000,
+    // TODO: restore this when we find a SimpleHash replacement
+    // retry: 3,
+    staleTime: Infinity, // Keep data in cache indefinitely
+    gcTime: Infinity, // Keep data in cache indefinitely
   });
 }
 
