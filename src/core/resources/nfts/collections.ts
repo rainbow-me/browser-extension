@@ -166,6 +166,9 @@ export function useNftCollections<TSelectData = NftCollectionsResult>(
     getNextPageParam: (lastPage) => lastPage?.nextPage,
     initialPageParam: undefined,
     refetchInterval: 60000,
-    retry: 3,
+    // TODO: restore this when we find a SimpleHash replacement
+    // retry: 3,
+    gcTime: Infinity, // Keep data in cache indefinitely
+    staleTime: Infinity, // Keep data in cache indefinitely
   });
 }

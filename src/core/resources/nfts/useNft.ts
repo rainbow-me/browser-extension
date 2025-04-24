@@ -28,7 +28,9 @@ export function useNft(
     initialData,
     initialDataUpdatedAt: initialData !== undefined ? Date.now() : 0,
     enabled: !!contractAddress && !!chainId && !!tokenId,
-    retry: 3,
-    staleTime: 24 * 60 * 60 * 1000, // 1 day
+    // TODO: restore this when we find a SimpleHash replacement
+    // retry: 3,
+    staleTime: Infinity, // Keep data in cache indefinitely
+    gcTime: Infinity, // Keep data in cache indefinitely
   });
 }
