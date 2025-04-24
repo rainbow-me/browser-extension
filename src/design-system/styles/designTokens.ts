@@ -701,6 +701,7 @@ export const textColors = selectForegroundColors(
   'zora',
   'bsc',
   'avalanche',
+  'ink',
   ...genericColors,
 );
 export type TextColor = (typeof textColors)[number];

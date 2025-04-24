@@ -13,7 +13,6 @@ import {
   Columns,
   Inline,
   Stack,
-  Text,
   TextOverflow,
 } from '~/design-system';
 import { AccentColorProvider } from '~/design-system/components/Box/ColorContext';
@@ -80,9 +79,14 @@ export const SwapAssetCard = ({
                     </TextOverflow>
                   </Column>
                   <Column width="content">
-                    <Text color="label" size="14pt" weight="bold">
+                    <TextOverflow
+                      color="label"
+                      size="14pt"
+                      weight="bold"
+                      maxWidth={50}
+                    >
                       {`${asset?.symbol}`}
-                    </Text>
+                    </TextOverflow>
                   </Column>
                 </Columns>
 
