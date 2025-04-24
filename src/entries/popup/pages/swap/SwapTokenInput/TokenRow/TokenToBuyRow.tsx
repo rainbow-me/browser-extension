@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 
-import { trackFavorite } from '~/analytics/util';
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { useFavoritesStore } from '~/core/state/favorites';
 import { ChainId } from '~/core/types/chains';
@@ -108,10 +109,22 @@ export function TokenToBuyRow({
       const { address, chainId } = asset;
       if (isFavorite) {
         removeFavorite({ address, chainId });
-        trackFavorite(address, chainId, false, favorites[chainId]?.length || 0);
+        analytics.track(
+          event.tokenUnfavorited,
+          {
+            token: { address, chainId },
+            favorites: { favoritesLength: favorites[chainId]?.length || 0 },
+          },
+        );
       } else {
         addFavorite({ address, chainId });
-        trackFavorite(address, chainId, true, favorites[chainId]?.length || 0);
+        analytics.track(
+          event.tokenFavorited,
+          {
+            token: { address, chainId },
+            favorites: { favoritesLength: favorites[chainId]?.length || 0 },
+          },
+        );
       }
     },
     [addFavorite, asset, favorites, isFavorite, removeFavorite],

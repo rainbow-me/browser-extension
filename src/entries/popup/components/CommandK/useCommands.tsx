@@ -6,7 +6,6 @@ import { useEnsName } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
-import { trackHiddenAsset } from '~/analytics/util';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
@@ -1019,11 +1018,12 @@ export const useCommands = (
       const hiddenCount = Object.values(hiddenAssetStore[address] || {}).filter(
         (isHidden) => isHidden,
       ).length;
-      trackHiddenAsset(
-        token.address,
-        token.asset.chainId,
-        isHidden,
-        hiddenCount,
+      analytics.track(
+        isHidden ? event.tokenHidden : event.tokenUnhidden,
+        {
+          token: { address: token.address, chainId: token.asset.chainId },
+          hiddenAssets: { totalHidden: hiddenCount },
+        },
       );
     },
     [

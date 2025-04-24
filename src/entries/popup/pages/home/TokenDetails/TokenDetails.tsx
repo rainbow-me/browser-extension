@@ -4,7 +4,6 @@ import { Address } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
-import { trackFavorite, trackHiddenAsset } from '~/analytics/util';
 import { i18n } from '~/core/languages';
 import { ETH_ADDRESS } from '~/core/references';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -304,19 +303,21 @@ function FavoriteButton({ token }: { token: ParsedUserAsset | SearchAsset }) {
   const handleClick = () => {
     if (isFavorite) {
       removeFavorite(token);
-      trackFavorite(
-        token.address,
-        token.chainId,
-        false,
-        favorites[token.chainId]?.length || 0,
+      analytics.track(
+        event.tokenUnfavorited,
+        {
+          token: { address: token.address, chainId: token.chainId },
+          favorites: { favoritesLength: favorites[token.chainId]?.length || 0 },
+        },
       );
     } else {
       addFavorite(token);
-      trackFavorite(
-        token.address,
-        token.chainId,
-        true,
-        favorites[token.chainId]?.length || 0,
+      analytics.track(
+        event.tokenFavorited,
+        {
+          token: { address: token.address, chainId: token.chainId },
+          favorites: { favoritesLength: favorites[token.chainId]?.length || 0 },
+        },
       );
     }
   };
@@ -397,7 +398,13 @@ function MoreOptions({
     const hiddenCount = Object.values(hiddenStore[address] || {}).filter(
       (isHidden) => isHidden,
     ).length;
-    trackHiddenAsset(token.address, token.chainId, isHidden, hiddenCount);
+    analytics.track(
+      isHidden ? event.tokenHidden : event.tokenUnhidden,
+      {
+        token: { address: token.address, chainId: token.chainId },
+        hiddenAssets: { totalHidden: hiddenCount },
+      },
+    );
   }, [
     pinned,
     togglePinAsset,
@@ -657,7 +664,7 @@ export function TokenDetails() {
     ({ elapsedTime }) => {
       const { address, chainId, symbol } = token;
       const chartData = getPriceChartQueryCache({ address, chainId });
-      analytics.track(analytics.event.tokenDetailsViewed, {
+      analytics.track(event.tokenDetailsViewed, {
         eventSentAfterMs: elapsedTime,
         token: { address, chainId, symbol },
         available_data: {

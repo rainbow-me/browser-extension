@@ -2,7 +2,6 @@ import { ReactNode, useCallback } from 'react';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
-import { trackHiddenAsset } from '~/analytics/util';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -143,7 +142,13 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
     const hiddenCount = Object.values(
       useHiddenAssetStore.getState().hidden[address] || {},
     ).filter((isHidden) => isHidden).length;
-    trackHiddenAsset(token.address, token.chainId, isHidden, hiddenCount);
+    analytics.track(
+      isHidden ? event.tokenHidden : event.tokenUnhidden,
+      {
+        token: { address: token.address, chainId: token.chainId },
+        hiddenAssets: { totalHidden: hiddenCount },
+      },
+    );
   }, [
     token,
     containerRef,

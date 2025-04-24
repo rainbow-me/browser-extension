@@ -4,7 +4,6 @@ import { Address } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
-import { trackHiddenAsset } from '~/analytics/util';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -84,11 +83,12 @@ export function useTokensShortcuts() {
       const hiddenCount = Object.values(
         useHiddenAssetStore.getState().hidden[address] || {},
       ).filter((isHidden) => isHidden).length;
-      trackHiddenAsset(
-        _selectedToken.address,
-        _selectedToken.chainId,
-        isHidden,
-        hiddenCount,
+      analytics.track(
+        isHidden ? event.tokenHidden : event.tokenUnhidden,
+        {
+          token: { address: _selectedToken.address, chainId: _selectedToken.chainId },
+          hiddenAssets: { totalHidden: hiddenCount },
+        },
       );
     },
     [
