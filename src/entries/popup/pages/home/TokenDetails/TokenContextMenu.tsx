@@ -135,6 +135,22 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
         name: token.symbol,
       }),
     });
+    const isHidden =
+      useHiddenAssetStore.getState().hidden[address]?.[
+        computeUniqueIdForHiddenAsset(token)
+      ];
+    const hiddenCount = Object.values(
+      useHiddenAssetStore.getState().hidden[address] || {},
+    ).filter((isHidden) => isHidden).length;
+    analytics.track(isHidden ? event.tokenHidden : event.tokenUnhidden, {
+      token: {
+        address: token.address,
+        chainId: token.chainId,
+        symbol: token.symbol,
+        name: token.name,
+      },
+      hiddenTokens: hiddenCount,
+    });
   }, [
     token,
     containerRef,

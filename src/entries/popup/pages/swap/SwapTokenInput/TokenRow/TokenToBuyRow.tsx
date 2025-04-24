@@ -1,5 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { useFavoritesStore } from '~/core/state/favorites';
 import { ChainId } from '~/core/types/chains';
@@ -107,11 +109,19 @@ export function TokenToBuyRow({
       const { address, chainId } = asset;
       if (isFavorite) {
         removeFavorite({ address, chainId });
+        analytics.track(event.tokenUnfavorited, {
+          token: { address, chainId, symbol: asset.symbol, name: asset.name },
+          favorites: favorites[chainId]?.length || 0,
+        });
       } else {
         addFavorite({ address, chainId });
+        analytics.track(event.tokenFavorited, {
+          token: { address, chainId, symbol: asset.symbol, name: asset.name },
+          favorites: favorites[chainId]?.length || 0,
+        });
       }
     },
-    [addFavorite, asset, isFavorite, removeFavorite],
+    [addFavorite, asset, favorites, isFavorite, removeFavorite],
   );
 
   const rightColumn = useMemo(

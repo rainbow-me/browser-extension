@@ -10,6 +10,7 @@ import {
 } from 'react-router-dom';
 
 import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { screen } from '~/analytics/screen';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -1077,7 +1078,7 @@ function Rerouter() {
 
   React.useEffect(() => {
     setError(error);
-    analytics.track(analytics.event.appCrashed, { error: error.message });
+    analytics.track(event.appCrashed, { error: error.message });
     navigate(ROUTES.HOME, { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

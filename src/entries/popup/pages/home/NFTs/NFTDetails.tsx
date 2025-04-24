@@ -7,6 +7,7 @@ import { Address } from 'viem';
 import { useEnsName } from 'wagmi';
 
 import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { useEnsRegistration } from '~/core/resources/ens/ensRegistration';
 import { useNft } from '~/core/resources/nfts/useNft';
@@ -162,7 +163,7 @@ function NFTDetails({
         nft.uniqueId,
       );
       const isParty = !!nft.external_link?.includes('party.app');
-      analytics.track(analytics.event.nftDetailsViewed, {
+      analytics.track(event.nftDetailsViewed, {
         eventSentAfterMs: elapsedTime,
         token: {
           isENS,

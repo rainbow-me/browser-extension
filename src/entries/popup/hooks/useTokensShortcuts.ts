@@ -76,6 +76,22 @@ export function useTokensShortcuts() {
           name: _selectedToken.symbol,
         }),
       });
+      const isHidden =
+        useHiddenAssetStore.getState().hidden[address]?.[
+          computeUniqueIdForHiddenAsset(_selectedToken)
+        ];
+      const hiddenCount = Object.values(
+        useHiddenAssetStore.getState().hidden[address] || {},
+      ).filter((isHidden) => isHidden).length;
+      analytics.track(isHidden ? event.tokenHidden : event.tokenUnhidden, {
+        token: {
+          address: _selectedToken.address,
+          chainId: _selectedToken.chainId,
+          symbol: _selectedToken.symbol,
+          name: _selectedToken.name,
+        },
+        hiddenTokens: hiddenCount,
+      });
     },
     [
       containerRef,

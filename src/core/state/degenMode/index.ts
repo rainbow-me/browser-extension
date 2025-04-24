@@ -1,4 +1,5 @@
 import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 
 export const useDegenMode = createRainbowStore(
@@ -13,7 +14,7 @@ export const useDegenMode = createRainbowStore(
 
 export const toggleDegenMode = () =>
   useDegenMode.setState((s) => {
-    analytics.track(analytics.event.toggledDegenMode, {
+    analytics.track(event.toggledDegenMode, {
       enabled: !s.isDegenModeEnabled,
     });
     return { isDegenModeEnabled: !s.isDegenModeEnabled };
