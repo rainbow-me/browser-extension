@@ -23,7 +23,7 @@ import {
   GasFeeParamsBySpeed,
   GasSpeed,
 } from '~/core/types/gas';
-import { gweiToWei, weiToGwei } from '~/core/utils/ethereum';
+import { gweiToWei } from '~/core/utils/ethereum';
 import {
   gasFeeParamsChanged,
   parseCustomGasFeeLegacyParams,
@@ -353,9 +353,7 @@ const useGas = ({
     setCustomMaxPriorityFee,
     setCustomGasPrice,
     clearCustomGasModified,
-    currentBaseFee: weiToGwei(
-      (gasData as MeteorologyResponse)?.data?.currentBaseFee,
-    ),
+    currentBaseFee: (gasData as MeteorologyResponse)?.data?.currentBaseFee,
     baseFeeTrend: (gasData as MeteorologyResponse)?.data?.baseFeeTrend,
     feeType: (gasData as MeteorologyResponse)?.meta?.feeType,
   };

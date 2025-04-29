@@ -8,6 +8,7 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { txSpeedEmoji } from '~/core/references/txSpeed';
 import { useGasStore } from '~/core/state';
 import { GasFeeLegacyParams, GasFeeParams, GasSpeed } from '~/core/types/gas';
+import { weiToGwei } from '~/core/utils/ethereum';
 import { getBaseFeeTrendParams } from '~/core/utils/gas';
 import { isZero, lessThan, toFixedDecimals } from '~/core/utils/numbers';
 import {
@@ -183,6 +184,10 @@ export const CustomGasSheet = ({
     setSelectedGas,
   } = useGasStore();
 
+  const convertedCurrentBaseFee = useMemo(() => {
+    return weiToGwei(currentBaseFee);
+  }, [currentBaseFee]);
+
   const [selectedSpeedOption, setSelectedSpeedOption] = useState<GasSpeed>(
     selectedGas?.option,
   );
@@ -248,14 +253,14 @@ export const CustomGasSheet = ({
       setMaxBaseFee(maxBaseFee);
       if (!maxBaseFee || isZero(maxBaseFee)) {
         setMaxBaseFeeWarning('fail');
-      } else if (lessThan(maxBaseFee, currentBaseFee)) {
+      } else if (lessThan(maxBaseFee, convertedCurrentBaseFee)) {
         setMaxBaseFeeWarning('stuck');
       } else {
         setMaxBaseFeeWarning(undefined);
       }
     },
     [
-      currentBaseFee,
+      convertedCurrentBaseFee,
       gasFeeParamsBySpeed,
       prevSelectedGasOption,
       setCustomMaxBaseFee,
@@ -329,7 +334,7 @@ export const CustomGasSheet = ({
     setSelectedSpeed(selectedSpeedOption);
     closeCustomGasSheet();
     analytics.track(event.dappPromptSendTransactionCustomGasSet, {
-      baseFee: Number(currentBaseFee),
+      baseFee: Number(convertedCurrentBaseFee),
       maxBaseFee: Number(maxBaseFee),
       minerTip: Number(maxPriorityFee),
       maxFee: Number(maxBaseFee) + Number(maxPriorityFee),
@@ -340,7 +345,7 @@ export const CustomGasSheet = ({
     });
   }, [
     closeCustomGasSheet,
-    currentBaseFee,
+    convertedCurrentBaseFee,
     maxBaseFee,
     maxBaseFeeWarning,
     maxPriorityFee,
@@ -393,7 +398,7 @@ export const CustomGasSheet = ({
           <ExplainerHeaderPill
             color={trendParams.color}
             label={trendParams.label}
-            gwei={currentBaseFee}
+            gwei={convertedCurrentBaseFee}
             symbol={trendParams.symbol}
             borderColor={trendParams.borderColor}
           />
@@ -410,7 +415,12 @@ export const CustomGasSheet = ({
         labelColor: 'label',
       },
     });
-  }, [baseFeeTrend, currentBaseFee, hideExplainerSheet, showExplainerSheet]);
+  }, [
+    baseFeeTrend,
+    convertedCurrentBaseFee,
+    hideExplainerSheet,
+    showExplainerSheet,
+  ]);
 
   const showMaxBaseFeeExplainer = useCallback(
     () =>
@@ -535,7 +545,10 @@ export const CustomGasSheet = ({
                           size="14pt"
                           weight="semibold"
                         >
-                          {`${toFixedDecimals(currentBaseFee, 2)} Gwei`}
+                          {`${toFixedDecimals(
+                            convertedCurrentBaseFee,
+                            2,
+                          )} Gwei`}
                         </Text>
                       </Inline>
                     </Stack>
