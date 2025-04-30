@@ -386,8 +386,6 @@ function InsuficientGasFunds({
   const chainNativeAsset = useNativeAsset({ chainId });
   const { nativeAsset } = useUserNativeAsset({ chainId, address });
   const chainName = getChain({ chainId }).name;
-  console.log('nativeAsset', nativeAsset);
-  console.log('chainNativeAsset', chainNativeAsset);
 
   const { currentCurrency } = useCurrentCurrencyStore();
   const { data: hasBridgeableBalance } = useUserAssets(
@@ -586,8 +584,6 @@ export function SendTransactionInfo({
   const isScamDapp = dappMetadata?.status === DAppStatus.Scam;
 
   const hasEnoughGas = useHasEnoughGas(activeSession);
-  console.log('hasEnoughGas', hasEnoughGas);
-  console.log('activeSession', activeSession);
 
   return (
     <Box
