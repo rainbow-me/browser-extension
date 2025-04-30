@@ -35,6 +35,7 @@ import { DappIcon } from '~/entries/popup/components/DappIcon/DappIcon';
 import { Tag } from '~/entries/popup/components/Tag';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
+import { useNativeAsset } from '~/entries/popup/hooks/useNativeAsset';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useUserNativeAsset } from '~/entries/popup/hooks/useUserNativeAsset';
 import { ROUTES } from '~/entries/popup/urls';
@@ -382,15 +383,18 @@ function InsuficientGasFunds({
   const { testnetMode } = useTestnetModeStore();
   const isTestnet = testnetMode || getChain({ chainId }).testnet;
 
+  const chainNativeAsset = useNativeAsset({ chainId });
   const { nativeAsset } = useUserNativeAsset({ chainId, address });
   const chainName = getChain({ chainId }).name;
+  console.log('nativeAsset', nativeAsset);
+  console.log('chainNativeAsset', chainNativeAsset);
 
   const { currentCurrency } = useCurrentCurrencyStore();
   const { data: hasBridgeableBalance } = useUserAssets(
     { address, currency: currentCurrency },
     {
       select(data) {
-        const nativeNetworks = nativeAsset?.networks;
+        const nativeNetworks = chainNativeAsset?.networks;
         if (!nativeNetworks) return false;
         const bridgeableChains = Object.keys(nativeNetworks);
         // has a balance on any other chain we could bridge from?
@@ -405,7 +409,7 @@ function InsuficientGasFunds({
     },
   );
 
-  const token = `${chainName} ${nativeAsset?.symbol}`;
+  const token = `${chainName} ${chainNativeAsset?.symbol}`;
   const faucet =
     getFaucetsUrl(chainId) ||
     'https://www.alchemy.com/list-of/crypto-faucets-on-ethereum';
@@ -416,7 +420,7 @@ function InsuficientGasFunds({
     (state) => state.setSelectedToken,
   );
 
-  if (!nativeAsset) return null;
+  if (!chainNativeAsset) return null;
 
   return (
     <Box
@@ -437,13 +441,13 @@ function InsuficientGasFunds({
       <Inline alignVertical="center" space="12px">
         <ChainBadge chainId={chainId} size={16} />
         <Text size="14pt" weight="bold">
-          {+nativeAsset.balance.amount > 0
+          {nativeAsset && +nativeAsset?.balance.amount > 0
             ? i18n.t('approve_request.insufficient_gas_funds', { token })
             : i18n.t('approve_request.no_gas_funds', { token })}
         </Text>
       </Inline>
       <Text size="12pt" weight="medium" color="labelQuaternary">
-        {+nativeAsset.balance.amount > 0
+        {nativeAsset && +nativeAsset?.balance.amount > 0
           ? i18n.t('approve_request.insufficient_gas_funds_description', {
               token,
             })
@@ -461,13 +465,15 @@ function InsuficientGasFunds({
             variant="transparent"
             color="blue"
             onClick={() => {
-              setSelectedToken(nativeAsset);
-              navigate(ROUTES.BRIDGE, { replace: true });
-              onRejectRequest({ preventWindowClose: true });
-              triggerToast({
-                title: i18n.t('approve_request.request_rejected'),
-                description: i18n.t('approve_request.bridge_and_try_again'),
-              });
+              if (nativeAsset) {
+                setSelectedToken(nativeAsset);
+                navigate(ROUTES.BRIDGE, { replace: true });
+                onRejectRequest({ preventWindowClose: true });
+                triggerToast({
+                  title: i18n.t('approve_request.request_rejected'),
+                  description: i18n.t('approve_request.bridge_and_try_again'),
+                });
+              }
             }}
           >
             <Inline alignVertical="center" space="12px" wrap={false}>
@@ -580,6 +586,8 @@ export function SendTransactionInfo({
   const isScamDapp = dappMetadata?.status === DAppStatus.Scam;
 
   const hasEnoughGas = useHasEnoughGas(activeSession);
+  console.log('hasEnoughGas', hasEnoughGas);
+  console.log('activeSession', activeSession);
 
   return (
     <Box
