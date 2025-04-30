@@ -21,6 +21,44 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Testing
 
+## [v1.5.103](https://github.com/rainbow-me/browser-extension/releases/tag/v1.5.103)
+
+### Fixed
+
+- Fixed crash when bridging to Ink network #1878
+- Fixed multiple overflow issues #1879
+- Resolved broken messenger connection due to BFCache #1877
+- Fixed issue with message decoding #1880
+
+### Added
+
+- Added analytics events for token favorites and hiding #1845
+
+### Internal
+
+- Implemented additional security fix from audit #1884
+- Set indefinite NFT cache time for improved performance #1883
+
+## [v1.5.100](https://github.com/rainbow-me/browser-extension/releases/tag/v1.5.100)
+
+### Added
+
+- Added tag-version script for improved version management #1866
+
+### Changed
+
+- Updated to use Target from Swap SDK for enhanced swap functionality #1859
+
+### Fixed
+
+- Fixed useUserChains filtration to properly account for mainnetId when disabling certain features #5a667e1
+- Replaced `withSelectors` usage with hook derived from createRainbowStore for better state management #c712821
+
+### Internal
+
+- Implemented security fixes from recent audit #1874
+- Upgraded BPP to version 3.8.0 #1870
+
 ## [v1.5.32](https://github.com/rainbow-me/browser-extension/releases/tag/v1.5.32)
 
 ### Added
@@ -28,7 +66,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Degen Mode is here to make Swapping even faster. Turn it on in Swap Settings to skip the review steps #1652
 
 ### Changed
- 
+
 - Automatically defaulting ETH as the output for Swaps, and using Max values to reduce clicks #1622 #1653
 - Swap values are now rounded to match the Rainbow App. Pasting an exact amount or Maxing will continue to function as expected #1656
 - Added support for Ham and Cronos chains in Custom Networks #1658
@@ -44,7 +82,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Now merging Private Keys and Wallet Groups where possible upon import #1435
 - Fixed an issue with the font for Tip highlights on Firefox #1661
 
-### Internal 
+### Internal
 
 - Reduced artifact noise by deprecating artifact comment links and leveraging persistent artifacts on workflow runs instead #1628
 - Added axios advisory to allowlist #1664
@@ -177,7 +215,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
-- dApps can now leverage the `wallet_revokePermissions` RPC call to disconnect from Rainbow programatically. When disconnecting from a dApp, the wallet will now remember your preference on the next visit.  #1575
+- dApps can now leverage the `wallet_revokePermissions` RPC call to disconnect from Rainbow programatically. When disconnecting from a dApp, the wallet will now remember your preference on the next visit. #1575
 
 ### Fixed
 
@@ -880,7 +918,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 - Turned on support for Rainbow's RPC to improve transaction reliability, protect your privacy, and allow Custom Networks and RPCs in the near future #1125
-- Improved translations for Networks settings, Developer Tools and Testnet Mode, Malicious dApp warnings, Wallet management right-click menus, Clear transactions, and Points #1122 
+- Improved translations for Networks settings, Developer Tools and Testnet Mode, Malicious dApp warnings, Wallet management right-click menus, Clear transactions, and Points #1122
 
 ### Fixed
 
@@ -990,10 +1028,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [v1.2.39](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.39)
 
 ### Added
+
 - Bridging is easier than ever when right-clicking on a token or choosing to Bridge from the Token Details pane #997
 - You can now connect to all major Testnets for Rainbow's supported networks to sign and send testnet transactions. When connecting to or switching networks from a dApp that supports Testnets, you'll automatically be connected to the correct testnet by default, without needing to manage an RPC or network list. #1027
 
 ### Changed
+
 - Right-click is now available in even more places, like the wallet header to manage your wallet, Send, Swap, the Wallet Switcher, and the Wallets & Keys menu in the Settings interface #1017 #1004
 - The default tab when opening the wallet is now Tokens instead of the Activity pane #1029
 - Links within descriptions for Tokens are now clickable #1019
@@ -1003,6 +1043,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Improved keyboard navigation for the Flip Assets feature in Swap #1023
 
 ### Fixed
+
 - Improved handling of hex-encoded signature requests for `personal_sign` support for Ledger and Trezor hardware wallets #1035
 - Resolved an issue where Rainbow over-fetched metadata for dApps as users navigated the web. Rainbow now only fetches metadata for dApps that first interact with the Rainbow RPC provider #1038
 - Allowance field no longer appears in Token Details if there is no contract approval allowance to display #1045
@@ -1011,18 +1052,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Improved spacing in the `Del` shortcut hint bubble for the menu to Cancel or Speed up a transaction #1030
 
 ### Security
+
 - Deprecated support for dApps that rely on the vulnerable `eth_sign` method for signatures #1049
 - Sanitizing fields in EIP-712 signature requests to mitigate common phishing attacks #1028
 
 ### Internal
+
 - Added debounce to some fee calculations in Send flow #1032
 - Stricter Sentry filtering on `beforeSend` #1036
 - Reduce price/coingecko queries in swap search list #1033
 
 ### Testing
+
 - e2e: Send Shortcut test #1002
 - e2e: shortcut wallet switcher test #1037
-
 
 ## [v1.2.36](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.36)
 
@@ -1067,6 +1110,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Upgraded `vite`, `vitest`, and `chai` #1015
 
 ### Testing
+
 - e2e coverage of Home shortcuts #942
 
 ## [v1.2.26](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.26)
@@ -1163,10 +1207,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [v1.2.13](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.13)
 
 ### Changed
+
 - Introduced a transaction submission loading spinner for the "Send" button in the Send feature, mirroring the behavior in Swaps #916
 - Implemented an explainer for tokens that aren't supported in Swaps because their contract requires a fee on transfer #917
 
 ### Fixed
+
 - Resolved an issue with Rainbow's "default wallet" toggle behavior for users that interacted with dApps across multiple tabs simultaneously #906
 - The dApp and More menus on the core wallet screen can now be toggled properly with the `n` and `.` hotkeys #913
 - Resolved a conflict where the `w` hotkey for the Wallet Switcher could be triggered while the dApp menu is active #913
@@ -1182,19 +1228,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [v1.2.11](https://github.com/rainbow-me/browser-extension/releases/tag/v1.2.11)
 
 ### Changed
+
 - Temporarily disabled hardware wallet support on Firefox due to browser restrictions #907
 - Enhanced internalization support for multi-lingual store listings on the Chrome Web Store #895
 
 ### Fixed
+
 - Resolved an issue where some pending transactions would get stuck in the Activity list or transaction nonces would be incorrect for users simultaneously sending transactions across multiple wallets or networks #914
 - Improved transaction gas estimation reliability on Base, Arbitrum, Optimism, and Zora with Rainbow estimates #911
 - Improved gas estimation support for OP Stack chains with an L1 security fee #911
 - Improved behavior on dApps that use Web3Modal by supporting the expected `window.ethereum.providers` provider ordering #910
 
 ### Internal
+
 - Upgraded to TypeScript 5 to enhance type safety #890
 
 ### Testing
+
 - Shortcuts support for end-to-end tests #899
 - Addressed timeouts in end-to-end testing to foster more consistent results #909
 
@@ -1230,7 +1280,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - State restoration for the Swap and Send flows so that user selections and input are sticky for a short period of time for when you need to close the pop-up or back-out to copy an address #852
 - Paginated scroll and loading indicators on the Tokens and Activity interfaces for heavy wallets #880
-- Analytics for anonymized metrics on the types of wallets our users interface with in Rainbow #805 
+- Analytics for anonymized metrics on the types of wallets our users interface with in Rainbow #805
 
 ### Fixed
 
@@ -1308,7 +1358,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Improved keychain vault stability to resolve an issue where the extension could appear like the user had not yet onboarded #813
 - Resolved an issue with Ledger account discovery for users with more than 1 address #807
-- Resolved an issue where dApps would not reflect a disconnection when using Disconnect All #806 
+- Resolved an issue where dApps would not reflect a disconnection when using Disconnect All #806
 - Fixed an issue with the `window.ethereum` provider when no other wallets were injected #800
 - Fixed a crash in the Recovery Phrase Seed quiz #780
 - Fixed a crash in Edge when a New Tab is opened #811
