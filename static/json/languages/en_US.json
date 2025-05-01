@@ -1303,6 +1303,7 @@
     "tokens": "Tokens"
   },
   "activity": {
+    "hour": "Last Hour",
     "today": "Today",
     "yesterday": "Yesterday",
     "this_month": "This Month",
