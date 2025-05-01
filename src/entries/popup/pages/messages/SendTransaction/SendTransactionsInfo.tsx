@@ -439,13 +439,13 @@ function InsuficientGasFunds({
       <Inline alignVertical="center" space="12px">
         <ChainBadge chainId={chainId} size={16} />
         <Text size="14pt" weight="bold">
-          {nativeAsset && +nativeAsset?.balance.amount > 0
+          {+(nativeAsset?.balance?.amount ?? '0') > 0
             ? i18n.t('approve_request.insufficient_gas_funds', { token })
             : i18n.t('approve_request.no_gas_funds', { token })}
         </Text>
       </Inline>
       <Text size="12pt" weight="medium" color="labelQuaternary">
-        {nativeAsset && +nativeAsset?.balance.amount > 0
+        {+(nativeAsset?.balance?.amount ?? '0') > 0
           ? i18n.t('approve_request.insufficient_gas_funds_description', {
               token,
             })
