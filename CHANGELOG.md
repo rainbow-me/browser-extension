@@ -26,18 +26,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed
 
 - Fixed crash when bridging to Ink network #1878
-- Fixed multiple overflow issues #1879
-- Resolved broken messenger connection due to BFCache #1877
-- Fixed issue with message decoding #1880
-
-### Added
-
-- Added analytics events for token favorites and hiding #1845
+- Fixed multiple text overflow issues #1879
+- Fixed issue with message signature decoding for some dapps #1880
 
 ### Internal
 
 - Implemented additional security fix from audit #1884
-- Set indefinite NFT cache time for improved performance #1883
+- Set indefinite NFT cache time to smooth over migration #1883
+- Resolved broken messenger connection due to BFCache #1877
+- Added analytics events for token favorites and hiding #1845
 
 ## [v1.5.100](https://github.com/rainbow-me/browser-extension/releases/tag/v1.5.100)
 
