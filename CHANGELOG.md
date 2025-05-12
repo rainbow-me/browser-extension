@@ -38,21 +38,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [v1.5.100](https://github.com/rainbow-me/browser-extension/releases/tag/v1.5.100)
 
-### Added
-
-- Added tag-version script for improved version management #1866
-
-### Changed
-
-- Updated to use Target from Swap SDK for enhanced swap functionality #1859
-
 ### Fixed
 
-- Fixed useUserChains filtration to properly account for mainnetId when disabling certain features #5a667e1
-- Replaced `withSelectors` usage with hook derived from createRainbowStore for better state management #c712821
+- Resolved an issue where Testnets were incorrectly filtered out of some chain lists #1875
 
 ### Internal
 
+- Replaced `withSelectors` usage with hook derived from createRainbowStore for better state management #1873
+- Added tag-version script for improved version management #1866
+- Updated to use Target from Swap SDK for enhanced swap functionality #1859
 - Implemented security fixes from recent audit #1874
 - Upgraded BPP to version 3.8.0 #1870
 
