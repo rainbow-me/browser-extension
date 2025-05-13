@@ -418,8 +418,6 @@ function InsuficientGasFunds({
     (state) => state.setSelectedToken,
   );
 
-  if (!chainNativeAsset) return null;
-
   return (
     <Box
       as={motion.div}
@@ -439,13 +437,13 @@ function InsuficientGasFunds({
       <Inline alignVertical="center" space="12px">
         <ChainBadge chainId={chainId} size={16} />
         <Text size="14pt" weight="bold">
-          {+(nativeAsset?.balance?.amount ?? '0') > 0
+          {nativeAsset
             ? i18n.t('approve_request.insufficient_gas_funds', { token })
             : i18n.t('approve_request.no_gas_funds', { token })}
         </Text>
       </Inline>
       <Text size="12pt" weight="medium" color="labelQuaternary">
-        {+(nativeAsset?.balance?.amount ?? '0') > 0
+        {nativeAsset
           ? i18n.t('approve_request.insufficient_gas_funds_description', {
               token,
             })
@@ -456,22 +454,20 @@ function InsuficientGasFunds({
       <Stack marginHorizontal="-8px">
         <Separator color="separatorTertiary" />
 
-        {hasBridgeableBalance && (
+        {hasBridgeableBalance && nativeAsset && (
           <Button
             paddingHorizontal="8px"
             height="44px"
             variant="transparent"
             color="blue"
             onClick={() => {
-              if (nativeAsset) {
-                setSelectedToken(nativeAsset);
-                navigate(ROUTES.BRIDGE, { replace: true });
-                onRejectRequest({ preventWindowClose: true });
-                triggerToast({
-                  title: i18n.t('approve_request.request_rejected'),
-                  description: i18n.t('approve_request.bridge_and_try_again'),
-                });
-              }
+              setSelectedToken(nativeAsset);
+              navigate(ROUTES.BRIDGE, { replace: true });
+              onRejectRequest({ preventWindowClose: true });
+              triggerToast({
+                title: i18n.t('approve_request.request_rejected'),
+                description: i18n.t('approve_request.bridge_and_try_again'),
+              });
             }}
           >
             <Inline alignVertical="center" space="12px" wrap={false}>
