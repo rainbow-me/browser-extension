@@ -35,6 +35,7 @@ import { DappIcon } from '~/entries/popup/components/DappIcon/DappIcon';
 import { Tag } from '~/entries/popup/components/Tag';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
+import { useNativeAsset } from '~/entries/popup/hooks/useNativeAsset';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useUserNativeAsset } from '~/entries/popup/hooks/useUserNativeAsset';
 import { ROUTES } from '~/entries/popup/urls';
@@ -382,6 +383,7 @@ function InsuficientGasFunds({
   const { testnetMode } = useTestnetModeStore();
   const isTestnet = testnetMode || getChain({ chainId }).testnet;
 
+  const chainNativeAsset = useNativeAsset({ chainId });
   const { nativeAsset } = useUserNativeAsset({ chainId, address });
   const chainName = getChain({ chainId }).name;
 
@@ -390,7 +392,7 @@ function InsuficientGasFunds({
     { address, currency: currentCurrency },
     {
       select(data) {
-        const nativeNetworks = nativeAsset?.networks;
+        const nativeNetworks = chainNativeAsset?.networks;
         if (!nativeNetworks) return false;
         const bridgeableChains = Object.keys(nativeNetworks);
         // has a balance on any other chain we could bridge from?
@@ -405,7 +407,7 @@ function InsuficientGasFunds({
     },
   );
 
-  const token = `${chainName} ${nativeAsset?.symbol}`;
+  const token = `${chainName} ${chainNativeAsset?.symbol}`;
   const faucet =
     getFaucetsUrl(chainId) ||
     'https://www.alchemy.com/list-of/crypto-faucets-on-ethereum';
@@ -415,8 +417,6 @@ function InsuficientGasFunds({
   const setSelectedToken = useSelectedTokenStore(
     (state) => state.setSelectedToken,
   );
-
-  if (!nativeAsset) return null;
 
   return (
     <Box
@@ -437,13 +437,13 @@ function InsuficientGasFunds({
       <Inline alignVertical="center" space="12px">
         <ChainBadge chainId={chainId} size={16} />
         <Text size="14pt" weight="bold">
-          {+nativeAsset.balance.amount > 0
+          {nativeAsset && +nativeAsset.balance.amount > 0
             ? i18n.t('approve_request.insufficient_gas_funds', { token })
             : i18n.t('approve_request.no_gas_funds', { token })}
         </Text>
       </Inline>
       <Text size="12pt" weight="medium" color="labelQuaternary">
-        {+nativeAsset.balance.amount > 0
+        {nativeAsset && +nativeAsset.balance.amount > 0
           ? i18n.t('approve_request.insufficient_gas_funds_description', {
               token,
             })
@@ -454,7 +454,7 @@ function InsuficientGasFunds({
       <Stack marginHorizontal="-8px">
         <Separator color="separatorTertiary" />
 
-        {hasBridgeableBalance && (
+        {hasBridgeableBalance && nativeAsset && (
           <Button
             paddingHorizontal="8px"
             height="44px"
