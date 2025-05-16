@@ -16,158 +16,15 @@
     },
     "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs": {
       "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/core": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/helper-module-transforms": true,
         "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/helper-plugin-utils": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/helper-simple-access": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/core": {
-      "builtin": {
-        "assert": true,
-        "fs": true,
-        "module": true,
-        "path": true,
-        "process": true,
-        "url": true,
-        "util": true,
-        "v8": true
-      },
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "console.log": true,
-        "process.env.BABEL_ENV": true,
-        "process.env.BABEL_SHOW_CONFIG_FOR": true,
-        "process.env.NODE_ENV": true,
-        "process.versions.node": true,
-        "process.versions.pnp": true
-      },
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/core>@babel/code-frame": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/core>@babel/generator": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/core>@babel/helper-compilation-targets": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/core>@babel/helpers": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/core>@babel/parser": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/core>@babel/template": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/core>@babel/types": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/helper-module-transforms": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@ampproject/remapping": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>gensync": true,
-        "eslint>debug": true,
-        "file-loader>loader-utils>json5": true,
-        "lavamoat-browserify>convert-source-map": true,
-        "semver": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/core>@babel/code-frame": {
-      "globals": {
-        "console.warn": true,
-        "process": true
-      },
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/helper-module-transforms>@babel/helper-validator-identifier": true,
-        "react>loose-envify>js-tokens": true,
-        "vitest>picocolors": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/core>@babel/generator": {
-      "globals": {
-        "console.error": true,
-        "console.warn": true
-      },
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/core>@babel/generator>@babel/types": true,
-        "jest>@jest/core>@jest/reporters>@jridgewell/trace-mapping": true,
-        "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping": true,
-        "jest>@jest/core>jest-snapshot>@babel/generator>jsesc": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/core>@babel/generator>@babel/types": {
-      "globals": {
-        "console.warn": true,
-        "process.env": true
-      },
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/core>@babel/types>@babel/helper-string-parser": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/helper-module-transforms>@babel/helper-validator-identifier": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/core>@babel/helper-compilation-targets": {
-      "globals": {
-        "console.warn": true,
-        "process.env.BROWSERSLIST": true,
-        "process.env.BROWSERSLIST_CONFIG": true,
-        "process.versions.node": true
-      },
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/core>@babel/helper-compilation-targets>@babel/compat-data": true,
-        "chromedriver>proxy-agent>lru-cache": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>@babel/helper-validator-option": true,
-        "semver": true,
-        "webpack>browserslist": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/core>@babel/helpers": {
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/core>@babel/template": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/core>@babel/types": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/core>@babel/template": {
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/core>@babel/parser": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/core>@babel/template>@babel/code-frame": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/core>@babel/types": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/core>@babel/template>@babel/code-frame": {
-      "globals": {
-        "console.warn": true,
-        "process": true
-      },
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/helper-module-transforms>@babel/helper-validator-identifier": true,
-        "react>loose-envify>js-tokens": true,
-        "vitest>picocolors": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/core>@babel/types": {
-      "globals": {
-        "console.warn": true,
-        "process.env": true
-      },
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/core>@babel/types>@babel/helper-string-parser": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/helper-module-transforms>@babel/helper-validator-identifier": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/helper-module-transforms": {
-      "builtin": {
-        "assert": true,
-        "path.basename": true,
-        "path.extname": true
-      },
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/core": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/helper-module-transforms>@babel/helper-module-imports": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/helper-module-transforms>@babel/helper-validator-identifier": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/helper-module-transforms>@babel/helper-module-imports": {
-      "builtin": {
-        "assert": true
-      },
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/core>@babel/types": true
+        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/helper-simple-access": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms": true
       }
     },
     "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/helper-simple-access": {
       "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-modules-commonjs>@babel/core>@babel/types": true
+        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-annotate-as-pure>@babel/types": true
       }
     },
     "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript": {
@@ -197,8 +54,8 @@
         "process.env": true
       },
       "packages": {
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template>@babel/types>@babel/helper-string-parser": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template>@babel/types>@babel/helper-validator-identifier": true
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/types>@babel/helper-string-parser": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/types>@babel/helper-validator-identifier": true
       }
     },
     "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin": {
@@ -210,9 +67,9 @@
         "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/helper-member-expression-to-functions": true,
         "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/helper-optimise-call-expression": true,
         "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/helper-replace-supers": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse": true,
         "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-skip-transparent-expression-wrappers": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse": true,
         "semver": true
       }
     },
@@ -230,105 +87,8 @@
       "packages": {
         "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/helper-member-expression-to-functions": true,
         "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/helper-optimise-call-expression": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse": {
-      "globals": {
-        "console.log": true
-      },
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse>@babel/code-frame": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse>@babel/generator": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse>@babel/parser": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse>@babel/template": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse>@babel/types": true,
-        "eslint>debug": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>globals": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse>@babel/code-frame": {
-      "globals": {
-        "console.warn": true,
-        "process": true
-      },
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse>@babel/types>@babel/helper-validator-identifier": true,
-        "react>loose-envify>js-tokens": true,
-        "vitest>picocolors": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse>@babel/generator": {
-      "globals": {
-        "console.error": true,
-        "console.warn": true
-      },
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse>@babel/generator>@jridgewell/gen-mapping": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse>@babel/generator>@jridgewell/trace-mapping": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse>@babel/generator>jsesc": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse>@babel/types": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse>@babel/generator>@jridgewell/gen-mapping": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse>@babel/generator>@jridgewell/gen-mapping>@jridgewell/set-array": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse>@babel/generator>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse>@babel/generator>@jridgewell/trace-mapping": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse>@babel/generator>@jridgewell/gen-mapping>@jridgewell/set-array": {
-      "globals": {
-        "define": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse>@babel/generator>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": {
-      "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
-        "define": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse>@babel/generator>@jridgewell/trace-mapping": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
-        "webpack>terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": {
-      "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
-        "define": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse>@babel/generator>jsesc": {
-      "globals": {
-        "Buffer": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse>@babel/template": {
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse>@babel/code-frame": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse>@babel/parser": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse>@babel/types": true
-      }
-    },
-    "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse>@babel/types": {
-      "globals": {
-        "console.warn": true,
-        "process.env": true
-      },
-      "packages": {
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse>@babel/types>@babel/helper-string-parser": true,
-        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-create-class-features-plugin>@babel/traverse>@babel/types>@babel/helper-validator-identifier": true
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse": true
       }
     },
     "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-skip-transparent-expression-wrappers": {
@@ -566,16 +326,6 @@
     "browserify>readable-stream>util-deprecate": {
       "builtin": {
         "util.deprecate": true
-      }
-    },
-    "chromedriver>proxy-agent>lru-cache": {
-      "globals": {
-        "AbortController": true,
-        "AbortSignal": true,
-        "console.error": true,
-        "performance": true,
-        "process": true,
-        "setTimeout": true
       }
     },
     "circular-dependency-plugin": {
@@ -939,19 +689,12 @@
       },
       "packages": {
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/generator>@jridgewell/gen-mapping>@jridgewell/set-array": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/generator>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/generator>@jridgewell/trace-mapping": true
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/generator>@jridgewell/trace-mapping": true,
+        "jest>@jest/core>@jest/reporters>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/generator>@jridgewell/gen-mapping>@jridgewell/set-array": {
       "globals": {
-        "define": true
-      }
-    },
-    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/generator>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": {
-      "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
         "define": true
       }
     },
@@ -984,8 +727,8 @@
         "process.versions.node.split": true
       },
       "packages": {
+        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/helper-validator-option": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>@babel/compat-data": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>@babel/helper-validator-option": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>browserslist": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets>lru-cache": true,
         "semver": true
@@ -1025,13 +768,9 @@
         "path.extname": true
       },
       "packages": {
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-environment-visitor": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-split-export-declaration": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/types": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/types>@babel/helper-validator-identifier": true
       }
     },
@@ -1040,17 +779,87 @@
         "assert": true
       },
       "packages": {
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/types": true
-      }
-    },
-    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": {
-      "packages": {
         "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-annotate-as-pure>@babel/types": true
       }
     },
-    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-split-export-declaration": {
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse": {
+      "globals": {
+        "console.log": true
+      },
       "packages": {
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/types": true
+        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-annotate-as-pure>@babel/types": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/code-frame": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/parser": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/template": true,
+        "eslint>debug": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>globals": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/code-frame": {
+      "globals": {
+        "console.warn": true,
+        "process": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/types>@babel/helper-validator-identifier": true,
+        "react>loose-envify>js-tokens": true,
+        "vitest>picocolors": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator": {
+      "globals": {
+        "console.error": true,
+        "console.warn": true
+      },
+      "packages": {
+        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-annotate-as-pure>@babel/types": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>@jridgewell/gen-mapping": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>@jridgewell/trace-mapping": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>jsesc": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>@jridgewell/gen-mapping": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>@jridgewell/gen-mapping>@jridgewell/set-array": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>@jridgewell/trace-mapping": true,
+        "jest>@jest/core>@jest/reporters>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>@jridgewell/gen-mapping>@jridgewell/set-array": {
+      "globals": {
+        "define": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>@jridgewell/trace-mapping": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
+        "webpack>terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "define": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>jsesc": {
+      "globals": {
+        "Buffer": true
+      }
+    },
+    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/template": {
+      "packages": {
+        "@trezor/connect-web>@trezor/connect>@babel/preset-typescript>@babel/plugin-transform-typescript>@babel/helper-annotate-as-pure>@babel/types": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/code-frame": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/parser": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers": {
@@ -1065,8 +874,8 @@
         "process.env": true
       },
       "packages": {
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/types>@babel/helper-string-parser": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers>@babel/types>@babel/helper-validator-identifier": true
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/types>@babel/helper-string-parser": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/types>@babel/helper-validator-identifier": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": {
@@ -1082,7 +891,7 @@
         "process": true
       },
       "packages": {
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template>@babel/types>@babel/helper-validator-identifier": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/types>@babel/helper-validator-identifier": true,
         "react>loose-envify>js-tokens": true,
         "vitest>picocolors": true
       }
@@ -1093,8 +902,8 @@
         "process.env": true
       },
       "packages": {
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template>@babel/types>@babel/helper-string-parser": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template>@babel/types>@babel/helper-validator-identifier": true
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/types>@babel/helper-string-parser": true,
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/types>@babel/helper-validator-identifier": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/traverse": {
@@ -1534,20 +1343,6 @@
         "web-ext>addons-linter>cheerio>domutils>domelementtype": true
       }
     },
-    "jest>@jest/core>@jest/reporters>@jridgewell/trace-mapping": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "jest>@jest/core>@jest/reporters>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
-        "jest>@jest/core>@jest/reporters>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
-      }
-    },
-    "jest>@jest/core>@jest/reporters>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
-      "globals": {
-        "define": true
-      }
-    },
     "jest>@jest/core>@jest/reporters>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": {
       "globals": {
         "Buffer": true,
@@ -1558,26 +1353,6 @@
     "jest>@jest/core>jest-runner>p-limit": {
       "packages": {
         "jest>@jest/core>jest-runner>p-limit>yocto-queue": true
-      }
-    },
-    "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "jest>@jest/core>@jest/reporters>@jridgewell/trace-mapping": true,
-        "jest>@jest/core>@jest/reporters>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
-        "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping>@jridgewell/set-array": true
-      }
-    },
-    "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping>@jridgewell/set-array": {
-      "globals": {
-        "define": true
-      }
-    },
-    "jest>@jest/core>jest-snapshot>@babel/generator>jsesc": {
-      "globals": {
-        "Buffer.isBuffer": true
       }
     },
     "lavamoat-browserify>convert-source-map": {
