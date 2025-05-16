@@ -635,19 +635,12 @@
       },
       "packages": {
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@ampproject/remapping>@jridgewell/gen-mapping>@jridgewell/set-array": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@ampproject/remapping>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@ampproject/remapping>@jridgewell/trace-mapping": true
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@ampproject/remapping>@jridgewell/trace-mapping": true,
+        "jest>@jest/core>@jest/reporters>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@ampproject/remapping>@jridgewell/gen-mapping>@jridgewell/set-array": {
       "globals": {
-        "define": true
-      }
-    },
-    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@ampproject/remapping>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": {
-      "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
         "define": true
       }
     },
@@ -832,19 +825,12 @@
       },
       "packages": {
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>@jridgewell/gen-mapping>@jridgewell/set-array": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true,
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>@jridgewell/trace-mapping": true
+        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>@jridgewell/trace-mapping": true,
+        "jest>@jest/core>@jest/reporters>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>@jridgewell/gen-mapping>@jridgewell/set-array": {
       "globals": {
-        "define": true
-      }
-    },
-    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": {
-      "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
         "define": true
       }
     },
