@@ -166,7 +166,7 @@
     "validator": "13.9.0",
     "viem": "2.21.55",
     "wagmi": "2.8.1",
-    "word-wrap": "1.2.4",
+    "word-wrap": "1.2.5",
     "zustand": "4.5.4"
   },
   "devDependencies": {
@@ -204,7 +204,7 @@
     "copy-webpack-plugin": "11.0.0",
     "css-loader": "6.7.1",
     "dotenv-webpack": "8.0.1",
-    "esbuild": "0.25.0",
+    "esbuild": "0.25.1",
     "esbuild-register": "3.6.0",
     "eslint": "8.48.0",
     "eslint-config-prettier": "9.0.0",
