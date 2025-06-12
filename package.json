@@ -362,5 +362,6 @@
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-hash": false,
       "esbuild-register>esbuild": false
     }
-  }
+  },
+  "packageManager": "yarn@1.22.22"
 }
