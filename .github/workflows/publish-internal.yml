@@ -16,7 +16,7 @@ jobs:
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.event.pull_request.head.ref }}
-          token: ${{ secrets.REPO_TOKEN }}
+          token: ${{ secrets.ORG_ACCESS_TOKEN }}
       - name: Check for new commits
         run: |
           last_commit=$(git log -1 --pretty=%B)
@@ -33,7 +33,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: 'rainbow-me/browser-extension-env'
-          token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+          token: ${{ secrets.ORG_ACCESS_TOKEN }}
           path: tmp
       - name: Copy dotenv
         run: cat tmp/dotenv >> .env && rm -rf tmp
