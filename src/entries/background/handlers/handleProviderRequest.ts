@@ -23,7 +23,7 @@ import { isCustomChain } from '~/core/utils/chains';
 import { getDappHost, isValidUrl } from '~/core/utils/connectedApps';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { WELCOME_URL, goToNewTab } from '~/core/utils/tabs';
-import { getProvider } from '~/core/wagmi/clientToProvider';
+import { getProviderViem } from '~/core/wagmi/clientToProvider';
 import { IN_DAPP_NOTIFICATION_STATUS } from '~/entries/iframe/notification';
 import { RainbowError, logger } from '~/logger';
 
@@ -264,7 +264,7 @@ export const handleProviderRequest = ({
       useNetworkStore.getState().getBackendSupportedChains(true)[chainId]
         ?.nativeCurrency,
     getFeatureFlags: () => useFeatureFlagsStore.getState().featureFlags,
-    getProvider: getProvider,
+    getProvider: getProviderViem,
     messengerProviderRequest: (request: ProviderRequestPayload) =>
       messengerProviderRequest(popupMessenger, request),
     onAddEthereumChain: ({

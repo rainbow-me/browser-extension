@@ -1,7 +1,14 @@
 import { Provider } from '@ethersproject/providers';
-import { getClient } from '@wagmi/core';
+import { getClient, getPublicClient } from '@wagmi/core';
 import { providers } from 'ethers';
-import type { Chain, Client, Transport } from 'viem';
+import {
+  type Chain,
+  type Client,
+  PublicClient,
+  type Transport,
+  createPublicClient,
+  http,
+} from 'viem';
 
 import { wagmiConfig } from '.';
 
@@ -29,6 +36,24 @@ export function clientToBatchedProvider(client: Client<Transport, Chain>) {
     ensAddress: chain.contracts?.ensRegistry?.address,
   };
   return new providers.JsonRpcBatchProvider(transport.url, network);
+}
+
+export function getProviderViem({
+  chainId,
+}: { chainId?: number } = {}): PublicClient {
+  const client = getPublicClient(wagmiConfig, { chainId });
+  if (client) {
+    return client;
+  }
+
+  const rpcUrl = wagmiConfig.chains.find((chain) => chain.id === chainId)
+    ?.rpcUrls.default.http[0];
+
+  const newClient = createPublicClient({
+    transport: http(rpcUrl),
+  });
+
+  return newClient;
 }
 
 /** Action to convert a viem Public Client to an ethers.js Provider. */

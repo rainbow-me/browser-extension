@@ -113,7 +113,7 @@
     "@radix-ui/react-select": "1.2.1",
     "@radix-ui/react-tabs": "1.0.4",
     "@radix-ui/react-tooltip": "1.0.3",
-    "@rainbow-me/provider": "0.1.2",
+    "@rainbow-me/provider": "file:./rainbow-me-provider-0.1.1.tgz",
     "@rainbow-me/swaps": "0.36.0",
     "@rudderstack/analytics-js-service-worker": "3.0.6",
     "@scure/bip39": "1.2.1",
@@ -164,8 +164,8 @@
     "react-switch": "7.0.0",
     "socket.io-client": "4.5.3",
     "validator": "13.9.0",
-    "viem": "2.21.55",
-    "wagmi": "2.8.1",
+    "viem": "2.30.6",
+    "wagmi": "2.15.6",
     "word-wrap": "1.2.4",
     "zustand": "4.5.4"
   },
@@ -360,7 +360,8 @@
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-has": false,
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>tiny-secp256k1": false,
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-hash": false,
-      "esbuild-register>esbuild": false
+      "esbuild-register>esbuild": false,
+      "wagmi>@wagmi/connectors>cbw-sdk>keccak": false
     }
   }
 }
