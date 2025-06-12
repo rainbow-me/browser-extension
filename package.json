@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.5.108",
+  "version": "1.5.110",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -362,5 +362,6 @@
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-hash": false,
       "esbuild-register>esbuild": false
     }
-  }
+  },
+  "packageManager": "yarn@1.22.22"
 }
