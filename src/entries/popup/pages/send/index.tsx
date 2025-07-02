@@ -78,7 +78,7 @@ import { useSendUniqueAsset } from '../../hooks/send/useSendUniqueAsset';
 import { useSendValidations } from '../../hooks/send/useSendValidations';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
-import usePrevious from '../../hooks/usePrevious';
+
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useTokenListSampling } from '../../hooks/useTokenListSampling';
 import { useWallets } from '../../hooks/useWallets';
@@ -196,7 +196,6 @@ export function Send() {
     isValidToAddress,
     readyForReview,
     validateToAddress,
-    toAddressIsSmartContract,
   } = useSendValidations({
     asset,
     assetAmount,
@@ -475,24 +474,7 @@ export function Send() {
   const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
 
-  const showToContractExplainer = useCallback(() => {
-    showExplainerSheet({
-      show: true,
-      title: i18n.t('explainers.send.to_smart_contract.title'),
-      description: [
-        i18n.t('explainers.send.to_smart_contract.description_1'),
-        i18n.t('explainers.send.to_smart_contract.description_2'),
-        i18n.t('explainers.send.to_smart_contract.description_3'),
-      ],
-      actionButton: {
-        label: i18n.t('explainers.send.action_label'),
-        variant: 'tinted',
-        labelColor: 'blue',
-        action: hideExplainerSheet,
-      },
-      header: { emoji: '✋' },
-    });
-  }, [hideExplainerSheet, showExplainerSheet]);
+
 
   useEffect(() => {
     // navigating from token row
@@ -528,21 +510,7 @@ export function Send() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const prevToAddressIsSmartContract = usePrevious(toAddressIsSmartContract);
-  useEffect(() => {
-    if (
-      !prevToAddressIsSmartContract &&
-      toAddressIsSmartContract &&
-      !toEnsName?.includes('argent.xyz')
-    ) {
-      showToContractExplainer();
-    }
-  }, [
-    prevToAddressIsSmartContract,
-    showToContractExplainer,
-    toAddressIsSmartContract,
-    toEnsName,
-  ]);
+
 
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {

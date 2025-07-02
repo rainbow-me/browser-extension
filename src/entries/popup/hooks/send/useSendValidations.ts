@@ -1,5 +1,5 @@
 import { isValidAddress } from '@ethereumjs/util';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
@@ -15,7 +15,6 @@ import {
   lessOrEqualThan,
   lessThan,
 } from '~/core/utils/numbers';
-import { getProvider } from '~/core/wagmi/clientToProvider';
 
 import { useUserNativeAsset } from '../useUserNativeAsset';
 
@@ -34,8 +33,6 @@ export const useSendValidations = ({
   toAddress?: Address;
   toAddressOrName?: string;
 }) => {
-  const [toAddressIsSmartContract, setToAddressIsSmartContract] =
-    useState(false);
 
   const getNativeAssetChainId = () => {
     if (asset) {
@@ -103,21 +100,7 @@ export const useSendValidations = ({
     selectedGas?.gasFee?.amount,
   ]);
 
-  useEffect(() => {
-    const checkToAddress = async () => {
-      if (!toAddress) {
-        setToAddressIsSmartContract(false);
-      } else {
-        setToAddressIsSmartContract(false);
-        const provider = getProvider({
-          chainId: asset?.chainId || ChainId.mainnet,
-        });
-        const code = await provider.getCode(toAddress);
-        setToAddressIsSmartContract(code !== '0x');
-      }
-    };
-    checkToAddress();
-  }, [asset?.chainId, nft, toAddress]);
+
 
   const buttonLabel = useMemo(() => {
     if (!isValidToAddress && toAddressOrName !== '')
@@ -176,7 +159,6 @@ export const useSendValidations = ({
   return {
     enoughAssetBalance,
     enoughNativeAssetForGas,
-    toAddressIsSmartContract,
     buttonLabel,
     isValidToAddress,
     readyForReview,
