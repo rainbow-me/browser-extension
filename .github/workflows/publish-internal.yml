@@ -26,7 +26,7 @@ jobs:
           fi
       - uses: actions/setup-node@v4
         with:
-          node-version: "20.16.0"
+          node-version: "22.17.0"
           cache: 'yarn'
       - name: Install deps via Yarn
         run: yarn setup
