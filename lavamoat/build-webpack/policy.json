@@ -147,9 +147,9 @@
         "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@vanilla-extract/babel-plugin-debug-ids": true,
         "@vanilla-extract/vite-plugin>@vanilla-extract/integration>esbuild": true,
         "@vanilla-extract/vite-plugin>@vanilla-extract/integration>eval": true,
-        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up": true,
         "@vanilla-extract/vite-plugin>@vanilla-extract/integration>javascript-stringify": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": true,
+        "eslint>find-up": true,
         "lodash": true
       }
     },
@@ -221,38 +221,6 @@
       },
       "globals": {
         "process.mainModule": true
-      }
-    },
-    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up": {
-      "builtin": {
-        "path.dirname": true,
-        "path.parse": true,
-        "path.resolve": true
-      },
-      "packages": {
-        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up>locate-path": true,
-        "eslint>find-up>path-exists": true
-      }
-    },
-    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up>locate-path": {
-      "builtin": {
-        "fs.lstat": true,
-        "fs.lstatSync": true,
-        "fs.stat": true,
-        "fs.statSync": true,
-        "path.resolve": true,
-        "util.promisify": true
-      },
-      "globals": {
-        "process.cwd": true
-      },
-      "packages": {
-        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up>locate-path>p-locate": true
-      }
-    },
-    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up>locate-path>p-locate": {
-      "packages": {
-        "jest>@jest/core>jest-runner>p-limit": true
       }
     },
     "@vanilla-extract/vite-plugin>@vanilla-extract/integration>javascript-stringify": {
@@ -352,47 +320,12 @@
         "path.sep": true
       },
       "packages": {
-        "copy-webpack-plugin>glob-parent": true,
-        "copy-webpack-plugin>globby": true,
         "copy-webpack-plugin>schema-utils": true,
         "copy-webpack-plugin>serialize-javascript": true,
+        "eslint>glob-parent": true,
+        "globby": true,
         "globby>fast-glob": true,
         "lint-staged>normalize-path": true
-      }
-    },
-    "copy-webpack-plugin>glob-parent": {
-      "builtin": {
-        "os.platform": true,
-        "path.posix.dirname": true
-      },
-      "packages": {
-        "eslint>is-glob": true
-      }
-    },
-    "copy-webpack-plugin>globby": {
-      "builtin": {
-        "fs.Stats": true,
-        "fs.readFile": true,
-        "fs.readFileSync": true,
-        "fs.statSync": true,
-        "path.dirname": true,
-        "path.isAbsolute": true,
-        "path.join": true,
-        "path.posix.join": true,
-        "path.relative": true,
-        "stream.Transform": true,
-        "util.promisify": true
-      },
-      "globals": {
-        "process.cwd": true
-      },
-      "packages": {
-        "eslint>ignore": true,
-        "globby>array-union": true,
-        "globby>dir-glob": true,
-        "globby>fast-glob": true,
-        "globby>merge2": true,
-        "globby>slash": true
       }
     },
     "copy-webpack-plugin>schema-utils": {
@@ -978,17 +911,6 @@
         "eslint>@nodelib/fs.walk>fastq>reusify": true
       }
     },
-    "eslint>ajv": {
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "eslint>ajv>fast-json-stable-stringify": true,
-        "eslint>ajv>json-schema-traverse": true,
-        "eslint>ajv>uri-js": true,
-        "eslint>fast-deep-equal": true
-      }
-    },
     "eslint>ajv>uri-js": {
       "globals": {
         "define": true
@@ -1023,11 +945,52 @@
         "eslint>esquery>estraverse": true
       }
     },
+    "eslint>find-up": {
+      "builtin": {
+        "path.dirname": true,
+        "path.parse": true,
+        "path.resolve": true
+      },
+      "packages": {
+        "eslint>find-up>locate-path": true,
+        "eslint>find-up>path-exists": true
+      }
+    },
+    "eslint>find-up>locate-path": {
+      "builtin": {
+        "fs.lstat": true,
+        "fs.lstatSync": true,
+        "fs.stat": true,
+        "fs.statSync": true,
+        "path.resolve": true,
+        "util.promisify": true
+      },
+      "globals": {
+        "process.cwd": true
+      },
+      "packages": {
+        "eslint>find-up>locate-path>p-locate": true
+      }
+    },
+    "eslint>find-up>locate-path>p-locate": {
+      "packages": {
+        "jest>@jest/core>jest-runner>p-limit": true
+      }
+    },
     "eslint>find-up>path-exists": {
       "builtin": {
         "fs.access": true,
         "fs.accessSync": true,
         "util.promisify": true
+      }
+    },
+    "eslint>glob-parent": {
+      "builtin": {
+        "os.platform": true,
+        "path.posix.dirname": true
+      },
+      "packages": {
+        "eslint>is-glob": true
       }
     },
     "eslint>ignore": {
@@ -1087,8 +1050,52 @@
     },
     "file-loader>schema-utils": {
       "packages": {
-        "eslint>ajv": true,
-        "webpack>schema-utils>ajv-keywords": true
+        "file-loader>schema-utils>ajv": true,
+        "file-loader>schema-utils>ajv-keywords": true
+      }
+    },
+    "file-loader>schema-utils>ajv": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "eslint>ajv>fast-json-stable-stringify": true,
+        "eslint>ajv>uri-js": true,
+        "eslint>fast-deep-equal": true,
+        "file-loader>schema-utils>ajv>json-schema-traverse": true
+      }
+    },
+    "file-loader>schema-utils>ajv-keywords": {
+      "globals": {
+        "Buffer": true,
+        "console.error": true,
+        "console.warn": true
+      }
+    },
+    "globby": {
+      "builtin": {
+        "fs.Stats": true,
+        "fs.readFile": true,
+        "fs.readFileSync": true,
+        "fs.statSync": true,
+        "path.dirname": true,
+        "path.isAbsolute": true,
+        "path.join": true,
+        "path.posix.join": true,
+        "path.relative": true,
+        "stream.Transform": true,
+        "util.promisify": true
+      },
+      "globals": {
+        "process.cwd": true
+      },
+      "packages": {
+        "eslint>ignore": true,
+        "globby>array-union": true,
+        "globby>dir-glob": true,
+        "globby>fast-glob": true,
+        "globby>merge2": true,
+        "globby>slash": true
       }
     },
     "globby>dir-glob": {
@@ -1294,7 +1301,7 @@
     },
     "html-webpack-plugin>pretty-error>renderkid>css-select>domutils>dom-serializer": {
       "packages": {
-        "html-webpack-plugin>pretty-error>renderkid>css-select>domutils>dom-serializer>entities": true,
+        "html-webpack-plugin>pretty-error>renderkid>htmlparser2>entities": true,
         "web-ext>addons-linter>cheerio>domutils>domelementtype": true
       }
     },
@@ -1319,26 +1326,8 @@
     },
     "html-webpack-plugin>pretty-error>renderkid>htmlparser2": {
       "packages": {
-        "html-webpack-plugin>pretty-error>renderkid>htmlparser2>domhandler": true,
-        "html-webpack-plugin>pretty-error>renderkid>htmlparser2>domutils": true,
-        "html-webpack-plugin>pretty-error>renderkid>htmlparser2>entities": true,
-        "web-ext>addons-linter>cheerio>domutils>domelementtype": true
-      }
-    },
-    "html-webpack-plugin>pretty-error>renderkid>htmlparser2>domhandler": {
-      "packages": {
-        "web-ext>addons-linter>cheerio>domutils>domelementtype": true
-      }
-    },
-    "html-webpack-plugin>pretty-error>renderkid>htmlparser2>domutils": {
-      "packages": {
-        "html-webpack-plugin>pretty-error>renderkid>htmlparser2>domhandler": true,
-        "html-webpack-plugin>pretty-error>renderkid>htmlparser2>domutils>dom-serializer": true,
-        "web-ext>addons-linter>cheerio>domutils>domelementtype": true
-      }
-    },
-    "html-webpack-plugin>pretty-error>renderkid>htmlparser2>domutils>dom-serializer": {
-      "packages": {
+        "html-webpack-plugin>pretty-error>renderkid>css-select>domhandler": true,
+        "html-webpack-plugin>pretty-error>renderkid>css-select>domutils": true,
         "html-webpack-plugin>pretty-error>renderkid>htmlparser2>entities": true,
         "web-ext>addons-linter>cheerio>domutils>domelementtype": true
       }
@@ -1391,33 +1380,9 @@
     },
     "mini-css-extract-plugin>schema-utils": {
       "packages": {
-        "mini-css-extract-plugin>schema-utils>ajv": true,
-        "mini-css-extract-plugin>schema-utils>ajv-formats": true,
-        "mini-css-extract-plugin>schema-utils>ajv-keywords": true
-      }
-    },
-    "mini-css-extract-plugin>schema-utils>ajv": {
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "eslint>ajv>uri-js": true,
-        "eslint>fast-deep-equal": true,
-        "web-ext>addons-linter>ajv>json-schema-traverse": true
-      }
-    },
-    "mini-css-extract-plugin>schema-utils>ajv-formats": {
-      "packages": {
-        "mini-css-extract-plugin>schema-utils>ajv": true
-      }
-    },
-    "mini-css-extract-plugin>schema-utils>ajv-keywords": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "eslint>fast-deep-equal": true,
-        "mini-css-extract-plugin>schema-utils>ajv": true
+        "copy-webpack-plugin>schema-utils>ajv": true,
+        "copy-webpack-plugin>schema-utils>ajv-formats": true,
+        "copy-webpack-plugin>schema-utils>ajv-keywords": true
       }
     },
     "semver": {
@@ -1538,6 +1503,7 @@
         "crypto": true,
         "fs": true,
         "inspector": true,
+        "module.findPnpApi": true,
         "os.EOL": true,
         "os.platform": true,
         "path.dirname": true,
@@ -1634,12 +1600,6 @@
         "viem>ws>bufferutil>node-gyp-build": true
       }
     },
-    "vitest>acorn": {
-      "globals": {
-        "console": true,
-        "define": true
-      }
-    },
     "vitest>acorn-walk": {
       "globals": {
         "define": true
@@ -1667,19 +1627,13 @@
       },
       "packages": {
         "vitest>vite>terser>@jridgewell/source-map": true,
-        "vitest>vite>terser>acorn": true
+        "webpack>acorn": true
       }
     },
     "vitest>vite>terser>@jridgewell/source-map": {
       "globals": {
         "Buffer": true,
         "TextDecoder": true,
-        "define": true
-      }
-    },
-    "vitest>vite>terser>acorn": {
-      "globals": {
-        "console": true,
         "define": true
       }
     },
@@ -1843,18 +1797,12 @@
         "lodash": true,
         "viem>ws": true,
         "vitest>acorn-walk": true,
-        "webpack-bundle-analyzer>acorn": true,
         "webpack-bundle-analyzer>chalk": true,
         "webpack-bundle-analyzer>gzip-size": true,
         "webpack-bundle-analyzer>opener": true,
         "webpack-bundle-analyzer>sirv": true,
-        "webpack-cli>@discoveryjs/json-ext": true
-      }
-    },
-    "webpack-bundle-analyzer>acorn": {
-      "globals": {
-        "console": true,
-        "define": true
+        "webpack-cli>@discoveryjs/json-ext": true,
+        "webpack>acorn": true
       }
     },
     "webpack-bundle-analyzer>chalk": {
@@ -2174,8 +2122,19 @@
         "process": true
       },
       "packages": {
-        "eslint>ajv": true,
+        "webpack>schema-utils>ajv": true,
         "webpack>schema-utils>ajv-keywords": true
+      }
+    },
+    "webpack>schema-utils>ajv": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "eslint>ajv>fast-json-stable-stringify": true,
+        "eslint>ajv>uri-js": true,
+        "eslint>fast-deep-equal": true,
+        "webpack>schema-utils>ajv>json-schema-traverse": true
       }
     },
     "webpack>schema-utils>ajv-keywords": {
@@ -2264,14 +2223,20 @@
         "process": true
       },
       "packages": {
-        "vitest>acorn": true,
-        "webpack>terser-webpack-plugin>terser>@jridgewell/source-map": true
+        "webpack>terser-webpack-plugin>terser>@jridgewell/source-map": true,
+        "webpack>terser-webpack-plugin>terser>acorn": true
       }
     },
     "webpack>terser-webpack-plugin>terser>@jridgewell/source-map": {
       "globals": {
         "Buffer": true,
         "TextDecoder": true,
+        "define": true
+      }
+    },
+    "webpack>terser-webpack-plugin>terser>acorn": {
+      "globals": {
+        "console": true,
         "define": true
       }
     },

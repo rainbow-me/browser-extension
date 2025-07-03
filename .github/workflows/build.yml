@@ -19,19 +19,24 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "20.16.0"
-          cache: 'yarn'
+          node-version: "22.17.0"
+      - name: Enable Corepack
+        run: |
+          corepack enable
+          corepack prepare --activate
       - name: Install deps via Yarn
-        run: yarn setup
+        run: |
+          yarn install --immutable
+          yarn setup
       - name: Check for frozen lockfile
         run: yarn check-lockfile
-      - name: Zip node_modules
-        run: tar czf node_modules.tar.gz node_modules/
+      - name: Zip node_modules and yarn state
+        run: tar czf yarn_node_modules.tar.gz node_modules/ .yarn/install-state.gz
       - name: Upload deps artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: node_modules.tar.gz
-          path: node_modules.tar.gz
+          name: yarn_node_modules.tar.gz
+          path: yarn_node_modules.tar.gz
 
   # BUILD THE EXTENSION
   build:
@@ -41,13 +46,17 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "20.16.0"
+          node-version: "22.17.0"
+      - name: Enable Corepack
+        run: |
+          corepack enable
+          corepack prepare --activate
       - name: Download deps cache artifacts
         uses: actions/download-artifact@v4
         with:
-          name: node_modules.tar.gz
-      - name: Unzip node_modules
-        run: tar xzf node_modules.tar.gz
+          name: yarn_node_modules.tar.gz
+      - name: Unzip node_modules and yarn state
+        run: tar xzf yarn_node_modules.tar.gz
       - uses: actions/checkout@v4
         with:
             repository: 'rainbow-me/browser-extension-env'
@@ -399,13 +408,17 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "20.16.0"
+          node-version: "22.17.0"
+      - name: Enable Corepack
+        run: |
+          corepack enable
+          corepack prepare --activate
       - name: Download deps cache artifacts
         uses: actions/download-artifact@v4
         with:
-          name: node_modules.tar.gz
-      - name: Unzip node_modules
-        run: tar xzf node_modules.tar.gz
+          name: yarn_node_modules.tar.gz
+      - name: Unzip node_modules and yarn state
+        run: tar xzf yarn_node_modules.tar.gz
       - name: Install rust
         uses: moonrepo/setup-rust@v1.2.1
         with:
@@ -438,13 +451,17 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "20.16.0"
+          node-version: "22.17.0"
+      - name: Enable Corepack
+        run: |
+          corepack enable
+          corepack prepare --activate
       - name: Download deps cache artifacts
         uses: actions/download-artifact@v4
         with:
-          name: node_modules.tar.gz
-      - name: Unzip node_modules
-        run: tar xzf node_modules.tar.gz
+          name: yarn_node_modules.tar.gz
+      - name: Unzip node_modules and yarn state
+        run: tar xzf yarn_node_modules.tar.gz
       - name: DS Setup
         run: yarn ds:install
       - name: Fetch networks
@@ -461,7 +478,7 @@ jobs:
     steps:
       - uses: geekyeggo/delete-artifact@v5
         with:
-          name: node_modules.tar.gz
+          name: yarn_node_modules.tar.gz
           failOnError: false
       - uses: geekyeggo/delete-artifact@v5
         with:

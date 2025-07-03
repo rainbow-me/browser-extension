@@ -16,10 +16,15 @@ jobs:
           token: ${{ secrets.ORG_ACCESS_TOKEN }}
       - uses: actions/setup-node@v4
         with:
-          node-version: "20.16.0"
-          cache: 'yarn'
+          node-version: "22.17.0"
+      - name: Enable Corepack
+        run: |
+          corepack enable
+          corepack prepare --activate
       - name: Install deps via Yarn
-        run: yarn setup
+        run: |
+          yarn install --immutable
+          yarn setup
       - uses: actions/checkout@v4
         with:
           repository: 'rainbow-me/browser-extension-env'
