@@ -19,10 +19,10 @@ runs:
   - name: Download deps cache artifacts
     uses: actions/download-artifact@v4
     with:
-      name: node_modules.tar.gz
-  - name: Unzip node_modules
+      name: yarn_node_modules.tar.gz
+  - name: Unzip node_modules and yarn state
     shell: 'bash'
-    run: tar xzf node_modules.tar.gz
+    run: tar xzf yarn_node_modules.tar.gz
   - name: Download build artifacts
     uses: actions/download-artifact@v4
     with:
