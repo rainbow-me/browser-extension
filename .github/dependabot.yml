@@ -1,0 +1,12 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "npm"
+    directory: "/src/design-system/docs"
+    schedule:
+      interval: "weekly"
+    ignore:
+      - dependency-name: "*"
