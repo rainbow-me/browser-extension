@@ -343,7 +343,6 @@ export const importAccountAtIndex = async (
     case 'Trezor':
       {
         const path = getHDPathForVendorAndType(index, 'Trezor');
-        // @ts-expect-error --- the type definitons make no sense for this method.
         // 'address' is required but it should be optional and only used for validation
         const result = await TrezorConnect.ethereumGetAddress({
           path,
