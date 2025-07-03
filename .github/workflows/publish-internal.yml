@@ -32,7 +32,9 @@ jobs:
           corepack enable
           corepack prepare --activate
       - name: Install deps via Yarn
-        run: yarn setup
+        run: |
+          yarn install --immutable
+          yarn setup
       - uses: actions/checkout@v4
         with:
           repository: 'rainbow-me/browser-extension-env'

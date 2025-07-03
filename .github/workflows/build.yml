@@ -25,7 +25,9 @@ jobs:
           corepack enable
           corepack prepare --activate
       - name: Install deps via Yarn
-        run: yarn setup
+        run: |
+          yarn install --immutable
+          yarn setup
       - name: Check for frozen lockfile
         run: yarn check-lockfile
       - name: Zip node_modules
