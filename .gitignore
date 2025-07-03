@@ -1,23 +1,32 @@
+# Environment variables
 .env
 .env-e
+
+# OS
 .DS_Store
 
-# node.js
-#
+# yarn v4
 node_modules/
-npm-debug.log
-yarn-error.log
-
-.eslintcache
-
-build/
-screenshots/
+.pnp.*
+.yarn/*
+!.yarn/cache
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
 
 # Anvil logs
 anvil*.log
 
+# Build artifacts
 rainbowbx.xpi
+build/
+screenshots/
+.eslintcache
 
+# IDEs
 .idea/**
 
+# Static data
 static/data
