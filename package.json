@@ -360,7 +360,9 @@
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-has": false,
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>tiny-secp256k1": false,
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-hash": false,
-      "esbuild-register>esbuild": false
+      "esbuild-register>esbuild": false,
+      "wagmi>@wagmi/connectors>@metamask/sdk>@metamask/sdk-communication-layer>bufferutil": false,
+      "wagmi>@wagmi/connectors>@metamask/sdk>@metamask/sdk-communication-layer>utf-8-validate": false
     }
   },
   "packageManager": "yarn@4.2.2"
