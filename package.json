@@ -30,9 +30,9 @@
     "// Design System scripts": "",
     "// GraphQL scripts": "",
     "graphql-setup": "yarn graphql-codegen:install && yarn graphql-codegen",
-    "graphql-codegen:install": "yarn install --cwd src/core/graphql",
+    "graphql-codegen:install": "yarn --cwd src/core/graphql install",
     "graphql-codegen": "export GRAPH_ENS_API_KEY=$(grep GRAPH_ENS_API_KEY .env | cut -d '=' -f2) && cd src/core/graphql && yarn codegen",
-    "ds:install": "yarn install --cwd src/design-system/docs",
+    "ds:install": "yarn --cwd src/design-system/docs install",
     "ds": "cd src/design-system/docs && yarn dev",
     "ds:build": "cd src/design-system/docs && yarn build",
     "ds:generate-symbols": "node -r esbuild-register ./src/design-system/scripts/generateSymbols.ts",
@@ -363,5 +363,5 @@
       "esbuild-register>esbuild": false
     }
   },
-  "packageManager": "yarn@1.22.22"
+  "packageManager": "yarn@4.2.2"
 }
