@@ -18,6 +18,7 @@ import {
   delayTime,
   executePerformShortcut,
   findElementByTestId,
+  findElementByTestIdAndClick,
   findElementByText,
   getExtensionIdByName,
   getRootUrl,
@@ -105,7 +106,9 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
   });
 
   it('should be able to open contact menu', async () => {
+    await findElementByTestIdAndClick({ id: 'send-input-mask', driver });
     await executePerformShortcut({ driver, key: 'DECIMAL' });
+    await delayTime('long');
     const copyOption = await findElementByText(driver, 'Copy Address');
     expect(copyOption).toBeTruthy();
     await executePerformShortcut({ driver, key: 'ESCAPE' });
