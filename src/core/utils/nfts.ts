@@ -1,6 +1,5 @@
 import { ChainName } from '../types/chains';
 import {
-  PolygonAllowListDictionary,
   SimpleHashChain,
   SimpleHashFloorPrice,
   SimpleHashMarketplaceId,
@@ -196,7 +195,6 @@ export function getNetworkFromSimpleHashChain(
 
 export function validateSimpleHashNFT(
   nft: SimpleHashNFT,
-  allowList?: PolygonAllowListDictionary,
 ): ValidatedSimpleHashNFT | undefined {
   const lowercasedContractAddress = nft.contract_address?.toLowerCase();
   const network = getNetworkFromSimpleHashChain(nft.chain);
@@ -207,15 +205,11 @@ export function validateSimpleHashNFT(
     !nft.contract_address ||
     !nft.token_id ||
     !network;
-  const isPolygonAndNotAllowed =
-    allowList &&
-    nft.chain === SimpleHashChain.Polygon &&
-    !allowList[lowercasedContractAddress];
   const isGnosisAndNotPOAP =
     nft.chain === SimpleHashChain.Gnosis &&
     lowercasedContractAddress !== POAP_NFT_ADDRESS;
 
-  if (isMissingRequiredFields || isPolygonAndNotAllowed || isGnosisAndNotPOAP) {
+  if (isMissingRequiredFields || isGnosisAndNotPOAP) {
     return undefined;
   }
 
@@ -231,10 +225,9 @@ export function validateSimpleHashNFT(
 
 export function filterSimpleHashNFTs(
   nfts: SimpleHashNFT[],
-  allowList: PolygonAllowListDictionary,
 ): ValidatedSimpleHashNFT[] {
   return nfts.reduce((validatedNfts, nft) => {
-    const validatedNft = validateSimpleHashNFT(nft, allowList);
+    const validatedNft = validateSimpleHashNFT(nft);
     if (validatedNft) validatedNfts.push(validatedNft);
     return validatedNfts;
   }, [] as ValidatedSimpleHashNFT[]);
