@@ -1,10 +1,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { Address, Chain } from 'viem';
 
-import {
-  fetchNftCollections,
-  polygonAllowListFetcher,
-} from '~/core/network/nfts';
+import { fetchNftCollections } from '~/core/network/nfts';
 import {
   InfiniteQueryConfig,
   QueryFunctionArgs,
@@ -117,26 +114,7 @@ async function nftCollectionsQueryFunction({
     nextPage: pageParam as string | undefined,
     sort: sort === 'alphabetical' ? 'name__asc' : 'last_acquired_date__desc',
   });
-  const polygonAllowList = await polygonAllowListFetcher();
-  const filteredCollections = data?.collections?.filter(
-    (collection: SimpleHashCollectionDetails) => {
-      const polygonContractAddressString =
-        collection.collection_details.top_contracts.find((contract) =>
-          contract.includes('polygon'),
-        );
-      const shouldPrefilterPolygonContract =
-        collection.collection_details.top_contracts.length === 1 &&
-        polygonContractAddressString;
-
-      if (shouldPrefilterPolygonContract) {
-        const polygonContractAddress =
-          polygonContractAddressString.split('.')[1];
-        return polygonAllowList[polygonContractAddress.toLowerCase()];
-      } else {
-        return true;
-      }
-    },
-  );
+  const filteredCollections = data?.collections;
   return {
     collections: filteredCollections,
     nextPage: data?.nextPage,

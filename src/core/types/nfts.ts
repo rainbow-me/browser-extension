@@ -1,11 +1,5 @@
 import { ChainName } from './chains';
 
-export type PolygonAllowlist = Record<string, boolean>;
-
-export interface PolygonAllowListDictionary {
-  [key: string]: boolean;
-}
-
 export enum SimpleHashChain {
   AlignTestnet = 'align-testnet',
   AnomalyAndromedaTestnet = 'anomaly-andromeda-testnet',
