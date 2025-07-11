@@ -28,6 +28,7 @@ const isFirefox = browser === 'firefox';
 
 // consts
 
+// Default Selenium wait timeout
 const waitUntilTime = 20_000;
 const testPassword = 'test1234';
 const BINARY_PATHS = {
@@ -1053,6 +1054,10 @@ export async function importWalletFlow(
   });
 
   if (!isPrivateKey) {
+    await waitUntilElementByTestIdIsPresent({
+      id: 'add-wallets-button',
+      driver,
+    });
     await findElementByTestIdAndClick({
       id: 'add-wallets-button',
       driver,
