@@ -1,8 +1,9 @@
 import { isValidAddress } from '@ethereumjs/util';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
+import { RAINBOW_TOKEN_LIST } from '~/core/network/rainbowTokenList';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId, chainNameToIdMapping } from '~/core/types/chains';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
@@ -15,7 +16,6 @@ import {
   lessOrEqualThan,
   lessThan,
 } from '~/core/utils/numbers';
-import { getProvider } from '~/core/wagmi/clientToProvider';
 
 import { useUserNativeAsset } from '../useUserNativeAsset';
 
@@ -34,9 +34,6 @@ export const useSendValidations = ({
   toAddress?: Address;
   toAddressOrName?: string;
 }) => {
-  const [toAddressIsSmartContract, setToAddressIsSmartContract] =
-    useState(false);
-
   const getNativeAssetChainId = () => {
     if (asset) {
       return asset?.chainId || ChainId.mainnet;
@@ -103,21 +100,21 @@ export const useSendValidations = ({
     selectedGas?.gasFee?.amount,
   ]);
 
-  useEffect(() => {
-    const checkToAddress = async () => {
-      if (!toAddress) {
-        setToAddressIsSmartContract(false);
-      } else {
-        setToAddressIsSmartContract(false);
-        const provider = getProvider({
-          chainId: asset?.chainId || ChainId.mainnet,
-        });
-        const code = await provider.getCode(toAddress);
-        setToAddressIsSmartContract(code !== '0x');
-      }
-    };
-    checkToAddress();
-  }, [asset?.chainId, nft, toAddress]);
+  const isTokenContractAddress = useMemo(
+    () => !!(toAddress && RAINBOW_TOKEN_LIST[toAddress.toLowerCase()]),
+    [toAddress],
+  );
+
+  const isSelfSend = useMemo(
+    () =>
+      !!(
+        asset &&
+        !asset.isNativeAsset &&
+        toAddress &&
+        asset.address.toLowerCase() === toAddress.toLowerCase()
+      ),
+    [asset, toAddress],
+  );
 
   const buttonLabel = useMemo(() => {
     if (!isValidToAddress && toAddressOrName !== '')
@@ -176,7 +173,8 @@ export const useSendValidations = ({
   return {
     enoughAssetBalance,
     enoughNativeAssetForGas,
-    toAddressIsSmartContract,
+    isTokenContractAddress,
+    isSelfSend,
     buttonLabel,
     isValidToAddress,
     readyForReview,
