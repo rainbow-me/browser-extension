@@ -1718,6 +1718,10 @@
         "description_3": "Double check the address, verify it with the recipient, or contact support first.",
         "title": "Hold your horses!"
       },
+      "validation": {
+        "sending_to_token_contract": "You cannot send %{tokenName} to its own contract address",
+        "sending_to_token_contract_generic": "You cannot send tokens to a token contract address"
+      },
       "action_label": "Got it"
     },
     "custom_gas": {

@@ -15,9 +15,30 @@ import {
   lessOrEqualThan,
   lessThan,
 } from '~/core/utils/numbers';
-import { getProvider } from '~/core/wagmi/clientToProvider';
 
 import { useUserNativeAsset } from '../useUserNativeAsset';
+
+const validateRecipient = (
+  toAddress: Address | undefined,
+  asset: ParsedUserAsset | null,
+  userAssets: ParsedUserAsset[]
+): boolean => {
+  if (!toAddress) return false;
+  
+  const recipientAddress = toAddress.toLowerCase();
+  
+  // Token being sent shares contract address with recipient
+  if (asset && asset.address.toLowerCase() === recipientAddress) {
+    return false;
+  }
+  
+  // Token contract send prevention - check if recipient matches any token contract
+  const isTokenContract = userAssets.some(
+    userAsset => userAsset.address.toLowerCase() === recipientAddress
+  );
+  
+  return !isTokenContract;
+};
 
 export const useSendValidations = ({
   asset,
@@ -26,6 +47,7 @@ export const useSendValidations = ({
   selectedGas,
   toAddress,
   toAddressOrName,
+  userAssets = [],
 }: {
   asset?: ParsedUserAsset | null;
   assetAmount?: string;
@@ -33,9 +55,9 @@ export const useSendValidations = ({
   selectedGas?: GasFeeParams | GasFeeLegacyParams;
   toAddress?: Address;
   toAddressOrName?: string;
+  userAssets?: ParsedUserAsset[];
 }) => {
-  const [toAddressIsSmartContract, setToAddressIsSmartContract] =
-    useState(false);
+  const [recipientValidationError, setRecipientValidationError] = useState<string | null>(null);
 
   const getNativeAssetChainId = () => {
     if (asset) {
@@ -103,25 +125,42 @@ export const useSendValidations = ({
     selectedGas?.gasFee?.amount,
   ]);
 
+  const isValidRecipient = useMemo(() => {
+    return validateRecipient(toAddress, asset || null, userAssets);
+  }, [toAddress, asset, userAssets]);
+
   useEffect(() => {
-    const checkToAddress = async () => {
-      if (!toAddress) {
-        setToAddressIsSmartContract(false);
+    if (!toAddress) {
+      setRecipientValidationError(null);
+      return;
+    }
+
+    if (!isValidRecipient) {
+      // Check if sending to token contract
+      if (asset && asset.address.toLowerCase() === toAddress.toLowerCase()) {
+        setRecipientValidationError(
+          i18n.t('send.validation.sending_to_token_contract', {
+            tokenName: asset.symbol,
+          }) || 'You cannot send a token to its own contract address'
+        );
       } else {
-        setToAddressIsSmartContract(false);
-        const provider = getProvider({
-          chainId: asset?.chainId || ChainId.mainnet,
-        });
-        const code = await provider.getCode(toAddress);
-        setToAddressIsSmartContract(code !== '0x');
+        setRecipientValidationError(
+          i18n.t('send.validation.sending_to_token_contract_generic') || 
+          'You cannot send tokens to a token contract address'
+        );
       }
-    };
-    checkToAddress();
-  }, [asset?.chainId, nft, toAddress]);
+    } else {
+      setRecipientValidationError(null);
+    }
+  }, [toAddress, asset, isValidRecipient]);
 
   const buttonLabel = useMemo(() => {
     if (!isValidToAddress && toAddressOrName !== '')
       return i18n.t('send.button_label.enter_valid_address');
+
+    if (recipientValidationError) {
+      return recipientValidationError;
+    }
 
     if (!toAddress && !assetAmount && !nft) {
       return i18n.t('send.button_label.enter_address_and_amount');
@@ -152,6 +191,7 @@ export const useSendValidations = ({
     nft,
     toAddress,
     toAddressOrName,
+    recipientValidationError,
   ]);
 
   const readyForReview = useMemo(
@@ -161,7 +201,8 @@ export const useSendValidations = ({
       toAddressOrName !== '' &&
       (assetAmount || !!nft) &&
       enoughAssetBalance &&
-      enoughNativeAssetForGas,
+      enoughNativeAssetForGas &&
+      isValidRecipient,
     [
       assetAmount,
       enoughAssetBalance,
@@ -170,13 +211,15 @@ export const useSendValidations = ({
       nft,
       selectedGas?.gasFee?.amount,
       toAddressOrName,
+      isValidRecipient,
     ],
   );
 
   return {
     enoughAssetBalance,
     enoughNativeAssetForGas,
-    toAddressIsSmartContract,
+    isValidRecipient,
+    recipientValidationError,
     buttonLabel,
     isValidToAddress,
     readyForReview,

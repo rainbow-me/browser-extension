@@ -196,7 +196,8 @@ export function Send() {
     isValidToAddress,
     readyForReview,
     validateToAddress,
-    toAddressIsSmartContract,
+    isValidRecipient,
+    recipientValidationError,
   } = useSendValidations({
     asset,
     assetAmount,
@@ -204,6 +205,7 @@ export function Send() {
     selectedGas,
     toAddress,
     toAddressOrName,
+    userAssets: unhiddenAssets,
   });
 
   const controls = useAnimationControls();
@@ -528,21 +530,7 @@ export function Send() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const prevToAddressIsSmartContract = usePrevious(toAddressIsSmartContract);
-  useEffect(() => {
-    if (
-      !prevToAddressIsSmartContract &&
-      toAddressIsSmartContract &&
-      !toEnsName?.includes('argent.xyz')
-    ) {
-      showToContractExplainer();
-    }
-  }, [
-    prevToAddressIsSmartContract,
-    showToContractExplainer,
-    toAddressIsSmartContract,
-    toEnsName,
-  ]);
+  // Removed smart contract explainer logic - now handled in useSendValidations
 
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
