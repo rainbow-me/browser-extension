@@ -14,7 +14,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed
 
 ### Removed
-- Removed deprecated Polygon allowlist fetcher and obsolete `137-allowList` storage entry
 
 ### Security
 
