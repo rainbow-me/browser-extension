@@ -1,0 +1,23 @@
+{
+  "snapshot": "snapshot-20250712-feeb954c-80f2-4e29-b131-1c771f357059",
+  "install": "yarn install --immutable && yarn setup",
+  "start": "yarn run dev",
+  "terminals": [
+    {
+      "name": "Run linter",
+      "command": "yarn run lint"
+    },
+    {
+      "name": "Run typecheck",
+      "command": "yarn run typecheck"
+    },
+    {
+      "name": "Run unit tests",
+      "command": "yarn run test"
+    },
+    {
+      "name": "Run React app",
+      "command": "yarn run dev"
+    }
+  ]
+}
