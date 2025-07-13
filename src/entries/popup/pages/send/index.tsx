@@ -191,20 +191,15 @@ export function Send() {
     setToAddressOrName,
   } = useSendState({ assetAmount, rawMaxAssetBalanceAmount, asset, nft });
 
-  const {
-    buttonLabel,
-    isValidToAddress,
-    readyForReview,
-    validateToAddress,
-    toAddressIsSmartContract,
-  } = useSendValidations({
-    asset,
-    assetAmount,
-    nft,
-    selectedGas,
-    toAddress,
-    toAddressOrName,
-  });
+  const { buttonLabel, isValidRecipient, readyForReview, validateRecipient } =
+    useSendValidations({
+      asset,
+      assetAmount,
+      nft,
+      selectedGas,
+      toAddress,
+      toAddressOrName,
+    });
 
   const controls = useAnimationControls();
   const transactionRequestForGas: TransactionRequest = useMemo(() => {
@@ -475,14 +470,14 @@ export function Send() {
   const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
 
-  const showToContractExplainer = useCallback(() => {
+  const showTokenContractExplainer = useCallback(() => {
     showExplainerSheet({
       show: true,
-      title: i18n.t('explainers.send.to_smart_contract.title'),
+      title: i18n.t('explainers.send.to_token_contract.title'),
       description: [
-        i18n.t('explainers.send.to_smart_contract.description_1'),
-        i18n.t('explainers.send.to_smart_contract.description_2'),
-        i18n.t('explainers.send.to_smart_contract.description_3'),
+        i18n.t('explainers.send.to_token_contract.description_1'),
+        i18n.t('explainers.send.to_token_contract.description_2'),
+        i18n.t('explainers.send.to_token_contract.description_3'),
       ],
       actionButton: {
         label: i18n.t('explainers.send.action_label'),
@@ -528,21 +523,13 @@ export function Send() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const prevToAddressIsSmartContract = usePrevious(toAddressIsSmartContract);
+  const isInvalidRecipient = validateRecipient();
+  const prevInvalidRecipient = usePrevious(isInvalidRecipient);
   useEffect(() => {
-    if (
-      !prevToAddressIsSmartContract &&
-      toAddressIsSmartContract &&
-      !toEnsName?.includes('argent.xyz')
-    ) {
-      showToContractExplainer();
+    if (!prevInvalidRecipient && isInvalidRecipient) {
+      showTokenContractExplainer();
     }
-  }, [
-    prevToAddressIsSmartContract,
-    showToContractExplainer,
-    toAddressIsSmartContract,
-    toEnsName,
-  ]);
+  }, [prevInvalidRecipient, isInvalidRecipient, showTokenContractExplainer]);
 
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
@@ -680,7 +667,7 @@ export function Send() {
                 handleToAddressChange={handleToAddressChange}
                 setToAddressOrName={setToAddressOrName}
                 onDropdownOpen={setToAddressDropdownOpen}
-                validateToAddress={validateToAddress}
+                validateRecipient={validateRecipient}
                 ref={toAddressInputRef}
               />
             </Row>
@@ -745,7 +732,7 @@ export function Send() {
           )}
 
           <Row height="content">
-            {isValidToAddress && (!!asset || !!nft) ? (
+            {isValidRecipient && (!!asset || !!nft) ? (
               <AccentColorProvider color={assetAccentColor}>
                 <Box paddingHorizontal="8px">
                   <Rows space="20px">
