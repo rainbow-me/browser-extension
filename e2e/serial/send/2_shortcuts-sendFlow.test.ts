@@ -105,6 +105,8 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
   });
 
   it('should be able to open contact menu', async () => {
+    // blur the amount input so the shortcut is recognized
+    await executePerformShortcut({ driver, key: 'TAB' });
     await executePerformShortcut({ driver, key: 'DECIMAL' });
     const copyOption = await findElementByText(driver, 'Copy Address');
     expect(copyOption).toBeTruthy();
