@@ -20,7 +20,7 @@ import {
   RPC_PROXY_API_KEY,
   buildTimeNetworks,
 } from './constants';
-import { NetworkState } from './types';
+import { NetworkState, NetworkUserPreferences } from './types';
 
 // Export the constant for backward compatibility
 export { DEFAULT_PRIVATE_MEMPOOL_TIMEOUT };
@@ -471,7 +471,7 @@ export const oldDefaultRPC: { [key in ChainId]?: string } = {
  */
 export const mergeChainData = (
   networks: Networks,
-  userPreferences: Record<number, ChainPreferences>,
+  userPreferences: NetworkUserPreferences,
   chainOrder: Array<number>,
   enabledChainIds: Set<number>,
 ): Record<number, TransformedChain> => {
@@ -518,6 +518,7 @@ export const mergeChainData = (
   for (const chainId of Object.keys(userPreferences)) {
     const chainIdNum = toChainId(chainId);
     const userPrefs = userPreferences[chainIdNum];
+    if (!userPrefs) continue;
     if (userPrefs.type === 'supported') continue;
     const order = chainOrder.indexOf(chainIdNum);
     mergedChainData[chainIdNum] = {
