@@ -15,7 +15,7 @@ import { useNetworkStore } from '~/core/state/networks/networks';
 import { useStaleBalancesStore } from '~/core/state/staleBalances';
 import { ParsedAssetsDictByChain, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { AddressAssetsReceivedMessage } from '~/core/types/refraction';
+import { AddressAssetsReceivedMessage } from '~/core/types/zerion';
 import { getSupportedChains } from '~/core/utils/chains';
 import { RainbowError, logger } from '~/logger';
 
