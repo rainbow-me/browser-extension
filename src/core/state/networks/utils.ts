@@ -169,19 +169,6 @@ const buildNewUserPreferences = (
   const userPreferences: Record<number, ChainPreferences> = {};
   const chainOrder = initialNonInternalNetworks.map(({ id }) => toChainId(id));
 
-  for (const supportedNetwork of initialNonInternalNetworks) {
-    const chainIdNum = toChainId(supportedNetwork.id);
-    userPreferences[chainIdNum] = {} as ChainPreferences;
-    const defaultRpcUrl = proxyBackendNetworkRpcEndpoint(
-      supportedNetwork.defaultRPC.url,
-    );
-    userPreferences[chainIdNum].activeRpcUrl = defaultRpcUrl;
-    userPreferences[chainIdNum].rpcs = {
-      [defaultRpcUrl]: transformBackendNetworkToChain(supportedNetwork),
-    };
-    userPreferences[chainIdNum].type = 'supported';
-  }
-
   return {
     userPreferences,
     chainOrder,
