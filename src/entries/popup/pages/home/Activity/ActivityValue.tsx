@@ -71,6 +71,18 @@ const swapTypeValues = (changes: RainbowTransaction['changes']) => {
   return [valueOut, valueIn];
 };
 
+const SUPER_TINY_THRESHOLD = 0.000001 as const;
+
+const isSuperTinyValue = (amount: string): boolean => {
+  const num = Number(amount);
+  return num > 0 && num < SUPER_TINY_THRESHOLD;
+};
+
+const getFormatOptions = (amount: string): Intl.NumberFormatOptions => {
+  const num = Number(amount);
+  return num > 100_000 ? { notation: 'compact' } : {};
+};
+
 const activityValues = (transaction: RainbowTransaction) => {
   const { changes, direction, type } = transaction;
   if (['swap', 'wrap', 'unwrap'].includes(type)) return swapTypeValues(changes);
@@ -87,17 +99,23 @@ const activityValues = (transaction: RainbowTransaction) => {
   const { balance, native } = asset;
   if (balance.amount === '0') return;
 
-  const formatOptions =
-    +balance.amount > 100_000 ? ({ notation: 'compact' } as const) : undefined;
-  const assetValue = `${formatNumber(balance.amount, formatOptions)} ${
-    asset.symbol
-  }`;
+  const assetValue = isSuperTinyValue(balance.amount)
+    ? `>${formatNumber(SUPER_TINY_THRESHOLD)} ${asset.symbol}`
+    : `${formatNumber(balance.amount, getFormatOptions(balance.amount))} ${
+        asset.symbol
+      }`;
 
   const nativeBalance = native.balance.amount;
-  const assetNativeValue =
-    +nativeBalance > 0
-      ? `${valueSymbol}${formatCurrency(nativeBalance)}`
-      : i18n.t('activity.no_value');
+  let assetNativeValue: string;
+  if (isSuperTinyValue(nativeBalance)) {
+    assetNativeValue = `${valueSymbol} >${formatCurrency(
+      String(SUPER_TINY_THRESHOLD),
+    )}`;
+  } else if (+nativeBalance > 0) {
+    assetNativeValue = `${valueSymbol}${formatCurrency(nativeBalance)}`;
+  } else {
+    assetNativeValue = i18n.t('activity.no_value');
+  }
 
   return +nativeBalance > 0
     ? [assetValue, assetNativeValue]
