@@ -10,8 +10,8 @@ import {
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
 import { ChainId, ChainName, chainNameToIdMapping } from '~/core/types/chains';
-import { TransactionsReceivedMessage } from '~/core/types/refraction';
 import { RainbowTransaction } from '~/core/types/transactions';
+import { TransactionsReceivedMessage } from '~/core/types/zerion';
 import { parseTransaction } from '~/core/utils/transactions';
 import { RainbowError, logger } from '~/logger';
 
