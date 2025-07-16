@@ -19,6 +19,7 @@
 
 import { i18n } from '~/core/languages';
 import { RainbowTransaction } from '~/core/types/transactions';
+import { isParsedUserAsset } from '~/core/utils/assets';
 import { formatCurrency, formatNumber } from '~/core/utils/formatNumber';
 import { getApprovalLabel } from '~/core/utils/transactions';
 import { Box, Inline, Text, TextOverflow } from '~/design-system';
@@ -72,20 +73,23 @@ const swapTypeValues = (changes: RainbowTransaction['changes']) => {
 };
 
 const activityValues = (transaction: RainbowTransaction) => {
-  const { changes, direction, type } = transaction;
+  const { changes, direction, type, asset: _asset } = transaction;
   if (['swap', 'wrap', 'unwrap'].includes(type)) return swapTypeValues(changes);
   if (['approve', 'revoke'].includes(type))
     return approvalTypeValues(transaction);
 
-  const asset = changes?.filter(
+  const changeAsset = changes?.find(
     (c) => c?.direction === direction && c?.asset.type !== 'nft',
-  )[0]?.asset;
-  const valueSymbol = direction === 'out' ? '-' : '+';
+  )?.asset;
 
-  if (!asset) return;
+  const asset = changeAsset ?? _asset;
+
+  if (!asset || !isParsedUserAsset(asset)) return;
 
   const { balance, native } = asset;
-  if (balance.amount === '0') return;
+
+  const valueSymbol =
+    balance.amount === '0' ? '' : direction === 'in' ? '+' : '-'; // direction === "out" || direction === "self" || direction == undefined
 
   const formatOptions =
     +balance.amount > 100_000 ? ({ notation: 'compact' } as const) : undefined;
