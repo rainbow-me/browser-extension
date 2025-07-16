@@ -16,8 +16,8 @@ import {
   WebElement,
   until,
 } from 'selenium-webdriver';
-import chrome from 'selenium-webdriver/chrome';
-import firefox from 'selenium-webdriver/firefox';
+import * as chrome from 'selenium-webdriver/chrome';
+import * as firefox from 'selenium-webdriver/firefox';
 import { erc20Abi } from 'viem';
 import { expect } from 'vitest';
 
@@ -150,7 +150,7 @@ export async function initDriverWithOptions(opts: {
     driver = await new Builder()
       .setChromeService(service)
       .forBrowser('chrome')
-      .setChromeOptions(options)
+      .setChromeOptions(options as chrome.Options)
       .build();
   }
   // @ts-ignore
