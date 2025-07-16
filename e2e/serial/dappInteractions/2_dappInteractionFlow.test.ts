@@ -1,5 +1,3 @@
-import 'chromedriver';
-import 'geckodriver';
 import { getAddress } from '@ethersproject/address';
 import { WebDriver } from 'selenium-webdriver';
 import {
