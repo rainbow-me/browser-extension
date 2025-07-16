@@ -12,7 +12,7 @@ import {
 import { SupportedCurrencyKey } from '~/core/references';
 import { ParsedAssetsDictByChain, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { AddressAssetsReceivedMessage } from '~/core/types/refraction';
+import { AddressAssetsReceivedMessage } from '~/core/types/zerion';
 import { RainbowError, logger } from '~/logger';
 
 import { parseUserAssets, userAssetsQueryKey } from './common';

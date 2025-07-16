@@ -3,7 +3,7 @@ import { Chain } from 'viem/chains';
 import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { ChainId } from '~/core/types/chains';
 
-import { runNetworksMigrationIfNeeded } from '../networks/runNetworksMigrationIfNeeded';
+import { runNetworksMigrationIfNeeded } from '../networks/migration';
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
 export interface RainbowChain {
