@@ -1,9 +1,7 @@
 import { RainbowError, logger } from '~/logger';
 
-import { queryClient } from '../react-query';
 import { ChainId, ChainName, chainNameToIdMapping } from '../types/chains';
 import {
-  PolygonAllowListDictionary,
   SimpleHashCollectionDetails,
   SimpleHashNFT,
   UniqueAsset,
@@ -16,7 +14,6 @@ import {
 } from '../utils/nfts';
 
 import { RainbowFetchClient } from './internal/rainbowFetch';
-import { nftAllowListClient } from './nftAllowList';
 
 interface SimpleHashCollectionsResponse {
   collections: SimpleHashCollectionDetails[];
@@ -149,29 +146,6 @@ export const fetchNfts = async ({
     };
   }
 };
-
-export const fetchPolygonAllowList =
-  async (): Promise<PolygonAllowListDictionary> => {
-    const allowList = await nftAllowListClient.get<{
-      data: { addresses: string[] };
-    }>('/137-allowlist.json');
-    const polygonAllowListDictionary = allowList.data?.data?.addresses?.reduce(
-      (allowListDict, tokenAddress) => {
-        allowListDict[tokenAddress.toLowerCase()] = true;
-        return allowListDict;
-      },
-      {} as PolygonAllowListDictionary,
-    );
-    return polygonAllowListDictionary;
-  };
-
-export function polygonAllowListFetcher() {
-  return queryClient.fetchQuery<PolygonAllowListDictionary>({
-    queryKey: ['137-allowList'],
-    queryFn: async () => await fetchPolygonAllowList(),
-    staleTime: 60000,
-  });
-}
 
 export const reportNftAsSpam = async (nft: UniqueAsset) => {
   const network =

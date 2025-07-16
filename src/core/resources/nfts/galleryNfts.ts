@@ -4,7 +4,7 @@ import {
 } from '@tanstack/react-query';
 import { Address, Chain } from 'viem';
 
-import { fetchGalleryNfts, polygonAllowListFetcher } from '~/core/network/nfts';
+import { fetchGalleryNfts } from '~/core/network/nfts';
 import {
   InfiniteQueryConfig,
   QueryFunctionArgs,
@@ -80,8 +80,7 @@ async function galleryNftsQueryFunction({
     nextPage: pageParam as string | undefined,
     sort: sort === 'alphabetical' ? 'name__asc' : 'last_acquired_date__desc',
   });
-  const polygonAllowList = await polygonAllowListFetcher();
-  const nfts = filterSimpleHashNFTs(data?.nfts, polygonAllowList)?.map((n) =>
+  const nfts = filterSimpleHashNFTs(data?.nfts)?.map((n) =>
     simpleHashNFTToUniqueAsset(n),
   );
   return {

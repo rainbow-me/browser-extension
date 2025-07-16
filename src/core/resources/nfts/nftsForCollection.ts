@@ -133,7 +133,7 @@ async function nftsForCollectionQueryFunction({
     collectionIds: [collectionId],
     nextPage: pageParam as string | undefined,
   });
-  const nfts = filterSimpleHashNFTs(result?.nfts, {})?.map((n) =>
+  const nfts = filterSimpleHashNFTs(result?.nfts)?.map((n) =>
     simpleHashNFTToUniqueAsset(n),
   );
   return {
