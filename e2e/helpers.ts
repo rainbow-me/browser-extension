@@ -93,6 +93,11 @@ export async function getWindowHandle({ driver }: { driver: WebDriver }) {
   return windowHandle;
 }
 
+export async function switchToWindow(driver: WebDriver, handle: string) {
+  await driver.switchTo().window(handle);
+  await driver.executeScript('window.focus();');
+}
+
 // setup functions
 
 export async function initDriverWithOptions(opts: {
@@ -298,6 +303,19 @@ export async function findElementByTestId({
   driver: WebDriver;
 }) {
   return querySelector(driver, `[data-testid="${id}"]`);
+}
+
+export async function findElementByTestIdInDOM({
+  id,
+  driver,
+}: {
+  id: string;
+  driver: WebDriver;
+}) {
+  return driver.wait(
+    until.elementLocated(By.css(`[data-testid="${id}"]`)),
+    20_000,
+  );
 }
 
 export async function findElementById({
@@ -751,29 +769,25 @@ export async function switchWallet(
   await delayTime('long');
 }
 
-export async function connectToTestDapp(driver: WebDriver) {
-  await goToTestApp(driver);
-  const dappHandler = await getWindowHandle({ driver });
-
-  const button = await findElementByText(driver, 'Connect Wallet');
-  expect(button).toBeTruthy();
-  await waitAndClick(button, driver);
-
-  const modalTitle = await findElementByText(driver, 'Connect a Wallet');
-  expect(modalTitle).toBeTruthy();
-
-  const mmButton = await querySelector(
+export async function connectToTestDapp(
+  driver: WebDriver,
+  rootURL: string,
+  dappHandler: string,
+) {
+  await waitAndClick(
+    await querySelector(driver, '[data-testid="rk-wallet-option-me.rainbow"]'),
     driver,
-    '[data-testid="rk-wallet-option-me.rainbow"]',
   );
-  await waitAndClick(mmButton, driver);
+
+  // The popup opens in its own context, not a new window or iframe.
+  // We need to open it directly in a new tab to interact with it.
+  await driver.switchTo().newWindow('tab');
+  await goToPopup(driver, rootURL);
 
   const { popupHandler } = await getAllWindowHandles({
     driver,
     dappHandler,
   });
-
-  await driver.switchTo().window(popupHandler);
 
   return { dappHandler, popupHandler };
 }
@@ -830,12 +844,20 @@ export const fillPrivateKey = async (driver: WebDriver, privateKey: string) => {
 };
 
 export async function clickAcceptRequestButton(driver: WebDriver) {
-  await waitUntilElementByTestIdIsPresent({
+  const button = await findElementByTestIdInDOM({
     id: 'accept-request-button',
     driver,
   });
+  await scrollElementIntoView(button, driver);
+  await waitAndClick(button, driver);
+}
 
-  await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
+export async function scrollElementIntoView(
+  element: WebElement,
+  driver: WebDriver,
+) {
+  await driver.executeScript('arguments[0].scrollIntoView(true);', element);
+  await delayTime('short');
 }
 
 export async function importHardwareWalletFlow(

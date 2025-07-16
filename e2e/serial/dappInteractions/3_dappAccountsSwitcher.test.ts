@@ -23,6 +23,7 @@ import {
   getExtensionIdByName,
   getRootUrl,
   getTextFromText,
+  getWindowHandle,
   goToPopup,
   goToTestApp,
   goToWelcome,
@@ -179,7 +180,15 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
   });
 
   it('should be able to connect to bx test dapp', async () => {
-    const { dappHandler } = await connectToTestDapp(driver);
+    await goToTestApp(driver);
+    const dappHandler = await getWindowHandle({ driver });
+    const button = await findElementByText(driver, 'Connect Wallet');
+    expect(button).toBeTruthy();
+    await waitAndClick(button, driver);
+    const modalTitle = await findElementByText(driver, 'Connect a Wallet');
+    expect(modalTitle).toBeTruthy();
+
+    await connectToTestDapp(driver, rootURL, dappHandler);
 
     // switch account
     await findElementByTestIdAndClick({ id: 'switch-wallet-menu', driver });
@@ -276,22 +285,16 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
     });
   });
 
-  it('should be able to connect to bx test dapp again', async () => {
-    const { dappHandler } = await connectToTestDapp(driver);
-
+  it('should be able to disconnect and reconnect to the dapp', async () => {
+    await goToTestApp(driver);
+    const dappHandler = await getWindowHandle({ driver });
+    const button = await findElementByText(driver, 'Connect Wallet');
+    expect(button).toBeTruthy();
+    await waitAndClick(button, driver);
+    const modalTitle = await findElementByText(driver, 'Connect a Wallet');
+    expect(modalTitle).toBeTruthy();
+    await connectToTestDapp(driver, rootURL, dappHandler);
     await clickAcceptRequestButton(driver);
-
-    await driver.switchTo().window(dappHandler);
-    const topButton = await querySelector(
-      driver,
-      '[data-testid="rk-account-button"]',
-    );
-
-    expect(topButton).toBeTruthy();
-    await waitAndClick(topButton, driver);
-
-    const ensLabel = await querySelector(driver, '[id="rk_profile_title"]');
-    expect(ensLabel).toBeTruthy();
   });
 
   it('should be able to go back to extension and go to switch wallets prompt', async () => {

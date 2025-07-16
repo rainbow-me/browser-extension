@@ -19,10 +19,13 @@ import {
   executePerformShortcut,
   findElementByTestId,
   findElementByTestIdAndClick,
+  findElementByText,
   getExtensionIdByName,
   getRootUrl,
+  getWindowHandle,
   goBackTwice,
   goToPopup,
+  goToTestApp,
   importWalletFlow,
   initDriverWithOptions,
   navigateToSettingsNetworks,
@@ -63,7 +66,15 @@ describe.runIf(browser !== 'firefox')('Networks & Testnet Mode flows', () => {
   });
 
   it('should be able to connect to bx test dapp', async () => {
-    const { dappHandler } = await connectToTestDapp(driver);
+    await goToTestApp(driver);
+    const dappHandler = await getWindowHandle({ driver });
+    const button = await findElementByText(driver, 'Connect Wallet');
+    expect(button).toBeTruthy();
+    await waitAndClick(button, driver);
+    const modalTitle = await findElementByText(driver, 'Connect a Wallet');
+    expect(modalTitle).toBeTruthy();
+
+    await connectToTestDapp(driver, rootURL, dappHandler);
 
     await clickAcceptRequestButton(driver);
 
