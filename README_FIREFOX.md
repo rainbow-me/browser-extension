@@ -9,17 +9,17 @@
 
 ### 1. Set up Node
 
-Use node v20 (20.16.0) or if you use nvm follow the instructions below
+Use node v22 (22.17.0) or if you use nvm follow the instructions below
 
 ```bash
-nvm install 20.16.0
-# or
-nvm use 20.16.0
+nvm install && nvm use
+corepack enable
 ```
 
 ### 2. Install project dependencies
 
 ```bash
+yarn install
 yarn setup
 ```
 
