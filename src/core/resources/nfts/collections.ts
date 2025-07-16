@@ -114,9 +114,8 @@ async function nftCollectionsQueryFunction({
     nextPage: pageParam as string | undefined,
     sort: sort === 'alphabetical' ? 'name__asc' : 'last_acquired_date__desc',
   });
-  const filteredCollections = data?.collections;
   return {
-    collections: filteredCollections,
+    collections: data?.collections,
     nextPage: data?.nextPage,
   };
 }
