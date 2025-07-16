@@ -15,6 +15,7 @@ import {
   usePendingRequestStore,
 } from '~/core/state';
 import { useNetworkStore } from '~/core/state/networks/networks';
+import { getSenderHost, getTabIdString } from '~/core/state/requests/utils';
 import { SessionStorage } from '~/core/storage';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
@@ -65,62 +66,106 @@ const focusOnWindow = (windowId: number) => {
 const openWindowForTabId = async (tabId: string) => {
   const { notificationWindows } = useNotificationWindowStore.getState();
   const notificationWindow = notificationWindows[tabId];
-  if (notificationWindow) {
-    chrome.windows.get(
-      notificationWindow.id as number,
-      async (existingWindow) => {
-        if (chrome.runtime.lastError) {
-          createNewWindow(tabId);
+  if (notificationWindow?.id) {
+    chrome.windows.get(notificationWindow.id, async (existingWindow) => {
+      if (chrome.runtime.lastError) {
+        createNewWindow(tabId);
+      } else {
+        if (existingWindow.id) {
+          focusOnWindow(existingWindow.id);
         } else {
-          if (existingWindow) {
-            focusOnWindow(existingWindow.id as number);
-          } else {
-            createNewWindow(tabId);
-          }
+          createNewWindow(tabId);
         }
-      },
-    );
+      }
+    });
   } else {
     createNewWindow(tabId);
+  }
+};
+
+const handleConnectionResolver = (
+  host: string,
+  addConnectionResolver: (
+    host: string,
+    resolver: {
+      resolve: (value: object) => void;
+      reject: (error: Error) => void;
+    },
+  ) => void,
+): Promise<object> => {
+  return new Promise((resolve, reject) => {
+    addConnectionResolver(host, { resolve, reject });
+  });
+};
+
+const resolveConnectionRequestsIfNeeded = (
+  request: ProviderRequestPayload,
+  payload: unknown,
+) => {
+  if (request.method !== 'eth_requestAccounts') return;
+  const host = getSenderHost(request);
+  if (!host) return;
+  const { resolveConnectionRequests } = usePendingRequestStore.getState();
+  if (payload) {
+    resolveConnectionRequests(host, payload);
+  } else {
+    resolveConnectionRequests(
+      host,
+      new UserRejectedRequestError(Error('User rejected the request.')),
+      true,
+    );
   }
 };
 
 /**
  * Uses extensionMessenger to send messages to popup for the user to approve or reject
  * @param {PendingRequest} request
- * @returns {boolean}
+ * @returns {object}
  */
 const messengerProviderRequest = async (
   messenger: Messenger,
   request: ProviderRequestPayload,
 ) => {
-  const { addPendingRequest } = usePendingRequestStore.getState();
-  // Add pending request to global background state.
-  addPendingRequest(request);
+  const { addPendingRequest, addConnectionResolver } =
+    usePendingRequestStore.getState();
 
-  let ready = isInitialized();
-  while (!ready) {
+  // Check if this is a duplicate connection request
+  const isRequestAdded = addPendingRequest(request);
+
+  if (!isRequestAdded) {
+    // This is a duplicate connection request - add resolver and focus existing window
+    const host = getSenderHost(request);
+    const tabId = getTabIdString(request);
+    if (host && tabId) {
+      openWindowForTabId(tabId);
+      return handleConnectionResolver(host, addConnectionResolver);
+    }
+  }
+
+  // Wait for initialization
+  while (!isInitialized()) {
     // eslint-disable-next-line no-promise-executor-return, no-await-in-loop
     await new Promise((resolve) => setTimeout(resolve, 100));
-    ready = isInitialized();
   }
-  const _hasVault = ready && (await hasVault());
+  const _hasVault = await hasVault();
   const passwordSet = _hasVault && (await isPasswordSet());
 
-  if (_hasVault && passwordSet) {
-    openWindowForTabId(Number(request.meta?.sender.tab?.id).toString());
+  const tabId = getTabIdString(request);
+  if (_hasVault && passwordSet && tabId) {
+    openWindowForTabId(tabId);
   } else {
-    goToNewTab({
-      url: WELCOME_URL,
-    });
+    goToNewTab({ url: WELCOME_URL });
   }
+
   // Wait for response from the popup.
   const payload: unknown | null = await new Promise((resolve) =>
     // eslint-disable-next-line no-promise-executor-return
-    messenger.reply(`message:${request.id}`, async (payload) =>
-      resolve(payload),
-    ),
+    messenger.reply(`message:${request.id}`, async (payload) => {
+      resolve(payload);
+      resolveConnectionRequestsIfNeeded(request, payload);
+    }),
   );
+
   if (!payload) {
     throw new UserRejectedRequestError(Error('User rejected the request.'));
   }
