@@ -1,6 +1,6 @@
 import { RainbowError, logger } from '~/logger';
 
-const OBSOLETE_KEYS = ['rainbow.wagmi', '137-allowList'];
+const OBSOLETE_KEYS = ['rainbow.wagmi'];
 
 /**
  * Cleanup obsolete storage keys
