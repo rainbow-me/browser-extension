@@ -107,17 +107,22 @@ export const useSendValidations = ({
     const checkToAddress = async () => {
       if (!toAddress) {
         setToAddressIsSmartContract(false);
-      } else {
-        setToAddressIsSmartContract(false);
+        return;
+      }
+      try {
         const provider = getProvider({
           chainId: asset?.chainId || ChainId.mainnet,
         });
         const code = await provider.getCode(toAddress);
+        console.log('Address check:', { address: toAddress, code });
         setToAddressIsSmartContract(code !== '0x');
+      } catch (error) {
+        console.error('Failed to check address code:', error);
+        setToAddressIsSmartContract(false);
       }
     };
     checkToAddress();
-  }, [asset?.chainId, nft, toAddress]);
+  }, [asset?.chainId, toAddress]);
 
   const buttonLabel = useMemo(() => {
     if (!isValidToAddress && toAddressOrName !== '')

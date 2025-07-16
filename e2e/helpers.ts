@@ -30,17 +30,6 @@ const isFirefox = browser === 'firefox';
 
 const waitUntilTime = 20_000;
 const testPassword = 'test1234';
-const BINARY_PATHS = {
-  mac: {
-    chrome: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-    firefox:
-      '/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox',
-  },
-  linux: {
-    chrome: process.env.CHROMIUM_BIN,
-    firefox: process.env.FIREFOX_BIN,
-  },
-};
 
 export const getRootUrl = () => {
   const browser = process.env.BROWSER || 'chrome';
@@ -122,31 +111,20 @@ export async function initDriverWithOptions(opts: {
 
   if (opts.browser === 'firefox') {
     const options = new firefox.Options()
-      // @ts-ignore
-      .setBinary(BINARY_PATHS[opts.os][opts.browser])
       .addArguments(...args.slice(1))
       .setPreference('xpinstall.signatures.required', false)
       .setPreference('extensions.langpacks.signatures.required', false)
       .addExtensions('rainbowbx.xpi');
 
-    const service = new firefox.ServiceBuilder().setStdio('inherit');
-
     driver = await new Builder()
-      .setFirefoxService(service)
       .forBrowser('firefox')
       .setFirefoxOptions(options)
       .build();
   } else {
-    const options = new chrome.Options()
-      // @ts-ignore
-      .setChromeBinaryPath(BINARY_PATHS[opts.os][opts.browser])
-      .addArguments(...args);
+    const options = new chrome.Options().addArguments(...args);
     options.setAcceptInsecureCerts(true);
 
-    const service = new chrome.ServiceBuilder().setStdio('inherit');
-
     driver = await new Builder()
-      .setChromeService(service)
       .forBrowser('chrome')
       .setChromeOptions(options)
       .build();

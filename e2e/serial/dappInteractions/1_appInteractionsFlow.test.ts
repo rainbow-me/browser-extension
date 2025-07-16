@@ -1,5 +1,3 @@
-import 'chromedriver';
-import 'geckodriver';
 import { getAddress } from '@ethersproject/address';
 import { isHexString } from '@ethersproject/bytes';
 import { verifyMessage, verifyTypedData } from '@ethersproject/wallet';
