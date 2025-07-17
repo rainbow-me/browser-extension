@@ -108,7 +108,7 @@ const activityValues = (transaction: RainbowTransaction) => {
   const nativeBalance = native.balance.amount;
   let assetNativeValue: string;
   if (isSuperTinyValue(nativeBalance)) {
-    assetNativeValue = `${valueSymbol} >${formatCurrency(
+    assetNativeValue = `${valueSymbol} <${formatCurrency(
       String(SUPER_TINY_THRESHOLD),
     )}`;
   } else if (+nativeBalance > 0) {
