@@ -36,10 +36,10 @@ const getFormatOptions = (amount: string): Intl.NumberFormatOptions => {
   return num > 100_000 ? { notation: 'compact' } : {};
 };
 
-const formatSignedToken = (
+export const formatSignedToken = (
   amount: string,
   symbol: string,
-  sign: '+' | '-',
+  sign: '+' | '-' | '' = '',
 ): string => {
   if (isSuperTinyValue(amount)) {
     return `${sign} <${formatNumber(SUPER_TINY_THRESHOLD)} ${symbol}`;

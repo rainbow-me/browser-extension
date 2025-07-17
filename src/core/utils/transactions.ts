@@ -11,6 +11,7 @@ import { Address } from 'viem';
 
 import RainbowIcon from 'static/images/icon-16@2x.png';
 import { useNetworkStore } from '~/core/state/networks/networks';
+import { formatSignedToken } from '~/entries/popup/pages/home/Activity/ActivityValue';
 
 import { i18n } from '../languages';
 import {
@@ -692,7 +693,8 @@ export const getApprovalLabel = ({
   if (!approvalAmount || !asset) return;
   if (approvalAmount === 'UNLIMITED') return i18n.t('approvals.unlimited');
   if (type === 'revoke') return i18n.t('approvals.no_allowance');
-  return `${formatNumber(formatUnits(approvalAmount, asset.decimals))} ${
-    asset.symbol
-  }`;
+  return formatSignedToken(
+    formatUnits(approvalAmount, asset.decimals),
+    asset.symbol,
+  );
 };
