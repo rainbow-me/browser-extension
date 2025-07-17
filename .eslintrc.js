@@ -3,6 +3,7 @@ module.exports = {
   extends: ['rainbow', 'plugin:prettier/recommended'],
   root: true,
   rules: {
+    'no-nested-ternary': 'off',
     'import/no-default-export': 'off',
     'react/react-in-jsx-scope': 'off',
     'import/order': [

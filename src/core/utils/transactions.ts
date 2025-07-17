@@ -274,7 +274,7 @@ export function parseTransaction({
 
   const addressTo = getAddressTo(tx);
 
-  const direction = tx.direction || getDirection(type);
+  const direction = getDirection(type, changes, tx.direction);
 
   const description = getDescription(asset, type, meta);
 
@@ -614,7 +614,13 @@ const TransactionOutTypes = [
   'contract_interaction',
 ] as const;
 
-export const getDirection = (type: TransactionType) => {
+export const getDirection = (
+  type: TransactionType,
+  changes: RainbowTransaction['changes'],
+  txDirection?: TransactionDirection,
+) => {
+  if (type !== 'airdrop' && txDirection) return txDirection;
+  if (changes?.length === 1) return changes[0]?.direction;
   if (TransactionOutTypes.includes(type)) return 'out';
   return 'in';
 };
