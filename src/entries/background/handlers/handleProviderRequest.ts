@@ -83,21 +83,6 @@ const openWindowForTabId = async (tabId: string) => {
   }
 };
 
-const handleConnectionResolver = (
-  host: string,
-  addConnectionResolver: (
-    host: string,
-    resolver: {
-      resolve: (value: object) => void;
-      reject: (error: Error) => void;
-    },
-  ) => void,
-): Promise<object> => {
-  return new Promise((resolve, reject) => {
-    addConnectionResolver(host, { resolve, reject });
-  });
-};
-
 const resolveConnectionRequestsIfNeeded = (
   request: ProviderRequestPayload,
   payload: unknown,
@@ -118,6 +103,40 @@ const resolveConnectionRequestsIfNeeded = (
 };
 
 /**
+ * Creates a promise that will be resolved when the connection request for this host completes.
+ * This allows multiple eth_requestAccounts calls from the same host to wait for a single user decision.
+ */
+const handleConnectionResolver = (
+  host: string,
+  addConnectionResolver: (
+    host: string,
+    resolver: {
+      resolve: (value: object) => void;
+      reject: (error: Error) => void;
+    },
+  ) => void,
+): Promise<object> => {
+  return new Promise((resolve, reject) => {
+    addConnectionResolver(host, { resolve, reject });
+  });
+};
+
+/**
+ * Resolves all queued connection requests for the same host when a connection request completes.
+ * This ensures that multiple eth_requestAccounts calls from the same host all get the same result.
+ */
+/**
+ * Waits for the extension to be fully initialized.
+ * This is required for inpage script bootup delays to avoid race conditions.
+ */
+const waitForInitialized = async (): Promise<void> => {
+  while (!isInitialized()) {
+    // eslint-disable-next-line no-promise-executor-return, no-await-in-loop
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+};
+
+/**
  * Uses extensionMessenger to send messages to popup for the user to approve or reject
  * @param {PendingRequest} request
  * @returns {object}
@@ -129,11 +148,13 @@ const messengerProviderRequest = async (
   const { addPendingRequest, addConnectionResolver } =
     usePendingRequestStore.getState();
 
-  // Check if this is a duplicate connection request
+  // Attempt to add the request - this implements deduplication for eth_requestAccounts
   const isRequestAdded = addPendingRequest(request);
 
   if (!isRequestAdded) {
-    // This is a duplicate connection request - add resolver and focus existing window
+    // This is a duplicate connection request from the same host+tab.
+    // Instead of creating a new popup, we focus the existing one and queue
+    // this request to be resolved when the original request completes.
     const host = getSenderHost(request);
     const tabId = getTabIdString(request);
     if (host && tabId) {
@@ -142,11 +163,8 @@ const messengerProviderRequest = async (
     }
   }
 
-  // Wait for initialization
-  while (!isInitialized()) {
-    // eslint-disable-next-line no-promise-executor-return, no-await-in-loop
-    await new Promise((resolve) => setTimeout(resolve, 100));
-  }
+  // Wait for initialization - required for inpage script bootup delays
+  await waitForInitialized();
   const _hasVault = await hasVault();
   const passwordSet = _hasVault && (await isPasswordSet());
 
