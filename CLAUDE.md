@@ -9,6 +9,7 @@ Rainbow is a cryptocurrency wallet browser extension built with TypeScript, Reac
 ### Setup & Installation
 ```bash
 # Install dependencies and set up the project
+yarn install
 yarn setup
 ```
 
