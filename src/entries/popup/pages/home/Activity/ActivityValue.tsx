@@ -100,7 +100,7 @@ const activityValues = (transaction: RainbowTransaction) => {
   if (balance.amount === '0') return;
 
   const assetValue = isSuperTinyValue(balance.amount)
-    ? `>${formatNumber(SUPER_TINY_THRESHOLD)} ${asset.symbol}`
+    ? `<${formatNumber(SUPER_TINY_THRESHOLD)} ${asset.symbol}`
     : `${formatNumber(balance.amount, getFormatOptions(balance.amount))} ${
         asset.symbol
       }`;
