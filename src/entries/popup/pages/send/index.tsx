@@ -523,8 +523,14 @@ export function Send() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const isInvalidRecipient = validateRecipient();
+  const [isInvalidRecipient, setIsInvalidRecipient] = useState(false);
   const prevInvalidRecipient = usePrevious(isInvalidRecipient);
+
+  useEffect(() => {
+    const invalid = validateRecipient();
+    setIsInvalidRecipient(invalid);
+  }, [validateRecipient]);
+
   useEffect(() => {
     if (!prevInvalidRecipient && isInvalidRecipient) {
       showTokenContractExplainer();
