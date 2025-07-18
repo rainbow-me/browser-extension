@@ -223,11 +223,12 @@ jobs:
           export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
           export MAX_RETRIES=1
           yarn vitest:parallel
-      - name: Upload deps artifacts
+      - name: Upload screenshots on failure
         if: steps.ChromeE2EParallel.outcome == 'failure'
         uses: actions/upload-artifact@v4
+        continue-on-error: true
         with:
-          name: screenshots
+          name: screenshots-${{ github.job }}
           path: screenshots/
       - name: Fail if any tests failed
         if: steps.ChromeE2EParallel.outcome == 'failure'
@@ -253,11 +254,12 @@ jobs:
           export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
           export MAX_RETRIES=1
           yarn vitest:swap
-      - name: Upload deps artifacts
+      - name: Upload screenshots on failure
         if: steps.ChromeE2ESwaps.outcome == 'failure'
         uses: actions/upload-artifact@v4
+        continue-on-error: true
         with:
-          name: screenshots
+          name: screenshots-${{ github.job }}
           path: screenshots/
       - name: Fail if any tests failed
         if: steps.ChromeE2ESwaps.outcome == 'failure'
@@ -283,11 +285,12 @@ jobs:
           export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
           export MAX_RETRIES=1
           yarn vitest:send
-      - name: Upload deps artifacts
+      - name: Upload screenshots on failure
         if: steps.ChromeE2ESend.outcome == 'failure'
         uses: actions/upload-artifact@v4
+        continue-on-error: true
         with:
-          name: screenshots
+          name: screenshots-${{ github.job }}
           path: screenshots/
       - name: Fail if any tests failed
         if: steps.ChromeE2ESend.outcome == 'failure'
@@ -313,11 +316,12 @@ jobs:
           export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
           export MAX_RETRIES=1
           yarn vitest:send:optimism
-      - name: Upload deps artifacts
+      - name: Upload screenshots on failure
         if: steps.ChromeOpE2ESend.outcome == 'failure'
         uses: actions/upload-artifact@v4
+        continue-on-error: true
         with:
-          name: screenshots
+          name: screenshots-${{ github.job }}
           path: screenshots/
       - name: Fail if any tests failed
         if: steps.ChromeOpE2ESend.outcome == 'failure'
@@ -343,11 +347,12 @@ jobs:
           export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
           export MAX_RETRIES=1
           yarn vitest:dappInteractions
-      - name: Upload deps artifacts
+      - name: Upload screenshots on failure
         if: steps.ChromeE2EDappInteractions.outcome == 'failure'
         uses: actions/upload-artifact@v4
+        continue-on-error: true
         with:
-          name: screenshots
+          name: screenshots-${{ github.job }}
           path: screenshots/
       - name: Fail if any tests failed
         if: steps.ChromeE2EDappInteractions.outcome == 'failure'

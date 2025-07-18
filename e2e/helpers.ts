@@ -95,7 +95,42 @@ export async function getWindowHandle({ driver }: { driver: WebDriver }) {
 
 export async function switchToWindow(driver: WebDriver, handle: string) {
   await driver.switchTo().window(handle);
+  console.log(`[switchToWindow] Switched to handle: ${handle}`);
   await driver.executeScript('window.focus();');
+  console.log(`[switchToWindow] Executed window.focus() on handle: ${handle}`);
+}
+
+export async function switchToPopup(
+  driver: WebDriver,
+  dappHandler: string,
+  rootURL: string,
+): Promise<string> {
+  console.log('[switchToPopup] Waiting for popup window to appear...');
+
+  // Attempt to wait for a real popup for a short time
+  const sawRealPopup = await driver
+    .wait(async () => (await driver.getAllWindowHandles()).length === 2, 1500)
+    .catch(() => false);
+
+  if (sawRealPopup) {
+    console.log('[switchToPopup] Detected a real popup window.');
+    const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
+    await switchToWindow(driver, popupHandler);
+    return popupHandler;
+  }
+
+  // Fallback: If no real popup is detected, open the UI in a new window
+  console.log(
+    '[switchToPopup] Real popup not detected. Opening UI in new window fallback.',
+  );
+  await driver.switchTo().newWindow('window');
+  const popupHandle = await driver.getWindowHandle();
+  await driver.get(`${rootURL}/popup.html`);
+  await driver.executeScript('window.focus();');
+  console.log(
+    `[switchToPopup] Fallback window created with handle: ${popupHandle}`,
+  );
+  return popupHandle;
 }
 
 // setup functions
@@ -774,21 +809,15 @@ export async function connectToTestDapp(
   rootURL: string,
   dappHandler: string,
 ) {
+  console.log('[connectToTestDapp] Clicking Rainbow wallet option...');
   await waitAndClick(
     await querySelector(driver, '[data-testid="rk-wallet-option-me.rainbow"]'),
     driver,
   );
 
-  // The popup opens in its own context, not a new window or iframe.
-  // We need to open it directly in a new tab to interact with it.
-  await driver.switchTo().newWindow('tab');
-  await goToPopup(driver, rootURL);
-
-  const { popupHandler } = await getAllWindowHandles({
-    driver,
-    dappHandler,
-  });
-
+  console.log('[connectToTestDapp] Clicked. Now switching to popup...');
+  const popupHandler = await switchToPopup(driver, dappHandler, rootURL);
+  console.log('[connectToTestDapp] Switched to popup successfully.');
   return { dappHandler, popupHandler };
 }
 
@@ -844,12 +873,16 @@ export const fillPrivateKey = async (driver: WebDriver, privateKey: string) => {
 };
 
 export async function clickAcceptRequestButton(driver: WebDriver) {
+  console.log('[clickAcceptRequestButton] Starting...');
   const button = await findElementByTestIdInDOM({
     id: 'accept-request-button',
     driver,
   });
+  console.log('[clickAcceptRequestButton] Found button element in DOM.');
   await scrollElementIntoView(button, driver);
+  console.log('[clickAcceptRequestButton] Scrolled button into view.');
   await waitAndClick(button, driver);
+  console.log('[clickAcceptRequestButton] Clicked button successfully.');
 }
 
 export async function scrollElementIntoView(
