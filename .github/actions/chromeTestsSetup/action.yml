@@ -12,4 +12,6 @@ runs:
       gh-access-token: ${{ inputs.gh-access-token }}
   - name: Install chrome
     shell: 'bash'
-    run: npx @puppeteer/browsers install chrome@138
+    run: |
+      CHROME_VERSION=$(cat e2e/browsers.json | jq -r '.versions.chrome')
+      npx @puppeteer/browsers install chrome@$CHROME_VERSION
