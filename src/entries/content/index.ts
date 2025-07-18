@@ -1,7 +1,10 @@
 import { initializeMessenger } from '~/core/messengers';
 import { setupBridgeMessengerRelay } from '~/core/messengers/internal/bridge';
+import { initializeSentry } from '~/core/sentry';
 import { useIsDefaultWalletStore } from '~/core/state';
 require('../../core/utils/lockdown');
+
+initializeSentry('content');
 
 const insertInpageScriptIfNeeded = () => {
   if (navigator.userAgent.toLowerCase().includes('firefox')) {

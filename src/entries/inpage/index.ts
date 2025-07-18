@@ -5,6 +5,7 @@ import { EIP1193Provider, announceProvider } from 'mipd';
 
 import { initializeMessenger } from '~/core/messengers';
 import { RAINBOW_ICON_RAW_SVG } from '~/core/references/rawImages';
+import { initializeSentry } from '~/core/sentry';
 import { providerRequestTransport } from '~/core/transports';
 import { ChainId } from '~/core/types/chains';
 import { getDappHost, isValidUrl } from '~/core/utils/connectedApps';
@@ -33,6 +34,8 @@ declare global {
 }
 
 window.lodash = _.noConflict();
+
+initializeSentry('inpage');
 
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
 const messenger = initializeMessenger({ connect: 'popup' });

@@ -1,6 +1,7 @@
 import { createElement } from 'react';
 import { createRoot } from 'react-dom/client';
 
+import { initializeSentry } from '~/core/sentry';
 import { ChainId } from '~/core/types/chains';
 
 import { IN_DAPP_NOTIFICATION_STATUS, Notification } from './notification';
@@ -9,6 +10,8 @@ const ELEMENT_ID = 'rainbow-notification';
 
 const NOTIFICATION_DURATION = 3000;
 const DELAY_DURATION = 2000;
+
+initializeSentry('iframe');
 
 export const injectNotificationIframe = async ({
   chainId,
