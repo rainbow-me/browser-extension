@@ -117,14 +117,14 @@ it('should be able to add a custom testnet network', async () => {
   await findElementByTestIdAndClick({ driver, id: 'network-name-field' });
 
   // fill out custom network form
-  await typeOnTextInput({ text: 'Telos EVM Testnet', driver });
+  await typeOnTextInput({ text: 'Cronos Testnet', driver });
   await executePerformShortcut({ driver, key: 'TAB' });
   await typeOnTextInput({
-    text: 'https://rpc.testnet.telos.net',
+    text: 'https://evm-t3.cronos.org',
     driver,
   });
   await executePerformShortcut({ driver, key: 'TAB' });
-  await typeOnTextInput({ text: 'ETH', driver });
+  await typeOnTextInput({ text: 'TCRO', driver });
   await findElementByTestIdAndClick({ driver, id: 'testnet-toggle' });
 
   // needs a couple seconds to validate the custom RPC
@@ -135,11 +135,11 @@ it('should be able to add a custom testnet network', async () => {
     id: 'add-custom-network-button',
   });
 
-  const telos = await findElementByTestId({
-    id: 'network-row-41',
+  const cronosTestnet = await findElementByTestId({
+    id: 'network-row-338',
     driver,
   });
-  expect(telos).toBeTruthy();
+  expect(cronosTestnet).toBeTruthy();
 });
 
 it('should be able to add a custom ETH RPC and switch to it', async () => {
