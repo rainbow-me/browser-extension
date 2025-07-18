@@ -3,16 +3,12 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "daily"
+    allow:
+      - dependency-name: "@rainbow-me/*"
   - package-ecosystem: "npm"
     directory: "/src/design-system/docs"
     schedule:
       interval: "weekly"
     ignore:
       - dependency-name: "*"
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "daily"
-    allow:
-      - dependency-name: "@rainbow-me/*"
