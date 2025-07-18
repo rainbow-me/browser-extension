@@ -1,6 +1,4 @@
 /* eslint-disable no-await-in-loop */
-import 'chromedriver';
-import 'geckodriver';
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 

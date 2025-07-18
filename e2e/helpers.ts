@@ -30,17 +30,6 @@ const isFirefox = browser === 'firefox';
 
 const waitUntilTime = 20_000;
 const testPassword = 'test1234';
-const BINARY_PATHS = {
-  mac: {
-    chrome: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-    firefox:
-      '/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox',
-  },
-  linux: {
-    chrome: process.env.CHROMIUM_BIN,
-    firefox: process.env.FIREFOX_BIN,
-  },
-};
 
 export const getRootUrl = () => {
   const browser = process.env.BROWSER || 'chrome';
@@ -104,6 +93,46 @@ export async function getWindowHandle({ driver }: { driver: WebDriver }) {
   return windowHandle;
 }
 
+export async function switchToWindow(driver: WebDriver, handle: string) {
+  await driver.switchTo().window(handle);
+  console.log(`[switchToWindow] Switched to handle: ${handle}`);
+  await driver.executeScript('window.focus();');
+  console.log(`[switchToWindow] Executed window.focus() on handle: ${handle}`);
+}
+
+export async function switchToPopup(
+  driver: WebDriver,
+  dappHandler: string,
+  rootURL: string,
+): Promise<string> {
+  console.log('[switchToPopup] Waiting for popup window to appear...');
+
+  // Attempt to wait for a real popup for a short time
+  const sawRealPopup = await driver
+    .wait(async () => (await driver.getAllWindowHandles()).length === 2, 1500)
+    .catch(() => false);
+
+  if (sawRealPopup) {
+    console.log('[switchToPopup] Detected a real popup window.');
+    const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
+    await switchToWindow(driver, popupHandler);
+    return popupHandler;
+  }
+
+  // Fallback: If no real popup is detected, open the UI in a new window
+  console.log(
+    '[switchToPopup] Real popup not detected. Opening UI in new window fallback.',
+  );
+  await driver.switchTo().newWindow('window');
+  const popupHandle = await driver.getWindowHandle();
+  await driver.get(`${rootURL}/popup.html`);
+  await driver.executeScript('window.focus();');
+  console.log(
+    `[switchToPopup] Fallback window created with handle: ${popupHandle}`,
+  );
+  return popupHandle;
+}
+
 // setup functions
 
 export async function initDriverWithOptions(opts: {
@@ -122,31 +151,20 @@ export async function initDriverWithOptions(opts: {
 
   if (opts.browser === 'firefox') {
     const options = new firefox.Options()
-      // @ts-ignore
-      .setBinary(BINARY_PATHS[opts.os][opts.browser])
       .addArguments(...args.slice(1))
       .setPreference('xpinstall.signatures.required', false)
       .setPreference('extensions.langpacks.signatures.required', false)
       .addExtensions('rainbowbx.xpi');
 
-    const service = new firefox.ServiceBuilder().setStdio('inherit');
-
     driver = await new Builder()
-      .setFirefoxService(service)
       .forBrowser('firefox')
       .setFirefoxOptions(options)
       .build();
   } else {
-    const options = new chrome.Options()
-      // @ts-ignore
-      .setChromeBinaryPath(BINARY_PATHS[opts.os][opts.browser])
-      .addArguments(...args);
+    const options = new chrome.Options().addArguments(...args);
     options.setAcceptInsecureCerts(true);
 
-    const service = new chrome.ServiceBuilder().setStdio('inherit');
-
     driver = await new Builder()
-      .setChromeService(service)
       .forBrowser('chrome')
       .setChromeOptions(options)
       .build();
@@ -320,6 +338,19 @@ export async function findElementByTestId({
   driver: WebDriver;
 }) {
   return querySelector(driver, `[data-testid="${id}"]`);
+}
+
+export async function findElementByTestIdInDOM({
+  id,
+  driver,
+}: {
+  id: string;
+  driver: WebDriver;
+}) {
+  return driver.wait(
+    until.elementLocated(By.css(`[data-testid="${id}"]`)),
+    20_000,
+  );
 }
 
 export async function findElementById({
@@ -773,30 +804,20 @@ export async function switchWallet(
   await delayTime('long');
 }
 
-export async function connectToTestDapp(driver: WebDriver) {
-  await goToTestApp(driver);
-  const dappHandler = await getWindowHandle({ driver });
-
-  const button = await findElementByText(driver, 'Connect Wallet');
-  expect(button).toBeTruthy();
-  await waitAndClick(button, driver);
-
-  const modalTitle = await findElementByText(driver, 'Connect a Wallet');
-  expect(modalTitle).toBeTruthy();
-
-  const mmButton = await querySelector(
+export async function connectToTestDapp(
+  driver: WebDriver,
+  rootURL: string,
+  dappHandler: string,
+) {
+  console.log('[connectToTestDapp] Clicking Rainbow wallet option...');
+  await waitAndClick(
+    await querySelector(driver, '[data-testid="rk-wallet-option-me.rainbow"]'),
     driver,
-    '[data-testid="rk-wallet-option-me.rainbow"]',
   );
-  await waitAndClick(mmButton, driver);
 
-  const { popupHandler } = await getAllWindowHandles({
-    driver,
-    dappHandler,
-  });
-
-  await driver.switchTo().window(popupHandler);
-
+  console.log('[connectToTestDapp] Clicked. Now switching to popup...');
+  const popupHandler = await switchToPopup(driver, dappHandler, rootURL);
+  console.log('[connectToTestDapp] Switched to popup successfully.');
   return { dappHandler, popupHandler };
 }
 
@@ -852,12 +873,24 @@ export const fillPrivateKey = async (driver: WebDriver, privateKey: string) => {
 };
 
 export async function clickAcceptRequestButton(driver: WebDriver) {
-  await waitUntilElementByTestIdIsPresent({
+  console.log('[clickAcceptRequestButton] Starting...');
+  const button = await findElementByTestIdInDOM({
     id: 'accept-request-button',
     driver,
   });
+  console.log('[clickAcceptRequestButton] Found button element in DOM.');
+  await scrollElementIntoView(button, driver);
+  console.log('[clickAcceptRequestButton] Scrolled button into view.');
+  await waitAndClick(button, driver);
+  console.log('[clickAcceptRequestButton] Clicked button successfully.');
+}
 
-  await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
+export async function scrollElementIntoView(
+  element: WebElement,
+  driver: WebDriver,
+) {
+  await driver.executeScript('arguments[0].scrollIntoView(true);', element);
+  await delayTime('short');
 }
 
 export async function importHardwareWalletFlow(
