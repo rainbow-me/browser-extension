@@ -15,7 +15,22 @@ runs:
     run: |
       CHROME_VERSION=$(cat e2e/browsers.json | jq -r '.versions.chrome')
       echo "PUPPETEER_CACHE_DIR=$HOME/.cache/puppeteer" >> $GITHUB_ENV
+      npx @puppeteer/browsers install chrome@$CHROME_VERSION
+  - name: List installed browsers
+    shell: 'bash'
+    run: |
+      npx --yes @puppeteer/browsers list
+      CHROME_VERSION=$(cat e2e/browsers.json | jq -r '.versions.chrome')
+      npx --yes @puppeteer/browsers list | grep -F "chrome@${CHROME_VERSION}" | cut -d')' -f2- | sed -e 's/^[[:space:]]*//'
+  - name: Setup Chrome binary
+    shell: 'bash'
+    run: |
+      npx --yes @puppeteer/browsers list 
+      CHROME_VERSION=$(cat e2e/browsers.json | jq -r '.versions.chrome')
       CHROME_BIN=$(npx --yes @puppeteer/browsers list | grep -F "chrome@${CHROME_VERSION}" | cut -d')' -f2- | sed -e 's/^[[:space:]]*//')
       mkdir -p /opt/google/chrome
       ln -sf "$CHROME_BIN" /opt/google/chrome/chrome
+  - name: Verify Chrome installation
+    shell: 'bash'
+    run: |
       /opt/google/chrome/chrome --version
