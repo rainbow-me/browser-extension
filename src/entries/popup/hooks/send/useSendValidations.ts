@@ -48,7 +48,7 @@ export const useSendValidations = ({
     chainId: getNativeAssetChainId(),
   });
 
-  const [isValidRecipient, setIsValidRecipient] = useState(false);
+  const [isValidToAddress, setIsValidToAddress] = useState(false);
 
   const enoughAssetBalance = useMemo(() => {
     if (nft) {
@@ -113,12 +113,12 @@ export const useSendValidations = ({
     [userAssets],
   );
 
-  const validateRecipient = useCallback(
+  const validateToAddress = useCallback(
     (address?: Address) => {
       const candidate = address || toAddress || '';
       const validAddress = isValidAddress(candidate);
       if (!validAddress) {
-        setIsValidRecipient(false);
+        setIsValidToAddress(false);
         return false;
       }
       const lower = candidate.toLowerCase();
@@ -126,14 +126,14 @@ export const useSendValidations = ({
         asset && !asset.isNativeAsset && asset.address.toLowerCase() === lower;
       const knownToken = tokenContracts.includes(lower);
       const valid = !(sendingToToken || knownToken);
-      setIsValidRecipient(valid);
+      setIsValidToAddress(valid);
       return sendingToToken || knownToken;
     },
     [asset, toAddress, tokenContracts],
   );
 
   const buttonLabel = useMemo(() => {
-    if (!isValidRecipient && toAddressOrName !== '')
+    if (!isValidToAddress && toAddressOrName !== '')
       return i18n.t('send.button_label.enter_valid_address');
 
     if (!toAddress && !assetAmount && !nft) {
@@ -161,7 +161,7 @@ export const useSendValidations = ({
     assetAmount,
     enoughAssetBalance,
     enoughNativeAssetForGas,
-    isValidRecipient,
+    isValidToAddress,
     nft,
     toAddress,
     toAddressOrName,
@@ -170,7 +170,7 @@ export const useSendValidations = ({
   const readyForReview = useMemo(
     () =>
       selectedGas?.gasFee?.amount &&
-      isValidRecipient &&
+      isValidToAddress &&
       toAddressOrName !== '' &&
       (assetAmount || !!nft) &&
       enoughAssetBalance &&
@@ -179,7 +179,7 @@ export const useSendValidations = ({
       assetAmount,
       enoughAssetBalance,
       enoughNativeAssetForGas,
-      isValidRecipient,
+      isValidToAddress,
       nft,
       selectedGas?.gasFee?.amount,
       toAddressOrName,
@@ -190,8 +190,8 @@ export const useSendValidations = ({
     enoughAssetBalance,
     enoughNativeAssetForGas,
     buttonLabel,
-    isValidRecipient,
+    isValidToAddress,
     readyForReview,
-    validateRecipient,
+    validateToAddress,
   };
 };

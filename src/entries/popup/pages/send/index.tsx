@@ -191,7 +191,7 @@ export function Send() {
     setToAddressOrName,
   } = useSendState({ assetAmount, rawMaxAssetBalanceAmount, asset, nft });
 
-  const { buttonLabel, isValidRecipient, readyForReview, validateRecipient } =
+  const { buttonLabel, isValidToAddress, readyForReview, validateToAddress } =
     useSendValidations({
       asset,
       assetAmount,
@@ -527,9 +527,9 @@ export function Send() {
   const prevInvalidRecipient = usePrevious(isInvalidRecipient);
 
   useEffect(() => {
-    const invalid = validateRecipient();
+    const invalid = validateToAddress();
     setIsInvalidRecipient(invalid);
-  }, [validateRecipient]);
+  }, [validateToAddress]);
 
   useEffect(() => {
     if (!prevInvalidRecipient && isInvalidRecipient) {
@@ -673,7 +673,7 @@ export function Send() {
                 handleToAddressChange={handleToAddressChange}
                 setToAddressOrName={setToAddressOrName}
                 onDropdownOpen={setToAddressDropdownOpen}
-                validateRecipient={validateRecipient}
+                validateToAddress={validateToAddress}
                 ref={toAddressInputRef}
               />
             </Row>
@@ -738,7 +738,7 @@ export function Send() {
           )}
 
           <Row height="content">
-            {isValidRecipient && (!!asset || !!nft) ? (
+            {isValidToAddress && (!!asset || !!nft) ? (
               <AccentColorProvider color={assetAccentColor}>
                 <Box paddingHorizontal="8px">
                   <Rows space="20px">

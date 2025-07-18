@@ -271,7 +271,7 @@ interface ToAddressProps {
   clearToAddress: () => void;
   setToAddressOrName: (adrressOrName: string) => void;
   onDropdownOpen: (open: boolean) => void;
-  validateRecipient: (address?: Address) => void;
+  validateToAddress: (address?: Address) => void;
 }
 
 export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
@@ -285,7 +285,7 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
       clearToAddress,
       setToAddressOrName,
       onDropdownOpen,
-      validateRecipient,
+      validateToAddress,
     } = props;
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -322,9 +322,9 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
       (address: Address) => {
         setToAddressOrName(address);
         onDropdownAction();
-        validateRecipient(address);
+        validateToAddress(address);
       },
-      [onDropdownAction, validateRecipient, setToAddressOrName],
+      [onDropdownAction, validateToAddress, setToAddressOrName],
     );
 
     const onInputClick = useCallback(() => {
@@ -344,9 +344,9 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
     useEffect(() => {
       if (!inputVisible) {
         closeDropdown();
-        validateRecipient();
+        validateToAddress();
       }
-    }, [closeDropdown, inputVisible, validateRecipient]);
+    }, [closeDropdown, inputVisible, validateToAddress]);
 
     const { displayName, isNameDefined } = useWalletInfo({
       address: toAddress,

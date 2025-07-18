@@ -39,7 +39,7 @@ beforeEach(() => {
   useCurrentCurrencyStore.setState({ currentCurrency: 'USD' });
 });
 
-describe('validateRecipient', () => {
+describe('validateToAddress', () => {
   test('detects sending to the token contract', () => {
     const { result } = renderHook(() =>
       useSendValidations({
@@ -47,7 +47,7 @@ describe('validateRecipient', () => {
         toAddress: DAI_MAINNET_ASSET.address as Address,
       }),
     );
-    expect(result.current.validateRecipient()).toBe(true);
+    expect(result.current.validateToAddress()).toBe(true);
   });
 
   test('detects sending to a known token contract', () => {
@@ -57,7 +57,7 @@ describe('validateRecipient', () => {
         toAddress: USDC_MAINNET_ASSET.address as Address,
       }),
     );
-    expect(result.current.validateRecipient()).toBe(true);
+    expect(result.current.validateToAddress()).toBe(true);
   });
 
   test('allows normal recipient', () => {
@@ -67,6 +67,6 @@ describe('validateRecipient', () => {
         toAddress: TEST_ADDRESS_1 as Address,
       }),
     );
-    expect(result.current.validateRecipient()).toBe(false);
+    expect(result.current.validateToAddress()).toBe(false);
   });
 });
