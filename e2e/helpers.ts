@@ -33,13 +33,11 @@ const testPassword = 'test1234';
 const BINARY_PATHS = {
   mac: {
     chrome: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-    brave: '/Applications/Brave Browser.app/Contents/MacOS/Brave Browser',
     firefox:
       '/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox',
   },
   linux: {
     chrome: process.env.CHROMIUM_BIN,
-    brave: process.env.BRAVE_BIN,
     firefox: process.env.FIREFOX_BIN,
   },
 };

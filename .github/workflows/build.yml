@@ -343,59 +343,7 @@ jobs:
       - name: Fail if any tests failed
         if: steps.ChromeE2EDappInteractions.outcome == 'failure'
         run: exit 1
-  # BRAVE TESTS
-  # brave-e2e:
-  #   needs: [build]
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 20
-  #   env:
-  #     DISPLAY: :0
-  #     VITEST_SEGFAULT_RETRY: 3
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: "20.16.0"
-  #     - name: Download deps cache artifacts
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: node_modules.tar.gz
-  #     - name: Unzip node_modules
-  #       run: tar xzvf node_modules.tar.gz
-  #     - name: Download build artifacts
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: rainbowbx-${{ github.sha }}
-  #         path: build
-  #     - name: Setup xvfb
-  #       run: |
-  #         sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
-  #         # start xvfb in the background
-  #         sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
-  #     - name: Setup Brave browser
-  #       run: |
-  #         sudo apt install apt-transport-https curl
-  #         sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
-  #         echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main"|sudo tee /etc/apt/sources.list.d/brave-browser-release.list
-  #         sudo apt update
-  #         sudo apt install brave-browser
-  #     - name: Install Anvil
-  #       uses: foundry-rs/foundry-toolchain@v1
-  #       with:
-  #         version: nightly
-  #     - uses: actions/checkout@v4
-  #       with:
-  #           repository: 'rainbow-me/browser-extension-env'
-  #           token: ${{ secrets.ORG_ACCESS_TOKEN }}
-  #           path: tmp
-  #     - name: Copy dotenv
-  #       run: cat tmp/dotenv >> .env && rm -rf tmp
-  #     - name: Run e2e (Brave)
-  #       run:  |
-  #        export BROWSER=brave
-  #         export OS=linux
-  #         export BRAVE_BIN='/usr/bin/brave-browser-stable'
-  #         yarn vitest:parallel && yarn vitest:serial
+
   # UNIT TESTS
   unit-tests:
     runs-on: ubuntu-latest
