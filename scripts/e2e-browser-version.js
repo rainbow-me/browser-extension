@@ -23,8 +23,7 @@ function getBinaryPath(browser, os) {
     throw new Error(`No binary path configured for ${browser} on ${os}`);
   }
   
-  // Replace environment variables like ${CHROMIUM_BIN}
-  return path.replace(/\$\{(\w+)\}/g, (_, envVar) => process.env[envVar] || '');
+  return path;
 }
 
 function getExpectedVersion(browser) {
