@@ -20,7 +20,7 @@ echo "Anvil Launched..."
 
 # Run the tests and store the result
 echo "Running Tests..."
-NODE_OPTIONS='--no-experimental-fetch' vitest
+vitest
 TEST_RESULT=$?
 
 # kill anvil
