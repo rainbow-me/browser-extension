@@ -1,6 +1,9 @@
 #!/bin/bash
 RETRY_COUNT=0
 
+# Check browser version before running tests
+node scripts/e2e-browser-version.js
+
 # Function to run tests
 run_tests() {
   echo "Running Tests..."
