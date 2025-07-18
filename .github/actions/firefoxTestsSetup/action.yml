@@ -15,4 +15,9 @@ runs:
       shell: bash
       run: |
         FIREFOX_VERSION=$(cat e2e/browsers.json | jq -r '.versions.firefox')
+        echo "PUPPETEER_CACHE_DIR=$HOME/.cache/puppeteer" >> $GITHUB_ENV
         npx @puppeteer/browsers install firefox@devedition_$FIREFOX_VERSION
+        FIREFOX_BIN=$(npx --yes @puppeteer/browsers list | grep -F "firefox@devedition_${FIREFOX_VERSION}" | cut -d')' -f2- | sed -e 's/^[[:space:]]*//')
+        mkdir -p /usr/lib/firefox
+        ln -sf "$FIREFOX_BIN" /usr/lib/firefox/firefox
+        /usr/lib/firefox/firefox --version

@@ -9,8 +9,8 @@
       "firefox": "/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox"
     },
     "linux": {
-      "chrome": "${CHROMIUM_BIN}",
-      "firefox": "${FIREFOX_BIN}"
+      "chrome": "/opt/google/chrome/chrome",
+      "firefox": "/usr/lib/firefox/firefox"
     }
   }
 }
