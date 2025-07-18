@@ -1,5 +1,4 @@
 #!/bin/bash
-MAX_RETRIES=5
 RETRY_COUNT=0
 
 # Function to run tests
@@ -10,7 +9,7 @@ run_tests() {
 
 # Main loop for retry logic
 TEST_RESULT=1
-while [ $RETRY_COUNT -lt $MAX_RETRIES ] && [ $TEST_RESULT -ne 0 ]; do
+while [ $RETRY_COUNT -lt ${MAX_RETRIES:-1} ] && [ $TEST_RESULT -ne 0 ]; do
   if [ $RETRY_COUNT -gt 0 ]; then
     echo "Test failed, attempting retry $RETRY_COUNT..."
   fi
