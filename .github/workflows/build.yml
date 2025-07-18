@@ -220,7 +220,6 @@ jobs:
         run: |
           export BROWSER=chrome
           export OS=linux
-          export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
           export MAX_RETRIES=1
           yarn vitest:parallel
       - name: Upload deps artifacts
@@ -250,7 +249,6 @@ jobs:
         run: |
           export BROWSER=chrome
           export OS=linux
-          export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
           export MAX_RETRIES=1
           yarn vitest:swap
       - name: Upload deps artifacts
@@ -280,7 +278,6 @@ jobs:
         run: |
           export BROWSER=chrome
           export OS=linux
-          export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
           export MAX_RETRIES=1
           yarn vitest:send
       - name: Upload deps artifacts
@@ -310,7 +307,6 @@ jobs:
         run: |
           export BROWSER=chrome
           export OS=linux
-          export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
           export MAX_RETRIES=1
           yarn vitest:send:optimism
       - name: Upload deps artifacts
@@ -340,7 +336,6 @@ jobs:
         run: |
           export BROWSER=chrome
           export OS=linux
-          export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
           export MAX_RETRIES=1
           yarn vitest:dappInteractions
       - name: Upload deps artifacts
