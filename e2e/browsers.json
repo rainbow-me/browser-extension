@@ -1,0 +1,16 @@
+{
+  "versions": {
+    "chrome": "133.0.6943.141",
+    "firefox": "122.0b9"
+  },
+  "paths": {
+    "mac": {
+      "chrome": "/Applications/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing",
+      "firefox": "/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox"
+    },
+    "linux": {
+      "chrome": "${CHROMIUM_BIN}",
+      "firefox": "${FIREFOX_BIN}"
+    }
+  }
+}
