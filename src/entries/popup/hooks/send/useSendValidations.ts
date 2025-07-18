@@ -49,6 +49,8 @@ export const useSendValidations = ({
   });
 
   const [isValidToAddress, setIsValidToAddress] = useState(false);
+  const [toAddressIsTokenContract, setToAddressIsTokenContract] =
+    useState(false);
 
   const enoughAssetBalance = useMemo(() => {
     if (nft) {
@@ -125,9 +127,11 @@ export const useSendValidations = ({
       const sendingToToken =
         asset && !asset.isNativeAsset && asset.address.toLowerCase() === lower;
       const knownToken = tokenContracts.includes(lower);
-      const valid = !(sendingToToken || knownToken);
+      const isTokenContract = sendingToToken || knownToken;
+      const valid = !isTokenContract;
       setIsValidToAddress(valid);
-      return sendingToToken || knownToken;
+      setToAddressIsTokenContract(isTokenContract);
+      return isTokenContract;
     },
     [asset, toAddress, tokenContracts],
   );
@@ -193,5 +197,6 @@ export const useSendValidations = ({
     isValidToAddress,
     readyForReview,
     validateToAddress,
+    toAddressIsTokenContract,
   };
 };

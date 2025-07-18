@@ -191,15 +191,20 @@ export function Send() {
     setToAddressOrName,
   } = useSendState({ assetAmount, rawMaxAssetBalanceAmount, asset, nft });
 
-  const { buttonLabel, isValidToAddress, readyForReview, validateToAddress } =
-    useSendValidations({
-      asset,
-      assetAmount,
-      nft,
-      selectedGas,
-      toAddress,
-      toAddressOrName,
-    });
+  const {
+    buttonLabel,
+    isValidToAddress,
+    readyForReview,
+    validateToAddress,
+    toAddressIsTokenContract,
+  } = useSendValidations({
+    asset,
+    assetAmount,
+    nft,
+    selectedGas,
+    toAddress,
+    toAddressOrName,
+  });
 
   const controls = useAnimationControls();
   const transactionRequestForGas: TransactionRequest = useMemo(() => {
@@ -523,19 +528,17 @@ export function Send() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const [isInvalidRecipient, setIsInvalidRecipient] = useState(false);
-  const prevInvalidRecipient = usePrevious(isInvalidRecipient);
+  const prevToAddressIsTokenContract = usePrevious(toAddressIsTokenContract);
 
   useEffect(() => {
-    const invalid = validateToAddress();
-    setIsInvalidRecipient(invalid);
-  }, [validateToAddress]);
-
-  useEffect(() => {
-    if (!prevInvalidRecipient && isInvalidRecipient) {
+    if (!prevToAddressIsTokenContract && toAddressIsTokenContract) {
       showTokenContractExplainer();
     }
-  }, [prevInvalidRecipient, isInvalidRecipient, showTokenContractExplainer]);
+  }, [
+    prevToAddressIsTokenContract,
+    toAddressIsTokenContract,
+    showTokenContractExplainer,
+  ]);
 
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
