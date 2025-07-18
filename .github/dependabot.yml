@@ -10,3 +10,9 @@ updates:
       interval: "weekly"
     ignore:
       - dependency-name: "*"
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    allow:
+      - dependency-name: "@rainbow-me/*"
