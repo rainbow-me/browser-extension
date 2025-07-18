@@ -2,6 +2,9 @@
 ANVIL_PORT=8545
 RETRY_COUNT=0
 
+# Check browser version before running tests
+node scripts/e2e-browser-version.js
+
 # Function to launch and verify Anvil
 launch_anvil() {
   # Launch anvil in the bg
