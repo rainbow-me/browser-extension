@@ -1,0 +1,6 @@
+[auth]
+token=${SENTRY_AUTH_TOKEN}
+
+[defaults]
+org=${SENTRY_ORG}
+project=${SENTRY_PROJECT}
