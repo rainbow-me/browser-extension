@@ -1712,8 +1712,8 @@
       "action_label": "Got it"
     },
     "send": {
-      "to_smart_contract": {
-        "description_1": "The address you entered is for a smart contract.",
+      "to_token_contract": {
+        "description_1": "The address you entered is for a token contract.",
         "description_2": "Except for rare situations, you probably shouldn't do this. You could lose your assets or they might go to the wrong place.",
         "description_3": "Double check the address, verify it with the recipient, or contact support first.",
         "title": "Hold your horses!"
