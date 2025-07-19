@@ -115,8 +115,6 @@ const RESTORE_NAV_MAP: Record<string, string[]> = {
   // [ROUTES.SIGN]: [],
   // kicking back to /home
   // [ROUTES.TOKEN_DETAILS]: [],
-  // dev only not supporting
-  // [ROUTES.WALLETS]: [],
   [ROUTES.WALLET_SWITCHER]: [ROUTES.WALLET_SWITCHER],
 };
 
