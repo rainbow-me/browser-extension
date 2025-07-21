@@ -35,9 +35,7 @@ import { useExpiryListener } from './hooks/useExpiryListener';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
 import usePrevious from './hooks/usePrevious';
 
-if (process.env.IS_TESTING !== 'true' && process.env.IS_DEV !== 'true') {
-  initializeSentry('popup');
-}
+initializeSentry('popup');
 
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
 

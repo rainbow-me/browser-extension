@@ -19,7 +19,11 @@ const IGNORED_ERRORS = [
 ];
 
 export function initializeSentry(context: 'popup' | 'background') {
-  if (process.env.IS_DEV !== 'true' && process.env.SENTRY_DSN) {
+  if (
+    process.env.IS_DEV !== 'true' &&
+    process.env.IS_TESTING !== 'true' &&
+    process.env.SENTRY_DSN
+  ) {
     try {
       const integrations =
         context === 'popup'
