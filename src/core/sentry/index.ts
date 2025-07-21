@@ -1,4 +1,11 @@
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/react';
+import React from 'react';
+import {
+  createRoutesFromChildren,
+  matchRoutes,
+  useLocation,
+  useNavigationType,
+} from 'react-router-dom';
 
 import pkg from '../../../package.json';
 
@@ -15,7 +22,18 @@ export function initializeSentry(context: 'popup' | 'background') {
   if (process.env.IS_DEV !== 'true' && process.env.SENTRY_DSN) {
     try {
       const integrations =
-        context === 'popup' ? [Sentry.browserTracingIntegration()] : [];
+        context === 'popup'
+          ? [
+              Sentry.browserTracingIntegration(),
+              Sentry.reactRouterV6BrowserTracingIntegration({
+                useEffect: React.useEffect,
+                useLocation,
+                useNavigationType,
+                createRoutesFromChildren,
+                matchRoutes,
+              }),
+            ]
+          : [];
       Sentry.init({
         dsn: process.env.SENTRY_DSN,
         integrations,

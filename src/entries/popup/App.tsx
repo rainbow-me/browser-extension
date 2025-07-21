@@ -37,6 +37,10 @@ import usePrevious from './hooks/usePrevious';
 
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
+if (process.env.IS_TESTING !== 'true' && process.env.IS_DEV !== 'true') {
+  initializeSentry('popup');
+}
+
 export function App() {
   const { currentLanguage, setCurrentLanguage } = useCurrentLanguageStore();
   const activeChains = useNetworkStore((state) =>
@@ -66,7 +70,6 @@ export function App() {
   React.useEffect(() => {
     // Disable analytics & sentry for e2e and dev mode
     if (process.env.IS_TESTING !== 'true' && process.env.IS_DEV !== 'true') {
-      initializeSentry('popup');
       analytics.track(event.popupOpened);
       setTimeout(() => flushQueuedEvents(), 1000);
     }

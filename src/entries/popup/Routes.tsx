@@ -1,10 +1,11 @@
+import * as Sentry from '@sentry/react';
 import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
 import {
   Outlet,
   RouteObject,
   RouterProvider,
-  createHashRouter,
+  createHashRouter as createHashRouterWithoutSentry,
   useLocation,
   useRouteError,
 } from 'react-router-dom';
@@ -1020,6 +1021,10 @@ const RootLayout = () => {
   );
 };
 
+const createHashRouter = Sentry.wrapCreateMemoryRouterV6(
+  createHashRouterWithoutSentry,
+);
+
 const router = createHashRouter([
   { element: <RootLayout />, children: ROUTE_DATA, errorElement: <Rerouter /> },
 ]);
@@ -1078,6 +1083,7 @@ function Rerouter() {
 
   React.useEffect(() => {
     setError(error);
+    Sentry.captureException(error);
     analytics.track(event.appCrashed, { error: error.message });
     navigate(ROUTES.HOME, { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps

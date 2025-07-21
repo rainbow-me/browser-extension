@@ -1,5 +1,5 @@
-import * as Sentry from '@sentry/browser';
-import { severityLevelFromString } from '@sentry/utils';
+import { severityLevelFromString } from '@sentry/core';
+import * as Sentry from '@sentry/react';
 import format from 'date-fns/format';
 
 import { DebugContext } from './debugContext';
