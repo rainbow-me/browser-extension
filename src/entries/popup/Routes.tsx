@@ -1021,7 +1021,7 @@ const RootLayout = () => {
   );
 };
 
-const createHashRouter = Sentry.wrapCreateMemoryRouterV6(
+const createHashRouter = Sentry.wrapCreateBrowserRouterV6(
   createHashRouterWithoutSentry,
 );
 
