@@ -30,6 +30,7 @@ export interface RainbowConfig extends Record<string, any> {
   rewards_enabled: boolean;
   rewards_bridging_enabled: boolean;
   degen_mode: boolean;
+  nfts_enabled: boolean;
   // SWAPS
   default_slippage_bips: Partial<Record<ChainId, number>>;
 }
@@ -53,6 +54,7 @@ const DEFAULT_CONFIG = {
   tx_requests_enabled: true,
   rpc_proxy_enabled: true,
   points_enabled: true,
+  nfts_enabled: true,
   defi_positions_enabled: false,
   rewards_enabled: true,
   rewards_bridging_enabled: true,
@@ -113,7 +115,8 @@ export const init = async () => {
             key === 'BX_defi_positions_enabled' ||
             key === 'BX_rewards_enabled' ||
             key === 'BX_rewards_bridging_enabled' ||
-            key === 'BX_degen_mode'
+            key === 'BX_degen_mode' ||
+            key === 'BX_nfts_enabled'
           ) {
             config[realKey] = entry.asBoolean();
           } else {

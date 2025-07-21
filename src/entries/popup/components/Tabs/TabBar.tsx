@@ -2,6 +2,7 @@ import chroma from 'chroma-js';
 import { motion } from 'framer-motion';
 import { ReactElement, memo, useMemo } from 'react';
 
+import config from '~/core/firebase/remoteConfig';
 import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useTabNavigation } from '~/core/state/currentSettings/tabNavigation';
@@ -30,7 +31,7 @@ export const isValidTab = (value: unknown): value is Tab => {
   return typeof value === 'string' && TABS.includes(value);
 };
 
-const TABS = ['tokens', 'activity', 'nfts', 'points'];
+const TABS = ['tokens', 'activity', 'nfts', 'points'] as const;
 
 const TAB_HEIGHT = 32;
 const TAB_WIDTH = 42;
@@ -70,6 +71,10 @@ const tabConfig: TabConfigType[] = [
   },
 ];
 
+const visibleTabConfig = config.nfts_enabled
+  ? tabConfig
+  : tabConfig.filter((tab) => tab.name !== 'nfts');
+
 export const TabBar = memo(function TabBar() {
   const height = 44;
   const { selectedTab, setSelectedTab } = useTabNavigation();
@@ -86,6 +91,11 @@ export const TabBar = memo(function TabBar() {
   }, [avatar?.color, currentTheme]);
 
   const { isWatchingWallet } = useWallets();
+
+  const visibleSelectedIndex =
+    visibleTabConfig.findIndex((t) => t.name === selectedTab) === -1
+      ? 0
+      : visibleTabConfig.findIndex((t) => t.name === selectedTab);
 
   return (
     <Box
@@ -115,14 +125,14 @@ export const TabBar = memo(function TabBar() {
       }}
       transition={timingConfig(0.2)}
     >
-      <TabBackground selectedTabIndex={TABS.indexOf(selectedTab)} />
+      <TabBackground selectedTabIndex={visibleSelectedIndex} />
       <Inline
         alignHorizontal="center"
         alignVertical="center"
         height="full"
         space="4px"
       >
-        {tabConfig.map((tab, index) => {
+        {visibleTabConfig.map((tab, index) => {
           if (tab.name === 'points' && isWatchingWallet) return null;
           return (
             <Tab
@@ -134,7 +144,7 @@ export const TabBar = memo(function TabBar() {
               key={index}
               name={tab.name}
               onSelectTab={setSelectedTab}
-              selectedTabIndex={TABS.indexOf(selectedTab)}
+              selectedTabIndex={visibleSelectedIndex}
             />
           );
         })}
