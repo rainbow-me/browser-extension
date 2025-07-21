@@ -7,7 +7,7 @@ import {
   encryptWithKey,
   importKey,
 } from '@metamask/browser-passworder';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/react';
 import { Address } from 'viem';
 
 import { LocalStorage, SessionStorage } from '../storage';

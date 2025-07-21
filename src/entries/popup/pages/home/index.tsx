@@ -1,4 +1,4 @@
-import { logger } from '@sentry/utils';
+import { debug as logger } from '@sentry/core';
 import { motion, useMotionValueEvent } from 'framer-motion';
 import { memo, useEffect, useLayoutEffect, useRef, useState } from 'react';
 

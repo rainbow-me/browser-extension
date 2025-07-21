@@ -1,5 +1,5 @@
 import { RainbowProvider } from '@rainbow-me/provider';
-import { uuid4 } from '@sentry/utils';
+import { uuid4 } from '@sentry/core';
 import _ from 'lodash';
 import { EIP1193Provider, announceProvider } from 'mipd';
 

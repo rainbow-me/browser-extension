@@ -35,6 +35,8 @@ import { useExpiryListener } from './hooks/useExpiryListener';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
 import usePrevious from './hooks/usePrevious';
 
+initializeSentry('popup');
+
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
 export function App() {
@@ -66,7 +68,6 @@ export function App() {
   React.useEffect(() => {
     // Disable analytics & sentry for e2e and dev mode
     if (process.env.IS_TESTING !== 'true' && process.env.IS_DEV !== 'true') {
-      initializeSentry('popup');
       analytics.track(event.popupOpened);
       setTimeout(() => flushQueuedEvents(), 1000);
     }
