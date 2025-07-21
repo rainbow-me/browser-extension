@@ -35,11 +35,11 @@ import { useExpiryListener } from './hooks/useExpiryListener';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
 import usePrevious from './hooks/usePrevious';
 
-const backgroundMessenger = initializeMessenger({ connect: 'background' });
-
 if (process.env.IS_TESTING !== 'true' && process.env.IS_DEV !== 'true') {
   initializeSentry('popup');
 }
+
+const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
 export function App() {
   const { currentLanguage, setCurrentLanguage } = useCurrentLanguageStore();
