@@ -91,16 +91,25 @@ export async function getAllWindowHandles({
   const dappHandlerFromHandlers =
     handlers.find((handler) => handler !== popupHandler) || '';
 
-  return {
+  const allHandlers = {
     handlers,
     popupHandler: popupHandler || popupHandlerFromHandlers,
     dappHandler: dappHandler || dappHandlerFromHandlers,
   };
+  console.log(
+    `[test logging | Window Handles | getAllWindowHandles] - ${JSON.stringify(
+      allHandlers,
+    )}`,
+  );
+  return allHandlers;
 }
 
 export async function getWindowHandle({ driver }: { driver: WebDriver }) {
   await delayTime('long');
   const windowHandle = await driver.getWindowHandle();
+  console.log(
+    `[test logging | Window Handles | getWindowHandle] - ${windowHandle}`,
+  );
   return windowHandle;
 }
 
