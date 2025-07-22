@@ -93,7 +93,6 @@ import { ChooseWalletGroup } from './pages/walletSwitcher/chooseWalletGroup';
 import { NewImportWallet } from './pages/walletSwitcher/newImportWallet';
 import { NewImportWalletSelection } from './pages/walletSwitcher/newImportWalletSelection';
 import { NewWatchWallet } from './pages/walletSwitcher/newWatchWallet';
-import { Wallets } from './pages/wallets';
 import { WatchWallet } from './pages/watchWallet';
 import { Welcome } from './pages/welcome';
 import { ROUTES } from './urls';
@@ -844,20 +843,6 @@ const ROUTE_DATA = [
         protectedRoute
       >
         <Sign />
-      </AnimatedRoute>
-    ),
-  },
-  {
-    path: ROUTES.WALLETS,
-    element: (
-      <AnimatedRoute
-        direction="right"
-        navbar
-        navbarIcon="arrow"
-        title={i18n.t('wallets.title')}
-        protectedRoute
-      >
-        <Wallets />
       </AnimatedRoute>
     ),
   },
