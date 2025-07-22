@@ -429,22 +429,6 @@ export function WalletSwitcher() {
             </Button>
           </Link>
         )}
-        {process.env.IS_DEV === 'true' && (
-          <Link to={ROUTES.WALLETS}>
-            <Button
-              color="fillSecondary"
-              variant="flat"
-              symbol="gearshape.fill"
-              symbolSide="left"
-              height="32px"
-              width="full"
-              borderRadius="9px"
-              tabIndex={0}
-            >
-              Old Wallets UI [DEV]
-            </Button>
-          </Link>
-        )}
       </Box>
     </Box>
   );

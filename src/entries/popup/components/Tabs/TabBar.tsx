@@ -2,6 +2,7 @@ import chroma from 'chroma-js';
 import { motion } from 'framer-motion';
 import { ReactElement, memo, useMemo } from 'react';
 
+import config from '~/core/firebase/remoteConfig';
 import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useTabNavigation } from '~/core/state/currentSettings/tabNavigation';
@@ -124,6 +125,7 @@ export const TabBar = memo(function TabBar() {
       >
         {tabConfig.map((tab, index) => {
           if (tab.name === 'points' && isWatchingWallet) return null;
+          if (tab.name === 'nfts' && !config.nfts_enabled) return null;
           return (
             <Tab
               Icon={tab.Icon}

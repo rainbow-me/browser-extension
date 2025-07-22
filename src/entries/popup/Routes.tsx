@@ -1,10 +1,11 @@
+import * as Sentry from '@sentry/react';
 import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
 import {
   Outlet,
   RouteObject,
   RouterProvider,
-  createHashRouter,
+  createHashRouter as createHashRouterWithoutSentry,
   useLocation,
   useRouteError,
 } from 'react-router-dom';
@@ -92,7 +93,6 @@ import { ChooseWalletGroup } from './pages/walletSwitcher/chooseWalletGroup';
 import { NewImportWallet } from './pages/walletSwitcher/newImportWallet';
 import { NewImportWalletSelection } from './pages/walletSwitcher/newImportWalletSelection';
 import { NewWatchWallet } from './pages/walletSwitcher/newWatchWallet';
-import { Wallets } from './pages/wallets';
 import { WatchWallet } from './pages/watchWallet';
 import { Welcome } from './pages/welcome';
 import { ROUTES } from './urls';
@@ -847,20 +847,6 @@ const ROUTE_DATA = [
     ),
   },
   {
-    path: ROUTES.WALLETS,
-    element: (
-      <AnimatedRoute
-        direction="right"
-        navbar
-        navbarIcon="arrow"
-        title={i18n.t('wallets.title')}
-        protectedRoute
-      >
-        <Wallets />
-      </AnimatedRoute>
-    ),
-  },
-  {
     path: ROUTES.WALLET_SWITCHER,
     element: (
       <AnimatedRoute
@@ -1020,6 +1006,10 @@ const RootLayout = () => {
   );
 };
 
+const createHashRouter = Sentry.wrapCreateBrowserRouterV6(
+  createHashRouterWithoutSentry,
+);
+
 const router = createHashRouter([
   { element: <RootLayout />, children: ROUTE_DATA, errorElement: <Rerouter /> },
 ]);
@@ -1078,6 +1068,7 @@ function Rerouter() {
 
   React.useEffect(() => {
     setError(error);
+    Sentry.captureException(error);
     analytics.track(event.appCrashed, { error: error.message });
     navigate(ROUTES.HOME, { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
