@@ -65,7 +65,7 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     await takeScreenshotOnFailure(context);
   });
 
-  afterAll(() => driver.quit());
+  afterAll(() => driver?.quit());
 
   // Import a wallet
   it('should be able import a wallet via pk', async () => {

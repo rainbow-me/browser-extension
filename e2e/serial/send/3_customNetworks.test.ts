@@ -42,7 +42,7 @@ afterEach<{ driver: WebDriver }>(async (context) => {
   await takeScreenshotOnFailure(context);
 });
 
-afterAll(() => driver.quit());
+afterAll(() => driver?.quit());
 
 it('should be able import a wallet via pk', async () => {
   await importWalletFlow(driver, rootURL, TEST_VARIABLES.SEED_WALLET.PK);

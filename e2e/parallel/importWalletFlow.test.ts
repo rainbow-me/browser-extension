@@ -26,7 +26,7 @@ describe('Import wallet with a secret phrase flow', () => {
     if (!extensionId) throw new Error('Extension not found');
     rootURL += extensionId;
   });
-  afterAll(async () => driver.quit());
+  afterAll(async () => driver?.quit());
 
   it('should be able import a wallet via seed', async () => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);

@@ -40,7 +40,7 @@ describe('Watch wallet then add more and switch between them', () => {
     rootURL += extensionId;
   });
 
-  afterAll(async () => driver.quit());
+  afterAll(async () => driver?.quit());
 
   // Watch a wallet
   it('should be able watch a wallet', async () => {

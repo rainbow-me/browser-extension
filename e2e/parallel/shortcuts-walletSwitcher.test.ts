@@ -42,7 +42,7 @@ describe.runIf(browser !== 'firefox')(
       if (!extensionId) throw new Error('Extension not found');
       rootURL += extensionId;
     });
-    afterAll(async () => driver.quit());
+    afterAll(async () => driver?.quit());
 
     it('should be able import a wallet via pk', async () => {
       await importWalletFlowUsingKeyboardNavigation(
