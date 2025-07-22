@@ -31,7 +31,7 @@ export const isValidTab = (value: unknown): value is Tab => {
   return typeof value === 'string' && TABS.includes(value);
 };
 
-const TABS = ['tokens', 'activity', 'nfts', 'points'] as const;
+const TABS = ['tokens', 'activity', 'nfts', 'points'];
 
 const TAB_HEIGHT = 32;
 const TAB_WIDTH = 42;
@@ -71,10 +71,6 @@ const tabConfig: TabConfigType[] = [
   },
 ];
 
-const visibleTabConfig = config.nfts_enabled
-  ? tabConfig
-  : tabConfig.filter((tab) => tab.name !== 'nfts');
-
 export const TabBar = memo(function TabBar() {
   const height = 44;
   const { selectedTab, setSelectedTab } = useTabNavigation();
@@ -91,11 +87,6 @@ export const TabBar = memo(function TabBar() {
   }, [avatar?.color, currentTheme]);
 
   const { isWatchingWallet } = useWallets();
-
-  const visibleSelectedIndex =
-    visibleTabConfig.findIndex((t) => t.name === selectedTab) === -1
-      ? 0
-      : visibleTabConfig.findIndex((t) => t.name === selectedTab);
 
   return (
     <Box
@@ -125,15 +116,16 @@ export const TabBar = memo(function TabBar() {
       }}
       transition={timingConfig(0.2)}
     >
-      <TabBackground selectedTabIndex={visibleSelectedIndex} />
+      <TabBackground selectedTabIndex={TABS.indexOf(selectedTab)} />
       <Inline
         alignHorizontal="center"
         alignVertical="center"
         height="full"
         space="4px"
       >
-        {visibleTabConfig.map((tab, index) => {
+        {tabConfig.map((tab, index) => {
           if (tab.name === 'points' && isWatchingWallet) return null;
+          if (tab.name === 'nfts' && !config.nfts_enabled) return null;
           return (
             <Tab
               Icon={tab.Icon}
@@ -144,7 +136,7 @@ export const TabBar = memo(function TabBar() {
               key={index}
               name={tab.name}
               onSelectTab={setSelectedTab}
-              selectedTabIndex={visibleSelectedIndex}
+              selectedTabIndex={TABS.indexOf(selectedTab)}
             />
           );
         })}
