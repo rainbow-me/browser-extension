@@ -7,7 +7,6 @@ import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { RAINBOW_LEARN_URL } from '~/core/references/links';
 import { useCurrentAddressStore } from '~/core/state';
-import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { toggleDegenMode, useDegenMode } from '~/core/state/degenMode';
 import { ChainId } from '~/core/types/chains';
 import {
@@ -178,9 +177,7 @@ const getSlippageExplainerProps = (t: I18n['t']) => ({
 function DegenModeCard() {
   const isDegenModeEnabled = useDegenMode((state) => state.isDegenModeEnabled);
 
-  const { featureFlags } = useFeatureFlagsStore();
-
-  if (!featureFlags.degen_mode && !config.degen_mode) return null;
+  if (!config.degen_mode_enabled) return null;
 
   return (
     <Stack marginHorizontal="-8px" space="16px" paddingBottom="8px">
