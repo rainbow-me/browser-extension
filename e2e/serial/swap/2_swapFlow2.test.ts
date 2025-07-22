@@ -69,7 +69,7 @@ describe('Swap Flow 2', () => {
     await takeScreenshotOnFailure(context);
   });
 
-  afterAll(() => driver.quit());
+  afterAll(() => driver?.quit());
 
   it('should be able import a wallet via pk', async () => {
     //  Start from welcome screen

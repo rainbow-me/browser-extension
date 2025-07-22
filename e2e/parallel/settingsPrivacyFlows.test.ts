@@ -39,7 +39,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
     if (!extensionId) throw new Error('Extension not found');
     rootURL += extensionId;
   });
-  afterAll(async () => await driver.quit());
+  afterAll(async () => await driver?.quit());
 
   it('should be able import a wallet via seed', async () => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);

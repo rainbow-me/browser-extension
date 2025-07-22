@@ -10058,7 +10058,7 @@ __metadata:
     chalk: "npm:5.3.0"
     check-password-strength: "npm:2.0.7"
     chroma-js: "npm:2.4.2"
-    chromedriver: "npm:133"
+    chromedriver: "npm:138"
     circular-dependency-plugin: "npm:5.2.2"
     clsx: "npm:1.2.1"
     cmdk: "npm:0.2.0"
@@ -10876,9 +10876,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chromedriver@npm:133":
-  version: 133.0.3
-  resolution: "chromedriver@npm:133.0.3"
+"chromedriver@npm:138":
+  version: 138.0.3
+  resolution: "chromedriver@npm:138.0.3"
   dependencies:
     "@testim/chrome-version": "npm:^1.1.4"
     axios: "npm:^1.7.4"
@@ -10889,7 +10889,7 @@ __metadata:
     tcp-port-used: "npm:^1.0.2"
   bin:
     chromedriver: bin/chromedriver
-  checksum: 10c0/c5c60a6fd27495478d31fbfb79e6da25d334434d3bbba13c67a05f1ee10430977411f798944824250698d2eb9ab4ea5c5491b852c4e75ec282c88e06702751e5
+  checksum: 10c0/f532a98d208c40e2cf54a18460b52634bde047ca409502a5ad9c63ac4e233a014d722838d2ab12371f7d585adcbac92fdf848bd70bf389c098db7a998f27e2b2
   languageName: node
   linkType: hard
 

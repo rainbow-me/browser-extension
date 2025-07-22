@@ -55,7 +55,7 @@ describe('Complete Hardhat Optimism send flow', () => {
     await takeScreenshotOnFailure(context);
   });
 
-  afterAll(() => driver.quit());
+  afterAll(() => driver?.quit());
 
   it('should be able import a wallet via pk', async () => {
     await importWalletFlowUsingKeyboardNavigation(
