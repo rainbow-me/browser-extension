@@ -29,34 +29,40 @@ export function TabHeader({
   const { currentCurrency } = useCurrentCurrencyStore();
   const { visibleTokenCount } = useVisibleTokenCount();
 
-  const displayBalanceComponent = useMemo(
-    () =>
-      hideAssetBalances ? (
-        <Inline alignHorizontal="right" alignVertical="center">
-          <Text
-            testId={'balance-hidden'}
-            color={activeTab === 'tokens' ? 'label' : 'labelTertiary'}
-            size="16pt"
-            weight="bold"
-          >
-            {supportedCurrencies?.[currentCurrency]?.symbol}
-          </Text>
-          <Asterisks color="label" size={13} />
-        </Inline>
-      ) : (
+  const displayBalanceComponent = useMemo(() => {
+    if (isLoading) return <Skeleton width="62px" height="11px" />;
+
+    return hideAssetBalances ? (
+      <Inline alignHorizontal="right" alignVertical="center">
         <Text
-          testId={'balance-shown'}
+          testId={'balance-hidden'}
           color={activeTab === 'tokens' ? 'label' : 'labelTertiary'}
           size="16pt"
           weight="bold"
-          userSelect="all"
-          cursor="text"
         >
-          {userAssetsBalanceDisplay || ''}
+          {supportedCurrencies?.[currentCurrency]?.symbol}
         </Text>
-      ),
-    [activeTab, currentCurrency, hideAssetBalances, userAssetsBalanceDisplay],
-  );
+        <Asterisks color="label" size={13} />
+      </Inline>
+    ) : (
+      <Text
+        testId={'balance-shown'}
+        color={activeTab === 'tokens' ? 'label' : 'labelTertiary'}
+        size="16pt"
+        weight="bold"
+        userSelect="all"
+        cursor="text"
+      >
+        {userAssetsBalanceDisplay || ''}
+      </Text>
+    );
+  }, [
+    activeTab,
+    currentCurrency,
+    hideAssetBalances,
+    userAssetsBalanceDisplay,
+    isLoading,
+  ]);
 
   const tabTitle = useMemo(() => {
     const rewardsEnabled =
