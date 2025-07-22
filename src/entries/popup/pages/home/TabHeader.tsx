@@ -101,17 +101,17 @@ export function TabHeader({
           >
             {tabTitle}
           </Text>
-          {activeTab === 'tokens' && visibleTokenCount > 0 && (
-            <Text color="labelQuaternary" size="14pt" weight="bold">
-              {visibleTokenCount}
-            </Text>
-          )}
+          {activeTab === 'tokens' &&
+            (isLoading ? (
+              <Skeleton width="48px" height="11px" />
+            ) : (
+              visibleTokenCount > 0 && (
+                <Text color="labelQuaternary" size="14pt" weight="bold">
+                  {visibleTokenCount}
+                </Text>
+              )
+            ))}
         </Inline>
-        {isLoading && (
-          <Inline alignVertical="center">
-            <Skeleton width="62px" height="11px" />
-          </Inline>
-        )}
 
         {shouldDisplayBalanceComponent && (
           <CursorTooltip
