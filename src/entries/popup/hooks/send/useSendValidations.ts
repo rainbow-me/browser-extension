@@ -1,8 +1,11 @@
 import { isValidAddress } from '@ethereumjs/util';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
+import { selectUserAssetsDictByChain } from '~/core/resources/_selectors/assets';
+import { useUserAssets } from '~/core/resources/assets';
+import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId, chainNameToIdMapping } from '~/core/types/chains';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
@@ -15,7 +18,6 @@ import {
   lessOrEqualThan,
   lessThan,
 } from '~/core/utils/numbers';
-import { getProvider } from '~/core/wagmi/clientToProvider';
 
 import { useUserNativeAsset } from '../useUserNativeAsset';
 
@@ -34,9 +36,6 @@ export const useSendValidations = ({
   toAddress?: Address;
   toAddressOrName?: string;
 }) => {
-  const [toAddressIsSmartContract, setToAddressIsSmartContract] =
-    useState(false);
-
   const getNativeAssetChainId = () => {
     if (asset) {
       return asset?.chainId || ChainId.mainnet;
@@ -50,12 +49,8 @@ export const useSendValidations = ({
   });
 
   const [isValidToAddress, setIsValidToAddress] = useState(false);
-
-  const validateToAddress = useCallback(
-    (address?: Address) =>
-      setIsValidToAddress(isValidAddress(address || toAddress || '')),
-    [toAddress],
-  );
+  const [toAddressIsTokenContract, setToAddressIsTokenContract] =
+    useState(false);
 
   const enoughAssetBalance = useMemo(() => {
     if (nft) {
@@ -103,21 +98,43 @@ export const useSendValidations = ({
     selectedGas?.gasFee?.amount,
   ]);
 
-  useEffect(() => {
-    const checkToAddress = async () => {
-      if (!toAddress) {
-        setToAddressIsSmartContract(false);
-      } else {
-        setToAddressIsSmartContract(false);
-        const provider = getProvider({
-          chainId: asset?.chainId || ChainId.mainnet,
-        });
-        const code = await provider.getCode(toAddress);
-        setToAddressIsSmartContract(code !== '0x');
+  const { currentAddress } = useCurrentAddressStore();
+  const { currentCurrency } = useCurrentCurrencyStore();
+  const { data: userAssets = {} } = useUserAssets(
+    { address: currentAddress, currency: currentCurrency },
+    { select: selectUserAssetsDictByChain },
+  );
+
+  const tokenContracts = useMemo(
+    () =>
+      Object.values(userAssets)
+        .map((byChain) =>
+          Object.values(byChain).map((a) => a.address.toLowerCase()),
+        )
+        .flat(),
+    [userAssets],
+  );
+
+  const validateToAddress = useCallback(
+    (address?: Address) => {
+      const candidate = address || toAddress || '';
+      const validAddress = isValidAddress(candidate);
+      if (!validAddress) {
+        setIsValidToAddress(false);
+        return false;
       }
-    };
-    checkToAddress();
-  }, [asset?.chainId, nft, toAddress]);
+      const lower = candidate.toLowerCase();
+      const sendingToToken =
+        asset && !asset.isNativeAsset && asset.address.toLowerCase() === lower;
+      const knownToken = tokenContracts.includes(lower);
+      const isTokenContract = sendingToToken || knownToken;
+      const valid = !isTokenContract;
+      setIsValidToAddress(valid);
+      setToAddressIsTokenContract(isTokenContract);
+      return isTokenContract;
+    },
+    [asset, toAddress, tokenContracts],
+  );
 
   const buttonLabel = useMemo(() => {
     if (!isValidToAddress && toAddressOrName !== '')
@@ -176,10 +193,10 @@ export const useSendValidations = ({
   return {
     enoughAssetBalance,
     enoughNativeAssetForGas,
-    toAddressIsSmartContract,
     buttonLabel,
     isValidToAddress,
     readyForReview,
     validateToAddress,
+    toAddressIsTokenContract,
   };
 };
