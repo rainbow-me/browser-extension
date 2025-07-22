@@ -40,7 +40,10 @@ test('should prevent duplicate eth_requestAccounts requests from same host', asy
     method: 'eth_requestAccounts',
     params: [],
     meta: {
-      sender: { url: 'https://example.com' },
+      sender: {
+        url: 'https://example.com',
+        tab: { id: 123 },
+      },
       topic: 'test_topic',
     },
   };
@@ -50,7 +53,10 @@ test('should prevent duplicate eth_requestAccounts requests from same host', asy
     method: 'eth_requestAccounts',
     params: [],
     meta: {
-      sender: { url: 'https://example.com' },
+      sender: {
+        url: 'https://example.com',
+        tab: { id: 123 },
+      },
       topic: 'test_topic',
     },
   };
