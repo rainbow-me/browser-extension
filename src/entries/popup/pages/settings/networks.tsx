@@ -1,9 +1,9 @@
 import { useCallback, useMemo } from 'react';
 import { DropResult } from 'react-beautiful-dnd';
 
+import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
-import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { promoTypes, useQuickPromoStore } from '~/core/state/quickPromo';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
@@ -51,7 +51,6 @@ export function SettingsNetworks() {
   const { seenPromos, setSeenPromo } = useQuickPromoStore();
   const { developerToolsEnabled, setDeveloperToolsEnabled } =
     useDeveloperToolsEnabledStore();
-  const { featureFlags } = useFeatureFlagsStore();
   const removeCustomChain = useNetworkStore((state) => state.removeCustomChain);
   const { enabledChainIds, chainOrder } = useNetworkStore((state) => ({
     chainOrder: state.chainOrder,
@@ -112,7 +111,7 @@ export function SettingsNetworks() {
 
   return (
     <Box paddingHorizontal="20px">
-      {featureFlags.custom_rpc && (
+      {config.custom_rpc_enabled && (
         <MenuContainer>
           <Menu>
             <MenuItem

@@ -25,11 +25,13 @@ export interface RainbowConfig extends Record<string, any> {
   swaps_enabled: boolean;
   tx_requests_enabled: boolean;
   rpc_proxy_enabled: boolean;
+  hw_wallets_enabled: boolean;
+  custom_rpc_enabled: boolean;
   points_enabled: boolean;
   defi_positions_enabled: boolean;
   rewards_enabled: boolean;
   rewards_bridging_enabled: boolean;
-  degen_mode: boolean;
+  degen_mode_enabled: boolean;
   // SWAPS
   default_slippage_bips: Partial<Record<ChainId, number>>;
 }
@@ -52,11 +54,13 @@ const DEFAULT_CONFIG = {
   swaps_enabled: true,
   tx_requests_enabled: true,
   rpc_proxy_enabled: true,
+  hw_wallets_enabled: true,
+  custom_rpc_enabled: true,
   points_enabled: true,
   defi_positions_enabled: false,
   rewards_enabled: true,
   rewards_bridging_enabled: true,
-  degen_mode: false,
+  degen_mode_enabled: true,
   // SWAPS
   default_slippage_bips: Object.values(
     useNetworkStore.getState().getBackendSupportedChains(true),
@@ -109,11 +113,13 @@ export const init = async () => {
             key === 'BX_swaps_enabled' ||
             key === 'BX_tx_requests_enabled' ||
             key === 'BX_rpc_proxy_enabled' ||
+            key === 'BX_hw_wallets_enabled' ||
+            key === 'BX_custom_rpc_enabled' ||
             key === 'BX_points_enabled' ||
             key === 'BX_defi_positions_enabled' ||
             key === 'BX_rewards_enabled' ||
             key === 'BX_rewards_bridging_enabled' ||
-            key === 'BX_degen_mode'
+            key === 'BX_degen_mode_enabled'
           ) {
             config[realKey] = entry.asBoolean();
           } else {

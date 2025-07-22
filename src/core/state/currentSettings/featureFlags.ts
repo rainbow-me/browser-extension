@@ -2,10 +2,7 @@ import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 
 export enum featureFlagTypes {
   full_watching_wallets = 'full_watching_wallets',
-  hw_wallets_enabled = 'hw_wallets_enabled',
   command_k_internal_shortcuts_enabled = 'command_k_internal_shortcuts_enabled',
-  custom_rpc = 'custom_rpc',
-  degen_mode = 'degen_mode',
 }
 export type FeatureFlagTypes = keyof typeof featureFlagTypes;
 
@@ -18,10 +15,7 @@ export const useFeatureFlagsStore = createRainbowStore<FeatureFlagsStore>(
   (set, get) => ({
     featureFlags: {
       full_watching_wallets: false,
-      hw_wallets_enabled: true,
       command_k_internal_shortcuts_enabled: false,
-      custom_rpc: true,
-      degen_mode: false,
     },
     setFeatureFlag: (key, value) => {
       const { featureFlags } = get();

@@ -1,8 +1,8 @@
 /* eslint-disable no-nested-ternary */
 import { useCallback } from 'react';
 
+import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
-import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { Box } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 
@@ -15,7 +15,6 @@ import { ROUTES } from '../../urls';
 const AddWallet = () => {
   const navigate = useRainbowNavigate();
   const { isFirefox } = useBrowser();
-  const { featureFlags } = useFeatureFlagsStore();
 
   const handleCreateWallet = useCallback(async () => {
     navigate(ROUTES.CHOOSE_WALLET_GROUP, {
@@ -35,7 +34,7 @@ const AddWallet = () => {
   };
 
   const onAddHardwareWallet = () => {
-    if (!featureFlags.hw_wallets_enabled) {
+    if (!config.hw_wallets_enabled) {
       triggerAlert({ text: i18n.t('alert.coming_soon') });
       return;
     }
