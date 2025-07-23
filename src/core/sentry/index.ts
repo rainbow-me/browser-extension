@@ -145,11 +145,10 @@ export function initializeSentry(context: 'popup' | 'background') {
 
       void lazy(async () => {
         for (const integration of lazyIntegrations) {
-          // dynamic loading is not needed, as we have no network latencyw
+          // dynamic loading is not needed, as we have no network latency
           // lazy loading is done here to reduce runtime cpu and memory usage
           Sentry.addIntegration(integration);
         }
-        console.log('lazy sentry integrations loaded for ', context);
       });
     } catch (e) {
       console.log('sentry failed to initialize', e);
