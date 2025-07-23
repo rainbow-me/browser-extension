@@ -23,6 +23,9 @@ import NFTsSelected from './TabIcons/NFTsSelected';
 import PointsIcon from './TabIcons/Points';
 import PointsSelected from './TabIcons/PointsSelected';
 
+const IS_TESTING = process.env.IS_TESTING === 'true';
+const IS_DEV = process.env.IS_DEV === 'true';
+
 export type Tab = (typeof TABS)[number];
 
 export const ICON_SIZE = 36;
@@ -125,7 +128,12 @@ export const TabBar = memo(function TabBar() {
       >
         {tabConfig.map((tab, index) => {
           if (tab.name === 'points' && isWatchingWallet) return null;
-          if (tab.name === 'nfts' && !config.nfts_enabled) return null;
+          if (
+            tab.name === 'nfts' &&
+            !(IS_TESTING || IS_DEV) &&
+            !config.nfts_enabled
+          )
+            return null;
           return (
             <Tab
               Icon={tab.Icon}
