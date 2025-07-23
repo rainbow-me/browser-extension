@@ -3,6 +3,8 @@ import { isEmpty, isEqual } from 'lodash';
 import { LocalStorage } from '~/core/storage';
 import { RainbowError, logger } from '~/logger';
 
+import { useCurrentChainIdStore } from '../currentSettings';
+import { useGasStore } from '../gas';
 import * as stores from '../index';
 import { useNetworksStoreMigrationStore } from '../networks/migration';
 import { useNetworkStore } from '../networks/networks';
@@ -154,4 +156,19 @@ export function syncNetworksStore(context: 'popup' | 'background') {
       });
     }
   }
+}
+
+// Clear gas store immediately when chain switches to prevent cross-chain gas contamination
+export function syncGasStoreOnChainSwitch() {
+  let lastChainId = useCurrentChainIdStore.getState().currentChainId;
+
+  useCurrentChainIdStore.subscribe((state) => {
+    if (state.currentChainId !== lastChainId) {
+      logger.debug(
+        `Chain switched from ${lastChainId} to ${state.currentChainId}, clearing gas store`,
+      );
+      useGasStore.getState().clearGasData();
+      lastChainId = state.currentChainId;
+    }
+  });
 }
