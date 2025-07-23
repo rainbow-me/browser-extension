@@ -2,7 +2,6 @@ import chroma from 'chroma-js';
 import { motion } from 'framer-motion';
 import { ReactElement, memo, useMemo } from 'react';
 
-import config from '~/core/firebase/remoteConfig';
 import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useTabNavigation } from '~/core/state/currentSettings/tabNavigation';
@@ -10,7 +9,6 @@ import { Box, Inline } from '~/design-system';
 import { globalColors } from '~/design-system/styles/designTokens';
 
 import { useAvatar } from '../../hooks/useAvatar';
-import { useWallets } from '../../hooks/useWallets';
 import { zIndexes } from '../../utils/zIndexes';
 import { timingConfig } from '../CommandK/references';
 
@@ -23,18 +21,7 @@ import NFTsSelected from './TabIcons/NFTsSelected';
 import PointsIcon from './TabIcons/Points';
 import PointsSelected from './TabIcons/PointsSelected';
 
-const IS_TESTING = process.env.IS_TESTING === 'true';
-const IS_DEV = process.env.IS_DEV === 'true';
-
-export type Tab = (typeof TABS)[number];
-
 export const ICON_SIZE = 36;
-
-export const isValidTab = (value: unknown): value is Tab => {
-  return typeof value === 'string' && TABS.includes(value);
-};
-
-const TABS = ['tokens', 'activity', 'nfts', 'points'];
 
 const TAB_HEIGHT = 32;
 const TAB_WIDTH = 42;
@@ -48,7 +35,7 @@ type TabConfigType = {
     accentColor: string;
     colorMatrixValues: number[];
   }) => ReactElement;
-  name: Tab;
+  name: 'tokens' | 'activity' | 'nfts' | 'points';
 };
 
 const tabConfig: TabConfigType[] = [
@@ -74,7 +61,9 @@ const tabConfig: TabConfigType[] = [
   },
 ];
 
-export const TabBar = memo(function TabBar() {
+export type Tab = (typeof tabConfig)[number]['name'];
+
+export const TabBar = memo(function TabBar({ tabs }: { tabs: Tab[] }) {
   const height = 44;
   const { selectedTab, setSelectedTab } = useTabNavigation();
 
@@ -89,7 +78,9 @@ export const TabBar = memo(function TabBar() {
     return currentTheme === 'dark' ? [0, 0, 0] : rgbValues;
   }, [avatar?.color, currentTheme]);
 
-  const { isWatchingWallet } = useWallets();
+  const visibleTabs = useMemo(() => {
+    return tabConfig.filter((tab) => tabs.includes(tab.name));
+  }, [tabs]);
 
   return (
     <Box
@@ -119,21 +110,18 @@ export const TabBar = memo(function TabBar() {
       }}
       transition={timingConfig(0.2)}
     >
-      <TabBackground selectedTabIndex={TABS.indexOf(selectedTab)} />
+      <TabBackground
+        selectedTabIndex={visibleTabs.findIndex(
+          (tab) => tab.name === selectedTab,
+        )}
+      />
       <Inline
         alignHorizontal="center"
         alignVertical="center"
         height="full"
         space="4px"
       >
-        {tabConfig.map((tab, index) => {
-          if (tab.name === 'points' && isWatchingWallet) return null;
-          if (
-            tab.name === 'nfts' &&
-            !(IS_TESTING || IS_DEV) &&
-            !config.nfts_enabled
-          )
-            return null;
+        {visibleTabs.map((tab, index) => {
           return (
             <Tab
               Icon={tab.Icon}
@@ -144,7 +132,9 @@ export const TabBar = memo(function TabBar() {
               key={index}
               name={tab.name}
               onSelectTab={setSelectedTab}
-              selectedTabIndex={TABS.indexOf(selectedTab)}
+              selectedTabIndex={visibleTabs.findIndex(
+                (tab) => tab.name === selectedTab,
+              )}
             />
           );
         })}
