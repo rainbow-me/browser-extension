@@ -1057,10 +1057,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@bazel/runfiles@npm:^5.8.1":
-  version: 5.8.1
-  resolution: "@bazel/runfiles@npm:5.8.1"
-  checksum: 10c0/c148ea89839240d918ea615c485fcd0e5c009215ddfa718cc7dd1c3f0e2e278eb8d291b6cd990cd8fc2ade161f98f2defbac8b9c2968e5c5bc4edb98e6ed6bc6
+"@bazel/runfiles@npm:^6.3.1":
+  version: 6.3.1
+  resolution: "@bazel/runfiles@npm:6.3.1"
+  checksum: 10c0/7b542dcff9e917cc521520db137bd4f4a478796693700e2ec2c27f4beede800c9f4987e20c6b965d81000638f63549160780aea51eca2f0d0275be76fdc5e49f
   languageName: node
   linkType: hard
 
@@ -10116,7 +10116,7 @@ __metadata:
     react-image: "npm:4.1.0"
     react-router-dom: "npm:6.4.2"
     react-switch: "npm:7.0.0"
-    selenium-webdriver: "npm:4.24.1"
+    selenium-webdriver: "npm:4.34.0"
     semver: "npm:7.5.2"
     socket.io-client: "npm:4.5.3"
     supports-color: "npm:5.5.0"
@@ -21767,15 +21767,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"selenium-webdriver@npm:4.24.1":
-  version: 4.24.1
-  resolution: "selenium-webdriver@npm:4.24.1"
+"selenium-webdriver@npm:4.34.0":
+  version: 4.34.0
+  resolution: "selenium-webdriver@npm:4.34.0"
   dependencies:
-    "@bazel/runfiles": "npm:^5.8.1"
+    "@bazel/runfiles": "npm:^6.3.1"
     jszip: "npm:^3.10.1"
     tmp: "npm:^0.2.3"
-    ws: "npm:^8.18.0"
-  checksum: 10c0/803b15c6584deb00f924892fcd61f296fdf15b5f4a0ad00ca6bf0206e54de5eff873338568d46a4bb1ced5f1c7bf3726c1a2ee41640601e8cd4b49a7894e22cd
+    ws: "npm:^8.18.2"
+  checksum: 10c0/bfca387713677284d70b66aa419ad0e6f013945cca1f19bb780a62e4eff1f69190a165e939ef79e8f23af9aa0bd08b9a90c41ee6713eec30b7601034bd5f1824
   languageName: node
   linkType: hard
 
