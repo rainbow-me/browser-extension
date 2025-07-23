@@ -11,12 +11,15 @@ console.log('bumping from v%s to v%s', currentVersion, newVersion);
 pkgJson.version = newVersion;
 
 // Update package.json
-require('fs').writeFileSync('./package.json', JSON.stringify(pkgJson, null, 2));
+require('fs').writeFileSync(
+  './package.json',
+  JSON.stringify(pkgJson, null, 2) + '\n',
+);
 // Update manifest.json
 manifest.version = newVersion;
 require('fs').writeFileSync(
   './static/manifest.json',
-  JSON.stringify(manifest, null, 2),
+  JSON.stringify(manifest, null, 2) + '\n',
 );
 
 console.log('Done.');
