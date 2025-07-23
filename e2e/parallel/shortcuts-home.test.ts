@@ -3,6 +3,8 @@ import 'geckodriver';
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
+import config from '~/core/firebase/remoteConfig';
+
 import {
   checkExtensionURL,
   checkWalletName,
@@ -129,32 +131,54 @@ describe.runIf(browser !== 'firefox')(
         text: 'Activity',
         driver,
       });
-      await executePerformShortcut({
-        driver,
-        key: 'ARROW_RIGHT',
-        timesToPress: 2,
-      });
-      await findElementByText(driver, 'NFTs');
-      const tokens = await isElementFoundByText({
-        text: 'Tokens',
-        driver,
-      });
-      await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
-      await findElementByText(driver, 'Points');
-      const nfts = await isElementFoundByText({
-        text: 'NFTs',
-        driver,
-      });
-      await executePerformShortcut({
-        driver,
-        key: 'ARROW_LEFT',
-        timesToPress: 3,
-      });
-      const points = await isElementFoundByText({
-        text: 'Points',
-        driver,
-      });
-      expect(activity && tokens && nfts && points).toBe(false);
+
+      if (config.nfts_enabled) {
+        // When NFTs are enabled: Tokens -> Activity -> NFTs -> Points
+        await executePerformShortcut({
+          driver,
+          key: 'ARROW_RIGHT',
+          timesToPress: 2,
+        });
+        await findElementByText(driver, 'NFTs');
+        const tokens = await isElementFoundByText({
+          text: 'Tokens',
+          driver,
+        });
+        await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
+        await findElementByText(driver, 'Points');
+        const nfts = await isElementFoundByText({
+          text: 'NFTs',
+          driver,
+        });
+        await executePerformShortcut({
+          driver,
+          key: 'ARROW_LEFT',
+          timesToPress: 3,
+        });
+        const points = await isElementFoundByText({
+          text: 'Points',
+          driver,
+        });
+        expect(activity && tokens && nfts && points).toBe(false);
+      } else {
+        // When NFTs are disabled: Tokens -> Activity -> Points
+        await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
+        await findElementByText(driver, 'Points');
+        const tokens = await isElementFoundByText({
+          text: 'Tokens',
+          driver,
+        });
+        await executePerformShortcut({
+          driver,
+          key: 'ARROW_LEFT',
+          timesToPress: 2,
+        });
+        const points = await isElementFoundByText({
+          text: 'Points',
+          driver,
+        });
+        expect(activity && tokens && points).toBe(false);
+      }
     });
 
     it('should be able to navigate to highlight asset + open context menu with keyboard', async () => {
