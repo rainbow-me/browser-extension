@@ -8,7 +8,6 @@ import {
 
 import { useTabNavigation } from '~/core/state/currentSettings/tabNavigation';
 
-import { isValidTab } from '../components/Tabs/TabBar';
 import { ROUTES } from '../urls';
 
 export function useRainbowNavigate() {
@@ -23,11 +22,7 @@ export function useRainbowNavigate() {
         return;
       }
 
-      if (
-        to === ROUTES.HOME &&
-        options?.state?.tab &&
-        isValidTab(options?.state?.tab)
-      ) {
+      if (to === ROUTES.HOME && options?.state?.tab) {
         setSelectedTab(options.state.tab);
       }
 

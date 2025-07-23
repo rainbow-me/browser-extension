@@ -1,10 +1,18 @@
 import { debug as logger } from '@sentry/core';
 import { motion, useMotionValueEvent } from 'framer-motion';
-import { memo, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import {
+  memo,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { identifyWalletTypes } from '~/analytics/identify/walletTypes';
+import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore, usePendingRequestStore } from '~/core/state';
@@ -52,9 +60,12 @@ import { Points } from './Points/Points';
 import { TabHeader } from './TabHeader';
 import { Tokens } from './Tokens';
 
+const IS_TESTING = process.env.IS_TESTING === 'true';
+const IS_DEV = process.env.IS_DEV === 'true';
+
 const TOP_NAV_HEIGHT = 65;
 
-const Tabs = memo(function Tabs() {
+const Tabs = memo(function Tabs({ visibleTabs }: { visibleTabs: Tab[] }) {
   const { trackShortcut } = useKeyboardAnalytics();
   const { visibleTokenCount } = useVisibleTokenCount();
 
@@ -93,39 +104,27 @@ const Tabs = memo(function Tabs() {
 
   useKeyboardShortcut({
     handler: (e) => {
-      if (e.key === shortcuts.global.BACK.key) {
+      const currentIndex = visibleTabs.indexOf(activeTab);
+
+      if (e.key === shortcuts.global.BACK.key && currentIndex > 0) {
         trackShortcut({
           key: shortcuts.global.BACK.display,
           type: 'home.switchTab',
         });
-        if (activeTab === 'activity') {
-          onSelectTab('tokens');
-        } else if (activeTab === 'nfts') {
-          onSelectTab('activity');
-        } else if (activeTab === 'points') {
-          onSelectTab('nfts');
-        }
+        onSelectTab(visibleTabs[currentIndex - 1]);
       }
-      if (e.key === shortcuts.global.FORWARD.key) {
+      if (
+        e.key === shortcuts.global.FORWARD.key &&
+        currentIndex < visibleTabs.length - 1
+      ) {
         trackShortcut({
           key: shortcuts.global.FORWARD.display,
           type: 'home.switchTab',
         });
-        if (activeTab === 'tokens') {
-          onSelectTab('activity');
-        } else if (activeTab === 'activity') {
-          onSelectTab('nfts');
-        } else if (activeTab === 'nfts') {
-          onSelectTab('points');
-        }
+        onSelectTab(visibleTabs[currentIndex + 1]);
       }
     },
   });
-
-  const { isWatchingWallet } = useWallets();
-  if (activeTab === 'points' && isWatchingWallet) {
-    onSelectTab('tokens');
-  }
 
   return (
     <>
@@ -151,6 +150,23 @@ export const Home = memo(function Home() {
   const navigate = useRainbowNavigate();
   const { pendingRequests } = usePendingRequestStore();
   const prevPendingRequest = usePrevious(pendingRequests?.[0]);
+  const { isWatchingWallet } = useWallets();
+
+  const visibleTabs = useMemo(() => {
+    const tabs: Tab[] = ['tokens', 'activity'];
+
+    // Add NFTs tab if feature flag is enabled or in testing/dev
+    if (config.nfts_enabled || IS_TESTING || IS_DEV) {
+      tabs.push('nfts');
+    }
+
+    // Add Points tab if not watching wallet
+    if (!isWatchingWallet) {
+      tabs.push('points');
+    }
+
+    return tabs;
+  }, [isWatchingWallet]);
 
   useEffect(() => {
     if (
@@ -205,10 +221,10 @@ export const Home = memo(function Home() {
           >
             <TopNav />
             <Header />
-            <Tabs />
+            <Tabs visibleTabs={visibleTabs} />
             <AppConnectionWalletSwitcher />
           </motion.div>
-          <NewTabBar />
+          <NewTabBar tabs={visibleTabs} />
           <BackupReminder />
           {currentHomeSheet}
           <RevokeApproval />
