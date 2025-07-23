@@ -260,8 +260,7 @@ export const handleProviderRequest = ({
     removeAppSession: ({ host }: { host: string }) =>
       useAppSessionsStore.getState().removeAppSession({ host }),
     getChainNativeCurrency: (chainId: number) =>
-      useNetworkStore.getState().getBackendSupportedChains(true)[chainId]
-        ?.nativeCurrency,
+      useNetworkStore.getState().getChain(chainId)?.nativeCurrency,
     getFeatureFlags: () => ({
       // TODO: Populate with the remote config feature flag
       custom_rpc: true,
