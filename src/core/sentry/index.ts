@@ -18,6 +18,96 @@ const IGNORED_ERRORS = [
   'The browser is shutting down',
 ];
 
+/**
+ * Schedules a function to run when the browser is idle (if available), or as soon as possible otherwise.
+ * Returns a Promise resolving to the function's result.
+ * Works in browsers, service workers, and Node.js.
+ *
+ * Tries, in order:
+ *   - requestIdleCallback (browser, service worker)
+ *   - setImmediate (Node.js, IE/Edge)
+ *   - microtask (Promise.resolve().then)
+ */
+export function lazy<T>(fn: () => Promise<T>): Promise<T> {
+  // Prefer requestIdleCallback if available (browser, some workers)
+  const globalScope =
+    typeof self !== 'undefined'
+      ? self
+      : typeof window !== 'undefined'
+      ? window
+      : typeof global !== 'undefined'
+      ? global
+      : undefined;
+
+  if (globalScope && typeof globalScope.requestIdleCallback === 'function') {
+    return new Promise<T>((resolve, reject) => {
+      globalScope.requestIdleCallback(
+        () => {
+          fn().then(resolve, reject);
+        },
+        { timeout: 1000 },
+      );
+    });
+  }
+
+  // Node.js or IE/Edge: setImmediate
+  if (typeof setImmediate === 'function') {
+    return new Promise<T>((resolve, reject) => {
+      setImmediate(() => {
+        fn().then(resolve, reject);
+      });
+    });
+  }
+
+  // Fallback: schedule as microtask
+  return Promise.resolve().then(fn);
+}
+
+type Integration = ReturnType<typeof Sentry.httpClientIntegration>; // not exported
+
+const INTEGRATIONS: Array<{
+  on: 'popup' | 'background' | 'shared';
+  lazy: boolean;
+  integrations: Integration[];
+}> = [
+  {
+    on: 'shared',
+    lazy: false,
+    integrations: [
+      Sentry.browserTracingIntegration(),
+      Sentry.browserProfilingIntegration(),
+    ],
+  },
+  {
+    on: 'shared',
+    lazy: true,
+    integrations: [
+      Sentry.extraErrorDataIntegration(),
+      Sentry.httpClientIntegration(),
+    ],
+  },
+  {
+    on: 'popup',
+    lazy: false,
+    integrations: [
+      Sentry.reactRouterV6BrowserTracingIntegration({
+        useEffect: React.useEffect,
+        useLocation,
+        useNavigationType,
+        createRoutesFromChildren,
+        matchRoutes,
+      }),
+    ],
+  },
+  {
+    on: 'popup',
+    lazy: true,
+    integrations: [
+      Sentry.replayIntegration(), // This masks all inputs and texts, so it should be safe
+    ],
+  },
+];
+
 export function initializeSentry(context: 'popup' | 'background') {
   if (
     process.env.IS_DEV !== 'true' &&
@@ -25,19 +115,13 @@ export function initializeSentry(context: 'popup' | 'background') {
     process.env.SENTRY_DSN
   ) {
     try {
-      const integrations =
-        context === 'popup'
-          ? [
-              Sentry.browserTracingIntegration(),
-              Sentry.reactRouterV6BrowserTracingIntegration({
-                useEffect: React.useEffect,
-                useLocation,
-                useNavigationType,
-                createRoutesFromChildren,
-                matchRoutes,
-              }),
-            ]
-          : [];
+      const contextIntegrations = INTEGRATIONS.filter(
+        (i) => i.on === context || i.on === 'shared',
+      );
+      const integrations = contextIntegrations
+        .filter((i) => i.lazy === false)
+        .flatMap((i) => i.integrations);
+
       Sentry.init({
         dsn: process.env.SENTRY_DSN,
         integrations,
@@ -53,6 +137,19 @@ export function initializeSentry(context: 'popup' | 'background') {
           }
           return event;
         },
+      });
+
+      const lazyIntegrations = contextIntegrations
+        .filter((i) => i.lazy === true)
+        .flatMap((i) => i.integrations);
+
+      void lazy(async () => {
+        for (const integration of lazyIntegrations) {
+          // dynamic loading is not needed, as we have no network latencyw
+          // lazy loading is done here to reduce runtime cpu and memory usage
+          Sentry.addIntegration(integration);
+        }
+        console.log('lazy sentry integrations loaded for ', context);
       });
     } catch (e) {
       console.log('sentry failed to initialize', e);
