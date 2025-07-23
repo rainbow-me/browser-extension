@@ -6,7 +6,6 @@ import { Chain, UserRejectedRequestError } from 'viem';
 
 import { event } from '~/analytics/event';
 import { queueEventTracking } from '~/analytics/queueEvent';
-import config from '~/core/firebase/remoteConfig';
 import { hasVault, isInitialized, isPasswordSet } from '~/core/keychain';
 import { Messenger } from '~/core/messengers';
 import { CallbackOptions } from '~/core/messengers/internal/createMessenger';
@@ -264,7 +263,8 @@ export const handleProviderRequest = ({
       useNetworkStore.getState().getBackendSupportedChains(true)[chainId]
         ?.nativeCurrency,
     getFeatureFlags: () => ({
-      custom_rpc: config.custom_rpc_enabled,
+      // TODO: Populate with the remote config feature flag
+      custom_rpc: true,
     }),
     getProvider: getProvider,
     messengerProviderRequest: (request: ProviderRequestPayload) =>
