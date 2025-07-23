@@ -9,6 +9,8 @@ import {
 
 import pkg from '../../../package.json';
 
+const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
+
 // Any error that we don't wanna send to sentry should be added here
 // via partial match
 const IGNORED_ERRORS = [
@@ -129,10 +131,11 @@ export function initializeSentry(context: 'popup' | 'background') {
       Sentry.init({
         dsn: process.env.SENTRY_DSN,
         integrations,
-        tracesSampleRate: process.env.INTERNAL_BUILD === 'true' ? 1.0 : 0.2, // 20% sampling in prod
+        tracesSampleRate: INTERNAL_BUILD ? 1.0 : 0.1, // 10% sampling in prod
+        replaysSessionSampleRate: INTERNAL_BUILD ? 1.0 : 0.1, // 10% sampling in prod
+        replaysOnErrorSampleRate: 1.0, // 100% sampling in prod
         release: pkg.version,
-        environment:
-          process.env.INTERNAL_BUILD === 'true' ? 'internal' : 'production',
+        environment: INTERNAL_BUILD ? 'internal' : 'production',
         beforeSend(event) {
           for (const ignoredError of IGNORED_ERRORS) {
             if (event.message?.includes(ignoredError)) {
