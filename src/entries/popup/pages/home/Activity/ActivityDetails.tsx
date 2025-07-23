@@ -59,6 +59,7 @@ import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
 import { SheetMode, SpeedUpAndCancelSheet } from '../../speedUpAndCancelSheet';
 import { triggerRevokeApproval } from '../Approvals/utils';
+import { ActivityDetailsContentSkeleton } from '../Skeletons';
 import { CopyableValue, InfoRow } from '../TokenDetails/About';
 
 import { ActivityPill } from './ActivityPill';
@@ -576,7 +577,11 @@ export function ActivityDetails() {
   const { hash, chainId } = useParams<{ hash: TxHash; chainId: string }>();
   const { isWatchingWallet } = useWallets();
 
-  const { data: transaction } = useTransaction({
+  const {
+    data: transaction,
+    isLoading,
+    isError,
+  } = useTransaction({
     hash,
     chainId: Number(chainId),
   });
@@ -625,7 +630,7 @@ export function ActivityDetails() {
     triggerRevokeApproval({ show: true, approval: approvalToRevoke });
   };
 
-  if (!transaction) {
+  if (!isLoading && (!transaction || isError)) {
     return <Navigate to={ROUTES.HOME} state={{ tab: 'activity' }} />;
   }
 
@@ -633,30 +638,56 @@ export function ActivityDetails() {
     <BottomSheet zIndex={zIndexes.ACTIVITY_DETAILS} show>
       <Navbar
         leftComponent={<Navbar.CloseButton onClick={backToHome} withinModal />}
-        titleComponent={<ActivityPill transaction={transaction} />}
+        titleComponent={
+          isLoading ? (
+            <Skeleton width="120px" height="20px" />
+          ) : (
+            transaction && <ActivityPill transaction={transaction} />
+          )
+        }
         rightComponent={
-          <MoreOptions
-            transaction={transaction}
-            revoke={!!approvalToRevoke && !isWatchingWallet}
-            onRevoke={onRevoke}
-          />
+          isLoading ? (
+            <Skeleton circle width="32px" height="32px" />
+          ) : (
+            transaction && (
+              <MoreOptions
+                transaction={transaction}
+                revoke={!!approvalToRevoke && !isWatchingWallet}
+                onRevoke={onRevoke}
+              />
+            )
+          )
         }
       />
       <Separator color="separatorTertiary" />
 
-      <Stack
-        separator={<Separator color="separatorTertiary" />}
-        padding="20px"
-        gap="20px"
-      >
-        <ToFrom transaction={transaction} />
-        {additionalDetails && <AdditionalDetails details={additionalDetails} />}
-        <ConfirmationData transaction={transaction} />
-        <NetworkData transaction={transaction} />
-        {transaction.status === 'pending' && (
-          <SpeedUpOrCancel transaction={transaction} />
-        )}
-      </Stack>
+      {isLoading ? (
+        <Stack
+          separator={<Separator color="separatorTertiary" />}
+          padding="20px"
+          gap="20px"
+        >
+          <ActivityDetailsContentSkeleton />
+        </Stack>
+      ) : (
+        transaction && (
+          <Stack
+            separator={<Separator color="separatorTertiary" />}
+            padding="20px"
+            gap="20px"
+          >
+            <ToFrom transaction={transaction} />
+            {additionalDetails && (
+              <AdditionalDetails details={additionalDetails} />
+            )}
+            <ConfirmationData transaction={transaction} />
+            <NetworkData transaction={transaction} />
+            {transaction.status === 'pending' && (
+              <SpeedUpOrCancel transaction={transaction} />
+            )}
+          </Stack>
+        )
+      )}
     </BottomSheet>
   );
 }

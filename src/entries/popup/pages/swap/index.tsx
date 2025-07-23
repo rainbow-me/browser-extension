@@ -6,7 +6,6 @@ import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore, useGasStore } from '~/core/state';
-import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useDegenMode } from '~/core/state/degenMode';
 import {
   computeUniqueIdForHiddenAsset,
@@ -224,11 +223,10 @@ const MissingPriceExplanation = ({
 };
 
 const DegenModePromo = ({ onClick }: { onClick: () => void }) => {
-  const { featureFlags } = useFeatureFlagsStore();
   const { seenPromos, setSeenPromo } = useQuickPromoStore();
   const isDegenModeEnabled = useDegenMode((s) => s.isDegenModeEnabled);
 
-  if (!featureFlags.degen_mode && !config.degen_mode) return null;
+  if (!config.degen_mode_enabled) return null;
   if (seenPromos.degen_mode || isDegenModeEnabled) return null;
 
   return (

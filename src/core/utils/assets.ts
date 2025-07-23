@@ -232,6 +232,12 @@ export function parseUserAssetBalances({
   };
 }
 
+export function isParsedUserAsset(
+  asset: ParsedAsset | ParsedUserAsset,
+): asset is ParsedUserAsset {
+  return 'balance' in asset;
+}
+
 export function parseParsedUserAsset({
   parsedAsset,
   currency,

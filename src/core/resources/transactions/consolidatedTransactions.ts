@@ -13,8 +13,8 @@ import {
 import { SupportedCurrencyKey } from '~/core/references';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainName, chainNameToIdMapping } from '~/core/types/chains';
-import { TransactionsReceivedMessage } from '~/core/types/refraction';
 import { RainbowTransaction } from '~/core/types/transactions';
+import { TransactionsReceivedMessage } from '~/core/types/zerion';
 import { parseTransaction } from '~/core/utils/transactions';
 import { RainbowError, logger } from '~/logger';
 

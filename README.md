@@ -60,17 +60,17 @@ Additionally, we're using some well known tools engineered by the MetaMask team:
 
 ### 1. Set up Node
 
-Use node v20 or if you use nvm follow the instructions below
+Use node v22 or if you use nvm follow the instructions below
 
 ```bash
-nvm install
-# or
-nvm use
+nvm install && nvm use
+corepack enable
 ```
 
 ### 2. Install project dependencies
 
 ```bash
+yarn install
 yarn setup
 ```
 

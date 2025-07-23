@@ -196,7 +196,7 @@ export function Send() {
     isValidToAddress,
     readyForReview,
     validateToAddress,
-    toAddressIsSmartContract,
+    toAddressIsTokenContract,
   } = useSendValidations({
     asset,
     assetAmount,
@@ -475,14 +475,14 @@ export function Send() {
   const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
 
-  const showToContractExplainer = useCallback(() => {
+  const showToTokenContractExplainer = useCallback(() => {
     showExplainerSheet({
       show: true,
-      title: i18n.t('explainers.send.to_smart_contract.title'),
+      title: i18n.t('explainers.send.to_token_contract.title'),
       description: [
-        i18n.t('explainers.send.to_smart_contract.description_1'),
-        i18n.t('explainers.send.to_smart_contract.description_2'),
-        i18n.t('explainers.send.to_smart_contract.description_3'),
+        i18n.t('explainers.send.to_token_contract.description_1'),
+        i18n.t('explainers.send.to_token_contract.description_2'),
+        i18n.t('explainers.send.to_token_contract.description_3'),
       ],
       actionButton: {
         label: i18n.t('explainers.send.action_label'),
@@ -528,20 +528,16 @@ export function Send() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const prevToAddressIsSmartContract = usePrevious(toAddressIsSmartContract);
+  const prevToAddressIsTokenContract = usePrevious(toAddressIsTokenContract);
+
   useEffect(() => {
-    if (
-      !prevToAddressIsSmartContract &&
-      toAddressIsSmartContract &&
-      !toEnsName?.includes('argent.xyz')
-    ) {
-      showToContractExplainer();
+    if (!prevToAddressIsTokenContract && toAddressIsTokenContract) {
+      showToTokenContractExplainer();
     }
   }, [
-    prevToAddressIsSmartContract,
-    showToContractExplainer,
-    toAddressIsSmartContract,
-    toEnsName,
+    prevToAddressIsTokenContract,
+    toAddressIsTokenContract,
+    showToTokenContractExplainer,
   ]);
 
   useKeyboardShortcut({

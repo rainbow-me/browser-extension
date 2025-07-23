@@ -65,7 +65,6 @@ export const ROUTES = {
   SWAP: '/swap', // Swap
   BRIDGE: '/bridge', // Bridge
   SIGN: '/sign', // Sign
-  WALLETS: '/wallets', // Wallets
   WALLET_SWITCHER: '/wallet-switcher', // WalletSwitcher
   ADD_WALLET: '/add-wallet', // AddWallet
   NEW_WATCH_WALLET: '/add-wallet/watch', // NewWatchWallet

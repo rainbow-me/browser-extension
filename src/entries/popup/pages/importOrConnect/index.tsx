@@ -2,8 +2,8 @@
 import { useCallback, useEffect } from 'react';
 import { NavigateOptions } from 'react-router-dom';
 
+import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
-import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { Box, Separator, Stack, Text } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 
@@ -17,7 +17,6 @@ import { ROUTES } from '../../urls';
 export function ImportOrConnect() {
   const navigate = useRainbowNavigate();
   const { isFirefox } = useBrowser();
-  const { featureFlags } = useFeatureFlagsStore();
 
   const navigateTo = useCallback(
     (route: string, options?: NavigateOptions) => {
@@ -32,14 +31,15 @@ export function ImportOrConnect() {
   );
 
   const onConnectHardwareWallet = useCallback(() => {
-    featureFlags.hw_wallets_enabled
+    config.hw_wallets_enabled
       ? isFirefox
         ? triggerAlert({ text: i18n.t('alert.no_hw_ff') })
         : navigateTo(ROUTES.HW_CHOOSE, {
             state: { direction: 'right', navbarIcon: 'arrow' },
           })
       : triggerAlert({ text: i18n.t('alert.coming_soon') });
-  }, [featureFlags.hw_wallets_enabled, isFirefox, navigateTo]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [config.hw_wallets_enabled, isFirefox, navigateTo]);
 
   const onWatchEthereumAddress = useCallback(
     () => navigateTo(ROUTES.WATCH),
