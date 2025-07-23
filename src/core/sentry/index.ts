@@ -103,7 +103,11 @@ const INTEGRATIONS: Array<{
     on: 'popup',
     lazy: true,
     integrations: [
-      Sentry.replayIntegration(), // This masks all inputs and texts, so it should be safe
+      Sentry.replayIntegration({
+        maskAllText: true,
+        maskAllInputs: true,
+        blockAllMedia: true,
+      }), // This masks all inputs and texts, so it should be safe
     ],
   },
 ];
