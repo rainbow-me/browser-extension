@@ -122,8 +122,7 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
 
   const {
     data: assets = [],
-    isFetching,
-    isPending,
+    isLoading: isUserAssetsLoading,
     refetch: refetchUserAssets,
   } = useUserAssets(
     {
@@ -259,7 +258,7 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [unhiddenAssets?.length]);
 
-  if ((isFetching && isPending) || manuallyRefetchingTokens) {
+  if (isUserAssetsLoading || manuallyRefetchingTokens) {
     return <TokensSkeleton />;
   }
 
