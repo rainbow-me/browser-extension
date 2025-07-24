@@ -1,6 +1,7 @@
 name: Claude Code Review
 
 on:
+  # Run on PRs opened, updated
   pull_request:
     types: [opened, synchronize]
     paths:
@@ -15,6 +16,10 @@ on:
       - ".changeset/*.md"
       # Workflows
       - ".github/**/*.yml"
+  # Re-run on CI completion
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
 jobs:
   claude-review:    
     runs-on: ubuntu-latest
@@ -22,6 +27,7 @@ jobs:
       contents: read
       pull-requests: read
       issues: read
+      actions: read
       id-token: write
     
     steps:
@@ -35,6 +41,8 @@ jobs:
         uses: anthropics/claude-code-action@beta
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          additional_permissions: |
+            actions: read
 
           # Optional: Specify model (defaults to Claude Sonnet 4, uncomment for Claude Opus 4)
           # model: "claude-opus-4-20250514"
@@ -46,6 +54,7 @@ jobs:
             - Potential bugs or issues
             - Performance considerations
             - Proper changeset documentation
+            - Test coverage and CI status and failures
             For each file type, focus on:
             - For TypeScript files: Type safety and proper interface usage
             - For API endpoints: Security, input validation, and error handling
@@ -53,6 +62,8 @@ jobs:
             - For tests: Coverage, edge cases, and test quality
             - For .changeset/ additions: Changeset style and readability matching CHANGELOG.md
             - For .github/workflows: Ensure the workflow is valid
+            - For unit tests and e2e tests: Coverage, edge cases, test quality
+            - For failed tests in CI: Provide a detailed explanation of the failure(s) and how to fix
             Since this PR touches critical source code paths, please be thorough
             in your review and provide inline comments where appropriate.
             Be constructive and helpful in your feedback. Use as few words as possible.
