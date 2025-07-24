@@ -579,7 +579,12 @@ export function SendTransactionInfo({
 
   const isScamDapp = dappMetadata?.status === DAppStatus.Scam;
 
-  const hasEnoughGas = useHasEnoughGas(activeSession);
+  const { hasEnough: hasEnoughGas, isLoading: isGasLoading } =
+    useHasEnoughGas(activeSession);
+
+  // Show transaction info while loading or if user has enough gas
+  // Only show insufficient funds if we've confirmed they don't have enough
+  const showInsufficientFunds = !isGasLoading && hasEnoughGas === false;
 
   return (
     <Box
@@ -627,7 +632,7 @@ export function SendTransactionInfo({
         )}
       </AnimatePresence>
 
-      {hasEnoughGas ? (
+      {!showInsufficientFunds ? (
         <TransactionInfo
           request={txRequest}
           dappMetadata={dappMetadata}
