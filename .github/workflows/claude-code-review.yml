@@ -3,21 +3,20 @@ name: Claude Code Review
 on:
   pull_request:
     types: [opened, synchronize]
-    # Optional: Only run on specific file changes
-    # paths:
-    #   - "src/**/*.ts"
-    #   - "src/**/*.tsx"
-    #   - "src/**/*.js"
-    #   - "src/**/*.jsx"
-
+    paths:
+      # Core code
+      - "src/**/*.ts"
+      - "src/**/*.tsx"
+      - "src/**/*.js"
+      - "src/**/*.jsx"
+      # Patches
+      - "patches/**/*.patch"
+      # Changeset additions
+      - ".changeset/*.md"
+      # Workflows
+      - ".github/**/*.yml"
 jobs:
-  claude-review:
-    # Optional: Filter by PR author
-    # if: |
-    #   github.event.pull_request.user.login == 'external-contributor' ||
-    #   github.event.pull_request.user.login == 'new-developer' ||
-    #   github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR'
-    
+  claude-review:    
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -46,33 +45,29 @@ jobs:
             - Code quality and best practices
             - Potential bugs or issues
             - Performance considerations
-            - Security concerns
-            - Test coverage
-            
-            Be constructive and helpful in your feedback.
+            - Proper changeset documentation
+            For each file type, focus on:
+            - For TypeScript files: Type safety and proper interface usage
+            - For API endpoints: Security, input validation, and error handling
+            - For React components: Performance, accessibility, and best practices
+            - For tests: Coverage, edge cases, and test quality
+            - For .changeset/ additions: Changeset style and readability matching CHANGELOG.md
+            - For .github/workflows: Ensure the workflow is valid
+            Since this PR touches critical source code paths, please be thorough
+            in your review and provide inline comments where appropriate.
+            Be constructive and helpful in your feedback. Use as few words as possible.
 
           # Optional: Use sticky comments to make Claude reuse the same comment on subsequent pushes to the same PR
-          # use_sticky_comment: true
+          use_sticky_comment: true
           
-          # Optional: Customize review based on file types
-          # direct_prompt: |
-          #   Review this PR focusing on:
-          #   - For TypeScript files: Type safety and proper interface usage
-          #   - For API endpoints: Security, input validation, and error handling
-          #   - For React components: Performance, accessibility, and best practices
-          #   - For tests: Coverage, edge cases, and test quality
+          # Allow linting and typechecking
+          allowed_tools: "Bash(yarn run lint),Bash(yarn run typecheck)"
+
+          # Don't waste cycles on e2e tests covered by CI
+          disallowed_tools: "Bash(yarn run test),Bash(yarn run vitest:parallel),Bash(yarn run vitest:serial),Bash(yarn run vitest:swap),Bash(yarn run vitest:send),Bash(yarn run vitest:send:optimism),Bash(yarn run vitest:dappInteractions),Bash(yarn run e2e:mac:chrome),Bash(yarn run e2e:mac:firefox),Bash(yarn run e2e:mac),Bash(yarn run e2e)"
           
-          # Optional: Different prompts for different authors
-          # direct_prompt: |
-          #   ${{ github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR' && 
-          #   'Welcome! Please review this PR from a first-time contributor. Be encouraging and provide detailed explanations for any suggestions.' ||
-          #   'Please provide a thorough code review focusing on our coding standards and best practices.' }}
-          
-          # Optional: Add specific tools for running tests or linting
-          # allowed_tools: "Bash(npm run test),Bash(npm run lint),Bash(npm run typecheck)"
-          
-          # Optional: Skip review for certain conditions
-          # if: |
-          #   !contains(github.event.pull_request.title, '[skip-review]') &&
-          #   !contains(github.event.pull_request.title, '[WIP]')
+          # Skip review for draft PRs and PRs with [WIP] in the title
+          if: |
+            ${{ github.event.pull_request.draft == false }} &&
+            !contains(github.event.pull_request.title, '[WIP]')
 
