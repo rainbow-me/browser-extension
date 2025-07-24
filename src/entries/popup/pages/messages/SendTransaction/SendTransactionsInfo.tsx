@@ -28,6 +28,7 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
+import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 import { SymbolName } from '~/design-system/styles/designTokens';
 import { AddressDisplay } from '~/entries/popup/components/AddressDisplay';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
@@ -287,6 +288,35 @@ const TransactionData = memo(function TransactionData({
     </Box>
   );
 });
+
+function BalanceLoadingSkeleton() {
+  return (
+    <Box
+      display="flex"
+      flexDirection="column"
+      padding="20px"
+      paddingBottom="2px"
+      background="surfaceSecondaryElevated"
+      borderRadius="20px"
+      borderColor="separatorSecondary"
+      borderWidth="1px"
+      width="full"
+      gap="16px"
+    >
+      <Inline alignVertical="center" space="12px">
+        <Skeleton width="16px" height="16px" circle />
+        <Skeleton width="200px" height="16px" />
+      </Inline>
+      <Skeleton width="100%" height="14px" />
+      <Stack marginHorizontal="-8px" space="8px">
+        <Separator color="separatorTertiary" />
+        <Skeleton width="100%" height="44px" />
+        <Separator color="separatorTertiary" />
+        <Skeleton width="100%" height="44px" />
+      </Stack>
+    </Box>
+  );
+}
 
 function TransactionInfo({
   request,
@@ -582,10 +612,6 @@ export function SendTransactionInfo({
   const { hasEnough: hasEnoughGas, isLoading: isGasLoading } =
     useHasEnoughGas(activeSession);
 
-  // Show transaction info while loading or if user has enough gas
-  // Only show insufficient funds if we've confirmed they don't have enough
-  const showInsufficientFunds = !isGasLoading && hasEnoughGas === false;
-
   return (
     <Box
       background="surfacePrimaryElevatedSecondary"
@@ -632,22 +658,53 @@ export function SendTransactionInfo({
         )}
       </AnimatePresence>
 
-      {!showInsufficientFunds ? (
-        <TransactionInfo
-          request={txRequest}
-          dappMetadata={dappMetadata}
-          dappUrl={dappUrl}
-          expanded={expanded}
-          onExpand={() => setExpanded((e) => !e)}
-        />
-      ) : (
-        activeSession && (
-          <InsuficientGasFunds
-            session={activeSession}
-            onRejectRequest={onRejectRequest}
-          />
-        )
-      )}
+      <AnimatePresence mode="wait">
+        {/* Show loading skeleton while balance is being fetched */}
+        {isGasLoading ? (
+          <motion.div
+            key="loading"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.15 }}
+          >
+            <BalanceLoadingSkeleton />
+          </motion.div>
+        ) : /* Show insufficient funds if user doesn't have enough gas */ hasEnoughGas ===
+          false ? (
+          activeSession && (
+            <motion.div
+              key="insufficient-funds"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.15 }}
+            >
+              <InsuficientGasFunds
+                session={activeSession}
+                onRejectRequest={onRejectRequest}
+              />
+            </motion.div>
+          )
+        ) : (
+          /* Show normal transaction info if user has enough gas or gas state is unknown */
+          <motion.div
+            key="transaction-info"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.15 }}
+          >
+            <TransactionInfo
+              request={txRequest}
+              dappMetadata={dappMetadata}
+              dappUrl={dappUrl}
+              expanded={expanded}
+              onExpand={() => setExpanded((e) => !e)}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </Box>
   );
 }
