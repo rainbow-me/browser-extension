@@ -29,7 +29,16 @@ jobs:
       issues: read
       actions: read
       id-token: write
-    
+
+    # Run only for internal contributors (OWNER, MEMBER, or COLLABORATOR)
+    # Skip review for draft PRs and PRs with [WIP] in the title
+    if: |
+      (github.event.pull_request.author_association == 'OWNER' ||
+      github.event.pull_request.author_association == 'MEMBER' ||
+      github.event.pull_request.author_association == 'COLLABORATOR') &&
+      github.event.pull_request.draft == false &&
+      !contains(github.event.pull_request.title, '[WIP]')
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -68,7 +77,7 @@ jobs:
             in your review and provide inline comments where appropriate.
             Be constructive and helpful in your feedback. Use as few words as possible.
 
-          # Optional: Use sticky comments to make Claude reuse the same comment on subsequent pushes to the same PR
+          # Use sticky comments to make Claude reuse the same comment on subsequent pushes to the same PR
           use_sticky_comment: true
           
           # Allow linting and typechecking
@@ -76,9 +85,3 @@ jobs:
 
           # Don't waste cycles on e2e tests covered by CI
           disallowed_tools: "Bash(yarn run test),Bash(yarn run vitest:parallel),Bash(yarn run vitest:serial),Bash(yarn run vitest:swap),Bash(yarn run vitest:send),Bash(yarn run vitest:send:optimism),Bash(yarn run vitest:dappInteractions),Bash(yarn run e2e:mac:chrome),Bash(yarn run e2e:mac:firefox),Bash(yarn run e2e:mac),Bash(yarn run e2e)"
-          
-          # Skip review for draft PRs and PRs with [WIP] in the title
-          if: |
-            ${{ github.event.pull_request.draft == false }} &&
-            !contains(github.event.pull_request.title, '[WIP]')
-
