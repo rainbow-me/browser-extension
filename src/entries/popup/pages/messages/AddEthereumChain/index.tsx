@@ -70,14 +70,22 @@ export const AddEthereumChain = ({
       };
       addCustomChain(+chainId, chain, rpcUrl, true);
 
-      analytics.track(event.dappAddEthereumChainPromptApproved, {
-        chainId: Number(chainId),
-        rpcUrl,
-        blockExplorerUrl,
-        dappURL: dappMetadata?.url || '',
-        dappDomain: dappMetadata?.appHost || '',
-        dappName: dappMetadata?.appName,
-      });
+      try {
+        void analytics.track(event.dappAddEthereumChainPromptApproved, {
+          chainId: Number(chainId),
+          rpcUrl,
+          blockExplorerUrl,
+          dappURL: dappMetadata?.url || '',
+          dappDomain: dappMetadata?.appHost || '',
+          dappName: dappMetadata?.appName,
+        });
+      } catch (e) {
+        // use logger to know that the analytics failed
+        logger.error(new RainbowError('Analytics failed'), {
+          message: e instanceof Error ? e.message : String(e),
+          cause: e,
+        });
+      }
 
       // wait 1.2s for storages to sync (persist throttle on network store is 1s)
       await new Promise((resolve) => {
