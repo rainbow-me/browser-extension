@@ -66,6 +66,7 @@ import { Send } from './pages/send';
 import { Currency } from './pages/settings/currency';
 import { SettingsCustomChain } from './pages/settings/customChain';
 import { AddAsset } from './pages/settings/customChain/addAsset';
+import { SettingsCustomChainsList } from './pages/settings/customChain/list';
 import { Language } from './pages/settings/language';
 import { SettingsNetworks } from './pages/settings/networks';
 import { AutoLockTimer } from './pages/settings/privacy/autoLockTimer';
@@ -569,6 +570,21 @@ const ROUTE_DATA = [
         background="surfaceSecondary"
       >
         <SettingsNetworksRPCs />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.SETTINGS__NETWORKS__CUSTOM_NETWORKS,
+    element: (
+      <AnimatedRoute
+        direction="right"
+        navbar
+        navbarIcon="arrow"
+        title="Custom Networks"
+        protectedRoute
+        background="surfaceSecondary"
+      >
+        <SettingsCustomChainsList />
       </AnimatedRoute>
     ),
   },
