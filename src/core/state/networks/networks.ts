@@ -853,7 +853,8 @@ export const useNetworkStore = createQueryStore<
       chainOrder: state.chainOrder,
       enabledChainIds: state.enabledChainIds,
     }),
-    persistThrottleMs: 1_000,
+    // TODO: investigate infinite loop if we remove this throttle
+    persistThrottleMs: 5_000,
     storageKey: 'networks',
     useRainbowNamingSchema: false,
     version: 1,
