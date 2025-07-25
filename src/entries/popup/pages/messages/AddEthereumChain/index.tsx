@@ -53,7 +53,7 @@ export const AddEthereumChain = ({
 
   const addCustomChain = useNetworkStore((state) => state.addCustomChain);
 
-  const onAcceptRequest = useCallback(async () => {
+  const onAcceptRequest = useCallback(() => {
     try {
       setLoading(true);
 
@@ -70,6 +70,7 @@ export const AddEthereumChain = ({
       };
       addCustomChain(+chainId, chain, rpcUrl, true);
 
+      approveRequest(true);
       analytics.track(event.dappAddEthereumChainPromptApproved, {
         chainId: Number(chainId),
         rpcUrl,
@@ -78,13 +79,6 @@ export const AddEthereumChain = ({
         dappDomain: dappMetadata?.appHost || '',
         dappName: dappMetadata?.appName,
       });
-
-      // wait 1.2s for storages to sync (persist throttle on network store is 1s)
-      await new Promise((resolve) => {
-        setTimeout(resolve, 1200);
-      });
-
-      approveRequest(true);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       logger.info('error adding ethereum chain');
