@@ -79,19 +79,19 @@ describe('useNetworkStore', () => {
           expect(userOverride).toBeDefined();
 
           // preserve activeRpcUrl
-          expect(userOverride.activeRpcUrl).toEqual(chain.activeRpcUrl);
+          expect(userOverride?.activeRpcUrl).toEqual(chain.activeRpcUrl);
 
           // preserve rpcs
-          for (const rpcUrl in userOverride.rpcs) {
+          for (const rpcUrl in userOverride?.rpcs) {
             expect(
               chain.chains.some((c) => c.rpcUrls.default.http[0] === rpcUrl),
             ).toBe(true);
           }
 
           // additional checks for user-added custom networks
-          if (userOverride.type === 'custom') {
+          if (userOverride?.type === 'custom') {
             const activeChain = chain.chains.find(
-              (c) => c.rpcUrls.default.http[0] === userOverride.activeRpcUrl,
+              (c) => c.rpcUrls.default.http[0] === userOverride?.activeRpcUrl,
             );
             if (!activeChain) {
               throw new Error('Active chain not found');
