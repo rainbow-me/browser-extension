@@ -1057,10 +1057,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@bazel/runfiles@npm:^5.8.1":
-  version: 5.8.1
-  resolution: "@bazel/runfiles@npm:5.8.1"
-  checksum: 10c0/c148ea89839240d918ea615c485fcd0e5c009215ddfa718cc7dd1c3f0e2e278eb8d291b6cd990cd8fc2ade161f98f2defbac8b9c2968e5c5bc4edb98e6ed6bc6
+"@bazel/runfiles@npm:^6.3.1":
+  version: 6.3.1
+  resolution: "@bazel/runfiles@npm:6.3.1"
+  checksum: 10c0/7b542dcff9e917cc521520db137bd4f4a478796693700e2ec2c27f4beede800c9f4987e20c6b965d81000638f63549160780aea51eca2f0d0275be76fdc5e49f
   languageName: node
   linkType: hard
 
@@ -10058,7 +10058,7 @@ __metadata:
     chalk: "npm:5.3.0"
     check-password-strength: "npm:2.0.7"
     chroma-js: "npm:2.4.2"
-    chromedriver: "npm:133"
+    chromedriver: "npm:138"
     circular-dependency-plugin: "npm:5.2.2"
     clsx: "npm:1.2.1"
     cmdk: "npm:0.2.0"
@@ -10116,7 +10116,7 @@ __metadata:
     react-image: "npm:4.1.0"
     react-router-dom: "npm:6.4.2"
     react-switch: "npm:7.0.0"
-    selenium-webdriver: "npm:4.24.1"
+    selenium-webdriver: "npm:4.34.0"
     semver: "npm:7.5.2"
     socket.io-client: "npm:4.5.3"
     supports-color: "npm:5.5.0"
@@ -10876,9 +10876,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chromedriver@npm:133":
-  version: 133.0.3
-  resolution: "chromedriver@npm:133.0.3"
+"chromedriver@npm:138":
+  version: 138.0.3
+  resolution: "chromedriver@npm:138.0.3"
   dependencies:
     "@testim/chrome-version": "npm:^1.1.4"
     axios: "npm:^1.7.4"
@@ -10889,7 +10889,7 @@ __metadata:
     tcp-port-used: "npm:^1.0.2"
   bin:
     chromedriver: bin/chromedriver
-  checksum: 10c0/c5c60a6fd27495478d31fbfb79e6da25d334434d3bbba13c67a05f1ee10430977411f798944824250698d2eb9ab4ea5c5491b852c4e75ec282c88e06702751e5
+  checksum: 10c0/f532a98d208c40e2cf54a18460b52634bde047ca409502a5ad9c63ac4e233a014d722838d2ab12371f7d585adcbac92fdf848bd70bf389c098db7a998f27e2b2
   languageName: node
   linkType: hard
 
@@ -21767,15 +21767,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"selenium-webdriver@npm:4.24.1":
-  version: 4.24.1
-  resolution: "selenium-webdriver@npm:4.24.1"
+"selenium-webdriver@npm:4.34.0":
+  version: 4.34.0
+  resolution: "selenium-webdriver@npm:4.34.0"
   dependencies:
-    "@bazel/runfiles": "npm:^5.8.1"
+    "@bazel/runfiles": "npm:^6.3.1"
     jszip: "npm:^3.10.1"
     tmp: "npm:^0.2.3"
-    ws: "npm:^8.18.0"
-  checksum: 10c0/803b15c6584deb00f924892fcd61f296fdf15b5f4a0ad00ca6bf0206e54de5eff873338568d46a4bb1ced5f1c7bf3726c1a2ee41640601e8cd4b49a7894e22cd
+    ws: "npm:^8.18.2"
+  checksum: 10c0/bfca387713677284d70b66aa419ad0e6f013945cca1f19bb780a62e4eff1f69190a165e939ef79e8f23af9aa0bd08b9a90c41ee6713eec30b7601034bd5f1824
   languageName: node
   linkType: hard
 

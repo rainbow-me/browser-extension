@@ -36,7 +36,7 @@ describe('New wallet flow', () => {
     rootURL += extensionId;
   });
 
-  afterAll(async () => driver.quit());
+  afterAll(async () => driver?.quit());
 
   // Create a new wallet
   it('should be able create a new wallet', async () => {

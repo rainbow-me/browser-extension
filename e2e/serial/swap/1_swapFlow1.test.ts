@@ -59,7 +59,7 @@ afterEach(async (context: any) => {
   await takeScreenshotOnFailure(context);
 });
 
-afterAll(() => driver.quit());
+afterAll(() => driver?.quit());
 
 const WALLET_TO_USE_SECRET = TEST_VARIABLES.SWAPS_WALLET.PK;
 

@@ -127,6 +127,7 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
               style={{
                 alignSelf: 'center',
                 position: 'absolute',
+                top: '100%',
                 zIndex: 999999,
                 boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
                 borderRadius: 16,

@@ -226,8 +226,9 @@ jobs:
       - name: Upload deps artifacts
         if: steps.ChromeE2EParallel.outcome == 'failure'
         uses: actions/upload-artifact@v4
+        continue-on-error: true
         with:
-          name: screenshots
+          name: screenshots-chrome-e2e-parallel
           path: screenshots/
       - name: Fail if any tests failed
         if: steps.ChromeE2EParallel.outcome == 'failure'
@@ -256,8 +257,9 @@ jobs:
       - name: Upload deps artifacts
         if: steps.ChromeE2ESwaps.outcome == 'failure'
         uses: actions/upload-artifact@v4
+        continue-on-error: true
         with:
-          name: screenshots
+          name: screenshots-chrome-e2e-swap
           path: screenshots/
       - name: Fail if any tests failed
         if: steps.ChromeE2ESwaps.outcome == 'failure'
@@ -286,8 +288,9 @@ jobs:
       - name: Upload deps artifacts
         if: steps.ChromeE2ESend.outcome == 'failure'
         uses: actions/upload-artifact@v4
+        continue-on-error: true
         with:
-          name: screenshots
+          name: screenshots-chrome-e2e-send
           path: screenshots/
       - name: Fail if any tests failed
         if: steps.ChromeE2ESend.outcome == 'failure'
@@ -316,8 +319,9 @@ jobs:
       - name: Upload deps artifacts
         if: steps.ChromeOpE2ESend.outcome == 'failure'
         uses: actions/upload-artifact@v4
+        continue-on-error: true
         with:
-          name: screenshots
+          name: screenshots-chrome-optimism-e2e-send
           path: screenshots/
       - name: Fail if any tests failed
         if: steps.ChromeOpE2ESend.outcome == 'failure'
@@ -346,8 +350,9 @@ jobs:
       - name: Upload deps artifacts
         if: steps.ChromeE2EDappInteractions.outcome == 'failure'
         uses: actions/upload-artifact@v4
+        continue-on-error: true
         with:
-          name: screenshots
+          name: screenshots-chrome-e2e-dappInteractions
           path: screenshots/
       - name: Fail if any tests failed
         if: steps.ChromeE2EDappInteractions.outcome == 'failure'
@@ -431,5 +436,5 @@ jobs:
           failOnError: false
       - uses: geekyeggo/delete-artifact@v5
         with:
-          name: screenshots
+          name: screenshots-*
           failOnError: false

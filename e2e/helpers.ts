@@ -113,11 +113,13 @@ export async function initDriverWithOptions(opts: {
   let driver;
   const args = [
     'load-extension=build/',
-    '--log-level=0',
+    '--log-level=3',
     '--enable-logging',
     '--no-sandbox',
     '--disable-dev-shm-usage',
     '--disable-extensions-except=build/',
+    '--disable-popup-blocking',
+    '--remote-debugging-port=9222',
   ];
 
   if (opts.browser === 'firefox') {
@@ -137,18 +139,39 @@ export async function initDriverWithOptions(opts: {
       .setFirefoxOptions(options)
       .build();
   } else {
-    const options = new chrome.Options()
-      // @ts-ignore
-      .setChromeBinaryPath(BINARY_PATHS[opts.os][opts.browser])
-      .addArguments(...args);
+    const chromeBinaryPath = BINARY_PATHS[opts.os as 'mac' | 'linux']['chrome'];
+
+    if (!chromeBinaryPath) {
+      throw new Error(
+        `Chrome binary path not found for OS: ${opts.os} and browser: ${opts.browser}`,
+      );
+    }
+
+    const options = new chrome.Options();
+    options.setChromeBinaryPath(chromeBinaryPath);
+    options.addArguments(...args);
     options.setAcceptInsecureCerts(true);
+    options.setLoggingPrefs({
+      browser: 'ALL',
+      driver: 'ALL',
+    });
+
+    const existingGoogChromeOptions = options.get('goog:chromeOptions') || {};
+
+    options.set(
+      'goog:chromeOptions',
+      Object.assign(existingGoogChromeOptions, {
+        enableExtensionTargets: true,
+        windowTypes: ['popup', 'app'],
+      }),
+    );
 
     const service = new chrome.ServiceBuilder().setStdio('inherit');
 
     driver = await new Builder()
-      .setChromeService(service)
       .forBrowser('chrome')
       .setChromeOptions(options)
+      .setChromeService(service)
       .build();
   }
   // @ts-ignore
