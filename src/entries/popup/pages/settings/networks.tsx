@@ -127,13 +127,7 @@ export function SettingsNetworks() {
                 />
               }
               onClick={() =>
-                navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC, {
-                  state: {
-                    title: i18n.t(
-                      'settings.networks.custom_rpc.add_custom_network',
-                    ),
-                  },
-                })
+                navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_NETWORKS)
               }
               titleComponent={
                 <MenuItem.Title
