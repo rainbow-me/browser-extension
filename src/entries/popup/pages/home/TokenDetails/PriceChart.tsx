@@ -1,3 +1,4 @@
+import { ErrorBoundary } from '@sentry/react';
 import { useQuery } from '@tanstack/react-query';
 import { memo, useReducer, useState } from 'react';
 
@@ -305,17 +306,38 @@ export function PriceChart({
       </Box>
       {((shouldHaveData && isLoading) || hasPriceData) && (
         <>
-          <Box style={{ height: '222px' }} marginHorizontal="-20px">
-            {data && (
-              <LineChart
-                data={data}
-                onMouseMove={setIndicatorPoint}
-                width={POPUP_DIMENSIONS.width}
-                height={222}
-                paddingY={40}
-              />
-            )}
-          </Box>
+          <ErrorBoundary
+            fallback={
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                flexDirection="column"
+                gap="10px"
+                style={{ height: '222px' }}
+                background="surfaceSecondary"
+                borderWidth="1px"
+                borderColor="surfaceSecondaryElevated"
+                marginHorizontal="-20px"
+              >
+                <Text size="14pt" weight="heavy" color="labelTertiary">
+                  Error while loading price chart.
+                </Text>
+              </Box>
+            }
+          >
+            <Box style={{ height: '222px' }} marginHorizontal="-20px">
+              {data && (
+                <LineChart
+                  data={data}
+                  onMouseMove={setIndicatorPoint}
+                  width={POPUP_DIMENSIONS.width}
+                  height={222}
+                  paddingY={40}
+                />
+              )}
+            </Box>
+          </ErrorBoundary>
           <SelectChartTime
             selectedTime={selectedTime}
             setSelectedTime={setSelectedTime}
