@@ -27,7 +27,7 @@ import {
   buildTimeNetworks,
 } from './constants';
 import { useNetworksStoreMigrationStore } from './migration';
-import { NetworkState } from './types';
+import { NetworkState, NetworkUserPreferences } from './types';
 
 interface NetworkActions {
   // user-added custom networks store methods
@@ -100,7 +100,7 @@ interface NetworkActions {
 }
 
 let lastNetworks: Networks | null = null;
-let lastUserPreferences: Record<number, ChainPreferences> | null = null;
+let lastUserPreferences: NetworkUserPreferences | null = null;
 let lastChainOrder: number[] | null = null;
 let lastEnabledChainIds: Set<number> | null = null;
 let mergedChainData: Record<number, TransformedChain> | null = null;
@@ -111,7 +111,7 @@ let mergedChainData: Record<number, TransformedChain> | null = null;
  */
 function getMergedChainData(
   networks: Networks,
-  userPreferences: Record<number, ChainPreferences>,
+  userPreferences: NetworkUserPreferences,
   chainOrder: number[],
   enabledChainIds: Set<number>,
 ): Record<number, TransformedChain> {
@@ -141,7 +141,7 @@ function getMergedChainData(
 function createSelector<T>(
   selectorFn: (params: {
     networks: Networks;
-    userPreferences: Record<number, ChainPreferences>;
+    userPreferences: NetworkUserPreferences;
     chainOrder: number[];
     enabledChainIds: Set<number>;
     mergedChainData: Record<number, TransformedChain>;
@@ -151,7 +151,7 @@ function createSelector<T>(
   let cachedResult: T | typeof uninitialized = uninitialized;
   let lastInputs: {
     networks: Networks;
-    userPreferences: Record<number, ChainPreferences>;
+    userPreferences: NetworkUserPreferences;
     chainOrder: number[];
     enabledChainIds: Set<number>;
   } | null = null;
@@ -198,7 +198,7 @@ function createSelector<T>(
 function createParameterizedSelector<T, Args extends unknown[]>(
   selectorFn: (params: {
     networks: Networks;
-    userPreferences: Record<number, ChainPreferences>;
+    userPreferences: NetworkUserPreferences;
     chainOrder: number[];
     enabledChainIds: Set<number>;
     mergedChainData: Record<number, TransformedChain>;
@@ -209,7 +209,7 @@ function createParameterizedSelector<T, Args extends unknown[]>(
   let lastArgs: Args | null = null;
   let lastInputs: {
     networks: Networks;
-    userPreferences: Record<number, ChainPreferences>;
+    userPreferences: NetworkUserPreferences;
     chainOrder: number[];
     enabledChainIds: Set<number>;
   } | null = null;
@@ -401,7 +401,7 @@ export const useNetworkStore = createQueryStore<
         const newUserPreferences = {
           ...state.userPreferences,
           [chainId]: {
-            ...state.userPreferences[chainId],
+            ...preferences,
             activeRpcUrl: rpcUrl,
           },
         };
