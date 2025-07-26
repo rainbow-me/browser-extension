@@ -6,7 +6,7 @@ import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 
 export const useWalletName = ({ address }: { address?: Address }) => {
-  const { data: ensName } = useEnsName({
+  const { data: ensName, isLoading: isEnsLoading } = useEnsName({
     address,
     chainId: ChainId.mainnet,
   });
@@ -17,6 +17,7 @@ export const useWalletName = ({ address }: { address?: Address }) => {
     return {
       displayName: undefined,
       showAddress: undefined,
+      isLoading: false,
     };
   }
 
@@ -27,5 +28,6 @@ export const useWalletName = ({ address }: { address?: Address }) => {
   return {
     displayName,
     showAddress,
+    isLoading: walletNames[address] ? false : isEnsLoading,
   };
 };
