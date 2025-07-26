@@ -4,6 +4,7 @@ import { initFCM } from '~/core/firebase/fcm';
 import { initializeMessenger } from '~/core/messengers';
 import { initializeSentry } from '~/core/sentry';
 import {
+  syncGasStoreOnChainSwitch,
   syncNetworksStore,
   syncStores,
 } from '~/core/state/internal/syncStores';
@@ -41,6 +42,7 @@ handleDisconnect();
 
 syncNetworksStore('background');
 syncStores();
+syncGasStoreOnChainSwitch();
 
 uuid4();
 // wait until the page is active to initialize FCM
