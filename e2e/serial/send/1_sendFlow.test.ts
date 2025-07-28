@@ -234,6 +234,7 @@ it('should be able to interact with destination menu on review on send flow', as
 });
 
 it('should be able to send transaction on review on send flow', async () => {
+  await delayTime('very-long');
   await findElementByTestIdAndClick({ id: 'review-confirm-button', driver });
   const sendTransaction = await transactionStatus();
   expect(await sendTransaction).toBe('success');
