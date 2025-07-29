@@ -79,4 +79,4 @@ jobs:
           use_sticky_comment: true
 
           # Don't waste cycles on tests covered by CI
-          disallowed_tools: "Bash(yarn run test*),Bash(yarn run vitest*),Bash(yarn run e2e*),Bash(yarn run lint),Bash(yarn run typecheck)"
+          disallowed_tools: "Bash(yarn test*),Bash(yarn vitest*),Bash(yarn e2e*),Bash(yarn lint),Bash(yarn typecheck)"
