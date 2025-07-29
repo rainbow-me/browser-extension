@@ -39,9 +39,7 @@ jobs:
     if: |
       (github.event.pull_request.author_association == 'OWNER' ||
       github.event.pull_request.author_association == 'MEMBER' ||
-      github.event.pull_request.author_association == 'COLLABORATOR') &&
-      github.event.pull_request.draft == false &&
-      !contains(github.event.pull_request.title, '[WIP]')
+      github.event.pull_request.author_association == 'COLLABORATOR')
 
     steps:
       - name: Checkout repository
