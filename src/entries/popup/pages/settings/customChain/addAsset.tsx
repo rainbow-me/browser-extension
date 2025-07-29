@@ -8,7 +8,7 @@ import { i18n } from '~/core/languages';
 import { useAssetMetadata } from '~/core/resources/assets/assetMetadata';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
-import { Box, Button, Inline, Stack } from '~/design-system';
+import { Box, Button, Inset, Stack } from '~/design-system';
 import { Form } from '~/entries/popup/components/Form/Form';
 import { FormInput } from '~/entries/popup/components/Form/FormInput';
 import { maskInput } from '~/entries/popup/components/InputMask/utils';
@@ -271,17 +271,18 @@ export function AddAsset() {
             tabIndex={0}
           />
 
-          <Inline alignHorizontal="right">
+          <Inset top="10px">
             <Button
               onClick={addAsset}
               color="accent"
               height="36px"
               variant="raised"
               tabIndex={0}
+              width="full"
             >
               {i18n.t('settings.networks.watch_asset.add_token')}
             </Button>
-          </Inline>
+          </Inset>
         </Form>
       </Stack>
     </Box>

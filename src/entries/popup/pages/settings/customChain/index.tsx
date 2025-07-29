@@ -8,7 +8,7 @@ import { useChainMetadata } from '~/core/resources/chains/chainMetadata';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { getDappHostname, isValidUrl } from '~/core/utils/connectedApps';
-import { Box, Button, Inline, Stack, Text } from '~/design-system';
+import { Box, Button, Inline, Inset, Stack, Text } from '~/design-system';
 import { Form } from '~/entries/popup/components/Form/Form';
 import { FormInput } from '~/entries/popup/components/Form/FormInput';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
@@ -399,7 +399,7 @@ export function SettingsCustomChain() {
               />
             </Inline>
           </Box>
-          <Inline alignHorizontal="right">
+          <Inset top="10px">
             <Button
               onClick={addCustomRpc}
               color="accent"
@@ -411,7 +411,7 @@ export function SettingsCustomChain() {
             >
               {i18n.t('settings.networks.custom_rpc.add_network')}
             </Button>
-          </Inline>
+          </Inset>
         </Form>
       </Stack>
     </Box>
