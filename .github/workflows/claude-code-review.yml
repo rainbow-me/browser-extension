@@ -5,7 +5,7 @@ on:
   pull_request:
     types: [opened, synchronize]
   
-  # fire only after the “CI” workflow finishes (any conclusion)
+  # fire after the “CI” workflow finishes (any conclusion)
   workflow_run:
     workflows: ["CI"]
     types: [completed]
@@ -17,10 +17,12 @@ jobs:
     # Run only when the triggering CI run came from a pull‑request
     # By internal contributors (OWNER, MEMBER, or COLLABORATOR)
     if: |
-      github.event.workflow_run.event == 'pull_request' &&
-      (github.event.pull_request.author_association == 'OWNER' ||
-      github.event.pull_request.author_association == 'MEMBER' ||
-      github.event.pull_request.author_association == 'COLLABORATOR')
+      (github.event_name == 'pull_request' && 
+       (github.event.pull_request.author_association == 'OWNER' ||
+        github.event.pull_request.author_association == 'MEMBER' ||
+        github.event.pull_request.author_association == 'COLLABORATOR')) ||
+      (github.event_name == 'workflow_run' && 
+       github.event.workflow_run.event == 'pull_request')
     
     runs-on: ubuntu-latest
     permissions:
