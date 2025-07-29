@@ -22,7 +22,6 @@ import {
   Inline,
   Row,
   Rows,
-  Separator,
   Symbol,
   Text,
   TextOverflow,
@@ -326,13 +325,8 @@ export function SettingsNetworksRPCs() {
                 </Box>
               ))}
             </Box>
-          </Menu>
-        ) : null}
-
-        {config.custom_rpc_enabled &&
-        (activeChain?.name || supportedChain?.name) ? (
-          <>
-            <Menu>
+            {config.custom_rpc_enabled &&
+            (activeChain?.name || supportedChain?.name) ? (
               <MenuItem
                 first
                 last
@@ -365,9 +359,8 @@ export function SettingsNetworksRPCs() {
                 }
                 testId={'custom-rpc-button'}
               />
-            </Menu>
-            <Separator color="separatorTertiary" strokeWeight="1px" />
-          </>
+            ) : null}
+          </Menu>
         ) : null}
 
         {config.custom_rpc_enabled && customNetworkAssetsForChain.length ? (
@@ -470,7 +463,6 @@ export function SettingsNetworksRPCs() {
                 }
               />
             </Menu>
-            <Separator color="separatorTertiary" strokeWeight="1px" />
           </>
         )}
 
@@ -537,7 +529,6 @@ export function SettingsNetworksRPCs() {
                 ))}
               </Box>
             </Menu>
-            <Separator color="separatorTertiary" strokeWeight="1px" />
           </>
         ) : null}
 
