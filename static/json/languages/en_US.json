@@ -132,7 +132,12 @@
       },
       "rpc_endpoints": "RPCs",
       "watch_asset": {
-        "title": "Add Token"
+        "title": "Add Token",
+        "add_token": "Add Token",
+        "address_placeholder": "Address",
+        "name_placeholder": "Name",
+        "decimals_placeholder": "Decimals",
+        "symbol_placeholder": "Symbol"
       }
     },
     "privacy_and_security": {
