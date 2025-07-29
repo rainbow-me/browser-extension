@@ -98,7 +98,7 @@
       "disabled": "Disabled",
       "enable": "Enable",
       "enabled": "Network Enabled",
-      "description": "Choose which networks and tokens to display. You can connect to any networks supported by Rainbow, even if they’re unchecked.",
+      "description": "Choose which networks and tokens to display. You can still connect to any network supported by Rainbow, even if they’re disabled.",
       "developer_tools": {
         "title": "Enable Developer Tools",
         "toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
