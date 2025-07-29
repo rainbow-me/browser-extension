@@ -10,6 +10,9 @@ on:
       - "src/**/*.tsx"
       - "src/**/*.js"
       - "src/**/*.jsx"
+      # Tests
+      - "src/**/*.test.ts"
+      - "e2e/**/*.test.ts"
       # Patches
       - "patches/**/*.patch"
       # Changeset additions
