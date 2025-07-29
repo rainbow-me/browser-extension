@@ -55,7 +55,7 @@ jobs:
             - Code quality and best practices
             - Potential bugs or issues
             - Performance considerations
-            - Proper changeset documentation
+            - Proper changeset additions and documentation for meaningful changes
             - Test coverage and CI status and failures
             For each file type, focus on:
             - For TypeScript files: Type safety and proper interface usage
