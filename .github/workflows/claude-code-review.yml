@@ -1,6 +1,10 @@
 name: Claude Code Review
 
 on:
+  # Run on PRs opened, updated
+  pull_request:
+    types: [opened, synchronize]
+  
   # fire only after the “CI” workflow finishes (any conclusion)
   workflow_run:
     workflows: ["CI"]
