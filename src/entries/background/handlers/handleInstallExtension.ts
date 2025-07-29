@@ -6,7 +6,7 @@ import { POPUP_URL, WELCOME_URL, goToNewTab } from '~/core/utils/tabs';
  * Handles the extension installation event.
  */
 export const handleInstallExtension = () =>
-  chrome.runtime.onInstalled.addListener(async () => {
+  chrome.runtime.onInstalled.addListener(async (details) => {
     if (process.env.IS_DEV === 'true') {
       chrome.contextMenus.create({
         id: 'open-tab',
@@ -24,7 +24,11 @@ export const handleInstallExtension = () =>
         }
       });
       // This breaks e2e!!
-    } else if (process.env.IS_TESTING !== 'true') {
+    } else if (
+      process.env.IS_TESTING !== 'true' &&
+      details.reason === 'install'
+    ) {
+      // Only show onboarding on actual install, not on updates or browser restarts
       // wait till the keychain is initialized
       let ready = await isInitialized();
       while (!ready) {
