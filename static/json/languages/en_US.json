@@ -116,7 +116,7 @@
         "testnet": "Testnet",
         "block_explorer_url": "Block Explorer URL",
         "add_network": "Add Network",
-        "add_rpc": "Add RPC Endpoint",
+        "add_rpc": "Add Custom RPC",
         "add_network_rpc": "Add %{rpcName} RPC",
         "add_asset": "Add Custom Token",
         "network_added": "Network Added",
@@ -125,12 +125,12 @@
         "remove_rpc": "Remove RPC",
         "remove_network": "Remove Network",
         "tokens": "Tokens",
-        "cant_connect": "Can't connect to this RPC endpoint",
-        "rpc_not_responding": "The provided RPC endpoint is not responding",
+        "cant_connect": "Can't connect to this RPC",
+        "rpc_not_responding": "The provided RPC is not responding",
         "rainbow_default_rpc": "Rainbow",
         "rainbow_default": "Rainbow"
       },
-      "rpc_endpoints": "RPC Endpoints",
+      "rpc_endpoints": "RPCs",
       "watch_asset": {
         "title": "Add Custom Token"
       }
