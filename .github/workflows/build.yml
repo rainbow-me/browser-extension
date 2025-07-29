@@ -83,7 +83,6 @@ jobs:
   #   needs: [build]
   #   env:
   #     DISPLAY: :0
-  #     VITEST_SEGFAULT_RETRY: 4
   #   steps:
   #     - uses: actions/checkout@v4
   #     - uses: ./.github/actions/firefoxTestsSetup
@@ -114,7 +113,6 @@ jobs:
   #   needs: [build]
   #   env:
   #     DISPLAY: :0
-  #     VITEST_SEGFAULT_RETRY: 4
   #   steps:
   #     - uses: actions/checkout@v4
   #     - uses: ./.github/actions/firefoxTestsSetup
@@ -145,7 +143,6 @@ jobs:
   #   needs: [build]
   #   env:
   #     DISPLAY: :0
-  #     VITEST_SEGFAULT_RETRY: 4
   #   steps:
   #     - uses: actions/checkout@v4
   #     - uses: ./.github/actions/firefoxTestsSetup
@@ -176,7 +173,6 @@ jobs:
   #   needs: [build]
   #   env:
   #     DISPLAY: :0
-  #     VITEST_SEGFAULT_RETRY: 4
   #   steps:
   #     - uses: actions/checkout@v4
   #     - uses: ./.github/actions/firefoxTestsSetup
@@ -208,7 +204,6 @@ jobs:
     needs: [build]
     env:
       DISPLAY: :0
-      VITEST_SEGFAULT_RETRY: 4
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/chromeTestsSetup
@@ -239,7 +234,6 @@ jobs:
     needs: [build]
     env:
       DISPLAY: :0
-      VITEST_SEGFAULT_RETRY: 3
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/chromeTestsSetup
@@ -270,7 +264,6 @@ jobs:
     needs: [build]
     env:
       DISPLAY: :0
-      VITEST_SEGFAULT_RETRY: 3
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/chromeTestsSetup
@@ -301,7 +294,6 @@ jobs:
     needs: [build]
     env:
       DISPLAY: :0
-      VITEST_SEGFAULT_RETRY: 3
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/chromeTestsSetup
@@ -332,7 +324,6 @@ jobs:
     needs: [build]
     env:
       DISPLAY: :0
-      VITEST_SEGFAULT_RETRY: 3
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/chromeTestsSetup
