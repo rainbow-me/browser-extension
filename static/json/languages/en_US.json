@@ -98,13 +98,13 @@
       "disabled": "Disabled",
       "enable": "Enable",
       "enabled": "Network Enabled",
-      "description": "Choose which networks and tokens to display. You can connect to any networks supported by Rainbow, even if they’re unchecked.",
+      "description": "Choose which networks and tokens to display. You can still connect to any network supported by Rainbow, even if they’re disabled.",
       "developer_tools": {
         "title": "Enable Developer Tools",
         "toggle_explainer": "Enables the Testnet Mode shortcut (T) and adds a toggle to the home screen’s top-right menu."
       },
       "custom_rpc": {
-        "title": "Add Custom RPC",
+        "title": "Add RPC",
         "add_custom_network": "Add Custom Network",
         "networks": "Networks",
         "network_name": "Network Name",
@@ -116,23 +116,28 @@
         "testnet": "Testnet",
         "block_explorer_url": "Block Explorer URL",
         "add_network": "Add Network",
-        "add_rpc": "Add RPC Endpoint",
+        "add_rpc": "Add RPC",
         "add_network_rpc": "Add %{rpcName} RPC",
-        "add_asset": "Add Custom Token",
+        "add_asset": "Add Token",
         "network_added": "Network Added",
         "network_added_correctly": "%{networkName}",
         "remove_token": "Remove Token",
         "remove_rpc": "Remove RPC",
         "remove_network": "Remove Network",
         "tokens": "Tokens",
-        "cant_connect": "Can't connect to this RPC endpoint",
-        "rpc_not_responding": "The provided RPC endpoint is not responding",
+        "cant_connect": "Can't connect to this RPC",
+        "rpc_not_responding": "The provided RPC is not responding",
         "rainbow_default_rpc": "Rainbow",
         "rainbow_default": "Rainbow"
       },
-      "rpc_endpoints": "RPC Endpoints",
+      "rpc_endpoints": "RPCs",
       "watch_asset": {
-        "title": "Add Custom Token"
+        "title": "Add Token",
+        "add_token": "Add Token",
+        "address_placeholder": "Address",
+        "name_placeholder": "Name",
+        "decimals_placeholder": "Decimals",
+        "symbol_placeholder": "Symbol"
       }
     },
     "privacy_and_security": {

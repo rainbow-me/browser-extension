@@ -8,7 +8,7 @@ import { useChainMetadata } from '~/core/resources/chains/chainMetadata';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { getDappHostname, isValidUrl } from '~/core/utils/connectedApps';
-import { Box, Button, Inline, Stack, Text } from '~/design-system';
+import { Box, Button, Inline, Inset, Stack, Text } from '~/design-system';
 import { Form } from '~/entries/popup/components/Form/Form';
 import { FormInput } from '~/entries/popup/components/Form/FormInput';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
@@ -37,7 +37,6 @@ export function SettingsCustomChain() {
   const draftKey = chain?.id ?? 'new';
   const savedDraft = customNetworkDrafts[draftKey];
   const [customRPC, setCustomRPC] = useState<{
-    active?: boolean;
     testnet?: boolean;
     rpcUrl?: string;
     chainId?: number;
@@ -50,7 +49,6 @@ export function SettingsCustomChain() {
       chainId: chain?.id,
       symbol: chain?.nativeCurrency.symbol,
       explorerUrl: chain?.blockExplorers?.default.url,
-      active: !chain, // True only if adding a new network
     },
   );
   const [validations, setValidations] = useState<{
@@ -93,7 +91,6 @@ export function SettingsCustomChain() {
         | 'name'
         | 'symbol'
         | 'explorerUrl'
-        | 'active'
         | 'testnet',
     ) => {
       if (type === 'number' && typeof value === 'string') {
@@ -245,7 +242,7 @@ export function SettingsCustomChain() {
         },
         testnet: customRPC.testnet,
       };
-      addCustomChain(chainId, chain, rpcUrl, customRPC.active ?? false);
+      addCustomChain(chainId, chain, rpcUrl, true); // active by default
       triggerToast({
         title: i18n.t('settings.networks.custom_rpc.network_added'),
         description: i18n.t(
@@ -364,25 +361,6 @@ export function SettingsCustomChain() {
                 size="12pt"
                 color="labelSecondary"
               >
-                {i18n.t('settings.networks.custom_rpc.active')}
-              </Text>
-              <Checkbox
-                borderColor="accent"
-                onClick={() =>
-                  onInputChange<boolean>(!customRPC.active, 'boolean', 'active')
-                }
-                selected={!!customRPC.active}
-              />
-            </Inline>
-          </Box>
-          <Box padding="10px">
-            <Inline alignHorizontal="justify" alignVertical="center">
-              <Text
-                align="center"
-                weight="semibold"
-                size="12pt"
-                color="labelSecondary"
-              >
                 {i18n.t('settings.networks.custom_rpc.testnet')}
               </Text>
               <Checkbox
@@ -399,7 +377,7 @@ export function SettingsCustomChain() {
               />
             </Inline>
           </Box>
-          <Inline alignHorizontal="right">
+          <Inset top="10px">
             <Button
               onClick={addCustomRpc}
               color="accent"
@@ -409,9 +387,9 @@ export function SettingsCustomChain() {
               width="full"
               testId={'add-custom-network-button'}
             >
-              {i18n.t('settings.networks.custom_rpc.add_network')}
+              {i18n.t('settings.networks.custom_rpc.add_rpc')}
             </Button>
-          </Inline>
+          </Inset>
         </Form>
       </Stack>
     </Box>

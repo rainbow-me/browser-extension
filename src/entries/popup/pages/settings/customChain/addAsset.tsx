@@ -4,10 +4,11 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router';
 import { Address } from 'viem';
 
+import { i18n } from '~/core/languages';
 import { useAssetMetadata } from '~/core/resources/assets/assetMetadata';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
-import { Box, Button, Inline, Stack } from '~/design-system';
+import { Box, Button, Inset, Stack } from '~/design-system';
 import { Form } from '~/entries/popup/components/Form/Form';
 import { FormInput } from '~/entries/popup/components/Form/FormInput';
 import { maskInput } from '~/entries/popup/components/InputMask/utils';
@@ -223,21 +224,25 @@ export function AddAsset() {
             onChange={(t) =>
               onInputChange<string>(t.target.value, 'string', 'address')
             }
-            placeholder="Address"
+            placeholder={i18n.t(
+              'settings.networks.watch_asset.address_placeholder',
+            )}
             value={asset.address}
             loading={assetMetadataIsFetching}
             onBlur={onAddressBlur}
-            borderColor={validations.address ? 'accent' : 'red'}
+            borderColor={validations.address ? 'transparent' : 'red'}
             tabIndex={0}
           />
           <FormInput
             onChange={(t) =>
               onInputChange<string>(t.target.value, 'string', 'name')
             }
-            placeholder="Name"
+            placeholder={i18n.t(
+              'settings.networks.watch_asset.name_placeholder',
+            )}
             value={asset.name || assetMetadata?.name}
             onBlur={onNameBlur}
-            borderColor={validations.name ? 'accent' : 'red'}
+            borderColor={validations.name ? 'transparent' : 'red'}
             tabIndex={0}
             testId={'token-name-field'}
           />
@@ -245,34 +250,39 @@ export function AddAsset() {
             onChange={(t) =>
               onInputChange<number>(t.target.value, 'number', 'decimals')
             }
-            placeholder="Decimals"
+            placeholder={i18n.t(
+              'settings.networks.watch_asset.decimals_placeholder',
+            )}
             value={asset.decimals || assetMetadata?.decimals}
             onBlur={onDecimalsBlur}
-            borderColor={validations.decimals ? 'accent' : 'red'}
+            borderColor={validations.decimals ? 'transparent' : 'red'}
             tabIndex={0}
           />
           <FormInput
             onChange={(t) =>
               onInputChange<string>(t.target.value, 'string', 'symbol')
             }
-            placeholder="Symbol"
+            placeholder={i18n.t(
+              'settings.networks.watch_asset.symbol_placeholder',
+            )}
             value={asset.symbol || assetMetadata?.symbol}
             onBlur={onSymbolBlur}
-            borderColor={validations.symbol ? 'accent' : 'red'}
+            borderColor={validations.symbol ? 'transparent' : 'red'}
             tabIndex={0}
           />
 
-          <Inline alignHorizontal="right">
+          <Inset top="10px">
             <Button
               onClick={addAsset}
               color="accent"
               height="36px"
               variant="raised"
               tabIndex={0}
+              width="full"
             >
-              Add
+              {i18n.t('settings.networks.watch_asset.add_token')}
             </Button>
-          </Inline>
+          </Inset>
         </Form>
       </Stack>
     </Box>

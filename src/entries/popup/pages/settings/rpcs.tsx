@@ -22,7 +22,6 @@ import {
   Inline,
   Row,
   Rows,
-  Separator,
   Symbol,
   Text,
   TextOverflow,
@@ -326,13 +325,8 @@ export function SettingsNetworksRPCs() {
                 </Box>
               ))}
             </Box>
-          </Menu>
-        ) : null}
-
-        {config.custom_rpc_enabled &&
-        (activeChain?.name || supportedChain?.name) ? (
-          <>
-            <Menu>
+            {config.custom_rpc_enabled &&
+            (activeChain?.name || supportedChain?.name) ? (
               <MenuItem
                 first
                 last
@@ -365,9 +359,8 @@ export function SettingsNetworksRPCs() {
                 }
                 testId={'custom-rpc-button'}
               />
-            </Menu>
-            <Separator color="separatorTertiary" strokeWeight="1px" />
-          </>
+            ) : null}
+          </Menu>
         ) : null}
 
         {config.custom_rpc_enabled && customNetworkAssetsForChain.length ? (
@@ -440,40 +433,6 @@ export function SettingsNetworksRPCs() {
           </Menu>
         ) : null}
 
-        {config.custom_rpc_enabled && (
-          <>
-            <Menu>
-              <MenuItem
-                testId={'custom-token-link'}
-                first
-                last
-                leftComponent={
-                  <Symbol
-                    color="blue"
-                    symbol="plus.circle.fill"
-                    weight="medium"
-                    size={18}
-                  />
-                }
-                onClick={() =>
-                  navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC__DETAILS, {
-                    state: {
-                      chainId,
-                    },
-                  })
-                }
-                titleComponent={
-                  <MenuItem.Title
-                    color="blue"
-                    text={i18n.t('settings.networks.custom_rpc.add_asset')}
-                  />
-                }
-              />
-            </Menu>
-            <Separator color="separatorTertiary" strokeWeight="1px" />
-          </>
-        )}
-
         {developerToolsEnabled && testnetChains().length ? (
           <>
             <Menu>
@@ -537,9 +496,41 @@ export function SettingsNetworksRPCs() {
                 ))}
               </Box>
             </Menu>
-            <Separator color="separatorTertiary" strokeWeight="1px" />
           </>
         ) : null}
+
+        {config.custom_rpc_enabled && (
+          <>
+            <Menu>
+              <MenuItem
+                testId={'custom-token-link'}
+                first
+                last
+                leftComponent={
+                  <Symbol
+                    color="blue"
+                    symbol="plus.circle.fill"
+                    weight="medium"
+                    size={18}
+                  />
+                }
+                onClick={() =>
+                  navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC__DETAILS, {
+                    state: {
+                      chainId,
+                    },
+                  })
+                }
+                titleComponent={
+                  <MenuItem.Title
+                    color="blue"
+                    text={i18n.t('settings.networks.custom_rpc.add_asset')}
+                  />
+                }
+              />
+            </Menu>
+          </>
+        )}
 
         {!supportedChains[chainId] ? (
           <Menu>

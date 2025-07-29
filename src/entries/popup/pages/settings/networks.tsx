@@ -111,37 +111,6 @@ export function SettingsNetworks() {
 
   return (
     <Box paddingHorizontal="20px">
-      {config.custom_rpc_enabled && (
-        <MenuContainer>
-          <Menu>
-            <MenuItem
-              testId={'custom-chain-link'}
-              first
-              last
-              leftComponent={
-                <Symbol
-                  symbol="plus.circle.fill"
-                  weight="medium"
-                  size={18}
-                  color="blue"
-                />
-              }
-              onClick={() =>
-                navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_NETWORKS)
-              }
-              titleComponent={
-                <MenuItem.Title
-                  color="blue"
-                  text={i18n.t(
-                    'settings.networks.custom_rpc.add_custom_network',
-                  )}
-                />
-              }
-            />
-          </Menu>
-        </MenuContainer>
-      )}
-
       {!seenPromos[promoTypes.network_settings] && (
         <Inset bottom="20px">
           <QuickPromo
@@ -282,6 +251,34 @@ export function SettingsNetworks() {
             </Text>
           </Box>
         </Menu>
+
+        {config.custom_rpc_enabled && (
+          <Menu>
+            <MenuItem
+              testId={'custom-chain-link'}
+              first
+              last
+              leftComponent={
+                <Symbol
+                  symbol="plus.circle.fill"
+                  weight="medium"
+                  size={18}
+                  color="blue"
+                />
+              }
+              onClick={() =>
+                navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_NETWORKS)
+              }
+              titleComponent={
+                <MenuItem.Title
+                  color="blue"
+                  text={i18n.t('settings.networks.custom_rpc.add_network')}
+                />
+              }
+            />
+          </Menu>
+        )}
+
         <Menu>
           <MenuItem
             leftComponent={
