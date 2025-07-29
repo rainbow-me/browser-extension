@@ -19,7 +19,8 @@ on:
   # Re-run on CI completion
   workflow_run:
     workflows: ["CI"]
-    types: [completed]
+    types:
+      - completed
 jobs:
   claude-review:    
     runs-on: ubuntu-latest
