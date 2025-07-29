@@ -433,39 +433,6 @@ export function SettingsNetworksRPCs() {
           </Menu>
         ) : null}
 
-        {config.custom_rpc_enabled && (
-          <>
-            <Menu>
-              <MenuItem
-                testId={'custom-token-link'}
-                first
-                last
-                leftComponent={
-                  <Symbol
-                    color="blue"
-                    symbol="plus.circle.fill"
-                    weight="medium"
-                    size={18}
-                  />
-                }
-                onClick={() =>
-                  navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC__DETAILS, {
-                    state: {
-                      chainId,
-                    },
-                  })
-                }
-                titleComponent={
-                  <MenuItem.Title
-                    color="blue"
-                    text={i18n.t('settings.networks.custom_rpc.add_asset')}
-                  />
-                }
-              />
-            </Menu>
-          </>
-        )}
-
         {developerToolsEnabled && testnetChains().length ? (
           <>
             <Menu>
@@ -531,6 +498,39 @@ export function SettingsNetworksRPCs() {
             </Menu>
           </>
         ) : null}
+
+        {config.custom_rpc_enabled && (
+          <>
+            <Menu>
+              <MenuItem
+                testId={'custom-token-link'}
+                first
+                last
+                leftComponent={
+                  <Symbol
+                    color="blue"
+                    symbol="plus.circle.fill"
+                    weight="medium"
+                    size={18}
+                  />
+                }
+                onClick={() =>
+                  navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC__DETAILS, {
+                    state: {
+                      chainId,
+                    },
+                  })
+                }
+                titleComponent={
+                  <MenuItem.Title
+                    color="blue"
+                    text={i18n.t('settings.networks.custom_rpc.add_asset')}
+                  />
+                }
+              />
+            </Menu>
+          </>
+        )}
 
         {!supportedChains[chainId] ? (
           <Menu>
