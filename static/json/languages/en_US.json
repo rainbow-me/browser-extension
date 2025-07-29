@@ -118,7 +118,7 @@
         "add_network": "Add Network",
         "add_rpc": "Add Custom RPC",
         "add_network_rpc": "Add %{rpcName} RPC",
-        "add_asset": "Add Custom Token",
+        "add_asset": "Add Token",
         "network_added": "Network Added",
         "network_added_correctly": "%{networkName}",
         "remove_token": "Remove Token",
@@ -132,7 +132,7 @@
       },
       "rpc_endpoints": "RPCs",
       "watch_asset": {
-        "title": "Add Custom Token"
+        "title": "Add Token"
       }
     },
     "privacy_and_security": {
