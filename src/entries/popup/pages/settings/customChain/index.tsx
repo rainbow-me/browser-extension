@@ -387,7 +387,7 @@ export function SettingsCustomChain() {
               width="full"
               testId={'add-custom-network-button'}
             >
-              {i18n.t('settings.networks.custom_rpc.add_network')}
+              {i18n.t('settings.networks.custom_rpc.add_rpc')}
             </Button>
           </Inset>
         </Form>
