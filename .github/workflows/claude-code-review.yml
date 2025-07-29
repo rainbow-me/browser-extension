@@ -1,31 +1,23 @@
 name: Claude Code Review
 
 on:
-  # Run on PRs opened, updated
-  pull_request:
-    types: [opened, synchronize]
-    paths:
-      # Core code
-      - "src/**/*.ts"
-      - "src/**/*.tsx"
-      - "src/**/*.js"
-      - "src/**/*.jsx"
-      # Tests
-      - "src/**/*.test.ts"
-      - "e2e/**/*.test.ts"
-      # Patches
-      - "patches/**/*.patch"
-      # Changeset additions
-      - ".changeset/*.md"
-      # Workflows
-      - ".github/**/*.yml"
-  # Re-run on CI completion
+  # fire only after the “CI” workflow finishes (any conclusion)
   workflow_run:
     workflows: ["CI"]
-    types:
-      - completed
+    types: [completed]
+    # ignore runs whose *head* branch is master ➜ skips pushes straight to master
+    branches-ignore: [master]
+
 jobs:
-  claude-code-review:    
+  claude-code-review:
+    # Run only when the triggering CI run came from a pull‑request
+    # By internal contributors (OWNER, MEMBER, or COLLABORATOR)
+    if: |
+      github.event.workflow_run.event == 'pull_request' &&
+      (github.event.pull_request.author_association == 'OWNER' ||
+      github.event.pull_request.author_association == 'MEMBER' ||
+      github.event.pull_request.author_association == 'COLLABORATOR')
+    
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -34,18 +26,11 @@ jobs:
       actions: read
       id-token: write
 
-    # Run only for internal contributors (OWNER, MEMBER, or COLLABORATOR)
-    # Skip review for draft PRs and PRs with [WIP] in the title
-    if: |
-      (github.event.pull_request.author_association == 'OWNER' ||
-      github.event.pull_request.author_association == 'MEMBER' ||
-      github.event.pull_request.author_association == 'COLLABORATOR')
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Run Claude Code Review
         id: claude-code-review
