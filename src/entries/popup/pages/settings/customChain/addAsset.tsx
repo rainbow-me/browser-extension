@@ -230,7 +230,7 @@ export function AddAsset() {
             value={asset.address}
             loading={assetMetadataIsFetching}
             onBlur={onAddressBlur}
-            borderColor={validations.address ? 'accent' : 'red'}
+            borderColor={validations.address ? 'transparent' : 'red'}
             tabIndex={0}
           />
           <FormInput
@@ -242,7 +242,7 @@ export function AddAsset() {
             )}
             value={asset.name || assetMetadata?.name}
             onBlur={onNameBlur}
-            borderColor={validations.name ? 'accent' : 'red'}
+            borderColor={validations.name ? 'transparent' : 'red'}
             tabIndex={0}
             testId={'token-name-field'}
           />
@@ -255,7 +255,7 @@ export function AddAsset() {
             )}
             value={asset.decimals || assetMetadata?.decimals}
             onBlur={onDecimalsBlur}
-            borderColor={validations.decimals ? 'accent' : 'red'}
+            borderColor={validations.decimals ? 'transparent' : 'red'}
             tabIndex={0}
           />
           <FormInput
@@ -267,7 +267,7 @@ export function AddAsset() {
             )}
             value={asset.symbol || assetMetadata?.symbol}
             onBlur={onSymbolBlur}
-            borderColor={validations.symbol ? 'accent' : 'red'}
+            borderColor={validations.symbol ? 'transparent' : 'red'}
             tabIndex={0}
           />
 
