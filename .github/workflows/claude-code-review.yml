@@ -76,9 +76,6 @@ jobs:
 
           # Use sticky comments to make Claude reuse the same comment on subsequent pushes to the same PR
           use_sticky_comment: true
-          
-          # Allow linting and typechecking
-          allowed_tools: "Bash(yarn run lint),Bash(yarn run typecheck)"
 
-          # Don't waste cycles on e2e tests covered by CI
-          disallowed_tools: "Bash(yarn run test*),Bash(yarn run vitest*),Bash(yarn run e2e*)"
+          # Don't waste cycles on tests covered by CI
+          disallowed_tools: "Bash(yarn run test*),Bash(yarn run vitest*),Bash(yarn run e2e*),Bash(yarn run lint),Bash(yarn run typecheck)"
