@@ -44,7 +44,7 @@ export class ReadOnlyKeychain implements IKeychain {
   async deserialize(opts: SerializedReadOnlyKeychain) {
     if (!isAddress(opts.address)) {
       logger.info('Invalid address:', { address: opts.address });
-      throw new Error('Invalid address');
+      throw new Error(`Invalid address: ${opts.address}`);
     }
     this.address = opts.address;
   }
