@@ -1,53 +1,44 @@
 name: Claude Code Review
 
 on:
-  # Run on PRs opened, updated
   pull_request:
     types: [opened, synchronize]
-  
-  # fire after the “CI” workflow finishes (any conclusion)
-  workflow_run:
-    workflows: ["CI"]
-    types: [completed]
-    # ignore runs whose *head* branch is master ➜ skips pushes straight to master
-    branches-ignore: [master]
+    # Optional: Only run on specific file changes
+    # paths:
+    #   - "src/**/*.ts"
+    #   - "src/**/*.tsx"
+    #   - "src/**/*.js"
+    #   - "src/**/*.jsx"
 
 jobs:
-  claude-code-review:
-    # Run only when the triggering CI run came from a pull‑request
-    # By internal contributors (OWNER, MEMBER, or COLLABORATOR)
-    if: |
-      (github.event_name == 'pull_request' && 
-       (github.event.pull_request.author_association == 'OWNER' ||
-        github.event.pull_request.author_association == 'MEMBER' ||
-        github.event.pull_request.author_association == 'COLLABORATOR')) ||
-      (github.event_name == 'workflow_run' && 
-       github.event.workflow_run.event == 'pull_request')
+  claude-review:
+    # Optional: Filter by PR author
+    # if: |
+    #   github.event.pull_request.user.login == 'external-contributor' ||
+    #   github.event.pull_request.user.login == 'new-developer' ||
+    #   github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR'
     
     runs-on: ubuntu-latest
     permissions:
       contents: read
       pull-requests: read
       issues: read
-      actions: read
       id-token: write
-
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.workflow_run.head_sha || github.event.pull_request.head.sha }}
+          fetch-depth: 1
 
       - name: Run Claude Code Review
-        id: claude-code-review
+        id: claude-review
         uses: anthropics/claude-code-action@beta
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          additional_permissions: |
-            actions: read
 
           # Optional: Specify model (defaults to Claude Sonnet 4, uncomment for Claude Opus 4)
-          model: "claude-opus-4-20250514"
+          # model: "claude-opus-4-20250514"
           
           # Direct prompt for automated review (no @claude mention needed)
           direct_prompt: |
@@ -55,28 +46,33 @@ jobs:
             - Code quality and best practices
             - Potential bugs or issues
             - Performance considerations
-            - Proper changeset additions and documentation for meaningful changes
-            - Test coverage and CI failures
-            For each file type, focus on:
-            - For TypeScript files: Type safety and proper interface usage
-            - For API endpoints: Security, input validation, and error handling
-            - For React components: Performance, accessibility, and best practices
-            - For tests: Coverage, edge cases, and test quality
-            - For unit tests and e2e tests: Coverage, edge cases, test quality
-            - For failed tests in CI: Provide a detailed explanation of the failure(s) and how to fix
-            - For .changeset/ additions: Changeset style and readability matching CHANGELOG.md
-            - For .github/workflows: Ensure the workflow is valid
-            Since this PR touches critical source code paths, please be thorough
-            in your review and provide inline comments where appropriate.
+            - Security concerns
+            - Test coverage
+            
             Be constructive and helpful in your feedback.
-            Don't generate a Final Assessment, strengths, or scores. Focus on issues.
-            Don't reitterate or describe the changes made unless they are problematic.
-            Reduce the number of sections and formatting.
-            Be concise and to the point, using as few words as possible.
-            Don't evaluate the CI status until the CI workflow has completed.
 
-          # Use sticky comments to make Claude reuse the same comment on subsequent pushes to the same PR
-          use_sticky_comment: true
+          # Optional: Use sticky comments to make Claude reuse the same comment on subsequent pushes to the same PR
+          # use_sticky_comment: true
+          
+          # Optional: Customize review based on file types
+          # direct_prompt: |
+          #   Review this PR focusing on:
+          #   - For TypeScript files: Type safety and proper interface usage
+          #   - For API endpoints: Security, input validation, and error handling
+          #   - For React components: Performance, accessibility, and best practices
+          #   - For tests: Coverage, edge cases, and test quality
+          
+          # Optional: Different prompts for different authors
+          # direct_prompt: |
+          #   ${{ github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR' && 
+          #   'Welcome! Please review this PR from a first-time contributor. Be encouraging and provide detailed explanations for any suggestions.' ||
+          #   'Please provide a thorough code review focusing on our coding standards and best practices.' }}
+          
+          # Optional: Add specific tools for running tests or linting
+          # allowed_tools: "Bash(npm run test),Bash(npm run lint),Bash(npm run typecheck)"
+          
+          # Optional: Skip review for certain conditions
+          # if: |
+          #   !contains(github.event.pull_request.title, '[skip-review]') &&
+          #   !contains(github.event.pull_request.title, '[WIP]')
 
-          # Don't waste cycles on tests covered by CI
-          disallowed_tools: "Bash(yarn test*),Bash(yarn vitest*),Bash(yarn e2e*),Bash(yarn lint),Bash(yarn typecheck)"
