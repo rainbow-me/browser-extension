@@ -232,10 +232,6 @@ it('should be able to add a custom ETH RPC and switch to it', async () => {
   await findElementByTestIdAndClick({ driver, id: 'custom-rpc-button' });
   await checkExtensionURL(driver, 'custom-chain');
 
-  // fill out custom network form
-  await findElementByTestIdAndClick({ driver, id: 'network-name-field' });
-  await typeOnTextInput({ text: 'Mainnet (alt RPC)', driver });
-
   // sometimes certain RPCs can fail to validate, adding a fallback
   try {
     // RPC URL
