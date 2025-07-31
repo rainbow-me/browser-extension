@@ -320,7 +320,12 @@ export const useNetworkStore = createQueryStore<
 
     addCustomChain: (chainId, chain, rpcUrl, active) => {
       set((state) => {
-        const { chainOrder, enabledChainIds, userPreferences } = state;
+        const {
+          chainOrder,
+          enabledChainIds,
+          userPreferences,
+          getBackendSupportedChain,
+        } = state;
 
         const order = [...chainOrder].indexOf(chainId);
         const existing = userPreferences[chainId];
@@ -348,6 +353,8 @@ export const useNetworkStore = createQueryStore<
             userPreferences: newUserPrferences,
           };
         } else {
+          const backendChain = getBackendSupportedChain(chainId);
+
           return {
             ...state,
             chainOrder: order === -1 ? [...chainOrder, chainId] : chainOrder,
@@ -356,8 +363,10 @@ export const useNetworkStore = createQueryStore<
               ...userPreferences,
               [chainId]: {
                 ...chain,
-                type: 'custom',
-                activeRpcUrl: rpcUrl,
+                type: backendChain ? 'supported' : 'custom',
+                activeRpcUrl: active
+                  ? rpcUrl
+                  : backendChain?.activeRpcUrl ?? rpcUrl,
                 rpcs: {
                   [rpcUrl]: chain,
                 },
@@ -581,6 +590,7 @@ export const useNetworkStore = createQueryStore<
         return (includeTestnets = false) => {
           return Object.values(mergedChainData).reduce((acc, chain) => {
             if (
+              !chain ||
               (!includeTestnets && chain?.testnet) ||
               chain?.type !== 'supported'
             )
@@ -600,6 +610,7 @@ export const useNetworkStore = createQueryStore<
           return Object.values(mergedChainData).reduce<number[]>(
             (acc, chain) => {
               if (
+                !chain ||
                 (!includeTestnets && chain?.testnet) ||
                 chain?.type !== 'supported'
               )
@@ -616,7 +627,7 @@ export const useNetworkStore = createQueryStore<
       ({ mergedChainData }) => {
         return (chainId) => {
           const chain = mergedChainData[chainId];
-          if (chain?.type !== 'supported') return undefined;
+          if (!chain || chain?.type !== 'supported') return undefined;
           return chain;
         };
       },
@@ -815,7 +826,7 @@ export const useNetworkStore = createQueryStore<
         return Object.values(mergedChainData)
           .filter(Boolean)
           .reduce((acc, chain) => {
-            if (!includeTestnets && chain.testnet) return acc;
+            if (!chain || (!includeTestnets && chain.testnet)) return acc;
             return {
               ...acc,
               [chain.id]: chain as TransformedChain,
@@ -835,7 +846,9 @@ export const useNetworkStore = createQueryStore<
         return (includeTestnets = false) => {
           return Object.values(mergedChainData)
             .filter(Boolean)
-            .filter((chain) => includeTestnets || !chain.testnet)
+            .filter((chain): chain is TransformedChain =>
+              Boolean(chain && (includeTestnets || !chain.testnet)),
+            )
             .sort((a, b) => {
               if (a?.order === undefined && b?.order === undefined) return 0;
               if (a?.order === undefined) return 1;

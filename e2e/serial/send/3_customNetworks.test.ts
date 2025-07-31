@@ -10,7 +10,6 @@ import {
   executePerformShortcut,
   findElementByTestId,
   findElementByTestIdAndClick,
-  findElementByTextAndClick,
   getExtensionIdByName,
   getRootUrl,
   importWalletFlow,
@@ -56,34 +55,77 @@ it('should be able to naviagate to network settings', async () => {
   await checkExtensionURL(driver, 'networks');
 });
 
-it('should be able to add an auto-complete network', async () => {
+it('should be able to search and filter networks', async () => {
   await findElementByTestIdAndClick({ driver, id: 'custom-chain-link' });
-  await checkExtensionURL(driver, 'custom-chain');
-  await findElementByTestIdAndClick({ driver, id: 'network-name-field' });
-  await findElementByTextAndClick(driver, 'Arbitrum Nova');
-  const symbol = await findElementByTestId({
-    id: 'custom-network-symbol',
+  await checkExtensionURL(driver, 'custom-networks');
+
+  // Test search functionality
+  await typeOnTextInput({
+    text: 'Arbitrum',
+    driver,
+    id: 'search-networks-input',
+  });
+  await delayTime('medium');
+
+  // Should show Arbitrum networks
+  const arbitrumNova = await findElementByTestId({
+    id: 'custom-network-42170',
     driver,
   });
-  const symbolValue = await symbol.getAttribute('value');
-  expect(symbolValue).toContain('ETH');
+  expect(arbitrumNova).toBeTruthy();
 
-  // needs a couple seconds to validate the custom RPC
-  await delayTime('very-long');
+  // Test no results scenario
+  const searchInput = await findElementByTestId({
+    id: 'search-networks-input',
+    driver,
+  });
+  await searchInput.clear();
+  await typeOnTextInput({
+    text: 'nonexistentnetwork',
+    driver,
+    id: 'search-networks-input',
+  });
+  await delayTime('medium');
 
+  // Should show no results message and manual form link
+  const noResults = await findElementByTestId({
+    id: 'no-networks-found',
+    driver,
+  });
+  expect(noResults).toBeTruthy();
+
+  const manualLink = await findElementByTestId({
+    id: 'add-custom-network-manual',
+    driver,
+  });
+  expect(manualLink).toBeTruthy();
+
+  // Clear search and go back to full list
+  await searchInput.clear();
+  await delayTime('medium');
+});
+
+it('should be able to navigate from list to manual form', async () => {
+  // Click on the manual form link
+  await checkExtensionURL(driver, 'custom-networks');
   await findElementByTestIdAndClick({
     driver,
-    id: 'add-custom-network-button',
+    id: 'add-custom-network-manual',
   });
-  const novaChain = await findElementByTestId({
-    id: 'network-row-42170',
-    driver,
-  });
-  expect(novaChain).toBeTruthy();
+
+  // Should navigate to the manual form
+  await checkExtensionURL(driver, 'custom-chain');
+
+  // Navigate back to continue with other tests
+  await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
+  await checkExtensionURL(driver, 'custom-networks');
 });
 
 it('should be able to add a custom network', async () => {
-  await findElementByTestIdAndClick({ driver, id: 'custom-chain-link' });
+  await findElementByTestIdAndClick({
+    driver,
+    id: 'add-custom-network-manual',
+  });
   await checkExtensionURL(driver, 'custom-chain');
   await findElementByTestIdAndClick({ driver, id: 'network-name-field' });
 
@@ -104,15 +146,24 @@ it('should be able to add a custom network', async () => {
     id: 'add-custom-network-button',
   });
 
+  await delayTime('very-long');
+
   const cronos = await findElementByTestId({
     id: 'network-row-25',
     driver,
   });
   expect(cronos).toBeTruthy();
+
+  await delayTime('long'); // wait for confirm toast to disappear
 });
 
 it('should be able to add a custom testnet network', async () => {
   await findElementByTestIdAndClick({ driver, id: 'custom-chain-link' });
+  await checkExtensionURL(driver, 'custom-networks');
+  await findElementByTestIdAndClick({
+    driver,
+    id: 'add-custom-network-manual',
+  });
   await checkExtensionURL(driver, 'custom-chain');
   await findElementByTestIdAndClick({ driver, id: 'network-name-field' });
 
@@ -135,11 +186,43 @@ it('should be able to add a custom testnet network', async () => {
     id: 'add-custom-network-button',
   });
 
+  await delayTime('very-long');
+
   const cronosTestnet = await findElementByTestId({
     id: 'network-row-338',
     driver,
   });
   expect(cronosTestnet).toBeTruthy();
+
+  await delayTime('long'); // wait for confirm toast to disappear
+});
+
+it('should be able to add a known custom network from list', async () => {
+  await findElementByTestIdAndClick({ driver, id: 'custom-chain-link' });
+  await checkExtensionURL(driver, 'custom-networks');
+
+  // Search for Arbitrum Nova
+  await typeOnTextInput({
+    text: 'Arbitrum Nova',
+    driver,
+    id: 'search-networks-input',
+  });
+  await delayTime('medium');
+
+  // Click on Arbitrum Nova network directly from the list
+  await findElementByTestIdAndClick({ driver, id: 'custom-network-42170' });
+
+  // Should navigate back to networks page after adding
+  await checkExtensionURL(driver, 'networks');
+
+  // Verify the network was added
+  const novaChain = await findElementByTestId({
+    id: 'network-row-42170',
+    driver,
+  });
+  expect(novaChain).toBeTruthy();
+
+  await delayTime('very-long'); // wait for confirm toast to disappear
 });
 
 it('should be able to add a custom ETH RPC and switch to it', async () => {
@@ -147,17 +230,14 @@ it('should be able to add a custom ETH RPC and switch to it', async () => {
   await checkExtensionURL(driver, 'rpcs');
 
   await findElementByTestIdAndClick({ driver, id: 'custom-rpc-button' });
-
-  // fill out custom network form
-  await findElementByTestIdAndClick({ driver, id: 'network-name-field' });
-  await typeOnTextInput({ text: 'Mainnet (alt RPC)', driver });
+  await checkExtensionURL(driver, 'custom-chain');
 
   // sometimes certain RPCs can fail to validate, adding a fallback
   try {
     // RPC URL
     await findElementByTestIdAndClick({ driver, id: 'custom-network-rpc-url' });
     await typeOnTextInput({
-      text: 'https://rpc.ankr.com/eth',
+      text: 'https://eth.llamarpc.com',
       driver,
     });
 
@@ -186,7 +266,7 @@ it('should be able to add a custom ETH RPC and switch to it', async () => {
       timesToPress: 30,
     });
     await typeOnTextInput({
-      text: 'https://eth.llamarpc.com',
+      text: 'https://eth.drpc.org',
       driver,
     });
 

@@ -1,22 +1,21 @@
 import { isEqual } from 'lodash';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 import { Chain } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { useChainMetadata } from '~/core/resources/chains/chainMetadata';
-import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { getDappHostname, isValidUrl } from '~/core/utils/connectedApps';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
-import { Autocomplete } from '~/entries/popup/components/Autocomplete';
 import { Form } from '~/entries/popup/components/Form/Form';
 import { FormInput } from '~/entries/popup/components/Form/FormInput';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { useDebounce } from '~/entries/popup/hooks/useDebounce';
 import usePrevious from '~/entries/popup/hooks/usePrevious';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
+import { ROUTES } from '~/entries/popup/urls';
 
 import { Checkbox } from '../../../components/Checkbox/Checkbox';
 import { maskInput } from '../../../components/InputMask/utils';
@@ -33,22 +32,11 @@ export function SettingsCustomChain() {
 
   const addCustomChain = useNetworkStore((state) => state.addCustomChain);
 
-  const { developerToolsEnabled } = useDeveloperToolsEnabledStore();
-  const knownNetworksAutocomplete = useMemo(
-    () => ({
-      [i18n.t('settings.networks.custom_rpc.networks')]: customNetworks.filter(
-        (network) =>
-          developerToolsEnabled ? true : !network.testnet.isTestnet,
-      ),
-    }),
-    [developerToolsEnabled, customNetworks],
-  );
-
   const { customNetworkDrafts, saveCustomNetworkDraft } =
     usePopupInstanceStore();
   const draftKey = chain?.id ?? 'new';
+  const isNewNetwork = draftKey === 'new';
   const savedDraft = customNetworkDrafts[draftKey];
-  const [open, setOpen] = useState(false);
   const [customRPC, setCustomRPC] = useState<{
     active?: boolean;
     testnet?: boolean;
@@ -57,15 +45,14 @@ export function SettingsCustomChain() {
     name?: string;
     symbol?: string;
     explorerUrl?: string;
-  }>(
-    savedDraft || {
-      testnet: chain?.testnet,
-      chainId: chain?.id,
-      symbol: chain?.nativeCurrency.symbol,
-      explorerUrl: chain?.blockExplorers?.default.url,
-      active: !chain, // True only if adding a new network
-    },
-  );
+  }>({
+    name: savedDraft?.name ?? chain?.name,
+    testnet: savedDraft?.testnet ?? chain?.testnet,
+    chainId: savedDraft?.chainId ?? chain?.id,
+    symbol: savedDraft?.symbol ?? chain?.nativeCurrency.symbol,
+    explorerUrl: savedDraft?.explorerUrl ?? chain?.blockExplorers?.default.url,
+    active: !chain, // True only if adding a new network
+  });
   const [validations, setValidations] = useState<{
     rpcUrl: boolean;
     chainId: boolean;
@@ -79,7 +66,6 @@ export function SettingsCustomChain() {
     symbol: true,
     explorerUrl: true,
   });
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const debouncedRpcUrl = useDebounce(customRPC.rpcUrl, 1000);
   const {
@@ -155,13 +141,12 @@ export function SettingsCustomChain() {
   }, [chainMetadata?.chainId, customRPC.chainId]);
 
   const validateName = useCallback(() => {
-    return !!inputRef.current?.value;
-  }, []);
+    return !!customRPC.name;
+  }, [customRPC.name]);
 
   const onNameBlur = useCallback(() => {
     setValidations((prev) => ({ ...prev, name: validateName() }));
-    open && setOpen(false);
-  }, [open, validateName]);
+  }, [validateName]);
 
   const validateSymbol = useCallback(
     () => !!customRPC.symbol,
@@ -269,15 +254,22 @@ export function SettingsCustomChain() {
         ),
       });
       setCustomRPC({});
-      navigate(-1);
+      if (isNewNetwork) {
+        navigate(ROUTES.SETTINGS__NETWORKS, {
+          state: { backTo: ROUTES.SETTINGS },
+        });
+      } else {
+        navigate(-1);
+      }
     }
   }, [
-    chain,
-    chainMetadata?.chainId,
     customRPC,
-    navigate,
+    chainMetadata?.chainId,
+    chain,
     validateAddCustomRpc,
     addCustomChain,
+    isNewNetwork,
+    navigate,
   ]);
 
   useEffect(() => {
@@ -292,65 +284,27 @@ export function SettingsCustomChain() {
     validateCustomRpcMetadata,
   ]);
 
-  const handleNetworkSelect = useCallback(
-    (networkName: string) => {
-      const network = customNetworks.find(
-        (network) => network.name === networkName,
-      );
-      if (network) {
-        setCustomRPC((prev) => ({
-          ...prev,
-          testnet: network.testnet.isTestnet,
-          rpcUrl: network.defaultRPCURL,
-          explorerUrl: network.defaultExplorerURL,
-          symbol: network.nativeAsset.symbol,
-          name: networkName,
-          active: true,
-          chainId: undefined,
-        }));
-
-        // All these are previously validated by us
-        // when adding the network to the list
-        setValidations({
-          rpcUrl: true,
-          chainId: true,
-          name: true,
-          symbol: true,
-          explorerUrl: true,
-        });
-      }
-      open && setOpen(false);
-    },
-    [open, customNetworks],
-  );
-
   return (
     <Box paddingHorizontal="20px">
       <Stack space="20px">
         <Form>
-          <Autocomplete
-            autoFocus
-            open={!chain ? open : false}
-            onFocus={() => setOpen(true)}
-            onBlur={() => {
-              customRPC.name && onNameBlur();
-              setOpen(false);
-            }}
-            data={knownNetworksAutocomplete}
-            value={customRPC.name || ''}
-            borderColor={validations.name ? 'transparent' : 'red'}
-            placeholder={i18n.t('settings.networks.custom_rpc.network_name')}
-            onChange={(value) => {
-              onInputChange<string>(value, 'string', 'name');
-              if (!validations.name) {
-                setValidations((prev) => ({ ...prev, name: true }));
-              }
-            }}
-            onSelect={handleNetworkSelect}
-            ref={inputRef}
-            tabIndex={1}
-            testId={'network-name-field'}
-          />
+          {isNewNetwork && (
+            <FormInput
+              onChange={(t) => {
+                onInputChange<string>(t.target.value, 'string', 'name');
+                if (!validations.name) {
+                  setValidations((prev) => ({ ...prev, name: true }));
+                }
+              }}
+              placeholder={i18n.t('settings.networks.custom_rpc.network_name')}
+              value={customRPC.name || ''}
+              onBlur={() => customRPC.name && onNameBlur()}
+              borderColor={validations.name ? 'transparent' : 'red'}
+              spellCheck={false}
+              tabIndex={1}
+              testId={'network-name-field'}
+            />
+          )}
           <FormInput
             onChange={(t) => {
               onInputChange<string>(t.target.value, 'string', 'rpcUrl');
@@ -371,39 +325,49 @@ export function SettingsCustomChain() {
             tabIndex={2}
             testId={'custom-network-rpc-url'}
           />
-          <FormInput
-            onChange={(t) => {
-              onInputChange<string>(t.target.value, 'string', 'symbol');
-              if (!validations.symbol) {
-                setValidations((prev) => ({ ...prev, symbol: true }));
-              }
-            }}
-            placeholder={i18n.t('settings.networks.custom_rpc.symbol')}
-            value={customRPC.symbol}
-            onBlur={() => customRPC.symbol && onSymbolBlur()}
-            borderColor={
-              validations.symbol || !customRPC.symbol ? 'transparent' : 'red'
-            }
-            spellCheck={false}
-            tabIndex={3}
-            testId={'custom-network-symbol'}
-          />
-          <FormInput
-            onChange={(t) => {
-              onInputChange<string>(t.target.value, 'string', 'explorerUrl');
-              if (!validations.explorerUrl) {
-                setValidations((prev) => ({ ...prev, explorerUrl: true }));
-              }
-            }}
-            placeholder={i18n.t(
-              'settings.networks.custom_rpc.block_explorer_url',
-            )}
-            value={customRPC.explorerUrl}
-            onBlur={() => customRPC.explorerUrl && onExplorerUrlBlur()}
-            borderColor={validations.explorerUrl ? 'transparent' : 'red'}
-            spellCheck={false}
-            tabIndex={4}
-          />
+          {isNewNetwork && (
+            <>
+              <FormInput
+                onChange={(t) => {
+                  onInputChange<string>(t.target.value, 'string', 'symbol');
+                  if (!validations.symbol) {
+                    setValidations((prev) => ({ ...prev, symbol: true }));
+                  }
+                }}
+                placeholder={i18n.t('settings.networks.custom_rpc.symbol')}
+                value={customRPC.symbol}
+                onBlur={() => customRPC.symbol && onSymbolBlur()}
+                borderColor={
+                  validations.symbol || !customRPC.symbol
+                    ? 'transparent'
+                    : 'red'
+                }
+                spellCheck={false}
+                tabIndex={3}
+                testId={'custom-network-symbol'}
+              />
+              <FormInput
+                onChange={(t) => {
+                  onInputChange<string>(
+                    t.target.value,
+                    'string',
+                    'explorerUrl',
+                  );
+                  if (!validations.explorerUrl) {
+                    setValidations((prev) => ({ ...prev, explorerUrl: true }));
+                  }
+                }}
+                placeholder={i18n.t(
+                  'settings.networks.custom_rpc.block_explorer_url',
+                )}
+                value={customRPC.explorerUrl}
+                onBlur={() => customRPC.explorerUrl && onExplorerUrlBlur()}
+                borderColor={validations.explorerUrl ? 'transparent' : 'red'}
+                spellCheck={false}
+                tabIndex={4}
+              />
+            </>
+          )}
           <Box padding="10px">
             <Inline alignHorizontal="justify" alignVertical="center">
               <Text
@@ -423,30 +387,32 @@ export function SettingsCustomChain() {
               />
             </Inline>
           </Box>
-          <Box padding="10px">
-            <Inline alignHorizontal="justify" alignVertical="center">
-              <Text
-                align="center"
-                weight="semibold"
-                size="12pt"
-                color="labelSecondary"
-              >
-                {i18n.t('settings.networks.custom_rpc.testnet')}
-              </Text>
-              <Checkbox
-                testId={'testnet-toggle'}
-                borderColor="accent"
-                onClick={() =>
-                  onInputChange<boolean>(
-                    !customRPC.testnet,
-                    'boolean',
-                    'testnet',
-                  )
-                }
-                selected={!!customRPC.testnet}
-              />
-            </Inline>
-          </Box>
+          {isNewNetwork && (
+            <Box padding="10px">
+              <Inline alignHorizontal="justify" alignVertical="center">
+                <Text
+                  align="center"
+                  weight="semibold"
+                  size="12pt"
+                  color="labelSecondary"
+                >
+                  {i18n.t('settings.networks.custom_rpc.testnet')}
+                </Text>
+                <Checkbox
+                  testId={'testnet-toggle'}
+                  borderColor="accent"
+                  onClick={() =>
+                    onInputChange<boolean>(
+                      !customRPC.testnet,
+                      'boolean',
+                      'testnet',
+                    )
+                  }
+                  selected={!!customRPC.testnet}
+                />
+              </Inline>
+            </Box>
+          )}
           <Inline alignHorizontal="right">
             <Button
               onClick={addCustomRpc}
@@ -457,7 +423,11 @@ export function SettingsCustomChain() {
               width="full"
               testId={'add-custom-network-button'}
             >
-              {i18n.t('settings.networks.custom_rpc.add_network')}
+              {isNewNetwork
+                ? i18n.t('settings.networks.custom_rpc.add_network')
+                : i18n.t('settings.networks.custom_rpc.add_network_rpc', {
+                    rpcName: customRPC.name || chain?.name,
+                  })}
             </Button>
           </Inline>
         </Form>

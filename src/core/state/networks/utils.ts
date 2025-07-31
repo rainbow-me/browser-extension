@@ -494,7 +494,11 @@ export const mergeChainData = (
     // case where we have user preferences on top of backend networks
     mergedChainData[chainId] = {
       ...chain,
-      ...userPrefs,
+      rpcs: {
+        ...userPrefs.rpcs,
+        [chain.rpcUrls.default.http[0]]: chain,
+      },
+      activeRpcUrl: userPrefs.activeRpcUrl,
       type: 'supported',
       order: order === -1 ? undefined : order,
       enabled: enabledChainIds.has(chainId),
