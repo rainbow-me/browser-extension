@@ -853,6 +853,11 @@ export const useNetworkStore = createQueryStore<
       chainOrder: state.chainOrder,
       enabledChainIds: state.enabledChainIds,
     }),
+    // TODO: investigate why this was introduced
+    // This creates instances where custom network additions
+    // or changes to network settings/RPCs are not persisted
+    // (i.e. prompt closes before threshold is reached)
+    // When removing, the extension crashes in an infinite loop
     persistThrottleMs: 1_000,
     storageKey: 'networks',
     useRainbowNamingSchema: false,
