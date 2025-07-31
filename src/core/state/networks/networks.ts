@@ -201,7 +201,7 @@ function createParameterizedSelector<T, Args extends unknown[]>(
     userPreferences: NetworkUserPreferences;
     chainOrder: number[];
     enabledChainIds: Set<number>;
-    mergedChainData: Record<number, TransformedChain>;
+    mergedChainData: Record<number, TransformedChain | undefined>;
   }) => (...args: Args) => T,
 ): (...args: Args) => T {
   const uninitialized = Symbol();
@@ -304,7 +304,7 @@ export const useNetworkStore = createQueryStore<
         };
       });
     },
-    staleTime: 10 * 60 * 1000,
+    staleTime: 10 * 60 * 1000, // 10 minutes
   },
 
   (set, get) => ({
@@ -467,7 +467,7 @@ export const useNetworkStore = createQueryStore<
             Record<number, TransformedChain>
           >((acc, chain) => {
             if (
-              chain.type === 'custom' &&
+              chain?.type === 'custom' &&
               !networks.backendNetworks.networks.find(
                 (c) => +c.id === chain.id,
               ) &&
@@ -488,7 +488,7 @@ export const useNetworkStore = createQueryStore<
           return Object.values(mergedChainData).reduce<number[]>(
             (acc, chain) => {
               if (
-                chain.type === 'custom' &&
+                chain?.type === 'custom' &&
                 chain.testnet &&
                 includeTestnets &&
                 !networks.backendNetworks.networks.find(
@@ -581,8 +581,8 @@ export const useNetworkStore = createQueryStore<
         return (includeTestnets = false) => {
           return Object.values(mergedChainData).reduce((acc, chain) => {
             if (
-              (!includeTestnets && chain.testnet) ||
-              chain.type !== 'supported'
+              (!includeTestnets && chain?.testnet) ||
+              chain?.type !== 'supported'
             )
               return acc;
             return {
@@ -600,8 +600,8 @@ export const useNetworkStore = createQueryStore<
           return Object.values(mergedChainData).reduce<number[]>(
             (acc, chain) => {
               if (
-                (!includeTestnets && chain.testnet) ||
-                chain.type !== 'supported'
+                (!includeTestnets && chain?.testnet) ||
+                chain?.type !== 'supported'
               )
                 return acc;
               return [...acc, chain.id];
@@ -616,7 +616,7 @@ export const useNetworkStore = createQueryStore<
       ({ mergedChainData }) => {
         return (chainId) => {
           const chain = mergedChainData[chainId];
-          if (chain.type !== 'supported') return undefined;
+          if (chain?.type !== 'supported') return undefined;
           return chain;
         };
       },
@@ -812,13 +812,15 @@ export const useNetworkStore = createQueryStore<
 
     getAllChains: createParameterizedSelector(({ mergedChainData }) => {
       return (includeTestnets = false) => {
-        return Object.values(mergedChainData).reduce((acc, chain) => {
-          if (!includeTestnets && chain.testnet) return acc;
-          return {
-            ...acc,
-            [chain.id]: chain,
-          };
-        }, {});
+        return Object.values(mergedChainData)
+          .filter(Boolean)
+          .reduce((acc, chain) => {
+            if (!includeTestnets && chain.testnet) return acc;
+            return {
+              ...acc,
+              [chain.id]: chain as TransformedChain,
+            };
+          }, {});
       };
     }),
 
@@ -832,11 +834,12 @@ export const useNetworkStore = createQueryStore<
       ({ mergedChainData }) => {
         return (includeTestnets = false) => {
           return Object.values(mergedChainData)
+            .filter(Boolean)
             .filter((chain) => includeTestnets || !chain.testnet)
             .sort((a, b) => {
-              if (a.order === undefined && b.order === undefined) return 0;
-              if (a.order === undefined) return 1;
-              if (b.order === undefined) return -1;
+              if (a?.order === undefined && b?.order === undefined) return 0;
+              if (a?.order === undefined) return 1;
+              if (b?.order === undefined) return -1;
               return a.order - b.order;
             });
         };
@@ -850,7 +853,12 @@ export const useNetworkStore = createQueryStore<
       chainOrder: state.chainOrder,
       enabledChainIds: state.enabledChainIds,
     }),
-    persistThrottleMs: 5_000,
+    // TODO: investigate why this was introduced
+    // This creates instances where custom network additions
+    // or changes to network settings/RPCs are not persisted
+    // (i.e. prompt closes before threshold is reached)
+    // When removing, the extension crashes in an infinite loop
+    persistThrottleMs: 1_000,
     storageKey: 'networks',
     useRainbowNamingSchema: false,
     version: 1,
