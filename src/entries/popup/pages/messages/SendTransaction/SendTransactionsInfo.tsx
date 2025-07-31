@@ -7,7 +7,11 @@ import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { useUserAssets } from '~/core/resources/assets';
 import { DappMetadata, useDappMetadata } from '~/core/resources/metadata/dapp';
-import { useCurrentCurrencyStore, useNonceStore } from '~/core/state';
+import {
+  useCurrentCurrencyStore,
+  useCurrentThemeStore,
+  useNonceStore,
+} from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
@@ -28,6 +32,7 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
+import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 import { SymbolName } from '~/design-system/styles/designTokens';
 import { AddressDisplay } from '~/entries/popup/components/AddressDisplay';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
@@ -45,6 +50,10 @@ import {
   MaliciousRequestWarning,
   getDappStatusBadge,
 } from '../DappScanStatus';
+import {
+  overflowGradientDark,
+  overflowGradientLight,
+} from '../OverflowGradient.css';
 import { SimulationOverview } from '../Simulation';
 import { CopyButton, TabContent, Tabs } from '../Tabs';
 import { useHasEnoughGas } from '../useHasEnoughGas';
@@ -287,6 +296,45 @@ const TransactionData = memo(function TransactionData({
     </Box>
   );
 });
+
+function BalanceLoadingSkeleton() {
+  const { currentTheme } = useCurrentThemeStore();
+  const overflowGradient =
+    currentTheme === 'dark' ? overflowGradientDark : overflowGradientLight;
+
+  return (
+    <Box
+      display="flex"
+      flexDirection="column"
+      padding="20px"
+      paddingBottom="2px"
+      background="surfaceSecondaryElevated"
+      borderRadius="20px"
+      borderColor="separatorSecondary"
+      borderWidth="1px"
+      width="full"
+      gap="16px"
+      className={overflowGradient}
+      style={{
+        position: 'relative',
+        overflowX: 'visible',
+        overflowY: 'hidden',
+      }}
+    >
+      <Inline alignVertical="center" space="12px">
+        <Skeleton width="16px" height="16px" circle />
+        <Skeleton width="200px" height="16px" />
+      </Inline>
+      <Skeleton width="100%" height="14px" />
+      <Stack marginHorizontal="-8px" space="8px">
+        <Separator color="separatorTertiary" />
+        <Skeleton width="100%" height="44px" />
+        <Separator color="separatorTertiary" />
+        <Skeleton width="100%" height="44px" />
+      </Stack>
+    </Box>
+  );
+}
 
 function TransactionInfo({
   request,
@@ -579,7 +627,8 @@ export function SendTransactionInfo({
 
   const isScamDapp = dappMetadata?.status === DAppStatus.Scam;
 
-  const hasEnoughGas = useHasEnoughGas(activeSession);
+  const { hasEnough: hasEnoughGas, isLoading: isGasLoading } =
+    useHasEnoughGas(activeSession);
 
   return (
     <Box
@@ -626,8 +675,18 @@ export function SendTransactionInfo({
           </motion.div>
         )}
       </AnimatePresence>
-
-      {hasEnoughGas ? (
+      {/* Show loading skeleton while balance is being fetched */}
+      {isGasLoading ? (
+        <BalanceLoadingSkeleton />
+      ) : /* Show insufficient funds if user doesn't have enough gas */ hasEnoughGas ===
+        false ? (
+        activeSession && (
+          <InsuficientGasFunds
+            session={activeSession}
+            onRejectRequest={onRejectRequest}
+          />
+        )
+      ) : (
         <TransactionInfo
           request={txRequest}
           dappMetadata={dappMetadata}
@@ -635,13 +694,6 @@ export function SendTransactionInfo({
           expanded={expanded}
           onExpand={() => setExpanded((e) => !e)}
         />
-      ) : (
-        activeSession && (
-          <InsuficientGasFunds
-            session={activeSession}
-            onRejectRequest={onRejectRequest}
-          />
-        )
       )}
     </Box>
   );
