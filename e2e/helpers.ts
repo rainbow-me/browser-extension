@@ -151,10 +151,6 @@ export async function initDriverWithOptions(opts: {
     options.setChromeBinaryPath(chromeBinaryPath);
     options.addArguments(...args);
     options.setAcceptInsecureCerts(true);
-    options.setLoggingPrefs({
-      browser: 'ALL',
-      driver: 'ALL',
-    });
 
     const existingGoogChromeOptions = options.get('goog:chromeOptions') || {};
 

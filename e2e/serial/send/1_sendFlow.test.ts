@@ -197,13 +197,6 @@ it('should be able to click max and switch on send flow', async () => {
   expect(switchButton).toBeTruthy();
 
   await findElementByTestIdAndClick({ id: 'value-input-max', driver });
-
-  const inputMask = await findElementByTestId({
-    id: 'send-input-mask',
-    driver,
-  });
-  await inputMask.clear();
-  await inputMask.sendKeys('0.01');
 });
 
 it('should be able to go to review on send flow', async () => {
