@@ -179,17 +179,15 @@ function createTabMessenger() {
  */
 export let tabMessenger = createTabMessenger();
 
+// this is only needed in content script
 if (detectScriptType() === 'contentScript') {
   onBFCacheRestore(() => {
-    console.log('onBFCacheRestore');
-    // this is only needed in content script
     const newMessenger = createTabMessenger();
     tabMessenger.migrateListeners(newMessenger);
     tabMessenger = newMessenger;
   });
 
   onBFUnload(() => {
-    console.log('onBFUnload');
     tabMessenger.stopListeners();
   });
 }
