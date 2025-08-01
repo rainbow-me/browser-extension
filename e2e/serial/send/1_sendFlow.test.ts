@@ -281,11 +281,7 @@ it('should be able to select token on send flow', async () => {
     id: 'token-input-asset-eth_1',
     driver,
   });
-  const inputMask = await findElementByTestId({
-    id: 'send-input-mask',
-    driver,
-  });
-  await inputMask.sendKeys('0.01');
+  await findElementByTestIdAndClick({ id: 'value-input-max', driver });
 });
 
 it('should be able to go to review on send flow', async () => {
