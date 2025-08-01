@@ -5,6 +5,7 @@ import React, { ReactNode, useCallback, useState } from 'react';
 import { useCurrentAddressStore } from '~/core/state';
 import { Box, Column, Columns, Symbol, TextOverflow } from '~/design-system';
 import { Lens } from '~/design-system/components/Lens/Lens';
+import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 import { transformScales } from '~/design-system/styles/designTokens';
 
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
@@ -36,7 +37,9 @@ export function AccountName({
   renderTooltip,
 }: AccountNameProps) {
   const { currentAddress: address } = useCurrentAddressStore();
-  const { displayName } = useWalletName({ address: address || '0x' });
+  const { displayName, isLoading } = useWalletName({
+    address: address || '0x',
+  });
   const navigate = useRainbowNavigate();
   const [hover, setHover] = useState(false);
 
@@ -80,7 +83,11 @@ export function AccountName({
                 weight="heavy"
                 testId="account-name"
               >
-                {displayName}
+                {isLoading ? (
+                  <Skeleton width="100%" height="16px" />
+                ) : (
+                  displayName
+                )}
               </TextOverflow>
             </Box>
             {chevron && (
