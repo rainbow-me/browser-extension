@@ -59,6 +59,8 @@ export type ReplyMessage<TResponse> = {
  * Creates a generic messenger that can be used to send and receive messages between extension scripts.
  * @see https://www.notion.so/rainbowdotme/Cross-script-Messaging-141de5115294435f95e31b87abcf4314#6c19ef14227d468e8e9bc232a367f035
  */
-export function createMessenger(messenger: Messenger) {
+export function createMessenger<T extends object>(
+  messenger: Messenger & T,
+): Messenger & T {
   return messenger;
 }
