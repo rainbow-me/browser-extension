@@ -1,6 +1,6 @@
 import 'chromedriver';
 import 'geckodriver';
-import { Key, WebDriver } from 'selenium-webdriver';
+import { WebDriver } from 'selenium-webdriver';
 import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
 
 import {
@@ -197,20 +197,8 @@ it('should be able to click max and switch on send flow', async () => {
   expect(switchButton).toBeTruthy();
 
   await findElementByTestIdAndClick({ id: 'value-input-max', driver });
-  const inputMask = await findElementByTestId({
-    id: 'send-input-mask',
-    driver,
-  });
-  await waitAndClick(inputMask, driver);
-  await driver
-    .actions()
-    .sendKeys(Key.BACK_SPACE)
-    .sendKeys(Key.BACK_SPACE)
-    .sendKeys(Key.BACK_SPACE)
-    .sendKeys(Key.BACK_SPACE)
-    .sendKeys(Key.BACK_SPACE)
-    .sendKeys(Key.BACK_SPACE)
-    .perform();
+  await delayTime('long');
+  await findElementByTestIdAndClick({ id: 'value-input-max', driver });
 });
 
 it('should be able to go to review on send flow', async () => {
@@ -296,20 +284,8 @@ it('should be able to select token on send flow', async () => {
     driver,
   });
   await findElementByTestIdAndClick({ id: 'value-input-max', driver });
-  const inputMask = await findElementByTestId({
-    id: 'send-input-mask',
-    driver,
-  });
-  await waitAndClick(inputMask, driver);
-  await driver
-    .actions()
-    .sendKeys(Key.BACK_SPACE)
-    .sendKeys(Key.BACK_SPACE)
-    .sendKeys(Key.BACK_SPACE)
-    .sendKeys(Key.BACK_SPACE)
-    .sendKeys(Key.BACK_SPACE)
-    .sendKeys(Key.BACK_SPACE)
-    .perform();
+  await delayTime('long');
+  await findElementByTestIdAndClick({ id: 'value-input-max', driver });
 });
 
 it('should be able to go to review on send flow', async () => {
