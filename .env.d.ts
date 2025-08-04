@@ -37,11 +37,13 @@ declare global {
       RPC_PROXY_BASE_URL: string;
       RPC_PROXY_ENABLED: 'true' | 'false';
       GRAPH_ENS_API_KEY: string;
-      // Firebase Remote Config
+      // Firebase
       FIREBASE_API_KEY_BX: string;
       FIREBASE_AUTH_DOMAIN_BX: string;
       FIREBASE_PROJECT_ID_BX: string;
+      FIREBASE_SENDER_ID_BX: string;
       FIREBASE_APP_ID_BX: string;
+      FIREBASE_VAPID_BX: string;
       // Telemetry
       RUDDERSTACK_DATA_PLANE: string;
       RUDDERSTACK_WRITE_KEY: string;
