@@ -1,5 +1,3 @@
-import 'chromedriver';
-import 'geckodriver';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { WebDriver } from 'selenium-webdriver';
 import {
