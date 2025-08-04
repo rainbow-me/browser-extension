@@ -1,5 +1,3 @@
-import 'chromedriver';
-import 'geckodriver';
 import { Contract } from '@ethersproject/contracts';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { ChainId } from '@rainbow-me/swaps';

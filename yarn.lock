@@ -7078,13 +7078,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/chrome@npm:0.0.237":
-  version: 0.0.237
-  resolution: "@types/chrome@npm:0.0.237"
+"@types/chrome@npm:0.1.1":
+  version: 0.1.1
+  resolution: "@types/chrome@npm:0.1.1"
   dependencies:
     "@types/filesystem": "npm:*"
     "@types/har-format": "npm:*"
-  checksum: 10c0/1e28700c935d019c31bd556986a10384b855ee0b02fb3520966d49945ce223fcca6cf9c1b93ae21cb624c8c6fbc54ea0e78e07a6e52d33aaf84d987008825bdf
+  checksum: 10c0/e497e3c78dc4078d5517970acf2e890ab6ef51d03d1ad34639015e314cffbb0b681c99b9a20a03aeb35fc2cc9d8d3d6c2c25037d940ea1cd79c289a84342de90
   languageName: node
   linkType: hard
 
@@ -7404,12 +7404,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/selenium-webdriver@npm:4.1.15":
-  version: 4.1.15
-  resolution: "@types/selenium-webdriver@npm:4.1.15"
+"@types/selenium-webdriver@npm:4.1.28":
+  version: 4.1.28
+  resolution: "@types/selenium-webdriver@npm:4.1.28"
   dependencies:
+    "@types/node": "npm:*"
     "@types/ws": "npm:*"
-  checksum: 10c0/1cc11bb4a3aab7d6a2fc15dc4101eaa0daf5fa3e77a705e52350bc90b8a8d537e85c82feef8bcf0d85f3944ec501404373bb080be01f18ce8134bc99f6a12475
+  checksum: 10c0/69a0eba9376d676299ee73384a4ff2bb1b35d926ec72e380281fd8cee53777baa01cb8040e3ba2665c547bbe4faf8fc5ca69e07f0b95bd7079bb1ac27fe53de8
   languageName: node
   linkType: hard
 
@@ -10028,7 +10029,7 @@ __metadata:
     "@trezor/connect-plugin-ethereum": "npm:9.0.2"
     "@trezor/connect-web": "npm:9.4.2"
     "@types/chroma-js": "npm:2.1.4"
-    "@types/chrome": "npm:0.0.237"
+    "@types/chrome": "npm:0.1.1"
     "@types/fs-extra": "npm:9.0.13"
     "@types/lodash": "npm:4.14.186"
     "@types/node": "npm:18.11.0"
@@ -10039,7 +10040,7 @@ __metadata:
     "@types/react": "npm:18.0.21"
     "@types/react-beautiful-dnd": "npm:13.1.3"
     "@types/react-dom": "npm:18.0.6"
-    "@types/selenium-webdriver": "npm:4.1.15"
+    "@types/selenium-webdriver": "npm:4.1.28"
     "@types/semver": "npm:7.3.13"
     "@types/validator": "npm:13.7.12"
     "@typescript-eslint/eslint-plugin": "npm:6.4.1"
@@ -10058,7 +10059,7 @@ __metadata:
     chalk: "npm:5.3.0"
     check-password-strength: "npm:2.0.7"
     chroma-js: "npm:2.4.2"
-    chromedriver: "npm:138"
+    chromedriver: "npm:138.0.5"
     circular-dependency-plugin: "npm:5.2.2"
     clsx: "npm:1.2.1"
     cmdk: "npm:0.2.0"
@@ -10876,9 +10877,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chromedriver@npm:138":
-  version: 138.0.3
-  resolution: "chromedriver@npm:138.0.3"
+"chromedriver@npm:138.0.5":
+  version: 138.0.5
+  resolution: "chromedriver@npm:138.0.5"
   dependencies:
     "@testim/chrome-version": "npm:^1.1.4"
     axios: "npm:^1.7.4"
@@ -10889,7 +10890,7 @@ __metadata:
     tcp-port-used: "npm:^1.0.2"
   bin:
     chromedriver: bin/chromedriver
-  checksum: 10c0/f532a98d208c40e2cf54a18460b52634bde047ca409502a5ad9c63ac4e233a014d722838d2ab12371f7d585adcbac92fdf848bd70bf389c098db7a998f27e2b2
+  checksum: 10c0/b814df6ce699c37fa3d9b5c7be099c6f82923db5e5a56d7a979b09c320e51b345fb623ef264b82b2ef39e959163f892e19480eb96270b571ce89d16b439ab212
   languageName: node
   linkType: hard
 
