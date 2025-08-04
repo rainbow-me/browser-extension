@@ -1,6 +1,5 @@
 import { uuid4 } from '@sentry/core';
 
-import { initFCM } from '~/core/firebase/fcm';
 import { initializeMessenger } from '~/core/messengers';
 import { initializeSentry } from '~/core/sentry';
 import {
@@ -43,10 +42,6 @@ syncNetworksStore('background');
 syncStores();
 
 uuid4();
-// wait until the page is active to initialize FCM
-self.addEventListener('activate', () => {
-  initFCM();
-});
 handleKeepAlive();
 
 popupMessenger.reply('rainbow_updateWagmiClient', async () => {
