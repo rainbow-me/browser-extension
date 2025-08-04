@@ -7078,13 +7078,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/chrome@npm:0.0.237":
-  version: 0.0.237
-  resolution: "@types/chrome@npm:0.0.237"
+"@types/chrome@npm:0.1.1":
+  version: 0.1.1
+  resolution: "@types/chrome@npm:0.1.1"
   dependencies:
     "@types/filesystem": "npm:*"
     "@types/har-format": "npm:*"
-  checksum: 10c0/1e28700c935d019c31bd556986a10384b855ee0b02fb3520966d49945ce223fcca6cf9c1b93ae21cb624c8c6fbc54ea0e78e07a6e52d33aaf84d987008825bdf
+  checksum: 10c0/e497e3c78dc4078d5517970acf2e890ab6ef51d03d1ad34639015e314cffbb0b681c99b9a20a03aeb35fc2cc9d8d3d6c2c25037d940ea1cd79c289a84342de90
   languageName: node
   linkType: hard
 
@@ -10029,7 +10029,7 @@ __metadata:
     "@trezor/connect-plugin-ethereum": "npm:9.0.2"
     "@trezor/connect-web": "npm:9.4.2"
     "@types/chroma-js": "npm:2.1.4"
-    "@types/chrome": "npm:0.0.237"
+    "@types/chrome": "npm:0.1.1"
     "@types/fs-extra": "npm:9.0.13"
     "@types/lodash": "npm:4.14.186"
     "@types/node": "npm:18.11.0"
