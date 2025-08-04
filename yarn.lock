@@ -7404,12 +7404,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/selenium-webdriver@npm:4.1.15":
-  version: 4.1.15
-  resolution: "@types/selenium-webdriver@npm:4.1.15"
+"@types/selenium-webdriver@npm:4.1.28":
+  version: 4.1.28
+  resolution: "@types/selenium-webdriver@npm:4.1.28"
   dependencies:
+    "@types/node": "npm:*"
     "@types/ws": "npm:*"
-  checksum: 10c0/1cc11bb4a3aab7d6a2fc15dc4101eaa0daf5fa3e77a705e52350bc90b8a8d537e85c82feef8bcf0d85f3944ec501404373bb080be01f18ce8134bc99f6a12475
+  checksum: 10c0/69a0eba9376d676299ee73384a4ff2bb1b35d926ec72e380281fd8cee53777baa01cb8040e3ba2665c547bbe4faf8fc5ca69e07f0b95bd7079bb1ac27fe53de8
   languageName: node
   linkType: hard
 
@@ -10039,7 +10040,7 @@ __metadata:
     "@types/react": "npm:18.0.21"
     "@types/react-beautiful-dnd": "npm:13.1.3"
     "@types/react-dom": "npm:18.0.6"
-    "@types/selenium-webdriver": "npm:4.1.15"
+    "@types/selenium-webdriver": "npm:4.1.28"
     "@types/semver": "npm:7.3.13"
     "@types/validator": "npm:13.7.12"
     "@typescript-eslint/eslint-plugin": "npm:6.4.1"
