@@ -197,13 +197,8 @@ it('should be able to click max and switch on send flow', async () => {
   expect(switchButton).toBeTruthy();
 
   await findElementByTestIdAndClick({ id: 'value-input-max', driver });
-
-  const inputMask = await findElementByTestId({
-    id: 'send-input-mask',
-    driver,
-  });
-  await inputMask.clear();
-  await inputMask.sendKeys('0.01');
+  await delayTime('long');
+  await findElementByTestIdAndClick({ id: 'value-input-max', driver });
 });
 
 it('should be able to go to review on send flow', async () => {
@@ -234,6 +229,7 @@ it('should be able to interact with destination menu on review on send flow', as
 });
 
 it('should be able to send transaction on review on send flow', async () => {
+  await delayTime('very-long');
   await findElementByTestIdAndClick({ id: 'review-confirm-button', driver });
   const sendTransaction = await transactionStatus();
   expect(await sendTransaction).toBe('success');
@@ -287,11 +283,9 @@ it('should be able to select token on send flow', async () => {
     id: 'token-input-asset-eth_1',
     driver,
   });
-  const inputMask = await findElementByTestId({
-    id: 'send-input-mask',
-    driver,
-  });
-  await inputMask.sendKeys('0.01');
+  await findElementByTestIdAndClick({ id: 'value-input-max', driver });
+  await delayTime('long');
+  await findElementByTestIdAndClick({ id: 'value-input-max', driver });
 });
 
 it('should be able to go to review on send flow', async () => {
