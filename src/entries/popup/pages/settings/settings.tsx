@@ -3,7 +3,6 @@ import { useCallback, useState } from 'react';
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { i18n, supportedLanguages } from '~/core/languages';
-import { initializeMessenger } from '~/core/messengers';
 import { supportedCurrencies } from '~/core/references';
 import {
   RAINBOW_FEEDBACK_URL,
@@ -35,13 +34,12 @@ import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 import { SwitchMenu } from '~/entries/popup/components/SwitchMenu/SwitchMenu';
 
 import packageJson from '../../../../../package.json';
+import { popupClient } from '../../handlers/background';
 import { testSandbox } from '../../handlers/wallet';
 import { useDeviceUUID } from '../../hooks/useDeviceUUID';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
-
-const messenger = initializeMessenger({ connect: 'inpage' });
 
 export function Settings() {
   const navigate = useRainbowNavigate();
@@ -111,7 +109,8 @@ export function Settings() {
           : event.settingsRainbowDefaultProviderDisabled,
       );
       setIsDefaultWallet(rainbowAsDefault);
-      messenger.send('rainbow_setDefaultProvider', { rainbowAsDefault });
+      // dont wait
+      void popupClient.state.rainbow.setDefaultProvider({ rainbowAsDefault });
     },
     [setIsDefaultWallet],
   );
