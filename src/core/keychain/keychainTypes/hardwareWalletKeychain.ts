@@ -10,8 +10,10 @@ import { HWSigner } from '../HWSigner';
 import { IKeychain, PrivateKey } from '../IKeychain';
 import { getHDPathForVendorAndType } from '../hdPath';
 
+export type HardwareWalletVendor = 'Ledger' | 'Trezor';
+
 export interface SerializedHardwareWalletKeychain {
-  vendor?: string;
+  vendor?: HardwareWalletVendor;
   hdPath?: string;
   deviceId?: string;
   accountsEnabled?: number;
@@ -26,7 +28,7 @@ const privates = new WeakMap();
 export class HardwareWalletKeychain implements IKeychain {
   type: KeychainType.HardwareWalletKeychain =
     KeychainType.HardwareWalletKeychain;
-  vendor?: string;
+  vendor?: HardwareWalletVendor;
 
   constructor() {
     this.vendor = undefined;
@@ -96,10 +98,7 @@ export class HardwareWalletKeychain implements IKeychain {
     return (
       wallet.hdPath ??
       // Backwards compatibility
-      getHDPathForVendorAndType(
-        wallet.index,
-        this.vendor as 'Ledger' | 'Trezor',
-      )
+      getHDPathForVendorAndType(wallet.index, this.vendor)
     );
   }
 
