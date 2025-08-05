@@ -33,6 +33,7 @@ import { addHexPrefix } from '../utils/hex';
 
 import { PrivateKey } from './IKeychain';
 import { keychainManager } from './KeychainManager';
+import type { HardwareWalletVendor } from './keychainTypes/hardwareWalletKeychain';
 import { SerializedKeypairKeychain } from './keychainTypes/keyPairKeychain';
 
 interface TypedDataTypes {
@@ -145,9 +146,9 @@ export const importHardwareWallet = async ({
   wallets,
   accountsEnabled,
 }: {
-  vendor: string;
+  vendor: HardwareWalletVendor;
   deviceId: string;
-  wallets: Array<{ address: Address; index: number; hdPath: string }>;
+  wallets: Array<{ address: Address; index: number; hdPath?: string }>;
   accountsEnabled: number;
 }) => {
   const keychain = await keychainManager.importKeychain({
