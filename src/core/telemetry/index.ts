@@ -5,12 +5,13 @@ import { getWalletContext } from '~/analytics/util';
 import { useAuth } from '~/entries/popup/hooks/useAuth';
 
 import { setSentryUser } from '../sentry';
-import { useCurrentAddressStore, useDeviceIdStore } from '../state';
+import { useDeviceIdStore } from '../state';
+import { useSettingsStore } from '../state/currentSettings/store';
 
 export const TelemetryIdentifier = () => {
   const { status: authStatus } = useAuth();
   const { deviceId } = useDeviceIdStore();
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
 
   // update telemetry wallet each time selected wallet changes
   useEffect(() => {

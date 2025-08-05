@@ -6,7 +6,7 @@ import { Address, isAddress } from 'viem';
 
 import { analytics } from '~/analytics';
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
+import { settingsStorage } from '~/core/state/currentSettings/store';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { isValidPrivateKey } from '~/core/utils/ethereum';
 import { addHexPrefix } from '~/core/utils/hex';
@@ -45,9 +45,6 @@ const ImportWalletViaPrivateKey = () => {
   const [isValid, setIsValid] = useState(false);
   const [isAddingWallets, setIsAddingWallets] = useState(false);
   const [secrets, setSecrets] = useState<string[]>(['']);
-  const setCurrentAddress = useCurrentAddressStore(
-    (state) => state.setCurrentAddress,
-  );
 
   const [validity, setValidity] = useState<
     { valid: boolean; too_long: boolean; type: string | undefined }[]
@@ -118,7 +115,7 @@ const ImportWalletViaPrivateKey = () => {
           const address = (await wallet.importWithSecret(
             secrets[0],
           )) as Address;
-          setCurrentAddress(address);
+          await settingsStorage.setItem('settings:currentAddress', address);
           setIsAddingWallets(false);
 
           // workaround for a deeper issue where the keychain status
@@ -143,7 +140,7 @@ const ImportWalletViaPrivateKey = () => {
         }
       }
     }
-  }, [isAddingWallets, navigate, onboarding, secrets, setCurrentAddress]);
+  }, [isAddingWallets, navigate, onboarding, secrets]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {

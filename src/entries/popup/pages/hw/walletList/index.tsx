@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import {
   Box,
   Button,
@@ -41,9 +41,7 @@ const WalletListHW = () => {
   const { state } = useLocation();
   const [accountsIgnored, setAccountsIgnored] = useState<Address[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const setCurrentAddress = useCurrentAddressStore(
-    (state) => state.setCurrentAddress,
-  );
+  const [, setCurrentAddress] = useSettingsStore('currentAddress');
 
   const [accountsToImport, setAccountsToImport] = useState<
     { address: Address; index: number; hdPath?: string }[]

@@ -2,9 +2,8 @@ import chroma from 'chroma-js';
 import { motion } from 'framer-motion';
 import { ReactElement, memo, useMemo } from 'react';
 
-import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
-import { useTabNavigation } from '~/core/state/currentSettings/tabNavigation';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { Box, Inline } from '~/design-system';
 import { globalColors } from '~/design-system/styles/designTokens';
 
@@ -65,9 +64,9 @@ export type Tab = (typeof tabConfig)[number]['name'];
 
 export const TabBar = memo(function TabBar({ tabs }: { tabs: Tab[] }) {
   const height = 44;
-  const { selectedTab, setSelectedTab } = useTabNavigation();
+  const [selectedTab, setSelectedTab] = useSettingsStore('selectedTab');
 
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
   const { currentTheme } = useCurrentThemeStore();
 
@@ -234,7 +233,7 @@ function Tab({
 
 function TabBackground({ selectedTabIndex }: { selectedTabIndex: number }) {
   const { currentTheme } = useCurrentThemeStore();
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
 
   // 6 = tab bar horizontal padding; 4 = space between tabs

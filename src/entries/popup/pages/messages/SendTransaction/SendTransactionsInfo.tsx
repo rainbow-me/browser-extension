@@ -7,12 +7,9 @@ import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { useUserAssets } from '~/core/resources/assets';
 import { DappMetadata, useDappMetadata } from '~/core/resources/metadata/dapp';
-import {
-  useCurrentCurrencyStore,
-  useCurrentThemeStore,
-  useNonceStore,
-} from '~/core/state';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useNonceStore } from '~/core/state';
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
@@ -428,14 +425,14 @@ function InsuficientGasFunds({
     preventWindowClose?: boolean;
   }) => void;
 }) {
-  const { testnetMode } = useTestnetModeStore();
+  const [testnetMode] = useSettingsStore('isTestnetMode');
   const isTestnet = testnetMode || getChain({ chainId }).testnet;
 
   const chainNativeAsset = useNativeAsset({ chainId });
   const { nativeAsset } = useUserNativeAsset({ chainId, address });
   const chainName = getChain({ chainId }).name;
 
-  const { currentCurrency } = useCurrentCurrencyStore();
+  const [currentCurrency] = useSettingsStore('currentCurrency');
   const { data: hasBridgeableBalance } = useUserAssets(
     { address, currency: currentCurrency },
     {

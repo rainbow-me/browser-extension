@@ -18,6 +18,7 @@
 */
 
 import { i18n } from '~/core/languages';
+import type { SupportedCurrencyKey } from '~/core/references';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { isParsedUserAsset } from '~/core/utils/assets';
 import { formatCurrency, formatNumber } from '~/core/utils/formatNumber';
@@ -72,7 +73,10 @@ const swapTypeValues = (changes: RainbowTransaction['changes']) => {
   return [valueOut, valueIn];
 };
 
-const activityValues = (transaction: RainbowTransaction) => {
+const activityValues = (
+  currency: SupportedCurrencyKey,
+  transaction: RainbowTransaction,
+) => {
   const { changes, direction, type, asset: _asset } = transaction;
   if (['swap', 'wrap', 'unwrap'].includes(type)) return swapTypeValues(changes);
   if (['approve', 'revoke'].includes(type))
@@ -102,7 +106,7 @@ const activityValues = (transaction: RainbowTransaction) => {
   const nativeBalance = native.balance.amount;
   const assetNativeValue =
     +nativeBalance > 0
-      ? `${valueSymbol}${formatCurrency(nativeBalance)}`
+      ? `${valueSymbol}${formatCurrency(currency, nativeBalance)}`
       : i18n.t('activity.no_value');
 
   return +nativeBalance > 0
@@ -112,10 +116,12 @@ const activityValues = (transaction: RainbowTransaction) => {
 
 export const ActivityValue = ({
   transaction,
+  currency,
 }: {
   transaction: RainbowTransaction;
+  currency: SupportedCurrencyKey;
 }) => {
-  const [topValue, bottomValue] = activityValues(transaction) ?? [];
+  const [topValue, bottomValue] = activityValues(currency, transaction) ?? [];
   if (!topValue && !bottomValue) return null;
 
   return (

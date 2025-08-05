@@ -2,7 +2,10 @@ import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber';
 import BigNumber from 'bignumber.js';
 import { isNil } from 'lodash';
 
-import { supportedCurrencies } from '~/core/references';
+import {
+  type SupportedCurrencyKey,
+  supportedCurrencies,
+} from '~/core/references';
 import { maskInput } from '~/entries/popup/components/InputMask/utils';
 
 import { formatCurrency } from './formatNumber';
@@ -340,8 +343,11 @@ const cleanNumber = (n: number | string | null | undefined): number => {
   return n || 0;
 };
 
-export const formatNumber = (n?: number | string | null) => {
-  let value = formatCurrency(cleanNumber(n), {
+export const formatNumber = (
+  currency: SupportedCurrencyKey,
+  n?: number | string | null,
+) => {
+  let value = formatCurrency(currency, cleanNumber(n), {
     notation: 'compact',
     maximumSignificantDigits: 4,
   });
@@ -351,11 +357,14 @@ export const formatNumber = (n?: number | string | null) => {
   return value;
 };
 
-export const processExchangeRateArray = (arr: string[]): string[] => {
+export const processExchangeRateArray = (
+  currency: SupportedCurrencyKey,
+  arr: string[],
+): string[] => {
   return arr.map((item) => {
     const parts = item.split(' ');
     if (parts.length === 5) {
-      const formattedAmount = formatNumber(parts[3]);
+      const formattedAmount = formatNumber(currency, parts[3]);
       return `${parts[0]} ${parts[1]} ${parts[2]} ${formattedAmount} ${parts[4]}`;
     }
     return item;

@@ -3,7 +3,7 @@ import { ReactNode, useCallback } from 'react';
 import { i18n } from '~/core/languages';
 import { reportNftAsSpam } from '~/core/network/nfts';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useCurrentAddressStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useNftsStore } from '~/core/state/nfts';
 import { useSelectedNftStore } from '~/core/state/selectedNft';
 import { ChainName, chainNameToIdMapping } from '~/core/types/chains';
@@ -44,7 +44,7 @@ export default function NFTDropdownMenu({
   children: ReactNode;
   nft?: UniqueAsset | null;
 }) {
-  const { currentAddress: address } = useCurrentAddressStore();
+  const [address] = useSettingsStore('currentAddress');
   const nftUniqueId = nft?.uniqueId || '';
   const hidden = useNftsStore((state) => state.hidden);
   const toggleHideNFT = useNftsStore((state) => state.toggleHideNFT);

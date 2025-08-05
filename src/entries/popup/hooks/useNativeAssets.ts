@@ -1,11 +1,11 @@
 import { useExternalTokens } from '~/core/resources/assets/externalToken';
-import { useCurrentCurrencyStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { AddressOrEth, ParsedAsset } from '~/core/types/assets';
 import { BackendNetwork, ChainId } from '~/core/types/chains';
 
 export function useNativeAssets() {
-  const { currentCurrency: currency } = useCurrentCurrencyStore();
+  const [currency] = useSettingsStore('currentCurrency');
   const nativeAssets = useNetworkStore((state) => state.getChainsNativeAsset());
 
   // NOTE: We only fetch the native asset for mainnet and chains that don't use ETH as their native token

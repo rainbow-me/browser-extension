@@ -10,7 +10,7 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { ETH_ADDRESS, SupportedCurrencyKey } from '~/core/references';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import {
   RainbowChainAsset,
@@ -359,7 +359,7 @@ export function useCustomNetworkAssets<
     customNetworkAssetsKey
   > = {},
 ) {
-  const { testnetMode } = useTestnetModeStore();
+  const [testnetMode] = useSettingsStore('isTestnetMode');
   const { rainbowChainAssets } = useRainbowChainAssetsStore();
   return useQuery({
     queryKey: customNetworkAssetsKey({

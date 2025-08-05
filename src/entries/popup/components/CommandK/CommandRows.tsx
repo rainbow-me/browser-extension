@@ -4,9 +4,8 @@ import React, { ReactElement } from 'react';
 
 import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
-import { useCurrentCurrencyStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
-import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { KeychainType } from '~/core/types/keychainTypes';
 import {
   Box,
@@ -302,8 +301,8 @@ export const TokenRow = ({
   isHidden,
   selected,
 }: TokenRowProps) => {
-  const { currentCurrency } = useCurrentCurrencyStore();
-  const { hideAssetBalances } = useHideAssetBalancesStore();
+  const [currentCurrency] = useSettingsStore('currentCurrency');
+  const [hideAssetBalances] = useSettingsStore('isHideAssetBalances');
 
   const TokenIcon = React.useMemo(
     () => (

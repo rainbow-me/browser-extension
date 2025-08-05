@@ -5,6 +5,8 @@ import { memo, useReducer, useState } from 'react';
 import { metadataClient } from '~/core/graphql';
 import { i18n } from '~/core/languages';
 import { queryClient } from '~/core/react-query';
+import { SupportedCurrencyKey } from '~/core/references';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { AddressOrEth, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -84,7 +86,9 @@ const TokenPrice = memo(function TokenPrice({
   hasPriceData,
   isLoading,
   fallbackPrice,
+  currency,
 }: {
+  currency: SupportedCurrencyKey;
   token: ParsedUserAsset | SearchAsset;
   tokenInfo: ParsedTokenInfo;
   hasPriceData: boolean;
@@ -104,6 +108,7 @@ const TokenPrice = memo(function TokenPrice({
           {!isLoading && !hasPriceData && !fallbackPrice
             ? i18n.t('token_details.not_available')
             : formatCurrency(
+                currency,
                 'native' in token
                   ? token.native.price?.amount || fallbackPrice
                   : tokenInfo?.price?.value || fallbackPrice,
@@ -253,6 +258,7 @@ export function PriceChart({
   token: ParsedUserAsset | SearchAsset;
   tokenInfo: ParsedTokenInfo;
 }) {
+  const [currentCurrency] = useSettingsStore('currentCurrency');
   const [selectedTime, setSelectedTime] = useState<ChartTime>('day');
   const shouldHaveData = !getChain({ chainId: token.chainId }).testnet;
 
@@ -296,6 +302,7 @@ export function PriceChart({
     <>
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <TokenPrice
+          currency={currentCurrency}
           hasPriceData={hasPriceData}
           isLoading={isLoading}
           token={token}
@@ -329,6 +336,7 @@ export function PriceChart({
             <Box style={{ height: '222px' }} marginHorizontal="-20px">
               {data && (
                 <LineChart
+                  currency={currentCurrency}
                   data={data}
                   onMouseMove={setIndicatorPoint}
                   width={POPUP_DIMENSIONS.width}

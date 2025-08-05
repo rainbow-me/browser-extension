@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Address } from 'viem';
 
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId, chainNameToIdMapping } from '~/core/types/chains';
@@ -30,11 +30,11 @@ export const useSendState = ({
 }) => {
   const [toAddressOrName, setToAddressOrName] = useState<Address | string>('');
   const { saveSendAddress } = usePopupInstanceStore();
-  const { currentCurrency } = useCurrentCurrencyStore();
+  const [currentCurrency] = useSettingsStore('currentCurrency');
 
   const [, setAsset] = useState<ParsedUserAsset>();
 
-  const { currentAddress: fromAddress } = useCurrentAddressStore();
+  const [fromAddress] = useSettingsStore('currentAddress');
   const getChainId = () => {
     if (asset) {
       return asset?.chainId ?? ChainId.mainnet;

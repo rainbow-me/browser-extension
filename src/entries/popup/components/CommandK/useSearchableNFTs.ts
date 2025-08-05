@@ -4,8 +4,7 @@ import { Address } from 'viem';
 import { i18n } from '~/core/languages';
 import { selectNfts } from '~/core/resources/_selectors/nfts';
 import { useGalleryNfts } from '~/core/resources/nfts/galleryNfts';
-import { useCurrentAddressStore } from '~/core/state';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useNftsStore } from '~/core/state/nfts';
 import { ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import { UniqueAsset } from '~/core/types/nfts';
@@ -28,9 +27,9 @@ export const parseNftName = (name: string, id: string) => {
 };
 
 export const useSearchableNFTs = () => {
-  const { currentAddress: address } = useCurrentAddressStore();
+  const [address] = useSettingsStore('currentAddress');
   const navigate = useRainbowNavigate();
-  const { testnetMode } = useTestnetModeStore();
+  const [testnetMode] = useSettingsStore('isTestnetMode');
   const { chains: userChains } = useUserChains();
 
   const hiddenNfts = useNftsStore((state) => state.hidden);

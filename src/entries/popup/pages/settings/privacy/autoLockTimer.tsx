@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { autoLockTimerOptions } from '~/core/references/autoLockTimer';
-import { useAutoLockTimerStore } from '~/core/state/currentSettings/autoLockTimer';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { AutoLockTimerOption } from '~/core/types/settings';
 import { Box } from '~/design-system';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
@@ -9,7 +9,7 @@ import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 
 export function AutoLockTimer() {
-  const { autoLockTimer, setAutoLockTimer } = useAutoLockTimerStore();
+  const [autoLockTimer, setAutoLockTimer] = useSettingsStore('autoLockTimer');
   return (
     <Box paddingHorizontal="20px">
       <MenuContainer testId="settings-menu-container">

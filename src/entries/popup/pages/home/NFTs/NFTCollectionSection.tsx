@@ -6,7 +6,7 @@ import {
   MOCK_NFTS_FOR_COLLECTION,
   useNftsForCollection,
 } from '~/core/resources/nfts/nftsForCollection';
-import { useCurrentAddressStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useNftsStore } from '~/core/state/nfts';
 import { ChainName } from '~/core/types/chains';
 import { SimpleHashCollectionDetails, UniqueAsset } from '~/core/types/nfts';
@@ -54,7 +54,7 @@ export function NFTCollectionSection({
   onAssetClick: (asset: UniqueAsset) => void;
   displayMode?: NFTCollectionDisplayMode;
 }) {
-  const { currentAddress: address } = useCurrentAddressStore();
+  const [address] = useSettingsStore('currentAddress');
   const { isWatchingWallet } = useWallets();
   const sections = useNftsStore((state) => state.sections);
   const toggleGallerySectionOpen = useNftsStore(

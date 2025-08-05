@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { useCurrentAddressStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useNavRestorationStore } from '~/core/state/navRestoration';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { SessionStorage } from '~/core/storage';
@@ -9,7 +9,7 @@ import usePrevious from './usePrevious';
 
 export function useExpiryListener() {
   const { resetValues, setupPort } = usePopupInstanceStore();
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
   const clearLastPage = useNavRestorationStore((state) => state.clearLastPage);
   const lastPage = useNavRestorationStore((state) => state.lastPage);
   const setShouldRestoreNavigation = useNavRestorationStore(

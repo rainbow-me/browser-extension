@@ -9,7 +9,7 @@ import {
   selectorFilterByUserChains,
 } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
-import { useCurrentCurrencyStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import {
   computeUniqueIdForHiddenAsset,
   useHiddenAssetStore,
@@ -62,7 +62,7 @@ export const AppConnectionWalletItem = React.forwardRef(
       },
       [address, hidden],
     );
-    const { currentCurrency: currency } = useCurrentCurrencyStore();
+    const [currency] = useSettingsStore('currentCurrency');
     const { data: totalAssetsBalance } = useUserAssets(
       { address, currency },
       {

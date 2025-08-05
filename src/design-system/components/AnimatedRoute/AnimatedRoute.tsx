@@ -14,8 +14,7 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 
-import { useCurrentAddressStore } from '~/core/state';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import {
   POPUP_DIMENSIONS,
   TESTNET_MODE_BAR_HEIGHT,
@@ -194,9 +193,11 @@ export const AnimatedRoute = forwardRef(function AnimatedRoute(
     rightNavbarComponent,
     accentColor = true,
   } = props;
-  const { state } = useLocation();
-  const { testnetMode } = useTestnetModeStore();
-  const location = useLocation();
+  const { state, pathname } = useLocation();
+
+  const [currentAddress] = useSettingsStore('currentAddress');
+  const [testnetMode] = useSettingsStore('isTestnetMode');
+
   const animationDirection: AnimatedRouteDirection =
     state?.direction ?? direction;
   const { initial, end, exit } = animatedRouteValues[animationDirection];
@@ -206,7 +207,6 @@ export const AnimatedRoute = forwardRef(function AnimatedRoute(
   const isBack =
     (navigationType === 'POP' && state?.isBack !== false) || state?.isBack;
 
-  const { currentAddress } = useCurrentAddressStore();
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
   const [urlSearchParams] = useSearchParams();
   const hideBackButton = urlSearchParams.get('hideBack') === 'true';
@@ -249,7 +249,7 @@ export const AnimatedRoute = forwardRef(function AnimatedRoute(
                 POPUP_DIMENSIONS.height -
                 (shouldShowTestnetBar({
                   testnetMode,
-                  pathname: location.pathname,
+                  pathname,
                 })
                   ? TESTNET_MODE_BAR_HEIGHT
                   : 0),
@@ -261,7 +261,7 @@ export const AnimatedRoute = forwardRef(function AnimatedRoute(
             className={
               shouldShowTestnetBar({
                 testnetMode,
-                pathname: location.pathname,
+                pathname,
               })
                 ? animatedRouteTestnetModeStyles
                 : animatedRouteStyles

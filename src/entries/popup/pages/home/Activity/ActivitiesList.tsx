@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion';
 import { useCallback, useMemo, useRef } from 'react';
 
+import { SupportedCurrencyKey } from '~/core/references';
 import { useApprovals } from '~/core/resources/approvals/approvals';
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import {
   RainbowTransaction,
   TransactionStatus,
@@ -55,8 +56,8 @@ export function Activities() {
   });
   useTransactionListForPendingTxs();
   const containerRef = useContainerRef();
-  const { currentAddress } = useCurrentAddressStore();
-  const { currentCurrency } = useCurrentCurrencyStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
+  const [currentCurrency] = useSettingsStore('currentCurrency');
   const { chains } = useUserChains();
   const { isWatchingWallet } = useWallets();
 
@@ -157,6 +158,7 @@ export function Activities() {
                   <Box paddingVertical="4px">
                     <ActivityRow
                       transaction={tx}
+                      currentCurrency={currentCurrency}
                       onRevokeTransaction={
                         isRevokableTransaction(tx)
                           ? () => onRevokeTransaction(tx)
@@ -207,9 +209,11 @@ const ActivityDescription = ({
 
 function ActivityRow({
   transaction,
+  currentCurrency,
   onRevokeTransaction,
 }: {
   transaction: RainbowTransaction;
+  currentCurrency: SupportedCurrencyKey;
   onRevokeTransaction?: () => void;
 }) {
   const navigate = useRainbowNavigate();
@@ -255,7 +259,10 @@ function ActivityRow({
               <ActivityTypeLabel transaction={transaction} />
               <ActivityDescription transaction={transaction} />
             </Stack>
-            <ActivityValue transaction={transaction} />
+            <ActivityValue
+              transaction={transaction}
+              currency={currentCurrency}
+            />
           </Box>
         </Box>
       </ActivityContextMenu>

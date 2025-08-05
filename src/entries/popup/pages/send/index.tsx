@@ -19,9 +19,12 @@ import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useCurrentAddressStore, useGasStore } from '~/core/state';
+import { useGasStore } from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
-import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import {
+  settingsStorage,
+  useSettingsStore,
+} from '~/core/state/currentSettings/store';
 import {
   computeUniqueIdForHiddenAsset,
   useHiddenAssetStore,
@@ -109,7 +112,9 @@ export function Send() {
   const [toAddressDropdownOpen, setToAddressDropdownOpen] = useState(false);
 
   const navigate = useRainbowNavigate();
-  const { currentAddress: address } = useCurrentAddressStore();
+  const [address] = useSettingsStore('currentAddress');
+  const [connectedToHardhat] = useSettingsStore('isConnectedToHardhat');
+  const [connectedToHardhatOp] = useSettingsStore('isConnectedToHardhatOp');
 
   const isContact = useContactsStore((state) => state.isContact);
   const { allWallets } = useWallets();
@@ -130,9 +135,6 @@ export function Send() {
 
   const isMyWallet = (address: Address) =>
     allWallets?.some((w) => w.address === address);
-
-  const { connectedToHardhat, connectedToHardhatOp } =
-    useConnectedToHardhatStore();
 
   const {
     asset,
@@ -345,6 +347,9 @@ export function Send() {
       if (!config.send_enabled) return;
 
       try {
+        const currency = await settingsStorage.getItem(
+          'settings:currentCurrency',
+        );
         if (asset) {
           const { type, vendor } = await getWallet(fromAddress);
           // Change the label while we wait for confirmation
@@ -361,11 +366,14 @@ export function Send() {
           });
           if (result && asset) {
             const transaction: NewTransaction = buildPendingTransaction(result);
-            addNewTransaction({
-              address: fromAddress,
-              chainId: activeChainId,
-              transaction,
-            });
+            addNewTransaction(
+              {
+                address: fromAddress,
+                chainId: activeChainId,
+                transaction,
+              },
+              { currency },
+            );
             callback?.();
             navigate(ROUTES.HOME, {
               state: { tab: 'activity' },
@@ -395,11 +403,14 @@ export function Send() {
           });
           if (result && nft) {
             const transaction: NewTransaction = buildPendingTransaction(result);
-            addNewTransaction({
-              address: fromAddress,
-              chainId: activeChainId,
-              transaction,
-            });
+            addNewTransaction(
+              {
+                address: fromAddress,
+                chainId: activeChainId,
+                transaction,
+              },
+              { currency },
+            );
             callback?.();
             navigate(ROUTES.HOME, {
               state: { tab: 'activity' },

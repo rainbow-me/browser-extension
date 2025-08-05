@@ -7,14 +7,13 @@ import {
 } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
 import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
-import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { ParsedUserAsset } from '~/core/types/assets';
 
 export const useVisibleTokenCount = () => {
-  const { currentAddress: address } = useCurrentAddressStore();
-  const { currentCurrency } = useCurrentCurrencyStore();
-  const { hideSmallBalances } = useHideSmallBalancesStore();
+  const [address] = useSettingsStore('currentAddress');
+  const [currentCurrency] = useSettingsStore('currentCurrency');
+  const [hideSmallBalances] = useSettingsStore('isHideSmallBalances');
 
   const { data: assets = [] } = useUserAssets(
     {

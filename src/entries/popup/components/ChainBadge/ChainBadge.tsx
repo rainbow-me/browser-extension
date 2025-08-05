@@ -5,7 +5,7 @@ import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme'
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { getBadgeUrl } from '~/core/state/networks/utils';
 import { ChainId } from '~/core/types/chains';
-import { getCustomChainIconUrl } from '~/core/utils/assets';
+import { getCustomChainIconUrl } from '~/core/utils/assets-pure';
 import { Box, Text } from '~/design-system';
 import { colors as emojiColors } from '~/entries/popup/utils/emojiAvatarBackgroundColors';
 

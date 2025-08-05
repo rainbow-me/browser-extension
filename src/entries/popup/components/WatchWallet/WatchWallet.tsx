@@ -4,7 +4,8 @@ import { Address, isAddress } from 'viem';
 import { useEnsAddress } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore, useSavedEnsNamesStore } from '~/core/state';
+import { useSavedEnsNamesStore } from '~/core/state';
+import { settingsStorage } from '~/core/state/currentSettings/store';
 import { ChainId } from '~/core/types/chains';
 import { isENSAddressFormat } from '~/core/utils/ethereum';
 import {
@@ -263,9 +264,6 @@ export const WatchWallet = ({
     [address, selectedAddresses],
   );
 
-  const setCurrentAddress = useCurrentAddressStore(
-    (state) => state.setCurrentAddress,
-  );
   const save = useSavedEnsNamesStore((state) => state.save);
 
   const [renameAccount, setRenameAccount] = useState<Address>();
@@ -285,7 +283,10 @@ export const WatchWallet = ({
       if (ensName && address) {
         save(ensName, address);
       }
-      setCurrentAddress(importedAddresses[0]);
+      await settingsStorage.setItem(
+        'settings:currentAddress',
+        importedAddresses[0],
+      );
       if (!onboarding && !ensName) setRenameAccount(address);
       else onFinishImporting?.();
     }
@@ -293,7 +294,6 @@ export const WatchWallet = ({
     addressesToImport,
     ensName,
     address,
-    setCurrentAddress,
     onboarding,
     onFinishImporting,
     save,

@@ -11,7 +11,7 @@ import {
   ValidatePointsSignatureMutation,
 } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { formatNumber } from '~/core/utils/formatNumber';
@@ -249,7 +249,7 @@ const doneRows = [
 
 export const PointsOnboardingSheet = () => {
   const navigate = useRainbowNavigate();
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
   const { displayName } = useWalletName({ address: currentAddress });
   const { state } = useLocation();
 

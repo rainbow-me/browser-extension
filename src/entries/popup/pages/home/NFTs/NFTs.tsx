@@ -1,8 +1,7 @@
 import React, { useRef } from 'react';
 import { Address } from 'viem';
 
-import { useCurrentAddressStore } from '~/core/state';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useNftsStore } from '~/core/state/nfts';
 import { ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import { UniqueAsset } from '~/core/types/nfts';
@@ -16,12 +15,12 @@ import NFTCollections from './NFTCollections';
 import NFTGallery from './NFTGallery';
 
 export function NFTs() {
-  const { currentAddress: address } = useCurrentAddressStore();
+  const [address] = useSettingsStore('currentAddress');
   const { sort, displayMode } = useNftsStore((state) => ({
     sort: state.sort,
     displayMode: state.displayMode,
   }));
-  const { testnetMode } = useTestnetModeStore();
+  const [testnetMode] = useSettingsStore('isTestnetMode');
   const { chains: userChains } = useUserChains();
   const navigate = useRainbowNavigate();
   const onAssetClick = (asset: UniqueAsset) => {

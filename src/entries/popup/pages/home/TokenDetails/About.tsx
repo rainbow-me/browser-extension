@@ -3,6 +3,7 @@ import { ReactNode, useState } from 'react';
 import { getAddress } from 'viem';
 
 import { i18n } from '~/core/languages';
+import { SupportedCurrencyKey } from '~/core/references';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { SearchAsset } from '~/core/types/search';
 import { truncateAddress } from '~/core/utils/address';
@@ -235,9 +236,11 @@ const placeholder = <Skeleton width="40px" height="12px" />;
 export function About({
   token,
   tokenInfo,
+  currency,
 }: {
   token: ParsedUserAsset | SearchAsset;
   tokenInfo: ParsedTokenInfo;
+  currency: SupportedCurrencyKey;
 }) {
   const {
     volume1d = placeholder,
@@ -269,6 +272,7 @@ export function About({
               symbol="dollarsign.square"
               label={i18n.t(`token_details.about.price`)}
               value={formatCurrency(
+                currency,
                 'native' in token
                   ? token.native.price?.amount
                   : tokenInfo?.price?.value ?? undefined,

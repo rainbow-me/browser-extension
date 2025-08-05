@@ -1,8 +1,6 @@
 import { initializeMessenger } from '~/core/messengers';
-import {
-  useIsDefaultWalletStore,
-  useNotificationWindowStore,
-} from '~/core/state';
+import { useNotificationWindowStore } from '~/core/state';
+import { settingsStorage } from '~/core/state/currentSettings/store';
 import { usePendingRequestStore } from '~/core/state/requests';
 
 const inpageMessenger = initializeMessenger({ connect: 'inpage' });
@@ -25,9 +23,12 @@ export const handleTabAndWindowUpdates = () => {
     clearPendingRequestsOnUpdate(tabId);
   });
 
-  chrome.tabs.onActivated.addListener(() => {
+  chrome.tabs.onActivated.addListener(async () => {
+    const rainbowAsDefault = await settingsStorage.getItem(
+      'settings:isDefaultWallet',
+    );
     inpageMessenger.send('rainbow_setDefaultProvider', {
-      rainbowAsDefault: useIsDefaultWalletStore.getState().isDefaultWallet,
+      rainbowAsDefault,
     });
   });
 

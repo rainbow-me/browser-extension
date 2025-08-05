@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 import appConnectionSheetImageMask from 'static/assets/appConnectionSheetImageMask.svg';
 import { i18n } from '~/core/languages';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
-import { useCurrentAddressStore } from '~/core/state';
 import { useAppConnectionWalletSwitcherStore } from '~/core/state/appConnectionWalletSwitcher/appConnectionSwitcher';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import {
   Box,
   Button,
@@ -37,7 +37,8 @@ export const AppConnectionNudgeSheet = ({
   connect: () => void;
   setShow: (show: boolean) => void;
 }) => {
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
+
   const { displayName } = useWalletName({ address: currentAddress || '0x' });
   const { url } = useActiveTab();
   const { data: dappMetadata } = useDappMetadata({ url });

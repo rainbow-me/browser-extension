@@ -1,22 +1,14 @@
+import { fakeBrowser } from '@webext-core/fake-browser';
 import { setupServer } from 'msw/node';
 import { afterAll, afterEach, beforeAll, vi } from 'vitest';
 
 import { handlers } from './mocks/handlers';
 
-vi.stubGlobal('chrome', {
-  storage: {
-    local: {
-      get: vi.fn(() => ({})),
-      set: vi.fn(),
-      remove: vi.fn(),
-    },
-    session: {
-      get: vi.fn(() => ({})),
-      set: vi.fn(),
-      remove: vi.fn(),
-    },
-  },
-  runtime: {},
+vi.stubGlobal('chrome', fakeBrowser);
+vi.mock('webextension-polyfill', async () => {
+  return await import('@webext-core/fake-browser').then(({ fakeBrowser }) => ({
+    default: fakeBrowser,
+  }));
 });
 
 vi.stubGlobal('window.location', {

@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
+import { settingsStorage } from '~/core/state/currentSettings/store';
 import { minus } from '~/core/utils/numbers';
 import { Box, Button, Stack, Text } from '~/design-system';
 
@@ -60,9 +60,6 @@ const addOrRemoveAddy = (addresses: Address[], address: Address) => {
 const emptyArray: unknown[] = [];
 export function ImportWalletSelectionEdit({ onboarding = false }) {
   const navigate = useRainbowNavigate();
-  const setCurrentAddress = useCurrentAddressStore(
-    (state) => state.setCurrentAddress,
-  );
 
   const { state } = useLocation();
   const accountsToImport: Address[] = state.accountsToImport || emptyArray;
@@ -86,11 +83,14 @@ export function ImportWalletSelectionEdit({ onboarding = false }) {
   const { importSecrets, isImporting } = useImportWalletsFromSecrets();
 
   const onImport = () =>
-    importSecrets({ secrets, accountsIgnored }).then(() => {
+    importSecrets({ secrets, accountsIgnored }).then(async () => {
       const importedAccounts = sortedAccountsToImport.filter(
         (a) => !accountsIgnored.includes(a),
       );
-      setCurrentAddress(importedAccounts[0]);
+      await settingsStorage.setItem(
+        'settings:currentAddress',
+        importedAccounts[0],
+      );
       if (onboarding) {
         navigate(ROUTES.CREATE_PASSWORD, {
           state: { backTo: ROUTES.IMPORT__SEED },

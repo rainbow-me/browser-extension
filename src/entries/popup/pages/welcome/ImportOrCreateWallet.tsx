@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
+import { settingsStorage } from '~/core/state/currentSettings/store';
 import { Box, Button, Inline, Text, ThemeProvider } from '~/design-system';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
 import { Row, Rows } from '~/design-system/components/Rows/Rows';
@@ -47,10 +47,6 @@ export function ImportOrCreateWallet() {
     wipeIncompleteWallet();
   }, []);
 
-  const setCurrentAddress = useCurrentAddressStore(
-    (state) => state.setCurrentAddress,
-  );
-
   const handleImportWalletClick = React.useCallback(async () => {
     const permissionsOk = await requestPermissionsIfNeeded();
     permissionsOk && navigate(ROUTES.IMPORT_OR_CONNECT);
@@ -63,7 +59,10 @@ export function ImportOrCreateWallet() {
     setLoading(true);
     try {
       const newWalletAddress = await wallet.create();
-      setCurrentAddress(newWalletAddress);
+      await settingsStorage.setItem(
+        'settings:currentAddress',
+        newWalletAddress,
+      );
       const seedPhrase = await wallet.exportWallet(newWalletAddress, '');
       setImportWalletSecrets([seedPhrase]);
       navigate(ROUTES.SEED_BACKUP_PROMPT);
@@ -73,7 +72,7 @@ export function ImportOrCreateWallet() {
       logger.error(new RainbowError(e?.name), { message: e?.message });
       setLoading(false);
     }
-  }, [loading, navigate, requestPermissionsIfNeeded, setCurrentAddress]);
+  }, [loading, navigate, requestPermissionsIfNeeded]);
 
   return (
     <Box style={{ marginTop: '234px' }}>

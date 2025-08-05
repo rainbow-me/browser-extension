@@ -2,7 +2,7 @@ import { KeyboardEventHandler } from 'react';
 import Switch from 'react-switch';
 
 import { shortcuts } from '~/core/references/shortcuts';
-import { useCurrentAddressStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useAvatar } from '~/entries/popup/hooks/useAvatar';
 
 import { Box } from '../Box/Box';
@@ -24,8 +24,9 @@ const Toggle = ({
   tabIndex,
   testId,
 }: ToggleProps) => {
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
+
   const onKeyDown: KeyboardEventHandler<HTMLInputElement> = (e) => {
     if (e.key === shortcuts.global.SELECT.key) {
       handleChange(!checked);

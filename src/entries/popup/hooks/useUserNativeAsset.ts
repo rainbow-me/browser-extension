@@ -2,7 +2,7 @@ import { Address, zeroAddress } from 'viem';
 import { useConfig } from 'wagmi';
 
 import { useUserTestnetNativeAsset } from '~/core/resources/assets/userTestnetNativeAsset';
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { isCustomChain } from '~/core/utils/chains';
@@ -18,8 +18,8 @@ export const useUserNativeAsset = ({
   address?: Address;
   chainId: ChainId;
 }): { nativeAsset?: ParsedUserAsset | null; isLoading: boolean } => {
-  const { currentAddress } = useCurrentAddressStore();
-  const { currentCurrency } = useCurrentCurrencyStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
+  const [currentCurrency] = useSettingsStore('currentCurrency');
   const { chains } = useConfig();
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
     chainId,

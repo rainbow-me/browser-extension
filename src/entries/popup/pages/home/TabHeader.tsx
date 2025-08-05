@@ -3,8 +3,7 @@ import { useMemo } from 'react';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
-import { useCurrentCurrencyStore } from '~/core/state';
-import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { Box, Inline, Inset, Text } from '~/design-system';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 
@@ -23,10 +22,10 @@ export function TabHeader({
   activeTab: Tab;
   onSelectTab: (tab: Tab) => void;
 }) {
-  const { hideAssetBalances } = useHideAssetBalancesStore();
+  const [hideAssetBalances] = useSettingsStore('isHideAssetBalances');
   const { display: userAssetsBalanceDisplay, isLoading } =
     useUserAssetsBalance();
-  const { currentCurrency } = useCurrentCurrencyStore();
+  const [currentCurrency] = useSettingsStore('currentCurrency');
   const { visibleTokenCount } = useVisibleTokenCount();
 
   const displayBalanceComponent = useMemo(() => {

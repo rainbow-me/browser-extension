@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
+import { settingsStorage } from '~/core/state/currentSettings/store';
 import { SessionStorage } from '~/core/storage';
 import {
   Box,
@@ -106,9 +106,6 @@ export const useImportWalletsFromSecrets = () => {
 
 export const ImportWalletSelection = ({ onboarding = false }) => {
   const navigate = useRainbowNavigate();
-  const setCurrentAddress = useCurrentAddressStore(
-    (state) => state.setCurrentAddress,
-  );
 
   const secrets = useImportWalletSessionSecrets();
 
@@ -130,8 +127,11 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
   };
 
   const onImport = () =>
-    importSecrets({ secrets }).then(() => {
-      setCurrentAddress(accountsToImport[0]);
+    importSecrets({ secrets }).then(async () => {
+      await settingsStorage.setItem(
+        'settings:currentAddress',
+        accountsToImport[0],
+      );
       if (onboarding)
         navigate(ROUTES.CREATE_PASSWORD, {
           state: { backTo: ROUTES.IMPORT__SEED },

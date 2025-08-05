@@ -3,6 +3,7 @@ import { Contract, PopulatedTransaction } from '@ethersproject/contracts';
 import { Address, Hash, erc20Abi, erc721Abi, maxUint256 } from 'viem';
 
 import { useGasStore } from '~/core/state';
+import { settingsStorage } from '~/core/state/currentSettings/store';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 import {
@@ -236,6 +237,7 @@ export const unlock = async ({
   wallet,
 }: ActionProps<'unlock'>): Promise<RapActionResult> => {
   const { selectedGas, gasFeeParamsBySpeed } = useGasStore.getState();
+  const currency = await settingsStorage.getItem('settings:currentCurrency');
 
   const { assetToUnlock, contractAddress, chainId } = parameters;
 
@@ -303,11 +305,14 @@ export const unlock = async ({
     ...gasParams,
   } satisfies NewTransaction;
 
-  addNewTransaction({
-    address: parameters.fromAddress as Address,
-    chainId: approval.chainId as ChainId,
-    transaction,
-  });
+  addNewTransaction(
+    {
+      address: parameters.fromAddress as Address,
+      chainId: approval.chainId as ChainId,
+      transaction,
+    },
+    { currency },
+  );
 
   return {
     nonce: approval?.nonce,

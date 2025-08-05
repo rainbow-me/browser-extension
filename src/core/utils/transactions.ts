@@ -16,11 +16,7 @@ import {
   SupportedCurrencyKey,
   smartContractMethods,
 } from '../references';
-import {
-  useCurrentCurrencyStore,
-  useNonceStore,
-  usePendingTransactionsStore,
-} from '../state';
+import { useNonceStore, usePendingTransactionsStore } from '../state';
 import { AddressOrEth, ParsedAsset, ParsedUserAsset } from '../types/assets';
 import { ChainId, ChainName } from '../types/chains';
 import { UniqueAsset } from '../types/nfts';
@@ -511,38 +507,43 @@ export async function getNextNonce({
   return nextNonce;
 }
 
-export function addNewTransaction({
-  address,
-  chainId,
-  transaction,
-}: {
-  address: Address;
-  chainId: ChainId;
-  transaction: NewTransaction;
-}) {
-  updateTransaction({
+export function addNewTransaction(
+  {
     address,
     chainId,
     transaction,
-  });
+  }: {
+    address: Address;
+    chainId: ChainId;
+    transaction: NewTransaction;
+  },
+  options: { currency: SupportedCurrencyKey },
+) {
+  updateTransaction(
+    {
+      address,
+      chainId,
+      transaction,
+    },
+    options,
+  );
 }
 
-export function updateTransaction({
-  address,
-  chainId,
-  transaction,
-}: {
-  address: Address;
-  chainId: ChainId;
-  transaction: NewTransaction;
-}) {
+export function updateTransaction(
+  {
+    address,
+    chainId,
+    transaction,
+  }: {
+    address: Address;
+    chainId: ChainId;
+    transaction: NewTransaction;
+  },
+  { currency }: { currency: SupportedCurrencyKey },
+) {
   const { getNonce, setNonce } = useNonceStore.getState();
   const { updatePendingTransaction } = usePendingTransactionsStore.getState();
-  const { currentCurrency } = useCurrentCurrencyStore.getState();
-  const updatedPendingTransaction = parseNewTransaction(
-    transaction,
-    currentCurrency,
-  );
+  const updatedPendingTransaction = parseNewTransaction(transaction, currency);
   updatePendingTransaction({
     address,
     pendingTransaction: updatedPendingTransaction,

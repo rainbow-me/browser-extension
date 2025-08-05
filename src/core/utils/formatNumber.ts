@@ -1,5 +1,5 @@
 /* eslint-disable default-param-last */
-import { useCurrentCurrencyStore } from '../state';
+import type { SupportedCurrencyKey } from '../references';
 
 export const createNumberFormatter = (options?: Intl.NumberFormatOptions) => {
   const formatter = new Intl.NumberFormat(navigator.language, {
@@ -21,10 +21,10 @@ export const formatNumber = (
 ) => createNumberFormatter(options).format(n);
 
 export const formatCurrencyParts = (
+  currency: SupportedCurrencyKey,
   n: number | string = 0,
   options?: Intl.NumberFormatOptions,
 ) => {
-  const currency = useCurrentCurrencyStore.getState().currentCurrency;
   const formatter = createNumberFormatter({
     style: 'currency',
     currency,
@@ -55,6 +55,7 @@ export const formatCurrencyParts = (
 export type FormattedCurrencyParts = ReturnType<typeof formatCurrencyParts>;
 
 export const formatCurrency = (
+  currency: SupportedCurrencyKey,
   n: number | string = 0,
   options?: Intl.NumberFormatOptions,
-) => formatCurrencyParts(n, options).raw.split(/\s/).join('');
+) => formatCurrencyParts(currency, n, options).raw.split(/\s/).join('');

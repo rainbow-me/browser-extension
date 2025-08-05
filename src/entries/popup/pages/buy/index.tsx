@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 
 import { fetchProviderWidgetUrl, useProvidersList } from '~/core/resources/f2c';
 import { ProviderConfig } from '~/core/resources/f2c/types';
-import { useCurrentAddressStore } from '~/core/state/currentSettings/currentAddress';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { Box, Stack } from '~/design-system';
 
 import { ProviderCard } from '../../components/Buy/ProviderCard';
@@ -11,7 +11,7 @@ import { MoonpayIcon } from '../../components/MoonpayIcon/MoonpayIcon';
 import { RampIcon } from '../../components/RampIcon/RampIcon';
 
 export function Buy() {
-  const { currentAddress: depositAddress } = useCurrentAddressStore();
+  const [depositAddress] = useSettingsStore('currentAddress');
   const { data } = useProvidersList();
   const providers = useMemo(
     () => data?.filter((provider) => provider.enabled === true),

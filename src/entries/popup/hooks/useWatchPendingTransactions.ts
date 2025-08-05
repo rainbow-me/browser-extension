@@ -6,11 +6,8 @@ import { userAssetsQueryKey } from '~/core/resources/assets/common';
 import { userAssetsFetchQuery } from '~/core/resources/assets/userAssets';
 import { consolidatedTransactionsQueryKey } from '~/core/resources/transactions/consolidatedTransactions';
 import { fetchTransaction } from '~/core/resources/transactions/transaction';
-import {
-  useCurrentCurrencyStore,
-  usePendingTransactionsStore,
-} from '~/core/state';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { usePendingTransactionsStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { useStaleBalancesStore } from '~/core/state/staleBalances';
 import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
@@ -32,12 +29,12 @@ export const useWatchPendingTransactions = ({
     pendingTransactions: storePendingTransactions,
     setPendingTransactions,
   } = usePendingTransactionsStore();
-  const { currentCurrency } = useCurrentCurrencyStore();
+  const [currentCurrency] = useSettingsStore('currentCurrency');
   const addCustomNetworkTransactions = useCustomNetworkTransactionsStore(
     (state) => state.addCustomNetworkTransactions,
   );
   const enabledChainIds = useNetworkStore((state) => state.enabledChainIds);
-  const { testnetMode } = useTestnetModeStore();
+  const [testnetMode] = useSettingsStore('isTestnetMode');
   const { addStaleBalance } = useStaleBalancesStore();
 
   const pendingTransactions = useMemo(

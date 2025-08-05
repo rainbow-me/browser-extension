@@ -10,8 +10,8 @@ import {
   useApprovals,
 } from '~/core/resources/approvals/approvals';
 import { useConsolidatedTransactions } from '~/core/resources/transactions/consolidatedTransactions';
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction, TxHash } from '~/core/types/transactions';
@@ -322,8 +322,8 @@ const sortApprovals = (
 };
 
 export const Approvals = () => {
-  const { currentAddress } = useCurrentAddressStore();
-  const { currentCurrency } = useCurrentCurrencyStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
+  const [currentCurrency] = useSettingsStore('currentCurrency');
   const { chains } = useUserChains();
   const supportedMainnetChainIds = useNetworkStore((state) =>
     state.getBackendSupportedChainIds(),
@@ -614,7 +614,7 @@ const TokenApproval = ({
   spender: ApprovalSpender;
   onRevoke: () => void;
 }) => {
-  const { currentCurrency } = useCurrentCurrencyStore();
+  const [currentCurrency] = useSettingsStore('currentCurrency');
   const triggerRef = useRef<HTMLDivElement>(null);
 
   return (

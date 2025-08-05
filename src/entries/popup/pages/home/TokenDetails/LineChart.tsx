@@ -8,6 +8,7 @@ import {
   useState,
 } from 'react';
 
+import { SupportedCurrencyKey } from '~/core/references';
 import { formatCurrency } from '~/core/utils/formatNumber';
 import {
   accentColorAsHsl,
@@ -28,7 +29,13 @@ const findClosestPoint = (points: ChartPoint[], mouseX: number) => {
   );
 };
 
-const IndicatorLabel = ({ x }: { x: number }) => {
+const IndicatorLabel = ({
+  x,
+  currency,
+}: {
+  x: number;
+  currency: SupportedCurrencyKey;
+}) => {
   const { width, points } = useChart();
   const textLabelWidth = 60;
   const overflowRight = x + textLabelWidth > width;
@@ -44,12 +51,18 @@ const IndicatorLabel = ({ x }: { x: number }) => {
       x={overflowRight ? x - 4 : x + 4}
       textAnchor={overflowRight ? 'end' : 'start'}
     >
-      {formatCurrency(point.price)}
+      {formatCurrency(currency, point.price)}
     </text>
   );
 };
 
-const Indicator = ({ position: { x, y } }: { position: Position }) => {
+const Indicator = ({
+  position: { x, y },
+  currency,
+}: {
+  position: Position;
+  currency: SupportedCurrencyKey;
+}) => {
   const { height } = useChart();
 
   return (
@@ -88,7 +101,7 @@ const Indicator = ({ position: { x, y } }: { position: Position }) => {
       </defs>
       <circle cx={x} cy={y} r="16" fill={transparentAccentColorAsHsl} />
       <circle cx={x} cy={y} r="8" fill={accentColorAsHsl} />
-      <IndicatorLabel x={x} />
+      <IndicatorLabel x={x} currency={currency} />
     </>
   );
 };
@@ -115,7 +128,9 @@ export const LineChart = ({
   paddingY,
   data,
   onMouseMove,
+  currency,
 }: {
+  currency: SupportedCurrencyKey;
   width: number;
   height: number;
   paddingY: number;
@@ -191,7 +206,7 @@ export const LineChart = ({
           }
           strokeWidth={3}
         />
-        {indicator && <Indicator position={indicator} />}
+        {indicator && <Indicator position={indicator} currency={currency} />}
       </motion.svg>
     </ChartContext.Provider>
   );

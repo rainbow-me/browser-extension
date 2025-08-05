@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { Address } from 'viem';
 
-import { useCurrentAddressStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { KeychainType } from '~/core/types/keychainTypes';
 
@@ -39,7 +39,7 @@ export const useWallets = () => {
     refetchOnReconnect: false,
   });
 
-  const { currentAddress: address } = useCurrentAddressStore();
+  const [address] = useSettingsStore('currentAddress');
 
   return useMemo(() => {
     if (!allWallets)

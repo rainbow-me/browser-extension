@@ -11,19 +11,13 @@ import {
   RAINBOW_TWITTER_URL,
 } from '~/core/references/links';
 import { themeOptions } from '~/core/references/themes';
-import {
-  useCurrentCurrencyStore,
-  useCurrentLanguageStore,
-  useIsDefaultWalletStore,
-  useNonceStore,
-} from '~/core/state';
-import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { useNonceStore } from '~/core/state';
+import { useCurrentLanguage } from '~/core/state/currentSettings/currentLanguage';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import {
   FeatureFlagTypes,
-  useFeatureFlagsStore,
-} from '~/core/state/currentSettings/featureFlags';
-import { useSoundStore } from '~/core/state/sound';
+  useSettingsStore,
+} from '~/core/state/currentSettings/store';
 import { ThemeOption } from '~/core/types/settings';
 import { Box, Inline, Symbol, Text } from '~/design-system';
 import { Lens } from '~/design-system/components/Lens/Lens';
@@ -43,23 +37,26 @@ import { ROUTES } from '../../urls';
 
 export function Settings() {
   const navigate = useRainbowNavigate();
-  const { currentCurrency } = useCurrentCurrencyStore();
-  const { currentLanguage } = useCurrentLanguageStore();
-  const { isDefaultWallet, setIsDefaultWallet } = useIsDefaultWalletStore();
-  const { soundsEnabled, toggleSoundsEnabled } = useSoundStore();
-  const { featureFlags, setFeatureFlag } = useFeatureFlagsStore();
   const { isWatchingWallet } = useWallets();
   const { getAppUUID, handleUUIDCopy } = useDeviceUUID();
 
   const { currentUserSelectedTheme, currentTheme, setCurrentTheme } =
     useCurrentThemeStore();
-  const {
-    connectedToHardhat,
-    setConnectedToHardhat,
-    connectedToHardhatOp,
-    setConnectedToHardhatOp,
-  } = useConnectedToHardhatStore();
   const clearNonces = useNonceStore((state) => state.clearNonces);
+
+  const { currentLanguage } = useCurrentLanguage();
+  const [currentCurrency] = useSettingsStore('currentCurrency');
+  const [isDefaultWallet, setIsDefaultWallet] =
+    useSettingsStore('isDefaultWallet');
+  const [isSoundEnabled, setIsSoundEnabled] =
+    useSettingsStore('isSoundEnabled');
+  const [featureFlags, setFeatureFlag] = useSettingsStore('featureFlags');
+  const [connectedToHardhat, setConnectedToHardhat] = useSettingsStore(
+    'isConnectedToHardhat',
+  );
+  const [connectedToHardhatOp, setConnectedToHardhatOp] = useSettingsStore(
+    'isConnectedToHardhatOp',
+  );
 
   const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
 
@@ -71,9 +68,13 @@ export function Settings() {
 
   const toggleFeatureFlag = useCallback(
     (key: FeatureFlagTypes) => {
-      setFeatureFlag(key, !featureFlags[key]);
+      setFeatureFlag((old, defaults) => ({
+        ...defaults,
+        ...old,
+        [key]: !(old ?? defaults)[key],
+      }));
     },
-    [featureFlags, setFeatureFlag],
+    [setFeatureFlag],
   );
 
   const testSandboxPopup = useCallback(async () => {
@@ -89,17 +90,17 @@ export function Settings() {
   }, []);
 
   const toggleSounds = useCallback(
-    () => toggleSoundsEnabled(!soundsEnabled),
-    [soundsEnabled, toggleSoundsEnabled],
+    () => setIsSoundEnabled((x) => !x),
+    [setIsSoundEnabled],
   );
 
   const connectToHardhat = useCallback(() => {
-    setConnectedToHardhat(!connectedToHardhat);
-  }, [setConnectedToHardhat, connectedToHardhat]);
+    setConnectedToHardhat((x) => !x);
+  }, [setConnectedToHardhat]);
 
   const connectToHardhatOp = useCallback(() => {
-    setConnectedToHardhatOp(!connectedToHardhatOp);
-  }, [setConnectedToHardhatOp, connectedToHardhatOp]);
+    setConnectedToHardhatOp((x) => !x);
+  }, [setConnectedToHardhatOp]);
 
   const setRainbowAsDefaultWallet = useCallback(
     async (rainbowAsDefault: boolean) => {
@@ -358,7 +359,7 @@ export function Settings() {
             }
             rightComponent={
               <Toggle
-                checked={soundsEnabled}
+                checked={isSoundEnabled}
                 handleChange={toggleSounds}
                 tabIndex={-1}
               />

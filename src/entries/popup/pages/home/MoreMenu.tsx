@@ -7,9 +7,7 @@ import {
   RAINBOW_SUPPORT_URL,
 } from '~/core/references/links';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useCurrentAddressStore } from '~/core/state';
-import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { ChainId } from '~/core/types/chains';
 import { getProfileUrl, goToNewTab } from '~/core/utils/tabs';
 import { Box, Inline, Row, Rows, Stack, Symbol, Text } from '~/design-system';
@@ -31,11 +29,11 @@ import { ROUTES } from '../../urls';
 import playSound from '../../utils/playSound';
 
 export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
-  const { currentAddress: address } = useCurrentAddressStore();
+  const [address] = useSettingsStore('currentAddress');
   const { data: ensName } = useEnsName({ address, chainId: ChainId.mainnet });
   const navigate = useRainbowNavigate();
-  const { testnetMode, setTestnetMode } = useTestnetModeStore();
-  const { developerToolsEnabled } = useDeveloperToolsEnabledStore();
+  const [testnetMode, setTestnetMode] = useSettingsStore('isTestnetMode');
+  const [developerToolsEnabled] = useSettingsStore('isDeveloperToolsEnabled');
 
   const openProfile = React.useCallback(
     () =>

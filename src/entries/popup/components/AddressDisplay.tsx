@@ -1,7 +1,7 @@
 import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import { getBlockExplorerHostForChain } from '~/core/utils/chains';
@@ -87,10 +87,8 @@ const YouOrAddress = ({
   address: Address;
   color?: TextProps['color'];
 }) => {
-  const currentAccount = useCurrentAddressStore((a) =>
-    a.currentAddress.toLocaleLowerCase(),
-  );
-  if (currentAccount === address.toLowerCase())
+  const [currentAccount] = useSettingsStore('currentAddress');
+  if (currentAccount.toLowerCase() === address.toLowerCase())
     return (
       <Inline alignVertical="center" wrap={false} space="2px">
         <Text color={color} size="12pt" weight="semibold">

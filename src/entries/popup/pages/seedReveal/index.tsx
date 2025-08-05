@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useWalletBackupsStore } from '~/core/state/walletBackups';
 import {
   Bleed,
@@ -29,7 +29,7 @@ export function SeedReveal() {
     (state) => state.setWalletBackedUp,
   );
   const [seed, setSeed] = useState('');
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
 
   useEffect(() => {
     const init = async () => {

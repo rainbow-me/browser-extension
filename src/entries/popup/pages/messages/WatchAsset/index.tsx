@@ -5,7 +5,7 @@ import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { useAssetMetadata } from '~/core/resources/assets/assetMetadata';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ParsedUserAsset } from '~/core/types/assets';
@@ -55,8 +55,8 @@ export const WatchAsset = ({
   const [selectedChainId, setSelectedChainId] = useState<ChainId>(
     Number(chainId),
   );
-  const { currentAddress } = useCurrentAddressStore();
-  const { currentCurrency } = useCurrentCurrencyStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
+  const [currentCurrency] = useSettingsStore('currentCurrency');
   const logo = useMemo(
     () => getCustomChainIconUrl(selectedChainId, assetAddress),
     [selectedChainId, assetAddress],

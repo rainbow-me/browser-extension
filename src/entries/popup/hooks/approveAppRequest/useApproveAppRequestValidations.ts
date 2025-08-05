@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { ActiveSession } from '~/core/state/appSessions';
-import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { ChainId } from '~/core/types/chains';
 import { chainIdToUse, getChain } from '~/core/utils/chains';
 
@@ -18,8 +18,8 @@ export const useApproveAppRequestValidations = ({
   dappStatus?: DAppStatus;
   signingWithDevice?: boolean;
 }) => {
-  const { connectedToHardhat, connectedToHardhatOp } =
-    useConnectedToHardhatStore();
+  const [connectedToHardhat] = useSettingsStore('isConnectedToHardhat');
+  const [connectedToHardhatOp] = useSettingsStore('isConnectedToHardhatOp');
 
   const { hasEnough: enoughNativeAssetForGas, isLoading: isGasLoading } =
     useHasEnoughGas(session);

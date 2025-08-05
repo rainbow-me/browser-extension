@@ -7,11 +7,8 @@ import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
-import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
-import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
-import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useSelectedNftStore } from '~/core/state/selectedNft';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { useSelectedTransactionStore } from '~/core/state/selectedTransaction';
@@ -44,7 +41,7 @@ import { useRainbowNavigate } from './useRainbowNavigate';
 import { useWallets } from './useWallets';
 
 export function useHomeShortcuts() {
-  const { currentAddress: address } = useCurrentAddressStore();
+  const [address] = useSettingsStore('currentAddress');
   const { data: ensName } = useEnsName({ address, chainId: ChainId.mainnet });
   const { selectedToken } = useSelectedTokenStore();
   const { selectedTransaction } = useSelectedTransactionStore();
@@ -54,10 +51,10 @@ export function useHomeShortcuts() {
   const { url } = useActiveTab();
   const { data: dappMetadata } = useDappMetadata({ url });
   const { disconnectSession } = useAppSession({ host: dappMetadata?.appHost });
-  const { featureFlags } = useFeatureFlagsStore();
+  const [featureFlags] = useSettingsStore('featureFlags');
   const { isWatchingWallet } = useWallets();
-  const { testnetMode, setTestnetMode } = useTestnetModeStore();
-  const { developerToolsEnabled } = useDeveloperToolsEnabledStore();
+  const [testnetMode, setTestnetMode] = useSettingsStore('isTestnetMode');
+  const [developerToolsEnabled] = useSettingsStore('isDeveloperToolsEnabled');
   const { selectedNft } = useSelectedNftStore();
   const location = useLocation();
 

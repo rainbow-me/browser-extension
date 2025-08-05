@@ -2,8 +2,7 @@ import { useCallback, useMemo } from 'react';
 import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
-import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { POPUP_URL, goToNewTab } from '~/core/utils/tabs';
@@ -30,14 +29,14 @@ export const useSearchableContacts = ({
 }: UseSearchableContactsParameters) => {
   const contacts = useContacts();
   const { isWatchingWallet } = useWallets();
-  const { featureFlags } = useFeatureFlagsStore();
+  const [featureFlags] = useSettingsStore('featureFlags');
   const navigate = useRainbowNavigate();
 
   const isFullScreen = useIsFullScreen();
 
   const { type, vendor } = useCurrentWalletTypeAndVendor();
 
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
 
   const isTrezor =
     type === KeychainType.HardwareWalletKeychain && vendor === 'Trezor';

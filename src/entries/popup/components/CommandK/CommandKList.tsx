@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import React, { useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useHiddenAssetStore } from '~/core/state/hiddenAssets/hiddenAssets';
 import { useNftsStore } from '~/core/state/nfts';
 import { Box, Stack, Symbol, Text, TextOverflow } from '~/design-system';
@@ -75,7 +75,7 @@ export const CommandKList = React.forwardRef<
   const isCommandKVisible = useCommandKStatus(
     (state) => state.isCommandKVisible,
   );
-  const address = useCurrentAddressStore((state) => state.currentAddress);
+  const [address] = useSettingsStore('currentAddress');
   const hiddenAssets = useHiddenAssetStore((state) => state.hidden);
   const hiddenNfts = useNftsStore((state) => state.hidden);
   const hiddenNftsForAddress = useMemo(

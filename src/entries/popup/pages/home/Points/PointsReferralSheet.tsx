@@ -2,8 +2,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { KeyboardEventHandler, useCallback, useState } from 'react';
 
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import {
   Box,
   Button,
@@ -47,7 +47,7 @@ const maskAsciiInput = (inputValue: string): string => {
 
 export const PointsReferralSheet = () => {
   const navigate = useRainbowNavigate();
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
   const { currentTheme } = useCurrentThemeStore();
   const [referralCode, setReferralCode] = useState('');

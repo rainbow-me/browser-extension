@@ -16,11 +16,8 @@ import { useUserAssets } from '~/core/resources/assets';
 import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
 import { fetchProviderWidgetUrl } from '~/core/resources/f2c';
 import { FiatProviderName } from '~/core/resources/f2c/types';
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
-import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
-import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import {
   computeUniqueIdForHiddenAsset,
   useHiddenAssetStore,
@@ -99,11 +96,11 @@ const TokenRow = memo(function TokenRow({
 });
 
 export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
-  const { currentAddress } = useCurrentAddressStore();
-  const { currentCurrency: currency } = useCurrentCurrencyStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
+  const [currency] = useSettingsStore('currentCurrency');
   const [manuallyRefetchingTokens, setManuallyRefetchingTokens] =
     useState(false);
-  const { hideSmallBalances } = useHideSmallBalancesStore();
+  const [hideSmallBalances] = useSettingsStore('isHideSmallBalances');
   const { trackShortcut } = useKeyboardAnalytics();
   const { modifierSymbol } = useSystemSpecificModifierKey();
   const { pinned: pinnedStore } = usePinnedAssetStore();
@@ -338,8 +335,8 @@ export const AssetRow = memo(function AssetRow({
 }: AssetRowProps) {
   const name = asset?.name || asset?.symbol || truncateAddress(asset.address);
   const uniqueId = asset?.uniqueId;
-  const { hideAssetBalances } = useHideAssetBalancesStore();
-  const { currentCurrency } = useCurrentCurrencyStore();
+  const [hideAssetBalances] = useSettingsStore('isHideAssetBalances');
+  const [currentCurrency] = useSettingsStore('currentCurrency');
 
   const priceChange = asset?.native?.price?.change;
   const priceChangeDisplay = priceChange?.length ? priceChange : '-';
@@ -447,7 +444,7 @@ type EmptyStateProps = {
 
 function TokensEmptyState({ depositAddress }: EmptyStateProps) {
   const { currentTheme } = useCurrentThemeStore();
-  const { testnetMode } = useTestnetModeStore();
+  const [testnetMode] = useSettingsStore('isTestnetMode');
   const handleCoinbase = useCallback(async () => {
     const { data } = await fetchProviderWidgetUrl({
       provider: FiatProviderName.Coinbase,

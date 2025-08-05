@@ -8,14 +8,9 @@ import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useCurrentAddressStore } from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
-import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
-import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
-import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
-import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useHiddenAssetStore } from '~/core/state/hiddenAssets/hiddenAssets';
 import { useNftsStore } from '~/core/state/nfts';
 import { usePinnedAssetStore } from '~/core/state/pinnedAssets';
@@ -730,11 +725,10 @@ export const useCommands = (
   setSelectedCommandNeedsUpdate: React.Dispatch<React.SetStateAction<boolean>>,
 ) => {
   const { isFirefox } = useBrowser();
-  const { currentAddress: address, setCurrentAddress } =
-    useCurrentAddressStore();
+  const [address, setCurrentAddress] = useSettingsStore('currentAddress');
   const { currentTheme } = useCurrentThemeStore();
   const { data: ensName } = useEnsName({ address, chainId: ChainId.mainnet });
-  const { featureFlags } = useFeatureFlagsStore();
+  const [featureFlags] = useSettingsStore('featureFlags');
   const isFullScreen = useIsFullScreen();
   const navigate = useRainbowNavigate();
   const navigateToSwaps = useNavigateToSwaps();
@@ -785,15 +779,18 @@ export const useCommands = (
   });
   const { sortedAccounts } = useAccounts();
 
-  const { setTestnetMode, testnetMode } = useTestnetModeStore();
-  const { developerToolsEnabled, setDeveloperToolsEnabled } =
-    useDeveloperToolsEnabledStore();
-  const { hideAssetBalances, setHideAssetBalances } =
-    useHideAssetBalancesStore();
-  const { hideSmallBalances, setHideSmallBalances } =
-    useHideSmallBalancesStore();
+  const [testnetMode, setTestnetMode] = useSettingsStore('isTestnetMode');
+  const [developerToolsEnabled, setDeveloperToolsEnabled] = useSettingsStore(
+    'isDeveloperToolsEnabled',
+  );
+  const [hideAssetBalances, setHideAssetBalances] = useSettingsStore(
+    'isHideAssetBalances',
+  );
+  const [hideSmallBalances, setHideSmallBalances] = useSettingsStore(
+    'isHideSmallBalances',
+  );
 
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
 
   const { contacts, deleteContact, saveContact } = useContactsStore();
 

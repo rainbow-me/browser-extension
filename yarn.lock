@@ -7843,6 +7843,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/webextension-polyfill@npm:^0":
+  version: 0.12.3
+  resolution: "@types/webextension-polyfill@npm:0.12.3"
+  checksum: 10c0/0f0cea5ab70a3958f7eca61168b8b431288c35ee7e8f052f5b3bf6a6aa101183aa760addd4dcf408027d558731aa8a8f107e47a373bb7c347cb7cba807fe46e6
+  languageName: node
+  linkType: hard
+
 "@types/webpack-sources@npm:*":
   version: 3.2.0
   resolution: "@types/webpack-sources@npm:3.2.0"
@@ -8996,6 +9003,24 @@ __metadata:
     "@webassemblyjs/ast": "npm:1.12.1"
     "@xtuc/long": "npm:4.2.2"
   checksum: 10c0/39bf746eb7a79aa69953f194943bbc43bebae98bd7cadd4d8bc8c0df470ca6bf9d2b789effaa180e900fab4e2691983c1f7d41571458bd2a26267f2f0c73705a
+  languageName: node
+  linkType: hard
+
+"@webext-core/fake-browser@npm:1.3.2":
+  version: 1.3.2
+  resolution: "@webext-core/fake-browser@npm:1.3.2"
+  dependencies:
+    lodash.merge: "npm:^4.6.2"
+  checksum: 10c0/92a8608846034d1ccf3be4f0fa3bf329f33f5905f6097cf066e05f51119669c49bffcabe36e84ccb971502ace648fa2090b74a57efe114deab935c048cf3a12e
+  languageName: node
+  linkType: hard
+
+"@webext-core/storage@npm:1.2.0":
+  version: 1.2.0
+  resolution: "@webext-core/storage@npm:1.2.0"
+  dependencies:
+    webextension-polyfill: "npm:^0.10.0"
+  checksum: 10c0/9c0a0ff1718443c08a753acade9a62660ca13cf2165695f307e8f74852930e6b6b9b58157dff27224298a46523cbeda8ebd248f5708154c07e0a9f839d13a5a1
   languageName: node
   linkType: hard
 
@@ -10529,6 +10554,7 @@ __metadata:
     "@types/react-dom": "npm:18.0.6"
     "@types/selenium-webdriver": "npm:4.1.28"
     "@types/semver": "npm:7.3.13"
+    "@types/webextension-polyfill": "npm:^0"
     "@typescript-eslint/eslint-plugin": "npm:6.4.1"
     "@typescript-eslint/parser": "npm:6.4.1"
     "@vanilla-extract/css": "npm:1.9.1"
@@ -10537,6 +10563,8 @@ __metadata:
     "@vanilla-extract/sprinkles": "npm:1.5.0"
     "@vanilla-extract/vite-plugin": "npm:3.6.1"
     "@vanilla-extract/webpack-plugin": "npm:2.2.0"
+    "@webext-core/fake-browser": "npm:1.3.2"
+    "@webext-core/storage": "npm:1.2.0"
     audit-ci: "npm:6.3.0"
     babel-plugin-module-resolver: "npm:5.0.2"
     bignumber.js: "npm:9.0.1"
@@ -10607,12 +10635,14 @@ __metadata:
     selenium-webdriver: "npm:4.34.0"
     semver: "npm:7.5.2"
     svg-path-commander: "npm:1.0.5"
+    swr: "npm:2.3.6"
     ts-loader: "npm:9.4.1"
     typescript: "npm:5.8.2"
     viem: "npm:2.31.7"
     vitest: "npm:0.34.6"
     wagmi: "npm:2.16.1"
     web-ext: "npm:7.6.2"
+    webextension-polyfill: "npm:0.12.0"
     webpack: "npm:5.94.0"
     webpack-bundle-analyzer: "npm:4.8.0"
     webpack-cli: "npm:5.1.4"
@@ -12622,6 +12652,13 @@ __metadata:
   bin:
     deps-sort: bin/cmd.js
   checksum: 10c0/e4f71e6c1d3fea2008f0dac179f9b07f75dcd0bb18eaf52e5cb5227b2ffb393fc0039f9bd4ec4c3877a899ce1d6f83d06edabe00789bcc1ccfc1bf008d697879
+  languageName: node
+  linkType: hard
+
+"dequal@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "dequal@npm:2.0.3"
+  checksum: 10c0/f98860cdf58b64991ae10205137c0e97d384c3a4edc7f807603887b7c4b850af1224a33d88012009f150861cbee4fa2d322c4cc04b9313bee312e47f6ecaa888
   languageName: node
   linkType: hard
 
@@ -23989,6 +24026,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"swr@npm:2.3.6":
+  version: 2.3.6
+  resolution: "swr@npm:2.3.6"
+  dependencies:
+    dequal: "npm:^2.0.3"
+    use-sync-external-store: "npm:^1.4.0"
+  peerDependencies:
+    react: ^16.11.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 10c0/9534f350982e36a3ae0a13da8c0f7da7011fc979e77f306e60c4e5db0f9b84f17172c44f973441ba56bb684b69b0d9838ab40011a6b6b3e32d0cd7f3d5405f99
+  languageName: node
+  linkType: hard
+
 "synckit@npm:^0.8.5":
   version: 0.8.5
   resolution: "synckit@npm:0.8.5"
@@ -25221,6 +25270,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"use-sync-external-store@npm:^1.4.0":
+  version: 1.5.0
+  resolution: "use-sync-external-store@npm:1.5.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 10c0/1b8663515c0be34fa653feb724fdcce3984037c78dd4a18f68b2c8be55cc1a1084c578d5b75f158d41b5ddffc2bf5600766d1af3c19c8e329bb20af2ec6f52f4
+  languageName: node
+  linkType: hard
+
 "useragent@npm:^2.3.0":
   version: 2.3.0
   resolution: "useragent@npm:2.3.0"
@@ -25772,6 +25830,13 @@ __metadata:
     pvtsutils: "npm:^1.3.5"
     tslib: "npm:^2.6.2"
   checksum: 10c0/d4158af402500eb26d0de6e088baa0fbef41c43a3e3b5f53b8326c8c517e55037b3d8a17672cf48bdccfd13526599857544ea8485e2172bb14c9ee4561d706a5
+  languageName: node
+  linkType: hard
+
+"webextension-polyfill@npm:0.12.0":
+  version: 0.12.0
+  resolution: "webextension-polyfill@npm:0.12.0"
+  checksum: 10c0/5ace2aaaf6a203515bdd2fb948622f186a5fbb50099b539ce9c0ad54896f9cc1fcc3c0e2a71d1f7071dd7236d7daebba1e0cbcf43bfdfe54361addf0333ee7d1
   languageName: node
   linkType: hard
 

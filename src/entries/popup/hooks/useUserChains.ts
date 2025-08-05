@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 import { isCustomChain } from '~/core/utils/chains';
@@ -17,7 +17,7 @@ export const useUserChains = () => {
     chainOrder: state.chainOrder,
   }));
 
-  const { testnetMode } = useTestnetModeStore();
+  const [testnetMode] = useSettingsStore('isTestnetMode');
 
   const allTransformedChainsMap = useNetworkStore((state) =>
     state.getAllChains(true),

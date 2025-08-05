@@ -7,7 +7,7 @@ import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { RapClaimActionParameters } from '~/core/raps/references';
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId, chainIdToNameMapping } from '~/core/types/chains';
 import { GasSpeed } from '~/core/types/gas';
@@ -64,8 +64,8 @@ export function ClaimSheet() {
   const [initialClaimableAmount, setInitialClaimableAmount] = useState('');
   const [initialClaimableDisplay, setInitialClaimableDisplay] = useState('');
 
-  const { currentAddress: address } = useCurrentAddressStore();
-  const { currentCurrency: currency } = useCurrentCurrencyStore();
+  const [address] = useSettingsStore('currentAddress');
+  const [currency] = useSettingsStore('currentCurrency');
   const { data, refetch } = usePoints(address);
   const rewards = data?.user?.rewards;
   const { claimable } = rewards || {};

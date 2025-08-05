@@ -15,7 +15,7 @@ import {
   delay,
 } from '~/test/utils';
 
-import { useConnectedToHardhatStore } from '../state/currentSettings/connectedToHardhat';
+import { settingsStorage } from '../state/currentSettings/store';
 import { chainHardhat } from '../types/chains';
 import { updateWagmiConfig } from '../wagmi';
 
@@ -105,7 +105,7 @@ const doesntNeedUnlockQuote: Quote | QuoteError | null = {
 };
 
 beforeAll(async () => {
-  useConnectedToHardhatStore.setState({ connectedToHardhat: true });
+  await settingsStorage.setItem('settings:isConnectedToHardhat', true);
   updateWagmiConfig([chainHardhat]);
   await delay(3000);
 });

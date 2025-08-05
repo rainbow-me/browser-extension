@@ -5,8 +5,7 @@ import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useCurrentAddressStore } from '~/core/state';
-import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import {
   computeUniqueIdForHiddenAsset,
   useHiddenAssetStore,
@@ -44,8 +43,8 @@ interface TokenContextMenuProps {
 
 export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
   const { isWatchingWallet } = useWallets();
-  const { featureFlags } = useFeatureFlagsStore();
-  const { currentAddress: address } = useCurrentAddressStore();
+  const [featureFlags] = useSettingsStore('featureFlags');
+  const [address] = useSettingsStore('currentAddress');
   const { pinned: pinnedStore, togglePinAsset } = usePinnedAssetStore();
   const setSelectedToken = useSelectedTokenStore(
     (state) => state.setSelectedToken,

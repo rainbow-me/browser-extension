@@ -11,7 +11,7 @@ import {
   tokenSearchQueryKey,
   useTokenSearchAllNetworks,
 } from '~/core/resources/search/tokenSearch';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -140,7 +140,7 @@ export function useSearchCurrencyLists({
   // provided during swap to filter token search by available routes
   const fromChainId = isCrosschainSearch ? inputChainId : undefined;
 
-  const { testnetMode } = useTestnetModeStore();
+  const [testnetMode] = useSettingsStore('isTestnetMode');
   const supportedChains = useNetworkStore((state) =>
     state.getBackendSupportedChains(true),
   );

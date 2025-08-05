@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { useWalletBackupsStore } from '~/core/state/walletBackups';
 import { useWalletNamesStore } from '~/core/state/walletNames';
@@ -46,7 +46,8 @@ export const WipeWalletGroupPrompt = ({
   show: boolean;
   onClose: () => void;
 }) => {
-  const { currentAddress, setCurrentAddress } = useCurrentAddressStore();
+  const [currentAddress, setCurrentAddress] =
+    useSettingsStore('currentAddress');
   const navigate = useRainbowNavigate();
 
   const handleDeleteWalletGroup = useCallback(async () => {

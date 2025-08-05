@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { supportedCurrencies } from '~/core/references';
-import { useCurrentCurrencyStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
@@ -25,7 +25,7 @@ export const useSendInputs = ({
   asset: ParsedUserAsset | null;
   selectedGas: GasFeeParams | GasFeeLegacyParams;
 }) => {
-  const { currentCurrency } = useCurrentCurrencyStore();
+  const [currentCurrency] = useSettingsStore('currentCurrency');
   const independentFieldRef = useRef<HTMLInputElement>(null);
   const [independentAmount, setIndependentAmount] = useState<string>('');
   const [independentField, setIndependentField] = useState<'native' | 'asset'>(

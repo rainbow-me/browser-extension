@@ -5,8 +5,8 @@ import { useEnsName } from 'wagmi';
 import appsConnectedImageMask from 'static/assets/appsConnectedImageMask.svg';
 import { i18n } from '~/core/languages';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
-import { useCurrentAddressStore } from '~/core/state';
 import { AppSession } from '~/core/state/appSessions';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import { isLowerCaseMatch } from '~/core/utils/strings';
@@ -35,7 +35,7 @@ import { useAppSessions } from '../../hooks/useAppSessions';
 
 export const ConnectedApps = () => {
   const { appSessions, disconnectAppSessions } = useAppSessions();
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
 
   const filteredSessions = Object.values(appSessions).reduce(
     (acc: [AppSession[], AppSession[]], session: AppSession) => (

@@ -1,6 +1,9 @@
+import { useCallback } from 'react';
+
 import { Language, changeI18nLanguage, i18n } from '~/core/languages';
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { fetchJsonLocally } from '~/core/utils/localJson';
+
+import { useSettingsStore } from './store';
 
 export interface CurrentLanguageState {
   currentLanguage: Language;
@@ -15,17 +18,19 @@ const loadTranslation = async (language: Language) => {
   i18n.translations[language] = newLangDict;
 };
 
-export const useCurrentLanguageStore = createRainbowStore<CurrentLanguageState>(
-  (set) => ({
-    currentLanguage: Language.EN_US,
-    setCurrentLanguage: async (newLanguage) => {
+export const useCurrentLanguage: () => CurrentLanguageState = () => {
+  const [currentLanguage, _setCurrentLanguage] =
+    useSettingsStore('currentLanguage');
+  const setCurrentLanguage = useCallback(
+    async (newLanguage: Language) => {
       await loadTranslation(newLanguage);
       changeI18nLanguage(newLanguage);
-      set({ currentLanguage: newLanguage });
+      _setCurrentLanguage(newLanguage);
     },
-  }),
-  {
-    storageKey: 'currentLanguage',
-    version: 1,
-  },
-);
+    [_setCurrentLanguage],
+  );
+  return {
+    currentLanguage,
+    setCurrentLanguage,
+  };
+};

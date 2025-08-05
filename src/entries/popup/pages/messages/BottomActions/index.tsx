@@ -7,7 +7,7 @@ import { event } from '~/analytics/event';
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useCurrentAddressStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
@@ -142,9 +142,7 @@ export const BottomSwitchWallet = ({
   selectedWallet: Address;
   setSelectedWallet: (selected: Address) => void;
 }) => {
-  const setCurrentAddress = useCurrentAddressStore(
-    (state) => state.setCurrentAddress,
-  );
+  const [, setCurrentAddress] = useSettingsStore('currentAddress');
   const { sortedAccounts } = useAccounts();
   const { trackShortcut } = useKeyboardAnalytics();
   const menuTriggerRef = useRef<{ triggerMenu: () => void }>(null);

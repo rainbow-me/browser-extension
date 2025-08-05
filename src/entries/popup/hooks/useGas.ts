@@ -13,7 +13,8 @@ import {
   MeteorologyResponse,
 } from '~/core/resources/gas/meteorology';
 import { useOptimismL1SecurityFee } from '~/core/resources/gas/optimismL1SecurityFee';
-import { useCurrentCurrencyStore, useGasStore } from '~/core/state';
+import { useGasStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { ParsedAsset, ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -52,7 +53,7 @@ const useGas = ({
   enabled?: boolean;
   additionalTime?: number;
 }) => {
-  const { currentCurrency } = useCurrentCurrencyStore();
+  const [currentCurrency] = useSettingsStore('currentCurrency');
   const { data: gasData, isLoading } = useGasData({ chainId });
   const { nativeAsset } = useUserNativeAsset({ chainId, address });
   const needsSecurityFee = useNetworkStore((state) =>

@@ -2,6 +2,7 @@ import { uuid4 } from '@sentry/core';
 
 import { initializeMessenger } from '~/core/messengers';
 import { initializeSentry } from '~/core/sentry';
+import { migrateStorage } from '~/core/state/currentSettings/migrate';
 import {
   syncNetworksStore,
   syncStores,
@@ -21,6 +22,7 @@ import { startPopupRouter } from './procedures/popup';
 require('../../core/utils/lockdown');
 
 initializeSentry('background');
+migrateStorage();
 localStorageRecycler();
 
 handleOpenExtensionShortcut();

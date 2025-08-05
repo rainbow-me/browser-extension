@@ -3,10 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { analytics } from '~/analytics';
 import { i18n } from '~/core/languages';
 import { autoLockTimerOptions } from '~/core/references/autoLockTimer';
-import { useAnalyticsDisabledStore } from '~/core/state/currentSettings/analyticsDisabled';
-import { useAutoLockTimerStore } from '~/core/state/currentSettings/autoLockTimer';
-import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
-import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { Box, Symbol } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
@@ -19,14 +16,17 @@ import { ConfirmPasswordPrompt } from './confirmPasswordPrompt';
 
 export function Privacy() {
   const navigate = useRainbowNavigate();
-  const { analyticsDisabled, setAnalyticsDisabled } =
-    useAnalyticsDisabledStore();
-  const { hideAssetBalances, setHideAssetBalances } =
-    useHideAssetBalancesStore();
-  const { hideSmallBalances, setHideSmallBalances } =
-    useHideSmallBalancesStore();
+  const [analyticsDisabled, setAnalyticsDisabled] = useSettingsStore(
+    'isAnalyticsDisabled',
+  );
+  const [hideAssetBalances, setHideAssetBalances] = useSettingsStore(
+    'isHideAssetBalances',
+  );
+  const [hideSmallBalances, setHideSmallBalances] = useSettingsStore(
+    'isHideSmallBalances',
+  );
 
-  const { autoLockTimer } = useAutoLockTimerStore();
+  const [autoLockTimer] = useSettingsStore('autoLockTimer');
   const [showEnterPassword, setShowEnterPassword] = useState(false);
   const [confirmPasswordRedirect, setConfirmPasswordRedirect] = useState('');
   const openPasswordPrompt = () => {
@@ -101,7 +101,7 @@ export function Privacy() {
                   testId={'hide-assets-toggle'}
                   tabIndex={-1}
                   checked={hideAssetBalances}
-                  handleChange={setHideAssetBalances}
+                  handleChange={(value) => setHideAssetBalances(value)}
                 />
               }
               titleComponent={
@@ -124,7 +124,7 @@ export function Privacy() {
                 <Toggle
                   testId={'hide-small-balances-toggle'}
                   checked={hideSmallBalances}
-                  handleChange={setHideSmallBalances}
+                  handleChange={(value) => setHideSmallBalances(value)}
                   tabIndex={-1}
                 />
               }

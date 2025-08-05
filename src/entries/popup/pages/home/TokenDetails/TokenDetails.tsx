@@ -10,8 +10,7 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { useApprovals } from '~/core/resources/approvals/approvals';
 import { useAssetSearchMetadata } from '~/core/resources/assets/assetMetadata';
 import { useTokenSearch } from '~/core/resources/search';
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
-import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useFavoritesStore } from '~/core/state/favorites';
 import {
   computeUniqueIdForHiddenAsset,
@@ -113,7 +112,7 @@ function BalanceValue({
   nativeBalance: FormattedCurrencyParts;
   chainId: ParsedUserAsset['chainId'];
 }) {
-  const { hideAssetBalances } = useHideAssetBalancesStore();
+  const [hideAssetBalances] = useSettingsStore('isHideAssetBalances');
 
   const color: TextProps['color'] = hideAssetBalances
     ? 'labelTertiary'
@@ -358,7 +357,7 @@ function MoreOptions({
 }) {
   const { toggleHideAsset, hidden: hiddenStore } = useHiddenAssetStore();
 
-  const { currentAddress: address } = useCurrentAddressStore();
+  const [address] = useSettingsStore('currentAddress');
 
   const { pinned: pinnedStore, togglePinAsset } = usePinnedAssetStore();
 
@@ -556,8 +555,8 @@ function MoreOptions({
 }
 
 export function TokenDetails() {
-  const { currentAddress } = useCurrentAddressStore();
-  const { currentCurrency } = useCurrentCurrencyStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
+  const [currentCurrency] = useSettingsStore('currentCurrency');
   const { uniqueId } = useParams<{ uniqueId: UniqueId }>();
   const [urlSearchParams] = useSearchParams();
 
@@ -801,10 +800,13 @@ export function TokenDetails() {
           {'balance' in token && 'native' in token && (
             <BalanceValue
               balance={{
-                ...formatCurrencyParts(token.balance.amount),
+                ...formatCurrencyParts(currentCurrency, token.balance.amount),
                 symbol: token.symbol,
               }}
-              nativeBalance={formatCurrencyParts(token.native.balance.amount)}
+              nativeBalance={formatCurrencyParts(
+                currentCurrency,
+                token.native.balance.amount,
+              )}
               chainId={token.chainId}
             />
           )}
@@ -918,7 +920,11 @@ export function TokenDetails() {
               <Separator color="separatorTertiary" />
             </Box>
           ) : null}
-          <About token={token} tokenInfo={tokenInfo} />
+          <About
+            token={token}
+            tokenInfo={tokenInfo}
+            currency={currentCurrency}
+          />
         </Box>
       )}
       <ExplainerSheet

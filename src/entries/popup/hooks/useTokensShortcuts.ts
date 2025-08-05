@@ -7,8 +7,7 @@ import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useCurrentAddressStore } from '~/core/state';
-import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import {
   computeUniqueIdForHiddenAsset,
   useHiddenAssetStore,
@@ -36,10 +35,10 @@ import { useWallets } from './useWallets';
 
 export function useTokensShortcuts() {
   const { isWatchingWallet } = useWallets();
-  const { featureFlags } = useFeatureFlagsStore();
+  const [featureFlags] = useSettingsStore('featureFlags');
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
   const { trackShortcut } = useKeyboardAnalytics();
-  const { currentAddress: address } = useCurrentAddressStore();
+  const [address] = useSettingsStore('currentAddress');
   const navigate = useRainbowNavigate();
   const navigateToSwaps = useNavigateToSwaps();
 

@@ -2,7 +2,7 @@ import { Address } from 'viem';
 
 import { createQueryKey } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
-import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { settingsStorage } from '~/core/state/currentSettings/store';
 import {
   AssetApiResponse,
   ParsedAssetsDictByChain,
@@ -74,8 +74,10 @@ export async function parseUserAssets({
     }
   }
 
-  const { connectedToHardhat, connectedToHardhatOp } =
-    useConnectedToHardhatStore.getState();
+  const [connectedToHardhat, connectedToHardhatOp] = await Promise.all([
+    settingsStorage.getItem('settings:isConnectedToHardhat'),
+    settingsStorage.getItem('settings:isConnectedToHardhatOp'),
+  ]);
   if (connectedToHardhat || connectedToHardhatOp) {
     // separating out these ternaries for readability
     const selectedHardhatChainId = connectedToHardhat

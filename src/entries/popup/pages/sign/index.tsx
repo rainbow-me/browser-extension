@@ -8,7 +8,7 @@ import {
 import React, { useCallback, useState } from 'react';
 import { ByteArray, getAddress } from 'viem';
 
-import { useCurrentAddressStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { WalletAction } from '~/core/types/walletActions';
 import { Box, Column, Columns, Row, Rows, Text } from '~/design-system';
 
@@ -18,7 +18,7 @@ export function Sign() {
   const [message, setMessage] = useState('');
   const [signature, setSignature] = useState('');
   const [signing, setSigning] = useState(false);
-  const { currentAddress: address } = useCurrentAddressStore();
+  const [address] = useSettingsStore('currentAddress');
 
   const handleMessageChange = useCallback(
     (event: { target: { value: React.SetStateAction<string> } }) => {

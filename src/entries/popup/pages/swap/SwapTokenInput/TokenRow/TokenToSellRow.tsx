@@ -1,8 +1,7 @@
 import { useMemo } from 'react';
 
 import { supportedCurrencies } from '~/core/references';
-import { useCurrentCurrencyStore } from '~/core/state';
-import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { UniqueId } from '~/core/types/assets';
 import {
   Box,
@@ -28,8 +27,8 @@ export type TokenToSellRowProps = {
 
 export function TokenToSellRow({ uniqueId }: TokenToSellRowProps) {
   const { data: asset } = useUserAsset(uniqueId);
-  const { hideAssetBalances } = useHideAssetBalancesStore();
-  const { currentCurrency } = useCurrentCurrencyStore();
+  const [hideAssetBalances] = useSettingsStore('isHideAssetBalances');
+  const [currentCurrency] = useSettingsStore('currentCurrency');
 
   const balanceDisplay = useMemo(
     () =>
