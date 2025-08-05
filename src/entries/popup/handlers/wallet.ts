@@ -2,39 +2,38 @@ import {
   TransactionRequest,
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
+import { BigNumber } from '@ethersproject/bignumber';
 import { Bytes } from '@ethersproject/bytes';
-import { HDNode, Mnemonic } from '@ethersproject/hdnode';
+import { HDNode } from '@ethersproject/hdnode';
 import { keccak256 } from '@ethersproject/keccak256';
 import AppEth from '@ledgerhq/hw-app-eth';
 import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import TrezorConnect from '@trezor/connect-web';
 import { Address } from 'viem';
 
-import { PrivateKey } from '~/core/keychain/IKeychain';
 import { getHDPathForVendorAndType } from '~/core/keychain/hdPath';
+import type { HardwareWalletVendor } from '~/core/keychain/keychainTypes/hardwareWalletKeychain';
 import {
   RapSwapActionParameters,
   RapTypes,
   WalletExecuteRapProps,
 } from '~/core/raps/references';
 import { useGasStore } from '~/core/state';
-import { SessionStorage } from '~/core/storage';
 import {
   TransactionGasParams,
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
-import { KeychainWallet } from '~/core/types/keychainTypes';
 import { ExecuteRapResponse } from '~/core/types/transactions';
-import { deserializeBigNumbers } from '~/core/utils/deserializeBigNumbers';
 import { hasPreviousTransactions } from '~/core/utils/ethereum';
 import { estimateGasWithPadding } from '~/core/utils/gas';
-import { toHex } from '~/core/utils/hex';
+import { toHex, toHexOrUndefined } from '~/core/utils/hex';
 import { getNextNonce } from '~/core/utils/transactions';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import { RainbowError, logger } from '~/logger';
 
 import { PathOptions } from '../pages/hw/addByIndexSheet';
 
+import { popupClient } from './background';
 import {
   sendTransactionFromLedger,
   signMessageByTypeFromLedger,
@@ -47,17 +46,6 @@ import {
 } from './trezor';
 import { walletAction } from './walletAction';
 import { HARDWARE_WALLETS } from './walletVariables';
-
-const signMessageByType = async (
-  msgData: string | Bytes,
-  address: Address,
-  type: 'personal_sign' | 'sign_typed_data',
-): Promise<string> => {
-  return walletAction<string>(type, {
-    address,
-    msgData,
-  });
-};
 
 export const signTransactionFromHW = async (
   transactionRequest: TransactionRequest,
@@ -129,10 +117,17 @@ export const sendTransaction = async (
 
   const params = {
     ...transactionRequest,
-    ...transactionGasParams,
     gasLimit: toHex(gasLimit || '0'),
-    value: transactionRequest?.value,
-    nonce,
+    value:
+      transactionRequest?.value === undefined
+        ? undefined
+        : toHex(transactionRequest.value),
+    nonce: Number(toHex(nonce)),
+    maxFeePerGas: toHex(transactionGasParams.maxFeePerGas),
+    maxPriorityFeePerGas: toHex(transactionGasParams.maxPriorityFeePerGas),
+    gasPrice: toHex(transactionGasParams.gasPrice),
+    from: toHexOrUndefined(transactionRequest.from),
+    data: toHexOrUndefined(transactionRequest.data),
   };
 
   let walletInfo;
@@ -159,12 +154,30 @@ export const sendTransaction = async (
         throw new Error('Unsupported hardware wallet');
     }
   } else {
-    const transactionResponse = await walletAction<TransactionResponse>(
-      'send_transaction',
-      params,
-    );
+    const transaction = await popupClient.wallet.sendTransaction(params);
 
-    return deserializeBigNumbers(transactionResponse);
+    const transactionResponse: TransactionResponse = {
+      ...transaction,
+      wait: async () => {
+        throw new Error('Not implemented');
+      },
+      gasLimit: BigNumber.from(transaction.gasLimit),
+      value: BigNumber.from(transaction.value),
+      gasPrice:
+        transaction.gasPrice !== undefined
+          ? BigNumber.from(transaction.gasPrice)
+          : undefined,
+      maxFeePerGas:
+        transaction.maxFeePerGas !== undefined
+          ? BigNumber.from(transaction.maxFeePerGas)
+          : undefined,
+      maxPriorityFeePerGas:
+        transaction.maxPriorityFeePerGas !== undefined
+          ? BigNumber.from(transaction.maxPriorityFeePerGas)
+          : undefined,
+    };
+
+    return transactionResponse;
   }
 };
 
@@ -203,7 +216,10 @@ export const personalSign = async (
         throw new Error('Unsupported hardware wallet');
     }
   } else {
-    return signMessageByType(msgData, address, 'personal_sign');
+    return popupClient.wallet.personalSign({
+      address,
+      msgData,
+    });
   }
 };
 
@@ -223,112 +239,78 @@ export const signTypedData = async (
         throw new Error('Unsupported hardware wallet');
     }
   } else {
-    return signMessageByType(msgData, address, 'sign_typed_data');
+    return walletAction<string>('sign_typed_data', {
+      address,
+      msgData,
+    });
   }
 };
 
-export const lock = async () => {
-  await walletAction('lock', {});
-  await SessionStorage.set('userStatus', 'LOCKED');
-  return;
-};
+export const lock = async () => popupClient.wallet.lock();
 
-export const unlock = async (password: string): Promise<boolean> => {
-  const result = await walletAction<boolean>('unlock', password);
-  if (result) {
-    await SessionStorage.set('userStatus', 'READY');
-  }
-  return result;
-};
+export const unlock = async (password: string) =>
+  popupClient.wallet.unlock({ password });
 
-export const wipe = async () => {
-  await walletAction('wipe', {});
-  await SessionStorage.set('userStatus', 'NEW');
-  return;
-};
+export const wipe = async () => popupClient.wallet.wipe();
 
-export const testSandbox = async () => walletAction('test_sandbox', {});
+export const testSandbox = async () => popupClient.wallet.testSandbox();
 
-export const updatePassword = async (password: string, newPassword: string) => {
-  const result = await walletAction<boolean>('update_password', {
+export const updatePassword = async (password: string, newPassword: string) =>
+  popupClient.wallet.updatePassword({
     password,
     newPassword,
   });
-  // We have a vault
-  // We have a password
-  // It's unlocked
-  // Then it's ready to use
-  await SessionStorage.set('userStatus', 'READY');
-  return result;
+
+export const deriveAccountsFromSecret = async (secret: string) => {
+  const { accounts } = await popupClient.wallet.deriveAccountsFromSecret({
+    secret,
+  });
+  return accounts;
 };
 
-export const deriveAccountsFromSecret = async (secret: string) =>
-  walletAction<Address[]>('derive_accounts_from_secret', secret);
-
-export const isMnemonicInVault = async (secret: string) =>
-  walletAction<boolean>('is_mnemonic_in_vault', secret);
+export const isMnemonicInVault = async (secret: string) => {
+  const { isInVault } = await popupClient.wallet.isMnemonicInVault({
+    secret,
+  });
+  return isInVault;
+};
 
 export const verifyPassword = async (password: string) =>
-  walletAction<boolean>('verify_password', password);
+  popupClient.wallet.verifyPassword({ password });
 
-export const getAccounts = async () =>
-  walletAction<Address[]>('get_accounts', {});
+export const getAccounts = async () => popupClient.wallet.accounts();
 
-export const getWallets = async () =>
-  walletAction<KeychainWallet[]>('get_wallets', {});
+export const getWallets = async () => popupClient.wallet.wallets();
 
 export const getWallet = async (address: Address) =>
-  walletAction<KeychainWallet>('get_wallet', address);
+  popupClient.wallet.wallet(address);
 
-export const getStatus = async () =>
-  walletAction<{
-    unlocked: boolean;
-    hasVault: boolean;
-    passwordSet: boolean;
-    ready: boolean;
-  }>('status', {});
+export const getStatus = async () => popupClient.wallet.status();
 
 export const create = async () => {
-  const address = await walletAction<Address>('create', {});
+  const { address } = await popupClient.wallet.create();
 
-  // we probably need to set a password
-  let newStatus = 'NEEDS_PASSWORD';
-  const { passwordSet } = await getStatus();
-  // unless we have a password, then we're ready to go
-  if (passwordSet) {
-    newStatus = 'READY';
-  }
-  await SessionStorage.set('userStatus', newStatus);
   return address;
 };
 
 export const importWithSecret = async (seed: string) => {
-  const address = await walletAction<Address>('import', seed);
-  // we probably need to set a password
-  let newStatus = 'NEEDS_PASSWORD';
-  const { passwordSet } = await getStatus();
-  // unless we have a password, then we're ready to go
-  if (passwordSet) {
-    newStatus = 'READY';
-  }
-  await SessionStorage.set('userStatus', newStatus);
+  const { address } = await popupClient.wallet.import({ seed });
   return address;
 };
 
 export const remove = async (address: Address) =>
-  walletAction('remove', address);
+  popupClient.wallet.remove(address);
 
-export const add = async (sibling: Address) =>
-  walletAction<Address>('add', sibling);
+export const add = async (sibling: Address) => popupClient.wallet.add(sibling);
 
 export const exportWallet = async (address: Address, password: string) =>
-  walletAction<Mnemonic['phrase']>('export_wallet', {
+  popupClient.wallet.exportWallet({
     address,
     password,
   });
 
 export const exportAccount = async (address: Address, password: string) =>
-  walletAction<PrivateKey>('export_account', {
+  popupClient.wallet.exportAccount({
     address,
     password,
   });
@@ -513,24 +495,19 @@ export const connectLedger = async () => {
 
 export const importAccountsFromHW = async (
   accountsToImport: {
-    address: string;
+    address: Address;
     index: number;
     hdPath?: string;
   }[],
   accountsEnabled: number,
   deviceId: string,
-  vendor: 'Ledger' | 'Trezor',
+  vendor: HardwareWalletVendor,
 ) => {
-  const address = await walletAction('import_hw', {
+  const { address } = await popupClient.wallet.importHardware({
     deviceId,
     wallets: accountsToImport,
     vendor,
     accountsEnabled,
   });
-  const { passwordSet } = await getStatus();
-  if (!passwordSet) {
-    // we probably need to set a password
-    await SessionStorage.set('userStatus', 'NEEDS_PASSWORD');
-  }
   return address;
 };

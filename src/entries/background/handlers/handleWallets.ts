@@ -1,4 +1,3 @@
-import { TransactionRequest } from '@ethersproject/abstract-provider';
 import {
   TypedDataDomain,
   TypedDataField,
@@ -6,39 +5,10 @@ import {
 import { Bytes } from '@ethersproject/bytes';
 import { Address } from 'viem';
 
-import {
-  addAccountAtIndex,
-  addNewAccount,
-  createWallet,
-  deriveAccountsFromSecret,
-  executeRap,
-  exportAccount,
-  exportKeychain,
-  getAccounts,
-  getPath,
-  getWallet,
-  getWallets,
-  hasVault,
-  importHardwareWallet,
-  importWallet,
-  isInitialized,
-  isMnemonicInVault,
-  isPasswordSet,
-  isVaultUnlocked,
-  lockVault,
-  removeAccount,
-  sendTransaction,
-  setVaultPassword,
-  signMessage,
-  signTypedData,
-  unlockVault,
-  verifyPassword,
-  wipeVault,
-} from '~/core/keychain';
+import { executeRap, signTypedData } from '~/core/keychain';
 import { initializeMessenger } from '~/core/messengers';
 import { WalletExecuteRapProps } from '~/core/raps/references';
 import { WalletAction } from '~/core/types/walletActions';
-import { EthereumWalletSeed } from '~/core/utils/ethereum';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 
 type WalletActionArguments = {
@@ -75,121 +45,7 @@ export const handleWallets = () =>
       try {
         let response = null;
         switch (action) {
-          case 'status': {
-            const ready = await isInitialized();
-            const _hasVault = ready && (await hasVault());
-            const unlocked = _hasVault && (await isVaultUnlocked());
-            const passwordSet = _hasVault && (await isPasswordSet());
-            response = {
-              hasVault: _hasVault,
-              unlocked,
-              passwordSet,
-              ready,
-            };
-            break;
-          }
-          case 'lock':
-            response = await lockVault();
-            break;
-          case 'update_password': {
-            const { password, newPassword } = payload as {
-              password: string;
-              newPassword: string;
-            };
-            response = await setVaultPassword(password, newPassword);
-            break;
-          }
-          case 'wipe':
-            response = await wipeVault();
-            break;
-          case 'unlock':
-            response = await unlockVault(payload as string);
-            break;
-          case 'verify_password':
-            response = await verifyPassword(payload as string);
-            break;
-          case 'create':
-            response = await createWallet();
-            break;
-          case 'import':
-            response = await importWallet(payload as EthereumWalletSeed);
-            break;
-          case 'import_hw':
-            response = await importHardwareWallet(
-              payload as {
-                wallets: Array<{
-                  address: Address;
-                  index: number;
-                  hdPath: string;
-                }>;
-                vendor: string;
-                deviceId: string;
-                accountsEnabled: number;
-              },
-            );
-            break;
-          case 'add':
-            response = await addNewAccount(payload as Address);
-            break;
-          case 'add_account_at_index': {
-            const { siblingAddress, index, address } = payload as {
-              siblingAddress: Address;
-              index: number;
-              address: Address;
-            };
-
-            response = await addAccountAtIndex(siblingAddress, index, address);
-            break;
-          }
-          case 'remove':
-            response = await removeAccount(payload as Address);
-            break;
-          case 'derive_accounts_from_secret':
-            response = await deriveAccountsFromSecret(
-              payload as EthereumWalletSeed,
-            );
-            break;
-          case 'is_mnemonic_in_vault':
-            response = await isMnemonicInVault(payload as EthereumWalletSeed);
-            break;
-          case 'get_accounts':
-            response = await getAccounts();
-            break;
-          case 'get_wallets':
-            response = await getWallets();
-            break;
-          case 'get_wallet':
-            response = await getWallet(payload as Address);
-            break;
-          case 'get_path':
-            response = await getPath(payload as Address);
-            break;
-          case 'export_wallet': {
-            const { address, password } = payload as {
-              address: Address;
-              password: string;
-            };
-            response = await exportKeychain(address, password);
-            break;
-          }
-          case 'export_account': {
-            const { address, password } = payload as {
-              address: Address;
-              password: string;
-            };
-            response = await exportAccount(address, password);
-            break;
-          }
-          case 'send_transaction': {
-            const provider = getProvider({
-              chainId: (payload as TransactionRequest).chainId,
-            });
-            response = await sendTransaction(
-              payload as TransactionRequest,
-              provider,
-            );
-            break;
-          }
+          // TODO: needs to be refactored as part of a bigger rap refactor
           case 'execute_rap': {
             const p = payload as WalletExecuteRapProps;
             const provider = getProvider({
@@ -201,27 +57,39 @@ export const handleWallets = () =>
             });
             break;
           }
-          case 'personal_sign':
-            response = await signMessage(payload as SignMessageArguments);
-            break;
-          case 'sign_typed_data':
+          // TODO: needs to be refactored as part of a bigger signTypedData refactor
+          case 'sign_typed_data': {
             response = await signTypedData(payload as SignTypedDataArguments);
             break;
+          }
+
+          case 'status':
+          case 'lock':
+          case 'update_password':
+          case 'wipe':
+          case 'unlock':
+          case 'verify_password':
+          case 'create':
+          case 'import':
+          case 'import_hw':
+          case 'add':
+          case 'add_account_at_index':
+          case 'remove':
+          case 'derive_accounts_from_secret':
+          case 'is_mnemonic_in_vault':
+          case 'get_accounts':
+          case 'get_wallets':
+          case 'get_wallet':
+          case 'get_path':
+          case 'export_wallet':
+          case 'export_account':
+          case 'send_transaction':
+          case 'personal_sign':
           case 'test_sandbox':
-            {
-              try {
-                console.log('about to leak...');
-                const r = await fetch('https://api.ipify.org?format=json');
-                const res = await r.json();
-                console.log('response from server after leaking', res);
-                response = 'Background leaked!';
-              } catch (e) {
-                response = 'Background sandboxed!';
-              }
-            }
-            break;
+            console.warn(`Deprecated action: ${action}`);
+            throw new Error(`Deprecated action: ${action}`);
           default: {
-            // TODO: handle other methods
+            throw new Error(`Unknown action: ${action}`);
           }
         }
         return { result: response };

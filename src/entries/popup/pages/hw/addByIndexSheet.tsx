@@ -85,7 +85,7 @@ export const AddByIndexSheet = ({
   }>();
 
   const { walletsSummary } = useWalletsSummary({
-    addresses: [newAccount?.address as Address] || [],
+    addresses: newAccount ? [newAccount.address] : [],
   });
 
   const handleAddWallet = useCallback(() => {
