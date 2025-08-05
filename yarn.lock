@@ -4688,6 +4688,144 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@orpc/client@npm:1.7.9":
+  version: 1.7.9
+  resolution: "@orpc/client@npm:1.7.9"
+  dependencies:
+    "@orpc/shared": "npm:1.7.9"
+    "@orpc/standard-server": "npm:1.7.9"
+    "@orpc/standard-server-fetch": "npm:1.7.9"
+    "@orpc/standard-server-peer": "npm:1.7.9"
+  checksum: 10c0/fd94545b1986c64ffb5da53889311ac079340ea619edad8c2cffcf1b9b4ee5e5986e6d1fb7f4fea25b2a0533e428bdc06d61ffc5f42887e6e3c5591051d86f3f
+  languageName: node
+  linkType: hard
+
+"@orpc/contract@npm:1.7.9":
+  version: 1.7.9
+  resolution: "@orpc/contract@npm:1.7.9"
+  dependencies:
+    "@orpc/client": "npm:1.7.9"
+    "@orpc/shared": "npm:1.7.9"
+    "@standard-schema/spec": "npm:^1.0.0"
+    openapi-types: "npm:^12.1.3"
+  checksum: 10c0/b91e1d5a0cc9b8f7354150b3ba00b4d5be0c4b1fac9c9becbeac6fe323db582e3bbcc7c494819821479a510b065831d2dc98abb43c083a1a0322de55b50a9cb3
+  languageName: node
+  linkType: hard
+
+"@orpc/server@npm:1.7.9":
+  version: 1.7.9
+  resolution: "@orpc/server@npm:1.7.9"
+  dependencies:
+    "@orpc/client": "npm:1.7.9"
+    "@orpc/contract": "npm:1.7.9"
+    "@orpc/shared": "npm:1.7.9"
+    "@orpc/standard-server": "npm:1.7.9"
+    "@orpc/standard-server-aws-lambda": "npm:1.7.9"
+    "@orpc/standard-server-fetch": "npm:1.7.9"
+    "@orpc/standard-server-node": "npm:1.7.9"
+    "@orpc/standard-server-peer": "npm:1.7.9"
+    cookie: "npm:^1.0.2"
+  peerDependencies:
+    crossws: ">=0.3.4"
+    ws: ">=8.18.1"
+  peerDependenciesMeta:
+    crossws:
+      optional: true
+    ws:
+      optional: true
+  checksum: 10c0/999805902bb854507ca08cbe719cdc2800f9ffb7db562d8311478464b9b04ee5043d7d0cbe19e5f25050db8303aa64b282459ab25740f8a3135c6156b53efc2e
+  languageName: node
+  linkType: hard
+
+"@orpc/shared@npm:1.7.9":
+  version: 1.7.9
+  resolution: "@orpc/shared@npm:1.7.9"
+  dependencies:
+    radash: "npm:^12.1.1"
+    type-fest: "npm:^4.39.1"
+  checksum: 10c0/65ad76d69984f738dd211704dc78b55ccd2b711034010755670030b59862cc5cf13ee129ae789721eed7fb0d4bcb3b9d76902ed820663fabb8b929e137a0acd3
+  languageName: node
+  linkType: hard
+
+"@orpc/shared@npm:1.8.1":
+  version: 1.8.1
+  resolution: "@orpc/shared@npm:1.8.1"
+  dependencies:
+    radash: "npm:^12.1.1"
+    type-fest: "npm:^4.39.1"
+  peerDependencies:
+    "@opentelemetry/api": ">=1.9.0"
+  peerDependenciesMeta:
+    "@opentelemetry/api":
+      optional: true
+  checksum: 10c0/30e8c731da98c80a09bc7475de01efff3317b18576e89cbfb1e68314b9f1f5c40bee9da4d760e07f60bc8c66e5fc17f9603271c34e75c3f7ddb31c2ce92621fc
+  languageName: node
+  linkType: hard
+
+"@orpc/standard-server-aws-lambda@npm:1.7.9":
+  version: 1.7.9
+  resolution: "@orpc/standard-server-aws-lambda@npm:1.7.9"
+  dependencies:
+    "@orpc/shared": "npm:1.7.9"
+    "@orpc/standard-server": "npm:1.7.9"
+    "@orpc/standard-server-fetch": "npm:1.7.9"
+    "@orpc/standard-server-node": "npm:1.7.9"
+  checksum: 10c0/0f5ab8d987ca19fbbb25c2c0cb9bdc6c3295f69302768da8be6a139d5ed640d2b5cf6dbe7da8a9db25534d80e1786be5e1dae258920b2a3f043147504a61ba93
+  languageName: node
+  linkType: hard
+
+"@orpc/standard-server-fetch@npm:1.7.9":
+  version: 1.7.9
+  resolution: "@orpc/standard-server-fetch@npm:1.7.9"
+  dependencies:
+    "@orpc/shared": "npm:1.7.9"
+    "@orpc/standard-server": "npm:1.7.9"
+  checksum: 10c0/8cb57f8d29c2482e22ba1c25cceaec8a05f690bf6b624fad1533103e6bee0abc89ad61b25e2153312391367442a088dd44defbc9aaf043d1ac11182670e8b167
+  languageName: node
+  linkType: hard
+
+"@orpc/standard-server-node@npm:1.7.9":
+  version: 1.7.9
+  resolution: "@orpc/standard-server-node@npm:1.7.9"
+  dependencies:
+    "@orpc/shared": "npm:1.7.9"
+    "@orpc/standard-server": "npm:1.7.9"
+    "@orpc/standard-server-fetch": "npm:1.7.9"
+  checksum: 10c0/b9a44cc4deb9dc6150823d5f521280bb6f6144b5ffa6a7a03939572c1213cd324ed01236a89d0fc25b5c47ed1d94b23b5ed90f20d392560e36e660e2766743cd
+  languageName: node
+  linkType: hard
+
+"@orpc/standard-server-peer@npm:1.7.9":
+  version: 1.7.9
+  resolution: "@orpc/standard-server-peer@npm:1.7.9"
+  dependencies:
+    "@orpc/shared": "npm:1.7.9"
+    "@orpc/standard-server": "npm:1.7.9"
+  checksum: 10c0/28ccfec60ab4dc6eb5d4322ae2f57a9b6e9fae8ca2428a032afb07fcd02183419edc054e835cf6a9e1d55d9cb7f7a39fc91f64f225ff2cb6915fd9f8bed1be3a
+  languageName: node
+  linkType: hard
+
+"@orpc/standard-server@npm:1.7.9":
+  version: 1.7.9
+  resolution: "@orpc/standard-server@npm:1.7.9"
+  dependencies:
+    "@orpc/shared": "npm:1.7.9"
+  checksum: 10c0/95b79888764021cc986a00575b2a9091bbd34e98653e57f532c14d0a2a9df5651a756fcc4ed7d856d68c11a0da2e98ed17790ad56d5a68bc65205ab1e68657e3
+  languageName: node
+  linkType: hard
+
+"@orpc/tanstack-query@npm:1.8.1":
+  version: 1.8.1
+  resolution: "@orpc/tanstack-query@npm:1.8.1"
+  dependencies:
+    "@orpc/shared": "npm:1.8.1"
+  peerDependencies:
+    "@orpc/client": 1.8.1
+    "@tanstack/query-core": ">=5.80.2"
+  checksum: 10c0/edc36005b66f33fe4d93967d38d6678dad14bd4def7d9090428e056dc72c7d9a1b4cbf905b8b4a77b2f0f9cde2ca00e2be7cb1522f8c8ccfafbd324db646e71a
+  languageName: node
+  linkType: hard
+
 "@parcel/watcher-android-arm64@npm:2.4.1":
   version: 2.4.1
   resolution: "@parcel/watcher-android-arm64@npm:2.4.1"
@@ -6764,6 +6902,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@standard-schema/spec@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@standard-schema/spec@npm:1.0.0"
+  checksum: 10c0/a1ab9a8bdc09b5b47aa8365d0e0ec40cc2df6437be02853696a0e377321653b0d3ac6f079a8c67d5ddbe9821025584b1fb71d9cc041a6666a96f1fadf2ece15f
+  languageName: node
+  linkType: hard
+
 "@szmarczak/http-timer@npm:^5.0.1":
   version: 5.0.1
   resolution: "@szmarczak/http-timer@npm:5.0.1"
@@ -6773,51 +6918,51 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/query-async-storage-persister@npm:5.35.1":
-  version: 5.35.1
-  resolution: "@tanstack/query-async-storage-persister@npm:5.35.1"
+"@tanstack/query-async-storage-persister@npm:5.85.2":
+  version: 5.85.2
+  resolution: "@tanstack/query-async-storage-persister@npm:5.85.2"
   dependencies:
-    "@tanstack/query-persist-client-core": "npm:5.35.1"
-  checksum: 10c0/184e694ea14649c40c53782bf701ac739bd921caecf4f747a4ec08eb523539d18efca43c71697a97d5eba418d2c27fdf74879e56bbfb9d0efe4b50111ef4ae7d
+    "@tanstack/query-persist-client-core": "npm:5.85.2"
+  checksum: 10c0/3c424f18ffe2eddc92946500d9053cd780077b8cb17054f21d1dc58b350472d22f895b594746270447578726ff32ded9c01ccca5920d17e5dc901875e47a79c7
   languageName: node
   linkType: hard
 
-"@tanstack/query-core@npm:5.35.1":
-  version: 5.35.1
-  resolution: "@tanstack/query-core@npm:5.35.1"
-  checksum: 10c0/c991efeb29ec42f9aadf43130dac5e4e9e0651880ef96e0cb5f0dc3224b9b919b34f0e4af53231a7de32582aa7ba801ed6683ed7448e41e7b2a344803f08f3fe
+"@tanstack/query-core@npm:5.85.2":
+  version: 5.85.2
+  resolution: "@tanstack/query-core@npm:5.85.2"
+  checksum: 10c0/398386c0e56b0ab0916951468b6b6a2b9f1f713fa95757405171f1c99c7a33cd3427eb20a82f252e5abc63ccd93e8e77c7cc5bc30043401d0dd5a074d7f5ff4e
   languageName: node
   linkType: hard
 
-"@tanstack/query-persist-client-core@npm:5.35.1":
-  version: 5.35.1
-  resolution: "@tanstack/query-persist-client-core@npm:5.35.1"
+"@tanstack/query-persist-client-core@npm:5.85.2":
+  version: 5.85.2
+  resolution: "@tanstack/query-persist-client-core@npm:5.85.2"
   dependencies:
-    "@tanstack/query-core": "npm:5.35.1"
-  checksum: 10c0/71f53d6f07397403407217980ca8d2401cd10b1e9dba43b789bddd82d13211140c126cc4543a8f2bd1165047230f2baf32dc786bb8c1c28d435a0dece518ad4d
+    "@tanstack/query-core": "npm:5.85.2"
+  checksum: 10c0/01a4d97696a1fbe36d3d7897b04edb45315b800cee436c2e08e167dd8434095ec59447865af68d73724efab89e8d10c8e2dc9036375a45238bcbfeb59f4ac16f
   languageName: node
   linkType: hard
 
-"@tanstack/react-query-persist-client@npm:5.35.1":
-  version: 5.35.1
-  resolution: "@tanstack/react-query-persist-client@npm:5.35.1"
+"@tanstack/react-query-persist-client@npm:5.85.2":
+  version: 5.85.2
+  resolution: "@tanstack/react-query-persist-client@npm:5.85.2"
   dependencies:
-    "@tanstack/query-persist-client-core": "npm:5.35.1"
+    "@tanstack/query-persist-client-core": "npm:5.85.2"
   peerDependencies:
-    "@tanstack/react-query": ^5.35.1
-    react: ^18.0.0
-  checksum: 10c0/73195f2662f6976787be4ef0f676daea03e96b399664093bfde5187d9aff6a95a9d7caadc75b612f10bf1f8b00206c5cfff4cf93325ce0d3f48d526a96ecce3e
+    "@tanstack/react-query": ^5.85.2
+    react: ^18 || ^19
+  checksum: 10c0/7ff666589e898a15c4de89bc242d17f66b2c86f3804f29c522cabed2dc6403705b905fac226259d80b64225ae8200adc8069922af60cff0dd7443bec75fbd944
   languageName: node
   linkType: hard
 
-"@tanstack/react-query@npm:5.35.1":
-  version: 5.35.1
-  resolution: "@tanstack/react-query@npm:5.35.1"
+"@tanstack/react-query@npm:5.85.2":
+  version: 5.85.2
+  resolution: "@tanstack/react-query@npm:5.85.2"
   dependencies:
-    "@tanstack/query-core": "npm:5.35.1"
+    "@tanstack/query-core": "npm:5.85.2"
   peerDependencies:
-    react: ^18.0.0
-  checksum: 10c0/80b3d4e295b05171e34f522c1856bcd561c58963e7661ae2340f3406a3097b7c9896d4f67005876c634ce1d808791498a987b200f00341e6df9fcc862060e6ad
+    react: ^18 || ^19
+  checksum: 10c0/8feb9a82d25589b7f3a9cc1e3f24ec2b29b35e86522ca94b3f94dc2649e4a4472da7782b2e1f0b7a48722d11e8c34cf77711b9fbad474b1b73478ae0f06c9ba0
   languageName: node
   linkType: hard
 
@@ -10347,6 +10492,10 @@ __metadata:
     "@ledgerhq/hw-transport-webhid": "npm:6.30.0"
     "@metamask/browser-passworder": "npm:4.1.0"
     "@metamask/eth-sig-util": "npm:7.0.1"
+    "@orpc/client": "npm:1.7.9"
+    "@orpc/contract": "npm:1.7.9"
+    "@orpc/server": "npm:1.7.9"
+    "@orpc/tanstack-query": "npm:1.8.1"
     "@peculiar/webcrypto": "npm:1.4.1"
     "@radix-ui/react-accordion": "npm:1.1.2"
     "@radix-ui/react-context-menu": "npm:2.1.1"
@@ -10360,9 +10509,9 @@ __metadata:
     "@rudderstack/analytics-js-service-worker": "npm:3.0.6"
     "@scure/bip39": "npm:1.2.1"
     "@sentry/react": "npm:9.40.0"
-    "@tanstack/query-async-storage-persister": "npm:5.35.1"
-    "@tanstack/react-query": "npm:5.35.1"
-    "@tanstack/react-query-persist-client": "npm:5.35.1"
+    "@tanstack/query-async-storage-persister": "npm:5.85.2"
+    "@tanstack/react-query": "npm:5.85.2"
+    "@tanstack/react-query-persist-client": "npm:5.85.2"
     "@tanstack/react-virtual": "npm:3.8.1"
     "@testing-library/react": "npm:13.4.0"
     "@total-typescript/ts-reset": "npm:0.4.2"
@@ -10440,6 +10589,7 @@ __metadata:
     make-color-more-chill: "npm:0.2.2"
     mini-css-extract-plugin: "npm:2.6.1"
     mipd: "npm:0.0.5"
+    mitt: "npm:3.0.1"
     mnemonist: "npm:0.39.5"
     msw: "npm:2.10.5"
     node-vibrant: "npm:3.2.1-alpha.1"
@@ -10460,7 +10610,7 @@ __metadata:
     semver: "npm:7.5.2"
     svg-path-commander: "npm:1.0.5"
     ts-loader: "npm:9.4.1"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.8.2"
     viem: "npm:2.31.7"
     vitest: "npm:0.34.6"
     wagmi: "npm:2.16.1"
@@ -10470,6 +10620,7 @@ __metadata:
     webpack-cli: "npm:5.1.4"
     webpack-extension-reloader: "rainbow-me/webpack-extension-reloader#23fc3ed1f59f295702d459ad58aec90d6f0a3551"
     worker-loader: "npm:3.0.8"
+    zod: "npm:4.0.14"
     zustand: "npm:4.5.4"
   languageName: unknown
   linkType: soft
@@ -11798,6 +11949,13 @@ __metadata:
   version: 0.7.2
   resolution: "cookie@npm:0.7.2"
   checksum: 10c0/9596e8ccdbf1a3a88ae02cf5ee80c1c50959423e1022e4e60b91dd87c622af1da309253d8abdb258fb5e3eacb4f08e579dc58b4897b8087574eee0fd35dfa5d2
+  languageName: node
+  linkType: hard
+
+"cookie@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "cookie@npm:1.0.2"
+  checksum: 10c0/fd25fe79e8fbcfcaf6aa61cd081c55d144eeeba755206c058682257cb38c4bd6795c6620de3f064c740695bb65b7949ebb1db7a95e4636efb8357a335ad3f54b
   languageName: node
   linkType: hard
 
@@ -19140,6 +19298,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mitt@npm:3.0.1":
+  version: 3.0.1
+  resolution: "mitt@npm:3.0.1"
+  checksum: 10c0/3ab4fdecf3be8c5255536faa07064d05caa3dd332bd318ff02e04621f7b3069ca1de9106cfe8e7ced675abfc2bec2ce4c4ef321c4a1bb1fb29df8ae090741913
+  languageName: node
+  linkType: hard
+
 "mixin-object@npm:^2.0.1":
   version: 2.0.1
   resolution: "mixin-object@npm:2.0.1"
@@ -20096,6 +20261,13 @@ __metadata:
     is-inside-container: "npm:^1.0.0"
     is-wsl: "npm:^2.2.0"
   checksum: 10c0/8073ec0dd8994a7a7d9bac208bd17d093993a65ce10f2eb9b62b6d3a91c9366ae903938a237c275493c130171d339f6dcbdd2a2de7e32953452c0867b97825af
+  languageName: node
+  linkType: hard
+
+"openapi-types@npm:^12.1.3":
+  version: 12.1.3
+  resolution: "openapi-types@npm:12.1.3"
+  checksum: 10c0/4ad4eb91ea834c237edfa6ab31394e87e00c888fc2918009763389c00d02342345195d6f302d61c3fd807f17723cd48df29b47b538b68375b3827b3758cd520f
   languageName: node
   linkType: hard
 
@@ -21574,6 +21746,13 @@ __metadata:
   version: 5.1.1
   resolution: "quick-lru@npm:5.1.1"
   checksum: 10c0/a24cba5da8cec30d70d2484be37622580f64765fb6390a928b17f60cd69e8dbd32a954b3ff9176fa1b86d86ff2ba05252fae55dc4d40d0291c60412b0ad096da
+  languageName: node
+  linkType: hard
+
+"radash@npm:^12.1.1":
+  version: 12.1.1
+  resolution: "radash@npm:12.1.1"
+  checksum: 10c0/f8cbe85c0a8a444f1d2892c82875e00333e58a7b8afdbf3d8d04574d0532d895484bae20650c197c87dd91abfbd1e0af1c819cd12e6dc306633acec30222af7e
   languageName: node
   linkType: hard
 
@@ -24464,6 +24643,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"type-fest@npm:^4.39.1":
+  version: 4.41.0
+  resolution: "type-fest@npm:4.41.0"
+  checksum: 10c0/f5ca697797ed5e88d33ac8f1fec21921839871f808dc59345c9cf67345bfb958ce41bd821165dbf3ae591cedec2bf6fe8882098dfdd8dc54320b859711a2c1e4
+  languageName: node
+  linkType: hard
+
 "typed-array-buffer@npm:^1.0.0":
   version: 1.0.0
   resolution: "typed-array-buffer@npm:1.0.0"
@@ -24534,23 +24720,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:5.2.2":
-  version: 5.2.2
-  resolution: "typescript@npm:5.2.2"
+"typescript@npm:5.8.2":
+  version: 5.8.2
+  resolution: "typescript@npm:5.8.2"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10c0/91ae3e6193d0ddb8656d4c418a033f0f75dec5e077ebbc2bd6d76439b93f35683936ee1bdc0e9cf94ec76863aa49f27159b5788219b50e1cd0cd6d110aa34b07
+  checksum: 10c0/5c4f6fbf1c6389b6928fe7b8fcd5dc73bb2d58cd4e3883f1d774ed5bd83b151cbac6b7ecf11723de56d4676daeba8713894b1e9af56174f2f9780ae7848ec3c6
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A5.2.2#optional!builtin<compat/typescript>":
-  version: 5.2.2
-  resolution: "typescript@patch:typescript@npm%3A5.2.2#optional!builtin<compat/typescript>::version=5.2.2&hash=f3b441"
+"typescript@patch:typescript@npm%3A5.8.2#optional!builtin<compat/typescript>":
+  version: 5.8.2
+  resolution: "typescript@patch:typescript@npm%3A5.8.2#optional!builtin<compat/typescript>::version=5.8.2&hash=b45daf"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10c0/062c1cee1990e6b9419ce8a55162b8dc917eb87f807e4de0327dbc1c2fa4e5f61bc0dd4e034d38ff541d1ed0479b53bcee8e4de3a4075c51a1724eb6216cb6f5
+  checksum: 10c0/8a6cd29dfb59bd5a978407b93ae0edb530ee9376a5b95a42ad057a6f80ffb0c410489ccd6fe48d1d0dfad6e8adf5d62d3874bbd251f488ae30e11a1ce6dabd28
   languageName: node
   linkType: hard
 
@@ -26327,10 +26513,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod@npm:3.23.8":
-  version: 3.23.8
-  resolution: "zod@npm:3.23.8"
-  checksum: 10c0/8f14c87d6b1b53c944c25ce7a28616896319d95bc46a9660fe441adc0ed0a81253b02b5abdaeffedbeb23bdd25a0bf1c29d2c12dd919aef6447652dd295e3e69
+"zod@npm:3.22.4":
+  version: 3.22.4
+  resolution: "zod@npm:3.22.4"
+  checksum: 10c0/7578ab283dac0eee66a0ad0fc4a7f28c43e6745aadb3a529f59a4b851aa10872b3890398b3160f257f4b6817b4ce643debdda4fb21a2c040adda7862cab0a587
+  languageName: node
+  linkType: hard
+
+"zod@npm:4.0.14":
+  version: 4.0.14
+  resolution: "zod@npm:4.0.14"
+  checksum: 10c0/ec8681050d393f3be1c2c8f30d7dd4f56bec3746855fb17288be856185a0fe65e68d1b24aec657bbf956f64c05e69332d3751eafd6c103d19385bcc46075612b
+  languageName: node
+  linkType: hard
+
+"zod@npm:^1.11.11":
+  version: 1.11.17
+  resolution: "zod@npm:1.11.17"
+  checksum: 10c0/fd95791a2d21b84884ce922e9cf6049a28534fafb1406baab0d41f8fc4bef2e69eae57c4b8b958584a6d031c5b584157ec4d24c307d4df2938050457b570364a
   languageName: node
   linkType: hard
 
