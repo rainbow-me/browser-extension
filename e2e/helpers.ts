@@ -1230,6 +1230,37 @@ export async function takeScreenshotOnFailure(context: any) {
   });
 }
 
+export async function captureScreenshot(
+  driver: WebDriver,
+  suiteName: string,
+  testStep: string,
+) {
+  if (!fs.existsSync('screenshots')) {
+    fs.mkdirSync('screenshots');
+  }
+  
+  // Normalize names for Percy - remove special characters and spaces
+  const normalizedSuite = suiteName
+    .replace(/[^a-zA-Z0-9-_]/g, '_')
+    .replace(/_+/g, '_')
+    .toLowerCase();
+  const normalizedStep = testStep
+    .replace(/[^a-zA-Z0-9-_]/g, '_')
+    .replace(/_+/g, '_')
+    .toLowerCase();
+  
+  const fileName = `${normalizedSuite}-${normalizedStep}`;
+  const filePath = `screenshots/${fileName}.png`;
+  
+  try {
+    const image = await driver.takeScreenshot();
+    fs.writeFileSync(filePath, image, 'base64');
+    console.log(`Screenshot saved: ${fileName}.png`);
+  } catch (error) {
+    console.error(`Error capturing screenshot ${fileName}:`, error);
+  }
+}
+
 export async function performSearchTokenAddressActionsCmdK({
   driver,
   tokenAddress,

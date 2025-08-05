@@ -169,6 +169,7 @@
     "@lavamoat/allow-scripts": "3.0.1",
     "@lavamoat/preinstall-always-fail": "2.0.0",
     "@peculiar/webcrypto": "1.4.1",
+    "@percy/cli": "1.31.1",
     "@testing-library/react": "13.4.0",
     "@total-typescript/ts-reset": "0.4.2",
     "@types/chroma-js": "2.1.4",
@@ -357,6 +358,8 @@
       "wagmi>@wagmi/connectors>@metamask/sdk>@metamask/sdk-communication-layer>bufferutil": false,
       "wagmi>@wagmi/connectors>@metamask/sdk>@metamask/sdk-communication-layer>utf-8-validate": false,
       "firebase>@firebase/util": false,
+      "@percy/cli>@percy/cli-command>@percy/core": false,
+      "@percy/cli-upload>@percy/cli-command>@percy/core": false,
       "wagmi>@wagmi/connectors>cbw-sdk>keccak": false
     }
   },

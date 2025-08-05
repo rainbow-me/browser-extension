@@ -3,6 +3,7 @@ import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
+  captureScreenshot,
   delayTime,
   findElementByTestIdAndClick,
   findElementByText,
@@ -39,16 +40,22 @@ describe('New wallet flow', () => {
   // Create a new wallet
   it('should be able create a new wallet', async () => {
     await goToWelcome(driver, rootURL);
+    await captureScreenshot(driver, 'newWalletFlow', 'welcome');
+    
     await findElementByTestIdAndClick({
       id: 'create-wallet-button',
       driver,
     });
+    await captureScreenshot(driver, 'newWalletFlow', 'create-wallet-clicked');
+    
     await findElementByTestIdAndClick({
       id: 'show-recovery-phrase-button',
       driver,
     });
+    await captureScreenshot(driver, 'newWalletFlow', 'recovery-phrase');
 
     await passSecretQuiz(driver);
+    await captureScreenshot(driver, 'newWalletFlow', 'quiz-passed');
 
     await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
     await typeOnTextInput({
@@ -56,10 +63,12 @@ describe('New wallet flow', () => {
       driver,
       text: 'test1234',
     });
+    await captureScreenshot(driver, 'newWalletFlow', 'password-entered');
 
     await findElementByTestIdAndClick({ id: 'set-password-button', driver });
     await delayTime('long');
     await findElementByText(driver, 'Rainbow is ready to use');
+    await captureScreenshot(driver, 'newWalletFlow', 'wallet-ready');
   });
 
   it('should display account name', async () => {

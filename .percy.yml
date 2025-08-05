@@ -1,0 +1,4 @@
+version: 2
+upload:
+  files: "**/*.png"
+  strip-extensions: true

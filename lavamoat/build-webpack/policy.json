@@ -147,9 +147,9 @@
         "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@vanilla-extract/babel-plugin-debug-ids": true,
         "@vanilla-extract/vite-plugin>@vanilla-extract/integration>esbuild": true,
         "@vanilla-extract/vite-plugin>@vanilla-extract/integration>eval": true,
-        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up": true,
         "@vanilla-extract/vite-plugin>@vanilla-extract/integration>javascript-stringify": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": true,
+        "eslint>find-up": true,
         "lodash": true
       }
     },
@@ -223,38 +223,6 @@
         "process.mainModule": true
       }
     },
-    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up": {
-      "builtin": {
-        "path.dirname": true,
-        "path.parse": true,
-        "path.resolve": true
-      },
-      "packages": {
-        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up>locate-path": true,
-        "eslint>find-up>path-exists": true
-      }
-    },
-    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up>locate-path": {
-      "builtin": {
-        "fs.lstat": true,
-        "fs.lstatSync": true,
-        "fs.stat": true,
-        "fs.statSync": true,
-        "path.resolve": true,
-        "util.promisify": true
-      },
-      "globals": {
-        "process.cwd": true
-      },
-      "packages": {
-        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up>locate-path>p-locate": true
-      }
-    },
-    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up>locate-path>p-locate": {
-      "packages": {
-        "jest>@jest/core>jest-runner>p-limit": true
-      }
-    },
     "@vanilla-extract/vite-plugin>@vanilla-extract/integration>javascript-stringify": {
       "globals": {
         "Buffer": true
@@ -326,20 +294,6 @@
     "browserify>readable-stream>util-deprecate": {
       "builtin": {
         "util.deprecate": true
-      }
-    },
-    "bundlewatch>gzip-size": {
-      "builtin": {
-        "fs.createReadStream": true,
-        "fs.readFileSync": true,
-        "stream.PassThrough": true,
-        "util.promisify": true,
-        "zlib.createGzip": true,
-        "zlib.gzip": true,
-        "zlib.gzipSync": true
-      },
-      "packages": {
-        "audit-ci>event-stream>duplexer": true
       }
     },
     "circular-dependency-plugin": {
@@ -1018,6 +972,38 @@
     "eslint>eslint-scope>esrecurse": {
       "packages": {
         "eslint>esquery>estraverse": true
+      }
+    },
+    "eslint>find-up": {
+      "builtin": {
+        "path.dirname": true,
+        "path.parse": true,
+        "path.resolve": true
+      },
+      "packages": {
+        "eslint>find-up>locate-path": true,
+        "eslint>find-up>path-exists": true
+      }
+    },
+    "eslint>find-up>locate-path": {
+      "builtin": {
+        "fs.lstat": true,
+        "fs.lstatSync": true,
+        "fs.stat": true,
+        "fs.statSync": true,
+        "path.resolve": true,
+        "util.promisify": true
+      },
+      "globals": {
+        "process.cwd": true
+      },
+      "packages": {
+        "eslint>find-up>locate-path>p-locate": true
+      }
+    },
+    "eslint>find-up>locate-path>p-locate": {
+      "packages": {
+        "jest>@jest/core>jest-runner>p-limit": true
       }
     },
     "eslint>find-up>path-exists": {
@@ -1808,15 +1794,29 @@
         "setImmediate": true
       },
       "packages": {
-        "bundlewatch>gzip-size": true,
         "eslint>chalk": true,
         "lodash": true,
         "viem>ws": true,
         "vitest>acorn-walk": true,
+        "webpack-bundle-analyzer>gzip-size": true,
         "webpack-bundle-analyzer>opener": true,
         "webpack-bundle-analyzer>sirv": true,
         "webpack-cli>@discoveryjs/json-ext": true,
         "webpack>acorn": true
+      }
+    },
+    "webpack-bundle-analyzer>gzip-size": {
+      "builtin": {
+        "fs.createReadStream": true,
+        "fs.readFileSync": true,
+        "stream.PassThrough": true,
+        "util.promisify": true,
+        "zlib.createGzip": true,
+        "zlib.gzip": true,
+        "zlib.gzipSync": true
+      },
+      "packages": {
+        "audit-ci>event-stream>duplexer": true
       }
     },
     "webpack-bundle-analyzer>opener": {
