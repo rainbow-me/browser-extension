@@ -10,15 +10,23 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "module": "ESNext",
-    "moduleResolution": "Node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
       "~/*": ["src/*"]
-    },
+    }
   },
   "include": ["src", "e2e", ".env.d.ts"],
-  "exclude": ["vitest.config.*", "e2e/serial/vitest.config.ts", "design-system/docs", "static/", "node_modules", "dist", "build"],
+  "exclude": [
+    "vitest.config.*",
+    "e2e/serial/vitest.config.ts",
+    "design-system/docs",
+    "static/",
+    "node_modules",
+    "dist",
+    "build"
+  ]
 }
