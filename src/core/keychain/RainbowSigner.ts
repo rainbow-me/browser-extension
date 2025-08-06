@@ -7,11 +7,11 @@ import {
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { Signer } from '@ethersproject/abstract-signer';
 import { BigNumber } from '@ethersproject/bignumber';
-import { defineReadOnly } from '@ethersproject/properties';
 import { Provider } from '@ethersproject/providers';
 import { personalSign } from '@metamask/eth-sig-util';
 import { Address, ByteArray, bytesToHex, hexToBytes } from 'viem';
 
+import { defineReadOnly } from '../utils/define';
 import { addHexPrefix } from '../utils/hex';
 
 import { PrivateKey } from './IKeychain';

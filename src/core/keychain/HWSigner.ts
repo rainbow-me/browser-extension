@@ -2,11 +2,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { Signer } from '@ethersproject/abstract-signer';
-import { defineReadOnly } from '@ethersproject/properties';
 import { Provider } from '@ethersproject/providers';
 import { Address, ByteArray } from 'viem';
 
 import { initializeMessenger } from '../messengers';
+import { defineReadOnly } from '../utils/define';
 
 export class HWSigner extends Signer {
   readonly path: string | undefined;
