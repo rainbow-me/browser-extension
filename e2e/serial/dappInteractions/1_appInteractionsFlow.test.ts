@@ -1,9 +1,8 @@
 import 'chromedriver';
 import 'geckodriver';
-import { getAddress } from '@ethersproject/address';
-import { isHexString } from '@ethersproject/bytes';
 import { verifyMessage, verifyTypedData } from '@ethersproject/wallet';
 import { WebDriver } from 'selenium-webdriver';
+import { getAddress, isHex } from 'viem';
 import {
   afterAll,
   afterEach,
@@ -307,7 +306,7 @@ describe('App interactions flow', () => {
     const signatureText = await signatureTextSelector.getText();
     const signature = signatureText.replace('sign message data sig: ', '');
 
-    expect(isHexString(signature)).toBe(true);
+    expect(isHex(signature)).toBe(true);
     const recoveredAddress = verifyMessage(MESSAGE, signature);
     expect(getAddress(recoveredAddress)).eq(
       getAddress(TEST_VARIABLES.PRIVATE_KEY_WALLET_3.ADDRESS),
@@ -334,7 +333,7 @@ describe('App interactions flow', () => {
     );
     const signatureText = await signatureTextSelector.getText();
     const signature = signatureText.replace('typed message data sig: ', '');
-    expect(isHexString(signature)).toBe(true);
+    expect(isHex(signature)).toBe(true);
 
     const recoveredAddress = verifyTypedData(
       TYPED_MESSAGE.domain,

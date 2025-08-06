@@ -1,6 +1,5 @@
-import { isAddress } from '@ethersproject/address';
-import { isBytesLike } from '@ethersproject/bytes';
 import { Wallet } from '@ethersproject/wallet';
+import { isAddress, isHex } from 'viem';
 import { beforeAll, expect, test } from 'vitest';
 
 import { delay } from '~/test/utils';
@@ -10,7 +9,7 @@ import { KeychainType } from '../types/keychainTypes';
 import { PrivateKey } from './IKeychain';
 import { keychainManager } from './KeychainManager';
 
-let privateKey = '';
+let privateKey = '' as PrivateKey;
 let password = '';
 
 beforeAll(async () => {
@@ -39,7 +38,7 @@ test('[keychain/KeychainManager] :: should be able to export a private key for a
     accounts[1],
     password,
   )) as PrivateKey;
-  expect(isBytesLike(privateKey)).toBe(true);
+  expect(isHex(privateKey)).toBe(true);
 });
 
 test('[keychain/KeychainManager] :: should be able to remove an account from an HD keychain...', async () => {
