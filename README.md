@@ -110,13 +110,6 @@ Any changes to your code will trigger an update to the extension.
 
 > Tip: You can press Option + Shift + R to reload the extension (on Mac) or Ctrl + Shift + R (on Windows) - This is done via the extension reloader chrome extension from the step 4 of the setup scenario.
 
-## Playgrounds
-
-You can run a development build as a "playground". The following playgrounds are available:
-
-- `yarn playground` **(Default)**: A generic playground to test out stuff.
-- `yarn playground:ds` **(Design System)**: A playground to view & demo Design System components.
-
 ## Testing
 
 ### 1. Install foundry
