@@ -58,7 +58,7 @@ export const getCustomChainIconUrl = (
   }
 };
 
-export const getNativeAssetPrice = ({
+const getNativeAssetPrice = ({
   priceData,
   currency,
 }: {
@@ -73,7 +73,7 @@ export const getNativeAssetPrice = ({
   };
 };
 
-export const getNativeAssetBalance = ({
+const getNativeAssetBalance = ({
   currency,
   priceUnit,
   value,
@@ -236,40 +236,6 @@ export function isParsedUserAsset(
   asset: ParsedAsset | ParsedUserAsset,
 ): asset is ParsedUserAsset {
   return 'balance' in asset;
-}
-
-export function parseParsedUserAsset({
-  parsedAsset,
-  currency,
-  quantity,
-}: {
-  parsedAsset: ParsedUserAsset;
-  currency: SupportedCurrencyKey;
-  quantity: string;
-}): ParsedUserAsset {
-  const amount = convertRawAmountToDecimalFormat(
-    quantity,
-    parsedAsset?.decimals,
-  );
-  return {
-    ...parsedAsset,
-    balance: {
-      amount,
-      display: convertAmountToBalanceDisplay(amount, {
-        decimals: parsedAsset?.decimals,
-        symbol: parsedAsset?.symbol,
-      }),
-    },
-    native: {
-      ...parsedAsset.native,
-      balance: getNativeAssetBalance({
-        currency,
-        decimals: parsedAsset?.decimals,
-        priceUnit: parsedAsset?.price?.value || 0,
-        value: amount,
-      }),
-    },
-  };
 }
 
 export const parseSearchAsset = ({
