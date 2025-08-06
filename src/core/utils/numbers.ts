@@ -1,6 +1,5 @@
 import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber';
 import BigNumber from 'bignumber.js';
-import currency from 'currency.js';
 import { isNil } from 'lodash';
 
 import { supportedCurrencies } from '~/core/references';
@@ -16,9 +15,6 @@ export const toBigNumber = (v?: string | number | BigNumber) =>
 
 export const abs = (value: BigNumberish): string =>
   new BigNumber(value).abs().toFixed();
-
-export const isPositive = (value: BigNumberish): boolean =>
-  new BigNumber(value).isPositive();
 
 export const subtract = (
   numberOne: BigNumberish,
@@ -52,102 +48,6 @@ export const greaterThanOrEqualTo = (
   numberTwo: BigNumberish,
 ): boolean => new BigNumber(numberOne).gte(numberTwo);
 
-export const isEqual = (
-  numberOne: BigNumberish,
-  numberTwo: BigNumberish,
-): boolean => new BigNumber(numberOne).eq(numberTwo);
-
-export const formatFixedDecimals = (
-  value: BigNumberish,
-  decimals: number,
-): string => {
-  const _value = convertNumberToString(value);
-  const _decimals = convertStringToNumber(decimals);
-  return new BigNumber(new BigNumber(_value).toFixed(_decimals)).toFixed();
-};
-
-export const mod = (numberOne: BigNumberish, numberTwo: BigNumberish): string =>
-  new BigNumber(numberOne).mod(new BigNumber(numberTwo)).toFixed();
-
-/**
- * @desc real floor divides two numbers
- * @param  {Number}   numberOne
- * @param  {Number}   numberTwo
- * @return {String}
- */
-export const floorDivide = (
-  numberOne: BigNumberish,
-  numberTwo: BigNumberish,
-): string =>
-  new BigNumber(numberOne)
-    .dividedToIntegerBy(new BigNumber(numberTwo))
-    .toFixed();
-
-/**
- * @desc count value's number of decimals places
- * @param  {String}   value
- * @return {String}
- */
-export const countDecimalPlaces = (value: BigNumberish): number =>
-  new BigNumber(value).dp();
-
-/**
- * @desc update the amount to display precision
- * equivalent to ~0.01 of the native price
- * or use most significant decimal
- * if the updated precision amounts to zero
- * @param  {String}   amount
- * @param  {String}   nativePrice
- * @param  {Boolean}  use rounding up mode
- * @return {String}   updated amount
- */
-export const updatePrecisionToDisplay = (
-  amount: BigNumberish,
-  nativePrice?: BigNumberish,
-  roundUp = false,
-): string => {
-  if (!amount) return '0';
-  const roundingMode = roundUp ? BigNumber.ROUND_UP : BigNumber.ROUND_DOWN;
-  if (!nativePrice)
-    return new BigNumber(amount).decimalPlaces(6, roundingMode).toFixed();
-  const bnAmount = new BigNumber(amount);
-  const significantDigitsOfNativePriceInteger = new BigNumber(nativePrice)
-    .decimalPlaces(0, BigNumber.ROUND_DOWN)
-    .sd(true);
-  const truncatedPrecision = new BigNumber(
-    significantDigitsOfNativePriceInteger,
-  )
-    .plus(2, 10)
-    .toNumber();
-  const truncatedAmount = bnAmount.decimalPlaces(
-    truncatedPrecision,
-    BigNumber.ROUND_DOWN,
-  );
-  return truncatedAmount.isZero()
-    ? new BigNumber(bnAmount.toPrecision(1, roundingMode)).toFixed()
-    : bnAmount.decimalPlaces(truncatedPrecision, roundingMode).toFixed();
-};
-
-/**
- * @desc format inputOne value to signficant decimals given inputTwo
- * @param  {String}   inputOne
- * @param  {String}   inputTwo
- * @return {String}
- */
-// TODO revisit logic, at least rename so it is not native amount dp
-export const formatInputDecimals = (
-  inputOne: BigNumberish,
-  inputTwo: BigNumberish,
-): string => {
-  const _nativeAmountDecimalPlaces = countDecimalPlaces(inputTwo);
-  const decimals =
-    _nativeAmountDecimalPlaces > 8 ? _nativeAmountDecimalPlaces : 8;
-  const result = new BigNumber(formatFixedDecimals(inputOne, decimals))
-    .toFormat()
-    .replace(/,/g, '');
-  return result;
-};
-
 export const add = (numberOne: BigNumberish, numberTwo: BigNumberish): string =>
   new BigNumber(numberOne).plus(numberTwo).toFixed();
 
@@ -155,15 +55,6 @@ export const minus = (
   numberOne: BigNumberish,
   numberTwo: BigNumberish,
 ): string => new BigNumber(numberOne).minus(numberTwo).toFixed();
-
-export const addDisplay = (numberOne: string, numberTwo: string): string => {
-  const unit = numberOne.replace(/[\d.-]/g, '');
-  const leftAlignedUnit = numberOne.indexOf(unit) === 0;
-  return currency(0, { symbol: unit, pattern: leftAlignedUnit ? '!#' : '#!' })
-    .add(numberOne)
-    .add(numberTwo)
-    .format();
-};
 
 export const multiply = (
   numberOne: BigNumberish,
@@ -214,9 +105,6 @@ export const convertAmountFromNativeValue = (
       .toFixed(decimals, BigNumber.ROUND_DOWN),
   ).toFixed();
 };
-
-export const convertStringToNumber = (value: BigNumberish) =>
-  new BigNumber(value).toNumber();
 
 export const lessThan = (
   numberOne: BigNumberish,
@@ -273,7 +161,7 @@ export const handleSignificantDecimalsAsNumber = (
 /**
  * @desc convert from asset BigNumber amount to native price BigNumber amount
  */
-export const convertAmountToNativeAmount = (
+const convertAmountToNativeAmount = (
   amount: BigNumberish,
   priceUnit: BigNumberish,
 ): string => multiply(amount, priceUnit);
@@ -389,34 +277,6 @@ export const convertAmountToPercentageDisplay = (
 };
 
 /**
- * @desc convert from amount to display formatted string
- * with a threshold percent
- */
-export const convertAmountToPercentageDisplayWithThreshold = (
-  value: BigNumberish,
-  decimals = 2,
-  threshold = '0.0001',
-): string => {
-  if (lessThan(value, threshold)) {
-    return '< 0.01%';
-  } else {
-    const display = new BigNumber(value).times(100).toFixed(decimals);
-    return `${display}%`;
-  }
-};
-
-/**
- * @desc convert from bips amount to percentage format
- */
-export const convertBipsToPercentage = (
-  value: BigNumberish,
-  decimals = 2,
-): string => {
-  if (value === null) return '0';
-  return new BigNumber(value || 0).shiftedBy(-2).toFixed(decimals);
-};
-
-/**
  * @desc convert from amount value to display formatted string
  */
 export const convertAmountToNativeDisplay = (
@@ -439,7 +299,7 @@ export const convertAmountToNativeDisplay = (
   return `${display} ${nativeSelected.symbol}`;
 };
 
-export const convertAmountToNativeDisplayWithThreshold = (
+const convertAmountToNativeDisplayWithThreshold = (
   value: BigNumberish,
   nativeCurrency: keyof nativeCurrencyType,
 ) => {
@@ -472,9 +332,6 @@ export const convertDecimalFormatToRawAmount = (
   decimals = 18,
 ): string =>
   new BigNumber(value).multipliedBy(new BigNumber(10).pow(decimals)).toFixed(0);
-
-export const fromWei = (number: BigNumberish): string =>
-  convertRawAmountToDecimalFormat(number, 18);
 
 const cleanNumber = (n: number | string | null | undefined): number => {
   if (typeof n === 'string') {
