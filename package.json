@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.5.126",
+  "version": "1.5.127",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -152,6 +152,7 @@
     "mipd": "0.0.5",
     "mnemonist": "0.39.5",
     "node-vibrant": "3.2.1-alpha.1",
+    "ox": "0.8.7",
     "parse-ms": "3.0.0",
     "qrcode": "1.5.1",
     "react": "18.2.0",
@@ -163,8 +164,8 @@
     "react-switch": "7.0.0",
     "socket.io-client": "4.5.3",
     "validator": "13.9.0",
-    "viem": "2.21.55",
-    "wagmi": "2.8.1",
+    "viem": "2.31.7",
+    "wagmi": "2.16.1",
     "word-wrap": "1.2.4",
     "zustand": "4.5.4"
   },
@@ -362,7 +363,8 @@
       "esbuild-register>esbuild": false,
       "wagmi>@wagmi/connectors>@metamask/sdk>@metamask/sdk-communication-layer>bufferutil": false,
       "wagmi>@wagmi/connectors>@metamask/sdk>@metamask/sdk-communication-layer>utf-8-validate": false,
-      "firebase>@firebase/util": false
+      "firebase>@firebase/util": false,
+      "wagmi>@wagmi/connectors>cbw-sdk>keccak": false
     }
   },
   "packageManager": "yarn@4.2.2"
