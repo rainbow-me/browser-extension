@@ -3,13 +3,12 @@ import {
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
 import { BigNumber } from '@ethersproject/bignumber';
-import { Bytes } from '@ethersproject/bytes';
 import { HDNode } from '@ethersproject/hdnode';
-import { keccak256 } from '@ethersproject/keccak256';
 import AppEth from '@ledgerhq/hw-app-eth';
+import type Transport from '@ledgerhq/hw-transport';
 import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import TrezorConnect from '@trezor/connect-web';
-import { Address } from 'viem';
+import { Address, ByteArray, Hex, keccak256 } from 'viem';
 
 import { getHDPathForVendorAndType } from '~/core/keychain/hdPath';
 import type { HardwareWalletVendor } from '~/core/keychain/keychainTypes/hardwareWalletKeychain';
@@ -202,7 +201,7 @@ export async function executeRap<T extends RapTypes>({
 }
 
 export const personalSign = async (
-  msgData: string | Bytes,
+  msgData: string | ByteArray,
   address: Address,
 ): Promise<string> => {
   const { type, vendor } = await getWallet(address as Address);
@@ -224,7 +223,7 @@ export const personalSign = async (
 };
 
 export const signTypedData = async (
-  msgData: string | Bytes,
+  msgData: string | ByteArray,
   address: Address,
 ) => {
   const { type, vendor } = await getWallet(address as Address);
@@ -360,13 +359,41 @@ export const importAccountAtIndex = async (
   return address;
 };
 
-export const connectTrezor = async () => {
+type AccountToImport = { address: Address; index: number };
+
+type ConnectHWResult =
+  | {
+      accountsToImport: AccountToImport[];
+      deviceId: Hex;
+      accountsEnabled: number;
+    }
+  | { error: string };
+
+const autodiscoverAccounts = async (
+  getAddressAtIndex: (index: number) => Promise<Address>,
+): Promise<AccountToImport[]> => {
+  const discover = async (
+    index: number,
+    acc: AccountToImport[],
+  ): Promise<AccountToImport[]> => {
+    const address = await getAddressAtIndex(index);
+    const hasBeenUsed = await hasPreviousTransactions(address);
+    if (hasBeenUsed) {
+      return discover(index + 1, [...acc, { address, index }]);
+    }
+    return acc;
+  };
+
+  const firstAddress = await getAddressAtIndex(0);
+  return discover(1, [{ address: firstAddress, index: 0 }]);
+};
+
+export const connectTrezor = async (): Promise<ConnectHWResult> => {
   if (process.env.IS_TESTING === 'true') {
     return HARDWARE_WALLETS.MOCK_ACCOUNT;
   }
   try {
-    // We don't want the index to be part of the path
-    // because we need the public key
+    // We don't want the index to be part of the path because we need the public key
     const path = getHDPathForVendorAndType(0, 'Trezor').slice(0, -2);
     const result = await TrezorConnect.ethereumGetPublicKey({
       path,
@@ -384,97 +411,52 @@ export const connectTrezor = async () => {
     }
 
     const hdNode = HDNode.fromExtendedKey(result.payload.xpub);
-    const firstAccountPath = `0`;
 
-    const accountsToImport = [
-      { address: hdNode.derivePath(firstAccountPath).address, index: 0 },
-    ];
-    let accountsEnabled = 1;
-    // Autodiscover accounts
-    let empty = false;
-    while (!empty) {
-      const path = `${accountsEnabled}`;
-      const newAddress = hdNode.derivePath(path).address;
+    const getAddressAtIndex = (index: number): Promise<Address> =>
+      Promise.resolve(hdNode.derivePath(`${index}`).address as Address);
 
-      // eslint-disable-next-line no-await-in-loop
-      const hasBeenUsed = await hasPreviousTransactions(newAddress as Address);
-
-      if (hasBeenUsed) {
-        accountsToImport.push({
-          address: newAddress,
-          index: accountsEnabled,
-        });
-        accountsEnabled += 1;
-      } else {
-        empty = true;
-      }
-    }
-
+    const accountsToImport = await autodiscoverAccounts(getAddressAtIndex);
+    const accountsEnabled = accountsToImport.length;
     const deviceId = keccak256(accountsToImport[0].address);
 
     return { accountsToImport, deviceId, accountsEnabled };
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (e: any) {
-    if (e?.name === 'TransportStatusError') {
+  } catch (e) {
+    if (e instanceof Error && e.name === 'TransportStatusError') {
       alert('Please make sure your trezor is connected and unlocked');
     } else {
       alert('Unable to connect to your trezor. Please try again.');
     }
-    return null;
+    return { error: e instanceof Error ? e.name : 'unknown' };
   }
 };
 
-export const connectLedger = async () => {
+export const connectLedger = async (): Promise<ConnectHWResult> => {
   if (process.env.IS_TESTING === 'true') {
     return HARDWARE_WALLETS.MOCK_ACCOUNT;
   }
-  let transport;
+  let transport: Transport | undefined;
   try {
     transport = await TransportWebHID.create();
     const appEth = new AppEth(transport);
-    const result = await appEth.getAddress(
-      getHDPathForVendorAndType(0, 'Ledger'),
-      false,
-      false,
-    );
-    const accountsToImport = [{ address: result.address, index: 0 }];
-    let accountsEnabled = 1;
-    // Autodiscover accounts
-    let empty = false;
-    while (!empty) {
-      // eslint-disable-next-line no-await-in-loop
+
+    const getAddressAtIndex = async (index: number): Promise<Address> => {
       const result = await appEth.getAddress(
-        getHDPathForVendorAndType(accountsEnabled, 'Ledger'),
+        getHDPathForVendorAndType(index, 'Ledger'),
         false,
         false,
       );
+      return result.address as Address;
+    };
 
-      // eslint-disable-next-line no-await-in-loop
-      const hasBeenUsed = await hasPreviousTransactions(
-        result.address as Address,
-      );
-
-      if (hasBeenUsed) {
-        accountsToImport.push({
-          address: result.address,
-          index: accountsEnabled,
-        });
-        accountsEnabled += 1;
-      } else {
-        empty = true;
-      }
-    }
-
+    const accountsToImport = await autodiscoverAccounts(getAddressAtIndex);
+    const accountsEnabled = accountsToImport.length;
     const deviceId = keccak256(accountsToImport[0].address);
     await transport?.close();
 
     return { accountsToImport, deviceId, accountsEnabled };
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (e: any) {
+  } catch (e) {
     let error = '';
-    switch (e?.name) {
+    switch (e instanceof Error ? e.name : '') {
       case 'TransportWebUSBGestureRequired':
         error = 'needs_unlock';
         break;

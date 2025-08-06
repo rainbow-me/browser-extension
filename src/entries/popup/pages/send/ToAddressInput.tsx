@@ -1,4 +1,3 @@
-import { isAddress } from '@ethersproject/address';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, {
   InputHTMLAttributes,
@@ -9,7 +8,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Address } from 'viem';
+import { Address, isAddress } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';

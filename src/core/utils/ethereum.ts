@@ -1,19 +1,17 @@
-import { isAddress } from '@ethersproject/address';
-import { Mnemonic, isValidMnemonic } from '@ethersproject/hdnode';
 import { TransactionResponse } from '@ethersproject/providers';
-import { parseEther } from '@ethersproject/units';
 import BigNumber from 'bignumber.js';
 import omit from 'lodash/omit';
-import { Address } from 'viem';
+import { Address, isAddress, parseEther } from 'viem';
 
 import { PrivateKey } from '../keychain/IKeychain';
 import { ethUnits } from '../references';
 import { EthereumWalletType } from '../types/walletTypes';
 
 import { addHexPrefix, isHexStringIgnorePrefix } from './hex';
+import { isValidMnemonic } from './mnemonic';
 import { divide } from './numbers';
 
-export type EthereumWalletSeed = PrivateKey | Mnemonic['phrase'];
+export type EthereumWalletSeed = PrivateKey | string;
 
 const validTLDs = ['eth', 'xyz', 'luxe', 'kred', 'reverse', 'addr', 'test'];
 export const isENSAddressFormat = (name: string) => {

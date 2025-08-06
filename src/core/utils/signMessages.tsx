@@ -1,6 +1,4 @@
-import { getAddress, isAddress } from '@ethersproject/address';
-import { Bytes, isHexString } from '@ethersproject/bytes';
-import { Address } from 'viem';
+import { Address, ByteArray, getAddress, isAddress, isHex } from 'viem';
 
 import { RainbowError, logger } from '~/logger';
 
@@ -30,7 +28,7 @@ export const getSigningRequestDisplayDetails = (
         }
 
         try {
-          const strippedMessage = isHexString(message)
+          const strippedMessage = isHex(message)
             ? message.slice(2)
             : `${Buffer.from(message, 'utf8').toString('hex')}`; // Some dapps send the message as a utf8 string
           const buffer = Buffer.from(strippedMessage, 'hex');
@@ -64,9 +62,9 @@ export const getSigningRequestDisplayDetails = (
             const [address, data] = isAddress(params[0])
               ? [params[0], params[1]]
               : [params[1], params[0]];
-            let msgData: string | Bytes = data;
+            let msgData: string | ByteArray = data;
             try {
-              msgData = JSON.parse(data) as Bytes;
+              msgData = JSON.parse(data) as ByteArray;
               // eslint-disable-next-line no-empty
             } catch (e) {}
 

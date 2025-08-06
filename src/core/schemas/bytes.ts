@@ -1,6 +1,6 @@
-import { Bytes, isBytes } from '@ethersproject/bytes';
+import { ByteArray, isBytes } from 'viem';
 import { z } from 'zod';
 
-export const bytesSchema = z.custom<Bytes>(isBytes, {
-  message: 'Expected ArrayLike<number>',
+export const bytesSchema = z.custom<ByteArray>(isBytes, {
+  message: 'Expected Uint8Array',
 });
