@@ -16,7 +16,7 @@ export const handleOpenExtensionShortcut = () => {
     }
   };
 
-  chrome.commands.onCommand.addListener((command) => {
+  chrome.commands?.onCommand.addListener((command) => {
     if (command === 'open_rainbow') {
       openPopup();
 
