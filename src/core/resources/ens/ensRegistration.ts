@@ -65,6 +65,7 @@ const fetchRegistration = async (ensName: string) => {
 // ///////////////////////////////////////////////
 // Query Types
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type EnsRegistrationArgs = {
   name: string;
 };

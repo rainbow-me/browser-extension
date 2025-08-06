@@ -15,6 +15,7 @@ import { FiatProviderName } from './types';
 // ///////////////////////////////////////////////
 // Query Types
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type ProviderWidgetUrlArgs = {
   provider: FiatProviderName;
   depositAddress: Address;

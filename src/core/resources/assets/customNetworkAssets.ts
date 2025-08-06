@@ -43,6 +43,7 @@ const CUSTOM_NETWORK_ASSETS_REFETCH_INTERVAL = 60000;
 // ///////////////////////////////////////////////
 // Query Types
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type CustomNetworkAssetsArgs = {
   address: Address;
   currency: SupportedCurrencyKey;

@@ -47,6 +47,7 @@ export interface AddySummary {
 // ///////////////////////////////////////////////
 // Query Types
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type AddysSummaryArgs = {
   addresses: Address[];
   currency: SupportedCurrencyKey;

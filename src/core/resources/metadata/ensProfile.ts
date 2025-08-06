@@ -33,6 +33,11 @@ const ensProfileFields: EnsProfileField[] = [
 // ///////////////////////////////////////////////
 // Query Types
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type ResolveEnsProfileArgs = {
+  addressOrName: Address | string | undefined;
+};
+
 type EnsProfileArgs = {
   addressOrName: Address | string | undefined;
 };
@@ -103,11 +108,7 @@ async function resolveEnsProfile(name: string) {
   }
 }
 
-const fetchEnsProfile = ({
-  addressOrName,
-}: {
-  addressOrName?: string;
-}) => {
+const fetchEnsProfile = ({ addressOrName }: { addressOrName?: string }) => {
   if (!addressOrName) return null;
   return isAddress(addressOrName)
     ? reverseResolveEnsProfile(addressOrName as Address)

@@ -16,6 +16,11 @@ import { getProvider } from '~/core/wagmi/clientToProvider';
 // ///////////////////////////////////////////////
 // Query Types
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type OptimismL1SecurityFeeResponse = {
+  l1Gas: string;
+};
+
 type OptimismL1SecurityFeeArgs = {
   transactionRequest: TransactionRequest;
   chainId: ChainId;

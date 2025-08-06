@@ -2,14 +2,23 @@ import { InfiniteData } from '@tanstack/react-query';
 
 import { i18n } from '~/core/languages';
 import { SimpleHashCollectionDetails, UniqueAsset } from '~/core/types/nfts';
+
 type NFTInfiniteData = InfiniteData<{
   nfts: UniqueAsset[];
   nextPage?: string | null;
 }>;
+
 type NFTCollectionInfiniteData = InfiniteData<{
   collections: SimpleHashCollectionDetails[];
   nextPage?: string | null;
 }>;
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type NFTCollectionSectionData = {
+  assets: UniqueAsset[];
+  collection: UniqueAsset['collection'];
+  lastCollectionAcquisition?: string;
+};
 
 export const selectNfts = (data?: NFTInfiniteData) =>
   data?.pages?.map((page) => page.nfts).flat();

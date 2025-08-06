@@ -71,6 +71,7 @@ export type MeteorologyLegacyResponse = {
   };
 };
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type MeteorologyArgs = {
   chainId: ChainId;
 };

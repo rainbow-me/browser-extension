@@ -50,6 +50,7 @@ interface ApprovalsResponse {
 // ///////////////////////////////////////////////
 // Query Types
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type ApprovalsQueryArgs = {
   address: Address;
   chainIds: ChainId[];

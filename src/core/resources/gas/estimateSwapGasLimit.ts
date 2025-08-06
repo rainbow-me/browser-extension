@@ -22,6 +22,11 @@ import { ChainId } from '~/core/types/chains';
 // ///////////////////////////////////////////////
 // Query Types
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type EstimateSwapGasLimitResponse = {
+  gasLimit: string;
+};
+
 type EstimateSwapGasLimitArgs = {
   chainId: ChainId;
   quote?: Quote | CrosschainQuote | QuoteError;

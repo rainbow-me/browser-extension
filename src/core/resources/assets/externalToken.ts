@@ -117,6 +117,7 @@ async function externalTokenQueryFunction({
   return fetchExternalToken({ address, chainId, currency });
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type ExternalTokenQueryFunctionResult = QueryFunctionResult<
   typeof externalTokenQueryFunction
 >;

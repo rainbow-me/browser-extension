@@ -27,6 +27,7 @@ type UserAssetsArgs = {
   currency: SupportedCurrencyKey;
   testnetMode?: boolean;
 };
+
 export const userAssetsQueryKey = ({
   address,
   currency,
@@ -37,6 +38,9 @@ export const userAssetsQueryKey = ({
     { address, currency, testnetMode },
     { persisterVersion: 3 },
   );
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type UserAssetsQueryKey = ReturnType<typeof userAssetsQueryKey>;
 
 export async function parseUserAssets({
   address,

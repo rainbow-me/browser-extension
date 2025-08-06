@@ -16,6 +16,7 @@ import { ChainId } from '~/core/types/chains';
 // ///////////////////////////////////////////////
 // Query Types
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type EstimateAprovalGasLimitArgs = {
   chainId: ChainId;
   ownerAddress: Address;
