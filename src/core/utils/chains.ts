@@ -55,14 +55,6 @@ export const useMainChains = () => {
   return getMainChainsHelper(chains, supportedChains);
 };
 
-export const getMainChains = () => {
-  const { chains } = wagmiConfig;
-  return getMainChainsHelper(
-    chains,
-    useNetworkStore.getState().getBackendSupportedChains(true),
-  );
-};
-
 // All the chains we support
 // rainbow default and custom chains
 
