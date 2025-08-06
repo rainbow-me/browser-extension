@@ -76,6 +76,7 @@ jobs:
           path: build/
       - name: Remove old screenshots
         run: rm -rf screenshots/*
+  
   # FIREFOX TESTS
   # firefox-e2e-parallel:
   #   runs-on: ubuntu-latest
@@ -197,6 +198,7 @@ jobs:
   #     - name: Fail if any tests failed
   #       if: steps.FFE2eDappInteractions.outcome == 'failure'
   #       run: exit 1
+  
   # CHROME TESTS
   chrome-e2e-parallel:
     runs-on: beefy-runner-bx
@@ -204,6 +206,7 @@ jobs:
     needs: [build]
     env:
       DISPLAY: :0
+      PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/chromeTestsSetup
@@ -234,6 +237,7 @@ jobs:
     needs: [build]
     env:
       DISPLAY: :0
+      PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/chromeTestsSetup
@@ -264,6 +268,7 @@ jobs:
     needs: [build]
     env:
       DISPLAY: :0
+      PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/chromeTestsSetup
@@ -294,6 +299,7 @@ jobs:
     needs: [build]
     env:
       DISPLAY: :0
+      PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/chromeTestsSetup
@@ -324,6 +330,7 @@ jobs:
     needs: [build]
     env:
       DISPLAY: :0
+      PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/chromeTestsSetup

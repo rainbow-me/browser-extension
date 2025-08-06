@@ -1,3 +1,4 @@
+import percySnapshot from '@percy/selenium-webdriver';
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
 
@@ -73,6 +74,7 @@ it('should be able import a second wallet via pk then switch back to wallet 1', 
 
 it('should be able to go to setings', async () => {
   await goToPopup(driver, rootURL);
+  await percySnapshot(driver, 'Settings');
   await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
   await findElementByTestIdAndClick({ id: 'settings-link', driver });
 });
@@ -84,6 +86,7 @@ it('should be able to connect to hardhat and go to send flow', async () => {
   expect(button).toBeTruthy();
   await findElementByTestIdAndClick({ id: 'navbar-button-with-back', driver });
   await findElementByTestIdAndClick({ id: 'header-link-send', driver });
+  await percySnapshot(driver, 'Send');
 });
 
 it('should be able to save contact on send flow', async () => {
