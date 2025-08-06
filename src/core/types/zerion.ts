@@ -5,7 +5,7 @@ import { PaginatedTransactionsApiResponse } from '~/core/types/transactions';
 /**
  * Metadata for a message from the Zerion API.
  */
-export interface MessageMeta {
+interface MessageMeta {
   address?: string;
   currency?: string;
   cut_off?: number;
@@ -37,18 +37,6 @@ export interface AddressAssetsReceivedMessage {
 export interface TransactionsReceivedMessage {
   payload?: {
     transactions?: PaginatedTransactionsApiResponse[];
-  };
-  meta?: MessageMeta;
-}
-
-/**
- * A message from the Zerion API indicating that asset price data was received
- */
-export interface AssetPricesReceivedMessage {
-  payload?: {
-    prices?: {
-      [id: string]: AssetApiResponse;
-    };
   };
   meta?: MessageMeta;
 }
