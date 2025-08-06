@@ -3,7 +3,6 @@ import {
   TransactionRequest,
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
-import { Signer } from '@ethersproject/abstract-signer';
 import { Wallet } from '@ethersproject/wallet';
 import {
   MessageTypeProperty,
@@ -216,10 +215,6 @@ export const getWallets = async () => {
 
 export const getAccounts = async (): Promise<Address[]> => {
   return keychainManager.getAccounts();
-};
-
-export const getSigner = async (address: Address): Promise<Signer> => {
-  return keychainManager.getSigner(address);
 };
 
 export const exportKeychain = async (
