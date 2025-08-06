@@ -18,8 +18,8 @@ import {
   convertAmountToPercentageDisplay,
 } from '~/core/utils/numbers';
 
-export const EXTERNAL_TOKEN_CACHE_TIME = 1000 * 60 * 60 * 24; // 24 hours
-export const EXTERNAL_TOKEN_STALE_TIME = 1000 * 60; // 1 minute
+const EXTERNAL_TOKEN_CACHE_TIME = 1000 * 60 * 60 * 24; // 24 hours
+const EXTERNAL_TOKEN_STALE_TIME = 1000 * 60; // 1 minute
 
 // Types
 type ExternalToken = Pick<
@@ -40,7 +40,7 @@ type ExternalTokensArgs = {
 };
 
 // Query Key for Token Price
-export const externalTokenQueryKey = ({
+const externalTokenQueryKey = ({
   address,
   chainId,
   currency,
@@ -108,7 +108,7 @@ export async function fetchExternalToken({
   }
 }
 
-export async function externalTokenQueryFunction({
+async function externalTokenQueryFunction({
   queryKey: [{ address, chainId, currency }],
 }: QueryFunctionArgs<
   typeof externalTokenQueryKey
@@ -117,7 +117,7 @@ export async function externalTokenQueryFunction({
   return fetchExternalToken({ address, chainId, currency });
 }
 
-export type ExternalTokenQueryFunctionResult = QueryFunctionResult<
+type ExternalTokenQueryFunctionResult = QueryFunctionResult<
   typeof externalTokenQueryFunction
 >;
 

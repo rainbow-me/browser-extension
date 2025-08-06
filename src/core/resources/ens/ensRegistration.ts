@@ -65,7 +65,7 @@ const fetchRegistration = async (ensName: string) => {
 // ///////////////////////////////////////////////
 // Query Types
 
-export type EnsRegistrationArgs = {
+type EnsRegistrationArgs = {
   name: string;
 };
 

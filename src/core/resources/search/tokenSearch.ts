@@ -13,9 +13,7 @@ import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 import {
   SearchAsset,
-  TokenSearchAssetKey,
   TokenSearchListId,
-  TokenSearchThreshold,
 } from '~/core/types/search';
 
 import { parseTokenSearch } from './parseTokenSearch';
@@ -23,17 +21,10 @@ import { parseTokenSearch } from './parseTokenSearch';
 // ///////////////////////////////////////////////
 // Query Types
 
-export type TokenSearchArgs = {
+type TokenSearchArgs = {
   chainId: ChainId;
   fromChainId?: ChainId | '';
   list: TokenSearchListId;
-  query: string;
-};
-
-export type TokenSearchAllNetworksArgs = {
-  keys: TokenSearchAssetKey[];
-  list: TokenSearchListId;
-  threshold: TokenSearchThreshold;
   query: string;
 };
 

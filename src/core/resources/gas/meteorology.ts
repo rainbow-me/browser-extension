@@ -71,7 +71,7 @@ export type MeteorologyLegacyResponse = {
   };
 };
 
-export type MeteorologyArgs = {
+type MeteorologyArgs = {
   chainId: ChainId;
 };
 

@@ -16,7 +16,7 @@ import { ChainId } from '~/core/types/chains';
 // ///////////////////////////////////////////////
 // Query Types
 
-export type EstimateAprovalGasLimitArgs = {
+type EstimateAprovalGasLimitArgs = {
   chainId: ChainId;
   ownerAddress: Address;
   assetAddress?: Address;
@@ -82,7 +82,8 @@ type EstimateApprovalGasLimitResult = QueryFunctionResult<
 // ///////////////////////////////////////////////
 // Query Fetcher
 
-export async function fetchEstimateSwapGasLimit(
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+async function fetchEstimateSwapGasLimit(
   {
     chainId,
     ownerAddress,

@@ -10,11 +10,6 @@ type NFTCollectionInfiniteData = InfiniteData<{
   collections: SimpleHashCollectionDetails[];
   nextPage?: string | null;
 }>;
-export type NFTCollectionSectionData = {
-  assets: UniqueAsset[];
-  collection: UniqueAsset['collection'];
-  lastCollectionAcquisition?: string;
-};
 
 export const selectNfts = (data?: NFTInfiniteData) =>
   data?.pages?.map((page) => page.nfts).flat();

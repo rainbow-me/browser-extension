@@ -8,7 +8,7 @@ import { QueryFunctionArgs, createQueryKey } from '~/core/react-query';
 // ///////////////////////////////////////////////
 // Query Types
 
-export type ResolveEnsProfileArgs = {
+type ResolveEnsProfileArgs = {
   addressOrName: Address | string | undefined;
 };
 
@@ -27,7 +27,7 @@ type ResolveEnsProfileQueryKey = ReturnType<typeof ResolveEnsProfileQueryKey>;
 // ///////////////////////////////////////////////
 // Query Function
 
-export async function reverseResolve(address: Address) {
+async function reverseResolve(address: Address) {
   try {
     const response = await metadataClient.reverseResolveENSProfile({
       chainId: 1,
@@ -44,7 +44,7 @@ export async function reverseResolve(address: Address) {
   }
 }
 
-export async function resolve(name: string) {
+async function resolve(name: string) {
   try {
     const response = await metadataClient.resolveENSProfile({
       chainId: 1,
@@ -72,7 +72,7 @@ export const resolveEnsAvatar = ({
     : resolve(addressOrName);
 };
 
-export async function resolveEnsProfileQueryFunction({
+async function resolveEnsProfileQueryFunction({
   queryKey: [{ addressOrName }],
 }: QueryFunctionArgs<typeof ResolveEnsProfileQueryKey>) {
   return resolveEnsAvatar({ addressOrName });

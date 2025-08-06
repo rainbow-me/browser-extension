@@ -33,7 +33,7 @@ const ensProfileFields: EnsProfileField[] = [
 // ///////////////////////////////////////////////
 // Query Types
 
-export type EnsProfileArgs = {
+type EnsProfileArgs = {
   addressOrName: Address | string | undefined;
 };
 
@@ -48,7 +48,7 @@ type EnsProfileQueryKey = ReturnType<typeof EnsProfileQueryKey>;
 // ///////////////////////////////////////////////
 // Query Function
 
-export async function reverseResolveEnsProfile(address: Address) {
+async function reverseResolveEnsProfile(address: Address) {
   try {
     const response = await metadataClient.reverseResolveENSProfile({
       chainId: 1,
@@ -76,7 +76,7 @@ export async function reverseResolveEnsProfile(address: Address) {
   }
 }
 
-export async function resolveEnsProfile(name: string) {
+async function resolveEnsProfile(name: string) {
   try {
     const response = await metadataClient.resolveENSProfile({
       chainId: 1,
@@ -103,7 +103,7 @@ export async function resolveEnsProfile(name: string) {
   }
 }
 
-export const fetchEnsProfile = ({
+const fetchEnsProfile = ({
   addressOrName,
 }: {
   addressOrName?: string;
@@ -116,7 +116,7 @@ export const fetchEnsProfile = ({
 
 type EnsProfileResult = QueryFunctionResult<typeof fetchEnsProfile>;
 
-export async function resolveEnsProfileQueryFunction({
+async function resolveEnsProfileQueryFunction({
   queryKey: [{ addressOrName }],
 }: QueryFunctionArgs<typeof EnsProfileQueryKey>) {
   return fetchEnsProfile({ addressOrName });

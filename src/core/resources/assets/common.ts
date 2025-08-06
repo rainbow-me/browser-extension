@@ -22,7 +22,7 @@ import {
   USDC_MAINNET_ASSET,
 } from '~/test/utils';
 
-export type UserAssetsArgs = {
+type UserAssetsArgs = {
   address?: Address;
   currency: SupportedCurrencyKey;
   testnetMode?: boolean;
@@ -37,8 +37,6 @@ export const userAssetsQueryKey = ({
     { address, currency, testnetMode },
     { persisterVersion: 3 },
   );
-
-export type UserAssetsQueryKey = ReturnType<typeof userAssetsQueryKey>;
 
 export async function parseUserAssets({
   address,

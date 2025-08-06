@@ -22,11 +22,7 @@ import { ChainId } from '~/core/types/chains';
 // ///////////////////////////////////////////////
 // Query Types
 
-export type EstimateSwapGasLimitResponse = {
-  gasLimit: string;
-};
-
-export type EstimateSwapGasLimitArgs = {
+type EstimateSwapGasLimitArgs = {
   chainId: ChainId;
   quote?: Quote | CrosschainQuote | QuoteError;
   assetToSell?: ParsedSearchAsset | ParsedAsset;
@@ -94,7 +90,8 @@ type EstimateSwapGasLimitResult = QueryFunctionResult<
 // ///////////////////////////////////////////////
 // Query Fetcher
 
-export async function fetchEstimateSwapGasLimit(
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+async function fetchEstimateSwapGasLimit(
   { chainId, quote, assetToSell, assetToBuy }: EstimateSwapGasLimitArgs,
   config: QueryConfig<
     EstimateSwapGasLimitResult,

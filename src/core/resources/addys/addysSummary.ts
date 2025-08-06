@@ -47,7 +47,7 @@ export interface AddySummary {
 // ///////////////////////////////////////////////
 // Query Types
 
-export type AddysSummaryArgs = {
+type AddysSummaryArgs = {
   addresses: Address[];
   currency: SupportedCurrencyKey;
 };

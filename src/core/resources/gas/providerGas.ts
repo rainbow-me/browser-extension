@@ -13,18 +13,10 @@ import { getProvider } from '~/core/wagmi/clientToProvider';
 
 import { MeteorologyLegacyResponse } from './meteorology';
 
-export const BASE_FEE_BLOCKS_TO_CONFIRMATION_MULTIPLIERS = {
-  120: 0.75,
-  240: 0.72,
-  4: 0.92,
-  40: 0.79,
-  8: 0.88,
-};
-
 // ///////////////////////////////////////////////
 // Query Types
 
-export type ProviderGasArgs = {
+type ProviderGasArgs = {
   chainId: ChainId;
 };
 

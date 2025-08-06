@@ -25,7 +25,7 @@ const ASSETS_REFETCH_INTERVAL = 60000;
 // ///////////////////////////////////////////////
 // Query Types
 
-export type AssetsQueryArgs = {
+type AssetsQueryArgs = {
   assets: { address: AddressOrEth; chainId: ChainId }[];
   currency: SupportedCurrencyKey;
 };
@@ -41,7 +41,7 @@ type AssetsQueryKey = ReturnType<typeof assetsQueryKey>;
 // ///////////////////////////////////////////////
 // Query Function
 
-export async function assetsQueryFunction({
+async function assetsQueryFunction({
   queryKey: [{ assets, currency }],
 }: QueryFunctionArgs<typeof assetsQueryKey>): Promise<{
   [key: UniqueId]: ParsedAsset;
@@ -80,7 +80,8 @@ type AssetsQueryResult = QueryFunctionResult<typeof assetsQueryFunction>;
 // ///////////////////////////////////////////////
 // Query Fetcher
 
-export async function fetchAssets(
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+async function fetchAssets(
   { assets, currency }: AssetsQueryArgs,
   config: QueryConfig<
     AssetsQueryResult,

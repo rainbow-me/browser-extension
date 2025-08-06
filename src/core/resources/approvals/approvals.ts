@@ -16,8 +16,6 @@ import { ChainId } from '~/core/types/chains';
 import { TxHash } from '~/core/types/transactions';
 import { RainbowError, logger } from '~/logger';
 
-export const APPROVALS_TIMEOUT_DURATION = 10000;
-
 export interface ApprovalSpender {
   tx_hash: TxHash;
   tx_time: string;
@@ -52,7 +50,7 @@ interface ApprovalsResponse {
 // ///////////////////////////////////////////////
 // Query Types
 
-export type ApprovalsQueryArgs = {
+type ApprovalsQueryArgs = {
   address: Address;
   chainIds: ChainId[];
   currency: SupportedCurrencyKey;
@@ -77,7 +75,7 @@ type AprovalsQueryKey = ReturnType<typeof approvalsQueryKey>;
 // ///////////////////////////////////////////////
 // Query Function
 
-export async function approvalsQueryFunction({
+async function approvalsQueryFunction({
   queryKey: [{ address, chainIds, currency }],
 }: QueryFunctionArgs<typeof approvalsQueryKey>): Promise<Approval[] | null> {
   try {
@@ -110,7 +108,8 @@ type ApprovalsQueryResult = QueryFunctionResult<typeof approvalsQueryFunction>;
 // ///////////////////////////////////////////////
 // Query Fetcher
 
-export async function fetchApprovals(
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+async function fetchApprovals(
   { address, chainIds, currency }: ApprovalsQueryArgs,
   config: QueryConfig<
     ApprovalsQueryResult,
