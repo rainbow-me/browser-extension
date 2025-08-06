@@ -6891,6 +6891,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@total-typescript/ts-reset@npm:0.4.2":
+  version: 0.4.2
+  resolution: "@total-typescript/ts-reset@npm:0.4.2"
+  checksum: 10c0/548b9b4182995bf78b21ff660b57422c4130fc9414a4e83f20873deaac19a53db91ccbeae5d7383fdbe9cf150e89668e95c0496fcadf1b884c74b9c7cdd03751
+  languageName: node
+  linkType: hard
+
 "@trezor/analytics@npm:1.2.1":
   version: 1.2.1
   resolution: "@trezor/analytics@npm:1.2.1"
@@ -10338,6 +10345,7 @@ __metadata:
     "@tanstack/react-query-persist-client": "npm:5.35.1"
     "@tanstack/react-virtual": "npm:3.8.1"
     "@testing-library/react": "npm:13.4.0"
+    "@total-typescript/ts-reset": "npm:0.4.2"
     "@trezor/connect-plugin-ethereum": "npm:9.0.2"
     "@trezor/connect-web": "npm:9.4.2"
     "@types/chroma-js": "npm:2.1.4"

@@ -169,6 +169,7 @@
     "@lavamoat/preinstall-always-fail": "2.0.0",
     "@peculiar/webcrypto": "1.4.1",
     "@testing-library/react": "13.4.0",
+    "@total-typescript/ts-reset": "0.4.2",
     "@types/chroma-js": "2.1.4",
     "@types/chrome": "0.1.1",
     "@types/fs-extra": "9.0.13",
