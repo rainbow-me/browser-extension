@@ -11,6 +11,10 @@ const manifestFF = {
         "id": "browserextension@rainbow.me",
         "strict_min_version": "116.0"
       },
+      "gecko_android": {
+        "id": "browserextension@rainbow.me",
+        "strict_max_version": "0"
+      },
     },
     host_permissions: [
       ...manifestBase.host_permissions,
