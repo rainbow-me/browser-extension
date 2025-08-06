@@ -16,6 +16,8 @@ export const handleOpenExtensionShortcut = () => {
     }
   };
 
+  // chrome.commands may not be available in incompatible browsers
+  // this handler executes before we gate mobile users in onboarding
   chrome.commands?.onCommand.addListener((command) => {
     if (command === 'open_rainbow') {
       openPopup();
