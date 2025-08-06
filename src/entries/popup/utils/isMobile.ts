@@ -3,15 +3,15 @@ const userAgent = () =>
     ? navigator.userAgent.toLocaleLowerCase()
     : '';
 
-export const isAndroid = (ua = userAgent()) => ua.includes('android');
+const isAndroid = (ua = userAgent()) => ua.includes('android');
 
-export const isSmallIOS = (ua = userAgent()) =>
+const isSmallIOS = (ua = userAgent()) =>
   ua.includes('iphone') || ua.includes('ipod');
 
-export const isLargeIOS = (ua = userAgent()) =>
+const isLargeIOS = (ua = userAgent()) =>
   ua.includes('ipad') || (ua.includes('mac') && navigator.maxTouchPoints > 1);
 
-export const isIOS = (ua = userAgent()) => isSmallIOS(ua) || isLargeIOS(ua);
+const isIOS = (ua = userAgent()) => isSmallIOS(ua) || isLargeIOS(ua);
 
 export function isMobile() {
   const ua = userAgent();
