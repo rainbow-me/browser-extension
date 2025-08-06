@@ -10381,7 +10381,6 @@ __metadata:
     clsx: "npm:1.2.1"
     copy-webpack-plugin: "npm:11.0.0"
     css-loader: "npm:6.7.1"
-    currency.js: "npm:2.0.4"
     date-fns: "npm:2.29.3"
     deepmerge: "npm:4.2.2"
     dotenv-webpack: "npm:8.0.1"
@@ -12017,13 +12016,6 @@ __metadata:
   version: 3.1.1
   resolution: "csstype@npm:3.1.1"
   checksum: 10c0/7c8b8c5923049d84132581c13bae6e1faf999746fe3998ba5f3819a8e1cdc7512ace87b7d0a4a69f0f4b8ba11daf835d4f1390af23e09fc4f0baad52c084753a
-  languageName: node
-  linkType: hard
-
-"currency.js@npm:2.0.4":
-  version: 2.0.4
-  resolution: "currency.js@npm:2.0.4"
-  checksum: 10c0/e7cd308a97c7b5d3413fa304542da62b7205a28144889b9b38f0fd203fe4d3c499a9541303fcbb6a9fac33a7ee39ab02d810c2c8f37cd5c69a7991adef638ba3
   languageName: node
   linkType: hard
 
