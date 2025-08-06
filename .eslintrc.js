@@ -6,6 +6,8 @@ module.exports = {
     'no-nested-ternary': 'off',
     'import/no-default-export': 'off',
     'react/react-in-jsx-scope': 'off',
+    // Disable problematic import rules that trigger babel-module resolver, will be catched by typescript
+    'import/no-unresolved': 'off',
     'import/order': [
       'warn',
       {
