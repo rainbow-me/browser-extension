@@ -77,7 +77,6 @@ export class HardwareWalletKeychain implements IKeychain {
     throw new Error('Method not implemented.');
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getSigner(address: Address): Signer {
     const provider = getProvider({
       chainId: mainnet.id,
