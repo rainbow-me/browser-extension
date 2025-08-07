@@ -1,10 +1,18 @@
-import { Address, sha256, toBytes, toHex } from 'viem';
+import { Address, Hex, isHex } from 'viem';
 
 import { KeychainType } from '~/core/types/keychainTypes';
 import { getWallet } from '~/entries/popup/handlers/wallet';
 import { RainbowError, logger } from '~/logger';
 
-const SECURE_WALLET_HASH_KEY = toHex(process.env.SECURE_WALLET_HASH_KEY);
+import { hmacSha256 } from './hash';
+
+const SECURE_WALLET_HASH_KEY = process.env.SECURE_WALLET_HASH_KEY as
+  | Hex
+  | undefined;
+
+if (!isHex(SECURE_WALLET_HASH_KEY)) {
+  throw new Error('SECURE_WALLET_HASH_KEY is not a valid hex string');
+}
 
 function securelyHashWalletAddress(
   walletAddress: Address | undefined,
@@ -22,11 +30,7 @@ function securelyHashWalletAddress(
 
   try {
     // Concatenate key and address bytes, then hash using sha256
-    const input = new Uint8Array([
-      ...toBytes(SECURE_WALLET_HASH_KEY),
-      ...toBytes(walletAddress),
-    ]);
-    const hash = sha256(input);
+    const hash = hmacSha256(SECURE_WALLET_HASH_KEY, walletAddress);
     logger.debug(`[securelyHashWalletAddress]: Wallet address securely hashed`);
     return hash;
   } catch (e) {
