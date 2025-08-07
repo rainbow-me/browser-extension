@@ -16,11 +16,12 @@ import { getProvider } from '~/core/wagmi/clientToProvider';
 // ///////////////////////////////////////////////
 // Query Types
 
-export type EstimateGasLimitResponse = {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type EstimateGasLimitResponse = {
   gasLimit: string;
 };
 
-export type EstimateGasLimitArgs = {
+type EstimateGasLimitArgs = {
   chainId: ChainId;
   transactionRequest: TransactionRequest;
 };
@@ -71,7 +72,8 @@ type EstimateGasLimitResult = QueryFunctionResult<
 // ///////////////////////////////////////////////
 // Query Fetcher
 
-export async function fetchEstimateGasLimit(
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+async function fetchEstimateGasLimit(
   { chainId, transactionRequest }: EstimateGasLimitArgs,
   config: QueryConfig<
     EstimateGasLimitResult,

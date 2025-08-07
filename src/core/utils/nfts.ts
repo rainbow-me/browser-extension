@@ -5,16 +5,13 @@ import {
   SimpleHashMarketplaceId,
   SimpleHashNFT,
   UniqueAsset,
-  UniqueTokenType,
   ValidatedSimpleHashNFT,
-  uniqueTokenTypes,
 } from '../types/nfts';
 
 import { convertRawAmountToDecimalFormat } from './numbers';
 
-export const POAP_NFT_ADDRESS = '0x22c1f6050e56d2876009903609a2cc3fef83b415';
-export const ENS_NFT_CONTRACT_ADDRESS =
-  '0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85';
+const POAP_NFT_ADDRESS = '0x22c1f6050e56d2876009903609a2cc3fef83b415';
+const ENS_NFT_CONTRACT_ADDRESS = '0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85';
 
 export const simpleHashSupportedChainNames = [
   'ethereum',
@@ -68,22 +65,6 @@ export const simpleHashSupportedTestnetChainNames = [
   ChainName.zoraSepolia,
 ] as (ChainName | 'ethereum-sepolia' | 'ethereum')[];
 
-/**
- * Returns an NFT's `UniqueTokenType`.
- * @param contractAddress NFT contract address
- * @returns `UniqueTokenType`
- */
-export function getUniqueTokenType(contractAddress: string): UniqueTokenType {
-  switch (contractAddress) {
-    case POAP_NFT_ADDRESS:
-      return uniqueTokenTypes.POAP;
-    case ENS_NFT_CONTRACT_ADDRESS:
-      return uniqueTokenTypes.ENS;
-    default:
-      return uniqueTokenTypes.NFT;
-  }
-}
-
 // TODO: Replace this with simplehash API call to available chains and verify via `eip155_network_id` https://docs.simplehash.com/reference/chains
 /**
  * Returns a `ChainName` from a `SimpleHashChain`. If an invalid value is
@@ -91,9 +72,7 @@ export function getUniqueTokenType(contractAddress: string): UniqueTokenType {
  * @param chain `SimpleHashChain`
  * @returns `Network`
  */
-export function getNetworkFromSimpleHashChain(
-  chain: SimpleHashChain,
-): ChainName {
+function getNetworkFromSimpleHashChain(chain: SimpleHashChain): ChainName {
   switch (chain) {
     case SimpleHashChain.Apechain:
       return ChainName.apechain;
@@ -233,7 +212,7 @@ export function filterSimpleHashNFTs(
   }, [] as ValidatedSimpleHashNFT[]);
 }
 
-export function extractPoapDropId(externalUrl: string) {
+function extractPoapDropId(externalUrl: string) {
   const parsedUrl = new URL(externalUrl);
   const pathParts = parsedUrl.pathname.split('/');
   return pathParts[2];
@@ -341,10 +320,3 @@ export const getUniqueAssetImageThumbnailURL = (asset: UniqueAsset) => {
 export const getUniqueAssetImagePreviewURL = (asset: UniqueAsset) => {
   return asset.image_preview_url || getUniqueAssetImageThumbnailURL(asset);
 };
-
-export const isENS = (asset: UniqueAsset) => {
-  const lowercasedContractAddress = asset.asset_contract.address?.toLowerCase();
-  return lowercasedContractAddress === ENS_NFT_CONTRACT_ADDRESS;
-};
-
-export const ENS_COLLECTION_ID = 'e34baafc65deb66d52d11be5d44f523e';

@@ -15,7 +15,8 @@ import { FiatProviderName } from './types';
 // ///////////////////////////////////////////////
 // Query Types
 
-export type ProviderWidgetUrlArgs = {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type ProviderWidgetUrlArgs = {
   provider: FiatProviderName;
   depositAddress: Address;
   defaultExperience?: 'buy' | 'send';
@@ -42,7 +43,7 @@ type ProviderWidgetUrlQueryKey = ReturnType<typeof providerWidgetUrlQueryKey>;
 // ///////////////////////////////////////////////
 // Query Function
 
-export async function providerWidgetUrlQueryFunction({
+async function providerWidgetUrlQueryFunction({
   queryKey: [{ provider, depositAddress, defaultExperience, redirectUri }],
 }: QueryFunctionArgs<typeof providerWidgetUrlQueryKey>) {
   const query = qs.stringify({

@@ -83,7 +83,7 @@ async function fetchDappMetadata({
   return dappMetadata;
 }
 
-export async function dappMetadataQueryFunction({
+async function dappMetadataQueryFunction({
   queryKey: [{ url }],
 }: QueryFunctionArgs<
   typeof DappMetadataQueryKey

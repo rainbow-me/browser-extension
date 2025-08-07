@@ -94,15 +94,13 @@ export const getDataForTokenTransfer = (value: string, to: string): string => {
   return data;
 };
 
-export enum TokenStandard {
+enum TokenStandard {
   ERC1155 = 'ERC1155',
   ERC721 = 'ERC721',
 }
 
-export const CRYPTO_KITTIES_NFT_ADDRESS =
-  '0x06012c8cf97bead5deae237070f9587f8e7a266d';
-export const CRYPTO_PUNKS_NFT_ADDRESS =
-  '0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb';
+const CRYPTO_KITTIES_NFT_ADDRESS = '0x06012c8cf97bead5deae237070f9587f8e7a266d';
+const CRYPTO_PUNKS_NFT_ADDRESS = '0xb47e3cd837ddf8e4c57f05d70ab865de6e193bbb';
 
 /**
  * @desc Returns a transaction data string for an NFT transfer.
@@ -350,7 +348,7 @@ export function parseTransaction({
   } as RainbowTransaction;
 }
 
-export const parseNewTransaction = (
+const parseNewTransaction = (
   tx: NewTransaction,
   currency: SupportedCurrencyKey,
 ): RainbowTransaction => {
@@ -614,7 +612,7 @@ const TransactionOutTypes = [
   'contract_interaction',
 ] as const;
 
-export const getDirection = (
+const getDirection = (
   type: TransactionType,
   changes: RainbowTransaction['changes'],
   txDirection?: TransactionDirection,
@@ -625,7 +623,7 @@ export const getDirection = (
   return 'in';
 };
 
-export const getExchangeRate = ({ type, changes }: RainbowTransaction) => {
+const getExchangeRate = ({ type, changes }: RainbowTransaction) => {
   if (type !== 'swap') return;
 
   const tokenIn = changes?.filter((c) => c?.direction === 'in')[0]?.asset;

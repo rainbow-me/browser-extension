@@ -61,7 +61,7 @@ export const MOCK_NFT_COLLECTION = [
 // ///////////////////////////////////////////////
 // Query Types
 
-export type NftCollectionsArgs = {
+type NftCollectionsArgs = {
   address: Address;
   sort: NftSort;
   testnetMode: boolean;

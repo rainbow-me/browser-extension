@@ -100,7 +100,7 @@ export const MOCK_NFTS_FOR_COLLECTION = [
 // ///////////////////////////////////////////////
 // Query Types
 
-export type NftsForCollectionArgs = {
+type NftsForCollectionArgs = {
   address: Address;
   collectionId: string;
   collectionChains: ChainName[];

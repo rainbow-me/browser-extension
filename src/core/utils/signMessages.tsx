@@ -9,7 +9,7 @@ import { RPCMethod } from '../types/rpcMethods';
 
 import { sanitizeTypedData } from './ethereum';
 
-export const isSignTypedData = (method: RPCMethod) =>
+const isSignTypedData = (method: RPCMethod) =>
   method.indexOf('signTypedData') !== -1;
 
 export const getSigningRequestDisplayDetails = (

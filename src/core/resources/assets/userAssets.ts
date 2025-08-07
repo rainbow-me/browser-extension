@@ -23,12 +23,11 @@ import { parseUserAssets } from './common';
 
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
 const USER_ASSETS_TIMEOUT_DURATION = 20000;
-export const USER_ASSETS_STALE_INTERVAL = 30000;
 
 // ///////////////////////////////////////////////
 // Query Types
 
-export type UserAssetsArgs = {
+type UserAssetsArgs = {
   address?: Address;
   currency: SupportedCurrencyKey;
   testnetMode?: boolean;
@@ -57,7 +56,7 @@ type FetchUserAssetsArgs = {
 // ///////////////////////////////////////////////
 // Query Key
 
-export const userAssetsQueryKey = ({
+const userAssetsQueryKey = ({
   address,
   currency,
   testnetMode,
@@ -88,7 +87,8 @@ export const userAssetsFetchQuery = ({
   });
 };
 
-export const userAssetsSetQueryDefaults = ({
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const userAssetsSetQueryDefaults = ({
   address,
   currency,
   staleTime,
@@ -102,7 +102,8 @@ export const userAssetsSetQueryDefaults = ({
   );
 };
 
-export const userAssetsSetQueryData = ({
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const userAssetsSetQueryData = ({
   address,
   currency,
   userAssets,
@@ -279,7 +280,7 @@ export type UserAssetsByChainArgs = {
 // ///////////////////////////////////////////////
 // Query Key
 
-export const userAssetsByChainQueryKey = ({
+const userAssetsByChainQueryKey = ({
   address,
   chainId,
   currency,
@@ -295,7 +296,7 @@ type UserAssetsByChainQueryKey = ReturnType<typeof userAssetsByChainQueryKey>;
 // ///////////////////////////////////////////////
 // Query Fetcher
 
-export async function fetchUserAssetsByChain<
+async function fetchUserAssetsByChain<
   TSelectData = UserAssetsByChainResult,
 >(
   { address, chainId, currency }: UserAssetsByChainArgs,
@@ -320,7 +321,7 @@ export async function fetchUserAssetsByChain<
 // ///////////////////////////////////////////////
 // Query Function
 
-export async function userAssetsByChainQueryFunction({
+async function userAssetsByChainQueryFunction({
   queryKey: [{ address, chainId, currency }],
 }: QueryFunctionArgs<typeof userAssetsByChainQueryKey>): Promise<
   Record<string, ParsedUserAsset>

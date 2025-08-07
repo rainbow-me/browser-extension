@@ -2,7 +2,6 @@
 const fs = require('fs');
 const { resolve } = require('path');
 
-const { EnvironmentPlugin } = require('webpack');
 const ExtensionReloader = require('webpack-extension-reloader');
 
 const manifest = require('./static/manifest.json');
@@ -43,11 +42,6 @@ module.exports = {
   devtool: false,
   plugins: [
     ...config.plugins,
-    new EnvironmentPlugin({
-      PLAYGROUND: process.env.PLAYGROUND
-        ? JSON.stringify(process.env.PLAYGROUND)
-        : null,
-    }),
     ...allowedPlugins,
     {
       apply: (compiler) => {
