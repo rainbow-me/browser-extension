@@ -40,3 +40,16 @@ export interface TransactionsReceivedMessage {
   };
   meta?: MessageMeta;
 }
+
+/**
+ * A message from the Zerion API indicating that asset price data was received
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+interface AssetPricesReceivedMessage {
+  payload?: {
+    prices?: {
+      [id: string]: AssetApiResponse;
+    };
+  };
+  meta?: MessageMeta;
+}

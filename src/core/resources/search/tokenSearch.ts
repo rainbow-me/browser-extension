@@ -13,7 +13,9 @@ import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 import {
   SearchAsset,
+  TokenSearchAssetKey,
   TokenSearchListId,
+  TokenSearchThreshold,
 } from '~/core/types/search';
 
 import { parseTokenSearch } from './parseTokenSearch';
@@ -25,6 +27,14 @@ type TokenSearchArgs = {
   chainId: ChainId;
   fromChainId?: ChainId | '';
   list: TokenSearchListId;
+  query: string;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type TokenSearchAllNetworksArgs = {
+  keys: TokenSearchAssetKey[];
+  list: TokenSearchListId;
+  threshold: TokenSearchThreshold;
   query: string;
 };
 
