@@ -30,10 +30,23 @@ const mockStorage = vi.hoisted(() => ({
   session: new Map<string, unknown>(),
 }));
 
-// Helper functions for snapshot testing
+// Keychain-relevant storage keys
+const KEYCHAIN_STORAGE_KEYS = {
+  local: ['vault'],
+  session: ['salt', 'encryptionKey', 'keychainManager'],
+} as const;
+
 const captureStorageSnapshot = () => ({
-  local: Object.fromEntries(mockStorage.local.entries()),
-  session: Object.fromEntries(mockStorage.session.entries()),
+  local: Object.fromEntries(
+    KEYCHAIN_STORAGE_KEYS.local
+      .filter((key) => mockStorage.local.has(key))
+      .map((key) => [key, mockStorage.local.get(key)]),
+  ),
+  session: Object.fromEntries(
+    KEYCHAIN_STORAGE_KEYS.session
+      .filter((key) => mockStorage.session.has(key))
+      .map((key) => [key, mockStorage.session.get(key)]),
+  ),
 });
 
 const expectStorageSnapshot = () => {
