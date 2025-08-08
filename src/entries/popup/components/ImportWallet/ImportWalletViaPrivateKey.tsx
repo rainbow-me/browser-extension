@@ -1,9 +1,8 @@
-import { isAddress } from '@ethersproject/address';
 import { motion } from 'framer-motion';
 import { startsWith } from 'lodash';
 import { KeyboardEvent, useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Address } from 'viem';
+import { Address, isAddress } from 'viem';
 
 import { analytics } from '~/analytics';
 import { i18n } from '~/core/languages';

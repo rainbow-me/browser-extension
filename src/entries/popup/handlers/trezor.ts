@@ -4,7 +4,6 @@ import {
 } from '@ethersproject/abstract-provider';
 import { BigNumber } from '@ethersproject/bignumber';
 import { Bytes, hexlify } from '@ethersproject/bytes';
-import { toUtf8Bytes } from '@ethersproject/strings';
 import {
   UnsignedTransaction,
   parse,
@@ -13,7 +12,7 @@ import {
 import { TypedDataUtils } from '@metamask/eth-sig-util';
 import transformTypedDataPlugin from '@trezor/connect-plugin-ethereum';
 import TrezorConnect from '@trezor/connect-web';
-import { Address } from 'viem';
+import { Address, stringToBytes } from 'viem';
 
 import { addHexPrefix } from '~/core/utils/hex';
 import { getProvider } from '~/core/wagmi/clientToProvider';
@@ -117,7 +116,7 @@ export async function signMessageByTypeFromTrezor(
     if (typeof msgData === 'string') {
       try {
         // eslint-disable-next-line no-param-reassign
-        msgData = toUtf8Bytes(msgData);
+        msgData = stringToBytes(msgData);
       } catch (e) {
         logger.info('the message is not a utf8 string, will sign as hex');
       }

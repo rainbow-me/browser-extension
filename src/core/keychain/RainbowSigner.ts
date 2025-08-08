@@ -7,13 +7,11 @@ import {
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { Signer } from '@ethersproject/abstract-signer';
 import { BigNumber } from '@ethersproject/bignumber';
-import { Bytes } from '@ethersproject/bytes';
-import { defineReadOnly } from '@ethersproject/properties';
 import { Provider } from '@ethersproject/providers';
 import { personalSign } from '@metamask/eth-sig-util';
-import { bytesToHex } from 'ethereum-cryptography/utils';
-import { Address } from 'viem';
+import { Address, ByteArray, bytesToHex, hexToBytes } from 'viem';
 
+import { defineReadOnly } from '../utils/define';
 import { addHexPrefix } from '../utils/hex';
 
 import { PrivateKey } from './IKeychain';
@@ -29,21 +27,21 @@ export class RainbowSigner extends Signer {
     defineReadOnly(this, 'address', address);
   }
 
-  #getPrivateKeyBuffer = (): Buffer => {
-    return Buffer.from(addHexPrefix(this.privateKey).substring(2), 'hex');
+  #getPrivateKeyBuffer = (): Uint8Array => {
+    return hexToBytes(this.privateKey);
   };
 
   async getAddress(): Promise<Address> {
     return this.address as Address;
   }
 
-  async signMessage(message: Bytes | string): Promise<string> {
+  async signMessage(message: ByteArray | string): Promise<string> {
     const data =
       typeof message === 'string' ? message : bytesToHex(message as Uint8Array);
     const pkey = this.#getPrivateKeyBuffer();
 
     const signature = personalSign({
-      privateKey: pkey,
+      privateKey: Buffer.from(pkey),
       data,
     });
     return signature;

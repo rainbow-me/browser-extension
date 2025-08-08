@@ -1,5 +1,4 @@
-import { isAddress } from '@ethersproject/address';
-import { Address } from 'viem';
+import { Address, isAddress } from 'viem';
 import { useEnsAddress, useEnsName } from 'wagmi';
 
 import { useENSProfile } from '~/core/resources/metadata/ensProfile';

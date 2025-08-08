@@ -1,7 +1,6 @@
-import { isAddress } from '@ethersproject/address';
 import { motion } from 'framer-motion';
 import { ChangeEvent, useCallback, useMemo, useReducer, useState } from 'react';
-import { Address } from 'viem';
+import { Address, isAddress } from 'viem';
 import { useEnsAddress } from 'wagmi';
 
 import { i18n } from '~/core/languages';

@@ -1,8 +1,7 @@
-import { AddressZero } from '@ethersproject/constants';
 import { Contract } from '@ethersproject/contracts';
 import { Provider } from '@ethersproject/providers';
 import { getClient } from '@wagmi/core';
-import { Address, Client, erc20Abi, getContract } from 'viem';
+import { Address, Client, erc20Abi, getContract, zeroAddress } from 'viem';
 
 import { ETH_ADDRESS, SupportedCurrencyKey } from '~/core/references';
 import {
@@ -51,7 +50,7 @@ export const getCustomChainIconUrl = (
   const baseUrl =
     'https://raw.githubusercontent.com/rainbow-me/assets/master/blockchains/';
 
-  if (address === AddressZero || address === ETH_ADDRESS) {
+  if (address === zeroAddress || address === ETH_ADDRESS) {
     return `${baseUrl}${customChainIdsToAssetNames[chainId]}/info/logo.png`;
   } else {
     return `${baseUrl}${customChainIdsToAssetNames[chainId]}/assets/${address}/logo.png`;

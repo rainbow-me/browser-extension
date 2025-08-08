@@ -2,12 +2,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { Signer } from '@ethersproject/abstract-signer';
-import { Bytes } from '@ethersproject/bytes';
-import { defineReadOnly } from '@ethersproject/properties';
 import { Provider } from '@ethersproject/providers';
-import { Address } from 'viem';
+import { Address, ByteArray } from 'viem';
 
 import { initializeMessenger } from '../messengers';
+import { defineReadOnly } from '../utils/define';
 
 export class HWSigner extends Signer {
   readonly path: string | undefined;
@@ -59,7 +58,7 @@ export class HWSigner extends Signer {
     });
   }
 
-  async signMessage(message: Bytes | string): Promise<string> {
+  async signMessage(message: ByteArray | string): Promise<string> {
     return this.fwdHWSignRequest('signMessage', {
       message,
       address: this.address,

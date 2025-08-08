@@ -2,7 +2,6 @@ import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { BigNumber } from '@ethersproject/bignumber';
 import { Bytes, hexlify, joinSignature } from '@ethersproject/bytes';
 import { TransactionRequest } from '@ethersproject/providers';
-import { toUtf8Bytes } from '@ethersproject/strings';
 import {
   UnsignedTransaction,
   parse,
@@ -12,7 +11,7 @@ import AppEth, { ledgerService } from '@ledgerhq/hw-app-eth';
 import type Transport from '@ledgerhq/hw-transport';
 import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import { SignTypedDataVersion, TypedDataUtils } from '@metamask/eth-sig-util';
-import { Address } from 'viem';
+import { Address, stringToBytes } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { getProvider } from '~/core/wagmi/clientToProvider';
@@ -147,7 +146,7 @@ export async function signMessageByTypeFromLedger(
     if (typeof msgData === 'string') {
       try {
         // eslint-disable-next-line no-param-reassign
-        msgData = toUtf8Bytes(msgData);
+        msgData = stringToBytes(msgData);
       } catch (e) {
         logger.info('the message is not a utf8 string, will sign as hex');
       }

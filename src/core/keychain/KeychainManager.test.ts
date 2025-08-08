@@ -1,7 +1,6 @@
-import { isAddress } from '@ethersproject/address';
-import { isBytesLike } from '@ethersproject/bytes';
 import { Wallet } from '@ethersproject/wallet';
-import { beforeAll, expect, test } from 'vitest';
+import { isAddress, isHex } from 'viem';
+import { beforeAll, expect, test, vi } from 'vitest';
 
 import { delay } from '~/test/utils';
 
@@ -10,7 +9,80 @@ import { KeychainType } from '../types/keychainTypes';
 import { PrivateKey } from './IKeychain';
 import { keychainManager } from './KeychainManager';
 
-let privateKey = '';
+vi.stubGlobal('crypto', {
+  // deterministic bytes
+  getRandomValues: (arr: ArrayBufferView) => {
+    const u8 = new Uint8Array(arr.buffer, arr.byteOffset, arr.byteLength);
+    for (let i = 0; i < u8.length; i++) u8[i] = i & 0xff;
+    return arr;
+  },
+  randomUUID: () => '00000000-0000-0000-0000-000000000000',
+  subtle: globalThis.crypto?.subtle,
+});
+
+vi.mock('@sentry/core', () => ({
+  uuid4: () => '00000000-0000-0000-0000-000000000000',
+}));
+
+// Mock storage implementation - hoisted to be available before module initialization
+const mockStorage = vi.hoisted(() => ({
+  local: new Map<string, unknown>(),
+  session: new Map<string, unknown>(),
+}));
+
+// Helper functions for snapshot testing
+const captureStorageSnapshot = () => ({
+  local: Object.fromEntries(mockStorage.local.entries()),
+  session: Object.fromEntries(mockStorage.session.entries()),
+});
+
+const expectStorageSnapshot = () => {
+  expect(captureStorageSnapshot()).toMatchSnapshot();
+};
+
+// Mock the storage module
+vi.mock('~/core/storage', () => ({
+  LocalStorage: {
+    async clear() {
+      mockStorage.local.clear();
+    },
+    async set<TValue = unknown>(key: string, value: TValue) {
+      mockStorage.local.set(key, value);
+    },
+    async get<TValue = unknown>(key: string) {
+      return mockStorage.local.get(key) as TValue;
+    },
+    async remove(key: string) {
+      mockStorage.local.delete(key);
+    },
+    async listen() {
+      // Mock implementation - return a no-op cleanup function
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      return () => {};
+    },
+  },
+  SessionStorage: {
+    async clear() {
+      mockStorage.session.clear();
+    },
+    async set(key: string, value: unknown) {
+      mockStorage.session.set(key, value);
+    },
+    async get(key: string) {
+      return mockStorage.session.get(key);
+    },
+    async remove(key: string) {
+      mockStorage.session.delete(key);
+    },
+    async listen() {
+      // Mock implementation - return a no-op cleanup function
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      return () => {};
+    },
+  },
+}));
+
+let privateKey = '' as PrivateKey;
 let password = '';
 
 beforeAll(async () => {
@@ -22,6 +94,9 @@ test('[keychain/KeychainManager] :: should be able to create an HD wallet', asyn
   const accounts = await keychainManager.getAccounts();
   expect(accounts.length).toBe(1);
   expect(isAddress(accounts[0])).toBe(true);
+
+  // Snapshot test: storage state after creating HD wallet
+  expectStorageSnapshot();
 });
 
 test('[keychain/KeychainManager] :: should be able to add an account', async () => {
@@ -31,6 +106,9 @@ test('[keychain/KeychainManager] :: should be able to add an account', async () 
   accounts = await keychainManager.getAccounts();
   expect(accounts.length).toBe(2);
   expect(isAddress(accounts[1])).toBe(true);
+
+  // Snapshot test: storage state after adding account
+  expectStorageSnapshot();
 });
 
 test('[keychain/KeychainManager] :: should be able to export a private key for an account', async () => {
@@ -39,7 +117,10 @@ test('[keychain/KeychainManager] :: should be able to export a private key for a
     accounts[1],
     password,
   )) as PrivateKey;
-  expect(isBytesLike(privateKey)).toBe(true);
+  expect(isHex(privateKey)).toBe(true);
+
+  // Snapshot test: storage state after exporting private key
+  expectStorageSnapshot();
 });
 
 test('[keychain/KeychainManager] :: should be able to remove an account from an HD keychain...', async () => {
@@ -47,6 +128,9 @@ test('[keychain/KeychainManager] :: should be able to remove an account from an 
   await keychainManager.removeAccount(accounts[1]);
   accounts = await keychainManager.getAccounts();
   expect(accounts.length).toBe(1);
+
+  // Snapshot test: storage state after removing account
+  expectStorageSnapshot();
 });
 
 test('[keychain/KeychainManager] :: should be able to export the seed phrase for an HD wallet', async () => {
@@ -56,6 +140,9 @@ test('[keychain/KeychainManager] :: should be able to export the seed phrase for
     password,
   );
   expect(seedPhrase.split(' ').length).toBe(12);
+
+  // Snapshot test: storage state after exporting seed phrase
+  expectStorageSnapshot();
 });
 
 test('[keychain/KeychainManager] :: should be able to add a read only wallet using an address', async () => {
@@ -67,6 +154,9 @@ test('[keychain/KeychainManager] :: should be able to add a read only wallet usi
   expect(accounts.length).toBe(2);
   expect(isAddress(accounts[1])).toBe(true);
   expect(accounts[1]).toBe('0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4');
+
+  // Snapshot test: storage state after adding read-only wallet
+  expectStorageSnapshot();
 });
 
 test('[keychain/KeychainManager] :: should be able to remove an account from a ReadOnly keychain...', async () => {
@@ -74,6 +164,9 @@ test('[keychain/KeychainManager] :: should be able to remove an account from a R
   await keychainManager.removeAccount(accounts[1]);
   accounts = await keychainManager.getAccounts();
   expect(accounts.length).toBe(1);
+
+  // Snapshot test: storage state after removing read-only account
+  expectStorageSnapshot();
 });
 
 test('[keychain/KeychainManager] :: should be able to import a wallet using a private key', async () => {
@@ -84,6 +177,9 @@ test('[keychain/KeychainManager] :: should be able to import a wallet using a pr
   const accounts = await keychainManager.getAccounts();
   expect(accounts.length).toBe(2);
   expect(isAddress(accounts[1])).toBe(true);
+
+  // Snapshot test: storage state after importing private key wallet
+  expectStorageSnapshot();
 });
 
 test('[keychain/KeychainManager] :: should be able to remove an account from a KeyPair keychain...', async () => {
@@ -91,6 +187,9 @@ test('[keychain/KeychainManager] :: should be able to remove an account from a K
   await keychainManager.removeAccount(accounts[1]);
   accounts = await keychainManager.getAccounts();
   expect(accounts.length).toBe(1);
+
+  // Snapshot test: storage state after removing private key account
+  expectStorageSnapshot();
 });
 
 test('[keychain/KeychainManager] :: should be able to remove empty keychains', async () => {
@@ -99,6 +198,9 @@ test('[keychain/KeychainManager] :: should be able to remove empty keychains', a
   accounts = await keychainManager.getAccounts();
   expect(accounts.length).toBe(0);
   expect(keychainManager.state.keychains.length).toBe(0);
+
+  // Snapshot test: storage state after removing all keychains
+  expectStorageSnapshot();
 });
 
 test('[keychain/KeychainManager] :: should be able to import a wallet using a seed phrase', async () => {
@@ -111,6 +213,9 @@ test('[keychain/KeychainManager] :: should be able to import a wallet using a se
   accounts = await keychainManager.getAccounts();
   expect(accounts.length).toBe(1);
   expect(isAddress(accounts[0])).toBe(true);
+
+  // Snapshot test: storage state after importing seed phrase wallet
+  expectStorageSnapshot();
 });
 
 test('[keychain/KeychainManager] :: should be able to get the signer of a specific address', async () => {
@@ -119,24 +224,36 @@ test('[keychain/KeychainManager] :: should be able to get the signer of a specif
   expect(signer._isSigner).toBe(true);
   expect(signer.address).toBe(accounts[0]);
   expect(signer.sendTransaction).toBeDefined();
+
+  // Snapshot test: storage state after getting signer
+  expectStorageSnapshot();
 });
 
 test('[keychain/KeychainManager] :: should be able to update the password of the vault', async () => {
   password = 'newPassword';
   await keychainManager.setPassword(password);
   expect(await keychainManager.verifyPassword(password)).toBe(true);
+
+  // Snapshot test: storage state after updating password
+  expectStorageSnapshot();
 });
 
 test('[keychain/KeychainManager] :: should be able to lock the vault', async () => {
   await keychainManager.lock();
   expect(keychainManager.state.isUnlocked).toBe(false);
   expect(keychainManager.state.keychains.length).toBe(0);
+
+  // Snapshot test: storage state after locking vault
+  expectStorageSnapshot();
 });
 
 test('[keychain/KeychainManager] :: should be able to unlock the vault', async () => {
   await keychainManager.unlock(password);
   expect(keychainManager.state.isUnlocked).toBe(true);
   expect(keychainManager.state.keychains.length).toBe(1);
+
+  // Snapshot test: storage state after unlocking vault
+  expectStorageSnapshot();
 });
 
 test('[keychain/KeychainManager] :: should be able to autodiscover accounts when importing a seed phrase', async () => {
@@ -168,4 +285,7 @@ test('[keychain/KeychainManager] :: should be able to autodiscover accounts when
   expect(privateKey2).equal(
     '0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d',
   );
+
+  // Snapshot test: storage state after autodiscovering accounts
+  expectStorageSnapshot();
 });

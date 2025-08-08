@@ -1,5 +1,4 @@
-import { AddressZero } from '@ethersproject/constants';
-import { Address } from 'viem';
+import { Address, zeroAddress } from 'viem';
 import { useConfig } from 'wagmi';
 
 import { useUserTestnetNativeAsset } from '~/core/resources/assets/userTestnetNativeAsset';
@@ -42,7 +41,7 @@ export const useUserNativeAsset = ({
     isLoading: isCustomNetworkAssetLoading,
   } = useCustomNetworkAsset({
     address: address || currentAddress,
-    uniqueId: `${AddressZero}_${chainId}`,
+    uniqueId: `${zeroAddress}_${chainId}`,
     filterZeroBalance: false,
   });
 

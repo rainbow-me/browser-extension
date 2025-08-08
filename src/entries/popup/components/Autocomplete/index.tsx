@@ -1,8 +1,8 @@
-import { AddressZero } from '@ethersproject/constants';
 import clsx from 'clsx';
 import { Command } from 'cmdk';
 import { motion } from 'framer-motion';
 import { forwardRef } from 'react';
+import { zeroAddress } from 'viem';
 
 import { CustomNetwork } from '~/core/types/chains';
 import { getCustomChainIconUrl } from '~/core/utils/assets';
@@ -172,7 +172,7 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
                                 height={20}
                                 src={getCustomChainIconUrl(
                                   item.id,
-                                  AddressZero,
+                                  zeroAddress,
                                 )}
                                 width={20}
                               />

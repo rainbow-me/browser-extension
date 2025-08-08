@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Signer } from '@ethersproject/abstract-signer';
-import { Mnemonic } from '@ethersproject/hdnode';
 import { Wallet } from '@ethersproject/wallet';
 import { Address } from 'viem';
 import { mainnet } from 'viem/chains';
@@ -70,7 +69,7 @@ export class KeyPairKeychain implements IKeychain {
     return wallet.privateKey;
   }
 
-  async exportKeychain(): Promise<Mnemonic['phrase']> {
+  async exportKeychain(): Promise<string> {
     throw new Error('Method not implemented.');
   }
 

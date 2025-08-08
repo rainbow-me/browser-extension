@@ -1,4 +1,4 @@
-import { AddressZero } from '@ethersproject/constants';
+import { zeroAddress } from 'viem';
 import { Chain, mainnet } from 'viem/chains';
 import { useConfig } from 'wagmi';
 
@@ -98,7 +98,7 @@ export const isCustomChain = (chainId: number) =>
 
 export function isNativeAsset(address: AddressOrEth, chainId: ChainId) {
   if (isCustomChain(chainId)) {
-    return AddressZero === address;
+    return zeroAddress === address;
   }
 
   return isLowerCaseMatch(
