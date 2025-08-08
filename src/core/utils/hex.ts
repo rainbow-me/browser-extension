@@ -25,19 +25,31 @@ export const isHexStringIgnorePrefix = (value: string): boolean => {
 export const addHexPrefix = (value: string): `0x${string}` =>
   startsWith(value, '0x') ? (value as `0x${string}`) : `0x${value}`;
 
+const isEthersBigNumber: typeof EthersBigNumber.isBigNumber = (
+  value,
+): value is EthersBigNumber => {
+  return (
+    EthersBigNumber.isBigNumber(value) && // this method return false positive for BigNumber.js BigNumber
+    typeof value.toHexString === 'function' // that's why we need to check if this function exists, only on EthersBigNumber
+  );
+};
+
 export const convertStringToHex = (
   stringToConvert: BigNumberish | bigint | EthersBigNumber | Bytes,
 ): string => {
   if (typeof stringToConvert === 'bigint') {
     return stringToConvert.toString(16);
   }
-  if (EthersBigNumber.isBigNumber(stringToConvert)) {
+  if (isEthersBigNumber(stringToConvert)) {
     return stringToConvert.toHexString();
   }
   if (isBytes(stringToConvert)) {
     return EthersBigNumber.from(stringToConvert).toHexString();
   }
-  return new BigNumber(stringToConvert).toString(16);
+  // Handle bignumber.js BigNumber and other types
+  const bn = new BigNumber(stringToConvert);
+  if (bn.isNaN()) throw new Error(`Invalid number ${stringToConvert}`);
+  return bn.toString(16);
 };
 
 export const toHex = (
@@ -45,13 +57,13 @@ export const toHex = (
 ): `0x${string}` => addHexPrefix(convertStringToHex(stringToConvert));
 
 export const toHexOrUndefined = <
-  T extends BigNumberish | bigint | EthersBigNumber | Bytes | undefined,
+  T extends BigNumberish | bigint | EthersBigNumber | Bytes | undefined | null,
 >(
   stringToConvert: T,
-): T extends undefined ? undefined : `0x${string}` => {
-  if (stringToConvert === undefined)
-    return undefined as T extends undefined ? undefined : `0x${string}`;
-  return toHex(stringToConvert) as T extends undefined
+): T extends undefined | null ? undefined : `0x${string}` => {
+  if (stringToConvert === undefined || stringToConvert === null)
+    return undefined as T extends undefined | null ? undefined : `0x${string}`;
+  return toHex(stringToConvert) as T extends undefined | null
     ? undefined
     : `0x${string}`;
 };
