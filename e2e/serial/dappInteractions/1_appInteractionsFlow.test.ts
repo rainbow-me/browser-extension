@@ -304,6 +304,7 @@ describe('App interactions flow', () => {
     const signatureText = await signatureTextSelector.getText();
     const signature = signatureText.replace('sign message data sig: ', '');
 
+    expect(signature).toMatch(/^0x/);
     expect(isHex(signature)).toBe(true);
     const recoveredAddress = verifyMessage(MESSAGE, signature);
     expect(getAddress(recoveredAddress)).eq(
