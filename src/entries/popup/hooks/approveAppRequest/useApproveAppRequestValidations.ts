@@ -21,8 +21,7 @@ export const useApproveAppRequestValidations = ({
   const { connectedToHardhat, connectedToHardhatOp } =
     useConnectedToHardhatStore();
 
-  const { hasEnough: enoughNativeAssetForGas, isLoading: isGasLoading } =
-    useHasEnoughGas(session);
+  const enoughNativeAssetForGas = useHasEnoughGas(session);
 
   const buttonLabel = useMemo(() => {
     const activeChainId = chainIdToUse(
@@ -33,8 +32,7 @@ export const useApproveAppRequestValidations = ({
     if (dappStatus === DAppStatus.Scam)
       return i18n.t('approve_request.send_transaction_anyway');
 
-    // Only show insufficient gas if we've confirmed they don't have enough (not loading)
-    if (!isGasLoading && enoughNativeAssetForGas === false)
+    if (!enoughNativeAssetForGas)
       return i18n.t('approve_request.insufficient_native_asset_for_gas', {
         symbol: getChain({ chainId: activeChainId }).nativeCurrency.name,
       });
@@ -50,7 +48,6 @@ export const useApproveAppRequestValidations = ({
     session?.chainId,
     dappStatus,
     enoughNativeAssetForGas,
-    isGasLoading,
     signingWithDevice,
   ]);
 

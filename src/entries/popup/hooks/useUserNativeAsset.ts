@@ -18,29 +18,25 @@ export const useUserNativeAsset = ({
 }: {
   address?: Address;
   chainId: ChainId;
-}): { nativeAsset?: ParsedUserAsset | null; isLoading: boolean } => {
+}): { nativeAsset?: ParsedUserAsset | null } => {
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency } = useCurrentCurrencyStore();
   const { chains } = useConfig();
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
     chainId,
   });
-  const { data: userNativeAsset, isLoading: isUserAssetLoading } = useUserAsset(
+  const { data: userNativeAsset } = useUserAsset(
     nativeAssetUniqueId || '',
     address || currentAddress,
   );
 
-  const { data: testnetNativeAsset, isLoading: isTestnetAssetLoading } =
-    useUserTestnetNativeAsset({
-      address: address || currentAddress,
-      currency: currentCurrency,
-      chainId,
-    });
+  const { data: testnetNativeAsset } = useUserTestnetNativeAsset({
+    address: address || currentAddress,
+    currency: currentCurrency,
+    chainId,
+  });
 
-  const {
-    data: customNetworkNativeAsset,
-    isLoading: isCustomNetworkAssetLoading,
-  } = useCustomNetworkAsset({
+  const { data: customNetworkNativeAsset } = useCustomNetworkAsset({
     address: address || currentAddress,
     uniqueId: `${AddressZero}_${chainId}`,
     filterZeroBalance: false,
@@ -50,16 +46,12 @@ export const useUserNativeAsset = ({
   const isChainIdCustomNetwork = isCustomChain(chainId);
 
   let nativeAsset: ParsedUserAsset | undefined | null;
-  let isLoading = false;
   if (isChainIdCustomNetwork) {
     nativeAsset = customNetworkNativeAsset;
-    isLoading = isCustomNetworkAssetLoading;
   } else if (chain?.testnet) {
     nativeAsset = testnetNativeAsset;
-    isLoading = isTestnetAssetLoading;
   } else {
     nativeAsset = userNativeAsset;
-    isLoading = isUserAssetLoading;
   }
-  return { nativeAsset, isLoading };
+  return { nativeAsset };
 };
