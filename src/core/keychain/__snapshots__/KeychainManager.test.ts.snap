@@ -27,7 +27,7 @@ exports[`[keychain/KeychainManager] :: should be able to add an account 1`] = `
 exports[`[keychain/KeychainManager] :: should be able to autodiscover accounts when importing a seed phrase 1`] = `
 {
   "local": {
-    "vault": "{\\"data\\":\\"eG/OEE2jXuDMsmRKl10zqlij8ibUWBQIiB4/kMix8XjZFiNjxBZABpcGq5/0tdLsC/paj6WYjNXtf2fcqO6/6Y0nJ5cvTzhJxZTmr8hgXMzEikZimVUd/m7QOjuZojDP3DBI3aCq4etsJ9jl/f29ZBasAwTOeOJ4K+D/HzOFvGRVhZVUEdrpOf3A/ABOxw8l9j2BuGbwAyVsgN0hFSvMnwNlR30PNy9qjaWp66D1ZLkUncIinUO8jRmD3fnWdYD/rkPQKVTG/x7KKGocn/ngclpyXXVweQ7XRZ8ka5mxpHyn13OrLEMLHeUDU9THMXxCZMdc4w4bOR4fEt3qy7SVJJzwtNCwhrqP0J4LpfzwteQxwt8Dyplom/tpW/QpADOar4xmlqjCQ8OrG59RaszGo1QWD5bl6Qljxz5XExlhhuBhwk/mOGvTUpxU9jAJZYotVIV8/WQv/uLCWSrTXxh9GliIDEth3IWAhH+AsUYkc9PhBux30q9j26JoueWd5Q==\\",\\"iv\\":\\"AAECAwQFBgcICQoLDA0ODw==\\",\\"salt\\":\\"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=\\"}",
+    "vault": "{\\"data\\":\\"eG/OEE2jXuDMsmRKl10zqlij8ibUWBQIiB4/kMix8XjZFiNjxBZABpcGq5/0tdLsC/paj6WYjNXtf2fcqO6/6Y0nJ5cvTzhJxZTmr8hgXMzEikZimVUd/m7QOjuZojDP3DBI3aCq4etsJ9jl/f29ZBasAwTOeOJ4K+D/HzOFvGRVhZVUEdrpOf3A/ABOxw8l9j2BuGbwAyVsgN0hFSvMnwNlR30PNy9qjaWp66D1ZLkUncIinUO8jRmD3fnWdYD/rkPQKVTG/x7KKGocn/ngclpyXXVweQ7XRZ8ka5mxpHyn13OrLEMLHeUDU9THMXxCZMdc4w4bOR4fEt3qy7SVJJzwtNCwhrqP0J4LpfzwteQxwt8Dyplom/tpW/QpADOar4xmlqjCQ8OhG59RaszGo1QWD5bl6Qljxz5XExlhhuBhwk/mOGvTUpxU9jAJZYotVIV8/WQv/uLCWSrTXxh9GliIDEth3IWAhH+AsUYkum6jXoFdGv1qUqrj3y1hMg==\\",\\"iv\\":\\"AAECAwQFBgcICQoLDA0ODw==\\",\\"salt\\":\\"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=\\"}",
   },
   "session": {
     "encryptionKey": "{\\"key_ops\\":[\\"encrypt\\",\\"decrypt\\"],\\"ext\\":true,\\"kty\\":\\"oct\\",\\"k\\":\\"xBwW7Ghxj8m_0T2wIbWvt4dfTLbhDQJ5ynHnJMzlfls\\",\\"alg\\":\\"A256GCM\\"}",

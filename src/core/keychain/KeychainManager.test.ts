@@ -30,6 +30,23 @@ vi.mock('@scure/bip39', async () => {
   };
 });
 
+// Mock the aha network module for autodiscovery
+vi.mock('~/core/network/aha', () => ({
+  ahaHttp: {
+    get: vi.fn().mockResolvedValue({
+      data: {
+        data: {
+          addresses: {
+            // Mark first 2 addresses as used for autodiscovery
+            '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266': true,
+            '0x70997970c51812dc3a010c7d01b50e0d17dc79c8': true,
+          },
+        },
+      },
+    }),
+  },
+}));
+
 // Mock storage implementation - hoisted to be available before module initialization
 const mockStorage = vi.hoisted(() => ({
   local: new Map<string, unknown>(),
