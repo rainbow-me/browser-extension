@@ -417,9 +417,94 @@ jobs:
         run:  yarn audit:ci
       - name: Check types
         run: yarn typecheck
+  
+  # BUNDLE SIZE CHECK
+  bundlewatch:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.17.0"
+      - name: Enable Corepack
+        run: corepack enable
+      - name: Download deps cache artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: yarn_node_modules.tar.gz
+      - name: Unzip node_modules and yarn state
+        run: tar xzf yarn_node_modules.tar.gz
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: rainbowbx-${{ github.sha }}
+          path: build/
+      - name: Check bundle sizes
+        run: |
+          yarn bundlewatch 2>&1 | tee bundlewatch-results.txt
+        env:
+          CI_REPO_OWNER: ${{ github.repository_owner }}
+          CI_REPO_NAME: ${{ github.event.repository.name }}
+          CI_COMMIT_SHA: ${{ github.sha }}
+          CI_BRANCH: ${{ github.ref_name }}
+      - name: Format bundle sizes for summary
+        if: always()
+        run: |
+          echo "## 📦 Bundle Size Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          # Extract and display the result breakdown URL if it exists
+          if [ -f bundlewatch-results.txt ]; then
+            # Look specifically for the bundlewatch result URL (ja2r7.app.goo.gl domain)
+            BREAKDOWN_URL=$(grep -A1 "Result breakdown at:" bundlewatch-results.txt | grep -oE "https://ja2r7\.app\.goo\.gl/[a-zA-Z0-9]+" | head -1)
+            if [ -n "$BREAKDOWN_URL" ]; then
+              echo "📊 **[View detailed breakdown]($BREAKDOWN_URL)**" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+            fi
+            
+            # Check overall status
+            if grep -q "bundlewatch PASS" bundlewatch-results.txt; then
+              echo "✅ **Status: PASS** - All bundles are within size limits" >> $GITHUB_STEP_SUMMARY
+            elif grep -q "bundlewatch FAIL" bundlewatch-results.txt; then
+              echo "❌ **Status: FAIL** - Some bundles exceed size limits" >> $GITHUB_STEP_SUMMARY
+            fi
+            
+            # Extract total size change if present
+            TOTAL_CHANGE=$(grep -oE "Everything is in check \([^)]+\)" bundlewatch-results.txt || true)
+            if [ -n "$TOTAL_CHANGE" ]; then
+              echo "📈 $TOTAL_CHANGE" >> $GITHUB_STEP_SUMMARY
+            fi
+            echo "" >> $GITHUB_STEP_SUMMARY
+            
+            echo "| File | Size | Limit | Status |" >> $GITHUB_STEP_SUMMARY
+            echo "|------|------|-------|--------|" >> $GITHUB_STEP_SUMMARY
+            
+            # Parse bundlewatch output and format as markdown table
+            grep -E "PASS|FAIL" bundlewatch-results.txt | grep "./build/" | while IFS= read -r line; do
+              if [[ $line == *"PASS"* ]]; then
+                STATUS="✅"
+              else
+                STATUS="❌"
+              fi
+              FILE=$(echo "$line" | sed -E 's/.*(\.\/build\/[^:]+):.*/\1/')
+              SIZE=$(echo "$line" | sed -E 's/.*: ([0-9.]+[KMB]+).*/\1/')
+              LIMIT=$(echo "$line" | sed -E 's/.*< ([0-9.]+[KMB]+).*/\1/')
+              echo "| \`${FILE##*/}\` | **${SIZE}** | ${LIMIT} | ${STATUS} |" >> $GITHUB_STEP_SUMMARY
+            done
+          else
+            echo "No bundlewatch results found" >> $GITHUB_STEP_SUMMARY
+          fi
+      - name: Upload bundle size results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundlewatch-results-${{ github.sha }}
+          path: bundlewatch-results.txt
+  
   cleanup:
     runs-on:  ubuntu-latest
-    needs: [chrome-e2e-parallel, chrome-e2e-swap, chrome-e2e-send, chrome-e2e-dappInteractions, chrome-optimism-e2e-send, unit-tests, ci-checks]
+    needs: [chrome-e2e-parallel, chrome-e2e-swap, chrome-e2e-send, chrome-e2e-dappInteractions, chrome-optimism-e2e-send, unit-tests, ci-checks, bundlewatch]
     steps:
       - uses: geekyeggo/delete-artifact@v5
         with:
