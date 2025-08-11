@@ -6,7 +6,7 @@ import { delay } from '~/test/utils';
 
 import { KeychainType } from '../types/keychainTypes';
 
-import { PrivateKey } from './IKeychain';
+import type { PrivateKey } from './IKeychain';
 import { keychainManager } from './KeychainManager';
 
 vi.stubGlobal('crypto', {
@@ -23,6 +23,16 @@ vi.stubGlobal('crypto', {
 vi.mock('@sentry/core', () => ({
   uuid4: () => '00000000-0000-0000-0000-000000000000',
 }));
+
+vi.mock('@scure/bip39', async () => {
+  const actual =
+    await vi.importActual<typeof import('@scure/bip39')>('@scure/bip39');
+  return {
+    ...actual,
+    generateMnemonic: (): string =>
+      'test test test test test test test test test test test junk',
+  };
+});
 
 // Mock storage implementation - hoisted to be available before module initialization
 const mockStorage = vi.hoisted(() => ({
@@ -104,6 +114,8 @@ beforeAll(async () => {
 
 test('[keychain/KeychainManager] :: should be able to create an HD wallet', async () => {
   await keychainManager.addNewKeychain();
+  // introduce password, without this the vault will not be persisted
+  await keychainManager.setPassword('test');
   const accounts = await keychainManager.getAccounts();
   expect(accounts.length).toBe(1);
   expect(isAddress(accounts[0])).toBe(true);

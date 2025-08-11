@@ -3,11 +3,11 @@
 exports[`[keychain/KeychainManager] :: should be able to add a read only wallet using an address 1`] = `
 {
   "local": {
-    "vault": "",
+    "vault": "{\\"data\\":\\"SnoVv/vROdgXlYXUDTsN6GsPgtCrej3ImvQd4H/oBfeaBIV5kYRl2gIUekO0CX5yCIC1cbm1OxI/myn+gqApmUBTN4sYo7l2k3zTnWWRpPCoon1MBMefNxxB+1UlRvxa4OrMM4kRmYn18IbG4L1L0hkwad/3ndP9fzTQ3huEDIptDOeD7hyg1C26wl+78fdbeNR0gHcyJc8CI8p5etelVX0ncYt6oMW4VAqorGatPMzn+8Zt2xBfo9EVq72/zBJib8LdMk18Zgxld/A+nOeh39RCUf3EPSQFuhfaXwLiiwIx9h/Ld3H7CBvcboJ01oef4Q1RbqEbKQ+3gTsS38juxjU7EkzmDNZpCsELLy46LLuzASaSEZsR0A==\\",\\"iv\\":\\"AAECAwQFBgcICQoLDA0ODw==\\",\\"salt\\":\\"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=\\"}",
   },
   "session": {
-    "encryptionKey": "",
-    "salt": "",
+    "encryptionKey": "{\\"key_ops\\":[\\"encrypt\\",\\"decrypt\\"],\\"ext\\":true,\\"kty\\":\\"oct\\",\\"k\\":\\"sHyhXbroUejPho-aO3OoHJ7ZCPEl8tYOPvBsd6wRsI8\\",\\"alg\\":\\"A256GCM\\"}",
+    "salt": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
   },
 }
 `;
@@ -15,11 +15,11 @@ exports[`[keychain/KeychainManager] :: should be able to add a read only wallet 
 exports[`[keychain/KeychainManager] :: should be able to add an account 1`] = `
 {
   "local": {
-    "vault": "",
+    "vault": "{\\"data\\":\\"SnoVv/vROdgXlYXUDTsN6GsPgtCrej3ImvQd4H/oBfeaBIV5kYRl2gIUekO0CX5yCIC1cbm1OxI/myn+gqApmUBTN4sYo7l2k3zTnWWRpPCoon1MBMefNxxB+1UlRvxa4OrMM4kRmYn18IbG4L1I0hkwad/3ndP9fzTQ3huEDIptDOeD7hyg1C26wl+78fdbeNR0gHcyJc8CI8p5etelVX0ncYt6oMW4VAqorGatPMznl+ZNBlqPv7i2bXfQEF94/E/Qxg==\\",\\"iv\\":\\"AAECAwQFBgcICQoLDA0ODw==\\",\\"salt\\":\\"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=\\"}",
   },
   "session": {
-    "encryptionKey": "",
-    "salt": "",
+    "encryptionKey": "{\\"key_ops\\":[\\"encrypt\\",\\"decrypt\\"],\\"ext\\":true,\\"kty\\":\\"oct\\",\\"k\\":\\"sHyhXbroUejPho-aO3OoHJ7ZCPEl8tYOPvBsd6wRsI8\\",\\"alg\\":\\"A256GCM\\"}",
+    "salt": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
   },
 }
 `;
@@ -39,11 +39,11 @@ exports[`[keychain/KeychainManager] :: should be able to autodiscover accounts w
 exports[`[keychain/KeychainManager] :: should be able to create an HD wallet 1`] = `
 {
   "local": {
-    "vault": "",
+    "vault": "{\\"data\\":\\"SnoVv/vROdgXlYXUDTsN6GsPgtCrej3ImvQd4H/oBfeaBIV5kYRl2gIUekO0CX5yCIC1cbm1OxI/myn+gqApmUBTN4sYo7l2k3zTnWWRpPCoon1MBMefNxxB+1UlRvxa4OrMM4kRmYn18IbG4L1L0hkwad/3ndP9fzTQ3huEDIptDOeD7hyg1C26wl+78fdbeNR0gHcyJc8CI8p5etelVX0ncYt6oMW4VAqorGatPMznl+ZN3wm1OEH98PD9oRWUIgLXtQ==\\",\\"iv\\":\\"AAECAwQFBgcICQoLDA0ODw==\\",\\"salt\\":\\"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=\\"}",
   },
   "session": {
-    "encryptionKey": "",
-    "salt": "",
+    "encryptionKey": "{\\"key_ops\\":[\\"encrypt\\",\\"decrypt\\"],\\"ext\\":true,\\"kty\\":\\"oct\\",\\"k\\":\\"sHyhXbroUejPho-aO3OoHJ7ZCPEl8tYOPvBsd6wRsI8\\",\\"alg\\":\\"A256GCM\\"}",
+    "salt": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
   },
 }
 `;
@@ -51,11 +51,11 @@ exports[`[keychain/KeychainManager] :: should be able to create an HD wallet 1`]
 exports[`[keychain/KeychainManager] :: should be able to export a private key for an account 1`] = `
 {
   "local": {
-    "vault": "",
+    "vault": "{\\"data\\":\\"SnoVv/vROdgXlYXUDTsN6GsPgtCrej3ImvQd4H/oBfeaBIV5kYRl2gIUekO0CX5yCIC1cbm1OxI/myn+gqApmUBTN4sYo7l2k3zTnWWRpPCoon1MBMefNxxB+1UlRvxa4OrMM4kRmYn18IbG4L1I0hkwad/3ndP9fzTQ3huEDIptDOeD7hyg1C26wl+78fdbeNR0gHcyJc8CI8p5etelVX0ncYt6oMW4VAqorGatPMznl+ZNBlqPv7i2bXfQEF94/E/Qxg==\\",\\"iv\\":\\"AAECAwQFBgcICQoLDA0ODw==\\",\\"salt\\":\\"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=\\"}",
   },
   "session": {
-    "encryptionKey": "",
-    "salt": "",
+    "encryptionKey": "{\\"key_ops\\":[\\"encrypt\\",\\"decrypt\\"],\\"ext\\":true,\\"kty\\":\\"oct\\",\\"k\\":\\"sHyhXbroUejPho-aO3OoHJ7ZCPEl8tYOPvBsd6wRsI8\\",\\"alg\\":\\"A256GCM\\"}",
+    "salt": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
   },
 }
 `;
@@ -63,11 +63,11 @@ exports[`[keychain/KeychainManager] :: should be able to export a private key fo
 exports[`[keychain/KeychainManager] :: should be able to export the seed phrase for an HD wallet 1`] = `
 {
   "local": {
-    "vault": "",
+    "vault": "{\\"data\\":\\"SnoVv/vROdgXlYXUDTsN6GsPgtCrej3ImvQd4H/oBfeaBIV5kYRl2gIUekO0CX5yCIC1cbm1OxI/myn+gqApmUBTN4sYo7l2k3zTnWWRpPCoon1MBMefNxxB+1UlRvxa4OrMM4kRmYn18IbG4L1L0hkwad/3ndP9fzTQ3huEDIptDOeD7hyg1C26wl+78fdbeNR0gHcyJc8CI8p5etelVX0ncYt6oMW4VAqorGatPMzn+8ZtqtrQ1JpYWzhn03mN8uDaxIU=\\",\\"iv\\":\\"AAECAwQFBgcICQoLDA0ODw==\\",\\"salt\\":\\"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=\\"}",
   },
   "session": {
-    "encryptionKey": "",
-    "salt": "",
+    "encryptionKey": "{\\"key_ops\\":[\\"encrypt\\",\\"decrypt\\"],\\"ext\\":true,\\"kty\\":\\"oct\\",\\"k\\":\\"sHyhXbroUejPho-aO3OoHJ7ZCPEl8tYOPvBsd6wRsI8\\",\\"alg\\":\\"A256GCM\\"}",
+    "salt": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
   },
 }
 `;
@@ -75,11 +75,11 @@ exports[`[keychain/KeychainManager] :: should be able to export the seed phrase 
 exports[`[keychain/KeychainManager] :: should be able to get the signer of a specific address 1`] = `
 {
   "local": {
-    "vault": "",
+    "vault": "{\\"data\\":\\"SnoVv/vROdgXlYXUDSke8X1GjJ+ocTXKm/MXoWfwQueYEtE6hJRxxlZAa1+5CXl5EpLzJbmoKl8y3i/6zbpsjVEdMYtLofhs1nvS03+Ru6Tlt3NaUIOcMR1YvRx1B/dW4vqAa9g1lIv46Y3WscIUn1k0aOu004rzZ37ZoU7EQ4dhHq2D6g+oyzmmxwTypr1JYNoekEUnOY5QYOtzE57+V3Yld5A2+JSdUgWirW29bbLZpv5kkg9f+O4spIV3m+Uux397TbWyIyM8y8ad\\",\\"iv\\":\\"AAECAwQFBgcICQoLDA0ODw==\\",\\"salt\\":\\"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=\\"}",
   },
   "session": {
-    "encryptionKey": "",
-    "salt": "",
+    "encryptionKey": "{\\"key_ops\\":[\\"encrypt\\",\\"decrypt\\"],\\"ext\\":true,\\"kty\\":\\"oct\\",\\"k\\":\\"sHyhXbroUejPho-aO3OoHJ7ZCPEl8tYOPvBsd6wRsI8\\",\\"alg\\":\\"A256GCM\\"}",
+    "salt": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
   },
 }
 `;
@@ -87,11 +87,11 @@ exports[`[keychain/KeychainManager] :: should be able to get the signer of a spe
 exports[`[keychain/KeychainManager] :: should be able to import a wallet using a private key 1`] = `
 {
   "local": {
-    "vault": "",
+    "vault": "{\\"data\\":\\"SnoVv/vROdgXlYXUDTsN6GsPgtCrej3ImvQd4H/oBfeaBIV5kYRl2gIUekO0CX5yCIC1cbm1OxI/myn+gqApmUBTN4sYo7l2k3zTnWWRpPCoon1MBMefNxxB+1UlRvxa4OrMM4kRmYn18IbG4L1L0hkwad/3ndP9fzTQ3huEDIptDOeD7hyg1C26wl+78fdbeNR0gHcyJc8CI8p5etelVX0ncYt6oMW4VAqorGatPMzn+8Zt2xBfsscYr7m42ns9NNCfJ01nYgNCc61Fn8Co1tocW6iXMXMFuGCsJ3bj33FN8m6bLSutXxH6YpY8lZbeqQtENbt9fVy1+mNOleG93WFrRRy4SokY9iQT8x2T9JVX53WogRHuRJ8lYN4QhTtlkUvwIhrWDVIh42+2AeObVxse\\",\\"iv\\":\\"AAECAwQFBgcICQoLDA0ODw==\\",\\"salt\\":\\"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=\\"}",
   },
   "session": {
-    "encryptionKey": "",
-    "salt": "",
+    "encryptionKey": "{\\"key_ops\\":[\\"encrypt\\",\\"decrypt\\"],\\"ext\\":true,\\"kty\\":\\"oct\\",\\"k\\":\\"sHyhXbroUejPho-aO3OoHJ7ZCPEl8tYOPvBsd6wRsI8\\",\\"alg\\":\\"A256GCM\\"}",
+    "salt": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
   },
 }
 `;
@@ -99,11 +99,11 @@ exports[`[keychain/KeychainManager] :: should be able to import a wallet using a
 exports[`[keychain/KeychainManager] :: should be able to import a wallet using a seed phrase 1`] = `
 {
   "local": {
-    "vault": "",
+    "vault": "{\\"data\\":\\"SnoVv/vROdgXlYXUDSke8X1GjJ+ocTXKm/MXoWfwQueYEtE6hJRxxlZAa1+5CXl5EpLzJbmoKl8y3i/6zbpsjVEdMYtLofhs1nvS03+Ru6Tlt3NaUIOcMR1YvRx1B/dW4vqAa9g1lIv46Y3WscIUn1k0aOu004rzZ37ZoU7EQ4dhHq2D6g+oyzmmxwTypr1JYNoekEUnOY5QYOtzE57+V3Yld5A2+JSdUgWirW29bbLZpv5kkg9f+O4spIV3m+Uux397TbWyIyM8y8ad\\",\\"iv\\":\\"AAECAwQFBgcICQoLDA0ODw==\\",\\"salt\\":\\"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=\\"}",
   },
   "session": {
-    "encryptionKey": "",
-    "salt": "",
+    "encryptionKey": "{\\"key_ops\\":[\\"encrypt\\",\\"decrypt\\"],\\"ext\\":true,\\"kty\\":\\"oct\\",\\"k\\":\\"sHyhXbroUejPho-aO3OoHJ7ZCPEl8tYOPvBsd6wRsI8\\",\\"alg\\":\\"A256GCM\\"}",
+    "salt": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
   },
 }
 `;
@@ -123,11 +123,11 @@ exports[`[keychain/KeychainManager] :: should be able to lock the vault 1`] = `
 exports[`[keychain/KeychainManager] :: should be able to remove an account from a KeyPair keychain... 1`] = `
 {
   "local": {
-    "vault": "",
+    "vault": "{\\"data\\":\\"SnoVv/vROdgXlYXUDTsN6GsPgtCrej3ImvQd4H/oBfeaBIV5kYRl2gIUekO0CX5yCIC1cbm1OxI/myn+gqApmUBTN4sYo7l2k3zTnWWRpPCoon1MBMefNxxB+1UlRvxa4OrMM4kRmYn18IbG4L1L0hkwad/3ndP9fzTQ3huEDIptDOeD7hyg1C26wl+78fdbeNR0gHcyJc8CI8p5etelVX0ncYt6oMW4VAqorGatPMzn+8ZtqtrQ1JpYWzhn03mN8uDaxIU=\\",\\"iv\\":\\"AAECAwQFBgcICQoLDA0ODw==\\",\\"salt\\":\\"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=\\"}",
   },
   "session": {
-    "encryptionKey": "",
-    "salt": "",
+    "encryptionKey": "{\\"key_ops\\":[\\"encrypt\\",\\"decrypt\\"],\\"ext\\":true,\\"kty\\":\\"oct\\",\\"k\\":\\"sHyhXbroUejPho-aO3OoHJ7ZCPEl8tYOPvBsd6wRsI8\\",\\"alg\\":\\"A256GCM\\"}",
+    "salt": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
   },
 }
 `;
@@ -135,11 +135,11 @@ exports[`[keychain/KeychainManager] :: should be able to remove an account from 
 exports[`[keychain/KeychainManager] :: should be able to remove an account from a ReadOnly keychain... 1`] = `
 {
   "local": {
-    "vault": "",
+    "vault": "{\\"data\\":\\"SnoVv/vROdgXlYXUDTsN6GsPgtCrej3ImvQd4H/oBfeaBIV5kYRl2gIUekO0CX5yCIC1cbm1OxI/myn+gqApmUBTN4sYo7l2k3zTnWWRpPCoon1MBMefNxxB+1UlRvxa4OrMM4kRmYn18IbG4L1L0hkwad/3ndP9fzTQ3huEDIptDOeD7hyg1C26wl+78fdbeNR0gHcyJc8CI8p5etelVX0ncYt6oMW4VAqorGatPMzn+8ZtqtrQ1JpYWzhn03mN8uDaxIU=\\",\\"iv\\":\\"AAECAwQFBgcICQoLDA0ODw==\\",\\"salt\\":\\"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=\\"}",
   },
   "session": {
-    "encryptionKey": "",
-    "salt": "",
+    "encryptionKey": "{\\"key_ops\\":[\\"encrypt\\",\\"decrypt\\"],\\"ext\\":true,\\"kty\\":\\"oct\\",\\"k\\":\\"sHyhXbroUejPho-aO3OoHJ7ZCPEl8tYOPvBsd6wRsI8\\",\\"alg\\":\\"A256GCM\\"}",
+    "salt": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
   },
 }
 `;
@@ -147,11 +147,11 @@ exports[`[keychain/KeychainManager] :: should be able to remove an account from 
 exports[`[keychain/KeychainManager] :: should be able to remove an account from an HD keychain... 1`] = `
 {
   "local": {
-    "vault": "",
+    "vault": "{\\"data\\":\\"SnoVv/vROdgXlYXUDTsN6GsPgtCrej3ImvQd4H/oBfeaBIV5kYRl2gIUekO0CX5yCIC1cbm1OxI/myn+gqApmUBTN4sYo7l2k3zTnWWRpPCoon1MBMefNxxB+1UlRvxa4OrMM4kRmYn18IbG4L1L0hkwad/3ndP9fzTQ3huEDIptDOeD7hyg1C26wl+78fdbeNR0gHcyJc8CI8p5etelVX0ncYt6oMW4VAqorGatPMzn+8ZtqtrQ1JpYWzhn03mN8uDaxIU=\\",\\"iv\\":\\"AAECAwQFBgcICQoLDA0ODw==\\",\\"salt\\":\\"AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=\\"}",
   },
   "session": {
-    "encryptionKey": "",
-    "salt": "",
+    "encryptionKey": "{\\"key_ops\\":[\\"encrypt\\",\\"decrypt\\"],\\"ext\\":true,\\"kty\\":\\"oct\\",\\"k\\":\\"sHyhXbroUejPho-aO3OoHJ7ZCPEl8tYOPvBsd6wRsI8\\",\\"alg\\":\\"A256GCM\\"}",
+    "salt": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
   },
 }
 `;
@@ -162,8 +162,8 @@ exports[`[keychain/KeychainManager] :: should be able to remove empty keychains 
     "vault": "",
   },
   "session": {
-    "encryptionKey": "",
-    "salt": "",
+    "encryptionKey": "{\\"key_ops\\":[\\"encrypt\\",\\"decrypt\\"],\\"ext\\":true,\\"kty\\":\\"oct\\",\\"k\\":\\"sHyhXbroUejPho-aO3OoHJ7ZCPEl8tYOPvBsd6wRsI8\\",\\"alg\\":\\"A256GCM\\"}",
+    "salt": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
   },
 }
 `;
