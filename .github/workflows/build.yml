@@ -495,12 +495,6 @@ jobs:
           else
             echo "No bundlewatch results found" >> $GITHUB_STEP_SUMMARY
           fi
-      - name: Upload bundle size results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: bundlewatch-results-${{ github.sha }}
-          path: bundlewatch-results.txt
   
   cleanup:
     runs-on:  ubuntu-latest
