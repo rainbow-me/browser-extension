@@ -20,10 +20,6 @@ vi.stubGlobal('crypto', {
   subtle: globalThis.crypto?.subtle,
 });
 
-vi.mock('@sentry/core', () => ({
-  uuid4: () => '00000000-0000-0000-0000-000000000000',
-}));
-
 vi.mock('@scure/bip39', async () => {
   const actual =
     await vi.importActual<typeof import('@scure/bip39')>('@scure/bip39');
