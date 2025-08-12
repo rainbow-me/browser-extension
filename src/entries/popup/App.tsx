@@ -121,7 +121,6 @@ export function App() {
                       ? `${POPUP_DIMENSIONS.width}px`
                       : undefined,
                   }}
-                  testId="popup-container"
                 >
                   <Routes />
                 </Box>

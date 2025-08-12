@@ -1272,11 +1272,11 @@ export async function captureScreenshot(context: any, slug?: string) {
   const filePath = `screenshots/${finalFileName}.png`;
 
   try {
-    // Try to find and screenshot just the popup-container element
+    // Try to find and screenshot just the extension viewport element
     let popupContainer: WebElement | null = null;
     try {
       popupContainer = await driver.findElement(
-        By.css('[data-testid="popup-container"]'),
+        By.css('[data-viewport="extension-viewport"]'),
       );
     } catch {
       // Element not found, will use full screenshot
