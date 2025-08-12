@@ -616,7 +616,7 @@ export const calculateL1FeeOptimism = async ({
     );
     const l1FeeInWei: BigNumber =
       await OVM_GasPriceOracle.getL1Fee(serializedTx);
-    return toHex(l1FeeInWei.toString());
+    return toHex(l1FeeInWei.toString()) as Hex;
   } catch (e) {
     //
   }
