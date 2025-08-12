@@ -320,12 +320,21 @@
         "path.sep": true
       },
       "packages": {
+        "copy-webpack-plugin>glob-parent": true,
         "copy-webpack-plugin>schema-utils": true,
         "copy-webpack-plugin>serialize-javascript": true,
-        "eslint>glob-parent": true,
         "globby": true,
         "globby>fast-glob": true,
         "lint-staged>normalize-path": true
+      }
+    },
+    "copy-webpack-plugin>glob-parent": {
+      "builtin": {
+        "os.platform": true,
+        "path.posix.dirname": true
+      },
+      "packages": {
+        "eslint>is-glob": true
       }
     },
     "copy-webpack-plugin>schema-utils": {
@@ -412,7 +421,7 @@
       "packages": {
         "css-loader>postcss>nanoid": true,
         "css-loader>postcss>source-map-js": true,
-        "vitest>picocolors": true
+        "knip>picocolors": true
       }
     },
     "css-loader>postcss-modules-local-by-default": {
@@ -600,8 +609,8 @@
       },
       "packages": {
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/types>@babel/helper-validator-identifier": true,
-        "react>loose-envify>js-tokens": true,
-        "vitest>picocolors": true
+        "knip>picocolors": true,
+        "react>loose-envify>js-tokens": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/generator": {
@@ -736,8 +745,8 @@
       },
       "packages": {
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/types>@babel/helper-validator-identifier": true,
-        "react>loose-envify>js-tokens": true,
-        "vitest>picocolors": true
+        "knip>picocolors": true,
+        "react>loose-envify>js-tokens": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/traverse>@babel/generator": {
@@ -825,8 +834,8 @@
       },
       "packages": {
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/types>@babel/helper-validator-identifier": true,
-        "react>loose-envify>js-tokens": true,
-        "vitest>picocolors": true
+        "knip>picocolors": true,
+        "react>loose-envify>js-tokens": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template>@babel/types": {
@@ -891,24 +900,13 @@
         "process.versions.node": true
       },
       "packages": {
-        "eslint>@nodelib/fs.walk>@nodelib/fs.scandir>run-parallel": true,
-        "globby>fast-glob>@nodelib/fs.stat": true
-      }
-    },
-    "eslint>@nodelib/fs.walk>@nodelib/fs.scandir>run-parallel": {
-      "packages": {
-        "eslint>@nodelib/fs.walk>@nodelib/fs.scandir>run-parallel>queue-microtask": true
-      }
-    },
-    "eslint>@nodelib/fs.walk>@nodelib/fs.scandir>run-parallel>queue-microtask": {
-      "globals": {
-        "queueMicrotask": true,
-        "setTimeout": true
+        "knip>@nodelib/fs.walk>@nodelib/fs.scandir>run-parallel": true,
+        "knip>fast-glob>@nodelib/fs.stat": true
       }
     },
     "eslint>@nodelib/fs.walk>fastq": {
       "packages": {
-        "eslint>@nodelib/fs.walk>fastq>reusify": true
+        "knip>@nodelib/fs.walk>fastq>reusify": true
       }
     },
     "eslint>ajv>uri-js": {
@@ -916,9 +914,40 @@
         "define": true
       }
     },
+    "eslint>chalk": {
+      "packages": {
+        "eslint>chalk>ansi-styles": true,
+        "eslint>chalk>supports-color": true
+      }
+    },
+    "eslint>chalk>ansi-styles": {
+      "packages": {
+        "eslint>chalk>ansi-styles>color-convert": true
+      }
+    },
     "eslint>chalk>ansi-styles>color-convert": {
       "packages": {
         "eslint>chalk>ansi-styles>color-convert>color-name": true
+      }
+    },
+    "eslint>chalk>supports-color": {
+      "builtin": {
+        "os.release": true
+      },
+      "globals": {
+        "process.env": true,
+        "process.platform": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.versions.node.split": true
+      },
+      "packages": {
+        "eslint>chalk>supports-color>has-flag": true
+      }
+    },
+    "eslint>chalk>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
       }
     },
     "eslint>debug": {
@@ -936,8 +965,8 @@
         "process": true
       },
       "packages": {
-        "eslint>debug>ms": true,
-        "supports-color": true
+        "eslint>chalk>supports-color": true,
+        "eslint>debug>ms": true
       }
     },
     "eslint>eslint-scope>esrecurse": {
@@ -984,15 +1013,6 @@
         "util.promisify": true
       }
     },
-    "eslint>glob-parent": {
-      "builtin": {
-        "os.platform": true,
-        "path.posix.dirname": true
-      },
-      "packages": {
-        "eslint>is-glob": true
-      }
-    },
     "eslint>ignore": {
       "globals": {
         "process": true
@@ -1005,7 +1025,7 @@
     },
     "eslint>strip-ansi": {
       "packages": {
-        "eslint>strip-ansi>ansi-regex": true
+        "knip>easy-table>ansi-regex": true
       }
     },
     "file-loader": {
@@ -1137,27 +1157,10 @@
       },
       "packages": {
         "eslint>@nodelib/fs.walk": true,
-        "globby>fast-glob>@nodelib/fs.stat": true,
-        "globby>fast-glob>glob-parent": true,
         "globby>merge2": true,
-        "ts-loader>micromatch": true
-      }
-    },
-    "globby>fast-glob>@nodelib/fs.stat": {
-      "builtin": {
-        "fs.lstat": true,
-        "fs.lstatSync": true,
-        "fs.stat": true,
-        "fs.statSync": true
-      }
-    },
-    "globby>fast-glob>glob-parent": {
-      "builtin": {
-        "os.platform": true,
-        "path.posix.dirname": true
-      },
-      "packages": {
-        "eslint>is-glob": true
+        "knip>fast-glob>@nodelib/fs.stat": true,
+        "knip>fast-glob>glob-parent": true,
+        "knip>micromatch": true
       }
     },
     "globby>merge2": {
@@ -1344,6 +1347,84 @@
         "jest>@jest/core>jest-runner>p-limit>yocto-queue": true
       }
     },
+    "knip>@nodelib/fs.walk>@nodelib/fs.scandir>run-parallel": {
+      "packages": {
+        "knip>@nodelib/fs.walk>@nodelib/fs.scandir>run-parallel>queue-microtask": true
+      }
+    },
+    "knip>@nodelib/fs.walk>@nodelib/fs.scandir>run-parallel>queue-microtask": {
+      "globals": {
+        "queueMicrotask": true,
+        "setTimeout": true
+      }
+    },
+    "knip>fast-glob>@nodelib/fs.stat": {
+      "builtin": {
+        "fs.lstat": true,
+        "fs.lstatSync": true,
+        "fs.stat": true,
+        "fs.statSync": true
+      }
+    },
+    "knip>fast-glob>glob-parent": {
+      "builtin": {
+        "os.platform": true,
+        "path.posix.dirname": true
+      },
+      "packages": {
+        "eslint>is-glob": true
+      }
+    },
+    "knip>micromatch": {
+      "builtin": {
+        "util.inspect": true
+      },
+      "packages": {
+        "knip>micromatch>braces": true,
+        "knip>micromatch>picomatch": true
+      }
+    },
+    "knip>micromatch>braces": {
+      "globals": {
+        "console.log": true
+      },
+      "packages": {
+        "knip>micromatch>braces>fill-range": true
+      }
+    },
+    "knip>micromatch>braces>fill-range": {
+      "builtin": {
+        "util.inspect": true
+      },
+      "packages": {
+        "knip>micromatch>braces>fill-range>to-regex-range": true
+      }
+    },
+    "knip>micromatch>braces>fill-range>to-regex-range": {
+      "packages": {
+        "knip>micromatch>braces>fill-range>to-regex-range>is-number": true
+      }
+    },
+    "knip>micromatch>picomatch": {
+      "builtin": {
+        "path.basename": true,
+        "path.sep": true
+      },
+      "globals": {
+        "process.platform": true,
+        "process.version.slice": true
+      }
+    },
+    "knip>picocolors": {
+      "builtin": {
+        "tty.isatty": true
+      },
+      "globals": {
+        "process.argv.includes": true,
+        "process.env": true,
+        "process.platform": true
+      }
+    },
     "lavamoat-browserify>convert-source-map": {
       "globals": {
         "Buffer": true,
@@ -1399,26 +1480,6 @@
         "semver>lru-cache>yallist": true
       }
     },
-    "supports-color": {
-      "builtin": {
-        "os.release": true
-      },
-      "globals": {
-        "process.env": true,
-        "process.platform": true,
-        "process.stderr": true,
-        "process.stdout": true,
-        "process.versions.node.split": true
-      },
-      "packages": {
-        "supports-color>has-flag": true
-      }
-    },
-    "supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
-      }
-    },
     "ts-loader": {
       "builtin": {
         "console.Console": true,
@@ -1439,62 +1500,11 @@
         "process.stdout": true
       },
       "packages": {
+        "eslint>chalk": true,
+        "knip>micromatch": true,
         "semver": true,
-        "ts-loader>chalk": true,
-        "ts-loader>micromatch": true,
         "typescript": true,
         "webpack": true
-      }
-    },
-    "ts-loader>chalk": {
-      "packages": {
-        "supports-color": true,
-        "ts-loader>chalk>ansi-styles": true
-      }
-    },
-    "ts-loader>chalk>ansi-styles": {
-      "packages": {
-        "eslint>chalk>ansi-styles>color-convert": true
-      }
-    },
-    "ts-loader>micromatch": {
-      "builtin": {
-        "util.inspect": true
-      },
-      "packages": {
-        "ts-loader>micromatch>braces": true,
-        "ts-loader>micromatch>picomatch": true
-      }
-    },
-    "ts-loader>micromatch>braces": {
-      "globals": {
-        "console.log": true
-      },
-      "packages": {
-        "ts-loader>micromatch>braces>fill-range": true
-      }
-    },
-    "ts-loader>micromatch>braces>fill-range": {
-      "builtin": {
-        "util.inspect": true
-      },
-      "packages": {
-        "ts-loader>micromatch>braces>fill-range>to-regex-range": true
-      }
-    },
-    "ts-loader>micromatch>braces>fill-range>to-regex-range": {
-      "packages": {
-        "ts-loader>micromatch>braces>fill-range>to-regex-range>is-number": true
-      }
-    },
-    "ts-loader>micromatch>picomatch": {
-      "builtin": {
-        "path.basename": true,
-        "path.sep": true
-      },
-      "globals": {
-        "process.platform": true,
-        "process.version.slice": true
       }
     },
     "typescript": {
@@ -1603,16 +1613,6 @@
     "vitest>acorn-walk": {
       "globals": {
         "define": true
-      }
-    },
-    "vitest>picocolors": {
-      "builtin": {
-        "tty.isatty": true
-      },
-      "globals": {
-        "process.argv.includes": true,
-        "process.env": true,
-        "process.platform": true
       }
     },
     "vitest>vite>terser": {
@@ -1794,26 +1794,15 @@
         "setImmediate": true
       },
       "packages": {
+        "eslint>chalk": true,
         "lodash": true,
         "viem>ws": true,
         "vitest>acorn-walk": true,
-        "webpack-bundle-analyzer>chalk": true,
         "webpack-bundle-analyzer>gzip-size": true,
         "webpack-bundle-analyzer>opener": true,
         "webpack-bundle-analyzer>sirv": true,
         "webpack-cli>@discoveryjs/json-ext": true,
         "webpack>acorn": true
-      }
-    },
-    "webpack-bundle-analyzer>chalk": {
-      "packages": {
-        "supports-color": true,
-        "webpack-bundle-analyzer>chalk>ansi-styles": true
-      }
-    },
-    "webpack-bundle-analyzer>chalk>ansi-styles": {
-      "packages": {
-        "eslint>chalk>ansi-styles>color-convert": true
       }
     },
     "webpack-bundle-analyzer>gzip-size": {
@@ -2207,8 +2196,8 @@
         "setTimeout": true
       },
       "packages": {
+        "eslint>chalk>supports-color": true,
         "lint-staged>execa>merge-stream": true,
-        "supports-color": true,
         "webpack>terser-webpack-plugin": true
       }
     },

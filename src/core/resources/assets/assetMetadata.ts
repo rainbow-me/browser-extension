@@ -29,7 +29,7 @@ type AssetMetadataAllNetworksArgs = {
 // ///////////////////////////////////////////////
 // Query Key
 
-export const assetMetadataQueryKey = ({
+const assetMetadataQueryKey = ({
   assetAddress,
   chainId,
 }: AssetMetadataArgs) =>
@@ -41,7 +41,7 @@ export const assetMetadataQueryKey = ({
 
 type AssetMetadataQueryKey = ReturnType<typeof assetMetadataQueryKey>;
 
-export const assetSearchMetadataQueryKey = ({
+const assetSearchMetadataQueryKey = ({
   assetAddress,
   chainId,
 }: AssetMetadataArgs) =>
@@ -100,7 +100,7 @@ async function assetSearchMetadataQueryFunction({
   return null;
 }
 
-export type AssetMetadataResult = QueryFunctionResult<
+type AssetMetadataResult = QueryFunctionResult<
   typeof assetMetadataQueryFunction
 >;
 
@@ -108,7 +108,7 @@ type AssetSearchMetadataResult = QueryFunctionResult<
   typeof assetSearchMetadataQueryFunction
 >;
 
-export function parseSearchAssetMetadata({
+function parseSearchAssetMetadata({
   address,
   symbol,
   decimals,

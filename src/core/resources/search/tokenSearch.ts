@@ -23,14 +23,15 @@ import { parseTokenSearch } from './parseTokenSearch';
 // ///////////////////////////////////////////////
 // Query Types
 
-export type TokenSearchArgs = {
+type TokenSearchArgs = {
   chainId: ChainId;
   fromChainId?: ChainId | '';
   list: TokenSearchListId;
   query: string;
 };
 
-export type TokenSearchAllNetworksArgs = {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type TokenSearchAllNetworksArgs = {
   keys: TokenSearchAssetKey[];
   list: TokenSearchListId;
   threshold: TokenSearchThreshold;

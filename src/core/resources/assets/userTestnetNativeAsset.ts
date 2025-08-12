@@ -18,7 +18,7 @@ import { getProvider } from '~/core/wagmi/clientToProvider';
 
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
 
-export const getNativeAssetMock = ({ chainId }: { chainId: ChainId }) => {
+const getNativeAssetMock = ({ chainId }: { chainId: ChainId }) => {
   const chain = getChain({ chainId });
   const nativeAssetAddress =
     useNetworkStore.getState().getChainsNativeAsset()[chainId]?.address ||
@@ -61,7 +61,7 @@ type UserTestnetNativeAssetArgs = {
 // ///////////////////////////////////////////////
 // Query Key
 
-export const userTestnetNativeAssetQueryKey = ({
+const userTestnetNativeAssetQueryKey = ({
   address,
   currency,
   chainId,

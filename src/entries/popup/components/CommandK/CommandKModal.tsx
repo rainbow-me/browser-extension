@@ -190,5 +190,3 @@ export function CommandKModal({
     </AnimatePresence>
   );
 }
-
-export default CommandKModal;

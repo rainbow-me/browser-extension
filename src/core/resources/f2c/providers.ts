@@ -38,7 +38,8 @@ type ProvidersListResult = QueryFunctionResult<
 // ///////////////////////////////////////////////
 // Query Fetcher
 
-export async function fetchProvidersList(
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+async function fetchProvidersList(
   config: QueryConfig<
     ProvidersListResult,
     Error,

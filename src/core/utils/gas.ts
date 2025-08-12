@@ -63,7 +63,7 @@ const formatDisplayNumber = (number: number | string) => {
   }
 };
 
-export const parseGasDataConfirmationTime = ({
+const parseGasDataConfirmationTime = ({
   maxBaseFee,
   maxPriorityFee,
   blocksToConfirmation,
@@ -119,7 +119,7 @@ export const parseGasDataConfirmationTime = ({
   };
 };
 
-export const parseGasFeeParam = ({ wei }: { wei: string }): GasFeeParam => {
+const parseGasFeeParam = ({ wei }: { wei: string }): GasFeeParam => {
   const _wei = new BigNumber(wei).toFixed(0); // wei is the smallest unit, shouldn't have decimals
   const gwei = _wei ? weiToGwei(_wei) : '';
   return {
@@ -277,7 +277,7 @@ export const parseCustomGasFeeLegacyParams = ({
   };
 };
 
-export const parseGasFeeParams = ({
+const parseGasFeeParams = ({
   wei,
   currentBaseFee,
   speed,
@@ -376,7 +376,7 @@ export const parseGasFeeParams = ({
   };
 };
 
-export const parseGasFeeLegacyParams = ({
+const parseGasFeeLegacyParams = ({
   gwei,
   speed,
   waitTime,
@@ -442,7 +442,7 @@ export const parseGasFeeLegacyParams = ({
   };
 };
 
-export const getBaseFeeMultiplier = (speed: GasSpeed) => {
+const getBaseFeeMultiplier = (speed: GasSpeed) => {
   switch (speed) {
     case 'urgent':
     case 'custom':
@@ -455,7 +455,7 @@ export const getBaseFeeMultiplier = (speed: GasSpeed) => {
   }
 };
 
-export const getChainWaitTime = (chainId: ChainId) => {
+const getChainWaitTime = (chainId: ChainId) => {
   switch (chainId) {
     case ChainId.bsc:
     case ChainId.polygon:
@@ -793,6 +793,3 @@ export const getBaseFeeTrendParams = (trend: number) => {
       };
   }
 };
-
-export const chainShouldUseDefaultTxSpeed = (chainId: ChainId) =>
-  chainId === ChainId.mainnet || chainId === ChainId.polygon;

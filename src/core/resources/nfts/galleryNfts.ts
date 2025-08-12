@@ -27,7 +27,7 @@ const EMPTY_WALLET_ADDRESS = '0x3637f053D542E6D00Eee42D656dD7C59Fa33a62F';
 // ///////////////////////////////////////////////
 // Query Types
 
-export type GalleryNftsArgs = {
+type GalleryNftsArgs = {
   address: Address;
   sort: NftSort;
   testnetMode: boolean;

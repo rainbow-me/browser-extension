@@ -39,12 +39,12 @@ import { RainbowError, logger } from '~/logger';
 import { ASSETS_TIMEOUT_DURATION } from './assets';
 
 const CUSTOM_NETWORK_ASSETS_REFETCH_INTERVAL = 60000;
-export const CUSTOM_NETWORK_ASSETS_STALE_INTERVAL = 30000;
 
 // ///////////////////////////////////////////////
 // Query Types
 
-export type CustomNetworkAssetsArgs = {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type CustomNetworkAssetsArgs = {
   address: Address;
   currency: SupportedCurrencyKey;
   testnetMode?: boolean;
@@ -81,7 +81,7 @@ type FetchCustomNetworkAssetsArgs = {
 // ///////////////////////////////////////////////
 // Query Key
 
-export const customNetworkAssetsKey = ({
+const customNetworkAssetsKey = ({
   address,
   currency,
   testnetMode,
@@ -105,7 +105,8 @@ type customNetworkAssetsKey = ReturnType<typeof customNetworkAssetsKey>;
 // ///////////////////////////////////////////////
 // Query Function
 
-export const CustomNetworkAssetsFetchQuery = ({
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const CustomNetworkAssetsFetchQuery = ({
   address,
   currency,
   testnetMode,
@@ -124,7 +125,8 @@ export const CustomNetworkAssetsFetchQuery = ({
   });
 };
 
-export const CustomNetworkAssetsSetQueryDefaults = ({
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const CustomNetworkAssetsSetQueryDefaults = ({
   address,
   currency,
   staleTime,
@@ -146,7 +148,8 @@ export const CustomNetworkAssetsSetQueryDefaults = ({
   );
 };
 
-export const CustomNetworkAssetsSetQueryData = ({
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const CustomNetworkAssetsSetQueryData = ({
   address,
   currency,
   customNetworkAssets,

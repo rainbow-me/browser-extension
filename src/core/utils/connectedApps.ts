@@ -36,9 +36,6 @@ export const getDappHostname = (url: string) => {
   return hostname;
 };
 
-export const getPublicAppIcon = (host: string) =>
-  `https://icons.duckduckgo.com/ip3/${host}.ico`;
-
 const displayDappNames: {
   [name: string]: { name: string };
 } = {

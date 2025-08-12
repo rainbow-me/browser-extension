@@ -24,7 +24,7 @@ const CONSOLIDATED_TRANSACTIONS_TIMEOUT = 20000;
 // ///////////////////////////////////////////////
 // Query Types
 
-export type ConsolidatedTransactionsArgs = {
+type ConsolidatedTransactionsArgs = {
   address: Address;
   currency: SupportedCurrencyKey;
   userChainIds: number[];
@@ -50,8 +50,8 @@ type ConsolidatedTransactionsQueryKey = ReturnType<
 
 // ///////////////////////////////////////////////
 // Query Fetcher
-
-export async function fetchConsolidatedTransactions<
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+async function fetchConsolidatedTransactions<
   TSelectData = ConsolidatedTransactionsResult,
 >(
   { address, currency, userChainIds }: ConsolidatedTransactionsArgs,

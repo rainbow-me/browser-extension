@@ -16,11 +16,12 @@ import { getProvider } from '~/core/wagmi/clientToProvider';
 // ///////////////////////////////////////////////
 // Query Types
 
-export type OptimismL1SecurityFeeResponse = {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type OptimismL1SecurityFeeResponse = {
   l1Gas: string;
 };
 
-export type OptimismL1SecurityFeeArgs = {
+type OptimismL1SecurityFeeArgs = {
   transactionRequest: TransactionRequest;
   chainId: ChainId;
 };
@@ -73,7 +74,8 @@ type OptimismL1SecurityFeeResult = QueryFunctionResult<
 // ///////////////////////////////////////////////
 // Query Fetcher
 
-export async function fetchOptimismL1SecurityFee(
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+async function fetchOptimismL1SecurityFee(
   { transactionRequest, chainId }: OptimismL1SecurityFeeArgs,
   config: QueryConfig<
     OptimismL1SecurityFeeResult,

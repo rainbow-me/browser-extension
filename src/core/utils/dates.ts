@@ -5,37 +5,37 @@ import { RainbowTransaction } from '../types/transactions';
 
 import { getLocale } from './locales';
 
-export const calculateTimestampOfToday = () => {
+const calculateTimestampOfToday = () => {
   const d = new Date();
   d.setHours(0, 0, 0, 0);
   return d.getTime();
 };
 
-export const calculateTimestampOfYesterday = () => {
+const calculateTimestampOfYesterday = () => {
   const d = new Date();
   d.setDate(d.getDate() - 1);
   d.setHours(0, 0, 0, 0);
   return d.getTime();
 };
 
-export const calculateTimestampOfThisMonth = () => {
+const calculateTimestampOfThisMonth = () => {
   const d = new Date();
   d.setDate(0);
   d.setHours(0, 0, 0, 0);
   return d.getTime();
 };
 
-export const calculateTimestampOfThisYear = () => {
+const calculateTimestampOfThisYear = () => {
   const d = new Date();
   d.setFullYear(d.getFullYear(), 0, 1);
   d.setHours(0, 0, 0, 0);
   return d.getTime();
 };
 
-export const todayTimestamp = calculateTimestampOfToday();
-export const yesterdayTimestamp = calculateTimestampOfYesterday();
-export const thisMonthTimestamp = calculateTimestampOfThisMonth();
-export const thisYearTimestamp = calculateTimestampOfThisYear();
+const todayTimestamp = calculateTimestampOfToday();
+const yesterdayTimestamp = calculateTimestampOfYesterday();
+const thisMonthTimestamp = calculateTimestampOfThisMonth();
+const thisYearTimestamp = calculateTimestampOfThisYear();
 
 export const groupTransactionByDate = (tx: RainbowTransaction) => {
   if (tx.status === 'pending' || !tx.minedAt) return i18n.t('activity.today');

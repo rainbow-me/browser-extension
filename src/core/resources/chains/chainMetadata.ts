@@ -10,7 +10,7 @@ import {
 } from '~/core/react-query';
 import { isValidUrl } from '~/core/utils/connectedApps';
 
-export const getChainMetadataRPCUrl = async ({
+const getChainMetadataRPCUrl = async ({
   rpcUrl,
 }: {
   rpcUrl?: string;
@@ -33,7 +33,7 @@ type ChainMetadataArgs = {
 // ///////////////////////////////////////////////
 // Query Key
 
-export const chainMetadataQueryKey = ({ rpcUrl }: ChainMetadataArgs) =>
+const chainMetadataQueryKey = ({ rpcUrl }: ChainMetadataArgs) =>
   createQueryKey('chainMetadata', { rpcUrl }, { persisterVersion: 1 });
 
 type AssetMetadataQueryKey = ReturnType<typeof chainMetadataQueryKey>;

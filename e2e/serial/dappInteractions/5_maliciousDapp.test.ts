@@ -1,5 +1,3 @@
-import 'chromedriver';
-import 'geckodriver';
 import { WebDriver } from 'selenium-webdriver';
 import {
   afterAll,

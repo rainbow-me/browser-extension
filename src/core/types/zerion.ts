@@ -5,7 +5,7 @@ import { PaginatedTransactionsApiResponse } from '~/core/types/transactions';
 /**
  * Metadata for a message from the Zerion API.
  */
-export interface MessageMeta {
+interface MessageMeta {
   address?: string;
   currency?: string;
   cut_off?: number;
@@ -44,7 +44,8 @@ export interface TransactionsReceivedMessage {
 /**
  * A message from the Zerion API indicating that asset price data was received
  */
-export interface AssetPricesReceivedMessage {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+interface AssetPricesReceivedMessage {
   payload?: {
     prices?: {
       [id: string]: AssetApiResponse;

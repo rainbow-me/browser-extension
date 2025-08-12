@@ -21,10 +21,10 @@ import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 
 /**
- * @deprecated - DO NOT USE THIS DIRECTLY.
+ * DO NOT USE THIS DIRECTLY.
  * Use `getFaucetsUrl` instead below.
  */
-export const FALLBACK_FAUCETS = {
+const FALLBACK_FAUCETS = {
   [ChainId.sepolia]: 'https://sepoliafaucet.com',
   [ChainId.holesky]: 'https://faucet.quicknode.com/ethereum/holesky',
   [ChainId.optimismSepolia]: 'https://app.optimism.io/faucet',

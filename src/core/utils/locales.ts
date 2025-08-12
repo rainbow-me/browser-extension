@@ -25,7 +25,7 @@ import { useCurrentLanguageStore } from '../state';
  * locale keys. This object will need to updated each time we
  * add a new supported language
  */
-export const locales: Record<Language, Locale> = {
+const locales: Record<Language, Locale> = {
   ar_AR: ar,
   en_US: enUS,
   es_419: es,

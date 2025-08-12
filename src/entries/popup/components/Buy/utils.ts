@@ -76,6 +76,5 @@ export function convertAPINetworkToChainId(
     [APINetwork.Avalanche]: ChainId.avalanche,
   };
 
-  // @ts-expect-error networkMap only accounts for supported chains
   return networkMap[network] ?? undefined;
 }
