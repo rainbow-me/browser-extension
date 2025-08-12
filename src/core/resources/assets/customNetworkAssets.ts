@@ -1,6 +1,5 @@
-import { AddressZero } from '@ethersproject/constants';
 import { useQuery } from '@tanstack/react-query';
-import { Address } from 'viem';
+import { Address, zeroAddress } from 'viem';
 
 import { requestMetadata } from '~/core/graphql';
 import {
@@ -212,13 +211,13 @@ async function customNetworkAssetsFunction({
           (filterZeroBalance ? !isZero(nativeAssetBalance) : true)
             ? parseUserAssetBalances({
                 asset: {
-                  address: AddressZero,
+                  address: zeroAddress,
                   chainId: chain.id,
                   chainName: chain.name as ChainName,
                   isNativeAsset: true,
                   name: chain.nativeCurrency.symbol,
                   symbol: chain.nativeCurrency.symbol,
-                  uniqueId: `${AddressZero}_${chain.id}`,
+                  uniqueId: `${zeroAddress}_${chain.id}`,
                   decimals: 18,
                   native: { price: undefined },
                   price: { value: 0 },

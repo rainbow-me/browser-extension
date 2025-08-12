@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Bytes } from '@ethersproject/bytes';
 import { TransactionRequest } from '@ethersproject/providers';
 import { useEffect } from 'react';
-import { Address } from 'viem';
+import { Address, ByteArray } from 'viem';
 
 import { initializeMessenger } from '~/core/messengers';
 
@@ -21,7 +20,7 @@ interface HWSigningRequest {
   payload:
     | TransactionRequest
     | { message: string; address: string }
-    | { data: string | Bytes; address: string };
+    | { data: string | ByteArray; address: string };
 }
 
 function isMessagePayload(

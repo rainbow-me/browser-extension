@@ -1,7 +1,6 @@
-import { isAddress } from '@ethersproject/address';
 import { uniqBy } from 'lodash';
 import { useCallback, useEffect, useMemo } from 'react';
-import { Address } from 'viem';
+import { Address, isAddress } from 'viem';
 
 import { i18n } from '~/core/languages';
 import {

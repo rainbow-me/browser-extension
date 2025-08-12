@@ -1,4 +1,4 @@
-import { Address } from 'viem';
+import { Address, Hex } from 'viem';
 
 export const HARDWARE_WALLETS = {
   MOCK_ACCOUNT: {
@@ -12,7 +12,7 @@ export const HARDWARE_WALLETS = {
         index: 1,
       },
     ],
-    deviceId: 'lol',
+    deviceId: '0xlol' as Hex,
     accountsEnabled: 2,
   },
 };

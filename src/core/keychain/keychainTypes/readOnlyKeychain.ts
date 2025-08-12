@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Signer } from '@ethersproject/abstract-signer';
-import { isAddress } from '@ethersproject/address';
-import { Mnemonic } from '@ethersproject/hdnode';
 import { Wallet } from '@ethersproject/wallet';
-import { Address } from 'viem';
+import { Address, isAddress } from 'viem';
 
 import { KeychainType } from '~/core/types/keychainTypes';
 import { RainbowError, logger } from '~/logger';
@@ -65,7 +63,7 @@ export class ReadOnlyKeychain implements IKeychain {
     throw new Error('Method not implemented.');
   }
 
-  async exportKeychain(): Promise<Mnemonic['phrase']> {
+  async exportKeychain(): Promise<string> {
     throw new Error('Method not implemented.');
   }
 
