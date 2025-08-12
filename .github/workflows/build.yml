@@ -371,6 +371,8 @@ jobs:
         with:
           channel: stable
           profile: minimal
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
       - name: Fetch networks
         run: yarn fetch:networks
       - name: Install Anvil
@@ -409,6 +411,8 @@ jobs:
         run: tar xzf yarn_node_modules.tar.gz
       - name: DS Setup
         run: yarn ds:install
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
       - name: Fetch networks
         run: yarn fetch:networks
       - name: Lint

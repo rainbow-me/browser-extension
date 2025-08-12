@@ -1,8 +1,13 @@
 #!/bin/bash
+# This script runs the Optimism serial e2e tests.
 
-# Source the common test runner
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/test-runner-common.sh"
+# Source the common test logic script.
+source "$(dirname "$0")/common-test-logic.sh"
 
-# Run serial tests with Anvil (Optimism chain)
-run_tests_with_retry "e2e/serial/$1" "./e2e/serial/vitest.config.ts" "true" "yarn anvil:optimism --chain-id 1338"
+# Define the test parameters.
+TEST_GLOB="e2e/serial/${1}"
+CONFIG_FILE="./e2e/serial/vitest.config.ts"
+ANVIL_MODE="optimism" # Requires an Optimism-configured Anvil instance.
+
+# Call the common function to execute the tests with retry logic.
+run_tests_with_retry "$TEST_GLOB" "$CONFIG_FILE" "$ANVIL_MODE"
