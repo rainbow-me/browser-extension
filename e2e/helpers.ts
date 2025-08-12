@@ -446,6 +446,7 @@ export async function findElementByIdAndClick({
   const element = await findElementById({ id, driver });
   await waitAndClick(element, driver);
 }
+
 export async function waitAndClick(element: WebElement, driver: WebDriver) {
   try {
     await driver.wait(untilDocumentLoaded(), waitUntilTime);
@@ -1199,22 +1200,12 @@ export async function delayTime(
   }
 }
 
-// Screenshot function for Percy and debugging
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function captureScreenshot(context: any) {
-  const driver = context.driver as WebDriver;
-  const testName = context.task?.name || 'unknown';
-
-  if (!fs.existsSync('screenshots')) {
-    fs.mkdirSync('screenshots');
-  }
-
-  // Get the test file path from the stack trace
+// Helper to get the test file name from stack trace
+function getTestFileFromStack(): string {
   const stack = new Error().stack || '';
   const stackLines = stack.split('\n');
 
   // Find the test file in the stack (looking for .test.ts files)
-  let testFile = '';
   for (const line of stackLines) {
     const match = line.match(/\/(parallel|serial)\/(.+?)\.test\.ts/);
     if (match) {
@@ -1222,16 +1213,27 @@ export async function captureScreenshot(context: any) {
       const pathParts = match[2].split('/');
       if (pathParts.length > 1) {
         // Multi-level path like "send/1_sendFlow"
-        testFile = pathParts.join('-');
+        return pathParts.join('-');
       } else {
         // Single file like "newWalletFlow"
-        testFile = pathParts[0];
+        return pathParts[0];
       }
-      break;
     }
   }
+  return 'test';
+}
 
-  // Fallback to a generic name if we can't determine the test file
+// Screenshot function for Percy and debugging
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function captureScreenshot(context: any, slug?: string) {
+  const driver = context.driver as WebDriver;
+  const testName = context.task?.name || 'unknown';
+
+  if (!fs.existsSync('screenshots')) {
+    fs.mkdirSync('screenshots');
+  }
+
+  const testFile = getTestFileFromStack();
   const suiteName = testFile || 'test';
 
   // Normalize names for Percy - remove special characters and spaces
@@ -1239,12 +1241,24 @@ export async function captureScreenshot(context: any) {
     .replace(/[^a-zA-Z0-9-_]/g, '_')
     .replace(/_+/g, '_')
     .toLowerCase();
-  const normalizedTest = testName
-    .replace(/[^a-zA-Z0-9-_]/g, '_')
-    .replace(/_+/g, '_')
-    .toLowerCase();
 
-  const fileName = `${normalizedSuite}-${normalizedTest}`;
+  let fileName: string;
+
+  if (slug) {
+    // If suffix provided, use it for element-specific screenshots
+    const normalizedSuffix = slug
+      .replace(/[^a-zA-Z0-9-_]/g, '_')
+      .replace(/_+/g, '_')
+      .toLowerCase();
+    fileName = `${normalizedSuite}-element_${normalizedSuffix}`;
+  } else {
+    // Otherwise use the test name
+    const normalizedTest = testName
+      .replace(/[^a-zA-Z0-9-_]/g, '_')
+      .replace(/_+/g, '_')
+      .toLowerCase();
+    fileName = `${normalizedSuite}-${normalizedTest}`;
+  }
 
   // Handle duplicate filenames
   let finalFileName = fileName;
