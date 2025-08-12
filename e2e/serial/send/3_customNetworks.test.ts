@@ -1,8 +1,8 @@
-
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
 
 import {
+  captureScreenshot,
   checkExtensionURL,
   delayTime,
   executePerformShortcut,
@@ -13,7 +13,6 @@ import {
   importWalletFlow,
   initDriverWithOptions,
   navigateToSettingsNetworks,
-  takeScreenshotOnFailure,
   typeOnTextInput,
 } from '../../helpers';
 import { TEST_VARIABLES } from '../../walletVariables';
@@ -39,9 +38,8 @@ beforeEach<{ driver: WebDriver }>(async (context) => {
 });
 
 afterEach<{ driver: WebDriver }>(async (context) => {
-  await takeScreenshotOnFailure(context);
+  await captureScreenshot(context);
 });
-
 afterAll(() => driver?.quit());
 
 it('should be able import a wallet via pk', async () => {

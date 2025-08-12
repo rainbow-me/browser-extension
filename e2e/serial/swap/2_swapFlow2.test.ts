@@ -14,6 +14,7 @@ import {
 } from 'vitest';
 
 import {
+  captureScreenshot,
   clearInput,
   delay,
   delayTime,
@@ -30,7 +31,6 @@ import {
   goToWelcome,
   initDriverWithOptions,
   querySelector,
-  takeScreenshotOnFailure,
   typeOnTextInput,
   waitAndClick,
   waitUntilElementByTestIdIsPresent,
@@ -64,9 +64,8 @@ describe('Swap Flow 2', () => {
   });
 
   afterEach<{ driver: WebDriver }>(async (context) => {
-    await takeScreenshotOnFailure(context);
+    await captureScreenshot(context);
   });
-
   afterAll(() => driver?.quit());
 
   it('should be able import a wallet via pk', async () => {

@@ -12,6 +12,7 @@ import {
 import { ChainId } from '~/core/types/chains';
 
 import {
+  captureScreenshot,
   clickAcceptRequestButton,
   connectToTestDapp,
   delayTime,
@@ -27,7 +28,6 @@ import {
   initDriverWithOptions,
   navigateToSettingsNetworks,
   querySelector,
-  takeScreenshotOnFailure,
   waitAndClick,
 } from '../../helpers';
 import { TEST_VARIABLES } from '../../walletVariables';
@@ -55,9 +55,8 @@ describe.runIf(browser !== 'firefox')('Networks & Testnet Mode flows', () => {
   });
 
   afterEach<{ driver: WebDriver }>(async (context) => {
-    await takeScreenshotOnFailure(context);
+    await captureScreenshot(context);
   });
-
   it('should be able import a wallet via seed', async () => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);
   });

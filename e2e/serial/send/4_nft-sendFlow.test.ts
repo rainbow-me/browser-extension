@@ -10,6 +10,7 @@ import {
 } from 'vitest';
 
 import {
+  captureScreenshot,
   delayTime,
   doNotFindElementByTestId,
   findElementByTestId,
@@ -22,7 +23,6 @@ import {
   importWalletFlow,
   initDriverWithOptions,
   querySelector,
-  takeScreenshotOnFailure,
   transactionStatus,
   waitAndClick,
 } from '../../helpers';
@@ -51,10 +51,9 @@ describe('should be able to perform the nft send flow', () => {
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  afterEach(async (context: any) => {
-    await takeScreenshotOnFailure(context);
+  afterEach<{ driver: WebDriver }>(async (context) => {
+    await captureScreenshot(context);
   });
-
   afterAll(() => driver?.quit());
 
   it('should be able import a wallet via pk', async () => {

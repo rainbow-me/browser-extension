@@ -14,6 +14,7 @@ import { ChainId } from '~/core/types/chains';
 
 import {
   awaitTextChange,
+  captureScreenshot,
   clickAcceptRequestButton,
   delayTime,
   fillPrivateKey,
@@ -32,7 +33,6 @@ import {
   goToWelcome,
   initDriverWithOptions,
   shortenAddress,
-  takeScreenshotOnFailure,
   transactionStatus,
   typeOnTextInput,
   waitAndClick,
@@ -62,9 +62,8 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
   });
 
   afterEach<{ driver: WebDriver }>(async (context) => {
-    await takeScreenshotOnFailure(context);
+    await captureScreenshot(context);
   });
-
   afterAll(() => driver?.quit());
 
   // Import a wallet

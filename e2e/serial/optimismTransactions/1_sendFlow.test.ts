@@ -10,6 +10,7 @@ import {
 } from 'vitest';
 
 import {
+  captureScreenshot,
   checkExtensionURL,
   checkWalletName,
   delay,
@@ -23,7 +24,6 @@ import {
   importWalletFlowUsingKeyboardNavigation,
   initDriverWithOptions,
   navigateToElementWithTestId,
-  takeScreenshotOnFailure,
   transactionStatus,
 } from '../../helpers';
 import { TEST_VARIABLES } from '../../walletVariables';
@@ -50,9 +50,8 @@ describe('Complete Hardhat Optimism send flow', () => {
   });
 
   afterEach<{ driver: WebDriver }>(async (context) => {
-    await takeScreenshotOnFailure(context);
+    await captureScreenshot(context);
   });
-
   afterAll(() => driver?.quit());
 
   it('should be able import a wallet via pk', async () => {

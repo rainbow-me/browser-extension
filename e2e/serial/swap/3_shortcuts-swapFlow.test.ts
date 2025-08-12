@@ -11,6 +11,7 @@ import {
 } from 'vitest';
 
 import {
+  captureScreenshot,
   checkExtensionURL,
   checkWalletName,
   delayTime,
@@ -24,7 +25,6 @@ import {
   initDriverWithOptions,
   isElementFoundByText,
   navigateToElementWithTestId,
-  takeScreenshotOnFailure,
 } from '../../helpers';
 import { SWAP_VARIABLES, TEST_VARIABLES } from '../../walletVariables';
 
@@ -57,9 +57,8 @@ describe('Complete swap flow via shortcuts and keyboard navigation', () => {
   });
 
   afterEach<{ driver: WebDriver }>(async (context) => {
-    await takeScreenshotOnFailure(context);
+    await captureScreenshot(context);
   });
-
   afterAll(() => driver?.quit());
 
   it('should be able import a wallet via pk', async () => {

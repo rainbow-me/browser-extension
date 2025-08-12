@@ -14,6 +14,7 @@ import {
 import { ChainId } from '~/core/types/chains';
 
 import {
+  captureScreenshot,
   clickAcceptRequestButton,
   connectToTestDapp,
   delayTime,
@@ -33,7 +34,6 @@ import {
   querySelector,
   shortenAddress,
   switchWallet,
-  takeScreenshotOnFailure,
   typeOnTextInput,
   waitAndClick,
 } from '../../helpers';
@@ -93,9 +93,8 @@ describe('App interactions flow', () => {
   });
 
   afterEach<{ driver: WebDriver }>(async (context) => {
-    await takeScreenshotOnFailure(context);
+    await captureScreenshot(context);
   });
-
   afterAll(() => driver?.quit());
 
   // Import a wallet

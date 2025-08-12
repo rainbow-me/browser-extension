@@ -5,6 +5,7 @@ import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
 import { ChainId } from '~/core/types/chains';
 
 import {
+  captureScreenshot,
   clearInput,
   delay,
   delayTime,
@@ -24,7 +25,6 @@ import {
   goToWelcome,
   initDriverWithOptions,
   querySelector,
-  takeScreenshotOnFailure,
   typeOnTextInput,
   waitAndClick,
 } from '../../helpers';
@@ -53,10 +53,9 @@ beforeEach(async (context: any) => {
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-afterEach(async (context: any) => {
-  await takeScreenshotOnFailure(context);
+afterEach<{ driver: WebDriver }>(async (context) => {
+  await captureScreenshot(context);
 });
-
 afterAll(() => driver?.quit());
 
 const WALLET_TO_USE_SECRET = TEST_VARIABLES.SWAPS_WALLET.PK;

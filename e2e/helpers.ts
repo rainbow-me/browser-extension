@@ -1199,65 +1199,70 @@ export async function delayTime(
   }
 }
 
+// Screenshot function for Percy and debugging
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function takeScreenshotOnFailure(context: any) {
-  context.onTestFailed(async () => {
-    if (!fs.existsSync('screenshots')) {
-      fs.mkdirSync('screenshots');
-      console.log(`Folder screenshots created.`);
-    }
-    const normalizedFilePath = context.task.name
-      .replace(/'/g, '')
-      .replace(/"/g, '')
-      .replace(/=/g, '')
-      .replace(/\//g, '_')
-      .replace(/:/g, '_')
-      .replace(/ /g, '_');
-    let fileName = `${normalizedFilePath}_failure`;
-    let counter = 0;
-    while (fs.existsSync(`screenshots/${fileName}.png`)) {
-      counter++;
-      fileName = `${fileName}_${counter}`;
-      if (counter > 10) break;
-    }
-    console.log(`Screenshot of the failed test will be saved to: ${fileName}`);
-    try {
-      const image = await context.driver.takeScreenshot();
-      fs.writeFileSync(`screenshots/${fileName}.png`, image, 'base64');
-    } catch (error) {
-      console.error('Error occurred while taking screenshot:', error);
-    }
-  });
-}
+export async function captureScreenshot(context: any) {
+  const driver = context.driver as WebDriver;
+  const testName = context.task?.name || 'unknown';
 
-export async function captureScreenshot(
-  driver: WebDriver,
-  suiteName: string,
-  testStep: string,
-) {
   if (!fs.existsSync('screenshots')) {
     fs.mkdirSync('screenshots');
   }
-  
+
+  // Get the test file path from the stack trace
+  const stack = new Error().stack || '';
+  const stackLines = stack.split('\n');
+
+  // Find the test file in the stack (looking for .test.ts files)
+  let testFile = '';
+  for (const line of stackLines) {
+    const match = line.match(/\/(parallel|serial)\/(.+?)\.test\.ts/);
+    if (match) {
+      // Extract directory and filename: e.g., "send/1_sendFlow" from "serial/send/1_sendFlow.test.ts"
+      const pathParts = match[2].split('/');
+      if (pathParts.length > 1) {
+        // Multi-level path like "send/1_sendFlow"
+        testFile = pathParts.join('-');
+      } else {
+        // Single file like "newWalletFlow"
+        testFile = pathParts[0];
+      }
+      break;
+    }
+  }
+
+  // Fallback to a generic name if we can't determine the test file
+  const suiteName = testFile || 'test';
+
   // Normalize names for Percy - remove special characters and spaces
   const normalizedSuite = suiteName
     .replace(/[^a-zA-Z0-9-_]/g, '_')
     .replace(/_+/g, '_')
     .toLowerCase();
-  const normalizedStep = testStep
+  const normalizedTest = testName
     .replace(/[^a-zA-Z0-9-_]/g, '_')
     .replace(/_+/g, '_')
     .toLowerCase();
-  
-  const fileName = `${normalizedSuite}-${normalizedStep}`;
-  const filePath = `screenshots/${fileName}.png`;
-  
+
+  const fileName = `${normalizedSuite}-${normalizedTest}`;
+
+  // Handle duplicate filenames
+  let finalFileName = fileName;
+  let counter = 0;
+  while (fs.existsSync(`screenshots/${finalFileName}.png`)) {
+    counter++;
+    finalFileName = `${fileName}_${counter}`;
+    if (counter > 10) break;
+  }
+
+  const filePath = `screenshots/${finalFileName}.png`;
+
   try {
     const image = await driver.takeScreenshot();
     fs.writeFileSync(filePath, image, 'base64');
-    console.log(`Screenshot saved: ${fileName}.png`);
+    console.log(`Screenshot saved: ${finalFileName}.png`);
   } catch (error) {
-    console.error(`Error capturing screenshot ${fileName}:`, error);
+    console.error(`Error capturing screenshot ${finalFileName}:`, error);
   }
 }
 

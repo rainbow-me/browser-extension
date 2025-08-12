@@ -10,6 +10,7 @@ import {
 } from 'vitest';
 
 import {
+  captureScreenshot,
   checkWalletName,
   delayTime,
   findElementByTestId,
@@ -22,7 +23,6 @@ import {
   goToPopup,
   importWalletFlow,
   initDriverWithOptions,
-  takeScreenshotOnFailure,
   waitAndClick,
 } from '../../helpers';
 import { TEST_VARIABLES } from '../../walletVariables';
@@ -49,9 +49,8 @@ describe('App interactions flow', () => {
   });
 
   afterEach<{ driver: WebDriver }>(async (context) => {
-    await takeScreenshotOnFailure(context);
+    await captureScreenshot(context);
   });
-
   afterAll(() => driver?.quit());
 
   it('should be able import a wallet via seed', async () => {
