@@ -1,0 +1,28 @@
+{
+  "files": [
+    {
+      "path": "./build/background.js",
+      "maxSize": "3.5MB"
+    },
+    {
+      "path": "./build/popup.js",
+      "maxSize": "2.4MB"
+    },
+    {
+      "path": "./build/contentscript.js",
+      "maxSize": "360KB"
+    },
+    {
+      "path": "./build/inpage.js",
+      "maxSize": "2.5MB"
+    }
+  ],
+  "ci": {
+    "trackBranches": ["master"],
+    "repoBranchBase": "master",
+    "commitStatusPending": "Checking bundle sizes...",
+    "commitStatusSuccess": "✅ Bundle sizes are within limits",
+    "commitStatusFailure": "❌ Bundle size limit exceeded"
+  },
+  "defaultCompression": "none"
+}

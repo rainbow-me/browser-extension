@@ -78,9 +78,11 @@ const activityValues = (transaction: RainbowTransaction) => {
   if (['approve', 'revoke'].includes(type))
     return approvalTypeValues(transaction);
 
-  const changeAsset = changes?.find(
-    (c) => c?.direction === direction && c?.asset.type !== 'nft',
-  )?.asset;
+  const nonNftChanges = changes?.filter((c) => c?.asset.type !== 'nft') ?? [];
+  const changeAsset =
+    !direction && nonNftChanges.length === 1 // if there's no direction and only one change
+      ? nonNftChanges[0]?.asset // use the first change
+      : nonNftChanges.find((c) => c?.direction === direction)?.asset; // else: use the change with the direction
 
   const asset = changeAsset ?? _asset;
 

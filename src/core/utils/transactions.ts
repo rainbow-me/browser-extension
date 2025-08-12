@@ -42,6 +42,7 @@ import { parseAsset, parseUserAsset, parseUserAssetBalances } from './assets';
 import { getBlockExplorerHostForChain, isNativeAsset } from './chains';
 import { formatNumber } from './formatNumber';
 import { convertStringToHex } from './hex';
+import { convertAmountToRawAmount } from './numbers';
 import { capitalize } from './strings';
 
 /**
@@ -356,7 +357,13 @@ const parseNewTransaction = (
     ...change,
     asset: parseUserAssetBalances({
       asset: change.asset,
-      balance: change.value?.toString() || '0',
+      balance:
+        change.value !== undefined
+          ? convertAmountToRawAmount(
+              change.value.toString(),
+              change.asset.decimals,
+            )
+          : '0',
       currency,
     }),
   }));
