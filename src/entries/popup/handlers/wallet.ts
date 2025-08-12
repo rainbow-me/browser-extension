@@ -122,11 +122,13 @@ export const sendTransaction = async (
         ? undefined
         : toHex(transactionRequest.value),
     nonce: Number(toHex(nonce)),
-    maxFeePerGas: toHex(transactionGasParams.maxFeePerGas),
-    maxPriorityFeePerGas: toHex(transactionGasParams.maxPriorityFeePerGas),
-    gasPrice: toHex(transactionGasParams.gasPrice),
-    from: toHexOrUndefined(transactionRequest.from),
-    data: toHexOrUndefined(transactionRequest.data),
+    maxFeePerGas: toHexOrUndefined(transactionGasParams.maxFeePerGas),
+    maxPriorityFeePerGas: toHexOrUndefined(
+      transactionGasParams.maxPriorityFeePerGas,
+    ),
+    gasPrice: toHexOrUndefined(transactionGasParams.gasPrice),
+    data: transactionRequest.data as Hex | undefined, // dont cast to hex, as it can be '0x'
+    from: transactionRequest.from as Address | undefined, // dont cast to hex, as it's case sensitive
   };
 
   let walletInfo;
