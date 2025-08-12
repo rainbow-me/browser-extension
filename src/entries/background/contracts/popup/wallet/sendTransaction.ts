@@ -20,13 +20,13 @@ const transactionRequestSchema = z.object({
 
 const transactionResponseSchema = z.object({
   hash: hexSchema,
-  to: addressSchema.optional(),
+  to: addressSchema.nullish(),
   from: addressSchema,
   nonce: z.number(),
   gasLimit: hexSchema,
-  gasPrice: hexSchema.optional(),
-  maxFeePerGas: hexSchema.optional(),
-  maxPriorityFeePerGas: hexSchema.optional(),
+  gasPrice: hexSchema.nullish(),
+  maxFeePerGas: hexSchema.nullish(),
+  maxPriorityFeePerGas: hexSchema.nullish(),
   data: hexSchema,
   value: hexSchema,
   chainId: z.number(),
