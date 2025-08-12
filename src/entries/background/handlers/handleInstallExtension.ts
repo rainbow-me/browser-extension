@@ -7,27 +7,25 @@ import { POPUP_URL, WELCOME_URL, goToNewTab } from '~/core/utils/tabs';
  */
 export const handleInstallExtension = () =>
   chrome.runtime.onInstalled.addListener(async (details) => {
-    if (process.env.IS_DEV === 'true') {
-      chrome.contextMenus.create({
-        id: 'open-tab',
-        title: 'Open Extension in a New Tab',
-        type: 'normal',
-        contexts: ['action'],
-      });
+    chrome.contextMenus.create({
+      id: 'open-tab',
+      title: 'Open in New Tab',
+      type: 'normal',
+      contexts: ['action'],
+    });
 
-      chrome.contextMenus.onClicked.addListener((info) => {
-        switch (info.menuItemId) {
-          case 'open-tab':
-            goToNewTab({
-              url: POPUP_URL,
-            });
-        }
-      });
-      // This breaks e2e!!
-    } else if (
-      process.env.IS_TESTING !== 'true' &&
-      details.reason === 'install'
-    ) {
+    chrome.contextMenus.onClicked.addListener((info) => {
+      switch (info.menuItemId) {
+        case 'open-tab':
+          goToNewTab({
+            url: POPUP_URL,
+          });
+          break;
+        default:
+      }
+    });
+    // This breaks e2e!!
+    if (process.env.IS_TESTING !== 'true' && details.reason === 'install') {
       // Only show onboarding on actual install, not on updates or browser restarts
       // wait till the keychain is initialized
       let ready = await isInitialized();
