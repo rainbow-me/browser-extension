@@ -65,6 +65,7 @@ export function FullScreenBackground({
           position: 'relative',
           overflow: 'hidden',
         }}
+        testId="popup-container"
       >
         <TestnetBar testnetMode={testnetMode} />
         <Box style={{ overflow: 'auto ' }}>{children}</Box>

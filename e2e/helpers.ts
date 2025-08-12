@@ -1272,9 +1272,28 @@ export async function captureScreenshot(context: any, slug?: string) {
   const filePath = `screenshots/${finalFileName}.png`;
 
   try {
-    const image = await driver.takeScreenshot();
+    // Try to find and screenshot just the popup-container element
+    let popupContainer: WebElement | null = null;
+    try {
+      popupContainer = await driver.findElement(
+        By.css('[data-testid="popup-container"]'),
+      );
+    } catch {
+      // Element not found, will use full screenshot
+    }
+
+    let image: string;
+    if (popupContainer) {
+      // Screenshot just the popup container element
+      image = await popupContainer.takeScreenshot();
+      console.log(`Popup container screenshot saved: ${finalFileName}.png`);
+    } else {
+      // Fallback to full page screenshot if element not found
+      image = await driver.takeScreenshot();
+      console.log(`Full screenshot saved: ${finalFileName}.png`);
+    }
+
     fs.writeFileSync(filePath, image, 'base64');
-    console.log(`Screenshot saved: ${finalFileName}.png`);
   } catch (error) {
     console.error(`Error capturing screenshot ${finalFileName}:`, error);
   }
