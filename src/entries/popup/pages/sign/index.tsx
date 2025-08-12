@@ -1,5 +1,3 @@
-import { getAddress } from '@ethersproject/address';
-import { Bytes } from '@ethersproject/bytes';
 import { verifyMessage } from '@ethersproject/wallet';
 import {
   MessageTypes,
@@ -8,6 +6,7 @@ import {
   recoverTypedSignature,
 } from '@metamask/eth-sig-util';
 import React, { useCallback, useState } from 'react';
+import { ByteArray, getAddress } from 'viem';
 
 import { useCurrentAddressStore } from '~/core/state';
 import { WalletAction } from '~/core/types/walletActions';
@@ -30,12 +29,12 @@ export function Sign() {
 
   const handleSign = useCallback(async () => {
     if (!address) return;
-    let msgData: string | Bytes = message;
+    let msgData: string | ByteArray = message;
     let action: WalletAction = 'personal_sign';
     let result: string;
     setSigning(true);
     try {
-      msgData = JSON.parse(message) as string | Bytes;
+      msgData = JSON.parse(message) as string | ByteArray;
       action = 'sign_typed_data';
     } catch (e) {
       console.log('not json string, falling back to personal sign');

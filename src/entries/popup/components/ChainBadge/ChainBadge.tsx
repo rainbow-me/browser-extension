@@ -1,4 +1,4 @@
-import { AddressZero } from '@ethersproject/constants';
+import { zeroAddress } from 'viem';
 
 import { customChainIdsToAssetNames } from '~/core/references/assets';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
@@ -101,7 +101,7 @@ const ChainBadge = ({
     >
       {customChainIdsToAssetNames[chainId] ? (
         <ExternalImage
-          src={getCustomChainIconUrl(chainId, AddressZero)}
+          src={getCustomChainIconUrl(chainId, zeroAddress)}
           borderRadius={iconSize}
           boxShadow={boxShadow}
           width={iconSize}

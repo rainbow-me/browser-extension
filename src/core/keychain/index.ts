@@ -30,6 +30,7 @@ import {
 } from '../utils/ethereum';
 import { addHexPrefix } from '../utils/hex';
 
+import { PrivateKey } from './IKeychain';
 import { keychainManager } from './KeychainManager';
 import { SerializedKeypairKeychain } from './keychainTypes/keyPairKeychain';
 
@@ -120,7 +121,7 @@ export const deriveAccountsFromSecret = async (
     case EthereumWalletType.privateKey: {
       accounts = await keychainManager.deriveAccounts({
         type: KeychainType.KeyPairKeychain,
-        privateKey: secret,
+        privateKey: secret as PrivateKey,
       });
       break;
     }
@@ -175,7 +176,7 @@ export const importWallet = async (
     case EthereumWalletType.privateKey: {
       const opts: SerializedKeypairKeychain = {
         type: KeychainType.KeyPairKeychain,
-        privateKey: secret,
+        privateKey: secret as PrivateKey,
       };
       const newAccount = (await keychainManager.deriveAccounts(opts))[0];
 

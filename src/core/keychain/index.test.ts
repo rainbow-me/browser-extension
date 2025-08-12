@@ -1,11 +1,8 @@
-import { getAddress, isAddress } from '@ethersproject/address';
-import { isBytesLike, isHexString } from '@ethersproject/bytes';
 import {
   TransactionReceipt,
   TransactionResponse,
   getDefaultProvider,
 } from '@ethersproject/providers';
-import { parseEther } from '@ethersproject/units';
 import { verifyMessage } from '@ethersproject/wallet';
 import {
   MessageTypes,
@@ -13,6 +10,7 @@ import {
   TypedMessage,
   recoverTypedSignature,
 } from '@metamask/eth-sig-util';
+import { getAddress, isAddress, isHex, parseEther } from 'viem';
 import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test, vi } from 'vitest';
 
@@ -70,7 +68,7 @@ test('[keychain/index] :: should be able to add an account', async () => {
 test('[keychain/index] :: should be able to export a private key for an account', async () => {
   const accounts = await getAccounts();
   privateKey = (await exportAccount(accounts[1], password)) as PrivateKey;
-  expect(isBytesLike(privateKey)).toBe(true);
+  expect(isHex(privateKey)).toBe(true);
 });
 
 test('[keychain/index] :: should be able to remove an account from an HD keychain...', async () => {
@@ -180,7 +178,7 @@ test('[keychain/index] :: should be able to sign personal messages', async () =>
     msgData: msg,
   });
 
-  expect(isHexString(signature)).toBe(true);
+  expect(isHex(signature)).toBe(true);
   const recoveredAddress = verifyMessage(msg, signature);
   expect(getAddress(recoveredAddress)).eq(getAddress(accounts[0]));
 });
@@ -243,7 +241,7 @@ test('[keychain/index] :: should be able to sign typed data messages ', async ()
     address: accounts[0],
     msgData,
   });
-  expect(isHexString(signature)).toBe(true);
+  expect(isHex(signature)).toBe(true);
 
   const recoveredAddress = recoverTypedSignature({
     data: msgData as unknown as TypedMessage<MessageTypes>,
@@ -294,7 +292,7 @@ test('[keychain/index] :: should be able to send transactions', async () => {
     };
   }
 
-  expect(isHexString(result.hash)).toBe(true);
+  expect(isHex(result.hash)).toBe(true);
 
   let txReceipt: TransactionResponse;
   try {

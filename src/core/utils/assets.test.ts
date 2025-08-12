@@ -1,4 +1,4 @@
-import { AddressZero } from '@ethersproject/constants';
+import { zeroAddress } from 'viem';
 import { expect, test } from 'vitest';
 
 import { ETH_ADDRESS } from '../references';
@@ -26,7 +26,7 @@ const ETH_FROM_ZERION = {
   },
   networks: {
     [ChainId.arbitrum]: {
-      address: AddressZero,
+      address: zeroAddress,
       decimals: 18,
     },
     [ChainId.mainnet]: {
@@ -34,7 +34,7 @@ const ETH_FROM_ZERION = {
       decimals: 18,
     },
     [ChainId.optimism]: {
-      address: AddressZero,
+      address: zeroAddress,
       decimals: 18,
     },
   },

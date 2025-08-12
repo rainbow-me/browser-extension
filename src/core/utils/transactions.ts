@@ -1,13 +1,11 @@
 import { BigNumber, FixedNumber } from '@ethersproject/bignumber';
-import { AddressZero } from '@ethersproject/constants';
 import {
   Provider,
   TransactionReceipt,
   TransactionResponse,
 } from '@ethersproject/providers';
-import { formatUnits } from '@ethersproject/units';
 import { isString } from 'lodash';
-import { Address } from 'viem';
+import { Address, formatUnits, zeroAddress } from 'viem';
 
 import RainbowIcon from 'static/images/icon-16@2x.png';
 import { useNetworkStore } from '~/core/state/networks/networks';
@@ -656,7 +654,7 @@ export const getAdditionalDetails = (transaction: RainbowTransaction) => {
   const collection = nft?.symbol;
   const standard = nft?.standard;
   const tokenContract =
-    asset?.address !== ETH_ADDRESS && asset?.address !== AddressZero
+    asset?.address !== ETH_ADDRESS && asset?.address !== zeroAddress
       ? asset?.address
       : undefined;
 

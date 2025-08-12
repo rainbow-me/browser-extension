@@ -1,9 +1,8 @@
 import { Signer } from '@ethersproject/abstract-signer';
-import { Mnemonic } from '@ethersproject/hdnode';
 import { Wallet } from '@ethersproject/wallet';
-import { Address } from 'viem';
+import { Address, Hex } from 'viem';
 
-export type PrivateKey = string;
+export type PrivateKey = Hex;
 
 export type TWallet = Omit<Wallet, 'address' | 'privateKey'> & {
   address: Address;
@@ -19,6 +18,6 @@ export interface IKeychain {
   getAccounts(): Promise<Array<Address>>;
   getSigner(address: Address): Signer;
   exportAccount(address: Address): Promise<PrivateKey>;
-  exportKeychain(address: Address): Promise<Mnemonic['phrase']>;
+  exportKeychain(address: Address): Promise<string>;
   removeAccount(address: Address): Promise<void>;
 }
