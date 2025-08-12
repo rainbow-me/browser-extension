@@ -40,7 +40,7 @@ export const ETH_MAINNET_ASSET = {
 
 export const DAI_MAINNET_ASSET = {
   address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-  balance: { amount: '0', display: '0 DAI' },
+  balance: { amount: '10000', display: '10,000.00 DAI' },
   chainId: 1,
   chainName: ChainName.mainnet,
   colors: { primary: '#808088', fallback: '#E8EAF5' },
@@ -51,7 +51,7 @@ export const DAI_MAINNET_ASSET = {
   mainnetAddress: undefined,
   name: 'DAI',
   native: {
-    balance: { amount: '0', display: '$0' },
+    balance: { amount: '10000', display: '$10,000.00' },
     price: { change: '0.15%', amount: 1634.18, display: '$1,634.18' },
   },
   price: {
@@ -64,7 +64,7 @@ export const DAI_MAINNET_ASSET = {
 
 export const USDC_MAINNET_ASSET = {
   address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-  balance: { amount: '0', display: '0 USDC' },
+  balance: { amount: '10000', display: '10,000.00 USDC' },
   chainId: 1,
   chainName: ChainName.mainnet,
   colors: { primary: '#2775CA' },
@@ -74,7 +74,7 @@ export const USDC_MAINNET_ASSET = {
   mainnetAddress: undefined,
   name: 'USD Coin',
   native: {
-    balance: { amount: '0', display: '$0' },
+    balance: { amount: '10000', display: '$10,000.00' },
     price: {
       amount: 1.000587633346778,
       change: '-1.34%',

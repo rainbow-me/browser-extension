@@ -22,6 +22,23 @@ import {
   USDC_MAINNET_ASSET,
 } from '~/test/utils';
 
+import { TEST_VARIABLES } from '../../../../e2e/walletVariables';
+
+// Test wallet addresses from e2e test variables
+const TEST_WALLET_ADDRESSES = [
+  TEST_VARIABLES.SEED_WALLET.ADDRESS.toLowerCase(),
+  TEST_VARIABLES.SWAPS_WALLET.ADDRESS.toLowerCase(),
+  TEST_VARIABLES.EMPTY_WALLET.ADDRESS.toLowerCase(),
+  TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS.toLowerCase(),
+  TEST_VARIABLES.PRIVATE_KEY_WALLET_2.ADDRESS.toLowerCase(),
+  TEST_VARIABLES.PRIVATE_KEY_WALLET_3.ADDRESS.toLowerCase(),
+  TEST_VARIABLES.SEED_PHRASE_24.ADDRESS.toLowerCase(),
+];
+
+const isTestWallet = (address: Address): boolean => {
+  return TEST_WALLET_ADDRESSES.includes(address.toLowerCase());
+};
+
 type UserAssetsArgs = {
   address?: Address;
   currency: SupportedCurrencyKey;
@@ -98,31 +115,39 @@ export async function parseUserAssets({
       assets[DAI_MAINNET_ASSET.uniqueId] = DAI_MAINNET_ASSET;
     }
 
-    const balanceRequests = Object.values(assets).map(async (asset) => {
-      if (asset.chainId !== mainnetOrOptimismChainId) return asset;
-      const provider = getProvider({ chainId: selectedHardhatChainId });
-      try {
-        const parsedAsset = await fetchAssetBalanceViaProvider({
-          parsedAsset: asset,
-          currentAddress: address,
-          currency,
-          provider,
-        });
-        return parsedAsset;
-      } catch (e) {
-        return asset;
-      }
-    });
+    // Skip fetching balances from provider for test wallets when IS_TESTING is true
+    // Test wallets use stubbed balances for predictable test behavior
+    if (process.env.IS_TESTING === 'true' && isTestWallet(address)) {
+      // Use the mock assets with predictable balances
+      parsedAssetsDict[mainnetOrOptimismChainId] = assets;
+    } else {
+      // Fetch real balances from provider for non-test wallets
+      const balanceRequests = Object.values(assets).map(async (asset) => {
+        if (asset.chainId !== mainnetOrOptimismChainId) return asset;
+        const provider = getProvider({ chainId: selectedHardhatChainId });
+        try {
+          const parsedAsset = await fetchAssetBalanceViaProvider({
+            parsedAsset: asset,
+            currentAddress: address,
+            currency,
+            provider,
+          });
+          return parsedAsset;
+        } catch (e) {
+          return asset;
+        }
+      });
 
-    const newParsedAssetsByUniqueId = await Promise.all(balanceRequests);
-    const newAssets = newParsedAssetsByUniqueId.reduce<
-      Record<string, ParsedUserAsset>
-    >((acc, parsedAsset) => {
-      acc[parsedAsset.uniqueId] = parsedAsset;
-      return acc;
-    }, {});
-    // eslint-disable-next-line require-atomic-updates
-    parsedAssetsDict[mainnetOrOptimismChainId] = newAssets;
+      const newParsedAssetsByUniqueId = await Promise.all(balanceRequests);
+      const newAssets = newParsedAssetsByUniqueId.reduce<
+        Record<string, ParsedUserAsset>
+      >((acc, parsedAsset) => {
+        acc[parsedAsset.uniqueId] = parsedAsset;
+        return acc;
+      }, {});
+      // eslint-disable-next-line require-atomic-updates
+      parsedAssetsDict[mainnetOrOptimismChainId] = newAssets;
+    }
   }
   return parsedAssetsDict;
 }
