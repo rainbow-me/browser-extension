@@ -31,13 +31,20 @@ export const convertStringToHex = (
   if (typeof stringToConvert === 'bigint') {
     return stringToConvert.toString(16);
   }
-  if (EthersBigNumber.isBigNumber(stringToConvert)) {
+  if (
+    EthersBigNumber.isBigNumber(stringToConvert) &&
+    'toHexString' in stringToConvert // make sure to only match EthersBigNumber
+  ) {
     return stringToConvert.toHexString();
   }
   if (isBytes(stringToConvert)) {
     return EthersBigNumber.from(stringToConvert).toHexString();
   }
-  return new BigNumber(stringToConvert).toString(16);
+  const bn = new BigNumber(stringToConvert);
+  if (bn.isNaN()) {
+    throw new Error(`Invalid BigNumberish ${stringToConvert}`);
+  }
+  return bn.toString(16);
 };
 
 export const toHex = (
@@ -45,13 +52,13 @@ export const toHex = (
 ): `0x${string}` => addHexPrefix(convertStringToHex(stringToConvert));
 
 export const toHexOrUndefined = <
-  T extends BigNumberish | bigint | EthersBigNumber | Bytes | undefined,
+  T extends BigNumberish | bigint | EthersBigNumber | Bytes | undefined | null,
 >(
   stringToConvert: T,
-): T extends undefined ? undefined : `0x${string}` => {
-  if (stringToConvert === undefined)
-    return undefined as T extends undefined ? undefined : `0x${string}`;
-  return toHex(stringToConvert) as T extends undefined
+): T extends undefined | null ? undefined : `0x${string}` => {
+  if (stringToConvert === undefined || stringToConvert === null)
+    return undefined as T extends undefined | null ? undefined : `0x${string}`;
+  return toHex(stringToConvert) as T extends undefined | null
     ? undefined
     : `0x${string}`;
 };
