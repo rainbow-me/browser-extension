@@ -1,3 +1,5 @@
+import { ORPCError } from '@orpc/client';
+
 import { sendTransaction } from '~/core/keychain';
 import { toHex, toHexOrUndefined } from '~/core/utils/hex';
 import { getProvider } from '~/core/wagmi/clientToProvider';
@@ -9,7 +11,14 @@ export const sendTransactionHandler = popupOs.wallet.sendTransaction.handler(
     const provider = getProvider({
       chainId: transactionRequest.chainId,
     });
-    const response = await sendTransaction(transactionRequest, provider);
+    const response = await sendTransaction(transactionRequest, provider).catch(
+      (e) => {
+        throw new ORPCError('SEND_TRANSACTION_FAILED', {
+          message: 'Sending the transaction failed',
+          data: { cause: e },
+        });
+      },
+    );
 
     // Transform BigNumber properties to strings to match schema
     return {
