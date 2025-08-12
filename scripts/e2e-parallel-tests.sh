@@ -1,24 +1,8 @@
 #!/bin/bash
-RETRY_COUNT=0
 
-# Function to run tests
-run_tests() {
-  echo "Running Tests..."
-  yarn vitest e2e/parallel/$1 --config ./e2e/parallel/vitest.config.ts --reporter=verbose --bail 1
-}
+# Source the common test runner
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/test-runner-common.sh"
 
-# Main loop for retry logic
-TEST_RESULT=1
-while [ $RETRY_COUNT -lt ${MAX_RETRIES:-1} ] && [ $TEST_RESULT -ne 0 ]; do
-  if [ $RETRY_COUNT -gt 0 ]; then
-    echo "Test failed, attempting retry $RETRY_COUNT..."
-  fi
-  
-  run_tests $1
-  TEST_RESULT=$?
-
-  RETRY_COUNT=$((RETRY_COUNT+1))
-done
-
-# Return the result of the tests
-exit $TEST_RESULT
+# Run parallel tests without Anvil
+run_tests_with_retry "e2e/parallel/$1" "./e2e/parallel/vitest.config.ts" "false"
