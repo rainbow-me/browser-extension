@@ -162,18 +162,21 @@ export const sendTransaction = async (
       wait: async () => {
         throw new Error('Not implemented');
       },
+      to: transaction.to ?? undefined,
       gasLimit: BigNumber.from(transaction.gasLimit),
       value: BigNumber.from(transaction.value),
       gasPrice:
-        transaction.gasPrice !== undefined
+        transaction.gasPrice !== undefined && transaction.gasPrice !== null
           ? BigNumber.from(transaction.gasPrice)
           : undefined,
       maxFeePerGas:
-        transaction.maxFeePerGas !== undefined
+        transaction.maxFeePerGas !== undefined &&
+        transaction.maxFeePerGas !== null
           ? BigNumber.from(transaction.maxFeePerGas)
           : undefined,
       maxPriorityFeePerGas:
-        transaction.maxPriorityFeePerGas !== undefined
+        transaction.maxPriorityFeePerGas !== undefined &&
+        transaction.maxPriorityFeePerGas !== null
           ? BigNumber.from(transaction.maxPriorityFeePerGas)
           : undefined,
     };
