@@ -7,7 +7,7 @@ const { writeFile } = require('fs/promises');
 const { createClient, http, sha256 } = require('viem');
 const { getBlockNumber } = require('viem/actions');
 
-const urls = require('./mocks/mock_swap_quotes_urls.json');
+const urls = require('./swap_quotes_urls.json');
 const FETCH_TIMEOUT = 5000; // 5 seconds
 
 const fetchWithTimeout = (
@@ -42,7 +42,7 @@ const fetchWithTimeout = (
     const hash = sha256(url);
     try {
       const res = await fetchWithTimeout(url, FETCH_TIMEOUT);
-      await writeFile(`e2e/mocks/swap_quotes/${hash}.json`, res);
+      await writeFile(`e2e/mocks/swap/quotes/${hash}.json`, res);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error(`Error fetching ${url}:`, error.message);
@@ -50,7 +50,7 @@ const fetchWithTimeout = (
         error: true,
         message: error.message,
       });
-      await writeFile(`e2e/mocks/swap_quotes/${hash}.json`, errorMessage);
+      await writeFile(`e2e/mocks/swap/quotes/${hash}.json`, errorMessage);
     }
   });
 
