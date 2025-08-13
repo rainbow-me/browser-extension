@@ -3,7 +3,6 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-promise-executor-return */
 /* eslint-disable @typescript-eslint/no-var-requires */
-import * as fs from 'node:fs';
 
 import { Contract } from '@ethersproject/contracts';
 import { getDefaultProvider } from '@ethersproject/providers';
@@ -1200,114 +1199,6 @@ export async function delayTime(
       return await delay(1000);
     case 'very-long':
       return await delay(5000);
-  }
-}
-
-// Helper to get the test file name from stack trace
-function getTestFileFromStack(): string {
-  const stack = new Error().stack || '';
-  const stackLines = stack.split('\n');
-
-  // Find the test file in the stack (looking for .test.ts files)
-  for (const line of stackLines) {
-    const match = line.match(/\/(parallel|serial)\/(.+?)\.test\.ts/);
-    if (match) {
-      // Extract directory and filename: e.g., "send/1_sendFlow" from "serial/send/1_sendFlow.test.ts"
-      const pathParts = match[2].split('/');
-      if (pathParts.length > 1) {
-        // Multi-level path like "send/1_sendFlow"
-        return pathParts.join('-');
-      } else {
-        // Single file like "newWalletFlow"
-        return pathParts[0];
-      }
-    }
-  }
-  return 'test';
-}
-
-// Screenshot function for Percy and debugging
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function captureScreenshot(context: any, slug?: string) {
-  const driver = context.driver as WebDriver;
-  const testName = context.task?.name || 'unknown';
-
-  // Only capture screenshots when on popup.html
-  const currentUrl = await driver.getCurrentUrl();
-  if (!currentUrl.includes('/popup.html')) {
-    return;
-  }
-
-  // Wait for animations to complete before capturing
-  await delayTime('medium');
-
-  if (!fs.existsSync('screenshots')) {
-    fs.mkdirSync('screenshots');
-  }
-
-  const testFile = getTestFileFromStack();
-  const suiteName = testFile || 'test';
-
-  // Normalize names for Percy - remove special characters and spaces
-  const normalizedSuite = suiteName
-    .replace(/[^a-zA-Z0-9-_]/g, '_')
-    .replace(/_+/g, '_')
-    .toLowerCase();
-
-  let fileName: string;
-
-  if (slug) {
-    // If suffix provided, use it for element-specific screenshots
-    const normalizedSuffix = slug
-      .replace(/[^a-zA-Z0-9-_]/g, '_')
-      .replace(/_+/g, '_')
-      .toLowerCase();
-    fileName = `${normalizedSuite}-element_${normalizedSuffix}`;
-  } else {
-    // Otherwise use the test name
-    const normalizedTest = testName
-      .replace(/[^a-zA-Z0-9-_]/g, '_')
-      .replace(/_+/g, '_')
-      .toLowerCase();
-    fileName = `${normalizedSuite}-${normalizedTest}`;
-  }
-
-  // Handle duplicate filenames
-  let finalFileName = fileName;
-  let counter = 0;
-  while (fs.existsSync(`screenshots/${finalFileName}.png`)) {
-    counter++;
-    finalFileName = `${fileName}_${counter}`;
-    if (counter > 10) break;
-  }
-
-  const filePath = `screenshots/${finalFileName}.png`;
-
-  try {
-    // Try to find and screenshot just the extension viewport element
-    let popupContainer: WebElement | null = null;
-    try {
-      popupContainer = await driver.findElement(
-        By.css('[data-viewport="extension-viewport"]'),
-      );
-    } catch {
-      // Element not found, will use full screenshot
-    }
-
-    let image: string;
-    if (popupContainer) {
-      // Screenshot just the popup container element
-      image = await popupContainer.takeScreenshot();
-      console.log(`Popup container screenshot saved: ${finalFileName}.png`);
-    } else {
-      // Fallback to full page screenshot if element not found
-      image = await driver.takeScreenshot();
-      console.log(`Full screenshot saved: ${finalFileName}.png`);
-    }
-
-    fs.writeFileSync(filePath, image, 'base64');
-  } catch (error) {
-    console.error(`Error capturing screenshot ${finalFileName}:`, error);
   }
 }
 
