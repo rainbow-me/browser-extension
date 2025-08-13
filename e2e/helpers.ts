@@ -119,8 +119,6 @@ export async function initDriverWithOptions(opts: {
     '--disable-extensions-except=build/',
     '--disable-popup-blocking',
     '--remote-debugging-port=9222',
-    '--force-device-scale-factor=2',
-    '--high-dpi-support=1',
   ];
 
   if (opts.browser === 'firefox') {
@@ -130,7 +128,6 @@ export async function initDriverWithOptions(opts: {
       .addArguments(...args.slice(1))
       .setPreference('xpinstall.signatures.required', false)
       .setPreference('extensions.langpacks.signatures.required', false)
-      .setPreference('layout.css.devPixelsPerPx', '2')
       .addExtensions('rainbowbx.xpi');
 
     const service = new firefox.ServiceBuilder().setStdio('inherit');
