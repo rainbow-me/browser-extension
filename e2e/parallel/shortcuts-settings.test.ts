@@ -1,5 +1,4 @@
-import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import {
   checkExtensionURL,
@@ -8,37 +7,22 @@ import {
   executePerformShortcut,
   findElementByTestId,
   findElementByText,
-  getExtensionIdByName,
-  getRootUrl,
   importWalletFlowUsingKeyboardNavigation,
-  initDriverWithOptions,
   isElementFoundByText,
   toggleStatus,
   typeOnTextInput,
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
 
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
 const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
 
 describe.runIf(browser !== 'firefox')(
   'navigate through settings flows with shortcuts',
   () => {
-    beforeAll(async () => {
-      driver = await initDriverWithOptions({
-        browser,
-        os,
-      });
-      const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-      if (!extensionId) throw new Error('Extension not found');
-      rootURL += extensionId;
-    });
-    afterAll(async () => driver?.quit());
-
-    it('should be able import a wallet via seed', async () => {
+    it('should be able import a wallet via seed', async ({
+      driver,
+      rootURL,
+    }) => {
       await importWalletFlowUsingKeyboardNavigation(
         driver,
         rootURL,
@@ -46,7 +30,7 @@ describe.runIf(browser !== 'firefox')(
       );
     });
 
-    it('should display account name', async () => {
+    it('should display account name', async ({ driver, rootURL }) => {
       await checkWalletName(
         driver,
         rootURL,
@@ -55,19 +39,23 @@ describe.runIf(browser !== 'firefox')(
     });
 
     // shortcut tests begin
-    it('should be able to navigate to settings via shortcuts', async () => {
+    it('should be able to navigate to settings via shortcuts', async ({
+      driver,
+    }) => {
       await executePerformShortcut({ driver, key: 'DECIMAL' });
       await executePerformShortcut({ driver, key: 'ARROW_DOWN' });
       await executePerformShortcut({ driver, key: 'ENTER' });
       await checkExtensionURL(driver, 'settings');
     });
 
-    it('should be able to navigate back home with esc', async () => {
+    it('should be able to navigate back home with esc', async ({ driver }) => {
       await executePerformShortcut({ driver, key: 'ESCAPE' });
       await delayTime('medium');
     });
 
-    it('should be able to navigate back home with arrow left', async () => {
+    it('should be able to navigate back home with arrow left', async ({
+      driver,
+    }) => {
       await executePerformShortcut({ driver, key: 'DECIMAL' });
       await executePerformShortcut({ driver, key: 'ARROW_DOWN' });
       await executePerformShortcut({ driver, key: 'ENTER' });
@@ -76,7 +64,9 @@ describe.runIf(browser !== 'firefox')(
       await delayTime('medium');
     });
 
-    it('should be able to navigate to settings via keyboard', async () => {
+    it('should be able to navigate to settings via keyboard', async ({
+      driver,
+    }) => {
       await executePerformShortcut({ driver, key: 'TAB', timesToPress: 3 });
       await executePerformShortcut({ driver, key: 'ENTER' });
       await executePerformShortcut({ driver, key: 'TAB' });
@@ -84,7 +74,9 @@ describe.runIf(browser !== 'firefox')(
       await checkExtensionURL(driver, 'settings');
     });
 
-    it('should be able to toggle Set Rainbow As Default Wallet via keyboard', async () => {
+    it('should be able to toggle Set Rainbow As Default Wallet via keyboard', async ({
+      driver,
+    }) => {
       await delayTime('medium');
       const defaultToggleStatus = await toggleStatus(
         'set-rainbow-default-toggle',
@@ -101,7 +93,9 @@ describe.runIf(browser !== 'firefox')(
       expect(changedToggleStatus).toBe('false');
     });
 
-    it('should be able to navigate to Networks using keyboard', async () => {
+    it('should be able to navigate to Networks using keyboard', async ({
+      driver,
+    }) => {
       await delayTime('medium');
       await executePerformShortcut({ driver, key: 'TAB', timesToPress: 2 });
       await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
@@ -109,14 +103,18 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
     });
 
-    it('should be able to navigate to Privacy & Security using keyboard', async () => {
+    it('should be able to navigate to Privacy & Security using keyboard', async ({
+      driver,
+    }) => {
       await delayTime('medium');
       await executePerformShortcut({ driver, key: 'TAB', timesToPress: 7 });
       await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
       await checkExtensionURL(driver, 'privacy');
     });
 
-    it('should be able to toggle analytics with keyboard', async () => {
+    it('should be able to toggle analytics with keyboard', async ({
+      driver,
+    }) => {
       await delayTime('medium');
       if (browser === 'firefox') {
         const defaultToggleStatus = await toggleStatus(
@@ -149,7 +147,9 @@ describe.runIf(browser !== 'firefox')(
       }
     });
 
-    it('should be able to toggle hide asset balances with keyboard', async () => {
+    it('should be able to toggle hide asset balances with keyboard', async ({
+      driver,
+    }) => {
       await delayTime('medium');
       const defaultToggleStatus = await toggleStatus(
         'hide-assets-toggle',
@@ -165,7 +165,9 @@ describe.runIf(browser !== 'firefox')(
       expect(changedToggleStatus).toBe('true');
     });
 
-    it('should be able to validate that balances are hidden', async () => {
+    it('should be able to validate that balances are hidden', async ({
+      driver,
+    }) => {
       await executePerformShortcut({
         driver,
         key: 'ARROW_LEFT',
@@ -183,7 +185,9 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({ driver, key: 'ENTER' });
     });
 
-    it('should be able to navigate back to Privacy & Security using keyboard ', async () => {
+    it('should be able to navigate back to Privacy & Security using keyboard ', async ({
+      driver,
+    }) => {
       await executePerformShortcut({ driver, key: 'DECIMAL' });
       await executePerformShortcut({ driver, key: 'ARROW_DOWN' });
       await executePerformShortcut({ driver, key: 'ENTER' });
@@ -192,7 +196,9 @@ describe.runIf(browser !== 'firefox')(
       await checkExtensionURL(driver, 'privacy');
     });
 
-    it('should be able to toggle auto hide small balances with keyboard', async () => {
+    it('should be able to toggle auto hide small balances with keyboard', async ({
+      driver,
+    }) => {
       await delayTime('medium');
       await driver.sleep(10000);
       const defaultToggleStatus = await toggleStatus(
@@ -209,7 +215,9 @@ describe.runIf(browser !== 'firefox')(
       expect(changedToggleStatus).toBe('true');
     });
 
-    it('should be able to change password using only the keyboard', async () => {
+    it('should be able to change password using only the keyboard', async ({
+      driver,
+    }) => {
       await executePerformShortcut({ driver, key: 'TAB' });
       await executePerformShortcut({ driver, key: 'ENTER' });
       await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
@@ -229,13 +237,15 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({ driver, key: 'ENTER' });
     });
 
-    it('should be able to navigate to auto-lock options', async () => {
+    it('should be able to navigate to auto-lock options', async ({
+      driver,
+    }) => {
       await executePerformShortcut({ driver, key: 'TAB', timesToPress: 6 });
       await executePerformShortcut({ driver, key: 'ENTER' });
       await checkExtensionURL(driver, 'autolock');
     });
 
-    it('should be able to change auto-lock option', async () => {
+    it('should be able to change auto-lock option', async ({ driver }) => {
       await executePerformShortcut({ driver, key: 'TAB', timesToPress: 5 });
       await executePerformShortcut({ driver, key: 'ENTER' });
       await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
@@ -246,7 +256,9 @@ describe.runIf(browser !== 'firefox')(
       expect(await chosenAutoLockTime.getText()).toContain('10 minutes');
     });
 
-    it('should be able to navigate to Wallets & Keys with the keyboard', async () => {
+    it('should be able to navigate to Wallets & Keys with the keyboard', async ({
+      driver,
+    }) => {
       await executePerformShortcut({
         driver,
         key: 'ESCAPE',
@@ -260,7 +272,9 @@ describe.runIf(browser !== 'firefox')(
       await checkExtensionURL(driver, 'wallets-and-keys');
     });
 
-    it('should be able to navigate to Wallet Details with the keyboard', async () => {
+    it('should be able to navigate to Wallet Details with the keyboard', async ({
+      driver,
+    }) => {
       await executePerformShortcut({
         driver,
         key: 'ARROW_DOWN',
@@ -270,7 +284,9 @@ describe.runIf(browser !== 'firefox')(
       await checkExtensionURL(driver, 'wallet-details');
     });
 
-    it('should be able to open the wallet context menu and close it with the keyboard', async () => {
+    it('should be able to open the wallet context menu and close it with the keyboard', async ({
+      driver,
+    }) => {
       await executePerformShortcut({
         driver,
         key: 'ARROW_DOWN',
@@ -290,7 +306,9 @@ describe.runIf(browser !== 'firefox')(
       expect(newContextMenuOption).toBe(false);
     });
 
-    it('should be able to navigate back to settings page', async () => {
+    it('should be able to navigate back to settings page', async ({
+      driver,
+    }) => {
       await executePerformShortcut({
         driver,
         key: 'ARROW_LEFT',
@@ -299,7 +317,9 @@ describe.runIf(browser !== 'firefox')(
       await checkExtensionURL(driver, 'settings');
     });
 
-    it('should be able to navigate to transaction options', async () => {
+    it('should be able to navigate to transaction options', async ({
+      driver,
+    }) => {
       await executePerformShortcut({
         driver,
         key: 'ARROW_DOWN',
@@ -309,7 +329,7 @@ describe.runIf(browser !== 'firefox')(
       await checkExtensionURL(driver, 'transactions');
     });
 
-    it('should be able to change default txn speed', async () => {
+    it('should be able to change default txn speed', async ({ driver }) => {
       await executePerformShortcut({
         driver,
         key: 'TAB',
@@ -326,7 +346,7 @@ describe.runIf(browser !== 'firefox')(
       expect(fastGasLabel).toBe(true);
     });
 
-    it('should be able navigate to currencies', async () => {
+    it('should be able navigate to currencies', async ({ driver }) => {
       await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
       await executePerformShortcut({
         driver,
@@ -337,7 +357,7 @@ describe.runIf(browser !== 'firefox')(
       await checkExtensionURL(driver, 'currency');
     });
 
-    it('should be able navigate to select new currency', async () => {
+    it('should be able navigate to select new currency', async ({ driver }) => {
       await executePerformShortcut({
         driver,
         key: 'TAB',
@@ -352,7 +372,7 @@ describe.runIf(browser !== 'firefox')(
       expect(await currencyTextContent.getText()).toContain('Ethereum');
     });
 
-    it('should be able navigate to languages', async () => {
+    it('should be able navigate to languages', async ({ driver }) => {
       await executePerformShortcut({
         driver,
         key: 'TAB',
@@ -362,7 +382,9 @@ describe.runIf(browser !== 'firefox')(
       await checkExtensionURL(driver, 'language');
     });
 
-    it('should be able navigate to switch to spanish and back to english', async () => {
+    it('should be able navigate to switch to spanish and back to english', async ({
+      driver,
+    }) => {
       await executePerformShortcut({
         driver,
         key: 'TAB',
@@ -387,7 +409,9 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({ driver, key: 'ENTER' });
     });
 
-    it('should be able navigate to switch theme and open context menu', async () => {
+    it('should be able navigate to switch theme and open context menu', async ({
+      driver,
+    }) => {
       await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
       await executePerformShortcut({
         driver,
@@ -402,7 +426,7 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({ driver, key: 'ENTER' });
     });
 
-    it('should be able to switch theme to light', async () => {
+    it('should be able to switch theme to light', async ({ driver }) => {
       await executePerformShortcut({ driver, key: 'ARROW_UP' });
       await executePerformShortcut({ driver, key: 'ENTER' });
       const chosenThemeOption = await findElementByText(driver, 'Light');

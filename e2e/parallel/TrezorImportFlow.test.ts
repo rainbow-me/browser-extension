@@ -1,47 +1,33 @@
-import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import {
   checkWalletName,
   findElementByIdAndClick,
   findElementByTestIdAndClick,
   findElementByText,
-  getExtensionIdByName,
-  getRootUrl,
   importHardwareWalletFlow,
-  initDriverWithOptions,
 } from '../helpers';
 import { HARDWARE_WALLETS } from '../walletVariables';
 
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
 const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
 
 describe.runIf(browser !== 'firefox')(
   'Import wallet with a Trezor hw wallet',
   () => {
-    beforeAll(async () => {
-      driver = await initDriverWithOptions({
-        browser,
-        os,
-      });
-      const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-      if (!extensionId) throw new Error('Extension not found');
-      rootURL += extensionId;
-    });
-    afterAll(async () => driver?.quit());
-
-    it('should be able import a wallet via hw wallet', async () => {
+    it('should be able import a wallet via hw wallet', async ({
+      driver,
+      rootURL,
+    }) => {
       await importHardwareWalletFlow(driver, rootURL, 'trezor');
     });
 
-    it('should display account 0 name', async () => {
+    it('should display account 0 name', async ({ driver, rootURL }) => {
       await checkWalletName(driver, rootURL, HARDWARE_WALLETS.WALLET_1);
     });
 
-    it('should display hw label on wallet switcher screen', async () => {
+    it('should display hw label on wallet switcher screen', async ({
+      driver,
+    }) => {
       await findElementByIdAndClick({
         id: 'header-account-name-shuffle',
         driver,
@@ -50,7 +36,7 @@ describe.runIf(browser !== 'firefox')(
       expect(hwLabel).toBeTruthy();
     });
 
-    it('should display account 1 name', async () => {
+    it('should display account 1 name', async ({ driver, rootURL }) => {
       await findElementByTestIdAndClick({
         id: 'wallet-account-2',
         driver,

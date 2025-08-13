@@ -3,7 +3,6 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-promise-executor-return */
 /* eslint-disable @typescript-eslint/no-var-requires */
-import * as fs from 'node:fs';
 
 import { Contract } from '@ethersproject/contracts';
 import { getDefaultProvider } from '@ethersproject/providers';
@@ -22,6 +21,8 @@ import { erc20Abi } from 'viem';
 import { expect } from 'vitest';
 
 import { RAINBOW_TEST_DAPP } from '~/core/references/links';
+
+import { captureSnapshot } from './util/snapshot';
 
 const browser = process.env.BROWSER || 'chrome';
 const isFirefox = browser === 'firefox';
@@ -120,6 +121,8 @@ export async function initDriverWithOptions(opts: {
     '--disable-extensions-except=build/',
     '--disable-popup-blocking',
     '--remote-debugging-port=9222',
+    '--force-device-scale-factor=2',
+    '--high-dpi-support=1',
   ];
 
   if (opts.browser === 'firefox') {
@@ -170,6 +173,7 @@ export async function initDriverWithOptions(opts: {
       .setChromeService(service)
       .build();
   }
+
   // @ts-ignore
   driver.browser = opts.browser;
   return driver;
@@ -446,12 +450,18 @@ export async function findElementByIdAndClick({
   const element = await findElementById({ id, driver });
   await waitAndClick(element, driver);
 }
+
 export async function waitAndClick(element: WebElement, driver: WebDriver) {
   try {
     await driver.wait(untilDocumentLoaded(), waitUntilTime);
     await delayTime('short');
     await driver.wait(until.elementIsVisible(element), waitUntilTime);
     await driver.wait(until.elementIsEnabled(element), waitUntilTime);
+
+    // capture snapshot before clicking
+    const testId = await element.getAttribute('data-testid');
+    await captureSnapshot({ driver }, testId);
+
     return element.click();
   } catch (error) {
     const testId = await element.getAttribute('data-testid');
@@ -1197,37 +1207,6 @@ export async function delayTime(
     case 'very-long':
       return await delay(5000);
   }
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function takeScreenshotOnFailure(context: any) {
-  context.onTestFailed(async () => {
-    if (!fs.existsSync('screenshots')) {
-      fs.mkdirSync('screenshots');
-      console.log(`Folder screenshots created.`);
-    }
-    const normalizedFilePath = context.task.name
-      .replace(/'/g, '')
-      .replace(/"/g, '')
-      .replace(/=/g, '')
-      .replace(/\//g, '_')
-      .replace(/:/g, '_')
-      .replace(/ /g, '_');
-    let fileName = `${normalizedFilePath}_failure`;
-    let counter = 0;
-    while (fs.existsSync(`screenshots/${fileName}.png`)) {
-      counter++;
-      fileName = `${fileName}_${counter}`;
-      if (counter > 10) break;
-    }
-    console.log(`Screenshot of the failed test will be saved to: ${fileName}`);
-    try {
-      const image = await context.driver.takeScreenshot();
-      fs.writeFileSync(`screenshots/${fileName}.png`, image, 'base64');
-    } catch (error) {
-      console.error('Error occurred while taking screenshot:', error);
-    }
-  });
 }
 
 export async function performSearchTokenAddressActionsCmdK({

@@ -968,12 +968,7 @@
     },
     "eslint>chalk>ansi-styles": {
       "packages": {
-        "eslint>chalk>ansi-styles>color-convert": true
-      }
-    },
-    "eslint>chalk>ansi-styles>color-convert": {
-      "packages": {
-        "eslint>chalk>ansi-styles>color-convert>color-name": true
+        "sharp>color>color-convert": true
       }
     },
     "eslint>chalk>supports-color": {
@@ -1492,6 +1487,11 @@
     "semver>lru-cache": {
       "packages": {
         "semver>lru-cache>yallist": true
+      }
+    },
+    "sharp>color>color-convert": {
+      "packages": {
+        "sharp>color>color-string>color-name": true
       }
     },
     "ts-loader": {

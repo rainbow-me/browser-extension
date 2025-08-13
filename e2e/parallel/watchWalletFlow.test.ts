@@ -1,5 +1,4 @@
-import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import {
   delayTime,
@@ -9,12 +8,9 @@ import {
   findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
-  getExtensionIdByName,
-  getRootUrl,
   getTextFromText,
   goToPopup,
   goToWelcome,
-  initDriverWithOptions,
   querySelector,
   shortenAddress,
   switchWallet,
@@ -23,27 +19,9 @@ import {
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
 
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
-const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
-
 describe('Watch wallet then add more and switch between them', () => {
-  beforeAll(async () => {
-    driver = await initDriverWithOptions({
-      browser,
-      os,
-    });
-    const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-    if (!extensionId) throw new Error('Extension not found');
-    rootURL += extensionId;
-  });
-
-  afterAll(async () => driver?.quit());
-
   // Watch a wallet
-  it('should be able watch a wallet', async () => {
+  it('should be able watch a wallet', async ({ driver, rootURL }) => {
     //  Start from welcome screen
     await goToWelcome(driver, rootURL);
     await findElementByTestIdAndClick({ id: 'import-wallet-button', driver });
@@ -80,7 +58,7 @@ describe('Watch wallet then add more and switch between them', () => {
     await findElementByText(driver, 'Rainbow is ready to use');
   });
 
-  it('should display watched account name', async () => {
+  it('should display watched account name', async ({ driver, rootURL }) => {
     await goToPopup(driver, rootURL);
     const label = await querySelector(
       driver,
@@ -95,7 +73,10 @@ describe('Watch wallet then add more and switch between them', () => {
     expect(expected.includes(actual)).toEqual(true);
   });
 
-  it('should be able to add a new wallet via seed', async () => {
+  it('should be able to add a new wallet via seed', async ({
+    driver,
+    rootURL,
+  }) => {
     await goToPopup(driver, rootURL, '#/home');
     await findElementByIdAndClick({
       id: 'header-account-name-shuffle',
@@ -129,7 +110,10 @@ describe('Watch wallet then add more and switch between them', () => {
     expect(account).toBe(shortenAddress(TEST_VARIABLES.EMPTY_WALLET.ADDRESS));
   });
 
-  it('should be able to add a new wallet via watch', async () => {
+  it('should be able to add a new wallet via watch', async ({
+    driver,
+    rootURL,
+  }) => {
     await goToPopup(driver, rootURL, '#/home');
     await findElementByIdAndClick({
       id: 'header-account-name-shuffle',
@@ -168,7 +152,10 @@ describe('Watch wallet then add more and switch between them', () => {
     expect(expected.includes(actual)).toEqual(true);
   });
 
-  it('should be able to add a new wallet via pk', async () => {
+  it('should be able to add a new wallet via pk', async ({
+    driver,
+    rootURL,
+  }) => {
     await goToPopup(driver, rootURL, '#/home');
     await findElementByIdAndClick({
       id: 'header-account-name-shuffle',
@@ -193,14 +180,17 @@ describe('Watch wallet then add more and switch between them', () => {
     });
   });
 
-  it('should display pk account name', async () => {
+  it('should display pk account name', async ({ driver }) => {
     const account = await getTextFromText({ id: 'account-name', driver });
     expect(account).toBe(
       shortenAddress(TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS),
     );
   });
 
-  it('should be able to switch to the watched wallet', async () => {
+  it('should be able to switch to the watched wallet', async ({
+    driver,
+    rootURL,
+  }) => {
     await delayTime('medium');
     await switchWallet(
       TEST_VARIABLES.WATCHED_WALLET.PRIMARY_ADDRESS,
@@ -221,7 +211,10 @@ describe('Watch wallet then add more and switch between them', () => {
     expect(expected.includes(actual)).toEqual(true);
   });
 
-  it('should be able to switch to the pk wallet', async () => {
+  it('should be able to switch to the pk wallet', async ({
+    driver,
+    rootURL,
+  }) => {
     await delayTime('medium');
     await switchWallet(
       TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS,
@@ -235,14 +228,20 @@ describe('Watch wallet then add more and switch between them', () => {
     );
   });
 
-  it('should be able to switch to the seed wallet', async () => {
+  it('should be able to switch to the seed wallet', async ({
+    driver,
+    rootURL,
+  }) => {
     await delayTime('medium');
     await switchWallet(TEST_VARIABLES.EMPTY_WALLET.ADDRESS, rootURL, driver);
     const wallet = await getTextFromText({ id: 'account-name', driver });
     expect(wallet).toBe(shortenAddress(TEST_VARIABLES.EMPTY_WALLET.ADDRESS));
   });
 
-  it('should be able to switch to the second watched wallet', async () => {
+  it('should be able to switch to the second watched wallet', async ({
+    driver,
+    rootURL,
+  }) => {
     await delayTime('medium');
     await switchWallet(
       TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS,

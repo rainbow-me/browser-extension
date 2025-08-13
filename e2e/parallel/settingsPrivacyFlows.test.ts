@@ -1,6 +1,5 @@
 /* eslint-disable no-await-in-loop */
-import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import {
   delayTime,
@@ -8,12 +7,9 @@ import {
   findElementByTestIdAndClick,
   findElementByText,
   findElementByTextAndClick,
-  getExtensionIdByName,
   getNumberOfWallets,
-  getRootUrl,
   goToPopup,
   importWalletFlow,
-  initDriverWithOptions,
   navigateToSettings,
   passSecretQuiz,
   querySelector,
@@ -21,29 +17,12 @@ import {
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
 
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
-const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
-
 describe('Navigate Settings & Privacy and its flows', () => {
-  beforeAll(async () => {
-    driver = await initDriverWithOptions({
-      browser,
-      os,
-    });
-    const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-    if (!extensionId) throw new Error('Extension not found');
-    rootURL += extensionId;
-  });
-  afterAll(async () => await driver?.quit());
-
-  it('should be able import a wallet via seed', async () => {
+  it('should be able import a wallet via seed', async ({ driver, rootURL }) => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);
   });
 
-  it('should be able to reveal secret', async () => {
+  it('should be able to reveal secret', async ({ driver, rootURL }) => {
     await navigateToSettings(driver, rootURL);
 
     await findElementByTestIdAndClick({ id: 'wallets-and-keys', driver });
@@ -80,7 +59,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
     expect(walletsKeysText).toBeTruthy();
   });
 
-  it('should be able to reveal pkey', async () => {
+  it('should be able to reveal pkey', async ({ driver, rootURL }) => {
     await navigateToSettings(driver, rootURL);
 
     await findElementByTestIdAndClick({ id: 'wallets-and-keys', driver });
@@ -106,7 +85,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
     expect(walletsKeysText).toBeTruthy();
   });
 
-  it('should be able to rename a wallet', async () => {
+  it('should be able to rename a wallet', async ({ driver, rootURL }) => {
     await navigateToSettings(driver, rootURL);
     await findElementByTestIdAndClick({ id: 'wallets-and-keys', driver });
     await findElementByTestIdAndClick({ id: 'wallet-group-1', driver });
@@ -129,7 +108,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
     expect(TEST_VARIABLES.SEED_WALLET.ADDRESS).toBeTruthy();
   });
 
-  it('should be able to copy an address', async () => {
+  it('should be able to copy an address', async ({ driver }) => {
     await findElementByTextAndClick(driver, 'test name');
     await delayTime('medium');
     await findElementByTextAndClick(driver, 'Copy Address');
@@ -141,7 +120,10 @@ describe('Navigate Settings & Privacy and its flows', () => {
     await delayTime('very-long');
   });
 
-  it('should be able to create a new wallet from a new seed', async () => {
+  it('should be able to create a new wallet from a new seed', async ({
+    driver,
+    rootURL,
+  }) => {
     await findElementByTestIdAndClick({
       id: 'navbar-button-with-back',
       driver,
@@ -164,7 +146,10 @@ describe('Navigate Settings & Privacy and its flows', () => {
     expect(await getNumberOfWallets(driver, 'wallet-group-')).toBe(2);
   });
 
-  it('should be able to create a new wallet from an existing seed', async () => {
+  it('should be able to create a new wallet from an existing seed', async ({
+    driver,
+    rootURL,
+  }) => {
     await findElementByTestIdAndClick({ id: 'create-a-new-wallet', driver });
     await findElementByTestIdAndClick({ id: 'wallet-group-1', driver });
     await typeOnTextInput({
@@ -187,7 +172,10 @@ describe('Navigate Settings & Privacy and its flows', () => {
     expect(await textContent.getText()).toContain('2 Wallets');
   });
 
-  it('should be able to hide / unhide a wallet', async () => {
+  it('should be able to hide / unhide a wallet', async ({
+    driver,
+    rootURL,
+  }) => {
     await goToPopup(driver, rootURL);
     await findElementByTestIdAndClick({ id: 'account-name', driver });
     const numOfWallets = await getNumberOfWallets(driver, 'wallet-account-');
@@ -215,7 +203,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
     expect(numOfWalletsAfterUnhide).toBe(numOfWallets);
   });
 
-  it('should be able to delete a wallet', async () => {
+  it('should be able to delete a wallet', async ({ driver, rootURL }) => {
     await navigateToSettings(driver, rootURL);
     await findElementByTestIdAndClick({ id: 'wallets-and-keys', driver });
     await findElementByTestIdAndClick({ id: 'wallet-group-1', driver });

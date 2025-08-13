@@ -74,8 +74,7 @@ jobs:
         with:
           name: rainbowbx-${{ github.sha }}
           path: build/
-      - name: Remove old screenshots
-        run: rm -rf screenshots/*
+  
   # FIREFOX TESTS
   # firefox-e2e-parallel:
   #   runs-on: ubuntu-latest
@@ -98,12 +97,6 @@ jobs:
   #           export MAX_RETRIES=1
   #           yarn firefox:manifest && yarn firefox:zip
   #           yarn vitest:parallel
-  #     - name: Upload deps artifacts
-  #       if: steps.FFE2eParallel.outcome == 'failure'
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: screenshots
-  #         path: screenshots/
   #     - name: Fail if any tests failed
   #       if: steps.FFE2eParallel.outcome == 'failure'
   #       run: exit 1
@@ -128,12 +121,6 @@ jobs:
   #         export MAX_RETRIES=1
   #         yarn firefox:manifest && yarn firefox:zip
   #         yarn vitest:swap
-  #     - name: Upload deps artifacts
-  #       if: steps.FFE2eSwap.outcome == 'failure'
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: screenshots
-  #         path: screenshots/
   #     - name: Fail if any tests failed
   #       if: steps.FFE2eSwap.outcome == 'failure'
   #       run: exit 1
@@ -158,12 +145,6 @@ jobs:
   #           export MAX_RETRIES=1
   #           yarn firefox:manifest && yarn firefox:zip
   #           yarn vitest:send
-  #     - name: Upload deps artifacts
-  #       if: steps.FFE2eSend.outcome == 'failure'
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: screenshots
-  #         path: screenshots/
   #     - name: Fail if any tests failed
   #       if: steps.FFE2eSend.outcome == 'failure'
   #       run: exit 1
@@ -188,15 +169,10 @@ jobs:
   #         export MAX_RETRIES=1
   #         yarn firefox:manifest && yarn firefox:zip
   #         yarn vitest:dappInteractions
-  #     - name: Upload deps artifacts
-  #       if: steps.FFE2eDappInteractions.outcome == 'failure'
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: screenshots
-  #         path: screenshots/
   #     - name: Fail if any tests failed
   #       if: steps.FFE2eDappInteractions.outcome == 'failure'
   #       run: exit 1
+  
   # CHROME TESTS
   chrome-e2e-parallel:
     runs-on: beefy-runner-bx
@@ -204,6 +180,13 @@ jobs:
     needs: [build]
     env:
       DISPLAY: :0
+      PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+      PERCY_BRANCH: ${{ github.head_ref || github.ref_name }}
+      PERCY_TARGET_BRANCH: master
+      PERCY_COMMIT: ${{ github.sha }}
+      PERCY_PULL_REQUEST: ${{ github.event.pull_request.number || '' }}
+      PERCY_PARALLEL_NONCE: ${{ github.run_id }}
+      PERCY_PARALLEL_TOTAL: -1
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/chromeTestsSetup
@@ -218,13 +201,10 @@ jobs:
           export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
           export MAX_RETRIES=1
           yarn vitest:parallel
-      - name: Upload deps artifacts
-        if: steps.ChromeE2EParallel.outcome == 'failure'
-        uses: actions/upload-artifact@v4
+      - name: Upload screenshots to Percy
+        if: always()
         continue-on-error: true
-        with:
-          name: screenshots-chrome-e2e-parallel
-          path: screenshots/
+        run: npx percy upload screenshots/
       - name: Fail if any tests failed
         if: steps.ChromeE2EParallel.outcome == 'failure'
         run: exit 1
@@ -234,6 +214,13 @@ jobs:
     needs: [build]
     env:
       DISPLAY: :0
+      PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+      PERCY_BRANCH: ${{ github.head_ref || github.ref_name }}
+      PERCY_TARGET_BRANCH: master
+      PERCY_COMMIT: ${{ github.sha }}
+      PERCY_PULL_REQUEST: ${{ github.event.pull_request.number || '' }}
+      PERCY_PARALLEL_NONCE: ${{ github.run_id }}
+      PERCY_PARALLEL_TOTAL: -1
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/chromeTestsSetup
@@ -248,13 +235,10 @@ jobs:
           export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
           export MAX_RETRIES=1
           yarn vitest:swap
-      - name: Upload deps artifacts
-        if: steps.ChromeE2ESwaps.outcome == 'failure'
-        uses: actions/upload-artifact@v4
+      - name: Upload screenshots to Percy
+        if: always()
         continue-on-error: true
-        with:
-          name: screenshots-chrome-e2e-swap
-          path: screenshots/
+        run: npx percy upload screenshots/
       - name: Fail if any tests failed
         if: steps.ChromeE2ESwaps.outcome == 'failure'
         run: exit 1
@@ -264,6 +248,13 @@ jobs:
     needs: [build]
     env:
       DISPLAY: :0
+      PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+      PERCY_BRANCH: ${{ github.head_ref || github.ref_name }}
+      PERCY_TARGET_BRANCH: master
+      PERCY_COMMIT: ${{ github.sha }}
+      PERCY_PULL_REQUEST: ${{ github.event.pull_request.number || '' }}
+      PERCY_PARALLEL_NONCE: ${{ github.run_id }}
+      PERCY_PARALLEL_TOTAL: -1
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/chromeTestsSetup
@@ -278,13 +269,10 @@ jobs:
           export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
           export MAX_RETRIES=1
           yarn vitest:send
-      - name: Upload deps artifacts
-        if: steps.ChromeE2ESend.outcome == 'failure'
-        uses: actions/upload-artifact@v4
+      - name: Upload screenshots to Percy
+        if: always()
         continue-on-error: true
-        with:
-          name: screenshots-chrome-e2e-send
-          path: screenshots/
+        run: npx percy upload screenshots/
       - name: Fail if any tests failed
         if: steps.ChromeE2ESend.outcome == 'failure'
         run: exit 1
@@ -294,6 +282,13 @@ jobs:
     needs: [build]
     env:
       DISPLAY: :0
+      PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+      PERCY_BRANCH: ${{ github.head_ref || github.ref_name }}
+      PERCY_TARGET_BRANCH: master
+      PERCY_COMMIT: ${{ github.sha }}
+      PERCY_PULL_REQUEST: ${{ github.event.pull_request.number || '' }}
+      PERCY_PARALLEL_NONCE: ${{ github.run_id }}
+      PERCY_PARALLEL_TOTAL: -1
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/chromeTestsSetup
@@ -308,13 +303,10 @@ jobs:
           export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
           export MAX_RETRIES=1
           yarn vitest:send:optimism
-      - name: Upload deps artifacts
-        if: steps.ChromeOpE2ESend.outcome == 'failure'
-        uses: actions/upload-artifact@v4
+      - name: Upload screenshots to Percy
+        if: always()
         continue-on-error: true
-        with:
-          name: screenshots-chrome-optimism-e2e-send
-          path: screenshots/
+        run: npx percy upload screenshots/
       - name: Fail if any tests failed
         if: steps.ChromeOpE2ESend.outcome == 'failure'
         run: exit 1
@@ -324,6 +316,13 @@ jobs:
     needs: [build]
     env:
       DISPLAY: :0
+      PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+      PERCY_BRANCH: ${{ github.head_ref || github.ref_name }}
+      PERCY_TARGET_BRANCH: master
+      PERCY_COMMIT: ${{ github.sha }}
+      PERCY_PULL_REQUEST: ${{ github.event.pull_request.number || '' }}
+      PERCY_PARALLEL_NONCE: ${{ github.run_id }}
+      PERCY_PARALLEL_TOTAL: -1
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/chromeTestsSetup
@@ -338,13 +337,10 @@ jobs:
           export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
           export MAX_RETRIES=1
           yarn vitest:dappInteractions
-      - name: Upload deps artifacts
-        if: steps.ChromeE2EDappInteractions.outcome == 'failure'
-        uses: actions/upload-artifact@v4
+      - name: Upload screenshots to Percy
+        if: always()
         continue-on-error: true
-        with:
-          name: screenshots-chrome-e2e-dappInteractions
-          path: screenshots/
+        run: npx percy upload screenshots/
       - name: Fail if any tests failed
         if: steps.ChromeE2EDappInteractions.outcome == 'failure'
         run: exit 1
@@ -417,7 +413,7 @@ jobs:
         run:  yarn audit:ci
       - name: Check types
         run: yarn typecheck
-  
+
   # BUNDLE SIZE CHECK
   bundlewatch:
     runs-on: ubuntu-latest
@@ -498,7 +494,7 @@ jobs:
           else
             echo "No bundlewatch results found" >> $GITHUB_STEP_SUMMARY
           fi
-  
+
   cleanup:
     runs-on:  ubuntu-latest
     needs: [chrome-e2e-parallel, chrome-e2e-swap, chrome-e2e-send, chrome-e2e-dappInteractions, chrome-optimism-e2e-send, unit-tests, ci-checks, bundlewatch]
@@ -506,8 +502,4 @@ jobs:
       - uses: geekyeggo/delete-artifact@v5
         with:
           name: yarn_node_modules.tar.gz
-          failOnError: false
-      - uses: geekyeggo/delete-artifact@v5
-        with:
-          name: screenshots-*
           failOnError: false

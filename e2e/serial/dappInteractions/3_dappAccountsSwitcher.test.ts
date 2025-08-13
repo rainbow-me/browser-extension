@@ -1,13 +1,4 @@
-import { WebDriver } from 'selenium-webdriver';
-import {
-  afterAll,
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-} from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { ChainId } from '~/core/types/chains';
 
@@ -20,50 +11,22 @@ import {
   findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
-  getExtensionIdByName,
-  getRootUrl,
   getTextFromText,
   goToPopup,
   goToTestApp,
   goToWelcome,
-  initDriverWithOptions,
   querySelector,
   shortenAddress,
   switchWallet,
-  takeScreenshotOnFailure,
   typeOnTextInput,
   waitAndClick,
 } from '../../helpers';
 import { TEST_VARIABLES } from '../../walletVariables';
 
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
 const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
 
 describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
-  beforeAll(async () => {
-    driver = await initDriverWithOptions({
-      browser,
-      os,
-    });
-    const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-    if (!extensionId) throw new Error('Extension not found');
-    rootURL += extensionId;
-  });
-
-  beforeEach<{ driver: WebDriver }>(async (context) => {
-    context.driver = driver;
-  });
-
-  afterEach<{ driver: WebDriver }>(async (context) => {
-    await takeScreenshotOnFailure(context);
-  });
-
-  afterAll(() => driver?.quit());
-
-  it('should be able import a wallet via pk', async () => {
+  it('should be able import a wallet via pk', async ({ driver, rootURL }) => {
     //  Start from welcome screen
     await goToWelcome(driver, rootURL);
     await findElementByTestIdAndClick({
@@ -97,20 +60,23 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
     await findElementByText(driver, 'Rainbow is ready to use');
   });
 
-  it('should be able to go to setings', async () => {
+  it('should be able to go to setings', async ({ driver, rootURL }) => {
     await goToPopup(driver, rootURL);
     await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
     await findElementByTestIdAndClick({ id: 'settings-link', driver });
   });
 
-  it.todo('should be able to set rainbow as default wallet', async () => {
-    await findElementByTestIdAndClick({
-      id: 'set-rainbow-default-toggle',
-      driver,
-    });
-  });
+  it.todo(
+    'should be able to set rainbow as default wallet',
+    async ({ driver }) => {
+      await findElementByTestIdAndClick({
+        id: 'set-rainbow-default-toggle',
+        driver,
+      });
+    },
+  );
 
-  it('should be able to connect to hardhat', async () => {
+  it('should be able to connect to hardhat', async ({ driver }) => {
     await findElementByTestIdAndClick({ id: 'connect-to-hardhat', driver });
     const button = await findElementByText(driver, 'Disconnect from Hardhat');
     expect(button).toBeTruthy();
@@ -120,7 +86,10 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
     });
   });
 
-  it('should be able to add a new wallet via pk 2', async () => {
+  it('should be able to add a new wallet via pk 2', async ({
+    driver,
+    rootURL,
+  }) => {
     await goToPopup(driver, rootURL, '#/home');
     await findElementByIdAndClick({
       id: 'header-account-name-shuffle',
@@ -145,7 +114,10 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
     });
   });
 
-  it('should be able to add a new wallet via pk 3', async () => {
+  it('should be able to add a new wallet via pk 3', async ({
+    driver,
+    rootURL,
+  }) => {
     await goToPopup(driver, rootURL, '#/home');
     await findElementByIdAndClick({
       id: 'header-account-name-shuffle',
@@ -170,7 +142,10 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
     });
   });
 
-  it('should be able to switch to the first pk wallet', async () => {
+  it('should be able to switch to the first pk wallet', async ({
+    driver,
+    rootURL,
+  }) => {
     await delayTime('medium');
     await switchWallet(TEST_VARIABLES.SEED_WALLET.ADDRESS, rootURL, driver);
     await delayTime('very-long');
@@ -178,7 +153,7 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
     expect(wallet).toBe(shortenAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS));
   });
 
-  it('should be able to connect to bx test dapp', async () => {
+  it('should be able to connect to bx test dapp', async ({ driver }) => {
     const { dappHandler } = await connectToTestDapp(driver);
 
     // switch account
@@ -207,7 +182,10 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
     expect(ensLabel).toBeTruthy();
   });
 
-  it('should be able to go back to extension, switch account and connect from nudge sheet', async () => {
+  it('should be able to go back to extension, switch account and connect from nudge sheet', async ({
+    driver,
+    rootURL,
+  }) => {
     await switchWallet(TEST_VARIABLES.SEED_WALLET.ADDRESS, rootURL, driver);
     await delayTime('long');
     const appConnectionNudgeSheet = await findElementByTestId({
@@ -230,7 +208,10 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
     expect(appConnectionRow).toBeTruthy();
   });
 
-  it('should be able to go back to extension, switch account and connect from nudge banner', async () => {
+  it('should be able to go back to extension, switch account and connect from nudge banner', async ({
+    driver,
+    rootURL,
+  }) => {
     await switchWallet(
       TEST_VARIABLES.PRIVATE_KEY_WALLET_3.ADDRESS,
       rootURL,
@@ -259,7 +240,7 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
     expect(appConnectionRow).toBeTruthy();
   });
 
-  it('should be able to disconnect', async () => {
+  it('should be able to disconnect', async ({ driver }) => {
     await findElementByTestIdAndClick({
       id: `connected-app-bx-test-dapp.vercel.app-${shortenAddress(
         TEST_VARIABLES.PRIVATE_KEY_WALLET_3.ADDRESS,
@@ -276,7 +257,7 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
     });
   });
 
-  it('should be able to connect to bx test dapp again', async () => {
+  it('should be able to connect to bx test dapp again', async ({ driver }) => {
     const { dappHandler } = await connectToTestDapp(driver);
 
     await clickAcceptRequestButton(driver);
@@ -294,7 +275,10 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
     expect(ensLabel).toBeTruthy();
   });
 
-  it('should be able to go back to extension and go to switch wallets prompt', async () => {
+  it('should be able to go back to extension and go to switch wallets prompt', async ({
+    driver,
+    rootURL,
+  }) => {
     await switchWallet(TEST_VARIABLES.SEED_WALLET.ADDRESS, rootURL, driver);
     await delayTime('long');
     const appConnectionNudgeSheet = await findElementByTestId({
@@ -313,7 +297,7 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
     expect(switchWalletsPrompt).toBeTruthy();
   });
 
-  it('should be able to change connected network chain', async () => {
+  it('should be able to change connected network chain', async ({ driver }) => {
     await findElementByTestIdAndClick({
       id: `app-connection-wallet-item-dropdown-menu-${TEST_VARIABLES.PRIVATE_KEY_WALLET_3.ADDRESS}`,
       driver,
@@ -333,7 +317,9 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
     expect(walletItemBadge).toBeTruthy();
   });
 
-  it('should be able to connect another account and change network', async () => {
+  it('should be able to connect another account and change network', async ({
+    driver,
+  }) => {
     const activeSeedWallet = await findElementByTestId({
       id: `app-connection-wallet-item-${TEST_VARIABLES.PRIVATE_KEY_WALLET_3.ADDRESS}-active`,
       driver,
@@ -367,7 +353,9 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
     expect(walletItemBadge).toBeTruthy();
   });
 
-  it('should be able to connect another account and change network of a connected but not active session', async () => {
+  it('should be able to connect another account and change network of a connected but not active session', async ({
+    driver,
+  }) => {
     const notActivePK3Wallet = await findElementByTestId({
       id: `app-connection-wallet-item-${TEST_VARIABLES.PRIVATE_KEY_WALLET_3.ADDRESS}-not-active`,
       driver,
@@ -392,7 +380,9 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
     expect(walletItemBadge).toBeTruthy();
   });
 
-  it('should be able to connect another account and check the connection in the dapp', async () => {
+  it('should be able to connect another account and check the connection in the dapp', async ({
+    driver,
+  }) => {
     await findElementByTestIdAndClick({
       id: `app-connection-wallet-item-${TEST_VARIABLES.SEED_WALLET.ADDRESS}-not-active`,
       driver,

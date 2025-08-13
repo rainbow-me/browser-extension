@@ -121,3 +121,10 @@ Key stores include: `currentSettings`, `wallets`, `transactions`, `assets`, `net
 - Prefix commits and PR titles with a type such as fix, feat, or chore, for example: fix: resolve login bug.
 - Never modify any CHANGELOG.md files. These are managed automatically.
 - Only modify en-US.json locale files; never adjust other locale JSON files.
+
+## Important Development Notes
+
+### E2E Testing
+- **NEVER run the full E2E test suite** - These tests require significant system resources and browser automation
+- E2E tests should only be run locally by developers, not in automated assistance
+- When working with E2E test code, focus on refactoring, organizing, or fixing type issues without executing the tests

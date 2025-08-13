@@ -19,7 +19,7 @@ export function FullScreenBackground({
 
   if (!isFullscreen)
     return (
-      <Box style={{ overflow: 'hidden' }}>
+      <Box style={{ overflow: 'hidden' }} data-viewport="extension-viewport">
         <TestnetBar testnetMode={testnetMode} />
         <Box style={{ overflow: 'auto' }}>{children}</Box>
       </Box>
@@ -59,6 +59,7 @@ export function FullScreenBackground({
       <Box
         borderRadius="32px"
         background="surfacePrimaryElevated"
+        data-viewport="extension-viewport"
         style={{
           width: POPUP_DIMENSIONS.width,
           height: POPUP_DIMENSIONS.height,

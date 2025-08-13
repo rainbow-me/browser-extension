@@ -1,6 +1,5 @@
 /* eslint-disable no-await-in-loop */
-import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { TokenNames, tokenAddresses, tokenNames } from 'e2e/tokenVariables';
 
@@ -10,40 +9,23 @@ import {
   executeMultipleShortcuts,
   executePerformShortcut,
   findElementByText,
-  getExtensionIdByName,
-  getRootUrl,
   goToPopup,
   importWalletFlow,
-  initDriverWithOptions,
   performSearchTokenAddressActionsCmdK,
   typeOnTextInput,
   waitUntilElementByTestIdIsPresent,
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
 
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
-const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
-
 describe('Command+K behaviours', () => {
-  beforeAll(async () => {
-    driver = await initDriverWithOptions({
-      browser,
-      os,
-    });
-    const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-    if (!extensionId) throw new Error('Extension not found');
-    rootURL += extensionId;
-  });
-  afterAll(async () => driver?.quit());
-
-  it('should be able import a wallet via seed', async () => {
+  it('should be able import a wallet via seed', async ({ driver, rootURL }) => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);
   });
 
-  it('should send to an owned wallet in my wallets menu', async () => {
+  it('should send to an owned wallet in my wallets menu', async ({
+    driver,
+    rootURL,
+  }) => {
     await goToPopup(driver, rootURL);
 
     await delayTime('medium');
@@ -83,7 +65,10 @@ describe('Command+K behaviours', () => {
     await checkExtensionURL(driver, 'send');
   });
 
-  it('should be able to add a searched wallet as contact and send it using my contacts section', async () => {
+  it('should be able to add a searched wallet as contact and send it using my contacts section', async ({
+    driver,
+    rootURL,
+  }) => {
     await goToPopup(driver, rootURL);
 
     // cmd k
@@ -126,7 +111,10 @@ describe('Command+K behaviours', () => {
     await checkExtensionURL(driver, 'send');
   });
 
-  it('should be able to search for custom unowned tokens on mainnet', async () => {
+  it('should be able to search for custom unowned tokens on mainnet', async ({
+    driver,
+    rootURL,
+  }) => {
     for (const [key, tokenAddress] of Object.entries(tokenAddresses.mainnet)) {
       const tokenName = tokenNames[key as TokenNames];
       await performSearchTokenAddressActionsCmdK({
@@ -138,7 +126,10 @@ describe('Command+K behaviours', () => {
     }
   });
 
-  it('should be able to search for custom unowned tokens on optimism', async () => {
+  it('should be able to search for custom unowned tokens on optimism', async ({
+    driver,
+    rootURL,
+  }) => {
     for (const [key, tokenAddress] of Object.entries(tokenAddresses.optimism)) {
       const tokenName = tokenNames[key as TokenNames];
       await performSearchTokenAddressActionsCmdK({
