@@ -1229,6 +1229,12 @@ export async function captureScreenshot(context: any, slug?: string) {
   const driver = context.driver as WebDriver;
   const testName = context.task?.name || 'unknown';
 
+  // Only capture screenshots when on popup.html
+  const currentUrl = await driver.getCurrentUrl();
+  if (!currentUrl.includes('/popup.html')) {
+    return;
+  }
+
   if (!fs.existsSync('screenshots')) {
     fs.mkdirSync('screenshots');
   }
