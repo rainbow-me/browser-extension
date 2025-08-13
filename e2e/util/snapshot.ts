@@ -1,7 +1,9 @@
 import * as fs from 'node:fs';
 
 import { WebDriver } from 'selenium-webdriver';
-import * as sharp from 'sharp';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const sharp = require('sharp');
 
 import { delayTime } from '../helpers';
 
