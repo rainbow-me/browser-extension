@@ -1,5 +1,5 @@
-import { getAddress } from '@ethersproject/address';
 import { WebDriver } from 'selenium-webdriver';
+import { getAddress } from 'viem';
 import {
   afterAll,
   afterEach,

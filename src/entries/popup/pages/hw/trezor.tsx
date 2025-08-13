@@ -18,8 +18,8 @@ export function ConnectTrezor() {
   useEffect(() => {
     setTimeout(async () => {
       const res = await wallet.connectTrezor();
-      if (!res) alert('error connecting to trezor');
-      if (res?.accountsToImport?.length) {
+      if ('error' in res) return alert('error connecting to trezor');
+      if (res.accountsToImport.length) {
         navigate(ROUTES.HW_WALLET_LIST, {
           state: {
             ...res,

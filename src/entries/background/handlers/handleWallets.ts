@@ -2,8 +2,7 @@ import {
   TypedDataDomain,
   TypedDataField,
 } from '@ethersproject/abstract-signer';
-import { Bytes } from '@ethersproject/bytes';
-import { Address } from 'viem';
+import { Address, ByteArray } from 'viem';
 
 import { executeRap, signTypedData } from '~/core/keychain';
 import { initializeMessenger } from '~/core/messengers';
@@ -18,7 +17,7 @@ type WalletActionArguments = {
 
 export type SignMessageArguments = {
   address: Address;
-  msgData: string | Bytes;
+  msgData: string | ByteArray;
 };
 export type SignTypedDataArguments = {
   address: Address;

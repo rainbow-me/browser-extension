@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.5.130",
+  "version": "1.5.131",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -55,6 +55,8 @@
     "zip:source": "zip -r ./rainbowbx-source.zip * -x 'build/*' -x '*node_modules/*'",
     "// Build and zip": "",
     "bundle": "yarn build && yarn zip",
+    "// Check bundle sizes": "",
+    "bundlewatch": "bundlewatch --config .bundlewatchrc.json",
     "// Runs tests": "",
     "anvil": "anvil --fork-url $(./scripts/get-rpc-url.sh mainnet) --fork-block-number 21939175 --block-base-fee-per-gas 100000000 --block-gas-limit 30000000",
     "anvil:optimism": "anvil --fork-url $(./scripts/get-rpc-url.sh optimism)",
@@ -194,6 +196,7 @@
     "babel-plugin-module-resolver": "5.0.2",
     "browserify": "17.0.0",
     "buffer": "6.0.3",
+    "bundlewatch": "0.4.1",
     "chromedriver": "138.0.5",
     "circular-dependency-plugin": "5.2.2",
     "copy-webpack-plugin": "11.0.0",

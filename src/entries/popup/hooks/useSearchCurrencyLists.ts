@@ -1,8 +1,7 @@
-import { isAddress } from '@ethersproject/address';
 import { useQueries } from '@tanstack/react-query';
 import { uniqBy } from 'lodash';
 import { useMemo } from 'react';
-import { Address } from 'viem';
+import { Address, isAddress } from 'viem';
 
 import { useAssetSearchMetadataAllNetworks } from '~/core/resources/assets/assetMetadata';
 import { useTokenSearch } from '~/core/resources/search';

@@ -1,5 +1,4 @@
-import { isAddress } from '@ethersproject/address';
-import { Address } from 'viem';
+import { Address, isAddress } from 'viem';
 
 import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { RainbowTransaction } from '~/core/types/transactions';

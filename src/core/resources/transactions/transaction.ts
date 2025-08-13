@@ -1,7 +1,6 @@
 import { Provider, TransactionResponse } from '@ethersproject/providers';
-import { formatUnits } from '@ethersproject/units';
 import { QueryClient, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Address, Hash } from 'viem';
+import { Address, Hash, formatUnits } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { addysHttp } from '~/core/network/addys';
@@ -126,7 +125,7 @@ const fetchTransactionDataFromProvider = async ({
     throw `getCustomChainTransaction: couldn't find transaction`;
 
   const decimals = 18; // assuming every chain uses 18 decimals
-  const value = formatUnits(transaction.value, decimals);
+  const value = formatUnits(transaction.value.toBigInt(), decimals);
 
   const direction =
     transaction.from === account ? ('out' as const) : ('in' as const);

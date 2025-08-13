@@ -1,8 +1,6 @@
 import { Signer } from '@ethersproject/abstract-signer';
-import { MaxUint256 } from '@ethersproject/constants';
 import { Contract, PopulatedTransaction } from '@ethersproject/contracts';
-import { parseUnits } from '@ethersproject/units';
-import { Address, Hash, erc20Abi, erc721Abi } from 'viem';
+import { Address, Hash, erc20Abi, erc721Abi, maxUint256 } from 'viem';
 
 import { useGasStore } from '~/core/state';
 import { useNetworkStore } from '~/core/state/networks/networks';
@@ -95,7 +93,7 @@ export const estimateApprove = async ({
     const tokenContract = new Contract(tokenAddress, erc20Abi, provider);
     const gasLimit = await tokenContract.estimateGas.approve(
       spender,
-      MaxUint256,
+      maxUint256,
       {
         from: owner,
       },
@@ -125,7 +123,7 @@ export const populateApprove = async ({
     const tokenContract = new Contract(tokenAddress, erc20Abi, provider);
     const approveTransaction = await tokenContract.populateTransaction.approve(
       spender,
-      MaxUint256,
+      maxUint256,
       {
         from: owner,
       },
@@ -188,7 +186,7 @@ export const populateRevokeApproval = async ({
   const provider = getProvider({ chainId });
   const tokenContract = new Contract(tokenAddress, erc721Abi, provider);
   if (type === 'erc20') {
-    const amountToApprove = parseUnits('0', 'ether');
+    const amountToApprove = 0n;
     const txObject = await tokenContract.populateTransaction.approve(
       spenderAddress,
       amountToApprove,
@@ -222,7 +220,7 @@ export const executeApprove = async ({
 
   const tokenContract = new Contract(tokenAddress, erc20Abi, wallet);
 
-  return await tokenContract.approve(spender, MaxUint256, {
+  return await tokenContract.approve(spender, maxUint256, {
     nonce,
     gasLimit: toBigNumber(gasLimit),
     gasPrice: toBigNumber(gasPrice),

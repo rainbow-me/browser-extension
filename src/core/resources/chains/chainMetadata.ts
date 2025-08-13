@@ -1,5 +1,5 @@
-import { JsonRpcProvider } from '@ethersproject/providers';
 import { useQuery } from '@tanstack/react-query';
+import { createPublicClient, http } from 'viem';
 
 import { proxyRpcEndpoint } from '~/core/providers/proxy';
 import {
@@ -14,11 +14,15 @@ const getChainMetadataRPCUrl = async ({
   rpcUrl,
 }: {
   rpcUrl?: string;
-}) => {
+}): Promise<{ chainId: number } | null> => {
   if (rpcUrl && isValidUrl(rpcUrl)) {
-    const provider = new JsonRpcProvider(proxyRpcEndpoint(rpcUrl, 0));
-    const network = await provider.getNetwork();
-    return { chainId: network.chainId };
+    // viem expects the url to be a string, proxyRpcEndpoint can be used as before
+    const client = createPublicClient({
+      transport: http(proxyRpcEndpoint(rpcUrl, 0)),
+    });
+    // getChainId returns a Promise<number>
+    const chainId = await client.getChainId();
+    return { chainId };
   }
   return null;
 };
