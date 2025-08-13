@@ -24,7 +24,7 @@ import {
   typeOnTextInput,
   waitAndClick,
 } from '../../helpers';
-import { convertRawAmountToDecimalFormat, subtract } from '../../numbers';
+import { convertRawAmountToDecimalFormat, subtract } from '../../util/numbers';
 import { SWAP_VARIABLES, TEST_VARIABLES } from '../../walletVariables';
 
 const WALLET_TO_USE_SECRET = TEST_VARIABLES.SWAPS_WALLET.PK;
