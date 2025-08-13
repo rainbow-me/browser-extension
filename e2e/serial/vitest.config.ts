@@ -9,6 +9,7 @@ export default mergeConfig(
     test: {
       bail: 1,
       threads: false,
+      setupFiles: ['./e2e/setup.ts'],
       sequence: {
         shuffle: false,
         sequencer: class Sequencer {
