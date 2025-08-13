@@ -40,7 +40,7 @@ beforeEach(async (context) => {
 
   if (context.driver) {
     // Capture screenshot at the beginning of each test
-    await captureSnapshot(context, 'before');
+    await captureSnapshot(context);
   }
 });
 

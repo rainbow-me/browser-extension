@@ -62,9 +62,6 @@ export async function captureSnapshot(
     return;
   }
 
-  // Wait for animations to complete before capturing
-  await delayTime('medium');
-
   await takeScreenshot({
     driver,
     testName,

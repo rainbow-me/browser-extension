@@ -22,6 +22,8 @@ import { expect } from 'vitest';
 
 import { RAINBOW_TEST_DAPP } from '~/core/references/links';
 
+import { captureSnapshot } from './util/snapshot';
+
 const browser = process.env.BROWSER || 'chrome';
 const isFirefox = browser === 'firefox';
 
@@ -452,6 +454,11 @@ export async function waitAndClick(element: WebElement, driver: WebDriver) {
     await delayTime('short');
     await driver.wait(until.elementIsVisible(element), waitUntilTime);
     await driver.wait(until.elementIsEnabled(element), waitUntilTime);
+
+    // capture snapshot before clicking
+    const testId = await element.getAttribute('data-testid');
+    await captureSnapshot({ driver }, testId);
+
     return element.click();
   } catch (error) {
     const testId = await element.getAttribute('data-testid');
