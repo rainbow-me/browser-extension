@@ -202,7 +202,7 @@ export async function executeRap<T extends RapTypes>({
     rapActionParameters: { ...rapActionParameters, nonce },
     type,
   };
-  return walletAction<ExecuteRapResponse>('execute_rap', params);
+  return walletAction('execute_rap', params);
 }
 
 export const personalSign = async (
@@ -243,7 +243,7 @@ export const signTypedData = async (
         throw new Error('Unsupported hardware wallet');
     }
   } else {
-    return walletAction<string>('sign_typed_data', {
+    return walletAction('sign_typed_data', {
       address,
       msgData,
     });
