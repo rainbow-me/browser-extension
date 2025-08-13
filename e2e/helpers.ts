@@ -121,6 +121,8 @@ export async function initDriverWithOptions(opts: {
     '--disable-extensions-except=build/',
     '--disable-popup-blocking',
     '--remote-debugging-port=9222',
+    '--force-device-scale-factor=2',
+    '--high-dpi-support=1',
   ];
 
   if (opts.browser === 'firefox') {
@@ -171,6 +173,7 @@ export async function initDriverWithOptions(opts: {
       .setChromeService(service)
       .build();
   }
+
   // @ts-ignore
   driver.browser = opts.browser;
   return driver;

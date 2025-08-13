@@ -1,6 +1,7 @@
 import * as fs from 'node:fs';
 
-import { By, WebDriver, WebElement } from 'selenium-webdriver';
+import { WebDriver } from 'selenium-webdriver';
+import * as sharp from 'sharp';
 
 import { delayTime } from '../helpers';
 
@@ -32,7 +33,6 @@ interface ScreenshotOptions {
   testName?: string;
   slug?: string;
   waitForAnimations?: boolean;
-  captureElement?: boolean;
 }
 
 interface ScreenshotContext {
@@ -56,18 +56,26 @@ export async function captureSnapshot(
   const driver = context.driver as WebDriver;
   const testName = context.task?.name || 'unknown';
 
-  // Only capture screenshots when on popup.html
-  const currentUrl = await driver.getCurrentUrl();
-  if (!currentUrl.includes('/popup.html')) {
-    return;
-  }
+  try {
+    // Only capture screenshots when on popup.html
+    const currentUrl = await driver.getCurrentUrl();
+    if (
+      !currentUrl ||
+      currentUrl === 'data:,' ||
+      !currentUrl.includes('/popup.html')
+    ) {
+      console.log(`Skipping screenshot - not on popup page: ${currentUrl}`);
+      return;
+    }
 
-  await takeScreenshot({
-    driver,
-    testName,
-    slug,
-    captureElement: true,
-  });
+    await takeScreenshot({
+      driver,
+      testName,
+      slug,
+    });
+  } catch (error) {
+    console.warn(`Failed to capture snapshot: ${error}`);
+  }
 }
 
 /**
@@ -82,7 +90,6 @@ async function takeScreenshot(options: ScreenshotOptions): Promise<void> {
     testName = 'unknown',
     slug,
     waitForAnimations = true,
-    captureElement = true,
   } = options;
 
   // Wait for animations if requested
@@ -99,26 +106,14 @@ async function takeScreenshot(options: ScreenshotOptions): Promise<void> {
   const filePath = `screenshots/${fileName}.png`;
 
   try {
-    let image: string;
+    // Take full screenshot
+    const fullScreenshot = await driver.takeScreenshot();
 
-    if (captureElement) {
-      // Try to find and screenshot just the extension viewport element
-      const popupContainer = await findPopupContainer(driver);
-      if (popupContainer) {
-        image = await popupContainer.takeScreenshot();
-        console.log(`Popup container screenshot saved: ${fileName}.png`);
-      } else {
-        // Fallback to full page screenshot if element not found
-        image = await driver.takeScreenshot();
-        console.log(`Full screenshot saved: ${fileName}.png`);
-      }
-    } else {
-      // Take full page screenshot
-      image = await driver.takeScreenshot();
-      console.log(`Full screenshot saved: ${fileName}.png`);
-    }
+    // Crop to 360x600 centered
+    const croppedImage = await cropScreenshot(fullScreenshot, 360, 600);
 
-    fs.writeFileSync(filePath, image, 'base64');
+    // Save the cropped image
+    fs.writeFileSync(filePath, croppedImage, 'base64');
   } catch (error) {
     console.error(`Error capturing screenshot ${fileName}:`, error);
   }
@@ -172,20 +167,57 @@ function generateScreenshotFilename(testName: string, slug?: string): string {
 }
 
 /**
- * Finds the popup container element for targeted screenshots.
+ * Crops a base64 PNG image to specified dimensions, centered.
+ * Uses Sharp for image processing.
  *
- * @param driver - WebDriver instance
- * @returns WebElement if found, null otherwise
+ * @param base64Image - Base64 encoded PNG image
+ * @param targetWidth - Target width in CSS pixels
+ * @param targetHeight - Target height in CSS pixels
+ * @returns Base64 encoded cropped image
  */
-async function findPopupContainer(
-  driver: WebDriver,
-): Promise<WebElement | null> {
+async function cropScreenshot(
+  base64Image: string,
+  targetWidth: number,
+  targetHeight: number,
+): Promise<string> {
+  // For high-DPI displays with devicePixelRatio=2
+  const dpr = 2;
+  const cropWidth = targetWidth * dpr;
+  const cropHeight = targetHeight * dpr;
+
   try {
-    return await driver.findElement(
-      By.css('[data-viewport="extension-viewport"]'),
-    );
-  } catch {
-    // Element not found
-    return null;
+    // Decode base64 to buffer
+    const inputBuffer = Buffer.from(base64Image, 'base64');
+
+    // Get image metadata
+    const metadata = await sharp(inputBuffer).metadata();
+    const width = metadata.width || 0;
+    const height = metadata.height || 0;
+
+    // If image is already smaller than target, return as-is
+    if (width <= cropWidth && height <= cropHeight) {
+      return base64Image;
+    }
+
+    // Calculate centered crop position
+    const left = Math.max(0, Math.floor((width - cropWidth) / 2));
+    const top = Math.max(0, Math.floor((height - cropHeight) / 2));
+
+    // Crop the image using Sharp
+    const croppedBuffer = await sharp(inputBuffer)
+      .extract({
+        left,
+        top,
+        width: cropWidth,
+        height: cropHeight,
+      })
+      .png()
+      .toBuffer();
+
+    // Convert back to base64
+    return croppedBuffer.toString('base64');
+  } catch (error) {
+    console.error('Error during crop operation:', error);
+    return base64Image;
   }
 }
