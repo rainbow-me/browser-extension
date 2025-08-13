@@ -361,7 +361,8 @@
       "firebase>@firebase/util": false,
       "@percy/cli>@percy/cli-command>@percy/core": false,
       "@percy/cli-upload>@percy/cli-command>@percy/core": false,
-      "wagmi>@wagmi/connectors>cbw-sdk>keccak": false
+      "wagmi>@wagmi/connectors>cbw-sdk>keccak": false,
+      "sharp": false
     }
   },
   "packageManager": "yarn@4.2.2"
