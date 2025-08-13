@@ -1235,6 +1235,9 @@ export async function captureScreenshot(context: any, slug?: string) {
     return;
   }
 
+  // Wait for animations to complete before capturing
+  await delayTime('medium');
+
   if (!fs.existsSync('screenshots')) {
     fs.mkdirSync('screenshots');
   }
