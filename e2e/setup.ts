@@ -1,5 +1,5 @@
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, afterEach, beforeAll, beforeEach } from 'vitest';
+import { afterAll, beforeAll, beforeEach } from 'vitest';
 
 import {
   getExtensionIdByName,
@@ -39,16 +39,8 @@ beforeEach(async (context) => {
   context.rootURL = globalRootURL;
 
   if (context.driver) {
-    console.log(`Starting test: ${context.task?.name || 'unknown'}`);
     // Capture screenshot at the beginning of each test
     await captureSnapshot(context, 'before');
-  }
-});
-
-afterEach(async (context) => {
-  // Capture screenshot after each test
-  if (context.driver) {
-    await captureSnapshot(context);
   }
 });
 
