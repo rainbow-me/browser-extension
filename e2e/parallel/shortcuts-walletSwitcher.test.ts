@@ -1,5 +1,4 @@
-import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import {
   checkExtensionURL,
@@ -9,21 +8,14 @@ import {
   findElementByTestId,
   findElementByText,
   findElementByTextAndClick,
-  getExtensionIdByName,
-  getRootUrl,
   importWalletFlowUsingKeyboardNavigation,
-  initDriverWithOptions,
   isElementFoundByText,
   returnAttributesOfActiveElement,
   shortenAddress,
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
 
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
 const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
 
 const shortenedMainAddress = shortenAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS);
 const shortenedSecondaryAddress = shortenAddress(
@@ -33,18 +25,7 @@ const shortenedSecondaryAddress = shortenAddress(
 describe.runIf(browser !== 'firefox')(
   'navigate through wallet switcher flows with shortcuts and keyboard',
   () => {
-    beforeAll(async () => {
-      driver = await initDriverWithOptions({
-        browser,
-        os,
-      });
-      const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-      if (!extensionId) throw new Error('Extension not found');
-      rootURL += extensionId;
-    });
-    afterAll(async () => driver?.quit());
-
-    it('should be able import a wallet via pk', async () => {
+    it('should be able import a wallet via pk', async ({ driver, rootURL }) => {
       await importWalletFlowUsingKeyboardNavigation(
         driver,
         rootURL,
@@ -52,7 +33,7 @@ describe.runIf(browser !== 'firefox')(
       );
     });
 
-    it('should display account name', async () => {
+    it('should display account name', async ({ driver, rootURL }) => {
       await checkWalletName(
         driver,
         rootURL,
@@ -60,7 +41,7 @@ describe.runIf(browser !== 'firefox')(
       );
     });
 
-    it('should be able import a wallet via pk', async () => {
+    it('should be able import a wallet via pk', async ({ driver, rootURL }) => {
       await importWalletFlowUsingKeyboardNavigation(
         driver,
         rootURL,
@@ -69,7 +50,7 @@ describe.runIf(browser !== 'firefox')(
       );
     });
 
-    it('should display account name', async () => {
+    it('should display account name', async ({ driver, rootURL }) => {
       await checkWalletName(
         driver,
         rootURL,
@@ -77,7 +58,7 @@ describe.runIf(browser !== 'firefox')(
       );
     });
 
-    it('navigate to wallet switcher with tab/arrows', async () => {
+    it('navigate to wallet switcher with tab/arrows', async ({ driver }) => {
       await executePerformShortcut({ driver, key: 'TAB', timesToPress: 2 });
       await executePerformShortcut({ driver, key: 'ENTER' });
       await checkExtensionURL(driver, 'wallet-switcher');
@@ -86,12 +67,12 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({ driver, key: 'ESCAPE' });
     });
 
-    it('navigate to wallet switcher with shortcut', async () => {
+    it('navigate to wallet switcher with shortcut', async ({ driver }) => {
       await executePerformShortcut({ driver, key: 'w' });
       await checkExtensionURL(driver, 'wallet-switcher');
     });
 
-    it('select search bar with keyboard', async () => {
+    it('select search bar with keyboard', async ({ driver }) => {
       await executePerformShortcut({ driver, key: 'TAB', timesToPress: 2 });
       const placeholder = await returnAttributesOfActiveElement(
         driver,
@@ -102,7 +83,7 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({ driver, key: 'w' });
     });
 
-    it('select wallet with number keys', async () => {
+    it('select wallet with number keys', async ({ driver }) => {
       const walletAccount1Content = await findElementByTestId({
         driver,
         id: 'wallet-account-1',
@@ -130,7 +111,7 @@ describe.runIf(browser !== 'firefox')(
       expect(await activeWallet.getText()).toBe(walletAccount2Name[1]);
     });
 
-    it('select wallet with keyboard navigation + ENTER', async () => {
+    it('select wallet with keyboard navigation + ENTER', async ({ driver }) => {
       await executePerformShortcut({ driver, key: 'w' });
       await checkExtensionURL(driver, 'wallet-switcher');
       await executePerformShortcut({ driver, key: 'TAB', timesToPress: 3 });
@@ -149,7 +130,7 @@ describe.runIf(browser !== 'firefox')(
     // bug currently on this flow. will un-skip once its fixed.
     it.todo(
       'open wallet context menu with navigation + SPACE (Broken)',
-      async () => {
+      async ({ driver }) => {
         await executePerformShortcut({ driver, key: 'w' });
         await executePerformShortcut({ driver, key: 'TAB', timesToPress: 3 });
         await executePerformShortcut({ driver, key: 'SPACE' });

@@ -1,20 +1,10 @@
-import { WebDriver } from 'selenium-webdriver';
 import { getAddress } from 'viem';
-import {
-  afterAll,
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-} from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { ChainId } from '~/core/types/chains';
 
 import {
   awaitTextChange,
-  captureScreenshot,
   clickAcceptRequestButton,
   delayTime,
   fillPrivateKey,
@@ -24,14 +14,11 @@ import {
   findElementByText,
   findElementByTextAndClick,
   getAllWindowHandles,
-  getExtensionIdByName,
   getOnchainBalance,
-  getRootUrl,
   getTextFromDappText,
   getWindowHandle,
   goToPopup,
   goToWelcome,
-  initDriverWithOptions,
   shortenAddress,
   transactionStatus,
   typeOnTextInput,
@@ -39,35 +26,12 @@ import {
 } from '../../helpers';
 import { TEST_VARIABLES } from '../../walletVariables';
 
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
 const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
 const shortenedAddress = shortenAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS);
 
 describe.runIf(browser !== 'firefox')('App interactions flow', () => {
-  beforeAll(async () => {
-    driver = await initDriverWithOptions({
-      browser,
-      os,
-    });
-    const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-    if (!extensionId) throw new Error('Extension not found');
-    rootURL += extensionId;
-  });
-
-  beforeEach<{ driver: WebDriver }>(async (context) => {
-    context.driver = driver;
-  });
-
-  afterEach<{ driver: WebDriver }>(async (context) => {
-    await captureScreenshot(context);
-  });
-  afterAll(() => driver?.quit());
-
   // Import a wallet
-  it('should be able import a wallet via pk', async () => {
+  it('should be able import a wallet via pk', async ({ driver, rootURL }) => {
     //  Start from welcome screen
     await goToWelcome(driver, rootURL);
     await findElementByTestIdAndClick({
@@ -101,20 +65,20 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     await findElementByText(driver, 'Rainbow is ready to use');
   });
 
-  it('should be able to go to setings', async () => {
+  it('should be able to go to setings', async ({ driver, rootURL }) => {
     await goToPopup(driver, rootURL);
     await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
     await findElementByTestIdAndClick({ id: 'settings-link', driver });
   });
 
-  it('should be able to set rainbow as default wallet', async () => {
+  it('should be able to set rainbow as default wallet', async ({ driver }) => {
     await findElementByTestIdAndClick({
       id: 'set-rainbow-default-toggle',
       driver,
     });
   });
 
-  it('should be able to connect to hardhat', async () => {
+  it('should be able to connect to hardhat', async ({ driver }) => {
     await findElementByTestIdAndClick({ id: 'connect-to-hardhat', driver });
     const button = await findElementByText(driver, 'Disconnect from Hardhat');
     expect(button).toBeTruthy();
@@ -124,7 +88,7 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     });
   });
 
-  it('should be able to connect to mm dapp', async () => {
+  it('should be able to connect to mm dapp', async ({ driver }) => {
     await delayTime('long');
     await driver.get('https://bx-e2e-dapp.vercel.app/');
     const dappHandler = await getWindowHandle({ driver });
@@ -151,7 +115,7 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     );
   });
 
-  it('should be able to complete a personal sign', async () => {
+  it('should be able to complete a personal sign', async ({ driver }) => {
     const dappHandler = await getWindowHandle({ driver });
 
     const button = await findElementById({ id: 'personalSign', driver });
@@ -184,7 +148,7 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     expect(personalSignText).toBeTruthy();
   });
 
-  it('should be able to sign typed data (v3)', async () => {
+  it('should be able to sign typed data (v3)', async ({ driver }) => {
     const dappHandler = await getWindowHandle({ driver });
     await driver.switchTo().window(dappHandler);
 
@@ -223,7 +187,7 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     expect(result).toBe(TEST_VARIABLES.SEED_WALLET.ADDRESS.toLowerCase());
   });
 
-  it('should be able to sign typed data (v4)', async () => {
+  it('should be able to sign typed data (v4)', async ({ driver }) => {
     const dappHandler = await getWindowHandle({ driver });
     await driver.switchTo().window(dappHandler);
 
@@ -262,7 +226,10 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     expect(result).toBe(TEST_VARIABLES.SEED_WALLET.ADDRESS.toLowerCase());
   });
 
-  it('should be able to switch network to hardhat', async () => {
+  it('should be able to switch network to hardhat', async ({
+    driver,
+    rootURL,
+  }) => {
     await goToPopup(driver, rootURL, '#/home');
     await findElementByTestIdAndClick({ id: 'home-page-header-left', driver });
     await findElementByTestIdAndClick({
@@ -285,7 +252,7 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     await expect(Number(chainText)).toBe(1337);
   });
 
-  it('should be able to create token', async () => {
+  it('should be able to create token', async ({ driver }) => {
     const dappHandler = await getWindowHandle({ driver });
     await driver.switchTo().window(dappHandler);
 
@@ -321,7 +288,7 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
 
   it.runIf(browser !== 'firefox')(
     'should be able to add a token to the wallet',
-    async () => {
+    async ({ driver }) => {
       const dappHandler = await getWindowHandle({ driver });
       await driver.switchTo().window(dappHandler);
 
@@ -350,7 +317,7 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     },
   );
 
-  it('should be able to transfer token', async () => {
+  it('should be able to transfer token', async ({ driver }) => {
     // get token contract address
     await delayTime('medium');
     const token = await findElementById({ id: 'tokenAddress', driver });
@@ -411,7 +378,7 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     expect(txnStatus).toBe('success');
   });
 
-  it('should be able to approve tokens', async () => {
+  it('should be able to approve tokens', async ({ driver }) => {
     const dappHandler = await getWindowHandle({ driver });
     await driver.switchTo().window(dappHandler);
 
@@ -435,7 +402,7 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     expect(txnStatus).toBe('success');
   });
 
-  it('should be able to transfer tokens without gas', async () => {
+  it('should be able to transfer tokens without gas', async ({ driver }) => {
     // get token contract address
     await delayTime('medium');
     const token = await findElementById({ id: 'tokenAddress', driver });
@@ -499,7 +466,7 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     expect(txnStatus).toBe('success');
   });
 
-  it('should be able to approve token without gas', async () => {
+  it('should be able to approve token without gas', async ({ driver }) => {
     const dappHandler = await getWindowHandle({ driver });
     await driver.switchTo().window(dappHandler);
 
@@ -526,7 +493,7 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     expect(txnStatus).toBe('success');
   });
 
-  it('should be able to do a legacy send', async () => {
+  it('should be able to do a legacy send', async ({ driver }) => {
     const dappHandler = await getWindowHandle({ driver });
 
     const button = await findElementById({ id: 'sendButton', driver });
@@ -547,7 +514,7 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     await delayTime('medium');
   });
 
-  it('should be able to do a EIP 1559 send', async () => {
+  it('should be able to do a EIP 1559 send', async ({ driver }) => {
     const dappHandler = await getWindowHandle({ driver });
 
     const button = await findElementById({ id: 'sendEIP1559Button', driver });
@@ -568,7 +535,7 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     await delayTime('medium');
   });
 
-  it('should be able to deploy a collection', async () => {
+  it('should be able to deploy a collection', async ({ driver }) => {
     const dappHandler = await getWindowHandle({ driver });
 
     const button = await findElementById({
@@ -594,7 +561,7 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     await awaitTextChange('collectiblesStatus', 'Deployed', driver);
   });
 
-  it('should be able to mint a collectible', async () => {
+  it('should be able to mint a collectible', async ({ driver }) => {
     const dappHandler = await getWindowHandle({ driver });
 
     const button = await findElementById({
@@ -619,7 +586,7 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     await awaitTextChange('collectiblesStatus', 'Mint completed', driver);
   });
 
-  it('should be able to approve a collectible', async () => {
+  it('should be able to approve a collectible', async ({ driver }) => {
     const dappHandler = await getWindowHandle({ driver });
 
     const button = await findElementById({
@@ -646,7 +613,9 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     await awaitTextChange('collectiblesStatus', 'Approve completed', driver);
   });
 
-  it('should be able to set approval for all for a collectible', async () => {
+  it('should be able to set approval for all for a collectible', async ({
+    driver,
+  }) => {
     const dappHandler = await getWindowHandle({ driver });
 
     const button = await findElementById({
@@ -676,7 +645,9 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     );
   });
 
-  it('should be able to revoke approval for a collectible', async () => {
+  it('should be able to revoke approval for a collectible', async ({
+    driver,
+  }) => {
     const dappHandler = await getWindowHandle({ driver });
 
     const button = await findElementById({
@@ -702,7 +673,7 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     await awaitTextChange('collectiblesStatus', 'Revoke completed', driver);
   });
 
-  it('should be able to transfer a collectible', async () => {
+  it('should be able to transfer a collectible', async ({ driver }) => {
     const dappHandler = await getWindowHandle({ driver });
 
     const button = await findElementById({

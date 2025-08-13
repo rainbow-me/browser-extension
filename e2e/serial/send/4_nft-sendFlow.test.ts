@@ -1,66 +1,26 @@
-import { WebDriver } from 'selenium-webdriver';
-import {
-  afterAll,
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-} from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import {
-  captureScreenshot,
   delayTime,
   doNotFindElementByTestId,
   findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
   findElementByTextAndClick,
-  getExtensionIdByName,
-  getRootUrl,
   goToPopup,
   importWalletFlow,
-  initDriverWithOptions,
   querySelector,
   transactionStatus,
   waitAndClick,
 } from '../../helpers';
 import { TEST_VARIABLES } from '../../walletVariables';
 
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
-const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
-
 describe('should be able to perform the nft send flow', () => {
-  beforeAll(async () => {
-    driver = await initDriverWithOptions({
-      browser,
-      os,
-    });
-    const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-    if (!extensionId) throw new Error('Extension not found');
-    rootURL += extensionId;
-  });
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  beforeEach(async (context: any) => {
-    context.driver = driver;
-  });
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  afterEach<{ driver: WebDriver }>(async (context) => {
-    await captureScreenshot(context);
-  });
-  afterAll(() => driver?.quit());
-
-  it('should be able import a wallet via pk', async () => {
+  it('should be able import a wallet via pk', async ({ driver, rootURL }) => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.SEED_WALLET.PK);
   });
 
-  it('should be able to go to settings', async () => {
+  it('should be able to go to settings', async ({ driver, rootURL }) => {
     await goToPopup(driver, rootURL);
     await findElementByTestIdAndClick({
       id: 'home-page-header-right',
@@ -69,7 +29,9 @@ describe('should be able to perform the nft send flow', () => {
     await findElementByTestIdAndClick({ id: 'settings-link', driver });
   });
 
-  it('should be able to connect to hardhat and go to send flow', async () => {
+  it('should be able to connect to hardhat and go to send flow', async ({
+    driver,
+  }) => {
     const btn = await querySelector(
       driver,
       '[data-testid="connect-to-hardhat"]',
@@ -83,7 +45,9 @@ describe('should be able to perform the nft send flow', () => {
     });
   });
 
-  it('should be able to filter nfts and make selection on send flow', async () => {
+  it('should be able to filter nfts and make selection on send flow', async ({
+    driver,
+  }) => {
     await findElementByTestIdAndClick({ id: 'bottom-tab-nfts', driver });
     await delayTime('very-long');
     const NFTsort = await findElementByTestId({
@@ -123,11 +87,13 @@ describe('should be able to perform the nft send flow', () => {
     await findElementByTextAndClick(driver, '#7054159');
   });
 
-  it('should be able to go to review on send flow', async () => {
+  it('should be able to go to review on send flow', async ({ driver }) => {
     await findElementByTestIdAndClick({ id: 'send-review-button', driver });
   });
 
-  it('should be able to send transaction on review on send flow', async () => {
+  it('should be able to send transaction on review on send flow', async ({
+    driver,
+  }) => {
     await findElementByTestIdAndClick({
       id: 'review-confirm-button',
       driver,

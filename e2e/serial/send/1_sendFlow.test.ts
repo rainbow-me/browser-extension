@@ -1,8 +1,6 @@
-import { WebDriver } from 'selenium-webdriver';
-import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
+import { expect, it } from 'vitest';
 
 import {
-  captureScreenshot,
   delayTime,
   findElementById,
   findElementByIdAndClick,
@@ -10,11 +8,8 @@ import {
   findElementByTestIdAndClick,
   findElementByText,
   findElementByTextAndClick,
-  getExtensionIdByName,
-  getRootUrl,
   goToPopup,
   importWalletFlow,
-  initDriverWithOptions,
   querySelector,
   shortenAddress,
   transactionStatus,
@@ -23,36 +18,14 @@ import {
 } from '../../helpers';
 import { TEST_VARIABLES } from '../../walletVariables';
 
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
-const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
-
-beforeAll(async () => {
-  driver = await initDriverWithOptions({
-    browser,
-    os,
-  });
-  const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-  if (!extensionId) throw new Error('Extension not found');
-  rootURL += extensionId;
-});
-
-beforeEach<{ driver: WebDriver }>(async (context) => {
-  context.driver = driver;
-});
-
-afterEach<{ driver: WebDriver }>(async (context) => {
-  await captureScreenshot(context);
-});
-afterAll(() => driver?.quit());
-
-it('should be able import a wallet via pk', async () => {
+it('should be able import a wallet via pk', async ({ driver, rootURL }) => {
   await importWalletFlow(driver, rootURL, TEST_VARIABLES.SEED_WALLET.PK);
 });
 
-it('should be able import a second wallet via pk then switch back to wallet 1', async () => {
+it('should be able import a second wallet via pk then switch back to wallet 1', async ({
+  driver,
+  rootURL,
+}) => {
   await importWalletFlow(
     driver,
     rootURL,
@@ -70,13 +43,15 @@ it('should be able import a second wallet via pk then switch back to wallet 1', 
   );
 });
 
-it('should be able to go to setings', async () => {
+it('should be able to go to setings', async ({ driver, rootURL }) => {
   await goToPopup(driver, rootURL);
   await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
   await findElementByTestIdAndClick({ id: 'settings-link', driver });
 });
 
-it('should be able to connect to hardhat and go to send flow', async () => {
+it('should be able to connect to hardhat and go to send flow', async ({
+  driver,
+}) => {
   const btn = await querySelector(driver, '[data-testid="connect-to-hardhat"]');
   await waitAndClick(btn, driver);
   const button = await findElementByText(driver, 'Disconnect from Hardhat');
@@ -85,7 +60,7 @@ it('should be able to connect to hardhat and go to send flow', async () => {
   await findElementByTestIdAndClick({ id: 'header-link-send', driver });
 });
 
-it('should be able to save contact on send flow', async () => {
+it('should be able to save contact on send flow', async ({ driver }) => {
   const input = await querySelector(driver, '[data-testid="to-address-input"]');
   await input.sendKeys('rainbowwallet.eth');
   await delayTime('very-long');
@@ -110,7 +85,7 @@ it('should be able to save contact on send flow', async () => {
   expect(displayNameText).toBe('rainbowwallet.eth');
 });
 
-it('should be able to edit contact on send flow', async () => {
+it('should be able to edit contact on send flow', async ({ driver }) => {
   await findElementByTestIdAndClick({
     id: 'navbar-contact-button-edit',
     driver,
@@ -140,7 +115,7 @@ it('should be able to edit contact on send flow', async () => {
   expect(displayNameText).toBe('rianbo');
 });
 
-it('should be able to delete contact on send flow', async () => {
+it('should be able to delete contact on send flow', async ({ driver }) => {
   await findElementByTestIdAndClick({
     id: 'navbar-contact-button-edit',
     driver,
@@ -164,7 +139,9 @@ it('should be able to delete contact on send flow', async () => {
   expect(displayNameText).toBe('rainbowwallet.eth');
 });
 
-it('should be able to clear to address input on send flow', async () => {
+it('should be able to clear to address input on send flow', async ({
+  driver,
+}) => {
   await findElementByTestIdAndClick({
     id: 'input-wrapper-close-to-address-input',
     driver,
@@ -174,7 +151,7 @@ it('should be able to clear to address input on send flow', async () => {
   await delayTime('long');
 });
 
-it('should be able to select token on send flow', async () => {
+it('should be able to select token on send flow', async ({ driver }) => {
   await findElementByTestIdAndClick({
     id: 'input-wrapper-dropdown-token-input',
     driver,
@@ -186,7 +163,9 @@ it('should be able to select token on send flow', async () => {
   });
 });
 
-it('should be able to click max and switch on send flow', async () => {
+it('should be able to click max and switch on send flow', async ({
+  driver,
+}) => {
   const switchButton = await querySelector(
     driver,
     '[data-testid="value-input-switch"]',
@@ -198,11 +177,13 @@ it('should be able to click max and switch on send flow', async () => {
   await findElementByTestIdAndClick({ id: 'value-input-max', driver });
 });
 
-it('should be able to go to review on send flow', async () => {
+it('should be able to go to review on send flow', async ({ driver }) => {
   await findElementByTestIdAndClick({ id: 'send-review-button', driver });
 });
 
-it('should be able to interact with destination menu on review on send flow', async () => {
+it('should be able to interact with destination menu on review on send flow', async ({
+  driver,
+}) => {
   await findElementByTestIdAndClick({
     id: 'send-review-edit-contact-trigger',
     driver,
@@ -225,14 +206,19 @@ it('should be able to interact with destination menu on review on send flow', as
   await waitAndClick(copyContactItem, driver);
 });
 
-it('should be able to send transaction on review on send flow', async () => {
+it('should be able to send transaction on review on send flow', async ({
+  driver,
+}) => {
   await delayTime('very-long');
   await findElementByTestIdAndClick({ id: 'review-confirm-button', driver });
   const sendTransaction = await transactionStatus();
   expect(await sendTransaction).toBe('success');
 });
 
-it('should be able to rename a wallet from the wallet switcher', async () => {
+it('should be able to rename a wallet from the wallet switcher', async ({
+  driver,
+  rootURL,
+}) => {
   await goToPopup(driver, rootURL);
   await findElementByIdAndClick({
     id: 'header-account-name-shuffle',
@@ -250,7 +236,9 @@ it('should be able to rename a wallet from the wallet switcher', async () => {
   expect(newWalletName).toBeTruthy();
 });
 
-it('should be able to go to send flow and choose recipient based on suggestions', async () => {
+it('should be able to go to send flow and choose recipient based on suggestions', async ({
+  driver,
+}) => {
   await findElementByTestIdAndClick({
     id: 'navbar-button-with-back',
     driver,
@@ -271,7 +259,7 @@ it('should be able to go to send flow and choose recipient based on suggestions'
   );
 });
 
-it('should be able to select token on send flow', async () => {
+it('should be able to select token on send flow', async ({ driver }) => {
   await findElementByTestIdAndClick({
     id: 'input-wrapper-dropdown-token-input',
     driver,
@@ -285,11 +273,13 @@ it('should be able to select token on send flow', async () => {
   await findElementByTestIdAndClick({ id: 'value-input-max', driver });
 });
 
-it('should be able to go to review on send flow', async () => {
+it('should be able to go to review on send flow', async ({ driver }) => {
   await findElementByTestIdAndClick({ id: 'send-review-button', driver });
 });
 
-it('should be able to send transaction on review on send flow', async () => {
+it('should be able to send transaction on review on send flow', async ({
+  driver,
+}) => {
   await findElementByTestIdAndClick({ id: 'review-confirm-button', driver });
   const sendTransaction = await transactionStatus();
   expect(await sendTransaction).toBe('success');

@@ -1,43 +1,25 @@
 /* eslint-disable no-await-in-loop */
-import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import {
   delayTime,
   findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
-  getExtensionIdByName,
-  getRootUrl,
   goToPopup,
   importWalletFlow,
-  initDriverWithOptions,
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
 
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
-const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
-
 describe('Visit NFTs Gallery and Details Pages', () => {
-  beforeAll(async () => {
-    driver = await initDriverWithOptions({
-      browser,
-      os,
-    });
-    const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-    if (!extensionId) throw new Error('Extension not found');
-    rootURL += extensionId;
-  });
-  afterAll(async () => await driver?.quit());
-
-  it('should be able import a wallet via seed', async () => {
+  it('should be able import a wallet via seed', async ({ driver, rootURL }) => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);
   });
 
-  it('should be able to navigate to NFT details', async () => {
+  it('should be able to navigate to NFT details', async ({
+    driver,
+    rootURL,
+  }) => {
     await goToPopup(driver, rootURL);
     await findElementByTestIdAndClick({ id: 'bottom-tab-nfts', driver });
     await delayTime('short');
@@ -49,12 +31,12 @@ describe('Visit NFTs Gallery and Details Pages', () => {
     expect(nftName).toBeTruthy();
   });
 
-  it('should display last sales price', async () => {
+  it('should display last sales price', async ({ driver }) => {
     const lastSalesPrice = await findElementByText(driver, '0.0179');
     expect(lastSalesPrice).toBeTruthy();
   });
 
-  it('should display NFT description', async () => {
+  it('should display NFT description', async ({ driver }) => {
     const description = await findElementByText(
       driver,
       'Bring your citizen to life',
@@ -62,34 +44,34 @@ describe('Visit NFTs Gallery and Details Pages', () => {
     expect(description).toBeTruthy();
   });
 
-  it('should display NFT traits', async () => {
+  it('should display NFT traits', async ({ driver }) => {
     const bodyTrait = await findElementByText(driver, 'ALPINEMIKI');
     expect(bodyTrait).toBeTruthy();
     const materialTrait = await findElementByText(driver, 'ORANGE');
     expect(materialTrait).toBeTruthy();
   });
 
-  it('should display token standard', async () => {
+  it('should display token standard', async ({ driver }) => {
     const tokenStandard = await findElementByText(driver, 'ERC721');
     expect(tokenStandard).toBeTruthy();
   });
 
-  it('should display token contract', async () => {
+  it('should display token contract', async ({ driver }) => {
     const contractAddress = await findElementByText(driver, '0x6171…f23b');
     expect(contractAddress).toBeTruthy();
   });
 
-  it('should display contract creator', async () => {
+  it('should display contract creator', async ({ driver }) => {
     const creatorAddress = await findElementByText(driver, 'adworld.eth');
     expect(creatorAddress).toBeTruthy();
   });
 
-  it('should display chain', async () => {
+  it('should display chain', async ({ driver }) => {
     const networkName = await findElementByText(driver, 'Base');
     expect(networkName).toBeTruthy();
   });
 
-  it('should correctly display external link', async () => {
+  it('should correctly display external link', async ({ driver }) => {
     const externalLinkButton = await findElementByTestId({
       id: 'nft-link-button-adworld.game',
       driver,
@@ -97,7 +79,9 @@ describe('Visit NFTs Gallery and Details Pages', () => {
     expect(externalLinkButton).toBeTruthy();
   });
 
-  it('should return back to gallery and select another NFT (ENS)', async () => {
+  it('should return back to gallery and select another NFT (ENS)', async ({
+    driver,
+  }) => {
     await findElementByTestIdAndClick({
       id: 'navbar-button-with-back',
       driver,
@@ -111,14 +95,14 @@ describe('Visit NFTs Gallery and Details Pages', () => {
     expect(ensName).toBeTruthy();
   });
 
-  it('should display ens registration date accurately', async () => {
+  it('should display ens registration date accurately', async ({ driver }) => {
     const registeredLabel = await findElementByText(driver, 'Registered on');
     expect(registeredLabel).toBeTruthy();
     const registeredDate = await findElementByText(driver, 'Mar 27, 2023');
     expect(registeredDate).toBeTruthy();
   });
 
-  it('should display and format ens expiration date', async () => {
+  it('should display and format ens expiration date', async ({ driver }) => {
     const expirationLabel = await findElementByText(driver, 'Expires in');
     expect(expirationLabel).toBeTruthy();
     const expirationValue = await findElementByTestId({
@@ -130,7 +114,7 @@ describe('Visit NFTs Gallery and Details Pages', () => {
     expect(expirationValueText !== 'Invalid Date');
   });
 
-  it('should be able to change nfts display mode', async () => {
+  it('should be able to change nfts display mode', async ({ driver }) => {
     await findElementByTestIdAndClick({
       id: 'navbar-button-with-back',
       driver,

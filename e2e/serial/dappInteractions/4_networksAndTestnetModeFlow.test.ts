@@ -1,18 +1,8 @@
-import { WebDriver } from 'selenium-webdriver';
-import {
-  afterAll,
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-} from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { ChainId } from '~/core/types/chains';
 
 import {
-  captureScreenshot,
   clickAcceptRequestButton,
   connectToTestDapp,
   delayTime,
@@ -20,48 +10,26 @@ import {
   executePerformShortcut,
   findElementByTestId,
   findElementByTestIdAndClick,
-  getExtensionIdByName,
-  getRootUrl,
   goBackTwice,
   goToPopup,
   importWalletFlow,
-  initDriverWithOptions,
   navigateToSettingsNetworks,
   querySelector,
   waitAndClick,
 } from '../../helpers';
 import { TEST_VARIABLES } from '../../walletVariables';
 
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
 const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
 
 describe.runIf(browser !== 'firefox')('Networks & Testnet Mode flows', () => {
-  beforeAll(async () => {
-    driver = await initDriverWithOptions({
-      browser,
-      os,
-    });
-    const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-    if (!extensionId) throw new Error('Extension not found');
-    rootURL += extensionId;
-  });
-  afterAll(async () => await driver?.quit());
-
-  beforeEach<{ driver: WebDriver }>(async (context) => {
-    context.driver = driver;
-  });
-
-  afterEach<{ driver: WebDriver }>(async (context) => {
-    await captureScreenshot(context);
-  });
-  it('should be able import a wallet via seed', async () => {
+  it('should be able import a wallet via seed', async ({ driver, rootURL }) => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);
   });
 
-  it('should be able to connect to bx test dapp', async () => {
+  it('should be able to connect to bx test dapp', async ({
+    driver,
+    rootURL,
+  }) => {
     const { dappHandler } = await connectToTestDapp(driver);
 
     await clickAcceptRequestButton(driver);
@@ -80,7 +48,10 @@ describe.runIf(browser !== 'firefox')('Networks & Testnet Mode flows', () => {
     await goToPopup(driver, rootURL, '#/home');
   });
 
-  it('should be able to toggle developer tools', async () => {
+  it('should be able to toggle developer tools', async ({
+    driver,
+    rootURL,
+  }) => {
     await navigateToSettingsNetworks(driver, rootURL);
     await delayTime('short');
 
@@ -92,7 +63,9 @@ describe.runIf(browser !== 'firefox')('Networks & Testnet Mode flows', () => {
     await goBackTwice(driver);
   });
 
-  it('should enable and disable testnet mode clicking testnet mode in menu', async () => {
+  it('should enable and disable testnet mode clicking testnet mode in menu', async ({
+    driver,
+  }) => {
     await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
     await findElementByTestIdAndClick({ id: 'testnet-mode', driver });
     await delayTime('medium');
@@ -111,7 +84,7 @@ describe.runIf(browser !== 'firefox')('Networks & Testnet Mode flows', () => {
     expect(testnetBar2).toBeFalsy();
   });
 
-  it('should disable testnet mode with shortcut', async () => {
+  it('should disable testnet mode with shortcut', async ({ driver }) => {
     await executePerformShortcut({ driver, key: 't' });
     await delayTime('medium');
     const testnetBar = await findElementByTestId({
@@ -128,7 +101,10 @@ describe.runIf(browser !== 'firefox')('Networks & Testnet Mode flows', () => {
     expect(testnetBar2).toBeFalsy();
   });
 
-  it('should go to networks setting and disable ethereum networks', async () => {
+  it('should go to networks setting and disable ethereum networks', async ({
+    driver,
+    rootURL,
+  }) => {
     await navigateToSettingsNetworks(driver, rootURL);
     await findElementByTestIdAndClick({
       driver,
@@ -144,7 +120,9 @@ describe.runIf(browser !== 'firefox')('Networks & Testnet Mode flows', () => {
     });
   });
 
-  it('should go back to home and check ethereum networks are not available in dapp menu', async () => {
+  it('should go back to home and check ethereum networks are not available in dapp menu', async ({
+    driver,
+  }) => {
     await goBackTwice(driver);
     await findElementByTestIdAndClick({ id: 'home-page-header-left', driver });
     await findElementByTestIdAndClick({
@@ -163,7 +141,9 @@ describe.runIf(browser !== 'firefox')('Networks & Testnet Mode flows', () => {
     expect(foundOptimism).toBeTruthy();
   });
 
-  it('should enable testnet mode and check testnet available networks', async () => {
+  it('should enable testnet mode and check testnet available networks', async ({
+    driver,
+  }) => {
     await executePerformShortcut({ driver, key: 't' });
     await findElementByTestIdAndClick({ id: 'home-page-header-left', driver });
     await findElementByTestIdAndClick({

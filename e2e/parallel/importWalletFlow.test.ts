@@ -1,40 +1,19 @@
-import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, it } from 'vitest';
+import { describe, it } from 'vitest';
 
-import {
-  checkWalletName,
-  getExtensionIdByName,
-  getRootUrl,
-  importWalletFlow,
-  initDriverWithOptions,
-} from '../helpers';
+import { checkWalletName, importWalletFlow } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
 
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
-const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
-
 describe('Import wallet with a secret phrase flow', () => {
-  beforeAll(async () => {
-    driver = await initDriverWithOptions({
-      browser,
-      os,
-    });
-    const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-    if (!extensionId) throw new Error('Extension not found');
-    rootURL += extensionId;
-  });
-  afterAll(async () => driver?.quit());
-
-  it('should be able import a wallet via seed', async () => {
+  it('should be able import a wallet via seed', async ({ driver, rootURL }) => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);
   });
-  it('should display account name', async () => {
+  it('should display account name', async ({ driver, rootURL }) => {
     await checkWalletName(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.ADDRESS);
   });
-  it('should be able import a wallet with a 24 word seed phrase', async () => {
+  it('should be able import a wallet with a 24 word seed phrase', async ({
+    driver,
+    rootURL,
+  }) => {
     await importWalletFlow(
       driver,
       rootURL,
@@ -43,7 +22,10 @@ describe('Import wallet with a secret phrase flow', () => {
       true,
     );
   });
-  it('should display account name of the 24 word seed phrase wallet', async () => {
+  it('should display account name of the 24 word seed phrase wallet', async ({
+    driver,
+    rootURL,
+  }) => {
     await checkWalletName(
       driver,
       rootURL,

@@ -1,57 +1,30 @@
-import { WebDriver } from 'selenium-webdriver';
-import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
+import { expect, it } from 'vitest';
 
 import {
-  captureScreenshot,
   checkExtensionURL,
   delayTime,
   executePerformShortcut,
   findElementByTestId,
   findElementByTestIdAndClick,
-  getExtensionIdByName,
-  getRootUrl,
   importWalletFlow,
-  initDriverWithOptions,
   navigateToSettingsNetworks,
   typeOnTextInput,
 } from '../../helpers';
 import { TEST_VARIABLES } from '../../walletVariables';
 
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
-const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
-
-beforeAll(async () => {
-  driver = await initDriverWithOptions({
-    browser,
-    os,
-  });
-  const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-  if (!extensionId) throw new Error('Extension not found');
-  rootURL += extensionId;
-});
-
-beforeEach<{ driver: WebDriver }>(async (context) => {
-  context.driver = driver;
-});
-
-afterEach<{ driver: WebDriver }>(async (context) => {
-  await captureScreenshot(context);
-});
-afterAll(() => driver?.quit());
-
-it('should be able import a wallet via pk', async () => {
+it('should be able import a wallet via pk', async ({ driver, rootURL }) => {
   await importWalletFlow(driver, rootURL, TEST_VARIABLES.SEED_WALLET.PK);
 });
 
-it('should be able to naviagate to network settings', async () => {
+it('should be able to naviagate to network settings', async ({
+  driver,
+  rootURL,
+}) => {
   await navigateToSettingsNetworks(driver, rootURL);
   await checkExtensionURL(driver, 'networks');
 });
 
-it('should be able to search and filter networks', async () => {
+it('should be able to search and filter networks', async ({ driver }) => {
   await findElementByTestIdAndClick({ driver, id: 'custom-chain-link' });
   await checkExtensionURL(driver, 'custom-networks');
 
@@ -101,7 +74,9 @@ it('should be able to search and filter networks', async () => {
   await delayTime('medium');
 });
 
-it('should be able to navigate from list to manual form', async () => {
+it('should be able to navigate from list to manual form', async ({
+  driver,
+}) => {
   // Click on the manual form link
   await checkExtensionURL(driver, 'custom-networks');
   await findElementByTestIdAndClick({
@@ -117,7 +92,7 @@ it('should be able to navigate from list to manual form', async () => {
   await checkExtensionURL(driver, 'custom-networks');
 });
 
-it('should be able to add a custom network', async () => {
+it('should be able to add a custom network', async ({ driver }) => {
   await findElementByTestIdAndClick({
     driver,
     id: 'add-custom-network-manual',
@@ -153,7 +128,7 @@ it('should be able to add a custom network', async () => {
   await delayTime('long'); // wait for confirm toast to disappear
 });
 
-it('should be able to add a custom testnet network', async () => {
+it('should be able to add a custom testnet network', async ({ driver }) => {
   await findElementByTestIdAndClick({ driver, id: 'custom-chain-link' });
   await checkExtensionURL(driver, 'custom-networks');
   await findElementByTestIdAndClick({
@@ -193,7 +168,9 @@ it('should be able to add a custom testnet network', async () => {
   await delayTime('long'); // wait for confirm toast to disappear
 });
 
-it('should be able to add a known custom network from list', async () => {
+it('should be able to add a known custom network from list', async ({
+  driver,
+}) => {
   await findElementByTestIdAndClick({ driver, id: 'custom-chain-link' });
   await checkExtensionURL(driver, 'custom-networks');
 
@@ -221,7 +198,9 @@ it('should be able to add a known custom network from list', async () => {
   await delayTime('very-long'); // wait for confirm toast to disappear
 });
 
-it('should be able to add a custom ETH RPC and switch to it', async () => {
+it('should be able to add a custom ETH RPC and switch to it', async ({
+  driver,
+}) => {
   await findElementByTestIdAndClick({ driver, id: 'network-row-1' });
   await checkExtensionURL(driver, 'rpcs');
 
@@ -283,7 +262,7 @@ it('should be able to add a custom ETH RPC and switch to it', async () => {
   expect(await activeRPC.getText()).toContain('Active');
 });
 
-it('should be able to add a custom token', async () => {
+it('should be able to add a custom token', async ({ driver }) => {
   await delayTime('very-long');
   await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
   await delayTime('very-long');

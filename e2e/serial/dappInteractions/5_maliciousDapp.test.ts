@@ -1,73 +1,35 @@
-import { WebDriver } from 'selenium-webdriver';
-import {
-  afterAll,
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-} from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import {
-  captureScreenshot,
   checkWalletName,
   delayTime,
   findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
   getAllWindowHandles,
-  getExtensionIdByName,
-  getRootUrl,
   getWindowHandle,
   goToPopup,
   importWalletFlow,
-  initDriverWithOptions,
   waitAndClick,
 } from '../../helpers';
 import { TEST_VARIABLES } from '../../walletVariables';
 
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
-const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
-
 describe('App interactions flow', () => {
-  beforeAll(async () => {
-    driver = await initDriverWithOptions({
-      browser,
-      os,
-    });
-    const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-    if (!extensionId) throw new Error('Extension not found');
-    rootURL += extensionId;
-  });
-
-  beforeEach<{ driver: WebDriver }>(async (context) => {
-    context.driver = driver;
-  });
-
-  afterEach<{ driver: WebDriver }>(async (context) => {
-    await captureScreenshot(context);
-  });
-  afterAll(() => driver?.quit());
-
-  it('should be able import a wallet via seed', async () => {
+  it('should be able import a wallet via seed', async ({ driver, rootURL }) => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);
   });
 
-  it('should display account name', async () => {
+  it('should display account name', async ({ driver, rootURL }) => {
     await checkWalletName(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.ADDRESS);
   });
 
-  it('should be able to go to setings', async () => {
+  it('should be able to go to setings', async ({ driver, rootURL }) => {
     await goToPopup(driver, rootURL);
     await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
     await findElementByTestIdAndClick({ id: 'settings-link', driver });
   });
 
-  it('should be able to connect to hardhat', async () => {
+  it('should be able to connect to hardhat', async ({ driver }) => {
     await findElementByTestIdAndClick({ id: 'connect-to-hardhat', driver });
     const button = await findElementByText(driver, 'Disconnect from Hardhat');
     expect(button).toBeTruthy();
@@ -77,7 +39,9 @@ describe('App interactions flow', () => {
     });
   });
 
-  it('should be able to navigate to the malicious app and click connect', async () => {
+  it('should be able to navigate to the malicious app and click connect', async ({
+    driver,
+  }) => {
     await delayTime('long');
     await driver.get('https://test-dap-welps.vercel.app/');
     const dappHandler = await getWindowHandle({ driver });
@@ -101,7 +65,9 @@ describe('App interactions flow', () => {
     await driver.switchTo().window(popupHandler);
   });
 
-  it('should be able to navigate to switch to BX and see malicious app warning', async () => {
+  it('should be able to navigate to switch to BX and see malicious app warning', async ({
+    driver,
+  }) => {
     await delayTime('long');
     const dappWarning = await findElementByTestId({
       id: 'malicious-request-warning',

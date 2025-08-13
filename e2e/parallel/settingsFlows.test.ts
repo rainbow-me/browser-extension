@@ -1,44 +1,25 @@
 /* eslint-disable no-await-in-loop */
-import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import {
   findElementByTestId,
   findElementByTestIdAndClick,
-  getExtensionIdByName,
-  getRootUrl,
   goBackTwice,
   importWalletFlow,
-  initDriverWithOptions,
   navigateToSettingsPrivacy,
   toggleStatus,
   typeOnTextInput,
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
 
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
 const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
 
 describe('Navigate Settings & Privacy and its flows', () => {
-  beforeAll(async () => {
-    driver = await initDriverWithOptions({
-      browser,
-      os,
-    });
-    const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-    if (!extensionId) throw new Error('Extension not found');
-    rootURL += extensionId;
-  });
-  afterAll(async () => await driver?.quit());
-
-  it('should be able import a wallet via seed', async () => {
+  it('should be able import a wallet via seed', async ({ driver, rootURL }) => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);
   });
 
-  it('should be able to toggle analytics', async () => {
+  it('should be able to toggle analytics', async ({ driver, rootURL }) => {
     await navigateToSettingsPrivacy(driver, rootURL);
 
     // find toggle status and expect to be true
@@ -61,7 +42,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
     }
   });
 
-  it('should be able to hide asset balances', async () => {
+  it('should be able to hide asset balances', async ({ driver, rootURL }) => {
     // find toggle status and expect to be false
     expect(await toggleStatus('hide-assets-toggle', driver)).toBe('false');
     // go home + check balance is shown
@@ -84,7 +65,10 @@ describe('Navigate Settings & Privacy and its flows', () => {
     expect(balanceHidden).toBeTruthy();
   });
 
-  it('should be able to change password and then lock and unlock with it', async () => {
+  it('should be able to change password and then lock and unlock with it', async ({
+    driver,
+    rootURL,
+  }) => {
     await navigateToSettingsPrivacy(driver, rootURL);
 
     await findElementByTestIdAndClick({

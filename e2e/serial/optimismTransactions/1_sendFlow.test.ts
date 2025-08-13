@@ -1,16 +1,6 @@
-import { WebDriver } from 'selenium-webdriver';
-import {
-  afterAll,
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-} from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import {
-  captureScreenshot,
   checkExtensionURL,
   checkWalletName,
   delay,
@@ -18,43 +8,15 @@ import {
   executePerformShortcut,
   findElementByTestId,
   findElementByText,
-  getExtensionIdByName,
-  getRootUrl,
   goToPopup,
   importWalletFlowUsingKeyboardNavigation,
-  initDriverWithOptions,
   navigateToElementWithTestId,
   transactionStatus,
 } from '../../helpers';
 import { TEST_VARIABLES } from '../../walletVariables';
 
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
-const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
-
 describe('Complete Hardhat Optimism send flow', () => {
-  beforeAll(async () => {
-    driver = await initDriverWithOptions({
-      browser,
-      os,
-    });
-    const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-    if (!extensionId) throw new Error('Extension not found');
-    rootURL += extensionId;
-  });
-
-  beforeEach<{ driver: WebDriver }>(async (context) => {
-    context.driver = driver;
-  });
-
-  afterEach<{ driver: WebDriver }>(async (context) => {
-    await captureScreenshot(context);
-  });
-  afterAll(() => driver?.quit());
-
-  it('should be able import a wallet via pk', async () => {
+  it('should be able import a wallet via pk', async ({ driver, rootURL }) => {
     await importWalletFlowUsingKeyboardNavigation(
       driver,
       rootURL,
@@ -62,11 +24,11 @@ describe('Complete Hardhat Optimism send flow', () => {
     );
   });
 
-  it('should display account name', async () => {
+  it('should display account name', async ({ driver, rootURL }) => {
     await checkWalletName(driver, rootURL, TEST_VARIABLES.SEED_WALLET.ADDRESS);
   });
 
-  it('should be able to go to setings', async () => {
+  it('should be able to go to setings', async ({ driver, rootURL }) => {
     await goToPopup(driver, rootURL);
     await executePerformShortcut({ driver, key: 'DECIMAL' });
     await executePerformShortcut({ driver, key: 'ARROW_DOWN' });
@@ -74,7 +36,7 @@ describe('Complete Hardhat Optimism send flow', () => {
     await checkExtensionURL(driver, 'settings');
   });
 
-  it('should be able to connect to hardhat Optimism', async () => {
+  it('should be able to connect to hardhat Optimism', async ({ driver }) => {
     await navigateToElementWithTestId({
       driver,
       testId: 'connect-to-hardhat-op',
@@ -87,12 +49,14 @@ describe('Complete Hardhat Optimism send flow', () => {
     await executePerformShortcut({ driver, key: 'ESCAPE' });
   });
 
-  it('should be able to navigate to send', async () => {
+  it('should be able to navigate to send', async ({ driver }) => {
     await executePerformShortcut({ driver, key: 's' });
     await checkExtensionURL(driver, 'send');
   });
 
-  it('should be able to nav to send field and type in address', async () => {
+  it('should be able to nav to send field and type in address', async ({
+    driver,
+  }) => {
     await executePerformShortcut({ driver, key: 'TAB', timesToPress: 2 });
     await driver
       .actions()
@@ -102,7 +66,9 @@ describe('Complete Hardhat Optimism send flow', () => {
     expect(shortenedAddress).toBeTruthy();
   });
 
-  it('should be able to select asset to send with keyboard', async () => {
+  it('should be able to select asset to send with keyboard', async ({
+    driver,
+  }) => {
     await navigateToElementWithTestId({
       driver,
       testId: 'asset-name-0x0000000000000000000000000000000000000000_10',
@@ -118,7 +84,9 @@ describe('Complete Hardhat Optimism send flow', () => {
     expect(Number(valueNum)).toBe(0);
   });
 
-  it('should be able to initiate Optimisim ETH transaction', async () => {
+  it('should be able to initiate Optimisim ETH transaction', async ({
+    driver,
+  }) => {
     await driver.actions().sendKeys('1').perform();
     const value = await findElementByTestId({ id: 'send-input-mask', driver });
     const valueNum = await value.getAttribute('value');

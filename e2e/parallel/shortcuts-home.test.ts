@@ -1,5 +1,4 @@
-import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import {
   checkExtensionURL,
@@ -12,11 +11,8 @@ import {
   findElementByTestId,
   findElementByText,
   findElementByTextAndClick,
-  getExtensionIdByName,
-  getRootUrl,
   goToPopup,
   importWalletFlowUsingKeyboardNavigation,
-  initDriverWithOptions,
   isElementFoundByText,
   querySelector,
   querySelectorWithin,
@@ -24,27 +20,15 @@ import {
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
 
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
 const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
 
 describe.runIf(browser !== 'firefox')(
   'navigate through settings flows with shortcuts',
   () => {
-    beforeAll(async () => {
-      driver = await initDriverWithOptions({
-        browser,
-        os,
-      });
-      const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-      if (!extensionId) throw new Error('Extension not found');
-      rootURL += extensionId;
-    });
-    afterAll(async () => driver.quit());
-
-    it('should be able import a wallet via seed', async () => {
+    it('should be able import a wallet via seed', async ({
+      driver,
+      rootURL,
+    }) => {
       await importWalletFlowUsingKeyboardNavigation(
         driver,
         rootURL,
@@ -52,7 +36,7 @@ describe.runIf(browser !== 'firefox')(
       );
     });
 
-    it('should display account name', async () => {
+    it('should display account name', async ({ driver, rootURL }) => {
       await checkWalletName(
         driver,
         rootURL,
@@ -60,7 +44,10 @@ describe.runIf(browser !== 'firefox')(
       );
     });
 
-    it('should be able to connect to bx test dapp', async () => {
+    it('should be able to connect to bx test dapp', async ({
+      driver,
+      rootURL,
+    }) => {
       const { dappHandler } = await connectToTestDapp(driver);
 
       await delayTime('medium');
@@ -82,14 +69,18 @@ describe.runIf(browser !== 'firefox')(
 
     // shortcut tests begin
 
-    it('should be able to navigate to connected apps + back with keyboard', async () => {
+    it('should be able to navigate to connected apps + back with keyboard', async ({
+      driver,
+    }) => {
       await executePerformShortcut({ driver, key: 'a' });
       await checkExtensionURL(driver, 'connected');
       await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
       await checkExtensionURL(driver, 'home');
     });
 
-    it('should be able to navigate to network selector + close with keyboard', async () => {
+    it('should be able to navigate to network selector + close with keyboard', async ({
+      driver,
+    }) => {
       await executePerformShortcut({ driver, key: 'n' });
       await delayTime('medium');
       await executePerformShortcut({ driver, key: 'a' });
@@ -101,7 +92,9 @@ describe.runIf(browser !== 'firefox')(
       await checkExtensionURL(driver, 'home');
     });
 
-    it('should be able to open more menu + close with keyboard', async () => {
+    it('should be able to open more menu + close with keyboard', async ({
+      driver,
+    }) => {
       await executePerformShortcut({ driver, key: 'DECIMAL' });
       await findElementByText(driver, 'Settings');
       await findElementByText(driver, 'Lock Rainbow');
@@ -117,7 +110,7 @@ describe.runIf(browser !== 'firefox')(
       expect(settingsText && lockText).toBe(false);
     });
 
-    it('should be able to use arrows to tab switch', async () => {
+    it('should be able to use arrows to tab switch', async ({ driver }) => {
       await findElementByText(driver, 'Tokens');
       await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
       await findElementByText(driver, 'Activity');
@@ -155,7 +148,9 @@ describe.runIf(browser !== 'firefox')(
       expect(activity && tokens && nfts && points).toBe(false);
     });
 
-    it('should be able to navigate to highlight asset + open context menu with keyboard', async () => {
+    it('should be able to navigate to highlight asset + open context menu with keyboard', async ({
+      driver,
+    }) => {
       await executePerformShortcut({
         driver,
         key: 'ARROW_DOWN',
@@ -194,7 +189,9 @@ describe.runIf(browser !== 'firefox')(
       expect(swap && send).toBe(false);
     });
 
-    it('should be able to navigate to highlight transaction + open context menu with keyboard', async () => {
+    it('should be able to navigate to highlight transaction + open context menu with keyboard', async ({
+      driver,
+    }) => {
       await findElementByText(driver, 'Tokens');
       await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
       await findElementByText(driver, 'Activity');
@@ -214,13 +211,16 @@ describe.runIf(browser !== 'firefox')(
       expect(txHash).toBe(false);
     });
 
-    it('should navigate to send page using Cmd+K', async () => {
+    it('should navigate to send page using Cmd+K', async ({ driver }) => {
       await executePerformShortcut({ driver, key: 'k' });
       await executePerformShortcut({ driver, key: 'ENTER' });
       await checkExtensionURL(driver, 'send');
     });
 
-    it('should navigate to my wallets section in Cmd+K', async () => {
+    it('should navigate to my wallets section in Cmd+K', async ({
+      driver,
+      rootURL,
+    }) => {
       await goToPopup(driver, rootURL);
       await executePerformShortcut({ driver, key: 'k' });
       await executePerformShortcut({
@@ -235,7 +235,7 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({ driver, key: 'ESCAPE' });
     });
 
-    it('should be able to lock extension with keyboard', async () => {
+    it('should be able to lock extension with keyboard', async ({ driver }) => {
       await executePerformShortcut({ driver, key: 'DECIMAL' });
       await executePerformShortcut({ driver, key: 'l' });
       await findElementByText(driver, 'Welcome back');

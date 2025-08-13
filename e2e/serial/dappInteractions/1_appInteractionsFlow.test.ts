@@ -1,20 +1,10 @@
 import { verifyMessage, verifyTypedData } from '@ethersproject/wallet';
-import { WebDriver } from 'selenium-webdriver';
 import { getAddress, isHex } from 'viem';
-import {
-  afterAll,
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-} from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { ChainId } from '~/core/types/chains';
 
 import {
-  captureScreenshot,
   clickAcceptRequestButton,
   connectToTestDapp,
   delayTime,
@@ -23,14 +13,11 @@ import {
   findElementByTestIdAndClick,
   findElementByText,
   getAllWindowHandles,
-  getExtensionIdByName,
-  getRootUrl,
   getTextFromText,
   getWindowHandle,
   goToPopup,
   goToTestApp,
   goToWelcome,
-  initDriverWithOptions,
   querySelector,
   shortenAddress,
   switchWallet,
@@ -71,34 +58,9 @@ const TYPED_MESSAGE = {
 };
 const MESSAGE = 'rainbow rocks 🌈';
 
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
-const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
-
 describe('App interactions flow', () => {
-  beforeAll(async () => {
-    driver = await initDriverWithOptions({
-      browser,
-      os,
-    });
-    const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-    if (!extensionId) throw new Error('Extension not found');
-    rootURL += extensionId;
-  });
-
-  beforeEach<{ driver: WebDriver }>(async (context) => {
-    context.driver = driver;
-  });
-
-  afterEach<{ driver: WebDriver }>(async (context) => {
-    await captureScreenshot(context);
-  });
-  afterAll(() => driver?.quit());
-
   // Import a wallet
-  it('should be able import a wallet via pk', async () => {
+  it('should be able import a wallet via pk', async ({ driver, rootURL }) => {
     //  Start from welcome screen
     await goToWelcome(driver, rootURL);
     await findElementByTestIdAndClick({
@@ -132,20 +94,23 @@ describe('App interactions flow', () => {
     await findElementByText(driver, 'Rainbow is ready to use');
   });
 
-  it('should be able to go to setings', async () => {
+  it('should be able to go to setings', async ({ driver, rootURL }) => {
     await goToPopup(driver, rootURL);
     await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
     await findElementByTestIdAndClick({ id: 'settings-link', driver });
   });
 
-  it.todo('should be able to set rainbow as default wallet', async () => {
-    await findElementByTestIdAndClick({
-      id: 'set-rainbow-default-toggle',
-      driver,
-    });
-  });
+  it.todo(
+    'should be able to set rainbow as default wallet',
+    async ({ driver }) => {
+      await findElementByTestIdAndClick({
+        id: 'set-rainbow-default-toggle',
+        driver,
+      });
+    },
+  );
 
-  it('should be able to connect to hardhat', async () => {
+  it('should be able to connect to hardhat', async ({ driver }) => {
     await findElementByTestIdAndClick({ id: 'connect-to-hardhat', driver });
     const button = await findElementByText(driver, 'Disconnect from Hardhat');
     expect(button).toBeTruthy();
@@ -155,7 +120,10 @@ describe('App interactions flow', () => {
     });
   });
 
-  it('should be able to add a new wallet via pk 2', async () => {
+  it('should be able to add a new wallet via pk 2', async ({
+    driver,
+    rootURL,
+  }) => {
     await goToPopup(driver, rootURL, '#/home');
     await findElementByIdAndClick({
       id: 'header-account-name-shuffle',
@@ -180,7 +148,10 @@ describe('App interactions flow', () => {
     });
   });
 
-  it('should be able to add a new wallet via pk 3', async () => {
+  it('should be able to add a new wallet via pk 3', async ({
+    driver,
+    rootURL,
+  }) => {
     await goToPopup(driver, rootURL, '#/home');
     await findElementByIdAndClick({
       id: 'header-account-name-shuffle',
@@ -205,7 +176,10 @@ describe('App interactions flow', () => {
     });
   });
 
-  it('should be able to switch to the first pk wallet', async () => {
+  it('should be able to switch to the first pk wallet', async ({
+    driver,
+    rootURL,
+  }) => {
     await delayTime('medium');
     await switchWallet(TEST_VARIABLES.SEED_WALLET.ADDRESS, rootURL, driver);
     await delayTime('very-long');
@@ -213,7 +187,7 @@ describe('App interactions flow', () => {
     expect(wallet).toBe(shortenAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS));
   });
 
-  it('should be able to connect to bx test dapp', async () => {
+  it('should be able to connect to bx test dapp', async ({ driver }) => {
     const { dappHandler } = await connectToTestDapp(driver);
 
     // switch account
@@ -244,7 +218,10 @@ describe('App interactions flow', () => {
     expect(ensLabel).toBeTruthy();
   });
 
-  it('should be able to go back to extension and switch account and chain', async () => {
+  it('should be able to go back to extension and switch account and chain', async ({
+    driver,
+    rootURL,
+  }) => {
     await goToPopup(driver, rootURL, '#/home');
     await findElementByTestIdAndClick({ id: 'home-page-header-left', driver });
     await findElementByTestIdAndClick({
@@ -279,7 +256,7 @@ describe('App interactions flow', () => {
     expect(actualAccountAddress.includes(expectedAccountAddress)).toBe(true);
   });
 
-  it('should be able to accept a signing request', async () => {
+  it('should be able to accept a signing request', async ({ driver }) => {
     await goToTestApp(driver);
 
     const dappHandler = await getWindowHandle({ driver });
@@ -311,7 +288,9 @@ describe('App interactions flow', () => {
     );
   });
 
-  it('should be able to accept a typed data signing request', async () => {
+  it('should be able to accept a typed data signing request', async ({
+    driver,
+  }) => {
     const dappHandler = await getWindowHandle({ driver });
 
     const button = await querySelector(driver, '[id="signTypedData"]');
@@ -344,7 +323,7 @@ describe('App interactions flow', () => {
     );
   });
 
-  it('should be able to accept a transaction request', async () => {
+  it('should be able to accept a transaction request', async ({ driver }) => {
     await delayTime('long');
     await goToTestApp(driver);
 
@@ -365,7 +344,10 @@ describe('App interactions flow', () => {
     await driver.switchTo().window(dappHandler);
   });
 
-  it('should be able to disconnect from connected dapps', async () => {
+  it('should be able to disconnect from connected dapps', async ({
+    driver,
+    rootURL,
+  }) => {
     await goToPopup(driver, rootURL, '#/home');
     await findElementByTestIdAndClick({ id: 'home-page-header-left', driver });
     await findElementByTestIdAndClick({

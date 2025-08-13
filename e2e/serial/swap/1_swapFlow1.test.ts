@@ -1,11 +1,10 @@
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
-import { Key, WebDriver } from 'selenium-webdriver';
-import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
+import { Key } from 'selenium-webdriver';
+import { expect, it } from 'vitest';
 
 import { ChainId } from '~/core/types/chains';
 
 import {
-  captureScreenshot,
   clearInput,
   delay,
   delayTime,
@@ -17,13 +16,10 @@ import {
   findElementByTestIdAndDoubleClick,
   findElementByText,
   findElementByTextAndClick,
-  getExtensionIdByName,
-  getRootUrl,
   getTextFromText,
   getTextFromTextInput,
   goToPopup,
   goToWelcome,
-  initDriverWithOptions,
   querySelector,
   typeOnTextInput,
   waitAndClick,
@@ -31,38 +27,11 @@ import {
 import { convertRawAmountToDecimalFormat, subtract } from '../../numbers';
 import { SWAP_VARIABLES, TEST_VARIABLES } from '../../walletVariables';
 
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
-const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
-
-beforeAll(async () => {
-  driver = await initDriverWithOptions({
-    browser,
-    os,
-  });
-  const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-  if (!extensionId) throw new Error('Extension not found');
-  rootURL += extensionId;
-});
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-beforeEach(async (context: any) => {
-  context.driver = driver;
-});
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-afterEach<{ driver: WebDriver }>(async (context) => {
-  await captureScreenshot(context);
-});
-afterAll(() => driver?.quit());
-
 const WALLET_TO_USE_SECRET = TEST_VARIABLES.SWAPS_WALLET.PK;
 
 const WALLET_TO_USE_ADDRESS = TEST_VARIABLES.SWAPS_WALLET.ADDRESS;
 
-it('should be able import a wallet via pk', async () => {
+it('should be able import a wallet via pk', async ({ driver, rootURL }) => {
   //  Start from welcome screen
   await goToWelcome(driver, rootURL);
   await findElementByTestIdAndClick({
@@ -95,13 +64,13 @@ it('should be able import a wallet via pk', async () => {
   await findElementByText(driver, 'Rainbow is ready to use');
 });
 
-it('should be able to go to setings', async () => {
+it('should be able to go to setings', async ({ driver, rootURL }) => {
   await goToPopup(driver, rootURL);
   await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
   await findElementByTestIdAndClick({ id: 'settings-link', driver });
 });
 
-it('should be able to connect to hardhat', async () => {
+it('should be able to connect to hardhat', async ({ driver }) => {
   const btn = await querySelector(driver, '[data-testid="connect-to-hardhat"]');
   await waitAndClick(btn, driver);
   const button = await findElementByText(driver, 'Disconnect from Hardhat');
@@ -114,11 +83,13 @@ it('should be able to connect to hardhat', async () => {
   await delay(10_000);
 });
 
-it('should be able to go to swap flow', async () => {
+it('should be able to go to swap flow', async ({ driver }) => {
   await findElementByTestIdAndClick({ id: 'header-link-swap', driver });
 });
 
-it('should be able to go to swap settings and check rows are visible', async () => {
+it('should be able to go to swap settings and check rows are visible', async ({
+  driver,
+}) => {
   await findElementByTestIdAndClick({
     id: 'swap-settings-navbar-button',
     driver,
@@ -136,7 +107,7 @@ it('should be able to go to swap settings and check rows are visible', async () 
   expect(slippageRow).toBeTruthy();
 });
 
-it('should be able to interact with route settings', async () => {
+it('should be able to interact with route settings', async ({ driver }) => {
   await findElementByTestIdAndClick({
     id: 'swap-settings-route-label',
     driver,
@@ -155,7 +126,7 @@ it('should be able to interact with route settings', async () => {
   });
 });
 
-it('should be able to interact with slippage settings', async () => {
+it('should be able to interact with slippage settings', async ({ driver }) => {
   await findElementByTestIdAndClick({
     id: 'swap-settings-slippage-label',
     driver,
@@ -191,7 +162,7 @@ it('should be able to interact with slippage settings', async () => {
 
 it.todo(
   'should be able to set default values for settings and go back to swap',
-  async () => {
+  async ({ driver }) => {
     await findElementByTestIdAndClick({
       id: 'settings-use-defaults-button',
       driver,
@@ -213,7 +184,9 @@ it.todo(
   },
 );
 
-it('should be able to open token to sell input and select assets', async () => {
+it('should be able to open token to sell input and select assets', async ({
+  driver,
+}) => {
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-token-input-remove`,
     driver,
@@ -257,7 +230,9 @@ it('should be able to open token to sell input and select assets', async () => {
   expect(toBuyInputEthSelected).toBeTruthy();
 });
 
-it('should be able to select same asset than asset to buy as asset to sell and remove the asset to buy', async () => {
+it('should be able to select same asset than asset to buy as asset to sell and remove the asset to buy', async ({
+  driver,
+}) => {
   await findElementByTestIdAndClick({
     id: 'token-to-sell-search-token-input',
     driver,
@@ -293,7 +268,9 @@ it('should be able to select same asset than asset to buy as asset to sell and r
   expect(toBuyInputNoneSelected).toBeTruthy();
 });
 
-it('should be able to open press max on token to sell input', async () => {
+it('should be able to open press max on token to sell input', async ({
+  driver,
+}) => {
   const fiatValueText = await getTextFromTextInput({
     id: 'token-to-sell-info-fiat-value-input',
     driver,
@@ -315,7 +292,9 @@ it('should be able to open press max on token to sell input', async () => {
   expect(fiatValueTextAfterMax).not.toEqual('0.00');
 });
 
-it('should be able to remove token to sell and select it again', async () => {
+it('should be able to remove token to sell and select it again', async ({
+  driver,
+}) => {
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-token-input-remove`,
     driver,
@@ -338,7 +317,9 @@ it('should be able to remove token to sell and select it again', async () => {
   expect(ethValueAfterSelection).not.toEqual('');
 });
 
-it('should be able to open token to buy input and select assets', async () => {
+it('should be able to open token to buy input and select assets', async ({
+  driver,
+}) => {
   await findElementByTestIdAndClick({
     id: 'token-to-buy-search-token-input',
     driver,
@@ -360,46 +341,51 @@ it('should be able to open token to buy input and select assets', async () => {
   expect(toBuyInputDaiSelected).toBeTruthy();
 });
 
-it.todo('should be able to type native amount on sell input', async () => {
-  await findElementByTestIdAndClick({
-    id: 'token-to-sell-info-fiat-value-input',
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: `token-to-sell-info-fiat-value-input`,
-    driver,
-  });
-  await delay(5_000);
-  await clearInput({
-    id: `token-to-sell-info-fiat-value-input`,
-    driver,
-  });
-  await typeOnTextInput({
-    id: `token-to-sell-info-fiat-value-input`,
-    text: 1,
-    driver,
-  });
-  await delay(10_000);
-  const fiatValueText = await getTextFromTextInput({
-    id: 'token-to-sell-info-fiat-value-input',
-    driver,
-  });
-  expect(fiatValueText).toBe('1');
+it.todo(
+  'should be able to type native amount on sell input',
+  async ({ driver }) => {
+    await findElementByTestIdAndClick({
+      id: 'token-to-sell-info-fiat-value-input',
+      driver,
+    });
+    await findElementByTestIdAndClick({
+      id: `token-to-sell-info-fiat-value-input`,
+      driver,
+    });
+    await delay(5_000);
+    await clearInput({
+      id: `token-to-sell-info-fiat-value-input`,
+      driver,
+    });
+    await typeOnTextInput({
+      id: `token-to-sell-info-fiat-value-input`,
+      text: 1,
+      driver,
+    });
+    await delay(10_000);
+    const fiatValueText = await getTextFromTextInput({
+      id: 'token-to-sell-info-fiat-value-input',
+      driver,
+    });
+    expect(fiatValueText).toBe('1');
 
-  const assetToSellInputText = await getTextFromTextInput({
-    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
-    driver,
-  });
-  expect(assetToSellInputText).not.toBe('');
+    const assetToSellInputText = await getTextFromTextInput({
+      id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+      driver,
+    });
+    expect(assetToSellInputText).not.toBe('');
 
-  const assetToBuyInputText = await getTextFromTextInput({
-    id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
-    driver,
-  });
-  expect(assetToBuyInputText).not.toBe('');
-});
+    const assetToBuyInputText = await getTextFromTextInput({
+      id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+      driver,
+    });
+    expect(assetToBuyInputText).not.toBe('');
+  },
+);
 
-it('should be able to open remove token to buy and check favorites and verified lists are visible', async () => {
+it('should be able to open remove token to buy and check favorites and verified lists are visible', async ({
+  driver,
+}) => {
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-buy-token-input-remove`,
     driver,
@@ -416,7 +402,9 @@ it('should be able to open remove token to buy and check favorites and verified 
   expect(verifiedSection).toBeTruthy();
 });
 
-it('should be able to favorite a token and check the info button is present', async () => {
+it('should be able to favorite a token and check the info button is present', async ({
+  driver,
+}) => {
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.WBTC_MAINNET_ID}-favorites-token-to-buy-row-info-button`,
     driver,
@@ -434,7 +422,9 @@ it('should be able to favorite a token and check the info button is present', as
   });
 });
 
-it('should be able to check price and balance of token to buy', async () => {
+it('should be able to check price and balance of token to buy', async ({
+  driver,
+}) => {
   const tokenToBuyInfoPrice = await getTextFromText({
     id: 'token-to-buy-info-price',
     driver,
@@ -450,7 +440,7 @@ it('should be able to check price and balance of token to buy', async () => {
 // we fixed a preexisting issue with output swaps, which breaks
 // this test. Need to rethink if we even want this test anymore.
 // keeping it here for now but skipping the validations.
-it.todo('should be able to flip correctly', async () => {
+it.todo('should be able to flip correctly', async ({ driver }) => {
   await findElementByTestIdAndDoubleClick({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
@@ -494,33 +484,38 @@ it.todo('should be able to flip correctly', async () => {
 });
 
 // broken right now and unsure why. need to investigate more.
-it.todo('should be able to check insufficient asset for swap', async () => {
-  await findElementByTestIdAndDoubleClick({
-    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
-    driver,
-  });
+it.todo(
+  'should be able to check insufficient asset for swap',
+  async ({ driver }) => {
+    await findElementByTestIdAndDoubleClick({
+      id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+      driver,
+    });
 
-  await findElementByTestIdAndClick({
-    id: 'swap-flip-button',
-    driver,
-  });
+    await findElementByTestIdAndClick({
+      id: 'swap-flip-button',
+      driver,
+    });
 
-  await typeOnTextInput({
-    id: `${SWAP_VARIABLES.WBTC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
-    text: 1,
-    driver,
-  });
+    await typeOnTextInput({
+      id: `${SWAP_VARIABLES.WBTC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+      text: 1,
+      driver,
+    });
 
-  await delay(10_000);
+    await delay(10_000);
 
-  const confirmButtonText = await getTextFromText({
-    id: 'swap-confirmation-button-ready',
-    driver,
-  });
-  expect(confirmButtonText).toEqual('Insufficient WBTC');
-});
+    const confirmButtonText = await getTextFromText({
+      id: 'swap-confirmation-button-ready',
+      driver,
+    });
+    expect(confirmButtonText).toEqual('Insufficient WBTC');
+  },
+);
 
-it('should be able to check insufficient native asset for gas', async () => {
+it('should be able to check insufficient native asset for gas', async ({
+  driver,
+}) => {
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
@@ -544,7 +539,7 @@ it('should be able to check insufficient native asset for gas', async () => {
   expect(confirmButtonText).toEqual('Insufficient ETH for gas');
 });
 
-it.todo('should be able to see small market warning', async () => {
+it.todo('should be able to see small market warning', async ({ driver }) => {
   const swapWarning = await findElementByTestId({
     id: 'swap-warning-price-impact',
     driver,
@@ -552,7 +547,7 @@ it.todo('should be able to see small market warning', async () => {
   expect(swapWarning).toBeTruthy();
 });
 
-it('should be able to filter assets to buy by network', async () => {
+it('should be able to filter assets to buy by network', async ({ driver }) => {
   // OP
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.WBTC_MAINNET_ID}-token-to-buy-token-input-remove`,
@@ -673,7 +668,7 @@ it('should be able to filter assets to buy by network', async () => {
 });
 
 // the list shouldn't be including an asset with no routes to it
-it.todo('should be able to see no route explainer', async () => {
+it.todo('should be able to see no route explainer', async ({ driver }) => {
   await findElementByTestIdAndClick({
     id: 'token-to-buy-networks-trigger',
     driver,
@@ -757,57 +752,60 @@ it.todo('should be able to see no route explainer', async () => {
 });
 
 // same asset on other networks does not show in testnet mode (makes sense we won't crosschain sepolia -> mainnet)
-it.todo('should be able to find exact match on other networks', async () => {
-  await findElementByTestIdAndClick({
-    id: `${SWAP_VARIABLES.OP_OPTIMISM_ID}-token-to-sell-token-input-remove`,
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: `token-to-sell-search-token-input`,
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: 'token-to-sell-token-input-dropdown-toggle',
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: `${SWAP_VARIABLES.GMX_ARBITRUM_ID}-token-to-buy-token-input-remove`,
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: 'token-to-buy-networks-trigger',
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: `switch-network-item-${ChainId.polygon}`,
-    driver,
-  });
-  await typeOnTextInput({
-    id: 'token-to-buy-search-token-input',
-    driver,
-    text: 'optimism',
-  });
-  const onOtherNetworksSections = await findElementByTestId({
-    id: 'other_networks-token-to-buy-section',
-    driver,
-  });
-  expect(onOtherNetworksSections).toBeTruthy();
+it.todo(
+  'should be able to find exact match on other networks',
+  async ({ driver }) => {
+    await findElementByTestIdAndClick({
+      id: `${SWAP_VARIABLES.OP_OPTIMISM_ID}-token-to-sell-token-input-remove`,
+      driver,
+    });
+    await findElementByTestIdAndClick({
+      id: `token-to-sell-search-token-input`,
+      driver,
+    });
+    await findElementByTestIdAndClick({
+      id: 'token-to-sell-token-input-dropdown-toggle',
+      driver,
+    });
+    await findElementByTestIdAndClick({
+      id: `${SWAP_VARIABLES.GMX_ARBITRUM_ID}-token-to-buy-token-input-remove`,
+      driver,
+    });
+    await findElementByTestIdAndClick({
+      id: 'token-to-buy-networks-trigger',
+      driver,
+    });
+    await findElementByTestIdAndClick({
+      id: `switch-network-item-${ChainId.polygon}`,
+      driver,
+    });
+    await typeOnTextInput({
+      id: 'token-to-buy-search-token-input',
+      driver,
+      text: 'optimism',
+    });
+    const onOtherNetworksSections = await findElementByTestId({
+      id: 'other_networks-token-to-buy-section',
+      driver,
+    });
+    expect(onOtherNetworksSections).toBeTruthy();
 
-  await findElementByTestIdAndClick({
-    id: `${SWAP_VARIABLES.OP_OPTIMISM_ID}-other_networks-token-to-buy-row`,
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: `${SWAP_VARIABLES.OP_OPTIMISM_ID}-token-to-buy-token-input-remove`,
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: 'token-to-buy-search-token-input',
-    driver,
-  });
-});
+    await findElementByTestIdAndClick({
+      id: `${SWAP_VARIABLES.OP_OPTIMISM_ID}-other_networks-token-to-buy-row`,
+      driver,
+    });
+    await findElementByTestIdAndClick({
+      id: `${SWAP_VARIABLES.OP_OPTIMISM_ID}-token-to-buy-token-input-remove`,
+      driver,
+    });
+    await findElementByTestIdAndClick({
+      id: 'token-to-buy-search-token-input',
+      driver,
+    });
+  },
+);
 
-it('should be able to go to review a swap', async () => {
+it('should be able to go to review a swap', async ({ driver }) => {
   const toSellInputEthSelected = await findElementByTestId({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
@@ -851,7 +849,9 @@ it('should be able to go to review a swap', async () => {
   });
 });
 
-it('should be able to see swap information in review sheet', async () => {
+it('should be able to see swap information in review sheet', async ({
+  driver,
+}) => {
   const ethAssetToSellAssetCard = await findElementByTestId({
     id: `ETH-asset-to-sell-swap-asset-card`,
     driver,
@@ -968,7 +968,7 @@ it('should be able to see swap information in review sheet', async () => {
   expect(swapReviewTitleText).toBe('Review & Swap');
 });
 
-it('should be able to execute swap', async () => {
+it('should be able to execute swap', async ({ driver }) => {
   const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545');
   await provider.ready;
 

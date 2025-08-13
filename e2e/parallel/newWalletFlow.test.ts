@@ -1,43 +1,21 @@
 /* eslint-disable no-await-in-loop */
-import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import {
   delayTime,
   findElementByTestIdAndClick,
   findElementByText,
-  getExtensionIdByName,
-  getRootUrl,
   goToPopup,
   goToWelcome,
-  initDriverWithOptions,
   passSecretQuiz,
   querySelector,
   typeOnTextInput,
   waitAndClick,
 } from '../helpers';
 
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
-const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
-
 describe('New wallet flow', () => {
-  beforeAll(async () => {
-    driver = await initDriverWithOptions({
-      browser,
-      os,
-    });
-    const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-    if (!extensionId) throw new Error('Extension not found');
-    rootURL += extensionId;
-  });
-
-  afterAll(async () => driver?.quit());
-
   // Create a new wallet
-  it('should be able create a new wallet', async () => {
+  it('should be able create a new wallet', async ({ driver, rootURL }) => {
     await goToWelcome(driver, rootURL);
 
     await findElementByTestIdAndClick({
@@ -64,7 +42,7 @@ describe('New wallet flow', () => {
     await findElementByText(driver, 'Rainbow is ready to use');
   });
 
-  it('should display account name', async () => {
+  it('should display account name', async ({ driver, rootURL }) => {
     await goToPopup(driver, rootURL);
     const label = await querySelector(
       driver,
@@ -75,7 +53,10 @@ describe('New wallet flow', () => {
     expect(actual.substr(0, 2) === '0x' && actual.length === 11).toEqual(true);
   });
 
-  it('should be able to lock and unlock the extension', async () => {
+  it('should be able to lock and unlock the extension', async ({
+    driver,
+    rootURL,
+  }) => {
     await goToPopup(driver, rootURL, '#/home');
     // Lock
     await findElementByTestIdAndClick({
@@ -89,7 +70,10 @@ describe('New wallet flow', () => {
     await findElementByTestIdAndClick({ id: 'unlock-button', driver });
   });
 
-  it('should be able to test the sandbox for the popup', async () => {
+  it('should be able to test the sandbox for the popup', async ({
+    driver,
+    rootURL,
+  }) => {
     await goToPopup(driver, rootURL, '#/home');
     await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
     await findElementByTestIdAndClick({ id: 'settings-link', driver });
@@ -103,7 +87,9 @@ describe('New wallet flow', () => {
     await driver.switchTo().alert().accept();
   });
 
-  it('should be able to test the sandbox for the background', async () => {
+  it('should be able to test the sandbox for the background', async ({
+    driver,
+  }) => {
     const btn = await querySelector(
       driver,
       '[data-testid="test-sandbox-background"]',

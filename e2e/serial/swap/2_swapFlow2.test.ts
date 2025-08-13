@@ -1,20 +1,11 @@
 import { Contract } from '@ethersproject/contracts';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { ChainId } from '@rainbow-me/swaps';
-import { Key, WebDriver } from 'selenium-webdriver';
+import { Key } from 'selenium-webdriver';
 import { erc20Abi } from 'viem';
-import {
-  afterAll,
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-} from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import {
-  captureScreenshot,
   clearInput,
   delay,
   delayTime,
@@ -24,12 +15,9 @@ import {
   findElementByTestIdAndClick,
   findElementByText,
   findElementByTextAndClick,
-  getExtensionIdByName,
-  getRootUrl,
   getTextFromText,
   goToPopup,
   goToWelcome,
-  initDriverWithOptions,
   querySelector,
   typeOnTextInput,
   waitAndClick,
@@ -38,37 +26,12 @@ import {
 import { convertRawAmountToDecimalFormat, subtract } from '../../numbers';
 import { SWAP_VARIABLES, TEST_VARIABLES } from '../../walletVariables';
 
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
-const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
-
 const WALLET_TO_USE_SECRET = TEST_VARIABLES.SWAPS_WALLET.PK;
 
 const WALLET_TO_USE_ADDRESS = TEST_VARIABLES.SWAPS_WALLET.ADDRESS;
 
 describe('Swap Flow 2', () => {
-  beforeAll(async () => {
-    driver = await initDriverWithOptions({
-      browser,
-      os,
-    });
-    const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-    if (!extensionId) throw new Error('Extension not found');
-    rootURL += extensionId;
-  });
-
-  beforeEach<{ driver: WebDriver }>(async (context) => {
-    context.driver = driver;
-  });
-
-  afterEach<{ driver: WebDriver }>(async (context) => {
-    await captureScreenshot(context);
-  });
-  afterAll(() => driver?.quit());
-
-  it('should be able import a wallet via pk', async () => {
+  it('should be able import a wallet via pk', async ({ driver, rootURL }) => {
     //  Start from welcome screen
     await goToWelcome(driver, rootURL);
     await findElementByTestIdAndClick({
@@ -102,13 +65,13 @@ describe('Swap Flow 2', () => {
     await findElementByText(driver, 'Rainbow is ready to use');
   });
 
-  it('should be able to go to setings', async () => {
+  it('should be able to go to setings', async ({ driver, rootURL }) => {
     await goToPopup(driver, rootURL);
     await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
     await findElementByTestIdAndClick({ id: 'settings-link', driver });
   });
 
-  it('should be able to connect to hardhat', async () => {
+  it('should be able to connect to hardhat', async ({ driver }) => {
     const btn = await querySelector(
       driver,
       '[data-testid="connect-to-hardhat"]',
@@ -122,13 +85,13 @@ describe('Swap Flow 2', () => {
     });
   });
 
-  it('should be able to go to swap flow', async () => {
+  it('should be able to go to swap flow', async ({ driver }) => {
     await delayTime('very-long');
     await findElementByTestIdAndClick({ id: 'header-link-swap', driver });
     await delayTime('long');
   });
 
-  it('should be able to go to review a unlock and swap', async () => {
+  it('should be able to go to review a unlock and swap', async ({ driver }) => {
     await findElementByTestIdAndClick({
       id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-token-input-remove`,
       driver,
@@ -157,7 +120,7 @@ describe('Swap Flow 2', () => {
   // TODO: fix. with mocking set up, currently this swap fails. You can see in the anvil logs that it is reverted.
   // My best guess is its on the provider level bc its throwing a custom error. Ideally we can un-skip this
   // bc its our only token > ETH swap we have on e2e. To see behavior just un-skip and run tests.
-  it.todo('should be able to execute unlock and swap', async () => {
+  it.todo('should be able to execute unlock and swap', async ({ driver }) => {
     const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545');
     await provider.ready;
     await delayTime('short');
@@ -226,85 +189,88 @@ describe('Swap Flow 2', () => {
     expect(Number(usdcBalanceDifference)).toBe(50);
   });
 
-  it.todo('should be able to go to swap flow', async () => {
+  it.todo('should be able to go to swap flow', async ({ driver }) => {
     await findElementByTestIdAndClick({ id: 'header-link-swap', driver });
     await delayTime('long');
   });
 
-  it.todo('should be able to go to review a crosschain swap', async () => {
-    await findElementByTestIdAndClick({
-      id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-row`,
-      driver,
-    });
-    await delayTime('medium');
-    const toSellInputDaiSelected = await findElementByTestId({
-      id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
-      driver,
-    });
-    expect(toSellInputDaiSelected).toBeTruthy();
-    await findElementByTestIdAndClick({
-      id: 'token-to-buy-search-token-input',
-      driver,
-    });
-    await findElementByTestIdAndClick({
-      id: 'token-to-buy-networks-trigger',
-      driver,
-    });
-    await findElementByTestIdAndClick({
-      id: `switch-network-item-${ChainId.arbitrum}`,
-      driver,
-    });
-    const daiBridge = await findElementByTestId({
-      id: `${SWAP_VARIABLES.DAI_ARBITRUM_ID}-bridge-token-to-buy-row`,
-      driver,
-    });
-    expect(daiBridge).toBeTruthy();
-
-    await typeOnTextInput({
-      id: 'token-to-buy-search-token-input',
-      driver,
-      text: 'USDC',
-    });
-    await findElementByTestIdAndClick({
-      id: `${SWAP_VARIABLES.USDC_ARBITRUM_ID}-favorites-token-to-buy-row`,
-      driver,
-    });
-    const toBuyInputUsdcSelected = await findElementByTestId({
-      id: `${SWAP_VARIABLES.USDC_ARBITRUM_ID}-token-to-buy-swap-token-input-swap-input-mask`,
-      driver,
-    });
-    expect(toBuyInputUsdcSelected).toBeTruthy();
-    await findElementByTestIdAndClick({
-      id: 'token-to-sell-info-max-button',
-      driver,
-    });
-    await waitUntilElementByTestIdIsPresent({
-      id: 'swap-confirmation-button-ready',
-      driver,
-    });
-
-    await findElementByTestIdAndClick({
-      id: 'swap-confirmation-button-ready',
-      driver,
-    });
-
-    await delayTime('long');
-    const longWaitExplainerFound = await doNotFindElementByTestId({
-      id: 'explainer-sheet-swap-long-wait',
-      driver,
-    });
-
-    if (longWaitExplainerFound) {
+  it.todo(
+    'should be able to go to review a crosschain swap',
+    async ({ driver }) => {
       await findElementByTestIdAndClick({
-        id: 'explainer-action-button',
+        id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-row`,
         driver,
       });
-    }
-  });
+      await delayTime('medium');
+      const toSellInputDaiSelected = await findElementByTestId({
+        id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+        driver,
+      });
+      expect(toSellInputDaiSelected).toBeTruthy();
+      await findElementByTestIdAndClick({
+        id: 'token-to-buy-search-token-input',
+        driver,
+      });
+      await findElementByTestIdAndClick({
+        id: 'token-to-buy-networks-trigger',
+        driver,
+      });
+      await findElementByTestIdAndClick({
+        id: `switch-network-item-${ChainId.arbitrum}`,
+        driver,
+      });
+      const daiBridge = await findElementByTestId({
+        id: `${SWAP_VARIABLES.DAI_ARBITRUM_ID}-bridge-token-to-buy-row`,
+        driver,
+      });
+      expect(daiBridge).toBeTruthy();
+
+      await typeOnTextInput({
+        id: 'token-to-buy-search-token-input',
+        driver,
+        text: 'USDC',
+      });
+      await findElementByTestIdAndClick({
+        id: `${SWAP_VARIABLES.USDC_ARBITRUM_ID}-favorites-token-to-buy-row`,
+        driver,
+      });
+      const toBuyInputUsdcSelected = await findElementByTestId({
+        id: `${SWAP_VARIABLES.USDC_ARBITRUM_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+        driver,
+      });
+      expect(toBuyInputUsdcSelected).toBeTruthy();
+      await findElementByTestIdAndClick({
+        id: 'token-to-sell-info-max-button',
+        driver,
+      });
+      await waitUntilElementByTestIdIsPresent({
+        id: 'swap-confirmation-button-ready',
+        driver,
+      });
+
+      await findElementByTestIdAndClick({
+        id: 'swap-confirmation-button-ready',
+        driver,
+      });
+
+      await delayTime('long');
+      const longWaitExplainerFound = await doNotFindElementByTestId({
+        id: 'explainer-sheet-swap-long-wait',
+        driver,
+      });
+
+      if (longWaitExplainerFound) {
+        await findElementByTestIdAndClick({
+          id: 'explainer-action-button',
+          driver,
+        });
+      }
+    },
+  );
 
   it.todo(
     'should be able to see crosschain swap information in review sheet',
-    async () => {
+    async ({ driver }) => {
       await delayTime('long');
       const daiAssetToSellAssetCard = await findElementByTestId({
         id: `DAI-asset-to-sell-swap-asset-card`,
@@ -455,7 +421,7 @@ describe('Swap Flow 2', () => {
     },
   );
 
-  it.todo('should be able to go to review a bridge', async () => {
+  it.todo('should be able to go to review a bridge', async ({ driver }) => {
     await findElementByTestIdAndClick({
       id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-token-to-sell-token-input-remove`,
       driver,
@@ -529,7 +495,7 @@ describe('Swap Flow 2', () => {
 
   it.todo(
     'should be able to see bridge information in review sheet',
-    async () => {
+    async ({ driver }) => {
       const ethAssetToSellAssetCard = await findElementByTestId({
         id: `ETH-asset-to-sell-swap-asset-card`,
         driver,
