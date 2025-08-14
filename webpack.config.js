@@ -27,6 +27,12 @@ if (process.env.ANALYZE_BUNDLE === 'true') {
   );
 }
 
+// Include e2e mocks when IS_TESTING is true
+const copyPatterns = [{ from: 'static', to: './' }];
+if (process.env.IS_TESTING === 'true') {
+  copyPatterns.push({ from: 'e2e/mocks', to: './e2e/mocks' });
+}
+
 const manifestOverride = manifest;
 manifestOverride.content_security_policy.extension_pages = `${
   manifestOverride.content_security_policy.extension_pages
@@ -74,6 +80,12 @@ module.exports = {
           },
         ],
       },
+      // Add JSON loader for mock files
+      {
+        test: /\.json$/,
+        type: 'json',
+        include: [resolve(__dirname, 'e2e/mocks')],
+      },
     ],
   },
   plugins: [
@@ -90,7 +102,7 @@ module.exports = {
       filename: 'popup.html',
     }),
     new CopyPlugin({
-      patterns: [{ from: 'static', to: './' }],
+      patterns: copyPatterns,
     }),
     new MiniCssExtractPlugin(),
     new ProgressPlugin(),
