@@ -18,7 +18,18 @@ syncStores();
 syncNetworksStore('popup');
 
 if (process.env.IS_TESTING === 'true') {
-  await import('../../../e2e/mockFetch').then((m) => m.mockFetch());
+  console.log('[Popup] IS_TESTING is true, initializing mockFetch...');
+  await import('../../../e2e/mockFetch')
+    .then((m) => {
+      console.log('[Popup] mockFetch module loaded');
+      m.mockFetch();
+      console.log('[Popup] mockFetch initialized');
+    })
+    .catch((e) => {
+      console.error('[Popup] Failed to load mockFetch:', e);
+    });
+} else {
+  console.log('[Popup] IS_TESTING is not true:', process.env.IS_TESTING);
 }
 
 const domContainer = document.querySelector('#app') as Element;

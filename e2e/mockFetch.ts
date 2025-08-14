@@ -1,10 +1,67 @@
 import { Hex, sha256 } from 'viem';
 
+// Type for JSON modules that may have a default export
+type MockData = {
+  default?: unknown;
+  [key: string]: unknown;
+};
+
+// Type declarations for Webpack's require.context
+declare const require: {
+  context(
+    directory: string,
+    useSubdirectories: boolean,
+    regExp: RegExp,
+  ): {
+    keys(): string[];
+    (id: string): MockData;
+  };
+};
+
 interface MockService {
   hostname: string;
   getFilenameFromUrl: (url: URL) => string;
   getMockPath: (filename: string) => string;
   logPrefix: string;
+}
+
+// Webpack needs explicit imports to bundle JSON files
+// We'll create a context for each mock directory
+const swapMocksContext = require.context(
+  './mocks/swap_quotes',
+  false,
+  /\.json$/,
+);
+
+const userAssetsMocksContext = require.context(
+  './mocks/user_assets',
+  false,
+  /\.json$/,
+);
+
+// Create maps of available mocks
+const swapMocks = new Map<string, MockData>();
+const userAssetsMocks = new Map<string, MockData>();
+
+// Load all mocks at initialization
+try {
+  swapMocksContext.keys().forEach((key: string) => {
+    const fileName = key.replace('./', '');
+    swapMocks.set(fileName, swapMocksContext(key));
+  });
+  console.log(`[MockFetch] Loaded ${swapMocks.size} swap quote mocks`);
+} catch (e) {
+  console.error('[MockFetch] Failed to load swap mocks:', e);
+}
+
+try {
+  userAssetsMocksContext.keys().forEach((key: string) => {
+    const fileName = key.replace('./', '');
+    userAssetsMocks.set(fileName, userAssetsMocksContext(key));
+  });
+  console.log(`[MockFetch] Loaded ${userAssetsMocks.size} user asset mocks`);
+} catch (e) {
+  console.error('[MockFetch] Failed to load user asset mocks:', e);
 }
 
 const MOCK_SERVICES: MockService[] = [
@@ -36,6 +93,12 @@ const MOCK_SERVICES: MockService[] = [
 ];
 
 export function mockFetch() {
+  console.log('[MockFetch] Initializing mock fetch system', {
+    IS_TESTING: process.env.IS_TESTING,
+    NODE_ENV: process.env.NODE_ENV,
+    availableServices: MOCK_SERVICES.map((s) => s.hostname),
+  });
+
   const nativeFetch = window.fetch;
   window.fetch = async function mockedFetch(
     input: RequestInfo | URL,
@@ -51,34 +114,65 @@ export function mockFetch() {
     );
 
     if (mockService) {
-      console.log(`Intercepting ${mockService.logPrefix} request:`, {
-        url: url.href,
-        params: Object.fromEntries(url.searchParams),
-      });
+      console.log(
+        `[MockFetch] Intercepting ${mockService.logPrefix} request:`,
+        {
+          url: url.href,
+          params: Object.fromEntries(url.searchParams),
+          pathname: url.pathname,
+        },
+      );
 
       const fileName = mockService.getFilenameFromUrl(url);
       const mockPath = mockService.getMockPath(fileName);
-      console.log(`Looking for mock file: ${mockPath}`);
+      console.log(`[MockFetch] Looking for mock file:`, {
+        mockPath,
+        fileName,
+        hash: fileName.replace('.json', ''),
+      });
 
       try {
-        // Fetch the mock JSON file as a static resource
-        // This works better with webpack's build process than dynamic imports
-        const mockUrl = chrome.runtime.getURL(`e2e/${mockPath}`);
-        console.log(`Fetching mock from: ${mockUrl}`);
+        console.log('[MockFetch] Looking up pre-loaded mock...');
 
-        const mockResponse = await nativeFetch(mockUrl);
-        if (!mockResponse.ok) {
-          throw new Error(`Failed to fetch mock: ${mockResponse.status}`);
+        // Get the mock from our pre-loaded maps
+        let mockData: MockData | undefined;
+        if (mockService.hostname === 'swap.p.rainbow.me') {
+          mockData = swapMocks.get(fileName);
+        } else if (mockService.hostname === 'addys.p.rainbow.me') {
+          mockData = userAssetsMocks.get(fileName);
         }
 
-        const mockData = await mockResponse.json();
+        if (!mockData) {
+          throw new Error(`Mock not found in pre-loaded maps: ${fileName}`);
+        }
+
         console.log(
-          `Mock response for ${mockService.logPrefix} loaded successfully`,
+          `[MockFetch] Mock response for ${mockService.logPrefix} loaded successfully`,
+          {
+            hasDefault: !!mockData.default,
+            hasData: !!mockData,
+            dataKeys: mockData.default
+              ? Object.keys(mockData.default as Record<string, unknown>).slice(
+                  0,
+                  5,
+                )
+              : Object.keys(mockData).slice(0, 5),
+          },
         );
-        return new Response(JSON.stringify(mockData), {
+        return new Response(JSON.stringify(mockData.default || mockData), {
           headers: { 'Content-Type': 'application/json' },
         });
       } catch (error) {
+        console.error(`[MockFetch] Failed to load mock:`, {
+          service: mockService.logPrefix,
+          mockPath,
+          fileName,
+          error: error instanceof Error ? error.message : error,
+          stack:
+            error instanceof Error
+              ? error.stack?.split('\n').slice(0, 3)
+              : undefined,
+        });
         const errorMessage = `
 ❌ Mock file not found for ${mockService.logPrefix}
 
