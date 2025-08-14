@@ -10,7 +10,7 @@
           "chain_id": 1,
           "price": {
             "value": 3000,
-            "changed_at": 1755198989.705,
+            "changed_at": 1755201321.368,
             "relative_change_24h": 2.5
           },
           "icon_url": "https://rainbowme-res.cloudinary.com/image/upload/v1668633477/assets/ethereum/eth.png",
@@ -41,7 +41,7 @@
           "chain_id": 1,
           "price": {
             "value": 1,
-            "changed_at": 1755198989.705,
+            "changed_at": 1755201321.368,
             "relative_change_24h": 0.1
           },
           "icon_url": "https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png",
@@ -68,7 +68,7 @@
           "chain_id": 1,
           "price": {
             "value": 1,
-            "changed_at": 1755198989.705,
+            "changed_at": 1755201321.368,
             "relative_change_24h": 0.05
           },
           "icon_url": "https://rainbowme-res.cloudinary.com/image/upload/v1668633477/assets/ethereum/0x6b175474e89094c44da98b954eedeac495271d0f.png",
@@ -95,7 +95,7 @@
           "chain_id": 10,
           "price": {
             "value": 3000,
-            "changed_at": 1755198989.705,
+            "changed_at": 1755201321.368,
             "relative_change_24h": 2.5
           },
           "icon_url": "https://rainbowme-res.cloudinary.com/image/upload/v1668633477/assets/ethereum/eth.png",
