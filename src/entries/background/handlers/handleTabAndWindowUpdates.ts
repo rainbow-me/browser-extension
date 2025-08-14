@@ -11,11 +11,11 @@ export const handleTabAndWindowUpdates = () => {
   // When a tab is removed, check if that was the last tab for that host
   // if that's the case then we need to remove the pending requests
   const clearPendingRequestsOnUpdate = (tabId: number) => {
-    const { pendingRequests } = usePendingRequestStore.getState();
+    const { pendingRequests, rejectPendingRequest } =
+      usePendingRequestStore.getState();
     pendingRequests.forEach((request) => {
       if (request.meta?.sender?.tab?.id === tabId) {
-        console.log('request', request);
-        // rejectPendingRequest(request.id);
+        rejectPendingRequest(request.id);
       }
     });
   };
