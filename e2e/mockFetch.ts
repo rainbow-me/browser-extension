@@ -68,26 +68,38 @@ export function mockFetch() {
           `${mockPath}`
         );
         console.log(
-          `Mock response for ${mockService.logPrefix} loaded from: ${mockPath}`,
+          `Mock response for ${mockService.logPrefix} loaded successfully`,
         );
         return new Response(JSON.stringify(mockData.default || mockData), {
           headers: { 'Content-Type': 'application/json' },
         });
       } catch (error) {
-        console.error(
-          `Failed to load mock for ${mockService.logPrefix} at path: ${mockPath}`,
-          error,
-        );
+        const errorMessage = `
+❌ Mock file not found for ${mockService.logPrefix}
 
-        // For debugging: log what we tried to load
-        console.log('Attempted to load:', {
-          fileName,
-          mockPath,
-          canonicalHash: fileName.replace('.json', ''),
-        });
+Requested URL: ${url.href}
+Expected mock file: ${mockPath}
+Generated hash: ${fileName.replace('.json', '')}
 
-        throw new Error(`No mock response found for ${mockService.logPrefix}`, {
-          cause: { url: url.href, mockPath },
+To fix this:
+1. Ensure the mock file exists at: e2e/${mockPath}
+2. If missing, run: npx tsx e2e/generateUserAssetMocks.ts
+3. Rebuild with IS_TESTING=true
+
+Debug info:
+- Canonical URL used for hashing: See console log above
+- Mock filename: ${fileName}
+        `.trim();
+
+        console.error(errorMessage);
+
+        throw new Error(`Mock not found: ${mockService.logPrefix}`, {
+          cause: {
+            url: url.href,
+            mockPath,
+            hash: fileName.replace('.json', ''),
+            hint: 'Run mock generation script and rebuild',
+          },
         });
       }
     }

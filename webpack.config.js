@@ -27,10 +27,11 @@ if (process.env.ANALYZE_BUNDLE === 'true') {
   );
 }
 
-// Include e2e mocks when IS_TESTING is true
+// Only include e2e mocks in test builds to avoid bundle bloat
 const copyPatterns = [{ from: 'static', to: './' }];
 if (process.env.IS_TESTING === 'true') {
   copyPatterns.push({ from: 'e2e/mocks', to: './e2e/mocks' });
+  console.log('📦 Including E2E mock files in test build');
 }
 
 const manifestOverride = manifest;
@@ -80,12 +81,7 @@ module.exports = {
           },
         ],
       },
-      // Add JSON loader for mock files
-      {
-        test: /\.json$/,
-        type: 'json',
-        include: [resolve(__dirname, 'e2e/mocks')],
-      },
+      // Note: Webpack 5 handles JSON files by default, no explicit loader needed
     ],
   },
   plugins: [

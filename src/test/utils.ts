@@ -40,54 +40,44 @@ export const ETH_MAINNET_ASSET = {
 
 export const DAI_MAINNET_ASSET = {
   address: '0x6b175474e89094c44da98b954eedeac495271d0f',
-  balance: { amount: '10000', display: '10,000.00 DAI' },
+  balance: { amount: '100000', display: '100,000.00 DAI' },
   chainId: 1,
   chainName: ChainName.mainnet,
-  colors: { primary: '#808088', fallback: '#E8EAF5' },
+  colors: { primary: '#F0B340', fallback: '#F0B340' },
   decimals: 18,
   icon_url:
-    'https://rainbowme-res.cloudinary.com/image/upload/v1668633496/assets/ethereum/0x6b175474e89094c44da98b954eedeac495271d0f.png',
+    'https://rainbowme-res.cloudinary.com/image/upload/v1668633477/assets/ethereum/0x6b175474e89094c44da98b954eedeac495271d0f.png',
   isNativeAsset: false,
-  mainnetAddress: undefined,
-  name: 'DAI',
+  mainnetAddress: '0x6b175474e89094c44da98b954eedeac495271d0f',
+  name: 'Dai',
   native: {
-    balance: { amount: '10000', display: '$10,000.00' },
+    balance: { amount: '100000', display: '$100,000.00' },
     price: { change: '0.15%', amount: 1634.18, display: '$1,634.18' },
   },
-  price: {
-    value: 1634.18,
-    relative_change_24h: 0.14646492502099484,
-  },
+  price: { value: 1.0003, relative_change_24h: 0.030007 },
   symbol: 'DAI',
   uniqueId: '0x6b175474e89094c44da98b954eedeac495271d0f_1',
 } satisfies ParsedUserAsset;
 
 export const USDC_MAINNET_ASSET = {
   address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-  balance: { amount: '10000', display: '10,000.00 USDC' },
+  balance: { amount: '50000', display: '50,000.00 USDC' },
   chainId: 1,
   chainName: ChainName.mainnet,
-  colors: { primary: '#2775CA' },
+  colors: { primary: '#2775CA', fallback: '#2775CA' },
+  decimals: 6,
   icon_url:
     'https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png',
   isNativeAsset: false,
-  mainnetAddress: undefined,
+  mainnetAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
   name: 'USD Coin',
   native: {
-    balance: { amount: '10000', display: '$10,000.00' },
-    price: {
-      amount: 1.000587633346778,
-      change: '-1.34%',
-      display: '$1.00',
-    },
+    balance: { amount: '50000', display: '$50,000.00' },
+    price: { change: '0.15%', amount: 1634.18, display: '$1,634.18' },
   },
-  price: {
-    value: 1.000587633346778,
-    relative_change_24h: -1.3378856946931859,
-  },
+  price: { value: 0.999934, relative_change_24h: -0.006725 },
   symbol: 'USDC',
-  uniqueId: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48_1' as UniqueId,
-  decimals: 6,
+  uniqueId: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48_1',
 } satisfies ParsedUserAsset;
 
 export const OPTIMISM_MAINNET_ASSET = {

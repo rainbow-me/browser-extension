@@ -228,7 +228,7 @@ function generateMocks() {
 }
 
 // Run if executed directly
-if (require.main === module) {
+if (process.argv[1] === __filename) {
   generateMocks();
   console.log('Mock generation complete!');
 }
