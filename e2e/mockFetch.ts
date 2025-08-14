@@ -61,16 +61,21 @@ export function mockFetch() {
       console.log(`Looking for mock file: ${mockPath}`);
 
       try {
-        // Dynamic import with explicit path for webpack to bundle
-        const mockData = await import(
-          /* webpackMode: "eager" */
-          /* webpackInclude: /\.json$/ */
-          `${mockPath}`
-        );
+        // Fetch the mock JSON file as a static resource
+        // This works better with webpack's build process than dynamic imports
+        const mockUrl = chrome.runtime.getURL(`e2e/${mockPath}`);
+        console.log(`Fetching mock from: ${mockUrl}`);
+
+        const mockResponse = await nativeFetch(mockUrl);
+        if (!mockResponse.ok) {
+          throw new Error(`Failed to fetch mock: ${mockResponse.status}`);
+        }
+
+        const mockData = await mockResponse.json();
         console.log(
           `Mock response for ${mockService.logPrefix} loaded successfully`,
         );
-        return new Response(JSON.stringify(mockData.default || mockData), {
+        return new Response(JSON.stringify(mockData), {
           headers: { 'Content-Type': 'application/json' },
         });
       } catch (error) {
