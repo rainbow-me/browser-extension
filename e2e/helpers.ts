@@ -74,10 +74,12 @@ export async function getAllWindowHandles({
   await delayTime('long');
   const handlers = await driver.getAllWindowHandles();
   const popupHandlerFromHandlers =
-    handlers.find((handler) => handler !== dappHandler) || '';
+    handlers.find((handler: string | undefined) => handler !== dappHandler) ||
+    '';
 
   const dappHandlerFromHandlers =
-    handlers.find((handler) => handler !== popupHandler) || '';
+    handlers.find((handler: string | undefined) => handler !== popupHandler) ||
+    '';
 
   return {
     handlers,
@@ -927,7 +929,6 @@ export async function importWalletFlowUsingKeyboardNavigation(
     await executePerformShortcut({ driver, key: 'ENTER' });
   }
 
-  // ok
   const isPrivateKey =
     walletSecret.substring(0, 2) === '0x' && walletSecret.length === 66;
 
@@ -937,7 +938,6 @@ export async function importWalletFlowUsingKeyboardNavigation(
     timesToPress: isPrivateKey ? 3 : 2,
   });
   await executePerformShortcut({ driver, key: 'ENTER' });
-  // ok
   isPrivateKey
     ? await fillPrivateKey(driver, walletSecret)
     : await fillSeedPhrase(driver, walletSecret);
@@ -1142,19 +1142,27 @@ export async function awaitTextChange(
 // custom conditions
 
 export const untilDocumentLoaded = async function () {
-  return new Condition('for document to load', async (driver) => {
-    return await driver.wait(async () => {
-      const documentReadyState = await driver.executeScript(
-        'return document.readyState',
-      );
+  return new Condition(
+    'for document to load',
+    async (driver: {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      wait: (arg0: () => Promise<boolean>, arg1: number) => any;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      executeScript: (arg0: string) => any;
+    }) => {
+      return await driver.wait(async () => {
+        const documentReadyState = await driver.executeScript(
+          'return document.readyState',
+        );
 
-      if (documentReadyState === 'complete') {
-        return true;
-      }
+        if (documentReadyState === 'complete') {
+          return true;
+        }
 
-      return false;
-    }, waitUntilTime);
-  });
+        return false;
+      }, waitUntilTime);
+    },
+  );
 };
 
 // delays
