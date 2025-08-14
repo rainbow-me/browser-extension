@@ -38,9 +38,9 @@ function generateMockResponse(
   const isEmptyWallet = address === TEST_VARIABLES.EMPTY_WALLET.ADDRESS;
 
   const ethBalance = isEmptyWallet ? '0' : '10000000000000000000000'; // 10,000 ETH
-  const usdcBalance = isEmptyWallet ? '0' : '50000000000'; // 50,000 USDC (6 decimals)
-  const daiBalance = isEmptyWallet ? '0' : '100000000000000000000000'; // 100,000 DAI (18 decimals)
-  const opBalance = isEmptyWallet ? '0' : '5000000000000000000000'; // 5,000 OP
+  const usdcBalance = isEmptyWallet ? '0' : '50000000000'; // 50,000 USDC
+  const daiBalance = isEmptyWallet ? '0' : '100000000000000000000000'; // 100,000 DAI
+  const opBalance = isEmptyWallet ? '0' : '10000000000000000000000'; // 10,000 OP ETH
 
   const response: AddressAssetsReceivedMessage = {
     payload: {
