@@ -45,7 +45,12 @@ const userAssetsMocks = new Map<string, MockData>();
 
 // Load all mocks at initialization
 try {
-  swapMocksContext.keys().forEach((key: string) => {
+  const swapKeys = swapMocksContext.keys();
+  console.log(
+    `[MockFetch] Found ${swapKeys.length} swap mock files:`,
+    swapKeys.slice(0, 5),
+  );
+  swapKeys.forEach((key: string) => {
     const fileName = key.replace('./', '');
     swapMocks.set(fileName, swapMocksContext(key));
   });
@@ -55,11 +60,22 @@ try {
 }
 
 try {
-  userAssetsMocksContext.keys().forEach((key: string) => {
+  const userKeys = userAssetsMocksContext.keys();
+  console.log(
+    `[MockFetch] Found ${userKeys.length} user asset mock files:`,
+    userKeys.slice(0, 5),
+  );
+  userKeys.forEach((key: string) => {
     const fileName = key.replace('./', '');
     userAssetsMocks.set(fileName, userAssetsMocksContext(key));
   });
   console.log(`[MockFetch] Loaded ${userAssetsMocks.size} user asset mocks`);
+  // Log first few entries to verify they're loaded
+  const firstEntries = Array.from(userAssetsMocks.entries()).slice(0, 3);
+  console.log(
+    '[MockFetch] Sample user asset mocks loaded:',
+    firstEntries.map(([k, v]) => [k, !!v]),
+  );
 } catch (e) {
   console.error('[MockFetch] Failed to load user asset mocks:', e);
 }
