@@ -1,13 +1,14 @@
+import { os } from '@orpc/server';
 import { RPCHandler } from '@orpc/server/message-port';
 
-import { popupOs } from './os';
+import { walletOs } from './os';
 import { stateRouter } from './state';
 import { walletRouter } from './wallet';
 
-export const popupRouter = popupOs.router({
-  wallet: walletRouter,
-  state: stateRouter,
-});
+export const popupRouter = {
+  wallet: walletOs.router(walletRouter),
+  state: os.router(stateRouter),
+};
 
 export type PopupRouter = typeof popupRouter;
 

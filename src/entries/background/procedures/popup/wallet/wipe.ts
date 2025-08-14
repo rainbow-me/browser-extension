@@ -1,9 +1,9 @@
 import { wipeVault } from '~/core/keychain';
 import { SessionStorage } from '~/core/storage';
 
-import { popupOs } from '../os';
+import { walletOs } from '../os';
 
-export const wipeHandler = popupOs.wallet.wipe.handler(async () => {
+export const wipeHandler = walletOs.wipe.handler(async () => {
   await wipeVault();
   await SessionStorage.set('userStatus', 'NEW');
 });

@@ -1,9 +1,7 @@
 import { getPath } from '~/core/keychain';
 
-import { popupOs } from '../os';
+import { walletOs } from '../os';
 
-export const pathHandler = popupOs.wallet.path.handler(
-  async ({ input: address }) => {
-    return await getPath(address);
-  },
-);
+export const pathHandler = walletOs.path.handler(async ({ input: address }) => {
+  return await getPath(address);
+});

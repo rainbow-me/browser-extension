@@ -1,9 +1,9 @@
 import { unlockVault } from '~/core/keychain';
 import { SessionStorage } from '~/core/storage';
 
-import { popupOs } from '../os';
+import { walletOs } from '../os';
 
-export const unlockHandler = popupOs.wallet.unlock.handler(
+export const unlockHandler = walletOs.unlock.handler(
   async ({ input: { password } }) => {
     const result = await unlockVault(password);
     if (result) {
