@@ -17,7 +17,6 @@ export { useGasStore } from './gas';
 export { useNonceStore } from './nonce';
 export { useNotificationWindowStore } from './notificationWindow';
 export { usePendingTransactionsStore } from './transactions/pendingTransactions';
-export { usePendingRequestStore } from './requests';
 export { useRainbowChainsStore } from './rainbowChains';
 export { useUserChainsStore } from './userChains';
 export { useFeatureFlagsStore } from './currentSettings/featureFlags';

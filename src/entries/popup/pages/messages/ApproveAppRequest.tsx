@@ -1,7 +1,6 @@
+import { useMutation, useQuery } from '@tanstack/react-query';
 import React, { useCallback, useEffect } from 'react';
 
-import { initializeMessenger } from '~/core/messengers';
-import { usePendingRequestStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useNotificationWindowStore } from '~/core/state/notificationWindow';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
@@ -9,6 +8,7 @@ import { TESTNET_MODE_BAR_HEIGHT } from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
 
 import { TestnetModeWatcher } from '../../components/TestnetMode/TestnetModeWatcher/TestnetModeWatcher';
+import { popupClientQueryUtils } from '../../handlers/background';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 import { isExternalPopup } from '../../utils/windows';
@@ -18,8 +18,6 @@ import { RequestAccounts } from './RequestAccounts';
 import { SendTransaction } from './SendTransaction';
 import { SignMessage } from './SignMessage';
 import { WatchAsset } from './WatchAsset';
-
-const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
 const ApproveAppRequestWrapper = ({
   children,
@@ -48,7 +46,18 @@ const ApproveAppRequestWrapper = ({
 };
 
 export const ApproveAppRequest = () => {
-  const { pendingRequests, removePendingRequest } = usePendingRequestStore();
+  const { data: pendingRequests = [], refetch: refetchPendingRequests } =
+    useQuery(popupClientQueryUtils.state.requests.getAll.queryOptions());
+  const { mutate: approvePendingRequest } = useMutation(
+    popupClientQueryUtils.state.requests.approve.mutationOptions({
+      onSuccess: () => refetchPendingRequests(),
+    }),
+  );
+  const { mutate: rejectPendingRequest } = useMutation(
+    popupClientQueryUtils.state.requests.reject.mutationOptions({
+      onSuccess: () => refetchPendingRequests(),
+    }),
+  );
   const { notificationWindows } = useNotificationWindowStore();
   // If we're on an external popup, we only want to show the request that were sent from that tab
   // otherwise we show all the requests in the extension popup
@@ -73,25 +82,23 @@ export const ApproveAppRequest = () => {
 
   const handleRequestAction = useCallback(
     ({ preventWindowClose = false }: { preventWindowClose?: boolean } = {}) => {
-      removePendingRequest(pendingRequest?.id);
       const notificationWindow =
         notificationWindows?.[
           Number(pendingRequest?.meta?.sender?.tab?.id)?.toString()
         ];
+      console.log('pendingRequests.length', pendingRequests.length);
       if (
         !preventWindowClose &&
         pendingRequests.length <= 1 &&
         notificationWindow?.id
       ) {
-        notificationWindow?.id && chrome.windows.remove(notificationWindow?.id);
+        chrome.windows.remove(notificationWindow.id);
         setTimeout(() => {
           navigate(ROUTES.HOME);
         }, 50);
       }
     },
     [
-      removePendingRequest,
-      pendingRequest?.id,
       pendingRequest?.meta?.sender?.tab?.id,
       notificationWindows,
       pendingRequests.length,
@@ -101,18 +108,21 @@ export const ApproveAppRequest = () => {
 
   const approveRequest = useCallback(
     async (payload?: unknown) => {
-      backgroundMessenger.send(`message:${pendingRequest?.id}`, payload);
+      console.log('approveRequest', pendingRequest, payload);
+      if (!pendingRequest) return;
+      approvePendingRequest({ id: pendingRequest.id, payload });
       handleRequestAction();
     },
-    [handleRequestAction, pendingRequest?.id],
+    [approvePendingRequest, handleRequestAction, pendingRequest],
   );
 
   const rejectRequest = useCallback(
     ({ preventWindowClose }: { preventWindowClose?: boolean } = {}) => {
-      backgroundMessenger.send(`message:${pendingRequest?.id}`, null);
+      if (!pendingRequest) return;
+      rejectPendingRequest({ id: pendingRequest.id });
       handleRequestAction({ preventWindowClose });
     },
-    [handleRequestAction, pendingRequest?.id],
+    [handleRequestAction, pendingRequest, rejectPendingRequest],
   );
 
   switch (pendingRequest?.method) {
