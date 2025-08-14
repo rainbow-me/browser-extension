@@ -189,12 +189,21 @@ function generateMockResponse(
 
 // Generate and save mock files
 function generateMocks() {
-  const currencies = ['usd', 'eur']; // Support multiple currencies if needed
-
   const generatedMocks: string[] = [];
 
+  // Ensure mock directories exist
+  const mocksDir = path.join(__dirname, 'mocks');
+  const userAssetsDir = path.join(mocksDir, 'user_assets');
+
+  if (!fs.existsSync(mocksDir)) {
+    fs.mkdirSync(mocksDir);
+  }
+  if (!fs.existsSync(userAssetsDir)) {
+    fs.mkdirSync(userAssetsDir);
+  }
+
   for (const address of TEST_WALLETS) {
-    for (const currency of currencies) {
+    for (const currency of ['usd']) {
       // Construct the URL with the exact chain list
       const url = `${ADDYS_BASE_URL}/${REQUESTED_CHAIN_IDS.join(
         ',',

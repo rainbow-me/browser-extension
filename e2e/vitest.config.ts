@@ -11,6 +11,7 @@ export default defineConfig({
     retry: 2,
     bail: 1,
     hookTimeout: 30_000,
+    globalSetup: path.resolve(__dirname, './globalSetup.ts'),
   },
   resolve: {
     alias: {
