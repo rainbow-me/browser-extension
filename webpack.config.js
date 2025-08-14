@@ -39,6 +39,29 @@ manifestOverride.content_security_policy.extension_pages = `${
   manifestOverride.content_security_policy.extension_pages
 } ${allowList.urls.join(' ')};`;
 
+// Add mock files to web_accessible_resources when in test mode
+if (process.env.IS_TESTING === 'true') {
+  // Ensure web_accessible_resources exists and has the correct structure
+  if (!manifestOverride.web_accessible_resources) {
+    manifestOverride.web_accessible_resources = [];
+  }
+
+  // Add mock files to the first resource entry or create one
+  const resourceEntry = manifestOverride.web_accessible_resources[0] || {
+    matches: ['<all_urls>'],
+    resources: [],
+  };
+
+  // Add e2e/mocks directory to accessible resources
+  resourceEntry.resources.push('e2e/mocks/**/*.json');
+
+  if (!manifestOverride.web_accessible_resources[0]) {
+    manifestOverride.web_accessible_resources.push(resourceEntry);
+  }
+
+  console.log('📦 Added e2e/mocks to web_accessible_resources in manifest');
+}
+
 module.exports = {
   devtool: 'cheap-module-eval-source-map',
   entry: {
