@@ -1,32 +1,18 @@
 import { Hex, sha256 } from 'viem';
 
-// Use webpack's require.context to include mock files at build time
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const requireAny: any = require as any;
-const userAssetMocksContext = requireAny.context(
-  './mocks/user_assets',
-  false,
-  /\.json$/,
-);
-const swapQuoteMocksContext = requireAny.context(
-  './mocks/swap_quotes',
-  false,
-  /\.json$/,
-);
-
 interface MockService {
   hostname: string;
   getFilenameFromUrl: (url: URL) => string;
+  getMockPath: (filename: string) => string;
   logPrefix: string;
-  context: ReturnType<typeof requireAny.context>;
 }
 
 const MOCK_SERVICES: MockService[] = [
   {
     hostname: 'swap.p.rainbow.me',
     getFilenameFromUrl: (url: URL) => `${sha256(url.href as Hex)}.json`,
+    getMockPath: (filename: string) => `./mocks/swap_quotes/${filename}`,
     logPrefix: 'swap',
-    context: swapQuoteMocksContext,
   },
   {
     hostname: 'addys.p.rainbow.me',
@@ -41,10 +27,11 @@ const MOCK_SERVICES: MockService[] = [
         url.searchParams.get('currency') || 'usd'
       ).toLowerCase();
       const canonical = `${url.origin}/v3/${chains}/${addressLower}/assets/?currency=${currency}`;
+      console.log('Canonical URL for hashing:', canonical);
       return `${sha256(canonical as Hex)}.json`;
     },
+    getMockPath: (filename: string) => `./mocks/user_assets/${filename}`,
     logPrefix: 'user assets',
-    context: userAssetMocksContext,
   },
 ];
 
@@ -70,32 +57,37 @@ export function mockFetch() {
       });
 
       const fileName = mockService.getFilenameFromUrl(url);
-      const key = `./${fileName}`;
-      console.log(`Looking for mock file: ${key}`);
+      const mockPath = mockService.getMockPath(fileName);
+      console.log(`Looking for mock file: ${mockPath}`);
 
       try {
-        const response = mockService.context(key);
-        console.log(
-          `Mock response for ${mockService.logPrefix} loaded from: ${key}`,
+        // Dynamic import with explicit path for webpack to bundle
+        const mockData = await import(
+          /* webpackMode: "eager" */
+          /* webpackInclude: /\.json$/ */
+          `${mockPath}`
         );
-        return new Response(JSON.stringify(response), {
+        console.log(
+          `Mock response for ${mockService.logPrefix} loaded from: ${mockPath}`,
+        );
+        return new Response(JSON.stringify(mockData.default || mockData), {
           headers: { 'Content-Type': 'application/json' },
         });
       } catch (error) {
         console.error(
-          `Failed to load mock for ${mockService.logPrefix} at path: ${key}`,
+          `Failed to load mock for ${mockService.logPrefix} at path: ${mockPath}`,
           error,
         );
 
-        // Log available mocks for debugging
-        const available =
-          typeof mockService.context.keys === 'function'
-            ? mockService.context.keys()
-            : [];
-        console.log(`Available ${mockService.logPrefix} mocks:`, available);
+        // For debugging: log what we tried to load
+        console.log('Attempted to load:', {
+          fileName,
+          mockPath,
+          canonicalHash: fileName.replace('.json', ''),
+        });
 
         throw new Error(`No mock response found for ${mockService.logPrefix}`, {
-          cause: { url: url.href, key },
+          cause: { url: url.href, mockPath },
         });
       }
     }
