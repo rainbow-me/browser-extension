@@ -86,6 +86,7 @@ export const ApproveAppRequest = () => {
         notificationWindows?.[
           Number(pendingRequest?.meta?.sender?.tab?.id)?.toString()
         ];
+      console.log('pendingRequests.length', pendingRequests.length);
       if (
         !preventWindowClose &&
         pendingRequests.length <= 1 &&
