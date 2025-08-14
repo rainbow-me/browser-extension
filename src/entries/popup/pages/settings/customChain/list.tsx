@@ -1,5 +1,5 @@
-import { AddressZero } from '@ethersproject/constants';
 import { useCallback, useMemo, useState } from 'react';
+import { zeroAddress } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
@@ -123,7 +123,7 @@ export function SettingsCustomChainsList() {
                     borderRadius="10px"
                     customFallbackSymbol="globe"
                     height={20}
-                    src={getCustomChainIconUrl(network.id, AddressZero)}
+                    src={getCustomChainIconUrl(network.id, zeroAddress)}
                     width={20}
                   />
                 }

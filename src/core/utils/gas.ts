@@ -3,11 +3,10 @@ import {
   Provider,
   TransactionRequest,
 } from '@ethersproject/abstract-provider';
-import { getAddress } from '@ethersproject/address';
-import { BigNumberish } from '@ethersproject/bignumber';
 import { Contract, ContractInterface } from '@ethersproject/contracts';
 import { serialize } from '@ethersproject/transactions';
 import BigNumber from 'bignumber.js';
+import { Hex, getAddress } from 'viem';
 
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { globalColors } from '~/design-system/styles/designTokens';
@@ -565,7 +564,7 @@ export const calculateL1FeeOptimism = async ({
   currentGasPrice: string;
   transactionRequest: TransactionRequest & { gas?: string };
   provider: Provider;
-}): Promise<BigNumberish | undefined> => {
+}): Promise<Hex | undefined> => {
   const transactionRequest = { ...txRequest };
   try {
     if (transactionRequest?.value) {
@@ -615,8 +614,9 @@ export const calculateL1FeeOptimism = async ({
       optimismGasOracleAbi,
       provider,
     );
-    const l1FeeInWei = await OVM_GasPriceOracle.getL1Fee(serializedTx);
-    return l1FeeInWei;
+    const l1FeeInWei: BigNumber =
+      await OVM_GasPriceOracle.getL1Fee(serializedTx);
+    return toHex(l1FeeInWei.toString()) as Hex;
   } catch (e) {
     //
   }

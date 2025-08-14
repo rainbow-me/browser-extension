@@ -1,12 +1,10 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Signer } from '@ethersproject/abstract-signer';
-import { BytesLike } from '@ethersproject/bytes';
 import { Wallet } from '@ethersproject/wallet';
 import * as bip39 from '@scure/bip39';
 import { wordlist as englishWordlist } from '@scure/bip39/wordlists/english';
 import { HDKey } from 'ethereum-cryptography/hdkey';
-import { bytesToHex } from 'ethereum-cryptography/utils';
-import { Address } from 'viem';
+import { Address, bytesToHex } from 'viem';
 import { mainnet } from 'viem/chains';
 
 import { KeychainType } from '~/core/types/keychainTypes';
@@ -41,9 +39,9 @@ const privates = new WeakMap<
     accountsEnabled: number;
     accountsDeleted: number[];
     hdPath: SupportedHDPath;
-    getWalletForAddress(address: Address): Wallet | undefined;
+    getWalletForAddress(address: Address): TWallet | undefined;
     deriveWallet(index: number): RainbowHDKey;
-    addAccount(index: number): Wallet;
+    addAccount(index: number): TWallet;
   }
 >();
 
@@ -82,7 +80,7 @@ export class HdKeychain implements IKeychain {
         return derivedWallet;
       },
 
-      addAccount: (index: number): Wallet => {
+      addAccount: (index: number): TWallet => {
         const _privates = privates.get(this)!;
         const derivedWallet = _privates.deriveWallet(index);
 
@@ -100,9 +98,9 @@ export class HdKeychain implements IKeychain {
           }
         });
 
-        const wallet = new Wallet(
-          derivedWallet.privateKey as BytesLike,
-        ) as TWallet;
+        if (!derivedWallet.privateKey) throw new Error('No private key');
+
+        const wallet = new Wallet(derivedWallet.privateKey) as TWallet;
         _privates.wallets.push({ wallet, index: derivedWallet.index });
         return wallet;
       },

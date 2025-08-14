@@ -1,7 +1,6 @@
-import { keccak256 } from '@ethersproject/keccak256';
-import { toUtf8Bytes } from '@ethersproject/strings';
 import { useQuery } from '@tanstack/react-query';
 import uts46 from 'idna-uts46-hx';
+import { keccak256, stringToBytes } from 'viem';
 
 import { ensClient } from '~/core/graphql';
 import {
@@ -45,7 +44,7 @@ function labelhash(unnormalisedLabelOrLabelhash: string) {
   }
   return isEncodedLabelhash(unnormalisedLabelOrLabelhash)
     ? '0x' + decodeLabelhash(unnormalisedLabelOrLabelhash)
-    : keccak256(toUtf8Bytes(normalizeENS(unnormalisedLabelOrLabelhash)));
+    : keccak256(stringToBytes(normalizeENS(unnormalisedLabelOrLabelhash)));
 }
 
 const fetchRegistration = async (ensName: string) => {

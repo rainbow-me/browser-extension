@@ -212,7 +212,19 @@ export function ConnectLedger() {
 
   const connectLedger = useCallback(async () => {
     const res = await wallet.connectLedger();
-    if (res?.accountsToImport?.length) {
+    if ('error' in res) {
+      setConnectingState(
+        res.error as
+          | 'needs_connect'
+          | 'needs_unlock'
+          | 'needs_app'
+          | 'needs_exclusivity',
+      );
+      clearTimeout(timer.current);
+      timer.current = setTimeout(() => {
+        connectLedger();
+      }, 5000);
+    } else {
       navigate(ROUTES.HW_WALLET_LIST, {
         state: {
           ...res,
@@ -225,18 +237,6 @@ export function ConnectLedger() {
         type: KeychainType.HardwareWalletKeychain,
         vendor: 'Ledger',
       });
-    } else if (res.error) {
-      setConnectingState(
-        res.error as
-          | 'needs_connect'
-          | 'needs_unlock'
-          | 'needs_app'
-          | 'needs_exclusivity',
-      );
-      clearTimeout(timer.current);
-      timer.current = setTimeout(() => {
-        connectLedger();
-      }, 5000);
     }
   }, [navigate, state?.direction, state?.navbarIcon]);
 
