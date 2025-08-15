@@ -2,6 +2,8 @@ const DEFAULT_HD_PATH = "m/44'/60'/0'/0";
 const DEFAULT_LEDGER_LIVE_PATH = "m/44'/60'";
 const LEGACY_LEDGER_PATH = "m/44'/60'/0'";
 
+// TODO: Move this helper out of the keychain module to keep imports clean
+
 export const getHDPathForVendorAndType = (
   index: number,
   vendor?: 'Ledger' | 'Trezor',

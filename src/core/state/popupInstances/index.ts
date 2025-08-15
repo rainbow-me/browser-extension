@@ -4,7 +4,8 @@ import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { isNativePopup } from '~/core/utils/tabs';
-import { IndependentField } from '~/entries/popup/hooks/swap/useSwapInputs';
+// eslint-disable-next-line boundaries/element-types
+import type { IndependentField } from '~/entries/popup/hooks/swap/useSwapInputs';
 
 type SendAddress = Address | 'eth' | '';
 interface CustomNetworkDraft {

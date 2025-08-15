@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Address } from 'viem';
 
+// eslint-disable-next-line boundaries/element-types
 import { getHDPathForVendorAndType } from '~/core/keychain/hdPath';
 import { i18n } from '~/core/languages';
 import {

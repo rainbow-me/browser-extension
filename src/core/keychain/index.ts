@@ -12,10 +12,12 @@ import {
 } from '@metamask/eth-sig-util';
 import { Address } from 'viem';
 
-import {
+/* eslint-disable boundaries/element-types */
+import type {
   SignMessageArguments,
   SignTypedDataArguments,
 } from '~/entries/background/handlers/handleWallets';
+/* eslint-enable boundaries/element-types */
 
 import { walletExecuteRap } from '../raps/execute';
 import { RapSwapActionParameters, RapTypes } from '../raps/references';

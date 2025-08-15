@@ -1,5 +1,6 @@
 import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
-import { Tab } from '~/entries/popup/components/Tabs/TabBar';
+// eslint-disable-next-line boundaries/element-types
+import type { Tab } from '~/entries/popup/components/Tabs/TabBar';
 
 interface TabNavigationState {
   selectedTab: Tab;
