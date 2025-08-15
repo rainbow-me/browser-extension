@@ -28,6 +28,12 @@ const REQUESTED_CHAIN_IDS = [
   59144, 80094, 81457, 534352, 7777777, 666666666,
 ];
 
+// CI seems to use a different chain list (missing: 100, 324, 59144, 534352)
+const CI_CHAIN_IDS = [
+  1, 10, 56, 130, 137, 1625, 1996, 8453, 33139, 42161, 43114, 57073, 80094,
+  81457, 7777777, 666666666,
+];
+
 // Generate mock response for a wallet address
 function generateMockResponse(
   address: string,
@@ -202,33 +208,68 @@ function generateMocks() {
     fs.mkdirSync(userAssetsDir);
   }
 
-  for (const address of TEST_WALLETS) {
+  // Generate mocks for both chain lists
+  const chainLists = [
+    { name: 'Original', chains: REQUESTED_CHAIN_IDS },
+    { name: 'CI', chains: CI_CHAIN_IDS },
+  ];
+
+  for (const { name, chains } of chainLists) {
+    console.log(`\nGenerating mocks for ${name} chain list...`);
+
+    // Generate mock for the "no address" case (happens when wallet not yet loaded)
     for (const currency of ['usd']) {
-      // Construct the URL with the exact chain list
-      const url = `${ADDYS_BASE_URL}/${REQUESTED_CHAIN_IDS.join(
+      const noAddressUrl = `${ADDYS_BASE_URL}/${chains.join(
         ',',
-      )}/${address.toLowerCase()}/assets/?currency=${currency}`;
+      )}//assets/?currency=${currency}`;
+      const hash = sha256(noAddressUrl as Hex);
 
-      // Generate hash for the URL
-      const hash = sha256(url as Hex);
+      // Generate empty response for no address
+      const emptyResponse: AddressAssetsReceivedMessage = {
+        payload: { assets: [] },
+        meta: {
+          chain_ids: chains,
+          currency: currency,
+          address: '',
+          chain_ids_with_errors: [],
+          status: 'ok',
+        },
+      };
 
-      // Generate mock response
-      const mockResponse = generateMockResponse(
-        address,
-        REQUESTED_CHAIN_IDS,
-        currency,
-      );
-
-      // Save mock to file
       const mockPath = path.join(
         __dirname,
         'mocks',
         'user_assets',
         `${hash}.json`,
       );
-      fs.writeFileSync(mockPath, JSON.stringify(mockResponse, null, 2));
+      fs.writeFileSync(mockPath, JSON.stringify(emptyResponse, null, 2));
+      generatedMocks.push(`${hash} -> ${noAddressUrl} (no address)`);
+    }
 
-      generatedMocks.push(`${hash} -> ${url}`);
+    for (const address of TEST_WALLETS) {
+      for (const currency of ['usd']) {
+        // Construct the URL with the exact chain list
+        const url = `${ADDYS_BASE_URL}/${chains.join(
+          ',',
+        )}/${address.toLowerCase()}/assets/?currency=${currency}`;
+
+        // Generate hash for the URL
+        const hash = sha256(url as Hex);
+
+        // Generate mock response
+        const mockResponse = generateMockResponse(address, chains, currency);
+
+        // Save mock to file
+        const mockPath = path.join(
+          __dirname,
+          'mocks',
+          'user_assets',
+          `${hash}.json`,
+        );
+        fs.writeFileSync(mockPath, JSON.stringify(mockResponse, null, 2));
+
+        generatedMocks.push(`${hash} -> ${url}`);
+      }
     }
   }
 
