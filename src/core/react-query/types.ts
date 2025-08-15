@@ -34,14 +34,14 @@ export type QueryConfig<
   'gcTime' | 'enabled' | 'refetchInterval' | 'retry' | 'staleTime' | 'select'
 >;
 
-export type InfiniteQueryConfig<TQueryFnData, TError, TData> = Pick<
-  UseInfiniteQueryOptions<
-    TQueryFnData,
-    TError,
-    TData,
-    TQueryFnData,
-    Array<string | { [key: string]: any }>
-  >,
+export type InfiniteQueryConfig<
+  TQueryFnData,
+  TError,
+  TData,
+  TQueryKey extends QueryKey = QueryKey,
+  TPageParam = unknown,
+> = Pick<
+  UseInfiniteQueryOptions<TQueryFnData, TError, TData, TQueryKey, TPageParam>,
   'gcTime' | 'enabled' | 'refetchInterval' | 'retry' | 'staleTime' | 'select'
 >;
 

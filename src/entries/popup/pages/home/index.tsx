@@ -1,4 +1,5 @@
 import { debug as logger } from '@sentry/core';
+import { useQuery } from '@tanstack/react-query';
 import { motion, useMotionValueEvent } from 'framer-motion';
 import {
   memo,
@@ -15,7 +16,7 @@ import { identifyWalletTypes } from '~/analytics/identify/walletTypes';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useCurrentAddressStore, usePendingRequestStore } from '~/core/state';
+import { useCurrentAddressStore } from '~/core/state';
 import { useTabNavigation } from '~/core/state/currentSettings';
 import { useErrorStore } from '~/core/state/error';
 import { goToNewTab } from '~/core/utils/tabs';
@@ -33,6 +34,7 @@ import { TabBar as NewTabBar, Tab } from '../../components/Tabs/TabBar';
 import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { WalletContextMenu } from '../../components/WalletContextMenu';
+import { popupClientQueryUtils } from '../../handlers/background';
 import { removeImportWalletSecrets } from '../../handlers/importWalletSecrets';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useCurrentHomeSheet } from '../../hooks/useCurrentHomeSheet';
@@ -148,7 +150,9 @@ export const Home = memo(function Home() {
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
   const { currentHomeSheet, isDisplayingSheet } = useCurrentHomeSheet();
   const navigate = useRainbowNavigate();
-  const { pendingRequests } = usePendingRequestStore();
+  const { data: pendingRequests } = useQuery(
+    popupClientQueryUtils.state.requests.getAll.queryOptions(),
+  );
   const prevPendingRequest = usePrevious(pendingRequests?.[0]);
   const { isWatchingWallet } = useWallets();
 

@@ -30,11 +30,10 @@ handleOpenExtensionShortcut();
 
 startPopupRouter();
 
-const popupMessenger = initializeMessenger({ connect: 'popup' });
 const inpageMessenger = initializeMessenger({ connect: 'inpage' });
 
 handleInstallExtension();
-handleProviderRequest({ popupMessenger, inpageMessenger });
+handleProviderRequest({ inpageMessenger });
 handleTabAndWindowUpdates();
 handlePrefetchDappMetadata();
 handleSetupInpage();
@@ -47,6 +46,7 @@ syncStores();
 uuid4();
 handleKeepAlive();
 
+const popupMessenger = initializeMessenger({ connect: 'popup' });
 popupMessenger.reply('rainbow_updateWagmiClient', async () => {
   const activeChains = useNetworkStore.getState().getAllActiveRpcChains();
   updateWagmiConfig(activeChains);

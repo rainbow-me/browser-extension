@@ -5,9 +5,9 @@ import {
   isVaultUnlocked,
 } from '~/core/keychain';
 
-import { popupOs } from '../os';
+import { walletOs } from '../os';
 
-export const statusHandler = popupOs.wallet.status.handler(async () => {
+export const statusHandler = walletOs.status.handler(async () => {
   const ready = await isInitialized();
   const _hasVault = ready && (await hasVault());
   const unlocked = _hasVault && (await isVaultUnlocked());

@@ -96,14 +96,20 @@ type GalleryNftsResult = QueryFunctionResult<typeof galleryNftsQueryFunction>;
 
 export function useGalleryNfts<TSelectData = GalleryNftsResult>(
   { address, sort, testnetMode, userChains }: GalleryNftsArgs,
-  config: InfiniteQueryConfig<GalleryNftsResult, Error, TSelectData> = {},
+  config: InfiniteQueryConfig<
+    GalleryNftsResult,
+    Error,
+    TSelectData,
+    ReturnType<typeof galleryNftsQueryKey>,
+    string | null
+  > = {},
 ): UseInfiniteQueryResult<TSelectData> {
   return useInfiniteQuery({
     queryKey: galleryNftsQueryKey({ address, sort, testnetMode, userChains }),
     queryFn: galleryNftsQueryFunction,
     ...config,
     getNextPageParam: (lastPage) => lastPage?.nextPage,
-    initialPageParam: null,
+    initialPageParam: null as string | null,
     refetchInterval: 60000,
     // TODO: restore this when we find a SimpleHash replacement
     // retry: 3,
