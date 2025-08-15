@@ -105,6 +105,20 @@ const MOCK_SERVICES: MockService[] = [
       const currency = (
         url.searchParams.get('currency') || 'usd'
       ).toLowerCase();
+
+      // Handle the case where there's no address (double slash in URL)
+      // This happens when the wallet hasn't loaded yet
+      if (!parts[2] || parts[2] === 'assets') {
+        // No address case: /v3/chains//assets/
+        const canonicalUrl = `${url.origin}/v3/${chains}//assets/?currency=${currency}`;
+        console.log('Canonical URL for hashing (no address):', canonicalUrl);
+        return {
+          canonicalUrl,
+          fileName: `${sha256(canonicalUrl as Hex)}.json`,
+        };
+      }
+
+      // Normal case with address
       const canonicalUrl = `${url.origin}/v3/${chains}/${addressLower}/assets/?currency=${currency}`;
       console.log('Canonical URL for hashing:', canonicalUrl);
       return {
