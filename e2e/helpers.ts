@@ -135,6 +135,12 @@ export async function initDriverWithOptions(opts: {
 
     const existingGoogChromeOptions = options.get('goog:chromeOptions') || {};
 
+    // Enable logging capabilities
+    const loggingPrefs = {
+      browser: 'ALL',
+      driver: 'ALL',
+    };
+
     options.set(
       'goog:chromeOptions',
       Object.assign(existingGoogChromeOptions, {
@@ -142,6 +148,8 @@ export async function initDriverWithOptions(opts: {
         windowTypes: ['popup', 'app'],
       }),
     );
+
+    options.set('goog:loggingPrefs', loggingPrefs);
 
     const service = new chrome.ServiceBuilder().setStdio('inherit');
 
@@ -1215,6 +1223,97 @@ export async function takeScreenshotOnFailure(context: any) {
       console.error('Error occurred while taking screenshot:', error);
     }
   });
+}
+
+export async function captureAndLogBrowserConsole(
+  driver: WebDriver,
+  label = 'Browser Console',
+) {
+  try {
+    console.log(`\n=== ${label} ===`);
+    const logs = await driver.manage().logs().get('browser');
+
+    if (!logs || logs.length === 0) {
+      console.log('No browser console logs available');
+      return [];
+    }
+
+    console.log(`Found ${logs.length} console entries:`);
+
+    // Filter and categorize logs
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mockFetchLogs: any[] = [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const testingLogs: any[] = [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const errorLogs: any[] = [];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const otherLogs: any[] = [];
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    logs.forEach((entry: any) => {
+      const message = entry.message || '';
+
+      if (message.includes('MockFetch') || message.includes('mockFetch')) {
+        mockFetchLogs.push(entry);
+      } else if (
+        message.includes('IS_TESTING') ||
+        message.includes('Popup') ||
+        message.includes('Background')
+      ) {
+        testingLogs.push(entry);
+      } else if (
+        entry.level?.name === 'SEVERE' ||
+        entry.level?.name === 'ERROR'
+      ) {
+        errorLogs.push(entry);
+      } else {
+        otherLogs.push(entry);
+      }
+    });
+
+    // Print categorized logs
+    if (mockFetchLogs.length > 0) {
+      console.log('\n📦 MockFetch Related:');
+      mockFetchLogs.forEach((entry) => {
+        console.log(`  [${entry.level?.name || 'LOG'}] ${entry.message}`);
+      });
+    }
+
+    if (testingLogs.length > 0) {
+      console.log('\n🧪 Testing Related:');
+      testingLogs.forEach((entry) => {
+        console.log(`  [${entry.level?.name || 'LOG'}] ${entry.message}`);
+      });
+    }
+
+    if (errorLogs.length > 0) {
+      console.log('\n❌ Errors:');
+      errorLogs.forEach((entry) => {
+        console.log(`  [${entry.level?.name || 'ERROR'}] ${entry.message}`);
+      });
+    }
+
+    if (otherLogs.length > 0 && otherLogs.length <= 20) {
+      console.log('\n📝 Other Logs:');
+      otherLogs.forEach((entry) => {
+        console.log(`  [${entry.level?.name || 'LOG'}] ${entry.message}`);
+      });
+    } else if (otherLogs.length > 20) {
+      console.log(
+        `\n📝 Other Logs: ${otherLogs.length} entries (showing first 20)`,
+      );
+      otherLogs.slice(0, 20).forEach((entry) => {
+        console.log(`  [${entry.level?.name || 'LOG'}] ${entry.message}`);
+      });
+    }
+
+    console.log(`=== End ${label} ===\n`);
+    return logs;
+  } catch (error) {
+    console.log(`Could not retrieve browser logs: ${error}`);
+    return [];
+  }
 }
 
 export async function performSearchTokenAddressActionsCmdK({
