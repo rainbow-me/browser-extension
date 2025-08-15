@@ -443,38 +443,41 @@ jobs:
         with:
           name: rainbowbx-${{ github.sha }}
           path: build/
-      - name: Check bundle sizes
-        run: |
-          yarn bundlewatch 2>&1 | tee bundlewatch-results.txt
+      - name: Check bundle sizes and generate report
         env:
           CI_REPO_OWNER: ${{ github.repository_owner }}
           CI_REPO_NAME: ${{ github.event.repository.name }}
           CI_COMMIT_SHA: ${{ github.sha }}
           CI_BRANCH: ${{ github.ref_name }}
-      - name: Format bundle sizes for summary
-        if: always()
         run: |
+          # Run bundlewatch and capture output
+          BUNDLEWATCH_OUTPUT=$(yarn bundlewatch 2>&1)
+          echo "$BUNDLEWATCH_OUTPUT"
+          
+          # Generate summary report
           echo "## 📦 Bundle Size Report" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           
           # Extract and display the result breakdown URL if it exists
-          if [ -f bundlewatch-results.txt ]; then
+          if [ -n "$BUNDLEWATCH_OUTPUT" ]; then
             # Look specifically for the bundlewatch result URL (ja2r7.app.goo.gl domain)
-            BREAKDOWN_URL=$(grep -A1 "Result breakdown at:" bundlewatch-results.txt | grep -oE "https://ja2r7\.app\.goo\.gl/[a-zA-Z0-9]+" | head -1)
+            BREAKDOWN_URL=$(echo "$BUNDLEWATCH_OUTPUT" | grep -A1 "Result breakdown at:" | grep -oE "https://ja2r7\.app\.goo\.gl/[a-zA-Z0-9]+" | head -1)
             if [ -n "$BREAKDOWN_URL" ]; then
               echo "📊 **[View detailed breakdown]($BREAKDOWN_URL)**" >> $GITHUB_STEP_SUMMARY
               echo "" >> $GITHUB_STEP_SUMMARY
             fi
             
             # Check overall status
-            if grep -q "bundlewatch PASS" bundlewatch-results.txt; then
+            if echo "$BUNDLEWATCH_OUTPUT" | grep -q "bundlewatch PASS"; then
               echo "✅ **Status: PASS** - All bundles are within size limits" >> $GITHUB_STEP_SUMMARY
-            elif grep -q "bundlewatch FAIL" bundlewatch-results.txt; then
+            elif echo "$BUNDLEWATCH_OUTPUT" | grep -q "bundlewatch FAIL"; then
               echo "❌ **Status: FAIL** - Some bundles exceed size limits" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "⚠️ **Action Required:** Please review the bundle size increases. If the increases are expected and justified, update the limits in \`.bundlewatchrc.json\`" >> $GITHUB_STEP_SUMMARY
             fi
             
             # Extract total size change if present
-            TOTAL_CHANGE=$(grep -oE "Everything is in check \([^)]+\)" bundlewatch-results.txt || true)
+            TOTAL_CHANGE=$(echo "$BUNDLEWATCH_OUTPUT" | grep -oE "Everything is in check \([^)]+\)" || true)
             if [ -n "$TOTAL_CHANGE" ]; then
               echo "📈 $TOTAL_CHANGE" >> $GITHUB_STEP_SUMMARY
             fi
@@ -484,7 +487,7 @@ jobs:
             echo "|------|------|-------|--------|" >> $GITHUB_STEP_SUMMARY
             
             # Parse bundlewatch output and format as markdown table
-            grep -E "PASS|FAIL" bundlewatch-results.txt | grep "./build/" | while IFS= read -r line; do
+            echo "$BUNDLEWATCH_OUTPUT" | grep -E "PASS|FAIL" | grep "./build/" | while IFS= read -r line; do
               if [[ $line == *"PASS"* ]]; then
                 STATUS="✅"
               else
@@ -497,6 +500,11 @@ jobs:
             done
           else
             echo "No bundlewatch results found" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          # Exit with failure if bundlewatch failed
+          if echo "$BUNDLEWATCH_OUTPUT" | grep -q "bundlewatch FAIL"; then
+            exit 1
           fi
   
   cleanup:
