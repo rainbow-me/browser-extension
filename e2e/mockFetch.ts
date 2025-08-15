@@ -20,7 +20,10 @@ declare const require: {
 
 interface MockService {
   hostname: string;
-  getFilenameFromUrl: (url: URL) => string;
+  getFilenameFromUrl: (url: URL) => {
+    fileName: string;
+    canonicalUrl: string;
+  };
   getMockPath: (filename: string) => string;
   logPrefix: string;
 }
@@ -83,7 +86,10 @@ try {
 const MOCK_SERVICES: MockService[] = [
   {
     hostname: 'swap.p.rainbow.me',
-    getFilenameFromUrl: (url: URL) => `${sha256(url.href as Hex)}.json`,
+    getFilenameFromUrl: (url: URL) => ({
+      canonicalUrl: url.href,
+      fileName: `${sha256(url.href as Hex)}.json`,
+    }),
     getMockPath: (filename: string) => `./mocks/swap_quotes/${filename}`,
     logPrefix: 'swap',
   },
@@ -99,9 +105,12 @@ const MOCK_SERVICES: MockService[] = [
       const currency = (
         url.searchParams.get('currency') || 'usd'
       ).toLowerCase();
-      const canonical = `${url.origin}/v3/${chains}/${addressLower}/assets/?currency=${currency}`;
-      console.log('Canonical URL for hashing:', canonical);
-      return `${sha256(canonical as Hex)}.json`;
+      const canonicalUrl = `${url.origin}/v3/${chains}/${addressLower}/assets/?currency=${currency}`;
+      console.log('Canonical URL for hashing:', canonicalUrl);
+      return {
+        canonicalUrl,
+        fileName: `${sha256(canonicalUrl as Hex)}.json`,
+      };
     },
     getMockPath: (filename: string) => `./mocks/user_assets/${filename}`,
     logPrefix: 'user assets',
@@ -115,8 +124,11 @@ export function mockFetch() {
     availableServices: MOCK_SERVICES.map((s) => s.hostname),
   });
 
-  const nativeFetch = window.fetch;
-  window.fetch = async function mockedFetch(
+  const nativeFetch = globalThis.fetch;
+  if (!nativeFetch) {
+    throw new Error('[MockFetch] Fetch API is unavailable in this environment');
+  }
+  globalThis.fetch = async function mockedFetch(
     input: RequestInfo | URL,
     init?: RequestInit,
   ) {
@@ -139,12 +151,14 @@ export function mockFetch() {
         },
       );
 
-      const fileName = mockService.getFilenameFromUrl(url);
+      const { fileName, canonicalUrl } = mockService.getFilenameFromUrl(url);
+      const hash = fileName.replace('.json', '');
       const mockPath = mockService.getMockPath(fileName);
       console.log(`[MockFetch] Looking for mock file:`, {
         mockPath,
         fileName,
-        hash: fileName.replace('.json', ''),
+        canonicalUrl,
+        hash,
       });
 
       try {
@@ -183,6 +197,8 @@ export function mockFetch() {
           service: mockService.logPrefix,
           mockPath,
           fileName,
+          canonicalUrl,
+          hash,
           error: error instanceof Error ? error.message : error,
           stack:
             error instanceof Error
@@ -193,8 +209,9 @@ export function mockFetch() {
 ❌ Mock file not found for ${mockService.logPrefix}
 
 Requested URL: ${url.href}
+Canonical URL: ${canonicalUrl}
 Expected mock file: ${mockPath}
-Generated hash: ${fileName.replace('.json', '')}
+Computed hash: ${hash}
 
 To fix this:
 1. Ensure the mock file exists at: e2e/${mockPath}

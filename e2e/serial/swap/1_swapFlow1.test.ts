@@ -5,6 +5,7 @@ import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
 import { ChainId } from '~/core/types/chains';
 
 import {
+  captureAndLogBrowserConsole,
   clearInput,
   delay,
   delayTime,
@@ -94,6 +95,9 @@ it('should be able import a wallet via pk', async () => {
   });
   await findElementByTestIdAndClick({ id: 'set-password-button', driver });
   await findElementByText(driver, 'Rainbow is ready to use');
+
+  // Capture browser logs after wallet import
+  await captureAndLogBrowserConsole(driver, 'After Wallet Import');
 });
 
 it('should be able to go to setings', async () => {
@@ -215,6 +219,9 @@ it.todo(
 );
 
 it('should be able to open token to sell input and select assets', async () => {
+  // Capture browser logs before looking for ETH element
+  await captureAndLogBrowserConsole(driver, 'Before Looking for ETH Element');
+
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-token-input-remove`,
     driver,
