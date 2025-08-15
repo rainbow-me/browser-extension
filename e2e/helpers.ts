@@ -113,6 +113,7 @@ export async function initDriverWithOptions(opts: {
   let driver;
   const args = [
     'load-extension=build/',
+    '--lang=en',
     '--log-level=3',
     '--enable-logging',
     '--no-sandbox',
@@ -151,6 +152,9 @@ export async function initDriverWithOptions(opts: {
     options.setChromeBinaryPath(chromeBinaryPath);
     options.addArguments(...args);
     options.setAcceptInsecureCerts(true);
+    options.setUserPreferences({
+      'intl.accept_languages': 'en-US,en;q=0.9',
+    });
 
     const existingGoogChromeOptions = options.get('goog:chromeOptions') || {};
 

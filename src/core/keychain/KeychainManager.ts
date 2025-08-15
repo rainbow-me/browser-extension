@@ -16,6 +16,7 @@ import { isLowerCaseMatch } from '../utils/strings';
 
 import {
   HardwareWalletKeychain,
+  type HardwareWalletVendor,
   SerializedHardwareWalletKeychain,
 } from './keychainTypes/hardwareWalletKeychain';
 import { HdKeychain, SerializedHdKeychain } from './keychainTypes/hdKeychain';
@@ -519,14 +520,16 @@ class KeychainManager {
           ? (keychain as HdKeychain).imported
           : false,
     } as {
-      vendor?: string;
+      vendor?: HardwareWalletVendor;
       type: KeychainType;
       accounts: Address[];
       imported: boolean;
     };
 
     if (keychain.type === 'HardwareWalletKeychain') {
-      wallet.vendor = (keychain as HardwareWalletKeychain).vendor as string;
+      wallet.vendor = (keychain as HardwareWalletKeychain).vendor as
+        | 'Ledger'
+        | 'Trezor';
     }
 
     return wallet;
