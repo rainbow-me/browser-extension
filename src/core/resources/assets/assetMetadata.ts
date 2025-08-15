@@ -29,10 +29,7 @@ type AssetMetadataAllNetworksArgs = {
 // ///////////////////////////////////////////////
 // Query Key
 
-const assetMetadataQueryKey = ({
-  assetAddress,
-  chainId,
-}: AssetMetadataArgs) =>
+const assetMetadataQueryKey = ({ assetAddress, chainId }: AssetMetadataArgs) =>
   createQueryKey(
     'assetMetadata',
     { assetAddress, chainId },

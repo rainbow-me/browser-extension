@@ -1,6 +1,5 @@
 build/
 docs/
 .env.d.ts
-scripts/
 static/
 src/core/graphql/__generated__/

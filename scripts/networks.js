@@ -1,8 +1,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
-const { BACKEND_NETWORKS_QUERY, CUSTOM_NETWORKS_QUERY } = require('../src/core/resources/networks/queries');
 
 const fs = require('fs-extra');
+
+const {
+  BACKEND_NETWORKS_QUERY,
+  CUSTOM_NETWORKS_QUERY,
+} = require('../src/core/resources/networks/queries.ts');
 
 /**
  * Fetches data from the GraphQL API and saves it to a JSON file.

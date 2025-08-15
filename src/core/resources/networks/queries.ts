@@ -1,4 +1,4 @@
-const BACKEND_NETWORKS_QUERY = `
+export const BACKEND_NETWORKS_QUERY = `
   query getNetworks($device: Device!, $includeTestnets: Boolean!) {
     networks(device: $device, includeTestnets: $includeTestnets) {
       id
@@ -99,7 +99,7 @@ const BACKEND_NETWORKS_QUERY = `
   }
 `;
 
-const CUSTOM_NETWORKS_QUERY = `
+export const CUSTOM_NETWORKS_QUERY = `
   query getCustomNetworks($includeTestnets: Boolean) {
     customNetworks(includeTestnets: $includeTestnets) {
       id
@@ -121,8 +121,3 @@ const CUSTOM_NETWORKS_QUERY = `
     }
   }
 `;
-
-module.exports = {
-  BACKEND_NETWORKS_QUERY,
-  CUSTOM_NETWORKS_QUERY,
-};
