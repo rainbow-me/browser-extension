@@ -86,7 +86,6 @@ export const ApproveAppRequest = () => {
         notificationWindows?.[
           Number(pendingRequest?.meta?.sender?.tab?.id)?.toString()
         ];
-      console.log('pendingRequests.length', pendingRequests.length);
       if (
         !preventWindowClose &&
         pendingRequests.length <= 1 &&
@@ -108,7 +107,6 @@ export const ApproveAppRequest = () => {
 
   const approveRequest = useCallback(
     async (payload?: unknown) => {
-      console.log('approveRequest', pendingRequest, payload);
       if (!pendingRequest) return;
       approvePendingRequest({ id: pendingRequest.id, payload });
       handleRequestAction();
