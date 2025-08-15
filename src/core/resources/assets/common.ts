@@ -98,7 +98,6 @@ export async function parseUserAssets({
       assets[DAI_MAINNET_ASSET.uniqueId] = DAI_MAINNET_ASSET;
     }
 
-    // Fetch real balances from provider
     const balanceRequests = Object.values(assets).map(async (asset) => {
       if (asset.chainId !== mainnetOrOptimismChainId) return asset;
       const provider = getProvider({ chainId: selectedHardhatChainId });
