@@ -1,5 +1,4 @@
 import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
-import { getBrowser } from '~/entries/popup/hooks/useBrowser';
 
 export interface AnalyticsDisabledState {
   analyticsDisabled: boolean;
@@ -9,7 +8,7 @@ export interface AnalyticsDisabledState {
 export const useAnalyticsDisabledStore =
   createRainbowStore<AnalyticsDisabledState>(
     (set) => ({
-      analyticsDisabled: getBrowser() === 'Firefox',
+      analyticsDisabled: false,
       setAnalyticsDisabled: (newanalyticsDisabled) =>
         set({ analyticsDisabled: newanalyticsDisabled }),
     }),

@@ -10411,6 +10411,7 @@ __metadata:
     eslint: "npm:8.48.0"
     eslint-config-prettier: "npm:9.0.0"
     eslint-config-rainbow: "npm:4.4.0"
+    eslint-plugin-boundaries: "npm:5.0.1"
     eslint-plugin-import: "npm:2.28.1"
     eslint-plugin-jest: "npm:27.2.3"
     eslint-plugin-prettier: "npm:5.0.0"
@@ -13521,7 +13522,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-import-resolver-node@npm:^0.3.7":
+"eslint-import-resolver-node@npm:0.3.9, eslint-import-resolver-node@npm:^0.3.7":
   version: 0.3.9
   resolution: "eslint-import-resolver-node@npm:0.3.9"
   dependencies:
@@ -13550,6 +13551,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint-module-utils@npm:2.12.0":
+  version: 2.12.0
+  resolution: "eslint-module-utils@npm:2.12.0"
+  dependencies:
+    debug: "npm:^3.2.7"
+  peerDependenciesMeta:
+    eslint:
+      optional: true
+  checksum: 10c0/4d8b46dcd525d71276f9be9ffac1d2be61c9d54cc53c992e6333cf957840dee09381842b1acbbb15fc6b255ebab99cd481c5007ab438e5455a14abe1a0468558
+  languageName: node
+  linkType: hard
+
 "eslint-module-utils@npm:^2.7.4":
   version: 2.12.1
   resolution: "eslint-module-utils@npm:2.12.1"
@@ -13571,6 +13584,20 @@ __metadata:
     eslint:
       optional: true
   checksum: 10c0/c7a8d1a58d76ec8217a8fea49271ec8132d1b9390965a75f6a4ecbc9e5983d742195b46d2e4378231d2186801439fe1aa5700714b0bfd4eb17aac6e1b65309df
+  languageName: node
+  linkType: hard
+
+"eslint-plugin-boundaries@npm:5.0.1":
+  version: 5.0.1
+  resolution: "eslint-plugin-boundaries@npm:5.0.1"
+  dependencies:
+    chalk: "npm:4.1.2"
+    eslint-import-resolver-node: "npm:0.3.9"
+    eslint-module-utils: "npm:2.12.0"
+    micromatch: "npm:4.0.8"
+  peerDependencies:
+    eslint: ">=6.0.0"
+  checksum: 10c0/a63adfe918f96b61abec6a29a9bbee2e37435f6744c2cb635c453d3af98037d6e48f8d25dc7d5b63128bec99703485130730cf07141122e1bd30e5414115a5af
   languageName: node
   linkType: hard
 

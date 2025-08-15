@@ -9,7 +9,9 @@ import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import TrezorConnect from '@trezor/connect-web';
 import { Address, ByteArray, Hex, keccak256 } from 'viem';
 
-import { PrivateKey } from '~/core/keychain/IKeychain';
+// eslint-disable-next-line boundaries/element-types
+import type { PrivateKey } from '~/core/keychain/IKeychain';
+// eslint-disable-next-line boundaries/element-types
 import { getHDPathForVendorAndType } from '~/core/keychain/hdPath';
 import {
   RapSwapActionParameters,

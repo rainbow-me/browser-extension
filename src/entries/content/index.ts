@@ -1,7 +1,10 @@
 import { initializeMessenger } from '~/core/messengers';
 import { setupBridgeMessengerRelay } from '~/core/messengers/internal/bridge';
+// eslint-disable-next-line boundaries/element-types
 import { useIsDefaultWalletStore } from '~/core/state';
 require('../../core/utils/lockdown');
+
+// TODO: Remove state usage within the content script; this is vulnerable.
 
 const insertInpageScriptIfNeeded = () => {
   if (navigator.userAgent.toLowerCase().includes('firefox')) {
