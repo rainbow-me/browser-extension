@@ -5,6 +5,7 @@ import { capitalize } from 'lodash';
 import opentype from 'opentype.js';
 import * as prettier from 'prettier';
 import SVGPathCommander from 'svg-path-commander';
+
 import { FontWeight, fontWeights, symbolNames } from '../styles/designTokens';
 import { SFSymbol } from '../symbols/generated/types';
 

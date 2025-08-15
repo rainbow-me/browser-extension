@@ -296,9 +296,7 @@ type UserAssetsByChainQueryKey = ReturnType<typeof userAssetsByChainQueryKey>;
 // ///////////////////////////////////////////////
 // Query Fetcher
 
-async function fetchUserAssetsByChain<
-  TSelectData = UserAssetsByChainResult,
->(
+async function fetchUserAssetsByChain<TSelectData = UserAssetsByChainResult>(
   { address, chainId, currency }: UserAssetsByChainArgs,
   config: QueryConfig<
     UserAssetsByChainResult,

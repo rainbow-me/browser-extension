@@ -2,6 +2,9 @@
 module.exports = {
   extends: ['rainbow', 'plugin:prettier/recommended'],
   root: true,
+  parserOptions: {
+    warnOnUnsupportedTypeScriptVersion: false,
+  },
   rules: {
     'no-nested-ternary': 'off',
     'import/no-default-export': 'off',

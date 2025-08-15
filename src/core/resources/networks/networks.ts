@@ -1,5 +1,8 @@
+import {
+  BACKEND_NETWORKS_QUERY,
+  CUSTOM_NETWORKS_QUERY,
+} from '~/core/resources/networks/queries';
 import { BackendNetworks, CustomNetworks, Networks } from '~/core/types/chains';
-const { BACKEND_NETWORKS_QUERY, CUSTOM_NETWORKS_QUERY } = require('../../resources/networks/queries');
 
 async function fetchBackendNetworks(): Promise<BackendNetworks> {
   const response = await fetch('https://metadata.p.rainbow.me/v1/graph', {
@@ -37,6 +40,6 @@ export async function fetchNetworks(): Promise<Networks> {
 
   return {
     backendNetworks,
-    customNetworks
+    customNetworks,
   };
 }
