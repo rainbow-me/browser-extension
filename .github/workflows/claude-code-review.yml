@@ -1,35 +1,60 @@
 name: Claude Code Review
 
 on:
-  # Run on PRs opened, updated
+  # Run on PRs opened, updated, and review requested
+  # Quietly fails for ready_for_review and review_requested in experimental-review mode
   pull_request:
-    types: [opened, synchronize]
+    types: [opened, ready_for_review, review_requested]
+    
+    # Focus on core code changes, ignore erroneous config changes
+    paths:
+      - "src/**/*.{ts,tsx,js,jsx}"
+      - "scripts/**/*.{ts,js}"
+      - "e2e/**/*.{ts,js}"
   
-  # fire after the “CI” workflow finishes (any conclusion)
-  workflow_run:
-    workflows: ["CI"]
-    types: [completed]
-    # ignore runs whose *head* branch is master ➜ skips pushes straight to master
-    branches-ignore: [master]
+  # Run on `@claude review` comment on PRs
+  issue_comment:
+    types: [created]
+
+  # Run on manual triggers
+  # This seems to quietly bail in experimental-review mode
+  #workflow_dispatch:
+  
+  # Run after the “CI” workflow finishes (any conclusion)
+  # This seems to quietly bail in experimental-review mode
+  #workflow_run:
+  #  workflows: ["CI"]
+  #  types: [completed]
+  #  # ignore runs whose *head* branch is master ➜ skips pushes straight to master
+  #  branches-ignore: [master]
+
+# Cancel in-progress runs when a new run is triggered
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   claude-code-review:
-    # Run only when the triggering CI run came from a pull‑request
+    # Run when the triggering CI run came from a pull‑request
+    # Or when the `@claude review` comment is added
     # By internal contributors (OWNER, MEMBER, or COLLABORATOR)
     if: |
       (github.event_name == 'pull_request' && 
        (github.event.pull_request.author_association == 'OWNER' ||
         github.event.pull_request.author_association == 'MEMBER' ||
         github.event.pull_request.author_association == 'COLLABORATOR')) ||
-      (github.event_name == 'workflow_run' && 
-       github.event.workflow_run.event == 'pull_request')
-    
+      (github.event_name == 'issue_comment' && 
+       contains(github.event.comment.body, '@claude review') &&
+       (github.event.comment.author_association == 'OWNER' ||
+        github.event.comment.author_association == 'MEMBER' ||
+        github.event.comment.author_association == 'COLLABORATOR'))
+  
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: read
-      issues: read
-      actions: read
+      pull-requests: write
+      issues: write
+      actions: read # Read GitHub Actions for CI status
       id-token: write
 
     steps:
@@ -37,18 +62,25 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.workflow_run.head_sha || github.event.pull_request.head.sha }}
+          fetch-depth: 0 # Full history for better diff analysis
 
       - name: Run Claude Code Review
         id: claude-code-review
         uses: anthropics/claude-code-action@beta
         with:
-          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          additional_permissions: |
-            actions: read
-
-          # Optional: Specify model (defaults to Claude Sonnet 4, uncomment for Claude Opus 4)
-          model: "claude-opus-4-20250514"
+          # Force using the PR code preview
+          mode: experimental-review
           
+          # Read GitHub Actions for CI status
+          additional_permissions: |
+            actions: read 
+
+          # Claude Code OAuth token (using Max subscription)
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+
+          # Optional: Specify model (defaults to Claude Sonnet 4)
+          model: "claude-opus-4-1-20250805"
+
           # Direct prompt for automated review (no @claude mention needed)
           direct_prompt: |
             Please review this pull request and provide feedback on:
