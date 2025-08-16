@@ -79,6 +79,11 @@
     "firefox:zip": "yarn zip && mv rainbowbx.zip rainbowbx.xpi",
     "firefox:lint": "yarn web-ext lint --source-dir ./build",
     "firefox:run": "yarn web-ext run --source-dir ./build/ -f='/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox'",
+    "safari:manifest": "node scripts/prepare-safari-manifest.js",
+    "safari:build": "yarn build && yarn safari:manifest",
+    "safari:convert": "xcrun safari-web-extension-converter build --project-location ./safari --app-name 'Rainbow' --bundle-identifier 'com.rainbow.wallet' --swift --force",
+    "safari:xcode": "yarn safari:build && yarn safari:convert && cd safari/Rainbow && xcodebuild -scheme 'Rainbow (macOS)' -configuration Debug build CODE_SIGN_IDENTITY='' CODE_SIGNING_REQUIRED=NO",
+    "safari:run": "yarn safari:xcode && open \"$(find ~/Library/Developer/Xcode/DerivedData -name 'Rainbow.app' -type d | head -1)\"",
     "tag-version": "git tag -a v$(node -p \"require('./package.json').version\") -m \"Release v$(node -p \"require('./package.json').version\")\" && git push --tags"
   },
   "engines": {
@@ -161,6 +166,7 @@
     "react-switch": "7.0.0",
     "viem": "2.31.7",
     "wagmi": "2.16.1",
+    "webextension-polyfill": "0.12.0",
     "zustand": "4.5.4"
   },
   "devDependencies": {
@@ -184,6 +190,7 @@
     "@types/react-dom": "18.0.6",
     "@types/selenium-webdriver": "4.1.28",
     "@types/semver": "7.3.13",
+    "@types/webextension-polyfill": "0.12.3",
     "@typescript-eslint/eslint-plugin": "6.4.1",
     "@typescript-eslint/parser": "6.4.1",
     "@vanilla-extract/vite-plugin": "3.6.1",

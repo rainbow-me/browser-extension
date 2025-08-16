@@ -7700,6 +7700,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/webextension-polyfill@npm:0.12.3":
+  version: 0.12.3
+  resolution: "@types/webextension-polyfill@npm:0.12.3"
+  checksum: 10c0/0f0cea5ab70a3958f7eca61168b8b431288c35ee7e8f052f5b3bf6a6aa101183aa760addd4dcf408027d558731aa8a8f107e47a373bb7c347cb7cba807fe46e6
+  languageName: node
+  linkType: hard
+
 "@types/webpack-sources@npm:*":
   version: 3.2.0
   resolution: "@types/webpack-sources@npm:3.2.0"
@@ -10382,6 +10389,7 @@ __metadata:
     "@types/react-dom": "npm:18.0.6"
     "@types/selenium-webdriver": "npm:4.1.28"
     "@types/semver": "npm:7.3.13"
+    "@types/webextension-polyfill": "npm:0.12.3"
     "@typescript-eslint/eslint-plugin": "npm:6.4.1"
     "@typescript-eslint/parser": "npm:6.4.1"
     "@vanilla-extract/css": "npm:1.9.1"
@@ -10465,6 +10473,7 @@ __metadata:
     vitest: "npm:0.34.6"
     wagmi: "npm:2.16.1"
     web-ext: "npm:7.6.2"
+    webextension-polyfill: "npm:0.12.0"
     webpack: "npm:5.94.0"
     webpack-bundle-analyzer: "npm:4.8.0"
     webpack-cli: "npm:5.1.4"
@@ -25588,6 +25597,13 @@ __metadata:
     pvtsutils: "npm:^1.3.5"
     tslib: "npm:^2.6.2"
   checksum: 10c0/d4158af402500eb26d0de6e088baa0fbef41c43a3e3b5f53b8326c8c517e55037b3d8a17672cf48bdccfd13526599857544ea8485e2172bb14c9ee4561d706a5
+  languageName: node
+  linkType: hard
+
+"webextension-polyfill@npm:0.12.0":
+  version: 0.12.0
+  resolution: "webextension-polyfill@npm:0.12.0"
+  checksum: 10c0/5ace2aaaf6a203515bdd2fb948622f186a5fbb50099b539ce9c0ad54896f9cc1fcc3c0e2a71d1f7071dd7236d7daebba1e0cbcf43bfdfe54361addf0333ee7d1
   languageName: node
   linkType: hard
 

@@ -28,6 +28,7 @@ const SupportedBrowsers: Browser[] = [
   'Chrome',
   'Edge',
   'Firefox',
+  'Safari',
 ];
 
 // needs to be a hook because we can only know if it's Arc based on the computed css props
@@ -55,5 +56,6 @@ export const useBrowser = () => {
     isArc: browser === 'Arc',
     isFirefox: browser === 'Firefox',
     isChrome: browser === 'Chrome',
+    isSafari: browser === 'Safari',
   } as const;
 };
