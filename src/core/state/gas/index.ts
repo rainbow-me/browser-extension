@@ -24,6 +24,7 @@ export interface GasStore {
     gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed;
   }) => void;
   clearCustomGasModified: () => void;
+  clearGasData: () => void;
 }
 
 export const useGasStore = createRainbowStore<GasStore>(
@@ -63,6 +64,15 @@ export const useGasStore = createRainbowStore<GasStore>(
     },
     clearCustomGasModified: () => {
       set({ customGasModified: false });
+    },
+    clearGasData: () => {
+      set({
+        selectedGas: {} as GasFeeParams | GasFeeLegacyParams,
+        gasFeeParamsBySpeed: {} as
+          | GasFeeParamsBySpeed
+          | GasFeeLegacyParamsBySpeed,
+        customGasModified: false,
+      });
     },
   }),
   {
