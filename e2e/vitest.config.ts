@@ -11,6 +11,7 @@ export default defineConfig({
     retry: 2,
     bail: 1,
     hookTimeout: 30_000,
+    silent: false, // Show console logs
   },
   resolve: {
     alias: {
