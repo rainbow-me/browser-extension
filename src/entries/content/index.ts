@@ -7,7 +7,12 @@ require('../../core/utils/lockdown');
 // TODO: Remove state usage within the content script; this is vulnerable.
 
 const insertInpageScriptIfNeeded = () => {
-  if (navigator.userAgent.toLowerCase().includes('firefox')) {
+  const userAgent = navigator.userAgent.toLowerCase();
+  const isFirefox = userAgent.includes('firefox');
+  const isSafari = userAgent.includes('safari') && !userAgent.includes('chrome');
+  
+  // Firefox and Safari need manual script injection
+  if (isFirefox || isSafari) {
     const targetElement = document.head || document.documentElement;
     const tag = document.createElement('script');
     tag.setAttribute('async', 'false');

@@ -6,10 +6,17 @@ export async function handleSetupInpage() {
     (cs) => cs.id === INPAGE_ID,
   );
   try {
+    const userAgent = navigator.userAgent.toLowerCase();
+    const isFirefox = userAgent.includes('firefox');
+    const isSafari = userAgent.includes('safari') && !userAgent.includes('chrome');
+    
+    // Firefox and Safari handle script injection differently (manually in content script)
     if (
       !inpageRegisteredContentScript &&
-      !navigator.userAgent.toLowerCase().includes('firefox')
+      !isFirefox &&
+      !isSafari
     ) {
+      // For Chrome-based browsers, use scripting API with MAIN world
       chrome.scripting.registerContentScripts([
         {
           id: INPAGE_ID,
@@ -19,6 +26,10 @@ export async function handleSetupInpage() {
           world: 'MAIN',
         },
       ]);
+    } else if (!inpageRegisteredContentScript && isSafari) {
+      // Safari doesn't support file:// pattern and needs different handling
+      // The content script will inject the inpage script manually
+      console.log('Safari detected - inpage script will be injected by content script');
     }
   } catch (e) {
     // This will trigger if the service worker restarts and the current tab

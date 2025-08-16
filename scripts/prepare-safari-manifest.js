@@ -31,7 +31,7 @@ if (manifest.permissions) {
 }
 
 // Update manifest version info
-manifest.name = manifest.name.replace('DEVELOPMENT BUILD', 'Safari');
+manifest.name = manifest.name.replace('DEVELOPMENT BUILD', '');
 manifest.description = 'Rainbow Wallet for Safari';
 
 // Safari prefers specific icon sizes
