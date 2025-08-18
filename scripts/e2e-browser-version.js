@@ -63,9 +63,8 @@ function checkBrowserVersion() {
       console.error('');
       
       if (browser === 'chrome') {
-        const majorVersion = expectedVersion.split('.')[0];
         console.error('To fix this, install the correct version:');
-        console.error(`npx @puppeteer/browsers install chrome@${majorVersion}`);
+        console.error(`npx @puppeteer/browsers install chrome@${expectedVersion}`);
         console.error('');
         console.error('Or install Chrome for Testing manually:');
         console.error(`https://googlechromelabs.github.io/chrome-for-testing/`);
@@ -95,9 +94,8 @@ function checkBrowserVersion() {
     console.error('');
     
     if (browser === 'chrome') {
-      const majorVersion = expectedVersion.split('.')[0];
       console.error('Install Chrome for Testing:');
-      console.error(`npx @puppeteer/browsers install chrome@${majorVersion}`);
+      console.error(`npx @puppeteer/browsers install chrome@${expectedVersion}`);
       console.error('');
       console.error('Or download manually:');
       console.error(`https://googlechromelabs.github.io/chrome-for-testing/`);
