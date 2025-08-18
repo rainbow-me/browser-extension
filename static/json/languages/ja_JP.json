@@ -1303,6 +1303,7 @@
     "tokens": "トークン"
   },
   "activity": {
+    "hour": "過去1時間",
     "today": "今日",
     "yesterday": "昨日",
     "this_month": "今月",
@@ -1711,8 +1712,8 @@
       "action_label": "了解"
     },
     "send": {
-      "to_smart_contract": {
-        "description_1": "入力したアドレスはスマートコントラクト用です。",
+      "to_token_contract": {
+        "description_1": "入力したアドレスはトークンコントラクト用です。",
         "description_2": "稀な状況を除いて、おそらくこれは行わない方が良いでしょう。資産を失ったり、間違った場所に送信される可能性があります。",
         "description_3": "アドレスを再確認し、受信者と確認するか、まずサポートに連絡してください。",
         "title": "お待ちください。"

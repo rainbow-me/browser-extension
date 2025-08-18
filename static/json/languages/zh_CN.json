@@ -1303,6 +1303,7 @@
     "tokens": "代币"
   },
   "activity": {
+    "hour": "上小时",
     "today": "今天",
     "yesterday": "昨天",
     "this_month": "本月",
@@ -1711,8 +1712,8 @@
       "action_label": "了解"
     },
     "send": {
-      "to_smart_contract": {
-        "description_1": "您输入的地址是智能合约地址。",
+      "to_token_contract": {
+        "description_1": "您输入的地址是一个代币合约地址。",
         "description_2": "除非特殊情况，您可能不应这样做。否则，您可能会丢失资产或将其发送到错误的地址。",
         "description_3": "仔细检查地址，先与接收方确认，或先联系支持。",
         "title": "等一下！"
