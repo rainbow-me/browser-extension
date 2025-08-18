@@ -1,5 +1,4 @@
-import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import {
   checkExtensionURL,
@@ -12,38 +11,19 @@ import {
   findElementByTestId,
   findElementByText,
   findElementByTextAndClick,
-  getExtensionIdByName,
-  getRootUrl,
   goToPopup,
   importWalletFlowUsingKeyboardNavigation,
-  initDriverWithOptions,
   isElementFoundByText,
   querySelector,
   querySelectorWithin,
   waitAndClick,
 } from '../helpers';
+import { browser } from '../helpers/environment';
 import { TEST_VARIABLES } from '../walletVariables';
-
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
-const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
 
 describe.runIf(browser !== 'firefox')(
   'navigate through settings flows with shortcuts',
   () => {
-    beforeAll(async () => {
-      driver = await initDriverWithOptions({
-        browser,
-        os,
-      });
-      const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-      if (!extensionId) throw new Error('Extension not found');
-      rootURL += extensionId;
-    });
-    afterAll(async () => driver.quit());
-
     it('should be able import a wallet via seed', async () => {
       await importWalletFlowUsingKeyboardNavigation(
         driver,

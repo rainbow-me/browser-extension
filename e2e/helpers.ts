@@ -1,14 +1,8 @@
-/* eslint-disable no-plusplus */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable no-await-in-loop */
-/* eslint-disable no-promise-executor-return */
-/* eslint-disable @typescript-eslint/no-var-requires */
 import * as fs from 'node:fs';
 
 import { Contract } from '@ethersproject/contracts';
 import { getDefaultProvider } from '@ethersproject/providers';
 import {
-  Builder,
   By,
   Condition,
   Key,
@@ -16,30 +10,15 @@ import {
   WebElement,
   until,
 } from 'selenium-webdriver';
-import chrome from 'selenium-webdriver/chrome';
-import firefox from 'selenium-webdriver/firefox';
 import { erc20Abi } from 'viem';
 import { expect } from 'vitest';
 
 import { RAINBOW_TEST_DAPP } from '~/core/references/links';
 
-import browserConfig from './browsers.json';
-
-const browser = process.env.BROWSER || 'chrome';
-const isFirefox = browser === 'firefox';
-
 // consts
 
 const waitUntilTime = 20_000;
 const testPassword = 'test1234';
-
-export const getRootUrl = () => {
-  const browser = process.env.BROWSER || 'chrome';
-  if (browser === 'firefox') {
-    return 'moz-extension://';
-  }
-  return 'chrome-extension://';
-};
 
 // navigators
 
@@ -93,176 +72,6 @@ export async function getWindowHandle({ driver }: { driver: WebDriver }) {
   await delayTime('long');
   const windowHandle = await driver.getWindowHandle();
   return windowHandle;
-}
-
-// setup functions
-
-export async function initDriverWithOptions(opts: {
-  browser: string;
-  os: string;
-}) {
-  let driver;
-  const args = [
-    'load-extension=build/',
-    '--log-level=3',
-    '--enable-logging',
-    '--no-sandbox',
-    '--disable-dev-shm-usage',
-    '--disable-extensions-except=build/',
-    '--disable-popup-blocking',
-    '--remote-debugging-port=9222',
-  ];
-
-  if (opts.browser === 'firefox') {
-    const options = new firefox.Options()
-      // @ts-ignore
-      .setBinary(browserConfig.paths[opts.os][opts.browser])
-      .addArguments(...args.slice(1))
-      .setPreference('xpinstall.signatures.required', false)
-      .setPreference('extensions.langpacks.signatures.required', false)
-      .addExtensions('rainbowbx.xpi');
-
-    const service = new firefox.ServiceBuilder().setStdio('inherit');
-
-    driver = await new Builder()
-      .setFirefoxService(service)
-      .forBrowser('firefox')
-      .setFirefoxOptions(options)
-      .build();
-  } else {
-    const options = new chrome.Options()
-      // @ts-ignore
-      .setChromeBinaryPath(browserConfig.paths[opts.os][opts.browser])
-      .addArguments(...args);
-    options.setAcceptInsecureCerts(true);
-
-    const existingGoogChromeOptions = options.get('goog:chromeOptions') || {};
-
-    options.set(
-      'goog:chromeOptions',
-      Object.assign(existingGoogChromeOptions, {
-        enableExtensionTargets: true,
-        windowTypes: ['popup', 'app'],
-      }),
-    );
-
-    const service = new chrome.ServiceBuilder().setStdio('inherit');
-
-    driver = await new Builder()
-      .forBrowser('chrome')
-      .setChromeOptions(options)
-      .setChromeService(service)
-      .build();
-  }
-  // @ts-ignore
-  driver.browser = opts.browser;
-  return driver;
-}
-
-const addPermissionForAllWebsites = async (driver: WebDriver) => {
-  // Add the permission to access all websites
-  await driver.get('about:addons');
-  const sidebarBtn = await querySelector(driver, `[title="Extensions"]`);
-  await sidebarBtn.click();
-  const moreBtn = await querySelector(driver, `[action="more-options"]`);
-  await moreBtn.click();
-  const manageBtn = await querySelector(
-    driver,
-    `[data-l10n-id="manage-addon-button"]`,
-  );
-  await manageBtn.click();
-  await findElementByIdAndClick({
-    id: 'details-deck-button-permissions',
-    driver,
-  });
-  await driver.executeScript(
-    `document.querySelectorAll('[class="permission-info"]')[0].children[0].click();`,
-  );
-};
-
-interface ExtensionInfo {
-  name: string | undefined;
-  id: string | null;
-  rawName: string | undefined;
-}
-
-interface ExtensionsResponse {
-  extensionsFound: ExtensionInfo[];
-  searchingFor: string;
-}
-
-interface ErrorResponse {
-  error: string;
-}
-
-export async function getExtensionIdByName(
-  driver: WebDriver,
-  extensionName: string,
-) {
-  // @ts-ignore
-  if (driver?.browser === 'firefox') {
-    await addPermissionForAllWebsites(driver);
-
-    await driver.get('about:debugging#addons');
-    const text = await driver
-      .wait(
-        until.elementLocated(
-          By.xpath(
-            "//dt[contains(., 'Extension ID')]/following-sibling::dd[contains(., 'rainbow')]/../following-sibling::div/dt[contains(., 'Internal UUID')]/following-sibling::dd",
-          ),
-        ),
-        1000,
-      )
-      .getText();
-    return text;
-  } else {
-    await driver.get('chrome://extensions');
-
-    const result = (await driver.executeScript(`
-    return new Promise((resolve) => {
-      const extensions = document.querySelector("extensions-manager")?.shadowRoot
-        ?.querySelector("extensions-item-list")?.shadowRoot
-        ?.querySelectorAll("extensions-item");
-      
-      if (!extensions) {
-        resolve({ error: "No extensions found" });
-        return;
-      }
-
-      const extensionsList = Array.from(extensions).map(extension => ({
-        name: extension.shadowRoot?.querySelector('#name')?.textContent?.trim(),
-        id: extension.getAttribute("id"),
-        rawName: extension.shadowRoot?.querySelector('#name')?.textContent
-      }));
-
-      resolve({
-        extensionsFound: extensionsList,
-        searchingFor: "${extensionName}"
-      });
-    });
-  `)) as ExtensionsResponse | ErrorResponse;
-
-    console.log('Debug info:', JSON.stringify(result, null, 2));
-
-    if ('error' in result) {
-      console.log('Error:', result.error);
-      return undefined;
-    }
-
-    const matchingExtension = result.extensionsFound.find(
-      (ext) => ext.name?.toLowerCase().includes(extensionName.toLowerCase()),
-    );
-
-    if (matchingExtension) {
-      console.log(
-        `Found matching extension: "${matchingExtension.name}" with ID: ${matchingExtension.id}`,
-      );
-      return matchingExtension.id;
-    }
-
-    console.log('No matching extension found');
-    return undefined;
-  }
 }
 
 // search functions
@@ -344,7 +153,9 @@ export async function doNotFindElementByTestId({
 }) {
   const elementFound = await Promise.race([
     querySelector(driver, `[data-testid="${id}"]`),
-    new Promise((resolve) => setTimeout(() => resolve(false), 1000)),
+    new Promise((resolve) => {
+      setTimeout(() => resolve(false), 1000);
+    }),
   ]);
   return !!elementFound;
 }
@@ -452,13 +263,6 @@ export async function typeOnTextInput({
   text: number | string;
   driver: WebDriver;
 }) {
-  if (isFirefox) {
-    id &&
-      (await clearInput({
-        id,
-        driver,
-      }));
-  }
   const element = id ? await findElementByTestId({ id, driver }) : null;
   element
     ? await element.sendKeys(text)
@@ -631,18 +435,20 @@ export async function executePerformShortcut({
   timesToPress = 1,
 }: {
   driver: WebDriver;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  key: any;
+  key: keyof typeof Key | string;
   timesToPress?: number;
 }): Promise<void> {
   try {
-    for (let i = 0; i < timesToPress; i++) {
-      if (!(key in Key)) {
-        await performShortcutWithNormalKey(driver, key);
-      } else {
-        await performShortcutWithSpecialKey(driver, key);
-      }
-    }
+    const shortcuts = Array(timesToPress)
+      .fill(null)
+      .map(() => {
+        if (!(key in Key)) {
+          return performShortcutWithNormalKey(driver, key);
+        } else {
+          return performShortcutWithSpecialKey(driver, key as keyof typeof Key);
+        }
+      });
+    await Promise.all(shortcuts);
   } catch (error) {
     console.error(`Error occurred while executing shortcut:`, error);
     throw error;
@@ -679,24 +485,32 @@ export async function getNumberOfWallets(
   driver: WebDriver,
   testIdPrefix: string,
 ) {
-  let numOfWallets = 0;
-
-  for (let i = 1; ; i++) {
+  const checkWallet = async (index: number): Promise<boolean> => {
     try {
       const el = await driver.wait(
-        until.elementLocated(By.css(`[data-testid="${testIdPrefix}${i}"]`)),
+        until.elementLocated(By.css(`[data-testid="${testIdPrefix}${index}"]`)),
         5000,
       );
       await driver.wait(until.elementIsVisible(el), 5000);
-
-      numOfWallets += 1;
+      return true;
     } catch (err) {
-      // Element not found, break out of loop
-      break;
+      return false;
     }
-  }
+  };
 
-  return numOfWallets;
+  // Recursive function to count wallets sequentially
+  const countWalletsRecursive = async (
+    index: number,
+    count: number,
+  ): Promise<number> => {
+    const found = await checkWallet(index);
+    if (!found) {
+      return count;
+    }
+    return countWalletsRecursive(index + 1, count + 1);
+  };
+
+  return countWalletsRecursive(1, 0);
 }
 
 export async function navigateToSettingsPrivacy(
@@ -837,13 +651,14 @@ export const fillSeedPhrase = async (driver: WebDriver, seedPhrase: string) => {
   }
 
   // Fill each word input dynamically based on the phrase length
-  for (let i = 0; i < words.length; i++) {
-    await typeOnTextInput({
+  const wordInputs = words.map((word, i) =>
+    typeOnTextInput({
       id: `secret-input-${i + 1}`,
       driver,
-      text: words[i],
-    });
-  }
+      text: word,
+    }),
+  );
+  await Promise.all(wordInputs);
 };
 
 export const fillPrivateKey = async (driver: WebDriver, privateKey: string) => {
@@ -1101,14 +916,15 @@ export async function passSecretQuiz(driver: WebDriver) {
   const requiredWordsIndexes = [4, 8, 12];
   const requiredWords: string[] = [];
 
-  for (const index of requiredWordsIndexes) {
+  const wordPromises = requiredWordsIndexes.map(async (index) => {
     const wordElement = await querySelector(
       driver,
       `[data-testid="seed_word_${index}"]`,
     );
-    const wordText = await wordElement.getText();
-    requiredWords.push(wordText);
-  }
+    return wordElement.getText();
+  });
+  const words = await Promise.all(wordPromises);
+  requiredWords.push(...words);
 
   await findElementByTestIdAndClick({
     id: 'saved-these-words-button',
@@ -1116,9 +932,10 @@ export async function passSecretQuiz(driver: WebDriver) {
   });
   await delayTime('long');
 
-  for (const word of requiredWords) {
-    await findElementByTestIdAndClick({ id: `word_${word}`, driver });
-  }
+  const clickPromises = requiredWords.map((word) =>
+    findElementByTestIdAndClick({ id: `word_${word}`, driver }),
+  );
+  await Promise.all(clickPromises);
 
   await delayTime('long');
 }
@@ -1165,7 +982,9 @@ export const untilDocumentLoaded = async function () {
 // delays
 
 export async function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise<void>((resolve) => {
+    setTimeout(resolve, ms);
+  });
 }
 
 export async function delayTime(
@@ -1200,7 +1019,7 @@ export async function takeScreenshotOnFailure(context: any) {
     let fileName = `${normalizedFilePath}_failure`;
     let counter = 0;
     while (fs.existsSync(`screenshots/${fileName}.png`)) {
-      counter++;
+      counter += 1;
       fileName = `${fileName}_${counter}`;
       if (counter > 10) break;
     }

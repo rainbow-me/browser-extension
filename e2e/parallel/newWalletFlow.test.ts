@@ -1,41 +1,19 @@
 /* eslint-disable no-await-in-loop */
-import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import {
   delayTime,
   findElementByTestIdAndClick,
   findElementByText,
-  getExtensionIdByName,
-  getRootUrl,
   goToPopup,
   goToWelcome,
-  initDriverWithOptions,
   passSecretQuiz,
   querySelector,
   typeOnTextInput,
   waitAndClick,
 } from '../helpers';
 
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
-const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
-
 describe('New wallet flow', () => {
-  beforeAll(async () => {
-    driver = await initDriverWithOptions({
-      browser,
-      os,
-    });
-    const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-    if (!extensionId) throw new Error('Extension not found');
-    rootURL += extensionId;
-  });
-
-  afterAll(async () => driver?.quit());
-
   // Create a new wallet
   it('should be able create a new wallet', async () => {
     await goToWelcome(driver, rootURL);

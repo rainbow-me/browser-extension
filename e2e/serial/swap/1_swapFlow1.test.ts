@@ -1,6 +1,6 @@
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
-import { Key, WebDriver } from 'selenium-webdriver';
-import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
+import { Key } from 'selenium-webdriver';
+import { afterAll, afterEach, beforeEach, expect, it } from 'vitest';
 
 import { ChainId } from '~/core/types/chains';
 
@@ -16,13 +16,10 @@ import {
   findElementByTestIdAndDoubleClick,
   findElementByText,
   findElementByTextAndClick,
-  getExtensionIdByName,
-  getRootUrl,
   getTextFromText,
   getTextFromTextInput,
   goToPopup,
   goToWelcome,
-  initDriverWithOptions,
   querySelector,
   takeScreenshotOnFailure,
   typeOnTextInput,
@@ -30,22 +27,6 @@ import {
 } from '../../helpers';
 import { convertRawAmountToDecimalFormat, subtract } from '../../numbers';
 import { SWAP_VARIABLES, TEST_VARIABLES } from '../../walletVariables';
-
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
-const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
-
-beforeAll(async () => {
-  driver = await initDriverWithOptions({
-    browser,
-    os,
-  });
-  const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-  if (!extensionId) throw new Error('Extension not found');
-  rootURL += extensionId;
-});
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 beforeEach(async (context: any) => {

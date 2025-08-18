@@ -1,13 +1,4 @@
-import { WebDriver } from 'selenium-webdriver';
-import {
-  afterAll,
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-} from 'vitest';
+import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import {
   delayTime,
@@ -16,11 +7,8 @@ import {
   findElementByTestIdAndClick,
   findElementByText,
   findElementByTextAndClick,
-  getExtensionIdByName,
-  getRootUrl,
   goToPopup,
   importWalletFlow,
-  initDriverWithOptions,
   querySelector,
   takeScreenshotOnFailure,
   transactionStatus,
@@ -28,23 +16,7 @@ import {
 } from '../../helpers';
 import { TEST_VARIABLES } from '../../walletVariables';
 
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
-const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
-
 describe('should be able to perform the nft send flow', () => {
-  beforeAll(async () => {
-    driver = await initDriverWithOptions({
-      browser,
-      os,
-    });
-    const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-    if (!extensionId) throw new Error('Extension not found');
-    rootURL += extensionId;
-  });
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   beforeEach(async (context: any) => {
     context.driver = driver;

@@ -3,15 +3,7 @@ import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { ChainId } from '@rainbow-me/swaps';
 import { Key, WebDriver } from 'selenium-webdriver';
 import { erc20Abi } from 'viem';
-import {
-  afterAll,
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-} from 'vitest';
+import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import {
   clearInput,
@@ -23,12 +15,9 @@ import {
   findElementByTestIdAndClick,
   findElementByText,
   findElementByTextAndClick,
-  getExtensionIdByName,
-  getRootUrl,
   getTextFromText,
   goToPopup,
   goToWelcome,
-  initDriverWithOptions,
   querySelector,
   takeScreenshotOnFailure,
   typeOnTextInput,
@@ -38,27 +27,11 @@ import {
 import { convertRawAmountToDecimalFormat, subtract } from '../../numbers';
 import { SWAP_VARIABLES, TEST_VARIABLES } from '../../walletVariables';
 
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
-const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
-
 const WALLET_TO_USE_SECRET = TEST_VARIABLES.SWAPS_WALLET.PK;
 
 const WALLET_TO_USE_ADDRESS = TEST_VARIABLES.SWAPS_WALLET.ADDRESS;
 
 describe('Swap Flow 2', () => {
-  beforeAll(async () => {
-    driver = await initDriverWithOptions({
-      browser,
-      os,
-    });
-    const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-    if (!extensionId) throw new Error('Extension not found');
-    rootURL += extensionId;
-  });
-
   beforeEach<{ driver: WebDriver }>(async (context) => {
     context.driver = driver;
   });

@@ -1,5 +1,4 @@
-import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import {
   checkExtensionURL,
@@ -9,21 +8,13 @@ import {
   findElementByTestId,
   findElementByText,
   findElementByTextAndClick,
-  getExtensionIdByName,
-  getRootUrl,
   importWalletFlowUsingKeyboardNavigation,
-  initDriverWithOptions,
   isElementFoundByText,
   returnAttributesOfActiveElement,
   shortenAddress,
 } from '../helpers';
+import { browser } from '../helpers/environment';
 import { TEST_VARIABLES } from '../walletVariables';
-
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
-const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
 
 const shortenedMainAddress = shortenAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS);
 const shortenedSecondaryAddress = shortenAddress(
@@ -33,17 +24,6 @@ const shortenedSecondaryAddress = shortenAddress(
 describe.runIf(browser !== 'firefox')(
   'navigate through wallet switcher flows with shortcuts and keyboard',
   () => {
-    beforeAll(async () => {
-      driver = await initDriverWithOptions({
-        browser,
-        os,
-      });
-      const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-      if (!extensionId) throw new Error('Extension not found');
-      rootURL += extensionId;
-    });
-    afterAll(async () => driver?.quit());
-
     it('should be able import a wallet via pk', async () => {
       await importWalletFlowUsingKeyboardNavigation(
         driver,

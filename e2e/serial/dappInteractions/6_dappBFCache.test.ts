@@ -1,13 +1,7 @@
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, describe, expect, it } from 'vitest';
 
-import {
-  getExtensionIdByName,
-  getRootUrl,
-  goToTestApp,
-  importWalletFlow,
-  initDriverWithOptions,
-} from '../../helpers';
+import { goToTestApp, importWalletFlow } from '../../helpers';
 import { TEST_VARIABLES } from '../../walletVariables';
 
 const triggerBFCache = async (driver: WebDriver) => {
@@ -30,23 +24,7 @@ const triggerBFCache = async (driver: WebDriver) => {
   }
 };
 
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
-const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
-
 describe('Dapp provider BFCache behavior', () => {
-  beforeAll(async () => {
-    driver = await initDriverWithOptions({
-      browser,
-      os,
-    });
-    const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-    if (!extensionId) throw new Error('Extension not found');
-    rootURL += extensionId;
-  });
-
   afterAll(() => driver?.quit());
 
   it('has working provider stream after BFCache restore', async () => {

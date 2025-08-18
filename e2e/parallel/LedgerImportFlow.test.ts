@@ -1,38 +1,18 @@
-import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import {
   checkWalletName,
   findElementByIdAndClick,
   findElementByTestIdAndClick,
   findElementByText,
-  getExtensionIdByName,
-  getRootUrl,
   importHardwareWalletFlow,
-  initDriverWithOptions,
 } from '../helpers';
+import { browser } from '../helpers/environment';
 import { HARDWARE_WALLETS } from '../walletVariables';
-
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
-const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
 
 describe.runIf(browser !== 'firefox')(
   'Import wallet with a Ledger hw wallet',
   () => {
-    beforeAll(async () => {
-      driver = await initDriverWithOptions({
-        browser,
-        os,
-      });
-      const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-      if (!extensionId) throw new Error('Extension not found');
-      rootURL += extensionId;
-    });
-    afterAll(async () => driver?.quit());
-
     it('should be able import a wallet via hw wallet', async () => {
       await importHardwareWalletFlow(driver, rootURL, 'ledger');
     });

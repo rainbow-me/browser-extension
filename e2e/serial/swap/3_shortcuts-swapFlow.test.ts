@@ -1,14 +1,6 @@
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { WebDriver } from 'selenium-webdriver';
-import {
-  afterAll,
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-} from 'vitest';
+import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import {
   checkExtensionURL,
@@ -17,11 +9,8 @@ import {
   executePerformShortcut,
   findElementByTestId,
   findElementByText,
-  getExtensionIdByName,
-  getRootUrl,
   goToPopup,
   importWalletFlowUsingKeyboardNavigation,
-  initDriverWithOptions,
   isElementFoundByText,
   navigateToElementWithTestId,
   takeScreenshotOnFailure,
@@ -31,27 +20,11 @@ import { SWAP_VARIABLES, TEST_VARIABLES } from '../../walletVariables';
 const ethId = SWAP_VARIABLES.ETH_MAINNET_ID;
 const usdcId = SWAP_VARIABLES.USDC_MAINNET_ID;
 
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
-const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
-
 const WALLET_TO_USE_SECRET = TEST_VARIABLES.SWAPS_WALLET.PK;
 
 const WALLET_TO_USE_ADDRESS = TEST_VARIABLES.SWAPS_WALLET.ADDRESS;
 
 describe('Complete swap flow via shortcuts and keyboard navigation', () => {
-  beforeAll(async () => {
-    driver = await initDriverWithOptions({
-      browser,
-      os,
-    });
-    const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-    if (!extensionId) throw new Error('Extension not found');
-    rootURL += extensionId;
-  });
-
   beforeEach<{ driver: WebDriver }>(async (context) => {
     context.driver = driver;
   });

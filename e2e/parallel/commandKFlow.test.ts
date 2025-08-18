@@ -1,6 +1,5 @@
 /* eslint-disable no-await-in-loop */
-import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { TokenNames, tokenAddresses, tokenNames } from 'e2e/tokenVariables';
 
@@ -10,35 +9,15 @@ import {
   executeMultipleShortcuts,
   executePerformShortcut,
   findElementByText,
-  getExtensionIdByName,
-  getRootUrl,
   goToPopup,
   importWalletFlow,
-  initDriverWithOptions,
   performSearchTokenAddressActionsCmdK,
   typeOnTextInput,
   waitUntilElementByTestIdIsPresent,
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
 
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
-const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
-
 describe('Command+K behaviours', () => {
-  beforeAll(async () => {
-    driver = await initDriverWithOptions({
-      browser,
-      os,
-    });
-    const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-    if (!extensionId) throw new Error('Extension not found');
-    rootURL += extensionId;
-  });
-  afterAll(async () => driver?.quit());
-
   it('should be able import a wallet via seed', async () => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);
   });

@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+/* eslint-disable @typescript-eslint/no-var-requires */
 const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
@@ -12,43 +13,63 @@ const browserConfig = JSON.parse(fs.readFileSync(browserConfigPath, 'utf8'));
 const browser = process.env.BROWSER || 'chrome';
 const os = process.platform === 'darwin' ? 'mac' : 'linux';
 
-function getBinaryPath(browser, os) {
-  const browserPaths = browserConfig.paths[os];
-  if (!browserPaths) {
-    throw new Error(`No paths configured for OS: ${os}`);
-  }
-  
-  const path = browserPaths[browser];
+function getBinaryPath() {
+  const path = browserConfig[os][browser]['path'];
   if (!path) {
     throw new Error(`No binary path configured for ${browser} on ${os}`);
   }
-  
   return path;
 }
 
-function getExpectedVersion(browser) {
-  const version = browserConfig.versions[browser];
+function getExpectedVersion() {
+  const version = browserConfig[os][browser]['version'];
   if (!version) {
     throw new Error(`No expected version configured for ${browser}`);
   }
   return version;
 }
 
+function printInstallInstructions(browser, expectedVersion, os) {
+  if (browser === 'chrome') {
+    console.error('To fix this, install the correct version:');
+    console.error(`npx @puppeteer/browsers install chrome@${expectedVersion}`);
+    console.error('');
+    console.error('Or install Chrome for Testing manually:');
+    console.error(`https://googlechromelabs.github.io/chrome-for-testing/`);
+    if (os === 'mac') {
+      console.error(
+        'For macOS, you can also install as .app in /Applications/',
+      );
+    }
+  } else {
+    console.error('To fix this, install the correct Firefox version:');
+    console.error(
+      `npx @puppeteer/browsers install firefox@devedition_${expectedVersion}`,
+    );
+    console.error('');
+    console.error('Or download Firefox Developer Edition manually:');
+    console.error(
+      `https://ftp.mozilla.org/pub/devedition/releases/${expectedVersion}/`,
+    );
+  }
+}
+
 function checkBrowserVersion() {
-  const expectedVersion = getExpectedVersion(browser);
-  const binaryPath = getBinaryPath(browser, os);
-  
+  const expectedVersion = getExpectedVersion();
+  const binaryPath = getBinaryPath();
+
   try {
     const versionOutput = execSync(`"${binaryPath}" --version`, {
       encoding: 'utf8',
       stdio: 'pipe',
-      shell: true
+      shell: true,
     });
-    
-    const versionRegex = browser === 'chrome' 
-      ? /Chrome.*?([\d.]+)/ 
-      : /Firefox ([\d.]+[a-zA-Z]\d*)/;
-    
+
+    const versionRegex =
+      browser === 'chrome'
+        ? /Chrome.*?([\d.]+)/
+        : /Firefox ([\d.]+[a-zA-Z]\d*)/;
+
     const versionMatch = versionOutput.match(versionRegex);
     const actualVersion = versionMatch?.[1] || '';
 
@@ -61,55 +82,29 @@ function checkBrowserVersion() {
       console.error(`Expected: ${expectedVersion}`);
       console.error(`Actual:   ${actualVersion}`);
       console.error('');
-      
-      if (browser === 'chrome') {
-        console.error('To fix this, install the correct version:');
-        console.error(`npx @puppeteer/browsers install chrome@${expectedVersion}`);
-        console.error('');
-        console.error('Or install Chrome for Testing manually:');
-        console.error(`https://googlechromelabs.github.io/chrome-for-testing/`);
-        if (os === 'mac') {
-          console.error('For macOS, you can also install as .app in /Applications/');
-        }
-      } else {
-        console.error('To fix this, install the correct Firefox version:');
-        console.error(`npx @puppeteer/browsers install firefox@devedition_${expectedVersion}`);
-        console.error('');
-        console.error('Or download Firefox Developer Edition manually:');
-        console.error(`https://ftp.mozilla.org/pub/devedition/releases/${expectedVersion}/`);
-      }
-      
+
+      printInstallInstructions(browser, expectedVersion, os);
+
       process.exit(1);
     }
 
-    console.log(`✅ ${browser} version ${actualVersion} matches expected version ${expectedVersion}`);
+    console.log(
+      `✅ ${browser} version ${actualVersion} matches expected version ${expectedVersion}`,
+    );
   } catch (error) {
     if (error.status === 1) {
       // Version mismatch error already handled above
       return;
     }
-    
-    console.error(`❌ Could not validate ${browser} version. Binary may not be installed.`);
+
+    console.error(
+      `❌ Could not validate ${browser} version. Binary may not be installed.`,
+    );
     console.error(`Expected path: ${binaryPath}`);
     console.error('');
-    
-    if (browser === 'chrome') {
-      console.error('Install Chrome for Testing:');
-      console.error(`npx @puppeteer/browsers install chrome@${expectedVersion}`);
-      console.error('');
-      console.error('Or download manually:');
-      console.error(`https://googlechromelabs.github.io/chrome-for-testing/`);
-      if (os === 'mac') {
-        console.error('For macOS, you can also install as .app in /Applications/');
-      }
-    } else {
-      console.error('Install Firefox Developer Edition:');
-      console.error(`npx @puppeteer/browsers install firefox@devedition_${expectedVersion}`);
-      console.error('');
-      console.error('Or download manually:');
-      console.error(`https://ftp.mozilla.org/pub/devedition/releases/${expectedVersion}/`);
-    }
-    
+
+    printInstallInstructions(browser, expectedVersion, os);
+
     console.error('');
     console.error(`Original error: ${error.message}`);
     process.exit(1);

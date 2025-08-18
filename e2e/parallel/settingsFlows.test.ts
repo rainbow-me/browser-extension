@@ -1,39 +1,19 @@
 /* eslint-disable no-await-in-loop */
-import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import {
   findElementByTestId,
   findElementByTestIdAndClick,
-  getExtensionIdByName,
-  getRootUrl,
   goBackTwice,
   importWalletFlow,
-  initDriverWithOptions,
   navigateToSettingsPrivacy,
   toggleStatus,
   typeOnTextInput,
 } from '../helpers';
+import { browser } from '../helpers/environment';
 import { TEST_VARIABLES } from '../walletVariables';
 
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
-const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
-
 describe('Navigate Settings & Privacy and its flows', () => {
-  beforeAll(async () => {
-    driver = await initDriverWithOptions({
-      browser,
-      os,
-    });
-    const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-    if (!extensionId) throw new Error('Extension not found');
-    rootURL += extensionId;
-  });
-  afterAll(async () => await driver?.quit());
-
   it('should be able import a wallet via seed', async () => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);
   });

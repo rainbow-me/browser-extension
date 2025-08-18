@@ -1,5 +1,5 @@
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
+import { afterAll, afterEach, beforeEach, expect, it } from 'vitest';
 
 import {
   checkExtensionURL,
@@ -7,31 +7,12 @@ import {
   executePerformShortcut,
   findElementByTestId,
   findElementByTestIdAndClick,
-  getExtensionIdByName,
-  getRootUrl,
   importWalletFlow,
-  initDriverWithOptions,
   navigateToSettingsNetworks,
   takeScreenshotOnFailure,
   typeOnTextInput,
 } from '../../helpers';
 import { TEST_VARIABLES } from '../../walletVariables';
-
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
-const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
-
-beforeAll(async () => {
-  driver = await initDriverWithOptions({
-    browser,
-    os,
-  });
-  const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-  if (!extensionId) throw new Error('Extension not found');
-  rootURL += extensionId;
-});
 
 beforeEach<{ driver: WebDriver }>(async (context) => {
   context.driver = driver;

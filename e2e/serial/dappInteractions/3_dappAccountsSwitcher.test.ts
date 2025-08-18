@@ -1,13 +1,5 @@
 import { WebDriver } from 'selenium-webdriver';
-import {
-  afterAll,
-  afterEach,
-  beforeAll,
-  beforeEach,
-  describe,
-  expect,
-  it,
-} from 'vitest';
+import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { ChainId } from '~/core/types/chains';
 
@@ -20,13 +12,10 @@ import {
   findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
-  getExtensionIdByName,
-  getRootUrl,
   getTextFromText,
   goToPopup,
   goToTestApp,
   goToWelcome,
-  initDriverWithOptions,
   querySelector,
   shortenAddress,
   switchWallet,
@@ -34,25 +23,10 @@ import {
   typeOnTextInput,
   waitAndClick,
 } from '../../helpers';
+import { browser } from '../../helpers/environment';
 import { TEST_VARIABLES } from '../../walletVariables';
 
-let rootURL = getRootUrl();
-let driver: WebDriver;
-
-const browser = process.env.BROWSER || 'chrome';
-const os = process.env.OS || 'mac';
-
 describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
-  beforeAll(async () => {
-    driver = await initDriverWithOptions({
-      browser,
-      os,
-    });
-    const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-    if (!extensionId) throw new Error('Extension not found');
-    rootURL += extensionId;
-  });
-
   beforeEach<{ driver: WebDriver }>(async (context) => {
     context.driver = driver;
   });

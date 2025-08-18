@@ -1,16 +1,26 @@
 {
-  "versions": {
-    "chrome": "138.0.7204.183",
-    "firefox": "122.0b9"
-  },
-  "paths": {
-    "mac": {
-      "chrome": "/Applications/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing",
-      "firefox": "/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox"
+  "mac": {
+    "chrome": {
+      "version": "138.0.7204.183",
+      "path": "/Applications/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing",
+      "extension_scheme": "chrome-extension://"
     },
-    "linux": {
-      "chrome": "/opt/google/chrome/chrome",
-      "firefox": "/usr/lib/firefox/firefox"
+    "firefox": {
+      "version": "122.0b9",
+      "path": "/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox",
+      "extension_scheme": "moz-extension://"
+    }
+  },
+  "linux": {
+    "chrome": {
+      "version": "138.0.7204.183",
+      "path": "/opt/google/chrome/chrome",
+      "extension_scheme": "chrome-extension://"
+    },
+    "firefox": {
+      "version": "122.0b9",
+      "path": "/usr/lib/firefox/firefox",
+      "extension_scheme": "moz-extension://"
     }
   }
 }
