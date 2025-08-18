@@ -10,6 +10,6 @@ runs:
   - uses: ./.github/actions/testsSetup
     with:
       gh-access-token: ${{ inputs.gh-access-token }}
-  - name: Install chrome
+  - name: Setup Chrome 138
     shell: 'bash'
     run: npx @puppeteer/browsers install chrome@138
