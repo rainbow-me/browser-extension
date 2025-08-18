@@ -127,7 +127,7 @@
         "tokens": "رموز",
         "cant_connect": "لا يمكن الاتصال بهذه النقطة النهائية لـ RPC",
         "rpc_not_responding": "نقطة النهاية لـ RPC المُقدمة لا تستجيب",
-        "rainbow_default_rpc": "رينبو",
+        "rainbow_default_rpc": "Rainbow",
         "rainbow_default": "رينبو"
       },
       "rpc_endpoints": "نقاط نهاية RPC",
@@ -1303,7 +1303,6 @@
     "tokens": "رموز"
   },
   "activity": {
-    "hour": "Last Hour",
     "today": "اليوم",
     "yesterday": "أمس",
     "this_month": "هذا الشهر",
@@ -1712,8 +1711,8 @@
       "action_label": "فهمت"
     },
     "send": {
-      "to_token_contract": {
-        "description_1": "The address you entered is for a token contract.",
+      "to_smart_contract": {
+        "description_1": "العنوان الذي أدخلته مخصص لعقد ذكي",
         "description_2": "ما عدا الحالات النادرة، ربما لا يجب أن تقوم بذلك. يمكنك أن تخسر أصولك أو أن تذهب إلى المكان الخاطئ",
         "description_3": "تحقق مرتين من العنوان، وأكده مع المستلم، أو اتصل بالدعم أولا",
         "title": "انتظر قليلا!"
