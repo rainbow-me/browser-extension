@@ -1303,6 +1303,7 @@
     "tokens": "टोकन"
   },
   "activity": {
+    "hour": "Last Hour",
     "today": "आज",
     "yesterday": "कल",
     "this_month": "इस महीने",
@@ -1711,11 +1712,11 @@
       "action_label": "समझे"
     },
     "send": {
-      "to_smart_contract": {
-        "description_1": "आपने एक स्मार्ट कॉन्ट्रैक्ट के लिए पता दर्ज किया है।",
-        "description_2": "नदीशान अवस्थाओं को छोड़कर, आपको शायद इसे नहीं करना चाहिए। आप अपना सम्पत्ति खो सकते हैं या वह गलत स्थान पर जा सकती है।",
-        "description_3": "पता दोहराएं, प्राप्ति से पुष्टि करें या पहले सपोर्ट से संपर्क करें।",
-        "title": "अपने घोड़े को रोको!"
+      "to_token_contract": {
+        "description_1": "The address you entered is for a token contract.",
+        "description_2": "Except for rare situations, you probably shouldn't do this. You could lose your assets or they might go to the wrong place.",
+        "description_3": "Double check the address, verify it with the recipient, or contact support first.",
+        "title": "Hold your horses!"
       },
       "action_label": "मिल गया"
     },
