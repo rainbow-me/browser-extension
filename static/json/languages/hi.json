@@ -1,0 +1,1892 @@
+{
+  "test": {
+    "salute": "नमस्ते!"
+  },
+  "label": {
+    "toggle": "टॉगल"
+  },
+  "permissions": {
+    "firefox_permission_denied": "Rainbow को ठीक से काम करने के लिए सभी वेबसाइटों तक पहुंच की अनुमति की आवश्यकता है। कृपया जारी रखने के लिए अनुमति दें।"
+  },
+  "wallet": {
+    "rename": "वॉलेट का नाम बदलें",
+    "edit_appearance": "रूपरेखा संपादित करें",
+    "view_on": "%{explorer}पर देखें",
+    "copy_address": "पता प्रतिलिपि करें"
+  },
+  "wallet_switcher": {
+    "title": "वॉलेट्स",
+    "rename_wallet": "वॉलेट का नाम बदलें",
+    "copy_address": "पता प्रतिलिपि करें",
+    "remove_wallet": "वॉलेट हटाएं",
+    "hide_wallet": "वॉलेट छिपाएं",
+    "watching": "देख रहे हैं",
+    "ledger": "लेजर",
+    "trezor": "ट्रेज़र",
+    "add_another_wallet": "एक और वॉलेट जोड़ें",
+    "connect_hardware_wallet": "हार्डवेयर वॉलेट से जोड़ें",
+    "search_placeholder": "वॉलेट्स खोजें",
+    "no_wallets": "कोई वॉलेट नहीं",
+    "no_results": "कोई परिणाम नहीं",
+    "quick_promo": {
+      "text": "वॉलेटों को ज़री आदेश में बदलें",
+      "text_bold": "युक्ति:"
+    }
+  },
+  "qr_code": {
+    "copy_address": "पता प्रतिलिपि करें"
+  },
+  "add_wallet": {
+    "title": "एक और वॉलेट जोड़ें",
+    "create_wallet": "नया वॉलेट बनाएं",
+    "create_wallet_description": "अपने सीड वाक्यों में से एक के साथ एक नया वॉलेट बनाएं।",
+    "import_wallet": "गुप्त वापसी मंत्र या निजी कुंजी के साथ आयात करें",
+    "import_wallet_description": "अपने गुप्त वापसी मंत्र या निजी कुंजी का उपयोग करके वॉलेट जोड़ें।",
+    "hardware_wallet": "हार्डवेयर वॉलेट से जोड़ें",
+    "hardware_wallet_description": "हार्डवेयर वॉलेट से अधिक खाते जोड़ें।",
+    "watch_address": "एक Ethereum पते को देखें",
+    "watch_address_description": "पब्लिक पता या ENS नाम देखें।"
+  },
+  "create_wallet_prompt": {
+    "title": "अपनी वॉलेट का नाम दें",
+    "create_wallet": "वॉलेट बनाएं",
+    "create": "बनाएं",
+    "input_placeholder": "नाम"
+  },
+  "rename_wallet_prompt": {
+    "rename_wallet": "वॉलेट का नाम बदलें",
+    "done": "हो गया"
+  },
+  "remove_wallet_prompt": {
+    "error": "वॉलेट हटाने में त्रुटि",
+    "remove": "हटाएँ",
+    "remove_title": "हटाएँ %{name}",
+    "remove_last_wallet_title": "हटाएँ %{name} और अपने सीक्रेट रिकवरी फ़्रेज़",
+    "remove_description": "यह वॉलेट इस सूची से हटा देगा और इसके साथ संबंधित सभी डेटा को हटा देगा।",
+    "remove_last_wallet_description": "यह आपकी वॉलेट और सीक्रेट रिकवरी फ़्रेज़ और इसके साथ संबंधित सभी डेटा को स्थायी रूप से हटा देगा",
+    "hide": "छिपाएं",
+    "hide_title": "छिपाएँ %{name}",
+    "hide_description": "यह केवल इस सूची से वॉलेट को हटाता है। आप इस वॉलेट को संगठन विंडो में खोज सकते हैं और अतिरिक्त प्रबंधन विकल्प प्राप्त कर सकते हैं।",
+    "cancel": "रद्द करें"
+  },
+  "settings": {
+    "title": "सेटिंग्स",
+    "use_rainbow_as_default_wallet": "इसे इंस्टॉलेशन की प्राथमिक वॉलेट के रूप में उपयोग करें",
+    "sounds": "ध्वनियाँ",
+    "default_wallet_description": "एप्स को जोड़ने के लिए Rainbow को प्राथमिकता दें",
+    "contacts": "संपर्क",
+    "guides_and_support": "गाइड और सहायता",
+    "learn_about_ethereum": "ईथेरियम के बारे में सीखें",
+    "follow_us_on_twitter": "हमें ट्विटर पर फॉलो करें",
+    "share_feedback": "फ़ीडबैक साझा करें",
+    "theme": {
+      "title": "थीम",
+      "system": "सिस्टम",
+      "light": "रोशनी",
+      "dark": "अंधेरा"
+    },
+    "networks": {
+      "mainnet": "मुख्य नेटवर्क",
+      "testnet": "टेस्टनेट",
+      "title": "नेटवर्क",
+      "testnets": "टेस्टनेट्स",
+      "quick_promo": {
+        "text": "नेटवर्क को पुनर्क्रमित करने के लिए खींचें",
+        "text_bold": "युक्ति:"
+      },
+      "disable": "निष्क्रिय करें",
+      "disabled": "निष्क्रिय",
+      "enable": "सक्रिय करें",
+      "enabled": "नेटवर्क सक्रिय है",
+      "description": "चुनें कि कौन से नेटवर्क और टोकन प्रदर्शित करें। आप Rainbow द्वारा समर्थित किसी भी नेटवर्क से कनेक्ट कर सकते हैं, भले ही वे अनचेक्ड हों।",
+      "developer_tools": {
+        "title": "डेवलपर टूल सक्षम करें",
+        "toggle_explainer": "टेस्टनेट मोड शॉर्टकट (T) सक्षम करता है और होम स्क्रीन के शीर्ष-दाईं मेनू में एक टॉगल जोड़ता है"
+      },
+      "custom_rpc": {
+        "title": "नेटवर्क जोड़ें",
+        "add_custom_network": "कस्टम नेटवर्क जोड़ें",
+        "networks": "नेटवर्क",
+        "network_name": "नेटवर्क का नाम",
+        "rpc_url": "RPC यूआरएल",
+        "chain_id": "चेन आईडी",
+        "symbol": "प्रतीक",
+        "decimals": "दशमलव",
+        "active": "सक्रिय",
+        "testnet": "टेस्टनेट",
+        "block_explorer_url": "ब्लॉक एक्सप्लोरर URL",
+        "add_network": "नेटवर्क जोड़ें",
+        "add_rpc": "RPC एंडपॉइंट जोड़ें",
+        "add_network_rpc": "%{rpcName} RPC जोड़ें",
+        "add_asset": "कस्टम टोकन जोड़ें",
+        "network_added": "नेटवर्क जोड़ा गया",
+        "network_added_correctly": "%{networkName}",
+        "remove_token": "टोकन हटाएं",
+        "remove_rpc": "RPC हटाएं",
+        "remove_network": "नेटवर्क हटाएं",
+        "tokens": "टोकन्स",
+        "cant_connect": "इस RPC एंडपॉइंट से कनेक्ट नहीं हो सकता",
+        "rpc_not_responding": "प्रदान की गई RPC एंडपॉइंट प्रतिसाद नहीं दे रहा है",
+        "rainbow_default_rpc": "रेनबो",
+        "rainbow_default": "रेनबो"
+      },
+      "rpc_endpoints": "RPC एंडपॉइंट्स",
+      "watch_asset": {
+        "title": "कस्टम टोकन जोड़ें"
+      }
+    },
+    "privacy_and_security": {
+      "title": "गोपनीयता और सुरक्षा",
+      "analytics": "विश्लेषणिकी",
+      "analytics_description": "तुक्तीय् डेटा और अनुप्रयोग उपयोग के विश्लेषण की अनुमति देकर रेनबो अपने उत्पादों और सेवाओं में सुधार करें. इकट्ठा किया गया डेटा आपके या आपके खाते से संबंधित नहीं होता है.",
+      "hide_asset_balances": "संपत्ति मान को छिपाएँ",
+      "hide_asset_balances_description": "इसके साथ जब रेनबो टोकन संतुलन को गुमा देगा |",
+      "auto_hide_balances_under_1": "₹1 से कम शेष राशि स्वचालित रूप से छिपाएं",
+      "view_private_key": "निजी कुंजी देखें",
+      "view_secret_recovery_phrase": "गुप्त पुनर्प्राप्ति मंत्र देखें",
+      "auto_lock_timer": {
+        "title": "ऑटो-लॉक टाइमर",
+        "immediately": "तत्काल",
+        "one_minute": "1 मिनट",
+        "five_minutes": "5 मिनट",
+        "ten_minutes": "10 मिनट",
+        "fifteen_minutes": "15 मिनट",
+        "thirty_minutes": "30 मिनट",
+        "one_hour": "1 घंटा",
+        "twelve_hours": "12 घंटे",
+        "twenty_four_hours": "24 घंटे",
+        "none": "कोई नहीं"
+      },
+      "change_password": {
+        "title": "पासवर्ड बदलें",
+        "header_label": "अपना पासवर्ड बदलें"
+      },
+      "confirm_password": {
+        "title": "अपना पासवर्ड दर्ज करें",
+        "description": "जारी रखने के लिए आपको अपना मौजूदा पासवर्ड दर्ज करना आवश्यक है।"
+      },
+      "wallets_and_keys": {
+        "title": "वॉलेट और कुंजी",
+        "create_a_new_wallet": "नया वॉलेट बनाएं",
+        "imported": "आयात किए गए",
+        "wallet_single": "वॉलेट",
+        "wallet_plural": "वॉलेट्स",
+        "recovery_phrase_label": "वॉलेट समूह",
+        "private_key_label": "निजी कुंजी",
+        "hardware_wallet_label": "हार्डवेयर वॉलेट",
+        "backed_up": "बैकअप किया गया",
+        "not_backed_up": "बैकअप नहीं हुआ",
+        "back_up_now": "अब बैकअप करें",
+        "context_menu": {
+          "create_wallet": "वॉलेट बनाएं",
+          "view_secret_phrase": "गुप्त वाक्यांश देखें",
+          "hide_wallets": "वॉलेट छुपाएं",
+          "unhide_wallets": "वॉलेट दिखाएं"
+        },
+        "wallet_details": {
+          "title": "वॉलेट विवरण",
+          "view_recovery_phrase": "विभाजन संकेत देखें",
+          "create_new_wallet": "नया वॉलेट बनाएं",
+          "rename_wallet": "वॉलेट का नाम बदलें",
+          "unhide_wallet": "छिपा हुआ वॉलेट",
+          "delete_wallet": "वॉलेट हटाएं",
+          "view_private_key": "निजी कुंजी देखें",
+          "copy_address": "पता प्रतिलिपि करें",
+          "hidden": "छिपा हुआ है",
+          "back_up_now": "अब बैकअप करें",
+          "last_backed_up": "अंतिम बैकअप के रूप में %{date}"
+        },
+        "new_wallet": {
+          "name_your_wallet": "अपनी वॉलेट का नाम दें",
+          "create": "वॉलेट बनाएं",
+          "input_placeholder": "उदाहरण: वॉलेट 1"
+        },
+        "private_key": {
+          "title": "आपकी निजी कुंजी",
+          "subtitle": "जिसके पास भी यह कुंजी होगी, वह आपके पूरे वॉलेट तक पहुंच सकता है! कृपया इसे किसी के साथ साझा न करें।",
+          "saved": "मैंने इसे सहेज लिया है",
+          "warning_1": "कृपया अपनी निजी कुंजी को किसी के साथ साझा न करें और किसी ऐप में न डालें।",
+          "warning_2": "यह सुनिश्चित करें कि कोई भी आपकी प्राइवेट कुंजी देखकर आपकी स्क्रीन नहीं देख सकता।",
+          "warning_3": "कोई भी आपकी प्राइवेट कुंजी के साथ आपकी पूरी वॉलेट तक पहुंच सकता है।",
+          "warning_4": "रेनबो समर्थन कभी भी आपसे आपकी प्राइवेट कुंजी के बारे में पूछगछ नहीं करेगा।",
+          "show": "प्राइवेट कुंजी दिखाएं",
+          "copied": "निजी कुंजी कॉपी की गई"
+        },
+        "recovery_phrase": {
+          "title": "आपकी पुनर्प्राप्ति वाक्य",
+          "subtitle": "जिसके पास इन शब्दों का होता है वह आपकी पूरी वॉलेट तक पहुंच सकता है! आपको उन्हें कभी भी साझा नहीं करना चाहिए।",
+          "saved": "मैंने इन शब्दों को सहेज लिया है",
+          "warning_1": "कभी भी अपने पुनर्प्राप्ति वाक्य को साझा न करें और किसी ऐप में दर्ज न करें।",
+          "warning_2": "यह सुनिश्चित करें कि कोई भी आपकी पुनर्प्राप्ति वाक्य देखकर आपकी स्क्रीन नहीं देख सकता।",
+          "warning_3": "कोई भी आपकी पुनर्प्राप्ति वाक्य के साथ आपकी पूरी वॉलेट तक पहुंच सकता है।",
+          "warning_4": "रेनबो समर्थन कभी भी आपसे आपकी पुनर्प्राप्ति वाक्य के बारे में पूछगछ नहीं करेगा।",
+          "show": "पुनर्प्राप्ति वाक्य दिखाएं",
+          "copied": "पुनर्प्राप्ति वाक्य कॉपी किया गया"
+        },
+        "wipe_wallets": {
+          "delete": "रेनबो रीसेट करें",
+          "acknowlegement": "मैंने ऊपर दी गई जानकारी पढ़ी और स्वीकार की है",
+          "warning_one": "रेनबो रीसेट करने पर आपका पासवर्ड रीसेट होगा, और सभी वॉलेट्स हटा दिए जाएंगे",
+          "warning_two": "इससे रेनबो में सभी डेटा और सेटिंग्स भी मिट जाएंगे",
+          "warning_three": "आगे बढ़ने से पहले सुनिश्चित करें कि आपका सीक्रेट रिकवरी फ्रेज़ सुरक्षित है ",
+          "warning_four": "आपकी संपत्ति और फंड सही रिकवरी जानकारी के साथ सुलभ हैं",
+          "button_wipe": "रेनबो रीसेट करें",
+          "button_complete": "ऊपर दिए गए चेक को पूरा करें",
+          "wipe_confirmation": "रेनबो रीसेट करें",
+          "wipe_confirmation_desc": "क्या आप वाकई रेनबो ब्राउज़र एक्सटेंशन को रीसेट करना चाहते हैं?",
+          "wipe_confirmation_button": "रीसेट करें",
+          "wipe_confirmation_cancel": "रद्द करें"
+        },
+        "wipe_wallet_group": {
+          "delete": "वॉलेट समूह हटाएं",
+          "acknowlegement": "मैंने अपना सीक्रेट रिकवरी फ्रेज़ बैक अप कर लिया है।",
+          "warning_one": "आपका वॉलेट समूह हटाने से रेनबो से रिकवरी फ्रेज़ डिलीट हो जाएगा।",
+          "warning_two": "आपकी संपत्ति और फंड सही वॉलेट रिकवरी जानकारी से रिकवर हो सकते हैं।",
+          "warning_three": "आगे बढ़ने से पहले सुनिश्चित करें कि आपका सीक्रेट रिकवरी फ्रेज़ बैक अप हो गया है।",
+          "button_wipe": "रेनबो रीसेट करें",
+          "button_complete": "ऊपर दिए गए चेक को पूरा करें",
+          "wipe_confirmation": "वॉलेट समूह हटाएं",
+          "wipe_confirmation_desc": "क्या आप निश्चित हैं कि आप अपना सीक्रेट रिकवरी फ्रेज़ रेनबो से हटाना चाहते हैं?",
+          "wipe_confirmation_button": "हटाएँ",
+          "wipe_confirmation_cancel": "रद्द करें"
+        },
+        "wipe_hardware_wallet_group": {
+          "delete": "%{vendor} को अनपेयर करें",
+          "wipe_confirmation": "%{vendor} को अनपेयर करें",
+          "wipe_confirmation_desc": "क्या आप निश्चित हैं कि आप अपने %{vendor} को अनपेयर करना चाहते हैं और अपने वॉलेट्स को डिस्कनेक्ट करना चाहते हैं?",
+          "wipe_confirmation_button": "अनपेयर",
+          "wipe_confirmation_cancel": "रद्द करें"
+        }
+      }
+    },
+    "transactions": {
+      "title": "लेनदेन",
+      "default_speed": "डिफ़ॉल्ट गति",
+      "use_flashbots": "फ़्लैशबॉट्स का उपयोग करें",
+      "clear_transactions_and_nonces": "लंबित लेन-देन साफ करें",
+      "clear_transactions_and_nonces_success": "लंबित लेन-देन साफ",
+      "flashbots_description": "फ्लैशबॉट्स आपके लेन-देन की सुरक्षा करता है और लेन-देन विफलताओं की संभावना को कम करता है।"
+    },
+    "approvals": {
+      "title": "अनुमतियाँ"
+    },
+    "currency": {
+      "title": "मुद्रा",
+      "ETH": "ईथेरियम",
+      "USD": "अमेरिकी डॉलर",
+      "EUR": "यूरो",
+      "GBP": "ब्रिटिश पाउंड",
+      "AUD": "ऑस्ट्रेलियन डॉलर",
+      "CNY": "चीनी युआन",
+      "KRW": "दक्षिण कोरियाई वॉन",
+      "JPY": "जापानी येन",
+      "RUB": "रूसी रूबल",
+      "INR": "भारतीय रुपया",
+      "TRY": "तुर्की लीरा",
+      "CAD": "कैनेडियन डॉलर",
+      "NZD": "न्यूज़ीलैंड डॉलर",
+      "ZAR": "दक्षिण अफ़्रीकी रैंड"
+    },
+    "language": {
+      "title": "भाषा"
+    },
+    "feature_flags": {
+      "full_watching_wallets": "Watched वॉलेट्स का पूरा उपयोग",
+      "hw_wallets_enabled": "हार्डवेयर वॉलेट समर्थन सक्षम करें",
+      "command_k_internal_shortcuts_enabled": "⌘K आंतरिक शॉर्टकट्स सक्षम करें",
+      "custom_rpc": "कस्टम RPC",
+      "degen_mode": "Degen मोड"
+    }
+  },
+  "transactions": {
+    "savings": "सेविंग्स",
+    "cancelled": "लेनदेन रद्द",
+    "burn": {
+      "pending": "जला रहा है",
+      "confirmed": "जला दिया गया",
+      "failed": "जलाने में विफल रहा"
+    },
+    "cancel": {
+      "pending": "रद्द कर रहा है",
+      "confirmed": "रद्द कर दिया गया",
+      "failed": "रद्द करने में विफल रहा"
+    },
+    "send": {
+      "pending": "भेज रहा है",
+      "confirmed": "भेज दिया",
+      "failed": "भेजने में विफल"
+    },
+    "receive": {
+      "pending": "",
+      "confirmed": "प्राप्त किया",
+      "failed": ""
+    },
+    "withdraw": {
+      "pending": "निकासी कर रहे हैं",
+      "confirmed": "निकासी हो गई",
+      "failed": "निकासी विफल"
+    },
+    "deposit": {
+      "pending": "जमा कर रहे हैं",
+      "confirmed": "जमा हो गया",
+      "failed": "जमा विफल"
+    },
+    "mint": {
+      "pending": "मुद्रित कर रहे हैं",
+      "confirmed": "मुद्रित",
+      "failed": "मुद्रा विफल"
+    },
+    "approve": {
+      "pending": "मंजूरी दे रहे हैं",
+      "confirmed": "मंजूरी दी गई",
+      "failed": "मंजूरी विफल"
+    },
+    "contract_interaction": {
+      "pending": "इंटरैक्शन लंबित",
+      "confirmed": "इंटरैक्ट किया",
+      "failed": "इंटरैक्शन विफल"
+    },
+    "swap": {
+      "pending": "आदान-प्रदान कर रहे हैं",
+      "confirmed": "आदान-प्रदान कर दिया",
+      "failed": "आदान-प्रदान विफल"
+    },
+    "borrow": {
+      "pending": "उधार ले रहा है",
+      "confirmed": "उधार लिया",
+      "failed": "उधार विफल"
+    },
+    "claim": {
+      "pending": "दावा कर रहा है",
+      "confirmed": "दावा किया हुआ",
+      "failed": "दावा विफल"
+    },
+    "deployment": {
+      "pending": "लागू कर रहा है",
+      "confirmed": "लागू हुआ",
+      "failed": "लागू करने में विफल"
+    },
+    "repay": {
+      "pending": "चुकता कर रहा है",
+      "confirmed": "चुकता कर दिया",
+      "failed": "चुकता करने में विफल"
+    },
+    "stake": {
+      "pending": "शेयर जमा कर रहा है",
+      "confirmed": "शेयर जमा किया है",
+      "failed": "शेयर जमा करने में विफल"
+    },
+    "unstake": {
+      "pending": "शेयर निष्काशित कर रहा है",
+      "confirmed": "शेयर निष्काशित कर दिया",
+      "failed": "शेयर निष्काशन में विफल"
+    },
+    "purchase": {
+      "pending": "खरीद रहे हैं",
+      "confirmed": "खरीद लिया",
+      "failed": "खरीदने में विफल"
+    },
+    "revoke": {
+      "pending": "रोकथाम कर रहे हैं",
+      "confirmed": "रद्द कर दिया",
+      "failed": "रोकथाम विफल"
+    },
+    "sale": {
+      "pending": "बेच रहे हैं",
+      "confirmed": "बिक चुका",
+      "failed": "बिक्री विफल"
+    },
+    "bridge": {
+      "pending": "ब्रिजिंग",
+      "confirmed": "ब्रिज किया",
+      "failed": "ब्रिज विफल"
+    },
+    "airdrop": {
+      "pending": "",
+      "confirmed": "एयरड्रॉप किया",
+      "failed": ""
+    },
+    "wrap": {
+      "pending": "लपेट रहे हैं",
+      "confirmed": "लपेट लिया",
+      "failed": "लपेट विफल"
+    },
+    "unwrap": {
+      "pending": "अनलॉक कर रहे हैं",
+      "confirmed": "अनलॉक किया",
+      "failed": "अनव्रैप विफल रहा"
+    },
+    "bid": {
+      "pending": "बोली लगाना",
+      "confirmed": "बोली",
+      "failed": "बोली विफल रही"
+    },
+    "speed_up": {
+      "pending": "गति बढ़ाना",
+      "confirmed": "स्पीड अप किया",
+      "failed": "गति बढ़ाना विफल"
+    }
+  },
+  "command_k": {
+    "action_labels": {
+      "activate_command": "कमांड सक्रिय करें",
+      "open": "खोलें",
+      "open_in_new_tab": "नई टैब में खोलें",
+      "switch_to_wallet": "वॉलेट में स्विच करें",
+      "send_to_contact": "संपर्क को भेजें",
+      "view": "देखें",
+      "uuid_copied": "UUID कॉपी किया गया"
+    },
+    "commands": {
+      "names": {
+        "send": "भेजें",
+        "swap": "स्वैप करें",
+        "bridge": "ब्रिज",
+        "get": "प्राप्त करें",
+        "my_wallets": "मेरे वॉलेट",
+        "my_contacts": "मेरे संपर्क",
+        "approvals": "अनुमतियाँ",
+        "my_tokens": "मेरे टोकन",
+        "my_tokens_watched": "टोकन्स",
+        "my_nfts": "मेरे NFTs",
+        "my_nfts_watched": "NFTs",
+        "copy_address": "पता प्रतिलिपि करें",
+        "view_profile": "रेनबो प्रोफ़ाइल देखें",
+        "add_wallet": "वॉलेट जोड़ें",
+        "lock": "रेनबोल लॉक करें",
+        "connected_apps": "कनेक्टेड एप्स",
+        "developer_tools": "डेवलपर टूल टॉगल करें",
+        "developer_tools_disabled": "डेवलपर टूल सक्षम करें",
+        "developer_tools_enabled": "डेवलपर टूल अक्षम करें",
+        "testnet_mode": "टेस्टनेट मोड टॉगल करें",
+        "testnet_mode_disabled": "टेस्टनेट मोड सक्षम करें",
+        "testnet_mode_enabled": "टेस्टनेट मोड अक्षम करें",
+        "settings": "सेटिंग्स",
+        "network_settings": "नेटवर्क सेटिंग्स",
+        "my_qr_code": "मेरा क्यूआर कोड",
+        "my_qr_code_watched": "क्यूआर कोड",
+        "create_wallet": "वॉलेट बनाएं",
+        "import_wallet": "वॉलेट आयात करें",
+        "watch_wallet": "वॉलेट देखें",
+        "add_hardware_wallet": "हार्डवेयर वॉलेट जोड़ें",
+        "hide_balances": "छिपे हुए शेष राशि टॉगल करें",
+        "hide_balances_hidden": "शेष राशि दिखाएँ",
+        "hide_balances_revealed": "शेष राशि छिपाएँ",
+        "hide_small_balances": "छोटे शेष राशियों को टॉगल करें",
+        "hide_small_balances_hidden": "छोटे शेष राशियाँ दिखाएँ",
+        "hide_small_balances_revealed": "छोटे शेष राशियाँ छिपाएं",
+        "wallets_and_keys": "वॉलेट और कुंजी",
+        "view_full_screen": "फ़ुल स्क्रीन देखें",
+        "view_token": "टोकन देखें",
+        "view_token_details": "%{symbol} विवरण देखें",
+        "send_token": "टोकन भेजें",
+        "swap_token": "टोकन बदलें",
+        "copy_token_address": "टोकन कॉन्ट्रैक्ट पता कॉपी करें",
+        "view_token_on_explorer": "एक्सप्लोरर पर देखें",
+        "add_as_watched_wallet": "इस वॉलेट को देखें",
+        "view_on_ens": "ENS पर देखें",
+        "switch_to_wallet": "इस वॉलेट में स्विच करें",
+        "send_to_wallet": "इस वॉलेट को भेजें",
+        "add_contact": "संपर्क जोड़ें",
+        "remove_contact": "संपर्क हटाएं",
+        "hide_token": "छिपाएँ %{name}",
+        "unhide_token": "%{name} को अनहाइड करें",
+        "hide": "छिपाएं",
+        "unhide": "अनहाइड",
+        "copy_wallet_address": "पता प्रतिलिपि करें",
+        "view_wallet_on_etherscan": "Etherscan पर देखें",
+        "send_contact": "संपर्क को भेजें",
+        "export_addresses_as_csv": "CSV के रूप में पते निर्यात करें",
+        "enable_flashbots": "Flashbots सक्षम करें",
+        "disable_flashbots": "Flashbots अक्षम करें",
+        "copy_uuid": "UUID कॉपी करें"
+      },
+      "search_tags": {
+        "swap": "खरीद, बेच, व्यापार, ऑर्डर, एक्सचेंज, डेक्स, रूट्स",
+        "bridge": "ट्रांसफर, चेन, रूट्स",
+        "hide_token": "छिपा हुआ है",
+        "hide_nft": "छिपा हुआ है",
+        "get": "स्वैप, ब्रिज",
+        "my_wallets": "मेरा, स्विच",
+        "my_contacts": "मेरा",
+        "my_tokens_watched": "मेरा",
+        "my_nfts_watched": "मेरा",
+        "view_profile": "प्रोफ़ाइल, गैलरी, ENS, NFTs",
+        "testnet_mode": "टॉगल, नेटवर्क्स, टेस्टनेट्स",
+        "developer_tools": "टॉगल, नेटवर्क्स, डेवलपर, टेस्टनेट्स",
+        "approvals": "रद्द करें, टोकन्स, NFTs, अनुबंध",
+        "settings": "प्राथमिकताएं",
+        "network_settings": "टेस्टनेट्स, डेवलपर, नेटवर्क्स",
+        "my_qr_code_watched": "मेरा",
+        "create_wallet": "जोड़ें, नया",
+        "import_wallet": "जोड़ें, गुप्त बचाव, बीज शब्द, निजी कुंजी",
+        "watch_wallet": "जोड़ें",
+        "add_hardware_wallet": "लेजर, त्रेजोर, कनेक्ट",
+        "hide_balances": "टॉगल करें",
+        "hide_small_balances": "टॉगल करें",
+        "wallets_and_keys": "वॉलेट और कुंजी, सेटिंग्स, प्राथमिकताएं",
+        "diagnostics": "डायग्नोस्टिक्स"
+      }
+    },
+    "command_rows": {
+      "no_value": "कोई मूल्य नहीं"
+    },
+    "developer_tools_toast": {
+      "description_enabled": "T दबाएं टेस्टनेट मोड टॉगल करने के लिए",
+      "title_disabled": "डेवलपर टूल अक्षम",
+      "title_enabled": "विकासक उपकरण सक्षम"
+    },
+    "hide_balances_toast": {
+      "description_hidden": "आपके शेष राशि छिपी हुई है",
+      "description_revealed": "आपके शेष देख सकते हैं",
+      "title_hidden": "शेष छिपा हुआ है",
+      "title_revealed": "शेष खुला हुआ है"
+    },
+    "hide_small_balances_toast": {
+      "description_hidden": "$1 के नीचे शेष",
+      "description_revealed": "सभी टोकन दिखाएं",
+      "title_hidden": "सामान्य संतुलन छिपा हुआ",
+      "title_revealed": "छोटे संतुलन दिखा रहे हैं"
+    },
+    "contact_toast": {
+      "title_added": "संपर्क जोड़ा गया",
+      "title_removed": "संपर्क हटाया गया"
+    },
+    "no_results": "कोई परिणाम नहीं",
+    "pages": {
+      "add_wallet": {
+        "search_placeholder": "वॉलेट जोड़ने के तरीके खोजें…",
+        "section_title": "वॉलेट जोड़ें"
+      },
+      "home": {
+        "search_placeholder": "खोजें या कमांड दर्ज करें…",
+        "section_title": "सुझाव",
+        "section_title_results": "परिणाम"
+      },
+      "my_tokens": {
+        "empty_label": "कोई टोकन नहीं मिला",
+        "search_placeholder": "टोकन खोजें…",
+        "section_title": "मेरे टोकन"
+      },
+      "my_nfts": {
+        "empty_label": "कोई NFTs नहीं मिले",
+        "search_placeholder": "NFTs खोजें…",
+        "section_title": "मेरे NFTs"
+      },
+      "my_wallets": {
+        "search_placeholder": "स्विच करने के लिए वॉलेट का चयन करें…",
+        "section_title": "मेरे वॉलेट"
+      },
+      "my_contacts": {
+        "search_placeholder": "भेजने के लिए एक संपर्क चुनें...",
+        "section_title": "मेरे संपर्क"
+      },
+      "token_detail": {
+        "search_placeholder": "खोज टोकन कार्रवाई…",
+        "section_title": "कार्रवाइयाँ"
+      },
+      "nft_token_detail": {
+        "search_placeholder": "NFT क्रियाएँ खोजें…",
+        "section_title": "कार्रवाइयाँ"
+      },
+      "wallet_detail": {
+        "search_placeholder": "खोज वॉलेट कार्रवाइयाँ…",
+        "section_title": "कार्रवाइयाँ"
+      }
+    },
+    "labels": {
+      "contact": "संपर्क करें",
+      "hidden": "छिपा हुआ है"
+    },
+    "quick_promo": {
+      "text": "मैजिक मेन्यू खोलने के लिए %{modifierSymbol}K दबाएं",
+      "text_bold": "युक्ति:"
+    },
+    "toolbar": {
+      "actions_hint": "कार्रवाइयाँ"
+    },
+    "export_public_addresses": {
+      "keychain_type": {
+        "watching": "देख रहे हैं",
+        "recovery_phrase": "वसूली वाक्य",
+        "private_key": "निजी कुंजी",
+        "hardware_wallet": "हार्डवेयर वॉलेट"
+      },
+      "toast": {
+        "title": "पते डाउनलोड किए गए",
+        "description": "rainbow_addresses.csv"
+      }
+    }
+  },
+  "connected_apps": {
+    "title": "कनेक्टेड एप्स",
+    "disconnect": "सभी को डिस्कनेक्ट करें",
+    "other_wallets": "अन्य वॉलेट",
+    "no_connections_title": "कोई संपर्कित ऐप नहीं",
+    "no_connections_copy": "यहां आपके कनेक्शन किए गए वेबसाइट दिखाई देंगे"
+  },
+  "approvals": {
+    "title": "अनुमतियाँ",
+    "unlimited": "असीमित",
+    "no_allowance": "कोई अनुमति नहीं",
+    "revoke_approval": "अनुमति रद्द करें",
+    "copy_spender": "स्पेंडर कॉपी करें",
+    "spender_address_copied": "स्पेंडर पता कॉपी किया गया",
+    "revoked_approvals": "रद्द की गई अनुमतियाँ",
+    "nothing_found": "कुछ नहीं मिला",
+    "revoke": {
+      "title": "अनुमति रद्द करें",
+      "action": "रद्द करें",
+      "cancel": "रद्द करें",
+      "allowance": "अनुमति",
+      "spender": "स्पेंडर",
+      "chain": "श्रृंखला"
+    },
+    "token_details": {
+      "explainer": {
+        "token_approval": {
+          "title": "अनुमति क्या है?",
+          "description_1": "अनुमतियाँ एक डीऐप को आपकी ओर से टोकन या एनएफटी को खर्च और स्थानांतरित करने की अनुमति देती हैं।",
+          "description_2": "अपनी अनुमतियों पर नजर रखना और अनावश्यक, व्यापक या असुरक्षित अनुमतियों को रद्द करना महत्वपूर्ण है जो आपकी संपत्तियों को जोखिम में डाल सकती हैं।",
+          "action_label": "समझ गया"
+        }
+      }
+    }
+  },
+  "send": {
+    "title": "भेजें",
+    "input_to_address_placeholder": "नाम, ENS या पता",
+    "input_token_placeholder": "टोकन",
+    "max": "अधिकतम",
+    "switch_to": "को स्विच करें %{currency}",
+    "button_label": {
+      "review": "समीक्षा करें",
+      "enter_address_and_amount": "पता और राशि दर्ज करें",
+      "enter_valid_address": "एक वैध पता दर्ज करें",
+      "enter_address": "पता दर्ज करें",
+      "enter_amount": "राशि दर्ज करें",
+      "insufficient_asset": "पर्याप्त %{symbol}",
+      "insufficient_native_asset_for_gas": "गैस के लिए पर्याप्त %{symbol}"
+    },
+    "wallets_list": {
+      "contacts": "संपर्क",
+      "my_wallets": "मेरे वॉलेट",
+      "watched_wallets": "देख रहे हैं",
+      "no_results": "कोई परिणाम नहीं"
+    },
+    "tokens_input": {
+      "tokens": "टोकन्स",
+      "sort": "छांटें",
+      "available": "उपलब्ध",
+      "token_balance": "टोकन शेष",
+      "networks": "नेटवर्क",
+      "nothing_found": "कुछ नहीं मिला",
+      "nfts": "NFTs",
+      "alphabetical": "वर्णमाला",
+      "recent": "हाल ही में"
+    },
+    "review": {
+      "title": "समीक्षा और भेजें",
+      "to": "से",
+      "you_own_wallet": "आपका वॉलेट मालिक है",
+      "send_to": "भेजें %{toName}को",
+      "cancel": "रद्द करें",
+      "sending_on_network": "%{chainName} नेटवर्क पर भेज रहा है",
+      "sending_on_l2_check_1": "मैं एक एक्सचेंज पर नहीं भेज रहा हूँ",
+      "complete_checks": "जाँचों को पूरा करें",
+      "confirm_hw": "अपनी डिवाइस पर पुष्टि करें"
+    }
+  },
+  "swap": {
+    "_actions": {
+      "Swap": "स्वैप करें",
+      "swap": "स्वैप",
+      "swaps": "स्वैप्स",
+      "Swapping": "आदान-प्रदान कर रहे हैं",
+      "swapping": "स्वापिंग",
+      "Bridge": "ब्रिज",
+      "bridge": "सेतु",
+      "bridges": "ब्रिजेस",
+      "Bridging": "ब्रिजिंग",
+      "bridging": "ब्रिजिंग"
+    },
+    "title": "%{Action}",
+    "input_token_placeholder": "टोकन का चयन करें %{action}",
+    "input_token_to_receive_placeholder": "प्राप्त करने के लिए एक टोकन का चयन करें",
+    "select_tokens": "टोकन का चयन करें %{action}",
+    "max": "अधिकतम",
+    "balance": "शेष",
+    "tokens_input": {
+      "tokens": "टोकन्स",
+      "sort": "छांटें",
+      "available": "उपलब्ध",
+      "token_balance": "टोकन शेष",
+      "networks": "नेटवर्क",
+      "filter_by_network": "नेटवर्क से फ़िल्टर करें",
+      "switch_networks": "नेटवर्क बदलें",
+      "nothing_found": "कुछ नहीं मिला",
+      "nothing_found_description": "कुछ टोकन की पर्याप्त तरलता नहीं होती है एक सफल %{action}को प्रदर्शित करने के लिए।",
+      "nothing_found_description_l2": "कुछ टोकन की पर्याप्त परत 2 तरलता नहीं होती है एक सफल %{action}को प्रदर्शित करने के लिए।",
+      "output_quotes_disabled": "आउटपुट कोटेशन सक्षम नहीं है"
+    },
+    "warnings": {
+      "long_wait": {
+        "title": "लंबा इंतजार",
+        "description": "अधिकतम %{time} से %{action}"
+      },
+      "price_impact": {
+        "title": "छोटा बाजार",
+        "description": "कमाना %{impactAmount}"
+      },
+      "unknown_price": {
+        "title": "%{symbol} का बाजार मूल्य अज्ञात",
+        "description": "अगर आप जारी रखने का फैसला करते हैं, तो सुनिश्चित करें कि आपको उद्धृत राशि प्राप्त होने से संतुष्टि है।"
+      }
+    },
+    "promo": {
+      "degen_mode": {
+        "title": "समीक्षा को छोड़ने के लिए डेगेन मोड आज़माएं"
+      }
+    },
+    "aggregators": {
+      "rainbow": "स्वचालित"
+    },
+    "settings": {
+      "title": "%{Action} सेटिंग्स",
+      "route": "मार्ग %{actions} के माध्यम से",
+      "use_flashbots": "फ़्लैशबॉट्स का उपयोग करें",
+      "max_slippage": "मैक्स स्लिपेज",
+      "use_defaults": "डिफ़ॉल्ट उपयोग करें",
+      "done": "हो गया",
+      "warnings": {
+        "high": "उच्च",
+        "possible_loss": "संभवता हानि"
+      },
+      "explainers": {
+        "slippage": {
+          "title": "स्लिपेज",
+          "description_1": "स्लिपेज तब होता है जब किसी %{action} की कीमत आपके लेन-देन को सबमिट करने और उसकी पुष्टि के बीच के समय में बदल जाती है।",
+          "description_2": "एक ऊंची स्लिपेज सहनशीलता सेट करने से %{action} सफल होने की संभावना बढ़ जाती है, लेकिन इसके परिणामस्वरूप आपको खराब मूल्य मिल सकता है।",
+          "read_more": {
+            "open_text": "अभी भी जानना चाहते हैं? ",
+            "link_text": "और अधिक पढ़ें",
+            "close_text": " स्लिपेज के बारे में और यह कैसे %{actions}को प्रभावित करता है।"
+          }
+        },
+        "flashbots": {
+          "title": "फ्लैशबॉट्स",
+          "description": "फ्लैशबॉट्स आपके लेनदेन को सामने से टकराने और सैंडविच हमलों से सुरक्षित रखता है जिससे आपको एक बेहतर मूल्य या आपकी लेनदेन विफल होने का खतरा हो सकता है।",
+          "read_more": {
+            "open_text": "अभी भी जानना चाहते हैं? ",
+            "link_text": "और अधिक पढ़ें",
+            "close_text": " Flashbots और इसकी सुरक्षा के बारे में"
+          }
+        },
+        "routing": {
+          "title": "%{Action} रूटिंग",
+          "description": "डिफ़ॉल्ट रूप से, रेनबो आपके %{action}के लिए सबसे सस्ता मार्ग चुनता है। यदि आप विशेष रूप से 0x या 1inch का उपयोग करना पसंद करते हैं, तो आप वह भी कर सकते हैं।",
+          "read_more": {
+            "open_text": "अभी भी जानना चाहते हैं? ",
+            "link_text": "और अधिक पढ़ें",
+            "close_text": " हमारे रूटिंग के दृष्टिकोण के बारे में %{actions}."
+          }
+        },
+        "got_it": "समझ गया"
+      },
+      "degen_mode": {
+        "title": "Degen मोड",
+        "description": "तेज स्वैप के लिए समीक्षा चरण छोड़ें"
+      }
+    },
+    "actions": {
+      "review": "समीक्षा करें",
+      "loading": "लोड हो रहा है",
+      "insufficient_liquidity": "पर्याप्त लिक्विडिटी नहीं",
+      "fee_on_transfer_token": "स्थानांतरण पर शुल्क टोकन",
+      "no_route": "कोई मार्ग नहीं मिला",
+      "no_quote": "कोई कोट उपलब्ध नहीं",
+      "enter_an_amount": "राशि दर्ज करें",
+      "swap": "%{Action}",
+      "swapping": "%{Actioning} के माध्यम से",
+      "waiting_signature": "अपनी डिवाइस पर पुष्टि करें"
+    },
+    "review": {
+      "title": "समीक्षा और %{Action}",
+      "flashbots_on": "शुरू",
+      "minimum_received": "न्यूनतम प्राप्त",
+      "via": "%{Actioning} के माध्यम से",
+      "included_fee": "रेनबो शुल्क शामिल",
+      "use_flashbots": "फ़्लैशबॉट्स का उपयोग करें",
+      "exchange_rate": "विनिमय दर",
+      "asset_contract": "%{symbol} कॉन्ट्रैक्ट",
+      "more_details": "अधिक जानकारी",
+      "confirmation": "%{Action} %{sellSymbol} से %{buySymbol}",
+      "go_back": "पीछे जाएं"
+    },
+    "explainers": {
+      "long_wait": {
+        "title": "%{action}का इंतजार करने में समय लगेगा",
+        "description": "इस %{action} लेने में बहुत अधिक समय लग सकता है। यह आम तौर पर क्रॉस-चेन ब्रिज़ से समस्याओं के कारण होता है",
+        "action_label": "फिर भी जारी रखें"
+      },
+      "no_route": {
+        "title": "कोई मार्ग नहीं मिला",
+        "description": "हमें इस %{action}के लिए मार्ग नहीं मिला। इस %{action}के लिए मार्ग मौजूद नहीं हो सकता, या राशि बहुत छोटी हो सकती है",
+        "action_label": "समझ गया"
+      },
+      "no_quote": {
+        "title": "कोई कोट उपलब्ध नहीं",
+        "description": "हमें इस %{action}के लिए उद्धरण नहीं मिले। यह हो सकता है क्योंकि इसमें पर्याप्त तरलता नहीं है %{action} करने के लिए या टोकन कैसे लागू किया गया है, उसमें समस्याएं होने के कारण।",
+        "action_label": "समझ गया"
+      },
+      "insufficient_liquidity": {
+        "title": "पर्याप्त लिक्विडिटी नहीं",
+        "description": "हमें इस %{action} के लिए उद्धरण नहीं मिले क्योंकि इस जोड़ी में एक्सचेंजों पर पर्याप्त तरलता नहीं है।",
+        "action_label": "समझ गया",
+        "footer_text": {
+          "open_text": "अभी भी जानना चाहते हैं? ",
+          "link_text": "और अधिक पढ़ें",
+          "close_text": " ऍमएम और टोकन नकदीपन के बारे में।"
+        }
+      },
+      "fee_on_transfer_token": {
+        "title": "स्थानांतरण पर शुल्क टोकन",
+        "description": "इस %{action} का विफलता होगा रेनबो में क्यूंकि %{tokenName} अनुबंध अतिरिक्त शुल्क जोड़ता है।",
+        "action_label": "समझ गया",
+        "footer_text": {
+          "open_text": "पढ़ें ",
+          "link_text": "हमारा मार्गदर्शन",
+          "close_text": " मदद के लिए %{actioning} इस टोकन!"
+        }
+      },
+      "flashbots": {
+        "title": "फ्लैशबॉट्स",
+        "description": "फ्लैशबॉट्स आपके लेनदेन को सामने से टकराने और सैंडविच हमलों से सुरक्षित रखता है जिससे आपको एक बेहतर मूल्य या आपकी लेनदेन विफल होने का खतरा हो सकता है।",
+        "action_label": "समझ गया"
+      },
+      "fee": {
+        "title": "रेनबो शुल्क",
+        "description": "रेनबो %{actions}से %{feePercentage} शुल्क लेता है। यह हमें आपको सर्वश्रेष्ठ इथेरियम अनुभव प्रदान करने में सक्षम बनाता है।",
+        "action_label": "समझ गया"
+      }
+    }
+  },
+  "custom_gas": {
+    "title": "गैस सेटिंग्स",
+    "current_base_fee": "वर्तमान बेस शुल्क",
+    "max_base_fee": "अधिकतम बेस शुल्क",
+    "miner_tip": "माइनर टिप",
+    "gas_price": "गैस की कीमत",
+    "max_transaction_fee": "अधिकतम लेनदेन शुल्क",
+    "transaction_speed": "लेनदेन की गति",
+    "cancel": "रद्द करें",
+    "set": "सेट करें",
+    "base_trend": {
+      "falling": "गिरते",
+      "stable": "स्थिर",
+      "surging": "बढ़ते",
+      "rising": "बढ़ता हुआ"
+    },
+    "warnings": {
+      "may_get_stuck": "अटक सकता है",
+      "likely_to_fail": "असफल होने की संभावना",
+      "low": "कम"
+    }
+  },
+  "contacts": {
+    "save_contact": "संपर्क सहेजें",
+    "add_to_contacts": "संपर्कों में जोड़ें",
+    "edit_contact": "संपर्क संपादित करें",
+    "save_changes": "परिवर्तन सहेजें",
+    "cancel": "रद्द करें",
+    "remove_contact_title": "संपर्क हटाएं?",
+    "remove_contact_action": "संपर्क हटाएं",
+    "remove_contact_description": "क्या आप वाकई अपने संपर्कों से “%{name}” को हटाना चाहते हैं?",
+    "save": "सहेजें",
+    "copy_address": "पता प्रतिलिपि करें",
+    "view_on_etherscan": "Etherscan पर देखें",
+    "view_on_explorer": "एक्सप्लोरर पर देखें",
+    "delete_contact": "संपर्क हटाएं",
+    "contact_address_copied": "पता कॉपी किया गया"
+  },
+  "sign": {
+    "title": "साइन करें"
+  },
+  "unlock": {
+    "welcome_back": "वापसी में आपका स्वागत है",
+    "enter_password": "Rainbow को अनलॉक करने के लिए अपना पासवर्ड दर्ज करें।",
+    "unlock": "अनलॉक करें",
+    "having_trouble": "कोई समस्या है?",
+    "contact": "संपर्क करें",
+    "rainbow_support": "Rainbow समर्थन"
+  },
+  "onboard_before_connect": {
+    "before_connect": "जब आप कनेक्ट कर सकें",
+    "almost_done": "आप लगभग संपन्न हो गए हैं। जल्दी से रेनबो से अपना वॉलेट सेट अप करें।",
+    "setup_wallet": "अपना वॉलेट सेट अप करें"
+  },
+  "welcome": {
+    "title": "रेनबो",
+    "subtitle": "Ethereum की नई दुनिया का अन्वेषण करें",
+    "create_wallet": "नया वॉलेट बनाएं",
+    "import_wallet": "बटवालेट इम्पोर्ट करें या कनेक्ट करें",
+    "disclaimer_tos": "आगे बढ़ने के लिए, आपको इसके साथ सहमत होना होगा",
+    "disclaimer_tos_link": "उपयोग की शर्तें",
+    "invalid_code": "अमान्य कोड",
+    "join": "शामिल हों"
+  },
+  "seed_backup_prompt": {
+    "title": "शुरू होने से पहले, अपने सीक्रेट रिकवरी फ्रेज का बैकअप बनाएं",
+    "warning_1": "यह महत्वपूर्ण है कि आप अपने सीक्रेट रिकवरी फ्रेज को कहीं सुरक्षित लिखें और संग्रह करें।",
+    "warning_2": "आपके सीधे जोड़ी हुए शब्द मात्रा के अलावा कोई और तरीका नहीं होता है जिससे आप अपने खातों और फंड को वापस प्राप्त कर सकते हैं।",
+    "warning_3": "कोई भी आपकी पुनर्प्राप्ति वाक्य के साथ आपकी पूरी वॉलेट तक पहुंच सकता है।",
+    "reveal_your_recovery_phrase": "अपने रिकवरी शब्दों को व्यक्त करें",
+    "take_me_to_wallet": "मुझे मेरे वॉलेट पर ले चलें"
+  },
+  "seed_reveal": {
+    "title": "आपकी पुनर्प्राप्ति वाक्य",
+    "write_down_seed_importance": "जिसके पास इन शब्दों का होता है वह आपकी पूरी वॉलेट तक पहुंच सकता है! आपको उन्हें कभी भी साझा नहीं करना चाहिए।",
+    "saved_these_words": "मैंने इन शब्दों को सहेज लिया है",
+    "copied": "पुनर्प्राप्ति वाक्य कॉपी किया गया"
+  },
+  "import_wallet_via_secret": {
+    "title": "वॉलेट आयात करें",
+    "explanation": "अपनी पसंद की आयात विधि का चयन करें। आप बाद में किसी भी समय अतिरिक्त वॉलेट आयात कर सकते हैं।",
+    "seed_phrase": "गुप्त शब्द के द्वारा आयात करें",
+    "seed_phrase_desc": "अपने 12 या 24 शब्दों का उपयोग करके वॉलेट समूह जोड़ें",
+    "private_key": "प्राइवेट कुंजी से आयात करें",
+    "private_key_desc": "अपने 64 अक्षरों की प्राइवेट कुंजी का उपयोग करके एकल वॉलेट जोड़ें"
+  },
+  "import_wallet_via_seed": {
+    "title": "अपना वॉलेट आयात करें",
+    "explanation": "वॉलेट जोड़ने के लिए, अपने 12 या 24 शब्दों के रिकवरी शब्द लिखें या पेस्ट करें।",
+    "24_words": "मैं 24 शब्द का उपयोग कर रहा हूँ",
+    "12_words": "मैं 12 शब्द का उपयोग कर रहा हूँ",
+    "import_wallet_group": "वॉलेट समूह आयात करें",
+    "n_words_might_be_wrong": "%{n} शब्द गलत या गलत हो सकते हैं।",
+    "1_word_might_be_wrong": "1 शब्द गलत या गलत हो सकता है।",
+    "couldnt_paste": "हम आपके सीक्रेट रिकवरी फ्रेज़ को पेस्ट नहीं कर सके",
+    "duplicate_seed": "यह बीज पहले ही आयात हो चुका है"
+  },
+  "import_wallet_via_private_key": {
+    "title": "अपना वॉलेट आयात करें",
+    "explanation": "64-वर्णकी निजी कुंजी दर्ज करें, रेनबो या किसी अन्य Ethereum वॉलेट से।",
+    "placeholder": "एक अन्य वॉलेट से अपनी निजी कुंजी पेस्ट करें",
+    "import_wallet": "वॉलेट इम्पोर्ट करें"
+  },
+  "import_or_connect": {
+    "title": "पुनर्स्थापित करें या कनेक्ट करें",
+    "explanation": "आपके सीक्रेट रिकवरी फ्रेज़ के साथ कोई भी आपका पूरा वॉलेट एक्सेस कर सकता है! इसे कहीं सुरक्षित स्थान पर संग्रह करें और किसी के साथ साझा न करें।",
+    "import_wallet": "गुप्त वापसी मंत्र या निजी कुंजी के साथ आयात करें",
+    "import_wallet_description": "अपने गुप्त वापसी मंत्र या निजी कुंजी का उपयोग करके वॉलेट जोड़ें।",
+    "connect_wallet": "अपने हार्डवेयर वॉलेट को कनेक्ट करें",
+    "connect_wallet_description": "अपने हार्डवेयर वॉलेट से खाते जोड़ें।",
+    "watch_address": "एक Ethereum पते को देखें",
+    "watch_address_description": "पब्लिक पता या ENS नाम देखें।"
+  },
+  "import_wallet_selection": {
+    "title": "आपके वॉलेट्स",
+    "description": {
+      "zero": "रेनबो ने 1 वॉलेट का पता लगाया है। आप कभी भी अधिक जोड़ सकते हैं।",
+      "one": "रेनबो ने हाल ही में इस्तेमाल की गई 1 वॉलेट का पता लगाया है। आप कभी भी अधिक जोड़ सकते हैं।",
+      "other": "रेनबो ने हाल ही में उपयोग किए गए %{count} वॉलेट्स का पता लगाया। आप कभी भी संपादित कर सकते हैं या और जोड़ सकते हैं।"
+    },
+    "add_wallets": "वॉलेट जोड़ें",
+    "edit_wallets": "वॉलेट संपादित करें",
+    "loading": "हम आपके सभी वॉलेट्स की खोज करते समय थोड़ा समय लगेगा...",
+    "importing": "आपके वॉलेट्स को आयात कर रहे हैं...",
+    "account_summary_tokens": "टोकन: %{tokensAmount}",
+    "account_summary_last_tx": "अंतिम ट्रांजैक्शन: %{lastTx} पहले"
+  },
+  "watch_wallet": {
+    "title": "एक Ethereum पते को देखें",
+    "description": "कोई भी ईथेरियम पता या ENS नाम दर्ज करें। बाद में आपको भेजने या संकेत करने के लिए इसे आयातित करना होगा।",
+    "invalid_address": "अमान्य पता",
+    "unsupported_tld": "%{tld} समर्थित नहीं है",
+    "address_already_added": "पता पहले ही जोड़ा गया है",
+    "address_already_added_as": "पता पहले ही %{addedAs}के रूप में जोड़ा गया है",
+    "watch_top_ens_wallets": "शीर्ष ENS वॉलेट देखें",
+    "placeholder": "ईथेरियम पता या ENS नाम",
+    "watch_wallet": "वॉलेट देखें",
+    "watch_wallets": "वॉलेट देखें",
+    "loading": "इन वॉलेट्स को देखना शुरू करते समय धैर्य रखें..."
+  },
+  "import_wallet": {
+    "title": "अपना वॉलेट आयात करें",
+    "description": "अपनी सीक्रेट रिकवरी फ्रेज़ या रामबो या किसी ईथेरियम वॉलेट से निजी कुंजी दर्ज करें।",
+    "too_many_words": "बहुत सारे शब्द",
+    "too_many_chars": "बहुत सारे अक्षर",
+    "add_another": "एक और जोड़ें",
+    "remove": "हटाएँ",
+    "placeholder": "अपनी सीक्रेट रिकवरी फ्रेज़ या दूसरे वॉलेट से निजी कुंजी पेस्ट करें",
+    "invalid_word": "अमान्य शब्द: %{word}",
+    "invalid_private_key": "अवैध निजी कुंजी",
+    "invalid_recovery_phrase": "अमान्य रिकवरी फ्रेज़",
+    "missing_words": {
+      "one": "1 शब्द छूट गया",
+      "other": "%{count} शब्द गायब हैं"
+    },
+    "import_wallet": {
+      "one": "वॉलेट को पुनर्स्थापित करें",
+      "other": "वॉलेट को पुनर्स्थापित करें"
+    }
+  },
+  "edit_import_wallet_selection": {
+    "title": "सभी वॉलेट",
+    "add_wallet": {
+      "zero": "एक वॉलेट का चयन करें",
+      "one": "वॉलेट जोड़ें",
+      "other": "%{count} वॉलेट जोड़ें"
+    },
+    "importing_your_wallet": {
+      "one": "आपकी वॉलेट आयात की जा रही है...",
+      "other": "आपके वॉलेट्स को आयात कर रहे हैं..."
+    },
+    "sort": {
+      "title": "छांटें",
+      "default": "डिफ़ॉल्ट",
+      "token_balance": "टोकन शेष",
+      "last_transaction": "अंतिम लेनदेन"
+    }
+  },
+  "seed_verify": {
+    "title": "अपना गुप्त फ्रेज कड़वाएँ",
+    "explanation": "प्रकाशित संवेदनशील वाक्यांश के 4th, 8th, और 12th शब्दों का चयन करें",
+    "skip": "इसे छोड़ें"
+  },
+  "menu": {
+    "network": {
+      "title": "नेटवर्क बदलें",
+      "disconnect": "डिस्कनेक्ट करें"
+    },
+    "app_connection_menu": {
+      "connected_apps": "कनेक्टेड एप्स",
+      "not_connected": "कनेक्ट नहीं हुआ",
+      "networks": "नेटवर्क",
+      "connect": "कनेक्ट करें",
+      "switch_network": "नेटवर्क स्विच करें",
+      "switch_wallets": "वॉलेट स्विच करें",
+      "disconnect": "डिस्कनेक्ट करें"
+    },
+    "home_header_right": {
+      "settings": "सेटिंग्स",
+      "qr_code": "मेरा क्यूआर कोड",
+      "rainbow_profile": "रेनबो प्रोफ़ाइल",
+      "guides_and_support": "गाइड और सहायता",
+      "share_feedback": "फ़ीडबैक साझा करें",
+      "lock_rainbow": "रेनबोल लॉक करें",
+      "testnet_mode": "परीक्षण नेटवर्क मोड",
+      "testnet_mode_off": "बंद",
+      "testnet_mode_on": "शुरू"
+    }
+  },
+  "testnet_mode_watcher": {
+    "connect_to": "स्विच करें %{chainName}?",
+    "testnet_mode": "परीक्षण नेटवर्क मोड",
+    "testnet_mode_active": "वर्तमान में सक्रिय है। क्या आप इसे बंद करना चाहेंगे और बजाय %{chainName} से संवाद करना चाहेंगे?",
+    "disable_and_connect": "अक्षम करें और स्विच करें",
+    "cancel": "रद्द करें"
+  },
+  "app_connection_switcher": {
+    "banner": {
+      "connect_to": "%{appName}से कनेक्ट करें",
+      "app_connected": "%{appName} जुड़े"
+    },
+    "sheet": {
+      "connect": "कनेक्ट करें",
+      "connect_different_wallet": "एक अलग वॉलेट कनेक्ट करें",
+      "dont_show_again": "फिर से दिखाएँ नहीं",
+      "allow_to": "%{appName} को अपने वॉलेट पता, शेष राशि, गतिविधि देखने और लेन-देन के लिए मंजूरी के लिए आपको अनुमति दें।",
+      "connect_to": "%{appName}से कनेक्ट करें?"
+    },
+    "wallet_item": {
+      "disconnect": "डिस्कनेक्ट करें",
+      "switch_connection": "कनेक्शन बदलें",
+      "connect": "कनेक्ट करें"
+    },
+    "wallet_item_dropdown_menu": {
+      "connect": "कनेक्ट करें",
+      "disconnect": "डिस्कनेक्ट करें",
+      "open_app": "%{appName}ओपन करें"
+    },
+    "wallet_switcher": {
+      "switch_wallets": "वॉलेट बदलें",
+      "other_wallets": "अन्य वॉलेट",
+      "done": "हो गया",
+      "connected": "कनेक्टेड"
+    }
+  },
+  "wallet_backup_reminder": {
+    "title": "आपके कुछ वॉलेट्स का बैकअप नहीं हुआ है",
+    "description": "आपके कुछ वॉलेट्स का बैकअप नहीं हुआ है। अगर आपने इस यंत्र की पहुंच खो दी है तो अपने वॉलेट्स की पहुंच पाने के लिए बैकअप करें।",
+    "button_label_action": "अब बैकअप करें",
+    "button_label_cancel": "मुझे बाद में याद दिलाएं"
+  },
+  "approve_request": {
+    "allow_to_add_asset": "एक टोकन सुझाएँ चाहता है",
+    "wallet_info_title": "आपके वॉलेट के साथ कनेक्ट करना चाहता है",
+    "wallet_info_description": "%{appName} को आपके वॉलेट का पता, शेष राशि, गतिविधि देखने और लेनदेनों की मंज़ूरी अनुरोध करने के लिए अनुमति दें।",
+    "add_chain_info_description": "यदि आप इसे मंजूर करते हैं, तो इस नेटवर्क का उपयोग रेनबो ब्राउज़र एक्सटेंशन के भीतर किया जा सकता है।",
+    "watch_asset_info_description": "अगर आप इसे मंजूर करते हैं, तो यह एसेट Rainbow Browser Extension में उपयोग किया जा सकता है।",
+    "wallet": "वॉलेट",
+    "network": "नेटवर्क",
+    "switch_networks": "नेटवर्क बदलें",
+    "switch_wallets": "वॉलेट बदलें",
+    "allow_to_add_network": "नेटवर्क जोड़ना चाहता है",
+    "connect": "%{appName}से कनेक्ट करें",
+    "connect_anyway": "फिर भी कनेक्ट करें",
+    "approve": "मंजूर करें",
+    "approve_anyway": "फिर भी मंजूर करें",
+    "malicious_warning": {
+      "title": "यह ऐप शायद हानिकरक है",
+      "message": "इस ऐप से संदेश या लेन-देन हस्ताक्षरण करने के परिणामस्वरूप आपकी संपत्ति खो सकती है"
+    },
+    "malicious_transaction_warning": {
+      "title": "यह लेन-देन संदिग्ध लगता है",
+      "malicious_address": "एक हानिकारक पता इस लेन-देन में शामिल है। हस्ताक्षर करने से नुकसान हो सकता है",
+      "malicious_entity": "एक हानिकारक संस्था इस लेन-देन में शामिल है। हस्ताक्षर करने से नुकसान हो सकता है",
+      "minting_is_a_losing_trade": "एक धोखाधड़ी कांट्रैक्ट इस लेनदेन में शामिल है। मिंटिंग नुकसानदेह है",
+      "you_can_lose_everything": "इस लेन-देन का हस्ताक्षर करने से आपके वॉलेट में मौजूदा सभी चीजों को खोने का जोखिम है"
+    },
+    "dangerous_request": "आपत्तिजनक अनुरोध",
+    "message_signing_request": "संदेश हस्ताक्षर अनुरोध",
+    "message": "संदेश",
+    "message_copied": "संदेश कॉपी किया गया",
+    "transaction_data_copied": "लेन-देन डेटा कॉपी किया गया",
+    "sign_message": "साइन करें",
+    "sign_message_anyway": "फिर भी हस्ताक्षर करें",
+    "confirm_hw": "अपनी डिवाइस पर पुष्टि करें",
+    "balance": "शेष",
+    "send_transaction": "साइन करें",
+    "send_transaction_anyway": "फिर भी हस्ताक्षर करें",
+    "contract_deployment": "कॉन्ट्रैक्ट डिप्लॉयमेंट",
+    "transaction_request": "लेनदेन अनुरोध",
+    "insufficient_gas_funds": "आपको और चाहिए %{token}",
+    "insufficient_gas_funds_description": "इस लेनदेन के लिए भुगतान करने के लिए आपको थोड़ी ज्यादा %{token} की आवश्यकता है। इस अनुरोध के साथ जारी रखने के लिए नीचे और प्राप्त करें।",
+    "no_gas_funds": "आपको कुछ %{token}की ज़रूरत है",
+    "no_gas_funds_description": "इस लेनदेन के लिए भुगतान करने के लिए आपको %{token} की जरूरत होगी। इस अनुरोध के साथ जारी रखने के लिए नीचे कुछ %{token} प्राप्त करें।",
+    "no_token": "कोई %{token}नहीं।",
+    "on_chain": "पर %{chain}",
+    "copy_deposit_address": "जमा करने के लिए बटुए का पता कॉपी करें",
+    "bridge_to": "ब्रिज तक %{chain}",
+    "signing_with": "के साथ हस्ताक्षर करना",
+    "no_fee_to_sign": "साइन करने के लिए कोई शुल्क नहीं",
+    "request_rejected": "लेन-देन अनुरोध को मंजूर नहीं किया गया",
+    "bridge_and_try_again": "कुछ गैस फंड ब्रिज करें और पुनः प्रयास करें",
+    "buy_and_try_again": "कुछ गैस फंड खरीदें और पुनः प्रयास करें",
+    "buy_gas": "%{token}खरीदें",
+    "get_testnet_gas": "मुफ्त टेस्टनेट %{token}प्राप्त करें"
+  },
+  "add_chain": {
+    "name": "नाम",
+    "chain_id": "चेन आईडी",
+    "currency_symbol": "मुद्रा प्रतीक",
+    "currency_name": "मुद्रा नाम",
+    "currency_decimals": "मुद्रा दशमलव",
+    "rpc_url": "RPC URL",
+    "block_explorer_url": "ब्लॉक एक्सप्लोरर URL",
+    "testnet": "टेस्टनेट"
+  },
+  "transaction_fee": {
+    "title": "लेनदेन की गति",
+    "urgent": "तत्काल",
+    "fast": "तेज",
+    "normal": "सामान्य",
+    "custom": "विशेष",
+    "estimated_fee": "अनुमानित शुल्क"
+  },
+  "time": {
+    "days": {
+      "long": {
+        "plural": "दिन",
+        "singular": "दिन"
+      },
+      "micro": "दि",
+      "short": {
+        "plural": "दिन",
+        "singular": "दिन"
+      }
+    },
+    "hours": {
+      "long": {
+        "plural": "घंटे",
+        "singular": "घंटा"
+      },
+      "micro": "घ",
+      "short": {
+        "plural": "घंटे",
+        "singular": "घंटा"
+      }
+    },
+    "milliseconds": {
+      "long": {
+        "plural": "मिलीसेकंड",
+        "singular": "मिलीसेकंड"
+      },
+      "micro": "मि.से.",
+      "short": {
+        "plural": "मि.से.",
+        "singular": "मि.से."
+      }
+    },
+    "minutes": {
+      "long": {
+        "plural": "मिनट",
+        "singular": "मिनट"
+      },
+      "micro": "मिन",
+      "short": {
+        "plural": "मिनट",
+        "singular": "मिनट"
+      }
+    },
+    "now": "अभी",
+    "seconds": {
+      "long": {
+        "plural": "सेकंड",
+        "singular": "सेकंड"
+      },
+      "micro": "से.",
+      "short": {
+        "plural": "सेकंड",
+        "singular": "सेकंड"
+      }
+    }
+  },
+  "wallets": {
+    "title": "वॉलेट्स"
+  },
+  "common_actions": {
+    "back": "वापस",
+    "cancel": "रद्द करें",
+    "continue": "जारी रखें",
+    "copy_to_clipboard": "क्लिपबोर्ड पर कॉपी करें"
+  },
+  "errors": {
+    "error_encountered": "कुछ गलत हो गया। कृपया हमारी टीम के साथ समस्या साझा करें और हम इसे ठीक करेंगे!",
+    "no_wallet_name_set": "कोई वॉलेट नाम निर्धारित नहीं है",
+    "report_error": "समस्या रिपोर्ट करें",
+    "sending_transaction": "लेन-देन भेजने में त्रुटि",
+    "executing_swap": "स्वैप क्रियान्वयन में त्रुटि"
+  },
+  "common_titles": {
+    "before_you_proceed": "जारी रखने से पहले"
+  },
+  "passwords": {
+    "password": "पासवर्ड",
+    "password_not_set": "पासवर्ड सेट नहीं है",
+    "password_incorrect": "गलत पासवर्ड",
+    "passwords_do_not_match": "पासवर्ड मेल नहीं खाते",
+    "wrong_password": "गलत पासवर्ड",
+    "new_password": "नया पासवर्ड",
+    "confirm_password": "पासवर्ड की पुष्टि करें",
+    "update_password": "पासवर्ड अपडेट करें",
+    "set_password": "पासवर्ड सेट करें",
+    "too_weak": "बहुत दुर्बल",
+    "weak": "कमजोर",
+    "good": "अच्छा",
+    "excellent": "शानदार",
+    "8_chars_min": "8 अक्षरों का न्यूनतम",
+    "try_another_password_weak": "यह एक कमजोर पासवर्ड है जिसे आसानी से क्रैक किया जा सकता है। एक मजबूत पासवर्ड का प्रयास करें।",
+    "try_another_password_common": "अपने पासवर्ड को और मजबूत बनाएं, ऊपरी और निचले केस के अक्षर, अंक और चिन्हों का मिश्रण करके",
+    "too_short": "पासवर्ड कम से कम 8 अक्षरों का होना चाहिए"
+  },
+  "create_password": {
+    "title": "अपना पासवर्ड बनाएं",
+    "description": "अपने वॉलेट को सुरक्षित और ताला लगाने के लिए एक पासवर्ड चुनें।"
+  },
+  "tabs": {
+    "activity": "गतिविधि",
+    "nfts": "NFTs",
+    "points": "अंक",
+    "rewards": "पुरस्कार",
+    "tokens": "टोकन्स"
+  },
+  "activity": {
+    "hour": "Last Hour",
+    "today": "आज",
+    "yesterday": "कल",
+    "this_month": "इस महीने",
+    "empty_header": "अभी तक कोई गतिविधि नहीं",
+    "empty_description": "अपने वॉलेट का उपयोग शुरू करने के बाद, आप यहाँ अपने लेन-देन देखेंगे।",
+    "loading_more": "और लोड हो रहा है...",
+    "no_value": "कोई मूल्य नहीं"
+  },
+  "activity_details": {
+    "you": "तुम",
+    "from": "से",
+    "to": "को",
+    "confirmed_at": "पुष्टि मिली",
+    "confirmations": "पुष्टिकरण",
+    "token": "टोकन",
+    "block": "ब्लॉक",
+    "value": "मूल्य",
+    "network": "नेटवर्क",
+    "fee": "नेटवर्क शुल्क",
+    "base_fee": "मूल शुल्क",
+    "max_base_fee": "अधिकतम मूल शुल्क",
+    "gas_price": "गैस की कीमत",
+    "gas_limit": "गैस सीमा",
+    "gas_used": "गैस का उपयोग",
+    "max_priority_fee": "खननकर्ता का टिप",
+    "nonce": "नॉन्स",
+    "allowance": "अनुमति",
+    "unlimited_allowance": "असीमित %{symbol}",
+    "app": "ऐप",
+    "copy_hash": "ट्रांजैक्शन हैश कॉपी करें",
+    "hash_copied": "हैश कॉपी",
+    "copy_explorer_url": "लिंक कॉपी करें",
+    "explorer_copied": "लिंक कॉपी किया",
+    "exchange_rate": "एक्सचेंज",
+    "collection": "संग्रह",
+    "token_contract": "टोकन अनुबंध",
+    "token_standard": "टोकन मानक",
+    "revoke_approval": "अनुमति रद्द करें"
+  },
+  "tokens_tab": {
+    "coinbase_title": "कॉइनबेस से जमा करें",
+    "coinbase_description": "कॉइनबेस से अपने क्रिप्टो को निःशुल्क स्थानांतरित करें",
+    "buy_title": "अपने वॉलेट को धन राशि प्रदान करने के लिए क्रिप्टो खरीदें",
+    "buy_description_1": "दबाएं",
+    "buy_description_2": "समर्थित भुगतान विकल्प देखने के लिए",
+    "send_from_wallet": "दूसरे वॉलेट से भेजें",
+    "send_description_1": "दबाएं",
+    "send_description_2": "अपना पता कॉपी करने के लिए या",
+    "send_description_3": "QR कोड के लिए",
+    "unknown_token": "अज्ञात टोकन"
+  },
+  "nfts": {
+    "empty_state_header": "NFTs",
+    "empty_state_description": "आपके NFTs यहां दिखाई देंगे!",
+    "report_nft_action_text": "रिपोर्ट करें",
+    "report_nft_confirm_description": "NFT की रिपोर्ट की पुष्टि करें?",
+    "view_on_web": "वेब पर देखें",
+    "display_mode_gallery": "गैलरी",
+    "display_mode_collections": "संग्रह",
+    "sort_option_recent": "हाल ही में",
+    "sort_option_abc": "एबीसी",
+    "sort_option_recent_long": "हाल ही में",
+    "sort_option_abc_long": "वर्णमाला",
+    "hidden_section_title": "छिपा हुआ है",
+    "details": {
+      "last_sales_price": "अंतिम बिक्री मूल्य",
+      "none": "कोई नहीं",
+      "floor_price": "फ़्लोर की कीमत",
+      "description": "विवरण",
+      "properties": "गुण",
+      "address_copied": "पता कॉपी किया गया",
+      "about": "के बारे में",
+      "token_standard": "टोकन मानक",
+      "token_contract": "टोकन अनुबंध",
+      "contract_creator": "संविधान सृजक",
+      "chain": "श्रृंखला",
+      "hide": "छिपाएं",
+      "unhide": "अनहाइड",
+      "id_copied": "ID कॉपी किया गया",
+      "copy_token_id": "टोकन आईडी कॉपी करें",
+      "download": "डाउनलोड करें",
+      "explorer": "एक्सप्लोरर",
+      "view_collection": "कलेक्शन देखें",
+      "collection_website": "कलेक्शन वेबसाइट",
+      "owners": "मालिक",
+      "unique_owners": "अद्वितीय मालिकों",
+      "ens_profile_info": "प्रोफ़ाइल जानकारी",
+      "ens_bio": "बायो",
+      "ens_cover": "कवर",
+      "ens_address": "ईथ ठेका",
+      "ens_website": "वेबसाइट",
+      "registered_on": "पंजीकृत",
+      "expires_in": "समाप्त होता है",
+      "report": "रिपोर्ट करें",
+      "explainer": {
+        "floor_price_description": "संग्रह की निचली कीमत वह न्यूनतम मांग की गई कीमत होती है जो उस संग्रह में बिक्री के लिए उपलब्ध सभी वस्तुओं में से होती है।",
+        "floor_price_title": "संग्रह की न्यूनतम कीमत",
+        "floor_price_action_label": "समझ गया"
+      },
+      "send": "भेजें",
+      "view_on_opensea": "OpenSea पर देखें",
+      "view_on_explorer": "%{explorerTitle}पर देखें",
+      "gallery": "गैलरी",
+      "view_gallery": "गैलरी देखें"
+    },
+    "toast": {
+      "spam_reported": "आपकी रिपोर्ट प्राप्त हो गई है!",
+      "hidden": "NFT छुपाया गया",
+      "unhidden": "NFT अनहाइड किया गया"
+    }
+  },
+  "points": {
+    "check_back_soon_header": "जल्दी ही वापस देखें",
+    "check_back_soon_description": "अंक इस समय उपलब्ध नहीं हैं।\nजल्द ही वापस जांचें ताकि आप Rainbow अंकों का उपयोग जारी रख सकें।",
+    "your_rank": "आपका रैंक",
+    "my_points": "मेरे अंक",
+    "rank": "रैंक",
+    "ranking": "रैंक #%{rank}",
+    "unranked": "अवर्गीकृत",
+    "no_weekly_rank": "कोई साप्ताहिक रैंक नहीं",
+    "points_to_rank": "%{rank_cutoff} अंक रैंक के लिए",
+    "top_holders": "शीर्ष अंक धारक",
+    "next_drop": "अगली ड्रॉप",
+    "leaderboard": "लीडरबोर्ड",
+    "referral_code": "मित्रों को संदर्भित करें",
+    "referral_code_description": "जब आपके रेफरल Rainbow के माध्यम से $100 का स्वैप करते हैं तो अंक अर्जित करें, साथ ही आपके रेफरल द्वारा अर्जित अंकों का 10% प्राप्त करें",
+    "referral_earnings": "%{earnings} अंक",
+    "copied_referral_code": "रेफरल कोड की प्रतिलिपि बनाई गई!",
+    "copied_referral_link": "रेफरल लिंक की प्रतिलिपि बनाई गई!",
+    "out_of_current_total_points": "%{total} कुल अंकों में से",
+    "header": "अपने पॉइंट्स का दावा करें",
+    "description": "पॉइंट्स यहां हैं। जानिए आपको कितने पॉइंट्स मिले हैं।",
+    "get_started": "आरंभ करें",
+    "use_referral_code": "रेफरल कोड का प्रयोग करें",
+    "referral_header": "अपना रेफरल कोड दर्ज करें",
+    "referral_description": "बोनस इनाम का दावा करने के लिए नीचे रेफरल कोड दर्ज करें",
+    "referral_code_invalid": "अवैध कोड",
+    "onboarding": {
+      "authorization_required": "अनुमति आवश्यक है",
+      "sign_in_with_your_wallet": "अपने वॉलेट से साइन इन करें",
+      "access_granted": "पहुंच अनुमति दी गई",
+      "calculating_points": "पॉइंट्स की गणना हो रही है",
+      "rainbow_swaps": "रेनबो स्वैप्स:",
+      "rainbow_nfts_owned": "रेनबो NFTs का स्वामित्व:",
+      "wallet_balance": "वॉलेट बैलेंस:",
+      "metamask_swaps": "मेटामास्क स्वैप्स:",
+      "bonus_reward": "बोनस इनाम:",
+      "calculation_complete": "गणना पूरी हुई",
+      "points_earned": "अर्जित अंक:",
+      "bonus_points": "बोनस अंक:",
+      "claim_description_buy": "अपने बोनस अंकों का शेष दावा करने के लिए, रेनबो के माध्यम से कुछ ETH प्राप्त करें।",
+      "claim_description_swap": "अपने बोनस अंकों का शेष दावा करने के लिए, रेनबो के माध्यम से कम से कम $100 स्वैप करें।",
+      "account": "अकाउंट:",
+      "sign_in": "साइन इन करें",
+      "get_eth": "कुछ ETH प्राप्त करें",
+      "try_swap": "स्वैप करके देखें",
+      "referral_link_ready": "आपका रेफरल लिंक तैयार है",
+      "referral_link_bonus_text": "अपना रेफरल लिंक ट्वीट करें और आपको आपके द्वारा संदर्भित किसी भी व्यक्ति द्वारा अर्जित अंकों का 10% मिलेगा",
+      "share": "X को शेयर करें",
+      "share_tweet": "मेरे वॉलेट में अभी-अभी %{points} रेनबो पॉइंट्स आये\nहर किसी के पास कम से कम 100 पॉइंट्स हैं, पर आपके पास और भी हो सकते हैं!\n\nअपने ड्रॉप का दावा करें: https://rainbow.me/points?ref=%{referralCode}",
+      "share_tweet_with_metamask_bonus": "मेरे वॉलेट में अभी-अभी %{points} रेनबो पॉइंट्स आये — और साथ में अतिरिक्त %{metamaskBonus} पॉइंट्स बोनस के रूप में जैसे कि मैंने अपना मेटामास्क वॉलेट रेनबो में माइग्रेट किया है 🦊 🔫\n\nहर किसी के पास कम से कम 100 पॉइंट्स हैं, पर आपके पास और भी हो सकते हैं! अपने ड्रॉप का दावा करें: https://rainbow.me/points?ref=%{referralCode}",
+      "registration_complete": "पंजीकरण पूरा हुआ",
+      "all_set": "आप तैयार हैं!",
+      "keep_earning_by": "स्वैपिंग, ब्रिजिंग, मिंटिंग, दोस्तों को रेफर करके, और अधिक करके अंक कमाते रहें",
+      "the_more_you_use": "Rainbow का अधिक प्रयोग करें, अधिक इनाम पाएं",
+      "balance_required": "वॉलेट बैलेंस आवश्यक",
+      "ensure_you_have_a_balance_on": "जारी रखने के लिए, निम्नलिखित नेटवर्क्स में से किसी एक पर ईटीएच बैलेंस सुनिश्चित करें:",
+      "or_alternatively_balance_on": "या वैकल्पिक रूप से, पॉलीगॉन पर एक POL बैलेंस या BSC पर एक BNB बैलेंस",
+      "fund_my_wallet": "मेरा वॉलेट फंड करें"
+    },
+    "error": {
+      "existing_user": "मौजूदा उपयोगकर्ता",
+      "invalid_referral_code": "अवैध रेफ़रल कोड",
+      "unexpected": "कुछ अनपेक्षित हुआ, कुछ मिनटों में पुनः प्रयास करें"
+    },
+    "weekly_overview": {
+      "week_of": "> सप्ताह %{from} - %{to}",
+      "counting": "> अर्जित अंक गिने जा रहे हैं...",
+      "your_activity": "आपकी गतिविधि:",
+      "referral_activity": "रेफरल गतिविधि:",
+      "new_referrals": "नए रेफरल:",
+      "retroactive": "पूर्वव्यापी अंक:",
+      "bonus": "बोनस अंक:",
+      "total": "कुल:",
+      "weekly_counted": "> साप्ताहिक कमाई गिनी गई",
+      "you_have": "आपके पास है:",
+      "none": "कोई नहीं",
+      "your_earnings": "आपकी पिछले सप्ताह की कमाई",
+      "view_breakdown": "अपनी साप्ताहिक कमाई का विवरण देखें",
+      "view_now": "अभी देखें"
+    },
+    "rewards": {
+      "counting_points": "> अर्जित अंक गिने जा रहे हैं...",
+      "calculating_referrals": "> आपके रेफरल की गणना हो रही है...",
+      "allocating_earnings": "> आपकी कमाई को आवंटित किया जा रहा है...",
+      "claiming_your_reward": "आपका पुरस्कार का दावा हो रहा है",
+      "done": "हो गया",
+      "in_eth": "ETH में",
+      "your_rewards": "आपके पुरस्कार",
+      "amount_in_eth": "+ %{amount} ETH",
+      "ready_to_spend": "आपकी ETH आपके वॉलेट में है और खर्च के लिए तैयार है। सब ठीक है।",
+      "keep_earning": "स्वैपिंग, ब्रिजिंग, मिंटिंग, दोस्तों को संदर्भित करने और अधिक के द्वारा अंक अर्जित करते रहें और अपने हिस्से का रेनबो पुरस्कार प्राप्त करें",
+      "use_rainbow": "जितना अधिक आप Rainbow का उपयोग करते हैं, उतना अधिक आप पुरस्कृत होंगे",
+      "choose_claim_network": "क्लेम नेटवर्क चुनें",
+      "coming_soon": "जल्द आ रहा है",
+      "available_to_claim": "दावा करने के लिए उपलब्ध",
+      "program_earnings": "Rainbow उपयोगकर्ताओं ने अर्जित किया है",
+      "my_earnings": "मेरी कमाई",
+      "claimed_earnings": "दावा की गई कमाई",
+      "current_value": "वर्तमान मूल्य",
+      "earn_eth_rewards": "ETH पुरस्कार अर्जित करें",
+      "points_explanation": "शीर्ष साप्ताहिक अंक प्राप्त करने वालों को Rainbow की खुद की कड़ी मेहनत की ETH का साप्ताहिक एयरड्रॉप प्राप्त होगा। स्वैपिंग या लेनदेन करके, dapps का उपयोग करके, या दोस्तों को संदर्भित करके अंक एकत्र करें।",
+      "your_reward_is_ready": "> आपका पुरस्कार तैयार है",
+      "claim_complete": "> दावा पूरा हुआ",
+      "already_claimed": "> आपके पुरस्कार का पहले ही दावा किया जा चुका है",
+      "no_claim": "> इस समय आपके पास दावा करने के लिए कोई पुरस्कार नहीं है",
+      "earned_last_week": "पिछले सप्ताह अर्जित",
+      "my_referrals": "रेफरल",
+      "claim_reward": "%{reward} दावा करें",
+      "free_to_claim": "दावा करने के लिए निःशुल्क",
+      "has_bridge_fee": "ब्रिज शुल्क है",
+      "claim_failed": "दावा विफल हुआ। कृपया पुन: प्रयास करें।",
+      "claim_success_bridge_failed": "दावा सफल रहा लेकिन फंड को ब्रिज नहीं किया गया।",
+      "my_rewards": "मेरे पुरस्कार"
+    }
+  },
+  "speed_up_and_cancel": {
+    "speed_up": "गति बढ़ाएं",
+    "cancel": "रद्द करें",
+    "view_on_etherscan": "Etherscan पर देखें",
+    "view_on_explorer": "एक्सप्लोरर पर देखें",
+    "copy_tx_hash": "ट्रांजैक्शन हैश कॉपी करें",
+    "cancel_explanation": "यह आपके पेंडिंग ट्रांजैक्शन को रद्द करने की कोशिश करेगा। इसके लिए एक और ट्रांजैक्शन ब्रॉडकास्ट करने की आवश्यकता है।",
+    "speed_up_explanation": "यह आपके पेंडिंग ट्रांजैक्शन को तेज़ करेगा। आपके मूल ट्रांजैक्शन को पहले पुष्टि होने का एक मौका है।",
+    "cancel_title": "ट्रांजैक्शन रद्द करें",
+    "speed_up_title": "ट्रांजैक्शन तेज़ करें",
+    "wallet": "वॉलेट",
+    "balance": "शेष",
+    "cancel_cta": "ट्रांजैक्शन रद्द करें",
+    "speed_up_cta": "ट्रांजैक्शन तेज़ करें",
+    "speed_up_transaction": "ट्रांजैक्शन तेज़ करें",
+    "close_cta": "रद्द करें",
+    "handle_copy_title": "ट्रांजैक्शन हैश कॉपी हो गया",
+    "revoke_approval": "अनुमति रद्द करें",
+    "speed_up_failed": {
+      "title": "स्पीड अप विफल",
+      "description": "नेटवर्क भीड़भाड़, गैस लिमिट बढ़ने, या मूल लेन-देन के पहले पुष्टि होने पर लेन-देन की गति बढ़ाने के प्रयास विफल हो सकते हैं"
+    }
+  },
+  "token_details": {
+    "swap": "स्वैप करें",
+    "bridge": "ब्रिज",
+    "send": "भेजें",
+    "balance": "शेष",
+    "value": "मूल्य",
+    "hour": "1घ",
+    "day": "1दिन",
+    "week": "1सप्ताह",
+    "month": "1महीना",
+    "year": "1साल",
+    "approvals": "टोकन  अनुमोदन",
+    "this_token_is_on_network": "यह %{symbol} इस %{chainName} नेटवर्क पर है",
+    "view_on": "%{explorer}पर देखें",
+    "view_on_coingecko": "कॉइनगेको पर देखें",
+    "not_available": "मूल्य उपलब्ध नहीं है",
+    "more_options": {
+      "copy_address": "पता प्रतिलिपि करें",
+      "view_on_explorer": "%{explorer}पर देखें",
+      "hide": "टोकन छिपाएँ",
+      "report": "टोकन की रिपोर्ट करें",
+      "unpin_token": "%{name} को अनपिन करें",
+      "pin_token": "%{name} को पिन करें",
+      "hide_token": "छिपाएँ %{name}",
+      "unhide_token": "%{name} को अनहाइड करें"
+    },
+    "toast": {
+      "hide_token": "आपका %{name} छिपा हुआ है",
+      "unhide_token": "आपका %{name} अनहाइड हो गया है",
+      "pin_token": "आपका %{name} पिन हो गया है",
+      "unpin_token": "आपका %{name} अनपिन हो गया है"
+    },
+    "about": {
+      "about_token": "लगभग %{name}के बारे में",
+      "price": "मूल्य",
+      "volume": "वॉल्यूम",
+      "ath": "सभी समय की उच्चतम सीमा",
+      "atl": "सभी समय की निम्नतम सीमा",
+      "market_cap": "मार्केट कैप",
+      "market_cap_explainer": {
+        "title": "मार्केट कैप",
+        "description": "मार्केट कैप कोई टोकन के चक्रवर्ती आपूर्ति की कुल मार्केट मूल्य होती है। इसे औसत विनिमय मूल्य के साथ गणना किया जाता है।",
+        "action": "समझ गया"
+      },
+      "fully_diluted": "पूरी तरह से जहाँ अर्थपूर्ण",
+      "fully_diluted_explainer": {
+        "title": "पूरी तरह से जहाँ अर्थपूर्ण मार्केट कैप",
+        "description": "टोकन का अधिकतम संभव मार्केट कैप अगर कुल आपूर्ति पर उपलब्ध होता।",
+        "action": "समझ गया"
+      },
+      "supply": "आपूर्ति",
+      "max_total_supply": "अधिकतम कुल आपूर्ति",
+      "holders": "धारकों",
+      "total_transfers": "कुल स्थानांतरण",
+      "more_info": "अधिक जानकारी",
+      "token_standard": "टोकन मानक",
+      "token_contract": "टोकन अनुबंध",
+      "chains": {
+        "one": "श्रृंखला",
+        "other": "श्रृंखलाएं"
+      }
+    }
+  },
+  "wallet_ready": {
+    "title": "रेनबो तैयार है",
+    "subtitle": "अपने वॉलेट तक पहुँचने के लिए, संबद्धताओं के ड्रॉपडाउन में से रेनबो पर क्लिक करें या तेज़ी से कीबोर्ड शॉर्टकट का उपयोग करें",
+    "open": "रेनबो खोलें",
+    "get_started_with_rainbow": "रेनबो के साथ शुरुआत करें",
+    "get_started_with_rainbow_desc": "रेनबो में आपका स्वागत है! हम खुशी महसूस कर रहे हैं कि आप यहां हैं। हमने इस गाइड को बनाया है ताकि रेनबो के मूल तत्वों की मदद कर सकें।",
+    "discover_shortcuts": "शॉर्टकट खोजें",
+    "discover_shortcuts_desc": "अधिक शॉर्टकट खोजना चाहते हैं? हमने आपके लिए इससे संबंधित सहायक गाइड तैयार किया है।",
+    "pin_rainbow_to_your_toolbar": "अपनी टूलबार में रेनबो को दबाएं"
+  },
+  "wallet_header": {
+    "buy": "खरीदें",
+    "copy": "कॉपी करें",
+    "swap": "स्वैप करें",
+    "send": "भेजें",
+    "copy_toast": "पता कॉपी किया गया"
+  },
+  "token_search": {
+    "section_header": {
+      "favorites": "पसंदीदा",
+      "unverified": "अप्रमाणित",
+      "verified": "सत्यापित",
+      "on_other_networks": "अन्य नेटवर्कों पर",
+      "bridge": "ब्रिज",
+      "popular": "रेनबो में लोकप्रिय"
+    },
+    "verified_by_rainbow": "रेनबो द्वारा सत्यापित"
+  },
+  "explainers": {
+    "sidechains": {
+      "layer_two": {
+        "title": "%{chainName} क्या है?",
+        "description_1": "%{chainName} एक लेयर 2 नेटवर्क है जो इथेरियम के ऊपर चलता है, जो सस्ते और तेज़ लेनदेन को सक्षम बनाता है जबकि इथेरियम की अंतर्निहित सुरक्षा से लाभ उठाता है।",
+        "description_2": "यह बहुत सारे लेनदेन को एक \"रोल अप\" में बंडल करता है इससे पहले कि वे इथेरियम पर स्थायी रूप से भेजे जाएं।"
+      },
+      "specific": {
+        "polygon": {
+          "title": "पॉलिगॉन क्या है?",
+          "description_1": "पॉलिगॉन एक साइडचेन है, एक विशिष्ट नेटवर्क जो इथेरियम के साथ-साथ चलता है और उसके साथ संगत है।",
+          "description_2": "यह सस्ते और तेज़ लेनदेन को सक्षम बनाता है, लेकिन लेयर 2 नेटवर्क के विपरीत, पॉलिगॉन की अपनी सुरक्षा और सहमति तंत्र होते हैं जो इथेरियम से अलग होते हैं।"
+        },
+        "bsc": {
+          "title": "BSC क्या है?",
+          "description_1": "BNB स्मार्ट चेन, या BSC संक्षेप में, बिनेंस क्रिप्टोकरेंसी एक्सचेंज द्वारा विकसित एक वैकल्पिक लेयर 1 है।",
+          "description_2": "यह सस्ते और तेज़ लेन-देन की अनुमति देता है, परंतु लेयर 2 नेटवर्क्स के विपरीत, BSC की अपनी सुरक्षा और सहमति तंत्र हैं जो एथेरियम से भिन्न हैं।"
+        },
+        "avalanche": {
+          "title": "एवलांच क्या है?",
+          "description_1": "एवलांच एक वैकल्पिक लेयर 1 है जो सबनेट्स की एक पारिस्थितिकी द्वारा संचालित है, जो एथेरियम साइडचेन्स और लेयर 2s के समान है।",
+          "description_2": "यह सस्ते और तेज़ लेन-देन की अनुमति देता है, परंतु लेयर 2 नेटवर्क्स के विपरीत, एवलांच की अपनी सुरक्षा और सहमति तंत्र हैं जो एथेरियम से भिन्न हैं।"
+        },
+        "blast": {
+          "title": "ब्लास्ट क्या है?",
+          "description_1": "ब्लास्ट एक एथेरियम लेयर 2 प्लेटफॉर्म है जिसे ब्लर, लोकप्रिय NFT मार्केटप्लेस के पीछे की प्रतिभाशाली टीम द्वारा बनाया गया है।",
+          "description_2": "चेन खुद को ईथर (ETH) और विभिन्न स्थिर मुद्राओं जैसे कि USDC, USDT, और DAI के लिए मूल यील्ड के परिचय से अलग करती है।"
+        },
+        "degen": {
+          "title": "डेजेन क्या है?",
+          "description_1": "डीजेन चेन एक लेयर 3 नेटवर्क है जो आर्बिट्रम ऑर्बिट और एथेरियम के ऊपर चलता है।",
+          "description_2": "यह फार्कास्टर समुदाय टोकन $degen में अत्यंत तेज और सस्ते लेन-देन की पेशकश करता है।"
+        },
+        "apechain": {
+          "title": "एपचेन क्या है?",
+          "description_1": "एपचेन एक लेयर 3 नेटवर्क है जो आर्बिट्रम ऑर्बिट और एथेरियम के ऊपर चलता है।",
+          "description_2": "यह एपकॉइन की उपयोगिता को काफी बढ़ाता है, एक सशक्त और गतिशील अर्थव्यवस्था को बढ़ावा देता है जो $APE द्वारा संचालित होती है।"
+        },
+        "ink": {
+          "title": "इंक क्या है?",
+          "description_1": "इंक एक अत्याधुनिक लेयर 2 (L2) ब्लॉकचेन है, जो सुपरचैन पर निर्मित है और क्रैकन द्वारा जारी किया गया है।",
+          "description_2": "अपने मिशन के प्राकृतिक विकास के रूप में, इंक डिफाई के लिए एक सहज पुल के रूप में काम करेगा, उपयोगकर्ताओं को आत्मविश्वास और आसानी से ऑनचैन जाने का सशक्तिकरण प्रदान करेगा"
+        },
+        "sanko": {
+          "title": "सांको क्या है?",
+          "description_1": "सांको एक लेयर 2 नेटवर्क है जो आर्बिट्रम के ऊपर चलता है।",
+          "description_2": "यह सस्ते और तेज़ ट्रांजेक्शनों की सुविधा प्रदान करता है, लेकिन लेयर 2 नेटवर्क की तरह नहीं, सांको का अपना सुरक्षा और सहमति मैकनिज़्म है जो ईथेरियम से अलग होता है।"
+        },
+        "gravity": {
+          "title": "ग्रैविटी क्या है?",
+          "description_1": "ग्रैविटी एक लेयर-1 ब्लॉकचेन है जिसे व्यापक अपनाने और एक ऑम्निचैन भविष्य के लिए डिज़ाइन किया गया है।",
+          "description_2": "यह सस्ते और तेज़ ट्रांजेक्शनों की सुविधा प्रदान करता है, लेकिन लेयर 2 नेटवर्क की तरह नहीं, ग्रैविटी का अपना सुरक्षा और सहमति मैकनिज़्म है जो ईथेरियम से अलग होता है।"
+        },
+        "berachain": {
+          "title": "बेराचैन क्या है?",
+          "description_1": "बेराचैन एक लेयर-1 ब्लॉकचेन है जो बीकनकिट का उपयोग करते हुए लिक्विडिटी के प्रमाण पर निर्मित है।",
+          "description_2": "यह सस्ते और तेज़ ट्रांजेक्शनों की सुविधा प्रदान करता है, लेकिन लेयर 2 नेटवर्क की तरह नहीं, बेराचैन का अपना सुरक्षा और सहमति मैकनिज़्म है जो ईथेरियम से अलग होता है।"
+        },
+        "custom_network": {
+          "title": "यह नेटवर्क क्या है?",
+          "description_1": "यह आपके द्वारा जोड़ा गया एक कस्टम नेटवर्क है! कस्टम नेटवर्क विशिष्ट आवश्यकताओं को पूरा करने के लिए बनाए जा सकते हैं, अद्वितीय विशेषताओं और क्षमताओं की पेशकश करते हैं।",
+          "description_2": "इसकी कॉन्फ़िगरेशन के आधार पर, यह नेटवर्क विशिष्ट प्रोटोकॉल, सुरक्षा उपायों, और सहमति तंत्र का उपयोग कर सकता है, जिन्हें प्रदर्शन को अनुकूलित करने, लागत को कम करने, या विशेषीकृत सेवाओं की डिलीवरी के लिए डिज़ाइन किया गया है।"
+        }
+      },
+      "link_button_label": "और अधिक पढ़ें",
+      "action_label": "समझ गया"
+    },
+    "send": {
+      "to_token_contract": {
+        "description_1": "The address you entered is for a token contract.",
+        "description_2": "नदीशान अवस्थाओं को छोड़कर, आपको शायद इसे नहीं करना चाहिए। आप अपना सम्पत्ति खो सकते हैं या वह गलत स्थान पर जा सकती है।",
+        "description_3": "पता दोहराएं, प्राप्ति से पुष्टि करें या पहले सपोर्ट से संपर्क करें।",
+        "title": "अपने घोड़े को रोको!"
+      },
+      "action_label": "समझ गया"
+    },
+    "custom_gas": {
+      "action_button_label": "समझ गया",
+      "current_base_stable": "नेटवर्क यातायात अभी स्थिर है। आनंद लें!",
+      "current_base_surging": "शुल्क असामान्य रूप से ऊंचा है! यदि आपके लेन-देन को तत्कालीनता है, तो शुल्क घटने के लिए प्रतीक्षा करना बेस्ट है।",
+      "current_base_falling": "शुल्क अभी घट रहे हैं!",
+      "current_base_rising": "शुल्क अभी बढ़ रहे हैं! एक अधिक उच्चतम मूल शुल्क का उपयोग करना सट्टा लगाने से बचाने के लिए सबसे अच्छा है।",
+      "current_base_description": "मूल शुल्क को इथेरियम नेटवर्क द्वारा सेट किया जाता है और यह नेटवर्क कितना व्यस्त होता है इस पर निर्धारित करता है।",
+      "current_base_title": "वर्तमान बेस शुल्क",
+      "max_base_explainer_1": "यह आपके लिए सबसे अधिक बेस फ़ी का उचित मापदण्ड है जिसे आप इस लेनदेन के लिए चुक़ता करने के लिए राज़ी हैं।",
+      "max_base_explainer_2": "एक उच्चतम मूल शुल्क सेट करना आपके लेनदेन को अगर शुल्क बढ़ जाएगा तो अटकने से ख़तम करता है।",
+      "max_base_title": "अधिकतम बेस शुल्क",
+      "max_priority_explainer": "माइनर टिप सीधे उस माइनर के पास जाता है जो आपकी लेनदेन का सत्यापन नेटवर्क पर करता है।\n\nएक अधिक टिप आपकी लेनदेन को जल्दी सत्यापित करने की कामना करती है।",
+      "max_priority_title": "माइनर टिप"
+    }
+  },
+  "injected_notifications": {
+    "network_changed": "नेटवर्क बदला गया",
+    "network_changed_failed": "नेटवर्क बदलने में विफल",
+    "unsupported_network": "असमर्थित नेटवर्क",
+    "no_active_session": "कोई सक्रिय सत्र नहीं है",
+    "already_added": "RPC सक्रिय",
+    "set_as_active": "नया RPC सक्रिय",
+    "already_active": "नेटवर्क पहले से जोड़ा गया"
+  },
+  "alert": {
+    "ok": "ठीक है",
+    "cancel": "रद्द करें",
+    "wallet_watching_mode": "यह वॉलेट वर्तमान में 'देख रहा है' मोड में है",
+    "wallet_testing_mode": "टेस्टनेट्स का समर्थन स्व्याप नहीं करता। जारी रखने के लिए टेस्टनेट मोड को अक्षम करें।",
+    "coming_soon": "जल्द ही आ रहा है!",
+    "no_hw_ff": "हार्डवेयर वॉलेट्स Firefox पर समर्थित नहीं हैं। Chrome या Brave जैसे अन्य ब्राउज़र का प्रयास करें।"
+  },
+  "hw": {
+    "choose_title": "हार्डवेयर वॉलेट कनेक्ट करें",
+    "ledger_support": "लेजर नैनो एस, नैनो एस प्लस, नैनो एक्स और स्टैक्स डिवाइस का समर्थन है।",
+    "trezor_support": "मॉडल वन या मॉडल टी डिवाइस का समर्थन है।",
+    "connect_ledger_title": "लेजर कनेक्ट करें",
+    "connect_ledger_description": "अपने कंप्यूटर में यूएसबी-सी केबल का उपयोग करके लेजर को रेनबो में प्लग करके लेजर को कनेक्ट करें।",
+    "unlock_ledger_title": "लेजर का अनलॉक करें",
+    "unlock_ledger_description": "जारी रखने के लिए आपके लेजर पर इथेरीयम ऐप खोलने की जरूरत है।",
+    "unlock_ledger_description_2": "लेजर को अनलॉक करने के लिए अपना पासकोड दर्ज करें। एक बार अनलॉक हो जाने के बाद, दोनों बटन एक साथ दबा कर इथेरीयम ऐप खोलें।",
+    "exclusivity_ledger_title": "लेजर का उपयोग कर रहा एक और ऐप हो सकता है",
+    "exclusivity_ledger_description": "लेजर लाइव, मेटामास्क या किसी अन्य ब्राउज़र टैब जैसे अन्य ऐप का उपयोग नहीं कर रहे हैं सुनिश्चित करें।",
+    "exclusivity_ledger_description_2": "जब आप अन्य ऐप को बंद कर दें, तो कृपया पुनः लोड करने के लिए इस पेज को रीलोड करें।",
+    "needs_app_ledger_title": "ईथ ऐप खोलें",
+    "needs_app_ledger_description": "लेजर पर ट्रांजेक्शन जारी रखने के लिए आपके लेजर पर इथेरीयम ऐप खोलने की जरूरत है।",
+    "needs_app_ledger_description_2": "लेजर को अनलॉक करने के लिए अपना पासकोड दर्ज करें। एक बार अनलॉक हो जाने के बाद, दोनों बटन एक साथ दबा कर इथेरीयम ऐप खोलें।",
+    "connect_trezor_title": "अपनी Trezor सेटअप पूरी करें",
+    "connect_trezor_description": "वेब इंटरफ़ेस के माध्यम से अपनी Trezor को रेनबो से जोड़ना जारी रखें।",
+    "learn_more": "और जानें।",
+    "connect_wallets_title": "अपने वॉलेट कनेक्ट करें",
+    "connect_wallets_found": "आपके %{vendor} पर %{count} वॉलेट खोजे गए हैं जिनमें बैलेंस या गतिविधि है। जोड़ने के लिए किसे चुनें।",
+    "connect_wallets_not_found": "हमने इस %{vendor} पर कोई ऐसी वॉलेटें नहीं मिली है जिनमें गतिविधि हो, लेकिन आप फिर भी इन्हें जोड़ सकते हैं।",
+    "connect_wallet": "वॉलेट कनेक्ट करें",
+    "connect_n_wallets": "%{count} वॉलेटें जोड़ें",
+    "wallets_found": "%{count} वॉलेटें मिलीं",
+    "add_by_index": "द्वारा इंडेक्स जोड़ें",
+    "index_label": "इंडेक्स",
+    "connection_successful_title": "सफलतापूर्वक कनेक्ट हुआ",
+    "connection_successful_description": "आपने सफलतापूर्वक जोड़ा %{count} %{wallet_noun}. %{wallet_pronoun} आपके वॉलेट सूची में %{vendor} बैज के साथ पहचानने में सरल है। आप कभी भी और भी जोड़ सकते हैं।",
+    "wallet_singular": "वॉलेट",
+    "wallet_plural": "वॉलेट्स",
+    "wallet_pronoun_plural": "वे",
+    "wallet_pronoun_singular": "यह है",
+    "done": "हो गया",
+    "add_wallet": "वॉलेट जोड़ें",
+    "add_by_index_title": "इंडेक्स द्वारा वॉलेट जोड़ें",
+    "add_by_index_description": "उत्पन्नता पथ चुनें और वालेट का सूचकांक दर्ज करें जिसे आप जोड़ना चाहते हैं।",
+    "waiting_for_trezor_connect": "Trezor Connect के लिए प्रतीक्षा कर रहे हैं",
+    "continue_on_trezor_connect": "Trezor Connect विंडो पर दिए गए निर्देशों का पालन करें",
+    "trezor_success": "सफलता!",
+    "you_can_close_this_window": "आप इस विंडो को बंद कर सकते हैं",
+    "ledger_locked_error": "कृपया सुनिश्चित करें कि आपका लेजर खोला और ओपन ईथेरियम ऐप है",
+    "check_ledger_disconnected": "यह सुनिश्चित करें कि आपका उपकरण कनेक्ट किया हुआ है, खोला हुआ है और ईथेरियम ऐप खोला हुआ है"
+  },
+  "choose_wallet_group": {
+    "title": "वॉलेट समूह चुनें",
+    "description": "नया वॉलेट समूह बनाएं या एक नया वॉलेट समूह बनाएं",
+    "wallet_group": "वॉलेट समूह %{number}",
+    "new_wallet_group": "नया वॉलेट समूह बनाएं",
+    "create_recovery_phrase": "एक नई पुनर्प्राप्ति वाक्य बनाएं"
+  },
+  "unsupported_browser": {
+    "title": "असमर्थित ब्राउज़र",
+    "description": "आपका ब्राउज़र वर्तमान में समर्थित नहीं है। रेनबो वर्तमान में एंड्रॉइड और आईओएस पर मोबाइल और क्रोम, ब्रेव, आर्क और एज डेस्कटॉप उपकरणों के लिए उपलब्ध है।",
+    "download_the_app": "ऐप डाउनलोड करें",
+    "link_text": {
+      "highlighted": "रेनबो से संपर्क करें",
+      "after": " अधिक जानकारी के लिए अनुरोध करें।"
+    }
+  },
+  "buy": {
+    "title": "खरीदें",
+    "fees_title": "शुल्क",
+    "instant_title": "तुरंत",
+    "instant_yes": "हाँ",
+    "method_title": "विधि",
+    "methods_title": "विधियां",
+    "network_title": "नेटवर्क",
+    "networks_title": "नेटवर्क",
+    "payment_methods": {
+      "apple_pay": "Apple पेमेंट",
+      "bank": "बैंक",
+      "card": "कार्ड",
+      "google_pay": "Google पेमेंट"
+    }
+  },
+  "tooltip": {
+    "switch_network": "नेटवर्क स्विच करें",
+    "copy_address": "वॉलेट पता कॉपी करें",
+    "swap": "अपने टोकन स्वैप करें",
+    "send": "टोकन भेजें",
+    "more": "अधिक आइटम",
+    "view_tokens": "टोकन देखें",
+    "view_activity": "गतिविधि देखें",
+    "balance": "कुल बैलेंस",
+    "switch_wallet": "वॉलेट स्विच करें",
+    "save_to_contacts": "संपर्कों में सहेजें",
+    "clear_address": "पता हटाएं",
+    "clear_token": "टोकन हटाएं",
+    "gwei_settings": "Gwei सेटिंग",
+    "flip_tokens": "टोकन स्थितियां बदलें",
+    "favorite": "पसंदीदा में जोड़ें",
+    "unfavorite": "पसंदीदा से हटाएं",
+    "estimated_difference": "मान में अनुमानित अंतर",
+    "buy_crypto": "क्रिप्टो खरीदें और ट्रांसफर करें"
+  },
+  "simulation": {
+    "title": "नकली परिणाम",
+    "loading": "नकली जारी है...",
+    "error": "नकली विफल हुई",
+    "no_changes": "कोई परिवर्तन नहीं पाया गया",
+    "received": "प्राप्त किया",
+    "sent": "भेज दिया",
+    "approved": "मंजूरी दी गई",
+    "reverted": "लेन-देन वापस लिए गए",
+    "function": "कार्य",
+    "contract": "संविदा",
+    "contract_name": "संविदा का नाम",
+    "contract_created_at": "कलेक्शन बनाया गया",
+    "to": "को",
+    "source_code": "स्रोत कोड",
+    "signature": {
+      "message": "संदेश"
+    },
+    "tabs": {
+      "overview": "अवलोकन",
+      "details": "विवरण",
+      "data": "डेटा"
+    }
+  },
+  "chain": "श्रृंखला",
+  "nonce": "नॉन्स",
+  "copy": "कॉपी करें",
+  "copy_link": "लिंक कॉपी करें",
+  "link_text": "और जानें",
+  "close": "बंद करें",
+  "verified": "सत्यापित",
+  "unverified": "अप्रमाणित",
+  "skip": "छोड़ें",
+  "done": "हो गया",
+  "view_on_explorer": "%{explorer}पर देखें",
+  "watch_asset": {
+    "chain_id": "चेन आईडी",
+    "symbol": "प्रतीक",
+    "decimals": "दशमलव",
+    "address": "पता",
+    "not_found": "हमें इस एसेट को चुने गए नेटवर्क पर नहीं मिला। कृपया नीचे सही नेटवर्क चुनें।"
+  }
+}
