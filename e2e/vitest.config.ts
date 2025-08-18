@@ -6,7 +6,7 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     include: ['./**/**/*.test.ts'],
-    setupFiles: ['./setup.ts'],
+    setupFiles: ['./e2e/setup.ts'],
     testTimeout: 120_000,
     watch: false,
     retry: 2,
