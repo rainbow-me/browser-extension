@@ -1303,7 +1303,7 @@
     "tokens": "Tokenler"
   },
   "activity": {
-    "hour": "Last Hour",
+    "hour": "Son saat",
     "today": "Bugün",
     "yesterday": "Dün",
     "this_month": "Bu Ay",
@@ -1713,10 +1713,10 @@
     },
     "send": {
       "to_token_contract": {
-        "description_1": "The address you entered is for a token contract.",
-        "description_2": "Except for rare situations, you probably shouldn't do this. You could lose your assets or they might go to the wrong place.",
-        "description_3": "Double check the address, verify it with the recipient, or contact support first.",
-        "title": "Hold your horses!"
+        "description_1": "Girdiğiniz adres bir token sözleşmesi içindir.",
+        "description_2": "Nadir durumlar hariç, bunu yapmamanızı öneririz. Varlıklarınızı kaybedebilir veya yanlış yere gidebilirler.",
+        "description_3": "Adresi çift kontrol edin, alıcıyla doğrulayın veya önce destekle iletişime geçin.",
+        "title": "Sakin olun!"
       },
       "action_label": "Anladım"
     },
