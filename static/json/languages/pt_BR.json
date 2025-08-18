@@ -186,11 +186,11 @@
         "wallet_details": {
           "title": "Detalhes da Carteira",
           "view_recovery_phrase": "Visualizar frase de recuperação",
-          "create_new_wallet": "Criar uma nova carteira",
+          "create_new_wallet": "Crie uma nova carteira",
           "rename_wallet": "Renomear carteira",
           "unhide_wallet": "Mostrar carteira oculta",
           "delete_wallet": "Excluir carteira",
-          "view_private_key": "Visualizar chave privada",
+          "view_private_key": "Ver Chave Privada",
           "copy_address": "Copiar endereço",
           "hidden": "Oculto",
           "back_up_now": "Fazer Backup Agora",
@@ -450,7 +450,7 @@
         "my_tokens_watched": "Tokens",
         "my_nfts": "Meus NFTs",
         "my_nfts_watched": "NFTs",
-        "copy_address": "Copiar Endereço",
+        "copy_address": "Copiar endereço",
         "view_profile": "Ver Perfil Rainbow",
         "add_wallet": "Adicionar uma Carteira",
         "lock": "Bloquear Rainbow",
@@ -493,7 +493,7 @@
         "unhide_token": "Reexibir %{name}",
         "hide": "Ocultar",
         "unhide": "Reexibir",
-        "copy_wallet_address": "Copiar Endereço",
+        "copy_wallet_address": "Copiar endereço",
         "view_wallet_on_etherscan": "Ver no Etherscan",
         "send_contact": "Enviar para Contato",
         "export_addresses_as_csv": "Exportar endereços como CSV",
@@ -552,7 +552,7 @@
       "title_added": "Contato Adicionado",
       "title_removed": "Contato Removido"
     },
-    "no_results": "Nenhum resultado",
+    "no_results": "Sem resultados",
     "pages": {
       "add_wallet": {
         "search_placeholder": "Buscar formas de adicionar uma carteira…",
@@ -672,7 +672,7 @@
       "contacts": "Contatos",
       "my_wallets": "Minhas carteiras",
       "watched_wallets": "Assistindo",
-      "no_results": "Nenhum resultado"
+      "no_results": "Sem resultados"
     },
     "tokens_input": {
       "tokens": "Tokens",
@@ -719,8 +719,8 @@
     "tokens_input": {
       "tokens": "Tokens",
       "sort": "Ordenar",
-      "available": "disponível",
-      "token_balance": "Saldo do token",
+      "available": "disponíveis",
+      "token_balance": "Saldo do Token",
       "networks": "Redes",
       "filter_by_network": "Filtrar por rede",
       "switch_networks": "Alternar redes",
@@ -754,7 +754,7 @@
     "settings": {
       "title": "%{Action} Configurações",
       "route": "Rota %{actions} via",
-      "use_flashbots": "Usar Flashbots",
+      "use_flashbots": "Use Flashbots",
       "max_slippage": "Deslizamento máximo",
       "use_defaults": "Usar padrões",
       "done": "Concluído",
@@ -778,7 +778,7 @@
           "description": "Flashbots protege suas transações contra ataques de frontrunning e sandwich que podem resultar em você obter um preço pior ou falha na sua transação.",
           "read_more": {
             "open_text": "Ainda curioso? ",
-            "link_text": "Leia mais",
+            "link_text": "Ler mais",
             "close_text": " sobre Flashbots e a proteção que ela oferece."
           }
         },
@@ -787,7 +787,7 @@
           "description": "Por padrão, o Rainbow escolhe a rota mais barata possível para o seu %{action}. Se preferir usar especificamente 0x ou 1inch, também pode fazer isso.",
           "read_more": {
             "open_text": "Ainda curioso? ",
-            "link_text": "Leia mais",
+            "link_text": "Ler mais",
             "close_text": " sobre nossa abordagem ao roteamento %{actions}"
           }
         },
@@ -805,7 +805,7 @@
       "fee_on_transfer_token": "Taxa em Token de Transferência",
       "no_route": "Nenhuma rota encontrada",
       "no_quote": "Nenhuma cotação disponível",
-      "enter_an_amount": "Insira um valor",
+      "enter_an_amount": "Digite uma quantia",
       "swap": "%{Action}",
       "swapping": "%{Actioning}",
       "waiting_signature": "Confirmar no seu dispositivo"
@@ -816,7 +816,7 @@
       "minimum_received": "Valor mínimo recebido",
       "via": "%{Actioning} via",
       "included_fee": "Taxa Rainbow incluída",
-      "use_flashbots": "Usar Flashbots",
+      "use_flashbots": "Use Flashbots",
       "exchange_rate": "Taxa de câmbio",
       "asset_contract": "%{symbol} contrato",
       "more_details": "Mais detalhes",
@@ -845,7 +845,7 @@
         "action_label": "Entendi",
         "footer_text": {
           "open_text": "Ainda curioso? ",
-          "link_text": "Leia mais",
+          "link_text": "Ler mais",
           "close_text": " sobre AMMs e liquidez de tokens."
         }
       },
@@ -939,13 +939,13 @@
     "title": "Antes de começar, faça um backup de sua Frase de Recuperação Secreta",
     "warning_1": "É importante escrever e armazenar sua Frase de Recuperação Secreta em um local seguro.",
     "warning_2": "Sua frase de recuperação secreta é a única maneira de recuperar suas contas e fundos.",
-    "warning_3": "Qualquer pessoa com sua frase de recuperação secreta pode acessar toda a sua carteira.",
+    "warning_3": "Qualquer pessoa que tenha sua Frase de Recuperação pode acessar toda a sua carteira.",
     "reveal_your_recovery_phrase": "Revelar sua frase de recuperação",
     "take_me_to_wallet": "Me leve para minha carteira"
   },
   "seed_reveal": {
-    "title": "Sua frase de recuperação secreta",
-    "write_down_seed_importance": "Armazene essas palavras e acesse toda a sua carteira! Guarde-as em um local seguro e nunca as compartilhe.",
+    "title": "Sua Frase de Recuperação",
+    "write_down_seed_importance": "Qualquer pessoa que tenha essas palavras pode acessar toda a sua carteira! Você nunca deve compartilhá-las.",
     "saved_these_words": "Eu salvei essas palavras",
     "copied": "Frase de Recuperação Copiada"
   },
@@ -969,7 +969,7 @@
     "duplicate_seed": "Esta semente já foi importada"
   },
   "import_wallet_via_private_key": {
-    "title": "Importar sua Carteira",
+    "title": "Importar sua carteira",
     "explanation": "Insira sua Chave Privada de 64 caracteres do Rainbow ou de qualquer carteira Ethereum.",
     "placeholder": "Cole sua Chave Privada de outra carteira",
     "import_wallet": "Importar carteira"
@@ -978,11 +978,11 @@
     "title": "Restaurar ou Conectar",
     "explanation": "Qualquer pessoa com sua Frase de Recuperação Secreta pode acessar toda a sua carteira! Guarde-a em algum lugar seguro e não a compartilhe com ninguém.",
     "import_wallet": "Importar com uma Frase de Recuperação Secreta ou Chave Privada",
-    "import_wallet_description": "Adicionar uma carteira usando sua Frase de Recuperação Secreta ou Chave Privada.",
+    "import_wallet_description": "Adicionar uma carteira usando sua Frase de Recuperação Secreta ou uma Chave Privada.",
     "connect_wallet": "Conectar sua carteira de hardware",
     "connect_wallet_description": "Adicionar contas da sua carteira de hardware.",
-    "watch_address": "Observar um endereço Ethereum",
-    "watch_address_description": "Observar um endereço público ou nome ENS."
+    "watch_address": "Assistir a um endereço Ethereum",
+    "watch_address_description": "Assista a um endereço público ou nome ENS."
   },
   "import_wallet_selection": {
     "title": "Suas carteiras",
@@ -999,7 +999,7 @@
     "account_summary_last_tx": "Última tx: %{lastTx} atrás"
   },
   "watch_wallet": {
-    "title": "Assistir endereço Ethereum",
+    "title": "Assistir a um endereço Ethereum",
     "description": "Digite qualquer endereço Ethereum ou nome ENS. Você terá que importá-lo posteriormente para enviar ou assinar transações.",
     "invalid_address": "Endereço inválido",
     "unsupported_tld": "%{tld} não é suportado",
@@ -1045,7 +1045,7 @@
     "sort": {
       "title": "Ordenar",
       "default": "Padrão",
-      "token_balance": "Saldo de tokens",
+      "token_balance": "Saldo do Token",
       "last_transaction": "Última transação"
     }
   },
@@ -1056,7 +1056,7 @@
   },
   "menu": {
     "network": {
-      "title": "Mudar de Redes",
+      "title": "Alternar redes",
       "disconnect": "Desconectar"
     },
     "app_connection_menu": {
@@ -1070,7 +1070,7 @@
     },
     "home_header_right": {
       "settings": "Configurações",
-      "qr_code": "Meu código QR",
+      "qr_code": "Meu Código QR",
       "rainbow_profile": "Perfil do Rainbow",
       "guides_and_support": "Guias e Suporte",
       "share_feedback": "Compartilhar Feedback",
@@ -1130,8 +1130,8 @@
     "watch_asset_info_description": "Se você aprovar, este ativo poderá ser usado dentro da Extensão do Navegador Rainbow.",
     "wallet": "Carteira",
     "network": "Rede",
-    "switch_networks": "Alternar Redes",
-    "switch_wallets": "Alternar Carteiras",
+    "switch_networks": "Alternar redes",
+    "switch_wallets": "Trocar Carteiras",
     "allow_to_add_network": "deseja adicionar uma rede",
     "connect": "Conectar-se a %{appName}",
     "connect_anyway": "Conectar mesmo assim",
@@ -1153,12 +1153,12 @@
     "message": "Mensagem",
     "message_copied": "Mensagem copiada",
     "transaction_data_copied": "Dados da transação copiados",
-    "sign_message": "Assinar Mensagem",
+    "sign_message": "Assinar",
     "sign_message_anyway": "Assinar mesmo assim",
     "confirm_hw": "Confirmar no seu dispositivo",
     "balance": "Saldo",
-    "send_transaction": "Enviar Transação",
-    "send_transaction_anyway": "Confirmar mesmo assim",
+    "send_transaction": "Assinar",
+    "send_transaction_anyway": "Assinar mesmo assim",
     "contract_deployment": "Implantação de Contrato",
     "transaction_request": "Solicitação de Transação",
     "insufficient_gas_funds": "Você precisa de mais %{token}",
@@ -1303,6 +1303,7 @@
     "tokens": "Tokens"
   },
   "activity": {
+    "hour": "Last Hour",
     "today": "Hoje",
     "yesterday": "Ontem",
     "this_month": "Este Mês",
@@ -1569,7 +1570,7 @@
     "view_on_coingecko": "Ver no CoinGecko",
     "not_available": "Preço não disponível",
     "more_options": {
-      "copy_address": "Copiar Endereço",
+      "copy_address": "Copiar endereço",
       "view_on_explorer": "Ver no %{explorer}",
       "hide": "Ocultar Token",
       "report": "Relatar Token",
@@ -1707,12 +1708,12 @@
           "description_2": "Dependendo de sua configuração, esta rede pode utilizar protocolos distintos, medidas de segurança e mecanismos de consenso, projetados para otimizar o desempenho, reduzir custos ou fornecer serviços especializados."
         }
       },
-      "link_button_label": "Leia mais",
+      "link_button_label": "Ler mais",
       "action_label": "Entendi"
     },
     "send": {
-      "to_smart_contract": {
-        "description_1": "O endereço que você digitou é para um contrato inteligente.",
+      "to_token_contract": {
+        "description_1": "The address you entered is for a token contract.",
         "description_2": "Exceto em situações raras, você provavelmente não deveria fazer isso. Você pode perder seus ativos ou eles podem ir para o lugar errado.",
         "description_3": "Verifique novamente o endereço, verifique-o com o destinatário ou entre em contato com o suporte primeiro.",
         "title": "Segure seus cavalos!"
@@ -1726,12 +1727,12 @@
       "current_base_falling": "As taxas estão caindo agora!",
       "current_base_rising": "As taxas estão aumentando agora! É melhor usar uma taxa de base máxima mais alta para evitar uma transação travada.",
       "current_base_description": "A taxa básica é definida pela rede Ethereum e muda dependendo de quão ocupada a rede está.",
-      "current_base_title": "Taxa básica atual",
+      "current_base_title": "Taxa base atual",
       "max_base_explainer_1": "Essa é a taxa básica máxima que você está disposto a pagar por esta transação.",
       "max_base_explainer_2": "Definir uma taxa de base máxima mais alta impede que sua transação fique presa se as taxas aumentarem.",
-      "max_base_title": "Taxa de base máxima",
+      "max_base_title": "Taxa base máxima",
       "max_priority_explainer": "A gorjeta para o minerador vai diretamente para o minerador que confirma sua transação na rede.\n\nUma gorjeta mais alta faz com que sua transação tenha mais chances de ser confirmada rapidamente.",
-      "max_priority_title": "Gorjeta para o minerador"
+      "max_priority_title": "Gorjeta para mineradores"
     }
   },
   "injected_notifications": {
