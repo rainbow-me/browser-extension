@@ -178,7 +178,7 @@
         "not_backed_up": "No respaldado",
         "back_up_now": "Respaldar ahora",
         "context_menu": {
-          "create_wallet": "Crear Billetera",
+          "create_wallet": "Crear billetera",
           "view_secret_phrase": "Ver Frase Secreta",
           "hide_wallets": "Ocultar Carteras",
           "unhide_wallets": "Desocultar Carteras"
@@ -198,7 +198,7 @@
         },
         "new_wallet": {
           "name_your_wallet": "Nombra tu billetera",
-          "create": "Crear Billetera",
+          "create": "Crear billetera",
           "input_placeholder": "ej: Billetera 1"
         },
         "private_key": {
@@ -493,7 +493,7 @@
         "unhide_token": "Mostrar %{name}",
         "hide": "Ocultar",
         "unhide": "Mostrar",
-        "copy_wallet_address": "Copiar Dirección",
+        "copy_wallet_address": "Copiar dirección",
         "view_wallet_on_etherscan": "Ver en Etherscan",
         "send_contact": "Enviar a Contacto",
         "export_addresses_as_csv": "Exportar Direcciones como CSV",
@@ -552,7 +552,7 @@
       "title_added": "Contacto Agregado",
       "title_removed": "Contacto Eliminado"
     },
-    "no_results": "No hay resultados",
+    "no_results": "Sin resultados",
     "pages": {
       "add_wallet": {
         "search_placeholder": "Buscar formas de agregar un monedero…",
@@ -566,7 +566,7 @@
       "my_tokens": {
         "empty_label": "No se encontraron tokens",
         "search_placeholder": "Buscar tokens…",
-        "section_title": "Mis Tokens"
+        "section_title": "Mis tokens"
       },
       "my_nfts": {
         "empty_label": "No se encontraron NFTs",
@@ -575,7 +575,7 @@
       },
       "my_wallets": {
         "search_placeholder": "Selecciona un monedero para cambiar a…",
-        "section_title": "Mis billeteras"
+        "section_title": "Mis monederos"
       },
       "my_contacts": {
         "search_placeholder": "Selecciona un contacto para enviar a...",
@@ -671,7 +671,7 @@
     "wallets_list": {
       "contacts": "Contactos",
       "my_wallets": "Mis billeteras",
-      "watched_wallets": "Observados",
+      "watched_wallets": "Observando",
       "no_results": "Sin resultados"
     },
     "tokens_input": {
@@ -714,17 +714,17 @@
     "input_token_placeholder": "Seleccionar un token para %{action}",
     "input_token_to_receive_placeholder": "Selecciona un token para recibir",
     "select_tokens": "Seleccionar tokens para %{action}",
-    "max": "Máximo",
+    "max": "Máx.",
     "balance": "Saldo",
     "tokens_input": {
       "tokens": "Tokens",
       "sort": "Ordenar",
-      "available": "disponible",
-      "token_balance": "Saldo del token",
+      "available": "disponibles",
+      "token_balance": "Saldo de tokens",
       "networks": "Redes",
       "filter_by_network": "Filtrar por red",
       "switch_networks": "Cambiar de red",
-      "nothing_found": "No se encontró nada",
+      "nothing_found": "Nada encontrado",
       "nothing_found_description": "Algunos tokens no tienen suficiente liquidez para realizar un éxito %{action}",
       "nothing_found_description_l2": "Algunos tokens no tienen suficiente liquidez en capa 2 para realizar un éxito %{action}",
       "output_quotes_disabled": "Citas de salida desactivadas"
@@ -777,7 +777,7 @@
           "title": "Flashbots",
           "description": "Flashbots protege sus transacciones de frontrunning y ataques sandwich que podrían resultar en un precio peor o el fracaso de su transacción.",
           "read_more": {
-            "open_text": "¿Aún tienes curiosidad? ",
+            "open_text": "¿Aún tienes dudas? ",
             "link_text": "Leer más",
             "close_text": " sobre Flashbots y la protección que ofrece."
           }
@@ -786,7 +786,7 @@
           "title": "%{Action} Enrutamiento",
           "description": "Por defecto, Rainbow elige la ruta más barata posible para tu %{action}. Si prefieres usar específicamente 0x o 1inch, también puedes hacerlo.",
           "read_more": {
-            "open_text": "¿Aún tienes curiosidad? ",
+            "open_text": "¿Aún tienes dudas? ",
             "link_text": "Leer más",
             "close_text": " sobre nuestro enfoque para direccionar %{actions}"
           }
@@ -805,7 +805,7 @@
       "fee_on_transfer_token": "Comisión en el Token de Transferencia",
       "no_route": "No se encontró ruta",
       "no_quote": "No hay cotización disponible",
-      "enter_an_amount": "Ingresa una cantidad",
+      "enter_an_amount": "Ingrese una cantidad",
       "swap": "%{Action}",
       "swapping": "%{Actioning}",
       "waiting_signature": "Confirmar en tu dispositivo"
@@ -835,7 +835,7 @@
         "action_label": "Entendido"
       },
       "no_quote": {
-        "title": "Cotización no disponible",
+        "title": "No hay cotización disponible",
         "description": "No pudimos encontrar cotizaciones para este %{action}. Esto podría ser porque no hay suficiente liquidez para %{action} o debido a problemas con cómo se implementó el token",
         "action_label": "Entendido"
       },
@@ -844,7 +844,7 @@
         "description": "No pudimos encontrar cotizaciones para este %{action} porque este par no tiene suficiente liquidez en los exchanges",
         "action_label": "Entendido",
         "footer_text": {
-          "open_text": "¿Todavía tienes curiosidad? ",
+          "open_text": "¿Aún tienes dudas? ",
           "link_text": "Leer más",
           "close_text": " sobre los AMMs y la liquidez de tokens."
         }
@@ -905,7 +905,7 @@
     "save": "Guardar",
     "copy_address": "Copiar dirección",
     "view_on_etherscan": "Ver en Etherscan",
-    "view_on_explorer": "Ver en Explorador",
+    "view_on_explorer": "Ver en el Explorador",
     "delete_contact": "Eliminar contacto",
     "contact_address_copied": "Dirección copiada"
   },
@@ -939,13 +939,13 @@
     "title": "Antes de comenzar, haz una copia de seguridad de tu Frase de Recuperación Secreta",
     "warning_1": "Es importante anotar y guardar tu Frase de Recuperación Secreta en un lugar seguro.",
     "warning_2": "Tu frase de recuperación secreta es la única forma de recuperar tus cuentas y fondos.",
-    "warning_3": "Cualquier persona con tu frase de recuperación secreta puede acceder a toda tu billetera.",
+    "warning_3": "Cualquier persona con su Frase de Recuperación puede acceder a toda su billetera.",
     "reveal_your_recovery_phrase": "Revela tu frase de recuperación",
     "take_me_to_wallet": "Llévame a mi billetera"
   },
   "seed_reveal": {
-    "title": "Tu frase de recuperación secreta",
-    "write_down_seed_importance": "¡Guarda estas palabras, pueden acceder a toda tu billetera! Guárdalas en un lugar seguro y nunca las compartas.",
+    "title": "Su Frase de Recuperación",
+    "write_down_seed_importance": "¡Cualquier persona que tenga estas palabras puede acceder a toda su billetera! Nunca las comparta.",
     "saved_these_words": "He guardado estas palabras",
     "copied": "Frase de Recuperación Copiada"
   },
@@ -969,7 +969,7 @@
     "duplicate_seed": "Esta seed ya está importada"
   },
   "import_wallet_via_private_key": {
-    "title": "Importar tu billetera",
+    "title": "Importa tu billetera",
     "explanation": "Ingresa tu clave privada de 64 caracteres de Rainbow u otra billetera Ethereum.",
     "placeholder": "Pega tu clave privada de otra billetera",
     "import_wallet": "Importar billetera"
@@ -977,12 +977,12 @@
   "import_or_connect": {
     "title": "Restaurar o Conectar",
     "explanation": "¡Cualquier persona con tu Frase de Recuperación Secreta puede acceder a toda tu billetera! Guárdala en un lugar seguro y no la compartas con nadie.",
-    "import_wallet": "Importar con una Frase de Recuperación Secreta o una Clave Privada",
-    "import_wallet_description": "Agregar una billetera usando tu Frase de Recuperación Secreta o una Clave Privada.",
+    "import_wallet": "Importar con una Frase de Recuperación Secreta o Clave Privada",
+    "import_wallet_description": "Añade una billetera usando tu Frase de Recuperación Secreta o una Clave Privada.",
     "connect_wallet": "Conectar tu billetera física",
     "connect_wallet_description": "Agregar cuentas desde tu billetera física.",
-    "watch_address": "Observar una dirección Ethereum",
-    "watch_address_description": "Observar una dirección pública o un nombre ENS."
+    "watch_address": "Observar una dirección de Ethereum",
+    "watch_address_description": "Ver una dirección pública o nombre ENS."
   },
   "import_wallet_selection": {
     "title": "Tus billeteras",
@@ -999,7 +999,7 @@
     "account_summary_last_tx": "Última transacción: hace %{lastTx}"
   },
   "watch_wallet": {
-    "title": "Vigilar una dirección de Ethereum",
+    "title": "Observar una dirección de Ethereum",
     "description": "Ingresa cualquier dirección Ethereum o nombre ENS. Deberás importarlo más tarde para enviar o firmar transacciones.",
     "invalid_address": "Dirección inválida",
     "unsupported_tld": "%{tld} no es compatible",
@@ -1040,12 +1040,12 @@
     },
     "importing_your_wallet": {
       "one": "Importando tu billetera...",
-      "other": "Importando tus billeteras..."
+      "other": "Importando tus monederos..."
     },
     "sort": {
       "title": "Ordenar",
       "default": "Predeterminado",
-      "token_balance": "Saldo del token",
+      "token_balance": "Saldo de tokens",
       "last_transaction": "Última transacción"
     }
   },
@@ -1070,9 +1070,9 @@
     },
     "home_header_right": {
       "settings": "Configuración",
-      "qr_code": "Mi código QR",
+      "qr_code": "Mi Código QR",
       "rainbow_profile": "Perfil Rainbow",
-      "guides_and_support": "Guías y soporte",
+      "guides_and_support": "Guías y Soporte",
       "share_feedback": "Compartir comentarios",
       "lock_rainbow": "Bloquear Rainbow",
       "testnet_mode": "Modo Testnet",
@@ -1130,8 +1130,8 @@
     "watch_asset_info_description": "Si lo apruebas, este activo puede ser utilizado dentro de la Extensión de Navegador Rainbow.",
     "wallet": "Billetera",
     "network": "Red",
-    "switch_networks": "Cambiar redes",
-    "switch_wallets": "Cambiar billeteras",
+    "switch_networks": "Cambiar de red",
+    "switch_wallets": "Cambiar Billeteras",
     "allow_to_add_network": "quiere agregar una red",
     "connect": "Conectar a %{appName}",
     "connect_anyway": "Conectar de todos modos",
@@ -1153,12 +1153,12 @@
     "message": "Mensaje",
     "message_copied": "Mensaje copiado",
     "transaction_data_copied": "Datos de transacción copiados",
-    "sign_message": "Firmar mensaje",
+    "sign_message": "Firmar",
     "sign_message_anyway": "Firmar de todos modos",
     "confirm_hw": "Confirmar en tu dispositivo",
     "balance": "Saldo",
-    "send_transaction": "Enviar transacción",
-    "send_transaction_anyway": "Confirmar de todos modos",
+    "send_transaction": "Firmar",
+    "send_transaction_anyway": "Firmar de todos modos",
     "contract_deployment": "Despliegue de contrato",
     "transaction_request": "Solicitud de transacción",
     "insufficient_gas_funds": "Necesitas más %{token}",
@@ -1254,7 +1254,7 @@
     }
   },
   "wallets": {
-    "title": "Carteras"
+    "title": "Billeteras"
   },
   "common_actions": {
     "back": "Atrás",
@@ -1303,6 +1303,7 @@
     "tokens": "Tokens"
   },
   "activity": {
+    "hour": "Last Hour",
     "today": "Hoy",
     "yesterday": "Ayer",
     "this_month": "Este mes",
@@ -1533,7 +1534,7 @@
     "speed_up": "Acelerar",
     "cancel": "Cancelar",
     "view_on_etherscan": "Ver en Etherscan",
-    "view_on_explorer": "Ver en el explorador",
+    "view_on_explorer": "Ver en el Explorador",
     "copy_tx_hash": "Copiar hash de transacción",
     "cancel_explanation": "Esto intentará cancelar tu transacción pendiente. Requiere transmitir otra transacción.",
     "speed_up_explanation": "Esto acelerará tu transacción pendiente reemplazándola. Existe la posibilidad de que tu transacción original se confirme primero.",
@@ -1628,7 +1629,7 @@
   "wallet_header": {
     "buy": "Comprar",
     "copy": "Copiar",
-    "swap": "Cambiar",
+    "swap": "Intercambiar",
     "send": "Enviar",
     "copy_toast": "Dirección copiada"
   },
@@ -1711,8 +1712,8 @@
       "action_label": "Entendido"
     },
     "send": {
-      "to_smart_contract": {
-        "description_1": "La dirección que ingresaste es para un contrato inteligente.",
+      "to_token_contract": {
+        "description_1": "The address you entered is for a token contract.",
         "description_2": "Excepto en situaciones raras, probablemente no debas hacer esto. Podrías perder tus activos o podrían ir al lugar equivocado.",
         "description_3": "Revisa la dirección, verifícala con el destinatario o contacta al soporte primero.",
         "title": "¡Espera un momento!"
