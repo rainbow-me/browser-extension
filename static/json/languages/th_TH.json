@@ -1303,6 +1303,7 @@
     "tokens": "โทเคน"
   },
   "activity": {
+    "hour": "Last Hour",
     "today": "วันนี้",
     "yesterday": "เมื่อวาน",
     "this_month": "เดือนนี้",
@@ -1711,11 +1712,11 @@
       "action_label": "เข้าใจแล้ว"
     },
     "send": {
-      "to_smart_contract": {
-        "description_1": "ที่อยู่ที่คุณป้อนคือสำหรับสัญญาอัจฉริยะ",
-        "description_2": "ยกเว้นสถานการณ์ที่ไม่ปกติ คุณควรไม่ทำเช่นนี้ คุณอาจจะสูญเสียสินทรัพย์หรือสินทรัพย์อาจจะไปยังสถานที่ที่ผิด",
-        "description_3": "ตรวจสอบที่อยู่อีกครั้ง ตรวจสอบด้วยผู้รับ หรือติดต่อฝ่ายสนับสนุนเรื่องนี้ก่อน",
-        "title": "รอสักครู่!"
+      "to_token_contract": {
+        "description_1": "The address you entered is for a token contract.",
+        "description_2": "Except for rare situations, you probably shouldn't do this. You could lose your assets or they might go to the wrong place.",
+        "description_3": "Double check the address, verify it with the recipient, or contact support first.",
+        "title": "Hold your horses!"
       },
       "action_label": "เข้าใจแล้ว"
     },
