@@ -246,6 +246,33 @@ function generateMocks() {
       generatedMocks.push(`${hash} -> ${noAddressUrl} (no address)`);
     }
 
+    // Generate mock for the "summary" endpoint (also happens when wallet not yet loaded)
+    for (const currency of ['usd']) {
+      const summaryUrl = `${ADDYS_BASE_URL}/summary//assets/?currency=${currency}`;
+      const hash = sha256(summaryUrl as Hex);
+
+      // Generate empty response for summary endpoint
+      const emptyResponse: AddressAssetsReceivedMessage = {
+        payload: { assets: [] },
+        meta: {
+          chain_ids: [],
+          currency: currency,
+          address: '',
+          chain_ids_with_errors: [],
+          status: 'ok',
+        },
+      };
+
+      const mockPath = path.join(
+        __dirname,
+        'mocks',
+        'user_assets',
+        `${hash}.json`,
+      );
+      fs.writeFileSync(mockPath, JSON.stringify(emptyResponse, null, 2));
+      generatedMocks.push(`${hash} -> ${summaryUrl} (summary no address)`);
+    }
+
     for (const address of TEST_WALLETS) {
       for (const currency of ['usd']) {
         // Construct the URL with the exact chain list
