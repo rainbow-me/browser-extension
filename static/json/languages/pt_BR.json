@@ -1303,7 +1303,6 @@
     "tokens": "Tokens"
   },
   "activity": {
-    "hour": "Last Hour",
     "today": "Hoje",
     "yesterday": "Ontem",
     "this_month": "Este Mês",
@@ -1712,8 +1711,8 @@
       "action_label": "Entendi"
     },
     "send": {
-      "to_token_contract": {
-        "description_1": "The address you entered is for a token contract.",
+      "to_smart_contract": {
+        "description_1": "O endereço que você digitou é para um contrato inteligente.",
         "description_2": "Exceto em situações raras, você provavelmente não deveria fazer isso. Você pode perder seus ativos ou eles podem ir para o lugar errado.",
         "description_3": "Verifique novamente o endereço, verifique-o com o destinatário ou entre em contato com o suporte primeiro.",
         "title": "Segure seus cavalos!"
