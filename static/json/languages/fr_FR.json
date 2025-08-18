@@ -1303,6 +1303,7 @@
     "tokens": "Jetons"
   },
   "activity": {
+    "hour": "Last Hour",
     "today": "Aujourd'hui",
     "yesterday": "Hier",
     "this_month": "Ce mois-ci",
@@ -1711,11 +1712,11 @@
       "action_label": "Compris"
     },
     "send": {
-      "to_smart_contract": {
-        "description_1": "L'adresse que vous avez saisie est celle d'un contrat intelligent.",
-        "description_2": "Sauf dans des situations rares, vous ne devriez probablement pas le faire. Vous pourriez perdre vos actifs ou ils pourraient aller au mauvais endroit.",
-        "description_3": "Vérifiez bien l'adresse, vérifiez-la avec le destinataire ou contactez le support en premier.",
-        "title": "Attendez un instant !"
+      "to_token_contract": {
+        "description_1": "The address you entered is for a token contract.",
+        "description_2": "Except for rare situations, you probably shouldn't do this. You could lose your assets or they might go to the wrong place.",
+        "description_3": "Double check the address, verify it with the recipient, or contact support first.",
+        "title": "Hold your horses!"
       },
       "action_label": "Compris"
     },
