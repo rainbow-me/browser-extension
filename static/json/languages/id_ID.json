@@ -17,7 +17,7 @@
   "wallet_switcher": {
     "title": "Dompet",
     "rename_wallet": "Ganti nama dompet",
-    "copy_address": "Salin alamat",
+    "copy_address": "Salin Alamat",
     "remove_wallet": "Hapus dompet",
     "hide_wallet": "Sembunyikan dompet",
     "watching": "Pantau",
@@ -34,7 +34,7 @@
     }
   },
   "qr_code": {
-    "copy_address": "Salin alamat"
+    "copy_address": "Salin Alamat"
   },
   "add_wallet": {
     "title": "Tambah dompet lain",
@@ -178,7 +178,7 @@
         "not_backed_up": "Belum di-backup",
         "back_up_now": "Backup Sekarang",
         "context_menu": {
-          "create_wallet": "Buat Dompet",
+          "create_wallet": "Buat dompet",
           "view_secret_phrase": "Lihat Frasa Rahasia",
           "hide_wallets": "Sembunyikan Dompet",
           "unhide_wallets": "Tampilkan Dompet"
@@ -186,8 +186,8 @@
         "wallet_details": {
           "title": "Detail Dompet",
           "view_recovery_phrase": "Lihat Frasa Pemulihan",
-          "create_new_wallet": "Buat Dompet Baru",
-          "rename_wallet": "Ganti Nama Dompet",
+          "create_new_wallet": "Buat dompet baru",
+          "rename_wallet": "Ganti nama dompet",
           "unhide_wallet": "Tampilkan Dompet",
           "delete_wallet": "Hapus Dompet",
           "view_private_key": "Lihat Kunci Pribadi",
@@ -198,7 +198,7 @@
         },
         "new_wallet": {
           "name_your_wallet": "Beri nama dompet Anda",
-          "create": "Buat Dompet",
+          "create": "Buat dompet",
           "input_placeholder": "contoh: Dompet 1"
         },
         "private_key": {
@@ -903,7 +903,7 @@
     "remove_contact_action": "Hapus kontak",
     "remove_contact_description": "Apakah anda yakin ingin menghapus “%{name}” dari kontak anda?",
     "save": "Simpan",
-    "copy_address": "Salin alamat",
+    "copy_address": "Salin Alamat",
     "view_on_etherscan": "Lihat di Etherscan",
     "view_on_explorer": "Lihat di Explorer",
     "delete_contact": "Hapus kontak",
@@ -939,13 +939,13 @@
     "title": "Sebelum Anda memulai, cadangkan Frasa Pemulihan Rahasia Anda",
     "warning_1": "Penting untuk mencatat dan menyimpan Frasa Pemulihan Rahasia Anda di tempat yang aman",
     "warning_2": "Frasa Pemulihan Rahasia Anda adalah satu-satunya cara untuk memulihkan akun dan dana Anda",
-    "warning_3": "Siapapun dengan Frasa Pemulihan Rahasia Anda dapat mengakses seluruh dompet Anda",
+    "warning_3": "Siapa saja dengan Frasa Pemulihan Anda dapat mengakses seluruh dompet Anda.",
     "reveal_your_recovery_phrase": "Tampilkan frasa pemulihan Anda",
     "take_me_to_wallet": "Bawa saya ke dompet saya"
   },
   "seed_reveal": {
-    "title": "Frasa Pemulihan Rahasia Anda",
-    "write_down_seed_importance": "Simpan kata-kata ini dapat mengakses seluruh dompet Anda! Simpan di tempat yang aman jangan pernah membaginya",
+    "title": "Frasa Pemulihan Anda",
+    "write_down_seed_importance": "Siapa saja yang memiliki kata-kata ini dapat mengakses seluruh dompet Anda! Anda tidak boleh pernah membagikan mereka",
     "saved_these_words": "Saya telah menyimpan kata-kata ini",
     "copied": "Frasa Pemulihan Disalin"
   },
@@ -1153,12 +1153,12 @@
     "message": "Pesan",
     "message_copied": "Salin Pesan",
     "transaction_data_copied": "Salin Data Transaksi",
-    "sign_message": "Tandatangani Pesan",
+    "sign_message": "Tanda Tangan",
     "sign_message_anyway": "Tanda Tangani Tetap",
     "confirm_hw": "Konfirmasi di perangkat Anda",
     "balance": "Saldo",
-    "send_transaction": "Kirim Transaksi",
-    "send_transaction_anyway": "Konfirmasi Tetap",
+    "send_transaction": "Tanda Tangan",
+    "send_transaction_anyway": "Tanda Tangani Tetap",
     "contract_deployment": "Penerapan Kontrak",
     "transaction_request": "Permintaan Transaksi",
     "insufficient_gas_funds": "Anda butuh lebih banyak %{token}",
@@ -1303,6 +1303,7 @@
     "tokens": "Tokens"
   },
   "activity": {
+    "hour": "Last Hour",
     "today": "Hari Ini",
     "yesterday": "Kemarin",
     "this_month": "Bulan Ini",
@@ -1711,8 +1712,8 @@
       "action_label": "Mengerti"
     },
     "send": {
-      "to_smart_contract": {
-        "description_1": "Alamat yang Anda masukkan adalah untuk smart contract",
+      "to_token_contract": {
+        "description_1": "The address you entered is for a token contract.",
         "description_2": "Kecuali dalam situasi langka, sebaiknya Anda tidak melakukan ini. Anda bisa kehilangan aset Anda atau mungkin pergi ke tempat yang salah",
         "description_3": "Periksa lagi alamatnya, verifikasi dengan penerima, atau hubungi dukungan terlebih dahulu",
         "title": "Tahan diri Anda!"
@@ -1729,7 +1730,7 @@
       "current_base_title": "Biaya dasar saat ini",
       "max_base_explainer_1": "Ini adalah biaya dasar maksimum yang Anda bersedia bayar untuk transaksi ini",
       "max_base_explainer_2": "Mengatur biaya dasar maksimum yang lebih tinggi mencegah transaksi Anda dari macet jika biaya naik",
-      "max_base_title": "Biaya dasar maksimum",
+      "max_base_title": "Biaya dasar maksimal",
       "max_priority_explainer": "Tip penambang langsung menuju ke penambang yang mengkonfirmasi transaksi Anda di jaringan.\n\nTip yang lebih tinggi membuat transaksi Anda lebih cenderung dikonfirmasi dengan cepat",
       "max_priority_title": "Tip penambang"
     }
