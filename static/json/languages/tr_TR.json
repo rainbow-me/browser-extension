@@ -42,7 +42,7 @@
     "create_wallet_description": "Meydana getirme ifadeniz veya özel anahtarınızla yeni bir cüzdan oluşturun.",
     "import_wallet": "Gizli Kurtarma İfadesi veya Özel Anahtar ile İthalat Yap",
     "import_wallet_description": "Gizli Kurtarma İfadesi veya Özel Anahtarınızı kullanarak bir cüzdan ekleyin.",
-    "hardware_wallet": "Donanım cüzdanınızdan ekle",
+    "hardware_wallet": "Donanım cüzdanını bağla",
     "hardware_wallet_description": "Daha fazla hesap ekleme donanım cüzdanınızdan.",
     "watch_address": "Bir Ethereum adresini izle",
     "watch_address_description": "Bir genel adres veya ENS adı takip edin."
@@ -54,7 +54,7 @@
     "input_placeholder": "İsim"
   },
   "rename_wallet_prompt": {
-    "rename_wallet": "Cüzdanı yeniden adlandır",
+    "rename_wallet": "Cüzdanı Yeniden Adlandır",
     "done": "Tamam"
   },
   "remove_wallet_prompt": {
@@ -178,7 +178,7 @@
         "not_backed_up": "Yedeklenmedi",
         "back_up_now": "Şimdi Yedekle",
         "context_menu": {
-          "create_wallet": "Cüzdan Oluştur",
+          "create_wallet": "Cüzdan oluştur",
           "view_secret_phrase": "Gizli İfadeyi Görüntüle",
           "hide_wallets": "Cüzdanları Gizle",
           "unhide_wallets": "Cüzdanları Göster"
@@ -186,7 +186,7 @@
         "wallet_details": {
           "title": "Cüzdan Detayları",
           "view_recovery_phrase": "Kurtarma İfadesini Görüntüle",
-          "create_new_wallet": "Yeni Bir Cüzdan Oluştur",
+          "create_new_wallet": "Yeni bir cüzdan oluştur",
           "rename_wallet": "Cüzdanı Yeniden Adlandır",
           "unhide_wallet": "Gizlenmiş Cüzdanı Göster",
           "delete_wallet": "Cüzdanı Sil",
@@ -197,8 +197,8 @@
           "last_backed_up": "Son yedekleme %{date}olarak"
         },
         "new_wallet": {
-          "name_your_wallet": "Cüzdanınızın Adını Girin",
-          "create": "Cüzdan Oluştur",
+          "name_your_wallet": "Cüzdanınıza bir isim verin",
+          "create": "Cüzdan oluştur",
           "input_placeholder": "örn: Cüzdan 1"
         },
         "private_key": {
@@ -566,7 +566,7 @@
       "my_tokens": {
         "empty_label": "Token bulunamadı",
         "search_placeholder": "Tokenları arayın…",
-        "section_title": "Tokenlarım"
+        "section_title": "Tokenlerim"
       },
       "my_nfts": {
         "empty_label": "NFT bulunamadı",
@@ -671,7 +671,7 @@
     "wallets_list": {
       "contacts": "Kişiler",
       "my_wallets": "Cüzdanlarım",
-      "watched_wallets": "İzleme Listesinde",
+      "watched_wallets": "İzleme",
       "no_results": "Sonuç bulunamadı"
     },
     "tokens_input": {
@@ -699,7 +699,7 @@
   },
   "swap": {
     "_actions": {
-      "Swap": "Takas",
+      "Swap": "Takas Et",
       "swap": "takas",
       "swaps": "takaslar",
       "Swapping": "Takas Oluyor",
@@ -714,17 +714,17 @@
     "input_token_placeholder": "Takas etmek için bir token seçin %{action}",
     "input_token_to_receive_placeholder": "Almak için bir jeton seç",
     "select_tokens": "Takas etmek için tokenları seçin %{action}",
-    "max": "Maks.",
+    "max": "Maksimum",
     "balance": "Bakiye",
     "tokens_input": {
-      "tokens": "Jetonlar",
+      "tokens": "Tokenler",
       "sort": "Sırala",
-      "available": "mevcut",
-      "token_balance": "Jeton Bakiyesi",
+      "available": "kullanılabilir",
+      "token_balance": "Token Bakiyesi",
       "networks": "Ağlar",
       "filter_by_network": "Ağa göre filtrele",
       "switch_networks": "Ağları Değiştir",
-      "nothing_found": "Hiçbir şey bulunamadı",
+      "nothing_found": "Hiçbir sonuç bulunamadı",
       "nothing_found_description": "Bazı tokenların başarılı bir %{action}gerçekleştirmek için yeterli likiditeye sahip değil.",
       "nothing_found_description_l2": "Bazı tokenların başarılı bir %{action}gerçekleştirmek için yeterli katman 2 likiditesi yok.",
       "output_quotes_disabled": "Çıktı alıntıları devre dışı"
@@ -754,10 +754,10 @@
     "settings": {
       "title": "%{Action} Ayarlar",
       "route": "Rota %{actions} üzerinden",
-      "use_flashbots": "Flashbots kullan",
+      "use_flashbots": "Flashbots Kullan",
       "max_slippage": "Maksimum slippage",
       "use_defaults": "Varsayılanları kullan",
-      "done": "Tamamlandı",
+      "done": "Tamam",
       "warnings": {
         "high": "Yüksek",
         "possible_loss": "Mümkün kayıp"
@@ -777,8 +777,8 @@
           "title": "Flashbots",
           "description": "Flashbots işlemlerinizi önleyici işlemlerden ve sandviç saldırılarından korur; bu, daha kötü bir fiyat elde etmenize veya işleminizin başarısız olmasına neden olabilir.",
           "read_more": {
-            "open_text": "Hâlâ meraklı mısınız? ",
-            "link_text": "Daha fazlasını okuyun",
+            "open_text": "Hala merak mı ediyorsunuz? ",
+            "link_text": "Daha fazla oku",
             "close_text": " Flashbots ve sunduğu koruma hakkında"
           }
         },
@@ -786,8 +786,8 @@
           "title": "%{Action} Yönlendirme",
           "description": "Varsayılan olarak, Rainbow %{action}işlemi için en ucuz rotayı seçer. 0x veya 1inch'i özellikle kullanmayı tercih ederseniz, bunu da yapabilirsiniz.",
           "read_more": {
-            "open_text": "Hâlâ meraklı mısınız? ",
-            "link_text": "Daha fazlasını okuyun",
+            "open_text": "Hala merak mı ediyorsunuz? ",
+            "link_text": "Daha fazla oku",
             "close_text": " Rotalama yaklaşımımız hakkında %{actions}."
           }
         },
@@ -805,7 +805,7 @@
       "fee_on_transfer_token": "Transfer Token Üzerine Ücret",
       "no_route": "Rota bulunamadı",
       "no_quote": "Teklif mevcut değil",
-      "enter_an_amount": "Bir miktar girin",
+      "enter_an_amount": "Miktar girin",
       "swap": "%{Action}",
       "swapping": "%{Actioning}",
       "waiting_signature": "Cihazınızda Onaylayın"
@@ -816,7 +816,7 @@
       "minimum_received": "Minimum alınan",
       "via": "%{Actioning} üzerinden",
       "included_fee": "Dahil olan Rainbow ücreti",
-      "use_flashbots": "Flashbots kullan",
+      "use_flashbots": "Flashbots Kullan",
       "exchange_rate": "Döviz kuru",
       "asset_contract": "%{symbol} sözleşme",
       "more_details": "Daha fazla ayrıntı",
@@ -844,7 +844,7 @@
         "description": "Bu %{action} için teklif bulamadık çünkü bu çiftin borsalarda yeterli likiditesi yok.",
         "action_label": "Anladım",
         "footer_text": {
-          "open_text": "Hala meraklı mısın? ",
+          "open_text": "Hala merak mı ediyorsunuz? ",
           "link_text": "Daha fazla oku",
           "close_text": " hakkında AMM'ler ve token likiditesi."
         }
@@ -904,8 +904,8 @@
     "remove_contact_description": "“%{name}” kişilerinizden çıkarmak istediğinize emin misiniz?",
     "save": "Kaydet",
     "copy_address": "Adresi Kopyala",
-    "view_on_etherscan": "Etherscan'de Görüntüle",
-    "view_on_explorer": "Araştırmacıda Görüntüle",
+    "view_on_etherscan": "Etherscan'da Görüntüle",
+    "view_on_explorer": "Arayüzde Görüntüle",
     "delete_contact": "Kişiyi Sil",
     "contact_address_copied": "Adres Kopyalandı"
   },
@@ -928,7 +928,7 @@
   "welcome": {
     "title": "Rainbow",
     "subtitle": "Ethereum'un yeni dünyasını keşfedin",
-    "create_wallet": "Yeni bir cüzdan oluşturun",
+    "create_wallet": "Yeni bir cüzdan oluştur",
     "import_wallet": "Bir cüzdanı içe aktarın veya bağlayın",
     "disclaimer_tos": "Devam ederek, Rainbow'un",
     "disclaimer_tos_link": "Kullanım Koşulları'na",
@@ -939,14 +939,14 @@
     "title": "Beta kodunuzu girin",
     "warning_1": "Başlamadan önce, Gizli Kurtarma Cümlenizi yedekleyin",
     "warning_2": "Gizli Kurtarma Cümlenizi bir yerde güvenli bir şekilde yazmak ve saklamak önemlidir.",
-    "warning_3": "Gizli Kurtarma Kelimeleriniz, hesaplarınızı ve fonlarınızı kurtarmanın tek yoludur.",
+    "warning_3": "Kurtarma Cümlenizle herhangi biri tüm cüzdanınıza erişebilir.",
     "reveal_your_recovery_phrase": "Gizli Kurtarma Kelimelerinizi bilen herkes, tüm cüzdanınıza erişebilir.",
     "take_me_to_wallet": "Kurtarma cümlenizi ortaya çıkarın"
   },
   "seed_reveal": {
-    "title": "Cüzdanıma git",
-    "write_down_seed_importance": "Gizli Kurtarma Kelimeleriniz",
-    "saved_these_words": "Bu kelimeleri saklayan herkes, tüm cüzdanınıza erişebilir! Onları güvenli bir yere saklayın ve asla paylaşmayın.",
+    "title": "Kurtarma Cümleniz",
+    "write_down_seed_importance": "Bu kelimelere sahip olan herkes tüm cüzdanınıza erişebilir! Onları asla paylaşmamalısınız.",
+    "saved_these_words": "Bu kelimeleri kaydettim",
     "copied": "Kurtarma Cümlesi Kopyalandı"
   },
   "import_wallet_via_secret": {
@@ -969,7 +969,7 @@
     "duplicate_seed": "Bu tohum zaten ithal edildi"
   },
   "import_wallet_via_private_key": {
-    "title": "Gizli Kurtarma Cümlesini yapıştıramadık",
+    "title": "64 karakterlik Özel Anahtar kullanarak tek bir cüzdan ekleyin",
     "explanation": "Cüzdanını İçe Aktar",
     "placeholder": "Rainbow ya da herhangi bir Ethereum cüzdanından 64 karakterli Özel Anahtarınızı girin.",
     "import_wallet": "Başka bir cüzdandan Özel Anahtarınızı yapıştırın"
@@ -977,12 +977,12 @@
   "import_or_connect": {
     "title": "Cüzdanı İçe Aktar",
     "explanation": "Geri Yükle veya Bağlan",
-    "import_wallet": "Gizli Kurtarma Cümlesi ya da Özel Anahtar ile içe aktarın",
-    "import_wallet_description": "Gizli Kurtarma Cümlesi veya Özel Anahtar ile içe aktarın",
+    "import_wallet": "Gizli Kurtarma İfadesi veya Özel Anahtar ile İthalat Yap",
+    "import_wallet_description": "Gizli Kurtarma İfadesi veya Özel Anahtarınızı kullanarak bir cüzdan ekleyin.",
     "connect_wallet": "Donanım cüzdanınızı bağlayın",
     "connect_wallet_description": "Donanım cüzdanınızdan hesapları ekleyin.",
-    "watch_address": "Bir Ethereum adresini izleyin",
-    "watch_address_description": "Bir genel adres ya da ENS adı izleyin."
+    "watch_address": "Bir Ethereum adresini izle",
+    "watch_address_description": "Bir genel adres veya ENS adı takip edin."
   },
   "import_wallet_selection": {
     "title": "Cüzdanlarınız",
@@ -1017,7 +1017,7 @@
     "too_many_words": "Çok fazla kelime",
     "too_many_chars": "Çok fazla karakter",
     "add_another": "Başka bir tane ekle",
-    "remove": "Sil",
+    "remove": "Kaldır",
     "placeholder": "Başka bir cüzdandan Gizli Kurtarma Sözcüklerinizi veya Özel Anahtarınızı yapıştırın",
     "invalid_word": "Geçersiz kelime: %{word}",
     "invalid_private_key": "Geçersiz Özel Anahtar",
@@ -1040,7 +1040,7 @@
     },
     "importing_your_wallet": {
       "one": "Cüzdanınızı içe aktarılıyor...",
-      "other": "Cüzdanlarınızı içe aktarılıyor..."
+      "other": "Cüzdanlarınızı içe aktarıyoruz..."
     },
     "sort": {
       "title": "Sırala",
@@ -1072,9 +1072,9 @@
       "settings": "Ayarlar",
       "qr_code": "QR Kodum",
       "rainbow_profile": "Rainbow Profili",
-      "guides_and_support": "Rehberler ve Destek",
+      "guides_and_support": "Kılavuzlar ve Destek",
       "share_feedback": "Geri Bildirim Paylaş",
-      "lock_rainbow": "Rainbow'u Kitle",
+      "lock_rainbow": "Rainbow'u Kilitle",
       "testnet_mode": "Testnet Modu",
       "testnet_mode_off": "Kapalı",
       "testnet_mode_on": "Açık"
@@ -1100,13 +1100,13 @@
       "connect_to": "%{appName}ile bağlanmak mı?"
     },
     "wallet_item": {
-      "disconnect": "Bağlantıyı kes",
+      "disconnect": "Bağlantıyı Kes",
       "switch_connection": "Bağlantıyı değiştir",
       "connect": "Bağlan"
     },
     "wallet_item_dropdown_menu": {
       "connect": "Bağlan",
-      "disconnect": "Bağlantıyı kes",
+      "disconnect": "Bağlantıyı Kes",
       "open_app": "%{appName}uygulamasını aç"
     },
     "wallet_switcher": {
@@ -1153,12 +1153,12 @@
     "message": "Mesaj",
     "message_copied": "Mesaj Kopyalandı",
     "transaction_data_copied": "İşlem Verisi Kopyalandı",
-    "sign_message": "Mesajı İmzala",
+    "sign_message": "İmzala",
     "sign_message_anyway": "Yine de İmzala",
     "confirm_hw": "Cihazınızda Onaylayın",
     "balance": "Bakiye",
-    "send_transaction": "İşlem Gönder",
-    "send_transaction_anyway": "Yine de Onayla",
+    "send_transaction": "İmzala",
+    "send_transaction_anyway": "Yine de İmzala",
     "contract_deployment": "Akıllı Sözleşme Yayınlama",
     "transaction_request": "İşlem İsteği",
     "insufficient_gas_funds": "Daha fazla %{token}ihtiyacınız var",
@@ -1203,7 +1203,7 @@
       },
       "micro": "g",
       "short": {
-        "plural": "gün",
+        "plural": "günler",
         "singular": "gün"
       }
     },
@@ -1303,6 +1303,7 @@
     "tokens": "Tokenler"
   },
   "activity": {
+    "hour": "Last Hour",
     "today": "Bugün",
     "yesterday": "Dün",
     "this_month": "Bu Ay",
@@ -1531,9 +1532,9 @@
   },
   "speed_up_and_cancel": {
     "speed_up": "Hızlandır",
-    "cancel": "İptal et",
-    "view_on_etherscan": "Etherscan'da görüntüle",
-    "view_on_explorer": "Explorer'da görüntüle",
+    "cancel": "İptal",
+    "view_on_etherscan": "Etherscan'da Görüntüle",
+    "view_on_explorer": "Arayüzde Görüntüle",
     "copy_tx_hash": "Tx Hash Kopyalandı",
     "cancel_explanation": "Bu, bekleyen işleminizi iptal etmeye çalışacaktır. Başka bir işlem yayınlamanız gerekmektedir.",
     "speed_up_explanation": "Bu, bekleyen işleminizi hızlandıracaktır. Orijinal işleminizin önce onaylanma olasılığı vardır.",
@@ -1544,7 +1545,7 @@
     "cancel_cta": "İşlemi İptal Et",
     "speed_up_cta": "İşlemi Hızlandır",
     "speed_up_transaction": "İşlemi Hızlandır",
-    "close_cta": "İptal Et",
+    "close_cta": "İptal",
     "handle_copy_title": "Tx Hash Kopyalandı",
     "revoke_approval": "Onayı İptal Et",
     "speed_up_failed": {
@@ -1553,7 +1554,7 @@
     }
   },
   "token_details": {
-    "swap": "Değiştir",
+    "swap": "Takas Et",
     "bridge": "Bridge",
     "send": "Gönder",
     "balance": "Bakiye",
@@ -1628,7 +1629,7 @@
   "wallet_header": {
     "buy": "Satın Al",
     "copy": "Kopyala",
-    "swap": "Değiştir",
+    "swap": "Takas Et",
     "send": "Gönder",
     "copy_toast": "Adres Kopyalandı"
   },
@@ -1707,12 +1708,12 @@
           "description_2": "Yapılandırmasına bağlı olarak, bu ağ farklı protokoller, güvenlik önlemleri ve uzlaşma mekanizmaları kullanabilir, performansı optimize etmek, maliyetleri azaltmak veya özelleştirilmiş hizmetler sunmak için tasarlanmıştır."
         }
       },
-      "link_button_label": "Daha fazla bilgi",
+      "link_button_label": "Daha fazla oku",
       "action_label": "Anladım"
     },
     "send": {
-      "to_smart_contract": {
-        "description_1": "Girdiğiniz adres bir akıllı sözleşme içindir.",
+      "to_token_contract": {
+        "description_1": "The address you entered is for a token contract.",
         "description_2": "Nadir durumlar hariç, bunu yapmamanızı öneririz. Varlıklarınızı kaybedebilir veya yanlış yere gidebilirler.",
         "description_3": "Adresi çift kontrol edin, alıcıyla doğrulayın veya önce destekle iletişime geçin.",
         "title": "Sakin olun!"
@@ -1726,12 +1727,12 @@
       "current_base_falling": "Ücretler şu anda düşüyor!",
       "current_base_rising": "Ücretler şu anda yükseliyor! Sıkışık bir işlem yaşamamak için daha yüksek bir maksimum taban ücreti kullanmanız en iyisi.",
       "current_base_description": "Taban ücreti Ethereum ağı tarafından belirlenir ve ağ ne kadar meşgul olursa değişir.",
-      "current_base_title": "Geçerli taban ücreti",
+      "current_base_title": "Mevcut taban ücreti",
       "max_base_explainer_1": "Bu işlem için ödemeyi kabul etmeyi istediğiniz maksimum taban ücretidir.",
       "max_base_explainer_2": "Daha yüksek bir maksimum taban ücreti belirlemek, ücretler yükseldiğinde işleminizin sıkışmasını engeller.",
       "max_base_title": "Maksimum taban ücreti",
       "max_priority_explainer": "Maden işçisi bahisi, işleminizi ağda onaylayan madencinin doğrudan alır.\n\nDaha yüksek bahis, işleminizin daha hızlı onaylanma olasılığını artırır.",
-      "max_priority_title": "Maden işçisi bahisi"
+      "max_priority_title": "Madenci bahşişi"
     }
   },
   "injected_notifications": {
@@ -1765,7 +1766,7 @@
     "exclusivity_ledger_description_2": "Diğer uygulamayı kapattıktan sonra, tekrar denemek için lütfen bu sayfayı yenileyin.",
     "needs_app_ledger_title": "ETH uygulamasını açın",
     "needs_app_ledger_description": "İşlemi sürdürebilmek için Ledger'ınızda Ethereum uygulamasının açık olması gerekmektedir.",
-    "needs_app_ledger_description_2": "Ledger'ınızı açmak için parolanızı girin. Bir kez açıldıktan sonra, Ethereum uygulamasını iki düğmeye birden basarak açın.",
+    "needs_app_ledger_description_2": "Ledger'ınızın kilidini açmak için şifrenizi girin. Kilidi açtıktan sonra, Ethereum uygulamasını aynı anda her iki düğmeye basarak açın.",
     "connect_trezor_title": "Trezor kurulumunu tamamla",
     "connect_trezor_description": "Trezor'u web arayüzü vasıtasıyla Rainbow'a bağlamaya devam edin.",
     "learn_more": "Daha fazla bilgi edinin.",
@@ -1783,8 +1784,8 @@
     "wallet_plural": "cüzdanlar",
     "wallet_pronoun_plural": "Onlar",
     "wallet_pronoun_singular": "O",
-    "done": "Tamamlandı",
-    "add_wallet": "Cüzdan Ekle",
+    "done": "Tamam",
+    "add_wallet": "Cüzdan ekle",
     "add_by_index_title": "İndexine göre cüzdan ekle",
     "add_by_index_description": "Türetme yolunu seçin ve eklemek istediğiniz cüzdanın indeksini girin.",
     "waiting_for_trezor_connect": "Trezor Connect için bekleniyor",
