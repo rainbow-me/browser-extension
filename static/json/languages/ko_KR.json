@@ -1303,7 +1303,6 @@
     "tokens": "토큰"
   },
   "activity": {
-    "hour": "Last Hour",
     "today": "오늘",
     "yesterday": "어제",
     "this_month": "이번 달",
@@ -1712,8 +1711,8 @@
       "action_label": "알았습니다"
     },
     "send": {
-      "to_token_contract": {
-        "description_1": "The address you entered is for a token contract.",
+      "to_smart_contract": {
+        "description_1": "입력한 주소는 스마트 계약을 위한 것입니다.",
         "description_2": "드문 경우를 제외하면 이렇게 하지 않는 것이 좋습니다. 자산을 잃을 수도 있고 잘못된 곳으로 갈 수도 있습니다.",
         "description_3": "주소를 다시 확인하고, 수신자와 확인하거나 먼저 지원팀에 문의하십시오.",
         "title": "천천히!"
