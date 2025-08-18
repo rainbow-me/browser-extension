@@ -1303,7 +1303,7 @@
     "tokens": "Tokens"
   },
   "activity": {
-    "hour": "Last Hour",
+    "hour": "Última hora",
     "today": "Hoje",
     "yesterday": "Ontem",
     "this_month": "Este Mês",
@@ -1713,10 +1713,10 @@
     },
     "send": {
       "to_token_contract": {
-        "description_1": "The address you entered is for a token contract.",
-        "description_2": "Except for rare situations, you probably shouldn't do this. You could lose your assets or they might go to the wrong place.",
-        "description_3": "Double check the address, verify it with the recipient, or contact support first.",
-        "title": "Hold your horses!"
+        "description_1": "O endereço que você digitou é para um contrato de token.",
+        "description_2": "Exceto em situações raras, você provavelmente não deveria fazer isso. Você pode perder seus ativos ou eles podem ir para o lugar errado.",
+        "description_3": "Verifique novamente o endereço, verifique-o com o destinatário ou entre em contato com o suporte primeiro.",
+        "title": "Segure seus cavalos!"
       },
       "action_label": "Entendi"
     },
