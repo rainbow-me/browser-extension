@@ -1303,7 +1303,7 @@
     "tokens": "โทเคน"
   },
   "activity": {
-    "hour": "Last Hour",
+    "hour": "ชั่วโมงที่ผ่านมา",
     "today": "วันนี้",
     "yesterday": "เมื่อวาน",
     "this_month": "เดือนนี้",
@@ -1713,10 +1713,10 @@
     },
     "send": {
       "to_token_contract": {
-        "description_1": "The address you entered is for a token contract.",
-        "description_2": "Except for rare situations, you probably shouldn't do this. You could lose your assets or they might go to the wrong place.",
-        "description_3": "Double check the address, verify it with the recipient, or contact support first.",
-        "title": "Hold your horses!"
+        "description_1": "ที่อยู่ที่คุณป้อนเป็นของคอนแทร็กต์โทเค็น",
+        "description_2": "ยกเว้นในบางสถานการณ์ที่พบได้ยาก คุณไม่ควรทำเช่นนี้ อาจทำให้คุณสูญเสียสินทรัพย์ หรือสินทรัพย์อาจถูกส่งไปยังที่ที่ไม่ถูกต้อง",
+        "description_3": "ตรวจสอบที่อยู่อีกครั้ง ยืนยันกับผู้รับ หรือติดต่อฝ่ายสนับสนุนก่อน",
+        "title": "รอสักครู่!"
       },
       "action_label": "เข้าใจแล้ว"
     },
