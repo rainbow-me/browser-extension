@@ -26,6 +26,8 @@
     "knip": "knip",
     "// Fetch backend networks": "",
     "fetch:networks": "node scripts/networks.js",
+    "// Updates the mock quotes": "",
+    "mock:swap-quotes": "node e2e/mocks/swap/update.js",
     "// Design System scripts": "",
     "// GraphQL scripts": "",
     "graphql-setup": "yarn graphql-codegen:install && yarn graphql-codegen",

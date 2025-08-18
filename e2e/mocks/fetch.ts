@@ -20,7 +20,7 @@ export function mockFetch() {
       const hash = sha256(url.href as Hex);
       console.log('Looking for mock file with hash:', hash);
 
-      const response = await import(`./mocks/swap_quotes/${hash}.json`);
+      const response = await import(`./swap/quotes/${hash}.json`);
       console.log('Mock response:', response);
 
       if (!response)

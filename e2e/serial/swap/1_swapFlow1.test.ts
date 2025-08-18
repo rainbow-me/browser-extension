@@ -25,7 +25,10 @@ import {
   typeOnTextInput,
   waitAndClick,
 } from '../../helpers';
-import { convertRawAmountToDecimalFormat, subtract } from '../../numbers';
+import {
+  convertRawAmountToDecimalFormat,
+  subtract,
+} from '../../helpers/numbers';
 import { SWAP_VARIABLES, TEST_VARIABLES } from '../../walletVariables';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

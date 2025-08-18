@@ -7,13 +7,10 @@ const { writeFile } = require('fs/promises');
 const { createClient, http, sha256 } = require('viem');
 const { getBlockNumber } = require('viem/actions');
 
-const urls = require('./mocks/mock_swap_quotes_urls.json');
+const urls = require('./urls.json');
 const FETCH_TIMEOUT = 5000; // 5 seconds
 
-const fetchWithTimeout = (
-  url: RequestInfo | URL,
-  timeout: number,
-): Promise<string> => {
+const fetchWithTimeout = (url, timeout) => {
   return new Promise((resolve, reject) => {
     const timer = setTimeout(() => {
       reject(new Error('Fetch timed out'));
@@ -38,19 +35,19 @@ const fetchWithTimeout = (
 
   console.log('INITIAL BLOCK NUMBER', blockNumberInitial.toString());
 
-  const fetchAndWritePromises = urls.map(async (url: RequestInfo | URL) => {
+  const fetchAndWritePromises = urls.map(async (url) => {
     const hash = sha256(url);
     try {
       const res = await fetchWithTimeout(url, FETCH_TIMEOUT);
-      await writeFile(`e2e/mocks/swap_quotes/${hash}.json`, res);
+      await writeFile(`e2e/mocks/swap/quotes/${hash}.json`, res);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
+    } catch (error) {
       console.error(`Error fetching ${url}:`, error.message);
       const errorMessage = JSON.stringify({
         error: true,
         message: error.message,
       });
-      await writeFile(`e2e/mocks/swap_quotes/${hash}.json`, errorMessage);
+      await writeFile(`e2e/mocks/swap/quotes/${hash}.json`, errorMessage);
     }
   });
 
