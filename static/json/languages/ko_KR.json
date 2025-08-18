@@ -1303,7 +1303,7 @@
     "tokens": "토큰"
   },
   "activity": {
-    "hour": "Last Hour",
+    "hour": "지난 1시간",
     "today": "오늘",
     "yesterday": "어제",
     "this_month": "이번 달",
@@ -1713,10 +1713,10 @@
     },
     "send": {
       "to_token_contract": {
-        "description_1": "The address you entered is for a token contract.",
-        "description_2": "Except for rare situations, you probably shouldn't do this. You could lose your assets or they might go to the wrong place.",
-        "description_3": "Double check the address, verify it with the recipient, or contact support first.",
-        "title": "Hold your horses!"
+        "description_1": "입력한 주소는 토큰 스마트 계약 주소입니다.",
+        "description_2": "드문 경우를 제외하면 이렇게 하지 않는 것이 좋습니다. 자산을 잃을 수도 있고 잘못된 곳으로 갈 수도 있습니다.",
+        "description_3": "주소를 다시 확인하고, 수신자와 확인하거나 먼저 지원팀에 문의하십시오.",
+        "title": "천천히!"
       },
       "action_label": "알았습니다"
     },
