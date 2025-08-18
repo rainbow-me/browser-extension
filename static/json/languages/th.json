@@ -1,0 +1,1892 @@
+{
+  "test": {
+    "salute": "สวัสดี!"
+  },
+  "label": {
+    "toggle": "สลับ"
+  },
+  "permissions": {
+    "firefox_permission_denied": "Rainbow ต้องการสิทธิ์การเข้าถึงทุกเว็บไซต์เพื่อให้การทำงานถูกต้อง กรุณาให้สิทธิ์เพื่อดำเนินการต่อ"
+  },
+  "wallet": {
+    "rename": "เปลี่ยนชื่อกระเป๋าเงิน",
+    "edit_appearance": "แก้ไขการแสดงผล",
+    "view_on": "ดูบน %{explorer}",
+    "copy_address": "คัดลอกที่อยู่"
+  },
+  "wallet_switcher": {
+    "title": "กระเป๋าเงิน",
+    "rename_wallet": "เปลี่ยนชื่อกระเป๋าเงิน",
+    "copy_address": "คัดลอกที่อยู่",
+    "remove_wallet": "ลบกระเป๋าเงิน",
+    "hide_wallet": "ซ่อนกระเป๋าเงิน",
+    "watching": "กำลังสังเกต",
+    "ledger": "Ledger",
+    "trezor": "Trezor",
+    "add_another_wallet": "เพิ่มกระเป๋าเงินอื่น",
+    "connect_hardware_wallet": "เพิ่มจากกระเป๋าเงินฮาร์ดแวร์ของคุณ",
+    "search_placeholder": "ค้นหากระเป๋าเงิน",
+    "no_wallets": "ไม่มีกระเป๋าเงิน",
+    "no_results": "ไม่มีผลลัพธ์",
+    "quick_promo": {
+      "text": "ลากกระเป๋าเงินเพื่อจัดเรียง",
+      "text_bold": "เคล็ดลับ:"
+    }
+  },
+  "qr_code": {
+    "copy_address": "คัดลอกที่อยู่"
+  },
+  "add_wallet": {
+    "title": "เพิ่มกระเป๋าเงินอื่น",
+    "create_wallet": "สร้างกระเป๋าเงินใหม่",
+    "create_wallet_description": "สร้างกระเป๋าเงินใหม่บน seed phrases ของคุณ",
+    "import_wallet": "นำเข้าด้วย Secret Recovery Phrase หรือ Private Key",
+    "import_wallet_description": "เพิ่มกระเป๋าเงินโดยใช้ Secret Recovery Phrase หรือ Private Key",
+    "hardware_wallet": "เพิ่มจากกระเป๋าเงินฮาร์ดแวร์ของคุณ",
+    "hardware_wallet_description": "เพิ่มบัญชีเพิ่มเติมจาก hardware wallet ของคุณ",
+    "watch_address": "รับชมที่อยู่ Ethereum",
+    "watch_address_description": "รับชมที่อยู่สาธารณะหรือชื่อ ENS"
+  },
+  "create_wallet_prompt": {
+    "title": "ตั้งชื่อกระเป๋าเงินของคุณ",
+    "create_wallet": "สร้างกระเป๋าเงิน",
+    "create": "สร้าง",
+    "input_placeholder": "ชื่อ"
+  },
+  "rename_wallet_prompt": {
+    "rename_wallet": "เปลี่ยนชื่อกระเป๋าเงิน",
+    "done": "เสร็จสิ้น"
+  },
+  "remove_wallet_prompt": {
+    "error": "ลบกระเป๋าเงินล้มเหลว",
+    "remove": "ลบ",
+    "remove_title": "ลบ %{name}",
+    "remove_last_wallet_title": "ลบ %{name} และวลีกู้คืนลับของคุณ",
+    "remove_description": "สิ่งนี้จะลบวอลเล็ตจากรายการนี้และลบข้อมูลที่เกี่ยวข้องทั้งหมด",
+    "remove_last_wallet_description": "สิ่งนี้จะลบวอลเล็ตและวลีกู้คืนลับและข้อมูลที่เกี่ยวข้องอย่างถาวร",
+    "hide": "ซ่อน",
+    "hide_title": "ซ่อน %{name}",
+    "hide_description": "สิ่งนี้เพียงลบวอลเล็ตจากรายการนี้ คุณสามารถค้นหาวอลเล็ตนี้และตัวเลือกจัดการเพิ่มเติมในการตั้งค่า",
+    "cancel": "ยกเลิก"
+  },
+  "settings": {
+    "title": "การตั้งค่า",
+    "use_rainbow_as_default_wallet": "ใช้ Rainbow เป็นวอลเล็ตเริ่มต้น",
+    "sounds": "เสียง",
+    "default_wallet_description": "อนุญาตให้แอปเลือกใช้ Rainbow เป็นหลักเมื่อต้องการเชื่อมต่อกับส่วนขยาย",
+    "contacts": "รายชื่อติดต่อ",
+    "guides_and_support": "คู่มือและการสนับสนุน",
+    "learn_about_ethereum": "เรียนรู้เกี่ยวกับ Ethereum",
+    "follow_us_on_twitter": "ติดตามเราบน Twitter",
+    "share_feedback": "แชร์คำติชม",
+    "theme": {
+      "title": "ธีม",
+      "system": "ระบบ",
+      "light": "สว่าง",
+      "dark": "มืด"
+    },
+    "networks": {
+      "mainnet": "เครือข่ายหลัก",
+      "testnet": "เทสต์เน็ต",
+      "title": "เครือข่าย",
+      "testnets": "เทสต์เน็ตส์",
+      "quick_promo": {
+        "text": "ลากเครือข่ายเพื่อจัดเรียง",
+        "text_bold": "เคล็ดลับ:"
+      },
+      "disable": "ปิดการใช้งาน",
+      "disabled": "ปิดการใช้งาน",
+      "enable": "เปิดการใช้งาน",
+      "enabled": "เครือข่ายถูกเปิดใช้งาน",
+      "description": "เลือกเครือข่ายและโทเคนที่จะแสดง คุณสามารถเชื่อมต่อกับเครือข่ายที่ Rainbow รองรับได้ แม้จะไม่ได้เลือก",
+      "developer_tools": {
+        "title": "เปิดใช้งานเครื่องมือนักพัฒนา",
+        "toggle_explainer": "เปิดใช้งานทางลัดโหมด Testnet (T) และเพิ่มสลับที่หน้าจอหลักสุดขวาบน"
+      },
+      "custom_rpc": {
+        "title": "เพิ่มเครือข่าย",
+        "add_custom_network": "เพิ่มเครือข่ายที่กำหนดเอง",
+        "networks": "เครือข่าย",
+        "network_name": "ชื่อเครือข่าย",
+        "rpc_url": "URL ของ RPC",
+        "chain_id": "รหัสเครือข่าย",
+        "symbol": "สัญลักษณ์",
+        "decimals": "ทศนิยม",
+        "active": "กำลังใช้งาน",
+        "testnet": "เทสต์เน็ต",
+        "block_explorer_url": "URL เบราว์เซอร์บล็อก",
+        "add_network": "เพิ่มเครือข่าย",
+        "add_rpc": "เพิ่มจุดปลายทาง RPC",
+        "add_network_rpc": "เพิ่ม %{rpcName} RPC",
+        "add_asset": "เพิ่มโทเค็นที่กำหนดเอง",
+        "network_added": "เครือข่ายถูกเพิ่มแล้ว",
+        "network_added_correctly": "%{networkName}",
+        "remove_token": "ลบโทเค็น",
+        "remove_rpc": "ลบ RPC",
+        "remove_network": "ลบเครือข่าย",
+        "tokens": "โทเคน",
+        "cant_connect": "ไม่สามารถเชื่อมต่อกับ RPC endpoint นี้ได้",
+        "rpc_not_responding": "RPC endpoint ที่ให้มาไม่ตอบสนอง",
+        "rainbow_default_rpc": "Rainbow",
+        "rainbow_default": "Rainbow"
+      },
+      "rpc_endpoints": "จุดปลายทาง RPC",
+      "watch_asset": {
+        "title": "เพิ่มโทเค็นที่กำหนดเอง"
+      }
+    },
+    "privacy_and_security": {
+      "title": "ความเป็นส่วนตัว & ความปลอดภัย",
+      "analytics": "วิเคราะห์",
+      "analytics_description": "ช่วยปรับปรุงผลิตภัณฑ์และบริการของ Rainbow ด้วยการวิเคราะห์ข้อมูลการใช้งาน ข้อมูลที่รวบรวมไม่เกี่ยวข้องกับคุณหรือบัญชีของคุณ",
+      "hide_asset_balances": "ซ่อนยอดเงินในสินทรัพย์",
+      "hide_asset_balances_description": "สวิตช์นี้เปิด Rainbow จะทำการปกปิดยอดเงินที่ปรากฏในแอปทั่วๆ",
+      "auto_hide_balances_under_1": "ซ่อนยอดคงเหลือที่ต่ำกว่า $1 โดยอัตโนมัติ",
+      "view_private_key": "ดูคีย์ส่วนตัว",
+      "view_secret_recovery_phrase": "ดูวลีลับสำหรับการกู้คืน",
+      "auto_lock_timer": {
+        "title": "ตัวจับเวลาล็อกอัตโนมัติ",
+        "immediately": "ทันที",
+        "one_minute": "1 นาที",
+        "five_minutes": "5 นาที",
+        "ten_minutes": "10 นาที",
+        "fifteen_minutes": "15 นาที",
+        "thirty_minutes": "30 นาที",
+        "one_hour": "1 ชั่วโมง",
+        "twelve_hours": "12 ชั่วโมง",
+        "twenty_four_hours": "24 ชั่วโมง",
+        "none": "ไม่มี"
+      },
+      "change_password": {
+        "title": "เปลี่ยนรหัสผ่าน",
+        "header_label": "เปลี่ยนรหัสผ่านของคุณ"
+      },
+      "confirm_password": {
+        "title": "ป้อนรหัสผ่านของคุณ",
+        "description": "คุณต้องป้อนรหัสผ่านปัจจุบันของคุณเพื่อดำเนินการต่อ"
+      },
+      "wallets_and_keys": {
+        "title": "กระเป๋าสตางค์และคีย์",
+        "create_a_new_wallet": "สร้างกระเป๋าเงินใหม่",
+        "imported": "นำเข้าแล้ว",
+        "wallet_single": "กระเป๋าสตางค์",
+        "wallet_plural": "กระเป๋าเงิน",
+        "recovery_phrase_label": "กลุ่มกระเป๋าสตางค์",
+        "private_key_label": "คีย์ส่วนตัว",
+        "hardware_wallet_label": "กระเป๋าสตางค์ฮาร์ดแวร์",
+        "backed_up": "สำรองข้อมูลแล้ว",
+        "not_backed_up": "ยังไม่ได้สำรองข้อมูล",
+        "back_up_now": "สำรองข้อมูลทันที",
+        "context_menu": {
+          "create_wallet": "สร้างกระเป๋าเงิน",
+          "view_secret_phrase": "ดูวลีลับ",
+          "hide_wallets": "ซ่อนวอลเล็ต",
+          "unhide_wallets": "เปิดดูวอลเล็ต"
+        },
+        "wallet_details": {
+          "title": "รายละเอียดกระเป๋าสตางค์",
+          "view_recovery_phrase": "ดูวลีการกู้คืน",
+          "create_new_wallet": "สร้างกระเป๋าเงินใหม่",
+          "rename_wallet": "เปลี่ยนชื่อกระเป๋าเงิน",
+          "unhide_wallet": "เปิดซ่อนกระเป๋าสตางค์",
+          "delete_wallet": "ลบกระเป๋าสตางค์",
+          "view_private_key": "ดูคีย์ส่วนตัว",
+          "copy_address": "คัดลอกที่อยู่",
+          "hidden": "ซ่อน",
+          "back_up_now": "สำรองข้อมูลทันที",
+          "last_backed_up": "สำรองข้อมูลครั้งล่าสุดเป็น %{date}"
+        },
+        "new_wallet": {
+          "name_your_wallet": "ตั้งชื่อกระเป๋าเงินของคุณ",
+          "create": "สร้างกระเป๋าเงิน",
+          "input_placeholder": "ตัวอย่าง: กระเป๋าเงิน 1"
+        },
+        "private_key": {
+          "title": "คีย์ส่วนตัวของคุณ",
+          "subtitle": "ใครที่มีคีย์นี้สามารถเข้าถึงกระเป๋าสตางค์ของคุณทั้งหมด! คุณไม่ควรแบ่งปันมันให้ใคร",
+          "saved": "ฉันได้บันทึกนี้",
+          "warning_1": "อย่าแชร์คีย์ส่วนตัวหรือกรอกมันลงในแอพใดๆ",
+          "warning_2": "ตรวจสอบให้แน่ใจว่าไม่มีใครสามารถมองเห็นหน้าจอของคุณเมื่อกำลังดูคีย์ส่วนตัวของคุณ",
+          "warning_3": "ใครที่มีคีย์ส่วนตัวของคุณสามารถใช้กระเป๋าสตางค์ของคุณทั้งหมด",
+          "warning_4": "ฝ่ายสนับสนุน Rainbow จะไม่ขอคีย์ส่วนตัวของคุณ",
+          "show": "แสดงคีย์ส่วนตัว",
+          "copied": "คัดลอกคีย์ส่วนตัวแล้ว"
+        },
+        "recovery_phrase": {
+          "title": "วลีกู้คืนของคุณ",
+          "subtitle": "ใครที่มีคำเหล่านี้สามารถเข้าถึงกระเป๋าสตางค์ของคุณได้ทั้งหมด! คุณไม่ควรแบ่งปันคำเหล่านี้ให้ใคร",
+          "saved": "ฉันได้บันทึกคำเหล่านี้",
+          "warning_1": "อย่าแบ่งปัน Recovery Phrase หรือป้อนลงในแอปใด ๆ",
+          "warning_2": "ตรวจสอบให้แน่ใจว่าไม่มีใครสามารถดูหน้าจอของคุณเมื่อมอง Recovery Phrase",
+          "warning_3": "ใคร ๆ ก็สามารถเข้าถึงกระเป๋าเงินของคุณทั้งหมดหากสามารถเข้าถึง Recovery Phrase ของท่าน",
+          "warning_4": "ทีมงาน Rainbow จะไม่ขอขอ Recovery Phrase ของคุณ",
+          "show": "แสดง Recovery Phrase",
+          "copied": "คัดลอก Recovery Phrase แล้ว"
+        },
+        "wipe_wallets": {
+          "delete": "รีเซ็ต Rainbow",
+          "acknowlegement": "ฉันได้อ่านและยอมรับข้อมูลข้างต้น",
+          "warning_one": "การรีเซ็ต Rainbow จะทำการรีเซ็ตรหัสผ่าน และลบกระเป๋าเงินทั้งหมด",
+          "warning_two": "นอกจากนี้ยังจะลบข้อมูลและการตั้งค่าใน Rainbow ทั้งหมด",
+          "warning_three": "ตรวจสอบให้แน่ใจว่า Secret Recovery Phrase ของคุณปลอดภัยก่อนดำเนินการต่อ ",
+          "warning_four": "ทรัพย์สินและเงินของคุณสามารถเข้าถึงได้ด้วยข้อมูลการกู้คืนที่ถูกต้อง",
+          "button_wipe": "รีเซ็ต Rainbow",
+          "button_complete": "ตรวจสอบข้อมูลข้างต้นให้ครบถ้วน",
+          "wipe_confirmation": "รีเซ็ต Rainbow",
+          "wipe_confirmation_desc": "คุณแน่ใจหรือไม่ว่าต้องการรีเซ็ตส่วนขยายของ Rainbow บนเบราว์เซอร์",
+          "wipe_confirmation_button": "รีเซ็ต",
+          "wipe_confirmation_cancel": "ยกเลิก"
+        },
+        "wipe_wallet_group": {
+          "delete": "ลบกลุ่มกระเป๋าเงิน",
+          "acknowlegement": "ฉันได้สำรอง Secret Recovery Phrase แล้ว",
+          "warning_one": "การลบกลุ่มกระเป๋าเงินจะลบ Recovery Phrase ออกจาก Rainbow",
+          "warning_two": "ทรัพย์สินและเงินของคุณสามารถกู้คืนได้ด้วยข้อมูลกู้คืนกระเป๋าเงินที่ถูกต้อง",
+          "warning_three": "ตรวจสอบว่าได้สำรอง Secret Recovery Phrase ก่อนดำเนินการ",
+          "button_wipe": "รีเซ็ต Rainbow",
+          "button_complete": "ตรวจสอบข้อมูลข้างต้นให้ครบถ้วน",
+          "wipe_confirmation": "ลบกลุ่มกระเป๋าเงิน",
+          "wipe_confirmation_desc": "คุณแน่ใจหรือไม่ว่าต้องการลบ Secret Recovery Phrase ออกจาก Rainbow",
+          "wipe_confirmation_button": "ลบ",
+          "wipe_confirmation_cancel": "ยกเลิก"
+        },
+        "wipe_hardware_wallet_group": {
+          "delete": "ยกเลิกการเชื่อมต่อ %{vendor}",
+          "wipe_confirmation": "ยกเลิกการเชื่อมต่อ %{vendor}",
+          "wipe_confirmation_desc": "คุณแน่ใจหรือไม่ว่าต้องการยกเลิกการเชื่อมต่อ %{vendor} และตัดการเชื่อมต่อกระเป๋าเงินของคุณ",
+          "wipe_confirmation_button": "ยกเลิกการเชื่อมต่อ",
+          "wipe_confirmation_cancel": "ยกเลิก"
+        }
+      }
+    },
+    "transactions": {
+      "title": "การทำธุรกรรม",
+      "default_speed": "ความเร็วที่ตั้งค่าเริ่มต้น",
+      "use_flashbots": "ใช้ Flashbots",
+      "clear_transactions_and_nonces": "ล้างธุรกรรมที่รอดำเนินการ",
+      "clear_transactions_and_nonces_success": "ธุรกรรมที่รอดำเนินการถูกล้างแล้ว",
+      "flashbots_description": "Flashbots ปกป้องการทำธุรกรรมของคุณและลดโอกาสของการทำธุรกรรมล้มเหลว"
+    },
+    "approvals": {
+      "title": "การอนุมัติ"
+    },
+    "currency": {
+      "title": "สกุลเงิน",
+      "ETH": "Ethereum",
+      "USD": "ดอลลาร์สหรัฐฯ",
+      "EUR": "ยูโร",
+      "GBP": "ปอนด์อังกฤษ",
+      "AUD": "ดอลลาร์ออสเตรเลีย",
+      "CNY": "หยวนจีน",
+      "KRW": "วอนเกาหลีใต้",
+      "JPY": "เยนญี่ปุ่น",
+      "RUB": "รูเบิลรัสเซีย",
+      "INR": "รูปีอินเดีย",
+      "TRY": "ลีราตุรกี",
+      "CAD": "ดอลลาร์แคนาดา",
+      "NZD": "ดอลลาร์นิวซีแลนด์",
+      "ZAR": "แรนด์แอฟริกาใต้"
+    },
+    "language": {
+      "title": "ภาษา"
+    },
+    "feature_flags": {
+      "full_watching_wallets": "สิทธิ์เข้าถึงเต็มรูปแบบของ Wallet ที่ถูกติดตาม",
+      "hw_wallets_enabled": "เปิดการสนับสนุน Hardware Wallet",
+      "command_k_internal_shortcuts_enabled": "เปิดใช้งาน ⌘K Shortcut ภายใน",
+      "custom_rpc": "Custom RPC",
+      "degen_mode": "โหมด Degen"
+    }
+  },
+  "transactions": {
+    "savings": "ออม",
+    "cancelled": "ยกเลิกการทำธุรกรรม",
+    "burn": {
+      "pending": "กำลังทำลาย",
+      "confirmed": "ทำลายแล้ว",
+      "failed": "การทำลายล้มเหลว"
+    },
+    "cancel": {
+      "pending": "กำลังยกเลิก",
+      "confirmed": "ยกเลิกแล้ว",
+      "failed": "การยกเลิกล้มเหลว"
+    },
+    "send": {
+      "pending": "กำลังส่ง",
+      "confirmed": "ส่งแล้ว",
+      "failed": "การส่งล้มเหลว"
+    },
+    "receive": {
+      "pending": "",
+      "confirmed": "ได้รับแล้ว",
+      "failed": ""
+    },
+    "withdraw": {
+      "pending": "กำลังถอน",
+      "confirmed": "ถอนแล้ว",
+      "failed": "ถอนไม่สำเร็จ"
+    },
+    "deposit": {
+      "pending": "กำลังฝาก",
+      "confirmed": "ฝากแล้ว",
+      "failed": "ฝากไม่สำเร็จ"
+    },
+    "mint": {
+      "pending": "กำลังสร้าง",
+      "confirmed": "สร้างแล้ว",
+      "failed": "สร้างไม่สำเร็จ"
+    },
+    "approve": {
+      "pending": "กำลังอนุมัติ",
+      "confirmed": "อนุมัติแล้ว",
+      "failed": "อนุมัติไม่สำเร็จ"
+    },
+    "contract_interaction": {
+      "pending": "กำลังรอการปฏิสัมพันธ์",
+      "confirmed": "ปฏิสัมพันธ์แล้ว",
+      "failed": "ปฏิสัมพันธ์ไม่สำเร็จ"
+    },
+    "swap": {
+      "pending": "กำลังแลกเปลี่ยน",
+      "confirmed": "แลกเปลี่ยนแล้ว",
+      "failed": "แลกเปลี่ยนล้มเหลว"
+    },
+    "borrow": {
+      "pending": "กำลังยืม",
+      "confirmed": "ยืมแล้ว",
+      "failed": "การยืมล้มเหลว"
+    },
+    "claim": {
+      "pending": "กำลังเรียกร้อง",
+      "confirmed": "เรียกร้องแล้ว",
+      "failed": "การเรียกร้องล้มเหลว"
+    },
+    "deployment": {
+      "pending": "กำลังปรับปรุง",
+      "confirmed": "ปรับปรุงแล้ว",
+      "failed": "การปรับปรุงล้มเหลว"
+    },
+    "repay": {
+      "pending": "กำลังจ่ายคืน",
+      "confirmed": "จ่ายคืนแล้ว",
+      "failed": "การจ่ายคืนล้มเหลว"
+    },
+    "stake": {
+      "pending": "กำลังวางเดิมทุน",
+      "confirmed": "วางเดิมทุนแล้ว",
+      "failed": "การวางเดิมทุนล้มเหลว"
+    },
+    "unstake": {
+      "pending": "กำลังถอนเดิมทุน",
+      "confirmed": "ถอนเดิมทุนแล้ว",
+      "failed": "การถอนสินทรัพย์ล้มเหลว"
+    },
+    "purchase": {
+      "pending": "กำลังซื้อ",
+      "confirmed": "ซื้อเรียบร้อย",
+      "failed": "การซื้อล้มเหลว"
+    },
+    "revoke": {
+      "pending": "กำลังถอนความยินยอม",
+      "confirmed": "ถอนความยินยอมเรียบร้อย",
+      "failed": "การถอนความยินยอมล้มเหลว"
+    },
+    "sale": {
+      "pending": "กำลังขาย",
+      "confirmed": "ขายเรียบร้อย",
+      "failed": "การขายล้มเหลว"
+    },
+    "bridge": {
+      "pending": "กำลังสร้างสะพาน",
+      "confirmed": "สร้างสะพานเรียบร้อย",
+      "failed": "การสร้างสะพานล้มเหลว"
+    },
+    "airdrop": {
+      "pending": "",
+      "confirmed": "ได้รับโดยการฝังดรอป",
+      "failed": ""
+    },
+    "wrap": {
+      "pending": "กำลังห่อ",
+      "confirmed": "ห่อเรียบร้อย",
+      "failed": "การห่อล้มเหลว"
+    },
+    "unwrap": {
+      "pending": "กำลังถอดห่อ",
+      "confirmed": "ปลอกออก",
+      "failed": "การปลอกไม่สำเร็จ"
+    },
+    "bid": {
+      "pending": "การประมูล",
+      "confirmed": "ประมูล",
+      "failed": "การประมูลไม่สำเร็จ"
+    },
+    "speed_up": {
+      "pending": "กำลังเร่ง",
+      "confirmed": "เร่งแล้ว",
+      "failed": "การเร่งล้มเหลว"
+    }
+  },
+  "command_k": {
+    "action_labels": {
+      "activate_command": "เริ่มคำสั่ง",
+      "open": "เปิด",
+      "open_in_new_tab": "เปิดในแท็บใหม่",
+      "switch_to_wallet": "สลับไปยัง Wallet",
+      "send_to_contact": "ส่งถึงผู้ติดต่อ",
+      "view": "ดู",
+      "uuid_copied": "UUID ถูกคัดลอก"
+    },
+    "commands": {
+      "names": {
+        "send": "ส่ง",
+        "swap": "แลกเปลี่ยน",
+        "bridge": "สะพาน",
+        "get": "รับ",
+        "my_wallets": "Wallet ของฉัน",
+        "my_contacts": "รายชื่อผู้ติดต่อของฉัน",
+        "approvals": "การอนุมัติ",
+        "my_tokens": "โทเคนของฉัน",
+        "my_tokens_watched": "โทเคน",
+        "my_nfts": "NFT ของฉัน",
+        "my_nfts_watched": "NFTs",
+        "copy_address": "คัดลอกที่อยู่",
+        "view_profile": "ดูโปรไฟล์ Rainbow",
+        "add_wallet": "เพิ่ม Wallet",
+        "lock": "ล็อค Rainbow",
+        "connected_apps": "แอปที่เชื่อมต่อ",
+        "developer_tools": "สลับเครื่องมือนักพัฒนา",
+        "developer_tools_disabled": "เปิดใช้งานเครื่องมือนักพัฒนา",
+        "developer_tools_enabled": "ปิดเครื่องมือนักพัฒนา",
+        "testnet_mode": "สลับโหมด Testnet",
+        "testnet_mode_disabled": "เปิดโหมด Testnet",
+        "testnet_mode_enabled": "ปิดโหมด Testnet",
+        "settings": "การตั้งค่า",
+        "network_settings": "การตั้งค่าเครือข่าย",
+        "my_qr_code": "QR Code ของฉัน",
+        "my_qr_code_watched": "รหัส QR",
+        "create_wallet": "สร้าง Wallet",
+        "import_wallet": "นำเข้า Wallet",
+        "watch_wallet": "ดู Wallet",
+        "add_hardware_wallet": "เพิ่ม Hardware Wallet",
+        "hide_balances": "สลับซ่อน Balances",
+        "hide_balances_hidden": "แสดงยอดเงิน",
+        "hide_balances_revealed": "ซ่อนยอดเงิน",
+        "hide_small_balances": "สลับยอดเงินเล็ก",
+        "hide_small_balances_hidden": "แสดงยอดเงินเล็ก",
+        "hide_small_balances_revealed": "ซ่อนยอดเงินเล็ก",
+        "wallets_and_keys": "กระเป๋าสตางค์และคีย์",
+        "view_full_screen": "ดูเต็มหน้าจอ",
+        "view_token": "ดูโทเคน",
+        "view_token_details": "ดูรายละเอียดของ %{symbol}",
+        "send_token": "ส่งโทเคน",
+        "swap_token": "สลับโทเคน",
+        "copy_token_address": "คัดลอกที่อยู่โทเคนสัญญา",
+        "view_token_on_explorer": "ดูบน Explorer",
+        "add_as_watched_wallet": "ตรวจสอบกระเป๋าสตางค์นี้",
+        "view_on_ens": "ดูบน ENS",
+        "switch_to_wallet": "สลับไปยังกระเป๋าสตางค์นี้",
+        "send_to_wallet": "ส่งถึงกระเป๋าสตางค์นี้",
+        "add_contact": "เพิ่มเป็นผู้ติดต่อ",
+        "remove_contact": "ลบผู้ติดต่อ",
+        "hide_token": "ซ่อน %{name}",
+        "unhide_token": "เลิกซ่อน %{name}",
+        "hide": "ซ่อน",
+        "unhide": "เลิกซ่อน",
+        "copy_wallet_address": "คัดลอกที่อยู่",
+        "view_wallet_on_etherscan": "ดูบน Etherscan",
+        "send_contact": "ส่งถึงผู้ติดต่อ",
+        "export_addresses_as_csv": "ส่งออกที่อยู่เป็น CSV",
+        "enable_flashbots": "เปิดใช้งาน Flashbots",
+        "disable_flashbots": "ปิดการใช้งาน Flashbots",
+        "copy_uuid": "คัดลอก UUID"
+      },
+      "search_tags": {
+        "swap": "ซื้อ, ขาย, แลกเปลี่ยน, สั่งซื้อ, เปลี่ยน, dex, เส้นทาง",
+        "bridge": "โอนย้าย, เครือข่าย, เส้นทาง",
+        "hide_token": "ซ่อน",
+        "hide_nft": "ซ่อน",
+        "get": "เปลี่ยน, โอนย้าย",
+        "my_wallets": "ของฉัน, สลับ",
+        "my_contacts": "ของฉัน",
+        "my_tokens_watched": "ของฉัน",
+        "my_nfts_watched": "ของฉัน",
+        "view_profile": "โปรไฟล์, แกลเลอรี, ens, nfts",
+        "testnet_mode": "สลับ, เครือข่าย, เทสเน็ต",
+        "developer_tools": "สลับ, เครือข่าย, นักพัฒนา, เทสเน็ต",
+        "approvals": "เพิกถอน, โทเค็น, NFTs, สัญญา",
+        "settings": "การตั้งค่า",
+        "network_settings": "เทสเน็ต, นักพัฒนา, เครือข่าย",
+        "my_qr_code_watched": "ของฉัน",
+        "create_wallet": "เพิ่ม, ใหม่",
+        "import_wallet": "เพิ่ม, การกู้คืนลับ, ประโยคเมล็ด, คีย์ส่วนตัว",
+        "watch_wallet": "เพิ่ม",
+        "add_hardware_wallet": "ledger, trezor, เชื่อมต่อ",
+        "hide_balances": "สลับ",
+        "hide_small_balances": "สลับ",
+        "wallets_and_keys": "กระเป๋าสตางค์และคีย์, การตั้งค่า, การตั้งค่า",
+        "diagnostics": "การวินิจฉัย"
+      }
+    },
+    "command_rows": {
+      "no_value": "ไม่มีค่า"
+    },
+    "developer_tools_toast": {
+      "description_enabled": "กด T เพื่อสลับโหมด Testnet",
+      "title_disabled": "เครื่องมือนักพัฒนาถูกปิดใช้งาน",
+      "title_enabled": "เปิดใช้งานเครื่องมือสำหรับนักพัฒนา"
+    },
+    "hide_balances_toast": {
+      "description_hidden": "ยอดคงเหลือของคุณถูกทำให้เป็นความลับ",
+      "description_revealed": "ยอดคงเหลือของคุณสามารถมองเห็นได้",
+      "title_hidden": "ซ่อนยอดคงเหลือ",
+      "title_revealed": "เปิดเผยยอดคงเหลือ"
+    },
+    "hide_small_balances_toast": {
+      "description_hidden": "ยอดเงินต่ำกว่า $1",
+      "description_revealed": "แสดงโทเค็นทั้งหมด",
+      "title_hidden": "ซ่อนยอดเงินเล็กน้อย",
+      "title_revealed": "แสดงยอดเงินเล็กน้อย"
+    },
+    "contact_toast": {
+      "title_added": "เพิ่มผู้ติดต่อแล้ว",
+      "title_removed": "ลบผู้ติดต่อแล้ว"
+    },
+    "no_results": "ไม่มีผลลัพธ์",
+    "pages": {
+      "add_wallet": {
+        "search_placeholder": "ค้นหารูปแบบการเพิ่มกระเป๋าเงิน…",
+        "section_title": "เพิ่ม Wallet"
+      },
+      "home": {
+        "search_placeholder": "ค้นหาหรือใส่คำสั่ง…",
+        "section_title": "ข้อเสนอแนะ",
+        "section_title_results": "ผลลัพธ์"
+      },
+      "my_tokens": {
+        "empty_label": "ไม่พบโทเค็น",
+        "search_placeholder": "ค้นหาโทเค็น…",
+        "section_title": "โทเคนของฉัน"
+      },
+      "my_nfts": {
+        "empty_label": "ไม่พบ NFT",
+        "search_placeholder": "ค้นหา NFTs…",
+        "section_title": "NFT ของฉัน"
+      },
+      "my_wallets": {
+        "search_placeholder": "เลือกกระเป๋าเงินเพื่อสลับไปยัง…",
+        "section_title": "Wallet ของฉัน"
+      },
+      "my_contacts": {
+        "search_placeholder": "เลือกผู้ติดต่อที่จะส่งถึง...",
+        "section_title": "รายชื่อผู้ติดต่อของฉัน"
+      },
+      "token_detail": {
+        "search_placeholder": "ค้นหาการดำเนินการของโทเค็น…",
+        "section_title": "การดำเนินการ"
+      },
+      "nft_token_detail": {
+        "search_placeholder": "ค้นหาการกระทำ NFTs…",
+        "section_title": "การดำเนินการ"
+      },
+      "wallet_detail": {
+        "search_placeholder": "ค้นหาการดำเนินการของกระเป๋าเงิน…",
+        "section_title": "การดำเนินการ"
+      }
+    },
+    "labels": {
+      "contact": "ติดต่อ",
+      "hidden": "ซ่อน"
+    },
+    "quick_promo": {
+      "text": "กด %{modifierSymbol}K เพื่อเปิดเมนูวิเศษ",
+      "text_bold": "เคล็ดลับ:"
+    },
+    "toolbar": {
+      "actions_hint": "การดำเนินการ"
+    },
+    "export_public_addresses": {
+      "keychain_type": {
+        "watching": "กำลังสังเกต",
+        "recovery_phrase": "วลีกู้คืน",
+        "private_key": "คีย์ส่วนตัว",
+        "hardware_wallet": "กระเป๋าสตางค์ฮาร์ดแวร์"
+      },
+      "toast": {
+        "title": "ดาวน์โหลดที่อยู่แล้ว",
+        "description": "rainbow_addresses.csv"
+      }
+    }
+  },
+  "connected_apps": {
+    "title": "แอปที่เชื่อมต่อ",
+    "disconnect": "ยกเลิกการเชื่อมต่อทั้งหมด",
+    "other_wallets": "กระเป๋าเงินอื่น ๆ",
+    "no_connections_title": "ไม่มีแอปที่เชื่อมต่อ",
+    "no_connections_copy": "เว็บไซต์ที่คุณเชื่อมต่อจะปรากฏที่นี่"
+  },
+  "approvals": {
+    "title": "การอนุมัติ",
+    "unlimited": "ไม่จำกัด",
+    "no_allowance": "ไม่มีวงเงิน",
+    "revoke_approval": "ยกเลิกการอนุมัติ",
+    "copy_spender": "คัดลอกผู้ใช้จ่าย",
+    "spender_address_copied": "คัดลอกที่อยู่ผู้ใช้จ่ายแล้ว",
+    "revoked_approvals": "การอนุมัติที่ถูกยกเลิก",
+    "nothing_found": "ไม่พบอะไร",
+    "revoke": {
+      "title": "ยกเลิกการอนุมัติ",
+      "action": "ยกเลิก",
+      "cancel": "ยกเลิก",
+      "allowance": "ทวนสอบ",
+      "spender": "ผู้ใช้จ่าย",
+      "chain": "เชื่อมโยง"
+    },
+    "token_details": {
+      "explainer": {
+        "token_approval": {
+          "title": "การอนุมัติคืออะไร?",
+          "description_1": "การอนุมัติให้ dApp สามารถใช้จ่ายและโอนโทเคนหรือ NFT แทนคุณได้",
+          "description_2": "สำคัญที่จะต้องตรวจสอบการอนุมัติของคุณและยกเลิกการอนุมัติที่ไม่จำเป็นหรือไม่ปลอดภัยที่อาจเสี่ยงต่อสินทรัพย์ของคุณ",
+          "action_label": "เข้าใจแล้ว"
+        }
+      }
+    }
+  },
+  "send": {
+    "title": "ส่ง",
+    "input_to_address_placeholder": "ชื่อ, ENS หรือที่อยู่",
+    "input_token_placeholder": "โทเค็น",
+    "max": "สูงสุด",
+    "switch_to": "เปลี่ยนไปที่ %{currency}",
+    "button_label": {
+      "review": "ตรวจสอบ",
+      "enter_address_and_amount": "ใส่ที่อยู่และจำนวน",
+      "enter_valid_address": "ใส่ที่อยู่ที่ถูกต้อง",
+      "enter_address": "กรอกที่อยู่",
+      "enter_amount": "ป้อนจำนวน",
+      "insufficient_asset": "%{symbol}ไม่เพียงพอ",
+      "insufficient_native_asset_for_gas": "%{symbol} ไม่เพียงพอสำหรับแก๊ส"
+    },
+    "wallets_list": {
+      "contacts": "รายชื่อติดต่อ",
+      "my_wallets": "กระเป๋าเงินของฉัน",
+      "watched_wallets": "กำลังสังเกต",
+      "no_results": "ไม่มีผลลัพธ์"
+    },
+    "tokens_input": {
+      "tokens": "โทเคน",
+      "sort": "เรียงลำดับ",
+      "available": "ที่มีอยู่",
+      "token_balance": "ยอดโทเคน",
+      "networks": "เครือข่าย",
+      "nothing_found": "ไม่พบอะไร",
+      "nfts": "NFTs",
+      "alphabetical": "ตามตัวอักษร",
+      "recent": "ล่าสุด"
+    },
+    "review": {
+      "title": "ตรวจสอบและส่ง",
+      "to": "ถึง",
+      "you_own_wallet": "คุณเป็นเจ้าของกระเป๋าเงินนี้",
+      "send_to": "ส่งไปยัง %{toName}",
+      "cancel": "ยกเลิก",
+      "sending_on_network": "กำลังส่งบนเครือข่าย %{chainName}",
+      "sending_on_l2_check_1": "ฉันไม่ได้ส่งไปยังแลกเปลี่ยน",
+      "complete_checks": "ตรวจสอบครบถ้วน",
+      "confirm_hw": "ยืนยันบนอุปกรณ์ของคุณ"
+    }
+  },
+  "swap": {
+    "_actions": {
+      "Swap": "แลกเปลี่ยน",
+      "swap": "แลกเปลี่ยน",
+      "swaps": "การแลกเปลี่ยน",
+      "Swapping": "กำลังแลกเปลี่ยน",
+      "swapping": "กำลังแลกเปลี่ยน",
+      "Bridge": "สะพาน",
+      "bridge": "สะพาน",
+      "bridges": "สะพาน",
+      "Bridging": "กำลังสร้างสะพาน",
+      "bridging": "กำลังสร้างสะพาน"
+    },
+    "title": "%{Action}",
+    "input_token_placeholder": "เลือกโทเคนที่ต้องการ %{action}",
+    "input_token_to_receive_placeholder": "เลือกโทเคนที่จะรับ",
+    "select_tokens": "เลือกโทเคนที่ %{action}",
+    "max": "สูงสุด",
+    "balance": "ยอดคงเหลือ",
+    "tokens_input": {
+      "tokens": "โทเคน",
+      "sort": "เรียงลำดับ",
+      "available": "ที่มีอยู่",
+      "token_balance": "ยอดโทเคน",
+      "networks": "เครือข่าย",
+      "filter_by_network": "กรองตามเครือข่าย",
+      "switch_networks": "สลับเครือข่าย",
+      "nothing_found": "ไม่พบอะไร",
+      "nothing_found_description": "บางโทเคนมีขาดแคลนความชื้นเพื่อทำการ %{action}อย่างสำเร็จ",
+      "nothing_found_description_l2": "บางโทเคนไม่มีความสุกใสขั้นที่ 2 เพียงพอที่จะทำ %{action}อย่างสำเร็จ",
+      "output_quotes_disabled": "ปิดใช้งานคำพูดผลลัพธ์"
+    },
+    "warnings": {
+      "long_wait": {
+        "title": "รอนาน",
+        "description": "ถึง %{time} ถึง %{action}"
+      },
+      "price_impact": {
+        "title": "ตลาดเล็ก",
+        "description": "การสูญเสีย %{impactAmount}"
+      },
+      "unknown_price": {
+        "title": "มูลค่าตลาดของ %{symbol} ไม่ทราบ",
+        "description": "หากคุณตัดสินใจดำเนินการต่อ โปรดตรวจสอบว่าคุณพอใจกับจำนวนที่ได้รับ"
+      }
+    },
+    "promo": {
+      "degen_mode": {
+        "title": "ลองใช้โหมด Degen เพื่อข้ามการตรวจสอบ"
+      }
+    },
+    "aggregators": {
+      "rainbow": "อัตโนมัติ"
+    },
+    "settings": {
+      "title": "%{Action} การตั้งค่า",
+      "route": "ทางเดิน %{actions} ผ่านทาง",
+      "use_flashbots": "ใช้ Flashbots",
+      "max_slippage": "สูญเสียสูงสุด",
+      "use_defaults": "ใช้ค่าเริ่มต้น",
+      "done": "เสร็จสิ้น",
+      "warnings": {
+        "high": "สูง",
+        "possible_loss": "การสูญเสียที่เป็นไปได้"
+      },
+      "explainers": {
+        "slippage": {
+          "title": "สูญเสีย",
+          "description_1": "การสูญเสียเกิดขึ้นเมื่อราคาของ %{action} เปลี่ยนแปลงระหว่างที่คุณส่งธุรกรรมและยืนยัน",
+          "description_2": "การตั้งค่าความยอมรับการสลับที่สูงขึ้นเพิ่มความน่าจะเป็นว่า %{action} ของคุณจะเป็นผลสำเร็จ แต่อาจทำให้คุณได้รับราคาที่ไม่ดี",
+          "read_more": {
+            "open_text": "ยังอยากรู้อีกหรือไม่ ",
+            "link_text": "อ่านเพิ่มเติม",
+            "close_text": " เกี่ยวกับความสูญเสียและวิธีที่มันส่งผลต่อ %{actions}"
+          }
+        },
+        "flashbots": {
+          "title": "Flashbots",
+          "description": "Flashbots ป้องกันการทำธุรกรรมของคุณจากการหน้าหนาวและการโจมตีแซนด์วิชซึ่งอาจทำให้คุณได้รับราคาที่แย่ลงหรือการทำธุรกรรมของคุณล้มเหลว",
+          "read_more": {
+            "open_text": "ยังอยากรู้อีกหรือไม่ ",
+            "link_text": "อ่านเพิ่มเติม",
+            "close_text": " เกี่ยวกับ Flashbots และการป้องกันที่มันเสนอ"
+          }
+        },
+        "routing": {
+          "title": "%{Action} การสร้างเส้นทาง",
+          "description": "โดยค่าเริ่มต้น Rainbow เลือกเส้นทางที่ถูกที่สุดสำหรับ %{action}ของคุณ หากคุณต้องการใช้ 0x หรือ 1inch โดยเฉพาะ คุณสามารถทำได้",
+          "read_more": {
+            "open_text": "ยังอยากรู้อีกหรือไม่ ",
+            "link_text": "อ่านเพิ่มเติม",
+            "close_text": " เกี่ยวกับวิธีการเราในการสร้างเส้นทาง %{actions}"
+          }
+        },
+        "got_it": "เข้าใจแล้ว"
+      },
+      "degen_mode": {
+        "title": "โหมด Degen",
+        "description": "ข้ามขั้นตอนการตรวจสอบเพื่อแลกเปลี่ยนได้เร็วขึ้น"
+      }
+    },
+    "actions": {
+      "review": "ตรวจสอบ",
+      "loading": "กำลังโหลด",
+      "insufficient_liquidity": "มีความเหลวน้อยเกินไป",
+      "fee_on_transfer_token": "ค่าธรรมเนียมสำหรับการโอนโทเค็น",
+      "no_route": "ไม่พบเส้นทาง",
+      "no_quote": "ไม่มีใบเสนอราคาที่มีอยู่",
+      "enter_an_amount": "ป้อนจำนวน",
+      "swap": "%{Action}",
+      "swapping": "%{Actioning}",
+      "waiting_signature": "ยืนยันบนอุปกรณ์ของคุณ"
+    },
+    "review": {
+      "title": "รีวิว & %{Action}",
+      "flashbots_on": "เปิด",
+      "minimum_received": "รับต่ำสุด",
+      "via": "%{Actioning} ผ่าน",
+      "included_fee": "รวมค่าธรรมเนียม Rainbow",
+      "use_flashbots": "ใช้ Flashbots",
+      "exchange_rate": "อัตราแลกเปลี่ยน",
+      "asset_contract": "%{symbol} สัญญา",
+      "more_details": "รายละเอียดเพิ่มเติม",
+      "confirmation": "%{Action} %{sellSymbol} ถึง %{buySymbol}",
+      "go_back": "ย้อนกลับ"
+    },
+    "explainers": {
+      "long_wait": {
+        "title": "รอนานพอสมควรเพื่อ %{action}",
+        "description": "การ %{action} นี้อาจใช้เวลาในการดำเนินการมาก. ส่วนใหญ่เกิดจากปัญหาในการสะพานข้ามสระคริปโต",
+        "action_label": "ดำเนินการต่อ"
+      },
+      "no_route": {
+        "title": "ไม่พบเส้นทาง",
+        "description": "เราไม่สามารถหาเส้นทางสำหรับ %{action}นี้ ระบบอาจไม่มีเส้นทางสำหรับ %{action}นี้ หรือจำนวนอาจเล็กเกินไป",
+        "action_label": "เข้าใจแล้ว"
+      },
+      "no_quote": {
+        "title": "ไม่มีใบเสนอราคาที่มีอยู่",
+        "description": "เราไม่สามารถหาการเสนอราคาสำหรับ %{action}นี้ ซึ่งอาจเป็นเพราะไม่มีความยืดหยุ่นทางการเงินเพียงพอกับ %{action} หรือเนื่องจากปัญหาในการปรับใช้ทอกเคน",
+        "action_label": "เข้าใจแล้ว"
+      },
+      "insufficient_liquidity": {
+        "title": "มีความเหลวน้อยเกินไป",
+        "description": "เราไม่สามารถหาการเสนอราคาสำหรับ %{action} นี้ เพราะคู่นี้ไม่มีความยืดหยุ่นทางการเงินเพียงพอบนตลาดแลกเปลี่ยน",
+        "action_label": "เข้าใจแล้ว",
+        "footer_text": {
+          "open_text": "ยังอยากรู้อีกหรือไม่ ",
+          "link_text": "อ่านเพิ่มเติม",
+          "close_text": " เกี่ยวกับ AMMs และความเหลวของโทเค็น"
+        }
+      },
+      "fee_on_transfer_token": {
+        "title": "ค่าธรรมเนียมสำหรับการโอนโทเค็น",
+        "description": "%{action} นี้จะล้มเหลวใน Rainbow เพราะสัญญา %{tokenName} เพิ่มค่าธรรมเนียมเพิ่มเติม",
+        "action_label": "เข้าใจแล้ว",
+        "footer_text": {
+          "open_text": "อ่าน ",
+          "link_text": "คู่มือของเรา",
+          "close_text": " สำหรับความช่วยเหลือ %{actioning} ทอกเคนนี้!"
+        }
+      },
+      "flashbots": {
+        "title": "Flashbots",
+        "description": "Flashbots ป้องกันการทำธุรกรรมของคุณจากการหน้าหนาวและการโจมตีแซนด์วิชซึ่งอาจทำให้คุณได้รับราคาที่แย่ลงหรือการทำธุรกรรมของคุณล้มเหลว",
+        "action_label": "เข้าใจแล้ว"
+      },
+      "fee": {
+        "title": "ค่าธรรมเนียม Rainbow",
+        "description": "Rainbow ไม่เสียค่าธรรมเนียม %{feePercentage} จาก %{actions}นี่เป็นส่วนหนึ่งของที่ทำให้เราสามารถให้คุณประสบการณ์ Ethereum ที่ดีที่สุดได้",
+        "action_label": "เข้าใจแล้ว"
+      }
+    }
+  },
+  "custom_gas": {
+    "title": "การตั้งค่าแก๊ส",
+    "current_base_fee": "ค่าฐานปัจจุบัน",
+    "max_base_fee": "ค่าฐานสูงสุด",
+    "miner_tip": "เคล็ดลับขุดแร่",
+    "gas_price": "ราคาก๊าซ",
+    "max_transaction_fee": "ค่าธรรมเนียมการทำธุรกรรมสูงสุด",
+    "transaction_speed": "ความเร็วการทำธุรกรรม",
+    "cancel": "ยกเลิก",
+    "set": "ตั้งค่า",
+    "base_trend": {
+      "falling": "ลดลง",
+      "stable": "คงที่",
+      "surging": "กำลังขึ้น",
+      "rising": "กำลังเพิ่มขึ้น"
+    },
+    "warnings": {
+      "may_get_stuck": "อาจติดขัด",
+      "likely_to_fail": "มีความน่าจะล้มเหลว",
+      "low": "ต่ำ"
+    }
+  },
+  "contacts": {
+    "save_contact": "บันทึกผู้ติดต่อ",
+    "add_to_contacts": "เพิ่มลงในรายชื่อผู้ติดต่อ",
+    "edit_contact": "แก้ไขผู้ติดต่อ",
+    "save_changes": "บันทึกการเปลี่ยนแปลง",
+    "cancel": "ยกเลิก",
+    "remove_contact_title": "ลบผู้ติดต่อ?",
+    "remove_contact_action": "ลบผู้ติดต่อ",
+    "remove_contact_description": "แน่ใจหรือว่าคุณต้องการลบ “%{name}” ออกจากรายชื่อผู้ติดต่อของคุณ?",
+    "save": "บันทึก",
+    "copy_address": "คัดลอกที่อยู่",
+    "view_on_etherscan": "ดูบน Etherscan",
+    "view_on_explorer": "ดูบน Explorer",
+    "delete_contact": "ลบผู้ติดต่อ",
+    "contact_address_copied": "คัดลอกที่อยู่แล้ว"
+  },
+  "sign": {
+    "title": "ลงชื่อ"
+  },
+  "unlock": {
+    "welcome_back": "ยินดีต้อนรับคุณกลับ",
+    "enter_password": "ใส่รหัสผ่านของคุณเพื่อปลดล็อค Rainbow",
+    "unlock": "ปลดล็อค",
+    "having_trouble": "มีปัญหาหรือไม่",
+    "contact": "ติดต่อ",
+    "rainbow_support": "การสนับสนุน Rainbow"
+  },
+  "onboard_before_connect": {
+    "before_connect": "ก่อนที่คุณจะสามารถเชื่อมต่อ",
+    "almost_done": "คุณเกือบจะเสร็จแล้ว รีบเสร็จสิ้นการตั้งค่ากระเป๋าเงินของคุณกับ Rainbow",
+    "setup_wallet": "ตั้งค่ากระเป๋าเงินของคุณ"
+  },
+  "welcome": {
+    "title": "Rainbow",
+    "subtitle": "สำรวจโลกใหม่ของ Ethereum",
+    "create_wallet": "สร้างกระเป๋าเงินใหม่",
+    "import_wallet": "นำเข้าหรือเชื่อมต่อกระเป๋าเงิน",
+    "disclaimer_tos": "โดยการดำเนินการต่อ คุณตกลงที่จะปฏิบัติตาม",
+    "disclaimer_tos_link": "เงื่อนไขการใช้งานของ Rainbow",
+    "invalid_code": "รหัสไม่ถูกต้อง",
+    "join": "เข้าร่วม"
+  },
+  "seed_backup_prompt": {
+    "title": "ก่อนที่คุณจะเริ่มต้น สำรองฟรัสประโยคฟื้นฟูลับของคุณ",
+    "warning_1": "มันสำคัญที่จะเขียนและจัดเก็บวลีการกู้คืนลับๆ ของคุณในที่ซ่อนเร้น",
+    "warning_2": "วลีการกู้คืนลับๆ ของคุณคือวิธีเดียวในการกู้คืนบัญชีและเงินทุนของคุณ",
+    "warning_3": "ใคร ๆ ก็สามารถเข้าถึงกระเป๋าเงินของคุณทั้งหมดหากสามารถเข้าถึง Recovery Phrase ของท่าน",
+    "reveal_your_recovery_phrase": "เปิดเผยวลีการกู้คืนของคุณ",
+    "take_me_to_wallet": "พาฉันไปยังกระเป๋าสตางค์ของฉัน"
+  },
+  "seed_reveal": {
+    "title": "วลีกู้คืนของคุณ",
+    "write_down_seed_importance": "ใครที่มีคำเหล่านี้สามารถเข้าถึงกระเป๋าสตางค์ของคุณได้ทั้งหมด! คุณไม่ควรแบ่งปันคำเหล่านี้ให้ใคร",
+    "saved_these_words": "ฉันได้บันทึกคำเหล่านี้",
+    "copied": "คัดลอก Recovery Phrase แล้ว"
+  },
+  "import_wallet_via_secret": {
+    "title": "นำเข้ากระเป๋าสตางค์",
+    "explanation": "เลือกวิธีการนำเข้าที่เหมาะสมกับคุณ คุณสามารถนำเข้ากระเป๋าสตางค์เพิ่มเติมในภายหลังได้ทุกเวลา",
+    "seed_phrase": "นำเข้าจากวลีกู้คืนลับ",
+    "seed_phrase_desc": "เพิ่มกลุ่มกระเป๋าสตางค์ด้วยวลีกู้คืนลับ 12 หรือ 24 คำ",
+    "private_key": "นำเข้าจาก Private Key",
+    "private_key_desc": "เพิ่มกระเป๋าเงินเดี่ยวด้วย Private Key 64 ตัวอักษร"
+  },
+  "import_wallet_via_seed": {
+    "title": "นำกระเป๋าเงินของคุณเข้า",
+    "explanation": "หากต้องการเพิ่มกระเป๋าสตางค์, ใส่หรือวางวลีกู้คืนลับ 12 หรือ 24 คำของคุณ",
+    "24_words": "ฉันใช้ 24 คำ",
+    "12_words": "ฉันใช้ 12 คำ",
+    "import_wallet_group": "นำเข้ากลุ่มกระเป๋าสตางค์",
+    "n_words_might_be_wrong": "%{n} คำอาจจะสะกดไม่ถูกต้องหรือไม่ถูกต้อง",
+    "1_word_might_be_wrong": "1 คำอาจจะสะกดไม่ถูกต้องหรือไม่ถูกต้อง",
+    "couldnt_paste": "เราไม่สามารถวางวลีกู้คืนลับของคุณ",
+    "duplicate_seed": "เมล็ดนี้นำเข้าแล้ว"
+  },
+  "import_wallet_via_private_key": {
+    "title": "นำกระเป๋าเงินของคุณเข้า",
+    "explanation": "ใส่คีย์ส่วนตัว 64 ตัวอักษร จาก Rainbow หรือกระเป๋า Ethereum ของคุณ",
+    "placeholder": "วางคีย์ส่วนตัวของคุณจากกระเป๋าอื่น ๆ",
+    "import_wallet": "นำเข้ากระเป๋า"
+  },
+  "import_or_connect": {
+    "title": "กู้คืนหรือเชื่อมต่อ",
+    "explanation": "บุคคลที่มีวลีการกู้คืนลับของคุณสามารถเข้าถึงกระเป๋าครบถ้วน จัดเก็บมันในที่ที่ปลอดภัยและอย่าแชร์กับใคร",
+    "import_wallet": "นำเข้าด้วย Secret Recovery Phrase หรือ Private Key",
+    "import_wallet_description": "เพิ่มกระเป๋าเงินโดยใช้ Secret Recovery Phrase หรือ Private Key",
+    "connect_wallet": "เชื่อมต่อกระเป๋าเฮาร์ดแวร์ของคุณ",
+    "connect_wallet_description": "เพิ่มบัญชีจากกระเป๋าเฮาร์ดแวร์ของคุณ",
+    "watch_address": "รับชมที่อยู่ Ethereum",
+    "watch_address_description": "รับชมที่อยู่สาธารณะหรือชื่อ ENS"
+  },
+  "import_wallet_selection": {
+    "title": "กระเป๋าของคุณ",
+    "description": {
+      "zero": "Rainbow ตรวจพบ 1 กระเป๋า คุณสามารถเพิ่มเพิ่มเติมได้ตลอดเวลา",
+      "one": "Rainbow ตรวจพบ 1 กระเป๋าที่ถูกใช้เมื่อเร็ว ๆ นี้ คุณสามารถเพิ่มเพิ่มเติมได้ตลอดเวลา",
+      "other": "Rainbow ตรวจพบ %{count} กระเป๋าที่ถูกใช้เมื่อเร็ว ๆ นี้ คุณสามารถแก้ไขหรือเพิ่มเพิ่มเติมได้ตลอดเวลา"
+    },
+    "add_wallets": "เพิ่มกระเป๋า",
+    "edit_wallets": "แก้ไขกระเป๋า",
+    "loading": "รอสักครู่ในขณะที่เราค้นหากระเป๋าเงินของคุณ...",
+    "importing": "กำลังนำเข้ากระเป๋าเงินของคุณ...",
+    "account_summary_tokens": "Tokens: %{tokensAmount}",
+    "account_summary_last_tx": "ธุรกรรมล่าสุด: %{lastTx} ที่ผ่านมา"
+  },
+  "watch_wallet": {
+    "title": "รับชมที่อยู่ Ethereum",
+    "description": "ป้อนที่อยู่ Ethereum หรือชื่อ ENS คุณจะต้องนำเข้าภายหลังเพื่อส่งหรือทำธุรกรรมเซ็นต์",
+    "invalid_address": "ที่อยู่ไม่ถูกต้อง",
+    "unsupported_tld": "%{tld} ไม่ได้รับการสนับสนุน",
+    "address_already_added": "ที่อยู่ถูกเพิ่มแล้ว",
+    "address_already_added_as": "ที่อยู่ถูกเพิ่มเป็น %{addedAs}แล้ว",
+    "watch_top_ens_wallets": "ดูกระเป๋าเงิน ENS ยอดนิยม",
+    "placeholder": "ที่อยู่ Ethereum หรือชื่อ ENS",
+    "watch_wallet": "ดูกระเป๋าเงิน",
+    "watch_wallets": "ดูกระเป๋าเงิน",
+    "loading": "รอสักครู่ขณะที่เราเริ่มต้นตรวจสอบกระเป๋าเหล่านี้..."
+  },
+  "import_wallet": {
+    "title": "นำเข้ากระเป๋าของคุณ",
+    "description": "ใส่วลีการกู้คืนลับของคุณ หรือ คีย์ส่วนตัวจาก Rainbow หรือกระเป๋า Ethereum ใดๆ",
+    "too_many_words": "คำเยอะเกินไป",
+    "too_many_chars": "ตัวอักษรเยอะเกินไป",
+    "add_another": "เพิ่มอีก",
+    "remove": "ลบ",
+    "placeholder": "วางวลีการกู้คืนลับของคุณ หรือ คีย์ส่วนตัวจากกระเป๋าอื่น",
+    "invalid_word": "คำที่ไม่ถูกต้อง: %{word}",
+    "invalid_private_key": "คีย์ส่วนตัวไม่ถูกต้อง",
+    "invalid_recovery_phrase": "วลีการกู้คืนไม่ถูกต้อง",
+    "missing_words": {
+      "one": "ขาด 1 คำ",
+      "other": "ขาด %{count} คำ"
+    },
+    "import_wallet": {
+      "one": "เรียกคืนกระเป๋าเงิน",
+      "other": "เรียกคืนกระเป๋าเงินทั้งหมด"
+    }
+  },
+  "edit_import_wallet_selection": {
+    "title": "กระเป๋าเงินทั้งหมด",
+    "add_wallet": {
+      "zero": "เลือกกระเป๋าเงิน",
+      "one": "เพิ่มกระเป๋าเงิน",
+      "other": "เพิ่ม %{count} กระเป๋าเงิน"
+    },
+    "importing_your_wallet": {
+      "one": "กำลังนำเข้ากระเป๋าเงินของคุณ...",
+      "other": "กำลังนำเข้ากระเป๋าเงินของคุณ..."
+    },
+    "sort": {
+      "title": "เรียงลำดับ",
+      "default": "ค่าเริ่มต้น",
+      "token_balance": "ยอดโทเคน",
+      "last_transaction": "ธุรกรรมล่าสุด"
+    }
+  },
+  "seed_verify": {
+    "title": "ตรวจสอบวลีการกู้คืนลับของคุณ",
+    "explanation": "เลือกคำที่ 4, 8, และ 12 ตามลำดับที่วลีกู้คืนแสดง",
+    "skip": "ข้ามขั้นตอนนี้"
+  },
+  "menu": {
+    "network": {
+      "title": "สลับเครือข่าย",
+      "disconnect": "ตัดการเชื่อมต่อ"
+    },
+    "app_connection_menu": {
+      "connected_apps": "แอปที่เชื่อมต่อ",
+      "not_connected": "ไม่ได้เชื่อมต่อ",
+      "networks": "เครือข่าย",
+      "connect": "เชื่อมต่อ",
+      "switch_network": "เปลี่ยนเครือข่าย",
+      "switch_wallets": "เปลี่ยน Wallet",
+      "disconnect": "ตัดการเชื่อมต่อ"
+    },
+    "home_header_right": {
+      "settings": "การตั้งค่า",
+      "qr_code": "QR Code ของฉัน",
+      "rainbow_profile": "โปรไฟล์ Rainbow",
+      "guides_and_support": "คู่มือและการสนับสนุน",
+      "share_feedback": "แชร์คำติชม",
+      "lock_rainbow": "ล็อค Rainbow",
+      "testnet_mode": "โหมด Testnet",
+      "testnet_mode_off": "ปิด",
+      "testnet_mode_on": "เปิด"
+    }
+  },
+  "testnet_mode_watcher": {
+    "connect_to": "เปลี่ยนไปที่ %{chainName}?",
+    "testnet_mode": "โหมด Testnet",
+    "testnet_mode_active": "กำลังทำงานอยู่ คุณต้องการปิดการใช้งานและทำงานร่วมกับ %{chainName} แทนหรือไม่?",
+    "disable_and_connect": "ปิดการใช้งานและสลับ",
+    "cancel": "ยกเลิก"
+  },
+  "app_connection_switcher": {
+    "banner": {
+      "connect_to": "เชื่อมต่อกับ %{appName}",
+      "app_connected": "%{appName} เชื่อมต่อแล้ว"
+    },
+    "sheet": {
+      "connect": "เชื่อมต่อ",
+      "connect_different_wallet": "เชื่อมต่อกระเป๋าเงินที่ต่างกัน",
+      "dont_show_again": "อย่าแสดงอีกครั้ง",
+      "allow_to": "อนุญาตให้ %{appName} ดูที่อยู่วอลเล็ตของคุณ, ยอดเงิน, กิจกรรม และขออนุมัติสำหรับการทำธุรกรรม",
+      "connect_to": "เชื่อมต่อกับ %{appName}?"
+    },
+    "wallet_item": {
+      "disconnect": "ตัดการเชื่อมต่อ",
+      "switch_connection": "เปลี่ยนการเชื่อมต่อ",
+      "connect": "เชื่อมต่อ"
+    },
+    "wallet_item_dropdown_menu": {
+      "connect": "เชื่อมต่อ",
+      "disconnect": "ตัดการเชื่อมต่อ",
+      "open_app": "เปิด %{appName}"
+    },
+    "wallet_switcher": {
+      "switch_wallets": "สลับกระเป๋าเงิน",
+      "other_wallets": "กระเป๋าเงินอื่น ๆ",
+      "done": "เสร็จสิ้น",
+      "connected": "เชื่อมต่อแล้ว"
+    }
+  },
+  "wallet_backup_reminder": {
+    "title": "บางส่วนของกระเป๋าเงินของคุณยังไม่ได้สำรอง",
+    "description": "บางส่วนของกระเป๋าเงินของคุณยังไม่ได้สำรอง กรุณาสำรองข้อมูลเพื่อสามารถเข้าถึงกระเป๋าเงินของคุณได้หากคุณสูญเสียการเข้าถึงอุปกรณ์นี้",
+    "button_label_action": "สำรองข้อมูลทันที",
+    "button_label_cancel": "แจ้งฉันใหม่ภายหลัง"
+  },
+  "approve_request": {
+    "allow_to_add_asset": "ต้องการแนะนำการใช้โทเค็น",
+    "wallet_info_title": "ต้องการเชื่อมต่อกับกระเป๋าสตางค์ของคุณ",
+    "wallet_info_description": "อนุญาติ %{appName} เพื่อดูที่อยู่กระเป๋าสตางค์, ยอดเงิน, กิจกรรมและขออนุมัติสำหรับการทำธุรกรรม",
+    "add_chain_info_description": "หากคุณอนุมัติก็ใช้งานได้ในส่วนต่อขยายของเบราว์เซอร์ Rainbow",
+    "watch_asset_info_description": "หากคุณอนุมัติ สินทรัพย์เหล่านี้สามารถใช้งานได้ในส่วนขยายเบราว์เซอร์ Rainbow",
+    "wallet": "กระเป๋าสตางค์",
+    "network": "เครือข่าย",
+    "switch_networks": "สลับเครือข่าย",
+    "switch_wallets": "สลับกระเป๋าเงิน",
+    "allow_to_add_network": "ต้องการเพิ่มเครือข่าย",
+    "connect": "เชื่อมต่อกับ %{appName}",
+    "connect_anyway": "เชื่อมต่อแบบไม่รวมเงื่อนไข",
+    "approve": "อนุมัติ",
+    "approve_anyway": "อนุมัติในทุกกรณี",
+    "malicious_warning": {
+      "title": "แอปนี้มีแนวโน้มเป็นมัลแวร์",
+      "message": "การทำธุรกรรมหรือเซ็นข้อความจากแอปนี้อาจทำให้คุณสูญเสียสินทรัพย์"
+    },
+    "malicious_transaction_warning": {
+      "title": "ธุรกรรมนี้ดูน่าสงสัย",
+      "malicious_address": "มีการเกี่ยวข้องของที่อยู่ที่เป็นอันตรายในธุรกรรมนี้ การลงชื่ออาจทำให้เกิดการสูญเสีย",
+      "malicious_entity": "มีบุคคลอันตรายเกี่ยวข้องในธุรกรรมนี้ การลงชื่ออาจทำให้เกิดการสูญเสีย",
+      "minting_is_a_losing_trade": "มีสัญญาการหลอกลวงเกี่ยวข้องในธุรกรรมนี้ การปั๊มทำให้เสียเปรียบ",
+      "you_can_lose_everything": "การลงชื่อธุรกรรมนี้อาจทำให้สูญเสียสิทธิ์ในทุกอย่างในกระเป๋าเงินของคุณ"
+    },
+    "dangerous_request": "คำขอที่เสี่ยงต่อความปลอดภัย",
+    "message_signing_request": "คำขอลงนามข้อความ",
+    "message": "ข้อความ",
+    "message_copied": "คัดลอกข้อความแล้ว",
+    "transaction_data_copied": "คัดลอกข้อมูลธุรกรรมแล้ว",
+    "sign_message": "ลงชื่อ",
+    "sign_message_anyway": "เซ็นโดยไม่คำนึงเงื่อนไข",
+    "confirm_hw": "ยืนยันบนอุปกรณ์ของคุณ",
+    "balance": "ยอดคงเหลือ",
+    "send_transaction": "ลงชื่อ",
+    "send_transaction_anyway": "เซ็นโดยไม่คำนึงเงื่อนไข",
+    "contract_deployment": "การเปิดใช้งานสัญญา",
+    "transaction_request": "คำร้องเรียกร้องการทำธุรกรรม",
+    "insufficient_gas_funds": "คุณต้องมีเพิ่มเติม %{token}",
+    "insufficient_gas_funds_description": "คุณต้องมีเพิ่มเติมขึ้น %{token} เพื่อชำระสำหรับการทำธุรกรรมนี้ รับเพิ่มเติมด้านล่างเพื่อดำเนินการกับคำขอนี้",
+    "no_gas_funds": "คุณต้องมีบางส่วนของ %{token}",
+    "no_gas_funds_description": "คุณจะต้องมี %{token} เพื่อชำระสำหรับการทำธุรกรรมนี้ รับบางส่วน %{token} ด้านล่างเพื่อดำเนินการกับคำขอนี้",
+    "no_token": "ไม่มี %{token}",
+    "on_chain": "บน %{chain}",
+    "copy_deposit_address": "คัดลอกที่อยู่กระเป๋าเงินเพื่อฝาก",
+    "bridge_to": "สะพานไปยัง %{chain}",
+    "signing_with": "กำลังลงลายมือด้วย",
+    "no_fee_to_sign": "ไม่มีค่าธรรมเนียมในการเซ็นต์",
+    "request_rejected": "คำขอธุรกรรมถูกปฏิเสธ",
+    "bridge_and_try_again": "ส่งเงินม้วนธรรมเนียมไปสักหน่วยและลองอีกครั้ง",
+    "buy_and_try_again": "ซื้อม้วนธรรมเนียมไปสักหน่วยและลองอีกครั้ง",
+    "buy_gas": "ซื้อ %{token}",
+    "get_testnet_gas": "รับ testnet ฟรี %{token}"
+  },
+  "add_chain": {
+    "name": "ชื่อ",
+    "chain_id": "รหัสเครือข่าย",
+    "currency_symbol": "สัญลักษณ์สกุลเงิน",
+    "currency_name": "ชื่อสกุลเงิน",
+    "currency_decimals": "จำนวนทศนิยมของสกุลเงิน",
+    "rpc_url": "URL RPC",
+    "block_explorer_url": "URL Block Explorer",
+    "testnet": "เทสต์เน็ต"
+  },
+  "transaction_fee": {
+    "title": "ความเร็วของธุรกรรม",
+    "urgent": "ด่วน",
+    "fast": "เร็ว",
+    "normal": "ปกติ",
+    "custom": "กำหนดเอง",
+    "estimated_fee": "ค่าธรรมเนียมที่ประเมิน"
+  },
+  "time": {
+    "days": {
+      "long": {
+        "plural": "วัน",
+        "singular": "วัน"
+      },
+      "micro": "ว",
+      "short": {
+        "plural": "วัน",
+        "singular": "วัน"
+      }
+    },
+    "hours": {
+      "long": {
+        "plural": "ชั่วโมง",
+        "singular": "ชั่วโมง"
+      },
+      "micro": "ชม",
+      "short": {
+        "plural": "ชม",
+        "singular": "ชม"
+      }
+    },
+    "milliseconds": {
+      "long": {
+        "plural": "มิลลิวินาที",
+        "singular": "มิลลิวินาที"
+      },
+      "micro": "มิลลิวินาที",
+      "short": {
+        "plural": "มิลลิวินาที",
+        "singular": "มิลลิวินาที"
+      }
+    },
+    "minutes": {
+      "long": {
+        "plural": "นาที",
+        "singular": "นาที"
+      },
+      "micro": "ม.",
+      "short": {
+        "plural": "นาที",
+        "singular": "นาที"
+      }
+    },
+    "now": "ตอนนี้",
+    "seconds": {
+      "long": {
+        "plural": "วินาที",
+        "singular": "วินาที"
+      },
+      "micro": "ว.",
+      "short": {
+        "plural": "วินาที",
+        "singular": "วินาที"
+      }
+    }
+  },
+  "wallets": {
+    "title": "กระเป๋าเงิน"
+  },
+  "common_actions": {
+    "back": "ย้อนกลับ",
+    "cancel": "ยกเลิก",
+    "continue": "ดำเนินการต่อ",
+    "copy_to_clipboard": "คัดลอกไปที่คลิปบอร์ด"
+  },
+  "errors": {
+    "error_encountered": "มีบางอย่างผิดพลาด กรุณาแชร์ปัญหานี้กับทีมของเราและเราจะแก้ไข!",
+    "no_wallet_name_set": "ไม่ได้ตั้งชื่อวอลเล็ต",
+    "report_error": "รายงานปัญหา",
+    "sending_transaction": "เกิดข้อผิดพลาดในการส่งธุรกรรม",
+    "executing_swap": "เกิดข้อผิดพลาดในการแลกเปลี่ยน"
+  },
+  "common_titles": {
+    "before_you_proceed": "ก่อนที่คุณจะดำเนินการต่อ"
+  },
+  "passwords": {
+    "password": "รหัสผ่าน",
+    "password_not_set": "ไม่ได้ตั้งค่ารหัสผ่าน",
+    "password_incorrect": "รหัสผ่านไม่ถูกต้อง",
+    "passwords_do_not_match": "รหัสผ่านไม่ตรงกัน",
+    "wrong_password": "รหัสผ่านผิด",
+    "new_password": "รหัสผ่านใหม่",
+    "confirm_password": "ยืนยันรหัสผ่าน",
+    "update_password": "อัปเดตรหัสผ่าน",
+    "set_password": "ตั้งรหัสผ่าน",
+    "too_weak": "อ่อนแอมาก",
+    "weak": "อ่อนแอ",
+    "good": "ดี",
+    "excellent": "ยอดเยี่ยม",
+    "8_chars_min": "อักขระต่ำสุด 8 ตัว",
+    "try_another_password_weak": "นี่เป็นรหัสผ่านที่อ่อนแอและง่ายต่อการแตก. ลองใช้รหัสผ่านที่แข็งแกร่งขึ้น",
+    "try_another_password_common": "ทำรหัสผ่านของคุณให้แข็งแกร่งขึ้นด้วยการผสมตัวอักษรตัวใหญ่และตัวเล็ก ตัวเลข และสัญลักษณ์",
+    "too_short": "รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร"
+  },
+  "create_password": {
+    "title": "สร้างรหัสผ่านของคุณ",
+    "description": "เลือกรหัสผ่านเพื่อรักษาความปลอดภัยและล็อคกระเป๋าสตางค์ของคุณ"
+  },
+  "tabs": {
+    "activity": "กิจกรรม",
+    "nfts": "NFTs",
+    "points": "คะแนน",
+    "rewards": "รางวัล",
+    "tokens": "โทเคน"
+  },
+  "activity": {
+    "hour": "Last Hour",
+    "today": "วันนี้",
+    "yesterday": "เมื่อวาน",
+    "this_month": "เดือนนี้",
+    "empty_header": "ยังไม่มีกิจกรรม",
+    "empty_description": "เมื่อคุณเริ่มใช้กระเป๋าสตางค์ของคุณ คุณจะเห็นธุรกรรมของคุณที่นี่",
+    "loading_more": "กำลังโหลดเพิ่ม...",
+    "no_value": "ไม่มีค่า"
+  },
+  "activity_details": {
+    "you": "คุณ",
+    "from": "จาก",
+    "to": "ถึง",
+    "confirmed_at": "ยืนยันที่",
+    "confirmations": "การยืนยัน",
+    "token": "โทเค็น",
+    "block": "บล็อก",
+    "value": "ค่า",
+    "network": "เครือข่าย",
+    "fee": "ค่าธรรมเนียมเครือข่าย",
+    "base_fee": "ค่าธรรมเนียมฐาน",
+    "max_base_fee": "ค่าธรรมเนียมฐานสูงสุด",
+    "gas_price": "ราคาก๊าซ",
+    "gas_limit": "ขีดจำกัดก๊าซ",
+    "gas_used": "ก๊าซที่ใช้",
+    "max_priority_fee": "ทิปผู้ขุด",
+    "nonce": "Nonce",
+    "allowance": "ทวนสอบ",
+    "unlimited_allowance": "ไม่จำกัด %{symbol}",
+    "app": "แอป",
+    "copy_hash": "คัดลอก Tx Hash",
+    "hash_copied": "คัดลอก Hash แล้ว",
+    "copy_explorer_url": "คัดลอกลิงก์",
+    "explorer_copied": "คัดลอกลิงก์แล้ว",
+    "exchange_rate": "แลกเปลี่ยน",
+    "collection": "คอลเล็กชั่น",
+    "token_contract": "สัญญาโทเค็น",
+    "token_standard": "มาตรฐานโทเค็น",
+    "revoke_approval": "ยกเลิกการอนุมัติ"
+  },
+  "tokens_tab": {
+    "coinbase_title": "ฝากจาก Coinbase",
+    "coinbase_description": "โอน crypto ของคุณจาก Coinbase ฟรี",
+    "buy_title": "ซื้อ crypto เพื่อเติมเงินในกระเป๋าของคุณ",
+    "buy_description_1": "กด",
+    "buy_description_2": "เพื่อดูตัวเลือกการชำระเงินที่รองรับ",
+    "send_from_wallet": "ส่งจากกระเป๋าสตางค์อื่น",
+    "send_description_1": "กด",
+    "send_description_2": "เพื่อคัดลอกที่อยู่ของคุณหรือ",
+    "send_description_3": "สำหรับรหัส QR",
+    "unknown_token": "Token ไม่ทราบ"
+  },
+  "nfts": {
+    "empty_state_header": "NFTs",
+    "empty_state_description": "NFTs ของคุณจะปรากฎที่นี่!",
+    "report_nft_action_text": "รายงาน",
+    "report_nft_confirm_description": "ยืนยันรายงาน NFT?",
+    "view_on_web": "ดูในเว็บ",
+    "display_mode_gallery": "แกลเลอรี",
+    "display_mode_collections": "คอลเลกชัน",
+    "sort_option_recent": "ล่าสุด",
+    "sort_option_abc": "Abc",
+    "sort_option_recent_long": "ล่าสุด",
+    "sort_option_abc_long": "ตามตัวอักษร",
+    "hidden_section_title": "ซ่อน",
+    "details": {
+      "last_sales_price": "ราคาขายล่าสุด",
+      "none": "ไม่มี",
+      "floor_price": "ราคาฟลอร์",
+      "description": "คำอธิบาย",
+      "properties": "คุณสมบัติ",
+      "address_copied": "คัดลอกที่อยู่แล้ว",
+      "about": "เกี่ยวกับ",
+      "token_standard": "มาตรฐานโทเค็น",
+      "token_contract": "สัญญาโทเค็น",
+      "contract_creator": "ผู้สร้างสัญญา",
+      "chain": "เชื่อมโยง",
+      "hide": "ซ่อน",
+      "unhide": "เลิกซ่อน",
+      "id_copied": "คัดลอก ID แล้ว",
+      "copy_token_id": "คัดลอกรหัสโทเค็น",
+      "download": "ดาวน์โหลด",
+      "explorer": "เบราว์เซอร์",
+      "view_collection": "ดูคลัง",
+      "collection_website": "เว็บไซต์คลัง",
+      "owners": "เจ้าของ",
+      "unique_owners": "เจ้าของที่ไม่ซ้ำหน้า",
+      "ens_profile_info": "ข้อมูลโปรไฟล์",
+      "ens_bio": "ไบโอ",
+      "ens_cover": "ปก",
+      "ens_address": "ที่อยู่ Ethereum",
+      "ens_website": "เว็บไซต์",
+      "registered_on": "ลงทะเบียนเมื่อ",
+      "expires_in": "หมดอายุใน",
+      "report": "รายงาน",
+      "explainer": {
+        "floor_price_description": "ราคาต่ำสุดของคอลเลกชันคือราคาที่ถามต่ำสุดในรายการที่วางขายอยู่ในคอลเลกชัน",
+        "floor_price_title": "ราคาพื้นคอลเลกชั่น",
+        "floor_price_action_label": "เข้าใจแล้ว"
+      },
+      "send": "ส่ง",
+      "view_on_opensea": "ดูที่ OpenSea",
+      "view_on_explorer": "ดูที่ %{explorerTitle}",
+      "gallery": "แกลเลอรี",
+      "view_gallery": "ดูแกลเลอรี"
+    },
+    "toast": {
+      "spam_reported": "รายงานของคุณได้รับแล้ว",
+      "hidden": "NFT ถูกซ่อนแล้ว",
+      "unhidden": "NFT ไม่ถูกซ่อนแล้ว"
+    }
+  },
+  "points": {
+    "check_back_soon_header": "กลับมาเร็วๆ นี้",
+    "check_back_soon_description": "ไม่สามารถใช้งานแต้มได้ในขณะนี้\nกรุณากลับมาใหม่เพื่อใช้งาน Rainbow Points ต่อ",
+    "your_rank": "อันดับของคุณ",
+    "my_points": "คะแนนของฉัน",
+    "rank": "อันดับ",
+    "ranking": "อันดับ #%{rank}",
+    "unranked": "ไม่มีอันดับ",
+    "no_weekly_rank": "ไม่มีอันดับรายสัปดาห์",
+    "points_to_rank": "%{rank_cutoff} แต้มเพื่อจัดอันดับ",
+    "top_holders": "ผู้ที่มีคะแนนสูงสุด",
+    "next_drop": "ดรอปถัดไป",
+    "leaderboard": "ลีดเดอร์บอร์ด",
+    "referral_code": "เชิญเพื่อน",
+    "referral_code_description": "รับคะแนนเมื่อเพื่อนที่คุณแนะนำทำการแลกเปลี่ยน $100 ผ่าน Rainbow และรับคะแนนเพิ่ม 10% จากคะแนนที่เพื่อนของคุณได้รับ",
+    "referral_earnings": "%{earnings} คะแนน",
+    "copied_referral_code": "คัดลอกรหัสอ้างอิงแล้ว!",
+    "copied_referral_link": "คัดลอกลิงก์อ้างอิงแล้ว!",
+    "out_of_current_total_points": "จากทั้งหมด %{total} คะแนนปัจจุบัน",
+    "header": "เรียกร้องคะแนนของคุณ",
+    "description": "คะแนนมาแล้ว ดูว่าคุณได้รับไปเท่าไร",
+    "get_started": "เริ่มต้นใช้งาน",
+    "use_referral_code": "ใช้โค้ดแนะนำ",
+    "referral_header": "กรอกโค้ดแนะนำของคุณ",
+    "referral_description": "กรอกโค้ดแนะนำด้านล่างเพื่อรับโบนัส",
+    "referral_code_invalid": "โค้ดไม่ถูกต้อง",
+    "onboarding": {
+      "authorization_required": "จำเป็นต้องมีการยืนยัน",
+      "sign_in_with_your_wallet": "เข้าสู่ระบบด้วยกระเป๋าเงินของคุณ",
+      "access_granted": "เข้าถึงได้แล้ว",
+      "calculating_points": "กำลังคำนวณคะแนน",
+      "rainbow_swaps": "แลกเปลี่ยน Rainbow:",
+      "rainbow_nfts_owned": "NFTs ที่เป็นเจ้าของใน Rainbow:",
+      "wallet_balance": "ยอดเงินในกระเป๋า:",
+      "metamask_swaps": "การแลกเปลี่ยน MetaMask:",
+      "bonus_reward": "รางวัลโบนัส:",
+      "calculation_complete": "คำนวณเสร็จสิ้น",
+      "points_earned": "คะแนนที่ได้รับ:",
+      "bonus_points": "คะแนนโบนัส:",
+      "claim_description_buy": "เพื่อรับคะแนนโบนัสที่เหลือ กรุณาซื้อ ETH ผ่าน Rainbow",
+      "claim_description_swap": "เพื่อรับคะแนนโบนัสที่เหลือ ทำการสวอปอย่างน้อย $100 ผ่าน Rainbow",
+      "account": "บัญชี:",
+      "sign_in": "เข้าสู่ระบบ",
+      "get_eth": "ได้รับ ETH",
+      "try_swap": "ลองแลกเปลี่ยน",
+      "referral_link_ready": "ลิงค์อ้างอิงของคุณพร้อมแล้ว",
+      "referral_link_bonus_text": "ทวีตลิงก์การแนะนำของคุณ และคุณจะได้รับ 10% ของคะแนนที่ผู้ที่คุณแนะนำได้รับ",
+      "share": "แชร์ไปยัง X",
+      "share_tweet": "ฉันเพิ่งได้ %{points} แต้ม Rainbow หล่นเข้ากระเป๋าเงินของฉัน\nทุกคนมีอย่างน้อย 100 แต้มที่รออยู่, แต่คุณอาจมีมากกว่านั้น!\n\nรับแต้มของคุณ: https://rainbow.me/points?ref=%{referralCode}",
+      "share_tweet_with_metamask_bonus": "ฉันเพิ่งได้ %{points} แต้ม Rainbow หล่นเข้ากระเป๋า — พร้อมโบนัสเพิ่มเติม %{metamaskBonus} แต้มจากการย้าย MetaMask ของฉันเข้า Rainbow 🦊 🔫\n\nทุกคนมีอย่างน้อย 100 แต้มที่รออยู่, แต่คุณอาจมีมากกว่านั้น! รับแต้มของคุณ: https://rainbow.me/points?ref=%{referralCode}",
+      "registration_complete": "การลงทะเบียนเสร็จสมบูรณ์",
+      "all_set": "คุณได้พร้อมทั้งหมดแล้ว!",
+      "keep_earning_by": "คงไว้คะแนนโดยการแลกเปลี่ยน สะพาน สร้างสกุลเงิน แนะนำเพื่อน และอื่นๆ",
+      "the_more_you_use": "ยิ่งใช้ Rainbow มากเท่าไหร่ ก็ยิ่งได้รับรางวัลมากขึ้น",
+      "balance_required": "ต้องมียอดเงินในกระเป๋า",
+      "ensure_you_have_a_balance_on": "เพื่อดำเนินการต่อ โปรดตรวจสอบว่าคุณมี ETH ในเครือข่ายต่อไปนี้:",
+      "or_alternatively_balance_on": "หรือมียอดเงิน POL บน Polygon หรือ BNB บน BSC",
+      "fund_my_wallet": "เติมเงินเข้ากระเป๋า"
+    },
+    "error": {
+      "existing_user": "ผู้ใช้เดิม",
+      "invalid_referral_code": "รหัสแนะนำไม่ถูกต้อง",
+      "unexpected": "เกิดข้อผิดพลาดที่ไม่คาดคิด ลองอีกครั้งในอีกสักครู่"
+    },
+    "weekly_overview": {
+      "week_of": "> สัปดาห์ของ %{from} - %{to}",
+      "counting": "> กำลังนับคะแนนที่ได้รับ...",
+      "your_activity": "กิจกรรมของคุณ:",
+      "referral_activity": "กิจกรรมการอ้างอิง:",
+      "new_referrals": "การอ้างอิงใหม่:",
+      "retroactive": "คะแนนย้อนหลัง:",
+      "bonus": "คะแนนโบนัส:",
+      "total": "รวม:",
+      "weekly_counted": "> การนับรายได้รายสัปดาห์",
+      "you_have": "คุณมี:",
+      "none": "ไม่มี",
+      "your_earnings": "รายได้สัปดาห์ที่แล้วของคุณ",
+      "view_breakdown": "ดูการแบ่งรายได้รายสัปดาห์ของคุณ",
+      "view_now": "ดูเลย"
+    },
+    "rewards": {
+      "counting_points": "> กำลังนับคะแนนที่ได้รับ...",
+      "calculating_referrals": "> กำลังคำนวณคำแนะนำของคุณ...",
+      "allocating_earnings": "> กำลังจัดสรรรายได้ของคุณ...",
+      "claiming_your_reward": "การอ้างสิทธิ์รางวัลของคุณ",
+      "done": "เสร็จสิ้น",
+      "in_eth": "ใน ETH",
+      "your_rewards": "รางวัลของคุณ",
+      "amount_in_eth": "+ %{amount} ETH",
+      "ready_to_spend": "ETH ของคุณอยู่ในกระเป๋าสตางค์ของคุณและพร้อมใช้งาน คุณพร้อมทุกอย่างแล้ว",
+      "keep_earning": "รับคะแนนและรางวัล Rainbow ของคุณโดยทำการเปลี่ยน, โอนย้าย, minting, แนะนำเพื่อน และอื่น ๆ",
+      "use_rainbow": "ยิ่งคุณใช้งาน Rainbow มากเท่าไรก็จะได้รับรางวัลมากขึ้นเท่านั้น",
+      "choose_claim_network": "เลือกเครือข่ายอ้างสิทธิ์",
+      "coming_soon": "เร็วๆนี้",
+      "available_to_claim": "พร้อมให้อ้างสิทธิ์",
+      "program_earnings": "ผู้ใช้ Rainbow ได้รับ",
+      "my_earnings": "รายได้ของฉัน",
+      "claimed_earnings": "รายได้ที่อ้างสิทธิ์",
+      "current_value": "มูลค่าปัจจุบัน",
+      "earn_eth_rewards": "รับรางวัล ETH",
+      "points_explanation": "ผู้ที่ได้รับคะแนนสูงสุดในแต่ละสัปดาห์จะได้รับการ airdrop ETHของRainbowรายสัปดาห์ที่ได้รับอย่างหนัก รับคะแนนโดยทำการแลกเปลี่ยนหรือทำธุรกรรมใน Rainbow, ใช้ dapps หรือแนะนำเพื่อน",
+      "your_reward_is_ready": "> รางวัลของคุณพร้อมแล้ว",
+      "claim_complete": "> อ้างสิทธิ์เสร็จสมบูรณ์",
+      "already_claimed": "> รางวัลของคุณได้รับการอ้างสิทธิ์ไปแล้ว",
+      "no_claim": "> คุณไม่มีรางวัลที่จะอ้างสิทธิ์ในขณะนี้",
+      "earned_last_week": "ได้รับเมื่อสัปดาห์ที่แล้ว",
+      "my_referrals": "คำแนะนำ",
+      "claim_reward": "อ้างสิทธิ์ %{reward}",
+      "free_to_claim": "อ้างสิทธิ์ฟรี",
+      "has_bridge_fee": "มีค่าธรรมเนียมการโอนย้าย",
+      "claim_failed": "อ้างสิทธิ์ล้มเหลว กรุณาลองอีกครั้ง.",
+      "claim_success_bridge_failed": "อ้างสิทธิ์สำเร็จแต่เงินไม่ได้ถูกโอน.",
+      "my_rewards": "รางวัลของฉัน"
+    }
+  },
+  "speed_up_and_cancel": {
+    "speed_up": "เร่ง",
+    "cancel": "ยกเลิก",
+    "view_on_etherscan": "ดูบน Etherscan",
+    "view_on_explorer": "ดูบน Explorer",
+    "copy_tx_hash": "คัดลอก Tx Hash",
+    "cancel_explanation": "นี่จะพยายามยกเลิกธุรกรรมที่รอดำเนินการของคุณ ซึ่งจำเป็นต้องส่งธุรกรรมอื่น",
+    "speed_up_explanation": "นี่จะเร่งธุรกรรมที่รอดำเนินการของคุณด้วยการแทนที่ โอกาสของการยืนยันธุรกรรมเดิมของคุณก่อน",
+    "cancel_title": "ยกเลิกธุรกรรม",
+    "speed_up_title": "เร่งธุรกรรม",
+    "wallet": "กระเป๋าสตางค์",
+    "balance": "ยอดคงเหลือ",
+    "cancel_cta": "ยกเลิกธุรกรรม",
+    "speed_up_cta": "เร่งธุรกรรม",
+    "speed_up_transaction": "เร่งธุรกรรม",
+    "close_cta": "ยกเลิก",
+    "handle_copy_title": "คัดลอก Tx Hash",
+    "revoke_approval": "ยกเลิกการอนุมัติ",
+    "speed_up_failed": {
+      "title": "การเร่งล้มเหลว",
+      "description": "ความพยายามในการเร่งธุรกรรมอาจล้มเหลวในช่วงที่เครือข่ายคับคั่ง เพิ่มขีดจำกัดก๊าซ หรือเมื่อธุรกรรมเดิมได้รับการยืนยันก่อน"
+    }
+  },
+  "token_details": {
+    "swap": "แลกเปลี่ยน",
+    "bridge": "สะพาน",
+    "send": "ส่ง",
+    "balance": "ยอดคงเหลือ",
+    "value": "ค่า",
+    "hour": "1 ชั่วโมง",
+    "day": "1วัน",
+    "week": "1สัปดาห์",
+    "month": "1เดือน",
+    "year": "1ปี",
+    "approvals": "การอนุมัติโทเคน",
+    "this_token_is_on_network": "%{symbol} นี้อยู่บนเครือข่าย %{chainName}",
+    "view_on": "ดูบน %{explorer}",
+    "view_on_coingecko": "ดูที่ CoinGecko",
+    "not_available": "ราคาไม่สามารถใช้ได้",
+    "more_options": {
+      "copy_address": "คัดลอกที่อยู่",
+      "view_on_explorer": "ดูบน %{explorer}",
+      "hide": "ซ่อนโทเคน",
+      "report": "แจ้งโทเคน",
+      "unpin_token": "ถอนการปักหมุด %{name}",
+      "pin_token": "ปักหมุด %{name}",
+      "hide_token": "ซ่อน %{name}",
+      "unhide_token": "เลิกซ่อน %{name}"
+    },
+    "toast": {
+      "hide_token": "%{name} ของคุณถูกซ่อนไว้",
+      "unhide_token": "%{name} ของคุณถูกเลิกซ่อน",
+      "pin_token": "%{name} ของคุณถูกปักหมุด",
+      "unpin_token": "%{name} ของคุณถูกถอนการปักหมุด"
+    },
+    "about": {
+      "about_token": "เกี่ยวกับ %{name}",
+      "price": "ราคา",
+      "volume": "ปริมาณ",
+      "ath": "สูงสุดตลอดกาล",
+      "atl": "ต่ำสุดตลอดกาล",
+      "market_cap": "มูลค่าตลาด",
+      "market_cap_explainer": {
+        "title": "มูลค่าตลาด",
+        "description": "มูลค่าตลาดคือมูลค่าสินทรัพย์ทั้งหมดของโทเคน คำนวณด้วยราคาเฉลี่ยจากตลาดแลกเปลี่ยน",
+        "action": "เข้าใจแล้ว"
+      },
+      "fully_diluted": "ยืนยันทั้งหมด",
+      "fully_diluted_explainer": {
+        "title": "มูลค่าตลาดแบบยืนยันทั้งหมด",
+        "description": "มูลค่าตลาดสูงสุดที่เป็นไปได้ของโทเค็นหากจำนวนทั้งหมดที่มีอยู่ถูกนำมาใช้งาน",
+        "action": "เข้าใจแล้ว"
+      },
+      "supply": "อุปทาน",
+      "max_total_supply": "จำนวนสูงสุดทั้งหมด",
+      "holders": "ผู้ถือ",
+      "total_transfers": "การโอนทั้งหมด",
+      "more_info": "ข้อมูลเพิ่มเติม",
+      "token_standard": "มาตรฐานโทเค็น",
+      "token_contract": "สัญญาโทเค็น",
+      "chains": {
+        "one": "เชื่อมโยง",
+        "other": "เชื่อมโยง"
+      }
+    }
+  },
+  "wallet_ready": {
+    "title": "Rainbow พร้อมใช้งาน",
+    "subtitle": "เพื่อเข้าถึงกระเป๋าเงินของคุณ คลิก Rainbow จากรายการแบบเลื่อนลงที่เพิ่มเติม หรือใช้ทางลัดที่รวดเร็วบนแป้นพิมพ์",
+    "open": "เปิด Rainbow",
+    "get_started_with_rainbow": "เริ่มต้นใช้งาน Rainbow",
+    "get_started_with_rainbow_desc": "ยินดีต้อนรับสู่ Rainbow! มีความยินดีมากที่คุณมาที่นี่ ทางเราได้สร้างคู่มือนี้ขึ้นมาเพื่อช่วยเตรียมพื้นฐานให้กับ Rainbow",
+    "discover_shortcuts": "ค้นพบทางลัด",
+    "discover_shortcuts_desc": "ต้องการค้นพบทางลัดมากขึ้นหรือไม่? ลองดูคู่มือที่เราคัดสรรมาให้คุณ",
+    "pin_rainbow_to_your_toolbar": "ติด Rainbow ไว้ที่แถบเครื่องมือของคุณ"
+  },
+  "wallet_header": {
+    "buy": "ซื้อ",
+    "copy": "คัดลอก",
+    "swap": "แลกเปลี่ยน",
+    "send": "ส่ง",
+    "copy_toast": "คัดลอกที่อยู่แล้ว"
+  },
+  "token_search": {
+    "section_header": {
+      "favorites": "รายการโปรด",
+      "unverified": "ไม่ได้รับการตรวจสอบ",
+      "verified": "ได้รับการตรวจสอบ",
+      "on_other_networks": "ในเครือข่ายอื่น ๆ",
+      "bridge": "สะพาน",
+      "popular": "ยอดนิยมใน Rainbow"
+    },
+    "verified_by_rainbow": "ตรวจสอบโดย Rainbow"
+  },
+  "explainers": {
+    "sidechains": {
+      "layer_two": {
+        "title": "อะไรคือ %{chainName}",
+        "description_1": "%{chainName} เป็นเครือข่าย Layer 2 ที่ทำงานบน Ethereum ช่วยให้การทำธุรกรรมถูกและเร็วขึ้น พร้อมรักษาความปลอดภัยจาก Ethereum",
+        "description_2": "มันจะรวมธุรกรรมจำนวนมากเข้าด้วยกันในรูปแบบ \"roll up\" ก่อนที่จะส่งลงไปยัง Ethereum อย่างถาวร"
+      },
+      "specific": {
+        "polygon": {
+          "title": "อะไรคือ Polygon",
+          "description_1": "Polygon เป็น sidechain ซึ่งเป็นเครือข่ายที่ทำงานควบคู่ไปกับ Ethereum และสามารถทำงานร่วมกันได้",
+          "description_2": "มันช่วยให้การทำธุรกรรมถูกและเร็วขึ้น แต่ไม่เหมือนกับเครือข่าย Layer 2, Polygon มีระบบความปลอดภัยและกลไกการตกลงที่แตกต่างจาก Ethereum"
+        },
+        "bsc": {
+          "title": "อะไรคือ BSC",
+          "description_1": "BNB Smart Chain หรือ BSC คือ Layer 1 ทางเลือกที่พัฒนาโดยแพลตฟอร์มเทรดเหรียญ Binance",
+          "description_2": "มีค่าธรรมเนียมและความเร็วในการทำธุรกรรมที่ถูกและเร็วกว่า แต่ไม่เหมือน Layer 2, BSC มีกลไกความปลอดภัยและความเห็นชอบที่ต่างจาก Ethereum"
+        },
+        "avalanche": {
+          "title": "Avalanche คืออะไร",
+          "description_1": "Avalanche คือ Layer 1 ทางเลือกที่ใช้ระบบของ subnets คล้ายกับ sidechains และ Layer 2 ของ Ethereum",
+          "description_2": "ช่วยให้ทำธุรกรรมได้ถูกและเร็วขึ้น แต่ไม่เหมือน Layer 2, Avalanche มีกลไกความปลอดภัยและความเห็นชอบที่ต่างจาก Ethereum"
+        },
+        "blast": {
+          "title": "Blast คืออะไร",
+          "description_1": "Blast เป็นแพลตฟอร์ม Layer-2 (L2) ของ Ethereum ที่สร้างโดยทีมเดียวกับที่สร้าง Blur, ตลาด NFT ยอดนิยม",
+          "description_2": "แตกต่างด้วยการนำเสนอผลตอบแทนพื้นฐานสำหรับเหรียญ ether (ETH) และ stablecoins หลายชนิด เช่น USDC, USDT, และ DAI"
+        },
+        "degen": {
+          "title": "Degen คืออะไร",
+          "description_1": "Degen Chain เป็นเครือข่าย Layer 3 ที่ทำงานบน Arbitrum และ Ethereum",
+          "description_2": "มีการทำธุรกรรมที่เร็วและถูกมาก โดยใช้เหรียญชุมชน Farcaster ว่า $degen"
+        },
+        "apechain": {
+          "title": "ApeChain คืออะไร?",
+          "description_1": "ApeChain เป็นเครือข่าย Layer 3 ที่ทำงานบน Arbitrum Orbit และ Ethereum",
+          "description_2": "มันเพิ่มประสิทธิภาพของ ApeCoin อย่างมาก ส่งเสริมเศรษฐกิจที่แข็งแกร่งและมีการเคลื่อนไหวโดย $APE"
+        },
+        "ink": {
+          "title": "Ink คืออะไร",
+          "description_1": "Ink เป็นบล็อกเชน Layer 2 ที่สร้างขึ้นบน Superchain และเปิดตัวโดย Kraken",
+          "description_2": "การก้าวสู่ยุคใหม่ของภารกิจ Ink จะเป็นสะพานเชื่อมสู่ DeFi ที่ลื่นไหล ให้ผู้ใช้สามารถเคลื่อนไหวบนบล็อกเชนได้อย่างมั่นใจและง่ายดาย"
+        },
+        "sanko": {
+          "title": "Sanko คืออะไร",
+          "description_1": "Sanko เป็นเครือข่ายชั้นที่ 2 ที่ทำงานบน Arbitrum",
+          "description_2": "มันช่วยให้ธุรกรรมถูกและเร็วขึ้น แต่ไม่เหมือนกับเครือข่ายชั้นที่ 2, Sanko มีความปลอดภัยของตัวเองและกลไกการสรุปที่แตกต่างจาก Ethereum"
+        },
+        "gravity": {
+          "title": "Gravity คืออะไร",
+          "description_1": "Gravity เป็นบล็อกเชน Layer-1 ที่ออกแบบมาเพื่อการใช้งานทั่วไปและอนาคตโซ่เชื่อมโยงหลายสื่อ",
+          "description_2": "มันช่วยให้ธุรกรรมถูกและเร็วขึ้น แต่ไม่เหมือนกับเครือข่ายชั้นที่ 2, Gravity มีความปลอดภัยของตัวเองและกลไกการสรุปที่แตกต่างจาก Ethereum"
+        },
+        "berachain": {
+          "title": "Berachain คืออะไร",
+          "description_1": "Berachain เป็นบล็อกเชน Layer-1 ที่สร้างขึ้นบนหลักการพิสูจน์สภาพคล่องด้วย BeaconKit",
+          "description_2": "มันช่วยให้ธุรกรรมถูกและเร็วขึ้น แต่ไม่เหมือนกับเครือข่ายชั้นที่ 2, Berachain มีความปลอดภัยของตัวเองและกลไกการสรุปที่แตกต่างจาก Ethereum"
+        },
+        "custom_network": {
+          "title": "เครือข่ายนี้คืออะไร",
+          "description_1": "นี่คือเครือข่ายที่คุณเพิ่มเอง! เครือข่ายที่กำหนดเองสามารถออกแบบให้ตอบสนองความต้องการเฉพาะได้ โดยมีคุณสมบัติและความสามารถที่เฉพาะเจาะจง",
+          "description_2": "ขึ้นอยู่กับการตั้งค่า เครือข่ายนี้อาจใช้โปรโตคอล มาตรการความปลอดภัย และกลไกความเห็นชอบที่แตกต่างกัน เพื่อเพิ่มประสิทธิภาพ ลดต้นทุน หรือให้บริการพิเศษ"
+        }
+      },
+      "link_button_label": "อ่านเพิ่มเติม",
+      "action_label": "เข้าใจแล้ว"
+    },
+    "send": {
+      "to_token_contract": {
+        "description_1": "The address you entered is for a token contract.",
+        "description_2": "ยกเว้นสถานการณ์ที่ไม่ปกติ คุณควรไม่ทำเช่นนี้ คุณอาจจะสูญเสียสินทรัพย์หรือสินทรัพย์อาจจะไปยังสถานที่ที่ผิด",
+        "description_3": "ตรวจสอบที่อยู่อีกครั้ง ตรวจสอบด้วยผู้รับ หรือติดต่อฝ่ายสนับสนุนเรื่องนี้ก่อน",
+        "title": "รอสักครู่!"
+      },
+      "action_label": "เข้าใจแล้ว"
+    },
+    "custom_gas": {
+      "action_button_label": "เข้าใจแล้ว",
+      "current_base_stable": "ขณะนี้การจราจรเครือข่ายเสถียร สนุกไปเถอะ!",
+      "current_base_surging": "ค่าธรรมเนียมสูงกว่าปกติในตอนนี้! หากการทำธุรกรรมของคุณไม่เร่งด่วน ควรรอให้ค่าธรรมเนียมลดลง",
+      "current_base_falling": "ค่าธรรมเนียมกำลังลดลงในตอนนี้!",
+      "current_base_rising": "ค่าธรรมเนียมกำลังเพิ่มขึ้นในตอนนี้! ควรใช้ค่าธรรมเนียมฐานสูงสุดที่สูงขึ้นเพื่อหลีกเลี่ยงการธุรกรรมที่ติดขัด",
+      "current_base_description": "ค่าฐานจะถูกตั้งโดยเครือข่าย Ethereum และจะเปลี่ยนแปลงขึ้นอยู่กับความยุ่งยากของเครือข่าย",
+      "current_base_title": "ค่าฐานปัจจุบัน",
+      "max_base_explainer_1": "นี่คือค่าฐานสูงสุดที่คุณยินยอมจ่ายสำหรับการทำธุรกรรมนี้",
+      "max_base_explainer_2": "การตั้งค่าฐานสูงสุดทำให้การทำธุรกรรมของคุณไม่ติดขัดหากค่าธรรมเนียมพุ่งสูง",
+      "max_base_title": "ค่าฐานสูงสุด",
+      "max_priority_explainer": "ค่าทิปของผู้ขุดจะไปโดยตรงถึงผู้ขุดที่ยืนยันการทำธุรกรรมของคุณบนเครือข่าย\n\nทิปสูงเท่าไหร่การยืนยันธุรกรรมก็มั่นคงเท่านั้น",
+      "max_priority_title": "เคล็ดลับขุดแร่"
+    }
+  },
+  "injected_notifications": {
+    "network_changed": "เปลี่ยนเครือข่ายแล้ว",
+    "network_changed_failed": "เปลี่ยนเครือข่ายล้มเหลว",
+    "unsupported_network": "ไม่รองรับเครือข่าย",
+    "no_active_session": "ไม่มีเซสชั่นที่กำลังทำงาน",
+    "already_added": "เปิดใช้งาน RPC แล้ว",
+    "set_as_active": "เปิดใช้งาน RPC ใหม่แล้ว",
+    "already_active": "เครือข่ายถูกเพิ่มแล้ว"
+  },
+  "alert": {
+    "ok": "ตกลง",
+    "cancel": "ยกเลิก",
+    "wallet_watching_mode": "กระเป๋าสตางค์นี้อยู่ในโหมด 'ดู' ณ ตอนนี้",
+    "wallet_testing_mode": "Testnet ไม่ได้รับการสนับสนุนโดย Swap ปิดโหมด Testnet เพื่อดำเนินการต่อ",
+    "coming_soon": "เร็ว ๆ นี้!",
+    "no_hw_ff": "ไม่รองรับ hardware wallets บน Firefox ลองใช้เบราว์เซอร์อื่นเช่น Chrome หรือ Brave"
+  },
+  "hw": {
+    "choose_title": "เชื่อมต่อกระเป๋าสตางค์ฮาร์ดแวร์",
+    "ledger_support": "รองรับ Ledger Nano S, Nano S Plus, Nano X, และอุปกรณ์ Stax",
+    "trezor_support": "รองรับ Model One หรือ Model T",
+    "connect_ledger_title": "เชื่อมต่อ Ledger ของคุณ",
+    "connect_ledger_description": "เชื่อมต่อ Ledger ของคุณกับ Rainbow โดยใช้สาย USB-C เสียบเข้ากับคอมพิวเตอร์",
+    "unlock_ledger_title": "ปลดล็อค Ledger",
+    "unlock_ledger_description": "แอป Ethereum ต้องเปิดอยู่บน Ledger ของคุณเพื่อดำเนินการต่อ",
+    "unlock_ledger_description_2": "ป้อนรหัสผ่านของคุณเพื่อปลดล็อค Ledger หลังจากปลดล็อคแล้วเปิดแอป Ethereum โดยคลิกปุ่มทั้งสองพร้อมกัน",
+    "exclusivity_ledger_title": "ดูเหมือนว่าแอปอื่นกำลังใช้ Ledger ของคุณ",
+    "exclusivity_ledger_description": "ตรวจสอบให้แน่ใจว่าคุณไม่ได้ใช้อุปกรณ์ด้วยแอปอื่น เช่น Ledger Live, MetaMask หรือแท็บเบราว์เซอร์อื่น",
+    "exclusivity_ledger_description_2": "เมื่อปิดแอปอื่นแล้ว โปรดโหลดหน้านี้ใหม่เพื่อลองอีกครั้ง",
+    "needs_app_ledger_title": "เปิดแอป ETH",
+    "needs_app_ledger_description": "ต้องเปิดแอป Ethereum บน Ledger ของคุณเพื่อดำเนินการทำธุรกรรมต่อ",
+    "needs_app_ledger_description_2": "ป้อนรหัสผ่านของคุณเพื่อปลดล็อค Ledger หลังจากปลดล็อคแล้วเปิดแอป Ethereum โดยคลิกปุ่มทั้งสองพร้อมกัน",
+    "connect_trezor_title": "ดำเนินการตั้งค่า Trezor ของคุณให้เสร็จสมบูรณ์",
+    "connect_trezor_description": "ดำเนินการเชื่อมต่อ Trezor ของคุณกับ Rainbow ผ่านทางอินเตอร์เฟซเว็บ",
+    "learn_more": "เรียนรู้เพิ่มเติม",
+    "connect_wallets_title": "เชื่อมต่อกระเป๋าเงินของคุณ",
+    "connect_wallets_found": "พบ %{count} กระเป๋าเงินใน %{vendor} ที่มียอดเงินหรือการทำธุรกรรม กรุณาเลือกเพื่อเชื่อมต่อ",
+    "connect_wallets_not_found": "เราไม่พบกระเป๋าเงินที่มีหรือทำธุรกรรมใด ๆ ในสิ่งนี้ %{vendor} แต่คุณยังสามารถเพิ่มเหล่านี้ได้",
+    "connect_wallet": "เชื่อมต่อกระเป๋าเงิน",
+    "connect_n_wallets": "เชื่อมต่อ %{count} กระเป๋าเงิน",
+    "wallets_found": "พบ %{count} กระเป๋าเงิน",
+    "add_by_index": "เพิ่มตามดัชนี",
+    "index_label": "ดัชนี",
+    "connection_successful_title": "เชื่อมต่อสำเร็จ",
+    "connection_successful_description": "คุณเพิ่ม %{count} %{wallet_noun}. %{wallet_pronoun} ในรายการกระเป๋าเงินของคุณโดยมี %{vendor} เป็นสัญลักษณ์ คุณสามารถเพิ่มเพิ่มเติมได้ตลอดเวลา",
+    "wallet_singular": "กระเป๋าเงิน",
+    "wallet_plural": "กระเป๋าเงิน",
+    "wallet_pronoun_plural": "พวกเขา",
+    "wallet_pronoun_singular": "มัน",
+    "done": "เสร็จสิ้น",
+    "add_wallet": "เพิ่มกระเป๋าเงิน",
+    "add_by_index_title": "เพิ่มกระเป๋าเงินด้วยดัชนี",
+    "add_by_index_description": "เลือกเส้นทางที่มาและป้อนดัชนีของกระเป๋าเงินที่คุณต้องการเพิ่ม",
+    "waiting_for_trezor_connect": "กำลังรอ Trezor Connect",
+    "continue_on_trezor_connect": "กรุณาทำตามคำแนะนำบนหน้าต่าง Trezor Connect",
+    "trezor_success": "สำเร็จ!",
+    "you_can_close_this_window": "คุณสามารถปิดหน้าต่างนี้ได้",
+    "ledger_locked_error": "กรุณาตรวจสอบว่า ledger ของคุณถูกปลดล็อกและเปิดแอป Ethereum",
+    "check_ledger_disconnected": "ตรวจสอบให้แน่ใจว่าอุปกรณ์ของคุณเชื่อมต่อและปลดล็อกและแอป ethereum เปิดอยู่"
+  },
+  "choose_wallet_group": {
+    "title": "เลือกกลุ่มกระเป๋าเงิน",
+    "description": "เลือกกลุ่มกระเป๋าเงินที่คุณต้องการสร้างหรือสร้างใหม่",
+    "wallet_group": "กลุ่ม Wallet %{number}",
+    "new_wallet_group": "กลุ่ม Wallet ใหม่",
+    "create_recovery_phrase": "สร้าง recovery phrase ใหม่"
+  },
+  "unsupported_browser": {
+    "title": "เบราว์เซอร์ที่ไม่รองรับ",
+    "description": "เบราเซอร์ของคุณไม่รองรับในขณะนี้ ราวโบว์ใช้ได้กับ Android และ iOS บนมือถือ และ Chrome, Brave, Arc, และ Edge บนอุปกรณ์เดสก์ท็อป",
+    "download_the_app": "ดาวน์โหลดแอป",
+    "link_text": {
+      "highlighted": "ติดต่อ Rainbow",
+      "after": " สำหรับขอเพิ่มเติม"
+    }
+  },
+  "buy": {
+    "title": "ซื้อ",
+    "fees_title": "ค่าธรรมเนียม",
+    "instant_title": "ทันที",
+    "instant_yes": "ใช่",
+    "method_title": "วิธี",
+    "methods_title": "วิธีการ",
+    "network_title": "เครือข่าย",
+    "networks_title": "เครือข่าย",
+    "payment_methods": {
+      "apple_pay": "Apple Pay",
+      "bank": "ธนาคาร",
+      "card": "บัตร",
+      "google_pay": "Google Pay"
+    }
+  },
+  "tooltip": {
+    "switch_network": "เปลี่ยนเครือข่าย",
+    "copy_address": "คัดลอกที่อยู่กระเป๋าเงิน",
+    "swap": "แลกเปลี่ยนโทเค็นของคุณ",
+    "send": "ส่งโทเค็น",
+    "more": "รายการเพิ่มเติม",
+    "view_tokens": "ดูโทเค็น",
+    "view_activity": "ดูกิจกรรม",
+    "balance": "ยอดรวม",
+    "switch_wallet": "สลับกระเป๋า",
+    "save_to_contacts": "บันทึกลงที่อยู่",
+    "clear_address": "ล้างที่อยู่",
+    "clear_token": "ล้างโทเค็น",
+    "gwei_settings": "การตั้งค่า Gwei",
+    "flip_tokens": "สลับตำแหน่งโทเค็น",
+    "favorite": "เพิ่มในรายการโปรด",
+    "unfavorite": "ลบออกจากรายการโปรด",
+    "estimated_difference": "ความแตกต่างในมูลค่าที่ประมาณการ",
+    "buy_crypto": "ซื้อและโอนคริปโต"
+  },
+  "simulation": {
+    "title": "ผลลัพธ์จำลอง",
+    "loading": "กำลังจำลอง...",
+    "error": "การจำลองล้มเหลว",
+    "no_changes": "ไม่พบการเปลี่ยนแปลง",
+    "received": "ได้รับแล้ว",
+    "sent": "ส่งแล้ว",
+    "approved": "อนุมัติแล้ว",
+    "reverted": "ธุรกรรมถูกยกเลิก",
+    "function": "ฟังก์ชัน",
+    "contract": "สัญญา",
+    "contract_name": "ชื่อสัญญา",
+    "contract_created_at": "สร้างสัญญาแล้ว",
+    "to": "ถึง",
+    "source_code": "รหัสต้นฉบับ",
+    "signature": {
+      "message": "ข้อความ"
+    },
+    "tabs": {
+      "overview": "ภาพรวม",
+      "details": "รายละเอียด",
+      "data": "ข้อมูล"
+    }
+  },
+  "chain": "เชื่อมโยง",
+  "nonce": "Nonce",
+  "copy": "คัดลอก",
+  "copy_link": "คัดลอกลิงก์",
+  "link_text": "เรียนรู้เพิ่มเติม",
+  "close": "ปิด",
+  "verified": "ได้รับการตรวจสอบ",
+  "unverified": "ไม่ได้รับการตรวจสอบ",
+  "skip": "ข้าม",
+  "done": "เสร็จสิ้น",
+  "view_on_explorer": "ดูบน %{explorer}",
+  "watch_asset": {
+    "chain_id": "รหัสเครือข่าย",
+    "symbol": "สัญลักษณ์",
+    "decimals": "ทศนิยม",
+    "address": "ที่อยู่",
+    "not_found": "เราไม่พบสินทรัพย์เหล่านี้ในเครือข่ายที่เลือก โปรดเลือกเครือข่ายที่ถูกต้องด้านล่าง"
+  }
+}
