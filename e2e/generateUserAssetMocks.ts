@@ -251,15 +251,10 @@ function generateMocks() {
       const summaryUrl = `${ADDYS_BASE_URL}/summary//assets/?currency=${currency}`;
       const hash = sha256(summaryUrl as Hex);
 
-      // Generate empty response for summary endpoint
-      const emptyResponse: AddressAssetsReceivedMessage = {
-        payload: { assets: [] },
-        meta: {
-          chain_ids: [],
-          currency: currency,
-          address: '',
-          chain_ids_with_errors: [],
-          status: 'ok',
+      // Generate empty response for summary endpoint with correct AddySummary structure
+      const emptySummaryResponse = {
+        data: {
+          addresses: {},
         },
       };
 
@@ -269,8 +264,75 @@ function generateMocks() {
         'user_assets',
         `${hash}.json`,
       );
-      fs.writeFileSync(mockPath, JSON.stringify(emptyResponse, null, 2));
+      fs.writeFileSync(mockPath, JSON.stringify(emptySummaryResponse, null, 2));
       generatedMocks.push(`${hash} -> ${summaryUrl} (summary no address)`);
+    }
+
+    // Generate summary mocks for each wallet address
+    for (const address of TEST_WALLETS) {
+      for (const currency of ['usd']) {
+        const summaryUrlWithAddress = `${ADDYS_BASE_URL}/summary/${address.toLowerCase()}/assets/?currency=${currency}`;
+        const hash = sha256(summaryUrlWithAddress as Hex);
+
+        const isEmptyWallet = address === TEST_VARIABLES.EMPTY_WALLET.ADDRESS;
+        const ethBalance = isEmptyWallet ? '0' : '10000000000000000000000'; // 10,000 ETH
+        const assetValue = isEmptyWallet ? 0 : 30000000; // $30M in USD
+
+        // Generate summary response with correct AddySummary structure
+        const summaryResponse = {
+          data: {
+            addresses: {
+              [address.toLowerCase()]: {
+                summary: {
+                  native_balance_by_symbol: {
+                    ETH: {
+                      symbol: 'ETH',
+                      quantity: ethBalance,
+                      decimals: 18,
+                    },
+                  },
+                  num_erc20s: isEmptyWallet ? 0 : 2, // USDC and DAI
+                  last_activity: Date.now() / 1000,
+                  asset_value: assetValue,
+                },
+                summary_by_chain: {
+                  [ChainId.mainnet]: {
+                    native_balance: {
+                      symbol: 'ETH',
+                      quantity: ethBalance,
+                      decimals: 18,
+                    },
+                    num_erc20s: isEmptyWallet ? 0 : 2,
+                    last_activity: Date.now() / 1000,
+                    asset_value: assetValue,
+                  },
+                  [ChainId.optimism]: {
+                    native_balance: {
+                      symbol: 'ETH',
+                      quantity: isEmptyWallet ? '0' : '5000000000000000000000', // 5,000 ETH on Optimism
+                      decimals: 18,
+                    },
+                    num_erc20s: 0,
+                    last_activity: Date.now() / 1000,
+                    asset_value: isEmptyWallet ? 0 : 15000000,
+                  },
+                },
+              },
+            },
+          },
+        };
+
+        const mockPath = path.join(
+          __dirname,
+          'mocks',
+          'user_assets',
+          `${hash}.json`,
+        );
+        fs.writeFileSync(mockPath, JSON.stringify(summaryResponse, null, 2));
+        generatedMocks.push(
+          `${hash} -> ${summaryUrlWithAddress} (summary with address)`,
+        );
+      }
     }
 
     for (const address of TEST_WALLETS) {

@@ -1,0 +1,42 @@
+{
+  "data": {
+    "addresses": {
+      "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266": {
+        "summary": {
+          "native_balance_by_symbol": {
+            "ETH": {
+              "symbol": "ETH",
+              "quantity": "10000000000000000000000",
+              "decimals": 18
+            }
+          },
+          "num_erc20s": 2,
+          "last_activity": 1755557829.347,
+          "asset_value": 30000000
+        },
+        "summary_by_chain": {
+          "1": {
+            "native_balance": {
+              "symbol": "ETH",
+              "quantity": "10000000000000000000000",
+              "decimals": 18
+            },
+            "num_erc20s": 2,
+            "last_activity": 1755557829.347,
+            "asset_value": 30000000
+          },
+          "10": {
+            "native_balance": {
+              "symbol": "ETH",
+              "quantity": "5000000000000000000000",
+              "decimals": 18
+            },
+            "num_erc20s": 0,
+            "last_activity": 1755557829.347,
+            "asset_value": 15000000
+          }
+        }
+      }
+    }
+  }
+}

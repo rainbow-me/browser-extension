@@ -1,12 +1,5 @@
 {
-  "payload": {
-    "assets": []
-  },
-  "meta": {
-    "chain_ids": [],
-    "currency": "usd",
-    "address": "",
-    "chain_ids_with_errors": [],
-    "status": "ok"
+  "data": {
+    "addresses": {}
   }
 }

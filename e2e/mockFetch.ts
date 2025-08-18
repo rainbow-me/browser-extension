@@ -101,19 +101,34 @@ const MOCK_SERVICES: MockService[] = [
       const parts = url.pathname.split('/').filter(Boolean);
       // parts[0] === 'v3', parts[1] === chains, parts[2] === address
       const chains = parts[1] || '';
-      const addressLower = (parts[2] || '').toLowerCase();
       const currency = (
         url.searchParams.get('currency') || 'usd'
       ).toLowerCase();
 
       // Handle the "summary" endpoint case (no specific chain IDs)
       if (chains === 'summary') {
-        const canonicalUrl = `${url.origin}/v3/summary//assets/?currency=${currency}`;
-        console.log('Canonical URL for hashing (summary):', canonicalUrl);
-        return {
-          canonicalUrl,
-          fileName: `${sha256(canonicalUrl as Hex)}.json`,
-        };
+        // Check if there's an address in the path
+        if (parts[2] && parts[2] !== 'assets') {
+          // Summary with address: /v3/summary/<address>/assets/
+          const addressLower = parts[2].toLowerCase();
+          const canonicalUrl = `${url.origin}/v3/summary/${addressLower}/assets/?currency=${currency}`;
+          console.log(
+            'Canonical URL for hashing (summary with address):',
+            canonicalUrl,
+          );
+          return {
+            canonicalUrl,
+            fileName: `${sha256(canonicalUrl as Hex)}.json`,
+          };
+        } else {
+          // Summary without address: /v3/summary//assets/
+          const canonicalUrl = `${url.origin}/v3/summary//assets/?currency=${currency}`;
+          console.log('Canonical URL for hashing (summary):', canonicalUrl);
+          return {
+            canonicalUrl,
+            fileName: `${sha256(canonicalUrl as Hex)}.json`,
+          };
+        }
       }
 
       // Handle the case where there's no address (double slash in URL)
@@ -129,6 +144,7 @@ const MOCK_SERVICES: MockService[] = [
       }
 
       // Normal case with address
+      const addressLower = parts[2].toLowerCase();
       const canonicalUrl = `${url.origin}/v3/${chains}/${addressLower}/assets/?currency=${currency}`;
       console.log('Canonical URL for hashing:', canonicalUrl);
       return {
