@@ -1,7 +1,7 @@
 import { describe, it } from 'vitest';
 
+import { TEST_VARIABLES } from '../fixtures/wallets';
 import { checkWalletName, importWalletFlow } from '../helpers';
-import { TEST_VARIABLES } from '../walletVariables';
 
 describe('Import wallet with a private key flow', () => {
   it('should be able import a wallet via private key', async () => {

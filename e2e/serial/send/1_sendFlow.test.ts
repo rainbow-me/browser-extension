@@ -1,6 +1,7 @@
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, afterEach, beforeEach, expect, it } from 'vitest';
 
+import { TEST_VARIABLES } from '../../fixtures/wallets';
 import {
   delayTime,
   findElementById,
@@ -18,7 +19,6 @@ import {
   typeOnTextInput,
   waitAndClick,
 } from '../../helpers';
-import { TEST_VARIABLES } from '../../walletVariables';
 
 beforeEach<{ driver: WebDriver }>(async (context) => {
   context.driver = driver;

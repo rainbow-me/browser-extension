@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { HARDWARE_WALLETS } from '../fixtures/wallets';
 import {
   checkWalletName,
   findElementByIdAndClick,
@@ -8,7 +9,6 @@ import {
   importHardwareWalletFlow,
 } from '../helpers';
 import { browser } from '../helpers/environment';
-import { HARDWARE_WALLETS } from '../walletVariables';
 
 describe.runIf(browser !== 'firefox')(
   'Import wallet with a Ledger hw wallet',

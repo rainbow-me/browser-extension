@@ -1,8 +1,9 @@
 /* eslint-disable no-await-in-loop */
 import { describe, expect, it } from 'vitest';
 
-import { TokenNames, tokenAddresses, tokenNames } from 'e2e/tokenVariables';
+import { TokenNames, tokenAddresses, tokenNames } from 'e2e/fixtures/tokens';
 
+import { TEST_VARIABLES } from '../fixtures/wallets';
 import {
   checkExtensionURL,
   delayTime,
@@ -15,7 +16,6 @@ import {
   typeOnTextInput,
   waitUntilElementByTestIdIsPresent,
 } from '../helpers';
-import { TEST_VARIABLES } from '../walletVariables';
 
 describe('Command+K behaviours', () => {
   it('should be able import a wallet via seed', async () => {

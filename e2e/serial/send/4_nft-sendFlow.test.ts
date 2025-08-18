@@ -1,5 +1,6 @@
 import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
 
+import { TEST_VARIABLES } from '../../fixtures/wallets';
 import {
   delayTime,
   doNotFindElementByTestId,
@@ -14,7 +15,6 @@ import {
   transactionStatus,
   waitAndClick,
 } from '../../helpers';
-import { TEST_VARIABLES } from '../../walletVariables';
 
 describe('should be able to perform the nft send flow', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

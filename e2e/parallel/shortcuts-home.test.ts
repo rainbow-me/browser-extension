@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { TEST_VARIABLES } from '../fixtures/wallets';
 import {
   checkExtensionURL,
   checkWalletName,
@@ -19,7 +20,6 @@ import {
   waitAndClick,
 } from '../helpers';
 import { browser } from '../helpers/environment';
-import { TEST_VARIABLES } from '../walletVariables';
 
 describe.runIf(browser !== 'firefox')(
   'navigate through settings flows with shortcuts',

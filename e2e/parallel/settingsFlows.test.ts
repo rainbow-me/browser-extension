@@ -1,6 +1,7 @@
 /* eslint-disable no-await-in-loop */
 import { describe, expect, it } from 'vitest';
 
+import { TEST_VARIABLES } from '../fixtures/wallets';
 import {
   findElementByTestId,
   findElementByTestIdAndClick,
@@ -11,7 +12,6 @@ import {
   typeOnTextInput,
 } from '../helpers';
 import { browser } from '../helpers/environment';
-import { TEST_VARIABLES } from '../walletVariables';
 
 describe('Navigate Settings & Privacy and its flows', () => {
   it('should be able import a wallet via seed', async () => {

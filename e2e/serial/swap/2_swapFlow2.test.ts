@@ -5,6 +5,7 @@ import { Key, WebDriver } from 'selenium-webdriver';
 import { erc20Abi } from 'viem';
 import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
 
+import { SWAP_VARIABLES, TEST_VARIABLES } from '../../fixtures/wallets';
 import {
   clearInput,
   delay,
@@ -28,7 +29,6 @@ import {
   convertRawAmountToDecimalFormat,
   subtract,
 } from '../../helpers/numbers';
-import { SWAP_VARIABLES, TEST_VARIABLES } from '../../walletVariables';
 
 const WALLET_TO_USE_SECRET = TEST_VARIABLES.SWAPS_WALLET.PK;
 

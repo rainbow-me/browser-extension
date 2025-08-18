@@ -4,6 +4,7 @@ import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { ChainId } from '~/core/types/chains';
 
+import { TEST_VARIABLES } from '../../fixtures/wallets';
 import {
   awaitTextChange,
   clickAcceptRequestButton,
@@ -27,7 +28,6 @@ import {
   waitAndClick,
 } from '../../helpers';
 import { browser } from '../../helpers/environment';
-import { TEST_VARIABLES } from '../../walletVariables';
 
 const shortenedAddress = shortenAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS);
 

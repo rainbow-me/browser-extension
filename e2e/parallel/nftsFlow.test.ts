@@ -1,6 +1,7 @@
 /* eslint-disable no-await-in-loop */
 import { describe, expect, it } from 'vitest';
 
+import { TEST_VARIABLES } from '../fixtures/wallets';
 import {
   delayTime,
   findElementByTestId,
@@ -9,7 +10,6 @@ import {
   goToPopup,
   importWalletFlow,
 } from '../helpers';
-import { TEST_VARIABLES } from '../walletVariables';
 
 describe('Visit NFTs Gallery and Details Pages', () => {
   it('should be able import a wallet via seed', async () => {

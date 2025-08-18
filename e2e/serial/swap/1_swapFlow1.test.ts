@@ -4,6 +4,7 @@ import { afterAll, afterEach, beforeEach, expect, it } from 'vitest';
 
 import { ChainId } from '~/core/types/chains';
 
+import { SWAP_VARIABLES, TEST_VARIABLES } from '../../fixtures/wallets';
 import {
   clearInput,
   delay,
@@ -29,7 +30,6 @@ import {
   convertRawAmountToDecimalFormat,
   subtract,
 } from '../../helpers/numbers';
-import { SWAP_VARIABLES, TEST_VARIABLES } from '../../walletVariables';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 beforeEach(async (context: any) => {

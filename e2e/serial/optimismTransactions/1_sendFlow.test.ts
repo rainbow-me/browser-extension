@@ -1,6 +1,7 @@
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
 
+import { TEST_VARIABLES } from '../../fixtures/wallets';
 import {
   checkExtensionURL,
   checkWalletName,
@@ -15,7 +16,6 @@ import {
   takeScreenshotOnFailure,
   transactionStatus,
 } from '../../helpers';
-import { TEST_VARIABLES } from '../../walletVariables';
 
 describe('Complete Hardhat Optimism send flow', () => {
   beforeEach<{ driver: WebDriver }>(async (context) => {

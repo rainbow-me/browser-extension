@@ -1,8 +1,8 @@
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, describe, expect, it } from 'vitest';
 
+import { TEST_VARIABLES } from '../../fixtures/wallets';
 import { goToTestApp, importWalletFlow } from '../../helpers';
-import { TEST_VARIABLES } from '../../walletVariables';
 
 const triggerBFCache = async (driver: WebDriver) => {
   await driver.executeScript(`

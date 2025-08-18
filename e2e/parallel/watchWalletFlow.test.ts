@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { TEST_VARIABLES } from '../fixtures/wallets';
 import {
   delayTime,
   fillPrivateKey,
@@ -17,7 +18,6 @@ import {
   typeOnTextInput,
   waitUntilElementByTestIdIsPresent,
 } from '../helpers';
-import { TEST_VARIABLES } from '../walletVariables';
 
 describe('Watch wallet then add more and switch between them', () => {
   // Watch a wallet

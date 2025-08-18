@@ -3,6 +3,7 @@ import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { ChainId } from '~/core/types/chains';
 
+import { TEST_VARIABLES } from '../../fixtures/wallets';
 import {
   clickAcceptRequestButton,
   connectToTestDapp,
@@ -24,7 +25,6 @@ import {
   waitAndClick,
 } from '../../helpers';
 import { browser } from '../../helpers/environment';
-import { TEST_VARIABLES } from '../../walletVariables';
 
 describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
   beforeEach<{ driver: WebDriver }>(async (context) => {

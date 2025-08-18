@@ -2,6 +2,7 @@ import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
 
+import { SWAP_VARIABLES, TEST_VARIABLES } from '../../fixtures/wallets';
 import {
   checkExtensionURL,
   checkWalletName,
@@ -15,7 +16,6 @@ import {
   navigateToElementWithTestId,
   takeScreenshotOnFailure,
 } from '../../helpers';
-import { SWAP_VARIABLES, TEST_VARIABLES } from '../../walletVariables';
 
 const ethId = SWAP_VARIABLES.ETH_MAINNET_ID;
 const usdcId = SWAP_VARIABLES.USDC_MAINNET_ID;

@@ -1,6 +1,7 @@
 import { Key, WebDriver } from 'selenium-webdriver';
 import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
 
+import { TEST_VARIABLES } from '../../fixtures/wallets';
 import {
   checkExtensionURL,
   checkWalletName,
@@ -16,7 +17,6 @@ import {
   takeScreenshotOnFailure,
   transactionStatus,
 } from '../../helpers';
-import { TEST_VARIABLES } from '../../walletVariables';
 
 describe('Complete send flow via shortcuts and keyboard navigation', () => {
   beforeEach<{ driver: WebDriver }>(async (context) => {

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { TEST_VARIABLES } from '../fixtures/wallets';
 import {
   checkExtensionURL,
   checkWalletName,
@@ -14,7 +15,6 @@ import {
   shortenAddress,
 } from '../helpers';
 import { browser } from '../helpers/environment';
-import { TEST_VARIABLES } from '../walletVariables';
 
 const shortenedMainAddress = shortenAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS);
 const shortenedSecondaryAddress = shortenAddress(

@@ -5,6 +5,7 @@ import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { ChainId } from '~/core/types/chains';
 
+import { TEST_VARIABLES } from '../../fixtures/wallets';
 import {
   clickAcceptRequestButton,
   connectToTestDapp,
@@ -26,7 +27,6 @@ import {
   typeOnTextInput,
   waitAndClick,
 } from '../../helpers';
-import { TEST_VARIABLES } from '../../walletVariables';
 
 const TYPED_MESSAGE = {
   domain: {
