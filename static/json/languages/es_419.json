@@ -1303,6 +1303,7 @@
     "tokens": "Tokens"
   },
   "activity": {
+    "hour": "Last Hour",
     "today": "Hoy",
     "yesterday": "Ayer",
     "this_month": "Este mes",
@@ -1711,11 +1712,11 @@
       "action_label": "Entendido"
     },
     "send": {
-      "to_smart_contract": {
-        "description_1": "La dirección que ingresaste es para un contrato inteligente.",
-        "description_2": "Excepto en situaciones raras, probablemente no debas hacer esto. Podrías perder tus activos o podrían ir al lugar equivocado.",
-        "description_3": "Revisa la dirección, verifícala con el destinatario o contacta al soporte primero.",
-        "title": "¡Espera un momento!"
+      "to_token_contract": {
+        "description_1": "The address you entered is for a token contract.",
+        "description_2": "Except for rare situations, you probably shouldn't do this. You could lose your assets or they might go to the wrong place.",
+        "description_3": "Double check the address, verify it with the recipient, or contact support first.",
+        "title": "Hold your horses!"
       },
       "action_label": "Entendido"
     },
