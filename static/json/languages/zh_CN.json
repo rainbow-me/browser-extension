@@ -42,7 +42,7 @@
     "create_wallet_description": "使用您的种子短语之一创建一个新钱包。",
     "import_wallet": "使用恢复短语或私钥导入",
     "import_wallet_description": "使用恢复短语或私钥添加钱包。",
-    "hardware_wallet": "从您的硬件钱包添加",
+    "hardware_wallet": "从硬件钱包连接",
     "hardware_wallet_description": "从您的硬件钱包添加更多账户。",
     "watch_address": "观察以太坊地址",
     "watch_address_description": "查看公共地址或ENS名称。"
@@ -186,7 +186,7 @@
         "wallet_details": {
           "title": "钱包详情",
           "view_recovery_phrase": "查看恢复短语",
-          "create_new_wallet": "创建新钱包",
+          "create_new_wallet": "创建新的钱包",
           "rename_wallet": "重命名钱包",
           "unhide_wallet": "取消隐藏钱包",
           "delete_wallet": "删除钱包",
@@ -197,7 +197,7 @@
           "last_backed_up": "上次备份为 %{date}"
         },
         "new_wallet": {
-          "name_your_wallet": "为你的钱包命名",
+          "name_your_wallet": "给钱包取个名字",
           "create": "创建钱包",
           "input_placeholder": "例如：钱包1"
         },
@@ -475,7 +475,7 @@
         "hide_small_balances": "切换小额余额",
         "hide_small_balances_hidden": "显示小额余额",
         "hide_small_balances_revealed": "隐藏小额余额",
-        "wallets_and_keys": "钱包及密钥",
+        "wallets_and_keys": "钱包和密钥",
         "view_full_screen": "全屏查看",
         "view_token": "查看代币",
         "view_token_details": "查看 %{symbol} 详情",
@@ -600,7 +600,7 @@
     },
     "quick_promo": {
       "text": "按 %{modifierSymbol}K 打开魔法菜单",
-      "text_bold": "提示:"
+      "text_bold": "提示："
     },
     "toolbar": {
       "actions_hint": "操作"
@@ -619,7 +619,7 @@
     }
   },
   "connected_apps": {
-    "title": "已连接应用",
+    "title": "连接的应用",
     "disconnect": "断开全部",
     "other_wallets": "其他钱包",
     "no_connections_title": "没有已连接的应用",
@@ -672,7 +672,7 @@
       "contacts": "通讯录",
       "my_wallets": "我的钱包",
       "watched_wallets": "观察中",
-      "no_results": "没有结果"
+      "no_results": "无结果"
     },
     "tokens_input": {
       "tokens": "代币",
@@ -777,7 +777,7 @@
           "title": "Flashbots",
           "description": "Flashbots保护您的交易免受预先执行和夹击攻击的影响，这可能导致您获得更差的价格或交易失败。",
           "read_more": {
-            "open_text": "还有疑问吗？ ",
+            "open_text": "还有更多疑问吗？ ",
             "link_text": "阅读更多",
             "close_text": " 关于Flashbots和它所提供的保护。"
           }
@@ -786,7 +786,7 @@
           "title": "%{Action} 路由",
           "description": "默认情况下，Rainbow会为您的 %{action}选择最便宜的路径。如果你希望特别使用0x或1inch，你也可以这样做",
           "read_more": {
-            "open_text": "还有疑问吗？ ",
+            "open_text": "还有更多疑问吗？ ",
             "link_text": "阅读更多",
             "close_text": " 我们对路由 %{actions}的方法"
           }
@@ -799,7 +799,7 @@
       }
     },
     "actions": {
-      "review": "审查",
+      "review": "审核",
       "loading": "加载中",
       "insufficient_liquidity": "流动性不足",
       "fee_on_transfer_token": "转账代币的费用",
@@ -816,7 +816,7 @@
       "minimum_received": "最低接收金额",
       "via": "%{Actioning} 通过",
       "included_fee": "包括彩虹钱包收费",
-      "use_flashbots": "使用Flashbots",
+      "use_flashbots": "使用 Flashbots",
       "exchange_rate": "汇率",
       "asset_contract": "%{symbol} 合约",
       "more_details": "更多细节",
@@ -844,7 +844,7 @@
         "description": "我们无法为这 %{action} 找到报价，因为这对交易在交易所的流动性不足",
         "action_label": "知道了",
         "footer_text": {
-          "open_text": "还想了解更多吗？ ",
+          "open_text": "还有更多疑问吗？ ",
           "link_text": "阅读更多",
           "close_text": " 关于自动化做市商和代币流动性"
         }
@@ -904,8 +904,8 @@
     "remove_contact_description": "您确定要从您的联系人中删除“%{name}”？",
     "save": "保存",
     "copy_address": "复制地址",
-    "view_on_etherscan": "在Etherscan上查看",
-    "view_on_explorer": "在浏览器上查看",
+    "view_on_etherscan": "在 Etherscan 上查看",
+    "view_on_explorer": "在浏览器中查看",
     "delete_contact": "删除联系人",
     "contact_address_copied": "地址已复制"
   },
@@ -928,7 +928,7 @@
   "welcome": {
     "title": "Rainbow",
     "subtitle": "探索以太坊的新世界",
-    "create_wallet": "创建新钱包",
+    "create_wallet": "创建一个新钱包",
     "import_wallet": "导入或连接钱包",
     "disclaimer_tos": "继续操作即表示您同意使用 Rainbow 的",
     "disclaimer_tos_link": "使用条款",
@@ -939,14 +939,14 @@
     "title": "在开始之前，请备份您的恢复密语",
     "warning_1": "重要的是将您的恢复密语写下并储存在安全的地方。",
     "warning_2": "您的密钥恢复短语是唯一恢复账户和资金的途径。",
-    "warning_3": "拥有您的密钥恢复短语的任何人都可以访问您的全部钱包。",
+    "warning_3": "任何拥有您的恢复短语的人都可以访问您的整个钱包。",
     "reveal_your_recovery_phrase": "揭示您的恢复短语",
     "take_me_to_wallet": "带我去我的钱包"
   },
   "seed_reveal": {
-    "title": "您的密钥恢复短语",
-    "write_down_seed_importance": "存储这些词可以访问您的全部钱包！将它们存放在安全的地方，永远不要分享。",
-    "saved_these_words": "我已经保存了这些词",
+    "title": "您的恢复短语",
+    "write_down_seed_importance": "任何拥有这些单词的人都可以访问您的整个钱包！您永远不应该分享它们。",
+    "saved_these_words": "我已保存这些单词",
     "copied": "恢复短语已复制"
   },
   "import_wallet_via_secret": {
@@ -977,12 +977,12 @@
   "import_or_connect": {
     "title": "恢复或连接",
     "explanation": "持有您的秘密恢复短语的任何人都可以访问您的整个钱包！将其存放在安全的地方，不要与任何人共享。",
-    "import_wallet": "使用秘密恢复短语或私钥进行导入",
-    "import_wallet_description": "通过秘密恢复短语或私钥添加钱包。",
+    "import_wallet": "使用恢复短语或私钥导入",
+    "import_wallet_description": "使用恢复短语或私钥添加钱包。",
     "connect_wallet": "连接您的硬件钱包",
     "connect_wallet_description": "从您的硬件钱包添加账户",
     "watch_address": "观察以太坊地址",
-    "watch_address_description": "观察公共地址或ENS名称"
+    "watch_address_description": "查看公共地址或ENS名称。"
   },
   "import_wallet_selection": {
     "title": "您的钱包",
@@ -999,7 +999,7 @@
     "account_summary_last_tx": "上次交易： %{lastTx} 前"
   },
   "watch_wallet": {
-    "title": "监视以太坊地址",
+    "title": "观察以太坊地址",
     "description": "输入任何以太坊地址或ENS名称。稍后必须导入它以进行发送或签名交易。",
     "invalid_address": "无效地址",
     "unsupported_tld": "%{tld} 不受支持",
@@ -1040,7 +1040,7 @@
     },
     "importing_your_wallet": {
       "one": "正在导入您的钱包...",
-      "other": "正在导入您的钱包..."
+      "other": "正在导入您的钱包……"
     },
     "sort": {
       "title": "排序",
@@ -1060,7 +1060,7 @@
       "disconnect": "断开连接"
     },
     "app_connection_menu": {
-      "connected_apps": "已连接应用",
+      "connected_apps": "连接的应用",
       "not_connected": "未连接",
       "networks": "网络",
       "connect": "连接",
@@ -1072,7 +1072,7 @@
       "settings": "设置",
       "qr_code": "我的二维码",
       "rainbow_profile": "彩虹资料",
-      "guides_and_support": "指南与支持",
+      "guides_and_support": "指南和支持",
       "share_feedback": "分享反馈",
       "lock_rainbow": "锁定彩虹",
       "testnet_mode": "测试网络模式",
@@ -1153,12 +1153,12 @@
     "message": "消息",
     "message_copied": "信息已复制",
     "transaction_data_copied": "交易数据已复制",
-    "sign_message": "签名消息",
+    "sign_message": "签名",
     "sign_message_anyway": "照样签名",
     "confirm_hw": "在您的设备上确认",
     "balance": "余额",
-    "send_transaction": "发送交易",
-    "send_transaction_anyway": "照样确认",
+    "send_transaction": "签名",
+    "send_transaction_anyway": "照样签名",
     "contract_deployment": "合约部署",
     "transaction_request": "交易请求",
     "insufficient_gas_funds": "你需要更多 %{token}",
@@ -1303,6 +1303,7 @@
     "tokens": "代币"
   },
   "activity": {
+    "hour": "Last Hour",
     "today": "今天",
     "yesterday": "昨天",
     "this_month": "本月",
@@ -1532,8 +1533,8 @@
   "speed_up_and_cancel": {
     "speed_up": "加快",
     "cancel": "取消",
-    "view_on_etherscan": "在Etherscan上查看",
-    "view_on_explorer": "在Explorer上查看",
+    "view_on_etherscan": "在 Etherscan 上查看",
+    "view_on_explorer": "在浏览器中查看",
     "copy_tx_hash": "复制交易哈希",
     "cancel_explanation": "此操作将尝试取消您的待处理交易。它需要广播另一笔交易。",
     "speed_up_explanation": "此操作将通过替换来加快您的待处理交易。原始交易有可能首先确认。",
@@ -1707,20 +1708,20 @@
           "description_2": "根据其配置，这个网络可能利用不同的协议、安全措施和共识机制，旨在优化性能、降低成本或提供专业服务。"
         }
       },
-      "link_button_label": "了解更多",
-      "action_label": "了解"
+      "link_button_label": "阅读更多",
+      "action_label": "知道了"
     },
     "send": {
-      "to_smart_contract": {
-        "description_1": "您输入的地址是智能合约地址。",
+      "to_token_contract": {
+        "description_1": "The address you entered is for a token contract.",
         "description_2": "除非特殊情况，您可能不应这样做。否则，您可能会丢失资产或将其发送到错误的地址。",
         "description_3": "仔细检查地址，先与接收方确认，或先联系支持。",
         "title": "等一下！"
       },
-      "action_label": "明白了"
+      "action_label": "知道了"
     },
     "custom_gas": {
-      "action_button_label": "明白了",
+      "action_button_label": "知道了",
       "current_base_stable": "现在网络流量稳定。玩得开心！",
       "current_base_surging": "现在费用异常高！除非你的交易很紧急，最好等待费用下降。",
       "current_base_falling": "现在费用正在下降！",
@@ -1729,7 +1730,7 @@
       "current_base_title": "当前基础费用",
       "max_base_explainer_1": "这是您愿意为此交易支付的最大基础费用。",
       "max_base_explainer_2": "设置较高的最大基础费用可以防止交易在费用上升时卡住。",
-      "max_base_title": "最大基础费用",
+      "max_base_title": "最高基础费用",
       "max_priority_explainer": "矿工小费直接发送给确认您在网络上的交易的矿工。\n\n提供较高的小费可以更快确认您的交易。",
       "max_priority_title": "矿工小费"
     }
@@ -1765,7 +1766,7 @@
     "exclusivity_ledger_description_2": "关闭其他应用程序后，请重新加载此页面以重试。",
     "needs_app_ledger_title": "打开ETH应用",
     "needs_app_ledger_description": "以太坊应用程序需要在您的Ledger上打开才能进行交易。",
-    "needs_app_ledger_description_2": "输入密码解锁您的Ledger。解锁后，同时按下两个按钮打开以太坊应用程序。",
+    "needs_app_ledger_description_2": "请输入密码以解锁您的Ledger。一旦解锁，请通过同时按下两个按钮来打开以太坊应用程序。",
     "connect_trezor_title": "完成您的Trezor设置",
     "connect_trezor_description": "继续通过Web界面将您的Trezor连接到Rainbow。",
     "learn_more": "了解更多。",
