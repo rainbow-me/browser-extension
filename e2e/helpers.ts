@@ -957,6 +957,11 @@ export async function importWalletFlowUsingKeyboardNavigation(
   await executePerformShortcut({ driver, key: 'ENTER' });
   if (!isPrivateKey) {
     await delayTime('very-long');
+    // Log before looking for add-wallets-button-section
+    await captureAndLogBrowserConsole(
+      driver,
+      'Before looking for add-wallets-button-section',
+    );
     await findElementByTestId({ id: 'add-wallets-button-section', driver });
     await executePerformShortcut({
       driver,
@@ -1057,6 +1062,11 @@ export async function importWalletFlow(
   });
 
   if (!isPrivateKey) {
+    // Log before looking for add-wallets-button
+    await captureAndLogBrowserConsole(
+      driver,
+      'Before looking for add-wallets-button',
+    );
     await findElementByTestIdAndClick({
       id: 'add-wallets-button',
       driver,

@@ -12,6 +12,7 @@ import {
 import { ChainId } from '~/core/types/chains';
 
 import {
+  captureAndLogBrowserConsole,
   clickAcceptRequestButton,
   connectToTestDapp,
   delayTime,
@@ -60,9 +61,19 @@ describe.runIf(browser !== 'firefox')('Networks & Testnet Mode flows', () => {
 
   it('should be able import a wallet via seed', async () => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);
+    // Log after wallet import
+    await captureAndLogBrowserConsole(
+      driver,
+      'After Wallet Import - networksAndTestnetModeFlow',
+    );
   });
 
   it('should be able to connect to bx test dapp', async () => {
+    // Log before connecting to dapp
+    await captureAndLogBrowserConsole(
+      driver,
+      'Before Connecting to Dapp - networksAndTestnetModeFlow',
+    );
     const { dappHandler } = await connectToTestDapp(driver);
 
     await clickAcceptRequestButton(driver);
