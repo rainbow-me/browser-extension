@@ -42,7 +42,7 @@
     "create_wallet_description": "أنشئ محفظة جديدة على أحد عبارات البذور الخاصة بك",
     "import_wallet": "استورد باستخدام عبارة الاستعادة السرية أو المفتاح الخاص",
     "import_wallet_description": "أضف محفظة باستخدام عبارة الاستعادة السرية أو المفتاح الخاص",
-    "hardware_wallet": "أضف من محفظتك الجهازية",
+    "hardware_wallet": "إضافة من محفظتك الأجهزة",
     "hardware_wallet_description": "أضف المزيد من الحسابات من محفظتك الأجهزة",
     "watch_address": "مشاهدة عنوان Ethereum",
     "watch_address_description": "مشاهدة عنوان عام أو اسم ENS"
@@ -127,7 +127,7 @@
         "tokens": "رموز",
         "cant_connect": "لا يمكن الاتصال بهذه النقطة النهائية لـ RPC",
         "rpc_not_responding": "نقطة النهاية لـ RPC المُقدمة لا تستجيب",
-        "rainbow_default_rpc": "Rainbow",
+        "rainbow_default_rpc": "رينبو",
         "rainbow_default": "رينبو"
       },
       "rpc_endpoints": "نقاط نهاية RPC",
@@ -178,7 +178,7 @@
         "not_backed_up": "لم يتم النسخ الاحتياطي",
         "back_up_now": "النسخ الاحتياطي الآن",
         "context_menu": {
-          "create_wallet": "إنشاء محفظة",
+          "create_wallet": "أنشئ المحفظة",
           "view_secret_phrase": "عرض العبارة السرية",
           "hide_wallets": "إخفاء المحافظ",
           "unhide_wallets": "أظهر المحافظ"
@@ -197,8 +197,8 @@
           "last_backed_up": "آخر نسخ احتياطي كان %{date}"
         },
         "new_wallet": {
-          "name_your_wallet": "تسمية محفظتك",
-          "create": "إنشاء محفظة",
+          "name_your_wallet": "اسمح لمحفظتك",
+          "create": "أنشئ المحفظة",
           "input_placeholder": "مثال: محفظة 1"
         },
         "private_key": {
@@ -461,7 +461,7 @@
         "testnet_mode": "تبديل وضع الاختبار",
         "testnet_mode_disabled": "تفعيل وضع الاختبار",
         "testnet_mode_enabled": "تعطيل وضع الاختبار",
-        "settings": "الإعدادات",
+        "settings": "الاعدادات",
         "network_settings": "اعدادات الشبكة",
         "my_qr_code": "رمز الاستجابة السريعة الخاص بي",
         "my_qr_code_watched": "رمز الاستجابة السريعة",
@@ -552,7 +552,7 @@
       "title_added": "تمت إضافة جهة اتصال",
       "title_removed": "تمت إزالة جهة الاتصال"
     },
-    "no_results": "لا يوجد نتائج",
+    "no_results": "لا توجد نتائج",
     "pages": {
       "add_wallet": {
         "search_placeholder": "ابحث عن طرق لإضافة محفظة…",
@@ -614,7 +614,7 @@
       },
       "toast": {
         "title": "تم تنزيل العناوين",
-        "description": "rainbow_addresses.csv"
+        "description": "rainbow_addresses.csv}]} }``` }printf( }"
       }
     }
   },
@@ -669,10 +669,10 @@
       "insufficient_native_asset_for_gas": "%{symbol} غير كافٍ للغاز"
     },
     "wallets_list": {
-      "contacts": "جهات الاتصال",
+      "contacts": "الاتصالات",
       "my_wallets": "محافظي",
-      "watched_wallets": "المشاهدة",
-      "no_results": "لا يوجد نتائج"
+      "watched_wallets": "مشاهدة",
+      "no_results": "لا توجد نتائج"
     },
     "tokens_input": {
       "tokens": "رموز",
@@ -754,7 +754,7 @@
     "settings": {
       "title": "%{Action} الإعدادات",
       "route": "الطريق %{actions} عبر",
-      "use_flashbots": "استخدم فلاشبوتس",
+      "use_flashbots": "استخدم Flashbots",
       "max_slippage": "الانزلاق الأقصى",
       "use_defaults": "استخدم الإعدادات الافتراضية",
       "done": "تم",
@@ -816,7 +816,7 @@
       "minimum_received": "الحد الأدنى المستلم",
       "via": "%{Actioning} عبر",
       "included_fee": "تضمين رسوم الرينبو",
-      "use_flashbots": "استخدم فلاشبوتس",
+      "use_flashbots": "استخدم Flashbots",
       "exchange_rate": "سعر الصرف",
       "asset_contract": "%{symbol} عقد",
       "more_details": "مزيد من التفاصيل",
@@ -850,7 +850,7 @@
         }
       },
       "fee_on_transfer_token": {
-        "title": "رسوم على نقل رمز",
+        "title": "الرسوم على نقل العملة",
         "description": "هذا %{action} سيفشل في Rainbow لأن عقد %{tokenName} يضيف رسومًا إضافية",
         "action_label": "فهمت",
         "footer_text": {
@@ -879,7 +879,7 @@
     "gas_price": "سعر الغاز",
     "max_transaction_fee": "الرسوم القصوى للمعاملة",
     "transaction_speed": "سرعة المعاملة",
-    "cancel": "الغاء",
+    "cancel": "إلغاء",
     "set": "تعيين",
     "base_trend": {
       "falling": "هابط",
@@ -898,7 +898,7 @@
     "add_to_contacts": "إضافة إلى الجهات الاتصال",
     "edit_contact": "تعديل الاتصال",
     "save_changes": "حفظ التغييرات",
-    "cancel": "الغاء",
+    "cancel": "إلغاء",
     "remove_contact_title": "إزالة الاتصال؟",
     "remove_contact_action": "إزالة الاتصال",
     "remove_contact_description": "هل أنت متأكد أنك تريد إزالة \"%{name}\" من جهات اتصالك؟",
@@ -928,7 +928,7 @@
   "welcome": {
     "title": "رينبو",
     "subtitle": "استكشاف عالم إيثيريوم الجديد",
-    "create_wallet": "إنشاء محفظة جديدة",
+    "create_wallet": "أنشئ محفظة جديدة",
     "import_wallet": "استيراد أو توصيل محفظة",
     "disclaimer_tos": "بالمتابعة، أنت توافق على شروط Rainbow",
     "disclaimer_tos_link": "شروط الاستخدام",
@@ -939,13 +939,13 @@
     "title": "قبل أن تبدأ، احتفظ بنسخة احتياطية من عبارة الاسترداد السرية",
     "warning_1": "من الأهمية بمكان أن تكتب وتخزن عبارة الاستعادة السرية الخاصة بك في مكان آمن",
     "warning_2": "عبارة الاستعادة السرية الخاصة بك هي الطريقة الوحيدة لاستعادة حساباتك وأموالك",
-    "warning_3": "أي شخص يملك عبارة الاستعادة السرية الخاصة بك يمكنه الوصول إلى المحفظة بالكامل",
+    "warning_3": "أي شخص يملك عبارة الاستعادة الخاصة بك يمكنه الوصول إلى محفظتك بأكملها",
     "reveal_your_recovery_phrase": "اكشف عن عبارة الاستعادة الخاصة بك",
     "take_me_to_wallet": "أعرض محفظتي"
   },
   "seed_reveal": {
-    "title": "عبارة الاستعادة السرية الخاصة بك",
-    "write_down_seed_importance": "حفظ هذه الكلمات يمكنه الوصول إلى المحفظة بأكملها! احفظهم في مكان آمن ولا تشاركهم أبداً",
+    "title": "عبارتك الاستعادية",
+    "write_down_seed_importance": "أي شخص يمتلك هذه الكلمات يمكنه الوصول إلى محفظتك بالكامل! يجب أن لا تشاركها أبدًا",
     "saved_these_words": "لقد حفظت هذه الكلمات",
     "copied": "تم نسخ عبارة الاستعادة"
   },
@@ -977,12 +977,12 @@
   "import_or_connect": {
     "title": "استعادة أو اتصال",
     "explanation": "أي شخص مع عبارة الاستعادة السرية الخاصة بك يمكنه الوصول إلى محفظتك بالكامل! احفظه في مكان آمن ولا تشاركه مع أي شخص",
-    "import_wallet": "استيراد بواسطة كلمة استعادة سرية أو مفتاح خاص",
-    "import_wallet_description": "إضف محفظة باستخدام جملة استعادة سرية أو مفتاح خاص",
+    "import_wallet": "استورد باستخدام عبارة الاستعادة السرية أو المفتاح الخاص",
+    "import_wallet_description": "أضف محفظة باستخدام عبارة الاستعادة السرية أو المفتاح الخاص",
     "connect_wallet": "اتصل بمحفظتك الأجهزة",
     "connect_wallet_description": "أضف الحسابات من محفظة الأجهزة الخاصة بك",
-    "watch_address": "مراقبة عنوان إثريوم",
-    "watch_address_description": "مراقبة عنوان عمومي أو اسم ENS"
+    "watch_address": "مشاهدة عنوان Ethereum",
+    "watch_address_description": "مشاهدة عنوان عام أو اسم ENS"
   },
   "import_wallet_selection": {
     "title": "محافظك",
@@ -999,7 +999,7 @@
     "account_summary_last_tx": "آخر معاملة: %{lastTx} منذ"
   },
   "watch_wallet": {
-    "title": "مراقبة عنوان إثريوم",
+    "title": "مشاهدة عنوان Ethereum",
     "description": "أدخل أي عنوان Ethereum أو اسم ENS. ستحتاج إلى استيراده لاحقًا لإرسال أو توقيع المعاملات.",
     "invalid_address": "عنوان غير صالح",
     "unsupported_tld": "%{tld} غير مدعوم",
@@ -1069,12 +1069,12 @@
       "disconnect": "قطع الاتصال"
     },
     "home_header_right": {
-      "settings": "الإعدادات",
+      "settings": "الاعدادات",
       "qr_code": "رمز الاستجابة السريعة الخاص بي",
       "rainbow_profile": "ملف راينبو الشخصي",
       "guides_and_support": "الدلائل والدعم",
       "share_feedback": "شارك الرأي",
-      "lock_rainbow": "قفل راينبو",
+      "lock_rainbow": "قفل الرينبو",
       "testnet_mode": "وضع Testnet",
       "testnet_mode_off": "أيقاف",
       "testnet_mode_on": "تشغيل"
@@ -1093,7 +1093,7 @@
       "app_connected": "%{appName} متصل"
     },
     "sheet": {
-      "connect": "اتصال",
+      "connect": "اتصل",
       "connect_different_wallet": "الاتصال بمحفظة مختلفة",
       "dont_show_again": "لا تظهر هذا مرة أخرى",
       "allow_to": "السماح لـ %{appName} بعرض عنوان محفظتك ، الرصيد ، النشاط وطلب الموافقة على المعاملات",
@@ -1102,10 +1102,10 @@
     "wallet_item": {
       "disconnect": "قطع الاتصال",
       "switch_connection": "تبديل الاتصال",
-      "connect": "اتصال"
+      "connect": "اتصل"
     },
     "wallet_item_dropdown_menu": {
-      "connect": "اتصال",
+      "connect": "اتصل",
       "disconnect": "قطع الاتصال",
       "open_app": "افتح %{appName}"
     },
@@ -1153,12 +1153,12 @@
     "message": "رسالة",
     "message_copied": "تم نسخ الرسالة",
     "transaction_data_copied": "تم نسخ بيانات المعاملة",
-    "sign_message": "توقيع الرسالة",
+    "sign_message": "توقيع",
     "sign_message_anyway": "التوقيع على أي حال",
     "confirm_hw": "تأكيد على جهازك",
     "balance": "الرصيد",
-    "send_transaction": "أرسل المعاملة",
-    "send_transaction_anyway": "التأكيد على أي حال",
+    "send_transaction": "توقيع",
+    "send_transaction_anyway": "التوقيع على أي حال",
     "contract_deployment": "نشر العقد",
     "transaction_request": "طلب العملية",
     "insufficient_gas_funds": "أنت بحاجة إلى المزيد %{token}",
@@ -1225,8 +1225,8 @@
       },
       "micro": "ميلي ثانية",
       "short": {
-        "plural": "مللي ثانية",
-        "singular": "مللي ثانية"
+        "plural": "ميلي ثانية",
+        "singular": "ميلي ثانية"
       }
     },
     "minutes": {
@@ -1258,7 +1258,7 @@
   },
   "common_actions": {
     "back": "رجوع",
-    "cancel": "الغاء",
+    "cancel": "إلغاء",
     "continue": "استمر",
     "copy_to_clipboard": "نسخ إلى الحافظة"
   },
@@ -1303,6 +1303,7 @@
     "tokens": "رموز"
   },
   "activity": {
+    "hour": "Last Hour",
     "today": "اليوم",
     "yesterday": "أمس",
     "this_month": "هذا الشهر",
@@ -1531,20 +1532,20 @@
   },
   "speed_up_and_cancel": {
     "speed_up": "تسريع العملية",
-    "cancel": "الغاء",
+    "cancel": "إلغاء",
     "view_on_etherscan": "عرض على Etherscan",
     "view_on_explorer": "عرض على الاستكشاف",
-    "copy_tx_hash": "نسخ الهاش الخاص بالمعاملة",
+    "copy_tx_hash": "نسخ هاش المعاملة",
     "cancel_explanation": "هذا سوف يحاول إلغاء معاملتك المعلقة. يتطلب بث معاملة أخرى.",
     "speed_up_explanation": "هذا سوف يسرع معاملتك المعلقة عبر استبدالها. هناك فرصة أن يتم تأكيد معاملتك الأصلية أولاً.",
     "cancel_title": "إلغاء المعاملة",
     "speed_up_title": "تسريع المعاملة",
     "wallet": "محفظة",
     "balance": "الرصيد",
-    "cancel_cta": "الغاء العملية",
-    "speed_up_cta": "تسريع العملية",
-    "speed_up_transaction": "تسريع العملية",
-    "close_cta": "الغاء",
+    "cancel_cta": "إلغاء المعاملة",
+    "speed_up_cta": "تسريع المعاملة",
+    "speed_up_transaction": "تسريع المعاملة",
+    "close_cta": "إلغاء",
     "handle_copy_title": "تم نسخ الهاش الخاص بالمعاملة",
     "revoke_approval": "إلغاء الموافقة",
     "speed_up_failed": {
@@ -1711,8 +1712,8 @@
       "action_label": "فهمت"
     },
     "send": {
-      "to_smart_contract": {
-        "description_1": "العنوان الذي أدخلته مخصص لعقد ذكي",
+      "to_token_contract": {
+        "description_1": "The address you entered is for a token contract.",
         "description_2": "ما عدا الحالات النادرة، ربما لا يجب أن تقوم بذلك. يمكنك أن تخسر أصولك أو أن تذهب إلى المكان الخاطئ",
         "description_3": "تحقق مرتين من العنوان، وأكده مع المستلم، أو اتصل بالدعم أولا",
         "title": "انتظر قليلا!"
@@ -1783,8 +1784,8 @@
     "wallet_plural": "المحافظ",
     "wallet_pronoun_plural": "هم",
     "wallet_pronoun_singular": "هو",
-    "done": "انتهى",
-    "add_wallet": "أضف محفظة",
+    "done": "تم",
+    "add_wallet": "إضافة محفظة",
     "add_by_index_title": "إضافة محفظة بواسطة فهرسها",
     "add_by_index_description": "حدد مسار التفريع وأدخل فهرس المحفظة التي ترغب في إضافتها",
     "waiting_for_trezor_connect": "انتظار الاتصال بـTrezor",
@@ -1817,7 +1818,7 @@
     "instant_yes": "نعم",
     "method_title": "طريقة",
     "methods_title": "طرق",
-    "network_title": "شبكة",
+    "network_title": "الشبكة",
     "networks_title": "الشبكات",
     "payment_methods": {
       "apple_pay": "آبل باي",
