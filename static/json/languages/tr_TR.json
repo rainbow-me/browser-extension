@@ -1303,7 +1303,6 @@
     "tokens": "Tokenler"
   },
   "activity": {
-    "hour": "Last Hour",
     "today": "Bugün",
     "yesterday": "Dün",
     "this_month": "Bu Ay",
@@ -1712,8 +1711,8 @@
       "action_label": "Anladım"
     },
     "send": {
-      "to_token_contract": {
-        "description_1": "The address you entered is for a token contract.",
+      "to_smart_contract": {
+        "description_1": "Girdiğiniz adres bir akıllı sözleşme içindir.",
         "description_2": "Nadir durumlar hariç, bunu yapmamanızı öneririz. Varlıklarınızı kaybedebilir veya yanlış yere gidebilirler.",
         "description_3": "Adresi çift kontrol edin, alıcıyla doğrulayın veya önce destekle iletişime geçin.",
         "title": "Sakin olun!"
