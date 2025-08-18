@@ -178,7 +178,7 @@
         "not_backed_up": "백업되지 않음",
         "back_up_now": "지금 백업",
         "context_menu": {
-          "create_wallet": "지갑 생성",
+          "create_wallet": "지갑 만들기",
           "view_secret_phrase": "비밀 구문 보기",
           "hide_wallets": "지갑 숨기기",
           "unhide_wallets": "지갑 숨김 해제"
@@ -186,7 +186,7 @@
         "wallet_details": {
           "title": "지갑 상세",
           "view_recovery_phrase": "복구 구문 보기",
-          "create_new_wallet": "새 지갑 생성",
+          "create_new_wallet": "새 지갑 만들기",
           "rename_wallet": "지갑 이름 변경",
           "unhide_wallet": "지갑 숨기기 해제",
           "delete_wallet": "지갑 삭제",
@@ -198,7 +198,7 @@
         },
         "new_wallet": {
           "name_your_wallet": "지갑의 이름을 지정하세요",
-          "create": "지갑 생성",
+          "create": "지갑 만들기",
           "input_placeholder": "예: 지갑 1"
         },
         "private_key": {
@@ -614,12 +614,12 @@
       },
       "toast": {
         "title": "주소 다운로드됨",
-        "description": "rainbow_addresses.csv"
+        "description": "''"
       }
     }
   },
   "connected_apps": {
-    "title": "연결된 앱들",
+    "title": "연결된 앱",
     "disconnect": "모두 연결 해제",
     "other_wallets": "다른 지갑들",
     "no_connections_title": "연결된 앱 없음",
@@ -654,7 +654,7 @@
     }
   },
   "send": {
-    "title": "보내기",
+    "title": "전송",
     "input_to_address_placeholder": "이름, ENS 또는 주소",
     "input_token_placeholder": "토큰",
     "max": "최대",
@@ -724,7 +724,7 @@
       "networks": "네트워크",
       "filter_by_network": "네트워크별 필터링",
       "switch_networks": "네트워크 전환",
-      "nothing_found": "아무것도 없음",
+      "nothing_found": "찾을 수 없음",
       "nothing_found_description": "일부 토큰은 충분한 유동성이 없어 성공적인 %{action}수행이 불가합니다.",
       "nothing_found_description_l2": "일부 토큰은 레이어 2 유동성이 충분하지 않아 성공적인 %{action}수행이 불가합니다.",
       "output_quotes_disabled": "출력 견적 비활성화"
@@ -754,7 +754,7 @@
     "settings": {
       "title": "%{Action} 설정",
       "route": "경로 %{actions} 경유",
-      "use_flashbots": "Flashbots 사용",
+      "use_flashbots": "Flashbots 사용하기",
       "max_slippage": "최대 슬리피지",
       "use_defaults": "기본값 사용",
       "done": "완료",
@@ -805,7 +805,7 @@
       "fee_on_transfer_token": "전송 토큰에 대한 수수료",
       "no_route": "경로를 찾을 수 없음",
       "no_quote": "견적을 받을 수 없음",
-      "enter_an_amount": "금액 입력",
+      "enter_an_amount": "금액을 입력하세요",
       "swap": "%{Action}",
       "swapping": "%{Actioning}",
       "waiting_signature": "장치에서 확인"
@@ -816,7 +816,7 @@
       "minimum_received": "최소 수령량",
       "via": "%{Actioning} 경유",
       "included_fee": "포함된 레인보우 비용",
-      "use_flashbots": "Flashbots 사용",
+      "use_flashbots": "Flashbots 사용하기",
       "exchange_rate": "환율",
       "asset_contract": "%{symbol} 계약",
       "more_details": "자세한 사항",
@@ -832,27 +832,27 @@
       "no_route": {
         "title": "경로를 찾을 수 없음",
         "description": "우리는 이 %{action}에 대한 루트를 찾을 수 없습니다. 이 %{action}에 대한 루트가 없거나, 금액이 너무 작을 수 있습니다.",
-        "action_label": "알았음"
+        "action_label": "확인"
       },
       "no_quote": {
-        "title": "견적이 없습니다",
+        "title": "견적을 받을 수 없음",
         "description": "이 %{action}에 대한 견적을 찾을 수 없습니다. 이는 %{action} 에 충분한 유동성이 없거나 토큰 구현에 문제가 있기 때문일 수 있습니다.",
         "action_label": "확인"
       },
       "insufficient_liquidity": {
         "title": "충분하지 않은 유동성",
         "description": "교환에서 충분한 유동성이 없기 때문에 이 %{action} 에 대한 견적을 찾을 수 없습니다.",
-        "action_label": "알겠습니다",
+        "action_label": "확인",
         "footer_text": {
-          "open_text": "아직 궁금한가요? ",
-          "link_text": "더 읽어보기",
+          "open_text": "아직 궁금하신가요? ",
+          "link_text": "더 읽기",
           "close_text": " AMMs와 토큰 유동성에 대해"
         }
       },
       "fee_on_transfer_token": {
         "title": "전송 토큰에 대한 수수료",
         "description": "이 %{action} 은 Rainbow에서 실패할 것입니다 왜냐하면 %{tokenName} 계약이 추가 수수료를 부과하기 때문입니다.",
-        "action_label": "알겠습니다",
+        "action_label": "확인",
         "footer_text": {
           "open_text": "읽기 ",
           "link_text": "우리의 가이드",
@@ -939,13 +939,13 @@
     "title": "시작하기 전에, 비밀 복구 구절을 백업하세요",
     "warning_1": "비밀 복구 구문을 써놓고 안전한 곳에 보관하는 것이 중요합니다",
     "warning_2": "비밀 복구 구문은 계정과 자금을 복구하는 유일한 방법입니다",
-    "warning_3": "비밀 복구 구문을 가진 사람은 당신의 지갑 전체에 접근할 수 있습니다",
+    "warning_3": "복구 문구를 가진 모든 사람이 전체 지갑에 액세스할 수 있습니다",
     "reveal_your_recovery_phrase": "복구 구문을 확인하세요",
     "take_me_to_wallet": "나의 지갑으로 이동"
   },
   "seed_reveal": {
-    "title": "비밀 복구 구문",
-    "write_down_seed_importance": "이 결과를 저장하면 당신의 전체 지갑에 접근할 수 있습니다! 안전한 곳에 보관하고 절대 공유하지 마세요",
+    "title": "회복 구문",
+    "write_down_seed_importance": "이 단어를 가진 사람은 여러분의 전체 지갑에 접근할 수 있습니다! 절대 공유해서는 안 됩니다.",
     "saved_these_words": "이 단어들을 저장했습니다",
     "copied": "복구 문구 복사됨"
   },
@@ -1070,11 +1070,11 @@
     },
     "home_header_right": {
       "settings": "설정",
-      "qr_code": "내 QR 코드",
+      "qr_code": "나의 QR 코드",
       "rainbow_profile": "레인보우 프로필",
       "guides_and_support": "가이드 및 지원",
       "share_feedback": "피드백 공유",
-      "lock_rainbow": "레인보우 잠금",
+      "lock_rainbow": "Rainbow 잠금",
       "testnet_mode": "테스트넷 모드",
       "testnet_mode_off": "끄기",
       "testnet_mode_on": "켜짐"
@@ -1111,7 +1111,7 @@
     },
     "wallet_switcher": {
       "switch_wallets": "지갑 전환",
-      "other_wallets": "다른 지갑",
+      "other_wallets": "다른 지갑들",
       "done": "완료",
       "connected": "연결됨"
     }
@@ -1131,7 +1131,7 @@
     "wallet": "지갑",
     "network": "네트워크",
     "switch_networks": "네트워크 전환",
-    "switch_wallets": "지갑 변경",
+    "switch_wallets": "지갑 전환",
     "allow_to_add_network": "네트워크 추가를 원합니다",
     "connect": "%{appName}에 연결",
     "connect_anyway": "그래도 연결",
@@ -1153,12 +1153,12 @@
     "message": "메시지",
     "message_copied": "메시지가 복사됨",
     "transaction_data_copied": "거래 데이터 복사됨",
-    "sign_message": "메시지 서명",
+    "sign_message": "서명",
     "sign_message_anyway": "그래도 서명",
     "confirm_hw": "장치에서 확인",
     "balance": "잔액",
-    "send_transaction": "거래 보내기",
-    "send_transaction_anyway": "그래도 확인",
+    "send_transaction": "서명",
+    "send_transaction_anyway": "그래도 서명",
     "contract_deployment": "계약 배포",
     "transaction_request": "트랜잭션 요청",
     "insufficient_gas_funds": "당신은 더 많은 %{token}이 필요합니다",
@@ -1303,6 +1303,7 @@
     "tokens": "토큰"
   },
   "activity": {
+    "hour": "Last Hour",
     "today": "오늘",
     "yesterday": "어제",
     "this_month": "이번 달",
@@ -1533,7 +1534,7 @@
     "speed_up": "가속",
     "cancel": "취소",
     "view_on_etherscan": "Etherscan에서 보기",
-    "view_on_explorer": "Explorer에서 보기",
+    "view_on_explorer": "탐색기에서 보기",
     "copy_tx_hash": "Tx 해시 복사",
     "cancel_explanation": "여러분의 보류 중인 트랜잭션을 취소하려고 합니다. 이것은 또 다른 트랜잭션을 전송해야합니다",
     "speed_up_explanation": "여러분의 보류 중인 트랜잭션을 대체하여 속도를 높입니다. 원래의 트랜잭션이 먼저 확인될 확률이 있습니다",
@@ -1541,9 +1542,9 @@
     "speed_up_title": "트랜잭션 가속",
     "wallet": "지갑",
     "balance": "잔액",
-    "cancel_cta": "거래 취소",
-    "speed_up_cta": "거래 속도 향상",
-    "speed_up_transaction": "거래 속도 향상",
+    "cancel_cta": "트랜잭션 취소",
+    "speed_up_cta": "트랜잭션 가속",
+    "speed_up_transaction": "트랜잭션 가속",
     "close_cta": "취소",
     "handle_copy_title": "Tx 해시 복사됨",
     "revoke_approval": "승인 취소",
@@ -1594,13 +1595,13 @@
       "market_cap_explainer": {
         "title": "시가 총액",
         "description": "시가 총액은 토큰의 순환 공급에 대한 전체 시장 가치입니다. 평균 거래 가격으로 계산됩니다",
-        "action": "알겠습니다"
+        "action": "확인"
       },
       "fully_diluted": "완전히 희석됨",
       "fully_diluted_explainer": {
         "title": "완전 희석된 시장 캡",
         "description": "전체 공급이 순환에 있을 경우 토큰의 최대 가능한 시장 캡",
-        "action": "알겠습니다"
+        "action": "확인"
       },
       "supply": "공급량",
       "max_total_supply": "최대 총 공급량",
@@ -1708,28 +1709,28 @@
         }
       },
       "link_button_label": "더 읽기",
-      "action_label": "알았습니다"
+      "action_label": "확인"
     },
     "send": {
-      "to_smart_contract": {
-        "description_1": "입력한 주소는 스마트 계약을 위한 것입니다.",
+      "to_token_contract": {
+        "description_1": "The address you entered is for a token contract.",
         "description_2": "드문 경우를 제외하면 이렇게 하지 않는 것이 좋습니다. 자산을 잃을 수도 있고 잘못된 곳으로 갈 수도 있습니다.",
         "description_3": "주소를 다시 확인하고, 수신자와 확인하거나 먼저 지원팀에 문의하십시오.",
         "title": "천천히!"
       },
-      "action_label": "알았습니다"
+      "action_label": "확인"
     },
     "custom_gas": {
-      "action_button_label": "알았습니다",
+      "action_button_label": "확인",
       "current_base_stable": "네트워크 트래픽이 현재 안정적입니다. 즐기세요!",
       "current_base_surging": "현재 수수료가 비정상적으로 높습니다! 거래가 급한 경우가 아니라면, 수수료가 떨어질 때까지 기다리는 것이 최선입니다.",
       "current_base_falling": "현재 수수료가 내려가고 있습니다!",
       "current_base_rising": "현재 수수료가 오르고 있습니다! 거래가 멈추지 않도록 최대 기본 수수료를 높게 설정하는 것이 좋습니다.",
       "current_base_description": "기본 수수료는 Ethereum 네트워크에 설정되어 있으며 네트워크의 사용량에 따라 달라집니다.",
-      "current_base_title": "현재 기본 수수료",
+      "current_base_title": "현재 기본 요금",
       "max_base_explainer_1": "이것은 이 거래에 대해 지불할 수 있는 최대 기본 수수료입니다.",
       "max_base_explainer_2": "보다 높은 최대 기본 수수료를 설정하면 수수료가 오르더라도 거래가 정체되는 것을 방지합니다.",
-      "max_base_title": "최대 기본 수수료",
+      "max_base_title": "최대 기본 요금",
       "max_priority_explainer": "광부 팁은 네트워크에서 거래를 확인하는 광부에게 직접 가게 됩니다.\n\n더 높은 팁은 거래가 빠르게 확인될 가능성이 높아집니다.",
       "max_priority_title": "광부 팁"
     }
