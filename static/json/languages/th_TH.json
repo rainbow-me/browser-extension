@@ -178,7 +178,7 @@
         "not_backed_up": "ยังไม่ได้สำรองข้อมูล",
         "back_up_now": "สำรองข้อมูลทันที",
         "context_menu": {
-          "create_wallet": "สร้างกระเป๋าสตางค์",
+          "create_wallet": "สร้างกระเป๋าเงิน",
           "view_secret_phrase": "ดูวลีลับ",
           "hide_wallets": "ซ่อนวอลเล็ต",
           "unhide_wallets": "เปิดดูวอลเล็ต"
@@ -186,8 +186,8 @@
         "wallet_details": {
           "title": "รายละเอียดกระเป๋าสตางค์",
           "view_recovery_phrase": "ดูวลีการกู้คืน",
-          "create_new_wallet": "สร้างกระเป๋าสตางค์ใหม่",
-          "rename_wallet": "เปลี่ยนชื่อกระเป๋าสตางค์",
+          "create_new_wallet": "สร้างกระเป๋าเงินใหม่",
+          "rename_wallet": "เปลี่ยนชื่อกระเป๋าเงิน",
           "unhide_wallet": "เปิดซ่อนกระเป๋าสตางค์",
           "delete_wallet": "ลบกระเป๋าสตางค์",
           "view_private_key": "ดูคีย์ส่วนตัว",
@@ -198,7 +198,7 @@
         },
         "new_wallet": {
           "name_your_wallet": "ตั้งชื่อกระเป๋าเงินของคุณ",
-          "create": "สร้างกระเป๋าสตางค์",
+          "create": "สร้างกระเป๋าเงิน",
           "input_placeholder": "ตัวอย่าง: กระเป๋าเงิน 1"
         },
         "private_key": {
@@ -939,13 +939,13 @@
     "title": "ก่อนที่คุณจะเริ่มต้น สำรองฟรัสประโยคฟื้นฟูลับของคุณ",
     "warning_1": "มันสำคัญที่จะเขียนและจัดเก็บวลีการกู้คืนลับๆ ของคุณในที่ซ่อนเร้น",
     "warning_2": "วลีการกู้คืนลับๆ ของคุณคือวิธีเดียวในการกู้คืนบัญชีและเงินทุนของคุณ",
-    "warning_3": "ใครก็ตามที่มีวลีการกู้คืนลับๆ ของคุณสามารถเข้าถึงกระเป๋าสตางค์ทั้งหมดของคุณ",
+    "warning_3": "ใคร ๆ ก็สามารถเข้าถึงกระเป๋าเงินของคุณทั้งหมดหากสามารถเข้าถึง Recovery Phrase ของท่าน",
     "reveal_your_recovery_phrase": "เปิดเผยวลีการกู้คืนของคุณ",
     "take_me_to_wallet": "พาฉันไปยังกระเป๋าสตางค์ของฉัน"
   },
   "seed_reveal": {
-    "title": "วลีการกู้คืนลับๆ ของคุณ",
-    "write_down_seed_importance": "เก็บคำเหล่านี้สามารถเข้าถึงกระเป๋าสตางค์ทั้งหมดของคุณ! เก็บไว้ที่ปลอดภัยและไม่เคยแชร์พวกนั้น",
+    "title": "วลีกู้คืนของคุณ",
+    "write_down_seed_importance": "ใครที่มีคำเหล่านี้สามารถเข้าถึงกระเป๋าสตางค์ของคุณได้ทั้งหมด! คุณไม่ควรแบ่งปันคำเหล่านี้ให้ใคร",
     "saved_these_words": "ฉันได้บันทึกคำเหล่านี้",
     "copied": "คัดลอก Recovery Phrase แล้ว"
   },
@@ -1066,7 +1066,7 @@
       "connect": "เชื่อมต่อ",
       "switch_network": "เปลี่ยนเครือข่าย",
       "switch_wallets": "เปลี่ยน Wallet",
-      "disconnect": "ยกเลิกการเชื่อมต่อ"
+      "disconnect": "ตัดการเชื่อมต่อ"
     },
     "home_header_right": {
       "settings": "การตั้งค่า",
@@ -1100,13 +1100,13 @@
       "connect_to": "เชื่อมต่อกับ %{appName}?"
     },
     "wallet_item": {
-      "disconnect": "ยกเลิกการเชื่อมต่อ",
+      "disconnect": "ตัดการเชื่อมต่อ",
       "switch_connection": "เปลี่ยนการเชื่อมต่อ",
       "connect": "เชื่อมต่อ"
     },
     "wallet_item_dropdown_menu": {
       "connect": "เชื่อมต่อ",
-      "disconnect": "ยกเลิกการเชื่อมต่อ",
+      "disconnect": "ตัดการเชื่อมต่อ",
       "open_app": "เปิด %{appName}"
     },
     "wallet_switcher": {
@@ -1131,7 +1131,7 @@
     "wallet": "กระเป๋าสตางค์",
     "network": "เครือข่าย",
     "switch_networks": "สลับเครือข่าย",
-    "switch_wallets": "สลับกระเป๋าสตางค์",
+    "switch_wallets": "สลับกระเป๋าเงิน",
     "allow_to_add_network": "ต้องการเพิ่มเครือข่าย",
     "connect": "เชื่อมต่อกับ %{appName}",
     "connect_anyway": "เชื่อมต่อแบบไม่รวมเงื่อนไข",
@@ -1153,12 +1153,12 @@
     "message": "ข้อความ",
     "message_copied": "คัดลอกข้อความแล้ว",
     "transaction_data_copied": "คัดลอกข้อมูลธุรกรรมแล้ว",
-    "sign_message": "ลงนามข้อความ",
+    "sign_message": "ลงชื่อ",
     "sign_message_anyway": "เซ็นโดยไม่คำนึงเงื่อนไข",
     "confirm_hw": "ยืนยันบนอุปกรณ์ของคุณ",
     "balance": "ยอดคงเหลือ",
-    "send_transaction": "ส่งธุรกรรม",
-    "send_transaction_anyway": "ยืนยันโดยไม่คำนึงเงื่อนไข",
+    "send_transaction": "ลงชื่อ",
+    "send_transaction_anyway": "เซ็นโดยไม่คำนึงเงื่อนไข",
     "contract_deployment": "การเปิดใช้งานสัญญา",
     "transaction_request": "คำร้องเรียกร้องการทำธุรกรรม",
     "insufficient_gas_funds": "คุณต้องมีเพิ่มเติม %{token}",
@@ -1303,6 +1303,7 @@
     "tokens": "โทเคน"
   },
   "activity": {
+    "hour": "Last Hour",
     "today": "วันนี้",
     "yesterday": "เมื่อวาน",
     "this_month": "เดือนนี้",
@@ -1592,7 +1593,7 @@
       "atl": "ต่ำสุดตลอดกาล",
       "market_cap": "มูลค่าตลาด",
       "market_cap_explainer": {
-        "title": "มูลค่าตามตลาด",
+        "title": "มูลค่าตลาด",
         "description": "มูลค่าตลาดคือมูลค่าสินทรัพย์ทั้งหมดของโทเคน คำนวณด้วยราคาเฉลี่ยจากตลาดแลกเปลี่ยน",
         "action": "เข้าใจแล้ว"
       },
@@ -1711,8 +1712,8 @@
       "action_label": "เข้าใจแล้ว"
     },
     "send": {
-      "to_smart_contract": {
-        "description_1": "ที่อยู่ที่คุณป้อนคือสำหรับสัญญาอัจฉริยะ",
+      "to_token_contract": {
+        "description_1": "The address you entered is for a token contract.",
         "description_2": "ยกเว้นสถานการณ์ที่ไม่ปกติ คุณควรไม่ทำเช่นนี้ คุณอาจจะสูญเสียสินทรัพย์หรือสินทรัพย์อาจจะไปยังสถานที่ที่ผิด",
         "description_3": "ตรวจสอบที่อยู่อีกครั้ง ตรวจสอบด้วยผู้รับ หรือติดต่อฝ่ายสนับสนุนเรื่องนี้ก่อน",
         "title": "รอสักครู่!"
