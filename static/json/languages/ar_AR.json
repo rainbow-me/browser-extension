@@ -1303,6 +1303,7 @@
     "tokens": "رموز"
   },
   "activity": {
+    "hour": "Last Hour",
     "today": "اليوم",
     "yesterday": "أمس",
     "this_month": "هذا الشهر",
@@ -1711,11 +1712,11 @@
       "action_label": "فهمت"
     },
     "send": {
-      "to_smart_contract": {
-        "description_1": "العنوان الذي أدخلته مخصص لعقد ذكي",
-        "description_2": "ما عدا الحالات النادرة، ربما لا يجب أن تقوم بذلك. يمكنك أن تخسر أصولك أو أن تذهب إلى المكان الخاطئ",
-        "description_3": "تحقق مرتين من العنوان، وأكده مع المستلم، أو اتصل بالدعم أولا",
-        "title": "انتظر قليلا!"
+      "to_token_contract": {
+        "description_1": "The address you entered is for a token contract.",
+        "description_2": "Except for rare situations, you probably shouldn't do this. You could lose your assets or they might go to the wrong place.",
+        "description_3": "Double check the address, verify it with the recipient, or contact support first.",
+        "title": "Hold your horses!"
       },
       "action_label": "فهمت"
     },
