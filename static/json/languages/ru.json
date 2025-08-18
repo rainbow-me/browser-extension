@@ -1,0 +1,1892 @@
+{
+  "test": {
+    "salute": "привет!"
+  },
+  "label": {
+    "toggle": "Переключить"
+  },
+  "permissions": {
+    "firefox_permission_denied": "Rainbow требуется разрешение на доступ ко всем сайтам для нормальной работы. Пожалуйста, предоставьте разрешение, чтобы продолжить"
+  },
+  "wallet": {
+    "rename": "Переименовать кошелек",
+    "edit_appearance": "Редактировать внешний вид",
+    "view_on": "Посмотреть на %{explorer}",
+    "copy_address": "Скопировать адрес"
+  },
+  "wallet_switcher": {
+    "title": "Кошельки",
+    "rename_wallet": "Переименовать кошелек",
+    "copy_address": "Скопировать адрес",
+    "remove_wallet": "Удалить кошелек",
+    "hide_wallet": "Скрыть кошелек",
+    "watching": "Наблюдение",
+    "ledger": "Ledger",
+    "trezor": "Trezor",
+    "add_another_wallet": "Добавить еще один кошелек",
+    "connect_hardware_wallet": "Добавить с помощью аппаратного кошелька",
+    "search_placeholder": "Поиск кошельков",
+    "no_wallets": "Нет кошельков",
+    "no_results": "Нет результатов",
+    "quick_promo": {
+      "text": "Перетаскивайте кошельки для изменения их порядка",
+      "text_bold": "Совет:"
+    }
+  },
+  "qr_code": {
+    "copy_address": "Скопировать адрес"
+  },
+  "add_wallet": {
+    "title": "Добавить еще один кошелек",
+    "create_wallet": "Создать новый кошелек",
+    "create_wallet_description": "Создайте новый кошелек с помощью одной из своих сид-фраз.",
+    "import_wallet": "Импорт с помощью Секретной Восстановительной Фразы или Приватного Ключа",
+    "import_wallet_description": "Добавьте кошелек, используя Секретную Восстановительную Фразу или Приватный Ключ.",
+    "hardware_wallet": "Добавить с помощью аппаратного кошелька",
+    "hardware_wallet_description": "Добавьте еще аккаунты с помощью Вашего аппаратного кошелька.",
+    "watch_address": "Добавить Ethereum адрес в наблюдение",
+    "watch_address_description": "Следите за публичным адресом или именем ENS."
+  },
+  "create_wallet_prompt": {
+    "title": "Назовите ваш кошелек",
+    "create_wallet": "Создать кошелек",
+    "create": "Создать",
+    "input_placeholder": "Название"
+  },
+  "rename_wallet_prompt": {
+    "rename_wallet": "Переименовать кошелек",
+    "done": "Готово"
+  },
+  "remove_wallet_prompt": {
+    "error": "Ошибка при удалении кошелька",
+    "remove": "Удалить",
+    "remove_title": "Удалить %{name}",
+    "remove_last_wallet_title": "Удалить %{name} и вашу секретную фразу для восстановления",
+    "remove_description": "Это удалит кошелек из списка и удалит все связанные с ним данные.",
+    "remove_last_wallet_description": "Это навсегда удалит ваш кошелек и секретную фразу для восстановления, а также все связанные данные",
+    "hide": "Скрыть",
+    "hide_title": "Скрыть %{name}",
+    "hide_description": "Это только удаляет кошелек из списка. Вы можете найти этот кошелек и дополнительные параметры управления в настройках.",
+    "cancel": "Отмена"
+  },
+  "settings": {
+    "title": "Настройки",
+    "use_rainbow_as_default_wallet": "Использовать Rainbow в качестве основного кошелька",
+    "sounds": "Звуки",
+    "default_wallet_description": "Разрешить приложениям выбирать Rainbow в качестве расширения для подключения",
+    "contacts": "Контакты",
+    "guides_and_support": "Руководства и поддержка",
+    "learn_about_ethereum": "Узнать о Ethereum",
+    "follow_us_on_twitter": "Подписаться на нас в Twitter",
+    "share_feedback": "Отправить отзыв",
+    "theme": {
+      "title": "Тема",
+      "system": "Системная",
+      "light": "Светлая",
+      "dark": "Тёмная"
+    },
+    "networks": {
+      "mainnet": "Основная сеть",
+      "testnet": "Тестнет",
+      "title": "Сети",
+      "testnets": "Тестнеты",
+      "quick_promo": {
+        "text": "Перетаскивайте сети для изменения их порядка",
+        "text_bold": "Совет:"
+      },
+      "disable": "Отключить",
+      "disabled": "Отключено",
+      "enable": "Включить",
+      "enabled": "Сеть включена",
+      "description": "Выберите, какие сети и токены отображать. Вы можете подключиться к любым сетям, поддерживаемым Rainbow, даже если они не отмечены.",
+      "developer_tools": {
+        "title": "Включить инструменты разработчика",
+        "toggle_explainer": "Включает ярлык режима Testnet (T) и добавляет переключатель в верхнее правое меню главного экрана"
+      },
+      "custom_rpc": {
+        "title": "Добавить сеть",
+        "add_custom_network": "Добавить пользовательскую сеть",
+        "networks": "Сети",
+        "network_name": "Имя сети",
+        "rpc_url": "URL RPC",
+        "chain_id": "Идентификатор сети",
+        "symbol": "Символ",
+        "decimals": "Десятичные знаки",
+        "active": "Активен",
+        "testnet": "Тестнет",
+        "block_explorer_url": "URL блок-эксплорера",
+        "add_network": "Добавить сеть",
+        "add_rpc": "Добавить RPC-точку доступа",
+        "add_network_rpc": "Добавить RPC %{rpcName}",
+        "add_asset": "Добавить пользовательский токен",
+        "network_added": "Сеть добавлена",
+        "network_added_correctly": "%{networkName}",
+        "remove_token": "Удалить токен",
+        "remove_rpc": "Удалить RPC",
+        "remove_network": "Удалить сеть",
+        "tokens": "Токены",
+        "cant_connect": "Не удаётся подключиться к этому RPC-эндпоинту",
+        "rpc_not_responding": "Предоставленный RPC-эндпоинт не отвечает",
+        "rainbow_default_rpc": "Rainbow",
+        "rainbow_default": "Rainbow"
+      },
+      "rpc_endpoints": "RPC-конечные точки",
+      "watch_asset": {
+        "title": "Добавить пользовательский токен"
+      }
+    },
+    "privacy_and_security": {
+      "title": "Конфиденциальность и безопасность",
+      "analytics": "Аналитика",
+      "analytics_description": "Помогите Rainbow улучшить свои продукты и сервисы, разрешив анализ данных использования. Собранные данные не связаны с вами или вашей учетной записью.",
+      "hide_asset_balances": "Скрыть балансы активов",
+      "hide_asset_balances_description": "Если это включено, Rainbow будет затруднять распознавание балансов токенов в приложении.",
+      "auto_hide_balances_under_1": "Скрыть балансы меньше $1",
+      "view_private_key": "Посмотреть Приватный Ключ",
+      "view_secret_recovery_phrase": "Посмотреть Секретную фразу для восстановления",
+      "auto_lock_timer": {
+        "title": "Таймер автоматической блокировки",
+        "immediately": "Сразу",
+        "one_minute": "1 минута",
+        "five_minutes": "5 минут",
+        "ten_minutes": "10 минут",
+        "fifteen_minutes": "15 минут",
+        "thirty_minutes": "30 минут",
+        "one_hour": "1 час",
+        "twelve_hours": "12 часов",
+        "twenty_four_hours": "24 часа",
+        "none": "Нет"
+      },
+      "change_password": {
+        "title": "Изменить пароль",
+        "header_label": "Изменить свой пароль"
+      },
+      "confirm_password": {
+        "title": "Введите свой пароль",
+        "description": "Вам нужно ввести свой текущий пароль, чтобы продолжить."
+      },
+      "wallets_and_keys": {
+        "title": "Кошельки и ключи",
+        "create_a_new_wallet": "Создать новый кошелек",
+        "imported": "Импортированный",
+        "wallet_single": "Кошелек",
+        "wallet_plural": "Кошельки",
+        "recovery_phrase_label": "Группа Кошельков",
+        "private_key_label": "Приватный Ключ",
+        "hardware_wallet_label": "Аппаратный Кошелек",
+        "backed_up": "Резервное копирование выполнено",
+        "not_backed_up": "Резервное копирование не выполнено",
+        "back_up_now": "Сделать резервную копию сейчас",
+        "context_menu": {
+          "create_wallet": "Создать кошелек",
+          "view_secret_phrase": "Просмотреть секретную фразу",
+          "hide_wallets": "Скрыть кошельки",
+          "unhide_wallets": "Показать кошельки"
+        },
+        "wallet_details": {
+          "title": "Детали Кошелька",
+          "view_recovery_phrase": "Просмотреть фразу восстановления",
+          "create_new_wallet": "Создать новый кошелек",
+          "rename_wallet": "Переименовать кошелек",
+          "unhide_wallet": "Разблокировать скрытый кошелек",
+          "delete_wallet": "Удалить кошелек",
+          "view_private_key": "Посмотреть Приватный Ключ",
+          "copy_address": "Скопировать адрес",
+          "hidden": "Скрытый",
+          "back_up_now": "Сделать резервную копию сейчас",
+          "last_backed_up": "Последнее резервное копирование было %{date}"
+        },
+        "new_wallet": {
+          "name_your_wallet": "Назовите ваш кошелек",
+          "create": "Создать кошелек",
+          "input_placeholder": "например: Кошелек 1"
+        },
+        "private_key": {
+          "title": "Ваш личный ключ",
+          "subtitle": "Любой, у кого есть этот ключ, может получить доступ ко всему вашему кошельку! Никогда не делитесь им.",
+          "saved": "Я сохранял это",
+          "warning_1": "Никогда не делитесь вашим личным ключом и не вводите его в какие-либо приложения.",
+          "warning_2": "Убедитесь, что никто не может видеть ваш экран при просмотре вашего приватного ключа.",
+          "warning_3": "Любой, у кого есть ваш приватный ключ, может получить доступ ко всему вашему кошельку.",
+          "warning_4": "Служба поддержки Rainbow никогда не попросит ваш приватный ключ.",
+          "show": "Показать приватный ключ",
+          "copied": "Приватный ключ скопирован"
+        },
+        "recovery_phrase": {
+          "title": "Ваша фраза для восстановления",
+          "subtitle": "Кто угодно, у кого есть эти слова, может получить доступ ко всему вашему кошельку! Никогда не делитесь ими.",
+          "saved": "Я сохранил эти слова",
+          "warning_1": "Никогда не делитесь вашей фразой для восстановления или не вводите ее в любые приложения.",
+          "warning_2": "Убедитесь, что никто не может видеть ваш экран при просмотре вашей фразы для восстановления.",
+          "warning_3": "Любой, у кого есть ваша фраза для восстановления, может получить доступ ко всему вашему кошельку.",
+          "warning_4": "Служба поддержки Rainbow никогда не попросит вашу фразу для восстановления.",
+          "show": "Показать фразу для восстановления",
+          "copied": "Фраза для восстановления скопирована"
+        },
+        "wipe_wallets": {
+          "delete": "Сбросить Rainbow",
+          "acknowlegement": "Я прочитал и подтверждаю вышеизложенную информацию",
+          "warning_one": "Сброс Rainbow приведёт к сбросу пароля и удалению всех кошельков",
+          "warning_two": "Также будут стёрты все данные и настройки Rainbow",
+          "warning_three": "Перед продолжением убедитесь, что ваша секретная фраза восстановления в безопасности ",
+          "warning_four": "Ваши активы и средства доступны при наличии правильной информации для восстановления",
+          "button_wipe": "Сбросить Rainbow",
+          "button_complete": "Завершить проверку выше",
+          "wipe_confirmation": "Сбросить Rainbow",
+          "wipe_confirmation_desc": "Вы уверены, что хотите сбросить расширение браузера Rainbow?",
+          "wipe_confirmation_button": "Сбросить",
+          "wipe_confirmation_cancel": "Отмена"
+        },
+        "wipe_wallet_group": {
+          "delete": "Удалить группу кошельков",
+          "acknowlegement": "Я сохранил свою секретную фразу восстановления",
+          "warning_one": "Удаление группы кошельков приведет к удалению фразы восстановления из Rainbow",
+          "warning_two": "Ваши активы и средства можно восстановить, если у вас есть правильная информация для восстановления кошелька",
+          "warning_three": "Перед продолжением убедитесь, что вы сохранили свою секретную фразу восстановления",
+          "button_wipe": "Сбросить Rainbow",
+          "button_complete": "Завершить проверку выше",
+          "wipe_confirmation": "Удалить группу кошельков",
+          "wipe_confirmation_desc": "Вы уверены, что хотите удалить свою секретную фразу восстановления из Rainbow?",
+          "wipe_confirmation_button": "Удалить",
+          "wipe_confirmation_cancel": "Отмена"
+        },
+        "wipe_hardware_wallet_group": {
+          "delete": "Отвязать %{vendor}",
+          "wipe_confirmation": "Отвязать %{vendor}",
+          "wipe_confirmation_desc": "Вы уверены, что хотите отвязать ваш %{vendor} и отключить ваши кошельки?",
+          "wipe_confirmation_button": "Отвязать",
+          "wipe_confirmation_cancel": "Отмена"
+        }
+      }
+    },
+    "transactions": {
+      "title": "Транзакции",
+      "default_speed": "Скорость по умолчанию",
+      "use_flashbots": "Использовать Flashbots",
+      "clear_transactions_and_nonces": "Очистить Ожидающие Транзакции",
+      "clear_transactions_and_nonces_success": "Ожидающие транзакции очищены",
+      "flashbots_description": "Flashbots защищает ваши транзакции и снижает вероятность их неудачи."
+    },
+    "approvals": {
+      "title": "Разрешения"
+    },
+    "currency": {
+      "title": "Валюта",
+      "ETH": "Ethereum",
+      "USD": "Доллар США",
+      "EUR": "Евро",
+      "GBP": "Фунт стерлингов",
+      "AUD": "Австралийский доллар",
+      "CNY": "Китайский юань",
+      "KRW": "Южнокорейская вона",
+      "JPY": "Японская иена",
+      "RUB": "Российский рубль",
+      "INR": "Индийская рупия",
+      "TRY": "Турецкая лира",
+      "CAD": "Канадский доллар",
+      "NZD": "Новозеландский доллар",
+      "ZAR": "Южноафриканский рэнд"
+    },
+    "language": {
+      "title": "Язык"
+    },
+    "feature_flags": {
+      "full_watching_wallets": "Полный доступ к отслеживаемым кошелькам",
+      "hw_wallets_enabled": "Включить поддержку аппаратных кошельков",
+      "command_k_internal_shortcuts_enabled": "Включить внутренние ярлыки ⌘K",
+      "custom_rpc": "Пользовательский RPC",
+      "degen_mode": "Degenмод"
+    }
+  },
+  "transactions": {
+    "savings": "Сбережения",
+    "cancelled": "Транзакция отменена",
+    "burn": {
+      "pending": "Сжигание",
+      "confirmed": "Сожжено",
+      "failed": "Не удалось сжечь"
+    },
+    "cancel": {
+      "pending": "Отмена",
+      "confirmed": "Отменено",
+      "failed": "Не удалось отменить"
+    },
+    "send": {
+      "pending": "Отправка",
+      "confirmed": "Отправлено",
+      "failed": "Не удалось отправить"
+    },
+    "receive": {
+      "pending": "",
+      "confirmed": "Получено",
+      "failed": ""
+    },
+    "withdraw": {
+      "pending": "Снятие",
+      "confirmed": "Снято",
+      "failed": "Снятие не удалось"
+    },
+    "deposit": {
+      "pending": "Пополнение",
+      "confirmed": "Пополнено",
+      "failed": "Пополнение не удалось"
+    },
+    "mint": {
+      "pending": "Создание",
+      "confirmed": "Создано",
+      "failed": "Создание не удалось"
+    },
+    "approve": {
+      "pending": "Утверждение",
+      "confirmed": "Утверждено",
+      "failed": "Утверждение не удалось"
+    },
+    "contract_interaction": {
+      "pending": "Взаимодействие в ожидании",
+      "confirmed": "Взаимодействие состоялось",
+      "failed": "Взаимодействие не удалось"
+    },
+    "swap": {
+      "pending": "Смена",
+      "confirmed": "Заменено",
+      "failed": "Замена не удалась"
+    },
+    "borrow": {
+      "pending": "Заимствование",
+      "confirmed": "Заимствовано",
+      "failed": "Заимствование не удалось"
+    },
+    "claim": {
+      "pending": "Получение",
+      "confirmed": "Получено",
+      "failed": "Получение не удалось"
+    },
+    "deployment": {
+      "pending": "Внедрение",
+      "confirmed": "Внедрено",
+      "failed": "Внедрение не удалось"
+    },
+    "repay": {
+      "pending": "Возврат",
+      "confirmed": "Возвращено",
+      "failed": "Возврат не удался"
+    },
+    "stake": {
+      "pending": "Ставка",
+      "confirmed": "Ставка сделана",
+      "failed": "Ставка не удалась"
+    },
+    "unstake": {
+      "pending": "Отмена ставки",
+      "confirmed": "Ставка отменена",
+      "failed": "Отмена ставки не удалась"
+    },
+    "purchase": {
+      "pending": "Покупка",
+      "confirmed": "Куплено",
+      "failed": "Покупка не удалась"
+    },
+    "revoke": {
+      "pending": "Отзыв",
+      "confirmed": "Отозвано",
+      "failed": "Отзыв не удался"
+    },
+    "sale": {
+      "pending": "Продажа",
+      "confirmed": "Продано",
+      "failed": "Продажа не удалась"
+    },
+    "bridge": {
+      "pending": "Перевод",
+      "confirmed": "Переведено",
+      "failed": "Перевод не удался"
+    },
+    "airdrop": {
+      "pending": "",
+      "confirmed": "Аирдроп",
+      "failed": ""
+    },
+    "wrap": {
+      "pending": "Обёртывание",
+      "confirmed": "Обёрнуто",
+      "failed": "Не удалось обернуть"
+    },
+    "unwrap": {
+      "pending": "Развертывание",
+      "confirmed": "Развернуто",
+      "failed": "Распаковка не удалась"
+    },
+    "bid": {
+      "pending": "Ставка",
+      "confirmed": "Ставка",
+      "failed": "Ставка не удалась"
+    },
+    "speed_up": {
+      "pending": "Ускорение",
+      "confirmed": "Ускорено",
+      "failed": "Не удалось ускорить"
+    }
+  },
+  "command_k": {
+    "action_labels": {
+      "activate_command": "Активировать команду",
+      "open": "Открыть",
+      "open_in_new_tab": "Открыть в новой вкладке",
+      "switch_to_wallet": "Переключиться на кошелек",
+      "send_to_contact": "Отправить контакту",
+      "view": "Просмотр",
+      "uuid_copied": "UUID скопирован"
+    },
+    "commands": {
+      "names": {
+        "send": "Отправить",
+        "swap": "Обменять",
+        "bridge": "Мост",
+        "get": "Получить",
+        "my_wallets": "Мои кошельки",
+        "my_contacts": "Мои контакты",
+        "approvals": "Разрешения",
+        "my_tokens": "Мои токены",
+        "my_tokens_watched": "Токены",
+        "my_nfts": "Мои NFT",
+        "my_nfts_watched": "NFT",
+        "copy_address": "Скопировать адрес",
+        "view_profile": "Посмотреть профиль Rainbow",
+        "add_wallet": "Добавить кошелек",
+        "lock": "Заблокировать Rainbow",
+        "connected_apps": "Подключенные приложения",
+        "developer_tools": "Переключить инструменты разработчика",
+        "developer_tools_disabled": "Включить инструменты разработчика",
+        "developer_tools_enabled": "Отключить инструменты разработчика",
+        "testnet_mode": "Переключить режим Testnet",
+        "testnet_mode_disabled": "Включить режим Testnet",
+        "testnet_mode_enabled": "Отключить режим Testnet",
+        "settings": "Настройки",
+        "network_settings": "Настройки сети",
+        "my_qr_code": "Мой QR-код",
+        "my_qr_code_watched": "QR-код",
+        "create_wallet": "Создать кошелек",
+        "import_wallet": "Импортировать кошелек",
+        "watch_wallet": "Просмотреть кошелек",
+        "add_hardware_wallet": "Добавить аппаратный кошелек",
+        "hide_balances": "Переключить скрытые балансы",
+        "hide_balances_hidden": "Показать балансы",
+        "hide_balances_revealed": "Скрыть балансы",
+        "hide_small_balances": "Переключить малые балансы",
+        "hide_small_balances_hidden": "Показать малые балансы",
+        "hide_small_balances_revealed": "Скрыть малые балансы",
+        "wallets_and_keys": "Кошельки и ключи",
+        "view_full_screen": "Просмотр на полный экран",
+        "view_token": "Просмотр токена",
+        "view_token_details": "Посмотреть детали %{symbol}",
+        "send_token": "Отправить токен",
+        "swap_token": "Обменять токен",
+        "copy_token_address": "Скопировать адрес контракта токена",
+        "view_token_on_explorer": "Просмотр в обозревателе",
+        "add_as_watched_wallet": "Просмотр данного кошелька",
+        "view_on_ens": "Просмотр в ENS",
+        "switch_to_wallet": "Переключиться на этот кошелек",
+        "send_to_wallet": "Отправить на этот кошелек",
+        "add_contact": "Добавить как контакт",
+        "remove_contact": "Удалить контакт",
+        "hide_token": "Скрыть %{name}",
+        "unhide_token": "Показать %{name}",
+        "hide": "Скрыть",
+        "unhide": "Показать",
+        "copy_wallet_address": "Скопировать адрес",
+        "view_wallet_on_etherscan": "Просмотр в Etherscan",
+        "send_contact": "Отправить контакту",
+        "export_addresses_as_csv": "Экспортировать адреса в формате CSV",
+        "enable_flashbots": "Включить Flashbots",
+        "disable_flashbots": "Отключить Flashbots",
+        "copy_uuid": "Копировать UUID"
+      },
+      "search_tags": {
+        "swap": "купить, продать, обменять, заказать, обмен, dex, маршруты",
+        "bridge": "перевод, цепь, маршруты",
+        "hide_token": "скрытый",
+        "hide_nft": "скрытый",
+        "get": "обмен, мост",
+        "my_wallets": "мой, переключение",
+        "my_contacts": "мои",
+        "my_tokens_watched": "мои",
+        "my_nfts_watched": "мои",
+        "view_profile": "профиль, галерея, ens, nft",
+        "testnet_mode": "переключатель, сети, тестовые сети",
+        "developer_tools": "переключатель, сети, разработчик, тестовые сети",
+        "approvals": "отзывать, токены, нфт, контракты",
+        "settings": "настройки",
+        "network_settings": "тестовые сети, разработчик, сети",
+        "my_qr_code_watched": "мои",
+        "create_wallet": "добавить, новый",
+        "import_wallet": "добавить, восстановление секрета, фраза восстановления, приватный ключ",
+        "watch_wallet": "добавить",
+        "add_hardware_wallet": "ledger, trezor, подключить",
+        "hide_balances": "переключить",
+        "hide_small_balances": "переключить",
+        "wallets_and_keys": "кошельки и ключи, настройки, предпочтения",
+        "diagnostics": "диагностика"
+      }
+    },
+    "command_rows": {
+      "no_value": "Нет значения"
+    },
+    "developer_tools_toast": {
+      "description_enabled": "Нажмите T для переключения режима Testnet",
+      "title_disabled": "Инструменты разработчика отключены",
+      "title_enabled": "Инструменты разработчика включены"
+    },
+    "hide_balances_toast": {
+      "description_hidden": "Ваши балансы скрыты",
+      "description_revealed": "Ваши балансы видимы",
+      "title_hidden": "Скрытые балансы",
+      "title_revealed": "Раскрытые балансы"
+    },
+    "hide_small_balances_toast": {
+      "description_hidden": "Баланс менее $1",
+      "description_revealed": "Все токены видимы",
+      "title_hidden": "Скрытые небольшие балансы",
+      "title_revealed": "Показать небольшие балансы"
+    },
+    "contact_toast": {
+      "title_added": "Контакт добавлен",
+      "title_removed": "Контакт удален"
+    },
+    "no_results": "Нет результатов",
+    "pages": {
+      "add_wallet": {
+        "search_placeholder": "Поиск способов добавить кошелек…",
+        "section_title": "Добавить кошелек"
+      },
+      "home": {
+        "search_placeholder": "Поиск или введите команду…",
+        "section_title": "Предложения",
+        "section_title_results": "Результаты"
+      },
+      "my_tokens": {
+        "empty_label": "Токены не найдены",
+        "search_placeholder": "Поиск токенов…",
+        "section_title": "Мои токены"
+      },
+      "my_nfts": {
+        "empty_label": "NFT не найдены",
+        "search_placeholder": "Искать NFT…",
+        "section_title": "Мои NFT"
+      },
+      "my_wallets": {
+        "search_placeholder": "Выберите кошелек для переключения…",
+        "section_title": "Мои кошельки"
+      },
+      "my_contacts": {
+        "search_placeholder": "Выберите контакт для отправки…",
+        "section_title": "Мои контакты"
+      },
+      "token_detail": {
+        "search_placeholder": "Поиск действий токена…",
+        "section_title": "Действия"
+      },
+      "nft_token_detail": {
+        "search_placeholder": "Искать действия с NFT…",
+        "section_title": "Действия"
+      },
+      "wallet_detail": {
+        "search_placeholder": "Поиск действий кошелька…",
+        "section_title": "Действия"
+      }
+    },
+    "labels": {
+      "contact": "Свяжитесь",
+      "hidden": "Скрытый"
+    },
+    "quick_promo": {
+      "text": "Нажмите %{modifierSymbol}K, чтобы открыть волшебное меню",
+      "text_bold": "Совет:"
+    },
+    "toolbar": {
+      "actions_hint": "Действия"
+    },
+    "export_public_addresses": {
+      "keychain_type": {
+        "watching": "Наблюдение",
+        "recovery_phrase": "Фраза восстановления",
+        "private_key": "Приватный Ключ",
+        "hardware_wallet": "Аппаратный Кошелек"
+      },
+      "toast": {
+        "title": "Скачаны адреса",
+        "description": "rainbow_addresses.csv"
+      }
+    }
+  },
+  "connected_apps": {
+    "title": "Подключенные приложения",
+    "disconnect": "Отключить все",
+    "other_wallets": "Другие кошельки",
+    "no_connections_title": "Нет подключенных приложений",
+    "no_connections_copy": "Здесь будут отображаться веб-сайты, с которыми вы подключаетесь"
+  },
+  "approvals": {
+    "title": "Разрешения",
+    "unlimited": "Безлимитный",
+    "no_allowance": "Без Разрешения",
+    "revoke_approval": "Отозвать разрешение",
+    "copy_spender": "Копировать адрес отправителя",
+    "spender_address_copied": "Адрес отправителя скопирован",
+    "revoked_approvals": "Отозванные разрешения",
+    "nothing_found": "Ничего не найдено",
+    "revoke": {
+      "title": "Отозвать разрешение",
+      "action": "Отозвать",
+      "cancel": "Отмена",
+      "allowance": "Допуск",
+      "spender": "Отправитель",
+      "chain": "Сеть"
+    },
+    "token_details": {
+      "explainer": {
+        "token_approval": {
+          "title": "Что такое разрешение?",
+          "description_1": "Разрешения позволяют dApp расходовать и переводить токены или NFT от вашего имени.",
+          "description_2": "Важно контролировать ваши разрешения и отзывать ненужные, обширные или небезопасные, которые могут угрожать вашим активам.",
+          "action_label": "Понятно"
+        }
+      }
+    }
+  },
+  "send": {
+    "title": "Отправить",
+    "input_to_address_placeholder": "Имя, ENS или адрес",
+    "input_token_placeholder": "Токен",
+    "max": "Максимум",
+    "switch_to": "Переключиться на %{currency}",
+    "button_label": {
+      "review": "Просмотр",
+      "enter_address_and_amount": "Введите адрес и сумму",
+      "enter_valid_address": "Введите правильный адрес",
+      "enter_address": "Введите адрес",
+      "enter_amount": "Введите сумму",
+      "insufficient_asset": "Недостаточно %{symbol}",
+      "insufficient_native_asset_for_gas": "Недостаточно %{symbol} на комиссию"
+    },
+    "wallets_list": {
+      "contacts": "Контакты",
+      "my_wallets": "Мои кошельки",
+      "watched_wallets": "Наблюдение",
+      "no_results": "Нет результатов"
+    },
+    "tokens_input": {
+      "tokens": "Токены",
+      "sort": "Сортировать",
+      "available": "доступны",
+      "token_balance": "Баланс токена",
+      "networks": "Сети",
+      "nothing_found": "Ничего не найдено",
+      "nfts": "NFT",
+      "alphabetical": "Алфавитный",
+      "recent": "Недавние"
+    },
+    "review": {
+      "title": "Проверить и отправить",
+      "to": "на",
+      "you_own_wallet": "У вас есть доступ к этому кошельку",
+      "send_to": "Перевести в %{toName}",
+      "cancel": "Отмена",
+      "sending_on_network": "Отправка по сети %{chainName}",
+      "sending_on_l2_check_1": "Я не отправляю на биржу",
+      "complete_checks": "Завершите проверки",
+      "confirm_hw": "Подтвердите на вашем устройстве"
+    }
+  },
+  "swap": {
+    "_actions": {
+      "Swap": "Обменять",
+      "swap": "обмен",
+      "swaps": "обмены",
+      "Swapping": "Смена",
+      "swapping": "обменять",
+      "Bridge": "Мост",
+      "bridge": "Мост",
+      "bridges": "мосты",
+      "Bridging": "Перевод",
+      "bridging": "перенос"
+    },
+    "title": "%{Action}",
+    "input_token_placeholder": "Выберите токен для %{action}",
+    "input_token_to_receive_placeholder": "Выберите токен для получения",
+    "select_tokens": "Выбрать токены для %{action}",
+    "max": "Максимум",
+    "balance": "Баланс",
+    "tokens_input": {
+      "tokens": "Токены",
+      "sort": "Сортировать",
+      "available": "доступны",
+      "token_balance": "Баланс токена",
+      "networks": "Сети",
+      "filter_by_network": "Фильтр по сети",
+      "switch_networks": "Переключить сети",
+      "nothing_found": "Ничего не найдено",
+      "nothing_found_description": "У некоторых токенов недостаточно ликвидности для успешного %{action}.",
+      "nothing_found_description_l2": "У некоторых токенов недостаточно ликвидности на уровне 2 для успешного %{action}.",
+      "output_quotes_disabled": "Отключена выдача котировок"
+    },
+    "warnings": {
+      "long_wait": {
+        "title": "Длительное ожидание",
+        "description": "До %{time} до %{action}"
+      },
+      "price_impact": {
+        "title": "Маленький рынок",
+        "description": "Потеря %{impactAmount}"
+      },
+      "unknown_price": {
+        "title": "Рыночная стоимость %{symbol} неизвестна",
+        "description": "Если вы решите продолжить, убедитесь, что вас устраивает предложенная сумма"
+      }
+    },
+    "promo": {
+      "degen_mode": {
+        "title": "Попробуйте режим Degen, чтобы пропустить обзор"
+      }
+    },
+    "aggregators": {
+      "rainbow": "Авто"
+    },
+    "settings": {
+      "title": "%{Action} Настройки",
+      "route": "Маршрут %{actions} через",
+      "use_flashbots": "Использовать Flashbots",
+      "max_slippage": "Максимальное слипание",
+      "use_defaults": "Использовать настройки по умолчанию",
+      "done": "Готово",
+      "warnings": {
+        "high": "Высокое",
+        "possible_loss": "Возможная потеря"
+      },
+      "explainers": {
+        "slippage": {
+          "title": "Слипание",
+          "description_1": "Скольжение происходит, когда цена %{action} меняется во время между тем, как вы отправляете свою транзакцию, и ее подтверждением",
+          "description_2": "Установка более высокой толерантности к скольжению увеличивает вероятность успешности вашего %{action} , но может привести к получению худшей цены",
+          "read_more": {
+            "open_text": "Все еще интересно? ",
+            "link_text": "Читать дальше",
+            "close_text": " о скольжении и его влиянии на %{actions}"
+          }
+        },
+        "flashbots": {
+          "title": "Flashbots",
+          "description": "Flashbots защищает ваши транзакции от фронтраннинга и сэндвич-атак, которые могут привести к получению вами худшей цены или сбою вашей транзакции.",
+          "read_more": {
+            "open_text": "Все еще интересно? ",
+            "link_text": "Читать дальше",
+            "close_text": " о Flashbots и предоставляемой им защите."
+          }
+        },
+        "routing": {
+          "title": "%{Action} Маршрутизация",
+          "description": "По умолчанию, Rainbow выбирает самый дешевый путь для вашего %{action}. Если вы предпочитаете использовать 0x или 1inch, такой вариант тоже возможен",
+          "read_more": {
+            "open_text": "Все еще интересно? ",
+            "link_text": "Читать дальше",
+            "close_text": " о нашем подходе к маршрутизации %{actions}"
+          }
+        },
+        "got_it": "Понятно"
+      },
+      "degen_mode": {
+        "title": "Degenмод",
+        "description": "Пропустить этап проверки, чтобы быстрее обменять"
+      }
+    },
+    "actions": {
+      "review": "Просмотр",
+      "loading": "Загрузка",
+      "insufficient_liquidity": "Недостаточная ликвидность",
+      "fee_on_transfer_token": "Комиссия на токены при переводе",
+      "no_route": "Маршрут не найден",
+      "no_quote": "Нет доступного предложения",
+      "enter_an_amount": "Введите сумму",
+      "swap": "%{Action}",
+      "swapping": "%{Actioning}",
+      "waiting_signature": "Подтвердите на вашем устройстве"
+    },
+    "review": {
+      "title": "Обзор и %{Action}",
+      "flashbots_on": "Вкл.",
+      "minimum_received": "Минимальная получаемая",
+      "via": "%{Actioning} через",
+      "included_fee": "Включена комиссия Rainbow",
+      "use_flashbots": "Использовать Flashbots",
+      "exchange_rate": "Курс обмена",
+      "asset_contract": "%{symbol} контракт",
+      "more_details": "Подробнее",
+      "confirmation": "%{Action} %{sellSymbol} к %{buySymbol}",
+      "go_back": "Вернуться"
+    },
+    "explainers": {
+      "long_wait": {
+        "title": "долгое ожидание до %{action}",
+        "description": "Это %{action} может занять очень много времени. Обычно это связано с проблемами с кросс-чейн мостом",
+        "action_label": "Продолжить в любом случае"
+      },
+      "no_route": {
+        "title": "Маршруты не найдены",
+        "description": "Мы не смогли найти маршрут для этого %{action}. Маршрут может не существовать для этого %{action}, или сумма может быть слишком маленькой.",
+        "action_label": "Понятно"
+      },
+      "no_quote": {
+        "title": "Нет доступного предложения",
+        "description": "Мы не смогли найти котировки для этого %{action}. Это может быть связано с недостатком ликвидности для %{action} или из-за проблем с реализацией токена",
+        "action_label": "Понятно"
+      },
+      "insufficient_liquidity": {
+        "title": "Недостаточная ликвидность",
+        "description": "Мы не смогли найти котировки для этого %{action} , потому что у этой пары недостаточно ликвидности на биржах",
+        "action_label": "Понятно",
+        "footer_text": {
+          "open_text": "Все еще интересно? ",
+          "link_text": "Читать дальше",
+          "close_text": " о ММА и ликвидности токена."
+        }
+      },
+      "fee_on_transfer_token": {
+        "title": "Комиссия на токены при переводе",
+        "description": "Этот %{action} не будет работать в Rainbow, потому что контракт %{tokenName} включает дополнительные комиссии",
+        "action_label": "Понятно",
+        "footer_text": {
+          "open_text": "Прочитайте ",
+          "link_text": "наше руководство",
+          "close_text": " для помощи %{actioning} этому токену"
+        }
+      },
+      "flashbots": {
+        "title": "Flashbots",
+        "description": "Flashbots защищает ваши транзакции от фронтраннинга и сэндвич-атак, которые могут привести к получению вами худшей цены или сбою вашей транзакции.",
+        "action_label": "Понятно"
+      },
+      "fee": {
+        "title": "Комиссия Rainbow",
+        "description": "Rainbow берет комиссию %{feePercentage} от %{actions}. Это помогает нам обеспечивать вам лучший опыт работы с Ethereum",
+        "action_label": "Понятно"
+      }
+    }
+  },
+  "custom_gas": {
+    "title": "Настройки газа",
+    "current_base_fee": "Текущая базовая комиссия",
+    "max_base_fee": "Максимальная базовая комиссия",
+    "miner_tip": "Подсказка майнера",
+    "gas_price": "Цена газа",
+    "max_transaction_fee": "Максимальная комиссия за транзакцию",
+    "transaction_speed": "Скорость транзакции",
+    "cancel": "Отмена",
+    "set": "Установить",
+    "base_trend": {
+      "falling": "Падает",
+      "stable": "Стабильно",
+      "surging": "Взлетает",
+      "rising": "Растет"
+    },
+    "warnings": {
+      "may_get_stuck": "может застрять",
+      "likely_to_fail": "вероятно, провалится",
+      "low": "Низкий"
+    }
+  },
+  "contacts": {
+    "save_contact": "Сохранить контакт",
+    "add_to_contacts": "Добавить в контакты",
+    "edit_contact": "Редактировать контакт",
+    "save_changes": "Сохранить изменения",
+    "cancel": "Отмена",
+    "remove_contact_title": "Удалить контакт?",
+    "remove_contact_action": "Удалить контакт",
+    "remove_contact_description": "Вы уверены, что хотите удалить «%{name}» из своих контактов?",
+    "save": "Сохранить",
+    "copy_address": "Скопировать адрес",
+    "view_on_etherscan": "Просмотр в Etherscan",
+    "view_on_explorer": "Просмотр в обозревателе",
+    "delete_contact": "Удалить контакт",
+    "contact_address_copied": "Адрес скопирован"
+  },
+  "sign": {
+    "title": "Подписать"
+  },
+  "unlock": {
+    "welcome_back": "Добро пожаловать обратно",
+    "enter_password": "Введите пароль, чтобы разблокировать Rainbow.",
+    "unlock": "Разблокировать",
+    "having_trouble": "Есть проблемы?",
+    "contact": "Свяжитесь",
+    "rainbow_support": "Поддержка Rainbow"
+  },
+  "onboard_before_connect": {
+    "before_connect": "Прежде чем вы сможете подключиться",
+    "almost_done": "Вы почти закончили. Быстро завершите настройку вашего кошелька с Rainbow.",
+    "setup_wallet": "Настроить ваш кошелек"
+  },
+  "welcome": {
+    "title": "Rainbow",
+    "subtitle": "Исследуйте новый мир Ethereum",
+    "create_wallet": "Создать новый кошелек",
+    "import_wallet": "Импортировать или подключить кошелек",
+    "disclaimer_tos": "Продолжая, вы соглашаетесь с",
+    "disclaimer_tos_link": "Условиями использования",
+    "invalid_code": "Недействительный код",
+    "join": "Присоединиться"
+  },
+  "seed_backup_prompt": {
+    "title": "Перед началом работы сделайте резервную копию вашего секретного кодовой фразы",
+    "warning_1": "Важно записать и хранить секретную кодовую фразу в надежном месте.",
+    "warning_2": "Твоя Секретная Фраза Восстановления — единственный способ восстановить твои аккаунты и средства.",
+    "warning_3": "Любой, у кого есть ваша фраза для восстановления, может получить доступ ко всему вашему кошельку.",
+    "reveal_your_recovery_phrase": "Раскрой свою фразу восстановления",
+    "take_me_to_wallet": "Перейти в мой кошелек"
+  },
+  "seed_reveal": {
+    "title": "Ваша фраза для восстановления",
+    "write_down_seed_importance": "Кто угодно, у кого есть эти слова, может получить доступ ко всему вашему кошельку! Никогда не делитесь ими.",
+    "saved_these_words": "Я сохранил эти слова",
+    "copied": "Фраза для восстановления скопирована"
+  },
+  "import_wallet_via_secret": {
+    "title": "Импорт кошелька",
+    "explanation": "Выберите метод импорта, который подходит вам наиболее. Вы можете импортировать дополнительные кошельки в любое время.",
+    "seed_phrase": "Импорт по Секретной Фразе Восстановления",
+    "seed_phrase_desc": "Добавьте группу кошельков с помощью вашей 12- или 24-словной Секретной Фразы Восстановления",
+    "private_key": "Импорт по Приватному Ключу",
+    "private_key_desc": "Добавьте отдельный кошелек с помощью вашего 64-символьного Приватного Ключа"
+  },
+  "import_wallet_via_seed": {
+    "title": "Импортировать Кошелек",
+    "explanation": "Чтобы добавить кошелек, введите или вставьте вашу 12- или 24-словную Секретную Фразу Восстановления.",
+    "24_words": "Я использую 24 слова",
+    "12_words": "Я использую 12 слов",
+    "import_wallet_group": "Импортировать группу кошельков",
+    "n_words_might_be_wrong": "%{n} слов могут быть написаны с ошибками или некорректными.",
+    "1_word_might_be_wrong": "1 слово может быть написано с ошибкой или некорректно.",
+    "couldnt_paste": "Мы не смогли вставить вашу Секретную фразу восстановления",
+    "duplicate_seed": "Этот seed уже импортирован"
+  },
+  "import_wallet_via_private_key": {
+    "title": "Импортировать Кошелек",
+    "explanation": "Введите свой 64-значный приватный ключ из Rainbow или любого другого Ethereum кошелька.",
+    "placeholder": "Вставьте свой приватный ключ из другого кошелька",
+    "import_wallet": "Импортировать кошелек"
+  },
+  "import_or_connect": {
+    "title": "Восстановить или подключить",
+    "explanation": "Любой, у кого есть ваша Секретная фраза восстановления, может получить доступ к вашему кошельку! Храните ее в безопасном месте и никому не сообщайте.",
+    "import_wallet": "Импорт с помощью Секретной Восстановительной Фразы или Приватного Ключа",
+    "import_wallet_description": "Добавьте кошелек, используя Секретную Восстановительную Фразу или Приватный Ключ.",
+    "connect_wallet": "Подключить ваш аппаратный кошелек",
+    "connect_wallet_description": "Добавить счета с вашего аппаратного кошелька.",
+    "watch_address": "Добавить Ethereum адрес в наблюдение",
+    "watch_address_description": "Следите за публичным адресом или именем ENS."
+  },
+  "import_wallet_selection": {
+    "title": "Ваши кошельки",
+    "description": {
+      "zero": "Rainbow обнаружил 1 кошелек. Вы можете добавить еще в любое время.",
+      "one": "Rainbow обнаружил 1 кошелек, который был недавно использован. Вы можете добавить еще в любое время.",
+      "other": "Рэйнбоу обнаружил %{count} кошельков, которые были недавно использованы. Вы можете редактировать или добавлять их в любое время."
+    },
+    "add_wallets": "Добавить кошельки",
+    "edit_wallets": "Редактировать кошельки",
+    "loading": "Подождите, пока мы найдем все ваши кошельки...",
+    "importing": "Импорт ваших кошельков...",
+    "account_summary_tokens": "Токены: %{tokensAmount}",
+    "account_summary_last_tx": "Последняя транзакция: %{lastTx} назад"
+  },
+  "watch_wallet": {
+    "title": "Добавить Ethereum адрес в наблюдение",
+    "description": "Введите любой адрес Ethereum или имя ENS. Вам потребуется импортировать его позже, чтобы отправлять или подписывать транзакции.",
+    "invalid_address": "Неверный адрес",
+    "unsupported_tld": "%{tld} не поддерживается",
+    "address_already_added": "Адрес уже добавлен",
+    "address_already_added_as": "Адрес уже добавлен как %{addedAs}",
+    "watch_top_ens_wallets": "Следить за популярными кошельками ENS",
+    "placeholder": "Адрес Ethereum или имя ENS",
+    "watch_wallet": "Следить за кошельком",
+    "watch_wallets": "Следить за кошельками",
+    "loading": "Подождите, пока мы начнем следить за этими кошельками..."
+  },
+  "import_wallet": {
+    "title": "Импортировать ваш кошелек",
+    "description": "Введите вашу секретную фразу восстановления или приватный ключ из Rainbow или любого другого кошелька Ethereum.",
+    "too_many_words": "Слишком много слов",
+    "too_many_chars": "Слишком много символов",
+    "add_another": "Добавить еще один",
+    "remove": "Удалить",
+    "placeholder": "Вставьте вашу секретную фразу восстановления или приватный ключ из другого кошелька",
+    "invalid_word": "Неверное слово: %{word}",
+    "invalid_private_key": "Неверный приватный ключ",
+    "invalid_recovery_phrase": "Неверная фраза восстановления",
+    "missing_words": {
+      "one": "Отсутствует 1 слово",
+      "other": "Пропущено %{count} слов"
+    },
+    "import_wallet": {
+      "one": "Восстановить кошелек",
+      "other": "Восстановить кошельки"
+    }
+  },
+  "edit_import_wallet_selection": {
+    "title": "Все кошельки",
+    "add_wallet": {
+      "zero": "Выбрать кошелек",
+      "one": "Добавить кошелек",
+      "other": "Добавить %{count} кошельков"
+    },
+    "importing_your_wallet": {
+      "one": "Импорт вашего кошелька...",
+      "other": "Импорт ваших кошельков..."
+    },
+    "sort": {
+      "title": "Сортировать",
+      "default": "По умолчанию",
+      "token_balance": "Баланс токена",
+      "last_transaction": "Последняя транзакция"
+    }
+  },
+  "seed_verify": {
+    "title": "Подтвердите свою секретную фразу восстановления",
+    "explanation": "Выберите 4-е, 8-е и 12-е слова в порядке, в котором они отображаются в вашей секретной фразе восстановления",
+    "skip": "Пропустить"
+  },
+  "menu": {
+    "network": {
+      "title": "Переключить сети",
+      "disconnect": "Отключиться"
+    },
+    "app_connection_menu": {
+      "connected_apps": "Подключенные приложения",
+      "not_connected": "Не подключено",
+      "networks": "Сети",
+      "connect": "Подключить",
+      "switch_network": "Переключить сеть",
+      "switch_wallets": "Переключить кошелек",
+      "disconnect": "Отключиться"
+    },
+    "home_header_right": {
+      "settings": "Настройки",
+      "qr_code": "Мой QR-код",
+      "rainbow_profile": "Профиль Rainbow",
+      "guides_and_support": "Руководства и поддержка",
+      "share_feedback": "Отправить отзыв",
+      "lock_rainbow": "Заблокировать Rainbow",
+      "testnet_mode": "Тестовый режим",
+      "testnet_mode_off": "Выкл",
+      "testnet_mode_on": "Вкл."
+    }
+  },
+  "testnet_mode_watcher": {
+    "connect_to": "Переключиться на %{chainName}?",
+    "testnet_mode": "Тестовый режим",
+    "testnet_mode_active": "в настоящее время активен. Хотите отключить его и взаимодействовать с %{chainName} вместо этого?",
+    "disable_and_connect": "Отключить и Переключить",
+    "cancel": "Отмена"
+  },
+  "app_connection_switcher": {
+    "banner": {
+      "connect_to": "Подключиться к %{appName}",
+      "app_connected": "%{appName} Подключено"
+    },
+    "sheet": {
+      "connect": "Подключить",
+      "connect_different_wallet": "Подключить другой кошелек",
+      "dont_show_again": "Не показывать это снова",
+      "allow_to": "Разрешить %{appName} просматривать адрес вашего кошелька, баланс, активность и запрашивать разрешение на транзакции.",
+      "connect_to": "Подключиться к %{appName}?"
+    },
+    "wallet_item": {
+      "disconnect": "Отключиться",
+      "switch_connection": "Переключить подключение",
+      "connect": "Подключить"
+    },
+    "wallet_item_dropdown_menu": {
+      "connect": "Подключить",
+      "disconnect": "Отключиться",
+      "open_app": "Открыть %{appName}"
+    },
+    "wallet_switcher": {
+      "switch_wallets": "Переключить кошельки",
+      "other_wallets": "Другие кошельки",
+      "done": "Готово",
+      "connected": "Подключено"
+    }
+  },
+  "wallet_backup_reminder": {
+    "title": "Некоторые из ваших кошельков не имеют резервных копий",
+    "description": "Некоторые из ваших кошельков не имеют резервных копий. Создайте резервные копии, чтобы восстановить доступ к кошелькам, если вы потеряете доступ к этому устройству.",
+    "button_label_action": "Сделать резервную копию сейчас",
+    "button_label_cancel": "Напомнить мне позже"
+  },
+  "approve_request": {
+    "allow_to_add_asset": "хочет предложить токен",
+    "wallet_info_title": "хочет получить доступ к вашему кошельку",
+    "wallet_info_description": "Разрешить %{appName} просматривать адреса, балансы и операции вашего кошелька, а также запрашивать подтверждение для транзакций.",
+    "add_chain_info_description": "Если вы это разрешите, эта сеть может использоваться в расширении Rainbow Browser.",
+    "watch_asset_info_description": "Если вы одобрите его, этот актив может быть использован в расширении браузера Rainbow.",
+    "wallet": "Кошелек",
+    "network": "Сеть",
+    "switch_networks": "Переключить сети",
+    "switch_wallets": "Переключить кошельки",
+    "allow_to_add_network": "хочет добавить сеть",
+    "connect": "Подключиться к %{appName}",
+    "connect_anyway": "Подключиться Все Равно",
+    "approve": "Разрешить",
+    "approve_anyway": "Разрешить в любом случае",
+    "malicious_warning": {
+      "title": "Это приложение вероятно вредоносное",
+      "message": "Подписывая сообщения или транзакции от этого приложения, вы можете потерять свои средства"
+    },
+    "malicious_transaction_warning": {
+      "title": "Эта транзакция выглядит подозрительно",
+      "malicious_address": "В эту транзакцию вовлечен вредоносный адрес. Подпись может привести к потерям",
+      "malicious_entity": "В эту транзакцию вовлечено вредоносное существо. Подпись может привести к потерям",
+      "minting_is_a_losing_trade": "В эту транзакцию вовлечен мошеннический контракт. Чеканка является убыточной сделкой",
+      "you_can_lose_everything": "Подписание этой транзакции может привести к потере доступа ко всему содержимому вашего кошелька"
+    },
+    "dangerous_request": "Опасный запрос",
+    "message_signing_request": "Запрос на подпись сообщения",
+    "message": "Сообщение",
+    "message_copied": "Сообщение скопировано",
+    "transaction_data_copied": "Данные транзакции скопированы",
+    "sign_message": "Подписать",
+    "sign_message_anyway": "Подписать Все Равно",
+    "confirm_hw": "Подтвердите на вашем устройстве",
+    "balance": "Баланс",
+    "send_transaction": "Подписать",
+    "send_transaction_anyway": "Подписать Все Равно",
+    "contract_deployment": "Развертывание контракта",
+    "transaction_request": "Запрос на транзакцию",
+    "insufficient_gas_funds": "Вам нужно больше %{token}",
+    "insufficient_gas_funds_description": "Вам нужно немного больше %{token} для оплаты этой транзакции. Получите больше ниже, чтобы продолжить с этим запросом.",
+    "no_gas_funds": "Вам нужно немного %{token}",
+    "no_gas_funds_description": "Вам понадобится %{token} для оплаты этой транзакции. Получите немного %{token} ниже, чтобы продолжить с этим запросом.",
+    "no_token": "Нет %{token}",
+    "on_chain": "на %{chain}",
+    "copy_deposit_address": "Скопировать адрес кошелька для депозита",
+    "bridge_to": "Мост к %{chain}",
+    "signing_with": "Подписание с помощью",
+    "no_fee_to_sign": "Без комиссии для подписи",
+    "request_rejected": "Запрос на транзакцию отклонен",
+    "bridge_and_try_again": "Подключите немного средств для оплаты транзакционных расходов и повторите попытку",
+    "buy_and_try_again": "Приобретите немного средств для оплаты транзакционных расходов и повторите попытку",
+    "buy_gas": "Купить %{token}",
+    "get_testnet_gas": "Получить бесплатный тестнет %{token}"
+  },
+  "add_chain": {
+    "name": "Название",
+    "chain_id": "Идентификатор сети",
+    "currency_symbol": "Символ валюты",
+    "currency_name": "Наименование валюты",
+    "currency_decimals": "Количество знаков после запятой",
+    "rpc_url": "URL RPC",
+    "block_explorer_url": "URL исследователя блока",
+    "testnet": "Тестнет"
+  },
+  "transaction_fee": {
+    "title": "Скорость транзакции",
+    "urgent": "Срочно",
+    "fast": "Быстро",
+    "normal": "Обычный",
+    "custom": "Настроить",
+    "estimated_fee": "Ожидаемая комиссия"
+  },
+  "time": {
+    "days": {
+      "long": {
+        "plural": "дни",
+        "singular": "день"
+      },
+      "micro": "д",
+      "short": {
+        "plural": "дни",
+        "singular": "день"
+      }
+    },
+    "hours": {
+      "long": {
+        "plural": "часы",
+        "singular": "час"
+      },
+      "micro": "ч",
+      "short": {
+        "plural": "часов",
+        "singular": "час"
+      }
+    },
+    "milliseconds": {
+      "long": {
+        "plural": "миллисекунды",
+        "singular": "миллисекунда"
+      },
+      "micro": "мс",
+      "short": {
+        "plural": "мс",
+        "singular": "мс"
+      }
+    },
+    "minutes": {
+      "long": {
+        "plural": "минуты",
+        "singular": "минута"
+      },
+      "micro": "м",
+      "short": {
+        "plural": "минуты",
+        "singular": "минута"
+      }
+    },
+    "now": "Сейчас",
+    "seconds": {
+      "long": {
+        "plural": "секунды",
+        "singular": "секунда"
+      },
+      "micro": "с",
+      "short": {
+        "plural": "секунды",
+        "singular": "секунда"
+      }
+    }
+  },
+  "wallets": {
+    "title": "Кошельки"
+  },
+  "common_actions": {
+    "back": "Назад",
+    "cancel": "Отмена",
+    "continue": "Продолжить",
+    "copy_to_clipboard": "Скопировать в буфер обмена"
+  },
+  "errors": {
+    "error_encountered": "Что-то пошло не так. Пожалуйста, сообщите о проблеме нашей команде и мы это исправим!",
+    "no_wallet_name_set": "Не указано имя кошелька",
+    "report_error": "Сообщить о проблеме",
+    "sending_transaction": "Ошибка при отправке транзакции",
+    "executing_swap": "Ошибка при выполнении обмена"
+  },
+  "common_titles": {
+    "before_you_proceed": "Перед тем, как продолжить"
+  },
+  "passwords": {
+    "password": "Пароль",
+    "password_not_set": "Пароль не задан",
+    "password_incorrect": "Неверный пароль",
+    "passwords_do_not_match": "Пароли не совпадают",
+    "wrong_password": "Неправильный пароль",
+    "new_password": "Новый пароль",
+    "confirm_password": "Подтвердите пароль",
+    "update_password": "Обновить пароль",
+    "set_password": "Установить пароль",
+    "too_weak": "Слишком слабый",
+    "weak": "Слабый",
+    "good": "Хороший",
+    "excellent": "Отличный",
+    "8_chars_min": "Минимум 8 символов",
+    "try_another_password_weak": "Это слабый пароль, который легко взломать. Попробуйте более надежный пароль.",
+    "try_another_password_common": "Сделайте свой пароль еще сильнее, смешивая прописные и строчные буквы, цифры и символы",
+    "too_short": "Пароль должен состоять как минимум из 8 символов"
+  },
+  "create_password": {
+    "title": "Создайте свой пароль",
+    "description": "Выберите пароль для защиты и блокировки кошелька."
+  },
+  "tabs": {
+    "activity": "Активность",
+    "nfts": "NFT",
+    "points": "Поинты",
+    "rewards": "Награды",
+    "tokens": "Токены"
+  },
+  "activity": {
+    "hour": "Last Hour",
+    "today": "Сегодня",
+    "yesterday": "Вчера",
+    "this_month": "В этом месяце",
+    "empty_header": "Пока нет активности",
+    "empty_description": "Как только вы начнете использовать свой кошелек, вы увидите здесь ваши транзакции.",
+    "loading_more": "Загрузка...",
+    "no_value": "Нет значения"
+  },
+  "activity_details": {
+    "you": "Вы",
+    "from": "От",
+    "to": "К",
+    "confirmed_at": "Подтверждено в",
+    "confirmations": "Подтверждения",
+    "token": "Токен",
+    "block": "Блок",
+    "value": "Значение",
+    "network": "Сеть",
+    "fee": "Сетевой сбор",
+    "base_fee": "Базовый сбор",
+    "max_base_fee": "Макс. базовый сбор",
+    "gas_price": "Цена газа",
+    "gas_limit": "Лимит газа",
+    "gas_used": "Газ использован",
+    "max_priority_fee": "Чаевые майнеру",
+    "nonce": "Нонс",
+    "allowance": "Допуск",
+    "unlimited_allowance": "Неограниченно %{symbol}",
+    "app": "Приложение",
+    "copy_hash": "Скопировать хеш транзакции",
+    "hash_copied": "Хэш Скопирован",
+    "copy_explorer_url": "Копировать Ссылку",
+    "explorer_copied": "Ссылка Скопирована",
+    "exchange_rate": "Обмен",
+    "collection": "Коллекция",
+    "token_contract": "Контракт токена",
+    "token_standard": "Стандарт токена",
+    "revoke_approval": "Отозвать разрешение"
+  },
+  "tokens_tab": {
+    "coinbase_title": "Депозит с Coinbase",
+    "coinbase_description": "Переведите свою криптовалюту из Coinbase бесплатно",
+    "buy_title": "Купите криптовалюту для пополнения вашего кошелька",
+    "buy_description_1": "Нажмите",
+    "buy_description_2": "чтобы просмотреть поддерживаемые способы оплаты",
+    "send_from_wallet": "Отправить из другого кошелька",
+    "send_description_1": "Нажмите",
+    "send_description_2": "чтобы скопировать ваш адрес или",
+    "send_description_3": "для QR кода",
+    "unknown_token": "Неизвестный токен"
+  },
+  "nfts": {
+    "empty_state_header": "NFT",
+    "empty_state_description": "Ваши NFT появятся здесь!",
+    "report_nft_action_text": "Сообщить",
+    "report_nft_confirm_description": "Подтвердить отчет по NFT?",
+    "view_on_web": "Посмотреть на Веб",
+    "display_mode_gallery": "Галерея",
+    "display_mode_collections": "Коллекции",
+    "sort_option_recent": "Недавние",
+    "sort_option_abc": "Абв",
+    "sort_option_recent_long": "Недавние",
+    "sort_option_abc_long": "Алфавитный",
+    "hidden_section_title": "Скрытый",
+    "details": {
+      "last_sales_price": "Цена последней продажи",
+      "none": "Нет",
+      "floor_price": "Минимальная цена",
+      "description": "Описание",
+      "properties": "Свойства",
+      "address_copied": "Адрес скопирован",
+      "about": "Описание",
+      "token_standard": "Стандарт токена",
+      "token_contract": "Контракт токена",
+      "contract_creator": "Создатель контракта",
+      "chain": "Сеть",
+      "hide": "Скрыть",
+      "unhide": "Показать",
+      "id_copied": "Скопировано ID",
+      "copy_token_id": "Скопировать ID токена",
+      "download": "Загрузить",
+      "explorer": "Исследователь",
+      "view_collection": "Просмотр коллекции",
+      "collection_website": "Веб-сайт коллекции",
+      "owners": "Владельцы",
+      "unique_owners": "Уникальные владельцы",
+      "ens_profile_info": "Информация профиля",
+      "ens_bio": "Био",
+      "ens_cover": "Обложка",
+      "ens_address": "ETH адрес",
+      "ens_website": "Веб-сайт",
+      "registered_on": "Зарегистрирован",
+      "expires_in": "Истекает через",
+      "report": "Сообщить",
+      "explainer": {
+        "floor_price_description": "Наименьшая цена коллекции - это самая низкая цена предложения по всем предметам, которые в настоящее время продаются в коллекции",
+        "floor_price_title": "Наименьшая цена коллекции",
+        "floor_price_action_label": "Понятно"
+      },
+      "send": "Отправить",
+      "view_on_opensea": "Посмотреть на OpenSea",
+      "view_on_explorer": "Посмотреть на %{explorerTitle}",
+      "gallery": "галерея",
+      "view_gallery": "Посмотреть галерею"
+    },
+    "toast": {
+      "spam_reported": "Ваше сообщение получено!",
+      "hidden": "NFT скрыт",
+      "unhidden": "NFT виден"
+    }
+  },
+  "points": {
+    "check_back_soon_header": "Загляните позже",
+    "check_back_soon_description": "Баллы временно недоступны.\nЗайдите позже, чтобы продолжить использовать Баллы Rainbow.",
+    "your_rank": "Ваш ранг",
+    "my_points": "Мои баллы",
+    "rank": "Ранг",
+    "ranking": "Ранг №%{rank}",
+    "unranked": "Без ранга",
+    "no_weekly_rank": "Нет недельного ранга",
+    "points_to_rank": "%{rank_cutoff} баллов до получения ранга",
+    "top_holders": "Лучшие держатели баллов",
+    "next_drop": "Следующий дроп",
+    "leaderboard": "Лидеры",
+    "referral_code": "Пригласить друзей",
+    "referral_code_description": "Зарабатывайте баллы, когда ваши рефералы обменивают $100 через Rainbow, плюс получайте 10% баллов, заработанных вашими рефералами",
+    "referral_earnings": "%{earnings} баллов",
+    "copied_referral_code": "Реферальный код скопирован!",
+    "copied_referral_link": "Реферальная ссылка скопирована!",
+    "out_of_current_total_points": "Из %{total} текущего общего количества очков",
+    "header": "Получить ваши баллы",
+    "description": "Баллы здесь. Узнайте, сколько вам начислено",
+    "get_started": "Начать",
+    "use_referral_code": "Использовать реферальный код",
+    "referral_header": "Введите ваш реферальный код",
+    "referral_description": "Введите реферальный код ниже, чтобы получить бонусное вознаграждение",
+    "referral_code_invalid": "Недействительный код",
+    "onboarding": {
+      "authorization_required": "Требуется авторизация",
+      "sign_in_with_your_wallet": "Войдите, используя ваш кошелек",
+      "access_granted": "Доступ открыт",
+      "calculating_points": "Идет расчет баллов",
+      "rainbow_swaps": "Обмен через Rainbow:",
+      "rainbow_nfts_owned": "NFT владения Rainbow:",
+      "wallet_balance": "Баланс кошелька:",
+      "metamask_swaps": "Обмен через MetaMask:",
+      "bonus_reward": "Бонусное вознаграждение:",
+      "calculation_complete": "Расчет завершен",
+      "points_earned": "Баллы заработаны:",
+      "bonus_points": "Бонусные баллы:",
+      "claim_description_buy": "Чтобы получить остальные бонусные баллы, купите ETH через Rainbow",
+      "claim_description_swap": "Чтобы получить остальные бонусные баллы, совершите обмен хотя бы на $100 через Rainbow",
+      "account": "Аккаунт:",
+      "sign_in": "Войти",
+      "get_eth": "Купить ETH",
+      "try_swap": "Попробовать обмен",
+      "referral_link_ready": "Ваша реферальная ссылка готова",
+      "referral_link_bonus_text": "Твитните свою реферальную ссылку, и вы заработаете 10% от очков, заработанных привлеченными вами людьми",
+      "share": "Поделиться X",
+      "share_tweet": "Только что на мой кошелек зачислили %{points} Rainbow Points\nУ всех есть минимум 100 очков в ожидании, но у вас может быть больше!\n\nЗаберите свои очки: https://rainbow.me/points?ref=%{referralCode}",
+      "share_tweet_with_metamask_bonus": "Только что на мой кошелек зачислили %{points} Rainbow Points и дополнительно %{metamaskBonus} очков в качестве бонуса за переход с MetaMask в Rainbow 🦊 🔫\n\nУ всех есть минимум 100 очков в ожидании, но у вас может быть больше! Заберите свои очки: https://rainbow.me/points?ref=%{referralCode}",
+      "registration_complete": "Регистрация завершена",
+      "all_set": "Все готово!",
+      "keep_earning_by": "Продолжайте зарабатывать баллы, обменивая, переводя, создавая, рекомендуя друзей и другое",
+      "the_more_you_use": "Чем больше вы используете Rainbow, тем больше будет награда",
+      "balance_required": "Требуется баланс кошелька",
+      "ensure_you_have_a_balance_on": "Для продолжения убедитесь, что у вас есть баланс ETH на одной из следующих сетей:",
+      "or_alternatively_balance_on": "Или, альтернативно, баланс POL на Polygon или баланс BNB на BSC",
+      "fund_my_wallet": "Пополнить мой кошелек"
+    },
+    "error": {
+      "existing_user": "Существующий пользователь",
+      "invalid_referral_code": "Недействительный реферальный код",
+      "unexpected": "Произошло что-то неожиданное, попробуйте еще раз через несколько минут"
+    },
+    "weekly_overview": {
+      "week_of": "> Неделя с %{from} по %{to}",
+      "counting": "> Подсчет заработанных очков...",
+      "your_activity": "Ваша активность:",
+      "referral_activity": "Активность рефералов:",
+      "new_referrals": "Новые рефералы:",
+      "retroactive": "Ретроактивные баллы:",
+      "bonus": "Бонусные баллы:",
+      "total": "Итого:",
+      "weekly_counted": "> Недельный заработок учтен",
+      "you_have": "У вас есть:",
+      "none": "Нет",
+      "your_earnings": "Ваши доходы на прошлой неделе",
+      "view_breakdown": "Посмотреть разбивку недельных доходов",
+      "view_now": "Посмотреть сейчас"
+    },
+    "rewards": {
+      "counting_points": "> Подсчет заработанных очков...",
+      "calculating_referrals": "> Подсчитываем ваши рефералы...",
+      "allocating_earnings": "> Распределяем ваши заработки...",
+      "claiming_your_reward": "ЗАБИРАЕМ ВАШУ НАГРАДУ",
+      "done": "Готово",
+      "in_eth": "В ETH",
+      "your_rewards": "Ваши награды",
+      "amount_in_eth": "+ %{amount} ETH",
+      "ready_to_spend": "Ваш ETH находится в вашем кошельке и готов к использованию. Всё готово.",
+      "keep_earning": "Продолжайте зарабатывать баллы и свою долю наград Rainbow, обменивая, переводя, создавая токены, приглашая друзей и не только",
+      "use_rainbow": "Чем больше вы используете Rainbow, тем больше наград вы получите",
+      "choose_claim_network": "Выберите сеть для получения",
+      "coming_soon": "Скоро будет",
+      "available_to_claim": "Доступно для получения",
+      "program_earnings": "Пользователи Rainbow заработали",
+      "my_earnings": "Мои заработки",
+      "claimed_earnings": "Полученные заработки",
+      "current_value": "Текущая стоимость",
+      "earn_eth_rewards": "Зарабатывайте ETH-награды",
+      "points_explanation": "Лучшие еженедельные зарабатыватели баллов получат еженедельный airdrop собственного тяжело заработанного ETH Rainbow. Зарабатывайте баллы, обменивая или совершая транзакции в Rainbow, используя dapps или приглашая друзей.",
+      "your_reward_is_ready": "> Ваша награда готова",
+      "claim_complete": "> Получение завершено",
+      "already_claimed": "> Ваша награда уже получена",
+      "no_claim": "> У вас нет награды для получения на данный момент",
+      "earned_last_week": "Заработано на прошлой неделе",
+      "my_referrals": "Рефералы",
+      "claim_reward": "Получить %{reward}",
+      "free_to_claim": "Бесплатно для получения",
+      "has_bridge_fee": "Есть комиссия за мост",
+      "claim_failed": "Не удалось получить. Пожалуйста, попробуйте еще раз.",
+      "claim_success_bridge_failed": "Получение прошло успешно, но средства не были переведены.",
+      "my_rewards": "Мои награды"
+    }
+  },
+  "speed_up_and_cancel": {
+    "speed_up": "Ускорить",
+    "cancel": "Отмена",
+    "view_on_etherscan": "Просмотр в Etherscan",
+    "view_on_explorer": "Просмотр в обозревателе",
+    "copy_tx_hash": "Скопировать хеш транзакции",
+    "cancel_explanation": "Это попытается отменить вашу ожидающую транзакцию. Требуется отправить другую транзакцию.",
+    "speed_up_explanation": "Это ускорит вашу ожидающую транзакцию, заменив ее. Есть шанс, что ваша первоначальная транзакция будет подтверждена первой.",
+    "cancel_title": "Отменить транзакцию",
+    "speed_up_title": "Ускорить транзакцию",
+    "wallet": "Кошелек",
+    "balance": "Баланс",
+    "cancel_cta": "Отменить транзакцию",
+    "speed_up_cta": "Ускорить транзакцию",
+    "speed_up_transaction": "Ускорить транзакцию",
+    "close_cta": "Отмена",
+    "handle_copy_title": "Хеш транзакции скопирован",
+    "revoke_approval": "Отозвать разрешение",
+    "speed_up_failed": {
+      "title": "Ускорение не удалось",
+      "description": "Попытки ускорить транзакцию могут не удаться из-за перегрузки сети, увеличения лимита газа или если исходная транзакция подтвердится первой"
+    }
+  },
+  "token_details": {
+    "swap": "Обменять",
+    "bridge": "Мост",
+    "send": "Отправить",
+    "balance": "Баланс",
+    "value": "Значение",
+    "hour": "1 ч.",
+    "day": "1 дн.",
+    "week": "1 нед.",
+    "month": "1 мес.",
+    "year": "1 г.",
+    "approvals": "Разрешения для токенов",
+    "this_token_is_on_network": "Этот %{symbol} находится в сети %{chainName}",
+    "view_on": "Посмотреть на %{explorer}",
+    "view_on_coingecko": "Посмотреть на CoinGecko",
+    "not_available": "Цена недоступна",
+    "more_options": {
+      "copy_address": "Скопировать адрес",
+      "view_on_explorer": "Посмотреть на %{explorer}",
+      "hide": "Скрыть токен",
+      "report": "Сообщить о токене",
+      "unpin_token": "Открепить %{name}",
+      "pin_token": "Закрепить %{name}",
+      "hide_token": "Скрыть %{name}",
+      "unhide_token": "Показать %{name}"
+    },
+    "toast": {
+      "hide_token": "Ваш %{name} скрыт",
+      "unhide_token": "Ваш %{name} отображается",
+      "pin_token": "Ваш %{name} закреплен",
+      "unpin_token": "Ваш %{name} откреплен"
+    },
+    "about": {
+      "about_token": "О %{name}",
+      "price": "Цена",
+      "volume": "Объем",
+      "ath": "Исторический максимум",
+      "atl": "Исторический минимум",
+      "market_cap": "Рыночная капитализация",
+      "market_cap_explainer": {
+        "title": "Рыночная капитализация",
+        "description": "Рыночная капитализация - это общая рыночная стоимость обращающегося в общественном обращении объема токена. Она рассчитывается по средней валютной цене обмена.",
+        "action": "Понятно"
+      },
+      "fully_diluted": "При полном выпуске",
+      "fully_diluted_explainer": {
+        "title": "Рыночная капитализация при полном выпуске",
+        "description": "Максимальная возможная рыночная капитализация токена, если общее предложение было доступно в обращении.",
+        "action": "Понятно"
+      },
+      "supply": "Предложение",
+      "max_total_supply": "Максимальное общее предложение",
+      "holders": "Держатели",
+      "total_transfers": "Всего трансферов",
+      "more_info": "Более подробно",
+      "token_standard": "Стандарт токена",
+      "token_contract": "Контракт токена",
+      "chains": {
+        "one": "Сеть",
+        "other": "Сети"
+      }
+    }
+  },
+  "wallet_ready": {
+    "title": "Rainbow готов к использованию",
+    "subtitle": "Чтобы получить доступ к вашему кошельку, просто щелкните Rainbow в раскрывающемся меню Расширений или используйте быструю комбинацию клавиш",
+    "open": "Открыть Rainbow",
+    "get_started_with_rainbow": "Начать работу с Rainbow",
+    "get_started_with_rainbow_desc": "Добро пожаловать в Rainbow! Мы так рады, что вы здесь. Мы создали этот руководство, чтобы помочь вам освоить основы Rainbow.",
+    "discover_shortcuts": "Откройте ярлыки",
+    "discover_shortcuts_desc": "Хотите узнать больше ярлыков? Ознакомьтесь с этим полезным руководством, которое мы для вас подготовили.",
+    "pin_rainbow_to_your_toolbar": "Закрепите Rainbow на панель инструментов"
+  },
+  "wallet_header": {
+    "buy": "Купить",
+    "copy": "Копировать",
+    "swap": "Обменять",
+    "send": "Отправить",
+    "copy_toast": "Адрес скопирован"
+  },
+  "token_search": {
+    "section_header": {
+      "favorites": "Избранное",
+      "unverified": "Непроверенные",
+      "verified": "Проверенные",
+      "on_other_networks": "На других сетях",
+      "bridge": "Мост",
+      "popular": "Популярное в Rainbow"
+    },
+    "verified_by_rainbow": "Проверено Rainbow"
+  },
+  "explainers": {
+    "sidechains": {
+      "layer_two": {
+        "title": "Что такое %{chainName}?",
+        "description_1": "%{chainName} - это сеть второго уровня, которая работает поверх Ethereum, обеспечивая более дешевые и быстрые транзакции, сохраняя при этом безопасность Ethereum",
+        "description_2": "Она объединяет много транзакций в \"роллап\" перед тем, как они будут отправлены на постоянное хранение в Ethereum"
+      },
+      "specific": {
+        "polygon": {
+          "title": "Что такое Polygon?",
+          "description_1": "Polygon - это сайдчейн, отдельная сеть, которая работает параллельно с Ethereum и совместима с ним",
+          "description_2": "Он позволяет совершать более дешевые и быстрые транзакции, но в отличие от сетей второго уровня, Polygon имеет свои механизмы безопасности и консенсуса, отличные от Ethereum"
+        },
+        "bsc": {
+          "title": "Что такое BSC?",
+          "description_1": "Binance Smart Chain или BSC — это альтернативный уровень 1, разработанный криптовалютной биржей Binance.",
+          "description_2": "Позволяет совершать более дешевые и быстрые транзакции, но в отличие от сетей уровня 2, BSC имеет свои механизмы безопасности и консенсуса, отличные от Ethereum."
+        },
+        "avalanche": {
+          "title": "Что такое Avalanche?",
+          "description_1": "Avalanche — это альтернативный уровень 1, работающий на экосистеме сабнетов, похожих на боковые цепи Ethereum и сети уровня 2.",
+          "description_2": "Позволяет совершать более дешевые и быстрые транзакции, но в отличие от сетей уровня 2, Avalanche имеет свои механизмы безопасности и консенсуса, отличные от Ethereum."
+        },
+        "blast": {
+          "title": "Что такое Blast?",
+          "description_1": "Blast — это платформа уровня 2 (L2) для Ethereum, созданная той же талантливой командой, что и популярный рынок NFT Blur.",
+          "description_2": "Сеть отличается введением родного дохода для эфира (ETH) и различных стейблкоинов, таких как USDC, USDT и DAI."
+        },
+        "degen": {
+          "title": "Что такое Degen?",
+          "description_1": "Degen Chain — это сеть уровня 3, которая работает поверх Arbitrum и Ethereum.",
+          "description_2": "Предлагает невероятно быстрые и дешевые транзакции в токенах сообщества Farcaster $degen."
+        },
+        "apechain": {
+          "title": "Что такое ApeChain?",
+          "description_1": "ApeChain — это сеть уровня <b>3</b>, которая работает поверх Arbitrum Orbit и Ethereum.",
+          "description_2": "Она значительно улучшает утилитарность ApeCoin, содействуя развитию мощной и динамичной экономики, управляемой $APE."
+        },
+        "ink": {
+          "title": "Что такое Ink?",
+          "description_1": "Ink — это передовая блокчейн Layer 2 (L2), построенная на Superchain и выпущенная Kraken.",
+          "description_2": "Ink, как естественное развитие их миссии, будет служить плавным мостом к DeFi, давая пользователям возможность с уверенностью и легкостью двигаться в ончейн"
+        },
+        "sanko": {
+          "title": "Что такое Sanko?",
+          "description_1": "Sanko — это сеть уровня 2, которая работает поверх Arbitrum.",
+          "description_2": "Он позволяет проводить более дешевые и быстрые транзакции, но в отличие от сетей второго уровня, у Sanko есть свои собственные механизмы безопасности и консенсуса, отличающиеся от Ethereum."
+        },
+        "gravity": {
+          "title": "Что такое Gravity?",
+          "description_1": "Gravity — это блокчейн Layer-1, предназначенный для массового использования и омничейнового будущего.",
+          "description_2": "Он позволяет проводить более дешевые и быстрые транзакции, но в отличие от сетей второго уровня, у Gravity есть свои собственные механизмы безопасности и консенсуса, отличающиеся от Ethereum."
+        },
+        "berachain": {
+          "title": "Что такое Berachain?",
+          "description_1": "Berachain — это блокчейн Layer-1, построенная на основе доказательства ликвидности с использованием BeaconKit.",
+          "description_2": "Он позволяет проводить более дешевые и быстрые транзакции, но в отличие от сетей второго уровня, у Berachain есть свои собственные механизмы безопасности и консенсуса, отличающиеся от Ethereum."
+        },
+        "custom_network": {
+          "title": "Что это за сеть?",
+          "description_1": "Это пользовательская сеть, добавленная вами! Пользовательские сети могут быть адаптированы для удовлетворения конкретных потребностей, предлагая уникальные функции и возможности.",
+          "description_2": "В зависимости от конфигурации, эта сеть может использовать различные протоколы, меры безопасности и механизмы консенсуса, разработанные для оптимизации производительности, снижения затрат или предоставления специализированных услуг."
+        }
+      },
+      "link_button_label": "Читать дальше",
+      "action_label": "Понятно"
+    },
+    "send": {
+      "to_token_contract": {
+        "description_1": "The address you entered is for a token contract.",
+        "description_2": "За исключением редких ситуаций, вам, скорее всего, не стоит этого делать. Вы можете потерять ваши активы, или они могут попасть не туда, куда нужно.",
+        "description_3": "Проверьте адрес, подтвердите его с получателем или сначала свяжитесь со службой поддержки.",
+        "title": "Подождите немного!"
+      },
+      "action_label": "Понятно"
+    },
+    "custom_gas": {
+      "action_button_label": "Понятно",
+      "current_base_stable": "Сетевой трафик сейчас стабильный. Веселитесь!",
+      "current_base_surging": "Комиссии сейчас необычно высоки! Если ваша транзакция не срочна, лучше подождать, пока комиссии не снизятся.",
+      "current_base_falling": "Комиссии сейчас снижаются!",
+      "current_base_rising": "Сборы растут прямо сейчас! Чтобы избежать застревания транзакции, лучше использовать более высокую максимальную базовую комиссию.",
+      "current_base_description": "Базовая комиссия устанавливается сетью Ethereum и изменяется в зависимости от загруженности сети.",
+      "current_base_title": "Текущая базовая комиссия",
+      "max_base_explainer_1": "Это максимальная базовая комиссия, которую вы готовы заплатить за эту транзакцию.",
+      "max_base_explainer_2": "Установка более высокой максимальной базовой комиссии позволяет избежать застревания транзакции при росте комиссий.",
+      "max_base_title": "Максимальная базовая комиссия",
+      "max_priority_explainer": "Чаевые для майнера напрямую передаются майнеру, который подтверждает вашу транзакцию в сети.\n\nБолее высокий чаевые делают вашу транзакцию более вероятной для быстрого подтверждения.",
+      "max_priority_title": "Подсказка майнера"
+    }
+  },
+  "injected_notifications": {
+    "network_changed": "Сеть изменена",
+    "network_changed_failed": "Сбой при изменении сети",
+    "unsupported_network": "Неподдерживаемая сеть",
+    "no_active_session": "Нет активной сессии",
+    "already_added": "RPC активирован",
+    "set_as_active": "Новый RPC активирован",
+    "already_active": "Сеть уже добавлена"
+  },
+  "alert": {
+    "ok": "ОК",
+    "cancel": "Отмена",
+    "wallet_watching_mode": "Этот кошелек в настоящее время находится в режиме 'Наблюдение'",
+    "wallet_testing_mode": "Тестнеты не поддерживаются Swap. Отключите режим тестнета, чтобы продолжить.",
+    "coming_soon": "Скоро!",
+    "no_hw_ff": "Аппаратные кошельки не поддерживаются в Firefox. Попробуйте другой браузер, например, Chrome или Brave"
+  },
+  "hw": {
+    "choose_title": "Подключите аппаратный кошелек",
+    "ledger_support": "Поддерживает устройства Ledger Nano S, Nano S Plus, Nano X и Stax.",
+    "trezor_support": "Поддерживает устройства Model One или Model T.",
+    "connect_ledger_title": "Подключите свой Ledger",
+    "connect_ledger_description": "Подключите свой Ledger к Rainbow, подключив его к компьютеру с помощью кабеля USB-C.",
+    "unlock_ledger_title": "Разблокировать Ledger",
+    "unlock_ledger_description": "Чтобы продолжить, приложение Ethereum должно быть открыто на вашем Ledger.",
+    "unlock_ledger_description_2": "Введите пароль для разблокировки вашего Ledger. После разблокировки откройте приложение Ethereum, нажав оба кнопки одновременно.",
+    "exclusivity_ledger_title": "Похоже, что другое приложение использует ваш Ledger",
+    "exclusivity_ledger_description": "Убедитесь, что вы не используете устройство с другим приложением, таким как Ledger Live, MetaMask или другой вкладкой браузера.",
+    "exclusivity_ledger_description_2": "После закрытия другого приложения пожалуйста, перезагрузите эту страницу и повторите попытку.",
+    "needs_app_ledger_title": "Откройте приложение ETH",
+    "needs_app_ledger_description": "Для продолжения транзакции, приложение Ethereum должно быть открыто на вашем Ledger.",
+    "needs_app_ledger_description_2": "Введите пароль для разблокировки вашего Ledger. После разблокировки откройте приложение Ethereum, нажав оба кнопки одновременно.",
+    "connect_trezor_title": "Завершите настройку вашего Trezor",
+    "connect_trezor_description": "Продолжите подключение вашего Trezor к Rainbow через веб-интерфейс.",
+    "learn_more": "Узнать больше.",
+    "connect_wallets_title": "Подключите свои кошельки",
+    "connect_wallets_found": "Мы нашли %{count} кошельков на вашем %{vendor} с балансом или активностью. Выберите, с какими подключиться.",
+    "connect_wallets_not_found": "Мы не нашли ни одного кошелька с активностью на этом %{vendor} , но вы все равно можете их добавить.",
+    "connect_wallet": "Подключить кошелек",
+    "connect_n_wallets": "Подключить %{count} кошельков",
+    "wallets_found": "Найдено %{count} кошельков",
+    "add_by_index": "Добавить по индексу",
+    "index_label": "Индекс",
+    "connection_successful_title": "Успешно подключено",
+    "connection_successful_description": "Вы успешно добавили %{count} %{wallet_noun}. %{wallet_pronoun} Легко идентифицируется в вашем списке кошельков с бейджем %{vendor} . Вы можете добавить больше в любое время.",
+    "wallet_singular": "кошелек",
+    "wallet_plural": "кошельки",
+    "wallet_pronoun_plural": "Они",
+    "wallet_pronoun_singular": "Это",
+    "done": "Готово",
+    "add_wallet": "Добавить кошелек",
+    "add_by_index_title": "Добавить кошелек по индексу",
+    "add_by_index_description": "Выберите путь производного и введите индекс кошелька, который вы хотите добавить",
+    "waiting_for_trezor_connect": "Ожидание подключения Trezor",
+    "continue_on_trezor_connect": "Пожалуйста, следуйте инструкциям в окне подключения Trezor",
+    "trezor_success": "Успех!",
+    "you_can_close_this_window": "Вы можете закрыть это окно",
+    "ledger_locked_error": "Пожалуйста, убедитесь, что ваше устройство Ledger разблокировано и открыто приложение Ethereum",
+    "check_ledger_disconnected": "Убедитесь, что ваше устройство подключено, разблокировано и приложение Ethereum открыто"
+  },
+  "choose_wallet_group": {
+    "title": "Выберите группу кошелька",
+    "description": "Выберите группу кошелька, внутри которой вы хотите создать новый кошелек, или создайте новую",
+    "wallet_group": "Группа кошельков %{number}",
+    "new_wallet_group": "Новая группа кошельков",
+    "create_recovery_phrase": "Создать новую фразу восстановления"
+  },
+  "unsupported_browser": {
+    "title": "Неподдерживаемый браузер",
+    "description": "Ваш браузер в настоящее время не поддерживается. Rainbow в настоящее время доступен для Android и iOS на мобильных устройствах, а также для Chrome, Brave, Arc и Edge на настольных устройствах.",
+    "download_the_app": "Скачать приложение",
+    "link_text": {
+      "highlighted": "Связаться с Rainbow",
+      "after": " для запроса дополнительной информации."
+    }
+  },
+  "buy": {
+    "title": "Купить",
+    "fees_title": "Сборы",
+    "instant_title": "Мгновенно",
+    "instant_yes": "Да",
+    "method_title": "Метод",
+    "methods_title": "Методы",
+    "network_title": "Сеть",
+    "networks_title": "Сети",
+    "payment_methods": {
+      "apple_pay": "Apple Pay",
+      "bank": "Банк",
+      "card": "Карта",
+      "google_pay": "Google Pay"
+    }
+  },
+  "tooltip": {
+    "switch_network": "Сменить сети",
+    "copy_address": "Скопировать адрес кошелька",
+    "swap": "Обменять токены",
+    "send": "Отправить токены",
+    "more": "Больше элементов",
+    "view_tokens": "Просмотр токенов",
+    "view_activity": "Посмотреть активность",
+    "balance": "Общий баланс",
+    "switch_wallet": "Сменить кошельки",
+    "save_to_contacts": "Сохранить в контактах",
+    "clear_address": "Очистить адрес",
+    "clear_token": "Очистить токен",
+    "gwei_settings": "Настройки Gwei",
+    "flip_tokens": "Поменять позиции токенов",
+    "favorite": "Добавить в избранное",
+    "unfavorite": "Удалить из избранного",
+    "estimated_difference": "Оценочное отличие в стоимости",
+    "buy_crypto": "Купить и перевести крипто"
+  },
+  "simulation": {
+    "title": "Симулированый результат",
+    "loading": "Симуляция...",
+    "error": "Ошибка в симуляции",
+    "no_changes": "Изменений не обнаружено",
+    "received": "Получено",
+    "sent": "Отправлено",
+    "approved": "Утверждено",
+    "reverted": "Транзакция отменена",
+    "function": "Функция",
+    "contract": "Контракт",
+    "contract_name": "Имя контракта",
+    "contract_created_at": "Контракт создан",
+    "to": "К",
+    "source_code": "Исходный код",
+    "signature": {
+      "message": "Сообщение"
+    },
+    "tabs": {
+      "overview": "Обзор",
+      "details": "Детали",
+      "data": "Данные"
+    }
+  },
+  "chain": "Сеть",
+  "nonce": "Нонс",
+  "copy": "Копировать",
+  "copy_link": "Копировать Ссылку",
+  "link_text": "Узнать больше",
+  "close": "Закрыть",
+  "verified": "Проверенные",
+  "unverified": "Непроверенные",
+  "skip": "Пропустить",
+  "done": "Готово",
+  "view_on_explorer": "Посмотреть на %{explorer}",
+  "watch_asset": {
+    "chain_id": "Идентификатор сети",
+    "symbol": "Символ",
+    "decimals": "Десятичные знаки",
+    "address": "Адрес",
+    "not_found": "Мы не смогли найти этот актив на выбранной сети. Пожалуйста, выберите правильную сеть ниже"
+  }
+}
