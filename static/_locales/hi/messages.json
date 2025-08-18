@@ -1,10 +1,10 @@
 {
   "appName": {
-    "message": "Rainbow",
+    "message": "रेनबो",
     "description": "The name of the extension, displayed in the web store."
   },
   "appShortName": {
-    "message": "Rainbow",
+    "message": "रेनबो",
     "description": "The short name of the extension, displayed in the toolbar."
   },
   "appDescription": {
