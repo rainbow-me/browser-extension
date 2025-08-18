@@ -1,6 +1,12 @@
 #!/bin/bash
 RETRY_COUNT=0
 
+# Auto-setup Chrome 138 if available
+if [ -d "chrome-138" ]; then
+  export CHROMIUM_BIN=$(find chrome-138 -name "Google Chrome for Testing" -type f | head -1)
+  echo "Using Chrome 138: $CHROMIUM_BIN"
+fi
+
 # Function to run tests
 run_tests() {
   echo "Running Tests..."

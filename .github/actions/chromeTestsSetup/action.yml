@@ -10,7 +10,7 @@ runs:
   - uses: ./.github/actions/testsSetup
     with:
       gh-access-token: ${{ inputs.gh-access-token }}
-  - name: Install chrome
+  - name: Setup Chrome 138
     shell: 'bash'
     run: |
       CHROME_VERSION=$(cat e2e/browsers.json | jq -r '.linux.chrome.version')
