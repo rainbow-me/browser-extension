@@ -1,5 +1,20 @@
 import { Hex, sha256 } from 'viem';
 
+// Handle mocked services
+const mockConfigs = [
+  {
+    service: 'swap',
+    hostname: 'swap.p.rainbow.me',
+    mockPath: 'swap/quotes',
+  },
+  {
+    service: 'addys',
+    hostname: 'addys.p.rainbow.me',
+    path: '/assets',
+    mockPath: 'addys/assets',
+  },
+];
+
 export function mockFetch() {
   const nativeFetch = window.fetch;
   window.fetch = async function mockedFetch(
@@ -11,17 +26,21 @@ export function mockFetch() {
 
     const url = new URL(input);
 
-    if (url.hostname === 'swap.p.rainbow.me') {
-      console.log('Intercepting swap request:', {
+    const config = mockConfigs.find((c) => {
+      if (url.hostname !== c.hostname) return false;
+      if (c.path && !url.pathname.includes(c.path)) return false;
+      return true;
+    });
+
+    if (config) {
+      const hash = sha256(url.href as Hex);
+
+      console.log(`Intercepting ${config.service} request:`, {
         url: url.href,
-        params: Object.fromEntries(url.searchParams),
+        hash,
       });
 
-      const hash = sha256(url.href as Hex);
-      console.log('Looking for mock file with hash:', hash);
-
-      const response = await import(`./swap/quotes/${hash}.json`);
-      console.log('Mock response:', response);
+      const response = await import(`./${config.mockPath}/${hash}.json`);
 
       if (!response)
         throw new Error('no response for request', {

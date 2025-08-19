@@ -28,6 +28,7 @@
     "fetch:networks": "node scripts/networks.js",
     "// Updates the mock quotes": "",
     "mock:swap-quotes": "node e2e/mocks/swap/update.js",
+    "mock:addys-assets": "node e2e/mocks/addys/update.js",
     "// Design System scripts": "",
     "// GraphQL scripts": "",
     "graphql-setup": "yarn graphql-codegen:install && yarn graphql-codegen",
