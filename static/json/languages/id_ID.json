@@ -1303,6 +1303,7 @@
     "tokens": "Tokens"
   },
   "activity": {
+    "hour": "Jam Terakhir",
     "today": "Hari Ini",
     "yesterday": "Kemarin",
     "this_month": "Bulan Ini",
@@ -1711,10 +1712,10 @@
       "action_label": "Mengerti"
     },
     "send": {
-      "to_smart_contract": {
-        "description_1": "Alamat yang Anda masukkan adalah untuk smart contract",
-        "description_2": "Kecuali dalam situasi langka, sebaiknya Anda tidak melakukan ini. Anda bisa kehilangan aset Anda atau mungkin pergi ke tempat yang salah",
-        "description_3": "Periksa lagi alamatnya, verifikasi dengan penerima, atau hubungi dukungan terlebih dahulu",
+      "to_token_contract": {
+        "description_1": "Alamat yang Anda masukkan adalah untuk kontrak token.",
+        "description_2": "Kecuali dalam situasi langka, sebaiknya Anda tidak melakukan ini. Anda bisa kehilangan aset Anda atau mungkin pergi ke tempat yang salah.",
+        "description_3": "Periksa lagi alamatnya, verifikasi dengan penerima, atau hubungi dukungan terlebih dahulu.",
         "title": "Tahan diri Anda!"
       },
       "action_label": "Mengerti"
