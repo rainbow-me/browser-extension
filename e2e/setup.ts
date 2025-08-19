@@ -21,6 +21,18 @@ beforeAll(async () => {
   if (!extensionId) throw new Error('Extension not found');
 
   globalRootURL = browserExtensionScheme + extensionId;
+
+  // Monitor WebDriver connection - exit if browser is closed
+  const checkDriverConnection = setInterval(async () => {
+    try {
+      // Try to get window handles - will throw if browser is closed
+      await driver.getWindowHandle();
+    } catch (error) {
+      console.log('Browser closed, exiting tests...');
+      clearInterval(checkDriverConnection);
+      process.exit(0);
+    }
+  }, 1000);
 });
 
 beforeEach(async (context) => {
@@ -40,7 +52,6 @@ afterAll(async () => {
 
 // Handle process termination signals to ensure cleanup
 const cleanupAndExit = async () => {
-  console.log('Cleaning up WebDriver before exit...');
   await globalDriver?.quit();
   process.exit(0);
 };
