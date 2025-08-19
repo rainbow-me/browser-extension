@@ -1,5 +1,4 @@
-import { WebDriver } from 'selenium-webdriver';
-import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { ChainId } from '~/core/types/chains';
 
@@ -22,20 +21,9 @@ import { browser } from '../../helpers/environment';
 import { getTextFromText, typeOnTextInput } from '../../helpers/input';
 import { goToPopup, goToWelcome } from '../../helpers/navigation';
 import { fillPrivateKey } from '../../helpers/onboarding';
-import { takeScreenshotOnFailure } from '../../helpers/screenshot';
 import { shortenAddress, switchWallet } from '../../helpers/wallet';
 
 describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
-  beforeEach<{ driver: WebDriver }>(async (context) => {
-    context.driver = driver;
-  });
-
-  afterEach<{ driver: WebDriver }>(async (context) => {
-    await takeScreenshotOnFailure(context);
-  });
-
-  afterAll(() => driver?.quit());
-
   it('should be able import a wallet via pk', async () => {
     //  Start from welcome screen
     await goToWelcome(driver, rootURL);

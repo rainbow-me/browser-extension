@@ -1,5 +1,5 @@
-import { Key, WebDriver } from 'selenium-webdriver';
-import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { Key } from 'selenium-webdriver';
+import { describe, expect, it } from 'vitest';
 
 import { TEST_VARIABLES } from '../../fixtures/wallets';
 import { delay, delayTime } from '../../helpers/delays';
@@ -11,7 +11,6 @@ import {
 import { checkExtensionURL, goToPopup } from '../../helpers/navigation';
 import { importWalletFlowUsingKeyboardNavigation } from '../../helpers/onboarding';
 import { transactionStatus } from '../../helpers/onchain';
-import { takeScreenshotOnFailure } from '../../helpers/screenshot';
 import {
   executePerformShortcut,
   navigateToElementWithTestId,
@@ -19,16 +18,6 @@ import {
 import { checkWalletName } from '../../helpers/wallet';
 
 describe('Complete send flow via shortcuts and keyboard navigation', () => {
-  beforeEach<{ driver: WebDriver }>(async (context) => {
-    context.driver = driver;
-  });
-
-  afterEach<{ driver: WebDriver }>(async (context) => {
-    await takeScreenshotOnFailure(context);
-  });
-
-  afterAll(() => driver?.quit());
-
   it('should be able import a wallet via pk', async () => {
     await importWalletFlowUsingKeyboardNavigation(
       driver,

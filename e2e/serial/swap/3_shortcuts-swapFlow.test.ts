@@ -1,6 +1,5 @@
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
-import { WebDriver } from 'selenium-webdriver';
-import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { SWAP_VARIABLES, TEST_VARIABLES } from '../../fixtures/wallets';
 import { delayTime } from '../../helpers/delays';
@@ -11,7 +10,6 @@ import {
 } from '../../helpers/elements';
 import { checkExtensionURL, goToPopup } from '../../helpers/navigation';
 import { importWalletFlowUsingKeyboardNavigation } from '../../helpers/onboarding';
-import { takeScreenshotOnFailure } from '../../helpers/screenshot';
 import {
   executePerformShortcut,
   navigateToElementWithTestId,
@@ -26,16 +24,6 @@ const WALLET_TO_USE_SECRET = TEST_VARIABLES.SWAPS_WALLET.PK;
 const WALLET_TO_USE_ADDRESS = TEST_VARIABLES.SWAPS_WALLET.ADDRESS;
 
 describe('Complete swap flow via shortcuts and keyboard navigation', () => {
-  beforeEach<{ driver: WebDriver }>(async (context) => {
-    context.driver = driver;
-  });
-
-  afterEach<{ driver: WebDriver }>(async (context) => {
-    await takeScreenshotOnFailure(context);
-  });
-
-  afterAll(() => driver?.quit());
-
   it('should be able import a wallet via pk', async () => {
     await importWalletFlowUsingKeyboardNavigation(
       driver,

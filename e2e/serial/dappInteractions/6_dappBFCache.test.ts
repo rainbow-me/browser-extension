@@ -1,11 +1,10 @@
-import { WebDriver } from 'selenium-webdriver';
-import { afterAll, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { TEST_VARIABLES } from '../../fixtures/wallets';
 import { goToTestApp } from '../../helpers/dapp';
 import { importWalletFlow } from '../../helpers/onboarding';
 
-const triggerBFCache = async (driver: WebDriver) => {
+const triggerBFCache = async () => {
   await driver.executeScript(`
     window.addEventListener('pageshow', (event) => {
       if (event.persisted) {
@@ -26,8 +25,6 @@ const triggerBFCache = async (driver: WebDriver) => {
 };
 
 describe('Dapp provider BFCache behavior', () => {
-  afterAll(() => driver?.quit());
-
   it('has working provider stream after BFCache restore', async () => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);
     await goToTestApp(driver);
@@ -44,7 +41,7 @@ describe('Dapp provider BFCache behavior', () => {
     );
     expect(initialResult).toBe('0x1');
 
-    await triggerBFCache(driver);
+    await triggerBFCache();
 
     const bfcacheResult = await driver.executeScript(
       `return window.ethereum.request(${request})`,

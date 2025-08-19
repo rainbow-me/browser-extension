@@ -1,9 +1,9 @@
 import { Contract } from '@ethersproject/contracts';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { ChainId } from '@rainbow-me/swaps';
-import { Key, WebDriver } from 'selenium-webdriver';
+import { Key } from 'selenium-webdriver';
 import { erc20Abi } from 'viem';
-import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { SWAP_VARIABLES, TEST_VARIABLES } from '../../fixtures/wallets';
 import { delay, delayTime } from '../../helpers/delays';
@@ -28,23 +28,12 @@ import {
   subtract,
 } from '../../helpers/numbers';
 import { fillPrivateKey } from '../../helpers/onboarding';
-import { takeScreenshotOnFailure } from '../../helpers/screenshot';
 
 const WALLET_TO_USE_SECRET = TEST_VARIABLES.SWAPS_WALLET.PK;
 
 const WALLET_TO_USE_ADDRESS = TEST_VARIABLES.SWAPS_WALLET.ADDRESS;
 
 describe('Swap Flow 2', () => {
-  beforeEach<{ driver: WebDriver }>(async (context) => {
-    context.driver = driver;
-  });
-
-  afterEach<{ driver: WebDriver }>(async (context) => {
-    await takeScreenshotOnFailure(context);
-  });
-
-  afterAll(() => driver?.quit());
-
   it('should be able import a wallet via pk', async () => {
     //  Start from welcome screen
     await goToWelcome(driver, rootURL);

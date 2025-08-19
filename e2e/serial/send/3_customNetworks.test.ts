@@ -1,5 +1,4 @@
-import { WebDriver } from 'selenium-webdriver';
-import { afterAll, afterEach, beforeEach, expect, it } from 'vitest';
+import { expect, it } from 'vitest';
 
 import { TEST_VARIABLES } from '../../fixtures/wallets';
 import { delayTime } from '../../helpers/delays';
@@ -10,19 +9,8 @@ import {
 import { typeOnTextInput } from '../../helpers/input';
 import { checkExtensionURL } from '../../helpers/navigation';
 import { importWalletFlow } from '../../helpers/onboarding';
-import { takeScreenshotOnFailure } from '../../helpers/screenshot';
 import { navigateToSettingsNetworks } from '../../helpers/settings';
 import { executePerformShortcut } from '../../helpers/shortcuts';
-
-beforeEach<{ driver: WebDriver }>(async (context) => {
-  context.driver = driver;
-});
-
-afterEach<{ driver: WebDriver }>(async (context) => {
-  await takeScreenshotOnFailure(context);
-});
-
-afterAll(() => driver?.quit());
 
 it('should be able import a wallet via pk', async () => {
   await importWalletFlow(driver, rootURL, TEST_VARIABLES.SEED_WALLET.PK);

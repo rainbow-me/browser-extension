@@ -1,6 +1,6 @@
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { Key } from 'selenium-webdriver';
-import { afterAll, afterEach, beforeEach, expect, it } from 'vitest';
+import { expect, it } from 'vitest';
 
 import { ChainId } from '~/core/types/chains';
 
@@ -28,20 +28,7 @@ import {
   subtract,
 } from '../../helpers/numbers';
 import { fillPrivateKey } from '../../helpers/onboarding';
-import { takeScreenshotOnFailure } from '../../helpers/screenshot';
 import { executePerformShortcut } from '../../helpers/shortcuts';
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-beforeEach(async (context: any) => {
-  context.driver = driver;
-});
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-afterEach(async (context: any) => {
-  await takeScreenshotOnFailure(context);
-});
-
-afterAll(() => driver?.quit());
 
 const WALLET_TO_USE_SECRET = TEST_VARIABLES.SWAPS_WALLET.PK;
 

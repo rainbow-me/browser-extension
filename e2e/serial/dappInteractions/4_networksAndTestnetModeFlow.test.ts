@@ -1,5 +1,4 @@
-import { WebDriver } from 'selenium-webdriver';
-import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { ChainId } from '~/core/types/chains';
 
@@ -19,21 +18,10 @@ import {
 import { browser } from '../../helpers/environment';
 import { goBackTwice, goToPopup } from '../../helpers/navigation';
 import { importWalletFlow } from '../../helpers/onboarding';
-import { takeScreenshotOnFailure } from '../../helpers/screenshot';
 import { navigateToSettingsNetworks } from '../../helpers/settings';
 import { executePerformShortcut } from '../../helpers/shortcuts';
 
 describe.runIf(browser !== 'firefox')('Networks & Testnet Mode flows', () => {
-  afterAll(async () => await driver?.quit());
-
-  beforeEach<{ driver: WebDriver }>(async (context) => {
-    context.driver = driver;
-  });
-
-  afterEach<{ driver: WebDriver }>(async (context) => {
-    await takeScreenshotOnFailure(context);
-  });
-
   it('should be able import a wallet via seed', async () => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);
   });

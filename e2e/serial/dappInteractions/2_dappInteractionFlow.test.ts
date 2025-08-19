@@ -1,6 +1,6 @@
-import { WebDriver, until } from 'selenium-webdriver';
+import { until } from 'selenium-webdriver';
 import { getAddress } from 'viem';
-import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { ChainId } from '~/core/types/chains';
 
@@ -28,12 +28,11 @@ import {
 } from '../../helpers/navigation';
 import { fillPrivateKey } from '../../helpers/onboarding';
 import { getOnchainBalance, transactionStatus } from '../../helpers/onchain';
-import { takeScreenshotOnFailure } from '../../helpers/screenshot';
 import { shortenAddress } from '../../helpers/wallet';
 
 const waitUntilTime = 20_000;
 
-async function awaitTextChange(id: string, text: string, driver: WebDriver) {
+async function awaitTextChange(id: string, text: string) {
   try {
     const element = await findElementById({
       id: id,
@@ -53,16 +52,6 @@ async function awaitTextChange(id: string, text: string, driver: WebDriver) {
 const shortenedAddress = shortenAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS);
 
 describe.runIf(browser !== 'firefox')('App interactions flow', () => {
-  beforeEach<{ driver: WebDriver }>(async (context) => {
-    context.driver = driver;
-  });
-
-  afterEach<{ driver: WebDriver }>(async (context) => {
-    await takeScreenshotOnFailure(context);
-  });
-
-  afterAll(() => driver?.quit());
-
   // Import a wallet
   it('should be able import a wallet via pk', async () => {
     //  Start from welcome screen
@@ -588,7 +577,7 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     await driver.switchTo().window(dappHandler);
     await delayTime('very-long');
 
-    await awaitTextChange('collectiblesStatus', 'Deployed', driver);
+    await awaitTextChange('collectiblesStatus', 'Deployed');
   });
 
   it('should be able to mint a collectible', async () => {
@@ -613,7 +602,7 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
 
     await driver.switchTo().window(dappHandler);
     await delayTime('very-long');
-    await awaitTextChange('collectiblesStatus', 'Mint completed', driver);
+    await awaitTextChange('collectiblesStatus', 'Mint completed');
   });
 
   it('should be able to approve a collectible', async () => {
@@ -640,7 +629,7 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     await driver.switchTo().window(dappHandler);
     await delayTime('very-long');
 
-    await awaitTextChange('collectiblesStatus', 'Approve completed', driver);
+    await awaitTextChange('collectiblesStatus', 'Approve completed');
   });
 
   it('should be able to set approval for all for a collectible', async () => {
@@ -669,7 +658,6 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     await awaitTextChange(
       'collectiblesStatus',
       'Set Approval For All completed',
-      driver,
     );
   });
 
@@ -696,7 +684,7 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     await driver.switchTo().window(dappHandler);
     await delayTime('very-long');
 
-    await awaitTextChange('collectiblesStatus', 'Revoke completed', driver);
+    await awaitTextChange('collectiblesStatus', 'Revoke completed');
   });
 
   it('should be able to transfer a collectible', async () => {
@@ -721,10 +709,6 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
 
     await driver.switchTo().window(dappHandler);
     await delayTime('very-long');
-    await awaitTextChange(
-      'collectiblesStatus',
-      'Transfer From completed',
-      driver,
-    );
+    await awaitTextChange('collectiblesStatus', 'Transfer From completed');
   });
 });

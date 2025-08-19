@@ -1,7 +1,6 @@
 import { verifyMessage, verifyTypedData } from '@ethersproject/wallet';
-import { WebDriver } from 'selenium-webdriver';
 import { getAddress, isHex } from 'viem';
-import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { ChainId } from '~/core/types/chains';
 
@@ -27,7 +26,6 @@ import {
   goToWelcome,
 } from '../../helpers/navigation';
 import { fillPrivateKey } from '../../helpers/onboarding';
-import { takeScreenshotOnFailure } from '../../helpers/screenshot';
 import { shortenAddress, switchWallet } from '../../helpers/wallet';
 
 const TYPED_MESSAGE = {
@@ -63,16 +61,6 @@ const TYPED_MESSAGE = {
 const MESSAGE = 'rainbow rocks 🌈';
 
 describe('App interactions flow', () => {
-  beforeEach<{ driver: WebDriver }>(async (context) => {
-    context.driver = driver;
-  });
-
-  afterEach<{ driver: WebDriver }>(async (context) => {
-    await takeScreenshotOnFailure(context);
-  });
-
-  afterAll(() => driver?.quit());
-
   // Import a wallet
   it('should be able import a wallet via pk', async () => {
     //  Start from welcome screen

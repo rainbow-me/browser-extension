@@ -1,4 +1,4 @@
-import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { TEST_VARIABLES } from '../../fixtures/wallets';
 import { delayTime } from '../../helpers/delays';
@@ -14,21 +14,8 @@ import {
 import { goToPopup } from '../../helpers/navigation';
 import { importWalletFlow } from '../../helpers/onboarding';
 import { transactionStatus } from '../../helpers/onchain';
-import { takeScreenshotOnFailure } from '../../helpers/screenshot';
 
 describe('should be able to perform the nft send flow', () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  beforeEach(async (context: any) => {
-    context.driver = driver;
-  });
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  afterEach(async (context: any) => {
-    await takeScreenshotOnFailure(context);
-  });
-
-  afterAll(() => driver?.quit());
-
   it('should be able import a wallet via pk', async () => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.SEED_WALLET.PK);
   });
