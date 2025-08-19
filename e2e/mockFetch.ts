@@ -143,6 +143,18 @@ const MOCK_SERVICES: MockService[] = [
         };
       }
 
+      // Check if this is a transactions endpoint
+      if (parts[3] === 'transactions') {
+        // Transactions endpoint: /v3/<chains>/<address>/transactions/
+        const addressLower = parts[2].toLowerCase();
+        const canonicalUrl = `${url.origin}/v3/${chains}/${addressLower}/transactions/?currency=${currency}`;
+        console.log('Canonical URL for hashing (transactions):', canonicalUrl);
+        return {
+          canonicalUrl,
+          fileName: `${sha256(canonicalUrl as Hex)}.json`,
+        };
+      }
+
       // Normal case with address
       const addressLower = parts[2].toLowerCase();
       const canonicalUrl = `${url.origin}/v3/${chains}/${addressLower}/assets/?currency=${currency}`;

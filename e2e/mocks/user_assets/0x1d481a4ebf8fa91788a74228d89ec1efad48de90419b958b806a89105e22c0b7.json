@@ -11,7 +11,7 @@
             }
           },
           "num_erc20s": 2,
-          "last_activity": 1755557829.348,
+          "last_activity": 1755582331.391,
           "asset_value": 30000000
         },
         "summary_by_chain": {
@@ -22,7 +22,7 @@
               "decimals": 18
             },
             "num_erc20s": 2,
-            "last_activity": 1755557829.348,
+            "last_activity": 1755582331.391,
             "asset_value": 30000000
           },
           "10": {
@@ -32,7 +32,7 @@
               "decimals": 18
             },
             "num_erc20s": 0,
-            "last_activity": 1755557829.348,
+            "last_activity": 1755582331.391,
             "asset_value": 15000000
           }
         }

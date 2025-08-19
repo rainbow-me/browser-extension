@@ -1,10 +1,13 @@
 import fs from 'fs';
 import path from 'path';
 
-import { Hex, sha256 } from 'viem';
+import { Address, Hex, sha256 } from 'viem';
 
 import { ChainId, ChainName } from '../src/core/types/chains';
-import { AddressAssetsReceivedMessage } from '../src/core/types/zerion';
+import {
+  AddressAssetsReceivedMessage,
+  TransactionsReceivedMessage,
+} from '../src/core/types/zerion';
 
 import { TEST_VARIABLES } from './walletVariables';
 
@@ -332,6 +335,206 @@ function generateMocks() {
         generatedMocks.push(
           `${hash} -> ${summaryUrlWithAddress} (summary with address)`,
         );
+      }
+    }
+
+    // Generate transaction mocks for each wallet address
+    for (const address of TEST_WALLETS) {
+      for (const currency of ['usd']) {
+        // Generate mock for transactions endpoint with the chain list
+        const transactionsUrl = `${ADDYS_BASE_URL}/${chains.join(
+          ',',
+        )}/${address.toLowerCase()}/transactions/?currency=${currency}`;
+        const hash = sha256(transactionsUrl as Hex);
+
+        const isEmptyWallet = address === TEST_VARIABLES.EMPTY_WALLET.ADDRESS;
+
+        // Generate transactions response with sample transactions for non-empty wallets
+        const transactionsResponse: TransactionsReceivedMessage = {
+          payload: {
+            transactions: isEmptyWallet
+              ? []
+              : [
+                  {
+                    id: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+                    hash: '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+                    network: 'ethereum' as ChainName,
+                    status: 'confirmed',
+                    direction: 'out',
+                    address_from: address.toLowerCase() as Address,
+                    address_to:
+                      '0x0000000000000000000000000000000000000000' as Address,
+                    nonce: 1,
+                    changes: [
+                      {
+                        asset: {
+                          asset_code: 'eth',
+                          name: 'Ethereum',
+                          symbol: 'ETH',
+                          decimals: 18,
+                          chain_id: ChainId.mainnet,
+                          price: {
+                            value: 3000,
+                            changed_at: Date.now() / 1000,
+                            relative_change_24h: 2.5,
+                          },
+                          icon_url:
+                            'https://rainbowme-res.cloudinary.com/image/upload/v1668633477/assets/ethereum/eth.png',
+                          network: 'ethereum' as ChainName,
+                          networks: {
+                            [ChainId.mainnet]: {
+                              address: 'eth',
+                              decimals: 18,
+                            },
+                          },
+                          bridging: {
+                            bridgeable: true,
+                            networks: {},
+                          },
+                        },
+                        value: 3000, // $3000 value
+                        quantity: '1000000000000000000', // 1 ETH
+                        direction: 'out',
+                        address_from: address.toLowerCase() as Address,
+                        address_to:
+                          '0x0000000000000000000000000000000000000000' as Address,
+                        price: 3000,
+                      },
+                    ],
+                    fee: {
+                      value: 1.26, // $1.26 fee
+                      price: 3000,
+                    },
+                    meta: {
+                      type: 'send',
+                      action: 'send',
+                      status: 'confirmed',
+                      asset: {
+                        asset_code: 'eth',
+                        name: 'Ethereum',
+                        symbol: 'ETH',
+                        decimals: 18,
+                        chain_id: ChainId.mainnet,
+                        icon_url:
+                          'https://rainbowme-res.cloudinary.com/image/upload/v1668633477/assets/ethereum/eth.png',
+                        network: 'ethereum' as ChainName,
+                        networks: {
+                          [ChainId.mainnet]: {
+                            address: 'eth',
+                            decimals: 18,
+                          },
+                        },
+                        bridging: {
+                          bridgeable: true,
+                          networks: {},
+                        },
+                      },
+                      quantity: '1000000000000000000',
+                    },
+                    block_number: 1000000,
+                    mined_at: Math.floor(Date.now() / 1000) - 86400, // 1 day ago
+                  },
+                  {
+                    id: '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
+                    hash: '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
+                    network: 'ethereum' as ChainName,
+                    status: 'confirmed',
+                    direction: 'in',
+                    address_from:
+                      '0x0000000000000000000000000000000000000000' as Address,
+                    address_to: address.toLowerCase() as Address,
+                    nonce: -2, // -2 means not from wallet user
+                    changes: [
+                      {
+                        asset: {
+                          asset_code: 'eth',
+                          name: 'Ethereum',
+                          symbol: 'ETH',
+                          decimals: 18,
+                          chain_id: ChainId.mainnet,
+                          price: {
+                            value: 3000,
+                            changed_at: Date.now() / 1000,
+                            relative_change_24h: 2.5,
+                          },
+                          icon_url:
+                            'https://rainbowme-res.cloudinary.com/image/upload/v1668633477/assets/ethereum/eth.png',
+                          network: 'ethereum' as ChainName,
+                          networks: {
+                            [ChainId.mainnet]: {
+                              address: 'eth',
+                              decimals: 18,
+                            },
+                          },
+                          bridging: {
+                            bridgeable: true,
+                            networks: {},
+                          },
+                        },
+                        value: 6000, // $6000 value
+                        quantity: '2000000000000000000', // 2 ETH
+                        direction: 'in',
+                        address_from:
+                          '0x0000000000000000000000000000000000000000' as Address,
+                        address_to: address.toLowerCase() as Address,
+                        price: 3000,
+                      },
+                    ],
+                    fee: {
+                      value: 1.26,
+                      price: 3000,
+                    },
+                    meta: {
+                      type: 'receive',
+                      action: 'receive',
+                      status: 'confirmed',
+                      asset: {
+                        asset_code: 'eth',
+                        name: 'Ethereum',
+                        symbol: 'ETH',
+                        decimals: 18,
+                        chain_id: ChainId.mainnet,
+                        icon_url:
+                          'https://rainbowme-res.cloudinary.com/image/upload/v1668633477/assets/ethereum/eth.png',
+                        network: 'ethereum' as ChainName,
+                        networks: {
+                          [ChainId.mainnet]: {
+                            address: 'eth',
+                            decimals: 18,
+                          },
+                        },
+                        bridging: {
+                          bridgeable: true,
+                          networks: {},
+                        },
+                      },
+                      quantity: '2000000000000000000',
+                    },
+                    block_number: 999999,
+                    mined_at: Math.floor(Date.now() / 1000) - 172800, // 2 days ago
+                  },
+                ],
+          },
+          meta: {
+            chain_ids: chains,
+            currency: currency,
+            address: address.toLowerCase(),
+            chain_ids_with_errors: [],
+            status: 'ok',
+          },
+        };
+
+        const mockPath = path.join(
+          __dirname,
+          'mocks',
+          'user_assets',
+          `${hash}.json`,
+        );
+        fs.writeFileSync(
+          mockPath,
+          JSON.stringify(transactionsResponse, null, 2),
+        );
+        generatedMocks.push(`${hash} -> ${transactionsUrl} (transactions)`);
       }
     }
 
