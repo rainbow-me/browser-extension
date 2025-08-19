@@ -13,6 +13,7 @@ import { Box } from '~/design-system';
 
 import { useActiveTab } from '../../hooks/useActiveTab';
 import { useAppSession } from '../../hooks/useAppSession';
+import { useAppSessions } from '../../hooks/useAppSessions';
 import { useHomePromptQueue } from '../../hooks/useHomePromptsQueue';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import usePrevious from '../../hooks/usePrevious';
@@ -29,9 +30,10 @@ export const AppConnectionWatcher = () => {
   const { url } = useActiveTab();
   const { data: dappMetadata } = useDappMetadata({ url });
   const location = useLocation();
-  const { addSession, activeSession } = useAppSession({
+  const { activeSession } = useAppSession({
     host: dappMetadata?.appHost || '',
   });
+  const { addSession } = useAppSessions();
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const bannerHoverRef = useRef<boolean>(false);
   const shouldAnimateOut = useRef<boolean>(false);

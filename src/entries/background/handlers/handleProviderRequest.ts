@@ -244,8 +244,10 @@ export const handleProviderRequest = ({
       isCustomChain(chainId),
     getActiveSession: ({ host }: { host: string }) =>
       useAppSessionsStore.getState().getActiveSession({ host }),
-    removeAppSession: ({ host }: { host: string }) =>
-      useAppSessionsStore.getState().removeAppSession({ host }),
+    removeAppSession: ({ host }: { host: string }) => {
+      inpageMessenger.send(`disconnect:${host}`, null);
+      useAppSessionsStore.getState().removeAppSession({ host });
+    },
     getChainNativeCurrency: (chainId: number) =>
       useNetworkStore.getState().getChain(chainId)?.nativeCurrency,
     getFeatureFlags: () => ({

@@ -14,6 +14,7 @@ import { useCurrentAddressStore } from '~/core/state';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 
 import { useAppSession } from '../../hooks/useAppSession';
+import { useAppSessions } from '../../hooks/useAppSessions';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
@@ -75,12 +76,12 @@ export const AppConnectionMenu = ({
   const appLogo = data?.appLogo || '';
 
   const {
-    addSession,
     updateAppSessionChainId,
     disconnectAppSession,
     appSession,
     activeSession,
   } = useAppSession({ host: appHost });
+  const { addSession } = useAppSessions();
 
   const changeChainId = useCallback(
     (chainId: string) => {

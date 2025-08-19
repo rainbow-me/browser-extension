@@ -1,132 +1,111 @@
-import * as React from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Address } from 'viem';
 
-import { initializeMessenger } from '~/core/messengers';
-import { useAppSessionsStore } from '~/core/state';
-import { useAppConnectionWalletSwitcherStore } from '~/core/state/appConnectionWalletSwitcher/appConnectionSwitcher';
-import { toHex } from '~/core/utils/hex';
-import { isLowerCaseMatch } from '~/core/utils/strings';
+import { popupClientQueryUtils } from '~/entries/popup/handlers/background';
 
-const messenger = initializeMessenger({ connect: 'inpage' });
+import {
+  useActiveSessionQuery,
+  useAppSessionQuery,
+} from './useAppSessionQuery';
 
 export function useAppSession({ host = '' }: { host?: string }) {
-  const {
-    removeAppSession,
-    removeSession,
-    updateActiveSessionChainId: storeUpdateActiveSessionChainId,
-    updateSessionChainId: storeUpdateSessionChainId,
-    updateActiveSession: storeUpdateActiveSession,
-    appSessions,
-    addSession: storeAddSession,
-    getActiveSession,
-  } = useAppSessionsStore();
+  const queryClient = useQueryClient();
+  const { data: activeSession = null } = useActiveSessionQuery(host);
+  const appSession = useAppSessionQuery(host);
 
-  const activeSession = getActiveSession({ host });
-  const clearAppHasInteractedWithNudgeSheet =
-    useAppConnectionWalletSwitcherStore(
-      (state) => state.clearAppHasInteractedWithNudgeSheet,
-    );
+  // Provide a default structure when loading to maintain backward compatibility
+  const defaultAppSession = {
+    activeSessionAddress:
+      '0x0000000000000000000000000000000000000000' as Address,
+    host: host || '',
+    sessions: {} as Record<Address, number>,
+    url: '',
+  };
 
-  const updateAppSessionAddress = React.useCallback(
-    ({ address }: { address: Address }) => {
-      storeUpdateActiveSession({ host, address });
-      messenger.send(`accountsChanged:${host}`, address);
-      messenger.send(
-        `chainChanged:${host}`,
-        appSessions[host].sessions[address],
-      );
-    },
-    [appSessions, host, storeUpdateActiveSession],
-  );
+  const safeAppSession = appSession ?? defaultAppSession;
 
-  const addSession = React.useCallback(
-    ({
-      host,
-      address,
-      chainId,
-      url,
-    }: {
-      host: string;
-      address: Address;
-      chainId: number;
-      url: string;
-    }) => {
-      const sessions = storeAddSession({ host, address, chainId, url });
-      messenger.send(`accountsChanged:${host}`, address);
-      if (Object.keys(sessions).length === 1) {
-        messenger.send(`connect:${host}`, {
-          address,
-          chainId: toHex(String(chainId)),
-        });
-      }
-    },
-    [storeAddSession],
-  );
-
-  const updateAppSessionChainId = React.useCallback(
-    (chainId: number) => {
-      storeUpdateActiveSessionChainId({ host, chainId });
-      messenger.send(`chainChanged:${host}`, chainId);
-    },
-    [host, storeUpdateActiveSessionChainId],
-  );
-
-  const updateActiveSessionChainId = React.useCallback(
-    (chainId: number) => {
-      storeUpdateActiveSessionChainId({ host, chainId });
-      messenger.send(`chainChanged:${host}`, chainId);
-    },
-    [host, storeUpdateActiveSessionChainId],
-  );
-
-  const updateSessionChainId = React.useCallback(
-    ({ address, chainId }: { address: Address; chainId: number }) => {
-      storeUpdateSessionChainId({ host, address, chainId });
-      if (isLowerCaseMatch(activeSession?.address, address)) {
-        messenger.send(`chainChanged:${host}`, chainId);
-      }
-    },
-    [activeSession?.address, host, storeUpdateSessionChainId],
-  );
-
-  const appSession = React.useMemo(
-    () => appSessions[host],
-    [appSessions, host],
-  );
-
-  const disconnectSession = React.useCallback(
-    ({ address, host }: { address: Address; host: string }) => {
-      const newActiveSession = removeSession({ host, address });
-      if (newActiveSession) {
-        messenger.send(`accountsChanged:${host}`, newActiveSession?.address);
-        messenger.send(`chainChanged:${host}`, newActiveSession?.chainId);
-      } else {
-        messenger.send(`disconnect:${host}`, []);
-        clearAppHasInteractedWithNudgeSheet({
-          host: host,
-        });
-      }
-    },
-    [clearAppHasInteractedWithNudgeSheet, removeSession],
-  );
-
-  const disconnectAppSession = React.useCallback(() => {
-    messenger.send(`disconnect:${host}`, null);
-    removeAppSession({ host });
-    clearAppHasInteractedWithNudgeSheet({
-      host: host,
+  // Helper to invalidate both queries
+  const invalidateSessionQueries = () => {
+    queryClient.invalidateQueries({
+      queryKey: popupClientQueryUtils.state.sessions.getAppSessions.key(),
     });
-  }, [host, removeAppSession, clearAppHasInteractedWithNudgeSheet]);
+    queryClient.invalidateQueries({
+      queryKey: popupClientQueryUtils.state.sessions.getActiveSession.key(),
+    });
+  };
+
+  // Mutations that invalidate queries
+  const updateActiveSessionMutation = useMutation(
+    popupClientQueryUtils.state.sessions.updateActiveSession.mutationOptions({
+      onSuccess: invalidateSessionQueries,
+    }),
+  );
+
+  const updateActiveSessionChainIdMutation = useMutation(
+    popupClientQueryUtils.state.sessions.updateActiveSessionChainId.mutationOptions(
+      {
+        onSuccess: invalidateSessionQueries,
+      },
+    ),
+  );
+
+  const updateSessionChainIdMutation = useMutation(
+    popupClientQueryUtils.state.sessions.updateSessionChainId.mutationOptions({
+      onSuccess: invalidateSessionQueries,
+    }),
+  );
+
+  const removeSessionMutation = useMutation(
+    popupClientQueryUtils.state.sessions.removeSession.mutationOptions({
+      onSuccess: invalidateSessionQueries,
+    }),
+  );
+
+  const removeAppSessionMutation = useMutation(
+    popupClientQueryUtils.state.sessions.removeAppSession.mutationOptions({
+      onSuccess: invalidateSessionQueries,
+    }),
+  );
+
+  const updateAppSessionAddress = ({ address }: { address: Address }) => {
+    return updateActiveSessionMutation.mutateAsync({ host, address });
+  };
+
+  const updateAppSessionChainId = (chainId: number) => {
+    return updateActiveSessionChainIdMutation.mutateAsync({ host, chainId });
+  };
+
+  const updateSessionChainId = ({
+    address,
+    chainId,
+  }: {
+    address: Address;
+    chainId: number;
+  }) => {
+    return updateSessionChainIdMutation.mutateAsync({ host, address, chainId });
+  };
+
+  const disconnectSession = ({
+    address,
+    host,
+  }: {
+    address: Address;
+    host: string;
+  }) => {
+    return removeSessionMutation.mutateAsync({ host, address });
+  };
+
+  const disconnectAppSession = () => {
+    return removeAppSessionMutation.mutateAsync({ host });
+  };
 
   return {
-    addSession,
     updateAppSessionAddress,
-    updateActiveSessionChainId,
     updateSessionChainId,
     updateAppSessionChainId,
     disconnectAppSession,
     disconnectSession,
-    appSession,
+    appSession: safeAppSession,
     activeSession,
   };
 }
