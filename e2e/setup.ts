@@ -35,7 +35,21 @@ beforeEach(async (context) => {
 
 afterAll(async () => {
   // Quit the driver after all tests
-  if (globalDriver) {
-    await globalDriver.quit();
-  }
+  await globalDriver?.quit();
+});
+
+// Handle process termination signals to ensure cleanup
+const cleanupAndExit = async () => {
+  console.log('Cleaning up WebDriver before exit...');
+  await globalDriver?.quit();
+  process.exit(0);
+};
+
+// Gracefully exit on Ctrl+C or process termination
+process.on('SIGINT', cleanupAndExit);
+process.on('SIGTERM', cleanupAndExit);
+process.on('exit', () => {
+  // Synchronous fallback cleanup if async didn't complete
+  // Note: quit() is async, but we try anyway as last resort
+  globalDriver?.quit();
 });
