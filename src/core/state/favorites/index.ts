@@ -8,13 +8,12 @@ type UpdateFavoritesArgs = {
   chainId: ChainId;
 };
 
-const IS_DEV = process.env.IS_DEV === 'true';
 const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
 
 const getInitialFavorites = () => {
   return buildTimeNetworks.backendNetworks.networks.reduce(
     (acc, network) => {
-      if (network.internal && !(INTERNAL_BUILD || IS_DEV)) return acc;
+      if (network.internal && !INTERNAL_BUILD) return acc;
 
       return {
         ...acc,
