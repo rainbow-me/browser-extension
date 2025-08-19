@@ -2,6 +2,7 @@ import { Key } from 'selenium-webdriver';
 import { describe, expect, it } from 'vitest';
 
 import { TEST_VARIABLES } from '../../fixtures/wallets';
+import { transactionStatus } from '../../helpers/anvil';
 import { delay, delayTime } from '../../helpers/delays';
 import {
   findElementByTestId,
@@ -10,7 +11,6 @@ import {
 } from '../../helpers/elements';
 import { checkExtensionURL, goToPopup } from '../../helpers/navigation';
 import { importWalletFlowUsingKeyboardNavigation } from '../../helpers/onboarding';
-import { transactionStatus } from '../../helpers/onchain';
 import {
   executePerformShortcut,
   navigateToElementWithTestId,

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { TEST_VARIABLES } from '../../fixtures/wallets';
+import { transactionStatus } from '../../helpers/anvil';
 import { delayTime } from '../../helpers/delays';
 import {
   doNotFindElementByTestId,
@@ -13,7 +14,6 @@ import {
 } from '../../helpers/elements';
 import { goToPopup } from '../../helpers/navigation';
 import { importWalletFlow } from '../../helpers/onboarding';
-import { transactionStatus } from '../../helpers/onchain';
 
 describe('should be able to perform the nft send flow', () => {
   it('should be able import a wallet via pk', async () => {

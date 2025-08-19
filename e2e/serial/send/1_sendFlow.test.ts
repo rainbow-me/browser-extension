@@ -1,6 +1,7 @@
 import { expect, it } from 'vitest';
 
 import { TEST_VARIABLES } from '../../fixtures/wallets';
+import { transactionStatus } from '../../helpers/anvil';
 import { delayTime } from '../../helpers/delays';
 import {
   findElementById,
@@ -15,7 +16,6 @@ import {
 import { typeOnTextInput } from '../../helpers/input';
 import { goToPopup } from '../../helpers/navigation';
 import { importWalletFlow } from '../../helpers/onboarding';
-import { transactionStatus } from '../../helpers/onchain';
 import { shortenAddress } from '../../helpers/wallet';
 
 it('should be able import a wallet via pk', async () => {

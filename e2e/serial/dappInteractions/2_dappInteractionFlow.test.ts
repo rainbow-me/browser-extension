@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 import { ChainId } from '~/core/types/chains';
 
 import { TEST_VARIABLES } from '../../fixtures/wallets';
+import { getOnchainBalance, transactionStatus } from '../../helpers/anvil';
 import {
   clickAcceptRequestButton,
   getTextFromDappText,
@@ -27,7 +28,6 @@ import {
   goToWelcome,
 } from '../../helpers/navigation';
 import { fillPrivateKey } from '../../helpers/onboarding';
-import { getOnchainBalance, transactionStatus } from '../../helpers/onchain';
 import { shortenAddress } from '../../helpers/wallet';
 
 const waitUntilTime = 20_000;
