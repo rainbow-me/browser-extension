@@ -32,9 +32,7 @@ const waitUntilTime = 20_000;
 const testPassword = 'test1234';
 const BINARY_PATHS = {
   mac: {
-    chrome:
-      process.env.CHROMIUM_BIN ||
-      '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+    chrome: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
     firefox:
       '/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox',
   },
