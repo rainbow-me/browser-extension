@@ -10,7 +10,7 @@ import {
   querySelector,
   waitUntilElementByTestIdIsPresent,
 } from '../helpers/elements';
-import { getTextFromText, typeOnTextInput } from '../helpers/input';
+import { typeOnTextInput } from '../helpers/input';
 import { goToPopup, goToWelcome } from '../helpers/navigation';
 import { fillPrivateKey, fillSeedPhrase } from '../helpers/onboarding';
 import { shortenAddress, switchWallet } from '../helpers/wallet';
@@ -99,7 +99,11 @@ describe('Watch wallet then add more and switch between them', () => {
     });
     await delayTime('medium');
 
-    const account = await getTextFromText({ id: 'account-name', driver });
+    const accountNameElement = await findElementByTestId({
+      id: 'account-name',
+      driver,
+    });
+    const account = await accountNameElement.getText();
     expect(account).toBe(shortenAddress(TEST_VARIABLES.EMPTY_WALLET.ADDRESS));
   });
 
@@ -168,7 +172,11 @@ describe('Watch wallet then add more and switch between them', () => {
   });
 
   it('should display pk account name', async () => {
-    const account = await getTextFromText({ id: 'account-name', driver });
+    const pkAccountNameElement = await findElementByTestId({
+      id: 'account-name',
+      driver,
+    });
+    const account = await pkAccountNameElement.getText();
     expect(account).toBe(
       shortenAddress(TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS),
     );
@@ -203,7 +211,11 @@ describe('Watch wallet then add more and switch between them', () => {
       driver,
     );
     await delayTime('very-long');
-    const wallet = await getTextFromText({ id: 'account-name', driver });
+    const pkWalletNameElement = await findElementByTestId({
+      id: 'account-name',
+      driver,
+    });
+    const wallet = await pkWalletNameElement.getText();
     expect(wallet).toBe(
       shortenAddress(TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS),
     );
@@ -212,7 +224,11 @@ describe('Watch wallet then add more and switch between them', () => {
   it('should be able to switch to the seed wallet', async () => {
     await delayTime('medium');
     await switchWallet(TEST_VARIABLES.EMPTY_WALLET.ADDRESS, rootURL, driver);
-    const wallet = await getTextFromText({ id: 'account-name', driver });
+    const seedWalletNameElement = await findElementByTestId({
+      id: 'account-name',
+      driver,
+    });
+    const wallet = await seedWalletNameElement.getText();
     expect(wallet).toBe(shortenAddress(TEST_VARIABLES.EMPTY_WALLET.ADDRESS));
   });
 

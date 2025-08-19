@@ -13,12 +13,13 @@ import {
 import { delayTime } from '../../helpers/delays';
 import {
   findElementByIdAndClick,
+  findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
   querySelector,
   waitAndClick,
 } from '../../helpers/elements';
-import { getTextFromText, typeOnTextInput } from '../../helpers/input';
+import { typeOnTextInput } from '../../helpers/input';
 import {
   getAllWindowHandles,
   getWindowHandle,
@@ -173,7 +174,11 @@ describe('App interactions flow', () => {
     await delayTime('medium');
     await switchWallet(TEST_VARIABLES.SEED_WALLET.ADDRESS, rootURL, driver);
     await delayTime('very-long');
-    const wallet = await getTextFromText({ id: 'account-name', driver });
+    const accountNameElement = await findElementByTestId({
+      id: 'account-name',
+      driver,
+    });
+    const wallet = await accountNameElement.getText();
     expect(wallet).toBe(shortenAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS));
   });
 

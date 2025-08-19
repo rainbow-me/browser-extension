@@ -4,10 +4,10 @@ import { expect } from 'vitest';
 import { delayTime } from './delays';
 import {
   findElementByIdAndClick,
+  findElementByTestId,
   findElementByTestIdAndClick,
   waitUntilElementByTestIdIsPresent,
 } from './elements';
-import { getTextFromText } from './input';
 import { goToPopup } from './navigation';
 
 export function shortenAddress(address: string) {
@@ -89,6 +89,7 @@ export async function checkWalletName(
 ) {
   goToPopup(driver, rootURL);
   await delayTime('short');
-  const account = await getTextFromText({ id: 'account-name', driver });
+  const element = await findElementByTestId({ id: 'account-name', driver });
+  const account = await element.getText();
   expect(account).toBe(shortenAddress(walletAddress));
 }

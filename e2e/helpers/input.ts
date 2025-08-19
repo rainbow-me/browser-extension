@@ -38,14 +38,3 @@ export async function getTextFromTextInput({
   const element = await findElementByTestId({ id, driver });
   return await element.getAttribute('value');
 }
-
-export async function getTextFromText({
-  id,
-  driver,
-}: {
-  id: string;
-  driver: WebDriver;
-}) {
-  const element = await findElementByTestId({ id, driver });
-  return await element.getText();
-}

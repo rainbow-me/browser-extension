@@ -18,7 +18,6 @@ import {
 } from '../../helpers/elements';
 import {
   clearInput,
-  getTextFromText,
   getTextFromTextInput,
   typeOnTextInput,
 } from '../../helpers/input';
@@ -407,15 +406,17 @@ it('should be able to favorite a token and check the info button is present', as
 });
 
 it('should be able to check price and balance of token to buy', async () => {
-  const tokenToBuyInfoPrice = await getTextFromText({
+  const priceElement = await findElementByTestId({
     id: 'token-to-buy-info-price',
     driver,
   });
+  const tokenToBuyInfoPrice = await priceElement.getText();
   expect(tokenToBuyInfoPrice).not.toBe('');
-  const tokenToBuyInfoBalance = await getTextFromText({
+  const balanceElement = await findElementByTestId({
     id: 'token-to-buy-info-balance',
     driver,
   });
+  const tokenToBuyInfoBalance = await balanceElement.getText();
   expect(tokenToBuyInfoBalance).not.toBe('');
 });
 
@@ -485,10 +486,11 @@ it.todo('should be able to check insufficient asset for swap', async () => {
 
   await delay(10_000);
 
-  const confirmButtonText = await getTextFromText({
+  const confirmButtonElement = await findElementByTestId({
     id: 'swap-confirmation-button-ready',
     driver,
   });
+  const confirmButtonText = await confirmButtonElement.getText();
   expect(confirmButtonText).toEqual('Insufficient WBTC');
 });
 
@@ -509,10 +511,11 @@ it('should be able to check insufficient native asset for gas', async () => {
     text: `\b10000`,
     driver,
   });
-  const confirmButtonText = await getTextFromText({
+  const insufficientGasButtonElement = await findElementByTestId({
     id: 'swap-confirmation-button-ready',
     driver,
   });
+  const confirmButtonText = await insufficientGasButtonElement.getText();
   expect(confirmButtonText).toEqual('Insufficient ETH for gas');
 });
 
@@ -708,10 +711,11 @@ it.todo('should be able to see no route explainer', async () => {
     text: 1,
   });
   await delay(10_000);
-  const confirmButtonText = await getTextFromText({
+  const errorButtonElement = await findElementByTestId({
     id: 'swap-confirmation-button-error',
     driver,
   });
+  const confirmButtonText = await errorButtonElement.getText();
   expect(confirmButtonText).toEqual('No route found');
   await findElementByTestIdAndClick({
     id: 'swap-confirmation-button-error',
@@ -927,16 +931,18 @@ it('should be able to see swap information in review sheet', async () => {
     driver,
   });
 
-  const swapReviewConfirmationText = await getTextFromText({
+  const confirmationTextElement = await findElementByTestId({
     id: 'swap-review-confirmation-text',
     driver,
   });
+  const swapReviewConfirmationText = await confirmationTextElement.getText();
   expect(swapReviewConfirmationText).toBe('Swap ETH to USDC');
 
-  const swapReviewTitleText = await getTextFromText({
+  const titleTextElement = await findElementByTestId({
     id: 'swap-review-title-text',
     driver,
   });
+  const swapReviewTitleText = await titleTextElement.getText();
   expect(swapReviewTitleText).toBe('Review & Swap');
 });
 

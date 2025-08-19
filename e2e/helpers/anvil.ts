@@ -2,7 +2,7 @@ import { Contract } from '@ethersproject/contracts';
 import { getDefaultProvider } from '@ethersproject/providers';
 import { erc20Abi } from 'viem';
 
-export async function getOnchainBalance(addy: string, contract: string) {
+export async function tokenBalance(addy: string, contract: string) {
   try {
     const provider = getDefaultProvider('http://127.0.0.1:8545');
     const testContract = new Contract(contract, erc20Abi, provider);

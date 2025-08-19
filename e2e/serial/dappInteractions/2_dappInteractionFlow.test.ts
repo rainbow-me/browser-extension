@@ -5,11 +5,8 @@ import { describe, expect, it } from 'vitest';
 import { ChainId } from '~/core/types/chains';
 
 import { TEST_VARIABLES } from '../../fixtures/wallets';
-import { getOnchainBalance, transactionStatus } from '../../helpers/anvil';
-import {
-  clickAcceptRequestButton,
-  getTextFromDappText,
-} from '../../helpers/dapp';
+import { tokenBalance, transactionStatus } from '../../helpers/anvil';
+import { clickAcceptRequestButton } from '../../helpers/dapp';
 import { delayTime } from '../../helpers/delays';
 import {
   findElementById,
@@ -202,10 +199,11 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     });
     await waitAndClick(verifyButton, driver);
 
-    const result = await getTextFromDappText({
+    const signTypedDataElement = await findElementById({
       id: 'signTypedDataV3VerifyResult',
       driver,
     });
+    const result = await signTypedDataElement.getText();
     expect(result).toBe(TEST_VARIABLES.SEED_WALLET.ADDRESS.toLowerCase());
   });
 
@@ -241,10 +239,11 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     });
     await waitAndClick(verifyButton, driver);
 
-    const result = await getTextFromDappText({
+    const signTypedDataElement = await findElementById({
       id: 'signTypedDataV4VerifyResult',
       driver,
     });
+    const result = await signTypedDataElement.getText();
     expect(result).toBe(TEST_VARIABLES.SEED_WALLET.ADDRESS.toLowerCase());
   });
 
@@ -343,12 +342,12 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     const tokenText = await token.getText();
 
     // find pre-send balance of token created in last test
-    const senderPreSendbalance = await getOnchainBalance(
+    const senderPreSendbalance = await tokenBalance(
       TEST_VARIABLES.SEED_WALLET.ADDRESS,
       tokenText,
     );
     // recipient address hardcoded on test dapp and used here
-    const recipientPreSendBalance = await getOnchainBalance(
+    const recipientPreSendBalance = await tokenBalance(
       TEST_VARIABLES.DAPP_RECIPIENT.ADDRESS,
       tokenText,
     );
@@ -373,12 +372,12 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     await delayTime('medium');
 
     // find post-send token address
-    const senderPostSendbalance = await getOnchainBalance(
+    const senderPostSendbalance = await tokenBalance(
       TEST_VARIABLES.SEED_WALLET.ADDRESS,
       tokenText,
     );
     // recipient address hardcoded on test dapp and used here
-    const recipientPostSendBalance = await getOnchainBalance(
+    const recipientPostSendBalance = await tokenBalance(
       TEST_VARIABLES.DAPP_RECIPIENT.ADDRESS,
       tokenText,
     );
@@ -428,12 +427,12 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     const tokenText = await token.getText();
 
     // find pre-send balance of token created in last test
-    const senderPreSendbalance = await getOnchainBalance(
+    const senderPreSendbalance = await tokenBalance(
       TEST_VARIABLES.SEED_WALLET.ADDRESS,
       tokenText,
     );
     // recipient address hardcoded on test dapp and used here
-    const recipientPreSendBalance = await getOnchainBalance(
+    const recipientPreSendBalance = await tokenBalance(
       TEST_VARIABLES.DAPP_RECIPIENT.ADDRESS,
       tokenText,
     );
@@ -461,12 +460,12 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     await delayTime('medium');
 
     // find post-send token address
-    const senderPostSendbalance = await getOnchainBalance(
+    const senderPostSendbalance = await tokenBalance(
       TEST_VARIABLES.SEED_WALLET.ADDRESS,
       tokenText,
     );
     // recipient address hardcoded on test dapp and used here
-    const recipientPostSendBalance = await getOnchainBalance(
+    const recipientPostSendBalance = await tokenBalance(
       TEST_VARIABLES.DAPP_RECIPIENT.ADDRESS,
       tokenText,
     );

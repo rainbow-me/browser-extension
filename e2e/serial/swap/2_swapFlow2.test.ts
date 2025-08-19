@@ -17,11 +17,7 @@ import {
   waitAndClick,
   waitUntilElementByTestIdIsPresent,
 } from '../../helpers/elements';
-import {
-  clearInput,
-  getTextFromText,
-  typeOnTextInput,
-} from '../../helpers/input';
+import { clearInput, typeOnTextInput } from '../../helpers/input';
 import { goToPopup, goToWelcome } from '../../helpers/navigation';
 import {
   convertRawAmountToDecimalFormat,
@@ -401,16 +397,19 @@ describe('Swap Flow 2', () => {
         driver,
       });
 
-      const swapReviewConfirmationText = await getTextFromText({
+      const confirmationTextElement = await findElementByTestId({
         id: 'swap-review-confirmation-text',
         driver,
       });
+      const swapReviewConfirmationText =
+        await confirmationTextElement.getText();
       expect(swapReviewConfirmationText).toBe('Swap DAI to USDC');
 
-      const swapReviewTitleText = await getTextFromText({
+      const titleTextElement = await findElementByTestId({
         id: 'swap-review-title-text',
         driver,
       });
+      const swapReviewTitleText = await titleTextElement.getText();
       expect(swapReviewTitleText).toBe('Review & Swap');
 
       await findElementByTestIdAndClick({
@@ -581,16 +580,19 @@ describe('Swap Flow 2', () => {
       });
       expect(assetToBuyContractRow).toBeFalsy();
 
-      const swapReviewConfirmationText = await getTextFromText({
+      const bridgeConfirmationTextElement = await findElementByTestId({
         id: 'swap-review-confirmation-text',
         driver,
       });
+      const swapReviewConfirmationText =
+        await bridgeConfirmationTextElement.getText();
       expect(swapReviewConfirmationText).toBe('Bridge ETH');
 
-      const swapReviewTitleText = await getTextFromText({
+      const bridgeTitleTextElement = await findElementByTestId({
         id: 'swap-review-title-text',
         driver,
       });
+      const swapReviewTitleText = await bridgeTitleTextElement.getText();
       expect(swapReviewTitleText).toBe('Review & Bridge');
 
       await findElementByTestIdAndClick({

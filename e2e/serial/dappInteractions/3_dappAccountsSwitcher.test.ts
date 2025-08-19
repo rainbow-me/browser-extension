@@ -18,7 +18,7 @@ import {
   waitAndClick,
 } from '../../helpers/elements';
 import { browser } from '../../helpers/environment';
-import { getTextFromText, typeOnTextInput } from '../../helpers/input';
+import { typeOnTextInput } from '../../helpers/input';
 import { goToPopup, goToWelcome } from '../../helpers/navigation';
 import { fillPrivateKey } from '../../helpers/onboarding';
 import { shortenAddress, switchWallet } from '../../helpers/wallet';
@@ -135,7 +135,11 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
     await delayTime('medium');
     await switchWallet(TEST_VARIABLES.SEED_WALLET.ADDRESS, rootURL, driver);
     await delayTime('very-long');
-    const wallet = await getTextFromText({ id: 'account-name', driver });
+    const accountNameElement = await findElementByTestId({
+      id: 'account-name',
+      driver,
+    });
+    const wallet = await accountNameElement.getText();
     expect(wallet).toBe(shortenAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS));
   });
 

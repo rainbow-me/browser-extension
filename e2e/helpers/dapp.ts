@@ -5,7 +5,6 @@ import { RAINBOW_TEST_DAPP } from '~/core/references/links';
 
 import { delayTime } from './delays';
 import {
-  findElementById,
   findElementByTestIdAndClick,
   findElementByText,
   querySelector,
@@ -24,17 +23,6 @@ export async function goToTestApp(driver: WebDriver) {
   await driver.get(RAINBOW_TEST_DAPP);
   await driver.wait(untilDocumentLoaded(), waitUntilTime);
   await delayTime('very-long');
-}
-
-export async function getTextFromDappText({
-  id,
-  driver,
-}: {
-  id: string;
-  driver: WebDriver;
-}) {
-  const element = await findElementById({ id, driver });
-  return await element.getText();
 }
 
 export async function connectToTestDapp(driver: WebDriver) {
