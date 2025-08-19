@@ -23,33 +23,19 @@ import { expect } from 'vitest';
 
 import { RAINBOW_TEST_DAPP } from '~/core/references/links';
 
-const browser = process.env.BROWSER || 'chrome';
-const isFirefox = browser === 'firefox';
+import {
+  browser,
+  browserBinaryPath,
+  browserExtensionScheme,
+} from './helpers/environment';
 
 // consts
 
 const waitUntilTime = 20_000;
 const testPassword = 'test1234';
-const BINARY_PATHS = {
-  mac: {
-    chrome:
-      process.env.CHROMIUM_BIN ||
-      '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-    firefox:
-      '/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox',
-  },
-  linux: {
-    chrome: process.env.CHROMIUM_BIN,
-    firefox: process.env.FIREFOX_BIN,
-  },
-};
 
 export const getRootUrl = () => {
-  const browser = process.env.BROWSER || 'chrome';
-  if (browser === 'firefox') {
-    return 'moz-extension://';
-  }
-  return 'chrome-extension://';
+  return browserExtensionScheme;
 };
 
 // navigators
@@ -126,8 +112,7 @@ export async function initDriverWithOptions(opts: {
 
   if (opts.browser === 'firefox') {
     const options = new firefox.Options()
-      // @ts-ignore
-      .setBinary(BINARY_PATHS[opts.os][opts.browser])
+      .setBinary(browserBinaryPath)
       .addArguments(...args.slice(1))
       .setPreference('xpinstall.signatures.required', false)
       .setPreference('extensions.langpacks.signatures.required', false)
@@ -141,16 +126,8 @@ export async function initDriverWithOptions(opts: {
       .setFirefoxOptions(options)
       .build();
   } else {
-    const chromeBinaryPath = BINARY_PATHS[opts.os as 'mac' | 'linux']['chrome'];
-
-    if (!chromeBinaryPath) {
-      throw new Error(
-        `Chrome binary path not found for OS: ${opts.os} and browser: ${opts.browser}`,
-      );
-    }
-
     const options = new chrome.Options();
-    options.setChromeBinaryPath(chromeBinaryPath);
+    options.setChromeBinaryPath(browserBinaryPath);
     options.addArguments(...args);
     options.setAcceptInsecureCerts(true);
 
@@ -470,7 +447,7 @@ export async function typeOnTextInput({
   text: number | string;
   driver: WebDriver;
 }) {
-  if (isFirefox) {
+  if (browser === 'firefox') {
     id &&
       (await clearInput({
         id,

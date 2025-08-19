@@ -1,17 +1,14 @@
 #!/bin/bash
 RETRY_COUNT=0
 
-# Auto-setup Chrome 138 if available
-if [ -d "chrome-138" ]; then
-  export CHROMIUM_BIN=$(find chrome-138 -name "Google Chrome for Testing" -type f | head -1)
-  echo "Using Chrome 138: $CHROMIUM_BIN"
-fi
-
 # Function to run tests
 run_tests() {
   echo "Running Tests..."
   yarn vitest e2e/parallel/$1 --config ./e2e/parallel/vitest.config.ts --reporter=verbose --bail 1
 }
+
+# Check browser version before running tests
+node scripts/e2e-browser-version.js
 
 # Main loop for retry logic
 TEST_RESULT=1

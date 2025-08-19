@@ -30,8 +30,3 @@ screenshots/
 
 # Static data
 static/data
-
-# e2e test browser
-chrome-138/
-chrome/
-

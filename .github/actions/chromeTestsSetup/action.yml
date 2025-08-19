@@ -10,6 +10,16 @@ runs:
   - uses: ./.github/actions/testsSetup
     with:
       gh-access-token: ${{ inputs.gh-access-token }}
-  - name: Setup Chrome 138
+  - name: Install chrome
     shell: 'bash'
-    run: npx @puppeteer/browsers install chrome@138
+    run: |
+      CHROME_VERSION=$(cat e2e/browsers.json | jq -r '.linux.chrome.version')
+      echo "PUPPETEER_CACHE_DIR=$HOME/.cache/puppeteer" >> $GITHUB_ENV
+      npx --yes @puppeteer/browsers install chrome@${CHROME_VERSION}
+      CHROME_BIN=$(npx --yes @puppeteer/browsers list | grep -F "chrome@${CHROME_VERSION}" | head -1 | cut -d')' -f2- | sed -e 's/^[[:space:]]*//')
+      mkdir -p /opt/google/chrome
+      ln -sf "$CHROME_BIN" /opt/google/chrome/chrome
+  - name: Verify Chrome installation
+    shell: 'bash'
+    run: |
+      /opt/google/chrome/chrome --version
