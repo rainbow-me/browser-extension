@@ -1,46 +1,13 @@
 #!/bin/bash
-ANVIL_PORT=8545
-RETRY_COUNT=0
+# This script runs the Optimism serial e2e tests.
 
-# Function to launch and verify Anvil
-launch_anvil() {
-  # Launch anvil in the bg
-  yarn anvil:kill
-  yarn anvil:optimism --chain-id 1338 &
-  echo "Launching Anvil..."
+# Source the common test logic script.
+source "$(dirname "$0")/common-test-logic.sh"
 
-  # Give it some time to boot
-  interval=5
-  until nc -z localhost $ANVIL_PORT; do
-    sleep $interval
-    interval=$((interval * 2))
-  done
-  echo "Anvil Launched..."
-}
+# Define the test parameters.
+TEST_GLOB="e2e/serial/${1}"
+CONFIG_FILE="./e2e/serial/vitest.config.ts"
+ANVIL_MODE="optimism" # Requires an Optimism-configured Anvil instance.
 
-# Function to run tests
-run_tests() {
-  echo "Running Tests..."
-  yarn vitest e2e/serial/$1 --config ./e2e/serial/vitest.config.ts --reporter=verbose --bail 1
-}
-
-# Main loop for retry logic
-TEST_RESULT=1
-while [ $RETRY_COUNT -lt ${MAX_RETRIES:-1} ] && [ $TEST_RESULT -ne 0 ]; do
-  if [ $RETRY_COUNT -gt 0 ]; then
-    echo "Test failed, attempting retry $RETRY_COUNT..."
-  fi
-  
-  launch_anvil
-  run_tests $1
-  TEST_RESULT=$?
-  
-  # kill anvil
-  echo "Cleaning Up..."
-  yarn anvil:kill
-
-  RETRY_COUNT=$((RETRY_COUNT+1))
-done
-
-# Return the result of the tests
-exit $TEST_RESULT
+# Call the common function to execute the tests with retry logic.
+run_tests_with_retry "$TEST_GLOB" "$CONFIG_FILE" "$ANVIL_MODE"
