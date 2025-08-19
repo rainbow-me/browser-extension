@@ -41,6 +41,12 @@ module.exports = {
         default: 'disallow',
         rules: [
           {
+            // Allow messaging system to be typed, by allowing type imports from background for every entrypoint
+            importKind: 'type',
+            from: ['entry-popup', 'entry-content', 'entry-inpage'],
+            allow: ['entry-background'],
+          },
+          {
             // Only background is allowed to interact with keychain
             from: ['entry-background'],
             allow: ['core-keychain'],
