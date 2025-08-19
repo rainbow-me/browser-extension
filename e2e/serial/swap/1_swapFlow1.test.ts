@@ -5,31 +5,31 @@ import { afterAll, afterEach, beforeEach, expect, it } from 'vitest';
 import { ChainId } from '~/core/types/chains';
 
 import { SWAP_VARIABLES, TEST_VARIABLES } from '../../fixtures/wallets';
+import { delay, delayTime } from '../../helpers/delays';
 import {
-  clearInput,
-  delay,
-  delayTime,
   doNotFindElementByTestId,
-  executePerformShortcut,
-  fillPrivateKey,
   findElementByTestId,
   findElementByTestIdAndClick,
   findElementByTestIdAndDoubleClick,
   findElementByText,
   findElementByTextAndClick,
+  querySelector,
+  waitAndClick,
+} from '../../helpers/elements';
+import {
+  clearInput,
   getTextFromText,
   getTextFromTextInput,
-  goToPopup,
-  goToWelcome,
-  querySelector,
-  takeScreenshotOnFailure,
   typeOnTextInput,
-  waitAndClick,
-} from '../../helpers';
+} from '../../helpers/input';
+import { goToPopup, goToWelcome } from '../../helpers/navigation';
 import {
   convertRawAmountToDecimalFormat,
   subtract,
 } from '../../helpers/numbers';
+import { fillPrivateKey } from '../../helpers/onboarding';
+import { takeScreenshotOnFailure } from '../../helpers/screenshot';
+import { executePerformShortcut } from '../../helpers/shortcuts';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 beforeEach(async (context: any) => {

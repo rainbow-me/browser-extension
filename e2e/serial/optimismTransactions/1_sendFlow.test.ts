@@ -2,20 +2,17 @@ import { WebDriver } from 'selenium-webdriver';
 import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { TEST_VARIABLES } from '../../fixtures/wallets';
+import { delay, delayTime } from '../../helpers/delays';
+import { findElementByTestId, findElementByText } from '../../helpers/elements';
+import { checkExtensionURL, goToPopup } from '../../helpers/navigation';
+import { importWalletFlowUsingKeyboardNavigation } from '../../helpers/onboarding';
+import { transactionStatus } from '../../helpers/onchain';
+import { takeScreenshotOnFailure } from '../../helpers/screenshot';
 import {
-  checkExtensionURL,
-  checkWalletName,
-  delay,
-  delayTime,
   executePerformShortcut,
-  findElementByTestId,
-  findElementByText,
-  goToPopup,
-  importWalletFlowUsingKeyboardNavigation,
   navigateToElementWithTestId,
-  takeScreenshotOnFailure,
-  transactionStatus,
-} from '../../helpers';
+} from '../../helpers/shortcuts';
+import { checkWalletName } from '../../helpers/wallet';
 
 describe('Complete Hardhat Optimism send flow', () => {
   beforeEach<{ driver: WebDriver }>(async (context) => {

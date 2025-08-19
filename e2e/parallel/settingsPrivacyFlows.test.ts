@@ -2,20 +2,19 @@
 import { describe, expect, it } from 'vitest';
 
 import { TEST_VARIABLES } from '../fixtures/wallets';
+import { delayTime } from '../helpers/delays';
 import {
-  delayTime,
   findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
   findElementByTextAndClick,
-  getNumberOfWallets,
-  goToPopup,
-  importWalletFlow,
-  navigateToSettings,
-  passSecretQuiz,
   querySelector,
-  typeOnTextInput,
-} from '../helpers';
+} from '../helpers/elements';
+import { typeOnTextInput } from '../helpers/input';
+import { goToPopup } from '../helpers/navigation';
+import { importWalletFlow, passSecretQuiz } from '../helpers/onboarding';
+import { navigateToSettings } from '../helpers/settings';
+import { getNumberOfWallets } from '../helpers/wallet';
 
 describe('Navigate Settings & Privacy and its flows', () => {
   it('should be able import a wallet via seed', async () => {

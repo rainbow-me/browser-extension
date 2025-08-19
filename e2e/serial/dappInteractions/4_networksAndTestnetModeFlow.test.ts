@@ -7,20 +7,21 @@ import { TEST_VARIABLES } from '../../fixtures/wallets';
 import {
   clickAcceptRequestButton,
   connectToTestDapp,
-  delayTime,
+} from '../../helpers/dapp';
+import { delayTime } from '../../helpers/delays';
+import {
   doNotFindElementByTestId,
-  executePerformShortcut,
   findElementByTestId,
   findElementByTestIdAndClick,
-  goBackTwice,
-  goToPopup,
-  importWalletFlow,
-  navigateToSettingsNetworks,
   querySelector,
-  takeScreenshotOnFailure,
   waitAndClick,
-} from '../../helpers';
+} from '../../helpers/elements';
 import { browser } from '../../helpers/environment';
+import { goBackTwice, goToPopup } from '../../helpers/navigation';
+import { importWalletFlow } from '../../helpers/onboarding';
+import { takeScreenshotOnFailure } from '../../helpers/screenshot';
+import { navigateToSettingsNetworks } from '../../helpers/settings';
+import { executePerformShortcut } from '../../helpers/shortcuts';
 
 describe.runIf(browser !== 'firefox')('Networks & Testnet Mode flows', () => {
   afterAll(async () => await driver?.quit());

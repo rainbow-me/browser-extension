@@ -6,29 +6,29 @@ import { erc20Abi } from 'viem';
 import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { SWAP_VARIABLES, TEST_VARIABLES } from '../../fixtures/wallets';
+import { delay, delayTime } from '../../helpers/delays';
 import {
-  clearInput,
-  delay,
-  delayTime,
   doNotFindElementByTestId,
-  fillPrivateKey,
   findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
   findElementByTextAndClick,
-  getTextFromText,
-  goToPopup,
-  goToWelcome,
   querySelector,
-  takeScreenshotOnFailure,
-  typeOnTextInput,
   waitAndClick,
   waitUntilElementByTestIdIsPresent,
-} from '../../helpers';
+} from '../../helpers/elements';
+import {
+  clearInput,
+  getTextFromText,
+  typeOnTextInput,
+} from '../../helpers/input';
+import { goToPopup, goToWelcome } from '../../helpers/navigation';
 import {
   convertRawAmountToDecimalFormat,
   subtract,
 } from '../../helpers/numbers';
+import { fillPrivateKey } from '../../helpers/onboarding';
+import { takeScreenshotOnFailure } from '../../helpers/screenshot';
 
 const WALLET_TO_USE_SECRET = TEST_VARIABLES.SWAPS_WALLET.PK;
 

@@ -2,19 +2,18 @@ import { describe, expect, it } from 'vitest';
 
 import { TEST_VARIABLES } from '../fixtures/wallets';
 import {
-  checkExtensionURL,
-  checkWalletName,
-  executePerformShortcut,
   findElementById,
   findElementByTestId,
   findElementByText,
   findElementByTextAndClick,
-  importWalletFlowUsingKeyboardNavigation,
   isElementFoundByText,
   returnAttributesOfActiveElement,
-  shortenAddress,
-} from '../helpers';
+} from '../helpers/elements';
 import { browser } from '../helpers/environment';
+import { checkExtensionURL } from '../helpers/navigation';
+import { importWalletFlowUsingKeyboardNavigation } from '../helpers/onboarding';
+import { executePerformShortcut } from '../helpers/shortcuts';
+import { checkWalletName, shortenAddress } from '../helpers/wallet';
 
 const shortenedMainAddress = shortenAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS);
 const shortenedSecondaryAddress = shortenAddress(

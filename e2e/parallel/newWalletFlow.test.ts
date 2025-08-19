@@ -1,17 +1,16 @@
 /* eslint-disable no-await-in-loop */
 import { describe, expect, it } from 'vitest';
 
+import { delayTime } from '../helpers/delays';
 import {
-  delayTime,
   findElementByTestIdAndClick,
   findElementByText,
-  goToPopup,
-  goToWelcome,
-  passSecretQuiz,
   querySelector,
-  typeOnTextInput,
   waitAndClick,
-} from '../helpers';
+} from '../helpers/elements';
+import { typeOnTextInput } from '../helpers/input';
+import { goToPopup, goToWelcome } from '../helpers/navigation';
+import { passSecretQuiz } from '../helpers/onboarding';
 
 describe('New wallet flow', () => {
   // Create a new wallet

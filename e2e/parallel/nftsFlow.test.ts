@@ -2,14 +2,14 @@
 import { describe, expect, it } from 'vitest';
 
 import { TEST_VARIABLES } from '../fixtures/wallets';
+import { delayTime } from '../helpers/delays';
 import {
-  delayTime,
   findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
-  goToPopup,
-  importWalletFlow,
-} from '../helpers';
+} from '../helpers/elements';
+import { goToPopup } from '../helpers/navigation';
+import { importWalletFlow } from '../helpers/onboarding';
 
 describe('Visit NFTs Gallery and Details Pages', () => {
   it('should be able import a wallet via seed', async () => {

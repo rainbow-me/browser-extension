@@ -9,24 +9,26 @@ import { TEST_VARIABLES } from '../../fixtures/wallets';
 import {
   clickAcceptRequestButton,
   connectToTestDapp,
-  delayTime,
-  fillPrivateKey,
+  goToTestApp,
+} from '../../helpers/dapp';
+import { delayTime } from '../../helpers/delays';
+import {
   findElementByIdAndClick,
   findElementByTestIdAndClick,
   findElementByText,
+  querySelector,
+  waitAndClick,
+} from '../../helpers/elements';
+import { getTextFromText, typeOnTextInput } from '../../helpers/input';
+import {
   getAllWindowHandles,
-  getTextFromText,
   getWindowHandle,
   goToPopup,
-  goToTestApp,
   goToWelcome,
-  querySelector,
-  shortenAddress,
-  switchWallet,
-  takeScreenshotOnFailure,
-  typeOnTextInput,
-  waitAndClick,
-} from '../../helpers';
+} from '../../helpers/navigation';
+import { fillPrivateKey } from '../../helpers/onboarding';
+import { takeScreenshotOnFailure } from '../../helpers/screenshot';
+import { shortenAddress, switchWallet } from '../../helpers/wallet';
 
 const TYPED_MESSAGE = {
   domain: {

@@ -1,21 +1,72 @@
 /* eslint-disable no-await-in-loop */
+import { WebDriver } from 'selenium-webdriver';
 import { describe, expect, it } from 'vitest';
 
 import { TokenNames, tokenAddresses, tokenNames } from 'e2e/fixtures/tokens';
 
 import { TEST_VARIABLES } from '../fixtures/wallets';
+import { delayTime } from '../helpers/delays';
 import {
-  checkExtensionURL,
-  delayTime,
+  findElementByText,
+  waitUntilElementByTestIdIsPresent,
+} from '../helpers/elements';
+import { clearInput, typeOnTextInput } from '../helpers/input';
+import { checkExtensionURL, goToPopup } from '../helpers/navigation';
+import { importWalletFlow } from '../helpers/onboarding';
+import {
   executeMultipleShortcuts,
   executePerformShortcut,
-  findElementByText,
-  goToPopup,
-  importWalletFlow,
-  performSearchTokenAddressActionsCmdK,
-  typeOnTextInput,
-  waitUntilElementByTestIdIsPresent,
-} from '../helpers';
+} from '../helpers/shortcuts';
+
+async function performSearchTokenAddressActionsCmdK({
+  driver,
+  tokenAddress,
+  tokenName,
+  rootURL,
+}: {
+  driver: WebDriver;
+  tokenAddress: string;
+  tokenName: string;
+  rootURL: string;
+}) {
+  await goToPopup(driver, rootURL, '#/home');
+
+  // Open Cmd+K menu
+  await executePerformShortcut({ driver, key: 'k' });
+
+  await clearInput({ id: 'command-k-input', driver });
+
+  await typeOnTextInput({
+    id: 'command-k-input',
+    driver,
+    text: tokenAddress,
+  });
+
+  await waitUntilElementByTestIdIsPresent({
+    id: `command-name-${tokenName}`,
+    driver,
+  });
+
+  await executePerformShortcut({
+    driver,
+    key: 'ARROW_DOWN',
+  });
+
+  // Go to token details
+  await executePerformShortcut({ driver, key: 'ENTER' });
+
+  await checkExtensionURL(driver, 'token-details');
+
+  await waitUntilElementByTestIdIsPresent({
+    id: `about-${tokenAddress}`,
+    driver,
+  });
+
+  await waitUntilElementByTestIdIsPresent({
+    id: `token-price-name-${tokenAddress}`,
+    driver,
+  });
+}
 
 describe('Command+K behaviours', () => {
   it('should be able import a wallet via seed', async () => {

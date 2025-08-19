@@ -2,8 +2,7 @@ import { Builder, By, WebDriver, until } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
 import firefox from 'selenium-webdriver/firefox';
 
-import { findElementByIdAndClick, querySelector } from '../helpers';
-
+import { findElementByIdAndClick, querySelector } from './elements';
 import { browser, browserPath } from './environment';
 
 // Initialize the selenium driver

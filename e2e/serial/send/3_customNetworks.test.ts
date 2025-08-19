@@ -2,17 +2,17 @@ import { WebDriver } from 'selenium-webdriver';
 import { afterAll, afterEach, beforeEach, expect, it } from 'vitest';
 
 import { TEST_VARIABLES } from '../../fixtures/wallets';
+import { delayTime } from '../../helpers/delays';
 import {
-  checkExtensionURL,
-  delayTime,
-  executePerformShortcut,
   findElementByTestId,
   findElementByTestIdAndClick,
-  importWalletFlow,
-  navigateToSettingsNetworks,
-  takeScreenshotOnFailure,
-  typeOnTextInput,
-} from '../../helpers';
+} from '../../helpers/elements';
+import { typeOnTextInput } from '../../helpers/input';
+import { checkExtensionURL } from '../../helpers/navigation';
+import { importWalletFlow } from '../../helpers/onboarding';
+import { takeScreenshotOnFailure } from '../../helpers/screenshot';
+import { navigateToSettingsNetworks } from '../../helpers/settings';
+import { executePerformShortcut } from '../../helpers/shortcuts';
 
 beforeEach<{ driver: WebDriver }>(async (context) => {
   context.driver = driver;

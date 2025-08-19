@@ -2,19 +2,21 @@ import { WebDriver } from 'selenium-webdriver';
 import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { TEST_VARIABLES } from '../../fixtures/wallets';
+import { delayTime } from '../../helpers/delays';
 import {
-  checkWalletName,
-  delayTime,
   findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
+  waitAndClick,
+} from '../../helpers/elements';
+import {
   getAllWindowHandles,
   getWindowHandle,
   goToPopup,
-  importWalletFlow,
-  takeScreenshotOnFailure,
-  waitAndClick,
-} from '../../helpers';
+} from '../../helpers/navigation';
+import { importWalletFlow } from '../../helpers/onboarding';
+import { takeScreenshotOnFailure } from '../../helpers/screenshot';
+import { checkWalletName } from '../../helpers/wallet';
 
 describe('App interactions flow', () => {
   beforeEach<{ driver: WebDriver }>(async (context) => {

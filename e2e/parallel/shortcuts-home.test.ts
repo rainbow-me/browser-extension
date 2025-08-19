@@ -1,25 +1,23 @@
 import { describe, expect, it } from 'vitest';
 
 import { TEST_VARIABLES } from '../fixtures/wallets';
+import { clickAcceptRequestButton, connectToTestDapp } from '../helpers/dapp';
+import { delayTime } from '../helpers/delays';
 import {
-  checkExtensionURL,
-  checkWalletName,
-  clickAcceptRequestButton,
-  connectToTestDapp,
-  delayTime,
   doNotFindElementByTestId,
-  executePerformShortcut,
   findElementByTestId,
   findElementByText,
   findElementByTextAndClick,
-  goToPopup,
-  importWalletFlowUsingKeyboardNavigation,
   isElementFoundByText,
   querySelector,
   querySelectorWithin,
   waitAndClick,
-} from '../helpers';
+} from '../helpers/elements';
 import { browser } from '../helpers/environment';
+import { checkExtensionURL, goToPopup } from '../helpers/navigation';
+import { importWalletFlowUsingKeyboardNavigation } from '../helpers/onboarding';
+import { executePerformShortcut } from '../helpers/shortcuts';
+import { checkWalletName } from '../helpers/wallet';
 
 describe.runIf(browser !== 'firefox')(
   'navigate through settings flows with shortcuts',

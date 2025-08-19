@@ -1,7 +1,8 @@
 import { describe, it } from 'vitest';
 
 import { TEST_VARIABLES } from '../fixtures/wallets';
-import { checkWalletName, importWalletFlow } from '../helpers';
+import { importWalletFlow } from '../helpers/onboarding';
+import { checkWalletName } from '../helpers/wallet';
 
 describe('Import wallet with a secret phrase flow', () => {
   it('should be able import a wallet via seed', async () => {

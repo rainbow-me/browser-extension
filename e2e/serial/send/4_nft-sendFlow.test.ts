@@ -1,20 +1,20 @@
 import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { TEST_VARIABLES } from '../../fixtures/wallets';
+import { delayTime } from '../../helpers/delays';
 import {
-  delayTime,
   doNotFindElementByTestId,
   findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
   findElementByTextAndClick,
-  goToPopup,
-  importWalletFlow,
   querySelector,
-  takeScreenshotOnFailure,
-  transactionStatus,
   waitAndClick,
-} from '../../helpers';
+} from '../../helpers/elements';
+import { goToPopup } from '../../helpers/navigation';
+import { importWalletFlow } from '../../helpers/onboarding';
+import { transactionStatus } from '../../helpers/onchain';
+import { takeScreenshotOnFailure } from '../../helpers/screenshot';
 
 describe('should be able to perform the nft send flow', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

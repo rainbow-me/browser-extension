@@ -2,13 +2,13 @@ import { describe, expect, it } from 'vitest';
 
 import { HARDWARE_WALLETS } from '../fixtures/wallets';
 import {
-  checkWalletName,
   findElementByIdAndClick,
   findElementByTestIdAndClick,
   findElementByText,
-  importHardwareWalletFlow,
-} from '../helpers';
+} from '../helpers/elements';
 import { browser } from '../helpers/environment';
+import { importHardwareWalletFlow } from '../helpers/onboarding';
+import { checkWalletName } from '../helpers/wallet';
 
 describe.runIf(browser !== 'firefox')(
   'Import wallet with a Trezor hw wallet',

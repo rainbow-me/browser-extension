@@ -7,24 +7,23 @@ import { TEST_VARIABLES } from '../../fixtures/wallets';
 import {
   clickAcceptRequestButton,
   connectToTestDapp,
-  delayTime,
-  fillPrivateKey,
+  goToTestApp,
+} from '../../helpers/dapp';
+import { delayTime } from '../../helpers/delays';
+import {
   findElementByIdAndClick,
   findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
-  getTextFromText,
-  goToPopup,
-  goToTestApp,
-  goToWelcome,
   querySelector,
-  shortenAddress,
-  switchWallet,
-  takeScreenshotOnFailure,
-  typeOnTextInput,
   waitAndClick,
-} from '../../helpers';
+} from '../../helpers/elements';
 import { browser } from '../../helpers/environment';
+import { getTextFromText, typeOnTextInput } from '../../helpers/input';
+import { goToPopup, goToWelcome } from '../../helpers/navigation';
+import { fillPrivateKey } from '../../helpers/onboarding';
+import { takeScreenshotOnFailure } from '../../helpers/screenshot';
+import { shortenAddress, switchWallet } from '../../helpers/wallet';
 
 describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
   beforeEach<{ driver: WebDriver }>(async (context) => {

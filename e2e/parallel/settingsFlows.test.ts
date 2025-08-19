@@ -1,17 +1,26 @@
 /* eslint-disable no-await-in-loop */
+import { WebDriver } from 'selenium-webdriver';
 import { describe, expect, it } from 'vitest';
 
 import { TEST_VARIABLES } from '../fixtures/wallets';
+import { delayTime } from '../helpers/delays';
 import {
   findElementByTestId,
   findElementByTestIdAndClick,
-  goBackTwice,
-  importWalletFlow,
-  navigateToSettingsPrivacy,
   toggleStatus,
-  typeOnTextInput,
-} from '../helpers';
+} from '../helpers/elements';
 import { browser } from '../helpers/environment';
+import { typeOnTextInput } from '../helpers/input';
+import { goBackTwice, goToPopup } from '../helpers/navigation';
+import { importWalletFlow } from '../helpers/onboarding';
+
+async function navigateToSettingsPrivacy(driver: WebDriver, rootURL: string) {
+  await goToPopup(driver, rootURL, '#/home');
+  await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
+  await findElementByTestIdAndClick({ id: 'settings-link', driver });
+  await findElementByTestIdAndClick({ id: 'privacy-security-link', driver });
+  await delayTime('medium');
+}
 
 describe('Navigate Settings & Privacy and its flows', () => {
   it('should be able import a wallet via seed', async () => {

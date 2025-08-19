@@ -1,23 +1,19 @@
 import { describe, expect, it } from 'vitest';
 
 import { TEST_VARIABLES } from '../fixtures/wallets';
+import { delayTime } from '../helpers/delays';
 import {
-  delayTime,
-  fillPrivateKey,
-  fillSeedPhrase,
   findElementByIdAndClick,
   findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
-  getTextFromText,
-  goToPopup,
-  goToWelcome,
   querySelector,
-  shortenAddress,
-  switchWallet,
-  typeOnTextInput,
   waitUntilElementByTestIdIsPresent,
-} from '../helpers';
+} from '../helpers/elements';
+import { getTextFromText, typeOnTextInput } from '../helpers/input';
+import { goToPopup, goToWelcome } from '../helpers/navigation';
+import { fillPrivateKey, fillSeedPhrase } from '../helpers/onboarding';
+import { shortenAddress, switchWallet } from '../helpers/wallet';
 
 describe('Watch wallet then add more and switch between them', () => {
   // Watch a wallet

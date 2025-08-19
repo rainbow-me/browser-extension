@@ -1,4 +1,4 @@
-import { WebDriver } from 'selenium-webdriver';
+import { WebDriver, until } from 'selenium-webdriver';
 import { getAddress } from 'viem';
 import { afterAll, afterEach, beforeEach, describe, expect, it } from 'vitest';
 
@@ -6,28 +6,49 @@ import { ChainId } from '~/core/types/chains';
 
 import { TEST_VARIABLES } from '../../fixtures/wallets';
 import {
-  awaitTextChange,
   clickAcceptRequestButton,
-  delayTime,
-  fillPrivateKey,
+  getTextFromDappText,
+} from '../../helpers/dapp';
+import { delayTime } from '../../helpers/delays';
+import {
   findElementById,
   findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
   findElementByTextAndClick,
+  waitAndClick,
+} from '../../helpers/elements';
+import { browser } from '../../helpers/environment';
+import { typeOnTextInput } from '../../helpers/input';
+import {
   getAllWindowHandles,
-  getOnchainBalance,
-  getTextFromDappText,
   getWindowHandle,
   goToPopup,
   goToWelcome,
-  shortenAddress,
-  takeScreenshotOnFailure,
-  transactionStatus,
-  typeOnTextInput,
-  waitAndClick,
-} from '../../helpers';
-import { browser } from '../../helpers/environment';
+} from '../../helpers/navigation';
+import { fillPrivateKey } from '../../helpers/onboarding';
+import { getOnchainBalance, transactionStatus } from '../../helpers/onchain';
+import { takeScreenshotOnFailure } from '../../helpers/screenshot';
+import { shortenAddress } from '../../helpers/wallet';
+
+const waitUntilTime = 20_000;
+
+async function awaitTextChange(id: string, text: string, driver: WebDriver) {
+  try {
+    const element = await findElementById({
+      id: id,
+      driver,
+    });
+
+    await driver.wait(until.elementTextIs(element, text), waitUntilTime);
+  } catch (error) {
+    console.error(
+      `Error occurred while awaiting text change for element with ID '${id}':`,
+      error,
+    );
+    throw error;
+  }
+}
 
 const shortenedAddress = shortenAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS);
 
