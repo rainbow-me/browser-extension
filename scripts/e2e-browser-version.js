@@ -29,28 +29,49 @@ function getExpectedVersion() {
   return version;
 }
 
-function printInstallInstructions(browser, expectedVersion, os) {
+function printInstallInstructions(browser, expectedVersion) {
   if (browser === 'chrome') {
-    console.error('To fix this, install the correct version:');
-    console.error(`npx @puppeteer/browsers install chrome@${expectedVersion}`);
     console.error('');
-    console.error('Or install Chrome for Testing manually:');
-    console.error(`https://googlechromelabs.github.io/chrome-for-testing/`);
-    if (os === 'mac') {
-      console.error(
-        'For macOS, you can also install as .app in /Applications/',
-      );
-    }
+    console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.error('📦 CHROME FOR TESTING INSTALLATION REQUIRED');
+    console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.error('');
+    console.error('To fix this, run the setup script:');
+    console.error('');
+    console.error('  👉  ./scripts/setup-chrome.sh');
+    console.error('');
+    console.error(
+      'This will download and install Chrome for Testing to /Applications',
+    );
+    console.error('');
+    console.error('────────────────────────────────────────────────────────');
+    console.error('Alternatively, you can install manually:');
+    console.error(
+      `  npx @puppeteer/browsers install chrome@${expectedVersion}`,
+    );
+    console.error('  Then move the app to /Applications/');
+    console.error('');
+    console.error('Or download Chrome for Testing directly:');
+    console.error(`  https://googlechromelabs.github.io/chrome-for-testing/`);
+    console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.error('');
   } else {
+    console.error('');
+    console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.error('📦 FIREFOX DEVELOPER EDITION INSTALLATION REQUIRED');
+    console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.error('');
     console.error('To fix this, install the correct Firefox version:');
     console.error(
-      `npx @puppeteer/browsers install firefox@devedition_${expectedVersion}`,
+      `  👉  npx @puppeteer/browsers install firefox@devedition_${expectedVersion}`,
     );
     console.error('');
     console.error('Or download Firefox Developer Edition manually:');
     console.error(
-      `https://ftp.mozilla.org/pub/devedition/releases/${expectedVersion}/`,
+      `  https://ftp.mozilla.org/pub/devedition/releases/${expectedVersion}/`,
     );
+    console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    console.error('');
   }
 }
 
