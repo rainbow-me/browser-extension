@@ -2,7 +2,11 @@ import type { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, beforeEach, vi } from 'vitest';
 
 import { browserExtensionScheme } from './helpers/environment';
-import { getExtensionIdByName, initDriver } from './helpers/install';
+import {
+  getExtensionIdByName,
+  initDriver,
+  waitForInstall,
+} from './helpers/install';
 
 /**
  * Global setup for E2E tests.
@@ -21,6 +25,9 @@ beforeAll(async () => {
   if (!extensionId) throw new Error('Extension not found');
 
   globalRootURL = browserExtensionScheme + extensionId;
+
+  // Wait for installation event trigger
+  await waitForInstall(globalDriver);
 
   // Monitor WebDriver connection - exit if browser is closed
   const checkDriverConnection = setInterval(async () => {

@@ -2,6 +2,7 @@ import { Builder, By, WebDriver, until } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
 import firefox from 'selenium-webdriver/firefox';
 
+import { delayTime } from './delays';
 import { findElementByIdAndClick, querySelector } from './elements';
 import { browser, browserPath } from './environment';
 
@@ -166,4 +167,23 @@ export async function getExtensionIdByName(
     console.log('No matching extension found');
     return undefined;
   }
+}
+
+// Wait for installation to complete and switch to the installation tab
+export async function waitForInstall(driver: WebDriver) {
+  // Wait for installation event trigger
+  await delayTime('very-long');
+
+  // Get all window handles
+  const handles = await driver.getAllWindowHandles();
+
+  if (handles.length > 1) {
+    // Close the first tab (extensions or debugging page)
+    await driver.switchTo().window(handles[0]);
+    await driver.close();
+
+    // Switch to the installation/welcome tab (should be the second tab)
+    await driver.switchTo().window(handles[1]);
+  }
+  // Won't be triggered in dev mode
 }
