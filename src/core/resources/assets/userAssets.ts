@@ -126,7 +126,6 @@ async function userAssetsQueryFunction({
       testnetMode,
     }),
   })?.state?.data || {}) as ParsedAssetsDictByChain;
-
   try {
     const supportedAssetsChainIds = useNetworkStore
       .getState()

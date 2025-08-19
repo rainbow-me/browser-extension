@@ -37,7 +37,7 @@ function generateMockResponse(
   const isEmptyWallet = address === TEST_VARIABLES.EMPTY_WALLET.ADDRESS;
 
   const ethBalance = isEmptyWallet ? '0' : '10000000000000000000000'; // 10,000 ETH
-  const usdcBalance = isEmptyWallet ? '0' : '50000000000'; // 50,000 USDC
+  const usdcBalance = isEmptyWallet ? '0' : '10000000000'; // 10,000 USDC
   const daiBalance = isEmptyWallet ? '0' : '10000000000000000000000'; // 10,000 DAI
   const opBalance = isEmptyWallet ? '0' : '10000000000000000000000'; // 10,000 OP ETH
 
