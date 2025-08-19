@@ -167,6 +167,24 @@ const MOCK_SERVICES: MockService[] = [
     getMockPath: (filename: string) => `./mocks/user_assets/${filename}`,
     logPrefix: 'user assets',
   },
+  {
+    hostname: 'nftp.rainbow.me',
+    getFilenameFromUrl: (url: URL) => ({
+      canonicalUrl: url.href,
+      fileName: 'nft-mock.json',
+    }),
+    getMockPath: (filename: string) => `./mocks/nft/${filename}`,
+    logPrefix: 'nft',
+  },
+  {
+    hostname: 'token-search.rainbow.me',
+    getFilenameFromUrl: (url: URL) => ({
+      canonicalUrl: url.href,
+      fileName: 'token-search-mock.json',
+    }),
+    getMockPath: (filename: string) => `./mocks/token-search/${filename}`,
+    logPrefix: 'token search',
+  },
 ];
 
 export function mockFetch() {
@@ -222,6 +240,17 @@ export function mockFetch() {
           mockData = swapMocks.get(fileName);
         } else if (mockService.hostname === 'addys.p.rainbow.me') {
           mockData = userAssetsMocks.get(fileName);
+        } else if (mockService.hostname === 'nftp.rainbow.me') {
+          // Return empty NFT response
+          mockData = {
+            results: [],
+            next: null,
+          };
+        } else if (mockService.hostname === 'token-search.rainbow.me') {
+          // Return empty token search response
+          mockData = {
+            data: [],
+          };
         }
 
         if (!mockData) {
