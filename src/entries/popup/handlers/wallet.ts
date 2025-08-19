@@ -10,7 +10,9 @@ import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import TrezorConnect from '@trezor/connect-web';
 import { Address, ByteArray, Hex, keccak256 } from 'viem';
 
+// eslint-disable-next-line boundaries/element-types
 import { getHDPathForVendorAndType } from '~/core/keychain/hdPath';
+// eslint-disable-next-line boundaries/element-types
 import type { HardwareWalletVendor } from '~/core/keychain/keychainTypes/hardwareWalletKeychain';
 import {
   RapSwapActionParameters,
