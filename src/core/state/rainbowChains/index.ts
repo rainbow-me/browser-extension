@@ -4,7 +4,6 @@ import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { ChainId } from '~/core/types/chains';
 
 import { runNetworksMigrationIfNeeded } from '../networks/migration';
-const IS_TESTING = process.env.IS_TESTING === 'true';
 
 export interface RainbowChain {
   activeRpcUrl: string;
@@ -118,7 +117,7 @@ export const useRainbowChainsStore = createRainbowStore<RainbowChainsState>(
     version: 13,
     onRehydrateStorage: () => {
       return (_, error) => {
-        if (!error && !IS_TESTING) {
+        if (!error) {
           runNetworksMigrationIfNeeded('rainbowChains');
         }
       };
