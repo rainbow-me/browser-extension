@@ -7,6 +7,9 @@ run_tests() {
   yarn vitest e2e/parallel/$1 --config ./e2e/parallel/vitest.config.ts --reporter=verbose --bail 1
 }
 
+# Check browser version before running tests
+node scripts/e2e-browser-version.js
+
 # Main loop for retry logic
 TEST_RESULT=1
 while [ $RETRY_COUNT -lt ${MAX_RETRIES:-1} ] && [ $TEST_RESULT -ne 0 ]; do
