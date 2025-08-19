@@ -28,8 +28,6 @@ interface MockService {
   logPrefix: string;
 }
 
-// Webpack needs explicit imports to bundle JSON files
-// We'll create a context for each mock directory
 const swapMocksContext = require.context(
   './mocks/swap_quotes',
   false,
@@ -99,13 +97,12 @@ const MOCK_SERVICES: MockService[] = [
       // Normalize to match generator: lowercase address and keep only currency param
       // Expected pathname: /v3/<chains>/<address>/assets/
       const parts = url.pathname.split('/').filter(Boolean);
-      // parts[0] === 'v3', parts[1] === chains, parts[2] === address
       const chains = parts[1] || '';
       const currency = (
         url.searchParams.get('currency') || 'usd'
       ).toLowerCase();
 
-      // Handle the "summary" endpoint case (no specific chain IDs)
+      // Handle the "summary" endpoint case
       if (chains === 'summary') {
         // Check if there's an address in the path
         if (parts[2] && parts[2] !== 'assets') {
