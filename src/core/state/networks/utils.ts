@@ -25,6 +25,35 @@ export { DEFAULT_PRIVATE_MEMPOOL_TIMEOUT };
 const IS_TESTING = process.env.IS_TESTING === 'true';
 const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
 
+// Network IDs to keep when IS_TESTING is true
+const TEST_NETWORK_IDS = [
+  // Mainnet Networks
+  '1', // Ethereum Mainnet
+  '10', // Optimism
+  '56', // BNB Smart Chain
+  '137', // Polygon
+  '8453', // Base
+  '42161', // Arbitrum One
+  // Test Networks
+  '1337', // Hardhat (local)
+  '1338', // Hardhat OP
+  '11155111', // Sepolia
+  '11155420', // Optimism Sepolia
+];
+
+/**
+ * Filters networks based on build flags (INTERNAL_BUILD and IS_TESTING)
+ * - Filters out internal networks unless INTERNAL_BUILD is true
+ * - When IS_TESTING is true, only includes networks in TEST_NETWORK_IDS
+ */
+function filterNetworksByBuildFlags<
+  T extends { id: string; internal: boolean },
+>(networks: T[]): T[] {
+  return networks
+    .filter((network) => !network.internal || INTERNAL_BUILD)
+    .filter((network) => !IS_TESTING || TEST_NETWORK_IDS.includes(network.id));
+}
+
 export function getBadgeUrl({
   chainBadges,
   size,
@@ -82,10 +111,12 @@ export function transformBackendNetworksToChains(
   if (!networks) {
     return [];
   }
-  // include all networks for internal builds, otherwise filter out flagged as internal
-  return networks
-    .filter((network) => !network.internal || INTERNAL_BUILD)
-    .map((network) => transformBackendNetworkToChain(network));
+
+  const filteredNetworks = filterNetworksByBuildFlags(networks);
+
+  return filteredNetworks.map((network) =>
+    transformBackendNetworkToChain(network),
+  );
 }
 
 export function toChainId(id: string): ChainId {
@@ -191,10 +222,10 @@ export const buildInitialUserPreferences = (
   );
 
   const userPreferences: Record<number, ChainPreferences> = {};
-  const initialNonInternalNetworks =
-    initialSupportedNetworks.backendNetworks.networks.filter(
-      (network) => !network.internal || INTERNAL_BUILD,
-    );
+
+  const initialNonInternalNetworks = filterNetworksByBuildFlags(
+    initialSupportedNetworks.backendNetworks.networks,
+  );
 
   logger.debug('[buildInitialUserPreferences] Filtered non-internal networks', {
     initialNonInternalNetworks,
