@@ -371,6 +371,7 @@ export function useCustomNetworkAssets<
     }),
     queryFn: customNetworkAssetsFunction,
     ...config,
+    enabled: !!address && config.enabled !== false,
     refetchInterval: CUSTOM_NETWORK_ASSETS_REFETCH_INTERVAL,
     staleTime: process.env.IS_TESTING === 'true' ? 0 : 1000,
   });
