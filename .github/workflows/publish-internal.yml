@@ -46,6 +46,8 @@ jobs:
         run: yarn bump
       - name: Fetch the current version number
         run: echo "release_version=$(cat package.json | jq -r .version)" >> $GITHUB_ENV
+      - name: Fetch networks
+        run: yarn fetch:networks
       - name: Build the extension ready for the stores
         run: yarn build:webpack
       - name: Update the manifest

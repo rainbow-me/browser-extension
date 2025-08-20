@@ -65,8 +65,6 @@ jobs:
           sed -i 's/IS_TESTING.*/IS_TESTING=true/g' .env
       - name: Yarn setup again
         run: yarn setup
-      - name: Fetch networks
-        run: yarn fetch:networks
       - name: Build the extension
         run: yarn build:webpack
       - name: Upload artifacts
@@ -371,8 +369,6 @@ jobs:
         with:
           channel: stable
           profile: minimal
-      - name: Fetch networks
-        run: yarn fetch:networks
       - name: Install Anvil
         uses: foundry-rs/foundry-toolchain@v1
         with:
@@ -409,8 +405,6 @@ jobs:
         run: tar xzf yarn_node_modules.tar.gz
       - name: DS Setup
         run: yarn ds:install
-      - name: Fetch networks
-        run: yarn fetch:networks
       - name: Lint
         run: yarn lint
       - name: Audit CI

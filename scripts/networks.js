@@ -29,7 +29,8 @@ async function persistData(fileName, data) {
   const filePath = path.join(__dirname, `../static/data/${fileName}.json`);
 
   await fs.ensureFile(filePath);
-  await fs.writeJson(filePath, data);
+  // Readable JSON that is minified at build-time
+  await fs.writeJson(filePath, data, { spaces: 2 });
 }
 
 async function main() {

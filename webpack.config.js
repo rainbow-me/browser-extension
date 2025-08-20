@@ -90,7 +90,21 @@ module.exports = {
       filename: 'popup.html',
     }),
     new CopyPlugin({
-      patterns: [{ from: 'static', to: './' }],
+      patterns: [
+        {
+          from: 'static',
+          to: './',
+          transform(content, absoluteFrom) {
+            // Minify JSON files during copy
+            if (absoluteFrom.endsWith('.json')) {
+              return Buffer.from(
+                JSON.stringify(JSON.parse(content.toString())),
+              );
+            }
+            return content;
+          },
+        },
+      ],
     }),
     new MiniCssExtractPlugin(),
     new ProgressPlugin(),
