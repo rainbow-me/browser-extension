@@ -14,9 +14,6 @@ import { logger } from '~/logger';
 
 import {
   DEFAULT_PRIVATE_MEMPOOL_TIMEOUT,
-  INTERNAL_BUILD,
-  IS_DEV,
-  IS_TESTING,
   RPC_PROXY_API_KEY,
   buildTimeNetworks,
 } from './constants';
@@ -24,6 +21,9 @@ import { NetworkState, NetworkUserPreferences } from './types';
 
 // Export the constant for backward compatibility
 export { DEFAULT_PRIVATE_MEMPOOL_TIMEOUT };
+
+const IS_TESTING = process.env.IS_TESTING === 'true';
+const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
 
 export function getBadgeUrl({
   chainBadges,
@@ -84,7 +84,7 @@ export function transformBackendNetworksToChains(
   }
   // include all networks for internal builds, otherwise filter out flagged as internal
   return networks
-    .filter((network) => !network.internal || INTERNAL_BUILD || IS_DEV)
+    .filter((network) => !network.internal || INTERNAL_BUILD)
     .map((network) => transformBackendNetworkToChain(network));
 }
 
@@ -193,7 +193,7 @@ export const buildInitialUserPreferences = (
   const userPreferences: Record<number, ChainPreferences> = {};
   const initialNonInternalNetworks =
     initialSupportedNetworks.backendNetworks.networks.filter(
-      (network) => !network.internal || INTERNAL_BUILD || IS_DEV,
+      (network) => !network.internal || INTERNAL_BUILD,
     );
 
   logger.debug('[buildInitialUserPreferences] Filtered non-internal networks', {
