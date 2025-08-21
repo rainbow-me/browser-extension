@@ -5,7 +5,7 @@ import {
 } from '~/core/state';
 import { usePendingRequestStore } from '~/core/state/requests';
 
-const bridgeMessenger = initializeMessenger({ connect: 'inpage' });
+const inpageMessenger = initializeMessenger({ connect: 'inpage' });
 
 export const handleTabAndWindowUpdates = () => {
   // When a tab is removed, check if that was the last tab for that host
@@ -26,7 +26,7 @@ export const handleTabAndWindowUpdates = () => {
   });
 
   chrome.tabs.onActivated.addListener(() => {
-    bridgeMessenger.send('rainbow_setDefaultProvider', {
+    inpageMessenger.send('rainbow_setDefaultProvider', {
       rainbowAsDefault: useIsDefaultWalletStore.getState().isDefaultWallet,
     });
   });
