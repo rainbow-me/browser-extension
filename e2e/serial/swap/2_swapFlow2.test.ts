@@ -131,7 +131,7 @@ describe('Swap Flow 2', () => {
 
   it('should be able to go to review a unlock and swap', async () => {
     await findElementByTestIdAndClick({
-      id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-token-input-remove`,
+      id: `${SWAP_VARIABLES.ETH_OPTIMISM_ID}-token-to-sell-token-input-remove`,
       driver,
     });
     await findElementByTestIdAndClick({

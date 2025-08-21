@@ -85,6 +85,18 @@
     "ts-loader": {
       "packages": {
         "typescript": true
+      },
+      "globals": {
+        "WeakMap": true,
+        "console.warn": true,
+        "clearTimeout": true,
+        "setTimeout": true,
+        "process.env.NODE_ENV": true
+      }
+    },
+    "ts-loader>micromatch": {
+      "globals": {
+        "util": true
       }
     },
     "webpack>terser-webpack-plugin>jest-worker": {

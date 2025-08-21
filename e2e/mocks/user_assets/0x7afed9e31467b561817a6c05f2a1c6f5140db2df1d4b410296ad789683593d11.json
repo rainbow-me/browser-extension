@@ -1,0 +1,29 @@
+{
+  "payload": {
+    "transactions": []
+  },
+  "meta": {
+    "chain_ids": [
+      1,
+      10,
+      56,
+      130,
+      137,
+      1625,
+      1996,
+      8453,
+      33139,
+      42161,
+      43114,
+      57073,
+      80094,
+      81457,
+      7777777,
+      666666666
+    ],
+    "currency": "usd",
+    "address": "0x3637f053d542e6d00eee42d656dd7c59fa33a62f",
+    "chain_ids_with_errors": [],
+    "status": "ok"
+  }
+}

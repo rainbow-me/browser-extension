@@ -1508,10 +1508,15 @@
         "path.resolve": true
       },
       "globals": {
+        "WeakMap": true,
         "__dirname": true,
+        "clearTimeout": true,
         "console.log.call": true,
+        "console.warn": true,
+        "process.env.NODE_ENV": true,
         "process.stderr": true,
-        "process.stdout": true
+        "process.stdout": true,
+        "setTimeout": true
       },
       "packages": {
         "eslint>chalk": true,
@@ -1519,6 +1524,11 @@
         "semver": true,
         "typescript": true,
         "webpack": true
+      }
+    },
+    "ts-loader>micromatch": {
+      "globals": {
+        "util": true
       }
     },
     "typescript": {

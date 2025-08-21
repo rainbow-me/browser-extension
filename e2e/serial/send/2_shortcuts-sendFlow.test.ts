@@ -10,6 +10,7 @@ import {
 } from 'vitest';
 
 import {
+  captureAndLogBrowserConsole,
   checkExtensionURL,
   checkWalletName,
   delay,
@@ -62,9 +63,19 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
       rootURL,
       TEST_VARIABLES.SEED_WALLET.PK,
     );
+    // Log after wallet import
+    await captureAndLogBrowserConsole(
+      driver,
+      'After Wallet Import - shortcuts-sendFlow',
+    );
   });
 
   it('should display account name', async () => {
+    // Log before checking wallet name
+    await captureAndLogBrowserConsole(
+      driver,
+      'Before Checking Wallet Name - shortcuts-sendFlow',
+    );
     await checkWalletName(driver, rootURL, TEST_VARIABLES.SEED_WALLET.ADDRESS);
   });
 

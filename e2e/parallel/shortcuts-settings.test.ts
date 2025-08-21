@@ -2,6 +2,7 @@ import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
+  captureAndLogBrowserConsole,
   checkExtensionURL,
   checkWalletName,
   delayTime,
@@ -44,9 +45,19 @@ describe.runIf(browser !== 'firefox')(
         rootURL,
         TEST_VARIABLES.EMPTY_WALLET.SECRET,
       );
+      // Log after wallet import to check state
+      await captureAndLogBrowserConsole(
+        driver,
+        'After Wallet Import - shortcuts-settings',
+      );
     });
 
     it('should display account name', async () => {
+      // Log before checking wallet name
+      await captureAndLogBrowserConsole(
+        driver,
+        'Before Checking Wallet Name - shortcuts-settings',
+      );
       await checkWalletName(
         driver,
         rootURL,
