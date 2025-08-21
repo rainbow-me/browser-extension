@@ -6,9 +6,7 @@ import {
   syncNetworksStore,
   syncStores,
 } from '~/core/state/internal/syncStores';
-import { useNetworkStore } from '~/core/state/networks/networks';
 import { localStorageRecycler } from '~/core/storage/localStorageRecycler';
-import { updateWagmiConfig } from '~/core/wagmi';
 
 import { handleDisconnect } from './handlers/handleDisconnect';
 import { handleInstallExtension } from './handlers/handleInstallExtension';
@@ -43,9 +41,3 @@ syncNetworksStore('background');
 syncStores();
 
 uuid4();
-
-const popupMessenger = initializeMessenger({ connect: 'popup' });
-popupMessenger.reply('rainbow_updateWagmiClient', async () => {
-  const activeChains = useNetworkStore.getState().getAllActiveRpcChains();
-  updateWagmiConfig(activeChains);
-});
