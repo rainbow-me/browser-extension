@@ -29,24 +29,46 @@ import {
   typeOnTextInput,
   waitAndClick,
 } from '../../helpers';
+import { ProxyRecorder } from '../../helpers/proxyRecorder';
 import { convertRawAmountToDecimalFormat, subtract } from '../../numbers';
 import { SWAP_VARIABLES, TEST_VARIABLES } from '../../walletVariables';
 
 let rootURL = getRootUrl();
 let driver: WebDriver;
+let proxyRecorder: ProxyRecorder;
 
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 
 beforeAll(async () => {
-  driver = await initDriverWithOptions({
-    browser,
-    os,
+  // Start the proxy server FIRST before initializing the driver
+  // The driver is configured to use proxy at localhost:8080
+  proxyRecorder = new ProxyRecorder({
+    mode: 'replay', // Recording mode to capture HAR
+    scenarioName: 'swap-flow-1',
+    port: 8080,
+    verbose: true,
   });
-  const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-  if (!extensionId) throw new Error('Extension not found');
-  rootURL += extensionId;
-});
+
+  try {
+    await proxyRecorder.start();
+    console.log('Proxy server started on port 8080');
+
+    // Now initialize the driver which will use the proxy
+    driver = await initDriverWithOptions({
+      browser,
+      os,
+    });
+    const extensionId = await getExtensionIdByName(driver, 'Rainbow');
+    if (!extensionId) throw new Error('Extension not found');
+    rootURL += extensionId;
+  } catch (error) {
+    console.error('Failed in beforeAll:', error);
+    // Ensure proxy stops even if setup fails
+    await proxyRecorder?.stop();
+    throw error;
+  }
+}, 60000); // Increase timeout to 60s for browser startup
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 beforeEach(async (context: any) => {
@@ -58,7 +80,31 @@ afterEach(async (context: any) => {
   await takeScreenshotOnFailure(context);
 });
 
-afterAll(() => driver?.quit());
+afterAll(async () => {
+  console.log('Starting afterAll cleanup...');
+
+  // Always try to quit driver first
+  if (driver) {
+    try {
+      await driver.quit();
+      console.log('Driver quit successfully');
+    } catch (error) {
+      console.error('Error quitting driver:', error);
+    }
+  }
+
+  // Always try to stop proxy and save HAR
+  if (proxyRecorder) {
+    try {
+      const stats = proxyRecorder.getStatistics();
+      console.log('Proxy statistics:', stats);
+      await proxyRecorder.stop();
+      console.log('Proxy server stopped and HAR saved');
+    } catch (error) {
+      console.error('Error stopping proxy:', error);
+    }
+  }
+}, 30000); // Give cleanup 30s
 
 const WALLET_TO_USE_SECRET = TEST_VARIABLES.SWAPS_WALLET.PK;
 
@@ -1027,3 +1073,7 @@ it('should be able to execute swap', async () => {
 
   expect(Number(ethDifferenceAmount)).toBeGreaterThan(1);
 });
+
+/*
+popup.js:287773 00:02:38 [ERROR] Error: estimateGasWithPadding error: Error: insufficient funds for intrinsic transaction cost [ See: https://links.ethers.org/v5-errors-INSUFFICIENT_FUNDS ] (error={"reason":"processing response error","code":"SERVER_ERROR","body":"{\"jsonrpc\":\"2.0\",\"id\":45,\"error\":{\"code\":-32003,\"message\":\"insufficient funds for gas * price + value: have 8 want 1000000000000000000\"}}","error":{"code":-32003},"requestBody":"{\"method\":\"eth_estimateGas\",\"params\":[{\"gas\":\"0x28c5030\",\"value\":\"0xde0b6b3a7640000\",\"from\":\"0xa0ee7a142d267c1f36714e4a8f75612f20a79720\",\"to\":\"0x00000000009726632680fb29d3f7a9734e3010e2\",\"data\":\"0x3c2b9a7d000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000111111125421ca6dc452d289314280a0f8842a650000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000001e32b4789740000000000000000000000000000000000000000000000000000000000000000048a76dfc3b00000000000000000000000000000000000000000000000000000000d7d825a4200000000000000000000000e0554a476a092703abdb3ef35c80e0d76d32939fd6f29312000000000000000000000000000000000000000000000000\"}],\"id\":45,\"jsonrpc\":\"2.0\"}","requestMethod":"POST","url":"https://rpc.rainbow.me/v1/1/B9kBlwE2Hpw0COb7pWj6rpnk69fqSGGRc3fQ5nZ2LzeFS1G2VRxBQilZWbxAZkXI"}, method="estimateGas", transaction={"from":"0xa0Ee7A142d267C1f36714E4a8F75612F20a79720","gasLimit":{"type":"BigNumber","hex":"0x028c5030"},"to":"0x00000000009726632680FB29d3F7A9734E3010E2","value":{"type":"BigNumber","hex":"0x0de0b6b3a7640000"},"data":"0x3c2b9a7d000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000111111125421ca6dc452d289314280a0f8842a650000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000001e32b4789740000000000000000000000000000000000000000000000000000000000000000048a76dfc3b00000000000000000000000000000000000000000000000000000000d7d825a4200000000000000000000000e0554a476a092703abdb3ef35c80e0d76d32939fd6f29312000000000000000000000000000000000000000000000000","accessList":null}, code=INSUFFICIENT_FUNDS, version=providers/5.7.2)
+*/

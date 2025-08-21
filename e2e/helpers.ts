@@ -146,6 +146,16 @@ export async function initDriverWithOptions(opts: {
       Object.assign(existingGoogChromeOptions, {
         enableExtensionTargets: true,
         windowTypes: ['popup', 'app'],
+        // Ensure Chrome bypasses proxy for local/loopback so it can boot and talk to DevTools
+        args: [
+          ...(existingGoogChromeOptions.args || []),
+          // Route HTTP(S) traffic through our test proxy
+          '--proxy-server=http://localhost:8080',
+          '--proxy-bypass-list=<-loopback>,127.0.0.1,localhost',
+          // Helpful logging from Chrome itself
+          '--enable-logging',
+          '--v=1',
+        ],
       }),
     );
 
