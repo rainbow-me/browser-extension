@@ -522,8 +522,8 @@
         "import_wallet": "เพิ่ม, การกู้คืนลับ, ประโยคเมล็ด, คีย์ส่วนตัว",
         "watch_wallet": "เพิ่ม",
         "add_hardware_wallet": "ledger, trezor, เชื่อมต่อ",
-        "hide_balances": "toggle, hide, show, balances, reveal",
-        "hide_small_balances": "toggle, hide, show, balances, reveal",
+        "hide_balances": "สลับ, ซ่อน, แสดง, ยอดคงเหลือ, เปิดเผย",
+        "hide_small_balances": "สลับ, ซ่อน, แสดง, ยอดคงเหลือ, เปิดเผย",
         "wallets_and_keys": "กระเป๋าสตางค์และคีย์, การตั้งค่า, การตั้งค่า",
         "diagnostics": "การวินิจฉัย"
       }
