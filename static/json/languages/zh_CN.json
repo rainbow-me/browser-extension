@@ -522,8 +522,8 @@
         "import_wallet": "添加、私钥安全恢复、助记词",
         "watch_wallet": "添加",
         "add_hardware_wallet": "Ledger、Trezor、连接",
-        "hide_balances": "切换, 隐藏, 显示, 余额, 显示",
-        "hide_small_balances": "切换, 隐藏, 显示, 余额, 显示",
+        "hide_balances": "切换，隐藏，显示，余额，揭秘",
+        "hide_small_balances": "切换，隐藏，显示，余额，揭秘",
         "wallets_and_keys": "钱包和密钥、设置、偏好设置",
         "diagnostics": "诊断"
       }
