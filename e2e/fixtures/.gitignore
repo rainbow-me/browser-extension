@@ -1,0 +1,8 @@
+# Ignore CA certificates - these should be generated locally
+certs/
+*.crt
+*.key
+*.pem
+
+# Keep recordings but allow them to be updated
+# swap-flow-1/recordings.json
