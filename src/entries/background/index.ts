@@ -1,18 +1,17 @@
-// Initialize mocks BEFORE any other imports that might trigger fetches
-if (process.env.IS_TESTING === 'true') {
-  console.log(
-    '[Background] IS_TESTING is true, initializing mockFetch synchronously...',
-  );
-  try {
-    // Use require instead of dynamic import for synchronous loading
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { mockFetch } = require('../../../e2e/mockFetch');
-    mockFetch();
-    console.log('[Background] mockFetch initialized successfully');
-  } catch (e) {
-    console.error('[Background] Failed to initialize mockFetch:', e);
-  }
-}
+// if (process.env.IS_TESTING === 'true') {
+//   console.log(
+//     '[Background] IS_TESTING is true, initializing mockFetch synchronously...',
+//   );
+//   try {
+//     // Use require instead of dynamic import for synchronous loading
+//     // eslint-disable-next-line @typescript-eslint/no-var-requires
+//     const { mockFetch } = require('../../../e2e/mockFetch');
+//     mockFetch();
+//     console.log('[Background] mockFetch initialized successfully');
+//   } catch (e) {
+//     console.error('[Background] Failed to initialize mockFetch:', e);
+//   }
+// }
 
 import { uuid4 } from '@sentry/core';
 
