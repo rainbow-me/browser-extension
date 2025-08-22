@@ -522,8 +522,8 @@
         "import_wallet": "जोड़ें, गुप्त बचाव, बीज शब्द, निजी कुंजी",
         "watch_wallet": "जोड़ें",
         "add_hardware_wallet": "लेजर, त्रेजोर, कनेक्ट",
-        "hide_balances": "toggle, hide, show, balances, reveal",
-        "hide_small_balances": "toggle, hide, show, balances, reveal",
+        "hide_balances": "टॉगल, छिपाएँ, दिखाएँ, संतुलन, प्रकट करें",
+        "hide_small_balances": "टॉगल, छिपाएँ, दिखाएँ, संतुलन, प्रकट करें",
         "wallets_and_keys": "वॉलेट और कुंजी, सेटिंग्स, प्राथमिकताएं",
         "diagnostics": "डायग्नोस्टिक्स"
       }
