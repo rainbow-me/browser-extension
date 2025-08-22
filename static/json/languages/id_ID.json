@@ -522,8 +522,8 @@
         "import_wallet": "tambah, pemulihan rahasia, frasa benih, kunci privat",
         "watch_wallet": "tambah",
         "add_hardware_wallet": "ledger, trezor, hubungkan",
-        "hide_balances": "toggle, hide, show, balances, reveal",
-        "hide_small_balances": "toggle, hide, show, balances, reveal",
+        "hide_balances": "alihkan, sembunyikan, tampilkan, saldo, ungkapkan",
+        "hide_small_balances": "alihkan, sembunyikan, tampilkan, saldo, ungkapkan",
         "wallets_and_keys": "dompet dan kunci, pengaturan, preferensi",
         "diagnostics": "diagnostik"
       }
