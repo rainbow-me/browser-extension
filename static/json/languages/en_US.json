@@ -522,8 +522,8 @@
         "import_wallet": "add, secret recovery, seed phrase, private key",
         "watch_wallet": "add",
         "add_hardware_wallet": "ledger, trezor, connect",
-        "hide_balances": "toggle",
-        "hide_small_balances": "toggle",
+        "hide_balances": "toggle, hide, show, balances, reveal",
+        "hide_small_balances": "toggle, hide, show, balances, reveal",
         "wallets_and_keys": "wallets and keys, settings, preferences",
         "diagnostics": "diagnostics"
       }
