@@ -27,6 +27,3 @@ screenshots/
 
 # IDEs
 .idea/**
-
-# Static data
-static/data
