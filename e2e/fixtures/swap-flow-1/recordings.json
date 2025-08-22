@@ -2018,5 +2018,221 @@
       },
       "body": "{\"data\":[]}"
     }
+  },
+  {
+    "id": "addys-assets-0",
+    "timestamp": 1755877829173,
+    "request": {
+      "method": "GET",
+      "url": "https://addys.p.rainbow.me/v3/1,10,56,100,130,137,324,1625,1996,8453,33139,42161,43114,57073,59144,80094,81457,534352,7777777,666666666//assets/?currency=usd",
+      "headers": {},
+      "body": ""
+    },
+    "response": {
+      "status": 200,
+      "statusText": "OK",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": "{\"meta\":{\"addresses\":[],\"currency\":\"usd\",\"chain_ids\":[1],\"status\":\"ok\"},\"payload\":{\"assets\":[{\"asset\":{\"asset_code\":\"eth\",\"decimals\":18,\"icon_url\":\"https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/eth.png\",\"name\":\"Ethereum\",\"network\":\"mainnet\",\"chain_id\":1,\"price\":{\"value\":2629.45,\"changed_at\":1755877829173},\"symbol\":\"ETH\",\"type\":\"native\"},\"quantity\":\"1000000000000000000\",\"native\":{\"balance\":{\"amount\":\"1000000000000000000\",\"display\":\"1 ETH\"},\"price\":{\"amount\":\"2629.45\",\"display\":\"$2,629.45\"}}}]}}"
+    }
+  },
+  {
+    "id": "addys-assets-clean-0",
+    "timestamp": 1755877829173,
+    "request": {
+      "method": "GET",
+      "url": "https://addys.p.rainbow.me/v3/1,10,56,100,130,137,324,1625,1996,8453,33139,42161,43114,57073,59144,80094,81457,534352,7777777,666666666/assets?currency=usd",
+      "headers": {},
+      "body": ""
+    },
+    "response": {
+      "status": 200,
+      "statusText": "OK",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": "{\"meta\":{\"addresses\":[],\"currency\":\"usd\",\"chain_ids\":[1],\"status\":\"ok\"},\"payload\":{\"assets\":[{\"asset\":{\"asset_code\":\"eth\",\"decimals\":18,\"icon_url\":\"https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/eth.png\",\"name\":\"Ethereum\",\"network\":\"mainnet\",\"chain_id\":1,\"price\":{\"value\":2629.45,\"changed_at\":1755877829173},\"symbol\":\"ETH\",\"type\":\"native\"},\"quantity\":\"1000000000000000000\",\"native\":{\"balance\":{\"amount\":\"1000000000000000000\",\"display\":\"1 ETH\"},\"price\":{\"amount\":\"2629.45\",\"display\":\"$2,629.45\"}}}]}}"
+    }
+  },
+  {
+    "id": "addys-wallet-assets-0",
+    "timestamp": 1755877829173,
+    "request": {
+      "method": "GET",
+      "url": "https://addys.p.rainbow.me/v3/1,10,56,100,130,137,324,1625,1996,8453,33139,42161,43114,57073,59144,80094,81457,534352,7777777,666666666/0xa0Ee7A142d267C1f36714E4a8F75612F20a79720/assets/?currency=usd",
+      "headers": {},
+      "body": ""
+    },
+    "response": {
+      "status": 200,
+      "statusText": "OK",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": "{\"meta\":{\"addresses\":[],\"currency\":\"usd\",\"chain_ids\":[1],\"status\":\"ok\"},\"payload\":{\"assets\":[{\"asset\":{\"asset_code\":\"eth\",\"decimals\":18,\"icon_url\":\"https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/eth.png\",\"name\":\"Ethereum\",\"network\":\"mainnet\",\"chain_id\":1,\"price\":{\"value\":2629.45,\"changed_at\":1755877829173},\"symbol\":\"ETH\",\"type\":\"native\"},\"quantity\":\"1000000000000000000\",\"native\":{\"balance\":{\"amount\":\"1000000000000000000\",\"display\":\"1 ETH\"},\"price\":{\"amount\":\"2629.45\",\"display\":\"$2,629.45\"}}}]}}"
+    }
+  },
+  {
+    "id": "addys-wallet-assets-clean-0",
+    "timestamp": 1755877829173,
+    "request": {
+      "method": "GET",
+      "url": "https://addys.p.rainbow.me/v3/1,10,56,100,130,137,324,1625,1996,8453,33139,42161,43114,57073,59144,80094,81457,534352,7777777,666666666/0xa0Ee7A142d267C1f36714E4a8F75612F20a79720/assets?currency=usd",
+      "headers": {},
+      "body": ""
+    },
+    "response": {
+      "status": 200,
+      "statusText": "OK",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": "{\"meta\":{\"addresses\":[],\"currency\":\"usd\",\"chain_ids\":[1],\"status\":\"ok\"},\"payload\":{\"assets\":[{\"asset\":{\"asset_code\":\"eth\",\"decimals\":18,\"icon_url\":\"https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/eth.png\",\"name\":\"Ethereum\",\"network\":\"mainnet\",\"chain_id\":1,\"price\":{\"value\":2629.45,\"changed_at\":1755877829173},\"symbol\":\"ETH\",\"type\":\"native\"},\"quantity\":\"1000000000000000000\",\"native\":{\"balance\":{\"amount\":\"1000000000000000000\",\"display\":\"1 ETH\"},\"price\":{\"amount\":\"2629.45\",\"display\":\"$2,629.45\"}}}]}}"
+    }
+  },
+  {
+    "id": "addys-assets-1",
+    "timestamp": 1755877829173,
+    "request": {
+      "method": "GET",
+      "url": "https://addys.p.rainbow.me/v3/1,10,56,130,137,1625,1996,8453,33139,42161,43114,57073,80094,81457,7777777,666666666//assets/?currency=usd",
+      "headers": {},
+      "body": ""
+    },
+    "response": {
+      "status": 200,
+      "statusText": "OK",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": "{\"meta\":{\"addresses\":[],\"currency\":\"usd\",\"chain_ids\":[1],\"status\":\"ok\"},\"payload\":{\"assets\":[{\"asset\":{\"asset_code\":\"eth\",\"decimals\":18,\"icon_url\":\"https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/eth.png\",\"name\":\"Ethereum\",\"network\":\"mainnet\",\"chain_id\":1,\"price\":{\"value\":2629.45,\"changed_at\":1755877829173},\"symbol\":\"ETH\",\"type\":\"native\"},\"quantity\":\"1000000000000000000\",\"native\":{\"balance\":{\"amount\":\"1000000000000000000\",\"display\":\"1 ETH\"},\"price\":{\"amount\":\"2629.45\",\"display\":\"$2,629.45\"}}}]}}"
+    }
+  },
+  {
+    "id": "addys-assets-clean-1",
+    "timestamp": 1755877829173,
+    "request": {
+      "method": "GET",
+      "url": "https://addys.p.rainbow.me/v3/1,10,56,130,137,1625,1996,8453,33139,42161,43114,57073,80094,81457,7777777,666666666/assets?currency=usd",
+      "headers": {},
+      "body": ""
+    },
+    "response": {
+      "status": 200,
+      "statusText": "OK",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": "{\"meta\":{\"addresses\":[],\"currency\":\"usd\",\"chain_ids\":[1],\"status\":\"ok\"},\"payload\":{\"assets\":[{\"asset\":{\"asset_code\":\"eth\",\"decimals\":18,\"icon_url\":\"https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/eth.png\",\"name\":\"Ethereum\",\"network\":\"mainnet\",\"chain_id\":1,\"price\":{\"value\":2629.45,\"changed_at\":1755877829173},\"symbol\":\"ETH\",\"type\":\"native\"},\"quantity\":\"1000000000000000000\",\"native\":{\"balance\":{\"amount\":\"1000000000000000000\",\"display\":\"1 ETH\"},\"price\":{\"amount\":\"2629.45\",\"display\":\"$2,629.45\"}}}]}}"
+    }
+  },
+  {
+    "id": "addys-wallet-assets-1",
+    "timestamp": 1755877829173,
+    "request": {
+      "method": "GET",
+      "url": "https://addys.p.rainbow.me/v3/1,10,56,130,137,1625,1996,8453,33139,42161,43114,57073,80094,81457,7777777,666666666/0xa0Ee7A142d267C1f36714E4a8F75612F20a79720/assets/?currency=usd",
+      "headers": {},
+      "body": ""
+    },
+    "response": {
+      "status": 200,
+      "statusText": "OK",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": "{\"meta\":{\"addresses\":[],\"currency\":\"usd\",\"chain_ids\":[1],\"status\":\"ok\"},\"payload\":{\"assets\":[{\"asset\":{\"asset_code\":\"eth\",\"decimals\":18,\"icon_url\":\"https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/eth.png\",\"name\":\"Ethereum\",\"network\":\"mainnet\",\"chain_id\":1,\"price\":{\"value\":2629.45,\"changed_at\":1755877829173},\"symbol\":\"ETH\",\"type\":\"native\"},\"quantity\":\"1000000000000000000\",\"native\":{\"balance\":{\"amount\":\"1000000000000000000\",\"display\":\"1 ETH\"},\"price\":{\"amount\":\"2629.45\",\"display\":\"$2,629.45\"}}}]}}"
+    }
+  },
+  {
+    "id": "addys-wallet-assets-clean-1",
+    "timestamp": 1755877829173,
+    "request": {
+      "method": "GET",
+      "url": "https://addys.p.rainbow.me/v3/1,10,56,130,137,1625,1996,8453,33139,42161,43114,57073,80094,81457,7777777,666666666/0xa0Ee7A142d267C1f36714E4a8F75612F20a79720/assets?currency=usd",
+      "headers": {},
+      "body": ""
+    },
+    "response": {
+      "status": 200,
+      "statusText": "OK",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": "{\"meta\":{\"addresses\":[],\"currency\":\"usd\",\"chain_ids\":[1],\"status\":\"ok\"},\"payload\":{\"assets\":[{\"asset\":{\"asset_code\":\"eth\",\"decimals\":18,\"icon_url\":\"https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/eth.png\",\"name\":\"Ethereum\",\"network\":\"mainnet\",\"chain_id\":1,\"price\":{\"value\":2629.45,\"changed_at\":1755877829173},\"symbol\":\"ETH\",\"type\":\"native\"},\"quantity\":\"1000000000000000000\",\"native\":{\"balance\":{\"amount\":\"1000000000000000000\",\"display\":\"1 ETH\"},\"price\":{\"amount\":\"2629.45\",\"display\":\"$2,629.45\"}}}]}}"
+    }
+  },
+  {
+    "id": "addys-assets-2",
+    "timestamp": 1755877829173,
+    "request": {
+      "method": "GET",
+      "url": "https://addys.p.rainbow.me/v3/1,10,56,130,137,1625,1996,8453,33139,42161,43114,57073,80094,81457,534352,7777777,666666666//assets/?currency=usd",
+      "headers": {},
+      "body": ""
+    },
+    "response": {
+      "status": 200,
+      "statusText": "OK",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": "{\"meta\":{\"addresses\":[],\"currency\":\"usd\",\"chain_ids\":[1],\"status\":\"ok\"},\"payload\":{\"assets\":[{\"asset\":{\"asset_code\":\"eth\",\"decimals\":18,\"icon_url\":\"https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/eth.png\",\"name\":\"Ethereum\",\"network\":\"mainnet\",\"chain_id\":1,\"price\":{\"value\":2629.45,\"changed_at\":1755877829173},\"symbol\":\"ETH\",\"type\":\"native\"},\"quantity\":\"1000000000000000000\",\"native\":{\"balance\":{\"amount\":\"1000000000000000000\",\"display\":\"1 ETH\"},\"price\":{\"amount\":\"2629.45\",\"display\":\"$2,629.45\"}}}]}}"
+    }
+  },
+  {
+    "id": "addys-assets-clean-2",
+    "timestamp": 1755877829173,
+    "request": {
+      "method": "GET",
+      "url": "https://addys.p.rainbow.me/v3/1,10,56,130,137,1625,1996,8453,33139,42161,43114,57073,80094,81457,534352,7777777,666666666/assets?currency=usd",
+      "headers": {},
+      "body": ""
+    },
+    "response": {
+      "status": 200,
+      "statusText": "OK",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": "{\"meta\":{\"addresses\":[],\"currency\":\"usd\",\"chain_ids\":[1],\"status\":\"ok\"},\"payload\":{\"assets\":[{\"asset\":{\"asset_code\":\"eth\",\"decimals\":18,\"icon_url\":\"https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/eth.png\",\"name\":\"Ethereum\",\"network\":\"mainnet\",\"chain_id\":1,\"price\":{\"value\":2629.45,\"changed_at\":1755877829173},\"symbol\":\"ETH\",\"type\":\"native\"},\"quantity\":\"1000000000000000000\",\"native\":{\"balance\":{\"amount\":\"1000000000000000000\",\"display\":\"1 ETH\"},\"price\":{\"amount\":\"2629.45\",\"display\":\"$2,629.45\"}}}]}}"
+    }
+  },
+  {
+    "id": "addys-wallet-assets-2",
+    "timestamp": 1755877829173,
+    "request": {
+      "method": "GET",
+      "url": "https://addys.p.rainbow.me/v3/1,10,56,130,137,1625,1996,8453,33139,42161,43114,57073,80094,81457,534352,7777777,666666666/0xa0Ee7A142d267C1f36714E4a8F75612F20a79720/assets/?currency=usd",
+      "headers": {},
+      "body": ""
+    },
+    "response": {
+      "status": 200,
+      "statusText": "OK",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": "{\"meta\":{\"addresses\":[],\"currency\":\"usd\",\"chain_ids\":[1],\"status\":\"ok\"},\"payload\":{\"assets\":[{\"asset\":{\"asset_code\":\"eth\",\"decimals\":18,\"icon_url\":\"https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/eth.png\",\"name\":\"Ethereum\",\"network\":\"mainnet\",\"chain_id\":1,\"price\":{\"value\":2629.45,\"changed_at\":1755877829173},\"symbol\":\"ETH\",\"type\":\"native\"},\"quantity\":\"1000000000000000000\",\"native\":{\"balance\":{\"amount\":\"1000000000000000000\",\"display\":\"1 ETH\"},\"price\":{\"amount\":\"2629.45\",\"display\":\"$2,629.45\"}}}]}}"
+    }
+  },
+  {
+    "id": "addys-wallet-assets-clean-2",
+    "timestamp": 1755877829173,
+    "request": {
+      "method": "GET",
+      "url": "https://addys.p.rainbow.me/v3/1,10,56,130,137,1625,1996,8453,33139,42161,43114,57073,80094,81457,534352,7777777,666666666/0xa0Ee7A142d267C1f36714E4a8F75612F20a79720/assets?currency=usd",
+      "headers": {},
+      "body": ""
+    },
+    "response": {
+      "status": 200,
+      "statusText": "OK",
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": "{\"meta\":{\"addresses\":[],\"currency\":\"usd\",\"chain_ids\":[1],\"status\":\"ok\"},\"payload\":{\"assets\":[{\"asset\":{\"asset_code\":\"eth\",\"decimals\":18,\"icon_url\":\"https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/eth.png\",\"name\":\"Ethereum\",\"network\":\"mainnet\",\"chain_id\":1,\"price\":{\"value\":2629.45,\"changed_at\":1755877829173},\"symbol\":\"ETH\",\"type\":\"native\"},\"quantity\":\"1000000000000000000\",\"native\":{\"balance\":{\"amount\":\"1000000000000000000\",\"display\":\"1 ETH\"},\"price\":{\"amount\":\"2629.45\",\"display\":\"$2,629.45\"}}}]}}"
+    }
   }
 ]

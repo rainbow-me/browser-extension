@@ -955,7 +955,61 @@ export class MitmProxyV2 {
     url: string,
   ): RequestRecord | undefined {
     const key = this.getRecordKey(method, url);
-    return this.records.get(key);
+    let record = this.records.get(key);
+
+    // If no exact match and it's a Rainbow API, try fuzzy matching
+    if (!record && url.includes('.rainbow.me')) {
+      this.log('debug', `No exact match for ${url}, trying fuzzy match...`);
+
+      // Try to find a similar URL ignoring chain IDs in the path
+      for (const recordValue of this.records.values()) {
+        if (recordValue.request.method === method) {
+          const recordUrl = recordValue.request.url;
+
+          // Check if it's the same endpoint with different chain IDs
+          if (this.isSimilarRainbowUrl(url, recordUrl)) {
+            this.log('warn', `Using fuzzy match: ${recordUrl} for ${url}`);
+            record = recordValue;
+            break;
+          }
+        }
+      }
+    }
+
+    return record;
+  }
+
+  private isSimilarRainbowUrl(url1: string, url2: string): boolean {
+    try {
+      const u1 = new URL(url1);
+      const u2 = new URL(url2);
+
+      // Must be same host
+      if (u1.host !== u2.host) return false;
+
+      // For addys.p.rainbow.me/v3/[chains]/[address?]/assets URLs
+      if (u1.host === 'addys.p.rainbow.me' && u1.pathname.includes('/v3/')) {
+        const path1Parts = u1.pathname.split('/').filter((p) => p);
+        const path2Parts = u2.pathname.split('/').filter((p) => p);
+
+        // Check if structure is similar (v3/chains/assets or v3/chains/address/assets)
+        if (path1Parts[0] === 'v3' && path2Parts[0] === 'v3') {
+          // Both have assets endpoint
+          const hasAssets1 = path1Parts[path1Parts.length - 1] === 'assets';
+          const hasAssets2 = path2Parts[path2Parts.length - 1] === 'assets';
+
+          if (hasAssets1 && hasAssets2) {
+            // Check if query params match
+            return u1.search === u2.search;
+          }
+        }
+      }
+
+      // For other endpoints, require exact pathname match
+      return u1.pathname === u2.pathname && u1.search === u2.search;
+    } catch {
+      return false;
+    }
   }
 
   private sanitizeHeaders(
