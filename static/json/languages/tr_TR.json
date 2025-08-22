@@ -522,8 +522,8 @@
         "import_wallet": "ekle, gizli kurtarma, seed cümlesi, özel anahtar",
         "watch_wallet": "ekle",
         "add_hardware_wallet": "ledger, trezor, bağlan",
-        "hide_balances": "aç/kapa",
-        "hide_small_balances": "aç/kapa",
+        "hide_balances": "değiştir, gizle, göster, bakiyeler, ortaya çıkar",
+        "hide_small_balances": "değiştir, gizle, göster, bakiyeler, ortaya çıkar",
         "wallets_and_keys": "cüzdanlar ve anahtarlar, ayarlar, tercihler",
         "diagnostics": "teşhisler"
       }

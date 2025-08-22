@@ -522,8 +522,8 @@
         "import_wallet": "agregar, recuperación secreta, frase de recuperación, clave privada",
         "watch_wallet": "agregar",
         "add_hardware_wallet": "ledger, trezor, conectar",
-        "hide_balances": "alternar",
-        "hide_small_balances": "alternar",
+        "hide_balances": "alternar, ocultar, mostrar, saldos, revelar",
+        "hide_small_balances": "alternar, ocultar, mostrar, saldos, revelar",
         "wallets_and_keys": "billeteras y claves, configuración, preferencias",
         "diagnostics": "diagnósticos"
       }
