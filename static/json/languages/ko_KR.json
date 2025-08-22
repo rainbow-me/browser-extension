@@ -522,8 +522,8 @@
         "import_wallet": "추가, 비밀 복구, 시드 구절, 개인 키",
         "watch_wallet": "추가",
         "add_hardware_wallet": "렛저, 트레저, 연결",
-        "hide_balances": "토글",
-        "hide_small_balances": "토글",
+        "hide_balances": "전환하다, 숨기다, 보기, 잔액, 공개하다",
+        "hide_small_balances": "전환하다, 숨기다, 보기, 잔액, 공개하다",
         "wallets_and_keys": "지갑 및 키, 설정, 환경설정",
         "diagnostics": "진단"
       }
