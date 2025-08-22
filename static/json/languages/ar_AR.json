@@ -522,8 +522,8 @@
         "import_wallet": "إضافة, استعادة سرية, عبارة البذور, المفتاح الخاص",
         "watch_wallet": "إضافة",
         "add_hardware_wallet": "ledger, trezor, الاتصال",
-        "hide_balances": "تبديل",
-        "hide_small_balances": "تبديل",
+        "hide_balances": "التبديل، اخفاء، اظهار، الأرصدة، الكشف",
+        "hide_small_balances": "التبديل، اخفاء، اظهار، الأرصدة، الكشف",
         "wallets_and_keys": "المحافظ والمفاتيح, الإعدادات, التفضيلات",
         "diagnostics": "التشخيصات"
       }
