@@ -522,8 +522,8 @@
         "import_wallet": "追加、シークレットリカバリ、シードフレーズ、プライベートキー",
         "watch_wallet": "追加",
         "add_hardware_wallet": "レジャー、トレゾール、接続",
-        "hide_balances": "切り替える",
-        "hide_small_balances": "切り替える",
+        "hide_balances": "トグル、非表示、表示、残高、表示",
+        "hide_small_balances": "トグル、非表示、表示、残高、表示",
         "wallets_and_keys": "ウォレットとキー、設定、設定",
         "diagnostics": "診断"
       }
