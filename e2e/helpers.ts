@@ -28,6 +28,7 @@ import {
   browserBinaryPath,
   browserExtensionScheme,
 } from './helpers/environment';
+import { interceptMocks } from './mocks/intercept';
 
 // consts
 
@@ -157,6 +158,9 @@ export async function initDriverWithOptions(opts: {
       }),
     );
 
+    // Enable BiDi for Chrome
+    options.set('webSocketUrl', true);
+
     const service = new chrome.ServiceBuilder().setStdio('inherit');
 
     driver = await new Builder()
@@ -167,6 +171,10 @@ export async function initDriverWithOptions(opts: {
   }
   // @ts-ignore
   driver.browser = opts.browser;
+
+  // Install network interception for mocking
+  await interceptMocks(driver);
+
   return driver;
 }
 
