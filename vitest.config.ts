@@ -10,7 +10,7 @@ export default defineConfig({
   plugins: [vanillaExtractPlugin()],
   test: {
     environment: 'happy-dom',
-    include: ['src/**/*.test.(ts|tsx)'],
+    include: ['src/**/*.test.(ts|tsx)', 'e2e/mocks/*.test.ts'],
     testTimeout: 45_000,
     setupFiles: './src/test/setup.ts',
     watch: false,

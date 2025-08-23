@@ -1,0 +1,2491 @@
+{
+  "meta": {
+    "addresses": [
+      "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+    ],
+    "errors": [],
+    "currency": "usd",
+    "status": "ok",
+    "chain_ids": [
+      1,
+      10,
+      56,
+      137,
+      8453,
+      42161
+    ],
+    "addresses_with_errors": [],
+    "chain_ids_with_errors": []
+  },
+  "payload": {
+    "assets": [
+      {
+        "quantity": "1001000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x688e78ebf059196aee381f4cd5e2319bcfdbe168",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "Hepatitis C",
+          "network": "base",
+          "chain_id": 8453,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230829,
+            "relative_change_24h": -1.5477798596888692
+          },
+          "symbol": "HEPATITISC",
+          "colors": {
+            "primary": "#FF8024"
+          },
+          "networks": {
+            "8453": {
+              "address": "0x688e78ebf059196aee381f4cd5e2319bcfdbe168",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": false,
+          "transferable": true,
+          "creation_date": "2025-02-24T11:40:55Z"
+        }
+      },
+      {
+        "quantity": "24390716060607400000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x9e07e80815f0ceef6c8b2663ed14e12072643827",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "Wildcard",
+          "network": "base",
+          "chain_id": 8453,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "WC",
+          "colors": {
+            "primary": "#75C06B"
+          },
+          "networks": {
+            "8453": {
+              "address": "0x9e07e80815f0ceef6c8b2663ed14e12072643827",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "20000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x946dd3703d1b34dc7e87723560a308bbc3e8a229",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "juanito",
+          "network": "base",
+          "chain_id": 8453,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "juan",
+          "colors": {
+            "primary": "#A575FF"
+          },
+          "networks": {
+            "8453": {
+              "address": "0x946dd3703d1b34dc7e87723560a308bbc3e8a229",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "150000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xe8ac5347028393728c3e2393ae0230f4ceafdcf1",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "CredibilityToken",
+          "network": "polygon",
+          "chain_id": 137,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "CRED",
+          "colors": {
+            "primary": "#A575FF"
+          },
+          "networks": {
+            "137": {
+              "address": "0xe8ac5347028393728c3e2393ae0230f4ceafdcf1",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x068b75b72eda5c9fdc2823a7a428f184b0de382d",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake ETH",
+          "network": "polygon",
+          "chain_id": 137,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230828,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeETH",
+          "colors": {
+            "primary": "#5FC6D4"
+          },
+          "networks": {
+            "137": {
+              "address": "0x068b75b72eda5c9fdc2823a7a428f184b0de382d",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x065496eb08dcbfed7c329ffa7de210251942723a",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "MTT Test",
+          "network": "polygon",
+          "chain_id": 137,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "MTT",
+          "colors": {
+            "primary": "#E95D72"
+          },
+          "networks": {
+            "137": {
+              "address": "0x065496eb08dcbfed7c329ffa7de210251942723a",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "150000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x302de0c6267f8091651de096d89145b92c947bba",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "CredibilityToken",
+          "network": "polygon",
+          "chain_id": 137,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "CRED",
+          "colors": {
+            "primary": "#75C06B"
+          },
+          "networks": {
+            "137": {
+              "address": "0x302de0c6267f8091651de096d89145b92c947bba",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "500000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xd1e55f5e7a7016ad16797160ef4e542c260610b4",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "Wrapped XDAI",
+          "network": "polygon",
+          "chain_id": 137,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "WXDAI",
+          "colors": {
+            "primary": "#FF9A23"
+          },
+          "networks": {
+            "137": {
+              "address": "0xd1e55f5e7a7016ad16797160ef4e542c260610b4",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "50000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x0854154f4f927422e940c31ea88e8f75e17988dd",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "Payment USDT",
+          "network": "polygon",
+          "chain_id": 137,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "P-USDT",
+          "colors": {
+            "primary": "#6A87C8"
+          },
+          "networks": {
+            "137": {
+              "address": "0x0854154f4f927422e940c31ea88e8f75e17988dd",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "75000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x6e3d618fcc4ec5cc139c9a9186c730ea47b31d00",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "holiverse coin",
+          "network": "polygon",
+          "chain_id": 137,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230661,
+            "relative_change_24h": -6.511189228934995
+          },
+          "symbol": "HC",
+          "colors": {
+            "primary": "#FFD95A"
+          },
+          "networks": {
+            "137": {
+              "address": "0x6e3d618fcc4ec5cc139c9a9186c730ea47b31d00",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "96700000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xb4b18a7c73db421939516121ab3867fd76f12a20",
+          "decimals": 8,
+          "icon_url": "",
+          "name": "JOOS CreatorShare #32",
+          "network": "polygon",
+          "chain_id": 137,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "JOOS#32",
+          "colors": {
+            "primary": "#FF949A"
+          },
+          "networks": {
+            "137": {
+              "address": "0xb4b18a7c73db421939516121ab3867fd76f12a20",
+              "decimals": 8
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xe92de7e9f664d9ffcf57bb9f49f8b6d0a7247e73",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake ETH",
+          "network": "polygon",
+          "chain_id": 137,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeETH",
+          "colors": {
+            "primary": "#FF8024"
+          },
+          "networks": {
+            "137": {
+              "address": "0xe92de7e9f664d9ffcf57bb9f49f8b6d0a7247e73",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x9515c6902c16361dc42b82d21c1a60b519248906",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake GLP",
+          "network": "polygon",
+          "chain_id": 137,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeGLP",
+          "colors": {
+            "primary": "#FFD95A"
+          },
+          "networks": {
+            "137": {
+              "address": "0x9515c6902c16361dc42b82d21c1a60b519248906",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "11183788400000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x3c0bd2118a5e61c41d2adeebcb8b7567fde1cbaf",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "Cookie",
+          "network": "polygon",
+          "chain_id": 137,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230590,
+            "relative_change_24h": -0.08151004961721973
+          },
+          "symbol": "CKIE",
+          "colors": {
+            "primary": "#FF6780"
+          },
+          "networks": {
+            "137": {
+              "address": "0x3c0bd2118a5e61c41d2adeebcb8b7567fde1cbaf",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": false,
+          "transferable": true,
+          "creation_date": "2022-03-15T22:06:39Z"
+        }
+      },
+      {
+        "quantity": "21000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x2abc81725ef28c09fdd7d9d147d002df8e0456ff",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "BBB Token",
+          "network": "polygon",
+          "chain_id": 137,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "BBB",
+          "colors": {
+            "primary": "#A8CE63"
+          },
+          "networks": {
+            "137": {
+              "address": "0x2abc81725ef28c09fdd7d9d147d002df8e0456ff",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "49000000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x0640a8daeb533f4b4fb56dd75c379adf70a2e76d",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "Backed USDT",
+          "network": "polygon",
+          "chain_id": 137,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "bUSDT",
+          "colors": {
+            "primary": "#FF8024"
+          },
+          "networks": {
+            "137": {
+              "address": "0x0640a8daeb533f4b4fb56dd75c379adf70a2e76d",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "50000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x7dacd1e6b4097bbae0f2fdf4dfc09092d80b5b69",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "GawdBlood",
+          "network": "polygon",
+          "chain_id": 137,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "BLOOD",
+          "colors": {
+            "primary": "#EC66FF"
+          },
+          "networks": {
+            "137": {
+              "address": "0x7dacd1e6b4097bbae0f2fdf4dfc09092d80b5b69",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "75330000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x11a13c1cc1a569ae8c1d3b766abdbe4c9eca5120",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "stgUSD",
+          "network": "polygon",
+          "chain_id": 137,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230663,
+            "relative_change_24h": 0
+          },
+          "symbol": "stgUSD",
+          "colors": {
+            "primary": "#5FD0F3"
+          },
+          "networks": {
+            "137": {
+              "address": "0x11a13c1cc1a569ae8c1d3b766abdbe4c9eca5120",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x71a8b8f202760be1545debcbe9d8e6ecaa0f9a65",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake GLP",
+          "network": "polygon",
+          "chain_id": 137,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeGLP",
+          "colors": {
+            "primary": "#EC66FF"
+          },
+          "networks": {
+            "137": {
+              "address": "0x71a8b8f202760be1545debcbe9d8e6ecaa0f9a65",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10500000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x42d93be6591a7b6b8ae1791a95499d14ab4d395f",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "BBBzero Token",
+          "network": "polygon",
+          "chain_id": 137,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "BBBzero",
+          "colors": {
+            "primary": "#FF6780"
+          },
+          "networks": {
+            "137": {
+              "address": "0x42d93be6591a7b6b8ae1791a95499d14ab4d395f",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "100000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x2e881bb9b5414877d7405a148b6b0080a9cba6d8",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "Sky",
+          "network": "polygon",
+          "chain_id": 137,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230661,
+            "relative_change_24h": 0
+          },
+          "symbol": "SKY",
+          "colors": {
+            "primary": "#4D82FF"
+          },
+          "networks": {
+            "137": {
+              "address": "0x2e881bb9b5414877d7405a148b6b0080a9cba6d8",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x54d7afa7c764e1cf6fbefe9ff8239c0b117fd70d",
+          "decimals": 0,
+          "icon_url": "",
+          "name": "FAST PROFIT",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230661,
+            "relative_change_24h": 0
+          },
+          "symbol": "FP",
+          "colors": {
+            "primary": "#FFDD86"
+          },
+          "networks": {
+            "56": {
+              "address": "0x54d7afa7c764e1cf6fbefe9ff8239c0b117fd70d",
+              "decimals": 0
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "14000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xb7b6b8bc7e398b3dae97beebe335fe59145f3d41",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "Privasea AI Test Token",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "PRAIT",
+          "colors": {
+            "primary": "#5FD0F3"
+          },
+          "networks": {
+            "56": {
+              "address": "0xb7b6b8bc7e398b3dae97beebe335fe59145f3d41",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x7d609034687a4dabdb5a9d8d48c21f841057a6ab",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake ETH",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeETH",
+          "colors": {
+            "primary": "#6A87C8"
+          },
+          "networks": {
+            "56": {
+              "address": "0x7d609034687a4dabdb5a9d8d48c21f841057a6ab",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "600000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x6d4cc9dc49c8450853dec381c65f30a48aa52aa0",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "Binance-Peg EthereumPoW Token",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230706,
+            "relative_change_24h": 0
+          },
+          "symbol": "ETHW",
+          "colors": {
+            "primary": "#FFB35A"
+          },
+          "networks": {
+            "56": {
+              "address": "0x6d4cc9dc49c8450853dec381c65f30a48aa52aa0",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "37298530680783276",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x76b19d54dd2b12c61f6534b2348eb5ebb1945353",
+          "decimals": 9,
+          "icon_url": "",
+          "name": "Mouse Coin",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230661,
+            "relative_change_24h": 0
+          },
+          "symbol": "MSCN",
+          "colors": {
+            "primary": "#FFE279"
+          },
+          "networks": {
+            "56": {
+              "address": "0x76b19d54dd2b12c61f6534b2348eb5ebb1945353",
+              "decimals": 9
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x4a2a849709812293bd683f8557e4c0bc749cf3e4",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake GLP",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeGLP",
+          "colors": {
+            "primary": "#FFE279"
+          },
+          "networks": {
+            "56": {
+              "address": "0x4a2a849709812293bd683f8557e4c0bc749cf3e4",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "25000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xd124d5ec682a120a2c4bb6746a36160a23137086",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "Turks",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "Trk",
+          "colors": {
+            "primary": "#FF8CBC"
+          },
+          "networks": {
+            "56": {
+              "address": "0xd124d5ec682a120a2c4bb6746a36160a23137086",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x806d462a76fad2e4a2efb0fc2f4763a482262e17",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake ETH",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230828,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeETH",
+          "colors": {
+            "primary": "#4D82FF"
+          },
+          "networks": {
+            "56": {
+              "address": "0x806d462a76fad2e4a2efb0fc2f4763a482262e17",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xe253ca0268b0cfeae37ad30972c771b0753e7e05",
+          "decimals": 0,
+          "icon_url": "",
+          "name": "META BNB",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230661,
+            "relative_change_24h": 0
+          },
+          "symbol": "MBNB",
+          "colors": {
+            "primary": "#C5DADB"
+          },
+          "networks": {
+            "56": {
+              "address": "0xe253ca0268b0cfeae37ad30972c771b0753e7e05",
+              "decimals": 0
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "100000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xd3dff17e4dfbbddea602deeb4ce9cdd8cb8d163c",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "V8 Test Token",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "V8TEST",
+          "colors": {
+            "primary": "#E95D72"
+          },
+          "networks": {
+            "56": {
+              "address": "0xd3dff17e4dfbbddea602deeb4ce9cdd8cb8d163c",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x25a97bf9dac5656707f2ad5df87915c11475ed3f",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake GLP",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeGLP",
+          "colors": {
+            "primary": "#FC5C54"
+          },
+          "networks": {
+            "56": {
+              "address": "0x25a97bf9dac5656707f2ad5df87915c11475ed3f",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x8ffa6ba3d61f5d43baeed0cbc2ef2b1d2c357f56",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake ETH",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230828,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeETH",
+          "colors": {
+            "primary": "#75C06B"
+          },
+          "networks": {
+            "56": {
+              "address": "0x8ffa6ba3d61f5d43baeed0cbc2ef2b1d2c357f56",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xf923465cba96a378876d93a12244f9a3fcc4df5f",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake ETH",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeETH",
+          "colors": {
+            "primary": "#FC5C54"
+          },
+          "networks": {
+            "56": {
+              "address": "0xf923465cba96a378876d93a12244f9a3fcc4df5f",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "123558714250065422464",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x37ec7a49886f8db9becb950b9bfc3a5c4ec4693a",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "Mock HKDAO",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230828,
+            "relative_change_24h": 0
+          },
+          "symbol": "HKDAO9",
+          "colors": {
+            "primary": "#EC66FF"
+          },
+          "networks": {
+            "56": {
+              "address": "0x37ec7a49886f8db9becb950b9bfc3a5c4ec4693a",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xfb0bf584165fec8b52317aab972f799884cd3ecc",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake GLP",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeGLP",
+          "colors": {
+            "primary": "#6A87C8"
+          },
+          "networks": {
+            "56": {
+              "address": "0xfb0bf584165fec8b52317aab972f799884cd3ecc",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xf6176015f647d22b5f2cd85ccd9c13bd28097e9f",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake ETH",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230831,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeETH",
+          "colors": {
+            "primary": "#FFE279"
+          },
+          "networks": {
+            "56": {
+              "address": "0xf6176015f647d22b5f2cd85ccd9c13bd28097e9f",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x375fdb901171a40319e41d1c46722d523a685962",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake ETH",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230828,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeETH",
+          "colors": {
+            "primary": "#FFDD86"
+          },
+          "networks": {
+            "56": {
+              "address": "0x375fdb901171a40319e41d1c46722d523a685962",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xbeb43b6d24183f8ea89e88d2e25c42c177be8fbe",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake GLP",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeGLP",
+          "colors": {
+            "primary": "#FFD95A"
+          },
+          "networks": {
+            "56": {
+              "address": "0xbeb43b6d24183f8ea89e88d2e25c42c177be8fbe",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x78a476c73810ab3e54599321197f98083064ec80",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "GalaxyLand",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "GXN",
+          "colors": {
+            "primary": "#FF949A"
+          },
+          "networks": {
+            "56": {
+              "address": "0x78a476c73810ab3e54599321197f98083064ec80",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xb7211a70a324c5ffe8d11937060660a8035f4fe8",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake ETH",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeETH",
+          "colors": {
+            "primary": "#EC66FF"
+          },
+          "networks": {
+            "56": {
+              "address": "0xb7211a70a324c5ffe8d11937060660a8035f4fe8",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xde423449962a2c7d2664dd5d355ad6a8b225d27d",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake ETH",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeETH",
+          "colors": {
+            "primary": "#5FD0F3"
+          },
+          "networks": {
+            "56": {
+              "address": "0xde423449962a2c7d2664dd5d355ad6a8b225d27d",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "1000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x9e8fda98326da911cbaebd823da0f724b04b2c41",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "Rel2011",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "Rel2011",
+          "colors": {
+            "primary": "#FF6780"
+          },
+          "networks": {
+            "56": {
+              "address": "0x9e8fda98326da911cbaebd823da0f724b04b2c41",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x1d706d827d5ba226025126510b2192b6f89b1132",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake GLP",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeGLP",
+          "colors": {
+            "primary": "#C5DADB"
+          },
+          "networks": {
+            "56": {
+              "address": "0x1d706d827d5ba226025126510b2192b6f89b1132",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x5ab5e7ba4c22bc7a000b56758e5d5ecbef58a3b1",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake GLP",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeGLP",
+          "colors": {
+            "primary": "#FFE279"
+          },
+          "networks": {
+            "56": {
+              "address": "0x5ab5e7ba4c22bc7a000b56758e5d5ecbef58a3b1",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xcfe82d8c44dfe6ba289306b7af8397f37f47960d",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake GLP",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeGLP",
+          "colors": {
+            "primary": "#C5DADB"
+          },
+          "networks": {
+            "56": {
+              "address": "0xcfe82d8c44dfe6ba289306b7af8397f37f47960d",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x6ea1ec41d5358985eacfffdb94a52b6a236c7cc8",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake GLP",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeGLP",
+          "colors": {
+            "primary": "#A575FF"
+          },
+          "networks": {
+            "56": {
+              "address": "0x6ea1ec41d5358985eacfffdb94a52b6a236c7cc8",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "240000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xafa6bcde9c014699a4aaf1f6e17ca0038f46ff21",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestCoin",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "TCT",
+          "colors": {
+            "primary": "#6A87C8"
+          },
+          "networks": {
+            "56": {
+              "address": "0xafa6bcde9c014699a4aaf1f6e17ca0038f46ff21",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x1d839f31886de69b846aa1157c1f56dc65e90eca",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake GLP",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeGLP",
+          "colors": {
+            "primary": "#A575FF"
+          },
+          "networks": {
+            "56": {
+              "address": "0x1d839f31886de69b846aa1157c1f56dc65e90eca",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xd643eb0d2650fb84e9cbd2353b10572ee98fbc11",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake ETH",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeETH",
+          "colors": {
+            "primary": "#A575FF"
+          },
+          "networks": {
+            "56": {
+              "address": "0xd643eb0d2650fb84e9cbd2353b10572ee98fbc11",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "17515495000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xf807425840f14e310f05618088f5a36938b5213a",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "MetaSpiderMan",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230828,
+            "relative_change_24h": 0
+          },
+          "symbol": "MSM",
+          "colors": {
+            "primary": "#EC66FF"
+          },
+          "networks": {
+            "56": {
+              "address": "0xf807425840f14e310f05618088f5a36938b5213a",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xbc45994d04b980d35adcc9665deff332c7c2e90b",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake GLP",
+          "network": "arbitrum",
+          "chain_id": 42161,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeGLP",
+          "colors": {
+            "primary": "#FFE279"
+          },
+          "networks": {
+            "42161": {
+              "address": "0xbc45994d04b980d35adcc9665deff332c7c2e90b",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "100000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x45baa47e8af76222ba2971e5a2e6c3b3de317c0b",
+          "decimals": 6,
+          "icon_url": "",
+          "name": "VOLARBI2",
+          "network": "arbitrum",
+          "chain_id": 42161,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "VOLARBI2",
+          "colors": {
+            "primary": "#FF9A23"
+          },
+          "networks": {
+            "42161": {
+              "address": "0x45baa47e8af76222ba2971e5a2e6c3b3de317c0b",
+              "decimals": 6
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "20000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xd7c136169590f1c0e1ebda2a72c2084a3b0812cf",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "Reward Token",
+          "network": "arbitrum",
+          "chain_id": 42161,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "rTKN",
+          "colors": {
+            "primary": "#FFD95A"
+          },
+          "networks": {
+            "42161": {
+              "address": "0xd7c136169590f1c0e1ebda2a72c2084a3b0812cf",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x9218f3451861b0b6cf008ccabd28000f905e11a3",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake ETH",
+          "network": "arbitrum",
+          "chain_id": 42161,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230831,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeETH",
+          "colors": {
+            "primary": "#B6B1B6"
+          },
+          "networks": {
+            "42161": {
+              "address": "0x9218f3451861b0b6cf008ccabd28000f905e11a3",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "9818804662367358223492268505",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x58b58b8a2dd1664665da5585cc73b349c3f56827",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "XOXO",
+          "network": "arbitrum",
+          "chain_id": 42161,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230655,
+            "relative_change_24h": 0
+          },
+          "symbol": "XOXO",
+          "colors": {
+            "primary": "#A575FF"
+          },
+          "networks": {
+            "42161": {
+              "address": "0x58b58b8a2dd1664665da5585cc73b349c3f56827",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x5418705304d0d84d3dfc1d308b06e05641b6d626",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake ETH",
+          "network": "arbitrum",
+          "chain_id": 42161,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230831,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeETH",
+          "colors": {
+            "primary": "#5FD0F3"
+          },
+          "networks": {
+            "42161": {
+              "address": "0x5418705304d0d84d3dfc1d308b06e05641b6d626",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xb483ed47cd234be0170f7b38957beb9f142ee6fe",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake ETH",
+          "network": "arbitrum",
+          "chain_id": 42161,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230831,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeETH",
+          "colors": {
+            "primary": "#B6B1B6"
+          },
+          "networks": {
+            "42161": {
+              "address": "0xb483ed47cd234be0170f7b38957beb9f142ee6fe",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x310150ea84ee5a2ddb5714e66871675e82d814ba",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake GLP",
+          "network": "arbitrum",
+          "chain_id": 42161,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeGLP",
+          "colors": {
+            "primary": "#FF6780"
+          },
+          "networks": {
+            "42161": {
+              "address": "0x310150ea84ee5a2ddb5714e66871675e82d814ba",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xb1b26d55107550b04e871d7907998c03ca4f00bd",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake ETH",
+          "network": "arbitrum",
+          "chain_id": 42161,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230831,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeETH",
+          "colors": {
+            "primary": "#FF8024"
+          },
+          "networks": {
+            "42161": {
+              "address": "0xb1b26d55107550b04e871d7907998c03ca4f00bd",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "1",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xbcb8b83029e1fbfb7fe883e11c668a3deee83ecd",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "Token",
+          "network": "arbitrum",
+          "chain_id": 42161,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "TKN",
+          "colors": {
+            "primary": "#5FD0F3"
+          },
+          "networks": {
+            "42161": {
+              "address": "0xbcb8b83029e1fbfb7fe883e11c668a3deee83ecd",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "100000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x7829b943d49d79ab3888d5e65a3187b18c60aa13",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake GLP",
+          "network": "arbitrum",
+          "chain_id": 42161,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeGLP",
+          "colors": {
+            "primary": "#FFE279"
+          },
+          "networks": {
+            "42161": {
+              "address": "0x7829b943d49d79ab3888d5e65a3187b18c60aa13",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "100000000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x8fa2040dfb35f1ba4643622456ca094e799256fc",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "$TRUSK",
+          "network": "arbitrum",
+          "chain_id": 42161,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "TSK",
+          "colors": {
+            "primary": "#FFB35A"
+          },
+          "networks": {
+            "42161": {
+              "address": "0x8fa2040dfb35f1ba4643622456ca094e799256fc",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xe0a6e4bb3df34fe5f27a05dfc1efb6b63e398dcb",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake GLP",
+          "network": "arbitrum",
+          "chain_id": 42161,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeGLP",
+          "colors": {
+            "primary": "#A8CE63"
+          },
+          "networks": {
+            "42161": {
+              "address": "0xe0a6e4bb3df34fe5f27a05dfc1efb6b63e398dcb",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xb720ad6a9040a40436bfeda0b0f6c3a8516d5af0",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake ETH",
+          "network": "arbitrum",
+          "chain_id": 42161,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230831,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeETH",
+          "colors": {
+            "primary": "#A575FF"
+          },
+          "networks": {
+            "42161": {
+              "address": "0xb720ad6a9040a40436bfeda0b0f6c3a8516d5af0",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xb60fdc0958671b8870dea84e136f424a8dbf286d",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake GLP",
+          "network": "arbitrum",
+          "chain_id": 42161,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeGLP",
+          "colors": {
+            "primary": "#FFE279"
+          },
+          "networks": {
+            "42161": {
+              "address": "0xb60fdc0958671b8870dea84e136f424a8dbf286d",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xdf95d2725ade72b64a586cabc8a70aed1e5e18dd",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestYS: fake GLP",
+          "network": "arbitrum",
+          "chain_id": 42161,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "fakeGLP",
+          "colors": {
+            "primary": "#C5DADB"
+          },
+          "networks": {
+            "42161": {
+              "address": "0xdf95d2725ade72b64a586cabc8a70aed1e5e18dd",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "1",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xfa7a3e9ae859684efb6d0d4b926f8cee36f142ba",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "Ions",
+          "network": "arbitrum",
+          "chain_id": 42161,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "ION",
+          "colors": {
+            "primary": "#FFDD86"
+          },
+          "networks": {
+            "42161": {
+              "address": "0xfa7a3e9ae859684efb6d0d4b926f8cee36f142ba",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "4864131454404953479577",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x2145eaec86935b0414754caa4d8c1582d433c73e",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "All your base are belong to us",
+          "network": "mainnet",
+          "chain_id": 1,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230661,
+            "relative_change_24h": 0
+          },
+          "symbol": "AYBABTU",
+          "colors": {
+            "primary": "#71ABFF"
+          },
+          "networks": {
+            "1": {
+              "address": "0x2145eaec86935b0414754caa4d8c1582d433c73e",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": false,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "35000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x750c3a0a0ce9984eeb8c5d146dff024b584e5e33",
+          "decimals": 18,
+          "icon_url": "https://rainbowme-res.cloudinary.com/image/upload/v1723028171/assets/ethereum/0x750c3a0a0ce9984eeb8c5d146dff024b584e5e33.png",
+          "name": "zkHive",
+          "network": "mainnet",
+          "chain_id": 1,
+          "price": {
+            "value": 0.00150056795912,
+            "changed_at": 1756230829,
+            "relative_change_24h": -4.006024055396985
+          },
+          "symbol": "ZKHIVE",
+          "colors": {
+            "primary": "#BFB9A8",
+            "fallback": "#AB9B59"
+          },
+          "networks": {
+            "1": {
+              "address": "0x750c3a0a0ce9984eeb8c5d146dff024b584e5e33",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": false,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "100000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xd8c0b13b551718b808fc97ead59499d5ef862775",
+          "decimals": 8,
+          "icon_url": "",
+          "name": "Gala Music",
+          "network": "mainnet",
+          "chain_id": 1,
+          "price": {
+            "value": 0.0175197284765,
+            "changed_at": 1756230829,
+            "relative_change_24h": 0.011113103431290867
+          },
+          "symbol": "MUSIC",
+          "colors": {
+            "primary": "#FF949A"
+          },
+          "networks": {
+            "1": {
+              "address": "0xd8c0b13b551718b808fc97ead59499d5ef862775",
+              "decimals": 8
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": false,
+          "verified": true,
+          "transferable": true,
+          "creation_date": "2023-11-01T17:38:35Z"
+        }
+      },
+      {
+        "quantity": "370800000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xae4533189c7281501f04ba4b7c37e3aded402902",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "World Friendship Cash",
+          "network": "mainnet",
+          "chain_id": 1,
+          "price": {
+            "value": 0.0395388,
+            "changed_at": 1756230794,
+            "relative_change_24h": 0.16852332826984284
+          },
+          "symbol": "WFCA",
+          "colors": {
+            "primary": "#5FD0F3"
+          },
+          "networks": {
+            "1": {
+              "address": "0xae4533189c7281501f04ba4b7c37e3aded402902",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": false,
+          "verified": true,
+          "transferable": true,
+          "creation_date": "2022-08-31T05:08:35Z"
+        }
+      },
+      {
+        "quantity": "1000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x6982508145454ce325ddbe47a25d4ec3d2311933",
+          "decimals": 18,
+          "icon_url": "https://rainbowme-res.cloudinary.com/image/upload/v1681981536/assets/ethereum/0x6982508145454ce325ddbe47a25d4ec3d2311933.png",
+          "name": "Pepe",
+          "network": "mainnet",
+          "chain_id": 1,
+          "price": {
+            "value": 0.00000998295858491,
+            "changed_at": 1756230829,
+            "relative_change_24h": -1.0042961447060308
+          },
+          "symbol": "PEPE",
+          "colors": {
+            "primary": "#009110",
+            "fallback": "#A35F65"
+          },
+          "networks": {
+            "1": {
+              "address": "0x6982508145454ce325ddbe47a25d4ec3d2311933",
+              "decimals": 18
+            },
+            "10": {
+              "address": "0xc1c167cc44f7923cd0062c4370df962f9ddb16f5",
+              "decimals": 18
+            },
+            "8453": {
+              "address": "0xb4fde59a779991bfb6a52253b51947828b982be3",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": true,
+            "networks": {
+              "10": {
+                "bridgeable": true
+              },
+              "8453": {
+                "bridgeable": true
+              }
+            }
+          },
+          "probable_spam": false,
+          "verified": true,
+          "transferable": true,
+          "creation_date": "2023-04-14T14:51:35Z"
+        }
+      },
+      {
+        "quantity": "81585000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x85d83a87381817bbe5051e6d7ca63a9f7a3b1a7c",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "Time",
+          "network": "mainnet",
+          "chain_id": 1,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230830,
+            "relative_change_24h": 0
+          },
+          "symbol": "TIME",
+          "colors": {
+            "primary": "#FF8024"
+          },
+          "networks": {
+            "1": {
+              "address": "0x85d83a87381817bbe5051e6d7ca63a9f7a3b1a7c",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": false,
+          "transferable": true
+        }
+      }
+    ]
+  }
+}

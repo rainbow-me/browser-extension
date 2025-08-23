@@ -10604,7 +10604,7 @@ __metadata:
     react-image: "npm:4.1.0"
     react-router-dom: "npm:6.4.2"
     react-switch: "npm:7.0.0"
-    selenium-webdriver: "npm:4.34.0"
+    selenium-webdriver: "npm:4.35.0"
     semver: "npm:7.5.2"
     svg-path-commander: "npm:1.0.5"
     ts-loader: "npm:9.4.1"
@@ -22906,15 +22906,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"selenium-webdriver@npm:4.34.0":
-  version: 4.34.0
-  resolution: "selenium-webdriver@npm:4.34.0"
+"selenium-webdriver@npm:4.35.0":
+  version: 4.35.0
+  resolution: "selenium-webdriver@npm:4.35.0"
   dependencies:
     "@bazel/runfiles": "npm:^6.3.1"
     jszip: "npm:^3.10.1"
     tmp: "npm:^0.2.3"
     ws: "npm:^8.18.2"
-  checksum: 10c0/bfca387713677284d70b66aa419ad0e6f013945cca1f19bb780a62e4eff1f69190a165e939ef79e8f23af9aa0bd08b9a90c41ee6713eec30b7601034bd5f1824
+  checksum: 10c0/a141f61b8c43b30c53e2f37babc8de08554f0196fd76c9eb8e399dc74572fd9c78bcc8155f9541fc9aff9b52206a77aeab531f0120f4120f8f7416d88116f039
   languageName: node
   linkType: hard
 
