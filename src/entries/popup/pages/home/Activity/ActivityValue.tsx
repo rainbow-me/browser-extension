@@ -25,6 +25,29 @@ import { getApprovalLabel } from '~/core/utils/transactions';
 import { Box, Inline, Text, TextOverflow } from '~/design-system';
 import { ContractIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
 
+const SUPER_TINY_THRESHOLD = 0.000001 as const;
+
+const isSuperTinyValue = (amount: string): boolean => {
+  const num = Number(amount);
+  return num > 0 && num < SUPER_TINY_THRESHOLD;
+};
+
+const getFormatOptions = (amount: string): Intl.NumberFormatOptions => {
+  const num = Number(amount);
+  return num > 100_000 ? { notation: 'compact' } : {};
+};
+
+const formatSignedToken = (
+  amount: string,
+  symbol: string,
+  sign: '+' | '-',
+): string => {
+  if (isSuperTinyValue(amount)) {
+    return `${sign} <${formatNumber(SUPER_TINY_THRESHOLD)} ${symbol}`;
+  }
+  return `${sign}${formatNumber(amount, getFormatOptions(amount))} ${symbol}`;
+};
+
 const approvalTypeValues = (transaction: RainbowTransaction) => {
   const { asset, approvalAmount, hash, contract } = transaction;
 
@@ -59,15 +82,21 @@ const approvalTypeValues = (transaction: RainbowTransaction) => {
 };
 
 const swapTypeValues = (changes: RainbowTransaction['changes']) => {
-  const tokenIn = changes?.filter((c) => c?.direction === 'in')[0]?.asset;
-  const tokenOut = changes?.filter((c) => c?.direction === 'out')[0]?.asset;
+  const tokenIn = changes?.find((c) => c?.direction === 'in')?.asset;
+  const tokenOut = changes?.find((c) => c?.direction === 'out')?.asset;
 
   if (!tokenIn || !tokenOut) return;
 
-  const valueOut = `-${formatNumber(tokenOut.balance.amount)} ${
-    tokenOut.symbol
-  }`;
-  const valueIn = `+${formatNumber(tokenIn.balance.amount)} ${tokenIn.symbol}`;
+  const valueOut = formatSignedToken(
+    tokenOut.balance.amount,
+    tokenOut.symbol,
+    '-',
+  );
+  const valueIn = formatSignedToken(
+    tokenIn.balance.amount,
+    tokenIn.symbol,
+    '+',
+  );
 
   return [valueOut, valueIn];
 };
@@ -93,21 +122,28 @@ const activityValues = (transaction: RainbowTransaction) => {
   const valueSymbol =
     balance.amount === '0' ? '' : direction === 'in' ? '+' : '-'; // direction === "out" || direction === "self" || direction == undefined
 
-  const formatOptions =
-    +balance.amount > 100_000 ? ({ notation: 'compact' } as const) : undefined;
-  const assetValue = `${formatNumber(balance.amount, formatOptions)} ${
-    asset.symbol
-  }`;
+  // Use formatNumberHandler for assetValue
+  const assetValue = formatSignedToken(
+    balance.amount,
+    asset.symbol,
+    valueSymbol,
+  );
 
   const nativeBalance = native.balance.amount;
-  const assetNativeValue =
-    +nativeBalance > 0
-      ? `${valueSymbol}${formatCurrency(nativeBalance)}`
-      : i18n.t('activity.no_value');
+  let assetNativeValue: string;
+  if (isSuperTinyValue(nativeBalance)) {
+    assetNativeValue = `${valueSymbol} <${formatCurrency(
+      String(SUPER_TINY_THRESHOLD),
+    )}`;
+  } else if (+nativeBalance > 0) {
+    assetNativeValue = `${valueSymbol}${formatCurrency(nativeBalance)}`;
+  } else {
+    assetNativeValue = i18n.t('activity.no_value');
+  }
 
   return +nativeBalance > 0
     ? [assetValue, assetNativeValue]
-    : [assetNativeValue, `${valueSymbol}${assetValue}`];
+    : [assetNativeValue, assetValue];
 };
 
 export const ActivityValue = ({
