@@ -4747,6 +4747,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@orpc/shared@npm:1.8.1":
+  version: 1.8.1
+  resolution: "@orpc/shared@npm:1.8.1"
+  dependencies:
+    radash: "npm:^12.1.1"
+    type-fest: "npm:^4.39.1"
+  peerDependencies:
+    "@opentelemetry/api": ">=1.9.0"
+  peerDependenciesMeta:
+    "@opentelemetry/api":
+      optional: true
+  checksum: 10c0/30e8c731da98c80a09bc7475de01efff3317b18576e89cbfb1e68314b9f1f5c40bee9da4d760e07f60bc8c66e5fc17f9603271c34e75c3f7ddb31c2ce92621fc
+  languageName: node
+  linkType: hard
+
 "@orpc/standard-server-aws-lambda@npm:1.7.9":
   version: 1.7.9
   resolution: "@orpc/standard-server-aws-lambda@npm:1.7.9"
@@ -4796,6 +4811,18 @@ __metadata:
   dependencies:
     "@orpc/shared": "npm:1.7.9"
   checksum: 10c0/95b79888764021cc986a00575b2a9091bbd34e98653e57f532c14d0a2a9df5651a756fcc4ed7d856d68c11a0da2e98ed17790ad56d5a68bc65205ab1e68657e3
+  languageName: node
+  linkType: hard
+
+"@orpc/tanstack-query@npm:1.8.1":
+  version: 1.8.1
+  resolution: "@orpc/tanstack-query@npm:1.8.1"
+  dependencies:
+    "@orpc/shared": "npm:1.8.1"
+  peerDependencies:
+    "@orpc/client": 1.8.1
+    "@tanstack/query-core": ">=5.80.2"
+  checksum: 10c0/edc36005b66f33fe4d93967d38d6678dad14bd4def7d9090428e056dc72c7d9a1b4cbf905b8b4a77b2f0f9cde2ca00e2be7cb1522f8c8ccfafbd324db646e71a
   languageName: node
   linkType: hard
 
@@ -6891,51 +6918,51 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/query-async-storage-persister@npm:5.35.1":
-  version: 5.35.1
-  resolution: "@tanstack/query-async-storage-persister@npm:5.35.1"
+"@tanstack/query-async-storage-persister@npm:5.85.2":
+  version: 5.85.2
+  resolution: "@tanstack/query-async-storage-persister@npm:5.85.2"
   dependencies:
-    "@tanstack/query-persist-client-core": "npm:5.35.1"
-  checksum: 10c0/184e694ea14649c40c53782bf701ac739bd921caecf4f747a4ec08eb523539d18efca43c71697a97d5eba418d2c27fdf74879e56bbfb9d0efe4b50111ef4ae7d
+    "@tanstack/query-persist-client-core": "npm:5.85.2"
+  checksum: 10c0/3c424f18ffe2eddc92946500d9053cd780077b8cb17054f21d1dc58b350472d22f895b594746270447578726ff32ded9c01ccca5920d17e5dc901875e47a79c7
   languageName: node
   linkType: hard
 
-"@tanstack/query-core@npm:5.35.1":
-  version: 5.35.1
-  resolution: "@tanstack/query-core@npm:5.35.1"
-  checksum: 10c0/c991efeb29ec42f9aadf43130dac5e4e9e0651880ef96e0cb5f0dc3224b9b919b34f0e4af53231a7de32582aa7ba801ed6683ed7448e41e7b2a344803f08f3fe
+"@tanstack/query-core@npm:5.85.2":
+  version: 5.85.2
+  resolution: "@tanstack/query-core@npm:5.85.2"
+  checksum: 10c0/398386c0e56b0ab0916951468b6b6a2b9f1f713fa95757405171f1c99c7a33cd3427eb20a82f252e5abc63ccd93e8e77c7cc5bc30043401d0dd5a074d7f5ff4e
   languageName: node
   linkType: hard
 
-"@tanstack/query-persist-client-core@npm:5.35.1":
-  version: 5.35.1
-  resolution: "@tanstack/query-persist-client-core@npm:5.35.1"
+"@tanstack/query-persist-client-core@npm:5.85.2":
+  version: 5.85.2
+  resolution: "@tanstack/query-persist-client-core@npm:5.85.2"
   dependencies:
-    "@tanstack/query-core": "npm:5.35.1"
-  checksum: 10c0/71f53d6f07397403407217980ca8d2401cd10b1e9dba43b789bddd82d13211140c126cc4543a8f2bd1165047230f2baf32dc786bb8c1c28d435a0dece518ad4d
+    "@tanstack/query-core": "npm:5.85.2"
+  checksum: 10c0/01a4d97696a1fbe36d3d7897b04edb45315b800cee436c2e08e167dd8434095ec59447865af68d73724efab89e8d10c8e2dc9036375a45238bcbfeb59f4ac16f
   languageName: node
   linkType: hard
 
-"@tanstack/react-query-persist-client@npm:5.35.1":
-  version: 5.35.1
-  resolution: "@tanstack/react-query-persist-client@npm:5.35.1"
+"@tanstack/react-query-persist-client@npm:5.85.2":
+  version: 5.85.2
+  resolution: "@tanstack/react-query-persist-client@npm:5.85.2"
   dependencies:
-    "@tanstack/query-persist-client-core": "npm:5.35.1"
+    "@tanstack/query-persist-client-core": "npm:5.85.2"
   peerDependencies:
-    "@tanstack/react-query": ^5.35.1
-    react: ^18.0.0
-  checksum: 10c0/73195f2662f6976787be4ef0f676daea03e96b399664093bfde5187d9aff6a95a9d7caadc75b612f10bf1f8b00206c5cfff4cf93325ce0d3f48d526a96ecce3e
+    "@tanstack/react-query": ^5.85.2
+    react: ^18 || ^19
+  checksum: 10c0/7ff666589e898a15c4de89bc242d17f66b2c86f3804f29c522cabed2dc6403705b905fac226259d80b64225ae8200adc8069922af60cff0dd7443bec75fbd944
   languageName: node
   linkType: hard
 
-"@tanstack/react-query@npm:5.35.1":
-  version: 5.35.1
-  resolution: "@tanstack/react-query@npm:5.35.1"
+"@tanstack/react-query@npm:5.85.2":
+  version: 5.85.2
+  resolution: "@tanstack/react-query@npm:5.85.2"
   dependencies:
-    "@tanstack/query-core": "npm:5.35.1"
+    "@tanstack/query-core": "npm:5.85.2"
   peerDependencies:
-    react: ^18.0.0
-  checksum: 10c0/80b3d4e295b05171e34f522c1856bcd561c58963e7661ae2340f3406a3097b7c9896d4f67005876c634ce1d808791498a987b200f00341e6df9fcc862060e6ad
+    react: ^18 || ^19
+  checksum: 10c0/8feb9a82d25589b7f3a9cc1e3f24ec2b29b35e86522ca94b3f94dc2649e4a4472da7782b2e1f0b7a48722d11e8c34cf77711b9fbad474b1b73478ae0f06c9ba0
   languageName: node
   linkType: hard
 
@@ -10468,6 +10495,7 @@ __metadata:
     "@orpc/client": "npm:1.7.9"
     "@orpc/contract": "npm:1.7.9"
     "@orpc/server": "npm:1.7.9"
+    "@orpc/tanstack-query": "npm:1.8.1"
     "@peculiar/webcrypto": "npm:1.4.1"
     "@radix-ui/react-accordion": "npm:1.1.2"
     "@radix-ui/react-context-menu": "npm:2.1.1"
@@ -10481,9 +10509,9 @@ __metadata:
     "@rudderstack/analytics-js-service-worker": "npm:3.0.6"
     "@scure/bip39": "npm:1.2.1"
     "@sentry/react": "npm:9.40.0"
-    "@tanstack/query-async-storage-persister": "npm:5.35.1"
-    "@tanstack/react-query": "npm:5.35.1"
-    "@tanstack/react-query-persist-client": "npm:5.35.1"
+    "@tanstack/query-async-storage-persister": "npm:5.85.2"
+    "@tanstack/react-query": "npm:5.85.2"
+    "@tanstack/react-query-persist-client": "npm:5.85.2"
     "@tanstack/react-virtual": "npm:3.8.1"
     "@testing-library/react": "npm:13.4.0"
     "@total-typescript/ts-reset": "npm:0.4.2"
@@ -10561,6 +10589,7 @@ __metadata:
     make-color-more-chill: "npm:0.2.2"
     mini-css-extract-plugin: "npm:2.6.1"
     mipd: "npm:0.0.5"
+    mitt: "npm:3.0.1"
     mnemonist: "npm:0.39.5"
     msw: "npm:2.10.5"
     node-vibrant: "npm:3.2.1-alpha.1"
@@ -10581,7 +10610,7 @@ __metadata:
     semver: "npm:7.5.2"
     svg-path-commander: "npm:1.0.5"
     ts-loader: "npm:9.4.1"
-    typescript: "npm:5.2.2"
+    typescript: "npm:5.8.2"
     viem: "npm:2.31.7"
     vitest: "npm:0.34.6"
     wagmi: "npm:2.16.1"
@@ -19269,6 +19298,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mitt@npm:3.0.1":
+  version: 3.0.1
+  resolution: "mitt@npm:3.0.1"
+  checksum: 10c0/3ab4fdecf3be8c5255536faa07064d05caa3dd332bd318ff02e04621f7b3069ca1de9106cfe8e7ced675abfc2bec2ce4c4ef321c4a1bb1fb29df8ae090741913
+  languageName: node
+  linkType: hard
+
 "mixin-object@npm:^2.0.1":
   version: 2.0.1
   resolution: "mixin-object@npm:2.0.1"
@@ -24684,23 +24720,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:5.2.2":
-  version: 5.2.2
-  resolution: "typescript@npm:5.2.2"
+"typescript@npm:5.8.2":
+  version: 5.8.2
+  resolution: "typescript@npm:5.8.2"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10c0/91ae3e6193d0ddb8656d4c418a033f0f75dec5e077ebbc2bd6d76439b93f35683936ee1bdc0e9cf94ec76863aa49f27159b5788219b50e1cd0cd6d110aa34b07
+  checksum: 10c0/5c4f6fbf1c6389b6928fe7b8fcd5dc73bb2d58cd4e3883f1d774ed5bd83b151cbac6b7ecf11723de56d4676daeba8713894b1e9af56174f2f9780ae7848ec3c6
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A5.2.2#optional!builtin<compat/typescript>":
-  version: 5.2.2
-  resolution: "typescript@patch:typescript@npm%3A5.2.2#optional!builtin<compat/typescript>::version=5.2.2&hash=f3b441"
+"typescript@patch:typescript@npm%3A5.8.2#optional!builtin<compat/typescript>":
+  version: 5.8.2
+  resolution: "typescript@patch:typescript@npm%3A5.8.2#optional!builtin<compat/typescript>::version=5.8.2&hash=b45daf"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10c0/062c1cee1990e6b9419ce8a55162b8dc917eb87f807e4de0327dbc1c2fa4e5f61bc0dd4e034d38ff541d1ed0479b53bcee8e4de3a4075c51a1724eb6216cb6f5
+  checksum: 10c0/8a6cd29dfb59bd5a978407b93ae0edb530ee9376a5b95a42ad057a6f80ffb0c410489ccd6fe48d1d0dfad6e8adf5d62d3874bbd251f488ae30e11a1ce6dabd28
   languageName: node
   linkType: hard
 

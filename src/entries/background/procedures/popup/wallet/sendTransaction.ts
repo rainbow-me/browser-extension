@@ -5,9 +5,9 @@ import { sendTransaction } from '~/core/keychain';
 import { toHex, toHexOrUndefined } from '~/core/utils/hex';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 
-import { popupOs } from '../os';
+import { walletOs } from '../os';
 
-export const sendTransactionHandler = popupOs.wallet.sendTransaction.handler(
+export const sendTransactionHandler = walletOs.sendTransaction.handler(
   async ({ input: transactionRequest }) => {
     const provider = getProvider({
       chainId: transactionRequest.chainId,

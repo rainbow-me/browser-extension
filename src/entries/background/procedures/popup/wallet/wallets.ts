@@ -1,7 +1,7 @@
 import { getWallets } from '~/core/keychain';
 
-import { popupOs } from '../os';
+import { walletOs } from '../os';
 
-export const walletsHandler = popupOs.wallet.wallets.handler(async () => {
+export const walletsHandler = walletOs.wallets.handler(async () => {
   return await getWallets();
 });
