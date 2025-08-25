@@ -23,6 +23,7 @@ import { Prompt } from '~/design-system/components/Prompt/Prompt';
 import { Account, useAccounts } from '../../hooks/useAccounts';
 import { useActiveTab } from '../../hooks/useActiveTab';
 import { useAppSession } from '../../hooks/useAppSession';
+import { useAppSessions } from '../../hooks/useAppSessions';
 import { zIndexes } from '../../utils/zIndexes';
 import { DappIcon } from '../DappIcon/DappIcon';
 import { Navbar } from '../Navbar/Navbar';
@@ -73,10 +74,10 @@ export const AppConnectionWalletSwitcher = () => {
   const hideWalletSwitcher = () =>
     setWalletSwitcher({ show: false, callback: undefined });
 
-  const { appSession, activeSession, addSession, updateAppSessionAddress } =
-    useAppSession({
-      host: dappMetadata?.appHost || '',
-    });
+  const { appSession, activeSession, updateAppSessionAddress } = useAppSession({
+    host: dappMetadata?.appHost || '',
+  });
+  const { addSession } = useAppSessions();
 
   const { sortedAccounts } = useAccounts(({ sortedAccounts }) => ({
     sortedAccounts,
