@@ -110,14 +110,18 @@ export async function initDriverWithOptions(opts: {
     '--disable-extensions-except=build/',
     '--disable-popup-blocking',
     '--remote-debugging-port=9222',
-    // BX-1923: localhost network access is permissioned in dev 139, and prod 141
-    '--disable-features=LocalNetworkAccessChecks,LocalNetworkAccessForWorkers',
   ];
 
   if (opts.browser === 'firefox') {
+    const firefoxArgs = args.slice(1);
+
+    if (process.env.HEADLESS_MODE !== 'false') {
+      firefoxArgs.push('--headless');
+    }
+
     const options = new firefox.Options()
       .setBinary(browserBinaryPath)
-      .addArguments(...args.slice(1, -1))
+      .addArguments(...firefoxArgs)
       .setPreference('xpinstall.signatures.required', false)
       .setPreference('extensions.langpacks.signatures.required', false)
       .addExtensions('rainbowbx.xpi');
@@ -130,9 +134,19 @@ export async function initDriverWithOptions(opts: {
       .setFirefoxOptions(options)
       .build();
   } else {
+    const chromeArgs = [
+      ...args,
+      // BX-1923: localhost network access is permissioned in dev 139, and prod 141
+      '--disable-features=LocalNetworkAccessChecks,LocalNetworkAccessForWorkers',
+    ];
+
+    if (process.env.HEADLESS_MODE !== 'false') {
+      chromeArgs.push('--headless=new');
+    }
+
     const options = new chrome.Options();
     options.setChromeBinaryPath(browserBinaryPath);
-    options.addArguments(...args);
+    options.addArguments(...chromeArgs);
     options.setAcceptInsecureCerts(true);
     options.setUserPreferences({
       'intl.accept_languages': 'en-US,en;q=0.9',

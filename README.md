@@ -121,7 +121,10 @@ You'll need to restart the terminal.
 
 To run the Browser Extension test suites:
 
-- `yarn e2e` – runs end-to-end tests against Chrome & Brave browsers.
+- `yarn e2e` – runs all end-to-end tests against a headless Chrome browser.
+  - `yarn e2e:headed` – runs e2e tests in headed mode (visible browser).
+  - `yarn e2e serial/send/1_sendFlow.test.ts` – runs a specific test file.
+  - `yarn e2e ./e2e/parallel/` – runs all tests in a specific directory.
 - `yarn test` – runs unit/integration tests.
   - `yarn test:watch` – run tests in watch mode.
 
