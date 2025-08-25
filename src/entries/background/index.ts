@@ -19,6 +19,7 @@ import { handleProviderRequest } from './handlers/handleProviderRequest';
 import { handleSetupInpage } from './handlers/handleSetupInpage';
 import { handleTabAndWindowUpdates } from './handlers/handleTabAndWindowUpdates';
 import { handleWallets } from './handlers/handleWallets';
+import { startPopupRouter } from './procedures/popup';
 
 require('../../core/utils/lockdown');
 
@@ -27,11 +28,12 @@ localStorageRecycler();
 
 handleOpenExtensionShortcut();
 
-const popupMessenger = initializeMessenger({ connect: 'popup' });
+startPopupRouter();
+
 const inpageMessenger = initializeMessenger({ connect: 'inpage' });
 
 handleInstallExtension();
-handleProviderRequest({ popupMessenger, inpageMessenger });
+handleProviderRequest({ inpageMessenger });
 handleTabAndWindowUpdates();
 handlePrefetchDappMetadata();
 handleSetupInpage();
@@ -44,6 +46,7 @@ syncStores();
 uuid4();
 handleKeepAlive();
 
+const popupMessenger = initializeMessenger({ connect: 'popup' });
 popupMessenger.reply('rainbow_updateWagmiClient', async () => {
   const activeChains = useNetworkStore.getState().getAllActiveRpcChains();
   updateWagmiConfig(activeChains);

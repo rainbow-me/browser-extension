@@ -41,6 +41,12 @@ module.exports = {
         default: 'disallow',
         rules: [
           {
+            // Allow messaging system to be typed, by allowing type imports from background for every entrypoint
+            importKind: 'type',
+            from: ['entry-popup', 'entry-content', 'entry-inpage'],
+            allow: ['entry-background'],
+          },
+          {
             // Only background is allowed to interact with keychain
             from: ['entry-background'],
             allow: ['core-keychain'],
@@ -61,6 +67,8 @@ module.exports = {
     'no-nested-ternary': 'off',
     'import/no-default-export': 'off',
     'react/react-in-jsx-scope': 'off',
+    // Disable problematic import rules that trigger babel-module resolver, will be catched by typescript
+    'import/no-unresolved': 'off',
     'import/order': [
       'warn',
       {
