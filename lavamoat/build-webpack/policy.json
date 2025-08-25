@@ -493,6 +493,26 @@
         "css-loader>icss-utils": true
       }
     },
+    "dotenv": {
+      "builtin": {
+        "crypto.createDecipheriv": true,
+        "fs.existsSync": true,
+        "fs.readFileSync": true,
+        "os.homedir": true,
+        "path.join": true,
+        "path.relative": true,
+        "path.resolve": true
+      },
+      "globals": {
+        "Buffer.from": true,
+        "URL": true,
+        "console.error": true,
+        "console.log": true,
+        "process.cwd": true,
+        "process.env": true,
+        "process.stdout.isTTY": true
+      }
+    },
     "dotenv-webpack": {
       "builtin": {
         "fs": true
@@ -1491,7 +1511,7 @@
     },
     "semver>lru-cache": {
       "packages": {
-        "semver>lru-cache>yallist": true
+        "prool>tar>yallist": true
       }
     },
     "ts-loader": {

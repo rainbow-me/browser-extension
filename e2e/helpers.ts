@@ -3,7 +3,8 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-promise-executor-return */
 /* eslint-disable @typescript-eslint/no-var-requires */
-import * as fs from 'node:fs';
+import fs from 'node:fs';
+import path from 'node:path';
 
 import { Contract } from '@ethersproject/contracts';
 import { getDefaultProvider } from '@ethersproject/providers';
@@ -99,24 +100,31 @@ export async function initDriverWithOptions(opts: {
   os: string;
 }) {
   let driver;
+  const buildPath = path.resolve(process.cwd(), 'build');
   const args = [
-    'load-extension=build/',
+    `load-extension=${buildPath}`,
     '--lang=en',
     '--log-level=3',
     '--enable-logging',
     '--no-sandbox',
     '--disable-dev-shm-usage',
-    '--disable-extensions-except=build/',
+    `--disable-extensions-except=${buildPath}`,
     '--disable-popup-blocking',
     '--remote-debugging-port=9222',
-    // BX-1923: localhost network access is permissioned in dev 139, and prod 141
-    '--disable-features=LocalNetworkAccessChecks,LocalNetworkAccessForWorkers',
+    '--start-maximized',
   ];
 
   if (opts.browser === 'firefox') {
+    const firefoxArgs = args.slice(1);
+
+    if (process.env.HEADLESS !== 'false') {
+      firefoxArgs.push('--headless');
+      firefoxArgs.push('--window-size=700,700');
+    }
+
     const options = new firefox.Options()
       .setBinary(browserBinaryPath)
-      .addArguments(...args.slice(1, -1))
+      .addArguments(...firefoxArgs)
       .setPreference('xpinstall.signatures.required', false)
       .setPreference('extensions.langpacks.signatures.required', false)
       .addExtensions('rainbowbx.xpi');
@@ -129,9 +137,23 @@ export async function initDriverWithOptions(opts: {
       .setFirefoxOptions(options)
       .build();
   } else {
+    const chromeArgs = [
+      ...args,
+      // BX-1923: localhost network access is permissioned in dev 139, and prod 141
+      '--disable-features=LocalNetworkAccessChecks,LocalNetworkAccessForWorkers',
+      // Remove automation infobars
+      '--disable-blink-features=AutomationControlled',
+      '--disable-infobars',
+    ];
+
+    if (process.env.HEADLESS !== 'false') {
+      chromeArgs.push('--headless=new');
+      chromeArgs.push('--window-size=700,700');
+    }
+
     const options = new chrome.Options();
     options.setChromeBinaryPath(browserBinaryPath);
-    options.addArguments(...args);
+    options.addArguments(...chromeArgs);
     options.setAcceptInsecureCerts(true);
     options.setUserPreferences({
       'intl.accept_languages': 'en-US,en;q=0.9',
@@ -224,7 +246,7 @@ export async function getExtensionIdByName(
       const extensions = document.querySelector("extensions-manager")?.shadowRoot
         ?.querySelector("extensions-item-list")?.shadowRoot
         ?.querySelectorAll("extensions-item");
-      
+
       if (!extensions) {
         resolve({ error: "No extensions found" });
         return;

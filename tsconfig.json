@@ -21,8 +21,6 @@
   },
   "include": ["src", "e2e", ".env.d.ts"],
   "exclude": [
-    "vitest.config.*",
-    "e2e/serial/vitest.config.ts",
     "design-system/docs",
     "static/",
     "node_modules",

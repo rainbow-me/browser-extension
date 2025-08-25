@@ -10,8 +10,6 @@ import {
   it,
 } from 'vitest';
 
-import { TokenNames, tokenAddresses, tokenNames } from 'e2e/tokenVariables';
-
 import {
   checkExtensionURL,
   delayTime,
@@ -28,6 +26,7 @@ import {
   typeOnTextInput,
   waitUntilElementByTestIdIsPresent,
 } from '../helpers';
+import { TokenNames, tokenAddresses, tokenNames } from '../tokenVariables';
 import { TEST_VARIABLES } from '../walletVariables';
 
 let rootURL = getRootUrl();
