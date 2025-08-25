@@ -3,11 +3,11 @@ import { call } from '@orpc/server';
 import { importHardwareWallet } from '~/core/keychain';
 import { SessionStorage } from '~/core/storage';
 
-import { popupOs } from '../os';
+import { walletOs } from '../os';
 
 import { statusHandler } from './status';
 
-export const importHardwareHandler = popupOs.wallet.importHardware.handler(
+export const importHardwareHandler = walletOs.importHardware.handler(
   async ({ input, context }) => {
     const address = await importHardwareWallet(input);
 

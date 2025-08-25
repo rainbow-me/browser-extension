@@ -1,8 +1,8 @@
 import { exportAccount } from '~/core/keychain';
 
-import { popupOs } from '../os';
+import { walletOs } from '../os';
 
-export const exportAccountHandler = popupOs.wallet.exportAccount.handler(
+export const exportAccountHandler = walletOs.exportAccount.handler(
   async ({ input: { address, password } }) => {
     return await exportAccount(address, password);
   },

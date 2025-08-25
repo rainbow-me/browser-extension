@@ -1,9 +1,9 @@
 import { implement } from '@orpc/server';
 
-import { popupRouterContract } from '../../contracts/popup';
+import { walletContract } from '../../contracts/popup';
 
 interface PopupContext {
   sender: chrome.runtime.MessageSender | undefined;
 }
 
-export const popupOs = implement(popupRouterContract).$context<PopupContext>();
+export const walletOs = implement(walletContract).$context<PopupContext>();

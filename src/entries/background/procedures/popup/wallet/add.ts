@@ -1,9 +1,7 @@
 import { addNewAccount } from '~/core/keychain';
 
-import { popupOs } from '../os';
+import { walletOs } from '../os';
 
-export const addHandler = popupOs.wallet.add.handler(
-  async ({ input: sibling }) => {
-    return await addNewAccount(sibling);
-  },
-);
+export const addHandler = walletOs.add.handler(async ({ input: sibling }) => {
+  return await addNewAccount(sibling);
+});
