@@ -65,6 +65,7 @@
     "test:watch": "yarn anvil & vitest --watch",
     "// Runs e2e": "",
     "e2e": "./scripts/e2e.sh",
+    "e2e:headed": "HEADLESS_MODE=false ./scripts/e2e.sh",
     "e2e:parallel": "./scripts/e2e.sh parallel",
     "e2e:serial": "./scripts/e2e.sh serial",
     "e2e:swap": "./scripts/e2e.sh serial/swap",
