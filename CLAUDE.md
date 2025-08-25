@@ -27,18 +27,14 @@ yarn build
 # Run unit/integration tests
 yarn test
 
-# Run E2E tests (requires yarn build first)
-yarn e2e                 # All browsers
-yarn e2e:mac:chrome      # Chrome only
-yarn e2e:mac:firefox     # Firefox only
-
-# Run specific E2E test suites
-yarn vitest:parallel     # Parallel E2E tests
-yarn vitest:serial       # Serial E2E tests
-yarn vitest:swap         # Swap feature tests
-yarn vitest:send         # Send feature tests
-yarn vitest:send:optimism # Optimism send tests
-yarn vitest:dappInteractions # DApp interaction tests
+# Run specific E2E test suites (requires yarn build first)
+yarn e2e:parallel     # Parallel E2E tests
+yarn e2e:serial       # Serial E2E tests
+yarn e2e:swap         # Swap feature tests
+yarn e2e:send         # Send feature tests
+yarn e2e:send:optimism # Optimism send tests
+yarn e2e:dappInteractions # DApp interaction tests
+yarn e2e serial/send/1_sendFlow.test.ts
 ```
 
 ### Code Quality
