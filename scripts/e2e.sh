@@ -11,6 +11,10 @@
 ANVIL_PORT=8545
 TEST_PATH="${1:-}"
 
+# Strip leading ./e2e/ or e2e/ if provided to normalize paths
+TEST_PATH="${TEST_PATH#./e2e/}"
+TEST_PATH="${TEST_PATH#e2e/}"
+
 # Chain configurations
 # Format: "pattern:command:chain_id:description"
 CHAIN_CONFIGS=(
