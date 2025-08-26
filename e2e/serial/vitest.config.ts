@@ -8,7 +8,12 @@ export default mergeConfig(
   defineConfig({
     test: {
       bail: 1,
-      threads: false,
+      pool: 'threads',
+      poolOptions: {
+        threads: {
+          singleThread: true,
+        },
+      },
       sequence: {
         shuffle: false,
         sequencer: class Sequencer {
