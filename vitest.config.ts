@@ -11,15 +11,6 @@ export default defineConfig({
   test: {
     environment: 'happy-dom',
     include: ['src/**/*.test.(ts|tsx)'],
-    environmentOptions: {
-      happyDOM: {
-        settings: {
-          disableCSSFileLoading: true,
-          disableJavaScriptFileLoading: true,
-          enableFileSystemHttpRequests: false,
-        },
-      },
-    },
     testTimeout: 45_000,
     setupFiles: './src/test/setup.ts',
     watch: false,
@@ -31,6 +22,6 @@ export default defineConfig({
     },
   },
   build: {
-    sourcemap: 'inline'
+    sourcemap: 'inline',
   },
 });
