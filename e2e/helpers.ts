@@ -149,6 +149,15 @@ export async function initDriverWithOptions(opts: {
         // Ensure Chrome bypasses proxy for local/loopback so it can boot and talk to DevTools
         args: [
           ...(existingGoogChromeOptions.args || []),
+          // Conditionally run in headless mode
+          ...(process.env.HEADLESS === 'true'
+            ? [
+                '--remote-debugging-port=0',
+                '--no-sandbox', // Required for CI/Docker
+                '--disable-dev-shm-usage', // Prevents /dev/shm issues in containers
+              ]
+            : []),
+          '--window-size=1920,1080',
           // Route HTTP(S) traffic through our test proxy
           '--proxy-server=http://localhost:8080',
           '--proxy-bypass-list=<-loopback>,127.0.0.1,localhost',

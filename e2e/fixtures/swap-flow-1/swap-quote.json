@@ -1,0 +1,86 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "https://swap.p.rainbow.me/v1/quote"
+  },
+  "response": {
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "sellAmount": "1000000000000000000",
+      "sellAmountMinusFees": "991500000000000000",
+      "sellAmountDisplay": "1000000000000000000",
+      "sellAmountInEth": "1000000000000000000",
+      "buyAmount": "2629450000",
+      "buyAmountMinusFees": "2629450000",
+      "buyAmountDisplay": "2629450000",
+      "buyAmountDisplayMinimum": "2603155500",
+      "buyAmountInEth": "991621459006369206",
+      "sellTokenAddress": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "buyTokenAddress": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+      "sellTokenAsset": {
+        "assetCode": "eth",
+        "decimals": 18,
+        "name": "Ethereum",
+        "symbol": "ETH",
+        "chainId": 1,
+        "price": {"value": 2629.45, "available": true}
+      },
+      "buyTokenAsset": {
+        "assetCode": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+        "decimals": 6,
+        "name": "USD Coin",
+        "symbol": "USDC",
+        "chainId": 1,
+        "price": {"value": 0.9999, "available": true}
+      },
+      "allowanceTarget": "0x00000000009726632680fb29d3f7a9734e3010e2",
+      "allowanceNeeded": false,
+      "price": "2629.45",
+      "guaranteedPrice": "2603.1555",
+      "estimatedPriceImpact": "0.1",
+      "estimatedGas": "150000",
+      "gas": "150000",
+      "gasPrice": "877725840",
+      "source": "1inch",
+      "sources": [
+        {
+          "name": "Uniswap_V3",
+          "proportion": "1"
+        }
+      ],
+      "protocols": [
+        {
+          "name": "UNISWAP_V3",
+          "part": 100
+        }
+      ],
+      "feeTokenAsset": {
+        "assetCode": "eth",
+        "decimals": 18,
+        "symbol": "ETH",
+        "price": {"value": 2629.45, "available": true}
+      },
+      "fee": "8500000000000000",
+      "feeInEth": "8500000000000000",
+      "feePercentageBasisPoints": "8500000000000000",
+      "tradeAmountUSD": 2629.45,
+      "tradeFeeAmountUSD": 22.35,
+      "tradeType": "exact_input",
+      "defaultGasLimit": "350000",
+      "swapType": "normal",
+      "from": "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720",
+      "to": "0x111111125421ca6dc452d289314280a0f8842a65",
+      "txTarget": "0x00000000009726632680fb29d3f7a9734e3010e2",
+      "value": "1000000000000000000",
+      "data": "0x12aa3caf0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000de0b6b3a7640000000000000000000000000000000000000000000000000000000000009c2e3cd20000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a",
+      "chainId": 1,
+      "fallback": false,
+      "slippagePercentage": 1,
+      "routes": []
+    }
+  }
+}

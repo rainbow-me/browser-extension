@@ -1,0 +1,109 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "https://token-search.rainbow.me/v3/tokens/1/?list=verifiedAssets&query=&fromChainId=undefined"
+  },
+  "response": {
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+    "data": [
+      {
+        "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+        "chainId": 1,
+        "decimals": 6,
+        "icon_url": "https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png",
+        "name": "USD Coin",
+        "symbol": "USDC",
+        "colors": {
+          "primary": "#2775CA",
+          "fallback": "#678FCA"
+        },
+        "mainnetAddress": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+        "highLiquidity": true,
+        "isVerified": true,
+        "isNativeAsset": false,
+        "uniqueId": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48_1",
+        "networks": {
+          "1": {
+            "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "decimals": 6
+          }
+        }
+      },
+      {
+        "address": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+        "chainId": 1,
+        "decimals": 8,
+        "icon_url": "https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/ethereum/0x2260fac5e5542a773aa44fbcfedf7c193bc2c599.png",
+        "name": "Wrapped BTC",
+        "symbol": "WBTC",
+        "colors": {
+          "primary": "#F09342",
+          "fallback": "#FF9C48"
+        },
+        "mainnetAddress": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+        "highLiquidity": true,
+        "isVerified": true,
+        "isNativeAsset": false,
+        "uniqueId": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599_1",
+        "networks": {
+          "1": {
+            "address": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+            "decimals": 8
+          }
+        }
+      },
+      {
+        "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
+        "chainId": 1,
+        "decimals": 18,
+        "icon_url": "https://rainbowme-res.cloudinary.com/image/upload/v1668633493/assets/ethereum/0x6b175474e89094c44da98b954eedeac495271d0f.png",
+        "name": "Dai Stablecoin",
+        "symbol": "DAI",
+        "colors": {
+          "primary": "#F5AC37",
+          "fallback": "#FFDC93"
+        },
+        "mainnetAddress": "0x6b175474e89094c44da98b954eedeac495271d0f",
+        "highLiquidity": true,
+        "isVerified": true,
+        "isNativeAsset": false,
+        "uniqueId": "0x6b175474e89094c44da98b954eedeac495271d0f_1",
+        "networks": {
+          "1": {
+            "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
+            "decimals": 18
+          }
+        }
+      },
+      {
+        "address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+        "chainId": 1,
+        "decimals": 6,
+        "icon_url": "https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/ethereum/0xdac17f958d2ee523a2206206994597c13d831ec7.png",
+        "name": "Tether USD",
+        "symbol": "USDT",
+        "colors": {
+          "primary": "#26A17B",
+          "fallback": "#6FC4A4"
+        },
+        "mainnetAddress": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+        "highLiquidity": true,
+        "isVerified": true,
+        "isNativeAsset": false,
+        "uniqueId": "0xdac17f958d2ee523a2206206994597c13d831ec7_1",
+        "networks": {
+          "1": {
+            "address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+            "decimals": 6
+          }
+        }
+      }
+    ]
+    }
+  }
+}

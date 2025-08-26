@@ -1,0 +1,40 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "https://token-search.rainbow.me/v3/tokens/1/?list=highLiquidityAssets&query=usdc"
+  },
+  "response": {
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "data": [
+        {
+          "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "chainId": 1,
+          "decimals": 6,
+          "icon_url": "https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png",
+          "name": "USD Coin",
+          "symbol": "USDC",
+          "colors": {
+            "primary": "#2775CA",
+            "fallback": "#678FCA"
+          },
+          "mainnetAddress": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "highLiquidity": true,
+          "isVerified": true,
+          "isNativeAsset": false,
+          "uniqueId": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48_1",
+          "networks": {
+            "1": {
+              "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+              "decimals": 6
+            }
+          }
+        }
+      ]
+    }
+  }
+}

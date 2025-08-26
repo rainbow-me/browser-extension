@@ -1,0 +1,19 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "https://swap.p.rainbow.me/v1/slippage"
+  },
+  "response": {
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "slippage": 1,
+      "suggestedSlippage": 1,
+      "minSlippage": 0.5,
+      "maxSlippage": 10
+    }
+  }
+}

@@ -8,8 +8,9 @@ import * as net from 'net';
 import * as path from 'path';
 import * as tls from 'tls';
 import { URL } from 'url';
+import * as zlib from 'zlib';
 
-import forge from 'node-forge';
+import * as forge from 'node-forge';
 
 interface RequestRecord {
   id: string;
@@ -534,14 +535,130 @@ export class MitmProxyV2 {
     if (record?.response) {
       this.log('debug', `✅ Replaying recorded response for ${url}`);
 
-      // Build response
+      // Decompress body if it's compressed
+      let responseBody = record.response.body || '';
+
+      // If body is an object (JSON), stringify it
+      if (typeof responseBody === 'object') {
+        responseBody = JSON.stringify(responseBody);
+      }
+
+      const contentEncoding = record.response.headers['content-encoding'];
+
+      if (contentEncoding && responseBody) {
+        try {
+          // Check if the data is actually compressed by looking for compression signatures
+          const isCompressed =
+            (contentEncoding === 'gzip' &&
+              responseBody.includes('\u001f\u008b')) || // gzip signature
+            (contentEncoding === 'br' && responseBody.charAt(0) === '\u00ce') || // brotli signature (approximate)
+            (contentEncoding === 'deflate' && responseBody.includes('\u0078')); // deflate signature (approximate)
+
+          if (isCompressed) {
+            const buffer = Buffer.from(responseBody, 'binary');
+
+            if (contentEncoding === 'gzip') {
+              responseBody = zlib
+                .gunzipSync(buffer as unknown as Uint8Array)
+                .toString('utf8');
+              this.log('debug', `📦 Decompressed gzipped response for ${url}`);
+            } else if (contentEncoding === 'br') {
+              responseBody = zlib
+                .brotliDecompressSync(buffer as unknown as Uint8Array)
+                .toString('utf8');
+              this.log('debug', `📦 Decompressed brotli response for ${url}`);
+            } else if (contentEncoding === 'deflate') {
+              responseBody = zlib
+                .inflateSync(buffer as unknown as Uint8Array)
+                .toString('utf8');
+              this.log('debug', `📦 Decompressed deflate response for ${url}`);
+            }
+          } else {
+            this.log(
+              'debug',
+              `📋 Response marked as ${contentEncoding} but appears uncompressed, using as-is`,
+            );
+          }
+        } catch (err) {
+          this.log(
+            'debug',
+            `⚠️ Could not decompress ${contentEncoding} response for ${url}, using as-is`,
+          );
+          // If decompression fails, assume the body is already decompressed
+        }
+      }
+
+      // Log the response body for debugging
+      if (url.includes('/assets/') || url.includes('token-search')) {
+        this.log('info', `📊 Response for ${url}:`);
+
+        // More detailed logging for mainnet token searches
+        if (url.includes('token-search.rainbow.me/v3/tokens/1/')) {
+          this.log('info', `🔍 Mainnet token search detected!`);
+          try {
+            const parsed = JSON.parse(responseBody) as any;
+            this.log(
+              'info',
+              `Token search returned ${parsed?.data?.length || 0} results`,
+            );
+            if (parsed?.data?.[0]) {
+              this.log(
+                'info',
+                `First token: ${parsed.data[0].symbol} (${parsed.data[0].address})`,
+              );
+            }
+          } catch (e) {
+            // Not JSON, show raw preview
+          }
+        }
+
+        this.log(
+          'info',
+          `Response body (first 500 chars): ${responseBody.substring(0, 500)}`,
+        );
+
+        // Special logging for USDC token-search to debug favorites
+        if (
+          url.includes('token-search.rainbow.me') &&
+          url.includes('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48')
+        ) {
+          this.log('info', '🎯 USDC token-search response detected!');
+          try {
+            const parsedBody = JSON.parse(responseBody) as any;
+            this.log(
+              'info',
+              `USDC search parsed successfully. Results count: ${
+                parsedBody?.data?.length || 0
+              }`,
+            );
+            if (parsedBody?.data?.[0]) {
+              this.log(
+                'info',
+                `First result: ${JSON.stringify(parsedBody.data[0]).substring(
+                  0,
+                  300,
+                )}`,
+              );
+            }
+          } catch (e) {
+            this.log('warn', `Could not parse USDC response as JSON: ${e}`);
+          }
+        }
+      }
+
+      // Build response - filter out problematic headers
+      const skipHeaders = [
+        'transfer-encoding',
+        'content-encoding',
+        'content-length',
+      ];
       let responseData = `HTTP/1.1 ${record.response.status} ${
         record.response.statusText || 'OK'
       }\r\n`;
 
-      // Add headers
+      // Add headers, filtering out problematic ones
       Object.entries(record.response.headers).forEach(([key, value]) => {
-        if (value) {
+        if (value && !skipHeaders.includes(key.toLowerCase())) {
           if (Array.isArray(value)) {
             value.forEach((v) => {
               responseData += `${key}: ${v}\r\n`;
@@ -552,8 +669,11 @@ export class MitmProxyV2 {
         }
       });
 
+      // Add content-length for the actual body
+      const bodyLength = Buffer.byteLength(responseBody);
+      responseData += `Content-Length: ${bodyLength}\r\n`;
       responseData += '\r\n';
-      responseData += record.response.body;
+      responseData += responseBody;
 
       try {
         tlsSocket.write(responseData);
@@ -651,8 +771,20 @@ export class MitmProxyV2 {
         proxyRes.statusMessage || 'OK'
       }\r\n`;
 
+      // Check if response is compressed
+      const contentEncoding = proxyRes.headers['content-encoding'];
+      const isCompressed =
+        contentEncoding === 'gzip' ||
+        contentEncoding === 'deflate' ||
+        contentEncoding === 'br';
+
       // Filter out problematic headers for the client
-      const skipHeaders = ['transfer-encoding', 'content-encoding'];
+      // We skip content-length because we'll add it later with the correct value
+      const skipHeaders = [
+        'transfer-encoding',
+        'content-encoding',
+        'content-length',
+      ];
       let responseBody = '';
 
       Object.entries(proxyRes.headers).forEach(([key, value]) => {
@@ -667,8 +799,8 @@ export class MitmProxyV2 {
         }
       });
 
-      if (isChunked || shouldRecord) {
-        // Buffer the entire response to handle chunked encoding
+      if (isChunked || shouldRecord || isCompressed) {
+        // Buffer the entire response to handle chunked encoding and decompression
         const chunks: Buffer[] = [];
 
         proxyRes.on('data', (chunk) => {
@@ -677,23 +809,45 @@ export class MitmProxyV2 {
 
         proxyRes.on('end', () => {
           try {
-            const fullBody = Buffer.concat(chunks as any[]);
+            let fullBody = Buffer.concat(chunks as any[]);
+
+            // Decompress if needed
+            if (isCompressed) {
+              this.log(
+                'debug',
+                `🗜️ Decompressing ${contentEncoding} response for ${fullUrl}`,
+              );
+              if (contentEncoding === 'gzip') {
+                fullBody = zlib.gunzipSync(fullBody as unknown as Uint8Array);
+              } else if (contentEncoding === 'deflate') {
+                fullBody = zlib.inflateSync(fullBody as unknown as Uint8Array);
+              } else if (contentEncoding === 'br') {
+                fullBody = zlib.brotliDecompressSync(
+                  fullBody as unknown as Uint8Array,
+                );
+              }
+            }
+
             responseBody = fullBody.toString('utf8');
 
-            // Add content-length header
+            // Add content-length header for decompressed content
             responseHeaders += `Content-Length: ${fullBody.length}\r\n`;
             responseHeaders += '\r\n';
 
-            // Send complete response
+            // Send complete response (decompressed)
             tlsSocket.write(responseHeaders);
             tlsSocket.write(fullBody as any);
 
-            // Save recording if needed
+            // Save recording if needed (with decompressed content)
             if (shouldRecord && recordedData) {
+              // Store headers without content-encoding since we're storing decompressed
+              const sanitizedHeaders = this.sanitizeHeaders(proxyRes.headers);
+              delete sanitizedHeaders['content-encoding'];
+
               recordedData.response = {
                 status: proxyRes.statusCode!,
                 statusText: proxyRes.statusMessage || 'OK',
-                headers: this.sanitizeHeaders(proxyRes.headers),
+                headers: sanitizedHeaders,
                 body: responseBody,
               };
 
@@ -711,10 +865,30 @@ export class MitmProxyV2 {
         });
       } else {
         // Stream response directly
-        responseHeaders += '\r\n';
+        // For streaming responses, we don't filter content-length since we're passing through as-is
+        let streamHeaders = `HTTP/1.1 ${proxyRes.statusCode} ${
+          proxyRes.statusMessage || 'OK'
+        }\r\n`;
+
+        // Only skip transfer-encoding and content-encoding for streaming
+        const streamSkipHeaders = ['transfer-encoding', 'content-encoding'];
+
+        Object.entries(proxyRes.headers).forEach(([key, value]) => {
+          if (!streamSkipHeaders.includes(key.toLowerCase()) && value) {
+            if (Array.isArray(value)) {
+              value.forEach((v) => {
+                streamHeaders += `${key}: ${v}\r\n`;
+              });
+            } else {
+              streamHeaders += `${key}: ${value}\r\n`;
+            }
+          }
+        });
+
+        streamHeaders += '\r\n';
 
         try {
-          tlsSocket.write(responseHeaders);
+          tlsSocket.write(streamHeaders);
           proxyRes.pipe(tlsSocket, { end: false });
 
           proxyRes.on('end', () => {
@@ -789,8 +963,83 @@ export class MitmProxyV2 {
 
     if (record?.response) {
       this.log('debug', `✅ Replaying recorded response for ${targetUrl}`);
-      clientRes.writeHead(record.response.status, record.response.headers);
-      clientRes.end(record.response.body);
+
+      // Decompress body if it's compressed
+      let responseBody = record.response.body || '';
+
+      // If body is an object (JSON), stringify it
+      if (typeof responseBody === 'object') {
+        responseBody = JSON.stringify(responseBody);
+      }
+
+      const contentEncoding = record.response.headers['content-encoding'];
+
+      if (contentEncoding && responseBody) {
+        try {
+          // Check if the data is actually compressed by looking for compression signatures
+          const isCompressed =
+            (contentEncoding === 'gzip' &&
+              responseBody.includes('\u001f\u008b')) || // gzip signature
+            (contentEncoding === 'br' && responseBody.charAt(0) === '\u00ce') || // brotli signature (approximate)
+            (contentEncoding === 'deflate' && responseBody.includes('\u0078')); // deflate signature (approximate)
+
+          if (isCompressed) {
+            const buffer = Buffer.from(responseBody, 'binary');
+
+            if (contentEncoding === 'gzip') {
+              responseBody = zlib
+                .gunzipSync(buffer as unknown as Uint8Array)
+                .toString('utf8');
+              this.log(
+                'debug',
+                `📦 Decompressed gzipped response for ${targetUrl}`,
+              );
+            } else if (contentEncoding === 'br') {
+              responseBody = zlib
+                .brotliDecompressSync(buffer as unknown as Uint8Array)
+                .toString('utf8');
+              this.log(
+                'debug',
+                `📦 Decompressed brotli response for ${targetUrl}`,
+              );
+            } else if (contentEncoding === 'deflate') {
+              responseBody = zlib
+                .inflateSync(buffer as unknown as Uint8Array)
+                .toString('utf8');
+              this.log(
+                'debug',
+                `📦 Decompressed deflate response for ${targetUrl}`,
+              );
+            }
+          } else {
+            this.log(
+              'debug',
+              `📋 Response marked as ${contentEncoding} but appears uncompressed, using as-is`,
+            );
+          }
+        } catch (err) {
+          this.log(
+            'debug',
+            `⚠️ Could not decompress ${contentEncoding} response for ${targetUrl}, using as-is`,
+          );
+          // If decompression fails, assume the body is already decompressed
+        }
+      }
+
+      // Filter out problematic headers
+      const filteredHeaders = { ...record.response.headers };
+      delete filteredHeaders['transfer-encoding'];
+      delete filteredHeaders['content-encoding'];
+      delete filteredHeaders['content-length'];
+
+      // Set proper content-length
+      if (responseBody) {
+        filteredHeaders['content-length'] =
+          Buffer.byteLength(responseBody).toString();
+      }
+
+      clientRes.writeHead(record.response.status, filteredHeaders);
+      clientRes.end(responseBody);
     } else {
       this.unmockedRequests.add(`${clientReq.method} ${targetUrl}`);
 
@@ -957,20 +1206,128 @@ export class MitmProxyV2 {
     const key = this.getRecordKey(method, url);
     let record = this.records.get(key);
 
+    // Log all token-search requests for debugging
+    if (url.includes('token-search.rainbow.me')) {
+      this.log('info', `🔍 Token search request: ${method} ${url}`);
+      this.log('info', `🔑 Looking for key: ${key}`);
+
+      // Log all available token-search keys
+      const tokenSearchKeys = Array.from(this.records.keys()).filter((k) =>
+        k.includes('token-search'),
+      );
+      if (tokenSearchKeys.length > 0) {
+        this.log('info', `📚 Available token-search keys:`);
+        tokenSearchKeys.forEach((k) => this.log('info', `  - ${k}`));
+      }
+    }
+
     // If no exact match and it's a Rainbow API, try fuzzy matching
     if (!record && url.includes('.rainbow.me')) {
       this.log('debug', `No exact match for ${url}, trying fuzzy match...`);
 
-      // Try to find a similar URL ignoring chain IDs in the path
-      for (const recordValue of this.records.values()) {
-        if (recordValue.request.method === method) {
-          const recordUrl = recordValue.request.url;
+      // Special handling for token-search endpoint
+      if (url.includes('token-search.rainbow.me')) {
+        // Parse the URL to check the query parameters
+        try {
+          const requestUrl = new URL(url);
+          const list = requestUrl.searchParams.get('list');
+          const query = requestUrl.searchParams.get('query');
+          const chainId = requestUrl.pathname.match(/\/v3\/tokens\/(\d+)/)?.[1];
 
-          // Check if it's the same endpoint with different chain IDs
-          if (this.isSimilarRainbowUrl(url, recordUrl)) {
-            this.log('warn', `Using fuzzy match: ${recordUrl} for ${url}`);
-            record = recordValue;
-            break;
+          this.log(
+            'info',
+            `🔎 Token search params: list=${list}, query="${query}", chainId=${chainId}`,
+          );
+
+          // Try to find a matching mock based on list and query
+          for (const [, recordValue] of Array.from(this.records.entries())) {
+            if (recordValue.request.url.includes('token-search.rainbow.me')) {
+              const mockUrl = new URL(recordValue.request.url);
+              const mockList = mockUrl.searchParams.get('list');
+              const mockQuery = mockUrl.searchParams.get('query');
+              const mockChainId =
+                mockUrl.pathname.match(/\/v3\/tokens\/(\d+)/)?.[1];
+
+              // Match if list and chainId are the same, and either:
+              // 1. Both queries are empty/null
+              // 2. Queries match exactly
+              // 3. Query contains USDC address (case-insensitive)
+              // 4. Query is "usdc" text search
+              const usdcAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+              const queryMatch =
+                ((!query || query === '') &&
+                  (!mockQuery || mockQuery === '')) ||
+                query === mockQuery ||
+                query?.toLowerCase() === usdcAddress.toLowerCase() ||
+                (mockQuery?.toLowerCase() === usdcAddress.toLowerCase() &&
+                  query?.toLowerCase().includes(usdcAddress.toLowerCase())) ||
+                (query?.toLowerCase() === 'usdc' &&
+                  mockQuery?.toLowerCase() === 'usdc');
+
+              // For verifiedAssets with empty query, ignore fromChainId differences
+              const isVerifiedAssetsEmptyQuery =
+                list === 'verifiedAssets' && (!query || query === '');
+
+              if (mockList === list && mockChainId === chainId && queryMatch) {
+                this.log(
+                  'warn',
+                  `✅ Using fuzzy match for token-search: ${recordValue.request.url}`,
+                );
+                if (isVerifiedAssetsEmptyQuery) {
+                  this.log(
+                    'info',
+                    `📋 Ignoring fromChainId for verifiedAssets empty query`,
+                  );
+                }
+                if (query?.toLowerCase().includes(usdcAddress.toLowerCase())) {
+                  this.log('info', `💰 USDC query matched!`);
+                }
+                record = recordValue;
+                break;
+              }
+            }
+          }
+        } catch (err) {
+          this.log('error', `Failed to parse token-search URL: ${err}`);
+        }
+      }
+
+      // Special handling for assets endpoint - match by address
+      else if (url.includes('/assets/')) {
+        const urlParts = url.split('/');
+        const addressMatch = urlParts.find((part) => part.startsWith('0x'));
+
+        if (addressMatch) {
+          // Try to find a record with the same address
+          for (const recordValue of Array.from(this.records.values())) {
+            if (
+              recordValue.request.method === method &&
+              recordValue.request.url.includes('/assets/') &&
+              recordValue.request.url.includes(addressMatch)
+            ) {
+              this.log(
+                'warn',
+                `Using address-based match: ${recordValue.request.url} for ${url}`,
+              );
+              record = recordValue;
+              break;
+            }
+          }
+        }
+      }
+
+      // If still no match, try general fuzzy matching
+      if (!record) {
+        for (const recordValue of Array.from(this.records.values())) {
+          if (recordValue.request.method === method) {
+            const recordUrl = recordValue.request.url;
+
+            // Check if it's the same endpoint with different chain IDs
+            if (this.isSimilarRainbowUrl(url, recordUrl)) {
+              this.log('warn', `Using fuzzy match: ${recordUrl} for ${url}`);
+              record = recordValue;
+              break;
+            }
           }
         }
       }
@@ -1054,20 +1411,79 @@ export class MitmProxyV2 {
 
   private async loadRecordings(): Promise<void> {
     try {
-      if (!fs.existsSync(this.fixturesPath)) {
+      // Load main recordings file
+      if (fs.existsSync(this.fixturesPath)) {
+        const data = fs.readFileSync(this.fixturesPath, 'utf-8');
+        const recordings = JSON.parse(data) as RequestRecord[];
+
+        for (const record of recordings) {
+          const key = this.getRecordKey(
+            record.request.method,
+            record.request.url,
+          );
+          this.records.set(key, record);
+        }
+        this.log(
+          'info',
+          `📼 Loaded ${recordings.length} recordings from main file`,
+        );
+      } else {
         this.log('warn', `No recordings found at ${this.fixturesPath}`);
-        return;
       }
 
-      const data = fs.readFileSync(this.fixturesPath, 'utf-8');
-      const recordings = JSON.parse(data) as RequestRecord[];
+      // Load additional mock files from the same directory
+      const fixtureDir = path.dirname(this.fixturesPath);
+      const additionalMocks = [
+        'test-wallet-assets.json',
+        'minimal-assets-mock.json',
+        'usdc-token-search.json',
+        'usdc-high-liquidity.json',
+        'mainnet-verified-assets.json',
+        'popular-assets.json',
+        'usdc-search-verified.json',
+        'usdc-search-high-liquidity.json',
+        'usdc-verified-assets.json',
+        'swap-quote.json',
+        'swap-slippage.json',
+      ];
 
-      for (const record of recordings) {
-        const key = this.getRecordKey(
-          record.request.method,
-          record.request.url,
-        );
-        this.records.set(key, record);
+      for (const mockFile of additionalMocks) {
+        const mockPath = path.join(fixtureDir, mockFile);
+        if (fs.existsSync(mockPath)) {
+          try {
+            const mockData = fs.readFileSync(mockPath, 'utf-8');
+            const mockRecord = JSON.parse(mockData) as RequestRecord;
+
+            // Add multiple keys for fuzzy matching
+            const key = this.getRecordKey(
+              mockRecord.request.method,
+              mockRecord.request.url,
+            );
+            this.records.set(key, mockRecord);
+
+            // Also add a key without the exact address for fuzzy matching
+            if (mockRecord.request.url.includes('/assets/')) {
+              const urlParts = mockRecord.request.url.split('/');
+              const addressIndex = urlParts.findIndex((part) =>
+                part.startsWith('0x'),
+              );
+              if (addressIndex > 0) {
+                // Create a fuzzy key that matches any address
+                const fuzzyUrl = [...urlParts];
+                fuzzyUrl[addressIndex] = '*';
+                const fuzzyKey = this.getRecordKey(
+                  mockRecord.request.method,
+                  fuzzyUrl.join('/'),
+                );
+                this.records.set(fuzzyKey, mockRecord);
+              }
+            }
+
+            this.log('info', `📼 Loaded mock from ${mockFile}`);
+          } catch (err) {
+            this.log('error', `Failed to load mock ${mockFile}: ${err}`);
+          }
+        }
       }
 
       this.log(
