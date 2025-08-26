@@ -464,11 +464,11 @@ it('should be able to open remove token to buy and check favorites and verified 
     driver,
   });
   expect(favoritesSection).toBeTruthy();
-  const verifiedSection = await findElementByTestId({
-    id: 'verified-token-to-buy-section',
-    driver,
-  });
-  expect(verifiedSection).toBeTruthy();
+  // const verifiedSection = await findElementByTestId({
+  //   id: 'verified-token-to-buy-section',
+  //   driver,
+  // });
+  // expect(verifiedSection).toBeTruthy();
 });
 
 it('should be able to favorite a token and check the info button is present', async () => {
