@@ -30,4 +30,7 @@ export default defineConfig({
       static: resolve(__dirname, './static'),
     },
   },
+  build: {
+    sourcemap: 'inline'
+  },
 });
