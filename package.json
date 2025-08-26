@@ -72,6 +72,7 @@
     "e2e:send": "./scripts/e2e.sh serial/send",
     "e2e:send:optimism": "./scripts/e2e.sh serial/optimismTransactions",
     "e2e:dappInteractions": "./scripts/e2e.sh serial/dappInteractions",
+    "e2e:kill": "yarn anvil:kill && pkill -f 'chromedriver|Google Chrome for Testing' || true",
     "firefox:manifest": "node scripts/firefox-manifest.js",
     "firefox:build": "yarn build && yarn firefox:manifest",
     "firefox:zip": "yarn zip && mv rainbowbx.zip rainbowbx.xpi",
