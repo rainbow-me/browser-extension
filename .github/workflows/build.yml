@@ -258,6 +258,37 @@ jobs:
       - name: Fail if any tests failed
         if: steps.ChromeE2ESwaps.outcome == 'failure'
         run: exit 1
+  chrome-e2e-proxy-swap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: [build]
+    env:
+      DISPLAY: :0
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/chromeTestsSetup
+        with:
+          gh-access-token: ${{ secrets.ORG_ACCESS_TOKEN }}
+      - name: Generate CA Certificate
+        run: node e2e/scripts/generate-ca-cert.js
+      - name: Run e2e proxy swap (Chrome)
+        id: ChromeE2EProxySwap
+        continue-on-error: true
+        run: |
+          export BROWSER=chrome
+          export OS=linux
+          export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
+          ./e2e/scripts/run-proxy-test.sh replay e2e/serial/swap/1_swapFlow1.test.ts
+      - name: Upload deps artifacts
+        if: steps.ChromeE2EProxySwap.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        continue-on-error: true
+        with:
+          name: screenshots-chrome-e2e-proxy-swap
+          path: screenshots/
+      - name: Fail if any tests failed
+        if: steps.ChromeE2EProxySwap.outcome == 'failure'
+        run: exit 1
   chrome-e2e-send:
     runs-on: send-runner-bx
     timeout-minutes: 16
@@ -509,7 +540,7 @@ jobs:
   
   cleanup:
     runs-on:  ubuntu-latest
-    needs: [chrome-e2e-parallel, chrome-e2e-swap, chrome-e2e-send, chrome-e2e-dappInteractions, chrome-optimism-e2e-send, unit-tests, ci-checks, bundlewatch]
+    needs: [chrome-e2e-parallel, chrome-e2e-swap, chrome-e2e-proxy-swap, chrome-e2e-send, chrome-e2e-dappInteractions, chrome-optimism-e2e-send, unit-tests, ci-checks, bundlewatch]
     steps:
       - uses: geekyeggo/delete-artifact@v5
         with:

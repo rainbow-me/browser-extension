@@ -1,0 +1,44 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "https://token-search.rainbow.me/v3/tokens/1/?list=verifiedAssets&query=0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+  },
+  "response": {
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "data": [
+        {
+          "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "chainId": 1,
+          "decimals": 6,
+          "icon": {
+            "url": "https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png"
+          },
+          "name": "USD Coin",
+          "symbol": "USDC",
+          "networks": {
+            "1": {
+              "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+              "decimals": 6
+            }
+          },
+          "native": {
+            "price": {
+              "amount": "1.00",
+              "display": "$1.00"
+            }
+          },
+          "price": {
+            "value": 1.0,
+            "relative_change_24h": 0.0
+          },
+          "type": "token"
+        }
+      ]
+    }
+  }
+}

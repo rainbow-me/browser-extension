@@ -1,0 +1,19 @@
+{
+  "id": "test-wallet-assets",
+  "timestamp": 1755832318315,
+  "request": {
+    "method": "GET",
+    "url": "https://addys.p.rainbow.me/v3/1,10,56,130,137,1625,1996,8453,33139,42161,43114,57073,80094,81457,7777777,666666666/0xa0Ee7A142d267C1f36714E4a8F75612F20a79720/assets/?currency=usd",
+    "headers": {},
+    "body": ""
+  },
+  "response": {
+    "status": 200,
+    "statusText": "OK",
+    "headers": {
+      "content-type": "application/json",
+      "cache-control": "no-cache"
+    },
+    "body": "{\"meta\":{\"addresses\":[\"0xa0Ee7A142d267C1f36714E4a8F75612F20a79720\"],\"currency\":\"usd\",\"chain_ids\":[1],\"status\":\"ok\"},\"payload\":{\"assets\":[{\"asset\":{\"asset_code\":\"eth\",\"decimals\":18,\"icon_url\":\"https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/eth.png\",\"name\":\"Ethereum\",\"network\":\"mainnet\",\"chain_id\":1,\"price\":{\"value\":2629.45,\"changed_at\":1755832317},\"symbol\":\"ETH\",\"type\":\"native\"},\"quantity\":\"10000000000000000000\",\"native\":{\"balance\":{\"amount\":\"10000000000000000000\",\"display\":\"10 ETH\"},\"price\":{\"amount\":\"26294.50\",\"display\":\"$26,294.50\"}}},{\"asset\":{\"asset_code\":\"0x6b175474e89094c44da98b954eedeac495271d0f\",\"decimals\":18,\"icon_url\":\"https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/0x6b175474e89094c44da98b954eedeac495271d0f.png\",\"name\":\"Dai Stablecoin\",\"network\":\"mainnet\",\"chain_id\":1,\"price\":{\"value\":1.0,\"changed_at\":1755832317},\"symbol\":\"DAI\",\"type\":\"token\",\"address\":\"0x6b175474e89094c44da98b954eedeac495271d0f\"},\"quantity\":\"5000000000000000000000\",\"native\":{\"balance\":{\"amount\":\"5000000000000000000000\",\"display\":\"5,000 DAI\"},\"price\":{\"amount\":\"5000.00\",\"display\":\"$5,000.00\"}}},{\"asset\":{\"asset_code\":\"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48\",\"decimals\":6,\"icon_url\":\"https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png\",\"name\":\"USD Coin\",\"network\":\"mainnet\",\"chain_id\":1,\"price\":{\"value\":1.0,\"changed_at\":1755832317},\"symbol\":\"USDC\",\"type\":\"token\",\"address\":\"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48\"},\"quantity\":\"3000000000\",\"native\":{\"balance\":{\"amount\":\"3000000000\",\"display\":\"3,000 USDC\"},\"price\":{\"amount\":\"3000.00\",\"display\":\"$3,000.00\"}}}]}}"
+  }
+}

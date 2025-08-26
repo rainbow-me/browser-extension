@@ -19,7 +19,7 @@ async function fetchFavoriteToken(address: AddressOrEth, chain: ChainId) {
     list: 'highLiquidityAssets',
     query: address.toLowerCase(),
   });
-  if (!unverifiedSearchResults?.[0]) return unverifiedSearchResults[0];
+  if (unverifiedSearchResults?.[0]) return unverifiedSearchResults[0];
 }
 
 export function useFavoriteAssets(chainId: ChainId) {
