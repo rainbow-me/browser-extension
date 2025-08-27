@@ -10,4 +10,6 @@ const link = new RPCLink({ port });
 
 export const popupClient: RouterClient<PopupRouter> = createORPCClient(link);
 
-export const popupClientQueryUtils = createTanstackQueryUtils(popupClient);
+export const popupClientQueryUtils = createTanstackQueryUtils(popupClient, {
+  path: ['orpc'],
+});
