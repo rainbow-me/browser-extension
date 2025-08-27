@@ -1,4 +1,4 @@
-import { KeyboardEvent, useState } from 'react';
+import { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
@@ -19,6 +19,15 @@ const RenameWallet = ({
 }) => {
   const { walletNames, saveWalletName } = useWalletNamesStore();
   const [newName, setNewName] = useState(walletNames[account]);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    // Focus the input after a short delay to ensure the modal animation has started
+    const timer = setTimeout(() => {
+      inputRef.current?.focus();
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   const isValid = newName?.trim().length > 0;
 
@@ -53,6 +62,7 @@ const RenameWallet = ({
             variant="transparent"
             textAlign="center"
             autoFocus
+            innerRef={inputRef}
             onKeyDown={onKeyDown}
             tabIndex={1}
           />
