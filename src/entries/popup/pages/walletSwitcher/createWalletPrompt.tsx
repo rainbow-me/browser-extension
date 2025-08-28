@@ -170,7 +170,6 @@ export const CreateWalletPrompt = ({
                           height="44px"
                           variant="transparent"
                           textAlign="center"
-                          autoFocus
                           innerRef={inputRef}
                           onKeyDown={onKeyDown}
                           tabIndex={1}
