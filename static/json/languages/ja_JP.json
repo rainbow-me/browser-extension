@@ -199,7 +199,7 @@
         "new_wallet": {
           "name_your_wallet": "ウォレットに名前を付ける",
           "create": "ウォレットを作成",
-          "input_placeholder": "例: ウォレット1"
+          "input_placeholder": "ウォレット"
         },
         "private_key": {
           "title": "秘密鍵",
