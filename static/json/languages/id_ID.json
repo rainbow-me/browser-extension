@@ -199,7 +199,7 @@
         "new_wallet": {
           "name_your_wallet": "Beri nama dompet Anda",
           "create": "Buat Dompet",
-          "input_placeholder": "contoh: Dompet 1"
+          "input_placeholder": "Dompet"
         },
         "private_key": {
           "title": "Kunci Pribadi Anda",
