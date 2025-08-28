@@ -118,9 +118,6 @@ run_serial_tests() {
 
 # Main execution
 main() {
-  # Kill any existing e2e processes before starting
-  yarn e2e:kill
-  
   # Check browser version before running tests
   node scripts/e2e-browser-version.js
   
