@@ -199,7 +199,7 @@
         "new_wallet": {
           "name_your_wallet": "为你的钱包命名",
           "create": "创建钱包",
-          "input_placeholder": "例如：钱包1"
+          "input_placeholder": "钱包"
         },
         "private_key": {
           "title": "您的私钥",

@@ -199,7 +199,7 @@
         "new_wallet": {
           "name_your_wallet": "Nomeie sua carteira",
           "create": "Criar carteira",
-          "input_placeholder": "ex: Carteira 1"
+          "input_placeholder": "Carteira"
         },
         "private_key": {
           "title": "Sua chave privada",

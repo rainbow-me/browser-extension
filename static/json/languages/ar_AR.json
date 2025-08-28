@@ -199,7 +199,7 @@
         "new_wallet": {
           "name_your_wallet": "تسمية محفظتك",
           "create": "إنشاء محفظة",
-          "input_placeholder": "مثال: محفظة 1"
+          "input_placeholder": "محفظة"
         },
         "private_key": {
           "title": "مفتاحك الخاص",
