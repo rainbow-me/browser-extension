@@ -3,8 +3,8 @@ import React from 'react';
 
 import { i18n } from '~/core/languages';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
-import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import {
   AccentColorProvider,
   Box,
@@ -36,7 +36,8 @@ export const AppConnectionNudgeBanner = ({
   hide: () => void;
   bannerHoverRef: React.MutableRefObject<boolean>;
 }) => {
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
+
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
   const { currentTheme } = useCurrentThemeStore();
   const { displayName } = useWalletName({ address: currentAddress || '0x' });

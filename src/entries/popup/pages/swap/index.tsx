@@ -5,7 +5,8 @@ import { useSearchParams } from 'react-router-dom';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useCurrentAddressStore, useGasStore } from '~/core/state';
+import { useGasStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useDegenMode } from '~/core/state/degenMode';
 import {
   computeUniqueIdForHiddenAsset,
@@ -397,7 +398,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     useExplainerSheetParams();
   const { selectedGas, clearCustomGasModified } = useGasStore();
   const { trackShortcut } = useKeyboardAnalytics();
-  const { currentAddress: address } = useCurrentAddressStore();
+  const [address] = useSettingsStore('currentAddress');
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
   const [urlSearchParams] = useSearchParams();
   const { hidden } = useHiddenAssetStore();

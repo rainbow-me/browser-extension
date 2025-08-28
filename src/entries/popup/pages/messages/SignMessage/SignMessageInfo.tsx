@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { DAppStatus } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
-import { useCurrentCurrencyStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
 import { copy } from '~/core/utils/copy';
@@ -104,7 +104,7 @@ function Overview({
 
 export const SignMessageInfo = ({ request }: SignMessageProps) => {
   const dappUrl = request?.meta?.sender?.url || '';
-  const { currentCurrency } = useCurrentCurrencyStore();
+  const [currentCurrency] = useSettingsStore('currentCurrency');
   const { data: dappMetadata } = useDappMetadata({ url: dappUrl });
 
   const { message, typedData } = getSigningRequestDisplayDetails(request);

@@ -3,7 +3,7 @@ import { DropResult } from 'react-beautiful-dnd';
 
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
-import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { promoTypes, useQuickPromoStore } from '~/core/state/quickPromo';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
@@ -49,8 +49,9 @@ export function SettingsNetworks() {
   const navigate = useRainbowNavigate();
   const chains = useMainChains();
   const { seenPromos, setSeenPromo } = useQuickPromoStore();
-  const { developerToolsEnabled, setDeveloperToolsEnabled } =
-    useDeveloperToolsEnabledStore();
+  const [developerToolsEnabled, setDeveloperToolsEnabled] = useSettingsStore(
+    'isDeveloperToolsEnabled',
+  );
   const removeCustomChain = useNetworkStore((state) => state.removeCustomChain);
   const { enabledChainIds, chainOrder } = useNetworkStore((state) => ({
     chainOrder: state.chainOrder,

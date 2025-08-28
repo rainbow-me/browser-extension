@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import { i18n } from '~/core/languages';
 import { txSpeedEmoji } from '~/core/references/txSpeed';
 import { useNonceStore, usePendingTransactionsStore } from '~/core/state';
-import { useDefaultTxSpeedStore } from '~/core/state/currentSettings/defaultTxSpeed';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
 import { GasSpeed } from '~/core/types/gas';
 import { DefaultTxSpeedOption } from '~/core/types/settings';
@@ -17,7 +17,8 @@ import { SwitchMenu } from '~/entries/popup/components/SwitchMenu/SwitchMenu';
 import { triggerToast } from '../../components/Toast/Toast';
 
 export function Transactions() {
-  const { defaultTxSpeed, setDefaultTxSpeed } = useDefaultTxSpeedStore();
+  const [defaultTxSpeed, setDefaultTxSpeed] =
+    useSettingsStore('defaultTxSpeed');
   const clearNonces = useNonceStore((state) => state.clearNonces);
   const clearPendingTransactions = usePendingTransactionsStore(
     (state) => state.clearPendingTransactions,

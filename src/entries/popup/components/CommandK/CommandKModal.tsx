@@ -1,8 +1,8 @@
 import { AnimatePresence, AnimationControls, motion } from 'framer-motion';
 import React from 'react';
 
-import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { AccentColorProvider, Box } from '~/design-system';
 import { globalColors } from '~/design-system/styles/designTokens';
@@ -76,7 +76,7 @@ export function CommandKModal({
 }) {
   const { closeCommandK, isCommandKVisible, setFinishedExiting } =
     useCommandKStatus();
-  const { currentAddress: address } = useCurrentAddressStore();
+  const [address] = useSettingsStore('currentAddress');
   const { data: avatar } = useAvatar({ addressOrName: address });
   const { currentTheme } = useCurrentThemeStore();
 

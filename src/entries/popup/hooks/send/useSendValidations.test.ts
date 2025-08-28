@@ -3,7 +3,7 @@ import { Address } from 'viem';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 import { useUserAssets } from '~/core/resources/assets';
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import { settingsStorage } from '~/core/state/currentSettings/store';
 import { ChainId } from '~/core/types/chains';
 import {
   DAI_MAINNET_ASSET,
@@ -12,6 +12,7 @@ import {
 } from '~/test/utils';
 
 import { useSendValidations } from './useSendValidations';
+
 vi.mock('../useUserNativeAsset', () => ({
   useUserNativeAsset: vi.fn().mockReturnValue({
     nativeAsset: { balance: { amount: '0' } },
@@ -29,14 +30,12 @@ const USER_ASSETS = {
   },
 };
 
-beforeEach(() => {
+beforeEach(async () => {
   vi.mocked(useUserAssets).mockReturnValue({ data: USER_ASSETS } as ReturnType<
     typeof useUserAssets
   >);
-  useCurrentAddressStore.setState({
-    currentAddress: TEST_ADDRESS_1 as Address,
-  });
-  useCurrentCurrencyStore.setState({ currentCurrency: 'USD' });
+  await settingsStorage.setItem('settings:currentAddress', TEST_ADDRESS_1);
+  await settingsStorage.setItem('settings:currentCurrency', 'USD');
 });
 
 describe('validateToAddress', () => {

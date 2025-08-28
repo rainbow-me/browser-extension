@@ -11,8 +11,8 @@ import React, {
 } from 'react';
 
 import { shortcuts } from '~/core/references/shortcuts';
-import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { hasChildren } from '~/core/utils/react';
 import {
   AccentColorProvider,
@@ -58,7 +58,7 @@ interface ContextMenuTriggerProps {
 
 export const ContextMenuTrigger = (props: ContextMenuTriggerProps) => {
   const { children, accentColor, asChild, disabled } = props;
-  const { currentAddress: address } = useCurrentAddressStore();
+  const [address] = useSettingsStore('currentAddress');
   const { data: avatar } = useAvatar({ addressOrName: address });
   const triggerRef = useRef<HTMLDivElement>(null);
 
@@ -158,7 +158,7 @@ const ContextMenuContentBody = React.forwardRef<
     onPointerDownOutside,
   } = props;
   const { currentTheme } = useCurrentThemeStore();
-  const { currentAddress: address } = useCurrentAddressStore();
+  const [address] = useSettingsStore('currentAddress');
   const { data: avatar } = useAvatar({ addressOrName: address });
   return (
     <AccentColorProvider

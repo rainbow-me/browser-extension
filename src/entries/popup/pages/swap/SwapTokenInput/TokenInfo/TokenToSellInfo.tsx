@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
-import { useCurrentCurrencyStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import {
   Bleed,
@@ -40,7 +40,7 @@ export const TokenToSellInfo = ({
   setAssetToSellInputNativeValue: (value: string) => void;
   setIndependentField: (field: IndependentField) => void;
 }) => {
-  const { currentCurrency } = useCurrentCurrencyStore();
+  const [currentCurrency] = useSettingsStore('currentCurrency');
   const { isFirefox } = useBrowser();
 
   const handleNativeValueOnChange = useCallback(

@@ -3,8 +3,8 @@ import clsx from 'clsx';
 import React, { PropsWithChildren } from 'react';
 
 import { shortcuts } from '~/core/references/shortcuts';
-import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { AccentColorProvider, Box, Text, ThemeProvider } from '~/design-system';
 import { accentMenuFocusVisibleStyle } from '~/design-system/components/Lens/Lens.css';
 import { globalColors } from '~/design-system/styles/designTokens';
@@ -56,7 +56,7 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
     ref,
   ) {
     const { currentTheme } = useCurrentThemeStore();
-    const { currentAddress } = useCurrentAddressStore();
+    const [currentAddress] = useSettingsStore('currentAddress');
     const { data: avatar } = useAvatar({ addressOrName: currentAddress });
     return (
       <SelectPrimitive.Portal>

@@ -1,9 +1,9 @@
-import { useCurrentAddressStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 
 import { useWallets } from './useWallets';
 
 export const useCurrentWalletTypeAndVendor = () => {
-  const { currentAddress: address } = useCurrentAddressStore();
+  const [address] = useSettingsStore('currentAddress');
   const { allWallets } = useWallets();
 
   const wallet = allWallets.find((wallet) => wallet.address === address);

@@ -8,7 +8,8 @@ import { Address } from 'viem';
 import { optimism } from 'viem/chains';
 
 import { REFERRER_CLAIM } from '~/core/references';
-import { useCurrentCurrencyStore, useGasStore } from '~/core/state';
+import { useGasStore } from '~/core/state';
+import { settingsStorage } from '~/core/state/currentSettings/store';
 import { TransactionGasParams } from '~/core/types/gas';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { calculateL1FeeOptimism } from '~/core/utils/gas';
@@ -45,6 +46,7 @@ export async function claimBridge({
   let needsNewQuote = false;
 
   // 1 - Get a quote to bridge the claimed funds
+  const currency = await settingsStorage.getItem('settings:currentCurrency');
   const claimBridgeQuote = await getClaimBridgeQuote({
     chainId,
     toChainId,
@@ -53,7 +55,7 @@ export async function claimBridge({
     buyTokenAddress: AddressZero,
     sellAmount: sellAmount,
     slippage: 2,
-    currency: useCurrentCurrencyStore.getState().currentCurrency,
+    currency,
   });
 
   // if we don't get a quote or there's an error we can't continue
@@ -120,7 +122,7 @@ export async function claimBridge({
       buyTokenAddress: AddressZero,
       sellAmount: maxBridgeableAmount,
       slippage: 2,
-      currency: useCurrentCurrencyStore.getState().currentCurrency,
+      currency,
     });
 
     if (!newQuote || (newQuote as QuoteError)?.error) {
@@ -204,11 +206,14 @@ export async function claimBridge({
     ...gasParams,
   } satisfies NewTransaction;
 
-  addNewTransaction({
-    address: bridgeQuote.from as Address,
-    chainId,
-    transaction,
-  });
+  addNewTransaction(
+    {
+      address: bridgeQuote.from as Address,
+      chainId,
+      transaction,
+    },
+    { currency },
+  );
 
   return {
     nonce: swap.nonce,

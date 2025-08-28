@@ -5,7 +5,8 @@ import { Address } from 'viem';
 import { useBalance, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore, useGasStore } from '~/core/state';
+import { useGasStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { ChainId } from '~/core/types/chains';
 import {
   GasSpeed,
@@ -173,24 +174,27 @@ export function SpeedUpAndCancelSheet({
     mutationFn: async () => {
       const replaceTx = await sendTransaction(transactionRequest);
 
-      updateTransaction({
-        address: replaceTx.from as Address,
-        chainId: replaceTx.chainId,
-        transaction: {
-          ...transaction,
-          data: replaceTx.data,
-          value: replaceTx.value?.toString(),
-          from: replaceTx.from as Address,
-          to: replaceTx.to as Address,
-          hash: replaceTx.hash as TxHash,
+      updateTransaction(
+        {
+          address: replaceTx.from as Address,
           chainId: replaceTx.chainId,
-          maxFeePerGas: replaceTx.maxFeePerGas?.toString(),
-          maxPriorityFeePerGas: replaceTx.maxPriorityFeePerGas?.toString(),
-          status: 'pending',
-          typeOverride: cancel ? 'cancel' : 'speed_up',
-          nonce: transaction.nonce,
+          transaction: {
+            ...transaction,
+            data: replaceTx.data,
+            value: replaceTx.value?.toString(),
+            from: replaceTx.from as Address,
+            to: replaceTx.to as Address,
+            hash: replaceTx.hash as TxHash,
+            chainId: replaceTx.chainId,
+            maxFeePerGas: replaceTx.maxFeePerGas?.toString(),
+            maxPriorityFeePerGas: replaceTx.maxPriorityFeePerGas?.toString(),
+            status: 'pending',
+            typeOverride: cancel ? 'cancel' : 'speed_up',
+            nonce: transaction.nonce,
+          },
         },
-      });
+        { currency: currentCurrency },
+      );
     },
     onSuccess: () => {
       onClose();
@@ -209,7 +213,8 @@ export function SpeedUpAndCancelSheet({
     },
   });
 
-  const { currentAddress: address } = useCurrentAddressStore();
+  const [address] = useSettingsStore('currentAddress');
+  const [currentCurrency] = useSettingsStore('currentCurrency');
 
   return (
     <Prompt
@@ -385,7 +390,7 @@ export function SpeedUpAndCancelSheet({
 }
 
 function AccountName() {
-  const { currentAddress: address } = useCurrentAddressStore();
+  const [address] = useSettingsStore('currentAddress');
   const { data: ensName } = useEnsName({ address, chainId: ChainId.mainnet });
   return (
     <Box>

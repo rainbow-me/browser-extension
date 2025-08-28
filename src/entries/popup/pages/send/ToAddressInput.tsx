@@ -11,8 +11,7 @@ import React, {
 import { Address, isAddress } from 'viem';
 
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
@@ -288,7 +287,7 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
     } = props;
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
-    const { testnetMode } = useTestnetModeStore();
+    const [testnetMode] = useSettingsStore('isTestnetMode');
 
     useImperativeHandle(forwardedRef, () => ({
       blur: () => closeDropdown(),
@@ -353,7 +352,7 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
     const { wallets, watchedWallets, contacts } = useAllFilteredWallets({
       filter: toAddress ? undefined : toAddressOrName,
     });
-    const { currentAddress } = useCurrentAddressStore();
+    const [currentAddress] = useSettingsStore('currentAddress');
     const selectableWallets = wallets.filter(
       (w) => w.address !== currentAddress,
     );

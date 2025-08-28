@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
@@ -15,7 +15,7 @@ export const WindowStroke = () => {
   const { currentTheme } = useCurrentThemeStore();
   const isFullScreen = useIsFullScreen();
   const location = useLocation();
-  const { testnetMode } = useTestnetModeStore();
+  const [testnetMode] = useSettingsStore('isTestnetMode');
   const displayingTestnetBar = shouldShowTestnetBar({
     testnetMode,
     pathname: location.pathname,

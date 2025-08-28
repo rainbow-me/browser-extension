@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import React, { useCallback, useEffect } from 'react';
 
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useNotificationWindowStore } from '~/core/state/notificationWindow';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { TESTNET_MODE_BAR_HEIGHT } from '~/core/utils/dimensions';
@@ -28,7 +28,7 @@ const ApproveAppRequestWrapper = ({
   pendingRequest: ProviderRequestPayload;
   rejectRequest: () => void;
 }) => {
-  const { testnetMode } = useTestnetModeStore();
+  const [testnetMode] = useSettingsStore('isTestnetMode');
   return (
     <Box
       style={{

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
@@ -48,7 +48,7 @@ export const TestnetModeWatcher = ({
   });
   const dappHost = dappMetadata?.appHost || '';
 
-  const { testnetMode, setTestnetMode } = useTestnetModeStore();
+  const [testnetMode, setTestnetMode] = useSettingsStore('isTestnetMode');
   const { activeSession } = useAppSession({
     host: dappHost,
   });

@@ -13,11 +13,8 @@ import {
   Approval,
   ApprovalSpender,
 } from '~/core/resources/approvals/approvals';
-import {
-  useCurrentAddressStore,
-  useCurrentCurrencyStore,
-  useGasStore,
-} from '~/core/state';
+import { useGasStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { ChainId } from '~/core/types/chains';
 import {
   TransactionGasParams,
@@ -73,7 +70,8 @@ export const RevokeApprovalSheet = ({
   onRevoke: () => void;
   onCancel: () => void;
 }) => {
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
+  const [currentCurrency] = useSettingsStore('currentCurrency');
   const [sending, setSending] = useState(false);
   const confirmSendButtonRef = useRef<HTMLButtonElement>(null);
   const previousShow = usePrevious(show);
@@ -86,7 +84,6 @@ export const RevokeApprovalSheet = ({
   );
 
   const navigate = useRainbowNavigate();
-  const { currentCurrency } = useCurrentCurrencyStore();
 
   const { approvalChainId, assetAddress, spenderAddress, assetType } =
     useMemo(() => {
@@ -195,11 +192,14 @@ export const RevokeApprovalSheet = ({
             selectedGas.transactionGasParams as TransactionGasParams
           )?.maxPriorityFeePerGas,
         };
-        await addNewTransaction({
-          address: currentAddress,
-          chainId: approvalChainId,
-          transaction,
-        });
+        await addNewTransaction(
+          {
+            address: currentAddress,
+            chainId: approvalChainId,
+            transaction,
+          },
+          { currency: currentCurrency },
+        );
         playSound('SendSound');
         onRevoke();
         navigate(ROUTES.HOME, {

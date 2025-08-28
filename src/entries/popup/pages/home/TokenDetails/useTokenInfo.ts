@@ -4,16 +4,20 @@ import { Address } from 'viem';
 import { metadataClient } from '~/core/graphql';
 import { AboutTokenQuery } from '~/core/graphql/__generated__/metadata';
 import { createQueryKey } from '~/core/react-query';
-import { useCurrentCurrencyStore } from '~/core/state';
+import { SupportedCurrencyKey } from '~/core/references';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { formatCurrency } from '~/core/utils/formatNumber';
 
-const parseTokenInfo = (token: AboutTokenQuery['token']) => {
+const parseTokenInfo = (
+  currency: SupportedCurrencyKey,
+  token: AboutTokenQuery['token'],
+) => {
   if (!token) return token;
   const format = (n?: number | string | null) =>
-    formatCurrency(n || 0, {
+    formatCurrency(currency, n || 0, {
       notation: 'compact',
       maximumSignificantDigits: 4,
     });
@@ -43,7 +47,7 @@ export const useTokenInfo = <Select = ParsedTokenInfo>(
   token: { address: AddressOrEth; chainId: ChainId } | null,
   options?: { select: (t: ParsedTokenInfo) => Select },
 ) => {
-  const { currentCurrency } = useCurrentCurrencyStore();
+  const [currentCurrency] = useSettingsStore('currentCurrency');
   const supportedChains = useNetworkStore((state) =>
     state.getBackendSupportedChains(true),
   );
@@ -53,7 +57,7 @@ export const useTokenInfo = <Select = ParsedTokenInfo>(
       if (!args) return;
       return metadataClient
         .aboutToken(args)
-        .then((d) => parseTokenInfo(d.token));
+        .then((d) => parseTokenInfo(currentCurrency, d.token));
     },
     queryKey: createQueryKey(
       'tokenInfo',

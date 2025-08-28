@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { zeroAddress } from 'viem';
 
 import { i18n } from '~/core/languages';
-import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { getCustomChainIconUrl } from '~/core/utils/assets';
 import { Box, Stack, Symbol, Text } from '~/design-system';
@@ -20,7 +20,7 @@ export function SettingsCustomChainsList() {
   const navigate = useRainbowNavigate();
   const [searchTerm, setSearchTerm] = useState('');
 
-  const { developerToolsEnabled } = useDeveloperToolsEnabledStore();
+  const [developerToolsEnabled] = useSettingsStore('isDeveloperToolsEnabled');
   const customNetworks = useNetworkStore((state) =>
     state.getSupportedCustomNetworks(),
   );

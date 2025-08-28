@@ -2,14 +2,15 @@ import React from 'react';
 
 import EthIcon from 'static/assets/ethIcon.png';
 import { SupportedCurrencyKey, supportedCurrencies } from '~/core/references';
-import { useCurrentCurrencyStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { Box, Inline } from '~/design-system';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 
 export function Currency() {
-  const { currentCurrency, setCurrentCurrency } = useCurrentCurrencyStore();
+  const [currentCurrency, setCurrentCurrency] =
+    useSettingsStore('currentCurrency');
   const supportedCurrencyKeys = Object.keys(
     supportedCurrencies,
   ) as SupportedCurrencyKey[];

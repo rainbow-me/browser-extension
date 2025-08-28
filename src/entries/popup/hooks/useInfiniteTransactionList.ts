@@ -8,12 +8,8 @@ import {
   consolidatedTransactionsQueryKey,
   useConsolidatedTransactions,
 } from '~/core/resources/transactions/consolidatedTransactions';
-import {
-  useCurrentAddressStore,
-  useCurrentCurrencyStore,
-  usePendingTransactionsStore,
-} from '~/core/state';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { usePendingTransactionsStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { useSupportedChains } from '~/core/utils/chains';
@@ -33,8 +29,8 @@ const stableEmptyPendingTransactionsArray: RainbowTransaction[] = [];
 export const useInfiniteTransactionList = ({
   getScrollElement,
 }: UseInfiniteTransactionListParams) => {
-  const { currentAddress: address } = useCurrentAddressStore();
-  const { currentCurrency: currency } = useCurrentCurrencyStore();
+  const [address] = useSettingsStore('currentAddress');
+  const [currency] = useSettingsStore('currentCurrency');
   const pendingTransactions = usePendingTransactionsStore(
     (s) =>
       s.pendingTransactions[address] || stableEmptyPendingTransactionsArray,
@@ -50,7 +46,7 @@ export const useInfiniteTransactionList = ({
     [address, customNetworkTransactions],
   );
 
-  const { testnetMode } = useTestnetModeStore();
+  const [testnetMode] = useSettingsStore('isTestnetMode');
   const { chains } = useUserChains();
   const userChainIds = chains.map(({ id }) => id);
   const supportedChainIds = useSupportedChains({ testnets: testnetMode })

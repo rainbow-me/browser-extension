@@ -76,14 +76,18 @@ export const HWRequestListener = () => {
         });
 
         for await (const request of stream) {
-          // Process the hardware wallet request
-          const response = await processHwSigningRequest(request);
+          try {
+            // Process the hardware wallet request
+            const response = await processHwSigningRequest(request);
 
-          // Send the response back to background
-          await popupClient.wallet.hw.response({
-            requestId: request.requestId,
-            result: response || { error: 'Unknown error' },
-          });
+            // Send the response back to background
+            await popupClient.wallet.hw.response({
+              requestId: request.requestId,
+              result: response || { error: 'Unknown error' },
+            });
+          } catch (error) {
+            console.error(error);
+          }
         }
       } catch (error) {
         if (error instanceof Error && error.name !== 'AbortError') {

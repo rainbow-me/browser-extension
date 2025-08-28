@@ -10,7 +10,7 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { useStaleBalancesStore } from '~/core/state/staleBalances';
 import { ParsedAssetsDictByChain, ParsedUserAsset } from '~/core/types/assets';
@@ -253,7 +253,7 @@ export function useUserAssets<TSelectResult = UserAssetsResult>(
     UserAssetsQueryKey
   > = {},
 ) {
-  const { testnetMode } = useTestnetModeStore();
+  const [testnetMode] = useSettingsStore('isTestnetMode');
   return useQuery({
     queryKey: userAssetsQueryKey({
       address,

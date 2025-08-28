@@ -5,7 +5,7 @@ import { event } from '~/analytics/event';
 import { getWalletContext } from '~/analytics/util';
 import { i18n } from '~/core/languages';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
-import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { RPCMethod } from '~/core/types/rpcMethods';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
@@ -53,7 +53,7 @@ export function SignMessage({
   const { data: dappMetadata } = useDappMetadata({
     url: request?.meta?.sender?.url,
   });
-  const { featureFlags } = useFeatureFlagsStore();
+  const [featureFlags] = useSettingsStore('featureFlags');
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
   const { allWallets, watchedWallets } = useWallets();
 
