@@ -199,7 +199,7 @@
         "new_wallet": {
           "name_your_wallet": "Nombra tu billetera",
           "create": "Crear Billetera",
-          "input_placeholder": "ej: Billetera 1"
+          "input_placeholder": "Billetera"
         },
         "private_key": {
           "title": "Tu clave privada",
