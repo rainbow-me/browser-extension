@@ -1,5 +1,5 @@
 import { verifyMessage, verifyTypedData } from '@ethersproject/wallet';
-import { WebDriver } from 'selenium-webdriver';
+import { By, WebDriver } from 'selenium-webdriver';
 import { getAddress, isHex } from 'viem';
 import {
   afterAll,
@@ -366,6 +366,73 @@ describe('App interactions flow', () => {
     await driver.switchTo().window(dappHandler);
   });
 
+  it('should check initial networks and RPCs state', async () => {
+    await goToPopup(driver, rootURL, '#/home');
+    await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
+    await findElementByTestIdAndClick({ id: 'settings-link', driver });
+    await findElementByTestIdAndClick({ id: 'networks-link', driver });
+
+    // Check mainnet and see how many RPCs it has initially
+    await findElementByTestIdAndClick({ id: 'network-row-1', driver });
+    await delayTime('medium');
+    const initialRpcElements = await driver.findElements(
+      By.css('[data-testid^="rpc-row-item"]'),
+    );
+    const initialRpcCount = initialRpcElements.length;
+    console.log(`Initial RPC count for mainnet: ${initialRpcCount}`);
+    expect(initialRpcCount).toBe(1);
+
+    // Go back to networks list
+    await findElementByTestIdAndClick({
+      id: 'navbar-button-with-back',
+      driver,
+    });
+    await delayTime('medium');
+
+    // Check how many networks we have initially
+    const initialNetworkElements = await driver.findElements(
+      By.css('[data-testid^="network-row"]'),
+    );
+    const initialNetworkCount = initialNetworkElements.length;
+    console.log(`Initial network count: ${initialNetworkCount}`);
+    expect(initialNetworkCount).toBe(6);
+  });
+
+  it('should be able to add a custom RPC for mainnet', async () => {
+    await goToTestApp(driver);
+    const dappHandler = await getWindowHandle({ driver });
+
+    // Click the add RPC button
+    const addRpcButton = await querySelector(driver, '[id="addRPC"]');
+    expect(addRpcButton).toBeTruthy();
+    await waitAndClick(addRpcButton, driver);
+    await delayTime('long');
+
+    await driver.switchTo().window(dappHandler);
+    await delayTime('medium');
+  });
+
+  it('should be able to add a custom network', async () => {
+    const dappHandler = await getWindowHandle({ driver });
+
+    // Click the add network button
+    const addNetworkButton = await querySelector(driver, '[id="addNetwork"]');
+    expect(addNetworkButton).toBeTruthy();
+    await waitAndClick(addNetworkButton, driver);
+
+    // Switch to popup to approve the network addition
+    const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
+    await driver.switchTo().window(popupHandler);
+
+    await delayTime('medium');
+    await clickAcceptRequestButton(driver);
+    await delayTime('long');
+
+    // Switch back to dapp - the network has been added
+    await driver.switchTo().window(dappHandler);
+    await delayTime('medium');
+  });
+
   it('should be able to disconnect from connected dapps', async () => {
     await goToPopup(driver, rootURL, '#/home');
     await findElementByTestIdAndClick({ id: 'home-page-header-left', driver });
@@ -384,5 +451,43 @@ describe('App interactions flow', () => {
     await goToTestApp(driver);
     const button = await findElementByText(driver, 'Connect Wallet');
     expect(button).toBeTruthy();
+  });
+
+  it('should verify custom RPC and network were added', async () => {
+    // After disconnecting, let's verify the RPC and network were actually added
+    await goToPopup(driver, rootURL, '#/home');
+    await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
+    await findElementByTestIdAndClick({ id: 'settings-link', driver });
+    await findElementByTestIdAndClick({ id: 'networks-link', driver });
+
+    // Check mainnet RPCs - should have one more than before
+    await findElementByTestIdAndClick({ id: 'network-row-1', driver });
+    await delayTime('medium');
+
+    const finalRpcElements = await driver.findElements(
+      By.css('[data-testid^="rpc-row-item"]'),
+    );
+    const finalRpcCount = finalRpcElements.length;
+    console.log(`Final RPC count for mainnet: ${finalRpcCount}`);
+
+    // We should have at least one more RPC than initially
+    expect(finalRpcCount).toBeGreaterThan(1);
+
+    // Go back to networks list
+    await findElementByTestIdAndClick({
+      id: 'navbar-button-with-back',
+      driver,
+    });
+    await delayTime('medium');
+
+    // Check total networks - should have one more than before
+    const finalNetworkElements = await driver.findElements(
+      By.css('[data-testid^="network-row"]'),
+    );
+    const finalNetworkCount = finalNetworkElements.length;
+    console.log(`Final network count: ${finalNetworkCount}`);
+
+    // We should have at least one more network than initially
+    expect(finalNetworkCount).toBeGreaterThan(6);
   });
 });
