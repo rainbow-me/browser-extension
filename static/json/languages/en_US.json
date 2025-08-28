@@ -199,7 +199,7 @@
         "new_wallet": {
           "name_your_wallet": "Name Your Wallet",
           "create": "Create Wallet",
-          "input_placeholder": "ex: Wallet 1"
+          "input_placeholder": "Wallet"
         },
         "private_key": {
           "title": "Your Private Key",
