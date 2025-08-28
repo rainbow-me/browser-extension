@@ -199,7 +199,7 @@
         "new_wallet": {
           "name_your_wallet": "Nommez votre portefeuille",
           "create": "Créer un portefeuille",
-          "input_placeholder": "ex: Portefeuille 1"
+          "input_placeholder": "Portefeuille"
         },
         "private_key": {
           "title": "Votre clé privée",
