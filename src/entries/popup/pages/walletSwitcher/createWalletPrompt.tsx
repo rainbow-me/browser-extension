@@ -1,4 +1,4 @@
-import { KeyboardEvent, useCallback, useEffect, useState } from 'react';
+import { KeyboardEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Address } from 'viem';
 
@@ -48,6 +48,7 @@ export const CreateWalletPrompt = ({
     (state) => state.setCurrentAddress,
   );
   const [newWallet, setNewWallet] = useState<KeychainWallet | null>();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const getWallet = async () => {
@@ -56,6 +57,16 @@ export const CreateWalletPrompt = ({
     };
     getWallet();
   }, []);
+
+  useEffect(() => {
+    // Focus the input after a short delay to ensure the modal animation has started
+    if (show) {
+      const timer = setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [show]);
 
   const onCreateWallet = useCallback(async () => {
     if (!address) return;
@@ -159,7 +170,7 @@ export const CreateWalletPrompt = ({
                           height="44px"
                           variant="transparent"
                           textAlign="center"
-                          autoFocus
+                          innerRef={inputRef}
                           onKeyDown={onKeyDown}
                           tabIndex={1}
                         />
