@@ -108,12 +108,14 @@ export async function initDriverWithOptions(opts: {
     '--disable-extensions-except=build/',
     '--disable-popup-blocking',
     '--remote-debugging-port=9222',
+    // BX-1923: localhost network access is permissioned in dev 139, and prod 141
+    '--disable-features=LocalNetworkAccessChecks,LocalNetworkAccessForWorkers',
   ];
 
   if (opts.browser === 'firefox') {
     const options = new firefox.Options()
       .setBinary(browserBinaryPath)
-      .addArguments(...args.slice(1))
+      .addArguments(...args.slice(1, -1))
       .setPreference('xpinstall.signatures.required', false)
       .setPreference('extensions.langpacks.signatures.required', false)
       .addExtensions('rainbowbx.xpi');

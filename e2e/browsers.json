@@ -1,7 +1,7 @@
 {
     "mac": {
       "chrome": {
-        "version": "138.0.7204.183",
+        "version": "139.0.7258.138",
         "path": "/Applications/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing",
         "extension_scheme": "chrome-extension://"
       },
@@ -13,7 +13,7 @@
     },
     "linux": {
       "chrome": {
-        "version": "138.0.7204.183",
+        "version": "139.0.7258.138",
         "path": "/opt/google/chrome/chrome",
         "extension_scheme": "chrome-extension://"
       },

@@ -10398,7 +10398,7 @@ __metadata:
     bundlewatch: "npm:0.4.1"
     check-password-strength: "npm:2.0.7"
     chroma-js: "npm:2.4.2"
-    chromedriver: "npm:138.0.5"
+    chromedriver: "npm:139.0.2"
     circular-dependency-plugin: "npm:5.2.2"
     clsx: "npm:1.2.1"
     copy-webpack-plugin: "npm:11.0.0"
@@ -11265,9 +11265,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chromedriver@npm:138.0.5":
-  version: 138.0.5
-  resolution: "chromedriver@npm:138.0.5"
+"chromedriver@npm:139.0.2":
+  version: 139.0.2
+  resolution: "chromedriver@npm:139.0.2"
   dependencies:
     "@testim/chrome-version": "npm:^1.1.4"
     axios: "npm:^1.7.4"
@@ -11278,7 +11278,7 @@ __metadata:
     tcp-port-used: "npm:^1.0.2"
   bin:
     chromedriver: bin/chromedriver
-  checksum: 10c0/b814df6ce699c37fa3d9b5c7be099c6f82923db5e5a56d7a979b09c320e51b345fb623ef264b82b2ef39e959163f892e19480eb96270b571ce89d16b439ab212
+  checksum: 10c0/e8dc51bc1483c438a14a12daaa68416a55310d80aa5f041a8d996bdfb681cc3e81451f978b6a611e3feb52c3a559b601fa2c203e883140ef7fda410e6c9bb152
   languageName: node
   linkType: hard
 

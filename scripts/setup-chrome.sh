@@ -1,11 +1,10 @@
 #!/bin/bash
 
-# Setup Chrome 138 for testing
-# This script downloads Chrome 138 for testing binary and installs it to /Applications
+# This script downloads Chrome for Testing binary and installs it to /Applications
 
 set -e
 
-CHROME_VERSION="138.0.7204.183"
+CHROME_VERSION=$(node -p "require('./e2e/browsers.json').mac.chrome.version")
 TEMP_DIR="/tmp/chrome-testing-download"
 APP_NAME="Google Chrome for Testing.app"
 INSTALL_PATH="/Applications/$APP_NAME"
