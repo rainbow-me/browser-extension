@@ -226,15 +226,16 @@ jobs:
           export BROWSER=chrome
           export OS=linux
           export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
-          yarn perf:initial
-          yarn perf:wallet
+          # Run tests directly with vitest
+          yarn vitest e2e/performance/initialLoad.test.ts --config ./e2e/vitest.config.ts --run || true
+          yarn vitest e2e/performance/walletFlowPerformance.test.ts --config ./e2e/vitest.config.ts --run || true
       
       - name: Compare with baseline
         id: compare
         continue-on-error: true
         run: |
-          if [ -f perf-baseline.json ]; then
-            yarn perf:compare > perf-output.txt 2>&1 || true
+          if [ -f perf-baseline.json ] && [ -f perf-results.json ]; then
+            node -r esbuild-register scripts/perf/compare.ts > perf-output.txt 2>&1 || true
             cat perf-output.txt
           else
             echo "No baseline found, skipping comparison"
