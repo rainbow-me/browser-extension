@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
-import { useAppSessionsStore, useCurrentAddressStore } from '~/core/state';
+import { useCurrentAddressStore } from '~/core/state';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { useWalletBackupsStore } from '~/core/state/walletBackups';
 import { useWalletNamesStore } from '~/core/state/walletNames';
@@ -20,6 +20,7 @@ import {
   Text,
 } from '~/design-system';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
+import { popupClient } from '~/entries/popup/handlers/background';
 import { getAccounts, remove, wipe } from '~/entries/popup/handlers/wallet';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
@@ -27,7 +28,6 @@ import { RainbowError, logger } from '~/logger';
 
 const { deleteWalletName } = useWalletNamesStore.getState();
 const { deleteWalletBackup } = useWalletBackupsStore.getState();
-const { removeAddressSessions } = useAppSessionsStore.getState();
 const { unhideWallet } = useHiddenWalletsStore.getState();
 
 async function removeWallet(address: Address) {
@@ -35,7 +35,7 @@ async function removeWallet(address: Address) {
   unhideWallet({ address }); // unhide so if it's readded later, it's not hidden
   deleteWalletName({ address });
   deleteWalletBackup({ address });
-  removeAddressSessions({ address });
+  await popupClient.state.sessions.removeAddressSessions({ address });
 }
 
 export const HardwareWalletWipePrompt = ({
