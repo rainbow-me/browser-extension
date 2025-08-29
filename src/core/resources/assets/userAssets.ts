@@ -143,7 +143,7 @@ async function userAssetsQueryFunction({
       .getStaleBalancesQueryParam(address as Address);
     const url = `/${supportedChainIds.join(
       ',',
-    )}/${address}/assets/?currency=${currency.toLowerCase()}${staleBalancesParam}`;
+    )}/${address}/assets?currency=${currency.toLowerCase()}${staleBalancesParam}`;
     const res = await addysHttp.get<AddressAssetsReceivedMessage>(url, {
       timeout: USER_ASSETS_TIMEOUT_DURATION,
     });
@@ -331,7 +331,7 @@ async function userAssetsByChainQueryFunction({
   })?.state?.data || {}) as ParsedAssetsDictByChain;
   const cachedDataForChain = cachedUserAssets?.[chainId];
   try {
-    const url = `/${chainId}/${address}/assets/?currency=${currency.toLowerCase()}`;
+    const url = `/${chainId}/${address}/assets?currency=${currency.toLowerCase()}`;
     const res = await addysHttp.get<AddressAssetsReceivedMessage>(url);
     const chainIdsInResponse = res?.data?.meta?.chain_ids || [];
     const assets = res?.data?.payload?.assets || [];
