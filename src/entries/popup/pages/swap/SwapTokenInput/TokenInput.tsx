@@ -75,6 +75,7 @@ interface TokenInputProps {
   variant: 'surface' | 'bordered' | 'transparent' | 'tinted';
   inputRef: React.RefObject<HTMLInputElement>;
   inputDisabled?: boolean;
+  isRefetching?: boolean;
   value: string;
   testId: string;
   openDropdownOnMount?: boolean;
@@ -106,6 +107,7 @@ export const TokenInput = React.forwardRef<
     variant,
     inputRef,
     inputDisabled,
+    isRefetching,
     value,
     testId,
     openDropdownOnMount,
@@ -240,6 +242,7 @@ export const TokenInput = React.forwardRef<
                   paddingHorizontal={0}
                   innerRef={inputRef}
                   disabled={inputDisabled}
+                  pulseText={isRefetching}
                 />
               </Box>
             </SwapInputMaskWrapper>

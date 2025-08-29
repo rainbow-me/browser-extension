@@ -521,6 +521,8 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
   const {
     data: quote,
     isLoading: isLoadingQuote,
+    isRefetchingAfterInputChange,
+    isRefetching,
     isCrosschainSwap,
     isWrapOrUnwrapEth,
   } = useSwapQuote({
@@ -921,6 +923,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                   assetToBuyNativeDisplay={assetToBuyNativeDisplay}
                   assetToSellNativeDisplay={assetToSellNativeDisplay}
                   setIndependentField={setIndependentField}
+                  isRefetching={isRefetching}
                 />
               </AccentColorProvider>
 
@@ -958,7 +961,9 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                       <SwapButton
                         showSwapReviewSheet={showSwapReviewSheet}
                         quote={quote}
-                        isLoadingQuote={isLoadingQuote}
+                        isLoadingQuote={
+                          isLoadingQuote || isRefetchingAfterInputChange
+                        }
                         assetToSell={assetToSell}
                         assetToSellValue={assetToSellValue}
                         assetToBuy={assetToBuy}

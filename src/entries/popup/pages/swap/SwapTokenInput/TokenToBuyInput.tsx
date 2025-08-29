@@ -31,6 +31,7 @@ interface TokenToBuyProps {
   assetToSellValue: string;
   inputRef: React.RefObject<HTMLInputElement>;
   inputDisabled?: boolean;
+  isRefetching?: boolean;
   openDropdownOnMount?: boolean;
   assetToBuyNativeDisplay: { amount: string; display: string } | null;
   assetToSellNativeDisplay: { amount: string; display: string } | null;
@@ -61,6 +62,7 @@ export const TokenToBuyInput = forwardRef(function TokenToBuyInput(
     assetToSellValue,
     inputRef,
     inputDisabled,
+    isRefetching,
     openDropdownOnMount,
     assetsToBuyNetworkSearchStatus,
     onDropdownOpen,
@@ -156,6 +158,7 @@ export const TokenToBuyInput = forwardRef(function TokenToBuyInput(
       inputDisabled={inputDisabled}
       ref={mergeRefs(ref, dropdownRef)}
       onFocus={() => setIndependentField('buyField')}
+      isRefetching={isRefetching}
     />
   );
 });

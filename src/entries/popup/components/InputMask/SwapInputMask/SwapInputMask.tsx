@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { motion } from 'framer-motion';
 import React, { CSSProperties, RefObject, useCallback } from 'react';
 
@@ -12,6 +13,8 @@ import {
 import { InputHeight } from '../../../../../design-system/components/Input/Input.css';
 import { maskInput } from '../utils';
 
+import { pulseTextStyle } from './SwapInputMask.css';
+
 interface SwapInputMaskProps {
   borderColor: BoxStyles['borderColor'];
   decimals?: number;
@@ -24,6 +27,7 @@ interface SwapInputMaskProps {
   onChange: (value: string) => void;
   paddingHorizontal?: number;
   placeholder: string;
+  pulseText?: boolean;
   accentCaretColor?: boolean;
   testId: string;
 }
@@ -38,6 +42,7 @@ export const SwapInputMask = ({
   height,
   innerRef,
   placeholder,
+  pulseText = false,
   style,
   value,
   variant,
@@ -85,6 +90,7 @@ export const SwapInputMask = ({
             caretColor: accentCaretColor ? accentColorAsHsl : undefined,
             cursor: disabled ? 'not-allowed' : 'text',
           }}
+          className={clsx(pulseText && pulseTextStyle)}
           enableTapScale={false}
           testId={`${testId}-swap-input-mask`}
           disabled={disabled}
