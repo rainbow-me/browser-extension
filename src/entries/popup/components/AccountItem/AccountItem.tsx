@@ -7,8 +7,7 @@ import {
   selectorFilterByUserChains,
 } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
-import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import {
   computeUniqueIdForHiddenAsset,
   useHiddenAssetStore,
@@ -41,8 +40,10 @@ export enum LabelOption {
 
 const TotalAssetsBalance = ({ account }: { account: Address }) => {
   const { hidden } = useHiddenAssetStore();
-  const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const { currentAddress: address } = useCurrentAddressStore();
+  const [address] = useSettingsStore('currentAddress');
+  const [currentCurrency] = useSettingsStore('currentCurrency');
+  const [hideAssetBalances] = useSettingsStore('isHideAssetBalances');
+
   const isHidden = useCallback(
     (asset: ParsedUserAsset) => {
       return !!hidden[address]?.[computeUniqueIdForHiddenAsset(asset)];
@@ -50,7 +51,7 @@ const TotalAssetsBalance = ({ account }: { account: Address }) => {
     [address, hidden],
   );
   const { data: totalAssetsBalance, isLoading } = useUserAssets(
-    { address: account, currency },
+    { address: account, currency: currentCurrency },
     {
       select: (data) =>
         selectorFilterByUserChains<string>({
@@ -63,11 +64,8 @@ const TotalAssetsBalance = ({ account }: { account: Address }) => {
   );
   const userAssetsBalanceDisplay = convertAmountToNativeDisplay(
     totalAssetsBalance || '0',
-    currency,
+    currentCurrency,
   );
-
-  const { hideAssetBalances } = useHideAssetBalancesStore();
-  const { currentCurrency } = useCurrentCurrencyStore();
 
   if (hideAssetBalances)
     return (

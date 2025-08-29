@@ -6,7 +6,7 @@ import {
   selectorFilterByUserChains,
 } from '~/core/resources/_selectors/assets';
 import { useAssets, useUserAssets } from '~/core/resources/assets';
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -32,8 +32,8 @@ const sortBy = (by: SortMethod) => {
 };
 
 export const useSwapAssets = ({ bridge }: { bridge: boolean }) => {
-  const { currentAddress } = useCurrentAddressStore();
-  const { currentCurrency } = useCurrentCurrencyStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
+  const [currentCurrency] = useSettingsStore('currentCurrency');
 
   const [assetToSell, setAssetToSellState] = useState<
     ParsedSearchAsset | SearchAsset | null

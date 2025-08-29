@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
-import { useCurrentCurrencyStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import {
   abs,
@@ -37,7 +37,7 @@ export const TokenToBuyInfo = ({
   assetToBuyNativeDisplay: { amount: string; display: string } | null;
   assetToSellNativeDisplay: { amount: string; display: string } | null;
 }) => {
-  const { currentCurrency } = useCurrentCurrencyStore();
+  const [currentCurrency] = useSettingsStore('currentCurrency');
 
   const nativeValueDisplay = useMemo(() => {
     const nativeDisplay = convertAmountAndPriceToNativeDisplay(

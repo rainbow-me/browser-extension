@@ -2,12 +2,12 @@ import { Address } from 'viem';
 
 import { selectUserAssetWithUniqueId } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { UniqueId } from '~/core/types/assets';
 
 export function useUserAsset(uniqueId?: UniqueId, address?: Address) {
-  const { currentAddress } = useCurrentAddressStore();
-  const { currentCurrency: currency } = useCurrentCurrencyStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
+  const [currency] = useSettingsStore('currentCurrency');
   return useUserAssets(
     {
       address: address || currentAddress,

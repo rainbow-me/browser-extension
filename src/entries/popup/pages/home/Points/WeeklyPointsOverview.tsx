@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 
 import { PointsQuery } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { createNumberFormatter } from '~/core/utils/formatNumber';
 import {
   AccentColorProvider,
@@ -32,7 +32,7 @@ const rainbowColorsArray = Object.values(rainbowColors);
 
 export function PointsWeeklyOverview() {
   const navigate = useRainbowNavigate();
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
   const { displayName } = useWalletName({ address: currentAddress });
 
   const backToHome = () => {

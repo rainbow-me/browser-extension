@@ -9,8 +9,7 @@ import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useGasStore } from '~/core/state';
-import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
-import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { AddressOrEth } from '~/core/types/assets';
@@ -63,11 +62,13 @@ export function SendTransaction({
     state.getChainsNativeAsset(),
   );
   const selectedWallet = activeSession?.address || '';
-  const { connectedToHardhat, connectedToHardhatOp } =
-    useConnectedToHardhatStore();
+
+  const [connectedToHardhat] = useSettingsStore('isConnectedToHardhat');
+  const [connectedToHardhatOp] = useSettingsStore('isConnectedToHardhatOp');
+  const [featureFlags] = useSettingsStore('featureFlags');
+  const [currency] = useSettingsStore('currentCurrency');
   const { asset, selectAssetAddressAndChain } = useSendAsset();
   const { allWallets, watchedWallets } = useWallets();
-  const { featureFlags } = useFeatureFlagsStore();
 
   const onAcceptRequest = useCallback(async () => {
     if (!config.tx_requests_enabled) return;
@@ -109,11 +110,14 @@ export function SendTransaction({
           ...selectedGas.transactionGasParams,
         } satisfies NewTransaction;
 
-        addNewTransaction({
-          address: txData.from,
-          chainId: txData.chainId,
-          transaction,
-        });
+        addNewTransaction(
+          {
+            address: txData.from,
+            chainId: txData.chainId,
+            transaction,
+          },
+          { currency },
+        );
         approveRequest(result.hash);
         setWaitingForDevice(false);
 
@@ -156,6 +160,7 @@ export function SendTransaction({
     connectedToHardhatOp,
     asset,
     selectedGas.transactionGasParams,
+    currency,
     approveRequest,
     dappMetadata?.url,
     dappMetadata?.appHost,

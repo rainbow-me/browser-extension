@@ -8,6 +8,7 @@ import { Address } from 'viem';
 
 import { REFERRER, ReferrerType } from '~/core/references';
 import { useGasStore } from '~/core/state';
+import { settingsStorage } from '~/core/state/currentSettings/store';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
@@ -122,6 +123,7 @@ export const crosschainSwap = async ({
 }: ActionProps<'crosschainSwap'>): Promise<RapActionResult> => {
   const { quote, chainId, requiresApprove } = parameters;
   const { selectedGas, gasFeeParamsBySpeed } = useGasStore.getState();
+  const currency = await settingsStorage.getItem('settings:currentCurrency');
 
   let gasParams = selectedGas.transactionGasParams;
   if (currentRap.actions.length - 1 > index) {
@@ -202,11 +204,14 @@ export const crosschainSwap = async ({
     ...gasParams,
   } satisfies NewTransaction;
 
-  addNewTransaction({
-    address: parameters.quote.from as Address,
-    chainId: parameters.chainId as ChainId,
-    transaction,
-  });
+  addNewTransaction(
+    {
+      address: parameters.quote.from as Address,
+      chainId: parameters.chainId as ChainId,
+      transaction,
+    },
+    { currency },
+  );
 
   return {
     nonce: swap.nonce,

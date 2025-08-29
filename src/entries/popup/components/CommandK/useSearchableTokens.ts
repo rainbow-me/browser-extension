@@ -12,9 +12,7 @@ import { useUserAssets } from '~/core/resources/assets';
 import { useAssetSearchMetadataAllNetworks } from '~/core/resources/assets/assetMetadata';
 import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
 import { useTokenSearchAllNetworks } from '~/core/resources/search/tokenSearch';
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
-import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useHiddenAssetStore } from '~/core/state/hiddenAssets/hiddenAssets';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { isENSAddressFormat } from '~/core/utils/ethereum';
@@ -43,11 +41,11 @@ export const useSearchableTokens = ({
   currentPage,
   setSelectedCommandNeedsUpdate,
 }: UseSearchableTokensParameters) => {
-  const { currentAddress: address } = useCurrentAddressStore();
-  const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const { hideSmallBalances } = useHideSmallBalancesStore();
+  const [address] = useSettingsStore('currentAddress');
+  const [currency] = useSettingsStore('currentCurrency');
+  const [hideSmallBalances] = useSettingsStore('isHideSmallBalances');
   const navigate = useRainbowNavigate();
-  const { testnetMode } = useTestnetModeStore();
+  const [testnetMode] = useSettingsStore('isTestnetMode');
 
   const hiddenAssets = useHiddenAssetStore((state) => state.hidden);
 

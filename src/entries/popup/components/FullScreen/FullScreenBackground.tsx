@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
 
@@ -15,7 +15,7 @@ export function FullScreenBackground({
 }) {
   const { currentTheme } = useCurrentThemeStore();
   const isFullscreen = useIsFullScreen();
-  const { testnetMode } = useTestnetModeStore();
+  const [testnetMode] = useSettingsStore('isTestnetMode');
 
   if (!isFullscreen)
     return (

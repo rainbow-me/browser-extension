@@ -10,7 +10,7 @@ import React, {
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
-import { useCurrentAddressStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 
 import { useAppSession } from '../../hooks/useAppSession';
@@ -65,7 +65,7 @@ export const AppConnectionMenu = ({
 
   const { isCommandKVisible } = useCommandKStatus();
   const { trackShortcut } = useKeyboardAnalytics();
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
   const { data } = useDappMetadata({ url });
   const navigate = useRainbowNavigate();
   const dropdownMenuRef = useRef<HTMLDivElement | null>(null);

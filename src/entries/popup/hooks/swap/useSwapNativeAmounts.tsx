@@ -2,7 +2,7 @@ import { CrosschainQuote, Quote } from '@rainbow-me/swaps';
 import { useMemo } from 'react';
 
 import { supportedCurrencies } from '~/core/references';
-import { useCurrentCurrencyStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import {
   convertAmountAndPriceToNativeDisplay,
@@ -25,7 +25,7 @@ export const useSwapNativeAmounts = ({
   quote?: Quote | CrosschainQuote;
   isWrapOrUnwrapEth: boolean;
 }) => {
-  const { currentCurrency } = useCurrentCurrencyStore();
+  const [currentCurrency] = useSettingsStore('currentCurrency');
 
   const assetToSellNativeDisplay = useMemo(() => {
     let nativeDisplay = null;

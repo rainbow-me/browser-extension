@@ -9,8 +9,8 @@ import { Address } from 'viem';
 import config from '~/core/firebase/remoteConfig';
 import { PointsQuery } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { truncateAddress } from '~/core/utils/address';
 import { copy } from '~/core/utils/copy';
 import { formatDate } from '~/core/utils/formatDate';
@@ -115,7 +115,7 @@ const LeaderboardPositionNumberDisplay = ({
 };
 
 function Leaderboard() {
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
   const { data, isSuccess } = usePoints(currentAddress);
   if (!data || !isSuccess) return null;
 
@@ -231,7 +231,7 @@ export const copyReferralLink = (referralCode: string) =>
 const formatReferralCode = (referralCode: string) =>
   referralCode.slice(0, 3) + '-' + referralCode.slice(-3);
 function ReferralCode() {
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
   const { data, isSuccess } = usePoints(currentAddress);
   const copyReferralCode = () =>
     copy({
@@ -354,7 +354,7 @@ function getRankDifference(
 }
 
 const YourRankAndNextDrop = memo(function YourRankAndNextDrop() {
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
   const { data, isSuccess } = usePoints(currentAddress);
 
   if (!data || !isSuccess || config.status !== 'ready')
@@ -455,7 +455,7 @@ const mapToRange = (
 };
 
 function YourPoints() {
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
   const { data, isSuccess } = usePoints(currentAddress);
 
   if (!data || !isSuccess || config.status !== 'ready')
@@ -556,7 +556,7 @@ function YourEarningsLastWeek() {
 
 export function OldPointsDashboard() {
   const { currentTheme } = useCurrentThemeStore();
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
   const { data: points } = usePoints(currentAddress);
   const configLoading = config.status !== 'ready';
 

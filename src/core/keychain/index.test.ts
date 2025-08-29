@@ -16,7 +16,7 @@ import { beforeAll, expect, test, vi } from 'vitest';
 
 import { delay } from '~/test/utils';
 
-import { useConnectedToHardhatStore } from '../state/currentSettings/connectedToHardhat';
+import { settingsStorage } from '../state/currentSettings/store';
 import { updateWagmiConfig } from '../wagmi';
 
 import { PrivateKey } from './IKeychain';
@@ -44,7 +44,7 @@ let privateKey = '';
 let password = '';
 
 beforeAll(async () => {
-  useConnectedToHardhatStore.setState({ connectedToHardhat: true });
+  await settingsStorage.setItem('settings:isConnectedToHardhat', true);
   updateWagmiConfig([mainnet]);
   await delay(3000);
 }, 20_000);

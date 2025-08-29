@@ -4,21 +4,22 @@ import { Address } from 'viem';
 import { userAssetsFetchQuery } from '~/core/resources/assets/userAssets';
 import { useConsolidatedTransactions } from '~/core/resources/transactions/consolidatedTransactions';
 import {
-  useCurrentAddressStore,
-  useCurrentCurrencyStore,
   usePendingTransactionsStore,
   useStaleBalancesStore,
 } from '~/core/state';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import {
+  settingsStorage,
+  useSettingsStore,
+} from '~/core/state/currentSettings/store';
 import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { getSupportedChains, useSupportedChains } from '~/core/utils/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
 export const useTransactionListForPendingTxs = () => {
-  const { currentAddress: address } = useCurrentAddressStore();
-  const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const { testnetMode } = useTestnetModeStore();
+  const [address] = useSettingsStore('currentAddress');
+  const [currency] = useSettingsStore('currentCurrency');
+  const [testnetMode] = useSettingsStore('isTestnetMode');
 
   const supportedChainIds = useSupportedChains({
     testnets: testnetMode,
@@ -61,7 +62,7 @@ export const useTransactionListForPendingTxs = () => {
   }, [address, data?.pages]);
 };
 
-function watchForPendingTransactionsReportedByRainbowBackend({
+async function watchForPendingTransactionsReportedByRainbowBackend({
   currentAddress,
   latestTransactions,
 }: {
@@ -74,7 +75,9 @@ function watchForPendingTransactionsReportedByRainbowBackend({
   } = usePendingTransactionsStore.getState();
   const pendingTransactions = storePendingTransactions[currentAddress] || [];
   const { addStaleBalance } = useStaleBalancesStore.getState();
-  const { currentCurrency } = useCurrentCurrencyStore.getState();
+  const currentCurrency = await settingsStorage.getItem(
+    'settings:currentCurrency',
+  );
 
   const newlyConfirmedTransactions: RainbowTransaction[] = [];
   const updatedPendingTransactions: RainbowTransaction[] = [];

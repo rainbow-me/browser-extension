@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { Address } from 'viem';
 
-import { useCurrentAddressStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { truncateAddress } from '~/core/utils/address';
 
 import { useAccounts } from '../../hooks/useAccounts';
@@ -31,9 +31,7 @@ export const useSearchableWallets = (currentPage: CommandKPage) => {
   const { sortedAccounts } = useAccounts(({ sortedAccounts }) => ({
     sortedAccounts,
   }));
-  const setCurrentAddress = useCurrentAddressStore(
-    (state) => state.setCurrentAddress,
-  );
+  const [, setCurrentAddress] = useSettingsStore('currentAddress');
 
   const handleSelectAddress = useCallback(
     (address: Address) => {

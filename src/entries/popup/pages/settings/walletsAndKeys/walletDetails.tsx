@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { useWalletBackupsStore } from '~/core/state/walletBackups';
 import { useWalletNamesStore } from '~/core/state/walletNames';
@@ -120,7 +120,8 @@ export function WalletDetails() {
   const [renameAccount, setRenameAccount] = useState<Address | undefined>();
   const [removeAccount, setRemoveAccount] = useState<Address | undefined>();
   const [wallet, setWallet] = useState<KeychainWallet | null>();
-  const { currentAddress, setCurrentAddress } = useCurrentAddressStore();
+  const [currentAddress, setCurrentAddress] =
+    useSettingsStore('currentAddress');
   const { unhideWallet, hiddenWallets } = useHiddenWalletsStore();
   const { visibleWallets } = useWallets();
   const { deleteWalletName } = useWalletNamesStore();

@@ -9,7 +9,7 @@ import React, {
 } from 'react';
 
 import { autoLockTimerOptions } from '~/core/references/autoLockTimer';
-import { useAutoLockTimerStore } from '~/core/state/currentSettings/autoLockTimer';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { SessionStorage } from '~/core/storage';
 
 import * as wallet from '../handlers/wallet';
@@ -54,7 +54,7 @@ export const getUserStatus = async (): Promise<UserStatusResult> => {
 
 const useSessionStatus = () => {
   const [status, setStatus] = useState('');
-  const { autoLockTimer } = useAutoLockTimerStore();
+  const [autoLockTimer] = useSettingsStore('autoLockTimer');
   const autoLockTimerMinutes = autoLockTimerOptions[autoLockTimer].mins;
 
   const updateStatus = useCallback(async () => {

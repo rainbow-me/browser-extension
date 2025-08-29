@@ -8,7 +8,7 @@ import {
 } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
 import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import {
   computeUniqueIdForHiddenAsset,
   useHiddenAssetStore,
@@ -22,8 +22,8 @@ export function useUserAssetsBalance(args?: {
   currency?: SupportedCurrencyKey;
 }) {
   const { chain, currency } = args || {};
-  const { currentAddress: address } = useCurrentAddressStore();
-  const { currentCurrency } = useCurrentCurrencyStore();
+  const [address] = useSettingsStore('currentAddress');
+  const [currentCurrency] = useSettingsStore('currentCurrency');
   const { hidden } = useHiddenAssetStore();
   const isHidden = useCallback(
     (asset: ParsedUserAsset) => {

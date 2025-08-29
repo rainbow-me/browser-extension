@@ -18,8 +18,8 @@ import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { PointsQuery } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import { copy } from '~/core/utils/copy';
@@ -149,7 +149,7 @@ const LeaderboardPositionNumberDisplay = ({
 };
 
 function Leaderboard() {
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
   const { data, isSuccess } = usePoints(currentAddress);
   if (!data || !isSuccess) return null;
 
@@ -299,7 +299,7 @@ export const copyReferralLink = (referralCode: string) => {
 const formatReferralCode = (referralCode: string) =>
   referralCode.slice(0, 3) + '-' + referralCode.slice(-3);
 function ReferralCode() {
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
   const { data, isSuccess } = usePoints(currentAddress);
   const copyReferralCode = () => {
     analytics.track(event.pointsReferralCopied, { type: 'code' });
@@ -462,7 +462,7 @@ function getRankDifference(
 }
 
 const StatsCarousel = memo(function YourRankAndNextDrop() {
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
   const { data, isSuccess } = usePoints(currentAddress);
 
   if (!data || !isSuccess)
@@ -618,7 +618,7 @@ const StatsCarousel = memo(function YourRankAndNextDrop() {
 });
 
 function YourPoints() {
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
   const { data, isSuccess } = usePoints(currentAddress);
 
   if (!data || !isSuccess)
@@ -707,7 +707,7 @@ function ClaimYourPoints({
 }) {
   const eth = useUserNativeAsset({ chainId: ChainId.mainnet });
   const ethPrice = eth?.nativeAsset?.price?.value;
-  const { currentCurrency: currency } = useCurrentCurrencyStore();
+  const [currency] = useSettingsStore('currentCurrency');
   if (!claimableReward || claimableReward === '0' || !ethPrice) return null;
   const claimableBalance = convertRawAmountToBalance(claimableReward || '0', {
     decimals: 18,
@@ -887,7 +887,7 @@ function YourEarningsLastWeek() {
 }
 
 function NextDrop() {
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
   const { data, isSuccess } = usePoints(currentAddress);
 
   if (!data || !isSuccess)
@@ -965,7 +965,7 @@ function RainbowUserEarnings({ totalEarnings }: { totalEarnings: string }) {
 function MyEarnings({ earnings = '0' }: { earnings?: string }) {
   const eth = useUserNativeAsset({ chainId: ChainId.mainnet });
   const ethPrice = eth?.nativeAsset?.price?.value;
-  const { currentCurrency: currency } = useCurrentCurrencyStore();
+  const [currency] = useSettingsStore('currentCurrency');
 
   if (!ethPrice) return null;
 
@@ -1094,7 +1094,7 @@ function NoHistoricalRewards() {
 }
 
 function Rewards() {
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
   const { data: points } = usePoints(currentAddress);
   const navigate = useRainbowNavigate();
 

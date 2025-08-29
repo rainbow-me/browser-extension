@@ -6,7 +6,7 @@ import {
   AddySummary,
   useAddysSummary,
 } from '~/core/resources/addys/addysSummary';
-import { useCurrentCurrencyStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { ParsedAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
@@ -85,7 +85,7 @@ const parseAddressSummary = ({
 
 export const useWalletsSummary = ({ addresses }: { addresses: Address[] }) => {
   const nativeAssets = useNativeAssets();
-  const { currentCurrency } = useCurrentCurrencyStore();
+  const [currentCurrency] = useSettingsStore('currentCurrency');
   const { data, isLoading } = useAddysSummary({
     addresses,
     currency: currentCurrency,

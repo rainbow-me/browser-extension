@@ -3,7 +3,7 @@ import { memo, useEffect, useState } from 'react';
 
 import { PointsErrorType } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { handleSignificantDecimalsWithThreshold } from '~/core/utils/numbers';
 import {
   Box,
@@ -41,7 +41,7 @@ export function ClaimOverview({
   success: boolean;
   show: boolean;
 }) {
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
   const { displayName } = useWalletName({ address: currentAddress });
 
   const [waitToDisplay, setWaitToDisplay] = useState(true);

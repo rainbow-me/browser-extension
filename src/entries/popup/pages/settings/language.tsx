@@ -1,14 +1,15 @@
 import React from 'react';
 
 import { SupportedLanguageKey, supportedLanguages } from '~/core/languages';
-import { useCurrentLanguageStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { Box } from '~/design-system';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 
 export function Language() {
-  const { currentLanguage, setCurrentLanguage } = useCurrentLanguageStore();
+  const [currentLanguage, setCurrentLanguage] =
+    useSettingsStore('currentLanguage');
   const supportedLanguageKeys = Object.keys(
     supportedLanguages,
   ) as SupportedLanguageKey[];

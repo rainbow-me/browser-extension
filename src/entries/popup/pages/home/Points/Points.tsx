@@ -3,10 +3,8 @@ import { useEffect, useMemo } from 'react';
 
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
-import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { TESTNET_MODE_BAR_HEIGHT } from '~/core/utils/dimensions';
 import { POPUP_URL, goToNewTab, isNativePopup } from '~/core/utils/tabs';
@@ -117,7 +115,7 @@ const PointsContentPlaceholder = () => {
 const PointsContent = () => {
   const navigate = useRainbowNavigate();
   const { isWatchingWallet } = useWallets();
-  const { featureFlags } = useFeatureFlagsStore();
+  const [featureFlags] = useSettingsStore('featureFlags');
 
   const allowOnboarding = useMemo(
     () => !isWatchingWallet || featureFlags.full_watching_wallets,
@@ -186,10 +184,10 @@ const PointsContent = () => {
 
 function ClaimYourPoints() {
   const ref = useCoolMode({ emojis: ['🌈', '🎰'] });
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
   const { currentTheme } = useCurrentThemeStore();
-  const { testnetMode } = useTestnetModeStore();
+  const [testnetMode] = useSettingsStore('isTestnetMode');
 
   const controls = useAnimation();
 
@@ -278,7 +276,7 @@ function ClaimYourPoints() {
 }
 
 export function Points() {
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
   const { data, isInitialLoading } = usePoints(currentAddress);
 
   if (isInitialLoading) return null;

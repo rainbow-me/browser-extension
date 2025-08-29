@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { useCurrentCurrencyStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import {
   convertRawAmountToBalance,
@@ -30,7 +30,7 @@ export const SwapAssetCard = ({
   assetAmount,
   testId,
 }: SwapAssetCardProps) => {
-  const { currentCurrency } = useCurrentCurrencyStore();
+  const [currentCurrency] = useSettingsStore('currentCurrency');
 
   const amount = useMemo(
     () =>
@@ -75,7 +75,7 @@ export const SwapAssetCard = ({
                 <Columns space="4px" alignVertical="center">
                   <Column>
                     <TextOverflow color="label" size="14pt" weight="bold">
-                      {`${formatNumber(amount)}`}
+                      {`${formatNumber(currentCurrency, amount)}`}
                     </TextOverflow>
                   </Column>
                   <Column width="content">

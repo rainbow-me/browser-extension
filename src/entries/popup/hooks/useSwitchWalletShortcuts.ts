@@ -1,4 +1,4 @@
-import { useCurrentAddressStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 
 import {
   getInputIsFocused,
@@ -11,9 +11,7 @@ import { useKeyboardShortcut } from './useKeyboardShortcut';
 
 export function useSwitchWalletShortcuts(disable?: boolean) {
   const { sortedAccounts } = useAccounts();
-  const setCurrentAddress = useCurrentAddressStore(
-    (state) => state.setCurrentAddress,
-  );
+  const [, setCurrentAddress] = useSettingsStore('currentAddress');
   const { trackShortcut } = useKeyboardAnalytics();
 
   useKeyboardShortcut({

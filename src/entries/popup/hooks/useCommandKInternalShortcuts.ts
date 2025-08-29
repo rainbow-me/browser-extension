@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { shortcuts } from '~/core/references/shortcuts';
-import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 
 import { SearchItem } from '../components/CommandK/SearchItems';
 import { CommandKPage, PAGES } from '../components/CommandK/pageConfig';
@@ -18,7 +18,7 @@ export function useCommandKInternalShortcuts(
   setDidScrollOrNavigate: React.Dispatch<React.SetStateAction<boolean>>,
 ) {
   const { closeCommandK, isCommandKVisible } = useCommandKStatus();
-  const { featureFlags } = useFeatureFlagsStore();
+  const [featureFlags] = useSettingsStore('featureFlags');
 
   const keyToShortcutMap = React.useMemo(() => {
     const map = new Map();

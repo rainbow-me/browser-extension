@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { useCurrentCurrencyStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import {
   convertAmountToNativeDisplay,
   divide,
@@ -31,7 +31,7 @@ export const useSwapPriceImpact = ({
   assetToBuyNativeValue: { amount: string; display: string } | null;
   isLoading: boolean;
 }) => {
-  const { currentCurrency } = useCurrentCurrencyStore();
+  const [currentCurrency] = useSettingsStore('currentCurrency');
 
   const { impactDisplay, priceImpact } = useMemo(() => {
     if (!assetToSellNativeValue?.amount || !assetToBuyNativeValue?.amount)

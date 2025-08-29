@@ -2,7 +2,7 @@
 import { motion } from 'framer-motion';
 import React, { ReactNode, useCallback, useState } from 'react';
 
-import { useCurrentAddressStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { Box, Column, Columns, Symbol, TextOverflow } from '~/design-system';
 import { Lens } from '~/design-system/components/Lens/Lens';
 import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
@@ -36,7 +36,8 @@ export function AccountName({
   tabIndex,
   renderTooltip,
 }: AccountNameProps) {
-  const { currentAddress: address } = useCurrentAddressStore();
+  const [address] = useSettingsStore('currentAddress');
+
   const { displayName, isLoading } = useWalletName({
     address: address || '0x',
   });
