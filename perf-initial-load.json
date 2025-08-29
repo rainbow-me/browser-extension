@@ -1,0 +1,118 @@
+{
+  "version": "1.0.0",
+  "timestamp": "2025-08-29T19:38:00.862Z",
+  "browser": "chrome",
+  "metrics": [
+    {
+      "timestamp": "2025-08-29T19:38:00.034Z",
+      "flow": "cold-start",
+      "browser": "chrome",
+      "metrics": {
+        "extensionLoadTime": 743,
+        "firstMeaningfulPaint": 788,
+        "domContentLoaded": 703,
+        "loadComplete": 743,
+        "bundleSize": 3214,
+        "memoryUsage": 81509015,
+        "customMetrics": {}
+      },
+      "raw": {
+        "navigationTiming": {
+          "dns": 0,
+          "domContentLoaded": 703,
+          "domInteractive": 21,
+          "loadComplete": 743,
+          "tcp": 0,
+          "ttfb": 1
+        },
+        "resourceTiming": [
+          {
+            "duration": 313.9000000357628,
+            "name": "https://nftp.rainbow.me/api/v0/nfts/owners_v2?chains=ethereum%2Carbitrum%2Cbase%2Cbsc%2Cgnosis%2Coptimism%2Cpolygon&filters=spam_score__lte%3D90&wallet_addresses=&order_by=last_acquired_date__desc",
+            "size": 392,
+            "type": "fetch"
+          },
+          {
+            "duration": 224,
+            "name": "https://rpc.rainbow.me/v1/1/B9kBlwE2Hpw0COb7pWj6rpnk69fqSGGRc3fQ5nZ2LzeFS1G2VRxBQilZWbxAZkXI",
+            "size": 414,
+            "type": "fetch"
+          },
+          {
+            "duration": 288.9000000357628,
+            "name": "https://firebaseinstallations.googleapis.com/v1/projects/rainbow-me/installations",
+            "size": 786,
+            "type": "fetch"
+          },
+          {
+            "duration": 139.5999999642372,
+            "name": "https://firebaseremoteconfig.googleapis.com/v1/projects/rainbow-me/namespaces/firebase:fetch?key=AIzaSyD0WcwACxldS8tIbpff_SRDhBZZjb1k3Rw",
+            "size": 1622,
+            "type": "fetch"
+          }
+        ],
+        "userTiming": {
+          "marks": [
+            {
+              "name": "flow-end-cold-start",
+              "startTime": 6782.300000011921
+            }
+          ],
+          "measures": []
+        }
+      }
+    },
+    {
+      "timestamp": "2025-08-29T19:38:00.856Z",
+      "flow": "warm-reload",
+      "browser": "chrome",
+      "metrics": {
+        "extensionLoadTime": 266,
+        "firstMeaningfulPaint": 316,
+        "domContentLoaded": 232,
+        "loadComplete": 266,
+        "bundleSize": 414,
+        "memoryUsage": 76740631,
+        "customMetrics": {},
+        "flowDuration": 513.6000000238419
+      },
+      "raw": {
+        "navigationTiming": {
+          "dns": 0,
+          "domContentLoaded": 232,
+          "domInteractive": 13,
+          "loadComplete": 266,
+          "tcp": 0,
+          "ttfb": 0
+        },
+        "resourceTiming": [
+          {
+            "duration": 131.29999995231628,
+            "name": "https://rpc.rainbow.me/v1/1/B9kBlwE2Hpw0COb7pWj6rpnk69fqSGGRc3fQ5nZ2LzeFS1G2VRxBQilZWbxAZkXI",
+            "size": 414,
+            "type": "fetch"
+          }
+        ],
+        "userTiming": {
+          "marks": [
+            {
+              "name": "flow-start-warm-reload",
+              "startTime": 296
+            },
+            {
+              "name": "flow-end-warm-reload",
+              "startTime": 809.6000000238419
+            }
+          ],
+          "measures": [
+            {
+              "duration": 513.6000000238419,
+              "name": "flow-warm-reload",
+              "startTime": 296
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

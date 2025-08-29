@@ -1,0 +1,110 @@
+import { WebDriver } from 'selenium-webdriver';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+} from 'vitest';
+
+import { TEST_VARIABLES } from 'e2e/walletVariables';
+
+import { PerformanceCollector } from '../../scripts/perf/collect';
+import {
+  getExtensionIdByName,
+  getRootUrl,
+  goToWelcome,
+  importWalletFlow,
+  initDriverWithOptions,
+  takeScreenshotOnFailure,
+} from '../helpers';
+
+let rootURL = getRootUrl();
+let driver: WebDriver;
+let collector: PerformanceCollector;
+
+const browser = process.env.BROWSER || 'chrome';
+const os = process.env.OS || 'mac';
+
+describe('Wallet Flow Performance Tests', () => {
+  beforeAll(async () => {
+    driver = await initDriverWithOptions({
+      browser,
+      os,
+    });
+    const extensionId = await getExtensionIdByName(driver, 'Rainbow');
+    if (!extensionId) throw new Error('Extension not found');
+    rootURL += extensionId;
+    collector = new PerformanceCollector(driver, browser);
+  });
+
+  beforeEach<{ driver: WebDriver }>(async (context) => {
+    context.driver = driver;
+  });
+
+  afterEach<{ driver: WebDriver }>(async (context) => {
+    await takeScreenshotOnFailure(context);
+  });
+
+  afterAll(() => driver?.quit());
+
+  it('should measure complete wallet import flow', async () => {
+    // Navigate to welcome for wallet import
+    await goToWelcome(driver, rootURL);
+
+    // Start performance measurement
+    await collector.startFlowMeasurement('wallet-import');
+
+    await importWalletFlow(driver, rootURL, TEST_VARIABLES.SEED_WALLET.SECRET);
+
+    // Wait a bit for metrics to be available
+    await new Promise((resolve) => {
+      setTimeout(resolve, 500);
+    });
+
+    // End measurement and collect metrics
+    await collector.endFlowMeasurement('wallet-import');
+    const metrics = await collector.collectAllMetrics('wallet-import');
+
+    // Save metrics for debugging
+    await collector.saveMetrics('perf-wallet-import.json');
+    console.log('Collected metrics:', JSON.stringify(metrics.metrics, null, 2));
+
+    // Performance assertions with realistic thresholds for browser extension
+    if (metrics.metrics.popupLoadTime !== undefined) {
+      expect(metrics.metrics.popupLoadTime).toBeLessThan(2000); // 2 seconds for full extension load
+      console.log(`Popup load time: ${metrics.metrics.popupLoadTime}ms`);
+    }
+    if (metrics.metrics.domContentLoaded !== undefined) {
+      expect(metrics.metrics.domContentLoaded).toBeLessThan(1000); // 1 second for DOM ready
+      console.log(`DOM content loaded: ${metrics.metrics.domContentLoaded}ms`);
+    }
+
+    // The complete flow including crypto operations
+    expect(metrics.metrics.flowDuration).toBeDefined();
+    if (metrics.metrics.flowDuration) {
+      expect(metrics.metrics.flowDuration).toBeLessThan(40_000); // 40 seconds for complete wallet import
+      console.log(`Total flow duration: ${metrics.metrics.flowDuration}ms`);
+    }
+  });
+
+  it('should check memory usage', async () => {
+    const metrics = await collector.collectExtensionMetrics();
+
+    // Memory thresholds for a React-based browser extension
+    if (metrics.memoryUsage) {
+      const memoryMB = metrics.memoryUsage.usedJSHeapSize / (1024 * 1024);
+      console.log(`Memory usage: ${memoryMB.toFixed(2)}MB`);
+
+      // 100MB is a more realistic threshold for a modern web app
+      expect(metrics.memoryUsage.usedJSHeapSize).toBeLessThan(100_000_000); // 100MB warning threshold
+
+      // Log if memory is high but not failing
+      if (metrics.memoryUsage.usedJSHeapSize > 75_000_000) {
+        console.warn(`⚠️ High memory usage detected: ${memoryMB.toFixed(2)}MB`);
+      }
+    }
+  });
+});

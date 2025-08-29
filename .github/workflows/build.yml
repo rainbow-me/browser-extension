@@ -195,6 +195,150 @@ jobs:
   #     - name: Fail if any tests failed
   #       if: steps.FFE2eDappInteractions.outcome == 'failure'
   #       run: exit 1
+  # PERFORMANCE TESTS
+  chrome-performance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [build]
+    # Only run on PRs to avoid noise on every commit
+    if: github.event_name == 'pull_request'
+    env:
+      DISPLAY: :0
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Need history for baseline comparison
+      - uses: ./.github/actions/chromeTestsSetup
+        with:
+          gh-access-token: ${{ secrets.ORG_ACCESS_TOKEN }}
+      
+      # Get baseline from main branch
+      - name: Fetch baseline metrics
+        run: |
+          git fetch origin master:master
+          git checkout master -- perf-baseline.json 2>/dev/null || echo "No baseline found"
+          git checkout -
+      
+      - name: Run performance tests
+        id: perfTests
+        continue-on-error: true
+        run: |
+          export BROWSER=chrome
+          export OS=linux
+          export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
+          yarn perf:initial
+          yarn perf:wallet
+      
+      - name: Compare with baseline
+        id: compare
+        continue-on-error: true
+        run: |
+          if [ -f perf-baseline.json ]; then
+            yarn perf:compare > perf-output.txt 2>&1 || true
+            cat perf-output.txt
+          else
+            echo "No baseline found, skipping comparison"
+          fi
+      
+      - name: Post results to PR
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            let comment = '## 📊 Performance Test Results\n\n';
+            
+            // Try to read the comparison report
+            if (fs.existsSync('perf-report.md')) {
+              const report = fs.readFileSync('perf-report.md', 'utf8');
+              
+              // Extract key parts from the markdown report
+              const summaryMatch = report.match(/## Summary[\s\S]*?(?=##|$)/);
+              const tableMatch = report.match(/## Detailed Results[\s\S]*?\|[^\n]+\|\n$/m);
+              const failedMatch = report.match(/## ❌ Failed Metrics[\s\S]*?(?=##|$)/);
+              
+              if (summaryMatch) {
+                comment += summaryMatch[0].trim() + '\n\n';
+              }
+              
+              if (tableMatch) {
+                comment += '### Results\n' + tableMatch[0].replace('## Detailed Results', '').trim() + '\n\n';
+              }
+              
+              if (failedMatch) {
+                comment += '<details>\n<summary>⚠️ Failed Metrics Details</summary>\n\n';
+                comment += failedMatch[0].replace('## ❌ Failed Metrics', '').trim();
+                comment += '\n</details>\n\n';
+              }
+            } else if (fs.existsSync('perf-results.json')) {
+              // No baseline, show current metrics
+              const results = JSON.parse(fs.readFileSync('perf-results.json', 'utf8'));
+              const metrics = results.metrics?.[0]?.metrics || {};
+              
+              comment += '### ℹ️ Initial Performance Baseline\n\n';
+              comment += 'No previous baseline found. Current metrics will be used as baseline:\n\n';
+              comment += '| Metric | Value |\n';
+              comment += '|--------|-------|\n';
+              
+              if (metrics.domContentLoaded) {
+                comment += `| DOM Loaded | ${Math.round(metrics.domContentLoaded)}ms |\n`;
+              }
+              if (metrics.firstMeaningfulPaint) {
+                comment += `| First Paint | ${Math.round(metrics.firstMeaningfulPaint)}ms |\n`;
+              }
+              if (metrics.memoryUsage) {
+                const memoryMB = (metrics.memoryUsage / (1024 * 1024)).toFixed(1);
+                comment += `| Memory Usage | ${memoryMB}MB |\n`;
+              }
+            } else {
+              comment += '⚠️ **No performance metrics collected**\n\n';
+              comment += 'Performance tests may have failed to run. Check the CI logs for details.\n';
+            }
+            
+            // Find existing comment to update
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            
+            const botComment = comments.find(comment => 
+              comment.user.type === 'Bot' && 
+              comment.body.includes('Performance Test Results')
+            );
+            
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: comment
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment
+              });
+            }
+      
+      - name: Upload performance artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-results
+          path: |
+            perf-*.json
+            perf-report.md
+      
+      - name: Fail if performance degraded
+        if: steps.compare.outcome == 'failure'
+        run: |
+          echo "❌ Performance regressions detected"
+          exit 1
+
   # CHROME TESTS
   chrome-e2e-parallel:
     runs-on: beefy-runner-bx

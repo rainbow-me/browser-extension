@@ -1,0 +1,461 @@
+{
+  "version": "1.0.0",
+  "timestamp": "2025-08-29T19:38:42.693Z",
+  "browser": "chrome",
+  "metrics": [
+    {
+      "timestamp": "2025-08-29T19:38:42.692Z",
+      "flow": "wallet-import",
+      "browser": "chrome",
+      "metrics": {
+        "extensionLoadTime": 701,
+        "firstMeaningfulPaint": 740,
+        "domContentLoaded": 666,
+        "loadComplete": 701,
+        "bundleSize": 35755,
+        "memoryUsage": 84142273,
+        "customMetrics": {},
+        "flowDuration": 33814.09999996424
+      },
+      "raw": {
+        "navigationTiming": {
+          "dns": 0,
+          "domContentLoaded": 666,
+          "domInteractive": 21,
+          "loadComplete": 701,
+          "tcp": 0,
+          "ttfb": 0
+        },
+        "resourceTiming": [
+          {
+            "duration": 232.5,
+            "name": "https://nftp.rainbow.me/api/v0/nfts/owners_v2?chains=ethereum%2Carbitrum%2Cbase%2Cbsc%2Cgnosis%2Coptimism%2Cpolygon&filters=spam_score__lte%3D90&wallet_addresses=&order_by=last_acquired_date__desc",
+            "size": 392,
+            "type": "fetch"
+          },
+          {
+            "duration": 239.30000001192093,
+            "name": "https://rpc.rainbow.me/v1/1/B9kBlwE2Hpw0COb7pWj6rpnk69fqSGGRc3fQ5nZ2LzeFS1G2VRxBQilZWbxAZkXI",
+            "size": 415,
+            "type": "fetch"
+          },
+          {
+            "duration": 211.80000001192093,
+            "name": "https://firebaseinstallations.googleapis.com/v1/projects/rainbow-me/installations",
+            "size": 784,
+            "type": "fetch"
+          },
+          {
+            "duration": 187.5999999642372,
+            "name": "https://firebaseremoteconfig.googleapis.com/v1/projects/rainbow-me/namespaces/firebase:fetch?key=AIzaSyD0WcwACxldS8tIbpff_SRDhBZZjb1k3Rw",
+            "size": 1622,
+            "type": "fetch"
+          },
+          {
+            "duration": 234.19999998807907,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20externalToken(%24address%3A%20String!%20%24chainId%3A%20Int!%20%24currency%3A%20String)%20%7B%20token(address%3A%20%24address%20chainID%3A%20%24chainId%20currency%3A%20%24currency)%20%7B%20decimals%20iconUrl%20name%20networks%20price%20%7B%20relativeChange24h%20value%20%7D%20symbol%20%7D%20%7D&variables=%7B%22address%22%3A%22eth%22%2C%22chainId%22%3A1%2C%22currency%22%3A%22USD%22%7D&operationName=externalToken",
+            "size": 628,
+            "type": "fetch"
+          },
+          {
+            "duration": 236.5,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20externalToken(%24address%3A%20String!%20%24chainId%3A%20Int!%20%24currency%3A%20String)%20%7B%20token(address%3A%20%24address%20chainID%3A%20%24chainId%20currency%3A%20%24currency)%20%7B%20decimals%20iconUrl%20name%20networks%20price%20%7B%20relativeChange24h%20value%20%7D%20symbol%20%7D%20%7D&variables=%7B%22address%22%3A%220x0000000000000000000000000000000000000000%22%2C%22chainId%22%3A56%2C%22currency%22%3A%22USD%22%7D&operationName=externalToken",
+            "size": 638,
+            "type": "fetch"
+          },
+          {
+            "duration": 235.9000000357628,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20externalToken(%24address%3A%20String!%20%24chainId%3A%20Int!%20%24currency%3A%20String)%20%7B%20token(address%3A%20%24address%20chainID%3A%20%24chainId%20currency%3A%20%24currency)%20%7B%20decimals%20iconUrl%20name%20networks%20price%20%7B%20relativeChange24h%20value%20%7D%20symbol%20%7D%20%7D&variables=%7B%22address%22%3A%220x0000000000000000000000000000000000000000%22%2C%22chainId%22%3A97%2C%22currency%22%3A%22USD%22%7D&operationName=externalToken",
+            "size": 462,
+            "type": "fetch"
+          },
+          {
+            "duration": 236.30000001192093,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20externalToken(%24address%3A%20String!%20%24chainId%3A%20Int!%20%24currency%3A%20String)%20%7B%20token(address%3A%20%24address%20chainID%3A%20%24chainId%20currency%3A%20%24currency)%20%7B%20decimals%20iconUrl%20name%20networks%20price%20%7B%20relativeChange24h%20value%20%7D%20symbol%20%7D%20%7D&variables=%7B%22address%22%3A%220x0000000000000000000000000000000000000000%22%2C%22chainId%22%3A100%2C%22currency%22%3A%22USD%22%7D&operationName=externalToken",
+            "size": 542,
+            "type": "fetch"
+          },
+          {
+            "duration": 247.79999995231628,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20externalToken(%24address%3A%20String!%20%24chainId%3A%20Int!%20%24currency%3A%20String)%20%7B%20token(address%3A%20%24address%20chainID%3A%20%24chainId%20currency%3A%20%24currency)%20%7B%20decimals%20iconUrl%20name%20networks%20price%20%7B%20relativeChange24h%20value%20%7D%20symbol%20%7D%20%7D&variables=%7B%22address%22%3A%220x0000000000000000000000000000000000001010%22%2C%22chainId%22%3A137%2C%22currency%22%3A%22USD%22%7D&operationName=externalToken",
+            "size": 603,
+            "type": "fetch"
+          },
+          {
+            "duration": 251.80000001192093,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20externalToken(%24address%3A%20String!%20%24chainId%3A%20Int!%20%24currency%3A%20String)%20%7B%20token(address%3A%20%24address%20chainID%3A%20%24chainId%20currency%3A%20%24currency)%20%7B%20decimals%20iconUrl%20name%20networks%20price%20%7B%20relativeChange24h%20value%20%7D%20symbol%20%7D%20%7D&variables=%7B%22address%22%3A%220x0000000000000000000000000000000000000000%22%2C%22chainId%22%3A1625%2C%22currency%22%3A%22USD%22%7D&operationName=externalToken",
+            "size": 578,
+            "type": "fetch"
+          },
+          {
+            "duration": 238.5,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20externalToken(%24address%3A%20String!%20%24chainId%3A%20Int!%20%24currency%3A%20String)%20%7B%20token(address%3A%20%24address%20chainID%3A%20%24chainId%20currency%3A%20%24currency)%20%7B%20decimals%20iconUrl%20name%20networks%20price%20%7B%20relativeChange24h%20value%20%7D%20symbol%20%7D%20%7D&variables=%7B%22address%22%3A%220x0000000000000000000000000000000000000000%22%2C%22chainId%22%3A1996%2C%22currency%22%3A%22USD%22%7D&operationName=externalToken",
+            "size": 577,
+            "type": "fetch"
+          },
+          {
+            "duration": 254.10000002384186,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20externalToken(%24address%3A%20String!%20%24chainId%3A%20Int!%20%24currency%3A%20String)%20%7B%20token(address%3A%20%24address%20chainID%3A%20%24chainId%20currency%3A%20%24currency)%20%7B%20decimals%20iconUrl%20name%20networks%20price%20%7B%20relativeChange24h%20value%20%7D%20symbol%20%7D%20%7D&variables=%7B%22address%22%3A%220x0000000000000000000000000000000000000000%22%2C%22chainId%22%3A33139%2C%22currency%22%3A%22USD%22%7D&operationName=externalToken",
+            "size": 676,
+            "type": "fetch"
+          },
+          {
+            "duration": 246.60000002384186,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20externalToken(%24address%3A%20String!%20%24chainId%3A%20Int!%20%24currency%3A%20String)%20%7B%20token(address%3A%20%24address%20chainID%3A%20%24chainId%20currency%3A%20%24currency)%20%7B%20decimals%20iconUrl%20name%20networks%20price%20%7B%20relativeChange24h%20value%20%7D%20symbol%20%7D%20%7D&variables=%7B%22address%22%3A%220x0000000000000000000000000000000000000000%22%2C%22chainId%22%3A43113%2C%22currency%22%3A%22USD%22%7D&operationName=externalToken",
+            "size": 465,
+            "type": "fetch"
+          },
+          {
+            "duration": 237.69999998807907,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20externalToken(%24address%3A%20String!%20%24chainId%3A%20Int!%20%24currency%3A%20String)%20%7B%20token(address%3A%20%24address%20chainID%3A%20%24chainId%20currency%3A%20%24currency)%20%7B%20decimals%20iconUrl%20name%20networks%20price%20%7B%20relativeChange24h%20value%20%7D%20symbol%20%7D%20%7D&variables=%7B%22address%22%3A%220x0000000000000000000000000000000000000000%22%2C%22chainId%22%3A43114%2C%22currency%22%3A%22USD%22%7D&operationName=externalToken",
+            "size": 586,
+            "type": "fetch"
+          },
+          {
+            "duration": 234.29999995231628,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20externalToken(%24address%3A%20String!%20%24chainId%3A%20Int!%20%24currency%3A%20String)%20%7B%20token(address%3A%20%24address%20chainID%3A%20%24chainId%20currency%3A%20%24currency)%20%7B%20decimals%20iconUrl%20name%20networks%20price%20%7B%20relativeChange24h%20value%20%7D%20symbol%20%7D%20%7D&variables=%7B%22address%22%3A%220x0000000000000000000000000000000000001010%22%2C%22chainId%22%3A80002%2C%22currency%22%3A%22USD%22%7D&operationName=externalToken",
+            "size": 476,
+            "type": "fetch"
+          },
+          {
+            "duration": 246,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20externalToken(%24address%3A%20String!%20%24chainId%3A%20Int!%20%24currency%3A%20String)%20%7B%20token(address%3A%20%24address%20chainID%3A%20%24chainId%20currency%3A%20%24currency)%20%7B%20decimals%20iconUrl%20name%20networks%20price%20%7B%20relativeChange24h%20value%20%7D%20symbol%20%7D%20%7D&variables=%7B%22address%22%3A%220x0000000000000000000000000000000000000000%22%2C%22chainId%22%3A80094%2C%22currency%22%3A%22USD%22%7D&operationName=externalToken",
+            "size": 557,
+            "type": "fetch"
+          },
+          {
+            "duration": 246.10000002384186,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20externalToken(%24address%3A%20String!%20%24chainId%3A%20Int!%20%24currency%3A%20String)%20%7B%20token(address%3A%20%24address%20chainID%3A%20%24chainId%20currency%3A%20%24currency)%20%7B%20decimals%20iconUrl%20name%20networks%20price%20%7B%20relativeChange24h%20value%20%7D%20symbol%20%7D%20%7D&variables=%7B%22address%22%3A%220x0000000000000000000000000000000000000000%22%2C%22chainId%22%3A666666666%2C%22currency%22%3A%22USD%22%7D&operationName=externalToken",
+            "size": 647,
+            "type": "fetch"
+          },
+          {
+            "duration": 165,
+            "name": "https://addys.p.rainbow.me/v3/summary",
+            "size": 349,
+            "type": "fetch"
+          },
+          {
+            "duration": 3925.100000023842,
+            "name": "https://addys.p.rainbow.me/v3/summary",
+            "size": 6579,
+            "type": "fetch"
+          },
+          {
+            "duration": 29.30000001192093,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 28.899999976158142,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220x70997970C51812dc3A010C7d01b50e0d17dc79C8%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 35.59999996423721,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 52.30000001192093,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220x90F79bf6EB2c4f870365E785982E1f101E93b906%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 35.10000002384186,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220x15d34AAf54267DB7D7c367839AAf71A00a2C6A65%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 46,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220x9965507D1a55bcC2695C58ba16FB37d819B0A4dc%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 51.40000003576279,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220x976EA74026E726554dB657fA54763abd0C3a0aa9%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 62.799999952316284,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220x14dC79964da2C08b23698B3D3cc7Ca32193d9955%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 61.80000001192093,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220x23618e81E3f5cdF7f54C3d65f7FBc0aBf5B21E8f%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 62,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220xa0Ee7A142d267C1f36714E4a8F75612F20a79720%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 61.39999997615814,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220xBcd4042DE499D14e55001CcbB24a551F3b954096%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 61.39999997615814,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220x71bE63f3384f5fb98995898A86B02Fb2426c5788%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 61.09999996423721,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220xFABB0ac9d68B0B445fB7357272Ff202C5651694a%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 60.89999997615814,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220x1CBd3b2770909D4e10f157cABC84C7264073C9Ec%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 78.19999998807907,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220xdF3e18d64BC6A983f673Ab319CCaE4f1a57C7097%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 77.5,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220xcd3B766CCDd6AE721141F452C550Ca635964ce71%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 77.5,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220x2546BcD3c84621e976D8185a91A922aE77ECEc30%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 77.40000003576279,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220xbDA5747bFD65F08deb54cb465eB87D40e51B197E%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 77.19999998807907,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220xdD2FD4581271e230360230F9337D5c0430Bf44C0%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 77.19999998807907,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 76.60000002384186,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220x09DB0a93B389bEF724429898f539AEB7ac2Dd55f%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 76.39999997615814,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220x02484cb50AAC86Eae85610D6f4Bf026f30f6627D%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 76.10000002384186,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220x08135Da0A343E492FA2d4282F2AE34c6c5CC1BbE%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 76.10000002384186,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220x5E661B79FE2D3F6cE70F5AAC07d8Cd9abb2743F1%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 77.89999997615814,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220x61097BA76cD906d2ba4FD106E757f7Eb455fc295%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 77.90000003576279,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220xDf37F81dAAD2b0327A0A50003740e1C935C70913%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 77.5,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220x553BC17A05702530097c3677091C5BB47a3a7931%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 77.40000003576279,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220x87BdCE72c06C21cd96219BD8521bDF1F42C78b5e%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 77.60000002384186,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220x40Fc963A729c542424cD800349a7E4Ecc4896624%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 76.69999998807907,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220x9DCCe783B6464611f38631e6C851bf441907c710%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 76.5,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220x1BcB8e569EedAb4668e55145Cfeaf190902d3CF2%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 76.29999995231628,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220x8263Fce86B1b78F95Ab4dae11907d8AF88f841e7%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 76,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220xcF2d5b3cBb4D7bF04e3F7bFa8e27081B52191f91%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 73.69999998807907,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220x86c53Eb85D0B7548fea5C4B4F82b4205C8f6Ac18%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 73.30000001192093,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220x1aac82773CB722166D7dA0d5b0FA35B0307dD99D%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 73,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220x2f4f06d218E426344CFE1A83D53dAd806994D325%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 72.80000001192093,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220x1003ff39d25F2Ab16dBCc18EcE05a9B6154f65F4%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 72.60000002384186,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220x9eAF5590f2c84912A08de97FA28d0529361Deb9E%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 72.70000004768372,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220x11e8F3eA3C6FcF12EcfF2722d75CEFC539c51a1C%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 72.39999997615814,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220x7D86687F980A56b832e9378952B738b614A99dc6%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 72.09999996423721,
+            "name": "https://metadata.p.rainbow.me/v1/graph?query=query%20reverseResolveENSProfile(%24chainId%3A%20Int!%20%24address%3A%20String!%20%24fields%3A%20%5BString!%5D)%20%7B%20reverseResolveENSProfile(chainID%3A%20%24chainId%20address%3A%20%24address%20fields%3A%20%24fields)%20%7B%20name%20resolverAddress%20reverseResolverAddress%20fields%20%7B%20key%20value%20%7D%20%7D%20%7D&variables=%7B%22chainId%22%3A1%2C%22address%22%3A%220x9eF6c02FB2ECc446146E05F1fF687a788a8BF76d%22%2C%22fields%22%3A%5B%22avatar%22%5D%7D&operationName=reverseResolveENSProfile",
+            "size": 366,
+            "type": "fetch"
+          },
+          {
+            "duration": 552.8999999761581,
+            "name": "https://rpc.rainbow.me/v1/1/B9kBlwE2Hpw0COb7pWj6rpnk69fqSGGRc3fQ5nZ2LzeFS1G2VRxBQilZWbxAZkXI",
+            "size": 400,
+            "type": "fetch"
+          },
+          {
+            "duration": 188.69999998807907,
+            "name": "https://rpc.rainbow.me/v1/1/B9kBlwE2Hpw0COb7pWj6rpnk69fqSGGRc3fQ5nZ2LzeFS1G2VRxBQilZWbxAZkXI",
+            "size": 399,
+            "type": "fetch"
+          },
+          {
+            "duration": 178.69999998807907,
+            "name": "https://rpc.rainbow.me/v1/1/B9kBlwE2Hpw0COb7pWj6rpnk69fqSGGRc3fQ5nZ2LzeFS1G2VRxBQilZWbxAZkXI",
+            "size": 401,
+            "type": "fetch"
+          },
+          {
+            "duration": 248,
+            "name": "https://rpc.rainbow.me/v1/1/B9kBlwE2Hpw0COb7pWj6rpnk69fqSGGRc3fQ5nZ2LzeFS1G2VRxBQilZWbxAZkXI",
+            "size": 401,
+            "type": "fetch"
+          },
+          {
+            "duration": 178.30000001192093,
+            "name": "https://rpc.rainbow.me/v1/1/B9kBlwE2Hpw0COb7pWj6rpnk69fqSGGRc3fQ5nZ2LzeFS1G2VRxBQilZWbxAZkXI",
+            "size": 401,
+            "type": "fetch"
+          },
+          {
+            "duration": 161.19999998807907,
+            "name": "https://rpc.rainbow.me/v1/1/B9kBlwE2Hpw0COb7pWj6rpnk69fqSGGRc3fQ5nZ2LzeFS1G2VRxBQilZWbxAZkXI",
+            "size": 397,
+            "type": "fetch"
+          },
+          {
+            "duration": 206.69999998807907,
+            "name": "https://nftp.rainbow.me/api/v0/nfts/owners_v2?chains=ethereum%2Carbitrum%2Cbase%2Cbsc%2Cgnosis%2Coptimism%2Cpolygon&filters=spam_score__lte%3D90&wallet_addresses=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266&order_by=last_acquired_date__desc",
+            "size": 392,
+            "type": "fetch"
+          },
+          {
+            "duration": 183.0999999642372,
+            "name": "https://rpc.rainbow.me/v1/1/B9kBlwE2Hpw0COb7pWj6rpnk69fqSGGRc3fQ5nZ2LzeFS1G2VRxBQilZWbxAZkXI",
+            "size": 382,
+            "type": "fetch"
+          }
+        ],
+        "userTiming": {
+          "marks": [
+            {
+              "name": "flow-start-wallet-import",
+              "startTime": 5739.5
+            },
+            {
+              "name": "flow-end-wallet-import",
+              "startTime": 39553.59999996424
+            }
+          ],
+          "measures": [
+            {
+              "duration": 33814.09999996424,
+              "name": "flow-wallet-import",
+              "startTime": 5739.5
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
