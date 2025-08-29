@@ -56,6 +56,7 @@ export type InputProps = {
   textAlign?: TextStyles['textAlign'];
   tabIndex?: number;
   id?: string;
+  className?: string;
 };
 
 export const stylesForVariant: Record<
@@ -179,6 +180,7 @@ export function Input({
   enableAccentSelectionStyle,
   enableTapScale = true,
   spellCheck,
+  className,
   ...inputProps
 }: InputProps) {
   const {
@@ -230,6 +232,7 @@ export function Input({
           borderColor === 'accent' || enableAccentSelectionStyle
             ? accentSelectionStyle
             : null,
+          className,
         ]}
         paddingHorizontal={paddingHorizontal}
         paddingVertical={paddingVertical}
