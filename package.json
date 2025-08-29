@@ -79,7 +79,14 @@
     "firefox:zip": "yarn zip && mv rainbowbx.zip rainbowbx.xpi",
     "firefox:lint": "yarn web-ext lint --source-dir ./build",
     "firefox:run": "yarn web-ext run --source-dir ./build/ -f='/Applications/Firefox Developer Edition.app/Contents/MacOS/firefox'",
-    "tag-version": "git tag -a v$(node -p \"require('./package.json').version\") -m \"Release v$(node -p \"require('./package.json').version\")\" && git push --tags"
+    "tag-version": "git tag -a v$(node -p \"require('./package.json').version\") -m \"Release v$(node -p \"require('./package.json').version\")\" && git push --tags",
+    "// Performance testing": "",
+    "perf:initial": "yarn vitest e2e/performance/initialLoad.test.ts --config ./e2e/vitest.config.ts",
+    "perf:wallet": "yarn vitest e2e/performance/walletFlowPerformance.test.ts --config ./e2e/vitest.config.ts",
+    "perf:all": "yarn perf:initial && yarn perf:wallet",
+    "perf:compare": "tsx scripts/perf/compare.ts",
+    "perf:baseline": "cp perf-results.json perf-baseline.json && echo 'Baseline updated'",
+    "perf:report": "tsx scripts/perf/compare.ts && cat perf-report.md"
   },
   "engines": {
     "node": ">=22.17.0"
