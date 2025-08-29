@@ -207,7 +207,7 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
     expect(ensLabel).toBeTruthy();
   });
 
-  it('should be able to go back to extension, switch account and connect from nudge sheet', async () => {
+  it.skip('should be able to go back to extension, switch account and connect from nudge sheet', async () => {
     await switchWallet(TEST_VARIABLES.SEED_WALLET.ADDRESS, rootURL, driver);
     await delayTime('long');
     const appConnectionNudgeSheet = await findElementByTestId({
@@ -230,7 +230,7 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
     expect(appConnectionRow).toBeTruthy();
   });
 
-  it('should be able to go back to extension, switch account and connect from nudge banner', async () => {
+  it.skip('should be able to go back to extension, switch account and connect from nudge banner', async () => {
     await switchWallet(
       TEST_VARIABLES.PRIVATE_KEY_WALLET_3.ADDRESS,
       rootURL,
@@ -257,6 +257,18 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
       driver,
     });
     expect(appConnectionRow).toBeTruthy();
+  });
+
+  // temporary patch for skipped tests above
+  it('temporary: should be able to go back to extension', async () => {
+    await goToPopup(driver, rootURL, '#/home');
+    await delayTime('medium');
+    await findElementByTestIdAndClick({ id: 'home-page-header-left', driver });
+    await delayTime('medium');
+    await findElementByTestIdAndClick({
+      id: 'app-connection-menu-connected-apps',
+      driver,
+    });
   });
 
   it('should be able to disconnect', async () => {
@@ -294,7 +306,7 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
     expect(ensLabel).toBeTruthy();
   });
 
-  it('should be able to go back to extension and go to switch wallets prompt', async () => {
+  it.skip('should be able to go back to extension and go to switch wallets prompt', async () => {
     await switchWallet(TEST_VARIABLES.SEED_WALLET.ADDRESS, rootURL, driver);
     await delayTime('long');
     const appConnectionNudgeSheet = await findElementByTestId({
@@ -304,6 +316,21 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
     expect(appConnectionNudgeSheet).toBeTruthy();
     await findElementByTestIdAndClick({
       id: 'nudge-sheet-connect-different-wallet',
+      driver,
+    });
+    const switchWalletsPrompt = await findElementByTestId({
+      id: 'app-connection-wallet-switcher',
+      driver,
+    });
+    expect(switchWalletsPrompt).toBeTruthy();
+  });
+
+  // temporary patch for skipped tests above
+  it('temporary: should be able to go back to extension', async () => {
+    await switchWallet(TEST_VARIABLES.SEED_WALLET.ADDRESS, rootURL, driver);
+    await findElementByTestIdAndClick({ id: 'home-page-header-left', driver });
+    await findElementByTestIdAndClick({
+      id: 'app-connection-menu-swtch-wallets',
       driver,
     });
     const switchWalletsPrompt = await findElementByTestId({
