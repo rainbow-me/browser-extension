@@ -12,7 +12,6 @@ import { updateWagmiConfig } from '~/core/wagmi';
 
 import { handleDisconnect } from './handlers/handleDisconnect';
 import { handleInstallExtension } from './handlers/handleInstallExtension';
-import { handleKeepAlive } from './handlers/handleKeepAlive';
 import { handleOpenExtensionShortcut } from './handlers/handleOpenExtensionShortcut';
 import { handlePrefetchDappMetadata } from './handlers/handlePrefetchMetadata';
 import { handleProviderRequest } from './handlers/handleProviderRequest';
@@ -44,7 +43,6 @@ syncNetworksStore('background');
 syncStores();
 
 uuid4();
-handleKeepAlive();
 
 const popupMessenger = initializeMessenger({ connect: 'popup' });
 popupMessenger.reply('rainbow_updateWagmiClient', async () => {
