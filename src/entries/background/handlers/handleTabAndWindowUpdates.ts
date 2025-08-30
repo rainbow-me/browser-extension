@@ -4,19 +4,31 @@ import {
   useNotificationWindowStore,
   usePendingRequestStore,
 } from '~/core/state';
+import { getSenderHost } from '~/core/state/requests/utils';
 
 const bridgeMessenger = initializeMessenger({ connect: 'inpage' });
 
 export const handleTabAndWindowUpdates = () => {
-  // When a tab is removed, check if that was the last tab for that host
-  // if that's the case then we need to remove the pending requests
+  // When a tab is removed, clean up pending requests and connection resolvers
   const clearPendingRequestsOnUpdate = (tabId: number) => {
-    const { pendingRequests, removePendingRequest } =
+    const { pendingRequests, removePendingRequest, resolveConnectionRequests } =
       usePendingRequestStore.getState();
     pendingRequests.forEach((request) => {
       if (request.meta?.sender?.tab?.id === tabId) {
         bridgeMessenger.send(`message:${request?.id}`, null);
         removePendingRequest(request.id);
+
+        // If this was a connection request, track the host for resolver cleanup
+        if (request.method === 'eth_requestAccounts') {
+          const host = getSenderHost(request);
+          if (host) {
+            resolveConnectionRequests(
+              host,
+              new Error('Tab closed before connection completed'),
+              true,
+            );
+          }
+        }
       }
     });
   };
