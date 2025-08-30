@@ -27,13 +27,23 @@ const asyncStoragePersister = createAsyncStoragePersister({
   },
 });
 
+function isOrpcQueryKey(queryKey: readonly unknown[]) {
+  const keys = queryKey[0];
+  return (
+    Array.isArray(keys) && typeof keys[0] === 'string' && keys[0] === 'orpc'
+  );
+}
+
 export const persistOptions: Omit<PersistQueryClientOptions, 'queryClient'> = {
   persister: asyncStoragePersister,
   dehydrateOptions: {
-    shouldDehydrateQuery: (query) =>
-      Boolean(
+    shouldDehydrateQuery: (query) => {
+      return Boolean(
         // We want to persist queries that have a `cacheTime` of above zero.
-        query.gcTime !== 0,
-      ),
+        query.gcTime !== 0 ||
+          // dont persist orpc queries
+          isOrpcQueryKey(query.queryKey),
+      );
+    },
   },
 };

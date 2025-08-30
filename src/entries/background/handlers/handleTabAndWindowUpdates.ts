@@ -2,21 +2,20 @@ import { initializeMessenger } from '~/core/messengers';
 import {
   useIsDefaultWalletStore,
   useNotificationWindowStore,
-  usePendingRequestStore,
 } from '~/core/state';
+import { usePendingRequestStore } from '~/core/state/requests';
 
-const bridgeMessenger = initializeMessenger({ connect: 'inpage' });
+const inpageMessenger = initializeMessenger({ connect: 'inpage' });
 
 export const handleTabAndWindowUpdates = () => {
   // When a tab is removed, check if that was the last tab for that host
   // if that's the case then we need to remove the pending requests
   const clearPendingRequestsOnUpdate = (tabId: number) => {
-    const { pendingRequests, removePendingRequest } =
+    const { pendingRequests, rejectPendingRequest } =
       usePendingRequestStore.getState();
     pendingRequests.forEach((request) => {
       if (request.meta?.sender?.tab?.id === tabId) {
-        bridgeMessenger.send(`message:${request?.id}`, null);
-        removePendingRequest(request.id);
+        rejectPendingRequest(request.id);
       }
     });
   };
@@ -27,7 +26,7 @@ export const handleTabAndWindowUpdates = () => {
   });
 
   chrome.tabs.onActivated.addListener(() => {
-    bridgeMessenger.send('rainbow_setDefaultProvider', {
+    inpageMessenger.send('rainbow_setDefaultProvider', {
       rainbowAsDefault: useIsDefaultWalletStore.getState().isDefaultWallet,
     });
   });

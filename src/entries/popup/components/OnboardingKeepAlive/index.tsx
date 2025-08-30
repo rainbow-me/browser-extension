@@ -1,29 +1,24 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
-import { initializeMessenger } from '~/core/messengers';
-
+import { popupClient } from '../../handlers/background';
 import { useAuth } from '../../hooks/useAuth';
 
 export const OnboardingKeepAlive = () => {
-  const bgMessenger = initializeMessenger({ connect: 'background' });
-
   const { status } = useAuth();
 
   const timer = useRef<undefined | NodeJS.Timer>(undefined);
 
-  const keepAlive = useCallback(async () => {
-    await bgMessenger.send('ping', {});
-  }, [bgMessenger]);
-
   useEffect(() => {
     if (status !== 'READY') {
       if (!timer.current) {
-        timer.current = setInterval(keepAlive, 1000);
+        timer.current = setInterval(async () => {
+          await popupClient.health.ping();
+        }, 1000);
       }
     } else {
       clearInterval(timer.current);
     }
-  }, [keepAlive, status]);
+  }, [status]);
 
   return null;
 };

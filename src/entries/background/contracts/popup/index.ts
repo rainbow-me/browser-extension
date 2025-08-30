@@ -1,0 +1,1 @@
+export { walletContract } from './wallet';

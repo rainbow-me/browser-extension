@@ -11,7 +11,6 @@ import { flushQueuedEvents } from '~/analytics/flushQueuedEvents';
 // !!!! DO NOT REMOVE THE NEXT 2 LINES BELOW !!!!
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import config from '~/core/firebase/remoteConfig';
-import { initializeMessenger } from '~/core/messengers';
 import { persistOptions, queryClient } from '~/core/react-query';
 import { initializeSentry } from '~/core/sentry';
 import { useCurrentLanguageStore, useCurrentThemeStore } from '~/core/state';
@@ -30,14 +29,13 @@ import { Routes } from './Routes';
 import { HWRequestListener } from './components/HWRequestListener/HWRequestListener';
 import { IdleTimer } from './components/IdleTimer/IdleTimer';
 import { OnboardingKeepAlive } from './components/OnboardingKeepAlive';
+import { popupClient } from './handlers/background';
 import { AuthProvider } from './hooks/useAuth';
 import { useExpiryListener } from './hooks/useExpiryListener';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
 import usePrevious from './hooks/usePrevious';
 
 initializeSentry('popup');
-
-const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
 export function App() {
   const { currentLanguage, setCurrentLanguage } = useCurrentLanguageStore();
@@ -53,9 +51,7 @@ export function App() {
 
   React.useEffect(() => {
     if (!isEqual(prevChains, activeChains)) {
-      backgroundMessenger.send('rainbow_updateWagmiClient', {
-        rpcProxyEnabled: config.rpc_proxy_enabled,
-      });
+      void popupClient.state.wagmi.updateClient();
       setWagmiConfig(
         createConfig({
           chains: createChains(activeChains),
