@@ -86,7 +86,7 @@ export class HardwareWalletKeychain implements IKeychain {
       this.getPath(address),
       privates.get(this).deviceId,
       address,
-      this.vendor as string,
+      this.vendor!,
     );
   }
 

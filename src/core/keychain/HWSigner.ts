@@ -5,56 +5,81 @@ import { Signer } from '@ethersproject/abstract-signer';
 import { Provider } from '@ethersproject/providers';
 import { Address, ByteArray } from 'viem';
 
-import { initializeMessenger } from '../messengers';
+import {
+  hwRequestPublisher,
+  hwResponsePublisher,
+} from '../messengers/hwEventPublishers';
 import { defineReadOnly } from '../utils/define';
+
+import type { HardwareWalletVendor } from './keychainTypes/hardwareWalletKeychain';
 
 export class HWSigner extends Signer {
   readonly path: string | undefined;
   readonly privateKey: null | undefined;
   readonly deviceId: string | undefined;
   readonly address: string | undefined;
-  readonly vendor: string | undefined;
-  readonly messenger: any | undefined;
-
+  readonly vendor: HardwareWalletVendor;
   constructor(
     provider: Provider,
     path: string,
     deviceId: string,
     address: Address,
-    vendor: string,
+    vendor: HardwareWalletVendor,
   ) {
     super();
     defineReadOnly(this, 'privateKey', null);
     defineReadOnly(this, 'path', path);
     defineReadOnly(this, 'deviceId', deviceId);
     defineReadOnly(this, 'address', address);
+    this.vendor = vendor;
     defineReadOnly(this, 'vendor', vendor);
     defineReadOnly(this, 'provider', provider || null);
-    const popupMessenger = initializeMessenger({ connect: 'popup' });
-    defineReadOnly(this, 'messenger', popupMessenger);
   }
 
   async getAddress(): Promise<Address> {
     return this.address as Address;
   }
 
-  async fwdHWSignRequest(action: string, payload: any): Promise<string> {
+  async fwdHWSignRequest(
+    action: 'signTransaction' | 'signMessage' | 'signTypedData',
+    payload: any,
+  ): Promise<string> {
     return new Promise((resolve, reject) => {
-      this.messenger.send('hwRequest', {
-        action,
+      const requestId = crypto.randomUUID();
+
+      // Subscribe to the response for this specific request
+      const controller = new AbortController();
+      const responseSubscription = hwResponsePublisher.subscribe(
+        'hw-response',
+        {
+          signal: controller.signal,
+        },
+      );
+
+      const handleResponse = async () => {
+        for await (const response of responseSubscription) {
+          if (response.requestId === requestId) {
+            controller.abort(); // once
+            if (typeof response.result === 'string') {
+              resolve(response.result);
+            } else {
+              reject(response.result.error || 'Hardware wallet signing failed');
+            }
+            break;
+          }
+        }
+      };
+
+      // Start listening for the response
+      handleResponse().catch(reject);
+
+      // Publish the request
+      hwRequestPublisher.publish('hw-request', {
+        requestId,
+        action: action,
         vendor: this.vendor,
         payload,
       });
-      this.messenger.reply(
-        'hwResponse',
-        async (response: string | { error: string }) => {
-          if (typeof response === 'string') {
-            resolve(response);
-          } else {
-            reject('handled');
-          }
-        },
-      );
     });
   }
 
@@ -66,7 +91,7 @@ export class HWSigner extends Signer {
   }
 
   async signTypedDataMessage(data: any): Promise<string> {
-    return this.fwdHWSignRequest('signTypedDataMessage', {
+    return this.fwdHWSignRequest('signTypedData', {
       data,
       address: this.address,
     });
