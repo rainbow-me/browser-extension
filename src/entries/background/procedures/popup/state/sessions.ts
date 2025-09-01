@@ -10,14 +10,6 @@ import { toHex } from '~/core/utils/hex';
 
 const messenger = initializeMessenger({ connect: 'inpage' });
 
-// Schemas for type safety
-const AppSessionSchema = z.object({
-  activeSessionAddress: addressSchema,
-  host: z.string(),
-  sessions: z.record(z.string(), z.number()),
-  url: z.string(),
-});
-
 const ActiveSessionSchema = z.object({
   address: addressSchema,
   chainId: z.number(),
@@ -54,24 +46,6 @@ const RemoveSessionInputSchema = z.object({
 const RemoveAppSessionInputSchema = z.object({
   host: z.string(),
 });
-
-const GetActiveSessionInputSchema = z.object({
-  host: z.string(),
-});
-
-// Query handlers (for reactive data)
-const getAppSessionsHandler = os
-  .output(z.record(z.string(), AppSessionSchema))
-  .handler(async () => {
-    return useAppSessionsStore.getState().appSessions;
-  });
-
-const getActiveSessionHandler = os
-  .input(GetActiveSessionInputSchema)
-  .output(ActiveSessionSchema.nullable())
-  .handler(async ({ input }) => {
-    return useAppSessionsStore.getState().getActiveSession(input);
-  });
 
 // Mutation handlers (for actions)
 const addSessionHandler = os
@@ -211,10 +185,6 @@ const disconnectAllSessionsHandler = os.output(z.void()).handler(async () => {
 });
 
 export const sessionsRouter = {
-  // Queries
-  getAppSessions: getAppSessionsHandler,
-  getActiveSession: getActiveSessionHandler,
-
   // Mutations
   addSession: addSessionHandler,
   updateActiveSession: updateActiveSessionHandler,

@@ -1,22 +1,14 @@
-import { useQuery } from '@tanstack/react-query';
-
-import { popupClientQueryUtils } from '~/entries/popup/handlers/background';
+import { useAppSessionsStore } from '~/core/state';
 
 export const useAppSessionsQuery = () => {
-  return useQuery(
-    popupClientQueryUtils.state.sessions.getAppSessions.queryOptions({}),
-  );
+  return useAppSessionsStore((s) => s.appSessions);
 };
 
 export const useActiveSessionQuery = (host: string) => {
-  return useQuery(
-    popupClientQueryUtils.state.sessions.getActiveSession.queryOptions({
-      input: { host },
-    }),
-  );
+  return useAppSessionsStore((s) => s.getActiveSession({ host }));
 };
 
 export const useAppSessionQuery = (host: string) => {
   const sessions = useAppSessionsQuery();
-  return sessions.data?.[host];
+  return sessions?.[host];
 };
