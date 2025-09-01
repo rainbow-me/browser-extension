@@ -1,10 +1,9 @@
-import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 
+import { usePendingRequestStore } from '~/core/state/requests';
 import { WELCOME_URL, goToNewTab } from '~/core/utils/tabs';
 
-import { popupClientQueryUtils } from './handlers/background';
 import { UserStatusResult, useAuth } from './hooks/useAuth';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
 import { ROUTES } from './urls';
@@ -26,9 +25,7 @@ export const ProtectedRoute = ({
   const { status, updateStatus } = useAuth();
   const isFullScreen = useIsFullScreen();
 
-  const { data: pendingRequests } = useQuery(
-    popupClientQueryUtils.state.requests.getAll.queryOptions(),
-  );
+  const pendingRequests = usePendingRequestStore((s) => s.pendingRequests);
 
   const [isStatusInitialized, setStatusInitialized] = React.useState(false);
   React.useEffect(() => {
