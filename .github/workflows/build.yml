@@ -228,12 +228,13 @@ jobs:
           export BROWSER=chrome
           export OS=linux
           export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
+          export MAX_RETRIES=3
           
           echo "Running performance tests..."
           # Check if performance tests exist and run them
           if [ -f "e2e/performance/initialLoad.test.ts" ] || [ -f "e2e/performance/walletFlowPerformance.test.ts" ]; then
-            # Run vitest with the specific test directory, not a glob
-            yarn vitest e2e/performance --config ./e2e/vitest.config.ts --run || true
+            # Run using the script, same as other e2e tests
+            yarn vitest:performance
           else
             echo "No performance test files found"
             echo "This is expected on the first PR introducing performance tests"
