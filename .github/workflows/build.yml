@@ -197,7 +197,7 @@ jobs:
   #       run: exit 1
   # PERFORMANCE TESTS
   chrome-performance:
-    runs-on: ubuntu-latest
+    runs-on: beefy-runner-bx
     timeout-minutes: 10
     needs: [build]
     # Only run on PRs
