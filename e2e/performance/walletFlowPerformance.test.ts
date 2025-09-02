@@ -30,14 +30,24 @@ const os = process.env.OS || 'mac';
 
 describe('Wallet Flow Performance Tests', () => {
   beforeAll(async () => {
-    driver = await initDriverWithOptions({
-      browser,
-      os,
-    });
-    const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-    if (!extensionId) throw new Error('Extension not found');
-    rootURL += extensionId;
-    collector = new PerformanceCollector(driver, browser);
+    try {
+      console.log(`Initializing driver for ${browser} on ${os}...`);
+      driver = await initDriverWithOptions({
+        browser,
+        os,
+      });
+      console.log('Driver initialized successfully');
+
+      const extensionId = await getExtensionIdByName(driver, 'Rainbow');
+      if (!extensionId) throw new Error('Extension not found');
+      rootURL += extensionId;
+      console.log(`Extension found with ID: ${extensionId}`);
+
+      collector = new PerformanceCollector(driver, browser);
+    } catch (error) {
+      console.error('Failed to initialize test:', error);
+      throw error;
+    }
   });
 
   beforeEach<{ driver: WebDriver }>(async (context) => {
@@ -48,7 +58,17 @@ describe('Wallet Flow Performance Tests', () => {
     await takeScreenshotOnFailure(context);
   });
 
-  afterAll(() => driver?.quit());
+  afterAll(async () => {
+    // Save metrics if collector was initialized
+    if (collector) {
+      try {
+        await collector.saveMetrics('perf-wallet-flow.json');
+      } catch (e) {
+        console.error('Failed to save metrics:', e);
+      }
+    }
+    await driver?.quit();
+  });
 
   it('should measure complete wallet import flow', async () => {
     // Navigate to welcome for wallet import

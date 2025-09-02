@@ -28,14 +28,24 @@ const os = process.env.OS || 'mac';
 
 describe('Extension Initial Load Performance', () => {
   beforeAll(async () => {
-    driver = await initDriverWithOptions({
-      browser,
-      os,
-    });
-    const extensionId = await getExtensionIdByName(driver, 'Rainbow');
-    if (!extensionId) throw new Error('Extension not found');
-    rootURL += extensionId;
-    collector = new PerformanceCollector(driver, browser);
+    try {
+      console.log(`Initializing driver for ${browser} on ${os}...`);
+      driver = await initDriverWithOptions({
+        browser,
+        os,
+      });
+      console.log('Driver initialized successfully');
+
+      const extensionId = await getExtensionIdByName(driver, 'Rainbow');
+      if (!extensionId) throw new Error('Extension not found');
+      rootURL += extensionId;
+      console.log(`Extension found with ID: ${extensionId}`);
+
+      collector = new PerformanceCollector(driver, browser);
+    } catch (error) {
+      console.error('Failed to initialize test:', error);
+      throw error;
+    }
   });
 
   beforeEach<{ driver: WebDriver }>(async (context) => {
@@ -47,8 +57,10 @@ describe('Extension Initial Load Performance', () => {
   });
 
   afterAll(async () => {
-    // Save all collected metrics
-    await collector.saveMetrics('perf-initial-load.json');
+    // Save all collected metrics if collector was initialized
+    if (collector) {
+      await collector.saveMetrics('perf-initial-load.json');
+    }
     await driver?.quit();
   });
 
