@@ -210,6 +210,17 @@ jobs:
         with:
           gh-access-token: ${{ secrets.ORG_ACCESS_TOKEN }}
       
+      - name: Check and copy performance tests
+        run: |
+          # Performance tests are in the repository, not the build artifact
+          # They need to be available for vitest to find them
+          if [ -d "e2e/performance" ]; then
+            echo "Performance tests found:"
+            ls -la e2e/performance/
+          else
+            echo "No performance tests directory found"
+          fi
+      
       - name: Run performance tests
         id: perfTests
         continue-on-error: true
@@ -219,10 +230,13 @@ jobs:
           export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
           
           echo "Running performance tests..."
-          if [ -d "e2e/performance" ]; then
-            yarn vitest "e2e/performance/*.test.ts" --config ./e2e/vitest.config.ts --run || true
+          # Check if performance tests exist and run them
+          if [ -f "e2e/performance/initialLoad.test.ts" ] || [ -f "e2e/performance/walletFlowPerformance.test.ts" ]; then
+            # Run vitest with the specific test directory, not a glob
+            yarn vitest e2e/performance --config ./e2e/vitest.config.ts --run || true
           else
-            echo "No performance tests found"
+            echo "No performance test files found"
+            echo "This is expected on the first PR introducing performance tests"
           fi
       
       - name: Post results to PR
