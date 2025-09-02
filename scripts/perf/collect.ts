@@ -276,6 +276,11 @@ export class PerformanceCollector {
 
     fs.writeFileSync(finalPath, JSON.stringify(output, null, 2));
     console.log(`Performance metrics saved to: ${finalPath}`);
+
+    // Also save to the default perf-results.json for CI
+    if (outputPath && outputPath !== defaultPath) {
+      fs.writeFileSync(defaultPath, JSON.stringify(output, null, 2));
+    }
   }
 
   getMetrics(): PerformanceMetrics[] {
