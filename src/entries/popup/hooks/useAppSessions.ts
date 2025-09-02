@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import type { Address } from 'viem';
 
 import { popupClientQueryUtils } from '../handlers/background';
@@ -6,29 +6,14 @@ import { popupClientQueryUtils } from '../handlers/background';
 import { useAppSessionsQuery } from './useAppSessionQuery';
 
 export function useAppSessions() {
-  const queryClient = useQueryClient();
-  const { data: appSessions = {} } = useAppSessionsQuery();
-
-  // Helper to invalidate both queries
-  const invalidateSessionQueries = () => {
-    queryClient.invalidateQueries({
-      queryKey: popupClientQueryUtils.state.sessions.getAppSessions.key(),
-    });
-    queryClient.invalidateQueries({
-      queryKey: popupClientQueryUtils.state.sessions.getActiveSession.key(),
-    });
-  };
+  const appSessions = useAppSessionsQuery();
 
   const addSessionMutation = useMutation(
-    popupClientQueryUtils.state.sessions.addSession.mutationOptions({
-      onSuccess: invalidateSessionQueries,
-    }),
+    popupClientQueryUtils.state.sessions.addSession.mutationOptions(),
   );
 
   const disconnectAllSessionsMutation = useMutation(
-    popupClientQueryUtils.state.sessions.disconnectAllSessions.mutationOptions({
-      onSuccess: invalidateSessionQueries,
-    }),
+    popupClientQueryUtils.state.sessions.disconnectAllSessions.mutationOptions(),
   );
 
   // Wrapper functions to maintain the same API
