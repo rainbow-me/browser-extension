@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { Address } from 'viem';
 
 import { popupClientQueryUtils } from '~/entries/popup/handlers/background';
@@ -9,62 +9,28 @@ import {
 } from './useAppSessionQuery';
 
 export function useAppSession({ host = '' }: { host?: string }) {
-  const queryClient = useQueryClient();
-  const { data: activeSession = null } = useActiveSessionQuery(host);
+  const activeSession = useActiveSessionQuery(host);
   const appSession = useAppSessionQuery(host);
-
-  // Provide a default structure when loading to maintain backward compatibility
-  const defaultAppSession = {
-    activeSessionAddress:
-      '0x0000000000000000000000000000000000000000' as Address,
-    host: host || '',
-    sessions: {} as Record<Address, number>,
-    url: '',
-  };
-
-  const safeAppSession = appSession ?? defaultAppSession;
-
-  // Helper to invalidate both queries
-  const invalidateSessionQueries = () => {
-    queryClient.invalidateQueries({
-      queryKey: popupClientQueryUtils.state.sessions.getAppSessions.key(),
-    });
-    queryClient.invalidateQueries({
-      queryKey: popupClientQueryUtils.state.sessions.getActiveSession.key(),
-    });
-  };
 
   // Mutations that invalidate queries
   const updateActiveSessionMutation = useMutation(
-    popupClientQueryUtils.state.sessions.updateActiveSession.mutationOptions({
-      onSuccess: invalidateSessionQueries,
-    }),
+    popupClientQueryUtils.state.sessions.updateActiveSession.mutationOptions(),
   );
 
   const updateActiveSessionChainIdMutation = useMutation(
-    popupClientQueryUtils.state.sessions.updateActiveSessionChainId.mutationOptions(
-      {
-        onSuccess: invalidateSessionQueries,
-      },
-    ),
+    popupClientQueryUtils.state.sessions.updateActiveSessionChainId.mutationOptions(),
   );
 
   const updateSessionChainIdMutation = useMutation(
-    popupClientQueryUtils.state.sessions.updateSessionChainId.mutationOptions({
-      onSuccess: invalidateSessionQueries,
-    }),
+    popupClientQueryUtils.state.sessions.updateSessionChainId.mutationOptions(),
   );
 
   const removeSessionMutation = useMutation(
-    popupClientQueryUtils.state.sessions.removeSession.mutationOptions({
-      onSuccess: invalidateSessionQueries,
-    }),
+    popupClientQueryUtils.state.sessions.removeSession.mutationOptions(),
   );
 
   const removeAppSessionMutation = useMutation(
-    popupClientQueryUtils.state.sessions.removeAppSession.mutationOptions({
-      onSuccess: invalidateSessionQueries,
-    }),
+    popupClientQueryUtils.state.sessions.removeAppSession.mutationOptions(),
   );
 
   const updateAppSessionAddress = ({ address }: { address: Address }) => {
@@ -105,7 +71,7 @@ export function useAppSession({ host = '' }: { host?: string }) {
     updateAppSessionChainId,
     disconnectAppSession,
     disconnectSession,
-    appSession: safeAppSession,
+    appSession,
     activeSession,
   };
 }
