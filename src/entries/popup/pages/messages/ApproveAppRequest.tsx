@@ -1,8 +1,9 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import React, { useCallback, useEffect } from 'react';
 
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useNotificationWindowStore } from '~/core/state/notificationWindow';
+import { usePendingRequestStore } from '~/core/state/requests';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { TESTNET_MODE_BAR_HEIGHT } from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
@@ -46,17 +47,12 @@ const ApproveAppRequestWrapper = ({
 };
 
 export const ApproveAppRequest = () => {
-  const { data: pendingRequests = [], refetch: refetchPendingRequests } =
-    useQuery(popupClientQueryUtils.state.requests.getAll.queryOptions());
+  const pendingRequests = usePendingRequestStore((s) => s.pendingRequests);
   const { mutate: approvePendingRequest } = useMutation(
-    popupClientQueryUtils.state.requests.approve.mutationOptions({
-      onSuccess: () => refetchPendingRequests(),
-    }),
+    popupClientQueryUtils.state.requests.approve.mutationOptions(),
   );
   const { mutate: rejectPendingRequest } = useMutation(
-    popupClientQueryUtils.state.requests.reject.mutationOptions({
-      onSuccess: () => refetchPendingRequests(),
-    }),
+    popupClientQueryUtils.state.requests.reject.mutationOptions(),
   );
   const { notificationWindows } = useNotificationWindowStore();
   // If we're on an external popup, we only want to show the request that were sent from that tab

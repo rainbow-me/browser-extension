@@ -9,6 +9,7 @@ export {
   useCurrentThemeStore,
   useIsDefaultWalletStore,
 } from './currentSettings';
+export { usePendingRequestStore } from './requests';
 export { useColorCacheStore } from './dominantColor';
 export { useSavedEnsNamesStore } from './savedEnsNames';
 export { useStaleBalancesStore } from './staleBalances';
