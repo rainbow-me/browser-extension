@@ -10,7 +10,7 @@ import {
   getQuote,
 } from '@rainbow-me/swaps';
 import { useQuery } from '@tanstack/react-query';
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { ParsedAsset, ParsedSearchAsset } from '~/core/types/assets';
@@ -46,6 +46,9 @@ export const useSwapQuote = ({
 }: UseSwapQuotesProps) => {
   const { currentAddress } = useCurrentAddressStore();
   const currency = useCurrentCurrencyStore((s) => s.currentCurrency);
+
+  const currentInputHash = `${assetToSell?.chainId}:${assetToSell?.address}:${assetToSellValue}`;
+  const lastFetchedInputHashRef = useRef<string>();
 
   const isCrosschainSwap = useMemo(
     () =>
@@ -126,6 +129,9 @@ export const useSwapQuote = ({
           outputAmount: assetToBuyValue,
         });
       }
+
+      lastFetchedInputHashRef.current = currentInputHash;
+
       return quote as Quote | CrosschainQuote | QuoteError;
     },
     queryKey: ['getSwapQuote', quotesParams],
@@ -134,6 +140,13 @@ export const useSwapQuote = ({
     gcTime: CACHE_INTERVAL,
     placeholderData: (previousData) => previousData,
   });
+
+  const isRefetchingAfterInputChange = useMemo(() => {
+    return (
+      currentInputHash !== lastFetchedInputHashRef.current &&
+      fetchStatus === 'fetching'
+    );
+  }, [currentInputHash, fetchStatus]);
 
   const isWrapOrUnwrapEth = useMemo(() => {
     if (!data || (data as QuoteError).error) return false;
@@ -161,6 +174,8 @@ export const useSwapQuote = ({
   return {
     data: quote,
     isLoading: isLoading && fetchStatus !== 'idle',
+    isRefetchingAfterInputChange,
+    isRefetching: fetchStatus === 'fetching',
     isError,
     isCrosschainSwap,
     isWrapOrUnwrapEth,
