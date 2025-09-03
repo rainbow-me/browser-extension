@@ -1,22 +1,19 @@
-import { useQuery } from '@tanstack/react-query';
 import { AnimatePresence, motion, useAnimationControls } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
+import { usePendingRequestStore } from '~/core/state/requests';
 import { useWalletBackupsStore } from '~/core/state/walletBackups';
 import { Box, Stack, Text } from '~/design-system';
 
 import { FlyingRainbows } from '../../components/FlyingRainbows/FlyingRainbows';
 import { LogoWithLetters } from '../../components/LogoWithLetters/LogoWithLetters';
-import { popupClientQueryUtils } from '../../handlers/background';
 
 import { ImportOrCreateWallet } from './ImportOrCreateWallet';
 import { OnboardBeforeConnectSheet } from './OnboardBeforeConnectSheet';
 
 export function Welcome() {
-  const { data: pendingRequests = [] } = useQuery(
-    popupClientQueryUtils.state.requests.getAll.queryOptions(),
-  );
+  const pendingRequests = usePendingRequestStore((s) => s.pendingRequests);
   const [showOnboardBeforeConnectSheet, setShowOnboardBeforeConnectSheet] =
     useState(!!pendingRequests.length);
   const headerControls = useAnimationControls();

@@ -5,9 +5,6 @@ import { onlyBackground } from '~/core/utils/onlyBackground';
 
 import { ProviderRequestPayload } from '../../transports/providerRequestTransport';
 
-// Throw an error if this file is loaded in the popup or inpage script
-onlyBackground('usePendingRequestStore');
-
 type Responses =
   | { status: 'APPROVED'; payload: unknown }
   | { status: 'REJECTED'; payload: null };
@@ -31,10 +28,14 @@ export const usePendingRequestStore = createRainbowStore<PendingRequestsStore>(
   (set, get) => ({
     pendingRequests: [],
     addPendingRequest: (newRequest) => {
+      onlyBackground('usePendingRequestStore.addPendingRequest()');
+
       const pendingRequests = get().pendingRequests;
       set({ pendingRequests: [...pendingRequests, newRequest] });
     },
     approvePendingRequest: (id, payload) => {
+      onlyBackground('usePendingRequestStore.approvePendingRequest()');
+
       const pendingRequests = get().pendingRequests;
       set({
         pendingRequests: pendingRequests.filter((request) => request.id !== id),
@@ -42,6 +43,8 @@ export const usePendingRequestStore = createRainbowStore<PendingRequestsStore>(
       eventEmitter.emit(id, { status: 'APPROVED', payload });
     },
     rejectPendingRequest: (id) => {
+      onlyBackground('usePendingRequestStore.rejectPendingRequest()');
+
       const pendingRequests = get().pendingRequests;
       set({
         pendingRequests: pendingRequests.filter((request) => request.id !== id),
@@ -49,6 +52,8 @@ export const usePendingRequestStore = createRainbowStore<PendingRequestsStore>(
       eventEmitter.emit(id, { status: 'REJECTED', payload: null });
     },
     waitForPendingRequest: (id: number): Promise<Responses> => {
+      onlyBackground('usePendingRequestStore.waitForPendingRequest()');
+
       return new Promise((resolve) => {
         const handler = (status: Responses) => {
           eventEmitter.off(id, handler);
