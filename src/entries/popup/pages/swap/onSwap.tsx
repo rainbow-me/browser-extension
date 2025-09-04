@@ -5,7 +5,7 @@ import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { QuoteTypeMap } from '~/core/raps/references';
-import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { connectedToHardhathard_OldSync as isConnectedToHardhat } from '~/core/state/currentSettings/oldSync';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSwapAssetsToRefreshStore } from '~/core/state/swapAssetsToRefresh';
 import { ParsedSearchAsset } from '~/core/types/assets';
@@ -37,9 +37,9 @@ export const onSwap = async ({
     assetToSell.chainId !== assetToBuy.chainId ? 'crosschainSwap' : 'swap';
   const q = quote as QuoteTypeMap[typeof type];
 
-  const isConnectedToHardhat =
-    useConnectedToHardhatStore.getState().connectedToHardhat;
-  const chainId = isConnectedToHardhat ? ChainId.hardhat : assetToSell.chainId;
+  const chainId = isConnectedToHardhat.value
+    ? ChainId.hardhat
+    : assetToSell.chainId;
   const isBridge = isSameAssetInDiffChains(assetToSell, assetToBuy);
 
   const wallet = getWallet(q.from as Address);

@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { RAINBOW_LEARN_URL } from '~/core/references/links';
-import { useCurrentAddressStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { toggleDegenMode, useDegenMode } from '~/core/state/degenMode';
 import { ChainId } from '~/core/types/chains';
 import {
@@ -218,7 +218,7 @@ export const SwapSettings = ({
   onDone,
   bridge,
 }: SwapSettingsProps) => {
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
 
   const prevChainId = usePrevious(chainId);

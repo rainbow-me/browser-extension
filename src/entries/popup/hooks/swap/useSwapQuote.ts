@@ -12,7 +12,7 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { useMemo, useRef } from 'react';
 
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { ParsedAsset, ParsedSearchAsset } from '~/core/types/assets';
 import { convertAmountToRawAmount } from '~/core/utils/numbers';
 
@@ -44,8 +44,8 @@ export const useSwapQuote = ({
   source,
   isClaim,
 }: UseSwapQuotesProps) => {
-  const { currentAddress } = useCurrentAddressStore();
-  const currency = useCurrentCurrencyStore((s) => s.currentCurrency);
+  const [currentAddress] = useSettingsStore('currentAddress');
+  const [currency] = useSettingsStore('currentCurrency');
 
   const currentInputHash = `${assetToSell?.chainId}:${assetToSell?.address}:${assetToSellValue}`;
   const lastFetchedInputHashRef = useRef<string>();

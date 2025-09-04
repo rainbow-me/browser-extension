@@ -13,7 +13,8 @@ import { flushQueuedEvents } from '~/analytics/flushQueuedEvents';
 import config from '~/core/firebase/remoteConfig';
 import { persistOptions, queryClient } from '~/core/react-query';
 import { initializeSentry } from '~/core/sentry';
-import { useCurrentLanguageStore, useCurrentThemeStore } from '~/core/state';
+import { useCurrentLanguage } from '~/core/state/currentSettings/currentLanguage';
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { TelemetryIdentifier } from '~/core/telemetry';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
@@ -38,7 +39,8 @@ import usePrevious from './hooks/usePrevious';
 initializeSentry('popup');
 
 export function App() {
-  const { currentLanguage, setCurrentLanguage } = useCurrentLanguageStore();
+  const { currentLanguage, setCurrentLanguage } = useCurrentLanguage();
+  const { currentTheme } = useCurrentThemeStore();
   const activeChains = useNetworkStore((state) =>
     state.getAllActiveRpcChains(),
   );
@@ -96,7 +98,6 @@ export function App() {
     setCurrentLanguage(currentLanguage);
   }, [currentLanguage, setCurrentLanguage]);
 
-  const { currentTheme } = useCurrentThemeStore();
   const isFullScreen = useIsFullScreen();
 
   return (

@@ -6,7 +6,7 @@ import { Address } from 'viem';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useCurrentAddressStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { useWalletNamesStore } from '~/core/state/walletNames';
 import { useWalletOrderStore } from '~/core/state/walletOrder';
@@ -182,7 +182,8 @@ export function WalletSwitcher() {
   const [removeAccount, setRemoveAccount] = useState<
     AddressAndType | undefined
   >();
-  const { currentAddress, setCurrentAddress } = useCurrentAddressStore();
+  const [currentAddress, setCurrentAddress] =
+    useSettingsStore('currentAddress');
   const { hideWallet, unhideWallet } = useHiddenWalletsStore();
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useRainbowNavigate();

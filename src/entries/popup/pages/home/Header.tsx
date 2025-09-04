@@ -7,8 +7,7 @@ import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useCurrentAddressStore } from '~/core/state';
-import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { POPUP_URL, goToNewTab } from '~/core/utils/tabs';
@@ -48,7 +47,7 @@ export const Header = React.memo(function Header() {
   const y = useTransform(progress, [0, 1], [0, 2]);
   const avatarOpacityValue = useTransform(progress, [0, 0.25, 1], [0, 0, 1]);
 
-  const { currentAddress: address } = useCurrentAddressStore();
+  const [address] = useSettingsStore('currentAddress');
 
   return (
     <WalletContextMenu account={address}>
@@ -118,7 +117,7 @@ export const Header = React.memo(function Header() {
 });
 
 export function AvatarSection() {
-  const { currentAddress: address } = useCurrentAddressStore();
+  const [address] = useSettingsStore('currentAddress');
   const { data: avatar } = useAvatar({ addressOrName: address });
 
   return (
@@ -136,11 +135,11 @@ export function AvatarSection() {
 }
 
 function ActionButtonsSection() {
-  const { currentAddress: address } = useCurrentAddressStore();
+  const [address] = useSettingsStore('currentAddress');
   const { data: avatar } = useAvatar({ addressOrName: address });
 
   const { isWatchingWallet } = useWallets();
-  const { featureFlags } = useFeatureFlagsStore();
+  const [featureFlags] = useSettingsStore('featureFlags');
   const navigate = useRainbowNavigate();
   const navigateToSwaps = useNavigateToSwaps();
 

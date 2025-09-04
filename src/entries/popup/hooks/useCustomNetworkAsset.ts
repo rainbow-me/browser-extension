@@ -2,7 +2,7 @@ import { Address } from 'viem';
 
 import { selectUserAssetWithUniqueId } from '~/core/resources/_selectors/assets';
 import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { UniqueId } from '~/core/types/assets';
 
 export function useCustomNetworkAsset({
@@ -14,8 +14,8 @@ export function useCustomNetworkAsset({
   uniqueId?: UniqueId;
   filterZeroBalance?: boolean;
 }) {
-  const { currentAddress } = useCurrentAddressStore();
-  const { currentCurrency: currency } = useCurrentCurrencyStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
+  const [currency] = useSettingsStore('currentCurrency');
   return useCustomNetworkAssets(
     {
       address: address || currentAddress,

@@ -8,7 +8,7 @@ import {
 import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test, vi } from 'vitest';
 
-import { useConnectedToHardhatStore, useGasStore } from '~/core/state';
+import { useGasStore } from '~/core/state';
 import {
   ENS_MAINNET_ASSET,
   ETH_MAINNET_ASSET,
@@ -19,6 +19,7 @@ import {
   delay,
 } from '~/test/utils';
 
+import { settingsStorage } from '../state/currentSettings/store';
 import { GasSpeed } from '../types/gas';
 import { updateWagmiConfig } from '../wagmi';
 import { getProvider } from '../wagmi/clientToProvider';
@@ -78,7 +79,7 @@ vi.mock('@ethersproject/wallet', () => ({
 }));
 
 beforeAll(async () => {
-  useConnectedToHardhatStore.setState({ connectedToHardhat: true });
+  await settingsStorage.setItem('settings:isConnectedToHardhat', true);
   updateWagmiConfig([mainnet]);
   await delay(3000);
   doesntNeedUnlockQuote = await getQuote({

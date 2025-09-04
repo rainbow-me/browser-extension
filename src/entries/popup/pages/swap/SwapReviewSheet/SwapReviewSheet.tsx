@@ -16,6 +16,7 @@ import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { useGasStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { KeychainType } from '~/core/types/keychainTypes';
@@ -212,6 +213,8 @@ const SwapReviewSheetWithQuote = ({
 }: SwapReviewSheetWithQuoteProps) => {
   const navigate = useRainbowNavigate();
 
+  const [currentCurrency] = useSettingsStore('currentCurrency');
+
   const [showMoreDetails, setShowDetails] = useState(false);
   const [sendingSwap, setSendingSwap] = useState(false);
   const selectedGas = useGasStore((state) => state.selectedGas);
@@ -235,9 +238,9 @@ const SwapReviewSheetWithQuote = ({
     useSwapReviewDetails({ quote, assetToBuy, assetToSell });
 
   const formattedExchangeRate = useMemo(
-    () => processExchangeRateArray(exchangeRate),
+    () => processExchangeRateArray(currentCurrency, exchangeRate),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [exchangeRate],
+    [exchangeRate, currentCurrency],
   );
 
   const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =

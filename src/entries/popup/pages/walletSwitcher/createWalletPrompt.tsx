@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
+import { settingsStorage } from '~/core/state/currentSettings/store';
 import { useWalletNamesStore } from '~/core/state/walletNames';
 import { KeychainWallet } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
@@ -44,9 +44,6 @@ export const CreateWalletPrompt = ({
   const [walletName, setWalletName] = useState('');
   const [error, setError] = useState<string | null>(null);
   const saveWalletName = useWalletNamesStore((state) => state.saveWalletName);
-  const setCurrentAddress = useCurrentAddressStore(
-    (state) => state.setCurrentAddress,
-  );
   const [newWallet, setNewWallet] = useState<KeychainWallet | null>();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -72,7 +69,7 @@ export const CreateWalletPrompt = ({
     if (!address) return;
     const name = walletName.trim();
     if (name) saveWalletName({ name, address });
-    setCurrentAddress(address);
+    await settingsStorage.setItem('settings:currentAddress', address);
     !fromChooseGroup
       ? navigate(ROUTES.HOME, { state: { isBack: true } })
       : navigate(
@@ -90,7 +87,6 @@ export const CreateWalletPrompt = ({
     address,
     navigate,
     saveWalletName,
-    setCurrentAddress,
     fromChooseGroup,
     state?.password,
     walletName,

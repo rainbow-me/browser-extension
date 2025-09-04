@@ -7,9 +7,8 @@ import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { selectUserAssetsDictByChain } from '~/core/resources/_selectors/assets';
 import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
-import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { transformBackendNetworkToChain } from '~/core/state/networks/utils';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
@@ -59,8 +58,8 @@ const isDefaultRPC = (
 };
 
 export function SettingsNetworksRPCs() {
-  const { currentAddress } = useCurrentAddressStore();
-  const { currentCurrency } = useCurrentCurrencyStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
+  const [currentCurrency] = useSettingsStore('currentCurrency');
   const { currentTheme } = useCurrentThemeStore();
   const {
     state: { chainId },
@@ -95,7 +94,7 @@ export function SettingsNetworksRPCs() {
   );
 
   const navigate = useRainbowNavigate();
-  const { developerToolsEnabled } = useDeveloperToolsEnabledStore();
+  const [developerToolsEnabled] = useSettingsStore('isDeveloperToolsEnabled');
   const selectRpcForChain = useNetworkStore((state) => state.selectRpcForChain);
   const updateEnabledChains = useNetworkStore(
     (state) => state.updateEnabledChains,

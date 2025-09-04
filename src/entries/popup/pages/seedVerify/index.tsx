@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { useCurrentAddressStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import { SeedVerifyQuiz } from '../../components/SeedVerifyQuiz/SeedVerifyQuiz';
@@ -9,7 +9,7 @@ import { ROUTES } from '../../urls';
 
 export function SeedVerify() {
   const navigate = useRainbowNavigate();
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
   const goToCreatePassword = useCallback(
     () =>
       navigate(ROUTES.CREATE_PASSWORD, { state: { backTo: ROUTES.WELCOME } }),

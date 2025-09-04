@@ -14,7 +14,7 @@ import React, {
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { NftSort } from '~/core/state/nfts';
 import { AddressOrEth, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -249,7 +249,7 @@ export const SendTokenInput = React.forwardRef<
   const [sortNFTDropdownOpen, setSortNFTDropdownOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
-  const { testnetMode } = useTestnetModeStore();
+  const [testnetMode] = useSettingsStore('isTestnetMode');
 
   useImperativeHandle(forwardedRef, () => ({
     blur: () => {

@@ -6,14 +6,14 @@ import {
   useNavigate,
 } from 'react-router-dom';
 
-import { useTabNavigation } from '~/core/state/currentSettings/tabNavigation';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 
 import { ROUTES } from '../urls';
 
 export function useRainbowNavigate() {
   const location = useLocation();
   const navigate = useNavigate();
-  const setSelectedTab = useTabNavigation((s) => s.setSelectedTab);
+  const [, setSelectedTab] = useSettingsStore('selectedTab');
 
   return useCallback(
     (to: To | number, options?: NavigateOptions) => {

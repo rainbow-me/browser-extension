@@ -5,8 +5,7 @@ import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { getWalletContext } from '~/analytics/util';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
-import { useCurrentAddressStore } from '~/core/state';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
 import { getDappHostname } from '~/core/utils/connectedApps';
@@ -29,7 +28,7 @@ export const RequestAccounts = ({
   request,
 }: ApproveRequestProps) => {
   const [loading, setLoading] = useState(false);
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
   const dappUrl = request?.meta?.sender?.url;
   const { addSession } = useAppSessions();
   const { data: dappMetadata } = useDappMetadata({ url: dappUrl });
@@ -37,7 +36,7 @@ export const RequestAccounts = ({
     dappMetadata?.appName || (dappUrl ? getDappHostname(dappUrl) : '');
   const requestedChainId = (request.params?.[0] as { chainId?: string })
     ?.chainId;
-  const { testnetMode } = useTestnetModeStore();
+  const [testnetMode] = useSettingsStore('isTestnetMode');
   const [selectedChainId, setSelectedChainId] = useState<ChainId>(
     (requestedChainId ? Number(requestedChainId) : undefined) ||
       (testnetMode ? ChainId.sepolia : ChainId.mainnet),

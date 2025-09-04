@@ -8,7 +8,7 @@ import {
 import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test, vi } from 'vitest';
 
-import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { settingsStorage } from '~/core/state/currentSettings/store';
 import { updateWagmiConfig } from '~/core/wagmi';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import { TEST_ADDRESS_2, TEST_PK_2, delay } from '~/test/utils';
@@ -33,7 +33,7 @@ vi.mock('./swap', async () => {
 });
 
 beforeAll(async () => {
-  useConnectedToHardhatStore.setState({ connectedToHardhat: true });
+  await settingsStorage.setItem('settings:isConnectedToHardhat', true);
   updateWagmiConfig([mainnet]);
   await delay(3000);
   quote = await getQuote({

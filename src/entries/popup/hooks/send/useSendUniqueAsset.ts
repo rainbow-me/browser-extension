@@ -5,17 +5,16 @@ import {
   MOCK_NFT_COLLECTION,
   useNftCollections,
 } from '~/core/resources/nfts/collections';
-import { useCurrentAddressStore } from '~/core/state';
-import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { NftSort } from '~/core/state/nfts';
 import { SimpleHashCollectionDetails, UniqueAsset } from '~/core/types/nfts';
 
 import { useUserChains } from '../useUserChains';
 
 export const useSendUniqueAsset = () => {
-  const { currentAddress: address } = useCurrentAddressStore();
+  const [address] = useSettingsStore('currentAddress');
   const [sortMethod, setSortMethod] = useState<NftSort>('recent');
-  const { testnetMode } = useTestnetModeStore();
+  const [testnetMode] = useSettingsStore('isTestnetMode');
 
   const [selectedNft, setSelectedNft] = useState<UniqueAsset>();
   const { chains: userChains } = useUserChains();

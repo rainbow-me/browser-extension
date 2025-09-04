@@ -1,7 +1,7 @@
 import { initializeMessenger } from '~/core/messengers';
 import { setupBridgeMessengerRelay } from '~/core/messengers/internal/bridge';
 // eslint-disable-next-line boundaries/element-types
-import { useIsDefaultWalletStore } from '~/core/state';
+import { settingsStorage } from '~/core/state/currentSettings/store';
 require('../../core/utils/lockdown');
 
 // TODO: Remove state usage within the content script; this is vulnerable.
@@ -23,8 +23,11 @@ setupBridgeMessengerRelay();
 
 const inpageMessenger = initializeMessenger({ connect: 'inpage' });
 
-setTimeout(() => {
+setTimeout(async () => {
+  const rainbowAsDefault = await settingsStorage.getItem(
+    'settings:isDefaultWallet',
+  );
   inpageMessenger.send('rainbow_setDefaultProvider', {
-    rainbowAsDefault: useIsDefaultWalletStore.getState().isDefaultWallet,
+    rainbowAsDefault: rainbowAsDefault,
   });
 }, 1);

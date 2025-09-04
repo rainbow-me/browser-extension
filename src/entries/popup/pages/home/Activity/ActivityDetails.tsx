@@ -5,9 +5,10 @@ import { useMemo } from 'react';
 import { Navigate, useParams, useSearchParams } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
+import { SupportedCurrencyKey } from '~/core/references';
 import { useApprovals } from '~/core/resources/approvals/approvals';
 import { useTransaction } from '~/core/resources/transactions/transaction';
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 import {
@@ -155,7 +156,10 @@ function ConfirmationData({
 
 const InfoValueSkeleton = () => <Skeleton width="50px" height="12px" />;
 
-const formatFee = (transaction: RainbowTransaction) => {
+const formatFee = (
+  currency: SupportedCurrencyKey,
+  transaction: RainbowTransaction,
+) => {
   if (
     transaction.native !== undefined &&
     transaction.native.fee !== undefined
@@ -163,7 +167,10 @@ const formatFee = (transaction: RainbowTransaction) => {
     // if the fee is less than $0.01, the provider returns 0 so we display it as <$0.01
     const feeInNative =
       +transaction.native.fee <= 0.01 ? 0.01 : transaction.native.fee;
-    return `${+feeInNative <= 0.01 ? '<' : ''}${formatCurrency(feeInNative)}`;
+    return `${+feeInNative <= 0.01 ? '<' : ''}${formatCurrency(
+      currency,
+      feeInNative,
+    )}`;
   }
 
   const nativeCurrencySymbol = useNetworkStore
@@ -174,7 +181,13 @@ const formatFee = (transaction: RainbowTransaction) => {
 
   return `${formatNumber(transaction.fee)} ${nativeCurrencySymbol}`;
 };
-function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
+function FeeData({
+  transaction: tx,
+  currency,
+}: {
+  transaction: RainbowTransaction;
+  currency: SupportedCurrencyKey;
+}) {
   const { feeType } = tx;
 
   // if baseFee is undefined (like in pending txs or custom networks the api wont have data about it)
@@ -185,7 +198,7 @@ function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
       tx.maxPriorityFeePerGas &&
       BigNumber.from(tx.maxFeePerGas).sub(tx.maxPriorityFeePerGas).toString());
 
-  const fee = formatFee(tx);
+  const fee = formatFee(currency, tx);
 
   if ((!baseFee || !tx.maxPriorityFeePerGas) && !tx.gasPrice) return null;
 
@@ -240,12 +253,15 @@ function FeeData({ transaction: tx }: { transaction: RainbowTransaction }) {
   );
 }
 
-const formatValue = (transaction: RainbowTransaction) => {
+const formatValue = (
+  currency: SupportedCurrencyKey,
+  transaction: RainbowTransaction,
+) => {
   const formattedValueInNative =
     transaction.native &&
     transaction.native.value &&
     Number(transaction.native.value) > 0 &&
-    formatCurrency(transaction.native.value);
+    formatCurrency(currency, transaction.native.value);
 
   if (formattedValueInNative) return formattedValueInNative;
 
@@ -261,12 +277,18 @@ const formatValue = (transaction: RainbowTransaction) => {
 
   return formattedValue;
 };
-function NetworkData({ transaction: tx }: { transaction: RainbowTransaction }) {
+function NetworkData({
+  transaction: tx,
+  currency,
+}: {
+  transaction: RainbowTransaction;
+  currency: SupportedCurrencyKey;
+}) {
   const chainsLabel = useNetworkStore((state) => state.getChainsLabel());
   const chain = useNetworkStore((state) =>
     state.getActiveRpcForChain(tx.chainId),
   );
-  const value = formatValue(tx);
+  const value = formatValue(currency, tx);
 
   return (
     <Stack space="24px">
@@ -287,7 +309,7 @@ function NetworkData({ transaction: tx }: { transaction: RainbowTransaction }) {
           </Inline>
         }
       />
-      <FeeData transaction={tx} />
+      <FeeData transaction={tx} currency={currency} />
       {tx.nonce >= 0 && (
         <InfoRow
           symbol="number"
@@ -572,8 +594,8 @@ function MoreOptions({
 }
 
 export function ActivityDetails() {
-  const { currentCurrency } = useCurrentCurrencyStore();
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentCurrency] = useSettingsStore('currentCurrency');
+  const [currentAddress] = useSettingsStore('currentAddress');
   const { hash, chainId } = useParams<{ hash: TxHash; chainId: string }>();
   const { isWatchingWallet } = useWallets();
 
@@ -681,7 +703,7 @@ export function ActivityDetails() {
               <AdditionalDetails details={additionalDetails} />
             )}
             <ConfirmationData transaction={transaction} />
-            <NetworkData transaction={transaction} />
+            <NetworkData transaction={transaction} currency={currentCurrency} />
             {transaction.status === 'pending' && (
               <SpeedUpOrCancel transaction={transaction} />
             )}

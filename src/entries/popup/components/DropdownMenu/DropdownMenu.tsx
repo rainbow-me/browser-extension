@@ -5,8 +5,8 @@ import { motion } from 'framer-motion';
 import React, { CSSProperties, ReactNode, useRef } from 'react';
 
 import { shortcuts } from '~/core/references/shortcuts';
-import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { hasChildren } from '~/core/utils/react';
 import {
   AccentColorProvider,
@@ -46,7 +46,7 @@ interface DropdownMenuTriggerProps {
 
 export function DropdownMenuTrigger(props: DropdownMenuTriggerProps) {
   const { children, accentColor, asChild } = props;
-  const { currentAddress: address } = useCurrentAddressStore();
+  const [address] = useSettingsStore('currentAddress');
   const { data: avatar } = useAvatar({ addressOrName: address });
   const triggerRef = useRef<HTMLButtonElement>(null);
 
@@ -128,7 +128,7 @@ export const DropdownMenuContentBody = React.forwardRef<
     animate = false,
   } = props;
   const { currentTheme } = useCurrentThemeStore();
-  const { currentAddress: address } = useCurrentAddressStore();
+  const [address] = useSettingsStore('currentAddress');
   const { data: avatar } = useAvatar({ addressOrName: address });
   return (
     <AccentColorProvider

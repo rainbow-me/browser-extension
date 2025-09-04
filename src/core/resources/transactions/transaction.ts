@@ -10,11 +10,8 @@ import {
   consolidatedTransactionsQueryFunction,
   consolidatedTransactionsQueryKey,
 } from '~/core/resources/transactions/consolidatedTransactions';
-import {
-  useCurrentAddressStore,
-  useCurrentCurrencyStore,
-  usePendingTransactionsStore,
-} from '~/core/state';
+import { usePendingTransactionsStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
 import { ChainId } from '~/core/types/chains';
@@ -225,8 +222,8 @@ export const useTransaction = ({
   const supportedTransactionsChainIds = useNetworkStore((state) =>
     state.getSupportedTransactionsChainIds(),
   );
-  const { currentAddress: address } = useCurrentAddressStore();
-  const { currentCurrency: currency } = useCurrentCurrencyStore();
+  const [currency] = useSettingsStore('currentCurrency');
+  const [address] = useSettingsStore('currentAddress');
   const { chains } = useUserChains();
 
   const params = {

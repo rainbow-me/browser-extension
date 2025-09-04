@@ -15,8 +15,7 @@ import { identifyWalletTypes } from '~/analytics/identify/walletTypes';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useCurrentAddressStore } from '~/core/state';
-import { useTabNavigation } from '~/core/state/currentSettings';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { useErrorStore } from '~/core/state/error';
 import { usePendingRequestStore } from '~/core/state/requests';
 import { goToNewTab } from '~/core/utils/tabs';
@@ -70,7 +69,7 @@ const Tabs = memo(function Tabs({ visibleTabs }: { visibleTabs: Tab[] }) {
   const { trackShortcut } = useKeyboardAnalytics();
   const { visibleTokenCount } = useVisibleTokenCount();
 
-  const { selectedTab: activeTab, setSelectedTab } = useTabNavigation();
+  const [activeTab, setSelectedTab] = useSettingsStore('selectedTab');
 
   const containerRef = useContainerRef();
   const prevScrollPosition = useRef<number | undefined>(undefined);
@@ -145,7 +144,7 @@ const Tabs = memo(function Tabs({ visibleTabs }: { visibleTabs: Tab[] }) {
 });
 
 export const Home = memo(function Home() {
-  const { currentAddress } = useCurrentAddressStore();
+  const [currentAddress] = useSettingsStore('currentAddress');
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
   const { currentHomeSheet, isDisplayingSheet } = useCurrentHomeSheet();
   const navigate = useRainbowNavigate();
@@ -242,7 +241,7 @@ export const Home = memo(function Home() {
 });
 
 const TopNav = memo(function TopNav() {
-  const { currentAddress: address } = useCurrentAddressStore();
+  const [address] = useSettingsStore('currentAddress');
 
   const { scrollY } = useScroll();
   const [isCollapsed, setIsCollapsed] = useState(scrollY.get() > 91);

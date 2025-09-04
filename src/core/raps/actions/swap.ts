@@ -17,6 +17,7 @@ import { Address } from 'viem';
 
 import { metadataPostClient } from '~/core/graphql';
 import { useGasStore } from '~/core/state';
+import { settingsStorage } from '~/core/state/currentSettings/store';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
@@ -270,6 +271,7 @@ export const swap = async ({
   baseNonce,
 }: ActionProps<'swap'>): Promise<RapActionResult> => {
   const { selectedGas, gasFeeParamsBySpeed } = useGasStore.getState();
+  const currency = await settingsStorage.getItem('settings:currentCurrency');
 
   const { quote, chainId, requiresApprove } = parameters;
   let gasParams = selectedGas.transactionGasParams;
@@ -346,11 +348,14 @@ export const swap = async ({
     ...gasParams,
   } satisfies NewTransaction;
 
-  addNewTransaction({
-    address: parameters.quote.from as Address,
-    chainId: parameters.chainId as ChainId,
-    transaction,
-  });
+  addNewTransaction(
+    {
+      address: parameters.quote.from as Address,
+      chainId: parameters.chainId as ChainId,
+      transaction,
+    },
+    { currency },
+  );
 
   return {
     nonce: swap.nonce,

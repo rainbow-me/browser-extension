@@ -4,7 +4,7 @@ import { Address } from 'viem';
 import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test, vi } from 'vitest';
 
-import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { settingsStorage } from '~/core/state/currentSettings/store';
 import { updateWagmiConfig } from '~/core/wagmi';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import {
@@ -73,7 +73,7 @@ vi.mock('@ethersproject/wallet', () => ({
 }));
 
 beforeAll(async () => {
-  useConnectedToHardhatStore.setState({ connectedToHardhat: true });
+  await settingsStorage.setItem('settings:isConnectedToHardhat', true);
   updateWagmiConfig([mainnet]);
   await delay(3000);
 });

@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useAssets } from '~/core/resources/assets';
-import { useCurrentCurrencyStore } from '~/core/state';
+import { useSettingsStore } from '~/core/state/currentSettings/store';
 import { createNumberFormatter } from '~/core/utils/formatNumber';
 import { convertRawAmountToNativeDisplay } from '~/core/utils/numbers';
 import {
@@ -58,7 +58,7 @@ function SimulatedChangeRow({
   color: TextColor;
   label: string;
 }) {
-  const { currentCurrency } = useCurrentCurrencyStore();
+  const [currentCurrency] = useSettingsStore('currentCurrency');
   const changeAmount =
     quantity === 'UNLIMITED'
       ? Number.MAX_SAFE_INTEGER
