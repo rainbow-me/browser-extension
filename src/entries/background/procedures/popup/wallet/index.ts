@@ -5,7 +5,6 @@ import { createHandler } from './create';
 import { deriveAccountsFromSecretHandler } from './deriveAccountsFromSecret';
 import { exportAccountHandler } from './exportAccount';
 import { exportWalletHandler } from './exportWallet';
-import { hwRouter } from './hw';
 import { importHandler } from './import';
 import { importHardwareHandler } from './importHardware';
 import { isMnemonicInVaultHandler } from './isMnemonicInVault';
@@ -47,5 +46,4 @@ export const walletRouter = {
   sendTransaction: sendTransactionHandler,
   personalSign: personalSignHandler,
   testSandbox: testSandboxHandler,
-  hw: hwRouter,
 };

@@ -4,7 +4,8 @@ import { TransactionRequest } from '@ethersproject/providers';
 import { useEffect } from 'react';
 import { Address, ByteArray } from 'viem';
 
-import { popupClient } from '../../handlers/background';
+import { initializeMessenger } from '~/core/messengers';
+
 import {
   personalSign,
   signTransactionFromHW,
@@ -65,37 +66,21 @@ const processHwSigningRequest = async (data: HWSigningRequest) => {
   }
 };
 
+const bgMessenger = initializeMessenger({ connect: 'background' });
+
 export const HWRequestListener = () => {
   useEffect(() => {
-    const abortController = new AbortController();
-
-    const subscribeToHWRequests = async () => {
-      try {
-        const stream = await popupClient.wallet.hw.requestStream({
-          signal: abortController.signal,
-        });
-
-        for await (const request of stream) {
-          // Process the hardware wallet request
-          const response = await processHwSigningRequest(request);
-
-          // Send the response back to background
-          await popupClient.wallet.hw.response({
-            requestId: request.requestId,
-            result: response || { error: 'Unknown error' },
-          });
+    const removeListener = bgMessenger.reply(
+      'hwRequest',
+      async (data: HWSigningRequest) => {
+        const response = await processHwSigningRequest(data);
+        if (response) {
+          bgMessenger.send('hwResponse', response);
         }
-      } catch (error) {
-        if (error instanceof Error && error.name !== 'AbortError') {
-          console.error('Hardware wallet request listener error:', error);
-        }
-      }
-    };
-
-    subscribeToHWRequests();
-
+      },
+    );
     return () => {
-      abortController.abort();
+      removeListener();
     };
   }, []);
 
