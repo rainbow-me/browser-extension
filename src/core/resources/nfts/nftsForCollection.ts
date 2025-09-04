@@ -151,7 +151,13 @@ type NftsForCollectionResult = QueryFunctionResult<
 
 export function useNftsForCollection<TSelectData = NftsForCollectionResult>(
   { address, collectionId, collectionChains }: NftsForCollectionArgs,
-  config: InfiniteQueryConfig<NftsForCollectionResult, Error, TSelectData> = {},
+  config: InfiniteQueryConfig<
+    NftsForCollectionResult,
+    Error,
+    TSelectData,
+    ReturnType<typeof nftsForCollectionQueryKey>,
+    string | null
+  > = {},
 ) {
   return useInfiniteQuery({
     queryKey: nftsForCollectionQueryKey({
@@ -162,7 +168,7 @@ export function useNftsForCollection<TSelectData = NftsForCollectionResult>(
     queryFn: nftsForCollectionQueryFunction,
     ...config,
     getNextPageParam: (lastPage) => lastPage?.nextPage,
-    initialPageParam: null,
+    initialPageParam: null as string | null,
     refetchInterval: 60000,
     // TODO: restore this when we find a SimpleHash replacement
     // retry: 3,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 
-import { usePendingRequestStore } from '~/core/state';
+import { usePendingRequestStore } from '~/core/state/requests';
 import { WELCOME_URL, goToNewTab } from '~/core/utils/tabs';
 
 import { UserStatusResult, useAuth } from './hooks/useAuth';
@@ -24,7 +24,8 @@ export const ProtectedRoute = ({
 }): JSX.Element => {
   const { status, updateStatus } = useAuth();
   const isFullScreen = useIsFullScreen();
-  const { pendingRequests } = usePendingRequestStore();
+
+  const pendingRequests = usePendingRequestStore((s) => s.pendingRequests);
 
   const [isStatusInitialized, setStatusInitialized] = React.useState(false);
   React.useEffect(() => {

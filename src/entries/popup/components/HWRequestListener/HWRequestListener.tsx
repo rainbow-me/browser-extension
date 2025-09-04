@@ -12,9 +12,8 @@ import {
   signTypedData,
 } from '../../handlers/wallet';
 
-const bgMessenger = initializeMessenger({ connect: 'background' });
-
 interface HWSigningRequest {
+  requestId: string;
   action: 'signTransaction' | 'signMessage' | 'signTypedData';
   vendor: 'Ledger' | 'Trezor';
   payload:
@@ -66,6 +65,8 @@ const processHwSigningRequest = async (data: HWSigningRequest) => {
     return { error: e?.name || e, nonce: 0 };
   }
 };
+
+const bgMessenger = initializeMessenger({ connect: 'background' });
 
 export const HWRequestListener = () => {
   useEffect(() => {

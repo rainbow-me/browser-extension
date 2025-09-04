@@ -9,12 +9,9 @@ import { queueEventTracking } from '~/analytics/queueEvent';
 import { hasVault, isInitialized, isPasswordSet } from '~/core/keychain';
 import { Messenger } from '~/core/messengers';
 import { CallbackOptions } from '~/core/messengers/internal/createMessenger';
-import {
-  useAppSessionsStore,
-  useNotificationWindowStore,
-  usePendingRequestStore,
-} from '~/core/state';
+import { useAppSessionsStore, useNotificationWindowStore } from '~/core/state';
 import { useNetworkStore } from '~/core/state/networks/networks';
+import { usePendingRequestStore } from '~/core/state/requests';
 import { SessionStorage } from '~/core/storage';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
@@ -88,13 +85,10 @@ const openWindowForTabId = async (tabId: string) => {
 /**
  * Uses extensionMessenger to send messages to popup for the user to approve or reject
  * @param {PendingRequest} request
- * @returns {boolean}
  */
-const messengerProviderRequest = async (
-  messenger: Messenger,
-  request: ProviderRequestPayload,
-) => {
-  const { addPendingRequest } = usePendingRequestStore.getState();
+const messengerProviderRequest = async (request: ProviderRequestPayload) => {
+  const { addPendingRequest, waitForPendingRequest } =
+    usePendingRequestStore.getState();
   // Add pending request to global background state.
   addPendingRequest(request);
 
@@ -115,16 +109,11 @@ const messengerProviderRequest = async (
     });
   }
   // Wait for response from the popup.
-  const payload: unknown | null = await new Promise((resolve) =>
-    // eslint-disable-next-line no-promise-executor-return
-    messenger.reply(`message:${request.id}`, async (payload) =>
-      resolve(payload),
-    ),
-  );
-  if (!payload) {
+  const { status, payload } = await waitForPendingRequest(request.id);
+  if (status === 'REJECTED') {
     throw new UserRejectedRequestError(Error('User rejected the request.'));
   }
-  return payload;
+  return payload as object;
 };
 
 const resetRateLimit = async (host: string, second: boolean) => {
@@ -244,10 +233,8 @@ const skipRateLimitCheck = (method: string) =>
  * Handles RPC requests from the provider.
  */
 export const handleProviderRequest = ({
-  popupMessenger,
   inpageMessenger,
 }: {
-  popupMessenger: Messenger;
   inpageMessenger: Messenger;
 }) =>
   rnbwHandleProviderRequest({
@@ -257,8 +244,10 @@ export const handleProviderRequest = ({
       isCustomChain(chainId),
     getActiveSession: ({ host }: { host: string }) =>
       useAppSessionsStore.getState().getActiveSession({ host }),
-    removeAppSession: ({ host }: { host: string }) =>
-      useAppSessionsStore.getState().removeAppSession({ host }),
+    removeAppSession: ({ host }: { host: string }) => {
+      inpageMessenger.send(`disconnect:${host}`, null);
+      useAppSessionsStore.getState().removeAppSession({ host });
+    },
     getChainNativeCurrency: (chainId: number) =>
       useNetworkStore.getState().getChain(chainId)?.nativeCurrency,
     getFeatureFlags: () => ({
@@ -267,7 +256,7 @@ export const handleProviderRequest = ({
     }),
     getProvider: getProvider,
     messengerProviderRequest: (request: ProviderRequestPayload) =>
-      messengerProviderRequest(popupMessenger, request),
+      messengerProviderRequest(request),
     onAddEthereumChain: ({
       proposedChain,
       callbackOptions,

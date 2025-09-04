@@ -5,33 +5,34 @@ import { Signer } from '@ethersproject/abstract-signer';
 import { Provider } from '@ethersproject/providers';
 import { Address, ByteArray } from 'viem';
 
-import { initializeMessenger } from '../messengers';
+import { Messenger, initializeMessenger } from '../messengers';
 import { defineReadOnly } from '../utils/define';
+
+import type { HardwareWalletVendor } from './keychainTypes/hardwareWalletKeychain';
 
 export class HWSigner extends Signer {
   readonly path: string | undefined;
   readonly privateKey: null | undefined;
   readonly deviceId: string | undefined;
   readonly address: string | undefined;
-  readonly vendor: string | undefined;
-  readonly messenger: any | undefined;
-
+  readonly vendor: HardwareWalletVendor;
+  readonly messenger: Messenger;
   constructor(
     provider: Provider,
     path: string,
     deviceId: string,
     address: Address,
-    vendor: string,
+    vendor: HardwareWalletVendor,
   ) {
     super();
     defineReadOnly(this, 'privateKey', null);
     defineReadOnly(this, 'path', path);
     defineReadOnly(this, 'deviceId', deviceId);
     defineReadOnly(this, 'address', address);
+    this.vendor = vendor;
     defineReadOnly(this, 'vendor', vendor);
     defineReadOnly(this, 'provider', provider || null);
-    const popupMessenger = initializeMessenger({ connect: 'popup' });
-    defineReadOnly(this, 'messenger', popupMessenger);
+    this.messenger = initializeMessenger({ connect: 'popup' });
   }
 
   async getAddress(): Promise<Address> {
@@ -66,7 +67,7 @@ export class HWSigner extends Signer {
   }
 
   async signTypedDataMessage(data: any): Promise<string> {
-    return this.fwdHWSignRequest('signTypedDataMessage', {
+    return this.fwdHWSignRequest('signTypedData', {
       data,
       address: this.address,
     });
