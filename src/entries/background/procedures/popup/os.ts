@@ -1,6 +1,6 @@
 import { implement } from '@orpc/server';
 
-import { walletContract } from '../../contracts/popup';
+import { walletContract } from '../../contracts/popup/wallet';
 
 interface PopupContext {
   sender: chrome.runtime.MessageSender | undefined;
