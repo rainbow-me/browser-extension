@@ -133,14 +133,14 @@ export const init = async () => {
       });
     }
   } catch (e) {
-    console.log('error getting remote config', e);
-    logger.info(`error getting remote config: ${e}`);
-    logger.info('Using default config');
-    logger.error(new RainbowError('error getting remote config'));
+    logger.info('Using default remote config');
+    logger.error(new RainbowError('error getting remote config', { cause: e }));
   } finally {
     config.status = 'ready';
     if (process.env.IS_DEV === 'true') {
-      console.log('CURRENT CONFIG', JSON.stringify(config, null, 2));
+      logger.info('Current remote config:', {
+        config: JSON.stringify(config, null, 2),
+      });
     }
   }
 };

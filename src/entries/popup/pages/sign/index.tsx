@@ -11,6 +11,7 @@ import { ByteArray, getAddress } from 'viem';
 import { useCurrentAddressStore } from '~/core/state';
 import { WalletAction } from '~/core/types/walletActions';
 import { Box, Column, Columns, Row, Rows, Text } from '~/design-system';
+import { RainbowError, logger } from '~/logger';
 
 import { personalSign, signTypedData } from '../../handlers/wallet';
 
@@ -37,7 +38,7 @@ export function Sign() {
       msgData = JSON.parse(message) as string | ByteArray;
       action = 'sign_typed_data';
     } catch (e) {
-      console.log('not json string, falling back to personal sign');
+      logger.info('not json string, falling back to personal sign');
     } finally {
       result =
         action === 'personal_sign'
@@ -64,8 +65,8 @@ export function Sign() {
         }
       }
     } catch (e) {
-      alert('Signign failed');
-      console.log('signing failed', e);
+      alert('Signing failed');
+      logger.error(new RainbowError('signing failed', { cause: e }));
     } finally {
       setSigning(false);
     }
