@@ -240,85 +240,17 @@ jobs:
             echo "This is expected on the first PR introducing performance tests"
           fi
       
-      - name: Post results to PR
-        if: github.event_name == 'pull_request' && always()
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const fs = require('fs');
-            let comment = '## 📊 Performance Metrics\n\n';
-            
-            if (fs.existsSync('perf-results.json')) {
-              const results = JSON.parse(fs.readFileSync('perf-results.json', 'utf8'));
-              
-              // Get all metrics from all test files
-              const allMetrics = results.metrics || [];
-              
-              if (allMetrics.length > 0) {
-                comment += '| Test | Metric | Value |\n';
-                comment += '|------|--------|-------|\n';
-                
-                for (const testResult of allMetrics) {
-                  const flow = testResult.flow || 'unknown';
-                  const metrics = testResult.metrics || {};
-                  
-                  if (metrics.domContentLoaded) {
-                    comment += `| ${flow} | DOM Content Loaded | ${Math.round(metrics.domContentLoaded)}ms |\n`;
-                  }
-                  if (metrics.firstMeaningfulPaint) {
-                    comment += `| ${flow} | First Meaningful Paint | ${Math.round(metrics.firstMeaningfulPaint)}ms |\n`;
-                  }
-                  if (metrics.memoryUsage) {
-                    const memoryMB = (metrics.memoryUsage / (1024 * 1024)).toFixed(1);
-                    comment += `| ${flow} | Memory Usage | ${memoryMB}MB |\n`;
-                  }
-                  if (metrics.flowDuration) {
-                    comment += `| ${flow} | Flow Duration | ${Math.round(metrics.flowDuration)}ms |\n`;
-                  }
-                  if (metrics.bundleSize) {
-                    const sizeMB = (metrics.bundleSize / (1024 * 1024)).toFixed(2);
-                    comment += `| ${flow} | Bundle Size | ${sizeMB}MB |\n`;
-                  }
-                }
-                
-                comment += '\n';
-                comment += `_Run at: ${new Date().toISOString()}_\n`;
-              } else {
-                comment += '⚠️ No metrics data found in results.\n';
-              }
-            } else {
-              comment += '⚠️ **No performance metrics collected**\n\n';
-              comment += 'Performance tests may not have run. Check the CI logs for details.\n';
-            }
-            
-            // Find existing comment to update
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-            });
-            
-            const botComment = comments.find(comment => 
-              comment.user.type === 'Bot' && 
-              comment.body.includes('Performance Metrics')
-            );
-            
-            if (botComment) {
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: botComment.id,
-                body: comment
-              });
-            } else {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body: comment
-              });
-            }
+      - name: Generate Performance Report
+        if: always()
+        run: |
+          if [ -f "perf-results.json" ]; then
+            node scripts/generate-perf-summary.js
+          else
+            echo "No performance results found"
+            echo "## Performance Metrics" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "No performance metrics collected. Check test logs for details." >> $GITHUB_STEP_SUMMARY
+          fi
       
       - name: Upload performance artifacts
         if: always()

@@ -20,12 +20,28 @@ import { startPopupRouter } from './procedures/popup';
 
 require('../../core/utils/lockdown');
 
+// Performance monitoring for tests only
+let perfCollector: { mark: (name: string) => void } | undefined;
+if (process.env.IS_TESTING === 'true') {
+  import('../../../scripts/perf/startup-metrics').then((module) => {
+    perfCollector = module.getStartupCollector();
+    perfCollector.mark('background:start');
+    console.log('[PERF] Background script started');
+  });
+}
+
 initializeSentry('background');
 localStorageRecycler();
 
 handleOpenExtensionShortcut();
 
 startPopupRouter();
+
+// Mark when popup router is ready
+if (process.env.IS_TESTING === 'true' && perfCollector) {
+  perfCollector.mark('background:popupRouterReady');
+  console.log('[PERF] Popup router ready');
+}
 
 const inpageMessenger = initializeMessenger({ connect: 'inpage' });
 

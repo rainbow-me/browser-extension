@@ -26,6 +26,15 @@ export interface PerformanceMetrics {
 
     // Custom flow metrics
     flowDuration?: number;
+
+    // Startup metrics from instrumentation
+    backgroundConnect?: number;
+    loadScripts?: number;
+    setupStore?: number;
+    getState?: number;
+    initialActions?: number;
+    firstReactRender?: number;
+    uiStartup?: number;
     customMetrics?: Record<string, number>;
   };
 
@@ -231,18 +240,37 @@ export class PerformanceCollector {
       0,
     );
 
+    // Get custom startup metrics from window if available
+    const customMetrics = (await this.driver
+      .executeScript(
+        `
+      return window.__PERF_METRICS__ || {};
+    `,
+      )
+      .catch(() => ({}) as any)) as any;
+
     const metrics: PerformanceMetrics = {
       timestamp: new Date().toISOString(),
       flow: flowName,
       browser: this.browser,
       metrics: {
         extensionLoadTime: extension.popupLoadTime,
-        firstMeaningfulPaint: extension.firstMeaningfulPaint,
-        domContentLoaded: navigation?.domContentLoaded,
+        firstMeaningfulPaint:
+          extension.firstMeaningfulPaint || customMetrics?.firstContentfulPaint,
+        domContentLoaded:
+          navigation?.domContentLoaded || customMetrics?.domContentLoaded,
         loadComplete: navigation?.loadComplete,
         bundleSize: totalResourceSize,
         memoryUsage: extension.memoryUsage?.usedJSHeapSize,
-        customMetrics: {},
+        // Add our new startup metrics
+        backgroundConnect: customMetrics?.backgroundConnect,
+        loadScripts: customMetrics?.loadScripts,
+        setupStore: customMetrics?.setupStore,
+        getState: customMetrics?.getState,
+        initialActions: customMetrics?.initialActions,
+        firstReactRender: customMetrics?.firstReactRender,
+        uiStartup: customMetrics?.uiStartup,
+        customMetrics: customMetrics || undefined,
       },
       raw: {
         navigationTiming: navigation,
