@@ -22,6 +22,7 @@ import { Box } from '~/design-system';
 import { Alert } from '~/design-system/components/Alert/Alert';
 import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { BoxProps } from '~/design-system/components/Box/Box';
+import { RainbowError, logger } from '~/logger';
 
 import { AppConnectionWatcher } from './components/AppConnection/AppConnectionWatcher';
 import { CommandK } from './components/CommandK/CommandK';
@@ -1084,7 +1085,7 @@ function Rerouter() {
 
   React.useEffect(() => {
     setError(error);
-    Sentry.captureException(error);
+    logger.error(new RainbowError(error.message, { cause: error }));
     analytics.track(event.appCrashed, { error: error.message });
     navigate(ROUTES.HOME, { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
