@@ -15,17 +15,7 @@ import { App } from './App';
 require('../../core/utils/lockdown');
 
 // Performance monitoring for tests only
-let perfCollector:
-  | {
-      mark: (name: string) => void;
-      markScriptsLoaded: () => void;
-      markStoreSetup: () => void;
-      markBackgroundConnected: () => void;
-      markFirstRender: () => void;
-      markUIReady: () => void;
-      getAllMetrics: () => any;
-    }
-  | undefined;
+let perfCollector: any;
 if (process.env.IS_TESTING === 'true') {
   await import('../../../scripts/perf/startup-metrics').then((module) => {
     perfCollector = module.getStartupCollector();
@@ -44,21 +34,21 @@ if (process.env.IS_TESTING === 'true' && perfCollector) {
 syncStores();
 syncNetworksStore('popup');
 
-if (process.env.IS_TESTING === 'true' && perfCollector) {
-  perfCollector.markStoreSetup();
+// if (process.env.IS_TESTING === 'true' && perfCollector) {
+//   perfCollector.markStoreSetup();
 
-  // Try to measure background connection
-  // This is approximate - real measurement would need to track actual message passing
-  const backgroundReady = new Promise((resolve) => {
-    chrome.runtime.sendMessage({ type: 'ping' }, () => {
-      resolve(true);
-    });
-  });
+//   // Try to measure background connection
+// This is approximate - real measurement would need to track actual message passing
+//   const backgroundReady = new Promise((resolve) => {
+//     chrome.runtime.sendMessage({ type: 'ping' }, () => {
+//       resolve(true);
+//     });
+//   });
 
-  backgroundReady.then(() => {
-    perfCollector?.markBackgroundConnected();
-  });
-}
+//   backgroundReady?.then(() => {
+//     perfCollector?.markBackgroundConnected();
+//   });
+// }
 
 if (process.env.IS_TESTING === 'true') {
   await import('../../../e2e/mockFetch').then((m) => m.mockFetch());

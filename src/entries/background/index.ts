@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { uuid4 } from '@sentry/core';
 
 import { initializeMessenger } from '~/core/messengers';
@@ -21,7 +22,7 @@ import { startPopupRouter } from './procedures/popup';
 require('../../core/utils/lockdown');
 
 // Performance monitoring for tests only
-let perfCollector: { mark: (name: string) => void } | undefined;
+let perfCollector: any;
 if (process.env.IS_TESTING === 'true') {
   import('../../../scripts/perf/startup-metrics').then((module) => {
     perfCollector = module.getStartupCollector();
