@@ -32,6 +32,10 @@ module.exports = {
         type: 'core-state',
         pattern: 'src/core/state/**',
       },
+      {
+        type: 'logger',
+        pattern: 'src/logger/**',
+      },
     ],
   },
   rules: {
@@ -60,6 +64,17 @@ module.exports = {
             // Keychain uses stores.
             from: ['core-keychain'],
             allow: ['core-state'],
+          },
+          {
+            // Logger can only be used by entry points (except inpage)
+            from: [
+              'entry-popup',
+              'entry-content',
+              'entry-background',
+              'core-state',
+              'core-keychain',
+            ],
+            allow: ['logger'],
           },
         ],
       },
