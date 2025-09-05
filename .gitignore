@@ -25,5 +25,8 @@ build/
 screenshots/
 .eslintcache
 
+# Performance test results
+perf-*.json
+
 # IDEs
 .idea/**
