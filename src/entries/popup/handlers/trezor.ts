@@ -18,10 +18,10 @@ import { addHexPrefix } from '~/core/utils/hex';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import { logger } from '~/logger';
 
-import { walletAction } from './walletAction';
+import { popupClient } from './background';
 
 const getPath = async (address: Address) => {
-  return (await walletAction('get_path', address)) as string;
+  return await popupClient.wallet.path(address);
 };
 
 export async function signTransactionFromTrezor(

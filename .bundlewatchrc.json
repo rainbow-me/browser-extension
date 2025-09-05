@@ -2,7 +2,7 @@
   "files": [
     {
       "path": "./build/background.js",
-      "maxSize": "3.5MB"
+      "maxSize": "4MB"
     },
     {
       "path": "./build/popup.js",

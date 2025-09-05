@@ -1,42 +1,43 @@
-import { useCallback } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import type { Address } from 'viem';
 
-import { initializeMessenger } from '~/core/messengers';
-import { useAppSessionsStore } from '~/core/state';
-import { useAppConnectionWalletSwitcherStore } from '~/core/state/appConnectionWalletSwitcher/appConnectionSwitcher';
-import { getDappHost, isValidUrl } from '~/core/utils/connectedApps';
+import { popupClientQueryUtils } from '../handlers/background';
 
-const messenger = initializeMessenger({ connect: 'inpage' });
+import { useAppSessionsQuery } from './useAppSessionQuery';
 
 export function useAppSessions() {
-  const appSessions = useAppSessionsStore((state) => state.appSessions);
-  const clearSessions = useAppSessionsStore((state) => state.clearSessions);
-  const removeAppSession = useAppSessionsStore(
-    (state) => state.removeAppSession,
-  );
-  const clearAppHasInteractedWithNudgeSheet =
-    useAppConnectionWalletSwitcherStore(
-      (state) => state.clearAppHasInteractedWithNudgeSheet,
-    );
+  const appSessions = useAppSessionsQuery();
 
-  const disconnectAppSessions = useCallback(() => {
-    Object.values(appSessions).map((session) => {
-      removeAppSession({ host: session.host });
-      clearAppHasInteractedWithNudgeSheet({
-        host: session.host,
-      });
-      isValidUrl(session?.url) &&
-        messenger.send(`disconnect:${getDappHost(session.url)}`, null);
-    });
-    clearSessions();
-  }, [
-    appSessions,
-    clearAppHasInteractedWithNudgeSheet,
-    clearSessions,
-    removeAppSession,
-  ]);
+  const addSessionMutation = useMutation(
+    popupClientQueryUtils.state.sessions.addSession.mutationOptions(),
+  );
+
+  const disconnectAllSessionsMutation = useMutation(
+    popupClientQueryUtils.state.sessions.disconnectAllSessions.mutationOptions(),
+  );
+
+  // Wrapper functions to maintain the same API
+  const addSession = ({
+    host,
+    address,
+    chainId,
+    url,
+  }: {
+    host: string;
+    address: Address;
+    chainId: number;
+    url: string;
+  }) => {
+    return addSessionMutation.mutateAsync({ host, address, chainId, url });
+  };
+
+  const disconnectAppSessions = () => {
+    return disconnectAllSessionsMutation.mutate({});
+  };
 
   return {
     appSessions,
+    addSession,
     disconnectAppSessions,
   };
 }

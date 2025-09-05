@@ -4,14 +4,14 @@ import { Address } from 'viem';
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { getWalletContext } from '~/analytics/util';
-import { initializeMessenger } from '~/core/messengers';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
-import { useAppSessionsStore, useCurrentAddressStore } from '~/core/state';
+import { useCurrentAddressStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
 import { getDappHostname } from '~/core/utils/connectedApps';
 import { Row, Rows, Separator } from '~/design-system';
+import { useAppSessions } from '~/entries/popup/hooks/useAppSessions';
 import { RainbowError, logger } from '~/logger';
 
 import { RequestAccountsActions } from './RequestAccountsActions';
@@ -23,8 +23,6 @@ interface ApproveRequestProps {
   request: ProviderRequestPayload;
 }
 
-const messenger = initializeMessenger({ connect: 'inpage' });
-
 export const RequestAccounts = ({
   approveRequest,
   rejectRequest,
@@ -33,13 +31,12 @@ export const RequestAccounts = ({
   const [loading, setLoading] = useState(false);
   const { currentAddress } = useCurrentAddressStore();
   const dappUrl = request?.meta?.sender?.url;
+  const { addSession } = useAppSessions();
   const { data: dappMetadata } = useDappMetadata({ url: dappUrl });
   const appName =
     dappMetadata?.appName || (dappUrl ? getDappHostname(dappUrl) : '');
   const requestedChainId = (request.params?.[0] as { chainId?: string })
     ?.chainId;
-  const addSession = useAppSessionsStore((state) => state.addSession);
-
   const { testnetMode } = useTestnetModeStore();
   const [selectedChainId, setSelectedChainId] = useState<ChainId>(
     (requestedChainId ? Number(requestedChainId) : undefined) ||
@@ -54,15 +51,12 @@ export const RequestAccounts = ({
         address: selectedWallet,
         chainId: selectedChainId,
       });
-      addSession({
+      // Session actions now handle both state management and inpage messaging
+      await addSession({
         host: dappMetadata?.appHost || '',
         address: selectedWallet,
         chainId: selectedChainId,
         url: dappUrl || '',
-      });
-      messenger.send(`connect:${dappMetadata?.appHostName}`, {
-        address: selectedWallet,
-        chainId: selectedChainId,
       });
       analytics.track(
         event.dappPromptConnectApproved,
@@ -86,9 +80,8 @@ export const RequestAccounts = ({
     selectedWallet,
     selectedChainId,
     addSession,
-    dappMetadata?.url,
     dappMetadata?.appHost,
-    dappMetadata?.appHostName,
+    dappMetadata?.url,
     dappMetadata?.appName,
     dappUrl,
   ]);

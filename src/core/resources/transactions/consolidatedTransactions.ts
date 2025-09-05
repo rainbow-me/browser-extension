@@ -156,7 +156,9 @@ export function useConsolidatedTransactions<
   config: InfiniteQueryConfig<
     ConsolidatedTransactionsResult,
     Error,
-    TSelectData
+    TSelectData,
+    ConsolidatedTransactionsQueryKey,
+    string | null
   > = {},
 ) {
   return useInfiniteQuery({
@@ -168,7 +170,7 @@ export function useConsolidatedTransactions<
     queryFn: consolidatedTransactionsQueryFunction,
     ...config,
     getNextPageParam: (lastPage) => lastPage?.nextPage,
-    initialPageParam: null,
+    initialPageParam: null as string | null,
     refetchInterval: CONSOLIDATED_TRANSACTIONS_INTERVAL,
     retry: 3,
   });

@@ -35,7 +35,6 @@ declare global {
 window.lodash = _.noConflict();
 
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
-const messenger = initializeMessenger({ connect: 'popup' });
 
 const rainbowProvider = new RainbowProvider({
   backgroundMessenger,
@@ -45,17 +44,20 @@ const rainbowProvider = new RainbowProvider({
     // here we don't need to listen to anything so we don't need these listeners
     if (isValidUrl(window.location.href)) {
       const host = getDappHost(window.location.href);
-      messenger?.reply(`accountsChanged:${host}`, async (address) => {
+      backgroundMessenger?.reply(`accountsChanged:${host}`, async (address) => {
         emit('accountsChanged', [address]);
       });
-      messenger?.reply(`chainChanged:${host}`, async (chainId: number) => {
-        emit('chainChanged', toHex(String(chainId)));
-      });
-      messenger?.reply(`disconnect:${host}`, async () => {
+      backgroundMessenger?.reply(
+        `chainChanged:${host}`,
+        async (chainId: number) => {
+          emit('chainChanged', toHex(String(chainId)));
+        },
+      );
+      backgroundMessenger?.reply(`disconnect:${host}`, async () => {
         emit('accountsChanged', []);
         emit('disconnect', []);
       });
-      messenger?.reply(`connect:${host}`, async (connectionInfo) => {
+      backgroundMessenger?.reply(`connect:${host}`, async (connectionInfo) => {
         emit('connect', connectionInfo);
       });
     }

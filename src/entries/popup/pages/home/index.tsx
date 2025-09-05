@@ -15,9 +15,10 @@ import { identifyWalletTypes } from '~/analytics/identify/walletTypes';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useCurrentAddressStore, usePendingRequestStore } from '~/core/state';
+import { useCurrentAddressStore } from '~/core/state';
 import { useTabNavigation } from '~/core/state/currentSettings';
 import { useErrorStore } from '~/core/state/error';
+import { usePendingRequestStore } from '~/core/state/requests';
 import { goToNewTab } from '~/core/utils/tabs';
 import { AccentColorProvider, Box, Separator } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
@@ -148,7 +149,7 @@ export const Home = memo(function Home() {
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
   const { currentHomeSheet, isDisplayingSheet } = useCurrentHomeSheet();
   const navigate = useRainbowNavigate();
-  const { pendingRequests } = usePendingRequestStore();
+  const pendingRequests = usePendingRequestStore((s) => s.pendingRequests);
   const prevPendingRequest = usePrevious(pendingRequests?.[0]);
   const { isWatchingWallet } = useWallets();
 
