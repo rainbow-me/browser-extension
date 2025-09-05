@@ -31,7 +31,7 @@ if (metrics.length === 0) {
   const walletImport = metrics.find((m) => m.flow === 'wallet-import');
   const initialMemory = metrics.find((m) => m.flow === 'initial-memory');
 
-  // UI Startup Metrics section (similar to MetaMask)
+  // UI Startup Metrics section
   summary += '### UI Startup Metrics\n\n';
   summary += '| Metric | Cold Start | Warm Reload |\n';
   summary += '|--------|------------|-------------|\n';
@@ -52,7 +52,7 @@ if (metrics.length === 0) {
       'firstMeaningfulPaint',
     )} | ${formatValue(warmReload, 'firstMeaningfulPaint')} |\n`;
 
-    // Extension-specific startup metrics (like MetaMask)
+    // Extension-specific startup metrics
     summary += `| Background Connect | ${formatValue(
       coldStart,
       'backgroundConnect',
