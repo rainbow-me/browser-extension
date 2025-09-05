@@ -7,17 +7,19 @@ import {
   useNavigationType,
 } from 'react-router-dom';
 
+import { RainbowError, logger } from '~/logger';
+
 import pkg from '../../../package.json';
 
 const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
 
-// Any error that we don't wanna send to sentry should be added here
-// via partial match
-const IGNORED_ERRORS = [
-  'Duplicate script ID',
-  'Could not establish connection',
-  'The message port closed',
-  'The browser is shutting down',
+// Common browser lifecycle errors that we want to ignore from Sentry
+// Strings are partially matched; use RegExp for exact matches
+const IGNORED_ERRORS: (string | RegExp)[] = [
+  'Could not establish connection. Receiving end does not exist.',
+  "Duplicate script ID 'inpage'",
+  'The page keeping the extension port is moved into back/forward cache, so the message channel is closed.',
+  'The browser is shutting down.',
 ];
 
 /**
@@ -136,14 +138,7 @@ export function initializeSentry(context: 'popup' | 'background') {
         replaysOnErrorSampleRate: 1.0, // 100% sampling in prod
         release: pkg.version,
         environment: INTERNAL_BUILD ? 'internal' : 'production',
-        beforeSend(event) {
-          for (const ignoredError of IGNORED_ERRORS) {
-            if (event.message?.includes(ignoredError)) {
-              return null;
-            }
-          }
-          return event;
-        },
+        ignoreErrors: IGNORED_ERRORS,
       });
 
       const lazyIntegrations = contextIntegrations
@@ -158,7 +153,9 @@ export function initializeSentry(context: 'popup' | 'background') {
         }
       });
     } catch (e) {
-      console.log('sentry failed to initialize', e);
+      logger.error(
+        new RainbowError('sentry failed to initialize', { cause: e }),
+      );
     }
   }
 }
