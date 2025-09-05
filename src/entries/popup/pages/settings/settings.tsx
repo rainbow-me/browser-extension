@@ -32,6 +32,7 @@ import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 import { SwitchMenu } from '~/entries/popup/components/SwitchMenu/SwitchMenu';
+import { logger } from '~/logger';
 
 import packageJson from '../../../../../package.json';
 import { popupClient } from '../../handlers/background';
@@ -78,10 +79,10 @@ export function Settings() {
 
   const testSandboxPopup = useCallback(async () => {
     try {
-      console.log('about to leak...');
+      logger.warn('about to leak...');
       const r = await fetch('https://api.ipify.org?format=json');
       const res = await r.json();
-      console.log('response from server after leaking', res);
+      logger.warn('response from server after leaking', res);
       alert('Popup leaked!');
     } catch (e) {
       alert('Popup sandboxed!');

@@ -3,6 +3,8 @@
  * @see https://developer.chrome.com/blog/bfcache-extension-messaging-changes
  */
 
+import { RainbowError, logger } from '~/logger';
+
 /**
  * Setup BFCache restoration handler for a callback
  */
@@ -15,7 +17,11 @@ export function onBFCacheRestore(callback: () => void): (() => void) | null {
       try {
         callback();
       } catch (error) {
-        console.warn('BFCache restoration callback failed:', error);
+        logger.error(
+          new RainbowError('BFCache restoration callback failed:', {
+            cause: error,
+          }),
+        );
       }
     }
   };

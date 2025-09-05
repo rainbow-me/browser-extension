@@ -23,6 +23,7 @@ import { popupClient } from '~/entries/popup/handlers/background';
 import { getAccounts, remove, wipe } from '~/entries/popup/handlers/wallet';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
+import { RainbowError, logger } from '~/logger';
 
 const t = (s: string) =>
   i18n.t(s, { scope: 'settings.privacy_and_security.wallets_and_keys' });
@@ -76,7 +77,10 @@ export const WipeWalletGroupPrompt = ({
 
       navigate(-2);
     } catch (error) {
-      console.error('An error occurred during wallet removal:', error);
+      logger.error(
+        new RainbowError('An error occurred during wallet removal:'),
+        { cause: error },
+      );
     }
   }, [currentAddress, navigate, setCurrentAddress]);
 
