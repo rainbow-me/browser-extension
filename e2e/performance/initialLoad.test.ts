@@ -84,7 +84,6 @@ describe('Extension Initial Load Performance', () => {
       flowDuration: metrics.metrics.flowDuration,
     });
 
-    // Performance assertions
     if (metrics.metrics.domContentLoaded !== undefined) {
       expect(metrics.metrics.domContentLoaded).toBeLessThan(1000); // 1s for cold start
 
@@ -96,7 +95,6 @@ describe('Extension Initial Load Performance', () => {
     }
 
     if (metrics.metrics.firstMeaningfulPaint !== undefined) {
-      // CI can be slower, especially on first run (seen up to 2488ms)
       expect(metrics.metrics.firstMeaningfulPaint).toBeLessThan(3000); // 3s for first paint in CI
       console.log(
         `First meaningful paint: ${metrics.metrics.firstMeaningfulPaint}ms`,
@@ -123,7 +121,6 @@ describe('Extension Initial Load Performance', () => {
       firstMeaningfulPaint: metrics.metrics.firstMeaningfulPaint,
     });
 
-    // Warm reload should be faster
     if (metrics.metrics.domContentLoaded !== undefined) {
       expect(metrics.metrics.domContentLoaded).toBeLessThan(600); // 600ms for warm reload
     }
@@ -136,7 +133,6 @@ describe('Extension Initial Load Performance', () => {
       const memoryMB = metrics.memoryUsage.usedJSHeapSize / (1024 * 1024);
       console.log(`Initial memory footprint: ${memoryMB.toFixed(2)}MB`);
 
-      // Initial memory should be reasonable
       expect(metrics.memoryUsage.usedJSHeapSize).toBeLessThan(80_000_000); // 80MB for initial load
 
       if (metrics.memoryUsage.usedJSHeapSize > 60_000_000) {

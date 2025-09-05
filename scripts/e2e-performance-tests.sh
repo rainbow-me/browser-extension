@@ -1,13 +1,11 @@
 #!/bin/bash
 RETRY_COUNT=0
 
-# Function to run tests
 run_tests() {
   echo "Running Performance Tests..."
   yarn vitest e2e/performance/$1 --config ./e2e/performance/vitest.config.ts --reporter=verbose --bail 1
 }
 
-# Check browser version before running tests
 node scripts/e2e-browser-version.js
 
 # Main loop for retry logic

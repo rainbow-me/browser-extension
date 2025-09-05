@@ -9,7 +9,7 @@ export default mergeConfig(
     test: {
       bail: 1,
       threads: false,
-      testTimeout: 180_000, // 3 minutes for performance tests
+      testTimeout: 120_000,
     },
   }) as UserConfig,
 );

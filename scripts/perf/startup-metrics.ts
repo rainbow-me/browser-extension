@@ -1,8 +1,3 @@
-/**
- * Startup performance metrics collection
- * Based on MetaMask's approach but adapted for Rainbow extension
- */
-
 export interface StartupMetrics {
   // Core timing metrics
   uiStartup?: number; // Total time from start to UI ready

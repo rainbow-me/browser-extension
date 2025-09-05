@@ -71,7 +71,6 @@ describe('Wallet Flow Performance Tests', () => {
   });
 
   it('should measure complete wallet import flow', async () => {
-    // Navigate to welcome for wallet import
     await goToWelcome(driver, rootURL);
 
     // Start performance measurement
@@ -84,15 +83,12 @@ describe('Wallet Flow Performance Tests', () => {
       setTimeout(resolve, 500);
     });
 
-    // End measurement and collect metrics
     await collector.endFlowMeasurement('wallet-import');
     const metrics = await collector.collectAllMetrics('wallet-import');
 
-    // Save metrics for debugging
     await collector.saveMetrics('perf-wallet-import.json');
     console.log('Collected metrics:', JSON.stringify(metrics.metrics, null, 2));
 
-    // Performance assertions with realistic thresholds for browser extension
     if (metrics.metrics.popupLoadTime !== undefined) {
       expect(metrics.metrics.popupLoadTime).toBeLessThan(2000); // 2 seconds for full extension load
       console.log(`Popup load time: ${metrics.metrics.popupLoadTime}ms`);
@@ -102,7 +98,6 @@ describe('Wallet Flow Performance Tests', () => {
       console.log(`DOM content loaded: ${metrics.metrics.domContentLoaded}ms`);
     }
 
-    // The complete flow including crypto operations
     expect(metrics.metrics.flowDuration).toBeDefined();
     if (metrics.metrics.flowDuration) {
       expect(metrics.metrics.flowDuration).toBeLessThan(40_000); // 40 seconds for complete wallet import
@@ -113,15 +108,12 @@ describe('Wallet Flow Performance Tests', () => {
   it('should check memory usage', async () => {
     const metrics = await collector.collectExtensionMetrics();
 
-    // Memory thresholds for a React-based browser extension
     if (metrics.memoryUsage) {
       const memoryMB = metrics.memoryUsage.usedJSHeapSize / (1024 * 1024);
       console.log(`Memory usage: ${memoryMB.toFixed(2)}MB`);
 
-      // 100MB is a more realistic threshold for a modern web app
       expect(metrics.memoryUsage.usedJSHeapSize).toBeLessThan(100_000_000); // 100MB warning threshold
 
-      // Log if memory is high but not failing
       if (metrics.memoryUsage.usedJSHeapSize > 75_000_000) {
         console.warn(`⚠️ High memory usage detected: ${memoryMB.toFixed(2)}MB`);
       }

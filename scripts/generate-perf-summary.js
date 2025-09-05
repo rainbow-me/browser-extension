@@ -25,13 +25,11 @@ summary += `**Browser:** ${results.browser || 'chrome'}\n\n`;
 if (metrics.length === 0) {
   summary += 'No metrics collected.\n';
 } else {
-  // Group metrics by test
   const coldStart = metrics.find((m) => m.flow === 'cold-start');
   const warmReload = metrics.find((m) => m.flow === 'warm-reload');
   const walletImport = metrics.find((m) => m.flow === 'wallet-import');
   const initialMemory = metrics.find((m) => m.flow === 'initial-memory');
 
-  // UI Startup Metrics section
   summary += '### UI Startup Metrics\n\n';
   summary += '| Metric | Cold Start | Warm Reload |\n';
   summary += '|--------|------------|-------------|\n';
@@ -118,7 +116,7 @@ if (metrics.length === 0) {
     }
   }
 
-  // Detailed Results (all metrics)
+  // Detailed Results
   summary += '\n### Detailed Results\n\n';
   summary += '<details>\n<summary>All Metrics</summary>\n\n';
   summary += '| Test | Metric | Value |\n';
