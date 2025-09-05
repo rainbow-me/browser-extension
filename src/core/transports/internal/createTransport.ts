@@ -1,5 +1,6 @@
 import { Messenger } from '~/core/messengers';
 import { CallbackOptions } from '~/core/messengers/internal/createMessenger';
+import { RainbowError, logger } from '~/logger';
 
 /**
  * Creates a generic transport that can be used to send and receive messages between extension scripts
@@ -15,8 +16,10 @@ export function createTransport<TPayload, TResponse>({
   topic: string;
 }) {
   if (!messenger.available) {
-    console.error(
-      `Messenger "${messenger.name}" is not available in this context.`,
+    logger.error(
+      new RainbowError(
+        `Messenger "${messenger.name}" is not available in this context.`,
+      ),
     );
   }
   return {
