@@ -1,6 +1,7 @@
 import { Variants, motion } from 'framer-motion';
 
 import { CHARACTER_TYPING_SPEED } from '~/entries/popup/pages/home/Points/utils';
+import { RainbowError, logger } from '~/logger';
 
 import { Box } from '../Box/Box';
 import { Text, TextProps } from '../Text/Text';
@@ -54,7 +55,7 @@ export const AnimatedText = ({
   rainbowColor?: boolean;
 }) => {
   if (typeof children !== 'string') {
-    console.error('AnimatedText expects a string as children');
+    logger.error(new RainbowError('AnimatedText expects a string as children'));
     return null;
   }
 

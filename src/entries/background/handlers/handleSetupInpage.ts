@@ -1,3 +1,5 @@
+import { logger } from '~/logger';
+
 const INPAGE_ID = 'inpage';
 export async function handleSetupInpage() {
   const registeredContentScripts =
@@ -24,6 +26,6 @@ export async function handleSetupInpage() {
     // This will trigger if the service worker restarts and the current tab
     // is still open and we already injected the content script.
     // We're logging it and swallowing the error because it's expected
-    console.log('failed to register content scripts', e);
+    logger.warn('failed to register content scripts');
   }
 }
