@@ -88,6 +88,7 @@ const INTEGRATIONS: Array<{
     integrations: [
       Sentry.extraErrorDataIntegration(),
       Sentry.httpClientIntegration(),
+      Sentry.zodErrorsIntegration(),
     ],
   },
   {
