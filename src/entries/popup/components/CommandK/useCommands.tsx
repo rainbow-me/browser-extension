@@ -6,6 +6,7 @@ import { useEnsName } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
+import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
@@ -164,6 +165,7 @@ export const getStaticCommandInfo = (): CommandInfo => {
       symbolSize: 16.25,
       toPage: PAGES.MY_NFTS,
       type: SearchItemType.Shortcut,
+      hidden: !config.nfts_enabled,
     },
     copyAddress: {
       name: getCommandName('copy_address'),
