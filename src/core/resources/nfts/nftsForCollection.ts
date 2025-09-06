@@ -1,6 +1,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { Address } from 'viem';
 
+import remoteConfig from '~/core/firebase/remoteConfig';
 import { fetchNfts } from '~/core/network/nfts';
 import {
   InfiniteQueryConfig,
@@ -174,5 +175,6 @@ export function useNftsForCollection<TSelectData = NftsForCollectionResult>(
     // retry: 3,
     staleTime: Infinity, // Keep data in cache indefinitely
     gcTime: Infinity, // Keep data in cache indefinitely
+    enabled: remoteConfig.nfts_enabled,
   });
 }

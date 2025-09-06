@@ -4,6 +4,7 @@ import {
 } from '@tanstack/react-query';
 import { Address, Chain } from 'viem';
 
+import remoteConfig from '~/core/firebase/remoteConfig';
 import { fetchGalleryNfts } from '~/core/network/nfts';
 import {
   InfiniteQueryConfig,
@@ -115,6 +116,7 @@ export function useGalleryNfts<TSelectData = GalleryNftsResult>(
     // retry: 3,
     staleTime: Infinity, // Keep data in cache indefinitely
     gcTime: Infinity, // Keep data in cache indefinitely
+    enabled: remoteConfig.nfts_enabled,
   });
 }
 

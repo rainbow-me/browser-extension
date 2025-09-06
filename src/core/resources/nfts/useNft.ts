@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Address } from 'viem';
 
+import remoteConfig from '~/core/firebase/remoteConfig';
 import { fetchNft } from '~/core/network/nfts';
 import { createQueryKey } from '~/core/react-query';
 import { ChainId } from '~/core/types/chains';
@@ -27,7 +28,8 @@ export function useNft(
     queryFn: ({ queryKey }) => fetchNft(queryKey[0]),
     initialData,
     initialDataUpdatedAt: initialData !== undefined ? Date.now() : 0,
-    enabled: !!contractAddress && !!chainId && !!tokenId,
+    enabled:
+      !!contractAddress && !!chainId && !!tokenId && remoteConfig.nfts_enabled,
     // TODO: restore this when we find a SimpleHash replacement
     // retry: 3,
     staleTime: Infinity, // Keep data in cache indefinitely
