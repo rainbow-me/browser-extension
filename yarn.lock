@@ -10545,6 +10545,7 @@ __metadata:
     bundlewatch: "npm:0.4.1"
     check-password-strength: "npm:2.0.7"
     chroma-js: "npm:2.4.2"
+    chrome-remote-interface: "npm:0.33.0"
     chromedriver: "npm:139.0.2"
     circular-dependency-plugin: "npm:5.2.2"
     clsx: "npm:1.2.1"
@@ -11407,6 +11408,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"chrome-remote-interface@npm:0.33.0":
+  version: 0.33.0
+  resolution: "chrome-remote-interface@npm:0.33.0"
+  dependencies:
+    commander: "npm:2.11.x"
+    ws: "npm:^7.2.0"
+  bin:
+    chrome-remote-interface: bin/client.js
+  checksum: 10c0/6fa6f24e4ed1af8ef665250a8bf136bf278aa67001e3c6efd35885afd9bc63e3c4efd026331667b0a5fd8aefedf988819b10d89bc15b5a1545bbd69df9811df8
+  languageName: node
+  linkType: hard
+
 "chrome-trace-event@npm:^1.0.2":
   version: 1.0.3
   resolution: "chrome-trace-event@npm:1.0.3"
@@ -11728,6 +11741,13 @@ __metadata:
   version: 1.2.9
   resolution: "command-exists@npm:1.2.9"
   checksum: 10c0/75040240062de46cd6cd43e6b3032a8b0494525c89d3962e280dde665103f8cc304a8b313a5aa541b91da2f5a9af75c5959dc3a77893a2726407a5e9a0234c16
+  languageName: node
+  linkType: hard
+
+"commander@npm:2.11.x":
+  version: 2.11.0
+  resolution: "commander@npm:2.11.0"
+  checksum: 10c0/19eaec3099eba7cc24617fd2bddf6430d62f9e91f0dbfc4abcc5a025f9a6c657526fea5f09243f90c99f87b0df29c29ab4aa4f250888987f658eda617238e55c
   languageName: node
   linkType: hard
 
