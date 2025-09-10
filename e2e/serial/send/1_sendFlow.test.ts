@@ -296,21 +296,29 @@ it('should be able to go to review on send flow', async () => {
   await findElementByTestIdAndClick({ id: 'send-review-button', driver });
 });
 
-it('should show matching activity amount while pending and after success', async () => {
-  await findElementByTestIdAndClick({ id: 'review-confirm-button', driver });
-  const pendingActivityValue = await findElementByText(
+it('should be able to send transaction on review on send flow', async () => {
+  const reviewAmount = await findElementByText(
     driver,
     `${SEND_INPUT_VALUE} ETH`,
   );
-  expect(await pendingActivityValue.getText()).toBe(`${SEND_INPUT_VALUE} ETH`);
+  expect(await reviewAmount.getText()).toBe(`${SEND_INPUT_VALUE} ETH`);
 
+  await delayTime('very-long');
+  await findElementByTestIdAndClick({ id: 'review-confirm-button', driver });
   const sendTransaction = await transactionStatus();
   expect(await sendTransaction).toBe('success');
+});
 
-  await delayTime('long');
-  const successActivityValue = await findElementByText(
+it('should show sent transaction in Activity with matching amount', async () => {
+  await goToPopup(driver, rootURL);
+  await findElementByTestIdAndClick({ id: 'bottom-tab-activity', driver });
+
+  const sentLabel = await findElementByText(driver, 'Sent');
+  expect(sentLabel).toBeTruthy();
+
+  const activityValue = await findElementByText(
     driver,
     `${SEND_INPUT_VALUE} ETH`,
   );
-  expect(await successActivityValue.getText()).toBe(`${SEND_INPUT_VALUE} ETH`);
+  expect(await activityValue.getText()).toBe(`${SEND_INPUT_VALUE} ETH`);
 });
