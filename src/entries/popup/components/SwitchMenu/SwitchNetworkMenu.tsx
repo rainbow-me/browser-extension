@@ -103,13 +103,18 @@ export const SwitchNetworkMenuSelector = ({
           });
           onShortcutPress(String(chain.id));
           onNetworkSelect?.();
-        } else if (showDisconnect && chainNumber === chains.length + 1) {
-          trackShortcut({
-            key: chainNumber.toString(),
-            type: 'switchNetworkMenu.disconnect',
-          });
-          disconnect?.();
         }
+      }
+
+      if (
+        showDisconnect &&
+        e.key.toLowerCase() === shortcuts.home.DISCONNECT_APP.key
+      ) {
+        trackShortcut({
+          key: shortcuts.home.DISCONNECT_APP.display,
+          type: 'switchNetworkMenu.disconnect',
+        });
+        disconnect?.();
       }
     },
     [
@@ -180,7 +185,7 @@ export const SwitchNetworkMenuSelector = ({
       {showDisconnect && disconnect && (
         <SwitchNetworkMenuDisconnect
           onDisconnect={disconnect}
-          shortcutLabel={String(chains.length + 1)}
+          shortcutLabel={shortcuts.home.DISCONNECT_APP.display}
         />
       )}
     </Box>
