@@ -93,7 +93,7 @@ class KeychainManager {
           }
         } catch (e) {
           logger.error(
-            new RainbowError('FATAL ERROR: rehydration failed', {
+            new RainbowError('Fatal error: rehydration failed', {
               cause: e,
             }),
           );
