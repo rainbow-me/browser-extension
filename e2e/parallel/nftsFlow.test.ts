@@ -1,6 +1,8 @@
 /* eslint-disable no-await-in-loop */
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+
+import remoteConfig from '~/core/firebase/remoteConfig';
 
 import {
   delayTime,
@@ -17,6 +19,7 @@ import { TEST_VARIABLES } from '../walletVariables';
 
 let rootURL = getRootUrl();
 let driver: WebDriver;
+let skipSuite = false;
 
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
@@ -30,6 +33,13 @@ describe('Visit NFTs Gallery and Details Pages', () => {
     const extensionId = await getExtensionIdByName(driver, 'Rainbow');
     if (!extensionId) throw new Error('Extension not found');
     rootURL += extensionId;
+    if (remoteConfig.nfts_enabled === false) {
+      skipSuite = true;
+    }
+  });
+  // Vitest provides a test context object via `this`
+  beforeEach(function (this: { skip: () => void }) {
+    if (skipSuite) this.skip();
   });
   afterAll(async () => await driver?.quit());
 
