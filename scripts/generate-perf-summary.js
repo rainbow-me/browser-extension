@@ -14,6 +14,22 @@ if (!fs.existsSync(resultsPath)) {
 const results = JSON.parse(fs.readFileSync(resultsPath, 'utf8'));
 const metrics = results.metrics || [];
 
+// Load baseline for comparison
+let baseline = null;
+let browserBaseline = null;
+try {
+  const baselinePath = path.join(
+    process.cwd(),
+    'e2e/performance/baseline.json',
+  );
+  if (fs.existsSync(baselinePath)) {
+    baseline = JSON.parse(fs.readFileSync(baselinePath, 'utf8'));
+    browserBaseline = baseline[results.browser || 'chrome'];
+  }
+} catch (error) {
+  console.error('Error loading baseline:', error);
+}
+
 // Generate markdown for GitHub Actions summary
 let summary = '## Performance Metrics Report\n\n';
 summary += `**Browser:** ${results.browser || 'chrome'} ${
@@ -28,43 +44,93 @@ if (metrics.length === 0) {
   const walletImport = metrics.find((m) => m.flow === 'wallet-import');
   const initialMemory = metrics.find((m) => m.flow === 'initial-memory');
 
-  summary += '### UI Startup Metrics\n\n';
-  summary += '| Metric | Cold Start | Warm Reload |\n';
-  summary += '|--------|------------|-------------|\n';
-
+  // Only show UI Startup Metrics if we have cold start or warm reload data
   if (coldStart || warmReload) {
+    summary += '### UI Startup Metrics\n\n';
+    summary += '| Metric | Cold Start | Warm Reload | Status |\n';
+    summary += '|--------|------------|-------------|--------|\n';
+
     const formatValue = (obj, key) => {
       if (!obj || !obj.metrics || obj.metrics[key] === undefined) return 'N/A';
       return `${Math.round(obj.metrics[key])}ms`;
     };
 
+    const getStatus = (metric, coldValue, warmValue) => {
+      // Check against baseline if available
+      if (baseline && browserBaseline) {
+        const coldBaseline = browserBaseline.coldStart?.[metric];
+        const warmBaseline = browserBaseline.warmReload?.[metric];
+
+        let hasIssue = false;
+        let hasWarning = false;
+
+        if (coldValue !== 'N/A' && coldBaseline) {
+          const ratio = parseInt(coldValue) / coldBaseline;
+          if (ratio > baseline.thresholds.critical) hasIssue = true;
+          else if (ratio > baseline.thresholds.warning) hasWarning = true;
+        }
+
+        if (warmValue !== 'N/A' && warmBaseline) {
+          const ratio = parseInt(warmValue) / warmBaseline;
+          if (ratio > baseline.thresholds.critical) hasIssue = true;
+          else if (ratio > baseline.thresholds.warning) hasWarning = true;
+        }
+
+        if (hasIssue) return '❌';
+        if (hasWarning) return '⚠️';
+      }
+      return '✅';
+    };
+
     // Core Web Vitals
-    summary += `| DOM Content Loaded | ${formatValue(
-      coldStart,
+    const coldDom = formatValue(coldStart, 'domContentLoaded');
+    const warmDom = formatValue(warmReload, 'domContentLoaded');
+    summary += `| DOM Content Loaded | ${coldDom} | ${warmDom} | ${getStatus(
       'domContentLoaded',
-    )} | ${formatValue(warmReload, 'domContentLoaded')} |\n`;
-    summary += `| First Meaningful Paint | ${formatValue(
-      coldStart,
+      coldDom,
+      warmDom,
+    )} |\n`;
+
+    const coldFMP = formatValue(coldStart, 'firstMeaningfulPaint');
+    const warmFMP = formatValue(warmReload, 'firstMeaningfulPaint');
+    summary += `| First Meaningful Paint | ${coldFMP} | ${warmFMP} | ${getStatus(
       'firstMeaningfulPaint',
-    )} | ${formatValue(warmReload, 'firstMeaningfulPaint')} |\n`;
+      coldFMP,
+      warmFMP,
+    )} |\n`;
 
     // Extension-specific startup metrics
-    summary += `| Load Scripts | ${formatValue(
-      coldStart,
+    const coldLoad = formatValue(coldStart, 'loadScripts');
+    const warmLoad = formatValue(warmReload, 'loadScripts');
+    summary += `| Load Scripts | ${coldLoad} | ${warmLoad} | ${getStatus(
       'loadScripts',
-    )} | ${formatValue(warmReload, 'loadScripts')} |\n`;
-    summary += `| Setup Store | ${formatValue(
-      coldStart,
+      coldLoad,
+      warmLoad,
+    )} |\n`;
+
+    const coldStore = formatValue(coldStart, 'setupStore');
+    const warmStore = formatValue(warmReload, 'setupStore');
+    summary += `| Setup Store | ${coldStore} | ${warmStore} | ${getStatus(
       'setupStore',
-    )} | ${formatValue(warmReload, 'setupStore')} |\n`;
-    summary += `| First React Render | ${formatValue(
-      coldStart,
+      coldStore,
+      warmStore,
+    )} |\n`;
+
+    const coldReact = formatValue(coldStart, 'firstReactRender');
+    const warmReact = formatValue(warmReload, 'firstReactRender');
+    summary += `| First React Render | ${coldReact} | ${warmReact} | ${getStatus(
       'firstReactRender',
-    )} | ${formatValue(warmReload, 'firstReactRender')} |\n`;
-    summary += `| UI Startup (Total) | ${formatValue(
-      coldStart,
+      coldReact,
+      warmReact,
+    )} |\n`;
+
+    const coldUI = formatValue(coldStart, 'uiStartup');
+    const warmUI = formatValue(warmReload, 'uiStartup');
+    summary += `| UI Startup (Total) | ${coldUI} | ${warmUI} | ${getStatus(
       'uiStartup',
-    )} | ${formatValue(warmReload, 'uiStartup')} |\n`;
+      coldUI,
+      warmUI,
+    )} |\n`;
   }
 
   // User Flow Metrics
@@ -143,90 +209,84 @@ if (metrics.length === 0) {
 // Performance Comparison with Baseline
 summary += '\n### Performance Status\n\n';
 
-try {
-  const baselinePath = path.join(
-    process.cwd(),
-    'e2e/performance/baseline.json',
-  );
-  if (fs.existsSync(baselinePath)) {
-    const baseline = JSON.parse(fs.readFileSync(baselinePath, 'utf8'));
-    const browserBaseline = baseline[results.browser || 'chrome'];
+if (baseline && browserBaseline && metrics.length > 0) {
+  const warnings = [];
+  const failures = [];
 
-    if (browserBaseline && metrics.length > 0) {
-      const warnings = [];
-      const failures = [];
+  // Check cold start metrics
+  const coldStart = metrics.find((m) => m.flow === 'cold-start');
+  const warmReload = metrics.find((m) => m.flow === 'warm-reload');
+  const walletImport = metrics.find((m) => m.flow === 'wallet-import');
 
-      // Check cold start metrics
-      const coldStart = metrics.find((m) => m.flow === 'cold-start');
-      if (coldStart && browserBaseline.coldStart) {
-        for (const [metric, baselineValue] of Object.entries(
-          browserBaseline.coldStart,
-        )) {
-          const actualValue = coldStart.metrics[metric];
-          if (actualValue && typeof baselineValue === 'number') {
-            const ratio = actualValue / baselineValue;
-            const unit = metric === 'memoryUsage' ? 'MB' : 'ms';
-            const displayValue =
-              metric === 'memoryUsage'
-                ? (actualValue / (1024 * 1024)).toFixed(1)
-                : Math.round(actualValue);
+  if (coldStart && browserBaseline.coldStart) {
+    for (const [metric, baselineValue] of Object.entries(
+      browserBaseline.coldStart,
+    )) {
+      const actualValue = coldStart.metrics[metric];
+      if (actualValue && typeof baselineValue === 'number') {
+        const ratio = actualValue / baselineValue;
+        const unit = metric === 'memoryUsage' ? 'MB' : 'ms';
+        const displayValue =
+          metric === 'memoryUsage'
+            ? (actualValue / (1024 * 1024)).toFixed(1)
+            : Math.round(actualValue);
 
-            if (ratio > baseline.thresholds.critical) {
-              failures.push(
-                `❌ ${metric}: ${displayValue}${unit} (${(
-                  (ratio - 1) *
-                  100
-                ).toFixed(0)}% over baseline)`,
-              );
-            } else if (ratio > baseline.thresholds.warning) {
-              warnings.push(
-                `⚠️ ${metric}: ${displayValue}${unit} (${(
-                  (ratio - 1) *
-                  100
-                ).toFixed(0)}% over baseline)`,
-              );
-            }
-          }
+        if (ratio > baseline.thresholds.critical) {
+          failures.push(
+            `❌ ${metric}: ${displayValue}${unit} (${(
+              (ratio - 1) *
+              100
+            ).toFixed(0)}% over baseline)`,
+          );
+        } else if (ratio > baseline.thresholds.warning) {
+          warnings.push(
+            `⚠️ ${metric}: ${displayValue}${unit} (${(
+              (ratio - 1) *
+              100
+            ).toFixed(0)}% over baseline)`,
+          );
         }
       }
-
-      if (failures.length > 0) {
-        summary += '#### ❌ Critical Performance Regressions\n\n';
-        failures.forEach((f) => (summary += `- ${f}\n`));
-        summary += '\n';
-      }
-
-      if (warnings.length > 0) {
-        summary += '#### ⚠️ Performance Warnings\n\n';
-        warnings.forEach((w) => (summary += `- ${w}\n`));
-        summary += '\n';
-      }
-
-      if (failures.length === 0 && warnings.length === 0) {
-        summary += '✅ All metrics within acceptable thresholds\n\n';
-      }
-
-      summary += `<details>\n<summary>Baseline Comparison Details</summary>\n\n`;
-      summary += `Baseline last updated: ${baseline.lastUpdated}\n`;
-      summary += `Warning threshold: ${(
-        (baseline.thresholds.warning - 1) *
-        100
-      ).toFixed(0)}% over baseline\n`;
-      summary += `Critical threshold: ${(
-        (baseline.thresholds.critical - 1) *
-        100
-      ).toFixed(0)}% over baseline\n\n`;
-      summary += `To update baseline: \`yarn perf:update-baseline\`\n`;
-      summary += `</details>\n`;
-    } else {
-      summary += 'No baseline data available for comparison.\n';
     }
-  } else {
-    summary +=
-      'No baseline file found. Run `yarn perf:create-baseline` to establish baseline metrics.\n';
   }
-} catch (error) {
-  summary += `Error loading baseline: ${error.message}\n`;
+
+  if (failures.length > 0) {
+    summary += '#### ❌ Critical Performance Regressions\n\n';
+    failures.forEach((f) => (summary += `- ${f}\n`));
+    summary += '\n';
+  }
+
+  if (warnings.length > 0) {
+    summary += '#### ⚠️ Performance Warnings\n\n';
+    warnings.forEach((w) => (summary += `- ${w}\n`));
+    summary += '\n';
+  }
+
+  if (!coldStart && !warmReload && !walletImport) {
+    summary += 'No performance tests were run.\n\n';
+  } else if (!coldStart && browserBaseline.coldStart) {
+    summary += 'ℹ️ Cold start metrics not tested in this run\n\n';
+  } else if (failures.length === 0 && warnings.length === 0) {
+    summary += '✅ All metrics within acceptable thresholds\n\n';
+  }
+
+  summary += `<details>\n<summary>Baseline Comparison Details</summary>\n\n`;
+  summary += `Baseline last updated: ${baseline.lastUpdated}\n`;
+  summary += `Warning threshold: ${(
+    (baseline.thresholds.warning - 1) *
+    100
+  ).toFixed(0)}% over baseline\n`;
+  summary += `Critical threshold: ${(
+    (baseline.thresholds.critical - 1) *
+    100
+  ).toFixed(0)}% over baseline\n\n`;
+  summary += `To update baseline: \`yarn perf:update-baseline\`\n`;
+  summary += `</details>\n`;
+} else if (!baseline) {
+  summary +=
+    'No baseline file found. Run `yarn perf:generate-baseline` to establish baseline metrics.\n';
+} else {
+  summary += 'No baseline data available for comparison.\n';
 }
 
 // Write to GitHub Actions summary
