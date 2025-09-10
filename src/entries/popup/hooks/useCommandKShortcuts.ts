@@ -4,7 +4,11 @@ import { shortcuts } from '~/core/references/shortcuts';
 
 import { useCommandKStatus } from '../components/CommandK/useCommandKStatus';
 import { ROUTES } from '../urls';
-import { getInputIsFocused, radixIsActive } from '../utils/activeElement';
+import {
+  inputIsFocused,
+  modalIsActive,
+  radixIsActive,
+} from '../utils/activeElement';
 
 import { useKeyboardShortcut } from './useKeyboardShortcut';
 
@@ -36,14 +40,18 @@ export function useCommandKShortcuts() {
   );
 
   const getCommandKTriggerIsActive = React.useCallback(() => {
-    return !disableOnCurrentRoute;
-  }, [disableOnCurrentRoute]);
+    if (isCommandKVisible) {
+      return true;
+    }
+    return !disableOnCurrentRoute && !modalIsActive();
+  }, [disableOnCurrentRoute, isCommandKVisible]);
 
   const handleCommandKShortcutPress = React.useCallback(
     (e: KeyboardEvent) => {
+      e.preventDefault();
+
       if (!isCommandKVisible) {
-        e.preventDefault();
-        if (getInputIsFocused()) {
+        if (inputIsFocused()) {
           setLastActiveElement(document.activeElement as HTMLElement);
         }
         if (radixIsActive()) {
@@ -51,7 +59,6 @@ export function useCommandKShortcuts() {
         }
         openCommandK();
       } else {
-        e.preventDefault();
         closeCommandK();
       }
     },
@@ -79,7 +86,7 @@ export function useCommandKShortcuts() {
   // Allow opening ⌘K with K alone if an input is not focused
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
-      if (e.key === shortcuts.global.COMMAND_K.key && !getInputIsFocused()) {
+      if (e.key === shortcuts.global.COMMAND_K.key && !inputIsFocused()) {
         handleCommandKShortcutPress(e);
       }
     },

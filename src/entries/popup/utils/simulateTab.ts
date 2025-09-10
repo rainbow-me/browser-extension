@@ -1,11 +1,9 @@
-import { getActiveModal, getExplainerSheet } from './activeElement';
+import { getActiveModal } from './activeElement';
 
 export const simulateTab = (forwards: boolean) => {
   const activeElement = document.activeElement;
   if (activeElement) {
-    const modal = getActiveModal();
-    const explainer = getExplainerSheet();
-    const target = explainer || modal || document;
+    const target = getActiveModal() || document;
 
     const tabbableArray = Array.from(
       target.querySelectorAll('[tabindex]:not([tabindex="-1"])'),

@@ -39,7 +39,6 @@ export type BoxProps = Omit<BoxStyles, 'background'> & {
       };
   className?: ClassValue;
   isModal?: boolean;
-  isExplainerSheet?: boolean;
   testId?: string;
   translate?: HTMLAttributes<unknown>['translate'];
   onKeyDown?: React.KeyboardEventHandler;
@@ -49,15 +48,7 @@ export type BoxProps = Omit<BoxStyles, 'background'> & {
 type PolymorphicBox = Polymorphic.ForwardRefComponent<'div', BoxProps>;
 
 export const Box = forwardRef(function Box(
-  {
-    as: Component = 'div',
-    className,
-    isModal,
-    isExplainerSheet,
-    testId,
-    translate,
-    ...props
-  },
+  { as: Component = 'div', className, isModal, testId, translate, ...props },
   ref,
 ) {
   let hasBoxStyles = false;
@@ -124,7 +115,6 @@ export const Box = forwardRef(function Box(
         className,
       )}
       data-is-modally-presented={isModal || undefined}
-      data-is-explainer-sheet={isExplainerSheet || undefined}
       data-testid={testId}
       translate={translate}
       // Since Box is a primitive component, it needs to spread props

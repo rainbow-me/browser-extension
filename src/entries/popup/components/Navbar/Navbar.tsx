@@ -13,8 +13,8 @@ import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import {
-  getActiveModal,
-  getInputIsFocused,
+  inputIsFocused,
+  modalIsActive,
   radixIsActive,
 } from '../../utils/activeElement';
 import {
@@ -193,9 +193,9 @@ function NavbarButtonWithBack({
       const closeWithEscape =
         e.key === shortcuts.global.CLOSE.key &&
         !radixIsActive() &&
-        (withinModal || !getActiveModal());
+        (withinModal || !modalIsActive());
       const closeWithArrow =
-        !getInputIsFocused() && e.key === shortcuts.global.BACK.key;
+        !inputIsFocused() && e.key === shortcuts.global.BACK.key;
 
       if (closeWithEscape || closeWithArrow) {
         trackShortcut({

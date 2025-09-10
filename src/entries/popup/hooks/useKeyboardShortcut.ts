@@ -28,15 +28,20 @@ export function useKeyboardShortcut({
   const isCommandKVisible = useCommandKStatus((s) => s.isCommandKVisible);
 
   const shouldListen = useMemo(() => {
-    if (!isCommandKVisible || enableWithinCommandK) {
-      return condition?.() || condition === undefined;
-    }
-    return false;
-  }, [condition, enableWithinCommandK, isCommandKVisible]);
+    return !isCommandKVisible || enableWithinCommandK;
+  }, [enableWithinCommandK, isCommandKVisible]);
 
   useEffect(() => {
     const systemSpecificModifierKey = getSystemSpecificModifierKey(modifierKey);
     const modifiedHandler = (e: KeyboardEvent) => {
+      // Block when CommandK is open unless explicitly allowed
+      if (isCommandKVisible && !enableWithinCommandK) {
+        return;
+      }
+      // Check condition on every keypress, not just at registration time
+      if (condition && !condition()) {
+        return;
+      }
       // If a modifierKey is specified, check if it's being held down
       if (systemSpecificModifierKey && !e[systemSpecificModifierKey]) {
         return;
@@ -58,5 +63,12 @@ export function useKeyboardShortcut({
     return () => {
       removeHandler();
     };
-  }, [handler, modifierKey, shouldListen]);
+  }, [
+    condition,
+    enableWithinCommandK,
+    handler,
+    isCommandKVisible,
+    modifierKey,
+    shouldListen,
+  ]);
 }

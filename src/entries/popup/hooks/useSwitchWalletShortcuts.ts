@@ -1,7 +1,8 @@
 import { useCurrentAddressStore } from '~/core/state';
 
 import {
-  getInputIsFocused,
+  inputIsFocused,
+  modalIsActive,
   switchNetworkMenuIsActive,
 } from '../utils/activeElement';
 
@@ -18,7 +19,11 @@ export function useSwitchWalletShortcuts(disable?: boolean) {
 
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
-      if (!switchNetworkMenuIsActive() && !getInputIsFocused()) {
+      if (
+        !switchNetworkMenuIsActive() &&
+        !modalIsActive() &&
+        !inputIsFocused()
+      ) {
         const regex = /^[1-9]$/;
         if (regex.test(e.key)) {
           const accountIndex = parseInt(e.key, 10) - 1;
