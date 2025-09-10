@@ -45,11 +45,27 @@ export interface PerformanceMetrics {
 
 export class PerformanceCollector {
   private metrics: PerformanceMetrics[] = [];
+  private browserVersion: string | null = null;
 
   constructor(
     private driver: WebDriver,
     private browser = 'chrome',
   ) {}
+
+  async getBrowserVersion(): Promise<string> {
+    if (this.browserVersion) return this.browserVersion;
+
+    try {
+      const userAgent: string = await this.driver.executeScript(
+        'return navigator.userAgent',
+      );
+      const versionMatch = userAgent.match(/Chrome\/([\d.]+)/);
+      this.browserVersion = versionMatch ? versionMatch[1] : 'unknown';
+      return this.browserVersion;
+    } catch {
+      return 'unknown';
+    }
+  }
 
   async collectNavigationMetrics(): Promise<any> {
     try {
@@ -288,10 +304,13 @@ export class PerformanceCollector {
     const defaultPath = path.join(process.cwd(), 'perf-results.json');
     const finalPath = outputPath || defaultPath;
 
+    const browserVersion = await this.getBrowserVersion();
+
     const output = {
       version: '1.0.0',
       timestamp: new Date().toISOString(),
       browser: this.browser,
+      browserVersion: browserVersion,
       metrics: this.metrics,
     };
 

@@ -16,11 +16,9 @@ const metrics = results.metrics || [];
 
 // Generate markdown for GitHub Actions summary
 let summary = '## Performance Metrics Report\n\n';
-summary += `**Date:** ${new Date().toISOString().split('T')[0]}\n`;
-summary += `**Commit:** ${
-  process.env.GITHUB_SHA ? process.env.GITHUB_SHA.substring(0, 7) : 'local'
-}\n`;
-summary += `**Browser:** ${results.browser || 'chrome'}\n\n`;
+summary += `**Browser:** ${results.browser || 'chrome'} ${
+  results.browserVersion || ''
+}\n\n`;
 
 if (metrics.length === 0) {
   summary += 'No metrics collected.\n';
@@ -142,9 +140,94 @@ if (metrics.length === 0) {
   summary += '\n</details>\n';
 }
 
-// Performance Thresholds (future implementation)
+// Performance Comparison with Baseline
 summary += '\n### Performance Status\n\n';
-summary += 'Performance thresholds will be implemented in a future update.\n';
+
+try {
+  const baselinePath = path.join(
+    process.cwd(),
+    'e2e/performance/baseline.json',
+  );
+  if (fs.existsSync(baselinePath)) {
+    const baseline = JSON.parse(fs.readFileSync(baselinePath, 'utf8'));
+    const browserBaseline = baseline[results.browser || 'chrome'];
+
+    if (browserBaseline && metrics.length > 0) {
+      const warnings = [];
+      const failures = [];
+
+      // Check cold start metrics
+      const coldStart = metrics.find((m) => m.flow === 'cold-start');
+      if (coldStart && browserBaseline.coldStart) {
+        for (const [metric, baselineValue] of Object.entries(
+          browserBaseline.coldStart,
+        )) {
+          const actualValue = coldStart.metrics[metric];
+          if (actualValue && typeof baselineValue === 'number') {
+            const ratio = actualValue / baselineValue;
+            const unit = metric === 'memoryUsage' ? 'MB' : 'ms';
+            const displayValue =
+              metric === 'memoryUsage'
+                ? (actualValue / (1024 * 1024)).toFixed(1)
+                : Math.round(actualValue);
+
+            if (ratio > baseline.thresholds.critical) {
+              failures.push(
+                `❌ ${metric}: ${displayValue}${unit} (${(
+                  (ratio - 1) *
+                  100
+                ).toFixed(0)}% over baseline)`,
+              );
+            } else if (ratio > baseline.thresholds.warning) {
+              warnings.push(
+                `⚠️ ${metric}: ${displayValue}${unit} (${(
+                  (ratio - 1) *
+                  100
+                ).toFixed(0)}% over baseline)`,
+              );
+            }
+          }
+        }
+      }
+
+      if (failures.length > 0) {
+        summary += '#### ❌ Critical Performance Regressions\n\n';
+        failures.forEach((f) => (summary += `- ${f}\n`));
+        summary += '\n';
+      }
+
+      if (warnings.length > 0) {
+        summary += '#### ⚠️ Performance Warnings\n\n';
+        warnings.forEach((w) => (summary += `- ${w}\n`));
+        summary += '\n';
+      }
+
+      if (failures.length === 0 && warnings.length === 0) {
+        summary += '✅ All metrics within acceptable thresholds\n\n';
+      }
+
+      summary += `<details>\n<summary>Baseline Comparison Details</summary>\n\n`;
+      summary += `Baseline last updated: ${baseline.lastUpdated}\n`;
+      summary += `Warning threshold: ${(
+        (baseline.thresholds.warning - 1) *
+        100
+      ).toFixed(0)}% over baseline\n`;
+      summary += `Critical threshold: ${(
+        (baseline.thresholds.critical - 1) *
+        100
+      ).toFixed(0)}% over baseline\n\n`;
+      summary += `To update baseline: \`yarn perf:update-baseline\`\n`;
+      summary += `</details>\n`;
+    } else {
+      summary += 'No baseline data available for comparison.\n';
+    }
+  } else {
+    summary +=
+      'No baseline file found. Run `yarn perf:create-baseline` to establish baseline metrics.\n';
+  }
+} catch (error) {
+  summary += `Error loading baseline: ${error.message}\n`;
+}
 
 // Write to GitHub Actions summary
 const summaryFile = process.env.GITHUB_STEP_SUMMARY;

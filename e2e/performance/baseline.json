@@ -1,0 +1,31 @@
+{
+  "version": "1.0.0",
+  "description": "Performance baseline snapshot - Run 'yarn perf:generate-baseline' to create from actual metrics",
+  "lastUpdated": "2025-09-10",
+  "chrome": {
+    "coldStart": {
+      "domContentLoaded": 703,
+      "firstMeaningfulPaint": 780,
+      "loadScripts": 702,
+      "setupStore": 0,
+      "firstReactRender": 35,
+      "uiStartup": 742,
+      "memoryUsage": 86763084
+    },
+    "warmReload": {
+      "domContentLoaded": 251,
+      "firstMeaningfulPaint": 320,
+      "loadScripts": 192,
+      "setupStore": 0,
+      "firstReactRender": 0,
+      "uiStartup": 272,
+      "memoryUsage": 77380025,
+      "flowDuration": 518
+    }
+  },
+  "thresholds": {
+    "warning": 1.2,
+    "critical": 1.5
+  },
+  "_instructions": "Run 'yarn perf:generate-baseline' to populate this file with actual performance metrics from your local machine"
+}

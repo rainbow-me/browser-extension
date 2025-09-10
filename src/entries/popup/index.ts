@@ -37,7 +37,9 @@ syncNetworksStore('popup');
 if (process.env.IS_TESTING === 'true') {
   const metrics = (window as any).__PERF_METRICS__ || {};
   metrics.storeSetupEnd = performance.now();
-  metrics.setupStore = metrics.storeSetupEnd - metrics.storeSetupStart;
+  if (metrics.storeSetupStart) {
+    metrics.setupStore = metrics.storeSetupEnd - metrics.storeSetupStart;
+  }
   (window as any).__PERF_METRICS__ = metrics;
 }
 
@@ -61,21 +63,29 @@ root.render(createElement(App));
 if (process.env.IS_TESTING === 'true') {
   requestAnimationFrame(() => {
     const metrics = (window as any).__PERF_METRICS__ || {};
-    metrics.firstReactRender = performance.now();
-    metrics.uiStartup = metrics.firstReactRender;
+    const now = performance.now();
 
-    // Calculate derived metrics
+    // Calculate final metrics
+    if (metrics.beforeReactRender) {
+      metrics.firstReactRender = Math.round(now - metrics.beforeReactRender);
+    }
+
+    // Total UI startup time
+    metrics.uiStartup = Math.round(now);
+
+    // Round other metrics
     if (metrics.scriptsLoaded) {
       metrics.loadScripts = Math.round(metrics.scriptsLoaded);
     }
     if (metrics.setupStore) {
       metrics.setupStore = Math.round(metrics.setupStore);
     }
-    if (metrics.firstReactRender && metrics.beforeReactRender) {
-      metrics.firstReactRender = Math.round(
-        metrics.firstReactRender - metrics.beforeReactRender,
-      );
-    }
+
+    // Clean up intermediate values
+    delete metrics.storeSetupStart;
+    delete metrics.storeSetupEnd;
+    delete metrics.beforeReactRender;
+    delete metrics.scriptsLoaded;
 
     (window as any).__PERF_METRICS__ = metrics;
     console.log('[PERF] Startup metrics:', metrics);
