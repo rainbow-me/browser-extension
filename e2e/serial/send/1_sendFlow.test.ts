@@ -296,14 +296,21 @@ it('should be able to go to review on send flow', async () => {
   await findElementByTestIdAndClick({ id: 'send-review-button', driver });
 });
 
-it('should be able to send transaction on review on send flow', async () => {
+it('should show matching activity amount while pending and after success', async () => {
   await findElementByTestIdAndClick({ id: 'review-confirm-button', driver });
-  const sendTransaction = await transactionStatus();
-  expect(await sendTransaction).toBe('success');
-  await delayTime('long');
-  const activityValue = await findElementByText(
+  const pendingActivityValue = await findElementByText(
     driver,
     `${SEND_INPUT_VALUE} ETH`,
   );
-  expect(await activityValue.getText()).toBe(`${SEND_INPUT_VALUE} ETH`);
+  expect(await pendingActivityValue.getText()).toBe(`${SEND_INPUT_VALUE} ETH`);
+
+  const sendTransaction = await transactionStatus();
+  expect(await sendTransaction).toBe('success');
+
+  await delayTime('long');
+  const successActivityValue = await findElementByText(
+    driver,
+    `${SEND_INPUT_VALUE} ETH`,
+  );
+  expect(await successActivityValue.getText()).toBe(`${SEND_INPUT_VALUE} ETH`);
 });
