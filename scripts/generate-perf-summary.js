@@ -136,8 +136,8 @@ if (metrics.length === 0) {
   // User Flow Metrics
   if (walletImport) {
     summary += '\n### User Flow Metrics\n\n';
-    summary += '| Flow | Duration | Memory Usage |\n';
-    summary += '|------|----------|-------------|\n';
+    summary += '| Flow | Duration | Memory Usage | Status |\n';
+    summary += '|------|----------|-------------|--------|\n';
 
     const duration = walletImport.metrics.flowDuration
       ? `${(walletImport.metrics.flowDuration / 1000).toFixed(1)}s`
@@ -146,7 +146,31 @@ if (metrics.length === 0) {
       ? `${(walletImport.metrics.memoryUsage / (1024 * 1024)).toFixed(1)}MB`
       : 'N/A';
 
-    summary += `| Wallet Import | ${duration} | ${memory} |\n`;
+    // Check status against baseline
+    let status = '✅';
+    if (baseline && browserBaseline && browserBaseline.walletImport) {
+      const baselineDuration = browserBaseline.walletImport.flowDuration;
+      const baselineMemory = browserBaseline.walletImport.memoryUsage;
+      let hasIssue = false;
+      let hasWarning = false;
+
+      if (walletImport.metrics.flowDuration && baselineDuration) {
+        const ratio = walletImport.metrics.flowDuration / baselineDuration;
+        if (ratio > baseline.thresholds.critical) hasIssue = true;
+        else if (ratio > baseline.thresholds.warning) hasWarning = true;
+      }
+
+      if (walletImport.metrics.memoryUsage && baselineMemory) {
+        const ratio = walletImport.metrics.memoryUsage / baselineMemory;
+        if (ratio > baseline.thresholds.critical) hasIssue = true;
+        else if (ratio > baseline.thresholds.warning) hasWarning = true;
+      }
+
+      if (hasIssue) status = '❌';
+      else if (hasWarning) status = '⚠️';
+    }
+
+    summary += `| Wallet Import | ${duration} | ${memory} | ${status} |\n`;
   }
 
   // Memory Metrics
@@ -250,6 +274,46 @@ if (baseline && browserBaseline && metrics.length > 0) {
     }
   }
 
+  // Check wallet import metrics if available
+  if (walletImport && browserBaseline.walletImport) {
+    for (const [metric, baselineValue] of Object.entries(
+      browserBaseline.walletImport,
+    )) {
+      const actualValue = walletImport.metrics[metric];
+      if (actualValue && typeof baselineValue === 'number') {
+        const ratio = actualValue / baselineValue;
+        const unit =
+          metric === 'memoryUsage'
+            ? 'MB'
+            : metric === 'flowDuration'
+            ? 's'
+            : 'ms';
+        const displayValue =
+          metric === 'memoryUsage'
+            ? (actualValue / (1024 * 1024)).toFixed(1)
+            : metric === 'flowDuration'
+            ? (actualValue / 1000).toFixed(1)
+            : Math.round(actualValue);
+
+        if (ratio > baseline.thresholds.critical) {
+          failures.push(
+            `❌ wallet-import.${metric}: ${displayValue}${unit} (${(
+              (ratio - 1) *
+              100
+            ).toFixed(0)}% over baseline)`,
+          );
+        } else if (ratio > baseline.thresholds.warning) {
+          warnings.push(
+            `⚠️ wallet-import.${metric}: ${displayValue}${unit} (${(
+              (ratio - 1) *
+              100
+            ).toFixed(0)}% over baseline)`,
+          );
+        }
+      }
+    }
+  }
+
   if (failures.length > 0) {
     summary += '#### ❌ Critical Performance Regressions\n\n';
     failures.forEach((f) => (summary += `- ${f}\n`));
@@ -264,10 +328,26 @@ if (baseline && browserBaseline && metrics.length > 0) {
 
   if (!coldStart && !warmReload && !walletImport) {
     summary += 'No performance tests were run.\n\n';
-  } else if (!coldStart && browserBaseline.coldStart) {
-    summary += 'ℹ️ Cold start metrics not tested in this run\n\n';
   } else if (failures.length === 0 && warnings.length === 0) {
-    summary += '✅ All metrics within acceptable thresholds\n\n';
+    summary += '✅ All tested metrics within acceptable thresholds\n\n';
+  } else if (!failures.length && !warnings.length) {
+    // If we only ran wallet-import but no baseline exists for it
+    if (walletImport && !browserBaseline.walletImport) {
+      summary += 'ℹ️ Wallet import baseline not available for comparison\n\n';
+    }
+  }
+
+  // Add note about untested flows
+  const untestedFlows = [];
+  if (!coldStart && browserBaseline?.coldStart)
+    untestedFlows.push('cold start');
+  if (!warmReload && browserBaseline?.warmReload)
+    untestedFlows.push('warm reload');
+  if (!walletImport && browserBaseline?.walletImport)
+    untestedFlows.push('wallet import');
+
+  if (untestedFlows.length > 0) {
+    summary += `ℹ️ Not tested in this run: ${untestedFlows.join(', ')}\n\n`;
   }
 
   summary += `<details>\n<summary>Baseline Comparison Details</summary>\n\n`;

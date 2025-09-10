@@ -21,6 +21,16 @@
       "uiStartup": 272,
       "memoryUsage": 77380025,
       "flowDuration": 518
+    },
+    "walletImport": {
+      "domContentLoaded": 699,
+      "firstMeaningfulPaint": 780,
+      "loadScripts": 698,
+      "setupStore": 0,
+      "firstReactRender": 36,
+      "uiStartup": 748,
+      "memoryUsage": 91594348,
+      "flowDuration": 37442
     }
   },
   "thresholds": {
