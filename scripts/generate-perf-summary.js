@@ -51,10 +51,6 @@ if (metrics.length === 0) {
     )} | ${formatValue(warmReload, 'firstMeaningfulPaint')} |\n`;
 
     // Extension-specific startup metrics
-    summary += `| Background Connect | ${formatValue(
-      coldStart,
-      'backgroundConnect',
-    )} | ${formatValue(warmReload, 'backgroundConnect')} |\n`;
     summary += `| Load Scripts | ${formatValue(
       coldStart,
       'loadScripts',
@@ -63,14 +59,6 @@ if (metrics.length === 0) {
       coldStart,
       'setupStore',
     )} | ${formatValue(warmReload, 'setupStore')} |\n`;
-    summary += `| Get State | ${formatValue(
-      coldStart,
-      'getState',
-    )} | ${formatValue(warmReload, 'getState')} |\n`;
-    summary += `| Initial Actions | ${formatValue(
-      coldStart,
-      'initialActions',
-    )} | ${formatValue(warmReload, 'initialActions')} |\n`;
     summary += `| First React Render | ${formatValue(
       coldStart,
       'firstReactRender',

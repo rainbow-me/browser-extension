@@ -27,12 +27,9 @@ export interface PerformanceMetrics {
     // Custom flow metrics
     flowDuration?: number;
 
-    // Startup metrics from instrumentation
-    backgroundConnect?: number;
+    // Startup metrics from passive collection
     loadScripts?: number;
     setupStore?: number;
-    getState?: number;
-    initialActions?: number;
     firstReactRender?: number;
     uiStartup?: number;
     customMetrics?: Record<string, number>;
@@ -262,15 +259,11 @@ export class PerformanceCollector {
         loadComplete: navigation?.loadComplete,
         bundleSize: totalResourceSize,
         memoryUsage: extension.memoryUsage?.usedJSHeapSize,
-        // Add our new startup metrics
-        backgroundConnect: customMetrics?.backgroundConnect,
+        // Startup metrics from passive collection
         loadScripts: customMetrics?.loadScripts,
         setupStore: customMetrics?.setupStore,
-        getState: customMetrics?.getState,
-        initialActions: customMetrics?.initialActions,
         firstReactRender: customMetrics?.firstReactRender,
         uiStartup: customMetrics?.uiStartup,
-        customMetrics: customMetrics || undefined,
       },
       raw: {
         navigationTiming: navigation,

@@ -14,41 +14,32 @@ import { App } from './App';
 
 require('../../core/utils/lockdown');
 
-// Performance monitoring for tests only
-let perfCollector: any;
+// Performance monitoring for tests only - passive collection
 if (process.env.IS_TESTING === 'true') {
-  await import('../../../scripts/perf/startup-metrics').then((module) => {
-    perfCollector = module.getStartupCollector();
-    perfCollector.markScriptsLoaded();
-    console.log('[PERF] Popup scripts loaded');
-  });
+  (window as any).__PERF_METRICS__ = {
+    scriptsLoaded: performance.now(),
+  };
 }
 
 initThemingLocal();
 
-// Mark store setup
-if (process.env.IS_TESTING === 'true' && perfCollector) {
-  perfCollector.mark('store:begin');
+// Mark store setup start
+if (process.env.IS_TESTING === 'true') {
+  const metrics = (window as any).__PERF_METRICS__ || {};
+  metrics.storeSetupStart = performance.now();
+  (window as any).__PERF_METRICS__ = metrics;
 }
 
 syncStores();
 syncNetworksStore('popup');
 
-// if (process.env.IS_TESTING === 'true' && perfCollector) {
-//   perfCollector.markStoreSetup();
-
-//   // Try to measure background connection
-// This is approximate - real measurement would need to track actual message passing
-//   const backgroundReady = new Promise((resolve) => {
-//     chrome.runtime.sendMessage({ type: 'ping' }, () => {
-//       resolve(true);
-//     });
-//   });
-
-//   backgroundReady?.then(() => {
-//     perfCollector?.markBackgroundConnected();
-//   });
-// }
+// Mark store setup complete
+if (process.env.IS_TESTING === 'true') {
+  const metrics = (window as any).__PERF_METRICS__ || {};
+  metrics.storeSetupEnd = performance.now();
+  metrics.setupStore = metrics.storeSetupEnd - metrics.storeSetupStart;
+  (window as any).__PERF_METRICS__ = metrics;
+}
 
 if (process.env.IS_TESTING === 'true') {
   await import('../../../e2e/mockFetch').then((m) => m.mockFetch());
@@ -58,24 +49,35 @@ const domContainer = document.querySelector('#app') as Element;
 const root = createRoot(domContainer);
 
 // Mark before React render
-if (process.env.IS_TESTING === 'true' && perfCollector) {
-  perfCollector.mark('react:beforeRender');
+if (process.env.IS_TESTING === 'true') {
+  const metrics = (window as any).__PERF_METRICS__ || {};
+  metrics.beforeReactRender = performance.now();
+  (window as any).__PERF_METRICS__ = metrics;
 }
 
 root.render(createElement(App));
 
-// Mark first render (this is approximate, actual render is async)
-if (process.env.IS_TESTING === 'true' && perfCollector) {
-  // Use requestAnimationFrame to approximate when render completes
+// Mark first render (approximate - actual render is async)
+if (process.env.IS_TESTING === 'true') {
   requestAnimationFrame(() => {
-    perfCollector?.markFirstRender();
-    perfCollector?.markUIReady();
+    const metrics = (window as any).__PERF_METRICS__ || {};
+    metrics.firstReactRender = performance.now();
+    metrics.uiStartup = metrics.firstReactRender;
 
-    // Export metrics to console for collection
-    const metrics = perfCollector?.getAllMetrics();
-    console.log('[PERF] Startup metrics:', JSON.stringify(metrics, null, 2));
+    // Calculate derived metrics
+    if (metrics.scriptsLoaded) {
+      metrics.loadScripts = Math.round(metrics.scriptsLoaded);
+    }
+    if (metrics.setupStore) {
+      metrics.setupStore = Math.round(metrics.setupStore);
+    }
+    if (metrics.firstReactRender && metrics.beforeReactRender) {
+      metrics.firstReactRender = Math.round(
+        metrics.firstReactRender - metrics.beforeReactRender,
+      );
+    }
 
-    // Store metrics in window for test collection
     (window as any).__PERF_METRICS__ = metrics;
+    console.log('[PERF] Startup metrics:', metrics);
   });
 }

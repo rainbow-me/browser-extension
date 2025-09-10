@@ -21,14 +21,11 @@ import { startPopupRouter } from './procedures/popup';
 
 require('../../core/utils/lockdown');
 
-// Performance monitoring for tests only
-let perfCollector: any;
+// Performance monitoring for tests only - passive collection
 if (process.env.IS_TESTING === 'true') {
-  import('../../../scripts/perf/startup-metrics').then((module) => {
-    perfCollector = module.getStartupCollector();
-    perfCollector.mark('background:start');
-    console.log('[PERF] Background script started');
-  });
+  (globalThis as any).__PERF_METRICS__ = {
+    backgroundStartup: performance.now(),
+  };
 }
 
 initializeSentry('background');
@@ -38,10 +35,11 @@ handleOpenExtensionShortcut();
 
 startPopupRouter();
 
-// Mark when popup router is ready
-if (process.env.IS_TESTING === 'true' && perfCollector) {
-  perfCollector.mark('background:popupRouterReady');
-  console.log('[PERF] Popup router ready');
+// Mark when popup router is ready - passive collection
+if (process.env.IS_TESTING === 'true') {
+  const metrics = (globalThis as any).__PERF_METRICS__ || {};
+  metrics.popupRouterReady = performance.now();
+  (globalThis as any).__PERF_METRICS__ = metrics;
 }
 
 const inpageMessenger = initializeMessenger({ connect: 'inpage' });
