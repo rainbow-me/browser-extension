@@ -26,8 +26,10 @@ import { ROUTES } from '../urls';
 import {
   appConnectionMenuIsActive,
   appConnectionSwitchWalletsPromptIsActive,
+  backupReminderIsActive,
   getExplainerSheet,
   getInputIsFocused,
+  switchNetworkMenuIsActive,
 } from '../utils/activeElement';
 import {
   clickHeaderLeft,
@@ -76,7 +78,13 @@ export function useHomeShortcuts() {
   }, []);
 
   const getHomeShortcutsAreActive = useCallback(() => {
-    return sheet === 'none' && !selectedTransaction && !selectedToken;
+    return (
+      sheet === 'none' &&
+      !selectedTransaction &&
+      !selectedToken &&
+      !switchNetworkMenuIsActive() &&
+      !backupReminderIsActive()
+    );
   }, [sheet, selectedToken, selectedTransaction]);
 
   const handleCopy = useCallback(() => {
@@ -116,8 +124,11 @@ export function useHomeShortcuts() {
         appConnectionSwitchWalletsPromptIsActive();
       const inputIsFocused = getInputIsFocused();
       const isExplainerSheet = getExplainerSheet();
+      const isBackupReminder = backupReminderIsActive();
       if (inputIsFocused) return;
       if (isExplainerSheet) return;
+      if (isBackupReminder) return;
+      if (switchNetworkMenuIsActive()) return;
       switch (e.key) {
         case shortcuts.home.BUY.key:
           trackShortcut({
