@@ -26,6 +26,8 @@ import { TEST_VARIABLES } from '../../walletVariables';
 let rootURL = getRootUrl();
 let driver: WebDriver;
 
+const SEND_INPUT_VALUE = '0.01';
+
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 
@@ -272,7 +274,7 @@ it('should be able to go to send flow and choose recipient based on suggestions'
   );
 });
 
-it('should be able to select token on send flow', async () => {
+it('should be able to select token and set amount on send flow', async () => {
   await findElementByTestIdAndClick({
     id: 'input-wrapper-dropdown-token-input',
     driver,
@@ -281,9 +283,13 @@ it('should be able to select token on send flow', async () => {
     id: 'token-input-asset-eth_1',
     driver,
   });
-  await findElementByTestIdAndClick({ id: 'value-input-max', driver });
-  await delayTime('long');
-  await findElementByTestIdAndClick({ id: 'value-input-max', driver });
+  const valueInput = await findElementByTestId({
+    id: 'send-input-mask',
+    driver,
+  });
+  await valueInput.clear();
+  await valueInput.sendKeys(SEND_INPUT_VALUE);
+  expect(await valueInput.getAttribute('value')).toBe(SEND_INPUT_VALUE);
 });
 
 it('should be able to go to review on send flow', async () => {
@@ -294,4 +300,10 @@ it('should be able to send transaction on review on send flow', async () => {
   await findElementByTestIdAndClick({ id: 'review-confirm-button', driver });
   const sendTransaction = await transactionStatus();
   expect(await sendTransaction).toBe('success');
+  await delayTime('long');
+  const activityValue = await findElementByText(
+    driver,
+    `${SEND_INPUT_VALUE} ETH`,
+  );
+  expect(await activityValue.getText()).toBe(`${SEND_INPUT_VALUE} ETH`);
 });
