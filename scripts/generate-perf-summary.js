@@ -60,8 +60,6 @@ if (metrics.length === 0) {
       return `${(value / (1024 * 1024)).toFixed(1)}MB`;
     } else if (metric === 'flowDuration') {
       return `${(value / 1000).toFixed(1)}s`;
-    } else if (metric === 'bundleSize') {
-      return `${(value / (1024 * 1024)).toFixed(2)}MB`;
     } else {
       return `${Math.round(value)}ms`;
     }
@@ -86,12 +84,10 @@ if (metrics.length === 0) {
     'domContentLoaded',
     'firstMeaningfulPaint',
     'loadScripts',
-    'setupStore',
     'firstReactRender',
     'uiStartup',
     'flowDuration',
     'memoryUsage',
-    'bundleSize',
   ];
 
   // Process each test result

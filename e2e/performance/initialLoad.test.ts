@@ -29,18 +29,13 @@ const os = process.env.OS || 'mac';
 describe('Extension Initial Load Performance', () => {
   beforeAll(async () => {
     try {
-      console.log(`Initializing driver for ${browser} on ${os}...`);
       driver = await initDriverWithOptions({
         browser,
         os,
       });
-      console.log('Driver initialized successfully');
-
       const extensionId = await getExtensionIdByName(driver, 'Rainbow');
       if (!extensionId) throw new Error('Extension not found');
       rootURL += extensionId;
-      console.log(`Extension found with ID: ${extensionId}`);
-
       collector = new PerformanceCollector(driver, browser);
     } catch (error) {
       console.error('Failed to initialize test:', error);
@@ -57,7 +52,6 @@ describe('Extension Initial Load Performance', () => {
   });
 
   afterAll(async () => {
-    // Save all collected metrics if collector was initialized
     if (collector) {
       await collector.saveMetrics('perf-initial-load.json');
     }
@@ -67,14 +61,7 @@ describe('Extension Initial Load Performance', () => {
   it('should measure cold start performance', async () => {
     // Measure cold start (first load)
     await collector.startFlowMeasurement('cold-start');
-
     await goToWelcome(driver, rootURL);
-
-    // Wait for page to stabilize
-    await new Promise((resolve) => {
-      setTimeout(resolve, 1000);
-    });
-
     await collector.endFlowMeasurement('cold-start');
     const metrics = await collector.collectAllMetrics('cold-start');
 
@@ -85,7 +72,7 @@ describe('Extension Initial Load Performance', () => {
     });
 
     if (metrics.metrics.domContentLoaded !== undefined) {
-      expect(metrics.metrics.domContentLoaded).toBeLessThan(1000); // 1s for cold start
+      expect(metrics.metrics.domContentLoaded).toBeLessThan(1000);
 
       if (metrics.metrics.domContentLoaded > 800) {
         console.warn(
@@ -95,7 +82,7 @@ describe('Extension Initial Load Performance', () => {
     }
 
     if (metrics.metrics.firstMeaningfulPaint !== undefined) {
-      expect(metrics.metrics.firstMeaningfulPaint).toBeLessThan(3000); // 3s for first paint in CI
+      expect(metrics.metrics.firstMeaningfulPaint).toBeLessThan(3000);
       console.log(
         `First meaningful paint: ${metrics.metrics.firstMeaningfulPaint}ms`,
       );
@@ -122,7 +109,7 @@ describe('Extension Initial Load Performance', () => {
     });
 
     if (metrics.metrics.domContentLoaded !== undefined) {
-      expect(metrics.metrics.domContentLoaded).toBeLessThan(600); // 600ms for warm reload
+      expect(metrics.metrics.domContentLoaded).toBeLessThan(600);
     }
   });
 
@@ -133,7 +120,7 @@ describe('Extension Initial Load Performance', () => {
       const memoryMB = metrics.memoryUsage.usedJSHeapSize / (1024 * 1024);
       console.log(`Initial memory footprint: ${memoryMB.toFixed(2)}MB`);
 
-      expect(metrics.memoryUsage.usedJSHeapSize).toBeLessThan(80_000_000); // 80MB for initial load
+      expect(metrics.memoryUsage.usedJSHeapSize).toBeLessThan(80_000_000);
 
       if (metrics.memoryUsage.usedJSHeapSize > 60_000_000) {
         console.warn(`⚠️ High initial memory usage: ${memoryMB.toFixed(2)}MB`);
