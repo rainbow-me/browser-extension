@@ -11,8 +11,8 @@ export function getBrowser() {
   if (isArc()) return 'Arc';
   if ('brave' in navigator) return 'Brave';
   if (ua.includes('firefox')) return 'Firefox';
-  if (ua.includes('samsungbrowser')) 'Samsung';
-  if (ua.includes('opera') || ua.includes('OPR')) return 'Opera';
+  if (ua.includes('samsungbrowser')) return 'Samsung';
+  if (ua.includes('opera') || ua.includes('opr')) return 'Opera';
   if (ua.includes('edge')) return 'Edge Legacy';
   if (ua.includes('edg')) return 'Edge';
   if (ua.includes('chrome')) return 'Chrome';
