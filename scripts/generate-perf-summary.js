@@ -248,6 +248,14 @@ if (baseline && browserBaseline && metrics.length > 0) {
     )) {
       const actualValue = coldStart.metrics[metric];
       if (actualValue && typeof baselineValue === 'number') {
+        // Skip comparison if baseline is 0 (can't divide by zero)
+        if (baselineValue === 0) {
+          // Only flag if the actual value is significantly different from 0
+          if (actualValue > 10) {
+            warnings.push(`⚠️ ${metric}: ${actualValue}ms (baseline was 0ms)`);
+          }
+          continue;
+        }
         const ratio = actualValue / baselineValue;
         const unit = metric === 'memoryUsage' ? 'MB' : 'ms';
         const displayValue =
@@ -281,6 +289,16 @@ if (baseline && browserBaseline && metrics.length > 0) {
     )) {
       const actualValue = walletImport.metrics[metric];
       if (actualValue && typeof baselineValue === 'number') {
+        // Skip comparison if baseline is 0 (can't divide by zero)
+        if (baselineValue === 0) {
+          // Only flag if the actual value is significantly different from 0
+          if (actualValue > 10) {
+            warnings.push(
+              `⚠️ wallet-import.${metric}: ${actualValue}ms (baseline was 0ms)`,
+            );
+          }
+          continue;
+        }
         const ratio = actualValue / baselineValue;
         const unit =
           metric === 'memoryUsage'
