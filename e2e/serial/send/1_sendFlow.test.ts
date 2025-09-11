@@ -305,13 +305,23 @@ it('should be able to send transaction on review on send flow', async () => {
 
   await delayTime('very-long');
   await findElementByTestIdAndClick({ id: 'review-confirm-button', driver });
-  const sendTransaction = await transactionStatus();
-  expect(await sendTransaction).toBe('success');
 });
 
-it('should show sent transaction in Activity with matching amount', async () => {
+it('should show pending then sent transaction in Activity with matching amount', async () => {
   await goToPopup(driver, rootURL);
   await findElementByTestIdAndClick({ id: 'bottom-tab-activity', driver });
+
+  const pendingLabel = await findElementByText(driver, 'Sending');
+  expect(pendingLabel).toBeTruthy();
+
+  const pendingValue = await findElementByText(
+    driver,
+    `${SEND_INPUT_VALUE} ETH`,
+  );
+  expect(await pendingValue.getText()).toBe(`${SEND_INPUT_VALUE} ETH`);
+
+  const sendTransaction = await transactionStatus();
+  expect(await sendTransaction).toBe('success');
 
   const sentLabel = await findElementByText(driver, 'Sent');
   expect(sentLabel).toBeTruthy();
