@@ -10,7 +10,6 @@ import {
   it,
 } from 'vitest';
 
-import { PerformanceCollector } from '../../scripts/perf/collect';
 import {
   getExtensionIdByName,
   getRootUrl,
@@ -18,6 +17,8 @@ import {
   initDriverWithOptions,
   takeScreenshotOnFailure,
 } from '../helpers';
+
+import { PerformanceCollector } from './collect';
 
 let rootURL = getRootUrl();
 let driver: WebDriver;

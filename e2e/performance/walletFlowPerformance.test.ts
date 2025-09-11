@@ -11,7 +11,6 @@ import {
 
 import { TEST_VARIABLES } from 'e2e/walletVariables';
 
-import { PerformanceCollector } from '../../scripts/perf/collect';
 import {
   getExtensionIdByName,
   getRootUrl,
@@ -20,6 +19,8 @@ import {
   initDriverWithOptions,
   takeScreenshotOnFailure,
 } from '../helpers';
+
+import { PerformanceCollector } from './collect';
 
 let rootURL = getRootUrl();
 let driver: WebDriver;
