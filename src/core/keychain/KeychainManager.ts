@@ -7,8 +7,9 @@ import {
   encryptWithKey,
   importKey,
 } from '@metamask/browser-passworder';
-import * as Sentry from '@sentry/react';
 import { Address } from 'viem';
+
+import { RainbowError, logger } from '~/logger';
 
 import { LocalStorage, SessionStorage } from '../storage';
 import { KeychainType } from '../types/keychainTypes';
@@ -91,13 +92,11 @@ class KeychainManager {
             this.state.isUnlocked = true;
           }
         } catch (e) {
-          console.log('FATAL ERROR: rehydration failed', e);
-          const customError = new Error('Fatal error: rehydration failed');
-          Sentry.captureException(customError, {
-            extra: {
-              error: e,
-            },
-          });
+          logger.error(
+            new RainbowError('Fatal error: rehydration failed', {
+              cause: e,
+            }),
+          );
         } finally {
           this.state.initialized = true;
         }

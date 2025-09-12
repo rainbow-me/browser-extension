@@ -1,6 +1,7 @@
 import { os } from '@orpc/server';
 import { RPCHandler } from '@orpc/server/message-port';
-import * as Sentry from '@sentry/react';
+
+import { RainbowError, logger } from '~/logger';
 
 import { healthRouter } from './health';
 import { walletOs } from './os';
@@ -10,9 +11,9 @@ import { walletRouter } from './wallet';
 const sentryMiddleware = os.middleware(async ({ next }) => {
   try {
     return await next();
-  } catch (error) {
-    Sentry.captureException(error);
-    throw error;
+  } catch (e) {
+    logger.error(new RainbowError((e as Error)?.message, { cause: e }));
+    throw e;
   }
 });
 
