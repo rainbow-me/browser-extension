@@ -10,14 +10,14 @@ import {
   vi,
 } from 'vitest';
 
-import remoteConfig from '~/core/firebase/remoteConfig';
-
-// Mock chrome.notifications for FCM
+// Mock chrome.notifications for FCM - must be before remoteConfig import
 vi.stubGlobal('chrome', {
   notifications: {
     create: vi.fn(),
   },
 });
+
+import remoteConfig from '~/core/firebase/remoteConfig';
 
 import {
   delayTime,
