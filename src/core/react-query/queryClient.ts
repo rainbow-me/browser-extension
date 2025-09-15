@@ -40,9 +40,9 @@ export const persistOptions: Omit<PersistQueryClientOptions, 'queryClient'> = {
     shouldDehydrateQuery: (query) => {
       return Boolean(
         // We want to persist queries that have a `cacheTime` of above zero.
-        query.gcTime !== 0 ||
+        query.gcTime !== 0 &&
           // dont persist orpc queries
-          isOrpcQueryKey(query.queryKey),
+          !isOrpcQueryKey(query.queryKey),
       );
     },
   },
