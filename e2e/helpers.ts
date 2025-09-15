@@ -138,6 +138,8 @@ export async function initDriverWithOptions(opts: {
       ...args,
       // BX-1923: localhost network access is permissioned in dev 139, and prod 141
       '--disable-features=LocalNetworkAccessChecks,LocalNetworkAccessForWorkers',
+      // Set explicit window size to ensure extension is fully visible
+      '--window-size=800,1400',
     ];
 
     if (process.env.HEADLESS_MODE !== 'false') {
