@@ -144,6 +144,13 @@ export async function initDriverWithOptions(opts: {
 
     if (process.env.HEADLESS_MODE !== 'false') {
       chromeArgs.push('--headless=new');
+      // Additional flags for better headless popup handling
+      chromeArgs.push('--disable-gpu');
+      chromeArgs.push('--disable-web-security');
+      chromeArgs.push('--disable-features=IsolateOrigins,site-per-process');
+      chromeArgs.push('--allow-running-insecure-content');
+      // Force popup windows to open as regular windows in headless
+      chromeArgs.push('--new-window');
     }
 
     const options = new chrome.Options();
@@ -821,10 +828,23 @@ export async function connectToTestDapp(driver: WebDriver) {
   );
   await waitAndClick(mmButton, driver);
 
+  // Add delay to ensure popup has time to open in headless mode
+  await delayTime('long');
+
   const { popupHandler } = await getAllWindowHandles({
     driver,
     dappHandler,
   });
+
+  // Verify we got a popup handler
+  if (!popupHandler || popupHandler === dappHandler) {
+    const handles = await driver.getAllWindowHandles();
+    console.error(
+      '[E2E] Failed to get popup handler. Available handles:',
+      handles,
+    );
+    throw new Error('Extension popup did not open properly');
+  }
 
   await driver.switchTo().window(popupHandler);
 
