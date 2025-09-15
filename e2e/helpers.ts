@@ -138,19 +138,12 @@ export async function initDriverWithOptions(opts: {
       ...args,
       // BX-1923: localhost network access is permissioned in dev 139, and prod 141
       '--disable-features=LocalNetworkAccessChecks,LocalNetworkAccessForWorkers',
-      // Set explicit window size to ensure extension is fully visible
-      '--window-size=800,1400',
+      // Set standard browser window size that works for both extension and web pages
+      '--window-size=1280,1024',
     ];
 
     if (process.env.HEADLESS_MODE !== 'false') {
       chromeArgs.push('--headless=new');
-      // Additional flags for better headless popup handling
-      chromeArgs.push('--disable-gpu');
-      chromeArgs.push('--disable-web-security');
-      chromeArgs.push('--disable-features=IsolateOrigins,site-per-process');
-      chromeArgs.push('--allow-running-insecure-content');
-      // Force popup windows to open as regular windows in headless
-      chromeArgs.push('--new-window');
     }
 
     const options = new chrome.Options();
