@@ -1,4 +1,4 @@
-import fs from 'node:fs/promises';
+import * as fs from 'node:fs/promises';
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -122,10 +122,10 @@ describe('Intercept Module', () => {
 
       const { interceptMocks } = await import('./intercept');
       const mockDriver = {};
-      const network = await interceptMocks(mockDriver);
+      const result = await interceptMocks(mockDriver);
 
       // Should not set cache bypass in replay mode
-      expect(network.setCacheBehavior).not.toHaveBeenCalled();
+      expect(result?.network.setCacheBehavior).not.toHaveBeenCalled();
     });
 
     it('should enable cache bypass in record mode', async () => {
@@ -134,9 +134,9 @@ describe('Intercept Module', () => {
 
       const { interceptMocks } = await import('./intercept');
       const mockDriver = {};
-      const network = await interceptMocks(mockDriver);
+      const result = await interceptMocks(mockDriver);
 
-      expect(network.setCacheBehavior).toHaveBeenCalledWith('bypass');
+      expect(result?.network.setCacheBehavior).toHaveBeenCalledWith('bypass');
     });
   });
 

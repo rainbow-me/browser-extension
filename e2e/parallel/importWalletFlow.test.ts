@@ -3,6 +3,7 @@ import { afterAll, beforeAll, describe, it } from 'vitest';
 
 import {
   checkWalletName,
+  cleanupDriver,
   getExtensionIdByName,
   getRootUrl,
   importWalletFlow,
@@ -26,7 +27,7 @@ describe('Import wallet with a secret phrase flow', () => {
     if (!extensionId) throw new Error('Extension not found');
     rootURL += extensionId;
   });
-  afterAll(async () => driver?.quit());
+  afterAll(() => cleanupDriver(driver));
 
   it('should be able import a wallet via seed', async () => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);

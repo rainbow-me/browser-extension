@@ -14,6 +14,7 @@ import {
 import { ChainId } from '~/core/types/chains';
 
 import {
+  cleanupDriver,
   clickAcceptRequestButton,
   connectToTestDapp,
   delayTime,
@@ -96,7 +97,7 @@ describe('App interactions flow', () => {
     await takeScreenshotOnFailure(context);
   });
 
-  afterAll(() => driver?.quit());
+  afterAll(() => cleanupDriver(driver));
 
   // Import a wallet
   it('should be able import a wallet via pk', async () => {

@@ -14,6 +14,7 @@ import { ChainId } from '~/core/types/chains';
 
 import {
   awaitTextChange,
+  cleanupDriver,
   clickAcceptRequestButton,
   delayTime,
   fillPrivateKey,
@@ -65,7 +66,7 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     await takeScreenshotOnFailure(context);
   });
 
-  afterAll(() => driver?.quit());
+  afterAll(() => cleanupDriver(driver));
 
   // Import a wallet
   it('should be able import a wallet via pk', async () => {

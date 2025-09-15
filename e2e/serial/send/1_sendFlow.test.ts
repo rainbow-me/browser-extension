@@ -2,6 +2,7 @@ import { WebDriver } from 'selenium-webdriver';
 import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
 
 import {
+  cleanupDriver,
   delayTime,
   findElementById,
   findElementByIdAndClick,
@@ -47,7 +48,7 @@ afterEach<{ driver: WebDriver }>(async (context) => {
   await takeScreenshotOnFailure(context);
 });
 
-afterAll(() => driver?.quit());
+afterAll(() => cleanupDriver(driver));
 
 it('should be able import a wallet via pk', async () => {
   await importWalletFlow(driver, rootURL, TEST_VARIABLES.SEED_WALLET.PK);

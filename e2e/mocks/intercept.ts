@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Buffer } from 'node:buffer';
-import fs from 'node:fs/promises';
-import path from 'node:path';
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
 
 import {
   HttpResponse,
@@ -11,13 +12,13 @@ import {
 } from 'msw';
 import * as Hash from 'ox/Hash';
 import { AddInterceptParameters } from 'selenium-webdriver/bidi/addInterceptParameters';
-// @ts-expect-error - BiDi modules not in TS definitions
+// @ts-ignore - BiDi modules not in TS definitions
 import { ContinueRequestParameters } from 'selenium-webdriver/bidi/continueRequestParameters';
-// @ts-expect-error - BiDi modules not in TS definitions
+// @ts-ignore - BiDi modules not in TS definitions
 import { InterceptPhase } from 'selenium-webdriver/bidi/interceptPhase';
-// @ts-expect-error - BiDi modules not in TS definitions
+// @ts-ignore - BiDi modules not in TS definitions
 import { Network } from 'selenium-webdriver/bidi/network';
-// @ts-expect-error - BiDi modules not in TS definitions
+// @ts-ignore - BiDi modules not in TS definitions
 import { ProvideResponseParameters } from 'selenium-webdriver/bidi/provideResponseParameters';
 import { UrlPattern } from 'selenium-webdriver/bidi/urlPattern';
 
@@ -185,7 +186,7 @@ export async function fetchAndPersist(
       }
     } else {
       const data = await response.arrayBuffer();
-      await fs.writeFile(filePath, Buffer.from(data));
+      await fs.writeFile(filePath, new Uint8Array(data));
       console.log(
         `[E2E Mock] Recorded non-JSON: ${request.url} -> ${path.relative(
           process.cwd(),
@@ -264,7 +265,7 @@ export async function interceptMocks(
         new UrlPattern().protocol('https').hostname(service.host),
       );
     }
-    await network.addIntercept(interceptParams);
+    const interceptId = await network.addIntercept(interceptParams);
 
     // Handle request interception with single error boundary
     await network.beforeRequestSent(async (evt: BeforeRequestSentEvent) => {
@@ -356,8 +357,22 @@ export async function interceptMocks(
       }
     });
 
-    return network;
+    // Return cleanup function
+    return {
+      network,
+      cleanup: async () => {
+        try {
+          // Remove the intercept to prevent timeout errors during cleanup
+          await network.removeIntercept(interceptId);
+          // Close the BiDi connection
+          await network.close();
+        } catch (error) {
+          console.warn('[E2E Mock] Error during cleanup:', error);
+        }
+      },
+    };
   } catch (error) {
     console.error('[E2E Mock] Failed to initialize mock interception:', error);
+    return null;
   }
 }

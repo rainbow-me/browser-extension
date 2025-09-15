@@ -6,6 +6,7 @@ import { TokenNames, tokenAddresses, tokenNames } from 'e2e/tokenVariables';
 
 import {
   checkExtensionURL,
+  cleanupDriver,
   delayTime,
   executeMultipleShortcuts,
   executePerformShortcut,
@@ -37,7 +38,7 @@ describe('Command+K behaviours', () => {
     if (!extensionId) throw new Error('Extension not found');
     rootURL += extensionId;
   });
-  afterAll(async () => driver?.quit());
+  afterAll(() => cleanupDriver(driver));
 
   it('should be able import a wallet via seed', async () => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);

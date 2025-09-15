@@ -12,6 +12,7 @@ import {
 import { ChainId } from '~/core/types/chains';
 
 import {
+  cleanupDriver,
   clickAcceptRequestButton,
   connectToTestDapp,
   delayTime,
@@ -48,7 +49,7 @@ describe.runIf(browser !== 'firefox')('Networks & Testnet Mode flows', () => {
     if (!extensionId) throw new Error('Extension not found');
     rootURL += extensionId;
   });
-  afterAll(async () => await driver?.quit());
+  afterAll(() => cleanupDriver(driver));
 
   beforeEach<{ driver: WebDriver }>(async (context) => {
     context.driver = driver;

@@ -179,7 +179,10 @@ export async function initDriverWithOptions(opts: {
   driver.browser = opts.browser;
 
   // Install network interception for mocking
-  await interceptMocks(driver);
+  const interceptor = await interceptMocks(driver);
+  // Store interceptor cleanup on driver for later use
+  // @ts-ignore
+  driver.interceptorCleanup = interceptor?.cleanup;
 
   return driver;
 }
@@ -1287,4 +1290,25 @@ export async function performSearchTokenAddressActionsCmdK({
     id: `token-price-name-${tokenAddress}`,
     driver,
   });
+}
+
+export async function cleanupDriver(driver: WebDriver | undefined) {
+  if (!driver) return;
+
+  // Clean up BiDi interceptor before quitting driver
+  // @ts-ignore
+  if (driver.interceptorCleanup) {
+    try {
+      // @ts-ignore
+      await driver.interceptorCleanup();
+    } catch (error) {
+      console.warn('[E2E] Error cleaning up interceptor:', error);
+    }
+  }
+
+  try {
+    await driver.quit();
+  } catch (error) {
+    console.warn('[E2E] Error quitting driver:', error);
+  }
 }

@@ -3,6 +3,7 @@ import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
+  cleanupDriver,
   delayTime,
   findElementByTestId,
   findElementByTestIdAndClick,
@@ -37,7 +38,7 @@ describe('Navigate Settings & Privacy and its flows', () => {
     if (!extensionId) throw new Error('Extension not found');
     rootURL += extensionId;
   });
-  afterAll(async () => await driver?.quit());
+  afterAll(() => cleanupDriver(driver));
 
   it('should be able import a wallet via seed', async () => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);

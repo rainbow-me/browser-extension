@@ -3,6 +3,7 @@ import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
+  cleanupDriver,
   delayTime,
   findElementByTestIdAndClick,
   findElementByText,
@@ -34,7 +35,7 @@ describe('New wallet flow', () => {
     rootURL += extensionId;
   });
 
-  afterAll(async () => driver?.quit());
+  afterAll(() => cleanupDriver(driver));
 
   // Create a new wallet
   it('should be able create a new wallet', async () => {
