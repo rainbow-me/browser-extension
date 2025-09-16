@@ -2,15 +2,15 @@ import { os } from '@orpc/server';
 import * as Sentry from '@sentry/browser';
 import z from 'zod';
 
-// Schema for analytics breadcrumb input
-const AnalyticsBreadcrumbSchema = z.object({
+// Schema for telemetry breadcrumb input
+const TelemetryBreadcrumbSchema = z.object({
   path: z.string(),
   params: z.record(z.string(), z.any()).optional(),
 });
 
 // Handler to add a breadcrumb to Sentry on navigation
 const addRouterBreadcrumbHandler = os
-  .input(AnalyticsBreadcrumbSchema)
+  .input(TelemetryBreadcrumbSchema)
   .output(z.object({ success: z.literal(true) }))
   .handler(async ({ input: { path, params } }) => {
     Sentry.addBreadcrumb({
@@ -25,6 +25,6 @@ const addRouterBreadcrumbHandler = os
     return { success: true };
   });
 
-export const analyticsRouter = {
+export const telemetryRouter = {
   addRouterBreadcrumb: addRouterBreadcrumbHandler,
 };

@@ -994,7 +994,7 @@ const RootLayout = () => {
 
   React.useEffect(() => {
     analytics.screen(screen[pathname], { path: pathname });
-    popupClient.analytics.addRouterBreadcrumb({
+    popupClient.telemetry.addRouterBreadcrumb({
       path: pathname,
       params: { name: screen[pathname], state },
     });
