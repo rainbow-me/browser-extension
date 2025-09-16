@@ -253,7 +253,7 @@ export class Logger {
 export const logger = new Logger();
 
 /**
- * Report to console in dev, Sentry in prod, nothing in test.
+ * Report to console in dev, Sentry in prod, internal build, or e2e
  */
 if (process.env.NODE_ENV === 'production') {
   logger.addTransport(sentryTransport);

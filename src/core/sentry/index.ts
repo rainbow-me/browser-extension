@@ -12,6 +12,7 @@ import { RainbowError, logger } from '~/logger';
 import pkg from '../../../package.json';
 
 const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
+const IS_TESTING = process.env.IS_TESTING === 'true';
 
 // Common browser lifecycle errors that we want to ignore from Sentry
 // Strings are partially matched; use RegExp for exact matches
@@ -138,7 +139,11 @@ export function initializeSentry(context: 'popup' | 'background') {
         replaysSessionSampleRate: INTERNAL_BUILD ? 1.0 : 0.1, // 10% sampling in prod
         replaysOnErrorSampleRate: 1.0, // 100% sampling in prod
         release: pkg.version,
-        environment: INTERNAL_BUILD ? 'internal' : 'production',
+        environment: IS_TESTING
+          ? 'e2e'
+          : INTERNAL_BUILD
+          ? 'internal'
+          : 'production',
         ignoreErrors: IGNORED_ERRORS,
       });
 
