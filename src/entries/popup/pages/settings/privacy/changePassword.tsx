@@ -24,6 +24,7 @@ import {
 
 export function ChangePassword() {
   const navigate = useRainbowNavigate();
+  // TODO: remove previous `password` from this persisted state
   const { state } = useLocation();
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');

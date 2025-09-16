@@ -1333,6 +1333,7 @@ export const NFTInfoRow = ({
 const parseUniqueId = (uniqueId: string | undefined) =>
   (uniqueId?.split('_') || []) as [address?: Address, chainId?: ChainId];
 export function NftDetailsRoute() {
+  // TODO: remove NFT from this state tree; rehydrate from uniqueId
   const { state } = useLocation();
   const { collectionUniqueId, tokenId } = useParams<{
     collectionUniqueId: UniqueId;

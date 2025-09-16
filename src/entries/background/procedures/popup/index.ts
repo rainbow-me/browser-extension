@@ -6,6 +6,7 @@ import { RainbowError, logger } from '~/logger';
 import { healthRouter } from './health';
 import { walletOs } from './os';
 import { stateRouter } from './state';
+import { telemetryRouter } from './telemetry';
 import { walletRouter } from './wallet';
 
 const sentryMiddleware = os.middleware(async ({ next }) => {
@@ -21,6 +22,7 @@ export const popupRouter = {
   wallet: walletOs.use(sentryMiddleware).router(walletRouter),
   state: os.use(sentryMiddleware).router(stateRouter),
   health: os.use(sentryMiddleware).router(healthRouter),
+  telemetry: os.use(sentryMiddleware).router(telemetryRouter),
 };
 
 export type PopupRouter = typeof popupRouter;

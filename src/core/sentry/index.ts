@@ -23,6 +23,13 @@ const IGNORED_ERRORS: (string | RegExp)[] = [
   'The browser is shutting down.',
 ];
 
+function detectPopupContext() {
+  if (chrome.extension.getViews({ type: 'popup' }).some((v) => v === window))
+    return 'action-popup'; // chrome toolbar popup
+  if (new URLSearchParams(location.search).has('tabId')) return 'dapp-prompt'; // background spawned popup for dapps
+  return 'fullscreen'; // normal tab
+}
+
 /**
  * Schedules a function to run when the browser is idle (if available), or as soon as possible otherwise.
  * Returns a Promise resolving to the function's result.
@@ -118,7 +125,7 @@ const INTEGRATIONS: Array<{
   },
 ];
 
-export function initializeSentry(context: 'popup' | 'background') {
+export function initializeSentry(entrypoint: 'popup' | 'background') {
   if (
     process.env.IS_DEV !== 'true' &&
     process.env.IS_TESTING !== 'true' &&
@@ -126,7 +133,7 @@ export function initializeSentry(context: 'popup' | 'background') {
   ) {
     try {
       const contextIntegrations = INTEGRATIONS.filter(
-        (i) => i.on === context || i.on === 'shared',
+        (i) => i.on === entrypoint || i.on === 'shared',
       );
       const integrations = contextIntegrations
         .filter((i) => i.lazy === false)
@@ -146,6 +153,11 @@ export function initializeSentry(context: 'popup' | 'background') {
           : 'production',
         ignoreErrors: IGNORED_ERRORS,
       });
+
+      Sentry.setTag('entrypoint', entrypoint);
+
+      if (entrypoint === 'popup')
+        Sentry.setTag('popupType', detectPopupContext());
 
       const lazyIntegrations = contextIntegrations
         .filter((i) => i.lazy === true)
