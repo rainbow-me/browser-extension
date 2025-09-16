@@ -3,6 +3,7 @@ import { RPCHandler } from '@orpc/server/message-port';
 
 import { RainbowError, logger } from '~/logger';
 
+import { analyticsRouter } from './analytics';
 import { healthRouter } from './health';
 import { walletOs } from './os';
 import { stateRouter } from './state';
@@ -21,6 +22,7 @@ export const popupRouter = {
   wallet: walletOs.use(sentryMiddleware).router(walletRouter),
   state: os.use(sentryMiddleware).router(stateRouter),
   health: os.use(sentryMiddleware).router(healthRouter),
+  analytics: os.use(sentryMiddleware).router(analyticsRouter),
 };
 
 export type PopupRouter = typeof popupRouter;

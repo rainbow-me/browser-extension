@@ -33,6 +33,7 @@ import { ImportWalletViaSeed } from './components/ImportWallet/ImportWalletViaSe
 import { Toast } from './components/Toast/Toast';
 import { UnsupportedBrowserSheet } from './components/UnsupportedBrowserSheet';
 import { WindowStroke } from './components/WindowStroke/WindowStroke';
+import { popupClient } from './handlers/background';
 import { useCommandKShortcuts } from './hooks/useCommandKShortcuts';
 import useKeyboardAnalytics from './hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from './hooks/useKeyboardShortcut';
@@ -993,6 +994,10 @@ const RootLayout = () => {
 
   React.useEffect(() => {
     analytics.screen(screen[pathname], { path: pathname });
+    popupClient.analytics.addRouterBreadcrumb({
+      path: pathname,
+      params: { name: screen[pathname], state },
+    });
     if (!shouldRestoreNavigation) {
       setLastPage(pathname);
       setLastState(state);
