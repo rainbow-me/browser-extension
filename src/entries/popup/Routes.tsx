@@ -980,6 +980,7 @@ const ROUTE_DATA = [
 ] satisfies RouteObject[];
 
 const RootLayout = () => {
+  // state may contain sensitive data; be careful with how it is used
   const { pathname, state } = useLocation();
   const { setLastPage, setLastState, shouldRestoreNavigation } =
     useNavRestorationStore((state) => ({
@@ -996,7 +997,7 @@ const RootLayout = () => {
     analytics.screen(screen[pathname], { path: pathname });
     popupClient.telemetry.addRouterBreadcrumb({
       path: pathname,
-      params: { name: screen[pathname], state },
+      params: { name: screen[pathname] },
     });
     if (!shouldRestoreNavigation) {
       setLastPage(pathname);

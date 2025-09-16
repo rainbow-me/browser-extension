@@ -116,6 +116,7 @@ const InfoButtonOptions = ({
 
 export function WalletDetails() {
   const navigate = useRainbowNavigate();
+  // TODO: remove wallet information from this state tree
   const { state } = useLocation();
   const [renameAccount, setRenameAccount] = useState<Address | undefined>();
   const [removeAccount, setRemoveAccount] = useState<Address | undefined>();
