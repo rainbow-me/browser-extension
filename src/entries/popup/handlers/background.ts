@@ -21,6 +21,7 @@ export const popupClient: RouterClient<PopupRouter> = createDeepProxy(
 
 autoReconnect(
   // Pass the initial port for reconnection logic
+  'popup->background',
   firstPort,
   () => chrome.runtime.connect(),
   (newPort) => {

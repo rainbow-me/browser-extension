@@ -1,3 +1,5 @@
+import { logger } from '~/logger';
+
 type AllowPromise<T> = T | Promise<T>;
 
 export const wait = (ms: number) =>
@@ -29,10 +31,12 @@ type AllowCleanUpFunction = void | (() => void);
 /**
  * Creates a port and recreates a new port if the old one disconnects
  *
+ * @param id - identifier for debug context
  * @param createPort - function to create a port
  * @param onConnect - callback when connected
  */
 export async function autoConnect(
+  id: string,
   createPort: () => chrome.runtime.Port,
   onConnect: (port: chrome.runtime.Port) => AllowCleanUpFunction,
 ) {
@@ -41,32 +45,34 @@ export async function autoConnect(
     3, // 3 retries plus the initial try, so 4 total tries
     (retry) => wait(retry * 100), // 100ms, 200ms, 300ms, max total wait 600ms
   );
-  console.log('Port connected');
+  logger.info(`[${id}] Port ${port} connected`);
   const cleanUp = onConnect(port);
   const handler = () => {
     cleanUp?.();
-    console.log('Port disconnected, reconnecting...');
+    logger.info(`[${id}] Port ${port} disconnected, reconnecting...`);
     port.onDisconnect.removeListener(handler);
-    void autoConnect(createPort, onConnect);
+    void autoConnect(id, createPort, onConnect);
   };
   port.onDisconnect.addListener(handler);
 }
 
 /**
  * Reconnects a port if it disconnects
+ * @param id - identifier for debug context
  * @param port - port to reconnect
  * @param createPort - function to create a port
  * @param onConnect - callback when connected
  */
 export function autoReconnect(
+  id: string,
   port: chrome.runtime.Port,
   createPort: () => chrome.runtime.Port,
   onReconnect: (port: chrome.runtime.Port) => AllowCleanUpFunction,
 ) {
   const handler = () => {
-    console.log('Port disconnected, reconnecting...');
+    logger.info(`[${id}] Port ${port} disconnected, reconnecting...`);
     port.onDisconnect.removeListener(handler);
-    void autoConnect(createPort, onReconnect);
+    void autoConnect(id, createPort, onReconnect);
   };
   port.onDisconnect.addListener(handler);
 }
