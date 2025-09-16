@@ -4,7 +4,7 @@ import { EventProperties, event } from '~/analytics/event';
 import { UserProperties } from '~/analytics/userProperties';
 import { type WalletContext } from '~/analytics/util';
 import { useAnalyticsDisabledStore } from '~/core/state/currentSettings/analyticsDisabled';
-import { logger } from '~/logger';
+import { RainbowError, logger } from '~/logger';
 
 import pkg from '../../package.json';
 
@@ -64,7 +64,11 @@ export class Analytics {
       );
       logger.debug(`RudderStack initialized`);
     } catch (e) {
-      logger.debug(`RudderStack failed to initialize`);
+      logger.error(
+        new RainbowError(`RudderStack failed to initialize`, {
+          cause: e,
+        }),
+      );
     }
   }
 

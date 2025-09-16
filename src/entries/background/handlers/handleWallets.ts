@@ -9,6 +9,7 @@ import { initializeMessenger } from '~/core/messengers';
 import { WalletExecuteRapProps } from '~/core/raps/references';
 import { WalletAction } from '~/core/types/walletActions';
 import { getProvider } from '~/core/wagmi/clientToProvider';
+import { logger } from '~/logger';
 
 type WalletActionArguments = {
   action: WalletAction;
@@ -85,7 +86,7 @@ export const handleWallets = () =>
           case 'send_transaction':
           case 'personal_sign':
           case 'test_sandbox':
-            console.warn(`Deprecated action: ${action}`);
+            logger.warn(`Deprecated action: ${action}`);
             throw new Error(`Deprecated action: ${action}`);
           default: {
             throw new Error(`Unknown action: ${action}`);
