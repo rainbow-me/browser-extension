@@ -994,16 +994,20 @@ const RootLayout = () => {
   }, [pathname]);
 
   React.useEffect(() => {
-    analytics.screen(screen[pathname], { path: pathname });
-    popupClient.telemetry.addRouterBreadcrumb({
-      path: pathname,
-      params: { name: screen[pathname] },
-    });
     if (!shouldRestoreNavigation) {
       setLastPage(pathname);
       setLastState(state);
     }
   }, [pathname, setLastPage, setLastState, shouldRestoreNavigation, state]);
+
+  // Collect analytics, breadcrumbs on navigation
+  React.useEffect(() => {
+    analytics.screen(screen[pathname], { path: pathname });
+    popupClient.telemetry.addRouterBreadcrumb({
+      path: pathname,
+      params: { name: screen[pathname] },
+    });
+  }, [pathname]);
 
   useGlobalShortcuts();
   useCommandKShortcuts();
