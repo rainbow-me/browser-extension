@@ -118,7 +118,7 @@ const INTEGRATIONS: Array<{
   },
 ];
 
-export function initializeSentry(context: 'popup' | 'background') {
+export function initializeSentry(entrypoint: 'popup' | 'background') {
   if (
     process.env.IS_DEV !== 'true' &&
     process.env.IS_TESTING !== 'true' &&
@@ -126,7 +126,7 @@ export function initializeSentry(context: 'popup' | 'background') {
   ) {
     try {
       const contextIntegrations = INTEGRATIONS.filter(
-        (i) => i.on === context || i.on === 'shared',
+        (i) => i.on === entrypoint || i.on === 'shared',
       );
       const integrations = contextIntegrations
         .filter((i) => i.lazy === false)
@@ -146,6 +146,8 @@ export function initializeSentry(context: 'popup' | 'background') {
           : 'production',
         ignoreErrors: IGNORED_ERRORS,
       });
+
+      Sentry.setTag('entrypoint', entrypoint);
 
       const lazyIntegrations = contextIntegrations
         .filter((i) => i.lazy === true)
