@@ -1004,8 +1004,8 @@ const RootLayout = () => {
   React.useEffect(() => {
     analytics.screen(screen[pathname], { path: pathname });
     popupClient.telemetry.addRouterBreadcrumb({
-      path: pathname,
-      params: { name: screen[pathname] },
+      from: state?.from || pathname,
+      to: pathname,
     });
   }, [pathname]);
 
