@@ -59,7 +59,7 @@ const DEFAULT_CONFIG = {
   hw_wallets_enabled: true,
   custom_rpc_enabled: true,
   points_enabled: true,
-  nfts_enabled: true,
+  nfts_enabled: false,
   defi_positions_enabled: false,
   rewards_enabled: true,
   rewards_bridging_enabled: true,

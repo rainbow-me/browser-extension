@@ -125,6 +125,7 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
       onboarding
         ? ROUTES.IMPORT__EDIT
         : ROUTES.NEW_IMPORT_WALLET_SELECTION_EDIT,
+      // TODO: avoid passing accounts list in router state
       { state: { accountsToImport } },
     );
   };

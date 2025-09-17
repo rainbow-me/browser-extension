@@ -21,8 +21,33 @@ module.exports = {
         pattern: 'src/entries/inpage/**',
       },
       {
+        // Should more specifically use background-messenger-wallet instead, etc.
         type: 'entry-background',
         pattern: 'src/entries/background/**',
+      },
+      {
+        // Legacy background messenger handlers that will be deprecated
+        type: 'background-handlers',
+        pattern: 'src/entries/background/handlers/**',
+      },
+      {
+        // Legacy popup messenger handlers that will be deprecated
+        type: 'popup-handlers',
+        pattern: 'src/entries/popup/handlers/**',
+      },
+      {
+        // Specific messenger for the keychain and wallet interactions
+        type: 'background-messenger-wallet',
+        pattern: [
+          'src/entries/background/contracts/popup/wallet/**',
+          'src/entries/background/procedures/popup/wallet/**',
+        ],
+      },
+      {
+        // Specific messenger for dapp session and request lifecycle
+        // Wagmi and Rainbow toggle procedures will be deprecated
+        type: 'background-messenger-dapp-session',
+        pattern: ['src/entries/background/procedures/popup/state/**'],
       },
       {
         type: 'core-keychain',
@@ -45,19 +70,41 @@ module.exports = {
         default: 'disallow',
         rules: [
           {
-            // Allow messaging system to be typed, by allowing type imports from background for every entrypoint
+            // Allowing type imports from background for every entrypoint
             importKind: 'type',
             from: ['entry-popup', 'entry-content', 'entry-inpage'],
+            allow: [
+              'entry-background',
+              'background-handlers',
+              'background-messenger-wallet',
+              'background-messenger-dapp-session',
+            ],
+          },
+          {
+            // Popup can access background entry point for messaging
+            from: ['entry-popup'],
             allow: ['entry-background'],
           },
           {
-            // Only background is allowed to interact with keychain
-            from: ['entry-background'],
+            // Only background components are allowed to interact with keychain
+            // background-handlers will be deprecated
+            from: [
+              'entry-background',
+              'background-handlers',
+              'background-messenger-wallet',
+            ],
             allow: ['core-keychain'],
           },
           {
             // Only popup and background are allowed to interact with stores.
-            from: ['entry-popup', 'entry-background'],
+            from: [
+              'entry-popup',
+              'entry-background',
+              'popup-handlers',
+              'background-handlers',
+              'background-messenger-wallet',
+              'background-messenger-dapp-session',
+            ],
             allow: ['core-state'],
           },
           {
@@ -71,6 +118,9 @@ module.exports = {
               'entry-popup',
               'entry-content',
               'entry-background',
+              'popup-handlers',
+              'background-handlers',
+              'background-messenger-dapp-session',
               'core-state',
               'core-keychain',
             ],
