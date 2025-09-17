@@ -1007,6 +1007,7 @@ const RootLayout = () => {
       from: state?.from || pathname,
       to: pathname,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
   useGlobalShortcuts();
