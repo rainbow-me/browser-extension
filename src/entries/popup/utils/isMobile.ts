@@ -1,7 +1,5 @@
 const userAgent = () =>
-  typeof navigator !== 'undefined'
-    ? navigator.userAgent.toLocaleLowerCase()
-    : '';
+  typeof navigator !== 'undefined' ? navigator.userAgent.toLowerCase() : '';
 
 const isAndroid = (ua = userAgent()) => ua.includes('android');
 

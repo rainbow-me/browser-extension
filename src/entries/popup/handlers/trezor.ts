@@ -16,7 +16,7 @@ import { Address, stringToBytes } from 'viem';
 
 import { addHexPrefix } from '~/core/utils/hex';
 import { getProvider } from '~/core/wagmi/clientToProvider';
-import { logger } from '~/logger';
+import { RainbowError, logger } from '~/logger';
 
 import { popupClient } from './background';
 
@@ -81,14 +81,17 @@ export async function signTransactionFromTrezor(
 
       return serializedTransaction;
     } else {
-      console.log('trezor error', JSON.stringify(response, null, 2), baseTx);
+      logger.error(new RainbowError('trezor error'), {
+        response,
+        baseTx,
+      });
       alert('error signing transaction with trezor');
       throw new Error('error signing transaction with trezor');
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
-    console.log('trezor error', e);
+    logger.error(new RainbowError('trezor error', { cause: e }));
     alert('Please make sure your trezor is unlocked');
 
     // bubble up the error

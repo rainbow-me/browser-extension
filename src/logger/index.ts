@@ -4,8 +4,6 @@ import format from 'date-fns/format';
 
 import { DebugContext } from './debugContext';
 
-const { LOG_LEVEL, LOG_DEBUG } = process.env;
-
 export enum LogLevel {
   Debug = 'debug',
   Info = 'info',
@@ -177,22 +175,18 @@ export class Logger {
   LogLevel = LogLevel;
   DebugContext = DebugContext;
 
-  enabled: boolean;
   level: LogLevel;
   transports: Transport[] = [];
 
   protected debugContextRegexes: RegExp[] = [];
 
   constructor({
-    enabled = process.env.NODE_ENV !== 'production',
-    level = LOG_LEVEL as LogLevel,
-    debug = LOG_DEBUG || '',
+    level = process.env.LOG_LEVEL as LogLevel,
+    debug = process.env.LOG_DEBUG || '',
   }: {
-    enabled?: boolean;
     level?: LogLevel;
     debug?: string;
   } = {}) {
-    this.enabled = enabled !== false;
     this.level = debug ? LogLevel.Debug : level ?? LogLevel.Warn;
     this.debugContextRegexes = (debug || '').split(',').map((context) => {
       return new RegExp(context.replace(/[^\w:*]/, '').replace(/\*/g, '.*'));
@@ -238,7 +232,6 @@ export class Logger {
     message: string | RainbowError,
     metadata: Metadata = {},
   ) {
-    if (!this.enabled) return;
     if (!enabledLogLevels[this.level].includes(level)) return;
 
     for (const transport of this.transports) {
@@ -260,10 +253,10 @@ export class Logger {
 export const logger = new Logger();
 
 /**
- * Report to console in dev, Sentry in prod, nothing in test.
+ * Report to console in dev, Sentry in prod, internal build, or e2e
  */
-if (process.env.NODE_ENV === 'development') {
-  logger.addTransport(consoleTransport);
-} else if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production') {
   logger.addTransport(sentryTransport);
+} else {
+  logger.addTransport(consoleTransport);
 }

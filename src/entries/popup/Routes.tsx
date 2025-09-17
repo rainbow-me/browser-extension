@@ -22,6 +22,7 @@ import { Box } from '~/design-system';
 import { Alert } from '~/design-system/components/Alert/Alert';
 import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 import { BoxProps } from '~/design-system/components/Box/Box';
+import { RainbowError, logger } from '~/logger';
 
 import { AppConnectionWatcher } from './components/AppConnection/AppConnectionWatcher';
 import { CommandK } from './components/CommandK/CommandK';
@@ -32,6 +33,7 @@ import { ImportWalletViaSeed } from './components/ImportWallet/ImportWalletViaSe
 import { Toast } from './components/Toast/Toast';
 import { UnsupportedBrowserSheet } from './components/UnsupportedBrowserSheet';
 import { WindowStroke } from './components/WindowStroke/WindowStroke';
+import { popupClient } from './handlers/background';
 import { useCommandKShortcuts } from './hooks/useCommandKShortcuts';
 import useKeyboardAnalytics from './hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from './hooks/useKeyboardShortcut';
@@ -978,6 +980,7 @@ const ROUTE_DATA = [
 ] satisfies RouteObject[];
 
 const RootLayout = () => {
+  // state may contain sensitive data; be careful with how it is used
   const { pathname, state } = useLocation();
   const { setLastPage, setLastState, shouldRestoreNavigation } =
     useNavRestorationStore((state) => ({
@@ -991,12 +994,21 @@ const RootLayout = () => {
   }, [pathname]);
 
   React.useEffect(() => {
-    analytics.screen(screen[pathname], { path: pathname });
     if (!shouldRestoreNavigation) {
       setLastPage(pathname);
       setLastState(state);
     }
   }, [pathname, setLastPage, setLastState, shouldRestoreNavigation, state]);
+
+  // Collect analytics, breadcrumbs on navigation
+  React.useEffect(() => {
+    analytics.screen(screen[pathname], { path: pathname });
+    popupClient.telemetry.addRouterBreadcrumb({
+      from: state?.from || pathname,
+      to: pathname,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   useGlobalShortcuts();
   useCommandKShortcuts();
@@ -1084,7 +1096,7 @@ function Rerouter() {
 
   React.useEffect(() => {
     setError(error);
-    Sentry.captureException(error);
+    logger.error(new RainbowError(error.message, { cause: error }));
     analytics.track(event.appCrashed, { error: error.message });
     navigate(ROUTES.HOME, { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps

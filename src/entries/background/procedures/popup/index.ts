@@ -1,18 +1,20 @@
 import { os } from '@orpc/server';
 import { RPCHandler } from '@orpc/server/message-port';
-import * as Sentry from '@sentry/react';
+
+import { RainbowError, logger } from '~/logger';
 
 import { healthRouter } from './health';
 import { walletOs } from './os';
 import { stateRouter } from './state';
+import { telemetryRouter } from './telemetry';
 import { walletRouter } from './wallet';
 
 const sentryMiddleware = os.middleware(async ({ next }) => {
   try {
     return await next();
-  } catch (error) {
-    Sentry.captureException(error);
-    throw error;
+  } catch (e) {
+    logger.error(new RainbowError((e as Error)?.message, { cause: e }));
+    throw e;
   }
 });
 
@@ -20,6 +22,7 @@ export const popupRouter = {
   wallet: walletOs.use(sentryMiddleware).router(walletRouter),
   state: os.use(sentryMiddleware).router(stateRouter),
   health: os.use(sentryMiddleware).router(healthRouter),
+  telemetry: os.use(sentryMiddleware).router(telemetryRouter),
 };
 
 export type PopupRouter = typeof popupRouter;
