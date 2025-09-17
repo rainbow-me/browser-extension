@@ -535,6 +535,9 @@ class KeychainManager {
   }
 
   async getKeychain(address: Address) {
+    if (!this.state.initialized) {
+      throw new Error('Keychain manager not initialized');
+    }
     for (let i = 0; i < this.state.keychains.length; i++) {
       const keychain = this.state.keychains[i];
       const accounts = await keychain.getAccounts();
