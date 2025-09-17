@@ -83,6 +83,7 @@ describe('App interactions flow', () => {
     driver = await initDriverWithOptions({
       browser,
       os,
+      disableBiDi: true, // BiDi is hijacking the extension popup window!
     });
     const extensionId = await getExtensionIdByName(driver, 'Rainbow');
     if (!extensionId) throw new Error('Extension not found');
@@ -231,9 +232,22 @@ describe('App interactions flow', () => {
     });
 
     await delayTime('medium');
-    await clickAcceptRequestButton(driver);
 
+    // Click "Connect Anyway" button (for malicious site warning)
+    const connectButton = await findElementByText(driver, 'Connect Anyway');
+    await driver.executeScript('arguments[0].click()', connectButton);
+
+    // Wait for popup to close
+    await delayTime('medium');
+
+    // Switch back to dapp
     await driver.switchTo().window(dappHandler);
+
+    // Refresh to ensure connection is reflected
+    await driver.navigate().refresh();
+    await delayTime('medium');
+
+    // Verify connection was successful
     const topButton = await querySelector(
       driver,
       '[data-testid="rk-account-button"]',

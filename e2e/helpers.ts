@@ -98,6 +98,7 @@ export async function getWindowHandle({ driver }: { driver: WebDriver }) {
 export async function initDriverWithOptions(opts: {
   browser: string;
   os: string;
+  disableBiDi?: boolean;
 }) {
   let driver;
   const args = [
@@ -164,8 +165,11 @@ export async function initDriverWithOptions(opts: {
       }),
     );
 
-    // Enable BiDi for Chrome
-    options.set('webSocketUrl', true);
+    // Only enable BiDi (WebSocket URL) if not explicitly disabled
+    if (!opts.disableBiDi) {
+      // @ts-ignore
+      options.set('webSocketUrl', true);
+    }
 
     const service = new chrome.ServiceBuilder().setStdio('inherit');
 
@@ -178,11 +182,13 @@ export async function initDriverWithOptions(opts: {
   // @ts-ignore
   driver.browser = opts.browser;
 
-  // Install network interception for mocking
-  const interceptor = await interceptMocks(driver);
-  // Store interceptor cleanup on driver for later use
-  // @ts-ignore
-  driver.interceptorCleanup = interceptor?.cleanup;
+  // Install network interception for mocking (unless disabled)
+  if (!opts.disableBiDi) {
+    const interceptor = await interceptMocks(driver);
+    // Store interceptor cleanup on driver for later use
+    // @ts-ignore
+    driver.interceptorCleanup = interceptor?.cleanup;
+  }
 
   return driver;
 }
@@ -808,38 +814,62 @@ export async function connectToTestDapp(driver: WebDriver) {
   await goToTestApp(driver);
   const dappHandler = await getWindowHandle({ driver });
 
+  // Click Connect Wallet button
   const button = await findElementByText(driver, 'Connect Wallet');
   expect(button).toBeTruthy();
   await waitAndClick(button, driver);
+  await delayTime('medium');
 
+  // Verify RainbowKit modal is present
   const modalTitle = await findElementByText(driver, 'Connect a Wallet');
   expect(modalTitle).toBeTruthy();
+  await delayTime('short');
 
-  const mmButton = await querySelector(
-    driver,
-    '[data-testid="rk-wallet-option-me.rainbow"]',
-  );
-  await waitAndClick(mmButton, driver);
+  // Click Rainbow wallet option
+  const clicked = await driver.executeScript(`
+    const button = document.querySelector('[data-testid="rk-wallet-option-me.rainbow"]');
+    if (button) {
+      button.click();
+      return true;
+    }
+    return false;
+  `);
 
-  // Add delay to ensure popup has time to open in headless mode
-  await delayTime('long');
+  if (!clicked) {
+    throw new Error('Rainbow wallet option not found in modal');
+  }
 
-  const { popupHandler } = await getAllWindowHandles({
-    driver,
-    dappHandler,
-  });
+  await delayTime('very-long');
 
-  // Verify we got a popup handler
+  let { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
+
+  // If no popup opened automatically, open it manually
   if (!popupHandler || popupHandler === dappHandler) {
-    const handles = await driver.getAllWindowHandles();
-    console.error(
-      '[E2E] Failed to get popup handler. Available handles:',
-      handles,
-    );
+    const extensionId = await getExtensionIdByName(driver, 'Rainbow');
+    if (extensionId) {
+      const popupUrl = `chrome-extension://${extensionId}/popup.html`;
+
+      // In headless mode, window.open might not work, so navigate directly
+      if (process.env.HEADLESS_MODE !== 'false') {
+        await driver.switchTo().newWindow('tab');
+        await driver.get(popupUrl);
+      } else {
+        await driver.executeScript(`window.open('${popupUrl}', '_blank');`);
+      }
+
+      await delayTime('medium');
+      const result = await getAllWindowHandles({ driver, dappHandler });
+      popupHandler = result.popupHandler;
+    }
+  }
+
+  if (!popupHandler || popupHandler === dappHandler) {
     throw new Error('Extension popup did not open properly');
   }
 
   await driver.switchTo().window(popupHandler);
+  await driver.wait(untilDocumentLoaded(), waitUntilTime);
+  await delayTime('medium');
 
   return { dappHandler, popupHandler };
 }

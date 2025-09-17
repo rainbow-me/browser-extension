@@ -19,10 +19,12 @@ import { InterceptPhase } from 'selenium-webdriver/bidi/interceptPhase';
 // @ts-ignore - BiDi modules not in TS definitions
 import { Network } from 'selenium-webdriver/bidi/network';
 // @ts-ignore - BiDi modules not in TS definitions
+import { BytesValue } from 'selenium-webdriver/bidi/networkTypes';
+// @ts-ignore - BiDi modules not in TS definitions
 import { ProvideResponseParameters } from 'selenium-webdriver/bidi/provideResponseParameters';
 import { UrlPattern } from 'selenium-webdriver/bidi/urlPattern';
 
-import type { BeforeRequestSentEvent, BytesValue, Header } from './bidi';
+import type { BeforeRequestSentEvent, Header } from './bidi';
 import { ENDPOINTS } from './endpoints';
 
 const SNAPSHOT_ROOT = path.resolve('e2e/mocks');
@@ -321,10 +323,10 @@ export async function interceptMocks(
           // The response body could contain non-UTF8 bytes (images, compressed data, etc.)
           // Base64 ensures safe transmission over the text-based BiDi protocol
           const ab = await mswRes.arrayBuffer();
-          const bodyBytes: BytesValue = {
-            type: 'base64',
-            value: Buffer.from(ab).toString('base64'),
-          };
+          const bodyBytes = new BytesValue(
+            'base64',
+            Buffer.from(ab).toString('base64'),
+          );
           params.body(bodyBytes);
           await network.provideResponse(params);
         } else {
