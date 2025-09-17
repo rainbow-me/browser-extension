@@ -11,8 +11,8 @@ import { RainbowError, logger } from '~/logger';
 
 import pkg from '../../../package.json';
 
-const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
-const IS_TESTING = process.env.IS_TESTING === 'true';
+export const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
+export const IS_TESTING = process.env.IS_TESTING === 'true';
 
 // Common browser lifecycle errors that we want to ignore from Sentry
 // Strings are partially matched; use RegExp for exact matches
