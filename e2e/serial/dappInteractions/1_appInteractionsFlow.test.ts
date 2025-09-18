@@ -32,6 +32,8 @@ import {
   goToWelcome,
   initDriverWithOptions,
   querySelector,
+  safeNavigate,
+  safeWindowSwitch,
   shortenAddress,
   switchWallet,
   takeScreenshotOnFailure,
@@ -83,6 +85,7 @@ describe('App interactions flow', () => {
     driver = await initDriverWithOptions({
       browser,
       os,
+      disableBiDi: true, // Disable BiDi for this test suite due to Chrome crashes with extension navigation
     });
     const extensionId = await getExtensionIdByName(driver, 'Rainbow');
     if (!extensionId) throw new Error('Extension not found');
@@ -233,7 +236,7 @@ describe('App interactions flow', () => {
     await delayTime('medium');
     await clickAcceptRequestButton(driver);
 
-    await driver.switchTo().window(dappHandler);
+    await safeWindowSwitch(driver, dappHandler);
     const topButton = await querySelector(
       driver,
       '[data-testid="rk-account-button"]',
@@ -247,7 +250,8 @@ describe('App interactions flow', () => {
   });
 
   it('should be able to go back to extension and switch account and chain', async () => {
-    await goToPopup(driver, rootURL, '#/home');
+    // Use safe navigation to handle cross-origin navigation with BiDi
+    await safeNavigate(driver, `${rootURL}/popup.html#/home`);
     await findElementByTestIdAndClick({ id: 'home-page-header-left', driver });
     await findElementByTestIdAndClick({
       id: 'app-connection-menu-connected-apps',
@@ -291,13 +295,13 @@ describe('App interactions flow', () => {
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
-    await driver.switchTo().window(popupHandler);
+    await safeWindowSwitch(driver, popupHandler);
 
     await delayTime('medium');
     await clickAcceptRequestButton(driver);
 
     await delayTime('medium');
-    await driver.switchTo().window(dappHandler);
+    await safeWindowSwitch(driver, dappHandler);
     const signatureTextSelector = await querySelector(
       driver,
       '[id="signTxSignature"]',
@@ -322,11 +326,11 @@ describe('App interactions flow', () => {
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
-    await driver.switchTo().window(popupHandler);
+    await safeWindowSwitch(driver, popupHandler);
     await delayTime('medium');
     await clickAcceptRequestButton(driver);
     await delayTime('medium');
-    await driver.switchTo().window(dappHandler);
+    await safeWindowSwitch(driver, dappHandler);
     const signatureTextSelector = await querySelector(
       driver,
       '[id="signTypedDataSignature"]',
@@ -360,11 +364,11 @@ describe('App interactions flow', () => {
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
-    await driver.switchTo().window(popupHandler);
+    await safeWindowSwitch(driver, popupHandler);
     await delayTime('very-long');
     await clickAcceptRequestButton(driver);
     await delayTime('long');
-    await driver.switchTo().window(dappHandler);
+    await safeWindowSwitch(driver, dappHandler);
   });
 
   it('should check initial networks and RPCs state', async () => {
@@ -409,7 +413,7 @@ describe('App interactions flow', () => {
     await waitAndClick(addRpcButton, driver);
     await delayTime('long');
 
-    await driver.switchTo().window(dappHandler);
+    await safeWindowSwitch(driver, dappHandler);
     await delayTime('medium');
   });
 
@@ -430,7 +434,7 @@ describe('App interactions flow', () => {
     await delayTime('long');
 
     // Switch back to dapp - the network has been added
-    await driver.switchTo().window(dappHandler);
+    await safeWindowSwitch(driver, dappHandler);
     await delayTime('medium');
   });
 

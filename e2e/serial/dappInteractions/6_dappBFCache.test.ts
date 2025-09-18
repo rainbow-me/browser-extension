@@ -42,6 +42,7 @@ describe('Dapp provider BFCache behavior', () => {
     driver = await initDriverWithOptions({
       browser,
       os,
+      disableBiDi: true, // Disable BiDi for this test suite due to Chrome crashes with extension navigation
     });
     const extensionId = await getExtensionIdByName(driver, 'Rainbow');
     if (!extensionId) throw new Error('Extension not found');

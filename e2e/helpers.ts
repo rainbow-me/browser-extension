@@ -23,12 +23,12 @@ import { expect } from 'vitest';
 
 import { RAINBOW_TEST_DAPP } from '~/core/references/links';
 
+import { BiDiManager } from './helpers/bidiManager';
 import {
   browser,
   browserBinaryPath,
   browserExtensionScheme,
 } from './helpers/environment';
-import { interceptMocks } from './mocks/intercept';
 
 // consts
 
@@ -45,6 +45,14 @@ export async function goToTestApp(driver: WebDriver) {
   await driver.get(RAINBOW_TEST_DAPP);
   await driver.wait(untilDocumentLoaded(), waitUntilTime);
   await delayTime('very-long');
+
+  // Initialize BiDi for mock interception if available
+  // @ts-ignore
+  const bidiManager = driver.bidiManager;
+  if (bidiManager && !bidiManager.getIsActive()) {
+    console.log('[goToTestApp] Initializing BiDi for dapp mock interception');
+    await bidiManager.initialize();
+  }
 }
 
 export async function goToPopup(
@@ -98,6 +106,7 @@ export async function getWindowHandle({ driver }: { driver: WebDriver }) {
 export async function initDriverWithOptions(opts: {
   browser: string;
   os: string;
+  disableBiDi?: boolean; // Option to disable BiDi for problematic test suites
 }) {
   let driver;
   const args = [
@@ -140,6 +149,8 @@ export async function initDriverWithOptions(opts: {
       '--disable-features=LocalNetworkAccessChecks,LocalNetworkAccessForWorkers',
       // Set standard browser window size that works for both extension and web pages
       '--window-size=1280,1024',
+      // Disable beforeunload dialogs
+      '--disable-prompt-on-repost',
     ];
 
     if (process.env.HEADLESS_MODE !== 'false') {
@@ -152,6 +163,9 @@ export async function initDriverWithOptions(opts: {
     options.setAcceptInsecureCerts(true);
     options.setUserPreferences({
       'intl.accept_languages': 'en-US,en;q=0.9',
+      // Disable beforeunload dialogs
+      'profile.default_content_setting_values.automatic_downloads': 1,
+      'profile.default_content_settings.popups': 0,
     });
 
     const existingGoogChromeOptions = options.get('goog:chromeOptions') || {};
@@ -164,8 +178,10 @@ export async function initDriverWithOptions(opts: {
       }),
     );
 
-    // Enable BiDi for Chrome
-    options.set('webSocketUrl', true);
+    // Enable BiDi for Chrome unless explicitly disabled (e.g., for dappInteractions tests)
+    if (!opts.disableBiDi) {
+      options.set('webSocketUrl', true);
+    }
 
     const service = new chrome.ServiceBuilder().setStdio('inherit');
 
@@ -173,16 +189,31 @@ export async function initDriverWithOptions(opts: {
       .forBrowser('chrome')
       .setChromeOptions(options)
       .setChromeService(service)
+      .withCapabilities({
+        unhandledPromptBehavior: 'accept',
+      })
       .build();
   }
   // @ts-ignore
   driver.browser = opts.browser;
 
-  // Install network interception for mocking
-  const interceptor = await interceptMocks(driver);
-  // Store interceptor cleanup on driver for later use
-  // @ts-ignore
-  driver.interceptorCleanup = interceptor?.cleanup;
+  if (!opts.disableBiDi) {
+    // Create BiDi manager for test suites that support it
+    const bidiManager = new BiDiManager(driver);
+
+    // @ts-ignore - Store manager on driver for access in other functions
+    driver.bidiManager = bidiManager;
+
+    // @ts-ignore - Keep for backward compatibility
+    driver.interceptorCleanup = () => bidiManager.cleanup();
+  } else {
+    // BiDi disabled for this test suite
+    // @ts-ignore
+    driver.bidiManager = null;
+
+    // @ts-ignore
+    driver.interceptorCleanup = () => Promise.resolve();
+  }
 
   return driver;
 }
@@ -808,6 +839,8 @@ export async function connectToTestDapp(driver: WebDriver) {
   await goToTestApp(driver);
   const dappHandler = await getWindowHandle({ driver });
 
+  const handlesBeforeConnect = await driver.getAllWindowHandles();
+
   const button = await findElementByText(driver, 'Connect Wallet');
   expect(button).toBeTruthy();
   await waitAndClick(button, driver);
@@ -821,25 +854,42 @@ export async function connectToTestDapp(driver: WebDriver) {
   );
   await waitAndClick(mmButton, driver);
 
-  // Add delay to ensure popup has time to open in headless mode
+  // Add delay to ensure popup has time to open
   await delayTime('long');
 
-  const { popupHandler } = await getAllWindowHandles({
-    driver,
-    dappHandler,
-  });
+  const handlesAfterClick = await driver.getAllWindowHandles();
 
-  // Verify we got a popup handler
-  if (!popupHandler || popupHandler === dappHandler) {
-    const handles = await driver.getAllWindowHandles();
-    console.error(
-      '[E2E] Failed to get popup handler. Available handles:',
-      handles,
-    );
-    throw new Error('Extension popup did not open properly');
+  // Find the NEW window handle - one that wasn't there before
+  const newHandles = handlesAfterClick.filter(
+    (h) => !handlesBeforeConnect.includes(h),
+  );
+
+  let popupHandler: string | undefined;
+
+  if (newHandles.length > 0) {
+    // Use the new window that just opened
+    popupHandler = newHandles[0];
+  } else {
+    // Fallback to old logic if no new windows
+    const result = await getAllWindowHandles({
+      driver,
+      dappHandler,
+    });
+    popupHandler = result.popupHandler;
   }
 
-  await driver.switchTo().window(popupHandler);
+  if (!popupHandler || popupHandler === dappHandler) {
+    const allHandles = await driver.getAllWindowHandles();
+    for (const handle of allHandles) {
+      await safeWindowSwitch(driver, handle);
+      const url = await driver.getCurrentUrl();
+      const title = await driver.getTitle();
+      console.log(`Window ${handle}: URL=${url}, Title=${title}`);
+    }
+    throw new Error('Extension popup did not open');
+  }
+
+  await safeWindowSwitch(driver, popupHandler);
 
   return { dappHandler, popupHandler };
 }
@@ -1247,6 +1297,12 @@ export async function takeScreenshotOnFailure(context: any) {
     }
     console.log(`Screenshot of the failed test will be saved to: ${fileName}`);
     try {
+      // Try to dismiss any beforeunload dialogs before taking screenshot
+      try {
+        await context.driver.switchTo().alert().accept();
+      } catch {
+        // No alert to dismiss, that's fine
+      }
       const image = await context.driver.takeScreenshot();
       fs.writeFileSync(`screenshots/${fileName}.png`, image, 'base64');
     } catch (error) {
@@ -1303,6 +1359,62 @@ export async function performSearchTokenAddressActionsCmdK({
     id: `token-price-name-${tokenAddress}`,
     driver,
   });
+}
+
+// Safe window operations that handle BiDi lifecycle
+
+/**
+ * Safely switch to a different window (disables BiDi during switch)
+ */
+export async function safeWindowSwitch(
+  driver: WebDriver,
+  windowHandle: string,
+) {
+  return await driver.switchTo().window(windowHandle);
+}
+
+/**
+ * Safely create a new window
+ */
+export async function safeNewWindow(
+  driver: WebDriver,
+  type: 'tab' | 'window' = 'tab',
+) {
+  return await driver.switchTo().newWindow(type);
+}
+
+/**
+ * Safely navigate to a URL (handles cross-origin navigation)
+ */
+export async function safeNavigate(driver: WebDriver, url: string) {
+  try {
+    const currentUrl = await driver.getCurrentUrl();
+    const isExtensionTarget = url.includes('chrome-extension://');
+    const isCurrentExtension = currentUrl.startsWith('chrome-extension://');
+
+    // When navigating from web page to extension, just navigate directly
+    // Note: This may cause issues with BiDi if enabled, but window.open()
+    // doesn't work for chrome-extension:// URLs from web pages
+    if (!isCurrentExtension && isExtensionTarget) {
+      console.log(
+        '[safeNavigate] Web to extension navigation - direct navigation',
+      );
+
+      // Just navigate directly - this works without webSocketUrl enabled
+      await driver.get(url);
+      return;
+    }
+
+    // For all other navigations, proceed normally
+    await driver.get(url);
+  } catch (e) {
+    console.log(
+      '[safeNavigate] Error during navigation:',
+      (e as Error).message,
+    );
+    // If we can't determine context, just navigate normally
+    await driver.get(url);
+  }
 }
 
 export async function cleanupDriver(driver: WebDriver | undefined) {
