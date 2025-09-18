@@ -40,6 +40,7 @@ describe('App interactions flow', () => {
       browser,
       os,
       disableBiDi: true, // Disable BiDi for this test suite due to Chrome crashes with extension navigation
+      disableHeadless: true, // Disable headless mode due to modal detection issues with window switching
     });
     const extensionId = await getExtensionIdByName(driver, 'Rainbow');
     if (!extensionId) throw new Error('Extension not found');

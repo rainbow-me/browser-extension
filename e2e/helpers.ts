@@ -107,6 +107,7 @@ export async function initDriverWithOptions(opts: {
   browser: string;
   os: string;
   disableBiDi?: boolean; // Option to disable BiDi for problematic test suites
+  disableHeadless?: boolean; // Option to disable headless mode for test suites with window switching
 }) {
   let driver;
   const args = [
@@ -153,7 +154,10 @@ export async function initDriverWithOptions(opts: {
       '--disable-prompt-on-repost',
     ];
 
-    if (process.env.HEADLESS_MODE !== 'false') {
+    const disableHeadless =
+      process.env.HEADLESS_MODE === 'false' || opts.disableHeadless === true;
+
+    if (!disableHeadless) {
       chromeArgs.push('--headless=new');
     }
 
