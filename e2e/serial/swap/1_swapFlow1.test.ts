@@ -42,6 +42,7 @@ beforeAll(async () => {
   driver = await initDriverWithOptions({
     browser,
     os,
+    disableHeadless: true, // Disable headless mode due to modal detection issues with window switching
   });
   const extensionId = await getExtensionIdByName(driver, 'Rainbow');
   if (!extensionId) throw new Error('Extension not found');
@@ -995,7 +996,7 @@ it('should be able to execute swap', async () => {
     text: '15',
   });
   await findElementByTextAndClick(driver, 'Auto');
-  await findElementByTextAndClick(driver, '1inch');
+  await findElementByTextAndClick(driver, '0x');
   await delayTime('medium');
   await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
 
@@ -1004,6 +1005,9 @@ it('should be able to execute swap', async () => {
     id: 'swap-confirmation-button-ready',
     driver,
   });
+  await delayTime('very-long');
+  await delayTime('very-long');
+  await delayTime('very-long');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
 
   // waiting for balances to update / swap to execute

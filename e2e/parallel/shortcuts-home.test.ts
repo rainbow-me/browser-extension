@@ -38,7 +38,7 @@ describe.runIf(browser !== 'firefox')(
       driver = await initDriverWithOptions({
         browser,
         os,
-        disableBiDi: true, // Disable BiDi for this test suite due to Chrome crashes with extension navigation
+        testSuite: 'window-switching',
         disableHeadless: true, // Disable headless mode due to modal detection issues with window switching
       });
       const extensionId = await getExtensionIdByName(driver, 'Rainbow');

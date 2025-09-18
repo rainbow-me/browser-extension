@@ -103,12 +103,24 @@ export async function getWindowHandle({ driver }: { driver: WebDriver }) {
 
 // setup functions
 
+/**
+ * Initialize a WebDriver instance with specified options
+ *
+ * @param opts.browser - Browser type ('chrome' or 'firefox')
+ * @param opts.os - Operating system ('mac', 'windows', 'linux')
+ * @param opts.testSuite - Type of test suite to configure driver for
+ *   - 'default': Standard tests with API mocking support via BiDi
+ *   - 'window-switching': Tests with heavy window/tab switching (disables BiDi to prevent Chrome crashes)
+ * @param opts.disableHeadless - Force disable headless mode (for debugging)
+ */
+
 export async function initDriverWithOptions(opts: {
   browser: string;
   os: string;
-  disableBiDi?: boolean; // Option to disable BiDi for problematic test suites
-  disableHeadless?: boolean; // Option to disable headless mode for test suites with window switching
+  testSuite?: 'default' | 'window-switching';
+  disableHeadless?: boolean;
 }) {
+  const testSuite = opts.testSuite || 'default';
   let driver;
   const args = [
     'load-extension=build/',
@@ -182,8 +194,8 @@ export async function initDriverWithOptions(opts: {
       }),
     );
 
-    // Enable BiDi for Chrome unless explicitly disabled (e.g., for dappInteractions tests)
-    if (!opts.disableBiDi) {
+    // Enable BiDi WebSocket for Chrome unless it's a window-switching test
+    if (testSuite !== 'window-switching') {
       options.set('webSocketUrl', true);
     }
 
@@ -201,22 +213,32 @@ export async function initDriverWithOptions(opts: {
   // @ts-ignore
   driver.browser = opts.browser;
 
-  if (!opts.disableBiDi) {
-    // Create BiDi manager for test suites that support it
-    const bidiManager = new BiDiManager(driver);
-
-    // @ts-ignore - Store manager on driver for access in other functions
-    driver.bidiManager = bidiManager;
-
-    // @ts-ignore - Keep for backward compatibility
-    driver.interceptorCleanup = () => bidiManager.cleanup();
-  } else {
-    // BiDi disabled for this test suite
+  if (testSuite === 'window-switching') {
+    // Tests with heavy window/tab switching can't use BiDi (causes Chrome crashes)
+    console.log(
+      '[initDriverWithOptions] BiDi disabled for window-switching test suite',
+    );
     // @ts-ignore
     driver.bidiManager = null;
-
     // @ts-ignore
     driver.interceptorCleanup = () => Promise.resolve();
+  } else {
+    // Standard tests get BiDi with API mocking
+    const bidiManager = new BiDiManager(driver);
+    // @ts-ignore - Store manager on driver for access in other functions
+    driver.bidiManager = bidiManager;
+    // @ts-ignore - Keep for backward compatibility
+    driver.interceptorCleanup = () => bidiManager.cleanup();
+
+    // Initialize BiDi immediately so API mocks work for all tests
+    try {
+      console.log(
+        '[initDriverWithOptions] Initializing BiDi mock interceptor for API mocking',
+      );
+      await bidiManager.initialize();
+    } catch (error) {
+      console.warn('[initDriverWithOptions] Failed to initialize BiDi:', error);
+    }
   }
 
   return driver;

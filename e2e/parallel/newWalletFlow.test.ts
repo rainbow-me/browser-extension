@@ -29,6 +29,8 @@ describe('New wallet flow', () => {
     driver = await initDriverWithOptions({
       browser,
       os,
+      testSuite: 'window-switching',
+      disableHeadless: true, // Disable headless mode due to modal detection issues with window switching
     });
     const extensionId = await getExtensionIdByName(driver, 'Rainbow');
     if (!extensionId) throw new Error('Extension not found');

@@ -282,6 +282,18 @@ export async function interceptMocks(
 
         // In record mode, fetch and persist, then continue
         if (MODE === 'record') {
+          // Work around 1inch API returning 403 - replace with rainbow source
+          if (
+            url.host === 'swap.p.rainbow.me' &&
+            url.searchParams.get('source') === '1inch'
+          ) {
+            url.searchParams.set('source', 'rainbow');
+            req.url = url.toString();
+            console.log(
+              '[E2E Mock] Replaced source=1inch with source=rainbow for swap API',
+            );
+          }
+
           // Await fetch and persist to ensure atomic operation and prevent race conditions
           try {
             await fetchAndPersist(req);

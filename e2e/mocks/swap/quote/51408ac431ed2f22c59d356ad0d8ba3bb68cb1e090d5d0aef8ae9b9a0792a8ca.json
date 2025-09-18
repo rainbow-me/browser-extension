@@ -1,0 +1,229 @@
+{
+  "sellTokenAddress": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+  "sellTokenAsset": {
+    "assetCode": "eth",
+    "decimals": 18,
+    "iconUrl": "https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/ethereum/eth.png",
+    "name": "Ethereum",
+    "network": "mainnet",
+    "symbol": "ETH",
+    "networks": {
+      "1": {
+        "address": "eth",
+        "decimals": 18
+      },
+      "10": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "decimals": 18
+      },
+      "56": {
+        "address": "0x2170ed0880ac9a755fd29b2688956bd959f933f8",
+        "decimals": 18
+      },
+      "130": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "decimals": 18
+      },
+      "324": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "decimals": 18
+      },
+      "8453": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "decimals": 18
+      },
+      "42161": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "decimals": 18
+      },
+      "57073": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "decimals": 18
+      },
+      "59144": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "decimals": 18
+      },
+      "81457": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "decimals": 18
+      },
+      "534352": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "decimals": 18
+      },
+      "7777777": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "decimals": 18
+      }
+    },
+    "chainId": 1,
+    "price": {
+      "value": 4595.26811455,
+      "available": true,
+      "updatedAt": 1758230919
+    },
+    "totalPrice": {
+      "value": 45952.6811455,
+      "available": true,
+      "updatedAt": 1758230919
+    }
+  },
+  "buyTokenAddress": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+  "buyTokenAsset": {
+    "assetCode": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    "decimals": 6,
+    "iconUrl": "https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png",
+    "name": "USD Coin",
+    "network": "mainnet",
+    "symbol": "USDC",
+    "networks": {
+      "1": {
+        "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+        "decimals": 6
+      },
+      "10": {
+        "address": "0x0b2c639c533813f4aa9d7837caf62653d097ff85",
+        "decimals": 6
+      },
+      "56": {
+        "address": "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d",
+        "decimals": 18
+      },
+      "130": {
+        "address": "0x078d782b760474a361dda0af3839290b0ef57ad6",
+        "decimals": 6
+      },
+      "137": {
+        "address": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359",
+        "decimals": 6
+      },
+      "8453": {
+        "address": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+        "decimals": 6
+      },
+      "42161": {
+        "address": "0xaf88d065e77c8cc2239327c5edb3a432268e5831",
+        "decimals": 6
+      },
+      "43114": {
+        "address": "0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e",
+        "decimals": 6
+      }
+    },
+    "chainId": 1,
+    "price": {
+      "value": 0.99977836,
+      "available": true,
+      "updatedAt": 1758230919
+    },
+    "totalPrice": {
+      "value": 45555.90755625152,
+      "available": true,
+      "updatedAt": 1758230919
+    }
+  },
+  "allowanceTarget": "0x00000000009726632680fb29d3f7a9734e3010e2",
+  "allowanceNeeded": false,
+  "to": "0xbbbbbBB520d69a9775E85b458C58c648259FAD5F",
+  "data": "0x4dcebcba0000000000000000000000000000000000000000000000000000000068cc79d300000000000000000000000000000000009726632680fb29d3f7a9734e3010e200000000000000000000000051c72848c68a965f66fa7a88855f9f7784502a7f0000000000000000000000000000000000000000000000002a706752e4f0ea84000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000000000899927f7d3ff80000000000000000000000000000000000000000000000000000000000a9bf2161600000000000000000000000000000000009726632680fb29d3f7a9734e3010e200000000000000000000000000000000000000000000000000000000000000012eb014151cc3450675e378c36cbbcb840000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000419eac67137cf448b35ca01988d245d1113ada46e30ff459a37bacbeb352ebe8a0395f9c1eb84e30519afa7ffd38b179b2a3f5a4d62d10784d04004e729eb97a3b1c00000000000000000000000000000000000000000000000000000000000000",
+  "sellAmount": "10000000000000000000",
+  "sellAmountMinusFees": "9915000000000000000",
+  "sellAmountDisplay": "10000000000000000000",
+  "sellAmountInEth": "10000000000000000000",
+  "buyAmount": "45566006806",
+  "buyAmountMinusFees": "45566006806",
+  "buyAmountDisplay": "45566006806",
+  "buyAmountDisplayMinimum": "45110346738",
+  "buyAmountInEth": "9913656052409177737",
+  "tradeAmountUSD": 45952.6811455,
+  "tradeFeeAmountUSD": 390.59778973675,
+  "value": "10000000000000000000",
+  "gasPrice": "427533878",
+  "source": "bebop",
+  "protocols": [
+    {
+      "name": "bebop",
+      "part": 100
+    }
+  ],
+  "feeTokenAsset": {
+    "assetCode": "eth",
+    "decimals": 18,
+    "iconUrl": "https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/ethereum/eth.png",
+    "name": "Ethereum",
+    "network": "mainnet",
+    "symbol": "ETH",
+    "networks": {
+      "1": {
+        "address": "eth",
+        "decimals": 18
+      },
+      "10": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "decimals": 18
+      },
+      "56": {
+        "address": "0x2170ed0880ac9a755fd29b2688956bd959f933f8",
+        "decimals": 18
+      },
+      "130": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "decimals": 18
+      },
+      "324": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "decimals": 18
+      },
+      "8453": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "decimals": 18
+      },
+      "42161": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "decimals": 18
+      },
+      "57073": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "decimals": 18
+      },
+      "59144": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "decimals": 18
+      },
+      "81457": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "decimals": 18
+      },
+      "534352": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "decimals": 18
+      },
+      "7777777": {
+        "address": "0x0000000000000000000000000000000000000000",
+        "decimals": 18
+      }
+    },
+    "chainId": 1,
+    "price": {
+      "value": 4595.26811455,
+      "available": true,
+      "updatedAt": 1758230919
+    },
+    "totalPrice": {
+      "value": 390.59778973675,
+      "available": true,
+      "updatedAt": 1758230919
+    }
+  },
+  "fee": "85000000000000000",
+  "feeInEth": "85000000000000000",
+  "feePercentageBasisPoints": "8500000000000000",
+  "tradeType": "exact_input",
+  "from": "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720",
+  "defaultGasLimit": "350000",
+  "swapType": "normal",
+  "txTarget": "0x00000000009726632680fb29d3f7a9734e3010e2",
+  "chainId": 1,
+  "fallback": false
+}
