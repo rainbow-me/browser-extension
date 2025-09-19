@@ -1,0 +1,1149 @@
+{
+  "meta": {
+    "addresses": [
+      "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
+    ],
+    "errors": [],
+    "currency": "usd",
+    "status": "ok",
+    "chain_ids": [
+      1,
+      10,
+      56,
+      137,
+      8453,
+      42161
+    ],
+    "addresses_with_errors": [],
+    "chain_ids_with_errors": []
+  },
+  "payload": {
+    "assets": [
+      {
+        "quantity": "1400000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x2abc81725ef28c09fdd7d9d147d002df8e0456ff",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "BBB Token",
+          "network": "polygon",
+          "chain_id": 137,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230837,
+            "relative_change_24h": 0
+          },
+          "symbol": "BBB",
+          "colors": {
+            "primary": "#A8CE63"
+          },
+          "networks": {
+            "137": {
+              "address": "0x2abc81725ef28c09fdd7d9d147d002df8e0456ff",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "150000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x302de0c6267f8091651de096d89145b92c947bba",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "CredibilityToken",
+          "network": "polygon",
+          "chain_id": 137,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230837,
+            "relative_change_24h": 0
+          },
+          "symbol": "CRED",
+          "colors": {
+            "primary": "#75C06B"
+          },
+          "networks": {
+            "137": {
+              "address": "0x302de0c6267f8091651de096d89145b92c947bba",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "150000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xe8ac5347028393728c3e2393ae0230f4ceafdcf1",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "CredibilityToken",
+          "network": "polygon",
+          "chain_id": 137,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230837,
+            "relative_change_24h": 0
+          },
+          "symbol": "CRED",
+          "colors": {
+            "primary": "#A575FF"
+          },
+          "networks": {
+            "137": {
+              "address": "0xe8ac5347028393728c3e2393ae0230f4ceafdcf1",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "75000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x6e3d618fcc4ec5cc139c9a9186c730ea47b31d00",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "holiverse coin",
+          "network": "polygon",
+          "chain_id": 137,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230661,
+            "relative_change_24h": -6.511189228934995
+          },
+          "symbol": "HC",
+          "colors": {
+            "primary": "#FFD95A"
+          },
+          "networks": {
+            "137": {
+              "address": "0x6e3d618fcc4ec5cc139c9a9186c730ea47b31d00",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "700000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x42d93be6591a7b6b8ae1791a95499d14ab4d395f",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "BBBzero Token",
+          "network": "polygon",
+          "chain_id": 137,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230837,
+            "relative_change_24h": 0
+          },
+          "symbol": "BBBzero",
+          "colors": {
+            "primary": "#FF6780"
+          },
+          "networks": {
+            "137": {
+              "address": "0x42d93be6591a7b6b8ae1791a95499d14ab4d395f",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "1000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xe81315996a84b6a46e755e517c146fce3e027bc0",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "xRLTV",
+          "network": "polygon",
+          "chain_id": 137,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230837,
+            "relative_change_24h": 0
+          },
+          "symbol": "xRLTV",
+          "colors": {
+            "primary": "#FFDD86"
+          },
+          "networks": {
+            "137": {
+              "address": "0xe81315996a84b6a46e755e517c146fce3e027bc0",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "1001",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x191cdd7ecf4703ea7ac70b65af0939f07fa0ef1b",
+          "decimals": 10,
+          "icon_url": "",
+          "name": "LUNA1",
+          "network": "polygon",
+          "chain_id": 137,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230836,
+            "relative_change_24h": 0
+          },
+          "symbol": "LN1",
+          "colors": {
+            "primary": "#75C06B"
+          },
+          "networks": {
+            "137": {
+              "address": "0x191cdd7ecf4703ea7ac70b65af0939f07fa0ef1b",
+              "decimals": 10
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "252000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x5ca0bb75eb18ccfed4374fed30f52a060c9d02ef",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "Test",
+          "network": "polygon",
+          "chain_id": 137,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230837,
+            "relative_change_24h": 0
+          },
+          "symbol": "TST",
+          "colors": {
+            "primary": "#4D82FF"
+          },
+          "networks": {
+            "137": {
+              "address": "0x5ca0bb75eb18ccfed4374fed30f52a060c9d02ef",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "5078000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x11a13c1cc1a569ae8c1d3b766abdbe4c9eca5120",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "stgUSD",
+          "network": "polygon",
+          "chain_id": 137,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230663,
+            "relative_change_24h": 0
+          },
+          "symbol": "stgUSD",
+          "colors": {
+            "primary": "#5FD0F3"
+          },
+          "networks": {
+            "137": {
+              "address": "0x11a13c1cc1a569ae8c1d3b766abdbe4c9eca5120",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "240000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xafa6bcde9c014699a4aaf1f6e17ca0038f46ff21",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TestCoin",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230837,
+            "relative_change_24h": 0
+          },
+          "symbol": "TCT",
+          "colors": {
+            "primary": "#6A87C8"
+          },
+          "networks": {
+            "56": {
+              "address": "0xafa6bcde9c014699a4aaf1f6e17ca0038f46ff21",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "5000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x7dc435bae682c9dc1d465d703cfbdf417408c8dd",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "DexCoin token",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230837,
+            "relative_change_24h": 0
+          },
+          "symbol": "DC",
+          "colors": {
+            "primary": "#C5DADB"
+          },
+          "networks": {
+            "56": {
+              "address": "0x7dc435bae682c9dc1d465d703cfbdf417408c8dd",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "4000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xb7b6b8bc7e398b3dae97beebe335fe59145f3d41",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "Privasea AI Test Token",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230837,
+            "relative_change_24h": 0
+          },
+          "symbol": "PRAIT",
+          "colors": {
+            "primary": "#5FD0F3"
+          },
+          "networks": {
+            "56": {
+              "address": "0xb7b6b8bc7e398b3dae97beebe335fe59145f3d41",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "50000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x4238e5ccc619dcc8c00ade4cfc5d3d9020b24898",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "AIT Token",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230717,
+            "relative_change_24h": 43.8533127328224
+          },
+          "symbol": "AIT",
+          "colors": {
+            "primary": "#5FD0F3"
+          },
+          "networks": {
+            "56": {
+              "address": "0x4238e5ccc619dcc8c00ade4cfc5d3d9020b24898",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": false,
+          "verified": true,
+          "transferable": true,
+          "creation_date": "2023-03-20T13:52:04Z"
+        }
+      },
+      {
+        "quantity": "500000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xd3dff17e4dfbbddea602deeb4ce9cdd8cb8d163c",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "V8 Test Token",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230837,
+            "relative_change_24h": 0
+          },
+          "symbol": "V8TEST",
+          "colors": {
+            "primary": "#E95D72"
+          },
+          "networks": {
+            "56": {
+              "address": "0xd3dff17e4dfbbddea602deeb4ce9cdd8cb8d163c",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "444000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x3f7189a8636a46105b1444e8d20bc331ba74c5ac",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "Next4Life",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230836,
+            "relative_change_24h": 0
+          },
+          "symbol": "NLife",
+          "colors": {
+            "primary": "#5FC6D4"
+          },
+          "networks": {
+            "56": {
+              "address": "0x3f7189a8636a46105b1444e8d20bc331ba74c5ac",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x54d7afa7c764e1cf6fbefe9ff8239c0b117fd70d",
+          "decimals": 0,
+          "icon_url": "",
+          "name": "FAST PROFIT",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230661,
+            "relative_change_24h": 0
+          },
+          "symbol": "FP",
+          "colors": {
+            "primary": "#FFDD86"
+          },
+          "networks": {
+            "56": {
+              "address": "0x54d7afa7c764e1cf6fbefe9ff8239c0b117fd70d",
+              "decimals": 0
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "10",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xe253ca0268b0cfeae37ad30972c771b0753e7e05",
+          "decimals": 0,
+          "icon_url": "",
+          "name": "META BNB",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230661,
+            "relative_change_24h": 0
+          },
+          "symbol": "MBNB",
+          "colors": {
+            "primary": "#C5DADB"
+          },
+          "networks": {
+            "56": {
+              "address": "0xe253ca0268b0cfeae37ad30972c771b0753e7e05",
+              "decimals": 0
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "500000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x8111e13fc813966a9143d61f5485bedba2f56132",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "Jay4Life",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230837,
+            "relative_change_24h": 0
+          },
+          "symbol": "JL",
+          "colors": {
+            "primary": "#71ABFF"
+          },
+          "networks": {
+            "56": {
+              "address": "0x8111e13fc813966a9143d61f5485bedba2f56132",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "5000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x4cb319a2cfc11b55947fbfe8fb71922c850c19d8",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "HENX",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230837,
+            "relative_change_24h": 0
+          },
+          "symbol": "HENX",
+          "colors": {
+            "primary": "#EC66FF"
+          },
+          "networks": {
+            "56": {
+              "address": "0x4cb319a2cfc11b55947fbfe8fb71922c850c19d8",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "35000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xd124d5ec682a120a2c4bb6746a36160a23137086",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "Turks",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230837,
+            "relative_change_24h": 0
+          },
+          "symbol": "Trk",
+          "colors": {
+            "primary": "#FF8CBC"
+          },
+          "networks": {
+            "56": {
+              "address": "0xd124d5ec682a120a2c4bb6746a36160a23137086",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "123558714250065422464",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x37ec7a49886f8db9becb950b9bfc3a5c4ec4693a",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "Mock HKDAO",
+          "network": "bsc",
+          "chain_id": 56,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230828,
+            "relative_change_24h": 0
+          },
+          "symbol": "HKDAO9",
+          "colors": {
+            "primary": "#EC66FF"
+          },
+          "networks": {
+            "56": {
+              "address": "0x37ec7a49886f8db9becb950b9bfc3a5c4ec4693a",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "8000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xa960ad0957e907cd0aa40c3444b6a1016705c3eb",
+          "decimals": 6,
+          "icon_url": "",
+          "name": "VOLOPTI",
+          "network": "optimism",
+          "chain_id": 10,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230837,
+            "relative_change_24h": 0
+          },
+          "symbol": "VOLOPTI",
+          "colors": {
+            "primary": "#4D82FF"
+          },
+          "networks": {
+            "10": {
+              "address": "0xa960ad0957e907cd0aa40c3444b6a1016705c3eb",
+              "decimals": 6
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "81585000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x85d83a87381817bbe5051e6d7ca63a9f7a3b1a7c",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "Time",
+          "network": "mainnet",
+          "chain_id": 1,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230837,
+            "relative_change_24h": 0
+          },
+          "symbol": "TIME",
+          "colors": {
+            "primary": "#FF8024"
+          },
+          "networks": {
+            "1": {
+              "address": "0x85d83a87381817bbe5051e6d7ca63a9f7a3b1a7c",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": false,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "4258024322003448059785",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x2145eaec86935b0414754caa4d8c1582d433c73e",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "All your base are belong to us",
+          "network": "mainnet",
+          "chain_id": 1,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230661,
+            "relative_change_24h": 0
+          },
+          "symbol": "AYBABTU",
+          "colors": {
+            "primary": "#71ABFF"
+          },
+          "networks": {
+            "1": {
+              "address": "0x2145eaec86935b0414754caa4d8c1582d433c73e",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": false,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "1",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0xbcb8b83029e1fbfb7fe883e11c668a3deee83ecd",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "Token",
+          "network": "arbitrum",
+          "chain_id": 42161,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230837,
+            "relative_change_24h": 0
+          },
+          "symbol": "TKN",
+          "colors": {
+            "primary": "#5FD0F3"
+          },
+          "networks": {
+            "42161": {
+              "address": "0xbcb8b83029e1fbfb7fe883e11c668a3deee83ecd",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "100000000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x8fa2040dfb35f1ba4643622456ca094e799256fc",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "$TRUSK",
+          "network": "arbitrum",
+          "chain_id": 42161,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230837,
+            "relative_change_24h": 0
+          },
+          "symbol": "TSK",
+          "colors": {
+            "primary": "#FFB35A"
+          },
+          "networks": {
+            "42161": {
+              "address": "0x8fa2040dfb35f1ba4643622456ca094e799256fc",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "1000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x50b4f916b2b68c9288a94df76e29649dafd1c1fb",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "TS",
+          "network": "arbitrum",
+          "chain_id": 42161,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230835,
+            "relative_change_24h": 0
+          },
+          "symbol": "TS",
+          "colors": {
+            "primary": "#6A87C8"
+          },
+          "networks": {
+            "42161": {
+              "address": "0x50b4f916b2b68c9288a94df76e29649dafd1c1fb",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "20000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x946dd3703d1b34dc7e87723560a308bbc3e8a229",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "juanito",
+          "network": "base",
+          "chain_id": 8453,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230837,
+            "relative_change_24h": 0
+          },
+          "symbol": "juan",
+          "colors": {
+            "primary": "#A575FF"
+          },
+          "networks": {
+            "8453": {
+              "address": "0x946dd3703d1b34dc7e87723560a308bbc3e8a229",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "1000000000000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x9d2c26a0241aed3ae132fb9efb8532dbeb297d27",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "Sahaai",
+          "network": "base",
+          "chain_id": 8453,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230837,
+            "relative_change_24h": 0
+          },
+          "symbol": "S",
+          "colors": {
+            "primary": "#4D82FF"
+          },
+          "networks": {
+            "8453": {
+              "address": "0x9d2c26a0241aed3ae132fb9efb8532dbeb297d27",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "185000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x9e07e80815f0ceef6c8b2663ed14e12072643827",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "Wildcard",
+          "network": "base",
+          "chain_id": 8453,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230837,
+            "relative_change_24h": 0
+          },
+          "symbol": "WC",
+          "colors": {
+            "primary": "#75C06B"
+          },
+          "networks": {
+            "8453": {
+              "address": "0x9e07e80815f0ceef6c8b2663ed14e12072643827",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "20250000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x4073de1f5f60f92c8d014251e1a6396589c10c09",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "Tuna Driver",
+          "network": "base",
+          "chain_id": 8453,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230799,
+            "relative_change_24h": 0
+          },
+          "symbol": "TUNA",
+          "colors": {
+            "primary": "#FFE279"
+          },
+          "networks": {
+            "8453": {
+              "address": "0x4073de1f5f60f92c8d014251e1a6396589c10c09",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": false,
+          "transferable": true,
+          "creation_date": "2024-05-06T05:33:33Z"
+        }
+      },
+      {
+        "quantity": "300000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x2e6cf164a471bb485b009e494306fcc9854c6dfb",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "based",
+          "network": "base",
+          "chain_id": 8453,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230837,
+            "relative_change_24h": 0
+          },
+          "symbol": "based",
+          "colors": {
+            "primary": "#FF8024"
+          },
+          "networks": {
+            "8453": {
+              "address": "0x2e6cf164a471bb485b009e494306fcc9854c6dfb",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "800000000000000000000000000",
+        "asset": {
+          "asset_code": "0x2c841f316b0e6e9df62676ff8eca1a35c9686a90",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "SLaY",
+          "network": "base",
+          "chain_id": 8453,
+          "price": {
+            "value": 0.0328261371663,
+            "changed_at": 1756230835,
+            "relative_change_24h": 0
+          },
+          "symbol": "SLaY",
+          "colors": {
+            "primary": "#A575FF"
+          },
+          "networks": {
+            "8453": {
+              "address": "0x2c841f316b0e6e9df62676ff8eca1a35c9686a90",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": true,
+          "transferable": true
+        }
+      },
+      {
+        "quantity": "1001000000000000000000",
+        "small_balance": true,
+        "asset": {
+          "asset_code": "0x688e78ebf059196aee381f4cd5e2319bcfdbe168",
+          "decimals": 18,
+          "icon_url": "",
+          "name": "Hepatitis C",
+          "network": "base",
+          "chain_id": 8453,
+          "price": {
+            "value": 0,
+            "changed_at": 1756230829,
+            "relative_change_24h": -1.5477798596888692
+          },
+          "symbol": "HEPATITISC",
+          "colors": {
+            "primary": "#FF8024"
+          },
+          "networks": {
+            "8453": {
+              "address": "0x688e78ebf059196aee381f4cd5e2319bcfdbe168",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          },
+          "probable_spam": false,
+          "transferable": true,
+          "creation_date": "2025-02-24T11:40:55Z"
+        }
+      }
+    ]
+  }
+}
