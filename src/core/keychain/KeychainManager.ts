@@ -12,6 +12,7 @@ import { Address } from 'viem';
 
 import { RainbowError, logger } from '~/logger';
 
+import { INTERNAL_BUILD, IS_TESTING } from '../sentry';
 import { LocalStorage, SessionStorage } from '../storage';
 import { KeychainType } from '../types/keychainTypes';
 import { isLowerCaseMatch } from '../utils/strings';
