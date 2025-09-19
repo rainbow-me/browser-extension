@@ -11,6 +11,7 @@ import {
 
 import {
   checkWalletName,
+  cleanupDriver,
   delayTime,
   findElementByTestId,
   findElementByTestIdAndClick,
@@ -38,6 +39,8 @@ describe('App interactions flow', () => {
     driver = await initDriverWithOptions({
       browser,
       os,
+      testSuite: 'window-switching', // Heavy window/tab switching test
+      disableHeadless: true, // Modal detection requires non-headless mode
     });
     const extensionId = await getExtensionIdByName(driver, 'Rainbow');
     if (!extensionId) throw new Error('Extension not found');
@@ -52,7 +55,7 @@ describe('App interactions flow', () => {
     await takeScreenshotOnFailure(context);
   });
 
-  afterAll(() => driver?.quit());
+  afterAll(() => cleanupDriver(driver));
 
   it('should be able import a wallet via seed', async () => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);

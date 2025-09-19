@@ -95,7 +95,7 @@ jobs:
   #           export FIREFOX_BIN="$(pwd)/firefox/firefox"
   #           export MAX_RETRIES=3
   #           yarn firefox:manifest && yarn firefox:zip
-  #           yarn vitest:parallel
+  #           yarn e2e:parallel
   #     - name: Upload deps artifacts
   #       if: steps.FFE2eParallel.outcome == 'failure'
   #       uses: actions/upload-artifact@v4
@@ -125,7 +125,7 @@ jobs:
   #         export FIREFOX_BIN="$(pwd)/firefox/firefox"
   #         export MAX_RETRIES=3
   #         yarn firefox:manifest && yarn firefox:zip
-  #         yarn vitest:swap
+  #         yarn e2e:swap
   #     - name: Upload deps artifacts
   #       if: steps.FFE2eSwap.outcome == 'failure'
   #       uses: actions/upload-artifact@v4
@@ -155,7 +155,7 @@ jobs:
   #           export FIREFOX_BIN="$(pwd)/firefox/firefox"
   #           export MAX_RETRIES=3
   #           yarn firefox:manifest && yarn firefox:zip
-  #           yarn vitest:send
+  #           yarn e2e:send
   #     - name: Upload deps artifacts
   #       if: steps.FFE2eSend.outcome == 'failure'
   #       uses: actions/upload-artifact@v4
@@ -185,7 +185,7 @@ jobs:
   #         export FIREFOX_BIN="$(pwd)/firefox/firefox"
   #         export MAX_RETRIES=3
   #         yarn firefox:manifest && yarn firefox:zip
-  #         yarn vitest:dappInteractions
+  #         yarn e2e:dappInteractions
   #     - name: Upload deps artifacts
   #       if: steps.FFE2eDappInteractions.outcome == 'failure'
   #       uses: actions/upload-artifact@v4
@@ -215,7 +215,7 @@ jobs:
           export OS=linux
           export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
           export MAX_RETRIES=3
-          yarn vitest:parallel
+          yarn e2e:parallel
       - name: Upload deps artifacts
         if: steps.ChromeE2EParallel.outcome == 'failure'
         uses: actions/upload-artifact@v4
@@ -245,7 +245,7 @@ jobs:
           export OS=linux
           export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
           export MAX_RETRIES=3
-          yarn vitest:swap
+          yarn e2e:swap
       - name: Upload deps artifacts
         if: steps.ChromeE2ESwaps.outcome == 'failure'
         uses: actions/upload-artifact@v4
@@ -275,7 +275,7 @@ jobs:
           export OS=linux
           export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
           export MAX_RETRIES=3
-          yarn vitest:send
+          yarn e2e:send
       - name: Upload deps artifacts
         if: steps.ChromeE2ESend.outcome == 'failure'
         uses: actions/upload-artifact@v4
@@ -305,7 +305,7 @@ jobs:
           export OS=linux
           export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
           export MAX_RETRIES=3
-          yarn vitest:send:optimism
+          yarn e2e:send:optimism
       - name: Upload deps artifacts
         if: steps.ChromeOpE2ESend.outcome == 'failure'
         uses: actions/upload-artifact@v4
@@ -335,7 +335,7 @@ jobs:
           export OS=linux
           export CHROMIUM_BIN=$(find chrome -type f -name 'chrome')
           export MAX_RETRIES=3
-          yarn vitest:dappInteractions
+          yarn e2e:dappInteractions
       - name: Upload deps artifacts
         if: steps.ChromeE2EDappInteractions.outcome == 'failure'
         uses: actions/upload-artifact@v4

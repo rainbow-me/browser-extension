@@ -3,6 +3,7 @@ import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
+  cleanupDriver,
   delayTime,
   findElementByTestIdAndClick,
   findElementByText,
@@ -28,13 +29,15 @@ describe('New wallet flow', () => {
     driver = await initDriverWithOptions({
       browser,
       os,
+      testSuite: 'window-switching',
+      disableHeadless: true, // Disable headless mode due to modal detection issues with window switching
     });
     const extensionId = await getExtensionIdByName(driver, 'Rainbow');
     if (!extensionId) throw new Error('Extension not found');
     rootURL += extensionId;
   });
 
-  afterAll(async () => driver?.quit());
+  afterAll(() => cleanupDriver(driver));
 
   // Create a new wallet
   it('should be able create a new wallet', async () => {

@@ -2,6 +2,7 @@ import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
+  cleanupDriver,
   delayTime,
   fillPrivateKey,
   fillSeedPhrase,
@@ -40,7 +41,7 @@ describe('Watch wallet then add more and switch between them', () => {
     rootURL += extensionId;
   });
 
-  afterAll(async () => driver?.quit());
+  afterAll(() => cleanupDriver(driver));
 
   // Watch a wallet
   it('should be able watch a wallet', async () => {

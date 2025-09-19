@@ -2,6 +2,7 @@ import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
+  cleanupDriver,
   getExtensionIdByName,
   getRootUrl,
   goToTestApp,
@@ -41,13 +42,14 @@ describe('Dapp provider BFCache behavior', () => {
     driver = await initDriverWithOptions({
       browser,
       os,
+      testSuite: 'window-switching', // Heavy window/tab switching test
     });
     const extensionId = await getExtensionIdByName(driver, 'Rainbow');
     if (!extensionId) throw new Error('Extension not found');
     rootURL += extensionId;
   });
 
-  afterAll(() => driver?.quit());
+  afterAll(() => cleanupDriver(driver));
 
   it('has working provider stream after BFCache restore', async () => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);

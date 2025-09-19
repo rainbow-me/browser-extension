@@ -4,6 +4,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import {
   checkExtensionURL,
   checkWalletName,
+  cleanupDriver,
   clickAcceptRequestButton,
   connectToTestDapp,
   delayTime,
@@ -37,12 +38,14 @@ describe.runIf(browser !== 'firefox')(
       driver = await initDriverWithOptions({
         browser,
         os,
+        testSuite: 'window-switching',
+        disableHeadless: true, // Disable headless mode due to modal detection issues with window switching
       });
       const extensionId = await getExtensionIdByName(driver, 'Rainbow');
       if (!extensionId) throw new Error('Extension not found');
       rootURL += extensionId;
     });
-    afterAll(async () => driver.quit());
+    afterAll(() => cleanupDriver(driver));
 
     it('should be able import a wallet via seed', async () => {
       await importWalletFlowUsingKeyboardNavigation(
