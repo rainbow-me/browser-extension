@@ -4,7 +4,11 @@ import { shortcuts } from '~/core/references/shortcuts';
 
 import { useCommandKStatus } from '../components/CommandK/useCommandKStatus';
 import { ROUTES } from '../urls';
-import { getInputIsFocused, radixIsActive } from '../utils/activeElement';
+import {
+  backupReminderIsActive,
+  getInputIsFocused,
+  radixIsActive,
+} from '../utils/activeElement';
 
 import { useKeyboardShortcut } from './useKeyboardShortcut';
 
@@ -36,12 +40,16 @@ export function useCommandKShortcuts() {
   );
 
   const getCommandKTriggerIsActive = React.useCallback(() => {
-    return !disableOnCurrentRoute;
+    return !disableOnCurrentRoute && !backupReminderIsActive();
   }, [disableOnCurrentRoute]);
 
   const handleCommandKShortcutPress = React.useCallback(
     (e: KeyboardEvent) => {
       if (!isCommandKVisible) {
+        if (backupReminderIsActive()) {
+          e.preventDefault();
+          return;
+        }
         e.preventDefault();
         if (getInputIsFocused()) {
           setLastActiveElement(document.activeElement as HTMLElement);
