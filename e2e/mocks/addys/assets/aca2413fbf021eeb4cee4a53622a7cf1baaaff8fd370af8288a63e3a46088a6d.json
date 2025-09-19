@@ -20,6 +20,110 @@
   "payload": {
     "assets": [
       {
+        "quantity": "10000000000000000000",
+        "small_balance": false,
+        "asset": {
+          "asset_code": "eth",
+          "decimals": 18,
+          "icon_url": "https://rainbowme-res.cloudinary.com/image/upload/v1668564868/assets/ethereum/eth.png",
+          "name": "Ethereum",
+          "network": "mainnet",
+          "chain_id": 1,
+          "price": {
+            "value": 3000,
+            "changed_at": 1700000000,
+            "relative_change_24h": 0
+          },
+          "symbol": "ETH",
+          "colors": {
+            "primary": "#627EEA",
+            "fallback": "#627EEA"
+          },
+          "bridging": {
+            "bridgeable": true,
+            "networks": {
+              "10": {
+                "address": "eth",
+                "decimals": 18
+              },
+              "137": {
+                "address": "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619",
+                "decimals": 18
+              }
+            }
+          }
+        }
+      },
+      {
+        "quantity": "100000000000000000000",
+        "small_balance": false,
+        "asset": {
+          "asset_code": "0x6b175474e89094c44da98b954eedeac495271d0f",
+          "decimals": 18,
+          "icon_url": "https://rainbowme-res.cloudinary.com/image/upload/v1668565017/assets/ethereum/0x6b175474e89094c44da98b954eedeac495271d0f.png",
+          "name": "Dai Stablecoin",
+          "network": "mainnet",
+          "chain_id": 1,
+          "price": {
+            "value": 1,
+            "changed_at": 1700000000,
+            "relative_change_24h": 0
+          },
+          "symbol": "DAI",
+          "colors": {
+            "primary": "#F4B731",
+            "fallback": "#F4B731"
+          },
+          "networks": {
+            "1": {
+              "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
+              "decimals": 18
+            }
+          },
+          "bridging": {
+            "bridgeable": false,
+            "networks": {}
+          }
+        }
+      },
+      {
+        "quantity": "100000000",
+        "small_balance": false,
+        "asset": {
+          "asset_code": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "decimals": 6,
+          "icon_url": "https://rainbowme-res.cloudinary.com/image/upload/v1668564868/assets/ethereum/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png",
+          "name": "USD Coin",
+          "network": "mainnet",
+          "chain_id": 1,
+          "price": {
+            "value": 1,
+            "changed_at": 1700000000,
+            "relative_change_24h": 0
+          },
+          "symbol": "USDC",
+          "colors": {
+            "primary": "#2775CA",
+            "fallback": "#2775CA"
+          },
+          "networks": {
+            "1": {
+              "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+              "decimals": 6
+            }
+          },
+          "bridging": {
+            "bridgeable": true,
+            "networks": {
+              "10": {
+                "address": "0x7f5c764cbc14f9669b88837ca1490cca17c31607",
+                "decimals": 6
+              }
+            }
+          }
+        }
+      },
+      {
         "quantity": "1000000000000000000",
         "small_balance": true,
         "asset": {
@@ -701,7 +805,7 @@
           "network": "mainnet",
           "chain_id": 1,
           "price": {
-            "value": 1.84279730494e-7,
+            "value": 1.84279730494e-07,
             "changed_at": 1758252129,
             "relative_change_24h": -0.23140567562001113
           },
@@ -1193,7 +1297,7 @@
           "asset_code": "0x23c67ac21bad999700a47266ef4719614ceeb970",
           "decimals": 9,
           "icon_url": "",
-          "name": "🐸 pepe",
+          "name": "\ud83d\udc38 pepe",
           "network": "base",
           "chain_id": 8453,
           "price": {
@@ -1201,7 +1305,7 @@
             "changed_at": 1758252130,
             "relative_change_24h": 0
           },
-          "symbol": "🐸 PEPE",
+          "symbol": "\ud83d\udc38 PEPE",
           "colors": {
             "primary": "#FFDD86"
           },
@@ -2915,7 +3019,7 @@
           "asset_code": "0xe02d952e135bd37939d598b6be4667ed83a2de15",
           "decimals": 9,
           "icon_url": "",
-          "name": "Kylian Mbappé",
+          "name": "Kylian Mbapp\u00e9",
           "network": "base",
           "chain_id": 8453,
           "price": {
@@ -3347,7 +3451,7 @@
           "asset_code": "0xc66cebb6983c6132312ad8abbab101e75d51eb8f",
           "decimals": 9,
           "icon_url": "",
-          "name": "🐠 Tropical Fish",
+          "name": "\ud83d\udc20 Tropical Fish",
           "network": "base",
           "chain_id": 8453,
           "price": {
@@ -3355,7 +3459,7 @@
             "changed_at": 1758252130,
             "relative_change_24h": 0
           },
-          "symbol": "🐠 FISH",
+          "symbol": "\ud83d\udc20 FISH",
           "colors": {
             "primary": "#A8CE63"
           },
@@ -3646,7 +3750,7 @@
           "asset_code": "0xf7d0860912fcb2d94c60b84857647880d57d8082",
           "decimals": 18,
           "icon_url": "",
-          "name": "Minji 민지",
+          "name": "Minji \ubbfc\uc9c0",
           "network": "base",
           "chain_id": 8453,
           "price": {
@@ -4675,7 +4779,7 @@
           "asset_code": "0x0c766335ca2e7aa6311e18f0bba6dd639e7a9d5c",
           "decimals": 10,
           "icon_url": "",
-          "name": "Brett’s Side Chick",
+          "name": "Brett\u2019s Side Chick",
           "network": "base",
           "chain_id": 8453,
           "price": {
@@ -6509,7 +6613,7 @@
             "changed_at": 1758252130,
             "relative_change_24h": 0
           },
-          "symbol": "𝘿𝙊𝙂𝙎",
+          "symbol": "\ud835\ude3f\ud835\ude4a\ud835\ude42\ud835\ude4e",
           "colors": {
             "primary": "#FF8024"
           },
@@ -7234,7 +7338,7 @@
           "network": "base",
           "chain_id": 8453,
           "price": {
-            "value": 0.0000591527384618,
+            "value": 5.91527384618e-05,
             "changed_at": 1758252130,
             "relative_change_24h": 0.9963967798982345
           },
@@ -12972,7 +13076,7 @@
             "changed_at": 1758252130,
             "relative_change_24h": 0
           },
-          "symbol": "DOGSΩ",
+          "symbol": "DOGS\u03a9",
           "colors": {
             "primary": "#A575FF"
           },
