@@ -9,7 +9,7 @@ export const walletHandler = walletOs.wallet.handler(
   async ({ input: address }) => {
     if (INTERNAL_BUILD || IS_TESTING) {
       Sentry.addBreadcrumb({
-        message: `Wallet address: ${address}`,
+        message: `Wallet address: ${address.replace('0x', 'x0000')}`,
         data: {
           address,
           timestamp: new Date().toISOString(),
