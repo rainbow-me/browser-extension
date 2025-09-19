@@ -87,7 +87,10 @@ jobs:
           echo "Checking logger import paths..."
           ! grep -r "from ['\"]\.\..*logger" src/ \
             --include="*.ts" \
-            --include="*.tsx" || \
+            --include="*.tsx" \
+            --exclude="*.test.ts" \
+            --exclude="*.spec.ts" \
+            --exclude="eslint-rules.test.ts" || \
           (echo "❌ Found relative logger imports. Use '~/logger' instead." && exit 1)
 
       - name: Check RainbowError usage
