@@ -7,10 +7,12 @@ import {
   encryptWithKey,
   importKey,
 } from '@metamask/browser-passworder';
+import * as Sentry from '@sentry/react';
 import { Address } from 'viem';
 
 import { RainbowError, logger } from '~/logger';
 
+import { INTERNAL_BUILD, IS_TESTING } from '../sentry';
 import { LocalStorage, SessionStorage } from '../storage';
 import { KeychainType } from '../types/keychainTypes';
 import { isLowerCaseMatch } from '../utils/strings';
@@ -544,6 +546,29 @@ class KeychainManager {
       if (accounts.includes(address)) {
         return keychain;
       }
+    }
+    if (INTERNAL_BUILD || IS_TESTING) {
+      const addressesByKeychain = await Promise.all(
+        this.state.keychains.map(async (keychain) => {
+          return {
+            keychainType: keychain.type,
+            accounts: (await keychain.getAccounts()).map((account) =>
+              account.replace('0x', 'x0000'),
+            ),
+          };
+        }),
+      );
+      Sentry.addBreadcrumb({
+        message: `Keychain not found for account: ${address.replace(
+          '0x',
+          'x0000',
+        )}`,
+        data: {
+          keychainAmount: this.state.keychains.length,
+          addressesByKeychain,
+          timestamp: new Date().toISOString(),
+        },
+      });
     }
     throw new Error('No keychain found for account');
   }
