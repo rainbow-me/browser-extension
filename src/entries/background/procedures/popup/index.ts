@@ -5,6 +5,7 @@ import * as Sentry from '@sentry/react';
 import { INTERNAL_BUILD, IS_TESTING } from '~/core/sentry';
 import { RainbowError, logger } from '~/logger';
 
+import { POPUP_PORT_NAME } from './constants';
 import { healthRouter } from './health';
 import { walletOs } from './os';
 import { stateRouter } from './state';
@@ -42,10 +43,12 @@ export function startPopupRouter() {
   const handler = new RPCHandler(popupRouter);
 
   chrome.runtime.onConnect.addListener((port) => {
-    handler.upgrade(port, {
-      context: {
-        sender: port.sender,
-      },
-    });
+    if (port.name === POPUP_PORT_NAME) {
+      handler.upgrade(port, {
+        context: {
+          sender: port.sender,
+        },
+      });
+    }
   });
 }
