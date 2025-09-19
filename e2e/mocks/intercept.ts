@@ -209,32 +209,59 @@ const handlers = [
   http.all('**', async ({ request }) => {
     try {
       const url = new URL(request.url);
+      console.log(`[E2E Mock MSW] Handling request: ${url.toString()}`);
+
       const basePath = getSnapshotPath(url);
-      if (!basePath) return passthrough();
+      if (!basePath) {
+        console.log(
+          `[E2E Mock MSW] No snapshot path for URL: ${url.toString()}`,
+        );
+        return passthrough();
+      }
+
+      console.log(`[E2E Mock MSW] Looking for mock at base path: ${basePath}`);
 
       // Try .json file first
       const jsonFile = `${basePath}.json`;
-      const jsonData = await fs.readFile(jsonFile, 'utf8').catch(() => null);
+      console.log(`[E2E Mock MSW] Checking for JSON file: ${jsonFile}`);
+      const jsonData = await fs.readFile(jsonFile, 'utf8').catch((err) => {
+        console.log(`[E2E Mock MSW] Failed to read JSON file: ${err.message}`);
+        return null;
+      });
       if (jsonData) {
         try {
           const json = JSON.parse(jsonData);
+          console.log(
+            `[E2E Mock MSW] Successfully serving JSON mock for: ${url.toString()}`,
+          );
           return HttpResponse.json(json as JsonBodyType, { status: 200 });
-        } catch {
+        } catch (e) {
+          console.log(`[E2E Mock MSW] Failed to parse JSON: ${e}`);
           // JSON parse failed, continue to try raw file
         }
       }
 
       // Try file without extension (for non-JSON responses)
-      const rawData = await fs.readFile(basePath, null).catch(() => null);
+      console.log(`[E2E Mock MSW] Checking for raw file: ${basePath}`);
+      const rawData = await fs.readFile(basePath, null).catch((err) => {
+        console.log(`[E2E Mock MSW] Failed to read raw file: ${err.message}`);
+        return null;
+      });
       if (rawData) {
+        console.log(
+          `[E2E Mock MSW] Successfully serving raw mock for: ${url.toString()}`,
+        );
         // Return as-is for non-JSON content
         return new HttpResponse(rawData, { status: 200 });
       }
 
+      console.log(
+        `[E2E Mock MSW] No mock found, passing through: ${url.toString()}`,
+      );
       return passthrough();
     } catch (error) {
       // On any error, passthrough to real network
-      console.warn('[E2E Mock] MSW handler error:', error);
+      console.warn('[E2E Mock MSW] Handler error:', error);
       return passthrough();
     }
   }),
@@ -270,15 +297,24 @@ export async function interceptMocks(
       try {
         const req = evt.request;
         const url = new URL(req.url);
+        console.log(`[E2E Mock BiDi] Intercepted request: ${req.url}`);
+
         const file = getSnapshotPath(url);
 
         // If not a mocked endpoint, continue
         if (!file) {
+          console.log(
+            `[E2E Mock BiDi] Not a mocked endpoint, continuing: ${req.url}`,
+          );
           await network.continueRequest(
             new ContinueRequestParameters(req.request),
           );
           return;
         }
+
+        console.log(
+          `[E2E Mock BiDi] Found snapshot path for ${req.url}: ${file}`,
+        );
 
         // In record mode, fetch and persist, then continue
         if (MODE === 'record') {

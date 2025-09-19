@@ -22,12 +22,21 @@ export class BiDiManager {
   async initialize(): Promise<void> {
     if (!this.isActive) {
       try {
+        console.log('[BiDiManager] Starting initialization...');
         this.interceptor = await interceptMocks(this.driver);
-        this.isActive = true;
-        console.log('[BiDiManager] Initialized');
+        if (this.interceptor) {
+          this.isActive = true;
+          console.log(
+            '[BiDiManager] Successfully initialized with interceptor',
+          );
+        } else {
+          console.warn('[BiDiManager] interceptMocks returned null');
+        }
       } catch (error) {
         console.error('[BiDiManager] Failed to initialize:', error);
       }
+    } else {
+      console.log('[BiDiManager] Already active, skipping initialization');
     }
   }
 
