@@ -211,6 +211,18 @@ const handlers = [
       const url = new URL(request.url);
       console.log(`[E2E Mock MSW] Handling request: ${url.toString()}`);
 
+      // Pass through localhost/RPC requests
+      if (
+        url.hostname === 'localhost' ||
+        url.hostname === '127.0.0.1' ||
+        url.hostname === 'rpc.rainbow.me'
+      ) {
+        console.log(
+          `[E2E Mock MSW] RPC/localhost request, passing through: ${url.toString()}`,
+        );
+        return passthrough();
+      }
+
       const basePath = getSnapshotPath(url);
       if (!basePath) {
         console.log(
@@ -281,15 +293,31 @@ export async function interceptMocks(
       console.log('[E2E Mock] Response data collector enabled');
     }
 
-    // Set up interception for configured endpoints
+    // Set up interception for configured endpoints and localhost
     const interceptParams = new AddInterceptParameters(
       InterceptPhase.BEFORE_REQUEST_SENT,
     );
+
+    // Add HTTPS endpoints from configuration
     for (const service of Object.values(ENDPOINTS)) {
       interceptParams.urlPattern(
         new UrlPattern().protocol('https').hostname(service.host),
       );
     }
+
+    // Add localhost/anvil interception for HTTP
+    interceptParams.urlPattern(
+      new UrlPattern().protocol('http').hostname('localhost'),
+    );
+    interceptParams.urlPattern(
+      new UrlPattern().protocol('http').hostname('127.0.0.1'),
+    );
+
+    // Also add RPC endpoints
+    interceptParams.urlPattern(
+      new UrlPattern().protocol('https').hostname('rpc.rainbow.me'),
+    );
+
     const interceptId = await network.addIntercept(interceptParams);
 
     // Handle request interception with single error boundary
@@ -298,6 +326,21 @@ export async function interceptMocks(
         const req = evt.request;
         const url = new URL(req.url);
         console.log(`[E2E Mock BiDi] Intercepted request: ${req.url}`);
+
+        // Check if this is localhost/RPC traffic - log but pass through
+        if (
+          url.hostname === 'localhost' ||
+          url.hostname === '127.0.0.1' ||
+          url.hostname === 'rpc.rainbow.me'
+        ) {
+          console.log(
+            `[E2E Mock BiDi] RPC/localhost request, passing through: ${req.url}`,
+          );
+          await network.continueRequest(
+            new ContinueRequestParameters(req.request),
+          );
+          return;
+        }
 
         const file = getSnapshotPath(url);
 
