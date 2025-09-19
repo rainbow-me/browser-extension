@@ -152,6 +152,7 @@ it('should be able to interact with route settings', async () => {
     id: 'settings-route-context-trigger-auto',
     driver,
   });
+  // Change from auto to 0x to avoid 1inch API errors
   await findElementByTestIdAndClick({
     id: 'settings-route-context-0x',
     driver,
