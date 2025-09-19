@@ -993,7 +993,7 @@ it('should be able to execute swap', async () => {
   await typeOnTextInput({
     id: 'slippage-input-mask',
     driver,
-    text: '15',
+    text: '99',
   });
   await findElementByTextAndClick(driver, 'Auto');
   await findElementByTextAndClick(driver, '0x');
