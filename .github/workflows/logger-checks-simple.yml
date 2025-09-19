@@ -1,0 +1,86 @@
+name: Console Usage Check
+
+on:
+  pull_request:
+    paths:
+      - 'src/**/*.ts'
+      - 'src/**/*.tsx'
+
+permissions:
+  contents: read
+
+jobs:
+  check-console-usage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Check for new console.log and console.error usage
+        run: |
+          echo "Checking for console.log and console.error in production code..."
+
+          # Directories where console should NOT be used (use logger instead)
+          PRODUCTION_DIRS=(
+            "src/entries/popup"
+            "src/entries/background"
+            "src/entries/content"
+            "src/core"
+            "src/analytics"
+          )
+
+          # Exclusions for legitimate console usage
+          EXCLUDE_PATTERNS=(
+            --exclude="*.test.ts"
+            --exclude="*.spec.ts"
+            --exclude="*.test.tsx"
+            --exclude-dir="scripts"
+            --exclude-dir="logger"
+          )
+
+          FOUND_ISSUES=false
+
+          for DIR in "${PRODUCTION_DIRS[@]}"; do
+            if [ -d "$DIR" ]; then
+              # Check for console.log
+              CONSOLE_LOGS=$(grep -r "console\.log" "$DIR" \
+                --include="*.ts" \
+                --include="*.tsx" \
+                "${EXCLUDE_PATTERNS[@]}" || true)
+
+              # Check for console.error
+              CONSOLE_ERRORS=$(grep -r "console\.error" "$DIR" \
+                --include="*.ts" \
+                --include="*.tsx" \
+                "${EXCLUDE_PATTERNS[@]}" || true)
+
+              if [ -n "$CONSOLE_LOGS" ] || [ -n "$CONSOLE_ERRORS" ]; then
+                if [ "$FOUND_ISSUES" = false ]; then
+                  echo "❌ Found console statements in production code:"
+                  echo "================================================"
+                  FOUND_ISSUES=true
+                fi
+
+                if [ -n "$CONSOLE_LOGS" ]; then
+                  echo ""
+                  echo "console.log found in $DIR:"
+                  echo "$CONSOLE_LOGS"
+                fi
+
+                if [ -n "$CONSOLE_ERRORS" ]; then
+                  echo ""
+                  echo "console.error found in $DIR:"
+                  echo "$CONSOLE_ERRORS"
+                fi
+              fi
+            fi
+          done
+
+          if [ "$FOUND_ISSUES" = true ]; then
+            echo ""
+            echo "================================================"
+            echo "❌ Please use 'logger' instead of 'console.log' or 'console.error'"
+            echo "   See: src/logger/README.md for usage"
+            exit 1
+          else
+            echo "✅ No console.log or console.error found in production code"
+          fi

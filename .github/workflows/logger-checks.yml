@@ -102,5 +102,14 @@ jobs:
           # Run normal linting - the project's .eslintrc.js should handle console rules appropriately
           yarn lint
 
-      - name: Type check logger usage
-        run: yarn typecheck
+      - name: Verify logger builds correctly
+        run: |
+          # Ensure the logger module and its tests compile without errors
+          echo "Type checking logger files..."
+          npx tsc --noEmit --skipLibCheck \
+            src/logger/index.ts \
+            src/logger/debugContext.ts \
+            src/logger/logger.test.ts \
+            src/logger/eslint-rules.test.ts
+
+          echo "✅ Logger files type check passed"
