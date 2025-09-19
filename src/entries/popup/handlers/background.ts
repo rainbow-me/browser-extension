@@ -4,12 +4,17 @@ import type { RouterClient } from '@orpc/server';
 import { createTanstackQueryUtils } from '@orpc/tanstack-query';
 
 import type { PopupRouter } from '~/entries/background/procedures/popup';
+import { POPUP_PORT_NAME } from '~/entries/background/procedures/popup/constants';
 
 import { createDeepProxy } from './deepProxy';
 import { autoReconnect } from './retry';
 
+function createPort() {
+  return chrome.runtime.connect({ name: POPUP_PORT_NAME });
+}
+
 // Mutable reference to the latest client
-const firstPort = chrome.runtime.connect();
+const firstPort = createPort();
 let _popupClient: RouterClient<PopupRouter> = createORPCClient(
   new RPCLink({ port: firstPort }),
 );
@@ -23,7 +28,7 @@ autoReconnect(
   // Pass the initial port for reconnection logic
   'popup->background',
   firstPort,
-  () => chrome.runtime.connect(),
+  createPort,
   (newPort) => {
     _popupClient = createORPCClient(new RPCLink({ port: newPort }));
   },
