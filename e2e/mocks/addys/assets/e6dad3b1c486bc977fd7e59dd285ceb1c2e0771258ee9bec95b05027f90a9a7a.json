@@ -1,0 +1,75 @@
+{
+  "meta": {
+    "addresses": ["0xa0Ee7A142d267C1f36714E4a8F75612F20a79720"],
+    "currency": "usd",
+    "chain_id": 10,
+    "total_pages": 1,
+    "page": 0,
+    "limit": 50,
+    "more": false,
+    "total_value": {
+      "raw": "10000000000000000000",
+      "formatted": 10.0
+    },
+    "total_underlying_value": {
+      "raw": "10000000000000000000",
+      "formatted": 10.0
+    },
+    "total_stable_value": {
+      "raw": "0",
+      "formatted": 0
+    },
+    "total_claimable_value": {
+      "raw": "0",
+      "formatted": 0
+    }
+  },
+  "payload": {
+    "results": [
+      {
+        "asset": {
+          "asset_code": "0x0000000000000000000000000000000000000000_10",
+          "colors": {
+            "primary": "#DEDED5",
+            "fallback": "",
+            "shadow": ""
+          },
+          "decimals": 18,
+          "icon_url": "https://ethereum-optimism.github.io/data/ETH/logo.png",
+          "name": "Ethereum",
+          "network": "10",
+          "price": {
+            "value": 2500.0,
+            "changed_at": 1707465600,
+            "relative_change_24h": 0.0
+          },
+          "symbol": "ETH",
+          "type": "native",
+          "interface": "native",
+          "supported_on_ramps": [
+            "Coinbase"
+          ]
+        },
+        "quantity": {
+          "raw": "10000000000000000000",
+          "formatted": 10.0
+        },
+        "balance_display": "10",
+        "balance": {
+          "value": "25000.00",
+          "display": "$25,000.00"
+        },
+        "native_balance": {
+          "value": "25000.00",
+          "display": "$25,000.00"
+        },
+        "underlying_balance": {
+          "value": "25000.00",
+          "display": "$25,000.00"
+        },
+        "stable_balance": null,
+        "claimable_balance": null
+      }
+    ]
+  }
+}

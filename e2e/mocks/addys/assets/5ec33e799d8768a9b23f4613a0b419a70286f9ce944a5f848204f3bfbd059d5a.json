@@ -445,8 +445,8 @@
         }
       },
       {
-        "quantity": "8",
-        "small_balance": true,
+        "quantity": "10000000000000000000",
+        "small_balance": false,
         "asset": {
           "asset_code": "eth",
           "decimals": 18,
