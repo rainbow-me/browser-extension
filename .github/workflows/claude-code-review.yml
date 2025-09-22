@@ -1,48 +1,82 @@
 name: Claude Code Review
 
 on:
+  # Run on PRs opened, updated, and review requested
   pull_request:
-    types: [opened, synchronize]
-    # Optional: Only run on specific file changes
-    # paths:
-    #   - "src/**/*.ts"
-    #   - "src/**/*.tsx"
-    #   - "src/**/*.js"
-    #   - "src/**/*.jsx"
+    types: [opened, synchronize, ready_for_review, reopened]
+    
+    # Focus on core code changes, ignore erroneous config changes
+    paths:
+      - "src/**/*.{ts,tsx,js,jsx}"
+      - "scripts/**/*.{ts,js}"
+      - "e2e/**/*.{ts,js}"
+
+# Cancel in-progress runs when a new run is triggered
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   claude-review:
-    # Optional: Filter by PR author
-    # if: |
-    #   github.event.pull_request.user.login == 'external-contributor' ||
-    #   github.event.pull_request.user.login == 'new-developer' ||
-    #   github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR'
+    # Run when the triggering CI run came from a pull‑request
+    # By internal contributors (OWNER, MEMBER, or COLLABORATOR)
+    if: |
+      github.event.pull_request.author_association == 'OWNER' ||
+      github.event.pull_request.author_association == 'MEMBER' ||
+      github.event.pull_request.author_association == 'COLLABORATOR'
     
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: read
-      issues: read
+      pull-requests: write
+      issues: write
       id-token: write
     
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          ref: ${{ github.event.workflow_run.head_sha || github.event.pull_request.head.sha }}
+          fetch-depth: 0 # Full history for better diff analysis
 
       - name: Run Claude Code Review
         id: claude-review
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          
+          # Don't track progress with comment spam
+          track_progress: false
+          
           prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
+
+            Note: The PR branch is already checked out in the current working directory.
+
             Please review this pull request and provide feedback on:
             - Code quality and best practices
             - Potential bugs or issues
             - Performance considerations
-            - Security concerns
-            - Test coverage
+            - Proper changeset additions and documentation for meaningful changes
+            - Test coverage and CI failures
+            For each file type, focus on:
+            - For TypeScript files: Type safety and proper interface usage
+            - For API endpoints: Security, input validation, and error handling
+            - For React components: Performance, accessibility, and best practices
+            - For tests: Coverage, edge cases, and test quality
+            - For unit tests and e2e tests: Coverage, edge cases, test quality
+            - For failed tests in CI: Provide a detailed explanation of the failure(s) and how to fix
+            - For .changeset/ additions: Changeset style and readability matching CHANGELOG.md
+            - For .github/workflows: Ensure the workflow is valid
+            Since this PR touches critical source code paths, please be thorough
+            in your review and provide inline comments where appropriate.
+            Be constructive and helpful in your feedback.
+            Don't generate a Final Assessment, strengths, or scores. Focus on issues.
+            Don't reitterate or describe the changes made unless they are problematic.
+            Reduce the number of sections and formatting.
+            Be concise and to the point, using as few words as possible.
+            Don't evaluate the CI status until the CI workflow has completed.
             
             Use the repository's CLAUDE.md for guidance on style and conventions. Be constructive and helpful in your feedback.
 
@@ -50,5 +84,12 @@ jobs:
           
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://docs.claude.com/en/docs/claude-code/sdk#command-line for available options
-          claude_args: '--allowed-tools "Bash(gh issue view:*),Bash(gh search:*),Bash(gh issue list:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*)"'
-
+          claude_args: |
+            --allowed-tools "mcp__github_inline_comment__create_inline_comment,Bash(gh issue view:*),Bash(gh search:*),Bash(gh issue list:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*)"
+            --disallowedTools "Bash(yarn test*),Bash(yarn vitest*),Bash(yarn e2e*),Bash(yarn lint),Bash(yarn typecheck)"
+            
+# When track_progress is enabled:
+# - Creates a tracking comment with progress checkboxes
+# - Includes all PR context (comments, attachments, images)
+# - Updates progress as the review proceeds
+# - Marks as completed when done
