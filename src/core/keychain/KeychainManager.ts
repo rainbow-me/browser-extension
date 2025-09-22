@@ -11,9 +11,6 @@ import * as Sentry from '@sentry/react';
 import { Address } from 'viem';
 
 import { RainbowError, logger } from '~/logger';
-
-export const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
-export const IS_TESTING = process.env.IS_TESTING === 'true';
 import { LocalStorage, SessionStorage } from '../storage';
 import { KeychainType } from '../types/keychainTypes';
 import { isLowerCaseMatch } from '../utils/strings';
@@ -32,6 +29,9 @@ import {
   ReadOnlyKeychain,
   SerializedReadOnlyKeychain,
 } from './keychainTypes/readOnlyKeychain';
+
+const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
+const IS_TESTING = process.env.IS_TESTING === 'true';
 
 export type Keychain =
   | KeyPairKeychain
