@@ -56,6 +56,12 @@ type Metadata = {
   };
 
   /**
+   * Do not pass `cause` in metadata; use RainbowError's `cause` property instead.
+   * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/cause
+   */
+  cause?: never;
+
+  /**
    * Any additional data, passed through to Sentry as `extra` param on
    * exceptions, or the `data` param on breadcrumbs.
    */
@@ -165,6 +171,9 @@ export const sentryTransport: Transport = (
   }
 };
 
+/**
+ * Example usage: new RainbowError('Error message', { cause: error });
+ */
 export class RainbowError extends Error {}
 
 /**

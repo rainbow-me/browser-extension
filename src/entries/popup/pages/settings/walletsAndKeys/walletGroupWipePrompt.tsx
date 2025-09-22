@@ -78,8 +78,9 @@ export const WipeWalletGroupPrompt = ({
       navigate(-2);
     } catch (error) {
       logger.error(
-        new RainbowError('An error occurred during wallet removal:'),
-        { cause: error },
+        new RainbowError('An error occurred during wallet removal:', {
+          cause: error,
+        }),
       );
     }
   }, [currentAddress, navigate, setCurrentAddress]);
