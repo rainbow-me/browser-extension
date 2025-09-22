@@ -1,114 +1,54 @@
 name: Claude Code Review
 
 on:
-  # Run on PRs opened, updated, and review requested
-  # Quietly fails for ready_for_review and review_requested in experimental-review mode
   pull_request:
-    types: [opened, ready_for_review, review_requested]
-    
-    # Focus on core code changes, ignore erroneous config changes
-    paths:
-      - "src/**/*.{ts,tsx,js,jsx}"
-      - "scripts/**/*.{ts,js}"
-      - "e2e/**/*.{ts,js}"
-  
-  # Run on `@claude review` comment on PRs
-  issue_comment:
-    types: [created]
-
-  # Run on manual triggers
-  # This seems to quietly bail in experimental-review mode
-  #workflow_dispatch:
-  
-  # Run after the “CI” workflow finishes (any conclusion)
-  # This seems to quietly bail in experimental-review mode
-  #workflow_run:
-  #  workflows: ["CI"]
-  #  types: [completed]
-  #  # ignore runs whose *head* branch is master ➜ skips pushes straight to master
-  #  branches-ignore: [master]
-
-# Cancel in-progress runs when a new run is triggered
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+    types: [opened, synchronize]
+    # Optional: Only run on specific file changes
+    # paths:
+    #   - "src/**/*.ts"
+    #   - "src/**/*.tsx"
+    #   - "src/**/*.js"
+    #   - "src/**/*.jsx"
 
 jobs:
-  claude-code-review:
-    # Run when the triggering CI run came from a pull‑request
-    # Or when the `@claude review` comment is added
-    # By internal contributors (OWNER, MEMBER, or COLLABORATOR)
-    if: |
-      (github.event_name == 'pull_request' && 
-       (github.event.pull_request.author_association == 'OWNER' ||
-        github.event.pull_request.author_association == 'MEMBER' ||
-        github.event.pull_request.author_association == 'COLLABORATOR')) ||
-      (github.event_name == 'issue_comment' && 
-       contains(github.event.comment.body, '@claude review') &&
-       (github.event.comment.author_association == 'OWNER' ||
-        github.event.comment.author_association == 'MEMBER' ||
-        github.event.comment.author_association == 'COLLABORATOR'))
-  
+  claude-review:
+    # Optional: Filter by PR author
+    # if: |
+    #   github.event.pull_request.user.login == 'external-contributor' ||
+    #   github.event.pull_request.user.login == 'new-developer' ||
+    #   github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR'
+    
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: write
-      issues: write
-      actions: read # Read GitHub Actions for CI status
+      pull-requests: read
+      issues: read
       id-token: write
-
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.workflow_run.head_sha || github.event.pull_request.head.sha }}
-          fetch-depth: 0 # Full history for better diff analysis
+          fetch-depth: 1
 
       - name: Run Claude Code Review
-        id: claude-code-review
-        uses: anthropics/claude-code-action@beta
+        id: claude-review
+        uses: anthropics/claude-code-action@v1
         with:
-          # Force using the PR code preview
-          mode: experimental-review
-          
-          # Read GitHub Actions for CI status
-          additional_permissions: |
-            actions: read 
-
-          # Claude Code OAuth token (using Max subscription)
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-
-          # Optional: Specify model (defaults to Claude Sonnet 4)
-          model: "claude-opus-4-1-20250805"
-
-          # Direct prompt for automated review (no @claude mention needed)
-          direct_prompt: |
+          prompt: |
             Please review this pull request and provide feedback on:
             - Code quality and best practices
             - Potential bugs or issues
             - Performance considerations
-            - Proper changeset additions and documentation for meaningful changes
-            - Test coverage and CI failures
-            For each file type, focus on:
-            - For TypeScript files: Type safety and proper interface usage
-            - For API endpoints: Security, input validation, and error handling
-            - For React components: Performance, accessibility, and best practices
-            - For tests: Coverage, edge cases, and test quality
-            - For unit tests and e2e tests: Coverage, edge cases, test quality
-            - For failed tests in CI: Provide a detailed explanation of the failure(s) and how to fix
-            - For .changeset/ additions: Changeset style and readability matching CHANGELOG.md
-            - For .github/workflows: Ensure the workflow is valid
-            Since this PR touches critical source code paths, please be thorough
-            in your review and provide inline comments where appropriate.
-            Be constructive and helpful in your feedback.
-            Don't generate a Final Assessment, strengths, or scores. Focus on issues.
-            Don't reitterate or describe the changes made unless they are problematic.
-            Reduce the number of sections and formatting.
-            Be concise and to the point, using as few words as possible.
-            Don't evaluate the CI status until the CI workflow has completed.
+            - Security concerns
+            - Test coverage
+            
+            Use the repository's CLAUDE.md for guidance on style and conventions. Be constructive and helpful in your feedback.
 
-          # Use sticky comments to make Claude reuse the same comment on subsequent pushes to the same PR
-          use_sticky_comment: true
+            Use `gh pr comment` with your Bash tool to leave your review as a comment on the PR.
+          
+          # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
+          # or https://docs.claude.com/en/docs/claude-code/sdk#command-line for available options
+          claude_args: '--allowed-tools "Bash(gh issue view:*),Bash(gh search:*),Bash(gh issue list:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*)"'
 
-          # Don't waste cycles on tests covered by CI
-          disallowed_tools: "Bash(yarn test*),Bash(yarn vitest*),Bash(yarn e2e*),Bash(yarn lint),Bash(yarn typecheck)"
