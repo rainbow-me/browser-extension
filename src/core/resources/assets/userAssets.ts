@@ -178,6 +178,7 @@ async function userAssetsQueryFunction({
   } catch (e) {
     logger.error(new RainbowError('userAssetsQueryFunction: '), {
       message: (e as Error)?.message,
+      cause: e,
     });
     return cachedUserAssets;
   }
@@ -219,8 +220,44 @@ async function userAssetsQueryFunctionRetryByChain({
         ),
       );
     }
-    const parsedRetries = await Promise.all(retries);
-    for (const parsedAssets of parsedRetries) {
+
+    const settledResults = await Promise.allSettled(retries);
+
+    // lodash partition does not seperate by type
+    const failedResults = settledResults
+      .map((result, idx) =>
+        result.status === 'rejected'
+          ? { chainId: chainIds[idx], reason: result.reason }
+          : null,
+      )
+      .filter((r) => r !== null);
+    const successfulResults = settledResults
+      .map((result) => (result.status === 'fulfilled' ? result.value : null))
+      .filter((parsedAssets) => parsedAssets !== null);
+
+    if (successfulResults.length === 0) {
+      // If all failed, throw the first error
+      throw (
+        failedResults[0]?.reason ?? new Error('All user asset fetches failed')
+      );
+    }
+
+    if (failedResults.length > 0) {
+      logger.error(
+        new RainbowError(
+          'userAssetsQueryFunctionRetryByChain: Some chains failed',
+        ),
+        {
+          failedChains: failedResults.map((f) => f.chainId),
+          reasons: failedResults.map((f) =>
+            f.reason instanceof Error ? f.reason.message : String(f.reason),
+          ),
+          causes: failedResults.map((f) => f.reason),
+        },
+      );
+    }
+
+    for (const parsedAssets of successfulResults) {
       const values = Object.values(parsedAssets);
       if (values[0]) {
         cachedUserAssets[values[0].chainId] = parsedAssets;
@@ -237,6 +274,7 @@ async function userAssetsQueryFunctionRetryByChain({
   } catch (e) {
     logger.error(new RainbowError('userAssetsQueryFunctionRetryByChain: '), {
       message: (e as Error)?.message,
+      cause: e,
     });
   }
 }
