@@ -16,7 +16,7 @@ export const sendTransactionHandler = walletOs.sendTransaction.handler(
       (e) => {
         throw new ORPCError('SEND_TRANSACTION_FAILED', {
           message: 'Sending the transaction failed',
-          data: { cause: e },
+          cause: e,
         });
       },
     );
