@@ -542,6 +542,9 @@ class KeychainManager {
     if (!this.state.initialized) {
       throw new Error('Keychain manager not initialized');
     }
+    if (!this.state.isUnlocked) {
+      throw new Error('Wallet locked - please unlock to access accounts');
+    }
     for (let i = 0; i < this.state.keychains.length; i++) {
       const keychain = this.state.keychains[i];
       const accounts = await keychain.getAccounts();
