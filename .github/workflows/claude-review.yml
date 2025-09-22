@@ -4,12 +4,19 @@ on:
   # Run on PRs opened, updated, and review requested
   pull_request:
     types: [opened, synchronize, ready_for_review, reopened]
-    
     # Focus on core code changes, ignore erroneous config changes
     paths:
       - "src/**/*.{ts,tsx,js,jsx}"
       - "scripts/**/*.{ts,js}"
       - "e2e/**/*.{ts,js}"
+
+  # Run after the “CI” workflow finishes (any conclusion)
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+    # ignore runs whose *head* branch is master ➜ skips pushes straight to master
+    branches-ignore: [master]
 
 # Cancel in-progress runs when a new run is triggered
 concurrency:
@@ -29,6 +36,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
+      actions: read
       issues: write
       id-token: write
     
@@ -87,7 +95,11 @@ jobs:
           claude_args: |
             --allowed-tools "mcp__github_inline_comment__create_inline_comment,Bash(gh issue view:*),Bash(gh search:*),Bash(gh issue list:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*)"
             --disallowedTools "Bash(yarn test*),Bash(yarn vitest*),Bash(yarn e2e*),Bash(yarn lint),Bash(yarn typecheck)"
-            
+          
+          # Read GitHub Actions results
+          additional_permissions: |
+            actions: read
+          
 # When track_progress is enabled:
 # - Creates a tracking comment with progress checkboxes
 # - Includes all PR context (comments, attachments, images)
