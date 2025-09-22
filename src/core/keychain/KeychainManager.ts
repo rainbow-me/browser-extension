@@ -12,7 +12,8 @@ import { Address } from 'viem';
 
 import { RainbowError, logger } from '~/logger';
 
-import { INTERNAL_BUILD, IS_TESTING } from '../sentry';
+export const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
+export const IS_TESTING = process.env.IS_TESTING === 'true';
 import { LocalStorage, SessionStorage } from '../storage';
 import { KeychainType } from '../types/keychainTypes';
 import { isLowerCaseMatch } from '../utils/strings';
