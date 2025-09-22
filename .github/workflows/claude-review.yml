@@ -2,31 +2,21 @@ name: Claude Code Review
 
 on:
   # Run on PRs opened, updated, and review requested
-  # Quietly fails for ready_for_review and review_requested in experimental-review mode
   pull_request:
-    types: [opened, ready_for_review, review_requested]
-    
+    types: [opened, synchronize, ready_for_review, reopened]
     # Focus on core code changes, ignore erroneous config changes
     paths:
       - "src/**/*.{ts,tsx,js,jsx}"
       - "scripts/**/*.{ts,js}"
       - "e2e/**/*.{ts,js}"
-  
-  # Run on `@claude review` comment on PRs
-  issue_comment:
-    types: [created]
 
-  # Run on manual triggers
-  # This seems to quietly bail in experimental-review mode
-  #workflow_dispatch:
-  
   # Run after the “CI” workflow finishes (any conclusion)
-  # This seems to quietly bail in experimental-review mode
-  #workflow_run:
-  #  workflows: ["CI"]
-  #  types: [completed]
-  #  # ignore runs whose *head* branch is master ➜ skips pushes straight to master
-  #  branches-ignore: [master]
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+    # ignore runs whose *head* branch is master ➜ skips pushes straight to master
+    branches-ignore: [master]
 
 # Cancel in-progress runs when a new run is triggered
 concurrency:
@@ -34,29 +24,22 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  claude-code-review:
+  claude-review:
     # Run when the triggering CI run came from a pull‑request
-    # Or when the `@claude review` comment is added
     # By internal contributors (OWNER, MEMBER, or COLLABORATOR)
     if: |
-      (github.event_name == 'pull_request' && 
-       (github.event.pull_request.author_association == 'OWNER' ||
-        github.event.pull_request.author_association == 'MEMBER' ||
-        github.event.pull_request.author_association == 'COLLABORATOR')) ||
-      (github.event_name == 'issue_comment' && 
-       contains(github.event.comment.body, '@claude review') &&
-       (github.event.comment.author_association == 'OWNER' ||
-        github.event.comment.author_association == 'MEMBER' ||
-        github.event.comment.author_association == 'COLLABORATOR'))
-  
+      github.event.pull_request.author_association == 'OWNER' ||
+      github.event.pull_request.author_association == 'MEMBER' ||
+      github.event.pull_request.author_association == 'COLLABORATOR'
+    
     runs-on: ubuntu-latest
     permissions:
       contents: read
       pull-requests: write
+      actions: read
       issues: write
-      actions: read # Read GitHub Actions for CI status
       id-token: write
-
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -65,24 +48,20 @@ jobs:
           fetch-depth: 0 # Full history for better diff analysis
 
       - name: Run Claude Code Review
-        id: claude-code-review
-        uses: anthropics/claude-code-action@beta
+        id: claude-review
+        uses: anthropics/claude-code-action@v1
         with:
-          # Force using the PR code preview
-          mode: experimental-review
-          
-          # Read GitHub Actions for CI status
-          additional_permissions: |
-            actions: read 
-
-          # Claude Code OAuth token (using Max subscription)
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          
+          # Don't track progress with comment spam
+          track_progress: false
+          
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
 
-          # Optional: Specify model (defaults to Claude Sonnet 4)
-          model: "claude-opus-4-1-20250805"
+            Note: The PR branch is already checked out in the current working directory.
 
-          # Direct prompt for automated review (no @claude mention needed)
-          direct_prompt: |
             Please review this pull request and provide feedback on:
             - Code quality and best practices
             - Potential bugs or issues
@@ -106,9 +85,23 @@ jobs:
             Reduce the number of sections and formatting.
             Be concise and to the point, using as few words as possible.
             Don't evaluate the CI status until the CI workflow has completed.
+            
+            Use the repository's CLAUDE.md for guidance on style and conventions. Be constructive and helpful in your feedback.
 
-          # Use sticky comments to make Claude reuse the same comment on subsequent pushes to the same PR
-          use_sticky_comment: true
-
-          # Don't waste cycles on tests covered by CI
-          disallowed_tools: "Bash(yarn test*),Bash(yarn vitest*),Bash(yarn e2e*),Bash(yarn lint),Bash(yarn typecheck)"
+            Use `gh pr comment` with your Bash tool to leave your review as a comment on the PR.
+          
+          # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
+          # or https://docs.claude.com/en/docs/claude-code/sdk#command-line for available options
+          claude_args: |
+            --allowed-tools "mcp__github_inline_comment__create_inline_comment,Bash(gh issue view:*),Bash(gh search:*),Bash(gh issue list:*),Bash(gh pr comment:*),Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr list:*)"
+            --disallowedTools "Bash(yarn test*),Bash(yarn vitest*),Bash(yarn e2e*),Bash(yarn lint),Bash(yarn typecheck)"
+          
+          # Read GitHub Actions results
+          additional_permissions: |
+            actions: read
+          
+# When track_progress is enabled:
+# - Creates a tracking comment with progress checkboxes
+# - Includes all PR context (comments, attachments, images)
+# - Updates progress as the review proceeds
+# - Marks as completed when done
