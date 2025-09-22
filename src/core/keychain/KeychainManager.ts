@@ -11,6 +11,7 @@ import * as Sentry from '@sentry/react';
 import { Address } from 'viem';
 
 import { RainbowError, logger } from '~/logger';
+
 import { LocalStorage, SessionStorage } from '../storage';
 import { KeychainType } from '../types/keychainTypes';
 import { isLowerCaseMatch } from '../utils/strings';
