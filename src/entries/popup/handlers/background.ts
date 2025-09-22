@@ -1,10 +1,11 @@
-import { createORPCClient } from '@orpc/client';
+import { createORPCClient, onError } from '@orpc/client';
 import { RPCLink } from '@orpc/client/message-port';
 import type { RouterClient } from '@orpc/server';
 import { createTanstackQueryUtils } from '@orpc/tanstack-query';
 
 import type { PopupRouter } from '~/entries/background/procedures/popup';
 import { POPUP_PORT_NAME } from '~/entries/background/procedures/popup/constants';
+import { RainbowError, logger } from '~/logger';
 
 import { createDeepProxy } from './deepProxy';
 import { autoReconnect } from './retry';
@@ -12,12 +13,22 @@ import { autoReconnect } from './retry';
 function createPort() {
   return chrome.runtime.connect({ name: POPUP_PORT_NAME });
 }
+function createClient(port: chrome.runtime.Port): RouterClient<PopupRouter> {
+  return createORPCClient(
+    new RPCLink({
+      port,
+      clientInterceptors: [
+        onError((e) => {
+          logger.error(new RainbowError('ORPC client error', { cause: e }));
+        }),
+      ],
+    }),
+  );
+}
 
 // Mutable reference to the latest client
 const firstPort = createPort();
-let _popupClient: RouterClient<PopupRouter> = createORPCClient(
-  new RPCLink({ port: firstPort }),
-);
+let _popupClient = createClient(firstPort);
 
 // stable export which uses a deep proxy to ensure the client is always up to date
 export const popupClient: RouterClient<PopupRouter> = createDeepProxy(
@@ -30,7 +41,7 @@ autoReconnect(
   firstPort,
   createPort,
   (newPort) => {
-    _popupClient = createORPCClient(new RPCLink({ port: newPort }));
+    _popupClient = createClient(newPort);
   },
 );
 
