@@ -176,10 +176,14 @@ async function userAssetsQueryFunction({
     }
     return cachedUserAssets;
   } catch (e) {
-    logger.error(new RainbowError('userAssetsQueryFunction: '), {
-      message: (e as Error)?.message,
-      cause: e,
-    });
+    logger.error(
+      new RainbowError('userAssetsQueryFunction: ', {
+        cause: e,
+      }),
+      {
+        message: (e as Error)?.message,
+      },
+    );
     return cachedUserAssets;
   }
 }
@@ -246,6 +250,7 @@ async function userAssetsQueryFunctionRetryByChain({
       logger.error(
         new RainbowError(
           'userAssetsQueryFunctionRetryByChain: Some chains failed',
+          { cause: failedResults[0]?.reason },
         ),
         {
           failedChains: failedResults.map((f) => f.chainId),
@@ -272,10 +277,14 @@ async function userAssetsQueryFunctionRetryByChain({
       cachedUserAssets,
     );
   } catch (e) {
-    logger.error(new RainbowError('userAssetsQueryFunctionRetryByChain: '), {
-      message: (e as Error)?.message,
-      cause: e,
-    });
+    logger.error(
+      new RainbowError('userAssetsQueryFunctionRetryByChain: ', {
+        cause: e,
+      }),
+      {
+        message: (e as Error)?.message,
+      },
+    );
   }
 }
 
