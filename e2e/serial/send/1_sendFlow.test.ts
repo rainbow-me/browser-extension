@@ -38,6 +38,16 @@ beforeAll(async () => {
   const extensionId = await getExtensionIdByName(driver, 'Rainbow');
   if (!extensionId) throw new Error('Extension not found');
   rootURL += extensionId;
+
+  // Handle any unexpected alerts on startup
+  try {
+    const alert = await driver.switchTo().alert();
+    const alertText = await alert.getText();
+    console.error('Alert found on startup:', alertText);
+    await alert.accept();
+  } catch (e) {
+    // No alert present, this is expected
+  }
 });
 
 beforeEach<{ driver: WebDriver }>(async (context) => {
@@ -51,7 +61,27 @@ afterEach<{ driver: WebDriver }>(async (context) => {
 afterAll(() => cleanupDriver(driver));
 
 it('should be able import a wallet via pk', async () => {
+  // Handle any alerts before import
+  try {
+    const alert = await driver.switchTo().alert();
+    const alertText = await alert.getText();
+    console.error('Alert before import:', alertText);
+    await alert.accept();
+  } catch (e) {
+    // No alert, continue
+  }
+
   await importWalletFlow(driver, rootURL, TEST_VARIABLES.SEED_WALLET.PK);
+
+  // Handle any alerts after import
+  try {
+    const alert = await driver.switchTo().alert();
+    const alertText = await alert.getText();
+    console.error('Alert after import:', alertText);
+    await alert.accept();
+  } catch (e) {
+    // No alert, continue
+  }
 });
 
 it('should be able import a second wallet via pk then switch back to wallet 1', async () => {
@@ -181,7 +211,6 @@ it('should be able to select token on send flow', async () => {
     id: 'input-wrapper-dropdown-token-input',
     driver,
   });
-  // dai
   await findElementByTestIdAndClick({
     id: 'token-input-asset-eth_1',
     driver,

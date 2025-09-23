@@ -246,6 +246,29 @@ const handlers = [
           console.log(
             `[E2E Mock MSW] Successfully serving JSON mock for: ${url.toString()}`,
           );
+
+          // Add detailed logging for addys responses
+          if (url.host.includes('addys')) {
+            console.log(
+              '\n========== ADDYS REQUEST/RESPONSE DETAILS ==========',
+            );
+            console.log('[REQUEST]');
+            console.log('  Full URL:', url.toString());
+            console.log('  Chain IDs in URL:', url.pathname.split('/')[2]);
+            console.log('  Address in URL:', url.pathname.split('/')[3]);
+            console.log('  Query params:', url.searchParams.toString());
+
+            console.log('[RESPONSE]');
+
+            console.log(
+              '  Full response (first 1000 chars):',
+              JSON.stringify(json).substring(0, 1000),
+            );
+            console.log(
+              '=====================================================\n',
+            );
+          }
+
           return HttpResponse.json(json as JsonBodyType, { status: 200 });
         } catch (e) {
           console.log(`[E2E Mock MSW] Failed to parse JSON: ${e}`);
@@ -327,7 +350,7 @@ export async function interceptMocks(
         const url = new URL(req.url);
         console.log(`[E2E Mock BiDi] Intercepted request: ${req.url}`);
 
-        // Check if this is localhost/RPC traffic - log but pass through
+        // Check if this is localhost/RPC traffic
         if (
           url.hostname === 'localhost' ||
           url.hostname === '127.0.0.1' ||
@@ -392,6 +415,52 @@ export async function interceptMocks(
         if (mswRes) {
           // Provide mocked response
           console.log(`[E2E Mock] Serving mock for: ${url.toString()}`);
+
+          // Clone response for logging (can only read body once)
+          const mswResClone = mswRes.clone();
+
+          // Log response details for addys API
+          if (url.host.includes('addys')) {
+            try {
+              const bodyJson = await mswResClone.json();
+              console.log(
+                '\n========== BIDI ADDYS RESPONSE (SENT TO BROWSER) ==========',
+              );
+              console.log('[REQUEST URL]:', url.toString());
+              console.log('[RESPONSE STATUS]:', mswRes.status);
+
+              console.log('[RESPONSE BODY]');
+              console.log(
+                '  Meta chain_ids:',
+                JSON.stringify(bodyJson?.meta?.chain_ids),
+              );
+              console.log('  Meta status:', bodyJson?.meta?.status);
+              console.log(
+                '  Assets count:',
+                bodyJson?.payload?.assets?.length || 0,
+              );
+
+              if (bodyJson?.payload?.assets?.length > 0) {
+                console.log('  All assets summary:');
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                bodyJson.payload.assets.forEach((a: any, i: number) => {
+                  console.log(
+                    `    [${i}] ${a.asset.symbol}: chain_id=${a.asset.chain_id}, asset_code=${a.asset.asset_code}, quantity=${a.quantity}`,
+                  );
+                });
+              }
+              console.log(
+                '  Response snippet (first 800 chars):',
+                JSON.stringify(bodyJson).substring(0, 800),
+              );
+              console.log(
+                '===========================================================\n',
+              );
+            } catch (e) {
+              console.log('[E2E Mock BiDi] Response parse error:', e);
+            }
+          }
+
           const params = new ProvideResponseParameters(req.request);
           params.statusCode(mswRes.status);
 

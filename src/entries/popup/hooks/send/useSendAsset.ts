@@ -40,11 +40,15 @@ export const useSendAsset = () => {
       currency: currentCurrency,
     },
     {
-      select: (data) =>
-        selectorFilterByUserChains({
+      select: (data) => {
+        console.log('[Send] Raw userAssets data:', data);
+        const filtered = selectorFilterByUserChains({
           data,
           selector: sortBy(sortMethod),
-        }),
+        });
+        console.log('[Send] Filtered userAssets:', filtered);
+        return filtered;
+      },
     },
   );
 
@@ -67,18 +71,23 @@ export const useSendAsset = () => {
     [],
   );
 
-  const allAssets = useMemo(
-    () =>
-      Array.from(
-        new Map(
-          [...customNetworkAssets, ...userAssets].map((item) => [
-            item.uniqueId,
-            item,
-          ]),
-        ).values(),
-      ),
-    [userAssets, customNetworkAssets],
-  );
+  const allAssets = useMemo(() => {
+    const combined = Array.from(
+      new Map(
+        [...customNetworkAssets, ...userAssets].map((item) => [
+          item.uniqueId,
+          item,
+        ]),
+      ).values(),
+    );
+    console.log('[Send] Combined assets:', {
+      userAssets: userAssets.length,
+      customNetworkAssets: customNetworkAssets.length,
+      combined: combined.length,
+      assets: combined,
+    });
+    return combined;
+  }, [userAssets, customNetworkAssets]);
 
   const asset = useMemo(
     () =>

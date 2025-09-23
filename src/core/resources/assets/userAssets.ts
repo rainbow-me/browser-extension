@@ -144,6 +144,9 @@ async function userAssetsQueryFunction({
     const url = `/${supportedChainIds.join(
       ',',
     )}/${address}/assets?currency=${currency.toLowerCase()}${staleBalancesParam}`;
+
+    console.log('[Assets API] Request:', url);
+
     const res = await addysHttp.get<AddressAssetsReceivedMessage>(url, {
       timeout: USER_ASSETS_TIMEOUT_DURATION,
     });
@@ -151,6 +154,13 @@ async function userAssetsQueryFunction({
     const chainIdsWithErrorsInResponse =
       res?.data?.meta?.chain_ids_with_errors || [];
     const assets = res?.data?.payload?.assets || [];
+
+    console.log('[Assets API] Response:', {
+      assetsCount: assets.length,
+      chainIds: chainIdsInResponse,
+      assets: assets.slice(0, 3), // Show first 3 assets
+      rawResponse: res?.data,
+    });
     if (address) {
       userAssetsQueryFunctionRetryByChain({
         address,
@@ -158,12 +168,33 @@ async function userAssetsQueryFunction({
         currency,
         testnetMode,
       });
-      if (assets.length && chainIdsInResponse.length) {
+      // Always parse assets to allow for hardhat injection even when no assets returned
+      if (chainIdsInResponse.length) {
+        console.log('[userAssets] Before parseUserAssets:', {
+          address,
+          assetsLength: assets.length,
+          chainIds: chainIdsInResponse,
+          currency,
+        });
         const parsedAssetsDict = await parseUserAssets({
           address,
           assets,
           chainIds: chainIdsInResponse,
           currency,
+        });
+        console.log('[userAssets] After parseUserAssets:', {
+          parsedAssetsDictKeys: Object.keys(parsedAssetsDict),
+          totalParsedAssets: Object.values(parsedAssetsDict).reduce(
+            (sum, dict) => sum + Object.keys(dict).length,
+            0,
+          ),
+          byChain: Object.entries(parsedAssetsDict).map(
+            ([chainId, assets]) => ({
+              chainId,
+              count: Object.keys(assets).length,
+              assetKeys: Object.keys(assets).slice(0, 3),
+            }),
+          ),
         });
 
         for (const missingChainId of chainIdsWithErrorsInResponse) {
