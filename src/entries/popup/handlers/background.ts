@@ -17,7 +17,7 @@ function createClient(port: chrome.runtime.Port): RouterClient<PopupRouter> {
   return createORPCClient(
     new RPCLink({
       port,
-      clientInterceptors: [
+      interceptors: [
         onError((e) => {
           logger.error(new RainbowError('ORPC client error', { cause: e }));
         }),

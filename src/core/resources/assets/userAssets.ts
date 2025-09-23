@@ -225,6 +225,10 @@ async function userAssetsQueryFunctionRetryByChain({
       );
     }
 
+    if (retries.length === 0) {
+      return;
+    }
+
     const settledResults = await Promise.allSettled(retries);
 
     // lodash partition does not seperate by type
