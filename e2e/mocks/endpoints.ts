@@ -51,4 +51,17 @@ export const ENDPOINTS: Record<string, ServiceConfig> = {
       },
     ],
   },
+  metadata: {
+    // GraphQL endpoint for ENS resolution and other metadata
+    host: 'metadata.p.rainbow.me',
+    headers: {},
+    paths: [
+      // /metadata/graphql/
+      // https://metadata.p.rainbow.me/graphql  → e2e/mocks/metadata/graphql/<hash>.json
+      {
+        pattern: /^\/graphql/,
+        dir: 'metadata/graphql',
+      },
+    ],
+  },
 };

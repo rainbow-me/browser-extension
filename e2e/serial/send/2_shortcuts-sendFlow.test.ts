@@ -12,6 +12,7 @@ import {
 import {
   checkExtensionURL,
   checkWalletName,
+  cleanupDriver,
   delay,
   delayTime,
   executePerformShortcut,
@@ -54,7 +55,7 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
     await takeScreenshotOnFailure(context);
   });
 
-  afterAll(() => driver?.quit());
+  afterAll(() => cleanupDriver(driver));
 
   it('should be able import a wallet via pk', async () => {
     await importWalletFlowUsingKeyboardNavigation(

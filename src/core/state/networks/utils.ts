@@ -235,6 +235,14 @@ export const buildInitialUserPreferences = (
     initialNonInternalNetworks.map(({ id }) => toChainId(id)),
   );
 
+  // In test mode, always include mainnet to display test assets
+  if (
+    process.env.IS_TESTING === 'true' &&
+    !enabledChainIds.has(ChainId.mainnet)
+  ) {
+    enabledChainIds.add(ChainId.mainnet);
+  }
+
   logger.debug('[buildInitialUserPreferences] Current store state', {
     rainbowChains,
     userChains,

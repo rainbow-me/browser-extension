@@ -12,6 +12,7 @@ import {
 import { ChainId } from '~/core/types/chains';
 
 import {
+  cleanupDriver,
   clickAcceptRequestButton,
   connectToTestDapp,
   delayTime,
@@ -47,6 +48,8 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
     driver = await initDriverWithOptions({
       browser,
       os,
+      testSuite: 'window-switching', // Heavy window/tab switching test
+      disableHeadless: true, // Modal detection requires non-headless mode
     });
     const extensionId = await getExtensionIdByName(driver, 'Rainbow');
     if (!extensionId) throw new Error('Extension not found');
@@ -61,7 +64,7 @@ describe.runIf(browser !== 'firefox')('Dapp accounts switcher flow', () => {
     await takeScreenshotOnFailure(context);
   });
 
-  afterAll(() => driver?.quit());
+  afterAll(() => cleanupDriver(driver));
 
   it('should be able import a wallet via pk', async () => {
     //  Start from welcome screen

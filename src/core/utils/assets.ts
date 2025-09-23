@@ -189,13 +189,37 @@ export function parseUserAsset({
   balance: string;
   smallBalance?: boolean;
 }) {
+  console.log('[parseUserAsset] INPUT:', {
+    asset_code: asset?.asset_code,
+    symbol: asset?.symbol,
+    chain_id: asset?.chain_id,
+    balance,
+    currency,
+    smallBalance,
+    full_asset: asset,
+  });
   const parsedAsset = parseAsset({ asset, currency });
-  return parseUserAssetBalances({
+  console.log('[parseUserAsset] After parseAsset:', {
+    address: parsedAsset?.address,
+    symbol: parsedAsset?.symbol,
+    chainId: parsedAsset?.chainId,
+    uniqueId: parsedAsset?.uniqueId,
+    mainnetAddress: parsedAsset?.mainnetAddress,
+  });
+  const result = parseUserAssetBalances({
     asset: parsedAsset,
     currency,
     balance,
     smallBalance,
   });
+  console.log('[parseUserAsset] RESULT:', {
+    uniqueId: result?.uniqueId,
+    symbol: result?.symbol,
+    chainId: result?.chainId,
+    balance: result?.balance,
+    native: result?.native,
+  });
+  return result;
 }
 
 export function parseUserAssetBalances({

@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "addresses": [
+      "0x38eDa688Cd8DFC6FeE8016c85803a584A0564dDC"
+    ],
+    "errors": [],
+    "currency": "usd",
+    "status": "ok",
+    "chain_ids": [
+      1,
+      10,
+      56,
+      130,
+      137,
+      1625,
+      1996,
+      8453,
+      33139,
+      42161,
+      43114,
+      57073,
+      80094,
+      81457,
+      7777777,
+      666666666
+    ],
+    "addresses_with_errors": [],
+    "chain_ids_with_errors": []
+  },
+  "payload": {
+    "assets": []
+  }
+}

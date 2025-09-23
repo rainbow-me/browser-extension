@@ -35,6 +35,14 @@ export function selectorFilterByUserChains<T>({
     .flat()
     .filter(Boolean);
 
+  // In test mode, always include mainnet chain to display test assets
+  if (
+    process.env.IS_TESTING === 'true' &&
+    !allUserChainIds.includes(ChainId.mainnet)
+  ) {
+    allUserChainIds.push(ChainId.mainnet);
+  }
+
   const filteredAssetsDictByChain = Object.keys(data).reduce((acc, key) => {
     const chainKey = Number(key);
     if (chain === chainKey || (!chain && allUserChainIds.includes(chainKey))) {

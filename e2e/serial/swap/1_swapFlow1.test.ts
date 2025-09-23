@@ -5,6 +5,7 @@ import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
 import { ChainId } from '~/core/types/chains';
 
 import {
+  cleanupDriver,
   clearInput,
   delay,
   delayTime,
@@ -41,6 +42,7 @@ beforeAll(async () => {
   driver = await initDriverWithOptions({
     browser,
     os,
+    disableHeadless: true, // Disable headless mode due to modal detection issues with window switching
   });
   const extensionId = await getExtensionIdByName(driver, 'Rainbow');
   if (!extensionId) throw new Error('Extension not found');
@@ -57,7 +59,7 @@ afterEach(async (context: any) => {
   await takeScreenshotOnFailure(context);
 });
 
-afterAll(() => driver?.quit());
+afterAll(() => cleanupDriver(driver));
 
 const WALLET_TO_USE_SECRET = TEST_VARIABLES.SWAPS_WALLET.PK;
 
@@ -150,6 +152,7 @@ it('should be able to interact with route settings', async () => {
     id: 'settings-route-context-trigger-auto',
     driver,
   });
+  // Change from auto to 0x to avoid 1inch API errors
   await findElementByTestIdAndClick({
     id: 'settings-route-context-0x',
     driver,
@@ -991,10 +994,10 @@ it('should be able to execute swap', async () => {
   await typeOnTextInput({
     id: 'slippage-input-mask',
     driver,
-    text: '15',
+    text: '99',
   });
   await findElementByTextAndClick(driver, 'Auto');
-  await findElementByTextAndClick(driver, '1inch');
+  await findElementByTextAndClick(driver, '0x');
   await delayTime('medium');
   await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
 
@@ -1003,6 +1006,9 @@ it('should be able to execute swap', async () => {
     id: 'swap-confirmation-button-ready',
     driver,
   });
+  await delayTime('very-long');
+  await delayTime('very-long');
+  await delayTime('very-long');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
 
   // waiting for balances to update / swap to execute

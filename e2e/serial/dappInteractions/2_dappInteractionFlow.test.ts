@@ -14,6 +14,7 @@ import { ChainId } from '~/core/types/chains';
 
 import {
   awaitTextChange,
+  cleanupDriver,
   clickAcceptRequestButton,
   delayTime,
   fillPrivateKey,
@@ -51,6 +52,8 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     driver = await initDriverWithOptions({
       browser,
       os,
+      testSuite: 'window-switching', // Heavy window/tab switching test
+      disableHeadless: true, // Modal detection requires non-headless mode
     });
     const extensionId = await getExtensionIdByName(driver, 'Rainbow');
     if (!extensionId) throw new Error('Extension not found');
@@ -65,7 +68,7 @@ describe.runIf(browser !== 'firefox')('App interactions flow', () => {
     await takeScreenshotOnFailure(context);
   });
 
-  afterAll(() => driver?.quit());
+  afterAll(() => cleanupDriver(driver));
 
   // Import a wallet
   it('should be able import a wallet via pk', async () => {

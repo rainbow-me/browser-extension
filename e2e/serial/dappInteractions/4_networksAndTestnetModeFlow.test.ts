@@ -12,6 +12,7 @@ import {
 import { ChainId } from '~/core/types/chains';
 
 import {
+  cleanupDriver,
   clickAcceptRequestButton,
   connectToTestDapp,
   delayTime,
@@ -43,12 +44,14 @@ describe.runIf(browser !== 'firefox')('Networks & Testnet Mode flows', () => {
     driver = await initDriverWithOptions({
       browser,
       os,
+      testSuite: 'window-switching', // Heavy window/tab switching test
+      disableHeadless: true, // Modal detection requires non-headless mode
     });
     const extensionId = await getExtensionIdByName(driver, 'Rainbow');
     if (!extensionId) throw new Error('Extension not found');
     rootURL += extensionId;
   });
-  afterAll(async () => await driver?.quit());
+  afterAll(() => cleanupDriver(driver));
 
   beforeEach<{ driver: WebDriver }>(async (context) => {
     context.driver = driver;

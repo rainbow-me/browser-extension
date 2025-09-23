@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Buffer } from 'node:buffer';
-import fs from 'node:fs/promises';
-import path from 'node:path';
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
 
 import {
   HttpResponse,
@@ -11,17 +12,17 @@ import {
 } from 'msw';
 import * as Hash from 'ox/Hash';
 import { AddInterceptParameters } from 'selenium-webdriver/bidi/addInterceptParameters';
-// @ts-expect-error - BiDi modules not in TS definitions
+// @ts-ignore - BiDi modules not in TS definitions
 import { ContinueRequestParameters } from 'selenium-webdriver/bidi/continueRequestParameters';
-// @ts-expect-error - BiDi modules not in TS definitions
+// @ts-ignore - BiDi modules not in TS definitions
 import { InterceptPhase } from 'selenium-webdriver/bidi/interceptPhase';
-// @ts-expect-error - BiDi modules not in TS definitions
+// @ts-ignore - BiDi modules not in TS definitions
 import { Network } from 'selenium-webdriver/bidi/network';
-// @ts-expect-error - BiDi modules not in TS definitions
+// @ts-ignore - BiDi modules not in TS definitions
 import { ProvideResponseParameters } from 'selenium-webdriver/bidi/provideResponseParameters';
 import { UrlPattern } from 'selenium-webdriver/bidi/urlPattern';
 
-import type { BeforeRequestSentEvent, BytesValue, Header } from './bidi';
+import type { BeforeRequestSentEvent, Header } from './bidi';
 import { ENDPOINTS } from './endpoints';
 
 const SNAPSHOT_ROOT = path.resolve('e2e/mocks');
@@ -185,7 +186,7 @@ export async function fetchAndPersist(
       }
     } else {
       const data = await response.arrayBuffer();
-      await fs.writeFile(filePath, Buffer.from(data));
+      await fs.writeFile(filePath, new Uint8Array(data));
       console.log(
         `[E2E Mock] Recorded non-JSON: ${request.url} -> ${path.relative(
           process.cwd(),
@@ -208,32 +209,94 @@ const handlers = [
   http.all('**', async ({ request }) => {
     try {
       const url = new URL(request.url);
+      console.log(`[E2E Mock MSW] Handling request: ${url.toString()}`);
+
+      // Pass through localhost/RPC requests
+      if (
+        url.hostname === 'localhost' ||
+        url.hostname === '127.0.0.1' ||
+        url.hostname === 'rpc.rainbow.me'
+      ) {
+        console.log(
+          `[E2E Mock MSW] RPC/localhost request, passing through: ${url.toString()}`,
+        );
+        return passthrough();
+      }
+
       const basePath = getSnapshotPath(url);
-      if (!basePath) return passthrough();
+      if (!basePath) {
+        console.log(
+          `[E2E Mock MSW] No snapshot path for URL: ${url.toString()}`,
+        );
+        return passthrough();
+      }
+
+      console.log(`[E2E Mock MSW] Looking for mock at base path: ${basePath}`);
 
       // Try .json file first
       const jsonFile = `${basePath}.json`;
-      const jsonData = await fs.readFile(jsonFile, 'utf8').catch(() => null);
+      console.log(`[E2E Mock MSW] Checking for JSON file: ${jsonFile}`);
+      const jsonData = await fs.readFile(jsonFile, 'utf8').catch((err) => {
+        console.log(`[E2E Mock MSW] Failed to read JSON file: ${err.message}`);
+        return null;
+      });
       if (jsonData) {
         try {
           const json = JSON.parse(jsonData);
+          console.log(
+            `[E2E Mock MSW] Successfully serving JSON mock for: ${url.toString()}`,
+          );
+
+          // Add detailed logging for addys responses
+          if (url.host.includes('addys')) {
+            console.log(
+              '\n========== ADDYS REQUEST/RESPONSE DETAILS ==========',
+            );
+            console.log('[REQUEST]');
+            console.log('  Full URL:', url.toString());
+            console.log('  Chain IDs in URL:', url.pathname.split('/')[2]);
+            console.log('  Address in URL:', url.pathname.split('/')[3]);
+            console.log('  Query params:', url.searchParams.toString());
+
+            console.log('[RESPONSE]');
+
+            console.log(
+              '  Full response (first 1000 chars):',
+              JSON.stringify(json).substring(0, 1000),
+            );
+            console.log(
+              '=====================================================\n',
+            );
+          }
+
           return HttpResponse.json(json as JsonBodyType, { status: 200 });
-        } catch {
+        } catch (e) {
+          console.log(`[E2E Mock MSW] Failed to parse JSON: ${e}`);
           // JSON parse failed, continue to try raw file
         }
       }
 
       // Try file without extension (for non-JSON responses)
-      const rawData = await fs.readFile(basePath, null).catch(() => null);
+      console.log(`[E2E Mock MSW] Checking for raw file: ${basePath}`);
+      const rawData = await fs.readFile(basePath, null).catch((err) => {
+        console.log(`[E2E Mock MSW] Failed to read raw file: ${err.message}`);
+        return null;
+      });
       if (rawData) {
+        console.log(
+          `[E2E Mock MSW] Successfully serving raw mock for: ${url.toString()}`,
+        );
         // Return as-is for non-JSON content
         return new HttpResponse(rawData, { status: 200 });
       }
 
+      console.log(
+        `[E2E Mock MSW] No mock found, passing through: ${url.toString()}`,
+      );
       return passthrough();
     } catch (error) {
       // On any error, passthrough to real network
-      console.warn('[E2E Mock] MSW handler error:', error);
+      console.warn('[E2E Mock MSW] Handler error:', error);
       return passthrough();
     }
   }),
@@ -245,44 +308,94 @@ export async function interceptMocks(
   browsingContextId?: string,
 ) {
   try {
-    const network = await Network(
-      driver,
-      browsingContextId ? [browsingContextId] : undefined,
-    );
+    const contextParam = browsingContextId ? [browsingContextId] : undefined;
+    const network = await Network(driver, contextParam);
 
     if (MODE === 'record') {
       await network.setCacheBehavior('bypass');
       console.log('[E2E Mock] Response data collector enabled');
     }
 
-    // Set up interception for configured endpoints
+    // Set up interception for configured endpoints and localhost
     const interceptParams = new AddInterceptParameters(
       InterceptPhase.BEFORE_REQUEST_SENT,
     );
+
+    // Add HTTPS endpoints from configuration
     for (const service of Object.values(ENDPOINTS)) {
       interceptParams.urlPattern(
         new UrlPattern().protocol('https').hostname(service.host),
       );
     }
-    await network.addIntercept(interceptParams);
+
+    // Add localhost/anvil interception for HTTP
+    interceptParams.urlPattern(
+      new UrlPattern().protocol('http').hostname('localhost'),
+    );
+    interceptParams.urlPattern(
+      new UrlPattern().protocol('http').hostname('127.0.0.1'),
+    );
+
+    // Also add RPC endpoints
+    interceptParams.urlPattern(
+      new UrlPattern().protocol('https').hostname('rpc.rainbow.me'),
+    );
+
+    const interceptId = await network.addIntercept(interceptParams);
 
     // Handle request interception with single error boundary
     await network.beforeRequestSent(async (evt: BeforeRequestSentEvent) => {
       try {
         const req = evt.request;
         const url = new URL(req.url);
-        const file = getSnapshotPath(url);
+        console.log(`[E2E Mock BiDi] Intercepted request: ${req.url}`);
 
-        // If not a mocked endpoint, continue
-        if (!file) {
+        // Check if this is localhost/RPC traffic
+        if (
+          url.hostname === 'localhost' ||
+          url.hostname === '127.0.0.1' ||
+          url.hostname === 'rpc.rainbow.me'
+        ) {
+          console.log(
+            `[E2E Mock BiDi] RPC/localhost request, passing through: ${req.url}`,
+          );
           await network.continueRequest(
             new ContinueRequestParameters(req.request),
           );
           return;
         }
 
+        const file = getSnapshotPath(url);
+
+        // If not a mocked endpoint, continue
+        if (!file) {
+          console.log(
+            `[E2E Mock BiDi] Not a mocked endpoint, continuing: ${req.url}`,
+          );
+          await network.continueRequest(
+            new ContinueRequestParameters(req.request),
+          );
+          return;
+        }
+
+        console.log(
+          `[E2E Mock BiDi] Found snapshot path for ${req.url}: ${file}`,
+        );
+
         // In record mode, fetch and persist, then continue
         if (MODE === 'record') {
+          // Work around 1inch API returning 403 - replace with rainbow source
+          if (
+            url.host === 'swap.p.rainbow.me' &&
+            url.searchParams.get('source') === '1inch'
+          ) {
+            url.searchParams.set('source', 'rainbow');
+            req.url = url.toString();
+            console.log(
+              '[E2E Mock] Replaced source=1inch with source=rainbow for swap API',
+            );
+          }
+
           // Await fetch and persist to ensure atomic operation and prevent race conditions
           try {
             await fetchAndPersist(req);
@@ -302,6 +415,52 @@ export async function interceptMocks(
         if (mswRes) {
           // Provide mocked response
           console.log(`[E2E Mock] Serving mock for: ${url.toString()}`);
+
+          // Clone response for logging (can only read body once)
+          const mswResClone = mswRes.clone();
+
+          // Log response details for addys API
+          if (url.host.includes('addys')) {
+            try {
+              const bodyJson = await mswResClone.json();
+              console.log(
+                '\n========== BIDI ADDYS RESPONSE (SENT TO BROWSER) ==========',
+              );
+              console.log('[REQUEST URL]:', url.toString());
+              console.log('[RESPONSE STATUS]:', mswRes.status);
+
+              console.log('[RESPONSE BODY]');
+              console.log(
+                '  Meta chain_ids:',
+                JSON.stringify(bodyJson?.meta?.chain_ids),
+              );
+              console.log('  Meta status:', bodyJson?.meta?.status);
+              console.log(
+                '  Assets count:',
+                bodyJson?.payload?.assets?.length || 0,
+              );
+
+              if (bodyJson?.payload?.assets?.length > 0) {
+                console.log('  All assets summary:');
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                bodyJson.payload.assets.forEach((a: any, i: number) => {
+                  console.log(
+                    `    [${i}] ${a.asset.symbol}: chain_id=${a.asset.chain_id}, asset_code=${a.asset.asset_code}, quantity=${a.quantity}`,
+                  );
+                });
+              }
+              console.log(
+                '  Response snippet (first 800 chars):',
+                JSON.stringify(bodyJson).substring(0, 800),
+              );
+              console.log(
+                '===========================================================\n',
+              );
+            } catch (e) {
+              console.log('[E2E Mock BiDi] Response parse error:', e);
+            }
+          }
+
           const params = new ProvideResponseParameters(req.request);
           params.statusCode(mswRes.status);
 
@@ -320,10 +479,16 @@ export async function interceptMocks(
           // The response body could contain non-UTF8 bytes (images, compressed data, etc.)
           // Base64 ensures safe transmission over the text-based BiDi protocol
           const ab = await mswRes.arrayBuffer();
-          const bodyBytes: BytesValue = {
-            type: 'base64',
-            value: Buffer.from(ab).toString('base64'),
-          };
+          // Import BytesValue class properly
+          // eslint-disable-next-line @typescript-eslint/no-var-requires
+          const {
+            BytesValue,
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+          } = require('selenium-webdriver/bidi/networkTypes');
+          const bodyBytes = new BytesValue(
+            'base64',
+            Buffer.from(ab).toString('base64'),
+          );
           params.body(bodyBytes);
           await network.provideResponse(params);
         } else {
@@ -356,8 +521,22 @@ export async function interceptMocks(
       }
     });
 
-    return network;
+    // Return cleanup function
+    return {
+      network,
+      cleanup: async () => {
+        try {
+          // Remove the intercept to prevent timeout errors during cleanup
+          await network.removeIntercept(interceptId);
+          // Close the BiDi connection
+          await network.close();
+        } catch (error) {
+          console.warn('[E2E Mock] Error during cleanup:', error);
+        }
+      },
+    };
   } catch (error) {
     console.error('[E2E Mock] Failed to initialize mock interception:', error);
+    return null;
   }
 }

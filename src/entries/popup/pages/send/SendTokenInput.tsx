@@ -263,9 +263,13 @@ export const SendTokenInput = React.forwardRef<
   }));
 
   const onDropdownAction = useCallback(() => {
+    console.log(
+      '[SendTokenInput] Dropdown clicked, assets:',
+      assets?.length || 0,
+    );
     setDropdownVisible(!dropdownVisible);
     dropdownVisible ? inputRef?.current?.blur() : inputRef?.current?.focus();
-  }, [dropdownVisible, inputRef]);
+  }, [dropdownVisible, inputRef, assets]);
 
   const onSelectAsset = useCallback(
     (address: AddressOrEth | '', chainId: ChainId) => {
