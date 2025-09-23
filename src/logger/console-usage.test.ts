@@ -6,7 +6,6 @@ import { describe, expect, it } from 'vitest';
 
 describe('Console Usage Validation', () => {
   it('should not use console.log or console.error in production code', () => {
-    // Use grep for efficient searching (same as CI)
     const command = `
       grep -r "console\\.(log|error)" \
         src/entries/popup \

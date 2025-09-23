@@ -104,7 +104,7 @@ describe('Transport Functions', () => {
         message: 'Debug breadcrumb',
         level: 'debug',
         type: 'debug',
-        data: { extra: { test: 'value' } }, // metadata after destructuring type and tags
+        data: { extra: { test: 'value' } },
         timestamp: expect.any(Number),
       });
       expect(Sentry.captureException).not.toHaveBeenCalled();
@@ -149,13 +149,12 @@ describe('Transport Functions', () => {
 
       expect(Sentry.captureException).toHaveBeenCalledWith(error, {
         tags: { component: 'payment', severity: 'high' },
-        extra: { extra: { orderId: 'ORD-123' } }, // metadata after destructuring
+        extra: { extra: { orderId: 'ORD-123' } },
       });
       expect(Sentry.addBreadcrumb).not.toHaveBeenCalled();
     });
 
     it('should add breadcrumb for error level with string message', () => {
-      // String messages create breadcrumbs, not exceptions
       sentryTransport(LogLevel.Error, 'String error message', {});
 
       expect(Sentry.addBreadcrumb).toHaveBeenCalledWith({
@@ -184,7 +183,6 @@ describe('Transport Functions', () => {
         tags: { service: 'api' },
         extra: {},
       });
-      // Sentry SDK should handle the cause chain internally
     });
 
     it('should use custom breadcrumb type when provided', () => {
@@ -197,13 +195,12 @@ describe('Transport Functions', () => {
         message: 'Navigation event',
         level: 'info',
         type: 'navigation',
-        data: { extra: { from: '/home', to: '/profile' } }, // metadata without type
+        data: { extra: { from: '/home', to: '/profile' } },
         timestamp: expect.any(Number),
       });
     });
 
     it('should handle empty metadata gracefully', () => {
-      // This should not crash even with empty metadata
       sentryTransport(LogLevel.Info, 'Message without metadata', {});
 
       expect(Sentry.addBreadcrumb).toHaveBeenCalledWith({
@@ -223,7 +220,7 @@ describe('Transport Functions', () => {
 
       logger.info('Test message', { tags: { test: true } });
 
-      expect(console.log).toHaveBeenCalled(); // consoleTransport uses console.log for info
+      expect(console.log).toHaveBeenCalled();
       expect(Sentry.addBreadcrumb).toHaveBeenCalled();
     });
 
