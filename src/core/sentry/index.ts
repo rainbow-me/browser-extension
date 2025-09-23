@@ -126,11 +126,7 @@ const INTEGRATIONS: Array<{
 ];
 
 export function initializeSentry(entrypoint: 'popup' | 'background') {
-  if (
-    process.env.IS_DEV !== 'true' &&
-    process.env.IS_TESTING !== 'true' &&
-    process.env.SENTRY_DSN
-  ) {
+  if (process.env.IS_DEV !== 'true' && process.env.SENTRY_DSN) {
     try {
       const contextIntegrations = INTEGRATIONS.filter(
         (i) => i.on === entrypoint || i.on === 'shared',
