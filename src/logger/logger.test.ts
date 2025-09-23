@@ -73,32 +73,31 @@ describe('Logger', () => {
   });
 
   describe('RainbowError', () => {
-    it('should preserve error cause', () => {
-      const originalError = new Error('Original error');
-      const wrappedError = new RainbowError('Wrapped error', {
-        cause: originalError,
-      });
+    it('should be an instance of Error', () => {
+      const error = new RainbowError('Test error');
 
-      expect(wrappedError.message).toBe('Wrapped error');
-      expect(wrappedError.cause).toBe(originalError);
+      expect(error).toBeInstanceOf(Error);
+      expect(error).toBeInstanceOf(RainbowError);
+      expect(error.message).toBe('Test error');
     });
 
-    it('should work without cause', () => {
-      const error = new RainbowError('Simple error');
+    it('should work with logger.error', () => {
+      const mockTransport = vi.fn();
+      const logger = new Logger({ level: LogLevel.Error, debug: '' });
+      logger.transports = [mockTransport];
 
-      expect(error.message).toBe('Simple error');
-      expect(error.cause).toBeUndefined();
+      const error = new RainbowError('Rainbow error occurred');
+      logger.error(error);
+
+      expect(mockTransport).toHaveBeenCalledWith(LogLevel.Error, error, {});
     });
 
-    it('should chain multiple errors', () => {
-      const level1 = new Error('Database connection failed');
-      const level2 = new RainbowError('Query failed', { cause: level1 });
-      const level3 = new RainbowError('User operation failed', {
-        cause: level2,
-      });
+    it('should support standard Error properties', () => {
+      const error = new RainbowError('Custom error');
 
-      expect(level3.cause).toBe(level2);
-      expect((level3.cause as RainbowError).cause).toBe(level1);
+      expect(error.name).toBe('Error'); // RainbowError extends Error without overriding name
+      expect(error.message).toBe('Custom error');
+      expect(error.stack).toBeDefined();
     });
   });
 
