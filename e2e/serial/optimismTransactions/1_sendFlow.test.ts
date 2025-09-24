@@ -12,6 +12,7 @@ import {
 import {
   checkExtensionURL,
   checkWalletName,
+  cleanupDriver,
   delay,
   delayTime,
   executePerformShortcut,
@@ -53,7 +54,7 @@ describe('Complete Hardhat Optimism send flow', () => {
     await takeScreenshotOnFailure(context);
   });
 
-  afterAll(() => driver?.quit());
+  afterAll(async () => await cleanupDriver(driver));
 
   it('should be able import a wallet via pk', async () => {
     await importWalletFlowUsingKeyboardNavigation(
