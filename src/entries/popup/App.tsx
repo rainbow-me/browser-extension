@@ -62,11 +62,6 @@ export function App() {
   }, [prevChains, activeChains]);
 
   React.useEffect(() => {
-    // Disable analytics & sentry for e2e and dev mode
-    if (process.env.IS_TESTING !== 'true' && process.env.IS_DEV !== 'true') {
-      analytics.track(event.popupOpened);
-      setTimeout(() => flushQueuedEvents(), 1000);
-    }
     // Init trezor once globally
     TrezorConnect?.init({
       manifest: {
@@ -89,6 +84,10 @@ export function App() {
         e.preventDefault();
       }
     });
+
+    // Report analytics events on popup open
+    analytics.track(event.popupOpened);
+    setTimeout(() => flushQueuedEvents(), 1000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

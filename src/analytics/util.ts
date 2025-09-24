@@ -1,6 +1,8 @@
+import { ORPCError, isDefinedError, safe } from '@orpc/client';
 import { Address, Hex, isHex } from 'viem';
 
 import { KeychainType } from '~/core/types/keychainTypes';
+import { KeychainWalletError } from '~/entries/background/contracts/popup/wallet/wallet';
 import { getWallet } from '~/entries/popup/handlers/wallet';
 import { RainbowError, logger } from '~/logger';
 
@@ -56,11 +58,10 @@ export async function getWalletContext(
 
   const walletAddressHash = securelyHashWalletAddress(address);
 
-  // walletType is unavailable when keychain is locked
-  let walletType: WalletContext['walletType'];
-  try {
-    // expect getWallet error when keychain is locked
-    const wallet = await getWallet(address);
+  let walletType: WalletContext['walletType']; // unavailable when keychain is locked
+  const [error, wallet] = await safe(getWallet(address));
+
+  if (wallet) {
     walletType = (
       {
         [KeychainType.HdKeychain]: 'owned',
@@ -68,9 +69,19 @@ export async function getWalletContext(
         [KeychainType.ReadOnlyKeychain]: 'watched',
         [KeychainType.HardwareWalletKeychain]: 'hardware',
       } as const
-    )[wallet?.type];
-  } catch (e) {
-    // intentionally empty
+    )[wallet.type];
+  } else if (
+    error &&
+    !(
+      error instanceof ORPCError &&
+      isDefinedError(error) &&
+      error.code === KeychainWalletError.KEYCHAIN_LOCKED
+    )
+  ) {
+    // expect getWallet error only when keychain is locked
+    logger.error(
+      new RainbowError('Unhandled getWallet error', { cause: error }),
+    );
   }
 
   return {

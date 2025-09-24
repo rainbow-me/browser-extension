@@ -1,4 +1,4 @@
-import { os } from '@orpc/server';
+import { ORPCError, isDefinedError, os } from '@orpc/server';
 import { RPCHandler } from '@orpc/server/message-port';
 import * as Sentry from '@sentry/react';
 
@@ -25,7 +25,11 @@ const sentryMiddleware = os.middleware(async ({ next, path }) => {
   try {
     return await next();
   } catch (e) {
-    logger.error(new RainbowError((e as Error)?.message, { cause: e }));
+    // only report unexpected errors; errors defined in errors() contract
+    // will bubble up to the client and throw if not handled by safe()
+    if (e && !(e instanceof ORPCError && isDefinedError(e))) {
+      logger.error(new RainbowError((e as Error)?.message, { cause: e }));
+    }
     throw e;
   }
 });

@@ -543,7 +543,7 @@ class KeychainManager {
       throw new Error('Keychain manager not initialized');
     }
     if (!this.state.isUnlocked) {
-      throw new Error('Wallet locked - please unlock to access accounts');
+      throw new Error('Keychain locked for account');
     }
     for (let i = 0; i < this.state.keychains.length; i++) {
       const keychain = this.state.keychains[i];
