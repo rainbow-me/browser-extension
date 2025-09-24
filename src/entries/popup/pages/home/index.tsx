@@ -61,6 +61,7 @@ import { Points } from './Points/Points';
 import { TabHeader } from './TabHeader';
 import { Tokens } from './Tokens';
 
+const IS_TESTING = process.env.IS_TESTING === 'true';
 const IS_DEV = process.env.IS_DEV === 'true';
 
 const TOP_NAV_HEIGHT = 65;
@@ -156,7 +157,7 @@ export const Home = memo(function Home() {
     const tabs: Tab[] = ['tokens', 'activity'];
 
     // Add NFTs tab if feature flag is enabled or in testing/dev
-    if (config.nfts_enabled || IS_DEV) {
+    if (config.nfts_enabled || IS_TESTING || IS_DEV) {
       tabs.push('nfts');
     }
 
