@@ -185,7 +185,7 @@ export async function fetchAndPersist(
       }
     } else {
       const data = await response.arrayBuffer();
-      await fs.writeFile(filePath, Buffer.from(data));
+      await fs.writeFile(filePath, new Uint8Array(data));
       console.log(
         `[E2E Mock] Recorded non-JSON: ${request.url} -> ${path.relative(
           process.cwd(),

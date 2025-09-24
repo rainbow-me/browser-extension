@@ -187,10 +187,10 @@ describe('Swap Flow 2', () => {
     await typeOnTextInput({
       id: 'slippage-input-mask',
       driver,
-      text: '15',
+      text: '99',
     });
     await findElementByTextAndClick(driver, 'Auto');
-    await findElementByTextAndClick(driver, '1inch');
+    await findElementByTextAndClick(driver, '0x');
     await delayTime('medium');
 
     await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
