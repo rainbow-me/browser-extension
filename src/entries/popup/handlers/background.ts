@@ -1,11 +1,10 @@
-import { createORPCClient, onError } from '@orpc/client';
+import { createORPCClient } from '@orpc/client';
 import { RPCLink } from '@orpc/client/message-port';
 import type { RouterClient } from '@orpc/server';
 import { createTanstackQueryUtils } from '@orpc/tanstack-query';
 
 import type { PopupRouter } from '~/entries/background/procedures/popup';
 import { POPUP_PORT_NAME } from '~/entries/background/procedures/popup/constants';
-import { RainbowError, logger } from '~/logger';
 
 import { createDeepProxy } from './deepProxy';
 import { autoReconnect } from './retry';
@@ -17,11 +16,6 @@ function createClient(port: chrome.runtime.Port): RouterClient<PopupRouter> {
   return createORPCClient(
     new RPCLink({
       port,
-      clientInterceptors: [
-        onError((e) => {
-          logger.error(new RainbowError('ORPC client error', { cause: e }));
-        }),
-      ],
     }),
   );
 }
