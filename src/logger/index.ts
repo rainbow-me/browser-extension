@@ -118,23 +118,31 @@ function withColor([x, y]: [number, number]) {
  */
 export const consoleTransport: Transport = (level, message, metadata) => {
   const timestamp = format(new Date(), 'HH:mm:ss');
-  const extra = Object.keys(metadata).length
-    ? ' ' + JSON.stringify(metadata, null, '  ')
-    : '';
   const color = {
     [LogLevel.Debug]: colors.magenta,
     [LogLevel.Info]: colors.default,
     [LogLevel.Warn]: colors.yellow,
     [LogLevel.Error]: colors.red,
   }[level];
-  // needed for stacktrace formatting
+  const messageContext = `${timestamp} ${withColor(color)(
+    `[${level.toUpperCase()}]`,
+  )}`;
+
+  const hasMetadata = Object.keys(metadata).length > 0;
+
+  // Error stackrace requires console.error
   const log = level === LogLevel.Error ? console.error : console.log;
 
-  log(
-    `${timestamp} ${withColor(color)(
-      `[${level.toUpperCase()}]`,
-    )} ${message.toString()}${extra}`,
-  );
+  // Stacktrace rendering requires the error object to be passed
+  if (message instanceof Error) {
+    log(`${messageContext}`, message, ...(hasMetadata ? [metadata] : []));
+  } else {
+    log(
+      `${messageContext} ${message}${
+        hasMetadata ? ' ' + JSON.stringify(metadata, null, '  ') : ''
+      }`,
+    );
+  }
 };
 
 export const sentryTransport: Transport = (
