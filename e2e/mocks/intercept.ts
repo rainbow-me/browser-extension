@@ -18,10 +18,12 @@ import { InterceptPhase } from 'selenium-webdriver/bidi/interceptPhase';
 // @ts-expect-error - BiDi modules not in TS definitions
 import { Network } from 'selenium-webdriver/bidi/network';
 // @ts-expect-error - BiDi modules not in TS definitions
+import { BytesValue } from 'selenium-webdriver/bidi/networkTypes';
+// @ts-expect-error - BiDi modules not in TS definitions
 import { ProvideResponseParameters } from 'selenium-webdriver/bidi/provideResponseParameters';
 import { UrlPattern } from 'selenium-webdriver/bidi/urlPattern';
 
-import type { BeforeRequestSentEvent, BytesValue, Header } from './bidi';
+import type { BeforeRequestSentEvent, Header } from './bidi';
 import { ENDPOINTS } from './endpoints';
 
 const SNAPSHOT_ROOT = path.resolve('e2e/mocks');
@@ -185,6 +187,7 @@ export async function fetchAndPersist(
       }
     } else {
       const data = await response.arrayBuffer();
+      // Write binary data - Uint8Array is the correct type for fs.promises.writeFile
       await fs.writeFile(filePath, new Uint8Array(data));
       console.log(
         `[E2E Mock] Recorded non-JSON: ${request.url} -> ${path.relative(
