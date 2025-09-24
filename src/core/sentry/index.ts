@@ -148,6 +148,88 @@ export function initializeSentry(entrypoint: 'popup' | 'background') {
           ? 'internal'
           : 'production',
         ignoreErrors: IGNORED_ERRORS,
+        beforeBreadcrumb(breadcrumb, hint) {
+          // Only enhance HTTP-like breadcrumbs across platforms
+          const cat = breadcrumb.category;
+
+          // ---- Browser: fetch ----
+          if (cat === 'fetch' && hint && 'response' in hint && hint.response) {
+            const res = hint.response as Response;
+            const status = res.status;
+            if (typeof status === 'number' && (status < 200 || status >= 300)) {
+              const h = res.headers as Headers;
+              const requestId = h.get('x-request-id') ?? undefined;
+              const traceId = h.get('x-trace-id') ?? undefined;
+
+              return {
+                ...breadcrumb,
+                data: {
+                  ...breadcrumb.data,
+                  status,
+                  ...(requestId && { requestId }),
+                  ...(traceId && { traceId }),
+                },
+                message: [
+                  breadcrumb.message ?? '',
+                  `(HTTP error: status ${status}`,
+                  requestId ? `requestId: ${requestId}` : '',
+                  traceId ? `traceId: ${traceId}` : '',
+                  ')',
+                ]
+                  .filter(Boolean)
+                  .join(' '),
+              };
+            }
+            return breadcrumb;
+          }
+
+          // ---- Browser: XHR ----
+          if (cat === 'xhr' && hint && 'xhr' in hint && hint.xhr) {
+            const xhr = hint.xhr as XMLHttpRequest;
+            const status = xhr.status;
+
+            // Parse headers from XHR
+            const raw = xhr.getAllResponseHeaders?.() ?? '';
+            const headerObj = raw
+              .trim()
+              .split(/[\r\n]+/)
+              .reduce<Record<string, string>>((acc, line) => {
+                const idx = line.indexOf(':');
+                if (idx !== -1)
+                  acc[line.slice(0, idx).toLowerCase()] = line
+                    .slice(idx + 1)
+                    .trim();
+                return acc;
+              }, {});
+
+            if (typeof status === 'number' && (status < 200 || status >= 300)) {
+              const requestId = headerObj['x-request-id'];
+              const traceId = headerObj['x-trace-id'];
+              return {
+                ...breadcrumb,
+                data: {
+                  ...breadcrumb.data,
+                  status,
+                  ...(requestId && { requestId }),
+                  ...(traceId && { traceId }),
+                },
+                message: [
+                  breadcrumb.message ?? '',
+                  `(HTTP error: status ${status}`,
+                  requestId ? `requestId: ${requestId}` : '',
+                  traceId ? `traceId: ${traceId}` : '',
+                  ')',
+                ]
+                  .filter(Boolean)
+                  .join(' '),
+              };
+            }
+            return breadcrumb;
+          }
+
+          // Other categories unchanged
+          return breadcrumb;
+        },
       });
 
       Sentry.setTag('entrypoint', entrypoint);
