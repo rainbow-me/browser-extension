@@ -289,10 +289,7 @@ export const getAccounts = async () => popupClient.wallet.accounts();
 export const getWallets = async () => popupClient.wallet.wallets();
 
 export const getWallet = async (address: Address) =>
-  popupClient.wallet.wallet(address).catch((e) => {
-    logger.error(new RainbowError('getWallet: error', { cause: e }));
-    throw e;
-  });
+  popupClient.wallet.wallet(address);
 
 export const getStatus = async () => popupClient.wallet.status();
 
