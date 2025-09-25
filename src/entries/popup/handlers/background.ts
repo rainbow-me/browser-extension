@@ -23,9 +23,11 @@ function createClient(
   port: chrome.runtime.Port,
 ): RouterClient<PopupRouter, ORPCClientContext> {
   let isClosed = false;
-  port.onDisconnect.addListener(() => {
+  const closeHandler = () => {
     isClosed = true;
-  });
+    port.onDisconnect.removeListener(closeHandler);
+  };
+  port.onDisconnect.addListener(closeHandler);
 
   return createORPCClient(
     new RPCLink({
