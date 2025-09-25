@@ -323,10 +323,10 @@ export async function interceptMocks(
           // The response body could contain non-UTF8 bytes (images, compressed data, etc.)
           // Base64 ensures safe transmission over the text-based BiDi protocol
           const ab = await mswRes.arrayBuffer();
-          const bodyBytes: BytesValue = {
-            type: 'base64',
-            value: Buffer.from(ab).toString('base64'),
-          };
+          const bodyBytes = new BytesValue(
+            'base64',
+            Buffer.from(ab).toString('base64'),
+          );
           params.body(bodyBytes);
           await network.provideResponse(params);
         } else {
