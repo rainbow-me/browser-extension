@@ -23,6 +23,7 @@ import { expect } from 'vitest';
 
 import { RAINBOW_TEST_DAPP } from '~/core/references/links';
 
+import { BiDiManager } from './helpers/bidiManager';
 import {
   browser,
   browserBinaryPath,
@@ -98,6 +99,7 @@ export async function getWindowHandle({ driver }: { driver: WebDriver }) {
 export async function initDriverWithOptions(opts: {
   browser: string;
   os: string;
+  disableHeadless?: boolean;
 }) {
   let driver;
   const args = [
@@ -162,8 +164,42 @@ export async function initDriverWithOptions(opts: {
   // @ts-ignore
   driver.browser = opts.browser;
 
-  // Install network interception for mocking
-  await interceptMocks(driver);
+  // Check if test will use multiple tabs by looking at test runner info
+  const testFile = process.env.VITEST_TEST_PATH || '';
+  const usesMultipleTabs = testFile.includes('dappInteractions');
+
+  if (usesMultipleTabs) {
+    // Tests with multiple tabs get managed BiDi to avoid crashes
+    console.log(
+      '[initDriverWithOptions] Test uses multiple tabs, using BiDiManager for crash prevention',
+    );
+    const bidiManager = new BiDiManager(driver);
+    // @ts-ignore - Store manager on driver for access in other functions
+    driver.bidiManager = bidiManager;
+    // @ts-ignore - Keep for backward compatibility
+    driver.interceptorCleanup = async () => await bidiManager.cleanup();
+
+    // Initialize BiDi immediately so API mocks work for all tests
+    try {
+      console.log(
+        '[initDriverWithOptions] Initializing BiDi mock interceptor for API mocking',
+      );
+      await bidiManager.initialize();
+    } catch (error) {
+      console.error(
+        '[initDriverWithOptions] Failed to initialize BiDi:',
+        error,
+      );
+    }
+  } else {
+    // Standard tests get BiDi with API mocking
+    console.log(
+      '[initDriverWithOptions] Standard test, using direct interceptMocks',
+    );
+    const interceptor = await interceptMocks(driver);
+    // @ts-ignore - Store cleanup function on driver
+    driver.interceptorCleanup = async () => interceptor?.cleanup?.();
+  }
 
   return driver;
 }
@@ -1271,4 +1307,25 @@ export async function performSearchTokenAddressActionsCmdK({
     id: `token-price-name-${tokenAddress}`,
     driver,
   });
+}
+
+export async function cleanupDriver(driver: WebDriver | undefined) {
+  if (!driver) return;
+
+  // Clean up BiDi interceptor before quitting driver
+  // @ts-ignore
+  if (driver.interceptorCleanup) {
+    try {
+      // @ts-ignore
+      await driver.interceptorCleanup();
+    } catch (error) {
+      console.warn('[E2E] Error cleaning up interceptor:', error);
+    }
+  }
+
+  try {
+    await driver.quit();
+  } catch (error) {
+    console.warn('[E2E] Error quitting driver:', error);
+  }
 }

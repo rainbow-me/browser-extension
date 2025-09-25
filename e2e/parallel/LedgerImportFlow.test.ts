@@ -3,6 +3,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
   checkWalletName,
+  cleanupDriver,
   findElementByIdAndClick,
   findElementByTestIdAndClick,
   findElementByText,
@@ -31,7 +32,7 @@ describe.runIf(browser !== 'firefox')(
       if (!extensionId) throw new Error('Extension not found');
       rootURL += extensionId;
     });
-    afterAll(async () => driver?.quit());
+    afterAll(async () => await cleanupDriver(driver));
 
     it('should be able import a wallet via hw wallet', async () => {
       await importHardwareWalletFlow(driver, rootURL, 'ledger');

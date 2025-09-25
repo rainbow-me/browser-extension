@@ -14,6 +14,7 @@ import {
 } from 'vitest';
 
 import {
+  cleanupDriver,
   clearInput,
   delay,
   delayTime,
@@ -67,7 +68,7 @@ describe('Swap Flow 2', () => {
     await takeScreenshotOnFailure(context);
   });
 
-  afterAll(() => driver?.quit());
+  afterAll(async () => await cleanupDriver(driver));
 
   it('should be able import a wallet via pk', async () => {
     //  Start from welcome screen
@@ -187,10 +188,10 @@ describe('Swap Flow 2', () => {
     await typeOnTextInput({
       id: 'slippage-input-mask',
       driver,
-      text: '15',
+      text: '99',
     });
     await findElementByTextAndClick(driver, 'Auto');
-    await findElementByTextAndClick(driver, '1inch');
+    await findElementByTextAndClick(driver, '0x');
     await delayTime('medium');
 
     await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });

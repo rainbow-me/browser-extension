@@ -5,6 +5,7 @@ import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
 import { ChainId } from '~/core/types/chains';
 
 import {
+  cleanupDriver,
   clearInput,
   delay,
   delayTime,
@@ -57,7 +58,7 @@ afterEach(async (context: any) => {
   await takeScreenshotOnFailure(context);
 });
 
-afterAll(() => driver?.quit());
+afterAll(async () => await cleanupDriver(driver));
 
 const WALLET_TO_USE_SECRET = TEST_VARIABLES.SWAPS_WALLET.PK;
 
@@ -991,10 +992,10 @@ it('should be able to execute swap', async () => {
   await typeOnTextInput({
     id: 'slippage-input-mask',
     driver,
-    text: '15',
+    text: '99',
   });
   await findElementByTextAndClick(driver, 'Auto');
-  await findElementByTextAndClick(driver, '1inch');
+  await findElementByTextAndClick(driver, '0x');
   await delayTime('medium');
   await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
 

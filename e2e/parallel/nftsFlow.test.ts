@@ -3,6 +3,7 @@ import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 
 import {
+  cleanupDriver,
   delayTime,
   findElementByTestId,
   findElementByTestIdAndClick,
@@ -41,7 +42,7 @@ describe.runIf(remoteConfig.nfts_enabled)(
       if (!extensionId) throw new Error('Extension not found');
       rootURL += extensionId;
     });
-    afterAll(async () => await driver?.quit());
+    afterAll(async () => await cleanupDriver(driver));
 
     it('should be able import a wallet via seed', async () => {
       await importWalletFlow(
