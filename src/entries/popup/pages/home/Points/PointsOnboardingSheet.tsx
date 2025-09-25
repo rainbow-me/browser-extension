@@ -243,7 +243,7 @@ const doneRows = [
     weight="semibold"
     color="labelTertiary"
   >
-    {doneRowsText[4]}
+    {doneRowsText[3]}
   </AnimatedText>,
 ];
 
