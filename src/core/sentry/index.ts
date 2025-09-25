@@ -163,7 +163,6 @@ export function initializeSentry(entrypoint: 'popup' | 'background') {
           import('../state/deviceId') // only import in background thread
             .then((m) => m.useDeviceIdStore.getState().deviceId)
             .then((deviceId) => {
-              console.log('deviceId', deviceId);
               setSentryUser({ deviceId });
             })
         );
