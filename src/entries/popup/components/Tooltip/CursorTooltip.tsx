@@ -110,6 +110,7 @@ export const CursorTooltip = ({
         <TooltipPrimitive.Trigger asChild>
           <Box
             ref={childElementWrapperRef}
+            style={{ userSelect: 'text' }}
             onMouseEnter={() => {
               setIsHovering(true);
               showTimer.current = setTimeout(() => setOpen(true), 750);
