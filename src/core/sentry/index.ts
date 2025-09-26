@@ -152,8 +152,20 @@ export function initializeSentry(entrypoint: 'popup' | 'background') {
 
       Sentry.setTag('entrypoint', entrypoint);
 
+      // only in popup thread
       if (entrypoint === 'popup')
         Sentry.setTag('popupType', detectPopupContext());
+
+      // only in background thread
+      if (entrypoint === 'background')
+        void (
+          // not blocking
+          import('../state/deviceId') // only import in background thread
+            .then((m) => m.useDeviceIdStore.getState().deviceId)
+            .then((deviceId) => {
+              setSentryUser({ deviceId });
+            })
+        );
 
       const lazyIntegrations = contextIntegrations
         .filter((i) => i.lazy === true)
