@@ -15,3 +15,5 @@ export const appConnectionMenuIsActive = () =>
   !!document.getElementById('app-connection-menu-selector-open');
 export const appConnectionSwitchWalletsPromptIsActive = () =>
   !!document.getElementById('app-connection-switch-wallets-prompt');
+export const backupReminderIsActive = () =>
+  !!document.getElementById('wallet-backup-reminder-sheet');
