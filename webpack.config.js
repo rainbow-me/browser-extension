@@ -49,6 +49,7 @@ module.exports = {
             loader: 'ts-loader',
             options: {
               transpileOnly: true,
+              experimentalFileCaching: true,
             },
           },
         ],
