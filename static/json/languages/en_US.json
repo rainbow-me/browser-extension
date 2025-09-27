@@ -1303,6 +1303,7 @@
     "tokens": "Tokens"
   },
   "activity": {
+    "just_now": "Just now",
     "hour": "Last Hour",
     "today": "Today",
     "yesterday": "Yesterday",

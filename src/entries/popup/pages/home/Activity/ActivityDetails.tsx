@@ -17,7 +17,10 @@ import {
 } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
 import { copy } from '~/core/utils/copy';
-import { formatDate } from '~/core/utils/formatDate';
+import {
+  formatExactDateTime,
+  formatRelativeDate,
+} from '~/core/utils/formatDate';
 import { formatCurrency, formatNumber } from '~/core/utils/formatNumber';
 import { isLowerCaseMatch, truncateString } from '~/core/utils/strings';
 import {
@@ -52,6 +55,7 @@ import {
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
 import { ExplainerSheet } from '~/entries/popup/components/ExplainerSheet/ExplainerSheet';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
+import { CursorTooltip } from '~/entries/popup/components/Tooltip/CursorTooltip';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
@@ -123,7 +127,18 @@ function ConfirmationData({
           <InfoRow
             symbol="clock.badge.checkmark"
             label={i18n.t('activity_details.confirmed_at')}
-            value={formatDate(transaction.minedAt * 1000)}
+            value={
+              <CursorTooltip
+                arrowDirection="up"
+                arrowCentered
+                text={formatExactDateTime(transaction.minedAt * 1000)}
+                textWeight="bold"
+                textSize="12pt"
+                textColor="labelSecondary"
+              >
+                {formatRelativeDate(transaction.minedAt * 1000)}
+              </CursorTooltip>
+            }
           />
           <InfoRow
             symbol="number.square"

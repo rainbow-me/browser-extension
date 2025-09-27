@@ -11,7 +11,7 @@ import { ChainId } from '~/core/types/chains';
 import { SearchAsset } from '~/core/types/search';
 import { getChain } from '~/core/utils/chains';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
-import { formatDate } from '~/core/utils/formatDate';
+import { formatRelativeDate } from '~/core/utils/formatDate';
 import { formatCurrency } from '~/core/utils/formatNumber';
 import {
   Box,
@@ -72,7 +72,7 @@ const PriceChange = memo(function PriceChange({
         </Text>
       </Inline>
       <Text size="14pt" weight="heavy" color={color}>
-        {formatDate(date)}
+        {formatRelativeDate(date)}
       </Text>
     </Box>
   );
