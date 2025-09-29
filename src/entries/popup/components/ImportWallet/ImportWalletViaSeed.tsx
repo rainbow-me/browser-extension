@@ -245,11 +245,11 @@ const ImportWalletViaSeed = () => {
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
-      if (e.key === 'Enter') {
+      if (e.key === 'Enter' && isValid) {
         handleImportWallet();
       }
     },
-    [handleImportWallet],
+    [handleImportWallet, isValid],
   );
 
   const isValidWord = (word: string) => englishWordlist.indexOf(word) > -1;
