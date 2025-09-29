@@ -44,7 +44,7 @@ export const overrideWithFastSpeedIfNeeded = ({
   chainId: ChainId;
   gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed;
 }) => {
-  const gasParams = selectedGas.transactionGasParams;
+  const gasParams = selectedGas.transactionGasParams ?? {};
   // approvals should always use fast gas or custom (whatever is faster)
   if (chainId === ChainId.mainnet) {
     const transactionGasParams = gasParams as TransactionGasParams;
