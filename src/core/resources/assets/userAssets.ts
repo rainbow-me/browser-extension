@@ -380,7 +380,7 @@ async function userAssetsByChainQueryFunction({
   const cachedUserAssets = (cache.find({
     queryKey: userAssetsQueryKey({ address, currency }),
   })?.state?.data || {}) as ParsedAssetsDictByChain;
-  const cachedDataForChain = cachedUserAssets?.[chainId];
+  const cachedDataForChain = cachedUserAssets?.[chainId] ?? {};
   try {
     const url = `/${chainId}/${address}/assets?currency=${currency.toLowerCase()}`;
     const res = await addysHttp.get<AddressAssetsReceivedMessage>(url);
@@ -394,19 +394,21 @@ async function userAssetsByChainQueryFunction({
         currency,
       });
 
-      return parsedAssetsDict[chainId];
+      return parsedAssetsDict[chainId] ?? {};
     } else {
       return cachedDataForChain;
     }
   } catch (e) {
-    logger.error(
-      new RainbowError(
-        `userAssetsByChainQueryFunction - chainId = ${chainId}:`,
-      ),
-      {
-        message: (e as Error)?.message,
-      },
-    );
+    if (!(e instanceof Error && e.name === 'AbortError'))
+      // abort errors are expected
+      logger.error(
+        new RainbowError(
+          `userAssetsByChainQueryFunction - chainId = ${chainId}:`,
+        ),
+        {
+          message: (e as Error)?.message,
+        },
+      );
     return cachedDataForChain;
   }
 }

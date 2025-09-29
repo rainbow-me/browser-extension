@@ -119,9 +119,15 @@ export async function consolidatedTransactionsQueryFunction({
     };
   } catch (e) {
     // we don't bother with fetching cache and returning stale data here because we probably have previous page data already
-    logger.error(new RainbowError('consolidatedTransactionsQueryFunction: '), {
-      message: e,
-    });
+    if (!(e instanceof Error && e.name === 'AbortError'))
+      // abort errors are expected
+      logger.error(
+        new RainbowError('consolidatedTransactionsQueryFunction: '),
+        {
+          message: e,
+        },
+      );
+
     return { transactions: [] };
   }
 }

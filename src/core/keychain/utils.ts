@@ -56,9 +56,11 @@ export const autoDiscoverAccountsFromIndex = async ({
     };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    logger.error(new RainbowError(`[aha]: Failed to discover wallets`), {
-      message: error.message,
-    });
+    if (!(error instanceof Error && error.name === 'AbortError'))
+      // abort errors are expected
+      logger.error(new RainbowError(`[aha]: Failed to discover wallets`), {
+        message: error.message,
+      });
     return { accountsEnabled: 1 };
   }
 };
