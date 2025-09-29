@@ -8,6 +8,15 @@ export const LocalStorage = {
     try {
       await chrome?.storage?.local?.set({ [key]: value });
     } catch (e) {
+      if (
+        e instanceof Error &&
+        (e.message.includes('IO error') ||
+          e.message.includes('The browser is shutting down'))
+      ) {
+        // dont report quota errors, this includes disk full etc
+        throw e; // dont pass, as this may lead to loss of funds
+      }
+
       const chromeError = chrome.runtime.lastError?.message;
       logger.error(new RainbowError('LocalStorage write error'), {
         message:
@@ -16,6 +25,8 @@ export const LocalStorage = {
             : `Unknown error: ${JSON.stringify(e)}`,
         extra: { chromeError },
       });
+
+      // pass for now, as we'll see in sentry how many errors are left. This should throw in the future
     }
   },
   async get<TValue = unknown>(key: string) {
