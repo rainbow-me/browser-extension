@@ -11,6 +11,7 @@ import {
 
 import {
   checkWalletName,
+  cleanupDriver,
   delayTime,
   findElementByTestId,
   findElementByTestIdAndClick,
@@ -52,7 +53,7 @@ describe('App interactions flow', () => {
     await takeScreenshotOnFailure(context);
   });
 
-  afterAll(() => driver?.quit());
+  afterAll(async () => await cleanupDriver(driver));
 
   it('should be able import a wallet via seed', async () => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);

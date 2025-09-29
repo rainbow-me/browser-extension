@@ -3,6 +3,7 @@ import { afterAll, afterEach, beforeAll, beforeEach, expect, it } from 'vitest';
 
 import {
   checkExtensionURL,
+  cleanupDriver,
   delayTime,
   executePerformShortcut,
   findElementByTestId,
@@ -41,7 +42,7 @@ afterEach<{ driver: WebDriver }>(async (context) => {
   await takeScreenshotOnFailure(context);
 });
 
-afterAll(() => driver?.quit());
+afterAll(async () => await cleanupDriver(driver));
 
 it('should be able import a wallet via pk', async () => {
   await importWalletFlow(driver, rootURL, TEST_VARIABLES.SEED_WALLET.PK);
