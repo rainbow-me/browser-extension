@@ -21,6 +21,7 @@ const IGNORED_ERRORS: (string | RegExp)[] = [
   "Duplicate script ID 'inpage'",
   'The page keeping the extension port is moved into back/forward cache, so the message channel is closed.',
   'The browser is shutting down.',
+  /^redacted$/i,
 ];
 
 function detectPopupContext() {
