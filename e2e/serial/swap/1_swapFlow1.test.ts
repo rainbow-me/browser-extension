@@ -995,7 +995,7 @@ it('should be able to execute swap', async () => {
     text: '99',
   });
   await findElementByTextAndClick(driver, 'Auto');
-  await findElementByTextAndClick(driver, '0x');
+  await findElementByTextAndClick(driver, '1inch');
   await delayTime('medium');
   await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
 

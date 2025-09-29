@@ -17,6 +17,7 @@ import { Address } from 'viem';
 
 import { metadataPostClient } from '~/core/graphql';
 import { useGasStore } from '~/core/state';
+import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
@@ -57,7 +58,19 @@ export const estimateSwapGasLimit = async ({
   requiresApprove?: boolean;
   quote: Quote;
 }): Promise<string> => {
-  const provider = getProvider({ chainId });
+  // Use Hardhat provider when connected to Hardhat, regardless of quote chainId
+  const isConnectedToHardhat =
+    useConnectedToHardhatStore.getState().connectedToHardhat;
+  const providerChainId = isConnectedToHardhat ? ChainId.hardhat : chainId;
+
+  console.log('[estimateSwapGasLimit] Provider selection:', {
+    quoteChainId: chainId,
+    isConnectedToHardhat,
+    providerChainId,
+    willUseHardhat: isConnectedToHardhat && providerChainId === ChainId.hardhat,
+  });
+
+  const provider = getProvider({ chainId: providerChainId });
 
   if (!provider || !quote) {
     const chainGasUnits = useNetworkStore.getState().getChainGasUnits(chainId);

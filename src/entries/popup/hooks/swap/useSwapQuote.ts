@@ -13,6 +13,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useMemo, useRef } from 'react';
 
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ParsedAsset, ParsedSearchAsset } from '~/core/types/assets';
 import { convertAmountToRawAmount } from '~/core/utils/numbers';
 
@@ -46,6 +47,7 @@ export const useSwapQuote = ({
 }: UseSwapQuotesProps) => {
   const { currentAddress } = useCurrentAddressStore();
   const currency = useCurrentCurrencyStore((s) => s.currentCurrency);
+  const { connectedToHardhat } = useConnectedToHardhatStore();
 
   const currentInputHash = `${assetToSell?.chainId}:${assetToSell?.address}:${assetToSellValue}`;
   const lastFetchedInputHashRef = useRef<string>();
@@ -67,9 +69,27 @@ export const useSwapQuote = ({
       assetToSell && assetToBuy && typeof independentValue === 'number';
     if (!paramsReady) return undefined;
 
+    // Always use asset's chainId for quote API (it doesn't support Hardhat)
+    // The execution layer will handle using Hardhat provider when needed
+    const quoteChainId = assetToSell.chainId;
+
+    // Debug logging for chainId tracking
+    console.log('[useSwapQuote] Creating quote params:', {
+      assetToSellChainId: assetToSell.chainId,
+      assetToSellSymbol: assetToSell.symbol,
+      assetToBuyChainId: assetToBuy.chainId,
+      assetToBuySymbol: assetToBuy.symbol,
+      connectedToHardhat,
+      quoteChainId,
+      note: connectedToHardhat
+        ? 'Using mainnet quote but will execute on Hardhat'
+        : 'Normal flow',
+      currentAddress,
+    });
+
     return {
       source: source === 'auto' ? undefined : source,
-      chainId: assetToSell.chainId,
+      chainId: quoteChainId,
       fromAddress: currentAddress,
       sellTokenAddress: assetToSell.isNativeAsset
         ? ETH_ADDRESS
@@ -101,15 +121,16 @@ export const useSwapQuote = ({
       currency,
     };
   }, [
-    assetToBuy,
-    assetToBuyValue,
-    assetToSell,
-    assetToSellValue,
-    currentAddress,
     independentField,
-    isCrosschainSwap,
-    slippage,
+    assetToBuyValue,
+    assetToSellValue,
+    assetToSell,
+    assetToBuy,
+    connectedToHardhat,
+    currentAddress,
     source,
+    slippage,
+    isCrosschainSwap,
     isClaim,
     currency,
   ]);
