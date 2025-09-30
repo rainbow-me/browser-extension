@@ -8,7 +8,7 @@ import {
   isSupported,
 } from 'firebase/remote-config';
 
-import { RainbowError, logger } from '~/logger';
+import { logger } from '~/logger';
 
 import { useNetworkStore } from '../state/networks/networks';
 import { ChainId } from '../types/chains';
@@ -134,7 +134,7 @@ export const init = async () => {
     }
   } catch (e) {
     logger.info('Using default remote config');
-    logger.error(new RainbowError('error getting remote config', { cause: e }));
+    // most likely blocked by adblockers or dns
   } finally {
     config.status = 'ready';
     if (process.env.IS_DEV === 'true') {

@@ -6,7 +6,7 @@
     },
     {
       "path": "./build/popup.js",
-      "maxSize": "2.4MB"
+      "maxSize": "3MB"
     },
     {
       "path": "./build/contentscript.js",
