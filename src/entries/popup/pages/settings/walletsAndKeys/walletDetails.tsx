@@ -9,7 +9,7 @@ import { useWalletBackupsStore } from '~/core/state/walletBackups';
 import { useWalletNamesStore } from '~/core/state/walletNames';
 import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
-import { formatDate } from '~/core/utils/formatDate';
+import { formatRelativeDate } from '~/core/utils/formatDate';
 import { getSettingWallets } from '~/core/utils/settings';
 import { Box, Inline, Symbol, Text } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
@@ -364,7 +364,7 @@ export function WalletDetails() {
               >
                 {i18n.t(
                   'settings.privacy_and_security.wallets_and_keys.wallet_details.last_backed_up',
-                  { date: formatDate(walletBackedUpInfo?.timestamp) },
+                  { date: formatRelativeDate(walletBackedUpInfo?.timestamp) },
                 )}
               </Text>
             </Box>

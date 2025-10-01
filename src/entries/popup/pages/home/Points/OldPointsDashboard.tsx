@@ -13,7 +13,7 @@ import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { truncateAddress } from '~/core/utils/address';
 import { copy } from '~/core/utils/copy';
-import { formatDate } from '~/core/utils/formatDate';
+import { formatRelativeDate } from '~/core/utils/formatDate';
 import { createNumberFormatter } from '~/core/utils/formatNumber';
 import {
   Box,
@@ -391,7 +391,7 @@ const YourRankAndNextDrop = memo(function YourRankAndNextDrop() {
             color="accent"
             textShadow="12px accent"
           >
-            {formatDate(nextDistribution)}
+            {formatRelativeDate(nextDistribution)}
           </Text>
         </Inline>
       </Card>
