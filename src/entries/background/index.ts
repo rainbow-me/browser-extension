@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { uuid4 } from '@sentry/core';
 
 import { initializeMessenger } from '~/core/messengers';
@@ -20,12 +21,26 @@ import { startPopupRouter } from './procedures/popup';
 
 require('../../core/utils/lockdown');
 
+// Performance monitoring for tests only - passive collection
+if (process.env.IS_TESTING === 'true') {
+  (globalThis as any).__PERF_METRICS__ = {
+    backgroundStartup: performance.now(),
+  };
+}
+
 initializeSentry('background');
 localStorageRecycler();
 
 handleOpenExtensionShortcut();
 
 startPopupRouter();
+
+// Mark when popup router is ready - passive collection
+if (process.env.IS_TESTING === 'true') {
+  const metrics = (globalThis as any).__PERF_METRICS__ || {};
+  metrics.popupRouterReady = performance.now();
+  (globalThis as any).__PERF_METRICS__ = metrics;
+}
 
 const inpageMessenger = initializeMessenger({ connect: 'inpage' });
 
