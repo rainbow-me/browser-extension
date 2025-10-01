@@ -2546,7 +2546,7 @@
         },
         "enabledServices": {
           "meteorology": {
-            "enabled": false
+            "enabled": true
           },
           "notifications": {
             "enabled": false
@@ -2643,7 +2643,7 @@
         },
         "enabledServices": {
           "meteorology": {
-            "enabled": false
+            "enabled": true
           },
           "notifications": {
             "enabled": false
@@ -2740,7 +2740,7 @@
         },
         "enabledServices": {
           "meteorology": {
-            "enabled": false
+            "enabled": true
           },
           "notifications": {
             "enabled": false
@@ -2837,7 +2837,7 @@
         },
         "enabledServices": {
           "meteorology": {
-            "enabled": false
+            "enabled": true
           },
           "notifications": {
             "enabled": false
@@ -2934,7 +2934,7 @@
         },
         "enabledServices": {
           "meteorology": {
-            "enabled": false
+            "enabled": true
           },
           "notifications": {
             "enabled": false
@@ -3031,7 +3031,7 @@
         },
         "enabledServices": {
           "meteorology": {
-            "enabled": false
+            "enabled": true
           },
           "notifications": {
             "enabled": false
@@ -3128,7 +3128,7 @@
         },
         "enabledServices": {
           "meteorology": {
-            "enabled": false
+            "enabled": true
           },
           "notifications": {
             "enabled": false
@@ -3225,7 +3225,7 @@
         },
         "enabledServices": {
           "meteorology": {
-            "enabled": false
+            "enabled": true
           },
           "notifications": {
             "enabled": false
@@ -3322,7 +3322,7 @@
         },
         "enabledServices": {
           "meteorology": {
-            "enabled": false
+            "enabled": true
           },
           "notifications": {
             "enabled": false
@@ -3419,7 +3419,7 @@
         },
         "enabledServices": {
           "meteorology": {
-            "enabled": false
+            "enabled": true
           },
           "notifications": {
             "enabled": false
@@ -3516,7 +3516,7 @@
         },
         "enabledServices": {
           "meteorology": {
-            "enabled": false
+            "enabled": true
           },
           "notifications": {
             "enabled": false
