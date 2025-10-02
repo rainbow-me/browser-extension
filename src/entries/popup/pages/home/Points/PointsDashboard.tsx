@@ -1108,7 +1108,7 @@ function Rewards() {
   const navigate = useRainbowNavigate();
   const { featureFlags } = useFeatureFlagsStore();
 
-  const showSupplementalSections = featureFlags.rewards_scheduled_drop;
+  const showScheduledDrop = featureFlags.rewards_scheduled_drop;
 
   const hasLastAirdropPoints = points?.user.stats.last_airdrop.differences.some(
     (d) => d && d.earnings.total > 0,
@@ -1143,14 +1143,14 @@ function Rewards() {
         <RainbowUserEarnings
           totalEarnings={points?.meta?.rewards?.total || '0'}
         />
-        {showSupplementalSections && <NextDrop />}
+        {showScheduledDrop && <NextDrop />}
         <Separator color="separatorTertiary" />
         <YourPoints />
         <Stack space="16px">
-          {showSupplementalSections && shouldShowWeeklyOverview && (
+          {showScheduledDrop && shouldShowWeeklyOverview && (
             <YourEarningsLastWeek />
           )}
-          <StatsCarousel showEarnedLastWeekCard={showSupplementalSections} />
+          <StatsCarousel showEarnedLastWeekCard={showScheduledDrop} />
         </Stack>
         <Separator color="separatorTertiary" />
         <ReferralCode />
