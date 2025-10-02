@@ -1108,8 +1108,7 @@ function Rewards() {
   const navigate = useRainbowNavigate();
   const { featureFlags } = useFeatureFlagsStore();
 
-  const showSupplementalSections =
-    featureFlags.points_rewards_supplemental_sections;
+  const showSupplementalSections = featureFlags.rewards_scheduled_drop;
 
   const hasLastAirdropPoints = points?.user.stats.last_airdrop.differences.some(
     (d) => d && d.earnings.total > 0,
