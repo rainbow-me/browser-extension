@@ -40,6 +40,12 @@ module.exports = {
   ...config,
   mode: 'development',
   devtool: false,
+  cache: {
+    type: 'filesystem',
+    buildDependencies: {
+      config: [__filename, resolve(__dirname, 'webpack.config.js')],
+    },
+  },
   plugins: [
     ...config.plugins,
     ...allowedPlugins,
