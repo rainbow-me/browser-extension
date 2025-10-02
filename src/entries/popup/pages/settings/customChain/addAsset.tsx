@@ -182,6 +182,7 @@ export function AddAsset() {
         rainbowChainAsset: assetToAdd,
       });
       saveCustomTokenDraft(chainId, undefined);
+      // Navigate back - we came from the rpcs page
       navigate(-1);
     }
   }, [

@@ -76,9 +76,8 @@ export function SettingsCustomChainsList() {
         ),
       });
 
-      navigate(ROUTES.SETTINGS__NETWORKS, {
-        state: { backTo: ROUTES.SETTINGS },
-      });
+      // Pop back to networks page after adding network from list
+      navigate(-1);
     },
     [addCustomChain, navigate],
   );

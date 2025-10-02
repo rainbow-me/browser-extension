@@ -156,6 +156,7 @@ export function SettingsNetworksRPCs() {
 
       removeRainbowChainAssets({ chainId });
       if (!supportedChain && newRpcsLength === 0) {
+        // Pop back to networks page when removing the last RPC
         navigate(-1);
       }
     },
@@ -167,6 +168,7 @@ export function SettingsNetworksRPCs() {
       const removed = useNetworkStore.getState().removeCustomChain(chainId);
       if (removed) {
         removeRainbowChainAssets({ chainId });
+        // Pop back to networks page after removing network
         navigate(-1);
       }
     },

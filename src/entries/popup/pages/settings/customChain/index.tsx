@@ -15,7 +15,6 @@ import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { useDebounce } from '~/entries/popup/hooks/useDebounce';
 import usePrevious from '~/entries/popup/hooks/usePrevious';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
-import { ROUTES } from '~/entries/popup/urls';
 
 import { Checkbox } from '../../../components/Checkbox/Checkbox';
 import { maskInput } from '../../../components/InputMask/utils';
@@ -255,10 +254,10 @@ export function SettingsCustomChain() {
       });
       setCustomRPC({});
       if (isNewNetwork) {
-        navigate(ROUTES.SETTINGS__NETWORKS, {
-          state: { backTo: ROUTES.SETTINGS },
-        });
+        // Pop back 2 levels: custom-chain-form -> custom-networks-list -> networks
+        navigate(-2);
       } else {
+        // When adding RPC to existing network, pop back 1 level: custom-chain-form -> rpcs
         navigate(-1);
       }
     }
