@@ -5,11 +5,13 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import {
   findElementByTestId,
   findElementByTestIdAndClick,
+  findElementByText,
   getExtensionIdByName,
   getRootUrl,
   goBackTwice,
   importWalletFlow,
   initDriverWithOptions,
+  navigateToSettings,
   navigateToSettingsPrivacy,
   toggleStatus,
   typeOnTextInput,
@@ -103,6 +105,28 @@ describe('Navigate Settings & Privacy and its flows', () => {
       driver,
       text: 'test5678',
     });
+    // Check that password input type is "password" before clicking visibility button
+    const passwordInputBeforeClick = await findElementByTestId({
+      id: 'new-password-input',
+      driver,
+    });
+    expect(await passwordInputBeforeClick.getAttribute('type')).toBe(
+      'password',
+    );
+
+    await findElementByTestIdAndClick({
+      id: 'password-visibility-button',
+      driver,
+    });
+
+    // Check that password input type changed to "text" after clicking visibility button
+    const passwordInputAfterClick = await findElementByTestId({
+      id: 'new-password-input',
+      driver,
+    });
+    expect(await passwordInputAfterClick.getAttribute('type')).toBe('text');
+    expect(await findElementByText(driver, 'Weak')).toBeTruthy();
+
     await findElementByTestIdAndClick({ id: 'update-password', driver });
     await goBackTwice(driver);
     await findElementByTestIdAndClick({
@@ -113,5 +137,125 @@ describe('Navigate Settings & Privacy and its flows', () => {
 
     await typeOnTextInput({ id: 'password-input', driver, text: 'test5678' });
     await findElementByTestIdAndClick({ id: 'unlock-button', driver });
+  });
+  it('should be able to navigate to settings', async () => {
+    await navigateToSettings(driver, rootURL);
+  });
+  it('should be able to check theme options', async () => {
+    // Verify 'Dark' is shown as the current theme
+    const darkThemeText = await findElementByText(driver, 'Dark');
+    expect(darkThemeText).toBeTruthy();
+
+    // Click on 'Theme' to open theme selector
+    await findElementByText(driver, 'Theme').then((el) => el.click());
+
+    // Switch to 'Light' theme
+    await findElementByText(driver, 'Light').then((el) => el.click());
+
+    // Verify 'Light' theme is now shown
+    const lightThemeText = await findElementByText(driver, 'Light');
+    expect(lightThemeText).toBeTruthy();
+
+    // Switch back to 'Dark' theme
+    await findElementByText(driver, 'Theme').then((el) => el.click());
+    await findElementByText(driver, 'Dark').then((el) => el.click());
+
+    // Verify 'Dark' theme is shown again
+    const darkThemeTextAgain = await findElementByText(driver, 'Dark');
+    expect(darkThemeTextAgain).toBeTruthy();
+  });
+  it('should be able to check language options', async () => {
+    // Verify 'English' is shown as the current language
+    const englishLanguage = await findElementByText(driver, 'English');
+    expect(englishLanguage).toBeTruthy();
+
+    // Click on 'Language' to navigate to language selection
+    await findElementByText(driver, 'Language').then((el) => el.click());
+
+    // Switch to Spanish (Español)
+    await findElementByText(driver, 'Español').then((el) => el.click());
+
+    // Navigate back to settings - note that UI is now in Spanish
+    await findElementByTestIdAndClick({
+      id: 'navbar-button-with-back',
+      driver,
+    });
+
+    // Verify 'Español' is shown (and 'Idioma' exists since UI is in Spanish)
+    const spanishLanguage = await findElementByText(driver, 'Español');
+    expect(spanishLanguage).toBeTruthy();
+    const idiomaText = await findElementByText(driver, 'Idioma');
+    expect(idiomaText).toBeTruthy();
+
+    // Click on 'Idioma' (Language in Spanish) to switch back
+    await findElementByText(driver, 'Idioma').then((el) => el.click());
+    await findElementByText(driver, 'English').then((el) => el.click());
+    await findElementByTestIdAndClick({
+      id: 'navbar-button-with-back',
+      driver,
+    });
+
+    // Verify 'English' is shown again and UI is back to English
+    const englishLanguageAgain = await findElementByText(driver, 'English');
+    expect(englishLanguageAgain).toBeTruthy();
+    const languageText = await findElementByText(driver, 'Language');
+    expect(languageText).toBeTruthy();
+  });
+
+  it('should be able to check currency options', async () => {
+    // Verify 'United States Dollar' (USD) is shown as the current currency
+    const usdCurrency = await findElementByText(driver, 'United States Dollar');
+    expect(usdCurrency).toBeTruthy();
+
+    // Click on 'Currency' to navigate to currency selection
+    await findElementByText(driver, 'Currency').then((el) => el.click());
+
+    // Switch to Euro (EUR)
+    await findElementByText(driver, 'Euro').then((el) => el.click());
+
+    // Navigate back to settings to verify the change
+    await findElementByTestIdAndClick({
+      id: 'navbar-button-with-back',
+      driver,
+    });
+
+    // Verify 'Euro' is now shown as the selected currency
+    const euroCurrency = await findElementByText(driver, 'Euro');
+    expect(euroCurrency).toBeTruthy();
+
+    // Navigate to home screen and check for Euro symbol
+    await findElementByTestIdAndClick({
+      id: 'navbar-button-with-back',
+      driver,
+    });
+    const euroSymbol = await findElementByText(driver, '€');
+    expect(euroSymbol).toBeTruthy();
+
+    // Go back to settings and switch back to USD
+    await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
+    await findElementByTestIdAndClick({ id: 'settings-link', driver });
+    await findElementByText(driver, 'Currency').then((el) => el.click());
+    await findElementByText(driver, 'United States Dollar').then((el) =>
+      el.click(),
+    );
+    await findElementByTestIdAndClick({
+      id: 'navbar-button-with-back',
+      driver,
+    });
+
+    // Verify 'United States Dollar' is shown again
+    const usdCurrencyAgain = await findElementByText(
+      driver,
+      'United States Dollar',
+    );
+    expect(usdCurrencyAgain).toBeTruthy();
+
+    // Navigate to home screen and check for dollar symbol
+    await findElementByTestIdAndClick({
+      id: 'navbar-button-with-back',
+      driver,
+    });
+    const dollarSymbol = await findElementByText(driver, '$');
+    expect(dollarSymbol).toBeTruthy();
   });
 });
