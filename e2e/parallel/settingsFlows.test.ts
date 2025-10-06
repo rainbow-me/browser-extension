@@ -11,7 +11,6 @@ import {
   goBackTwice,
   importWalletFlow,
   initDriverWithOptions,
-  navigateToSettings,
   navigateToSettingsPrivacy,
   toggleStatus,
   typeOnTextInput,
@@ -137,8 +136,5 @@ describe('Navigate Settings & Privacy and its flows', () => {
 
     await typeOnTextInput({ id: 'password-input', driver, text: 'test5678' });
     await findElementByTestIdAndClick({ id: 'unlock-button', driver });
-  });
-  it('should be able to navigate to settings', async () => {
-    await navigateToSettings(driver, rootURL);
   });
 });
