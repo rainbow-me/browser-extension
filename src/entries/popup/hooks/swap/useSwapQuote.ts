@@ -47,7 +47,7 @@ export const useSwapQuote = ({
   const { currentAddress } = useCurrentAddressStore();
   const currency = useCurrentCurrencyStore((s) => s.currentCurrency);
 
-  const currentInputHash = `${assetToSell?.chainId}:${assetToSell?.address}:${assetToSellValue}`;
+  const currentInputHash = `${assetToSell?.chainId}:${assetToSell?.address}:${assetToSellValue}:${assetToBuy?.chainId}:${assetToBuy?.address}`;
   const lastFetchedInputHashRef = useRef<string>();
 
   const isCrosschainSwap = useMemo(
@@ -134,7 +134,7 @@ export const useSwapQuote = ({
 
       return quote as Quote | CrosschainQuote | QuoteError;
     },
-    queryKey: ['getSwapQuote', quotesParams],
+    queryKey: ['getSwapQuote', currentInputHash],
     enabled: !!quotesParams,
     refetchInterval: SWAP_POLLING_INTERVAL,
     gcTime: CACHE_INTERVAL,

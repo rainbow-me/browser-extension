@@ -95,9 +95,10 @@ export function createRainbowStore<
     subscribeWithSelector(
       persist(createState, {
         migrate: persistConfig.migrate,
-        name: persistConfig.useRainbowNamingSchema
-          ? `rainbow.zustand.${persistConfig.storageKey}`
-          : persistConfig.storageKey,
+        name:
+          persistConfig.useRainbowNamingSchema ?? true
+            ? `rainbow.zustand.${persistConfig.storageKey}`
+            : persistConfig.storageKey,
         onRehydrateStorage: persistConfig.onRehydrateStorage,
         storage: persistStorage,
         version,
@@ -170,9 +171,7 @@ function createPersistStorage<S, PersistedState extends Partial<S>>(
       params: LazyPersistParams<S, PersistedState>,
     ): Promise<void> {
       try {
-        const key = !config.useRainbowNamingSchema
-          ? `${storageKey}.${params.name}`
-          : `rainbow.zustand.${params.name}`;
+        const key = params.name;
         const serializedValue = params.serializer(
           params.partialize(params.value.state as S),
           params.value.version ?? 0,
@@ -193,9 +192,7 @@ function createPersistStorage<S, PersistedState extends Partial<S>>(
 
   const persistStorage: PersistStorage<PersistedState> = {
     getItem: async (name: string) => {
-      const key = !config.useRainbowNamingSchema
-        ? `${storageKey}.${name}`
-        : `rainbow.zustand.${name}`;
+      const key = name;
       const serializedValue = await rainbowStorage.getItem(key);
       if (!serializedValue) return null;
       return deserializer(serializedValue);
@@ -210,9 +207,7 @@ function createPersistStorage<S, PersistedState extends Partial<S>>(
       });
     },
     removeItem: async (name: string) => {
-      const key = !config.useRainbowNamingSchema
-        ? `${storageKey}.${name}`
-        : `rainbow.zustand.${name}`;
+      const key = name;
       await rainbowStorage.removeItem(key);
     },
   };

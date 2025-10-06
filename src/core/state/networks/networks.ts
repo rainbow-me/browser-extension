@@ -872,7 +872,7 @@ export const useNetworkStore = createQueryStore<
     // (i.e. prompt closes before threshold is reached)
     // When removing, the extension crashes in an infinite loop
     persistThrottleMs: 1_000,
-    storageKey: 'networks',
+    storageKey: 'networks.networks',
     useRainbowNamingSchema: false,
     version: 1,
   },
