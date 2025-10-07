@@ -81,6 +81,7 @@ export const WipeWalletPrompt = ({
               </Column>
               <Column>
                 <Button
+                  testId="wipe-wallet-confirm-button"
                   variant="flat"
                   height="36px"
                   color="red"
