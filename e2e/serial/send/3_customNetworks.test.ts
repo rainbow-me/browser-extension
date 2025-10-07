@@ -321,3 +321,86 @@ it('should be able to add a custom token', async () => {
   });
   expect(customTokenSection).toBeTruthy();
 });
+
+it('should be able to disable a network via context menu', async () => {
+  await navigateToSettingsNetworks(driver, rootURL);
+
+  const networkRow = await findElementByTestId({
+    id: 'network-row-42170',
+    driver,
+  });
+
+  await driver.actions().contextClick(networkRow).perform();
+  await delayTime('medium');
+
+  const disableButton = await driver.findElement({
+    xpath: "//div[@role='menuitem' and contains(.,'Disable')]",
+  });
+  await disableButton.click();
+
+  await driver.wait(async () => {
+    const menuItems = await driver.findElements({
+      xpath: "//div[@role='menuitem']",
+    });
+    // waits for context menu to disappear
+    return menuItems.length === 0;
+  }, 5000);
+
+  await delayTime('medium');
+  const disabledLabels = await driver.findElements({
+    xpath:
+      "//*[@data-testid='network-row-42170']//*[contains(text(),'Disabled')]",
+  });
+  expect(disabledLabels.length).toBeGreaterThan(0);
+});
+
+it('should be able to enable a disabled network via context menu', async () => {
+  const networkRow = await findElementByTestId({
+    id: 'network-row-42170',
+    driver,
+  });
+
+  await driver.actions().contextClick(networkRow).perform();
+  await delayTime('medium');
+
+  const enableButton = await driver.findElement({
+    xpath: "//div[@role='menuitem' and contains(.,'Enable')]",
+  });
+  await enableButton.click();
+
+  await driver.wait(async () => {
+    const menuItems = await driver.findElements({
+      xpath: "//div[@role='menuitem']",
+    });
+    // waits for context menu to disappear
+    return menuItems.length === 0;
+  }, 5000);
+
+  await delayTime('medium');
+  const disabledElements = await driver.findElements({
+    xpath:
+      "//*[@data-testid='network-row-42170']//*[contains(text(),'Disabled')]",
+  });
+  expect(disabledElements.length).toBe(0);
+});
+
+it('should be able to remove a custom network via context menu', async () => {
+  const networkRow = await findElementByTestId({
+    id: 'network-row-42170',
+    driver,
+  });
+
+  await driver.actions().contextClick(networkRow).perform();
+  await delayTime('medium');
+
+  const removeButton = await driver.findElement({
+    xpath: "//div[@role='menuitem' and contains(.,'Remove Network')]",
+  });
+  await removeButton.click();
+  await delayTime('long');
+
+  const removedNetworks = await driver.findElements({
+    xpath: "//*[@data-testid='network-row-42170']",
+  });
+  expect(removedNetworks.length).toBe(0);
+});
