@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { Address } from 'viem';
 
-import { addysHttp } from '~/core/network/addys';
+import { platformHttp } from '~/core/network/platform';
 import {
   InfiniteQueryConfig,
   QueryConfig,
@@ -13,13 +13,18 @@ import {
 import { SupportedCurrencyKey } from '~/core/references';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainName, chainNameToIdMapping } from '~/core/types/chains';
-import { RainbowTransaction } from '~/core/types/transactions';
-import { TransactionsReceivedMessage } from '~/core/types/zerion';
+import type { ListTransactionsResponse as PlatformListTransactionsResponse } from '~/core/types/gen/platform/transaction/transaction';
+import {
+  PaginatedTransactionsApiResponse,
+  RainbowTransaction,
+} from '~/core/types/transactions';
+import { convertPlatformTransactionToPaginatedApiResponse } from '~/core/utils/platform';
 import { parseTransaction } from '~/core/utils/transactions';
 import { RainbowError, logger } from '~/logger';
 
 const CONSOLIDATED_TRANSACTIONS_INTERVAL = 60000;
 const CONSOLIDATED_TRANSACTIONS_TIMEOUT = 20000;
+const PLATFORM_LIST_TRANSACTIONS_PATH = '/v1/transactions/ListTransactions';
 
 // ///////////////////////////////////////////////
 // Query Types
@@ -96,25 +101,41 @@ export async function consolidatedTransactionsQueryFunction({
     const chainIds = userChainIds.filter((id) =>
       supportedTransactionsChainIds.includes(id),
     );
-    const response = await addysHttp.get<TransactionsReceivedMessage>(
-      `/${chainIds.join(',')}/${address}/transactions`,
+    if (!address || chainIds.length === 0) {
+      return { transactions: [] };
+    }
+
+    const params: Record<string, string> = {
+      address,
+      currency: currency.toLowerCase(),
+      chainIds: chainIds.join(','),
+      limit: '100',
+    };
+
+    if (pageParam) {
+      params.cursor = pageParam as string;
+    }
+
+    const response = await platformHttp.get<PlatformListTransactionsResponse>(
+      PLATFORM_LIST_TRANSACTIONS_PATH,
       {
-        params: {
-          currency: currency.toLowerCase(),
-          // passing empty value to pageParam breaks request
-          ...(pageParam ? { pageCursor: pageParam as string } : {}),
-        },
+        params,
         timeout: CONSOLIDATED_TRANSACTIONS_TIMEOUT,
       },
     );
+
+    const paginatedTransactions = (response?.data?.result ?? []).map((tx) =>
+      convertPlatformTransactionToPaginatedApiResponse(tx),
+    );
+
     const consolidatedTransactions = await parseConsolidatedTransactions(
-      response?.data,
+      paginatedTransactions,
       currency,
     );
 
     return {
-      cutoff: response?.data?.meta?.cut_off,
-      nextPage: response?.data?.meta?.next_page_cursor,
+      cutoff: undefined,
+      nextPage: response?.data?.pagination?.cursor ?? undefined,
       transactions: consolidatedTransactions,
     };
   } catch (e) {
@@ -128,6 +149,7 @@ export async function consolidatedTransactionsQueryFunction({
         },
       );
 
+    console.error(e);
     return { transactions: [] };
   }
 }
@@ -137,11 +159,10 @@ type ConsolidatedTransactionsResult = QueryFunctionResult<
 >;
 
 async function parseConsolidatedTransactions(
-  message: TransactionsReceivedMessage,
+  transactions: PaginatedTransactionsApiResponse[],
   currency: SupportedCurrencyKey,
 ) {
-  const data = message?.payload?.transactions || [];
-  return data
+  return transactions
     .map((tx) =>
       parseTransaction({
         tx,
