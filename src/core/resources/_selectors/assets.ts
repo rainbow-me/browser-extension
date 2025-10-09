@@ -6,6 +6,7 @@ import {
 } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { deriveAddressAndChainWithUniqueId } from '~/core/utils/address';
+import { getCappedAmount } from '~/core/utils/assets';
 import { add } from '~/core/utils/numbers';
 
 // selectors
@@ -52,8 +53,7 @@ export function selectUserAssetsList(assets: ParsedAssetsDictByChain) {
     .flat()
     .sort(
       (a: ParsedUserAsset, b: ParsedUserAsset) =>
-        parseFloat(b?.native?.balance?.amount) -
-        parseFloat(a?.native?.balance?.amount),
+        getCappedAmount(b) - getCappedAmount(a),
     );
 }
 
@@ -79,8 +79,7 @@ export function selectUserAssetsListByChainId(assets: ParsedAssetsDictByChain) {
     .map((chainAssets) =>
       Object.values(chainAssets).sort(
         (a: ParsedUserAsset, b: ParsedUserAsset) =>
-          parseFloat(b?.native?.balance?.amount) -
-          parseFloat(a?.native?.balance?.amount),
+          getCappedAmount(b) - getCappedAmount(a),
       ),
     )
     .flat();
@@ -103,7 +102,9 @@ export function selectUserAssetsBalance(
 
     const networkBalance = assetsNetwork
       .filter((asset) => !hidden(asset))
-      .map((asset) => asset.native.balance.amount)
+      .map(
+        (asset) => asset.balance.capped?.amount ?? asset.native.balance.amount,
+      )
       .reduce((prevBalance, currBalance) => add(prevBalance, currBalance), '0');
     return networkBalance;
   });

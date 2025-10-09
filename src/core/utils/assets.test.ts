@@ -404,12 +404,15 @@ test('[utils/assets -> parseUserAsset] :: parse zerion asset with user balance',
     asset: ETH_FROM_ZERION,
     currency: 'USD',
     balance: '38677330754953265',
+    cappedValue: '12.34',
   });
   expect(eth.uniqueId).toEqual(ethWithQuantity.uniqueId);
   expect(ethWithQuantity.native.balance.amount).toEqual(
     '58.01096807943175357555',
   );
   expect(ethWithQuantity.native.balance.display).toEqual('$58.01');
+  expect(ethWithQuantity.balance.capped?.amount).toEqual('12.34');
+  expect(ethWithQuantity.balance.capped?.display).toEqual('$12.34');
 
   const optimismUSDWithQuantity = parseUserAsset({
     asset: OPTIMISM_USD_FROM_ZERION,

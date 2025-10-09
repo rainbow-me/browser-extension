@@ -28,6 +28,10 @@ import {
   TokenSearchThreshold,
 } from '~/core/types/search';
 import { truncateAddress } from '~/core/utils/address';
+import {
+  PlatformValueComparison,
+  compareCappedAmountToCalculatedValue,
+} from '~/core/utils/assets';
 import { getChain, isCustomChain, isNativeAsset } from '~/core/utils/chains';
 import { copyAddress } from '~/core/utils/copy';
 import {
@@ -107,10 +111,14 @@ const HiddenValue = () => <Asterisks color="labelTertiary" size={10} />;
 function BalanceValue({
   balance,
   nativeBalance,
+  platformBalance,
+  comparison,
   chainId,
 }: {
   balance: FormattedCurrencyParts;
   nativeBalance: FormattedCurrencyParts;
+  platformBalance: FormattedCurrencyParts;
+  comparison: PlatformValueComparison;
   chainId: ParsedUserAsset['chainId'];
 }) {
   const { hideAssetBalances } = useHideAssetBalancesStore();
@@ -119,57 +127,94 @@ function BalanceValue({
     ? 'labelTertiary'
     : 'label';
 
-  const getPrice = (
-    nativeBalance: FormattedCurrencyParts,
-    chainId: ParsedUserAsset['chainId'],
-  ) => {
-    if (isCustomChain(chainId) && nativeBalance.value === '0') {
+  const formatParts = (parts: FormattedCurrencyParts) =>
+    (parts.symbolAtStart && `${parts.symbol}${parts.value}`) ||
+    `${parts.value}${parts.symbol}`;
+
+  const valueDisplay = () => {
+    if (isCustomChain(chainId) && platformBalance.value === '0') {
       return '-';
-    } else {
-      const val = hideAssetBalances ? <HiddenValue /> : nativeBalance.value;
-      return (
-        (nativeBalance.symbolAtStart && nativeBalance.symbol + val) ||
-        val + nativeBalance.symbol
-      );
     }
+    if (hideAssetBalances) return <HiddenValue />;
+    const formatted = formatParts(platformBalance);
+    return comparison.shouldApproximate ? `~${formatted}` : formatted;
   };
 
+  const shouldShowHint =
+    comparison.shouldApproximate &&
+    comparison.direction !== 'equal' &&
+    !hideAssetBalances;
+
+  const hintPrefixKey =
+    comparison.direction === 'higher'
+      ? 'token_details.low_liquidity_value_higher_prefix'
+      : 'token_details.low_liquidity_value_lower_prefix';
+
+  const formattedNativeBalance = formatParts(nativeBalance);
+
   return (
-    <Box display="flex" justifyContent="space-between" gap="10px">
-      <Box display="flex" flexDirection="column" gap="12px">
-        <Text size="12pt" weight="semibold" color="labelTertiary">
-          {i18n.t('token_details.balance')}
-        </Text>
-        <Inline alignVertical="center">
-          <TextOverflow
-            size="14pt"
+    <Box display="flex" flexDirection="column" gap="8px">
+      <Box display="flex" justifyContent="space-between" gap="10px">
+        <Box display="flex" flexDirection="column" gap="12px">
+          <Text size="12pt" weight="semibold" color="labelTertiary">
+            {i18n.t('token_details.balance')}
+          </Text>
+          <Inline alignVertical="center">
+            <TextOverflow
+              size="14pt"
+              weight="semibold"
+              color={color}
+              cursor="text"
+              userSelect="text"
+            >
+              {hideAssetBalances ? <HiddenValue /> : balance.value}{' '}
+              {balance.symbol}
+            </TextOverflow>
+          </Inline>
+        </Box>
+        <Box display="flex" flexDirection="column" gap="12px">
+          <Text
+            size="12pt"
             weight="semibold"
-            color={color}
-            cursor="text"
-            userSelect="text"
-          >
-            {hideAssetBalances ? <HiddenValue /> : balance.value}{' '}
-            {balance.symbol}
-          </TextOverflow>
-        </Inline>
-      </Box>
-      <Box display="flex" flexDirection="column" gap="12px">
-        <Text size="12pt" weight="semibold" color="labelTertiary" align="right">
-          {i18n.t('token_details.value')}
-        </Text>
-        <Inline alignVertical="center">
-          <TextOverflow
-            size="14pt"
-            weight="semibold"
-            color={color}
+            color="labelTertiary"
             align="right"
-            cursor="text"
-            userSelect="text"
           >
-            {getPrice(nativeBalance, chainId)}
-          </TextOverflow>
-        </Inline>
+            {i18n.t('token_details.value')}
+          </Text>
+          <Inline alignVertical="center">
+            <TextOverflow
+              size="14pt"
+              weight="semibold"
+              color={color}
+              align="right"
+              cursor="text"
+              userSelect="text"
+            >
+              {valueDisplay()}
+            </TextOverflow>
+          </Inline>
+        </Box>
       </Box>
+      {shouldShowHint && (
+        <Box
+          display="flex"
+          flexDirection="column"
+          paddingTop="12px"
+          alignItems="center"
+        >
+          <Inline space="4px" alignVertical="center" wrap={false}>
+            <Text size="11pt" color="labelTertiary" weight="semibold">
+              {i18n.t(hintPrefixKey)}
+            </Text>
+            <Text size="11pt" color="label" weight="heavy">
+              {formattedNativeBalance}
+            </Text>
+            <Text size="11pt" color="labelTertiary" weight="semibold">
+              {i18n.t('token_details.low_liquidity_value_suffix')}
+            </Text>
+          </Inline>
+        </Box>
+      )}
     </Box>
   );
 }
@@ -805,6 +850,13 @@ export function TokenDetails() {
                 symbol: token.symbol,
               }}
               nativeBalance={formatCurrencyParts(token.native.balance.amount)}
+              platformBalance={formatCurrencyParts(
+                token.balance.capped?.amount ?? token.native.balance.amount,
+              )}
+              comparison={compareCappedAmountToCalculatedValue({
+                cappedAmount: token.balance.capped?.amount,
+                calculatedAmount: token.native.balance.amount,
+              })}
               chainId={token.chainId}
             />
           )}
