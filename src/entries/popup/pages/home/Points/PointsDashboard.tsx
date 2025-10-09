@@ -20,6 +20,7 @@ import { PointsQuery } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import { copy } from '~/core/utils/copy';
@@ -461,14 +462,20 @@ function getRankDifference(
   } as const;
 }
 
-const StatsCarousel = memo(function YourRankAndNextDrop() {
+type StatsCarouselProps = {
+  showEarnedLastWeekCard: boolean;
+};
+
+const StatsCarousel = memo(function YourRankAndNextDrop({
+  showEarnedLastWeekCard,
+}: StatsCarouselProps) {
   const { currentAddress } = useCurrentAddressStore();
   const { data, isSuccess } = usePoints(currentAddress);
 
   if (!data || !isSuccess)
     return (
       <Inline wrap={false} space="12px">
-        <CardSkeleton height="89px" />
+        {showEarnedLastWeekCard && <CardSkeleton height="89px" />}
         <CardSkeleton height="89px" />
       </Inline>
     );
@@ -493,46 +500,48 @@ const StatsCarousel = memo(function YourRankAndNextDrop() {
         }}
       >
         <Columns space="12px">
-          <Column width="content">
-            <Card gap="10px">
-              <TextWithMoreInfo>
-                {i18n.t('points.rewards.earned_last_week')}
-              </TextWithMoreInfo>
-              <Text size="20pt" weight="bold">
-                {formatNumber(lastPeriod.earnings.total)}
-              </Text>
-              <Inline alignVertical="center" space="5px" wrap={false}>
-                <Symbol
-                  size={12}
-                  symbol={'trophy.fill'}
-                  weight="heavy"
-                  color={'accent'}
-                  filter={`shadow 12px accent`}
-                />
-                {lastPeriod.position.unranked ? (
-                  <Text
-                    size="12pt"
+          {showEarnedLastWeekCard && (
+            <Column width="content">
+              <Card gap="10px">
+                <TextWithMoreInfo>
+                  {i18n.t('points.rewards.earned_last_week')}
+                </TextWithMoreInfo>
+                <Text size="20pt" weight="bold">
+                  {formatNumber(lastPeriod.earnings.total)}
+                </Text>
+                <Inline alignVertical="center" space="5px" wrap={false}>
+                  <Symbol
+                    size={12}
+                    symbol={'trophy.fill'}
                     weight="heavy"
-                    color="accent"
-                    textShadow="16px accent"
-                  >
-                    {i18n.t('points.no_weekly_rank')}
-                  </Text>
-                ) : (
-                  <Text
-                    size="12pt"
-                    weight="heavy"
-                    color="accent"
-                    textShadow="16px accent"
-                  >
-                    {i18n.t('points.ranking', {
-                      rank: formatNumber(lastPeriod.position.current),
-                    })}
-                  </Text>
-                )}
-              </Inline>
-            </Card>
-          </Column>
+                    color={'accent'}
+                    filter={`shadow 12px accent`}
+                  />
+                  {lastPeriod.position.unranked ? (
+                    <Text
+                      size="12pt"
+                      weight="heavy"
+                      color="accent"
+                      textShadow="16px accent"
+                    >
+                      {i18n.t('points.no_weekly_rank')}
+                    </Text>
+                  ) : (
+                    <Text
+                      size="12pt"
+                      weight="heavy"
+                      color="accent"
+                      textShadow="16px accent"
+                    >
+                      {i18n.t('points.ranking', {
+                        rank: formatNumber(lastPeriod.position.current),
+                      })}
+                    </Text>
+                  )}
+                </Inline>
+              </Card>
+            </Column>
+          )}
           <Column width="content">
             <Card gap="10px">
               <TextWithMoreInfo>
@@ -1097,6 +1106,9 @@ function Rewards() {
   const { currentAddress } = useCurrentAddressStore();
   const { data: points } = usePoints(currentAddress);
   const navigate = useRainbowNavigate();
+  const { featureFlags } = useFeatureFlagsStore();
+
+  const showScheduledDrop = featureFlags.rewards_scheduled_drop;
 
   const hasLastAirdropPoints = points?.user.stats.last_airdrop.differences.some(
     (d) => d && d.earnings.total > 0,
@@ -1131,12 +1143,14 @@ function Rewards() {
         <RainbowUserEarnings
           totalEarnings={points?.meta?.rewards?.total || '0'}
         />
-        <NextDrop />
+        {showScheduledDrop && <NextDrop />}
         <Separator color="separatorTertiary" />
         <YourPoints />
         <Stack space="16px">
-          {shouldShowWeeklyOverview && <YourEarningsLastWeek />}
-          <StatsCarousel />
+          {showScheduledDrop && shouldShowWeeklyOverview && (
+            <YourEarningsLastWeek />
+          )}
+          <StatsCarousel showEarnedLastWeekCard={showScheduledDrop} />
         </Stack>
         <Separator color="separatorTertiary" />
         <ReferralCode />
