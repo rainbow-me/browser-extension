@@ -95,6 +95,7 @@ export const CommandRow = ({
         onClick={handleClick}
         padding="10px"
         role="option"
+        testId={`command-shortcut-${command.name.replace(/\s+/g, '-')}`}
       >
         <Columns alignVertical="center" space="8px">
           <Column width="content">

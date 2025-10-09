@@ -146,6 +146,7 @@ export function ChangePassword() {
                               .color as TextColor)) ||
                           'transparent'
                         }
+                        testId="password-strength-text"
                       >
                         {(strength && strengthMeta[strength].text) || (
                           <>&nbsp;</>

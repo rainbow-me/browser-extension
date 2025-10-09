@@ -5,6 +5,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import {
   findElementByTestId,
   findElementByTestIdAndClick,
+  findElementByText,
   getExtensionIdByName,
   getRootUrl,
   goBackTwice,
@@ -103,6 +104,28 @@ describe('Navigate Settings & Privacy and its flows', () => {
       driver,
       text: 'test5678',
     });
+    // Check that password input type is "password" before clicking visibility button
+    const passwordInputBeforeClick = await findElementByTestId({
+      id: 'new-password-input',
+      driver,
+    });
+    expect(await passwordInputBeforeClick.getAttribute('type')).toBe(
+      'password',
+    );
+
+    await findElementByTestIdAndClick({
+      id: 'password-visibility-button',
+      driver,
+    });
+
+    // Check that password input type changed to "text" after clicking visibility button
+    const passwordInputAfterClick = await findElementByTestId({
+      id: 'new-password-input',
+      driver,
+    });
+    expect(await passwordInputAfterClick.getAttribute('type')).toBe('text');
+    expect(await findElementByText(driver, 'Weak')).toBeTruthy();
+
     await findElementByTestIdAndClick({ id: 'update-password', driver });
     await goBackTwice(driver);
     await findElementByTestIdAndClick({
