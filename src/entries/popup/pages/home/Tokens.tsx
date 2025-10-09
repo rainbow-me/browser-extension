@@ -28,6 +28,7 @@ import {
 import { usePinnedAssetStore } from '~/core/state/pinnedAssets';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { truncateAddress } from '~/core/utils/address';
+import { comparePlatformToCalculatedValue } from '~/core/utils/assets';
 import { isCustomChain } from '~/core/utils/chains';
 import {
   Box,
@@ -57,6 +58,9 @@ import { ROUTES } from '../../urls';
 import { TokensSkeleton } from './Skeletons';
 import { TokenContextMenu } from './TokenDetails/TokenContextMenu';
 import { TokenMarkedHighlighter } from './TokenMarkedHighlighter';
+
+const getPlatformAmountValue = (asset: ParsedUserAsset) =>
+  parseFloat(asset.platformValue?.amount || '0');
 
 const TokenRow = memo(function TokenRow({
   token,
@@ -190,8 +194,7 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
 
       return uniqBy(filteredAssets, 'uniqueId').sort(
         (a: ParsedUserAsset, b: ParsedUserAsset) =>
-          parseFloat(b?.native?.balance?.amount) -
-          parseFloat(a?.native?.balance?.amount),
+          getPlatformAmountValue(b) - getPlatformAmountValue(a),
       );
     },
     [isPinned],
@@ -345,6 +348,19 @@ export const AssetRow = memo(function AssetRow({
   const priceChangeDisplay = priceChange?.length ? priceChange : '-';
   const priceChangeColor =
     priceChangeDisplay[0] !== '-' ? 'green' : 'labelTertiary';
+  const { shouldApproximate } = useMemo(
+    () =>
+      comparePlatformToCalculatedValue({
+        platformAmount: asset.platformValue?.amount,
+        calculatedAmount: asset.native.balance.amount,
+      }),
+    [asset.native.balance.amount, asset.platformValue?.amount],
+  );
+  const platformDisplay =
+    asset.platformValue?.display ?? asset.native.balance.display;
+  const displayWithApproximation = shouldApproximate
+    ? `~${platformDisplay}`
+    : platformDisplay;
 
   const balanceDisplay = useMemo(
     () =>
@@ -374,17 +390,19 @@ export const AssetRow = memo(function AssetRow({
           <Asterisks color="label" size={10} />
         </Inline>
       ) : isCustomChain(asset.chainId) &&
-        asset?.native?.balance?.amount === '0' ? null : (
+        (asset.platformValue?.amount ?? asset.native.balance.amount) ===
+          '0' ? null : (
         <Text size="14pt" weight="semibold" align="right">
-          {asset?.native?.balance?.display}
+          {displayWithApproximation}
         </Text>
       ),
     [
       hideAssetBalances,
       currentCurrency,
       asset.chainId,
-      asset?.native?.balance?.amount,
-      asset?.native?.balance?.display,
+      asset.platformValue?.amount,
+      asset.native.balance.amount,
+      displayWithApproximation,
     ],
   );
 

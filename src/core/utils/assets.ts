@@ -1,6 +1,7 @@
 import { Contract } from '@ethersproject/contracts';
 import { Provider } from '@ethersproject/providers';
 import { getClient } from '@wagmi/core';
+import BigNumber from 'bignumber.js';
 import { Address, Client, erc20Abi, getContract, zeroAddress } from 'viem';
 
 import { ETH_ADDRESS, SupportedCurrencyKey } from '~/core/references';
@@ -182,11 +183,13 @@ export function parseUserAsset({
   asset,
   currency,
   balance,
+  platformValue,
   smallBalance,
 }: {
   asset: AssetApiResponse | AddysPositionAsset;
   currency: SupportedCurrencyKey;
   balance: string;
+  platformValue?: string;
   smallBalance?: boolean;
 }) {
   const parsedAsset = parseAsset({ asset, currency });
@@ -194,6 +197,7 @@ export function parseUserAsset({
     asset: parsedAsset,
     currency,
     balance,
+    platformValue,
     smallBalance,
   });
 }
@@ -202,15 +206,30 @@ export function parseUserAssetBalances({
   asset,
   currency,
   balance,
+  platformValue,
   smallBalance = false,
 }: {
   asset: ParsedAsset;
   currency: SupportedCurrencyKey;
   balance: string;
+  platformValue?: string;
   smallBalance?: boolean;
 }) {
   const { decimals, symbol, price } = asset;
   const amount = convertRawAmountToDecimalFormat(balance, decimals);
+  const calculatedNativeBalance = getNativeAssetBalance({
+    currency,
+    decimals,
+    priceUnit: price?.value || 0,
+    value: amount,
+  });
+  const platformNativeBalance =
+    platformValue !== undefined
+      ? {
+          amount: platformValue,
+          display: convertAmountToNativeDisplay(platformValue, currency),
+        }
+      : calculatedNativeBalance;
 
   return {
     ...asset,
@@ -220,16 +239,58 @@ export function parseUserAssetBalances({
     },
     native: {
       ...asset.native,
-      balance: getNativeAssetBalance({
-        currency,
-        decimals,
-        priceUnit: price?.value || 0,
-        value: amount,
-      }),
+      balance: calculatedNativeBalance,
     },
+    platformValue: platformNativeBalance,
     smallBalance,
   };
 }
+
+export type PlatformValueComparisonDirection = 'higher' | 'lower' | 'equal';
+
+export type PlatformValueComparison = {
+  shouldApproximate: boolean;
+  direction: PlatformValueComparisonDirection;
+};
+
+export const comparePlatformToCalculatedValue = ({
+  platformAmount,
+  calculatedAmount,
+  threshold = 0.1,
+}: {
+  platformAmount?: string;
+  calculatedAmount: string;
+  threshold?: number;
+}): PlatformValueComparison => {
+  if (platformAmount === undefined) {
+    return { shouldApproximate: false, direction: 'equal' };
+  }
+
+  const platform = new BigNumber(platformAmount || '0');
+  const calculated = new BigNumber(calculatedAmount || '0');
+
+  if (calculated.isZero()) {
+    if (platform.isZero()) {
+      return { shouldApproximate: false, direction: 'equal' };
+    }
+    return {
+      shouldApproximate: true,
+      direction: platform.gt(0) ? 'higher' : 'equal',
+    };
+  }
+
+  const difference = platform.minus(calculated).abs();
+  const ratio = difference.dividedBy(calculated.abs());
+
+  if (ratio.gt(threshold)) {
+    const direction: PlatformValueComparisonDirection = platform.gt(calculated)
+      ? 'higher'
+      : 'lower';
+    return { shouldApproximate: true, direction };
+  }
+
+  return { shouldApproximate: false, direction: 'equal' };
+};
 
 export function isParsedUserAsset(
   asset: ParsedAsset | ParsedUserAsset,
@@ -286,6 +347,7 @@ export const fetchAssetBalanceViaProvider = async ({
     asset: parsedAsset,
     currency,
     balance: balance.toString(),
+    platformValue: parsedAsset.platformValue?.amount,
   });
   return updatedAsset;
 };

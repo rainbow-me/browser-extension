@@ -32,6 +32,7 @@ declare global {
       IMGIX_TOKEN: string;
       NFT_API_KEY: string;
       NFT_API_URL: string;
+      PLATFORM_API_KEY: string;
       RAINBOW_METADATA_API_TOKEN: string;
       RPC_PROXY_API_KEY: string;
       RPC_PROXY_BASE_URL: string;

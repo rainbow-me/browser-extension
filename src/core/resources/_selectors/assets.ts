@@ -8,6 +8,9 @@ import { ChainId } from '~/core/types/chains';
 import { deriveAddressAndChainWithUniqueId } from '~/core/utils/address';
 import { add } from '~/core/utils/numbers';
 
+const getPlatformAmountValue = (asset: ParsedUserAsset) =>
+  parseFloat(asset.platformValue?.amount || asset.native.balance.amount || '0');
+
 // selectors
 export function selectorFilterByUserChains<T>({
   data,
@@ -52,8 +55,7 @@ export function selectUserAssetsList(assets: ParsedAssetsDictByChain) {
     .flat()
     .sort(
       (a: ParsedUserAsset, b: ParsedUserAsset) =>
-        parseFloat(b?.native?.balance?.amount) -
-        parseFloat(a?.native?.balance?.amount),
+        getPlatformAmountValue(b) - getPlatformAmountValue(a),
     );
 }
 
@@ -79,8 +81,7 @@ export function selectUserAssetsListByChainId(assets: ParsedAssetsDictByChain) {
     .map((chainAssets) =>
       Object.values(chainAssets).sort(
         (a: ParsedUserAsset, b: ParsedUserAsset) =>
-          parseFloat(b?.native?.balance?.amount) -
-          parseFloat(a?.native?.balance?.amount),
+          getPlatformAmountValue(b) - getPlatformAmountValue(a),
       ),
     )
     .flat();
@@ -103,7 +104,9 @@ export function selectUserAssetsBalance(
 
     const networkBalance = assetsNetwork
       .filter((asset) => !hidden(asset))
-      .map((asset) => asset.native.balance.amount)
+      .map(
+        (asset) => asset.platformValue?.amount ?? asset.native.balance.amount,
+      )
       .reduce((prevBalance, currBalance) => add(prevBalance, currBalance), '0');
     return networkBalance;
   });

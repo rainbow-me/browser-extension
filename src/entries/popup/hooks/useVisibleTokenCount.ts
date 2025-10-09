@@ -11,6 +11,9 @@ import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
 import { ParsedUserAsset } from '~/core/types/assets';
 
+const getPlatformAmountValue = (asset: ParsedUserAsset) =>
+  parseFloat(asset.platformValue?.amount || asset.native.balance.amount || '0');
+
 export const useVisibleTokenCount = () => {
   const { currentAddress: address } = useCurrentAddressStore();
   const { currentCurrency } = useCurrentCurrencyStore();
@@ -65,8 +68,7 @@ export const useVisibleTokenCount = () => {
     () =>
       combinedAssets.sort(
         (a: ParsedUserAsset, b: ParsedUserAsset) =>
-          parseFloat(b?.native?.balance?.amount) -
-          parseFloat(a?.native?.balance?.amount),
+          getPlatformAmountValue(b) - getPlatformAmountValue(a),
       ),
     [combinedAssets],
   );
