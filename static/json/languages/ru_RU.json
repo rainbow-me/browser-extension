@@ -1303,6 +1303,7 @@
     "tokens": "Токены"
   },
   "activity": {
+    "just_now": "Just Now",
     "hour": "Последний час",
     "today": "Сегодня",
     "yesterday": "Вчера",
