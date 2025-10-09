@@ -158,7 +158,6 @@ describe('Cmd+K menu unique functionality', () => {
     });
     expect(ethFound).toBe(true);
 
-    await executePerformShortcut({ driver, key: 'ARROW_DOWN' });
     await executePerformShortcut({ driver, key: 'ENTER' });
 
     await checkExtensionURL(driver, 'token-details');
