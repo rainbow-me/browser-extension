@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { addysHttp } from '~/core/network/addys';
+import { platformHttp } from '~/core/network/platform';
 import {
   QueryConfig,
   QueryFunctionArgs,
@@ -9,13 +9,19 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
-import { ChainId, ChainName, chainNameToIdMapping } from '~/core/types/chains';
-import { RainbowTransaction } from '~/core/types/transactions';
-import { TransactionsReceivedMessage } from '~/core/types/zerion';
+import { ChainId } from '~/core/types/chains';
+import type { ListTransactionsResponse as PlatformListTransactionsResponse } from '~/core/types/gen/platform/transaction/transaction';
+import {
+  PaginatedTransactionsApiResponse,
+  RainbowTransaction,
+} from '~/core/types/transactions';
+import { convertPlatformTransactionToPaginatedApiResponse } from '~/core/utils/platform';
 import { parseTransaction } from '~/core/utils/transactions';
 import { RainbowError, logger } from '~/logger';
 
 const TRANSACTIONS_REFETCH_INTERVAL = 60000;
+const PLATFORM_LIST_TRANSACTIONS_PATH = '/v1/transactions/ListTransactions';
+const PLATFORM_REQUEST_TIMEOUT = 30000;
 
 // ///////////////////////////////////////////////
 // Query Types
@@ -77,17 +83,30 @@ async function transactionsQueryFunction({
   RainbowTransaction[]
 > {
   try {
-    const response = await addysHttp.get<TransactionsReceivedMessage>(
-      `/${chainId}/${address}/transactions`,
+    if (!address) {
+      return [];
+    }
+
+    const params: Record<string, string> = {
+      address,
+      currency: currency.toLowerCase(),
+      chainIds: chainId.toString(),
+      limit: transactionsLimit?.toString() || '100',
+    };
+
+    const response = await platformHttp.get<PlatformListTransactionsResponse>(
+      PLATFORM_LIST_TRANSACTIONS_PATH,
       {
-        params: {
-          currency: currency.toLowerCase(),
-          limit: transactionsLimit?.toString() || '100',
-        },
-        timeout: 30000,
+        params,
+        timeout: PLATFORM_REQUEST_TIMEOUT,
       },
     );
-    return parseTransactions(response?.data, currency);
+
+    const transactions = (response?.data?.result ?? []).map((tx) =>
+      convertPlatformTransactionToPaginatedApiResponse(tx),
+    );
+
+    return parseTransactions(transactions, currency, chainId);
   } catch (e) {
     const cache = queryClient.getQueryCache();
     const cachedTransactions = cache.find({
@@ -108,17 +127,16 @@ async function transactionsQueryFunction({
 type TransactionsResult = QueryFunctionResult<typeof transactionsQueryFunction>;
 
 async function parseTransactions(
-  message: TransactionsReceivedMessage,
+  transactions: PaginatedTransactionsApiResponse[],
   currency: SupportedCurrencyKey,
+  chainId: ChainId,
 ) {
-  const data = message?.payload?.transactions || [];
-  return data
+  return transactions
     .map((tx) =>
       parseTransaction({
         tx,
         currency,
-        chainId:
-          chainNameToIdMapping[message?.meta?.chain_id || ChainName.mainnet],
+        chainId,
       }),
     )
     .filter(Boolean);

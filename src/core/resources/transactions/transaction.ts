@@ -3,7 +3,7 @@ import { QueryClient, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Address, Hash, formatUnits } from 'viem';
 
 import { i18n } from '~/core/languages';
-import { addysHttp } from '~/core/network/addys';
+import { platformHttp } from '~/core/network/platform';
 import { QueryFunctionResult, createQueryKey } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
 import {
@@ -18,11 +18,9 @@ import {
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
 import { ChainId } from '~/core/types/chains';
-import {
-  RainbowTransaction,
-  TransactionApiResponse,
-  TxHash,
-} from '~/core/types/transactions';
+import type { GetTransactionByHashResponse as PlatformGetTransactionByHashResponse } from '~/core/types/gen/platform/transaction/transaction';
+import { RainbowTransaction, TxHash } from '~/core/types/transactions';
+import { convertPlatformTransactionToApiResponse } from '~/core/utils/platform';
 import { parseTransaction } from '~/core/utils/transactions';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import { useUserChains } from '~/entries/popup/hooks/useUserChains';
@@ -31,6 +29,10 @@ import { RainbowError, logger } from '~/logger';
 type ConsolidatedTransactionsResult = QueryFunctionResult<
   typeof consolidatedTransactionsQueryFunction
 >;
+
+const PLATFORM_TRANSACTION_BY_HASH_PATH =
+  '/v1/transactions/GetTransactionByHash';
+const PLATFORM_REQUEST_TIMEOUT = 30000;
 
 const searchInLocalPendingTransactions = (userAddress: Address, hash: Hash) => {
   const { pendingTransactions } = usePendingTransactionsStore.getState();
@@ -63,14 +65,27 @@ export const fetchTransaction = async ({
   }
 
   try {
-    const response = await addysHttp.get<{
-      payload: { transaction: TransactionApiResponse };
-      meta: { status: string };
-    }>(`/${chainId}/${address}/transactions/${hash}`, {
-      params: { currency: currency.toLowerCase() },
-    });
-    const tx = response.data.payload.transaction;
-    if (response.data.meta.status === 'pending') {
+    const response =
+      await platformHttp.get<PlatformGetTransactionByHashResponse>(
+        PLATFORM_TRANSACTION_BY_HASH_PATH,
+        {
+          params: {
+            currency: currency.toLowerCase(),
+            address,
+            chainIds: chainId.toString(),
+            hash,
+          },
+          timeout: PLATFORM_REQUEST_TIMEOUT,
+        },
+      );
+    if (!response.data.result)
+      throw new RainbowError('Plattform transaction not found by hash', {
+        cause: new Error(
+          `Platform transaction not found by hash: ${hash} on chain ${chainId}`,
+        ),
+      });
+    const tx = convertPlatformTransactionToApiResponse(response.data.result);
+    if (tx.status === 'pending') {
       const localPendingTx = searchInLocalPendingTransactions(address, hash);
       if (localPendingTx) return localPendingTx;
 

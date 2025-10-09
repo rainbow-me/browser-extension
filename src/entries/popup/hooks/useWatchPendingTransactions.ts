@@ -105,9 +105,13 @@ export const useWatchPendingTransactions = ({
         logger.error(
           new RainbowError(
             `useWatchPendingTransaction: Failed to watch transaction`,
+            { cause: e },
           ),
           {
             message: e.message,
+            cause: e.cause,
+            hash: tx.hash,
+            chainId: tx.chainId,
           },
         );
       }
