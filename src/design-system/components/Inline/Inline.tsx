@@ -50,6 +50,7 @@ export const Inline = forwardRef<HTMLDivElement, InlineProps>(function Inline(
       justifyContent={alignHorizontalToJustifyContent[alignHorizontal]}
       flexWrap={wrap ? 'wrap' : undefined}
       gap={space}
+      style={{ userSelect: 'text' }}
     >
       {children}
     </Box>
