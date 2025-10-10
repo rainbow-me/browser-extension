@@ -86,6 +86,11 @@ async function approvalsQueryFunction({
     const supportedChainIds = chainIds.filter((chainId) =>
       supportedApprovalsChainIds.includes(chainId),
     );
+
+    if (supportedChainIds.length === 0) {
+      throw new Error('No supported chain ids found');
+    }
+
     const response = await addysHttp.get(
       `/${supportedChainIds.join(',')}/${address}/approvals`,
       {

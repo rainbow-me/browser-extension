@@ -1,6 +1,7 @@
 import { Address } from 'viem';
 
 import { ChainId, ChainName } from '~/core/types/chains';
+import type { Asset as PlatformAsset } from '~/core/types/gen/plattform/common/asset';
 
 import { ETH_ADDRESS } from '../references';
 
@@ -10,6 +11,7 @@ export type AddressOrEth = Address | typeof ETH_ADDRESS;
 
 export interface ParsedAsset {
   address: AddressOrEth;
+  assetCode?: string;
   chainId: ChainId;
   chainName: ChainName;
   colors?: {
@@ -32,10 +34,15 @@ export interface ParsedAsset {
   uniqueId: UniqueId;
   decimals: number;
   icon_url?: string;
-  type?: AssetType;
+  type?: string;
   smallBalance?: boolean;
   standard?: 'erc-721' | 'erc-1155';
-  networks?: AssetApiResponse['networks'];
+  networks?: {
+    [chainId in ChainId | number]?: {
+      address: AddressOrEth;
+      decimals: number;
+    };
+  };
   bridging?: {
     isBridgeable: boolean;
     networks: { [id in ChainId]?: { bridgeable: boolean } };
@@ -76,34 +83,7 @@ export interface ZerionAssetPrice {
   relative_change_24h?: number;
 }
 
-export type AssetApiResponse = {
-  asset_code: AddressOrEth;
-  bridging: {
-    bridgeable: boolean;
-    networks: { [id in ChainId]?: { bridgeable: boolean } };
-  };
-  decimals: number;
-  icon_url: string;
-  name: string;
-  chain_id: number;
-  price?: {
-    value: number;
-    changed_at: number;
-    relative_change_24h: number;
-  };
-  symbol: string;
-  colors?: { primary?: string; fallback?: string; shadow?: string };
-  network?: ChainName;
-  networks?: {
-    [chainId in ChainId]?: {
-      address: chainId extends ChainId.mainnet ? AddressOrEth : Address;
-      decimals: number;
-    };
-  };
-  type?: AssetType;
-  interface?: 'erc-721' | 'erc-1155';
-  transferable?: boolean;
-};
+export type AssetApiResponse = PlatformAsset;
 
 type AssetType = ProtocolType | 'nft';
 

@@ -10,12 +10,11 @@ import {
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
 import { ChainId } from '~/core/types/chains';
-import type { ListTransactionsResponse as PlatformListTransactionsResponse } from '~/core/types/gen/plattform/transaction/transaction';
-import {
-  PaginatedTransactionsApiResponse,
-  RainbowTransaction,
-} from '~/core/types/transactions';
-import { convertPlatformTransactionToPaginatedApiResponse } from '~/core/utils/platform';
+import type {
+  ListTransactionsResponse as PlatformListTransactionsResponse,
+  Transaction as PlatformTransaction,
+} from '~/core/types/gen/plattform/transaction/transaction';
+import { RainbowTransaction } from '~/core/types/transactions';
 import { parseTransaction } from '~/core/utils/transactions';
 import { RainbowError, logger } from '~/logger';
 
@@ -101,9 +100,7 @@ async function transactionsQueryFunction({
       },
     );
 
-    const transactions = (response?.data?.result ?? []).map((tx) =>
-      convertPlatformTransactionToPaginatedApiResponse(tx),
-    );
+    const transactions = response?.data?.result ?? [];
 
     return parseTransactions(transactions, currency, chainId);
   } catch (e) {
@@ -126,7 +123,7 @@ async function transactionsQueryFunction({
 type TransactionsResult = QueryFunctionResult<typeof transactionsQueryFunction>;
 
 async function parseTransactions(
-  transactions: PaginatedTransactionsApiResponse[],
+  transactions: PlatformTransaction[],
   currency: SupportedCurrencyKey,
   chainId: ChainId,
 ) {

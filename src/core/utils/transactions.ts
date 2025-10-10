@@ -9,6 +9,7 @@ import { Address, formatUnits, zeroAddress } from 'viem';
 
 import RainbowIcon from 'static/images/icon-16@2x.png';
 import { useNetworkStore } from '~/core/state/networks/networks';
+import type { Transaction as PlatformTransaction } from '~/core/types/gen/plattform/transaction/transaction';
 
 import { i18n } from '../languages';
 import {
@@ -26,12 +27,10 @@ import { ChainId, ChainName } from '../types/chains';
 import { UniqueAsset } from '../types/nfts';
 import {
   NewTransaction,
-  PaginatedTransactionsApiResponse,
   RainbowTransaction,
-  TransactionApiResponse,
   TransactionDirection,
   TransactionType,
-  isValidTransactionType,
+  TxHash,
   transactionTypeShouldHaveChanges,
 } from '../types/transactions';
 import { getBatchedProvider } from '../wagmi/clientToProvider';
@@ -41,6 +40,16 @@ import { getBlockExplorerHostForChain, isNativeAsset } from './chains';
 import { formatNumber } from './formatNumber';
 import { convertStringToHex } from './hex';
 import { convertAmountToRawAmount } from './numbers';
+import {
+  normalizeDirection,
+  normalizeStatus,
+  normalizeTimestamp,
+  normalizeTransactionType,
+  toBigInt,
+  toNumber,
+  toOptionalAddress,
+  toOptionalNumber,
+} from './platform';
 import { capitalize } from './strings';
 
 /**
@@ -158,13 +167,23 @@ export const getDataForNftTransfer = (
 };
 
 type ParseTransactionArgs = {
-  tx: PaginatedTransactionsApiResponse;
+  tx: PlatformTransaction;
   currency: SupportedCurrencyKey;
   chainId: ChainId;
 };
 
+type ParsedChange = {
+  asset: ParsedUserAsset;
+  direction: TransactionDirection;
+  address_from: Address;
+  address_to: Address;
+  quantity: string;
+  value?: number | string;
+  price: number;
+};
+
 const getAssetFromChanges = (
-  changes: { direction: TransactionDirection; asset: ParsedUserAsset }[],
+  changes: ParsedChange[],
   type: TransactionType,
 ) => {
   if (type === 'sale')
@@ -172,24 +191,35 @@ const getAssetFromChanges = (
   return changes[0]?.asset;
 };
 
-const getAddressTo = (tx: PaginatedTransactionsApiResponse) => {
-  switch (tx.meta.type) {
+const getAddressTo = (
+  tx: PlatformTransaction,
+  type: TransactionType,
+  changes: ParsedChange[],
+) => {
+  switch (type) {
     case 'approve':
-      return tx.meta.approval_to;
+      return (
+        toOptionalAddress(tx.meta?.approvalTo) ??
+        changes[0]?.address_to ??
+        toOptionalAddress(tx.addressTo)
+      );
     case 'sale':
-      return tx.changes.find((c) => c?.direction === 'out')?.address_to;
+      return (
+        changes.find((c) => c?.direction === 'out')?.address_to ??
+        toOptionalAddress(tx.addressTo)
+      );
     case 'receive':
     case 'airdrop':
-      return tx.changes[0]?.address_to;
+      return changes[0]?.address_to ?? toOptionalAddress(tx.addressTo);
     default:
-      return tx.address_to;
+      return toOptionalAddress(tx.addressTo);
   }
 };
 
 const getDescription = (
   asset: ParsedAsset | undefined,
   type: TransactionType,
-  meta: PaginatedTransactionsApiResponse['meta'],
+  meta: { action?: string },
 ) => {
   if (asset?.type === 'nft') return asset.symbol || asset.name;
   if (type === 'cancel') return i18n.t('transactions.cancelled');
@@ -198,40 +228,59 @@ const getDescription = (
 };
 
 const parseFees = (
-  fee: TransactionApiResponse['fee'],
+  fee: PlatformTransaction['fee'] | undefined,
   nativeAssetDecimals: number,
 ) => {
-  const {
-    gas_price,
-    gas_limit,
-    max_base_fee,
-    max_priority_fee,
-    gas_used,
-    base_fee,
-    type_label,
-  } = fee.details || {};
+  if (!fee) {
+    return {
+      fee: '0',
+      feeInNative: '0',
+      feeType: undefined,
+      gasUsed: undefined,
+      maxFeePerGas: undefined,
+      maxPriorityFeePerGas: undefined,
+      baseFee: undefined,
+      gasPrice: undefined,
+      gasLimit: undefined,
+    };
+  }
 
-  const rollupFee = BigInt(
-    fee.details?.rollup_fee_details?.l1_fee || '0', // zero when it's not a rollup
+  const rollupFee = toBigInt(fee.details?.rollupFeeDetails?.l1Fee);
+  const feeValue = toBigInt(fee.value);
+  const totalFee = feeValue + rollupFee;
+
+  const feeAmount = FixedNumber.from(
+    formatUnits(totalFee, nativeAssetDecimals),
   );
-  const feeValue = FixedNumber.from(
-    formatUnits(BigInt(fee.value) + rollupFee, nativeAssetDecimals),
-  );
+  const priceNumber = toNumber(fee.price);
   const feePrice = FixedNumber.fromString(
-    fee.price.toFixed(nativeAssetDecimals).toString(),
+    priceNumber.toFixed(nativeAssetDecimals),
     nativeAssetDecimals,
   );
 
+  const typeValue = fee.details?.type;
+  const normalizedTypeLabel = fee.details?.typeLabel?.toLowerCase();
+  const feeType =
+    typeValue === 2
+      ? 'eip-1559'
+      : typeValue === 0
+      ? 'legacy'
+      : normalizedTypeLabel === 'eip-1559'
+      ? 'eip-1559'
+      : normalizedTypeLabel === 'legacy'
+      ? 'legacy'
+      : undefined;
+
   return {
-    fee: feeValue.toString(),
-    feeInNative: feeValue.mulUnsafe(feePrice).toString(),
-    feeType: type_label,
-    gasUsed: gas_used?.toString(),
-    maxFeePerGas: max_base_fee?.toString(),
-    maxPriorityFeePerGas: max_priority_fee?.toString(),
-    baseFee: base_fee?.toString(),
-    gasPrice: gas_price?.toString(),
-    gasLimit: gas_limit?.toString(),
+    fee: feeAmount.toString(),
+    feeInNative: feeAmount.mulUnsafe(feePrice).toString(),
+    feeType,
+    gasUsed: fee.details?.gasUsed,
+    maxFeePerGas: fee.details?.maxBaseFee,
+    maxPriorityFeePerGas: fee.details?.maxPriorityFee,
+    baseFee: fee.details?.baseFee,
+    gasPrice: fee.details?.gasPrice,
+    gasLimit: fee.details?.gasLimit,
   };
 };
 
@@ -240,106 +289,139 @@ export function parseTransaction({
   currency,
   chainId,
 }: ParseTransactionArgs): RainbowTransaction | undefined {
-  const { status, hash, meta, nonce, protocol } = tx;
+  const status = normalizeStatus(tx.status);
+  const type =
+    normalizeTransactionType(tx.meta?.type ?? tx.type) ||
+    'contract_interaction';
+  const from = toOptionalAddress(tx.addressFrom);
 
-  const changes = (tx.changes ?? []).filter(Boolean).map((change) => ({
-    ...change,
-    asset: parseUserAsset({
-      asset: change.asset,
-      balance: change.quantity || '0',
-      currency,
-    }),
-    value: change.quantity || undefined,
-  }));
+  if (!from) return;
 
-  const type = isValidTransactionType(meta.type)
-    ? meta.type
-    : 'contract_interaction';
+  const changes: ParsedChange[] = [];
+  for (const change of tx.changes ?? []) {
+    if (!change?.asset) continue;
+
+    const direction = normalizeDirection(change.direction);
+    const addressFrom = toOptionalAddress(change.addressFrom);
+    const addressTo = toOptionalAddress(change.addressTo);
+
+    if (!direction || !addressFrom || !addressTo) continue;
+
+    changes.push({
+      asset: parseUserAsset({
+        asset: change.asset,
+        balance: change.quantity || '0',
+        currency,
+      }),
+      direction,
+      address_from: addressFrom,
+      address_to: addressTo,
+      quantity: change.quantity || '0',
+      price: toNumber(change.price),
+      value:
+        change.value && change.value.length > 0
+          ? change.value
+          : change.quantity || '0',
+    });
+  }
 
   if (
-    !type ||
-    !tx.address_from ||
-    (status !== 'failed' && // failed txs won't have changes
-      transactionTypeShouldHaveChanges(type) &&
-      changes.length === 0)
+    status !== 'failed' &&
+    transactionTypeShouldHaveChanges(type) &&
+    changes.length === 0
   )
-    return; // filters some spam or weird api responses
+    return;
 
-  const asset: RainbowTransaction['asset'] = meta.asset?.asset_code
-    ? parseAsset({ asset: meta.asset, currency })
-    : getAssetFromChanges(changes, type);
+  const metaAsset = tx.meta?.asset
+    ? parseAsset({ asset: tx.meta.asset, currency })
+    : undefined;
+  const asset = metaAsset ?? getAssetFromChanges(changes, type);
 
-  const addressTo = getAddressTo(tx);
+  const resolvedAddressTo =
+    getAddressTo(tx, type, changes) ?? toOptionalAddress(tx.addressTo);
 
-  const direction = getDirection(type, changes, tx.direction);
+  const direction = getDirection(
+    type,
+    changes,
+    normalizeDirection(tx.direction),
+  );
 
-  const description = getDescription(asset, type, meta);
+  const description = getDescription(asset, type, {
+    action: tx.meta?.action,
+  });
 
   const nativeAsset = changes.find((change) => change?.asset.isNativeAsset);
-
+  const nativeAssetDecimals = 18; // keeping compatibility with legacy assumption
   const value = FixedNumber.fromValue(
-    BigNumber.from(nativeAsset?.value || 0),
-    nativeAsset?.asset.decimals || 0,
+    BigNumber.from(nativeAsset?.value ?? 0),
+    nativeAsset?.asset.decimals ?? nativeAssetDecimals,
   );
-
-  const nativeAssetDecimals = 18; // we only support networks with 18 decimals native assets rn, backend will change when we support more
-
   const nativeAssetPrice = FixedNumber.fromString(
-    typeof nativeAsset?.price === 'number'
-      ? nativeAsset.price.toFixed(nativeAssetDecimals).toString()
-      : '0',
+    (typeof nativeAsset?.price === 'number' ? nativeAsset.price : 0).toFixed(
+      nativeAssetDecimals,
+    ),
     nativeAssetDecimals,
   );
-
   const valueInNative = value.mulUnsafe(nativeAssetPrice).toString();
 
   const { feeInNative, ...fee } = parseFees(tx.fee, nativeAssetDecimals);
-
   const native = {
     fee: feeInNative,
     value: valueInNative,
   };
 
+  const externalSubtypeSources = [tx.meta?.publicSubType, tx.meta?.subType].map(
+    (item) => item?.toLowerCase(),
+  );
+  const externalSubtype = externalSubtypeSources.includes('rewards_claim')
+    ? 'rewards_claim'
+    : undefined;
+
   let contract;
-  if (meta.contract_name) {
-    if (meta.external_subtype === 'rewards_claim') {
+  if (tx.meta?.contractName) {
+    if (externalSubtype === 'rewards_claim') {
       contract = {
         name: 'Rainbow',
         iconUrl: RainbowIcon,
       };
     } else {
       contract = {
-        name: meta.contract_name,
-        iconUrl: meta.contract_icon_url,
+        name: tx.meta.contractName,
+        iconUrl: tx.meta.contractIconUrl,
       };
     }
   }
 
-  const explorer = meta.explorer_label &&
-    meta.explorer_url && {
-      name: meta.explorer_label,
-      url: meta.explorer_url,
-    };
+  const explorer =
+    tx.meta?.explorerLabel && tx.meta?.explorerUrl
+      ? {
+          name: tx.meta.explorerLabel,
+          url: tx.meta.explorerUrl,
+        }
+      : undefined;
 
   return {
-    from: tx.address_from,
-    to: addressTo,
+    from,
+    to: resolvedAddressTo,
     title: i18n.t(`transactions.${type}.${status}`),
     description,
-    hash,
-    chainId: +chainId,
+    hash: tx.hash as TxHash,
+    chainId,
     status,
-    nonce,
-    protocol,
+    nonce: typeof tx.nonce === 'number' ? tx.nonce : -2,
+    protocol: undefined,
     type,
     direction,
     value: value.toString(),
     changes,
     asset,
-    approvalAmount: meta.quantity,
-    minedAt: tx.mined_at,
-    blockNumber: tx.block_number,
-    confirmations: tx.block_confirmations,
+    approvalAmount:
+      tx.meta?.quantity && tx.meta.quantity.length > 0
+        ? tx.meta.quantity
+        : undefined,
+    minedAt: normalizeTimestamp(tx.minedAt),
+    blockNumber: toOptionalNumber(tx.blockNumber),
+    confirmations: toOptionalNumber(tx.blockConfirmations),
     contract,
     native,
     explorer,
@@ -619,11 +701,11 @@ const TransactionOutTypes = [
 
 const getDirection = (
   type: TransactionType,
-  changes: RainbowTransaction['changes'],
+  changes: ParsedChange[],
   txDirection?: TransactionDirection,
 ) => {
   if (type !== 'airdrop' && txDirection) return txDirection;
-  if (changes?.length === 1) return changes[0]?.direction;
+  if (changes.length === 1) return changes[0]?.direction;
   if (TransactionOutTypes.includes(type)) return 'out';
   return 'in';
 };

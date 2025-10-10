@@ -13,16 +13,28 @@ import {
   parseUserAsset,
 } from './assets';
 
-const ETH_FROM_ZERION = {
-  asset_code: 'eth',
-  chain_id: ChainId.mainnet,
+const ETH_FROM_ZERION: AssetApiResponse = {
+  address: 'eth',
+  chainId: ChainId.mainnet,
   name: 'Ethereum',
   symbol: 'ETH',
   decimals: 18,
+  type: 'native',
+  iconUrl:
+    'https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/smartchain/0x2170ed0880ac9a755fd29b2688956bd959f933f8.png',
+  network: ChainName.mainnet,
+  mainnetAddress: 'eth',
+  verified: true,
+  transferable: true,
+  creationDate: '',
+  colors: {
+    primary: '#808088',
+    fallback: '#E8EAF5',
+  },
   price: {
     value: 1499.87,
-    relative_change_24h: -3.4472325578401155,
-    changed_at: 1678390027,
+    relativeChange24h: -3.4472325578401155,
+    changedAt: new Date(1678390027 * 1000),
   },
   networks: {
     [ChainId.arbitrum]: {
@@ -38,18 +50,11 @@ const ETH_FROM_ZERION = {
       decimals: 18,
     },
   },
-  icon_url:
-    'https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/smartchain/0x2170ed0880ac9a755fd29b2688956bd959f933f8.png',
-  colors: {
-    primary: '#808088',
-    fallback: '#E8EAF5',
-  },
-  network: ChainName.mainnet,
   bridging: {
     bridgeable: true,
-    networks: [],
+    networks: {},
   },
-} satisfies AssetApiResponse;
+};
 
 const ETH_FROM_SEARCH: SearchAsset = {
   decimals: 18,
@@ -134,36 +139,59 @@ const ETH_FROM_METADATA = {
   volume1d: 4573101281,
 } satisfies AssetMetadata;
 
-const BSC_ETH_FROM_ZERION = {
-  asset_code: '0x2170ed0880ac9a755fd29b2688956bd959f933f8',
-  chain_id: ChainId.bsc,
+const BSC_ETH_FROM_ZERION: AssetApiResponse = {
+  address: '0x2170ed0880ac9a755fd29b2688956bd959f933f8',
+  chainId: ChainId.bsc,
   decimals: 18,
-  icon_url:
+  iconUrl:
     'https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/smartchain/0x2170ed0880ac9a755fd29b2688956bd959f933f8.png',
   name: 'Ethereum',
-  network: 'bsc' as ChainName,
+  network: 'bsc',
   symbol: 'ETH',
+  type: 'erc20',
+  mainnetAddress: ETH_ADDRESS,
+  verified: false,
+  transferable: true,
+  creationDate: '',
   colors: {
     primary: '#808088',
     fallback: '#E8EAF5',
   },
-  bridging: {
-    bridgeable: true,
-    networks: [],
+  networks: {
+    [ChainId.bsc]: {
+      address: '0x2170ed0880ac9a755fd29b2688956bd959f933f8',
+      decimals: 18,
+    },
   },
   price: {
     value: 1500.67,
-    relative_change_24h: -3.3290651940864646,
-    changed_at: 1678390027,
+    relativeChange24h: -3.3290651940864646,
+    changedAt: new Date(1678390027 * 1000),
   },
-} satisfies AssetApiResponse;
+  bridging: {
+    bridgeable: true,
+    networks: {},
+  },
+};
 
-const USD_FROM_ZERION = {
-  asset_code: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-  chain_id: ChainId.mainnet,
+const USD_FROM_ZERION: AssetApiResponse = {
+  address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+  chainId: ChainId.mainnet,
   name: 'USD Coin',
   symbol: 'USDC',
   decimals: 6,
+  type: 'erc20',
+  iconUrl:
+    'https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png',
+  network: ChainName.mainnet,
+  mainnetAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+  verified: true,
+  transferable: true,
+  creationDate: '',
+  colors: {
+    primary: '#2775CA',
+    fallback: '#9ABDE8',
+  },
   networks: {
     '1': {
       address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -190,22 +218,16 @@ const USD_FROM_ZERION = {
       decimals: 6,
     },
   },
-  icon_url:
-    'https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png',
-  colors: {
-    primary: '#2775CA',
-    fallback: '#9ABDE8',
+  price: {
+    value: 1.0034249098613037,
+    relativeChange24h: 0.3604239001534948,
+    changedAt: new Date(1678390027 * 1000),
   },
   bridging: {
     bridgeable: true,
-    networks: [],
+    networks: {},
   },
-  price: {
-    value: 1.0034249098613037,
-    relative_change_24h: 0.3604239001534948,
-    changed_at: 1678390027,
-  },
-} satisfies AssetApiResponse;
+};
 
 const OPTIMISM_USD_FROM_SEARCH = {
   decimals: 6,
@@ -253,22 +275,23 @@ const OPTIMISM_USD_FROM_SEARCH = {
   mainnetAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
 } satisfies SearchAsset;
 
-const OPTIMISM_USD_FROM_ZERION = {
-  asset_code: '0x7f5c764cbc14f9669b88837ca1490cca17c31607',
-  chain_id: ChainId.optimism,
+const OPTIMISM_USD_FROM_ZERION: AssetApiResponse = {
+  address: '0x7f5c764cbc14f9669b88837ca1490cca17c31607',
+  chainId: ChainId.optimism,
   decimals: 6,
-  icon_url:
+  iconUrl:
     'https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png',
   name: 'USD Coin',
   network: ChainName.optimism,
   symbol: 'USDC',
+  type: 'erc20',
+  mainnetAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+  verified: true,
+  transferable: true,
+  creationDate: '',
   colors: {
     primary: '#2775CA',
     fallback: '#9ABDE8',
-  },
-  bridging: {
-    bridgeable: true,
-    networks: [],
   },
   networks: {
     '1': {
@@ -298,10 +321,14 @@ const OPTIMISM_USD_FROM_ZERION = {
   },
   price: {
     value: 1.001,
-    relative_change_24h: 0.06633900739942358,
-    changed_at: 1678390027,
+    relativeChange24h: 0.06633900739942358,
+    changedAt: new Date(1678390027 * 1000),
   },
-} satisfies AssetApiResponse;
+  bridging: {
+    bridgeable: true,
+    networks: {},
+  },
+};
 
 const OPTIMISM_USD_FROM_METADATA = {
   colors: {
@@ -379,9 +406,7 @@ test('[utils/assets -> parseAsset] :: parse zerion asset', async () => {
     asset: USD_FROM_ZERION,
     currency: 'USD',
   });
-  expect(usd.uniqueId).toEqual(
-    `${USD_FROM_ZERION.asset_code}_${ChainId.mainnet}`,
-  );
+  expect(usd.uniqueId).toEqual(`${USD_FROM_ZERION.address}_${ChainId.mainnet}`);
   expect(usd.isNativeAsset).toEqual(false);
 
   const optimismUSD = parseAsset({
@@ -389,7 +414,7 @@ test('[utils/assets -> parseAsset] :: parse zerion asset', async () => {
     currency: 'USD',
   });
   expect(optimismUSD.uniqueId).toEqual(
-    `${OPTIMISM_USD_FROM_ZERION.asset_code}_${ChainId.optimism}`,
+    `${OPTIMISM_USD_FROM_ZERION.address}_${ChainId.optimism}`,
   );
   expect(optimismUSD.isNativeAsset).toEqual(false);
   expect(optimismUSD.native.price?.display[0]).toEqual('$');

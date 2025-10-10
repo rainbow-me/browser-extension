@@ -89,6 +89,10 @@ export const isCustomChain = (chainId: number) =>
   !!useNetworkStore.getState().getActiveRpcForChain(chainId);
 
 export function isNativeAsset(address: AddressOrEth, chainId: ChainId) {
+  if (address === 'eth') {
+    return true;
+  }
+
   if (isCustomChain(chainId)) {
     return zeroAddress === address;
   }

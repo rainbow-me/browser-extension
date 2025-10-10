@@ -20,7 +20,7 @@ import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/cus
 import { ChainId } from '~/core/types/chains';
 import type { GetTransactionByHashResponse as PlatformGetTransactionByHashResponse } from '~/core/types/gen/plattform/transaction/transaction';
 import { RainbowTransaction, TxHash } from '~/core/types/transactions';
-import { convertPlatformTransactionToApiResponse } from '~/core/utils/platform';
+import { normalizeStatus } from '~/core/utils/platform';
 import { parseTransaction } from '~/core/utils/transactions';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import { useUserChains } from '~/entries/popup/hooks/useUserChains';
@@ -78,8 +78,9 @@ export const fetchTransaction = async ({
         },
       );
     if (!response.data.result) throw new Error('No transaction found');
-    const tx = convertPlatformTransactionToApiResponse(response.data.result);
-    if (tx.status === 'pending') {
+    const tx = response.data.result;
+    const status = normalizeStatus(tx.status);
+    if (status === 'pending') {
       const localPendingTx = searchInLocalPendingTransactions(address, hash);
       if (localPendingTx) return localPendingTx;
 

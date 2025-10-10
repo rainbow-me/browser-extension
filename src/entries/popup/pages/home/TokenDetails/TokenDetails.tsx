@@ -655,7 +655,7 @@ export function TokenDetails() {
       select: (data) => {
         if (data) {
           const tokenApprovals = data.filter((approval) =>
-            isLowerCaseMatch(approval.asset.asset_code, token?.address),
+            isLowerCaseMatch(approval.asset.address, token?.address),
           );
           return tokenApprovals;
         }

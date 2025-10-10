@@ -12,13 +12,12 @@ import {
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
 import { useNetworkStore } from '~/core/state/networks/networks';
-import { ChainName, chainNameToIdMapping } from '~/core/types/chains';
-import type { ListTransactionsResponse as PlatformListTransactionsResponse } from '~/core/types/gen/plattform/transaction/transaction';
-import {
-  PaginatedTransactionsApiResponse,
-  RainbowTransaction,
-} from '~/core/types/transactions';
-import { convertPlatformTransactionToPaginatedApiResponse } from '~/core/utils/platform';
+import { ChainId, ChainName, chainNameToIdMapping } from '~/core/types/chains';
+import type {
+  ListTransactionsResponse as PlatformListTransactionsResponse,
+  Transaction as PlatformTransaction,
+} from '~/core/types/gen/plattform/transaction/transaction';
+import { RainbowTransaction } from '~/core/types/transactions';
 import { parseTransaction } from '~/core/utils/transactions';
 import { RainbowError, logger } from '~/logger';
 
@@ -124,12 +123,10 @@ export async function consolidatedTransactionsQueryFunction({
       },
     );
 
-    const paginatedTransactions = (response?.data?.result ?? []).map((tx) =>
-      convertPlatformTransactionToPaginatedApiResponse(tx),
-    );
+    const transactions = response?.data?.result ?? [];
 
     const consolidatedTransactions = await parseConsolidatedTransactions(
-      paginatedTransactions,
+      transactions,
       currency,
     );
 
@@ -159,7 +156,7 @@ type ConsolidatedTransactionsResult = QueryFunctionResult<
 >;
 
 async function parseConsolidatedTransactions(
-  transactions: PaginatedTransactionsApiResponse[],
+  transactions: PlatformTransaction[],
   currency: SupportedCurrencyKey,
 ) {
   return transactions
@@ -167,7 +164,14 @@ async function parseConsolidatedTransactions(
       parseTransaction({
         tx,
         currency,
-        chainId: chainNameToIdMapping[tx?.network ?? ChainName.mainnet],
+        chainId: ((): ChainId => {
+          const parsedChainId = Number(tx.chainId);
+          if (!Number.isNaN(parsedChainId)) {
+            return parsedChainId as ChainId;
+          }
+          const chainName = (tx?.network as ChainName) ?? ChainName.mainnet;
+          return chainNameToIdMapping[chainName];
+        })(),
       }),
     )
     .filter(Boolean);

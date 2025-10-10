@@ -21,7 +21,6 @@ import {
 import { ChainId } from '~/core/types/chains';
 import type { GetAssetUpdatesResponse as PlatformGetAssetUpdatesResponse } from '~/core/types/gen/plattform/assets/updates';
 import { getSupportedChains } from '~/core/utils/chains';
-import { convertPlatformAssetToAssetApiResponse } from '~/core/utils/platform';
 import { RainbowError, logger } from '~/logger';
 
 import { parseUserAssets } from './common';
@@ -160,7 +159,7 @@ async function userAssetsQueryFunction({
       forcedTokens: forcedTokensParam,
       timeout: USER_ASSETS_TIMEOUT_DURATION,
     });
-    const normalizedAssets = convertPlatformResultToLegacy(platformResult);
+    const normalizedAssets = convertPlatformResult(platformResult);
     const chainIdsInResponse = getChainIdsFromAssets(normalizedAssets);
 
     if (normalizedAssets.length && chainIdsInResponse.length) {
@@ -398,7 +397,7 @@ async function userAssetsByChainQueryFunction({
       currency,
       timeout: USER_ASSETS_TIMEOUT_DURATION,
     });
-    const normalizedAssets = convertPlatformResultToLegacy(platformResult);
+    const normalizedAssets = convertPlatformResult(platformResult);
     const chainIdsInResponse = getChainIdsFromAssets(normalizedAssets);
     if (normalizedAssets.length && chainIdsInResponse.includes(chainId)) {
       const parsedAssetsDict = await parseUserAssets({
@@ -455,9 +454,9 @@ export function useUserAssetsByChain<TSelectResult = UserAssetsByChainResult>(
   });
 }
 
-type LegacyAssetEntry = {
+type AssetEntry = {
   quantity: string;
-  small_balance?: boolean;
+  small_balance: boolean;
   asset: AssetApiResponse;
 };
 
@@ -507,28 +506,29 @@ async function fetchPlatformAssetBalances({
   return response?.data?.result ?? {};
 }
 
-function convertPlatformResultToLegacy(
+function convertPlatformResult(
   result: PlatformGetAssetUpdatesResponse['result'],
 ) {
   if (!result) return [];
-  return Object.values(result)
-    .map((entry) =>
-      !entry?.asset
-        ? undefined
-        : {
-            quantity: entry.quantity,
-            small_balance: entry.smallBalance,
-            asset: convertPlatformAssetToAssetApiResponse(entry.asset),
-          },
-    )
-    .filter((entry) => entry !== undefined);
+
+  return Object.values(result).reduce<AssetEntry[]>((acc, entry) => {
+    if (!entry?.asset) return acc;
+
+    acc.push({
+      quantity: entry.quantity,
+      small_balance: Boolean(entry.smallBalance),
+      asset: entry.asset,
+    });
+
+    return acc;
+  }, []);
 }
 
-function getChainIdsFromAssets(assets: LegacyAssetEntry[]) {
+function getChainIdsFromAssets(assets: AssetEntry[]) {
   const chainIds = new Set<ChainId>();
   for (const entry of assets) {
-    if (typeof entry?.asset?.chain_id === 'number') {
-      chainIds.add(entry.asset.chain_id as ChainId);
+    if (typeof entry?.asset?.chainId === 'number') {
+      chainIds.add(entry.asset.chainId as ChainId);
     }
   }
   return Array.from(chainIds);

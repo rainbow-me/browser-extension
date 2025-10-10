@@ -1,13 +1,8 @@
 import { TransactionResponse } from '@ethersproject/providers';
 import { Address } from 'viem';
 
-import {
-  AssetApiResponse,
-  ParsedAsset,
-  ParsedUserAsset,
-  ProtocolType,
-} from './assets';
-import { ChainId, ChainName } from './chains';
+import { ParsedAsset, ParsedUserAsset, ProtocolType } from './assets';
+import { ChainId } from './chains';
 import { TransactionGasParams, TransactionLegacyGasParams } from './gas';
 
 export type TransactionStatus = 'pending' | 'confirmed' | 'failed';
@@ -150,74 +145,3 @@ export type TransactionDirection = 'in' | 'out' | 'self';
 export interface ExecuteRapResponse extends TransactionResponse {
   errorMessage?: string;
 }
-
-export type TransactionApiResponse = {
-  status: TransactionStatus;
-  id: TxHash;
-  hash: TxHash;
-  network: ChainName;
-  protocol?: ProtocolType;
-  direction?: TransactionDirection;
-  address_from?: Address;
-  address_to?: Address;
-  // nonce will ALWAYS be -2 when the transaction is *not* from the wallet user
-  nonce: number;
-  changes: Array<
-    | {
-        asset: AssetApiResponse;
-        value: number | null;
-        quantity: string;
-        direction: TransactionDirection;
-        address_from: Address;
-        address_to: Address;
-        price: number;
-      }
-    | undefined
-  >;
-  fee: {
-    value: number;
-    price: number;
-
-    // Fee Details are only available on the tx by hash endpoint
-    // (won't be available on the consolidated txs list)
-    details?: {
-      type: 0 | 2;
-      type_label: 'legacy' | 'eip-1559';
-      gas_price: number;
-      gas_limit: number;
-      gas_used: number;
-      max_fee: number;
-      max_priority_fee: number;
-      base_fee: number;
-      max_base_fee: number;
-      rollup_fee_details: {
-        l1_fee: number;
-        l1_fee_scalar: number;
-        l1_gas_price: number;
-        l1_gas_used: number;
-        l2_fee: number;
-      };
-    };
-  };
-  block_confirmations?: number; // also only available on the tx by hash endpoint
-  meta: {
-    approval_to?: Address;
-    contract_name?: string;
-    contract_icon_url?: string;
-    explorer_label?: string;
-    explorer_url?: string;
-    type?: TransactionType;
-    action?: string;
-    asset?: AssetApiResponse;
-    quantity?: 'UNLIMITED' | string;
-    status: string;
-    external_subtype?: 'rewards_claim';
-  };
-  block_number?: number;
-  mined_at?: number;
-};
-
-export type PaginatedTransactionsApiResponse = Omit<
-  TransactionApiResponse,
-  'fee'
-> & { fee: Omit<TransactionApiResponse['fee'], 'details'> };

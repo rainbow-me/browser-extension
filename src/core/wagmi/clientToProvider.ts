@@ -37,6 +37,9 @@ export function getProvider({ chainId }: { chainId?: number } = {}) {
     Transport,
     Chain
   >;
+  if (!client) {
+    throw new Error('No client found for chain id: ' + chainId);
+  }
   return clientToProvider(client);
 }
 

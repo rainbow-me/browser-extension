@@ -108,6 +108,7 @@ export const useWatchPendingTransactions = ({
           ),
           {
             message: e.message,
+            cause: e,
           },
         );
       }
