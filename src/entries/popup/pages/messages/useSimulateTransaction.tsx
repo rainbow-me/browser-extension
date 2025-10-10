@@ -8,43 +8,49 @@ import { createQueryKey } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { AddressOrEth, ParsedAsset } from '~/core/types/assets';
-import { ChainId, ChainName } from '~/core/types/chains';
+import { ChainId, ChainName, chainIdToNameMapping } from '~/core/types/chains';
+import type { Asset as PlatformTransactionAsset } from '~/core/types/gen/plattform/transaction/transaction';
 import { parseAsset } from '~/core/utils/assets';
 
-const parseInterface = (interfaceName: string) => {
-  switch (interfaceName) {
-    case 'ERC20':
-      return undefined;
-    case 'ERC721':
-      return 'erc-721';
-    case 'ERC1155':
-      return 'erc-1155';
-    default:
-      return undefined;
-  }
-};
-
 const parseSimulationAsset = (asset: SimulationAsset, chainId: ChainId) => {
-  return parseAsset({
-    asset: {
-      symbol: asset.symbol,
-      name: asset.name,
-      decimals: asset.decimals,
-      chain_id: chainId,
-      networks: {
-        [chainId]: {
+  const networkName = chainIdToNameMapping[chainId] ?? ChainName.mainnet;
+  const iconUrl =
+    asset.iconURL && asset.iconURL !== 'undefined' ? asset.iconURL : undefined;
+
+  const simulatedAsset: PlatformTransactionAsset = {
+    assetCode: asset.assetCode,
+    decimals: asset.decimals,
+    iconUrl: iconUrl ?? '',
+    name: asset.name,
+    network: networkName,
+    chainId: chainId.toString(),
+    price: undefined,
+    symbol: asset.symbol,
+    type: asset.type ?? 'erc20',
+    interface: asset.interface,
+    colors: undefined,
+    networks: [
+      {
+        chainId: chainId.toString(),
+        tokenMapping: {
           address: asset.assetCode,
           decimals: asset.decimals,
         },
       },
-      asset_code: asset.assetCode,
-      icon_url: asset.iconURL,
-      interface: parseInterface(asset.interface),
-      bridging: {
-        bridgeable: false,
-        networks: {},
-      },
-    },
+    ],
+    bridging: undefined,
+    trash: false,
+    probableSpam: false,
+    tokenId: '',
+    verified: false,
+    defiPosition: false,
+    transferable: true,
+    hasTransferable: true,
+    creationDate: undefined,
+  };
+
+  return parseAsset({
+    asset: simulatedAsset,
     currency: useCurrentCurrencyStore.getState().currentCurrency,
   });
 };

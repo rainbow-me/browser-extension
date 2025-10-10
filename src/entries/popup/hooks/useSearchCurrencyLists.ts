@@ -13,7 +13,7 @@ import {
 } from '~/core/resources/search/tokenSearch';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useNetworkStore } from '~/core/state/networks/networks';
-import { ParsedSearchAsset } from '~/core/types/assets';
+import { AddressOrEth, ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { SearchAsset, TokenSearchListId } from '~/core/types/search';
 import { isSameAsset } from '~/core/utils/assets';
@@ -284,19 +284,20 @@ export function useSearchCurrencyLists({
 
             const chainName = getChain({ chainId }).name;
             const { address, decimals } = assetOnNetworkOverrides;
+            const networkAddress = address as AddressOrEth;
             // filter out the asset we're selling already
             if (
-              isSameAsset(assetToSell, { chainId, address }) ||
+              isSameAsset(assetToSell, { chainId, address: networkAddress }) ||
               !supportedChains[chainId]
             )
               return;
             return {
               ...assetToSell,
-              isNativeAsset: isNativeAsset(address, chainId),
+              isNativeAsset: isNativeAsset(networkAddress, chainId),
               chainId,
               chainName: chainName,
-              uniqueId: `${address}-${chainId}`,
-              address,
+              uniqueId: `${networkAddress}-${chainId}`,
+              address: networkAddress,
               decimals,
             };
           },

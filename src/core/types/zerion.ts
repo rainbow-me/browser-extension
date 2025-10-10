@@ -1,6 +1,6 @@
 import { AssetApiResponse } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
-import { PaginatedTransactionsApiResponse } from '~/core/types/transactions';
+import type { Transaction as PlatformTransaction } from '~/core/types/gen/plattform/transaction/transaction';
 
 /**
  * Metadata for a message from the Zerion API.
@@ -36,7 +36,7 @@ export interface AddressAssetsReceivedMessage {
  */
 export interface TransactionsReceivedMessage {
   payload?: {
-    transactions?: PaginatedTransactionsApiResponse[];
+    transactions?: PlatformTransaction[];
   };
   meta?: MessageMeta;
 }
