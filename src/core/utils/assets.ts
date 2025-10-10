@@ -15,6 +15,10 @@ import {
   ZerionAssetPrice,
 } from '~/core/types/assets';
 import { ChainId, ChainName, chainIdToNameMapping } from '~/core/types/chains';
+import type {
+  BridgeableNetworkMapping,
+  Asset as PlatformTransactionAsset,
+} from '~/core/types/gen/plattform/transaction/transaction';
 
 import { requestMetadata } from '../graphql';
 import { i18n } from '../languages';
@@ -33,6 +37,7 @@ import {
   convertAmountToRawAmount,
   convertRawAmountToDecimalFormat,
 } from './numbers';
+import { toNullableNumber, toNumber } from './platform';
 import { isLowerCaseMatch } from './strings';
 
 const get24HrChange = (priceData?: ZerionAssetPrice) => {
@@ -72,6 +77,210 @@ const getNativeAssetPrice = ({
   };
 };
 
+const normalizeAssetPrice = (
+  price:
+    | AssetApiResponse['price']
+    | PlatformTransactionAsset['price']
+    | undefined,
+): ZerionAssetPrice | undefined => {
+  if (!price) return undefined;
+
+  const value = toNumber((price as { value?: string | number }).value);
+  const relativeChange = toNullableNumber(
+    (price as { relativeChange24h?: string | number }).relativeChange24h ??
+      null,
+  );
+
+  const normalized: ZerionAssetPrice = {
+    value,
+  };
+
+  if (relativeChange !== null) {
+    normalized.relative_change_24h = relativeChange;
+  }
+
+  return normalized;
+};
+
+const normalizeAssetNetworks = (
+  networks:
+    | AssetApiResponse['networks']
+    | PlatformTransactionAsset['networks']
+    | undefined,
+): Record<number, { address: AddressOrEth; decimals: number }> => {
+  if (!networks) return {};
+
+  if (Array.isArray(networks)) {
+    return networks.reduce<
+      Record<number, { address: AddressOrEth; decimals: number }>
+    >((acc, mapping) => {
+      if (!mapping || !mapping.tokenMapping) {
+        return acc;
+      }
+
+      const chainId = Number(mapping.chainId);
+      if (Number.isNaN(chainId)) {
+        return acc;
+      }
+
+      acc[chainId] = {
+        address: mapping.tokenMapping.address as AddressOrEth,
+        decimals: mapping.tokenMapping.decimals,
+      };
+
+      return acc;
+    }, {});
+  }
+
+  return Object.entries(networks ?? {}).reduce<
+    Record<number, { address: AddressOrEth; decimals: number }>
+  >((acc, [chainId, info]) => {
+    if (!info) return acc;
+    const parsedChainId = Number(chainId);
+    if (Number.isNaN(parsedChainId)) return acc;
+    acc[parsedChainId] = {
+      address: info.address as AddressOrEth,
+      decimals: info.decimals,
+    };
+    return acc;
+  }, {});
+};
+
+const hasProp = <K extends PropertyKey>(
+  value: unknown,
+  prop: K,
+): value is Record<K, unknown> =>
+  typeof value === 'object' && value !== null && prop in value;
+
+const isHexAddress = (value: unknown): value is Address =>
+  typeof value === 'string' && /^0x[a-fA-F0-9]{40}$/.test(value);
+
+const extractIconUrl = (
+  asset: AssetApiResponse | PlatformTransactionAsset | AddysPositionAsset,
+) => {
+  if (hasProp(asset, 'iconUrl')) {
+    const value = asset.iconUrl;
+    return typeof value === 'string' &&
+      value !== 'undefined' &&
+      value.length > 0
+      ? value
+      : undefined;
+  }
+  if (hasProp(asset, 'icon_url')) {
+    const value = (asset as unknown as Record<string, unknown>)['icon_url'];
+    return typeof value === 'string' &&
+      value !== 'undefined' &&
+      value.length > 0
+      ? value
+      : undefined;
+  }
+  return undefined;
+};
+
+const extractAssetSymbol = (
+  asset: AssetApiResponse | PlatformTransactionAsset | AddysPositionAsset,
+) => {
+  if (hasProp(asset, 'symbol')) {
+    const value = (asset as unknown as Record<string, unknown>)['symbol'];
+    return typeof value === 'string' && value.length > 0 ? value : undefined;
+  }
+  return undefined;
+};
+
+const extractAssetType = (
+  asset: AssetApiResponse | PlatformTransactionAsset | AddysPositionAsset,
+) => {
+  if (hasProp(asset, 'type')) {
+    const value = (asset as unknown as Record<string, unknown>)['type'];
+    return typeof value === 'string' && value.length > 0 ? value : undefined;
+  }
+  return undefined;
+};
+
+const extractNumericChainId = (
+  asset: AssetApiResponse | PlatformTransactionAsset | AddysPositionAsset,
+): number | undefined => {
+  if (hasProp(asset, 'chainId')) {
+    const value = (asset as unknown as Record<string, unknown>)['chainId'];
+    if (typeof value === 'number') return value;
+    if (typeof value === 'string') {
+      const parsed = Number(value);
+      return Number.isNaN(parsed) ? undefined : parsed;
+    }
+  }
+  return undefined;
+};
+
+const extractAssetCode = (
+  asset: AssetApiResponse | PlatformTransactionAsset | AddysPositionAsset,
+): string | undefined => {
+  if (hasProp(asset, 'asset_code')) {
+    const value = (asset as unknown as Record<string, unknown>)['asset_code'];
+    return typeof value === 'string' && value.length > 0 ? value : undefined;
+  }
+  if (hasProp(asset, 'assetCode')) {
+    const value = (asset as unknown as Record<string, unknown>)['assetCode'];
+    return typeof value === 'string' && value.length > 0 ? value : undefined;
+  }
+  return undefined;
+};
+
+const extractAssetAddress = (
+  asset: AssetApiResponse | PlatformTransactionAsset | AddysPositionAsset,
+): AddressOrEth | undefined => {
+  if (hasProp(asset, 'address')) {
+    const value = (asset as unknown as Record<string, unknown>)['address'];
+    if (typeof value === 'string' && value.length > 0) {
+      if (value.toLowerCase() === ETH_ADDRESS) return ETH_ADDRESS;
+      if (isHexAddress(value)) return value as Address;
+    }
+  }
+  return undefined;
+};
+
+const normalizeAssetBridging = (
+  bridging:
+    | AssetApiResponse['bridging']
+    | PlatformTransactionAsset['bridging']
+    | undefined,
+) => {
+  if (!bridging) return undefined;
+
+  const networks: Record<number, { bridgeable: boolean }> = {};
+
+  const potentialArray = (bridging as PlatformTransactionAsset['bridging'])
+    ?.networks;
+  if (Array.isArray(potentialArray)) {
+    for (const mapping of potentialArray as BridgeableNetworkMapping[]) {
+      if (!mapping) continue;
+      const chainId = Number(mapping.chainId);
+      if (Number.isNaN(chainId) || !mapping.bridgeableNetwork) continue;
+      networks[chainId] = {
+        bridgeable: Boolean(mapping.bridgeableNetwork.bridgeable),
+      };
+    }
+  } else {
+    const record = (bridging as AssetApiResponse['bridging'])?.networks ?? {};
+    for (const [chainId, info] of Object.entries(record)) {
+      if (!info) continue;
+      const parsedChainId = Number(chainId);
+      if (Number.isNaN(parsedChainId)) continue;
+      networks[parsedChainId] = { bridgeable: Boolean(info.bridgeable) };
+    }
+  }
+
+  const baseBridgeable = Boolean(
+    (bridging as { bridgeable?: boolean }).bridgeable,
+  );
+
+  return {
+    isBridgeable:
+      baseBridgeable ||
+      Object.values(networks).some((network) => network.bridgeable),
+    networks,
+  };
+};
+
 const getNativeAssetBalance = ({
   currency,
   priceUnit,
@@ -89,21 +298,95 @@ export function parseAsset({
   asset,
   currency,
 }: {
-  asset: AssetApiResponse;
+  asset: AssetApiResponse | PlatformTransactionAsset | AddysPositionAsset;
   currency: SupportedCurrencyKey;
 }): ParsedAsset {
-  const address = asset.asset_code;
-  const chainName = asset.network ?? ChainName.mainnet;
-  const networks = 'networks' in asset ? asset.networks || {} : {};
-  const chainId = asset.chain_id;
+  const rawNetworks =
+    'networks' in asset ? (asset.networks as unknown) : undefined;
+  const networksMap = normalizeAssetNetworks(
+    rawNetworks as
+      | AssetApiResponse['networks']
+      | PlatformTransactionAsset['networks']
+      | undefined,
+  );
+
+  const iconUrl = extractIconUrl(asset);
+  const iconAddress = iconUrl
+    ? iconUrl.match(/0x[a-fA-F0-9]{40}/)?.[0]?.toLowerCase()
+    : undefined;
+
+  const chainIdNumeric = extractNumericChainId(asset);
+  const resolvedChainId =
+    chainIdNumeric && !Number.isNaN(chainIdNumeric) ? chainIdNumeric : 0;
+  const chainId = resolvedChainId as ChainId;
+
+  const networkAddress =
+    networksMap[chainId]?.address ?? networksMap[ChainId.mainnet]?.address;
+
+  const explicitAssetCode = extractAssetCode(asset);
+  const explicitAddress = extractAssetAddress(asset);
+  const fallbackAssetCode: AddressOrEth =
+    extractAssetSymbol(asset) === 'ETH' ? ETH_ADDRESS : zeroAddress;
+
+  const assetCode: AddressOrEth =
+    (explicitAssetCode as AddressOrEth | undefined) ??
+    explicitAddress ??
+    networkAddress ??
+    (iconAddress as Address | undefined) ??
+    fallbackAssetCode;
+
+  const assetType = extractAssetType(asset);
+  const symbol = extractAssetSymbol(asset);
+  const isExplicitNative =
+    assetType === 'native' || symbol === 'ETH' || assetCode === ETH_ADDRESS;
+
+  const address: AddressOrEth = isExplicitNative
+    ? ETH_ADDRESS
+    : explicitAddress ??
+      networkAddress ??
+      (iconAddress as Address | undefined) ??
+      assetCode;
+
+  const price = normalizeAssetPrice(asset.price);
+  const chainName = (asset.network as ChainName) ?? ChainName.mainnet;
   const mainnetAddress =
-    asset.symbol === 'ETH' ? ETH_ADDRESS : networks[ChainId.mainnet]?.address;
+    symbol === 'ETH'
+      ? ETH_ADDRESS
+      : (asset as { mainnetAddress?: AddressOrEth }).mainnetAddress ??
+        networksMap[ChainId.mainnet]?.address ??
+        (iconAddress as Address | undefined);
+  const uniqueId: UniqueId = `${assetCode}_${chainId}`;
+  const interfaceValue = (asset as { interface?: string }).interface;
+  const standard: ParsedAsset['standard'] = (() => {
+    if (!interfaceValue) return undefined;
+    const normalized = interfaceValue.toLowerCase();
+    if (normalized === 'erc721') return 'erc-721';
+    if (normalized === 'erc-721') return 'erc-721';
+    if (normalized === 'erc1155') return 'erc-1155';
+    if (normalized === 'erc-1155') return 'erc-1155';
+    return undefined;
+  })();
+  const colors = asset.colors
+    ? {
+        primary: asset.colors.primary,
+        fallback: asset.colors.fallback,
+        shadow: (asset.colors as { shadow?: string }).shadow,
+      }
+    : undefined;
+  const bridging = normalizeAssetBridging(asset.bridging);
+  const transferable =
+    'hasTransferable' in asset
+      ? asset.hasTransferable
+        ? asset.transferable
+        : undefined
+      : asset.transferable;
 
-  const standard = 'interface' in asset ? asset.interface : undefined;
+  const parsedNetworks = networksMap;
+  const networks =
+    Object.keys(parsedNetworks).length > 0 ? parsedNetworks : undefined;
 
-  const uniqueId: UniqueId = `${asset.asset_code}_${chainId}`;
-  const parsedAsset = {
-    assetCode: asset.asset_code,
+  const parsedAsset: ParsedAsset = {
+    assetCode,
     address,
     uniqueId,
     chainId,
@@ -113,27 +396,21 @@ export function parseAsset({
     native: {
       price: getNativeAssetPrice({
         currency,
-        priceData: asset?.price,
+        priceData: price,
       }),
     },
     name: asset.name || i18n.t('tokens_tab.unknown_token'),
-    price: asset.price,
+    price,
     symbol: asset.symbol,
-    type: asset.type,
+    type: (asset as { type?: string }).type,
     decimals: asset.decimals,
-    icon_url: asset.icon_url || getCustomChainIconUrl(chainId, address),
-    colors: asset.colors,
+    icon_url: iconUrl || getCustomChainIconUrl(chainId, address),
+    colors,
     standard,
-    networks: asset.networks,
-    ...('bridging' in asset && {
-      bridging: {
-        isBridgeable: !!asset.bridging.bridgeable,
-        networks: asset.bridging.networks,
-      },
-    }),
-    transferable: asset.transferable,
+    networks,
+    ...(bridging && { bridging }),
+    transferable,
   };
-
   return parsedAsset;
 }
 
@@ -184,7 +461,7 @@ export function parseUserAsset({
   balance,
   smallBalance,
 }: {
-  asset: AssetApiResponse | AddysPositionAsset;
+  asset: AssetApiResponse | PlatformTransactionAsset | AddysPositionAsset;
   currency: SupportedCurrencyKey;
   balance: string;
   smallBalance?: boolean;
