@@ -26,14 +26,12 @@ import { ROUTES } from '../urls';
 import {
   appConnectionMenuIsActive,
   appConnectionSwitchWalletsPromptIsActive,
+  backupReminderIsActive,
   getExplainerSheet,
   getInputIsFocused,
+  switchNetworkMenuIsActive,
 } from '../utils/activeElement';
-import {
-  clickHeaderLeft,
-  clickHeaderRight,
-  clickTabBar,
-} from '../utils/clickHeader';
+import { clickHeaderLeft, clickHeaderRight } from '../utils/clickHeader';
 
 import { useActiveTab } from './useActiveTab';
 import { useAppSession } from './useAppSession';
@@ -76,7 +74,13 @@ export function useHomeShortcuts() {
   }, []);
 
   const getHomeShortcutsAreActive = useCallback(() => {
-    return sheet === 'none' && !selectedTransaction && !selectedToken;
+    return (
+      sheet === 'none' &&
+      !selectedTransaction &&
+      !selectedToken &&
+      !switchNetworkMenuIsActive() &&
+      !backupReminderIsActive()
+    );
   }, [sheet, selectedToken, selectedTransaction]);
 
   const handleCopy = useCallback(() => {
@@ -116,8 +120,11 @@ export function useHomeShortcuts() {
         appConnectionSwitchWalletsPromptIsActive();
       const inputIsFocused = getInputIsFocused();
       const isExplainerSheet = getExplainerSheet();
+      const isBackupReminder = backupReminderIsActive();
       if (inputIsFocused) return;
       if (isExplainerSheet) return;
+      if (isBackupReminder) return;
+      if (switchNetworkMenuIsActive()) return;
       switch (e.key) {
         case shortcuts.home.BUY.key:
           trackShortcut({
@@ -210,8 +217,6 @@ export function useHomeShortcuts() {
             key: shortcuts.home.TESTNET_MODE.display,
             type: 'home.testnetMode',
           });
-          // in order to close dropdown menus
-          clickTabBar();
           handleTestnetMode();
           break;
         case shortcuts.home.OPEN_MORE_MENU.key:
