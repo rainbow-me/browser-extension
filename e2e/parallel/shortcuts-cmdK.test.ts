@@ -1,5 +1,5 @@
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 
 import {
   checkExtensionURL,
@@ -14,6 +14,7 @@ import {
   importWalletFlow,
   initDriverWithOptions,
   isElementFoundByText,
+  takeScreenshotOnFailure,
   typeOnTextInput,
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
@@ -39,6 +40,10 @@ describe('Cmd+K menu unique functionality', () => {
   });
 
   afterAll(async () => driver.quit());
+
+  afterEach<{ driver: WebDriver }>(async (context) => {
+    await takeScreenshotOnFailure(context);
+  });
 
   it('should open and close Cmd+K menu', async () => {
     await goToPopup(driver, rootURL);

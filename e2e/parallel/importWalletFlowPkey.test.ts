@@ -1,5 +1,5 @@
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, it } from 'vitest';
+import { afterAll, afterEach, beforeAll, describe, it } from 'vitest';
 
 import {
   checkWalletName,
@@ -7,6 +7,7 @@ import {
   getRootUrl,
   importWalletFlow,
   initDriverWithOptions,
+  takeScreenshotOnFailure,
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
 
@@ -27,6 +28,10 @@ describe('Import wallet with a private key flow', () => {
     rootURL += extensionId;
   });
   afterAll(async () => driver?.quit());
+
+  afterEach<{ driver: WebDriver }>(async (context) => {
+    await takeScreenshotOnFailure(context);
+  });
 
   it('should be able import a wallet via private key', async () => {
     await importWalletFlow(

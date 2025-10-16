@@ -1,5 +1,5 @@
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 
 import {
   checkExtensionURL,
@@ -16,6 +16,7 @@ import {
   isElementFoundByText,
   returnAttributesOfActiveElement,
   shortenAddress,
+  takeScreenshotOnFailure,
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
 
@@ -43,6 +44,10 @@ describe.runIf(browser !== 'firefox')(
       rootURL += extensionId;
     });
     afterAll(async () => driver?.quit());
+
+    afterEach<{ driver: WebDriver }>(async (context) => {
+      await takeScreenshotOnFailure(context);
+    });
 
     it('should be able import a wallet via pk', async () => {
       await importWalletFlowUsingKeyboardNavigation(
