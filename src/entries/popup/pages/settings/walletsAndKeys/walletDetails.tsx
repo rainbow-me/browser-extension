@@ -123,7 +123,7 @@ export function WalletDetails() {
   const [wallet, setWallet] = useState<KeychainWallet | null>();
   const { currentAddress, setCurrentAddress } = useCurrentAddressStore();
   const { unhideWallet, hiddenWallets } = useHiddenWalletsStore();
-  const { visibleWallets } = useWallets();
+  const { visibleWallets, fetchWallets } = useWallets();
   const { deleteWalletName } = useWalletNamesStore();
   const [createWalletAddress, setCreateWalletAddress] = useState<Address>();
   const [showEnterPassword, setShowEnterPassword] = useState(false);
@@ -172,7 +172,8 @@ export function WalletDetails() {
     deleteWalletName({ address });
     deleteWalletBackup({ address });
 
-    if (visibleWallets.length > 1) {
+    const { data: updatedVisibleWallets = [] } = await fetchWallets();
+    if (updatedVisibleWallets.length > 0) {
       // set current address to the next account if you deleted that one
       if (address === currentAddress) {
         const deletedIndex = visibleWallets.findIndex(
