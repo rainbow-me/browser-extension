@@ -131,7 +131,7 @@ export function Privacy() {
               titleComponent={
                 <MenuItem.Title
                   text={i18n.t(
-                    'settings.privacy_and_security.auto_hide_balances_under_1',
+                    'settings.privacy_and_security.auto_hide_small_balances',
                   )}
                 />
               }

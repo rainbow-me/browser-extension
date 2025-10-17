@@ -141,7 +141,6 @@
       "analytics_description": "분석을 통해 Rainbow의 제품 및 서비스를 향상시키도록 도와주세요. 수집된 데이터는 사용자나 계정과 연결되지 않습니다.",
       "hide_asset_balances": "자산 잔액 숨기기",
       "hide_asset_balances_description": "이 기능을 활성화하면 Rainbow는 애플리케이션 전체의 토큰 잔액을 흐리게 표시합니다.",
-      "auto_hide_balances_under_1": "1달러 미만 잔액 자동 숨김",
       "view_private_key": "개인 키 보기",
       "view_secret_recovery_phrase": "비밀 복구 문구 보기",
       "auto_lock_timer": {

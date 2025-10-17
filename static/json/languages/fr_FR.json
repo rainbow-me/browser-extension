@@ -141,7 +141,6 @@
       "analytics_description": "Aidez Rainbow à améliorer ses produits et services en autorisant l'analyse des données d'utilisation. Les données collectées ne sont pas associées à vous ou à votre compte.",
       "hide_asset_balances": "Masquer les soldes des actifs",
       "hide_asset_balances_description": "Lorsque cette option est activée, Rainbow masque les soldes des jetons dans l'application.",
-      "auto_hide_balances_under_1": "Masquer les soldes inférieurs à 1 $",
       "view_private_key": "Afficher la clé privée",
       "view_secret_recovery_phrase": "Afficher la phrase de récupération secrète",
       "auto_lock_timer": {

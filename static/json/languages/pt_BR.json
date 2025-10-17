@@ -141,7 +141,6 @@
       "analytics_description": "Ajude a Rainbow a melhorar seus produtos e serviços permitindo análises de dados de uso. Os dados coletados não estão associados a você ou à sua conta.",
       "hide_asset_balances": "Ocultar saldos de ativos",
       "hide_asset_balances_description": "Quando ativado, a Rainbow ocultará os saldos de tokens em todo o aplicativo.",
-      "auto_hide_balances_under_1": "Ocultar automaticamente saldos abaixo de $1",
       "view_private_key": "Ver Chave Privada",
       "view_secret_recovery_phrase": "Ver Frase Secreta de Recuperação",
       "auto_lock_timer": {

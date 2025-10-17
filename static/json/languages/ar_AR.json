@@ -141,7 +141,6 @@
       "analytics_description": "ساعد Rainbow في تحسين منتجاتها وخدماتها من خلال السماح بتحليلات بيانات الاستخدام. البيانات التي تم جمعها لا يتم ربطها بك أو بحسابك.",
       "hide_asset_balances": "إخفاء رصيد الأصول",
       "hide_asset_balances_description": "عند تشغيل هذا، سيقوم Rainbow بتعتيم أرصدة الرموز في التطبيق.",
-      "auto_hide_balances_under_1": "إخفاء التوازنات التلقائي تحت 1 دولار",
       "view_private_key": "عرض المفتاح الخاص",
       "view_secret_recovery_phrase": "عرض عبارة استعادة السر",
       "auto_lock_timer": {

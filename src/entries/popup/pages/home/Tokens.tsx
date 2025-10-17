@@ -1,5 +1,10 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { MotionValue, motion, useTransform } from 'framer-motion';
+import {
+  AnimatePresence,
+  MotionValue,
+  motion,
+  useTransform,
+} from 'framer-motion';
 import uniqBy from 'lodash/uniqBy';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Address } from 'viem';
@@ -8,10 +13,7 @@ import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
 import { shortcuts } from '~/core/references/shortcuts';
 import { selectUserAssetsList } from '~/core/resources/_selectors';
-import {
-  selectUserAssetsFilteringSmallBalancesList,
-  selectorFilterByUserChains,
-} from '~/core/resources/_selectors/assets';
+import { selectorFilterByUserChains } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
 import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
 import { fetchProviderWidgetUrl } from '~/core/resources/f2c';
@@ -26,12 +28,13 @@ import {
   useHiddenAssetStore,
 } from '~/core/state/hiddenAssets/hiddenAssets';
 import { usePinnedAssetStore } from '~/core/state/pinnedAssets';
-import { ParsedUserAsset } from '~/core/types/assets';
+import { ParsedAssetsDictByChain, ParsedUserAsset } from '~/core/types/assets';
 import { truncateAddress } from '~/core/utils/address';
 import { comparePlatformToCalculatedValue } from '~/core/utils/assets';
 import { isCustomChain } from '~/core/utils/chains';
 import {
   Box,
+  Button,
   Column,
   Columns,
   Inline,
@@ -61,6 +64,12 @@ import { TokenMarkedHighlighter } from './TokenMarkedHighlighter';
 
 const getPlatformAmountValue = (asset: ParsedUserAsset) =>
   parseFloat(asset.platformValue?.amount || '0');
+
+type AssetsSelection = {
+  visible: ParsedUserAsset[];
+  hidden: ParsedUserAsset[];
+  all: ParsedUserAsset[];
+};
 
 const TokenRow = memo(function TokenRow({
   token,
@@ -124,43 +133,67 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
     [currentAddress, hidden],
   );
 
-  const {
-    data: assets = [],
-    isLoading: isUserAssetsLoading,
-    refetch: refetchUserAssets,
-  } = useUserAssets(
-    {
-      address: currentAddress,
-      currency,
+  const buildAssetSelection = useCallback(
+    (data: ParsedAssetsDictByChain): AssetsSelection => {
+      const allAssets = selectorFilterByUserChains({
+        data,
+        selector: selectUserAssetsList,
+      });
+
+      const smallBalanceAssets = allAssets.filter(
+        (asset) => asset.smallBalance,
+      );
+      const visibleAssets = hideSmallBalances
+        ? allAssets.filter((asset) => !asset.smallBalance)
+        : allAssets;
+
+      return {
+        all: allAssets,
+        visible: visibleAssets,
+        hidden: smallBalanceAssets,
+      };
     },
-    {
-      select: (data) =>
-        selectorFilterByUserChains({
-          data,
-          selector: hideSmallBalances
-            ? selectUserAssetsFilteringSmallBalancesList
-            : selectUserAssetsList,
-        }),
-    },
+    [hideSmallBalances],
   );
 
   const {
-    data: customNetworkAssets = [],
-    refetch: refetchCustomNetworkAssets,
-  } = useCustomNetworkAssets(
+    data: userAssetsData,
+    isLoading: isUserAssetsLoading,
+    refetch: refetchUserAssets,
+  } = useUserAssets<AssetsSelection>(
     {
       address: currentAddress,
       currency,
     },
     {
-      select: (data) =>
-        selectorFilterByUserChains({
-          data,
-          selector: hideSmallBalances
-            ? selectUserAssetsFilteringSmallBalancesList
-            : selectUserAssetsList,
-        }),
+      select: buildAssetSelection,
     },
+  );
+
+  const { data: customNetworkAssetsData, refetch: refetchCustomNetworkAssets } =
+    useCustomNetworkAssets<AssetsSelection>(
+      {
+        address: currentAddress,
+        currency,
+      },
+      {
+        select: buildAssetSelection,
+      },
+    );
+
+  const [
+    userVisibleAssets,
+    userHiddenSmallAssets,
+    customVisibleAssets,
+    customHiddenSmallAssets,
+  ] = useMemo(
+    () => [
+      userAssetsData?.visible ?? [],
+      userAssetsData?.hidden ?? [],
+      customNetworkAssetsData?.visible ?? [],
+      customNetworkAssetsData?.hidden ?? [],
+    ],
+    [userAssetsData, customNetworkAssetsData],
   );
 
   const isPinned = useCallback(
@@ -169,22 +202,41 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
     [currentAddress, pinnedStore],
   );
 
-  const combinedAssets = useMemo(
+  const combinedVisibleAssets = useMemo(
     () =>
       Array.from(
         new Map(
-          [...customNetworkAssets, ...assets].map((item) => [
+          [...customVisibleAssets, ...userVisibleAssets].map((item) => [
             item.uniqueId,
             item,
           ]),
         ).values(),
       ),
-    [assets, customNetworkAssets],
+    [customVisibleAssets, userVisibleAssets],
   );
 
-  const unhiddenAssets = useMemo(() => {
-    return combinedAssets.filter((asset) => !isHidden(asset));
-  }, [combinedAssets, isHidden]);
+  const combinedHiddenSmallAssets = useMemo(
+    () =>
+      Array.from(
+        new Map(
+          [...customHiddenSmallAssets, ...userHiddenSmallAssets].map((item) => [
+            item.uniqueId,
+            item,
+          ]),
+        ).values(),
+      ),
+    [customHiddenSmallAssets, userHiddenSmallAssets],
+  );
+
+  const visibleAssetsUnhidden = useMemo(
+    () => combinedVisibleAssets.filter((asset) => !isHidden(asset)),
+    [combinedVisibleAssets, isHidden],
+  );
+
+  const hiddenSmallAssetsUnhidden = useMemo(
+    () => combinedHiddenSmallAssets.filter((asset) => !isHidden(asset)),
+    [combinedHiddenSmallAssets, isHidden],
+  );
 
   const computeUniqueAssets = useCallback(
     (assets: ParsedUserAsset[]) => {
@@ -220,22 +272,47 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
     [currentAddress, pinnedStore, isPinned],
   );
 
-  const filteredAssets = useMemo(
+  const orderedVisibleAssets = useMemo(
     () => [
-      ...computePinnedAssets(unhiddenAssets),
-      ...computeUniqueAssets(unhiddenAssets),
+      ...computePinnedAssets(visibleAssetsUnhidden),
+      ...computeUniqueAssets(visibleAssetsUnhidden),
     ],
-    [unhiddenAssets, computePinnedAssets, computeUniqueAssets],
+    [visibleAssetsUnhidden, computePinnedAssets, computeUniqueAssets],
   );
 
+  const orderedHiddenSmallAssets = useMemo(
+    () => [
+      ...computePinnedAssets(hiddenSmallAssetsUnhidden),
+      ...computeUniqueAssets(hiddenSmallAssetsUnhidden),
+    ],
+    [hiddenSmallAssetsUnhidden, computePinnedAssets, computeUniqueAssets],
+  );
+
+  const shouldShowSmallBalanceToggle =
+    hideSmallBalances && orderedHiddenSmallAssets.length > 0;
+
+  const [showHiddenSmallBalances, setShowHiddenSmallBalances] = useState(false);
+
+  useEffect(() => {
+    if (!shouldShowSmallBalanceToggle) {
+      setShowHiddenSmallBalances(false);
+    }
+  }, [shouldShowSmallBalanceToggle]);
+
+  const hasAnyAssets =
+    orderedVisibleAssets.length > 0 || orderedHiddenSmallAssets.length > 0;
+
+  const paddingEnd = shouldShowSmallBalanceToggle ? 16 : 64;
+
   const assetsRowVirtualizer = useVirtualizer({
-    count: filteredAssets.length,
+    count: orderedVisibleAssets.length,
     getScrollElement: () => containerRef.current,
     estimateSize: () => 52,
     overscan: 10,
-    paddingEnd: 64,
+    paddingEnd,
     paddingStart: 8,
-    getItemKey: (index) => filteredAssets[index].uniqueId,
+    getItemKey: (index) =>
+      orderedVisibleAssets[index]?.uniqueId ?? `token-${index}`,
   });
 
   useKeyboardShortcut({
@@ -254,18 +331,51 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
   });
 
   useTokensShortcuts();
-  useTokenListSampling(filteredAssets, 'wallet');
+  const samplingAssets = useMemo(
+    () =>
+      shouldShowSmallBalanceToggle && showHiddenSmallBalances
+        ? [...orderedVisibleAssets, ...orderedHiddenSmallAssets]
+        : orderedVisibleAssets,
+    [
+      orderedVisibleAssets,
+      orderedHiddenSmallAssets,
+      shouldShowSmallBalanceToggle,
+      showHiddenSmallBalances,
+    ],
+  );
+
+  const hiddenContainerRef = useRef<HTMLDivElement>(null);
+
+  const hiddenAssetsRowVirtualizer = useVirtualizer({
+    count: orderedHiddenSmallAssets.length,
+    getScrollElement: () => hiddenContainerRef.current,
+    estimateSize: () => 52,
+    overscan: 6,
+    paddingEnd: 16,
+    paddingStart: 8,
+    getItemKey: (index) =>
+      orderedHiddenSmallAssets[index]?.uniqueId ?? `hidden-token-${index}`,
+  });
+
+  useTokenListSampling(samplingAssets, 'wallet');
 
   useEffect(() => {
     assetsRowVirtualizer?.measure();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [unhiddenAssets?.length]);
+  }, [orderedVisibleAssets.length]);
+
+  useEffect(() => {
+    if (showHiddenSmallBalances) {
+      hiddenAssetsRowVirtualizer?.measure();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showHiddenSmallBalances, orderedHiddenSmallAssets.length]);
 
   if (isUserAssetsLoading || manuallyRefetchingTokens) {
     return <TokensSkeleton />;
   }
 
-  if (!filteredAssets?.length) {
+  if (!hasAnyAssets) {
     return <TokensEmptyState depositAddress={currentAddress} />;
   }
 
@@ -303,7 +413,8 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
         <Box>
           {assetsRowVirtualizer.getVirtualItems().map((virtualItem) => {
             const { key, size, start, index } = virtualItem;
-            const token = filteredAssets[index];
+            const token = orderedVisibleAssets[index];
+            if (!token) return null;
             const pinned =
               !!pinnedStore[currentAddress]?.[token.uniqueId]?.pinned;
 
@@ -326,6 +437,104 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
           })}
         </Box>
       </Box>
+      {shouldShowSmallBalanceToggle && (
+        <Box
+          width="full"
+          alignItems="center"
+          justifyContent="center"
+          display="flex"
+        >
+          <Button
+            color="surfaceSecondaryElevated"
+            height="32px"
+            variant="transparent"
+            width="fit"
+            onClick={() =>
+              setShowHiddenSmallBalances((prevState) => !prevState)
+            }
+            testId="show-small-balances-button"
+          >
+            <Inline alignVertical="center" space="6px">
+              <motion.div
+                animate={{ rotate: showHiddenSmallBalances ? -180 : 0 }}
+                transition={{ duration: 0.2 }}
+                style={{ display: 'flex' }}
+              >
+                <Symbol
+                  color="labelSecondary"
+                  size={12}
+                  symbol="chevron.down"
+                  weight="semibold"
+                />
+              </motion.div>
+              <Text size="12pt" weight="semibold" color="labelSecondary">
+                {showHiddenSmallBalances
+                  ? i18n.t('tokens_tab.small_balances_show_less')
+                  : i18n.t('tokens_tab.small_balances_show_more')}
+              </Text>
+            </Inline>
+          </Button>
+        </Box>
+      )}
+      <AnimatePresence initial={false}>
+        {shouldShowSmallBalanceToggle && showHiddenSmallBalances && (
+          <motion.div
+            key="hidden-small-balances"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            style={{ overflow: 'hidden', width: '100%' }}
+          >
+            <Box width="full" paddingBottom="16px">
+              <Box
+                ref={hiddenContainerRef}
+                style={{
+                  maxHeight: '400px',
+                  overflow: 'auto',
+                  position: 'relative',
+                }}
+              >
+                <Box
+                  style={{
+                    height: `${hiddenAssetsRowVirtualizer.getTotalSize()}px`,
+                    position: 'relative',
+                  }}
+                >
+                  {hiddenAssetsRowVirtualizer
+                    .getVirtualItems()
+                    .map((virtualItem) => {
+                      const { key, size, start, index } = virtualItem;
+                      const token = orderedHiddenSmallAssets[index];
+                      if (!token) return null;
+                      const pinned =
+                        !!pinnedStore[currentAddress]?.[token.uniqueId]?.pinned;
+                      return (
+                        <Box
+                          key={`hidden-small-${token.uniqueId}-${key}`}
+                          layoutId={`hidden-token-list-${index}`}
+                          as={motion.div}
+                          position="absolute"
+                          width="full"
+                          style={{
+                            height: size,
+                            y: start,
+                          }}
+                        >
+                          {pinned && <TokenMarkedHighlighter />}
+                          <TokenRow
+                            token={token}
+                            testId={`hidden-small-coin-row-item-${index}`}
+                          />
+                        </Box>
+                      );
+                    })}
+                </Box>
+              </Box>
+            </Box>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </Box>
   );
 }
