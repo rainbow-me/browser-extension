@@ -141,7 +141,7 @@
       "analytics_description": "Bantu Rainbow meningkatkan produk dan layanannya dengan mengizinkan analisis data penggunaan. Data yang dikumpulkan tidak terkait dengan Anda atau akun Anda",
       "hide_asset_balances": "Sembunyikan saldo aset",
       "hide_asset_balances_description": "Dengan ini diaktifkan, Rainbow akan menyamarkan saldo token di aplikasi",
-      "auto_hide_balances_under_1": "Sembunyikan saldo di bawah $1 secara otomatis",
+      "auto_hide_small_balances": "Auto-hide small balances",
       "view_private_key": "Lihat Kunci Pribadi",
       "view_secret_recovery_phrase": "Lihat Frasa Pemulihan Rahasia",
       "auto_lock_timer": {
@@ -1354,7 +1354,9 @@
     "send_description_1": "Tekan",
     "send_description_2": "untuk menyalin alamat Anda atau",
     "send_description_3": "untuk kode QR",
-    "unknown_token": "Token Tidak Dikenal"
+    "unknown_token": "Token Tidak Dikenal",
+    "small_balances_show_more": "Show more",
+    "small_balances_show_less": "Show less"
   },
   "nfts": {
     "empty_state_header": "NFTs",
@@ -1560,6 +1562,9 @@
     "send": "Kirim",
     "balance": "Saldo",
     "value": "Nilai",
+    "low_liquidity_value_lower_prefix": "Value is lower than",
+    "low_liquidity_value_higher_prefix": "Value is higher than",
+    "low_liquidity_value_suffix": "due to low liquidity",
     "hour": "1J",
     "day": "1H",
     "week": "1M",
