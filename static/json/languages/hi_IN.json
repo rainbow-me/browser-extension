@@ -141,7 +141,7 @@
       "analytics_description": "तुक्तीय् डेटा और अनुप्रयोग उपयोग के विश्लेषण की अनुमति देकर रेनबो अपने उत्पादों और सेवाओं में सुधार करें. इकट्ठा किया गया डेटा आपके या आपके खाते से संबंधित नहीं होता है.",
       "hide_asset_balances": "संपत्ति मान को छिपाएँ",
       "hide_asset_balances_description": "इसके साथ जब रेनबो टोकन संतुलन को गुमा देगा |",
-      "auto_hide_small_balances": "Auto-hide small balances",
+      "auto_hide_small_balances": "छोटे शेष राशियों को छुपाएं",
       "view_private_key": "निजी कुंजी देखें",
       "view_secret_recovery_phrase": "गुप्त पुनर्प्राप्ति मंत्र देखें",
       "auto_lock_timer": {
@@ -1355,8 +1355,8 @@
     "send_description_2": "अपना पता कॉपी करने के लिए या",
     "send_description_3": "QR कोड के लिए",
     "unknown_token": "अज्ञात टोकन",
-    "small_balances_show_more": "Show more",
-    "small_balances_show_less": "Show less"
+    "small_balances_show_more": "और दिखाएं",
+    "small_balances_show_less": "कम दिखाएं"
   },
   "nfts": {
     "empty_state_header": "NFTs",
@@ -1562,9 +1562,9 @@
     "send": "भेजें",
     "balance": "शेष",
     "value": "मूल्य",
-    "low_liquidity_value_lower_prefix": "Value is lower than",
-    "low_liquidity_value_higher_prefix": "Value is higher than",
-    "low_liquidity_value_suffix": "due to low liquidity",
+    "low_liquidity_value_lower_prefix": "मूल्य इससे कम है",
+    "low_liquidity_value_higher_prefix": "मूल्य इससे अधिक है",
+    "low_liquidity_value_suffix": "कम तरलता के कारण",
     "hour": "1घ",
     "day": "1दिन",
     "week": "1सप्ताह",
