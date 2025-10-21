@@ -28,6 +28,10 @@ import {
 import { usePinnedAssetStore } from '~/core/state/pinnedAssets';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { truncateAddress } from '~/core/utils/address';
+import {
+  compareCappedAmountToCalculatedValue,
+  getCappedAmount,
+} from '~/core/utils/assets';
 import { isCustomChain } from '~/core/utils/chains';
 import {
   Box,
@@ -190,8 +194,7 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
 
       return uniqBy(filteredAssets, 'uniqueId').sort(
         (a: ParsedUserAsset, b: ParsedUserAsset) =>
-          parseFloat(b?.native?.balance?.amount) -
-          parseFloat(a?.native?.balance?.amount),
+          getCappedAmount(b) - getCappedAmount(a),
       );
     },
     [isPinned],
@@ -345,6 +348,19 @@ export const AssetRow = memo(function AssetRow({
   const priceChangeDisplay = priceChange?.length ? priceChange : '-';
   const priceChangeColor =
     priceChangeDisplay[0] !== '-' ? 'green' : 'labelTertiary';
+  const { shouldApproximate } = useMemo(
+    () =>
+      compareCappedAmountToCalculatedValue({
+        cappedAmount: asset.balance.capped?.amount,
+        calculatedAmount: asset.native.balance.amount,
+      }),
+    [asset.native.balance.amount, asset.balance.capped?.amount],
+  );
+  const platformDisplay =
+    asset.balance.capped?.display ?? asset.native.balance.display;
+  const displayWithApproximation = shouldApproximate
+    ? `~${platformDisplay}`
+    : platformDisplay;
 
   const balanceDisplay = useMemo(
     () =>
@@ -374,17 +390,19 @@ export const AssetRow = memo(function AssetRow({
           <Asterisks color="label" size={10} />
         </Inline>
       ) : isCustomChain(asset.chainId) &&
-        asset?.native?.balance?.amount === '0' ? null : (
+        (asset.balance.capped?.amount ?? asset.native.balance.amount) ===
+          '0' ? null : (
         <Text size="14pt" weight="semibold" align="right">
-          {asset?.native?.balance?.display}
+          {displayWithApproximation}
         </Text>
       ),
     [
       hideAssetBalances,
       currentCurrency,
       asset.chainId,
-      asset?.native?.balance?.amount,
-      asset?.native?.balance?.display,
+      asset.balance.capped?.amount,
+      asset.native.balance.amount,
+      displayWithApproximation,
     ],
   );
 

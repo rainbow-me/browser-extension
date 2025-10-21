@@ -52,6 +52,7 @@ export async function parseUserAssets({
   assets: {
     quantity: string;
     small_balance?: boolean;
+    value?: string;
     asset: AssetApiResponse;
   }[];
   chainIds: ChainId[];
@@ -61,12 +62,13 @@ export async function parseUserAssets({
     (dict, currentChainId) => ({ ...dict, [currentChainId]: {} }),
     {},
   ) as ParsedAssetsDictByChain;
-  for (const { asset, quantity, small_balance } of assets) {
+  for (const { asset, quantity, small_balance, value } of assets) {
     if (greaterThan(quantity, 0)) {
       const parsedAsset = parseUserAsset({
         asset,
         currency,
         balance: quantity,
+        cappedValue: value,
         smallBalance: small_balance,
       });
       parsedAssetsDict[parsedAsset?.chainId][parsedAsset.uniqueId] =
