@@ -8,12 +8,23 @@ export interface HideSmallBalancesState {
 export const useHideSmallBalancesStore =
   createRainbowStore<HideSmallBalancesState>(
     (set) => ({
-      hideSmallBalances: false,
+      hideSmallBalances: true,
       setHideSmallBalances: (newHideSmallBalances) =>
         set({ hideSmallBalances: newHideSmallBalances }),
     }),
     {
       storageKey: 'hideSmallBalances',
-      version: 0,
+      version: 1,
+      migrate(persistedState, version) {
+        if (!persistedState || version === 0) {
+          // The default value gets persisted too
+          return {
+            // that's why we need to set the new default value here; This will overwrite user preferences, which is okay in this specific case
+            hideSmallBalances: true,
+          };
+        }
+
+        return persistedState;
+      },
     },
   );
