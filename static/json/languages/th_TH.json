@@ -141,7 +141,7 @@
       "analytics_description": "ช่วยปรับปรุงผลิตภัณฑ์และบริการของ Rainbow ด้วยการวิเคราะห์ข้อมูลการใช้งาน ข้อมูลที่รวบรวมไม่เกี่ยวข้องกับคุณหรือบัญชีของคุณ",
       "hide_asset_balances": "ซ่อนยอดเงินในสินทรัพย์",
       "hide_asset_balances_description": "สวิตช์นี้เปิด Rainbow จะทำการปกปิดยอดเงินที่ปรากฏในแอปทั่วๆ",
-      "auto_hide_small_balances": "Auto-hide small balances",
+      "auto_hide_small_balances": "ซ่อนยอดเงินเล็กอัตโนมัติ",
       "view_private_key": "ดูคีย์ส่วนตัว",
       "view_secret_recovery_phrase": "ดูวลีลับสำหรับการกู้คืน",
       "auto_lock_timer": {
@@ -1355,8 +1355,8 @@
     "send_description_2": "เพื่อคัดลอกที่อยู่ของคุณหรือ",
     "send_description_3": "สำหรับรหัส QR",
     "unknown_token": "Token ไม่ทราบ",
-    "small_balances_show_more": "Show more",
-    "small_balances_show_less": "Show less"
+    "small_balances_show_more": "แสดงเพิ่มเติม",
+    "small_balances_show_less": "แสดงน้อยลง"
   },
   "nfts": {
     "empty_state_header": "NFTs",
@@ -1562,9 +1562,9 @@
     "send": "ส่ง",
     "balance": "ยอดคงเหลือ",
     "value": "ค่า",
-    "low_liquidity_value_lower_prefix": "Value is lower than",
-    "low_liquidity_value_higher_prefix": "Value is higher than",
-    "low_liquidity_value_suffix": "due to low liquidity",
+    "low_liquidity_value_lower_prefix": "มูลค่าต่ำกว่า",
+    "low_liquidity_value_higher_prefix": "มูลค่าสูงกว่า",
+    "low_liquidity_value_suffix": "เนื่องจากสภาพคล่องต่ำ",
     "hour": "1 ชั่วโมง",
     "day": "1วัน",
     "week": "1สัปดาห์",
