@@ -141,7 +141,7 @@
       "analytics_description": "通过允许使用情况数据的分析来帮助 Rainbow 改进其产品和服务。收集的数据不会与您或您的账户关联。",
       "hide_asset_balances": "隐藏资产余额",
       "hide_asset_balances_description": "启用此功能后，Rainbow 将在整个应用中对代币余额进行模糊化处理。",
-      "auto_hide_small_balances": "Auto-hide small balances",
+      "auto_hide_small_balances": "自动隐藏小额余额",
       "view_private_key": "查看私钥",
       "view_secret_recovery_phrase": "查看秘密恢复短语",
       "auto_lock_timer": {
@@ -1355,8 +1355,8 @@
     "send_description_2": "复制你的地址或",
     "send_description_3": "查看QR码",
     "unknown_token": "未知代币",
-    "small_balances_show_more": "Show more",
-    "small_balances_show_less": "Show less"
+    "small_balances_show_more": "显示更多",
+    "small_balances_show_less": "显示更少"
   },
   "nfts": {
     "empty_state_header": "NFTs",
@@ -1562,9 +1562,9 @@
     "send": "发送",
     "balance": "余额",
     "value": "价值",
-    "low_liquidity_value_lower_prefix": "Value is lower than",
-    "low_liquidity_value_higher_prefix": "Value is higher than",
-    "low_liquidity_value_suffix": "due to low liquidity",
+    "low_liquidity_value_lower_prefix": "价值低于",
+    "low_liquidity_value_higher_prefix": "价值高于",
+    "low_liquidity_value_suffix": "由于流动性低",
     "hour": "1小时",
     "day": "1天",
     "week": "1周",
