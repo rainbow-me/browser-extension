@@ -141,7 +141,7 @@
       "analytics_description": "ساعد Rainbow في تحسين منتجاتها وخدماتها من خلال السماح بتحليلات بيانات الاستخدام. البيانات التي تم جمعها لا يتم ربطها بك أو بحسابك.",
       "hide_asset_balances": "إخفاء رصيد الأصول",
       "hide_asset_balances_description": "عند تشغيل هذا، سيقوم Rainbow بتعتيم أرصدة الرموز في التطبيق.",
-      "auto_hide_balances_under_1": "إخفاء التوازنات التلقائي تحت 1 دولار",
+      "auto_hide_small_balances": "إخفاء تلقائي للأرصدة الصغيرة",
       "view_private_key": "عرض المفتاح الخاص",
       "view_secret_recovery_phrase": "عرض عبارة استعادة السر",
       "auto_lock_timer": {
@@ -1354,7 +1354,9 @@
     "send_description_1": "اضغط",
     "send_description_2": "لنسخ عنوانك أو",
     "send_description_3": "لرمز الاستجابة السريعة",
-    "unknown_token": "رمز غير معروف"
+    "unknown_token": "رمز غير معروف",
+    "small_balances_show_more": "أظهر المزيد",
+    "small_balances_show_less": "أظهر أقل"
   },
   "nfts": {
     "empty_state_header": "NFTs",
@@ -1560,6 +1562,9 @@
     "send": "أرسل",
     "balance": "الرصيد",
     "value": "القيمة",
+    "low_liquidity_value_lower_prefix": "القيمة أقل من",
+    "low_liquidity_value_higher_prefix": "القيمة أعلى من",
+    "low_liquidity_value_suffix": "بسبب السيولة المنخفضة",
     "hour": "1 ساعة",
     "day": "1ي",
     "week": "1أ",
