@@ -141,7 +141,7 @@
       "analytics_description": "使用データの解析により、Rainbowの製品とサービスを改善するのに役立てます。収集されたデータは、あなたやアカウントと関連付けられません。",
       "hide_asset_balances": "資産の残高を非表示にする",
       "hide_asset_balances_description": "この機能をオンにすると、Rainbowはアプリ全体でトークンの残高を曖昧化します。",
-      "auto_hide_small_balances": "Auto-hide small balances",
+      "auto_hide_small_balances": "小額残高を自動的に非表示",
       "view_private_key": "秘密鍵を表示する",
       "view_secret_recovery_phrase": "秘密の回復フレーズを表示する",
       "auto_lock_timer": {
@@ -1355,8 +1355,8 @@
     "send_description_2": "アドレスをコピーするか",
     "send_description_3": "QRコードのために",
     "unknown_token": "不明なトークン",
-    "small_balances_show_more": "Show more",
-    "small_balances_show_less": "Show less"
+    "small_balances_show_more": "さらに表示",
+    "small_balances_show_less": "表示を短縮"
   },
   "nfts": {
     "empty_state_header": "NFTs",
@@ -1562,9 +1562,9 @@
     "send": "送信",
     "balance": "残高",
     "value": "価値",
-    "low_liquidity_value_lower_prefix": "Value is lower than",
-    "low_liquidity_value_higher_prefix": "Value is higher than",
-    "low_liquidity_value_suffix": "due to low liquidity",
+    "low_liquidity_value_lower_prefix": "''より低い価値",
+    "low_liquidity_value_higher_prefix": "''より高い価値",
+    "low_liquidity_value_suffix": "低流動性のため",
     "hour": "1時間",
     "day": "1日",
     "week": "1週間",
