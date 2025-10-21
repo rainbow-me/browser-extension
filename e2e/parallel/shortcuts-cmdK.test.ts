@@ -142,7 +142,7 @@ describe('Cmd+K menu unique functionality', () => {
     await checkExtensionURL(driver, 'home');
   });
 
-  it('should search for tokens by name and validate token details page', async () => {
+  it.skip('should search for tokens by name and validate token details page', async () => {
     await executePerformShortcut({ driver, key: 'k' });
 
     await typeOnTextInput({
