@@ -388,7 +388,7 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
         overflow: overflow,
       }}
       ref={containerRef}
-      paddingBottom="8px"
+      paddingBottom="80px"
     >
       <QuickPromo
         text={i18n.t('command_k.quick_promo.text', { modifierSymbol })}
@@ -486,51 +486,43 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
             transition={{ duration: 0.2 }}
             style={{ overflow: 'hidden', width: '100%' }}
           >
-            <Box width="full" paddingBottom="16px">
-              <Box
-                ref={hiddenContainerRef}
-                style={{
-                  maxHeight: '400px',
-                  overflow: 'auto',
-                  position: 'relative',
-                }}
-              >
-                <Box
-                  style={{
-                    height: `${hiddenAssetsRowVirtualizer.getTotalSize()}px`,
-                    position: 'relative',
-                  }}
-                >
-                  {hiddenAssetsRowVirtualizer
-                    .getVirtualItems()
-                    .map((virtualItem) => {
-                      const { key, size, start, index } = virtualItem;
-                      const token = orderedHiddenSmallAssets[index];
-                      if (!token) return null;
-                      const pinned =
-                        !!pinnedStore[currentAddress]?.[token.uniqueId]?.pinned;
-                      return (
-                        <Box
-                          key={`hidden-small-${token.uniqueId}-${key}`}
-                          layoutId={`hidden-token-list-${index}`}
-                          as={motion.div}
-                          position="absolute"
-                          width="full"
-                          style={{
-                            height: size,
-                            y: start,
-                          }}
-                        >
-                          {pinned && <TokenMarkedHighlighter />}
-                          <TokenRow
-                            token={token}
-                            testId={`hidden-small-coin-row-item-${index}`}
-                          />
-                        </Box>
-                      );
-                    })}
-                </Box>
-              </Box>
+            <Box
+              ref={hiddenContainerRef}
+              width="full"
+              paddingBottom="16px"
+              style={{
+                height: `${hiddenAssetsRowVirtualizer.getTotalSize()}px`,
+                position: 'relative',
+              }}
+            >
+              {hiddenAssetsRowVirtualizer
+                .getVirtualItems()
+                .map((virtualItem) => {
+                  const { key, size, start, index } = virtualItem;
+                  const token = orderedHiddenSmallAssets[index];
+                  if (!token) return null;
+                  const pinned =
+                    !!pinnedStore[currentAddress]?.[token.uniqueId]?.pinned;
+                  return (
+                    <Box
+                      key={`hidden-small-${token.uniqueId}-${key}`}
+                      layoutId={`hidden-token-list-${index}`}
+                      as={motion.div}
+                      position="absolute"
+                      width="full"
+                      style={{
+                        height: size,
+                        y: start,
+                      }}
+                    >
+                      {pinned && <TokenMarkedHighlighter />}
+                      <TokenRow
+                        token={token}
+                        testId={`hidden-small-coin-row-item-${index}`}
+                      />
+                    </Box>
+                  );
+                })}
             </Box>
           </motion.div>
         )}
