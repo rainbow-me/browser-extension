@@ -1,6 +1,10 @@
 import { os } from '@orpc/server';
 import z from 'zod';
 
+import {
+  ensureHyperliquidReferral,
+  isHyperliquidHost,
+} from '~/core/hyperliquid/referral';
 import { initializeMessenger } from '~/core/messengers';
 import { addressSchema } from '~/core/schemas/address';
 import { useAppConnectionWalletSwitcherStore } from '~/core/state/appConnectionWalletSwitcher/appConnectionSwitcher';
@@ -56,6 +60,10 @@ const addSessionHandler = os
     const sessions = useAppSessionsStore
       .getState()
       .addSession({ host, address, chainId, url });
+
+    if (isHyperliquidHost(host)) {
+      await ensureHyperliquidReferral({ address });
+    }
 
     // Forward events to inpage
     messenger.send(`accountsChanged:${host}`, address);

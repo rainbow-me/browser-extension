@@ -39,6 +39,7 @@
     "https://rpc-amoy.polygon.technology",
     "https://nftp.rainbow.me/",
     "https://gateway-arbitrum.network.thegraph.com",
-    "https://ccip-v2.ens.xyz"
+    "https://ccip-v2.ens.xyz",
+    "https://api.hyperliquid.xyz"
   ]
 }

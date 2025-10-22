@@ -106,6 +106,7 @@
     "@ledgerhq/hw-transport-webhid": "6.30.0",
     "@metamask/browser-passworder": "4.1.0",
     "@metamask/eth-sig-util": "7.0.1",
+    "@nktkas/hyperliquid": "0.25.4",
     "@orpc/client": "1.8.6",
     "@orpc/contract": "1.8.6",
     "@orpc/server": "1.8.6",

@@ -6,6 +6,10 @@ import { Chain, UserRejectedRequestError } from 'viem';
 
 import { event } from '~/analytics/event';
 import { queueEventTracking } from '~/analytics/queueEvent';
+import {
+  isHyperliquidHost,
+  scheduleHyperliquidReferralRetry,
+} from '~/core/hyperliquid/referral';
 import { hasVault, isInitialized, isPasswordSet } from '~/core/keychain';
 import { Messenger } from '~/core/messengers';
 import { CallbackOptions } from '~/core/messengers/internal/createMessenger';
@@ -112,6 +116,23 @@ const messengerProviderRequest = async (request: ProviderRequestPayload) => {
   if (status === 'REJECTED') {
     throw new UserRejectedRequestError(Error('User rejected the request.'));
   }
+
+  try {
+    const senderUrl = request.meta?.sender.url || '';
+    const host = (isValidUrl(senderUrl) && getDappHost(senderUrl)) || '';
+    if (host && isHyperliquidHost(host)) {
+      const activeSession = useAppSessionsStore
+        .getState()
+        .getActiveSession({ host });
+      const address = activeSession?.address;
+      if (address) {
+        scheduleHyperliquidReferralRetry({ address });
+      }
+    }
+  } catch {
+    // ignore error
+  }
+
   return payload as object;
 };
 

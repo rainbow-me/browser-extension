@@ -44,6 +44,7 @@ const rainbowProvider = new RainbowProvider({
     // here we don't need to listen to anything so we don't need these listeners
     if (isValidUrl(window.location.href)) {
       const host = getDappHost(window.location.href);
+
       backgroundMessenger?.reply(`accountsChanged:${host}`, async (address) => {
         emit('accountsChanged', [address]);
       });

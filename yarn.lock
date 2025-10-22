@@ -4259,6 +4259,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@msgpack/msgpack@npm:^3.1.2":
+  version: 3.1.2
+  resolution: "@msgpack/msgpack@npm:3.1.2"
+  checksum: 10c0/4fee6dbea70a485d3a787ac76dd43687f489d662f22919237db1f2abbc3c88070c1d3ad78417ce6e764bcd041051680284654021f52068e0aff82d570cb942d5
+  languageName: node
+  linkType: hard
+
 "@mswjs/interceptors@npm:^0.39.1":
   version: 0.39.6
   resolution: "@mswjs/interceptors@npm:0.39.6"
@@ -4270,6 +4277,21 @@ __metadata:
     outvariant: "npm:^1.4.3"
     strict-event-emitter: "npm:^0.5.1"
   checksum: 10c0/66f593d4e19da0ada76c6fd89c2bd078f10880f7ec83ba22db3ee3a1aca3998c281011d7e5f1dd5a4bf3ca2eae92e45ce646ec9b85863e9d64b2f8c9d5da6500
+  languageName: node
+  linkType: hard
+
+"@nktkas/hyperliquid@npm:0.25.4":
+  version: 0.25.4
+  resolution: "@nktkas/hyperliquid@npm:0.25.4"
+  dependencies:
+    "@msgpack/msgpack": "npm:^3.1.2"
+    "@noble/hashes": "npm:^2.0.0"
+    "@noble/secp256k1": "npm:^3.0.0"
+    typescript-event-target: "npm:1.1.1"
+    valibot: "npm:1.1.0"
+  bin:
+    hyperliquid: esm/bin/cli.js
+  checksum: 10c0/faddf1e01166f431dd188667df7f83ab60ca5f43a0affea97590784c24b7f59a06ff4823bd62251adde1abea222f9ba3cb7fab9005a322097340174d96fabab5
   languageName: node
   linkType: hard
 
@@ -4451,6 +4473,20 @@ __metadata:
   version: 1.6.1
   resolution: "@noble/hashes@npm:1.6.1"
   checksum: 10c0/27643cd8b551bc933b57cc29aa8c8763d586552fc4c3e06ecf7897f55be3463c0c9dff7f6ebacd88e5ce6d0cdb5415ca4874d0cf4359b5ea4a85be21ada03aab
+  languageName: node
+  linkType: hard
+
+"@noble/hashes@npm:^2.0.0":
+  version: 2.0.1
+  resolution: "@noble/hashes@npm:2.0.1"
+  checksum: 10c0/e81769ce21c3b1c80141a3b99bd001f17edea09879aa936692ae39525477386d696101cd573928a304806efb2b9fa751e1dd83241c67d0c84d30091e85c79bdb
+  languageName: node
+  linkType: hard
+
+"@noble/secp256k1@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@noble/secp256k1@npm:3.0.0"
+  checksum: 10c0/bf844b9c1d4bd69f24d677eec5e0d2eb93506e6b1c32f30fd62690b539618e2d18d98297a66cde224196f4c73d4395f437eade496f241f867907f3db8cc7a2ee
   languageName: node
   linkType: hard
 
@@ -10490,6 +10526,7 @@ __metadata:
     "@ledgerhq/hw-transport-webhid": "npm:6.30.0"
     "@metamask/browser-passworder": "npm:4.1.0"
     "@metamask/eth-sig-util": "npm:7.0.1"
+    "@nktkas/hyperliquid": "npm:0.25.4"
     "@orpc/client": "npm:1.8.6"
     "@orpc/contract": "npm:1.8.6"
     "@orpc/server": "npm:1.8.6"
@@ -24718,6 +24755,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typescript-event-target@npm:1.1.1":
+  version: 1.1.1
+  resolution: "typescript-event-target@npm:1.1.1"
+  checksum: 10c0/022a8b4389056a84c1c33ec35eb18826db20aed826990b3381bf09e3d4c03f5717d0adeb4154dff4fb3340d4a439b05a850271caf538204e18891b1586bb7f4f
+  languageName: node
+  linkType: hard
+
 "typescript@npm:5.8.2":
   version: 5.8.2
   resolution: "typescript@npm:5.8.2"
@@ -25328,6 +25372,18 @@ __metadata:
     "@types/istanbul-lib-coverage": "npm:^2.0.1"
     convert-source-map: "npm:^1.6.0"
   checksum: 10c0/aaa6491ee0505010a818a98bd7abdb30c0136a93eac12106b836e1afb519759ea4da795cceaf7fe871d26ed6cb669e46fd48533d6f8107a23213d723a028f805
+  languageName: node
+  linkType: hard
+
+"valibot@npm:1.1.0":
+  version: 1.1.0
+  resolution: "valibot@npm:1.1.0"
+  peerDependencies:
+    typescript: ">=5"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10c0/39580b4e4683cc44398fb775e88c03639dbaa7e6f587df416125916cb6307292d45df18f656054e8846093ced13a2d2fdc98659da6dd104d1d20180edcbd99d4
   languageName: node
   linkType: hard
 
