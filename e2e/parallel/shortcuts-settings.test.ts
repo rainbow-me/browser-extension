@@ -199,14 +199,14 @@ describe.runIf(browser !== 'firefox')(
         'hide-small-balances-toggle',
         driver,
       );
-      expect(defaultToggleStatus).toBe('true');
+      expect(defaultToggleStatus).toBe('false');
       await executePerformShortcut({ driver, key: 'TAB', timesToPress: 4 });
       await executePerformShortcut({ driver, key: 'ENTER' });
       const changedToggleStatus = await toggleStatus(
         'hide-small-balances-toggle',
         driver,
       );
-      expect(changedToggleStatus).toBe('false');
+      expect(changedToggleStatus).toBe('true');
     });
 
     it('should be able to change password using only the keyboard', async () => {

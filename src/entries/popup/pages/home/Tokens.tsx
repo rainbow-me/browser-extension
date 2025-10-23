@@ -1,11 +1,6 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
-import {
-  AnimatePresence,
-  MotionValue,
-  motion,
-  useTransform,
-} from 'framer-motion';
-import uniqBy from 'lodash/uniqBy';
+import { MotionValue, motion, useTransform } from 'framer-motion';
+import partition from 'lodash/partition';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Address } from 'viem';
 
@@ -37,7 +32,6 @@ import {
 import { isCustomChain } from '~/core/utils/chains';
 import {
   Box,
-  Button,
   Column,
   Columns,
   Inline,
@@ -64,12 +58,6 @@ import { ROUTES } from '../../urls';
 import { TokensSkeleton } from './Skeletons';
 import { TokenContextMenu } from './TokenDetails/TokenContextMenu';
 import { TokenMarkedHighlighter } from './TokenMarkedHighlighter';
-
-type AssetsSelection = {
-  visible: ParsedUserAsset[];
-  hidden: ParsedUserAsset[];
-  all: ParsedUserAsset[];
-};
 
 const TokenRow = memo(function TokenRow({
   token,
@@ -133,68 +121,39 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
     [currentAddress, hidden],
   );
 
-  const buildAssetSelection = useCallback(
-    (data: ParsedAssetsDictByChain): AssetsSelection => {
-      const allAssets = selectorFilterByUserChains({
+  const selectAssetsList = useCallback(
+    (data: ParsedAssetsDictByChain): ParsedUserAsset[] =>
+      selectorFilterByUserChains({
         data,
         selector: selectUserAssetsList,
-      });
-
-      const smallBalanceAssets = allAssets.filter(
-        (asset) => asset.smallBalance,
-      );
-      const visibleAssets = hideSmallBalances
-        ? allAssets.filter((asset) => !asset.smallBalance)
-        : allAssets;
-
-      return {
-        all: allAssets,
-        visible: visibleAssets,
-        hidden: smallBalanceAssets,
-      };
-    },
-    [hideSmallBalances],
+      }),
+    [],
   );
 
   const {
     data: userAssetsData,
     isLoading: isUserAssetsLoading,
     refetch: refetchUserAssets,
-  } = useUserAssets<AssetsSelection>(
+  } = useUserAssets<ParsedUserAsset[]>(
     {
       address: currentAddress,
       currency,
     },
     {
-      select: buildAssetSelection,
+      select: selectAssetsList,
     },
   );
 
   const { data: customNetworkAssetsData, refetch: refetchCustomNetworkAssets } =
-    useCustomNetworkAssets<AssetsSelection>(
+    useCustomNetworkAssets<ParsedUserAsset[]>(
       {
         address: currentAddress,
         currency,
       },
       {
-        select: buildAssetSelection,
+        select: selectAssetsList,
       },
     );
-
-  const [
-    userVisibleAssets,
-    userHiddenSmallAssets,
-    customVisibleAssets,
-    customHiddenSmallAssets,
-  ] = useMemo(
-    () => [
-      userAssetsData?.visible ?? [],
-      userAssetsData?.hidden ?? [],
-      customNetworkAssetsData?.visible ?? [],
-      customNetworkAssetsData?.hidden ?? [],
-    ],
-    [userAssetsData, customNetworkAssetsData],
-  );
 
   const isPinned = useCallback(
     (assetUniqueId: string) =>
@@ -202,117 +161,77 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
     [currentAddress, pinnedStore],
   );
 
-  const combinedVisibleAssets = useMemo(
-    () =>
-      Array.from(
-        new Map(
-          [...customVisibleAssets, ...userVisibleAssets].map((item) => [
-            item.uniqueId,
-            item,
-          ]),
-        ).values(),
-      ),
-    [customVisibleAssets, userVisibleAssets],
-  );
+  const orderedAssets = useMemo<ParsedUserAsset[]>(() => {
+    const userAssets = userAssetsData ?? [];
+    const customAssets = customNetworkAssetsData ?? [];
 
-  const combinedHiddenSmallAssets = useMemo(
-    () =>
-      Array.from(
-        new Map(
-          [...customHiddenSmallAssets, ...userHiddenSmallAssets].map((item) => [
-            item.uniqueId,
-            item,
-          ]),
-        ).values(),
-      ),
-    [customHiddenSmallAssets, userHiddenSmallAssets],
-  );
+    const combinedAssets = Array.from(
+      new Map(
+        [...customAssets, ...userAssets].map((asset) => [
+          asset.uniqueId,
+          asset,
+        ]),
+      ).values(),
+    ).filter((asset) => !isHidden(asset));
 
-  const visibleAssetsUnhidden = useMemo(
-    () => combinedVisibleAssets.filter((asset) => !isHidden(asset)),
-    [combinedVisibleAssets, isHidden],
-  );
-
-  const hiddenSmallAssetsUnhidden = useMemo(
-    () => combinedHiddenSmallAssets.filter((asset) => !isHidden(asset)),
-    [combinedHiddenSmallAssets, isHidden],
-  );
-
-  const computeUniqueAssets = useCallback(
-    (assets: ParsedUserAsset[]) => {
-      const filteredAssets = assets.filter(
-        ({ uniqueId }) => !isPinned(uniqueId),
-      );
-
-      return uniqBy(filteredAssets, 'uniqueId').sort(
-        (a: ParsedUserAsset, b: ParsedUserAsset) =>
-          getCappedAmount(b) - getCappedAmount(a),
-      );
-    },
-    [isPinned],
-  );
-
-  const computePinnedAssets = useCallback(
-    (assets: ParsedUserAsset[]) => {
-      const filteredAssets = assets.filter((asset) => isPinned(asset.uniqueId));
-
-      const sortedAssets = filteredAssets.sort((a, b) => {
-        const pinnedFirstAsset = pinnedStore[currentAddress]?.[a.uniqueId];
-        const pinnedSecondAsset = pinnedStore[currentAddress]?.[b.uniqueId];
-
-        // This won't happen, but we'll just return to it's
-        // default sorted order just in case it will happen
-        if (!pinnedFirstAsset || !pinnedSecondAsset) return 0;
-
-        return pinnedFirstAsset.createdAt - pinnedSecondAsset.createdAt;
-      });
-
-      return sortedAssets;
-    },
-    [currentAddress, pinnedStore, isPinned],
-  );
-
-  const orderedVisibleAssets = useMemo(
-    () => [
-      ...computePinnedAssets(visibleAssetsUnhidden),
-      ...computeUniqueAssets(visibleAssetsUnhidden),
-    ],
-    [visibleAssetsUnhidden, computePinnedAssets, computeUniqueAssets],
-  );
-
-  const orderedHiddenSmallAssets = useMemo(
-    () => [
-      ...computePinnedAssets(hiddenSmallAssetsUnhidden),
-      ...computeUniqueAssets(hiddenSmallAssetsUnhidden),
-    ],
-    [hiddenSmallAssetsUnhidden, computePinnedAssets, computeUniqueAssets],
-  );
-
-  const shouldShowSmallBalanceToggle =
-    hideSmallBalances && orderedHiddenSmallAssets.length > 0;
-
-  const [showHiddenSmallBalances, setShowHiddenSmallBalances] = useState(false);
-
-  useEffect(() => {
-    if (!shouldShowSmallBalanceToggle) {
-      setShowHiddenSmallBalances(false);
+    if (combinedAssets.length === 0) {
+      return [];
     }
-  }, [shouldShowSmallBalanceToggle]);
 
-  const hasAnyAssets =
-    orderedVisibleAssets.length > 0 || orderedHiddenSmallAssets.length > 0;
+    const [pinnedAssets, nonPinnedAssets] = partition(combinedAssets, (asset) =>
+      isPinned(asset.uniqueId),
+    );
+    const sortedPinnedAssets = [...pinnedAssets].sort((a, b) => {
+      const pinnedFirstAsset = pinnedStore[currentAddress]?.[a.uniqueId];
+      const pinnedSecondAsset = pinnedStore[currentAddress]?.[b.uniqueId];
 
-  const paddingEnd = shouldShowSmallBalanceToggle ? 16 : 64;
+      if (!pinnedFirstAsset || !pinnedSecondAsset) return 0;
+
+      return pinnedFirstAsset.createdAt - pinnedSecondAsset.createdAt;
+    });
+
+    const [nonSmallBalanceAssets, smallBalanceAssets] = partition(
+      nonPinnedAssets,
+      (asset) => !asset.smallBalance,
+    );
+
+    const sortByBalanceDesc = (assets: ParsedUserAsset[]) =>
+      assets.slice().sort((a, b) => getCappedAmount(b) - getCappedAmount(a));
+
+    const sortedNonSmallBalances = sortByBalanceDesc(nonSmallBalanceAssets);
+    const sortedSmallBalances = sortByBalanceDesc(smallBalanceAssets);
+
+    const shouldIncludeSmallBalances =
+      !hideSmallBalances ||
+      (sortedPinnedAssets.length === 0 && sortedNonSmallBalances.length === 0);
+
+    return shouldIncludeSmallBalances
+      ? [
+          ...sortedPinnedAssets,
+          ...sortedNonSmallBalances,
+          ...sortedSmallBalances,
+        ]
+      : [...sortedPinnedAssets, ...sortedNonSmallBalances];
+  }, [
+    customNetworkAssetsData,
+    userAssetsData,
+    isHidden,
+    isPinned,
+    pinnedStore,
+    currentAddress,
+    hideSmallBalances,
+  ]);
+
+  // UI constants
+  const hasAnyAssets = orderedAssets.length > 0;
 
   const assetsRowVirtualizer = useVirtualizer({
-    count: orderedVisibleAssets.length,
+    count: orderedAssets.length,
     getScrollElement: () => containerRef.current,
     estimateSize: () => 52,
     overscan: 10,
-    paddingEnd,
     paddingStart: 8,
-    getItemKey: (index) =>
-      orderedVisibleAssets[index]?.uniqueId ?? `token-${index}`,
+    getItemKey: (index) => orderedAssets[index]?.uniqueId ?? `token-${index}`,
   });
 
   useKeyboardShortcut({
@@ -331,45 +250,14 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
   });
 
   useTokensShortcuts();
-  const samplingAssets = useMemo(
-    () =>
-      shouldShowSmallBalanceToggle && showHiddenSmallBalances
-        ? [...orderedVisibleAssets, ...orderedHiddenSmallAssets]
-        : orderedVisibleAssets,
-    [
-      orderedVisibleAssets,
-      orderedHiddenSmallAssets,
-      shouldShowSmallBalanceToggle,
-      showHiddenSmallBalances,
-    ],
-  );
-
-  const hiddenContainerRef = useRef<HTMLDivElement>(null);
-
-  const hiddenAssetsRowVirtualizer = useVirtualizer({
-    count: orderedHiddenSmallAssets.length,
-    getScrollElement: () => hiddenContainerRef.current,
-    estimateSize: () => 52,
-    overscan: 6,
-    paddingEnd: 16,
-    paddingStart: 8,
-    getItemKey: (index) =>
-      orderedHiddenSmallAssets[index]?.uniqueId ?? `hidden-token-${index}`,
-  });
+  const samplingAssets = useMemo(() => orderedAssets, [orderedAssets]);
 
   useTokenListSampling(samplingAssets, 'wallet');
 
   useEffect(() => {
     assetsRowVirtualizer?.measure();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orderedVisibleAssets.length]);
-
-  useEffect(() => {
-    if (showHiddenSmallBalances) {
-      hiddenAssetsRowVirtualizer?.measure();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showHiddenSmallBalances, orderedHiddenSmallAssets.length]);
+  }, [orderedAssets.length]);
 
   if (isUserAssetsLoading || manuallyRefetchingTokens) {
     return <TokensSkeleton />;
@@ -388,7 +276,7 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
         overflow: overflow,
       }}
       ref={containerRef}
-      paddingBottom="8px"
+      paddingBottom="80px"
     >
       <QuickPromo
         text={i18n.t('command_k.quick_promo.text', { modifierSymbol })}
@@ -413,7 +301,7 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
         <Box>
           {assetsRowVirtualizer.getVirtualItems().map((virtualItem) => {
             const { key, size, start, index } = virtualItem;
-            const token = orderedVisibleAssets[index];
+            const token = orderedAssets[index];
             if (!token) return null;
             const pinned =
               !!pinnedStore[currentAddress]?.[token.uniqueId]?.pinned;
@@ -437,104 +325,6 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
           })}
         </Box>
       </Box>
-      {shouldShowSmallBalanceToggle && (
-        <Box
-          width="full"
-          alignItems="center"
-          justifyContent="center"
-          display="flex"
-        >
-          <Button
-            color="surfaceSecondaryElevated"
-            height="32px"
-            variant="transparent"
-            width="fit"
-            onClick={() =>
-              setShowHiddenSmallBalances((prevState) => !prevState)
-            }
-            testId="show-small-balances-button"
-          >
-            <Inline alignVertical="center" space="6px">
-              <motion.div
-                animate={{ rotate: showHiddenSmallBalances ? -180 : 0 }}
-                transition={{ duration: 0.2 }}
-                style={{ display: 'flex' }}
-              >
-                <Symbol
-                  color="labelSecondary"
-                  size={12}
-                  symbol="chevron.down"
-                  weight="semibold"
-                />
-              </motion.div>
-              <Text size="12pt" weight="semibold" color="labelSecondary">
-                {showHiddenSmallBalances
-                  ? i18n.t('tokens_tab.small_balances_show_less')
-                  : i18n.t('tokens_tab.small_balances_show_more')}
-              </Text>
-            </Inline>
-          </Button>
-        </Box>
-      )}
-      <AnimatePresence initial={false}>
-        {shouldShowSmallBalanceToggle && showHiddenSmallBalances && (
-          <motion.div
-            key="hidden-small-balances"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            style={{ overflow: 'hidden', width: '100%' }}
-          >
-            <Box width="full" paddingBottom="16px">
-              <Box
-                ref={hiddenContainerRef}
-                style={{
-                  maxHeight: '400px',
-                  overflow: 'auto',
-                  position: 'relative',
-                }}
-              >
-                <Box
-                  style={{
-                    height: `${hiddenAssetsRowVirtualizer.getTotalSize()}px`,
-                    position: 'relative',
-                  }}
-                >
-                  {hiddenAssetsRowVirtualizer
-                    .getVirtualItems()
-                    .map((virtualItem) => {
-                      const { key, size, start, index } = virtualItem;
-                      const token = orderedHiddenSmallAssets[index];
-                      if (!token) return null;
-                      const pinned =
-                        !!pinnedStore[currentAddress]?.[token.uniqueId]?.pinned;
-                      return (
-                        <Box
-                          key={`hidden-small-${token.uniqueId}-${key}`}
-                          layoutId={`hidden-token-list-${index}`}
-                          as={motion.div}
-                          position="absolute"
-                          width="full"
-                          style={{
-                            height: size,
-                            y: start,
-                          }}
-                        >
-                          {pinned && <TokenMarkedHighlighter />}
-                          <TokenRow
-                            token={token}
-                            testId={`hidden-small-coin-row-item-${index}`}
-                          />
-                        </Box>
-                      );
-                    })}
-                </Box>
-              </Box>
-            </Box>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </Box>
   );
 }
