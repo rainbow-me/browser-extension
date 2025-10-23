@@ -231,6 +231,13 @@ export function parseUserAssetBalances({
         }
       : undefined;
 
+  // TODO: remove the next 5 lines after BE fixes their smallBalance issue
+  const isZeroCappedAmount =
+    platformValue !== undefined &&
+    !new BigNumber(platformValue).isNaN() &&
+    new BigNumber(platformValue).isZero();
+  const resolvedSmallBalance = smallBalance || isZeroCappedAmount;
+
   return {
     ...asset,
     balance: {
@@ -242,7 +249,8 @@ export function parseUserAssetBalances({
       ...asset.native,
       balance: calculatedNativeBalance,
     },
-    smallBalance,
+    // Temporary frontend patch until backend toggles zero balances as small.
+    smallBalance: resolvedSmallBalance,
   };
 }
 
