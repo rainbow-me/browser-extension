@@ -2092,7 +2092,7 @@
         "id": "999",
         "mainnetId": "999",
         "name": "hyper-evm",
-        "label": "Hyper Evm",
+        "label": "HyperEVM",
         "colors": {
           "light": "#072723",
           "dark": "#97FCE4"
@@ -2482,8 +2482,8 @@
         "name": "celo",
         "label": "Celo",
         "colors": {
-          "light": "",
-          "dark": ""
+          "light": "#A0A314",
+          "dark": "#FCFF52"
         },
         "icons": {
           "uncropped": {
@@ -2579,8 +2579,8 @@
         "name": "abstract",
         "label": "Abstract",
         "colors": {
-          "light": "",
-          "dark": ""
+          "light": "#32A154",
+          "dark": "#6BD88C"
         },
         "icons": {
           "uncropped": {
@@ -2676,8 +2676,8 @@
         "name": "soneium",
         "label": "Soneium",
         "colors": {
-          "light": "",
-          "dark": ""
+          "light": "#25292E",
+          "dark": "#FFFFFF"
         },
         "icons": {
           "uncropped": {
@@ -2773,8 +2773,8 @@
         "name": "b3",
         "label": "B3",
         "colors": {
-          "light": "",
-          "dark": ""
+          "light": "#007AFF",
+          "dark": "#3996FB"
         },
         "icons": {
           "uncropped": {
@@ -2870,8 +2870,8 @@
         "name": "mantle",
         "label": "Mantle",
         "colors": {
-          "light": "",
-          "dark": ""
+          "light": "#25292E",
+          "dark": "#FFFFFF"
         },
         "icons": {
           "uncropped": {
@@ -2967,8 +2967,8 @@
         "name": "worldchain",
         "label": "Worldchain",
         "colors": {
-          "light": "",
-          "dark": ""
+          "light": "#25292E",
+          "dark": "#FFFFFF"
         },
         "icons": {
           "uncropped": {
@@ -3064,8 +3064,8 @@
         "name": "swellchain",
         "label": "Swellchain",
         "colors": {
-          "light": "",
-          "dark": ""
+          "light": "#5A91F0",
+          "dark": "#82B0FF"
         },
         "icons": {
           "uncropped": {
@@ -3161,8 +3161,8 @@
         "name": "plasma",
         "label": "Plasma",
         "colors": {
-          "light": "",
-          "dark": ""
+          "light": "#162F29",
+          "dark": "#82C9B4"
         },
         "icons": {
           "uncropped": {
@@ -3258,8 +3258,8 @@
         "name": "bob",
         "label": "Bob",
         "colors": {
-          "light": "",
-          "dark": ""
+          "light": "#F25D00",
+          "dark": "#F9863E"
         },
         "icons": {
           "uncropped": {
@@ -3355,8 +3355,8 @@
         "name": "ronin",
         "label": "Ronin",
         "colors": {
-          "light": "",
-          "dark": ""
+          "light": "#004DE5",
+          "dark": "#5E90F3"
         },
         "icons": {
           "uncropped": {
@@ -3452,8 +3452,8 @@
         "name": "plume",
         "label": "Plume",
         "colors": {
-          "light": "",
-          "dark": ""
+          "light": "#FF3D00",
+          "dark": "#FC6C3F"
         },
         "icons": {
           "uncropped": {
