@@ -1,5 +1,5 @@
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 
 import {
   getExtensionIdByName,
@@ -7,6 +7,7 @@ import {
   goToTestApp,
   importWalletFlow,
   initDriverWithOptions,
+  takeScreenshotOnFailure,
 } from '../../helpers';
 import { TEST_VARIABLES } from '../../walletVariables';
 
@@ -48,6 +49,10 @@ describe('Dapp provider BFCache behavior', () => {
   });
 
   afterAll(() => driver?.quit());
+
+  afterEach<{ driver: WebDriver }>(async (context) => {
+    await takeScreenshotOnFailure(context);
+  });
 
   it('has working provider stream after BFCache restore', async () => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);

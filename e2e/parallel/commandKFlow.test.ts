@@ -1,6 +1,6 @@
 /* eslint-disable no-await-in-loop */
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 
 import { TokenNames, tokenAddresses, tokenNames } from 'e2e/tokenVariables';
 
@@ -16,6 +16,7 @@ import {
   importWalletFlow,
   initDriverWithOptions,
   performSearchTokenAddressActionsCmdK,
+  takeScreenshotOnFailure,
   typeOnTextInput,
   waitUntilElementByTestIdIsPresent,
 } from '../helpers';
@@ -38,6 +39,10 @@ describe('Command+K behaviours', () => {
     rootURL += extensionId;
   });
   afterAll(async () => driver?.quit());
+
+  afterEach<{ driver: WebDriver }>(async (context) => {
+    await takeScreenshotOnFailure(context);
+  });
 
   it('should be able import a wallet via seed', async () => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);
