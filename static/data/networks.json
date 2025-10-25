@@ -863,7 +863,7 @@
             "approvals": false,
             "transactions": true,
             "assets": true,
-            "positions": true
+            "positions": false
           },
           "tokenSearch": {
             "enabled": true
@@ -3144,7 +3144,7 @@
             "approvals": false,
             "transactions": false,
             "assets": true,
-            "positions": false
+            "positions": true
           },
           "tokenSearch": {
             "enabled": true
@@ -3338,7 +3338,7 @@
             "approvals": false,
             "transactions": false,
             "assets": true,
-            "positions": false
+            "positions": true
           },
           "tokenSearch": {
             "enabled": true
@@ -3435,7 +3435,7 @@
             "approvals": true,
             "transactions": true,
             "assets": true,
-            "positions": false
+            "positions": true
           },
           "tokenSearch": {
             "enabled": true
@@ -3532,7 +3532,7 @@
             "approvals": false,
             "transactions": false,
             "assets": true,
-            "positions": false
+            "positions": true
           },
           "tokenSearch": {
             "enabled": true
