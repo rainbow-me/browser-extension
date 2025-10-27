@@ -1,6 +1,6 @@
 /* eslint-disable no-await-in-loop */
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 
 import { TokenNames, tokenAddresses, tokenNames } from 'e2e/tokenVariables';
 
@@ -39,6 +39,10 @@ describe('Command+K behaviours', () => {
     rootURL += extensionId;
   });
   afterAll(async () => driver?.quit());
+
+  beforeEach<{ driver: WebDriver }>(async (context) => {
+    context.driver = driver;
+  });
 
   afterEach<{ driver: WebDriver }>(async (context) => {
     await takeScreenshotOnFailure(context);

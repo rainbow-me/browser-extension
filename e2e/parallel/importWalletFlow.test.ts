@@ -1,5 +1,5 @@
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, afterEach, beforeAll, describe, it } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, it } from 'vitest';
 
 import {
   checkExtensionURL,
@@ -32,6 +32,10 @@ describe('Import wallet with a secret phrase flow', () => {
     rootURL += extensionId;
   });
   afterAll(async () => driver?.quit());
+
+  beforeEach<{ driver: WebDriver }>(async (context) => {
+    context.driver = driver;
+  });
 
   afterEach<{ driver: WebDriver }>(async (context) => {
     await takeScreenshotOnFailure(context);

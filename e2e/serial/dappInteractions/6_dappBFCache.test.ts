@@ -1,5 +1,5 @@
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 
 import {
   getExtensionIdByName,
@@ -49,6 +49,10 @@ describe('Dapp provider BFCache behavior', () => {
   });
 
   afterAll(() => driver?.quit());
+
+  beforeEach<{ driver: WebDriver }>(async (context) => {
+    context.driver = driver;
+  });
 
   afterEach<{ driver: WebDriver }>(async (context) => {
     await takeScreenshotOnFailure(context);

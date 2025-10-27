@@ -1,5 +1,5 @@
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 
 import {
   delayTime,
@@ -42,6 +42,10 @@ describe('Watch wallet then add more and switch between them', () => {
   });
 
   afterAll(async () => driver?.quit());
+
+  beforeEach<{ driver: WebDriver }>(async (context) => {
+    context.driver = driver;
+  });
 
   afterEach<{ driver: WebDriver }>(async (context) => {
     await takeScreenshotOnFailure(context);

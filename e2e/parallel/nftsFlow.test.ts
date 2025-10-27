@@ -4,6 +4,7 @@ import {
   afterAll,
   afterEach,
   beforeAll,
+  beforeEach,
   describe,
   expect,
   it,
@@ -51,6 +52,10 @@ describe.runIf(remoteConfig.nfts_enabled)(
       rootURL += extensionId;
     });
     afterAll(async () => await driver?.quit());
+
+    beforeEach<{ driver: WebDriver }>(async (context) => {
+      context.driver = driver;
+    });
 
     afterEach<{ driver: WebDriver }>(async (context) => {
       await takeScreenshotOnFailure(context);

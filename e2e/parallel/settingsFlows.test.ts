@@ -1,6 +1,6 @@
 /* eslint-disable no-await-in-loop */
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 
 import {
   findElementByTestId,
@@ -35,6 +35,10 @@ describe('Navigate Settings & Privacy and its flows', () => {
     rootURL += extensionId;
   });
   afterAll(async () => await driver?.quit());
+
+  beforeEach<{ driver: WebDriver }>(async (context) => {
+    context.driver = driver;
+  });
 
   afterEach<{ driver: WebDriver }>(async (context) => {
     await takeScreenshotOnFailure(context);
