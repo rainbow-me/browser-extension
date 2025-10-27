@@ -1,5 +1,12 @@
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, afterEach, beforeAll, beforeEach, describe, it } from 'vitest';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  it,
+} from 'vitest';
 
 import {
   checkExtensionURL,

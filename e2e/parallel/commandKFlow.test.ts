@@ -1,6 +1,14 @@
 /* eslint-disable no-await-in-loop */
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+} from 'vitest';
 
 import { TokenNames, tokenAddresses, tokenNames } from 'e2e/tokenVariables';
 
