@@ -7,6 +7,7 @@ import {
   encryptWithKey,
   importKey,
 } from '@metamask/browser-passworder';
+import * as Sentry from '@sentry/react';
 import { Address } from 'viem';
 
 import { RainbowError, logger } from '~/logger';
@@ -29,6 +30,9 @@ import {
   ReadOnlyKeychain,
   SerializedReadOnlyKeychain,
 } from './keychainTypes/readOnlyKeychain';
+
+const INTERNAL_BUILD = process.env.INTERNAL_BUILD === 'true';
+const IS_TESTING = process.env.IS_TESTING === 'true';
 
 export type Keychain =
   | KeyPairKeychain
@@ -538,12 +542,38 @@ class KeychainManager {
     if (!this.state.initialized) {
       throw new Error('Keychain manager not initialized');
     }
+    if (!this.state.isUnlocked) {
+      throw new Error('Keychain locked for account');
+    }
     for (let i = 0; i < this.state.keychains.length; i++) {
       const keychain = this.state.keychains[i];
       const accounts = await keychain.getAccounts();
       if (accounts.includes(address)) {
         return keychain;
       }
+    }
+    if (INTERNAL_BUILD || IS_TESTING) {
+      const addressesByKeychain = await Promise.all(
+        this.state.keychains.map(async (keychain) => {
+          return {
+            keychainType: keychain.type,
+            accounts: (await keychain.getAccounts()).map((account) =>
+              account.replace('0x', 'x0000'),
+            ),
+          };
+        }),
+      );
+      Sentry.addBreadcrumb({
+        message: `Keychain not found for account: ${address.replace(
+          '0x',
+          'x0000',
+        )}`,
+        data: {
+          keychainAmount: this.state.keychains.length,
+          addressesByKeychain,
+          timestamp: new Date().toISOString(),
+        },
+      });
     }
     throw new Error('No keychain found for account');
   }

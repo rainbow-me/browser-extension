@@ -47,6 +47,11 @@ export interface ParsedUserAsset extends ParsedAsset {
   balance: {
     amount: string;
     display: string;
+    capped?: {
+      // This field gets populated by the backend, it considers liquidity of the asset while calculating the fiat value. In mobile app, this is done one by one for each asset, with an extra network request, from the live pricing data. As BX has no live pricing yet, and the backend returns the liquidity capped fiat balance of an asset in the list, we introduce this extra field to keep track of it. Upstream if `balance.capped.amount`is 10% off from `balance.amount`, we show `~${balance.capped.display}` to indicate that the balance is approximate. If clicked, the user can see the exact (calculated) balance in the asset details page.
+      amount: string;
+      display: string;
+    };
   };
   native: {
     balance: {

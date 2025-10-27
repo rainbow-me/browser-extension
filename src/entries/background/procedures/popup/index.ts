@@ -1,10 +1,11 @@
-import { os } from '@orpc/server';
+import { ORPCError, isDefinedError, os } from '@orpc/server';
 import { RPCHandler } from '@orpc/server/message-port';
 import * as Sentry from '@sentry/react';
 
 import { INTERNAL_BUILD, IS_TESTING } from '~/core/sentry';
 import { RainbowError, logger } from '~/logger';
 
+import { POPUP_PORT_NAME } from './constants';
 import { healthRouter } from './health';
 import { walletOs } from './os';
 import { stateRouter } from './state';
@@ -24,7 +25,11 @@ const sentryMiddleware = os.middleware(async ({ next, path }) => {
   try {
     return await next();
   } catch (e) {
-    logger.error(new RainbowError((e as Error)?.message, { cause: e }));
+    // only report unexpected errors; errors defined in errors() contract
+    // will bubble up to the client and throw if not handled by safe()
+    if (e && !(e instanceof ORPCError && isDefinedError(e))) {
+      logger.error(new RainbowError((e as Error)?.message, { cause: e }));
+    }
     throw e;
   }
 });
@@ -42,10 +47,12 @@ export function startPopupRouter() {
   const handler = new RPCHandler(popupRouter);
 
   chrome.runtime.onConnect.addListener((port) => {
-    handler.upgrade(port, {
-      context: {
-        sender: port.sender,
-      },
-    });
+    if (port.name === POPUP_PORT_NAME) {
+      handler.upgrade(port, {
+        context: {
+          sender: port.sender,
+        },
+      });
+    }
   });
 }

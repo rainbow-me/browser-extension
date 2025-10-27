@@ -14,6 +14,17 @@ export const useHideSmallBalancesStore =
     }),
     {
       storageKey: 'hideSmallBalances',
-      version: 0,
+      version: 2,
+      migrate(persistedState, version) {
+        if (!persistedState || version <= 1) {
+          // The default value gets persisted too
+          return {
+            // that's why we need to set the new default value here; This will overwrite user preferences, which is okay in this specific case
+            hideSmallBalances: false,
+          };
+        }
+
+        return persistedState;
+      },
     },
   );

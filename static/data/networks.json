@@ -863,7 +863,7 @@
             "approvals": false,
             "transactions": true,
             "assets": true,
-            "positions": true
+            "positions": false
           },
           "tokenSearch": {
             "enabled": true
@@ -1913,10 +1913,10 @@
         "internal": false,
         "opStack": false,
         "defaultExplorer": {
-          "url": "https://berascan.com/",
+          "url": "https://berascan.com",
           "label": "Berascan",
-          "transactionURL": "https://berascan.com//tx/",
-          "tokenURL": "https://berascan.com//token/"
+          "transactionURL": "https://berascan.com/tx/",
+          "tokenURL": "https://berascan.com/token/"
         },
         "defaultRPC": {
           "enabledDevices": [
@@ -2010,10 +2010,10 @@
         "internal": false,
         "opStack": true,
         "defaultExplorer": {
-          "url": "https://unichain.blockscout.com/",
+          "url": "https://unichain.blockscout.com",
           "label": "Unichain",
-          "transactionURL": "https://unichain.blockscout.com//tx/",
-          "tokenURL": "https://unichain.blockscout.com//token/"
+          "transactionURL": "https://unichain.blockscout.com/tx/",
+          "tokenURL": "https://unichain.blockscout.com/token/"
         },
         "defaultRPC": {
           "enabledDevices": [
@@ -2076,6 +2076,1461 @@
           "addys": {
             "approvals": true,
             "transactions": true,
+            "assets": true,
+            "positions": true
+          },
+          "tokenSearch": {
+            "enabled": true
+          },
+          "nftProxy": {
+            "enabled": false
+          }
+        },
+        "favorites": []
+      },
+      {
+        "id": "999",
+        "mainnetId": "999",
+        "name": "hyper-evm",
+        "label": "HyperEVM",
+        "colors": {
+          "light": "#072723",
+          "dark": "#97FCE4"
+        },
+        "icons": {
+          "uncropped": {
+            "largeURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/hyper-evm/uncropped_large3x.png",
+            "smallURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/hyper-evm/uncropped_small3x.png"
+          }
+        },
+        "testnet": false,
+        "internal": true,
+        "opStack": false,
+        "defaultExplorer": {
+          "url": "https://hyperevmscan.io",
+          "label": "HyperEVMScan",
+          "transactionURL": "https://hyperevmscan.io/tx/",
+          "tokenURL": "https://hyperevmscan.io/token/"
+        },
+        "defaultRPC": {
+          "enabledDevices": [
+            "APP",
+            "BX"
+          ],
+          "url": "https://rpc.rainbow.me/v1/999/"
+        },
+        "gasUnits": {
+          "basic": {
+            "approval": "55000",
+            "swap": "350000",
+            "swapPermit": "400000",
+            "eoaTransfer": "21000",
+            "tokenTransfer": "50000"
+          },
+          "wrapped": {
+            "wrap": "100000",
+            "unwrap": "150000"
+          }
+        },
+        "nativeAsset": {
+          "address": "0x0000000000000000000000000000000000000000",
+          "name": "HYPE",
+          "symbol": "HYPE",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1758718002/assets/hyper-evm/hyperevm_ovid7b.png",
+          "colors": {
+            "primary": "#072723",
+            "fallback": "#97FCE4",
+            "shadow": ""
+          }
+        },
+        "nativeWrappedAsset": {
+          "address": "0x5555555555555555555555555555555555555555",
+          "name": "Wrapped HYPE",
+          "symbol": "WHYPE",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1758718002/assets/hyper-evm/hyperevm_ovid7b.png",
+          "colors": {
+            "primary": "#072723",
+            "fallback": "#97FCE4",
+            "shadow": ""
+          }
+        },
+        "enabledServices": {
+          "meteorology": {
+            "enabled": true
+          },
+          "notifications": {
+            "enabled": false
+          },
+          "swap": {
+            "enabled": true,
+            "swap": true,
+            "swapExactOutput": false,
+            "bridge": true,
+            "bridgeExactOutput": false
+          },
+          "addys": {
+            "approvals": true,
+            "transactions": true,
+            "assets": true,
+            "positions": true
+          },
+          "tokenSearch": {
+            "enabled": true
+          },
+          "nftProxy": {
+            "enabled": false
+          }
+        },
+        "favorites": []
+      },
+      {
+        "id": "1135",
+        "mainnetId": "1135",
+        "name": "lisk",
+        "label": "Lisk",
+        "colors": {
+          "light": "#25292E",
+          "dark": "#FFFFFF"
+        },
+        "icons": {
+          "uncropped": {
+            "largeURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/lisk/uncropped_large3x.png",
+            "smallURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/lisk/uncropped_small3x.png"
+          }
+        },
+        "testnet": false,
+        "internal": true,
+        "opStack": true,
+        "defaultExplorer": {
+          "url": "https://blockscout.lisk.com",
+          "label": "Lisk",
+          "transactionURL": "https://blockscout.lisk.com/tx/",
+          "tokenURL": "https://blockscout.lisk.com/token/"
+        },
+        "defaultRPC": {
+          "enabledDevices": [
+            "APP",
+            "BX"
+          ],
+          "url": "https://rpc.rainbow.me/v1/1135/"
+        },
+        "gasUnits": {
+          "basic": {
+            "approval": "55000",
+            "swap": "350000",
+            "swapPermit": "400000",
+            "eoaTransfer": "21000",
+            "tokenTransfer": "50000"
+          },
+          "wrapped": {
+            "wrap": "100000",
+            "unwrap": "150000"
+          }
+        },
+        "nativeAsset": {
+          "address": "0x0000000000000000000000000000000000000000",
+          "name": "Ethereum",
+          "symbol": "ETH",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/ethereum/eth.png",
+          "colors": {
+            "primary": "#808088",
+            "fallback": "#E8EAF5",
+            "shadow": ""
+          }
+        },
+        "nativeWrappedAsset": {
+          "address": "0x4200000000000000000000000000000000000006",
+          "name": "Wrapped ETH",
+          "symbol": "WETH",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1668633499/assets/ethereum/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
+          "colors": {
+            "primary": "#25292E",
+            "fallback": "#B6B6B7",
+            "shadow": ""
+          }
+        },
+        "enabledServices": {
+          "meteorology": {
+            "enabled": true
+          },
+          "notifications": {
+            "enabled": false
+          },
+          "swap": {
+            "enabled": true,
+            "swap": true,
+            "swapExactOutput": false,
+            "bridge": true,
+            "bridgeExactOutput": false
+          },
+          "addys": {
+            "approvals": true,
+            "transactions": true,
+            "assets": true,
+            "positions": true
+          },
+          "tokenSearch": {
+            "enabled": true
+          },
+          "nftProxy": {
+            "enabled": false
+          }
+        },
+        "favorites": []
+      },
+      {
+        "id": "747474",
+        "mainnetId": "747474",
+        "name": "katana",
+        "label": "Katana",
+        "colors": {
+          "light": "#059EED",
+          "dark": "#4EBDF5"
+        },
+        "icons": {
+          "uncropped": {
+            "largeURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/katana/uncropped_large3x.png",
+            "smallURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/katana/uncropped_small3x.png"
+          }
+        },
+        "testnet": false,
+        "internal": true,
+        "opStack": true,
+        "defaultExplorer": {
+          "url": "https://katanascan.com",
+          "label": "KatanaScan",
+          "transactionURL": "https://katanascan.com/tx/",
+          "tokenURL": "https://katanascan.com/token/"
+        },
+        "defaultRPC": {
+          "enabledDevices": [
+            "APP",
+            "BX"
+          ],
+          "url": "https://rpc.rainbow.me/v1/747474/"
+        },
+        "gasUnits": {
+          "basic": {
+            "approval": "55000",
+            "swap": "350000",
+            "swapPermit": "400000",
+            "eoaTransfer": "21000",
+            "tokenTransfer": "50000"
+          },
+          "wrapped": {
+            "wrap": "100000",
+            "unwrap": "150000"
+          }
+        },
+        "nativeAsset": {
+          "address": "0x0000000000000000000000000000000000000000",
+          "name": "Ethereum",
+          "symbol": "ETH",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/ethereum/eth.png",
+          "colors": {
+            "primary": "#808088",
+            "fallback": "#E8EAF5",
+            "shadow": ""
+          }
+        },
+        "nativeWrappedAsset": {
+          "address": "0x4200000000000000000000000000000000000006",
+          "name": "Wrapped ETH",
+          "symbol": "WETH",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1668633499/assets/ethereum/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
+          "colors": {
+            "primary": "#25292E",
+            "fallback": "#B6B6B7",
+            "shadow": ""
+          }
+        },
+        "enabledServices": {
+          "meteorology": {
+            "enabled": true
+          },
+          "notifications": {
+            "enabled": false
+          },
+          "swap": {
+            "enabled": true,
+            "swap": true,
+            "swapExactOutput": false,
+            "bridge": true,
+            "bridgeExactOutput": false
+          },
+          "addys": {
+            "approvals": false,
+            "transactions": true,
+            "assets": true,
+            "positions": true
+          },
+          "tokenSearch": {
+            "enabled": true
+          },
+          "nftProxy": {
+            "enabled": false
+          }
+        },
+        "favorites": []
+      },
+      {
+        "id": "146",
+        "mainnetId": "146",
+        "name": "sonic",
+        "label": "Sonic",
+        "colors": {
+          "light": "#594BA7",
+          "dark": "#7F6FC9"
+        },
+        "icons": {
+          "uncropped": {
+            "largeURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/sonic/uncropped_large3x.png",
+            "smallURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/sonic/uncropped_small3x.png"
+          }
+        },
+        "testnet": false,
+        "internal": true,
+        "opStack": false,
+        "defaultExplorer": {
+          "url": "https://sonicscan.org",
+          "label": "SonicScan",
+          "transactionURL": "https://sonicscan.org/tx/",
+          "tokenURL": "https://sonicscan.org/token/"
+        },
+        "defaultRPC": {
+          "enabledDevices": [
+            "APP",
+            "BX"
+          ],
+          "url": "https://rpc.rainbow.me/v1/146/"
+        },
+        "gasUnits": {
+          "basic": {
+            "approval": "55000",
+            "swap": "350000",
+            "swapPermit": "400000",
+            "eoaTransfer": "21000",
+            "tokenTransfer": "50000"
+          },
+          "wrapped": {
+            "wrap": "100000",
+            "unwrap": "150000"
+          }
+        },
+        "nativeAsset": {
+          "address": "0x0000000000000000000000000000000000000000",
+          "name": "Sonic",
+          "symbol": "S",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1758717651/assets/sonic/sonic_mmudws.png",
+          "colors": {
+            "primary": "#ED5409",
+            "fallback": "#FF9835",
+            "shadow": ""
+          }
+        },
+        "nativeWrappedAsset": {
+          "address": "0x039e2fb66102314ce7b64ce5ce3e5183bc94ad38",
+          "name": "Wrapped Sonic",
+          "symbol": "wS",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1758717651/assets/sonic/sonic_mmudws.png",
+          "colors": {
+            "primary": "#ED5409",
+            "fallback": "#FF9835",
+            "shadow": ""
+          }
+        },
+        "enabledServices": {
+          "meteorology": {
+            "enabled": true
+          },
+          "notifications": {
+            "enabled": false
+          },
+          "swap": {
+            "enabled": true,
+            "swap": true,
+            "swapExactOutput": false,
+            "bridge": true,
+            "bridgeExactOutput": false
+          },
+          "addys": {
+            "approvals": true,
+            "transactions": true,
+            "assets": true,
+            "positions": true
+          },
+          "tokenSearch": {
+            "enabled": true
+          },
+          "nftProxy": {
+            "enabled": false
+          }
+        },
+        "favorites": []
+      },
+      {
+        "id": "42220",
+        "mainnetId": "42220",
+        "name": "celo",
+        "label": "Celo",
+        "colors": {
+          "light": "#A0A314",
+          "dark": "#FCFF52"
+        },
+        "icons": {
+          "uncropped": {
+            "largeURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/celo/uncropped_large3x.png",
+            "smallURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/celo/uncropped_small3x.png"
+          }
+        },
+        "testnet": false,
+        "internal": true,
+        "opStack": false,
+        "defaultExplorer": {
+          "url": "https://celoscan.io",
+          "label": "CeloScan",
+          "transactionURL": "https://celoscan.io/tx/",
+          "tokenURL": "https://celoscan.io/token/"
+        },
+        "defaultRPC": {
+          "enabledDevices": [
+            "APP",
+            "BX"
+          ],
+          "url": "https://rpc.rainbow.me/v1/42220/"
+        },
+        "gasUnits": {
+          "basic": {
+            "approval": "55000",
+            "swap": "350000",
+            "swapPermit": "400000",
+            "eoaTransfer": "21000",
+            "tokenTransfer": "50000"
+          },
+          "wrapped": {
+            "wrap": "100000",
+            "unwrap": "150000"
+          }
+        },
+        "nativeAsset": {
+          "address": "0x471ece3750da237f93b8e339c536989b8978a438",
+          "name": "Celo",
+          "symbol": "CELO",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1758888326/assets/celo/celo_dpjkgm.png",
+          "colors": {
+            "primary": "#EFF634",
+            "fallback": "#FCFF4C",
+            "shadow": ""
+          }
+        },
+        "nativeWrappedAsset": {
+          "address": "0x471ece3750da237f93b8e339c536989b8978a438",
+          "name": "Celo",
+          "symbol": "CELO",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1758888326/assets/celo/celo_dpjkgm.png",
+          "colors": {
+            "primary": "#EFF634",
+            "fallback": "#FCFF4C",
+            "shadow": ""
+          }
+        },
+        "enabledServices": {
+          "meteorology": {
+            "enabled": true
+          },
+          "notifications": {
+            "enabled": false
+          },
+          "swap": {
+            "enabled": true,
+            "swap": true,
+            "swapExactOutput": false,
+            "bridge": true,
+            "bridgeExactOutput": false
+          },
+          "addys": {
+            "approvals": true,
+            "transactions": true,
+            "assets": true,
+            "positions": true
+          },
+          "tokenSearch": {
+            "enabled": true
+          },
+          "nftProxy": {
+            "enabled": false
+          }
+        },
+        "favorites": []
+      },
+      {
+        "id": "2741",
+        "mainnetId": "2741",
+        "name": "abstract",
+        "label": "Abstract",
+        "colors": {
+          "light": "#32A154",
+          "dark": "#6BD88C"
+        },
+        "icons": {
+          "uncropped": {
+            "largeURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/abstract/uncropped_large3x.png",
+            "smallURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/abstract/uncropped_small3x.png"
+          }
+        },
+        "testnet": false,
+        "internal": true,
+        "opStack": false,
+        "defaultExplorer": {
+          "url": "https://abscan.org",
+          "label": "AbstractScan",
+          "transactionURL": "https://abscan.org/tx/",
+          "tokenURL": "https://abscan.org/token/"
+        },
+        "defaultRPC": {
+          "enabledDevices": [
+            "APP",
+            "BX"
+          ],
+          "url": "https://rpc.rainbow.me/v1/2741/"
+        },
+        "gasUnits": {
+          "basic": {
+            "approval": "55000",
+            "swap": "350000",
+            "swapPermit": "400000",
+            "eoaTransfer": "21000",
+            "tokenTransfer": "50000"
+          },
+          "wrapped": {
+            "wrap": "100000",
+            "unwrap": "150000"
+          }
+        },
+        "nativeAsset": {
+          "address": "0x0000000000000000000000000000000000000000",
+          "name": "Ethereum",
+          "symbol": "ETH",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/ethereum/eth.png",
+          "colors": {
+            "primary": "#808088",
+            "fallback": "#E8EAF5",
+            "shadow": ""
+          }
+        },
+        "nativeWrappedAsset": {
+          "address": "0x3439153eb7af838ad19d56e1571fbd09333c2809",
+          "name": "Wrapped ETH",
+          "symbol": "WETH",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1668633499/assets/ethereum/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
+          "colors": {
+            "primary": "#25292E",
+            "fallback": "#B6B6B7",
+            "shadow": ""
+          }
+        },
+        "enabledServices": {
+          "meteorology": {
+            "enabled": true
+          },
+          "notifications": {
+            "enabled": false
+          },
+          "swap": {
+            "enabled": true,
+            "swap": true,
+            "swapExactOutput": false,
+            "bridge": true,
+            "bridgeExactOutput": false
+          },
+          "addys": {
+            "approvals": false,
+            "transactions": true,
+            "assets": true,
+            "positions": true
+          },
+          "tokenSearch": {
+            "enabled": true
+          },
+          "nftProxy": {
+            "enabled": false
+          }
+        },
+        "favorites": []
+      },
+      {
+        "id": "1868",
+        "mainnetId": "1868",
+        "name": "soneium",
+        "label": "Soneium",
+        "colors": {
+          "light": "#25292E",
+          "dark": "#FFFFFF"
+        },
+        "icons": {
+          "uncropped": {
+            "largeURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/soneium/uncropped_large3x.png",
+            "smallURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/soneium/uncropped_small3x.png"
+          }
+        },
+        "testnet": false,
+        "internal": true,
+        "opStack": true,
+        "defaultExplorer": {
+          "url": "https://soneium.blockscout.com",
+          "label": "Soneium",
+          "transactionURL": "https://soneium.blockscout.com/tx/",
+          "tokenURL": "https://soneium.blockscout.com/token/"
+        },
+        "defaultRPC": {
+          "enabledDevices": [
+            "APP",
+            "BX"
+          ],
+          "url": "https://rpc.rainbow.me/v1/1868/"
+        },
+        "gasUnits": {
+          "basic": {
+            "approval": "55000",
+            "swap": "350000",
+            "swapPermit": "400000",
+            "eoaTransfer": "21000",
+            "tokenTransfer": "50000"
+          },
+          "wrapped": {
+            "wrap": "100000",
+            "unwrap": "150000"
+          }
+        },
+        "nativeAsset": {
+          "address": "0x0000000000000000000000000000000000000000",
+          "name": "Ethereum",
+          "symbol": "ETH",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/ethereum/eth.png",
+          "colors": {
+            "primary": "#808088",
+            "fallback": "#E8EAF5",
+            "shadow": ""
+          }
+        },
+        "nativeWrappedAsset": {
+          "address": "0x4200000000000000000000000000000000000006",
+          "name": "Wrapped ETH",
+          "symbol": "WETH",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1668633499/assets/ethereum/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
+          "colors": {
+            "primary": "#25292E",
+            "fallback": "#B6B6B7",
+            "shadow": ""
+          }
+        },
+        "enabledServices": {
+          "meteorology": {
+            "enabled": true
+          },
+          "notifications": {
+            "enabled": false
+          },
+          "swap": {
+            "enabled": true,
+            "swap": true,
+            "swapExactOutput": false,
+            "bridge": true,
+            "bridgeExactOutput": false
+          },
+          "addys": {
+            "approvals": false,
+            "transactions": true,
+            "assets": true,
+            "positions": true
+          },
+          "tokenSearch": {
+            "enabled": true
+          },
+          "nftProxy": {
+            "enabled": false
+          }
+        },
+        "favorites": []
+      },
+      {
+        "id": "8333",
+        "mainnetId": "8333",
+        "name": "b3",
+        "label": "B3",
+        "colors": {
+          "light": "#007AFF",
+          "dark": "#3996FB"
+        },
+        "icons": {
+          "uncropped": {
+            "largeURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/b3/uncropped_large3x.png",
+            "smallURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/b3/uncropped_small3x.png"
+          }
+        },
+        "testnet": false,
+        "internal": true,
+        "opStack": false,
+        "defaultExplorer": {
+          "url": "https://explorer.b3.fun",
+          "label": "B3",
+          "transactionURL": "https://explorer.b3.fun/tx/",
+          "tokenURL": "https://explorer.b3.fun/token/"
+        },
+        "defaultRPC": {
+          "enabledDevices": [
+            "APP",
+            "BX"
+          ],
+          "url": "https://rpc.rainbow.me/v1/8333/"
+        },
+        "gasUnits": {
+          "basic": {
+            "approval": "55000",
+            "swap": "350000",
+            "swapPermit": "400000",
+            "eoaTransfer": "21000",
+            "tokenTransfer": "50000"
+          },
+          "wrapped": {
+            "wrap": "100000",
+            "unwrap": "150000"
+          }
+        },
+        "nativeAsset": {
+          "address": "0x0000000000000000000000000000000000000000",
+          "name": "Ethereum",
+          "symbol": "ETH",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/ethereum/eth.png",
+          "colors": {
+            "primary": "#808088",
+            "fallback": "#E8EAF5",
+            "shadow": ""
+          }
+        },
+        "nativeWrappedAsset": {
+          "address": "0x4200000000000000000000000000000000000006",
+          "name": "Wrapped ETH",
+          "symbol": "WETH",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1668633499/assets/ethereum/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
+          "colors": {
+            "primary": "#25292E",
+            "fallback": "#B6B6B7",
+            "shadow": ""
+          }
+        },
+        "enabledServices": {
+          "meteorology": {
+            "enabled": true
+          },
+          "notifications": {
+            "enabled": false
+          },
+          "swap": {
+            "enabled": true,
+            "swap": true,
+            "swapExactOutput": false,
+            "bridge": true,
+            "bridgeExactOutput": false
+          },
+          "addys": {
+            "approvals": false,
+            "transactions": false,
+            "assets": true,
+            "positions": false
+          },
+          "tokenSearch": {
+            "enabled": true
+          },
+          "nftProxy": {
+            "enabled": false
+          }
+        },
+        "favorites": []
+      },
+      {
+        "id": "5000",
+        "mainnetId": "5000",
+        "name": "mantle",
+        "label": "Mantle",
+        "colors": {
+          "light": "#25292E",
+          "dark": "#FFFFFF"
+        },
+        "icons": {
+          "uncropped": {
+            "largeURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/mantle/uncropped_large3x.png",
+            "smallURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/mantle/uncropped_small3x.png"
+          }
+        },
+        "testnet": false,
+        "internal": true,
+        "opStack": false,
+        "defaultExplorer": {
+          "url": "https://mantlescan.xyz",
+          "label": "MantleScan",
+          "transactionURL": "https://mantlescan.xyz/tx/",
+          "tokenURL": "https://mantlescan.xyz/token/"
+        },
+        "defaultRPC": {
+          "enabledDevices": [
+            "APP",
+            "BX"
+          ],
+          "url": "https://rpc.rainbow.me/v1/5000/"
+        },
+        "gasUnits": {
+          "basic": {
+            "approval": "55000",
+            "swap": "350000",
+            "swapPermit": "400000",
+            "eoaTransfer": "21000",
+            "tokenTransfer": "50000"
+          },
+          "wrapped": {
+            "wrap": "100000",
+            "unwrap": "150000"
+          }
+        },
+        "nativeAsset": {
+          "address": "0x0000000000000000000000000000000000000000",
+          "name": "Mantle",
+          "symbol": "MNT",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1758888327/assets/mantle/mnt_beqa8p.png",
+          "colors": {
+            "primary": "#E1A6CA",
+            "fallback": "#6CC0B6",
+            "shadow": ""
+          }
+        },
+        "nativeWrappedAsset": {
+          "address": "0x78c1b0c915c4faa5fffa6cabf0219da63d7f4cb8",
+          "name": "Wrapped Mantle",
+          "symbol": "WMNT",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1758904209/assets/mantle/wmnt_nydfuf.png",
+          "colors": {
+            "primary": "#858585",
+            "fallback": "#F4F4F4",
+            "shadow": ""
+          }
+        },
+        "enabledServices": {
+          "meteorology": {
+            "enabled": true
+          },
+          "notifications": {
+            "enabled": false
+          },
+          "swap": {
+            "enabled": true,
+            "swap": true,
+            "swapExactOutput": false,
+            "bridge": true,
+            "bridgeExactOutput": false
+          },
+          "addys": {
+            "approvals": true,
+            "transactions": true,
+            "assets": true,
+            "positions": true
+          },
+          "tokenSearch": {
+            "enabled": true
+          },
+          "nftProxy": {
+            "enabled": false
+          }
+        },
+        "favorites": []
+      },
+      {
+        "id": "480",
+        "mainnetId": "480",
+        "name": "worldchain",
+        "label": "Worldchain",
+        "colors": {
+          "light": "#25292E",
+          "dark": "#FFFFFF"
+        },
+        "icons": {
+          "uncropped": {
+            "largeURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/worldchain/uncropped_large3x.png",
+            "smallURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/worldchain/uncropped_small3x.png"
+          }
+        },
+        "testnet": false,
+        "internal": true,
+        "opStack": true,
+        "defaultExplorer": {
+          "url": "https://worldscan.org",
+          "label": "WorldScan",
+          "transactionURL": "https://worldscan.org/tx/",
+          "tokenURL": "https://worldscan.org/token/"
+        },
+        "defaultRPC": {
+          "enabledDevices": [
+            "APP",
+            "BX"
+          ],
+          "url": "https://rpc.rainbow.me/v1/480/"
+        },
+        "gasUnits": {
+          "basic": {
+            "approval": "55000",
+            "swap": "350000",
+            "swapPermit": "400000",
+            "eoaTransfer": "21000",
+            "tokenTransfer": "50000"
+          },
+          "wrapped": {
+            "wrap": "100000",
+            "unwrap": "150000"
+          }
+        },
+        "nativeAsset": {
+          "address": "0x0000000000000000000000000000000000000000",
+          "name": "Ethereum",
+          "symbol": "ETH",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/ethereum/eth.png",
+          "colors": {
+            "primary": "#808088",
+            "fallback": "#E8EAF5",
+            "shadow": ""
+          }
+        },
+        "nativeWrappedAsset": {
+          "address": "0x4200000000000000000000000000000000000006",
+          "name": "Wrapped ETH",
+          "symbol": "WETH",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1668633499/assets/ethereum/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
+          "colors": {
+            "primary": "#25292E",
+            "fallback": "#B6B6B7",
+            "shadow": ""
+          }
+        },
+        "enabledServices": {
+          "meteorology": {
+            "enabled": true
+          },
+          "notifications": {
+            "enabled": false
+          },
+          "swap": {
+            "enabled": true,
+            "swap": true,
+            "swapExactOutput": false,
+            "bridge": true,
+            "bridgeExactOutput": false
+          },
+          "addys": {
+            "approvals": true,
+            "transactions": true,
+            "assets": true,
+            "positions": true
+          },
+          "tokenSearch": {
+            "enabled": true
+          },
+          "nftProxy": {
+            "enabled": false
+          }
+        },
+        "favorites": []
+      },
+      {
+        "id": "1923",
+        "mainnetId": "1923",
+        "name": "swellchain",
+        "label": "Swellchain",
+        "colors": {
+          "light": "#5A91F0",
+          "dark": "#82B0FF"
+        },
+        "icons": {
+          "uncropped": {
+            "largeURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/swellchain/uncropped_large3x.png",
+            "smallURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/swellchain/uncropped_small3x.png"
+          }
+        },
+        "testnet": false,
+        "internal": true,
+        "opStack": true,
+        "defaultExplorer": {
+          "url": "https://swellchainscan.io",
+          "label": "SwellScan",
+          "transactionURL": "https://swellchainscan.io/tx/",
+          "tokenURL": "https://swellchainscan.io/token/"
+        },
+        "defaultRPC": {
+          "enabledDevices": [
+            "APP",
+            "BX"
+          ],
+          "url": "https://rpc.rainbow.me/v1/1923/"
+        },
+        "gasUnits": {
+          "basic": {
+            "approval": "55000",
+            "swap": "350000",
+            "swapPermit": "400000",
+            "eoaTransfer": "21000",
+            "tokenTransfer": "50000"
+          },
+          "wrapped": {
+            "wrap": "100000",
+            "unwrap": "150000"
+          }
+        },
+        "nativeAsset": {
+          "address": "0x0000000000000000000000000000000000000000",
+          "name": "Ethereum",
+          "symbol": "ETH",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/ethereum/eth.png",
+          "colors": {
+            "primary": "#808088",
+            "fallback": "#E8EAF5",
+            "shadow": ""
+          }
+        },
+        "nativeWrappedAsset": {
+          "address": "0x4200000000000000000000000000000000000006",
+          "name": "Wrapped ETH",
+          "symbol": "WETH",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1668633499/assets/ethereum/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
+          "colors": {
+            "primary": "#25292E",
+            "fallback": "#B6B6B7",
+            "shadow": ""
+          }
+        },
+        "enabledServices": {
+          "meteorology": {
+            "enabled": true
+          },
+          "notifications": {
+            "enabled": false
+          },
+          "swap": {
+            "enabled": true,
+            "swap": true,
+            "swapExactOutput": false,
+            "bridge": true,
+            "bridgeExactOutput": false
+          },
+          "addys": {
+            "approvals": false,
+            "transactions": false,
+            "assets": true,
+            "positions": true
+          },
+          "tokenSearch": {
+            "enabled": true
+          },
+          "nftProxy": {
+            "enabled": false
+          }
+        },
+        "favorites": []
+      },
+      {
+        "id": "9745",
+        "mainnetId": "9745",
+        "name": "plasma",
+        "label": "Plasma",
+        "colors": {
+          "light": "#162F29",
+          "dark": "#82C9B4"
+        },
+        "icons": {
+          "uncropped": {
+            "largeURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/plasma/uncropped_large3x.png",
+            "smallURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/plasma/uncropped_small3x.png"
+          }
+        },
+        "testnet": false,
+        "internal": true,
+        "opStack": false,
+        "defaultExplorer": {
+          "url": "https://plasmascan.to",
+          "label": "PlasmaScan",
+          "transactionURL": "https://plasmascan.to/tx/",
+          "tokenURL": "https://plasmascan.to/token/"
+        },
+        "defaultRPC": {
+          "enabledDevices": [
+            "APP",
+            "BX"
+          ],
+          "url": "https://rpc.rainbow.me/v1/9745/"
+        },
+        "gasUnits": {
+          "basic": {
+            "approval": "55000",
+            "swap": "350000",
+            "swapPermit": "400000",
+            "eoaTransfer": "21000",
+            "tokenTransfer": "50000"
+          },
+          "wrapped": {
+            "wrap": "100000",
+            "unwrap": "150000"
+          }
+        },
+        "nativeAsset": {
+          "address": "0x0000000000000000000000000000000000000000",
+          "name": "Plasma",
+          "symbol": "XPL",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1758888326/assets/plasma/xpl_ustq8k.png",
+          "colors": {
+            "primary": "#162F29",
+            "fallback": "#83908D",
+            "shadow": ""
+          }
+        },
+        "nativeWrappedAsset": {
+          "address": "0x6100e367285b01f48d07953803a2d8dca5d19873",
+          "name": "Wrapped XPL",
+          "symbol": "WXPL",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1758888326/assets/plasma/xpl_ustq8k.png",
+          "colors": {
+            "primary": "#162F29",
+            "fallback": "#83908D",
+            "shadow": ""
+          }
+        },
+        "enabledServices": {
+          "meteorology": {
+            "enabled": true
+          },
+          "notifications": {
+            "enabled": false
+          },
+          "swap": {
+            "enabled": true,
+            "swap": true,
+            "swapExactOutput": false,
+            "bridge": true,
+            "bridgeExactOutput": false
+          },
+          "addys": {
+            "approvals": false,
+            "transactions": true,
+            "assets": true,
+            "positions": true
+          },
+          "tokenSearch": {
+            "enabled": true
+          },
+          "nftProxy": {
+            "enabled": false
+          }
+        },
+        "favorites": []
+      },
+      {
+        "id": "60808",
+        "mainnetId": "60808",
+        "name": "bob",
+        "label": "Bob",
+        "colors": {
+          "light": "#F25D00",
+          "dark": "#F9863E"
+        },
+        "icons": {
+          "uncropped": {
+            "largeURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/bob/uncropped_large3x.png",
+            "smallURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/bob/uncropped_small3x.png"
+          }
+        },
+        "testnet": false,
+        "internal": true,
+        "opStack": true,
+        "defaultExplorer": {
+          "url": "https://explorer.gobob.xyz",
+          "label": "BOB",
+          "transactionURL": "https://explorer.gobob.xyz/tx/",
+          "tokenURL": "https://explorer.gobob.xyz/token/"
+        },
+        "defaultRPC": {
+          "enabledDevices": [
+            "APP",
+            "BX"
+          ],
+          "url": "https://rpc.rainbow.me/v1/60808/"
+        },
+        "gasUnits": {
+          "basic": {
+            "approval": "55000",
+            "swap": "350000",
+            "swapPermit": "400000",
+            "eoaTransfer": "21000",
+            "tokenTransfer": "50000"
+          },
+          "wrapped": {
+            "wrap": "100000",
+            "unwrap": "150000"
+          }
+        },
+        "nativeAsset": {
+          "address": "0x0000000000000000000000000000000000000000",
+          "name": "Ethereum",
+          "symbol": "ETH",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/ethereum/eth.png",
+          "colors": {
+            "primary": "#808088",
+            "fallback": "#E8EAF5",
+            "shadow": ""
+          }
+        },
+        "nativeWrappedAsset": {
+          "address": "0x4200000000000000000000000000000000000006",
+          "name": "Wrapped ETH",
+          "symbol": "WETH",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1668633499/assets/ethereum/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
+          "colors": {
+            "primary": "#25292E",
+            "fallback": "#B6B6B7",
+            "shadow": ""
+          }
+        },
+        "enabledServices": {
+          "meteorology": {
+            "enabled": true
+          },
+          "notifications": {
+            "enabled": false
+          },
+          "swap": {
+            "enabled": true,
+            "swap": true,
+            "swapExactOutput": false,
+            "bridge": true,
+            "bridgeExactOutput": false
+          },
+          "addys": {
+            "approvals": false,
+            "transactions": false,
+            "assets": true,
+            "positions": true
+          },
+          "tokenSearch": {
+            "enabled": true
+          },
+          "nftProxy": {
+            "enabled": false
+          }
+        },
+        "favorites": []
+      },
+      {
+        "id": "2020",
+        "mainnetId": "2020",
+        "name": "ronin",
+        "label": "Ronin",
+        "colors": {
+          "light": "#004DE5",
+          "dark": "#5E90F3"
+        },
+        "icons": {
+          "uncropped": {
+            "largeURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/ronin/uncropped_large3x.png",
+            "smallURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/ronin/uncropped_small3x.png"
+          }
+        },
+        "testnet": false,
+        "internal": true,
+        "opStack": false,
+        "defaultExplorer": {
+          "url": "https://app.roninchain.com",
+          "label": "Ronin",
+          "transactionURL": "https://app.roninchain.com/tx/",
+          "tokenURL": "https://app.roninchain.com/token/"
+        },
+        "defaultRPC": {
+          "enabledDevices": [
+            "APP",
+            "BX"
+          ],
+          "url": "https://rpc.rainbow.me/v1/2020/"
+        },
+        "gasUnits": {
+          "basic": {
+            "approval": "55000",
+            "swap": "350000",
+            "swapPermit": "400000",
+            "eoaTransfer": "21000",
+            "tokenTransfer": "50000"
+          },
+          "wrapped": {
+            "wrap": "100000",
+            "unwrap": "150000"
+          }
+        },
+        "nativeAsset": {
+          "address": "0x0000000000000000000000000000000000000000",
+          "name": "Ronin",
+          "symbol": "RON",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1758888326/assets/ronin/ron_gwt5y6.png",
+          "colors": {
+            "primary": "#1863D8",
+            "fallback": "#177AF9",
+            "shadow": ""
+          }
+        },
+        "nativeWrappedAsset": {
+          "address": "0xe514d9deb7966c8be0ca922de8a064264ea6bcd4",
+          "name": "Wrapped Ronin",
+          "symbol": "WRON",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1758904854/assets/ronin/wronin_irlye4.png",
+          "colors": {
+            "primary": "#354A6D",
+            "fallback": "#D5ECF7",
+            "shadow": ""
+          }
+        },
+        "enabledServices": {
+          "meteorology": {
+            "enabled": true
+          },
+          "notifications": {
+            "enabled": false
+          },
+          "swap": {
+            "enabled": true,
+            "swap": true,
+            "swapExactOutput": false,
+            "bridge": true,
+            "bridgeExactOutput": false
+          },
+          "addys": {
+            "approvals": true,
+            "transactions": true,
+            "assets": true,
+            "positions": true
+          },
+          "tokenSearch": {
+            "enabled": true
+          },
+          "nftProxy": {
+            "enabled": false
+          }
+        },
+        "favorites": []
+      },
+      {
+        "id": "98866",
+        "mainnetId": "98866",
+        "name": "plume",
+        "label": "Plume",
+        "colors": {
+          "light": "#FF3D00",
+          "dark": "#FC6C3F"
+        },
+        "icons": {
+          "uncropped": {
+            "largeURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/plume/uncropped_large3x.png",
+            "smallURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/plume/uncropped_small3x.png"
+          }
+        },
+        "testnet": false,
+        "internal": true,
+        "opStack": false,
+        "defaultExplorer": {
+          "url": "https://explorer.plume.org",
+          "label": "Plume",
+          "transactionURL": "https://explorer.plume.org/tx/",
+          "tokenURL": "https://explorer.plume.org/token/"
+        },
+        "defaultRPC": {
+          "enabledDevices": [
+            "APP",
+            "BX"
+          ],
+          "url": "https://rpc.rainbow.me/v1/98866/"
+        },
+        "gasUnits": {
+          "basic": {
+            "approval": "55000",
+            "swap": "350000",
+            "swapPermit": "400000",
+            "eoaTransfer": "21000",
+            "tokenTransfer": "50000"
+          },
+          "wrapped": {
+            "wrap": "100000",
+            "unwrap": "150000"
+          }
+        },
+        "nativeAsset": {
+          "address": "0x0000000000000000000000000000000000000000",
+          "name": "PLUME",
+          "symbol": "Plume",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1758888326/assets/plume/plume_mwzrbh.png",
+          "colors": {
+            "primary": "#FFA284",
+            "fallback": "#FFA284",
+            "shadow": ""
+          }
+        },
+        "nativeWrappedAsset": {
+          "address": "0xea237441c92cae6fc17caaf9a7acb3f953be4bd1",
+          "name": "Wrapped Plume",
+          "symbol": "WPLUME",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1758888326/assets/plume/plume_mwzrbh.png",
+          "colors": {
+            "primary": "#FFA284",
+            "fallback": "#FFA284",
+            "shadow": ""
+          }
+        },
+        "enabledServices": {
+          "meteorology": {
+            "enabled": true
+          },
+          "notifications": {
+            "enabled": false
+          },
+          "swap": {
+            "enabled": true,
+            "swap": true,
+            "swapExactOutput": false,
+            "bridge": true,
+            "bridgeExactOutput": false
+          },
+          "addys": {
+            "approvals": false,
+            "transactions": false,
             "assets": true,
             "positions": true
           },

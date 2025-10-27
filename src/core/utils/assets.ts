@@ -1,6 +1,7 @@
 import { Contract } from '@ethersproject/contracts';
 import { Provider } from '@ethersproject/providers';
 import { getClient } from '@wagmi/core';
+import BigNumber from 'bignumber.js';
 import { Address, Client, erc20Abi, getContract, zeroAddress } from 'viem';
 
 import { ETH_ADDRESS, SupportedCurrencyKey } from '~/core/references';
@@ -182,11 +183,13 @@ export function parseUserAsset({
   asset,
   currency,
   balance,
+  cappedValue,
   smallBalance,
 }: {
   asset: AssetApiResponse | AddysPositionAsset;
   currency: SupportedCurrencyKey;
   balance: string;
+  cappedValue?: string;
   smallBalance?: boolean;
 }) {
   const parsedAsset = parseAsset({ asset, currency });
@@ -194,6 +197,7 @@ export function parseUserAsset({
     asset: parsedAsset,
     currency,
     balance,
+    cappedValue,
     smallBalance,
   });
 }
@@ -202,34 +206,99 @@ export function parseUserAssetBalances({
   asset,
   currency,
   balance,
+  cappedValue: platformValue,
   smallBalance = false,
 }: {
   asset: ParsedAsset;
   currency: SupportedCurrencyKey;
   balance: string;
+  cappedValue?: string;
   smallBalance?: boolean;
 }) {
   const { decimals, symbol, price } = asset;
   const amount = convertRawAmountToDecimalFormat(balance, decimals);
+  const calculatedNativeBalance = getNativeAssetBalance({
+    currency,
+    decimals,
+    priceUnit: price?.value || 0,
+    value: amount,
+  });
+  const cappedNativeBalance =
+    platformValue !== undefined
+      ? {
+          amount: platformValue,
+          display: convertAmountToNativeDisplay(platformValue, currency),
+        }
+      : undefined;
+
+  // TODO: remove the next 5 lines after BE fixes their smallBalance issue
+  const isZeroCappedAmount =
+    platformValue !== undefined &&
+    !new BigNumber(platformValue).isNaN() &&
+    new BigNumber(platformValue).isZero();
+  const resolvedSmallBalance = smallBalance || isZeroCappedAmount;
 
   return {
     ...asset,
     balance: {
       amount,
       display: convertAmountToBalanceDisplay(amount, { decimals, symbol }),
+      ...(cappedNativeBalance ? { capped: cappedNativeBalance } : {}),
     },
     native: {
       ...asset.native,
-      balance: getNativeAssetBalance({
-        currency,
-        decimals,
-        priceUnit: price?.value || 0,
-        value: amount,
-      }),
+      balance: calculatedNativeBalance,
     },
-    smallBalance,
+    // Temporary frontend patch until backend toggles zero balances as small.
+    smallBalance: resolvedSmallBalance,
   };
 }
+
+export type PlatformValueComparisonDirection = 'higher' | 'lower' | 'equal';
+
+export type PlatformValueComparison = {
+  shouldApproximate: boolean;
+  direction: PlatformValueComparisonDirection;
+};
+
+export const compareCappedAmountToCalculatedValue = ({
+  cappedAmount,
+  calculatedAmount,
+  threshold = 0.1,
+}: {
+  cappedAmount?: string;
+  calculatedAmount: string;
+  threshold?: number;
+}): PlatformValueComparison => {
+  if (cappedAmount === undefined) {
+    return { shouldApproximate: false, direction: 'equal' };
+  }
+
+  const platform = new BigNumber(cappedAmount || '0');
+  const calculated = new BigNumber(calculatedAmount || '0');
+
+  if (calculated.isZero()) {
+    if (platform.isZero()) {
+      return { shouldApproximate: false, direction: 'equal' };
+    }
+    return {
+      shouldApproximate: true,
+      direction: platform.gt(0) ? 'higher' : 'equal',
+    };
+  }
+
+  const difference = platform.minus(calculated).abs();
+  const ratio = difference.dividedBy(calculated.abs());
+
+  if (ratio.gt(threshold)) {
+    const direction: PlatformValueComparisonDirection = platform.gt(calculated)
+      ? 'higher'
+      : 'lower';
+    return { shouldApproximate: true, direction };
+  }
+
+  return { shouldApproximate: false, direction: 'equal' };
+};
 
 export function isParsedUserAsset(
   asset: ParsedAsset | ParsedUserAsset,
@@ -286,6 +355,7 @@ export const fetchAssetBalanceViaProvider = async ({
     asset: parsedAsset,
     currency,
     balance: balance.toString(),
+    cappedValue: parsedAsset.balance.capped?.amount,
   });
   return updatedAsset;
 };
@@ -449,3 +519,8 @@ export const isSameAssetInDiffChains = (
     (assetInNetwork) => assetInNetwork?.address === a2.address,
   );
 };
+
+export const getCappedAmount = (asset: ParsedUserAsset) =>
+  parseFloat(
+    asset.balance.capped?.amount ?? asset.native.balance.amount ?? '0',
+  );

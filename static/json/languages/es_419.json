@@ -141,7 +141,7 @@
       "analytics_description": "Ayuda a Rainbow a mejorar sus productos y servicios permitiendo el análisis de datos de uso. Los datos recolectados no están asociados a usted ni a su cuenta.",
       "hide_asset_balances": "Ocultar saldos de activos",
       "hide_asset_balances_description": "Con esta opción activada, Rainbow ocultará los saldos de tokens en toda la aplicación.",
-      "auto_hide_balances_under_1": "Ocultar saldos inferiores a $1",
+      "auto_hide_small_balances": "Ocultar automáticamente saldos pequeños",
       "view_private_key": "Ver clave privada",
       "view_secret_recovery_phrase": "Ver frase de recuperación secreta",
       "auto_lock_timer": {
@@ -1303,6 +1303,7 @@
     "tokens": "Tokens"
   },
   "activity": {
+    "just_now": "Justo ahora",
     "hour": "Última hora",
     "today": "Hoy",
     "yesterday": "Ayer",
@@ -1353,7 +1354,9 @@
     "send_description_1": "Presiona",
     "send_description_2": "para copiar tu dirección o",
     "send_description_3": "para código QR",
-    "unknown_token": "Token desconocido"
+    "unknown_token": "Token desconocido",
+    "small_balances_show_more": "Mostrar más",
+    "small_balances_show_less": "Mostrar menos"
   },
   "nfts": {
     "empty_state_header": "NFTs",
@@ -1559,6 +1562,9 @@
     "send": "Enviar",
     "balance": "Saldo",
     "value": "Valor",
+    "low_liquidity_value_lower_prefix": "El valor es menor que",
+    "low_liquidity_value_higher_prefix": "El valor es mayor que",
+    "low_liquidity_value_suffix": "debido a baja liquidez",
     "hour": "1H",
     "day": "1D",
     "week": "1S",

@@ -33,10 +33,10 @@ async function syncStore({ store }: { store: StoreWithPersist<unknown> }) {
   const persistOptions = store.persist.getOptions();
   const storageName = persistOptions.name;
 
-  const listener = async (changedStore: StoreWithPersist<unknown>) => {
+  const listener = async (newValue: unknown) => {
     if (!storageName) return;
 
-    if (changedStore === undefined) {
+    if (newValue === undefined) {
       const state = store.getInitialState();
       const version = persistOptions.version;
       const serializedState = persistOptions?.serialize?.({ state, version });

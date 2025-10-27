@@ -25,12 +25,10 @@ export const TelemetryIdentifier = () => {
       analytics.setDeviceId(deviceId);
       analytics.identify();
     };
-    // Disable analytics & sentry for e2e and dev mode
-    if (process.env.IS_TESTING !== 'true' && process.env.IS_DEV !== 'true') {
-      if (authStatus === '') return; // wait for auth state to settle
-      else if (authStatus === 'READY') identify(); // assign full wallet context
-      else identify(); // assign partial wallet context immediately if available
-    }
+
+    if (authStatus === '') return; // wait for auth state to settle
+    else if (authStatus === 'READY') identify(); // assign full wallet context
+    else identify(); // assign partial wallet context immediately if available
   }, [deviceId, currentAddress, authStatus]);
 
   return null;

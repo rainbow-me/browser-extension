@@ -141,7 +141,7 @@
       "analytics_description": "Помогите Rainbow улучшить свои продукты и сервисы, разрешив анализ данных использования. Собранные данные не связаны с вами или вашей учетной записью.",
       "hide_asset_balances": "Скрыть балансы активов",
       "hide_asset_balances_description": "Если это включено, Rainbow будет затруднять распознавание балансов токенов в приложении.",
-      "auto_hide_balances_under_1": "Скрыть балансы меньше $1",
+      "auto_hide_small_balances": "Автоматически скрывать малые балансы",
       "view_private_key": "Посмотреть Приватный Ключ",
       "view_secret_recovery_phrase": "Посмотреть Секретную фразу для восстановления",
       "auto_lock_timer": {
@@ -1303,6 +1303,7 @@
     "tokens": "Токены"
   },
   "activity": {
+    "just_now": "Только что",
     "hour": "Последний час",
     "today": "Сегодня",
     "yesterday": "Вчера",
@@ -1353,7 +1354,9 @@
     "send_description_1": "Нажмите",
     "send_description_2": "чтобы скопировать ваш адрес или",
     "send_description_3": "для QR кода",
-    "unknown_token": "Неизвестный токен"
+    "unknown_token": "Неизвестный токен",
+    "small_balances_show_more": "Показать еще",
+    "small_balances_show_less": "Показать меньше"
   },
   "nfts": {
     "empty_state_header": "NFT",
@@ -1559,6 +1562,9 @@
     "send": "Отправить",
     "balance": "Баланс",
     "value": "Значение",
+    "low_liquidity_value_lower_prefix": "Значение ниже, чем",
+    "low_liquidity_value_higher_prefix": "Значение выше, чем",
+    "low_liquidity_value_suffix": "из-за низкой ликвидности",
     "hour": "1 ч.",
     "day": "1 дн.",
     "week": "1 нед.",

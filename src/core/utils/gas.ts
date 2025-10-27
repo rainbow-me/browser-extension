@@ -551,6 +551,14 @@ export const estimateGasWithPadding = async ({
     // otherwise default to the last block gas limit
     return lastBlockGasLimit;
   } catch (error) {
+    if (
+      error instanceof Error &&
+      'code' in error &&
+      error.code === 'UNPREDICTABLE_GAS_LIMIT'
+    ) {
+      return null;
+    }
+
     logger.error(new RainbowError(`estimateGasWithPadding error: ${error}`));
     return null;
   }

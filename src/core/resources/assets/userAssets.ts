@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Address } from 'viem';
 
-import { addysHttp } from '~/core/network/addys';
+import { platformHttp } from '~/core/network/platform';
 import {
   QueryConfig,
   QueryFunctionArgs,
@@ -13,16 +13,22 @@ import { SupportedCurrencyKey } from '~/core/references';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { useStaleBalancesStore } from '~/core/state/staleBalances';
-import { ParsedAssetsDictByChain, ParsedUserAsset } from '~/core/types/assets';
+import {
+  AssetApiResponse,
+  ParsedAssetsDictByChain,
+  ParsedUserAsset,
+} from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { AddressAssetsReceivedMessage } from '~/core/types/zerion';
+import type { GetAssetUpdatesResponse as PlatformGetAssetUpdatesResponse } from '~/core/types/gen/platform/assets/updates';
 import { getSupportedChains } from '~/core/utils/chains';
+import { convertPlatformAssetToAssetApiResponse } from '~/core/utils/platform';
 import { RainbowError, logger } from '~/logger';
 
 import { parseUserAssets } from './common';
 
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
 const USER_ASSETS_TIMEOUT_DURATION = 20000;
+const PLATFORM_ASSET_UPDATES_PATH = '/v1/assets/GetAssetUpdates';
 
 // ///////////////////////////////////////////////
 // Query Types
@@ -126,59 +132,68 @@ async function userAssetsQueryFunction({
       testnetMode,
     }),
   })?.state?.data || {}) as ParsedAssetsDictByChain;
+  const supportedAssetsChainIds = useNetworkStore
+    .getState()
+    .getSupportedAssetsChainIds();
+
+  const supportedChainIds = getSupportedChains({
+    testnets: testnetMode,
+  })
+    .map(({ id }) => id)
+    .filter((id) => supportedAssetsChainIds.includes(id));
+
+  if (!address || supportedChainIds.length === 0) {
+    return cachedUserAssets;
+  }
+
   try {
-    const supportedAssetsChainIds = useNetworkStore
-      .getState()
-      .getSupportedAssetsChainIds();
+    const staleBalancesStore = useStaleBalancesStore.getState();
+    staleBalancesStore.clearExpiredData(address);
+    const forcedTokensParam = extractForcedTokens(
+      staleBalancesStore.getStaleBalancesQueryParam(address),
+    );
 
-    const supportedChainIds = getSupportedChains({
-      testnets: testnetMode,
-    })
-      .map(({ id }) => id)
-      .filter((id) => supportedAssetsChainIds.includes(id));
-
-    useStaleBalancesStore.getState().clearExpiredData(address as Address);
-    const staleBalancesParam = useStaleBalancesStore
-      .getState()
-      .getStaleBalancesQueryParam(address as Address);
-    const url = `/${supportedChainIds.join(
-      ',',
-    )}/${address}/assets?currency=${currency.toLowerCase()}${staleBalancesParam}`;
-    const res = await addysHttp.get<AddressAssetsReceivedMessage>(url, {
+    const platformResult = await fetchPlatformAssetBalances({
+      address,
+      chainIds: supportedChainIds,
+      currency,
+      forcedTokens: forcedTokensParam,
       timeout: USER_ASSETS_TIMEOUT_DURATION,
     });
-    const chainIdsInResponse = res?.data?.meta?.chain_ids || [];
-    const chainIdsWithErrorsInResponse =
-      res?.data?.meta?.chain_ids_with_errors || [];
-    const assets = res?.data?.payload?.assets || [];
-    if (address) {
+    const normalizedAssets = convertPlatformResultToLegacy(platformResult);
+    const chainIdsInResponse = getChainIdsFromAssets(normalizedAssets);
+
+    if (normalizedAssets.length && chainIdsInResponse.length) {
+      const parsedAssetsDict = await parseUserAssets({
+        address,
+        assets: normalizedAssets,
+        chainIds: chainIdsInResponse,
+        currency,
+      });
+
+      return parsedAssetsDict;
+    }
+
+    return cachedUserAssets;
+  } catch (e) {
+    // trigger per chain retry by chainIds on error
+    for (const chainId of supportedChainIds) {
       userAssetsQueryFunctionRetryByChain({
         address,
-        chainIds: chainIdsWithErrorsInResponse,
+        chainIds: [chainId],
         currency,
         testnetMode,
       });
-      if (assets.length && chainIdsInResponse.length) {
-        const parsedAssetsDict = await parseUserAssets({
-          address,
-          assets,
-          chainIds: chainIdsInResponse,
-          currency,
-        });
-
-        for (const missingChainId of chainIdsWithErrorsInResponse) {
-          if (cachedUserAssets[missingChainId]) {
-            parsedAssetsDict[missingChainId] = cachedUserAssets[missingChainId];
-          }
-        }
-        return parsedAssetsDict;
-      }
     }
-    return cachedUserAssets;
-  } catch (e) {
-    logger.error(new RainbowError('userAssetsQueryFunction: '), {
-      message: (e as Error)?.message,
-    });
+
+    logger.error(
+      new RainbowError('userAssetsQueryFunction: ', {
+        cause: e,
+      }),
+      {
+        message: (e as Error)?.message,
+      },
+    );
     return cachedUserAssets;
   }
 }
@@ -219,8 +234,49 @@ async function userAssetsQueryFunctionRetryByChain({
         ),
       );
     }
-    const parsedRetries = await Promise.all(retries);
-    for (const parsedAssets of parsedRetries) {
+
+    if (retries.length === 0) {
+      return;
+    }
+
+    const settledResults = await Promise.allSettled(retries);
+
+    // lodash partition does not seperate by type
+    const failedResults = settledResults
+      .map((result, idx) =>
+        result.status === 'rejected'
+          ? { chainId: chainIds[idx], reason: result.reason }
+          : null,
+      )
+      .filter((r) => r !== null);
+    const successfulResults = settledResults
+      .map((result) => (result.status === 'fulfilled' ? result.value : null))
+      .filter((parsedAssets) => parsedAssets !== null);
+
+    if (successfulResults.length === 0) {
+      // If all failed, throw the first error
+      throw (
+        failedResults[0]?.reason ?? new Error('All user asset fetches failed')
+      );
+    }
+
+    if (failedResults.length > 0) {
+      logger.error(
+        new RainbowError(
+          'userAssetsQueryFunctionRetryByChain: Some chains failed',
+          { cause: failedResults[0]?.reason },
+        ),
+        {
+          failedChains: failedResults.map((f) => f.chainId),
+          reasons: failedResults.map((f) =>
+            f.reason instanceof Error ? f.reason.message : String(f.reason),
+          ),
+          causes: failedResults.map((f) => f.reason),
+        },
+      );
+    }
+
+    for (const parsedAssets of successfulResults) {
       const values = Object.values(parsedAssets);
       if (values[0]) {
         cachedUserAssets[values[0].chainId] = parsedAssets;
@@ -235,9 +291,14 @@ async function userAssetsQueryFunctionRetryByChain({
       cachedUserAssets,
     );
   } catch (e) {
-    logger.error(new RainbowError('userAssetsQueryFunctionRetryByChain: '), {
-      message: (e as Error)?.message,
-    });
+    logger.error(
+      new RainbowError('userAssetsQueryFunctionRetryByChain: ', {
+        cause: e,
+      }),
+      {
+        message: (e as Error)?.message,
+      },
+    );
   }
 }
 
@@ -329,33 +390,38 @@ async function userAssetsByChainQueryFunction({
   const cachedUserAssets = (cache.find({
     queryKey: userAssetsQueryKey({ address, currency }),
   })?.state?.data || {}) as ParsedAssetsDictByChain;
-  const cachedDataForChain = cachedUserAssets?.[chainId];
+  const cachedDataForChain = cachedUserAssets?.[chainId] ?? {};
   try {
-    const url = `/${chainId}/${address}/assets?currency=${currency.toLowerCase()}`;
-    const res = await addysHttp.get<AddressAssetsReceivedMessage>(url);
-    const chainIdsInResponse = res?.data?.meta?.chain_ids || [];
-    const assets = res?.data?.payload?.assets || [];
-    if (assets.length && chainIdsInResponse.length) {
+    const platformResult = await fetchPlatformAssetBalances({
+      address,
+      chainIds: [chainId],
+      currency,
+      timeout: USER_ASSETS_TIMEOUT_DURATION,
+    });
+    const normalizedAssets = convertPlatformResultToLegacy(platformResult);
+    const chainIdsInResponse = getChainIdsFromAssets(normalizedAssets);
+    if (normalizedAssets.length && chainIdsInResponse.includes(chainId)) {
       const parsedAssetsDict = await parseUserAssets({
         address,
-        assets,
+        assets: normalizedAssets,
         chainIds: chainIdsInResponse,
         currency,
       });
 
-      return parsedAssetsDict[chainId];
-    } else {
-      return cachedDataForChain;
+      return parsedAssetsDict[chainId] ?? {};
     }
+    return cachedDataForChain;
   } catch (e) {
-    logger.error(
-      new RainbowError(
-        `userAssetsByChainQueryFunction - chainId = ${chainId}:`,
-      ),
-      {
-        message: (e as Error)?.message,
-      },
-    );
+    if (!(e instanceof Error && e.name === 'AbortError'))
+      // abort errors are expected
+      logger.error(
+        new RainbowError(
+          `userAssetsByChainQueryFunction - chainId = ${chainId}:`,
+        ),
+        {
+          message: (e as Error)?.message,
+        },
+      );
     return cachedDataForChain;
   }
 }
@@ -387,4 +453,85 @@ export function useUserAssetsByChain<TSelectResult = UserAssetsByChainResult>(
     enabled: !!address && config.enabled !== false,
     refetchInterval: USER_ASSETS_REFETCH_INTERVAL,
   });
+}
+
+type LegacyAssetEntry = {
+  quantity: string;
+  small_balance?: boolean;
+  value?: string;
+  asset: AssetApiResponse;
+};
+
+function extractForcedTokens(param: string) {
+  if (!param) return undefined;
+  const trimmed = param.startsWith('&') ? param.slice(1) : param;
+  if (!trimmed.startsWith('tokens=')) return undefined;
+  const tokens = trimmed.substring('tokens='.length);
+  return tokens.length > 0 ? tokens : undefined;
+}
+
+async function fetchPlatformAssetBalances({
+  address,
+  chainIds,
+  currency,
+  forcedTokens,
+  timeout,
+}: {
+  address: Address;
+  chainIds: number[];
+  currency: SupportedCurrencyKey;
+  forcedTokens?: string;
+  timeout?: number;
+}) {
+  if (chainIds.length === 0) {
+    return {} as PlatformGetAssetUpdatesResponse['result'];
+  }
+
+  const params: Record<string, string> = {
+    address,
+    currency: currency.toLowerCase(),
+    chain_ids: chainIds.join(','),
+  };
+
+  if (forcedTokens) {
+    params.forced_tokens = forcedTokens;
+  }
+
+  const response = await platformHttp.get<PlatformGetAssetUpdatesResponse>(
+    PLATFORM_ASSET_UPDATES_PATH,
+    {
+      params,
+      timeout,
+    },
+  );
+
+  return response?.data?.result ?? {};
+}
+
+function convertPlatformResultToLegacy(
+  result: PlatformGetAssetUpdatesResponse['result'],
+) {
+  if (!result) return [];
+  return Object.values(result)
+    .map((entry) =>
+      !entry?.asset
+        ? undefined
+        : {
+            quantity: entry.quantity,
+            small_balance: entry.smallBalance,
+            value: entry.value,
+            asset: convertPlatformAssetToAssetApiResponse(entry.asset),
+          },
+    )
+    .filter((entry) => entry !== undefined);
+}
+
+function getChainIdsFromAssets(assets: LegacyAssetEntry[]) {
+  const chainIds = new Set<ChainId>();
+  for (const entry of assets) {
+    if (typeof entry?.asset?.chain_id === 'number') {
+      chainIds.add(entry.asset.chain_id as ChainId);
+    }
+  }
+  return Array.from(chainIds);
 }

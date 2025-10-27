@@ -19,7 +19,7 @@ import { ChainId } from '~/core/types/chains';
 import { getChain } from '~/core/utils/chains';
 import { copy, copyAddress } from '~/core/utils/copy';
 import { getFaucetsUrl } from '~/core/utils/faucets';
-import { formatDate } from '~/core/utils/formatDate';
+import { formatRelativeDate } from '~/core/utils/formatDate';
 import { truncateString } from '~/core/utils/strings';
 import { goToNewTab } from '~/core/utils/tabs';
 import {
@@ -261,7 +261,7 @@ const TransactionDetails = memo(function TransactionDetails({
         <InfoRow
           symbol="calendar"
           label={i18n.t('simulation.contract_created_at')}
-          value={formatDate(contractCreatedAt)}
+          value={formatRelativeDate(contractCreatedAt)}
         />
       )}
       {!!nonce && (

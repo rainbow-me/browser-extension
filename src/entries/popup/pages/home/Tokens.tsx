@@ -1,6 +1,6 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { MotionValue, motion, useTransform } from 'framer-motion';
-import uniqBy from 'lodash/uniqBy';
+import partition from 'lodash/partition';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Address } from 'viem';
 
@@ -8,10 +8,7 @@ import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
 import { shortcuts } from '~/core/references/shortcuts';
 import { selectUserAssetsList } from '~/core/resources/_selectors';
-import {
-  selectUserAssetsFilteringSmallBalancesList,
-  selectorFilterByUserChains,
-} from '~/core/resources/_selectors/assets';
+import { selectorFilterByUserChains } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
 import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAssets';
 import { fetchProviderWidgetUrl } from '~/core/resources/f2c';
@@ -26,8 +23,12 @@ import {
   useHiddenAssetStore,
 } from '~/core/state/hiddenAssets/hiddenAssets';
 import { usePinnedAssetStore } from '~/core/state/pinnedAssets';
-import { ParsedUserAsset } from '~/core/types/assets';
+import { ParsedAssetsDictByChain, ParsedUserAsset } from '~/core/types/assets';
 import { truncateAddress } from '~/core/utils/address';
+import {
+  compareCappedAmountToCalculatedValue,
+  getCappedAmount,
+} from '~/core/utils/assets';
 import { isCustomChain } from '~/core/utils/chains';
 import {
   Box,
@@ -120,44 +121,39 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
     [currentAddress, hidden],
   );
 
-  const {
-    data: assets = [],
-    isLoading: isUserAssetsLoading,
-    refetch: refetchUserAssets,
-  } = useUserAssets(
-    {
-      address: currentAddress,
-      currency,
-    },
-    {
-      select: (data) =>
-        selectorFilterByUserChains({
-          data,
-          selector: hideSmallBalances
-            ? selectUserAssetsFilteringSmallBalancesList
-            : selectUserAssetsList,
-        }),
-    },
+  const selectAssetsList = useCallback(
+    (data: ParsedAssetsDictByChain): ParsedUserAsset[] =>
+      selectorFilterByUserChains({
+        data,
+        selector: selectUserAssetsList,
+      }),
+    [],
   );
 
   const {
-    data: customNetworkAssets = [],
-    refetch: refetchCustomNetworkAssets,
-  } = useCustomNetworkAssets(
+    data: userAssetsData,
+    isLoading: isUserAssetsLoading,
+    refetch: refetchUserAssets,
+  } = useUserAssets<ParsedUserAsset[]>(
     {
       address: currentAddress,
       currency,
     },
     {
-      select: (data) =>
-        selectorFilterByUserChains({
-          data,
-          selector: hideSmallBalances
-            ? selectUserAssetsFilteringSmallBalancesList
-            : selectUserAssetsList,
-        }),
+      select: selectAssetsList,
     },
   );
+
+  const { data: customNetworkAssetsData, refetch: refetchCustomNetworkAssets } =
+    useCustomNetworkAssets<ParsedUserAsset[]>(
+      {
+        address: currentAddress,
+        currency,
+      },
+      {
+        select: selectAssetsList,
+      },
+    );
 
   const isPinned = useCallback(
     (assetUniqueId: string) =>
@@ -165,74 +161,77 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
     [currentAddress, pinnedStore],
   );
 
-  const combinedAssets = useMemo(
-    () =>
-      Array.from(
-        new Map(
-          [...customNetworkAssets, ...assets].map((item) => [
-            item.uniqueId,
-            item,
-          ]),
-        ).values(),
-      ),
-    [assets, customNetworkAssets],
-  );
+  const orderedAssets = useMemo<ParsedUserAsset[]>(() => {
+    const userAssets = userAssetsData ?? [];
+    const customAssets = customNetworkAssetsData ?? [];
 
-  const unhiddenAssets = useMemo(() => {
-    return combinedAssets.filter((asset) => !isHidden(asset));
-  }, [combinedAssets, isHidden]);
+    const combinedAssets = Array.from(
+      new Map(
+        [...customAssets, ...userAssets].map((asset) => [
+          asset.uniqueId,
+          asset,
+        ]),
+      ).values(),
+    ).filter((asset) => !isHidden(asset));
 
-  const computeUniqueAssets = useCallback(
-    (assets: ParsedUserAsset[]) => {
-      const filteredAssets = assets.filter(
-        ({ uniqueId }) => !isPinned(uniqueId),
-      );
+    if (combinedAssets.length === 0) {
+      return [];
+    }
 
-      return uniqBy(filteredAssets, 'uniqueId').sort(
-        (a: ParsedUserAsset, b: ParsedUserAsset) =>
-          parseFloat(b?.native?.balance?.amount) -
-          parseFloat(a?.native?.balance?.amount),
-      );
-    },
-    [isPinned],
-  );
+    const [pinnedAssets, nonPinnedAssets] = partition(combinedAssets, (asset) =>
+      isPinned(asset.uniqueId),
+    );
+    const sortedPinnedAssets = [...pinnedAssets].sort((a, b) => {
+      const pinnedFirstAsset = pinnedStore[currentAddress]?.[a.uniqueId];
+      const pinnedSecondAsset = pinnedStore[currentAddress]?.[b.uniqueId];
 
-  const computePinnedAssets = useCallback(
-    (assets: ParsedUserAsset[]) => {
-      const filteredAssets = assets.filter((asset) => isPinned(asset.uniqueId));
+      if (!pinnedFirstAsset || !pinnedSecondAsset) return 0;
 
-      const sortedAssets = filteredAssets.sort((a, b) => {
-        const pinnedFirstAsset = pinnedStore[currentAddress]?.[a.uniqueId];
-        const pinnedSecondAsset = pinnedStore[currentAddress]?.[b.uniqueId];
+      return pinnedFirstAsset.createdAt - pinnedSecondAsset.createdAt;
+    });
 
-        // This won't happen, but we'll just return to it's
-        // default sorted order just in case it will happen
-        if (!pinnedFirstAsset || !pinnedSecondAsset) return 0;
+    const [nonSmallBalanceAssets, smallBalanceAssets] = partition(
+      nonPinnedAssets,
+      (asset) => !asset.smallBalance,
+    );
 
-        return pinnedFirstAsset.createdAt - pinnedSecondAsset.createdAt;
-      });
+    const sortByBalanceDesc = (assets: ParsedUserAsset[]) =>
+      assets.slice().sort((a, b) => getCappedAmount(b) - getCappedAmount(a));
 
-      return sortedAssets;
-    },
-    [currentAddress, pinnedStore, isPinned],
-  );
+    const sortedNonSmallBalances = sortByBalanceDesc(nonSmallBalanceAssets);
+    const sortedSmallBalances = sortByBalanceDesc(smallBalanceAssets);
 
-  const filteredAssets = useMemo(
-    () => [
-      ...computePinnedAssets(unhiddenAssets),
-      ...computeUniqueAssets(unhiddenAssets),
-    ],
-    [unhiddenAssets, computePinnedAssets, computeUniqueAssets],
-  );
+    const shouldIncludeSmallBalances =
+      !hideSmallBalances ||
+      (sortedPinnedAssets.length === 0 && sortedNonSmallBalances.length === 0);
+
+    return shouldIncludeSmallBalances
+      ? [
+          ...sortedPinnedAssets,
+          ...sortedNonSmallBalances,
+          ...sortedSmallBalances,
+        ]
+      : [...sortedPinnedAssets, ...sortedNonSmallBalances];
+  }, [
+    customNetworkAssetsData,
+    userAssetsData,
+    isHidden,
+    isPinned,
+    pinnedStore,
+    currentAddress,
+    hideSmallBalances,
+  ]);
+
+  // UI constants
+  const hasAnyAssets = orderedAssets.length > 0;
 
   const assetsRowVirtualizer = useVirtualizer({
-    count: filteredAssets.length,
+    count: orderedAssets.length,
     getScrollElement: () => containerRef.current,
     estimateSize: () => 52,
     overscan: 10,
-    paddingEnd: 64,
     paddingStart: 8,
-    getItemKey: (index) => filteredAssets[index].uniqueId,
+    getItemKey: (index) => orderedAssets[index]?.uniqueId ?? `token-${index}`,
   });
 
   useKeyboardShortcut({
@@ -251,18 +250,20 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
   });
 
   useTokensShortcuts();
-  useTokenListSampling(filteredAssets, 'wallet');
+  const samplingAssets = useMemo(() => orderedAssets, [orderedAssets]);
+
+  useTokenListSampling(samplingAssets, 'wallet');
 
   useEffect(() => {
     assetsRowVirtualizer?.measure();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [unhiddenAssets?.length]);
+  }, [orderedAssets.length]);
 
   if (isUserAssetsLoading || manuallyRefetchingTokens) {
     return <TokensSkeleton />;
   }
 
-  if (!filteredAssets?.length) {
+  if (!hasAnyAssets) {
     return <TokensEmptyState depositAddress={currentAddress} />;
   }
 
@@ -275,7 +276,7 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
         overflow: overflow,
       }}
       ref={containerRef}
-      paddingBottom="8px"
+      paddingBottom="80px"
     >
       <QuickPromo
         text={i18n.t('command_k.quick_promo.text', { modifierSymbol })}
@@ -300,7 +301,8 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
         <Box>
           {assetsRowVirtualizer.getVirtualItems().map((virtualItem) => {
             const { key, size, start, index } = virtualItem;
-            const token = filteredAssets[index];
+            const token = orderedAssets[index];
+            if (!token) return null;
             const pinned =
               !!pinnedStore[currentAddress]?.[token.uniqueId]?.pinned;
 
@@ -345,6 +347,19 @@ export const AssetRow = memo(function AssetRow({
   const priceChangeDisplay = priceChange?.length ? priceChange : '-';
   const priceChangeColor =
     priceChangeDisplay[0] !== '-' ? 'green' : 'labelTertiary';
+  const { shouldApproximate } = useMemo(
+    () =>
+      compareCappedAmountToCalculatedValue({
+        cappedAmount: asset.balance.capped?.amount,
+        calculatedAmount: asset.native.balance.amount,
+      }),
+    [asset.native.balance.amount, asset.balance.capped?.amount],
+  );
+  const platformDisplay =
+    asset.balance.capped?.display ?? asset.native.balance.display;
+  const displayWithApproximation = shouldApproximate
+    ? `~${platformDisplay}`
+    : platformDisplay;
 
   const balanceDisplay = useMemo(
     () =>
@@ -374,17 +389,19 @@ export const AssetRow = memo(function AssetRow({
           <Asterisks color="label" size={10} />
         </Inline>
       ) : isCustomChain(asset.chainId) &&
-        asset?.native?.balance?.amount === '0' ? null : (
+        (asset.balance.capped?.amount ?? asset.native.balance.amount) ===
+          '0' ? null : (
         <Text size="14pt" weight="semibold" align="right">
-          {asset?.native?.balance?.display}
+          {displayWithApproximation}
         </Text>
       ),
     [
       hideAssetBalances,
       currentCurrency,
       asset.chainId,
-      asset?.native?.balance?.amount,
-      asset?.native?.balance?.display,
+      asset.balance.capped?.amount,
+      asset.native.balance.amount,
+      displayWithApproximation,
     ],
   );
 

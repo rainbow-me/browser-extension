@@ -21,7 +21,117 @@ const IGNORED_ERRORS: (string | RegExp)[] = [
   "Duplicate script ID 'inpage'",
   'The page keeping the extension port is moved into back/forward cache, so the message channel is closed.',
   'The browser is shutting down.',
+  /^redacted$/i,
 ];
+
+const enhanceHttpErrorBreadcrumb = (
+  breadcrumb: Sentry.Breadcrumb,
+  status: number,
+  requestId?: string,
+  traceId?: string,
+): Sentry.Breadcrumb => {
+  const parts = [
+    breadcrumb.message ?? '',
+    `(HTTP error: status ${status}`,
+    requestId ? `requestId: ${requestId}` : '',
+    traceId ? `traceId: ${traceId}` : '',
+    ')',
+  ].filter(Boolean);
+
+  return {
+    ...breadcrumb,
+    data: {
+      ...breadcrumb.data,
+      status,
+      ...(requestId && { requestId }),
+      ...(traceId && { traceId }),
+    },
+    message: parts.join(' '),
+  };
+};
+
+const successStatusCodeRange = [200, 400] as const;
+
+const beforeBreadcrumb = (
+  breadcrumb: Sentry.Breadcrumb,
+  hint?: Sentry.BreadcrumbHint,
+): Sentry.Breadcrumb | null => {
+  try {
+    const category = breadcrumb.category;
+
+    if (category === 'fetch' && hint) {
+      if ('response' in hint && hint.response) {
+        const response = hint.response as Response;
+        const status = response.status;
+
+        if (
+          typeof status === 'number' &&
+          (status < successStatusCodeRange[0] ||
+            status >= successStatusCodeRange[1])
+        ) {
+          const headers = response.headers as Headers | undefined;
+          const requestId = headers?.get('x-request-id') ?? undefined;
+          const traceId = headers?.get('x-trace-id') ?? undefined;
+
+          return enhanceHttpErrorBreadcrumb(
+            breadcrumb,
+            status,
+            requestId,
+            traceId,
+          );
+        }
+
+        return breadcrumb;
+      }
+
+      return {
+        ...breadcrumb,
+        data: {
+          ...breadcrumb.data,
+          hint,
+        },
+      };
+    }
+
+    if (category === 'xhr' && hint && 'xhr' in hint && hint.xhr) {
+      const xhr = hint.xhr as XMLHttpRequest;
+      const status = xhr.status;
+
+      if (
+        typeof status === 'number' &&
+        (status < successStatusCodeRange[0] ||
+          status >= successStatusCodeRange[1])
+      ) {
+        const rawHeaders = xhr.getAllResponseHeaders?.() ?? '';
+        const headerMap = rawHeaders
+          .trim()
+          .split(/[\r\n]+/)
+          .reduce<Record<string, string>>((acc, line) => {
+            const separatorIndex = line.indexOf(':');
+            if (separatorIndex !== -1)
+              acc[line.slice(0, separatorIndex).toLowerCase()] = line
+                .slice(separatorIndex + 1)
+                .trim();
+            return acc;
+          }, {});
+
+        const requestId = headerMap['x-request-id'];
+        const traceId = headerMap['x-trace-id'];
+
+        return enhanceHttpErrorBreadcrumb(
+          breadcrumb,
+          status,
+          requestId,
+          traceId,
+        );
+      }
+    }
+  } catch (error) {
+    // we should no trigger a logger.error or similar here, as it would go through this method again and again, so we opt to ignore errors for now
+  }
+
+  return breadcrumb;
+};
 
 function detectPopupContext() {
   if (chrome.extension.getViews({ type: 'popup' }).some((v) => v === window))
@@ -126,11 +236,7 @@ const INTEGRATIONS: Array<{
 ];
 
 export function initializeSentry(entrypoint: 'popup' | 'background') {
-  if (
-    process.env.IS_DEV !== 'true' &&
-    process.env.IS_TESTING !== 'true' &&
-    process.env.SENTRY_DSN
-  ) {
+  if (process.env.IS_DEV !== 'true' && process.env.SENTRY_DSN) {
     try {
       const contextIntegrations = INTEGRATIONS.filter(
         (i) => i.on === entrypoint || i.on === 'shared',
@@ -152,12 +258,25 @@ export function initializeSentry(entrypoint: 'popup' | 'background') {
           ? 'internal'
           : 'production',
         ignoreErrors: IGNORED_ERRORS,
+        beforeBreadcrumb,
       });
 
       Sentry.setTag('entrypoint', entrypoint);
 
+      // only in popup thread
       if (entrypoint === 'popup')
         Sentry.setTag('popupType', detectPopupContext());
+
+      // only in background thread
+      if (entrypoint === 'background')
+        void (
+          // not blocking
+          import('../state/deviceId') // only import in background thread
+            .then((m) => m.useDeviceIdStore.getState().deviceId)
+            .then((deviceId) => {
+              setSentryUser({ deviceId });
+            })
+        );
 
       const lazyIntegrations = contextIntegrations
         .filter((i) => i.lazy === true)

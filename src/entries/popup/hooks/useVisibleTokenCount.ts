@@ -10,6 +10,7 @@ import { useCustomNetworkAssets } from '~/core/resources/assets/customNetworkAss
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
 import { ParsedUserAsset } from '~/core/types/assets';
+import { getCappedAmount } from '~/core/utils/assets';
 
 export const useVisibleTokenCount = () => {
   const { currentAddress: address } = useCurrentAddressStore();
@@ -65,8 +66,7 @@ export const useVisibleTokenCount = () => {
     () =>
       combinedAssets.sort(
         (a: ParsedUserAsset, b: ParsedUserAsset) =>
-          parseFloat(b?.native?.balance?.amount) -
-          parseFloat(a?.native?.balance?.amount),
+          getCappedAmount(b) - getCappedAmount(a),
       ),
     [combinedAssets],
   );

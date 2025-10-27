@@ -9,7 +9,7 @@ import { useWalletBackupsStore } from '~/core/state/walletBackups';
 import { useWalletNamesStore } from '~/core/state/walletNames';
 import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
-import { formatDate } from '~/core/utils/formatDate';
+import { formatRelativeDate } from '~/core/utils/formatDate';
 import { getSettingWallets } from '~/core/utils/settings';
 import { Box, Inline, Symbol, Text } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
@@ -123,7 +123,7 @@ export function WalletDetails() {
   const [wallet, setWallet] = useState<KeychainWallet | null>();
   const { currentAddress, setCurrentAddress } = useCurrentAddressStore();
   const { unhideWallet, hiddenWallets } = useHiddenWalletsStore();
-  const { visibleWallets } = useWallets();
+  const { visibleWallets, fetchWallets } = useWallets();
   const { deleteWalletName } = useWalletNamesStore();
   const [createWalletAddress, setCreateWalletAddress] = useState<Address>();
   const [showEnterPassword, setShowEnterPassword] = useState(false);
@@ -172,7 +172,8 @@ export function WalletDetails() {
     deleteWalletName({ address });
     deleteWalletBackup({ address });
 
-    if (visibleWallets.length > 1) {
+    const { data: updatedVisibleWallets = [] } = await fetchWallets();
+    if (updatedVisibleWallets.length > 0) {
       // set current address to the next account if you deleted that one
       if (address === currentAddress) {
         const deletedIndex = visibleWallets.findIndex(
@@ -364,7 +365,7 @@ export function WalletDetails() {
               >
                 {i18n.t(
                   'settings.privacy_and_security.wallets_and_keys.wallet_details.last_backed_up',
-                  { date: formatDate(walletBackedUpInfo?.timestamp) },
+                  { date: formatRelativeDate(walletBackedUpInfo?.timestamp) },
                 )}
               </Text>
             </Box>

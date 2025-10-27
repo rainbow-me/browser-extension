@@ -108,6 +108,7 @@ export function PasswordInput({
             variant="transparent"
             symbol={!visible ? 'eye' : 'eye.slash.fill'}
             onClick={toggleVisibility}
+            testId="password-visibility-button"
           />
         </Box>
       </Box>

@@ -2,11 +2,15 @@ import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, it } from 'vitest';
 
 import {
+  checkExtensionURL,
   checkWalletName,
+  findElementByTestIdAndClick,
   getExtensionIdByName,
   getRootUrl,
   importWalletFlow,
   initDriverWithOptions,
+  navigateToSettings,
+  typeOnTextInput,
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
 
@@ -49,5 +53,23 @@ describe('Import wallet with a secret phrase flow', () => {
       rootURL,
       TEST_VARIABLES.SEED_PHRASE_24.ADDRESS,
     );
+  });
+
+  it('should be able to reset Rainbow via settings', async () => {
+    await navigateToSettings(driver, rootURL);
+    await findElementByTestIdAndClick({ id: 'wallets-and-keys', driver });
+    await findElementByTestIdAndClick({ id: 'wipe-wallets', driver });
+
+    await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
+    await findElementByTestIdAndClick({ id: 'continue-button', driver });
+
+    await findElementByTestIdAndClick({ id: 'wallet-wipe-check', driver });
+    await findElementByTestIdAndClick({ id: 'wipe-wallets', driver });
+
+    await findElementByTestIdAndClick({
+      id: 'wipe-wallet-confirm-button',
+      driver,
+    });
+    await checkExtensionURL(driver, 'welcome');
   });
 });
