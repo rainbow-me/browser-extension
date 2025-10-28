@@ -1,6 +1,14 @@
 /* eslint-disable no-await-in-loop */
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+} from 'vitest';
 
 import {
   delayTime,
@@ -13,6 +21,7 @@ import {
   initDriverWithOptions,
   passSecretQuiz,
   querySelector,
+  takeScreenshotOnFailure,
   typeOnTextInput,
   waitAndClick,
 } from '../helpers';
@@ -35,6 +44,14 @@ describe('New wallet flow', () => {
   });
 
   afterAll(async () => driver?.quit());
+
+  beforeEach<{ driver: WebDriver }>(async (context) => {
+    context.driver = driver;
+  });
+
+  afterEach<{ driver: WebDriver }>(async (context) => {
+    await takeScreenshotOnFailure(context);
+  });
 
   // Create a new wallet
   it('should be able create a new wallet', async () => {

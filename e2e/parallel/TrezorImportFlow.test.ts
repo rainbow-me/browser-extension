@@ -1,5 +1,13 @@
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+} from 'vitest';
 
 import {
   checkWalletName,
@@ -10,6 +18,7 @@ import {
   getRootUrl,
   importHardwareWalletFlow,
   initDriverWithOptions,
+  takeScreenshotOnFailure,
 } from '../helpers';
 import { HARDWARE_WALLETS } from '../walletVariables';
 
@@ -32,6 +41,14 @@ describe.runIf(browser !== 'firefox')(
       rootURL += extensionId;
     });
     afterAll(async () => driver?.quit());
+
+    beforeEach<{ driver: WebDriver }>(async (context) => {
+      context.driver = driver;
+    });
+
+    afterEach<{ driver: WebDriver }>(async (context) => {
+      await takeScreenshotOnFailure(context);
+    });
 
     it('should be able import a wallet via hw wallet', async () => {
       await importHardwareWalletFlow(driver, rootURL, 'trezor');

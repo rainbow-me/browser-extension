@@ -1,6 +1,14 @@
 /* eslint-disable no-await-in-loop */
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+} from 'vitest';
 
 import {
   delayTime,
@@ -17,6 +25,7 @@ import {
   navigateToSettings,
   passSecretQuiz,
   querySelector,
+  takeScreenshotOnFailure,
   typeOnTextInput,
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
@@ -38,6 +47,14 @@ describe('Navigate Settings & Privacy and its flows', () => {
     rootURL += extensionId;
   });
   afterAll(async () => await driver?.quit());
+
+  beforeEach<{ driver: WebDriver }>(async (context) => {
+    context.driver = driver;
+  });
+
+  afterEach<{ driver: WebDriver }>(async (context) => {
+    await takeScreenshotOnFailure(context);
+  });
 
   it('should be able import a wallet via seed', async () => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);

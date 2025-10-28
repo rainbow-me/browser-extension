@@ -1,5 +1,12 @@
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, it } from 'vitest';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  it,
+} from 'vitest';
 
 import {
   checkExtensionURL,
@@ -10,6 +17,7 @@ import {
   importWalletFlow,
   initDriverWithOptions,
   navigateToSettings,
+  takeScreenshotOnFailure,
   typeOnTextInput,
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
@@ -31,6 +39,14 @@ describe('Import wallet with a secret phrase flow', () => {
     rootURL += extensionId;
   });
   afterAll(async () => driver?.quit());
+
+  beforeEach<{ driver: WebDriver }>(async (context) => {
+    context.driver = driver;
+  });
+
+  afterEach<{ driver: WebDriver }>(async (context) => {
+    await takeScreenshotOnFailure(context);
+  });
 
   it('should be able import a wallet via seed', async () => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.EMPTY_WALLET.SECRET);

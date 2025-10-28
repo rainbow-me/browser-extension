@@ -1,5 +1,13 @@
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+} from 'vitest';
 
 import {
   delayTime,
@@ -18,6 +26,7 @@ import {
   querySelector,
   shortenAddress,
   switchWallet,
+  takeScreenshotOnFailure,
   typeOnTextInput,
   waitUntilElementByTestIdIsPresent,
 } from '../helpers';
@@ -41,6 +50,14 @@ describe('Watch wallet then add more and switch between them', () => {
   });
 
   afterAll(async () => driver?.quit());
+
+  beforeEach<{ driver: WebDriver }>(async (context) => {
+    context.driver = driver;
+  });
+
+  afterEach<{ driver: WebDriver }>(async (context) => {
+    await takeScreenshotOnFailure(context);
+  });
 
   // Watch a wallet
   it('should be able watch a wallet', async () => {
