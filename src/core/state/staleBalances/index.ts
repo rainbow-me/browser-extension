@@ -107,7 +107,7 @@ export const useStaleBalancesStore = createRainbowStore<StaleBalancesState>(
         const staleBalancesForChain = staleBalancesForUser[chainId];
         for (const staleBalance of Object.values(staleBalancesForChain)) {
           if (typeof staleBalance.expirationTime === 'number') {
-            tokenList.push(`${chainId}.${staleBalance.address}`);
+            tokenList.push(`${staleBalance.address}:${chainId}`);
           }
         }
       }

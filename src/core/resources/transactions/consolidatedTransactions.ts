@@ -134,8 +134,21 @@ export async function consolidatedTransactionsQueryFunction({
       currency,
     );
 
+    // Calculate cutoff from the oldest transaction timestamp
+    // This prevents custom network transactions from being duplicated when paginating
+    const cutoff =
+      consolidatedTransactions.length > 0
+        ? Math.min(
+            ...consolidatedTransactions
+              .filter((tx) => tx.status !== 'pending')
+              .map((tx) =>
+                'minedAt' in tx && tx.minedAt ? tx.minedAt : Infinity,
+              ),
+          )
+        : undefined;
+
     return {
-      cutoff: undefined,
+      cutoff: cutoff === Infinity ? undefined : cutoff,
       nextPage: response?.data?.pagination?.cursor ?? undefined,
       transactions: consolidatedTransactions,
     };

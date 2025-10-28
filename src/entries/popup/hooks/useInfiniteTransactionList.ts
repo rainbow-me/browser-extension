@@ -74,24 +74,60 @@ export const useInfiniteTransactionList = ({
   });
 
   const pages = data?.pages;
-  const cutoff = pages?.length ? pages[pages.length - 1]?.cutoff : null;
   const transactions = useMemo(
     () => pages?.flatMap((p) => p.transactions) || [],
     [pages],
   );
 
-  const transactionsAfterCutoff = useMemo(() => {
-    const allTransactions = transactions.concat(
-      currentAddressCustomNetworkTransactions,
-    );
-    if (!cutoff) return allTransactions;
-    const cutoffIndex = allTransactions.findIndex(
-      (tx) => tx.status !== 'pending' && tx.minedAt < cutoff,
-    );
-    if (!cutoffIndex || cutoffIndex === -1) return allTransactions;
+  // Calculate cutoff as the oldest transaction across ALL loaded pages
+  // This ensures custom network transactions are progressively shown as we paginate
+  const cutoff = useMemo(() => {
+    if (!transactions.length) return null;
+    const minedAtValues = transactions
+      .filter((tx) => tx.status !== 'pending' && 'minedAt' in tx && tx.minedAt)
+      .map((tx) => ('minedAt' in tx ? tx.minedAt : undefined))
+      .filter((minedAt): minedAt is number => minedAt !== undefined);
+    if (!minedAtValues.length) return null;
+    return Math.min(...minedAtValues);
+  }, [transactions]);
 
-    const transactionsAfterCutoff = [...allTransactions].slice(0, cutoffIndex);
-    return transactionsAfterCutoff;
+  const transactionsAfterCutoff = useMemo(() => {
+    // If no cutoff (initial state before any pages load), show all transactions
+    if (!cutoff) {
+      return transactions.concat(currentAddressCustomNetworkTransactions);
+    }
+
+    // Filter custom network transactions based on cutoff
+    // Cutoff represents the oldest backend transaction timestamp across ALL loaded pages
+    // We only show custom transactions that are >= cutoff
+    // This ensures we progressively reveal custom transactions as we paginate through time
+    // Example: Page 1 loads transactions >= 800, so we show custom >= 800
+    //          Page 2 loads transactions >= 500, so we show custom >= 500 (including previously hidden ones)
+    // Note: No deduplication needed - custom network transactions operate on different chains
+    // than backend transactions (custom chains vs supported chains)
+    const filteredCustomTransactions =
+      currentAddressCustomNetworkTransactions.filter(
+        (tx) => tx.status === 'pending' || (tx.minedAt && tx.minedAt >= cutoff),
+      );
+
+    // Find where backend transactions transition from >= cutoff to < cutoff
+    // This helps us insert custom transactions in the right chronological position
+    const cutoffIndex = transactions.findIndex(
+      (tx) => tx.status !== 'pending' && tx.minedAt && tx.minedAt < cutoff,
+    );
+
+    if (cutoffIndex === -1) {
+      // All backend transactions are newer than or equal to cutoff
+      // Just append filtered custom transactions (they'll be sorted correctly by selectTransactionsByDate)
+      return transactions.concat(filteredCustomTransactions);
+    }
+
+    // Return backend transactions up to the cutoff point, then add filtered custom transactions
+    // The final sorting by selectTransactionsByDate will ensure correct chronological order
+    return [
+      ...transactions.slice(0, cutoffIndex),
+      ...filteredCustomTransactions,
+    ];
   }, [currentAddressCustomNetworkTransactions, cutoff, transactions]);
 
   const formattedTransactions = useMemo(() => {
