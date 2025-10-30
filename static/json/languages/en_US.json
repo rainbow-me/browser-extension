@@ -1346,7 +1346,8 @@
     "error_title": "Unable to load activity",
     "error_message": "We couldn't fetch this transaction. Try again or head back to your activity.",
     "error_retry": "Try Again",
-    "error_back": "Back to Activity"
+    "error_back": "Back to Activity",
+    "loading_failed": "Loading Failed"
   },
   "tokens_tab": {
     "coinbase_title": "Deposit from Coinbase",

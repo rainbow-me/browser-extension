@@ -68,6 +68,7 @@ import { ActivityDetailsContentSkeleton } from '../Skeletons';
 import { CopyableValue, InfoRow } from '../TokenDetails/About';
 
 import { ActivityPill } from './ActivityPill';
+import { StatusPill } from './StatusPill';
 
 function ToFrom({ transaction }: { transaction: RainbowTransaction }) {
   const { from, to, contract, direction } = transaction;
@@ -508,13 +509,19 @@ function MoreOptions({
   revoke,
   onRevoke,
 }: {
-  transaction: RainbowTransaction;
+  transaction:
+    | Pick<RainbowTransaction, 'hash' | 'chainId' | 'explorer'>
+    | Pick<RainbowTransaction, 'hash' | 'chainId'>;
   revoke?: boolean;
-  onRevoke: () => void;
+  onRevoke?: () => void;
 }) {
-  const explorer = transaction?.explorer?.name
-    ? transaction.explorer
-    : getTransactionBlockExplorer(transaction);
+  const explorer =
+    'explorer' in transaction && transaction.explorer?.name
+      ? transaction.explorer
+      : getTransactionBlockExplorer({
+          hash: transaction.hash,
+          chainId: transaction.chainId,
+        });
   const hash = transaction.hash;
   return (
     <DropdownMenu>
@@ -576,7 +583,7 @@ function MoreOptions({
             >
               {i18n.t('token_details.view_on', { explorer: explorer.name })}
             </DropdownMenuItem>
-            {revoke ? (
+            {revoke && onRevoke && (
               <DropdownMenuItem
                 color="red"
                 symbolLeft="xmark.circle.fill"
@@ -584,7 +591,7 @@ function MoreOptions({
               >
                 {i18n.t('activity_details.revoke_approval')}
               </DropdownMenuItem>
-            ) : null}
+            )}
           </>
         )}
       </DropdownMenuContent>
@@ -635,7 +642,7 @@ function ActivityDetailsErrorState({
           )}
         </motion.div>
       </AnimatePresence>
-      <Stack alignHorizontal="center" gap="8px">
+      <Stack alignHorizontal="center" gap="8px" paddingBottom="16px">
         <Text align="center" size="16pt" weight="bold">
           {i18n.t('activity_details.error_title')}
         </Text>
@@ -728,34 +735,51 @@ export function ActivityDetails() {
   };
 
   const showErrorState = !isLoading && (!transaction || isError);
-  const navbarTitle = showErrorState
-    ? i18n.t('activity_details.error_title')
-    : undefined;
 
   let navbarTitleComponent: ReactNode | undefined;
   let navbarRightComponent: ReactNode | undefined;
 
-  if (!showErrorState) {
-    if (isLoading) {
-      navbarTitleComponent = <Skeleton width="120px" height="20px" />;
-      navbarRightComponent = <Skeleton circle width="32px" height="32px" />;
-    } else if (transaction) {
-      navbarTitleComponent = <ActivityPill transaction={transaction} />;
-      navbarRightComponent = (
-        <MoreOptions
-          transaction={transaction}
-          revoke={!!approvalToRevoke && !isWatchingWallet}
-          onRevoke={onRevoke}
-        />
-      );
-    }
+  if (isLoading) {
+    navbarTitleComponent = <Skeleton width="120px" height="20px" />;
+    navbarRightComponent = <Skeleton circle width="32px" height="32px" />;
+  } else if (showErrorState && hash && chainId) {
+    navbarTitleComponent = (
+      <StatusPill
+        status="failed"
+        title={i18n.t('activity_details.loading_failed')}
+        icon={
+          <Symbol
+            symbol="xmark.circle"
+            size={20}
+            color="red"
+            weight="semibold"
+          />
+        }
+      />
+    );
+    navbarRightComponent = (
+      <MoreOptions
+        transaction={{
+          hash,
+          chainId: Number(chainId) as ChainId,
+        }}
+      />
+    );
+  } else if (transaction) {
+    navbarTitleComponent = <ActivityPill transaction={transaction} />;
+    navbarRightComponent = (
+      <MoreOptions
+        transaction={transaction}
+        revoke={!!approvalToRevoke && !isWatchingWallet}
+        onRevoke={onRevoke}
+      />
+    );
   }
 
   return (
     <BottomSheet zIndex={zIndexes.ACTIVITY_DETAILS} show>
       <Navbar
         leftComponent={<Navbar.CloseButton onClick={backToHome} withinModal />}
-        title={navbarTitle}
         titleComponent={navbarTitleComponent}
         rightComponent={navbarRightComponent}
       />
