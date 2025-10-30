@@ -1,58 +1,64 @@
 import { i18n } from '~/core/languages';
-import { Box, Button, Inset, Text } from '~/design-system';
+import { shortcuts } from '~/core/references/shortcuts';
+import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
+import { ShortcutHint } from '~/entries/popup/components/ShortcutHint/ShortcutHint';
 
 export const ActivityErrorState = ({
   onRetry,
 }: {
   onRetry: () => Promise<void>;
 }) => {
-  const handleRetry = async () => {
-    await onRetry();
-  };
-
   return (
-    <Box
-      width="full"
-      height="full"
-      justifyContent="center"
-      alignItems="center"
-      paddingTop="104px"
+    <Stack
+      alignHorizontal="center"
+      gap="32px"
+      padding="24px"
+      paddingTop="48px"
+      paddingBottom="60px"
     >
-      <Box paddingBottom="14px">
-        <Text
-          align="center"
-          size="20pt"
-          weight="semibold"
-          color="labelTertiary"
-        >
+      <Symbol
+        symbol="exclamationmark.triangle.fill"
+        size={34}
+        color="labelQuaternary"
+      />
+      <Stack alignHorizontal="center" gap="16px">
+        <Text align="center" size="20pt" weight="bold" color="label">
           {i18n.t('activity.error_header')}
         </Text>
-      </Box>
-      <Inset horizontal="40px">
         <Text
           align="center"
-          size="12pt"
-          weight="medium"
-          color="labelQuaternary"
+          size="14pt"
+          weight="semibold"
+          color="labelTertiary"
+          whiteSpace="pre-wrap"
         >
           {i18n.t('activity.error_description')}
         </Text>
-      </Inset>
-      <Box
-        paddingTop="24px"
-        display="flex"
-        justifyContent="center"
-        width="full"
-      >
-        <Button
-          color="labelSecondary"
-          height="28px"
-          variant="transparent"
-          onClick={handleRetry}
+        <Box
+          as="button"
+          onClick={onRetry}
+          style={{
+            background: 'none',
+            border: 'none',
+            padding: 0,
+          }}
         >
-          {i18n.t('activity.error_retry')}
-        </Button>
-      </Box>
-    </Box>
+          <Inline
+            alignHorizontal="center"
+            alignVertical="center"
+            space="8px"
+            wrap={false}
+          >
+            <Text size="15pt" weight="semibold" color="label">
+              {i18n.t('activity.error_retry')}
+            </Text>
+            <ShortcutHint
+              hint={shortcuts.activity.REFRESH_TRANSACTIONS.display}
+              variant="flat"
+            />
+          </Inline>
+        </Box>
+      </Stack>
+    </Stack>
   );
 };
