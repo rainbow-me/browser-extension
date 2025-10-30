@@ -8,6 +8,7 @@ import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
+import { queryClient } from '~/core/react-query';
 import { shortcuts } from '~/core/references/shortcuts';
 import {
   useCurrentAddressStore,
@@ -74,6 +75,8 @@ import { useSearchableNFTs } from './useSearchableNFTs';
 import { useSearchableTokens } from './useSearchableTokens';
 import { useSearchableWallets } from './useSearchableWallets';
 import { handleExportAddresses } from './utils';
+
+const IS_DEV = process.env.IS_DEV === 'true';
 
 interface CommandOverride {
   [key: string]: Partial<ShortcutSearchItem>;
@@ -305,6 +308,14 @@ export const getStaticCommandInfo = (): CommandInfo => {
       searchTags: getSearchTags('wallets_and_keys'),
       symbol: 'key.fill',
       symbolSize: 16.5,
+      type: SearchItemType.Shortcut,
+    },
+    refreshData: {
+      name: getCommandName('refresh_data'),
+      page: PAGES.HOME,
+      searchTags: getSearchTags('refresh_data'),
+      symbol: 'clock.arrow.2.circlepath',
+      symbolSize: 15,
       type: SearchItemType.Shortcut,
     },
     viewFullScreen: {
@@ -890,6 +901,16 @@ export const useCommands = (
     setHideSmallBalances(!hideSmallBalances);
   }, [hideSmallBalances, setHideSmallBalances]);
 
+  const handleRefreshData = React.useCallback(async () => {
+    // Reset all queries to their initial state, clearing data and resetting placeholderData
+    // This ensures placeholderData receives undefined instead of stale data
+    // resetQueries automatically refetches active queries
+    await queryClient.resetQueries();
+    triggerToast({
+      title: i18n.t('command_k.refresh_data_toast.title'),
+    });
+  }, []);
+
   const openProfile = React.useCallback(
     (command?: ENSOrAddressSearchItem | WalletSearchItem | ContactSearchItem) =>
       goToNewTab({
@@ -1153,6 +1174,10 @@ export const useCommands = (
           navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS, {
             state: { direction: 'upRight', navbarIcon: 'ex' },
           }),
+      },
+      refreshData: {
+        action: handleRefreshData,
+        hidden: !IS_DEV,
       },
       viewFullScreen: {
         action: () => goToNewTab({ url: POPUP_URL }),
@@ -1501,6 +1526,7 @@ export const useCommands = (
       hideAssetBalances,
       handleToggleHiddenSmallBalances,
       hideSmallBalances,
+      handleRefreshData,
       currentTheme,
       previousPageState.selectedCommand,
       isContactAdded,
