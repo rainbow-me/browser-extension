@@ -9,7 +9,11 @@ import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useCurrentAddressStore } from '~/core/state';
+import {
+  useCurrentAddressStore,
+  useNonceStore,
+  usePendingTransactionsStore,
+} from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
@@ -23,6 +27,7 @@ import { usePinnedAssetStore } from '~/core/state/pinnedAssets';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { useSavedEnsNamesStore } from '~/core/state/savedEnsNames';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
+import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
 import { ParsedSearchAsset, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { KeychainType } from '~/core/types/keychainTypes';
@@ -317,6 +322,15 @@ export const getStaticCommandInfo = (): CommandInfo => {
       shouldRemainOnActiveRoute: true,
       searchTags: getSearchTags('export_addresses'),
       symbol: 'doc.on.doc',
+      symbolSize: 15,
+      type: SearchItemType.Shortcut,
+    },
+    clearTransactions: {
+      name: getCommandName('clear_transactions'),
+      page: PAGES.HOME,
+      searchTags: getSearchTags('clear_transactions'),
+      shouldRemainOnActiveRoute: true,
+      symbol: 'xmark.circle.fill',
       symbolSize: 15,
       type: SearchItemType.Shortcut,
     },
@@ -1142,6 +1156,23 @@ export const useCommands = (
       },
       viewFullScreen: {
         action: () => goToNewTab({ url: POPUP_URL }),
+      },
+      clearTransactions: {
+        action: () => {
+          const { clearNonces } = useNonceStore.getState();
+          const { clearPendingTransactions } =
+            usePendingTransactionsStore.getState();
+          const { clearAllCustomNetworkTransactions } =
+            useCustomNetworkTransactionsStore.getState();
+          clearNonces();
+          clearPendingTransactions();
+          clearAllCustomNetworkTransactions();
+          triggerToast({
+            title: i18n.t(
+              'settings.transactions.clear_transactions_and_nonces_success',
+            ),
+          });
+        },
       },
 
       // PAGE: ADD_WALLET
