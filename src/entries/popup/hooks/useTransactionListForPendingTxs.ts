@@ -69,7 +69,7 @@ function watchForPendingTransactionsReportedByRainbowBackend({
   latestTransactions: Map<ChainId, RainbowTransaction | null>;
 }) {
   const {
-    setPendingTransactions,
+    removePendingTransactionsForAddress,
     pendingTransactions: storePendingTransactions,
   } = usePendingTransactionsStore.getState();
   const pendingTransactions = storePendingTransactions[currentAddress] || [];
@@ -77,7 +77,6 @@ function watchForPendingTransactionsReportedByRainbowBackend({
   const { currentCurrency } = useCurrentCurrencyStore.getState();
 
   const newlyConfirmedTransactions: RainbowTransaction[] = [];
-  const updatedPendingTransactions: RainbowTransaction[] = [];
 
   pendingTransactions.forEach((tx) => {
     const txNonce = tx.nonce || 0;
@@ -88,8 +87,6 @@ function watchForPendingTransactionsReportedByRainbowBackend({
     const newlyConfirmed = latestTxNonce && txNonce <= latestTxNonce;
     if (newlyConfirmed) {
       newlyConfirmedTransactions.push(tx);
-    } else {
-      updatedPendingTransactions.push(tx);
     }
   });
 
@@ -130,8 +127,14 @@ function watchForPendingTransactionsReportedByRainbowBackend({
     });
   }
 
-  setPendingTransactions({
-    address: currentAddress,
-    pendingTransactions: updatedPendingTransactions,
-  });
+  // Remove confirmed transactions, keep the rest as-is
+  if (newlyConfirmedTransactions.length > 0) {
+    removePendingTransactionsForAddress({
+      address: currentAddress,
+      transactionsToRemove: newlyConfirmedTransactions.map((tx) => ({
+        hash: tx.hash,
+        chainId: tx.chainId,
+      })),
+    });
+  }
 }
