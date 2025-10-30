@@ -179,7 +179,7 @@ export const crosschainSwap = async ({
   const transaction = {
     data: parameters.quote.data,
     value: parameters.quote.value?.toString(),
-    asset: parameters.assetToBuy,
+    asset: parameters.assetToSell,
     changes: [
       {
         direction: 'out',
@@ -195,7 +195,7 @@ export const crosschainSwap = async ({
     from: parameters.quote.from as Address,
     to: parameters.quote.to as Address,
     hash: swap.hash as TxHash,
-    chainId: parameters.chainId,
+    chainId: parameters.assetToSell.chainId,
     nonce: swap.nonce,
     status: 'pending',
     type: isBridge ? 'bridge' : 'swap',

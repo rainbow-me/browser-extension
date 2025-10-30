@@ -31,7 +31,6 @@ import {
   convertAmountToBalanceDisplay,
   convertAmountToNativeDisplay,
   convertAmountToPercentageDisplay,
-  convertAmountToRawAmount,
   convertRawAmountToDecimalFormat,
 } from './numbers';
 import { isLowerCaseMatch } from './strings';
@@ -495,10 +494,7 @@ export const fetchAssetWithPrice = async ({
     return parseUserAssetBalances({
       asset: assetToReturn,
       currency,
-      balance: convertAmountToRawAmount(
-        parsedAsset.balance.amount,
-        parsedAsset.decimals,
-      ),
+      balance: parsedAsset.balance.amount.toString(),
       smallBalance: false,
     });
   }

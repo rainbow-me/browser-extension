@@ -17,12 +17,16 @@
   if native amount is 0, show no value on top and token amount on bottom
 */
 
+import { capitalize } from 'lodash';
+
 import { i18n } from '~/core/languages';
+import { chainIdToNameMapping } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { isParsedUserAsset } from '~/core/utils/assets';
 import { formatCurrency, formatNumber } from '~/core/utils/formatNumber';
 import { getApprovalLabel } from '~/core/utils/transactions';
 import { Box, Inline, Text, TextOverflow } from '~/design-system';
+import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { ContractIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
 
 const approvalTypeValues = (transaction: RainbowTransaction) => {
@@ -72,9 +76,34 @@ const swapTypeValues = (changes: RainbowTransaction['changes']) => {
   return [valueOut, valueIn];
 };
 
+const bridgeTypeValues = (changes: RainbowTransaction['changes']) => {
+  const tokenIn = changes?.filter((c) => c?.direction === 'in')[0]?.asset;
+  const tokenOut = changes?.filter((c) => c?.direction === 'out')[0]?.asset;
+
+  if (!tokenIn || !tokenOut) return;
+
+  const chainName = chainIdToNameMapping[tokenIn.chainId];
+  const destinationChainName = chainName ? capitalize(chainName) : 'Unknown';
+
+  const topValue = (
+    <Inline alignVertical="center" space="4px">
+      <TextOverflow color="labelTertiary" size="12pt" weight="semibold">
+        to {destinationChainName}
+      </TextOverflow>
+      <ChainBadge chainId={tokenIn.chainId} size={12} />
+    </Inline>
+  );
+
+  const valueIn = `+${formatNumber(tokenIn.balance.amount)} ${tokenIn.symbol}`;
+
+  return [topValue, valueIn];
+};
+
 const activityValues = (transaction: RainbowTransaction) => {
   const { changes, direction, type, asset: _asset } = transaction;
   if (['swap', 'wrap', 'unwrap'].includes(type)) return swapTypeValues(changes);
+  if (type === 'bridge' && changes?.length === 2)
+    return bridgeTypeValues(changes);
   if (['approve', 'revoke'].includes(type))
     return approvalTypeValues(transaction);
 
