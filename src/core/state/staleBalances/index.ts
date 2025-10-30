@@ -1,7 +1,8 @@
-import { Address, isAddress } from 'viem';
+import { Address } from 'viem';
 
 import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { ChainId } from '~/core/types/chains';
+import { isAddressOrEth } from '~/core/utils/platform';
 
 const TIME_TO_WATCH = 600000;
 
@@ -117,7 +118,7 @@ export const useStaleBalancesStore = createRainbowStore<StaleBalancesState>(
           if (
             typeof staleBalance.expirationTime === 'number' &&
             staleBalance.address &&
-            isAddress(staleBalance.address)
+            isAddressOrEth(staleBalance.address)
           ) {
             tokenList.push(`${staleBalance.address}:${chainId}`);
           }

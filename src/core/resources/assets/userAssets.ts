@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Address, isAddress } from 'viem';
+import { Address } from 'viem';
 
 import { platformHttp } from '~/core/network/platform';
 import {
@@ -21,7 +21,10 @@ import {
 import { ChainId } from '~/core/types/chains';
 import type { GetAssetUpdatesResponse as PlatformGetAssetUpdatesResponse } from '~/core/types/gen/platform/assets/updates';
 import { getSupportedChains } from '~/core/utils/chains';
-import { convertPlatformAssetToAssetApiResponse } from '~/core/utils/platform';
+import {
+  convertPlatformAssetToAssetApiResponse,
+  isAddressOrEth,
+} from '~/core/utils/platform';
 import { RainbowError, logger } from '~/logger';
 
 import { parseUserAssets } from './common';
@@ -478,8 +481,8 @@ function extractForcedTokens(param: string) {
     const [address, chainIdStr] = token.split(':');
     if (!address || !chainIdStr) return false;
 
-    // Validate address is a valid Ethereum address
-    if (!isAddress(address)) return false;
+    // Validate address is a valid Ethereum address or ETH
+    if (!isAddressOrEth(address)) return false;
 
     // Validate chainId is a valid number
     const chainId = parseInt(chainIdStr, 10);

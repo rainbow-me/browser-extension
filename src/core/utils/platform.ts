@@ -99,7 +99,7 @@ const toOptionalAddress = (value?: string) => {
   return value;
 };
 
-const isAddressOrEth = (value: string): value is AddressOrEth => {
+export const isAddressOrEth = (value: string): value is AddressOrEth => {
   return isAddress(value) || value === ETH_ADDRESS;
 };
 
