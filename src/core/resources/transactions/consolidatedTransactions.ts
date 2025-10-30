@@ -95,17 +95,17 @@ export async function consolidatedTransactionsQueryFunction({
 }: QueryFunctionArgs<
   typeof consolidatedTransactionsQueryKey
 >): Promise<_QueryResult> {
-  try {
-    const supportedTransactionsChainIds = useNetworkStore
-      .getState()
-      .getSupportedTransactionsChainIds();
-    const chainIds = userChainIds.filter((id) =>
-      supportedTransactionsChainIds.includes(id),
-    );
-    if (!address || chainIds.length === 0) {
-      return { transactions: [] };
-    }
+  const supportedTransactionsChainIds = useNetworkStore
+    .getState()
+    .getSupportedTransactionsChainIds();
+  const chainIds = userChainIds.filter((id) =>
+    supportedTransactionsChainIds.includes(id),
+  );
+  if (!address || chainIds.length === 0) {
+    return { transactions: [] };
+  }
 
+  try {
     const params: Record<string, string> = {
       address,
       currency: currency.toLowerCase(),
@@ -153,17 +153,18 @@ export async function consolidatedTransactionsQueryFunction({
       transactions: consolidatedTransactions,
     };
   } catch (e) {
-    // we don't bother with fetching cache and returning stale data here because we probably have previous page data already
-    if (!(e instanceof Error && e.name === 'AbortError'))
-      // abort errors are expected
-      logger.error(
-        new RainbowError('consolidatedTransactionsQueryFunction: '),
-        {
-          message: e,
-        },
-      );
+    // Abort errors are expected and should not be logged or thrown
+    if (e instanceof Error && e.name === 'AbortError') {
+      throw e; // Re-throw abort errors so React Query handles them properly
+    }
 
-    return { transactions: [] };
+    // For other errors, log and throw so React Query preserves previous data via placeholderData
+    logger.error(new RainbowError('consolidatedTransactionsQueryFunction: '), {
+      message: e,
+    });
+
+    // Throw the error so React Query treats it as a failure and preserves previous data
+    throw e;
   }
 }
 
@@ -213,5 +214,7 @@ export function useConsolidatedTransactions<
     initialPageParam: null as string | null,
     refetchInterval: CONSOLIDATED_TRANSACTIONS_INTERVAL,
     retry: 3,
+    gcTime: 24 * 60 * 60 * 1000, // 24 hours - keep in cache for a day
+    placeholderData: (previousData) => previousData, // Preserve previous data on error
   });
 }
