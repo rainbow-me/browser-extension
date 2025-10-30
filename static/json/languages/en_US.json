@@ -1315,7 +1315,7 @@
     "loading_more": "Loading more...",
     "no_value": "No value",
     "error_header": "Unable to load activity",
-    "error_description": "We couldn't fetch your transactions. Please try again.",
+    "error_description": "We couldn't find your transactions.\nPlease try again.",
     "error_retry": "Try Again"
   },
   "activity_details": {
@@ -1366,7 +1366,10 @@
     "send_description_3": "for QR code",
     "unknown_token": "Unknown Token",
     "small_balances_show_more": "Show more",
-    "small_balances_show_less": "Show less"
+    "small_balances_show_less": "Show less",
+    "error_header": "Unable to load balances",
+    "error_description": "We couldn't fetch your token balances.\nPlease try again.",
+    "error_retry": "Try Again"
   },
   "nfts": {
     "empty_state_header": "NFTs",
