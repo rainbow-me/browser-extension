@@ -45,9 +45,9 @@ export const ActivityErrorState = ({
         width="full"
       >
         <Button
-          color="labelSecondary"
-          height="28px"
-          variant="transparent"
+          color="fillSecondary"
+          height="32px"
+          variant="flat"
           onClick={handleRetry}
         >
           {i18n.t('activity.error_retry')}
