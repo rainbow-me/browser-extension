@@ -1,4 +1,4 @@
-import { Address } from 'viem';
+import { Address, isAddress } from 'viem';
 
 import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { ChainId } from '~/core/types/chains';
@@ -102,11 +102,23 @@ export const useStaleBalancesStore = createRainbowStore<StaleBalancesState>(
       const staleBalancesForUser = staleBalances[address];
       const tokenList: string[] = [];
 
+      if (!staleBalancesForUser) {
+        return '';
+      }
+
       for (const c of Object.keys(staleBalancesForUser)) {
         const chainId = parseInt(c, 10);
+        if (isNaN(chainId)) continue;
+
         const staleBalancesForChain = staleBalancesForUser[chainId];
+        if (!staleBalancesForChain) continue;
+
         for (const staleBalance of Object.values(staleBalancesForChain)) {
-          if (typeof staleBalance.expirationTime === 'number') {
+          if (
+            typeof staleBalance.expirationTime === 'number' &&
+            staleBalance.address &&
+            isAddress(staleBalance.address)
+          ) {
             tokenList.push(`${staleBalance.address}:${chainId}`);
           }
         }
