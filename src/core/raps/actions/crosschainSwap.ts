@@ -199,6 +199,7 @@ export const crosschainSwap = async ({
     nonce: swap.nonce,
     status: 'pending',
     type: isBridge ? 'bridge' : 'swap',
+    ...(isBridge ? { direction: 'in' } : {}), // bridge transactions should show the incoming amount as the value in activities
     ...gasParams,
   } satisfies NewTransaction;
 
