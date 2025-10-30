@@ -289,8 +289,117 @@ export const useInfiniteTransactionList = ({
 
   const refetchTransactions = async () => {
     setManuallyRefetching(true);
-    await refetch();
-    setManuallyRefetching(false);
+    try {
+      const queryKey = consolidatedTransactionsQueryKey({
+        address,
+        currency,
+        userChainIds: supportedChainIds,
+      });
+
+      // Get current cached data
+      const currentData = queryClient.getQueryData<{
+        pages: Array<{
+          transactions: RainbowTransaction[];
+          cutoff?: number;
+          nextPage?: string;
+        }>;
+        pageParams: Array<string | null>;
+      }>(queryKey);
+
+      // Fetch only the first page to get new transactions
+      // Use fetchInfiniteQuery to properly handle the infinite query structure
+      const fetchResult = await queryClient.fetchInfiniteQuery({
+        queryKey,
+        queryFn: consolidatedTransactionsQueryFunction,
+        getNextPageParam: () => undefined, // Only fetch first page
+        initialPageParam: null,
+      });
+      const firstPage = fetchResult.pages[0];
+
+      if (currentData && firstPage) {
+        // Create a set of existing transaction hashes for deduplication
+        const existingHashes = new Set(
+          currentData.pages.flatMap((page) =>
+            page.transactions.map((tx) => `${tx.hash}_${tx.chainId}`),
+          ),
+        );
+
+        // Filter out transactions that already exist
+        const newTransactions = firstPage.transactions.filter(
+          (tx) => !existingHashes.has(`${tx.hash}_${tx.chainId}`),
+        );
+
+        // If there are new transactions, merge them with existing pages
+        if (newTransactions.length > 0) {
+          queryClient.setQueryData<{
+            pages: Array<{
+              transactions: RainbowTransaction[];
+              cutoff?: number;
+              nextPage?: string;
+            }>;
+            pageParams: Array<string | null>;
+          }>(queryKey, (oldData) => {
+            if (!oldData) {
+              return {
+                pages: [firstPage],
+                pageParams: [null],
+              };
+            }
+
+            // Update the first page with new transactions, preserving existing ones
+            const existingFirstPage = oldData.pages[0];
+            const mergedFirstPageTransactions = [
+              ...newTransactions,
+              ...existingFirstPage.transactions,
+            ];
+
+            // Sort by timestamp (newest first) and deduplicate
+            const seen = new Set<string>();
+            const deduplicated = mergedFirstPageTransactions.filter((tx) => {
+              const key = `${tx.hash}_${tx.chainId}`;
+              if (seen.has(key)) return false;
+              seen.add(key);
+              return true;
+            });
+
+            // Sort by minedAt (newest first) or keep pending at top
+            const sorted = deduplicated.sort((a, b) => {
+              if (a.status === 'pending' && b.status !== 'pending') return -1;
+              if (a.status !== 'pending' && b.status === 'pending') return 1;
+              const aTime =
+                a.status !== 'pending' && 'minedAt' in a ? a.minedAt : 0;
+              const bTime =
+                b.status !== 'pending' && 'minedAt' in b ? b.minedAt : 0;
+              return bTime - aTime;
+            });
+
+            return {
+              ...oldData,
+              pages: [
+                {
+                  ...existingFirstPage,
+                  transactions: sorted,
+                  cutoff: firstPage.cutoff,
+                  nextPage: firstPage.nextPage,
+                },
+                ...oldData.pages.slice(1),
+              ],
+            };
+          });
+        }
+
+        // Invalidate to trigger a re-render with updated data
+        await queryClient.invalidateQueries({ queryKey });
+      } else {
+        // If no cached data, just refetch normally
+        await refetch();
+      }
+    } catch (error) {
+      // Fallback to normal refetch on error
+      await refetch();
+    } finally {
+      setManuallyRefetching(false);
+    }
   };
 
   useKeyboardShortcut({
@@ -312,5 +421,6 @@ export const useInfiniteTransactionList = ({
     transactions: formattedTransactions,
     virtualizer: infiniteRowVirtualizer,
     isRefetching: manuallyRefetching,
+    refetch: refetchTransactions,
   };
 };

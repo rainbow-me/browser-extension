@@ -1313,7 +1313,10 @@
     "empty_header": "No activity yet",
     "empty_description": "Once you start using your wallet, you will see your transactions here.",
     "loading_more": "Loading more...",
-    "no_value": "No value"
+    "no_value": "No value",
+    "error_header": "Unable to load activity",
+    "error_description": "We couldn't fetch your transactions. Please try again.",
+    "error_retry": "Try Again"
   },
   "activity_details": {
     "you": "You",
