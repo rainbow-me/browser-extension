@@ -58,6 +58,7 @@ import { ROUTES } from '../../urls';
 import { TokensSkeleton } from './Skeletons';
 import { TokenContextMenu } from './TokenDetails/TokenContextMenu';
 import { TokenMarkedHighlighter } from './TokenMarkedHighlighter';
+import { BalancesErrorState } from './Tokens/BalancesErrorState';
 
 const TokenRow = memo(function TokenRow({
   token,
@@ -131,17 +132,20 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
   );
 
   const {
-    data: userAssetsData,
+    data: userAssetsRawData,
     isLoading: isUserAssetsLoading,
+    error: userAssetsError,
     refetch: refetchUserAssets,
-  } = useUserAssets<ParsedUserAsset[]>(
-    {
-      address: currentAddress,
-      currency,
-    },
-    {
-      select: selectAssetsList,
-    },
+  } = useUserAssets({
+    address: currentAddress,
+    currency,
+  });
+
+  const isInitialLoading = isUserAssetsLoading && !userAssetsRawData;
+
+  const userAssetsData = useMemo(
+    () => (userAssetsRawData ? selectAssetsList(userAssetsRawData) : []),
+    [userAssetsRawData, selectAssetsList],
   );
 
   const { data: customNetworkAssetsData, refetch: refetchCustomNetworkAssets } =
@@ -259,8 +263,25 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderedAssets.length]);
 
-  if (isUserAssetsLoading || manuallyRefetchingTokens) {
+  if (isInitialLoading || manuallyRefetchingTokens) {
     return <TokensSkeleton />;
+  }
+
+  // Show error state only when there's an error, no assets, and initial loading is complete
+  // React Query's placeholderData will preserve previous data if available
+  if (userAssetsError && !hasAnyAssets && !isInitialLoading) {
+    return (
+      <BalancesErrorState
+        onRetry={async () => {
+          setManuallyRefetchingTokens(true);
+          await Promise.all([
+            refetchUserAssets(),
+            refetchCustomNetworkAssets(),
+          ]);
+          setManuallyRefetchingTokens(false);
+        }}
+      />
+    );
   }
 
   if (!hasAnyAssets) {
