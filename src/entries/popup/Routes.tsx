@@ -99,7 +99,7 @@ import { NewWatchWallet } from './pages/walletSwitcher/newWatchWallet';
 import { WatchWallet } from './pages/watchWallet';
 import { Welcome } from './pages/welcome';
 import { ROUTES } from './urls';
-import { getInputIsFocused } from './utils/activeElement';
+import { inputIsFocused } from './utils/activeElement';
 import { simulateTab } from './utils/simulateTab';
 import { zIndexes } from './utils/zIndexes';
 
@@ -1052,7 +1052,7 @@ const useGlobalShortcuts = () => {
     handler: (e: KeyboardEvent) => {
       // prevent scrolling with space
       if (e.key === shortcuts.global.OPEN_CONTEXT_MENU.key) {
-        if (!getInputIsFocused()) {
+        if (!inputIsFocused()) {
           e.preventDefault();
         }
       }
