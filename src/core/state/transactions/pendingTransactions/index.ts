@@ -18,12 +18,12 @@ export interface PendingTransactionsState {
     address: Address;
     pendingTransaction: RainbowTransaction;
   }) => void;
-  setPendingTransactions: ({
+  removePendingTransactionsForAddress: ({
     address,
-    pendingTransactions,
+    transactionsToRemove,
   }: {
     address: Address;
-    pendingTransactions: RainbowTransaction[];
+    transactionsToRemove: Array<Pick<RainbowTransaction, 'hash' | 'chainId'>>;
   }) => void;
   clearPendingTransactions: () => void;
 }
@@ -32,39 +32,78 @@ export const usePendingTransactionsStore =
   createRainbowStore<PendingTransactionsState>(
     (set, get) => ({
       pendingTransactions: {},
-      updatePendingTransaction: ({ address, pendingTransaction }) => {
-        const { pendingTransactions: currentPendingTransactions } = get();
-        const addressPendingTransactions =
-          currentPendingTransactions[address] || [];
+      updatePendingTransaction: ({ address, pendingTransaction }) =>
+        set(({ pendingTransactions: currentPendingTransactions }) => {
+          const addressPendingTransactions =
+            currentPendingTransactions[address] || [];
 
-        const updatedPendingTransactions = [
-          ...addressPendingTransactions.filter((tx) => {
-            if (tx.chainId === pendingTransaction.chainId) {
-              return tx.nonce !== pendingTransaction.nonce;
-            }
-            return true;
-          }),
-          pendingTransaction,
-        ];
-        const orderedPendingTransactions = updatedPendingTransactions.sort(
-          (a, b) => {
-            return (a.nonce || 0) - (b.nonce || 0);
-          },
-        );
-        set({
-          pendingTransactions: {
-            ...currentPendingTransactions,
-            [address]: orderedPendingTransactions,
-          },
-        });
-      },
-      setPendingTransactions: ({ address, pendingTransactions }) => {
+          const updatedPendingTransactions = [
+            ...addressPendingTransactions.filter((tx) => {
+              if (tx.chainId === pendingTransaction.chainId) {
+                return tx.nonce !== pendingTransaction.nonce;
+              }
+              return true;
+            }),
+            pendingTransaction,
+          ];
+          const orderedPendingTransactions = updatedPendingTransactions.sort(
+            (a, b) => {
+              return (a.nonce || 0) - (b.nonce || 0);
+            },
+          );
+          return {
+            pendingTransactions: {
+              ...currentPendingTransactions,
+              [address]: orderedPendingTransactions,
+            },
+          };
+        }),
+      removePendingTransactionsForAddress: ({
+        address,
+        transactionsToRemove,
+      }) => {
+        function removeTransactions(
+          oldPendingTransactions: RainbowTransaction[],
+          transactionsToRemove: Array<
+            Pick<RainbowTransaction, 'hash' | 'chainId'>
+          >,
+        ) {
+          const removeKeys = new Set<string>();
+          transactionsToRemove.forEach(({ hash, chainId }) => {
+            removeKeys.add(`${hash}-${chainId}`);
+          });
+          return oldPendingTransactions.filter((tx) => {
+            const key = `${tx.hash}-${tx.chainId}`;
+            return !removeKeys.has(key);
+          });
+        }
+        // Stage 1: Determine if update is needed (outside set)
         const { pendingTransactions: currentPendingTransactions } = get();
-        set({
-          pendingTransactions: {
-            ...currentPendingTransactions,
-            [address]: [...pendingTransactions],
-          },
+        const existingTransactions = currentPendingTransactions[address] || [];
+
+        // Filter out transactions to remove
+        const updatedTransactions = removeTransactions(
+          existingTransactions,
+          transactionsToRemove,
+        );
+
+        // Check if result is actually different
+        if (updatedTransactions.length === existingTransactions.length) {
+          // Nothing changed - don't call set()
+          return;
+        }
+
+        // Stage 2: Only call set() if update is actually needed and only use the most up-to-date state inside set()
+        set(({ pendingTransactions: latestPendingTransactions }) => {
+          return {
+            pendingTransactions: {
+              ...latestPendingTransactions,
+              [address]: removeTransactions(
+                latestPendingTransactions[address] || [],
+                transactionsToRemove,
+              ),
+            },
+          };
         });
       },
       clearPendingTransactions: () => {

@@ -30,7 +30,7 @@ export const useWatchPendingTransactions = ({
 }) => {
   const {
     pendingTransactions: storePendingTransactions,
-    setPendingTransactions,
+    removePendingTransactionsForAddress,
   } = usePendingTransactionsStore();
   const { currentCurrency } = useCurrentCurrencyStore();
   const addCustomNetworkTransactions = useCustomNetworkTransactionsStore(
@@ -135,21 +135,17 @@ export const useWatchPendingTransactions = ({
       pendingTransactions.map((tx) => processPendingTransaction(tx)),
     );
 
-    const { newPendingTransactions, minedTransactions } =
-      updatedPendingTransactions.reduce(
-        (acc, tx) => {
-          if (tx?.status === 'pending') {
-            acc.newPendingTransactions.push(tx);
-          } else {
-            acc.minedTransactions.push(tx);
-          }
-          return acc;
-        },
-        {
-          newPendingTransactions: [] as RainbowTransaction[],
-          minedTransactions: [] as MinedTransaction[],
-        },
-      );
+    const { minedTransactions } = updatedPendingTransactions.reduce(
+      (acc, tx) => {
+        if (tx?.status !== 'pending') {
+          acc.minedTransactions.push(tx);
+        }
+        return acc;
+      },
+      {
+        minedTransactions: [] as MinedTransaction[],
+      },
+    );
 
     minedTransactions.forEach((minedTransaction) => {
       if (minedTransaction.changes?.length) {
@@ -205,10 +201,16 @@ export const useWatchPendingTransactions = ({
       });
     }
 
-    setPendingTransactions({
-      address,
-      pendingTransactions: newPendingTransactions,
-    });
+    // Remove mined transactions, keep the rest as-is
+    if (minedTransactions.length > 0) {
+      removePendingTransactionsForAddress({
+        address,
+        transactionsToRemove: minedTransactions.map((tx) => ({
+          hash: tx.hash,
+          chainId: tx.chainId,
+        })),
+      });
+    }
   }, [
     addStaleBalance,
     addCustomNetworkTransactions,
@@ -216,7 +218,7 @@ export const useWatchPendingTransactions = ({
     currentCurrency,
     pendingTransactions,
     processPendingTransaction,
-    setPendingTransactions,
+    removePendingTransactionsForAddress,
     testnetMode,
     enabledChainIds,
   ]);
