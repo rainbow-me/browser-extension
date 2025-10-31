@@ -87,7 +87,7 @@ export const useWatchPendingTransactions = ({
 
   const processPendingTransaction = useCallback(
     async (tx: RainbowTransaction) => {
-      let updatedTransaction: RainbowTransaction = { ...tx };
+      let updatedTransaction: RainbowTransaction | null = { ...tx };
       try {
         if (tx.chainId && tx.hash && address) {
           if (isCustomChain(tx.chainId)) {
@@ -102,21 +102,30 @@ export const useWatchPendingTransactions = ({
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
+        const errorMessage = e?.message ?? String(e);
         logger.error(
           new RainbowError(
             `useWatchPendingTransaction: Failed to watch transaction`,
             { cause: e },
           ),
           {
-            message: e.message,
+            message: errorMessage,
             cause: e.cause,
             hash: tx.hash,
             chainId: tx.chainId,
           },
         );
+        if (
+          errorMessage.includes('Failed to create provider') ||
+          errorMessage.includes('Missing active RPC')
+        ) {
+          return null;
+        }
       }
 
-      if (updatedTransaction?.status !== 'pending') {
+      if (!updatedTransaction) return null;
+
+      if (updatedTransaction.status !== 'pending') {
         refreshAssets();
       }
       return updatedTransaction;
@@ -138,7 +147,9 @@ export const useWatchPendingTransactions = ({
     const { newPendingTransactions, minedTransactions } =
       updatedPendingTransactions.reduce(
         (acc, tx) => {
-          if (tx?.status === 'pending') {
+          if (!tx) return acc;
+
+          if (tx.status === 'pending') {
             acc.newPendingTransactions.push(tx);
           } else {
             acc.minedTransactions.push(tx);

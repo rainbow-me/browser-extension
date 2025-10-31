@@ -3,6 +3,8 @@ import { getClient } from '@wagmi/core';
 import { providers } from 'ethers';
 import type { Chain, Client, Transport } from 'viem';
 
+import { RainbowError } from '~/logger';
+
 import { wagmiConfig } from '.';
 
 export function clientToProvider(client: Client<Transport, Chain>) {
@@ -37,6 +39,15 @@ export function getProvider({ chainId }: { chainId?: number } = {}) {
     Transport,
     Chain
   >;
+  if (!client) {
+    throw new RainbowError('Failed to create provider', {
+      cause: new Error(
+        `No client found for chainId ${chainId}, available chains: ${wagmiConfig.chains
+          .map((chain) => chain.id)
+          .join(', ')}`,
+      ),
+    });
+  }
   return clientToProvider(client);
 }
 
