@@ -21,7 +21,10 @@ import {
 import { ChainId } from '~/core/types/chains';
 import type { GetAssetUpdatesResponse as PlatformGetAssetUpdatesResponse } from '~/core/types/gen/platform/assets/updates';
 import { getSupportedChains } from '~/core/utils/chains';
-import { convertPlatformAssetToAssetApiResponse } from '~/core/utils/platform';
+import {
+  convertPlatformAssetToAssetApiResponse,
+  isAddressOrEth,
+} from '~/core/utils/platform';
 import { RainbowError, logger } from '~/logger';
 
 import { parseUserAssets } from './common';
@@ -466,8 +469,29 @@ function extractForcedTokens(param: string) {
   if (!param) return undefined;
   const trimmed = param.startsWith('&') ? param.slice(1) : param;
   if (!trimmed.startsWith('tokens=')) return undefined;
-  const tokens = trimmed.substring('tokens='.length);
-  return tokens.length > 0 ? tokens : undefined;
+  const tokensString = trimmed.substring('tokens='.length);
+  if (!tokensString.length) return undefined;
+
+  // Filter out invalid tokens (those containing "undefined" or invalid addresses)
+  const validTokens = tokensString.split(',').filter((token) => {
+    // Skip tokens that contain "undefined"
+    if (token.includes('undefined')) return false;
+
+    // Validate format: address:chainId
+    const [address, chainIdStr] = token.split(':');
+    if (!address || !chainIdStr) return false;
+
+    // Validate address is a valid Ethereum address or ETH
+    if (!isAddressOrEth(address)) return false;
+
+    // Validate chainId is a valid number
+    const chainId = parseInt(chainIdStr, 10);
+    if (isNaN(chainId)) return false;
+
+    return true;
+  });
+
+  return validTokens.length > 0 ? validTokens.join(',') : undefined;
 }
 
 async function fetchPlatformAssetBalances({
