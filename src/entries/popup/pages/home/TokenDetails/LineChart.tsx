@@ -123,19 +123,33 @@ export const LineChart = ({
   onMouseMove: (pointData?: ChartPoint) => void;
 }) => {
   const { points, d } = useMemo(() => {
+    if (data.length === 0) {
+      const baseline = height - paddingY;
+      return {
+        points: [],
+        d: `M0,${baseline} L${width},${baseline}`,
+      };
+    }
+
     const prices = data.map((item) => item.price);
     const maxY = Math.max(...prices);
     const minY = Math.min(...prices);
 
-    const yScale = (height - 2 * paddingY) / (maxY - minY);
+    const range = maxY - minY;
+    const yScale = range === 0 ? 0 : (height - 2 * paddingY) / range;
 
+    const denominator = Math.max(data.length - 1, 1);
     const points = data.map(({ price, timestamp }, index) => {
-      const x = (index / data.length) * width;
-      const y = height - paddingY - (price - minY) * yScale;
+      const x = data.length === 1 ? width : (index / denominator) * width;
+      const scaledValue = range === 0 ? 0 : (price - minY) * yScale;
+      const y = height - paddingY - scaledValue;
       return { price, timestamp, x, y };
     });
 
-    const d = monotoneCubicInterpolation(points);
+    const d =
+      points.length > 1
+        ? monotoneCubicInterpolation(points)
+        : `M0,${points[0].y} L${width},${points[0].y}`;
 
     return { points, d };
   }, [data, height, paddingY, width]);
