@@ -499,7 +499,8 @@
         "export_addresses_as_csv": "Ekspor Alamat sebagai CSV",
         "enable_flashbots": "Aktifkan Flashbots",
         "disable_flashbots": "Nonaktifkan Flashbots",
-        "copy_uuid": "Salin UUID"
+        "copy_uuid": "Salin UUID",
+        "clear_transactions": "Hapus Transaksi Tertunda"
       },
       "search_tags": {
         "swap": "beli, jual, perdagangan, pesanan, pertukaran, dex, rute",
@@ -525,7 +526,8 @@
         "hide_balances": "tombol, sembunyikan, tampilkan, saldo, ungkapkan",
         "hide_small_balances": "tombol, sembunyikan, tampilkan, saldo, ungkapkan",
         "wallets_and_keys": "dompet dan kunci, pengaturan, preferensi",
-        "diagnostics": "diagnostik"
+        "diagnostics": "diagnostik",
+        "clear_transactions": "clear, reset, pending, transactions, nonce, nonces"
       }
     },
     "command_rows": {
