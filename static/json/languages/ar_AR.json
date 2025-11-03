@@ -499,7 +499,8 @@
         "export_addresses_as_csv": "تصدير العناوين كملف CSV",
         "enable_flashbots": "تمكين Flashbots",
         "disable_flashbots": "تعطيل Flashbots",
-        "copy_uuid": "نسخ UUID"
+        "copy_uuid": "نسخ UUID",
+        "clear_transactions": "معالجة المعاملات المعلقة"
       },
       "search_tags": {
         "swap": "شراء, بيع, تداول, طلب, تبادل, دكس, طرق",
@@ -525,7 +526,8 @@
         "hide_balances": "تبديل, إخفاء, إظهار, الأرصدة, كشف",
         "hide_small_balances": "تبديل, إخفاء, إظهار, الأرصدة, كشف",
         "wallets_and_keys": "المحافظ والمفاتيح, الإعدادات, التفضيلات",
-        "diagnostics": "التشخيص"
+        "diagnostics": "التشخيص",
+        "clear_transactions": "مسح، إعادة تعيين، قيد الانتظار، عمليات، معرف، معرّفات"
       }
     },
     "command_rows": {
