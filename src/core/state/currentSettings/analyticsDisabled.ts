@@ -1,4 +1,6 @@
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
+import { createBaseStore } from 'stores';
+
+import { createExtensionStoreOptions } from '../_internal';
 
 export interface AnalyticsDisabledState {
   analyticsDisabled: boolean;
@@ -6,14 +8,14 @@ export interface AnalyticsDisabledState {
 }
 
 export const useAnalyticsDisabledStore =
-  createRainbowStore<AnalyticsDisabledState>(
+  createBaseStore<AnalyticsDisabledState>(
     (set) => ({
       analyticsDisabled: false,
       setAnalyticsDisabled: (newanalyticsDisabled) =>
         set({ analyticsDisabled: newanalyticsDisabled }),
     }),
-    {
+    createExtensionStoreOptions({
       storageKey: 'analyticsDisabled',
       version: 1,
-    },
+    }),
   );
