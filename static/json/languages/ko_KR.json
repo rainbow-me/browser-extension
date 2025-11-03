@@ -499,7 +499,8 @@
         "export_addresses_as_csv": "주소를 CSV로 내보내기",
         "enable_flashbots": "플래시봇 활성화",
         "disable_flashbots": "플래시봇 비활성화",
-        "copy_uuid": "UUID 복사"
+        "copy_uuid": "UUID 복사",
+        "clear_transactions": "보류 중인 트랜잭션 지우기"
       },
       "search_tags": {
         "swap": "구매, 판매, 거래, 주문, 교환, 덱스, 경로",
@@ -525,7 +526,8 @@
         "hide_balances": "토글, 숨기기, 보이기, 잔액, 공개",
         "hide_small_balances": "토글, 숨기기, 보이기, 잔액, 공개",
         "wallets_and_keys": "지갑과 키, 설정, 환경 설정",
-        "diagnostics": "진단"
+        "diagnostics": "진단",
+        "clear_transactions": "지우기, 초기화, 보류 중, 거래, 넌스, 넌스들"
       }
     },
     "command_rows": {
