@@ -499,7 +499,8 @@
         "export_addresses_as_csv": "Exporter les adresses au format CSV",
         "enable_flashbots": "Activer Flashbots",
         "disable_flashbots": "Désactiver Flashbots",
-        "copy_uuid": "Copier UUID"
+        "copy_uuid": "Copier UUID",
+        "clear_transactions": "Effacer les transactions en attente"
       },
       "search_tags": {
         "swap": "acheter, vendre, échanger, commander, échange, dex, itinéraires",
@@ -525,7 +526,8 @@
         "hide_balances": "basculer, masquer, afficher, soldes, révéler",
         "hide_small_balances": "basculer, masquer, afficher, soldes, révéler",
         "wallets_and_keys": "portefeuilles et clés, paramètres, préférences",
-        "diagnostics": "diagnostics :)"
+        "diagnostics": "diagnostics :)",
+        "clear_transactions": "effacer, réinitialiser, en attente, transactions, nonce, nonces"
       }
     },
     "command_rows": {
