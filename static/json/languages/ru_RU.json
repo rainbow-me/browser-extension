@@ -527,7 +527,7 @@
         "hide_small_balances": "переключатель, скрыть, показать, балансы, раскрыть",
         "wallets_and_keys": "кошельки и ключи, настройки, предпочтения",
         "diagnostics": "диагностика",
-        "clear_transactions": "clear, reset, pending, transactions, nonce, nonces"
+        "clear_transactions": "очистить, сбросить, ожидающие, транзакции, нонс, нонсы"
       }
     },
     "command_rows": {
