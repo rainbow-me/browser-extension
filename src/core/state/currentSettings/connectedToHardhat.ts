@@ -1,4 +1,6 @@
-import { createRainbowStore } from '../internal/createRainbowStore';
+import { createBaseStore } from 'stores';
+
+import { createExtensionStoreOptions } from '../_internal';
 
 export interface ConnectedToHardhatState {
   connectedToHardhat: boolean;
@@ -9,7 +11,7 @@ export interface ConnectedToHardhatState {
 }
 
 export const useConnectedToHardhatStore =
-  createRainbowStore<ConnectedToHardhatState>(
+  createBaseStore<ConnectedToHardhatState>(
     (set) => ({
       connectedToHardhat: false,
       setConnectedToHardhat: (connectedToHardhat) => {
@@ -21,8 +23,8 @@ export const useConnectedToHardhatStore =
         set({ connectedToHardhatOp });
       },
     }),
-    {
+    createExtensionStoreOptions({
       storageKey: 'connectedToHardhat',
       version: 0,
-    },
+    }),
   );
