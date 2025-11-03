@@ -499,7 +499,8 @@
         "export_addresses_as_csv": "Export Addresses as CSV",
         "enable_flashbots": "Enable Flashbots",
         "disable_flashbots": "Disable Flashbots",
-        "copy_uuid": "Copy UUID"
+        "copy_uuid": "Copy UUID",
+        "clear_transactions": "Clear Pending Transactions"
       },
       "search_tags": {
         "swap": "buy, sell, trade, order, exchange, dex, routes",
@@ -525,7 +526,8 @@
         "hide_balances": "toggle, hide, show, balances, reveal",
         "hide_small_balances": "toggle, hide, show, balances, reveal",
         "wallets_and_keys": "wallets and keys, settings, preferences",
-        "diagnostics": "diagnostics"
+        "diagnostics": "diagnostics",
+        "clear_transactions": "clear, reset, pending, transactions, nonce, nonces"
       }
     },
     "command_rows": {
