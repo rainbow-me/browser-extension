@@ -527,7 +527,7 @@
         "hide_small_balances": "tombol, sembunyikan, tampilkan, saldo, ungkapkan",
         "wallets_and_keys": "dompet dan kunci, pengaturan, preferensi",
         "diagnostics": "diagnostik",
-        "clear_transactions": "clear, reset, pending, transactions, nonce, nonces"
+        "clear_transactions": "bersihkan, atur ulang, menunggu, transaksi, nonce, nonces"
       }
     },
     "command_rows": {
