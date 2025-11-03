@@ -499,7 +499,8 @@
         "export_addresses_as_csv": "ส่งออกที่อยู่เป็น CSV",
         "enable_flashbots": "เปิดใช้งาน Flashbots",
         "disable_flashbots": "ปิดการใช้งาน Flashbots",
-        "copy_uuid": "คัดลอก UUID"
+        "copy_uuid": "คัดลอก UUID",
+        "clear_transactions": "ล้างธุรกรรมที่รอดำเนินการ"
       },
       "search_tags": {
         "swap": "ซื้อ, ขาย, แลกเปลี่ยน, สั่งซื้อ, เปลี่ยน, dex, เส้นทาง",
@@ -525,7 +526,8 @@
         "hide_balances": "สลับ, ซ่อน, แสดง, ยอดคงเหลือ, เปิดเผย",
         "hide_small_balances": "สลับ, ซ่อน, แสดง, ยอดคงเหลือ, เปิดเผย",
         "wallets_and_keys": "กระเป๋าสตางค์และคีย์, การตั้งค่า, กำหนดค่าตั้งค่า",
-        "diagnostics": "การวินิจฉัย"
+        "diagnostics": "การวินิจฉัย",
+        "clear_transactions": "clear, reset, pending, transactions, nonce, nonces"
       }
     },
     "command_rows": {
