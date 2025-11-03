@@ -527,7 +527,7 @@
         "hide_small_balances": "değiştir, gizle, göster, bakiyeler, ortaya çıkar",
         "wallets_and_keys": "cüzdanlar ve anahtarlar, ayarlar, tercihler",
         "diagnostics": "teşhisler",
-        "clear_transactions": "clear, reset, pending, transactions, nonce, nonces"
+        "clear_transactions": "temizle, sıfırla, beklemede, işlemler, nonce, nonceler"
       }
     },
     "command_rows": {
