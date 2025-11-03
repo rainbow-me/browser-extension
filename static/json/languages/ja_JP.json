@@ -499,7 +499,8 @@
         "export_addresses_as_csv": "アドレスをCSVとしてエクスポート",
         "enable_flashbots": "Flashbotsを有効にする",
         "disable_flashbots": "Flashbotsを無効にする",
-        "copy_uuid": "UUIDをコピー"
+        "copy_uuid": "UUIDをコピー",
+        "clear_transactions": "保留中のトランザクションをクリア"
       },
       "search_tags": {
         "swap": "購入, 販売, 取引, 注文, 交換, dex, ルート",
@@ -525,7 +526,8 @@
         "hide_balances": "切り替え, 非表示, 表示, 残高, 公表",
         "hide_small_balances": "切り替え, 非表示, 表示, 残高, 公表",
         "wallets_and_keys": "ウォレットとキー, 設定, 設定",
-        "diagnostics": "診断"
+        "diagnostics": "診断",
+        "clear_transactions": "クリア、リセット、保留中、取引、ナンス、ナンセス"
       }
     },
     "command_rows": {
