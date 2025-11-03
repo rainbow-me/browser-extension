@@ -499,7 +499,8 @@
         "export_addresses_as_csv": "导出地址为CSV",
         "enable_flashbots": "启用Flashbots",
         "disable_flashbots": "禁用Flashbots",
-        "copy_uuid": "复制UUID"
+        "copy_uuid": "复制UUID",
+        "clear_transactions": "清除待处理交易"
       },
       "search_tags": {
         "swap": "买, 卖, 交易, 订单, 兑换, dex, 路线",
@@ -525,7 +526,8 @@
         "hide_balances": "切换, 隐藏, 显示, 余额, 揭秘",
         "hide_small_balances": "切换, 隐藏, 显示, 余额, 揭秘",
         "wallets_and_keys": "钱包和密钥, 设置, 偏好设置",
-        "diagnostics": "诊断"
+        "diagnostics": "诊断",
+        "clear_transactions": "clear, reset, pending, transactions, nonce, nonces"
       }
     },
     "command_rows": {
