@@ -499,7 +499,8 @@
         "export_addresses_as_csv": "Экспортировать адреса в формате CSV",
         "enable_flashbots": "Включить Flashbots",
         "disable_flashbots": "Отключить Flashbots",
-        "copy_uuid": "Копировать UUID"
+        "copy_uuid": "Копировать UUID",
+        "clear_transactions": "Очистить Ожидающие Транзакции"
       },
       "search_tags": {
         "swap": "купить, продать, обменять, заказать, обмен, dex, маршруты",
@@ -525,7 +526,8 @@
         "hide_balances": "переключатель, скрыть, показать, балансы, раскрыть",
         "hide_small_balances": "переключатель, скрыть, показать, балансы, раскрыть",
         "wallets_and_keys": "кошельки и ключи, настройки, предпочтения",
-        "diagnostics": "диагностика"
+        "diagnostics": "диагностика",
+        "clear_transactions": "clear, reset, pending, transactions, nonce, nonces"
       }
     },
     "command_rows": {
