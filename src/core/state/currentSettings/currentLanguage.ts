@@ -1,6 +1,9 @@
+import { createBaseStore } from 'stores';
+
 import { Language, changeI18nLanguage, i18n } from '~/core/languages';
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { fetchJsonLocally } from '~/core/utils/localJson';
+
+import { createExtensionStoreOptions } from '../_internal';
 
 export interface CurrentLanguageState {
   currentLanguage: Language;
@@ -15,7 +18,7 @@ const loadTranslation = async (language: Language) => {
   i18n.translations[language] = newLangDict;
 };
 
-export const useCurrentLanguageStore = createRainbowStore<CurrentLanguageState>(
+export const useCurrentLanguageStore = createBaseStore<CurrentLanguageState>(
   (set) => ({
     currentLanguage: Language.EN_US,
     setCurrentLanguage: async (newLanguage) => {
@@ -24,8 +27,8 @@ export const useCurrentLanguageStore = createRainbowStore<CurrentLanguageState>(
       set({ currentLanguage: newLanguage });
     },
   }),
-  {
+  createExtensionStoreOptions({
     storageKey: 'currentLanguage',
     version: 1,
-  },
+  }),
 );
