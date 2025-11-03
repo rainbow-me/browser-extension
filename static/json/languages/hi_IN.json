@@ -499,7 +499,8 @@
         "export_addresses_as_csv": "CSV के रूप में पते निर्यात करें",
         "enable_flashbots": "Flashbots सक्षम करें",
         "disable_flashbots": "Flashbots अक्षम करें",
-        "copy_uuid": "UUID कॉपी करें"
+        "copy_uuid": "UUID कॉपी करें",
+        "clear_transactions": "लंबित लेन-देन साफ करें"
       },
       "search_tags": {
         "swap": "खरीद, बेच, व्यापार, ऑर्डर, एक्सचेंज, डेक्स, रूट्स",
@@ -525,7 +526,8 @@
         "hide_balances": "टॉगल, छिपाएं, दिखाएं, संतुलन, प्रकट करें",
         "hide_small_balances": "टॉगल, छिपाएं, दिखाएं, संतुलन, प्रकट करें",
         "wallets_and_keys": "वॉलेट और कुंजी, सेटिंग्स, प्राथमिकताएं",
-        "diagnostics": "डायग्नोस्टिक्स"
+        "diagnostics": "डायग्नोस्टिक्स",
+        "clear_transactions": "clear, reset, pending, transactions, nonce, nonces"
       }
     },
     "command_rows": {
