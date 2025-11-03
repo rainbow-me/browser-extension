@@ -499,7 +499,8 @@
         "export_addresses_as_csv": "CSV olarak Adresleri Dışa Aktar",
         "enable_flashbots": "Flashbots'i etkinleştir",
         "disable_flashbots": "Flashbots'i devre dışı bırak",
-        "copy_uuid": "UUID'yi kopyala"
+        "copy_uuid": "UUID'yi kopyala",
+        "clear_transactions": "Bekleyen İşlemleri Temizle"
       },
       "search_tags": {
         "swap": "satın al, sat, takas, sipariş, değişim, dex, rotalar",
@@ -525,7 +526,8 @@
         "hide_balances": "değiştir, gizle, göster, bakiyeler, ortaya çıkar",
         "hide_small_balances": "değiştir, gizle, göster, bakiyeler, ortaya çıkar",
         "wallets_and_keys": "cüzdanlar ve anahtarlar, ayarlar, tercihler",
-        "diagnostics": "teşhisler"
+        "diagnostics": "teşhisler",
+        "clear_transactions": "clear, reset, pending, transactions, nonce, nonces"
       }
     },
     "command_rows": {
