@@ -527,7 +527,7 @@
         "hide_small_balances": "切换, 隐藏, 显示, 余额, 揭秘",
         "wallets_and_keys": "钱包和密钥, 设置, 偏好设置",
         "diagnostics": "诊断",
-        "clear_transactions": "clear, reset, pending, transactions, nonce, nonces"
+        "clear_transactions": "清除、重置、待处理、事务、nonce、nonces"
       }
     },
     "command_rows": {
