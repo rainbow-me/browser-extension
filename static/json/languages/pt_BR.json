@@ -527,7 +527,7 @@
         "hide_small_balances": "alternar, ocultar, mostrar, saldos, revelar",
         "wallets_and_keys": "carteiras e chaves, configurações, preferências",
         "diagnostics": "diagnóstico",
-        "clear_transactions": "clear, reset, pending, transactions, nonce, nonces"
+        "clear_transactions": "limpar, redefinir, pendente, transações, nonce, nonces"
       }
     },
     "command_rows": {
