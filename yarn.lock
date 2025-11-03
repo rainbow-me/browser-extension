@@ -10606,6 +10606,7 @@ __metadata:
     react-switch: "npm:7.0.0"
     selenium-webdriver: "npm:4.34.0"
     semver: "npm:7.5.2"
+    stores: "file:./stores-0.0.1.tgz"
     svg-path-commander: "npm:1.0.5"
     ts-loader: "npm:9.4.1"
     typescript: "npm:5.8.2"
@@ -23534,6 +23535,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"stores@file:./stores-0.0.1.tgz::locator=browser-extension%40workspace%3A.":
+  version: 0.0.1
+  resolution: "stores@file:./stores-0.0.1.tgz#./stores-0.0.1.tgz::hash=c90385&locator=browser-extension%40workspace%3A."
+  dependencies:
+    use-sync-external-store: "npm:1.6.0"
+    zustand: "npm:5.0.8"
+  peerDependencies:
+    react: ">=17.0.0"
+    react-native: ">=0.64.0"
+    react-native-mmkv: ">=2.0.0"
+  checksum: 10c0/b6b58ca38e78cda8d8b62b6dc08375558148e6a62e5a0e170555035313e32b3591c920d7d3c778593d8079d2bcd2b3a39300d39d27775d81a6e76c1e8dbcac57
+  languageName: node
+  linkType: hard
+
 "stream-browserify@npm:^3.0.0":
   version: 3.0.0
   resolution: "stream-browserify@npm:3.0.0"
@@ -25221,6 +25236,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"use-sync-external-store@npm:1.6.0":
+  version: 1.6.0
+  resolution: "use-sync-external-store@npm:1.6.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 10c0/35e1179f872a53227bdf8a827f7911da4c37c0f4091c29b76b1e32473d1670ebe7bcd880b808b7549ba9a5605c233350f800ffab963ee4a4ee346ee983b6019b
+  languageName: node
+  linkType: hard
+
 "useragent@npm:^2.3.0":
   version: 2.3.0
   resolution: "useragent@npm:2.3.0"
@@ -26591,5 +26615,26 @@ __metadata:
     use-sync-external-store:
       optional: true
   checksum: 10c0/dad96c6c123fda088c583d5df6692e9245cd207583078dc15f93d255a67b0f346bad4535545c98852ecde93d254812a0c799579dfde2ab595016b99fbe20e4d5
+  languageName: node
+  linkType: hard
+
+"zustand@npm:5.0.8":
+  version: 5.0.8
+  resolution: "zustand@npm:5.0.8"
+  peerDependencies:
+    "@types/react": ">=18.0.0"
+    immer: ">=9.0.6"
+    react: ">=18.0.0"
+    use-sync-external-store: ">=1.2.0"
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    immer:
+      optional: true
+    react:
+      optional: true
+    use-sync-external-store:
+      optional: true
+  checksum: 10c0/e865a6f7f1c0e03571701db5904151aaa7acefd6f85541a117085e129bf16e8f60b11f8cc82f277472de5c7ad5dcb201e1b0a89035ea0b40c9d9aab3cd24c8ad
   languageName: node
   linkType: hard

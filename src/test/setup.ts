@@ -1,23 +1,17 @@
 import { setupServer } from 'msw/node';
 import { afterAll, afterEach, beforeAll, vi } from 'vitest';
 
+import { MockChromeStorage, setupMockChrome } from '~/test/mock/chromeStorage';
+
 import { handlers } from './mocks/handlers';
 
-vi.stubGlobal('chrome', {
-  storage: {
-    local: {
-      get: vi.fn(() => ({})),
-      set: vi.fn(),
-      remove: vi.fn(),
-    },
-    session: {
-      get: vi.fn(() => ({})),
-      set: vi.fn(),
-      remove: vi.fn(),
-    },
-  },
-  runtime: {},
-});
+// Set up a complete Chrome mock with storage.onChanged support
+const mockChromeStorage = new MockChromeStorage();
+setupMockChrome(mockChromeStorage);
+
+// Also stub it with vi.stubGlobal to ensure vitest properly tracks it
+// Store the instance after setup so it can be restored by tests that need isolation
+vi.stubGlobal('chrome', globalThis.chrome);
 
 vi.stubGlobal('window.location', {
   pathname: 'popup.html',
