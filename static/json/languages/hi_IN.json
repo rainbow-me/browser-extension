@@ -527,7 +527,7 @@
         "hide_small_balances": "टॉगल, छिपाएं, दिखाएं, संतुलन, प्रकट करें",
         "wallets_and_keys": "वॉलेट और कुंजी, सेटिंग्स, प्राथमिकताएं",
         "diagnostics": "डायग्नोस्टिक्स",
-        "clear_transactions": "clear, reset, pending, transactions, nonce, nonces"
+        "clear_transactions": "स्पष्ट, पुनः सेट करें, लंबित, लेनदेन, नॉन्स, नॉन्सेस"
       }
     },
     "command_rows": {
