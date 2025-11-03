@@ -527,7 +527,7 @@
         "hide_small_balances": "สลับ, ซ่อน, แสดง, ยอดคงเหลือ, เปิดเผย",
         "wallets_and_keys": "กระเป๋าสตางค์และคีย์, การตั้งค่า, กำหนดค่าตั้งค่า",
         "diagnostics": "การวินิจฉัย",
-        "clear_transactions": "clear, reset, pending, transactions, nonce, nonces"
+        "clear_transactions": "ล้าง, รีเซ็ต, ที่อยู่ระหว่างดำเนินการ, ธุรกรรม, นอนซ์, นอนซ์"
       }
     },
     "command_rows": {
