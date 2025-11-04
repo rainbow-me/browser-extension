@@ -23790,7 +23790,7 @@ __metadata:
 
 "stores@file:./stores-0.0.1.tgz::locator=browser-extension%40workspace%3A.":
   version: 0.0.1
-  resolution: "stores@file:./stores-0.0.1.tgz#./stores-0.0.1.tgz::hash=c90385&locator=browser-extension%40workspace%3A."
+  resolution: "stores@file:./stores-0.0.1.tgz#./stores-0.0.1.tgz::hash=c6a382&locator=browser-extension%40workspace%3A."
   dependencies:
     use-sync-external-store: "npm:1.6.0"
     zustand: "npm:5.0.8"
@@ -23798,7 +23798,7 @@ __metadata:
     react: ">=17.0.0"
     react-native: ">=0.64.0"
     react-native-mmkv: ">=2.0.0"
-  checksum: 10c0/b6b58ca38e78cda8d8b62b6dc08375558148e6a62e5a0e170555035313e32b3591c920d7d3c778593d8079d2bcd2b3a39300d39d27775d81a6e76c1e8dbcac57
+  checksum: 10c0/71009d7531054cec497f1c9cb5d232980b313ec372c474759477ee1de3eb2f36d60682f7dede63ce68a4260187cff83c4266292455b88ab09b64d905807f909a
   languageName: node
   linkType: hard
 

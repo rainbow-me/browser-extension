@@ -1,5 +1,8 @@
+import { createBaseStore } from 'stores';
+
 import { DappMetadata } from '~/core/resources/metadata/dapp';
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
+
+import { createExtensionStoreOptions } from '../_internal';
 
 export interface DappMetadataState {
   dappMetadata: Record<string, DappMetadata>;
@@ -13,7 +16,7 @@ export interface DappMetadataState {
   getDappMetadata: ({ host }: { host: string }) => DappMetadata | null;
 }
 
-export const useDappMetadataStore = createRainbowStore<DappMetadataState>(
+export const useDappMetadataStore = createBaseStore<DappMetadataState>(
   (set, get) => ({
     dappMetadata: {},
     setDappMetadata: ({ host, dappMetadata }) => {
@@ -42,8 +45,8 @@ export const useDappMetadataStore = createRainbowStore<DappMetadataState>(
       return dappMetadata[host] || null;
     },
   }),
-  {
+  createExtensionStoreOptions({
     storageKey: 'dappMetadata',
     version: 0,
-  },
+  }),
 );

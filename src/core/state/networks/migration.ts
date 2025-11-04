@@ -1,4 +1,6 @@
-import { createRainbowStore } from '../internal/createRainbowStore';
+import { createBaseStore } from 'stores';
+
+import { createExtensionStoreOptions } from '../_internal';
 
 import { NetworksStoreMigrationState } from './types';
 
@@ -6,6 +8,8 @@ import { NetworksStoreMigrationState } from './types';
 let isRainbowChainsReady = false;
 let isUserChainsReady = false;
 let isMigrationManagerReady = false;
+// Guard to prevent concurrent migration execution - tracks the in-flight Promise
+let migrationPromise: Promise<void> | null = null;
 
 // Getter functions
 export const getIsRainbowChainsReady = () => isRainbowChainsReady;
@@ -44,6 +48,8 @@ export async function runNetworksMigrationIfNeeded(
   }
 
   if (areAllStoresReady()) {
+    // Early return if migration already completed or is in flight
+    // No throttling needed upstream - this guard prevents concurrent execution
     if (
       useNetworksStoreMigrationStore.getState().didCompleteNetworksMigration
     ) {
@@ -53,70 +59,89 @@ export async function runNetworksMigrationIfNeeded(
       return;
     }
 
-    // Lazy import to avoid circular dependency
-    const { detectScriptType } = await import('~/core/utils/detectScriptType');
-    const { logger } = await import('~/logger');
-
-    logger.debug('[networks] detectScriptType');
-
-    const scriptType = detectScriptType();
-
-    logger.debug('[networks] Context detection:', {
-      scriptType,
-    });
-
-    // If we're not in background, just update our state to match storage but don't migrate
-    if (scriptType !== 'background') {
-      logger.debug(
-        '[networks] In popup context, exiting for background migration',
-      );
+    // Prevent concurrent migration execution - wait for existing migration or start new one
+    if (migrationPromise) {
+      // Lazy import to avoid circular dependency
+      const { logger } = await import('~/logger');
+      logger.debug('[networks] Migration already in flight, waiting');
+      await migrationPromise;
       return;
     }
 
-    logger.debug('[networks] initializing networks store');
+    // Create and store the migration promise atomically
+    migrationPromise = (async () => {
+      try {
+        // Lazy import to avoid circular dependency
+        const { detectScriptType } = await import(
+          '~/core/utils/detectScriptType'
+        );
+        const { logger } = await import('~/logger');
 
-    // Lazy imports to avoid circular dependency
-    const { useRainbowChainsStore } = await import('../rainbowChains');
-    const { useUserChainsStore } = await import('../userChains');
-    const { useNetworkStore } = await import('./networks');
-    const { buildTimeNetworks } = await import('./constants');
-    const { buildInitialUserPreferences } = await import('./utils');
-    const { RainbowError } = await import('~/logger');
+        logger.debug('[networks] detectScriptType');
 
-    // Get the current state from the stores
-    const { rainbowChains } = useRainbowChainsStore.getState();
-    const { userChains, userChainsOrder } = useUserChainsStore.getState();
+        const scriptType = detectScriptType();
 
-    try {
-      // Initialize the network store with the current state
-      const initialState = {
-        networks: buildTimeNetworks,
-        ...buildInitialUserPreferences(
-          buildTimeNetworks,
-          rainbowChains,
-          userChains,
-          userChainsOrder,
-        ),
-      };
+        logger.debug('[networks] Context detection:', {
+          scriptType,
+        });
 
-      useNetworkStore.setState(initialState);
-      useNetworksStoreMigrationStore.setState({
-        didCompleteNetworksMigration: true,
-      });
-    } catch (error) {
-      logger.error(new RainbowError('Failed to migrate networks store'), {
-        error,
-      });
-    }
+        // If we're not in background, just update our state to match storage but don't migrate
+        if (scriptType !== 'background') {
+          logger.debug(
+            '[networks] In popup context, exiting for background migration',
+          );
+          return;
+        }
+
+        logger.debug('[networks] initializing networks store');
+
+        // Lazy imports to avoid circular dependency
+        const { useRainbowChainsStore } = await import('../rainbowChains');
+        const { useUserChainsStore } = await import('../userChains');
+        const { useNetworkStore } = await import('./networks');
+        const { buildTimeNetworks } = await import('./constants');
+        const { buildInitialUserPreferences } = await import('./utils');
+
+        // Get the current state from the stores
+        const { rainbowChains } = useRainbowChainsStore.getState();
+        const { userChains, userChainsOrder } = useUserChainsStore.getState();
+
+        // Initialize the network store with the current state
+        const initialState = {
+          networks: buildTimeNetworks,
+          ...buildInitialUserPreferences(
+            buildTimeNetworks,
+            rainbowChains,
+            userChains,
+            userChainsOrder,
+          ),
+        };
+
+        useNetworkStore.setState(initialState);
+        useNetworksStoreMigrationStore.setState({
+          didCompleteNetworksMigration: true,
+        });
+      } catch (error) {
+        const { logger } = await import('~/logger');
+        const { RainbowError } = await import('~/logger');
+        logger.error(new RainbowError('Failed to migrate networks store'), {
+          error,
+        });
+      } finally {
+        migrationPromise = null;
+      }
+    })();
+
+    await migrationPromise;
   }
 }
 
 export const useNetworksStoreMigrationStore =
-  createRainbowStore<NetworksStoreMigrationState>(
+  createBaseStore<NetworksStoreMigrationState>(
     () => ({
       didCompleteNetworksMigration: false,
     }),
-    {
+    createExtensionStoreOptions({
       storageKey: 'networksStoreMigration',
       version: 0,
       onRehydrateStorage: () => {
@@ -126,5 +151,5 @@ export const useNetworksStoreMigrationStore =
           }
         };
       },
-    },
+    }),
   );
