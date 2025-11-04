@@ -1,11 +1,13 @@
+import { createBaseStore } from '@storesjs/stores';
 import { Address } from 'viem';
 
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { isNativePopup } from '~/core/utils/tabs';
 // eslint-disable-next-line boundaries/element-types
 import type { IndependentField } from '~/entries/popup/hooks/swap/useSwapInputs';
+
+import { createExtensionStoreOptions } from '../_internal';
 
 type SendAddress = Address | 'eth' | '';
 interface CustomNetworkDraft {
@@ -85,7 +87,7 @@ export interface PopupInstanceStore extends PopupInstance {
   setupPort: () => void;
 }
 
-export const usePopupInstanceStore = createRainbowStore<PopupInstanceStore>(
+export const usePopupInstanceStore = createBaseStore<PopupInstanceStore>(
   (set, get) => ({
     ...DEFAULT_POPUP_INSTANCE_VALUES,
     resetValues: popupInstanceHandlerFactory(() =>
@@ -157,10 +159,10 @@ export const usePopupInstanceStore = createRainbowStore<PopupInstanceStore>(
       chrome.runtime.connect({ name: 'popup' });
     }),
   }),
-  {
+  createExtensionStoreOptions({
     storageKey: 'popupInstance',
     version: 1,
-  },
+  }),
 );
 
 // creates handlers that only work in popup context and passes through callback types
