@@ -1,8 +1,8 @@
+import { createQueryStore } from '@storesjs/stores';
 import { Chain } from 'viem';
 
 import { fetchNetworks } from '~/core/resources/networks/networks';
 import { useFavoritesStore } from '~/core/state/favorites';
-import { createQueryStore } from '~/core/state/internal/createQueryStore';
 import {
   buildInitialUserPreferences,
   differenceOrUnionOf,
@@ -21,6 +21,8 @@ import {
   TransformedChain,
 } from '~/core/types/chains';
 import { detectScriptType } from '~/core/utils/detectScriptType';
+
+import { createExtensionStoreOptions } from '../_internal';
 
 import {
   DEFAULT_PRIVATE_MEMPOOL_TIMEOUT,
@@ -859,23 +861,17 @@ export const useNetworkStore = createQueryStore<
       },
     ),
   }),
-  {
+  createExtensionStoreOptions({
     partialize: (state) => ({
       networks: state.networks,
       userPreferences: state.userPreferences,
       chainOrder: state.chainOrder,
       enabledChainIds: state.enabledChainIds,
     }),
-    // TODO: investigate why this was introduced
-    // This creates instances where custom network additions
-    // or changes to network settings/RPCs are not persisted
-    // (i.e. prompt closes before threshold is reached)
-    // When removing, the extension crashes in an infinite loop
-    persistThrottleMs: 1_000,
     storageKey: 'networks.networks',
     useRainbowNamingSchema: false,
     version: 1,
-  },
+  }),
 );
 
 export const syncDefaultFavoritesForNewlySupportedNetworks = (

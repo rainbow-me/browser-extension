@@ -1,7 +1,9 @@
+import { createBaseStore } from '@storesjs/stores';
 import { Address } from 'viem';
 
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { ChainId } from '~/core/types/chains';
+
+import { createExtensionStoreOptions } from '../_internal';
 
 const mergeNewOfficiallySupportedChainsAssetState = (
   state: RainbowChainAssetsState,
@@ -51,7 +53,7 @@ export interface RainbowChainAssetsState {
 }
 
 export const useRainbowChainAssetsStore =
-  createRainbowStore<RainbowChainAssetsState>(
+  createBaseStore<RainbowChainAssetsState>(
     (set, get) => ({
       rainbowChainAssets: {},
       addRainbowChainAsset: ({ chainId, rainbowChainAsset }) => {
@@ -112,7 +114,7 @@ export const useRainbowChainAssetsStore =
         });
       },
     }),
-    {
+    createExtensionStoreOptions({
       storageKey: 'rainbowChainAssets',
       version: 2,
       migrate(persistedState, version) {
@@ -135,5 +137,5 @@ export const useRainbowChainAssetsStore =
         }
         return state;
       },
-    },
+    }),
   );

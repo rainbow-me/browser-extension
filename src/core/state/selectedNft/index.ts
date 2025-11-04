@@ -1,4 +1,5 @@
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
+import { createBaseStore } from '@storesjs/stores';
+
 import { UniqueAsset } from '~/core/types/nfts';
 
 export interface SelectedNftState {
@@ -6,11 +7,9 @@ export interface SelectedNftState {
   selectedNft: UniqueAsset | null;
 }
 
-export const useSelectedNftStore = createRainbowStore<SelectedNftState>(
-  (set) => ({
-    setSelectedNft: (selectedNft?: UniqueAsset) => {
-      set({ selectedNft });
-    },
-    selectedNft: null,
-  }),
-);
+export const useSelectedNftStore = createBaseStore<SelectedNftState>((set) => ({
+  setSelectedNft: (selectedNft?: UniqueAsset) => {
+    set({ selectedNft });
+  },
+  selectedNft: null,
+}));

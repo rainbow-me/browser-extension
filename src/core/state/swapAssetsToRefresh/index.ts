@@ -1,4 +1,5 @@
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
+import { createBaseStore } from '@storesjs/stores';
+
 import { ParsedSearchAsset } from '~/core/types/assets';
 
 export interface SwapAssetsToRefreshState {
@@ -12,7 +13,7 @@ export interface SwapAssetsToRefreshState {
 }
 
 export const useSwapAssetsToRefreshStore =
-  createRainbowStore<SwapAssetsToRefreshState>((set, get) => ({
+  createBaseStore<SwapAssetsToRefreshState>((set, get) => ({
     setSwapAssetsToRefresh: ({ nonce, assetToBuy, assetToSell }) => {
       const swapAssetsToRefresh = get().swapAssetsToRefresh;
       swapAssetsToRefresh[nonce] = [assetToSell, assetToBuy];

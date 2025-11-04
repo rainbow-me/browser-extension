@@ -1,15 +1,18 @@
+import { createBaseStore } from '@storesjs/stores';
+
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 
-export const useDegenMode = createRainbowStore(
+import { createExtensionStoreOptions } from '../_internal';
+
+export const useDegenMode = createBaseStore(
   () => ({
     isDegenModeEnabled: false,
   }),
-  {
+  createExtensionStoreOptions({
     storageKey: 'degenMode',
     version: 1,
-  },
+  }),
 );
 
 export const toggleDegenMode = () =>

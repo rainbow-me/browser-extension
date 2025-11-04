@@ -1,7 +1,10 @@
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
+import { createBaseStore } from '@storesjs/stores';
+
 import { ChainId } from '~/core/types/chains';
 
+import { createExtensionStoreOptions } from '../_internal';
 import { runNetworksMigrationIfNeeded } from '../networks/migration';
+
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
 export interface UserChainsState {
@@ -39,7 +42,7 @@ export interface UserChainsState {
 /**
  * @deprecated use `useNetworkStore` instead
  */
-export const useUserChainsStore = createRainbowStore<UserChainsState>(
+export const useUserChainsStore = createBaseStore<UserChainsState>(
   (set, get) => ({
     userChains: {},
     userChainsOrder: [],
@@ -98,7 +101,7 @@ export const useUserChainsStore = createRainbowStore<UserChainsState>(
       });
     },
   }),
-  {
+  createExtensionStoreOptions({
     storageKey: 'userChains',
     version: 8,
     onRehydrateStorage: () => {
@@ -108,5 +111,5 @@ export const useUserChainsStore = createRainbowStore<UserChainsState>(
         }
       };
     },
-  },
+  }),
 );
