@@ -63,6 +63,7 @@ import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
 import { SheetMode, SpeedUpAndCancelSheet } from '../../speedUpAndCancelSheet';
 import { triggerRevokeApproval } from '../Approvals/utils';
+import { ErrorState } from '../ErrorState';
 import { ActivityDetailsContentSkeleton } from '../Skeletons';
 import { CopyableValue, InfoRow } from '../TokenDetails/About';
 
@@ -604,50 +605,28 @@ function ActivityDetailsErrorState({
   onRetry: () => Promise<void>;
 }) {
   return (
-    <Stack
-      alignHorizontal="center"
-      gap="32px"
-      padding="24px"
-      paddingTop="48px"
-      paddingBottom="60px"
+    <ErrorState
+      headerText={i18n.t('activity_details.error_title')}
+      descriptionText={i18n.t('activity_details.error_message')}
     >
-      <Symbol
-        symbol="exclamationmark.triangle.fill"
-        size={34}
-        color="labelQuaternary"
-      />
-      <Stack alignHorizontal="center" gap="16px">
-        <Text align="center" size="20pt" weight="bold" color="label">
-          {i18n.t('activity_details.error_title')}
-        </Text>
-        <Text
-          align="center"
-          size="14pt"
-          weight="semibold"
-          color="labelTertiary"
-          whiteSpace="pre-wrap" // to render newline from translations
+      <Box
+        style={{
+          background: 'rgba(255, 255, 255, 0.1)',
+          borderRadius: '30px',
+        }}
+      >
+        <Button
+          variant="transparent"
+          color="label"
+          borderRadius="30px"
+          height="44px"
+          onClick={onRetry}
+          width="full"
         >
-          {i18n.t('activity_details.error_message')}
-        </Text>
-        <Box
-          style={{
-            background: 'rgba(255, 255, 255, 0.1)',
-            borderRadius: '30px',
-          }}
-        >
-          <Button
-            variant="transparent"
-            color="label"
-            borderRadius="30px"
-            height="44px"
-            onClick={onRetry}
-            width="full"
-          >
-            {i18n.t('activity_details.error_retry')}
-          </Button>
-        </Box>
-      </Stack>
-    </Stack>
+          {i18n.t('activity_details.error_retry')}
+        </Button>
+      </Box>
+    </ErrorState>
   );
 }
 
