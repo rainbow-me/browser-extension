@@ -22,3 +22,5 @@ export { useRainbowChainsStore } from './rainbowChains';
 export { useUserChainsStore } from './userChains';
 export { useFeatureFlagsStore } from './currentSettings/featureFlags';
 export { useConnectedToHardhatStore } from './currentSettings/connectedToHardhat';
+export { useCustomNetworkTransactionsStore } from './transactions/customNetworkTransactions';
+export { useSelectedTransactionStore } from './selectedTransaction';
