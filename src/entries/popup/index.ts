@@ -3,7 +3,6 @@ import './global.css';
 import { createElement } from 'react';
 import { createRoot } from 'react-dom/client';
 
-import { syncStores } from '~/core/state/internal/syncStores';
 import { initThemingLocal } from '~/design-system/styles/initThemingLocal';
 
 import { App } from './App';
@@ -11,7 +10,6 @@ import { App } from './App';
 require('../../core/utils/lockdown');
 
 initThemingLocal();
-syncStores();
 
 if (process.env.IS_TESTING === 'true') {
   await import('../../../e2e/mockFetch').then((m) => m.mockFetch());
