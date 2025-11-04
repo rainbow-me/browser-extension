@@ -1,11 +1,11 @@
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
+import { createBaseStore } from 'stores';
 
 export interface ErrorState {
   error: Error | null;
   setError: (e: Error | null) => void;
 }
 
-export const useErrorStore = createRainbowStore<ErrorState>((set) => ({
+export const useErrorStore = createBaseStore<ErrorState>((set) => ({
   error: null,
   setError: (error) => set({ error }),
 }));
