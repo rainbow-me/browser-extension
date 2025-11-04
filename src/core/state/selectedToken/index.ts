@@ -1,4 +1,5 @@
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
+import { createBaseStore } from 'stores';
+
 import { ParsedUserAsset } from '~/core/types/assets';
 
 export interface SelectedTokenState {
@@ -7,7 +8,7 @@ export interface SelectedTokenState {
   selectedToken: ParsedUserAsset | null;
 }
 
-export const useSelectedTokenStore = createRainbowStore<SelectedTokenState>(
+export const useSelectedTokenStore = createBaseStore<SelectedTokenState>(
   (set, get) => ({
     getSelectedToken: () => get()?.selectedToken,
     setSelectedToken: (selectedToken?: ParsedUserAsset) => {
