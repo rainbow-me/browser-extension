@@ -1,4 +1,5 @@
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
+import { createBaseStore } from 'stores';
+
 import {
   GasFeeLegacyParams,
   GasFeeLegacyParamsBySpeed,
@@ -6,6 +7,8 @@ import {
   GasFeeParamsBySpeed,
   GasSpeed,
 } from '~/core/types/gas';
+
+import { createExtensionStoreOptions } from '../_internal';
 
 export interface GasStore {
   selectedGas: GasFeeParams | GasFeeLegacyParams;
@@ -26,7 +29,7 @@ export interface GasStore {
   clearCustomGasModified: () => void;
 }
 
-export const useGasStore = createRainbowStore<GasStore>(
+export const useGasStore = createBaseStore<GasStore>(
   (set, get) => ({
     selectedGas: {} as GasFeeParams | GasFeeLegacyParams,
     gasFeeParamsBySpeed: {} as GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed,
@@ -65,8 +68,8 @@ export const useGasStore = createRainbowStore<GasStore>(
       set({ customGasModified: false });
     },
   }),
-  {
+  createExtensionStoreOptions({
     storageKey: 'gas',
     version: 0,
-  },
+  }),
 );
