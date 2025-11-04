@@ -1,4 +1,6 @@
-import { createRainbowStore } from '../internal/createRainbowStore';
+import { createBaseStore } from 'stores';
+
+import { createExtensionStoreOptions } from '../_internal';
 
 import { NetworksStoreMigrationState } from './types';
 
@@ -112,11 +114,11 @@ export async function runNetworksMigrationIfNeeded(
 }
 
 export const useNetworksStoreMigrationStore =
-  createRainbowStore<NetworksStoreMigrationState>(
+  createBaseStore<NetworksStoreMigrationState>(
     () => ({
       didCompleteNetworksMigration: false,
     }),
-    {
+    createExtensionStoreOptions({
       storageKey: 'networksStoreMigration',
       version: 0,
       onRehydrateStorage: () => {
@@ -126,5 +128,5 @@ export const useNetworksStoreMigrationStore =
           }
         };
       },
-    },
+    }),
   );
