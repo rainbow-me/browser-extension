@@ -1,7 +1,9 @@
+import { createBaseStore } from '@storesjs/stores';
 import { Address } from 'viem';
 
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { RainbowTransaction } from '~/core/types/transactions';
+
+import { createExtensionStoreOptions } from '../../_internal';
 
 export interface CustomNetworkTransactionsState {
   customNetworkTransactions: Record<
@@ -33,7 +35,7 @@ export interface CustomNetworkTransactionsState {
 }
 
 export const useCustomNetworkTransactionsStore =
-  createRainbowStore<CustomNetworkTransactionsState>(
+  createBaseStore<CustomNetworkTransactionsState>(
     (set, get) => ({
       customNetworkTransactions: {},
       getCustomNetworkTransactions: ({ address }) => {
@@ -47,13 +49,12 @@ export const useCustomNetworkTransactionsStore =
         const { customNetworkTransactions } = get();
         const addressTransactions = customNetworkTransactions[address] || {};
         const addressChainIdTransactions = addressTransactions[chainId] || [];
-        addressChainIdTransactions.push(transaction);
         set({
           customNetworkTransactions: {
             ...customNetworkTransactions,
             [address]: {
               ...addressTransactions,
-              [chainId]: addressChainIdTransactions,
+              [chainId]: [...addressChainIdTransactions, transaction],
             },
           },
         });
@@ -75,8 +76,8 @@ export const useCustomNetworkTransactionsStore =
         set({ customNetworkTransactions: {} });
       },
     }),
-    {
+    createExtensionStoreOptions({
       storageKey: 'customNetworkTransactions',
       version: 0,
-    },
+    }),
   );

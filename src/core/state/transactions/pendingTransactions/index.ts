@@ -1,7 +1,9 @@
+import { createBaseStore } from '@storesjs/stores';
 import { Address, isAddress } from 'viem';
 
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { RainbowTransaction } from '~/core/types/transactions';
+
+import { createExtensionStoreOptions } from '../../_internal';
 
 export interface PendingTransactionsStateV1 {
   [key: Address]: {
@@ -29,7 +31,7 @@ export interface PendingTransactionsState {
 }
 
 export const usePendingTransactionsStore =
-  createRainbowStore<PendingTransactionsState>(
+  createBaseStore<PendingTransactionsState>(
     (set, get) => ({
       pendingTransactions: {},
       updatePendingTransaction: ({ address, pendingTransaction }) =>
@@ -110,7 +112,7 @@ export const usePendingTransactionsStore =
         set({ pendingTransactions: {} });
       },
     }),
-    {
+    createExtensionStoreOptions({
       storageKey: 'pendingTransactions',
       version: 2,
       migrate(persistedState, version) {
@@ -162,5 +164,5 @@ export const usePendingTransactionsStore =
         }
         return state;
       },
-    },
+    }),
   );
