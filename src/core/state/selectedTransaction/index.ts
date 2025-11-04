@@ -1,4 +1,5 @@
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
+import { createBaseStore } from 'stores';
+
 import { RainbowTransaction } from '~/core/types/transactions';
 
 export interface SelectedTransactionState {
@@ -8,7 +9,7 @@ export interface SelectedTransactionState {
 }
 
 export const useSelectedTransactionStore =
-  createRainbowStore<SelectedTransactionState>((set, get) => ({
+  createBaseStore<SelectedTransactionState>((set, get) => ({
     getSelectedTransaction: () => get()?.selectedTransaction,
     setSelectedTransaction: (selectedTransaction?: RainbowTransaction) => {
       set({ selectedTransaction });
