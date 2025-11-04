@@ -1,6 +1,7 @@
+import { createBaseStore } from '@storesjs/stores';
 import { Address } from 'viem';
 
-import { createRainbowStore } from '../internal/createRainbowStore';
+import { createExtensionStoreOptions } from '../_internal';
 
 export interface Contact {
   name: string;
@@ -19,7 +20,7 @@ export interface ContactsStore {
   deleteContact: ({ address }: { address: Address }) => void;
 }
 
-export const useContactsStore = createRainbowStore<ContactsStore>(
+export const useContactsStore = createBaseStore<ContactsStore>(
   (set, get) => ({
     contacts: {},
     getContact: ({ address }) => {
@@ -43,8 +44,8 @@ export const useContactsStore = createRainbowStore<ContactsStore>(
       set({ contacts: { ...contacts } });
     },
   }),
-  {
+  createExtensionStoreOptions({
     storageKey: 'contacts',
     version: 0,
-  },
+  }),
 );

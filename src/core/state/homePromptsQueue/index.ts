@@ -1,4 +1,4 @@
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
+import { createBaseStore } from '@storesjs/stores';
 
 type HomePrompt = 'app-connection' | 'wallet-backup';
 export interface HomePromptsQueue {
@@ -6,7 +6,7 @@ export interface HomePromptsQueue {
   popQueue: () => void;
 }
 
-export const useHomePromptsQueueStore = createRainbowStore<HomePromptsQueue>(
+export const useHomePromptsQueueStore = createBaseStore<HomePromptsQueue>(
   (set, get) => ({
     queue: ['wallet-backup', 'app-connection'],
     popQueue: () => {

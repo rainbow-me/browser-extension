@@ -1,4 +1,6 @@
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
+import { createBaseStore } from '@storesjs/stores';
+
+import { createExtensionStoreOptions } from '../_internal';
 
 export interface WalletAvatar {
   color?: string;
@@ -17,7 +19,7 @@ type WalletAvatarStore = {
   }) => void;
 };
 
-export const useWalletAvatarStore = createRainbowStore<WalletAvatarStore>(
+export const useWalletAvatarStore = createBaseStore<WalletAvatarStore>(
   (set, get) => ({
     walletAvatar: {},
     setWalletAvatar: ({ addressOrName, walletAvatar }) => {
@@ -30,8 +32,8 @@ export const useWalletAvatarStore = createRainbowStore<WalletAvatarStore>(
       });
     },
   }),
-  {
+  createExtensionStoreOptions({
     storageKey: 'walletAvatarStore',
     version: 0,
-  },
+  }),
 );

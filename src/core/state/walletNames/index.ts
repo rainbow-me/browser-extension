@@ -1,6 +1,7 @@
+import { createBaseStore } from '@storesjs/stores';
 import { Address } from 'viem';
 
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
+import { createExtensionStoreOptions } from '../_internal';
 
 export interface WalletNamesStore {
   walletNames: { [address: Address]: string };
@@ -19,7 +20,7 @@ export interface WalletNamesStore {
   deleteWalletName: ({ address }: { address: Address }) => void;
 }
 
-export const useWalletNamesStore = createRainbowStore<WalletNamesStore>(
+export const useWalletNamesStore = createBaseStore<WalletNamesStore>(
   (set, get) => ({
     walletNames: {},
     getWalletName: ({ address }) => {
@@ -40,8 +41,8 @@ export const useWalletNamesStore = createRainbowStore<WalletNamesStore>(
       set({ walletNames: { ...walletNames } });
     },
   }),
-  {
+  createExtensionStoreOptions({
     storageKey: 'walletNames',
     version: 0,
-  },
+  }),
 );
