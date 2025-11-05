@@ -5,6 +5,7 @@ import { queryClient } from '~/core/react-query';
 import { shortcuts } from '~/core/references/shortcuts';
 import { selectTransactionsByDate } from '~/core/resources/_selectors';
 import {
+  consolidatedTransactionsQueryFunction,
   consolidatedTransactionsQueryKey,
   useConsolidatedTransactions,
 } from '~/core/resources/transactions/consolidatedTransactions';
@@ -17,12 +18,14 @@ import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { useSupportedChains } from '~/core/utils/chains';
+import { RainbowError, logger } from '~/logger';
 
-import useComponentWillUnmount from './useComponentWillUnmount';
 import { useKeyboardShortcut } from './useKeyboardShortcut';
 import { useUserChains } from './useUserChains';
 
-const PAGES_TO_CACHE_LIMIT = 2;
+// We have page sizes of 100 since goldsky migration, so we only need to cache the first page on navigate away (these pages will be revalidated on return to the page, so we should keep as little pages as possible in cache)
+const PAGES_TO_CACHE_LIMIT = 1;
+const FIRST_PAGE_REFETCH_INTERVAL = 60000; // 1 minute
 
 interface UseInfiniteTransactionListParams {
   getScrollElement: () => HTMLDivElement | null;
@@ -53,9 +56,20 @@ export const useInfiniteTransactionList = ({
   const { testnetMode } = useTestnetModeStore();
   const { chains } = useUserChains();
   const userChainIds = chains.map(({ id }) => id);
-  const supportedChainIds = useSupportedChains({ testnets: testnetMode })
-    .map(({ id }) => id)
-    .filter((id) => userChainIds.includes(id));
+  const supportedChains = useSupportedChains({ testnets: testnetMode });
+
+  // stable reference
+  const supportedChainIds = useMemo(
+    () =>
+      supportedChains
+        .map(({ id }) => id)
+        .filter((id) => userChainIds.includes(id)),
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    supportedChains
+      .map(({ id }) => id)
+      .filter((id) => userChainIds.includes(id)),
+  );
 
   const {
     data,
@@ -160,61 +174,118 @@ export const useInfiniteTransactionList = ({
       },
       [formattedTransactions],
     ),
-    paddingEnd: 64,
+    paddingEnd: 0,
   });
-  const rows = infiniteRowVirtualizer.getVirtualItems();
 
-  const cleanupPages = useCallback(() => {
-    if (data && data?.pages) {
-      queryClient.setQueryData(
-        consolidatedTransactionsQueryKey({
-          address,
-          currency,
-          userChainIds: supportedChainIds,
-        }),
-        {
-          ...data,
-          pages: [...data.pages].slice(0, PAGES_TO_CACHE_LIMIT),
-        },
-      );
-    }
-  }, [address, currency, data, supportedChainIds]);
+  const virtualRows = infiniteRowVirtualizer.getVirtualItems();
 
-  useComponentWillUnmount(cleanupPages);
-
+  // Refetch only the first page periodically
   useEffect(() => {
-    const [lastRow] = [...rows].reverse();
+    if (!address || !supportedChainIds.length) return;
+
+    const queryKey = consolidatedTransactionsQueryKey({
+      address,
+      currency,
+      userChainIds: supportedChainIds,
+    });
+
+    const refetchFirstPage = async () => {
+      try {
+        // Fetch only the first page (pageParam: null) to check for changes
+        const firstPageResult = await consolidatedTransactionsQueryFunction({
+          queryKey,
+          pageParam: null,
+        } as Parameters<typeof consolidatedTransactionsQueryFunction>[0]);
+
+        // Get the current cached data
+        const currentData = queryClient.getQueryData(queryKey) as typeof data;
+
+        // Compare the first transaction to determine if we need a full refetch
+        const newFirstTx =
+          firstPageResult.transactions.length > 0
+            ? firstPageResult.transactions[0]
+            : null;
+        const currentFirstTx =
+          currentData?.pages?.[0]?.transactions?.[0] || null;
+
+        const firstTxChanged =
+          !currentFirstTx ||
+          !newFirstTx ||
+          newFirstTx.hash !== currentFirstTx.hash;
+
+        if (firstTxChanged && (currentData?.pages?.length ?? 0) > 1) {
+          // First transaction changed and we have more than one page - trigger full refetch to get all updated pages
+          await refetch();
+        } else {
+          // First transaction unchanged or we only have one page fetched - just update the first page cache quietly
+          queryClient.setQueryData(queryKey, (oldData: typeof data) => {
+            if (!oldData?.pages?.length) {
+              return { pages: [firstPageResult], pageParams: [null] };
+            }
+            return {
+              ...oldData,
+              pages: [firstPageResult, ...oldData.pages.slice(1)],
+            };
+          });
+        }
+      } catch (error) {
+        // Silently fail - we don't want to disrupt the UI if refetch fails
+        logger.error(new RainbowError('Failed to refetch first page'), {
+          message: error,
+        });
+      }
+    };
+
+    // Refetch immediately on mount, then every interval
+    refetchFirstPage();
+    const intervalId = setInterval(
+      refetchFirstPage,
+      FIRST_PAGE_REFETCH_INTERVAL,
+    );
+
+    return () => clearInterval(intervalId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address, currency, supportedChainIds]);
+
+  // Fetch next page when user scrolls to the last visible item
+  useEffect(() => {
+    const [lastRow] = [...virtualRows].reverse();
     if (!lastRow) return;
-    if (
-      lastRow.index >= transactions.length - 1 &&
-      hasNextPage &&
-      !isFetching &&
-      !isFetchingNextPage
-    ) {
-      fetchNextPage();
-    } else if (
-      // BE does not guarantee a particular number of transactions per page
-      // BE grabs a group from our data providers then filters for various reasons
-      // there are rare cases where BE filters out so many transactions on a page
-      // that we end up not filling the list UI, preventing the user from paginating via scroll
-      // so we recursively paginate until we know the UI is full
-      transactionsAfterCutoff.length < 8 &&
-      hasNextPage &&
-      !isFetching &&
-      !isFetchingNextPage
-    ) {
+
+    // Check if last visible row is near the end of the list
+    const isNearEnd = lastRow.index >= formattedTransactions.length - 1;
+
+    if (isNearEnd && hasNextPage && !isFetching && !isFetchingNextPage) {
       fetchNextPage();
     }
   }, [
-    data?.pages?.length,
-    fetchNextPage,
+    virtualRows,
+    formattedTransactions.length,
     hasNextPage,
     isFetching,
     isFetchingNextPage,
-    transactions.length,
-    transactionsAfterCutoff.length,
-    rows,
+    fetchNextPage,
   ]);
+
+  const cleanupPages = useCallback(() => {
+    if (!data?.pages) return;
+
+    queryClient.setQueryData(
+      consolidatedTransactionsQueryKey({
+        address,
+        currency,
+        userChainIds: supportedChainIds,
+      }),
+      { ...data, pages: [...data.pages].slice(0, PAGES_TO_CACHE_LIMIT) },
+    );
+  }, [data, address, currency, supportedChainIds]);
+
+  // Cleanup pages when component mounts or unmounts
+  useEffect(() => {
+    cleanupPages();
+    return () => cleanupPages();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const refetchTransactions = async () => {
     setManuallyRefetching(true);
