@@ -24,6 +24,7 @@ import { Account, useAccounts } from '../../hooks/useAccounts';
 import { useActiveTab } from '../../hooks/useActiveTab';
 import { useAppSession } from '../../hooks/useAppSession';
 import { useAppSessions } from '../../hooks/useAppSessions';
+import { useWalletsSummary } from '../../hooks/useWalletsSummary';
 import { zIndexes } from '../../utils/zIndexes';
 import { DappIcon } from '../DappIcon/DappIcon';
 import { Navbar } from '../Navbar/Navbar';
@@ -100,6 +101,14 @@ export const AppConnectionWalletSwitcher = () => {
     return { connectedAccounts, notConnectedAccounts };
   }, [appSession?.sessions, sortedAccounts]);
 
+  const allAccounts = useMemo(
+    () => [...connectedAccounts, ...notConnectedAccounts],
+    [connectedAccounts, notConnectedAccounts],
+  );
+  const { walletsSummary, isLoading: isLoadingSummary } = useWalletsSummary({
+    addresses: allAccounts.map((account) => account.address),
+  });
+
   return (
     <Prompt
       show={walletSwitcher.show}
@@ -164,6 +173,10 @@ export const AppConnectionWalletSwitcher = () => {
                                 account.address,
                               )}
                               connected={true}
+                              balance={
+                                walletsSummary[account.address]?.balance.amount
+                              }
+                              isLoadingBalance={isLoadingSummary}
                             />
                             <Box
                               position="absolute"
@@ -210,6 +223,10 @@ export const AppConnectionWalletSwitcher = () => {
                             address={account.address}
                             chainId={ChainId.mainnet}
                             connected={false}
+                            balance={
+                              walletsSummary[account.address]?.balance.amount
+                            }
+                            isLoadingBalance={isLoadingSummary}
                           />
                         ))}
                       </AccentColorProvider>

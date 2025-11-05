@@ -39,7 +39,15 @@ export enum LabelOption {
   balance = 'balance',
 }
 
-const TotalAssetsBalance = ({ account }: { account: Address }) => {
+const TotalAssetsBalance = ({
+  account,
+  balance,
+  isLoading: isLoadingBalance,
+}: {
+  account: Address;
+  balance?: string;
+  isLoading?: boolean;
+}) => {
   const { hidden } = useHiddenAssetStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
   const { currentAddress: address } = useCurrentAddressStore();
@@ -49,20 +57,24 @@ const TotalAssetsBalance = ({ account }: { account: Address }) => {
     },
     [address, hidden],
   );
-  const { data: totalAssetsBalance, isLoading } = useUserAssets(
-    { address: account, currency },
-    {
-      select: (data) =>
-        selectorFilterByUserChains<string>({
-          data,
-          selector: (assetsByChain) => {
-            return selectUserAssetsBalance(assetsByChain, isHidden);
-          },
-        }),
-    },
-  );
+  const { data: totalAssetsBalance, isLoading: isLoadingAssets } =
+    useUserAssets(
+      { address: account, currency },
+      {
+        select: (data) =>
+          selectorFilterByUserChains<string>({
+            data,
+            selector: (assetsByChain) => {
+              return selectUserAssetsBalance(assetsByChain, isHidden);
+            },
+          }),
+        enabled: balance === undefined && !isLoadingBalance, // Only fetch if balance not provided and not loading
+      },
+    );
+  const finalBalance = balance || totalAssetsBalance || '0';
+  const isLoading = isLoadingBalance ?? isLoadingAssets;
   const userAssetsBalanceDisplay = convertAmountToNativeDisplay(
-    totalAssetsBalance || '0',
+    finalBalance,
     currency,
   );
 
@@ -91,6 +103,8 @@ export default function AccountItem({
   labelType,
   isSelected,
   testId,
+  balance,
+  isLoadingBalance,
 }: {
   account: Address;
   rightComponent?: React.ReactNode;
@@ -100,6 +114,8 @@ export default function AccountItem({
   labelType?: LabelOption;
   searchTerm?: string;
   testId?: string;
+  balance?: string;
+  isLoadingBalance?: boolean;
 }) {
   const { displayName, showAddress } = useWalletName({ address: account });
 
@@ -109,7 +125,13 @@ export default function AccountItem({
       <MenuItem.Label text={truncateAddress(account)} />
     ) : null;
   } else if (labelType === LabelOption.balance) {
-    labelComponent = <TotalAssetsBalance account={account} />;
+    labelComponent = (
+      <TotalAssetsBalance
+        account={account}
+        balance={balance}
+        isLoading={isLoadingBalance}
+      />
+    );
   }
 
   return (

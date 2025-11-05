@@ -46,6 +46,7 @@ import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { SwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
 import { AddressAndType, useWallets } from '../../hooks/useWallets';
+import { useWalletsSummary } from '../../hooks/useWalletsSummary';
 import { ROUTES } from '../../urls';
 
 import { RemoveWalletPrompt } from './removeWalletPrompt';
@@ -135,12 +136,16 @@ const AccountItemWithMenu = ({
   isSelected,
   onSelect,
   index,
+  balance,
+  isLoadingBalance,
 }: {
   account: Account;
   onSelect: () => void;
   isSelected: boolean;
   menuOptions: MoreInfoOption[];
   index: number;
+  balance?: string;
+  isLoadingBalance?: boolean;
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   return (
@@ -172,6 +177,8 @@ const AccountItemWithMenu = ({
       }
       labelType={LabelOption.balance}
       isSelected={isSelected}
+      balance={balance}
+      isLoadingBalance={isLoadingBalance}
     />
   );
 };
@@ -189,6 +196,9 @@ export function WalletSwitcher() {
   const { visibleWallets: accounts, fetchWallets } = useWallets();
   const { data: avatar } = useAvatar({ addressOrName: currentAddress });
   const { trackShortcut } = useKeyboardAnalytics();
+  const { walletsSummary, isLoading: isLoadingSummary } = useWalletsSummary({
+    addresses: accounts.map((account) => account.address),
+  });
 
   const isLastWallet = accounts?.length === 1;
 
@@ -287,6 +297,8 @@ export function WalletSwitcher() {
               setRemoveAccount,
               isLastWallet,
             })}
+            balance={walletsSummary[account.address]?.balance.amount}
+            isLoadingBalance={isLoadingSummary}
           />
         </DraggableItem>
       )),
@@ -296,6 +308,8 @@ export function WalletSwitcher() {
       handleSelectAddress,
       isLastWallet,
       isSearching,
+      walletsSummary,
+      isLoadingSummary,
     ],
   );
 
