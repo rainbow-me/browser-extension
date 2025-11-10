@@ -1314,9 +1314,9 @@
     "empty_description": "เมื่อคุณเริ่มใช้กระเป๋าสตางค์ของคุณ คุณจะเห็นธุรกรรมของคุณที่นี่",
     "loading_more": "กำลังโหลดเพิ่ม...",
     "no_value": "ไม่มีค่า",
-    "error_header": "Unable to load activity",
-    "error_description": "We couldn't fetch your transactions. Please try again.",
-    "error_retry": "Try Again"
+    "error_header": "ไม่สามารถโหลดกิจกรรมได้",
+    "error_description": "เราไม่สามารถดึงธุรกรรมของคุณได้ กรุณาลองอีกครั้ง",
+    "error_retry": "ลองใหม่"
   },
   "activity_details": {
     "you": "คุณ",
@@ -1348,11 +1348,11 @@
     "token_contract": "สัญญาโทเค็น",
     "token_standard": "มาตรฐานโทเค็น",
     "revoke_approval": "ยกเลิกการอนุมัติ",
-    "error_title": "Unable to load activity",
-    "error_message": "We couldn't fetch this transaction.\nTry again or head back to your activity.",
-    "error_retry": "Try Again",
-    "error_back": "Back to Activity",
-    "loading_failed": "Loading Failed"
+    "error_title": "ไม่สามารถโหลดกิจกรรมได้",
+    "error_message": "เราไม่สามารถดึงธุรกรรมนี้ได้ \nลองอีกครั้งหรือกลับไปที่กิจกรรมของคุณ",
+    "error_retry": "ลองใหม่",
+    "error_back": "กลับไปยัง กิจกรรม",
+    "loading_failed": "การโหลดล้มเหลว"
   },
   "tokens_tab": {
     "coinbase_title": "ฝากจาก Coinbase",
