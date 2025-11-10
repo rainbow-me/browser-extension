@@ -44,6 +44,7 @@ import { ActivityValue } from './ActivityValue';
 import { NoActivity } from './NoActivity';
 
 export function Activities() {
+  const containerRef = useContainerRef();
   const {
     isInitialLoading,
     isFetchingNextPage,
@@ -54,7 +55,6 @@ export function Activities() {
     getScrollElement: () => containerRef.current,
   });
   useTransactionListForPendingTxs();
-  const containerRef = useContainerRef();
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency } = useCurrentCurrencyStore();
   const { chains } = useUserChains();
@@ -112,7 +112,7 @@ export function Activities() {
 
   const rows = activityRowVirtualizer.getVirtualItems();
   return (
-    <>
+    <Box paddingBottom="60px">
       <Box
         width="full"
         style={{
@@ -120,7 +120,6 @@ export function Activities() {
           overflow: 'visible',
         }}
         paddingBottom="12px"
-        ref={containerRef}
       >
         <Box
           width="full"
@@ -171,7 +170,7 @@ export function Activities() {
         </Box>
       </Box>
       {isFetchingNextPage && <SpinnerRow />}
-    </>
+    </Box>
   );
 }
 

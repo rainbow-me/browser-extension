@@ -4,11 +4,9 @@ import { Address } from 'viem';
 import { platformHttp } from '~/core/network/platform';
 import {
   InfiniteQueryConfig,
-  QueryConfig,
   QueryFunctionArgs,
   QueryFunctionResult,
   createQueryKey,
-  queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
 import { useNetworkStore } from '~/core/state/networks/networks';
@@ -22,10 +20,10 @@ import { convertPlatformTransactionToPaginatedApiResponse } from '~/core/utils/p
 import { parseTransaction } from '~/core/utils/transactions';
 import { RainbowError, logger } from '~/logger';
 
-const CONSOLIDATED_TRANSACTIONS_INTERVAL = 60000;
 const CONSOLIDATED_TRANSACTIONS_TIMEOUT = 20000;
 const PLATFORM_LIST_TRANSACTIONS_PATH = '/v1/transactions/ListTransactions';
 const CONSOLIDATED_TRANSACTIONS_LIMIT = 100;
+const CONSOLIDATED_TRANSACTIONS_STALE_TIME = /** 1 day */ 24 * 60 * 60 * 1000; // will be refetched explicitly when new tx is detected
 
 // ///////////////////////////////////////////////
 // Query Types
@@ -53,31 +51,6 @@ export const consolidatedTransactionsQueryKey = ({
 type ConsolidatedTransactionsQueryKey = ReturnType<
   typeof consolidatedTransactionsQueryKey
 >;
-
-// ///////////////////////////////////////////////
-// Query Fetcher
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function fetchConsolidatedTransactions<
-  TSelectData = ConsolidatedTransactionsResult,
->(
-  { address, currency, userChainIds }: ConsolidatedTransactionsArgs,
-  config: QueryConfig<
-    ConsolidatedTransactionsResult,
-    Error,
-    TSelectData,
-    ConsolidatedTransactionsQueryKey
-  >,
-) {
-  return await queryClient.fetchQuery({
-    queryKey: consolidatedTransactionsQueryKey({
-      address,
-      currency,
-      userChainIds,
-    }),
-    queryFn: consolidatedTransactionsQueryFunction,
-    ...config,
-  });
-}
 
 // ///////////////////////////////////////////////
 // Query Function
@@ -134,22 +107,31 @@ export async function consolidatedTransactionsQueryFunction({
       currency,
     );
 
+    const noResults = consolidatedTransactions.length === 0;
+
     // Calculate cutoff from the oldest transaction timestamp
     // This prevents custom network transactions from being duplicated when paginating
-    const cutoff =
-      consolidatedTransactions.length > 0
-        ? Math.min(
-            ...consolidatedTransactions
-              .filter((tx) => tx.status !== 'pending')
-              .map((tx) =>
-                'minedAt' in tx && tx.minedAt ? tx.minedAt : Infinity,
-              ),
-          )
-        : undefined;
+    const cutoff = noResults
+      ? undefined
+      : Math.min(
+          ...consolidatedTransactions
+            .filter((tx) => tx.status !== 'pending')
+            .map((tx) =>
+              'minedAt' in tx && tx.minedAt ? tx.minedAt : Infinity,
+            ),
+        );
+
+    const nextCursor = response?.data?.pagination?.cursor;
+
+    // Stop pagination if:
+    const shouldStopPagination =
+      !nextCursor || // If no next cursor is returned, stop pagination
+      noResults || // If no transactions are returned, stop pagination
+      (typeof pageParam === 'string' && pageParam === nextCursor); // If the cursor hasn't changed, stop pagination
 
     return {
       cutoff: cutoff === Infinity ? undefined : cutoff,
-      nextPage: response?.data?.pagination?.cursor ?? undefined,
+      nextPage: shouldStopPagination ? undefined : nextCursor,
       transactions: consolidatedTransactions,
     };
   } catch (e) {
@@ -211,7 +193,7 @@ export function useConsolidatedTransactions<
     ...config,
     getNextPageParam: (lastPage) => lastPage?.nextPage,
     initialPageParam: null as string | null,
-    refetchInterval: CONSOLIDATED_TRANSACTIONS_INTERVAL,
+    staleTime: CONSOLIDATED_TRANSACTIONS_STALE_TIME,
     retry: 3,
   });
 }

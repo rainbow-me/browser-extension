@@ -7,7 +7,7 @@ import { Spinner } from '../Spinner/Spinner';
 
 export function SpinnerRow() {
   return (
-    <Box style={{ height: '52px', marginTop: '-8px', paddingBottom: 60 }}>
+    <Box style={{ height: '52px' }}>
       <Inset horizontal="20px" vertical="8px">
         <Rows>
           <Row>
