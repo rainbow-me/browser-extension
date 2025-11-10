@@ -1,11 +1,11 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { Address } from 'viem';
 
 import { queryClient } from '~/core/react-query';
-import { userAssetsQueryKey } from '~/core/resources/assets/common';
 import { userAssetsFetchQuery } from '~/core/resources/assets/userAssets';
 import { consolidatedTransactionsQueryKey } from '~/core/resources/transactions/consolidatedTransactions';
 import { fetchTransaction } from '~/core/resources/transactions/transaction';
+import { transactionsQueryKey } from '~/core/resources/transactions/transactions';
 import {
   useCurrentCurrencyStore,
   usePendingTransactionsStore,
@@ -18,10 +18,13 @@ import {
   MinedTransaction,
   RainbowTransaction,
 } from '~/core/types/transactions';
-import { isCustomChain } from '~/core/utils/chains';
+import { isCustomChain, useSupportedChains } from '~/core/utils/chains';
 import { getTransactionReceiptStatus } from '~/core/utils/transactions';
 import { getProvider } from '~/core/wagmi/clientToProvider';
+import { useUserChains } from '~/entries/popup/hooks/useUserChains';
 import { RainbowError, logger } from '~/logger';
+
+import { wait } from '../handlers/retry';
 
 export const useWatchPendingTransactions = ({
   address,
@@ -36,14 +39,30 @@ export const useWatchPendingTransactions = ({
   const addCustomNetworkTransactions = useCustomNetworkTransactionsStore(
     (state) => state.addCustomNetworkTransactions,
   );
-  const enabledChainIds = useNetworkStore((state) => state.enabledChainIds);
-  const { testnetMode } = useTestnetModeStore();
   const { addStaleBalance } = useStaleBalancesStore();
+  const supportedTransactionsChainIds = useNetworkStore((state) =>
+    state.getSupportedTransactionsChainIds(),
+  );
+  const { testnetMode } = useTestnetModeStore();
+  const { chains } = useUserChains();
+  const userChainIds = chains.map(({ id }) => id);
+  const supportedChains = useSupportedChains({ testnets: testnetMode });
+  // Match the exact query key logic from useInfiniteTransactionList
+  const supportedChainIds = useMemo(
+    () =>
+      supportedChains
+        .map(({ id }) => id)
+        .filter((id) => userChainIds.includes(id)),
+    [supportedChains, userChainIds],
+  );
 
   const pendingTransactions = useMemo(
     () => storePendingTransactions[address] || [],
     [address, storePendingTransactions],
   );
+
+  // Store timeout refs for cleanup
+  const invalidationTimeoutsRef = useRef<Set<NodeJS.Timeout>>(new Set());
 
   const refreshAssets = useCallback(() => {
     userAssetsFetchQuery({
@@ -185,20 +204,49 @@ export const useWatchPendingTransactions = ({
     });
 
     if (minedTransactions.length) {
-      await queryClient.refetchQueries({
-        queryKey: consolidatedTransactionsQueryKey({
+      // Filter out custom chain transactions - those are handled separately
+      const supportedChainMinedTransactions = minedTransactions.filter((tx) =>
+        supportedTransactionsChainIds.includes(tx.chainId),
+      );
+
+      if (supportedChainMinedTransactions.length > 0) {
+        // Use the same query key logic as useInfiniteTransactionList
+        const queryKey = consolidatedTransactionsQueryKey({
           address,
           currency: currentCurrency,
-          userChainIds: Array.from(enabledChainIds),
-        }),
-      });
-      await queryClient.refetchQueries({
-        queryKey: userAssetsQueryKey({
-          address,
-          currency: currentCurrency,
-          testnetMode,
-        }),
-      });
+          userChainIds: supportedChainIds,
+        });
+
+        // Invalidate per-chain transaction queries for the chains where transactions were confirmed
+        const confirmedChainIds = new Set(
+          supportedChainMinedTransactions.map((tx) => tx.chainId),
+        );
+
+        const refetchQueries = async () => {
+          await Promise.allSettled([
+            queryClient.refetchQueries({ queryKey }),
+            ...Array.from(confirmedChainIds).map((chainId) =>
+              queryClient.refetchQueries({
+                queryKey: transactionsQueryKey({
+                  address,
+                  chainId,
+                  currency: currentCurrency,
+                }),
+              }),
+            ),
+          ]);
+        };
+
+        await wait(1500); // wait for the transactions to be enhanced by backend, 1.5s feels like a perfect balance between user does not notice extra time and backend has time to enhance the transactions
+        await refetchQueries(); // start refetch, wait for refetch to finish, this way the pending tx does not get removed before the list is refetched
+
+        // Schedule second invalidation after 5 seconds, this is to account for the fact that transactions get enhanced while being visible, and the normal refetch is too slow to feel responsive
+        const timeout = setTimeout(() => {
+          invalidationTimeoutsRef.current.delete(timeout);
+          refetchQueries();
+        }, 5000);
+        invalidationTimeoutsRef.current.add(timeout);
+      }
     }
 
     // Remove mined transactions, keep the rest as-is
@@ -219,9 +267,20 @@ export const useWatchPendingTransactions = ({
     pendingTransactions,
     processPendingTransaction,
     removePendingTransactionsForAddress,
-    testnetMode,
-    enabledChainIds,
+    supportedTransactionsChainIds,
+    supportedChainIds,
   ]);
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    const timeouts = invalidationTimeoutsRef.current;
+    return () => {
+      timeouts.forEach((timeout) => {
+        clearTimeout(timeout);
+      });
+      timeouts.clear();
+    };
+  }, []);
 
   return { watchPendingTransactions };
 };
