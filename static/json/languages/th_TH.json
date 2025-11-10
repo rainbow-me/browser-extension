@@ -1313,7 +1313,10 @@
     "empty_header": "ยังไม่มีกิจกรรม",
     "empty_description": "เมื่อคุณเริ่มใช้กระเป๋าสตางค์ของคุณ คุณจะเห็นธุรกรรมของคุณที่นี่",
     "loading_more": "กำลังโหลดเพิ่ม...",
-    "no_value": "ไม่มีค่า"
+    "no_value": "ไม่มีค่า",
+    "error_header": "Unable to load activity",
+    "error_description": "We couldn't fetch your transactions. Please try again.",
+    "error_retry": "Try Again"
   },
   "activity_details": {
     "you": "คุณ",
@@ -1344,7 +1347,12 @@
     "collection": "คอลเล็กชั่น",
     "token_contract": "สัญญาโทเค็น",
     "token_standard": "มาตรฐานโทเค็น",
-    "revoke_approval": "ยกเลิกการอนุมัติ"
+    "revoke_approval": "ยกเลิกการอนุมัติ",
+    "error_title": "Unable to load activity",
+    "error_message": "We couldn't fetch this transaction.\nTry again or head back to your activity.",
+    "error_retry": "Try Again",
+    "error_back": "Back to Activity",
+    "loading_failed": "Loading Failed"
   },
   "tokens_tab": {
     "coinbase_title": "ฝากจาก Coinbase",
