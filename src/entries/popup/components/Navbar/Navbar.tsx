@@ -25,8 +25,8 @@ import {
 export const NAVBAR_HEIGHT = 64;
 
 type NavbarProps = {
-  leftComponent?: React.ReactElement;
-  rightComponent?: React.ReactElement;
+  leftComponent?: React.ReactNode;
+  rightComponent?: React.ReactNode;
   title?: string;
   titleTestId?: string;
   titleComponent?: React.ReactNode;

@@ -1,8 +1,8 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits } from '@ethersproject/units';
 import { motion } from 'framer-motion';
-import { useMemo } from 'react';
-import { Navigate, useParams, useSearchParams } from 'react-router-dom';
+import { ReactNode, useMemo, useState } from 'react';
+import { useParams, useSearchParams } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { useApprovals } from '~/core/resources/approvals/approvals';
@@ -67,6 +67,7 @@ import { ActivityDetailsContentSkeleton } from '../Skeletons';
 import { CopyableValue, InfoRow } from '../TokenDetails/About';
 
 import { ActivityPill } from './ActivityPill';
+import { StatusPill } from './StatusPill';
 
 function ToFrom({ transaction }: { transaction: RainbowTransaction }) {
   const { from, to, contract, direction } = transaction;
@@ -507,13 +508,19 @@ function MoreOptions({
   revoke,
   onRevoke,
 }: {
-  transaction: RainbowTransaction;
+  transaction:
+    | Pick<RainbowTransaction, 'hash' | 'chainId' | 'explorer'>
+    | Pick<RainbowTransaction, 'hash' | 'chainId'>;
   revoke?: boolean;
-  onRevoke: () => void;
+  onRevoke?: () => void;
 }) {
-  const explorer = transaction?.explorer?.name
-    ? transaction.explorer
-    : getTransactionBlockExplorer(transaction);
+  const explorer =
+    'explorer' in transaction && transaction.explorer?.name
+      ? transaction.explorer
+      : getTransactionBlockExplorer({
+          hash: transaction.hash,
+          chainId: transaction.chainId,
+        });
   const hash = transaction.hash;
   return (
     <DropdownMenu>
@@ -575,7 +582,7 @@ function MoreOptions({
             >
               {i18n.t('token_details.view_on', { explorer: explorer.name })}
             </DropdownMenuItem>
-            {revoke ? (
+            {revoke && onRevoke && (
               <DropdownMenuItem
                 color="red"
                 symbolLeft="xmark.circle.fill"
@@ -583,11 +590,64 @@ function MoreOptions({
               >
                 {i18n.t('activity_details.revoke_approval')}
               </DropdownMenuItem>
-            ) : null}
+            )}
           </>
         )}
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+}
+
+function ActivityDetailsErrorState({
+  onRetry,
+}: {
+  onRetry: () => Promise<void>;
+}) {
+  return (
+    <Stack
+      alignHorizontal="center"
+      gap="32px"
+      padding="24px"
+      paddingTop="48px"
+      paddingBottom="60px"
+    >
+      <Symbol
+        symbol="exclamationmark.triangle.fill"
+        size={34}
+        color="labelQuaternary"
+      />
+      <Stack alignHorizontal="center" gap="16px">
+        <Text align="center" size="20pt" weight="bold" color="label">
+          {i18n.t('activity_details.error_title')}
+        </Text>
+        <Text
+          align="center"
+          size="14pt"
+          weight="semibold"
+          color="labelTertiary"
+          whiteSpace="pre-wrap" // to render newline from translations
+        >
+          {i18n.t('activity_details.error_message')}
+        </Text>
+        <Box
+          style={{
+            background: 'rgba(255, 255, 255, 0.1)',
+            borderRadius: '30px',
+          }}
+        >
+          <Button
+            variant="transparent"
+            color="label"
+            borderRadius="30px"
+            height="44px"
+            onClick={onRetry}
+            width="full"
+          >
+            {i18n.t('activity_details.error_retry')}
+          </Button>
+        </Box>
+      </Stack>
+    </Stack>
   );
 }
 
@@ -601,6 +661,8 @@ export function ActivityDetails() {
     data: transaction,
     isLoading,
     isError,
+    isRefetching,
+    refetch,
   } = useTransaction({
     hash,
     chainId: Number(chainId),
@@ -650,38 +712,78 @@ export function ActivityDetails() {
     triggerRevokeApproval({ show: true, approval: approvalToRevoke });
   };
 
-  if (!isLoading && (!transaction || isError)) {
-    return <Navigate to={ROUTES.HOME} state={{ tab: 'activity' }} />;
+  const [isRetrying, setIsRetrying] = useState(false);
+  const handleRetry = async () => {
+    setIsRetrying(true);
+    const minPendingPromise = new Promise((resolve) => {
+      setTimeout(resolve, 600);
+    });
+    const result = await refetch();
+    // If refetch succeeds (has data and no error), show immediately
+    if (result.data && !result.isError) {
+      setIsRetrying(false);
+    } else {
+      // If refetch fails, wait for minimum delay before showing error
+      await minPendingPromise;
+      setIsRetrying(false);
+    }
+  };
+
+  const showErrorState =
+    !isLoading && !isRefetching && !isRetrying && (!transaction || isError);
+
+  let navbarTitleComponent: ReactNode | undefined;
+  let navbarRightComponent: ReactNode | undefined;
+
+  if (isLoading || isRefetching || isRetrying) {
+    navbarTitleComponent = <Skeleton width="120px" height="20px" />;
+    navbarRightComponent = <Skeleton circle width="32px" height="32px" />;
+  } else if (showErrorState && hash && chainId) {
+    navbarTitleComponent = (
+      <StatusPill
+        status="failed"
+        title={i18n.t('activity_details.loading_failed')}
+        icon={
+          <Symbol
+            symbol="xmark.circle"
+            size={20}
+            color="red"
+            weight="semibold"
+          />
+        }
+      />
+    );
+    navbarRightComponent = (
+      <MoreOptions
+        transaction={{
+          hash,
+          chainId: Number(chainId) as ChainId,
+        }}
+      />
+    );
+  } else if (transaction) {
+    navbarTitleComponent = <ActivityPill transaction={transaction} />;
+    navbarRightComponent = (
+      <MoreOptions
+        transaction={transaction}
+        revoke={!!approvalToRevoke && !isWatchingWallet}
+        onRevoke={onRevoke}
+      />
+    );
   }
 
   return (
     <BottomSheet zIndex={zIndexes.ACTIVITY_DETAILS} show>
       <Navbar
         leftComponent={<Navbar.CloseButton onClick={backToHome} withinModal />}
-        titleComponent={
-          isLoading ? (
-            <Skeleton width="120px" height="20px" />
-          ) : (
-            transaction && <ActivityPill transaction={transaction} />
-          )
-        }
-        rightComponent={
-          isLoading ? (
-            <Skeleton circle width="32px" height="32px" />
-          ) : (
-            transaction && (
-              <MoreOptions
-                transaction={transaction}
-                revoke={!!approvalToRevoke && !isWatchingWallet}
-                onRevoke={onRevoke}
-              />
-            )
-          )
-        }
+        titleComponent={navbarTitleComponent}
+        rightComponent={navbarRightComponent}
       />
       <Separator color="separatorTertiary" />
 
-      {isLoading ? (
+      {showErrorState ? (
+        <ActivityDetailsErrorState onRetry={handleRetry} />
+      ) : isLoading || isRefetching || isRetrying ? (
         <Stack
           separator={<Separator color="separatorTertiary" />}
           padding="20px"
