@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useRef } from 'react';
+import { ReactNode, useCallback, useMemo, useRef } from 'react';
 
 import { i18n } from '~/core/languages';
 import { reportNftAsSpam } from '~/core/network/nfts';
@@ -43,11 +43,14 @@ export default function NFTContextMenu({
   const toggleHideNFT = useNftsStore((state) => state.toggleHideNFT);
   const { selectedNft, setSelectedNft } = useSelectedNftStore();
   const navigate = useRainbowNavigate();
-  const hiddenNftsForAddress = hidden[address] || {};
+  const hiddenNftsForAddress = useMemo(
+    () => hidden[address],
+    [hidden, address],
+  );
   const nftToFocus = selectedNft ?? nft;
   const hasContractAddress = !!nftToFocus?.asset_contract.address;
   const hasNetwork = !!nftToFocus?.network;
-  const displayed = !hiddenNftsForAddress[nftToFocus?.uniqueId || ''];
+  const displayed = !hiddenNftsForAddress?.[nftToFocus?.uniqueId || ''];
   const nftUniqueId = nftToFocus?.uniqueId || '';
 
   const navigatingRef = useRef(false);
