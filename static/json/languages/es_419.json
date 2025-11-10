@@ -1313,7 +1313,10 @@
     "empty_header": "Actividad no disponible aún",
     "empty_description": "Una vez que comiences a usar tu billetera, verás aquí tus transacciones.",
     "loading_more": "Cargando más...",
-    "no_value": "Sin valor"
+    "no_value": "Sin valor",
+    "error_header": "Unable to load activity",
+    "error_description": "We couldn't fetch your transactions. Please try again.",
+    "error_retry": "Try Again"
   },
   "activity_details": {
     "you": "Tú",
@@ -1344,7 +1347,12 @@
     "collection": "Colección",
     "token_contract": "Contrato del token",
     "token_standard": "Estándar del token",
-    "revoke_approval": "Revocar Aprobación"
+    "revoke_approval": "Revocar Aprobación",
+    "error_title": "Unable to load activity",
+    "error_message": "We couldn't fetch this transaction.\nTry again or head back to your activity.",
+    "error_retry": "Try Again",
+    "error_back": "Back to Activity",
+    "loading_failed": "Loading Failed"
   },
   "tokens_tab": {
     "coinbase_title": "Depósito desde Coinbase",
