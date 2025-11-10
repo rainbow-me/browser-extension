@@ -1314,9 +1314,9 @@
     "empty_description": "अपने वॉलेट का उपयोग शुरू करने के बाद, आप यहाँ अपने लेन-देन देखेंगे।",
     "loading_more": "और लोड हो रहा है...",
     "no_value": "कोई मूल्य नहीं",
-    "error_header": "Unable to load activity",
-    "error_description": "We couldn't fetch your transactions. Please try again.",
-    "error_retry": "Try Again"
+    "error_header": "गतिविधि लोड करने में असमर्थ",
+    "error_description": "हम आपके लेन-देन को प्राप्त नहीं कर सके। कृपया पुनः प्रयास करें।",
+    "error_retry": "फिर से प्रयास करें"
   },
   "activity_details": {
     "you": "तुम",
@@ -1348,11 +1348,11 @@
     "token_contract": "टोकन अनुबंध",
     "token_standard": "टोकन मानक",
     "revoke_approval": "अनुमति रद्द करें",
-    "error_title": "Unable to load activity",
-    "error_message": "We couldn't fetch this transaction.\nTry again or head back to your activity.",
-    "error_retry": "Try Again",
-    "error_back": "Back to Activity",
-    "loading_failed": "Loading Failed"
+    "error_title": "गतिविधि लोड करने में असमर्थ",
+    "error_message": "हम इस लेन-देन को प्राप्त नहीं कर सके।\nपुनः प्रयास करें या अपनी गतिविधि पर वापस जाएँ।",
+    "error_retry": "फिर से प्रयास करें",
+    "error_back": "गतिविधि पर वापस जाएँ",
+    "loading_failed": "लोडिंग विफल हुई"
   },
   "tokens_tab": {
     "coinbase_title": "कॉइनबेस से जमा करें",
