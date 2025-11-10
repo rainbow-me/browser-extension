@@ -1315,7 +1315,7 @@
     "loading_more": "正在加载更多...",
     "no_value": "无价值",
     "error_header": "无法加载活动",
-    "error_description": "无法获取您的交易。请再试一次。",
+    "error_description": "We couldn't find your transactions.\nPlease try again.",
     "error_retry": "再试一次"
   },
   "activity_details": {
@@ -1366,7 +1366,10 @@
     "send_description_3": "查看QR码",
     "unknown_token": "未知代币",
     "small_balances_show_more": "显示更多",
-    "small_balances_show_less": "显示更少"
+    "small_balances_show_less": "显示更少",
+    "error_header": "Unable to load balances",
+    "error_description": "We couldn't fetch your token balances.\nPlease try again.",
+    "error_retry": "再试一次"
   },
   "nfts": {
     "empty_state_header": "NFTs",
