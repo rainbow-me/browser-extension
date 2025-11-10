@@ -1314,9 +1314,9 @@
     "empty_description": "Как только вы начнете использовать свой кошелек, вы увидите здесь ваши транзакции.",
     "loading_more": "Загрузка...",
     "no_value": "Нет значения",
-    "error_header": "Unable to load activity",
-    "error_description": "We couldn't fetch your transactions. Please try again.",
-    "error_retry": "Try Again"
+    "error_header": "Не удалось загрузить действия",
+    "error_description": "Мы не смогли загрузить ваши транзакции. Попробуйте снова.",
+    "error_retry": "Попробуйте снова"
   },
   "activity_details": {
     "you": "Вы",
@@ -1348,11 +1348,11 @@
     "token_contract": "Контракт токена",
     "token_standard": "Стандарт токена",
     "revoke_approval": "Отозвать разрешение",
-    "error_title": "Unable to load activity",
-    "error_message": "We couldn't fetch this transaction.\nTry again or head back to your activity.",
-    "error_retry": "Try Again",
-    "error_back": "Back to Activity",
-    "loading_failed": "Loading Failed"
+    "error_title": "Не удалось загрузить действия",
+    "error_message": "Мы не смогли загрузить эту транзакцию.\nПопробуйте еще раз или вернитесь к своей активности.",
+    "error_retry": "Попробуйте снова",
+    "error_back": "Назад к действиям",
+    "loading_failed": "Загрузка не удалась"
   },
   "tokens_tab": {
     "coinbase_title": "Депозит с Coinbase",
