@@ -166,5 +166,30 @@ module.exports = {
       },
     ],
     'prettier/prettier': ['warn', require('./.prettierrc.js')],
+    // Prevent direct vault storage writes outside of _setVaultInStorage
+    'no-restricted-syntax': [
+      'error',
+      {
+        // Catch LocalStorage.set('vault', ...)
+        selector:
+          "CallExpression[callee.object.name='LocalStorage'][callee.property.name='set'] Literal[value='vault']:first-child",
+        message:
+          "Direct LocalStorage.set('vault', ...) calls are not allowed. Use the centralized _setVaultInStorage method instead to ensure proper safeguards.",
+      },
+      {
+        // Catch chrome.storage.local.set({ vault: ... }) - matches any ObjectExpression argument with 'vault' property
+        selector:
+          "CallExpression[callee.property.name='set'] > ObjectExpression > Property[key.name='vault']",
+        message:
+          'Direct chrome.storage.local.set({ vault: ... }) calls are not allowed. Use the centralized _setVaultInStorage method instead to ensure proper safeguards.',
+      },
+      {
+        // Catch chrome.storage.local.set({ 'vault': ... }) or chrome.storage.local.set({ "vault": ... })
+        selector:
+          "CallExpression[callee.property.name='set'] > ObjectExpression > Property[key.value='vault']",
+        message:
+          'Direct chrome.storage.local.set({ "vault": ... }) calls are not allowed. Use the centralized _setVaultInStorage method instead to ensure proper safeguards.',
+      },
+    ],
   },
 };
