@@ -33,22 +33,23 @@ export const useNonceStore = createBaseStore<CurrentNonceState>(
   (set, get) => ({
     nonces: {},
     setNonce: ({ address, currentNonce, latestConfirmedNonce, chainId }) => {
-      const { nonces: oldNonces } = get();
-      const addressAndChainIdNonces = oldNonces?.[address]?.[chainId] || {};
-      set({
-        nonces: {
-          ...oldNonces,
-          [address]: {
-            ...oldNonces[address],
-            [chainId]: {
-              currentNonce:
-                currentNonce ?? addressAndChainIdNonces?.currentNonce,
-              latestConfirmedNonce:
-                latestConfirmedNonce ??
-                addressAndChainIdNonces?.latestConfirmedNonce,
+      set((state) => {
+        const addressAndChainIdNonces = state.nonces[address]?.[chainId] || {};
+        return {
+          nonces: {
+            ...state.nonces,
+            [address]: {
+              ...state.nonces[address],
+              [chainId]: {
+                currentNonce:
+                  currentNonce ?? addressAndChainIdNonces?.currentNonce,
+                latestConfirmedNonce:
+                  latestConfirmedNonce ??
+                  addressAndChainIdNonces?.latestConfirmedNonce,
+              },
             },
           },
-        },
+        };
       });
     },
     getNonce: ({ address, chainId }) => {

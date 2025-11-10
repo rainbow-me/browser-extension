@@ -166,5 +166,44 @@ module.exports = {
       },
     ],
     'prettier/prettier': ['warn', require('./.prettierrc.js')],
+    // Prevent direct vault storage writes outside of _setVaultInStorage
+    'no-restricted-syntax': [
+      'error',
+      {
+        // Catch LocalStorage.set('vault', ...)
+        selector:
+          "CallExpression[callee.object.name='LocalStorage'][callee.property.name='set'] Literal[value='vault']:first-child",
+        message:
+          "Direct LocalStorage.set('vault', ...) calls are not allowed. Use the centralized _setVaultInStorage method instead to ensure proper safeguards.",
+      },
+      {
+        // Catch chrome.storage.local.set({ vault: ... }) - specifically targets chrome.storage.local.set
+        selector:
+          "CallExpression[callee.object.object.object.name='chrome'][callee.object.object.property.name='storage'][callee.object.property.name='local'][callee.property.name='set'] > ObjectExpression > Property[key.name='vault']",
+        message:
+          'Direct chrome.storage.local.set({ vault: ... }) calls are not allowed. Use the centralized _setVaultInStorage method instead to ensure proper safeguards.',
+      },
+      {
+        // Catch chrome.storage.local.set({ 'vault': ... }) or chrome.storage.local.set({ "vault": ... })
+        selector:
+          "CallExpression[callee.object.object.object.name='chrome'][callee.object.object.property.name='storage'][callee.object.property.name='local'][callee.property.name='set'] > ObjectExpression > Property[key.value='vault']",
+        message:
+          'Direct chrome.storage.local.set({ "vault": ... }) calls are not allowed. Use the centralized _setVaultInStorage method instead to ensure proper safeguards.',
+      },
+      {
+        // Catch chrome.storage.sync.set({ vault: ... }) - specifically targets chrome.storage.sync.set
+        selector:
+          "CallExpression[callee.object.object.object.name='chrome'][callee.object.object.property.name='storage'][callee.object.property.name='sync'][callee.property.name='set'] > ObjectExpression > Property[key.name='vault']",
+        message:
+          'Direct chrome.storage.sync.set({ vault: ... }) calls are not allowed. Use the centralized _setVaultInStorage method instead to ensure proper safeguards.',
+      },
+      {
+        // Catch chrome.storage.sync.set({ 'vault': ... }) or chrome.storage.sync.set({ "vault": ... })
+        selector:
+          "CallExpression[callee.object.object.object.name='chrome'][callee.object.object.property.name='storage'][callee.object.property.name='sync'][callee.property.name='set'] > ObjectExpression > Property[key.value='vault']",
+        message:
+          'Direct chrome.storage.sync.set({ "vault": ... }) calls are not allowed. Use the centralized _setVaultInStorage method instead to ensure proper safeguards.',
+      },
+    ],
   },
 };

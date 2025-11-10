@@ -88,7 +88,7 @@ export interface PopupInstanceStore extends PopupInstance {
 }
 
 export const usePopupInstanceStore = createBaseStore<PopupInstanceStore>(
-  (set, get) => ({
+  (set) => ({
     ...DEFAULT_POPUP_INSTANCE_VALUES,
     resetValues: popupInstanceHandlerFactory(() =>
       set(DEFAULT_POPUP_INSTANCE_VALUES),
@@ -111,22 +111,22 @@ export const usePopupInstanceStore = createBaseStore<PopupInstanceStore>(
     ),
     saveCustomNetworkDraft: popupInstanceHandlerFactory(
       (key, customNetworkDraft) => {
-        set({
+        set((state) => ({
           customNetworkDrafts: {
-            ...get().customNetworkDrafts,
+            ...state.customNetworkDrafts,
             [key]: customNetworkDraft,
           },
-        });
+        }));
       },
     ),
     saveCustomTokenDraft: popupInstanceHandlerFactory(
       (key, customTokenDraft) => {
-        set({
+        set((state) => ({
           customTokenDrafts: {
-            ...get().customTokenDrafts,
+            ...state.customTokenDrafts,
             [key]: customTokenDraft,
           },
-        });
+        }));
       },
     ),
     saveSendAddress: popupInstanceHandlerFactory(({ address }) => {
