@@ -1315,7 +1315,7 @@
     "loading_more": "กำลังโหลดเพิ่ม...",
     "no_value": "ไม่มีค่า",
     "error_header": "ไม่สามารถโหลดกิจกรรมได้",
-    "error_description": "เราไม่สามารถดึงธุรกรรมของคุณได้ กรุณาลองอีกครั้ง",
+    "error_description": "We couldn't find your transactions.\nPlease try again.",
     "error_retry": "ลองใหม่"
   },
   "activity_details": {
@@ -1366,7 +1366,10 @@
     "send_description_3": "สำหรับรหัส QR",
     "unknown_token": "Token ไม่ทราบ",
     "small_balances_show_more": "แสดงเพิ่มเติม",
-    "small_balances_show_less": "แสดงน้อยลง"
+    "small_balances_show_less": "แสดงน้อยลง",
+    "error_header": "Unable to load balances",
+    "error_description": "We couldn't fetch your token balances.\nPlease try again.",
+    "error_retry": "ลองใหม่"
   },
   "nfts": {
     "empty_state_header": "NFTs",
