@@ -1314,9 +1314,9 @@
     "empty_description": "Une fois que vous commencez à utiliser votre portefeuille, vous verrez vos transactions ici.",
     "loading_more": "Chargement en cours...",
     "no_value": "Aucune valeur",
-    "error_header": "Unable to load activity",
-    "error_description": "We couldn't fetch your transactions. Please try again.",
-    "error_retry": "Try Again"
+    "error_header": "Impossible de charger l'activité",
+    "error_description": "Nous n'avons pas pu récupérer vos transactions. Veuillez réessayer.",
+    "error_retry": "Réessayer"
   },
   "activity_details": {
     "you": "Vous",
@@ -1348,11 +1348,11 @@
     "token_contract": "Contrat du jeton",
     "token_standard": "Standard du jeton",
     "revoke_approval": "Révoquer l'autorisation",
-    "error_title": "Unable to load activity",
-    "error_message": "We couldn't fetch this transaction.\nTry again or head back to your activity.",
-    "error_retry": "Try Again",
-    "error_back": "Back to Activity",
-    "loading_failed": "Loading Failed"
+    "error_title": "Impossible de charger l'activité",
+    "error_message": "Nous n'avons pas pu récupérer cette transaction.\nRéessayez ou retournez à votre activité.",
+    "error_retry": "Réessayer",
+    "error_back": "Retour à l'activité",
+    "loading_failed": "Échec du chargement"
   },
   "tokens_tab": {
     "coinbase_title": "Dépôt depuis Coinbase",
