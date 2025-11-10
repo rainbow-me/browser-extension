@@ -1315,7 +1315,7 @@
     "loading_more": "Daha fazla yükleniyor...",
     "no_value": "Değer Yok",
     "error_header": "Etkinlik yüklenemedi",
-    "error_description": "İşlemlerinizi getiremedik. Lütfen tekrar deneyin.",
+    "error_description": "We couldn't find your transactions.\nPlease try again.",
     "error_retry": "Tekrar Deneyin"
   },
   "activity_details": {
@@ -1366,7 +1366,10 @@
     "send_description_3": "QR kod için",
     "unknown_token": "Bilinmeyen Token",
     "small_balances_show_more": "Daha fazla göster",
-    "small_balances_show_less": "Daha az göster"
+    "small_balances_show_less": "Daha az göster",
+    "error_header": "Unable to load balances",
+    "error_description": "We couldn't fetch your token balances.\nPlease try again.",
+    "error_retry": "Tekrar Deneyin"
   },
   "nfts": {
     "empty_state_header": "NFT'ler",
