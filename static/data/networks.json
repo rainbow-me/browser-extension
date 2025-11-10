@@ -2104,7 +2104,7 @@
           }
         },
         "testnet": false,
-        "internal": true,
+        "internal": false,
         "opStack": false,
         "defaultExplorer": {
           "url": "https://hyperevmscan.io",
@@ -3606,102 +3606,6 @@
           "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1668633498/assets/ethereum/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
           "colors": {
             "primary": "#6A87C8",
-            "fallback": "",
-            "shadow": ""
-          }
-        },
-        "enabledServices": {
-          "meteorology": {
-            "enabled": false
-          },
-          "notifications": {
-            "enabled": false
-          },
-          "swap": {
-            "enabled": true,
-            "swap": true,
-            "swapExactOutput": false,
-            "bridge": true,
-            "bridgeExactOutput": false
-          },
-          "addys": {
-            "approvals": true,
-            "transactions": true,
-            "assets": true,
-            "positions": false
-          },
-          "tokenSearch": {
-            "enabled": false
-          },
-          "nftProxy": {
-            "enabled": false
-          }
-        },
-        "favorites": []
-      },
-      {
-        "id": "17000",
-        "mainnetId": "1",
-        "name": "holesky",
-        "label": "Holesky",
-        "colors": {
-          "light": "",
-          "dark": ""
-        },
-        "icons": {
-          "uncropped": {
-            "largeURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/mainnet/uncropped_large3x.png",
-            "smallURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/mainnet/uncropped_small3x.png"
-          }
-        },
-        "testnet": true,
-        "internal": false,
-        "opStack": false,
-        "defaultExplorer": {
-          "url": "https://holesky.etherscan.io",
-          "label": "Etherscan",
-          "transactionURL": "https://holesky.etherscan.io/tx/",
-          "tokenURL": "https://holesky.etherscan.io/token/"
-        },
-        "defaultRPC": {
-          "enabledDevices": [
-            "BX"
-          ],
-          "url": "https://rpc.rainbow.me/v1/17000/"
-        },
-        "gasUnits": {
-          "basic": {
-            "approval": "55000",
-            "swap": "200000",
-            "swapPermit": "400000",
-            "eoaTransfer": "21000",
-            "tokenTransfer": "50000"
-          },
-          "wrapped": {
-            "wrap": "100000",
-            "unwrap": "150000"
-          }
-        },
-        "nativeAsset": {
-          "address": "0x0000000000000000000000000000000000000000",
-          "name": "Holesky Ethereum",
-          "symbol": "ETH",
-          "decimals": 18,
-          "iconURL": "",
-          "colors": {
-            "primary": "#B6B1B6",
-            "fallback": "",
-            "shadow": ""
-          }
-        },
-        "nativeWrappedAsset": {
-          "address": "0x94373a4919b3240d86ea41593d5eba789fef3848",
-          "name": "Wrapped Ether",
-          "symbol": "WETH",
-          "decimals": 18,
-          "iconURL": "",
-          "colors": {
-            "primary": "#FC5C54",
             "fallback": "",
             "shadow": ""
           }
