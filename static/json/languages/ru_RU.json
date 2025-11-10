@@ -1315,7 +1315,7 @@
     "loading_more": "Загрузка...",
     "no_value": "Нет значения",
     "error_header": "Не удалось загрузить действия",
-    "error_description": "We couldn't find your transactions.\nPlease try again.",
+    "error_description": "Мы не смогли найти ваши транзакции.\nПожалуйста, попробуйте снова.",
     "error_retry": "Попробуйте снова"
   },
   "activity_details": {
@@ -1367,8 +1367,8 @@
     "unknown_token": "Неизвестный токен",
     "small_balances_show_more": "Показать еще",
     "small_balances_show_less": "Показать меньше",
-    "error_header": "Unable to load balances",
-    "error_description": "We couldn't fetch your token balances.\nPlease try again.",
+    "error_header": "Не удалось загрузить балансы",
+    "error_description": "Мы не смогли получить ваши балансы токенов.\nПожалуйста, попробуйте снова. ",
     "error_retry": "Попробуйте снова"
   },
   "nfts": {
