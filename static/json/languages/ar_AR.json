@@ -1314,9 +1314,9 @@
     "empty_description": "بمجرد بدء استخدام محفظتك، سترى المعاملات هنا",
     "loading_more": "جاري تحميل المزيد...",
     "no_value": "لا يوجد قيمة",
-    "error_header": "Unable to load activity",
-    "error_description": "We couldn't fetch your transactions. Please try again.",
-    "error_retry": "Try Again"
+    "error_header": "غير قادر على تحميل النشاط",
+    "error_description": "لم نتمكن من جلب معاملاتك. يرجى المحاولة مرة أخرى.",
+    "error_retry": "حاول مرة أخرى"
   },
   "activity_details": {
     "you": "أنت",
@@ -1348,11 +1348,11 @@
     "token_contract": "عقد الرمز",
     "token_standard": "معايير الرمز",
     "revoke_approval": "إلغاء الموافقة",
-    "error_title": "Unable to load activity",
-    "error_message": "We couldn't fetch this transaction.\nTry again or head back to your activity.",
-    "error_retry": "Try Again",
-    "error_back": "Back to Activity",
-    "loading_failed": "Loading Failed"
+    "error_title": "غير قادر على تحميل النشاط",
+    "error_message": "لم نتمكن من جلب هذه المعاملة.\nحاول مرة أخرى أو عد إلى نشاطك.",
+    "error_retry": "حاول مرة أخرى",
+    "error_back": "العودة إلى النشاط",
+    "loading_failed": "فشل التحميل"
   },
   "tokens_tab": {
     "coinbase_title": "الإيداع من Coinbase",
