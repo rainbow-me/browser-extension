@@ -1314,9 +1314,9 @@
     "empty_description": "您一旦开始使用您的钱包，您将在此处看到您的交易。",
     "loading_more": "正在加载更多...",
     "no_value": "无价值",
-    "error_header": "Unable to load activity",
-    "error_description": "We couldn't fetch your transactions. Please try again.",
-    "error_retry": "Try Again"
+    "error_header": "无法加载活动",
+    "error_description": "无法获取您的交易。请再试一次。",
+    "error_retry": "再试一次"
   },
   "activity_details": {
     "you": "你",
@@ -1348,11 +1348,11 @@
     "token_contract": "代币合约",
     "token_standard": "代币标准",
     "revoke_approval": "撤销授权",
-    "error_title": "Unable to load activity",
-    "error_message": "We couldn't fetch this transaction.\nTry again or head back to your activity.",
-    "error_retry": "Try Again",
-    "error_back": "Back to Activity",
-    "loading_failed": "Loading Failed"
+    "error_title": "无法加载活动",
+    "error_message": "我们无法获取此交易。\n请再试一次或返回您的活动。",
+    "error_retry": "再试一次",
+    "error_back": "返回活动",
+    "loading_failed": "加载失败"
   },
   "tokens_tab": {
     "coinbase_title": "从Coinbase存入",
