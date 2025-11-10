@@ -1313,7 +1313,10 @@
     "empty_header": "अभी तक कोई गतिविधि नहीं",
     "empty_description": "अपने वॉलेट का उपयोग शुरू करने के बाद, आप यहाँ अपने लेन-देन देखेंगे।",
     "loading_more": "और लोड हो रहा है...",
-    "no_value": "कोई मूल्य नहीं"
+    "no_value": "कोई मूल्य नहीं",
+    "error_header": "Unable to load activity",
+    "error_description": "We couldn't fetch your transactions. Please try again.",
+    "error_retry": "Try Again"
   },
   "activity_details": {
     "you": "तुम",
@@ -1344,7 +1347,12 @@
     "collection": "संग्रह",
     "token_contract": "टोकन अनुबंध",
     "token_standard": "टोकन मानक",
-    "revoke_approval": "अनुमति रद्द करें"
+    "revoke_approval": "अनुमति रद्द करें",
+    "error_title": "Unable to load activity",
+    "error_message": "We couldn't fetch this transaction.\nTry again or head back to your activity.",
+    "error_retry": "Try Again",
+    "error_back": "Back to Activity",
+    "loading_failed": "Loading Failed"
   },
   "tokens_tab": {
     "coinbase_title": "कॉइनबेस से जमा करें",
