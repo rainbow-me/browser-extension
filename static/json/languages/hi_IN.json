@@ -1315,7 +1315,7 @@
     "loading_more": "और लोड हो रहा है...",
     "no_value": "कोई मूल्य नहीं",
     "error_header": "गतिविधि लोड करने में असमर्थ",
-    "error_description": "हम आपके लेन-देन को प्राप्त नहीं कर सके। कृपया पुनः प्रयास करें।",
+    "error_description": "We couldn't find your transactions.\nPlease try again.",
     "error_retry": "फिर से प्रयास करें"
   },
   "activity_details": {
@@ -1366,7 +1366,10 @@
     "send_description_3": "QR कोड के लिए",
     "unknown_token": "अज्ञात टोकन",
     "small_balances_show_more": "और दिखाएं",
-    "small_balances_show_less": "कम दिखाएं"
+    "small_balances_show_less": "कम दिखाएं",
+    "error_header": "Unable to load balances",
+    "error_description": "We couldn't fetch your token balances.\nPlease try again.",
+    "error_retry": "फिर से प्रयास करें"
   },
   "nfts": {
     "empty_state_header": "NFTs",
