@@ -127,14 +127,6 @@ const userAssetsSetQueryData = ({
 async function userAssetsQueryFunction({
   queryKey: [{ address, currency, testnetMode }],
 }: QueryFunctionArgs<typeof userAssetsQueryKey>) {
-  const cache = queryClient.getQueryCache();
-  const cachedUserAssets = (cache.find({
-    queryKey: userAssetsQueryKey({
-      address,
-      currency,
-      testnetMode,
-    }),
-  })?.state?.data || {}) as ParsedAssetsDictByChain;
   const supportedAssetsChainIds = useNetworkStore
     .getState()
     .getSupportedAssetsChainIds();
@@ -146,7 +138,7 @@ async function userAssetsQueryFunction({
     .filter((id) => supportedAssetsChainIds.includes(id));
 
   if (!address || supportedChainIds.length === 0) {
-    return cachedUserAssets;
+    return {} as ParsedAssetsDictByChain;
   }
 
   try {
@@ -177,18 +169,15 @@ async function userAssetsQueryFunction({
       return parsedAssetsDict;
     }
 
-    return cachedUserAssets;
+    // Return empty object to indicate success with no assets
+    return {} as ParsedAssetsDictByChain;
   } catch (e) {
-    // trigger per chain retry by chainIds on error
-    for (const chainId of supportedChainIds) {
-      userAssetsQueryFunctionRetryByChain({
-        address,
-        chainIds: [chainId],
-        currency,
-        testnetMode,
-      });
+    // Abort errors are expected and should not be logged or thrown
+    if (e instanceof Error && e.name === 'AbortError') {
+      throw e; // Re-throw abort errors so React Query handles them properly
     }
 
+    // Log the initial error
     logger.error(
       new RainbowError('userAssetsQueryFunction: ', {
         cause: e,
@@ -197,113 +186,87 @@ async function userAssetsQueryFunction({
         message: (e as Error)?.message,
       },
     );
-    return cachedUserAssets;
+
+    // Try fetching chain by chain as fallback
+    try {
+      const chainRetries = supportedChainIds.map(async (chainId) => {
+        const platformResult = await fetchPlatformAssetBalances({
+          address,
+          chainIds: [chainId],
+          currency,
+          timeout: USER_ASSETS_TIMEOUT_DURATION,
+        });
+        const normalizedAssets = convertPlatformResultToLegacy(platformResult);
+        const chainIdsInResponse = getChainIdsFromAssets(normalizedAssets);
+
+        if (normalizedAssets.length && chainIdsInResponse.includes(chainId)) {
+          const parsedAssetsDict = await parseUserAssets({
+            address,
+            assets: normalizedAssets,
+            chainIds: chainIdsInResponse,
+            currency,
+          });
+          return parsedAssetsDict[chainId] ?? {};
+        }
+        return {} as Record<string, ParsedUserAsset>;
+      });
+
+      const settledResults = await Promise.allSettled(chainRetries);
+
+      const successfulResults = settledResults
+        .map((result) => (result.status === 'fulfilled' ? result.value : null))
+        .filter((parsedAssets) => parsedAssets !== null);
+
+      const failedResults = settledResults
+        .map((result, idx) =>
+          result.status === 'rejected'
+            ? { chainId: supportedChainIds[idx], reason: result.reason }
+            : null,
+        )
+        .filter((r) => r !== null);
+
+      // If all chains failed, throw the original error
+      if (successfulResults.length === 0) {
+        throw e;
+      }
+
+      // If some chains failed, log them but continue with successful results
+      if (failedResults.length > 0) {
+        logger.error(
+          new RainbowError(
+            'userAssetsQueryFunction: Some chains failed in fallback retry',
+            { cause: failedResults[0]?.reason },
+          ),
+          {
+            failedChains: failedResults.map((f) => f.chainId),
+            reasons: failedResults.map((f) =>
+              f.reason instanceof Error ? f.reason.message : String(f.reason),
+            ),
+          },
+        );
+      }
+
+      // Merge successful chain results
+      const mergedAssets: ParsedAssetsDictByChain = {};
+      for (const parsedAssets of successfulResults) {
+        const values = Object.values(parsedAssets);
+        if (values[0]) {
+          mergedAssets[values[0].chainId] = parsedAssets;
+        }
+      }
+
+      // Return merged results or empty object if no assets
+      return Object.keys(mergedAssets).length > 0
+        ? mergedAssets
+        : ({} as ParsedAssetsDictByChain);
+    } catch (fallbackError) {
+      // If fallback also fails, throw the original error
+      throw e;
+    }
   }
 }
 
 type UserAssetsResult = QueryFunctionResult<typeof userAssetsQueryFunction>;
-
-async function userAssetsQueryFunctionRetryByChain({
-  address,
-  chainIds,
-  currency,
-  testnetMode,
-}: {
-  address: Address;
-  chainIds: ChainId[];
-  currency: SupportedCurrencyKey;
-  testnetMode?: boolean;
-}) {
-  try {
-    const cache = queryClient.getQueryCache();
-    const cachedUserAssets =
-      (cache.find({
-        queryKey: userAssetsQueryKey({
-          address,
-          currency,
-          testnetMode,
-        }),
-      })?.state?.data as ParsedAssetsDictByChain) || {};
-    const retries = [];
-    for (const chainIdWithError of chainIds) {
-      retries.push(
-        fetchUserAssetsByChain(
-          {
-            address,
-            chainId: chainIdWithError,
-            currency,
-          },
-          { gcTime: 0 },
-        ),
-      );
-    }
-
-    if (retries.length === 0) {
-      return;
-    }
-
-    const settledResults = await Promise.allSettled(retries);
-
-    // lodash partition does not seperate by type
-    const failedResults = settledResults
-      .map((result, idx) =>
-        result.status === 'rejected'
-          ? { chainId: chainIds[idx], reason: result.reason }
-          : null,
-      )
-      .filter((r) => r !== null);
-    const successfulResults = settledResults
-      .map((result) => (result.status === 'fulfilled' ? result.value : null))
-      .filter((parsedAssets) => parsedAssets !== null);
-
-    if (successfulResults.length === 0) {
-      // If all failed, throw the first error
-      throw (
-        failedResults[0]?.reason ?? new Error('All user asset fetches failed')
-      );
-    }
-
-    if (failedResults.length > 0) {
-      logger.error(
-        new RainbowError(
-          'userAssetsQueryFunctionRetryByChain: Some chains failed',
-          { cause: failedResults[0]?.reason },
-        ),
-        {
-          failedChains: failedResults.map((f) => f.chainId),
-          reasons: failedResults.map((f) =>
-            f.reason instanceof Error ? f.reason.message : String(f.reason),
-          ),
-          causes: failedResults.map((f) => f.reason),
-        },
-      );
-    }
-
-    for (const parsedAssets of successfulResults) {
-      const values = Object.values(parsedAssets);
-      if (values[0]) {
-        cachedUserAssets[values[0].chainId] = parsedAssets;
-      }
-    }
-    queryClient.setQueryData(
-      userAssetsQueryKey({
-        address,
-        currency,
-        testnetMode,
-      }),
-      cachedUserAssets,
-    );
-  } catch (e) {
-    logger.error(
-      new RainbowError('userAssetsQueryFunctionRetryByChain: ', {
-        cause: e,
-      }),
-      {
-        message: (e as Error)?.message,
-      },
-    );
-  }
-}
 
 // ///////////////////////////////////////////////
 // Query Hook
@@ -329,7 +292,10 @@ export function useUserAssets<TSelectResult = UserAssetsResult>(
     enabled: !!address && config.enabled !== false,
     refetchInterval: USER_ASSETS_REFETCH_INTERVAL,
     staleTime: process.env.IS_TESTING === 'true' ? 0 : 1000,
-    placeholderData: (previousData) => previousData,
+    retry: 1, // Retry only once as it already has a chain by chain fallback
+    retryDelay: 1000, // long delay between the two tries, as an immediate retry is already handled by the chain by chain fallback
+    gcTime: 24 * 60 * 60 * 1000, // 24 hours - keep in cache for a day
+    placeholderData: (previousData) => previousData, // Preserve previous data on error
   });
 }
 
@@ -357,29 +323,6 @@ const userAssetsByChainQueryKey = ({
   );
 
 type UserAssetsByChainQueryKey = ReturnType<typeof userAssetsByChainQueryKey>;
-
-// ///////////////////////////////////////////////
-// Query Fetcher
-
-async function fetchUserAssetsByChain<TSelectData = UserAssetsByChainResult>(
-  { address, chainId, currency }: UserAssetsByChainArgs,
-  config: QueryConfig<
-    UserAssetsByChainResult,
-    Error,
-    TSelectData,
-    UserAssetsByChainQueryKey
-  > = {},
-) {
-  return await queryClient.fetchQuery({
-    queryKey: userAssetsByChainQueryKey({
-      address,
-      chainId,
-      currency,
-    }),
-    queryFn: userAssetsByChainQueryFunction,
-    ...config,
-  });
-}
 
 // ///////////////////////////////////////////////
 // Query Function
