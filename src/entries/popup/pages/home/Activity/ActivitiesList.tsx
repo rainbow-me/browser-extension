@@ -38,6 +38,7 @@ import { triggerRevokeApproval } from '../Approvals/utils';
 import { ActivitySkeleton } from '../Skeletons';
 
 import { ActivityContextMenu } from './ActivityContextMenu';
+import { ActivityErrorState } from './ActivityErrorState';
 import { ActivityIcon } from './ActivityIcon';
 import { ActivityTypeIcon } from './ActivityTypeIcon';
 import { ActivityValue } from './ActivityValue';
@@ -46,11 +47,13 @@ import { NoActivity } from './NoActivity';
 export function Activities() {
   const containerRef = useContainerRef();
   const {
+    error,
     isInitialLoading,
     isFetchingNextPage,
     isRefetching,
     transactions,
     virtualizer: activityRowVirtualizer,
+    refetch,
   } = useInfiniteTransactionList({
     getScrollElement: () => containerRef.current,
   });
@@ -108,6 +111,13 @@ export function Activities() {
   );
 
   if (isInitialLoading || isRefetching) return <ActivitySkeleton />;
+
+  // Show error state only when there's an error, no transactions, and initial loading is complete
+  // React Query's placeholderData will preserve previous data if available
+  if (error && !transactions.length && !isInitialLoading) {
+    return <ActivityErrorState onRetry={refetch} />;
+  }
+
   if (!transactions.length) return <NoActivity />;
 
   const rows = activityRowVirtualizer.getVirtualItems();
