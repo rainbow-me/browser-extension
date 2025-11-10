@@ -1314,9 +1314,9 @@
     "empty_description": "Setelah Anda mulai menggunakan dompet Anda, Anda akan melihat transaksi Anda di sini",
     "loading_more": "Memuat lebih banyak...",
     "no_value": "Tidak ada nilai",
-    "error_header": "Unable to load activity",
-    "error_description": "We couldn't fetch your transactions. Please try again.",
-    "error_retry": "Try Again"
+    "error_header": "Tidak dapat memuat aktivitas",
+    "error_description": "Kami tidak dapat mengambil transaksi Anda. Silakan coba lagi.",
+    "error_retry": "Coba Lagi"
   },
   "activity_details": {
     "you": "Anda",
@@ -1348,11 +1348,11 @@
     "token_contract": "Kontrak Token",
     "token_standard": "Standar Token",
     "revoke_approval": "Cabut Persetujuan",
-    "error_title": "Unable to load activity",
-    "error_message": "We couldn't fetch this transaction.\nTry again or head back to your activity.",
-    "error_retry": "Try Again",
-    "error_back": "Back to Activity",
-    "loading_failed": "Loading Failed"
+    "error_title": "Tidak dapat memuat aktivitas",
+    "error_message": "Kami tidak dapat mengambil transaksi ini.\\nCoba lagi atau kembali ke aktivitas Anda.",
+    "error_retry": "Coba Lagi",
+    "error_back": "Kembali ke Aktivitas",
+    "loading_failed": "Loading Gagal"
   },
   "tokens_tab": {
     "coinbase_title": "Deposit dari Coinbase",
