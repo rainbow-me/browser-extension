@@ -1315,7 +1315,7 @@
     "loading_more": "جاري تحميل المزيد...",
     "no_value": "لا يوجد قيمة",
     "error_header": "غير قادر على تحميل النشاط",
-    "error_description": "لم نتمكن من جلب معاملاتك. يرجى المحاولة مرة أخرى.",
+    "error_description": "لم نتمكن من العثور على معاملاتك.\nيرجى المحاولة مرة أخرى.",
     "error_retry": "حاول مرة أخرى"
   },
   "activity_details": {
@@ -1366,7 +1366,10 @@
     "send_description_3": "لرمز الاستجابة السريعة",
     "unknown_token": "رمز غير معروف",
     "small_balances_show_more": "أظهر المزيد",
-    "small_balances_show_less": "أظهر أقل"
+    "small_balances_show_less": "أظهر أقل",
+    "error_header": "غير قادر على تحميل الأرصدة",
+    "error_description": "لم نتمكن من جلب أرصدة الرموز الخاصة بك.\nيرجى المحاولة مرة أخرى.",
+    "error_retry": "حاول مرة أخرى"
   },
   "nfts": {
     "empty_state_header": "NFTs",
