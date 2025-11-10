@@ -1314,9 +1314,9 @@
     "empty_description": "지갑 사용을 시작하면 거래 내역이 여기에 표시됩니다",
     "loading_more": "더 많이 로딩 중...",
     "no_value": "가치 없음",
-    "error_header": "Unable to load activity",
-    "error_description": "We couldn't fetch your transactions. Please try again.",
-    "error_retry": "Try Again"
+    "error_header": "활동을 불러올 수 없습니다.",
+    "error_description": "거래를 가져올 수 없습니다. 다시 시도해 주세요.",
+    "error_retry": "다시 시도하기"
   },
   "activity_details": {
     "you": "당신",
@@ -1348,11 +1348,11 @@
     "token_contract": "토큰 계약",
     "token_standard": "토큰 표준",
     "revoke_approval": "승인 취소",
-    "error_title": "Unable to load activity",
-    "error_message": "We couldn't fetch this transaction.\nTry again or head back to your activity.",
-    "error_retry": "Try Again",
-    "error_back": "Back to Activity",
-    "loading_failed": "Loading Failed"
+    "error_title": "활동을 불러올 수 없습니다.",
+    "error_message": "이 거래를 가져올 수 없습니다.\n다시 시도하거나 활동으로 돌아가세요.",
+    "error_retry": "다시 시도하기",
+    "error_back": "활동으로 돌아가기",
+    "loading_failed": "로드 실패"
   },
   "tokens_tab": {
     "coinbase_title": "코인베이스에서 입금",
