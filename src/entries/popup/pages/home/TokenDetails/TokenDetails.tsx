@@ -440,13 +440,11 @@ function MoreOptions({
         }),
       });
     }
-    const isHidden =
-      useHiddenAssetStore.getState().hidden[address]?.[
-        computeUniqueIdForHiddenAsset(token)
-      ];
-    const hiddenCount = Object.values(hiddenStore[address] || {}).filter(
-      (isHidden) => isHidden,
-    ).length;
+    const hiddenForAddress = hiddenStore[address];
+    const isHidden = !!hiddenForAddress?.[computeUniqueIdForHiddenAsset(token)];
+    const hiddenCount = hiddenForAddress
+      ? Object.values(hiddenForAddress).filter((isHidden) => isHidden).length
+      : 0;
     analytics.track(isHidden ? event.tokenHidden : event.tokenUnhidden, {
       token: {
         address: token.address,

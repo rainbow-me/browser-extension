@@ -316,7 +316,7 @@ function SwapButton({
   showExplainerSheet: (p: ExplainerSheetProps) => void;
   hideExplainerSheet: () => void;
 }) {
-  const { selectedGas } = useGasStore();
+  const selectedGas = useGasStore((state) => state.selectedGas);
 
   const {
     buttonLabel: validationButtonLabel,
@@ -395,18 +395,23 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
 
   const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
-  const { selectedGas, clearCustomGasModified } = useGasStore();
+  const selectedGas = useGasStore((state) => state.selectedGas);
+  const clearCustomGasModified = useGasStore(
+    (state) => state.clearCustomGasModified,
+  );
   const { trackShortcut } = useKeyboardAnalytics();
   const { currentAddress: address } = useCurrentAddressStore();
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
   const [urlSearchParams] = useSearchParams();
-  const { hidden } = useHiddenAssetStore();
+  const hiddenForAddress = useHiddenAssetStore(
+    (state) => state.hidden[address],
+  );
 
   const isHidden = useCallback(
     (asset: ParsedUserAsset | SearchAsset) => {
-      return !!hidden[address]?.[computeUniqueIdForHiddenAsset(asset)];
+      return !!hiddenForAddress?.[computeUniqueIdForHiddenAsset(asset)];
     },
-    [address, hidden],
+    [hiddenForAddress],
   );
 
   const hideBackButton = urlSearchParams.get('hideBack') === 'true';
