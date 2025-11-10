@@ -1315,7 +1315,7 @@
     "loading_more": "Memuat lebih banyak...",
     "no_value": "Tidak ada nilai",
     "error_header": "Tidak dapat memuat aktivitas",
-    "error_description": "We couldn't find your transactions.\nPlease try again.",
+    "error_description": "Kami tidak dapat menemukan transaksi Anda.\nSilakan coba lagi.",
     "error_retry": "Coba Lagi"
   },
   "activity_details": {
@@ -1367,8 +1367,8 @@
     "unknown_token": "Token Tidak Dikenal",
     "small_balances_show_more": "Tampilkan lebih banyak",
     "small_balances_show_less": "Tampilkan lebih sedikit",
-    "error_header": "Unable to load balances",
-    "error_description": "We couldn't fetch your token balances.\nPlease try again.",
+    "error_header": "Tidak dapat memuat saldo",
+    "error_description": "Kami tidak dapat mengambil saldo token Anda.\nSilakan coba lagi.",
     "error_retry": "Coba Lagi"
   },
   "nfts": {
