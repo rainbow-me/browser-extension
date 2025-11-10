@@ -1315,7 +1315,7 @@
     "loading_more": "Cargando más...",
     "no_value": "Sin valor",
     "error_header": "No se pudo cargar la actividad",
-    "error_description": "We couldn't find your transactions.\nPlease try again.",
+    "error_description": "No pudimos encontrar tus transacciones.\nPor favor, intenta de nuevo.",
     "error_retry": "Intenta de Nuevo"
   },
   "activity_details": {
@@ -1367,8 +1367,8 @@
     "unknown_token": "Token desconocido",
     "small_balances_show_more": "Mostrar más",
     "small_balances_show_less": "Mostrar menos",
-    "error_header": "Unable to load balances",
-    "error_description": "We couldn't fetch your token balances.\nPlease try again.",
+    "error_header": "No se pueden cargar los saldos",
+    "error_description": "No pudimos obtener los saldos de tus tokens.\nPor favor, intenta de nuevo.",
     "error_retry": "Intenta de Nuevo"
   },
   "nfts": {
