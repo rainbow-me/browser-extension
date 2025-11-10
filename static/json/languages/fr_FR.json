@@ -1315,7 +1315,7 @@
     "loading_more": "Chargement en cours...",
     "no_value": "Aucune valeur",
     "error_header": "Impossible de charger l'activité",
-    "error_description": "Nous n'avons pas pu récupérer vos transactions. Veuillez réessayer.",
+    "error_description": "Nous n’avons pas pu trouver vos transactions.\nVeuillez réessayer.",
     "error_retry": "Réessayer"
   },
   "activity_details": {
@@ -1366,7 +1366,10 @@
     "send_description_3": "pour le code QR",
     "unknown_token": "Token inconnu",
     "small_balances_show_more": "En voir plus",
-    "small_balances_show_less": "Montrer moins"
+    "small_balances_show_less": "Montrer moins",
+    "error_header": "Impossible de charger les soldes",
+    "error_description": "Nous n’avons pas pu récupérer vos soldes de jetons.\nVeuillez réessayer.",
+    "error_retry": "Réessayer"
   },
   "nfts": {
     "empty_state_header": "NFTs",
