@@ -110,7 +110,7 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
   const { trackShortcut } = useKeyboardAnalytics();
   const { modifierSymbol } = useSystemSpecificModifierKey();
   const { pinned: pinnedStore } = usePinnedAssetStore();
-  const { hidden } = useHiddenAssetStore();
+  const hidden = useHiddenAssetStore((state) => state.hidden);
 
   const containerRef = useRef<HTMLDivElement>(null);
 
