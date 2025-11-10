@@ -1313,7 +1313,10 @@
     "empty_header": "Henüz aktivite yok",
     "empty_description": "Cüzdanını kullanmaya başladığınızda, işlemlerinizi burada göreceksiniz.",
     "loading_more": "Daha fazla yükleniyor...",
-    "no_value": "Değer Yok"
+    "no_value": "Değer Yok",
+    "error_header": "Unable to load activity",
+    "error_description": "We couldn't fetch your transactions. Please try again.",
+    "error_retry": "Try Again"
   },
   "activity_details": {
     "you": "Siz",
@@ -1344,7 +1347,12 @@
     "collection": "Koleksiyon",
     "token_contract": "Token Sözleşmesi",
     "token_standard": "Token Standartı",
-    "revoke_approval": "Onayı İptal Et"
+    "revoke_approval": "Onayı İptal Et",
+    "error_title": "Unable to load activity",
+    "error_message": "We couldn't fetch this transaction.\nTry again or head back to your activity.",
+    "error_retry": "Try Again",
+    "error_back": "Back to Activity",
+    "loading_failed": "Loading Failed"
   },
   "tokens_tab": {
     "coinbase_title": "Coinbase'den Yatırma",
