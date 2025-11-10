@@ -1313,7 +1313,10 @@
     "empty_header": "Nenhuma atividade ainda",
     "empty_description": "Ao começar a usar sua carteira, você verá suas transações aqui.",
     "loading_more": "Carregando mais...",
-    "no_value": "Sem valor"
+    "no_value": "Sem valor",
+    "error_header": "Unable to load activity",
+    "error_description": "We couldn't fetch your transactions. Please try again.",
+    "error_retry": "Try Again"
   },
   "activity_details": {
     "you": "Você",
@@ -1344,7 +1347,12 @@
     "collection": "Coleção",
     "token_contract": "Contrato do Token",
     "token_standard": "Padrão do Token",
-    "revoke_approval": "Revogar Aprovação"
+    "revoke_approval": "Revogar Aprovação",
+    "error_title": "Unable to load activity",
+    "error_message": "We couldn't fetch this transaction.\nTry again or head back to your activity.",
+    "error_retry": "Try Again",
+    "error_back": "Back to Activity",
+    "loading_failed": "Loading Failed"
   },
   "tokens_tab": {
     "coinbase_title": "Depósito da Coinbase",
