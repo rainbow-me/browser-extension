@@ -48,7 +48,7 @@ const TotalAssetsBalance = ({
   balance?: string;
   isLoading?: boolean;
 }) => {
-  const { hidden } = useHiddenAssetStore();
+  const hidden = useHiddenAssetStore((s) => s.hidden);
   const { currentCurrency: currency } = useCurrentCurrencyStore();
   const { currentAddress: address } = useCurrentAddressStore();
   const isHidden = useCallback(

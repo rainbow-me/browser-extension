@@ -64,7 +64,7 @@ export const AppConnectionWalletItem = React.forwardRef(
     const [hovering, setHovering] = useState(false);
     const { displayName } = useWalletName({ address });
     const chainName = getChain({ chainId }).name;
-    const { hidden } = useHiddenAssetStore();
+    const hidden = useHiddenAssetStore((state) => state.hidden);
     const showChainBadge = !!chainId && chainId !== ChainId.mainnet;
     const isHidden = useCallback(
       (asset: ParsedUserAsset) => {

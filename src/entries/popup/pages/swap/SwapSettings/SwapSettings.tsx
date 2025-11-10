@@ -7,7 +7,7 @@ import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { RAINBOW_LEARN_URL } from '~/core/references/links';
 import { useCurrentAddressStore } from '~/core/state';
-import { toggleDegenMode, useDegenMode } from '~/core/state/degenMode';
+import { useDegenMode } from '~/core/state/degenMode';
 import { ChainId } from '~/core/types/chains';
 import {
   Bleed,
@@ -175,7 +175,7 @@ const getSlippageExplainerProps = (t: I18n['t']) => ({
 });
 
 function DegenModeCard() {
-  const isDegenModeEnabled = useDegenMode((state) => state.isDegenModeEnabled);
+  const { isDegenModeEnabled, toggleDegenMode } = useDegenMode();
 
   if (!config.degen_mode_enabled) return null;
 

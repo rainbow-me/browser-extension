@@ -1,4 +1,4 @@
-import { ReactNode, useCallback } from 'react';
+import { ReactNode, useCallback, useMemo } from 'react';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -51,6 +51,11 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
     (state) => state.setSelectedToken,
   );
   const toggleHideAsset = useHiddenAssetStore((state) => state.toggleHideAsset);
+  const hiddenStore = useHiddenAssetStore((state) => state.hidden);
+  const hidden = useMemo(
+    () => !!hiddenStore[address]?.[computeUniqueIdForHiddenAsset(token)],
+    [hiddenStore, address, token],
+  );
   const pinned = !!pinnedStore[address]?.[token.uniqueId]?.pinned;
 
   // if we are navigating to new page (swap/send) the menu closes automatically,
@@ -130,19 +135,15 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
     toggleHideAsset(address, computeUniqueIdForHiddenAsset(token));
     if (pinned) togglePinAsset(address, token.uniqueId);
     setSelectedToken();
+    const hiddenCount =
+      Object.values(hiddenStore[address] || {}).filter((isHidden) => isHidden)
+        .length + (!hidden ? 1 : -1);
     triggerToast({
       title: i18n.t('token_details.toast.hide_token', {
         name: token.symbol,
       }),
     });
-    const isHidden =
-      useHiddenAssetStore.getState().hidden[address]?.[
-        computeUniqueIdForHiddenAsset(token)
-      ];
-    const hiddenCount = Object.values(
-      useHiddenAssetStore.getState().hidden[address] || {},
-    ).filter((isHidden) => isHidden).length;
-    analytics.track(isHidden ? event.tokenHidden : event.tokenUnhidden, {
+    analytics.track(!hidden ? event.tokenHidden : event.tokenUnhidden, {
       token: {
         address: token.address,
         chainId: token.chainId,
@@ -159,6 +160,8 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
     toggleHideAsset,
     togglePinAsset,
     setSelectedToken,
+    hidden,
+    hiddenStore,
   ]);
 
   const copyTokenAddress = useCallback(() => {
