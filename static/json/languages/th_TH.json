@@ -1315,7 +1315,7 @@
     "loading_more": "กำลังโหลดเพิ่ม...",
     "no_value": "ไม่มีค่า",
     "error_header": "ไม่สามารถโหลดกิจกรรมได้",
-    "error_description": "We couldn't find your transactions.\nPlease try again.",
+    "error_description": "เราไม่พบธุรกรรมของคุณ\nโปรดลองอีกครั้ง",
     "error_retry": "ลองใหม่"
   },
   "activity_details": {
@@ -1367,8 +1367,8 @@
     "unknown_token": "Token ไม่ทราบ",
     "small_balances_show_more": "แสดงเพิ่มเติม",
     "small_balances_show_less": "แสดงน้อยลง",
-    "error_header": "Unable to load balances",
-    "error_description": "We couldn't fetch your token balances.\nPlease try again.",
+    "error_header": "โหลดยอดคงเหลือไม่สำเร็จ",
+    "error_description": "เราไม่สามารถดึงยอดคงเหลือของโทเค็นของคุณ\nโปรดลองอีกครั้ง",
     "error_retry": "ลองใหม่"
   },
   "nfts": {
