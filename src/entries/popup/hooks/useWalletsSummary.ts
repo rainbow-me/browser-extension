@@ -7,16 +7,7 @@ import {
   useAddysSummary,
 } from '~/core/resources/addys/addysSummary';
 import { useCurrentCurrencyStore } from '~/core/state';
-import { ParsedAsset } from '~/core/types/assets';
-import { ChainId } from '~/core/types/chains';
-import {
-  add,
-  convertAmountAndPriceToNativeDisplay,
-  convertAmountToNativeDisplay,
-  convertRawAmountToBalance,
-} from '~/core/utils/numbers';
-
-import { useNativeAssets } from './useNativeAssets';
+import { convertAmountToNativeDisplay } from '~/core/utils/numbers';
 
 export interface WalletSummary {
   balance: {
@@ -31,45 +22,18 @@ const parseAddressSummary = ({
   address,
   addysSummary,
   currentCurrency,
-  nativeAssets,
 }: {
   address: Address;
   addysSummary?: AddySummary;
   currentCurrency: SupportedCurrencyKey;
-  nativeAssets:
-    | {
-        [key: string]: ParsedAsset;
-      }
-    | undefined;
 }): WalletSummary => {
   const addressData =
     addysSummary?.data.addresses[address.toLowerCase() as Address];
-  const summaryByChain = addressData?.summary_by_chain;
 
-  const chainIds = Object.keys(summaryByChain || {}).map((id) =>
-    Number(id),
-  ) as ChainId[];
-
-  const chainBalances = chainIds.map((chainId) => {
-    const chainData = summaryByChain?.[chainId];
-    const chainRawBalance = chainData?.native_balance;
-    const chainBalance = convertRawAmountToBalance(
-      chainRawBalance?.quantity || 0,
-      {
-        decimals: 18,
-      },
-    ).amount;
-    const chainCurrencyBalance = convertAmountAndPriceToNativeDisplay(
-      chainBalance || 0,
-      nativeAssets?.[chainId]?.price?.value || 0,
-      currentCurrency,
-    ).amount;
-
-    return chainCurrencyBalance;
-  });
-
-  const balance = chainBalances.reduce((prev, curr) => add(prev, curr), '0');
-
+  // Use asset_value from backend which includes native balances + ERC20 tokens
+  // Already converted to the requested currency
+  const assetValue = addressData?.summary.asset_value ?? 0;
+  const balance = assetValue.toString();
   const balanceDisplay = convertAmountToNativeDisplay(balance, currentCurrency);
   const lastTx = addressData?.summary.last_activity;
 
@@ -84,7 +48,6 @@ const parseAddressSummary = ({
 };
 
 export const useWalletsSummary = ({ addresses }: { addresses: Address[] }) => {
-  const nativeAssets = useNativeAssets();
   const { currentCurrency } = useCurrentCurrencyStore();
   const { data, isLoading } = useAddysSummary({
     addresses,
@@ -97,11 +60,10 @@ export const useWalletsSummary = ({ addresses }: { addresses: Address[] }) => {
           address,
           addysSummary: data,
           currentCurrency,
-          nativeAssets,
         });
         return prev;
-      }, {}) || [],
-    [addresses, currentCurrency, data, nativeAssets],
+      }, {}) || {},
+    [addresses, currentCurrency, data],
   );
 
   return { walletsSummary, isLoading };

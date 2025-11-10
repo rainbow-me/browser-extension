@@ -98,6 +98,8 @@ export function useAddysSummary(
   return useQuery({
     queryKey: addysSummaryQueryKey({ addresses, currency }),
     queryFn: addysSummaryQueryFunction,
+    enabled: addresses.length > 0, // Don't fetch if empty array
+    staleTime: 60000, // 1 minute stale time
     ...config,
     retry: true,
   });

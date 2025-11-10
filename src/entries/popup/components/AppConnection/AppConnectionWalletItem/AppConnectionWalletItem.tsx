@@ -43,6 +43,8 @@ interface WalletItemProps {
   chainId: ChainId;
   active?: boolean;
   connected: boolean;
+  balance?: string;
+  isLoadingBalance?: boolean;
 }
 
 export const AppConnectionWalletItem = React.forwardRef(
@@ -50,7 +52,15 @@ export const AppConnectionWalletItem = React.forwardRef(
     props: WalletItemProps,
     ref: React.ForwardedRef<HTMLDivElement>,
   ) {
-    const { address, onClick, chainId, active, connected } = props;
+    const {
+      address,
+      onClick,
+      chainId,
+      active,
+      connected,
+      balance,
+      isLoadingBalance,
+    } = props;
     const [hovering, setHovering] = useState(false);
     const { displayName } = useWalletName({ address });
     const chainName = getChain({ chainId }).name;
@@ -73,11 +83,13 @@ export const AppConnectionWalletItem = React.forwardRef(
               return selectUserAssetsBalance(assetsByChain, isHidden);
             },
           }),
+        enabled: balance === undefined && !isLoadingBalance, // Only fetch if balance not provided and not loading
       },
     );
+    const finalBalance = balance || totalAssetsBalance || '0';
 
     const userAssetsBalanceDisplay = convertAmountToNativeDisplay(
-      totalAssetsBalance || 0,
+      finalBalance,
       currency,
     );
 
