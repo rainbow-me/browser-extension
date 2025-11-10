@@ -13,6 +13,9 @@ import { useRainbowNavigate } from './useRainbowNavigate';
 
 export function useCurrentHomeSheet() {
   const { setCurrentHomeSheet, sheet } = useCurrentHomeSheetStore();
+  const selectedTransaction = useSelectedTransactionStore(
+    (state) => state.selectedTransaction,
+  );
   const { trackShortcut } = useKeyboardAnalytics();
   const navigate = useRainbowNavigate();
 
@@ -22,8 +25,6 @@ export function useCurrentHomeSheet() {
   }, [navigate, setCurrentHomeSheet]);
 
   const currentHomeSheet = useMemo(() => {
-    const selectedTransaction =
-      useSelectedTransactionStore.getState().selectedTransaction;
     switch (sheet) {
       case 'cancel':
       case 'speedUp':
@@ -37,7 +38,7 @@ export function useCurrentHomeSheet() {
       default:
         return null;
     }
-  }, [closeSheet, sheet]);
+  }, [closeSheet, sheet, selectedTransaction]);
 
   const isDisplayingSheet = sheet !== 'none';
 
