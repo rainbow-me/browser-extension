@@ -476,6 +476,7 @@
         "hide_small_balances_hidden": "显示小额余额",
         "hide_small_balances_revealed": "隐藏小额余额",
         "wallets_and_keys": "钱包及密钥",
+        "refresh_data": "Refresh Balances and Activity",
         "view_full_screen": "全屏查看",
         "view_token": "查看代币",
         "view_token_details": "查看 %{symbol} 详情",
@@ -527,6 +528,7 @@
         "hide_small_balances": "切换, 隐藏, 显示, 余额, 揭秘",
         "wallets_and_keys": "钱包和密钥, 设置, 偏好设置",
         "diagnostics": "诊断",
+        "refresh_data": "refresh, reload, clear cache, reset, update",
         "clear_transactions": "清除、重置、待处理、事务、nonce、nonces"
       }
     },
@@ -549,6 +551,9 @@
       "description_revealed": "所有代币可见",
       "title_hidden": "隐藏小额余额",
       "title_revealed": "显示小额余额"
+    },
+    "refresh_data_toast": {
+      "title": "Balances and Activity Refreshed"
     },
     "contact_toast": {
       "title_added": "联系人已添加",
