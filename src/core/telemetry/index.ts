@@ -26,7 +26,7 @@ export const TelemetryIdentifier = () => {
       analytics.identify();
     };
 
-    if (authStatus === '') return; // wait for auth state to settle
+    if (authStatus === null) return; // wait for auth state to settle
     else if (authStatus === 'READY') identify(); // assign full wallet context
     else identify(); // assign partial wallet context immediately if available
   }, [deviceId, currentAddress, authStatus]);
