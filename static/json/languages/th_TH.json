@@ -476,6 +476,7 @@
         "hide_small_balances_hidden": "แสดงยอดเงินเล็ก",
         "hide_small_balances_revealed": "ซ่อนยอดเงินเล็ก",
         "wallets_and_keys": "กระเป๋าสตางค์และคีย์",
+        "refresh_data": "Refresh Balances and Activity",
         "view_full_screen": "ดูเต็มหน้าจอ",
         "view_token": "ดูโทเคน",
         "view_token_details": "ดูรายละเอียดของ %{symbol}",
@@ -527,6 +528,7 @@
         "hide_small_balances": "สลับ, ซ่อน, แสดง, ยอดคงเหลือ, เปิดเผย",
         "wallets_and_keys": "กระเป๋าสตางค์และคีย์, การตั้งค่า, กำหนดค่าตั้งค่า",
         "diagnostics": "การวินิจฉัย",
+        "refresh_data": "refresh, reload, clear cache, reset, update",
         "clear_transactions": "ล้าง, รีเซ็ต, ที่อยู่ระหว่างดำเนินการ, ธุรกรรม, นอนซ์, นอนซ์"
       }
     },
@@ -549,6 +551,9 @@
       "description_revealed": "แสดงโทเค็นทั้งหมด",
       "title_hidden": "ซ่อนยอดเงินเล็กน้อย",
       "title_revealed": "แสดงยอดเงินเล็กน้อย"
+    },
+    "refresh_data_toast": {
+      "title": "Balances and Activity Refreshed"
     },
     "contact_toast": {
       "title_added": "เพิ่มผู้ติดต่อแล้ว",
