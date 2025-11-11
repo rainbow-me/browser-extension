@@ -476,7 +476,7 @@
         "hide_small_balances_hidden": "Mostrar Saldos Pequeños",
         "hide_small_balances_revealed": "Ocultar Saldos Pequeños",
         "wallets_and_keys": "Billeteras y Claves",
-        "refresh_data": "Refresh Balances and Activity",
+        "refresh_data": "Actualizar Saldos y Actividad",
         "view_full_screen": "Ver Pantalla Completa",
         "view_token": "Ver Token",
         "view_token_details": "Ver detalles de %{symbol}",
@@ -528,7 +528,7 @@
         "hide_small_balances": "alternar, ocultar, mostrar, saldos, revelar",
         "wallets_and_keys": "billeteras y claves, configuración, preferencias",
         "diagnostics": "diagnósticos",
-        "refresh_data": "refresh, reload, clear cache, reset, update",
+        "refresh_data": "actualizar, recargar, limpiar caché, reiniciar, actualizar",
         "clear_transactions": "limpiar, reiniciar, pendientes, transacciones, nonce, nonces"
       }
     },
@@ -553,7 +553,7 @@
       "title_revealed": "Mostrando saldos pequeños"
     },
     "refresh_data_toast": {
-      "title": "Balances and Activity Refreshed"
+      "title": "Saldos y Actividad Actualizados"
     },
     "contact_toast": {
       "title_added": "Contacto Agregado",
