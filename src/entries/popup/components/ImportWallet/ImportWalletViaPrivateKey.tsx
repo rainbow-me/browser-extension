@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { startsWith } from 'lodash';
 import { KeyboardEvent, useCallback, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { Address, isAddress } from 'viem';
 
 import { analytics } from '~/analytics';
@@ -41,7 +41,8 @@ import { ROUTES } from '../../urls';
 const ImportWalletViaPrivateKey = () => {
   const navigate = useRainbowNavigate();
   const location = useLocation();
-  const onboarding = document.location.href.search('onboarding') !== -1;
+  const [searchParams] = useSearchParams();
+  const onboarding = searchParams.get('onboarding') === 'true';
   const [isValid, setIsValid] = useState(false);
   const [isAddingWallets, setIsAddingWallets] = useState(false);
   const [secrets, setSecrets] = useState<string[]>(['']);
