@@ -109,6 +109,57 @@ export type ChartData = { timestamp: number; price: number };
 type Position = { x: number; y: number };
 export type ChartPoint = ChartData & Position;
 
+/** Creates a horizontal SVG path at Y coordinate. */
+const createHorizontalLinePath = (y: number, width: number): string => {
+  return `M0,${y} L${width},${y}`;
+};
+
+/** Calculates Y-axis scale. Returns 0 when range is 0 to prevent division by zero. */
+const calculateYScale = (
+  minY: number,
+  maxY: number,
+  height: number,
+  paddingY: number,
+): number => {
+  const range = maxY - minY;
+  return range === 0 ? 0 : (height - 2 * paddingY) / range;
+};
+
+/** Maps price data to screen coordinates. */
+const calculateChartPoints = (
+  data: ChartData[],
+  width: number,
+  height: number,
+  paddingY: number,
+): ChartPoint[] => {
+  const prices = data.map((item) => item.price);
+  const maxY = Math.max(...prices);
+  const minY = Math.min(...prices);
+  const range = maxY - minY;
+  const yScale = calculateYScale(minY, maxY, height, paddingY);
+
+  const denominator = Math.max(data.length - 1, 1);
+  return data.map(({ price, timestamp }, index) => {
+    // Single point positioned at right edge
+    const x = data.length === 1 ? width : (index / denominator) * width;
+    // Identical prices positioned at baseline
+    const scaledValue = range === 0 ? 0 : (price - minY) * yScale;
+    const y = height - paddingY - scaledValue;
+    return { price, timestamp, x, y };
+  });
+};
+
+/** Generates SVG path: cubic interpolation for multiple points, horizontal line for single/empty. */
+const createChartPath = (points: ChartPoint[], width: number): string => {
+  if (points.length === 0) {
+    return '';
+  }
+  if (points.length === 1) {
+    return createHorizontalLinePath(points[0].y, width);
+  }
+  return monotoneCubicInterpolation(points);
+};
+
 export const LineChart = ({
   width,
   height,
@@ -123,31 +174,46 @@ export const LineChart = ({
   onMouseMove: (pointData?: ChartPoint) => void;
 }) => {
   const { points, d } = useMemo(() => {
-    const prices = data.map((item) => item.price);
-    const maxY = Math.max(...prices);
-    const minY = Math.min(...prices);
+    if (data.length === 0) {
+      const baseline = height - paddingY;
+      return {
+        points: [],
+        d: createHorizontalLinePath(baseline, width),
+      };
+    }
 
-    const yScale = (height - 2 * paddingY) / (maxY - minY);
+    const calculatedPoints = calculateChartPoints(
+      data,
+      width,
+      height,
+      paddingY,
+    );
 
-    const points = data.map(({ price, timestamp }, index) => {
-      const x = (index / data.length) * width;
-      const y = height - paddingY - (price - minY) * yScale;
-      return { price, timestamp, x, y };
-    });
+    const path = createChartPath(calculatedPoints, width);
 
-    const d = monotoneCubicInterpolation(points);
-
-    return { points, d };
+    return { points: calculatedPoints, d: path };
   }, [data, height, paddingY, width]);
 
   const [indicator, setIndicator] = useState<Position | null>(null);
 
-  const pathRef = useRef<SVGPathElement>(null);
+  const pathRef = useRef<SVGPathElement | null>(null);
+
+  // Check if line is flat (all points have same Y) or empty
+  const isFlatLine =
+    points.length === 0 ||
+    points.every((p) => Math.abs(p.y - points[0].y) < 0.01);
 
   const handleMouseMove = (event: MouseEvent<SVGSVGElement>) => {
     const path = pathRef.current;
     const pathLength = path?.getTotalLength();
     if (!pathLength) return;
+
+    // Empty data: keep baseline visible, no indicator
+    if (points.length === 0) {
+      setIndicator(null);
+      onMouseMove(undefined);
+      return;
+    }
 
     const { left } = event.currentTarget.getBoundingClientRect();
     const mouseX = event.clientX - left;
@@ -165,6 +231,19 @@ export const LineChart = ({
   };
 
   const paintedLineOffset = indicator ? (indicator.x / width) * 100 : 0;
+  // For flat lines or empty data, always keep line solid to avoid gradient issues
+  const useGradient =
+    !isFlatLine &&
+    indicator &&
+    paintedLineOffset > 0 &&
+    paintedLineOffset < 100;
+
+  // Stable stroke color for flat lines or empty data to prevent animation issues
+  const strokeColor = isFlatLine
+    ? accentColorAsHsl
+    : useGradient
+    ? 'url(#indicatorPaintedLine)'
+    : accentColorAsHsl;
 
   return (
     <ChartContext.Provider value={{ width, height, points }}>
@@ -174,21 +253,24 @@ export const LineChart = ({
         onMouseMove={handleMouseMove}
         onMouseLeave={onMouseLeave}
       >
-        <linearGradient id="indicatorPaintedLine" x1="0%" x2="100%">
-          <stop offset="0%" stopColor={accentColorAsHsl} />
-          <stop offset={`${paintedLineOffset}%`} stopColor={accentColorAsHsl} />
-          <stop
-            offset={`${paintedLineOffset}%`}
-            stopColor={globalColors.blueGrey60}
-          />
-        </linearGradient>
+        {useGradient && (
+          <linearGradient id="indicatorPaintedLine" x1="0%" x2="100%">
+            <stop offset="0%" stopColor={accentColorAsHsl} />
+            <stop
+              offset={`${paintedLineOffset}%`}
+              stopColor={accentColorAsHsl}
+            />
+            <stop
+              offset={`${paintedLineOffset}%`}
+              stopColor={globalColors.blueGrey60}
+            />
+          </linearGradient>
+        )}
         <motion.path
           ref={pathRef}
           animate={{ d }}
           fill="none"
-          stroke={
-            paintedLineOffset ? 'url(#indicatorPaintedLine)' : accentColorAsHsl
-          }
+          stroke={strokeColor}
           strokeWidth={3}
         />
         {indicator && <Indicator position={indicator} />}
