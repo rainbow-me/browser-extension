@@ -9,7 +9,7 @@ import React, {
   useReducer,
   useState,
 } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import {
@@ -38,6 +38,7 @@ import {
   setImportWalletSecrets,
 } from '../../handlers/importWalletSecrets';
 import { isMnemonicInVault } from '../../handlers/wallet';
+import { useAuth } from '../../hooks/useAuth';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
@@ -174,7 +175,9 @@ const emptySecrets24 = Array.from({ length: 24 }).map(() => '');
 const ImportWalletViaSeed = () => {
   const navigate = useRainbowNavigate();
   const location = useLocation();
-  const onboarding = document.location.href.search('onboarding') !== -1;
+  const [searchParams] = useSearchParams();
+  const { status } = useAuth();
+  const onboarding = searchParams.get('onboarding') === 'true';
   const [isValid, setIsValid] = useState(false);
   const [globalError, setGlobalError] = useState(false);
   const [invalidWords, setInvalidWords] = useState<number[]>([]);
@@ -231,17 +234,30 @@ const ImportWalletViaSeed = () => {
 
   const handleImportWallet = useCallback(async () => {
     if (await isMnemonicInVault(secrets.join(' '))) {
-      triggerAlert({
-        text: i18n.t('import_wallet_via_seed.duplicate_seed'),
-      });
-      setSecrets(emptySecrets12);
-      return;
+      if (onboarding) {
+        // Seed already imported during onboarding - redirect to appropriate page
+        // Password is set if status is READY or LOCKED
+        const passwordSet = status === 'READY' || status === 'LOCKED';
+        setSecrets(emptySecrets12);
+        return navigate(
+          passwordSet ? ROUTES.READY : ROUTES.CREATE_PASSWORD,
+          passwordSet
+            ? undefined
+            : { state: { backTo: ROUTES.IMPORT__SEED + '?onboarding=true' } },
+        );
+      } else {
+        // Not onboarding - show error
+        triggerAlert({
+          text: i18n.t('import_wallet_via_seed.duplicate_seed'),
+        });
+        return setSecrets(emptySecrets12);
+      }
     }
 
     return navigate(
       onboarding ? ROUTES.IMPORT__SELECT : ROUTES.NEW_IMPORT_WALLET_SELECTION,
     );
-  }, [navigate, onboarding, secrets]);
+  }, [navigate, onboarding, secrets, status]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {

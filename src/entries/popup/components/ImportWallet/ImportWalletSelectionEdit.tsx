@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
+import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
 import { minus } from '~/core/utils/numbers';
 import { Box, Button, Stack, Text } from '~/design-system';
@@ -14,6 +15,7 @@ import {
   useWalletsSummary,
 } from '../../hooks/useWalletsSummary';
 import { ROUTES } from '../../urls';
+import { getInputIsFocused } from '../../utils/activeElement';
 
 import { AccountToImportRows } from './AccountToImportRows';
 import { ImportWalletNavbar } from './ImportWalletNavbar';
@@ -93,7 +95,9 @@ export function ImportWalletSelectionEdit({ onboarding = false }) {
       setCurrentAddress(importedAccounts[0]);
       if (onboarding) {
         navigate(ROUTES.CREATE_PASSWORD, {
-          state: { backTo: ROUTES.IMPORT__SEED },
+          state: {
+            backTo: ROUTES.IMPORT__SEED + '?onboarding=true',
+          },
         });
       } else navigate(ROUTES.HOME);
     });
@@ -183,6 +187,11 @@ export function ImportWalletSelectionEdit({ onboarding = false }) {
                 disabled={isButtonDisabled}
                 onClick={onImport}
                 tabIndex={0}
+                shortcut={{
+                  ...shortcuts.global.SELECT,
+                  disabled: () => isButtonDisabled || getInputIsFocused(),
+                  hideHint: true,
+                }}
               >
                 {i18n.t('edit_import_wallet_selection.add_wallet', {
                   count: amountOfAddressesBeingAdded,
