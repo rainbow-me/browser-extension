@@ -153,7 +153,9 @@ class KeychainManager {
         }
         await this.mergeKeychains(keychain);
         await this.checkForDuplicateInKeychain(keychain);
-        this.state.keychains.push(keychain as Keychain);
+        privates
+          .get(this)
+          .setKeychains([...this.state.keychains, keychain as Keychain]);
         return keychain;
       },
 
@@ -166,7 +168,7 @@ class KeychainManager {
           }
         }
 
-        this.state.keychains = nonEmptyKeychains;
+        privates.get(this).setKeychains(nonEmptyKeychains);
       },
 
       persist: async () => {
@@ -187,6 +189,7 @@ class KeychainManager {
 
         if (serializedKeychains.length > 0) {
           const result = { vault: '', exportedKeyString: '', salt: '' };
+          // hasKeychains is automatically maintained by setKeychains setter
           if (pwd) {
             // Generate a new encryption key every time we save and have a password
             const encryptionResult = await encryptWithDetail(
@@ -206,16 +209,16 @@ class KeychainManager {
             result.salt = salt;
             result.exportedKeyString = encryptionKey;
           }
-          this.state.vault = result.vault;
-          await privates.get(this).setEncryptionKey(result.exportedKeyString);
-          await privates.get(this).setSalt(result.salt);
-          // Use centralized vault setter - vault is non-empty, safe to persist
-          await privates.get(this)._setVaultInStorage(result.vault);
-        } else {
-          // No keychains - allow clearing vault when all keychains are removed
-          // This is safe because it's an intentional action (user removed all keychains)
-          this.state.vault = '';
-          await privates.get(this)._setVaultInStorage('', true);
+
+          // Only persist if we have a password or encryptionKey/salt
+          // Without encryption, we can't securely store the vault
+          if (result.vault) {
+            this.state.vault = result.vault;
+            await privates.get(this).setEncryptionKey(result.exportedKeyString);
+            await privates.get(this).setSalt(result.salt);
+            // Use centralized vault setter - vault is non-empty, safe to persist
+            await privates.get(this)._setVaultInStorage(result.vault);
+          }
         }
       },
 
@@ -230,6 +233,18 @@ class KeychainManager {
       },
       getEncryptionKey: () => {
         return SessionStorage.get('encryptionKey');
+      },
+      /**
+       * Sets the keychains array and automatically updates hasKeychains in SessionStorage.
+       * This ensures hasKeychains is always in sync with the actual keychains state.
+       */
+      setKeychains: (keychains: Keychain[]) => {
+        this.state.keychains = keychains;
+        // Update hasKeychains based on whether we have any keychains
+        void SessionStorage.set(
+          'hasKeychains',
+          keychains.length > 0 ? true : null,
+        );
       },
 
       getLastStorageState: () => {
@@ -289,7 +304,7 @@ class KeychainManager {
         // Persist to storage
         // This is the ONLY allowed place to call LocalStorage.set('vault', ...)
         // eslint-disable-next-line no-restricted-syntax
-        await LocalStorage.set('vault', vaultValue);
+        await LocalStorage.set('vault', this.state.vault);
       },
     });
 
@@ -390,14 +405,26 @@ class KeychainManager {
     const keychain = new HdKeychain();
     await keychain.init(opts as SerializedHdKeychain);
     await this.checkForImportedDuplicateInKeychain(keychain);
-    this.state.keychains.push(keychain as Keychain);
+    // Use setter to ensure hasKeychains is updated
+    privates
+      .get(this)
+      .setKeychains([...this.state.keychains, keychain as Keychain]);
     this.state.isUnlocked = true;
     await privates.get(this).persist();
     return keychain;
   }
 
   async removeKeychain(keychain: Keychain) {
-    this.state.keychains = this.state.keychains.filter((k) => k !== keychain);
+    // This function is only called when a 1 account keychain needs removal, because the account moved to a different keychain
+    // example: you watch an account (read-only keychain), and then you that watched account to a different keychain (hd keychain), the read-only keychain is no longer needed
+    // given the above, it should be guaranteed that at least one keychain will always exist after removing one
+    const newKeychains = this.state.keychains.filter((k) => k !== keychain);
+    if (newKeychains.length === 0) {
+      throw new Error(
+        'The last keychain cannot be removed using this method, use `wipe()` instead.',
+      );
+    }
+    privates.get(this).setKeychains(newKeychains);
   }
 
   async isMnemonicInVault(mnemonic: string) {
@@ -484,11 +511,16 @@ class KeychainManager {
         await privates.get(this).removeEmptyKeychainsIfNeeded();
       }
     }
-    await privates.get(this).persist();
+    // If all keychains were removed, explicitly wipe the vault
+    if (this.state.keychains.length === 0) {
+      await this.wipe();
+    } else {
+      await privates.get(this).persist();
+    }
   }
 
   async lock() {
-    this.state.keychains = [];
+    privates.get(this).setKeychains([]);
     this.state.isUnlocked = false;
     privates.get(this).password = null;
     await privates.get(this).setEncryptionKey(null);
@@ -497,7 +529,7 @@ class KeychainManager {
 
   async wipe() {
     if (!this.state.isUnlocked && !!privates.get(this).password) return;
-    this.state.keychains = [];
+    privates.get(this).setKeychains([]);
     this.state.isUnlocked = false;
     this.state.vault = '';
 
@@ -505,7 +537,6 @@ class KeychainManager {
 
     // Use centralized vault setter - explicitly allow null for wipe operation
     await privates.get(this)._setVaultInStorage(null, false, true);
-    await SessionStorage.set('keychainManager', null);
     await privates.get(this).setEncryptionKey(null);
     await privates.get(this).setSalt(null);
   }

@@ -9,14 +9,11 @@ import { FlyingRainbows } from '../../components/FlyingRainbows/FlyingRainbows';
 import { PasswordInput } from '../../components/PasswordInput/PasswordInput';
 import { Spinner } from '../../components/Spinner/Spinner';
 import * as wallet from '../../handlers/wallet';
-import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
-import { ROUTES } from '../../urls';
 import playSound from '../../utils/playSound';
 import { AvatarSection } from '../home/Header';
 
 export function Unlock() {
   const [password, setPassword] = useState('');
-  const navigate = useRainbowNavigate();
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -38,7 +35,8 @@ export function Unlock() {
     try {
       if (await wallet.unlock(password)) {
         playSound('UnlockSound');
-        navigate(ROUTES.HOME);
+        // Don't navigate here - let ProtectedRoute and navigation restoration handle it
+        // This allows the previous navigation state to be restored after unlock
       } else {
         setError(i18n.t('passwords.wrong_password'));
         setLoading(false);
@@ -49,7 +47,7 @@ export function Unlock() {
       logger.error(e as RainbowError);
       setLoading(false);
     }
-  }, [navigate, password]);
+  }, [password]);
 
   return (
     <FlyingRainbows>
