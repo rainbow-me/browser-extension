@@ -476,6 +476,7 @@
         "hide_small_balances_hidden": "小額残高の表示",
         "hide_small_balances_revealed": "小額残高を非表示",
         "wallets_and_keys": "ウォレットとキー",
+        "refresh_data": "Refresh Balances and Activity",
         "view_full_screen": "フルスクリーン表示",
         "view_token": "トークンを表示",
         "view_token_details": "%{symbol}の詳細を表示",
@@ -527,6 +528,7 @@
         "hide_small_balances": "切り替え, 非表示, 表示, 残高, 公表",
         "wallets_and_keys": "ウォレットとキー, 設定, 設定",
         "diagnostics": "診断",
+        "refresh_data": "refresh, reload, clear cache, reset, update",
         "clear_transactions": "クリア、リセット、保留中、取引、ナンス、ナンセス"
       }
     },
@@ -549,6 +551,9 @@
       "description_revealed": "すべてのトークンが表示されます",
       "title_hidden": "小額残高非表示",
       "title_revealed": "小額残高表示中"
+    },
+    "refresh_data_toast": {
+      "title": "Balances and Activity Refreshed"
     },
     "contact_toast": {
       "title_added": "連絡先を追加しました",
