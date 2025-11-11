@@ -1,5 +1,4 @@
 import { i18n } from '~/core/languages';
-import { WELCOME_URL, goToNewTab } from '~/core/utils/tabs';
 import {
   Box,
   Button,
@@ -20,7 +19,8 @@ const t = (s: string) =>
 
 async function handleWipeWallet() {
   await wallet.wipe();
-  goToNewTab({ url: WELCOME_URL });
+  // ProtectedRoute will automatically detect the status change to 'NEW'
+  // and navigate to welcome screen or open new tab
 }
 
 export const WipeWalletPrompt = ({
