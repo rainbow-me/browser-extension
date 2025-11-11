@@ -476,6 +476,7 @@
         "hide_small_balances_hidden": "عرض الرصيد الصغير",
         "hide_small_balances_revealed": "إخفاء الرصيد الصغير",
         "wallets_and_keys": "المحافظ والمفاتيح",
+        "refresh_data": "Refresh Balances and Activity",
         "view_full_screen": "عرض كامل الشاشة",
         "view_token": "عرض الرمز",
         "view_token_details": "عرض تفاصيل %{symbol}",
@@ -527,6 +528,7 @@
         "hide_small_balances": "تبديل, إخفاء, إظهار, الأرصدة, كشف",
         "wallets_and_keys": "المحافظ والمفاتيح, الإعدادات, التفضيلات",
         "diagnostics": "التشخيص",
+        "refresh_data": "refresh, reload, clear cache, reset, update",
         "clear_transactions": "مسح، إعادة تعيين، قيد الانتظار، عمليات، معرف، معرّفات"
       }
     },
@@ -549,6 +551,9 @@
       "description_revealed": "جميع الرموز مرئية",
       "title_hidden": "التوازنات الصغيرة مخفية",
       "title_revealed": "عرض الرصيد الصغير"
+    },
+    "refresh_data_toast": {
+      "title": "Balances and Activity Refreshed"
     },
     "contact_toast": {
       "title_added": "تمت إضافة جهة اتصال",
