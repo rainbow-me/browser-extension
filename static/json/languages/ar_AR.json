@@ -476,7 +476,7 @@
         "hide_small_balances_hidden": "عرض الرصيد الصغير",
         "hide_small_balances_revealed": "إخفاء الرصيد الصغير",
         "wallets_and_keys": "المحافظ والمفاتيح",
-        "refresh_data": "Refresh Balances and Activity",
+        "refresh_data": "تحديث الأرصدة والنشاط",
         "view_full_screen": "عرض كامل الشاشة",
         "view_token": "عرض الرمز",
         "view_token_details": "عرض تفاصيل %{symbol}",
@@ -528,7 +528,7 @@
         "hide_small_balances": "تبديل, إخفاء, إظهار, الأرصدة, كشف",
         "wallets_and_keys": "المحافظ والمفاتيح, الإعدادات, التفضيلات",
         "diagnostics": "التشخيص",
-        "refresh_data": "refresh, reload, clear cache, reset, update",
+        "refresh_data": "تحديث، إعادة تحميل، مسح الذاكرة المؤقتة، إعادة تعيين، تحديث",
         "clear_transactions": "مسح، إعادة تعيين، قيد الانتظار، عمليات، معرف، معرّفات"
       }
     },
@@ -553,7 +553,7 @@
       "title_revealed": "عرض الرصيد الصغير"
     },
     "refresh_data_toast": {
-      "title": "Balances and Activity Refreshed"
+      "title": "تم تحديث الأرصدة والنشاط"
     },
     "contact_toast": {
       "title_added": "تمت إضافة جهة اتصال",
