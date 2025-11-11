@@ -476,7 +476,7 @@
         "hide_small_balances_hidden": "Tampilkan Saldo Kecil",
         "hide_small_balances_revealed": "Sembunyikan Saldo Kecil",
         "wallets_and_keys": "Dompet & Kunci",
-        "refresh_data": "Refresh Balances and Activity",
+        "refresh_data": "Perbarui Saldo dan Aktivitas",
         "view_full_screen": "Lihat Layar Penuh",
         "view_token": "Lihat Token",
         "view_token_details": "Lihat Detail %{symbol}",
@@ -528,7 +528,7 @@
         "hide_small_balances": "tombol, sembunyikan, tampilkan, saldo, ungkapkan",
         "wallets_and_keys": "dompet dan kunci, pengaturan, preferensi",
         "diagnostics": "diagnostik",
-        "refresh_data": "refresh, reload, clear cache, reset, update",
+        "refresh_data": "segarkan kembali, muat ulang, bersihkan cache, atur ulang, perbarui",
         "clear_transactions": "bersihkan, atur ulang, menunggu, transaksi, nonce, nonces"
       }
     },
@@ -553,7 +553,7 @@
       "title_revealed": "Menunjukkan Saldo Kecil"
     },
     "refresh_data_toast": {
-      "title": "Balances and Activity Refreshed"
+      "title": "Saldo dan Aktivitas Diperbarui"
     },
     "contact_toast": {
       "title_added": "Kontak Ditambahkan",
