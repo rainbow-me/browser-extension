@@ -476,6 +476,7 @@
         "hide_small_balances_hidden": "Show Small Balances",
         "hide_small_balances_revealed": "Hide Small Balances",
         "wallets_and_keys": "Wallets & Keys",
+        "refresh_data": "Refresh Balances and Activity",
         "view_full_screen": "View Full Screen",
         "view_token": "View Token",
         "view_token_details": "View %{symbol} Details",
@@ -527,6 +528,7 @@
         "hide_small_balances": "toggle, hide, show, balances, reveal",
         "wallets_and_keys": "wallets and keys, settings, preferences",
         "diagnostics": "diagnostics",
+        "refresh_data": "refresh, reload, clear cache, reset, update",
         "clear_transactions": "clear, reset, pending, transactions, nonce, nonces"
       }
     },
@@ -549,6 +551,9 @@
       "description_revealed": "All tokens visible",
       "title_hidden": "Small Balances Hidden",
       "title_revealed": "Showing Small Balances"
+    },
+    "refresh_data_toast": {
+      "title": "Balances and Activity Refreshed"
     },
     "contact_toast": {
       "title_added": "Contact Added",
