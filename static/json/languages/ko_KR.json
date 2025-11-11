@@ -476,7 +476,7 @@
         "hide_small_balances_hidden": "소액 잔액 표시",
         "hide_small_balances_revealed": "소액 잔액 숨기기",
         "wallets_and_keys": "지갑 & 키",
-        "refresh_data": "Refresh Balances and Activity",
+        "refresh_data": "잔액 및 활동 새로 고침",
         "view_full_screen": "전체 화면 보기",
         "view_token": "토큰 보기",
         "view_token_details": "%{symbol} 세부 정보 보기",
@@ -528,7 +528,7 @@
         "hide_small_balances": "토글, 숨기기, 보이기, 잔액, 공개",
         "wallets_and_keys": "지갑과 키, 설정, 환경 설정",
         "diagnostics": "진단",
-        "refresh_data": "refresh, reload, clear cache, reset, update",
+        "refresh_data": "새로 고침, 다시 로드, 캐시 제거, 초기화, 업데이트",
         "clear_transactions": "지우기, 초기화, 보류 중, 거래, 넌스, 넌스들"
       }
     },
@@ -553,7 +553,7 @@
       "title_revealed": "소액 잔액 표시"
     },
     "refresh_data_toast": {
-      "title": "Balances and Activity Refreshed"
+      "title": "잔액 및 활동이 새로 고쳐졌습니다"
     },
     "contact_toast": {
       "title_added": "연락처 추가됨",
