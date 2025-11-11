@@ -8,6 +8,7 @@ import { RainbowError, logger } from '~/logger';
 import { POPUP_PORT_NAME } from './constants';
 import { healthRouter } from './health';
 import { walletOs } from './os';
+import { registerPopupPort } from './popupPortManager';
 import { stateRouter } from './state';
 import { telemetryRouter } from './telemetry';
 import { walletRouter } from './wallet';
@@ -48,6 +49,9 @@ export function startPopupRouter() {
 
   chrome.runtime.onConnect.addListener((port) => {
     if (port.name === POPUP_PORT_NAME) {
+      // Register port for disconnect tracking (expiry and immediate lock)
+      registerPopupPort(port);
+
       handler.upgrade(port, {
         context: {
           sender: port.sender,

@@ -27,12 +27,11 @@ import { Box, ThemeProvider } from '~/design-system';
 
 import { Routes } from './Routes';
 import { HWRequestListener } from './components/HWRequestListener/HWRequestListener';
-import { IdleTimer } from './components/IdleTimer/IdleTimer';
 import { OnboardingKeepAlive } from './components/OnboardingKeepAlive';
 import { popupClient } from './handlers/background';
-import { AuthProvider } from './hooks/useAuth';
 import { useExpiryListener } from './hooks/useExpiryListener';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
+import { useLastActivityUpdater } from './hooks/useLastActivityUpdater';
 import usePrevious from './hooks/usePrevious';
 
 initializeSentry('popup');
@@ -48,6 +47,7 @@ export function App() {
     React.useState<ReturnType<typeof createConfig>>(_wagmiConfig);
 
   useExpiryListener();
+  useLastActivityUpdater();
 
   React.useEffect(() => {
     if (!isEqual(prevChains, activeChains)) {
@@ -107,23 +107,20 @@ export function App() {
         >
           <QueryClientProvider client={queryClient}>
             <ThemeProvider theme={currentTheme}>
-              <AuthProvider>
-                <Box
-                  id="main"
-                  background="surfacePrimaryElevated"
-                  style={{
-                    maxWidth: !isFullScreen
-                      ? `${POPUP_DIMENSIONS.width}px`
-                      : undefined,
-                  }}
-                >
-                  <Routes />
-                </Box>
-                <IdleTimer />
-                <OnboardingKeepAlive />
-                <WagmiConfigUpdater />
-                <TelemetryIdentifier />
-              </AuthProvider>
+              <Box
+                id="main"
+                background="surfacePrimaryElevated"
+                style={{
+                  maxWidth: !isFullScreen
+                    ? `${POPUP_DIMENSIONS.width}px`
+                    : undefined,
+                }}
+              >
+                <Routes />
+              </Box>
+              <OnboardingKeepAlive />
+              <WagmiConfigUpdater />
+              <TelemetryIdentifier />
             </ThemeProvider>
           </QueryClientProvider>
         </PersistQueryClientProvider>
