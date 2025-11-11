@@ -476,7 +476,7 @@
         "hide_small_balances_hidden": "Küçük Bakiyeleri Göster",
         "hide_small_balances_revealed": "Küçük Bakiyeleri Gizle",
         "wallets_and_keys": "Cüzdanlar ve Anahtarlar",
-        "refresh_data": "Refresh Balances and Activity",
+        "refresh_data": "Bakiye ve Etkinlikleri Yenile",
         "view_full_screen": "Tam Ekran Görüntüleme",
         "view_token": "Token Görüntüleme",
         "view_token_details": "%{symbol} Detaylarını Görüntüle",
@@ -528,7 +528,7 @@
         "hide_small_balances": "değiştir, gizle, göster, bakiyeler, ortaya çıkar",
         "wallets_and_keys": "cüzdanlar ve anahtarlar, ayarlar, tercihler",
         "diagnostics": "teşhisler",
-        "refresh_data": "refresh, reload, clear cache, reset, update",
+        "refresh_data": "yenile, tekrar yükle, önbelleği temizle, sıfırla, güncelle",
         "clear_transactions": "temizle, sıfırla, beklemede, işlemler, nonce, nonceler"
       }
     },
@@ -553,7 +553,7 @@
       "title_revealed": "Küçük Bakiyeler Gösteriliyor"
     },
     "refresh_data_toast": {
-      "title": "Balances and Activity Refreshed"
+      "title": "Bakiyeler ve Etkinlikler Yenilendi"
     },
     "contact_toast": {
       "title_added": "Kişi Eklendi",
