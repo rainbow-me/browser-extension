@@ -27,7 +27,7 @@ export interface NftsState {
 }
 
 export const useNftsStore = createBaseStore<NftsState>(
-  (set, get) => ({
+  (set) => ({
     displayMode: 'grouped',
     hidden: {},
     sections: {},
@@ -35,30 +35,30 @@ export const useNftsStore = createBaseStore<NftsState>(
     setNftSort: (sort) => set({ sort }),
     setNftDisplayMode: (displayMode) => set({ displayMode }),
     toggleGallerySectionOpen({ address, collectionId }) {
-      const { sections } = get();
-      const sectionsByAddress = sections[address] || {};
-      const isSectionCurrentlyOpen = sectionsByAddress[collectionId];
-      set({
-        sections: {
-          ...sections,
-          [address]: {
-            ...(sectionsByAddress || {}),
-            [collectionId]: !isSectionCurrentlyOpen,
+      set((state) => {
+        const sectionsByAddress = state.sections[address] || {};
+        const isSectionCurrentlyOpen = sectionsByAddress[collectionId];
+        return {
+          sections: {
+            ...state.sections,
+            [address]: {
+              ...(sectionsByAddress || {}),
+              [collectionId]: !isSectionCurrentlyOpen,
+            },
           },
-        },
+        };
       });
     },
     toggleHideNFT(address: Address, uniqueId: string) {
-      const { hidden } = get();
-      set({
+      set((state) => ({
         hidden: {
-          ...hidden,
+          ...state.hidden,
           [address]: {
-            ...hidden[address],
-            [uniqueId]: !hidden[address]?.[uniqueId],
+            ...state.hidden[address],
+            [uniqueId]: !state.hidden[address]?.[uniqueId],
           },
         },
-      });
+      }));
     },
   }),
   createExtensionStoreOptions({

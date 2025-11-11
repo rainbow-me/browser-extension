@@ -8,8 +8,7 @@ export interface SelectedNftState {
 }
 
 export const useSelectedNftStore = createBaseStore<SelectedNftState>((set) => ({
-  setSelectedNft: (selectedNft?: UniqueAsset) => {
-    set({ selectedNft });
-  },
+  setSelectedNft: (selectedNft?: UniqueAsset) =>
+    set({ selectedNft: selectedNft ?? null }),
   selectedNft: null,
 }));
