@@ -476,7 +476,7 @@
         "hide_small_balances_hidden": "छोटे शेष राशियाँ दिखाएँ",
         "hide_small_balances_revealed": "छोटे शेष राशियाँ छिपाएं",
         "wallets_and_keys": "वॉलेट और कुंजी",
-        "refresh_data": "Refresh Balances and Activity",
+        "refresh_data": "बैलेंस और गतिविधि ताज़ा करें",
         "view_full_screen": "फ़ुल स्क्रीन देखें",
         "view_token": "टोकन देखें",
         "view_token_details": "%{symbol} विवरण देखें",
@@ -528,7 +528,7 @@
         "hide_small_balances": "टॉगल, छिपाएं, दिखाएं, संतुलन, प्रकट करें",
         "wallets_and_keys": "वॉलेट और कुंजी, सेटिंग्स, प्राथमिकताएं",
         "diagnostics": "डायग्नोस्टिक्स",
-        "refresh_data": "refresh, reload, clear cache, reset, update",
+        "refresh_data": "ताज़ा करें, पुनः लोड करें, कैश साफ करें, रीसेट करें, अपडेट करें",
         "clear_transactions": "स्पष्ट, पुनः सेट करें, लंबित, लेनदेन, नॉन्स, नॉन्सेस"
       }
     },
@@ -553,7 +553,7 @@
       "title_revealed": "छोटे संतुलन दिखा रहे हैं"
     },
     "refresh_data_toast": {
-      "title": "Balances and Activity Refreshed"
+      "title": "बैलेंस और गतिविधि ताज़ा हुई"
     },
     "contact_toast": {
       "title_added": "संपर्क जोड़ा गया",
