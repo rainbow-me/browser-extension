@@ -476,7 +476,7 @@
         "hide_small_balances_hidden": "Показать малые балансы",
         "hide_small_balances_revealed": "Скрыть малые балансы",
         "wallets_and_keys": "Кошельки и ключи",
-        "refresh_data": "Refresh Balances and Activity",
+        "refresh_data": "Обновить балансы и активность",
         "view_full_screen": "Просмотр на полный экран",
         "view_token": "Просмотр токена",
         "view_token_details": "Посмотреть детали %{symbol}",
@@ -528,7 +528,7 @@
         "hide_small_balances": "переключатель, скрыть, показать, балансы, раскрыть",
         "wallets_and_keys": "кошельки и ключи, настройки, предпочтения",
         "diagnostics": "диагностика",
-        "refresh_data": "refresh, reload, clear cache, reset, update",
+        "refresh_data": "обновить, перезагрузить, очистить кэш, сбросить, обновление",
         "clear_transactions": "очистить, сбросить, ожидающие, транзакции, нонс, нонсы"
       }
     },
@@ -553,7 +553,7 @@
       "title_revealed": "Показать небольшие балансы"
     },
     "refresh_data_toast": {
-      "title": "Balances and Activity Refreshed"
+      "title": "Балансы и активность обновлены"
     },
     "contact_toast": {
       "title_added": "Контакт добавлен",
