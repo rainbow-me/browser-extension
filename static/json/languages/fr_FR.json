@@ -476,6 +476,7 @@
         "hide_small_balances_hidden": "Afficher les petits soldes",
         "hide_small_balances_revealed": "Masquer les petits soldes",
         "wallets_and_keys": "Portefeuilles et clés",
+        "refresh_data": "Actualiser les soldes et l'activité",
         "view_full_screen": "Plein écran",
         "view_token": "Voir le jeton",
         "view_token_details": "Voir les informations de %{symbol}",
@@ -527,6 +528,7 @@
         "hide_small_balances": "basculer, masquer, afficher, soldes, révéler",
         "wallets_and_keys": "portefeuilles et clés, paramètres, préférences",
         "diagnostics": "diagnostics :)",
+        "refresh_data": "actualiser, recharger, vider le cache, réinitialiser, mettre à jour",
         "clear_transactions": "effacer, réinitialiser, en attente, transactions, nonce, nonces"
       }
     },
@@ -549,6 +551,9 @@
       "description_revealed": "Tous les tokens visibles",
       "title_hidden": "Soldes faibles cachés",
       "title_revealed": "Affichage des soldes faibles"
+    },
+    "refresh_data_toast": {
+      "title": "Soldes et activité actualisés"
     },
     "contact_toast": {
       "title_added": "Contact ajouté",
