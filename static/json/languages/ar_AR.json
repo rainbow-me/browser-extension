@@ -501,7 +501,7 @@
         "enable_flashbots": "تمكين Flashbots",
         "disable_flashbots": "تعطيل Flashbots",
         "copy_uuid": "نسخ UUID",
-        "clear_transactions": "مسح المعاملات المعلقة"
+        "clear_transactions": "معالجة المعاملات المعلقة"
       },
       "search_tags": {
         "swap": "شراء, بيع, تداول, طلب, تبادل, دكس, طرق",
