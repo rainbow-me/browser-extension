@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useCallback, useMemo, useRef } from 'react';
 
+import { i18n } from '~/core/languages';
 import { useApprovals } from '~/core/resources/approvals/approvals';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import {
@@ -284,6 +285,7 @@ const ActivityTypeLabel = ({
   transaction: RainbowTransaction;
 }) => {
   const color = typeLabelColor[status];
+  const resolvedTitle = title || i18n.t(`transactions.${type}.${status}`) || '';
 
   return (
     <Columns space="4px" alignHorizontal="left">
@@ -296,7 +298,7 @@ const ActivityTypeLabel = ({
       </Column>
       <Column width="content">
         <Text size="12pt" weight="semibold" align="right" color={color}>
-          {truncateString(title, 20)}
+          {truncateString(resolvedTitle, 20)}
         </Text>
       </Column>
     </Columns>
