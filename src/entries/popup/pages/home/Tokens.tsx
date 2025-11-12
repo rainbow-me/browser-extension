@@ -46,6 +46,7 @@ import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 import { Asterisks } from '../../components/Asterisks/Asterisks';
 import { CoinbaseIcon } from '../../components/CoinbaseIcon/CoinbaseIcon';
 import { QuickPromo } from '../../components/QuickPromo/QuickPromo';
+import { prefetchInfiniteTransactionList } from '../../hooks/useInfiniteTransactionList';
 import useKeyboardAnalytics from '../../hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
@@ -158,6 +159,14 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
         select: selectAssetsList,
       },
     );
+
+  // Prefetch transactions when on the tokens/balances screen
+  // This gives the slow ListTransactions API a headstart before user navigates to activity
+  useEffect(() => {
+    prefetchInfiniteTransactionList({
+      address: currentAddress,
+    });
+  }, [currentAddress]);
 
   const isPinned = useCallback(
     (assetUniqueId: string) =>
