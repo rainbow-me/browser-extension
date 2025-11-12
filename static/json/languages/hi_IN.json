@@ -476,6 +476,7 @@
         "hide_small_balances_hidden": "छोटे शेष राशियाँ दिखाएँ",
         "hide_small_balances_revealed": "छोटे शेष राशियाँ छिपाएं",
         "wallets_and_keys": "वॉलेट और कुंजी",
+        "refresh_data": "बैलेंस और गतिविधि ताज़ा करें",
         "view_full_screen": "फ़ुल स्क्रीन देखें",
         "view_token": "टोकन देखें",
         "view_token_details": "%{symbol} विवरण देखें",
@@ -499,7 +500,8 @@
         "export_addresses_as_csv": "CSV के रूप में पते निर्यात करें",
         "enable_flashbots": "Flashbots सक्षम करें",
         "disable_flashbots": "Flashbots अक्षम करें",
-        "copy_uuid": "UUID कॉपी करें"
+        "copy_uuid": "UUID कॉपी करें",
+        "clear_transactions": "लंबित लेन-देन साफ करें"
       },
       "search_tags": {
         "swap": "खरीद, बेच, व्यापार, ऑर्डर, एक्सचेंज, डेक्स, रूट्स",
@@ -525,7 +527,9 @@
         "hide_balances": "टॉगल, छिपाएं, दिखाएं, संतुलन, प्रकट करें",
         "hide_small_balances": "टॉगल, छिपाएं, दिखाएं, संतुलन, प्रकट करें",
         "wallets_and_keys": "वॉलेट और कुंजी, सेटिंग्स, प्राथमिकताएं",
-        "diagnostics": "डायग्नोस्टिक्स"
+        "diagnostics": "डायग्नोस्टिक्स",
+        "refresh_data": "ताज़ा करें, पुनः लोड करें, कैश साफ करें, रीसेट करें, अपडेट करें",
+        "clear_transactions": "स्पष्ट, पुनः सेट करें, लंबित, लेनदेन, नॉन्स, नॉन्सेस"
       }
     },
     "command_rows": {
@@ -547,6 +551,9 @@
       "description_revealed": "सभी टोकन दिखाएं",
       "title_hidden": "सामान्य संतुलन छिपा हुआ",
       "title_revealed": "छोटे संतुलन दिखा रहे हैं"
+    },
+    "refresh_data_toast": {
+      "title": "बैलेंस और गतिविधि ताज़ा हुई"
     },
     "contact_toast": {
       "title_added": "संपर्क जोड़ा गया",
@@ -1311,7 +1318,10 @@
     "empty_header": "अभी तक कोई गतिविधि नहीं",
     "empty_description": "अपने वॉलेट का उपयोग शुरू करने के बाद, आप यहाँ अपने लेन-देन देखेंगे।",
     "loading_more": "और लोड हो रहा है...",
-    "no_value": "कोई मूल्य नहीं"
+    "no_value": "कोई मूल्य नहीं",
+    "error_header": "गतिविधि लोड करने में असमर्थ",
+    "error_description": "हम आपके लेन-देन नहीं ढूँढ सके।\nकृपया फिर से प्रयास करें।",
+    "error_retry": "फिर से प्रयास करें"
   },
   "activity_details": {
     "you": "तुम",
@@ -1342,7 +1352,12 @@
     "collection": "संग्रह",
     "token_contract": "टोकन अनुबंध",
     "token_standard": "टोकन मानक",
-    "revoke_approval": "अनुमति रद्द करें"
+    "revoke_approval": "अनुमति रद्द करें",
+    "error_title": "गतिविधि लोड करने में असमर्थ",
+    "error_message": "हम इस लेन-देन को प्राप्त नहीं कर सके।\nपुनः प्रयास करें या अपनी गतिविधि पर वापस जाएँ।",
+    "error_retry": "फिर से प्रयास करें",
+    "error_back": "गतिविधि पर वापस जाएँ",
+    "loading_failed": "लोडिंग विफल हुई"
   },
   "tokens_tab": {
     "coinbase_title": "कॉइनबेस से जमा करें",
@@ -1356,7 +1371,10 @@
     "send_description_3": "QR कोड के लिए",
     "unknown_token": "अज्ञात टोकन",
     "small_balances_show_more": "और दिखाएं",
-    "small_balances_show_less": "कम दिखाएं"
+    "small_balances_show_less": "कम दिखाएं",
+    "error_header": "शेष राशियाँ लोड करने में असमर्थ",
+    "error_description": "हम आपके टोकन शेष नहीं ला सके।\nकृपया फिर से प्रयास करें।",
+    "error_retry": "फिर से प्रयास करें"
   },
   "nfts": {
     "empty_state_header": "NFTs",

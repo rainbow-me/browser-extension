@@ -263,7 +263,7 @@
       "title": "المعاملات",
       "default_speed": "السرعة الافتراضية",
       "use_flashbots": "استخدم Flashbots",
-      "clear_transactions_and_nonces": "معالجة المعاملات المعلقة",
+      "clear_transactions_and_nonces": "مسح المعاملات المعلقة",
       "clear_transactions_and_nonces_success": "تم معالجة المعاملات المعلقة",
       "flashbots_description": "فلاشبوتس تحمي معاملاتك وتقلل احتمالية فشل المعاملات"
     },
@@ -476,6 +476,7 @@
         "hide_small_balances_hidden": "عرض الرصيد الصغير",
         "hide_small_balances_revealed": "إخفاء الرصيد الصغير",
         "wallets_and_keys": "المحافظ والمفاتيح",
+        "refresh_data": "تحديث الأرصدة والنشاط",
         "view_full_screen": "عرض كامل الشاشة",
         "view_token": "عرض الرمز",
         "view_token_details": "عرض تفاصيل %{symbol}",
@@ -499,7 +500,8 @@
         "export_addresses_as_csv": "تصدير العناوين كملف CSV",
         "enable_flashbots": "تمكين Flashbots",
         "disable_flashbots": "تعطيل Flashbots",
-        "copy_uuid": "نسخ UUID"
+        "copy_uuid": "نسخ UUID",
+        "clear_transactions": "مسح المعاملات المعلقة"
       },
       "search_tags": {
         "swap": "شراء, بيع, تداول, طلب, تبادل, دكس, طرق",
@@ -525,7 +527,9 @@
         "hide_balances": "تبديل, إخفاء, إظهار, الأرصدة, كشف",
         "hide_small_balances": "تبديل, إخفاء, إظهار, الأرصدة, كشف",
         "wallets_and_keys": "المحافظ والمفاتيح, الإعدادات, التفضيلات",
-        "diagnostics": "التشخيص"
+        "diagnostics": "التشخيص",
+        "refresh_data": "تحديث، إعادة تحميل، مسح الذاكرة المؤقتة، إعادة تعيين، تحديث",
+        "clear_transactions": "مسح، إعادة تعيين، قيد الانتظار، عمليات، معرف، معرّفات"
       }
     },
     "command_rows": {
@@ -547,6 +551,9 @@
       "description_revealed": "جميع الرموز مرئية",
       "title_hidden": "التوازنات الصغيرة مخفية",
       "title_revealed": "عرض الرصيد الصغير"
+    },
+    "refresh_data_toast": {
+      "title": "تم تحديث الأرصدة والنشاط"
     },
     "contact_toast": {
       "title_added": "تمت إضافة جهة اتصال",
@@ -1311,7 +1318,10 @@
     "empty_header": "لا يوجد نشاط بعد",
     "empty_description": "بمجرد بدء استخدام محفظتك، سترى المعاملات هنا",
     "loading_more": "جاري تحميل المزيد...",
-    "no_value": "لا يوجد قيمة"
+    "no_value": "لا يوجد قيمة",
+    "error_header": "غير قادر على تحميل النشاط",
+    "error_description": "لم نتمكن من العثور على معاملاتك.\nيرجى المحاولة مرة أخرى.",
+    "error_retry": "حاول مرة أخرى"
   },
   "activity_details": {
     "you": "أنت",
@@ -1342,7 +1352,12 @@
     "collection": "التجميع",
     "token_contract": "عقد الرمز",
     "token_standard": "معايير الرمز",
-    "revoke_approval": "إلغاء الموافقة"
+    "revoke_approval": "إلغاء الموافقة",
+    "error_title": "غير قادر على تحميل النشاط",
+    "error_message": "لم نتمكن من جلب هذه المعاملة.\nحاول مرة أخرى أو عد إلى نشاطك.",
+    "error_retry": "حاول مرة أخرى",
+    "error_back": "العودة إلى النشاط",
+    "loading_failed": "فشل التحميل"
   },
   "tokens_tab": {
     "coinbase_title": "الإيداع من Coinbase",
@@ -1356,7 +1371,10 @@
     "send_description_3": "لرمز الاستجابة السريعة",
     "unknown_token": "رمز غير معروف",
     "small_balances_show_more": "أظهر المزيد",
-    "small_balances_show_less": "أظهر أقل"
+    "small_balances_show_less": "أظهر أقل",
+    "error_header": "غير قادر على تحميل الأرصدة",
+    "error_description": "لم نتمكن من جلب أرصدة الرموز الخاصة بك.\nيرجى المحاولة مرة أخرى.",
+    "error_retry": "حاول مرة أخرى"
   },
   "nfts": {
     "empty_state_header": "NFTs",

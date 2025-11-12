@@ -476,6 +476,7 @@
         "hide_small_balances_hidden": "Mostrar Saldos Pequeños",
         "hide_small_balances_revealed": "Ocultar Saldos Pequeños",
         "wallets_and_keys": "Billeteras y Claves",
+        "refresh_data": "Actualizar Saldos y Actividad",
         "view_full_screen": "Ver Pantalla Completa",
         "view_token": "Ver Token",
         "view_token_details": "Ver detalles de %{symbol}",
@@ -499,7 +500,8 @@
         "export_addresses_as_csv": "Exportar Direcciones como CSV",
         "enable_flashbots": "Habilitar Flashbots",
         "disable_flashbots": "Desactivar Flashbots",
-        "copy_uuid": "Copiar UUID"
+        "copy_uuid": "Copiar UUID",
+        "clear_transactions": "Borrar Transacciones Pendientes"
       },
       "search_tags": {
         "swap": "comprar, vender, intercambiar, ordenar, intercambiar, dex, rutas",
@@ -525,7 +527,9 @@
         "hide_balances": "alternar, ocultar, mostrar, saldos, revelar",
         "hide_small_balances": "alternar, ocultar, mostrar, saldos, revelar",
         "wallets_and_keys": "billeteras y claves, configuración, preferencias",
-        "diagnostics": "diagnósticos"
+        "diagnostics": "diagnósticos",
+        "refresh_data": "actualizar, recargar, limpiar caché, reiniciar, actualizar",
+        "clear_transactions": "limpiar, reiniciar, pendientes, transacciones, nonce, nonces"
       }
     },
     "command_rows": {
@@ -547,6 +551,9 @@
       "description_revealed": "Todos los tokens visibles",
       "title_hidden": "Se ocultan los saldos pequeños",
       "title_revealed": "Mostrando saldos pequeños"
+    },
+    "refresh_data_toast": {
+      "title": "Saldos y Actividad Actualizados"
     },
     "contact_toast": {
       "title_added": "Contacto Agregado",
@@ -1311,7 +1318,10 @@
     "empty_header": "Actividad no disponible aún",
     "empty_description": "Una vez que comiences a usar tu billetera, verás aquí tus transacciones.",
     "loading_more": "Cargando más...",
-    "no_value": "Sin valor"
+    "no_value": "Sin valor",
+    "error_header": "No se pudo cargar la actividad",
+    "error_description": "No pudimos encontrar tus transacciones.\nPor favor, intenta de nuevo.",
+    "error_retry": "Intenta de Nuevo"
   },
   "activity_details": {
     "you": "Tú",
@@ -1342,7 +1352,12 @@
     "collection": "Colección",
     "token_contract": "Contrato del token",
     "token_standard": "Estándar del token",
-    "revoke_approval": "Revocar Aprobación"
+    "revoke_approval": "Revocar Aprobación",
+    "error_title": "No se pudo cargar la actividad",
+    "error_message": "No pudimos obtener esta transacción.\nInténtalo de nuevo o regresa a tu actividad.",
+    "error_retry": "Intenta de Nuevo",
+    "error_back": "Regresar a la Actividad",
+    "loading_failed": "Carga fallida"
   },
   "tokens_tab": {
     "coinbase_title": "Depósito desde Coinbase",
@@ -1356,7 +1371,10 @@
     "send_description_3": "para código QR",
     "unknown_token": "Token desconocido",
     "small_balances_show_more": "Mostrar más",
-    "small_balances_show_less": "Mostrar menos"
+    "small_balances_show_less": "Mostrar menos",
+    "error_header": "No se pueden cargar los saldos",
+    "error_description": "No pudimos obtener los saldos de tus tokens.\nPor favor, intenta de nuevo.",
+    "error_retry": "Intenta de Nuevo"
   },
   "nfts": {
     "empty_state_header": "NFTs",

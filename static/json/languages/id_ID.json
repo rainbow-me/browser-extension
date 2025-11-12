@@ -476,6 +476,7 @@
         "hide_small_balances_hidden": "Tampilkan Saldo Kecil",
         "hide_small_balances_revealed": "Sembunyikan Saldo Kecil",
         "wallets_and_keys": "Dompet & Kunci",
+        "refresh_data": "Perbarui Saldo dan Aktivitas",
         "view_full_screen": "Lihat Layar Penuh",
         "view_token": "Lihat Token",
         "view_token_details": "Lihat Detail %{symbol}",
@@ -499,7 +500,8 @@
         "export_addresses_as_csv": "Ekspor Alamat sebagai CSV",
         "enable_flashbots": "Aktifkan Flashbots",
         "disable_flashbots": "Nonaktifkan Flashbots",
-        "copy_uuid": "Salin UUID"
+        "copy_uuid": "Salin UUID",
+        "clear_transactions": "Hapus Transaksi Tertunda"
       },
       "search_tags": {
         "swap": "beli, jual, perdagangan, pesanan, pertukaran, dex, rute",
@@ -525,7 +527,9 @@
         "hide_balances": "tombol, sembunyikan, tampilkan, saldo, ungkapkan",
         "hide_small_balances": "tombol, sembunyikan, tampilkan, saldo, ungkapkan",
         "wallets_and_keys": "dompet dan kunci, pengaturan, preferensi",
-        "diagnostics": "diagnostik"
+        "diagnostics": "diagnostik",
+        "refresh_data": "segarkan kembali, muat ulang, bersihkan cache, atur ulang, perbarui",
+        "clear_transactions": "bersihkan, atur ulang, menunggu, transaksi, nonce, nonces"
       }
     },
     "command_rows": {
@@ -547,6 +551,9 @@
       "description_revealed": "Semua token terlihat",
       "title_hidden": "Saldo Kecil Tersembunyi",
       "title_revealed": "Menunjukkan Saldo Kecil"
+    },
+    "refresh_data_toast": {
+      "title": "Saldo dan Aktivitas Diperbarui"
     },
     "contact_toast": {
       "title_added": "Kontak Ditambahkan",
@@ -1311,7 +1318,10 @@
     "empty_header": "Belum ada aktivitas",
     "empty_description": "Setelah Anda mulai menggunakan dompet Anda, Anda akan melihat transaksi Anda di sini",
     "loading_more": "Memuat lebih banyak...",
-    "no_value": "Tidak ada nilai"
+    "no_value": "Tidak ada nilai",
+    "error_header": "Tidak dapat memuat aktivitas",
+    "error_description": "Kami tidak dapat menemukan transaksi Anda.\nSilakan coba lagi.",
+    "error_retry": "Coba Lagi"
   },
   "activity_details": {
     "you": "Anda",
@@ -1342,7 +1352,12 @@
     "collection": "Koleksi",
     "token_contract": "Kontrak Token",
     "token_standard": "Standar Token",
-    "revoke_approval": "Cabut Persetujuan"
+    "revoke_approval": "Cabut Persetujuan",
+    "error_title": "Tidak dapat memuat aktivitas",
+    "error_message": "Kami tidak dapat mengambil transaksi ini.\\nCoba lagi atau kembali ke aktivitas Anda.",
+    "error_retry": "Coba Lagi",
+    "error_back": "Kembali ke Aktivitas",
+    "loading_failed": "Loading Gagal"
   },
   "tokens_tab": {
     "coinbase_title": "Deposit dari Coinbase",
@@ -1356,7 +1371,10 @@
     "send_description_3": "untuk kode QR",
     "unknown_token": "Token Tidak Dikenal",
     "small_balances_show_more": "Tampilkan lebih banyak",
-    "small_balances_show_less": "Tampilkan lebih sedikit"
+    "small_balances_show_less": "Tampilkan lebih sedikit",
+    "error_header": "Tidak dapat memuat saldo",
+    "error_description": "Kami tidak dapat mengambil saldo token Anda.\nSilakan coba lagi.",
+    "error_retry": "Coba Lagi"
   },
   "nfts": {
     "empty_state_header": "NFTs",

@@ -476,6 +476,7 @@
         "hide_small_balances_hidden": "แสดงยอดเงินเล็ก",
         "hide_small_balances_revealed": "ซ่อนยอดเงินเล็ก",
         "wallets_and_keys": "กระเป๋าสตางค์และคีย์",
+        "refresh_data": "รีเฟรชยอดคงเหลือและกิจกรรม",
         "view_full_screen": "ดูเต็มหน้าจอ",
         "view_token": "ดูโทเคน",
         "view_token_details": "ดูรายละเอียดของ %{symbol}",
@@ -499,7 +500,8 @@
         "export_addresses_as_csv": "ส่งออกที่อยู่เป็น CSV",
         "enable_flashbots": "เปิดใช้งาน Flashbots",
         "disable_flashbots": "ปิดการใช้งาน Flashbots",
-        "copy_uuid": "คัดลอก UUID"
+        "copy_uuid": "คัดลอก UUID",
+        "clear_transactions": "ล้างธุรกรรมที่รอดำเนินการ"
       },
       "search_tags": {
         "swap": "ซื้อ, ขาย, แลกเปลี่ยน, สั่งซื้อ, เปลี่ยน, dex, เส้นทาง",
@@ -525,7 +527,9 @@
         "hide_balances": "สลับ, ซ่อน, แสดง, ยอดคงเหลือ, เปิดเผย",
         "hide_small_balances": "สลับ, ซ่อน, แสดง, ยอดคงเหลือ, เปิดเผย",
         "wallets_and_keys": "กระเป๋าสตางค์และคีย์, การตั้งค่า, กำหนดค่าตั้งค่า",
-        "diagnostics": "การวินิจฉัย"
+        "diagnostics": "การวินิจฉัย",
+        "refresh_data": "รีเฟรช, โหลดใหม่, ล้างแคช, รีเซ็ต, อัปเดต",
+        "clear_transactions": "ล้าง, รีเซ็ต, ที่อยู่ระหว่างดำเนินการ, ธุรกรรม, นอนซ์, นอนซ์"
       }
     },
     "command_rows": {
@@ -547,6 +551,9 @@
       "description_revealed": "แสดงโทเค็นทั้งหมด",
       "title_hidden": "ซ่อนยอดเงินเล็กน้อย",
       "title_revealed": "แสดงยอดเงินเล็กน้อย"
+    },
+    "refresh_data_toast": {
+      "title": "ยอดคงเหลือและกิจกรรมได้รับการรีเฟรชแล้ว"
     },
     "contact_toast": {
       "title_added": "เพิ่มผู้ติดต่อแล้ว",
@@ -1311,7 +1318,10 @@
     "empty_header": "ยังไม่มีกิจกรรม",
     "empty_description": "เมื่อคุณเริ่มใช้กระเป๋าสตางค์ของคุณ คุณจะเห็นธุรกรรมของคุณที่นี่",
     "loading_more": "กำลังโหลดเพิ่ม...",
-    "no_value": "ไม่มีค่า"
+    "no_value": "ไม่มีค่า",
+    "error_header": "ไม่สามารถโหลดกิจกรรมได้",
+    "error_description": "เราไม่พบธุรกรรมของคุณ\nโปรดลองอีกครั้ง",
+    "error_retry": "ลองใหม่"
   },
   "activity_details": {
     "you": "คุณ",
@@ -1342,7 +1352,12 @@
     "collection": "คอลเล็กชั่น",
     "token_contract": "สัญญาโทเค็น",
     "token_standard": "มาตรฐานโทเค็น",
-    "revoke_approval": "ยกเลิกการอนุมัติ"
+    "revoke_approval": "ยกเลิกการอนุมัติ",
+    "error_title": "ไม่สามารถโหลดกิจกรรมได้",
+    "error_message": "เราไม่สามารถดึงธุรกรรมนี้ได้ \nลองอีกครั้งหรือกลับไปที่กิจกรรมของคุณ",
+    "error_retry": "ลองใหม่",
+    "error_back": "กลับไปยัง กิจกรรม",
+    "loading_failed": "การโหลดล้มเหลว"
   },
   "tokens_tab": {
     "coinbase_title": "ฝากจาก Coinbase",
@@ -1356,7 +1371,10 @@
     "send_description_3": "สำหรับรหัส QR",
     "unknown_token": "Token ไม่ทราบ",
     "small_balances_show_more": "แสดงเพิ่มเติม",
-    "small_balances_show_less": "แสดงน้อยลง"
+    "small_balances_show_less": "แสดงน้อยลง",
+    "error_header": "โหลดยอดคงเหลือไม่สำเร็จ",
+    "error_description": "เราไม่สามารถดึงยอดคงเหลือของโทเค็นของคุณ\nโปรดลองอีกครั้ง",
+    "error_retry": "ลองใหม่"
   },
   "nfts": {
     "empty_state_header": "NFTs",

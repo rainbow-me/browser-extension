@@ -476,6 +476,7 @@
         "hide_small_balances_hidden": "Küçük Bakiyeleri Göster",
         "hide_small_balances_revealed": "Küçük Bakiyeleri Gizle",
         "wallets_and_keys": "Cüzdanlar ve Anahtarlar",
+        "refresh_data": "Bakiye ve Etkinlikleri Yenile",
         "view_full_screen": "Tam Ekran Görüntüleme",
         "view_token": "Token Görüntüleme",
         "view_token_details": "%{symbol} Detaylarını Görüntüle",
@@ -499,7 +500,8 @@
         "export_addresses_as_csv": "CSV olarak Adresleri Dışa Aktar",
         "enable_flashbots": "Flashbots'i etkinleştir",
         "disable_flashbots": "Flashbots'i devre dışı bırak",
-        "copy_uuid": "UUID'yi kopyala"
+        "copy_uuid": "UUID'yi kopyala",
+        "clear_transactions": "Bekleyen İşlemleri Temizle"
       },
       "search_tags": {
         "swap": "satın al, sat, takas, sipariş, değişim, dex, rotalar",
@@ -525,7 +527,9 @@
         "hide_balances": "değiştir, gizle, göster, bakiyeler, ortaya çıkar",
         "hide_small_balances": "değiştir, gizle, göster, bakiyeler, ortaya çıkar",
         "wallets_and_keys": "cüzdanlar ve anahtarlar, ayarlar, tercihler",
-        "diagnostics": "teşhisler"
+        "diagnostics": "teşhisler",
+        "refresh_data": "yenile, tekrar yükle, önbelleği temizle, sıfırla, güncelle",
+        "clear_transactions": "temizle, sıfırla, beklemede, işlemler, nonce, nonceler"
       }
     },
     "command_rows": {
@@ -547,6 +551,9 @@
       "description_revealed": "Tüm tokenler görünür",
       "title_hidden": "Küçük Bakiyeler Gizlendi",
       "title_revealed": "Küçük Bakiyeler Gösteriliyor"
+    },
+    "refresh_data_toast": {
+      "title": "Bakiyeler ve Etkinlikler Yenilendi"
     },
     "contact_toast": {
       "title_added": "Kişi Eklendi",
@@ -1311,7 +1318,10 @@
     "empty_header": "Henüz aktivite yok",
     "empty_description": "Cüzdanını kullanmaya başladığınızda, işlemlerinizi burada göreceksiniz.",
     "loading_more": "Daha fazla yükleniyor...",
-    "no_value": "Değer Yok"
+    "no_value": "Değer Yok",
+    "error_header": "Etkinlik yüklenemedi",
+    "error_description": "İşlemlerinizi bulamadık.\nLütfen tekrar deneyin.",
+    "error_retry": "Tekrar Deneyin"
   },
   "activity_details": {
     "you": "Siz",
@@ -1342,7 +1352,12 @@
     "collection": "Koleksiyon",
     "token_contract": "Token Sözleşmesi",
     "token_standard": "Token Standartı",
-    "revoke_approval": "Onayı İptal Et"
+    "revoke_approval": "Onayı İptal Et",
+    "error_title": "Etkinlik yüklenemedi",
+    "error_message": "Bu işlemi getiremedik.\nTekrar deneyin veya etkinliklerinize geri dönün.",
+    "error_retry": "Tekrar Deneyin",
+    "error_back": "Etkinliklere Geri Dön",
+    "loading_failed": "Yükleme Başarısız"
   },
   "tokens_tab": {
     "coinbase_title": "Coinbase'den Yatırma",
@@ -1356,7 +1371,10 @@
     "send_description_3": "QR kod için",
     "unknown_token": "Bilinmeyen Token",
     "small_balances_show_more": "Daha fazla göster",
-    "small_balances_show_less": "Daha az göster"
+    "small_balances_show_less": "Daha az göster",
+    "error_header": "Bakiyeler yüklenemiyor",
+    "error_description": "Token bakiyelerinizi getiremedik.\nLütfen tekrar deneyin.",
+    "error_retry": "Tekrar Deneyin"
   },
   "nfts": {
     "empty_state_header": "NFT'ler",

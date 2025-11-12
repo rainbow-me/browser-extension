@@ -476,6 +476,7 @@
         "hide_small_balances_hidden": "Afficher les petits soldes",
         "hide_small_balances_revealed": "Masquer les petits soldes",
         "wallets_and_keys": "Portefeuilles et clés",
+        "refresh_data": "Actualiser les soldes et l'activité",
         "view_full_screen": "Plein écran",
         "view_token": "Voir le jeton",
         "view_token_details": "Voir les informations de %{symbol}",
@@ -499,7 +500,8 @@
         "export_addresses_as_csv": "Exporter les adresses au format CSV",
         "enable_flashbots": "Activer Flashbots",
         "disable_flashbots": "Désactiver Flashbots",
-        "copy_uuid": "Copier UUID"
+        "copy_uuid": "Copier UUID",
+        "clear_transactions": "Effacer les transactions en attente"
       },
       "search_tags": {
         "swap": "acheter, vendre, échanger, commander, échange, dex, itinéraires",
@@ -525,7 +527,9 @@
         "hide_balances": "basculer, masquer, afficher, soldes, révéler",
         "hide_small_balances": "basculer, masquer, afficher, soldes, révéler",
         "wallets_and_keys": "portefeuilles et clés, paramètres, préférences",
-        "diagnostics": "diagnostics :)"
+        "diagnostics": "diagnostics :)",
+        "refresh_data": "actualiser, recharger, vider le cache, réinitialiser, mettre à jour",
+        "clear_transactions": "effacer, réinitialiser, en attente, transactions, nonce, nonces"
       }
     },
     "command_rows": {
@@ -547,6 +551,9 @@
       "description_revealed": "Tous les tokens visibles",
       "title_hidden": "Soldes faibles cachés",
       "title_revealed": "Affichage des soldes faibles"
+    },
+    "refresh_data_toast": {
+      "title": "Soldes et activité actualisés"
     },
     "contact_toast": {
       "title_added": "Contact ajouté",
@@ -1311,7 +1318,10 @@
     "empty_header": "Aucune activité pour le moment",
     "empty_description": "Une fois que vous commencez à utiliser votre portefeuille, vous verrez vos transactions ici.",
     "loading_more": "Chargement en cours...",
-    "no_value": "Aucune valeur"
+    "no_value": "Aucune valeur",
+    "error_header": "Impossible de charger l'activité",
+    "error_description": "Nous n’avons pas pu trouver vos transactions.\nVeuillez réessayer.",
+    "error_retry": "Réessayer"
   },
   "activity_details": {
     "you": "Vous",
@@ -1342,7 +1352,12 @@
     "collection": "Collection",
     "token_contract": "Contrat du jeton",
     "token_standard": "Standard du jeton",
-    "revoke_approval": "Révoquer l'autorisation"
+    "revoke_approval": "Révoquer l'autorisation",
+    "error_title": "Impossible de charger l'activité",
+    "error_message": "Nous n'avons pas pu récupérer cette transaction.\nRéessayez ou retournez à votre activité.",
+    "error_retry": "Réessayer",
+    "error_back": "Retour à l'activité",
+    "loading_failed": "Échec du chargement"
   },
   "tokens_tab": {
     "coinbase_title": "Dépôt depuis Coinbase",
@@ -1356,7 +1371,10 @@
     "send_description_3": "pour le code QR",
     "unknown_token": "Token inconnu",
     "small_balances_show_more": "En voir plus",
-    "small_balances_show_less": "Montrer moins"
+    "small_balances_show_less": "Montrer moins",
+    "error_header": "Impossible de charger les soldes",
+    "error_description": "Nous n’avons pas pu récupérer vos soldes de jetons.\nVeuillez réessayer.",
+    "error_retry": "Réessayer"
   },
   "nfts": {
     "empty_state_header": "NFTs",

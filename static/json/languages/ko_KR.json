@@ -476,6 +476,7 @@
         "hide_small_balances_hidden": "소액 잔액 표시",
         "hide_small_balances_revealed": "소액 잔액 숨기기",
         "wallets_and_keys": "지갑 & 키",
+        "refresh_data": "잔액 및 활동 새로 고침",
         "view_full_screen": "전체 화면 보기",
         "view_token": "토큰 보기",
         "view_token_details": "%{symbol} 세부 정보 보기",
@@ -499,7 +500,8 @@
         "export_addresses_as_csv": "주소를 CSV로 내보내기",
         "enable_flashbots": "플래시봇 활성화",
         "disable_flashbots": "플래시봇 비활성화",
-        "copy_uuid": "UUID 복사"
+        "copy_uuid": "UUID 복사",
+        "clear_transactions": "보류 중인 트랜잭션 지우기"
       },
       "search_tags": {
         "swap": "구매, 판매, 거래, 주문, 교환, 덱스, 경로",
@@ -525,7 +527,9 @@
         "hide_balances": "토글, 숨기기, 보이기, 잔액, 공개",
         "hide_small_balances": "토글, 숨기기, 보이기, 잔액, 공개",
         "wallets_and_keys": "지갑과 키, 설정, 환경 설정",
-        "diagnostics": "진단"
+        "diagnostics": "진단",
+        "refresh_data": "새로 고침, 다시 로드, 캐시 제거, 초기화, 업데이트",
+        "clear_transactions": "지우기, 초기화, 보류 중, 거래, 넌스, 넌스들"
       }
     },
     "command_rows": {
@@ -547,6 +551,9 @@
       "description_revealed": "모든 토큰 보이기",
       "title_hidden": "작은 잔액 숨김",
       "title_revealed": "소액 잔액 표시"
+    },
+    "refresh_data_toast": {
+      "title": "잔액 및 활동이 새로 고쳐졌습니다"
     },
     "contact_toast": {
       "title_added": "연락처 추가됨",
@@ -1311,7 +1318,10 @@
     "empty_header": "아직 활동이 없습니다",
     "empty_description": "지갑 사용을 시작하면 거래 내역이 여기에 표시됩니다",
     "loading_more": "더 많이 로딩 중...",
-    "no_value": "가치 없음"
+    "no_value": "가치 없음",
+    "error_header": "활동을 불러올 수 없습니다.",
+    "error_description": "트랜잭션을 찾을 수 없습니다.\n다시 시도해 주세요.",
+    "error_retry": "다시 시도하기"
   },
   "activity_details": {
     "you": "당신",
@@ -1342,7 +1352,12 @@
     "collection": "컬렉션",
     "token_contract": "토큰 계약",
     "token_standard": "토큰 표준",
-    "revoke_approval": "승인 취소"
+    "revoke_approval": "승인 취소",
+    "error_title": "활동을 불러올 수 없습니다.",
+    "error_message": "이 거래를 가져올 수 없습니다.\n다시 시도하거나 활동으로 돌아가세요.",
+    "error_retry": "다시 시도하기",
+    "error_back": "활동으로 돌아가기",
+    "loading_failed": "로드 실패"
   },
   "tokens_tab": {
     "coinbase_title": "코인베이스에서 입금",
@@ -1356,7 +1371,10 @@
     "send_description_3": "QR 코드를",
     "unknown_token": "알 수 없는 토큰",
     "small_balances_show_more": "더 보기",
-    "small_balances_show_less": "덜 보기"
+    "small_balances_show_less": "덜 보기",
+    "error_header": "잔액을 불러올 수 없습니다.",
+    "error_description": "토큰 잔액을 가져올 수 없습니다.\n다시 시도해 주세요.",
+    "error_retry": "다시 시도하기"
   },
   "nfts": {
     "empty_state_header": "NFTs",

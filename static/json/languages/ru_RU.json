@@ -476,6 +476,7 @@
         "hide_small_balances_hidden": "Показать малые балансы",
         "hide_small_balances_revealed": "Скрыть малые балансы",
         "wallets_and_keys": "Кошельки и ключи",
+        "refresh_data": "Обновить балансы и активность",
         "view_full_screen": "Просмотр на полный экран",
         "view_token": "Просмотр токена",
         "view_token_details": "Посмотреть детали %{symbol}",
@@ -499,7 +500,8 @@
         "export_addresses_as_csv": "Экспортировать адреса в формате CSV",
         "enable_flashbots": "Включить Flashbots",
         "disable_flashbots": "Отключить Flashbots",
-        "copy_uuid": "Копировать UUID"
+        "copy_uuid": "Копировать UUID",
+        "clear_transactions": "Очистить Ожидающие Транзакции"
       },
       "search_tags": {
         "swap": "купить, продать, обменять, заказать, обмен, dex, маршруты",
@@ -525,7 +527,9 @@
         "hide_balances": "переключатель, скрыть, показать, балансы, раскрыть",
         "hide_small_balances": "переключатель, скрыть, показать, балансы, раскрыть",
         "wallets_and_keys": "кошельки и ключи, настройки, предпочтения",
-        "diagnostics": "диагностика"
+        "diagnostics": "диагностика",
+        "refresh_data": "обновить, перезагрузить, очистить кэш, сбросить, обновление",
+        "clear_transactions": "очистить, сбросить, ожидающие, транзакции, нонс, нонсы"
       }
     },
     "command_rows": {
@@ -547,6 +551,9 @@
       "description_revealed": "Все токены видимы",
       "title_hidden": "Скрытые небольшие балансы",
       "title_revealed": "Показать небольшие балансы"
+    },
+    "refresh_data_toast": {
+      "title": "Балансы и активность обновлены"
     },
     "contact_toast": {
       "title_added": "Контакт добавлен",
@@ -1311,7 +1318,10 @@
     "empty_header": "Пока нет активности",
     "empty_description": "Как только вы начнете использовать свой кошелек, вы увидите здесь ваши транзакции.",
     "loading_more": "Загрузка...",
-    "no_value": "Нет значения"
+    "no_value": "Нет значения",
+    "error_header": "Не удалось загрузить действия",
+    "error_description": "Мы не смогли найти ваши транзакции.\nПожалуйста, попробуйте снова.",
+    "error_retry": "Попробуйте снова"
   },
   "activity_details": {
     "you": "Вы",
@@ -1342,7 +1352,12 @@
     "collection": "Коллекция",
     "token_contract": "Контракт токена",
     "token_standard": "Стандарт токена",
-    "revoke_approval": "Отозвать разрешение"
+    "revoke_approval": "Отозвать разрешение",
+    "error_title": "Не удалось загрузить действия",
+    "error_message": "Мы не смогли загрузить эту транзакцию.\nПопробуйте еще раз или вернитесь к своей активности.",
+    "error_retry": "Попробуйте снова",
+    "error_back": "Назад к действиям",
+    "loading_failed": "Загрузка не удалась"
   },
   "tokens_tab": {
     "coinbase_title": "Депозит с Coinbase",
@@ -1356,7 +1371,10 @@
     "send_description_3": "для QR кода",
     "unknown_token": "Неизвестный токен",
     "small_balances_show_more": "Показать еще",
-    "small_balances_show_less": "Показать меньше"
+    "small_balances_show_less": "Показать меньше",
+    "error_header": "Не удалось загрузить балансы",
+    "error_description": "Мы не смогли получить ваши балансы токенов.\nПожалуйста, попробуйте снова.",
+    "error_retry": "Попробуйте снова"
   },
   "nfts": {
     "empty_state_header": "NFT",

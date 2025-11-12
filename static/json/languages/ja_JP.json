@@ -476,6 +476,7 @@
         "hide_small_balances_hidden": "小額残高の表示",
         "hide_small_balances_revealed": "小額残高を非表示",
         "wallets_and_keys": "ウォレットとキー",
+        "refresh_data": "残高とアクティビティを更新",
         "view_full_screen": "フルスクリーン表示",
         "view_token": "トークンを表示",
         "view_token_details": "%{symbol}の詳細を表示",
@@ -499,7 +500,8 @@
         "export_addresses_as_csv": "アドレスをCSVとしてエクスポート",
         "enable_flashbots": "Flashbotsを有効にする",
         "disable_flashbots": "Flashbotsを無効にする",
-        "copy_uuid": "UUIDをコピー"
+        "copy_uuid": "UUIDをコピー",
+        "clear_transactions": "保留中のトランザクションをクリア"
       },
       "search_tags": {
         "swap": "購入, 販売, 取引, 注文, 交換, dex, ルート",
@@ -525,7 +527,9 @@
         "hide_balances": "切り替え, 非表示, 表示, 残高, 公表",
         "hide_small_balances": "切り替え, 非表示, 表示, 残高, 公表",
         "wallets_and_keys": "ウォレットとキー, 設定, 設定",
-        "diagnostics": "診断"
+        "diagnostics": "診断",
+        "refresh_data": "更新、リロード、キャッシュクリア、リセット、アップデート",
+        "clear_transactions": "クリア、リセット、保留中、取引、ナンス、ナンセス"
       }
     },
     "command_rows": {
@@ -547,6 +551,9 @@
       "description_revealed": "すべてのトークンが表示されます",
       "title_hidden": "小額残高非表示",
       "title_revealed": "小額残高表示中"
+    },
+    "refresh_data_toast": {
+      "title": "残高とアクティビティが更新されました"
     },
     "contact_toast": {
       "title_added": "連絡先を追加しました",
@@ -1311,7 +1318,10 @@
     "empty_header": "まだアクティビティはありません",
     "empty_description": "ウォレットを使い始めると、ここにトランザクションが表示されます。",
     "loading_more": "読み込み中...",
-    "no_value": "価値なし"
+    "no_value": "価値なし",
+    "error_header": "アクティビティを読み込めません",
+    "error_description": "トランザクションを見つけることができませんでした。\nもう一度お試しください。",
+    "error_retry": "再試行"
   },
   "activity_details": {
     "you": "あなた",
@@ -1342,7 +1352,12 @@
     "collection": "コレクション",
     "token_contract": "トークン契約",
     "token_standard": "トークン標準",
-    "revoke_approval": "承認を取り消す"
+    "revoke_approval": "承認を取り消す",
+    "error_title": "アクティビティを読み込めません",
+    "error_message": "このトランザクションを取得できませんでした。\nもう一度お試しになるか、アクティビティに戻ってください。",
+    "error_retry": "再試行",
+    "error_back": "アクティビティに戻る",
+    "loading_failed": "読み込みに失敗しました"
   },
   "tokens_tab": {
     "coinbase_title": "Coinbaseから入金",
@@ -1356,7 +1371,10 @@
     "send_description_3": "QRコードのために",
     "unknown_token": "不明なトークン",
     "small_balances_show_more": "さらに表示",
-    "small_balances_show_less": "表示を短縮"
+    "small_balances_show_less": "表示を短縮",
+    "error_header": "残高を読み込めません",
+    "error_description": "トークンの残高を取得できませんでした。\nもう一度お試しください。",
+    "error_retry": "再試行"
   },
   "nfts": {
     "empty_state_header": "NFTs",
