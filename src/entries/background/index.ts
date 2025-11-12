@@ -4,6 +4,7 @@ import { initializeMessenger } from '~/core/messengers';
 import { initializeSentry } from '~/core/sentry';
 import { localStorageRecycler } from '~/core/storage/localStorageRecycler';
 
+import { handleAutoLock } from './handlers/handleAutoLock';
 import { handleDisconnect } from './handlers/handleDisconnect';
 import { handleInstallExtension } from './handlers/handleInstallExtension';
 import { handleOpenExtensionShortcut } from './handlers/handleOpenExtensionShortcut';
@@ -32,5 +33,6 @@ handlePrefetchDappMetadata();
 handleSetupInpage();
 handleWallets();
 handleDisconnect();
+handleAutoLock();
 
 uuid4();

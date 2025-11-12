@@ -162,8 +162,8 @@ exports[`[keychain/KeychainManager] :: should be able to remove empty keychains 
     "vault": "",
   },
   "session": {
-    "encryptionKey": "{\\"key_ops\\":[\\"encrypt\\",\\"decrypt\\"],\\"ext\\":true,\\"kty\\":\\"oct\\",\\"k\\":\\"sHyhXbroUejPho-aO3OoHJ7ZCPEl8tYOPvBsd6wRsI8\\",\\"alg\\":\\"A256GCM\\"}",
-    "salt": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
+    "encryptionKey": null,
+    "salt": null,
   },
 }
 `;
