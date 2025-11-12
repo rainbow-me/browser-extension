@@ -1,5 +1,6 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Address } from 'viem';
 
 import { queryClient } from '~/core/react-query';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -15,9 +16,10 @@ import {
   usePendingTransactionsStore,
 } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
+import { useNetworkStore } from '~/core/state/networks/networks';
 import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
 import { RainbowTransaction } from '~/core/types/transactions';
-import { useSupportedChains } from '~/core/utils/chains';
+import { getSupportedChains, useSupportedChains } from '~/core/utils/chains';
 import { RainbowError, logger } from '~/logger';
 
 import { useKeyboardShortcut } from './useKeyboardShortcut';
@@ -32,6 +34,61 @@ interface UseInfiniteTransactionListParams {
 }
 
 const stableEmptyPendingTransactionsArray: RainbowTransaction[] = [];
+
+/**
+ * Prefetch the first page of transactions for the given address.
+ * Only prefetches if data doesn't already exist in cache.
+ * Accesses currency and chain IDs from stores internally.
+ */
+export const prefetchInfiniteTransactionList = async ({
+  address,
+}: {
+  address: Address;
+}) => {
+  if (!address) return;
+
+  // Access stores directly (not hooks, since this is not a React component)
+  const { currentCurrency: currency } = useCurrentCurrencyStore.getState();
+  const { testnetMode } = useTestnetModeStore.getState();
+  const { enabledChainIds } = useNetworkStore.getState();
+
+  // Get supported chains based on testnet mode
+  const supportedChains = getSupportedChains({ testnets: testnetMode });
+  const userChainIds = Array.from(enabledChainIds);
+  const supportedChainIds = supportedChains
+    .map(({ id }) => id)
+    .filter((id) => userChainIds.includes(id));
+
+  if (!supportedChainIds.length) return;
+
+  const queryKey = consolidatedTransactionsQueryKey({
+    address,
+    currency,
+    userChainIds: supportedChainIds,
+  });
+
+  try {
+    // Check if data already exists in cache
+    const cachedData = queryClient.getQueryData(queryKey);
+    if (cachedData) {
+      // Data already exists, skip prefetch
+      return;
+    }
+
+    // Prefetch the first page of transactions in the background
+    await queryClient.prefetchInfiniteQuery({
+      queryKey,
+      queryFn: consolidatedTransactionsQueryFunction,
+      getNextPageParam: (lastPage: { nextPage?: string }) => lastPage?.nextPage,
+      initialPageParam: null as string | null,
+    });
+  } catch (error) {
+    // Silently fail - we don't want to disrupt the UI if prefetch fails
+    logger.error(new RainbowError('Failed to prefetch transaction list'), {
+      message: error,
+    });
+  }
+};
 
 export const useInfiniteTransactionList = ({
   getScrollElement,
