@@ -236,14 +236,22 @@ export const useInfiniteTransactionList = ({
       }
     };
 
-    // Refetch immediately on mount, then every interval
-    refetchFirstPage();
+    // Only refetch immediately if we have cached data and React Query isn't already fetching
+    // This prevents double-fetching on initial load (React Query handles that)
+    // But allows immediate refresh when returning to a page with cached data
+    const shouldRefetchImmediately = data && !isInitialLoading && !isFetching;
+
+    if (shouldRefetchImmediately) {
+      refetchFirstPage();
+    }
+
     const intervalId = setInterval(
       refetchFirstPage,
       FIRST_PAGE_REFETCH_INTERVAL,
     );
 
     return () => clearInterval(intervalId);
+    // do not include data or any other dynamic value in here
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address, currency, supportedChainIds]);
 
