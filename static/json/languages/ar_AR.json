@@ -263,7 +263,7 @@
       "title": "المعاملات",
       "default_speed": "السرعة الافتراضية",
       "use_flashbots": "استخدم Flashbots",
-      "clear_transactions_and_nonces": "معالجة المعاملات المعلقة",
+      "clear_transactions_and_nonces": "مسح المعاملات المعلقة",
       "clear_transactions_and_nonces_success": "تم معالجة المعاملات المعلقة",
       "flashbots_description": "فلاشبوتس تحمي معاملاتك وتقلل احتمالية فشل المعاملات"
     },
@@ -501,7 +501,7 @@
         "enable_flashbots": "تمكين Flashbots",
         "disable_flashbots": "تعطيل Flashbots",
         "copy_uuid": "نسخ UUID",
-        "clear_transactions": "معالجة المعاملات المعلقة"
+        "clear_transactions": "مسح المعاملات المعلقة"
       },
       "search_tags": {
         "swap": "شراء, بيع, تداول, طلب, تبادل, دكس, طرق",
