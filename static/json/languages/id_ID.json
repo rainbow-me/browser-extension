@@ -1354,7 +1354,7 @@
     "token_standard": "Standar Token",
     "revoke_approval": "Cabut Persetujuan",
     "error_title": "Tidak dapat memuat aktivitas",
-    "error_message": "Kami tidak dapat mengambil transaksi ini.\\nCoba lagi atau kembali ke aktivitas Anda.",
+    "error_message": "Kami tidak dapat mengambil transaksi ini.\nCoba lagi atau kembali ke aktivitas Anda.",
     "error_retry": "Coba Lagi",
     "error_back": "Kembali ke Aktivitas",
     "loading_failed": "Loading Gagal"
