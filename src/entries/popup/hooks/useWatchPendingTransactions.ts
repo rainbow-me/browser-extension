@@ -243,15 +243,25 @@ export const useWatchPendingTransactions = ({
           ]);
         };
 
+        // Clear any existing scheduled refetches before refresh and schedule new ones
+        invalidationTimeoutsRef.current.forEach((timeout) => {
+          clearTimeout(timeout);
+        });
+        invalidationTimeoutsRef.current.clear();
+
         await wait(1500); // wait for the transactions to be enhanced by backend, 1.5s feels like a perfect balance between user does not notice extra time and backend has time to enhance the transactions
         await refetchQueries(); // start refetch, wait for refetch to finish, this way the pending tx does not get removed before the list is refetched
 
-        // Schedule second invalidation after 5 seconds, this is to account for the fact that transactions get enhanced while being visible, and the normal refetch is too slow to feel responsive
-        const timeout = setTimeout(() => {
-          invalidationTimeoutsRef.current.delete(timeout);
-          refetchQueries();
-        }, 5000);
-        invalidationTimeoutsRef.current.add(timeout);
+        // Schedule additional refetches to account for slow transaction ingestion
+        // Delays are in milliseconds relative to when this function is called
+        const refetchDelays = [5000, 16000]; // 5s and 16s total (5s + 11s after first, 16 because it's mainnet block time)
+        refetchDelays.forEach((delay) => {
+          const timeout = setTimeout(() => {
+            invalidationTimeoutsRef.current.delete(timeout);
+            refetchQueries();
+          }, delay);
+          invalidationTimeoutsRef.current.add(timeout);
+        });
       }
     }
 
