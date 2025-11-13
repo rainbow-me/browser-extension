@@ -43,6 +43,10 @@ export const ActivityIcon = ({
       />
     );
 
+  // special case for approvals without an asset in meta (https://linear.app/rainbow/issue/BACK-2243/missing-resultsmetaasset-causes-issues-with-nfts-and-approvals-txn)
+  if (type === 'approve' && contract?.name)
+    return <CoinIcon fallbackText={contract.name} size={size} badge={badge} />;
+
   return (
     <ContractIcon
       iconUrl={contract?.iconUrl}

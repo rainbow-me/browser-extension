@@ -115,7 +115,7 @@ const activityValues = (transaction: RainbowTransaction) => {
 
   const asset = changeAsset ?? _asset;
 
-  if (!asset || !isParsedUserAsset(asset)) return;
+  if (!asset || !isParsedUserAsset(asset) || asset.type === 'nft') return;
 
   const { balance, native } = asset;
 

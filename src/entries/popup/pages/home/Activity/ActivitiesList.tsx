@@ -44,6 +44,22 @@ import { ActivityTypeIcon } from './ActivityTypeIcon';
 import { ActivityValue } from './ActivityValue';
 import { NoActivity } from './NoActivity';
 
+function getNftChangesTag(transaction: RainbowTransaction): string | undefined {
+  const { asset, changes } = transaction;
+  const nftChangesAmount =
+    changes?.reduce((count, c) => {
+      if (c && asset?.address === c.asset.address && c.asset.type === 'nft') {
+        const numericValue = Number.isInteger(Number(c.value))
+          ? Number(c.value)
+          : 1;
+        return count + numericValue;
+      }
+      return count;
+    }, 0) ?? 0;
+  if (!nftChangesAmount) return;
+  return nftChangesAmount.toFixed(0);
+}
+
 export function Activities() {
   const containerRef = useContainerRef();
   const {
@@ -189,7 +205,7 @@ const ActivityDescription = ({
 }: {
   transaction: RainbowTransaction;
 }) => {
-  const { type, to, asset } = transaction;
+  const { type, to } = transaction;
   let description = transaction.description;
   let tag: string | undefined;
   if (type === 'contract_interaction' && to) {
@@ -197,12 +213,9 @@ const ActivityDescription = ({
     tag = transaction.description;
   }
 
-  const nftChangesAmount = transaction.changes
-    ?.filter(
-      (c) => asset?.address === c?.asset.address && c?.asset.type === 'nft',
-    )
-    .filter(Boolean).length;
-  if (nftChangesAmount) tag = nftChangesAmount.toString();
+  // Use the factored-out function to get the NFT tag
+  const nftTag = getNftChangesTag(transaction);
+  if (nftTag) tag = nftTag;
 
   return (
     <Inline space="4px" alignVertical="center" wrap={false}>

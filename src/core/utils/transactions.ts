@@ -185,13 +185,65 @@ const getAddressTo = (tx: PaginatedTransactionsApiResponse) => {
   }
 };
 
+type NonNullish<T> = T extends null | undefined ? never : T;
+
+function getSwapChanges(changes: RainbowTransaction['changes']) {
+  const nonNftChanges = changes?.filter(
+    (c): c is NonNullish<typeof c> => !!c?.asset && c.asset.type !== 'nft',
+  );
+  // No need to be exactly two, this is how App is handling it, simply showing thee first occurrence.While this is not perfect, I think it's better than the default of just showing one symbol, so we'll do it the same way.
+  // if (nonNftChanges?.length !== 2) return;
+  if (!nonNftChanges) return;
+  const inChange = nonNftChanges.find((c) => c?.direction === 'in');
+  const outChange = nonNftChanges.find((c) => c?.direction === 'out');
+  if (!inChange || !outChange) return;
+  return {
+    in: inChange,
+    out: outChange,
+  };
+}
+function getNftDescription(
+  {
+    name,
+    symbol,
+  }: {
+    name?: string;
+    symbol?: string;
+  },
+  type: TransactionType,
+) {
+  // This would show stuff like 'NFT: #363', which doesn't look good right now. This should be used to show which NFT (name?) in which collection (symbol?) was interacted with.
+  // if (name && symbol) return `${symbol}: ${name}`;
+
+  // For whatever reason, App shows the symbol for NFTs if it's a receive, but if it's a mint or any other it shows the name. While I dont think this makes sense, we'll do the same for now to match App, but I think the longterm solution is above, to show collection name and NFT name together.
+  if (type === 'receive') return symbol;
+
+  if (name) return name;
+  if (symbol) return symbol;
+  return 'Unknown NFT';
+}
+
 const getDescription = (
   asset: ParsedAsset | undefined,
   type: TransactionType,
-  meta: PaginatedTransactionsApiResponse['meta'],
+  changes: RainbowTransaction['changes'],
+  meta: Pick<
+    PaginatedTransactionsApiResponse['meta'],
+    'contract_name' | 'action'
+  > = {},
 ) => {
-  if (asset?.type === 'nft') return asset.symbol || asset.name;
+  if (asset?.type === 'nft') return getNftDescription(asset, type);
   if (type === 'cancel') return i18n.t('transactions.cancelled');
+  if (type === 'approve' && !asset?.name && meta.contract_name)
+    // this catches a backend bug, where they dont return the asset object inside the meta, which would lead to asset in this function to be null on approvals. In these cases, we can do a slightly better job than showing `meta.action` which is "Approval", instead we can show the contract name. The badge ontop of the description ("Approved") will make sure the user knows that they approved something, so goal of the description in this case is to let the user know what they approved.
+    return meta.contract_name;
+
+  if (type === 'swap') {
+    const swapChanges = getSwapChanges(changes);
+    if (swapChanges) {
+      return `${swapChanges.out.asset.symbol} → ${swapChanges.in.asset.symbol}`;
+    }
+  }
 
   return asset?.name || meta.action;
 };
@@ -272,7 +324,7 @@ export function parseTransaction({
 
   const direction = getDirection(type, changes, tx.direction);
 
-  const description = getDescription(asset, type, meta);
+  const description = getDescription(asset, type, changes, meta);
 
   const nativeAsset = changes.find((change) => change?.asset.isNativeAsset);
 
@@ -367,7 +419,9 @@ const parseNewTransaction = (
     status: 'pending',
     data: tx.data,
     title: i18n.t(`transactions.${tx.typeOverride || tx.type}.${tx.status}`),
-    description: asset?.name || methodName,
+    description:
+      tx.description ||
+      getDescription(asset, tx.type, changes, { action: methodName }),
     from: tx.from,
     changes,
     hash: tx.hash,
