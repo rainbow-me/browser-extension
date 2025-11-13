@@ -22,6 +22,7 @@ import { RainbowError, logger } from '~/logger';
 const TRANSACTIONS_REFETCH_INTERVAL = 60000;
 const PLATFORM_LIST_TRANSACTIONS_PATH = '/v1/transactions/ListTransactions';
 const PLATFORM_REQUEST_TIMEOUT = 30000;
+const PLATFORM_LIST_TRANSACTIONS_DEFAULT_LIMIT = 100; // App is using 30, did some tests and it looks like the endpoint is always the same "speed". So we stick with 100 to have less requests.
 
 // ///////////////////////////////////////////////
 // Query Types
@@ -91,7 +92,9 @@ async function transactionsQueryFunction({
       address,
       currency: currency.toLowerCase(),
       chainIds: chainId.toString(),
-      limit: transactionsLimit?.toString() || '100',
+      limit: (
+        transactionsLimit ?? PLATFORM_LIST_TRANSACTIONS_DEFAULT_LIMIT
+      ).toString(),
     };
 
     const response = await platformHttp.get<PlatformListTransactionsResponse>(
