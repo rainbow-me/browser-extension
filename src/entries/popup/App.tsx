@@ -3,7 +3,6 @@ import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client
 import TrezorConnect from '@trezor/connect-web';
 import { isEqual } from 'lodash';
 import * as React from 'react';
-import { WagmiProvider, createConfig } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -17,12 +16,7 @@ import { useCurrentLanguageStore, useCurrentThemeStore } from '~/core/state';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { TelemetryIdentifier } from '~/core/telemetry';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
-import {
-  WagmiConfigUpdater,
-  wagmiConfig as _wagmiConfig,
-  createChains,
-  createTransports,
-} from '~/core/wagmi';
+import { updateViemClientsWrapper } from '~/core/viem';
 import { Box, ThemeProvider } from '~/design-system';
 
 import { Routes } from './Routes';
@@ -43,21 +37,13 @@ export function App() {
   );
   const prevChains = usePrevious(activeChains);
 
-  const [wagmiConfig, setWagmiConfig] =
-    React.useState<ReturnType<typeof createConfig>>(_wagmiConfig);
-
   useExpiryListener();
   useLastActivityUpdater();
 
   React.useEffect(() => {
     if (!isEqual(prevChains, activeChains)) {
-      void popupClient.state.wagmi.updateClient();
-      setWagmiConfig(
-        createConfig({
-          chains: createChains(activeChains),
-          transports: createTransports(activeChains),
-        }),
-      );
+      void popupClient.state.viem.updateClient();
+      updateViemClientsWrapper(activeChains);
     }
   }, [prevChains, activeChains]);
 
@@ -100,31 +86,28 @@ export function App() {
 
   return (
     <>
-      <WagmiProvider config={wagmiConfig}>
-        <PersistQueryClientProvider
-          client={queryClient}
-          persistOptions={persistOptions}
-        >
-          <QueryClientProvider client={queryClient}>
-            <ThemeProvider theme={currentTheme}>
-              <Box
-                id="main"
-                background="surfacePrimaryElevated"
-                style={{
-                  maxWidth: !isFullScreen
-                    ? `${POPUP_DIMENSIONS.width}px`
-                    : undefined,
-                }}
-              >
-                <Routes />
-              </Box>
-              <OnboardingKeepAlive />
-              <WagmiConfigUpdater />
-              <TelemetryIdentifier />
-            </ThemeProvider>
-          </QueryClientProvider>
-        </PersistQueryClientProvider>
-      </WagmiProvider>
+      <PersistQueryClientProvider
+        client={queryClient}
+        persistOptions={persistOptions}
+      >
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider theme={currentTheme}>
+            <Box
+              id="main"
+              background="surfacePrimaryElevated"
+              style={{
+                maxWidth: !isFullScreen
+                  ? `${POPUP_DIMENSIONS.width}px`
+                  : undefined,
+              }}
+            >
+              <Routes />
+            </Box>
+            <OnboardingKeepAlive />
+            <TelemetryIdentifier />
+          </ThemeProvider>
+        </QueryClientProvider>
+      </PersistQueryClientProvider>
       <HWRequestListener />
     </>
   );

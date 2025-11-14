@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import {
@@ -13,6 +12,7 @@ import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { ChainId } from '~/core/types/chains';
 import { getProfileUrl, goToNewTab } from '~/core/utils/tabs';
 import { Box, Inline, Row, Rows, Stack, Symbol, Text } from '~/design-system';
+import { useEnsName } from '~/entries/popup/hooks/useEnsName';
 
 import {
   DropdownMenu,

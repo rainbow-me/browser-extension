@@ -1,12 +1,12 @@
 import { CSSProperties } from 'react';
 import { Address } from 'viem';
-import { useEnsName } from 'wagmi';
 
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import { isENSAddressFormat } from '~/core/utils/ethereum';
 import { TextOverflow } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
+import { useEnsName } from '~/entries/popup/hooks/useEnsName';
 
 type AddressOrEnsProps = {
   address: Address | string;
