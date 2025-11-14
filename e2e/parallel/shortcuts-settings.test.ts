@@ -9,6 +9,8 @@ import {
   it,
 } from 'vitest';
 
+import config from '~/core/firebase/remoteConfig';
+
 import {
   checkExtensionURL,
   checkWalletName,
@@ -128,7 +130,14 @@ describe.runIf(browser !== 'firefox')(
 
     it('should be able to navigate to Privacy & Security using keyboard', async () => {
       await delayTime('medium');
-      await executePerformShortcut({ driver, key: 'TAB', timesToPress: 7 });
+      // Tab count depends on whether approvals menu item is shown
+      // With approvals enabled: 7 tabs, without: 6 tabs
+      const tabCount = config.approvals_enabled ? 7 : 6;
+      await executePerformShortcut({
+        driver,
+        key: 'TAB',
+        timesToPress: tabCount,
+      });
       await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
       await checkExtensionURL(driver, 'privacy');
     });
@@ -204,7 +213,13 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({ driver, key: 'DECIMAL' });
       await executePerformShortcut({ driver, key: 'ARROW_DOWN' });
       await executePerformShortcut({ driver, key: 'ENTER' });
-      await executePerformShortcut({ driver, key: 'TAB', timesToPress: 7 });
+      // Tab count depends on whether approvals menu item is shown
+      const tabCount = config.approvals_enabled ? 7 : 6;
+      await executePerformShortcut({
+        driver,
+        key: 'TAB',
+        timesToPress: tabCount,
+      });
       await executePerformShortcut({ driver, key: 'ENTER' });
       await checkExtensionURL(driver, 'privacy');
     });
