@@ -1,9 +1,11 @@
 import { Address, isAddress } from 'viem';
-import { useEnsAddress, useEnsName } from 'wagmi';
 
 import { useENSProfile } from '~/core/resources/metadata/ensProfile';
 import { ChainId } from '~/core/types/chains';
 import { isENSAddressFormat } from '~/core/utils/ethereum';
+
+import { useEnsAddress } from './useEnsAddress';
+import { useEnsName } from './useEnsName';
 
 export const useEns = ({
   addressOrName,
