@@ -15,7 +15,7 @@ import TrezorConnect from '@trezor/connect-web';
 import { Address, stringToBytes } from 'viem';
 
 import { addHexPrefix } from '~/core/utils/hex';
-import { getProvider } from '~/core/wagmi/clientToProvider';
+import { getProvider } from '~/core/viem/clientToProvider';
 import { RainbowError, logger } from '~/logger';
 
 import { popupClient } from './background';

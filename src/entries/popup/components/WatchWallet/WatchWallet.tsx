@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion';
 import { ChangeEvent, useCallback, useMemo, useReducer, useState } from 'react';
 import { Address, isAddress } from 'viem';
-import { useEnsAddress } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore, useSavedEnsNamesStore } from '~/core/state';
@@ -27,6 +26,7 @@ import {
   transformScales,
   transitions,
 } from '~/design-system/styles/designTokens';
+import { useEnsAddress } from '~/entries/popup/hooks/useEnsAddress';
 
 import * as wallet from '../../handlers/wallet';
 import { useDebounce } from '../../hooks/useDebounce';

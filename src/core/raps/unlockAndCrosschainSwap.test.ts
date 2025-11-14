@@ -17,7 +17,7 @@ import {
 
 import { useConnectedToHardhatStore } from '../state/currentSettings/connectedToHardhat';
 import { chainHardhat } from '../types/chains';
-import { updateWagmiConfig } from '../wagmi';
+import { updateViemClientsWrapper } from '../viem';
 
 import {
   createUnlockAndCrosschainSwapRap,
@@ -106,7 +106,7 @@ const doesntNeedUnlockQuote: Quote | QuoteError | null = {
 
 beforeAll(async () => {
   useConnectedToHardhatStore.setState({ connectedToHardhat: true });
-  updateWagmiConfig([chainHardhat]);
+  updateViemClientsWrapper([chainHardhat]);
   await delay(3000);
 });
 

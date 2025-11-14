@@ -34,7 +34,7 @@ import {
   isValidTransactionType,
   transactionTypeShouldHaveChanges,
 } from '../types/transactions';
-import { getBatchedProvider } from '../wagmi/clientToProvider';
+import { getBatchedProvider } from '../viem/clientToProvider';
 
 import { parseAsset, parseUserAsset, parseUserAssetBalances } from './assets';
 import { getBlockExplorerHostForChain, isNativeAsset } from './chains';
