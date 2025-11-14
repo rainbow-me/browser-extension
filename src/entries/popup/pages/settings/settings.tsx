@@ -181,7 +181,7 @@ export function Settings() {
             }
           />
           <MenuItem
-            last={isWatchingWallet || !config.approvals_enabled}
+            last={isWatchingWallet}
             hasRightArrow
             leftComponent={
               <Symbol
