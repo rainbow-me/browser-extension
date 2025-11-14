@@ -456,7 +456,7 @@ const AdditionalDetails = ({ details }: { details: TxAdditionalDetails }) => {
               <Inline alignVertical="center" space="4px">
                 <Text color="orange" size="12pt" weight="semibold">
                   {i18n.t('activity_details.unlimited_allowance', {
-                    symbol: asset?.symbol,
+                    symbol: asset?.symbol ?? '', // If asset is undefined, "Unlimited" will be enough in the context of the transaction
                   })}
                 </Text>
                 <Symbol

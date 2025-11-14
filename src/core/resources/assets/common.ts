@@ -92,6 +92,11 @@ export async function parseUserAssets({
       ? ETH_MAINNET_ASSET
       : OPTIMISM_MAINNET_ASSET;
 
+    // Initialize the chain entry if it doesn't exist (e.g., when Hardhat Optimism is enabled but no Optimism assets were returned from the API)
+    if (!parsedAssetsDict[mainnetOrOptimismChainId]) {
+      parsedAssetsDict[mainnetOrOptimismChainId] = {};
+    }
+
     // Ensure assets are checked if connected to hardhat
     const assets = parsedAssetsDict[mainnetOrOptimismChainId];
     assets[ethereumOrOptimismAsset.uniqueId] = ethereumOrOptimismAsset;

@@ -316,7 +316,8 @@ export function parseTransaction({
   )
     return; // filters some spam or weird api responses
 
-  const asset: RainbowTransaction['asset'] = meta.asset?.asset_code
+  // Use primary asset from transaction if available, otherwise determine the asset from the changes
+  const asset: RainbowTransaction['asset'] = meta.asset
     ? parseAsset({ asset: meta.asset, currency })
     : getAssetFromChanges(changes, type);
 
