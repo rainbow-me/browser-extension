@@ -2,6 +2,7 @@ import * as Sentry from '@sentry/react';
 import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
 import {
+  Navigate,
   Outlet,
   RouteObject,
   RouterProvider,
@@ -13,6 +14,7 @@ import {
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { screen } from '~/analytics/screen';
+import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useErrorStore } from '~/core/state/error';
@@ -517,7 +519,7 @@ const ROUTE_DATA = [
   },
   {
     path: ROUTES.SETTINGS__APPROVALS,
-    element: (
+    element: config.approvals_enabled ? (
       <AnimatedRoute
         direction="up"
         navbar
@@ -528,6 +530,8 @@ const ROUTE_DATA = [
       >
         <Approvals />
       </AnimatedRoute>
+    ) : (
+      <Navigate to={ROUTES.SETTINGS} replace />
     ),
   },
   {

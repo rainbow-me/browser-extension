@@ -228,7 +228,7 @@ export const Home = memo(function Home() {
           <NewTabBar tabs={visibleTabs} />
           <BackupReminder />
           {currentHomeSheet}
-          <RevokeApproval />
+          {config.approvals_enabled ? <RevokeApproval /> : null}
 
           <PendingTransactionWatcher />
 

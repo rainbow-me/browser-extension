@@ -641,6 +641,8 @@
     "spender_address_copied": "Spender Address Copied",
     "revoked_approvals": "Revoked Approvals",
     "nothing_found": "Nothing found",
+    "feature_disabled": "Feature Disabled",
+    "feature_disabled_description": "This feature is currently disabled. Please check back later.",
     "revoke": {
       "title": "Revoke Approval",
       "action": "Revoke",
