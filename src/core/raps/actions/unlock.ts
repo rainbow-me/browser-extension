@@ -11,7 +11,7 @@ import {
 } from '~/core/types/gas';
 import { NewTransaction } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
-import { getProvider } from '~/core/wagmi/clientToProvider';
+import { getProvider } from '~/core/viem/clientToProvider';
 import { RainbowError, logger } from '~/logger';
 
 import { ETH_ADDRESS } from '../../references';

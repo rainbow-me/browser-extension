@@ -14,7 +14,7 @@ import { AddressOrEth, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
 import { fetchAssetBalanceViaProvider } from '~/core/utils/assets';
 import { getChain } from '~/core/utils/chains';
-import { getProvider } from '~/core/wagmi/clientToProvider';
+import { getProvider } from '~/core/viem/clientToProvider';
 
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
 

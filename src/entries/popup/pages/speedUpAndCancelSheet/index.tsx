@@ -2,7 +2,6 @@ import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { useMutation } from '@tanstack/react-query';
 import BigNumber from 'bignumber.js';
 import { Address } from 'viem';
-import { useBalance, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore, useGasStore } from '~/core/state';
@@ -35,6 +34,8 @@ import {
 } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
+import { useBalance } from '~/entries/popup/hooks/useBalance';
+import { useEnsName } from '~/entries/popup/hooks/useEnsName';
 
 import { EthSymbol } from '../../components/EthSymbol/EthSymbol';
 import { Spinner } from '../../components/Spinner/Spinner';

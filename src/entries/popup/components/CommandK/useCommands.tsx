@@ -2,7 +2,6 @@ import { TranslateOptions } from 'i18n-js';
 import React, { useCallback, useMemo } from 'react';
 import { To } from 'react-router-dom';
 import { Address } from 'viem';
-import { useEnsName } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -44,6 +43,7 @@ import {
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import * as wallet from '~/entries/popup/handlers/wallet';
 import { useAccounts } from '~/entries/popup/hooks/useAccounts';
+import { useEnsName } from '~/entries/popup/hooks/useEnsName';
 import { useNavigateToSwaps } from '~/entries/popup/hooks/useNavigateToSwaps';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useWallets } from '~/entries/popup/hooks/useWallets';

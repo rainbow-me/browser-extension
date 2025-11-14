@@ -16,7 +16,7 @@ import {
   getCustomChainIconUrl,
 } from '~/core/utils/assets';
 import { getChain } from '~/core/utils/chains';
-import { getProvider } from '~/core/wagmi/clientToProvider';
+import { getProvider } from '~/core/viem/clientToProvider';
 import { Row, Rows, Separator } from '~/design-system';
 import { RainbowError, logger } from '~/logger';
 

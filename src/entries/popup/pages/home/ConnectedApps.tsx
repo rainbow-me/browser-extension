@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react';
 import { Address } from 'viem';
-import { useEnsName } from 'wagmi';
 
 import appsConnectedImageMask from 'static/assets/appsConnectedImageMask.svg';
 import { i18n } from '~/core/languages';
@@ -25,6 +24,7 @@ import {
   TextOverflow,
 } from '~/design-system';
 import { Row, Rows } from '~/design-system/components/Rows/Rows';
+import { useEnsName } from '~/entries/popup/hooks/useEnsName';
 
 import { ChainBadge } from '../../components/ChainBadge/ChainBadge';
 import { DappIcon } from '../../components/DappIcon/DappIcon';

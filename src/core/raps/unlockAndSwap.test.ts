@@ -20,8 +20,8 @@ import {
 } from '~/test/utils';
 
 import { GasSpeed } from '../types/gas';
-import { updateWagmiConfig } from '../wagmi';
-import { getProvider } from '../wagmi/clientToProvider';
+import { updateViemClientsWrapper } from '../viem';
+import { getProvider } from '../viem/clientToProvider';
 
 import { walletExecuteRap } from './execute';
 import { createUnlockAndSwapRap, estimateUnlockAndSwap } from './unlockAndSwap';
@@ -81,7 +81,7 @@ vi.mock('@ethersproject/wallet', () => ({
 
 beforeAll(async () => {
   useConnectedToHardhatStore.setState({ connectedToHardhat: true });
-  updateWagmiConfig([mainnet]);
+  updateViemClientsWrapper([mainnet]);
   await delay(3000);
   doesntNeedUnlockQuote = await getQuote({
     chainId: 1,
