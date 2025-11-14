@@ -251,6 +251,7 @@ export const getStaticCommandInfo = (): CommandInfo => {
       symbolSize: 14.5,
       to: ROUTES.SETTINGS__APPROVALS,
       type: SearchItemType.Shortcut,
+      hidden: !config.approvals_enabled,
     },
     settings: {
       actionLabel: actionLabels.open,

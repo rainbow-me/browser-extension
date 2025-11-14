@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Address } from 'viem';
 
+import remoteConfig from '~/core/firebase/remoteConfig';
 import { addysHttp } from '~/core/network/addys';
 import {
   QueryConfig,
@@ -131,16 +132,23 @@ async function fetchApprovals(
 
 export function useApprovals(
   { address, chainIds, currency }: ApprovalsQueryArgs,
-  config: QueryConfig<
+  queryConfig: QueryConfig<
     ApprovalsQueryResult,
     Error,
     ApprovalsQueryResult,
     AprovalsQueryKey
   > = {},
 ) {
+  const { enabled: queryEnabled, ...restQueryConfig } = queryConfig;
+  const enabled =
+    remoteConfig.approvals_enabled &&
+    (queryEnabled ?? true) &&
+    chainIds.length > 0;
+
   return useQuery({
     queryKey: approvalsQueryKey({ address, chainIds, currency }),
     queryFn: approvalsQueryFunction,
-    ...config,
+    ...restQueryConfig,
+    enabled,
   });
 }

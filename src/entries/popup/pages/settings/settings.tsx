@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
+import config from '~/core/firebase/remoteConfig';
 import { i18n, supportedLanguages } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
 import {
@@ -180,7 +181,7 @@ export function Settings() {
             }
           />
           <MenuItem
-            last={isWatchingWallet}
+            last={isWatchingWallet || !config.approvals_enabled}
             hasRightArrow
             leftComponent={
               <Symbol
@@ -196,7 +197,7 @@ export function Settings() {
             }
             testId="settings-transactions"
           />
-          {isWatchingWallet ? null : (
+          {isWatchingWallet || !config.approvals_enabled ? null : (
             <MenuItem
               last
               hasRightArrow
