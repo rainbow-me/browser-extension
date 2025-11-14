@@ -14,7 +14,7 @@ import { SignTypedDataVersion, TypedDataUtils } from '@metamask/eth-sig-util';
 import { Address, stringToBytes } from 'viem';
 
 import { i18n } from '~/core/languages';
-import { getProvider } from '~/core/wagmi/clientToProvider';
+import { getProvider } from '~/core/viem/clientToProvider';
 import { logger } from '~/logger';
 
 import { popupClient } from './background';
