@@ -132,23 +132,20 @@ async function fetchApprovals(
 
 export function useApprovals(
   { address, chainIds, currency }: ApprovalsQueryArgs,
-  queryConfig: QueryConfig<
+  config: QueryConfig<
     ApprovalsQueryResult,
     Error,
     ApprovalsQueryResult,
     AprovalsQueryKey
   > = {},
 ) {
-  const { enabled: queryEnabled, ...restQueryConfig } = queryConfig;
-  const enabled =
-    remoteConfig.approvals_enabled &&
-    (queryEnabled ?? true) &&
-    chainIds.length > 0;
+  const { enabled: queryEnabled, ...restConfig } = config;
+  const enabled = remoteConfig.approvals_enabled && (queryEnabled ?? true);
 
   return useQuery({
     queryKey: approvalsQueryKey({ address, chainIds, currency }),
     queryFn: approvalsQueryFunction,
-    ...restQueryConfig,
+    ...restConfig,
     enabled,
   });
 }
