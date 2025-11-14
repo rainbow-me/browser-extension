@@ -19,7 +19,7 @@ import { isCustomChain } from '~/core/utils/chains';
 import { getDappHost, isValidUrl } from '~/core/utils/connectedApps';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { WELCOME_URL, goToNewTab } from '~/core/utils/tabs';
-import { getProvider } from '~/core/wagmi/clientToProvider';
+import { getProvider } from '~/core/viem/clientToProvider';
 import { IN_DAPP_NOTIFICATION_STATUS } from '~/entries/iframe/notification';
 
 const MAX_REQUEST_PER_SECOND = 10;

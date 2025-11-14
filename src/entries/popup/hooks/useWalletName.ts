@@ -1,9 +1,10 @@
 import { Address } from 'viem';
-import { useEnsName } from 'wagmi';
 
 import { useWalletNamesStore } from '~/core/state/walletNames';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
+
+import { useEnsName } from './useEnsName';
 
 export const useWalletName = ({ address }: { address?: Address }) => {
   const { data: ensName, isLoading: isEnsLoading } = useEnsName({

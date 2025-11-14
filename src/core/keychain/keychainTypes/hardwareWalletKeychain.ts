@@ -4,7 +4,7 @@ import { Address } from 'viem';
 import { mainnet } from 'viem/chains';
 
 import { KeychainType } from '~/core/types/keychainTypes';
-import { getProvider } from '~/core/wagmi/clientToProvider';
+import { getProvider } from '~/core/viem/clientToProvider';
 
 import { HWSigner } from '../HWSigner';
 import { IKeychain, PrivateKey } from '../IKeychain';

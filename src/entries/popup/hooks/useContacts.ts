@@ -1,10 +1,10 @@
 import { Address } from 'viem';
-import { useEnsName } from 'wagmi';
 
 import { ContactsStore, useContactsStore } from '~/core/state/contacts';
 import { ChainId } from '~/core/types/chains';
 
 import { useEnhanceWithEnsNames } from './useEnhanceWithEnsNames';
+import { useEnsName } from './useEnsName';
 
 export const useContact = ({ address }: { address: Address | undefined }) => {
   const { getContact } = useContactsStore();
