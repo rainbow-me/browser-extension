@@ -21,7 +21,7 @@ import {
   subtract,
 } from '~/core/utils/numbers';
 import { addNewTransaction } from '~/core/utils/transactions';
-import { getProvider } from '~/core/wagmi/clientToProvider';
+import { getProvider } from '~/core/viem/clientToProvider';
 
 import { ActionProps } from '../references';
 

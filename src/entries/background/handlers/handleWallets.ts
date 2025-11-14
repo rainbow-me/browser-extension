@@ -8,7 +8,7 @@ import { executeRap, signTypedData } from '~/core/keychain';
 import { initializeMessenger } from '~/core/messengers';
 import { WalletExecuteRapProps } from '~/core/raps/references';
 import { WalletAction } from '~/core/types/walletActions';
-import { getProvider } from '~/core/wagmi/clientToProvider';
+import { getProvider } from '~/core/viem/clientToProvider';
 import { logger } from '~/logger';
 
 type WalletActionArguments = {

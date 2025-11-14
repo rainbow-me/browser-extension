@@ -32,7 +32,7 @@ import {
   parseUserAssetBalances,
 } from '~/core/utils/assets';
 import { convertDecimalFormatToRawAmount, isZero } from '~/core/utils/numbers';
-import { getProvider } from '~/core/wagmi/clientToProvider';
+import { getProvider } from '~/core/viem/clientToProvider';
 import { RainbowError, logger } from '~/logger';
 
 import { ASSETS_TIMEOUT_DURATION } from './assets';

@@ -1,6 +1,5 @@
 import React, { useCallback, useImperativeHandle, useRef } from 'react';
 import { Address } from 'viem';
-import { useBalance } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -30,6 +29,7 @@ import { SwitchNetworkMenu } from '~/entries/popup/components/SwitchMenu/SwitchN
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
 import { useAccounts } from '~/entries/popup/hooks/useAccounts';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
+import { useBalance } from '~/entries/popup/hooks/useBalance';
 import useKeyboardAnalytics from '~/entries/popup/hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import { useWalletInfo } from '~/entries/popup/hooks/useWalletInfo';

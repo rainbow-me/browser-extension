@@ -45,7 +45,7 @@ module.exports = {
       },
       {
         // Specific messenger for dapp session and request lifecycle
-        // Wagmi and Rainbow toggle procedures will be deprecated
+        // Rainbow toggle procedures will be deprecated
         type: 'background-messenger-dapp-session',
         pattern: ['src/entries/background/procedures/popup/state/**'],
       },

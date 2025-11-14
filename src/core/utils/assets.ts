@@ -1,8 +1,7 @@
 import { Contract } from '@ethersproject/contracts';
 import { Provider } from '@ethersproject/providers';
-import { getClient } from '@wagmi/core';
 import BigNumber from 'bignumber.js';
-import { Address, Client, erc20Abi, getContract, zeroAddress } from 'viem';
+import { Address, erc20Abi, getContract, zeroAddress } from 'viem';
 
 import { ETH_ADDRESS, SupportedCurrencyKey } from '~/core/references';
 import {
@@ -22,8 +21,8 @@ import { i18n } from '../languages';
 import { customChainIdsToAssetNames } from '../references/assets';
 import { AddysPositionAsset } from '../resources/positions';
 import { SearchAsset } from '../types/search';
-import { wagmiConfig } from '../wagmi';
-import { getProvider } from '../wagmi/clientToProvider';
+import { getProvider } from '../viem/clientToProvider';
+import { getViemClient } from '../viem/clients';
 
 import { isNativeAsset } from './chains';
 import {
@@ -435,7 +434,7 @@ export const getAssetBalance = async ({
   currentAddress: Address;
   chainId: ChainId;
 }) => {
-  const client = getClient(wagmiConfig, { chainId }) as Client;
+  const client = getViemClient({ chainId });
   const balance = await getContract({
     address: assetAddress,
     abi: erc20Abi,

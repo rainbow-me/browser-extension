@@ -17,7 +17,7 @@ import { beforeAll, expect, test, vi } from 'vitest';
 import { delay } from '~/test/utils';
 
 import { useConnectedToHardhatStore } from '../state/currentSettings/connectedToHardhat';
-import { updateWagmiConfig } from '../wagmi';
+import { updateViemClientsWrapper } from '../viem';
 
 import { PrivateKey } from './IKeychain';
 
@@ -45,7 +45,7 @@ let password = '';
 
 beforeAll(async () => {
   useConnectedToHardhatStore.setState({ connectedToHardhat: true });
-  updateWagmiConfig([mainnet]);
+  updateViemClientsWrapper([mainnet]);
   await delay(3000);
 }, 20_000);
 
