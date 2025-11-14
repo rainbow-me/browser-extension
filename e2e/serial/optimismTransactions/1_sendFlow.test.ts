@@ -67,7 +67,7 @@ describe('Complete Hardhat Optimism send flow', () => {
     await checkWalletName(driver, rootURL, TEST_VARIABLES.SEED_WALLET.ADDRESS);
   });
 
-  it('should be able to go to setings', async () => {
+  it('should be able to go to settings', async () => {
     await goToPopup(driver, rootURL);
     await executePerformShortcut({ driver, key: 'DECIMAL' });
     await executePerformShortcut({ driver, key: 'ARROW_DOWN' });
@@ -86,6 +86,10 @@ describe('Complete Hardhat Optimism send flow', () => {
     );
     expect(button).toBeTruthy();
     await executePerformShortcut({ driver, key: 'ESCAPE' });
+  });
+
+  it('should wait for hardhat balance to be visible', async () => {
+    await findElementByText(driver, '10,000.00 ETH');
   });
 
   it('should be able to navigate to send', async () => {
