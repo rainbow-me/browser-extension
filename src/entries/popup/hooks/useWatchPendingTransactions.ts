@@ -20,7 +20,7 @@ import {
 } from '~/core/types/transactions';
 import { isCustomChain, useSupportedChains } from '~/core/utils/chains';
 import { getTransactionReceiptStatus } from '~/core/utils/transactions';
-import { getProvider } from '~/core/wagmi/clientToProvider';
+import { getProvider } from '~/core/viem/clientToProvider';
 import { useUserChains } from '~/entries/popup/hooks/useUserChains';
 import { RainbowError, logger } from '~/logger';
 
