@@ -33,6 +33,8 @@ let driver: WebDriver;
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 
+const remoteConfig = (await import('~/core/firebase/remoteConfig')).default;
+
 describe.runIf(browser !== 'firefox')(
   'navigate through settings flows with shortcuts',
   () => {
@@ -127,16 +129,8 @@ describe.runIf(browser !== 'firefox')(
     });
 
     it('should be able to navigate to Privacy & Security using keyboard', async () => {
-      // Wait for Firebase remote config to load
-      await delayTime('very-long');
-      // Check if approvals menu item is actually present in the UI
-      const approvalsMenuPresent = await isElementFoundByText({
-        text: 'Approvals',
-        driver,
-      });
-      // Tab count depends on whether approvals menu item is shown
-      // With approvals enabled: 7 tabs, without: 6 tabs
-      const tabCount = approvalsMenuPresent ? 7 : 6;
+      const tabCount = remoteConfig.approvals_enabled ? 7 : 6;
+      await delayTime('medium');
       await executePerformShortcut({
         driver,
         key: 'TAB',
@@ -217,15 +211,7 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({ driver, key: 'DECIMAL' });
       await executePerformShortcut({ driver, key: 'ARROW_DOWN' });
       await executePerformShortcut({ driver, key: 'ENTER' });
-      // Wait for Firebase remote config to load
-      await delayTime('very-long');
-      // Check if approvals menu item is actually present in the UI
-      const approvalsMenuPresent = await isElementFoundByText({
-        text: 'Approvals',
-        driver,
-      });
-      // Tab count depends on whether approvals menu item is shown
-      const tabCount = approvalsMenuPresent ? 7 : 6;
+      const tabCount = remoteConfig.approvals_enabled ? 7 : 6;
       await executePerformShortcut({
         driver,
         key: 'TAB',
