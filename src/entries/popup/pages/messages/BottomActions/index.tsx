@@ -34,7 +34,7 @@ import useKeyboardAnalytics from '~/entries/popup/hooks/useKeyboardAnalytics';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import { useWalletInfo } from '~/entries/popup/hooks/useWalletInfo';
 import {
-  getInputIsFocused,
+  inputIsFocused,
   radixIsActive,
   switchNetworkMenuIsActive,
 } from '~/entries/popup/utils/activeElement';
@@ -164,7 +164,7 @@ export const BottomSwitchWallet = ({
 
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
-      if (!switchNetworkMenuIsActive() && !getInputIsFocused()) {
+      if (!switchNetworkMenuIsActive() && !inputIsFocused()) {
         const regex = /^[1-9]$/;
         if (regex.test(e.key)) {
           const accountIndex = parseInt(e.key, 10) - 1;
