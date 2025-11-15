@@ -127,7 +127,8 @@ describe.runIf(browser !== 'firefox')(
     });
 
     it('should be able to navigate to Privacy & Security using keyboard', async () => {
-      await delayTime('medium');
+      // Wait for Firebase remote config to load
+      await delayTime('very-long');
       // Check if approvals menu item is actually present in the UI
       const approvalsMenuPresent = await isElementFoundByText({
         text: 'Approvals',
@@ -216,6 +217,8 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({ driver, key: 'DECIMAL' });
       await executePerformShortcut({ driver, key: 'ARROW_DOWN' });
       await executePerformShortcut({ driver, key: 'ENTER' });
+      // Wait for Firebase remote config to load
+      await delayTime('very-long');
       // Check if approvals menu item is actually present in the UI
       const approvalsMenuPresent = await isElementFoundByText({
         text: 'Approvals',
