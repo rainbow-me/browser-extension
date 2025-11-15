@@ -33,6 +33,8 @@ let driver: WebDriver;
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 
+const remoteConfig = (await import('~/core/firebase/remoteConfig')).default;
+
 describe.runIf(browser !== 'firefox')(
   'navigate through settings flows with shortcuts',
   () => {
@@ -127,8 +129,13 @@ describe.runIf(browser !== 'firefox')(
     });
 
     it('should be able to navigate to Privacy & Security using keyboard', async () => {
+      const tabCount = remoteConfig.approvals_enabled ? 7 : 6;
       await delayTime('medium');
-      await executePerformShortcut({ driver, key: 'TAB', timesToPress: 7 });
+      await executePerformShortcut({
+        driver,
+        key: 'TAB',
+        timesToPress: tabCount,
+      });
       await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
       await checkExtensionURL(driver, 'privacy');
     });
@@ -204,7 +211,12 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({ driver, key: 'DECIMAL' });
       await executePerformShortcut({ driver, key: 'ARROW_DOWN' });
       await executePerformShortcut({ driver, key: 'ENTER' });
-      await executePerformShortcut({ driver, key: 'TAB', timesToPress: 7 });
+      const tabCount = remoteConfig.approvals_enabled ? 7 : 6;
+      await executePerformShortcut({
+        driver,
+        key: 'TAB',
+        timesToPress: tabCount,
+      });
       await executePerformShortcut({ driver, key: 'ENTER' });
       await checkExtensionURL(driver, 'privacy');
     });
