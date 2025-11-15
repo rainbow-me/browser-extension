@@ -1224,7 +1224,7 @@
           }
         },
         "testnet": false,
-        "internal": true,
+        "internal": false,
         "opStack": false,
         "defaultExplorer": {
           "url": "https://explorer.zksync.io",
@@ -2298,7 +2298,7 @@
           }
         },
         "testnet": false,
-        "internal": true,
+        "internal": false,
         "opStack": true,
         "defaultExplorer": {
           "url": "https://katanascan.com",
@@ -2339,14 +2339,14 @@
           }
         },
         "nativeWrappedAsset": {
-          "address": "0x4200000000000000000000000000000000000006",
-          "name": "Wrapped ETH",
-          "symbol": "WETH",
+          "address": "0xee7d8bcfb72bc1880d0cf19822eb0a2e6577ab62",
+          "name": "Vault Bridge ETH",
+          "symbol": "vbETH",
           "decimals": 18,
-          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1668633499/assets/ethereum/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/ethereum/eth.png",
           "colors": {
-            "primary": "#25292E",
-            "fallback": "#B6B6B7",
+            "primary": "#808088",
+            "fallback": "#E8EAF5",
             "shadow": ""
           }
         },
