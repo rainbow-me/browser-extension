@@ -271,7 +271,7 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
                   tabIndex={0}
                   shortcut={{
                     ...shortcuts.global.SELECT,
-                    disabled: () => getInputIsFocused(),
+                    disabled: () => !isReady || getInputIsFocused(),
                     hideHint: true,
                   }}
                 >
