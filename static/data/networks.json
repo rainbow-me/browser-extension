@@ -1515,7 +1515,7 @@
           }
         },
         "testnet": false,
-        "internal": true,
+        "internal": false,
         "opStack": false,
         "defaultExplorer": {
           "url": "https://gnosisscan.io",
