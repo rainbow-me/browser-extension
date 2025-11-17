@@ -176,7 +176,7 @@ const ImportWalletViaSeed = () => {
   const navigate = useRainbowNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const { status } = useAuth();
+  const { status, isLoading } = useAuth();
   const onboarding = searchParams.get('onboarding') === 'true';
   const [isValid, setIsValid] = useState(false);
   const [globalError, setGlobalError] = useState(false);
@@ -235,6 +235,10 @@ const ImportWalletViaSeed = () => {
   const handleImportWallet = useCallback(async () => {
     if (await isMnemonicInVault(secrets.join(' '))) {
       if (onboarding) {
+        // Wait for auth status to be determined before navigating
+        if (isLoading || status === null) {
+          return;
+        }
         // Seed already imported during onboarding - redirect to appropriate page
         // Password is set if status is READY or LOCKED
         const passwordSet = status === 'READY' || status === 'LOCKED';
@@ -257,7 +261,7 @@ const ImportWalletViaSeed = () => {
     return navigate(
       onboarding ? ROUTES.IMPORT__SELECT : ROUTES.NEW_IMPORT_WALLET_SELECTION,
     );
-  }, [navigate, onboarding, secrets, status]);
+  }, [navigate, onboarding, secrets, status, isLoading]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
