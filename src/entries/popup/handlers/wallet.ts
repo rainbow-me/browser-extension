@@ -20,13 +20,17 @@ import {
   WalletExecuteRapProps,
 } from '~/core/raps/references';
 import { useGasStore } from '~/core/state';
+import { ChainId } from '~/core/types/chains';
 import {
   TransactionGasParams,
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
 import { ExecuteRapResponse } from '~/core/types/transactions';
 import { hasPreviousTransactions } from '~/core/utils/ethereum';
-import { estimateGasWithPadding } from '~/core/utils/gas';
+import {
+  estimateGasWithPadding,
+  validateAndAdjustGasParams,
+} from '~/core/utils/gas';
 import { toHex, toHexOrUndefined } from '~/core/utils/hex';
 import { getNextNonce } from '~/core/utils/transactions';
 import { getProvider } from '~/core/wagmi/clientToProvider';
@@ -66,9 +70,22 @@ export const signTransactionFromHW = async (
     chainId: transactionRequest.chainId as number,
   });
 
+  // Validate and adjust gas params to ensure maxFeePerGas meets current block base fee
+  // Extract backend base fee from selectedGas if available (for EIP-1559)
+  const backendBaseFee =
+    'maxBaseFee' in selectedGas && selectedGas.maxBaseFee
+      ? selectedGas.maxBaseFee.amount
+      : undefined;
+  const validatedGasParams = await validateAndAdjustGasParams({
+    gasParams: selectedGas.transactionGasParams,
+    chainId: transactionRequest.chainId as ChainId,
+    provider,
+    backendBaseFee,
+  });
+
   const params = {
     ...transactionRequest,
-    ...selectedGas.transactionGasParams,
+    ...validatedGasParams,
     value: transactionRequest?.value,
     nonce,
   };
@@ -103,18 +120,49 @@ export const sendTransaction = async (
       chainId: transactionRequest.chainId as number,
     }));
 
-  const transactionGasParams = {
-    maxFeePerGas:
-      transactionRequest.maxFeePerGas ||
-      (selectedGas.transactionGasParams as TransactionGasParams).maxFeePerGas,
-    maxPriorityFeePerGas:
-      transactionRequest.maxPriorityFeePerGas ||
-      (selectedGas.transactionGasParams as TransactionGasParams)
-        .maxPriorityFeePerGas,
-    gasPrice:
-      transactionRequest.gasPrice ||
-      (selectedGas.transactionGasParams as TransactionLegacyGasParams).gasPrice,
-  };
+  // Build initial gas params from request or selected gas
+  // Prefer gas params from transactionRequest if provided, otherwise use selectedGas
+  let transactionGasParams: TransactionGasParams | TransactionLegacyGasParams;
+
+  // Check if we have legacy gas params (gasPrice) or EIP-1559 params
+  const hasLegacyGas =
+    transactionRequest.gasPrice ||
+    ('gasPrice' in selectedGas.transactionGasParams &&
+      selectedGas.transactionGasParams.gasPrice);
+
+  if (hasLegacyGas) {
+    // Legacy transaction
+    transactionGasParams = {
+      gasPrice:
+        (transactionRequest.gasPrice as string | undefined) ||
+        (selectedGas.transactionGasParams as TransactionLegacyGasParams)
+          .gasPrice,
+    };
+  } else {
+    // EIP-1559 transaction
+    transactionGasParams = {
+      maxFeePerGas:
+        (transactionRequest.maxFeePerGas as string | undefined) ||
+        (selectedGas.transactionGasParams as TransactionGasParams).maxFeePerGas,
+      maxPriorityFeePerGas:
+        (transactionRequest.maxPriorityFeePerGas as string | undefined) ||
+        (selectedGas.transactionGasParams as TransactionGasParams)
+          .maxPriorityFeePerGas,
+    };
+  }
+
+  // Validate and adjust gas params to ensure maxFeePerGas meets current block base fee
+  // Extract backend base fee from selectedGas if available (for EIP-1559)
+  const backendBaseFee =
+    'maxBaseFee' in selectedGas && selectedGas.maxBaseFee
+      ? selectedGas.maxBaseFee.amount
+      : undefined;
+  transactionGasParams = await validateAndAdjustGasParams({
+    gasParams: transactionGasParams,
+    chainId: transactionRequest.chainId as ChainId,
+    provider,
+    backendBaseFee,
+  });
 
   const params = {
     ...transactionRequest,
@@ -124,11 +172,21 @@ export const sendTransaction = async (
         ? undefined
         : toHex(transactionRequest.value),
     nonce: Number(toHex(nonce)),
-    maxFeePerGas: toHexOrUndefined(transactionGasParams.maxFeePerGas),
-    maxPriorityFeePerGas: toHexOrUndefined(
-      transactionGasParams.maxPriorityFeePerGas,
+    maxFeePerGas: toHexOrUndefined(
+      'maxFeePerGas' in transactionGasParams
+        ? transactionGasParams.maxFeePerGas
+        : undefined,
     ),
-    gasPrice: toHexOrUndefined(transactionGasParams.gasPrice),
+    maxPriorityFeePerGas: toHexOrUndefined(
+      'maxPriorityFeePerGas' in transactionGasParams
+        ? transactionGasParams.maxPriorityFeePerGas
+        : undefined,
+    ),
+    gasPrice: toHexOrUndefined(
+      'gasPrice' in transactionGasParams
+        ? transactionGasParams.gasPrice
+        : undefined,
+    ),
     data: transactionRequest.data as Hex | undefined, // dont cast to hex, as it can be '0x'
     from: transactionRequest.from as Address | undefined, // dont cast to hex, as it's case sensitive
   };

@@ -11,7 +11,10 @@ import { REFERRER_CLAIM } from '~/core/references';
 import { useCurrentCurrencyStore, useGasStore } from '~/core/state';
 import { TransactionGasParams } from '~/core/types/gas';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
-import { calculateL1FeeOptimism } from '~/core/utils/gas';
+import {
+  calculateL1FeeOptimism,
+  validateAndAdjustGasParams,
+} from '~/core/utils/gas';
 import {
   add,
   addBuffer,
@@ -86,7 +89,22 @@ export async function claimBridge({
   // 2 - We use the default gas limit (already inflated) from the quote to calculate the aproximate gas fee
   const initalGasLimit = bridgeQuote.defaultGasLimit!;
   const { selectedGas } = useGasStore.getState();
-  const gasParams = selectedGas.transactionGasParams as TransactionGasParams;
+  let gasParams = selectedGas.transactionGasParams as TransactionGasParams;
+
+  // Validate and adjust gas params to ensure maxFeePerGas meets current block base fee
+  // Use the same provider for validation (it's for the target chain, not Optimism L1)
+  const validationProvider = getProvider({ chainId });
+  // Extract backend base fee from selectedGas if available (for EIP-1559)
+  const backendBaseFee =
+    'maxBaseFee' in selectedGas && selectedGas.maxBaseFee
+      ? selectedGas.maxBaseFee.amount
+      : undefined;
+  gasParams = (await validateAndAdjustGasParams({
+    gasParams,
+    chainId,
+    provider: validationProvider,
+    backendBaseFee,
+  })) as TransactionGasParams;
   const feeAmount = add(gasParams.maxFeePerGas, gasParams.maxPriorityFeePerGas);
   let gasFeeInWei = multiply(initalGasLimit!, feeAmount);
   if (l1GasFeeOptimism && greaterThan(l1GasFeeOptimism.toString(), '0')) {

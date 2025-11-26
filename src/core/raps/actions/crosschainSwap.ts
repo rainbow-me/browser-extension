@@ -20,7 +20,10 @@ import {
   TransactionGasParams,
   TransactionLegacyGasParams,
 } from '../../types/gas';
-import { estimateGasWithPadding } from '../../utils/gas';
+import {
+  estimateGasWithPadding,
+  validateAndAdjustGasParams,
+} from '../../utils/gas';
 import { toHex } from '../../utils/hex';
 import { ActionProps, RapActionResult } from '../references';
 import {
@@ -147,6 +150,21 @@ export const crosschainSwap = async ({
     );
     throw e;
   }
+
+  // Validate and adjust gas params to ensure maxFeePerGas meets current block base fee
+  const provider = getProvider({ chainId });
+  // Extract backend base fee from selectedGas if available (for EIP-1559)
+  const backendBaseFee =
+    'maxBaseFee' in selectedGas && selectedGas.maxBaseFee
+      ? selectedGas.maxBaseFee.amount
+      : undefined;
+  gasParams = await validateAndAdjustGasParams({
+    gasParams,
+    chainId,
+    provider,
+    backendBaseFee,
+  });
+
   const nonce = baseNonce ? baseNonce + index : undefined;
 
   const swapParams = {

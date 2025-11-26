@@ -10,6 +10,7 @@ import {
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
 import { NewTransaction } from '~/core/types/transactions';
+import { validateAndAdjustGasParams } from '~/core/utils/gas';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import { RainbowError, logger } from '~/logger';
@@ -259,10 +260,24 @@ export const unlock = async ({
     throw e;
   }
 
-  const gasParams = overrideWithFastSpeedIfNeeded({
+  let gasParams = overrideWithFastSpeedIfNeeded({
     chainId,
     gasFeeParamsBySpeed,
     selectedGas,
+  });
+
+  // Validate and adjust gas params to ensure maxFeePerGas meets current block base fee
+  const provider = getProvider({ chainId });
+  // Extract backend base fee from selectedGas if available (for EIP-1559)
+  const backendBaseFee =
+    'maxBaseFee' in selectedGas && selectedGas.maxBaseFee
+      ? selectedGas.maxBaseFee.amount
+      : undefined;
+  gasParams = await validateAndAdjustGasParams({
+    gasParams,
+    chainId,
+    provider,
+    backendBaseFee,
   });
 
   const nonce = baseNonce ? baseNonce + index : undefined;

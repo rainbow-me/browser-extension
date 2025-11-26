@@ -30,6 +30,8 @@ import {
   GasFeeParam,
   GasFeeParams,
   GasSpeed,
+  TransactionGasParams,
+  TransactionLegacyGasParams,
 } from '../types/gas';
 
 import { gweiToWei, weiToGwei } from './ethereum';
@@ -48,6 +50,83 @@ import {
   multiply,
 } from './numbers';
 import { getMinimalTimeUnitStringForMs } from './time';
+
+// Cache for onchain base fee lookups (2 second TTL)
+const baseFeeCache = new Map<ChainId, { baseFee: string; timestamp: number }>();
+const BASE_FEE_CACHE_TTL = 2000; // 2 seconds
+
+/**
+ * Gets the current base fee from onchain, with caching to avoid redundant fetches.
+ * Uses cached value if available and less than 2 seconds old.
+ */
+const getCachedOnchainBaseFee = async ({
+  chainId,
+  provider,
+  backendBaseFee,
+}: {
+  chainId: ChainId;
+  provider: Provider;
+  backendBaseFee?: string;
+}): Promise<string | null> => {
+  const cached = baseFeeCache.get(chainId);
+  const now = Date.now();
+
+  // Return cached value if still valid
+  if (cached && now - cached.timestamp < BASE_FEE_CACHE_TTL) {
+    return cached.baseFee;
+  }
+
+  try {
+    // Fetch latest block in parallel with other operations
+    const latestBlock = await provider.getBlock('latest');
+    const onchainBaseFee = latestBlock?.baseFeePerGas?.toString();
+
+    if (!onchainBaseFee) {
+      // Chain doesn't support EIP-1559, return null
+      return null;
+    }
+
+    // Double-check: if backend base fee is significantly different, use onchain
+    // Otherwise prefer backend value to avoid unnecessary adjustments
+    if (backendBaseFee) {
+      const backendWei = new BigNumber(backendBaseFee).toString();
+      const onchainWei = onchainBaseFee;
+      const diff = Math.abs(
+        new BigNumber(backendWei).minus(onchainWei).toNumber(),
+      );
+      const percentDiff = divide(diff, backendWei);
+
+      // If backend and onchain are within 5%, use backend (it's likely more recent)
+      // Otherwise use onchain (backend might be stale)
+      if (lessThan(percentDiff, '0.05')) {
+        // Cache the backend value since it's close enough
+        baseFeeCache.set(chainId, {
+          baseFee: backendBaseFee,
+          timestamp: now,
+        });
+        return backendBaseFee;
+      }
+    }
+
+    // Cache the onchain value
+    baseFeeCache.set(chainId, {
+      baseFee: onchainBaseFee,
+      timestamp: now,
+    });
+
+    return onchainBaseFee;
+  } catch (error) {
+    logger.error(
+      new RainbowError('getCachedOnchainBaseFee: error fetching block'),
+      {
+        message: (error as Error)?.message,
+        chainId,
+      },
+    );
+    // If fetch fails, return backend value if available
+    return backendBaseFee || null;
+  }
+};
 
 const formatDisplayNumber = (number: number | string) => {
   const n = Number(number);
@@ -751,6 +830,96 @@ export const gasFeeParamsChanged = (
   gasFeeParams1: GasFeeParams | GasFeeLegacyParams,
   gasFeeParams2: GasFeeParams | GasFeeLegacyParams,
 ) => gasFeeParams1?.gasFee?.amount !== gasFeeParams2?.gasFee?.amount;
+
+/**
+ * Validates and adjusts gas params to ensure maxFeePerGas is at least
+ * equal to the current block's base fee + maxPriorityFeePerGas.
+ * This prevents "max fee per gas less than block base fee" errors.
+ * Uses cached onchain base fee to avoid redundant fetches.
+ */
+export const validateAndAdjustGasParams = async ({
+  gasParams,
+  chainId,
+  provider,
+  backendBaseFee,
+}: {
+  gasParams: TransactionGasParams | TransactionLegacyGasParams;
+  chainId: ChainId;
+  provider: Provider;
+  backendBaseFee?: string;
+}): Promise<TransactionGasParams | TransactionLegacyGasParams> => {
+  // For legacy transactions, no adjustment needed
+  if ('gasPrice' in gasParams && !('maxFeePerGas' in gasParams)) {
+    return gasParams;
+  }
+
+  const eip1559Params = gasParams as TransactionGasParams;
+  if (!eip1559Params.maxFeePerGas || !eip1559Params.maxPriorityFeePerGas) {
+    return gasParams;
+  }
+
+  // Get cached onchain base fee (or fetch if needed)
+  const currentBaseFee = await getCachedOnchainBaseFee({
+    chainId,
+    provider,
+    backendBaseFee,
+  });
+
+  if (!currentBaseFee) {
+    // Chain doesn't support EIP-1559, return as-is
+    return gasParams;
+  }
+
+  // Convert hex strings to decimal strings for arithmetic operations
+  // BigNumber can handle hex, but we normalize to decimal strings for consistency
+  const maxPriorityFeeWei = eip1559Params.maxPriorityFeePerGas.startsWith('0x')
+    ? new BigNumber(eip1559Params.maxPriorityFeePerGas).toString()
+    : eip1559Params.maxPriorityFeePerGas;
+  const maxFeePerGasWei = eip1559Params.maxFeePerGas.startsWith('0x')
+    ? new BigNumber(eip1559Params.maxFeePerGas).toString()
+    : eip1559Params.maxFeePerGas;
+  const currentBaseFeeWei = currentBaseFee;
+
+  // Validate values are valid numbers
+  if (
+    !maxPriorityFeeWei ||
+    !maxFeePerGasWei ||
+    !currentBaseFeeWei ||
+    new BigNumber(maxPriorityFeeWei).isNaN() ||
+    new BigNumber(maxFeePerGasWei).isNaN() ||
+    new BigNumber(currentBaseFeeWei).isNaN()
+  ) {
+    logger.warn('validateAndAdjustGasParams: invalid gas values', {
+      chainId,
+      maxPriorityFeeWei,
+      maxFeePerGasWei,
+      currentBaseFeeWei,
+    });
+    return gasParams;
+  }
+
+  // Calculate minimum required maxFeePerGas: currentBaseFee + maxPriorityFeePerGas
+  const minRequiredMaxFeePerGas = add(currentBaseFeeWei, maxPriorityFeeWei);
+
+  // If current maxFeePerGas is less than required, adjust it
+  if (lessThan(maxFeePerGasWei, minRequiredMaxFeePerGas)) {
+    logger.info('Adjusting maxFeePerGas to meet current block base fee', {
+      chainId,
+      oldMaxFeePerGas: maxFeePerGasWei,
+      newMaxFeePerGas: minRequiredMaxFeePerGas,
+      currentBaseFee: currentBaseFeeWei,
+      maxPriorityFeePerGas: maxPriorityFeeWei,
+      backendBaseFee,
+    });
+
+    return {
+      ...eip1559Params,
+      maxFeePerGas: addHexPrefix(convertStringToHex(minRequiredMaxFeePerGas)),
+    };
+  }
+
+  return gasParams;
+};
 
 export const getBaseFeeTrendParams = (trend: number) => {
   switch (trend) {
