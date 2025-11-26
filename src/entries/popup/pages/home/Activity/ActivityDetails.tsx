@@ -21,7 +21,11 @@ import {
   formatExactDateTime,
   formatRelativeDate,
 } from '~/core/utils/formatDate';
-import { formatCurrency, formatNumber } from '~/core/utils/formatNumber';
+import {
+  formatCurrency,
+  formatCurrencyWithThreshold,
+  formatNumber,
+} from '~/core/utils/formatNumber';
 import { isLowerCaseMatch, truncateString } from '~/core/utils/strings';
 import {
   getAdditionalDetails,
@@ -183,9 +187,8 @@ const formatFee = (transaction: RainbowTransaction) => {
     transaction.native.fee !== undefined
   ) {
     // if the fee is less than $0.01, the provider returns 0 so we display it as <$0.01
-    const feeInNative =
-      +transaction.native.fee <= 0.01 ? 0.01 : transaction.native.fee;
-    return `${+feeInNative <= 0.01 ? '<' : ''}${formatCurrency(feeInNative)}`;
+    const feeInNative = +transaction.native.fee;
+    return formatCurrencyWithThreshold(feeInNative, 0.01);
   }
 
   const nativeCurrencySymbol = useNetworkStore

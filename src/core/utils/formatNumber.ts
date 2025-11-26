@@ -58,3 +58,34 @@ export const formatCurrency = (
   n: number | string = 0,
   options?: Intl.NumberFormatOptions,
 ) => formatCurrencyParts(n, options).raw.split(/\s/).join('');
+
+/**
+ * Formats a currency value with a "<" symbol when the value is below a threshold.
+ * Ensures the "<" symbol is placed before the currency symbol for consistent display.
+ *
+ * @param value - The numeric value to format
+ * @param threshold - The threshold value (default: 0.01)
+ * @param options - Optional Intl.NumberFormatOptions
+ * @returns Formatted string with "<" symbol placed correctly (e.g., "<$0.01" or "<0.01 $")
+ */
+export const formatCurrencyWithThreshold = (
+  value: number | string,
+  threshold = 0.01,
+  options?: Intl.NumberFormatOptions,
+): string => {
+  const numValue = +value;
+  const shouldShowLessThan = numValue <= threshold;
+
+  if (!shouldShowLessThan) {
+    return formatCurrency(value, options);
+  }
+
+  // Format with threshold value to get proper currency parts
+  const parts = formatCurrencyParts(threshold, options);
+
+  // Place "<" before the currency symbol for consistent display
+  if (parts.symbolAtStart) {
+    return `<${parts.symbol}${parts.value}`;
+  }
+  return `<${parts.value} ${parts.symbol}`;
+};
