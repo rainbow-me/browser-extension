@@ -30,7 +30,7 @@ import {
   getAtomicSwapsEnabled,
   getDelegationEnabled,
 } from '../resources/delegations/featureStatus';
-import { KeychainType } from '../types/keychainTypes';
+import { DuplicateAccountError, KeychainType } from '../types/keychainTypes';
 import { EthereumWalletType } from '../types/walletTypes';
 import {
   EthereumWalletSeed,
@@ -186,11 +186,21 @@ export const importWallet = async (
         privateKey: secret as PrivateKey,
       };
       const newAccount = (await keychainManager.deriveAccounts(opts))[0];
+      const existingAccounts = await keychainManager.getAccounts();
 
-      await keychainManager.importKeychain(opts);
-      // returning the derived address instead of the first from the keychain,
-      // because this pk could have been elevated to hd while importing
-      return newAccount;
+      // Check if account already exists before importing
+      if (existingAccounts.includes(newAccount)) {
+        const existingKeychain = await keychainManager.getKeychain(newAccount);
+        // If it's a ReadOnlyKeychain, we can override it with the private key
+        if (existingKeychain.type !== KeychainType.ReadOnlyKeychain) {
+          throw new DuplicateAccountError(newAccount);
+        }
+      }
+
+      const keychain = await keychainManager.importKeychain(opts);
+      // Return the derived address (could have been elevated to hd while importing)
+      const accounts = await keychain.getAccounts();
+      return accounts.includes(newAccount) ? newAccount : accounts[0];
     }
     case EthereumWalletType.readOnly: {
       const keychain = await keychainManager.importKeychain({
