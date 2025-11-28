@@ -12,6 +12,7 @@ import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { isSameAssetInDiffChains } from '~/core/utils/assets';
+import { logTransactionGasError } from '~/core/utils/gas-logging';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import { RainbowError, logger } from '~/logger';
@@ -162,6 +163,23 @@ export const crosschainSwap = async ({
   try {
     swap = await executeCrosschainSwap(swapParams);
   } catch (e) {
+    await logTransactionGasError({
+      error: e,
+      transactionRequest: gasParams
+        ? {
+            maxFeePerGas:
+              'maxFeePerGas' in gasParams ? gasParams.maxFeePerGas : undefined,
+            maxPriorityFeePerGas:
+              'maxPriorityFeePerGas' in gasParams
+                ? gasParams.maxPriorityFeePerGas
+                : undefined,
+            gasPrice: 'gasPrice' in gasParams ? gasParams.gasPrice : undefined,
+            gasLimit: gasLimit?.toString(),
+            chainId,
+          }
+        : undefined,
+      chainId,
+    });
     logger.error(
       new RainbowError('crosschainSwap: error executeCrosschainSwap'),
       { message: (e as Error)?.message },
