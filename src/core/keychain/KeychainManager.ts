@@ -13,7 +13,7 @@ import { Address } from 'viem';
 import { RainbowError, logger } from '~/logger';
 
 import { LocalStorage, SessionStorage } from '../storage';
-import { KeychainType } from '../types/keychainTypes';
+import { DuplicateAccountError, KeychainType } from '../types/keychainTypes';
 import { isLowerCaseMatch } from '../utils/strings';
 
 import {
@@ -376,7 +376,7 @@ class KeychainManager {
     const newAccounts = await keychain.getAccounts();
     for (let i = 0; i < newAccounts.length; i++) {
       if (existingAccounts.includes(newAccounts[i])) {
-        throw new Error(`Duplicate account ${newAccounts[i]}`);
+        throw new DuplicateAccountError(newAccounts[i]);
       }
     }
     return;
@@ -394,7 +394,7 @@ class KeychainManager {
           matchingExistingAccount,
         );
         if (existingAccountWallet.type !== KeychainType.ReadOnlyKeychain) {
-          throw new Error(`Duplicate account ${newAccounts[i]}`);
+          throw new DuplicateAccountError(newAccounts[i]);
         }
       }
     }
