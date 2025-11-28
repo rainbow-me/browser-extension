@@ -32,6 +32,7 @@ import {
   TransactionLegacyGasParams,
 } from '../../types/gas';
 import { estimateGasWithPadding } from '../../utils/gas';
+import { logTransactionGasError } from '../../utils/gas-logging';
 import { toHex } from '../../utils/hex';
 import { ActionProps, RapActionResult } from '../references';
 import {
@@ -312,6 +313,23 @@ export const swap = async ({
     };
     swap = await executeSwap(swapParams);
   } catch (e) {
+    await logTransactionGasError({
+      error: e,
+      transactionRequest: gasParams
+        ? {
+            maxFeePerGas:
+              'maxFeePerGas' in gasParams ? gasParams.maxFeePerGas : undefined,
+            maxPriorityFeePerGas:
+              'maxPriorityFeePerGas' in gasParams
+                ? gasParams.maxPriorityFeePerGas
+                : undefined,
+            gasPrice: 'gasPrice' in gasParams ? gasParams.gasPrice : undefined,
+            gasLimit: gasLimit?.toString(),
+            chainId,
+          }
+        : undefined,
+      chainId,
+    });
     logger.error(new RainbowError('swap: error executeSwap'), {
       message: (e as Error)?.message,
     });
