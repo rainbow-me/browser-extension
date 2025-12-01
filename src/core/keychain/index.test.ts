@@ -183,7 +183,7 @@ test('[keychain/index] :: should be able to sign personal messages', async () =>
   expect(getAddress(recoveredAddress)).eq(getAddress(accounts[0]));
 });
 
-test('[keychain/index] :: should be able to sign typed data messages ', async () => {
+test('[keychain/index] :: should be able to sign typed data messages (v4)', async () => {
   const msgData = {
     domain: {
       chainId: 1,
@@ -233,6 +233,278 @@ test('[keychain/index] :: should be able to sign typed data messages ', async ()
         { name: 'name', type: 'string' },
         { name: 'wallets', type: 'address[]' },
       ],
+    },
+  };
+
+  const accounts = await getAccounts();
+  const signature = await signTypedData({
+    address: accounts[0],
+    msgData,
+  });
+  expect(isHex(signature)).toBe(true);
+
+  const recoveredAddress = recoverTypedSignature({
+    data: msgData as unknown as TypedMessage<MessageTypes>,
+    signature,
+    version: SignTypedDataVersion.V4,
+  });
+  expect(getAddress(recoveredAddress)).eq(getAddress(accounts[0]));
+});
+
+test('[keychain/index] :: should be able to sign typed data v1 format (legacy)', async () => {
+  // v1 format is an array of TypedDataV1Field: [{ name, type, value }, ...]
+  // This is legacy and very rare, but we support it for backward compatibility
+  const msgData = [
+    { name: 'message', type: 'string', value: 'Hello World' },
+    { name: 'timestamp', type: 'uint256', value: '1234567890' },
+  ];
+
+  const accounts = await getAccounts();
+  const signature = await signTypedData({
+    address: accounts[0],
+    msgData,
+  });
+  expect(isHex(signature)).toBe(true);
+  expect(signature.length).toBeGreaterThan(0);
+  // v1 signatures are 65 bytes (130 hex chars with 0x prefix)
+  expect(signature.length).toBe(132); // 0x + 130 hex chars
+});
+
+test('[keychain/index] :: should be able to sign typed data v3 format (simple)', async () => {
+  const msgData = {
+    domain: {
+      name: 'My DApp',
+      version: '1',
+      chainId: 1,
+      verifyingContract: '0x0000000000000000000000000000000000000000',
+    },
+    types: {
+      EIP712Domain: [
+        { name: 'name', type: 'string' },
+        { name: 'version', type: 'string' },
+        { name: 'chainId', type: 'uint256' },
+        { name: 'verifyingContract', type: 'address' },
+      ],
+      Person: [
+        { name: 'name', type: 'string' },
+        { name: 'wallet', type: 'address' },
+      ],
+    },
+    primaryType: 'Person',
+    message: {
+      name: 'Alice',
+      wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+    },
+  };
+
+  const accounts = await getAccounts();
+  const signature = await signTypedData({
+    address: accounts[0],
+    msgData,
+  });
+  expect(isHex(signature)).toBe(true);
+
+  const recoveredAddress = recoverTypedSignature({
+    data: msgData as unknown as TypedMessage<MessageTypes>,
+    signature,
+    version: SignTypedDataVersion.V4, // v4 is backwards compatible with v3
+  });
+  expect(getAddress(recoveredAddress)).eq(getAddress(accounts[0]));
+});
+
+test('[keychain/index] :: should handle typed data with value field instead of message', async () => {
+  const msgData = {
+    domain: {
+      name: 'Test DApp',
+      version: '1',
+      chainId: 1,
+      verifyingContract: '0x0000000000000000000000000000000000000000',
+    },
+    types: {
+      EIP712Domain: [
+        { name: 'name', type: 'string' },
+        { name: 'version', type: 'string' },
+        { name: 'chainId', type: 'uint256' },
+        { name: 'verifyingContract', type: 'address' },
+      ],
+      Message: [{ name: 'content', type: 'string' }],
+    },
+    primaryType: 'Message',
+    value: {
+      // Some dapps use 'value' instead of 'message'
+      content: 'Test message',
+    },
+  };
+
+  const accounts = await getAccounts();
+  const signature = await signTypedData({
+    address: accounts[0],
+    msgData,
+  });
+  expect(isHex(signature)).toBe(true);
+  expect(signature.length).toBeGreaterThan(0);
+});
+
+test('[keychain/index] :: should handle typed data with both message and value fields', async () => {
+  const msgData = {
+    domain: {
+      name: 'Test DApp',
+      version: '1',
+      chainId: 1,
+      verifyingContract: '0x0000000000000000000000000000000000000000',
+    },
+    types: {
+      EIP712Domain: [
+        { name: 'name', type: 'string' },
+        { name: 'version', type: 'string' },
+        { name: 'chainId', type: 'uint256' },
+        { name: 'verifyingContract', type: 'address' },
+      ],
+      Message: [{ name: 'content', type: 'string' }],
+    },
+    primaryType: 'Message',
+    message: {
+      content: 'Primary message',
+    },
+    value: {
+      content: 'Secondary value',
+    },
+  };
+
+  const accounts = await getAccounts();
+  const signature = await signTypedData({
+    address: accounts[0],
+    msgData,
+  });
+  expect(isHex(signature)).toBe(true);
+
+  // Should use 'message' field when both are present
+  const recoveredAddress = recoverTypedSignature({
+    data: {
+      ...msgData,
+      message: msgData.message,
+    } as unknown as TypedMessage<MessageTypes>,
+    signature,
+    version: SignTypedDataVersion.V4,
+  });
+  expect(getAddress(recoveredAddress)).eq(getAddress(accounts[0]));
+});
+
+test('[keychain/index] :: should handle typed data with empty message object', async () => {
+  const msgData = {
+    domain: {
+      name: 'Test DApp',
+      version: '1',
+      chainId: 1,
+      verifyingContract: '0x0000000000000000000000000000000000000000',
+    },
+    types: {
+      EIP712Domain: [
+        { name: 'name', type: 'string' },
+        { name: 'version', type: 'string' },
+        { name: 'chainId', type: 'uint256' },
+        { name: 'verifyingContract', type: 'address' },
+      ],
+      Empty: [],
+    },
+    primaryType: 'Empty',
+    message: {},
+  };
+
+  const accounts = await getAccounts();
+  const signature = await signTypedData({
+    address: accounts[0],
+    msgData,
+  });
+  expect(isHex(signature)).toBe(true);
+  expect(signature.length).toBeGreaterThan(0);
+});
+
+test('[keychain/index] :: should throw error for invalid typed data missing required fields', async () => {
+  const accounts = await getAccounts();
+
+  // Missing domain
+  await expect(
+    signTypedData({
+      address: accounts[0],
+      msgData: {
+        types: {
+          EIP712Domain: [],
+          Message: [{ name: 'content', type: 'string' }],
+        },
+        primaryType: 'Message',
+        message: { content: 'test' },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any,
+    }),
+  ).rejects.toThrow(
+    'Invalid typed data: missing domain, types, or primaryType',
+  );
+
+  // Missing types
+  await expect(
+    signTypedData({
+      address: accounts[0],
+      msgData: {
+        domain: { name: 'Test', version: '1', chainId: 1 },
+        primaryType: 'Message',
+        message: { content: 'test' },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any,
+    }),
+  ).rejects.toThrow(
+    'Invalid typed data: missing domain, types, or primaryType',
+  );
+
+  // Missing primaryType
+  await expect(
+    signTypedData({
+      address: accounts[0],
+      msgData: {
+        domain: { name: 'Test', version: '1', chainId: 1 },
+        types: {
+          EIP712Domain: [],
+          Message: [{ name: 'content', type: 'string' }],
+        },
+        message: { content: 'test' },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any,
+    }),
+  ).rejects.toThrow(
+    'Invalid typed data: missing domain, types, or primaryType',
+  );
+});
+
+test('[keychain/index] :: should handle Permit typed data (common DeFi use case)', async () => {
+  const msgData = {
+    domain: {
+      name: 'Token',
+      version: '1',
+      chainId: 1,
+      verifyingContract: '0x6b175474e89094c44da98b954eedeac495271d0f',
+    },
+    types: {
+      EIP712Domain: [
+        { name: 'name', type: 'string' },
+        { name: 'version', type: 'string' },
+        { name: 'chainId', type: 'uint256' },
+        { name: 'verifyingContract', type: 'address' },
+      ],
+      Permit: [
+        { name: 'owner', type: 'address' },
+        { name: 'spender', type: 'address' },
+        { name: 'value', type: 'uint256' },
+        { name: 'nonce', type: 'uint256' },
+        { name: 'deadline', type: 'uint256' },
+      ],
+    },
+    primaryType: 'Permit',
+    message: {
+      owner: '0x0000000000000000000000000000000000000000',
+      spender: '0x0000000000000000000000000000000000000000',
+      value: '1000000000000000000',
+      nonce: 0,
+      deadline: 9999999999,
     },
   };
 
