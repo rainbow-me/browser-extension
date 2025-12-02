@@ -1,8 +1,9 @@
 import { uuid4 } from '@sentry/core';
-import { Address, ByteArray } from 'viem';
+import { Address, Hex } from 'viem';
 
 import { initializeMessenger } from '~/core/messengers';
 import { WalletExecuteRapProps } from '~/core/raps/references';
+import { TypedDataMessage } from '~/core/types/messageSigning';
 import { ExecuteRapResponse } from '~/core/types/transactions';
 
 const messenger = initializeMessenger({ connect: 'background' });
@@ -10,13 +11,13 @@ const messenger = initializeMessenger({ connect: 'background' });
 type WalletActionPayload = {
   sign_typed_data: {
     address: Address;
-    msgData: string | ByteArray;
+    message: TypedDataMessage;
   };
   execute_rap: WalletExecuteRapProps;
 };
 
 type WalletActionResponse = {
-  sign_typed_data: string;
+  sign_typed_data: Hex;
   execute_rap: ExecuteRapResponse;
 };
 
