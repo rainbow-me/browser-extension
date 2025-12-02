@@ -159,7 +159,7 @@ describe('Swap Flow 2', () => {
   // My best guess is its on the provider level bc its throwing a custom error. Ideally we can un-skip this
   // bc its our only token > ETH swap we have on e2e. To see behavior just un-skip and run tests.
   it.todo('should be able to execute unlock and swap', async () => {
-    const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545');
+    const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545/1');
     await provider.ready;
     await delayTime('short');
     const tokenContract = new Contract(

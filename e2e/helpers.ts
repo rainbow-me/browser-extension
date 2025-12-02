@@ -828,7 +828,7 @@ export async function connectToTestDapp(driver: WebDriver) {
 
 export async function getOnchainBalance(addy: string, contract: string) {
   try {
-    const provider = getDefaultProvider('http://127.0.0.1:8545');
+    const provider = getDefaultProvider('http://127.0.0.1:8545/1');
     const testContract = new Contract(contract, erc20Abi, provider);
     const balance = await testContract.balanceOf(addy);
 
@@ -840,7 +840,7 @@ export async function getOnchainBalance(addy: string, contract: string) {
 }
 
 export async function transactionStatus() {
-  const provider = getDefaultProvider('http://127.0.0.1:8545');
+  const provider = getDefaultProvider('http://127.0.0.1:8545/1');
   const blockData = await provider.getBlock('latest');
   const txnReceipt = await provider.getTransactionReceipt(
     blockData.transactions[0],

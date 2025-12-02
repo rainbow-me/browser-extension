@@ -253,7 +253,7 @@ test('[keychain/index] :: should be able to sign typed data messages ', async ()
 
 test('[keychain/index] :: should be able to send transactions', async () => {
   const accounts = await getAccounts();
-  const provider = getDefaultProvider('http://127.0.0.1:8545');
+  const provider = getDefaultProvider('http://127.0.0.1:8545/1');
 
   try {
     await Promise.race([
