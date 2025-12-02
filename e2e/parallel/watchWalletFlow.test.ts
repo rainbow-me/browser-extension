@@ -49,7 +49,7 @@ describe('Watch wallet then add more and switch between them', () => {
     rootURL += extensionId;
   });
 
-  afterAll(async () => driver?.quit());
+  afterAll(async () => await driver?.quit());
 
   beforeEach<{ driver: WebDriver }>(async (context) => {
     context.driver = driver;
