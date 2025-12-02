@@ -27,9 +27,9 @@ const abortFn = vi.fn();
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-global.AbortController = vi.fn(() => ({
-  abort: abortFn,
-}));
+global.AbortController = vi.fn(function () {
+  return { abort: abortFn };
+});
 
 Object.defineProperty(window, 'crypto', {
   value: global.crypto,

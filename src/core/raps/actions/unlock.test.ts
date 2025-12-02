@@ -32,33 +32,8 @@ vi.mock('./unlock', async (importOriginal) => {
 
 // Mock ethersproject/providers to fix network detection issue
 vi.mock('@ethersproject/providers', () => ({
-  JsonRpcProvider: vi.fn().mockImplementation(() => ({
-    getNetwork: vi.fn().mockResolvedValue({ chainId: 1, name: 'mainnet' }),
-    call: vi
-      .fn()
-      .mockResolvedValue(
-        '0x0000000000000000000000000000000000000000000000000000000000000000',
-      ),
-    estimateGas: vi.fn().mockResolvedValue('60000'),
-    ready: Promise.resolve(),
-  })),
-}));
-
-// Mock Contract class to handle approvals
-vi.mock('@ethersproject/contracts', () => ({
-  Contract: vi.fn().mockImplementation(() => ({
-    approve: vi.fn().mockResolvedValue({
-      hash: '0x123456',
-      wait: vi.fn().mockResolvedValue({ status: 1 }),
-    }),
-  })),
-}));
-
-// Mock wallet with necessary methods for approve transaction
-vi.mock('@ethersproject/wallet', () => ({
-  Wallet: vi.fn().mockImplementation(() => ({
-    address: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
-    provider: {
+  JsonRpcProvider: vi.fn(function () {
+    return {
       getNetwork: vi.fn().mockResolvedValue({ chainId: 1, name: 'mainnet' }),
       call: vi
         .fn()
@@ -66,10 +41,41 @@ vi.mock('@ethersproject/wallet', () => ({
           '0x0000000000000000000000000000000000000000000000000000000000000000',
         ),
       estimateGas: vi.fn().mockResolvedValue('60000'),
-      getTransaction: vi.fn().mockResolvedValue({ blockNumber: null }),
-    },
-    connect: vi.fn().mockReturnThis(),
-  })),
+      ready: Promise.resolve(),
+    };
+  }),
+}));
+
+// Mock Contract class to handle approvals
+vi.mock('@ethersproject/contracts', () => ({
+  Contract: vi.fn(function () {
+    return {
+      approve: vi.fn().mockResolvedValue({
+        hash: '0x123456',
+        wait: vi.fn().mockResolvedValue({ status: 1 }),
+      }),
+    };
+  }),
+}));
+
+// Mock wallet with necessary methods for approve transaction
+vi.mock('@ethersproject/wallet', () => ({
+  Wallet: vi.fn(function () {
+    return {
+      address: '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+      provider: {
+        getNetwork: vi.fn().mockResolvedValue({ chainId: 1, name: 'mainnet' }),
+        call: vi
+          .fn()
+          .mockResolvedValue(
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          ),
+        estimateGas: vi.fn().mockResolvedValue('60000'),
+        getTransaction: vi.fn().mockResolvedValue({ blockNumber: null }),
+      },
+      connect: vi.fn().mockReturnThis(),
+    };
+  }),
 }));
 
 beforeAll(async () => {

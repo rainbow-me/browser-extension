@@ -1667,11 +1667,6 @@
         "viem>ws>bufferutil>node-gyp-build": true
       }
     },
-    "vitest>acorn-walk": {
-      "globals": {
-        "define": true
-      }
-    },
     "vitest>vite>terser": {
       "globals": {
         "Buffer.from": true,
@@ -1855,11 +1850,16 @@
         "eslint>chalk": true,
         "lodash": true,
         "viem>ws": true,
-        "vitest>acorn-walk": true,
+        "webpack-bundle-analyzer>acorn-walk": true,
         "webpack-bundle-analyzer>opener": true,
         "webpack-bundle-analyzer>sirv": true,
         "webpack-cli>@discoveryjs/json-ext": true,
         "webpack>acorn": true
+      }
+    },
+    "webpack-bundle-analyzer>acorn-walk": {
+      "globals": {
+        "define": true
       }
     },
     "webpack-bundle-analyzer>opener": {
