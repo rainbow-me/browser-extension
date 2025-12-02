@@ -3,14 +3,14 @@ import {
   TransactionResponse,
   getDefaultProvider,
 } from '@ethersproject/providers';
-import { verifyMessage } from '@ethersproject/wallet';
 import {
-  MessageTypes,
-  SignTypedDataVersion,
-  TypedMessage,
-  recoverTypedSignature,
-} from '@metamask/eth-sig-util';
-import { getAddress, isAddress, isHex, parseEther } from 'viem';
+  getAddress,
+  isAddress,
+  isHex,
+  parseEther,
+  recoverMessageAddress,
+  recoverTypedDataAddress,
+} from 'viem';
 import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test, vi } from 'vitest';
 
@@ -175,18 +175,21 @@ test('[keychain/index] :: should be able to sign personal messages', async () =>
   const accounts = await getAccounts();
   const signature = await signMessage({
     address: accounts[0],
-    msgData: msg,
+    message: { type: 'personal_sign', message: msg },
   });
 
   expect(isHex(signature)).toBe(true);
-  const recoveredAddress = verifyMessage(msg, signature);
+  const recoveredAddress = await recoverMessageAddress({
+    message: msg,
+    signature: signature,
+  });
   expect(getAddress(recoveredAddress)).eq(getAddress(accounts[0]));
 });
 
 test('[keychain/index] :: should be able to sign typed data messages ', async () => {
   const msgData = {
     domain: {
-      chainId: 1,
+      chainId: 1n,
       name: 'Ether Mail',
       verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
       version: '1',
@@ -234,19 +237,24 @@ test('[keychain/index] :: should be able to sign typed data messages ', async ()
         { name: 'wallets', type: 'address[]' },
       ],
     },
-  };
+  } as const;
 
   const accounts = await getAccounts();
   const signature = await signTypedData({
     address: accounts[0],
-    msgData,
+    message: {
+      type: 'sign_typed_data',
+      data: msgData,
+    },
   });
   expect(isHex(signature)).toBe(true);
 
-  const recoveredAddress = recoverTypedSignature({
-    data: msgData as unknown as TypedMessage<MessageTypes>,
-    signature,
-    version: SignTypedDataVersion.V4,
+  const recoveredAddress = await recoverTypedDataAddress({
+    domain: msgData.domain,
+    types: msgData.types,
+    primaryType: msgData.primaryType,
+    message: msgData.message,
+    signature: signature,
   });
   expect(getAddress(recoveredAddress)).eq(getAddress(accounts[0]));
 });

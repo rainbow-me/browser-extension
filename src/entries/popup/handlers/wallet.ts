@@ -3,12 +3,13 @@ import {
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
 import { BigNumber } from '@ethersproject/bignumber';
+// Keep HDNode for xpub derivation - viem doesn't have extended public key derivation utilities
 import { HDNode } from '@ethersproject/hdnode';
 import AppEth from '@ledgerhq/hw-app-eth';
 import type Transport from '@ledgerhq/hw-transport';
 import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import TrezorConnect from '@trezor/connect-web';
-import { Address, ByteArray, Hex, keccak256 } from 'viem';
+import { Address, Hex, keccak256 } from 'viem';
 
 // eslint-disable-next-line boundaries/element-types
 import { getHDPathForVendorAndType } from '~/core/keychain/hdPath';
@@ -24,6 +25,10 @@ import {
   TransactionGasParams,
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
+import {
+  PersonalSignMessage,
+  TypedDataMessage,
+} from '~/core/types/messageSigning';
 import { ExecuteRapResponse } from '~/core/types/transactions';
 import { hasPreviousTransactions } from '~/core/utils/ethereum';
 import { estimateGasWithPadding } from '~/core/utils/gas';
@@ -51,7 +56,7 @@ import { HARDWARE_WALLETS } from './walletVariables';
 export const signTransactionFromHW = async (
   transactionRequest: TransactionRequest,
   vendor: string,
-): Promise<string | undefined> => {
+): Promise<Hex | undefined> => {
   const { selectedGas } = useGasStore.getState();
   const provider = getProvider({
     chainId: transactionRequest.chainId,
@@ -208,38 +213,39 @@ export async function executeRap<T extends RapTypes>({
 }
 
 export const personalSign = async (
-  msgData: string | ByteArray,
+  message: PersonalSignMessage,
   address: Address,
-): Promise<string> => {
+): Promise<Hex> => {
   const { type, vendor } = await getWallet(address as Address);
   if (type === 'HardwareWalletKeychain') {
     switch (vendor) {
       case 'Ledger':
-        return signMessageByTypeFromLedger(msgData, address, 'personal_sign');
+        return signMessageByTypeFromLedger(message, address);
       case 'Trezor':
-        return signMessageByTypeFromTrezor(msgData, address, 'personal_sign');
+        return signMessageByTypeFromTrezor(message, address);
       default:
         throw new Error('Unsupported hardware wallet');
     }
   } else {
     return popupClient.wallet.personalSign({
       address,
-      msgData,
+      message,
     });
   }
 };
 
 export const signTypedData = async (
-  msgData: string | ByteArray,
+  message: TypedDataMessage,
   address: Address,
 ) => {
   const { type, vendor } = await getWallet(address as Address);
+
   if (type === 'HardwareWalletKeychain') {
     switch (vendor) {
       case 'Ledger':
-        return signMessageByTypeFromLedger(msgData, address, 'sign_typed_data');
+        return signMessageByTypeFromLedger(message, address);
       case 'Trezor': {
-        return signMessageByTypeFromTrezor(msgData, address, 'sign_typed_data');
+        return signMessageByTypeFromTrezor(message, address);
       }
       default:
         throw new Error('Unsupported hardware wallet');
@@ -247,7 +253,7 @@ export const signTypedData = async (
   } else {
     return walletAction('sign_typed_data', {
       address,
-      msgData,
+      message,
     });
   }
 };
