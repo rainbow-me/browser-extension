@@ -12,6 +12,10 @@ import { Address, Hex } from 'viem';
 import { signTypedData as viemSignTypedData } from 'viem/accounts';
 
 /* eslint-disable boundaries/element-types */
+import {
+  getMessageContent,
+  isTypedDataMessage,
+} from '~/core/types/messageSigning';
 import type {
   SignMessageArguments,
   SignTypedDataArguments,
@@ -266,10 +270,11 @@ export const executeRap = async ({
 
 export const signMessage = async ({
   address,
-  msgData,
-}: SignMessageArguments): Promise<string> => {
+  message,
+}: SignMessageArguments): Promise<Hex> => {
   const signer = await keychainManager.getSigner(address);
-  return signer.signMessage(msgData);
+  const messageContent = getMessageContent(message);
+  return (await signer.signMessage(messageContent)) as Hex;
 };
 
 export const getWallet = async (address: Address) => {
@@ -296,43 +301,48 @@ export const addAccountAtIndex = async (
 
 export const signTypedData = async ({
   address,
-  msgData,
-}: SignTypedDataArguments): Promise<string> => {
+  message,
+}: SignTypedDataArguments): Promise<Hex> => {
   const signer = (await keychainManager.getSigner(address)) as Wallet;
 
-  const parsedData = msgData;
+  if (!isTypedDataMessage(message)) {
+    throw new Error('Invalid message type: expected typed data message');
+  }
 
-  // There are 3 types of messages
-  // v1 => basic data types
-  // v3 =>  has type / domain / primaryType
-  // v4 => same as v3 but also supports which supports arrays and recursive structs.
-  // Because v4 is backwards compatible with v3, we're supporting only v4
+  const typedData = message.data;
 
   // Check if this is v1 (legacy format without domain/types/primaryType)
   // Note: v1 is very rare and the type system expects v3/v4 format
+  // v1 format is an array, not the object format we use for v3/v4
   const isV1 =
-    typeof parsedData === 'object' &&
-    !(parsedData.types || parsedData.primaryType || parsedData.domain);
+    typeof typedData === 'object' &&
+    typedData !== null &&
+    !(
+      'types' in typedData ||
+      'primaryType' in typedData ||
+      'domain' in typedData
+    );
 
   if (isV1) {
     // For v1, fall back to @metamask/eth-sig-util
     // This is legacy format and should be rare
+    // v1 format is an array format, which @metamask/eth-sig-util expects
     const pkeyBuffer = Buffer.from(
       addHexPrefix(signer.privateKey).substring(2),
       'hex',
     );
-    // v1 format is different - it's an array format, not the object format we use for v3/v4
-    // Since this is legacy and rare, we use a type assertion to handle it
+    // Type assertion needed because v1 format is incompatible with our TypedDataDefinition type
+    // The library expects an array format for v1, which we've verified via the isV1 guard
     return signTypedDataSigUtil({
-      // @ts-expect-error - v1 format is an array, not the TypedMessage object format
-      data: parsedData,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      data: typedData as any,
       privateKey: pkeyBuffer,
       version: SignTypedDataVersion.V1,
-    }) as string;
+    }) as `0x${string}`;
   }
 
   // For v3/v4, use viem's signTypedData which properly handles EIP-712
-  const sanitizedData = sanitizeTypedData(parsedData);
+  const sanitizedData = sanitizeTypedData(typedData);
 
   // Ensure we have the required fields for viem
   if (
@@ -346,13 +356,17 @@ export const signTypedData = async ({
   }
 
   // viem uses 'message' instead of 'value' for the data payload
-  const message = sanitizedData.message || sanitizedData.value || {};
+  const messageData = sanitizedData.message || sanitizedData.value || {};
 
+  // After sanitization and validation checks, we know the structure is correct
+  // The sanitizedData has the required fields, so we can safely pass them to viem
+  // Type assertion needed because viem's TypedDataDefinition has very strict types
+  // but sanitizedData is structurally compatible after validation
   return await viemSignTypedData({
-    domain: sanitizedData.domain,
-    types: sanitizedData.types,
+    domain: sanitizedData.domain as never,
+    types: sanitizedData.types as never,
     primaryType: sanitizedData.primaryType,
-    message: message as Record<string, unknown>,
+    message: messageData as never,
     privateKey: addHexPrefix(signer.privateKey) as Hex,
-  });
+  } as Parameters<typeof viemSignTypedData>[0]);
 };
