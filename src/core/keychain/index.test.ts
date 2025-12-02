@@ -3,14 +3,14 @@ import {
   TransactionResponse,
   getDefaultProvider,
 } from '@ethersproject/providers';
-import { verifyMessage } from '@ethersproject/wallet';
 import {
-  MessageTypes,
-  SignTypedDataVersion,
-  TypedMessage,
-  recoverTypedSignature,
-} from '@metamask/eth-sig-util';
-import { getAddress, isAddress, isHex, parseEther } from 'viem';
+  getAddress,
+  isAddress,
+  isHex,
+  parseEther,
+  recoverMessageAddress,
+  recoverTypedDataAddress,
+} from 'viem';
 import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test, vi } from 'vitest';
 
@@ -175,11 +175,14 @@ test('[keychain/index] :: should be able to sign personal messages', async () =>
   const accounts = await getAccounts();
   const signature = await signMessage({
     address: accounts[0],
-    msgData: msg,
+    message: { type: 'personal_sign', message: msg },
   });
 
   expect(isHex(signature)).toBe(true);
-  const recoveredAddress = verifyMessage(msg, signature);
+  const recoveredAddress = await recoverMessageAddress({
+    message: msg,
+    signature: signature,
+  });
   expect(getAddress(recoveredAddress)).eq(getAddress(accounts[0]));
 });
 
@@ -214,12 +217,6 @@ test('[keychain/index] :: should be able to sign typed data messages (v4)', asyn
     },
     primaryType: 'Mail',
     types: {
-      EIP712Domain: [
-        { name: 'name', type: 'string' },
-        { name: 'version', type: 'string' },
-        { name: 'chainId', type: 'uint256' },
-        { name: 'verifyingContract', type: 'address' },
-      ],
       Group: [
         { name: 'name', type: 'string' },
         { name: 'members', type: 'Person[]' },
@@ -234,19 +231,24 @@ test('[keychain/index] :: should be able to sign typed data messages (v4)', asyn
         { name: 'wallets', type: 'address[]' },
       ],
     },
-  };
+  } as const;
 
   const accounts = await getAccounts();
   const signature = await signTypedData({
     address: accounts[0],
-    msgData,
+    message: {
+      type: 'sign_typed_data',
+      data: msgData,
+    },
   });
   expect(isHex(signature)).toBe(true);
 
-  const recoveredAddress = recoverTypedSignature({
-    data: msgData as unknown as TypedMessage<MessageTypes>,
-    signature,
-    version: SignTypedDataVersion.V4,
+  const recoveredAddress = await recoverTypedDataAddress({
+    domain: msgData.domain,
+    types: msgData.types,
+    primaryType: msgData.primaryType,
+    message: msgData.message,
+    signature: signature,
   });
   expect(getAddress(recoveredAddress)).eq(getAddress(accounts[0]));
 });
@@ -262,7 +264,11 @@ test('[keychain/index] :: should be able to sign typed data v1 format (legacy)',
   const accounts = await getAccounts();
   const signature = await signTypedData({
     address: accounts[0],
-    msgData,
+    message: {
+      type: 'sign_typed_data',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      data: msgData as any, // v1 format is array, not TypedDataDefinition
+    },
   });
   expect(isHex(signature)).toBe(true);
   expect(signature.length).toBeGreaterThan(0);
@@ -295,19 +301,27 @@ test('[keychain/index] :: should be able to sign typed data v3 format (simple)',
       name: 'Alice',
       wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
     },
-  };
+  } as const;
 
   const accounts = await getAccounts();
   const signature = await signTypedData({
     address: accounts[0],
-    msgData,
+    message: {
+      type: 'sign_typed_data',
+      data: msgData,
+    },
   });
   expect(isHex(signature)).toBe(true);
 
-  const recoveredAddress = recoverTypedSignature({
-    data: msgData as unknown as TypedMessage<MessageTypes>,
-    signature,
-    version: SignTypedDataVersion.V4, // v4 is backwards compatible with v3
+  const recoveredAddress = await recoverTypedDataAddress({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    domain: msgData.domain as any,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    types: msgData.types as any,
+    primaryType: msgData.primaryType as 'Person',
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    message: msgData.message as any,
+    signature: signature,
   });
   expect(getAddress(recoveredAddress)).eq(getAddress(accounts[0]));
 });
@@ -321,12 +335,6 @@ test('[keychain/index] :: should handle typed data with value field instead of m
       verifyingContract: '0x0000000000000000000000000000000000000000',
     },
     types: {
-      EIP712Domain: [
-        { name: 'name', type: 'string' },
-        { name: 'version', type: 'string' },
-        { name: 'chainId', type: 'uint256' },
-        { name: 'verifyingContract', type: 'address' },
-      ],
       Message: [{ name: 'content', type: 'string' }],
     },
     primaryType: 'Message',
@@ -334,12 +342,16 @@ test('[keychain/index] :: should handle typed data with value field instead of m
       // Some dapps use 'value' instead of 'message'
       content: 'Test message',
     },
-  };
+  } as const;
 
   const accounts = await getAccounts();
   const signature = await signTypedData({
     address: accounts[0],
-    msgData,
+    message: {
+      type: 'sign_typed_data',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      data: msgData as any, // needed because message is value here
+    },
   });
   expect(isHex(signature)).toBe(true);
   expect(signature.length).toBeGreaterThan(0);
@@ -354,12 +366,6 @@ test('[keychain/index] :: should handle typed data with both message and value f
       verifyingContract: '0x0000000000000000000000000000000000000000',
     },
     types: {
-      EIP712Domain: [
-        { name: 'name', type: 'string' },
-        { name: 'version', type: 'string' },
-        { name: 'chainId', type: 'uint256' },
-        { name: 'verifyingContract', type: 'address' },
-      ],
       Message: [{ name: 'content', type: 'string' }],
     },
     primaryType: 'Message',
@@ -369,23 +375,25 @@ test('[keychain/index] :: should handle typed data with both message and value f
     value: {
       content: 'Secondary value',
     },
-  };
+  } as const;
 
   const accounts = await getAccounts();
   const signature = await signTypedData({
     address: accounts[0],
-    msgData,
+    message: {
+      type: 'sign_typed_data',
+      data: msgData,
+    },
   });
   expect(isHex(signature)).toBe(true);
 
   // Should use 'message' field when both are present
-  const recoveredAddress = recoverTypedSignature({
-    data: {
-      ...msgData,
-      message: msgData.message,
-    } as unknown as TypedMessage<MessageTypes>,
-    signature,
-    version: SignTypedDataVersion.V4,
+  const recoveredAddress = await recoverTypedDataAddress({
+    domain: msgData.domain,
+    types: msgData.types,
+    primaryType: msgData.primaryType,
+    message: msgData.message,
+    signature: signature,
   });
   expect(getAddress(recoveredAddress)).eq(getAddress(accounts[0]));
 });
@@ -414,7 +422,11 @@ test('[keychain/index] :: should handle typed data with empty message object', a
   const accounts = await getAccounts();
   const signature = await signTypedData({
     address: accounts[0],
-    msgData,
+    message: {
+      type: 'sign_typed_data',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      data: msgData as any,
+    },
   });
   expect(isHex(signature)).toBe(true);
   expect(signature.length).toBeGreaterThan(0);
@@ -427,15 +439,18 @@ test('[keychain/index] :: should throw error for invalid typed data missing requ
   await expect(
     signTypedData({
       address: accounts[0],
-      msgData: {
-        types: {
-          EIP712Domain: [],
-          Message: [{ name: 'content', type: 'string' }],
-        },
-        primaryType: 'Message',
-        message: { content: 'test' },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any,
+      message: {
+        type: 'sign_typed_data',
+        data: {
+          types: {
+            EIP712Domain: [],
+            Message: [{ name: 'content', type: 'string' }],
+          },
+          primaryType: 'Message',
+          message: { content: 'test' },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } as any,
+      },
     }),
   ).rejects.toThrow(
     'Invalid typed data: missing domain, types, or primaryType',
@@ -445,12 +460,15 @@ test('[keychain/index] :: should throw error for invalid typed data missing requ
   await expect(
     signTypedData({
       address: accounts[0],
-      msgData: {
-        domain: { name: 'Test', version: '1', chainId: 1 },
-        primaryType: 'Message',
-        message: { content: 'test' },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any,
+      message: {
+        type: 'sign_typed_data',
+        data: {
+          domain: { name: 'Test', version: '1', chainId: 1 },
+          primaryType: 'Message',
+          message: { content: 'test' },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } as any,
+      },
     }),
   ).rejects.toThrow(
     'Invalid typed data: missing domain, types, or primaryType',
@@ -460,15 +478,18 @@ test('[keychain/index] :: should throw error for invalid typed data missing requ
   await expect(
     signTypedData({
       address: accounts[0],
-      msgData: {
-        domain: { name: 'Test', version: '1', chainId: 1 },
-        types: {
-          EIP712Domain: [],
-          Message: [{ name: 'content', type: 'string' }],
-        },
-        message: { content: 'test' },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } as any,
+      message: {
+        type: 'sign_typed_data',
+        data: {
+          domain: { name: 'Test', version: '1', chainId: 1 },
+          types: {
+            EIP712Domain: [],
+            Message: [{ name: 'content', type: 'string' }],
+          },
+          message: { content: 'test' },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } as any,
+      },
     }),
   ).rejects.toThrow(
     'Invalid typed data: missing domain, types, or primaryType',
@@ -484,12 +505,6 @@ test('[keychain/index] :: should handle Permit typed data (common DeFi use case)
       verifyingContract: '0x6b175474e89094c44da98b954eedeac495271d0f',
     },
     types: {
-      EIP712Domain: [
-        { name: 'name', type: 'string' },
-        { name: 'version', type: 'string' },
-        { name: 'chainId', type: 'uint256' },
-        { name: 'verifyingContract', type: 'address' },
-      ],
       Permit: [
         { name: 'owner', type: 'address' },
         { name: 'spender', type: 'address' },
@@ -502,23 +517,28 @@ test('[keychain/index] :: should handle Permit typed data (common DeFi use case)
     message: {
       owner: '0x0000000000000000000000000000000000000000',
       spender: '0x0000000000000000000000000000000000000000',
-      value: '1000000000000000000',
-      nonce: 0,
-      deadline: 9999999999,
+      value: 1000000000000000000n,
+      nonce: 0n,
+      deadline: 9999999999n,
     },
-  };
+  } as const;
 
   const accounts = await getAccounts();
   const signature = await signTypedData({
     address: accounts[0],
-    msgData,
+    message: {
+      type: 'sign_typed_data',
+      data: msgData,
+    },
   });
   expect(isHex(signature)).toBe(true);
 
-  const recoveredAddress = recoverTypedSignature({
-    data: msgData as unknown as TypedMessage<MessageTypes>,
-    signature,
-    version: SignTypedDataVersion.V4,
+  const recoveredAddress = await recoverTypedDataAddress({
+    domain: msgData.domain,
+    types: msgData.types,
+    primaryType: msgData.primaryType,
+    message: msgData.message,
+    signature: signature,
   });
   expect(getAddress(recoveredAddress)).eq(getAddress(accounts[0]));
 });

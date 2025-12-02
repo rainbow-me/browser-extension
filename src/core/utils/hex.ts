@@ -65,3 +65,47 @@ export const toHexOrUndefined = <
 
 export const toHexNoLeadingZeros = (value: string): string =>
   toHex(value).replace(/^0x0*/, '0x');
+
+/**
+ * @desc Joins signature components (r, s, v) into a single hex signature.
+ * Handles v values that can be either string or number, and strips 0x prefixes.
+ * @param signature The signature components from hardware wallet APIs
+ * @returns A concatenated signature hex string (0x + r + s + v)
+ * @throws Error if signature components are invalid
+ */
+const isValidHex = (value: string): boolean => /^[0-9a-fA-F]*$/.test(value);
+
+export const joinSignature = (signature: {
+  r: string;
+  s: string;
+  v: string | number;
+}): `0x${string}` => {
+  if (!signature.r || !signature.s) {
+    throw new Error('Invalid signature: r and s are required');
+  }
+
+  const r = signature.r.startsWith('0x') ? signature.r.slice(2) : signature.r;
+  const s = signature.s.startsWith('0x') ? signature.s.slice(2) : signature.s;
+
+  if (!isValidHex(r) || !isValidHex(s)) {
+    throw new Error('Invalid signature: r and s must be valid hex strings');
+  }
+
+  if (r.length !== 64 || s.length !== 64) {
+    throw new Error('Invalid signature: r and s must be 32 bytes');
+  }
+
+  const vValue = signature.v;
+  const vHex =
+    typeof vValue === 'string'
+      ? vValue.startsWith('0x')
+        ? vValue.slice(2)
+        : vValue
+      : vValue.toString(16);
+
+  if (!isValidHex(vHex)) {
+    throw new Error('Invalid signature: v must be a valid hex string');
+  }
+
+  return `0x${r}${s}${vHex.padStart(2, '0')}`;
+};
