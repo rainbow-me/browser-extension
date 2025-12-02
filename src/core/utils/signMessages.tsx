@@ -1,5 +1,10 @@
-import { Address, ByteArray, getAddress, isAddress, isHex } from 'viem';
+import { Address, getAddress, isAddress, isHex } from 'viem';
 
+import {
+  PersonalSignMessage,
+  SigningMessage,
+  TypedDataMessage,
+} from '~/core/types/messageSigning';
 import { RainbowError, logger } from '~/logger';
 
 import { ProviderRequestPayload } from '../transports/providerRequestTransport';
@@ -12,7 +17,11 @@ const isSignTypedData = (method: RPCMethod) =>
 
 export const getSigningRequestDisplayDetails = (
   payload: ProviderRequestPayload,
-) => {
+): {
+  message: SigningMessage | null;
+  address: Address | null;
+  displayMessage?: string;
+} => {
   try {
     switch (payload.method) {
       case 'personal_sign': {
@@ -43,10 +52,14 @@ export const getSigningRequestDisplayDetails = (
             },
           );
         }
-        return {
+        const personalSignMessage: PersonalSignMessage = {
+          type: 'personal_sign',
           message,
-          msgData: message,
+        };
+        return {
+          message: personalSignMessage,
           address: getAddress(address) as Address,
+          displayMessage: message,
         };
       }
       default: {
@@ -62,29 +75,40 @@ export const getSigningRequestDisplayDetails = (
             const [address, data] = isAddress(params[0])
               ? [params[0], params[1]]
               : [params[1], params[0]];
-            let msgData: string | ByteArray = data;
-            try {
-              msgData = JSON.parse(data) as ByteArray;
-              // eslint-disable-next-line no-empty
-            } catch (e) {}
 
-            const sanitizedMessageData = sanitizeTypedData(msgData);
+            let parsedData: unknown;
+            try {
+              parsedData = JSON.parse(data);
+            } catch (e) {
+              logger.error(new RainbowError('Failed to parse typed data'), {
+                data,
+              });
+              return { message: null, address: null };
+            }
+
+            const sanitizedMessageData = sanitizeTypedData(parsedData);
+
+            // Type assertion needed because viem's TypedDataDefinition has very strict types
+            // but sanitizedMessageData is structurally compatible after sanitization
+            const typedDataMessage: TypedDataMessage = {
+              type: 'sign_typed_data',
+              data: sanitizedMessageData as unknown as TypedDataMessage['data'],
+            };
 
             return {
-              message: JSON.stringify(sanitizedMessageData, null, 2),
-              msgData: sanitizedMessageData,
+              message: typedDataMessage,
               address: getAddress(address) as Address,
-              typedData: true,
+              displayMessage: JSON.stringify(sanitizedMessageData, null, 2),
             };
           }
         }
       }
     }
-    return {};
+    return { message: null, address: null };
   } catch (e) {
     logger.error(new RainbowError('MSG Signing Parsing Error', { cause: e }), {
       payload,
     });
-    return {};
+    return { message: null, address: null };
   }
 };

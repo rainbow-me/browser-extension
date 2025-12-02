@@ -307,7 +307,10 @@ export const PointsOnboardingSheet = () => {
     useMutation({
       mutationFn: async () => {
         if (!data) return;
-        return wallet.personalSign(data.pointsOnboardChallenge, currentAddress);
+        return wallet.personalSign(
+          { type: 'personal_sign', message: data.pointsOnboardChallenge },
+          currentAddress,
+        );
       },
       onSuccess: (signature) => {
         if (!signature) return;
