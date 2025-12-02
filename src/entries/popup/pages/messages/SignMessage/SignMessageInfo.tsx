@@ -107,7 +107,9 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
   const { currentCurrency } = useCurrentCurrencyStore();
   const { data: dappMetadata } = useDappMetadata({ url: dappUrl });
 
-  const { message, typedData } = getSigningRequestDisplayDetails(request);
+  const requestDetails = getSigningRequestDisplayDetails(request);
+  const message = requestDetails.displayMessage || '';
+  const typedData = requestDetails.message?.type === 'sign_typed_data';
 
   const isScamDapp = dappMetadata?.status === DAppStatus.Scam;
   const [expanded, setExpanded] = useState(false);
