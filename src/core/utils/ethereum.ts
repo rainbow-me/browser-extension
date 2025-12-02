@@ -1,3 +1,4 @@
+// Keep TransactionResponse for transaction normalization - used for compatibility with ethers providers
 import { TransactionResponse } from '@ethersproject/providers';
 import BigNumber from 'bignumber.js';
 import omit from 'lodash/omit';
@@ -109,29 +110,72 @@ export const normalizeTransactionResponsePayload = (
 
 // For more info read https://www.coinspect.com/wallet-EIP-712-injection-vulnerability/
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const sanitizeTypedData = (data: any) => {
-  if (data.types?.[data.primaryType]?.length > 0) {
+// Type guard to check if value has typed data structure
+const hasTypedDataStructure = (
+  value: unknown,
+): value is {
+  domain?: unknown;
+  types?: Record<string, Array<{ name: string; type: string }>>;
+  primaryType?: string;
+  message?: Record<string, unknown>;
+  value?: Record<string, unknown>;
+} => {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    ('types' in value || 'primaryType' in value || 'domain' in value)
+  );
+};
+
+type SanitizedTypedData = {
+  domain: unknown;
+  types: Record<string, Array<{ name: string; type: string }>>;
+  primaryType: string;
+  message: Record<string, unknown>;
+  value?: Record<string, unknown>;
+};
+
+export const sanitizeTypedData = (data: unknown): SanitizedTypedData => {
+  if (!hasTypedDataStructure(data)) {
+    return {
+      domain: {},
+      types: {},
+      primaryType: '',
+      message: {},
+    };
+  }
+
+  const primaryType = data.primaryType || '';
+  const types = data.types || {};
+  const message = data.message || {};
+
+  if (types[primaryType]?.length > 0 && Object.keys(message).length > 0) {
     // Extract all the valid permit types for the primary type
-    const permitPrimaryTypes: string[] = data.types[data.primaryType].map(
+    const permitPrimaryTypes: string[] = types[primaryType].map(
       (type: { name: string; type: string }) => type.name,
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const sanitizedMessage: any = {};
     // Extract all the message keys that matches the valid permit types
-    Object.keys(data.message).forEach((key) => {
+    const sanitizedMessage: Record<string, unknown> = {};
+    Object.keys(message).forEach((key) => {
       if (permitPrimaryTypes.includes(key)) {
-        sanitizedMessage[key] = data.message[key];
+        sanitizedMessage[key] = message[key];
       }
     });
 
-    const sanitizedData = {
-      ...data,
+    return {
+      domain: data.domain || {},
+      types,
+      primaryType,
       message: sanitizedMessage,
+      value: data.value,
     };
-
-    return sanitizedData;
   }
-  return data;
+  return {
+    domain: data.domain || {},
+    types,
+    primaryType,
+    message,
+    value: data.value,
+  };
 };
