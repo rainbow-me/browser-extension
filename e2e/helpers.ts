@@ -102,24 +102,17 @@ export async function initDriverWithOptions(opts: {
   let driver;
   const buildPath = path.resolve(process.cwd(), 'build');
   const args = [
-    `load-extension=${buildPath}`,
-    '--lang=en',
-    '--log-level=3',
-    '--enable-logging',
-    '--no-sandbox',
-    '--disable-dev-shm-usage',
-    `--disable-extensions-except=${buildPath}`,
-    '--disable-popup-blocking',
-    '--remote-debugging-port=9222',
-    '--start-maximized',
+    // Set browser language to English
+    'lang=en',
+    // Suppress most console logging (fatal errors only)
+    'log-level=3',
   ];
 
   if (opts.browser === 'firefox') {
-    const firefoxArgs = args.slice(1);
+    const firefoxArgs = args.map((arg) => `-${arg}`);
 
     if (process.env.HEADLESS !== 'false') {
-      firefoxArgs.push('--headless');
-      firefoxArgs.push('--window-size=700,700');
+      firefoxArgs.push('-headless', '-width=500', '-height=720');
     }
 
     const options = new firefox.Options()
@@ -139,16 +132,30 @@ export async function initDriverWithOptions(opts: {
   } else {
     const chromeArgs = [
       ...args,
-      // BX-1923: localhost network access is permissioned in dev 139, and prod 141
-      '--disable-features=LocalNetworkAccessChecks,LocalNetworkAccessForWorkers',
+      // Load unpacked extension from build directory
+      `load-extension=${buildPath}`,
+      `disable-extensions-except=${buildPath}`,
+      // Enable Chrome logging for debugging
+      'enable-logging',
+      // Disable sandbox for CI/Docker environments
+      'no-sandbox',
+      'disable-dev-shm-usage',
+      // Allow extension popups to open
+      'disable-popup-blocking',
       // Remove automation infobars
-      '--disable-blink-features=AutomationControlled',
-      '--disable-infobars',
+      'disable-blink-features=AutomationControlled',
+      'disable-infobars',
+      // Prevent throttling that breaks keyboard events in headless
+      'disable-background-timer-throttling',
+      'disable-backgrounding-occluded-windows',
+      'disable-renderer-backgrounding',
+      'disable-ipc-flooding-protection',
+      // BX-1923: localhost network access is permissioned in dev 139, and prod 141
+      'disable-features=LocalNetworkAccessChecks,LocalNetworkAccessForWorkers',
     ];
 
     if (process.env.HEADLESS !== 'false') {
-      chromeArgs.push('--headless=new');
-      chromeArgs.push('--window-size=700,700');
+      chromeArgs.push('headless', 'window-size=500,720');
     }
 
     const options = new chrome.Options();
