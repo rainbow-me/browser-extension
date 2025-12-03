@@ -35,9 +35,7 @@ import { estimateGasWithPadding } from '../../utils/gas';
 import { toHex } from '../../utils/hex';
 import { ActionProps, RapActionResult } from '../references';
 import {
-  CHAIN_IDS_WITH_TRACE_SUPPORT,
   SWAP_GAS_PADDING,
-  estimateSwapGasLimitWithFakeApproval,
   getDefaultGasLimitForTrade,
   getTargetAddressForQuote,
   overrideWithFastSpeedIfNeeded,
@@ -106,20 +104,10 @@ export const estimateSwapGasLimit = async ({
       );
 
       if (requiresApprove) {
-        if (CHAIN_IDS_WITH_TRACE_SUPPORT.includes(chainId)) {
-          try {
-            const gasLimitWithFakeApproval =
-              await estimateSwapGasLimitWithFakeApproval(
-                chainId,
-                provider,
-                quote,
-              );
-            return gasLimitWithFakeApproval;
-          } catch (e) {
-            //
-          }
-        }
-
+        // When requiresApprove is true, batch estimation (estimateUnlockAndSwapFromMetadata)
+        // should have already been attempted. If we reach here, batch estimation failed.
+        // We can't try separate simulation because swap requires approve to happen first.
+        // Fall back to default gas limits.
         return getDefaultGasLimitForTrade(quote, chainId);
       }
 
@@ -138,19 +126,22 @@ export const estimateSwapGasLimit = async ({
   }
 };
 
+/**
+ * Estimates gas for chained transactions (approve+swap) using Blockaid metadata service.
+ * This function ONLY handles chained/dependent transactions.
+ * For single transactions, use provider estimation via estimateSwapGasLimit instead.
+ */
 export const estimateUnlockAndSwapFromMetadata = async ({
-  swapAssetNeedsUnlocking,
   chainId,
   accountAddress,
   sellTokenAddress,
   quote,
 }: {
-  swapAssetNeedsUnlocking: boolean;
   chainId: ChainId;
   accountAddress: Address;
   sellTokenAddress: Address;
   quote: Quote | CrosschainQuote;
-}) => {
+}): Promise<string | null> => {
   try {
     const approveTransaction = await populateApprove({
       owner: accountAddress,
@@ -170,29 +161,21 @@ export const estimateUnlockAndSwapFromMetadata = async ({
       swapTransaction?.data &&
       swapTransaction?.from
     ) {
-      const transactions = swapAssetNeedsUnlocking
-        ? [
-            {
-              to: approveTransaction?.to,
-              data: approveTransaction?.data || '0x0',
-              from: approveTransaction?.from,
-              value: approveTransaction?.value?.toString() || '0x0',
-            },
-            {
-              to: swapTransaction?.to,
-              data: swapTransaction?.data || '0x0',
-              from: swapTransaction?.from,
-              value: swapTransaction?.value?.toString() || '0x0',
-            },
-          ]
-        : [
-            {
-              to: swapTransaction?.to,
-              data: swapTransaction?.data || '0x0',
-              from: swapTransaction?.from,
-              value: swapTransaction?.value?.toString() || '0x0',
-            },
-          ];
+      // Simulate both approve and swap transactions together
+      const transactions = [
+        {
+          to: approveTransaction.to,
+          data: approveTransaction.data || '0x0',
+          from: approveTransaction.from,
+          value: approveTransaction.value?.toString() || '0x0',
+        },
+        {
+          to: swapTransaction.to,
+          data: swapTransaction.data || '0x0',
+          from: swapTransaction.from,
+          value: swapTransaction.value?.toString() || '0x0',
+        },
+      ];
 
       const response = (await metadataPostClient.simulateTransactions({
         chainId,
