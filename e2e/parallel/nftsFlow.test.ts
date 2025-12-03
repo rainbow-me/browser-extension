@@ -8,8 +8,9 @@ import {
   describe,
   expect,
   it,
-  vi,
 } from 'vitest';
+
+import remoteConfig from '~/core/firebase/remoteConfig';
 
 import {
   delayTime,
@@ -24,14 +25,6 @@ import {
   takeScreenshotOnFailure,
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
-
-vi.stubGlobal('chrome', {
-  notifications: {
-    create: vi.fn(),
-  },
-});
-
-const remoteConfig = (await import('~/core/firebase/remoteConfig')).default;
 
 let rootURL = getRootUrl();
 let driver: WebDriver;

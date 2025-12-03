@@ -9,6 +9,7 @@ export default defineConfig({
   test: {
     include: ['./**/**/*.test.ts'],
     globalSetup: path.resolve(__dirname, './vitest.anvil.ts'),
+    setupFiles: [path.resolve(__dirname, './vitest.setup.ts')],
     watch: false,
     testTimeout: 120_000,
     hookTimeout: 30_000,
