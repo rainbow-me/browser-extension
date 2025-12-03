@@ -409,19 +409,11 @@ export function getDefaultGasSpeeds(chainId: ChainId): GasSpeed[] {
 
 export function getDefaultPollingInterval(chainId: ChainId): number {
   switch (chainId) {
-    case ChainId.arbitrum:
     case ChainId.mainnet:
     case ChainId.hardhat:
-      return 5000;
-    case ChainId.base:
-    case ChainId.bsc:
-    case ChainId.optimism:
-    case ChainId.polygon:
-    case ChainId.zora:
-    case ChainId.avalanche:
-    case ChainId.hardhatOptimism:
+      return 3000;
     default:
-      return 2000;
+      return 1000;
   }
 }
 
