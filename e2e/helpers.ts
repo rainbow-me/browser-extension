@@ -1273,11 +1273,6 @@ export async function performSearchTokenAddressActionsCmdK({
     driver,
   });
 
-  await executePerformShortcut({
-    driver,
-    key: 'ARROW_DOWN',
-  });
-
   // Go to token details
   await executePerformShortcut({ driver, key: 'ENTER' });
 
