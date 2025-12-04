@@ -57,7 +57,7 @@ afterEach(async (context: any) => {
   await takeScreenshotOnFailure(context);
 });
 
-afterAll(() => driver?.quit());
+afterAll(async () => await driver?.quit());
 
 const WALLET_TO_USE_SECRET = TEST_VARIABLES.SWAPS_WALLET.PK;
 
@@ -970,7 +970,7 @@ it('should be able to see swap information in review sheet', async () => {
 });
 
 it('should be able to execute swap', async () => {
-  const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545');
+  const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545/1');
   await provider.ready;
 
   await findElementByTestIdAndClick({

@@ -1,10 +1,8 @@
+import 'dotenv/config';
 import { resolve } from 'path';
 
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
-import dotenv from 'dotenv';
 import { defineConfig } from 'vitest/config';
-
-dotenv.config({ path: '.env' });
 
 export default defineConfig({
   plugins: [vanillaExtractPlugin()],
@@ -12,7 +10,8 @@ export default defineConfig({
     environment: 'happy-dom',
     include: ['src/**/*.test.(ts|tsx)'],
     testTimeout: 45_000,
-    setupFiles: './src/test/setup.ts',
+    globalSetup: './e2e/vitest.anvil.ts',
+    setupFiles: './src/test/vitest.setup.ts',
     watch: false,
   },
   resolve: {

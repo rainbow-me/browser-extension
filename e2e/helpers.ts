@@ -3,7 +3,8 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-promise-executor-return */
 /* eslint-disable @typescript-eslint/no-var-requires */
-import * as fs from 'node:fs';
+import fs from 'node:fs';
+import path from 'node:path';
 
 import { Contract } from '@ethersproject/contracts';
 import { getDefaultProvider } from '@ethersproject/providers';
@@ -99,24 +100,24 @@ export async function initDriverWithOptions(opts: {
   os: string;
 }) {
   let driver;
+  const buildPath = path.resolve(process.cwd(), 'build');
   const args = [
-    'load-extension=build/',
-    '--lang=en',
-    '--log-level=3',
-    '--enable-logging',
-    '--no-sandbox',
-    '--disable-dev-shm-usage',
-    '--disable-extensions-except=build/',
-    '--disable-popup-blocking',
-    '--remote-debugging-port=9222',
-    // BX-1923: localhost network access is permissioned in dev 139, and prod 141
-    '--disable-features=LocalNetworkAccessChecks,LocalNetworkAccessForWorkers',
+    // Set browser language to English
+    'lang=en',
+    // Suppress most console logging (fatal errors only)
+    'log-level=3',
   ];
 
   if (opts.browser === 'firefox') {
+    const firefoxArgs = args.map((arg) => `-${arg}`);
+
+    if (process.env.HEADLESS !== 'false') {
+      firefoxArgs.push('-headless', '-width=500', '-height=720');
+    }
+
     const options = new firefox.Options()
       .setBinary(browserBinaryPath)
-      .addArguments(...args.slice(1, -1))
+      .addArguments(...firefoxArgs)
       .setPreference('xpinstall.signatures.required', false)
       .setPreference('extensions.langpacks.signatures.required', false)
       .addExtensions('rainbowbx.xpi');
@@ -129,9 +130,37 @@ export async function initDriverWithOptions(opts: {
       .setFirefoxOptions(options)
       .build();
   } else {
+    const chromeArgs = [
+      ...args,
+      // Load unpacked extension from build directory
+      `load-extension=${buildPath}`,
+      `disable-extensions-except=${buildPath}`,
+      // Enable Chrome logging for debugging
+      'enable-logging',
+      // Disable sandbox for CI/Docker environments
+      'no-sandbox',
+      'disable-dev-shm-usage',
+      // Allow extension popups to open
+      'disable-popup-blocking',
+      // Remove automation infobars
+      'disable-blink-features=AutomationControlled',
+      'disable-infobars',
+      // Prevent throttling that breaks keyboard events in headless
+      'disable-background-timer-throttling',
+      'disable-backgrounding-occluded-windows',
+      'disable-renderer-backgrounding',
+      'disable-ipc-flooding-protection',
+      // BX-1923: localhost network access is permissioned in dev 139, and prod 141
+      'disable-features=LocalNetworkAccessChecks,LocalNetworkAccessForWorkers',
+    ];
+
+    if (process.env.HEADLESS !== 'false') {
+      chromeArgs.push('headless', 'window-size=500,720');
+    }
+
     const options = new chrome.Options();
     options.setChromeBinaryPath(browserBinaryPath);
-    options.addArguments(...args);
+    options.addArguments(...chromeArgs);
     options.setAcceptInsecureCerts(true);
     options.setUserPreferences({
       'intl.accept_languages': 'en-US,en;q=0.9',
@@ -224,7 +253,7 @@ export async function getExtensionIdByName(
       const extensions = document.querySelector("extensions-manager")?.shadowRoot
         ?.querySelector("extensions-item-list")?.shadowRoot
         ?.querySelectorAll("extensions-item");
-      
+
       if (!extensions) {
         resolve({ error: "No extensions found" });
         return;
@@ -806,7 +835,7 @@ export async function connectToTestDapp(driver: WebDriver) {
 
 export async function getOnchainBalance(addy: string, contract: string) {
   try {
-    const provider = getDefaultProvider('http://127.0.0.1:8545');
+    const provider = getDefaultProvider('http://127.0.0.1:8545/1');
     const testContract = new Contract(contract, erc20Abi, provider);
     const balance = await testContract.balanceOf(addy);
 
@@ -818,7 +847,7 @@ export async function getOnchainBalance(addy: string, contract: string) {
 }
 
 export async function transactionStatus() {
-  const provider = getDefaultProvider('http://127.0.0.1:8545');
+  const provider = getDefaultProvider('http://127.0.0.1:8545/1');
   const blockData = await provider.getBlock('latest');
   const txnReceipt = await provider.getTransactionReceipt(
     blockData.transactions[0],
@@ -1242,11 +1271,6 @@ export async function performSearchTokenAddressActionsCmdK({
   await waitUntilElementByTestIdIsPresent({
     id: `command-name-${tokenName}`,
     driver,
-  });
-
-  await executePerformShortcut({
-    driver,
-    key: 'ARROW_DOWN',
   });
 
   // Go to token details

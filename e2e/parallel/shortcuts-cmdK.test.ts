@@ -47,7 +47,7 @@ describe('Cmd+K menu unique functionality', () => {
     await importWalletFlow(driver, rootURL, TEST_VARIABLES.SEED_WALLET.PK);
   });
 
-  afterAll(async () => driver.quit());
+  afterAll(async () => await driver?.quit());
 
   beforeEach<{ driver: WebDriver }>(async (context) => {
     context.driver = driver;

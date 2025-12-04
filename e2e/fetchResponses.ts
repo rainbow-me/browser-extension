@@ -33,7 +33,7 @@ const fetchWithTimeout = (
 };
 
 (async () => {
-  const client = createClient({ transport: http('http://127.0.0.1:8545') });
+  const client = createClient({ transport: http('http://127.0.0.1:8545/1') });
   const blockNumberInitial = await getBlockNumber(client);
 
   console.log('INITIAL BLOCK NUMBER', blockNumberInitial.toString());

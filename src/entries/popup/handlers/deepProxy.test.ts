@@ -83,7 +83,7 @@ describe('createDeepProxy', () => {
 
       expect(proxy.date).toBe(date);
       expect(proxy.date).toBeInstanceOf(Date);
-      expect(proxy.date.getFullYear()).toBe(2023);
+      expect(proxy.date.getUTCFullYear()).toBe(2023);
     });
 
     it('should handle regular expressions (special objects returned directly)', () => {

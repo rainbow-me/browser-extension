@@ -12,7 +12,7 @@ export const chainHardhat: Chain = {
     symbol: 'ETH',
   },
   rpcUrls: {
-    default: { http: ['http://127.0.0.1:8545'] },
+    default: { http: ['http://127.0.0.1:8545/1'] },
   },
   testnet: true,
 };
@@ -26,7 +26,7 @@ export const chainHardhatOptimism: Chain = {
     symbol: 'ETH',
   },
   rpcUrls: {
-    default: { http: ['http://127.0.0.1:8545'] },
+    default: { http: ['http://127.0.0.1:8545/1'] },
   },
   testnet: true,
 };

@@ -56,7 +56,7 @@ describe('Dapp provider BFCache behavior', () => {
     rootURL += extensionId;
   });
 
-  afterAll(() => driver?.quit());
+  afterAll(async () => await driver?.quit());
 
   beforeEach<{ driver: WebDriver }>(async (context) => {
     context.driver = driver;

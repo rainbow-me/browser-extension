@@ -70,11 +70,13 @@ vi.mock('./actions', async () => {
 
 // Minimal mock for the wallet to handle provider requests
 vi.mock('@ethersproject/wallet', () => ({
-  Wallet: vi.fn().mockImplementation(() => ({
-    provider: {
-      getTransaction: vi.fn().mockResolvedValue({ blockNumber: null }),
-    },
-  })),
+  Wallet: vi.fn(function () {
+    return {
+      provider: {
+        getTransaction: vi.fn().mockResolvedValue({ blockNumber: null }),
+      },
+    };
+  }),
 }));
 
 beforeAll(async () => {

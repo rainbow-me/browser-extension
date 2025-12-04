@@ -60,7 +60,7 @@ describe('Complete swap flow via shortcuts and keyboard navigation', () => {
     await takeScreenshotOnFailure(context);
   });
 
-  afterAll(() => driver?.quit());
+  afterAll(async () => await driver?.quit());
 
   it('should be able import a wallet via pk', async () => {
     await importWalletFlowUsingKeyboardNavigation(
@@ -225,7 +225,7 @@ describe('Complete swap flow via shortcuts and keyboard navigation', () => {
    */
 
   it('should be able to initiate swap with keyboard navigation', async () => {
-    const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545');
+    const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545/1');
     await provider.ready;
     await delayTime('short');
     // const ethBalanceBeforeSwap = await provider.getBalance(
