@@ -6,7 +6,7 @@ import { useAuth } from '../../hooks/useAuth';
 export const OnboardingKeepAlive = () => {
   const { status } = useAuth();
 
-  const timer = useRef<undefined | ReturnType<typeof setInterval>>(undefined);
+  const timer = useRef<NodeJS.Timer>();
 
   useEffect(() => {
     if (status !== 'READY') {
