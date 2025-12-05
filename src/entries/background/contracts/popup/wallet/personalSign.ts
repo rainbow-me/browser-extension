@@ -2,13 +2,14 @@ import { oc } from '@orpc/contract';
 import z from 'zod';
 
 import { addressSchema } from '~/core/schemas/address';
-import { bytesSchema } from '~/core/schemas/bytes';
+import { hexSchema } from '~/core/schemas/hex';
+import { personalSignMessageSchema } from '~/core/schemas/messageSigning';
 
 export const personalSignContract = oc
   .input(
     z.object({
       address: addressSchema,
-      msgData: z.union([z.string(), bytesSchema]),
+      message: personalSignMessageSchema,
     }),
   )
-  .output(z.string());
+  .output(hexSchema);
