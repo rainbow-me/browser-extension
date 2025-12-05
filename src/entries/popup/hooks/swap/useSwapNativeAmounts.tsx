@@ -47,10 +47,10 @@ export const useSwapNativeAmounts = ({
       );
     } else {
       nativeDisplay =
-        !quote?.sellAmountInEth || !quote?.sellTokenAsset?.price?.value
+        !quote?.sellAmount || !quote?.sellTokenAsset?.price?.value
           ? null
           : convertRawAmountToNativeDisplay(
-              quote?.sellAmountInEth?.toString(),
+              quote?.sellAmount?.toString(),
               quote?.sellTokenAsset?.decimals || 18,
               quote?.sellTokenAsset?.price?.value,
               currentCurrency,
@@ -75,7 +75,6 @@ export const useSwapNativeAmounts = ({
     quote?.sellAmount,
     quote?.sellTokenAsset?.decimals,
     quote?.sellTokenAsset?.price?.value,
-    quote?.sellAmountInEth,
   ]);
 
   const assetToBuyNativeDisplay = useMemo(() => {
@@ -98,10 +97,10 @@ export const useSwapNativeAmounts = ({
       );
     } else {
       nativeDisplay =
-        !quote?.buyAmountInEth || !quote?.buyTokenAsset?.price?.value
+        !quote?.buyAmount || !quote?.buyTokenAsset?.price?.value
           ? null
           : convertRawAmountToNativeDisplay(
-              quote?.buyAmountInEth?.toString(),
+              quote?.buyAmount?.toString(),
               quote?.buyTokenAsset?.decimals || 18,
               quote?.buyTokenAsset?.price?.value,
               currentCurrency,
@@ -123,7 +122,6 @@ export const useSwapNativeAmounts = ({
     assetToBuy?.decimals,
     assetToBuyValue,
     quote?.buyAmount,
-    quote?.buyAmountInEth,
     currentCurrency,
     quote?.buyTokenAsset?.price?.value,
     quote?.buyTokenAsset?.decimals,
