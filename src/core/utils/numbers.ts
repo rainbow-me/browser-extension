@@ -310,6 +310,10 @@ const convertAmountToNativeDisplayWithThreshold = (
     nativeSelected.decimals < 4 ? '0.01' : '0.0001',
   );
   if (nativeSelected.alignment === 'left') {
+    // If display starts with "< ", move the "<" before the currency symbol
+    if (display.startsWith('< ')) {
+      return `<${nativeSelected.symbol}${display.slice(2)}`;
+    }
     return `${nativeSelected.symbol}${display}`;
   }
   return `${display} ${nativeSelected.symbol}`;
