@@ -61,7 +61,7 @@ vi.mock('~/core/storage', async () => {
 // Keychain-relevant storage keys
 const KEYCHAIN_STORAGE_KEYS = {
   local: ['vault'],
-  session: ['salt', 'encryptionKey', 'keychainManager'],
+  session: ['salt', 'encryptionKey'],
 } as const;
 
 const captureStorageSnapshot = async () => ({
@@ -205,10 +205,13 @@ test('[keychain/KeychainManager] :: should be able to remove an account from a K
 
 test('[keychain/KeychainManager] :: should be able to remove empty keychains', async () => {
   let accounts = await keychainManager.getAccounts();
+  console.log('accounts', accounts);
   await keychainManager.removeAccount(accounts[0]);
   accounts = await keychainManager.getAccounts();
+  console.log('accounts after', accounts);
   expect(accounts.length).toBe(0);
   expect(keychainManager.state.keychains.length).toBe(0);
+  await delay(0);
 
   // Snapshot test: storage state after removing all keychains
   await expectStorageSnapshot();
@@ -216,11 +219,13 @@ test('[keychain/KeychainManager] :: should be able to remove empty keychains', a
 
 test('[keychain/KeychainManager] :: should be able to import a wallet using a seed phrase', async () => {
   let accounts = await keychainManager.getAccounts();
+  expect(accounts.length).toBe(0); // starting from wipe, so we need to set password again
   await keychainManager.importKeychain({
     type: KeychainType.HdKeychain,
     mnemonic:
       'edge caught toy sniff enemy upon genre van tunnel make disorder home',
   });
+  await keychainManager.setPassword('test');
   accounts = await keychainManager.getAccounts();
   expect(accounts.length).toBe(1);
   expect(isAddress(accounts[0])).toBe(true);

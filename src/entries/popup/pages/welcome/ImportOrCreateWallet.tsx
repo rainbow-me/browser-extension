@@ -15,6 +15,7 @@ import {
   setImportWalletSecrets,
 } from '../../handlers/importWalletSecrets';
 import * as wallet from '../../handlers/wallet';
+import { useAuth } from '../../hooks/useAuth';
 import { useBrowser } from '../../hooks/useBrowser';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
@@ -23,6 +24,7 @@ export function ImportOrCreateWallet() {
   const navigate = useRainbowNavigate();
   const [loading, setLoading] = useState(false);
   const { isFirefox } = useBrowser();
+  const { isLoading } = useAuth();
 
   const requestPermissionsIfNeeded = useCallback(async () => {
     if (!isFirefox) return true;
@@ -37,15 +39,22 @@ export function ImportOrCreateWallet() {
   }, [isFirefox]);
 
   useEffect(() => {
-    const wipeIncompleteWallet = async () => {
-      const { hasVault } = await wallet.getStatus();
-      if (hasVault) {
-        wallet.wipe();
+    const ensureCleanStorage = async () => {
+      // Wipe incomplete vaults (has vault but no password set)
+      // ProtectedRoute handles redirects, so we only need to clean up here
+      const { hasVault, passwordSet } = await wallet.getStatus();
+      if (hasVault && !passwordSet) {
+        await wallet.wipe();
       }
       await removeImportWalletSecrets();
     };
-    wipeIncompleteWallet();
-  }, []);
+
+    if (isLoading) return;
+    ensureCleanStorage();
+
+    // Only run once after initial load
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading]);
 
   const setCurrentAddress = useCurrentAddressStore(
     (state) => state.setCurrentAddress,
