@@ -43,7 +43,9 @@ export default function NFTCollections({
   testnetMode,
   userChains,
 }: NFTGalleryProps) {
-  const { displayMode, hidden, sections } = useNftsStore();
+  const displayMode = useNftsStore((state) => state.displayMode);
+  const hidden = useNftsStore((state) => state.hidden);
+  const sections = useNftsStore((state) => state.sections);
   const [manuallyRefetching, setManuallyRefetching] = useState(false);
   const hiddenNftsForAddress = useMemo(
     () => hidden[address] || {},

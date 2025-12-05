@@ -54,63 +54,70 @@ export interface RainbowChainAssetsState {
 
 export const useRainbowChainAssetsStore =
   createBaseStore<RainbowChainAssetsState>(
-    (set, get) => ({
+    (set) => ({
       rainbowChainAssets: {},
       addRainbowChainAsset: ({ chainId, rainbowChainAsset }) => {
-        const { rainbowChainAssets } = get();
-        const chainIdcustomRPCAsset = rainbowChainAssets[chainId] || [];
-        const newCustomRPCAssets = chainIdcustomRPCAsset.concat([
-          rainbowChainAsset,
-        ]);
-        set({
-          rainbowChainAssets: {
-            ...rainbowChainAssets,
-            [chainId]: newCustomRPCAssets,
-          },
+        set((state) => {
+          const chainIdcustomRPCAsset = state.rainbowChainAssets[chainId] || [];
+          const newCustomRPCAssets = chainIdcustomRPCAsset.concat([
+            rainbowChainAsset,
+          ]);
+          return {
+            rainbowChainAssets: {
+              ...state.rainbowChainAssets,
+              [chainId]: newCustomRPCAssets,
+            },
+          };
         });
       },
       updateRainbowChainAsset: ({ chainId, rainbowChainAsset }) => {
-        const { rainbowChainAssets } = get();
-        const assets = rainbowChainAssets[chainId] || [];
-        const index = assets.findIndex(
-          (asset) => asset.address === rainbowChainAsset.address,
-        );
-        if (index !== -1) {
-          assets[index] = rainbowChainAsset;
-          set({
-            rainbowChainAssets: { ...rainbowChainAssets, [chainId]: assets },
-          });
-        }
+        set((state) => {
+          const assets = state.rainbowChainAssets[chainId] || [];
+          const index = assets.findIndex(
+            (asset) => asset.address === rainbowChainAsset.address,
+          );
+          if (index !== -1) {
+            const updatedAssets = [...assets];
+            updatedAssets[index] = rainbowChainAsset;
+            return {
+              rainbowChainAssets: {
+                ...state.rainbowChainAssets,
+                [chainId]: updatedAssets,
+              },
+            };
+          }
+          return state;
+        });
       },
       removeRainbowChainAsset: ({ chainId, address }) => {
-        const { rainbowChainAssets } = get();
-        const assets = rainbowChainAssets[chainId] || [];
-        const updatedAssets = assets.filter(
-          (asset) => asset.address !== address,
-        );
-        if (updatedAssets.length) {
-          set({
-            rainbowChainAssets: {
-              ...rainbowChainAssets,
-              [chainId]: updatedAssets,
-            },
-          });
-        } else {
-          delete rainbowChainAssets[chainId];
-          set({
-            rainbowChainAssets: {
-              ...rainbowChainAssets,
-            },
-          });
-        }
+        set((state) => {
+          const assets = state.rainbowChainAssets[chainId] || [];
+          const updatedAssets = assets.filter(
+            (asset) => asset.address !== address,
+          );
+          if (updatedAssets.length) {
+            return {
+              rainbowChainAssets: {
+                ...state.rainbowChainAssets,
+                [chainId]: updatedAssets,
+              },
+            };
+          } else {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { [chainId]: _chainId, ...rest } = state.rainbowChainAssets;
+            return {
+              rainbowChainAssets: rest,
+            };
+          }
+        });
       },
       removeRainbowChainAssets: ({ chainId }) => {
-        const { rainbowChainAssets } = get();
-        delete rainbowChainAssets[chainId];
-        set({
-          rainbowChainAssets: {
-            ...rainbowChainAssets,
-          },
+        set((state) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { [chainId]: _chainId, ...rest } = state.rainbowChainAssets;
+          return {
+            rainbowChainAssets: rest,
+          };
         });
       },
     }),

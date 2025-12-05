@@ -209,11 +209,14 @@ class KeychainManager {
           this.state.vault = result.vault;
           await privates.get(this).setEncryptionKey(result.exportedKeyString);
           await privates.get(this).setSalt(result.salt);
+          // Use centralized vault setter - vault is non-empty, safe to persist
+          await privates.get(this)._setVaultInStorage(result.vault);
         } else {
+          // No keychains - allow clearing vault when all keychains are removed
+          // This is safe because it's an intentional action (user removed all keychains)
           this.state.vault = '';
+          await privates.get(this)._setVaultInStorage('', true);
         }
-        // Store them in the fs
-        await LocalStorage.set('vault', this.state.vault);
       },
 
       setSalt: (val: string | null) => {
@@ -231,6 +234,62 @@ class KeychainManager {
 
       getLastStorageState: () => {
         return LocalStorage.get('vault');
+      },
+
+      /**
+       * Centralized method to set vault in storage.
+       * This is the ONLY place where vault should be written to storage.
+       *
+       * @param vaultValue - The vault value to store. Can be:
+       *   - A non-empty string (encrypted vault)
+       *   - An empty string '' (only allowed if allowEmpty is true)
+       *   - null (only allowed if allowNull is true)
+       * @param allowEmpty - Allow setting vault to empty string (default: false)
+       * @param allowNull - Allow setting vault to null (default: false)
+       */
+      _setVaultInStorage: async (
+        vaultValue: string | null,
+        allowEmpty = false,
+        allowNull = false,
+      ) => {
+        // Safety check: prevent accidentally clearing vault
+        if (vaultValue === null && !allowNull) {
+          logger.error(
+            new RainbowError(
+              'Attempted to set vault to null without explicit permission',
+            ),
+          );
+          throw new Error(
+            'Cannot set vault to null. Use wipe() method if you intend to clear the vault.',
+          );
+        }
+
+        // Safety check: prevent accidentally clearing vault with empty string
+        if (vaultValue === '' && !allowEmpty) {
+          const existingVault = await privates.get(this).getLastStorageState();
+          if (existingVault && existingVault !== '') {
+            logger.error(
+              new RainbowError(
+                'Attempted to set vault to empty string without explicit permission',
+              ),
+              {
+                existingVaultLength: existingVault.length,
+                keychainsCount: this.state.keychains.length,
+              },
+            );
+            throw new Error(
+              'Cannot set vault to empty string when vault exists. Use wipe() method if you intend to clear the vault.',
+            );
+          }
+        }
+
+        // Update state
+        this.state.vault = vaultValue || '';
+
+        // Persist to storage
+        // This is the ONLY allowed place to call LocalStorage.set('vault', ...)
+        // eslint-disable-next-line no-restricted-syntax
+        await LocalStorage.set('vault', vaultValue);
       },
     });
 
@@ -444,7 +503,8 @@ class KeychainManager {
 
     privates.get(this).password = '';
 
-    await LocalStorage.set('vault', null);
+    // Use centralized vault setter - explicitly allow null for wipe operation
+    await privates.get(this)._setVaultInStorage(null, false, true);
     await SessionStorage.set('keychainManager', null);
     await privates.get(this).setEncryptionKey(null);
     await privates.get(this).setSalt(null);
