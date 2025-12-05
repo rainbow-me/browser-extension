@@ -20,7 +20,7 @@ import {
 } from '~/core/utils/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { getExplorerUrl, goToNewTab } from '~/core/utils/tabs';
-import { wagmiConfig } from '~/core/wagmi';
+import { getAvailableChains } from '~/core/viem';
 import {
   Bleed,
   Box,
@@ -277,7 +277,7 @@ export const ReviewSheet = ({
   const prevShow = usePrevious(show);
   const [sending, setSending] = useState(false);
   const confirmSendButtonRef = useRef<HTMLButtonElement>(null);
-  const { chains } = wagmiConfig;
+  const chains = getAvailableChains();
   const assetChainId =
     asset?.chainId || chainNameToIdMapping[nft?.network || ChainName.mainnet];
   const chain = useMemo(
