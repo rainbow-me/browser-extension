@@ -1,17 +1,7 @@
-import { isEmpty, isEqual } from 'lodash';
-
 import { LocalStorage } from '~/core/storage';
-import { RainbowError, logger } from '~/logger';
 
 import * as stores from '../index';
-import { useNetworksStoreMigrationStore } from '../networks/migration';
-import { useNetworkStore } from '../networks/networks';
-import { NetworkState } from '../networks/types';
 
-import {
-  defaultDeserializeState,
-  defaultSerializeState,
-} from './createRainbowStore';
 import { StoreWithPersist } from './createStore';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -27,6 +17,35 @@ function isStoreWithPersist(store: any): store is StoreWithPersist<unknown> {
     'rehydrate' in store.persist &&
     typeof store.persist.rehydrate === 'function'
   );
+}
+
+/**
+ * Checks if a store requires manual synchronization via syncStores().
+ * Stores created with createRainbowStore require manual sync.
+ * Stores created with createBaseStore + createExtensionStoreOptions have automatic sync and don't require manual sync.
+ */
+export function requiresManualSync(store: StoreWithPersist<unknown>): boolean {
+  try {
+    const persistOptions = store.persist.getOptions();
+    const storage = persistOptions.storage;
+
+    // Check if storage has the required methods
+    if (
+      !storage ||
+      typeof storage !== 'object' ||
+      typeof storage.setItem !== 'function'
+    ) {
+      return false;
+    }
+
+    // Stores created with createRainbowStore include 'lazyPersist' in their setItem function
+    // If setItem includes lazyPersist, it requires manual sync (createRainbowStore)
+    const setItemCode = storage.setItem.toString();
+    return setItemCode.includes('lazyPersist');
+  } catch {
+    // If getOptions fails, the store can't use automatic sync, so it requires manual sync
+    return false;
+  }
 }
 
 async function syncStore({ store }: { store: StoreWithPersist<unknown> }) {
@@ -50,108 +69,19 @@ async function syncStore({ store }: { store: StoreWithPersist<unknown> }) {
   }
 }
 
+/**
+ * Syncs stores that need manual synchronization between processes.
+ * Only stores exported from '../index' are synced here.
+ * Stores using createExtensionStoreOptions have automatic sync and are skipped.
+ */
 export function syncStores() {
   Object.values(stores).forEach((store) => {
     if (isStoreWithPersist(store)) {
+      // Skip stores that don't require manual sync (they have automatic sync)
+      if (!requiresManualSync(store)) {
+        return;
+      }
       syncStore({ store });
     }
   });
-}
-
-const deserializeNetworkState = (state: string) => {
-  return defaultDeserializeState<NetworkState>(state, true);
-};
-
-const serializeNetworkState = (state: NetworkState, version: number) => {
-  return defaultSerializeState(state, version, true);
-};
-
-export function syncNetworksStore(context: 'popup' | 'background') {
-  // Track the last synced state to prevent circular updates
-  let lastSyncedState: string | null = null;
-  // For popup: track if we've received the first sync from background
-  let hasReceivedFirstSync = false;
-
-  // Common function to handle state updates from LocalStorage
-  const handleStorageUpdate = (state: string) => {
-    // Skip if we're seeing our own update
-    if (state === lastSyncedState) return;
-
-    try {
-      logger.debug(
-        `${context}: detected state change from ${
-          context === 'popup' ? 'background' : 'popup'
-        }: ${JSON.stringify(state)}`,
-      );
-      const { state: deserializedState } = deserializeNetworkState(state);
-      logger.debug(
-        `${context}: deserialized state: ${JSON.stringify(deserializedState)}`,
-      );
-      if (isEmpty(deserializedState)) return;
-
-      // Update last synced state before setting state to prevent loops
-      lastSyncedState = state;
-      useNetworkStore.setState(deserializedState);
-
-      // For popup: after receiving first sync from background, setup subscription
-      if (context === 'popup' && !hasReceivedFirstSync) {
-        logger.debug(
-          'popup: received first sync from background, now setting up subscription',
-        );
-        hasReceivedFirstSync = true;
-        useNetworkStore.subscribe(handleStoreUpdate);
-      }
-    } catch (error) {
-      logger.error(
-        new RainbowError(
-          `${context}: error deserializing network state: ${error}`,
-        ),
-      );
-    }
-  };
-
-  // Common function to handle useNetworkStore changes
-  const handleStoreUpdate = (state: NetworkState, prevState: NetworkState) => {
-    if (isEqual(state, prevState)) return;
-
-    const serializedState = serializeNetworkState(state, 1);
-    // Skip if we're seeing our own update
-    if (serializedState === lastSyncedState) return;
-
-    logger.debug(
-      `${context}: sending state update to ${
-        context === 'popup' ? 'background' : 'popup'
-      }`,
-    );
-    // Update last synced state before setting storage to prevent loops
-    lastSyncedState = serializedState;
-    LocalStorage.set('networks.networks', serializedState);
-  };
-
-  // Set up LocalStorage listener for both contexts
-  LocalStorage.listen<string>('networks.networks', handleStorageUpdate);
-
-  // For background context only, handle migration and subscription
-  // Popup will wait for first sync from background before subscribing
-  if (context === 'background') {
-    const initialMigrationState =
-      useNetworksStoreMigrationStore.getState().didCompleteNetworksMigration;
-
-    if (initialMigrationState) {
-      logger.debug(
-        'background: migration already complete, subscribing to network store changes',
-      );
-      useNetworkStore.subscribe(handleStoreUpdate);
-    } else {
-      logger.debug('background: waiting for network migration to complete');
-      useNetworksStoreMigrationStore.subscribe((state) => {
-        if (state.didCompleteNetworksMigration) {
-          logger.debug(
-            'background: migration complete, subscribing to network store changes',
-          );
-          useNetworkStore.subscribe(handleStoreUpdate);
-        }
-      });
-    }
-  }
 }
