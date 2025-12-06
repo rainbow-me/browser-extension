@@ -14,6 +14,7 @@ import { SignTypedDataVersion, TypedDataUtils } from '@metamask/eth-sig-util';
 import { Address, stringToBytes } from 'viem';
 
 import { i18n } from '~/core/languages';
+import { logTransactionGasError } from '~/core/utils/gas-logging';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import { logger } from '~/logger';
 
@@ -122,7 +123,16 @@ export async function sendTransactionFromLedger(
     chainId: transaction.chainId,
   });
 
-  return provider.sendTransaction(serializedTransaction);
+  try {
+    return await provider.sendTransaction(serializedTransaction);
+  } catch (error) {
+    await logTransactionGasError({
+      error,
+      transactionRequest: transaction,
+      chainId: transaction.chainId as number,
+    });
+    throw error;
+  }
 }
 
 export async function signMessageByTypeFromLedger(
