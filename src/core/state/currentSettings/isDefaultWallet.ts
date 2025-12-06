@@ -1,18 +1,20 @@
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
+import { createBaseStore } from 'stores';
+
+import { createExtensionStoreOptions } from '../_internal';
 
 export interface IsDefaultWalletState {
   isDefaultWallet: boolean;
   setIsDefaultWallet: (isDefaultWallet: boolean) => void;
 }
 
-export const useIsDefaultWalletStore = createRainbowStore<IsDefaultWalletState>(
+export const useIsDefaultWalletStore = createBaseStore<IsDefaultWalletState>(
   (set) => ({
     isDefaultWallet: true,
     setIsDefaultWallet: (newIsDefaultWallet) =>
       set({ isDefaultWallet: newIsDefaultWallet }),
   }),
-  {
+  createExtensionStoreOptions({
     storageKey: 'isDefaultWallet',
     version: 0,
-  },
+  }),
 );
