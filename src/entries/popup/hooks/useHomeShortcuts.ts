@@ -26,8 +26,8 @@ import { ROUTES } from '../urls';
 import {
   appConnectionMenuIsActive,
   appConnectionSwitchWalletsPromptIsActive,
-  getExplainerSheet,
-  getInputIsFocused,
+  inputIsFocused,
+  modalIsActive,
 } from '../utils/activeElement';
 import {
   clickHeaderLeft,
@@ -114,10 +114,11 @@ export function useHomeShortcuts() {
       const activeAppConnectionMenu = appConnectionMenuIsActive();
       const activeAppWalletSwitcher =
         appConnectionSwitchWalletsPromptIsActive();
-      const inputIsFocused = getInputIsFocused();
-      const isExplainerSheet = getExplainerSheet();
-      if (inputIsFocused) return;
-      if (isExplainerSheet) return;
+
+      // Block shortcuts when overlays are active
+      if (inputIsFocused() || modalIsActive()) {
+        return;
+      }
       switch (e.key) {
         case shortcuts.home.BUY.key:
           trackShortcut({

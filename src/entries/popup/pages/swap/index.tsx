@@ -71,7 +71,7 @@ import {
   TranslationContext,
   useTranslationContext,
 } from '../../hooks/useTranslationContext';
-import { getActiveElement, getInputIsFocused } from '../../utils/activeElement';
+import { getActiveElement, inputIsFocused } from '../../utils/activeElement';
 
 import { SwapReviewSheet } from './SwapReviewSheet/SwapReviewSheet';
 import { SwapSettings } from './SwapSettings/SwapSettings';
@@ -695,8 +695,8 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     handler: (e: KeyboardEvent) => {
       if (e.key === shortcuts.swap.FLIP_ASSETS.key) {
         const flippingAfterSearch =
-          getInputIsFocused() && getActiveElement()?.id === SWAP_INPUT_MASK_ID;
-        if (flippingAfterSearch || !getInputIsFocused()) {
+          inputIsFocused() && getActiveElement()?.id === SWAP_INPUT_MASK_ID;
+        if (flippingAfterSearch || !inputIsFocused()) {
           trackShortcut({
             key: shortcuts.swap.FLIP_ASSETS.display,
             type: 'swap.flipAssets',
@@ -708,9 +708,8 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
       if (e.key === shortcuts.swap.SET_MAX_AMOUNT.key) {
         if (assetToSell) {
           const maxxingAfterSearch =
-            getInputIsFocused() &&
-            getActiveElement()?.id === SWAP_INPUT_MASK_ID;
-          if (maxxingAfterSearch || !getInputIsFocused()) {
+            inputIsFocused() && getActiveElement()?.id === SWAP_INPUT_MASK_ID;
+          if (maxxingAfterSearch || !inputIsFocused()) {
             trackShortcut({
               key: shortcuts.swap.SET_MAX_AMOUNT.display,
               type: 'swap.setMax',

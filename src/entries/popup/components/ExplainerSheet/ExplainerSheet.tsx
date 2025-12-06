@@ -136,7 +136,7 @@ export const ExplainerSheet = ({
       zIndex={zIndexes.EXPLAINER_BOTTOM_SHEET}
       show={show}
     >
-      <Box testId={`explainer-sheet-${testId}`} isExplainerSheet>
+      <Box testId={`explainer-sheet-${testId}`}>
         <Box paddingVertical="44px" paddingHorizontal="32px">
           <Stack alignHorizontal="center" space="20px">
             {header?.emoji ? (
