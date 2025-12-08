@@ -1,4 +1,4 @@
-import { createBaseStore } from 'stores';
+import { createBaseStore } from '@storesjs/stores';
 
 import { AutoLockTimerOption } from '~/core/types/settings';
 

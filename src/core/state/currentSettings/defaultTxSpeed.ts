@@ -1,4 +1,4 @@
-import { createBaseStore } from 'stores';
+import { createBaseStore } from '@storesjs/stores';
 
 import { GasSpeed } from '~/core/types/gas';
 import { DefaultTxSpeedOption } from '~/core/types/settings';

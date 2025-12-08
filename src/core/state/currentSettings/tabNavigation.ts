@@ -1,4 +1,4 @@
-import { createBaseStore } from 'stores';
+import { createBaseStore } from '@storesjs/stores';
 
 // eslint-disable-next-line boundaries/element-types
 import type { Tab } from '~/entries/popup/components/Tabs/TabBar';
