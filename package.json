@@ -159,7 +159,7 @@
     "react-image": "4.1.0",
     "react-router-dom": "6.4.2",
     "react-switch": "7.0.0",
-    "stores": "file:./stores-0.0.1.tgz",
+    "stores": "file:./stores-0.8.0.tgz",
     "viem": "2.31.7",
     "wagmi": "2.16.1",
     "zod": "4.0.14",
