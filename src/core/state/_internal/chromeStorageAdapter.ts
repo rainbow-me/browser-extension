@@ -17,6 +17,7 @@ export class ChromeStorageAdapter implements AsyncStorageInterface {
   readonly area: 'local' | 'session' | 'sync' | 'managed';
   readonly async = true;
   readonly namespace: string;
+  private _isPromiseBased: boolean | null = null;
 
   constructor(options?: ChromeStorageAdapterOptions) {
     this.area = options?.area ?? 'local';
@@ -27,6 +28,13 @@ export class ChromeStorageAdapter implements AsyncStorageInterface {
     const storage = this.ensureStorage();
     if (!storage) return;
     const prefix = this.namespacePrefix();
+    // Prevent accidental deletion of all storage when namespace is empty
+    // An empty prefix would match all keys, causing data loss
+    if (!prefix) {
+      throw new Error(
+        'Cannot clear all storage with empty namespace. This would delete all storage entries. Please provide a namespace.',
+      );
+    }
     const keys = await this.listPrefixedKeys(storage, prefix);
     if (!keys.length) return;
     await this.execute(storage, (done) => storage.remove(keys, done));
@@ -37,7 +45,10 @@ export class ChromeStorageAdapter implements AsyncStorageInterface {
     if (!storage) return false;
     const storageKey = this.toStorageKey(key);
     const result = await this.getFromStorage(storage, storageKey);
-    return Object.prototype.hasOwnProperty.call(result, storageKey);
+    return (
+      Object.prototype.hasOwnProperty.call(result, storageKey) &&
+      result[storageKey] !== undefined
+    );
   }
 
   async delete(key: string): Promise<void> {
@@ -51,6 +62,13 @@ export class ChromeStorageAdapter implements AsyncStorageInterface {
     const storage = this.ensureStorage();
     if (!storage) return [];
     const prefix = this.namespacePrefix();
+    // Prevent returning all storage keys when namespace is empty
+    // An empty prefix would match all keys, violating namespace isolation
+    if (!prefix) {
+      throw new Error(
+        'Cannot get all keys with empty namespace. This would return all storage entries. Please provide a namespace.',
+      );
+    }
     const result = await this.getFromStorage(storage, null);
     return Object.keys(result)
       .filter((key) => key.startsWith(prefix))
@@ -105,7 +123,37 @@ export class ChromeStorageAdapter implements AsyncStorageInterface {
     return Object.keys(result).filter((key) => key.startsWith(prefix));
   }
 
+  private isPromiseBased(storage: chrome.storage.StorageArea): boolean {
+    if (this._isPromiseBased === null) {
+      try {
+        // Detect API type once by checking if get() returns a Promise
+        const result = storage.get(null);
+        this._isPromiseBased = result instanceof Promise;
+      } catch {
+        // If detection fails, default to callback-based API (real Chrome)
+        this._isPromiseBased = false;
+      }
+    }
+    return this._isPromiseBased;
+  }
+
   private async getFromStorage(
+    storage: chrome.storage.StorageArea,
+    keys: string | string[] | null,
+  ): Promise<Record<string, unknown>> {
+    if (this.isPromiseBased(storage)) {
+      // Promise-based API (fakeBrowser)
+      const result = storage.get(keys);
+      if (result instanceof Promise) {
+        return await result;
+      }
+      // Fall through to callback-based API if detection was wrong
+    }
+    // Callback-based API (real Chrome)
+    return await this.getFromStorageCallback(storage, keys);
+  }
+
+  private getFromStorageCallback(
     storage: chrome.storage.StorageArea,
     keys: string | string[] | null,
   ): Promise<Record<string, unknown>> {
@@ -129,6 +177,21 @@ export class ChromeStorageAdapter implements AsyncStorageInterface {
     storage: chrome.storage.StorageArea,
     operation: (done: () => void) => void,
   ): Promise<void> {
+    if (this.isPromiseBased(storage)) {
+      // Promise-based API (fakeBrowser) - operation returns a Promise
+      const promise = operation(() => {
+        // Callback ignored for Promise-based API
+      }) as unknown;
+      if (promise instanceof Promise) {
+        await promise;
+      }
+      const runtimeError = getRuntimeError();
+      if (runtimeError) {
+        throw runtimeError;
+      }
+      return;
+    }
+    // Callback-based API (real Chrome)
     await new Promise<void>((resolve, reject) => {
       try {
         operation(() => {
@@ -160,5 +223,7 @@ function getRuntimeError(): Error | null {
     !chrome.runtime.lastError
   )
     return null;
-  return new Error(chrome.runtime.lastError.message);
+  const message = chrome.runtime.lastError.message;
+  if (!message) return null;
+  return new Error(message);
 }

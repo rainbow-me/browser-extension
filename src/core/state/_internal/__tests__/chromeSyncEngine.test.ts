@@ -1,13 +1,6 @@
 import { createBaseStore } from 'stores';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import {
-  MockChromeStorage,
-  cleanupMockChrome,
-  restoreGlobalChrome,
-  setupMockChrome,
-} from '~/test/mock/chromeStorage';
-
 import { ChromeExtensionSyncEngine } from '../chromeExtensionSyncEngine';
 import { ChromeStorageAdapter } from '../chromeStorageAdapter';
 
@@ -19,18 +12,14 @@ const waitForMicrotasks = async (): Promise<void> => {
 };
 
 describe('ChromeExtensionSyncEngine', () => {
-  let mockStorage: MockChromeStorage;
   let storageAdapter1: ChromeStorageAdapter;
   let storageAdapter2: ChromeStorageAdapter;
   let syncEngine1: ChromeExtensionSyncEngine;
   let syncEngine2: ChromeExtensionSyncEngine;
 
   beforeEach(() => {
-    // Create a single shared mock storage (source of truth)
-    mockStorage = new MockChromeStorage();
-    setupMockChrome(mockStorage);
-
     // Create two separate storage adapters pointing to the same underlying storage
+    // fakeBrowser provides shared storage that both adapters can access
     const namespace = '@stores/test-sync';
     storageAdapter1 = new ChromeStorageAdapter({ namespace, area: 'local' });
     storageAdapter2 = new ChromeStorageAdapter({ namespace, area: 'local' });
@@ -42,12 +31,12 @@ describe('ChromeExtensionSyncEngine', () => {
 
   afterEach(async () => {
     // Clear storage to prevent test pollution
-    await mockStorage.local.clear();
-    // Clean up listeners to prevent memory leaks
-    mockStorage.cleanup();
-    cleanupMockChrome();
-    // Restore global chrome instance for other tests
-    restoreGlobalChrome();
+    await Promise.all([
+      chrome.storage.local.clear(),
+      chrome.storage.session.clear(),
+      chrome.storage.sync.clear(),
+      chrome.storage.managed.clear(),
+    ]);
   });
 
   it('should sync state changes between two store instances', async () => {
