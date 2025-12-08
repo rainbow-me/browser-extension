@@ -1,4 +1,4 @@
-import { createBaseStore } from 'stores';
+import { createBaseStore } from '@storesjs/stores';
 
 import { Language, changeI18nLanguage, i18n } from '~/core/languages';
 import { fetchJsonLocally } from '~/core/utils/localJson';
