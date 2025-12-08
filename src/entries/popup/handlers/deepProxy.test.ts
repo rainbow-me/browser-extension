@@ -641,4 +641,301 @@ describe('createDeepProxy', () => {
       expect(second).toBeGreaterThan(first);
     });
   });
+
+  describe('Real-world usage: Client recreation scenarios', () => {
+    /**
+     * Simulates the ORPC client recreation pattern where:
+     * - A client object can be replaced with a new instance
+     * - Nested objects (like telemetry, wallet) may be stored as references
+     * - Functions must always use the latest client instance
+     */
+
+    it('should keep stored nested references fresh when client is recreated', () => {
+      // Simulate initial client
+      const oldClient = {
+        telemetry: {
+          addRouterBreadcrumb: vi.fn().mockReturnValue({ success: true }),
+        },
+        wallet: {
+          sendTransaction: vi.fn().mockReturnValue({ hash: 'old-hash' }),
+        },
+      };
+
+      let currentClient = oldClient;
+      const proxy = createDeepProxy(() => currentClient);
+
+      // Store nested reference (simulating: const telemetry = popupClient.telemetry)
+      const storedTelemetry = proxy.telemetry;
+      const storedWallet = proxy.wallet;
+
+      // Verify initial state
+      expect(
+        storedTelemetry.addRouterBreadcrumb({ from: 'a', to: 'b' }),
+      ).toEqual({
+        success: true,
+      });
+      expect(oldClient.telemetry.addRouterBreadcrumb).toHaveBeenCalledWith({
+        from: 'a',
+        to: 'b',
+      });
+
+      // Simulate client recreation (port disconnect/reconnect)
+      const newClient = {
+        telemetry: {
+          addRouterBreadcrumb: vi.fn().mockReturnValue({ success: true }),
+        },
+        wallet: {
+          sendTransaction: vi.fn().mockReturnValue({ hash: 'new-hash' }),
+        },
+      };
+      currentClient = newClient;
+
+      // CRITICAL: Stored references should use the NEW client
+      expect(
+        storedTelemetry.addRouterBreadcrumb({ from: 'b', to: 'c' }),
+      ).toEqual({
+        success: true,
+      });
+      expect(newClient.telemetry.addRouterBreadcrumb).toHaveBeenCalledWith({
+        from: 'b',
+        to: 'c',
+      });
+      expect(oldClient.telemetry.addRouterBreadcrumb).toHaveBeenCalledTimes(1); // Only called once
+
+      expect(storedWallet.sendTransaction({ to: '0x123' })).toEqual({
+        hash: 'new-hash',
+      });
+      expect(newClient.wallet.sendTransaction).toHaveBeenCalledWith({
+        to: '0x123',
+      });
+    });
+
+    it('should ensure functions are always fresh even through cached nested proxies', () => {
+      // Simulate client with nested structure
+      const client1 = {
+        state: {
+          sessions: {
+            updateActiveSession: vi.fn().mockReturnValue('client1-result'),
+          },
+        },
+      };
+
+      let currentClient = client1;
+      const proxy = createDeepProxy(() => currentClient);
+
+      // Access nested object (this creates a cached proxy)
+      const sessions1 = proxy.state.sessions;
+      const sessions2 = proxy.state.sessions;
+
+      // Verify caching works (same proxy instance)
+      expect(sessions1).toBe(sessions2);
+
+      // Call function through cached proxy
+      expect(sessions1.updateActiveSession({ host: 'test' })).toBe(
+        'client1-result',
+      );
+      expect(client1.state.sessions.updateActiveSession).toHaveBeenCalledWith({
+        host: 'test',
+      });
+
+      // Recreate client
+      const client2 = {
+        state: {
+          sessions: {
+            updateActiveSession: vi.fn().mockReturnValue('client2-result'),
+          },
+        },
+      };
+      currentClient = client2;
+
+      // CRITICAL: Function accessed through cached proxy should use NEW client
+      expect(sessions1.updateActiveSession({ host: 'test2' })).toBe(
+        'client2-result',
+      );
+      expect(client2.state.sessions.updateActiveSession).toHaveBeenCalledWith({
+        host: 'test2',
+      });
+      expect(client1.state.sessions.updateActiveSession).toHaveBeenCalledTimes(
+        1,
+      );
+    });
+
+    it('should handle deeply nested access patterns like popupClientQueryUtils', () => {
+      // Simulate TanStack Query utils pattern
+      const client1 = {
+        state: {
+          sessions: {
+            updateActiveSession: {
+              mutationOptions: vi.fn().mockReturnValue({
+                mutationFn: vi.fn().mockReturnValue('client1-mutation'),
+              }),
+            },
+          },
+        },
+      };
+
+      let currentClient = client1;
+      const proxy = createDeepProxy(() => currentClient);
+
+      // Simulate: popupClientQueryUtils.state.sessions.updateActiveSession.mutationOptions()
+      const mutationOptions1 =
+        proxy.state.sessions.updateActiveSession.mutationOptions();
+      expect(mutationOptions1.mutationFn({ host: 'test' })).toBe(
+        'client1-mutation',
+      );
+
+      // Recreate client
+      const client2 = {
+        state: {
+          sessions: {
+            updateActiveSession: {
+              mutationOptions: vi.fn().mockReturnValue({
+                mutationFn: vi.fn().mockReturnValue('client2-mutation'),
+              }),
+            },
+          },
+        },
+      };
+      currentClient = client2;
+
+      // Access through same path should use new client
+      const mutationOptions2 =
+        proxy.state.sessions.updateActiveSession.mutationOptions();
+      expect(mutationOptions2.mutationFn({ host: 'test' })).toBe(
+        'client2-mutation',
+      );
+    });
+
+    it('should handle chained method calls like popupClient.telemetry.addRouterBreadcrumb()', () => {
+      const client1 = {
+        telemetry: {
+          addRouterBreadcrumb: vi.fn().mockResolvedValue({ success: true }),
+        },
+      };
+
+      let currentClient = client1;
+      const proxy = createDeepProxy(() => currentClient);
+
+      // Direct chained access
+      void proxy.telemetry.addRouterBreadcrumb({ from: 'a', to: 'b' });
+      expect(client1.telemetry.addRouterBreadcrumb).toHaveBeenCalledWith({
+        from: 'a',
+        to: 'b',
+      });
+
+      // Recreate client
+      const client2 = {
+        telemetry: {
+          addRouterBreadcrumb: vi.fn().mockResolvedValue({ success: true }),
+        },
+      };
+      currentClient = client2;
+
+      // Same chained access should use new client
+      void proxy.telemetry.addRouterBreadcrumb({ from: 'b', to: 'c' });
+      expect(client2.telemetry.addRouterBreadcrumb).toHaveBeenCalledWith({
+        from: 'b',
+        to: 'c',
+      });
+      expect(client1.telemetry.addRouterBreadcrumb).toHaveBeenCalledTimes(1);
+    });
+
+    it('should invalidate cached proxies when object instances change', () => {
+      const client1 = {
+        wallet: {
+          sendTransaction: vi.fn(),
+        },
+      };
+
+      let currentClient = client1;
+      const proxy = createDeepProxy(() => currentClient);
+
+      // Access wallet (creates cached proxy)
+      const wallet1 = proxy.wallet;
+      const wallet2 = proxy.wallet;
+      expect(wallet1).toBe(wallet2); // Same cached proxy
+
+      // Recreate client with NEW wallet object instance
+      const client2 = {
+        wallet: {
+          sendTransaction: vi.fn(),
+        },
+      };
+      currentClient = client2;
+
+      // Access wallet again - should create NEW proxy (cache miss due to new instance)
+      const wallet3 = proxy.wallet;
+      expect(wallet3).not.toBe(wallet1); // Different proxy instance
+
+      // But stored reference should still work (it's a proxy that calls getter)
+      wallet1.sendTransaction({ to: '0x123' });
+      expect(client2.wallet.sendTransaction).toHaveBeenCalledWith({
+        to: '0x123',
+      });
+    });
+
+    it('should handle multiple levels of stored references', () => {
+      const client1 = {
+        state: {
+          sessions: {
+            addSession: vi.fn().mockReturnValue('client1'),
+          },
+        },
+      };
+
+      let currentClient = client1;
+      const proxy = createDeepProxy(() => currentClient);
+
+      // Store multiple levels
+      const storedState = proxy.state;
+      const storedSessions = storedState.sessions;
+
+      expect(storedSessions.addSession({ host: 'test' })).toBe('client1');
+
+      // Recreate client
+      const client2 = {
+        state: {
+          sessions: {
+            addSession: vi.fn().mockReturnValue('client2'),
+          },
+        },
+      };
+      currentClient = client2;
+
+      // All stored references should use new client
+      expect(storedSessions.addSession({ host: 'test' })).toBe('client2');
+      expect(storedState.sessions.addSession({ host: 'test' })).toBe('client2');
+    });
+
+    it('should ensure function identity changes when client is recreated', () => {
+      const client1 = {
+        wallet: {
+          sendTransaction: vi.fn(),
+        },
+      };
+
+      let currentClient = client1;
+      const proxy = createDeepProxy(() => currentClient);
+
+      const fn1 = proxy.wallet.sendTransaction;
+      const fn2 = proxy.wallet.sendTransaction;
+
+      // Functions should be the same from same client
+      expect(fn1).toBe(fn2);
+      expect(fn1).toBe(client1.wallet.sendTransaction);
+
+      // Recreate client
+      const client2 = {
+        wallet: {
+          sendTransaction: vi.fn(),
+        },
+      };
+      currentClient = client2;
+
+      // New function should be different
+      const fn3 = proxy.wallet.sendTransaction;
+      expect(fn3).not.toBe(fn1);
+      expect(fn3).toBe(client2.wallet.sendTransaction);
+    });
+  });
 });

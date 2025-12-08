@@ -99,7 +99,28 @@ function createClient(
 const firstPort = createPort();
 let _popupClient = createClient(firstPort);
 
-// stable export which uses a deep proxy to ensure the client is always up to date
+/**
+ * Stable export of the ORPC client that always references the latest client instance.
+ *
+ * WHY DEEP PROXY IS NEEDED:
+ * 1. Client recreation: When the port disconnects, `_popupClient` is replaced with a new client.
+ *    Without deep proxy, stored references like `const wallet = popupClient.wallet` would become stale.
+ *
+ * 2. Nested access patterns: Code accesses deeply nested properties like:
+ *    - `popupClient.telemetry.addRouterBreadcrumb(...)`
+ *    - `popupClient.wallet.sendTransaction(...)`
+ *    - `popupClientQueryUtils.state.sessions.updateActiveSession.mutationOptions()`
+ *
+ * 3. TanStack Query utils: `popupClientQueryUtils` is created once and may store nested object
+ *    references. Deep proxy ensures that even if `popupClientQueryUtils.state.sessions` is stored,
+ *    accessing properties on it will always use the fresh client.
+ *
+ * 4. Function freshness: Functions are always returned directly (not cached), ensuring method calls
+ *    always use the latest client instance, even when accessed through cached nested proxies.
+ *
+ * Without deep proxy, if someone stores `const telemetry = popupClient.telemetry` and the client
+ * is recreated, `telemetry.addRouterBreadcrumb()` would use the stale client with a disconnected port.
+ */
 export const popupClient: RouterClient<PopupRouter, ORPCClientContext> =
   createDeepProxy(() => _popupClient);
 

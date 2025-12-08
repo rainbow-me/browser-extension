@@ -17,19 +17,33 @@ export const createDeepProxy = <T extends object>(getter: () => T): T => {
 
   const handler: ProxyHandler<object> = {
     get(_target, prop, receiver) {
+      // Always call getter() first to ensure we get the latest value
+      // This is critical for dynamic objects that can be replaced (e.g., recreated clients)
       const rootValue = getter();
       const value = Reflect.get(rootValue, prop, receiver);
 
-      // If the value is a non-null object (but not a function or special object), recursively wrap it in a proxy
+      // CRITICAL: Always return functions directly without caching
+      // Functions must always reference the latest client instance, even if accessed
+      // through a cached nested proxy. This ensures that when a client is recreated,
+      // all method calls use the fresh client, not a stale one.
+      if (typeof value === 'function') {
+        return value;
+      }
+
+      // For nested objects, create a proxy that will always get fresh values
+      // The nested proxy's getter calls the root getter, ensuring freshness
       if (
         typeof value === 'object' &&
         value !== null &&
-        typeof value !== 'function' &&
         !isSpecialObject(value)
       ) {
-        // Check cache first
+        // Cache proxies by object instance to prevent recreation
+        // When the object instance changes (e.g., new client), cache miss occurs
+        // and a new proxy is created, ensuring we always use fresh objects
         let cachedProxy = proxyCache.get(value);
         if (!cachedProxy) {
+          // Create nested proxy with getter that calls root getter for freshness
+          // This ensures that even cached nested proxies always access fresh data
           cachedProxy = createDeepProxy(() => {
             const freshRoot = getter();
             return Reflect.get(freshRoot, prop, receiver) as object;
