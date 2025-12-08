@@ -1,13 +1,3 @@
-// Move mock to top-level and use factory pattern to avoid hoisting issues
-vi.mock('~/core/storage', async () => {
-  const { createMockStorages } = await import('~/test/mock/storage');
-  const { SessionStorage, LocalStorage } = createMockStorages();
-  return {
-    SessionStorage,
-    LocalStorage,
-  };
-});
-
 import { call } from '@orpc/server';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
