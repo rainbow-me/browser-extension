@@ -9555,7 +9555,7 @@ __metadata:
     react-switch: "npm:7.0.0"
     selenium-webdriver: "npm:4.34.0"
     semver: "npm:7.5.2"
-    stores: "file:./stores-0.0.1.tgz"
+    stores: "file:./stores-0.8.0.tgz"
     svg-path-commander: "npm:1.0.5"
     ts-loader: "npm:9.4.1"
     typescript: "npm:5.8.2"
@@ -21753,9 +21753,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"stores@file:./stores-0.0.1.tgz::locator=browser-extension%40workspace%3A.":
-  version: 0.0.1
-  resolution: "stores@file:./stores-0.0.1.tgz#./stores-0.0.1.tgz::hash=c6a382&locator=browser-extension%40workspace%3A."
+"stores@file:./stores-0.8.0.tgz::locator=browser-extension%40workspace%3A.":
+  version: 0.8.0
+  resolution: "stores@file:./stores-0.8.0.tgz#./stores-0.8.0.tgz::hash=bf459f&locator=browser-extension%40workspace%3A."
   dependencies:
     use-sync-external-store: "npm:1.6.0"
     zustand: "npm:5.0.8"
@@ -21763,7 +21763,7 @@ __metadata:
     react: ">=17.0.0"
     react-native: ">=0.64.0"
     react-native-mmkv: ">=2.0.0"
-  checksum: 10c0/71009d7531054cec497f1c9cb5d232980b313ec372c474759477ee1de3eb2f36d60682f7dede63ce68a4260187cff83c4266292455b88ab09b64d905807f909a
+  checksum: 10c0/228f3eefadd124389497fcde095010fa071896585622147ed84c2962f5702141d62abf47d1f38e9d33acde96514d3f463fbd248504419c6847853ba147baf8af
   languageName: node
   linkType: hard
 
