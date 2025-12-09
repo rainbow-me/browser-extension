@@ -8,7 +8,7 @@ import { createExtensionStoreOptions } from '../_internal';
 export interface AppSession {
   activeSessionAddress: Address;
   host: string;
-  sessions: Record<Address, ChainId>;
+  sessions: Record<Address, ChainId | undefined>;
   url: string;
 }
 
@@ -22,7 +22,7 @@ interface V0AppSession {
 export type ActiveSession = { address: Address; chainId: ChainId } | null;
 
 export interface AppSessionsStore {
-  appSessions: Record<string, AppSession>;
+  appSessions: Record<string, AppSession | undefined>;
   getActiveSession: ({ host }: { host: string }) => ActiveSession;
   removeAddressSessions: ({ address }: { address: Address }) => void;
   addSession: ({
@@ -77,138 +77,160 @@ export const useAppSessionsStore = createBaseStore<AppSessionsStore>(
       const appSessions = get().appSessions;
       const activeSessionAddress = appSessions[host]?.activeSessionAddress;
       const sessions = appSessions[host]?.sessions;
-      return activeSessionAddress
-        ? {
-            address: activeSessionAddress,
-            chainId: sessions[activeSessionAddress],
-          }
-        : null;
+      if (!activeSessionAddress || !sessions) return null;
+      const chainId = sessions[activeSessionAddress];
+      if (chainId === undefined) return null;
+      return {
+        address: activeSessionAddress,
+        chainId,
+      };
     },
     removeAddressSessions: ({ address }) => {
-      const appSessions = get().appSessions;
-      for (const [host, session] of Object.entries(appSessions)) {
-        if (!session.sessions[address]) continue;
-        delete appSessions[host].sessions[address];
-        if (session.activeSessionAddress !== address) continue;
-        const newActiveSessionAddress = Object.keys(session.sessions)[0];
-        if (newActiveSessionAddress) {
-          appSessions[host].activeSessionAddress =
-            newActiveSessionAddress as Address;
-        } else {
-          delete appSessions[host];
+      set((state) => {
+        const updatedAppSessions: Record<string, AppSession | undefined> = {};
+        for (const [host, session] of Object.entries(state.appSessions)) {
+          if (!session || !session.sessions[address]) {
+            updatedAppSessions[host] = session;
+            continue;
+          }
+          const { [address]: _, ...updatedSessions } = session.sessions;
+          if (session.activeSessionAddress !== address) {
+            updatedAppSessions[host] = {
+              ...session,
+              sessions: updatedSessions,
+            };
+            continue;
+          }
+          const newActiveSessionAddress = Object.keys(updatedSessions)[0];
+          if (newActiveSessionAddress) {
+            updatedAppSessions[host] = {
+              ...session,
+              sessions: updatedSessions,
+              activeSessionAddress: newActiveSessionAddress as Address,
+            };
+          }
         }
-      }
-      set({ appSessions: { ...appSessions } });
+        return { appSessions: updatedAppSessions };
+      });
     },
     addSession: ({ host, address, chainId, url }) => {
-      const appSessions = get().appSessions;
-      const existingSession = appSessions[host];
-      if (!existingSession) {
-        appSessions[host] = {
-          host,
-          sessions: { [address]: chainId },
-          activeSessionAddress: address,
-          url,
+      let result: Record<Address, ChainId>;
+      set((state) => {
+        const existingSession = state.appSessions[host];
+        const updatedSessions = {
+          ...existingSession?.sessions,
+          [address]: chainId,
         };
-      } else {
-        appSessions[host].sessions[address] = chainId;
-        appSessions[host].activeSessionAddress = address;
-      }
-      set({
-        appSessions: {
-          ...appSessions,
-        },
+        const newSession: AppSession = {
+          host,
+          url: existingSession?.url ?? url,
+          sessions: updatedSessions,
+          activeSessionAddress: address,
+        };
+        result = Object.fromEntries(
+          Object.entries(updatedSessions).filter(
+            ([, value]) => value !== undefined,
+          ),
+        ) as Record<Address, ChainId>;
+        return {
+          appSessions: {
+            ...state.appSessions,
+            [host]: newSession,
+          },
+        };
       });
-      return appSessions[host].sessions;
+      return result!;
     },
     removeAppSession: ({ host }) => {
-      const appSessions = get().appSessions;
-      delete appSessions[host];
-      set({
-        appSessions: {
-          ...appSessions,
-        },
+      set((state) => {
+        const { [host]: _, ...appSessions } = state.appSessions;
+        return { appSessions };
       });
     },
     removeSession: ({ host, address }) => {
-      const appSessions = get().appSessions;
-      const appSession = appSessions[host];
-      let newActiveSession = null;
-      if (
-        appSession.sessions &&
-        Object.keys(appSession.sessions).length === 1
-      ) {
-        delete appSessions[host];
-        set({
-          appSessions: {
-            ...appSessions,
-          },
-        });
-      } else if (appSession.sessions) {
-        delete appSession.sessions[address];
+      let newActiveSession: { address: Address; chainId: number } | null = null;
+      set((state) => {
+        const appSession = state.appSessions[host];
+        if (!appSession) return state;
+        const sessionKeys = Object.keys(appSession.sessions);
+        if (sessionKeys.length === 1) {
+          const { [host]: _, ...appSessions } = state.appSessions;
+          return { appSessions };
+        }
+        const { [address]: _, ...updatedSessions } = appSession.sessions;
         const newActiveSessionAddress = Object.keys(
-          appSession.sessions,
+          updatedSessions,
         )[0] as Address;
-        appSession.activeSessionAddress = newActiveSessionAddress;
-        newActiveSession = {
-          address: newActiveSessionAddress,
-          chainId: appSession.sessions[newActiveSessionAddress],
-        };
-        set({
-          appSessions: {
-            ...appSessions,
-            [host]: {
-              ...appSession,
+        const chainId = updatedSessions[newActiveSessionAddress];
+        if (chainId !== undefined) {
+          newActiveSession = {
+            address: newActiveSessionAddress,
+            chainId,
+          };
+          return {
+            appSessions: {
+              ...state.appSessions,
+              [host]: {
+                ...appSession,
+                sessions: updatedSessions,
+                activeSessionAddress: newActiveSessionAddress,
+              },
             },
-          },
-        });
-      }
-
+          };
+        }
+        return state;
+      });
       return newActiveSession;
     },
     updateActiveSession: ({ host, address }) => {
-      const appSessions = get().appSessions;
-      const appSession = appSessions[host];
-      set({
-        appSessions: {
-          ...appSessions,
-          [host]: {
-            ...appSession,
-            activeSessionAddress: address,
+      set((state) => {
+        const appSession = state.appSessions[host];
+        if (!appSession) return state;
+        return {
+          appSessions: {
+            ...state.appSessions,
+            [host]: {
+              ...appSession,
+              activeSessionAddress: address,
+            },
           },
-        },
+        };
       });
     },
     updateActiveSessionChainId: ({ host, chainId }) => {
-      const appSessions = get().appSessions;
-      const appSession = appSessions[host];
-      set({
-        appSessions: {
-          ...appSessions,
-          [host]: {
-            ...appSession,
-            sessions: {
-              ...appSession.sessions,
-              [appSession.activeSessionAddress]: chainId,
+      set((state) => {
+        const appSession = state.appSessions[host];
+        if (!appSession) return state;
+        return {
+          appSessions: {
+            ...state.appSessions,
+            [host]: {
+              ...appSession,
+              sessions: {
+                ...appSession.sessions,
+                [appSession.activeSessionAddress]: chainId,
+              },
             },
           },
-        },
+        };
       });
     },
     updateSessionChainId: ({ host, address, chainId }) => {
-      const appSessions = get().appSessions;
-      const appSession = appSessions[host];
-      set({
-        appSessions: {
-          ...appSessions,
-          [host]: {
-            ...appSession,
-            sessions: {
-              ...appSession.sessions,
-              [address]: chainId,
+      set((state) => {
+        const appSession = state.appSessions[host];
+        if (!appSession) return state;
+        return {
+          appSessions: {
+            ...state.appSessions,
+            [host]: {
+              ...appSession,
+              sessions: {
+                ...appSession.sessions,
+                [address]: chainId,
+              },
             },
           },
-        },
+        };
       });
     },
     clearSessions: () => set({ appSessions: {} }),
