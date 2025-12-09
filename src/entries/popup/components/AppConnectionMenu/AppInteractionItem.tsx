@@ -18,7 +18,7 @@ export const AppInteractionItem = ({
   shortcutHint,
   type = 'dropdown',
 }: {
-  appSession: AppSession;
+  appSession: AppSession | undefined;
   chevronDirection: 'right' | 'down';
   showChevron: boolean;
   shortcutHint?: string;
