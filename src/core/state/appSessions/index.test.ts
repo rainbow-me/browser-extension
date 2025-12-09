@@ -107,24 +107,17 @@ test('should be able to update active session', async () => {
     chainId: ChainId.arbitrum,
   });
   updateActiveSession({ host: UNISWAP_HOST, address: ADDRESS_1 });
-  expect(
-    useAppSessionsStore.getState().appSessions[UNISWAP_HOST]
-      .activeSessionAddress,
-  ).toStrictEqual(ADDRESS_1);
+  const session = useAppSessionsStore.getState().appSessions[UNISWAP_HOST];
+  expect(session?.activeSessionAddress).toStrictEqual(ADDRESS_1);
 });
 
 test('should be able to update active session chainId', async () => {
   const { updateActiveSessionChainId } = useAppSessionsStore.getState();
 
   updateActiveSessionChainId({ host: UNISWAP_HOST, chainId: ChainId.base });
-  const activeSessionAddress =
-    useAppSessionsStore.getState().appSessions[UNISWAP_HOST]
-      .activeSessionAddress;
-  expect(
-    useAppSessionsStore.getState().appSessions[UNISWAP_HOST].sessions[
-      activeSessionAddress
-    ],
-  ).toStrictEqual(ChainId.base);
+  const session = useAppSessionsStore.getState().appSessions[UNISWAP_HOST];
+  const activeSessionAddress = session?.activeSessionAddress;
+  expect(session?.sessions[activeSessionAddress!]).toStrictEqual(ChainId.base);
 });
 
 test('should be able to update session chainId', async () => {
@@ -135,11 +128,8 @@ test('should be able to update session chainId', async () => {
     address: ADDRESS_1,
     chainId: ChainId.zora,
   });
-  expect(
-    useAppSessionsStore.getState().appSessions[UNISWAP_HOST].sessions[
-      ADDRESS_1
-    ],
-  ).toStrictEqual(ChainId.zora);
+  const session = useAppSessionsStore.getState().appSessions[UNISWAP_HOST];
+  expect(session?.sessions[ADDRESS_1]).toStrictEqual(ChainId.zora);
 });
 
 test('should be able to clear all sessions', async () => {

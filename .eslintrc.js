@@ -166,6 +166,16 @@ module.exports = {
       },
     ],
     'prettier/prettier': ['warn', require('./.prettierrc.js')],
+    // Allow _ as an intentionally unused variable (common in destructuring)
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      {
+        argsIgnorePattern: '^_$',
+        varsIgnorePattern: '^_$',
+        caughtErrorsIgnorePattern: '^_$',
+      },
+    ],
+    'no-unused-vars': 'off', // Use TypeScript version instead
     // Prevent direct vault storage writes outside of _setVaultInStorage
     'no-restricted-syntax': [
       'error',
