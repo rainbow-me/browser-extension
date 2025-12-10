@@ -1,6 +1,4 @@
-import { fakeBrowser } from '@webext-core/fake-browser';
-import { vi } from 'vitest';
+import { setupChromeMock } from '../src/test/setupChromeMock';
 
-vi.mock('webextension-polyfill');
-
-globalThis.chrome = fakeBrowser;
+// Use fakeBrowser for Chrome API mocking (preferred over custom mocks)
+setupChromeMock();
