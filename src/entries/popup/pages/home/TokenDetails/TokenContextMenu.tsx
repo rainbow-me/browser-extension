@@ -1,4 +1,4 @@
-import { ReactNode, useCallback } from 'react';
+import { ReactNode, useCallback, useMemo } from 'react';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -51,6 +51,11 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
     (state) => state.setSelectedToken,
   );
   const toggleHideAsset = useHiddenAssetStore((state) => state.toggleHideAsset);
+  const hiddenStore = useHiddenAssetStore((state) => state.hidden);
+  const hidden = useMemo(
+    () => !!hiddenStore[address]?.[computeUniqueIdForHiddenAsset(token)],
+    [hiddenStore, address, token],
+  );
   const pinned = !!pinnedStore[address]?.[token.uniqueId]?.pinned;
 
   // if we are navigating to new page (swap/send) the menu closes automatically,
@@ -130,19 +135,11 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
     toggleHideAsset(address, computeUniqueIdForHiddenAsset(token));
     if (pinned) togglePinAsset(address, token.uniqueId);
     setSelectedToken();
-    triggerToast({
-      title: i18n.t('token_details.toast.hide_token', {
-        name: token.symbol,
-      }),
-    });
-    const isHidden =
-      useHiddenAssetStore.getState().hidden[address]?.[
-        computeUniqueIdForHiddenAsset(token)
-      ];
-    const hiddenCount = Object.values(
-      useHiddenAssetStore.getState().hidden[address] || {},
-    ).filter((isHidden) => isHidden).length;
-    analytics.track(isHidden ? event.tokenHidden : event.tokenUnhidden, {
+    const newIsHidden = !hidden;
+    const hiddenCount =
+      Object.values(hiddenStore[address] || {}).filter((isHidden) => isHidden)
+        .length + (newIsHidden ? 1 : -1);
+    analytics.track(newIsHidden ? event.tokenHidden : event.tokenUnhidden, {
       token: {
         address: token.address,
         chainId: token.chainId,
@@ -150,6 +147,11 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
         name: token.name,
       },
       hiddenTokens: hiddenCount,
+    });
+    triggerToast({
+      title: i18n.t('token_details.toast.hide_token', {
+        name: token.symbol,
+      }),
     });
   }, [
     token,
@@ -159,6 +161,8 @@ export function TokenContextMenu({ children, token }: TokenContextMenuProps) {
     toggleHideAsset,
     togglePinAsset,
     setSelectedToken,
+    hidden,
+    hiddenStore,
   ]);
 
   const copyTokenAddress = useCallback(() => {

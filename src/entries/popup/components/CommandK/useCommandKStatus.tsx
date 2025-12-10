@@ -37,13 +37,11 @@ export const useCommandKStatus = create<CommandKState>((set, get) => {
       pendingOperation = openCommandK;
     } else {
       analyticsTrack(event.commandKOpened);
-      set(() => {
-        const store = useQuickPromoStore.getState();
-        if (!store.seenPromos[promoTypes.command_k]) {
-          store.setSeenPromo(promoTypes.command_k);
-        }
-        return { isCommandKVisible: true };
-      });
+      const store = useQuickPromoStore.getState();
+      if (!store.seenPromos[promoTypes.command_k]) {
+        store.setSeenPromo(promoTypes.command_k);
+      }
+      set({ isCommandKVisible: true });
     }
   };
 
