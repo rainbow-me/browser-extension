@@ -22,7 +22,7 @@ import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { add } from '~/core/utils/numbers';
 import { addNewTransaction } from '~/core/utils/transactions';
-import { getProvider } from '~/core/wagmi/clientToProvider';
+import { getProvider } from '~/core/viem/clientToProvider';
 import { TransactionSimulationResponse } from '~/entries/popup/pages/messages/useSimulateTransaction';
 import { RainbowError, logger } from '~/logger';
 
