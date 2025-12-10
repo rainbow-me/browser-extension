@@ -1,6 +1,6 @@
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { BigNumber } from '@ethersproject/bignumber';
-import { Bytes, hexlify, joinSignature } from '@ethersproject/bytes';
+// Keep ethers imports for transaction signing - hardware wallets require ethers transaction format
 import { TransactionRequest } from '@ethersproject/providers';
 import {
   UnsignedTransaction,
@@ -10,10 +10,24 @@ import {
 import AppEth, { ledgerService } from '@ledgerhq/hw-app-eth';
 import type Transport from '@ledgerhq/hw-transport';
 import TransportWebHID from '@ledgerhq/hw-transport-webhid';
-import { SignTypedDataVersion, TypedDataUtils } from '@metamask/eth-sig-util';
-import { Address, stringToBytes } from 'viem';
+import {
+  Address,
+  ByteArray,
+  Hex,
+  bytesToHex,
+  hashDomain,
+  hashStruct,
+  hexToBytes,
+  stringToBytes,
+} from 'viem';
 
 import { i18n } from '~/core/languages';
+import {
+  SigningMessage,
+  isPersonalSignMessage,
+  isTypedDataMessage,
+} from '~/core/types/messageSigning';
+import { sanitizeTypedData } from '~/core/utils/ethereum';
 import { getProvider } from '~/core/viem/clientToProvider';
 import { logger } from '~/logger';
 
@@ -25,7 +39,7 @@ const getPath = async (address: Address) => {
 
 export async function signTransactionFromLedger(
   transaction: TransactionRequest,
-): Promise<string> {
+): Promise<Hex> {
   let transport;
   try {
     const { from: address } = transaction;
@@ -86,7 +100,7 @@ export async function signTransactionFromLedger(
       r: '0x' + sig.r,
       s: '0x' + sig.s,
       v: BigNumber.from('0x' + sig.v).toNumber(),
-    });
+    }) as Hex;
 
     const parsedTx = parse(serializedTransaction);
 
@@ -126,10 +140,9 @@ export async function sendTransactionFromLedger(
 }
 
 export async function signMessageByTypeFromLedger(
-  msgData: string | Bytes,
+  message: SigningMessage,
   address: Address,
-  messageType: string,
-): Promise<string> {
+): Promise<Hex> {
   let transport;
   try {
     transport = await TransportWebHID.openConnected();
@@ -141,55 +154,77 @@ export async function signMessageByTypeFromLedger(
   }
   const appEth = new AppEth(transport as Transport);
   const path = await getPath(address);
+
   // Personal sign
-  if (messageType === 'personal_sign') {
-    if (typeof msgData === 'string') {
-      try {
-        // eslint-disable-next-line no-param-reassign
-        msgData = stringToBytes(msgData);
-      } catch (e) {
-        logger.info('the message is not a utf8 string, will sign as hex');
-      }
+  if (isPersonalSignMessage(message)) {
+    let messageBytes: ByteArray;
+    try {
+      messageBytes = stringToBytes(message.message);
+    } catch (e) {
+      logger.info('the message is not a utf8 string, will sign as hex');
+      // If stringToBytes fails, treat as hex string and convert to bytes
+      const hexMessage = message.message.startsWith('0x')
+        ? (message.message as Hex)
+        : (`0x${message.message}` as Hex);
+      messageBytes = hexToBytes(hexMessage);
     }
 
-    const messageHex = hexlify(msgData).substring(2);
+    const messageHex = bytesToHex(messageBytes).slice(2);
 
     const sig = await appEth.signPersonalMessage(path, messageHex);
     sig.r = '0x' + sig.r;
     sig.s = '0x' + sig.s;
     await (transport as TransportWebHID)?.close();
-    return joinSignature(sig);
-    // sign typed data
-  } else if (messageType === 'sign_typed_data') {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const parsedData = msgData as any;
-    const version = SignTypedDataVersion.V4;
+    // Format signature from r, s, v components (viem doesn't have joinSignature equivalent)
+    // sig.v from Ledger API can be string or number - handle both cases
+    const vValue: string | number = sig.v as string | number;
+    const vHex =
+      typeof vValue === 'string'
+        ? vValue.startsWith('0x')
+          ? vValue.slice(2)
+          : vValue
+        : vValue.toString(16);
+    return `0x${sig.r.slice(2)}${sig.s.slice(2)}${vHex.padStart(
+      2,
+      '0',
+    )}` as Hex;
+  }
+  // sign typed data
+  else if (isTypedDataMessage(message)) {
+    // message.data is already TypedDataDefinition, no need for type assertion
+    const typedData = message.data;
+
+    // Type guard to ensure we have the required fields for v3/v4
     if (
-      typeof msgData !== 'object' ||
-      !(parsedData.types || parsedData.primaryType || parsedData.domain)
+      typeof typedData !== 'object' ||
+      typedData === null ||
+      !(
+        'types' in typedData &&
+        'primaryType' in typedData &&
+        'domain' in typedData
+      )
     ) {
       await (transport as TransportWebHID)?.close();
       throw new Error('unsupported typed data version');
     }
 
-    const { domain, types, primaryType, message } =
-      TypedDataUtils.sanitizeData(parsedData);
+    const sanitizedData = sanitizeTypedData(typedData);
+    const { domain, types, primaryType, message: messageData } = sanitizedData;
 
-    const domainSeparatorHex = TypedDataUtils.hashStruct(
-      'EIP712Domain',
-      domain,
-      types,
-      version,
-    ).toString('hex');
-
-    const hashStructMessageHex = TypedDataUtils.hashStruct(
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
+    // Use viem's hashDomain and hashStruct utilities
+    // These return Hex strings (0x-prefixed), so we remove the prefix for Ledger
+    // sanitizedData.message is guaranteed to exist after sanitization
+    // Type assertions needed because viem's types are strict, but sanitizedData is compatible
+    const messagePayload = messageData || {};
+    const domainSeparatorHex = hashDomain({
+      domain: domain as never,
+      types: types as never,
+    } as Parameters<typeof hashDomain>[0]).slice(2);
+    const hashStructMessageHex = hashStruct({
+      data: messagePayload as never,
       primaryType,
-      message,
-      types,
-      version,
-    ).toString('hex');
+      types: types as never,
+    } as Parameters<typeof hashStruct>[0]).slice(2);
 
     const sig = await appEth.signEIP712HashedMessage(
       path,
@@ -199,10 +234,22 @@ export async function signMessageByTypeFromLedger(
     sig.r = '0x' + sig.r;
     sig.s = '0x' + sig.s;
     await (transport as TransportWebHID)?.close();
-    return joinSignature(sig);
+    // Format signature from r, s, v components (viem doesn't have joinSignature equivalent)
+    // sig.v from Ledger API can be string or number - handle both cases
+    const vValue: string | number = sig.v as string | number;
+    const vHex =
+      typeof vValue === 'string'
+        ? vValue.startsWith('0x')
+          ? vValue.slice(2)
+          : vValue
+        : vValue.toString(16);
+    return `0x${sig.r.slice(2)}${sig.s.slice(2)}${vHex.padStart(
+      2,
+      '0',
+    )}` as Hex;
   } else {
     await (transport as TransportWebHID)?.close();
-    throw new Error(`Message type ${messageType} not supported`);
+    throw new Error(`Unsupported message type`);
   }
 }
 
