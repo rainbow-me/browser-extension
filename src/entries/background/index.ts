@@ -2,10 +2,7 @@ import { uuid4 } from '@sentry/core';
 
 import { initializeMessenger } from '~/core/messengers';
 import { initializeSentry } from '~/core/sentry';
-import {
-  syncNetworksStore,
-  syncStores,
-} from '~/core/state/internal/syncStores';
+import { syncStores } from '~/core/state/internal/syncStores';
 import { localStorageRecycler } from '~/core/storage/localStorageRecycler';
 
 import { handleDisconnect } from './handlers/handleDisconnect';
@@ -37,7 +34,6 @@ handleSetupInpage();
 handleWallets();
 handleDisconnect();
 
-syncNetworksStore('background');
 syncStores();
 
 uuid4();
