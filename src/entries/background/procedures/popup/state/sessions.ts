@@ -80,7 +80,13 @@ const updateActiveSessionHandler = os
 
     // Forward events to inpage
     messenger.send(`accountsChanged:${host}`, address);
-    messenger.send(`chainChanged:${host}`, appSessions[host].sessions[address]);
+    const session = appSessions[host];
+    if (session) {
+      const chainId = session.sessions[address];
+      if (chainId !== undefined) {
+        messenger.send(`chainChanged:${host}`, chainId);
+      }
+    }
   });
 
 const updateActiveSessionChainIdHandler = os
@@ -169,17 +175,22 @@ const disconnectAllSessionsHandler = os.output(z.void()).handler(async () => {
   const { appSessions, clearSessions } = useAppSessionsStore.getState();
 
   // Disconnect all sessions and forward events
-  Object.values(appSessions).forEach((session) => {
-    useAppConnectionWalletSwitcherStore
-      .getState()
-      .clearAppHasInteractedWithNudgeSheet({
-        host: session.host,
-      });
+  Object.values(appSessions)
+    .filter(
+      (session): session is NonNullable<typeof session> =>
+        session !== undefined,
+    )
+    .forEach((session) => {
+      useAppConnectionWalletSwitcherStore
+        .getState()
+        .clearAppHasInteractedWithNudgeSheet({
+          host: session.host,
+        });
 
-    if (isValidUrl(session?.url)) {
-      messenger.send(`disconnect:${getDappHost(session.url)}`, null);
-    }
-  });
+      if (isValidUrl(session.url)) {
+        messenger.send(`disconnect:${getDappHost(session.url)}`, null);
+      }
+    });
 
   clearSessions();
 });
