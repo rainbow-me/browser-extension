@@ -62,7 +62,8 @@ import { SeedReveal } from './pages/seedReveal';
 import { SeedVerify } from './pages/seedVerify';
 import { Send } from './pages/send';
 import { Currency } from './pages/settings/currency';
-import { SettingsCustomChain } from './pages/settings/customChain';
+import { AddRpcForm } from './pages/settings/customChain/AddRpcForm';
+import { NewNetworkForm } from './pages/settings/customChain/NewNetworkForm';
 import { AddAsset } from './pages/settings/customChain/addAsset';
 import { SettingsCustomChainsList } from './pages/settings/customChain/list';
 import { Language } from './pages/settings/language';
@@ -561,11 +562,26 @@ const ROUTE_DATA = [
         direction="right"
         navbar
         navbarIcon="arrow"
-        title={i18n.t('settings.networks.custom_rpc.title')}
+        title={i18n.t('settings.networks.custom_rpc.add_custom_network')}
         protectedRoute
         background="surfaceSecondary"
       >
-        <SettingsCustomChain />
+        <NewNetworkForm />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.SETTINGS__NETWORKS__ADD_RPC,
+    element: (
+      <AnimatedRoute
+        direction="right"
+        navbar
+        navbarIcon="arrow"
+        title={i18n.t('settings.networks.custom_rpc.add_rpc')}
+        protectedRoute
+        background="surfaceSecondary"
+      >
+        <AddRpcForm />
       </AnimatedRoute>
     ),
   },

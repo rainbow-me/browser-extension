@@ -227,11 +227,10 @@ it('should be able to add a custom ETH RPC and switch to it', async () => {
   await checkExtensionURL(driver, 'rpcs');
 
   await findElementByTestIdAndClick({ driver, id: 'custom-rpc-button' });
-  await checkExtensionURL(driver, 'custom-chain');
+  await checkExtensionURL(driver, 'add-rpc');
 
   // sometimes certain RPCs can fail to validate, adding a fallback
   try {
-    // RPC URL
     await findElementByTestIdAndClick({ driver, id: 'custom-network-rpc-url' });
     await typeOnTextInput({
       text: 'https://eth.llamarpc.com',
@@ -242,13 +241,12 @@ it('should be able to add a custom ETH RPC and switch to it', async () => {
     await delayTime('very-long');
     await findElementByTestIdAndClick({
       driver,
-      id: 'add-custom-network-button',
+      id: 'add-rpc-button',
     });
 
     // this will fail if the RPC URL is not valid
     await findElementByTestIdAndClick({ id: 'rpc-row-item-1', driver });
   } catch {
-    // RPC URL
     await findElementByTestIdAndClick({ driver, id: 'custom-network-rpc-url' });
 
     // clear the input
@@ -272,7 +270,7 @@ it('should be able to add a custom ETH RPC and switch to it', async () => {
 
     await findElementByTestIdAndClick({
       driver,
-      id: 'add-custom-network-button',
+      id: 'add-rpc-button',
     });
     await findElementByTestIdAndClick({ id: 'rpc-row-item-1', driver });
   }
