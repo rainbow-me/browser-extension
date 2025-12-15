@@ -293,7 +293,7 @@ export const handleProviderRequest = ({
         const isActiveRpc = rainbowChain.activeRpcUrl === rpcUrl;
 
         if (!alreadyAddedRpcUrl) {
-          addCustomChain(chainObject.id, chainObject, rpcUrl, true);
+          addCustomChain(chainObject.id, chainObject, rpcUrl, false);
         }
 
         let rpcStatus;
@@ -304,7 +304,7 @@ export const handleProviderRequest = ({
             rpcStatus = IN_DAPP_NOTIFICATION_STATUS.already_added;
           }
         } else {
-          rpcStatus = IN_DAPP_NOTIFICATION_STATUS.set_as_active;
+          rpcStatus = IN_DAPP_NOTIFICATION_STATUS.rpc_added;
         }
 
         const extensionUrl = chrome.runtime.getURL('');

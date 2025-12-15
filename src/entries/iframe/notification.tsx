@@ -28,7 +28,7 @@ export enum IN_DAPP_NOTIFICATION_STATUS {
   'no_active_session' = 'no_active_session',
   'unsupported_network' = 'unsupported_network',
   'already_added' = 'already_added',
-  'set_as_active' = 'set_as_active',
+  'rpc_added' = 'rpc_added',
   'already_active' = 'already_active',
 }
 
@@ -253,9 +253,9 @@ const NotificationComponent = ({
           title: i18n.t(`injected_notifications.already_active`),
           description: undefined,
         };
-      case IN_DAPP_NOTIFICATION_STATUS.set_as_active:
+      case IN_DAPP_NOTIFICATION_STATUS.rpc_added:
         return {
-          title: i18n.t(`injected_notifications.set_as_active`),
+          title: i18n.t(`injected_notifications.rpc_added`),
           description: undefined,
         };
       case IN_DAPP_NOTIFICATION_STATUS.no_active_session:
@@ -296,7 +296,7 @@ const NotificationComponent = ({
               <Column width="content">
                 {status === IN_DAPP_NOTIFICATION_STATUS.success ||
                 status === IN_DAPP_NOTIFICATION_STATUS.already_added ||
-                status === IN_DAPP_NOTIFICATION_STATUS.set_as_active ? (
+                status === IN_DAPP_NOTIFICATION_STATUS.rpc_added ? (
                   <ChainBadge chainId={chainId} size={24} />
                 ) : (
                   <Box
