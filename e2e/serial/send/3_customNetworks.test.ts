@@ -227,10 +227,17 @@ it('should be able to add a custom ETH RPC and switch to it', async () => {
   await checkExtensionURL(driver, 'rpcs');
 
   await findElementByTestIdAndClick({ driver, id: 'custom-rpc-button' });
-  await checkExtensionURL(driver, 'custom-chain');
+  await checkExtensionURL(driver, 'add-rpc');
 
   // sometimes certain RPCs can fail to validate, adding a fallback
   try {
+    // RPC Name
+    await findElementByTestIdAndClick({ driver, id: 'rpc-name-field' });
+    await typeOnTextInput({
+      text: 'LlamaNodes',
+      driver,
+    });
+
     // RPC URL
     await findElementByTestIdAndClick({ driver, id: 'custom-network-rpc-url' });
     await typeOnTextInput({
@@ -242,12 +249,31 @@ it('should be able to add a custom ETH RPC and switch to it', async () => {
     await delayTime('very-long');
     await findElementByTestIdAndClick({
       driver,
-      id: 'add-custom-network-button',
+      id: 'add-rpc-button',
     });
 
     // this will fail if the RPC URL is not valid
     await findElementByTestIdAndClick({ id: 'rpc-row-item-1', driver });
   } catch {
+    // RPC Name
+    await findElementByTestIdAndClick({ driver, id: 'rpc-name-field' });
+
+    // clear the input
+    await executePerformShortcut({
+      driver,
+      key: 'ARROW_RIGHT',
+      timesToPress: 10,
+    });
+    await executePerformShortcut({
+      driver,
+      key: 'BACK_SPACE',
+      timesToPress: 30,
+    });
+    await typeOnTextInput({
+      text: 'DRPC',
+      driver,
+    });
+
     // RPC URL
     await findElementByTestIdAndClick({ driver, id: 'custom-network-rpc-url' });
 
@@ -272,7 +298,7 @@ it('should be able to add a custom ETH RPC and switch to it', async () => {
 
     await findElementByTestIdAndClick({
       driver,
-      id: 'add-custom-network-button',
+      id: 'add-rpc-button',
     });
     await findElementByTestIdAndClick({ id: 'rpc-row-item-1', driver });
   }
