@@ -73,10 +73,10 @@ export const useSwapQuote = ({
       fromAddress: currentAddress,
       sellTokenAddress: assetToSell.isNativeAsset
         ? ETH_ADDRESS
-        : assetToSell.address,
+        : (assetToSell.address as `0x${string}`),
       buyTokenAddress: assetToBuy.isNativeAsset
         ? ETH_ADDRESS
-        : assetToBuy.address,
+        : (assetToBuy.address as `0x${string}`),
       sellAmount:
         (independentField === 'sellField' ||
           independentField === 'sellNativeField') &&

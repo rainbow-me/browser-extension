@@ -6,6 +6,7 @@ export enum featureFlagTypes {
   full_watching_wallets = 'full_watching_wallets',
   command_k_internal_shortcuts_enabled = 'command_k_internal_shortcuts_enabled',
   rewards_scheduled_drop = 'rewards_scheduled_drop',
+  atomic_swaps_enabled = 'atomic_swaps_enabled',
 }
 export type FeatureFlagTypes = keyof typeof featureFlagTypes;
 
@@ -20,6 +21,7 @@ export const useFeatureFlagsStore = createBaseStore<FeatureFlagsStore>(
       full_watching_wallets: false,
       command_k_internal_shortcuts_enabled: false,
       rewards_scheduled_drop: false,
+      atomic_swaps_enabled: false,
     },
     setFeatureFlag: (key, value) => {
       const { featureFlags } = get();
