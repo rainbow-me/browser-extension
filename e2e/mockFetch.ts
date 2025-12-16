@@ -1,5 +1,7 @@
 import { Hex, sha256 } from 'viem';
 
+import { normalizeSwapUrlForMock } from './swapQuoteMockUtils';
+
 export function mockFetch() {
   const nativeFetch = window.fetch;
   window.fetch = async function mockedFetch(
@@ -12,25 +14,35 @@ export function mockFetch() {
     const url = new URL(input);
 
     if (url.hostname === 'swap.p.rainbow.me') {
-      console.log('Intercepting swap request:', {
-        url: url.href,
-        params: Object.fromEntries(url.searchParams),
-      });
+      const normalizedHref = normalizeSwapUrlForMock(url);
+      const hash = sha256(normalizedHref as Hex);
 
-      const hash = sha256(url.href as Hex);
-      console.log('Looking for mock file with hash:', hash);
+      try {
+        const response = await import(`./mocks/swap_quotes/${hash}.json`);
 
-      const response = await import(`./mocks/swap_quotes/${hash}.json`);
-      console.log('Mock response:', response);
+        if (!response)
+          throw new Error('no response for request', {
+            cause: { url: url.href, hash },
+          });
 
-      if (!response)
-        throw new Error('no response for request', {
-          cause: { url: url.href, hash },
+        return new Response(JSON.stringify(response), {
+          headers: { 'Content-Type': 'application/json' },
         });
-
-      return new Response(JSON.stringify(response), {
-        headers: { 'Content-Type': 'application/json' },
-      });
+      } catch (err) {
+        console.error('Mock not found for swap URL:', url.href);
+        if (normalizedHref !== url.href) {
+          console.error('Normalized URL for mock lookup:', normalizedHref);
+        }
+        console.error('Expected hash:', hash);
+        // Return error response so the UI shows a meaningful state
+        return new Response(
+          JSON.stringify({ error: true, message: 'Mock not found' }),
+          {
+            headers: { 'Content-Type': 'application/json' },
+            status: 404,
+          },
+        );
+      }
     }
 
     // Mock meteorology API to return base fee matching Anvil's fixed base fee

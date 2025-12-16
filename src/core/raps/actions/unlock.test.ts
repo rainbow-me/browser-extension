@@ -1,6 +1,6 @@
 import { Wallet } from '@ethersproject/wallet';
 import { getRainbowRouterContractAddress } from '@rainbow-me/swaps';
-import { Address } from 'viem';
+import { Address, maxUint256 } from 'viem';
 import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test, vi } from 'vitest';
 
@@ -129,6 +129,7 @@ test('[rap/unlock] :: should execute approve', async () => {
     spender: getRainbowRouterContractAddress(mainnet.id),
     tokenAddress: USDC_MAINNET_ASSET.address as Address,
     wallet,
+    approvalAmount: maxUint256.toString(),
   });
   expect(approvalTx.hash).toBeDefined();
 });

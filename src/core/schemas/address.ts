@@ -6,3 +6,11 @@ export const addressSchema = z.custom<Address>(
     typeof val === 'string' && isAddress(val, { strict: false }),
   { message: 'Invalid address' },
 );
+
+export function requireAddress(value: unknown, fieldName: string): Address {
+  const result = addressSchema.safeParse(value);
+  if (!result.success) {
+    throw new Error(`Invalid address for ${fieldName}: ${value}`);
+  }
+  return result.data;
+}

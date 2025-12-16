@@ -64,6 +64,8 @@ type FeeProps = {
   setCustomMaxBaseFee: (maxBaseFee?: string) => void;
   setCustomMaxPriorityFee: (maxPriorityFee?: string) => void;
   setCustomGasPrice: (gasPrice?: string) => void;
+  feeLabel?: string;
+  feeInfoButton?: { onClick: () => void };
 };
 
 function Fee({
@@ -83,6 +85,8 @@ function Fee({
   setCustomMaxBaseFee,
   setCustomMaxPriorityFee,
   setCustomGasPrice,
+  feeLabel,
+  feeInfoButton,
 }: FeeProps) {
   const { trackShortcut } = useKeyboardAnalytics();
   const [showCustomGasSheet, setShowCustomGasSheet] = useState(false);
@@ -170,9 +174,28 @@ function Fee({
         <Column>
           <Rows space="8px">
             <Row>
-              <Text weight="semibold" color="labelQuaternary" size="12pt">
-                {i18n.t('transaction_fee.estimated_fee')}
-              </Text>
+              <Inline space="4px" alignVertical="center">
+                <Text weight="semibold" color="labelQuaternary" size="12pt">
+                  {feeLabel ?? i18n.t('transaction_fee.estimated_fee')}
+                </Text>
+                {feeInfoButton && (
+                  <Lens
+                    borderRadius="round"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    style={{ height: 20, width: 20 }}
+                    onClick={feeInfoButton.onClick}
+                  >
+                    <Symbol
+                      weight="medium"
+                      symbol="info.circle.fill"
+                      size={12}
+                      color="labelQuaternary"
+                    />
+                  </Lens>
+                )}
+              </Inline>
             </Row>
             <Row>
               <Columns alignVertical="center" space="4px">
@@ -331,6 +354,8 @@ type SwapFeeProps = {
   enabled?: boolean;
   speedMenuMarginRight?: Space;
   quoteServiceTime?: number;
+  feeLabel?: string;
+  feeInfoButton?: { onClick: () => void };
 };
 
 export function SwapFee({
@@ -344,6 +369,8 @@ export function SwapFee({
   enabled = true,
   speedMenuMarginRight,
   quoteServiceTime,
+  feeLabel,
+  feeInfoButton,
 }: SwapFeeProps) {
   const { defaultTxSpeed } = useDefaultTxSpeed({ chainId });
   const {
@@ -383,6 +410,8 @@ export function SwapFee({
       baseFeeTrend={baseFeeTrend}
       speedMenuMarginRight={speedMenuMarginRight}
       feeType={feeType}
+      feeLabel={feeLabel}
+      feeInfoButton={feeInfoButton}
     />
   );
 }

@@ -31,7 +31,7 @@ import { parseUserAssets } from './common';
 
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
 const USER_ASSETS_TIMEOUT_DURATION = 20000;
-const PLATFORM_ASSET_UPDATES_PATH = '/v1/assets/GetAssetUpdates';
+const PLATFORM_ASSET_UPDATES_PATH = '/assets/GetAssetUpdates';
 
 // ///////////////////////////////////////////////
 // Query Types

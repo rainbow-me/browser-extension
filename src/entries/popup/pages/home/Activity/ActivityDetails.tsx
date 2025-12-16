@@ -1,11 +1,14 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { formatUnits } from '@ethersproject/units';
+import { DelegationStatus } from '@rainbow-me/delegation';
 import { motion } from 'framer-motion';
 import { ReactNode, useMemo, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 
+import RainbowIcon from 'static/images/icon-16@2x.png';
 import { i18n } from '~/core/languages';
 import { useApprovals } from '~/core/resources/approvals/approvals';
+import { useDelegations } from '~/core/resources/delegations/delegations';
 import { useTransaction } from '~/core/resources/transactions/transaction';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useNetworkStore } from '~/core/state/networks/networks';
@@ -104,6 +107,50 @@ function ToFrom({ transaction }: { transaction: RainbowTransaction }) {
         />
       )}
     </Stack>
+  );
+}
+
+function DelegationContractRow({
+  transaction,
+}: {
+  transaction: RainbowTransaction;
+}) {
+  const { currentAddress } = useCurrentAddressStore();
+  const { data: delegations } = useDelegations({ address: currentAddress });
+  const delegation = useMemo(
+    () => delegations?.find((d) => d.chainId === transaction.chainId),
+    [delegations, transaction.chainId],
+  );
+
+  const delegationContract =
+    transaction.type === 'delegate'
+      ? delegation?.contractAddress
+      : delegation?.revokeAddress ?? delegation?.contractAddress;
+
+  if (!delegationContract) return null;
+
+  const isRainbowDelegation =
+    delegation?.delegationStatus === DelegationStatus.RAINBOW_DELEGATED;
+  const title = isRainbowDelegation
+    ? i18n.t('activity_details.smart_account')
+    : delegation?.currentContractName ??
+      i18n.t('activity_details.smart_account');
+
+  return (
+    <InfoRow
+      symbol="person.2.fill"
+      label={title}
+      value={
+        <AddressDisplay
+          address={delegationContract}
+          chainId={transaction.chainId}
+          contract={{
+            name: title,
+            iconUrl: isRainbowDelegation ? RainbowIcon : undefined,
+          }}
+        />
+      }
+    />
   );
 }
 
@@ -781,6 +828,10 @@ export function ActivityDetails() {
             gap="20px"
           >
             <ToFrom transaction={transaction} />
+            {(transaction.type === 'delegate' ||
+              transaction.type === 'revoke_delegation') && (
+              <DelegationContractRow transaction={transaction} />
+            )}
             {additionalDetails && (
               <AdditionalDetails details={additionalDetails} />
             )}

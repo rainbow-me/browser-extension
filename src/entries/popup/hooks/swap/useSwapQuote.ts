@@ -11,10 +11,12 @@ import {
 } from '@rainbow-me/swaps';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo, useRef } from 'react';
+import { Address } from 'viem';
 
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { ParsedAsset, ParsedSearchAsset } from '~/core/types/assets';
 import { convertAmountToRawAmount } from '~/core/utils/numbers';
+import { isQuote, isQuoteError } from '~/core/utils/quotes';
 
 import { analyticsTrackQuoteFailed } from './analyticsTrackQuoteFailed';
 import { IndependentField } from './useSwapInputs';
@@ -73,10 +75,10 @@ export const useSwapQuote = ({
       fromAddress: currentAddress,
       sellTokenAddress: assetToSell.isNativeAsset
         ? ETH_ADDRESS
-        : assetToSell.address,
+        : (assetToSell.address as Address),
       buyTokenAddress: assetToBuy.isNativeAsset
         ? ETH_ADDRESS
-        : assetToBuy.address,
+        : (assetToBuy.address as Address),
       sellAmount:
         (independentField === 'sellField' ||
           independentField === 'sellNativeField') &&
@@ -121,7 +123,7 @@ export const useSwapQuote = ({
         quotesParams,
         signal,
       );
-      if (quote && 'error' in quote) {
+      if (quote && isQuoteError(quote)) {
         analyticsTrackQuoteFailed(quote, {
           inputAsset: assetToSell,
           outputAsset: assetToBuy,
@@ -149,13 +151,13 @@ export const useSwapQuote = ({
   }, [currentInputHash, fetchStatus]);
 
   const isWrapOrUnwrapEth = useMemo(() => {
-    if (!data || (data as QuoteError).error) return false;
+    if (!data || !isQuote(data)) return false;
     const quote = data as Quote | CrosschainQuote;
     return quote.swapType == SwapType.wrap || quote.swapType == SwapType.unwrap;
   }, [data]);
 
   const quote = useMemo(() => {
-    if (!data || (data as QuoteError)?.error) return data;
+    if (!data || isQuoteError(data)) return data;
     const quote = data as Quote | CrosschainQuote;
     return {
       ...quote,

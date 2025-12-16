@@ -5,7 +5,7 @@ import { event } from '~/analytics/event';
 import { getWalletContext } from '~/analytics/util';
 import { i18n } from '~/core/languages';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
-import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import { useFeatureFlagLocalOverwriteStore } from '~/core/state/currentSettings/featureFlags';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import {
   isPersonalSignMessage,
@@ -57,7 +57,7 @@ export function SignMessage({
   const { data: dappMetadata } = useDappMetadata({
     url: request?.meta?.sender?.url,
   });
-  const { featureFlags } = useFeatureFlagsStore();
+  const { featureFlags } = useFeatureFlagLocalOverwriteStore();
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
   const { allWallets, watchedWallets } = useWallets();
 

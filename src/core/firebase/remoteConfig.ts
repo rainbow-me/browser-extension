@@ -34,6 +34,8 @@ export interface RainbowConfig extends Record<string, any> {
   degen_mode_enabled: boolean;
   nfts_enabled: boolean;
   approvals_enabled: boolean;
+  atomic_swaps_enabled: boolean;
+  delegation_enabled: boolean;
   // SWAPS
   default_slippage_bips: Partial<Record<ChainId, number>>;
 }
@@ -50,6 +52,8 @@ export const defaultslippagInBips = (chainId: ChainId) => {
   }
 };
 
+const IS_TESTING = process.env.IS_TESTING === 'true';
+
 const DEFAULT_CONFIG = {
   // features
   send_enabled: true,
@@ -63,6 +67,10 @@ const DEFAULT_CONFIG = {
   defi_positions_enabled: false,
   degen_mode_enabled: true,
   approvals_enabled: false,
+  // Disable atomic swaps and delegation in test builds so E2E swap tests
+  // use the sequential execution path without needing delegation API access.
+  atomic_swaps_enabled: !IS_TESTING,
+  delegation_enabled: !IS_TESTING,
   // SWAPS
   default_slippage_bips: Object.values(
     useNetworkStore.getState().getBackendSupportedChains(true),
@@ -117,6 +125,13 @@ export function useRemoteConfig<K extends keyof RainbowConfig>(
 
 export const init = async () => {
   try {
+    // In test builds, skip Firebase entirely — use defaults only.
+    // This avoids network calls to Firebase and the delegation API
+    // and ensures deterministic behavior in E2E tests.
+    if (IS_TESTING) {
+      logger.info('Test build detected, using default remote config');
+      return;
+    }
     const supported = await isSupported();
     if (supported) {
       // Initialize Firebase
@@ -161,7 +176,9 @@ export const init = async () => {
             key === 'BX_defi_positions_enabled' ||
             key === 'BX_degen_mode_enabled' ||
             key === 'BX_nfts_enabled' ||
-            key === 'BX_approvals_enabled'
+            key === 'BX_approvals_enabled' ||
+            key === 'BX_atomic_swaps_enabled' ||
+            key === 'BX_delegation_enabled'
           ) {
             config[realKey] = entry.asBoolean();
           } else {

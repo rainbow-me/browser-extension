@@ -82,6 +82,10 @@ export type MinedTransaction = BaseTransaction & {
 export type RainbowTransaction = PendingTransaction | MinedTransaction;
 
 export type NewTransaction = Omit<PendingTransaction, 'title' | 'changes'> & {
+  /** True when batched execution (atomic swaps) */
+  batch?: boolean;
+  /** True when includes EIP-7702 delegation (type 4) */
+  delegation?: boolean;
   changes?: Array<
     | {
         direction: TransactionDirection;
@@ -97,9 +101,11 @@ const transactionTypes = {
   withoutChanges: [
     'cancel',
     'contract_interaction',
+    'delegate',
     'deployment',
     'approve',
     'revoke',
+    'revoke_delegation',
     'speed_up',
   ],
   withChanges: [

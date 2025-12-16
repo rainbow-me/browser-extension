@@ -186,6 +186,7 @@ export async function initDriverWithOptions(opts: {
   }
   // @ts-ignore
   driver.browser = opts.browser;
+
   return driver;
 }
 
@@ -1158,20 +1159,34 @@ export async function awaitTextChange(
   text: string,
   driver: WebDriver,
 ) {
-  try {
-    const element = await findElementById({
-      id: id,
-      driver,
-    });
+  // Poll using driver.executeScript instead of element.getText() to actively
+  // run JavaScript in the page context. This forces the tab's event loop to
+  // process pending callbacks (e.g. window.postMessage responses from the
+  // extension) that might otherwise be deferred while the tab was backgrounded.
+  const startTime = Date.now();
+  let lastActualText = '';
 
-    await driver.wait(until.elementTextIs(element, text), waitUntilTime);
-  } catch (error) {
-    console.error(
-      `Error occurred while awaiting text change for element with ID '${id}':`,
-      error,
-    );
-    throw error;
+  while (Date.now() - startTime < waitUntilTime) {
+    try {
+      const actualText = await driver.executeScript<string>(
+        `return document.getElementById(${JSON.stringify(
+          id,
+        )})?.innerText || ''`,
+      );
+      if (actualText === text) return;
+      lastActualText = actualText;
+    } catch {
+      // Element might not exist yet, continue polling
+    }
+    await delay(500);
   }
+
+  console.error(
+    `awaitTextChange: expected '${text}', got '${lastActualText}' for #${id}`,
+  );
+  throw new Error(
+    `Timeout waiting for element #${id} to have text '${text}'. Actual text: '${lastActualText}'`,
+  );
 }
 
 // custom conditions

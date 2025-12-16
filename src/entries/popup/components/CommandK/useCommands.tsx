@@ -7,7 +7,7 @@ import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
-import { queryClient } from '~/core/react-query';
+import { createQueryKey, queryClient } from '~/core/react-query';
 import { shortcuts } from '~/core/references/shortcuts';
 import {
   useCurrentAddressStore,
@@ -17,7 +17,7 @@ import {
 import { useContactsStore } from '~/core/state/contacts';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
-import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import { useFeatureFlagLocalOverwriteStore } from '~/core/state/currentSettings/featureFlags';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
@@ -343,6 +343,15 @@ export const getStaticCommandInfo = (): CommandInfo => {
       searchTags: getSearchTags('clear_transactions'),
       shouldRemainOnActiveRoute: true,
       symbol: 'xmark.circle.fill',
+      symbolSize: 15,
+      type: SearchItemType.Shortcut,
+    },
+    triggerSecurityAlert: {
+      name: getCommandName('trigger_security_alert'),
+      page: PAGES.HOME,
+      searchTags: getSearchTags('trigger_security_alert'),
+      shouldRemainOnActiveRoute: true,
+      symbol: 'exclamationmark.triangle.fill',
       symbolSize: 15,
       type: SearchItemType.Shortcut,
     },
@@ -762,7 +771,7 @@ export const useCommands = (
     useCurrentAddressStore();
   const { currentTheme } = useCurrentThemeStore();
   const { data: ensName } = useEnsName({ address, chainId: ChainId.mainnet });
-  const { featureFlags } = useFeatureFlagsStore();
+  const { featureFlags } = useFeatureFlagLocalOverwriteStore();
   const isFullScreen = useIsFullScreen();
   const navigate = useRainbowNavigate();
   const navigateToSwaps = useNavigateToSwaps();
@@ -1199,6 +1208,23 @@ export const useCommands = (
             ),
           });
         },
+      },
+      triggerSecurityAlert: {
+        action: () => {
+          const queryKey = createQueryKey(
+            'shouldRevokeDelegation',
+            { address },
+            { persisterVersion: 1 },
+          );
+          queryClient.setQueryData(queryKey, {
+            shouldRevoke: true,
+            revokes: [{ address, chainId: ChainId.mainnet }],
+          });
+          triggerToast({
+            title: i18n.t('command_k.trigger_security_alert_toast.title'),
+          });
+        },
+        hidden: !IS_DEV,
       },
 
       // PAGE: ADD_WALLET

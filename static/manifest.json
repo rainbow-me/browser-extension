@@ -68,7 +68,7 @@
     "notifications"
   ],
   "short_name": "Rainbow",
-  "version": "1.5.193",
+  "version": "1.5.195",
   "web_accessible_resources": [
     {
       "matches": [
@@ -76,6 +76,7 @@
       ],
       "resources": [
         "inpage.js",
+        "delegation-sdk.js",
         "*.woff2",
         "popup.css",
         "assets/badges/*.png"
