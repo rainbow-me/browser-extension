@@ -522,6 +522,7 @@ it.todo('should be able to check insufficient asset for swap', async () => {
 });
 
 it('should be able to check insufficient native asset for gas', async () => {
+  // Clear any existing value and type 10000 ETH (mock fetch normalizes this)
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
@@ -533,11 +534,17 @@ it('should be able to check insufficient native asset for gas', async () => {
     key: Key.BACK_SPACE,
   });
 
+  // Type 10000 to trigger the insufficient gas path; the mock lookup
+  // normalizes large sellAmount values to 1 ETH for deterministic fixtures.
   await typeOnTextInput({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     text: `\b10000`,
     driver,
   });
+
+  // Wait for quote to load
+  await delay(10_000);
+
   const confirmButtonText = await getTextFromText({
     id: 'swap-confirmation-button-ready',
     driver,
@@ -969,6 +976,13 @@ it('should be able to see swap information in review sheet', async () => {
   expect(swapReviewTitleText).toBe('Review & Swap');
 });
 
+// TODO: Add e2e test for atomic swap execution (EIP-7702 delegation)
+// Should test:
+// - Atomic approve+swap executes as single transaction
+// - Transaction hash and nonce handling for atomic execution
+// - Gas estimation for atomic swaps
+// - Fallback to sequential execution when atomic fails
+// - Balance changes after atomic swap execution
 it('should be able to execute swap', async () => {
   const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545/1');
   await provider.ready;
@@ -997,6 +1011,9 @@ it('should be able to execute swap', async () => {
   await findElementByTextAndClick(driver, '1inch');
   await delayTime('medium');
   await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
+
+  // Wait for quote to refresh with new slippage/source settings
+  await delay(5_000);
 
   const ethBalanceBeforeSwap = await provider.getBalance(WALLET_TO_USE_ADDRESS);
   await findElementByTestIdAndClick({

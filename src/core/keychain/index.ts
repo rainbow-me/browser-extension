@@ -3,6 +3,7 @@ import {
   TransactionRequest,
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
+import { BigNumber } from '@ethersproject/bignumber';
 import { Wallet } from '@ethersproject/wallet';
 import {
   SignTypedDataVersion,
@@ -20,10 +21,15 @@ import type {
   SignMessageArguments,
   SignTypedDataArguments,
 } from '~/entries/background/handlers/handleWallets';
+import { logger } from '~/logger';
 /* eslint-enable boundaries/element-types */
 
 import { walletExecuteRap } from '../raps/execute';
 import { RapSwapActionParameters, RapTypes } from '../raps/references';
+import {
+  getAtomicSwapsEnabled,
+  getDelegationEnabled,
+} from '../resources/delegations/featureStatus';
 import { KeychainType } from '../types/keychainTypes';
 import { EthereumWalletType } from '../types/walletTypes';
 import {
@@ -33,6 +39,7 @@ import {
   sanitizeTypedData,
 } from '../utils/ethereum';
 import { addHexPrefix } from '../utils/hex';
+import { getViemClient } from '../viem/clients';
 
 import { PrivateKey } from './IKeychain';
 import { keychainManager } from './KeychainManager';
@@ -232,6 +239,8 @@ export const exportAccount = async (
   return keychainManager.exportAccount(address, password);
 };
 
+const EIP_7702_TX_TYPE = 4;
+
 export const sendTransaction = async (
   txPayload: TransactionRequest,
   provider: Provider,
@@ -242,6 +251,50 @@ export const sendTransaction = async (
 
   const signer = await keychainManager.getSigner(txPayload.from as Address);
   const wallet = signer.connect(provider);
+
+  // TEMP: txv4 (EIP-7702) bypass - ethers rejects authorizationList and parseTransaction for type 4.
+  // Use viem sign + send, build response manually. Remove when ethers→viem migration PR lands.
+  if (Number(txPayload.type) === EIP_7702_TX_TYPE) {
+    const signedTx = await signer.signTransaction(txPayload);
+    const client = getViemClient({ chainId: txPayload.chainId });
+    const hash = await client.sendRawTransaction({
+      serializedTransaction: signedTx as `0x${string}`,
+    });
+    const response: TransactionResponse = {
+      hash,
+      from: txPayload.from as string,
+      to: txPayload.to as string,
+      nonce: txPayload.nonce !== undefined ? Number(txPayload.nonce) : 0,
+      gasLimit: BigNumber.from(txPayload.gasLimit ?? 0),
+      gasPrice: txPayload.gasPrice
+        ? BigNumber.from(txPayload.gasPrice)
+        : undefined,
+      maxFeePerGas: txPayload.maxFeePerGas
+        ? BigNumber.from(txPayload.maxFeePerGas)
+        : undefined,
+      maxPriorityFeePerGas: txPayload.maxPriorityFeePerGas
+        ? BigNumber.from(txPayload.maxPriorityFeePerGas)
+        : undefined,
+      data: (txPayload.data?.toString() ?? '0x') as string,
+      value: BigNumber.from(txPayload.value ?? 0),
+      chainId: txPayload.chainId ?? 1,
+      confirmations: 0,
+      wait: async () => {
+        /* eslint-disable no-await-in-loop -- intentional poll for receipt */
+        for (let i = 0; i < 120; i++) {
+          const receipt = await provider.getTransactionReceipt(hash);
+          if (receipt) return receipt;
+          await new Promise<void>((r) => {
+            setTimeout(r, 1000);
+          });
+        }
+        /* eslint-enable no-await-in-loop */
+        throw new Error('Transaction receipt not found');
+      },
+    };
+    return normalizeTransactionResponsePayload(response);
+  }
+
   let response = await wallet.sendTransaction(txPayload);
   response = normalizeTransactionResponsePayload(response);
   return response;
@@ -255,15 +308,52 @@ export const executeRap = async ({
   rapActionParameters: RapSwapActionParameters<'swap' | 'crosschainSwap'>;
   type: RapTypes;
   provider: Provider;
-}): Promise<{ nonce: number | undefined }> => {
+}): Promise<{
+  nonce: number | undefined;
+  errorMessage?: string | null;
+  hash?: string | null;
+}> => {
   const from = (rapActionParameters.address ||
     rapActionParameters.quote?.from) as Address;
   if (typeof from === 'undefined') {
     throw new Error('Missing from address');
   }
+
+  // Get wallet info to determine if atomic execution is allowed
+  const walletInfo = await keychainManager.getWallet(from);
+  const isHardwareWallet =
+    walletInfo?.type === KeychainType.HardwareWalletKeychain;
+
+  const atomicSwapsEnabled = getAtomicSwapsEnabled();
+  const delegationEnabled = getDelegationEnabled();
+
+  // Determine if atomic execution (delegation-based) should be used.
+  // Both feature flags must be enabled - delegation and atomic swaps are
+  // gated together to ensure the full flow is feature-flagged.
+  const canUseAtomic =
+    atomicSwapsEnabled &&
+    delegationEnabled &&
+    (type === 'swap' || type === 'crosschainSwap') &&
+    !isHardwareWallet;
+
+  logger.debug('[Delegation] executeRap called', {
+    rapType: type,
+    from,
+    chainId: rapActionParameters.chainId,
+    isHardwareWallet,
+    atomicSwapsEnabled,
+    delegationEnabled,
+    canUseAtomic,
+  });
+
   const signer = await keychainManager.getSigner(from);
   const wallet = signer.connect(provider);
-  return walletExecuteRap(wallet, type, rapActionParameters);
+
+  // Pass atomic flag to walletExecuteRap - it will handle feature flag checks
+  return walletExecuteRap(wallet, type, {
+    ...rapActionParameters,
+    atomic: canUseAtomic,
+  });
 };
 
 export const signMessage = async ({

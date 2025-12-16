@@ -193,15 +193,10 @@ const MenuItem = ({
       forwardNav={hasRightArrow}
       onKeyDown={handleKeyDown}
       style={{
-        borderRadius: 6,
-        ...(first && {
-          borderTopRightRadius: 15,
-          borderTopLeftRadius: 15,
-        }),
-        ...(last && {
-          borderBottomRightRadius: 15,
-          borderBottomLeftRadius: 15,
-        }),
+        borderTopLeftRadius: first ? 15 : 6,
+        borderTopRightRadius: first ? 15 : 6,
+        borderBottomLeftRadius: last ? 15 : 6,
+        borderBottomRightRadius: last ? 15 : 6,
         height: height || 50,
       }}
       tabIndex={tabIndex}

@@ -1,10 +1,5 @@
 import { Wallet } from '@ethersproject/wallet';
-import {
-  ETH_ADDRESS as ETH_ADDRESS_AGGREGATORS,
-  Quote,
-  QuoteError,
-  getQuote,
-} from '@rainbow-me/swaps';
+import { Quote, QuoteError, getQuote } from '@rainbow-me/swaps';
 import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test, vi } from 'vitest';
 
@@ -55,6 +50,15 @@ const SELECTED_GAS = {
   },
 };
 
+vi.mock('@rainbow-me/delegation', async (importOriginal) => {
+  const actual = (await importOriginal()) as Record<string, unknown>;
+  return {
+    ...actual,
+    supportsDelegation: vi.fn().mockResolvedValue({ supported: false }),
+    executeBatchedTransaction: vi.fn(),
+  };
+});
+
 vi.mock('./actions', async () => {
   const actual = (await vi.importActual('./actions')) as Record<
     string,
@@ -72,6 +76,9 @@ vi.mock('./actions', async () => {
 vi.mock('@ethersproject/wallet', () => ({
   Wallet: vi.fn(function () {
     return {
+      getAddress: vi
+        .fn()
+        .mockResolvedValue('0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266'),
       provider: {
         getTransaction: vi.fn().mockResolvedValue({ blockNumber: null }),
       },
@@ -86,7 +93,7 @@ beforeAll(async () => {
   doesntNeedUnlockQuote = await getQuote({
     chainId: 1,
     fromAddress: TEST_ADDRESS_2,
-    sellTokenAddress: ETH_ADDRESS_AGGREGATORS,
+    sellTokenAddress: ETH_MAINNET_ASSET.address,
     buyTokenAddress: USDC_MAINNET_ASSET.address,
     sellAmount: '1000000000000000000',
     slippage: 5,

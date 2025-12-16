@@ -1,14 +1,28 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-// this file is ran locally with ts-node to fetch the responses from the swap quotes urls
+// This script fetches fresh swap quote responses from the Rainbow API and
+// updates the Anvil fork block number in anvilConfig.ts to match the
+// capture point.  RFQ/PMM protocols are excluded from quote requests so
+// that signed orders (which embed chain-specific EIP-712 signatures)
+// don't fail verification on the fork (chain ID 1337 vs mainnet 1).
+//
+// Usage: npx ts-node e2e/fetchResponses.ts
+//
+// Prerequisites:
+// - ALCHEMY_DEV_KEY must be set in .env
+// - No need to run Anvil locally (connects to live mainnet)
+
 require('dotenv').config();
-const { writeFile } = require('fs/promises');
+const { readFile, writeFile, readdir, unlink } = require('fs/promises');
 
 const { createClient, http, sha256 } = require('viem');
-const { getBlockNumber } = require('viem/actions');
+const { getBlock, getBlockNumber } = require('viem/actions');
+const { mainnet } = require('viem/chains');
 
 const urls = require('./mocks/mock_swap_quotes_urls.json');
-const FETCH_TIMEOUT = 5000; // 5 seconds
+const FETCH_TIMEOUT = 30000; // 30 seconds for quote requests
+const MOCKS_DIR = 'e2e/mocks/swap_quotes';
+const { normalizeSwapUrlForMock } = require('./swapQuoteMockUtils');
 
 const fetchWithTimeout = (
   url: RequestInfo | URL,
@@ -32,17 +46,125 @@ const fetchWithTimeout = (
   });
 };
 
+async function updateAnvilConfig(blockNumber: bigint) {
+  const anvilConfigPath = 'e2e/anvilConfig.ts';
+  let content = await readFile(anvilConfigPath, 'utf-8');
+
+  content = content.replace(
+    /forkBlockNumber:\s*\d+/,
+    `forkBlockNumber: ${blockNumber.toString()}`,
+  );
+
+  await writeFile(anvilConfigPath, content);
+  console.log(`✅ Updated ${anvilConfigPath}:`);
+  console.log(`   forkBlockNumber: ${blockNumber}`);
+}
+
+async function removeUnusedMocks(expectedHashes: Set<string>) {
+  /** @type {string[]} */
+  const files = await readdir(MOCKS_DIR);
+  const staleFiles = files.filter(
+    (file: string) => file.endsWith('.json') && !expectedHashes.has(file),
+  );
+
+  await Promise.all(
+    staleFiles.map(async (file: string) => {
+      await unlink(`${MOCKS_DIR}/${file}`);
+    }),
+  );
+
+  if (staleFiles.length > 0) {
+    console.log(`🧹 Removed ${staleFiles.length} stale mock files`);
+  }
+}
+
 (async () => {
-  const client = createClient({ transport: http('http://127.0.0.1:8545/1') });
-  const blockNumberInitial = await getBlockNumber(client);
+  // Connect to live mainnet to get current block
+  const alchemyKey = process.env.ALCHEMY_DEV_KEY;
+  if (!alchemyKey) {
+    console.error('❌ ALCHEMY_DEV_KEY not set in .env');
+    process.exit(1);
+  }
 
-  console.log('INITIAL BLOCK NUMBER', blockNumberInitial.toString());
+  const rpcUrl = `https://eth-mainnet.g.alchemy.com/v2/${alchemyKey}`;
+  const client = createClient({
+    chain: mainnet,
+    transport: http(rpcUrl),
+  });
 
-  const fetchAndWritePromises = urls.map(async (url: RequestInfo | URL) => {
-    const hash = sha256(url);
+  // Capture the current block BEFORE fetching quotes so that the fork state
+  // is guaranteed to be from a point before any quote was generated.
+  const initialBlock = await getBlock(client);
+  const forkBlockNumber = initialBlock.number;
+
+  console.log('📦 Fork block:', forkBlockNumber.toString());
+  console.log(
+    `⏰ Block timestamp: ${new Date(
+      Number(initialBlock.timestamp) * 1000,
+    ).toISOString()}`,
+  );
+
+  console.log(`🔄 Fetching ${urls.length} swap quotes...`);
+
+  let successCount = 0;
+  let errorCount = 0;
+
+  const expectedHashes = new Set<string>();
+  const hashToUrl = new Map<string, string>();
+  const seenUrls = new Set<string>();
+  const deduplicatedUrls: string[] = [];
+
+  for (const url of urls as string[]) {
+    if (seenUrls.has(url)) continue;
+    seenUrls.add(url);
+
+    const normalized = normalizeSwapUrlForMock(url);
+    const hash = sha256(normalized);
+    const filename = `${hash}.json`;
+    const existing = hashToUrl.get(filename);
+    if (existing) {
+      console.error(
+        `❌ Hash collision after normalization (different URLs → same mock file):`,
+      );
+      console.error(`   URL 1: ${existing}`);
+      console.error(`   URL 2: ${url}`);
+      console.error(`   Normalized hash: ${hash}`);
+      console.error(
+        `Remove the duplicate from mock_swap_quotes_urls.json to avoid non-deterministic mocks.`,
+      );
+      process.exit(1);
+    }
+    expectedHashes.add(filename);
+    hashToUrl.set(filename, url);
+    deduplicatedUrls.push(url);
+  }
+
+  const skipped = (urls as string[]).length - deduplicatedUrls.length;
+  if (skipped > 0) {
+    console.log(`ℹ️  Skipped ${skipped} exact-duplicate URLs`);
+  }
+
+  const fetchAndWritePromises = deduplicatedUrls.map(async (url: string) => {
+    // Hash the normalized URL so the file is stored under the same key
+    // that mockFetch.ts will use for lookup at runtime.
+    const hash = sha256(normalizeSwapUrlForMock(url));
     try {
-      const res = await fetchWithTimeout(url, FETCH_TIMEOUT);
-      await writeFile(`e2e/mocks/swap_quotes/${hash}.json`, res);
+      // For /v1/quote URLs, disable RFQ and PMM (Private Market Maker)
+      // protocols.  Both embed chain-specific EIP-712 signed orders that
+      // fail verification on our fork (chain ID 1337 vs mainnet 1).
+      // The response is stored under the ORIGINAL URL's hash so that
+      // mockFetch.ts can look it up at runtime using the extension's URL.
+      let fetchUrl = url;
+      if (new URL(url).pathname.includes('/v1/quote')) {
+        const u = new URL(url);
+        u.searchParams.set('disableRFQs', 'true');
+        u.searchParams.set('disablePMMProtocols', 'true');
+        fetchUrl = u.href;
+      }
+
+      const res = await fetchWithTimeout(fetchUrl, FETCH_TIMEOUT);
+      await writeFile(`${MOCKS_DIR}/${hash}.json`, res);
+      successCount += 1;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error(`Error fetching ${url}:`, error.message);
@@ -50,17 +172,31 @@ const fetchWithTimeout = (
         error: true,
         message: error.message,
       });
-      await writeFile(`e2e/mocks/swap_quotes/${hash}.json`, errorMessage);
+      await writeFile(`${MOCKS_DIR}/${hash}.json`, errorMessage);
+      errorCount += 1;
     }
   });
 
   await Promise.all(fetchAndWritePromises);
+  await removeUnusedMocks(expectedHashes);
 
   const blockNumberFinal = await getBlockNumber(client);
 
-  console.log('FINAL BLOCK NUMBER', blockNumberFinal.toString());
+  console.log(`\n📊 Results: ${successCount} success, ${errorCount} errors`);
 
-  if (blockNumberInitial === blockNumberFinal)
-    console.log('✅✅✅ REQUESTS SPAN SINGLE BLOCK');
-  else console.log('❌❌❌ REQUESTS SPAN MULTIPLE BLOCKS');
+  if (forkBlockNumber === blockNumberFinal) {
+    console.log('✅ All requests completed within a single block');
+  } else {
+    console.log(
+      `⚠️  Requests spanned ${blockNumberFinal - forkBlockNumber} blocks`,
+    );
+  }
+
+  // Update the Anvil fork config with the block captured BEFORE fetching quotes.
+  // The chain clock is frozen at the fork block's timestamp by the global setup
+  // (anvil_setBlockTimestampInterval(0)) so RFQ quote expiry is never reached.
+  await updateAnvilConfig(forkBlockNumber);
+
+  console.log('\n🎉 Done! The Anvil fork block has been updated.');
+  console.log('   Swap execution tests should now work with the fresh mocks.');
 })();

@@ -1,4 +1,5 @@
 import { RainbowTransaction } from '~/core/types/transactions';
+import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import {
   CoinIcon,
   ContractIcon,
@@ -15,6 +16,19 @@ export const ActivityIcon = ({
   badge?: boolean;
   size?: 36 | 20 | 14 | 16;
 }) => {
+  if (type === 'delegate' || type === 'revoke_delegation') {
+    if (contract?.iconUrl)
+      return (
+        <ContractIcon
+          iconUrl={contract.iconUrl}
+          size={size}
+          badge={badge}
+          chainId={chainId}
+        />
+      );
+    return <ChainBadge chainId={chainId} size={size} shadow />;
+  }
+
   if (['wrap', 'unwrap', 'swap'].includes(type)) {
     const inAsset = changes?.find((a) => a?.direction === 'in')?.asset;
     const outAsset = changes?.find((a) => a?.direction === 'out')?.asset;

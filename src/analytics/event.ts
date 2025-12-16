@@ -142,6 +142,18 @@ export const event = {
    */
   dappProviderRateLimit: 'dapp.provider.rate_limit',
   /**
+   * Called when a delegation revoke transaction fails.
+   */
+  delegationRevokeFailed: 'delegation.revoke.failed',
+  /**
+   * Called when the user starts the delegation revoke flow.
+   */
+  delegationRevokeStarted: 'delegation.revoke.started',
+  /**
+   * Called when the user submits a delegation revoke transaction.
+   */
+  delegationRevokeSubmitted: 'delegation.revoke.submitted',
+  /**
    * Called when keyboard navigation is triggered
    */
   keyboardNavigationTriggered: 'keyboard.navigation.triggered',
@@ -852,6 +864,48 @@ export type EventProperties = {
   [event.rnbwRewardsBannerClicked]: undefined;
   [event.rnbwRewardsGetButtonClicked]: undefined;
   [event.rnbwRewardsTabViewed]: undefined;
+  [event.delegationRevokeStarted]: {
+    /**
+     * `chainId` of the delegation being revoked.
+     */
+    chainId: number;
+    /**
+     * Contract address of the delegation (only present for Rainbow delegations).
+     */
+    contractAddress?: string;
+    /**
+     * Total number of delegations to revoke.
+     */
+    totalDelegations: number;
+  };
+  [event.delegationRevokeSubmitted]: {
+    /**
+     * `chainId` of the delegation being revoked.
+     */
+    chainId: number;
+    /**
+     * Contract address of the delegation (only present for Rainbow delegations).
+     */
+    contractAddress?: string;
+    /**
+     * Transaction hash.
+     */
+    txHash?: string;
+  };
+  [event.delegationRevokeFailed]: {
+    /**
+     * `chainId` of the delegation being revoked.
+     */
+    chainId: number;
+    /**
+     * Contract address of the delegation (only present for Rainbow delegations).
+     */
+    contractAddress?: string;
+    /**
+     * Error message.
+     */
+    error?: string;
+  };
   [event.samplesTokenList]: {
     /**
      * Entrypoint of the token list sampling

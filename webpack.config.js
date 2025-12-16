@@ -43,6 +43,13 @@ module.exports = {
   module: {
     rules: [
       {
+        // Many node_modules ship ESM files with extensionless imports
+        // (e.g. `export * from './assert'` instead of `'./assert.js'`).
+        // This is invalid under webpack 5 strict ESM but very common.
+        test: /\.m?js$/,
+        resolve: { fullySpecified: false },
+      },
+      {
         test: /\.tsx?$/,
         use: [
           {
@@ -149,6 +156,8 @@ module.exports = {
       crypto: false,
     },
     extensions: ['.tsx', '.ts', '.js', '.json'],
+    mainFields: ['module', 'browser', 'main'],
+    conditionNames: ['import', 'module', 'browser', 'default'],
   },
   output: {
     filename: '[name].js',

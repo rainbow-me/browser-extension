@@ -15,6 +15,7 @@ import React, {
 import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
+import { useAtomicSwapsEnabled } from '~/core/resources/delegations/featureStatus';
 import { useGasStore } from '~/core/state';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -56,6 +57,7 @@ import { getNetworkNativeAssetUniqueId } from '~/entries/popup/hooks/useNativeAs
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useTranslationContext } from '~/entries/popup/hooks/useTranslationContext';
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
+import { useWillExecuteDelegation } from '~/entries/popup/hooks/useWillExecuteDelegation';
 import { ROUTES } from '~/entries/popup/urls';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
@@ -219,6 +221,13 @@ const SwapReviewSheetWithQuote = ({
   const { type } = useCurrentWalletTypeAndVendor();
   const isHardwareWallet = type === KeychainType.HardwareWalletKeychain;
 
+  const willDelegate = useWillExecuteDelegation(
+    quote.from as Address,
+    assetToSell?.chainId ?? ChainId.mainnet,
+  );
+  const atomicSwapsEnabled = useAtomicSwapsEnabled();
+  const showSmartWalletActivationFee = willDelegate && atomicSwapsEnabled;
+
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
     chainId: assetToSell?.chainId,
   });
@@ -310,6 +319,22 @@ const SwapReviewSheetWithQuote = ({
       testId: 'swap-review-fee',
     });
   }, [hideExplainerSheet, includedFee, showExplainerSheet, t]);
+
+  const openSmartWalletActivationExplainer = useCallback(() => {
+    showExplainerSheet({
+      show: true,
+      header: { emoji: '🌈' },
+      title: t('swap.explainers.smart_wallet_activation.title'),
+      description: [t('swap.explainers.smart_wallet_activation.description')],
+      actionButton: {
+        label: t('swap.explainers.fee.action_label'),
+        variant: 'tinted',
+        labelColor: 'blue',
+        action: hideExplainerSheet,
+      },
+      testId: 'swap-review-smart-wallet-activation',
+    });
+  }, [hideExplainerSheet, showExplainerSheet, t]);
 
   const buttonLabel = useMemo(() => {
     if (!enoughNativeAssetBalanceForGas) {
@@ -572,39 +597,51 @@ const SwapReviewSheetWithQuote = ({
                     enabled={show}
                     defaultSpeed={selectedGas.option}
                     speedMenuMarginRight="12px"
+                    feeLabel={
+                      showSmartWalletActivationFee
+                        ? t('swap.review.smart_wallet_activation_fee')
+                        : undefined
+                    }
+                    feeInfoButton={
+                      showSmartWalletActivationFee
+                        ? { onClick: openSmartWalletActivationExplainer }
+                        : undefined
+                    }
                   />
                 </Row>
                 <Row>
-                  <Button
-                    onClick={handleSwap}
-                    height="44px"
-                    variant="flat"
-                    color={buttonColor}
-                    disabled={sendingSwap}
-                    width="full"
-                    testId="swap-review-execute"
-                    tabIndex={0}
-                    ref={confirmSwapButtonRef}
-                  >
-                    {sendingSwap && (
-                      <Box
-                        width="fit"
-                        alignItems="center"
-                        justifyContent="center"
-                        style={{ margin: 'auto' }}
-                      >
-                        <Spinner size={16} color="label" />
-                      </Box>
-                    )}
-                    <TextOverflow
-                      testId="swap-review-confirmation-text"
-                      color="label"
-                      size="16pt"
-                      weight="bold"
+                  <Stack space="8px">
+                    <Button
+                      onClick={handleSwap}
+                      height="44px"
+                      variant="flat"
+                      color={buttonColor}
+                      disabled={sendingSwap}
+                      width="full"
+                      testId="swap-review-execute"
+                      tabIndex={0}
+                      ref={confirmSwapButtonRef}
                     >
-                      {buttonLabel}
-                    </TextOverflow>
-                  </Button>
+                      {sendingSwap && (
+                        <Box
+                          width="fit"
+                          alignItems="center"
+                          justifyContent="center"
+                          style={{ margin: 'auto' }}
+                        >
+                          <Spinner size={16} color="label" />
+                        </Box>
+                      )}
+                      <TextOverflow
+                        testId="swap-review-confirmation-text"
+                        color="label"
+                        size="16pt"
+                        weight="bold"
+                      >
+                        {buttonLabel}
+                      </TextOverflow>
+                    </Button>
+                  </Stack>
                 </Row>
               </Rows>
             </Box>

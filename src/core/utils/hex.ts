@@ -67,6 +67,21 @@ export const toHexNoLeadingZeros = (value: string): string =>
   toHex(value).replace(/^0x0*/, '0x');
 
 /**
+ * @desc Ensures a tx hash is valid 32-byte hex for RPC (eth_getTransactionByHash).
+ * Pads with leading zeros when stripped upstream (e.g. by BigNumber.toString(16)).
+ * Strips suffixes like "hash-chainId" from compound keys.
+ */
+export const ensureTxHashFormat = (hash: string): `0x${string}` | null => {
+  const stripped = hash.replace(/-.*/g, '');
+  const withPrefix = startsWith(stripped, '0x') ? stripped : `0x${stripped}`;
+  const hexPart = withPrefix.slice(2);
+  if (!/^[0-9a-fA-F]*$/.test(hexPart)) return null;
+  const padded = hexPart.padStart(64, '0').slice(0, 64).toLowerCase();
+  if (padded.length !== 64) return null;
+  return `0x${padded}` as `0x${string}`;
+};
+
+/**
  * @desc Joins signature components (r, s, v) into a single hex signature.
  * Handles v values that can be either string or number, and strips 0x prefixes.
  * @param signature The signature components from hardware wallet APIs

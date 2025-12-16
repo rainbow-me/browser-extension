@@ -1,6 +1,7 @@
 import { Signer } from '@ethersproject/abstract-signer';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { Transaction } from '@ethersproject/transactions';
+import type { BatchCall } from '@rainbow-me/delegation';
 import {
   CrosschainQuote,
   Quote,
@@ -10,39 +11,45 @@ import {
   getQuoteExecutionDetails,
   getWrappedAssetAddress,
   getWrappedAssetMethod,
+  prepareFillQuote,
   unwrapNativeAsset,
   wrapNativeAsset,
 } from '@rainbow-me/swaps';
 import { Address } from 'viem';
 
-import { metadataPostClient } from '~/core/graphql';
 import { useGasStore } from '~/core/state';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
-import { add } from '~/core/utils/numbers';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { getProvider } from '~/core/viem/clientToProvider';
-import { TransactionSimulationResponse } from '~/entries/popup/pages/messages/useSimulateTransaction';
 import { RainbowError, logger } from '~/logger';
 
 import { REFERRER } from '../../references';
+import { estimateTransactionsGasLimit } from '../../resources/transactions/simulation';
 import {
   TransactionGasParams,
   TransactionLegacyGasParams,
 } from '../../types/gas';
 import { estimateGasWithPadding } from '../../utils/gas';
 import { toHex } from '../../utils/hex';
-import { ActionProps, RapActionResult } from '../references';
+import {
+  ActionProps,
+  PrepareActionProps,
+  RapActionResult,
+  RapSwapActionParameters,
+} from '../references';
 import {
   CHAIN_IDS_WITH_TRACE_SUPPORT,
   SWAP_GAS_PADDING,
   estimateSwapGasLimitWithFakeApproval,
   getDefaultGasLimitForTrade,
+  getQuoteAllowanceTargetAddress,
   getTargetAddressForQuote,
   overrideWithFastSpeedIfNeeded,
   populateSwap,
 } from '../utils';
+import { requireAddress, requireHex } from '../validation';
 
 import { populateApprove } from './unlock';
 
@@ -138,75 +145,78 @@ export const estimateSwapGasLimit = async ({
   }
 };
 
-export const estimateUnlockAndSwapFromMetadata = async ({
-  swapAssetNeedsUnlocking,
+const getApproveSpender = (quote: Quote | CrosschainQuote) =>
+  quote.swapType === 'normal'
+    ? getTargetAddressForQuote(quote)
+    : getQuoteAllowanceTargetAddress(quote);
+
+export const estimateUnlockAndSwap = async ({
+  requiresApprove,
   chainId,
   accountAddress,
   sellTokenAddress,
   quote,
 }: {
-  swapAssetNeedsUnlocking: boolean;
+  requiresApprove: boolean;
   chainId: ChainId;
   accountAddress: Address;
   sellTokenAddress: Address;
   quote: Quote | CrosschainQuote;
 }) => {
-  try {
-    const approveTransaction = await populateApprove({
-      owner: accountAddress,
-      tokenAddress: sellTokenAddress,
-      spender: getTargetAddressForQuote(quote),
-      chainId,
-    });
-    const swapTransaction = await populateSwap({
-      provider: getProvider({ chainId }),
-      quote,
-    });
-    if (
-      approveTransaction?.to &&
-      approveTransaction?.data &&
-      approveTransaction?.from &&
-      swapTransaction?.to &&
-      swapTransaction?.data &&
-      swapTransaction?.from
-    ) {
-      const transactions = swapAssetNeedsUnlocking
-        ? [
-            {
-              to: approveTransaction?.to,
-              data: approveTransaction?.data || '0x0',
-              from: approveTransaction?.from,
-              value: approveTransaction?.value?.toString() || '0x0',
-            },
-            {
-              to: swapTransaction?.to,
-              data: swapTransaction?.data || '0x0',
-              from: swapTransaction?.from,
-              value: swapTransaction?.value?.toString() || '0x0',
-            },
-          ]
-        : [
-            {
-              to: swapTransaction?.to,
-              data: swapTransaction?.data || '0x0',
-              from: swapTransaction?.from,
-              value: swapTransaction?.value?.toString() || '0x0',
-            },
-          ];
-
-      const response = (await metadataPostClient.simulateTransactions({
+  const approveTransaction = requiresApprove
+    ? await populateApprove({
+        owner: accountAddress,
+        tokenAddress: sellTokenAddress,
+        spender: getApproveSpender(quote),
         chainId,
-        transactions,
-      })) as TransactionSimulationResponse;
-      const gasLimit = response.simulateTransactions
-        .map((res) => res.gas.estimate)
-        .reduce((acc, limit) => add(acc, limit), '0');
-      return gasLimit;
-    }
-  } catch (e) {
-    return null;
-  }
-  return null;
+      })
+    : null;
+
+  const swapTransaction = await populateSwap({
+    provider: getProvider({ chainId }),
+    quote,
+  });
+
+  const chainGasUnits = useNetworkStore.getState().getChainGasUnits(chainId);
+
+  const steps = [
+    ...(requiresApprove
+      ? [
+          {
+            transaction:
+              approveTransaction?.to &&
+              approveTransaction?.data &&
+              approveTransaction?.from
+                ? {
+                    to: approveTransaction.to,
+                    data: approveTransaction.data || '0x0',
+                    from: approveTransaction.from,
+                    value: approveTransaction.value?.toString() || '0x0',
+                  }
+                : null,
+            label: 'approve',
+            fallbackEstimate: async () =>
+              String(chainGasUnits.basic.approval) || undefined,
+          },
+        ]
+      : []),
+    {
+      transaction:
+        swapTransaction?.to && swapTransaction?.data && swapTransaction?.from
+          ? {
+              to: swapTransaction.to,
+              data: swapTransaction.data || '0x0',
+              from: swapTransaction.from,
+              value: swapTransaction.value?.toString() || '0x0',
+            }
+          : null,
+      label: 'swap',
+      fallbackEstimate: async () =>
+        getDefaultGasLimitForTrade(quote as Quote, chainId) || undefined,
+    },
+  ];
+
+  return estimateTransactionsGasLimit({ chainId, steps });
 };
 
 export const executeSwap = async ({
@@ -260,6 +270,76 @@ export const executeSwap = async ({
     );
   }
   return null;
+};
+
+const REFERRER_BX = 'browser-extension';
+
+/**
+ * Build a swap transaction object (without hash) for tracking.
+ */
+function buildSwapTransaction(
+  parameters: RapSwapActionParameters<'swap'>,
+  gasParams: TransactionGasParams | TransactionLegacyGasParams,
+): Omit<NewTransaction, 'hash'> {
+  const { quote, chainId, assetToSell, assetToBuy } = parameters;
+  return {
+    data: '0x',
+    from: quote.from as Address,
+    to: quote.to as Address,
+    value: quote.value?.toString(),
+    asset: assetToBuy,
+    changes: [
+      {
+        direction: 'out',
+        asset: assetToSell,
+        value: quote.sellAmount.toString(),
+      },
+      {
+        direction: 'in',
+        asset: assetToBuy,
+        value: quote.buyAmount.toString(),
+      },
+    ],
+    chainId,
+    status: 'pending',
+    type: 'swap',
+    ...gasParams,
+  } as Omit<NewTransaction, 'hash'>;
+}
+
+/**
+ * Prepare a swap call for atomic execution.
+ * Returns the BatchCall object and transaction metadata without executing.
+ */
+export const prepareSwap = async ({
+  parameters,
+  quote,
+  wallet,
+  chainId,
+}: PrepareActionProps<'swap'>): Promise<{
+  call: BatchCall;
+  transaction: Omit<NewTransaction, 'hash'>;
+}> => {
+  const { selectedGas } = useGasStore.getState();
+  const gasParams = selectedGas.transactionGasParams;
+
+  const tx = await prepareFillQuote(
+    quote as Quote,
+    {},
+    wallet,
+    false,
+    chainId as unknown as SwapChainId,
+    REFERRER_BX,
+  );
+
+  return {
+    call: {
+      to: requireAddress(tx.to, 'swap prepared tx.to'),
+      value: toHex(BigInt(tx.value?.toString() ?? '0')),
+      data: requireHex(tx.data, 'swap prepared tx.data'),
+    },
+    transaction: buildSwapTransaction(parameters, gasParams),
+  };
 };
 
 export const swap = async ({

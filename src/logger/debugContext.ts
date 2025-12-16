@@ -6,5 +6,6 @@
  * lowercase.
  */
 export const DebugContext = {
+  delegation: 'delegation',
   // e.g. swaps: 'swaps'
 } as const;

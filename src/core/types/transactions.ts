@@ -1,5 +1,5 @@
 import { TransactionResponse } from '@ethersproject/providers';
-import { Address } from 'viem';
+import { type Address, type SignedAuthorizationList } from 'viem';
 
 import {
   AssetApiResponse,
@@ -61,6 +61,10 @@ type BaseTransaction = {
   gasPrice?: string;
   gasLimit?: string;
   baseFee?: string;
+  /** EIP-7702 authorization list - required for type 4 speed up. Stored at tx creation. */
+  authorizationList?: SignedAuthorizationList;
+  /** True when EIP-7702 (type 4) - used for speed up to know we need authorizationList */
+  delegation?: boolean;
   explorer?: {
     name: string;
     url: string;
@@ -82,6 +86,10 @@ export type MinedTransaction = BaseTransaction & {
 export type RainbowTransaction = PendingTransaction | MinedTransaction;
 
 export type NewTransaction = Omit<PendingTransaction, 'title' | 'changes'> & {
+  /** True when batched execution (atomic swaps) */
+  batch?: boolean;
+  /** True when includes EIP-7702 delegation (type 4) */
+  delegation?: boolean;
   changes?: Array<
     | {
         direction: TransactionDirection;
@@ -97,9 +105,11 @@ const transactionTypes = {
   withoutChanges: [
     'cancel',
     'contract_interaction',
+    'delegate',
     'deployment',
     'approve',
     'revoke',
+    'revoke_delegation',
     'speed_up',
   ],
   withChanges: [

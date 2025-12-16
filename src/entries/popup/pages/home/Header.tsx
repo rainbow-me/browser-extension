@@ -8,7 +8,7 @@ import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
-import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import { useFeatureFlagLocalOverwriteStore } from '~/core/state/currentSettings/featureFlags';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { POPUP_URL, goToNewTab } from '~/core/utils/tabs';
@@ -140,7 +140,7 @@ function ActionButtonsSection() {
   const { data: avatar } = useAvatar({ addressOrName: address });
 
   const { isWatchingWallet } = useWallets();
-  const { featureFlags } = useFeatureFlagsStore();
+  const { featureFlags } = useFeatureFlagLocalOverwriteStore();
   const navigate = useRainbowNavigate();
   const navigateToSwaps = useNavigateToSwaps();
 

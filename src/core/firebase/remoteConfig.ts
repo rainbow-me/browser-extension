@@ -34,6 +34,8 @@ export interface RainbowConfig extends Record<string, any> {
   degen_mode_enabled: boolean;
   nfts_enabled: boolean;
   approvals_enabled: boolean;
+  atomic_swaps_enabled: boolean;
+  delegation_enabled: boolean;
   // SWAPS
   default_slippage_bips: Partial<Record<ChainId, number>>;
 }
@@ -63,6 +65,8 @@ const DEFAULT_CONFIG = {
   defi_positions_enabled: false,
   degen_mode_enabled: true,
   approvals_enabled: false,
+  atomic_swaps_enabled: true,
+  delegation_enabled: true,
   // SWAPS
   default_slippage_bips: Object.values(
     useNetworkStore.getState().getBackendSupportedChains(true),
@@ -115,8 +119,16 @@ export function useRemoteConfig<K extends keyof RainbowConfig>(
   return value;
 }
 
+const IS_TESTING = process.env.IS_TESTING === 'true';
+
 export const init = async () => {
   try {
+    // In test builds, skip Firebase entirely — use defaults only.
+    // This avoids network calls to Firebase and the delegation API
+    // and ensures deterministic behavior in E2E tests.
+    if (IS_TESTING) {
+      return;
+    }
     const supported = await isSupported();
     if (supported) {
       // Initialize Firebase
@@ -161,7 +173,9 @@ export const init = async () => {
             key === 'BX_defi_positions_enabled' ||
             key === 'BX_degen_mode_enabled' ||
             key === 'BX_nfts_enabled' ||
-            key === 'BX_approvals_enabled'
+            key === 'BX_approvals_enabled' ||
+            key === 'BX_atomic_swaps_enabled' ||
+            key === 'BX_delegation_enabled'
           ) {
             config[realKey] = entry.asBoolean();
           } else {
@@ -171,15 +185,9 @@ export const init = async () => {
       });
     }
   } catch (e) {
-    logger.info('Using default remote config');
     // most likely blocked by adblockers or dns
   } finally {
     config.status = 'ready';
-    if (process.env.IS_DEV === 'true') {
-      logger.info('Current remote config:', {
-        config: JSON.stringify(config, null, 2),
-      });
-    }
   }
 };
 

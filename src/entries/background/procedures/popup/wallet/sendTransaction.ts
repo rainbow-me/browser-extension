@@ -23,7 +23,7 @@ export const sendTransactionHandler = walletOs.sendTransaction.handler(
 
     // Transform BigNumber properties to strings to match schema
     return {
-      hash: toHex(response.hash),
+      hash: response.hash as `0x${string}`,
       to: response.to as Address | undefined,
       from: response.from as Address,
       nonce: response.nonce,
