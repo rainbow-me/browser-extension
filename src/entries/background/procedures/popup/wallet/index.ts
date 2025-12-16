@@ -12,6 +12,7 @@ import { lockHandler } from './lock';
 import { pathHandler } from './path';
 import { personalSignHandler } from './personalSign';
 import { removeHandler } from './remove';
+import { revokeDelegationHandler } from './revokeDelegation';
 import { sendTransactionHandler } from './sendTransaction';
 import { statusHandler } from './status';
 import { testSandboxHandler } from './testSandbox';
@@ -44,6 +45,7 @@ export const walletRouter = {
   exportWallet: exportWalletHandler,
   exportAccount: exportAccountHandler,
   sendTransaction: sendTransactionHandler,
+  revokeDelegation: revokeDelegationHandler,
   personalSign: personalSignHandler,
   testSandbox: testSandboxHandler,
 };
