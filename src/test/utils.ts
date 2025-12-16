@@ -1,3 +1,5 @@
+import { ETH_ADDRESS } from '@rainbow-me/swaps';
+
 import { ParsedAsset, ParsedUserAsset, UniqueId } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
 import { UniqueAsset } from '~/core/types/nfts';
@@ -16,7 +18,7 @@ export const RAINBOW_WALLET_ADDRESS =
   '0x7a3d05c70581bd345fe117c06e45f9669205384f';
 
 export const ETH_MAINNET_ASSET = {
-  address: 'eth',
+  address: ETH_ADDRESS,
   balance: { amount: '10000', display: '10,000.00 ETH' },
   chainId: 1,
   chainName: ChainName.mainnet,
@@ -100,7 +102,7 @@ export const OPTIMISM_MAINNET_ASSET = {
   icon_url:
     'https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/ethereum/eth.png',
   isNativeAsset: true,
-  mainnetAddress: 'eth',
+  mainnetAddress: ETH_ADDRESS,
   name: 'Ethereum',
   native: {
     balance: { amount: '16341800', display: '$16,341,800.00' },

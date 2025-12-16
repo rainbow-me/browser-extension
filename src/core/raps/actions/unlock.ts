@@ -1,5 +1,6 @@
 import { Signer } from '@ethersproject/abstract-signer';
 import { Contract, PopulatedTransaction } from '@ethersproject/contracts';
+import { BatchCall } from '@rainbow-me/rainbow-delegation';
 import { Address, Hash, erc20Abi, erc721Abi, maxUint256 } from 'viem';
 
 import { useGasStore } from '~/core/state';
@@ -16,12 +17,17 @@ import { RainbowError, logger } from '~/logger';
 
 import { ETH_ADDRESS } from '../../references';
 import { ParsedAsset } from '../../types/assets';
+import { toHex } from '../../utils/hex';
 import {
   convertAmountToRawAmount,
   greaterThan,
   toBigNumber,
 } from '../../utils/numbers';
-import { ActionProps, RapActionResult } from '../references';
+import {
+  ActionProps,
+  PrepareActionProps,
+  RapActionResult,
+} from '../references';
 import { overrideWithFastSpeedIfNeeded } from '../utils';
 
 export const getAssetRawAllowance = async ({
@@ -112,18 +118,22 @@ export const populateApprove = async ({
   tokenAddress,
   spender,
   chainId,
+  amount,
 }: {
   owner: Address;
   tokenAddress: Address;
   spender: Address;
   chainId: ChainId;
+  amount?: string;
 }): Promise<PopulatedTransaction | null> => {
   try {
     const provider = getProvider({ chainId });
     const tokenContract = new Contract(tokenAddress, erc20Abi, provider);
+    // Use specific amount if provided (for atomic swaps), otherwise unlimited
+    const approvalAmount = amount ? BigInt(amount) : maxUint256;
     const approveTransaction = await tokenContract.populateTransaction.approve(
       spender,
-      maxUint256,
+      approvalAmount,
       {
         from: owner,
       },
@@ -227,6 +237,32 @@ export const executeApprove = async ({
     maxFeePerGas: toBigNumber(maxFeePerGas),
     maxPriorityFeePerGas: toBigNumber(maxPriorityFeePerGas),
   });
+};
+
+/**
+ * Prepare an unlock (approval) call for atomic execution.
+ * Returns the BatchCall object without executing the transaction.
+ */
+export const prepareUnlock = async ({
+  parameters,
+}: PrepareActionProps<'unlock'>): Promise<{ call: BatchCall | null }> => {
+  const tx = await populateApprove({
+    owner: parameters.fromAddress,
+    tokenAddress: parameters.assetToUnlock.address as Address,
+    spender: parameters.contractAddress,
+    chainId: parameters.chainId,
+    amount: parameters.amount,
+  });
+
+  if (!tx?.data) return { call: null };
+
+  return {
+    call: {
+      to: parameters.assetToUnlock.address as Address,
+      value: toHex(BigInt(tx?.value?.toString() ?? '0')),
+      data: tx.data as `0x${string}`,
+    },
+  };
 };
 
 export const unlock = async ({

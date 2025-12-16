@@ -30,8 +30,7 @@ type ConsolidatedTransactionsResult = QueryFunctionResult<
   typeof consolidatedTransactionsQueryFunction
 >;
 
-const PLATFORM_TRANSACTION_BY_HASH_PATH =
-  '/v1/transactions/GetTransactionByHash';
+const PLATFORM_TRANSACTION_BY_HASH_PATH = '/transactions/GetTransactionByHash';
 const PLATFORM_REQUEST_TIMEOUT = 30000;
 
 const searchInLocalPendingTransactions = (userAddress: Address, hash: Hash) => {

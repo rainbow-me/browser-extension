@@ -34,6 +34,8 @@ export interface RainbowConfig extends Record<string, any> {
   degen_mode_enabled: boolean;
   nfts_enabled: boolean;
   approvals_enabled: boolean;
+  atomic_swaps_enabled: boolean;
+  delegation_enabled: boolean;
   // SWAPS
   default_slippage_bips: Partial<Record<ChainId, number>>;
 }
@@ -63,6 +65,8 @@ const DEFAULT_CONFIG = {
   defi_positions_enabled: false,
   degen_mode_enabled: true,
   approvals_enabled: false,
+  atomic_swaps_enabled: true,
+  delegation_enabled: true,
   // SWAPS
   default_slippage_bips: Object.values(
     useNetworkStore.getState().getBackendSupportedChains(true),
@@ -161,7 +165,9 @@ export const init = async () => {
             key === 'BX_defi_positions_enabled' ||
             key === 'BX_degen_mode_enabled' ||
             key === 'BX_nfts_enabled' ||
-            key === 'BX_approvals_enabled'
+            key === 'BX_approvals_enabled' ||
+            key === 'BX_atomic_swaps_enabled' ||
+            key === 'BX_delegation_enabled'
           ) {
             config[realKey] = entry.asBoolean();
           } else {

@@ -21,7 +21,7 @@ import { parseTransaction } from '~/core/utils/transactions';
 import { RainbowError, logger } from '~/logger';
 
 const CONSOLIDATED_TRANSACTIONS_TIMEOUT = 20000;
-const PLATFORM_LIST_TRANSACTIONS_PATH = '/v1/transactions/ListTransactions';
+const PLATFORM_LIST_TRANSACTIONS_PATH = '/transactions/ListTransactions';
 const CONSOLIDATED_TRANSACTIONS_LIMIT = 100;
 const CONSOLIDATED_TRANSACTIONS_STALE_TIME = /** 1 day */ 24 * 60 * 60 * 1000; // will be refetched explicitly when new tx is detected
 

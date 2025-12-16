@@ -193,53 +193,12 @@ query simulateTransactions(
           ...target
         }
       }
-    }
-  }
-}
-
-query simulateTransactionsWithoutGas(
-  $chainId: Int!
-  $transactions: [Transaction!]!
-  $domain: String
-) {
-  simulateTransactions(
-    chainID: $chainId
-    transactions: $transactions
-    domain: $domain
-  ) {
-    scanning {
-      result
-      description
-    }
-    error {
-      message
-      type
-    }
-    simulation {
-      in {
-        ...change
-      }
-      out {
-        ...change
-      }
-      approvals {
-        asset {
-          ...asset
-        }
-        spender {
-          ...target
-        }
-        quantityAllowed
-        quantityAtRisk
-        expiration
-      }
-      meta {
-        transferTo {
-          ...target
-        }
-        to {
-          ...target
-        }
+      delegation {
+        address
+        name
+        iconURL
+        created
+        sourceCodeStatus
       }
     }
   }
