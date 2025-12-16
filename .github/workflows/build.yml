@@ -1,4 +1,3 @@
-
 name: CI
 
 on:
@@ -55,9 +54,9 @@ jobs:
         run: tar xzf yarn_node_modules.tar.gz
       - uses: actions/checkout@v4
         with:
-            repository: 'rainbow-me/browser-extension-env'
-            token: ${{ secrets.ORG_ACCESS_TOKEN }}
-            path: tmp
+          repository: "rainbow-me/browser-extension-env"
+          token: ${{ secrets.ORG_ACCESS_TOKEN }}
+          path: tmp
       - name: Copy dotenv
         run: cat tmp/dotenv >> .env && rm -rf tmp
       - name: Set IS_TESTING=true
@@ -375,9 +374,9 @@ jobs:
           version: nightly
       - uses: actions/checkout@v4
         with:
-            repository: 'rainbow-me/browser-extension-env'
-            token: ${{ secrets.ORG_ACCESS_TOKEN }}
-            path: tmp
+          repository: "rainbow-me/browser-extension-env"
+          token: ${{ secrets.ORG_ACCESS_TOKEN }}
+          path: tmp
       - name: Copy dotenv
         run: cat tmp/dotenv >> .env && rm -rf tmp
       - name: Set IS_TESTING=true
@@ -408,17 +407,17 @@ jobs:
       - name: Lint
         run: yarn lint
       - name: Audit CI
-        run:  yarn audit:ci
+        run: yarn audit:ci
       - name: Check types
         run: yarn typecheck
-  
+
   # BUNDLE SIZE CHECK
   bundlewatch:
     runs-on: ubuntu-latest
     needs: [build]
     permissions:
       contents: read
-      statuses: write  # Needed to post status checks if using GitHub token
+      statuses: write # Needed to post status checks if using GitHub token
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -444,14 +443,17 @@ jobs:
           CI_COMMIT_SHA: ${{ github.sha }}
           CI_BRANCH: ${{ github.ref_name }}
         run: |
-          # Run bundlewatch and capture output
+          set +e  # Don't exit on error - we want to always write the summary
+
+          # Run bundlewatch and capture output and exit code
           BUNDLEWATCH_OUTPUT=$(yarn bundlewatch 2>&1)
+          BUNDLEWATCH_EXIT_CODE=$?
           echo "$BUNDLEWATCH_OUTPUT"
-          
-          # Generate summary report
+
+          # Generate summary report (always write, even on failure)
           echo "## 📦 Bundle Size Report" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          
+
           # Extract and display the result breakdown URL if it exists
           if [ -n "$BUNDLEWATCH_OUTPUT" ]; then
             # Look specifically for the bundlewatch result URL (ja2r7.app.goo.gl domain)
@@ -495,15 +497,25 @@ jobs:
           else
             echo "No bundlewatch results found" >> $GITHUB_STEP_SUMMARY
           fi
-          
-          # Exit with failure if bundlewatch failed
-          if echo "$BUNDLEWATCH_OUTPUT" | grep -q "bundlewatch FAIL"; then
+
+          # Exit with failure if bundlewatch failed (after writing summary)
+          if [ $BUNDLEWATCH_EXIT_CODE -ne 0 ] || echo "$BUNDLEWATCH_OUTPUT" | grep -q "bundlewatch FAIL"; then
             exit 1
           fi
-  
+
   cleanup:
-    runs-on:  ubuntu-latest
-    needs: [chrome-e2e-parallel, chrome-e2e-swap, chrome-e2e-send, chrome-e2e-dappInteractions, chrome-optimism-e2e-send, unit-tests, ci-checks, bundlewatch]
+    runs-on: ubuntu-latest
+    needs:
+      [
+        chrome-e2e-parallel,
+        chrome-e2e-swap,
+        chrome-e2e-send,
+        chrome-e2e-dappInteractions,
+        chrome-optimism-e2e-send,
+        unit-tests,
+        ci-checks,
+        bundlewatch,
+      ]
     steps:
       - uses: geekyeggo/delete-artifact@v5
         with:

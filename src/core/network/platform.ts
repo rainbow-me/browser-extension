@@ -1,6 +1,6 @@
 import { createHttpClient } from './internal/createHttpClient';
 
-const PLATFORM_BASE_URL = 'https://platform.p.rainbow.me';
+const PLATFORM_BASE_URL = 'https://platform.p.rainbow.me/v1';
 
 export const platformHttp = createHttpClient({
   baseUrl: PLATFORM_BASE_URL,
