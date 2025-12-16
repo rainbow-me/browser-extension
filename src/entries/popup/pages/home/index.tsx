@@ -23,6 +23,7 @@ import { AccountName } from '../../components/AccountName/AccountName';
 import { AppConnectionWalletSwitcher } from '../../components/AppConnection/AppConnectionWalletSwitcher';
 import { BackupReminder } from '../../components/BackupReminder/BackupReminder';
 import { Navbar } from '../../components/Navbar/Navbar';
+import { ProactiveRevokeWatcher } from '../../components/ProactiveRevokeWatcher';
 import { TabBar as NewTabBar, Tab } from '../../components/Tabs/TabBar';
 import { CursorTooltip } from '../../components/Tooltip/CursorTooltip';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
@@ -225,6 +226,7 @@ export const Home = memo(function Home() {
           <BackupReminder />
           {currentHomeSheet}
           {config.approvals_enabled ? <RevokeApproval /> : null}
+          {config.delegation_enabled ? <ProactiveRevokeWatcher /> : null}
 
           <PendingTransactionWatcher />
 

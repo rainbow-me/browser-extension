@@ -1,14 +1,16 @@
 import { isAllowedTargetContract } from '@rainbow-me/swaps';
 import { Address } from 'viem';
 
+import { isQuote } from '~/core/utils/quotes';
+
 import { add } from '../utils/numbers';
 
 import {
-  assetNeedsUnlocking,
   estimateApprove,
   estimateSwapGasLimit,
+  needsTokenApproval,
 } from './actions';
-import { estimateUnlockAndSwapFromMetadata } from './actions/swap';
+import { estimateUnlockAndSwap as estimateUnlockAndSwapSteps } from './actions/swap';
 import { createNewAction, createNewRap } from './common';
 import {
   RapAction,
@@ -37,18 +39,23 @@ export const estimateUnlockAndSwap = async (
   let swapAssetNeedsUnlocking = false;
 
   if (allowanceNeeded) {
-    swapAssetNeedsUnlocking = await assetNeedsUnlocking({
+    const targetAddress = getTargetAddressForQuote(quote);
+    if (!isAllowedTargetContract(targetAddress, chainId)) {
+      throw new Error('Target contract is not allowed');
+    }
+    swapAssetNeedsUnlocking = await needsTokenApproval({
       owner: accountAddress,
+      tokenAddress: sellTokenAddress,
+      spender: targetAddress,
       amount: sellAmount,
-      assetToUnlock: assetToSell,
-      spender: getTargetAddressForQuote(quote),
       chainId,
+      decimals: assetToSell.decimals,
     });
   }
 
   if (swapAssetNeedsUnlocking) {
-    const gasLimitFromMetadata = await estimateUnlockAndSwapFromMetadata({
-      swapAssetNeedsUnlocking,
+    const gasLimitFromMetadata = await estimateUnlockAndSwapSteps({
+      requiresApprove: swapAssetNeedsUnlocking,
       chainId,
       accountAddress,
       sellTokenAddress,
@@ -62,11 +69,6 @@ export const estimateUnlockAndSwap = async (
   let unlockGasLimit;
 
   if (swapAssetNeedsUnlocking) {
-    const targetAddress = getTargetAddressForQuote(quote);
-    const isAllowedTarget = isAllowedTargetContract(targetAddress, chainId);
-    if (!isAllowedTarget) {
-      throw new Error('Target contract is not allowed');
-    }
     unlockGasLimit = await estimateApprove({
       owner: accountAddress,
       tokenAddress: sellTokenAddress,
@@ -97,7 +99,15 @@ export const createUnlockAndSwapRap = async (
   const { sellAmount, quote, chainId, assetToSell, assetToBuy } =
     swapParameters;
 
-  const { from: accountAddress, allowanceNeeded } = quote as {
+  if (!isQuote(quote)) {
+    throw new Error('Invalid quote');
+  }
+
+  const {
+    from: accountAddress,
+    sellTokenAddress,
+    allowanceNeeded,
+  } = quote as {
     from: Address;
     sellTokenAddress: Address;
     buyTokenAddress: Address;
@@ -107,12 +117,17 @@ export const createUnlockAndSwapRap = async (
   let swapAssetNeedsUnlocking = false;
 
   if (allowanceNeeded) {
-    swapAssetNeedsUnlocking = await assetNeedsUnlocking({
+    const targetAddress = getTargetAddressForQuote(quote);
+    if (!isAllowedTargetContract(targetAddress, chainId)) {
+      throw new Error('Target contract is not allowed');
+    }
+    swapAssetNeedsUnlocking = await needsTokenApproval({
       owner: accountAddress,
+      tokenAddress: sellTokenAddress,
+      spender: targetAddress,
       amount: sellAmount as string,
-      assetToUnlock: assetToSell,
-      spender: getTargetAddressForQuote(quote),
       chainId,
+      decimals: assetToSell.decimals,
     });
   }
 

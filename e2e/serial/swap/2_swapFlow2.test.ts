@@ -158,6 +158,12 @@ describe('Swap Flow 2', () => {
   // TODO: fix. with mocking set up, currently this swap fails. You can see in the anvil logs that it is reverted.
   // My best guess is its on the provider level bc its throwing a custom error. Ideally we can un-skip this
   // bc its our only token > ETH swap we have on e2e. To see behavior just un-skip and run tests.
+  // TODO: Add e2e test for atomic unlock+swap execution (EIP-7702 delegation)
+  // Should test:
+  // - Atomic approve+swap executes as single transaction for token swaps
+  // - Transaction hash and nonce handling for atomic execution
+  // - Gas estimation for atomic unlock+swap
+  // - Balance changes after atomic token swap execution
   it.todo('should be able to execute unlock and swap', async () => {
     const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545/1');
     await provider.ready;

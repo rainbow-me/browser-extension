@@ -8,7 +8,7 @@ import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
-import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
+import { useFeatureFlagLocalOverwriteStore } from '~/core/state/currentSettings/featureFlags';
 import {
   computeUniqueIdForHiddenAsset,
   useHiddenAssetStore,
@@ -36,7 +36,7 @@ import { useWallets } from './useWallets';
 
 export function useTokensShortcuts() {
   const { isWatchingWallet } = useWallets();
-  const { featureFlags } = useFeatureFlagsStore();
+  const { featureFlags } = useFeatureFlagLocalOverwriteStore();
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
   const { trackShortcut } = useKeyboardAnalytics();
   const { currentAddress: address } = useCurrentAddressStore();

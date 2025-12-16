@@ -1,5 +1,5 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import BigNumber from 'bignumber.js';
 import { Address } from 'viem';
 
@@ -21,6 +21,7 @@ import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { toHex } from '~/core/utils/hex';
 import { greaterThan, handleSignificantDecimals } from '~/core/utils/numbers';
 import { updateTransaction } from '~/core/utils/transactions';
+import { getProvider } from '~/core/viem/clientToProvider';
 import {
   Box,
   Button,
@@ -47,30 +48,67 @@ import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 import { zIndexes } from '../../utils/zIndexes';
 
-const addTenPercent = (prevWeiValue = '0') => {
-  const prevWeiValueBN = new BigNumber(prevWeiValue || 0);
-
-  const newWeiValueBN = prevWeiValueBN
-    .times(new BigNumber('110'))
-    .dividedBy(new BigNumber('100'));
-
-  return newWeiValueBN.toFixed(0);
-};
+const addTenPercent = (prevWeiValue = '0') =>
+  new BigNumber(prevWeiValue || 0).times(110).dividedBy(100).toFixed(0);
 
 const greaterValueInHex = (a: string, b: string) =>
   toHex(greaterThan(a, b) ? a : b);
+
+function hasIncompleteStoredData(tx: PendingTransaction): boolean {
+  return (
+    tx.data === '0x' ||
+    (tx.nonce === 0 &&
+      (tx.type === 'revoke' || tx.type === 'revoke_delegation')) ||
+    !tx.gasLimit
+  );
+}
+
+/** Fields from chain needed to build speed up/cancel replacement tx */
+type FetchedTxForReplacement = Pick<
+  PendingTransaction,
+  | 'nonce'
+  | 'data'
+  | 'to'
+  | 'value'
+  | 'gasLimit'
+  | 'maxFeePerGas'
+  | 'maxPriorityFeePerGas'
+  | 'from'
+  | 'chainId'
+> & {
+  /** True when EIP-7702 (type 4) - required for speed up replacement */
+  delegation?: boolean;
+};
+
+async function fetchPendingTransaction(
+  hash: string,
+  chainId: number,
+): Promise<FetchedTxForReplacement | null> {
+  const provider = getProvider({ chainId });
+  const tx = await provider.getTransaction(hash);
+  if (!tx || tx.blockNumber != null) return null;
+
+  const to = tx.to ?? tx.from;
+  return {
+    chainId: tx.chainId as number,
+    from: tx.from as Address,
+    to: to as Address,
+    nonce: tx.nonce,
+    data: tx.data ?? '0x',
+    value: tx.value?.toString() ?? '0',
+    gasLimit: tx.gasLimit?.toString() ?? '0',
+    maxFeePerGas: tx.maxFeePerGas?.toString(),
+    maxPriorityFeePerGas: tx.maxPriorityFeePerGas?.toString(),
+    ...(tx.type === 4 && { delegation: true }),
+  };
+}
 
 async function gasParamsToOverrideTransaction(
   transaction: PendingTransaction,
   selectedGasParams: TransactionGasParams | TransactionLegacyGasParams,
 ) {
-  // add 10% to the gas params of the transaction we are overriding
-  // (so it executes faster than the original transaction)
-  // if the selected gas params are higher than this, we use the selected gas params
-
-  if ('gasPrice' in transaction) {
+  if ('gasPrice' in transaction && transaction.gasPrice) {
     if (!('gasPrice' in selectedGasParams)) return selectedGasParams;
-
     return {
       gasPrice: greaterValueInHex(
         selectedGasParams.gasPrice,
@@ -81,54 +119,44 @@ async function gasParamsToOverrideTransaction(
 
   if (!('maxFeePerGas' in selectedGasParams)) return selectedGasParams;
 
-  const minMaxFeePerGas = addTenPercent(transaction.maxFeePerGas);
-  const minMaxPriorityFeePerGas = addTenPercent(
-    transaction.maxPriorityFeePerGas,
-  );
+  const txMaxFee = transaction.maxFeePerGas;
+  const txMaxPriority = transaction.maxPriorityFeePerGas;
+  if (!txMaxFee || !txMaxPriority) return selectedGasParams;
 
   return {
     maxFeePerGas: greaterValueInHex(
       selectedGasParams.maxFeePerGas,
-      minMaxFeePerGas,
+      addTenPercent(txMaxFee),
     ),
     maxPriorityFeePerGas: greaterValueInHex(
-      minMaxPriorityFeePerGas,
+      addTenPercent(txMaxPriority),
       selectedGasParams.maxPriorityFeePerGas,
     ),
   };
 }
 
-const cancelTransaction = (
+const cancelTransaction = async (
   transaction: PendingTransaction,
   selectedGasParams: TransactionGasParams | TransactionLegacyGasParams,
-): TransactionRequest => {
-  const gasParams = gasParamsToOverrideTransaction(
+): Promise<TransactionRequest> => {
+  const gasParams = await gasParamsToOverrideTransaction(
     transaction,
     selectedGasParams,
   );
-  // to cancel we send 0 to the from address with higher gas price/priority fee
   const { nonce, chainId, from } = transaction;
-  return {
-    nonce,
-    chainId,
-    from,
-    to: from,
-    value: toHex('0'),
-    data: undefined,
-    ...gasParams,
-  };
+  return { nonce, chainId, from, to: from, value: toHex('0'), ...gasParams };
 };
 
-const speedUpTransaction = (
-  transaction: PendingTransaction,
+const speedUpTransaction = async (
+  transaction: PendingTransaction & { delegation?: boolean },
   selectedGasParams: TransactionGasParams | TransactionLegacyGasParams,
-): TransactionRequest => {
-  const gasParams = gasParamsToOverrideTransaction(
+): Promise<TransactionRequest> => {
+  const gasParams = await gasParamsToOverrideTransaction(
     transaction,
     selectedGasParams,
   );
-  // to speed up we just resent the same tx with higher gas price/priority fee
-  const { data, chainId, from, to, nonce, gasLimit, value } = transaction;
+  const { data, chainId, from, to, nonce, gasLimit, value, delegation } =
+    transaction;
   return {
     data,
     chainId,
@@ -136,8 +164,9 @@ const speedUpTransaction = (
     to,
     nonce,
     gasLimit,
-    value,
+    value: toHex(value || '0'),
     ...gasParams,
+    ...(delegation && { type: 4 }),
   };
 };
 
@@ -158,20 +187,48 @@ export function SpeedUpAndCancelSheet({
   transaction,
 }: SpeedUpAndCancelSheetProps) {
   const navigate = useRainbowNavigate();
-
   const selectedGasParams = useGasStore(
     (s) => s.selectedGas.transactionGasParams,
   );
-
   const cancel = currentSheet === 'cancel';
 
-  const transactionRequest = (cancel ? cancelTransaction : speedUpTransaction)(
-    transaction,
-    selectedGasParams,
-  );
+  const {
+    data: transactionRequest,
+    error: fetchError,
+    isFetching: isFetchingTx,
+  } = useQuery({
+    queryKey: [
+      'speedUpCancelTxRequest',
+      transaction.hash,
+      transaction.chainId,
+      cancel,
+      selectedGasParams,
+    ],
+    queryFn: async () => {
+      let resolvedTx = transaction;
+      if (hasIncompleteStoredData(transaction)) {
+        const fetched = await fetchPendingTransaction(
+          transaction.hash,
+          transaction.chainId,
+        );
+        if (!fetched) {
+          throw new Error(
+            i18n.t('speed_up_and_cancel.tx_confirmed_or_not_found'),
+          );
+        }
+        resolvedTx = { ...transaction, ...fetched };
+      }
+      return (cancel ? cancelTransaction : speedUpTransaction)(
+        resolvedTx,
+        selectedGasParams,
+      );
+    },
+    enabled: currentSheet !== 'none' && !!transaction.hash,
+  });
 
   const { mutate: executeTransaction, isPending: sending } = useMutation({
     mutationFn: async () => {
+      if (!transactionRequest) throw new Error('Transaction request not ready');
       const replaceTx = await sendTransaction(transactionRequest);
 
       updateTransaction({
@@ -279,11 +336,30 @@ export function SpeedUpAndCancelSheet({
                   </Box>
                 </Stack>
                 <Box paddingHorizontal="20px" paddingVertical="16px">
-                  <TransactionFee
-                    chainId={transaction.chainId}
-                    defaultSpeed={GasSpeed.URGENT}
-                    transactionRequest={transactionRequest}
-                  />
+                  {fetchError ? (
+                    <Text size="14pt" color="red" weight="semibold">
+                      {(fetchError as Error).message}
+                    </Text>
+                  ) : isFetchingTx || !transactionRequest ? (
+                    <Inline
+                      alignVertical="center"
+                      alignHorizontal="center"
+                      space="6px"
+                    >
+                      <Spinner size={14} color="labelTertiary" />
+                      <Text size="14pt" color="labelSecondary" weight="medium">
+                        {i18n.t('speed_up_and_cancel.estimating_fee')}
+                      </Text>
+                    </Inline>
+                  ) : (
+                    <TransactionFee
+                      chainId={transaction.chainId}
+                      defaultSpeed={GasSpeed.URGENT}
+                      transactionRequest={
+                        transactionRequest as TransactionRequest
+                      }
+                    />
+                  )}
                 </Box>
               </Box>
               <Box marginHorizontal="-12px">
@@ -337,7 +413,8 @@ export function SpeedUpAndCancelSheet({
                         height="44px"
                         variant="flat"
                         width="full"
-                        onClick={executeTransaction}
+                        onClick={() => executeTransaction()}
+                        disabled={!transactionRequest || !!fetchError}
                       >
                         {sending ? (
                           <Box

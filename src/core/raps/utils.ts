@@ -308,3 +308,5 @@ export const getTargetAddressForQuote = (quote: Quote | CrosschainQuote) => {
   }
   return targetAddress as Address;
 };
+
+export { getQuoteAllowanceTargetAddress } from './validation';

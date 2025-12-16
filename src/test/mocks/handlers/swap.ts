@@ -1,14 +1,18 @@
+import { getRainbowRouterContractAddress } from '@rainbow-me/swaps';
 import { HttpResponse, http } from 'msw';
+
+const RAINBOW_ROUTER_MAINNET = getRainbowRouterContractAddress(1);
 
 // Mock swap quote response for ETH -> USDC (no allowance needed)
 const mockSwapQuote = {
+  chainId: 1,
   sellTokenAddress: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
   buyTokenAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
   sellAmount: '1000000000000000000',
   buyAmount: '1800000000',
   value: '1000000000000000000',
   gas: '600000',
-  to: '0xdef1abe32c034e558cdd535791643c58a13acc10',
+  to: RAINBOW_ROUTER_MAINNET,
   data: '0x0000',
   from: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
   defaultGasLimit: '600000',
@@ -18,20 +22,21 @@ const mockSwapQuote = {
   tradeAmountUSD: 1800,
   tradeFeeAmountUSD: 0,
   routes: [],
-  allowanceTarget: '0x0000000000000000000000000000000000000000',
+  allowanceTarget: RAINBOW_ROUTER_MAINNET,
   allowanceNeeded: false,
   protocols: [{ name: 'UniswapV3', part: 100 }],
 };
 
 // Mock swap quote response for ENS -> USDC (allowance needed)
 const mockSwapQuoteWithAllowance = {
+  chainId: 1,
   sellTokenAddress: '0xc18360217d8f7ab5e7c516566761ea12ce7f9d72', // ENS token address
   buyTokenAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
   sellAmount: '1000000000000000000',
   buyAmount: '1800000000',
   value: '0',
   gas: '600000',
-  to: '0xdef1abe32c034e558cdd535791643c58a13acc10',
+  to: RAINBOW_ROUTER_MAINNET,
   data: '0x0000',
   from: '0x70997970c51812dc3a010c7d01b50e0d17dc79c8',
   defaultGasLimit: '600000',
@@ -41,7 +46,7 @@ const mockSwapQuoteWithAllowance = {
   tradeAmountUSD: 1800,
   tradeFeeAmountUSD: 0,
   routes: [],
-  allowanceTarget: '0xdef1abe32c034e558cdd535791643c58a13acc10',
+  allowanceTarget: RAINBOW_ROUTER_MAINNET,
   allowanceNeeded: true,
   protocols: [{ name: 'UniswapV3', part: 100 }],
 };
@@ -54,7 +59,7 @@ const mockCrosschainQuote = {
   buyAmount: '1800000000',
   value: '1000000000000000000',
   gas: '600000',
-  to: '0xdef1abe32c034e558cdd535791643c58a13acc10',
+  to: RAINBOW_ROUTER_MAINNET,
   data: '0x0000',
   from: '0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc',
   defaultGasLimit: '600000',
@@ -64,10 +69,22 @@ const mockCrosschainQuote = {
   tradeAmountUSD: 1800,
   tradeFeeAmountUSD: 0,
   routes: [],
-  allowanceTarget: '0x0000000000000000000000000000000000000000',
+  allowanceTarget: RAINBOW_ROUTER_MAINNET,
   protocols: [{ name: 'Socket', part: 100 }],
   chainId: 1,
   toChainId: 42161,
+};
+
+const ENS_TOKEN = '0xc18360217d8f7ab5e7c516566761ea12ce7f9d72';
+const ETH_TOKEN = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
+
+const getSwapQuoteResponse = (sellToken: string, buyToken: string) => {
+  const needsAllowance = sellToken.toLowerCase() === ENS_TOKEN.toLowerCase();
+  return {
+    ...(needsAllowance ? mockSwapQuoteWithAllowance : mockSwapQuote),
+    sellTokenAddress: sellToken,
+    buyTokenAddress: buyToken,
+  };
 };
 
 export const swapHandlers = [
@@ -87,7 +104,10 @@ export const swapHandlers = [
   http.get('https://swap.p.rainbow.me/v1/quote', ({ request }) => {
     const url = new URL(request.url);
     const bridgeVersion = url.searchParams.get('bridgeVersion');
-    const sellToken = url.searchParams.get('sellToken');
+    const sellToken = url.searchParams.get('sellToken') ?? ETH_TOKEN;
+    const buyToken =
+      url.searchParams.get('buyToken') ??
+      '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
 
     // Return crosschain quote if bridgeVersion is set
     if (bridgeVersion) {
@@ -99,18 +119,8 @@ export const swapHandlers = [
       });
     }
 
-    // Return quote with allowance for ENS token
-    if (sellToken === '0xc18360217d8f7ab5e7c516566761ea12ce7f9d72') {
-      return HttpResponse.json(mockSwapQuoteWithAllowance, {
-        status: 200,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-        },
-      });
-    }
-
-    // Return regular swap quote for ETH and other tokens
-    return HttpResponse.json(mockSwapQuote, {
+    const quote = getSwapQuoteResponse(sellToken, buyToken);
+    return HttpResponse.json(quote, {
       status: 200,
       headers: {
         'Access-Control-Allow-Origin': '*',
@@ -122,7 +132,10 @@ export const swapHandlers = [
   http.post('https://swap.p.rainbow.me/v1/quote', ({ request }) => {
     const url = new URL(request.url);
     const bridgeVersion = url.searchParams.get('bridgeVersion');
-    const sellToken = url.searchParams.get('sellToken');
+    const sellToken = url.searchParams.get('sellToken') ?? ETH_TOKEN;
+    const buyToken =
+      url.searchParams.get('buyToken') ??
+      '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
 
     // Return crosschain quote if bridgeVersion is set
     if (bridgeVersion) {
@@ -134,18 +147,8 @@ export const swapHandlers = [
       });
     }
 
-    // Return quote with allowance for ENS token
-    if (sellToken === '0xc18360217d8f7ab5e7c516566761ea12ce7f9d72') {
-      return HttpResponse.json(mockSwapQuoteWithAllowance, {
-        status: 200,
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-        },
-      });
-    }
-
-    // Return regular swap quote for ETH and other tokens
-    return HttpResponse.json(mockSwapQuote, {
+    const quote = getSwapQuoteResponse(sellToken, buyToken);
+    return HttpResponse.json(quote, {
       status: 200,
       headers: {
         'Access-Control-Allow-Origin': '*',
