@@ -1,8 +1,11 @@
 import { Signer } from '@ethersproject/abstract-signer';
+import { BatchCall } from '@rainbow-me/rainbow-delegation';
 import { CrosschainQuote, Quote } from '@rainbow-me/swaps';
 import { Address } from 'viem';
 
 import { ParsedAsset } from '../types/assets';
+import { ChainId } from '../types/chains';
+import { NewTransaction } from '../types/transactions';
 
 export enum SwapModalField {
   input = 'inputAmount',
@@ -52,10 +55,12 @@ export interface RapSwapActionParameters<T extends 'swap' | 'crosschainSwap'> {
   nonce?: number;
   quote: QuoteTypeMap[T];
   address?: Address;
+  atomic?: boolean;
 }
 
 export interface RapUnlockActionParameters {
   fromAddress: Address;
+  amount: string;
   assetToUnlock: ParsedAsset;
   contractAddress: Address;
   chainId: number;
@@ -124,3 +129,14 @@ export interface WalletExecuteRapProps {
   rapActionParameters: RapSwapActionParameters<'swap' | 'crosschainSwap'>;
   type: RapTypes;
 }
+
+export interface PrepareActionProps<T extends RapActionTypes> {
+  parameters: RapActionParameterMap[T];
+  wallet: Signer;
+  chainId: ChainId;
+  quote: Quote | CrosschainQuote;
+}
+
+export type PrepareActionResult =
+  | { call: BatchCall | null }
+  | { call: BatchCall; transaction: Omit<NewTransaction, 'hash'> };

@@ -22,8 +22,10 @@ import type {
 } from '~/entries/background/handlers/handleWallets';
 /* eslint-enable boundaries/element-types */
 
+import config from '../firebase/remoteConfig';
 import { walletExecuteRap } from '../raps/execute';
 import { RapSwapActionParameters, RapTypes } from '../raps/references';
+import { useFeatureFlagsStore } from '../state/currentSettings/featureFlags';
 import { KeychainType } from '../types/keychainTypes';
 import { EthereumWalletType } from '../types/walletTypes';
 import {
@@ -255,15 +257,57 @@ export const executeRap = async ({
   rapActionParameters: RapSwapActionParameters<'swap' | 'crosschainSwap'>;
   type: RapTypes;
   provider: Provider;
-}): Promise<{ nonce: number | undefined }> => {
+}): Promise<{
+  nonce: number | undefined;
+  errorMessage?: string | null;
+  hash?: string | null;
+}> => {
   const from = (rapActionParameters.address ||
     rapActionParameters.quote?.from) as Address;
   if (typeof from === 'undefined') {
     throw new Error('Missing from address');
   }
+
+  // Get wallet info to determine if atomic execution is allowed
+  const walletInfo = await keychainManager.getWallet(from);
+  const isHardwareWallet =
+    walletInfo?.type === KeychainType.HardwareWalletKeychain;
+
+  // Check feature flags - local flags override remote flags when set (not null), otherwise use remote flag
+  const remoteAtomicEnabled = config.atomic_swaps_enabled ?? false;
+  const localAtomicEnabled =
+    useFeatureFlagsStore.getState().featureFlags.atomic_swaps_enabled;
+  // Local flag takes precedence if set (not null), otherwise use remote flag
+  const atomicSwapsEnabled =
+    localAtomicEnabled !== null ? localAtomicEnabled : remoteAtomicEnabled;
+
+  // Determine if atomic execution should be used
+  // Atomic execution is enabled when:
+  // - Feature flag allows atomic swaps (local or remote)
+  // - Swap type is 'swap' or 'crosschainSwap' (not claimBridge)
+  // - Wallet is not a hardware wallet
+  // - Additional feature flags are checked inside walletExecuteRap
+  const canUseAtomic =
+    atomicSwapsEnabled &&
+    (type === 'swap' || type === 'crosschainSwap') &&
+    !isHardwareWallet;
+
+  console.log('[Delegation] executeRap called', {
+    type,
+    from,
+    chainId: rapActionParameters.chainId,
+    isHardwareWallet,
+    canUseAtomic,
+  });
+
   const signer = await keychainManager.getSigner(from);
   const wallet = signer.connect(provider);
-  return walletExecuteRap(wallet, type, rapActionParameters);
+
+  // Pass atomic flag to walletExecuteRap - it will handle feature flag checks
+  return walletExecuteRap(wallet, type, {
+    ...rapActionParameters,
+    atomic: canUseAtomic,
+  });
 };
 
 export const signMessage = async ({
