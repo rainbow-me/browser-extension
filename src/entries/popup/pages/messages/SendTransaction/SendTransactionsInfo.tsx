@@ -185,8 +185,8 @@ const TransactionDetails = memo(function TransactionDetails({
   simulation: TransactionSimulation;
   session: { address: Address; chainId: ChainId };
 }) {
-  const metaTo = simulation.meta.to;
-  const metaTransferTo = simulation.meta.transferTo;
+  const metaTo = simulation.meta?.to;
+  const metaTransferTo = simulation.meta?.transferTo;
 
   const isContract = metaTo?.function || metaTo?.created;
 
@@ -194,7 +194,7 @@ const TransactionDetails = memo(function TransactionDetails({
 
   const functionName = metaTo?.function.split('(')[0];
   const contract = metaTo && {
-    address: metaTo.address,
+    address: metaTo.address as Address,
     name: metaTo.name,
     iconUrl: metaTo.iconURL,
   };
@@ -209,7 +209,7 @@ const TransactionDetails = memo(function TransactionDetails({
           label={i18n.t('simulation.to')}
           value={
             <AddressDisplay
-              address={metaTransferTo.address}
+              address={metaTransferTo.address as Address}
               chainId={session.chainId}
             />
           }

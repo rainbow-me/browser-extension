@@ -44,6 +44,9 @@ import { Home } from './pages/home';
 import { ActivityDetails } from './pages/home/Activity/ActivityDetails';
 import { Approvals } from './pages/home/Approvals/Approvals';
 import { ConnectedApps } from './pages/home/ConnectedApps';
+import { ConfirmDisableSmartWallet } from './pages/home/Delegations/ConfirmDisableSmartWallet';
+import { Delegations } from './pages/home/Delegations/Delegations';
+import { RevokeDelegationPage } from './pages/home/Delegations/RevokeDelegationPage';
 import { NftDetailsRoute } from './pages/home/NFTs/NFTDetails';
 import { TokenDetails } from './pages/home/TokenDetails/TokenDetails';
 import { ChooseHW } from './pages/hw/chooseHW';
@@ -492,6 +495,47 @@ const ROUTE_DATA = [
         protectedRoute
       >
         <Approvals />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.SETTINGS__DELEGATIONS,
+    element: (
+      <AnimatedRoute
+        direction="up"
+        navbar
+        navbarBackground="surfacePrimaryElevatedSecondary"
+        navbarIcon="ex"
+        title={i18n.t('delegations.title')}
+        protectedRoute
+      >
+        <Delegations />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.SETTINGS__DELEGATIONS__REVOKE,
+    element: (
+      <AnimatedRoute
+        direction="up"
+        navbar={false}
+        protectedRoute
+        background="surfaceSecondary"
+      >
+        <RevokeDelegationPage />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.SETTINGS__DELEGATIONS__CONFIRM_DISABLE,
+    element: (
+      <AnimatedRoute
+        direction="up"
+        navbar={false}
+        protectedRoute
+        background="surfaceSecondary"
+      >
+        <ConfirmDisableSmartWallet />
       </AnimatedRoute>
     ),
   },
