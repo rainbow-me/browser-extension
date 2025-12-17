@@ -1321,7 +1321,7 @@
           }
         },
         "testnet": false,
-        "internal": true,
+        "internal": false,
         "opStack": false,
         "defaultExplorer": {
           "url": "https://scrollscan.com",
@@ -1515,7 +1515,7 @@
           }
         },
         "testnet": false,
-        "internal": true,
+        "internal": false,
         "opStack": false,
         "defaultExplorer": {
           "url": "https://gnosisscan.io",
@@ -2589,7 +2589,7 @@
           }
         },
         "testnet": false,
-        "internal": true,
+        "internal": false,
         "opStack": false,
         "defaultExplorer": {
           "url": "https://abscan.org",
@@ -2783,7 +2783,7 @@
           }
         },
         "testnet": false,
-        "internal": true,
+        "internal": false,
         "opStack": false,
         "defaultExplorer": {
           "url": "https://explorer.b3.fun",
@@ -2977,7 +2977,7 @@
           }
         },
         "testnet": false,
-        "internal": true,
+        "internal": false,
         "opStack": true,
         "defaultExplorer": {
           "url": "https://worldscan.org",
@@ -3074,7 +3074,7 @@
           }
         },
         "testnet": false,
-        "internal": true,
+        "internal": false,
         "opStack": true,
         "defaultExplorer": {
           "url": "https://swellchainscan.io",
@@ -3171,7 +3171,7 @@
           }
         },
         "testnet": false,
-        "internal": true,
+        "internal": false,
         "opStack": false,
         "defaultExplorer": {
           "url": "https://plasmascan.to",
@@ -3533,6 +3533,200 @@
             "transactions": false,
             "assets": true,
             "positions": true
+          },
+          "tokenSearch": {
+            "enabled": true
+          },
+          "nftProxy": {
+            "enabled": false
+          }
+        },
+        "favorites": []
+      },
+      {
+        "id": "143",
+        "mainnetId": "143",
+        "name": "monad",
+        "label": "Monad",
+        "colors": {
+          "light": "#6E54FF",
+          "dark": "#8C77FF"
+        },
+        "icons": {
+          "uncropped": {
+            "largeURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/monad/uncropped_large3x.png",
+            "smallURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/monad/uncropped_small3x.png"
+          }
+        },
+        "testnet": false,
+        "internal": false,
+        "opStack": false,
+        "defaultExplorer": {
+          "url": "https://monadscan.com/",
+          "label": "MonadScan",
+          "transactionURL": "https://monadscan.com//tx/",
+          "tokenURL": "https://monadscan.com//token/"
+        },
+        "defaultRPC": {
+          "enabledDevices": [
+            "APP",
+            "BX"
+          ],
+          "url": "https://rpc.rainbow.me/v1/143/"
+        },
+        "gasUnits": {
+          "basic": {
+            "approval": "55000",
+            "swap": "350000",
+            "swapPermit": "400000",
+            "eoaTransfer": "21000",
+            "tokenTransfer": "50000"
+          },
+          "wrapped": {
+            "wrap": "100000",
+            "unwrap": "150000"
+          }
+        },
+        "nativeAsset": {
+          "address": "0x0000000000000000000000000000000000000000",
+          "name": "Monad",
+          "symbol": "MON",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1763646696/assets/monad/monad_qi865e.png",
+          "colors": {
+            "primary": "#6E54FF",
+            "fallback": "#6E54FF",
+            "shadow": ""
+          }
+        },
+        "nativeWrappedAsset": {
+          "address": "0x3bd359c1119da7da1d913d1c4d2b7c461115433a",
+          "name": "Wrapped MON",
+          "symbol": "WMON",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1763646696/assets/monad/monad_qi865e.png",
+          "colors": {
+            "primary": "#6E54FF",
+            "fallback": "#6E54FF",
+            "shadow": ""
+          }
+        },
+        "enabledServices": {
+          "meteorology": {
+            "enabled": true
+          },
+          "notifications": {
+            "enabled": false
+          },
+          "swap": {
+            "enabled": true,
+            "swap": true,
+            "swapExactOutput": false,
+            "bridge": true,
+            "bridgeExactOutput": false
+          },
+          "addys": {
+            "approvals": false,
+            "transactions": false,
+            "assets": true,
+            "positions": false
+          },
+          "tokenSearch": {
+            "enabled": true
+          },
+          "nftProxy": {
+            "enabled": false
+          }
+        },
+        "favorites": []
+      },
+      {
+        "id": "4326",
+        "mainnetId": "4326",
+        "name": "megaeth",
+        "label": "MegaETH",
+        "colors": {
+          "light": "#B7ACAC",
+          "dark": "#DFD9D9"
+        },
+        "icons": {
+          "uncropped": {
+            "largeURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/megaeth/uncropped_large3x.png",
+            "smallURL": "https://rainbowme-res.cloudinary.com/image/upload/v1737789166/networks/megaeth/uncropped_small3x.png"
+          }
+        },
+        "testnet": false,
+        "internal": true,
+        "opStack": true,
+        "defaultExplorer": {
+          "url": "https://megaexplorer.xyz",
+          "label": "MegaETH",
+          "transactionURL": "https://megaexplorer.xyz/tx/",
+          "tokenURL": "https://megaexplorer.xyz/token/"
+        },
+        "defaultRPC": {
+          "enabledDevices": [
+            "APP",
+            "BX"
+          ],
+          "url": "https://rpc.rainbow.me/v1/4326/"
+        },
+        "gasUnits": {
+          "basic": {
+            "approval": "55000",
+            "swap": "350000",
+            "swapPermit": "400000",
+            "eoaTransfer": "21000",
+            "tokenTransfer": "50000"
+          },
+          "wrapped": {
+            "wrap": "100000",
+            "unwrap": "150000"
+          }
+        },
+        "nativeAsset": {
+          "address": "0x0000000000000000000000000000000000000000",
+          "name": "Ethereum",
+          "symbol": "ETH",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/ethereum/eth.png",
+          "colors": {
+            "primary": "#808088",
+            "fallback": "#E8EAF5",
+            "shadow": ""
+          }
+        },
+        "nativeWrappedAsset": {
+          "address": "0x4200000000000000000000000000000000000006",
+          "name": "Wrapped ETH",
+          "symbol": "WETH",
+          "decimals": 18,
+          "iconURL": "https://rainbowme-res.cloudinary.com/image/upload/v1668633499/assets/ethereum/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
+          "colors": {
+            "primary": "#25292E",
+            "fallback": "#B6B6B7",
+            "shadow": ""
+          }
+        },
+        "enabledServices": {
+          "meteorology": {
+            "enabled": true
+          },
+          "notifications": {
+            "enabled": false
+          },
+          "swap": {
+            "enabled": true,
+            "swap": true,
+            "swapExactOutput": false,
+            "bridge": true,
+            "bridgeExactOutput": false
+          },
+          "addys": {
+            "approvals": false,
+            "transactions": false,
+            "assets": true,
+            "positions": false
           },
           "tokenSearch": {
             "enabled": true
