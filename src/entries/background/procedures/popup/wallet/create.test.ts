@@ -1,8 +1,8 @@
 import { call } from '@orpc/server';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { setVaultPassword } from '~/core/keychain';
-import { SessionStorage } from '~/core/storage';
+import { hasVault, setVaultPassword } from '~/core/keychain';
+import { getUserStatus } from '~/core/utils/userStatus';
 
 import { createHandler } from './create';
 
@@ -19,12 +19,14 @@ describe('create through orpc', () => {
       { context: { sender: undefined } },
     );
 
+    expect(await hasVault()).toBe(true);
+
     expect(result).toHaveProperty('address');
     expect(result.address).toBeDefined();
     expect(typeof result.address).toBe('string');
     expect(result.address.length).toBe(42);
     expect(result.address.startsWith('0x')).toBe(true);
-    expect(await SessionStorage.get('userStatus')).toBe('NEEDS_PASSWORD');
+    expect(await getUserStatus()).toBe('NEEDS_PASSWORD');
   });
 
   it('should create a new wallet while password exists', async () => {
@@ -41,6 +43,6 @@ describe('create through orpc', () => {
     expect(typeof result.address).toBe('string');
     expect(result.address.length).toBe(42);
     expect(result.address.startsWith('0x')).toBe(true);
-    expect(await SessionStorage.get('userStatus')).toBe('READY');
+    expect(await getUserStatus()).toBe('READY');
   });
 });
