@@ -37,7 +37,7 @@ export class RainbowSigner extends Signer {
 
   async signMessage(message: ByteArray | string): Promise<Hex> {
     // Use viem's signMessage utility which properly handles personal_sign
-    // and avoids the toBuffer issue from @metamask/eth-sig-util
+    // Note: v1 typed data fallback in signTypedData still uses @metamask/eth-sig-util
     const messageToSign =
       typeof message === 'string' ? message : bytesToHex(message as Uint8Array);
 
