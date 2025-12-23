@@ -1,14 +1,14 @@
-import { zeroAddress } from 'viem';
+import { Address } from 'viem';
 import { Chain, mainnet } from 'viem/chains';
 
+import { NATIVE_ASSET_ADDRESS } from '~/core/references';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { mergedChainToViemChain } from '~/core/state/networks/utils';
 import { ChainId, TransformedChain } from '~/core/types/chains';
 import { getAvailableChains } from '~/core/viem';
 
-import { AddressOrEth } from '../types/assets';
-
 import { getDappHost } from './connectedApps';
+import { isNativeAssetAddress } from './nativeAssets';
 import { isLowerCaseMatch } from './strings';
 
 // Main chains for chain settings
@@ -87,14 +87,21 @@ export const isCustomChain = (chainId: number) =>
   !useNetworkStore.getState().getBackendSupportedChains(true)[chainId] &&
   !!useNetworkStore.getState().getActiveRpcForChain(chainId);
 
-export function isNativeAsset(address: AddressOrEth, chainId: ChainId) {
+export function isNativeAsset(address: Address, chainId: ChainId) {
+  // For custom chains, check if it's any native asset format
   if (isCustomChain(chainId)) {
-    return zeroAddress === address;
+    return isNativeAssetAddress(address);
   }
 
-  return isLowerCaseMatch(
-    useNetworkStore.getState().getChainsNativeAsset()[chainId]?.address,
-    address,
+  // For supported chains, check against the backend-provided native asset address
+  // Also check if the address is the standard native asset address
+  const chainNativeAddress = useNetworkStore.getState().getChainsNativeAsset()[
+    chainId
+  ]?.address;
+
+  return (
+    isLowerCaseMatch(chainNativeAddress, address) ||
+    address.toLowerCase() === NATIVE_ASSET_ADDRESS.toLowerCase()
   );
 }
 

@@ -9,6 +9,7 @@ import { useNetworkStore } from '~/core/state/networks/networks';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { formatCurrency } from '~/core/utils/formatNumber';
+import { toMetadataApiAddress } from '~/core/utils/nativeAssets';
 
 const parseTokenInfo = (token: AboutTokenQuery['token']) => {
   if (!token) return token;
@@ -47,7 +48,11 @@ export const useTokenInfo = <Select = ParsedTokenInfo>(
   const supportedChains = useNetworkStore((state) =>
     state.getBackendSupportedChains(true),
   );
-  const args = token && { ...token, currency: currentCurrency };
+  const args = token && {
+    ...token,
+    address: toMetadataApiAddress(token.address),
+    currency: currentCurrency,
+  };
   return useQuery({
     queryFn: () => {
       if (!args) return;

@@ -8,24 +8,28 @@ import {
   QueryFunctionResult,
   createQueryKey,
 } from '~/core/react-query';
-import { SupportedCurrencyKey } from '~/core/references';
+import { NATIVE_ASSET_ADDRESS, SupportedCurrencyKey } from '~/core/references';
 import { useNetworkStore } from '~/core/state/networks/networks';
-import { AddressOrEth, ParsedUserAsset } from '~/core/types/assets';
+import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
 import { fetchAssetBalanceViaProvider } from '~/core/utils/assets';
 import { getChain } from '~/core/utils/chains';
+import { normalizeNativeAssetAddress } from '~/core/utils/nativeAssets';
 import { getProvider } from '~/core/viem/clientToProvider';
 
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
 
 const getNativeAssetMock = ({ chainId }: { chainId: ChainId }) => {
   const chain = getChain({ chainId });
-  const nativeAssetAddress =
+  const rawNativeAssetAddress =
     useNetworkStore.getState().getChainsNativeAsset()[chainId]?.address ||
     ETH_ADDRESS;
+  // Normalize to Address type
+  const nativeAssetAddress =
+    normalizeNativeAssetAddress(rawNativeAssetAddress) ?? NATIVE_ASSET_ADDRESS;
   const chainLabel = useNetworkStore.getState().getChainsLabel()[chainId];
   const nativeAssetMock = {
-    address: nativeAssetAddress as AddressOrEth,
+    address: nativeAssetAddress,
     balance: { amount: '', display: '' },
     chainId: chainId,
     chainName: chainLabel as ChainName,

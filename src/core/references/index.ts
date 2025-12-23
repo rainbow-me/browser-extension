@@ -41,7 +41,19 @@ export type {
   SupportedCurrencyKey,
 } from './supportedCurrencies';
 
+/**
+ * The standard address used to represent native assets (ETH) across all chains.
+ * This is the industry-standard "0xEeee..." address used by swap aggregators.
+ */
+export const NATIVE_ASSET_ADDRESS =
+  '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE' as const;
+
+/**
+ * @deprecated Use NATIVE_ASSET_ADDRESS instead. This legacy value is kept for
+ * backward compatibility with APIs that still use 'eth' as the native asset identifier.
+ */
 export const ETH_ADDRESS = 'eth';
+
 export const OP_ADDRESS = '0x4200000000000000000000000000000000000042';
 export const DAI_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f';
 

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Address, zeroAddress } from 'viem';
+import { Address } from 'viem';
 
 import { requestMetadata } from '~/core/graphql';
 import {
@@ -9,7 +9,7 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
-import { ETH_ADDRESS, SupportedCurrencyKey } from '~/core/references';
+import { NATIVE_ASSET_ADDRESS, SupportedCurrencyKey } from '~/core/references';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import {
@@ -17,7 +17,6 @@ import {
   useRainbowChainAssetsStore,
 } from '~/core/state/rainbowChainAssets';
 import {
-  AddressOrEth,
   AssetMetadata,
   ParsedAssetsDict,
   ParsedUserAsset,
@@ -211,19 +210,22 @@ async function customNetworkAssetsFunction({
           (filterZeroBalance ? !isZero(nativeAssetBalance) : true)
             ? parseUserAssetBalances({
                 asset: {
-                  address: zeroAddress,
+                  address: NATIVE_ASSET_ADDRESS,
                   chainId: chain.id,
                   chainName: chain.name as ChainName,
                   isNativeAsset: true,
                   name: chain.nativeCurrency.symbol,
                   symbol: chain.nativeCurrency.symbol,
-                  uniqueId: `${zeroAddress}_${chain.id}`,
+                  uniqueId: `${NATIVE_ASSET_ADDRESS}_${chain.id}`,
                   decimals: 18,
                   native: { price: undefined },
                   price: { value: 0 },
                   bridging: { isBridgeable: false, networks: [] },
-                  mainnetAddress: ETH_ADDRESS as AddressOrEth,
-                  icon_url: getCustomChainIconUrl(chain.id, ETH_ADDRESS),
+                  mainnetAddress: NATIVE_ASSET_ADDRESS,
+                  icon_url: getCustomChainIconUrl(
+                    chain.id,
+                    NATIVE_ASSET_ADDRESS,
+                  ),
                 },
                 currency,
                 balance: nativeAssetBalance,
@@ -281,7 +283,8 @@ async function customNetworkAssetsFunction({
         const assets = Object.values(results).flat();
         assets.forEach((asset, i) => {
           const a = asset as unknown as AssetMetadata;
-          const address = a.networks?.[chain.id]?.address as AddressOrEth;
+          const address = a.networks?.[chain.id]?.address;
+          if (!address) return;
           const parsedAsset = parseAssetMetadata({
             address,
             asset: a,

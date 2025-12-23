@@ -12,6 +12,7 @@ import { AddressOrEth } from '~/core/types/assets';
 import { SearchAsset } from '~/core/types/search';
 import { getAssetMetadata, getCustomChainIconUrl } from '~/core/utils/assets';
 import { isNativeAsset } from '~/core/utils/chains';
+import { normalizeNativeAssetAddress } from '~/core/utils/nativeAssets';
 import { useUserChains } from '~/entries/popup/hooks/useUserChains';
 
 // ///////////////////////////////////////////////
@@ -118,8 +119,13 @@ function parseSearchAssetMetadata({
   name: string;
   chainId: number;
 }): SearchAsset {
+  // Normalize address to Address type
+  const normalizedAddress = normalizeNativeAssetAddress(address);
+  if (!normalizedAddress) {
+    throw new Error(`Invalid address for asset: ${symbol}`);
+  }
   return {
-    address,
+    address: normalizedAddress,
     name,
     networks: {},
     chainId,
@@ -127,10 +133,10 @@ function parseSearchAssetMetadata({
     decimals,
     highLiquidity: false,
     isVerified: false,
-    isNativeAsset: isNativeAsset(address, chainId),
-    mainnetAddress: address,
-    uniqueId: `${address}_${chainId}`,
-    icon_url: getCustomChainIconUrl(chainId, address),
+    isNativeAsset: isNativeAsset(normalizedAddress, chainId),
+    mainnetAddress: normalizedAddress,
+    uniqueId: `${normalizedAddress}_${chainId}`,
+    icon_url: getCustomChainIconUrl(chainId, normalizedAddress),
   };
 }
 

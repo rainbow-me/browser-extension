@@ -14,8 +14,8 @@ import { addNewTransaction } from '~/core/utils/transactions';
 import { getProvider } from '~/core/viem/clientToProvider';
 import { RainbowError, logger } from '~/logger';
 
-import { ETH_ADDRESS } from '../../references';
 import { ParsedAsset } from '../../types/assets';
+import { isNativeAssetAddress } from '../../utils/nativeAssets';
 import {
   convertAmountToRawAmount,
   greaterThan,
@@ -61,12 +61,15 @@ export const assetNeedsUnlocking = async ({
   spender: Address;
   chainId: ChainId;
 }) => {
-  if (assetToUnlock.isNativeAsset || assetToUnlock.address === ETH_ADDRESS)
+  if (
+    assetToUnlock.isNativeAsset ||
+    isNativeAssetAddress(assetToUnlock.address)
+  )
     return false;
 
   const allowance = await getAssetRawAllowance({
     owner,
-    assetAddress: assetToUnlock.address,
+    assetAddress: assetToUnlock.address as Address,
     spender,
     chainId,
   });
@@ -241,14 +244,17 @@ export const unlock = async ({
 
   const { address: assetAddress } = assetToUnlock;
 
-  if (assetAddress === ETH_ADDRESS)
+  if (isNativeAssetAddress(assetAddress))
     throw new RainbowError('unlock: Native ETH cannot be unlocked');
+
+  // At this point we've already verified it's not a native asset address
+  const tokenAddress = assetAddress as Address;
 
   let gasLimit;
   try {
     gasLimit = await estimateApprove({
       owner: parameters.fromAddress,
-      tokenAddress: assetAddress,
+      tokenAddress,
       spender: contractAddress,
       chainId,
     });
@@ -271,7 +277,7 @@ export const unlock = async ({
 
   try {
     approval = await executeApprove({
-      tokenAddress: assetAddress,
+      tokenAddress,
       spender: contractAddress,
       gasLimit,
       gasParams,
@@ -293,7 +299,7 @@ export const unlock = async ({
     value: approval.value?.toString(),
     changes: [],
     from: parameters.fromAddress,
-    to: assetAddress,
+    to: tokenAddress,
     hash: approval.hash as Hash,
     chainId: approval.chainId as ChainId,
     nonce: approval.nonce,

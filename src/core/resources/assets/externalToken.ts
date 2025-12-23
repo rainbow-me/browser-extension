@@ -13,6 +13,7 @@ import { SupportedCurrencyKey } from '~/core/references';
 import { AddressOrEth, ParsedAsset } from '~/core/types/assets';
 import { ChainId, chainIdToNameMapping } from '~/core/types/chains';
 import { isNativeAsset } from '~/core/utils/chains';
+import { toMetadataApiAddress } from '~/core/utils/nativeAssets';
 import {
   convertAmountAndPriceToNativeDisplay,
   convertAmountToPercentageDisplay,
@@ -66,7 +67,7 @@ const formatExternalAsset = (
     chainName: chainIdToNameMapping[chainId],
     uniqueId: `${address}_${chainId}`,
     address: address as Address,
-    isNativeAsset: isNativeAsset(address as AddressOrEth, chainId),
+    isNativeAsset: isNativeAsset(address as Address, chainId),
     native: {
       price: {
         change: asset?.price?.relativeChange24h
@@ -96,8 +97,10 @@ export async function fetchExternalToken({
   chainId,
   currency,
 }: ExternalTokenArgs) {
+  // Convert native asset addresses to 'eth' format for the GraphQL API
+  const apiAddress = toMetadataApiAddress(address);
   const response = await metadataClient.externalToken({
-    address,
+    address: apiAddress,
     chainId,
     currency,
   });

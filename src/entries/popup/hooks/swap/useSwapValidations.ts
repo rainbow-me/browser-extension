@@ -20,10 +20,12 @@ export const useSwapValidations = ({
   assetToSell,
   assetToSellValue,
   selectedGas,
+  isMaxZeroDueToInsufficientGas,
 }: {
   assetToSell?: ParsedSearchAsset | null;
   assetToSellValue?: string;
   selectedGas?: GasFeeParams | GasFeeLegacyParams;
+  isMaxZeroDueToInsufficientGas?: boolean;
 }) => {
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
     chainId: assetToSell?.chainId,
@@ -54,24 +56,44 @@ export const useSwapValidations = ({
   }, [assetToSell, assetToSellValue]);
 
   const enoughNativeAssetBalanceForGas = useMemo(() => {
+    // If gas hasn't been estimated yet, don't block the user
+    if (!selectedGas?.gasFee?.amount) {
+      return true;
+    }
+    // When selling native asset, use its balance directly (it's the same as userNativeAsset)
+    // This ensures we use the balance that's actually displayed in the UI
     if (assetToSell?.isNativeAsset) {
+      const nativeBalance = assetToSell?.balance?.amount;
+      if (!nativeBalance) {
+        return true; // Balance not loaded yet, don't block
+      }
       return lessOrEqualThan(
-        add(toWei(assetToSellValue || '0'), selectedGas?.gasFee?.amount || '0'),
-        toWei(userNativeAsset?.balance?.amount || '0'),
+        add(toWei(assetToSellValue || '0'), selectedGas.gasFee.amount),
+        toWei(nativeBalance),
       );
     }
-    return lessThan(
-      selectedGas?.gasFee?.amount || '0',
-      toWei(userNativeAsset?.balance?.amount || '0'),
-    );
+    // For non-native assets, check if we have enough native asset for gas
+    const nativeBalance = userNativeAsset?.balance?.amount;
+    if (!nativeBalance) {
+      return true; // Balance not loaded yet, don't block
+    }
+    return lessThan(selectedGas.gasFee.amount, toWei(nativeBalance));
   }, [
     assetToSell?.isNativeAsset,
+    assetToSell?.balance?.amount,
     assetToSellValue,
     userNativeAsset?.balance?.amount,
     selectedGas?.gasFee?.amount,
   ]);
 
   const buttonLabel = useMemo(() => {
+    // If max is 0 due to insufficient gas and no amount entered, show gas message
+    if (isMaxZeroDueToInsufficientGas && !assetToSellValue) {
+      return i18n.t('send.button_label.insufficient_native_asset_for_gas', {
+        symbol: getChain({ chainId: assetToSell?.chainId || ChainId.mainnet })
+          .nativeCurrency.symbol,
+      });
+    }
     if (!enoughAssetBalance)
       return i18n.t('send.button_label.insufficient_asset', {
         symbol: assetToSell?.symbol,
@@ -87,6 +109,8 @@ export const useSwapValidations = ({
     assetToSell?.symbol,
     enoughAssetBalance,
     enoughNativeAssetBalanceForGas,
+    isMaxZeroDueToInsufficientGas,
+    assetToSellValue,
   ]);
 
   const enoughAssetsForSwap =

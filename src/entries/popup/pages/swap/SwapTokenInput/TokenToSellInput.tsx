@@ -36,6 +36,7 @@ interface SwapTokenInputProps {
   setAssetToSellInputValue: (value: string) => void;
   setAssetToSellInputNativeValue: (value: string) => void;
   setIndependentField: (field: IndependentField) => void;
+  isMaxZeroDueToInsufficientGas?: boolean;
 }
 
 export const TokenToSellInput = ({
@@ -63,6 +64,7 @@ export const TokenToSellInput = ({
   setAssetToSellInputValue,
   setAssetToSellInputNativeValue,
   setIndependentField,
+  isMaxZeroDueToInsufficientGas,
 }: SwapTokenInputProps) => {
   const onSelectAssetRef = useRef<(asset: ParsedSearchAsset) => void>();
   const dropdownRef = useRef<{ openDropdown: () => void }>(null);
@@ -130,6 +132,7 @@ export const TokenToSellInput = ({
             setAssetToSellInputNativeValue={setAssetToSellInputNativeValue}
             independentField={independentField}
             setIndependentField={setIndependentField}
+            isMaxZeroDueToInsufficientGas={isMaxZeroDueToInsufficientGas}
           />
         ) : null
       }

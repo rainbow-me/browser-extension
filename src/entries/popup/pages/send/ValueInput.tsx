@@ -42,6 +42,7 @@ interface ValueInputProps {
   setMaxAssetAmount: () => void;
   switchIndependentField: () => void;
   inputAnimationControls: AnimationControls;
+  isMaxZeroDueToInsufficientGas?: boolean;
 }
 
 export const ValueInput = React.forwardRef<InputAPI, ValueInputProps>(
@@ -57,6 +58,7 @@ export const ValueInput = React.forwardRef<InputAPI, ValueInputProps>(
       setMaxAssetAmount,
       switchIndependentField,
       inputAnimationControls,
+      isMaxZeroDueToInsufficientGas,
     }: ValueInputProps,
     forwardedRef,
   ) {
@@ -120,13 +122,22 @@ export const ValueInput = React.forwardRef<InputAPI, ValueInputProps>(
 
                   <Box position="absolute" style={{ right: 48 }}>
                     <Button
-                      onClick={setMaxAssetAmount}
-                      color="accent"
+                      onClick={
+                        isMaxZeroDueToInsufficientGas
+                          ? undefined
+                          : setMaxAssetAmount
+                      }
+                      color={
+                        isMaxZeroDueToInsufficientGas
+                          ? 'surfaceSecondary'
+                          : 'accent'
+                      }
                       height="24px"
                       borderRadius="8px"
                       variant="raised"
                       testId="value-input-max"
-                      tabIndex={0}
+                      tabIndex={isMaxZeroDueToInsufficientGas ? -1 : 0}
+                      disabled={isMaxZeroDueToInsufficientGas}
                     >
                       {i18n.t('send.max')}
                     </Button>

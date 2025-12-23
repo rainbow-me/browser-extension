@@ -5,7 +5,6 @@ import { Address } from 'viem';
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
-import { ETH_ADDRESS } from '~/core/references';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useApprovals } from '~/core/resources/approvals/approvals';
 import { useAssetSearchMetadata } from '~/core/resources/assets/assetMetadata';
@@ -39,6 +38,10 @@ import {
   formatCurrencyParts,
   formatNumber,
 } from '~/core/utils/formatNumber';
+import {
+  isNativeAssetAddress,
+  normalizeNativeAssetAddress,
+} from '~/core/utils/nativeAssets';
 import { convertRawAmountToDecimalFormat } from '~/core/utils/numbers';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { getTokenBlockExplorer } from '~/core/utils/transactions';
@@ -344,10 +347,13 @@ function NetworkBanner({
 
 function FavoriteButton({ token }: { token: ParsedUserAsset | SearchAsset }) {
   const { favorites, addFavorite, removeFavorite } = useFavoritesStore();
-  const isFavorite = favorites[token.chainId]?.includes(token.address);
+  // Normalize the address for comparison and storage
+  const normalizedAddress = normalizeNativeAssetAddress(token.address);
+  const isFavorite = favorites[token.chainId]?.includes(normalizedAddress);
   const handleClick = () => {
+    const favoriteArgs = { address: normalizedAddress, chainId: token.chainId };
     if (isFavorite) {
-      removeFavorite(token);
+      removeFavorite(favoriteArgs);
       analytics.track(event.tokenUnfavorited, {
         token: {
           address: token.address,
@@ -358,7 +364,7 @@ function FavoriteButton({ token }: { token: ParsedUserAsset | SearchAsset }) {
         favorites: favorites[token.chainId]?.length || 0,
       });
     } else {
-      addFavorite(token);
+      addFavorite(favoriteArgs);
       analytics.track(event.tokenFavorited, {
         token: {
           address: token.address,
@@ -387,7 +393,10 @@ export const getCoingeckoUrl = ({
   address,
   mainnetAddress,
 }: Pick<ParsedUserAsset | SearchAsset, 'address' | 'mainnetAddress'>) => {
-  if ([mainnetAddress, address].includes(ETH_ADDRESS))
+  if (
+    isNativeAssetAddress(mainnetAddress || '') ||
+    isNativeAssetAddress(address)
+  )
     return `https://www.coingecko.com/en/coins/ethereum`;
   return `https://www.coingecko.com/en/coins/${mainnetAddress || address}`;
 };

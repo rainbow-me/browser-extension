@@ -54,13 +54,47 @@ const useGas = ({
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
   const { data: gasData, isLoading } = useGasData({ chainId });
-  const { nativeAsset } = useUserNativeAsset({ chainId, address });
+  const { nativeAsset, isLoading: isNativeAssetLoading } = useUserNativeAsset({
+    chainId,
+    address,
+  });
   const needsSecurityFee = useNetworkStore((state) =>
     state.getNeedsL1SecurityFeeChainIds(),
   ).includes(chainId);
   const chainGasUnits = useNetworkStore((state) =>
     state.getChainGasUnits(chainId),
   );
+
+  // Memoize chainGasUnits.basic.tokenTransfer to avoid recalculations
+  const defaultGasLimit = useMemo(
+    () => chainGasUnits.basic.tokenTransfer,
+    [chainGasUnits.basic.tokenTransfer],
+  );
+
+  // Memoize nativeAsset properties used in parseGasFeeParamsBySpeed to avoid recalculations
+  // Only recalculate when the actual values change, not when object reference changes
+  const nativeAssetForGas = useMemo(() => {
+    if (!nativeAsset) return null;
+    return {
+      symbol: nativeAsset.symbol,
+      price: nativeAsset.price,
+      decimals: nativeAsset.decimals,
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nativeAsset?.symbol, nativeAsset?.price, nativeAsset?.decimals]);
+
+  // Extract stable references to gasData properties to avoid recalculations
+  // when the object reference changes but data is the same
+  const gasDataCurrentBaseFee = (gasData as MeteorologyResponse)?.data
+    ?.currentBaseFee;
+  const gasDataLegacy = (gasData as MeteorologyLegacyResponse)?.data?.legacy;
+  const currentBaseFee = useMemo(
+    () => gasDataCurrentBaseFee,
+    [gasDataCurrentBaseFee],
+  );
+  const legacyGasData = useMemo(() => gasDataLegacy, [gasDataLegacy]);
+  const hasGasData = !!currentBaseFee || !!legacyGasData;
+
   const prevDefaultSpeed = usePrevious(defaultSpeed);
 
   const [internalMaxPriorityFee, setInternalMaxPriorityFee] = useState('');
@@ -96,6 +130,12 @@ const useGas = ({
     setCustomLegacySpeed,
     clearCustomGasModified,
   } = useGasStore();
+
+  // Memoize custom gas params to avoid recalculations when object reference changes
+  const customGasParams = useMemo(
+    () => storeGasFeeParamsBySpeed.custom,
+    [storeGasFeeParamsBySpeed.custom],
+  );
 
   const setCustomMaxBaseFee = useCallback((maxBaseFee = '0') => {
     setInternalMaxBaseFee(maxBaseFee);
@@ -247,44 +287,49 @@ const useGas = ({
     | GasFeeParamsBySpeed
     | GasFeeLegacyParamsBySpeed
     | null = useMemo(() => {
-    const newGasFeeParamsBySpeed =
-      !isLoading &&
-      ((gasData as MeteorologyResponse)?.data?.currentBaseFee ||
-        (gasData as MeteorologyLegacyResponse)?.data?.legacy)
-        ? nativeAsset
-          ? parseGasFeeParamsBySpeed({
-              chainId,
-              data: gasData as MeteorologyLegacyResponse | MeteorologyResponse,
-              gasLimit:
-                debouncedEstimatedGasLimit || chainGasUnits.basic.tokenTransfer,
-              nativeAsset,
-              currency: currentCurrency,
-              optimismL1SecurityFee,
-              additionalTime,
-            })
-          : null
-        : null;
+    // Don't calculate if gas data or native asset is still loading
+    if (isLoading || isNativeAssetLoading) {
+      return null;
+    }
+    if (!hasGasData || !gasData) {
+      return null;
+    }
+
+    const newGasFeeParamsBySpeed = nativeAssetForGas
+      ? parseGasFeeParamsBySpeed({
+          chainId,
+          data: gasData as MeteorologyLegacyResponse | MeteorologyResponse,
+          gasLimit: debouncedEstimatedGasLimit || defaultGasLimit,
+          nativeAsset: nativeAssetForGas as ParsedAsset,
+          currency: currentCurrency,
+          optimismL1SecurityFee,
+          additionalTime,
+        })
+      : null;
     if (
       customGasModified &&
       newGasFeeParamsBySpeed &&
-      prevChainId === chainId
+      prevChainId === chainId &&
+      customGasParams
     ) {
-      newGasFeeParamsBySpeed.custom = storeGasFeeParamsBySpeed.custom;
+      newGasFeeParamsBySpeed.custom = customGasParams;
     }
     return newGasFeeParamsBySpeed;
   }, [
     isLoading,
+    isNativeAssetLoading,
+    hasGasData,
     gasData,
-    nativeAsset,
+    nativeAssetForGas,
     chainId,
     debouncedEstimatedGasLimit,
+    defaultGasLimit,
     currentCurrency,
     optimismL1SecurityFee,
     additionalTime,
     customGasModified,
     prevChainId,
-    storeGasFeeParamsBySpeed.custom,
-    chainGasUnits.basic.tokenTransfer,
+    customGasParams,
   ]);
 
   useEffect(() => {
@@ -344,11 +389,14 @@ const useGas = ({
     }
   }, [chainId, clearCustomGasModified, prevChainId]);
 
+  // Combine loading states - we're loading if gas data OR native asset is loading
+  const isLoadingGas = isLoading || isNativeAssetLoading;
+
   return {
     gasFeeParamsBySpeed,
     setSelectedSpeed,
     selectedSpeed,
-    isLoading,
+    isLoading: isLoadingGas,
     setCustomMaxBaseFee,
     setCustomMaxPriorityFee,
     setCustomGasPrice,

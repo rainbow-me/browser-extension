@@ -1,9 +1,9 @@
 import { Contract } from '@ethersproject/contracts';
 import { Provider } from '@ethersproject/providers';
 import BigNumber from 'bignumber.js';
-import { Address, erc20Abi, getContract, zeroAddress } from 'viem';
+import { Address, erc20Abi, getContract } from 'viem';
 
-import { ETH_ADDRESS, SupportedCurrencyKey } from '~/core/references';
+import { NATIVE_ASSET_ADDRESS, SupportedCurrencyKey } from '~/core/references';
 import {
   AddressOrEth,
   AssetApiResponse,
@@ -25,6 +25,10 @@ import { getProvider } from '../viem/clientToProvider';
 import { getViemClient } from '../viem/clients';
 
 import { isNativeAsset } from './chains';
+import {
+  isNativeAssetAddress,
+  normalizeNativeAssetAddress,
+} from './nativeAssets';
 import {
   convertAmountAndPriceToNativeDisplay,
   convertAmountToBalanceDisplay,
@@ -49,7 +53,7 @@ export const getCustomChainIconUrl = (
   const baseUrl =
     'https://raw.githubusercontent.com/rainbow-me/assets/master/blockchains/';
 
-  if (address === zeroAddress || address === ETH_ADDRESS) {
+  if (isNativeAssetAddress(address)) {
     return `${baseUrl}${customChainIdsToAssetNames[chainId]}/info/logo.png`;
   } else {
     return `${baseUrl}${customChainIdsToAssetNames[chainId]}/assets/${address}/logo.png`;
@@ -91,16 +95,51 @@ export function parseAsset({
   asset: AssetApiResponse;
   currency: SupportedCurrencyKey;
 }): ParsedAsset {
-  const address = asset.asset_code;
+  // Normalize native asset addresses to the standard format
+  // If asset_code is missing but symbol is ETH, use NATIVE_ASSET_ADDRESS
+  const normalizedAddress = normalizeNativeAssetAddress(asset.asset_code);
+  const address =
+    normalizedAddress ??
+    (asset.symbol === 'ETH' ? NATIVE_ASSET_ADDRESS : undefined);
+  if (!address) {
+    throw new Error(`Missing asset_code for asset: ${asset.symbol}`);
+  }
   const chainName = asset.network ?? ChainName.mainnet;
-  const networks = 'networks' in asset ? asset.networks || {} : {};
+  const rawNetworks = 'networks' in asset ? asset.networks || {} : {};
   const chainId = asset.chain_id;
-  const mainnetAddress =
-    asset.symbol === 'ETH' ? ETH_ADDRESS : networks[ChainId.mainnet]?.address;
+
+  // Normalize addresses in networks object
+  const normalizedNetworks: ParsedAsset['networks'] = rawNetworks
+    ? Object.entries(rawNetworks).reduce(
+        (acc, [chainIdStr, networkData]) => {
+          if (!networkData || !acc) return acc;
+          const chainIdKey = +chainIdStr as ChainId;
+          const normalizedNetworkAddress = normalizeNativeAssetAddress(
+            networkData.address,
+          );
+          if (normalizedNetworkAddress) {
+            acc[chainIdKey] = {
+              ...networkData,
+              address: normalizedNetworkAddress,
+            };
+          }
+          return acc;
+        },
+        {} as NonNullable<ParsedAsset['networks']>,
+      )
+    : undefined;
+
+  // Normalize mainnet address if present
+  const rawMainnetAddress = rawNetworks[ChainId.mainnet]?.address;
+  const mainnetAddress = rawMainnetAddress
+    ? normalizeNativeAssetAddress(rawMainnetAddress) ?? undefined
+    : asset.symbol === 'ETH'
+    ? NATIVE_ASSET_ADDRESS
+    : undefined;
 
   const standard = 'interface' in asset ? asset.interface : undefined;
 
-  const uniqueId: UniqueId = `${asset.asset_code}_${chainId}`;
+  const uniqueId: UniqueId = `${address}_${chainId}`;
   const parsedAsset = {
     assetCode: asset.asset_code,
     address,
@@ -123,7 +162,7 @@ export function parseAsset({
     icon_url: asset.icon_url || getCustomChainIconUrl(chainId, address),
     colors: asset.colors,
     standard,
-    networks: asset.networks,
+    networks: normalizedNetworks,
     ...('bridging' in asset && {
       bridging: {
         isBridgeable: !!asset.bridging.bridgeable,
@@ -147,20 +186,53 @@ export function parseAssetMetadata({
   chainId: ChainId;
   currency: SupportedCurrencyKey;
 }): ParsedAsset {
-  const mainnetAddress = asset.networks?.[ChainId.mainnet]?.address || address;
-  const uniqueId = `${address}_${chainId}`;
+  // Normalize the address to standard format
+  const normalizedAddress = normalizeNativeAssetAddress(address);
+  if (!normalizedAddress) {
+    throw new Error(`Invalid address for asset: ${asset.symbol}`);
+  }
+
+  // Normalize addresses in networks object
+  const rawNetworks = asset?.networks;
+  const normalizedNetworks: ParsedAsset['networks'] = rawNetworks
+    ? Object.entries(rawNetworks).reduce(
+        (acc, [chainIdStr, networkData]) => {
+          if (!networkData || !acc) return acc;
+          const chainIdKey = +chainIdStr as ChainId;
+          const normalizedNetworkAddress = normalizeNativeAssetAddress(
+            networkData.address,
+          );
+          if (normalizedNetworkAddress) {
+            acc[chainIdKey] = {
+              ...networkData,
+              address: normalizedNetworkAddress,
+            };
+          }
+          return acc;
+        },
+        {} as NonNullable<ParsedAsset['networks']>,
+      )
+    : undefined;
+
+  // Normalize mainnet address as well
+  const rawMainnetAddress = rawNetworks?.[ChainId.mainnet]?.address;
+  const mainnetAddress = rawMainnetAddress
+    ? normalizeNativeAssetAddress(rawMainnetAddress) ?? normalizedAddress
+    : undefined;
+
+  const uniqueId = `${normalizedAddress}_${chainId}`;
   const priceData = {
     relative_change_24h: asset?.price?.relativeChange24h,
     value: asset?.price?.value,
   };
   const parsedAsset = {
-    address,
+    address: normalizedAddress,
     chainId,
     chainName: chainIdToNameMapping[chainId],
     colors: asset?.colors,
     decimals: asset?.decimals,
     icon_url: asset?.iconUrl,
-    isNativeAsset: isNativeAsset(address, chainId),
+    isNativeAsset: isNativeAsset(normalizedAddress, chainId),
     mainnetAddress,
     name: asset?.name || i18n.t('tokens_tab.unknown_token'),
     native: {
@@ -172,7 +244,7 @@ export function parseAssetMetadata({
     price: priceData,
     symbol: asset?.symbol,
     uniqueId,
-    networks: asset?.networks,
+    networks: normalizedNetworks,
   } satisfies ParsedAsset;
   return parsedAsset;
 }
@@ -312,25 +384,35 @@ export const parseSearchAsset = ({
   assetWithPrice?: ParsedAsset;
   searchAsset: ParsedSearchAsset | SearchAsset;
   userAsset?: ParsedUserAsset;
-}): ParsedSearchAsset => ({
-  ...searchAsset,
-  address: searchAsset.address,
-  chainId: searchAsset.chainId,
-  chainName: chainIdToNameMapping[searchAsset.chainId],
-  native: {
-    balance: userAsset?.native.balance || {
-      amount: '0',
-      display: '0.00',
+}): ParsedSearchAsset => {
+  // Normalize addresses from search results
+  const normalizedAddress = normalizeNativeAssetAddress(searchAsset.address);
+  const normalizedMainnetAddress = searchAsset.mainnetAddress
+    ? normalizeNativeAssetAddress(searchAsset.mainnetAddress)
+    : normalizedAddress;
+
+  return {
+    ...searchAsset,
+    address: normalizedAddress,
+    mainnetAddress: normalizedMainnetAddress,
+    uniqueId: `${normalizedAddress}_${searchAsset.chainId}`,
+    chainId: searchAsset.chainId,
+    chainName: chainIdToNameMapping[searchAsset.chainId],
+    native: {
+      balance: userAsset?.native.balance || {
+        amount: '0',
+        display: '0.00',
+      },
+      price: assetWithPrice?.native.price || userAsset?.native?.price,
     },
-    price: assetWithPrice?.native.price || userAsset?.native?.price,
-  },
-  price: assetWithPrice?.price || userAsset?.price,
-  balance: userAsset?.balance || { amount: '0', display: '0.00' },
-  icon_url:
-    userAsset?.icon_url || assetWithPrice?.icon_url || searchAsset?.icon_url,
-  colors: userAsset?.colors || assetWithPrice?.colors || searchAsset?.colors,
-  type: userAsset?.type || assetWithPrice?.type,
-});
+    price: assetWithPrice?.price || userAsset?.price,
+    balance: userAsset?.balance || { amount: '0', display: '0.00' },
+    icon_url:
+      userAsset?.icon_url || assetWithPrice?.icon_url || searchAsset?.icon_url,
+    colors: userAsset?.colors || assetWithPrice?.colors || searchAsset?.colors,
+    type: userAsset?.type || assetWithPrice?.type,
+  };
+};
 
 export const fetchAssetBalanceViaProvider = async ({
   parsedAsset,

@@ -5,23 +5,19 @@ import {
   TransactionResponse,
 } from '@ethersproject/providers';
 import { isString } from 'lodash';
-import { Address, formatUnits, zeroAddress } from 'viem';
+import { Address, formatUnits } from 'viem';
 
 import RainbowIcon from 'static/images/icon-16@2x.png';
 import { useNetworkStore } from '~/core/state/networks/networks';
 
 import { i18n } from '../languages';
-import {
-  ETH_ADDRESS,
-  SupportedCurrencyKey,
-  smartContractMethods,
-} from '../references';
+import { SupportedCurrencyKey, smartContractMethods } from '../references';
 import {
   useCurrentCurrencyStore,
   useNonceStore,
   usePendingTransactionsStore,
 } from '../state';
-import { AddressOrEth, ParsedAsset, ParsedUserAsset } from '../types/assets';
+import { ParsedAsset, ParsedUserAsset } from '../types/assets';
 import { ChainId, ChainName } from '../types/chains';
 import { UniqueAsset } from '../types/nfts';
 import {
@@ -40,6 +36,7 @@ import { parseAsset, parseUserAsset, parseUserAssetBalances } from './assets';
 import { getBlockExplorerHostForChain, isNativeAsset } from './chains';
 import { formatNumber } from './formatNumber';
 import { convertStringToHex } from './hex';
+import { isNativeAssetAddress } from './nativeAssets';
 import { capitalize } from './strings';
 
 /**
@@ -626,7 +623,7 @@ export function getTokenBlockExplorerUrl({
   address,
   chainId,
 }: {
-  address: AddressOrEth;
+  address: Address;
   chainId: ChainId;
 }) {
   const blockExplorerHost = getBlockExplorerHostForChain(chainId);
@@ -702,7 +699,7 @@ export const getAdditionalDetails = (transaction: RainbowTransaction) => {
   const collection = nft?.symbol;
   const standard = nft?.standard;
   const tokenContract =
-    asset?.address !== ETH_ADDRESS && asset?.address !== zeroAddress
+    asset?.address && !isNativeAssetAddress(asset.address)
       ? asset?.address
       : undefined;
 

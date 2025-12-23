@@ -284,9 +284,13 @@ export function useSearchCurrencyLists({
 
             const chainName = getChain({ chainId }).name;
             const { address, decimals } = assetOnNetworkOverrides;
+            // Address should already be normalized from parseAsset/parseAssetMetadata
             // filter out the asset we're selling already
             if (
-              isSameAsset(assetToSell, { chainId, address }) ||
+              isSameAsset(assetToSell, {
+                chainId,
+                address,
+              }) ||
               !supportedChains[chainId]
             )
               return;
@@ -295,7 +299,7 @@ export function useSearchCurrencyLists({
               isNativeAsset: isNativeAsset(address, chainId),
               chainId,
               chainName: chainName,
-              uniqueId: `${address}-${chainId}`,
+              uniqueId: `${address}_${chainId}`,
               address,
               decimals,
             };

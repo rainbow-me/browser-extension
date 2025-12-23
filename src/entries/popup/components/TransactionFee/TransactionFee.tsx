@@ -26,6 +26,7 @@ import {
   Text,
 } from '~/design-system';
 import { Lens } from '~/design-system/components/Lens/Lens';
+import { Skeleton } from '~/design-system/components/Skeleton/Skeleton';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { Space } from '~/design-system/styles/designTokens';
 
@@ -64,6 +65,7 @@ type FeeProps = {
   setCustomMaxBaseFee: (maxBaseFee?: string) => void;
   setCustomMaxPriorityFee: (maxPriorityFee?: string) => void;
   setCustomGasPrice: (gasPrice?: string) => void;
+  isMaxZeroDueToInsufficientGas?: boolean;
 };
 
 function Fee({
@@ -83,6 +85,7 @@ function Fee({
   setCustomMaxBaseFee,
   setCustomMaxPriorityFee,
   setCustomGasPrice,
+  isMaxZeroDueToInsufficientGas,
 }: FeeProps) {
   const { trackShortcut } = useKeyboardAnalytics();
   const [showCustomGasSheet, setShowCustomGasSheet] = useState(false);
@@ -91,6 +94,12 @@ function Fee({
     () => gasFeeParamsBySpeed?.[selectedSpeed],
     [gasFeeParamsBySpeed, selectedSpeed],
   );
+
+  // Show skeleton if loading OR if gas params are not available yet
+  // isLoading already accounts for both gas data and native asset loading
+  // gasFeeParamsBySpeed will be null while loading, so we can simplify the check
+  const isFeeLoading =
+    isLoading || !gasFeeParamsForSelectedSpeed?.gasFee?.display;
   const openCustomGasSheet = useCallback(() => {
     setShowCustomGasSheet(true);
     analyticsEvents?.customGasClicked &&
@@ -180,13 +189,15 @@ function Fee({
                   <ChainBadge chainId={chainId} size="18" />
                 </Column>
                 <Column width="content">
-                  <TextOverflow weight="semibold" color="label" size="14pt">
-                    {isLoading
-                      ? '~'
-                      : `${
-                          gasFeeParamsForSelectedSpeed?.gasFee.display || '~'
-                        }`}
-                  </TextOverflow>
+                  {isFeeLoading ? (
+                    <Skeleton height="16px" width="60px" />
+                  ) : (
+                    <TextOverflow weight="semibold" color="label" size="14pt">
+                      {isMaxZeroDueToInsufficientGas
+                        ? i18n.t('transaction_fee.insufficient_balance_for_gas')
+                        : gasFeeParamsForSelectedSpeed?.gasFee.display || '~'}
+                    </TextOverflow>
+                  )}
                 </Column>
                 <Column>
                   <TextOverflow
@@ -194,7 +205,7 @@ function Fee({
                     color="labelTertiary"
                     size="14pt"
                   >
-                    {isLoading
+                    {isFeeLoading
                       ? ''
                       : `${
                           gasFeeParamsForSelectedSpeed?.estimatedTime.display ||
@@ -331,6 +342,7 @@ type SwapFeeProps = {
   enabled?: boolean;
   speedMenuMarginRight?: Space;
   quoteServiceTime?: number;
+  isMaxZeroDueToInsufficientGas?: boolean;
 };
 
 export function SwapFee({
@@ -344,6 +356,7 @@ export function SwapFee({
   enabled = true,
   speedMenuMarginRight,
   quoteServiceTime,
+  isMaxZeroDueToInsufficientGas,
 }: SwapFeeProps) {
   const { defaultTxSpeed } = useDefaultTxSpeed({ chainId });
   const {
@@ -383,6 +396,7 @@ export function SwapFee({
       baseFeeTrend={baseFeeTrend}
       speedMenuMarginRight={speedMenuMarginRight}
       feeType={feeType}
+      isMaxZeroDueToInsufficientGas={isMaxZeroDueToInsufficientGas}
     />
   );
 }

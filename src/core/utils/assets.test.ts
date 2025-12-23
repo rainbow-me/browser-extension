@@ -1,7 +1,7 @@
 import { zeroAddress } from 'viem';
 import { expect, test } from 'vitest';
 
-import { ETH_ADDRESS } from '../references';
+import { NATIVE_ASSET_ADDRESS } from '../references';
 import { AddressOrEth, AssetApiResponse, AssetMetadata } from '../types/assets';
 import { ChainId, ChainName } from '../types/chains';
 import { SearchAsset } from '../types/search';
@@ -13,8 +13,9 @@ import {
   parseUserAsset,
 } from './assets';
 
+// Mock API response with legacy 'eth' format - tests normalization
 const ETH_FROM_ZERION = {
-  asset_code: 'eth',
+  asset_code: 'eth', // Legacy format from backend
   chain_id: ChainId.mainnet,
   name: 'Ethereum',
   symbol: 'ETH',
@@ -26,11 +27,11 @@ const ETH_FROM_ZERION = {
   },
   networks: {
     [ChainId.arbitrum]: {
-      address: zeroAddress,
+      address: zeroAddress, // Zero address for L2s from backend
       decimals: 18,
     },
     [ChainId.mainnet]: {
-      address: ETH_ADDRESS,
+      address: 'eth' as AddressOrEth, // Legacy format
       decimals: 18,
     },
     [ChainId.optimism]: {
@@ -56,16 +57,16 @@ const ETH_FROM_SEARCH: SearchAsset = {
   highLiquidity: false,
   name: 'Ethereum',
   symbol: 'ETH',
-  uniqueId: 'eth_1',
+  uniqueId: `${NATIVE_ASSET_ADDRESS}_1`,
   colors: { primary: '#808088', fallback: '#E8EAF5' },
   icon_url:
     'https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/smartchain/0x2170ed0880ac9a755fd29b2688956bd959f933f8.png',
   rainbowMetadataId: 76174,
   isVerified: true,
   networks: {
-    '1': { address: 'eth', decimals: 18 },
+    '1': { address: NATIVE_ASSET_ADDRESS, decimals: 18 },
     '10': {
-      address: '0x0000000000000000000000000000000000000000',
+      address: NATIVE_ASSET_ADDRESS,
       decimals: 18,
     },
     '56': {
@@ -73,14 +74,14 @@ const ETH_FROM_SEARCH: SearchAsset = {
       decimals: 18,
     },
     '42161': {
-      address: '0x0000000000000000000000000000000000000000',
+      address: NATIVE_ASSET_ADDRESS,
       decimals: 18,
     },
   },
-  address: 'eth',
+  address: NATIVE_ASSET_ADDRESS,
   chainId: 1,
   isNativeAsset: true,
-  mainnetAddress: 'eth',
+  mainnetAddress: NATIVE_ASSET_ADDRESS,
 };
 
 const ETH_FROM_METADATA = {
@@ -362,7 +363,9 @@ test('[utils/assets -> parseAsset] :: parse zerion asset', async () => {
     asset: ETH_FROM_ZERION,
     currency: 'USD',
   });
-  expect(eth.uniqueId).toEqual('eth_1');
+  // Verify that 'eth' from backend gets normalized to NATIVE_ASSET_ADDRESS
+  expect(eth.uniqueId).toEqual(`${NATIVE_ASSET_ADDRESS}_1`);
+  expect(eth.address).toEqual(NATIVE_ASSET_ADDRESS);
   expect(eth.isNativeAsset).toEqual(true);
 
   const bscEth = parseAsset({

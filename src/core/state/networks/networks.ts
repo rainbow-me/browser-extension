@@ -10,7 +10,6 @@ import {
   modifyUserPreferencesForNewlySupportedNetworks,
   toChainId,
 } from '~/core/state/networks/utils';
-import { AddressOrEth } from '~/core/types/assets';
 import {
   BackendNetwork,
   BackendNetworkWithPrivateMempoolTimeout,
@@ -21,6 +20,7 @@ import {
   TransformedChain,
 } from '~/core/types/chains';
 import { detectScriptType } from '~/core/utils/detectScriptType';
+import { normalizeNativeAssetAddress } from '~/core/utils/nativeAssets';
 
 import { createExtensionStoreOptions } from '../_internal';
 
@@ -882,12 +882,12 @@ export const syncDefaultFavoritesForNewlySupportedNetworks = (
   for (const [key, network] of newNetworks) {
     const chainId = toChainId(key);
     const stateChainFavorites = favorites[chainId] || [];
+    // Normalize addresses from backend before adding to favorites
+    const normalizedNetworkFavorites = network.favorites.map((f) =>
+      normalizeNativeAssetAddress(f.address),
+    );
     newFavorites[chainId] = [
-      ...new Set(
-        stateChainFavorites.concat(
-          network.favorites.map((f) => f.address as AddressOrEth),
-        ),
-      ),
+      ...new Set(stateChainFavorites.concat(normalizedNetworkFavorites)),
     ];
   }
 

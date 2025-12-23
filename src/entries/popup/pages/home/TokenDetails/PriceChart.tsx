@@ -13,6 +13,7 @@ import { getChain } from '~/core/utils/chains';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { formatRelativeDate } from '~/core/utils/formatDate';
 import { formatCurrency } from '~/core/utils/formatNumber';
+import { toMetadataApiAddress } from '~/core/utils/nativeAssets';
 import {
   Box,
   Button,
@@ -138,8 +139,10 @@ const fetchPriceChart = async (
   chainId: ChainId,
   address: AddressOrEth,
 ) => {
+  // Convert native asset addresses to 'eth' format for the GraphQL API
+  const apiAddress = toMetadataApiAddress(address);
   const priceChart = await metadataClient
-    .priceChart({ address, chainId, ...getChartTimeArg(time) })
+    .priceChart({ address: apiAddress, chainId, ...getChartTimeArg(time) })
     .then((d) => d.token?.priceCharts[time] as PriceChartTimeData);
 
   return (

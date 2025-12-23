@@ -15,6 +15,7 @@ import { calculateL1FeeOptimism } from '~/core/utils/gas';
 import {
   add,
   addBuffer,
+  calculateMaxAmountAfterGas,
   greaterThan,
   lessThan,
   multiply,
@@ -105,7 +106,12 @@ export async function claimBridge({
       );
     } else {
       // otherwise we bridge the maximum amount we can afford
-      maxBridgeableAmount = subtract(sellAmount, gasFeeInWei);
+      // Use unified function to ensure we never get negative values
+      maxBridgeableAmount = calculateMaxAmountAfterGas(
+        sellAmount,
+        gasFeeInWei,
+        '1.0', // No buffer for bridge claims
+      );
       needsNewQuote = true;
     }
   }

@@ -118,6 +118,60 @@ export const lessOrEqualThan = (
   new BigNumber(numberOne).lt(numberTwo) ||
   new BigNumber(numberOne).eq(numberTwo);
 
+/**
+ * Calculates the maximum amount available after reserving gas fees.
+ * Returns '0' if the balance is insufficient to cover gas fees.
+ *
+ * @param balance - The available balance (in wei for native assets)
+ * @param gasFee - The gas fee amount (in wei)
+ * @param buffer - Optional multiplier for gas fee (default: 1.0). Use 1.3 for swaps to add safety margin.
+ * @returns The maximum amount available after gas fees, or '0' if insufficient. Returns whole number (no decimals) for wei amounts.
+ */
+export const calculateMaxAmountAfterGas = (
+  balance: BigNumberish,
+  gasFee: BigNumberish | undefined | null,
+  buffer: BigNumberish = '1.0',
+): string => {
+  if (!gasFee || isZero(gasFee)) {
+    return new BigNumber(balance).toFixed(0);
+  }
+
+  const gasFeeWithBuffer = multiply(gasFee, buffer);
+  if (greaterThanOrEqualTo(balance, gasFeeWithBuffer)) {
+    return new BigNumber(balance)
+      .minus(new BigNumber(gasFeeWithBuffer))
+      .toFixed(0);
+  }
+
+  return '0';
+};
+
+/**
+ * Checks if the max amount is zero due to insufficient balance for gas fees.
+ * Returns true if balance exists but is less than gas fee (with buffer).
+ *
+ * @param balance - The available balance (in wei for native assets)
+ * @param gasFee - The gas fee amount (in wei)
+ * @param buffer - Optional multiplier for gas fee (default: 1.0)
+ * @returns True if balance exists but is insufficient for gas fees
+ */
+export const isMaxZeroDueToGas = (
+  balance: BigNumberish,
+  gasFee: BigNumberish | undefined | null,
+  buffer: BigNumberish = '1.0',
+): boolean => {
+  if (!gasFee || isZero(gasFee)) {
+    return false;
+  }
+  // If balance is zero, it's not due to gas
+  if (isZero(balance)) {
+    return false;
+  }
+  const gasFeeWithBuffer = multiply(gasFee, buffer);
+  // Return true if balance exists but is less than gas fee
+  return lessThan(balance, gasFeeWithBuffer);
+};
+
 export const handleSignificantDecimalsWithThreshold = (
   value: BigNumberish,
   decimals: number,
