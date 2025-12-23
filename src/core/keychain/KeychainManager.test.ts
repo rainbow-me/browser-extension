@@ -48,16 +48,6 @@ vi.mock('~/core/network/aha', () => ({
   },
 }));
 
-// Move mock to top-level and use factory pattern to avoid hoisting issues
-vi.mock('~/core/storage', async () => {
-  const { createMockStorages } = await import('~/test/mock/storage');
-  const { SessionStorage, LocalStorage } = createMockStorages();
-  return {
-    SessionStorage,
-    LocalStorage,
-  };
-});
-
 // Keychain-relevant storage keys
 const KEYCHAIN_STORAGE_KEYS = {
   local: ['vault'],
@@ -66,24 +56,20 @@ const KEYCHAIN_STORAGE_KEYS = {
 
 const captureStorageSnapshot = async () => ({
   local: Object.fromEntries(
-    (
-      await Promise.all(
-        KEYCHAIN_STORAGE_KEYS.local.map(async (key) => [
-          key,
-          await LocalStorage.get(key),
-        ]),
-      )
-    ).filter(([, value]) => value !== undefined),
+    await Promise.all(
+      KEYCHAIN_STORAGE_KEYS.local.map(async (key) => [
+        key,
+        (await LocalStorage.get(key)) ?? null,
+      ]),
+    ),
   ),
   session: Object.fromEntries(
-    (
-      await Promise.all(
-        KEYCHAIN_STORAGE_KEYS.session.map(async (key) => [
-          key,
-          await SessionStorage.get(key),
-        ]),
-      )
-    ).filter(([, value]) => value !== undefined),
+    await Promise.all(
+      KEYCHAIN_STORAGE_KEYS.session.map(async (key) => [
+        key,
+        (await SessionStorage.get(key)) ?? null,
+      ]),
+    ),
   ),
 });
 

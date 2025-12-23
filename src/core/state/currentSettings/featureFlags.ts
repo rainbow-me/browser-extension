@@ -1,4 +1,6 @@
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
+import { createBaseStore } from 'stores';
+
+import { createExtensionStoreOptions } from '../_internal';
 
 export enum featureFlagTypes {
   full_watching_wallets = 'full_watching_wallets',
@@ -12,7 +14,7 @@ export interface FeatureFlagsStore {
   setFeatureFlag: (key: FeatureFlagTypes, value: boolean) => void;
 }
 
-export const useFeatureFlagsStore = createRainbowStore<FeatureFlagsStore>(
+export const useFeatureFlagsStore = createBaseStore<FeatureFlagsStore>(
   (set, get) => ({
     featureFlags: {
       full_watching_wallets: false,
@@ -28,7 +30,7 @@ export const useFeatureFlagsStore = createRainbowStore<FeatureFlagsStore>(
       set({ featureFlags: newFeatureFlags });
     },
   }),
-  {
+  createExtensionStoreOptions({
     storageKey: 'featureFlagsStore',
     version: 10,
     merge(_persistedState, currentState) {
@@ -42,5 +44,5 @@ export const useFeatureFlagsStore = createRainbowStore<FeatureFlagsStore>(
         },
       };
     },
-  },
+  }),
 );
