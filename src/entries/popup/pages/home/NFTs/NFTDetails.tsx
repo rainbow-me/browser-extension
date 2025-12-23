@@ -12,7 +12,7 @@ import { useEnsRegistration } from '~/core/resources/ens/ensRegistration';
 import { useNft } from '~/core/resources/nfts/useNft';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { useSelectedNftStore } from '~/core/state/selectedNft';
-import { AddressOrEth, UniqueId } from '~/core/types/assets';
+import { UniqueId } from '~/core/types/assets';
 import { ChainId, ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import { UniqueAsset } from '~/core/types/nfts';
 import {
@@ -608,9 +608,9 @@ const NFTAccordionSectionEnsProfile = ({
             <NFTInfoRow
               symbol={'person.crop.rectangle.fill'}
               label={i18n.t('nfts.details.ens_address')}
-              value={truncateAddress(address as AddressOrEth)}
+              value={truncateAddress(address)}
               valueSymbol={'doc.on.doc'}
-              onClick={() => copyAddress(address as Address)}
+              onClick={() => copyAddress(address)}
             />
           )}
           {twitter && (
@@ -788,11 +788,9 @@ const NFTAccordionAboutSection = ({
           <NFTInfoRow
             symbol="doc.plaintext"
             label={i18n.t('nfts.details.token_contract')}
-            value={truncateAddress(
-              nft?.asset_contract?.address as AddressOrEth,
-            )}
+            value={truncateAddress(nft?.asset_contract?.address)}
             valueSymbol="doc.on.doc"
-            onClick={() => copyAddress(nft.asset_contract.address as Address)}
+            onClick={() => copyAddress(nft.asset_contract.address)}
           />
         )}
         {nft?.asset_contract?.deployed_by && (
@@ -800,8 +798,7 @@ const NFTAccordionAboutSection = ({
             symbol="doc.plaintext"
             label={i18n.t('nfts.details.contract_creator')}
             value={
-              creatorEnsName ||
-              truncateAddress(nft?.asset_contract.deployed_by as AddressOrEth)
+              creatorEnsName || truncateAddress(nft?.asset_contract.deployed_by)
             }
             valueSymbol="arrow.up.right.circle"
             onClick={() =>

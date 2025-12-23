@@ -22,7 +22,7 @@ import {
   isValidTransactionType,
 } from '~/core/types/transactions';
 
-import { ETH_ADDRESS } from '../references';
+import { isValidAssetAddress } from './nativeAssets';
 
 const SECONDS_IN_MILLISECOND = 1000;
 
@@ -99,8 +99,11 @@ const toOptionalAddress = (value?: string) => {
   return value;
 };
 
+/**
+ * @deprecated Use isValidAssetAddress from nativeAssets.ts instead
+ */
 export const isAddressOrEth = (value: string): value is AddressOrEth => {
-  return isAddress(value) || value === ETH_ADDRESS;
+  return isValidAssetAddress(value);
 };
 
 const convertCommonNetworks = (

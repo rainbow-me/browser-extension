@@ -2,14 +2,24 @@ import { Address } from 'viem';
 
 import { ChainId, ChainName } from '~/core/types/chains';
 
-import { ETH_ADDRESS } from '../references';
+import { ETH_ADDRESS, NATIVE_ASSET_ADDRESS } from '../references';
 
 import { SearchAsset } from './search';
 
+/**
+ * @deprecated Use Address type instead. After migration, all native assets
+ * use NATIVE_ASSET_ADDRESS ('0xEeee...') which is a valid Address.
+ */
 export type AddressOrEth = Address | typeof ETH_ADDRESS;
 
+/**
+ * Type alias for the native asset address constant.
+ * Use this when you need to reference the native asset address type.
+ */
+export type NativeAssetAddress = typeof NATIVE_ASSET_ADDRESS;
+
 export interface ParsedAsset {
-  address: AddressOrEth;
+  address: Address;
   chainId: ChainId;
   chainName: ChainName;
   colors?: {
@@ -26,7 +36,7 @@ export interface ParsedAsset {
       display: string;
     };
   };
-  mainnetAddress?: AddressOrEth;
+  mainnetAddress?: Address;
   price?: ZerionAssetPrice;
   symbol: string;
   uniqueId: UniqueId;
@@ -35,7 +45,12 @@ export interface ParsedAsset {
   type?: AssetType;
   smallBalance?: boolean;
   standard?: 'erc-721' | 'erc-1155';
-  networks?: AssetApiResponse['networks'];
+  networks?: {
+    [chainId in ChainId]?: {
+      address: Address;
+      decimals: number;
+    };
+  };
   bridging?: {
     isBridgeable: boolean;
     networks: { [id in ChainId]?: { bridgeable: boolean } };

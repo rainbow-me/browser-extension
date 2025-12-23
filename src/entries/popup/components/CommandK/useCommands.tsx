@@ -34,6 +34,7 @@ import { KeychainType } from '~/core/types/keychainTypes';
 import { SearchAsset } from '~/core/types/search';
 import { truncateAddress } from '~/core/utils/address';
 import { getBlockExplorerHostForChain } from '~/core/utils/chains';
+import { isNativeAssetAddress } from '~/core/utils/nativeAssets';
 import {
   POPUP_URL,
   getExplorerUrl,
@@ -748,8 +749,7 @@ const isContactCommand = (
   command: SearchItem | null,
 ): command is ContactSearchItem => command?.type === SearchItemType.Contact;
 
-const isETHAddress = (address: Address | 'eth') =>
-  address === 'eth' || address === '0x0000000000000000000000000000000000000000';
+const isETHAddress = (address: Address) => isNativeAssetAddress(address);
 
 export const useCommands = (
   currentPage: CommandKPage,
@@ -1283,7 +1283,7 @@ export const useCommands = (
       copyTokenAddress: {
         action: () =>
           previousPageState.selectedCommand?.asset?.address &&
-          previousPageState.selectedCommand?.asset?.address !== 'eth' &&
+          !isETHAddress(previousPageState.selectedCommand?.asset?.address) &&
           handleCopy(previousPageState.selectedCommand?.asset?.address),
         hidden:
           !previousPageState.selectedCommand?.asset?.address ||
@@ -1491,7 +1491,7 @@ export const useCommands = (
       copyUnownedTokenAddress: {
         action: () =>
           previousPageState.selectedCommand?.asset?.address &&
-          previousPageState.selectedCommand?.asset?.address !== 'eth' &&
+          !isETHAddress(previousPageState.selectedCommand?.asset?.address) &&
           handleCopy(previousPageState.selectedCommand?.asset?.address),
         hidden:
           !previousPageState.selectedCommand?.asset?.address ||

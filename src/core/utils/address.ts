@@ -1,11 +1,11 @@
 import { Address } from 'viem';
 
-import { AddressOrEth, UniqueId } from '../types/assets';
+import { UniqueId } from '../types/assets';
 import { ChainId } from '../types/chains';
 
-export function truncateAddress(address?: AddressOrEth) {
+export function truncateAddress(address?: Address | string) {
   if (!address) return '';
-  return `${address?.slice(0, 6)}…${address?.slice(-4)}`;
+  return `${address.slice(0, 6)}…${address.slice(-4)}`;
 }
 
 export function deriveAddressAndChainWithUniqueId(uniqueId: UniqueId) {

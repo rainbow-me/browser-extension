@@ -754,6 +754,7 @@
         "description": "If you decide to continue, be sure that you are satisfied receiving the quoted amount."
       }
     },
+    "dust_insufficient_gas_hint": "Balance is less than required gas fee",
     "promo": {
       "degen_mode": {
         "title": "Try Degen Mode to skip the review"
@@ -1204,7 +1205,8 @@
     "fast": "Fast",
     "normal": "Normal",
     "custom": "Custom",
-    "estimated_fee": "Estimated fee"
+    "estimated_fee": "Estimated fee",
+    "insufficient_balance_for_gas": "Insufficient balance"
   },
   "time": {
     "days": {
@@ -1746,7 +1748,8 @@
         "description_3": "Double check the address, verify it with the recipient, or contact support first.",
         "title": "Hold your horses!"
       },
-      "action_label": "Got it"
+      "action_label": "Got it",
+      "dust_insufficient_gas_hint": "Balance is less than required gas fee"
     },
     "custom_gas": {
       "action_button_label": "Got it",

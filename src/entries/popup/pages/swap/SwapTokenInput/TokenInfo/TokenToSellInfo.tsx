@@ -30,6 +30,7 @@ export const TokenToSellInfo = ({
   setAssetToSellMaxValue,
   setAssetToSellInputNativeValue,
   setIndependentField,
+  isMaxZeroDueToInsufficientGas,
 }: {
   asset: ParsedSearchAsset | null;
   assetToSellMaxValue: { display: string; amount: string };
@@ -39,6 +40,7 @@ export const TokenToSellInfo = ({
   setAssetToSellMaxValue: () => void;
   setAssetToSellInputNativeValue: (value: string) => void;
   setIndependentField: (field: IndependentField) => void;
+  isMaxZeroDueToInsufficientGas?: boolean;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
   const { isFirefox } = useBrowser();
@@ -112,7 +114,11 @@ export const TokenToSellInfo = ({
         )}
         <Column width="content">
           <CursorTooltip
-            text={`${assetToSellMaxValue.display} ${asset?.symbol}`}
+            text={
+              isMaxZeroDueToInsufficientGas
+                ? i18n.t('swap.dust_insufficient_gas_hint')
+                : `${assetToSellMaxValue.display} ${asset?.symbol}`
+            }
             textColor="labelSecondary"
             textSize="12pt"
             textWeight="bold"
@@ -121,9 +127,19 @@ export const TokenToSellInfo = ({
             align="end"
           >
             <Box
-              onClick={setAssetToSellMaxValue}
+              onClick={
+                isMaxZeroDueToInsufficientGas
+                  ? undefined
+                  : setAssetToSellMaxValue
+              }
               testId="token-to-sell-info-max-button"
               marginLeft={isFirefox ? '-36px' : undefined}
+              style={{
+                opacity: isMaxZeroDueToInsufficientGas ? 0.5 : 1,
+                cursor: isMaxZeroDueToInsufficientGas
+                  ? 'not-allowed'
+                  : 'pointer',
+              }}
             >
               <ButtonOverflow>
                 <Inline alignVertical="center" space="4px">
@@ -132,11 +148,21 @@ export const TokenToSellInfo = ({
                       symbol="wand.and.stars"
                       size={12}
                       weight="heavy"
-                      color="accent"
+                      color={
+                        isMaxZeroDueToInsufficientGas
+                          ? 'labelTertiary'
+                          : 'accent'
+                      }
                     />
                   </Box>
 
-                  <Text size="12pt" weight="heavy" color="accent">
+                  <Text
+                    size="12pt"
+                    weight="heavy"
+                    color={
+                      isMaxZeroDueToInsufficientGas ? 'labelTertiary' : 'accent'
+                    }
+                  >
                     {i18n.t('swap.max')}
                   </Text>
                 </Inline>

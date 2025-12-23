@@ -28,6 +28,7 @@ export const useSendValidations = ({
   selectedGas,
   toAddress,
   toAddressOrName,
+  isMaxZeroDueToInsufficientGas,
 }: {
   asset?: ParsedUserAsset | null;
   assetAmount?: string;
@@ -35,6 +36,7 @@ export const useSendValidations = ({
   selectedGas?: GasFeeParams | GasFeeLegacyParams;
   toAddress?: Address;
   toAddressOrName?: string;
+  isMaxZeroDueToInsufficientGas?: boolean;
 }) => {
   const getNativeAssetChainId = () => {
     if (asset) {
@@ -81,18 +83,31 @@ export const useSendValidations = ({
   ]);
 
   const enoughNativeAssetForGas = useMemo(() => {
+    // If gas hasn't been estimated yet, don't block the user
+    if (!selectedGas?.gasFee?.amount) {
+      return true;
+    }
+    // When sending native asset, use its balance directly (it's the same as nativeAsset)
+    // This ensures we use the balance that's actually displayed in the UI
     if (asset?.isNativeAsset) {
+      const nativeBalance = asset?.balance?.amount;
+      if (!nativeBalance) {
+        return true; // Balance not loaded yet, don't block
+      }
       return lessOrEqualThan(
-        add(toWei(assetAmount || '0'), selectedGas?.gasFee?.amount || '0'),
-        toWei(nativeAsset?.balance?.amount || '0'),
+        add(toWei(assetAmount || '0'), selectedGas.gasFee.amount),
+        toWei(nativeBalance),
       );
     }
-    return lessThan(
-      selectedGas?.gasFee?.amount || '0',
-      toWei(nativeAsset?.balance?.amount || '0'),
-    );
+    // For non-native assets, check if we have enough native asset for gas
+    const nativeBalance = nativeAsset?.balance?.amount;
+    if (!nativeBalance) {
+      return true; // Balance not loaded yet, don't block
+    }
+    return lessThan(selectedGas.gasFee.amount, toWei(nativeBalance));
   }, [
     asset?.isNativeAsset,
+    asset?.balance?.amount,
     assetAmount,
     nativeAsset?.balance?.amount,
     selectedGas?.gasFee?.amount,
@@ -140,6 +155,14 @@ export const useSendValidations = ({
     if (!isValidToAddress && toAddressOrName !== '')
       return i18n.t('send.button_label.enter_valid_address');
 
+    // If max is 0 due to insufficient gas and no amount entered, prioritize gas message
+    if (isMaxZeroDueToInsufficientGas && !assetAmount && !nft) {
+      return i18n.t('send.button_label.insufficient_native_asset_for_gas', {
+        symbol: getChain({ chainId: asset?.chainId || ChainId.mainnet })
+          .nativeCurrency.symbol,
+      });
+    }
+
     if (!toAddress && !assetAmount && !nft) {
       return i18n.t('send.button_label.enter_address_and_amount');
     }
@@ -165,6 +188,7 @@ export const useSendValidations = ({
     assetAmount,
     enoughAssetBalance,
     enoughNativeAssetForGas,
+    isMaxZeroDueToInsufficientGas,
     isValidToAddress,
     nft,
     toAddress,

@@ -90,10 +90,13 @@ export const useSwapButton = ({
   }
 
   if (!quote) {
+    // If validation button label exists (e.g., insufficient gas), use it instead of "Enter an amount"
+    const buttonLabel =
+      validationButtonLabel || t('swap.actions.enter_an_amount');
     return {
       buttonColor: 'surfaceSecondary',
       buttonDisabled: true,
-      buttonLabel: t('swap.actions.enter_an_amount'),
+      buttonLabel,
       buttonLabelColor: 'labelQuaternary',
       buttonIcon: null,
       buttonAction: () => null,

@@ -134,7 +134,7 @@ describe('Complete send flow via shortcuts and keyboard navigation', () => {
     });
     await navigateToElementWithTestId({
       driver,
-      testId: 'asset-name-eth_1',
+      testId: 'asset-name-0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE_1',
     });
     await delayTime('long');
     const tokenInput = await findElementByTestId({

@@ -8,6 +8,7 @@ import { ChainId } from '~/core/types/chains';
 import { SearchAsset } from '~/core/types/search';
 import { truncateAddress } from '~/core/utils/address';
 import { getBlockExplorerHostForChain } from '~/core/utils/chains';
+import { normalizeNativeAssetAddress } from '~/core/utils/nativeAssets';
 import { getExplorerUrl, goToNewTab } from '~/core/utils/tabs';
 import {
   Bleed,
@@ -106,17 +107,28 @@ export function TokenToBuyRow({
   const onToggleFavorite = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e?.stopPropagation();
-      const { address, chainId } = asset;
+      const { chainId } = asset;
+      const normalizedAddress = normalizeNativeAssetAddress(asset.address);
       if (isFavorite) {
-        removeFavorite({ address, chainId });
+        removeFavorite({ address: normalizedAddress, chainId });
         analytics.track(event.tokenUnfavorited, {
-          token: { address, chainId, symbol: asset.symbol, name: asset.name },
+          token: {
+            address: asset.address,
+            chainId,
+            symbol: asset.symbol,
+            name: asset.name,
+          },
           favorites: favorites[chainId]?.length || 0,
         });
       } else {
-        addFavorite({ address, chainId });
+        addFavorite({ address: normalizedAddress, chainId });
         analytics.track(event.tokenFavorited, {
-          token: { address, chainId, symbol: asset.symbol, name: asset.name },
+          token: {
+            address: asset.address,
+            chainId,
+            symbol: asset.symbol,
+            name: asset.name,
+          },
           favorites: favorites[chainId]?.length || 0,
         });
       }
