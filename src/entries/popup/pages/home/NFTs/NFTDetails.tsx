@@ -4,7 +4,6 @@ import { format, formatDistanceStrict } from 'date-fns';
 import { ReactNode, useCallback, useMemo } from 'react';
 import { Navigate, useLocation, useParams } from 'react-router-dom';
 import { Address } from 'viem';
-import { useEnsName } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -76,6 +75,7 @@ import {
 } from '~/entries/popup/components/Navbar/Navbar';
 import { useDominantColor } from '~/entries/popup/hooks/useDominantColor';
 import { useEns } from '~/entries/popup/hooks/useEns';
+import { useEnsName } from '~/entries/popup/hooks/useEnsName';
 import { useNftShortcuts } from '~/entries/popup/hooks/useNftShortcuts';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useTimeoutEffect } from '~/entries/popup/hooks/useTimeout';

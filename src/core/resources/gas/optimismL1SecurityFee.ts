@@ -11,7 +11,7 @@ import {
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
 import { calculateL1FeeOptimism } from '~/core/utils/gas';
-import { getProvider } from '~/core/wagmi/clientToProvider';
+import { getProvider } from '~/core/viem/clientToProvider';
 
 // ///////////////////////////////////////////////
 // Query Types
