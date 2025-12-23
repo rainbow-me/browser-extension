@@ -22,6 +22,11 @@ import type {
 } from '~/entries/background/handlers/handleWallets';
 /* eslint-enable boundaries/element-types */
 
+import {
+  estimateDelegatedGasLimit,
+  executeWithDelegate,
+  getShouldDelegate,
+} from '../delegateActions';
 import { walletExecuteRap } from '../raps/execute';
 import { RapSwapActionParameters, RapTypes } from '../raps/references';
 import { KeychainType } from '../types/keychainTypes';
@@ -257,12 +262,113 @@ export const executeRap = async ({
   >;
   type: RapTypes;
   provider: Provider;
-}): Promise<{ nonce: number | undefined }> => {
+}): Promise<{
+  nonce: number | undefined;
+  errorMessage?: string | null;
+  hash?: string | null;
+}> => {
   const from = (rapActionParameters.address ||
     rapActionParameters.quote?.from) as Address;
   if (typeof from === 'undefined') {
     throw new Error('Missing from address');
   }
+
+  // Check if we should use the delegation path for atomic swaps
+  // Only applies to swap and crosschainSwap types with a valid quote
+  const quote = rapActionParameters.quote;
+  const canUseDelegationPath =
+    quote && (type === 'swap' || type === 'crosschainSwap');
+
+  console.log('[Delegation] executeRap called', {
+    type,
+    from,
+    chainId: rapActionParameters.chainId,
+    hasQuote: !!quote,
+    canUseDelegationPath,
+  });
+
+  if (canUseDelegationPath) {
+    const shouldDelegate = await getShouldDelegate({
+      chainId: rapActionParameters.chainId,
+      quote,
+      userAddress: from,
+    });
+
+    console.log('[Delegation] getShouldDelegate result:', shouldDelegate);
+
+    if (shouldDelegate) {
+      // Import dynamically to avoid circular dependencies
+      const { getViemWalletClient } = await import('~/core/viem/walletClient');
+      const { getViemClient } = await import('~/core/viem/clients');
+      const { useGasStore } = await import('~/core/state');
+
+      // Get viem WalletClient
+      const walletClient = await getViemWalletClient({
+        address: from,
+        chainId: rapActionParameters.chainId,
+      });
+
+      if (!walletClient) {
+        // Fall back to legacy path if WalletClient creation fails (e.g., hardware wallet)
+        const signer = await keychainManager.getSigner(from);
+        const wallet = signer.connect(provider);
+        return walletExecuteRap(wallet, type, rapActionParameters);
+      }
+
+      // Get gas params from store
+      const { selectedGas } = useGasStore.getState();
+      const gasParams = selectedGas.transactionGasParams;
+
+      // Estimate gas for delegated transaction
+      const gasEstimate = await estimateDelegatedGasLimit({
+        quote,
+        chainId: rapActionParameters.chainId,
+        fromAddress: from,
+      });
+
+      // Build transaction options
+      const transactionOptions = {
+        maxFeePerGas: BigInt(
+          'maxFeePerGas' in gasParams ? gasParams.maxFeePerGas : '0',
+        ),
+        maxPriorityFeePerGas: BigInt(
+          'maxPriorityFeePerGas' in gasParams
+            ? gasParams.maxPriorityFeePerGas
+            : '0',
+        ),
+        gasLimit: BigInt(gasEstimate || '500000'),
+      };
+
+      // Execute with delegation
+      const result = await executeWithDelegate({
+        walletClient,
+        quote,
+        chainId: rapActionParameters.chainId,
+        transactionOptions,
+      });
+
+      if (result.error) {
+        return { nonce: undefined, errorMessage: result.error };
+      }
+
+      // Get nonce from the transaction (delegation uses single tx, so nonce doesn't increment)
+      const publicClient = getViemClient({
+        chainId: rapActionParameters.chainId,
+      });
+      const txReceipt = result.txHash
+        ? await publicClient.getTransaction({ hash: result.txHash })
+        : null;
+
+      return {
+        nonce: txReceipt?.nonce,
+        errorMessage: null,
+        hash: result.txHash,
+      };
+    }
+  }
+
+  // Legacy RAP path: approve then swap in separate transactions
+  console.log('[Delegation] Falling back to legacy RAP path');
   const signer = await keychainManager.getSigner(from);
   const wallet = signer.connect(provider);
   return walletExecuteRap(wallet, type, rapActionParameters);

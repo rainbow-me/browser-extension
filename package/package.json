@@ -1,0 +1,74 @@
+{
+  "name": "stores",
+  "version": "0.8.0",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "main": "dist/web/index.js",
+  "module": "dist/web/index.mjs",
+  "types": "dist/web/index.d.ts",
+  "react-native": "dist/native/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": {
+        "react-native": "./dist/native/index.js",
+        "default": "./dist/web/index.mjs"
+      },
+      "require": {
+        "react-native": "./dist/native/index.js",
+        "default": "./dist/web/index.js"
+      }
+    },
+    "./plugins/chrome": {
+      "types": "./dist/plugins/chrome/index.d.ts",
+      "import": "./dist/web/plugins/chrome.mjs",
+      "require": "./dist/web/plugins/chrome.js"
+    }
+  },
+  "dependencies": {
+    "use-sync-external-store": "1.6.0",
+    "zustand": "5.0.8"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.0",
+    "react-native": ">=0.64.0",
+    "react-native-mmkv": ">=2.0.0"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.276",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^24.5.2",
+    "@types/react": "^19.1.1",
+    "@types/use-sync-external-store": "1.5.0",
+    "esbuild": "^0.25.10",
+    "jest": "^29.7.0",
+    "terser": "^5.44.0",
+    "ts-jest": "^29.3.4",
+    "tsup": "^8.5.0",
+    "vitest": "^2.0.0"
+  },
+  "scripts": {
+    "analyze": "pnpm run prebuild:web && npx -y tsx analyze-bundle.ts && pnpm run postbuild:web",
+    "build": "pnpm run build:types && NODE_ENV=production pnpm run build:web && NODE_ENV=production pnpm run build:native",
+    "build:dev": "pnpm run build:types && NODE_ENV=development pnpm run build:web && NODE_ENV=development pnpm run build:native",
+    "build:native": "pnpm run prebuild:native && BUILD_TARGET=native tsup --config tsup.config.ts --out-dir dist/native && pnpm run postbuild:native",
+    "build:types": "tsc -p tsconfig.build.json --emitDeclarationOnly",
+    "build:web": "pnpm run prebuild:web && tsup --config tsup.config.ts --out-dir dist/web && pnpm run postbuild:web",
+    "lint": "pnpm -w run lint",
+    "lint:eslint": "pnpm -w run lint:eslint",
+    "lint:prettier": "pnpm -w run lint:prettier",
+    "postbuild:native": "rm -f src/storesStorage.ts src/env.ts",
+    "postbuild:web": "rm -f src/storesStorage.ts src/env.ts",
+    "prebuild:native": "cp src/storesStorage.native.ts src/storesStorage.ts && cp src/env.native.ts src/env.ts",
+    "prebuild:web": "cp src/storesStorage.web.ts src/storesStorage.ts && cp src/env.web.ts src/env.ts",
+    "test": "jest --detectOpenHandles --forceExit --testPathIgnorePatterns='src/plugins'",
+    "test:chrome": "vitest run src/plugins/chrome",
+    "test:all": "pnpm run test && pnpm run test:chrome"
+  }
+}
