@@ -5,12 +5,11 @@ import {
 } from '@ethersproject/abstract-provider';
 import { Wallet } from '@ethersproject/wallet';
 import {
-  MessageTypeProperty,
   SignTypedDataVersion,
-  TypedMessage,
   signTypedData as signTypedDataSigUtil,
 } from '@metamask/eth-sig-util';
-import { Address } from 'viem';
+import { Address, Hex } from 'viem';
+import { signTypedData as viemSignTypedData } from 'viem/accounts';
 
 /* eslint-disable boundaries/element-types */
 import type {
@@ -35,11 +34,6 @@ import { PrivateKey } from './IKeychain';
 import { keychainManager } from './KeychainManager';
 import type { HardwareWalletVendor } from './keychainTypes/hardwareWalletKeychain';
 import { SerializedKeypairKeychain } from './keychainTypes/keyPairKeychain';
-
-interface TypedDataTypes {
-  EIP712Domain: MessageTypeProperty[];
-  [additionalProperties: string]: MessageTypeProperty[];
-}
 
 export const setVaultPassword = async (
   password: string,
@@ -306,10 +300,6 @@ export const signTypedData = async ({
 }: SignTypedDataArguments): Promise<string> => {
   const signer = (await keychainManager.getSigner(address)) as Wallet;
 
-  const pkeyBuffer = Buffer.from(
-    addHexPrefix(signer.privateKey).substring(2),
-    'hex',
-  );
   const parsedData = msgData;
 
   // There are 3 types of messages
@@ -318,19 +308,51 @@ export const signTypedData = async ({
   // v4 => same as v3 but also supports which supports arrays and recursive structs.
   // Because v4 is backwards compatible with v3, we're supporting only v4
 
-  let sanitizedData = parsedData;
-
-  let version = 'v1';
-  if (
+  // Check if this is v1 (legacy format without domain/types/primaryType)
+  // Note: v1 is very rare and the type system expects v3/v4 format
+  const isV1 =
     typeof parsedData === 'object' &&
-    (parsedData.types || parsedData.primaryType || parsedData.domain)
-  ) {
-    version = 'v4';
-    sanitizedData = sanitizeTypedData(parsedData);
+    !(parsedData.types || parsedData.primaryType || parsedData.domain);
+
+  if (isV1) {
+    // For v1, fall back to @metamask/eth-sig-util
+    // This is legacy format and should be rare
+    const pkeyBuffer = Buffer.from(
+      addHexPrefix(signer.privateKey).substring(2),
+      'hex',
+    );
+    // v1 format is different - it's an array format, not the object format we use for v3/v4
+    // Since this is legacy and rare, we use a type assertion to handle it
+    return signTypedDataSigUtil({
+      // @ts-expect-error - v1 format is an array, not the TypedMessage object format
+      data: parsedData,
+      privateKey: pkeyBuffer,
+      version: SignTypedDataVersion.V1,
+    }) as string;
   }
-  return signTypedDataSigUtil({
-    data: sanitizedData as unknown as TypedMessage<TypedDataTypes>,
-    privateKey: pkeyBuffer,
-    version: version.toUpperCase() as SignTypedDataVersion,
+
+  // For v3/v4, use viem's signTypedData which properly handles EIP-712
+  const sanitizedData = sanitizeTypedData(parsedData);
+
+  // Ensure we have the required fields for viem
+  if (
+    !sanitizedData.domain ||
+    !sanitizedData.types ||
+    !sanitizedData.primaryType
+  ) {
+    throw new Error(
+      'Invalid typed data: missing domain, types, or primaryType',
+    );
+  }
+
+  // viem uses 'message' instead of 'value' for the data payload
+  const message = sanitizedData.message || sanitizedData.value || {};
+
+  return await viemSignTypedData({
+    domain: sanitizedData.domain,
+    types: sanitizedData.types,
+    primaryType: sanitizedData.primaryType,
+    message: message as Record<string, unknown>,
+    privateKey: addHexPrefix(signer.privateKey) as Hex,
   });
 };
