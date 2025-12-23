@@ -8,14 +8,13 @@ import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
 import { isNativeAsset } from '~/core/utils/chains';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import {
-  addBuffer,
+  calculateMaxAmountAfterGas,
   convertAmountFromNativeValue,
   convertAmountToRawAmount,
   convertRawAmountToBalance,
   handleSignificantDecimals,
   isExceedingMaxCharacters,
-  lessThan,
-  minus,
+  isMaxZeroDueToGas,
   truncateNumber,
 } from '~/core/utils/numbers';
 import { isLowerCaseMatch } from '~/core/utils/strings';
@@ -223,16 +222,38 @@ export const useSwapInputs = ({
       assetToSell?.decimals || 18,
     );
 
-    const rawAssetBalanceAmount =
-      assetToSell?.isNativeAsset &&
-      lessThan(selectedGas?.gasFee?.amount, assetBalanceAmount)
-        ? minus(assetBalanceAmount, addBuffer(selectedGas?.gasFee?.amount, 1.3))
-        : assetBalanceAmount;
+    const rawAssetBalanceAmount = assetToSell?.isNativeAsset
+      ? calculateMaxAmountAfterGas(
+          assetBalanceAmount,
+          selectedGas?.gasFee?.amount,
+          '1.3', // 30% buffer for swaps
+        )
+      : assetBalanceAmount;
 
     const assetBalance = convertRawAmountToBalance(rawAssetBalanceAmount, {
       decimals: assetToSell?.decimals || 18,
     });
     return assetBalance;
+  }, [
+    assetToSell?.balance?.amount,
+    assetToSell?.decimals,
+    assetToSell?.isNativeAsset,
+    selectedGas?.gasFee?.amount,
+  ]);
+
+  const isMaxZeroDueToInsufficientGas = useMemo(() => {
+    if (!assetToSell?.isNativeAsset) return false;
+    // Only check if gas fee has been estimated
+    if (!selectedGas?.gasFee?.amount) return false;
+    const assetBalanceAmount = convertAmountToRawAmount(
+      assetToSell?.balance?.amount || '0',
+      assetToSell?.decimals || 18,
+    );
+    return isMaxZeroDueToGas(
+      assetBalanceAmount,
+      selectedGas.gasFee.amount,
+      '1.3', // 30% buffer for swaps
+    );
   }, [
     assetToSell?.balance?.amount,
     assetToSell?.decimals,
@@ -414,5 +435,6 @@ export const useSwapInputs = ({
     setAssetToSellMaxValue,
     setIndependentField: setIndependentFieldIfOccupied,
     selectAssetToSell,
+    isMaxZeroDueToInsufficientGas,
   };
 };

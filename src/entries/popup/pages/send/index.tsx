@@ -175,6 +175,7 @@ export function Send() {
     setIndependentAmount,
     switchIndependentField,
     setMaxAssetAmount,
+    isMaxZeroDueToInsufficientGas,
   } = useSendInputs({ asset, selectedGas });
 
   const {
@@ -204,6 +205,7 @@ export function Send() {
     selectedGas,
     toAddress,
     toAddressOrName,
+    isMaxZeroDueToInsufficientGas,
   });
 
   const controls = useAnimationControls();

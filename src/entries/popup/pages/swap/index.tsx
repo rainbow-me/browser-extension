@@ -305,6 +305,7 @@ function SwapButton({
   showSwapReviewSheet,
   showExplainerSheet,
   hideExplainerSheet,
+  isMaxZeroDueToInsufficientGas,
 }: {
   quote: Quote | CrosschainQuote | QuoteError | undefined;
   assetToSell: ParsedSearchAsset | null;
@@ -315,6 +316,7 @@ function SwapButton({
   showSwapReviewSheet: () => void;
   showExplainerSheet: (p: ExplainerSheetProps) => void;
   hideExplainerSheet: () => void;
+  isMaxZeroDueToInsufficientGas?: boolean;
 }) {
   const selectedGas = useGasStore((state) => state.selectedGas);
 
@@ -326,6 +328,7 @@ function SwapButton({
     assetToSell,
     assetToSellValue,
     selectedGas,
+    isMaxZeroDueToInsufficientGas,
   });
 
   const isDegenModeEnabled = useDegenMode((s) => s.isDegenModeEnabled);
@@ -503,6 +506,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
     setAssetToBuyValue,
     setAssetToBuyInputValue,
     setIndependentField,
+    isMaxZeroDueToInsufficientGas,
   } = useSwapInputs({
     assetToSell,
     assetToBuy,
@@ -847,6 +851,7 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                   }
                   independentField={independentField}
                   setIndependentField={setIndependentField}
+                  isMaxZeroDueToInsufficientGas={isMaxZeroDueToInsufficientGas}
                 />
               </AccentColorProvider>
 
@@ -960,6 +965,9 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                         quoteServiceTime={getQuoteServiceTime({
                           quote: quote as CrosschainQuote,
                         })}
+                        isMaxZeroDueToInsufficientGas={
+                          isMaxZeroDueToInsufficientGas
+                        }
                       />
                     </Row>
                     <Row>
@@ -975,6 +983,9 @@ export function Swap({ bridge = false }: { bridge?: boolean }) {
                         timeEstimate={timeEstimate}
                         showExplainerSheet={showExplainerSheet}
                         hideExplainerSheet={hideExplainerSheet}
+                        isMaxZeroDueToInsufficientGas={
+                          isMaxZeroDueToInsufficientGas
+                        }
                       />
                     </Row>
                   </Rows>

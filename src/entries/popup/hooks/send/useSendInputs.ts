@@ -6,15 +6,14 @@ import { usePopupInstanceStore } from '~/core/state/popupInstances';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
 import {
+  calculateMaxAmountAfterGas,
   convertAmountAndPriceToNativeDisplay,
   convertAmountFromNativeValue,
   convertAmountToBalanceDisplay,
   convertAmountToRawAmount,
   convertNumberToString,
   convertRawAmountToBalance,
-  lessThan,
-  minus,
-  multiply,
+  isMaxZeroDueToGas,
   toFixedDecimals,
 } from '~/core/utils/numbers';
 
@@ -126,12 +125,34 @@ export const useSendInputs = ({
       asset?.balance?.amount || '0',
       asset?.decimals || 18,
     );
-    const rawAssetBalanceAmount =
-      asset?.isNativeAsset &&
-      lessThan(selectedGas?.gasFee?.amount, assetBalanceAmount)
-        ? minus(assetBalanceAmount, multiply(selectedGas?.gasFee?.amount, 1))
-        : assetBalanceAmount;
+    const rawAssetBalanceAmount = asset?.isNativeAsset
+      ? calculateMaxAmountAfterGas(
+          assetBalanceAmount,
+          selectedGas?.gasFee?.amount,
+          '1.0', // No buffer for sends
+        )
+      : assetBalanceAmount;
     return rawAssetBalanceAmount;
+  }, [
+    asset?.balance?.amount,
+    asset?.decimals,
+    asset?.isNativeAsset,
+    selectedGas?.gasFee?.amount,
+  ]);
+
+  const isMaxZeroDueToInsufficientGas = useMemo(() => {
+    if (!asset?.isNativeAsset) return false;
+    // Only check if gas fee has been estimated
+    if (!selectedGas?.gasFee?.amount) return false;
+    const assetBalanceAmount = convertAmountToRawAmount(
+      asset?.balance?.amount || '0',
+      asset?.decimals || 18,
+    );
+    return isMaxZeroDueToGas(
+      assetBalanceAmount,
+      selectedGas.gasFee.amount,
+      '1.0',
+    );
   }, [
     asset?.balance?.amount,
     asset?.decimals,
@@ -145,14 +166,16 @@ export const useSendInputs = ({
       asset?.decimals || 18,
     );
 
-    const rawAssetBalanceAmount =
-      asset?.isNativeAsset &&
-      lessThan(selectedGas?.gasFee?.amount, assetBalanceAmount)
-        ? toFixedDecimals(
-            minus(assetBalanceAmount, multiply(selectedGas?.gasFee?.amount, 1)),
-            0,
-          )
-        : assetBalanceAmount;
+    const rawAssetBalanceAmount = asset?.isNativeAsset
+      ? toFixedDecimals(
+          calculateMaxAmountAfterGas(
+            assetBalanceAmount,
+            selectedGas?.gasFee?.amount,
+            '1.0', // No buffer for sends
+          ),
+          0,
+        )
+      : assetBalanceAmount;
 
     const assetBalance = convertRawAmountToBalance(rawAssetBalanceAmount, {
       decimals: asset?.decimals || 18,
@@ -197,5 +220,6 @@ export const useSendInputs = ({
     setIndependentAmount,
     setIndependentField,
     switchIndependentField,
+    isMaxZeroDueToInsufficientGas,
   };
 };

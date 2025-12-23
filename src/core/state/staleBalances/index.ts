@@ -2,7 +2,10 @@ import { createBaseStore } from 'stores';
 import { Address } from 'viem';
 
 import { ChainId } from '~/core/types/chains';
-import { isAddressOrEth } from '~/core/utils/platform';
+import {
+  isValidAssetAddress,
+  normalizeNativeAssetAddress,
+} from '~/core/utils/nativeAssets';
 
 import { createExtensionStoreOptions } from '../_internal';
 
@@ -47,14 +50,17 @@ export const useStaleBalancesStore = createBaseStore<StaleBalancesState>(
       chainId: ChainId;
       info: StaleBalanceInfo;
     }) => {
+      // Normalize the asset address before storing
+      const normalizedAssetAddress = normalizeNativeAssetAddress(info.address);
       set((state) => {
         const { staleBalances } = state;
         const staleBalancesForUser = staleBalances[address] || {};
         const staleBalancesForChain = staleBalancesForUser[chainId] || {};
         const newStaleBalancesForChain = {
           ...staleBalancesForChain,
-          [info.address]: {
+          [normalizedAssetAddress]: {
             ...info,
+            address: normalizedAssetAddress,
             expirationTime: info.expirationTime || Date.now() + TIME_TO_WATCH,
           },
         };
@@ -120,9 +126,13 @@ export const useStaleBalancesStore = createBaseStore<StaleBalancesState>(
           if (
             typeof staleBalance.expirationTime === 'number' &&
             staleBalance.address &&
-            isAddressOrEth(staleBalance.address)
+            isValidAssetAddress(staleBalance.address)
           ) {
-            tokenList.push(`${staleBalance.address}:${chainId}`);
+            // Normalize the address before including in query param
+            const normalizedAddress = normalizeNativeAssetAddress(
+              staleBalance.address,
+            );
+            tokenList.push(`${normalizedAddress}:${chainId}`);
           }
         }
       }

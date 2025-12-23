@@ -182,7 +182,7 @@ it('should be able to select token on send flow', async () => {
   });
   // dai
   await findElementByTestIdAndClick({
-    id: 'token-input-asset-eth_1',
+    id: 'token-input-asset-0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE_1',
     driver,
   });
 });
@@ -278,7 +278,7 @@ it('should be able to select token on send flow', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: 'token-input-asset-eth_1',
+    id: 'token-input-asset-0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE_1',
     driver,
   });
   await findElementByTestIdAndClick({ id: 'value-input-max', driver });

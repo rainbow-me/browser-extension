@@ -1,6 +1,6 @@
 import { Address } from 'viem';
 
-import { AddressOrEth, ParsedAsset, UniqueId } from './assets';
+import { ParsedAsset, UniqueId } from './assets';
 import { ChainId } from './chains';
 
 export type TokenSearchAssetKey = keyof ParsedAsset;
@@ -13,7 +13,7 @@ export type TokenSearchListId =
   | 'verifiedAssets';
 
 export type SearchAsset = {
-  address: AddressOrEth;
+  address: Address;
   chainId: ChainId;
   colors?: { primary?: string; fallback?: string };
   decimals: number;
@@ -21,11 +21,11 @@ export type SearchAsset = {
   icon_url: string;
   isNativeAsset: boolean;
   isVerified: boolean;
-  mainnetAddress: AddressOrEth;
+  mainnetAddress: Address;
   name: string;
   networks: {
     [chainId in ChainId]?: {
-      address: chainId extends ChainId.mainnet ? AddressOrEth : Address;
+      address: Address;
       decimals: number;
     };
   };
