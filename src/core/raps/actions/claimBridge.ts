@@ -1,10 +1,9 @@
-import { AddressZero } from '@ethersproject/constants';
 import {
   CrosschainQuote,
   QuoteError,
   getClaimBridgeQuote,
 } from '@rainbow-me/swaps';
-import { Address } from 'viem';
+import { Address, zeroAddress } from 'viem';
 import { optimism } from 'viem/chains';
 
 import { REFERRER_CLAIM } from '~/core/references';
@@ -49,8 +48,8 @@ export async function claimBridge({
     chainId,
     toChainId,
     fromAddress: address,
-    sellTokenAddress: AddressZero,
-    buyTokenAddress: AddressZero,
+    sellTokenAddress: zeroAddress,
+    buyTokenAddress: zeroAddress,
     sellAmount: sellAmount,
     slippage: 2,
     currency: useCurrentCurrencyStore.getState().currentCurrency,
@@ -116,8 +115,8 @@ export async function claimBridge({
       chainId,
       toChainId,
       fromAddress: address,
-      sellTokenAddress: AddressZero,
-      buyTokenAddress: AddressZero,
+      sellTokenAddress: zeroAddress,
+      buyTokenAddress: zeroAddress,
       sellAmount: maxBridgeableAmount,
       slippage: 2,
       currency: useCurrentCurrencyStore.getState().currentCurrency,
