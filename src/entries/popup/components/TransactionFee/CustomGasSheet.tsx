@@ -176,12 +176,10 @@ export const CustomGasSheet = ({
   closeCustomGasSheet: () => void;
   setSelectedSpeed: (speed: GasSpeed) => void;
 }) => {
-  const {
-    gasFeeParamsBySpeed: { custom: customSpeed },
-    gasFeeParamsBySpeed,
-    selectedGas,
-    setSelectedGas,
-  } = useGasStore();
+  const gasFeeParamsBySpeed = useGasStore((state) => state.gasFeeParamsBySpeed);
+  const selectedGas = useGasStore((state) => state.selectedGas);
+  const setSelectedGas = useGasStore((state) => state.setSelectedGas);
+  const customSpeed = gasFeeParamsBySpeed?.custom;
 
   const [selectedSpeedOption, setSelectedSpeedOption] = useState<GasSpeed>(
     selectedGas?.option,

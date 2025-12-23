@@ -18,17 +18,15 @@ export interface NotificationWindowsState {
 
 export const useNotificationWindowStore =
   createBaseStore<NotificationWindowsState>(
-    (set, get) => ({
+    (set) => ({
       notificationWindows: {},
-      setNotificationWindow: (tabId, newNotificationWindow) => {
-        const notificationWindows = get().notificationWindows;
-        set({
+      setNotificationWindow: (tabId, newNotificationWindow) =>
+        set((state) => ({
           notificationWindows: {
-            ...notificationWindows,
+            ...state.notificationWindows,
             [tabId.toString()]: newNotificationWindow,
           },
-        });
-      },
+        })),
     }),
     createExtensionStoreOptions({
       storageKey: 'notificationWindowStore',

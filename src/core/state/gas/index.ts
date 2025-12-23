@@ -30,40 +30,29 @@ export interface GasStore {
 }
 
 export const useGasStore = createBaseStore<GasStore>(
-  (set, get) => ({
+  (set) => ({
     selectedGas: {} as GasFeeParams | GasFeeLegacyParams,
     gasFeeParamsBySpeed: {} as GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed,
     customGasModified: false,
-    setSelectedGas: ({ selectedGas }) => {
-      set({
-        selectedGas,
-      });
-    },
-    setGasFeeParamsBySpeed: ({ gasFeeParamsBySpeed }) => {
-      set({
-        gasFeeParamsBySpeed,
-      });
-    },
-    setCustomSpeed: (speed: GasFeeParams) => {
-      const { gasFeeParamsBySpeed } = get();
-      set({
+    setSelectedGas: ({ selectedGas }) => set({ selectedGas }),
+    setGasFeeParamsBySpeed: ({ gasFeeParamsBySpeed }) =>
+      set({ gasFeeParamsBySpeed }),
+    setCustomSpeed: (speed: GasFeeParams) =>
+      set((state) => ({
         gasFeeParamsBySpeed: {
-          ...gasFeeParamsBySpeed,
+          ...state.gasFeeParamsBySpeed,
           [GasSpeed.CUSTOM]: speed,
         } as GasFeeParamsBySpeed,
         customGasModified: true,
-      });
-    },
-    setCustomLegacySpeed: (speed: GasFeeLegacyParams) => {
-      const { gasFeeParamsBySpeed } = get();
-      set({
+      })),
+    setCustomLegacySpeed: (speed: GasFeeLegacyParams) =>
+      set((state) => ({
         gasFeeParamsBySpeed: {
-          ...gasFeeParamsBySpeed,
+          ...state.gasFeeParamsBySpeed,
           [GasSpeed.CUSTOM]: speed,
         } as GasFeeLegacyParamsBySpeed,
         customGasModified: true,
-      });
-    },
+      })),
     clearCustomGasModified: () => {
       set({ customGasModified: false });
     },
