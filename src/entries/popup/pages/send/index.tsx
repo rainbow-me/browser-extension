@@ -41,11 +41,13 @@ import {
 } from '~/core/types/gas';
 import { UniqueAsset } from '~/core/types/nfts';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
+import { parseUserAssetBalances } from '~/core/utils/assets';
 import { chainIdToUse } from '~/core/utils/chains';
 import {
   getUniqueAssetImagePreviewURL,
   getUniqueAssetImageThumbnailURL,
 } from '~/core/utils/nfts';
+import { convertAmountToRawAmount } from '~/core/utils/numbers';
 import { addNewTransaction } from '~/core/utils/transactions';
 import {
   Box,
@@ -298,17 +300,32 @@ export function Send() {
 
   const buildPendingTransaction = useCallback(
     (result: TransactionResponse) => {
+      const rawAmount =
+        asset && assetAmount
+          ? convertAmountToRawAmount(assetAmount, asset.decimals || 18)
+          : '0';
+
+      const changeAsset = nft
+        ? buildNftAssetObject(nft)
+        : asset && assetAmount
+        ? parseUserAssetBalances({
+            asset,
+            balance: rawAmount,
+            currency: currentCurrency,
+          })
+        : asset;
+
       return {
         changes: [
           nft
             ? { direction: 'out', asset: buildNftAssetObject(nft) }
             : {
                 direction: 'out',
-                asset,
-                value: assetAmount,
+                asset: changeAsset,
+                value: rawAmount,
               },
         ],
-        asset: nft ? buildNftAssetObject(nft) : asset,
+        asset: changeAsset,
         data: result.data,
         value: result.value.toString(),
         from: fromAddress,
@@ -333,6 +350,7 @@ export function Send() {
       asset,
       assetAmount,
       buildNftAssetObject,
+      currentCurrency,
       fromAddress,
       nft,
       selectedGas.transactionGasParams,

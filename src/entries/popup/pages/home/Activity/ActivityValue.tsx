@@ -108,12 +108,12 @@ const activityValues = (transaction: RainbowTransaction) => {
     return approvalTypeValues(transaction);
 
   const nonNftChanges = changes?.filter((c) => c?.asset.type !== 'nft') ?? [];
-  const changeAsset =
+  const changeWithAsset =
     !direction && nonNftChanges.length === 1 // if there's no direction and only one change
-      ? nonNftChanges[0]?.asset // use the first change
-      : nonNftChanges.find((c) => c?.direction === direction)?.asset; // else: use the change with the direction
+      ? nonNftChanges[0] // use the first change
+      : nonNftChanges.find((c) => c?.direction === direction); // else: use the change with the direction
 
-  const asset = changeAsset ?? _asset;
+  const asset = changeWithAsset?.asset ?? _asset;
 
   if (!asset || !isParsedUserAsset(asset) || asset.type === 'nft') return;
 
