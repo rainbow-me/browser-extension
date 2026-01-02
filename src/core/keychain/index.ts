@@ -29,6 +29,7 @@ import {
   normalizeTransactionResponsePayload,
   sanitizeTypedData,
 } from '../utils/ethereum';
+import { logTransactionGasError } from '../utils/gas-logging';
 import { addHexPrefix } from '../utils/hex';
 
 import { PrivateKey } from './IKeychain';
@@ -244,9 +245,20 @@ export const sendTransaction = async (
 
   const signer = await keychainManager.getSigner(txPayload.from as Address);
   const wallet = signer.connect(provider);
-  let response = await wallet.sendTransaction(txPayload);
-  response = normalizeTransactionResponsePayload(response);
-  return response;
+  try {
+    let response = await wallet.sendTransaction(txPayload);
+    response = normalizeTransactionResponsePayload(response);
+    return response;
+  } catch (error) {
+    await logTransactionGasError({
+      error,
+      transactionRequest: txPayload,
+      chainId: txPayload.chainId as number,
+      provider,
+    });
+
+    throw error;
+  }
 };
 
 export const executeRap = async ({
