@@ -149,29 +149,27 @@ export function SettingsCustomChainsList() {
             )}
 
             {/* Add Custom Network Button */}
-            {(filteredNetworks.length > 0 || showNoResults) && (
-              <MenuItem
-                last
-                leftComponent={
-                  <Symbol
-                    symbol="plus.circle.fill"
-                    weight="medium"
-                    size={18}
-                    color="blue"
-                  />
-                }
-                titleComponent={
-                  <MenuItem.Title
-                    color="blue"
-                    text={i18n.t(
-                      'settings.networks.custom_rpc.add_custom_network',
-                    )}
-                  />
-                }
-                onClick={handleAddCustomNetwork}
-                testId="add-custom-network-manual"
-              />
-            )}
+            <MenuItem
+              last
+              leftComponent={
+                <Symbol
+                  symbol="plus.circle.fill"
+                  weight="medium"
+                  size={18}
+                  color="blue"
+                />
+              }
+              titleComponent={
+                <MenuItem.Title
+                  color="blue"
+                  text={i18n.t(
+                    'settings.networks.custom_rpc.add_custom_network',
+                  )}
+                />
+              }
+              onClick={handleAddCustomNetwork}
+              testId="add-custom-network-manual"
+            />
           </Menu>
         </MenuContainer>
       </Stack>
