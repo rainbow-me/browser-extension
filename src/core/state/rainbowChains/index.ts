@@ -1,8 +1,9 @@
+import { createBaseStore } from '@storesjs/stores';
 import { Chain } from 'viem/chains';
 
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { ChainId } from '~/core/types/chains';
 
+import { createExtensionStoreOptions } from '../_internal';
 import { runNetworksMigrationIfNeeded } from '../networks/migration';
 
 export interface RainbowChain {
@@ -28,7 +29,7 @@ export interface RainbowChainsState {
 /**
  * @deprecated use `useNetworkStore` instead
  */
-export const useRainbowChainsStore = createRainbowStore<RainbowChainsState>(
+export const useRainbowChainsStore = createBaseStore<RainbowChainsState>(
   (set, get) => ({
     rainbowChains: {},
     getActiveChain: ({ chainId }) => {
@@ -112,7 +113,7 @@ export const useRainbowChainsStore = createRainbowStore<RainbowChainsState>(
       set({ rainbowChains: updatedrainbowChains });
     },
   }),
-  {
+  createExtensionStoreOptions({
     storageKey: 'rainbowChains',
     version: 13,
     onRehydrateStorage: () => {
@@ -122,5 +123,5 @@ export const useRainbowChainsStore = createRainbowStore<RainbowChainsState>(
         }
       };
     },
-  },
+  }),
 );

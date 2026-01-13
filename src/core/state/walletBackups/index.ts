@@ -1,7 +1,9 @@
+import { createBaseStore } from '@storesjs/stores';
 import { Address } from 'viem';
 
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
+
+import { createExtensionStoreOptions } from '../_internal';
 
 export interface WalletBackupReminderStore {
   reminded: boolean;
@@ -9,7 +11,7 @@ export interface WalletBackupReminderStore {
 }
 
 export const useWalletBackupReminderStore =
-  createRainbowStore<WalletBackupReminderStore>((set) => ({
+  createBaseStore<WalletBackupReminderStore>((set) => ({
     reminded: false,
     setReminded: () => {
       set({ reminded: true });
@@ -34,7 +36,7 @@ export interface WalletBackupsStore {
   clear: () => void;
 }
 
-export const useWalletBackupsStore = createRainbowStore<WalletBackupsStore>(
+export const useWalletBackupsStore = createBaseStore<WalletBackupsStore>(
   (set, get) => ({
     needsInitialization: true,
     walletBackups: {},
@@ -88,8 +90,8 @@ export const useWalletBackupsStore = createRainbowStore<WalletBackupsStore>(
       set({ walletBackups: {}, needsInitialization: true });
     },
   }),
-  {
+  createExtensionStoreOptions({
     storageKey: 'walletBackups',
     version: 0,
-  },
+  }),
 );

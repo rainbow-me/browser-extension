@@ -1,6 +1,7 @@
+import { createBaseStore } from '@storesjs/stores';
 import { Address } from 'viem';
 
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
+import { createExtensionStoreOptions } from '../_internal';
 
 type NftDisplayMode = 'byCollection' | 'grouped';
 export type NftSort = 'alphabetical' | 'recent';
@@ -25,7 +26,7 @@ export interface NftsState {
   toggleHideNFT: (address: Address, uniqueId: string) => void;
 }
 
-export const useNftsStore = createRainbowStore<NftsState>(
+export const useNftsStore = createBaseStore<NftsState>(
   (set, get) => ({
     displayMode: 'grouped',
     hidden: {},
@@ -60,8 +61,8 @@ export const useNftsStore = createRainbowStore<NftsState>(
       });
     },
   }),
-  {
+  createExtensionStoreOptions({
     storageKey: 'nfts',
     version: 1,
-  },
+  }),
 );
