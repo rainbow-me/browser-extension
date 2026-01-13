@@ -1,4 +1,6 @@
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
+import { createBaseStore } from '@storesjs/stores';
+
+import { createExtensionStoreOptions } from '../_internal';
 
 export enum promoTypes {
   command_k = 'command_k',
@@ -13,7 +15,7 @@ export interface QuickPromoStore {
   setSeenPromo: (key: PromoTypes) => void;
 }
 
-export const useQuickPromoStore = createRainbowStore<QuickPromoStore>(
+export const useQuickPromoStore = createBaseStore<QuickPromoStore>(
   (set, get) => ({
     seenPromos: {
       command_k: false,
@@ -32,8 +34,8 @@ export const useQuickPromoStore = createRainbowStore<QuickPromoStore>(
       });
     },
   }),
-  {
+  createExtensionStoreOptions({
     storageKey: 'quickPromoStore',
     version: 1,
-  },
+  }),
 );

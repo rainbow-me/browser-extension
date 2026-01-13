@@ -1,4 +1,6 @@
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
+import { createBaseStore } from '@storesjs/stores';
+
+import { createExtensionStoreOptions } from './_internal';
 
 export type NotificationWindow = chrome.windows.Window;
 
@@ -15,7 +17,7 @@ export interface NotificationWindowsState {
 }
 
 export const useNotificationWindowStore =
-  createRainbowStore<NotificationWindowsState>(
+  createBaseStore<NotificationWindowsState>(
     (set, get) => ({
       notificationWindows: {},
       setNotificationWindow: (tabId, newNotificationWindow) => {
@@ -28,8 +30,8 @@ export const useNotificationWindowStore =
         });
       },
     }),
-    {
+    createExtensionStoreOptions({
       storageKey: 'notificationWindowStore',
       version: 0,
-    },
+    }),
   );
