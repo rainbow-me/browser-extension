@@ -1,13 +1,12 @@
 import { zeroAddress } from 'viem';
 import { Chain, mainnet } from 'viem/chains';
-import { useConfig } from 'wagmi';
 
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { mergedChainToViemChain } from '~/core/state/networks/utils';
 import { ChainId, TransformedChain } from '~/core/types/chains';
+import { getAvailableChains } from '~/core/viem';
 
 import { AddressOrEth } from '../types/assets';
-import { wagmiConfig } from '../wagmi';
 
 import { getDappHost } from './connectedApps';
 import { isLowerCaseMatch } from './strings';
@@ -47,26 +46,26 @@ const getMainChainsHelper = (
 };
 
 export const useMainChains = () => {
-  const { chains } = useConfig();
+  const chains = getAvailableChains();
   const supportedChains = useNetworkStore((state) =>
     state.getBackendSupportedChains(true),
   );
 
-  return getMainChainsHelper(chains, supportedChains);
+  return getMainChainsHelper(chains as [Chain, ...Chain[]], supportedChains);
 };
 
 // All the chains we support
 // rainbow default and custom chains
 
 export const useSupportedChains = ({ testnets }: { testnets?: boolean }) => {
-  const { chains } = useConfig();
+  const chains = getAvailableChains();
   return chains.filter((chain) =>
     testnets ? !!chain.testnet : !chain.testnet,
   );
 };
 
 export const getSupportedChains = ({ testnets }: { testnets?: boolean }) => {
-  const { chains } = wagmiConfig;
+  const chains = getAvailableChains();
   return chains.filter((chain) =>
     testnets
       ? !!chain.testnet
@@ -79,7 +78,7 @@ export const getSupportedChains = ({ testnets }: { testnets?: boolean }) => {
 
 // Chain helpers
 export function getChain({ chainId }: { chainId?: ChainId }) {
-  const { chains } = wagmiConfig;
+  const chains = getAvailableChains();
   const chain = chains.find((chain) => chain.id === chainId);
   return chain || { ...mainnet, testnet: false };
 }

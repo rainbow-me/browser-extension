@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useEnsName } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -37,6 +36,7 @@ import {
 
 import { useActiveTab } from './useActiveTab';
 import { useAppSession } from './useAppSession';
+import { useEnsName } from './useEnsName';
 import useKeyboardAnalytics from './useKeyboardAnalytics';
 import { useKeyboardShortcut } from './useKeyboardShortcut';
 import { useNavigateToSwaps } from './useNavigateToSwaps';
