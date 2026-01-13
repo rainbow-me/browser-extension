@@ -13,16 +13,21 @@ export interface SwapAssetsToRefreshState {
 }
 
 export const useSwapAssetsToRefreshStore =
-  createBaseStore<SwapAssetsToRefreshState>((set, get) => ({
+  createBaseStore<SwapAssetsToRefreshState>((set) => ({
     setSwapAssetsToRefresh: ({ nonce, assetToBuy, assetToSell }) => {
-      const swapAssetsToRefresh = get().swapAssetsToRefresh;
-      swapAssetsToRefresh[nonce] = [assetToSell, assetToBuy];
-      set(swapAssetsToRefresh);
+      set((state) => ({
+        swapAssetsToRefresh: {
+          ...state.swapAssetsToRefresh,
+          [nonce]: [assetToSell, assetToBuy],
+        },
+      }));
     },
     removeSwapAssetsToRefresh: ({ nonce }) => {
-      const swapAssetsToRefresh = get().swapAssetsToRefresh;
-      delete swapAssetsToRefresh[nonce];
-      set(swapAssetsToRefresh);
+      set((state) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { [nonce]: _, ...rest } = state.swapAssetsToRefresh;
+        return { swapAssetsToRefresh: rest };
+      });
     },
     swapAssetsToRefresh: {},
   }));

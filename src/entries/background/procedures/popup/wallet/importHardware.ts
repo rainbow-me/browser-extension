@@ -1,22 +1,11 @@
-import { call } from '@orpc/server';
-
 import { importHardwareWallet } from '~/core/keychain';
-import { SessionStorage } from '~/core/storage';
 
 import { walletOs } from '../os';
 
-import { statusHandler } from './status';
-
 export const importHardwareHandler = walletOs.importHardware.handler(
-  async ({ input, context }) => {
+  async ({ input }) => {
     const address = await importHardwareWallet(input);
-
-    const { passwordSet } = await call(statusHandler, {}, { context });
-    if (!passwordSet) {
-      // we probably need to set a password
-      await SessionStorage.set('userStatus', 'NEEDS_PASSWORD');
-    }
-
+    // Status is now computed from keychain state, no need to set it explicitly
     return { address };
   },
 );

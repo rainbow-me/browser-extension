@@ -8,7 +8,7 @@ import { SessionStorage } from '~/core/storage';
 import usePrevious from './usePrevious';
 
 export function useExpiryListener() {
-  const { resetValues, setupPort } = usePopupInstanceStore();
+  const { resetValues } = usePopupInstanceStore();
   const { currentAddress } = useCurrentAddressStore();
   const clearLastPage = useNavRestorationStore((state) => state.clearLastPage);
   const lastPage = useNavRestorationStore((state) => state.lastPage);
@@ -23,14 +23,17 @@ export function useExpiryListener() {
     if (expired) {
       await resetValues();
       await clearLastPage();
+      // Don't restore navigation if expired - set to false after clearing
+      await setShouldRestoreNavigation(false);
+    } else {
+      // Only restore navigation if not expired
+      setShouldRestoreNavigation(!!lastPage);
     }
-    setShouldRestoreNavigation(!!lastPage);
   };
 
   useEffect(() => {
-    // this port's disconnection will let the background know to register a new expiry date
-    setupPort();
-    // reset popup instance data if the expiry date has passed
+    // Expiry is now tracked via orpc-popup port disconnect in popupPortManager
+    // Reset popup instance data if the expiry date has passed
     checkExpiry();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

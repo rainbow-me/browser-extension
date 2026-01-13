@@ -437,7 +437,7 @@ const ROUTE_DATA = [
     element: (
       <AnimatedRoute
         direction="right"
-        protectedRoute={['NEW']}
+        protectedRoute={['NEW', 'NEEDS_PASSWORD']}
         navbar
         navbarIcon="arrow"
         accentColor={false}
@@ -451,7 +451,7 @@ const ROUTE_DATA = [
     element: (
       <AnimatedRoute
         direction="right"
-        protectedRoute={['NEW']}
+        protectedRoute={['NEW', 'NEEDS_PASSWORD']}
         navbar
         accentColor={false}
       >
@@ -464,7 +464,7 @@ const ROUTE_DATA = [
     element: (
       <AnimatedRoute
         direction="right"
-        protectedRoute={['NEW']}
+        protectedRoute={['NEW', 'NEEDS_PASSWORD']}
         navbar
         accentColor={false}
       >

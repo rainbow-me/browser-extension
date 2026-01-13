@@ -22,21 +22,12 @@ export const ProtectedRoute = ({
   children: React.ReactNode;
   allowedStates: UserStatusResult[] | true;
 }): JSX.Element => {
-  const { status, updateStatus } = useAuth();
+  const { status, isLoading } = useAuth();
   const isFullScreen = useIsFullScreen();
 
   const pendingRequests = usePendingRequestStore((s) => s.pendingRequests);
 
-  const [isStatusInitialized, setStatusInitialized] = React.useState(false);
-  React.useEffect(() => {
-    const initializeStatus = async () => {
-      await updateStatus();
-      setStatusInitialized(true);
-    };
-    initializeStatus();
-  }, [updateStatus]);
-
-  if (!isStatusInitialized) {
+  if (isLoading) {
     return <></>;
   }
 

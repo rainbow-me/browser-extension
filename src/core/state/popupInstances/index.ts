@@ -84,7 +84,6 @@ export interface PopupInstanceStore extends PopupInstance {
   saveSwapField: ({ field }: { field: IndependentField }) => void;
   saveSwapTokenToBuy: ({ token }: { token: ParsedSearchAsset | null }) => void;
   saveSwapTokenToSell: ({ token }: { token: ParsedSearchAsset | null }) => void;
-  setupPort: () => void;
 }
 
 export const usePopupInstanceStore = createBaseStore<PopupInstanceStore>(
@@ -154,9 +153,6 @@ export const usePopupInstanceStore = createBaseStore<PopupInstanceStore>(
     }),
     saveSwapTokenToSell: popupInstanceHandlerFactory(({ token }) => {
       set({ swapTokenToSell: token });
-    }),
-    setupPort: popupInstanceHandlerFactory(() => {
-      chrome.runtime.connect({ name: 'popup' });
     }),
   }),
   createExtensionStoreOptions({

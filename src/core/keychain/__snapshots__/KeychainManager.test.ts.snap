@@ -7,7 +7,6 @@ exports[`[keychain/KeychainManager] :: should be able to add a read only wallet 
   },
   "session": {
     "encryptionKey": "{"key_ops":["encrypt","decrypt"],"ext":true,"kty":"oct","k":"sHyhXbroUejPho-aO3OoHJ7ZCPEl8tYOPvBsd6wRsI8","alg":"A256GCM"}",
-    "keychainManager": null,
     "salt": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
   },
 }
@@ -20,7 +19,6 @@ exports[`[keychain/KeychainManager] :: should be able to add an account 1`] = `
   },
   "session": {
     "encryptionKey": "{"key_ops":["encrypt","decrypt"],"ext":true,"kty":"oct","k":"sHyhXbroUejPho-aO3OoHJ7ZCPEl8tYOPvBsd6wRsI8","alg":"A256GCM"}",
-    "keychainManager": null,
     "salt": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
   },
 }
@@ -33,7 +31,6 @@ exports[`[keychain/KeychainManager] :: should be able to autodiscover accounts w
   },
   "session": {
     "encryptionKey": "{"key_ops":["encrypt","decrypt"],"ext":true,"kty":"oct","k":"xBwW7Ghxj8m_0T2wIbWvt4dfTLbhDQJ5ynHnJMzlfls","alg":"A256GCM"}",
-    "keychainManager": null,
     "salt": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
   },
 }
@@ -46,7 +43,6 @@ exports[`[keychain/KeychainManager] :: should be able to create an HD wallet 1`]
   },
   "session": {
     "encryptionKey": "{"key_ops":["encrypt","decrypt"],"ext":true,"kty":"oct","k":"sHyhXbroUejPho-aO3OoHJ7ZCPEl8tYOPvBsd6wRsI8","alg":"A256GCM"}",
-    "keychainManager": null,
     "salt": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
   },
 }
@@ -59,7 +55,6 @@ exports[`[keychain/KeychainManager] :: should be able to export a private key fo
   },
   "session": {
     "encryptionKey": "{"key_ops":["encrypt","decrypt"],"ext":true,"kty":"oct","k":"sHyhXbroUejPho-aO3OoHJ7ZCPEl8tYOPvBsd6wRsI8","alg":"A256GCM"}",
-    "keychainManager": null,
     "salt": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
   },
 }
@@ -72,7 +67,6 @@ exports[`[keychain/KeychainManager] :: should be able to export the seed phrase 
   },
   "session": {
     "encryptionKey": "{"key_ops":["encrypt","decrypt"],"ext":true,"kty":"oct","k":"sHyhXbroUejPho-aO3OoHJ7ZCPEl8tYOPvBsd6wRsI8","alg":"A256GCM"}",
-    "keychainManager": null,
     "salt": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
   },
 }
@@ -85,7 +79,6 @@ exports[`[keychain/KeychainManager] :: should be able to get the signer of a spe
   },
   "session": {
     "encryptionKey": "{"key_ops":["encrypt","decrypt"],"ext":true,"kty":"oct","k":"sHyhXbroUejPho-aO3OoHJ7ZCPEl8tYOPvBsd6wRsI8","alg":"A256GCM"}",
-    "keychainManager": null,
     "salt": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
   },
 }
@@ -98,7 +91,6 @@ exports[`[keychain/KeychainManager] :: should be able to import a wallet using a
   },
   "session": {
     "encryptionKey": "{"key_ops":["encrypt","decrypt"],"ext":true,"kty":"oct","k":"sHyhXbroUejPho-aO3OoHJ7ZCPEl8tYOPvBsd6wRsI8","alg":"A256GCM"}",
-    "keychainManager": null,
     "salt": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
   },
 }
@@ -111,7 +103,6 @@ exports[`[keychain/KeychainManager] :: should be able to import a wallet using a
   },
   "session": {
     "encryptionKey": "{"key_ops":["encrypt","decrypt"],"ext":true,"kty":"oct","k":"sHyhXbroUejPho-aO3OoHJ7ZCPEl8tYOPvBsd6wRsI8","alg":"A256GCM"}",
-    "keychainManager": null,
     "salt": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
   },
 }
@@ -124,7 +115,6 @@ exports[`[keychain/KeychainManager] :: should be able to lock the vault 1`] = `
   },
   "session": {
     "encryptionKey": null,
-    "keychainManager": null,
     "salt": null,
   },
 }
@@ -137,7 +127,6 @@ exports[`[keychain/KeychainManager] :: should be able to remove an account from 
   },
   "session": {
     "encryptionKey": "{"key_ops":["encrypt","decrypt"],"ext":true,"kty":"oct","k":"sHyhXbroUejPho-aO3OoHJ7ZCPEl8tYOPvBsd6wRsI8","alg":"A256GCM"}",
-    "keychainManager": null,
     "salt": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
   },
 }
@@ -150,7 +139,6 @@ exports[`[keychain/KeychainManager] :: should be able to remove an account from 
   },
   "session": {
     "encryptionKey": "{"key_ops":["encrypt","decrypt"],"ext":true,"kty":"oct","k":"sHyhXbroUejPho-aO3OoHJ7ZCPEl8tYOPvBsd6wRsI8","alg":"A256GCM"}",
-    "keychainManager": null,
     "salt": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
   },
 }
@@ -163,7 +151,6 @@ exports[`[keychain/KeychainManager] :: should be able to remove an account from 
   },
   "session": {
     "encryptionKey": "{"key_ops":["encrypt","decrypt"],"ext":true,"kty":"oct","k":"sHyhXbroUejPho-aO3OoHJ7ZCPEl8tYOPvBsd6wRsI8","alg":"A256GCM"}",
-    "keychainManager": null,
     "salt": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
   },
 }
@@ -175,9 +162,8 @@ exports[`[keychain/KeychainManager] :: should be able to remove empty keychains 
     "vault": "",
   },
   "session": {
-    "encryptionKey": "{"key_ops":["encrypt","decrypt"],"ext":true,"kty":"oct","k":"sHyhXbroUejPho-aO3OoHJ7ZCPEl8tYOPvBsd6wRsI8","alg":"A256GCM"}",
-    "keychainManager": null,
-    "salt": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
+    "encryptionKey": null,
+    "salt": null,
   },
 }
 `;
@@ -189,7 +175,6 @@ exports[`[keychain/KeychainManager] :: should be able to unlock the vault 1`] = 
   },
   "session": {
     "encryptionKey": "{"key_ops":["encrypt","decrypt"],"ext":true,"kty":"oct","k":"xBwW7Ghxj8m_0T2wIbWvt4dfTLbhDQJ5ynHnJMzlfls","alg":"A256GCM"}",
-    "keychainManager": null,
     "salt": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
   },
 }
@@ -202,7 +187,6 @@ exports[`[keychain/KeychainManager] :: should be able to update the password of 
   },
   "session": {
     "encryptionKey": "{"key_ops":["encrypt","decrypt"],"ext":true,"kty":"oct","k":"xBwW7Ghxj8m_0T2wIbWvt4dfTLbhDQJ5ynHnJMzlfls","alg":"A256GCM"}",
-    "keychainManager": null,
     "salt": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8=",
   },
 }
