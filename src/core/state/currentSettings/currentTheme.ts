@@ -1,6 +1,8 @@
+import { createBaseStore } from '@storesjs/stores';
+
 import { ThemeOption } from '~/core/types/settings';
 
-import { createRainbowStore } from '../internal/createRainbowStore';
+import { createExtensionStoreOptions } from '../_internal';
 
 export interface CurrentThemeState {
   currentTheme: Exclude<ThemeOption, 'system'>;
@@ -8,7 +10,7 @@ export interface CurrentThemeState {
   setCurrentTheme: (theme: ThemeOption) => void;
 }
 
-export const useCurrentThemeStore = createRainbowStore<CurrentThemeState>(
+export const useCurrentThemeStore = createBaseStore<CurrentThemeState>(
   (set) => ({
     currentTheme: 'dark',
     currentUserSelectedTheme: 'dark',
@@ -29,8 +31,8 @@ export const useCurrentThemeStore = createRainbowStore<CurrentThemeState>(
       }
     },
   }),
-  {
+  createExtensionStoreOptions({
     storageKey: 'currentTheme',
     version: 0,
-  },
+  }),
 );

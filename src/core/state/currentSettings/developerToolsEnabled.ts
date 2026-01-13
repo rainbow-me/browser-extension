@@ -1,4 +1,6 @@
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
+import { createBaseStore } from '@storesjs/stores';
+
+import { createExtensionStoreOptions } from '../_internal';
 
 export interface DeveloperToolsEnabledState {
   developerToolsEnabled: boolean;
@@ -6,14 +8,14 @@ export interface DeveloperToolsEnabledState {
 }
 
 export const useDeveloperToolsEnabledStore =
-  createRainbowStore<DeveloperToolsEnabledState>(
+  createBaseStore<DeveloperToolsEnabledState>(
     (set) => ({
       developerToolsEnabled: false,
       setDeveloperToolsEnabled: (developerToolsEnabled) =>
         set({ developerToolsEnabled }),
     }),
-    {
+    createExtensionStoreOptions({
       storageKey: 'developerTools',
       version: 0,
-    },
+    }),
   );

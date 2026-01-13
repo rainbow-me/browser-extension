@@ -1,4 +1,6 @@
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
+import { createBaseStore } from '@storesjs/stores';
+
+import { createExtensionStoreOptions } from '../_internal';
 
 export interface HideSmallBalancesState {
   hideSmallBalances: boolean;
@@ -6,13 +8,13 @@ export interface HideSmallBalancesState {
 }
 
 export const useHideSmallBalancesStore =
-  createRainbowStore<HideSmallBalancesState>(
+  createBaseStore<HideSmallBalancesState>(
     (set) => ({
       hideSmallBalances: false,
       setHideSmallBalances: (newHideSmallBalances) =>
         set({ hideSmallBalances: newHideSmallBalances }),
     }),
-    {
+    createExtensionStoreOptions({
       storageKey: 'hideSmallBalances',
       version: 2,
       migrate(persistedState, version) {
@@ -26,5 +28,5 @@ export const useHideSmallBalancesStore =
 
         return persistedState;
       },
-    },
+    }),
   );

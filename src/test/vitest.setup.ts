@@ -2,22 +2,10 @@ import { setupServer } from 'msw/node';
 import { afterAll, afterEach, beforeAll, vi } from 'vitest';
 
 import { handlers } from './mocks/handlers';
+import { setupChromeMock } from './setupChromeMock';
 
-vi.stubGlobal('chrome', {
-  storage: {
-    local: {
-      get: vi.fn(() => ({})),
-      set: vi.fn(),
-      remove: vi.fn(),
-    },
-    session: {
-      get: vi.fn(() => ({})),
-      set: vi.fn(),
-      remove: vi.fn(),
-    },
-  },
-  runtime: {},
-});
+// Setup Chrome mock FIRST before any other code runs
+setupChromeMock();
 
 vi.stubGlobal('window.location', {
   pathname: 'popup.html',

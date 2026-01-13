@@ -1,4 +1,6 @@
-import { createRainbowStore } from '../internal/createRainbowStore';
+import { createBaseStore } from '@storesjs/stores';
+
+import { createExtensionStoreOptions } from '../_internal';
 
 export interface HideAssetBalancesState {
   hideAssetBalances: boolean;
@@ -6,14 +8,14 @@ export interface HideAssetBalancesState {
 }
 
 export const useHideAssetBalancesStore =
-  createRainbowStore<HideAssetBalancesState>(
+  createBaseStore<HideAssetBalancesState>(
     (set) => ({
       hideAssetBalances: false,
       setHideAssetBalances: (newHideAssetBalances) =>
         set({ hideAssetBalances: newHideAssetBalances }),
     }),
-    {
+    createExtensionStoreOptions({
       storageKey: 'hideAssetBalances',
       version: 0,
-    },
+    }),
   );
