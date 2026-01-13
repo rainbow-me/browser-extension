@@ -23,7 +23,7 @@ export const createExtensionStoreOptions = <S>({
 
   const { storage, syncEngine } = getSyncedStorage({
     area,
-    namespace: useRainbowNamingSchema ? 'rainbow.zustand.' : undefined,
+    storageKeyPrefix: useRainbowNamingSchema ? 'rainbow.zustand.' : undefined,
   });
 
   return {
@@ -40,9 +40,9 @@ export const createExtensionStoreOptions = <S>({
 
 function getSyncedStorage(options: {
   area: AreaName;
-  namespace: string | undefined;
+  storageKeyPrefix: string | undefined;
 }): SyncedStorage {
-  const key = buildStorageKey(options.area, options.namespace);
+  const key = buildStorageKey(options.area, options.storageKeyPrefix);
   const cached = storageCache.get(key);
   if (cached) return cached;
 
@@ -51,7 +51,7 @@ function getSyncedStorage(options: {
   return syncedStorage;
 }
 
-function buildStorageKey(area: AreaName, namespace: string | undefined) {
-  if (!namespace) return area;
-  return `${area}.${namespace}`;
+function buildStorageKey(area: AreaName, storageKeyPrefix: string | undefined) {
+  if (!storageKeyPrefix) return area;
+  return `${area}.${storageKeyPrefix}`;
 }
