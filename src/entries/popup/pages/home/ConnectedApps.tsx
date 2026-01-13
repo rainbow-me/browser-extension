@@ -37,15 +37,17 @@ export const ConnectedApps = () => {
   const { appSessions, disconnectAppSessions } = useAppSessions();
   const { currentAddress } = useCurrentAddressStore();
 
-  const filteredSessions = Object.values(appSessions).reduce(
-    (acc: [AppSession[], AppSession[]], session: AppSession) => (
-      acc[
-        isLowerCaseMatch(session.activeSessionAddress, currentAddress) ? 0 : 1
-      ].push(session),
-      acc
-    ),
-    [[], []],
-  );
+  const filteredSessions = Object.values(appSessions)
+    .filter((session): session is AppSession => session !== undefined)
+    .reduce(
+      (acc: [AppSession[], AppSession[]], session: AppSession) => (
+        acc[
+          isLowerCaseMatch(session.activeSessionAddress, currentAddress) ? 0 : 1
+        ].push(session),
+        acc
+      ),
+      [[], []],
+    );
 
   const noConnectedApps =
     !filteredSessions?.[0]?.length && !filteredSessions?.[1]?.length;

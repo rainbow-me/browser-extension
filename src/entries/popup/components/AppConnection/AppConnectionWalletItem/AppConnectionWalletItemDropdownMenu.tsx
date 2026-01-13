@@ -118,31 +118,35 @@ export const AppConnectionWalletItemDropdownMenu = ({
               subMenuOpen={subMenuOpen}
               setSubMenuOpen={setSubMenuOpen}
               subMenuContent={
-                <DropdownMenuRadioGroup
-                  value={`${appSession.sessions[address]}`}
-                  onValueChange={changeChainId}
-                >
-                  <SwitchNetworkMenuSelector
-                    type="dropdown"
-                    highlightAccentColor
-                    selectedValue={`${appSession.sessions[address]}`}
-                    onNetworkSelect={(e) => {
-                      e?.preventDefault();
-                      setSubMenuOpen(false);
-                      setMenuOpen(false);
-                    }}
-                    onShortcutPress={changeChainId}
-                    showDisconnect={false}
-                    disconnect={disconnect}
-                  />
-                </DropdownMenuRadioGroup>
+                appSession ? (
+                  <DropdownMenuRadioGroup
+                    value={`${appSession.sessions[address]}`}
+                    onValueChange={changeChainId}
+                  >
+                    <SwitchNetworkMenuSelector
+                      type="dropdown"
+                      highlightAccentColor
+                      selectedValue={`${appSession.sessions[address]}`}
+                      onNetworkSelect={(e) => {
+                        e?.preventDefault();
+                        setSubMenuOpen(false);
+                        setMenuOpen(false);
+                      }}
+                      onShortcutPress={changeChainId}
+                      showDisconnect={false}
+                      disconnect={disconnect}
+                    />
+                  </DropdownMenuRadioGroup>
+                ) : null
               }
               subMenuElement={
-                <AppInteractionItem
-                  appSession={appSession}
-                  chevronDirection={subMenuOpen ? 'down' : 'right'}
-                  showChevron
-                />
+                appSession ? (
+                  <AppInteractionItem
+                    appSession={appSession}
+                    chevronDirection={subMenuOpen ? 'down' : 'right'}
+                    showChevron
+                  />
+                ) : null
               }
             />
             <DropdownMenuRadioItem
