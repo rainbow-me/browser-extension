@@ -47,6 +47,11 @@ export function useTokensShortcuts() {
 
   const { pinned: pinnedStore, togglePinAsset } = usePinnedAssetStore();
   const toggleHideAsset = useHiddenAssetStore((state) => state.toggleHideAsset);
+  const hiddenStore = useHiddenAssetStore((state) => state.hidden);
+  const hiddenForAddress = useMemo(
+    () => hiddenStore[address],
+    [hiddenStore, address],
+  );
   const location = useLocation();
   const isHomeRoute = location.pathname === ROUTES.HOME;
 
@@ -68,22 +73,18 @@ export function useTokensShortcuts() {
   const hideToken = useCallback(
     (_selectedToken: ParsedUserAsset) => {
       simulateClick(containerRef.current);
+      const wasHidden =
+        !!hiddenForAddress?.[computeUniqueIdForHiddenAsset(_selectedToken)];
       toggleHideAsset(address, computeUniqueIdForHiddenAsset(_selectedToken));
       if (pinned) togglePinAsset(address, _selectedToken.uniqueId);
       setSelectedToken();
-      triggerToast({
-        title: i18n.t('token_details.toast.hide_token', {
-          name: _selectedToken.symbol,
-        }),
-      });
-      const isHidden =
-        useHiddenAssetStore.getState().hidden[address]?.[
-          computeUniqueIdForHiddenAsset(_selectedToken)
-        ];
-      const hiddenCount = Object.values(
-        useHiddenAssetStore.getState().hidden[address] || {},
-      ).filter((isHidden) => isHidden).length;
-      analytics.track(isHidden ? event.tokenHidden : event.tokenUnhidden, {
+      const newIsHidden = !wasHidden;
+      const hiddenCount =
+        (hiddenForAddress
+          ? Object.values(hiddenForAddress).filter((isHidden) => isHidden)
+              .length
+          : 0) + (newIsHidden ? 1 : -1);
+      analytics.track(newIsHidden ? event.tokenHidden : event.tokenUnhidden, {
         token: {
           address: _selectedToken.address,
           chainId: _selectedToken.chainId,
@@ -91,6 +92,11 @@ export function useTokensShortcuts() {
           name: _selectedToken.name,
         },
         hiddenTokens: hiddenCount,
+      });
+      triggerToast({
+        title: i18n.t('token_details.toast.hide_token', {
+          name: _selectedToken.symbol,
+        }),
       });
     },
     [
@@ -100,6 +106,7 @@ export function useTokensShortcuts() {
       toggleHideAsset,
       togglePinAsset,
       setSelectedToken,
+      hiddenForAddress,
     ],
   );
 

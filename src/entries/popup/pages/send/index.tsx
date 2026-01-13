@@ -115,7 +115,7 @@ export function Send() {
 
   const isContact = useContactsStore((state) => state.isContact);
   const { allWallets } = useWallets();
-  const { hidden } = useHiddenAssetStore();
+  const hidden = useHiddenAssetStore((state) => state.hidden);
   const [urlSearchParams] = useSearchParams();
 
   const queryToAddress = urlSearchParams.get('to');

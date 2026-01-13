@@ -24,7 +24,7 @@ export function useUserAssetsBalance(args?: {
   const { chain, currency } = args || {};
   const { currentAddress: address } = useCurrentAddressStore();
   const { currentCurrency } = useCurrentCurrencyStore();
-  const { hidden } = useHiddenAssetStore();
+  const hidden = useHiddenAssetStore((state) => state.hidden);
   const isHidden = useCallback(
     (asset: ParsedUserAsset) => {
       return !!hidden[address]?.[computeUniqueIdForHiddenAsset(asset)];

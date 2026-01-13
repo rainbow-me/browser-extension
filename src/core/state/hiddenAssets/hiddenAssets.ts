@@ -21,19 +21,18 @@ export const computeUniqueIdForHiddenAsset = (
 };
 
 export const useHiddenAssetStore = createBaseStore<HiddenAssetState>(
-  (set, get) => ({
+  (set) => ({
     hidden: {},
     toggleHideAsset: (address: Address, uniqueId: string) => {
-      const { hidden } = get();
-      set({
+      set((state) => ({
         hidden: {
-          ...hidden,
+          ...state.hidden,
           [address]: {
-            ...(hidden[address] ?? {}),
-            [uniqueId]: !hidden[address]?.[uniqueId],
+            ...(state.hidden[address] ?? {}),
+            [uniqueId]: !state.hidden[address]?.[uniqueId],
           },
         },
-      });
+      }));
     },
   }),
   createExtensionStoreOptions({
