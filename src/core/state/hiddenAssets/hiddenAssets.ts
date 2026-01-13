@@ -1,8 +1,10 @@
+import { createBaseStore } from '@storesjs/stores';
 import { Address } from 'viem';
 
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { SearchAsset } from '~/core/types/search';
+
+import { createExtensionStoreOptions } from '../_internal';
 
 type HiddenAssetDict = Record<string, boolean>;
 type HiddenAssetsByAddress = Record<Address, HiddenAssetDict>;
@@ -18,7 +20,7 @@ export const computeUniqueIdForHiddenAsset = (
   return `${asset.address}-${asset.chainId}`;
 };
 
-export const useHiddenAssetStore = createRainbowStore<HiddenAssetState>(
+export const useHiddenAssetStore = createBaseStore<HiddenAssetState>(
   (set, get) => ({
     hidden: {},
     toggleHideAsset: (address: Address, uniqueId: string) => {
@@ -34,8 +36,8 @@ export const useHiddenAssetStore = createRainbowStore<HiddenAssetState>(
       });
     },
   }),
-  {
+  createExtensionStoreOptions({
     storageKey: 'hidden_assets',
     version: 2,
-  },
+  }),
 );

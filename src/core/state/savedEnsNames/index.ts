@@ -1,13 +1,14 @@
+import { createBaseStore } from '@storesjs/stores';
 import { Address } from 'viem';
 
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
+import { createExtensionStoreOptions } from '../_internal';
 
 type SavedNamesStore = {
   savedNames: Record<Address, string>;
   save: (name: string, address: Address) => void;
 };
 
-export const useSavedEnsNamesStore = createRainbowStore<SavedNamesStore>(
+export const useSavedEnsNamesStore = createBaseStore<SavedNamesStore>(
   (set, get) => ({
     savedNames: {},
     save(name, address) {
@@ -16,5 +17,5 @@ export const useSavedEnsNamesStore = createRainbowStore<SavedNamesStore>(
       set({ savedNames });
     },
   }),
-  { storageKey: 'ensSavedNames', version: 0 },
+  createExtensionStoreOptions({ storageKey: 'ensSavedNames', version: 0 }),
 );

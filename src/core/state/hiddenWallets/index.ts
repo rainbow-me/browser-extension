@@ -1,6 +1,7 @@
+import { createBaseStore } from '@storesjs/stores';
 import { Address } from 'viem';
 
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
+import { createExtensionStoreOptions } from '../_internal';
 
 export interface HiddenWalletsStore {
   hiddenWallets: { [address: Address]: boolean };
@@ -8,7 +9,7 @@ export interface HiddenWalletsStore {
   unhideWallet: ({ address }: { address: Address }) => void;
 }
 
-export const useHiddenWalletsStore = createRainbowStore<HiddenWalletsStore>(
+export const useHiddenWalletsStore = createBaseStore<HiddenWalletsStore>(
   (set, get) => ({
     hiddenWallets: {},
     hideWallet: ({ address }) => {
@@ -25,8 +26,8 @@ export const useHiddenWalletsStore = createRainbowStore<HiddenWalletsStore>(
       set({ hiddenWallets: { ...hiddenWallets } });
     },
   }),
-  {
+  createExtensionStoreOptions({
     storageKey: 'hiddenWallets',
     version: 0,
-  },
+  }),
 );
