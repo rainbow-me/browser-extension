@@ -1,9 +1,10 @@
+import { createBaseStore } from '@storesjs/stores';
 import mitt from 'mitt';
 
-import { createRainbowStore } from '~/core/state/internal/createRainbowStore';
 import { onlyBackground } from '~/core/utils/onlyBackground';
 
 import { ProviderRequestPayload } from '../../transports/providerRequestTransport';
+import { createExtensionStoreOptions } from '../_internal';
 
 type Responses =
   | { status: 'APPROVED'; payload: unknown }
@@ -24,7 +25,7 @@ export interface PendingRequestsStore {
 
 const eventEmitter = mitt<Events>();
 
-export const usePendingRequestStore = createRainbowStore<PendingRequestsStore>(
+export const usePendingRequestStore = createBaseStore<PendingRequestsStore>(
   (set, get) => ({
     pendingRequests: [],
     addPendingRequest: (newRequest) => {
@@ -63,8 +64,8 @@ export const usePendingRequestStore = createRainbowStore<PendingRequestsStore>(
       });
     },
   }),
-  {
+  createExtensionStoreOptions({
     storageKey: 'pendingRequestStore',
     version: 0,
-  },
+  }),
 );
