@@ -10,6 +10,7 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
+import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { useStaleBalancesStore } from '~/core/state/staleBalances';
@@ -157,8 +158,10 @@ async function userAssetsQueryFunction({
     });
     const normalizedAssets = convertPlatformResultToLegacy(platformResult);
     const chainIdsInResponse = getChainIdsFromAssets(normalizedAssets);
+    const { connectedToHardhat, connectedToHardhatOp } =
+      useConnectedToHardhatStore.getState();
 
-    if (normalizedAssets.length && chainIdsInResponse.length) {
+    if (normalizedAssets.length || connectedToHardhat || connectedToHardhatOp) {
       const parsedAssetsDict = await parseUserAssets({
         address,
         assets: normalizedAssets,
