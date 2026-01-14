@@ -2,15 +2,15 @@
 /* eslint-disable no-async-promise-executor */
 /* eslint-disable no-promise-executor-return */
 import { Signer } from '@ethersproject/abstract-signer';
-import {
-  BatchCall,
-  executeBatchedTransaction,
-  supportsDelegation,
-} from '@rainbow-me/rainbow-delegation';
+import type { BatchCall } from '@rainbow-me/rainbow-delegation';
 import { CrosschainQuote, Quote } from '@rainbow-me/swaps';
 import { Address } from 'viem';
 
 import config from '~/core/firebase/remoteConfig';
+import {
+  executeBatchedTransaction,
+  supportsDelegation,
+} from '~/core/resources/delegations/lazyDelegation';
 import { useGasStore } from '~/core/state';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { ChainId } from '~/core/types/chains';
