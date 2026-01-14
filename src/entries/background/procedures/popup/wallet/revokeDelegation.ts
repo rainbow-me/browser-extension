@@ -1,10 +1,8 @@
 import { ORPCError } from '@orpc/client';
-import {
-  TransactionGasOptions,
-  executeRevokeDelegation as sdkExecuteRevokeDelegation,
-} from '@rainbow-me/rainbow-delegation';
+import type { TransactionGasOptions } from '@rainbow-me/rainbow-delegation';
 import { Hex } from 'viem';
 
+import { executeRevokeDelegation as sdkExecuteRevokeDelegation } from '~/core/resources/delegations/lazyDelegation';
 import { ChainId } from '~/core/types/chains';
 import { toHex } from '~/core/utils/hex';
 import { getNextNonce } from '~/core/utils/transactions';
