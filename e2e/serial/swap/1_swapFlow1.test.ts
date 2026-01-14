@@ -522,6 +522,7 @@ it.todo('should be able to check insufficient asset for swap', async () => {
 });
 
 it('should be able to check insufficient native asset for gas', async () => {
+  // Clear any existing value and type 10000 ETH (matching the mocked quote URL)
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
@@ -533,11 +534,17 @@ it('should be able to check insufficient native asset for gas', async () => {
     key: Key.BACK_SPACE,
   });
 
+  // Type 10000 to match the mock URL for ETH -> WBTC quote
+  // The mock exists for sellAmount=10000000000000000000000 (10000 ETH in wei)
   await typeOnTextInput({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     text: `\b10000`,
     driver,
   });
+
+  // Wait for quote to load
+  await delay(10_000);
+
   const confirmButtonText = await getTextFromText({
     id: 'swap-confirmation-button-ready',
     driver,
@@ -997,6 +1004,9 @@ it('should be able to execute swap', async () => {
   await findElementByTextAndClick(driver, '1inch');
   await delayTime('medium');
   await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
+
+  // Wait for quote to refresh with new slippage/source settings
+  await delay(5_000);
 
   const ethBalanceBeforeSwap = await provider.getBalance(WALLET_TO_USE_ADDRESS);
   await findElementByTestIdAndClick({
