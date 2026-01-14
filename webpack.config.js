@@ -35,13 +35,24 @@ manifestOverride.content_security_policy.extension_pages = `${
 module.exports = {
   devtool: 'cheap-module-eval-source-map',
   entry: {
-    background: './src/entries/background/index.ts',
+    background: {
+      import: './src/entries/background/index.ts',
+      // Use importScripts-based chunk loading for MV3 service worker.
+      chunkLoading: 'import-scripts',
+    },
     contentscript: './src/entries/content/index.ts',
     inpage: './src/entries/inpage/index.ts',
     popup: './src/entries/popup/index.ts',
   },
   module: {
     rules: [
+      {
+        // Many node_modules ship ESM files with extensionless imports
+        // (e.g. `export * from './assert'` instead of `'./assert.js'`).
+        // This is invalid under webpack 5 strict ESM but very common.
+        test: /\.m?js$/,
+        resolve: { fullySpecified: false },
+      },
       {
         test: /\.tsx?$/,
         use: [
@@ -136,6 +147,11 @@ module.exports = {
     alias: {
       '~': resolve(__dirname, 'src/'),
       static: resolve(__dirname, 'static/'),
+      // TODO: Remove once @rainbow-me/delegation ships a fixed `module` field pointing to dist/index.mjs
+      '@rainbow-me/delegation': resolve(
+        __dirname,
+        'node_modules/@rainbow-me/delegation/dist/index.mjs',
+      ),
     },
     fallback: {
       fs: false,
@@ -149,6 +165,8 @@ module.exports = {
       crypto: false,
     },
     extensions: ['.tsx', '.ts', '.js', '.json'],
+    mainFields: ['module', 'browser', 'main'],
+    conditionNames: ['import', 'module', 'browser', 'default'],
   },
   output: {
     filename: '[name].js',

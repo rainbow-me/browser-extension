@@ -1,7 +1,7 @@
 import { Signer } from '@ethersproject/abstract-signer';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { Transaction } from '@ethersproject/transactions';
-import type { BatchCall } from '@rainbow-me/rainbow-delegation';
+import type { BatchCall } from '@rainbow-me/delegation';
 import {
   CrosschainQuote,
   Quote,

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable no-plusplus */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable no-await-in-loop */
@@ -15,6 +16,7 @@ import {
   Key,
   WebDriver,
   WebElement,
+  logging,
   until,
 } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
@@ -41,9 +43,48 @@ export const getRootUrl = () => {
 
 // navigators
 
+/**
+ * Injects a lightweight console interceptor into the current page context.
+ * Captured messages are stored on `window.__rainbowE2EConsoleLogs` and
+ * collected by `takeScreenshotOnFailure` when a test fails.
+ */
+async function injectConsoleInterceptor(driver: WebDriver): Promise<void> {
+  try {
+    await driver.executeScript(`
+      if (!window.__rainbowE2EConsoleLogs) {
+        window.__rainbowE2EConsoleLogs = [];
+        const maxLogs = 500;
+        ['log', 'warn', 'error', 'info', 'debug'].forEach(function(level) {
+          const original = console[level];
+          console[level] = function() {
+            try {
+              const args = Array.prototype.slice.call(arguments);
+              const message = args.map(function(a) {
+                try { return typeof a === 'object' ? JSON.stringify(a) : String(a); }
+                catch(e) { return String(a); }
+              }).join(' ');
+              if (window.__rainbowE2EConsoleLogs.length < maxLogs) {
+                window.__rainbowE2EConsoleLogs.push({
+                  level: level,
+                  message: message,
+                  timestamp: Date.now()
+                });
+              }
+            } catch(e) {}
+            return original.apply(console, arguments);
+          };
+        });
+      }
+    `);
+  } catch {
+    // Injection failed (e.g. page not ready); non-critical
+  }
+}
+
 export async function goToTestApp(driver: WebDriver) {
   await driver.get(RAINBOW_TEST_DAPP);
   await driver.wait(untilDocumentLoaded(), waitUntilTime);
+  await injectConsoleInterceptor(driver);
   await delayTime('very-long');
 }
 
@@ -54,12 +95,14 @@ export async function goToPopup(
 ) {
   await driver.get(rootURL + '/popup.html' + route);
   await driver.wait(untilDocumentLoaded(), waitUntilTime);
+  await injectConsoleInterceptor(driver);
   await delayTime('very-long');
 }
 
 export async function goToWelcome(driver: WebDriver, rootURL: string) {
   await driver.get(rootURL + '/popup.html#/welcome');
   await driver.wait(untilDocumentLoaded(), waitUntilTime);
+  await injectConsoleInterceptor(driver);
   await delayTime('very-long');
 }
 
@@ -158,10 +201,14 @@ export async function initDriverWithOptions(opts: {
       chromeArgs.push('headless', 'window-size=500,720');
     }
 
+    const logPrefs = new logging.Preferences();
+    logPrefs.setLevel(logging.Type.BROWSER, logging.Level.ALL);
+
     const options = new chrome.Options();
     options.setChromeBinaryPath(browserBinaryPath);
     options.addArguments(...chromeArgs);
     options.setAcceptInsecureCerts(true);
+    options.setLoggingPrefs(logPrefs);
     options.setUserPreferences({
       'intl.accept_languages': 'en-US,en;q=0.9',
     });
@@ -186,6 +233,80 @@ export async function initDriverWithOptions(opts: {
   }
   // @ts-ignore
   driver.browser = opts.browser;
+
+  // Inject console interceptor into the service worker (Chrome only)
+  if (opts.browser !== 'firefox') {
+    try {
+      const targetsResult =
+        // @ts-ignore - sendAndGetDevToolsCommand is on ChromiumWebDriver
+        await driver.sendAndGetDevToolsCommand('Target.getTargets');
+      const targets: Array<{
+        targetId: string;
+        type: string;
+        url: string;
+      }> = targetsResult?.targetInfos ?? [];
+
+      const swTarget = targets.find(
+        (t) =>
+          t.type === 'service_worker' &&
+          t.url.startsWith('chrome-extension://'),
+      );
+
+      if (swTarget) {
+        // @ts-ignore
+        const { sessionId } = await driver.sendAndGetDevToolsCommand(
+          'Target.attachToTarget',
+          { targetId: swTarget.targetId, flatten: true },
+        );
+
+        if (sessionId) {
+          // @ts-ignore
+          await driver.sendAndGetDevToolsCommand('Runtime.enable');
+
+          // Inject console interceptor into the service worker context
+          // @ts-ignore
+          await driver.sendAndGetDevToolsCommand('Runtime.evaluate', {
+            expression: `
+              if (!self.__rainbowE2EConsoleLogs) {
+                self.__rainbowE2EConsoleLogs = [];
+                const maxLogs = 500;
+                ['log', 'warn', 'error', 'info', 'debug'].forEach(function(level) {
+                  const original = console[level];
+                  console[level] = function() {
+                    try {
+                      const args = Array.prototype.slice.call(arguments);
+                      const message = args.map(function(a) {
+                        try { return typeof a === 'object' ? JSON.stringify(a) : String(a); }
+                        catch(e) { return String(a); }
+                      }).join(' ');
+                      if (self.__rainbowE2EConsoleLogs.length < maxLogs) {
+                        self.__rainbowE2EConsoleLogs.push({
+                          level: level,
+                          message: message,
+                          timestamp: Date.now()
+                        });
+                      }
+                    } catch(e) {}
+                    return original.apply(console, arguments);
+                  };
+                });
+              }
+            `,
+            returnByValue: true,
+          });
+
+          // Detach from target to avoid interference
+          await driver
+            // @ts-ignore - sendDevToolsCommand is on ChromiumWebDriver
+            .sendDevToolsCommand('Target.detachFromTarget', { sessionId })
+            .catch(() => {});
+        }
+      }
+    } catch {
+      // Non-critical: SW interceptor injection failed
+    }
+  }
+
   return driver;
 }
 
@@ -1158,20 +1279,34 @@ export async function awaitTextChange(
   text: string,
   driver: WebDriver,
 ) {
-  try {
-    const element = await findElementById({
-      id: id,
-      driver,
-    });
+  // Poll using driver.executeScript instead of element.getText() to actively
+  // run JavaScript in the page context. This forces the tab's event loop to
+  // process pending callbacks (e.g. window.postMessage responses from the
+  // extension) that might otherwise be deferred while the tab was backgrounded.
+  const startTime = Date.now();
+  let lastActualText = '';
 
-    await driver.wait(until.elementTextIs(element, text), waitUntilTime);
-  } catch (error) {
-    console.error(
-      `Error occurred while awaiting text change for element with ID '${id}':`,
-      error,
-    );
-    throw error;
+  while (Date.now() - startTime < waitUntilTime) {
+    try {
+      const actualText = await driver.executeScript<string>(
+        `return document.getElementById(${JSON.stringify(
+          id,
+        )})?.innerText || ''`,
+      );
+      if (actualText === text) return;
+      lastActualText = actualText;
+    } catch {
+      // Element might not exist yet, continue polling
+    }
+    await delay(500);
   }
+
+  console.error(
+    `awaitTextChange: expected '${text}', got '${lastActualText}' for #${id}`,
+  );
+  throw new Error(
+    `Timeout waiting for element #${id} to have text '${text}'. Actual text: '${lastActualText}'`,
+  );
 }
 
 // custom conditions
@@ -1213,33 +1348,283 @@ export async function delayTime(
   }
 }
 
+function ensureScreenshotsDir() {
+  if (!fs.existsSync('screenshots')) {
+    fs.mkdirSync('screenshots');
+    console.log('Folder screenshots created.');
+  }
+}
+
+function getFailureFileName(testName: string): string {
+  const normalizedFilePath = testName
+    .replace(/'/g, '')
+    .replace(/"/g, '')
+    .replace(/=/g, '')
+    .replace(/\//g, '_')
+    .replace(/:/g, '_')
+    .replace(/ /g, '_');
+  let fileName = `${normalizedFilePath}_failure`;
+  let counter = 0;
+  while (fs.existsSync(`screenshots/${fileName}.png`)) {
+    counter++;
+    fileName = `${normalizedFilePath}_failure_${counter}`;
+    if (counter > 10) break;
+  }
+  return fileName;
+}
+
+interface ConsoleLogEntry {
+  readonly source: string;
+  readonly url: string;
+  readonly logs: ReadonlyArray<{
+    readonly level: string;
+    readonly message: string;
+    readonly timestamp: number;
+  }>;
+}
+
+async function collectBrowserConsoleLogs(
+  driver: WebDriver,
+): Promise<readonly ConsoleLogEntry[]> {
+  const entries: ConsoleLogEntry[] = [];
+
+  try {
+    // @ts-ignore - check if this is a Chrome driver
+    const isChrome = driver.browser !== 'firefox';
+    if (!isChrome) return entries;
+
+    const currentHandle = await driver.getWindowHandle().catch(() => null);
+    const allHandles = await driver.getAllWindowHandles().catch(() => []);
+
+    // Collect console logs from each open window (popup / dApp tabs)
+    for (const handle of allHandles) {
+      try {
+        await driver.switchTo().window(handle);
+        const url: string = await driver.getCurrentUrl();
+
+        // Determine the source label based on the URL
+        const source = url.startsWith('chrome-extension://')
+          ? 'extension-popup'
+          : url.startsWith('moz-extension://')
+          ? 'extension-popup'
+          : 'dapp';
+
+        // Collect console messages that were captured via executeScript
+        const consoleLogs = ((await driver
+          .executeScript(
+            `
+          try {
+            // Return logs if our interceptor captured them
+            if (window.__rainbowE2EConsoleLogs) {
+              return window.__rainbowE2EConsoleLogs;
+            }
+            return [];
+          } catch(e) {
+            return [];
+          }
+        `,
+          )
+          .catch(() => [])) ?? []) as Array<{
+          level: string;
+          message: string;
+          timestamp: number;
+        }>;
+
+        entries.push({ source, url, logs: consoleLogs });
+      } catch {
+        // Window may have been closed, skip it
+      }
+    }
+
+    // Restore original window handle
+    if (currentHandle) {
+      await driver
+        .switchTo()
+        .window(currentHandle)
+        .catch(() => {});
+    }
+
+    // Collect Selenium browser logs (captures all console output from the
+    // currently-focused context since the last retrieval)
+    try {
+      const browserLogs = await driver
+        .manage()
+        .logs()
+        .get(logging.Type.BROWSER);
+      if (browserLogs.length > 0) {
+        entries.push({
+          source: 'browser-log-api',
+          url: 'selenium-managed-logs',
+          logs: browserLogs.map((entry) => ({
+            level: entry.level.name,
+            message: entry.message,
+            timestamp: entry.timestamp,
+          })),
+        });
+      }
+    } catch {
+      // Log retrieval not supported (e.g. Firefox)
+    }
+
+    // Collect service worker / background script console logs via CDP
+    try {
+      const targetsResult =
+        // @ts-ignore - sendAndGetDevToolsCommand is available on ChromiumWebDriver
+        await driver.sendAndGetDevToolsCommand('Target.getTargets');
+      const targets: Array<{
+        targetId: string;
+        type: string;
+        title: string;
+        url: string;
+      }> = targetsResult?.targetInfos ?? [];
+
+      const swTarget = targets.find(
+        (t) =>
+          t.type === 'service_worker' &&
+          t.url.startsWith('chrome-extension://'),
+      );
+
+      if (swTarget) {
+        // @ts-ignore
+        const { sessionId } = await driver.sendAndGetDevToolsCommand(
+          'Target.attachToTarget',
+          { targetId: swTarget.targetId, flatten: true },
+        );
+
+        if (sessionId) {
+          // Enable Runtime on the service worker session to read console logs
+          // Note: Collected logs are from Runtime.consoleAPICalled events which
+          // require a persistent listener. For now we capture what Selenium's
+          // log API provides, plus attempt to get any errors from the SW.
+          // @ts-ignore
+          await driver.sendDevToolsCommand('Runtime.enable', {}, sessionId);
+
+          // Evaluate a small expression in the SW context to verify connectivity
+          // (actual historic console logs are not retrievable after the fact via
+          // CDP without a prior listener, but error events are).
+          // @ts-ignore
+          const evalResult = await driver.sendAndGetDevToolsCommand(
+            'Runtime.evaluate',
+            {
+              expression:
+                'typeof __rainbowE2EConsoleLogs !== "undefined" ? JSON.stringify(__rainbowE2EConsoleLogs) : "[]"',
+              returnByValue: true,
+            },
+          );
+
+          const swLogs = JSON.parse(
+            evalResult?.result?.value ?? '[]',
+          ) as Array<{ level: string; message: string; timestamp: number }>;
+
+          entries.push({
+            source: 'extension-background',
+            url: swTarget.url,
+            logs: swLogs,
+          });
+
+          // Detach to avoid side effects
+          await driver
+            // @ts-ignore - sendDevToolsCommand is on ChromiumWebDriver
+            .sendDevToolsCommand('Target.detachFromTarget', { sessionId })
+            .catch(() => {});
+        }
+      }
+    } catch {
+      // CDP commands not available or failed; skip background log collection
+    }
+  } catch {
+    // Catch-all: don't let log collection break the test teardown
+  }
+
+  return entries;
+}
+
+const ANVIL_MESSAGES_URL = 'http://127.0.0.1:8545/1/messages';
+
+/**
+ * Fetches the in-memory message buffer from the local Anvil instance exposed
+ * by prool's HTTP server.  These messages contain transaction traces, revert
+ * reasons, and other EVM-level diagnostics that are invaluable when debugging
+ * on-chain failures in E2E tests.
+ */
+async function collectAnvilLogs(): Promise<string> {
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5_000);
+
+    const response = await fetch(ANVIL_MESSAGES_URL, {
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+
+    if (!response.ok) {
+      return `(anvil logs unavailable – HTTP ${response.status})`;
+    }
+
+    const messages: string[] = await response.json();
+    if (!Array.isArray(messages) || messages.length === 0) {
+      return '(no anvil messages captured)';
+    }
+
+    return messages.join('\n');
+  } catch {
+    return '(anvil logs unavailable – could not reach anvil server)';
+  }
+}
+
+function formatConsoleLogs(entries: readonly ConsoleLogEntry[]): string {
+  const sections = entries
+    .filter((entry) => entry.logs.length > 0)
+    .map((entry) => {
+      const header = `=== ${entry.source} | ${entry.url} ===`;
+      const logLines = entry.logs.map((log) => {
+        const time = new Date(log.timestamp).toISOString();
+        return `[${time}] [${log.level}] ${log.message}`;
+      });
+      return [header, ...logLines].join('\n');
+    });
+
+  return sections.length > 0
+    ? sections.join('\n\n')
+    : '(no console logs captured)';
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function takeScreenshotOnFailure(context: any) {
   context.onTestFailed(async () => {
-    if (!fs.existsSync('screenshots')) {
-      fs.mkdirSync('screenshots');
-      console.log(`Folder screenshots created.`);
-    }
-    const normalizedFilePath = context.task.name
-      .replace(/'/g, '')
-      .replace(/"/g, '')
-      .replace(/=/g, '')
-      .replace(/\//g, '_')
-      .replace(/:/g, '_')
-      .replace(/ /g, '_');
-    let fileName = `${normalizedFilePath}_failure`;
-    let counter = 0;
-    while (fs.existsSync(`screenshots/${fileName}.png`)) {
-      counter++;
-      fileName = `${fileName}_${counter}`;
-      if (counter > 10) break;
-    }
+    ensureScreenshotsDir();
+    const fileName = getFailureFileName(context.task.name);
+
+    // Capture screenshot
     console.log(`Screenshot of the failed test will be saved to: ${fileName}`);
     try {
       const image = await context.driver.takeScreenshot();
       fs.writeFileSync(`screenshots/${fileName}.png`, image, 'base64');
     } catch (error) {
       console.error('Error occurred while taking screenshot:', error);
+    }
+
+    // Capture console logs from all contexts
+    try {
+      const consoleLogs = await collectBrowserConsoleLogs(context.driver);
+      const formatted = formatConsoleLogs(consoleLogs);
+      fs.writeFileSync(
+        `screenshots/${fileName}_console.log`,
+        formatted,
+        'utf8',
+      );
+      console.log(`Console logs saved to: ${fileName}_console.log`);
+    } catch (error) {
+      console.error('Error occurred while capturing console logs:', error);
+    }
+
+    // Capture Anvil instance logs (transaction traces, revert reasons, etc.)
+    try {
+      const anvilLogs = await collectAnvilLogs();
+      fs.writeFileSync(`screenshots/${fileName}_anvil.log`, anvilLogs, 'utf8');
+      console.log(`Anvil logs saved to: ${fileName}_anvil.log`);
+    } catch (error) {
+      console.error('Error occurred while capturing anvil logs:', error);
     }
   });
 }

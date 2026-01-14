@@ -215,7 +215,7 @@ export const Delegations = () => {
 
       if (delegationsToRevoke.length > 0) {
         // Navigate to revoke page with all delegations - will process them sequentially
-        // Pass isDisabling flag and onComplete callback to navigate to confirm disable after revoking
+        // Pass isDisabling flag - RevokeDelegationPage will navigate to confirm disable after revoking
         navigate(ROUTES.SETTINGS__DELEGATIONS__REVOKE, {
           replace: true, // Use replace to avoid route stack issues
           state: {
@@ -223,12 +223,6 @@ export const Delegations = () => {
             initialIndex: 0,
             backTo: ROUTES.SETTINGS__DELEGATIONS,
             isDisabling: true,
-            onComplete: async () => {
-              // Navigate to confirm disable page after all delegations are revoked
-              navigate(ROUTES.SETTINGS__DELEGATIONS__CONFIRM_DISABLE, {
-                replace: true,
-              });
-            },
           },
         });
         return;

@@ -1,4 +1,4 @@
-import { getDelegations } from '@rainbow-me/rainbow-delegation';
+import { getDelegations } from '@rainbow-me/delegation';
 import { useQuery } from '@tanstack/react-query';
 import { Address } from 'viem';
 

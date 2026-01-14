@@ -1,5 +1,5 @@
 import { Signer } from '@ethersproject/abstract-signer';
-import type { BatchCall } from '@rainbow-me/rainbow-delegation';
+import type { BatchCall } from '@rainbow-me/delegation';
 import { CrosschainQuote, Quote } from '@rainbow-me/swaps';
 import { Address } from 'viem';
 

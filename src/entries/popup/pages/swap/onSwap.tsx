@@ -44,6 +44,12 @@ export const onSwap = async ({
 
   const wallet = getWallet(q.from as Address);
 
+  // Delegation SDK is configured in initPopup at startup
+  console.log('[Delegation] Popup: swap initiated, SDK configured', {
+    chainId,
+    type,
+  });
+
   const { errorMessage, nonce } = await executeRap<typeof type>({
     rapActionParameters: {
       sellAmount: q.sellAmount?.toString(),

@@ -56,7 +56,6 @@ interface LocationState {
   initialIndex?: number;
   backTo?: string;
   isDisabling?: boolean;
-  onComplete?: () => Promise<void> | void;
 }
 
 export const RevokeDelegationPage = () => {
@@ -208,17 +207,7 @@ export const RevokeDelegationPage = () => {
 
         // Automatically move to next delegation or finish without showing "done"
         if (isLastDelegation) {
-          // Call onComplete callback if provided (e.g., to show confirm disable modal)
           const locationState = location.state as LocationState;
-          if (locationState?.onComplete) {
-            try {
-              await locationState.onComplete();
-            } catch (e) {
-              logger.error(new RainbowError('Error in onComplete callback'), {
-                message: e instanceof Error ? e.message : String(e),
-              });
-            }
-          }
           // If disabling smart wallet, navigate to confirm disable page
           if (locationState?.isDisabling) {
             navigate(ROUTES.SETTINGS__DELEGATIONS__CONFIRM_DISABLE, {
@@ -237,7 +226,7 @@ export const RevokeDelegationPage = () => {
               delegationsToRevoke,
               initialIndex: nextIndex,
               backTo: ROUTES.SETTINGS__DELEGATIONS,
-              onComplete: locationState?.onComplete,
+              isDisabling: locationState?.isDisabling,
             },
           });
           // State will be reset by useEffect above
@@ -301,7 +290,6 @@ export const RevokeDelegationPage = () => {
           initialIndex: nextIndex,
           backTo: ROUTES.SETTINGS__DELEGATIONS,
           isDisabling: locationState?.isDisabling,
-          onComplete: locationState?.onComplete,
         },
       });
       return;
@@ -315,20 +303,6 @@ export const RevokeDelegationPage = () => {
       return;
     }
 
-    // If it's the last delegation, call onComplete callback if provided
-    if (locationState?.onComplete) {
-      const result = locationState.onComplete();
-      if (result instanceof Promise) {
-        result.catch((e: unknown) => {
-          logger.error(
-            new RainbowError('Error in onComplete callback on cancel'),
-            {
-              message: e instanceof Error ? e.message : String(e),
-            },
-          );
-        });
-      }
-    }
     // Navigate back to delegations list
     const backTo = locationState?.backTo || ROUTES.SETTINGS__DELEGATIONS;
     navigate(backTo, { replace: true });
@@ -383,12 +357,7 @@ export const RevokeDelegationPage = () => {
       <Navbar
         title={i18n.t('delegations.revoke.title')}
         titleTestId="revoke-delegation-title"
-        leftComponent={
-          <Navbar.BackButton
-            onClick={handleCancel}
-            // handleCancel will call onComplete and navigate properly
-          />
-        }
+        leftComponent={<Navbar.BackButton onClick={handleCancel} />}
       />
 
       <Box

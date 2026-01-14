@@ -2,15 +2,15 @@
 /* eslint-disable no-async-promise-executor */
 /* eslint-disable no-promise-executor-return */
 import { Signer } from '@ethersproject/abstract-signer';
-import type { BatchCall } from '@rainbow-me/rainbow-delegation';
+import {
+  type BatchCall,
+  executeBatchedTransaction,
+  supportsDelegation,
+} from '@rainbow-me/delegation';
 import { CrosschainQuote, Quote } from '@rainbow-me/swaps';
 import { Address } from 'viem';
 
 import config from '~/core/firebase/remoteConfig';
-import {
-  executeBatchedTransaction,
-  supportsDelegation,
-} from '~/core/resources/delegations/lazyDelegation';
 import { useGasStore } from '~/core/state';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { ChainId } from '~/core/types/chains';
@@ -196,13 +196,31 @@ export const walletExecuteRap = async (
   // Local flag takes precedence if set (not null), otherwise use remote flag
   const atomicSwapsEnabled =
     localEnabled !== null ? localEnabled : remoteEnabled;
-  // Check if delegation is supported (handles both chain support and user preferences)
-  const walletAddress = (await wallet.getAddress()) as Address;
-  const delegationSupported = await supportsDelegation({
-    address: walletAddress,
+
+  // Only check delegation support when atomic swaps are enabled to avoid
+  // unnecessary network calls that could fail in environments without
+  // the delegation API (e.g. E2E tests)
+  let delegationEnabled = false;
+  if (atomicSwapsEnabled) {
+    try {
+      const walletAddress = (await wallet.getAddress()) as Address;
+      const delegationSupported = await supportsDelegation({
+        address: walletAddress,
+        chainId: parameters.chainId,
+      });
+      delegationEnabled = delegationSupported.supported;
+    } catch (error) {
+      logger.warn('[walletExecuteRap] supportsDelegation check failed', {
+        message: (error as Error)?.message,
+      });
+    }
+  }
+
+  console.log('[Delegation] Background: delegation SDK enabled for swap', {
+    delegationEnabled,
+    atomicSwapsEnabled,
     chainId: parameters.chainId,
   });
-  const delegationEnabled = atomicSwapsEnabled && delegationSupported.supported;
 
   if (
     delegationEnabled &&
@@ -297,10 +315,10 @@ export const walletExecuteRap = async (
                 ),
               );
             } else {
-              // v4 consumes 2 nonces, so use baseNonce+1 for pending tx
-              // v2 uses just baseNonce
+              // eip7702 consumes 2 nonces, so use baseNonce+1 for pending tx
+              // eip1559 uses just baseNonce
               const pendingTxNonce =
-                result.type === 'v4' ? baseNonce + 1 : baseNonce;
+                result.type === 'eip7702' ? baseNonce + 1 : baseNonce;
 
               // Add pending transaction with hash and nonce
               const transaction: NewTransaction = {

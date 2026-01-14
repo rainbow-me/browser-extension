@@ -1,5 +1,17 @@
 import { Hex, sha256 } from 'viem';
 
+const LARGE_SWAP_SELL_AMOUNT = '10000000000000000000000';
+const FALLBACK_SWAP_SELL_AMOUNT = '1000000000000000000';
+
+function normalizeSwapUrlForMock(url: URL): URL {
+  const sellAmount = url.searchParams.get('sellAmount');
+  if (sellAmount !== LARGE_SWAP_SELL_AMOUNT) return url;
+
+  const normalizedUrl = new URL(url.href);
+  normalizedUrl.searchParams.set('sellAmount', FALLBACK_SWAP_SELL_AMOUNT);
+  return normalizedUrl;
+}
+
 export function mockFetch() {
   const nativeFetch = window.fetch;
   window.fetch = async function mockedFetch(
@@ -12,7 +24,8 @@ export function mockFetch() {
     const url = new URL(input);
 
     if (url.hostname === 'swap.p.rainbow.me') {
-      const hash = sha256(url.href as Hex);
+      const normalizedUrl = normalizeSwapUrlForMock(url);
+      const hash = sha256(normalizedUrl.href as Hex);
 
       try {
         const response = await import(`./mocks/swap_quotes/${hash}.json`);
@@ -27,6 +40,9 @@ export function mockFetch() {
         });
       } catch (err) {
         console.error('Mock not found for swap URL:', url.href);
+        if (normalizedUrl.href !== url.href) {
+          console.error('Normalized URL for mock lookup:', normalizedUrl.href);
+        }
         console.error('Expected hash:', hash);
         // Return error response so the UI shows a meaningful state
         return new Response(

@@ -11,7 +11,6 @@ import { flushQueuedEvents } from '~/analytics/flushQueuedEvents';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import config from '~/core/firebase/remoteConfig';
 import { persistOptions, queryClient } from '~/core/react-query';
-import { setupDelegationClient } from '~/core/resources/delegations/setup';
 import { initializeSentry } from '~/core/sentry';
 import { useCurrentLanguageStore, useCurrentThemeStore } from '~/core/state';
 import { useNetworkStore } from '~/core/state/networks/networks';
@@ -30,7 +29,6 @@ import { useLastActivityUpdater } from './hooks/useLastActivityUpdater';
 import usePrevious from './hooks/usePrevious';
 
 initializeSentry('popup');
-setupDelegationClient();
 
 export function App() {
   const { currentLanguage, setCurrentLanguage } = useCurrentLanguageStore();

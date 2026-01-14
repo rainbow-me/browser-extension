@@ -5794,6 +5794,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rainbow-me/delegation@npm:0.2.0":
+  version: 0.2.0
+  resolution: "@rainbow-me/delegation@npm:0.2.0"
+  peerDependencies:
+    "@storesjs/stores": ^0.8.6
+    ethers: ^5.7.0
+    react: ^18 || ^19
+    viem: ^2.38.0
+  peerDependenciesMeta:
+    ethers:
+      optional: true
+    react:
+      optional: true
+  checksum: 10c0/30f416b85c381ca1f123d4cefdf31391d796ab74bca8e549c38149ac6047d2c5ab88883234da9717a99c084190353b4bfdedf31cc5316d04020f00ac39b2e471
+  languageName: node
+  linkType: hard
+
 "@rainbow-me/provider@npm:0.1.3":
   version: 0.1.3
   resolution: "@rainbow-me/provider@npm:0.1.3"
@@ -5808,23 +5825,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rainbow-me/rainbow-delegation@file:./rainbow-me-delegation-1.0.0.tgz::locator=browser-extension%40workspace%3A.":
-  version: 1.0.0
-  resolution: "@rainbow-me/rainbow-delegation@file:./rainbow-me-delegation-1.0.0.tgz#./rainbow-me-delegation-1.0.0.tgz::hash=18489a&locator=browser-extension%40workspace%3A."
-  peerDependencies:
-    "@storesjs/stores": ^0.8.6
-    ethers: ^5.7.0
-    viem: ^2.38.0
-  peerDependenciesMeta:
-    ethers:
-      optional: true
-  checksum: 10c0/01234f4e96aa8c09550fcb58fcad9a1194a33db165bd8022005fd600389e8978b190d47cc59a537b3b2e9f73b3c43fad8ad620ce14f6e50e20ac927ca00b1917
-  languageName: node
-  linkType: hard
-
-"@rainbow-me/swaps@file:./rainbow-me-swaps-0.40.0.tgz::locator=browser-extension%40workspace%3A.":
-  version: 0.40.0
-  resolution: "@rainbow-me/swaps@file:./rainbow-me-swaps-0.40.0.tgz#./rainbow-me-swaps-0.40.0.tgz::hash=e873f8&locator=browser-extension%40workspace%3A."
+"@rainbow-me/swaps@npm:0.41.0":
+  version: 0.41.0
+  resolution: "@rainbow-me/swaps@npm:0.41.0"
   dependencies:
     "@ethereumjs/util": "npm:9.0.0"
     "@ethersproject/abi": "npm:5.7.0"
@@ -5840,7 +5843,7 @@ __metadata:
     "@ethersproject/wallet": "npm:5.7.0"
     "@metamask/eth-sig-util": "npm:7.0.0"
     ox: "npm:0.9.14"
-  checksum: 10c0/f6859ff4ced5139998bfdbf44bea89a48d7616427928946d0b3b0197c2bb04bcee2fc9684a69a86ccca14446b64a297d9a8a78bb91dba146c5809b3722944ca8
+  checksum: 10c0/4a5ff7342db57413c1daf0bf1f1f974d6a55abf04fee482d32f320da52c32e487751fcbc29008671b3e08fc5cc11d99d1e27859c4b557e772965abdace7f22a4
   languageName: node
   linkType: hard
 
@@ -9499,9 +9502,9 @@ __metadata:
     "@radix-ui/react-select": "npm:1.2.1"
     "@radix-ui/react-tabs": "npm:1.0.4"
     "@radix-ui/react-tooltip": "npm:1.0.3"
+    "@rainbow-me/delegation": "npm:0.2.0"
     "@rainbow-me/provider": "npm:0.1.3"
-    "@rainbow-me/rainbow-delegation": "file:./rainbow-me-delegation-1.0.0.tgz"
-    "@rainbow-me/swaps": "file:./rainbow-me-swaps-0.40.0.tgz"
+    "@rainbow-me/swaps": "npm:0.41.0"
     "@rudderstack/analytics-js-service-worker": "npm:3.0.6"
     "@scure/bip39": "npm:1.6.0"
     "@sentry/react": "npm:10.10.0"

@@ -1,3 +1,5 @@
+import './setPublicPath';
+
 import { uuid4 } from '@sentry/core';
 
 import { initializeMessenger } from '~/core/messengers';
@@ -22,12 +24,9 @@ localStorageRecycler();
 
 handleOpenExtensionShortcut();
 
-// Register delegation config (doesn't import SDK - just stores config)
-// SDK will be loaded lazily when delegation functions are first used
-//
-// MIGRATION NOTE: When switching to direct imports, setupDelegationClient()
-// will call configure() synchronously, but this call site doesn't need to change
+// Configure delegation SDK - required before execute_rap, revokeDelegation etc.
 setupDelegationClient();
+
 startPopupRouter();
 
 const inpageMessenger = initializeMessenger({ connect: 'inpage' });

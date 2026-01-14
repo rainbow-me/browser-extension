@@ -50,6 +50,15 @@ const SELECTED_GAS = {
   },
 };
 
+vi.mock('@rainbow-me/delegation', async (importOriginal) => {
+  const actual = (await importOriginal()) as Record<string, unknown>;
+  return {
+    ...actual,
+    supportsDelegation: vi.fn().mockResolvedValue({ supported: false }),
+    executeBatchedTransaction: vi.fn(),
+  };
+});
+
 vi.mock('./actions', async () => {
   const actual = (await vi.importActual('./actions')) as Record<
     string,

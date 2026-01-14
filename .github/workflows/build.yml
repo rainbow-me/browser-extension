@@ -443,63 +443,73 @@ jobs:
           CI_COMMIT_SHA: ${{ github.sha }}
           CI_BRANCH: ${{ github.ref_name }}
         run: |
-          set +e  # Don't exit on error - we want to always write the summary
+          # Disable exit-on-error to ensure summary is always written, even if bundlewatch fails
+          # GitHub Actions uses 'set -e' by default, which would exit immediately on command failure
+          set +e
 
-          # Run bundlewatch and capture output and exit code
+          # Run bundlewatch and capture both output and exit code
+          # Using command substitution with 2>&1 to capture both stdout and stderr
           BUNDLEWATCH_OUTPUT=$(yarn bundlewatch 2>&1)
           BUNDLEWATCH_EXIT_CODE=$?
+
+          # Echo output to job logs for visibility
           echo "$BUNDLEWATCH_OUTPUT"
 
-          # Generate summary report (always write, even on failure)
-          echo "## 📦 Bundle Size Report" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
+          # Generate summary report - this will always execute due to 'set +e'
+          # GITHUB_STEP_SUMMARY is a file path provided by GitHub Actions for step summaries
+          {
+            echo "## 📦 Bundle Size Report"
+            echo ""
 
-          # Extract and display the result breakdown URL if it exists
-          if [ -n "$BUNDLEWATCH_OUTPUT" ]; then
-            # Look specifically for the bundlewatch result URL (ja2r7.app.goo.gl domain)
-            BREAKDOWN_URL=$(echo "$BUNDLEWATCH_OUTPUT" | grep -A1 "Result breakdown at:" | grep -oE "https://ja2r7\.app\.goo\.gl/[a-zA-Z0-9]+" | head -1)
-            if [ -n "$BREAKDOWN_URL" ]; then
-              echo "📊 **[View detailed breakdown]($BREAKDOWN_URL)**" >> $GITHUB_STEP_SUMMARY
-              echo "" >> $GITHUB_STEP_SUMMARY
-            fi
-            
-            # Check overall status
-            if echo "$BUNDLEWATCH_OUTPUT" | grep -q "bundlewatch PASS"; then
-              echo "✅ **Status: PASS** - All bundles are within size limits" >> $GITHUB_STEP_SUMMARY
-            elif echo "$BUNDLEWATCH_OUTPUT" | grep -q "bundlewatch FAIL"; then
-              echo "❌ **Status: FAIL** - Some bundles exceed size limits" >> $GITHUB_STEP_SUMMARY
-              echo "" >> $GITHUB_STEP_SUMMARY
-              echo "⚠️ **Action Required:** Please review the bundle size increases. If the increases are expected and justified, update the limits in \`.bundlewatchrc.json\`" >> $GITHUB_STEP_SUMMARY
-            fi
-            
-            # Extract total size change if present
-            TOTAL_CHANGE=$(echo "$BUNDLEWATCH_OUTPUT" | grep -oE "Everything is in check \([^)]+\)" || true)
-            if [ -n "$TOTAL_CHANGE" ]; then
-              echo "📈 $TOTAL_CHANGE" >> $GITHUB_STEP_SUMMARY
-            fi
-            echo "" >> $GITHUB_STEP_SUMMARY
-            
-            echo "| File | Size | Limit | Status |" >> $GITHUB_STEP_SUMMARY
-            echo "|------|------|-------|--------|" >> $GITHUB_STEP_SUMMARY
-            
-            # Parse bundlewatch output and format as markdown table
-            echo "$BUNDLEWATCH_OUTPUT" | grep -E "PASS|FAIL" | grep "./build/" | while IFS= read -r line; do
-              if [[ $line == *"PASS"* ]]; then
-                STATUS="✅"
-              else
-                STATUS="❌"
+            # Extract and display the result breakdown URL if it exists
+            if [ -n "$BUNDLEWATCH_OUTPUT" ]; then
+              # Look specifically for the bundlewatch result URL (ja2r7.app.goo.gl domain)
+              BREAKDOWN_URL=$(echo "$BUNDLEWATCH_OUTPUT" | grep -A1 "Result breakdown at:" | grep -oE "https://ja2r7\.app\.goo\.gl/[a-zA-Z0-9]+" | head -1 || true)
+              if [ -n "$BREAKDOWN_URL" ]; then
+                echo "📊 **[View detailed breakdown]($BREAKDOWN_URL)**"
+                echo ""
               fi
-              FILE=$(echo "$line" | sed -E 's/.*(\.\/build\/[^:]+):.*/\1/')
-              SIZE=$(echo "$line" | sed -E 's/.*: ([0-9.]+[KMB]+).*/\1/')
-              LIMIT=$(echo "$line" | sed -E 's/.*< ([0-9.]+[KMB]+).*/\1/')
-              echo "| \`${FILE##*/}\` | **${SIZE}** | ${LIMIT} | ${STATUS} |" >> $GITHUB_STEP_SUMMARY
-            done
-          else
-            echo "No bundlewatch results found" >> $GITHUB_STEP_SUMMARY
-          fi
+
+              # Check overall status
+              if echo "$BUNDLEWATCH_OUTPUT" | grep -q "bundlewatch PASS"; then
+                echo "✅ **Status: PASS** - All bundles are within size limits"
+              elif echo "$BUNDLEWATCH_OUTPUT" | grep -q "bundlewatch FAIL"; then
+                echo "❌ **Status: FAIL** - Some bundles exceed size limits"
+                echo ""
+                echo "⚠️ **Action Required:** Please review the bundle size increases. If the increases are expected and justified, update the limits in \`.bundlewatchrc.json\`"
+              fi
+
+              # Extract total size change if present
+              TOTAL_CHANGE=$(echo "$BUNDLEWATCH_OUTPUT" | grep -oE "Everything is in check \([^)]+\)" || true)
+              if [ -n "$TOTAL_CHANGE" ]; then
+                echo "📈 $TOTAL_CHANGE"
+              fi
+              echo ""
+
+              echo "| File | Size | Limit | Status |"
+              echo "|------|------|-------|--------|"
+
+              # Parse bundlewatch output and format as markdown table
+              # Using process substitution to avoid subshell issues with pipes
+              echo "$BUNDLEWATCH_OUTPUT" | grep -E "PASS|FAIL" | grep "./build/" | while IFS= read -r line || [ -n "$line" ]; do
+                if [[ $line == *"PASS"* ]]; then
+                  STATUS="✅"
+                else
+                  STATUS="❌"
+                fi
+                FILE=$(echo "$line" | sed -E 's/.*(\.\/build\/[^:]+):.*/\1/' || echo "unknown")
+                SIZE=$(echo "$line" | sed -E 's/.*: ([0-9.]+[KMB]+).*/\1/' || echo "unknown")
+                LIMIT=$(echo "$line" | sed -E 's/.*< ([0-9.]+[KMB]+).*/\1/' || echo "unknown")
+                echo "| \`${FILE##*/}\` | **${SIZE}** | ${LIMIT} | ${STATUS} |"
+              done
+            else
+              echo "⚠️ No bundlewatch output found"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
 
           # Exit with failure if bundlewatch failed (after writing summary)
-          if [ $BUNDLEWATCH_EXIT_CODE -ne 0 ] || echo "$BUNDLEWATCH_OUTPUT" | grep -q "bundlewatch FAIL"; then
+          # Check both exit code and output for "bundlewatch FAIL" as a safety measure
+          if [ "$BUNDLEWATCH_EXIT_CODE" -ne 0 ] || echo "$BUNDLEWATCH_OUTPUT" | grep -q "bundlewatch FAIL"; then
             exit 1
           fi
 

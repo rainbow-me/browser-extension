@@ -9,7 +9,14 @@ import {
   it,
 } from 'vitest';
 
-import remoteConfig from '~/core/firebase/remoteConfig';
+// Test builds always use IS_TESTING=true, which sets these defaults.
+// We can't import remoteConfig directly because the test runner process
+// may evaluate IS_TESTING differently than the extension build, causing
+// a mismatch in which menu items are visible.
+const TEST_BUILD_CONFIG = {
+  approvals_enabled: false,
+  delegation_enabled: false, // !IS_TESTING → false in test builds
+} as const;
 
 import {
   checkExtensionURL,
@@ -130,10 +137,14 @@ describe.runIf(browser !== 'firefox')(
 
     it('should be able to navigate to Privacy & Security using keyboard', async () => {
       await delayTime('medium');
+      // Base: 6 tabs to reach Privacy & Security, +1 for each enabled menu item
+      let tabPresses = 6;
+      if (TEST_BUILD_CONFIG.approvals_enabled) tabPresses += 1;
+      if (TEST_BUILD_CONFIG.delegation_enabled) tabPresses += 1;
       await executePerformShortcut({
         driver,
         key: 'TAB',
-        timesToPress: remoteConfig.approvals_enabled ? 7 : 6,
+        timesToPress: tabPresses,
       });
       await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
       await checkExtensionURL(driver, 'privacy');
@@ -210,10 +221,14 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({ driver, key: 'DECIMAL' });
       await executePerformShortcut({ driver, key: 'ARROW_DOWN' });
       await executePerformShortcut({ driver, key: 'ENTER' });
+      // Base: 6 tabs to reach Privacy & Security, +1 for each enabled menu item
+      let tabPresses = 6;
+      if (TEST_BUILD_CONFIG.approvals_enabled) tabPresses += 1;
+      if (TEST_BUILD_CONFIG.delegation_enabled) tabPresses += 1;
       await executePerformShortcut({
         driver,
         key: 'TAB',
-        timesToPress: remoteConfig.approvals_enabled ? 7 : 6,
+        timesToPress: tabPresses,
       });
       await executePerformShortcut({ driver, key: 'ENTER' });
       await checkExtensionURL(driver, 'privacy');
@@ -355,10 +370,14 @@ describe.runIf(browser !== 'firefox')(
 
     it('should be able navigate to currencies', async () => {
       await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
+      // Base: 7 tabs to reach Currency, +1 for each enabled menu item
+      let tabPresses = 7;
+      if (TEST_BUILD_CONFIG.approvals_enabled) tabPresses += 1;
+      if (TEST_BUILD_CONFIG.delegation_enabled) tabPresses += 1;
       await executePerformShortcut({
         driver,
         key: 'TAB',
-        timesToPress: remoteConfig.approvals_enabled ? 8 : 7,
+        timesToPress: tabPresses,
       });
       await executePerformShortcut({ driver, key: 'ENTER' });
       await checkExtensionURL(driver, 'currency');
@@ -380,10 +399,14 @@ describe.runIf(browser !== 'firefox')(
     });
 
     it('should be able navigate to languages', async () => {
+      // Base: 8 tabs to reach Language, +1 for each enabled menu item
+      let tabPresses = 8;
+      if (TEST_BUILD_CONFIG.approvals_enabled) tabPresses += 1;
+      if (TEST_BUILD_CONFIG.delegation_enabled) tabPresses += 1;
       await executePerformShortcut({
         driver,
         key: 'TAB',
-        timesToPress: remoteConfig.approvals_enabled ? 9 : 8,
+        timesToPress: tabPresses,
       });
       await executePerformShortcut({ driver, key: 'ENTER' });
       await checkExtensionURL(driver, 'language');
@@ -399,10 +422,14 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
       const chosenLanguageOption = await findElementByText(driver, 'Idioma');
       expect(chosenLanguageOption).toBeTruthy();
+      // Base: 8 tabs to reach Language (in Spanish), +1 for each enabled menu item
+      let tabPresses = 8;
+      if (TEST_BUILD_CONFIG.approvals_enabled) tabPresses += 1;
+      if (TEST_BUILD_CONFIG.delegation_enabled) tabPresses += 1;
       await executePerformShortcut({
         driver,
         key: 'TAB',
-        timesToPress: remoteConfig.approvals_enabled ? 9 : 8,
+        timesToPress: tabPresses,
       });
       await executePerformShortcut({ driver, key: 'ENTER' });
       await checkExtensionURL(driver, 'language');
@@ -416,10 +443,14 @@ describe.runIf(browser !== 'firefox')(
 
     it('should be able navigate to switch theme and open context menu', async () => {
       await executePerformShortcut({ driver, key: 'ARROW_LEFT' });
+      // Base: 9 tabs to reach Theme, +1 for each enabled menu item
+      let tabPresses = 9;
+      if (TEST_BUILD_CONFIG.approvals_enabled) tabPresses += 1;
+      if (TEST_BUILD_CONFIG.delegation_enabled) tabPresses += 1;
       await executePerformShortcut({
         driver,
         key: 'TAB',
-        timesToPress: remoteConfig.approvals_enabled ? 10 : 9,
+        timesToPress: tabPresses,
       });
       await executePerformShortcut({ driver, key: 'ENTER' });
       const systemOption = await findElementByText(driver, 'System');

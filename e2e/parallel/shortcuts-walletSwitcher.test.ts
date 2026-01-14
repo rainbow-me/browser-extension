@@ -99,7 +99,7 @@ describe.runIf(browser !== 'firefox')(
       await executePerformShortcut({ driver, key: 'ENTER' });
       await checkExtensionURL(driver, 'wallet-switcher');
       // need this to unfocus search field on slow running tests
-      await findElementByTextAndClick(driver, 'wallets');
+      await findElementByTextAndClick(driver, 'Wallets');
       await executePerformShortcut({ driver, key: 'ESCAPE' });
     });
 
