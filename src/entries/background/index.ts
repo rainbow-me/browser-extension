@@ -22,6 +22,11 @@ localStorageRecycler();
 
 handleOpenExtensionShortcut();
 
+// Register delegation config (doesn't import SDK - just stores config)
+// SDK will be loaded lazily when delegation functions are first used
+//
+// MIGRATION NOTE: When switching to direct imports, setupDelegationClient()
+// will call configure() synchronously, but this call site doesn't need to change
 setupDelegationClient();
 startPopupRouter();
 
