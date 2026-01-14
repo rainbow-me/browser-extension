@@ -7,7 +7,7 @@ import {
   PointsDocument,
   ValidatePointsSignatureMutation,
 } from '~/core/graphql/__generated__/metadata';
-import { queryClient } from '~/core/react-query';
+import { persistQueryCache, queryClient } from '~/core/react-query';
 
 import { POINTS_MOCK_DATA } from './references';
 
@@ -34,6 +34,7 @@ export const seedPointsQueryCache = async (
 ) => {
   await queryClient.cancelQueries({ queryKey: ['points', address] });
   queryClient.setQueryData(['points', address], data);
+  await persistQueryCache();
 };
 
 export const fetchPointsQuery = async (address: Address) =>
