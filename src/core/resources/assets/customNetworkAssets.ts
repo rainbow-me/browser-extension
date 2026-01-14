@@ -51,15 +51,6 @@ type CustomNetworkAssetsArgs = {
   rainbowChainAssets?: Record<number, RainbowChainAsset[]>;
 };
 
-type SetCustomNetworkAssetsArgs = {
-  address: Address;
-  currency: SupportedCurrencyKey;
-  customNetworkAssets?: CustomNetworkAssetsResult;
-  testnetMode?: boolean;
-  filterZeroBalance?: boolean;
-  rainbowChainAssets: Record<number, RainbowChainAsset[]>;
-};
-
 type SetUserDefaultsArgs = {
   address: Address;
   currency: SupportedCurrencyKey;
@@ -144,27 +135,6 @@ const CustomNetworkAssetsSetQueryDefaults = ({
     {
       staleTime,
     },
-  );
-};
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const CustomNetworkAssetsSetQueryData = ({
-  address,
-  currency,
-  customNetworkAssets,
-  testnetMode,
-  filterZeroBalance,
-  rainbowChainAssets,
-}: SetCustomNetworkAssetsArgs) => {
-  queryClient.setQueryData(
-    customNetworkAssetsKey({
-      address,
-      currency,
-      testnetMode,
-      filterZeroBalance,
-      rainbowChainAssets,
-    }),
-    customNetworkAssets,
   );
 };
 

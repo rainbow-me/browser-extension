@@ -1,6 +1,11 @@
 export { createQueryKey } from './createQueryKey';
 
-export { persistOptions, queryClient } from './queryClient';
+export {
+  asyncStoragePersister,
+  persistOptions,
+  persistQueryCache,
+  queryClient,
+} from './queryClient';
 
 export type {
   MutationConfig,

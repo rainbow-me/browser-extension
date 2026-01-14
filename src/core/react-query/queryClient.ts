@@ -1,6 +1,9 @@
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import { QueryClient } from '@tanstack/react-query';
-import { PersistQueryClientOptions } from '@tanstack/react-query-persist-client';
+import {
+  PersistQueryClientOptions,
+  persistQueryClientSave,
+} from '@tanstack/react-query-persist-client';
 
 import { LocalStorage } from '../storage';
 
@@ -18,7 +21,7 @@ export const queryClient = new QueryClient({
   },
 });
 
-const asyncStoragePersister = createAsyncStoragePersister({
+export const asyncStoragePersister = createAsyncStoragePersister({
   key: 'rainbow.react-query',
   storage: {
     getItem: LocalStorage.get,
@@ -47,4 +50,17 @@ export const persistOptions: Omit<PersistQueryClientOptions, 'queryClient'> = {
       );
     },
   },
+};
+
+/**
+ * Persists the query client cache immediately.
+ * Use this after calling `setQueryData` to ensure cache updates are persisted
+ * before navigation, bypassing the default throttled persistence.
+ */
+export const persistQueryCache = async () => {
+  await persistQueryClientSave({
+    queryClient,
+    persister: asyncStoragePersister,
+    dehydrateOptions: persistOptions.dehydrateOptions,
+  });
 };
