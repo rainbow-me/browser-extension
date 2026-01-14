@@ -14,6 +14,7 @@ import {
   checkExtensionURL,
   checkWalletName,
   delayTime,
+  disableAtomicSwapsFeatureFlag,
   executePerformShortcut,
   findElementByTestId,
   findElementByText,
@@ -54,6 +55,8 @@ describe('Complete swap flow via shortcuts and keyboard navigation', () => {
 
   beforeEach<{ driver: WebDriver }>(async (context) => {
     context.driver = driver;
+    // Disable atomic swaps feature flag to ensure sequential execution in tests
+    await disableAtomicSwapsFeatureFlag(driver, rootURL);
   });
 
   afterEach<{ driver: WebDriver }>(async (context) => {
@@ -223,6 +226,12 @@ describe('Complete swap flow via shortcuts and keyboard navigation', () => {
    * and I think the keyboard navigation testing in and of itself is helpful
    * I dont think we should disabling this whole suite.
    */
+
+  // TODO: Add e2e test for atomic swap execution via keyboard navigation
+  // Should test:
+  // - Atomic swap can be initiated and executed using keyboard shortcuts
+  // - Transaction execution flow works with keyboard navigation
+  // - Balance updates correctly after atomic swap via keyboard
 
   it('should be able to initiate swap with keyboard navigation', async () => {
     const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545/1');
