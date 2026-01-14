@@ -8,6 +8,7 @@ import {
   clearInput,
   delay,
   delayTime,
+  disableAtomicSwapsFeatureFlag,
   doNotFindElementByTestId,
   executePerformShortcut,
   fillPrivateKey,
@@ -94,6 +95,9 @@ it('should be able import a wallet via pk', async () => {
   });
   await findElementByTestIdAndClick({ id: 'set-password-button', driver });
   await findElementByText(driver, 'Rainbow is ready to use');
+
+  // Disable atomic swaps feature flag to ensure sequential execution in tests
+  await disableAtomicSwapsFeatureFlag(driver, rootURL);
 });
 
 it('should be able to go to setings', async () => {
@@ -976,6 +980,13 @@ it('should be able to see swap information in review sheet', async () => {
   expect(swapReviewTitleText).toBe('Review & Swap');
 });
 
+// TODO: Add e2e test for atomic swap execution (EIP-7702 delegation)
+// Should test:
+// - Atomic approve+swap executes as single transaction
+// - Transaction hash and nonce handling for atomic execution
+// - Gas estimation for atomic swaps
+// - Fallback to sequential execution when atomic fails
+// - Balance changes after atomic swap execution
 it('should be able to execute swap', async () => {
   const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545/1');
   await provider.ready;
