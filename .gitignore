@@ -27,3 +27,6 @@ screenshots/
 
 # IDEs
 .idea/**
+
+# ESLint caches
+.eslintcache-*

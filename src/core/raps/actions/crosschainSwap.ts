@@ -1,8 +1,10 @@
 import { Signer } from '@ethersproject/abstract-signer';
+import { BatchCall } from '@rainbow-me/rainbow-delegation';
 import {
   CrosschainQuote,
   SwapType,
   fillCrosschainQuote,
+  prepareFillCrosschainQuote,
 } from '@rainbow-me/swaps';
 import { Address } from 'viem';
 
@@ -22,7 +24,12 @@ import {
 } from '../../types/gas';
 import { estimateGasWithPadding } from '../../utils/gas';
 import { toHex } from '../../utils/hex';
-import { ActionProps, RapActionResult } from '../references';
+import {
+  ActionProps,
+  PrepareActionProps,
+  RapActionResult,
+  RapSwapActionParameters,
+} from '../references';
 import {
   CHAIN_IDS_WITH_TRACE_SUPPORT,
   SWAP_GAS_PADDING,
@@ -111,6 +118,72 @@ export const executeCrosschainSwap = async ({
     ...gasParams,
   };
   return fillCrosschainQuote(quote, transactionParams, wallet, referrer);
+};
+
+const REFERRER_BX = 'browser-extension';
+
+/**
+ * Build a crosschain swap transaction object (without hash) for tracking.
+ */
+function buildCrosschainSwapTransaction(
+  parameters: RapSwapActionParameters<'crosschainSwap'>,
+  gasParams: TransactionGasParams | TransactionLegacyGasParams,
+): Omit<NewTransaction, 'hash'> {
+  const { quote, assetToSell, assetToBuy } = parameters;
+  const isBridge = isSameAssetInDiffChains(assetToBuy, assetToSell);
+
+  return {
+    data: quote.data,
+    value: quote.value?.toString(),
+    asset: assetToSell,
+    changes: [
+      {
+        direction: 'out',
+        asset: assetToSell,
+        value: quote.sellAmount.toString(),
+      },
+      {
+        direction: 'in',
+        asset: assetToBuy,
+        value: quote.buyAmount.toString(),
+      },
+    ],
+    from: quote.from as Address,
+    to: quote.to as Address,
+    chainId: assetToSell.chainId,
+    status: 'pending',
+    type: isBridge ? 'bridge' : 'swap',
+    ...gasParams,
+  } as Omit<NewTransaction, 'hash'>;
+}
+
+/**
+ * Prepare a crosschain swap call for atomic execution.
+ * Returns the BatchCall object and transaction metadata without executing.
+ */
+export const prepareCrosschainSwap = async ({
+  parameters,
+  quote,
+}: PrepareActionProps<'crosschainSwap'>): Promise<{
+  call: BatchCall;
+  transaction: Omit<NewTransaction, 'hash'>;
+}> => {
+  const { selectedGas } = useGasStore.getState();
+  const gasParams = selectedGas.transactionGasParams;
+
+  const tx = await prepareFillCrosschainQuote(
+    quote as CrosschainQuote,
+    REFERRER_BX,
+  );
+
+  return {
+    call: {
+      to: tx.to as Address,
+      value: toHex(BigInt(tx.value?.toString() ?? '0')),
+      data: tx.data as `0x${string}`,
+    },
+    transaction: buildCrosschainSwapTransaction(parameters, gasParams),
+  };
 };
 
 export const crosschainSwap = async ({

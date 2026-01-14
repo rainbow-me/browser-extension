@@ -18,6 +18,12 @@ export type Scalars = {
   TokenNetworks: any;
 };
 
+export type Authorization = {
+  address: Scalars['String'];
+  chainId: Scalars['String'];
+  nonce: Scalars['String'];
+};
+
 export enum CacheControlScope {
   Private = 'PRIVATE',
   Public = 'PUBLIC'
@@ -28,6 +34,33 @@ export type ClaimablePoints = {
   error?: Maybe<PointsError>;
   meta: PointsMeta;
   user: UserClaimablePoints;
+};
+
+export type Colors = {
+  __typename?: 'Colors';
+  /** Fallback color for secondary UI elements */
+  fallback: Scalars['String'];
+  /** Primary brand color in hex format (e.g., #FF0000) */
+  primary: Scalars['String'];
+  /** Shadow color for depth and emphasis */
+  shadow: Scalars['String'];
+};
+
+/** CompetitionWindow defines a time period for the King of the Hill competition */
+export type CompetitionWindow = {
+  __typename?: 'CompetitionWindow';
+  /** Total duration of the window in seconds */
+  durationSeconds: Scalars['Int'];
+  /** UTC timestamp when the competition window ends */
+  end: Scalars['Int'];
+  /** Time interval representation (e.g., "1h", "24h") */
+  interval: Scalars['String'];
+  /** Whether this is the currently active competition window */
+  isActive: Scalars['Boolean'];
+  /** How much time is left in the current window */
+  secondsRemaining: Scalars['Int'];
+  /** UTC timestamp when the competition window begins */
+  start: Scalars['Int'];
 };
 
 export type Contract = {
@@ -113,10 +146,50 @@ export enum DAppStatus {
   Verified = 'VERIFIED'
 }
 
+export type DAppV2 = {
+  __typename?: 'DAppV2';
+  /** Canonical name of the DApp protocol */
+  canonicalProtocolName: Scalars['String'];
+  /** Blockchain network ID where the DApp is deployed */
+  chainId: Scalars['Int'];
+  /** Color theme configuration for the DApp */
+  colors: Colors;
+  /** URL to the DApp's logo/icon image */
+  iconURL: Scalars['String'];
+  /** Unique identifier for the DApp */
+  protocolID: Scalars['String'];
+  /** Display name of the DApp */
+  protocolName: Scalars['String'];
+  /** Normalized identifier for the DApp (e.g., 'uniswap', 'aave') */
+  protocolNameID: Scalars['String'];
+  /** Version of the DApp protocol */
+  protocolVersion: Scalars['String'];
+  /** Website URL of the DApp */
+  siteURL: Scalars['String'];
+};
+
+export type DAppV2Result = {
+  __typename?: 'DAppV2Result';
+  count: Scalars['Int'];
+  result: Array<DAppV2>;
+};
+
 export enum Device {
   App = 'APP',
   Bx = 'BX'
 }
+
+export type DurationSummary = {
+  __typename?: 'DurationSummary';
+  /** The duration period this summary covers */
+  duration: Scalars['String'];
+  /** End timestamp of the summary period (Unix timestamp) */
+  end: Scalars['Time'];
+  /** Start timestamp of the summary period (Unix timestamp) */
+  start: Scalars['Time'];
+  /** Detailed trade statistics for this duration */
+  stats: Stats;
+};
 
 export type EnsMarquee = {
   __typename?: 'ENSMarquee';
@@ -144,6 +217,103 @@ export type EnsProfileField = {
   __typename?: 'ENSProfileField';
   key: Scalars['String'];
   value: Scalars['String'];
+};
+
+export type KingOfTheHill = {
+  __typename?: 'KingOfTheHill';
+  /** The current token in the King of the Hill competition */
+  current: KingOfTheHillToken;
+  /** The previous token that held the title */
+  lastWinner?: Maybe<KingOfTheHillToken>;
+};
+
+/**  KingOfTheHill represents token in the King of the Hill competition */
+export type KingOfTheHillRankingElem = {
+  __typename?: 'KingOfTheHillRankingElem';
+  /** Ranking position of the token in the competition */
+  rank: Scalars['Int'];
+  /**
+   * Token details.
+   * Note: This object may not resolve all fields defined in the Token type,
+   * as only a subset of data is available in this context.
+   */
+  token: Token;
+  /** Current time window for the competition */
+  windowTradingVolume: Scalars['String'];
+};
+
+export type KingOfTheHillRankings = {
+  __typename?: 'KingOfTheHillRankings';
+  /** The leaderboard of the King of the Hill competition */
+  rankings: Array<KingOfTheHillRankingElem>;
+  /** Current time window for the competition */
+  window: CompetitionWindow;
+};
+
+/** KingOfTheHillToken represents a token in the King of the Hill competition. */
+export type KingOfTheHillToken = {
+  __typename?: 'KingOfTheHillToken';
+  /** Ranking details for the token in the competition */
+  rankingDetails: RankingDetails;
+  /**
+   * Token details.
+   * Note: This object may not resolve all fields defined in the Token type,
+   * as only a subset of data is available in this context.
+   */
+  token: Token;
+  /** Current time window for the competition */
+  window: CompetitionWindow;
+};
+
+export type Launchpad = {
+  __typename?: 'Launchpad';
+  /** The name of the launchpad or associated launch platform. */
+  name: Scalars['String'];
+  /** Platform associated with the launchpad. */
+  platform: Scalars['String'];
+  /** URL to the platform's icon or logo. */
+  platformIconURL: Scalars['String'];
+  /** The protocol or platform powering the launchpad. */
+  protocol: Scalars['String'];
+  /** URL to the protocol's icon or logo. */
+  protocolIconURL: Scalars['String'];
+  /** The social interface or community platform associated with the launchpad. */
+  socialInterface: Scalars['String'];
+  /** URL to the social interface's icon or logo. */
+  socialInterfaceIconURL: Scalars['String'];
+};
+
+export type LaunchpadResult = {
+  __typename?: 'LaunchpadResult';
+  /** Token Creator address. */
+  creatorAddress: Scalars['String'];
+  /** Indicates whether launchpad information is available for this token. */
+  isLaunchpadAvailable: Scalars['Boolean'];
+  /** launchpad associated with tokens. */
+  launchpad?: Maybe<Launchpad>;
+};
+
+/** Represents a liquidity pool of Rainbow token, typically pairing the token with another asset. */
+export type LiquidityPool = {
+  __typename?: 'LiquidityPool';
+  /** The contract address of the liquidity pool. */
+  address: Scalars['ID'];
+  chainId: Scalars['Int'];
+  /** The contract address of the first token in the pair. */
+  token0Address: Scalars['String'];
+  /** The contract address of the second token in the pair (often the base currency like WETH). */
+  token1Address: Scalars['String'];
+};
+
+/** Represents market data for a token. */
+export type MarketData = {
+  __typename?: 'MarketData';
+  /** Number of unique holders of the token. */
+  holders?: Maybe<Scalars['Int']>;
+  /** The fully diluted market cap. */
+  marketCapFDV: Scalars['String'];
+  /** Trading volume for the last 24 hours in USD. */
+  volume24h: Scalars['String'];
 };
 
 export type Message = {
@@ -205,6 +375,7 @@ export type Network = {
   mainnetId: Scalars['ID'];
   name: Scalars['String'];
   nativeAsset: NetworkAsset;
+  nativeAssetNeedsApproval: Scalars['Boolean'];
   nativeWrappedAsset: NetworkAsset;
   opStack: Scalars['Boolean'];
   testnet: Scalars['Boolean'];
@@ -243,9 +414,16 @@ export type NetworkColors = {
   light: Scalars['String'];
 };
 
+export type NetworkDelegation = {
+  __typename?: 'NetworkDelegation';
+  enabled7702: Scalars['Boolean'];
+};
+
 export type NetworkEnabledServices = {
   __typename?: 'NetworkEnabledServices';
   addys: NetworkAddys;
+  delegation: NetworkDelegation;
+  launcher: NetworkLauncher;
   meteorology: NetworkMeteorology;
   nftProxy: NetworkNftProxy;
   notifications: NetworkNotifications;
@@ -295,6 +473,17 @@ export type NetworkIcons = {
   dark: NetworkIcon;
   light: NetworkIcon;
   uncropped: NetworkIcon;
+};
+
+export type NetworkLauncher = {
+  __typename?: 'NetworkLauncher';
+  v1: NetworkLauncherVersion;
+};
+
+export type NetworkLauncherVersion = {
+  __typename?: 'NetworkLauncherVersion';
+  contractAddress: Scalars['String'];
+  enabled: Scalars['Boolean'];
 };
 
 export type NetworkMeteorology = {
@@ -538,7 +727,10 @@ export type Query = {
   customNetworks?: Maybe<Array<Maybe<CustomNetwork>>>;
   dApp?: Maybe<DApp>;
   dApps?: Maybe<Array<Maybe<DApp>>>;
+  dAppsV2?: Maybe<DAppV2Result>;
   ensMarquee?: Maybe<EnsMarquee>;
+  kingOfTheHill?: Maybe<KingOfTheHill>;
+  kingOfTheHillLeaderBoard?: Maybe<KingOfTheHillRankings>;
   network?: Maybe<Network>;
   networks?: Maybe<Array<Maybe<Network>>>;
   nftAllowlist?: Maybe<NftAllowlist>;
@@ -550,6 +742,7 @@ export type Query = {
   rewards?: Maybe<Rewards>;
   simulateMessage?: Maybe<MessageResult>;
   simulateTransactions?: Maybe<Array<Maybe<TransactionResult>>>;
+  stats?: Maybe<RainbowTokenStats>;
   token?: Maybe<Token>;
   tokenInteractions?: Maybe<Array<Maybe<TokenInteraction>>>;
   validateReferral?: Maybe<ValidatedReferral>;
@@ -575,8 +768,10 @@ export type QueryContractFunctionArgs = {
 
 
 export type QueryContractsArgs = {
+  chainID?: InputMaybe<Scalars['Int']>;
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
+  typeID?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -594,6 +789,23 @@ export type QueryDAppArgs = {
 export type QueryDAppsArgs = {
   period?: InputMaybe<DAppRankingPeriod>;
   trending?: InputMaybe<Scalars['Boolean']>;
+};
+
+
+export type QueryDAppsV2Args = {
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  protocolIDs?: InputMaybe<Array<Scalars['String']>>;
+};
+
+
+export type QueryKingOfTheHillArgs = {
+  currency?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryKingOfTheHillLeaderBoardArgs = {
+  currency?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -666,6 +878,13 @@ export type QuerySimulateTransactionsArgs = {
 };
 
 
+export type QueryStatsArgs = {
+  address: Scalars['String'];
+  chainID: Scalars['Int'];
+  currency?: InputMaybe<Scalars['String']>;
+};
+
+
 export type QueryTokenArgs = {
   address: Scalars['String'];
   chainID: Scalars['Int'];
@@ -683,6 +902,65 @@ export type QueryTokenInteractionsArgs = {
 
 export type QueryValidateReferralArgs = {
   referral: Scalars['String'];
+};
+
+export type RainbowTokenDetails = {
+  __typename?: 'RainbowTokenDetails';
+  /** Information about the primary liquidity pool associated with this token, if available. */
+  liquidityPool?: Maybe<LiquidityPool>;
+  /** Descriptive metadata associated with the token. */
+  metadata?: Maybe<RainbowTokenMetadata>;
+  /** Data retrieved directly from the blockchain regarding the token. */
+  onchainData?: Maybe<RainbowTokenOnchainData>;
+};
+
+/** Contains descriptive metadata for a token. */
+export type RainbowTokenMetadata = {
+  __typename?: 'RainbowTokenMetadata';
+  /** A text description of the token. */
+  description?: Maybe<Scalars['String']>;
+  /** A URL pointing to the token's logo image. */
+  logoUrl?: Maybe<Scalars['String']>;
+  /** A URI (often IPFS or HTTP) pointing to more detailed token metadata conforming to a standard (e.g., ERC721/ERC1155). */
+  tokenUri?: Maybe<Scalars['String']>;
+};
+
+/** Contains data about the token fetched directly from the blockchain. */
+export type RainbowTokenOnchainData = {
+  __typename?: 'RainbowTokenOnchainData';
+  /** The address of the account that originally deployed the token contract. */
+  creatorAddress?: Maybe<Scalars['String']>;
+  /**
+   * The Merkle root hash, often used for verified airdrop distributions.
+   * May be zero if not applicable. (Included for completeness, might be niche)
+   */
+  merkleRoot?: Maybe<Scalars['String']>;
+  /** The total supply of the token currently in existence (as a string to handle large numbers). */
+  totalSupply: Scalars['String'];
+};
+
+export type RainbowTokenStats = {
+  __typename?: 'RainbowTokenStats';
+  /** Number of data buckets used (meaning might need clarification from source) */
+  bucketCount: Scalars['Int'];
+  /** Timestamp of the last known transaction included in the summary (Unix timestamp) */
+  lastTransaction: Scalars['Time'];
+  /** liquidity pool */
+  liquidityPool: LiquidityPool;
+  /** An array of summaries for different predefined time durations */
+  summary: Array<Maybe<DurationSummary>>;
+};
+
+export type RankingDetails = {
+  __typename?: 'RankingDetails';
+  /** Timestamp when this market data was last refreshed */
+  lastUpdated: Scalars['Int'];
+  /** Metric that determined the winner , supported values are "volume", "latestTransaction", "volume24h"  */
+  rankingCriteria: Scalars['String'];
+  /** Reason for the token's victory (e.g., "highest volume") */
+  rankingCriteriaDesc: Scalars['String'];
+  /** Trading volume specific to the current competition window */
+  windowTradingVolume: Scalars['String'];
 };
 
 export type RedeemedPoints = {
@@ -856,10 +1134,36 @@ export type RewardsStatsPositionChange = {
   h24?: Maybe<Scalars['Int']>;
 };
 
+export type Stats = {
+  __typename?: 'Stats';
+  /** Volume attributed to buy transactions */
+  buyVolume: Scalars['Float'];
+  /** Number of unique wallets that bought */
+  buyers: Scalars['Int'];
+  /** Number of buy transactions */
+  buys: Scalars['Int'];
+  /** Price change in percentage (e.g., 5.0 means +5%, -3.2 means -3.2%) */
+  priceChangePct: Scalars['Float'];
+  /** Volume attributed to sell transactions */
+  sellVolume: Scalars['Float'];
+  /** Number of unique wallets that sold */
+  sellers: Scalars['Int'];
+  /** Number of sell transactions */
+  sells: Scalars['Int'];
+  /** Total number of transactions (buys + sells) */
+  transactions: Scalars['Int'];
+  /** Number of unique wallets that traded */
+  uniques: Scalars['Int'];
+  /** Total volume of trades in the specified currency */
+  volume: Scalars['Float'];
+};
+
 export type Token = {
   __typename?: 'Token';
+  address: Scalars['String'];
   allTime: TokenAllTime;
   bridging: Scalars['TokenBridging'];
+  chainId: Scalars['Int'];
   circulatingSupply?: Maybe<Scalars['Float']>;
   colors: TokenColors;
   creationDate?: Maybe<Scalars['Time']>;
@@ -867,16 +1171,28 @@ export type Token = {
   description?: Maybe<Scalars['String']>;
   fullyDilutedValuation?: Maybe<Scalars['Float']>;
   iconUrl?: Maybe<Scalars['String']>;
+  launchpad?: Maybe<LaunchpadResult>;
   links?: Maybe<TokenLinks>;
   marketCap?: Maybe<Scalars['Float']>;
+  /**
+   * Grouped market-related for the token.
+   *
+   * Note: All internal fields related to market performance (e.g., market cap, volume, holders)
+   * are being consolidated under this object for better structure and maintainability.
+   * Prefer accessing market-related values through this field going forward.
+   */
+  marketData?: Maybe<MarketData>;
   name: Scalars['String'];
   networks: Scalars['TokenNetworks'];
   price: TokenPrice;
   priceCharts: TokenPriceCharts;
+  rainbow: Scalars['Boolean'];
+  rainbowTokenDetails?: Maybe<RainbowTokenDetails>;
   status: TokenStatus;
   symbol: Scalars['String'];
   totalSupply?: Maybe<Scalars['Float']>;
   transferable: Scalars['Boolean'];
+  type: Scalars['String'];
   volume1d?: Maybe<Scalars['Float']>;
 };
 
@@ -931,7 +1247,10 @@ export type TokenLinks = {
   __typename?: 'TokenLinks';
   coingecko?: Maybe<TokenLink>;
   facebook?: Maybe<TokenLink>;
+  farcaster?: Maybe<TokenLink>;
   homepage?: Maybe<TokenLink>;
+  other?: Maybe<TokenLink>;
+  rainbow?: Maybe<TokenLink>;
   reddit?: Maybe<TokenLink>;
   telegram?: Maybe<TokenLink>;
   twitter?: Maybe<TokenLink>;
@@ -940,6 +1259,7 @@ export type TokenLinks = {
 export type TokenPrice = {
   __typename?: 'TokenPrice';
   relativeChange24h?: Maybe<Scalars['Float']>;
+  updatedAt?: Maybe<Scalars['Time']>;
   value?: Maybe<Scalars['Float']>;
 };
 
@@ -984,6 +1304,7 @@ export enum TokenStatus {
 }
 
 export type Transaction = {
+  authorization_list?: InputMaybe<Array<InputMaybe<Authorization>>>;
   data: Scalars['String'];
   from: Scalars['String'];
   to: Scalars['String'];
@@ -1077,6 +1398,15 @@ export type TransactionSimulationChange = {
   quantity: Scalars['String'];
 };
 
+export type TransactionSimulationDelegation = {
+  __typename?: 'TransactionSimulationDelegation';
+  address: Scalars['String'];
+  created?: Maybe<Scalars['Time']>;
+  iconURL: Scalars['String'];
+  name: Scalars['String'];
+  sourceCodeStatus?: Maybe<VerificationStatus>;
+};
+
 export type TransactionSimulationMeta = {
   __typename?: 'TransactionSimulationMeta';
   to?: Maybe<TransactionSimulationTarget>;
@@ -1086,6 +1416,7 @@ export type TransactionSimulationMeta = {
 export type TransactionSimulationResult = {
   __typename?: 'TransactionSimulationResult';
   approvals?: Maybe<Array<Maybe<TransactionSimulationApproval>>>;
+  delegation?: Maybe<TransactionSimulationDelegation>;
   in?: Maybe<Array<Maybe<TransactionSimulationChange>>>;
   meta?: Maybe<TransactionSimulationMeta>;
   out?: Maybe<Array<Maybe<TransactionSimulationChange>>>;
@@ -1197,16 +1528,7 @@ export type SimulateTransactionsQueryVariables = Exact<{
 }>;
 
 
-export type SimulateTransactionsQuery = { __typename?: 'Query', simulateTransactions?: Array<{ __typename?: 'TransactionResult', scanning?: { __typename?: 'TransactionScanningResult', result: TransactionScanResultType, description: string } | null, error?: { __typename?: 'TransactionError', message: string, type: TransactionErrorType } | null, gas?: { __typename?: 'TransactionGasResult', estimate: string } | null, simulation?: { __typename?: 'TransactionSimulationResult', in?: Array<{ __typename?: 'TransactionSimulationChange', quantity: string, asset: { __typename?: 'TransactionSimulationAsset', assetCode: string, decimals: number, iconURL: string, name: string, network: string, symbol: string, type: TransactionAssetType, interface: TransactionAssetInterface, tokenId: string, status: VerificationStatus } } | null> | null, out?: Array<{ __typename?: 'TransactionSimulationChange', quantity: string, asset: { __typename?: 'TransactionSimulationAsset', assetCode: string, decimals: number, iconURL: string, name: string, network: string, symbol: string, type: TransactionAssetType, interface: TransactionAssetInterface, tokenId: string, status: VerificationStatus } } | null> | null, approvals?: Array<{ __typename?: 'TransactionSimulationApproval', quantityAllowed: string, quantityAtRisk: string, expiration?: any | null, asset: { __typename?: 'TransactionSimulationAsset', assetCode: string, decimals: number, iconURL: string, name: string, network: string, symbol: string, type: TransactionAssetType, interface: TransactionAssetInterface, tokenId: string, status: VerificationStatus }, spender: { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: any | null, sourceCodeStatus?: VerificationStatus | null } } | null> | null, meta?: { __typename?: 'TransactionSimulationMeta', transferTo?: { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: any | null, sourceCodeStatus?: VerificationStatus | null } | null, to?: { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: any | null, sourceCodeStatus?: VerificationStatus | null } | null } | null } | null } | null> | null };
-
-export type SimulateTransactionsWithoutGasQueryVariables = Exact<{
-  chainId: Scalars['Int'];
-  transactions: Array<Transaction> | Transaction;
-  domain?: InputMaybe<Scalars['String']>;
-}>;
-
-
-export type SimulateTransactionsWithoutGasQuery = { __typename?: 'Query', simulateTransactions?: Array<{ __typename?: 'TransactionResult', scanning?: { __typename?: 'TransactionScanningResult', result: TransactionScanResultType, description: string } | null, error?: { __typename?: 'TransactionError', message: string, type: TransactionErrorType } | null, simulation?: { __typename?: 'TransactionSimulationResult', in?: Array<{ __typename?: 'TransactionSimulationChange', quantity: string, asset: { __typename?: 'TransactionSimulationAsset', assetCode: string, decimals: number, iconURL: string, name: string, network: string, symbol: string, type: TransactionAssetType, interface: TransactionAssetInterface, tokenId: string, status: VerificationStatus } } | null> | null, out?: Array<{ __typename?: 'TransactionSimulationChange', quantity: string, asset: { __typename?: 'TransactionSimulationAsset', assetCode: string, decimals: number, iconURL: string, name: string, network: string, symbol: string, type: TransactionAssetType, interface: TransactionAssetInterface, tokenId: string, status: VerificationStatus } } | null> | null, approvals?: Array<{ __typename?: 'TransactionSimulationApproval', quantityAllowed: string, quantityAtRisk: string, expiration?: any | null, asset: { __typename?: 'TransactionSimulationAsset', assetCode: string, decimals: number, iconURL: string, name: string, network: string, symbol: string, type: TransactionAssetType, interface: TransactionAssetInterface, tokenId: string, status: VerificationStatus }, spender: { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: any | null, sourceCodeStatus?: VerificationStatus | null } } | null> | null, meta?: { __typename?: 'TransactionSimulationMeta', transferTo?: { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: any | null, sourceCodeStatus?: VerificationStatus | null } | null, to?: { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: any | null, sourceCodeStatus?: VerificationStatus | null } | null } | null } | null } | null> | null };
+export type SimulateTransactionsQuery = { __typename?: 'Query', simulateTransactions?: Array<{ __typename?: 'TransactionResult', scanning?: { __typename?: 'TransactionScanningResult', result: TransactionScanResultType, description: string } | null, error?: { __typename?: 'TransactionError', message: string, type: TransactionErrorType } | null, gas?: { __typename?: 'TransactionGasResult', estimate: string } | null, simulation?: { __typename?: 'TransactionSimulationResult', in?: Array<{ __typename?: 'TransactionSimulationChange', quantity: string, asset: { __typename?: 'TransactionSimulationAsset', assetCode: string, decimals: number, iconURL: string, name: string, network: string, symbol: string, type: TransactionAssetType, interface: TransactionAssetInterface, tokenId: string, status: VerificationStatus } } | null> | null, out?: Array<{ __typename?: 'TransactionSimulationChange', quantity: string, asset: { __typename?: 'TransactionSimulationAsset', assetCode: string, decimals: number, iconURL: string, name: string, network: string, symbol: string, type: TransactionAssetType, interface: TransactionAssetInterface, tokenId: string, status: VerificationStatus } } | null> | null, approvals?: Array<{ __typename?: 'TransactionSimulationApproval', quantityAllowed: string, quantityAtRisk: string, expiration?: any | null, asset: { __typename?: 'TransactionSimulationAsset', assetCode: string, decimals: number, iconURL: string, name: string, network: string, symbol: string, type: TransactionAssetType, interface: TransactionAssetInterface, tokenId: string, status: VerificationStatus }, spender: { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: any | null, sourceCodeStatus?: VerificationStatus | null } } | null> | null, meta?: { __typename?: 'TransactionSimulationMeta', transferTo?: { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: any | null, sourceCodeStatus?: VerificationStatus | null } | null, to?: { __typename?: 'TransactionSimulationTarget', address: string, name: string, iconURL: string, function: string, created?: any | null, sourceCodeStatus?: VerificationStatus | null } | null } | null, delegation?: { __typename?: 'TransactionSimulationDelegation', address: string, name: string, iconURL: string, created?: any | null, sourceCodeStatus?: VerificationStatus | null } | null } | null } | null> | null };
 
 export type SimulateMessageQueryVariables = Exact<{
   chainId: Scalars['Int'];
@@ -1469,52 +1791,12 @@ export const SimulateTransactionsDocument = gql`
           ...target
         }
       }
-    }
-  }
-}
-    ${ChangeFragmentDoc}
-${AssetFragmentDoc}
-${TargetFragmentDoc}`;
-export const SimulateTransactionsWithoutGasDocument = gql`
-    query simulateTransactionsWithoutGas($chainId: Int!, $transactions: [Transaction!]!, $domain: String) {
-  simulateTransactions(
-    chainID: $chainId
-    transactions: $transactions
-    domain: $domain
-  ) {
-    scanning {
-      result
-      description
-    }
-    error {
-      message
-      type
-    }
-    simulation {
-      in {
-        ...change
-      }
-      out {
-        ...change
-      }
-      approvals {
-        asset {
-          ...asset
-        }
-        spender {
-          ...target
-        }
-        quantityAllowed
-        quantityAtRisk
-        expiration
-      }
-      meta {
-        transferTo {
-          ...target
-        }
-        to {
-          ...target
-        }
+      delegation {
+        address
+        name
+        iconURL
+        created
+        sourceCodeStatus
       }
     }
   }
@@ -1806,9 +2088,6 @@ export function getSdk<C, E>(requester: Requester<C, E>) {
     },
     simulateTransactions(variables: SimulateTransactionsQueryVariables, options?: C): Promise<SimulateTransactionsQuery> {
       return requester<SimulateTransactionsQuery, SimulateTransactionsQueryVariables>(SimulateTransactionsDocument, variables, options) as Promise<SimulateTransactionsQuery>;
-    },
-    simulateTransactionsWithoutGas(variables: SimulateTransactionsWithoutGasQueryVariables, options?: C): Promise<SimulateTransactionsWithoutGasQuery> {
-      return requester<SimulateTransactionsWithoutGasQuery, SimulateTransactionsWithoutGasQueryVariables>(SimulateTransactionsWithoutGasDocument, variables, options) as Promise<SimulateTransactionsWithoutGasQuery>;
     },
     simulateMessage(variables: SimulateMessageQueryVariables, options?: C): Promise<SimulateMessageQuery> {
       return requester<SimulateMessageQuery, SimulateMessageQueryVariables>(SimulateMessageDocument, variables, options) as Promise<SimulateMessageQuery>;
