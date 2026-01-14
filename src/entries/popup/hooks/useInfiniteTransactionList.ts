@@ -2,7 +2,7 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'viem';
 
-import { queryClient } from '~/core/react-query';
+import { persistQueryCache, queryClient } from '~/core/react-query';
 import { shortcuts } from '~/core/references/shortcuts';
 import { selectTransactionsByDate } from '~/core/resources/_selectors';
 import {
@@ -284,6 +284,7 @@ export const useInfiniteTransactionList = ({
               pages: [firstPageResult, ...oldData.pages.slice(1)],
             };
           });
+          await persistQueryCache();
         }
       } catch (error) {
         // Silently fail - we don't want to disrupt the UI if refetch fails
@@ -332,7 +333,7 @@ export const useInfiniteTransactionList = ({
     fetchNextPage,
   ]);
 
-  const cleanupPages = useCallback(() => {
+  const cleanupPages = useCallback(async () => {
     if (!data?.pages) return;
 
     queryClient.setQueryData(
@@ -343,12 +344,15 @@ export const useInfiniteTransactionList = ({
       }),
       { ...data, pages: [...data.pages].slice(0, PAGES_TO_CACHE_LIMIT) },
     );
+    await persistQueryCache();
   }, [data, address, currency, supportedChainIds]);
 
   // Cleanup pages when component mounts or unmounts
   useEffect(() => {
     cleanupPages();
-    return () => cleanupPages();
+    return () => {
+      cleanupPages();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -451,6 +455,7 @@ export const useInfiniteTransactionList = ({
               ],
             };
           });
+          await persistQueryCache();
         }
 
         // Invalidate to trigger a re-render with updated data
