@@ -126,7 +126,7 @@ const ImportWalletViaPrivateKey = () => {
           setCurrentAddress(address);
 
           analytics.track('wallet.added', {
-            type: KeychainType.ReadOnlyKeychain,
+            type: KeychainType.KeyPairKeychain,
           });
 
           removeImportWalletSecrets();
