@@ -23,7 +23,7 @@ export const createExtensionStoreOptions = <S>({
 
   const { storage, syncEngine } = getSyncedStorage({
     area,
-    storageKeyPrefix: useRainbowNamingSchema ? 'rainbow.zustand.' : undefined,
+    storageKeyPrefix: useRainbowNamingSchema ? 'rainbow.zustand.' : '', // undefined uses the default prefix, but we want none
   });
 
   return {
