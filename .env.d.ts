@@ -1,28 +1,6 @@
 declare global {
   namespace NodeJS {
     interface ProcessEnv {
-      // Mainnet RPCs
-      ARBITRUM_MAINNET_RPC: string;
-      AVALANCHE_MAINNET_RPC: string;
-      BASE_MAINNET_RPC: string;
-      BLAST_MAINNET_RPC: string;
-      BSC_MAINNET_RPC: string;
-      DEGEN_MAINNET_RPC: string;
-      ETH_MAINNET_RPC: string;
-      OPTIMISM_MAINNET_RPC: string;
-      POLYGON_MAINNET_RPC: string;
-      ZORA_MAINNET_RPC: string;
-      // Testnet RPCs
-      ARBITRUM_SEPOLIA_RPC: string;
-      AVALANCHE_FUJI_RPC: string;
-      BASE_SEPOLIA_RPC: string;
-      BLAST_SEPOLIA_RPC: string;
-      BSC_TESTNET_RPC: string;
-      ETH_HOLESKY_RPC: string;
-      ETH_SEPOLIA_RPC: string;
-      OPTIMISM_SEPOLIA_RPC: string;
-      POLYGON_AMOY_RPC: string;
-      ZORA_SEPOLIA_RPC: string;
       // Services
       ADDYS_API_KEY: string;
       DATA_API_KEY: string;
