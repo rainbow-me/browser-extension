@@ -67,10 +67,9 @@ nvm install && nvm use
 corepack enable
 ```
 
-### 2. Install project dependencies
+### 2. Run initial setup and install project dependencies
 
 ```bash
-yarn install
 yarn setup
 ```
 
