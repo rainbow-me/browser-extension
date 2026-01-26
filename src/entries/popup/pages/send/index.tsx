@@ -42,7 +42,8 @@ import {
 import { UniqueAsset } from '~/core/types/nfts';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { parseUserAssetBalances } from '~/core/utils/assets';
-import { chainIdToUse } from '~/core/utils/chains';
+import { chainIdToUse, getChain } from '~/core/utils/chains';
+import { isInsufficientFundsError } from '~/core/utils/insufficientFunds';
 import {
   getUniqueAssetImagePreviewURL,
   getUniqueAssetImageThumbnailURL,
@@ -436,11 +437,26 @@ export function Send() {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
         if (!isLedgerConnectionError(e)) {
-          const extractedError = (e as Error).message.split('[')[0];
-          triggerAlert({
-            text: i18n.t('errors.sending_transaction'),
-            description: extractedError,
-          });
+          if (isInsufficientFundsError(e)) {
+            const nativeSymbol = asset?.isNativeAsset
+              ? asset?.symbol
+              : getChain({ chainId: activeChainId }).nativeCurrency.symbol;
+            triggerAlert({
+              text: i18n.t(
+                'send.button_label.insufficient_native_asset_for_gas',
+                {
+                  symbol: nativeSymbol,
+                },
+              ),
+              description: i18n.t('errors.insufficient_funds_description'),
+            });
+          } else {
+            const extractedError = (e as Error).message.split('[')[0];
+            triggerAlert({
+              text: i18n.t('errors.sending_transaction'),
+              description: extractedError,
+            });
+          }
         }
         logger.error(new RainbowError('send: error executing send'), {
           message: (e as Error)?.message,
