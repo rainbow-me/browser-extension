@@ -8,8 +8,8 @@ import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { Signer } from '@ethersproject/abstract-signer';
 import { BigNumber } from '@ethersproject/bignumber';
 import { Provider } from '@ethersproject/providers';
-import { personalSign } from '@metamask/eth-sig-util';
-import { Address, ByteArray, bytesToHex, hexToBytes } from 'viem';
+import { Address, ByteArray, Hex, bytesToHex, hexToBytes } from 'viem';
+import { signMessage as viemSignMessage } from 'viem/accounts';
 
 import { defineReadOnly } from '../utils/define';
 import { addHexPrefix } from '../utils/hex';
@@ -35,16 +35,16 @@ export class RainbowSigner extends Signer {
     return this.address as Address;
   }
 
-  async signMessage(message: ByteArray | string): Promise<string> {
-    const data =
+  async signMessage(message: ByteArray | string): Promise<Hex> {
+    // Use viem's signMessage utility which properly handles personal_sign
+    // and avoids the toBuffer issue from @metamask/eth-sig-util
+    const messageToSign =
       typeof message === 'string' ? message : bytesToHex(message as Uint8Array);
-    const pkey = this.#getPrivateKeyBuffer();
 
-    const signature = personalSign({
-      privateKey: Buffer.from(pkey),
-      data,
+    return await viemSignMessage({
+      message: messageToSign,
+      privateKey: this.privateKey,
     });
-    return signature;
   }
 
   async signTransaction(transaction: TransactionRequest): Promise<string> {
