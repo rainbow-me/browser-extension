@@ -1,5 +1,5 @@
 import chroma from 'chroma-js';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Address, Chain } from 'viem';
 
@@ -63,7 +63,7 @@ export function SettingsNetworksRPCs() {
   const { currentCurrency } = useCurrentCurrencyStore();
   const { currentTheme } = useCurrentThemeStore();
   const {
-    state: { chainId },
+    state: { chainId, pendingRpc },
   } = useLocation();
   const { removeRainbowChainAsset, removeRainbowChainAssets } =
     useRainbowChainAssetsStore();
@@ -156,7 +156,7 @@ export function SettingsNetworksRPCs() {
 
       removeRainbowChainAssets({ chainId });
       if (!supportedChain && newRpcsLength === 0) {
-        // Pop back to networks page when removing the last RPC
+        // Go back to previous page (Networks) when removing the last RPC
         navigate(-1);
       }
     },
@@ -168,12 +168,26 @@ export function SettingsNetworksRPCs() {
       const removed = useNetworkStore.getState().removeCustomChain(chainId);
       if (removed) {
         removeRainbowChainAssets({ chainId });
-        // Pop back to networks page after removing network
+        // Go back to previous page (Networks) after removing network
         navigate(-1);
       }
     },
     [navigate, removeRainbowChainAssets],
   );
+
+  // Get network name from chain or supportedChain
+  const networkName = chain?.name || supportedChain?.name;
+
+  // Auto-navigate to AddRpcForm when pendingRpc is present (redirected from NewNetworkForm)
+  // Use replace: true so this RPCs page (with pendingRpc state) is replaced, preventing loops
+  useEffect(() => {
+    if (pendingRpc?.rpcUrl && activeChain) {
+      navigate(ROUTES.SETTINGS__NETWORKS__ADD_RPC, {
+        state: { chain: activeChain, networkName, rpcUrl: pendingRpc.rpcUrl },
+        replace: true,
+      });
+    }
+  }, [pendingRpc, activeChain, networkName, navigate]);
 
   return (
     <Box paddingHorizontal="20px" paddingBottom="20px">
@@ -347,15 +361,10 @@ export function SettingsNetworksRPCs() {
                   />
                 }
                 onClick={() =>
-                  navigate(ROUTES.SETTINGS__NETWORKS__CUSTOM_RPC, {
+                  navigate(ROUTES.SETTINGS__NETWORKS__ADD_RPC, {
                     state: {
                       chain: activeChain || supportedChain,
-                      title: i18n.t(
-                        'settings.networks.custom_rpc.add_network_rpc',
-                        {
-                          rpcName: activeChain?.name || supportedChain?.name,
-                        },
-                      ),
+                      networkName,
                     },
                   })
                 }

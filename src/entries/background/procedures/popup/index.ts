@@ -13,6 +13,8 @@ import { stateRouter } from './state';
 import { telemetryRouter } from './telemetry';
 import { walletRouter } from './wallet';
 
+const IS_DEV = process.env.IS_DEV === 'true';
+
 const sentryMiddleware = os.middleware(async ({ next, path }) => {
   if (INTERNAL_BUILD || IS_TESTING) {
     Sentry.addBreadcrumb({
@@ -26,6 +28,11 @@ const sentryMiddleware = os.middleware(async ({ next, path }) => {
   try {
     return await next();
   } catch (e) {
+    // Log all errors to console in dev mode for easier debugging
+    if (IS_DEV) {
+      console.error(`[oRPC Error] ${path.join('/')}:`, e);
+    }
+
     // only report unexpected errors; errors defined in errors() contract
     // will bubble up to the client and throw if not handled by safe()
     if (e && !(e instanceof ORPCError && isDefinedError(e))) {
