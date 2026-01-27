@@ -155,7 +155,7 @@ describe.runIf(browser !== 'firefox')(
         driver,
       });
       await executePerformShortcut({ driver, key: 'ARROW_RIGHT' });
-      await findElementByText(driver, 'Points');
+      await findElementByText(driver, 'Rewards');
       const nfts = await isElementFoundByText({
         text: 'NFTs',
         driver,
@@ -165,11 +165,11 @@ describe.runIf(browser !== 'firefox')(
         key: 'ARROW_LEFT',
         timesToPress: 3,
       });
-      const points = await isElementFoundByText({
-        text: 'Points',
+      const rewards = await isElementFoundByText({
+        text: 'Rewards',
         driver,
       });
-      expect(activity && tokens && nfts && points).toBe(false);
+      expect(activity && tokens && nfts && rewards).toBe(false);
     });
 
     it('should be able to navigate to highlight asset + open context menu with keyboard', async () => {

@@ -2,28 +2,29 @@ import { createBaseStore } from '@storesjs/stores';
 
 import { createExtensionStoreOptions } from '../_internal';
 
-export enum promoTypes {
-  command_k = 'command_k',
-  wallet_switcher = 'wallet_switcher',
-  network_settings = 'network_settings',
-  degen_mode = 'degen_mode',
-}
-export type PromoTypes = keyof typeof promoTypes;
+// Promo types as a union
+export type PromoType =
+  | 'airdrop_banner'
+  | 'command_k'
+  | 'wallet_switcher'
+  | 'network_settings'
+  | 'degen_mode';
 
 export interface QuickPromoStore {
-  seenPromos: { [key in PromoTypes]: boolean };
-  setSeenPromo: (key: PromoTypes) => void;
+  seenPromos: Record<PromoType, boolean>;
+  setSeenPromo: (key: PromoType) => void;
 }
 
 export const useQuickPromoStore = createBaseStore<QuickPromoStore>(
   (set, get) => ({
     seenPromos: {
+      airdrop_banner: false,
       command_k: false,
       wallet_switcher: false,
       network_settings: false,
       degen_mode: false,
     },
-    setSeenPromo: (key: PromoTypes) => {
+    setSeenPromo: (key: PromoType) => {
       const seenPromos = get().seenPromos;
       const newSeenPromos = {
         ...seenPromos,
@@ -37,5 +38,15 @@ export const useQuickPromoStore = createBaseStore<QuickPromoStore>(
   createExtensionStoreOptions({
     storageKey: 'quickPromoStore',
     version: 1,
+    merge(_persistedState, currentState) {
+      const persistedState = _persistedState as QuickPromoStore;
+      return {
+        ...currentState,
+        seenPromos: {
+          ...currentState.seenPromos,
+          ...persistedState?.seenPromos,
+        },
+      };
+    },
   }),
 );

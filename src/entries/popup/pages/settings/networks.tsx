@@ -5,7 +5,7 @@ import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { useDeveloperToolsEnabledStore } from '~/core/state/currentSettings/developerToolsEnabled';
 import { useNetworkStore } from '~/core/state/networks/networks';
-import { promoTypes, useQuickPromoStore } from '~/core/state/quickPromo';
+import { usePromos } from '~/core/state/quickPromo/usePromos';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
 import { useMainChains } from '~/core/utils/chains';
 import { sortNetworks } from '~/core/utils/userChains';
@@ -48,7 +48,7 @@ const chainLabel = ({
 export function SettingsNetworks() {
   const navigate = useRainbowNavigate();
   const chains = useMainChains();
-  const { seenPromos, setSeenPromo } = useQuickPromoStore();
+  const { activePromo, setSeenPromo } = usePromos('network_settings');
   const { developerToolsEnabled, setDeveloperToolsEnabled } =
     useDeveloperToolsEnabledStore();
   const removeCustomChain = useNetworkStore((state) => state.removeCustomChain);
@@ -81,8 +81,7 @@ export function SettingsNetworks() {
 
   const onDragEnd = (result: DropResult) => {
     const { destination, draggableId } = result;
-    if (!seenPromos[promoTypes.network_settings])
-      setSeenPromo(promoTypes.network_settings);
+    if (activePromo) setSeenPromo(activePromo);
     if (!destination) return;
     useNetworkStore
       .getState()
@@ -142,14 +141,12 @@ export function SettingsNetworks() {
         </MenuContainer>
       )}
 
-      {!seenPromos[promoTypes.network_settings] && (
+      {activePromo && (
         <Inset bottom="20px">
           <QuickPromo
             text={i18n.t('settings.networks.quick_promo.text')}
             textBold={i18n.t('settings.networks.quick_promo.text_bold')}
-            symbol="sparkle"
-            symbolColor="accent"
-            promoType="network_settings"
+            promoType={activePromo}
           />
         </Inset>
       )}

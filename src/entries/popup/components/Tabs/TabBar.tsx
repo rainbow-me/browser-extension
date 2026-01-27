@@ -14,12 +14,12 @@ import { timingConfig } from '../CommandK/references';
 
 import ActivityIcon from './TabIcons/Activity';
 import ActivitySelected from './TabIcons/ActivitySelected';
+import AirdropIcon from './TabIcons/Airdrop';
+import AirdropSelected from './TabIcons/AirdropSelected';
 import HomeIcon from './TabIcons/Home';
 import HomeSelected from './TabIcons/HomeSelected';
 import NFTsIcon from './TabIcons/NFTs';
 import NFTsSelected from './TabIcons/NFTsSelected';
-import PointsIcon from './TabIcons/Points';
-import PointsSelected from './TabIcons/PointsSelected';
 
 export const ICON_SIZE = 36;
 
@@ -35,7 +35,7 @@ type TabConfigType = {
     accentColor: string;
     colorMatrixValues: number[];
   }) => ReactElement;
-  name: 'tokens' | 'activity' | 'nfts' | 'points';
+  name: 'tokens' | 'activity' | 'nfts' | 'rewards';
 };
 
 const tabConfig: TabConfigType[] = [
@@ -55,9 +55,9 @@ const tabConfig: TabConfigType[] = [
     name: 'nfts',
   },
   {
-    Icon: PointsIcon,
-    SelectedIcon: PointsSelected,
-    name: 'points',
+    Icon: AirdropIcon,
+    SelectedIcon: AirdropSelected,
+    name: 'rewards',
   },
 ];
 

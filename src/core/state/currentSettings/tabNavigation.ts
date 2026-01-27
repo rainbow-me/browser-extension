@@ -17,6 +17,12 @@ export const useTabNavigation = createBaseStore<TabNavigationState>(
   }),
   createExtensionStoreOptions({
     storageKey: 'tabNavigation',
-    version: 0,
+    version: 1,
+    migrate(persistedState, version) {
+      if (version === 0) {
+        return {}; // Use defaults, points was replaced with rewards
+      }
+      return persistedState as TabNavigationState;
+    },
   }),
 );

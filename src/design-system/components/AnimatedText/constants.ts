@@ -1,0 +1,1 @@
+export const CHARACTER_TYPING_SPEED = 0.02;

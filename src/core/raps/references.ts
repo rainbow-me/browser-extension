@@ -3,7 +3,6 @@ import { CrosschainQuote, Quote } from '@rainbow-me/swaps';
 import { Address } from 'viem';
 
 import { ParsedAsset } from '../types/assets';
-import { ChainId } from '../types/chains';
 
 export enum SwapModalField {
   input = 'inputAmount',
@@ -37,12 +36,9 @@ export type SwapMetadata = {
 export type QuoteTypeMap = {
   swap: Quote;
   crosschainSwap: CrosschainQuote;
-  claimBridge: undefined;
 };
 
-export interface RapSwapActionParameters<
-  T extends 'swap' | 'crosschainSwap' | 'claimBridge',
-> {
+export interface RapSwapActionParameters<T extends 'swap' | 'crosschainSwap'> {
   amount?: string | null;
   sellAmount: string;
   buyAmount?: string;
@@ -65,21 +61,9 @@ export interface RapUnlockActionParameters {
   chainId: number;
 }
 
-export interface RapClaimActionParameters {
-  address?: Address;
-  assetToSell: ParsedAsset;
-  sellAmount: string;
-  assetToBuy: ParsedAsset;
-  meta?: SwapMetadata;
-  chainId: ChainId;
-  toChainId?: ChainId;
-  quote: undefined;
-}
-
 export type RapActionParameters =
   | RapSwapActionParameters<'swap'>
   | RapSwapActionParameters<'crosschainSwap'>
-  | RapClaimActionParameters
   | RapUnlockActionParameters;
 
 export interface RapActionTransaction {
@@ -90,8 +74,6 @@ export type RapActionParameterMap = {
   swap: RapSwapActionParameters<'swap'>;
   crosschainSwap: RapSwapActionParameters<'crosschainSwap'>;
   unlock: RapUnlockActionParameters;
-  claim: RapClaimActionParameters;
-  claimBridge: RapClaimActionParameters;
 };
 
 export interface RapAction<T extends RapActionTypes> {
@@ -101,17 +83,13 @@ export interface RapAction<T extends RapActionTypes> {
 }
 
 export interface Rap {
-  actions: RapAction<
-    'swap' | 'crosschainSwap' | 'unlock' | 'claim' | 'claimBridge'
-  >[];
+  actions: RapAction<'swap' | 'crosschainSwap' | 'unlock'>[];
 }
 
 export enum rapActions {
   swap = 'swap',
   crosschainSwap = 'crosschainSwap',
   unlock = 'unlock',
-  claim = 'claim',
-  claimBridge = 'claimBridge',
 }
 
 export type RapActionTypes = keyof typeof rapActions;
@@ -119,7 +97,6 @@ export type RapActionTypes = keyof typeof rapActions;
 export enum rapTypes {
   swap = 'swap',
   crosschainSwap = 'crosschainSwap',
-  claimBridge = 'claimBridge',
 }
 
 export type RapTypes = keyof typeof rapTypes;
@@ -144,8 +121,6 @@ export interface ActionProps<T extends RapActionTypes> {
 }
 
 export interface WalletExecuteRapProps {
-  rapActionParameters: RapSwapActionParameters<
-    'swap' | 'crosschainSwap' | 'claimBridge'
-  >;
+  rapActionParameters: RapSwapActionParameters<'swap' | 'crosschainSwap'>;
   type: RapTypes;
 }
