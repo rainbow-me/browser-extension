@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Address } from 'viem';
 
 import { i18n } from '~/core/languages';
+import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
 import { SessionStorage } from '~/core/storage';
 import {
@@ -21,6 +22,7 @@ import { deriveAccountsFromSecret } from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useWalletsSummary } from '../../hooks/useWalletsSummary';
 import { ROUTES } from '../../urls';
+import { getInputIsFocused } from '../../utils/activeElement';
 import { Spinner } from '../Spinner/Spinner';
 
 import { AccountToImportRows } from './AccountToImportRows';
@@ -135,7 +137,9 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
       setCurrentAddress(accountsToImport[0]);
       if (onboarding)
         navigate(ROUTES.CREATE_PASSWORD, {
-          state: { backTo: ROUTES.IMPORT__SEED },
+          state: {
+            backTo: ROUTES.IMPORT__SEED + '?onboarding=true',
+          },
         });
       else navigate(ROUTES.HOME);
     });
@@ -265,6 +269,11 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
                   onClick={onImport}
                   testId="add-wallets-button"
                   tabIndex={0}
+                  shortcut={{
+                    ...shortcuts.global.SELECT,
+                    disabled: () => !isReady || getInputIsFocused(),
+                    hideHint: true,
+                  }}
                 >
                   {i18n.t('import_wallet_selection.add_wallets')}
                 </Button>
