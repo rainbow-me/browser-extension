@@ -1,12 +1,12 @@
-import {
-  TypedDataDomain,
-  TypedDataField,
-} from '@ethersproject/abstract-signer';
-import { Address, ByteArray } from 'viem';
+import { Address } from 'viem';
 
 import { executeRap, signTypedData } from '~/core/keychain';
 import { initializeMessenger } from '~/core/messengers';
 import { WalletExecuteRapProps } from '~/core/raps/references';
+import {
+  PersonalSignMessage,
+  TypedDataMessage,
+} from '~/core/types/messageSigning';
 import { WalletAction } from '~/core/types/walletActions';
 import { getProvider } from '~/core/viem/clientToProvider';
 import { logger } from '~/logger';
@@ -18,19 +18,11 @@ type WalletActionArguments = {
 
 export type SignMessageArguments = {
   address: Address;
-  msgData: string | ByteArray;
+  message: PersonalSignMessage;
 };
 export type SignTypedDataArguments = {
   address: Address;
-  msgData: SignTypedDataMsg;
-};
-
-type SignTypedDataMsg = {
-  domain: TypedDataDomain;
-  types: Record<string, Array<TypedDataField>>;
-  value?: Record<string, unknown>;
-  primaryType?: string;
-  message?: unknown;
+  message: TypedDataMessage;
 };
 
 const messenger = initializeMessenger({ connect: 'popup' });
@@ -57,7 +49,6 @@ export const handleWallets = () =>
             });
             break;
           }
-          // TODO: needs to be refactored as part of a bigger signTypedData refactor
           case 'sign_typed_data': {
             response = await signTypedData(payload as SignTypedDataArguments);
             break;
