@@ -3,7 +3,7 @@ import { Address, Hex } from 'viem';
 
 import { sendTransaction } from '~/core/keychain';
 import { toHex, toHexOrUndefined } from '~/core/utils/hex';
-import { getProvider } from '~/core/wagmi/clientToProvider';
+import { getProvider } from '~/core/viem/clientToProvider';
 
 import { walletOs } from '../os';
 

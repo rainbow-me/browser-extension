@@ -14,7 +14,7 @@ import {
   parseUserAsset,
 } from '~/core/utils/assets';
 import { greaterThan } from '~/core/utils/numbers';
-import { getProvider } from '~/core/wagmi/clientToProvider';
+import { getProvider } from '~/core/viem/clientToProvider';
 import {
   DAI_MAINNET_ASSET,
   ETH_MAINNET_ASSET,
