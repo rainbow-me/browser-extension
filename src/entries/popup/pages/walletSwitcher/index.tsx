@@ -8,6 +8,7 @@ import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
+import { usePromos } from '~/core/state/quickPromo/usePromos';
 import { useWalletNamesStore } from '~/core/state/walletNames';
 import { useWalletOrderStore } from '~/core/state/walletOrder';
 import { KeychainType } from '~/core/types/keychainTypes';
@@ -205,6 +206,7 @@ export function WalletSwitcher() {
   const { deleteWalletName } = useWalletNamesStore();
 
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const { activePromo } = usePromos('wallet_switcher');
 
   const handleSelectAddress = useCallback(
     (address: Address) => {
@@ -377,13 +379,13 @@ export function WalletSwitcher() {
           tabIndex={0}
           autoFocus
         />
-        <QuickPromo
-          text={i18n.t('wallet_switcher.quick_promo.text')}
-          textBold={i18n.t('wallet_switcher.quick_promo.text_bold')}
-          symbol="sparkle"
-          symbolColor="accent"
-          promoType="wallet_switcher"
-        />
+        {activePromo && (
+          <QuickPromo
+            text={i18n.t('wallet_switcher.quick_promo.text')}
+            textBold={i18n.t('wallet_switcher.quick_promo.text_bold')}
+            promoType={activePromo}
+          />
+        )}
       </Box>
       <DraggableContext onDragEnd={onDragEnd}>
         <Box paddingHorizontal="8px" paddingVertical="4px">

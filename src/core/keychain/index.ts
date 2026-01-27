@@ -252,9 +252,7 @@ export const executeRap = async ({
   type,
   provider,
 }: {
-  rapActionParameters: RapSwapActionParameters<
-    'swap' | 'crosschainSwap' | 'claimBridge'
-  >;
+  rapActionParameters: RapSwapActionParameters<'swap' | 'crosschainSwap'>;
   type: RapTypes;
   provider: Provider;
 }): Promise<{ nonce: number | undefined }> => {
