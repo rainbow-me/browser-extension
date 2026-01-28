@@ -3,7 +3,7 @@ import React from 'react';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { foregroundColors } from '~/design-system/styles/designTokens';
 
-const PointsIcon = () => {
+const AirdropIcon = () => {
   const { currentTheme } = useCurrentThemeStore();
   const color = foregroundColors.labelTertiary[currentTheme];
 
@@ -25,4 +25,4 @@ const PointsIcon = () => {
   );
 };
 
-export default PointsIcon;
+export default AirdropIcon;
