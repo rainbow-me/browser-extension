@@ -273,6 +273,9 @@
     "approvals": {
       "title": "Approvals"
     },
+    "delegations": {
+      "title": "Delegations"
+    },
     "currency": {
       "title": "Currency",
       "ETH": "Ethereum",
@@ -298,7 +301,10 @@
       "hw_wallets_enabled": "Enable Hardware Wallet Support",
       "command_k_internal_shortcuts_enabled": "Enable ⌘K Internal Shortcuts",
       "custom_rpc": "Custom RPC",
-      "degen_mode": "Degen Mode"
+      "degen_mode": "Degen Mode",
+      "atomic_swaps_enabled": "Atomic Swaps",
+      "rewards_scheduled_drop": "Rewards Scheduled Drop",
+      "delegation_enabled": "Delegation Enabled"
     }
   },
   "transactions": {
@@ -661,6 +667,46 @@
           "action_label": "Got it"
         }
       }
+    }
+  },
+  "delegations": {
+    "title": "Delegations",
+    "no_delegations": "No Active Delegations",
+    "no_delegations_description": "You don't have any active EIP-7702 delegations to manage.",
+    "revoke_all": "Revoke All Delegations",
+    "smart_wallet": {
+      "title": "Smart Wallet",
+      "active": "Active",
+      "disabled": "Disabled",
+      "description": "Smart wallets enable a faster, cheaper, and more reliable wallet experience.",
+      "backup_info": "Securely back up your wallets to iCloud so you can restore them if you lose your device or get a new one.",
+      "learn_more": "Learn more..."
+    },
+    "activated_networks": "Activated Networks",
+    "third_party_indicator_tooltip": "This is a third-party delegation",
+    "activate_smart_wallet": "Activate Smart Wallet",
+    "disable_smart_wallet": "Disable Smart Wallet",
+    "revoke": {
+      "title": "Revoke Delegation",
+      "subtitle": "Remove delegation from this contract",
+      "security_notice": "Security Notice",
+      "chain_label": "Chain",
+      "contract_label": "Contract",
+      "progress": "%{current} of %{total}",
+      "action": "Revoke Delegation",
+      "revoking": "Revoking...",
+      "success": "Successfully Revoked",
+      "try_again": "Try Again",
+      "cancel": "Cancel",
+      "done": "Done",
+      "next": "Next",
+      "confirm_hw": "Confirm on Device"
+    },
+    "confirm_disable": {
+      "title": "Disable Smart Wallet",
+      "description": "Disable smart wallets for future transactions. You can reactivate smart wallets at any time.",
+      "action": "Disable",
+      "cancel": "Cancel"
     }
   },
   "send": {

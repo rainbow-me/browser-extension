@@ -29,6 +29,10 @@ export const ROUTES = {
   QR_CODE: '/qr-code', // QR Code
   SETTINGS__NETWORKS: '/settings/networks', // Networks
   SETTINGS__APPROVALS: '/settings/approvals', // Approvals
+  SETTINGS__DELEGATIONS: '/settings/delegations', // Delegations
+  SETTINGS__DELEGATIONS__REVOKE: '/settings/delegations/revoke', // Revoke Delegations
+  SETTINGS__DELEGATIONS__CONFIRM_DISABLE:
+    '/settings/delegations/confirm-disable', // Confirm Disable Smart Wallet
   SETTINGS__NETWORKS__RPCS: '/settings/networks/rpcs', // RPCs per network
   SETTINGS__NETWORKS__CUSTOM_NETWORKS: '/settings/networks/custom-networks', // Custom Networks List
   SETTINGS__NETWORKS__CUSTOM_RPC: '/settings/networks/custom-chain', // Networks Custom Chain (New Network)

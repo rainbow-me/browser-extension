@@ -12,6 +12,7 @@ import { lockContract } from './lock';
 import { pathContract } from './path';
 import { personalSignContract } from './personalSign';
 import { removeContract } from './remove';
+import { revokeDelegationContract } from './revokeDelegation';
 import { sendTransactionContract } from './sendTransaction';
 import { statusContract } from './status';
 import { testSandboxContract } from './testSandbox';
@@ -44,6 +45,7 @@ export const walletContract = {
   exportWallet: exportWalletContract,
   exportAccount: exportAccountContract,
   sendTransaction: sendTransactionContract,
+  revokeDelegation: revokeDelegationContract,
   personalSign: personalSignContract,
   testSandbox: testSandboxContract,
 };
