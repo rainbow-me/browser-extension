@@ -1,6 +1,6 @@
 import { Signer } from '@ethersproject/abstract-signer';
 import { Contract, PopulatedTransaction } from '@ethersproject/contracts';
-import { BatchCall } from '@rainbow-me/rainbow-delegation';
+import type { BatchCall } from '@rainbow-me/rainbow-delegation';
 import { Address, Hash, erc20Abi, erc721Abi, maxUint256 } from 'viem';
 
 import { useGasStore } from '~/core/state';
