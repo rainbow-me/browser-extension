@@ -14,6 +14,7 @@ import transformTypedDataPlugin from '@trezor/connect-plugin-ethereum';
 import TrezorConnect from '@trezor/connect-web';
 import { Address, stringToBytes } from 'viem';
 
+import { logTransactionGasError } from '~/core/utils/gas-logging';
 import { addHexPrefix } from '~/core/utils/hex';
 import { getProvider } from '~/core/wagmi/clientToProvider';
 import { RainbowError, logger } from '~/logger';
@@ -105,7 +106,16 @@ export async function sendTransactionFromTrezor(
   const provider = getProvider({
     chainId: transaction.chainId,
   });
-  return provider.sendTransaction(serializedTransaction);
+  try {
+    return await provider.sendTransaction(serializedTransaction);
+  } catch (error) {
+    await logTransactionGasError({
+      error,
+      transactionRequest: transaction,
+      chainId: transaction.chainId as number,
+    });
+    throw error;
+  }
 }
 
 export async function signMessageByTypeFromTrezor(
