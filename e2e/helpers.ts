@@ -189,6 +189,44 @@ export async function initDriverWithOptions(opts: {
   return driver;
 }
 
+/**
+ * Disable atomic swaps feature flag in e2e tests.
+ * This ensures tests use sequential execution (unlock + swap) instead of atomic execution.
+ * Should be called in beforeEach hook of swap-related tests.
+ */
+export async function disableAtomicSwapsFeatureFlag(
+  driver: WebDriver,
+  rootURL: string,
+) {
+  try {
+    // Navigate to popup to access extension context
+    await goToPopup(driver, rootURL);
+    // Set feature flag to false via chrome.storage
+    await driver.executeScript(`
+      return new Promise((resolve) => {
+        chrome.storage.local.get(['featureFlagsStore'], (result) => {
+          const currentState = result.featureFlagsStore || {
+            featureFlags: {
+              atomic_swaps_enabled: null,
+              delegation_enabled: null,
+            },
+          };
+          currentState.featureFlags = {
+            ...currentState.featureFlags,
+            atomic_swaps_enabled: false,
+          };
+          chrome.storage.local.set({ featureFlagsStore: currentState }, () => {
+            resolve(true);
+          });
+        });
+      });
+    `);
+  } catch (error) {
+    // Silently fail - feature flag might not be critical for all tests
+    console.warn('Failed to disable atomic swaps feature flag:', error);
+  }
+}
+
 const addPermissionForAllWebsites = async (driver: WebDriver) => {
   // Add the permission to access all websites
   await driver.get('about:addons');
