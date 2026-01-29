@@ -73,9 +73,32 @@ export function Settings() {
 
   const toggleFeatureFlag = useCallback(
     (key: FeatureFlagTypes) => {
-      setFeatureFlag(key, !featureFlags[key]);
+      const currentValue = featureFlags[key];
+      // For atomic_swaps_enabled, get effective value (local or remote)
+      const effectiveValue =
+        key === 'atomic_swaps_enabled'
+          ? currentValue !== null
+            ? currentValue
+            : config.atomic_swaps_enabled ?? false
+          : currentValue;
+      // Toggle: if currently using remote (null), set to opposite of remote; otherwise toggle local value
+      const newValue =
+        key === 'atomic_swaps_enabled'
+          ? currentValue === null
+            ? !effectiveValue
+            : !currentValue
+          : !currentValue;
+      setFeatureFlag(key, newValue);
     },
     [featureFlags, setFeatureFlag],
+  );
+
+  const handleResetToRemote = useCallback(
+    (flagKey: FeatureFlagTypes) => (e: React.MouseEvent) => {
+      e.stopPropagation();
+      setFeatureFlag(flagKey, null);
+    },
+    [setFeatureFlag],
   );
 
   const testSandboxPopup = useCallback(async () => {
@@ -199,7 +222,6 @@ export function Settings() {
           />
           {isWatchingWallet || !config.approvals_enabled ? null : (
             <MenuItem
-              last
               hasRightArrow
               leftComponent={
                 <Symbol
@@ -214,6 +236,25 @@ export function Settings() {
                 <MenuItem.Title text={i18n.t('settings.approvals.title')} />
               }
               testId="settings-approvals"
+            />
+          )}
+          {isWatchingWallet || !config.delegation_enabled ? null : (
+            <MenuItem
+              last
+              hasRightArrow
+              leftComponent={
+                <Symbol
+                  symbol="bolt.shield.fill"
+                  color="orange"
+                  weight="semibold"
+                  size={18}
+                />
+              }
+              onClick={() => navigate(ROUTES.SETTINGS__DELEGATIONS)}
+              titleComponent={
+                <MenuItem.Title text={i18n.t('settings.delegations.title')} />
+              }
+              testId="settings-delegations"
             />
           )}
         </Menu>
@@ -484,27 +525,80 @@ export function Settings() {
           process.env.IS_TESTING === 'true') && (
           <Menu>
             <MenuItem.Description text="Feature Flags" />
-            {Object.keys(featureFlags).map((key, i) => (
-              <MenuItem
-                key={i}
-                titleComponent={
-                  <MenuItem.Title
-                    text={i18n.t(`settings.feature_flags.${key}`)}
-                  />
-                }
-                rightComponent={
-                  <Toggle
-                    tabIndex={-1}
-                    testId={`feature-flag-${key}`}
-                    checked={featureFlags[key as FeatureFlagTypes]}
-                    handleChange={() =>
-                      toggleFeatureFlag(key as FeatureFlagTypes)
+            {Object.keys(featureFlags)
+              .filter((key) => key !== 'delegation_enabled')
+              .map((key, i) => {
+                const flagKey = key as FeatureFlagTypes;
+                const localValue = featureFlags[flagKey];
+                const isRemoteFlag = flagKey === 'atomic_swaps_enabled';
+                const isUsingRemote = isRemoteFlag && localValue === null;
+                // For atomic_swaps_enabled, show remote value if local is null
+                const displayValue = isUsingRemote
+                  ? config.atomic_swaps_enabled ?? false
+                  : (localValue as boolean);
+
+                return (
+                  <MenuItem
+                    key={i}
+                    titleComponent={
+                      <MenuItem.Title
+                        text={i18n.t(`settings.feature_flags.${key}`)}
+                      />
                     }
+                    rightComponent={
+                      <Inline alignVertical="center" space="8px" wrap={false}>
+                        {isRemoteFlag && (
+                          <Box
+                            onClick={
+                              !isUsingRemote
+                                ? handleResetToRemote(flagKey)
+                                : undefined
+                            }
+                            background={
+                              !isUsingRemote
+                                ? {
+                                    default: 'transparent',
+                                    hover: 'surfaceSecondary',
+                                  }
+                                : undefined
+                            }
+                            borderRadius="6px"
+                            paddingHorizontal="6px"
+                            paddingVertical="4px"
+                            style={{
+                              cursor: !isUsingRemote ? 'pointer' : 'default',
+                              transition: 'background-color 0.2s ease',
+                            }}
+                            title={
+                              isUsingRemote
+                                ? 'Using remote value'
+                                : 'Click to reset to remote'
+                            }
+                          >
+                            <Symbol
+                              symbol={
+                                isUsingRemote
+                                  ? 'network'
+                                  : 'exclamationmark.circle.fill'
+                              }
+                              size={12}
+                              color={isUsingRemote ? 'labelTertiary' : 'yellow'}
+                              weight="semibold"
+                            />
+                          </Box>
+                        )}
+                        <Toggle
+                          tabIndex={-1}
+                          testId={`feature-flag-${key}`}
+                          checked={displayValue}
+                          handleChange={() => toggleFeatureFlag(flagKey)}
+                        />
+                      </Inline>
+                    }
+                    onToggle={() => toggleFeatureFlag(flagKey)}
                   />
-                }
-                onToggle={() => toggleFeatureFlag(key as FeatureFlagTypes)}
-              />
-            ))}
+                );
+              })}
           </Menu>
         )}
         <Box
