@@ -28,9 +28,8 @@ export interface RainbowConfig extends Record<string, any> {
   rpc_proxy_enabled: boolean;
   hw_wallets_enabled: boolean;
   custom_rpc_enabled: boolean;
-  points_enabled: boolean;
+  airdrop_tab_enabled: boolean;
   defi_positions_enabled: boolean;
-  rewards_enabled: boolean;
   rewards_bridging_enabled: boolean;
   degen_mode_enabled: boolean;
   nfts_enabled: boolean;
@@ -59,10 +58,9 @@ const DEFAULT_CONFIG = {
   rpc_proxy_enabled: true,
   hw_wallets_enabled: true,
   custom_rpc_enabled: true,
-  points_enabled: true,
+  airdrop_tab_enabled: true,
   nfts_enabled: false,
   defi_positions_enabled: false,
-  rewards_enabled: true,
   rewards_bridging_enabled: true,
   degen_mode_enabled: true,
   approvals_enabled: false,
@@ -120,9 +118,8 @@ export const init = async () => {
             key === 'BX_rpc_proxy_enabled' ||
             key === 'BX_hw_wallets_enabled' ||
             key === 'BX_custom_rpc_enabled' ||
-            key === 'BX_points_enabled' ||
+            key === 'BX_airdrop_tab_enabled' ||
             key === 'BX_defi_positions_enabled' ||
-            key === 'BX_rewards_enabled' ||
             key === 'BX_rewards_bridging_enabled' ||
             key === 'BX_degen_mode_enabled' ||
             key === 'BX_nfts_enabled' ||
