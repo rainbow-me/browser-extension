@@ -3,6 +3,7 @@ import { RPCHandler } from '@orpc/server/message-port';
 import * as Sentry from '@sentry/react';
 
 import { INTERNAL_BUILD, IS_TESTING } from '~/core/sentry';
+import { isInternalOrigin } from '~/core/utils/isInternalOrigin';
 import { RainbowError, logger } from '~/logger';
 
 import { POPUP_PORT_NAME } from './constants';
@@ -49,6 +50,14 @@ export function startPopupRouter() {
 
   chrome.runtime.onConnect.addListener((port) => {
     if (port.name === POPUP_PORT_NAME) {
+      // Defense-in-depth: validate that port connections originate from extension URLs.
+      // Port-based connections are inherently more secure than message-based,
+      // but explicit validation protects against future changes or compromised extensions.
+      if (!isInternalOrigin(port.sender, 'oRPC:startPopupRouter')) {
+        port.disconnect();
+        return;
+      }
+
       // Register port for disconnect tracking (expiry and immediate lock)
       registerPopupPort(port);
 
