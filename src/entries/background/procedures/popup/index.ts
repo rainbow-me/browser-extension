@@ -3,6 +3,7 @@ import { RPCHandler } from '@orpc/server/message-port';
 import * as Sentry from '@sentry/react';
 
 import { INTERNAL_BUILD, IS_TESTING } from '~/core/sentry';
+import { isInternalOrigin } from '~/core/utils/isInternalOrigin';
 import { RainbowError, logger } from '~/logger';
 
 import { POPUP_PORT_NAME } from './constants';
@@ -49,6 +50,11 @@ export function startPopupRouter() {
 
   chrome.runtime.onConnect.addListener((port) => {
     if (port.name === POPUP_PORT_NAME) {
+      if (!isInternalOrigin(port.sender, 'orpc')) {
+        port.disconnect();
+        return;
+      }
+
       // Register port for disconnect tracking (expiry and immediate lock)
       registerPopupPort(port);
 
