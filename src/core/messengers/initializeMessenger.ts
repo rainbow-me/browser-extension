@@ -1,6 +1,8 @@
 import { ScriptType, detectScriptType } from '../utils/detectScriptType';
+import { isInternalOrigin } from '../utils/isInternalOrigin';
 
 import { bridgeMessenger } from './internal/bridge';
+import { CallbackOptions, Messenger } from './internal/createMessenger';
 import { extensionMessenger } from './internal/extension';
 import { tabMessenger } from './internal/tab';
 import { windowMessenger } from './internal/window';
@@ -19,6 +21,34 @@ type InitializeMessengerArgs = {
   connect: ScriptType;
 };
 
+/**
+ * Wraps a messenger to validate that all incoming messages originate from
+ * extension URLs. This prevents cross-origin message handler bypass attacks
+ * where malicious websites attempt to send messages to privileged handlers.
+ */
+function withOriginValidation(messenger: Messenger): Messenger {
+  return {
+    ...messenger,
+    reply<TPayload, TResponse>(
+      topic: string,
+      callback: (
+        payload: TPayload,
+        options: CallbackOptions,
+      ) => Promise<TResponse>,
+    ) {
+      return messenger.reply<TPayload, TResponse>(
+        topic,
+        async (payload, options) => {
+          if (!isInternalOrigin(options.sender, `messenger:${topic}`)) {
+            return { error: 'Invalid origin' } as TResponse;
+          }
+          return callback(payload, options);
+        },
+      );
+    },
+  };
+}
+
 export function initializeMessenger({ connect }: InitializeMessengerArgs) {
   const source = detectScriptType();
   const connections = [
@@ -31,5 +61,13 @@ export function initializeMessenger({ connect }: InitializeMessengerArgs) {
       `No messenger found for connection ${source} <-> ${connect}.`,
     );
 
-  return messengersForConnection[connection];
+  const messenger = messengersForConnection[connection];
+
+  // When background expects messages from popup, enforce origin validation
+  // to prevent cross-origin message handler bypass attacks
+  if (source === 'background' && connect === 'popup') {
+    return withOriginValidation(messenger);
+  }
+
+  return messenger;
 }
