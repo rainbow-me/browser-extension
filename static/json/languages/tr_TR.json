@@ -1437,17 +1437,17 @@
   },
   "airdrop": {
     "banner": {
-      "subtitle": "INTRODUCING",
+      "subtitle": "TANITIM",
       "title": "Rainbow Token",
-      "description": "Claim your $RNBW airdrop in the Rainbow app. Download to check your eligibility.",
-      "cta": "Get the Mobile App",
-      "availability": "Available on the App Store and Google Play"
+      "description": "Rainbow uygulamasında $RNBW airdrop’unu talep et. Uygun olup olmadığını kontrol etmek için indir.",
+      "cta": "Mobil Uygulamayı Edin",
+      "availability": "App Store ve Google Play’de mevcut"
     }
   },
   "promo": {
     "airdrop_banner": {
       "title": "Rainbow Token",
-      "subtitle": "Download Rainbow\non Your Phone to Claim"
+      "subtitle": "Talep etmek için\ntelefonunuza Rainbow'u indirin"
     }
   },
   "speed_up_and_cancel": {
