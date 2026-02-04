@@ -5,7 +5,7 @@ import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { identifyWalletTypes } from '~/analytics/identify/walletTypes';
-import config from '~/core/firebase/remoteConfig';
+import config, { useRemoteConfig } from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
@@ -145,21 +145,25 @@ export const Home = memo(function Home() {
   const prevPendingRequest = usePrevious(pendingRequests?.[0]);
   const { isWatchingWallet } = useWallets();
 
+  // Use reactive hooks for remote config values
+  const nftsEnabled = useRemoteConfig('nfts_enabled');
+  const rnbwRewardsEnabled = useRemoteConfig('rnbw_rewards_enabled');
+
   const visibleTabs = useMemo(() => {
     const tabs: Tab[] = ['tokens', 'activity'];
 
     // Add NFTs tab if feature flag is enabled or in testing/dev
-    if (config.nfts_enabled || IS_TESTING) {
+    if (nftsEnabled || IS_TESTING) {
       tabs.push('nfts');
     }
 
     // Add Rewards tab if not watching wallet and feature flag is enabled (or in testing/dev)
-    if (!isWatchingWallet && (config.rnbw_rewards_enabled || IS_TESTING)) {
+    if (!isWatchingWallet && (rnbwRewardsEnabled || IS_TESTING)) {
       tabs.push('rewards');
     }
 
     return tabs;
-  }, [isWatchingWallet]);
+  }, [isWatchingWallet, nftsEnabled, rnbwRewardsEnabled]);
 
   useEffect(() => {
     if (
