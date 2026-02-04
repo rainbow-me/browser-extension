@@ -1437,17 +1437,17 @@
   },
   "airdrop": {
     "banner": {
-      "subtitle": "INTRODUCING",
-      "title": "Rainbow Token",
-      "description": "Claim your $RNBW airdrop in the Rainbow app. Download to check your eligibility.",
-      "cta": "Get the Mobile App",
-      "availability": "Available on the App Store and Google Play"
+      "subtitle": "소개합니다",
+      "title": "레인보우 토큰",
+      "description": "Rainbow 앱에서 $RNBW 에어드랍을 클레임하세요. 다운로드하여 자격 여부를 확인하세요.",
+      "cta": "모바일 앱 받기",
+      "availability": "App Store와 Google Play에서 이용 가능"
     }
   },
   "promo": {
     "airdrop_banner": {
-      "title": "Rainbow Token",
-      "subtitle": "Download Rainbow\non Your Phone to Claim"
+      "title": "레인보우 토큰",
+      "subtitle": "휴대폰에서 Rainbow를 다운로드하고\n수령하세요"
     }
   },
   "speed_up_and_cancel": {
