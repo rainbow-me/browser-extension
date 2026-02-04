@@ -1437,17 +1437,17 @@
   },
   "airdrop": {
     "banner": {
-      "subtitle": "INTRODUCING",
-      "title": "Rainbow Token",
-      "description": "Claim your $RNBW airdrop in the Rainbow app. Download to check your eligibility.",
-      "cta": "Get the Mobile App",
-      "availability": "Available on the App Store and Google Play"
+      "subtitle": "介绍",
+      "title": "Rainbow 代币",
+      "description": "在 Rainbow 应用中领取你的 $RNBW 空投。下载应用以查看你是否符合资格。",
+      "cta": "获取移动应用",
+      "availability": "可在 App Store 和 Google Play 下载"
     }
   },
   "promo": {
     "airdrop_banner": {
-      "title": "Rainbow Token",
-      "subtitle": "Download Rainbow\non Your Phone to Claim"
+      "title": "Rainbow 代币",
+      "subtitle": "在手机上下载 Rainbow\n即可领取"
     }
   },
   "speed_up_and_cancel": {
