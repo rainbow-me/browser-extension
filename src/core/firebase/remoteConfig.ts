@@ -7,6 +7,7 @@ import {
   getRemoteConfig,
   isSupported,
 } from 'firebase/remote-config';
+import { useCallback, useSyncExternalStore } from 'react';
 
 import { logger } from '~/logger';
 
@@ -71,8 +72,48 @@ const DEFAULT_CONFIG = {
   }, {}),
 };
 
+// Subscription management for reactive config updates
+const configListeners = new Set<() => void>();
+
+const notifyConfigChange = () => {
+  configListeners.forEach((listener) => listener());
+};
+
+const subscribeToConfig = (listener: () => void) => {
+  configListeners.add(listener);
+  return () => configListeners.delete(listener);
+};
+
 // Initialize with defaults in case firebase doesn't respond
-const config: RainbowConfig = { ...DEFAULT_CONFIG, status: 'loading' };
+const configData: RainbowConfig = { ...DEFAULT_CONFIG, status: 'loading' };
+
+// Proxy to intercept property sets and notify subscribers
+const config: RainbowConfig = new Proxy(configData, {
+  set(target, prop, value) {
+    const key = prop as keyof RainbowConfig;
+    if (target[key] !== value) {
+      target[key] = value;
+      notifyConfigChange();
+    }
+    return true;
+  },
+});
+
+/**
+ * React hook for reactive remote config values.
+ * Re-renders when the specified config key changes.
+ */
+export function useRemoteConfig<K extends keyof RainbowConfig>(
+  key: K,
+): RainbowConfig[K] {
+  const getSnapshot = useCallback(() => config[key], [key]);
+  const value = useSyncExternalStore(
+    subscribeToConfig,
+    getSnapshot,
+    getSnapshot,
+  );
+  return value;
+}
 
 export const init = async () => {
   try {
