@@ -3656,7 +3656,7 @@
           }
         },
         "testnet": false,
-        "internal": true,
+        "internal": false,
         "opStack": true,
         "defaultExplorer": {
           "url": "https://megaexplorer.xyz",
