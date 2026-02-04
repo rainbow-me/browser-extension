@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 
-import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
 import { useCurrentCurrencyStore } from '~/core/state';
@@ -65,19 +64,16 @@ export function TabHeader({
   ]);
 
   const tabTitle = useMemo(() => {
-    const rewardsEnabled =
-      config.rewards_enabled || process.env.INTERNAL_BUILD === 'true';
-
     switch (activeTab) {
-      case 'points':
-        return rewardsEnabled ? i18n.t('tabs.rewards') : i18n.t('tabs.points');
+      case 'rewards':
+        return i18n.t('tabs.rewards');
       default:
         return i18n.t(`tabs.${activeTab}`);
     }
   }, [activeTab]);
 
   const shouldDisplayBalanceComponent =
-    activeTab !== 'nfts' && activeTab !== 'points';
+    activeTab !== 'nfts' && activeTab !== 'rewards';
 
   return (
     <Inset bottom="20px" top="8px">
@@ -96,8 +92,8 @@ export function TabHeader({
           <Text
             size="16pt"
             weight="heavy"
-            textShadow={activeTab === 'points' ? '12px accent' : undefined}
-            color={activeTab === 'points' ? 'accent' : 'label'}
+            textShadow={activeTab === 'rewards' ? '12px accent' : undefined}
+            color={activeTab === 'rewards' ? 'accent' : 'label'}
           >
             {tabTitle}
           </Text>

@@ -45,10 +45,6 @@ import { ActivityDetails } from './pages/home/Activity/ActivityDetails';
 import { Approvals } from './pages/home/Approvals/Approvals';
 import { ConnectedApps } from './pages/home/ConnectedApps';
 import { NftDetailsRoute } from './pages/home/NFTs/NFTDetails';
-import { ClaimSheet } from './pages/home/Points/ClaimSheet';
-import { PointsOnboardingSheet } from './pages/home/Points/PointsOnboardingSheet';
-import { PointsReferralSheet } from './pages/home/Points/PointsReferralSheet';
-import { PointsWeeklyOverview } from './pages/home/Points/WeeklyPointsOverview';
 import { TokenDetails } from './pages/home/TokenDetails/TokenDetails';
 import { ChooseHW } from './pages/hw/chooseHW';
 import { ConnectLedger } from './pages/hw/ledger';
@@ -151,42 +147,10 @@ const ROUTE_DATA = [
         ),
       },
       {
-        path: ROUTES.CLAIM_SHEET,
-        element: (
-          <ChildRoute>
-            <ClaimSheet />
-          </ChildRoute>
-        ),
-      },
-      {
         path: ROUTES.ACTIVITY_DETAILS(':chainId', ':hash'),
         element: (
           <ChildRoute>
             <ActivityDetails />
-          </ChildRoute>
-        ),
-      },
-      {
-        path: ROUTES.POINTS_REFERRAL,
-        element: (
-          <ChildRoute>
-            <PointsReferralSheet />
-          </ChildRoute>
-        ),
-      },
-      {
-        path: ROUTES.POINTS_ONBOARDING,
-        element: (
-          <ChildRoute>
-            <PointsOnboardingSheet />
-          </ChildRoute>
-        ),
-      },
-      {
-        path: ROUTES.POINTS_WEEKLY_OVERVIEW,
-        element: (
-          <ChildRoute>
-            <PointsWeeklyOverview />
           </ChildRoute>
         ),
       },

@@ -3,7 +3,7 @@ import React from 'react';
 
 import { globalColors } from '~/design-system/styles/designTokens';
 
-const PointsSelectedIcon = ({
+const AirdropSelectedIcon = ({
   accentColor,
   colorMatrixValues,
   tintBackdrop,
@@ -136,4 +136,4 @@ const PointsSelectedIcon = ({
   );
 };
 
-export default PointsSelectedIcon;
+export default AirdropSelectedIcon;
