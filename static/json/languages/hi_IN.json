@@ -1437,17 +1437,17 @@
   },
   "airdrop": {
     "banner": {
-      "subtitle": "INTRODUCING",
-      "title": "Rainbow Token",
-      "description": "Claim your $RNBW airdrop in the Rainbow app. Download to check your eligibility.",
-      "cta": "Get the Mobile App",
-      "availability": "Available on the App Store and Google Play"
+      "subtitle": "परिचय",
+      "title": "रेनबो टोकन",
+      "description": "Rainbow ऐप में अपना $RNBW एयरड्रॉप क्लेम करें। अपनी पात्रता जांचने के लिए डाउनलोड करें।",
+      "cta": "मोबाइल ऐप प्राप्त करें",
+      "availability": "App Store और Google Play पर उपलब्ध"
     }
   },
   "promo": {
     "airdrop_banner": {
-      "title": "Rainbow Token",
-      "subtitle": "Download Rainbow\non Your Phone to Claim"
+      "title": "रेनबो टोकन",
+      "subtitle": "क्लेम करने के लिए अपने फ़ोन पर Rainbow डाउनलोड करें"
     }
   },
   "speed_up_and_cancel": {
