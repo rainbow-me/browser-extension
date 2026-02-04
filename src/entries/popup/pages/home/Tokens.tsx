@@ -1,5 +1,10 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { MotionValue, motion, useTransform } from 'framer-motion';
+import {
+  AnimatePresence,
+  MotionValue,
+  motion,
+  useTransform,
+} from 'framer-motion';
 import partition from 'lodash/partition';
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Address } from 'viem';
@@ -23,6 +28,7 @@ import {
   useHiddenAssetStore,
 } from '~/core/state/hiddenAssets/hiddenAssets';
 import { usePinnedAssetStore } from '~/core/state/pinnedAssets';
+import { usePromos } from '~/core/state/quickPromo/usePromos';
 import { ParsedAssetsDictByChain, ParsedUserAsset } from '~/core/types/assets';
 import { truncateAddress } from '~/core/utils/address';
 import {
@@ -54,6 +60,7 @@ import { useSystemSpecificModifierKey } from '../../hooks/useSystemSpecificModif
 import { useTokenListSampling } from '../../hooks/useTokenListSampling';
 import { useTokenPressMouseEvents } from '../../hooks/useTokenPressMouseEvents';
 import { useTokensShortcuts } from '../../hooks/useTokensShortcuts';
+import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 
 import { TokensSkeleton } from './Skeletons';
@@ -111,6 +118,8 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
   const { modifierSymbol } = useSystemSpecificModifierKey();
   const { pinned: pinnedStore } = usePinnedAssetStore();
   const hidden = useHiddenAssetStore((state) => state.hidden);
+  const { isWatchingWallet } = useWallets();
+  const { activePromo } = usePromos('tokens', isWatchingWallet);
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -308,19 +317,36 @@ export function Tokens({ scrollY }: { scrollY: MotionValue<number> }) {
       ref={containerRef}
       paddingBottom="80px"
     >
-      <QuickPromo
-        text={i18n.t('command_k.quick_promo.text', { modifierSymbol })}
-        textBold={i18n.t('command_k.quick_promo.text_bold')}
-        style={{
-          paddingBottom: 12,
-          paddingLeft: 20,
-          paddingRight: 20,
-          paddingTop: 10,
-        }}
-        symbol="sparkle"
-        symbolColor="accent"
-        promoType="command_k"
-      />
+      <AnimatePresence>
+        {activePromo && (
+          <motion.div
+            key={activePromo}
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            style={{ overflow: 'hidden' }}
+          >
+            <Box
+              style={{
+                paddingBottom: 12,
+                paddingLeft: 20,
+                paddingRight: 20,
+                paddingTop: 10,
+              }}
+            >
+              <QuickPromo
+                promoType={activePromo}
+                text={
+                  activePromo === 'command_k'
+                    ? i18n.t('command_k.quick_promo.text', { modifierSymbol })
+                    : undefined
+                }
+              />
+            </Box>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <Box
         width="full"
         style={{

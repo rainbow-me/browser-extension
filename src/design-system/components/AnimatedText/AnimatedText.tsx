@@ -1,10 +1,11 @@
 import { Variants, motion } from 'framer-motion';
 
-import { CHARACTER_TYPING_SPEED } from '~/entries/popup/pages/home/Points/utils';
 import { RainbowError, logger } from '~/logger';
 
 import { Box } from '../Box/Box';
 import { Text, TextProps } from '../Text/Text';
+
+import { CHARACTER_TYPING_SPEED } from './constants';
 
 type AnimationDirection = 'rightToLeft' | 'leftToRight';
 

@@ -1,13 +1,6 @@
 import { debug as logger } from '@sentry/core';
 import { motion, useMotionValueEvent } from 'framer-motion';
-import {
-  memo,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -57,12 +50,11 @@ import { Header } from './Header';
 import { MoreMenu } from './MoreMenu';
 import { NFTs } from './NFTs/NFTs';
 import { AppConnection } from './NetworkMenu';
-import { Points } from './Points/Points';
+import { RNBWRewards } from './Rewards/RNBWRewards';
 import { TabHeader } from './TabHeader';
 import { Tokens } from './Tokens';
 
 const IS_TESTING = process.env.IS_TESTING === 'true';
-const IS_DEV = process.env.IS_DEV === 'true';
 
 const TOP_NAV_HEIGHT = 65;
 
@@ -87,21 +79,21 @@ const Tabs = memo(function Tabs({ visibleTabs }: { visibleTabs: Tab[] }) {
 
   const COLLAPSED_HEADER_TOP_OFFSET = 157;
 
-  // If we are already in a state where the header is collapsed,
-  // then ensure we are scrolling to the top when we change tab.
-  // It's a useLayoutEffect because we want to set the scroll position
-  // right before the DOM is repainted with the new tab,
-  // so we don't have any flicker
-  useLayoutEffect(() => {
+  // Animate scroll position when switching tabs
+  useEffect(() => {
+    if (!containerRef.current) return;
+
     const top = prevScrollPosition.current;
-    if (!top || !containerRef.current) return;
+    if (!top) return;
+
     containerRef.current.scrollTo({
       top:
         top > COLLAPSED_HEADER_TOP_OFFSET && visibleTokenCount > 8
-          ? COLLAPSED_HEADER_TOP_OFFSET + 4 // don't know why, but +4 solves a shift :)
+          ? COLLAPSED_HEADER_TOP_OFFSET + 4
           : 0,
+      behavior: 'smooth',
     });
-  }, [activeTab, containerRef, prevScrollPosition, visibleTokenCount]);
+  }, [activeTab, containerRef, visibleTokenCount]);
 
   useKeyboardShortcut({
     handler: (e) => {
@@ -138,7 +130,7 @@ const Tabs = memo(function Tabs({ visibleTabs }: { visibleTabs: Tab[] }) {
         {activeTab === 'tokens' && <Tokens scrollY={scrollY} />}
         {activeTab === 'activity' && <Activities />}
         {activeTab === 'nfts' && <NFTs />}
-        {activeTab === 'points' && <Points />}
+        {activeTab === 'rewards' && <RNBWRewards />}
       </Box>
     </>
   );
@@ -157,13 +149,13 @@ export const Home = memo(function Home() {
     const tabs: Tab[] = ['tokens', 'activity'];
 
     // Add NFTs tab if feature flag is enabled or in testing/dev
-    if (config.nfts_enabled || IS_TESTING || IS_DEV) {
+    if (config.nfts_enabled || IS_TESTING) {
       tabs.push('nfts');
     }
 
-    // Add Points tab if not watching wallet
-    if (!isWatchingWallet) {
-      tabs.push('points');
+    // Add Rewards tab if not watching wallet and feature flag is enabled (or in testing/dev)
+    if (!isWatchingWallet && (config.rnbw_rewards_enabled || IS_TESTING)) {
+      tabs.push('rewards');
     }
 
     return tabs;

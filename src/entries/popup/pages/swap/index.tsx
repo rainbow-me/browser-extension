@@ -2,7 +2,6 @@ import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore, useGasStore } from '~/core/state';
@@ -13,7 +12,7 @@ import {
 } from '~/core/state/hiddenAssets/hiddenAssets';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
-import { promoTypes, useQuickPromoStore } from '~/core/state/quickPromo';
+import { usePromos } from '~/core/state/quickPromo/usePromos';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedSearchAsset, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -223,11 +222,10 @@ const MissingPriceExplanation = ({
 };
 
 const DegenModePromo = ({ onClick }: { onClick: () => void }) => {
-  const { seenPromos, setSeenPromo } = useQuickPromoStore();
+  const { activePromo, setSeenPromo } = usePromos('swap');
   const isDegenModeEnabled = useDegenMode((s) => s.isDegenModeEnabled);
 
-  if (!config.degen_mode_enabled) return null;
-  if (seenPromos.degen_mode || isDegenModeEnabled) return null;
+  if (!activePromo || isDegenModeEnabled) return null;
 
   return (
     <ButtonOverflow>
@@ -235,7 +233,7 @@ const DegenModePromo = ({ onClick }: { onClick: () => void }) => {
         testId={'swap-promo-degen-mode'}
         paddingHorizontal="20px"
         onClick={() => {
-          setSeenPromo(promoTypes.degen_mode);
+          setSeenPromo(activePromo);
           onClick();
         }}
       >

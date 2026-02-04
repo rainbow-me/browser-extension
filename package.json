@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.5.182",
+  "version": "1.5.186",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -30,7 +30,7 @@
     "// GraphQL scripts": "",
     "graphql-setup": "yarn graphql-codegen:install && yarn graphql-codegen",
     "graphql-codegen:install": "yarn --cwd src/core/graphql install",
-    "graphql-codegen": "export GRAPH_ENS_API_KEY=$(grep GRAPH_ENS_API_KEY .env | cut -d '=' -f2) && cd src/core/graphql && yarn codegen",
+    "graphql-codegen": "GRAPH_ENS_API_KEY=$(grep GRAPH_ENS_API_KEY .env | cut -d '=' -f2) yarn --cwd src/core/graphql codegen",
     "ds:install": "yarn --cwd src/design-system/docs install",
     "ds": "cd src/design-system/docs && yarn dev",
     "ds:build": "cd src/design-system/docs && yarn build",
@@ -47,7 +47,7 @@
     "// Checks the lockfile for changes": "",
     "check-lockfile": "./scripts/check-lockfile.sh",
     "// Installs deps, runs allowed scripts, patches packages and generates lavamoat policies": "",
-    "setup": "yarn install && yarn ds:install && yarn ds:generate-symbols && yarn allow-scripts && yarn patch-package && yarn policy",
+    "setup": "yarn install && yarn ds:install && yarn ds:generate-symbols && yarn patch-package && yarn policy",
     "// runs audit against dep. tree": "",
     "audit:ci": "yarn audit-ci --moderate --config audit-ci.jsonc",
     "// Generates a zip file based on the build folder ready to upload to the chrome web store": "",

@@ -154,33 +154,6 @@ export const event = {
    */
   nftDetailsViewed: 'nft_details.viewed',
   /**
-   * Called when user views the Leaderboard tab within Points
-   */
-  pointsLeaderboardViewed: 'points.leaderboard.viewed',
-  /**
-   * Called when user copies their referral link
-   * within Points and tracks if it was a code or link
-   */
-  pointsReferralCopied: 'points.referral.copied',
-  /**
-   * Called when user taps the claim button
-   * within the Points / Eth rewards screen
-   */
-  pointsRewardsClaimButtonClicked: 'points.rewards.claim_button.clicked',
-  /**
-   * Called when user chooses which network to claim rewards on and the
-   * code to claim is executed within the Points / Eth rewards screen
-   */
-  pointsRewardsClaimSubmitted: 'points.rewards.claim.submitted',
-  /**
-   * Called when user views the Rewards tab within Points
-   */
-  pointsRewardsViewed: 'points.rewards.viewed',
-  /**
-   * Called when user views the Points tab
-   */
-  pointsViewed: 'points.viewed',
-  /**
    * Called when the popup entry is opened, including:
    * - extension popup
    * - new window
@@ -191,6 +164,18 @@ export const event = {
    * Called when the user completes a Revoke Approcal flow and submits the transaction.
    */
   revokeSubmitted: 'revoke.submitted',
+  /**
+   * Called when the user clicks the RNBW rewards promo banner on the tokens tab
+   */
+  rnbwRewardsBannerClicked: 'rnbw_rewards.banner.clicked',
+  /**
+   * Called when the user clicks the Get the Mobile App button on the RNBW rewards tab
+   */
+  rnbwRewardsGetButtonClicked: 'rnbw_rewards.get_button.clicked',
+  /**
+   * Called when the user views the RNBW rewards tab
+   */
+  rnbwRewardsTabViewed: 'rnbw_rewards.tab.viewed',
   /**
    * Called when token list metrics are sampled during list loading
    */
@@ -830,35 +815,6 @@ export type EventProperties = {
       floorPrice: boolean;
     };
   };
-  [event.pointsLeaderboardViewed]: undefined;
-  [event.pointsReferralCopied]: {
-    /**
-     * Was a `link` or `code` copied
-     */
-    type: 'link' | 'code';
-  };
-  [event.pointsRewardsClaimButtonClicked]: {
-    /**
-     * Claim amount in ETH
-     */
-    claimAmount: number;
-  };
-  [event.pointsRewardsClaimSubmitted]: {
-    /**
-     * claim amount in ETH
-     */
-    claimAmount: number;
-    /**
-     * claim amount in USD
-     */
-    claimAmountUSD: number;
-    /**
-     * which network of the three possible was selected
-     */
-    networkSelected: 'optimism' | 'base' | 'zora';
-  };
-  [event.pointsRewardsViewed]: undefined;
-  [event.pointsViewed]: undefined;
   [event.popupOpened]: undefined;
   [event.searchQueried]: {
     /**
@@ -893,6 +849,9 @@ export type EventProperties = {
      */
     chainId: number;
   };
+  [event.rnbwRewardsBannerClicked]: undefined;
+  [event.rnbwRewardsGetButtonClicked]: undefined;
+  [event.rnbwRewardsTabViewed]: undefined;
   [event.samplesTokenList]: {
     /**
      * Entrypoint of the token list sampling

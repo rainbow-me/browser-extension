@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 import { EventProperties, event } from '~/analytics/event';
-import { promoTypes, useQuickPromoStore } from '~/core/state/quickPromo';
+import { useQuickPromoStore } from '~/core/state/quickPromo';
 
 const analyticsTrack = <T extends keyof EventProperties>(
   event: T,
@@ -38,8 +38,8 @@ export const useCommandKStatus = create<CommandKState>((set, get) => {
     } else {
       analyticsTrack(event.commandKOpened);
       const store = useQuickPromoStore.getState();
-      if (!store.seenPromos[promoTypes.command_k]) {
-        store.setSeenPromo(promoTypes.command_k);
+      if (!store.seenPromos.command_k) {
+        store.setSeenPromo('command_k');
       }
       set({ isCommandKVisible: true });
     }
