@@ -5,7 +5,6 @@ import { Address } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
-import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { createQueryKey, queryClient } from '~/core/react-query';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -25,6 +24,7 @@ import { useHiddenAssetStore } from '~/core/state/hiddenAssets/hiddenAssets';
 import { useNftsStore } from '~/core/state/nfts';
 import { usePinnedAssetStore } from '~/core/state/pinnedAssets';
 import { usePopupInstanceStore } from '~/core/state/popupInstances';
+import { useRemoteConfigStore } from '~/core/state/remoteConfig';
 import { useSavedEnsNamesStore } from '~/core/state/savedEnsNames';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { useCustomNetworkTransactionsStore } from '~/core/state/transactions/customNetworkTransactions';
@@ -100,7 +100,13 @@ const getSearchTags = (key: string) => {
     : tagString.split(/,\s*/);
 };
 
-export const getStaticCommandInfo = (): CommandInfo => {
+export const getStaticCommandInfo = ({
+  nftsEnabled,
+  approvalsEnabled,
+}: {
+  nftsEnabled: boolean;
+  approvalsEnabled: boolean;
+}): CommandInfo => {
   return {
     // PAGE: HOME
     send: {
@@ -173,7 +179,7 @@ export const getStaticCommandInfo = (): CommandInfo => {
       symbolSize: 16.25,
       toPage: PAGES.MY_NFTS,
       type: SearchItemType.Shortcut,
-      hidden: !config.nfts_enabled,
+      hidden: !nftsEnabled,
     },
     copyAddress: {
       name: getCommandName('copy_address'),
@@ -251,7 +257,7 @@ export const getStaticCommandInfo = (): CommandInfo => {
       symbolSize: 14.5,
       to: ROUTES.SETTINGS__APPROVALS,
       type: SearchItemType.Shortcut,
-      hidden: !config.approvals_enabled,
+      hidden: !approvalsEnabled,
     },
     settings: {
       actionLabel: actionLabels.open,
@@ -772,6 +778,8 @@ export const useCommands = (
   const { currentTheme } = useCurrentThemeStore();
   const { data: ensName } = useEnsName({ address, chainId: ChainId.mainnet });
   const { featureFlags } = useFeatureFlagLocalOverwriteStore();
+  const nftsEnabled = useRemoteConfigStore((s) => s.nfts_enabled);
+  const approvalsEnabled = useRemoteConfigStore((s) => s.approvals_enabled);
   const isFullScreen = useIsFullScreen();
   const navigate = useRainbowNavigate();
   const navigateToSwaps = useNavigateToSwaps();
@@ -1588,7 +1596,7 @@ export const useCommands = (
         isFullScreen,
         (isWatchingWallet ?? false) && !featureFlags.full_watching_wallets,
         commandOverrides,
-        getStaticCommandInfo(),
+        getStaticCommandInfo({ nftsEnabled, approvalsEnabled }),
         searchableWallets,
         searchableContacts,
         searchableENSOrAddress,
@@ -1600,6 +1608,8 @@ export const useCommands = (
       isWatchingWallet,
       featureFlags.full_watching_wallets,
       commandOverrides,
+      nftsEnabled,
+      approvalsEnabled,
       searchableTokens,
       searchableNFTs,
       searchableENSOrAddress,

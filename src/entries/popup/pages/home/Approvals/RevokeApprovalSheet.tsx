@@ -5,7 +5,6 @@ import { Address } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
-import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { populateRevokeApproval } from '~/core/raps/actions/unlock';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -18,6 +17,7 @@ import {
   useCurrentCurrencyStore,
   useGasStore,
 } from '~/core/state';
+import { useRemoteConfigStore } from '~/core/state/remoteConfig';
 import { ChainId } from '~/core/types/chains';
 import {
   TransactionGasParams,
@@ -148,8 +148,10 @@ export const RevokeApprovalSheet = ({
       revokeApproveTransaction?.data,
     ]);
 
+  const sendEnabled = useRemoteConfigStore((s) => s.send_enabled);
+
   const handleRevoke = useCallback(async () => {
-    if (!config.send_enabled || !approval?.asset) return;
+    if (!sendEnabled || !approval?.asset) return;
     setSending(true);
     try {
       const { type } = await getWallet(currentAddress);
@@ -229,6 +231,7 @@ export const RevokeApprovalSheet = ({
       setSending(false);
     }
   }, [
+    sendEnabled,
     approval?.asset,
     currentAddress,
     assetAddress,

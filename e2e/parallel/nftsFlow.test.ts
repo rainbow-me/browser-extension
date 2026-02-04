@@ -10,7 +10,7 @@ import {
   it,
 } from 'vitest';
 
-import remoteConfig from '~/core/firebase/remoteConfig';
+import { useRemoteConfigStore } from '~/core/state/remoteConfig';
 
 import {
   delayTime,
@@ -32,7 +32,7 @@ let driver: WebDriver;
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 
-describe.runIf(remoteConfig.nfts_enabled)(
+describe.runIf(useRemoteConfigStore.getState().nfts_enabled)(
   'Visit NFTs Gallery and Details Pages',
   () => {
     beforeAll(async () => {

@@ -4,8 +4,8 @@ import {
 } from '@rainbow-me/delegation';
 import type { Address } from 'viem';
 
-import config, { useRemoteConfig } from '~/core/firebase/remoteConfig';
 import { useFeatureFlagLocalOverwriteStore } from '~/core/state/currentSettings/featureFlags';
+import { useRemoteConfigStore } from '~/core/state/remoteConfig';
 
 /**
  * Delegation and atomic-swap feature status.
@@ -25,7 +25,8 @@ export function getDelegationEnabled(): boolean {
   const local =
     useFeatureFlagLocalOverwriteStore.getState().featureFlags
       .delegation_enabled;
-  return resolveFlag(local, config.delegation_enabled ?? false);
+  const remote = useRemoteConfigStore.getState().delegation_enabled ?? false;
+  return resolveFlag(local, remote);
 }
 
 /** Sync: feature flag only. Background only. */
@@ -33,7 +34,8 @@ export function getAtomicSwapsEnabled(): boolean {
   const local =
     useFeatureFlagLocalOverwriteStore.getState().featureFlags
       .atomic_swaps_enabled;
-  return resolveFlag(local, config.atomic_swaps_enabled ?? false);
+  const remote = useRemoteConfigStore.getState().atomic_swaps_enabled ?? false;
+  return resolveFlag(local, remote);
 }
 
 /**
@@ -49,7 +51,7 @@ export function useDelegationEnabled(): boolean {
   const local = useFeatureFlagLocalOverwriteStore(
     (s) => s.featureFlags.delegation_enabled,
   );
-  const remote = useRemoteConfig('delegation_enabled');
+  const remote = useRemoteConfigStore((s) => s.delegation_enabled);
   return resolveFlag(local, remote ?? false);
 }
 
@@ -58,7 +60,7 @@ export function useAtomicSwapsEnabled(): boolean {
   const local = useFeatureFlagLocalOverwriteStore(
     (s) => s.featureFlags.atomic_swaps_enabled,
   );
-  const remote = useRemoteConfig('atomic_swaps_enabled');
+  const remote = useRemoteConfigStore((s) => s.atomic_swaps_enabled);
   return resolveFlag(local, remote ?? false);
 }
 
