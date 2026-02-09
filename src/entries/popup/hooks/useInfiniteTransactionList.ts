@@ -201,20 +201,29 @@ export const useInfiniteTransactionList = ({
     ];
   }, [currentAddressCustomNetworkTransactions, cutoff, transactions]);
 
+  // Filter pending transactions by testnet mode (same as consolidated list)
+  const pendingTransactionsInSupportedChains = useMemo(
+    () =>
+      pendingTransactions.filter((tx) =>
+        supportedChainIds.includes(tx.chainId),
+      ),
+    [pendingTransactions, supportedChainIds],
+  );
+
   const formattedTransactions = useMemo(() => {
     const pendingHashes: string[] = [];
-    pendingTransactions.forEach((tx) =>
+    pendingTransactionsInSupportedChains.forEach((tx) =>
       pendingHashes.push(`${tx.hash}_${tx.chainId}`),
     );
     return Object.entries(
       selectTransactionsByDate([
-        ...pendingTransactions,
+        ...pendingTransactionsInSupportedChains,
         ...transactionsAfterCutoff.filter(
           (tx) => !pendingHashes.includes(`${tx.hash}_${tx.chainId}`),
         ),
       ]),
     ).flat(2);
-  }, [pendingTransactions, transactionsAfterCutoff]);
+  }, [pendingTransactionsInSupportedChains, transactionsAfterCutoff]);
 
   const infiniteRowVirtualizer = useVirtualizer({
     count: formattedTransactions?.length,
