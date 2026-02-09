@@ -155,6 +155,7 @@ export type TransactionApiResponse = {
   status: TransactionStatus;
   id: TxHash;
   hash: TxHash;
+  chainId: number;
   network: ChainName;
   protocol?: ProtocolType;
   direction?: TransactionDirection;

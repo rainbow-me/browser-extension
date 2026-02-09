@@ -1,7 +1,12 @@
 import { Address, isAddress } from 'viem';
 
 import { AddressOrEth, AssetApiResponse } from '~/core/types/assets';
-import { ChainId, ChainName, chainIdToNameMapping } from '~/core/types/chains';
+import {
+  ChainId,
+  ChainName,
+  chainIdToNameMapping,
+  chainNameToIdMapping,
+} from '~/core/types/chains';
 import type { Asset as PlatformAsset } from '~/core/types/gen/platform/common/asset';
 import type {
   BridgeableNetworkMapping,
@@ -439,13 +444,21 @@ export function convertPlatformTransactionToApiResponse(
   transaction: PlatformTransaction,
 ): TransactionApiResponse {
   const changes = (transaction.changes ?? []).map(convertPlatformChange);
+  const rawChainId = toOptionalNumber(transaction.chainId);
+  const chainId =
+    rawChainId !== undefined && !Number.isNaN(rawChainId)
+      ? rawChainId
+      : transaction.network
+      ? chainNameToIdMapping[transaction.network as ChainName]
+      : ChainId.mainnet;
   return {
     status: normalizeStatus(transaction.status),
     id: transaction.id as TxHash,
     hash: transaction.hash as TxHash,
+    chainId,
     network:
-      chainIdToNameMapping[Number(transaction.chainId)] ||
-      (transaction.network as ChainName | undefined),
+      (transaction.network as ChainName | undefined) ||
+      chainIdToNameMapping[chainId],
     protocol: undefined,
     direction: normalizeDirection(transaction.direction),
     address_from: toOptionalAddress(transaction.addressFrom),
