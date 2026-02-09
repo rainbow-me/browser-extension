@@ -12,7 +12,6 @@ import {
   MinedTransaction,
   RainbowTransaction,
 } from '~/core/types/transactions';
-import { isCustomChain } from '~/core/utils/chains';
 
 import { wait } from './handlers/retry';
 
@@ -94,11 +93,13 @@ function tryRemoveMinedTxs(
     .getState()
     .getSupportedTransactionsChainIds();
 
+  // Same predicate as watchPendingTransactions: non-Addys chains never hit consolidated
+  // history, so waiting for cache would leave pending rows stuck (isCustomChain missed
+  // backend-known chains without Addys).
   const toRemove = txs.filter(
     (tx) =>
-      (supportedTransactionsChainIds.includes(tx.chainId) &&
-        isTxInConsolidatedCache(address, tx.hash, tx.chainId)) ||
-      isCustomChain(tx.chainId),
+      !supportedTransactionsChainIds.includes(tx.chainId) ||
+      isTxInConsolidatedCache(address, tx.hash, tx.chainId),
   );
 
   if (toRemove.length > 0) {

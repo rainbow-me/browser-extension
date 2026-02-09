@@ -17,7 +17,6 @@ import {
   MinedTransaction,
   RainbowTransaction,
 } from '~/core/types/transactions';
-import { isCustomChain } from '~/core/utils/chains';
 import { ensureTxHashFormat } from '~/core/utils/hex';
 import { getTransactionReceiptStatus } from '~/core/utils/transactions';
 import { getProvider } from '~/core/viem/clientToProvider';
@@ -49,6 +48,11 @@ export async function watchPendingTransactions(
   const { addCustomNetworkTransactions } =
     useCustomNetworkTransactionsStore.getState();
 
+  await useNetworkStore.persist.hydrationPromise();
+  const supportedTransactionsChainIds = useNetworkStore
+    .getState()
+    .getSupportedTransactionsChainIds();
+
   const addresses = Object.keys(pendingTransactions) as Address[];
 
   const processTx = async (
@@ -56,7 +60,6 @@ export async function watchPendingTransactions(
     tx: RainbowTransaction,
   ): Promise<MinedTransaction | null> => {
     let updatedTransaction: RainbowTransaction | null = { ...tx };
-    await useNetworkStore.persist.hydrationPromise();
 
     try {
       if (!tx.chainId || !tx.hash) {
@@ -65,7 +68,9 @@ export async function watchPendingTransactions(
 
       const hashNormalized = ensureTxHashFormat(tx.hash);
 
-      if (isCustomChain(tx.chainId)) {
+      // Match consolidated history: only chains with Addys transactions use fetchTransaction;
+      // others use the RPC path (same predicate as pending cleanup / customNetwork store).
+      if (!supportedTransactionsChainIds.includes(tx.chainId)) {
         const provider = getProvider({ chainId: tx.chainId });
         const transactionResponse = await provider.getTransaction(
           hashNormalized ?? tx.hash,
@@ -187,8 +192,9 @@ export async function watchPendingTransactions(
       });
     }
 
-    // Custom chain txs go to custom network store
-    if (isCustomChain(minedTransaction.chainId)) {
+    // History for non-Addys chains is stored locally (not isCustomChain: backend-known
+    // testnets can still lack Addys transactions).
+    if (!supportedTransactionsChainIds.includes(minedTransaction.chainId)) {
       addCustomNetworkTransactions({
         address: addr,
         chainId: minedTransaction.chainId,
