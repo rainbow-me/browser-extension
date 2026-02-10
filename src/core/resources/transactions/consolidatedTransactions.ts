@@ -10,7 +10,7 @@ import {
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
 import { useNetworkStore } from '~/core/state/networks/networks';
-import { ChainName, chainNameToIdMapping } from '~/core/types/chains';
+import { ChainId } from '~/core/types/chains';
 import type { ListTransactionsResponse as PlatformListTransactionsResponse } from '~/core/types/gen/platform/transaction/transaction';
 import {
   PaginatedTransactionsApiResponse,
@@ -159,13 +159,17 @@ async function parseConsolidatedTransactions(
   currency: SupportedCurrencyKey,
 ) {
   return transactions
-    .map((tx) =>
-      parseTransaction({
+    .map((tx) => {
+      const resolvedChainId = Number(tx.chainId);
+      if (Number.isNaN(resolvedChainId) || !Number.isFinite(resolvedChainId))
+        return undefined;
+
+      return parseTransaction({
         tx,
         currency,
-        chainId: chainNameToIdMapping[tx?.network ?? ChainName.mainnet],
-      }),
-    )
+        chainId: resolvedChainId as ChainId,
+      });
+    })
     .filter(Boolean);
 }
 
