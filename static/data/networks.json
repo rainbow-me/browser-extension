@@ -2851,7 +2851,7 @@
           },
           "addys": {
             "approvals": false,
-            "transactions": false,
+            "transactions": true,
             "assets": true,
             "positions": false
           },
@@ -3142,7 +3142,7 @@
           },
           "addys": {
             "approvals": false,
-            "transactions": false,
+            "transactions": true,
             "assets": true,
             "positions": true
           },
@@ -3336,7 +3336,7 @@
           },
           "addys": {
             "approvals": false,
-            "transactions": false,
+            "transactions": true,
             "assets": true,
             "positions": true
           },
@@ -3530,7 +3530,7 @@
           },
           "addys": {
             "approvals": false,
-            "transactions": false,
+            "transactions": true,
             "assets": true,
             "positions": true
           },
@@ -3627,7 +3627,7 @@
           },
           "addys": {
             "approvals": false,
-            "transactions": false,
+            "transactions": true,
             "assets": true,
             "positions": false
           },
@@ -3724,7 +3724,7 @@
           },
           "addys": {
             "approvals": false,
-            "transactions": false,
+            "transactions": true,
             "assets": true,
             "positions": false
           },
@@ -3820,8 +3820,8 @@
           },
           "addys": {
             "approvals": true,
-            "transactions": true,
-            "assets": true,
+            "transactions": false,
+            "assets": false,
             "positions": false
           },
           "tokenSearch": {
@@ -3916,8 +3916,8 @@
           },
           "addys": {
             "approvals": true,
-            "transactions": true,
-            "assets": true,
+            "transactions": false,
+            "assets": false,
             "positions": false
           },
           "tokenSearch": {
@@ -4012,8 +4012,8 @@
           },
           "addys": {
             "approvals": true,
-            "transactions": true,
-            "assets": true,
+            "transactions": false,
+            "assets": false,
             "positions": false
           },
           "tokenSearch": {
@@ -4108,8 +4108,8 @@
           },
           "addys": {
             "approvals": true,
-            "transactions": true,
-            "assets": true,
+            "transactions": false,
+            "assets": false,
             "positions": false
           },
           "tokenSearch": {
@@ -4204,8 +4204,8 @@
           },
           "addys": {
             "approvals": true,
-            "transactions": true,
-            "assets": true,
+            "transactions": false,
+            "assets": false,
             "positions": false
           },
           "tokenSearch": {
@@ -4300,8 +4300,8 @@
           },
           "addys": {
             "approvals": true,
-            "transactions": true,
-            "assets": true,
+            "transactions": false,
+            "assets": false,
             "positions": false
           },
           "tokenSearch": {
@@ -4397,7 +4397,7 @@
           "addys": {
             "approvals": false,
             "transactions": false,
-            "assets": true,
+            "assets": false,
             "positions": false
           },
           "tokenSearch": {
@@ -4492,8 +4492,8 @@
           },
           "addys": {
             "approvals": true,
-            "transactions": true,
-            "assets": true,
+            "transactions": false,
+            "assets": false,
             "positions": false
           },
           "tokenSearch": {
