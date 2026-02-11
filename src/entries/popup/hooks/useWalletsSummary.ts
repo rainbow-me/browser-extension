@@ -28,7 +28,7 @@ const parseAddressSummary = ({
   currentCurrency: SupportedCurrencyKey;
 }): WalletSummary => {
   const addressData =
-    addysSummary?.data.addresses[address.toLowerCase() as Address];
+    addysSummary?.data?.addresses?.[address.toLowerCase() as Address];
 
   // Use asset_value from backend which includes native balances + ERC20 tokens
   // Already converted to the requested currency
