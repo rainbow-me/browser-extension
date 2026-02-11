@@ -36,6 +36,7 @@ function isOrpcQueryKey(queryKey: readonly unknown[]) {
 
 export const persistOptions: Omit<PersistQueryClientOptions, 'queryClient'> = {
   persister: asyncStoragePersister,
+  buster: '1',
   dehydrateOptions: {
     shouldDehydrateQuery: (query) => {
       return Boolean(
