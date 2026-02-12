@@ -7,6 +7,10 @@ import { i18n } from '~/core/languages';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
+import {
+  isPersonalSignMessage,
+  isTypedDataMessage,
+} from '~/core/types/messageSigning';
 import { RPCMethod } from '~/core/types/rpcMethods';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { getSigningRequestDisplayDetails } from '~/core/utils/signMessages';
@@ -62,8 +66,22 @@ export function SignMessage({
   const onAcceptRequest = useCallback(async () => {
     const walletAction = getWalletActionMethod(request?.method);
     const requestPayload = getSigningRequestDisplayDetails(request);
-    if (!requestPayload.msgData || !requestPayload.address || !selectedWallet)
+    if (!requestPayload.message || !requestPayload.address || !selectedWallet)
       return;
+
+    // Validate that walletAction is defined and matches the parsed message type
+    if (!walletAction) {
+      throw new Error(`Unsupported signing method: ${request?.method}`);
+    }
+
+    const expectedMessageType =
+      walletAction === 'personal_sign' ? 'personal_sign' : 'sign_typed_data';
+    if (requestPayload.message.type !== expectedMessageType) {
+      throw new Error(
+        `Message type mismatch: expected ${expectedMessageType}, got ${requestPayload.message.type}`,
+      );
+    }
+
     const { type, vendor } = await wallet.getWallet(selectedWallet);
     let result = null;
 
@@ -75,39 +93,43 @@ export function SignMessage({
       }
 
       if (walletAction === 'personal_sign') {
-        result = await wallet.personalSign(
-          requestPayload.msgData,
-          requestPayload.address,
-        );
-        analytics.track(
-          event.dappPromptSignMessageApproved,
-          {
-            chainId: activeSession?.chainId,
-            dappURL: dappMetadata?.url || '',
-            dappDomain: dappMetadata?.appHost || '',
-            dappName: dappMetadata?.appName,
-            hardwareWallet: !!vendor,
-            hardwareWalletVendor: vendor,
-          },
-          await getWalletContext(activeSession?.address),
-        );
+        if (isPersonalSignMessage(requestPayload.message)) {
+          result = await wallet.personalSign(
+            requestPayload.message,
+            requestPayload.address,
+          );
+          analytics.track(
+            event.dappPromptSignMessageApproved,
+            {
+              chainId: activeSession?.chainId,
+              dappURL: dappMetadata?.url || '',
+              dappDomain: dappMetadata?.appHost || '',
+              dappName: dappMetadata?.appName,
+              hardwareWallet: !!vendor,
+              hardwareWalletVendor: vendor,
+            },
+            await getWalletContext(activeSession?.address),
+          );
+        }
       } else if (walletAction === 'sign_typed_data') {
-        result = await wallet.signTypedData(
-          requestPayload.msgData,
-          requestPayload.address,
-        );
-        analytics.track(
-          event.dappPromptSignTypedDataApproved,
-          {
-            chainId: activeSession?.chainId,
-            dappURL: dappMetadata?.url || '',
-            dappDomain: dappMetadata?.appHost || '',
-            dappName: dappMetadata?.appName,
-            hardwareWallet: !!vendor,
-            hardwareWalletVendor: vendor,
-          },
-          await getWalletContext(activeSession?.address),
-        );
+        if (isTypedDataMessage(requestPayload.message)) {
+          result = await wallet.signTypedData(
+            requestPayload.message,
+            requestPayload.address,
+          );
+          analytics.track(
+            event.dappPromptSignTypedDataApproved,
+            {
+              chainId: activeSession?.chainId,
+              dappURL: dappMetadata?.url || '',
+              dappDomain: dappMetadata?.appHost || '',
+              dappName: dappMetadata?.appName,
+              hardwareWallet: !!vendor,
+              hardwareWalletVendor: vendor,
+            },
+            await getWalletContext(activeSession?.address),
+          );
+        }
       }
       approveRequest(result);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

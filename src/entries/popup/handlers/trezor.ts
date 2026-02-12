@@ -1,19 +1,31 @@
+// Keep ethers imports for transaction signing - hardware wallets require ethers transaction format
 import {
   TransactionRequest,
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
 import { BigNumber } from '@ethersproject/bignumber';
-import { Bytes, hexlify } from '@ethersproject/bytes';
 import {
   UnsignedTransaction,
   parse,
   serialize,
 } from '@ethersproject/transactions';
-import { TypedDataUtils } from '@metamask/eth-sig-util';
 import transformTypedDataPlugin from '@trezor/connect-plugin-ethereum';
 import TrezorConnect from '@trezor/connect-web';
-import { Address, stringToBytes } from 'viem';
+import {
+  Address,
+  ByteArray,
+  Hex,
+  bytesToHex,
+  hexToBytes,
+  stringToBytes,
+} from 'viem';
 
+import {
+  SigningMessage,
+  isPersonalSignMessage,
+  isTypedDataMessage,
+} from '~/core/types/messageSigning';
+import { sanitizeTypedData } from '~/core/utils/ethereum';
 import { addHexPrefix } from '~/core/utils/hex';
 import { getProvider } from '~/core/viem/clientToProvider';
 import { RainbowError, logger } from '~/logger';
@@ -26,7 +38,7 @@ const getPath = async (address: Address) => {
 
 export async function signTransactionFromTrezor(
   transaction: TransactionRequest,
-): Promise<string> {
+): Promise<Hex> {
   try {
     const { from: address } = transaction;
     const path = await getPath(address as Address);
@@ -72,7 +84,7 @@ export async function signTransactionFromTrezor(
         r: response.payload.r,
         s: response.payload.s,
         v: BigNumber.from(response.payload.v).toNumber(),
-      });
+      }) as Hex;
 
       const parsedTx = parse(serializedTransaction);
       if (parsedTx.from?.toLowerCase() !== address?.toLowerCase()) {
@@ -109,23 +121,26 @@ export async function sendTransactionFromTrezor(
 }
 
 export async function signMessageByTypeFromTrezor(
-  msgData: string | Bytes,
+  message: SigningMessage,
   address: Address,
-  messageType: string,
-): Promise<string> {
+): Promise<Hex> {
   const path = await getPath(address);
+
   // Personal sign
-  if (messageType === 'personal_sign') {
-    if (typeof msgData === 'string') {
-      try {
-        // eslint-disable-next-line no-param-reassign
-        msgData = stringToBytes(msgData);
-      } catch (e) {
-        logger.info('the message is not a utf8 string, will sign as hex');
-      }
+  if (isPersonalSignMessage(message)) {
+    let messageBytes: ByteArray;
+    try {
+      messageBytes = stringToBytes(message.message);
+    } catch (e) {
+      logger.info('the message is not a utf8 string, will sign as hex');
+      // If stringToBytes fails, treat as hex string and convert to bytes
+      const hexMessage = message.message.startsWith('0x')
+        ? (message.message as Hex)
+        : (`0x${message.message}` as Hex);
+      messageBytes = hexToBytes(hexMessage);
     }
 
-    const messageHex = hexlify(msgData).substring(2);
+    const messageHex = bytesToHex(messageBytes).slice(2);
 
     const response = await TrezorConnect.ethereumSignMessage({
       path,
@@ -145,28 +160,37 @@ export async function signMessageByTypeFromTrezor(
       throw new Error('Trezor returned an error');
     }
 
-    return addHexPrefix(response.payload.signature);
+    return addHexPrefix(response.payload.signature) as Hex;
+  }
+  // sign typed data
+  else if (isTypedDataMessage(message)) {
+    // message.data is already TypedDataDefinition, no need for type assertion
+    const typedData = message.data;
 
-    // sign typed data
-  } else if (messageType === 'sign_typed_data') {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const parsedData = msgData as any;
+    // Type guard to ensure we have the required fields
     if (
-      typeof msgData !== 'object' ||
-      !(parsedData.types || parsedData.primaryType || parsedData.domain)
+      typeof typedData !== 'object' ||
+      typedData === null ||
+      !(
+        'types' in typedData &&
+        'primaryType' in typedData &&
+        'domain' in typedData
+      )
     ) {
       throw new Error('unsupported typed data version');
     }
 
-    const { domain, types, primaryType, message } =
-      TypedDataUtils.sanitizeData(parsedData);
+    const sanitizedData = sanitizeTypedData(typedData);
+    const { domain, types, primaryType, message: messageData } = sanitizedData;
 
+    // Type assertion needed because Trezor's transformTypedDataPlugin expects specific types
+    // but sanitizedData is structurally compatible after sanitization
     const eip712Data = {
       types,
       primaryType,
       domain,
-      message,
-    };
+      message: messageData,
+    } as unknown as Parameters<typeof transformTypedDataPlugin>[0];
 
     const { domain_separator_hash, message_hash } = transformTypedDataPlugin(
       eip712Data,
@@ -190,8 +214,8 @@ export async function signMessageByTypeFromTrezor(
         'Trezor returned a different address than the one requested',
       );
     }
-    return addHexPrefix(response.payload.signature);
+    return addHexPrefix(response.payload.signature) as Hex;
   } else {
-    throw new Error(`Message type ${messageType} not supported`);
+    throw new Error(`Unsupported message type`);
   }
 }

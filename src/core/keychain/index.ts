@@ -12,6 +12,10 @@ import { Address, Hex } from 'viem';
 import { signTypedData as viemSignTypedData } from 'viem/accounts';
 
 /* eslint-disable boundaries/element-types */
+import {
+  getMessageContent,
+  isTypedDataMessage,
+} from '~/core/types/messageSigning';
 import type {
   SignMessageArguments,
   SignTypedDataArguments,
@@ -264,10 +268,11 @@ export const executeRap = async ({
 
 export const signMessage = async ({
   address,
-  msgData,
-}: SignMessageArguments): Promise<string> => {
+  message,
+}: SignMessageArguments): Promise<Hex> => {
   const signer = await keychainManager.getSigner(address);
-  return signer.signMessage(msgData);
+  const messageContent = getMessageContent(message);
+  return (await signer.signMessage(messageContent)) as Hex;
 };
 
 export const getWallet = async (address: Address) => {
@@ -381,7 +386,22 @@ const validateTypedDataFields = (data: {
   message?: unknown;
   value?: unknown;
 }): ValidatedTypedData => {
-  if (!data.domain || !data.types || !data.primaryType) {
+  // Check if fields exist and are not empty
+  // sanitizeTypedData returns {} for missing fields, so we need to check for empty objects
+  const hasValidDomain =
+    data.domain &&
+    typeof data.domain === 'object' &&
+    Object.keys(data.domain as Record<string, unknown>).length > 0;
+  const hasValidTypes =
+    data.types &&
+    typeof data.types === 'object' &&
+    Object.keys(data.types as Record<string, unknown>).length > 0;
+  const hasValidPrimaryType =
+    data.primaryType &&
+    typeof data.primaryType === 'string' &&
+    data.primaryType.length > 0;
+
+  if (!hasValidDomain || !hasValidTypes || !hasValidPrimaryType) {
     throw new Error(
       'Invalid typed data: missing domain, types, or primaryType',
     );
@@ -402,50 +422,51 @@ const validateTypedDataFields = (data: {
  */
 export const signTypedData = async ({
   address,
-  msgData,
-}: {
-  address: Address;
-  msgData:
-    | SignTypedDataArguments['msgData']
-    | Array<{ name: string; type: string; value: unknown }>;
-}): Promise<string> => {
+  message,
+}: SignTypedDataArguments): Promise<Hex> => {
   const signer = (await keychainManager.getSigner(address)) as Wallet;
 
+  if (!isTypedDataMessage(message)) {
+    throw new Error('Invalid message type: expected typed data message');
+  }
+
+  const typedData = message.data;
+
   // Handle v1 format (legacy array format)
-  if (isTypedDataV1(msgData)) {
+  if (isTypedDataV1(typedData)) {
     const pkeyBuffer = Buffer.from(
       addHexPrefix(signer.privateKey).substring(2),
       'hex',
     );
     return signTypedDataSigUtil({
-      data: msgData,
+      data: typedData,
       privateKey: pkeyBuffer,
       version: SignTypedDataVersion.V1,
-    });
+    }) as Hex;
   }
 
   // Handle v3/v4 format (EIP-712)
-  if (!isTypedDataV3V4(msgData)) {
+  if (!isTypedDataV3V4(typedData)) {
     throw new Error(
       'Invalid typed data format: must be v1 array format or v3/v4 EIP-712 format',
     );
   }
 
   // Normalize and sanitize the data
-  const normalizedData = normalizeTypedDataMessage(msgData);
+  const normalizedData = normalizeTypedDataMessage(typedData);
   const sanitizedData = sanitizeTypedData(normalizedData);
 
   // Validate required fields
   const validatedData = validateTypedDataFields(sanitizedData);
 
   // Extract message (viem uses 'message', but we support 'value' as fallback)
-  const message = validatedData.message || validatedData.value || {};
+  const messageData = validatedData.message || validatedData.value || {};
 
   return await viemSignTypedData({
-    domain: validatedData.domain,
-    types: validatedData.types,
+    domain: validatedData.domain as never,
+    types: validatedData.types as never,
     primaryType: validatedData.primaryType,
-    message: message as Record<string, unknown>,
+    message: messageData as never,
     privateKey: addHexPrefix(signer.privateKey) as Hex,
-  });
+  } as Parameters<typeof viemSignTypedData>[0]);
 };
