@@ -5,12 +5,11 @@ import {
 } from '@ethersproject/abstract-provider';
 import { Wallet } from '@ethersproject/wallet';
 import {
-  MessageTypeProperty,
   SignTypedDataVersion,
-  TypedMessage,
   signTypedData as signTypedDataSigUtil,
 } from '@metamask/eth-sig-util';
-import { Address } from 'viem';
+import { Address, Hex } from 'viem';
+import { signTypedData as viemSignTypedData } from 'viem/accounts';
 
 /* eslint-disable boundaries/element-types */
 import type {
@@ -35,11 +34,6 @@ import { PrivateKey } from './IKeychain';
 import { keychainManager } from './KeychainManager';
 import type { HardwareWalletVendor } from './keychainTypes/hardwareWalletKeychain';
 import { SerializedKeypairKeychain } from './keychainTypes/keyPairKeychain';
-
-interface TypedDataTypes {
-  EIP712Domain: MessageTypeProperty[];
-  [additionalProperties: string]: MessageTypeProperty[];
-}
 
 export const setVaultPassword = async (
   password: string,
@@ -298,37 +292,160 @@ export const addAccountAtIndex = async (
   return newAccount;
 };
 
+/**
+ * Guard function to check if typed data is v1 format
+ * v1 format is an array of TypedDataV1Field objects: [{ name, type, value }, ...]
+ * It lacks domain/types/primaryType fields that v3/v4 have
+ */
+const isTypedDataV1 = (
+  data: unknown,
+): data is Array<{ name: string; type: string; value: unknown }> => {
+  return (
+    Array.isArray(data) &&
+    data.length > 0 &&
+    data.every(
+      (field) =>
+        typeof field === 'object' &&
+        field !== null &&
+        'name' in field &&
+        'type' in field &&
+        'value' in field &&
+        typeof field.name === 'string' &&
+        typeof field.type === 'string',
+    )
+  );
+};
+
+/**
+ * Guard function to check if typed data is v3/v4 format
+ * v3/v4 format has domain, types, and primaryType fields
+ */
+const isTypedDataV3V4 = (
+  data: unknown,
+): data is {
+  domain: unknown;
+  types: unknown;
+  primaryType: unknown;
+  message?: unknown;
+  value?: unknown;
+} => {
+  return (
+    typeof data === 'object' &&
+    data !== null &&
+    !Array.isArray(data) &&
+    ('domain' in data || 'types' in data || 'primaryType' in data)
+  );
+};
+
+/**
+ * Normalizes typed data by converting 'value' field to 'message' if needed
+ * Some dapps use 'value' instead of 'message' for the data payload
+ */
+const normalizeTypedDataMessage = <
+  T extends { message?: unknown; value?: unknown },
+>(
+  data: T,
+): T & { message: Record<string, unknown> } => {
+  // Convert value to message if message is missing
+  const normalizedData =
+    data.message === undefined && data.value !== undefined
+      ? { ...data, message: data.value }
+      : data;
+
+  // Ensure message exists as an object to prevent sanitizeTypedData from crashing
+  // sanitizeTypedData does Object.keys(data.message) which will throw if message is null/undefined
+  const message =
+    normalizedData.message === undefined || normalizedData.message === null
+      ? {}
+      : (normalizedData.message as Record<string, unknown>);
+
+  return { ...normalizedData, message };
+};
+
+type ValidatedTypedData = {
+  domain: Record<string, unknown>;
+  types: Record<string, Array<{ name: string; type: string }>>;
+  primaryType: string;
+  message?: unknown;
+  value?: unknown;
+};
+
+/**
+ * Validates that typed data has all required fields for viem
+ * Returns the validated data or throws an error
+ */
+const validateTypedDataFields = (data: {
+  domain?: unknown;
+  types?: unknown;
+  primaryType?: unknown;
+  message?: unknown;
+  value?: unknown;
+}): ValidatedTypedData => {
+  if (!data.domain || !data.types || !data.primaryType) {
+    throw new Error(
+      'Invalid typed data: missing domain, types, or primaryType',
+    );
+  }
+  return {
+    domain: data.domain as Record<string, unknown>,
+    types: data.types as Record<string, Array<{ name: string; type: string }>>,
+    primaryType: data.primaryType as string,
+    message: data.message,
+    value: data.value,
+  };
+};
+
+/**
+ * Signs typed data using the appropriate method based on version
+ * - v1: Uses @metamask/eth-sig-util (legacy array format)
+ * - v3/v4: Uses viem's signTypedData (EIP-712 format)
+ */
 export const signTypedData = async ({
   address,
   msgData,
-}: SignTypedDataArguments): Promise<string> => {
+}: {
+  address: Address;
+  msgData:
+    | SignTypedDataArguments['msgData']
+    | Array<{ name: string; type: string; value: unknown }>;
+}): Promise<string> => {
   const signer = (await keychainManager.getSigner(address)) as Wallet;
 
-  const pkeyBuffer = Buffer.from(
-    addHexPrefix(signer.privateKey).substring(2),
-    'hex',
-  );
-  const parsedData = msgData;
-
-  // There are 3 types of messages
-  // v1 => basic data types
-  // v3 =>  has type / domain / primaryType
-  // v4 => same as v3 but also supports which supports arrays and recursive structs.
-  // Because v4 is backwards compatible with v3, we're supporting only v4
-
-  let sanitizedData = parsedData;
-
-  let version = 'v1';
-  if (
-    typeof parsedData === 'object' &&
-    (parsedData.types || parsedData.primaryType || parsedData.domain)
-  ) {
-    version = 'v4';
-    sanitizedData = sanitizeTypedData(parsedData);
+  // Handle v1 format (legacy array format)
+  if (isTypedDataV1(msgData)) {
+    const pkeyBuffer = Buffer.from(
+      addHexPrefix(signer.privateKey).substring(2),
+      'hex',
+    );
+    return signTypedDataSigUtil({
+      data: msgData,
+      privateKey: pkeyBuffer,
+      version: SignTypedDataVersion.V1,
+    });
   }
-  return signTypedDataSigUtil({
-    data: sanitizedData as unknown as TypedMessage<TypedDataTypes>,
-    privateKey: pkeyBuffer,
-    version: version.toUpperCase() as SignTypedDataVersion,
+
+  // Handle v3/v4 format (EIP-712)
+  if (!isTypedDataV3V4(msgData)) {
+    throw new Error(
+      'Invalid typed data format: must be v1 array format or v3/v4 EIP-712 format',
+    );
+  }
+
+  // Normalize and sanitize the data
+  const normalizedData = normalizeTypedDataMessage(msgData);
+  const sanitizedData = sanitizeTypedData(normalizedData);
+
+  // Validate required fields
+  const validatedData = validateTypedDataFields(sanitizedData);
+
+  // Extract message (viem uses 'message', but we support 'value' as fallback)
+  const message = validatedData.message || validatedData.value || {};
+
+  return await viemSignTypedData({
+    domain: validatedData.domain,
+    types: validatedData.types,
+    primaryType: validatedData.primaryType,
+    message: message as Record<string, unknown>,
+    privateKey: addHexPrefix(signer.privateKey) as Hex,
   });
 };
