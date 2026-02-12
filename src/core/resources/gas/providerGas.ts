@@ -9,7 +9,7 @@ import {
 } from '~/core/react-query';
 import { ChainId } from '~/core/types/chains';
 import { weiToGwei } from '~/core/utils/ethereum';
-import { getProvider } from '~/core/wagmi/clientToProvider';
+import { getProvider } from '~/core/viem/clientToProvider';
 
 import { MeteorologyLegacyResponse } from './meteorology';
 

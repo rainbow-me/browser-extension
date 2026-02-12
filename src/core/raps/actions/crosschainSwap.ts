@@ -13,7 +13,7 @@ import { ChainId } from '~/core/types/chains';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { isSameAssetInDiffChains } from '~/core/utils/assets';
 import { addNewTransaction } from '~/core/utils/transactions';
-import { getProvider } from '~/core/wagmi/clientToProvider';
+import { getProvider } from '~/core/viem/clientToProvider';
 import { RainbowError, logger } from '~/logger';
 
 import {
