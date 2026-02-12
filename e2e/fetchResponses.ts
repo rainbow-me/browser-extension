@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 // This script fetches fresh swap quote responses from the Rainbow API and
-// updates the Anvil fork block number in vitest.anvil.ts to match the
+// updates the Anvil fork block number in anvilConfig.ts to match the
 // capture point.  RFQ/PMM protocols are excluded from quote requests so
 // that signed orders (which embed chain-specific EIP-712 signatures)
 // don't fail verification on the fork (chain ID 1337 vs mainnet 1).
@@ -31,7 +31,7 @@ const FALLBACK_SWAP_SELL_AMOUNT = '1000000000000000000';
 function normalizeSwapUrlForMock(rawUrl: string): string {
   const url = new URL(rawUrl);
   const sellAmount = url.searchParams.get('sellAmount');
-  if (sellAmount !== LARGE_SWAP_SELL_AMOUNT) return rawUrl;
+  if (sellAmount !== LARGE_SWAP_SELL_AMOUNT) return url.href;
   url.searchParams.set('sellAmount', FALLBACK_SWAP_SELL_AMOUNT);
   return url.href;
 }
@@ -59,7 +59,7 @@ const fetchWithTimeout = (
 };
 
 async function updateAnvilConfig(blockNumber: bigint) {
-  const anvilConfigPath = 'e2e/vitest.anvil.ts';
+  const anvilConfigPath = 'e2e/anvilConfig.ts';
   let content = await readFile(anvilConfigPath, 'utf-8');
 
   content = content.replace(
@@ -121,11 +121,42 @@ async function removeUnusedMocks(expectedHashes: Set<string>) {
   let successCount = 0;
   let errorCount = 0;
 
-  const expectedHashes = new Set<string>(
-    urls.map((url: string) => `${sha256(normalizeSwapUrlForMock(url))}.json`),
-  );
+  const expectedHashes = new Set<string>();
+  const hashToUrl = new Map<string, string>();
+  const seenUrls = new Set<string>();
+  const deduplicatedUrls: string[] = [];
 
-  const fetchAndWritePromises = urls.map(async (url: string) => {
+  for (const url of urls as string[]) {
+    if (seenUrls.has(url)) continue;
+    seenUrls.add(url);
+
+    const normalized = normalizeSwapUrlForMock(url);
+    const hash = sha256(normalized);
+    const filename = `${hash}.json`;
+    const existing = hashToUrl.get(filename);
+    if (existing) {
+      console.error(
+        `❌ Hash collision after normalization (different URLs → same mock file):`,
+      );
+      console.error(`   URL 1: ${existing}`);
+      console.error(`   URL 2: ${url}`);
+      console.error(`   Normalized hash: ${hash}`);
+      console.error(
+        `Remove the duplicate from mock_swap_quotes_urls.json to avoid non-deterministic mocks.`,
+      );
+      process.exit(1);
+    }
+    expectedHashes.add(filename);
+    hashToUrl.set(filename, url);
+    deduplicatedUrls.push(url);
+  }
+
+  const skipped = (urls as string[]).length - deduplicatedUrls.length;
+  if (skipped > 0) {
+    console.log(`ℹ️  Skipped ${skipped} exact-duplicate URLs`);
+  }
+
+  const fetchAndWritePromises = deduplicatedUrls.map(async (url: string) => {
     // Hash the normalized URL so the file is stored under the same key
     // that mockFetch.ts will use for lookup at runtime.
     const hash = sha256(normalizeSwapUrlForMock(url));
