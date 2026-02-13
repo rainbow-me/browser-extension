@@ -14,6 +14,7 @@ import { personalSignContract } from './personalSign';
 import { removeContract } from './remove';
 import { revokeDelegationContract } from './revokeDelegation';
 import { sendTransactionContract } from './sendTransaction';
+import { shouldRevokeDelegationContract } from './shouldRevokeDelegation';
 import { statusContract } from './status';
 import { testSandboxContract } from './testSandbox';
 import { unlockContract } from './unlock';
@@ -46,6 +47,7 @@ export const walletContract = {
   exportAccount: exportAccountContract,
   sendTransaction: sendTransactionContract,
   revokeDelegation: revokeDelegationContract,
+  shouldRevokeDelegation: shouldRevokeDelegationContract,
   personalSign: personalSignContract,
   testSandbox: testSandboxContract,
 };

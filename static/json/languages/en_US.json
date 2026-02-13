@@ -510,7 +510,8 @@
         "enable_flashbots": "Enable Flashbots",
         "disable_flashbots": "Disable Flashbots",
         "copy_uuid": "Copy UUID",
-        "clear_transactions": "Clear Pending Transactions"
+        "clear_transactions": "Clear Pending Transactions",
+        "trigger_security_alert": "Trigger Security Alert"
       },
       "search_tags": {
         "swap": "buy, sell, trade, order, exchange, dex, routes",
@@ -538,7 +539,8 @@
         "wallets_and_keys": "wallets and keys, settings, preferences",
         "diagnostics": "diagnostics",
         "refresh_data": "refresh, reload, clear cache, reset, update",
-        "clear_transactions": "clear, reset, pending, transactions, nonce, nonces"
+        "clear_transactions": "clear, reset, pending, transactions, nonce, nonces",
+        "trigger_security_alert": "delegation, revoke, mock, debug, test"
       }
     },
     "command_rows": {
@@ -563,6 +565,9 @@
     },
     "refresh_data_toast": {
       "title": "Balances and Activity Refreshed"
+    },
+    "trigger_security_alert_toast": {
+      "title": "Security Alert Triggered"
     },
     "contact_toast": {
       "title_added": "Contact Added",
@@ -689,6 +694,8 @@
     "revoke": {
       "title": "Revoke Delegation",
       "subtitle": "Remove delegation from this contract",
+      "security_title": "Security Alert",
+      "security_subtitle": "An unknown delegation was detected. Revoke it to secure your wallet.",
       "security_notice": "Security Notice",
       "chain_label": "Chain",
       "contract_label": "Contract",
@@ -701,6 +708,10 @@
       "done": "Done",
       "next": "Next",
       "confirm_hw": "Confirm on Device"
+    },
+    "proactive_revoke": {
+      "title": "Security Alert",
+      "description": "An unknown delegation was detected. Revoke to secure your wallet."
     },
     "confirm_disable": {
       "title": "Disable Smart Wallet",

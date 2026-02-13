@@ -7,7 +7,7 @@ import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
-import { queryClient } from '~/core/react-query';
+import { createQueryKey, queryClient } from '~/core/react-query';
 import { shortcuts } from '~/core/references/shortcuts';
 import {
   useCurrentAddressStore,
@@ -343,6 +343,15 @@ export const getStaticCommandInfo = (): CommandInfo => {
       searchTags: getSearchTags('clear_transactions'),
       shouldRemainOnActiveRoute: true,
       symbol: 'xmark.circle.fill',
+      symbolSize: 15,
+      type: SearchItemType.Shortcut,
+    },
+    triggerSecurityAlert: {
+      name: getCommandName('trigger_security_alert'),
+      page: PAGES.HOME,
+      searchTags: getSearchTags('trigger_security_alert'),
+      shouldRemainOnActiveRoute: true,
+      symbol: 'exclamationmark.triangle.fill',
       symbolSize: 15,
       type: SearchItemType.Shortcut,
     },
@@ -1199,6 +1208,23 @@ export const useCommands = (
             ),
           });
         },
+      },
+      triggerSecurityAlert: {
+        action: () => {
+          const queryKey = createQueryKey(
+            'shouldRevokeDelegation',
+            { address },
+            { persisterVersion: 1 },
+          );
+          queryClient.setQueryData(queryKey, {
+            shouldRevoke: true,
+            revokes: [{ address, chainId: ChainId.mainnet }],
+          });
+          triggerToast({
+            title: i18n.t('command_k.trigger_security_alert_toast.title'),
+          });
+        },
+        hidden: !IS_DEV,
       },
 
       // PAGE: ADD_WALLET
