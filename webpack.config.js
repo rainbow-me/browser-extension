@@ -147,11 +147,6 @@ module.exports = {
     alias: {
       '~': resolve(__dirname, 'src/'),
       static: resolve(__dirname, 'static/'),
-      // TODO: Remove once @rainbow-me/delegation ships a fixed `module` field pointing to dist/index.mjs
-      '@rainbow-me/delegation': resolve(
-        __dirname,
-        'node_modules/@rainbow-me/delegation/dist/index.mjs',
-      ),
     },
     fallback: {
       fs: false,

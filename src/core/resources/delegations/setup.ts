@@ -1,9 +1,8 @@
 import { configure } from '@rainbow-me/delegation';
-import type { AsyncStorageInterface } from '@storesjs/stores';
 
 import { platformHttp } from '~/core/network/platform';
 import { useCurrentAddressStore } from '~/core/state';
-import { createExtensionStoreOptions } from '~/core/state/_internal';
+import { getSyncedStorage } from '~/core/state/_internal';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { logger } from '~/logger';
 
@@ -11,9 +10,9 @@ import { logger } from '~/logger';
  * Configure the delegation SDK. Call once at startup in both popup and background.
  */
 export function setupDelegationClient(): void {
-  const { sync, storage } = createExtensionStoreOptions({
-    storageKey: 'delegation',
-    version: 1,
+  const { storage, syncEngine } = getSyncedStorage({
+    area: 'local',
+    storageKeyPrefix: 'rainbow.zustand.',
   });
 
   configure({
@@ -22,11 +21,10 @@ export function setupDelegationClient(): void {
     chains: Object.values(
       useNetworkStore.getState().getBackendSupportedChains(),
     ),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    currentAddress: ($: any) => $(useCurrentAddressStore).currentAddress,
+    getCurrentAddress: ($) => $(useCurrentAddressStore).currentAddress,
     storeOptions: {
-      sync,
-      storage: storage as AsyncStorageInterface,
+      sync: { engine: syncEngine },
+      storage,
       shouldEnable: () => true,
     },
   });

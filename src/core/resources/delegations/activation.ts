@@ -1,16 +1,23 @@
-import { useDelegationPreference } from '@rainbow-me/delegation';
+import {
+  disableDelegation,
+  enableDelegation,
+  useDelegationDisabled,
+} from '@rainbow-me/delegation';
+import { useCallback } from 'react';
 import { Address } from 'viem';
 
 import remoteConfig from '~/core/firebase/remoteConfig';
 
 export function useActivationStatus({ address }: { address: Address }) {
-  const preference = useDelegationPreference(address);
+  const disabled = useDelegationDisabled(address);
+
+  const enable = useCallback(() => enableDelegation(address), [address]);
+  const disable = useCallback(() => disableDelegation(address), [address]);
 
   return {
-    ...preference,
-    // Override enabled to respect feature flag
-    enabled: remoteConfig.delegation_enabled && preference.enabled,
-    // For backwards compatibility with loading state checks
+    enabled: remoteConfig.delegation_enabled && !disabled,
     isLoading: false,
+    enable,
+    disable,
   };
 }

@@ -1,4 +1,4 @@
-import { getDelegations } from '@rainbow-me/delegation';
+import { DelegationStatus, getDelegations } from '@rainbow-me/delegation';
 import { useQuery } from '@tanstack/react-query';
 import { Address } from 'viem';
 
@@ -37,28 +37,18 @@ async function delegationsQueryFunction({
   ChainDelegation[] | null
 > {
   try {
-    // getDelegations returns all delegations across all chains
-    // It only returns chains where the wallet is actually delegated
-    const results = await getDelegations({
-      address,
-    });
+    const results = await getDelegations({ address });
 
     if (!results || !results.length) {
       return [];
     }
 
-    return results
-      .filter(
-        (result) =>
-          result.delegationStatus === 'DELEGATION_STATUS_RAINBOW_DELEGATED' ||
-          result.delegationStatus === 'DELEGATION_STATUS_THIRD_PARTY_DELEGATED',
-      )
-      .map((result) => ({
-        chainId: result.chainId,
-        contractAddress: result.currentContract || undefined,
-        isThirdParty:
-          result.delegationStatus === 'DELEGATION_STATUS_THIRD_PARTY_DELEGATED',
-      }));
+    return results.map((result) => ({
+      chainId: result.chainId,
+      contractAddress: result.currentContract || undefined,
+      isThirdParty:
+        result.delegationStatus === DelegationStatus.THIRD_PARTY_DELEGATED,
+    }));
   } catch (e) {
     logger.error(new RainbowError('delegationsQueryFunction: '), {
       message: (e as Error)?.message,

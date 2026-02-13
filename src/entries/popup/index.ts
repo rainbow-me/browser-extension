@@ -16,7 +16,7 @@ if (process.env.IS_TESTING === 'true') {
   await import('../../../e2e/mockFetch').then((m) => m.mockFetch());
 }
 
-// Configure delegation SDK before render - required for useDelegationPreference
+// Configure delegation SDK before render
 setupDelegationClient();
 
 const domContainer = document.querySelector('#app') as Element;
