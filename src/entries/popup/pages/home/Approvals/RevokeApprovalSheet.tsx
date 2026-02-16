@@ -1,7 +1,6 @@
-import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Address } from 'viem';
+import { Address, Hex, formatUnits } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -20,14 +19,14 @@ import {
 } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
 import {
-  TransactionGasParams,
-  TransactionLegacyGasParams,
-} from '~/core/types/gas';
-import { NewTransaction, TxHash } from '~/core/types/transactions';
+  NewTransaction,
+  TransactionRequest,
+  TxHash,
+} from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
 import { parseUserAsset } from '~/core/utils/assets';
 import { getChain } from '~/core/utils/chains';
-import { convertRawAmountToDecimalFormat } from '~/core/utils/numbers';
+import { getErrorMessage } from '~/core/utils/errors';
 import { addNewTransaction } from '~/core/utils/transactions';
 import {
   AccentColorProvider,
@@ -47,7 +46,7 @@ import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { CoinIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { ApprovalFee } from '~/entries/popup/components/TransactionFee/TransactionFee';
-import { isLedgerConnectionError } from '~/entries/popup/handlers/ledger';
+import { isLedgerConnectionError } from '~/entries/popup/handlers/hardwareWallet';
 import { getWallet, sendTransaction } from '~/entries/popup/handlers/wallet';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import usePrevious from '~/entries/popup/hooks/usePrevious';
@@ -110,9 +109,9 @@ export const RevokeApprovalSheet = ({
     return {
       to: currentAddress,
       from: currentAddress,
-      value: '0x0',
+      value: 0n,
       chainId: approval?.chain_id || ChainId.mainnet,
-      data: '0x',
+      data: '0x' as Hex,
     };
   }, [currentAddress, approval?.chain_id]);
 
@@ -139,7 +138,7 @@ export const RevokeApprovalSheet = ({
         to: assetAddress,
         from: currentAddress,
         chainId: approvalChainId,
-        data: revokeApproveTransaction?.data || '0x',
+        data: (revokeApproveTransaction?.data || '0x') as Hex,
       };
     }, [
       approvalChainId,
@@ -157,12 +156,13 @@ export const RevokeApprovalSheet = ({
       if (type === 'HardwareWalletKeychain') {
         setWaitingForDevice(true);
       }
+      const txData = (revokeApproveTransaction?.data || '0x') as Hex;
       const result = await sendTransaction({
         from: currentAddress,
         to: assetAddress,
-        value: '0x0',
+        value: 0n,
         chainId: approvalChainId,
-        data: revokeApproveTransaction?.data || '0x',
+        data: txData,
       });
       if (result) {
         const transaction: NewTransaction = {
@@ -176,8 +176,8 @@ export const RevokeApprovalSheet = ({
               }),
             },
           ],
-          data: result.data,
-          value: result.value.toString(),
+          data: txData,
+          value: '0',
           from: currentAddress,
           to: assetAddress,
           hash: result.hash as TxHash,
@@ -185,15 +185,21 @@ export const RevokeApprovalSheet = ({
           status: 'pending',
           type: 'revoke',
           nonce: result.nonce,
-          gasPrice: (
-            selectedGas.transactionGasParams as TransactionLegacyGasParams
-          )?.gasPrice,
-          maxFeePerGas: (
-            selectedGas.transactionGasParams as TransactionGasParams
-          )?.maxFeePerGas,
-          maxPriorityFeePerGas: (
-            selectedGas.transactionGasParams as TransactionGasParams
-          )?.maxPriorityFeePerGas,
+          gasPrice:
+            selectedGas?.transactionGasParams &&
+            'gasPrice' in selectedGas.transactionGasParams
+              ? selectedGas.transactionGasParams.gasPrice.toString()
+              : undefined,
+          maxFeePerGas:
+            selectedGas?.transactionGasParams &&
+            'maxFeePerGas' in selectedGas.transactionGasParams
+              ? selectedGas.transactionGasParams.maxFeePerGas.toString()
+              : undefined,
+          maxPriorityFeePerGas:
+            selectedGas?.transactionGasParams &&
+            'maxPriorityFeePerGas' in selectedGas.transactionGasParams
+              ? selectedGas.transactionGasParams.maxPriorityFeePerGas.toString()
+              : undefined,
         };
         await addNewTransaction({
           address: currentAddress,
@@ -213,16 +219,16 @@ export const RevokeApprovalSheet = ({
         });
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
+    } catch (e) {
       if (!isLedgerConnectionError(e)) {
-        const extractedError = (e as Error).message.split('[')[0];
+        const extractedError = getErrorMessage(e).split('[')[0];
         triggerAlert({
           text: i18n.t('errors.sending_transaction'),
           description: extractedError,
         });
       }
       logger.error(new RainbowError('send: error executing revoke approval'), {
-        message: (e as Error)?.message,
+        message: getErrorMessage(e),
       });
     } finally {
       setWaitingForDevice(false);
@@ -235,7 +241,7 @@ export const RevokeApprovalSheet = ({
     approvalChainId,
     revokeApproveTransaction?.data,
     currentCurrency,
-    selectedGas.transactionGasParams,
+    selectedGas?.transactionGasParams,
     onRevoke,
     navigate,
   ]);
@@ -317,9 +323,9 @@ export const RevokeApprovalSheet = ({
                     >
                       {spender?.quantity_allowed.toLowerCase() === 'unlimited'
                         ? spender?.quantity_allowed
-                        : convertRawAmountToDecimalFormat(
-                            spender?.quantity_allowed || '0',
-                            approval?.asset.decimals,
+                        : formatUnits(
+                            BigInt(spender?.quantity_allowed || '0'),
+                            approval?.asset.decimals || 18,
                           )}
                     </TextOverflow>
                   </Box>

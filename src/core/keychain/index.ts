@@ -1,43 +1,34 @@
 import {
-  Provider,
-  TransactionRequest,
-  TransactionResponse,
-} from '@ethersproject/abstract-provider';
-import { Wallet } from '@ethersproject/wallet';
-import {
   SignTypedDataVersion,
   signTypedData as signTypedDataSigUtil,
 } from '@metamask/eth-sig-util';
-import { Address, Hex } from 'viem';
-import { signTypedData as viemSignTypedData } from 'viem/accounts';
+import { Address, Hash, Hex, createWalletClient, http } from 'viem';
+import {
+  privateKeyToAccount,
+  signTypedData as viemSignTypedData,
+} from 'viem/accounts';
 
 /* eslint-disable boundaries/element-types */
 import {
+  type SignMessageArguments,
+  type SignTypedDataArguments,
   getMessageContent,
   isTypedDataMessage,
 } from '~/core/types/messageSigning';
-import type {
-  SignMessageArguments,
-  SignTypedDataArguments,
-} from '~/entries/background/handlers/handleWallets';
-import { logger } from '~/logger';
 /* eslint-enable boundaries/element-types */
 
 import { walletExecuteRap } from '../raps/execute';
-import { RapSwapActionParameters, RapTypes } from '../raps/references';
-import {
-  getAtomicSwapsEnabled,
-  getDelegationEnabled,
-} from '../resources/delegations/featureStatus';
+import { WalletExecuteRapProps } from '../raps/references';
+import { useNetworkStore } from '../state/networks/networks';
 import { KeychainType } from '../types/keychainTypes';
+import { TransactionRequest } from '../types/transactions';
 import { EthereumWalletType } from '../types/walletTypes';
 import {
   EthereumWalletSeed,
   identifyWalletType,
-  normalizeTransactionResponsePayload,
   sanitizeTypedData,
 } from '../utils/ethereum';
-import { addHexPrefix } from '../utils/hex';
+import { handleRpcUrl } from '../viem/clientRpc';
 
 import { PrivateKey } from './IKeychain';
 import { keychainManager } from './KeychainManager';
@@ -237,85 +228,80 @@ export const exportAccount = async (
   return keychainManager.exportAccount(address, password);
 };
 
+const getAccount = async (address: Address) => {
+  const keychain = await keychainManager.getKeychain(address);
+  const privateKey = await keychain.exportAccount(address);
+  return privateKeyToAccount(privateKey);
+};
+
+const getWalletClientForAddress = async (address: Address, chainId: number) => {
+  const account = await getAccount(address);
+  const chains = useNetworkStore.getState().getAllActiveRpcChains();
+  const chain = chains.find((c) => c.id === chainId);
+  if (!chain) throw new Error(`Chain ${chainId} not found`);
+  return createWalletClient({
+    account,
+    chain,
+    transport: http(handleRpcUrl(chain)),
+  });
+};
+
 export const sendTransaction = async (
   txPayload: TransactionRequest,
-  provider: Provider,
-): Promise<TransactionResponse> => {
+): Promise<Hash> => {
   if (typeof txPayload.from === 'undefined') {
     throw new Error('Missing from address');
   }
 
-  const signer = await keychainManager.getSigner(txPayload.from as Address);
-  const wallet = signer.connect(provider);
+  const walletClient = await getWalletClientForAddress(
+    txPayload.from as Address,
+    txPayload.chainId ?? 1,
+  );
 
-  let response = await wallet.sendTransaction(txPayload);
-  response = normalizeTransactionResponsePayload(response);
-  return response;
+  const baseTx = {
+    to: txPayload.to as Address,
+    value: txPayload.value,
+    data: txPayload.data as Hex | undefined,
+    nonce: txPayload.nonce,
+    gas: txPayload.gasLimit ?? txPayload.gas,
+    chain: null as null,
+  };
+
+  return txPayload.maxFeePerGas != null
+    ? walletClient.sendTransaction({
+        ...baseTx,
+        maxFeePerGas: txPayload.maxFeePerGas,
+        maxPriorityFeePerGas: txPayload.maxPriorityFeePerGas,
+      })
+    : walletClient.sendTransaction({
+        ...baseTx,
+        gasPrice: txPayload.gasPrice,
+      });
 };
 
 export const executeRap = async ({
   rapActionParameters,
   type,
-  provider,
-}: {
-  rapActionParameters: RapSwapActionParameters<'swap' | 'crosschainSwap'>;
-  type: RapTypes;
-  provider: Provider;
-}): Promise<{
-  nonce: number | undefined;
-  errorMessage?: string | null;
-  hash?: string | null;
-}> => {
+}: WalletExecuteRapProps): Promise<{ nonce: number | undefined }> => {
   const from = (rapActionParameters.address ||
     rapActionParameters.quote?.from) as Address;
   if (typeof from === 'undefined') {
     throw new Error('Missing from address');
   }
-
-  // Get wallet info to determine if atomic execution is allowed
-  const walletInfo = await keychainManager.getWallet(from);
-  const isHardwareWallet =
-    walletInfo?.type === KeychainType.HardwareWalletKeychain;
-
-  const atomicSwapsEnabled = getAtomicSwapsEnabled();
-  const delegationEnabled = getDelegationEnabled();
-
-  // Determine if atomic execution (delegation-based) should be used.
-  // Both feature flags must be enabled - delegation and atomic swaps are
-  // gated together to ensure the full flow is feature-flagged.
-  const canUseAtomic =
-    atomicSwapsEnabled &&
-    delegationEnabled &&
-    (type === 'swap' || type === 'crosschainSwap') &&
-    !isHardwareWallet;
-
-  logger.debug('[Delegation] executeRap called', {
-    rapType: type,
+  const walletClient = await getWalletClientForAddress(
     from,
-    chainId: rapActionParameters.chainId,
-    isHardwareWallet,
-    atomicSwapsEnabled,
-    delegationEnabled,
-    canUseAtomic,
-  });
-
-  const signer = await keychainManager.getSigner(from);
-  const wallet = signer.connect(provider);
-
-  // Pass atomic flag to walletExecuteRap - it will handle feature flag checks
-  return walletExecuteRap(wallet, type, {
-    ...rapActionParameters,
-    atomic: canUseAtomic,
-  });
+    rapActionParameters.chainId,
+  );
+  return walletExecuteRap(walletClient, type, rapActionParameters);
 };
 
 export const signMessage = async ({
   address,
   message,
 }: SignMessageArguments): Promise<Hex> => {
-  const signer = await keychainManager.getSigner(address);
+  const account = await getAccount(address);
   const messageContent = getMessageContent(message);
-  return (await signer.signMessage(messageContent)) as Hex;
+  return account.signMessage({ message: messageContent });
 };
 
 export const getWallet = async (address: Address) => {
@@ -467,7 +453,8 @@ export const signTypedData = async ({
   address,
   message,
 }: SignTypedDataArguments): Promise<Hex> => {
-  const signer = (await keychainManager.getSigner(address)) as Wallet;
+  const keychain = await keychainManager.getKeychain(address);
+  const privateKey = await keychain.exportAccount(address);
 
   if (!isTypedDataMessage(message)) {
     throw new Error('Invalid message type: expected typed data message');
@@ -477,10 +464,10 @@ export const signTypedData = async ({
 
   // Handle v1 format (legacy array format)
   if (isTypedDataV1(typedData)) {
-    const pkeyBuffer = Buffer.from(
-      addHexPrefix(signer.privateKey).substring(2),
-      'hex',
-    );
+    const pkeyHex = privateKey.startsWith('0x')
+      ? privateKey
+      : `0x${privateKey}`;
+    const pkeyBuffer = Buffer.from(pkeyHex.substring(2), 'hex');
     return signTypedDataSigUtil({
       data: typedData,
       privateKey: pkeyBuffer,
@@ -510,6 +497,8 @@ export const signTypedData = async ({
     types: validatedData.types as never,
     primaryType: validatedData.primaryType,
     message: messageData as never,
-    privateKey: addHexPrefix(signer.privateKey) as Hex,
+    privateKey: (privateKey.startsWith('0x')
+      ? privateKey
+      : `0x${privateKey}`) as Hex,
   } as Parameters<typeof viemSignTypedData>[0]);
 };

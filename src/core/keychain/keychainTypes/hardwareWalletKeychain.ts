@@ -1,14 +1,9 @@
-import { Signer } from '@ethersproject/abstract-signer';
-import { Wallet } from '@ethersproject/wallet';
 import { Address } from 'viem';
-import { mainnet } from 'viem/chains';
 
 import { KeychainType } from '~/core/types/keychainTypes';
-import { getProvider } from '~/core/viem/clientToProvider';
+import { getHDPathForVendorAndType } from '~/core/utils/hdPath';
 
-import { HWSigner } from '../HWSigner';
-import { IKeychain, PrivateKey } from '../IKeychain';
-import { getHDPathForVendorAndType } from '../hdPath';
+import { IKeychain, PrivateKey, TWallet } from '../IKeychain';
 
 export type HardwareWalletVendor = 'Ledger' | 'Trezor';
 
@@ -73,27 +68,14 @@ export class HardwareWalletKeychain implements IKeychain {
     return Promise.resolve(address);
   }
 
-  addNewAccount(): Promise<Wallet[]> {
+  addNewAccount(): Promise<TWallet[]> {
     throw new Error('Method not implemented.');
-  }
-
-  getSigner(address: Address): Signer {
-    const provider = getProvider({
-      chainId: mainnet.id,
-    });
-    return new HWSigner(
-      provider,
-      this.getPath(address),
-      privates.get(this).deviceId,
-      address,
-      this.vendor!,
-    );
   }
 
   getPath(address: Address): string {
     const wallet = privates
       .get(this)
-      .wallets.find((wallet: Wallet) => (wallet as Wallet).address === address);
+      .wallets.find((w: { address: Address }) => w.address === address);
     return (
       wallet.hdPath ??
       // Backwards compatibility
@@ -128,7 +110,7 @@ export class HardwareWalletKeychain implements IKeychain {
   getAccounts(): Promise<Array<Address>> {
     const addresses = privates
       .get(this)
-      .wallets.map((wallet: Wallet) => (wallet as Wallet).address as Address);
+      .wallets.map((w: { address: Address }) => w.address);
     return Promise.resolve(addresses);
   }
 
@@ -150,9 +132,7 @@ export class HardwareWalletKeychain implements IKeychain {
 
     const filteredList = privates
       .get(this)
-      .wallets.filter(
-        (wallet: Wallet) => (wallet as Wallet).address !== address,
-      );
+      .wallets.filter((w: { address: Address }) => w.address !== address);
 
     privates.get(this).wallets = filteredList;
     privates.get(this).accountsDeleted.push(accountToDeleteIndex);

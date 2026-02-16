@@ -6,13 +6,13 @@ export enum GasSpeed {
 }
 
 export interface GasFeeParam {
-  amount: string;
+  amount: bigint;
   display: string;
   gwei: string;
 }
 
 export interface TransactionLegacyGasParams {
-  gasPrice: string;
+  gasPrice: bigint;
 }
 
 export interface GasFeeLegacyParams {
@@ -21,7 +21,7 @@ export interface GasFeeLegacyParams {
   estimatedTime: { amount: number; display: string };
   display: string;
   transactionGasParams: TransactionLegacyGasParams;
-  gasFee: { amount: string; display: string };
+  gasFee: { amount: bigint; display: string };
 }
 
 export type GasFeeLegacyParamsBySpeed = {
@@ -29,8 +29,8 @@ export type GasFeeLegacyParamsBySpeed = {
 };
 
 export interface TransactionGasParams {
-  maxPriorityFeePerGas: string;
-  maxFeePerGas: string;
+  maxPriorityFeePerGas: bigint;
+  maxFeePerGas: bigint;
 }
 
 export interface GasFeeParams {
@@ -40,12 +40,20 @@ export interface GasFeeParams {
   estimatedTime: { amount: number; display: string };
   display: string;
   transactionGasParams: TransactionGasParams;
-  gasFee: { amount: string; display: string };
+  gasFee: { amount: bigint; display: string };
 }
 
 export type GasFeeParamsBySpeed = {
   [key in GasSpeed]: GasFeeParams;
 };
+
+export const isEIP1559Gas = (
+  gas: GasFeeParams | GasFeeLegacyParams,
+): gas is GasFeeParams => 'maxBaseFee' in gas;
+
+export const isLegacyGas = (
+  gas: GasFeeParams | GasFeeLegacyParams,
+): gas is GasFeeLegacyParams => 'gasPrice' in gas && !('maxBaseFee' in gas);
 
 export interface BlocksToConfirmationByPriorityFee {
   1: string;

@@ -15,6 +15,7 @@ import {
   PaginatedTransactionsApiResponse,
   RainbowTransaction,
 } from '~/core/types/transactions';
+import { getErrorMessage } from '~/core/utils/errors';
 import { convertPlatformTransactionToPaginatedApiResponse } from '~/core/utils/platform';
 import { parseTransaction } from '~/core/utils/transactions';
 import { RainbowError, logger } from '~/logger';
@@ -121,7 +122,7 @@ async function transactionsQueryFunction({
       }),
     })?.state?.data as RainbowTransaction[];
     logger.error(new RainbowError('transactionsQueryFunction: '), {
-      message: (e as Error)?.message,
+      message: getErrorMessage(e),
     });
     return cachedTransactions;
   }

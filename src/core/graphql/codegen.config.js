@@ -13,6 +13,15 @@ module.exports = {
           'typescript-generic-sdk',
         ],
         schema: [{ [value.schema.url]: { method: value.schema.method } }],
+        config: {
+          scalars: {
+            Any: 'unknown',
+            Time: 'string',
+            TokenBridging: 'unknown',
+            TokenNetworks:
+              'Record<string, { address: string; decimals: number }>',
+          },
+        },
       },
     };
   }, {}),

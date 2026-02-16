@@ -256,6 +256,25 @@ query simulateMessage(
   }
 }
 
+query tokenMetadata($address: String!, $chainId: Int!, $currency: String) {
+  token(address: $address, chainID: $chainId, currency: $currency) {
+    colors {
+      primary
+      fallback
+      shadow
+    }
+    decimals
+    iconUrl
+    name
+    networks
+    price {
+      relativeChange24h
+      value
+    }
+    symbol
+  }
+}
+
 query externalToken($address: String!, $chainId: Int!, $currency: String) {
   token(address: $address, chainID: $chainId, currency: $currency) {
     decimals

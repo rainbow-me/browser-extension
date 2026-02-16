@@ -4,9 +4,9 @@ import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { getWalletContext } from '~/analytics/util';
 import { i18n } from '~/core/languages';
+import { ProviderRequestPayload } from '~/core/provider/types';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
-import { useFeatureFlagLocalOverwriteStore } from '~/core/state/currentSettings/featureFlags';
-import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
+import { useFeatureFlagsStore } from '~/core/state';
 import {
   isPersonalSignMessage,
   isTypedDataMessage,
@@ -17,7 +17,7 @@ import { getSigningRequestDisplayDetails } from '~/core/utils/signMessages';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { Bleed, Box, Stack } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
-import { showLedgerDisconnectedAlertIfNeeded } from '~/entries/popup/handlers/ledger';
+import { showLedgerDisconnectedAlertIfNeeded } from '~/entries/popup/handlers/hardwareWallet';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { RainbowError, logger } from '~/logger';
@@ -57,7 +57,7 @@ export function SignMessage({
   const { data: dappMetadata } = useDappMetadata({
     url: request?.meta?.sender?.url,
   });
-  const { featureFlags } = useFeatureFlagLocalOverwriteStore();
+  const { featureFlags } = useFeatureFlagsStore();
   const { activeSession } = useAppSession({ host: dappMetadata?.appHost });
   const { allWallets, watchedWallets } = useWallets();
 
@@ -133,10 +133,13 @@ export function SignMessage({
       }
       approveRequest(result);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
+    } catch (e) {
       showLedgerDisconnectedAlertIfNeeded(e);
       logger.info('error in sign message');
-      logger.error(new RainbowError(e.name), { message: e.message });
+      logger.error(
+        new RainbowError(e instanceof Error ? e.name : 'UnknownError'),
+        { message: e instanceof Error ? e.message : String(e) },
+      );
     } finally {
       setWaitingForDevice(false);
       setLoading(false);

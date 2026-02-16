@@ -1,14 +1,16 @@
 /* eslint-disable no-nested-ternary */
-import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import { useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Address } from 'viem';
+import { Address, formatGwei, parseGwei } from 'viem';
 
 import { useEstimateGasLimit, useGasData } from '~/core/resources/gas';
-import { isLegacyMeteorologyFeeData } from '~/core/resources/gas/classification';
 import { useEstimateApprovalGasLimit } from '~/core/resources/gas/estimateApprovalGasLimit';
 import { useEstimateSwapGasLimit } from '~/core/resources/gas/estimateSwapGasLimit';
+import {
+  isMeteorologyEIP1559,
+  isMeteorologyLegacy,
+} from '~/core/resources/gas/meteorology';
 import { useOptimismL1SecurityFee } from '~/core/resources/gas/optimismL1SecurityFee';
 import { useCurrentCurrencyStore, useGasStore } from '~/core/state';
 import { useNetworkStore } from '~/core/state/networks/networks';
@@ -18,14 +20,16 @@ import {
   GasFeeLegacyParamsBySpeed,
   GasFeeParamsBySpeed,
   GasSpeed,
+  isEIP1559Gas,
 } from '~/core/types/gas';
-import { gweiToWei, weiToGwei } from '~/core/utils/ethereum';
+import { TransactionRequest } from '~/core/types/transactions';
 import {
   gasFeeParamsChanged,
   parseCustomGasFeeLegacyParams,
   parseCustomGasFeeParams,
   parseGasFeeParamsBySpeed,
 } from '~/core/utils/gas';
+import { isQuoteError } from '~/core/utils/swaps';
 
 import { useDebounce } from './useDebounce';
 import usePrevious from './usePrevious';
@@ -43,7 +47,7 @@ const useGas = ({
   chainId: ChainId;
   address?: Address;
   defaultSpeed?: GasSpeed;
-  estimatedGasLimit?: string;
+  estimatedGasLimit?: bigint;
   transactionRequest: TransactionRequest | null;
   enabled?: boolean;
   additionalTime?: number;
@@ -63,11 +67,7 @@ const useGas = ({
   const [internalMaxBaseFee, setInternalMaxBaseFee] = useState('');
   const [internalGasPrice, setInternalGasPrice] = useState('');
 
-  const legacyGasData =
-    gasData && isLegacyMeteorologyFeeData(gasData) ? gasData : undefined;
-  const eip1559GasData =
-    gasData && !isLegacyMeteorologyFeeData(gasData) ? gasData : undefined;
-  const feeType: 'legacy' | 'eip1559' = legacyGasData ? 'legacy' : 'eip1559';
+  const feeType = gasData?.meta?.feeType;
   const debouncedEstimatedGasLimit = useDebounce(estimatedGasLimit, 500);
   const debouncedMaxPriorityFee = useDebounce(internalMaxPriorityFee, 300);
   const prevDebouncedMaxPriorityFee = usePrevious(debouncedMaxPriorityFee);
@@ -96,9 +96,6 @@ const useGas = ({
     setCustomLegacySpeed,
     clearCustomGasModified,
   } = useGasStore();
-  const customGas = storeGasFeeParamsBySpeed.custom;
-  const customEip1559Gas =
-    customGas && 'maxPriorityFeePerGas' in customGas ? customGas : undefined;
 
   const setCustomMaxBaseFee = useCallback((maxBaseFee = '0') => {
     setInternalMaxBaseFee(maxBaseFee);
@@ -123,10 +120,12 @@ const useGas = ({
       nativeAsset,
       chainId,
       currentCurrency,
+      estimatedGasLimit,
     ],
     queryFn: () => {
-      if (!eip1559GasData || !nativeAsset) return;
-      const { data } = eip1559GasData;
+      if (!gasData || !isMeteorologyEIP1559(gasData) || !nativeAsset) return;
+
+      const { data } = gasData;
       const currentBaseFee = data.currentBaseFee;
       const secondsPerNewBlock = data.secondsPerNewBlock;
 
@@ -135,14 +134,20 @@ const useGas = ({
         byPriorityFee: data.blocksToConfirmationByPriorityFee,
       };
 
+      const customGas = storeGasFeeParamsBySpeed?.custom;
+      const maxPriorityFeePerGas =
+        customGas && isEIP1559Gas(customGas)
+          ? customGas.maxPriorityFeePerGas?.amount
+          : 0n;
+
       const newCustomSpeed = parseCustomGasFeeParams({
         currentBaseFee,
-        maxPriorityFeeWei:
-          customEip1559Gas?.maxPriorityFeePerGas?.amount ?? '0',
+        maxPriorityFeeWei: maxPriorityFeePerGas,
         speed: GasSpeed.CUSTOM,
-        baseFeeWei: gweiToWei(debouncedMaxBaseFee || '0'),
+        baseFeeWei: parseGwei(debouncedMaxBaseFee || '0'),
         blocksToConfirmation,
-        gasLimit: estimatedGasLimit || chainGasUnits.basic.tokenTransfer,
+        gasLimit:
+          estimatedGasLimit ?? BigInt(chainGasUnits.basic.tokenTransfer),
         nativeAsset,
         currency: currentCurrency,
         secondsPerNewBlock,
@@ -154,7 +159,6 @@ const useGas = ({
       !!gasData &&
       enabled &&
       feeType === 'eip1559' &&
-      !!eip1559GasData &&
       !!nativeAsset &&
       prevDebouncedMaxBaseFee !== debouncedMaxBaseFee,
   });
@@ -170,11 +174,13 @@ const useGas = ({
       nativeAsset,
       chainId,
       currentCurrency,
+      estimatedGasLimit,
     ],
     queryFn: () => {
-      if (!eip1559GasData || !nativeAsset) return;
-      const { data } = eip1559GasData;
-      const currentBaseFee = data.currentBaseFee;
+      if (!gasData || !isMeteorologyEIP1559(gasData) || !nativeAsset) return;
+
+      const { data } = gasData;
+      const currentBaseFee = data.currentBaseFee ?? 0;
       const secondsPerNewBlock = data.secondsPerNewBlock;
 
       const blocksToConfirmation = {
@@ -182,15 +188,22 @@ const useGas = ({
         byPriorityFee: data.blocksToConfirmationByPriorityFee,
       };
 
-      const maxPriorityFeeWei = gweiToWei(debouncedMaxPriorityFee || '0');
+      const customGas = storeGasFeeParamsBySpeed?.custom;
+      const maxBaseFee =
+        customGas && isEIP1559Gas(customGas)
+          ? customGas.maxBaseFee?.amount
+          : 0n;
+
+      const maxPriorityFeeWei = parseGwei(debouncedMaxPriorityFee || '0');
 
       const newCustomSpeed = parseCustomGasFeeParams({
         currentBaseFee,
         maxPriorityFeeWei,
         speed: GasSpeed.CUSTOM,
-        baseFeeWei: customEip1559Gas?.maxBaseFee?.amount ?? '0',
+        baseFeeWei: maxBaseFee,
         blocksToConfirmation,
-        gasLimit: estimatedGasLimit || chainGasUnits.basic.tokenTransfer,
+        gasLimit:
+          estimatedGasLimit ?? BigInt(chainGasUnits.basic.tokenTransfer),
         nativeAsset,
         currency: currentCurrency,
         secondsPerNewBlock,
@@ -202,7 +215,6 @@ const useGas = ({
       !!gasData &&
       enabled &&
       feeType === 'eip1559' &&
-      !!eip1559GasData &&
       !!nativeAsset &&
       prevDebouncedMaxPriorityFee !== debouncedMaxPriorityFee,
   });
@@ -218,26 +230,25 @@ const useGas = ({
       nativeAsset,
       chainId,
       currentCurrency,
+      estimatedGasLimit,
     ],
     queryFn: () => {
       if (!nativeAsset) return;
-      const gasPrice = gweiToWei(debouncedGasPrice || '0');
       const newCustomSpeed = parseCustomGasFeeLegacyParams({
         speed: GasSpeed.CUSTOM,
-        gasPriceWei: gasPrice,
-        gasLimit: estimatedGasLimit || chainGasUnits.basic.tokenTransfer,
+        gasPriceWei: parseGwei(debouncedGasPrice || '0'),
+        gasLimit:
+          estimatedGasLimit ?? BigInt(chainGasUnits.basic.tokenTransfer),
         nativeAsset,
         currency: currentCurrency,
         waitTime: 0,
       });
       setCustomLegacySpeed(newCustomSpeed);
-      return newCustomSpeed;
     },
     enabled:
       !!gasData &&
       enabled &&
       feeType === 'legacy' &&
-      !!legacyGasData &&
       !!nativeAsset &&
       prevDebouncedGasPrice !== debouncedGasPrice,
   });
@@ -250,15 +261,15 @@ const useGas = ({
     | null = useMemo(() => {
     if (isLoading || !gasData || !nativeAsset) return null;
 
-    const hasGasPayload = legacyGasData
-      ? !!legacyGasData.data?.legacy
-      : !!eip1559GasData?.data?.currentBaseFee;
-    if (!hasGasPayload) return null;
+    const hasGasData =
+      isMeteorologyEIP1559(gasData) || isMeteorologyLegacy(gasData);
+    if (!hasGasData) return null;
 
     const newGasFeeParamsBySpeed = parseGasFeeParamsBySpeed({
       chainId,
       data: gasData,
-      gasLimit: debouncedEstimatedGasLimit || chainGasUnits.basic.tokenTransfer,
+      gasLimit:
+        debouncedEstimatedGasLimit ?? BigInt(chainGasUnits.basic.tokenTransfer),
       nativeAsset,
       currency: currentCurrency,
       optimismL1SecurityFee,
@@ -268,7 +279,8 @@ const useGas = ({
     if (
       customGasModified &&
       newGasFeeParamsBySpeed &&
-      (prevChainId === chainId || prevChainId === undefined)
+      prevChainId === chainId &&
+      storeGasFeeParamsBySpeed
     ) {
       newGasFeeParamsBySpeed.custom = storeGasFeeParamsBySpeed.custom;
     }
@@ -277,8 +289,6 @@ const useGas = ({
     isLoading,
     gasData,
     nativeAsset,
-    legacyGasData,
-    eip1559GasData,
     chainId,
     debouncedEstimatedGasLimit,
     currentCurrency,
@@ -286,7 +296,7 @@ const useGas = ({
     additionalTime,
     customGasModified,
     prevChainId,
-    storeGasFeeParamsBySpeed.custom,
+    storeGasFeeParamsBySpeed,
     chainGasUnits.basic.tokenTransfer,
   ]);
 
@@ -321,10 +331,11 @@ const useGas = ({
     if (
       enabled &&
       gasFeeParamsBySpeed?.[selectedSpeed] &&
-      (gasFeeParamsChanged(
-        storeGasFeeParamsBySpeed[selectedSpeed],
-        gasFeeParamsBySpeed[selectedSpeed],
-      ) ||
+      (!storeGasFeeParamsBySpeed ||
+        gasFeeParamsChanged(
+          storeGasFeeParamsBySpeed[selectedSpeed],
+          gasFeeParamsBySpeed[selectedSpeed],
+        ) ||
         prevChainId !== chainId)
     ) {
       setGasFeeParamsBySpeed({
@@ -342,8 +353,7 @@ const useGas = ({
   ]);
 
   useEffect(() => {
-    // Only clear when chain actually changed (not on initial mount when prevChainId is undefined)
-    if ((prevChainId !== undefined && prevChainId !== chainId) || !chainId) {
+    if (prevChainId !== chainId || !chainId) {
       clearCustomGasModified();
     }
   }, [chainId, clearCustomGasModified, prevChainId]);
@@ -357,11 +367,18 @@ const useGas = ({
     setCustomMaxPriorityFee,
     setCustomGasPrice,
     clearCustomGasModified,
-    currentBaseFee: eip1559GasData
-      ? weiToGwei(eip1559GasData.data?.currentBaseFee ?? '0')
-      : '',
-    baseFeeTrend: eip1559GasData ? eip1559GasData.data?.baseFeeTrend ?? 0 : 0,
-    feeType,
+    currentBaseFee: formatGwei(
+      BigInt(
+        (gasData && isMeteorologyEIP1559(gasData)
+          ? gasData.data.currentBaseFee
+          : undefined) || '0',
+      ),
+    ),
+    baseFeeTrend:
+      gasData && isMeteorologyEIP1559(gasData)
+        ? gasData.data.baseFeeTrend
+        : undefined,
+    feeType: gasData?.meta?.feeType,
   };
 };
 
@@ -415,13 +432,12 @@ export const useSwapGas = ({
   });
 
   const transactionRequest: TransactionRequest | null = useMemo(() => {
-    if (quote && !(quote as QuoteError).error) {
-      const q = quote as Quote | CrosschainQuote;
-      const { to, from, value, data } = q;
+    if (quote && !isQuoteError(quote)) {
+      const { to, from, value, data } = quote;
       return {
         to,
         from,
-        value,
+        value: value != null ? BigInt(value) : undefined,
         chainId,
         data,
       };

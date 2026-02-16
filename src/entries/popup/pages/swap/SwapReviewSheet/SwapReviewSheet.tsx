@@ -22,6 +22,7 @@ import { ChainId } from '~/core/types/chains';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { processExchangeRateArray } from '~/core/utils/numbers';
+import { isQuoteError } from '~/core/utils/swaps';
 import {
   Bleed,
   Box,
@@ -182,15 +183,14 @@ export const SwapReviewSheet = ({
   quote,
   hideSwapReview,
 }: SwapReviewSheetProps) => {
-  if (!quote || !assetToBuy || !assetToSell || (quote as QuoteError)?.error)
-    return null;
+  if (!quote || !assetToBuy || !assetToSell || isQuoteError(quote)) return null;
   return (
     <SwapReviewSheetWithQuote
       show={show}
       assetToSell={assetToSell}
       assetToSellValue={assetToSellValue}
       assetToBuy={assetToBuy}
-      quote={quote as Quote | CrosschainQuote}
+      quote={quote}
       hideSwapReview={hideSwapReview}
     />
   );
@@ -600,7 +600,7 @@ const SwapReviewSheetWithQuote = ({
                     assetToSell={assetToSell}
                     assetToBuy={assetToBuy}
                     enabled={show}
-                    defaultSpeed={selectedGas.option}
+                    defaultSpeed={selectedGas?.option}
                     speedMenuMarginRight="12px"
                     feeLabel={
                       showSmartWalletActivationFee

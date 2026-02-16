@@ -9,7 +9,6 @@ import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { isValidPrivateKey } from '~/core/utils/ethereum';
-import { addHexPrefix } from '~/core/utils/hex';
 import {
   Box,
   Button,
@@ -62,7 +61,7 @@ const ImportWalletViaPrivateKey = () => {
       if (!valid) {
         if (startsWith(secret.toLowerCase(), '0x')) {
           type = 'pkey';
-          if (addHexPrefix(secret).length > 66) {
+          if (secret.length > 66) {
             too_long = true;
           }
         }

@@ -7,9 +7,9 @@ import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { txSpeedEmoji } from '~/core/references/txSpeed';
 import { useGasStore } from '~/core/state';
-import { GasFeeLegacyParams, GasFeeParams, GasSpeed } from '~/core/types/gas';
+import { GasSpeed, isEIP1559Gas, isLegacyGas } from '~/core/types/gas';
 import { getBaseFeeTrendParams } from '~/core/utils/gas';
-import { isZero, lessThan, toFixedDecimals } from '~/core/utils/numbers';
+import { lessThan, toFixedDecimals } from '~/core/utils/numbers';
 import {
   Bleed,
   Box,
@@ -168,8 +168,8 @@ export const CustomGasSheet = ({
 }: {
   show: boolean;
   currentBaseFee: string;
-  baseFeeTrend: number;
-  feeType: 'legacy' | 'eip1559';
+  baseFeeTrend?: number;
+  feeType?: 'legacy' | 'eip1559';
   setCustomMaxBaseFee: (maxBaseFee: string) => void;
   setCustomMaxPriorityFee: (maxPriorityFee: string) => void;
   setCustomGasPrice: (maxPrice: string) => void;
@@ -182,7 +182,7 @@ export const CustomGasSheet = ({
   const customSpeed = gasFeeParamsBySpeed?.custom;
 
   const [selectedSpeedOption, setSelectedSpeedOption] = useState<GasSpeed>(
-    selectedGas?.option,
+    selectedGas?.option ?? GasSpeed.NORMAL,
   );
 
   const prevSelectedGasOption = usePrevious(selectedSpeedOption);
@@ -191,16 +191,17 @@ export const CustomGasSheet = ({
   const maxPriorityFeeInputRef = useRef<HTMLInputElement>(null);
   const gasPriceInputRef = useRef<HTMLInputElement>(null);
 
-  const [maxBaseFee, setMaxBaseFee] = useState(
-    (customSpeed as GasFeeParams)?.maxBaseFee?.gwei,
-  );
+  const eip1559Custom =
+    customSpeed && isEIP1559Gas(customSpeed) ? customSpeed : undefined;
+  const legacyCustom =
+    customSpeed && isLegacyGas(customSpeed) ? customSpeed : undefined;
+
+  const [maxBaseFee, setMaxBaseFee] = useState(eip1559Custom?.maxBaseFee?.gwei);
   const [maxPriorityFee, setMaxPriorityFee] = useState(
-    (customSpeed as GasFeeParams)?.maxPriorityFeePerGas?.gwei,
+    eip1559Custom?.maxPriorityFeePerGas?.gwei,
   );
 
-  const [gasPrice, setGasPrice] = useState(
-    (customSpeed as GasFeeLegacyParams)?.gasPrice?.gwei,
-  );
+  const [gasPrice, setGasPrice] = useState(legacyCustom?.gasPrice?.gwei);
 
   const [maxBaseFeeWarning, setMaxBaseFeeWarning] = useState<
     'stuck' | 'fail'
@@ -211,7 +212,7 @@ export const CustomGasSheet = ({
   const [gasPriceWarning, setGasPriceWarning] = useState<'stuck' | 'fail'>();
 
   const trend = useMemo(
-    () => getBaseFeeTrendParams(baseFeeTrend),
+    () => getBaseFeeTrendParams(baseFeeTrend ?? -1),
     [baseFeeTrend],
   );
 
@@ -232,19 +233,21 @@ export const CustomGasSheet = ({
 
   const updateCustomMaxBaseFee = useCallback(
     (maxBaseFee: string) => {
-      if (prevSelectedGasOption !== GasSpeed.CUSTOM && prevSelectedGasOption) {
-        const prevSelectedGas = gasFeeParamsBySpeed[
-          prevSelectedGasOption
-        ] as GasFeeParams;
-        setSelectedGas({
-          selectedGas: prevSelectedGas,
-        });
-        setMaxPriorityFee(prevSelectedGas?.maxPriorityFeePerGas?.gwei);
+      if (
+        prevSelectedGasOption !== GasSpeed.CUSTOM &&
+        prevSelectedGasOption &&
+        gasFeeParamsBySpeed
+      ) {
+        const prevSelectedGas = gasFeeParamsBySpeed[prevSelectedGasOption];
+        setSelectedGas({ selectedGas: prevSelectedGas });
+        if (isEIP1559Gas(prevSelectedGas)) {
+          setMaxPriorityFee(prevSelectedGas.maxPriorityFeePerGas?.gwei);
+        }
       }
       setSelectedSpeedOption(GasSpeed.CUSTOM);
       setCustomMaxBaseFee(maxBaseFee);
       setMaxBaseFee(maxBaseFee);
-      if (!maxBaseFee || isZero(maxBaseFee)) {
+      if (!maxBaseFee || Number(maxBaseFee) === 0) {
         setMaxBaseFeeWarning('fail');
       } else if (lessThan(maxBaseFee, currentBaseFee)) {
         setMaxBaseFeeWarning('stuck');
@@ -263,23 +266,28 @@ export const CustomGasSheet = ({
 
   const updateCustomMaxPriorityFee = useCallback(
     (maxPriorityFee: string) => {
-      if (prevSelectedGasOption !== GasSpeed.CUSTOM && prevSelectedGasOption) {
-        const prevSelectedGas = gasFeeParamsBySpeed[
-          prevSelectedGasOption
-        ] as GasFeeParams;
-        setSelectedGas({
-          selectedGas: prevSelectedGas,
-        });
-        setMaxBaseFee(prevSelectedGas?.maxBaseFee?.gwei);
+      if (
+        prevSelectedGasOption !== GasSpeed.CUSTOM &&
+        prevSelectedGasOption &&
+        gasFeeParamsBySpeed
+      ) {
+        const prevSelectedGas = gasFeeParamsBySpeed[prevSelectedGasOption];
+        setSelectedGas({ selectedGas: prevSelectedGas });
+        if (isEIP1559Gas(prevSelectedGas)) {
+          setMaxBaseFee(prevSelectedGas.maxBaseFee?.gwei);
+        }
       }
       setSelectedSpeedOption(GasSpeed.CUSTOM);
       setCustomMaxPriorityFee(maxPriorityFee);
       setMaxPriorityFee(maxPriorityFee);
-      const normalSpeed = gasFeeParamsBySpeed?.normal as GasFeeParams;
-      if (!maxPriorityFee || isZero(maxPriorityFee)) {
+      const normalSpeed = gasFeeParamsBySpeed?.normal;
+      const normalEIP1559 =
+        normalSpeed && isEIP1559Gas(normalSpeed) ? normalSpeed : undefined;
+      if (!maxPriorityFee || Number(maxPriorityFee) === 0) {
         setPriorityBaseFeeWarning('fail');
       } else if (
-        lessThan(maxPriorityFee, normalSpeed?.maxPriorityFeePerGas?.gwei)
+        normalEIP1559?.maxPriorityFeePerGas?.gwei &&
+        lessThan(maxPriorityFee, normalEIP1559.maxPriorityFeePerGas.gwei)
       ) {
         setPriorityBaseFeeWarning('stuck');
       } else {
@@ -299,10 +307,15 @@ export const CustomGasSheet = ({
       setSelectedSpeedOption(GasSpeed.CUSTOM);
       setCustomGasPrice(gasPrice);
       setGasPrice(gasPrice);
-      const normalSpeed = gasFeeParamsBySpeed?.normal as GasFeeLegacyParams;
-      if (!gasPrice || isZero(maxPriorityFee)) {
+      const normalSpeed = gasFeeParamsBySpeed?.normal;
+      const normalLegacy =
+        normalSpeed && isLegacyGas(normalSpeed) ? normalSpeed : undefined;
+      if (!gasPrice || Number(maxPriorityFee) === 0) {
         setGasPriceWarning('fail');
-      } else if (lessThan(gasPrice, normalSpeed?.gasPrice?.gwei)) {
+      } else if (
+        normalLegacy?.gasPrice?.gwei &&
+        lessThan(gasPrice, normalLegacy.gasPrice.gwei)
+      ) {
         setGasPriceWarning('stuck');
       } else {
         setGasPriceWarning(undefined);
@@ -350,7 +363,7 @@ export const CustomGasSheet = ({
 
   useEffect(() => {
     if (show) {
-      onSelectedGasChange(selectedGas?.option);
+      if (selectedGas?.option) onSelectedGasChange(selectedGas.option);
       setTimeout(() => {
         if (feeType === 'eip1559') {
           maxBaseFeeInputRef?.current?.focus();
@@ -365,13 +378,15 @@ export const CustomGasSheet = ({
 
   const onSelectedGasChange = useCallback(
     (speed: GasSpeed) => {
+      if (!gasFeeParamsBySpeed) return;
       const selectedGas = gasFeeParamsBySpeed[speed];
-      setSelectedGas({ selectedGas: gasFeeParamsBySpeed[speed] });
-      setMaxBaseFee((selectedGas as GasFeeParams)?.maxBaseFee?.gwei);
-      setMaxPriorityFee(
-        (selectedGas as GasFeeParams)?.maxPriorityFeePerGas?.gwei,
-      );
-      setGasPrice((selectedGas as GasFeeLegacyParams)?.gasPrice?.gwei);
+      setSelectedGas({ selectedGas });
+      if (isEIP1559Gas(selectedGas)) {
+        setMaxBaseFee(selectedGas.maxBaseFee?.gwei);
+        setMaxPriorityFee(selectedGas.maxPriorityFeePerGas?.gwei);
+      } else if (isLegacyGas(selectedGas)) {
+        setGasPrice(selectedGas.gasPrice?.gwei);
+      }
       setSelectedSpeedOption(speed);
       maxBaseFeeInputRef?.current?.focus();
     },
@@ -382,7 +397,7 @@ export const CustomGasSheet = ({
     useExplainerSheetParams();
 
   const showCurrentBaseFeeExplainer = useCallback(() => {
-    const trendParams = getBaseFeeTrendParams(baseFeeTrend);
+    const trendParams = getBaseFeeTrendParams(baseFeeTrend ?? -1);
     showExplainerSheet({
       show: true,
       header: {
@@ -558,7 +573,7 @@ export const CustomGasSheet = ({
                     <Box style={{ width: 98 }} marginRight="-4px">
                       <GweiInputMask
                         inputRef={maxBaseFeeInputRef}
-                        value={maxBaseFee}
+                        value={maxBaseFee ?? ''}
                         variant="surface"
                         onChange={updateCustomMaxBaseFee}
                       />
@@ -583,7 +598,7 @@ export const CustomGasSheet = ({
                     <Box style={{ width: 98 }} marginRight="-4px">
                       <GweiInputMask
                         inputRef={maxPriorityFeeInputRef}
-                        value={maxPriorityFee}
+                        value={maxPriorityFee ?? ''}
                         variant="surface"
                         onChange={updateCustomMaxPriorityFee}
                       />
@@ -608,7 +623,7 @@ export const CustomGasSheet = ({
                     <Box style={{ width: 98 }} marginRight="-4px">
                       <GweiInputMask
                         inputRef={gasPriceInputRef}
-                        value={gasPrice}
+                        value={gasPrice ?? ''}
                         variant="surface"
                         onChange={updateCustomGasPrice}
                       />
@@ -771,7 +786,7 @@ export const CustomGasSheet = ({
                               size="11pt"
                               weight="semibold"
                             >
-                              {gasFeeParamsBySpeed[speed]?.gasFee?.display}
+                              {gasFeeParamsBySpeed?.[speed]?.gasFee?.display}
                             </TextOverflow>
                           </Stack>
                         </Column>

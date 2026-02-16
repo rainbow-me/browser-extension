@@ -4,10 +4,10 @@ import { Address } from 'viem';
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { getWalletContext } from '~/analytics/util';
+import { ProviderRequestPayload } from '~/core/provider/types';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCurrentAddressStore } from '~/core/state';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
-import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
 import { getDappHostname } from '~/core/utils/connectedApps';
 import { Row, Rows, Separator } from '~/design-system';
@@ -47,11 +47,10 @@ export const RequestAccounts = ({
   const onAcceptRequest = useCallback(async () => {
     try {
       setLoading(true);
-      approveRequest({
+      await approveRequest({
         address: selectedWallet,
         chainId: selectedChainId,
       });
-      // Session actions now handle both state management and inpage messaging
       await addSession({
         host: dappMetadata?.appHost || '',
         address: selectedWallet,
@@ -69,9 +68,12 @@ export const RequestAccounts = ({
         await getWalletContext(selectedWallet),
       );
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
+    } catch (e) {
       logger.info('error connecting to dapp');
-      logger.error(new RainbowError(e.name), { message: e.message });
+      logger.error(
+        new RainbowError(e instanceof Error ? e.name : 'UnknownError'),
+        { message: e instanceof Error ? e.message : String(e) },
+      );
     } finally {
       setLoading(false);
     }

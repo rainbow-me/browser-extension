@@ -1,65 +1,80 @@
-import { isAllowedTargetContract } from '@rainbow-me/swaps';
-
-import { add } from '../utils/numbers';
+import {
+  ChainId as SwapChainId,
+  isAllowedTargetContract,
+} from '@rainbow-me/swaps';
+import { Address } from 'viem';
 
 import {
+  assetNeedsUnlocking,
   estimateApprove,
   estimateSwapGasLimit,
-  needsTokenApproval,
 } from './actions';
-import { estimateUnlockAndSwap as estimateUnlockAndSwapSteps } from './actions/swap';
+import { estimateUnlockAndSwapFromMetadata } from './actions/swap';
 import { createNewAction, createNewRap } from './common';
 import {
-  type RapAction,
-  type RapSwapActionParameters,
-  type RapUnlockActionParameters,
+  RapAction,
+  RapSwapActionParameters,
+  RapUnlockActionParameters,
 } from './references';
-import { getQuoteAllowanceTargetAddress } from './validation';
+import { getTargetAddressForQuote } from './utils';
 
 export const estimateUnlockAndSwap = async (
   swapParameters: RapSwapActionParameters<'swap'>,
 ) => {
   const { sellAmount, quote, chainId, assetToSell } = swapParameters;
 
-  const allowanceTargetAddress = quote.allowanceNeeded
-    ? getQuoteAllowanceTargetAddress(quote)
-    : null;
+  const {
+    from: accountAddress,
+    sellTokenAddress,
+    allowanceNeeded,
+  } = quote as {
+    from: Address;
+    sellTokenAddress: Address;
+    buyTokenAddress: Address;
+    allowanceNeeded: boolean;
+  };
 
-  let gasLimits: (string | number)[] = [];
-  let requiresApprove = false;
+  let gasLimits: bigint[] = [];
+  let swapAssetNeedsUnlocking = false;
 
-  if (allowanceTargetAddress) {
-    if (!isAllowedTargetContract(allowanceTargetAddress, chainId)) {
-      throw new Error('Target contract is not allowed');
-    }
-
-    requiresApprove = await needsTokenApproval({
-      owner: quote.from,
-      tokenAddress: quote.sellTokenAddress,
-      spender: allowanceTargetAddress,
+  if (allowanceNeeded) {
+    swapAssetNeedsUnlocking = await assetNeedsUnlocking({
+      owner: accountAddress,
       amount: sellAmount,
+      assetToUnlock: assetToSell,
+      spender: getTargetAddressForQuote(quote),
       chainId,
-      decimals: assetToSell.decimals,
     });
   }
 
-  if (requiresApprove && allowanceTargetAddress) {
-    const gasLimitFromMetadata = await estimateUnlockAndSwapSteps({
-      requiresApprove,
+  if (swapAssetNeedsUnlocking) {
+    const gasLimitFromMetadata = await estimateUnlockAndSwapFromMetadata({
+      swapAssetNeedsUnlocking,
       chainId,
-      accountAddress: quote.from,
-      sellTokenAddress: quote.sellTokenAddress,
+      accountAddress,
+      sellTokenAddress,
       quote,
     });
-
     if (gasLimitFromMetadata) {
       return gasLimitFromMetadata;
     }
+  }
 
-    const unlockGasLimit = await estimateApprove({
-      owner: quote.from,
-      tokenAddress: quote.sellTokenAddress,
-      spender: allowanceTargetAddress,
+  let unlockGasLimit;
+
+  if (swapAssetNeedsUnlocking) {
+    const targetAddress = getTargetAddressForQuote(quote);
+    const isAllowedTarget = isAllowedTargetContract(
+      targetAddress,
+      chainId as unknown as SwapChainId,
+    );
+    if (!isAllowedTarget) {
+      throw new Error('Target contract is not allowed');
+    }
+    unlockGasLimit = await estimateApprove({
+      owner: accountAddress,
+      tokenAddress: sellTokenAddress,
+      spender: getTargetAddressForQuote(quote),
       chainId,
     });
     gasLimits = gasLimits.concat(unlockGasLimit);
@@ -67,13 +82,13 @@ export const estimateUnlockAndSwap = async (
 
   const swapGasLimit = await estimateSwapGasLimit({
     chainId,
-    requiresApprove,
+    requiresApprove: swapAssetNeedsUnlocking,
     quote,
   });
 
   const gasLimit = gasLimits
     .concat(swapGasLimit)
-    .reduce((acc, limit) => add(acc, limit), '0');
+    .reduce((acc, limit) => acc + limit, 0n);
 
   return gasLimit.toString();
 };
@@ -86,50 +101,50 @@ export const createUnlockAndSwapRap = async (
   const { sellAmount, quote, chainId, assetToSell, assetToBuy } =
     swapParameters;
 
-  const allowanceTargetAddress = quote.allowanceNeeded
-    ? getQuoteAllowanceTargetAddress(quote)
-    : null;
+  const { from: accountAddress, allowanceNeeded } = quote as {
+    from: Address;
+    sellTokenAddress: Address;
+    buyTokenAddress: Address;
+    allowanceNeeded: boolean;
+  };
 
-  let requiresApprove = false;
+  let swapAssetNeedsUnlocking = false;
 
-  if (allowanceTargetAddress) {
-    if (!isAllowedTargetContract(allowanceTargetAddress, chainId)) {
-      throw new Error('Target contract is not allowed');
-    }
-
-    requiresApprove = await needsTokenApproval({
-      owner: quote.from,
-      tokenAddress: quote.sellTokenAddress,
-      spender: allowanceTargetAddress,
-      amount: sellAmount,
+  if (allowanceNeeded) {
+    swapAssetNeedsUnlocking = await assetNeedsUnlocking({
+      owner: accountAddress,
+      amount: sellAmount as string,
+      assetToUnlock: assetToSell,
+      spender: getTargetAddressForQuote(quote),
       chainId,
-      decimals: assetToSell.decimals,
     });
   }
 
-  if (requiresApprove && allowanceTargetAddress) {
+  if (swapAssetNeedsUnlocking) {
     const unlock = createNewAction('unlock', {
-      fromAddress: quote.from,
+      fromAddress: accountAddress,
       amount: sellAmount,
       assetToUnlock: assetToSell,
       chainId,
-      contractAddress: allowanceTargetAddress,
-    } satisfies RapUnlockActionParameters);
-
+      contractAddress: getTargetAddressForQuote(quote),
+    } as RapUnlockActionParameters);
     actions = actions.concat(unlock);
   }
 
+  // create a swap rap
   const swap = createNewAction('swap', {
     chainId,
     sellAmount,
-    requiresApprove,
+    requiresApprove: swapAssetNeedsUnlocking,
     quote,
-    gasParams: swapParameters.gasParams,
     meta: swapParameters.meta,
     assetToSell,
     assetToBuy,
+    serializedGasParams: swapParameters.serializedGasParams,
   } satisfies RapSwapActionParameters<'swap'>);
   actions = actions.concat(swap);
 
-  return createNewRap(actions);
+  // create the overall rap
+  const newRap = createNewRap(actions);
+  return newRap;
 };

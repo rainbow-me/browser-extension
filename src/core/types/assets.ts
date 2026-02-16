@@ -169,28 +169,4 @@ export type ProtocolType =
   | 'native'
   | 'wrapped-native';
 
-export type AssetMetadata = {
-  circulatingSupply: number;
-  colors?: { primary: string; fallback?: string; shadow?: string };
-  decimals: number;
-  description: string;
-  fullyDilutedValuation: number;
-  iconUrl: string;
-  marketCap: number;
-  name: string;
-  networks?: {
-    [chainId in ChainId]?: {
-      address: chainId extends ChainId.mainnet ? AddressOrEth : Address;
-      decimals: number;
-    };
-  };
-  price: {
-    value: number;
-    relativeChange24h: number;
-  };
-  symbol: string;
-  totalSupply: number;
-  volume1d: number;
-};
-
 export type UniqueId = `${Address}_${ChainId}`;

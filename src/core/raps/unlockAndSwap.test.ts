@@ -1,5 +1,11 @@
-import { Wallet } from '@ethersproject/wallet';
-import { Quote, QuoteError, getQuote } from '@rainbow-me/swaps';
+import {
+  ETH_ADDRESS as ETH_ADDRESS_AGGREGATORS,
+  Quote,
+  QuoteError,
+  getQuote,
+} from '@rainbow-me/swaps';
+import { createWalletClient, http } from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
 import { mainnet } from 'viem/chains';
 import { beforeAll, expect, test, vi } from 'vitest';
 
@@ -16,7 +22,6 @@ import {
 
 import { GasSpeed } from '../types/gas';
 import { updateViemClientsWrapper } from '../viem';
-import { getProvider } from '../viem/clientToProvider';
 
 import { walletExecuteRap } from './execute';
 import { createUnlockAndSwapRap, estimateUnlockAndSwap } from './unlockAndSwap';
@@ -32,32 +37,23 @@ let wrapEthQuote: Quote | QuoteError | null;
 const SELECTED_GAS = {
   display: '73 - 86 Gwei',
   estimatedTime: { amount: 15, display: '~ 15 sec' },
-  gasFee: { amount: '4323764263200000', display: '$8.64' },
+  gasFee: { amount: 4323764263200000n, display: '$8.64' },
   maxBaseFee: {
-    amount: '800000000000',
+    amount: 800000000000n,
     display: '800 Gwei',
     gwei: '800',
   },
   maxPriorityFeePerGas: {
-    amount: '3000000000',
+    amount: 3000000000n,
     display: '3 Gwei',
     gwei: '3',
   },
   option: GasSpeed.NORMAL,
   transactionGasParams: {
-    maxPriorityFeePerGas: '0xb2d05e00',
-    maxFeePerGas: '0xba43b74000',
+    maxPriorityFeePerGas: 3000000000n,
+    maxFeePerGas: 800000000000n,
   },
 };
-
-vi.mock('@rainbow-me/delegation', async (importOriginal) => {
-  const actual = (await importOriginal()) as Record<string, unknown>;
-  return {
-    ...actual,
-    supportsDelegation: vi.fn().mockResolvedValue({ supported: false }),
-    executeBatchedTransaction: vi.fn(),
-  };
-});
 
 vi.mock('./actions', async () => {
   const actual = (await vi.importActual('./actions')) as Record<
@@ -72,20 +68,6 @@ vi.mock('./actions', async () => {
   };
 });
 
-// Minimal mock for the wallet to handle provider requests
-vi.mock('@ethersproject/wallet', () => ({
-  Wallet: vi.fn(function () {
-    return {
-      getAddress: vi
-        .fn()
-        .mockResolvedValue('0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266'),
-      provider: {
-        getTransaction: vi.fn().mockResolvedValue({ blockNumber: null }),
-      },
-    };
-  }),
-}));
-
 beforeAll(async () => {
   useConnectedToHardhatStore.setState({ connectedToHardhat: true });
   updateViemClientsWrapper([mainnet]);
@@ -93,8 +75,8 @@ beforeAll(async () => {
   doesntNeedUnlockQuote = await getQuote({
     chainId: 1,
     fromAddress: TEST_ADDRESS_2,
-    sellTokenAddress: ETH_MAINNET_ASSET.address,
-    buyTokenAddress: USDC_MAINNET_ASSET.address,
+    sellTokenAddress: ETH_ADDRESS_AGGREGATORS,
+    buyTokenAddress: USDC_MAINNET_ASSET.address as `0x${string}`,
     sellAmount: '1000000000000000000',
     slippage: 5,
     destReceiver: TEST_ADDRESS_2,
@@ -104,8 +86,8 @@ beforeAll(async () => {
   ethToEnsQuote = await getQuote({
     chainId: 1,
     fromAddress: TEST_ADDRESS_2,
-    sellTokenAddress: ETH_MAINNET_ASSET.address,
-    buyTokenAddress: ENS_MAINNET_ASSET.address,
+    sellTokenAddress: ETH_ADDRESS_AGGREGATORS,
+    buyTokenAddress: ENS_MAINNET_ASSET.address as `0x${string}`,
     sellAmount: '1000000000000000000',
     slippage: 5,
     destReceiver: TEST_ADDRESS_2,
@@ -115,8 +97,8 @@ beforeAll(async () => {
   needsUnlockQuote = await getQuote({
     chainId: 1,
     fromAddress: TEST_ADDRESS_2,
-    sellTokenAddress: ENS_MAINNET_ASSET.address,
-    buyTokenAddress: USDC_MAINNET_ASSET.address,
+    sellTokenAddress: ENS_MAINNET_ASSET.address as `0x${string}`,
+    buyTokenAddress: USDC_MAINNET_ASSET.address as `0x${string}`,
     sellAmount: '1000000000000000000',
     slippage: 5,
     destReceiver: TEST_ADDRESS_2,
@@ -126,8 +108,8 @@ beforeAll(async () => {
   wrapEthQuote = await getQuote({
     chainId: 1,
     fromAddress: TEST_ADDRESS_2,
-    sellTokenAddress: ETH_MAINNET_ASSET.address,
-    buyTokenAddress: WETH_MAINNET_ASSET.address,
+    sellTokenAddress: ETH_ADDRESS_AGGREGATORS,
+    buyTokenAddress: WETH_MAINNET_ASSET.address as `0x${string}`,
     sellAmount: '1000000000000000000',
     slippage: 5,
     destReceiver: TEST_ADDRESS_2,
@@ -137,8 +119,8 @@ beforeAll(async () => {
   unwrapEthQuote = await getQuote({
     chainId: 1,
     fromAddress: TEST_ADDRESS_2,
-    sellTokenAddress: WETH_MAINNET_ASSET.address,
-    buyTokenAddress: ETH_MAINNET_ASSET.address,
+    sellTokenAddress: WETH_MAINNET_ASSET.address as `0x${string}`,
+    buyTokenAddress: ETH_ADDRESS_AGGREGATORS,
     sellAmount: '100000000000000000',
     slippage: 5,
     destReceiver: TEST_ADDRESS_2,
@@ -189,8 +171,12 @@ test('[rap/unlockAndSwap] :: create unlock and swap rap without unlock', async (
 });
 
 test('[rap/unlockAndSwap] :: create unlock and swap rap without unlock and execute it', async () => {
-  const provider = getProvider({ chainId: mainnet.id });
-  const wallet = new Wallet(TEST_PK_1, provider);
+  const account = privateKeyToAccount(TEST_PK_1);
+  const wallet = createWalletClient({
+    account,
+    chain: mainnet,
+    transport: http(),
+  });
   const swap = await walletExecuteRap(wallet, 'swap', {
     quote: doesntNeedUnlockQuote as Quote,
     chainId: 1,
@@ -217,8 +203,12 @@ test('[rap/unlockAndSwap] :: create swap rap and execute it', async () => {
   setSelectedGas({
     selectedGas: SELECTED_GAS,
   });
-  const provider = getProvider({ chainId: mainnet.id });
-  const wallet = new Wallet(TEST_PK_1, provider);
+  const account = privateKeyToAccount(TEST_PK_1);
+  const wallet = createWalletClient({
+    account,
+    chain: mainnet,
+    transport: http(),
+  });
   const swap = await walletExecuteRap(wallet, 'swap', {
     quote: ethToEnsQuote as Quote,
     chainId: 1,
@@ -234,8 +224,12 @@ test('[rap/unlockAndSwap] :: create unlock and swap rap with unlock and execute 
   setSelectedGas({
     selectedGas: SELECTED_GAS,
   });
-  const provider = getProvider({ chainId: mainnet.id });
-  const wallet = new Wallet(TEST_PK_1, provider);
+  const account = privateKeyToAccount(TEST_PK_1);
+  const wallet = createWalletClient({
+    account,
+    chain: mainnet,
+    transport: http(),
+  });
   const swap = await walletExecuteRap(wallet, 'swap', {
     quote: needsUnlockQuote as Quote,
     chainId: 1,
@@ -251,8 +245,12 @@ test('[rap/unlockAndSwap] :: create unlock and wrap eth rap with unlock and exec
   setSelectedGas({
     selectedGas: SELECTED_GAS,
   });
-  const provider = getProvider({ chainId: mainnet.id });
-  const wallet = new Wallet(TEST_PK_1, provider);
+  const account = privateKeyToAccount(TEST_PK_1);
+  const wallet = createWalletClient({
+    account,
+    chain: mainnet,
+    transport: http(),
+  });
   const swap = await walletExecuteRap(wallet, 'swap', {
     quote: wrapEthQuote as Quote,
     chainId: 1,
@@ -279,8 +277,12 @@ test('[rap/unlockAndSwap] :: create unwrap weth rap and execute it', async () =>
   setSelectedGas({
     selectedGas: SELECTED_GAS,
   });
-  const provider = getProvider({ chainId: mainnet.id });
-  const wallet = new Wallet(TEST_PK_1, provider);
+  const account = privateKeyToAccount(TEST_PK_1);
+  const wallet = createWalletClient({
+    account,
+    chain: mainnet,
+    transport: http(),
+  });
   const swap = await walletExecuteRap(wallet, 'swap', {
     quote: unwrapEthQuote as Quote,
     chainId: 1,

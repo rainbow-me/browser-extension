@@ -1,4 +1,3 @@
-import { Wallet } from '@ethersproject/wallet';
 import { isAddress, isHex } from 'viem';
 import { beforeAll, expect, test, vi } from 'vitest';
 
@@ -218,14 +217,12 @@ test('[keychain/KeychainManager] :: should be able to import a wallet using a se
   await expectStorageSnapshot();
 });
 
-test('[keychain/KeychainManager] :: should be able to get the signer of a specific address', async () => {
+test('[keychain/KeychainManager] :: should be able to export a private key for signing', async () => {
   const accounts = await keychainManager.getAccounts();
-  const signer = (await keychainManager.getSigner(accounts[0])) as Wallet;
-  expect(signer._isSigner).toBe(true);
-  expect(signer.address).toBe(accounts[0]);
-  expect(signer.sendTransaction).toBeDefined();
+  const keychain = await keychainManager.getKeychain(accounts[0]);
+  const pk = await keychain.exportAccount(accounts[0]);
+  expect(isHex(pk)).toBe(true);
 
-  // Snapshot test: storage state after getting signer
   await expectStorageSnapshot();
 });
 

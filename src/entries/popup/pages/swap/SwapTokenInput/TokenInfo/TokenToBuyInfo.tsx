@@ -10,7 +10,7 @@ import {
   divide,
   handleSignificantDecimals,
   lessThan,
-  subtract,
+  minus,
 } from '~/core/utils/numbers';
 import { isWrapOrUnwrapEth } from '~/core/utils/swaps';
 import {
@@ -61,11 +61,12 @@ export const TokenToBuyInfo = ({
       return null;
     }
     const division = divide(
-      subtract(assetToBuyNativeDisplay.amount, assetToSellNativeDisplay.amount),
+      minus(assetToBuyNativeDisplay.amount, assetToSellNativeDisplay.amount),
       assetToBuyNativeDisplay.amount,
     );
+    const absDivision = abs(division);
     const nativeDifference = convertAmountToPercentageDisplay(
-      lessThan(abs(division), 0.01) ? '-0.01' : division,
+      lessThan(absDivision, '0.01') ? '-0.01' : division,
     );
     return nativeDifference;
   }, [

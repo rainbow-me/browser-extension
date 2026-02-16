@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { requestMetadata } from '~/core/graphql';
+import { metadataClient } from '~/core/graphql';
 import {
   QueryConfig,
   QueryFunctionArgs,
@@ -9,14 +9,10 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
-import {
-  AddressOrEth,
-  AssetMetadata,
-  ParsedAsset,
-  UniqueId,
-} from '~/core/types/assets';
+import { AddressOrEth, ParsedAsset, UniqueId } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { createAssetQuery, parseAssetMetadata } from '~/core/utils/assets';
+import { TokenMetadata, parseAssetMetadata } from '~/core/utils/assets';
+import { getErrorMessage } from '~/core/utils/errors';
 import { RainbowError, logger } from '~/logger';
 
 export const ASSETS_TIMEOUT_DURATION = 10000;
@@ -49,28 +45,29 @@ async function assetsQueryFunction({
 }> {
   try {
     if (!assets || !assets.length) return {};
-    const batches = assets.map((asset) =>
-      requestMetadata(
-        createAssetQuery([asset.address], asset.chainId, currency, true),
-        {
-          timeout: ASSETS_TIMEOUT_DURATION,
-        },
+    const responses = await Promise.all(
+      assets.map((asset) =>
+        metadataClient.tokenMetadata(
+          {
+            address: asset.address,
+            chainId: asset.chainId,
+            currency,
+          },
+          { timeout: ASSETS_TIMEOUT_DURATION },
+        ),
       ),
-    ) as Promise<Record<string, AssetMetadata>[]>[];
+    );
 
-    const results = (await Promise.all(batches))
-      .flat()
-      .map((r) => Object.values(r))
-      .flat();
-    const assetsMetadata = results.map((assetMetadata, i) => ({
-      assetMetadata,
-      chainId: assets[i].chainId,
-    }));
+    const assetsMetadata = responses.flatMap((response, i) =>
+      response.token
+        ? [{ assetMetadata: response.token, chainId: assets[i].chainId }]
+        : [],
+    );
     const parsedAssets = parseAssets(assetsMetadata, currency);
     return parsedAssets;
   } catch (e) {
     logger.error(new RainbowError('assetsQueryFunction: '), {
-      message: (e as Error)?.message,
+      message: getErrorMessage(e),
     });
     return {};
   }
@@ -100,20 +97,21 @@ async function fetchAssets(
 
 function parseAssets(
   assetsMetadata: {
-    assetMetadata: AssetMetadata;
+    assetMetadata: TokenMetadata;
     chainId: ChainId;
   }[],
   currency: SupportedCurrencyKey,
 ) {
   return assetsMetadata.reduce(
-    (assetsDict, assetMetadata) => {
-      const address =
-        assetMetadata.assetMetadata.networks?.[assetMetadata.chainId]?.address;
+    (assetsDict, { assetMetadata, chainId }) => {
+      const address = assetMetadata.networks[chainId]?.address as
+        | AddressOrEth
+        | undefined;
       if (address) {
         const parsedAsset = parseAssetMetadata({
           address,
-          asset: assetMetadata.assetMetadata,
-          chainId: assetMetadata.chainId,
+          asset: assetMetadata,
+          chainId,
           currency,
         });
         assetsDict[parsedAsset?.chainId] = parsedAsset;

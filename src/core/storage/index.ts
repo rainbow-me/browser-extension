@@ -1,3 +1,4 @@
+import { getErrorMessage } from '~/core/utils/errors';
 import { RainbowError, logger } from '~/logger';
 
 export const LocalStorage = {
@@ -68,7 +69,7 @@ export const SessionStorage = {
       if (
         chromeError?.indexOf('quota') != -1 ||
         // We're still checking on both places just in case
-        (e as Error)?.message.toLowerCase().indexOf('quota') !== -1
+        getErrorMessage(e).toLowerCase().indexOf('quota') !== -1
       ) {
         // If we got a quota related error, let's log the size of the keys
         // that can grow exponentially to see where we are at
@@ -86,7 +87,7 @@ export const SessionStorage = {
         );
       }
       logger.error(new RainbowError('SessionStorage write error'), {
-        message: (e as Error)?.message,
+        message: getErrorMessage(e),
       });
     }
   },

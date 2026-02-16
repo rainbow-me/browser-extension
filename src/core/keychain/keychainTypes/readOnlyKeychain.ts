@@ -1,12 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Signer } from '@ethersproject/abstract-signer';
-import { Wallet } from '@ethersproject/wallet';
 import { Address, isAddress } from 'viem';
 
 import { KeychainType } from '~/core/types/keychainTypes';
 import { RainbowError, logger } from '~/logger';
 
-import { IKeychain, PrivateKey } from '../IKeychain';
+import { IKeychain, PrivateKey, TWallet } from '../IKeychain';
 
 export interface SerializedReadOnlyKeychain {
   type: KeychainType.ReadOnlyKeychain;
@@ -18,14 +16,6 @@ export class ReadOnlyKeychain implements IKeychain {
 
   init(options: SerializedReadOnlyKeychain) {
     this.deserialize(options);
-  }
-
-  _getWalletForAddress(): Wallet {
-    return { address: this.address as Address } as Wallet;
-  }
-
-  getSigner(address: Address): Signer {
-    throw new Error('Method not implemented.');
   }
 
   addAccountAtIndex(index: number, address: Address): Promise<Address> {
@@ -48,7 +38,7 @@ export class ReadOnlyKeychain implements IKeychain {
     this.address = opts.address;
   }
 
-  async addNewAccount(): Promise<Array<Wallet>> {
+  async addNewAccount(): Promise<Array<TWallet>> {
     throw new Error('Method not implemented.');
   }
 

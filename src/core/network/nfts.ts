@@ -1,3 +1,4 @@
+import { getErrorMessage } from '~/core/utils/errors';
 import { RainbowError, logger } from '~/logger';
 
 import { ChainId, ChainName, chainNameToIdMapping } from '../types/chains';
@@ -63,7 +64,7 @@ export const fetchGalleryNfts = async ({
     };
   } catch (e) {
     logger.error(new RainbowError('Fetch NFT Gallery: '), {
-      message: (e as Error)?.message,
+      message: getErrorMessage(e),
     });
   }
   return {
@@ -103,7 +104,7 @@ export const fetchNftCollections = async ({
     };
   } catch (e) {
     logger.error(new RainbowError('Fetch NFT Collections: '), {
-      message: (e as Error)?.message,
+      message: getErrorMessage(e),
     });
     return { collections: [], nextPage: undefined };
   }
@@ -139,7 +140,7 @@ export const fetchNfts = async ({
     };
   } catch (e) {
     logger.error(new RainbowError('Fetch NFTs: '), {
-      message: (e as Error)?.message,
+      message: getErrorMessage(e),
     });
     return {
       nfts: [],
@@ -198,7 +199,7 @@ export const fetchNft = async ({
     return simpleHashNFTToUniqueAsset(validatedNft);
   } catch (e) {
     logger.error(new RainbowError('Fetch NFT: '), {
-      message: (e as Error)?.message,
+      message: getErrorMessage(e),
     });
     throw new Error('Failed to fetch Nft');
   }

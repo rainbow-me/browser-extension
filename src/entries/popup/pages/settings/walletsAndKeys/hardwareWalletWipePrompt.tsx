@@ -7,6 +7,7 @@ import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { useWalletBackupsStore } from '~/core/state/walletBackups';
 import { useWalletNamesStore } from '~/core/state/walletNames';
 import { KeychainWallet } from '~/core/types/keychainTypes';
+import { getErrorMessage } from '~/core/utils/errors';
 import { getSettingWallets } from '~/core/utils/settings';
 import {
   Box,
@@ -90,7 +91,7 @@ export const HardwareWalletWipePrompt = ({
       logger.error(
         new RainbowError('Wallet Removal: Hardware wallet removal error'),
         {
-          message: (e as Error)?.message,
+          message: getErrorMessage(e),
         },
       );
     }

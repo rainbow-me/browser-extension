@@ -3,11 +3,11 @@ import { Address } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
+import { ProviderRequestPayload } from '~/core/provider/types';
 import { useAssetMetadata } from '~/core/resources/assets/assetMetadata';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useRainbowChainAssetsStore } from '~/core/state/rainbowChainAssets';
-import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ParsedUserAsset } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
 import {
@@ -16,7 +16,6 @@ import {
   getCustomChainIconUrl,
 } from '~/core/utils/assets';
 import { getChain } from '~/core/utils/chains';
-import { getProvider } from '~/core/viem/clientToProvider';
 import { Row, Rows, Separator } from '~/design-system';
 import { RainbowError, logger } from '~/logger';
 
@@ -117,7 +116,6 @@ export const WatchAsset = ({
       parsedAsset: assetWithMetadata,
       currentAddress,
       currency: currentCurrency,
-      provider: getProvider({ chainId: Number(selectedChainId) }),
     });
 
     // Attempt to get the price through the backend
@@ -131,7 +129,7 @@ export const WatchAsset = ({
     } else {
       setAssetWithPrice(parsedAsset);
     }
-  }, [asset, currentAddress, currentCurrency, selectedChainId]);
+  }, [asset, currentAddress, currentCurrency]);
 
   useEffect(() => {
     fetchAssetData();
@@ -175,9 +173,12 @@ export const WatchAsset = ({
         dappName: dappMetadata?.appName,
       });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
+    } catch (e) {
       logger.info('error adding ethereum chain');
-      logger.error(new RainbowError(e.name), { message: e.message });
+      logger.error(
+        new RainbowError(e instanceof Error ? e.name : 'UnknownError'),
+        { message: e instanceof Error ? e.message : String(e) },
+      );
     } finally {
       setLoading(false);
     }

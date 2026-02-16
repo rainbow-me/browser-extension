@@ -1,6 +1,5 @@
-import { verifyMessage, verifyTypedData } from '@ethersproject/wallet';
 import { By, WebDriver } from 'selenium-webdriver';
-import { getAddress, isHex } from 'viem';
+import { getAddress, isHex, verifyMessage, verifyTypedData } from 'viem';
 import {
   afterAll,
   afterEach,
@@ -306,10 +305,12 @@ describe('App interactions flow', () => {
 
     expect(signature).toMatch(/^0x/);
     expect(isHex(signature)).toBe(true);
-    const recoveredAddress = verifyMessage(MESSAGE, signature);
-    expect(getAddress(recoveredAddress)).eq(
-      getAddress(TEST_VARIABLES.PRIVATE_KEY_WALLET_3.ADDRESS),
-    );
+    const isValid = await verifyMessage({
+      address: getAddress(TEST_VARIABLES.PRIVATE_KEY_WALLET_3.ADDRESS),
+      message: MESSAGE,
+      signature: signature as `0x${string}`,
+    });
+    expect(isValid).toBe(true);
   });
 
   it('should be able to accept a typed data signing request', async () => {
@@ -334,15 +335,20 @@ describe('App interactions flow', () => {
     const signature = signatureText.replace('typed message data sig: ', '');
     expect(isHex(signature)).toBe(true);
 
-    const recoveredAddress = verifyTypedData(
-      TYPED_MESSAGE.domain,
-      TYPED_MESSAGE.types,
-      TYPED_MESSAGE.value,
-      signature,
-    );
-    expect(getAddress(recoveredAddress)).eq(
-      getAddress(TEST_VARIABLES.PRIVATE_KEY_WALLET_3.ADDRESS),
-    );
+    const isValidTyped = await verifyTypedData({
+      address: getAddress(TEST_VARIABLES.PRIVATE_KEY_WALLET_3.ADDRESS),
+      domain: TYPED_MESSAGE.domain as {
+        chainId: number;
+        name: string;
+        verifyingContract: `0x${string}`;
+        version: string;
+      },
+      types: TYPED_MESSAGE.types,
+      primaryType: 'Mail' as const,
+      message: TYPED_MESSAGE.value,
+      signature: signature as `0x${string}`,
+    });
+    expect(isValidTyped).toBe(true);
   });
 
   it('should be able to accept a transaction request', async () => {
