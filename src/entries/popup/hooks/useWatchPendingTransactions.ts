@@ -21,7 +21,7 @@ import {
 } from '~/core/types/transactions';
 import { isCustomChain, useSupportedChains } from '~/core/utils/chains';
 import { getTransactionReceiptStatus } from '~/core/utils/transactions';
-import { getProvider } from '~/core/viem/clientToProvider';
+import { getViemClient } from '~/core/viem/clients';
 import { useUserChains } from '~/entries/popup/hooks/useUserChains';
 import { RainbowError, logger } from '~/logger';
 
@@ -74,11 +74,10 @@ export const useWatchPendingTransactions = ({
 
   const processCustomNetworkTransaction = useCallback(
     async (tx: RainbowTransaction) => {
-      const provider = getProvider({ chainId: tx.chainId });
-      const transactionResponse = await provider.getTransaction(tx.hash);
+      const client = getViemClient({ chainId: tx.chainId });
       const transactionStatus = await getTransactionReceiptStatus({
-        transactionResponse,
-        provider,
+        hash: tx.hash,
+        client,
       });
       return {
         ...tx,
@@ -121,8 +120,8 @@ export const useWatchPendingTransactions = ({
           throw new Error('Pending transaction missing chain id');
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (e: any) {
-        const errorMessage = e?.message ?? String(e);
+      } catch (e) {
+        const errorMessage = e instanceof Error ? e.message : String(e);
         logger.error(
           new RainbowError(
             `useWatchPendingTransaction: Failed to watch transaction`,

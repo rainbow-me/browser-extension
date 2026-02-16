@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
-import { Address } from 'viem';
+import { Address, formatUnits } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -19,7 +19,6 @@ import { truncateAddress } from '~/core/utils/address';
 import { parseUserAsset } from '~/core/utils/assets';
 import { getBlockExplorerHostForChain } from '~/core/utils/chains';
 import { copy } from '~/core/utils/copy';
-import { convertRawAmountToDecimalFormat } from '~/core/utils/numbers';
 import { getTxExplorerUrl } from '~/core/utils/tabs';
 import { getBlockExplorerName } from '~/core/utils/transactions';
 import {
@@ -711,9 +710,9 @@ const TokenApproval = ({
                       >
                         {spender?.quantity_allowed.toLowerCase() === 'unlimited'
                           ? spender?.quantity_allowed
-                          : `${convertRawAmountToDecimalFormat(
-                              spender?.quantity_allowed || '0',
-                              approval?.asset.decimals,
+                          : `${formatUnits(
+                              BigInt(spender?.quantity_allowed || '0'),
+                              approval?.asset.decimals || 18,
                             )} ${approval?.asset.symbol}`}
                       </TextOverflow>
                     </Box>

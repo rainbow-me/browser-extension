@@ -1,5 +1,4 @@
 /* eslint-disable no-nested-ternary */
-import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import { Address } from 'viem';
@@ -15,6 +14,7 @@ import {
   GasFeeParamsBySpeed,
   GasSpeed,
 } from '~/core/types/gas';
+import { TransactionRequest } from '~/core/types/transactions';
 import {
   Box,
   Column,
@@ -52,14 +52,14 @@ type FeeProps = {
   gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed | null;
   isLoading: boolean;
   currentBaseFee: string;
-  baseFeeTrend: number;
+  baseFeeTrend?: number;
   analyticsEvents?: {
     customGasClicked: keyof EventProperties;
     transactionSpeedSwitched: keyof EventProperties;
     transactionSpeedClicked: keyof EventProperties;
   };
   speedMenuMarginRight?: Space;
-  feeType: 'legacy' | 'eip1559';
+  feeType?: 'legacy' | 'eip1559';
   setSelectedSpeed: React.Dispatch<React.SetStateAction<GasSpeed>>;
   setCustomMaxBaseFee: (maxBaseFee?: string) => void;
   setCustomMaxPriorityFee: (maxPriorityFee?: string) => void;

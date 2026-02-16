@@ -4,8 +4,7 @@ import { useCurrentCurrencyStore } from '~/core/state';
 import {
   convertAmountToNativeDisplay,
   divide,
-  greaterThanOrEqualTo,
-  subtract,
+  minus,
 } from '~/core/utils/numbers';
 
 const highPriceImpactThreshold = 0.05;
@@ -37,7 +36,7 @@ export const useSwapPriceImpact = ({
     if (!assetToSellNativeValue?.amount || !assetToBuyNativeValue?.amount)
       return { impactDisplay: '', priceImpact: 0 };
 
-    const nativeAmountImpact = subtract(
+    const nativeAmountImpact = minus(
       assetToSellNativeValue.amount,
       assetToBuyNativeValue.amount,
     );
@@ -53,20 +52,14 @@ export const useSwapPriceImpact = ({
     return { impactDisplay, priceImpact };
   }, [assetToBuyNativeValue, currentCurrency, assetToSellNativeValue]);
 
-  if (
-    !isLoading &&
-    greaterThanOrEqualTo(priceImpact, severePriceImpactThreshold)
-  ) {
+  if (!isLoading && Number(priceImpact) >= severePriceImpactThreshold) {
     return {
       priceImpact: {
         type: SwapPriceImpactType.severe,
         impactDisplay,
       },
     };
-  } else if (
-    !isLoading &&
-    greaterThanOrEqualTo(priceImpact, highPriceImpactThreshold)
-  ) {
+  } else if (!isLoading && Number(priceImpact) >= highPriceImpactThreshold) {
     return {
       priceImpact: {
         type: SwapPriceImpactType.high,

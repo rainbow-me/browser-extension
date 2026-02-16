@@ -1,9 +1,14 @@
+/**
+ * HD Path utilities for hardware wallets
+ */
+
 const DEFAULT_HD_PATH = "m/44'/60'/0'/0";
 const DEFAULT_LEDGER_LIVE_PATH = "m/44'/60'";
 const LEGACY_LEDGER_PATH = "m/44'/60'/0'";
 
-// TODO: Move this helper out of the keychain module to keep imports clean
-
+/**
+ * Get HD derivation path for a hardware wallet based on vendor and type
+ */
 export const getHDPathForVendorAndType = (
   index: number,
   vendor?: 'Ledger' | 'Trezor',

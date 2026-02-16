@@ -1,14 +1,16 @@
 import { os } from '@orpc/server';
 import z from 'zod';
 
-import { initializeMessenger } from '~/core/messengers';
 import { addressSchema } from '~/core/schemas/address';
 import { useAppConnectionWalletSwitcherStore } from '~/core/state/appConnectionWalletSwitcher/appConnectionSwitcher';
 import { useAppSessionsStore } from '~/core/state/appSessions';
 import { getDappHost, isValidUrl } from '~/core/utils/connectedApps';
-import { toHex } from '~/core/utils/hex';
-
-const messenger = initializeMessenger({ connect: 'inpage' });
+import {
+  sendAccountsChangedEvent,
+  sendChainChangedEvent,
+  sendConnectEvent,
+  sendDisconnectEvent,
+} from '~/core/utils/inpageEvents';
 
 const ActiveSessionSchema = z.object({
   address: addressSchema,
@@ -58,12 +60,9 @@ const addSessionHandler = os
       .addSession({ host, address, chainId, url });
 
     // Forward events to inpage
-    messenger.send(`accountsChanged:${host}`, address);
+    await sendAccountsChangedEvent(host, [address]);
     if (Object.keys(sessions).length === 1) {
-      messenger.send(`connect:${host}`, {
-        address,
-        chainId: toHex(String(chainId)),
-      });
+      await sendConnectEvent(host, chainId);
     }
 
     return sessions;
@@ -79,12 +78,12 @@ const updateActiveSessionHandler = os
     updateActiveSession({ host, address });
 
     // Forward events to inpage
-    messenger.send(`accountsChanged:${host}`, address);
+    await sendAccountsChangedEvent(host, [address]);
     const session = appSessions[host];
     if (session) {
       const chainId = session.sessions[address];
       if (chainId !== undefined) {
-        messenger.send(`chainChanged:${host}`, chainId);
+        await sendChainChangedEvent(host, chainId);
       }
     }
   });
@@ -100,7 +99,7 @@ const updateActiveSessionChainIdHandler = os
       .updateActiveSessionChainId({ host, chainId });
 
     // Forward events to inpage
-    messenger.send(`chainChanged:${host}`, chainId);
+    await sendChainChangedEvent(host, chainId);
   });
 
 const updateSessionChainIdHandler = os
@@ -119,7 +118,7 @@ const updateSessionChainIdHandler = os
       activeSession &&
       activeSession.address.toLowerCase() === address.toLowerCase()
     ) {
-      messenger.send(`chainChanged:${host}`, chainId);
+      await sendChainChangedEvent(host, chainId);
     }
   });
 
@@ -139,10 +138,10 @@ const removeSessionHandler = os
 
     // Forward events to inpage
     if (newActiveSession) {
-      messenger.send(`accountsChanged:${host}`, newActiveSession.address);
-      messenger.send(`chainChanged:${host}`, newActiveSession.chainId);
+      await sendAccountsChangedEvent(host, [newActiveSession.address]);
+      await sendChainChangedEvent(host, newActiveSession.chainId);
     } else {
-      messenger.send(`disconnect:${host}`, []);
+      await sendDisconnectEvent(host);
     }
 
     return newActiveSession;
@@ -160,7 +159,7 @@ const removeAppSessionHandler = os
       .clearAppHasInteractedWithNudgeSheet({ host });
 
     // Forward events to inpage
-    messenger.send(`disconnect:${host}`, null);
+    await sendDisconnectEvent(host);
   });
 
 const removeAddressSessionsHandler = os
@@ -174,23 +173,25 @@ const removeAddressSessionsHandler = os
 const disconnectAllSessionsHandler = os.output(z.void()).handler(async () => {
   const { appSessions, clearSessions } = useAppSessionsStore.getState();
 
-  // Disconnect all sessions and forward events
-  Object.values(appSessions)
-    .filter(
-      (session): session is NonNullable<typeof session> =>
-        session !== undefined,
-    )
-    .forEach((session) => {
-      useAppConnectionWalletSwitcherStore
-        .getState()
-        .clearAppHasInteractedWithNudgeSheet({
-          host: session.host,
-        });
+  const disconnectPromises = [];
 
-      if (isValidUrl(session.url)) {
-        messenger.send(`disconnect:${getDappHost(session.url)}`, null);
-      }
-    });
+  // Disconnect all sessions and forward events
+  const sessions = Object.values(appSessions).filter(
+    (s): s is NonNullable<typeof s> => s !== undefined,
+  );
+  for (const session of sessions) {
+    useAppConnectionWalletSwitcherStore
+      .getState()
+      .clearAppHasInteractedWithNudgeSheet({
+        host: session.host,
+      });
+
+    if (isValidUrl(session.url)) {
+      disconnectPromises.push(sendDisconnectEvent(getDappHost(session.url)));
+    }
+  }
+
+  await Promise.allSettled(disconnectPromises);
 
   clearSessions();
 });

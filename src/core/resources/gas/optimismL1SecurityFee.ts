@@ -1,4 +1,3 @@
-import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { useQuery } from '@tanstack/react-query';
 
 import {
@@ -10,8 +9,9 @@ import {
 } from '~/core/react-query';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
+import { TransactionRequest } from '~/core/types/transactions';
 import { calculateL1FeeOptimism } from '~/core/utils/gas';
-import { getProvider } from '~/core/viem/clientToProvider';
+import { getViemClient } from '~/core/viem/clients';
 
 // ///////////////////////////////////////////////
 // Query Types
@@ -53,12 +53,12 @@ async function optimismL1SecurityFeeQueryFunction({
     .getState()
     .getNeedsL1SecurityFeeChainIds();
   if (needsL1SecurityFeeChains.includes(chainId)) {
-    const provider = getProvider({ chainId: ChainId.optimism });
-    const gasPrice = await provider.getGasPrice();
+    const client = getViemClient({ chainId: ChainId.optimism });
+    const gasPrice = await client.getGasPrice();
     const l1Fee = await calculateL1FeeOptimism({
       currentGasPrice: gasPrice.toString(),
       transactionRequest,
-      provider,
+      client,
     });
     const l1GasFeeGwei = l1Fee?.toString() || '0';
     return l1GasFeeGwei;

@@ -1,16 +1,9 @@
-// Keep TransactionResponse for transaction normalization - used for compatibility with ethers providers
-import { TransactionResponse } from '@ethersproject/providers';
-import BigNumber from 'bignumber.js';
-import omit from 'lodash/omit';
-import { Address, isAddress, parseEther } from 'viem';
+import { Address, isAddress, isHex } from 'viem';
 
 import { PrivateKey } from '../keychain/IKeychain';
-import { ethUnits } from '../references';
 import { EthereumWalletType } from '../types/walletTypes';
 
-import { addHexPrefix, isHexStringIgnorePrefix } from './hex';
 import { isValidMnemonic } from './mnemonic';
-import { divide } from './numbers';
 
 export type EthereumWalletSeed = PrivateKey | string;
 
@@ -28,7 +21,8 @@ export const isENSAddressFormat = (name: string) => {
  * @return Whether or not the string is a valid private key string.
  */
 export const isValidPrivateKey = (value: string): boolean => {
-  return isHexStringIgnorePrefix(value) && addHexPrefix(value).length === 66;
+  const prefixed = value.startsWith('0x') ? value : `0x${value}`;
+  return isHex(prefixed) && prefixed.length === 66;
 };
 
 export const identifyWalletType = (
@@ -72,33 +66,6 @@ export const hasPreviousTransactions = async (
   } catch (e) {
     return false;
   }
-};
-
-export const gweiToWei = (gweiAmount: string) => {
-  const weiAmount = new BigNumber(gweiAmount).times(ethUnits.gwei).toFixed(0); // fixed to 0 because wei is the smallest unit
-  return weiAmount;
-};
-
-export const weiToGwei = (weiAmount: string) => {
-  const gweiAmount = divide(weiAmount, ethUnits.gwei);
-  return gweiAmount;
-};
-
-export const toWei = (ether: string): string => {
-  const result = parseEther(ether);
-  return result.toString();
-};
-
-export const normalizeTransactionResponsePayload = (
-  payload: TransactionResponse,
-): TransactionResponse => {
-  // Firefox can't serialize functions
-  if (navigator.userAgent.toLowerCase().includes('firefox')) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    return omit(payload, 'wait') as TransactionResponse;
-  }
-  return payload;
 };
 
 // This function removes all the keys from the message that are not present in the types

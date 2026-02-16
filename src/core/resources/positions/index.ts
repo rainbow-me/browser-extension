@@ -16,6 +16,7 @@ import { AssetApiResponse, ParsedUserAsset } from '~/core/types/assets';
 import { ChainId, ChainName, chainNameToIdMapping } from '~/core/types/chains';
 import { parseUserAsset } from '~/core/utils/assets';
 import { getSupportedChains } from '~/core/utils/chains';
+import { getErrorMessage } from '~/core/utils/errors';
 import { RainbowError, logger } from '~/logger';
 
 const POSITIONS_TIMEOUT_DURATION = 20000;
@@ -140,7 +141,7 @@ async function positionsQueryFunction({
     return parsedPositionsByChain;
   } catch (e) {
     logger.error(new RainbowError('positionsQueryFunction: '), {
-      message: (e as Error)?.message,
+      message: getErrorMessage(e),
     });
   }
 }
@@ -195,7 +196,7 @@ async function positionsQueryFunctionRetryByChain({
     }
   } catch (e) {
     logger.error(new RainbowError('positionsQueryFunctionRetryByChain: '), {
-      message: (e as Error)?.message,
+      message: getErrorMessage(e),
     });
   }
 }
@@ -231,7 +232,7 @@ async function positionQueryFunctionByChain({
       new RainbowError(`positionQueryFunctionByChain - chainId = ${chainId}`),
     ),
       {
-        message: (e as Error)?.message,
+        message: getErrorMessage(e),
       };
   }
   return {

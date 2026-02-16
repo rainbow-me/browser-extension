@@ -50,7 +50,7 @@ export type MeteorologyResponse = {
     };
   };
   meta: {
-    feeType: 'legacy' | 'eip1559';
+    feeType: 'eip1559';
     blockNumber: string;
     provider: string;
   };
@@ -65,11 +65,21 @@ export type MeteorologyLegacyResponse = {
     };
   };
   meta: {
-    feeType: 'legacy' | 'eip1559';
+    feeType: 'legacy';
     blockNumber: number;
     provider: string;
   };
 };
+
+export type MeteorologyData = MeteorologyResponse | MeteorologyLegacyResponse;
+
+export const isMeteorologyEIP1559 = (
+  data: MeteorologyData,
+): data is MeteorologyResponse => data.meta.feeType === 'eip1559';
+
+export const isMeteorologyLegacy = (
+  data: MeteorologyData,
+): data is MeteorologyLegacyResponse => data.meta.feeType === 'legacy';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 type MeteorologyArgs = {

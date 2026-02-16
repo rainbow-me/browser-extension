@@ -429,8 +429,8 @@ class KeychainManager {
 
   async isMnemonicInVault(mnemonic: string) {
     for (const k of this.state.keychains) {
-      if (k.type != KeychainType.HdKeychain) continue;
-      if ((await k.exportKeychain()) == mnemonic) return true;
+      if (k.type !== KeychainType.HdKeychain) continue;
+      if ((await k.exportKeychain()) === mnemonic) return true;
     }
     return false;
   }
@@ -443,7 +443,7 @@ class KeychainManager {
         const existingKeychain = await this.getKeychain(newAccount);
         // if the account is already in the vault (like in a hd keychain), we don't want to import it again
         // UNLESS it's a readOnlyKeychain, which we DO WANT to override it, importing the pk
-        if (existingKeychain.type != KeychainType.ReadOnlyKeychain)
+        if (existingKeychain.type !== KeychainType.ReadOnlyKeychain)
           return existingKeychain;
       }
     }
@@ -667,11 +667,6 @@ class KeychainManager {
       });
     }
     throw new Error('No keychain found for account');
-  }
-
-  async getSigner(address: Address) {
-    const keychain = await this.getKeychain(address);
-    return keychain.getSigner(address);
   }
 }
 

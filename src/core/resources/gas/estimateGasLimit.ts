@@ -1,4 +1,3 @@
-import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { useQuery } from '@tanstack/react-query';
 
 import {
@@ -10,15 +9,16 @@ import {
 } from '~/core/react-query';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
+import { TransactionRequest } from '~/core/types/transactions';
 import { estimateGas } from '~/core/utils/gas';
-import { getProvider } from '~/core/viem/clientToProvider';
+import { getViemClient } from '~/core/viem/clients';
 
 // ///////////////////////////////////////////////
 // Query Types
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 type EstimateGasLimitResponse = {
-  gasLimit: string;
+  gasLimit: bigint;
 };
 
 type EstimateGasLimitArgs = {
@@ -47,20 +47,20 @@ type EstimateGasLimitQueryKey = ReturnType<typeof estimateGasLimitQueryKey>;
 async function estimateGasLimitQueryFunction({
   queryKey: [{ chainId, transactionRequest }],
 }: QueryFunctionArgs<typeof estimateGasLimitQueryKey>) {
-  const provider = getProvider({ chainId });
+  const client = getViemClient({ chainId });
   const gasLimit = await estimateGas({
     transactionRequest,
-    provider,
+    client,
   });
 
   if (!gasLimit) {
     const chainGasUnits = useNetworkStore.getState().getChainGasUnits(chainId);
     if (chainId === ChainId.arbitrum) {
-      return `${chainGasUnits.basic.eoaTransfer}`;
+      return BigInt(chainGasUnits.basic.eoaTransfer);
     }
     return transactionRequest?.data === '0x'
-      ? `${chainGasUnits.basic.eoaTransfer}`
-      : `${chainGasUnits.basic.tokenTransfer}`;
+      ? BigInt(chainGasUnits.basic.eoaTransfer)
+      : BigInt(chainGasUnits.basic.tokenTransfer);
   }
   return gasLimit;
 }

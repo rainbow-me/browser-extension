@@ -1,43 +1,38 @@
-import type { Signer } from '@ethersproject/abstract-signer';
-import { Contract, PopulatedTransaction } from '@ethersproject/contracts';
-import { type BatchCall, supportsDelegation } from '@rainbow-me/delegation';
+import type { BatchCall } from '@rainbow-me/delegation';
 import {
-  type Address,
-  type Hash,
+  Address,
+  Hash,
   type Hex,
+  WalletClient,
+  encodeFunctionData,
   erc20Abi,
   erc721Abi,
   maxUint256,
+  parseUnits,
+  toHex,
 } from 'viem';
 
-import { getDelegationEnabled } from '~/core/resources/delegations/featureStatus';
 import { useGasStore } from '~/core/state';
 import { useNetworkStore } from '~/core/state/networks/networks';
-import type { ChainId } from '~/core/types/chains';
-import type {
+import { ChainId } from '~/core/types/chains';
+import {
   TransactionGasParams,
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
-import type { NewTransaction } from '~/core/types/transactions';
+import { NewTransaction, TransactionRequest } from '~/core/types/transactions';
+import { getErrorMessage } from '~/core/utils/errors';
 import { addNewTransaction } from '~/core/utils/transactions';
-import { getProvider } from '~/core/viem/clientToProvider';
+import { getViemClient } from '~/core/viem/clients';
 import { RainbowError, logger } from '~/logger';
 
 import { ETH_ADDRESS } from '../../references';
-import type { ParsedAsset } from '../../types/assets';
-import { toHex } from '../../utils/hex';
+import { ParsedAsset } from '../../types/assets';
 import {
-  convertAmountToRawAmount,
-  greaterThan,
-  toBigNumber,
-} from '../../utils/numbers';
-import type {
   ActionProps,
-  PrepareActionProps,
   RapActionResult,
+  type RapUnlockActionParameters,
 } from '../references';
 import { overrideWithFastSpeedIfNeeded } from '../utils';
-import { requireAddress, requireHex } from '../validation';
 
 export const getAssetRawAllowance = async ({
   owner,
@@ -51,88 +46,20 @@ export const getAssetRawAllowance = async ({
   chainId: ChainId;
 }) => {
   try {
-    const provider = getProvider({ chainId });
-    const tokenContract = new Contract(assetAddress, erc20Abi, provider);
-    const allowance = await tokenContract.allowance(owner, spender);
+    const client = getViemClient({ chainId });
+    const allowance = await client.readContract({
+      address: assetAddress,
+      abi: erc20Abi,
+      functionName: 'allowance',
+      args: [owner, spender],
+    });
     return allowance.toString();
   } catch (error) {
     logger.error(new RainbowError('getRawAllowance: error'), {
-      message: (error as Error)?.message,
+      message: getErrorMessage(error),
     });
     return null;
   }
-};
-
-function parseRawAmount(
-  value: string | undefined,
-  decimals?: number,
-): bigint | null {
-  if (!value || value === '') return null;
-  try {
-    if (decimals !== undefined) {
-      const raw = convertAmountToRawAmount(value, decimals);
-      return BigInt(raw);
-    }
-    return BigInt(value);
-  } catch {
-    return null;
-  }
-}
-
-export const getApprovalAmount = async ({
-  address,
-  chainId,
-  amount,
-}: {
-  address: Address;
-  chainId: ChainId;
-  amount: string;
-}): Promise<{ approvalAmount: string; isUnlimited: boolean }> => {
-  const delegationEnabled = getDelegationEnabled();
-
-  if (delegationEnabled) {
-    try {
-      const { supported } = await supportsDelegation({ address, chainId });
-      if (supported) {
-        return { approvalAmount: amount, isUnlimited: false };
-      }
-    } catch {
-      // Fall through to unlimited on error
-    }
-  }
-  return { approvalAmount: maxUint256.toString(), isUnlimited: true };
-};
-
-export const needsTokenApproval = async ({
-  owner,
-  tokenAddress,
-  spender,
-  amount,
-  chainId,
-  decimals,
-}: {
-  owner: Address;
-  tokenAddress: Address;
-  spender: Address;
-  amount: string;
-  chainId: ChainId;
-  decimals?: number;
-}): Promise<boolean> => {
-  const requiredAmount = parseRawAmount(amount, decimals);
-  if (requiredAmount === null) return true;
-
-  const allowance = await getAssetRawAllowance({
-    owner,
-    assetAddress: tokenAddress,
-    spender,
-    chainId,
-  });
-  if (allowance === null) return true;
-
-  const currentAllowance = parseRawAmount(allowance);
-  if (currentAllowance === null) return true;
-
-  return currentAllowance < requiredAmount;
 };
 
 export const assetNeedsUnlocking = async ({
@@ -158,8 +85,9 @@ export const assetNeedsUnlocking = async ({
     chainId,
   });
 
-  const rawAmount = convertAmountToRawAmount(amount, assetToUnlock.decimals);
-  const needsUnlocking = !greaterThan(allowance, rawAmount);
+  if (!allowance) return true;
+  const rawAmount = parseUnits(String(amount), assetToUnlock.decimals);
+  const needsUnlocking = !(BigInt(allowance) > rawAmount);
   return needsUnlocking;
 };
 
@@ -173,24 +101,23 @@ export const estimateApprove = async ({
   tokenAddress: Address;
   spender: Address;
   chainId: ChainId;
-}): Promise<string> => {
+}): Promise<bigint> => {
   const chainGasUnits = useNetworkStore.getState().getChainGasUnits(chainId);
   try {
-    const provider = getProvider({ chainId });
-    const tokenContract = new Contract(tokenAddress, erc20Abi, provider);
-    const gasLimit = await tokenContract.estimateGas.approve(
-      spender,
-      maxUint256,
-      {
-        from: owner,
-      },
-    );
-    return gasLimit ? gasLimit.toString() : `${chainGasUnits.basic.approval}`;
+    const client = getViemClient({ chainId });
+    const gasLimit = await client.estimateContractGas({
+      address: tokenAddress,
+      abi: erc20Abi,
+      functionName: 'approve',
+      args: [spender, maxUint256],
+      account: owner,
+    });
+    return gasLimit || BigInt(chainGasUnits.basic.approval);
   } catch (error) {
     logger.error(new RainbowError('unlock: error estimateApprove'), {
-      message: (error as Error)?.message,
+      message: getErrorMessage(error),
     });
-    return `${chainGasUnits.basic.approval}`;
+    return BigInt(chainGasUnits.basic.approval);
   }
 };
 
@@ -198,31 +125,25 @@ export const populateApprove = async ({
   owner,
   tokenAddress,
   spender,
-  chainId,
   amount,
 }: {
   owner: Address;
   tokenAddress: Address;
   spender: Address;
-  chainId: ChainId;
-  amount?: string;
-}): Promise<PopulatedTransaction | null> => {
+  chainId?: ChainId;
+  amount?: bigint;
+}): Promise<TransactionRequest | null> => {
   try {
-    const provider = getProvider({ chainId });
-    const tokenContract = new Contract(tokenAddress, erc20Abi, provider);
-    // Use specific amount if provided (for atomic swaps), otherwise unlimited
-    const approvalAmount = amount ? BigInt(amount) : maxUint256;
-    const approveTransaction = await tokenContract.populateTransaction.approve(
-      spender,
-      approvalAmount,
-      {
-        from: owner,
-      },
-    );
-    return approveTransaction;
+    const approveAmount = amount ?? maxUint256;
+    const data = encodeFunctionData({
+      abi: erc20Abi,
+      functionName: 'approve',
+      args: [spender, approveAmount],
+    });
+    return { from: owner, to: tokenAddress, data };
   } catch (error) {
     logger.error(new RainbowError(' error populateApprove'), {
-      message: (error as Error)?.message,
+      message: getErrorMessage(error),
     });
     return null;
   }
@@ -238,27 +159,26 @@ export const estimateERC721Approval = async ({
   tokenAddress: Address;
   spender: Address;
   chainId: ChainId;
-}): Promise<string> => {
+}): Promise<bigint> => {
   const chainGasUnits = useNetworkStore.getState().getChainGasUnits(chainId);
   try {
-    const provider = getProvider({ chainId });
-    const tokenContract = new Contract(tokenAddress, erc721Abi, provider);
-    const gasLimit = await tokenContract.estimateGas.setApprovalForAll(
-      spender,
-      false,
-      {
-        from: owner,
-      },
-    );
-    return gasLimit ? gasLimit.toString() : `${chainGasUnits.basic.approval}`;
+    const client = getViemClient({ chainId });
+    const gasLimit = await client.estimateContractGas({
+      address: tokenAddress,
+      abi: erc721Abi,
+      functionName: 'setApprovalForAll',
+      args: [spender, false],
+      account: owner,
+    });
+    return gasLimit || BigInt(chainGasUnits.basic.approval);
   } catch (error) {
     logger.error(
       new RainbowError('estimateERC721Approval: error estimateApproval'),
       {
-        message: (error as Error)?.message,
+        message: getErrorMessage(error),
       },
     );
-    return `${chainGasUnits.basic.approval}`;
+    return BigInt(chainGasUnits.basic.approval);
   }
 };
 
@@ -272,23 +192,22 @@ export const populateRevokeApproval = async ({
   spenderAddress?: Address;
   chainId?: ChainId;
   type: 'erc20' | 'nft';
-}): Promise<PopulatedTransaction> => {
+}): Promise<TransactionRequest> => {
   if (!tokenAddress || !spenderAddress || !chainId) return {};
-  const provider = getProvider({ chainId });
-  const tokenContract = new Contract(tokenAddress, erc721Abi, provider);
   if (type === 'erc20') {
-    const amountToApprove = 0n;
-    const txObject = await tokenContract.populateTransaction.approve(
-      spenderAddress,
-      amountToApprove,
-    );
-    return txObject;
+    const data = encodeFunctionData({
+      abi: erc20Abi,
+      functionName: 'approve',
+      args: [spenderAddress, 0n],
+    });
+    return { to: tokenAddress, data };
   } else {
-    const txObject = await tokenContract.populateTransaction.setApprovalForAll(
-      spenderAddress,
-      false,
-    );
-    return txObject;
+    const data = encodeFunctionData({
+      abi: erc721Abi,
+      functionName: 'setApprovalForAll',
+      args: [spenderAddress, false],
+    });
+    return { to: tokenAddress, data };
   }
 };
 
@@ -299,73 +218,90 @@ export const executeApprove = async ({
   spender,
   tokenAddress,
   wallet,
-  approvalAmount,
+  chainId,
 }: {
   gasParams: Partial<TransactionGasParams & TransactionLegacyGasParams>;
-  gasLimit: string;
+  gasLimit: bigint;
   nonce?: number;
   spender: Address;
   tokenAddress: Address;
-  wallet: Signer;
-  approvalAmount: string;
-}) => {
+  wallet: WalletClient;
+  chainId: ChainId;
+}): Promise<{ hash: Hash; nonce?: number; chainId: ChainId }> => {
   const { gasPrice, maxFeePerGas, maxPriorityFeePerGas } = gasParams;
 
-  const tokenContract = new Contract(tokenAddress, erc20Abi, wallet);
+  const gasArgs = maxFeePerGas
+    ? {
+        gas: gasLimit || undefined,
+        maxFeePerGas: BigInt(maxFeePerGas),
+        maxPriorityFeePerGas: maxPriorityFeePerGas
+          ? BigInt(maxPriorityFeePerGas)
+          : undefined,
+      }
+    : {
+        gas: gasLimit || undefined,
+        gasPrice: gasPrice ? BigInt(gasPrice) : undefined,
+      };
 
-  return await tokenContract.approve(spender, approvalAmount, {
+  const hash = await wallet.writeContract({
+    chain: wallet.chain ?? null,
+    account: wallet.account!,
+    address: tokenAddress,
+    abi: erc20Abi,
+    functionName: 'approve',
+    args: [spender, maxUint256],
     nonce,
-    gasLimit: toBigNumber(gasLimit),
-    gasPrice: toBigNumber(gasPrice),
-    maxFeePerGas: toBigNumber(maxFeePerGas),
-    maxPriorityFeePerGas: toBigNumber(maxPriorityFeePerGas),
+    ...gasArgs,
   });
+
+  return { hash, nonce, chainId };
 };
 
-/**
- * Prepare an unlock (approval) call for atomic execution.
- * Returns the BatchCall object without executing the transaction.
- * Atomic swaps must approve exact amount, never unlimited.
- */
 export const prepareUnlock = async ({
   parameters,
-}: PrepareActionProps<'unlock'>): Promise<{ call: BatchCall | null }> => {
-  if (parameters.amount === undefined) {
+}: {
+  parameters: RapUnlockActionParameters;
+  wallet: WalletClient;
+  chainId: number;
+  quote: unknown;
+}): Promise<{ call: BatchCall | null }> => {
+  const amount = parameters.amount;
+  if (amount === undefined) {
     throw new RainbowError(
       'prepareUnlock: amount is required for atomic swaps; atomic path must approve exact amount, never unlimited',
     );
   }
-  const tokenAddress = requireAddress(
-    parameters.assetToUnlock.address,
-    'unlock asset address',
-  );
+  const tokenAddress = parameters.assetToUnlock.address;
+  if (tokenAddress === ETH_ADDRESS) {
+    return { call: null };
+  }
   const tx = await populateApprove({
     owner: parameters.fromAddress,
     tokenAddress,
     spender: parameters.contractAddress,
-    chainId: parameters.chainId,
-    amount: parameters.amount,
+    amount: parseUnits(amount, parameters.assetToUnlock.decimals),
   });
 
   if (!tx?.data) return { call: null };
-  const data = requireHex(tx.data, 'unlock prepared tx.data');
 
   return {
     call: {
-      to: tokenAddress,
-      value: toHex(BigInt(tx.value?.toString() ?? '0')) as Hex,
-      data,
+      to: tokenAddress as Address,
+      value: toHex(0n) as Hex,
+      data: tx.data as Hex,
     },
   };
 };
 
 export const unlock = async ({
   baseNonce,
+  client,
   index,
   parameters,
   wallet,
 }: ActionProps<'unlock'>): Promise<RapActionResult> => {
   const { selectedGas, gasFeeParamsBySpeed } = useGasStore.getState();
+  if (!selectedGas) throw new RainbowError('unlock: gas params not available');
 
   const { assetToUnlock, contractAddress, chainId } = parameters;
 
@@ -384,7 +320,7 @@ export const unlock = async ({
     });
   } catch (e) {
     logger.error(new RainbowError('unlock: error estimateApprove'), {
-      message: (e as Error)?.message,
+      message: getErrorMessage(e),
     });
     throw e;
   }
@@ -395,13 +331,7 @@ export const unlock = async ({
     selectedGas,
   });
 
-  const nonce = typeof baseNonce === 'number' ? baseNonce + index : undefined;
-
-  const { approvalAmount, isUnlimited } = await getApprovalAmount({
-    address: parameters.fromAddress,
-    chainId,
-    amount: parameters.amount,
-  });
+  const nonce = baseNonce ? baseNonce + index : undefined;
 
   let approval;
 
@@ -413,44 +343,46 @@ export const unlock = async ({
       gasParams,
       nonce,
       wallet,
-      approvalAmount,
+      chainId,
     });
   } catch (e) {
     logger.error(new RainbowError('unlock: error executeApprove'), {
-      message: (e as Error)?.message,
+      message: getErrorMessage(e),
     });
     throw e;
   }
 
   if (!approval) throw new RainbowError('unlock: error executeApprove');
 
-  const transaction: NewTransaction = {
+  const tx = await client.getTransaction({ hash: approval.hash });
+
+  const transaction = {
     asset: assetToUnlock,
-    data: approval.data,
-    value: approval.value?.toString() || '0',
     changes: [],
     from: parameters.fromAddress,
     to: assetAddress,
-    hash: approval.hash as Hash,
-    chainId: approval.chainId as ChainId,
-    nonce: approval.nonce,
-    gasLimit: gasLimit?.toString(),
+    hash: approval.hash,
+    chainId: approval.chainId,
+    nonce: tx.nonce,
     status: 'pending',
     type: 'approve',
-    approvalAmount: (isUnlimited ? 'UNLIMITED' : approvalAmount) as
-      | 'UNLIMITED'
-      | (string & object),
-    ...gasParams,
-  };
+    approvalAmount: 'UNLIMITED',
+    ...('gasPrice' in gasParams
+      ? { gasPrice: gasParams.gasPrice.toString() }
+      : {
+          maxFeePerGas: gasParams.maxFeePerGas.toString(),
+          maxPriorityFeePerGas: gasParams.maxPriorityFeePerGas.toString(),
+        }),
+  } satisfies NewTransaction;
 
   addNewTransaction({
-    address: parameters.fromAddress as Address,
-    chainId: approval.chainId as ChainId,
+    address: parameters.fromAddress,
+    chainId: approval.chainId,
     transaction,
   });
 
   return {
-    nonce: approval?.nonce,
-    hash: approval?.hash,
+    nonce: tx.nonce,
+    hash: approval.hash,
   };
 };

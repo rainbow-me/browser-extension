@@ -1,7 +1,7 @@
 import type { Revoke } from '@rainbow-me/delegation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import type { Address } from 'viem';
+import { type Address, toHex } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -15,7 +15,6 @@ import { type TransactionGasParams } from '~/core/types/gas';
 import { type NewTransaction } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
 import { getChain } from '~/core/utils/chains';
-import { toHex } from '~/core/utils/hex';
 import { addNewTransaction } from '~/core/utils/transactions';
 import {
   Box,
@@ -34,7 +33,7 @@ import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { TransactionFee } from '~/entries/popup/components/TransactionFee/TransactionFee';
 import { popupClient } from '~/entries/popup/handlers/background';
-import { isLedgerConnectionError } from '~/entries/popup/handlers/ledger';
+import { isLedgerConnectionError } from '~/entries/popup/handlers/hardwareWallet';
 import { getWallet } from '~/entries/popup/handlers/wallet';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
@@ -214,7 +213,7 @@ export const RevokeDelegationPage = () => {
   }, [currentDelegation, delegationsToRevoke.length]);
 
   const handleRevoke = useCallback(async () => {
-    if (!currentDelegation || !revokeAddress) return;
+    if (!currentDelegation || !revokeAddress || !selectedGas) return;
 
     setSending(true);
     setRevokeStatus('revoking');
@@ -283,8 +282,8 @@ export const RevokeDelegationPage = () => {
           status: 'pending',
           type: 'revoke_delegation',
           nonce: result.nonce,
-          maxFeePerGas: gasParams.maxFeePerGas,
-          maxPriorityFeePerGas: gasParams.maxPriorityFeePerGas,
+          maxFeePerGas: gasParams.maxFeePerGas?.toString(),
+          maxPriorityFeePerGas: gasParams.maxPriorityFeePerGas?.toString(),
         };
 
         await addNewTransaction({
@@ -372,7 +371,7 @@ export const RevokeDelegationPage = () => {
   }, [
     currentDelegation,
     revokeAddress,
-    selectedGas.transactionGasParams,
+    selectedGas,
     isLastDelegation,
     navigate,
     currentIndex,
@@ -639,7 +638,7 @@ export const RevokeDelegationPage = () => {
                   from: revokeAddress,
                   chainId: currentDelegation.chainId,
                   data: '0x',
-                  value: '0x0',
+                  value: 0n,
                 }}
               />
             </Row>

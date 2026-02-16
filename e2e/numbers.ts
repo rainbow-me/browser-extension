@@ -1,14 +1,17 @@
-import BigNumber from 'bignumber.js';
+import { formatUnits } from 'viem';
 
-export type BigNumberish = number | string | BigNumber;
+export type BigNumberish = number | string | bigint;
 
 export const convertRawAmountToDecimalFormat = (
   value: BigNumberish,
   decimals = 18,
-): string =>
-  new BigNumber(value).dividedBy(new BigNumber(10).pow(decimals)).toFixed();
+): string => formatUnits(BigInt(value), decimals);
 
 export const subtract = (
   numberOne: BigNumberish,
   numberTwo: BigNumberish,
-): string => new BigNumber(numberOne).minus(new BigNumber(numberTwo)).toFixed();
+): string => {
+  const a = BigInt(numberOne);
+  const b = BigInt(numberTwo);
+  return (a - b).toString();
+};

@@ -60,8 +60,10 @@ const formatExternalAsset = (
   asset: ExternalToken,
   nativeCurrency: SupportedCurrencyKey,
 ): ParsedAsset => {
+  const { networks, ...rest } = asset;
   return {
-    ...asset,
+    ...rest,
+    networks: networks as ParsedAsset['networks'],
     chainId,
     chainName: chainIdToNameMapping[chainId],
     uniqueId: `${address}_${chainId}`,
@@ -69,24 +71,22 @@ const formatExternalAsset = (
     isNativeAsset: isNativeAsset(address as AddressOrEth, chainId),
     native: {
       price: {
-        change: asset?.price?.relativeChange24h
-          ? convertAmountToPercentageDisplay(
-              `${asset?.price?.relativeChange24h}`,
-            )
+        change: asset.price.relativeChange24h
+          ? convertAmountToPercentageDisplay(`${asset.price.relativeChange24h}`)
           : '',
-        amount: asset?.price?.value ?? 0,
+        amount: asset.price.value ?? 0,
         display: convertAmountAndPriceToNativeDisplay(
           1,
-          asset?.price?.value ?? 0,
+          asset.price.value ?? 0,
           nativeCurrency,
         ).display,
       },
     },
     price: {
-      value: asset?.price?.value ?? 0,
-      relative_change_24h: asset?.price?.relativeChange24h ?? 0,
+      value: asset.price.value ?? 0,
+      relative_change_24h: asset.price.relativeChange24h ?? 0,
     },
-    icon_url: asset?.iconUrl || undefined,
+    icon_url: asset.iconUrl || undefined,
   };
 };
 

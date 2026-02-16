@@ -1,7 +1,3 @@
-import gql from 'graphql-tag';
-
-import { RainbowFetchRequestOpts } from '../network/internal/rainbowFetch';
-
 import { getSdk as getEnsSdk } from './__generated__/ens';
 import { getSdk as getMetadataSdk } from './__generated__/metadata';
 import { getFetchRequester } from './utils/getFetchRequester';
@@ -12,22 +8,11 @@ const { config } = require('./config.js');
 export const ensRequester = getFetchRequester(config.ens.schema);
 export const ensClient = getEnsSdk(ensRequester);
 
-export const metadataRequester = getFetchRequester(config.metadata.schema);
+const metadataRequester = getFetchRequester(config.metadata.schema);
 export const metadataClient = getMetadataSdk(metadataRequester);
 
-export const requestMetadata = (
-  q: string,
-  options?: Pick<RainbowFetchRequestOpts, 'timeout' | 'headers'>,
-) =>
-  metadataRequester(
-    gql`
-      ${q}
-    `,
-    options || {},
-  );
-
 // POST requests bypass CDN caching
-export const metadataPostRequester = getFetchRequester({
+const metadataPostRequester = getFetchRequester({
   ...config.metadata.schema,
   method: 'POST',
 });

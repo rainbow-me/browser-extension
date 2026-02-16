@@ -1,6 +1,6 @@
 import { isValidAddress } from '@ethereumjs/util';
 import { useCallback, useMemo, useState } from 'react';
-import { Address } from 'viem';
+import { Address, parseEther, parseUnits } from 'viem';
 
 import { i18n } from '~/core/languages';
 import { selectUserAssetsDictByChain } from '~/core/resources/_selectors/assets';
@@ -11,13 +11,6 @@ import { ChainId, chainNameToIdMapping } from '~/core/types/chains';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
 import { UniqueAsset } from '~/core/types/nfts';
 import { getChain } from '~/core/utils/chains';
-import { toWei } from '~/core/utils/ethereum';
-import {
-  add,
-  convertAmountToRawAmount,
-  lessOrEqualThan,
-  lessThan,
-} from '~/core/utils/numbers';
 
 import { useUserNativeAsset } from '../useUserNativeAsset';
 
@@ -32,7 +25,7 @@ export const useSendValidations = ({
   asset?: ParsedUserAsset | null;
   assetAmount?: string;
   nft?: UniqueAsset;
-  selectedGas?: GasFeeParams | GasFeeLegacyParams;
+  selectedGas?: GasFeeParams | GasFeeLegacyParams | null;
   toAddress?: Address;
   toAddressOrName?: string;
 }) => {
@@ -58,17 +51,15 @@ export const useSendValidations = ({
     }
     if (assetAmount) {
       if (!asset?.isNativeAsset) {
-        return lessOrEqualThan(
-          convertAmountToRawAmount(assetAmount, asset?.decimals || 18),
-          convertAmountToRawAmount(
-            asset?.balance?.amount || '0',
-            asset?.decimals || 18,
-          ),
+        const decimals = asset?.decimals || 18;
+        return (
+          parseUnits(assetAmount, decimals) <=
+          parseUnits(asset?.balance?.amount || '0', decimals)
         );
       } else {
-        return lessOrEqualThan(
-          toWei(assetAmount || '0'),
-          toWei(asset?.balance?.amount || '0'),
+        return (
+          parseEther(assetAmount || '0') <=
+          parseEther(asset?.balance?.amount || '0')
         );
       }
     }
@@ -81,16 +72,14 @@ export const useSendValidations = ({
   ]);
 
   const enoughNativeAssetForGas = useMemo(() => {
+    const nativeBalanceWei = parseEther(nativeAsset?.balance?.amount || '0');
     if (asset?.isNativeAsset) {
-      return lessOrEqualThan(
-        add(toWei(assetAmount || '0'), selectedGas?.gasFee?.amount || '0'),
-        toWei(nativeAsset?.balance?.amount || '0'),
+      return (
+        parseEther(assetAmount || '0') + (selectedGas?.gasFee?.amount ?? 0n) <=
+        nativeBalanceWei
       );
     }
-    return lessThan(
-      selectedGas?.gasFee?.amount || '0',
-      toWei(nativeAsset?.balance?.amount || '0'),
-    );
+    return (selectedGas?.gasFee?.amount ?? 0n) < nativeBalanceWei;
   }, [
     asset?.isNativeAsset,
     assetAmount,
@@ -173,7 +162,7 @@ export const useSendValidations = ({
 
   const readyForReview = useMemo(
     () =>
-      selectedGas?.gasFee?.amount &&
+      selectedGas?.gasFee?.amount != null &&
       isValidToAddress &&
       toAddressOrName !== '' &&
       (assetAmount || !!nft) &&

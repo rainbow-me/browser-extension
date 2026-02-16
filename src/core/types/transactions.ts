@@ -1,5 +1,4 @@
-import { TransactionResponse } from '@ethersproject/providers';
-import { type Address } from 'viem';
+import { Address, Hex } from 'viem';
 
 import {
   AssetApiResponse,
@@ -8,7 +7,22 @@ import {
   ProtocolType,
 } from './assets';
 import { ChainId, ChainName } from './chains';
-import { TransactionGasParams, TransactionLegacyGasParams } from './gas';
+
+export type TransactionRequest = {
+  to?: Address;
+  from?: Address;
+  value?: bigint;
+  data?: Hex;
+  nonce?: number;
+  gas?: bigint;
+  gasLimit?: bigint;
+  gasPrice?: bigint;
+  maxFeePerGas?: bigint;
+  maxPriorityFeePerGas?: bigint;
+  chainId?: number;
+  type?: number;
+  accessList?: { address: Address; storageKeys: Hex[] }[];
+};
 
 export type TransactionStatus = 'pending' | 'confirmed' | 'failed';
 
@@ -59,15 +73,19 @@ type BaseTransaction = {
 
   feeType?: 'legacy' | 'eip-1559';
   gasPrice?: string;
+  maxFeePerGas?: string;
+  maxPriorityFeePerGas?: string;
   gasLimit?: string;
   baseFee?: string;
   /** True when EIP-7702 (type 4) */
   delegation?: boolean;
+  /** True when executed as batched delegation tx */
+  batch?: boolean;
   explorer?: {
     name: string;
     url: string;
   };
-} & Partial<TransactionGasParams & TransactionLegacyGasParams>;
+};
 
 export type PendingTransaction = BaseTransaction & {
   status: 'pending';
@@ -84,10 +102,6 @@ export type MinedTransaction = BaseTransaction & {
 export type RainbowTransaction = PendingTransaction | MinedTransaction;
 
 export type NewTransaction = Omit<PendingTransaction, 'title' | 'changes'> & {
-  /** True when batched execution (atomic swaps) */
-  batch?: boolean;
-  /** True when includes EIP-7702 delegation (type 4) */
-  delegation?: boolean;
   changes?: Array<
     | {
         direction: TransactionDirection;
@@ -103,12 +117,12 @@ const transactionTypes = {
   withoutChanges: [
     'cancel',
     'contract_interaction',
-    'delegate',
     'deployment',
     'approve',
     'revoke',
-    'revoke_delegation',
     'speed_up',
+    'delegate',
+    'revoke_delegation',
   ],
   withChanges: [
     'sale',
@@ -155,9 +169,10 @@ export type TransactionType =
 
 export type TransactionDirection = 'in' | 'out' | 'self';
 
-export interface ExecuteRapResponse extends TransactionResponse {
+export type ExecuteRapResponse = {
+  nonce?: number;
   errorMessage?: string;
-}
+};
 
 export type TransactionApiResponse = {
   status: TransactionStatus;

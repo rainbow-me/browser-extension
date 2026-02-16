@@ -1,10 +1,10 @@
 import { useMutation } from '@tanstack/react-query';
 import React, { useCallback, useEffect } from 'react';
 
+import { ProviderRequestPayload } from '~/core/provider/types';
 import { useTestnetModeStore } from '~/core/state/currentSettings/testnetMode';
 import { useNotificationWindowStore } from '~/core/state/notificationWindow';
 import { usePendingRequestStore } from '~/core/state/requests';
-import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { TESTNET_MODE_BAR_HEIGHT } from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
 
@@ -48,10 +48,10 @@ const ApproveAppRequestWrapper = ({
 
 export const ApproveAppRequest = () => {
   const pendingRequests = usePendingRequestStore((s) => s.pendingRequests);
-  const { mutateAsync: approvePendingRequestAsync } = useMutation(
+  const { mutateAsync: approvePendingRequest } = useMutation(
     popupClientQueryUtils.state.requests.approve.mutationOptions(),
   );
-  const { mutateAsync: rejectPendingRequestAsync } = useMutation(
+  const { mutateAsync: rejectPendingRequest } = useMutation(
     popupClientQueryUtils.state.requests.reject.mutationOptions(),
   );
   const { notificationWindows } = useNotificationWindowStore();
@@ -104,32 +104,19 @@ export const ApproveAppRequest = () => {
   const approveRequest = useCallback(
     async (payload?: unknown) => {
       if (!pendingRequest) return;
-      // Await the ORPC call so the background removes the request from
-      // pendingRequests BEFORE the popup window is closed. Without this,
-      // chrome.windows.onRemoved can fire before the approve is processed,
-      // causing clearPendingRequestsOnUpdate to reject the request instead.
-      try {
-        await approvePendingRequestAsync({ id: pendingRequest.id, payload });
-      } catch {
-        // ORPC call may fail if the port disconnected; the background may
-        // still have processed the approval, so proceed to close the window.
-      }
+      await approvePendingRequest({ id: pendingRequest.id, payload });
       handleRequestAction();
     },
-    [approvePendingRequestAsync, handleRequestAction, pendingRequest],
+    [approvePendingRequest, handleRequestAction, pendingRequest],
   );
 
   const rejectRequest = useCallback(
     async ({ preventWindowClose }: { preventWindowClose?: boolean } = {}) => {
       if (!pendingRequest) return;
-      try {
-        await rejectPendingRequestAsync({ id: pendingRequest.id });
-      } catch {
-        // Same as above - proceed to close even if ORPC call fails.
-      }
+      await rejectPendingRequest({ id: pendingRequest.id });
       handleRequestAction({ preventWindowClose });
     },
-    [handleRequestAction, pendingRequest, rejectPendingRequestAsync],
+    [handleRequestAction, pendingRequest, rejectPendingRequest],
   );
 
   switch (pendingRequest?.method) {

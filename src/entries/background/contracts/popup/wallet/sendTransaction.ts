@@ -18,21 +18,6 @@ const transactionRequestSchema = z.object({
   type: z.number().optional(),
 });
 
-const transactionResponseSchema = z.object({
-  hash: hexSchema,
-  to: addressSchema.nullish(),
-  from: addressSchema,
-  nonce: z.number(),
-  gasLimit: hexSchema,
-  gasPrice: hexSchema.nullish(),
-  maxFeePerGas: hexSchema.nullish(),
-  maxPriorityFeePerGas: hexSchema.nullish(),
-  data: hexSchema,
-  value: hexSchema,
-  chainId: z.number(),
-  confirmations: z.number(),
-});
-
 export const sendTransactionContract = oc
   .input(transactionRequestSchema)
-  .output(transactionResponseSchema);
+  .output(hexSchema);

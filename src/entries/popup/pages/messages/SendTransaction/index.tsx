@@ -1,29 +1,35 @@
-import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Address, getAddress } from 'viem';
+import { Address, Hex, getAddress } from 'viem';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { getWalletContext } from '~/analytics/util';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
+import { ProviderRequestPayload } from '~/core/provider/types';
 import { useDappMetadata } from '~/core/resources/metadata/dapp';
-import { useGasStore } from '~/core/state';
-import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
-import { useFeatureFlagLocalOverwriteStore } from '~/core/state/currentSettings/featureFlags';
+import {
+  useConnectedToHardhatStore,
+  useFeatureFlagsStore,
+  useGasStore,
+} from '~/core/state';
 import { useNetworkStore } from '~/core/state/networks/networks';
-import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { AddressOrEth } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { NewTransaction, TxHash } from '~/core/types/transactions';
+import {
+  NewTransaction,
+  TransactionRequest,
+  TxHash,
+} from '~/core/types/transactions';
 import { chainIdToUse } from '~/core/utils/chains';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
+import { getErrorMessage } from '~/core/utils/errors';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Bleed, Box, Separator, Stack } from '~/design-system';
 import { triggerAlert } from '~/design-system/components/Alert/Alert';
 import { TransactionFee } from '~/entries/popup/components/TransactionFee/TransactionFee';
-import { showLedgerDisconnectedAlertIfNeeded } from '~/entries/popup/handlers/ledger';
+import { showLedgerDisconnectedAlertIfNeeded } from '~/entries/popup/handlers/hardwareWallet';
 import { useSendAsset } from '~/entries/popup/hooks/send/useSendAsset';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
@@ -67,14 +73,14 @@ export function SendTransaction({
     useConnectedToHardhatStore();
   const { asset, selectAssetAddressAndChain } = useSendAsset();
   const { allWallets, watchedWallets } = useWallets();
-  const { featureFlags } = useFeatureFlagLocalOverwriteStore();
+  const { featureFlags } = useFeatureFlagsStore();
+  const txRequest = request?.params?.[0] as TransactionRequest;
 
   const onAcceptRequest = useCallback(async () => {
     if (!config.tx_requests_enabled) return;
     if (!selectedWallet || !activeSession) return;
     setLoading(true);
     try {
-      const txRequest = request?.params?.[0] as TransactionRequest;
       const { type, vendor } = await wallet.getWallet(selectedWallet);
 
       // Change the label while we wait for confirmation
@@ -89,16 +95,16 @@ export function SendTransaction({
       const txData = {
         from: selectedWallet,
         to: txRequest?.to ? (getAddress(txRequest?.to) as Address) : undefined,
-        value: txRequest.value || '0x0',
-        data: txRequest.data ?? '0x',
+        value: txRequest.value ? BigInt(txRequest.value) : 0n,
+        data: (txRequest.data ?? '0x') as Hex,
         chainId: activeChainId,
       };
       const result = await wallet.sendTransaction(txData);
       if (result) {
         const transaction = {
           asset: asset || undefined,
-          value: result.value.toString(),
-          data: result.data,
+          value: txData.value?.toString() ?? '0',
+          data: txData.data,
           from: txData.from,
           to: txData.to,
           hash: result.hash as TxHash,
@@ -106,7 +112,15 @@ export function SendTransaction({
           nonce: result.nonce,
           status: 'pending',
           type: 'send',
-          ...selectedGas.transactionGasParams,
+          ...((): Record<string, string> => {
+            const gp = selectedGas?.transactionGasParams;
+            if (!gp) return {};
+            if ('gasPrice' in gp) return { gasPrice: gp.gasPrice.toString() };
+            return {
+              maxFeePerGas: gp.maxFeePerGas.toString(),
+              maxPriorityFeePerGas: gp.maxPriorityFeePerGas.toString(),
+            };
+          })(),
         } satisfies NewTransaction;
 
         addNewTransaction({
@@ -131,15 +145,15 @@ export function SendTransaction({
         );
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
+    } catch (e) {
       showLedgerDisconnectedAlertIfNeeded(e);
       logger.error(
         new RainbowError('send: error executing send dapp approval'),
         {
-          message: (e as Error)?.message,
+          message: getErrorMessage(e),
         },
       );
-      const extractedError = (e as Error).message.split('[')[0];
+      const extractedError = getErrorMessage(e).split('[')[0];
       triggerAlert({
         text: i18n.t('errors.sending_transaction'),
         description: extractedError,
@@ -151,11 +165,11 @@ export function SendTransaction({
   }, [
     selectedWallet,
     activeSession,
-    request?.params,
+    txRequest,
     connectedToHardhat,
     connectedToHardhatOp,
     asset,
-    selectedGas.transactionGasParams,
+    selectedGas?.transactionGasParams,
     approveRequest,
     dappMetadata?.url,
     dappMetadata?.appHost,
@@ -250,7 +264,7 @@ export function SendTransaction({
           }}
           chainId={activeSession?.chainId || ChainId.mainnet}
           address={activeSession?.address}
-          transactionRequest={request?.params?.[0] as TransactionRequest}
+          transactionRequest={txRequest}
           plainTriggerBorder
         />
         <SendTransactionActions

@@ -21,6 +21,7 @@ import { unlockHandler } from './unlock';
 import { updatePasswordHandler } from './updatePassword';
 import { verifyPasswordHandler } from './verifyPassword';
 import { walletHandler } from './wallet';
+import { walletActionHandler } from './walletAction';
 import { walletsHandler } from './wallets';
 import { wipeHandler } from './wipe';
 
@@ -42,6 +43,7 @@ export const walletRouter = {
   accounts: accountsHandler,
   wallets: walletsHandler,
   wallet: walletHandler,
+  walletAction: walletActionHandler,
   path: pathHandler,
   exportWallet: exportWalletHandler,
   exportAccount: exportAccountHandler,

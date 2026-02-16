@@ -5,7 +5,7 @@ import { Address } from 'viem';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
-import { minus } from '~/core/utils/numbers';
+import { lessThan } from '~/core/utils/numbers';
 import { Box, Button, Stack, Text } from '~/design-system';
 
 import { Spinner } from '../../components/Spinner/Spinner';
@@ -36,14 +36,18 @@ const sortAccounts = (
     case 'token-balance': {
       const accountsInfo = Object.values(summaries);
       const sortedAccounts = accountsInfo.sort((a, b) =>
-        Number(minus(b.balance.amount, a.balance.amount)),
+        lessThan(b.balance.amount, a.balance.amount)
+          ? -1
+          : lessThan(a.balance.amount, b.balance.amount)
+          ? 1
+          : 0,
       );
       return sortedAccounts.map((account) => account.address);
     }
     case 'last-transaction': {
       const accountsInfo = Object.values(summaries);
-      const sortedAccounts = accountsInfo.sort((a, b) =>
-        Number(minus(b.lastTx || 0, a.lastTx || 0)),
+      const sortedAccounts = accountsInfo.sort(
+        (a, b) => (b.lastTx || 0) - (a.lastTx || 0),
       );
       return sortedAccounts.map((account) => account.address);
     }

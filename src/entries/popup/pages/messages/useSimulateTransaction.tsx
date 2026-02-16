@@ -4,45 +4,16 @@ import { Address } from 'viem';
 import { metadataPostClient } from '~/core/graphql';
 import {
   Message,
-  SimulateMessageQuery,
+  SimulateTransactionsWithoutGasQuery,
   Transaction,
-  TransactionScanResultType,
 } from '~/core/graphql/__generated__/metadata';
 import { i18n } from '~/core/languages';
 import { createQueryKey } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
-import {
-  TransactionSimulationResult,
-  simulateTransactions,
-} from '~/core/resources/transactions/simulation';
 import { useCurrentCurrencyStore } from '~/core/state';
-import { ParsedAsset } from '~/core/types/assets';
+import { AddressOrEth, ParsedAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { parseAsset } from '~/core/utils/assets';
-
-/** Asset from simulation response */
-type SimulationAsset = NonNullable<
-  NonNullable<
-    NonNullable<TransactionSimulationResult['simulation']>['in']
-  >[number]
->['asset'];
-
-/** Target from simulation response */
-type SimulationTarget = NonNullable<
-  NonNullable<
-    NonNullable<TransactionSimulationResult['simulation']>['approvals']
-  >[number]
->['spender'];
-
-/** Meta from simulation response */
-type SimulationMeta = NonNullable<
-  NonNullable<TransactionSimulationResult['simulation']>['meta']
->;
-
-/** Message simulation result */
-type MessageSimulationResult = NonNullable<
-  SimulateMessageQuery['simulateMessage']
->;
 
 const parseInterface = (interfaceName: string) => {
   switch (interfaceName) {
@@ -57,8 +28,17 @@ const parseInterface = (interfaceName: string) => {
   }
 };
 
+type SimulationAsset = {
+  assetCode: string;
+  decimals: number;
+  iconURL: string;
+  name: string;
+  symbol: string;
+  interface: string;
+};
+
 const parseSimulationAsset = (asset: SimulationAsset, chainId: ChainId) => {
-  const assetAddress = asset.assetCode as Address;
+  const assetCode = asset.assetCode as AddressOrEth;
   return parseAsset({
     asset: {
       symbol: asset.symbol,
@@ -67,11 +47,11 @@ const parseSimulationAsset = (asset: SimulationAsset, chainId: ChainId) => {
       chain_id: chainId,
       networks: {
         [chainId]: {
-          address: assetAddress,
+          address: assetCode,
           decimals: asset.decimals,
         },
       },
-      asset_code: assetAddress,
+      asset_code: assetCode,
       icon_url: asset.iconURL,
       interface: parseInterface(asset.interface),
       bridging: {
@@ -97,18 +77,36 @@ const parseScanningDescription = (description: Lowercase<string>) => {
   return t('you_can_lose_everything');
 };
 
+type SimulationResultElement = NonNullable<
+  NonNullable<
+    SimulateTransactionsWithoutGasQuery['simulateTransactions']
+  >[number]
+>;
+
+type SimulationTarget = {
+  address: string;
+  name: string;
+  iconURL: string;
+  function: string;
+  created?: string | null;
+  sourceCodeStatus?: string | null;
+};
+
+type SimulationInput = Pick<
+  SimulationResultElement,
+  'simulation' | 'error' | 'scanning'
+>;
+
 function parseSimulation(
-  result: TransactionSimulationResult | MessageSimulationResult,
+  { simulation, error, scanning }: SimulationInput,
   chainId: ChainId,
 ): TransactionSimulation {
-  const { simulation, error, scanning } = result;
-
   if (error) throw error.type;
-  if (!simulation || !scanning) throw 'UNSUPPORTED';
+  if (!simulation || !scanning) throw 'UNSUPPORTED' as const;
 
-  const inChanges = simulation.in ?? [];
-  const outChanges = simulation.out ?? [];
-  const approvals = simulation.approvals ?? [];
+  const inChanges = simulation.in?.filter(Boolean) ?? [];
+  const outChanges = simulation.out?.filter(Boolean) ?? [];
+  const approvalChanges = simulation.approvals?.filter(Boolean) ?? [];
 
   return {
     chainId,
@@ -118,27 +116,26 @@ function parseSimulation(
         scanning.description.toLowerCase() as Lowercase<string>,
       ),
     },
-    in: inChanges
-      .filter((c): c is NonNullable<typeof c> => c !== null)
-      .map(({ asset, quantity }) => ({
-        quantity,
-        asset: parseSimulationAsset(asset, chainId),
-      })),
-    out: outChanges
-      .filter((c): c is NonNullable<typeof c> => c !== null)
-      .map(({ asset, quantity }) => ({
-        quantity,
-        asset: parseSimulationAsset(asset, chainId),
-      })),
-    approvals: approvals
-      .filter((a): a is NonNullable<typeof a> => a !== null)
-      .map((approval) => ({
-        ...approval,
-        asset: parseSimulationAsset(approval.asset, chainId),
-      })),
-    meta: simulation.meta ?? null,
+    in: inChanges.map(({ asset, quantity }) => ({
+      quantity,
+      asset: parseSimulationAsset(asset, chainId),
+    })),
+    out: outChanges.map(({ asset, quantity }) => ({
+      quantity,
+      asset: parseSimulationAsset(asset, chainId),
+    })),
+    approvals: approvalChanges.map((approval) => ({
+      ...approval,
+      asset: parseSimulationAsset(approval.asset, chainId),
+    })),
+    meta: {
+      to: simulation.meta?.to ?? null,
+      transferTo: simulation.meta?.transferTo ?? null,
+    },
     hasChanges:
-      inChanges.length > 0 || outChanges.length > 0 || approvals.length > 0,
+      inChanges.length > 0 ||
+      outChanges.length > 0 ||
+      approvalChanges.length > 0,
   };
 }
 
@@ -159,15 +156,15 @@ export const useSimulateTransaction = ({
     }),
     enabled: !!chainId && (!!transaction.value || !!transaction.data),
     queryFn: async () => {
-      const results = await simulateTransactions({
+      const response = await metadataPostClient.simulateTransactionsWithoutGas({
         chainId,
         transactions: [{ ...transaction, to: transaction.to || '' }],
         domain,
       });
 
-      if (!results[0]) throw 'UNSUPPORTED';
+      if (!response?.simulateTransactions?.[0]) throw 'UNSUPPORTED';
 
-      return parseSimulation(results[0], chainId);
+      return parseSimulation(response.simulateTransactions[0], chainId);
     },
     staleTime: 60 * 1000, // 1 min
   });
@@ -213,23 +210,22 @@ export const useSimulateMessage = ({
   });
 };
 
-/** Parsed simulation result for UI consumption */
 export type TransactionSimulation = {
   in: { asset: ParsedAsset; quantity: string }[];
   out: { asset: ParsedAsset; quantity: string }[];
   approvals: {
     asset: ParsedAsset;
-    spender: SimulationTarget;
-    quantityAllowed: string;
+    spender: { address: string; name: string; iconURL: string };
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    quantityAllowed: 'UNLIMITED' | (string & {});
     quantityAtRisk: string;
   }[];
-  scanning: {
-    result: TransactionScanResultType;
-    description: string;
+  scanning: { result: 'OK' | 'WARNING' | 'MALICIOUS'; description: string };
+  meta: {
+    to?: SimulationTarget | null;
+    transferTo?: SimulationTarget | null;
   };
-  meta: SimulationMeta | null;
   hasChanges: boolean;
   chainId: ChainId;
 };
-
 export type SimulationError = 'REVERT' | 'UNSUPPORTED';

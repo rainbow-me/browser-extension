@@ -1,12 +1,14 @@
 import {
-  Block,
-  Provider,
-  TransactionRequest,
-} from '@ethersproject/abstract-provider';
-import { Contract, ContractInterface } from '@ethersproject/contracts';
-import { serialize } from '@ethersproject/transactions';
-import BigNumber from 'bignumber.js';
-import { Hex, getAddress } from 'viem';
+  Abi,
+  Address,
+  Hex,
+  PublicClient,
+  formatGwei,
+  getAddress,
+  numberToHex,
+  parseGwei,
+  serializeTransaction,
+} from 'viem';
 
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { globalColors } from '~/design-system/styles/designTokens';
@@ -18,10 +20,9 @@ import {
   SupportedCurrencyKey,
   supportedCurrencies,
 } from '../references';
-import { isLegacyMeteorologyFeeData } from '../resources/gas/classification';
 import {
-  MeteorologyLegacyResponse,
-  MeteorologyResponse,
+  MeteorologyData,
+  isMeteorologyEIP1559,
 } from '../resources/gas/meteorology';
 import { ParsedAsset } from '../types/assets';
 import { ChainId } from '../types/chains';
@@ -32,21 +33,13 @@ import {
   GasFeeParams,
   GasSpeed,
 } from '../types/gas';
+import { TransactionRequest } from '../types/transactions';
 
-import { gweiToWei, weiToGwei } from './ethereum';
 import { formatNumber } from './formatNumber';
-import { addHexPrefix, convertStringToHex, toHex } from './hex';
 import { fetchJsonLocally } from './localJson';
 import {
-  add,
-  addBuffer,
   convertAmountAndPriceToNativeDisplayWithThreshold,
   convertRawAmountToBalance,
-  divide,
-  fraction,
-  greaterThan,
-  lessThan,
-  multiply,
 } from './numbers';
 import { getMinimalTimeUnitStringForMs } from './time';
 
@@ -70,8 +63,8 @@ const parseGasDataConfirmationTime = ({
   additionalTime = 0,
   secondsPerNewBlock,
 }: {
-  maxBaseFee: string;
-  maxPriorityFee: string;
+  maxBaseFee: bigint;
+  maxPriorityFee: bigint;
   blocksToConfirmation: BlocksToConfirmation;
   additionalTime?: number;
   secondsPerNewBlock: number;
@@ -80,33 +73,32 @@ const parseGasDataConfirmationTime = ({
   let blocksToWaitForBaseFee = 0;
   const { byPriorityFee, byBaseFee } = blocksToConfirmation;
 
-  if (lessThan(maxPriorityFee, divide(byPriorityFee[4], 2))) {
+  if (maxPriorityFee < BigInt(byPriorityFee[4]) / 2n) {
     blocksToWaitForPriorityFee += 240;
-  } else if (lessThan(maxPriorityFee, byPriorityFee[4])) {
+  } else if (maxPriorityFee < BigInt(byPriorityFee[4])) {
     blocksToWaitForPriorityFee += 4;
-  } else if (lessThan(maxPriorityFee, byPriorityFee[3])) {
+  } else if (maxPriorityFee < BigInt(byPriorityFee[3])) {
     blocksToWaitForPriorityFee += 3;
-  } else if (lessThan(maxPriorityFee, byPriorityFee[2])) {
+  } else if (maxPriorityFee < BigInt(byPriorityFee[2])) {
     blocksToWaitForPriorityFee += 2;
-  } else if (lessThan(maxPriorityFee, byPriorityFee[1])) {
+  } else if (maxPriorityFee < BigInt(byPriorityFee[1])) {
     blocksToWaitForPriorityFee += 1;
   }
 
-  if (lessThan(byBaseFee[4], maxBaseFee)) {
+  if (BigInt(byBaseFee[4]) < maxBaseFee) {
     blocksToWaitForBaseFee += 1;
-  } else if (lessThan(byBaseFee[8], maxBaseFee)) {
+  } else if (BigInt(byBaseFee[8]) < maxBaseFee) {
     blocksToWaitForBaseFee += 4;
-  } else if (lessThan(byBaseFee[40], maxBaseFee)) {
+  } else if (BigInt(byBaseFee[40]) < maxBaseFee) {
     blocksToWaitForBaseFee += 8;
-  } else if (lessThan(byBaseFee[120], maxBaseFee)) {
+  } else if (BigInt(byBaseFee[120]) < maxBaseFee) {
     blocksToWaitForBaseFee += 40;
-  } else if (lessThan(byBaseFee[240], maxBaseFee)) {
+  } else if (BigInt(byBaseFee[240]) < maxBaseFee) {
     blocksToWaitForBaseFee += 120;
   } else {
     blocksToWaitForBaseFee += 240;
   }
 
-  // 1 hour as max estimate, 240 blocks
   const totalBlocksToWait =
     blocksToWaitForBaseFee +
     (blocksToWaitForBaseFee < 240 ? blocksToWaitForPriorityFee : 0);
@@ -114,16 +106,15 @@ const parseGasDataConfirmationTime = ({
   return {
     amount: timeAmount,
     display: `${timeAmount >= 3600 ? '>' : '~'} ${getMinimalTimeUnitStringForMs(
-      Number(multiply(timeAmount, 1000)),
+      timeAmount * 1000,
     )}`,
   };
 };
 
-const parseGasFeeParam = ({ wei }: { wei: string }): GasFeeParam => {
-  const _wei = new BigNumber(wei).toFixed(0); // wei is the smallest unit, shouldn't have decimals
-  const gwei = _wei ? weiToGwei(_wei) : '';
+const parseGasFeeParam = ({ wei }: { wei: bigint }): GasFeeParam => {
+  const gwei = formatGwei(wei);
   return {
-    amount: _wei,
+    amount: wei,
     display: `${formatNumber(gwei)} Gwei`,
     gwei,
   };
@@ -141,36 +132,28 @@ export const parseCustomGasFeeParams = ({
   additionalTime,
   secondsPerNewBlock,
 }: {
-  baseFeeWei: string;
+  baseFeeWei: bigint;
   speed: GasSpeed;
-  maxPriorityFeeWei: string;
+  maxPriorityFeeWei: bigint;
   currentBaseFee: string;
-  gasLimit: string;
+  gasLimit: bigint;
   nativeAsset?: ParsedAsset;
   blocksToConfirmation: BlocksToConfirmation;
   currency: SupportedCurrencyKey;
   additionalTime?: number;
   secondsPerNewBlock: number;
 }): GasFeeParams => {
-  const maxBaseFee = parseGasFeeParam({
-    wei: baseFeeWei || '0',
-  });
-  const maxPriorityFeePerGas = parseGasFeeParam({
-    wei: maxPriorityFeeWei || '0',
-  });
+  const maxBaseFee = parseGasFeeParam({ wei: baseFeeWei });
+  const maxPriorityFeePerGas = parseGasFeeParam({ wei: maxPriorityFeeWei });
 
-  const baseFee = lessThan(currentBaseFee, maxBaseFee.amount)
-    ? currentBaseFee
-    : maxBaseFee.amount;
+  const currentBaseFeeBi = BigInt(currentBaseFee);
+  const baseFee =
+    currentBaseFeeBi < maxBaseFee.amount ? currentBaseFeeBi : maxBaseFee.amount;
 
   const display = `${formatDisplayNumber(
-    new BigNumber(
-      weiToGwei(add(baseFee, maxPriorityFeePerGas.amount)),
-    ).toNumber(),
+    Number(formatGwei(baseFee + maxPriorityFeePerGas.amount)),
   )} - ${formatDisplayNumber(
-    new BigNumber(
-      weiToGwei(add(baseFeeWei, maxPriorityFeePerGas.amount)),
-    ).toNumber(),
+    Number(formatGwei(baseFeeWei + maxPriorityFeePerGas.amount)),
   )} Gwei`;
 
   const estimatedTime = parseGasDataConfirmationTime({
@@ -181,17 +164,13 @@ export const parseCustomGasFeeParams = ({
     secondsPerNewBlock,
   });
 
+  const maxFeePerGasWei = maxPriorityFeePerGas.amount + maxBaseFee.amount;
   const transactionGasParams = {
-    maxPriorityFeePerGas: addHexPrefix(
-      convertStringToHex(maxPriorityFeePerGas.amount),
-    ),
-    maxFeePerGas: addHexPrefix(
-      convertStringToHex(add(maxPriorityFeePerGas.amount, maxBaseFee.amount)),
-    ),
+    maxPriorityFeePerGas: maxPriorityFeePerGas.amount,
+    maxFeePerGas: maxFeePerGasWei,
   };
 
-  const feeAmount = add(maxBaseFee.amount, maxPriorityFeePerGas.amount);
-  const totalWei = multiply(gasLimit, feeAmount);
+  const totalWei = gasLimit * maxFeePerGasWei;
   const nativeTotalWei = convertRawAmountToBalance(
     totalWei,
     supportedCurrencies[nativeAsset?.symbol as SupportedCurrencyKey],
@@ -223,31 +202,26 @@ export const parseCustomGasFeeLegacyParams = ({
   waitTime,
 }: {
   speed: GasSpeed;
-  gasPriceWei: string;
-  gasLimit: string;
+  gasPriceWei: bigint;
+  gasLimit: bigint;
   nativeAsset?: ParsedAsset;
   currency: SupportedCurrencyKey;
   waitTime: number | null;
 }): GasFeeLegacyParams => {
-  const gasPrice = parseGasFeeParam({
-    wei: gasPriceWei || '0',
-  });
+  const gasPrice = parseGasFeeParam({ wei: gasPriceWei });
   const display = `${formatDisplayNumber(gasPrice.gwei)} Gwei`;
 
   const estimatedTime = {
     amount: waitTime || 0,
     display: waitTime
       ? `${waitTime >= 3600 ? '>' : '~'} ${getMinimalTimeUnitStringForMs(
-          Number(multiply(waitTime, 1000)),
+          waitTime * 1000,
         )}`
       : '',
   };
-  const transactionGasParams = {
-    gasPrice: toHex(gasPrice.amount),
-  };
+  const transactionGasParams = { gasPrice: gasPrice.amount };
 
-  const amount = gasPrice.amount;
-  const totalWei = multiply(gasLimit, amount);
+  const totalWei = gasLimit * gasPrice.amount;
 
   const nativeTotalWei = convertRawAmountToBalance(
     totalWei,
@@ -298,7 +272,7 @@ const parseGasFeeParams = ({
     normal: string;
   };
   currentBaseFee: string;
-  gasLimit: string;
+  gasLimit: bigint;
   nativeAsset?: ParsedAsset;
   blocksToConfirmation: BlocksToConfirmation;
   currency: SupportedCurrencyKey;
@@ -307,24 +281,22 @@ const parseGasFeeParams = ({
   optimismL1SecurityFee?: string | null;
 }): GasFeeParams => {
   const maxBaseFee = parseGasFeeParam({
-    wei: new BigNumber(multiply(wei, getBaseFeeMultiplier(speed))).toFixed(0),
+    wei: applyFactor(BigInt(wei), getBaseFeeMultiplier(speed)),
   });
   const maxPriorityFeePerGas = parseGasFeeParam({
-    wei: maxPriorityFeeSuggestions[speed === 'custom' ? 'urgent' : speed],
+    wei: BigInt(
+      maxPriorityFeeSuggestions[speed === 'custom' ? 'urgent' : speed],
+    ),
   });
 
-  const baseFee = lessThan(currentBaseFee, maxBaseFee.amount)
-    ? currentBaseFee
-    : maxBaseFee.amount;
+  const currentBaseFeeBi = BigInt(currentBaseFee);
+  const baseFee =
+    currentBaseFeeBi < maxBaseFee.amount ? currentBaseFeeBi : maxBaseFee.amount;
 
   const display = `${formatDisplayNumber(
-    new BigNumber(
-      weiToGwei(add(baseFee, maxPriorityFeePerGas.amount)),
-    ).toNumber(),
+    Number(formatGwei(baseFee + maxPriorityFeePerGas.amount)),
   )} - ${formatDisplayNumber(
-    new BigNumber(
-      weiToGwei(add(maxBaseFee.amount, maxPriorityFeePerGas.amount)),
-    ).toNumber(),
+    Number(formatGwei(maxBaseFee.amount + maxPriorityFeePerGas.amount)),
   )} Gwei`;
 
   const estimatedTime = parseGasDataConfirmationTime({
@@ -335,20 +307,14 @@ const parseGasFeeParams = ({
     secondsPerNewBlock,
   });
 
+  const maxFeePerGasWei = maxPriorityFeePerGas.amount + maxBaseFee.amount;
   const transactionGasParams = {
-    maxPriorityFeePerGas: addHexPrefix(
-      convertStringToHex(maxPriorityFeePerGas.amount),
-    ),
-    maxFeePerGas: addHexPrefix(
-      convertStringToHex(add(maxPriorityFeePerGas.amount, maxBaseFee.amount)),
-    ),
+    maxPriorityFeePerGas: maxPriorityFeePerGas.amount,
+    maxFeePerGas: maxFeePerGasWei,
   };
 
-  const feeAmount = add(maxBaseFee.amount, maxPriorityFeePerGas.amount);
-  const totalWei = add(
-    multiply(gasLimit, feeAmount),
-    optimismL1SecurityFee || 0,
-  );
+  const totalWei =
+    gasLimit * maxFeePerGasWei + BigInt(optimismL1SecurityFee || '0');
   const nativeTotalWei = convertRawAmountToBalance(
     totalWei,
     supportedCurrencies[nativeAsset?.symbol as SupportedCurrencyKey],
@@ -388,14 +354,14 @@ const parseGasFeeLegacyParams = ({
   gwei: string;
   speed: GasSpeed;
   waitTime: number | null;
-  gasLimit: string;
+  gasLimit: bigint;
   nativeAsset?: ParsedAsset;
   currency: SupportedCurrencyKey;
   optimismL1SecurityFee?: string | null;
 }): GasFeeLegacyParams => {
-  const wei = gweiToWei(gwei);
+  const wei = parseGwei(gwei);
   const gasPrice = parseGasFeeParam({
-    wei: new BigNumber(multiply(wei, getBaseFeeMultiplier(speed))).toFixed(0),
+    wei: applyFactor(wei, getBaseFeeMultiplier(speed)),
   });
   const display = `${formatDisplayNumber(gasPrice.gwei)} Gwei`;
 
@@ -403,16 +369,14 @@ const parseGasFeeLegacyParams = ({
     amount: waitTime || 0,
     display: waitTime
       ? `${waitTime >= 3600 ? '>' : '~'} ${getMinimalTimeUnitStringForMs(
-          Number(multiply(waitTime, 1000)),
+          waitTime * 1000,
         )}`
       : '',
   };
-  const transactionGasParams = {
-    gasPrice: toHex(gasPrice.amount),
-  };
+  const transactionGasParams = { gasPrice: gasPrice.amount };
 
-  const amount = gasPrice.amount;
-  const totalWei = add(multiply(gasLimit, amount), optimismL1SecurityFee || 0);
+  const totalWei =
+    gasLimit * gasPrice.amount + BigInt(optimismL1SecurityFee || '0');
 
   const nativeTotalWei = convertRawAmountToBalance(
     totalWei,
@@ -477,46 +441,47 @@ const getChainWaitTime = (chainId: ChainId) => {
 
 export const estimateGas = async ({
   transactionRequest,
-  provider,
+  client,
 }: {
   transactionRequest: TransactionRequest;
-  provider: Provider;
+  client: PublicClient;
 }) => {
   try {
-    const gasLimit = await provider?.estimateGas(transactionRequest);
-    return gasLimit?.toString() ?? null;
+    const gasLimit = await client.estimateGas({
+      account: transactionRequest.from as Address,
+      to: transactionRequest.to as Address,
+      value: transactionRequest.value,
+      data: transactionRequest.data as Hex | undefined,
+    });
+    return gasLimit ?? null;
   } catch (error) {
     return null;
   }
 };
 
+const applyFactor = (value: bigint, factor: number): bigint =>
+  (value * BigInt(Math.round(factor * 1000))) / 1000n;
+
 export const estimateGasWithPadding = async ({
   transactionRequest,
-  contractCallEstimateGas = null,
-  callArguments = null,
-  provider,
+  contractCallEstimateGas,
+  client,
   paddingFactor = 1.1,
 }: {
   transactionRequest: TransactionRequest;
-  contractCallEstimateGas?: Contract['estimateGas'][string] | null;
-  callArguments?: unknown[] | null;
-  provider: Provider;
+  contractCallEstimateGas?: (() => Promise<bigint>) | null;
+  client: PublicClient;
   paddingFactor?: number;
-}): Promise<string | null> => {
+}): Promise<bigint | null> => {
   try {
-    const txPayloadToEstimate: TransactionRequest & { gas?: string } = {
-      ...transactionRequest,
-    };
+    const block = await client.getBlock();
+    const blockGasLimit = block.gasLimit;
 
-    // `getBlock`'s typing requires a parameter, but passing no parameter
-    // works as intended and returns the gas limit.
-    const { gasLimit } = await (provider.getBlock as () => Promise<Block>)();
+    const { to, data } = transactionRequest;
 
-    const { to, data } = txPayloadToEstimate;
-
-    // 1 - Check if the receiver is a contract
-    const code = to ? await provider.getCode(to) : undefined;
-    // 2 - if it's not a contract AND it doesn't have any data use the default gas limit
+    const code = to
+      ? await client.getCode({ address: to as Address })
+      : undefined;
     if (
       (!contractCallEstimateGas && !to && !data) ||
       (to && !data && (!code || code === '0x'))
@@ -524,32 +489,27 @@ export const estimateGasWithPadding = async ({
       const chainGasUnits = useNetworkStore
         .getState()
         .getChainGasUnits(transactionRequest.chainId);
-      return chainGasUnits.basic.eoaTransfer;
+      return BigInt(chainGasUnits.basic.eoaTransfer);
     }
-    const saferGasLimit = fraction(gasLimit.toString(), 19, 20);
-
-    txPayloadToEstimate[contractCallEstimateGas ? 'gasLimit' : 'gas'] =
-      toHex(saferGasLimit);
 
     const estimatedGas = await (contractCallEstimateGas
-      ? contractCallEstimateGas(...(callArguments ?? []), txPayloadToEstimate)
-      : provider.estimateGas(txPayloadToEstimate));
+      ? contractCallEstimateGas()
+      : client.estimateGas({
+          account: transactionRequest.from as Address,
+          to: transactionRequest.to as Address,
+          value: transactionRequest.value,
+          data: transactionRequest.data,
+        }));
 
-    const lastBlockGasLimit = addBuffer(gasLimit.toString(), 0.9);
-    const paddedGas = addBuffer(
-      estimatedGas.toString(),
-      paddingFactor.toString(),
-    );
+    const lastBlockGasLimit = applyFactor(blockGasLimit, 0.9);
+    const paddedGas = applyFactor(estimatedGas, paddingFactor);
 
-    // If the safe estimation is above the last block gas limit, use it
-    if (greaterThan(estimatedGas.toString(), lastBlockGasLimit)) {
-      return estimatedGas.toString();
+    if (estimatedGas > lastBlockGasLimit) {
+      return estimatedGas;
     }
-    // If the estimation is below the last block gas limit, use the padded estimate
-    if (greaterThan(lastBlockGasLimit, paddedGas)) {
+    if (lastBlockGasLimit > paddedGas) {
       return paddedGas;
     }
-    // otherwise default to the last block gas limit
     return lastBlockGasLimit;
   } catch (error) {
     if (
@@ -568,20 +528,18 @@ export const estimateGasWithPadding = async ({
 export const calculateL1FeeOptimism = async ({
   transactionRequest: txRequest,
   currentGasPrice,
-  provider,
+  client,
 }: {
   currentGasPrice: string;
-  transactionRequest: TransactionRequest & { gas?: string };
-  provider: Provider;
+  transactionRequest: TransactionRequest;
+  client: PublicClient;
 }): Promise<Hex | undefined> => {
   const transactionRequest = { ...txRequest };
   try {
-    if (transactionRequest?.value) {
-      transactionRequest.value = toHex(transactionRequest.value.toString());
-    }
-
     if (transactionRequest?.from) {
-      const nonce = await provider.getTransactionCount(transactionRequest.from);
+      const nonce = await client.getTransactionCount({
+        address: transactionRequest.from as Address,
+      });
       // eslint-disable-next-line require-atomic-updates
       transactionRequest.nonce = Number(nonce);
       delete transactionRequest.from;
@@ -598,34 +556,36 @@ export const calculateL1FeeOptimism = async ({
       const chainGasUnits = useNetworkStore
         .getState()
         .getChainGasUnits(txRequest.chainId);
-      transactionRequest.gasLimit = toHex(
-        `${
-          transactionRequest.data === '0x'
-            ? chainGasUnits.basic.eoaTransfer
-            : chainGasUnits.basic.tokenTransfer
-        }`,
+      transactionRequest.gasLimit = BigInt(
+        transactionRequest.data === '0x'
+          ? chainGasUnits.basic.eoaTransfer
+          : chainGasUnits.basic.tokenTransfer,
       );
     }
 
-    if (currentGasPrice) transactionRequest.gasPrice = toHex(currentGasPrice);
+    if (currentGasPrice) transactionRequest.gasPrice = BigInt(currentGasPrice);
 
-    const serializedTx = serialize({
-      ...transactionRequest,
+    const serializedTx = serializeTransaction({
+      to: transactionRequest.to,
       nonce: transactionRequest.nonce as number,
+      data: transactionRequest.data,
+      value: transactionRequest.value,
+      gas: transactionRequest.gasLimit,
+      gasPrice: transactionRequest.gasPrice,
+      chainId: transactionRequest.chainId,
     });
 
     const optimismGasOracleAbi = (await fetchJsonLocally(
       'abis/optimism-gas-oracle-abi.json',
-    )) as ContractInterface;
+    )) as Abi;
 
-    const OVM_GasPriceOracle = new Contract(
-      OVM_GAS_PRICE_ORACLE,
-      optimismGasOracleAbi,
-      provider,
-    );
-    const l1FeeInWei: BigNumber =
-      await OVM_GasPriceOracle.getL1Fee(serializedTx);
-    return toHex(l1FeeInWei.toString());
+    const l1FeeInWei = await client.readContract({
+      address: OVM_GAS_PRICE_ORACLE as Address,
+      abi: optimismGasOracleAbi,
+      functionName: 'getL1Fee',
+      args: [serializedTx],
+    });
+    return numberToHex(l1FeeInWei as bigint);
   } catch (e) {
     //
   }
@@ -641,15 +601,14 @@ export const parseGasFeeParamsBySpeed = ({
   additionalTime = 0,
 }: {
   chainId: ChainId;
-  data: MeteorologyResponse | MeteorologyLegacyResponse;
-  gasLimit: string;
+  data: MeteorologyData;
+  gasLimit: bigint;
   nativeAsset?: ParsedAsset;
   currency: SupportedCurrencyKey;
   optimismL1SecurityFee?: string | null;
   additionalTime?: number;
 }) => {
-  if (!isLegacyMeteorologyFeeData(data)) {
-    const response = data;
+  if (isMeteorologyEIP1559(data)) {
     const {
       data: {
         currentBaseFee,
@@ -657,11 +616,11 @@ export const parseGasFeeParamsBySpeed = ({
         baseFeeSuggestion,
         secondsPerNewBlock,
       },
-    } = response;
+    } = data;
 
     const blocksToConfirmation = {
-      byBaseFee: response.data.blocksToConfirmationByBaseFee,
-      byPriorityFee: response.data.blocksToConfirmationByPriorityFee,
+      byBaseFee: data.data.blocksToConfirmationByBaseFee,
+      byPriorityFee: data.data.blocksToConfirmationByPriorityFee,
     };
 
     const parseGasFeeParamsSpeed = ({ speed }: { speed: GasSpeed }) =>
@@ -694,7 +653,6 @@ export const parseGasFeeParamsBySpeed = ({
       }),
     };
   } else {
-    const response = data;
     const chainWaitTime = getChainWaitTime(chainId);
     const parseGasFeeParamsSpeed = ({
       speed,
@@ -717,28 +675,28 @@ export const parseGasFeeParamsBySpeed = ({
 
     return {
       custom: parseGasFeeParamsSpeed({
-        gwei: response?.data.legacy.fastGasPrice,
+        gwei: data.data.legacy.fastGasPrice,
         speed: GasSpeed.CUSTOM,
         waitTime: chainWaitTime
           ? chainWaitTime.fastWait + additionalTime
           : null,
       }),
       urgent: parseGasFeeParamsSpeed({
-        gwei: response?.data.legacy.fastGasPrice,
+        gwei: data.data.legacy.fastGasPrice,
         speed: GasSpeed.URGENT,
         waitTime: chainWaitTime
           ? chainWaitTime.fastWait + additionalTime
           : null,
       }),
       fast: parseGasFeeParamsSpeed({
-        gwei: response?.data.legacy.proposeGasPrice,
+        gwei: data.data.legacy.proposeGasPrice,
         speed: GasSpeed.FAST,
         waitTime: chainWaitTime
           ? chainWaitTime.proposedWait + additionalTime
           : null,
       }),
       normal: parseGasFeeParamsSpeed({
-        gwei: response?.data.legacy.safeGasPrice,
+        gwei: data.data.legacy.safeGasPrice,
         speed: GasSpeed.NORMAL,
         waitTime: chainWaitTime
           ? chainWaitTime.safeWait + additionalTime
@@ -749,8 +707,8 @@ export const parseGasFeeParamsBySpeed = ({
 };
 
 export const gasFeeParamsChanged = (
-  gasFeeParams1: GasFeeParams | GasFeeLegacyParams,
-  gasFeeParams2: GasFeeParams | GasFeeLegacyParams,
+  gasFeeParams1: GasFeeParams | GasFeeLegacyParams | null | undefined,
+  gasFeeParams2: GasFeeParams | GasFeeLegacyParams | null | undefined,
 ) => gasFeeParams1?.gasFee?.amount !== gasFeeParams2?.gasFee?.amount;
 
 export const getBaseFeeTrendParams = (trend: number) => {

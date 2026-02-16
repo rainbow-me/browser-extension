@@ -1,18 +1,14 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { Signer } from '@ethersproject/abstract-signer';
-import { Wallet } from '@ethersproject/wallet';
 import * as bip39 from '@scure/bip39';
 import { wordlist as englishWordlist } from '@scure/bip39/wordlists/english';
 import { HDKey } from 'ethereum-cryptography/hdkey';
-import { Address, bytesToHex } from 'viem';
-import { mainnet } from 'viem/chains';
+import { Address, Hex, bytesToHex } from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
 
 import { KeychainType } from '~/core/types/keychainTypes';
-import { getProvider } from '~/core/viem/clientToProvider';
 
 import { IKeychain, PrivateKey, TWallet } from '../IKeychain';
 import { keychainManager } from '../KeychainManager';
-import { RainbowSigner } from '../RainbowSigner';
 import { autoDiscoverAccounts } from '../utils';
 
 export interface RainbowHDKey extends HDKey {
@@ -75,8 +71,8 @@ export class HdKeychain implements IKeychain {
         const root = hdNode.derive(_privates.hdPath);
         const derivedWallet = root.deriveChild(index) as RainbowHDKey;
         const pkeyHex = bytesToHex(derivedWallet.privateKey as Uint8Array);
-        const wallet = new Wallet(pkeyHex) as TWallet;
-        derivedWallet.address = wallet.address;
+        const account = privateKeyToAccount(pkeyHex as Hex);
+        derivedWallet.address = account.address;
         return derivedWallet;
       },
 
@@ -90,8 +86,8 @@ export class HdKeychain implements IKeychain {
           if (keychainAccounts.includes(derivedWallet.address)) {
             keychain.removeAccount(derivedWallet.address);
             if (
-              keychain.type == KeychainType.ReadOnlyKeychain ||
-              keychain.type == KeychainType.KeyPairKeychain
+              keychain.type === KeychainType.ReadOnlyKeychain ||
+              keychain.type === KeychainType.KeyPairKeychain
             ) {
               keychainManager.removeKeychain(keychain);
             }
@@ -100,7 +96,14 @@ export class HdKeychain implements IKeychain {
 
         if (!derivedWallet.privateKey) throw new Error('No private key');
 
-        const wallet = new Wallet(derivedWallet.privateKey) as TWallet;
+        const pkeyHex = bytesToHex(
+          derivedWallet.privateKey as Uint8Array,
+        ) as PrivateKey;
+        const account = privateKeyToAccount(pkeyHex);
+        const wallet: TWallet = {
+          address: account.address,
+          privateKey: pkeyHex,
+        };
         _privates.wallets.push({ wallet, index: derivedWallet.index });
         return wallet;
       },
@@ -109,15 +112,6 @@ export class HdKeychain implements IKeychain {
 
   init(options?: SerializedHdKeychain) {
     return this.deserialize(options);
-  }
-
-  getSigner(address: Address): Signer {
-    const _privates = privates.get(this)!;
-
-    const provider = getProvider({ chainId: mainnet.id });
-    const wallet = _privates!.getWalletForAddress(address) as TWallet;
-    if (!wallet) throw new Error('Account not found');
-    return new RainbowSigner(provider, wallet.privateKey, wallet.address);
   }
 
   async serialize(): Promise<SerializedHdKeychain> {
@@ -165,7 +159,7 @@ export class HdKeychain implements IKeychain {
     }
   }
 
-  async addNewAccount(): Promise<Array<Wallet>> {
+  async addNewAccount(): Promise<Array<TWallet>> {
     const _privates = privates.get(this)!;
 
     const nextIndex = _privates.accountsEnabled;

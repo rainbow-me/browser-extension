@@ -6,8 +6,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { Contract } from '@ethersproject/contracts';
-import { getDefaultProvider } from '@ethersproject/providers';
 import {
   Builder,
   By,
@@ -19,7 +17,7 @@ import {
 } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
 import firefox from 'selenium-webdriver/firefox';
-import { erc20Abi } from 'viem';
+import { Address, createPublicClient, erc20Abi, http } from 'viem';
 import { expect } from 'vitest';
 
 import { RAINBOW_TEST_DAPP } from '~/core/references/links';
@@ -836,9 +834,15 @@ export async function connectToTestDapp(driver: WebDriver) {
 
 export async function getOnchainBalance(addy: string, contract: string) {
   try {
-    const provider = getDefaultProvider('http://127.0.0.1:8545/1');
-    const testContract = new Contract(contract, erc20Abi, provider);
-    const balance = await testContract.balanceOf(addy);
+    const client = createPublicClient({
+      transport: http('http://127.0.0.1:8545/1'),
+    });
+    const balance = await client.readContract({
+      address: contract as Address,
+      abi: erc20Abi,
+      functionName: 'balanceOf',
+      args: [addy as Address],
+    });
 
     return balance;
   } catch (error) {
@@ -848,12 +852,14 @@ export async function getOnchainBalance(addy: string, contract: string) {
 }
 
 export async function transactionStatus() {
-  const provider = getDefaultProvider('http://127.0.0.1:8545/1');
-  const blockData = await provider.getBlock('latest');
-  const txnReceipt = await provider.getTransactionReceipt(
-    blockData.transactions[0],
-  );
-  const txnStatus = txnReceipt.status === 1 ? 'success' : 'failure';
+  const client = createPublicClient({
+    transport: http('http://127.0.0.1:8545/1'),
+  });
+  const blockData = await client.getBlock({ blockTag: 'latest' });
+  const txnReceipt = await client.getTransactionReceipt({
+    hash: blockData.transactions[0] as `0x${string}`,
+  });
+  const txnStatus = txnReceipt.status === 'success' ? 'success' : 'failure';
   return txnStatus;
 }
 
