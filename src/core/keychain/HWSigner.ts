@@ -61,10 +61,12 @@ export class HWSigner extends Signer {
       payload,
     } as HWSigningRequest);
 
-    if (typeof response === 'string') {
-      return response;
+    if ('signature' in response) {
+      return response.signature;
+    } else if ('error' in response) {
+      throw new Error(response.error);
     } else {
-      throw new Error(response.error || 'Hardware wallet signing failed');
+      throw new Error('Hardware wallet signing failed');
     }
   }
 
