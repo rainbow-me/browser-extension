@@ -1,25 +1,18 @@
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { BigNumber } from '@ethersproject/bignumber';
-// Keep ethers imports for transaction signing - hardware wallets require ethers transaction format
 import { TransactionRequest } from '@ethersproject/providers';
 import {
-  UnsignedTransaction,
-  parse,
-  serialize,
-} from '@ethersproject/transactions';
-import AppEth, { ledgerService } from '@ledgerhq/hw-app-eth';
-import type Transport from '@ledgerhq/hw-transport';
-import TransportWebHID from '@ledgerhq/hw-transport-webhid';
-import {
   Address,
-  ByteArray,
   Hex,
-  bytesToHex,
-  hashDomain,
-  hashStruct,
-  hexToBytes,
-  stringToBytes,
+  TransactionSerializableEIP1559,
+  TransactionSerializableLegacy,
 } from 'viem';
+import {
+  AppNotOpenError,
+  DeviceLockedError,
+  DeviceNotFoundError,
+  UserRejectedError,
+} from 'viem-hw';
+import { createLedgerAccount } from 'viem-hw/ledger';
 
 import { i18n } from '~/core/languages';
 import {
@@ -27,104 +20,64 @@ import {
   isPersonalSignMessage,
   isTypedDataMessage,
 } from '~/core/types/messageSigning';
-import { sanitizeTypedData } from '~/core/utils/ethereum';
-import { joinSignature } from '~/core/utils/hex';
 import { getProvider } from '~/core/viem/clientToProvider';
-import { logger } from '~/logger';
 
 import { popupClient } from './background';
 
-const getPath = async (address: Address) => {
-  return await popupClient.wallet.path(address);
+const getPath = async (address: Address): Promise<`m/${string}`> => {
+  const path = await popupClient.wallet.path(address);
+  return path as `m/${string}`;
 };
+
+/**
+ * Convert ethers TransactionRequest to viem TransactionSerializable
+ */
+function toViemTransaction(
+  tx: TransactionRequest,
+): TransactionSerializableLegacy | TransactionSerializableEIP1559 {
+  const base = {
+    chainId: tx.chainId ? Number(tx.chainId) : 1,
+    data: tx.data as Hex | undefined,
+    gas: tx.gasLimit ? BigInt(tx.gasLimit.toString()) : undefined,
+    nonce: tx.nonce ? Number(tx.nonce) : undefined,
+    to: tx.to as Address | undefined,
+    value: tx.value ? BigInt(tx.value.toString()) : 0n,
+  };
+
+  if (tx.gasPrice) {
+    return {
+      ...base,
+      type: 'legacy',
+      gasPrice: BigInt(tx.gasPrice.toString()),
+    };
+  } else {
+    return {
+      ...base,
+      type: 'eip1559',
+      maxFeePerGas: tx.maxFeePerGas
+        ? BigInt(tx.maxFeePerGas.toString())
+        : undefined,
+      maxPriorityFeePerGas: tx.maxPriorityFeePerGas
+        ? BigInt(tx.maxPriorityFeePerGas.toString())
+        : undefined,
+    };
+  }
+}
 
 export async function signTransactionFromLedger(
   transaction: TransactionRequest,
 ): Promise<Hex> {
-  let transport;
   try {
     const { from: address } = transaction;
-    try {
-      transport = await TransportWebHID.openConnected();
-      if (transport === null) {
-        transport = await TransportWebHID.create();
-      }
-    } catch (e) {
-      transport = await TransportWebHID.create();
-    }
-    const appEth = new AppEth(transport as Transport);
-
     const path = await getPath(address as Address);
 
-    const baseTx: UnsignedTransaction = {
-      chainId: transaction.chainId || undefined,
-      data: transaction.data || undefined,
-      gasLimit: transaction.gasLimit
-        ? BigNumber.from(transaction.gasLimit).toHexString()
-        : undefined,
-      nonce: transaction.nonce
-        ? BigNumber.from(transaction.nonce).toNumber()
-        : undefined,
-      to: transaction.to || undefined,
-      value: transaction.value
-        ? BigNumber.from(transaction.value).toHexString()
-        : undefined,
-    };
+    const account = await createLedgerAccount({ path });
 
-    if (transaction.gasPrice) {
-      baseTx.gasPrice = transaction.gasPrice;
-    } else if (transaction.maxFeePerGas || transaction.maxPriorityFeePerGas) {
-      // eip-1559
-      baseTx.maxFeePerGas = transaction.maxFeePerGas || undefined;
-      baseTx.maxPriorityFeePerGas =
-        transaction.maxPriorityFeePerGas || undefined;
-      baseTx.type = 2;
-    } else {
-      baseTx.gasPrice = transaction.maxFeePerGas || undefined;
-    }
-
-    const unsignedTx = serialize(baseTx).substring(2);
-
-    const resolution = await ledgerService.resolveTransaction(
-      unsignedTx,
-      appEth.loadConfig,
-      {
-        erc20: true,
-        externalPlugins: true,
-        nft: true,
-      },
-    );
-
-    const sig = await appEth.signTransaction(path, unsignedTx, resolution);
-
-    const serializedTransaction = serialize(baseTx, {
-      r: '0x' + sig.r,
-      s: '0x' + sig.s,
-      v: BigNumber.from('0x' + sig.v).toNumber(),
-    }) as Hex;
-
-    const parsedTx = parse(serializedTransaction);
-
-    if (parsedTx.from?.toLowerCase() !== address?.toLowerCase()) {
-      throw new Error('Transaction was not signed by the right address');
-    }
-
-    await (transport as TransportWebHID)?.close();
-    return serializedTransaction;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (e: any) {
-    if (e?.name === 'TransportStatusError' || e?.name === 'LockedDeviceError') {
-      alert(i18n.t('hw.ledger_locked_error'));
-    } else if (
-      e?.name === 'TransportOpenUserCancelled' &&
-      e?.message === 'Access denied to use Ledger device'
-    ) {
-      alert(i18n.t('hw.check_ledger_disconnected'));
-    } else if (e?.message) {
-      alert(e.message);
-    }
-    await (transport as TransportWebHID)?.close();
-    // bubble up the error
+    const viemTx = toViemTransaction(transaction);
+    // signTransaction returns the serialized signed transaction
+    return account.signTransaction(viemTx);
+  } catch (e) {
+    handleLedgerError(e as Error);
     throw e;
   }
 }
@@ -144,101 +97,47 @@ export async function signMessageByTypeFromLedger(
   message: SigningMessage,
   address: Address,
 ): Promise<Hex> {
-  let transport;
   try {
-    transport = await TransportWebHID.openConnected();
-    if (transport === null) {
-      transport = await TransportWebHID.create();
+    const path = await getPath(address);
+    const account = await createLedgerAccount({ path });
+
+    if (isPersonalSignMessage(message)) {
+      return account.signMessage({ message: message.message });
+    } else if (isTypedDataMessage(message)) {
+      return account.signTypedData(message.data);
+    } else {
+      throw new Error('Unsupported message type');
     }
   } catch (e) {
-    transport = await TransportWebHID.create();
+    handleLedgerError(e as Error);
+    throw e;
   }
-  const appEth = new AppEth(transport as Transport);
-  const path = await getPath(address);
+}
 
-  // Personal sign
-  if (isPersonalSignMessage(message)) {
-    let messageBytes: ByteArray;
-    try {
-      messageBytes = stringToBytes(message.message);
-    } catch (e) {
-      logger.info('the message is not a utf8 string, will sign as hex');
-      // If stringToBytes fails, treat as hex string and convert to bytes
-      const hexMessage = message.message.startsWith('0x')
-        ? (message.message as Hex)
-        : (`0x${message.message}` as Hex);
-      messageBytes = hexToBytes(hexMessage);
-    }
-
-    const messageHex = bytesToHex(messageBytes).slice(2);
-
-    const sig = await appEth.signPersonalMessage(path, messageHex);
-    await (transport as TransportWebHID)?.close();
-    return joinSignature(sig);
-  }
-  // sign typed data
-  else if (isTypedDataMessage(message)) {
-    // message.data is already TypedDataDefinition, no need for type assertion
-    const typedData = message.data;
-
-    // Type guard to ensure we have the required fields for v3/v4
-    if (
-      typeof typedData !== 'object' ||
-      typedData === null ||
-      !(
-        'types' in typedData &&
-        'primaryType' in typedData &&
-        'domain' in typedData
-      )
-    ) {
-      await (transport as TransportWebHID)?.close();
-      throw new Error('unsupported typed data version');
-    }
-
-    const sanitizedData = sanitizeTypedData(typedData);
-    const { domain, types, primaryType, message: messageData } = sanitizedData;
-
-    // Use viem's hashDomain and hashStruct utilities
-    // These return Hex strings (0x-prefixed), so we remove the prefix for Ledger
-    // sanitizedData.message is guaranteed to exist after sanitization
-    // Type assertions needed because viem's types are strict, but sanitizedData is compatible
-    const messagePayload = messageData || {};
-    const domainSeparatorHex = hashDomain({
-      domain: domain as never,
-      types: types as never,
-    } as Parameters<typeof hashDomain>[0]).slice(2);
-    const hashStructMessageHex = hashStruct({
-      data: messagePayload as never,
-      primaryType,
-      types: types as never,
-    } as Parameters<typeof hashStruct>[0]).slice(2);
-
-    const sig = await appEth.signEIP712HashedMessage(
-      path,
-      domainSeparatorHex,
-      hashStructMessageHex,
-    );
-    await (transport as TransportWebHID)?.close();
-    return joinSignature(sig);
-  } else {
-    await (transport as TransportWebHID)?.close();
-    throw new Error(`Unsupported message type`);
+function handleLedgerError(e: Error) {
+  if (e instanceof DeviceLockedError) {
+    alert(i18n.t('hw.ledger_locked_error'));
+  } else if (e instanceof DeviceNotFoundError) {
+    alert(i18n.t('hw.check_ledger_disconnected'));
+  } else if (e instanceof AppNotOpenError) {
+    alert(i18n.t('hw.open_ethereum_app'));
+  } else if (e instanceof UserRejectedError) {
+    // User rejected - don't show alert, let caller handle
+  } else if (e?.message) {
+    alert(e.message);
   }
 }
 
 export const showLedgerDisconnectedAlertIfNeeded = (e: Error) => {
-  if (
-    e.name === 'TransportOpenUserCancelled' &&
-    e.message === 'Access denied to use Ledger device'
-  ) {
+  if (e instanceof DeviceNotFoundError) {
     alert(i18n.t('hw.check_ledger_disconnected'));
   }
 };
 
 export const isLedgerConnectionError = (e: Error) => {
-  return [
-    'TransportOpenUserCancelled',
-    'TransportStatusError',
-    'LockedDeviceError',
-  ].includes(e?.name);
+  return (
+    e instanceof DeviceNotFoundError ||
+    e instanceof DeviceLockedError ||
+    e instanceof AppNotOpenError
+  );
 };

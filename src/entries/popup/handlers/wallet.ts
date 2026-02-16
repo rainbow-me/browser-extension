@@ -3,16 +3,15 @@ import {
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
 import { BigNumber } from '@ethersproject/bignumber';
-// Keep HDNode for xpub derivation - viem doesn't have extended public key derivation utilities
-import { HDNode } from '@ethersproject/hdnode';
-import AppEth from '@ledgerhq/hw-app-eth';
-import type Transport from '@ledgerhq/hw-transport';
-import TransportWebHID from '@ledgerhq/hw-transport-webhid';
-import TrezorConnect from '@trezor/connect-web';
 import { Address, Hex, keccak256 } from 'viem';
+import {
+  AppNotOpenError,
+  DeviceLockedError,
+  DeviceNotFoundError,
+} from 'viem-hw';
+import { discoverLedgerAccounts } from 'viem-hw/ledger';
+import { discoverTrezorAccounts } from 'viem-hw/trezor';
 
-// eslint-disable-next-line boundaries/element-types
-import { getHDPathForVendorAndType } from '~/core/keychain/hdPath';
 // eslint-disable-next-line boundaries/element-types
 import type { HardwareWalletVendor } from '~/core/keychain/keychainTypes/hardwareWalletKeychain';
 import {
@@ -332,44 +331,37 @@ export const importAccountAtIndex = async (
   index: number,
   currentPath?: PathOptions,
 ) => {
-  let address = '';
   switch (type) {
-    case 'Trezor':
-      {
-        const path = getHDPathForVendorAndType(index, 'Trezor');
-        // 'address' is required but it should be optional and only used for validation
-        const result = await TrezorConnect.ethereumGetAddress({
-          path,
-          showOnTrezor: false,
-        });
-
-        if (!result.success) {
-          const e = new RainbowError('TrezorConnect.getAddress failed');
-          logger.error(e, {
-            result: JSON.stringify(result, null, 2),
-          });
-          throw e;
-        }
-        address = result.payload.address;
+    case 'Trezor': {
+      const derivationStyle = 'bip44';
+      const accounts = await discoverTrezorAccounts({
+        count: 1,
+        startIndex: index,
+        derivationStyle,
+        email: 'rainbow@rainbow.me',
+        appUrl: 'https://rainbow.me',
+      });
+      if (accounts.length === 0) {
+        throw new RainbowError('Failed to get Trezor address');
       }
-      break;
+      return accounts[0].address;
+    }
     case 'Ledger': {
-      const transport = await TransportWebHID.create();
-      const appEth = new AppEth(transport);
-      const hdPath =
-        currentPath === 'legacy'
-          ? getHDPathForVendorAndType(index, 'Ledger', 'legacy')
-          : getHDPathForVendorAndType(index, 'Ledger');
-      const result = await appEth.getAddress(hdPath, false, false);
-      await transport?.close();
-
-      address = result.address;
-      break;
+      const derivationStyle =
+        currentPath === 'legacy' ? 'ledger-live' : 'bip44';
+      const accounts = await discoverLedgerAccounts({
+        count: 1,
+        startIndex: index,
+        derivationStyle,
+      });
+      if (accounts.length === 0) {
+        throw new RainbowError('Failed to get Ledger address');
+      }
+      return accounts[0].address;
     }
     default:
       throw new Error('Unknown wallet type');
   }
-  return address;
 };
 
 type AccountToImport = { address: Address; index: number };
@@ -382,60 +374,45 @@ type ConnectHWResult =
     }
   | { error: string };
 
-const autodiscoverAccounts = async (
-  getAddressAtIndex: (index: number) => Promise<Address>,
-): Promise<AccountToImport[]> => {
-  const discover = async (
-    index: number,
-    acc: AccountToImport[],
-  ): Promise<AccountToImport[]> => {
-    const address = await getAddressAtIndex(index);
-    const hasBeenUsed = await hasPreviousTransactions(address);
-    if (hasBeenUsed) {
-      return discover(index + 1, [...acc, { address, index }]);
-    }
-    return acc;
-  };
-
-  const firstAddress = await getAddressAtIndex(0);
-  return discover(1, [{ address: firstAddress, index: 0 }]);
-};
-
 export const connectTrezor = async (): Promise<ConnectHWResult> => {
   if (process.env.IS_TESTING === 'true') {
     return HARDWARE_WALLETS.MOCK_ACCOUNT;
   }
   try {
-    // We don't want the index to be part of the path because we need the public key
-    const path = getHDPathForVendorAndType(0, 'Trezor').slice(0, -2);
-    const result = await TrezorConnect.ethereumGetPublicKey({
-      path,
-      showOnTrezor: false,
-      suppressBackupWarning: true,
-      chunkify: false,
+    // Use viem-hw to discover accounts with auto-discovery
+    const discoveredAccounts = await discoverTrezorAccounts({
+      count: 10, // Discover up to 10 accounts
+      derivationStyle: 'bip44',
+      email: 'rainbow@rainbow.me',
+      appUrl: 'https://rainbow.me',
     });
 
-    if (!result.success) {
-      const e = new RainbowError('TrezorConnect.ethereumGetPublicKey failed');
-      logger.error(e, {
-        result: JSON.stringify(result, null, 2),
-      });
-      throw e;
+    // Filter to accounts that have been used (have previous transactions)
+    // Sequential discovery is intentional for hardware wallet communication
+    const accountsToImport: AccountToImport[] = [];
+    for (const account of discoveredAccounts) {
+      // eslint-disable-next-line no-await-in-loop
+      const hasBeenUsed = await hasPreviousTransactions(account.address);
+      if (hasBeenUsed || account.index === 0) {
+        accountsToImport.push({
+          address: account.address,
+          index: account.index,
+        });
+      } else {
+        // Stop at first unused account (after index 0)
+        break;
+      }
     }
 
-    const hdNode = HDNode.fromExtendedKey(result.payload.xpub);
-
-    const getAddressAtIndex = (index: number): Promise<Address> =>
-      Promise.resolve(hdNode.derivePath(`${index}`).address as Address);
-
-    const accountsToImport = await autodiscoverAccounts(getAddressAtIndex);
     const accountsEnabled = accountsToImport.length;
     const deviceId = keccak256(accountsToImport[0].address);
 
     return { accountsToImport, deviceId, accountsEnabled };
   } catch (e) {
-    if (e instanceof Error && e.name === 'TransportStatusError') {
+    if (e instanceof DeviceLockedError) {
       alert('Please make sure your trezor is connected and unlocked');
+    } else if (e instanceof DeviceNotFoundError) {
+      alert('Unable to connect to your trezor. Please try again.');
     } else {
       alert('Unable to connect to your trezor. Please try again.');
     }
@@ -447,43 +424,45 @@ export const connectLedger = async (): Promise<ConnectHWResult> => {
   if (process.env.IS_TESTING === 'true') {
     return HARDWARE_WALLETS.MOCK_ACCOUNT;
   }
-  let transport: Transport | undefined;
   try {
-    transport = await TransportWebHID.create();
-    const appEth = new AppEth(transport);
+    // Use viem-hw to discover accounts with auto-discovery
+    const discoveredAccounts = await discoverLedgerAccounts({
+      count: 10, // Discover up to 10 accounts
+      derivationStyle: 'bip44',
+    });
 
-    const getAddressAtIndex = async (index: number): Promise<Address> => {
-      const result = await appEth.getAddress(
-        getHDPathForVendorAndType(index, 'Ledger'),
-        false,
-        false,
-      );
-      return result.address as Address;
-    };
+    // Filter to accounts that have been used (have previous transactions)
+    // Sequential discovery is intentional for hardware wallet communication
+    const accountsToImport: AccountToImport[] = [];
+    for (const account of discoveredAccounts) {
+      // eslint-disable-next-line no-await-in-loop
+      const hasBeenUsed = await hasPreviousTransactions(account.address);
+      if (hasBeenUsed || account.index === 0) {
+        accountsToImport.push({
+          address: account.address,
+          index: account.index,
+        });
+      } else {
+        // Stop at first unused account (after index 0)
+        break;
+      }
+    }
 
-    const accountsToImport = await autodiscoverAccounts(getAddressAtIndex);
     const accountsEnabled = accountsToImport.length;
     const deviceId = keccak256(accountsToImport[0].address);
-    await transport?.close();
 
     return { accountsToImport, deviceId, accountsEnabled };
   } catch (e) {
     let error = '';
-    switch (e instanceof Error ? e.name : '') {
-      case 'TransportWebUSBGestureRequired':
-        error = 'needs_unlock';
-        break;
-      case 'TransportStatusError':
-        error = 'needs_app';
-        break;
-      case 'InvalidStateError':
-        error = 'needs_exclusivity';
-        break;
-      case 'TransportOpenUserCancelled':
-      default:
-        error = 'needs_connect';
+    if (e instanceof DeviceLockedError) {
+      error = 'needs_unlock';
+    } else if (e instanceof AppNotOpenError) {
+      error = 'needs_app';
+    } else if (e instanceof DeviceNotFoundError) {
+      error = 'needs_connect';
+    } else {
+      error = 'needs_connect';
     }
-    await transport?.close();
     return { error };
   }
 };
