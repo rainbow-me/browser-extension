@@ -3,6 +3,8 @@ import { Contract, PopulatedTransaction } from '@ethersproject/contracts';
 import type { BatchCall } from '@rainbow-me/delegation';
 import { Address, Hash, erc20Abi, erc721Abi, maxUint256 } from 'viem';
 
+import { requireAddress } from '~/core/schemas/address';
+import { requireHex } from '~/core/schemas/hex';
 import { useGasStore } from '~/core/state';
 import { useNetworkStore } from '~/core/state/networks/networks';
 import { ChainId } from '~/core/types/chains';
@@ -246,21 +248,26 @@ export const executeApprove = async ({
 export const prepareUnlock = async ({
   parameters,
 }: PrepareActionProps<'unlock'>): Promise<{ call: BatchCall | null }> => {
+  const tokenAddress = requireAddress(
+    parameters.assetToUnlock.address,
+    'unlock asset address',
+  );
   const tx = await populateApprove({
     owner: parameters.fromAddress,
-    tokenAddress: parameters.assetToUnlock.address as Address,
+    tokenAddress,
     spender: parameters.contractAddress,
     chainId: parameters.chainId,
     amount: parameters.amount,
   });
 
   if (!tx?.data) return { call: null };
+  const data = requireHex(tx.data, 'unlock prepared tx.data');
 
   return {
     call: {
-      to: parameters.assetToUnlock.address as Address,
-      value: toHex(BigInt(tx?.value?.toString() ?? '0')),
-      data: tx.data as `0x${string}`,
+      to: tokenAddress,
+      value: toHex(BigInt(tx.value?.toString() ?? '0')),
+      data,
     },
   };
 };

@@ -217,8 +217,9 @@ export const Delegations = () => {
         // Navigate to revoke page with all delegations - will process them sequentially
         // Pass isDisabling flag - RevokeDelegationPage will navigate to confirm disable after revoking
         navigate(ROUTES.SETTINGS__DELEGATIONS__REVOKE, {
-          replace: true, // Use replace to avoid route stack issues
+          replace: true,
           state: {
+            address: currentAddress,
             delegationsToRevoke,
             initialIndex: 0,
             backTo: ROUTES.SETTINGS__DELEGATIONS,
@@ -231,7 +232,7 @@ export const Delegations = () => {
 
     // No delegations to revoke, navigate directly to confirm disable page
     navigate(ROUTES.SETTINGS__DELEGATIONS__CONFIRM_DISABLE, { replace: true });
-  }, [delegations, navigate, currentAddress]);
+  }, [currentAddress, delegations, navigate]);
 
   // Revoke a single delegation - called by individual delegation items
   const handleRevokeOne = useCallback(
@@ -241,13 +242,14 @@ export const Delegations = () => {
       // Navigate to revoke page with single delegation
       navigate(ROUTES.SETTINGS__DELEGATIONS__REVOKE, {
         state: {
+          address: currentAddress,
           delegationsToRevoke: [delegationToRevoke],
           initialIndex: 0,
           backTo: ROUTES.SETTINGS__DELEGATIONS,
         },
       });
     },
-    [navigate],
+    [currentAddress, navigate],
   );
 
   const hasDelegations = delegations && delegations.length > 0;

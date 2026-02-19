@@ -75,6 +75,7 @@ export const revokeDelegationHandler = walletOs.revokeDelegation.handler(
 
       return {
         txHash: result.hash ? toHex(result.hash) : undefined,
+        nonce,
         error: null,
       };
     } catch (e) {

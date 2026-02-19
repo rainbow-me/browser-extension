@@ -1,5 +1,3 @@
-import { Address } from 'viem';
-
 import { add } from '../utils/numbers';
 
 import { assetNeedsUnlocking, estimateApprove } from './actions';
@@ -10,45 +8,37 @@ import {
   RapSwapActionParameters,
   RapUnlockActionParameters,
 } from './references';
+import { getQuoteAllowanceTargetAddress } from './utils';
 
 export const estimateUnlockAndCrosschainSwap = async (
   swapParameters: RapSwapActionParameters<'crosschainSwap'>,
 ) => {
   const { sellAmount, quote, chainId, assetToSell } = swapParameters;
 
-  const {
-    from: accountAddress,
-    sellTokenAddress,
-    allowanceTarget,
-    allowanceNeeded,
-  } = quote as {
-    from: Address;
-    sellTokenAddress: Address;
-    buyTokenAddress: Address;
-    allowanceTarget: Address;
-    allowanceNeeded: boolean;
-  };
+  const allowanceTargetAddress = quote.allowanceNeeded
+    ? getQuoteAllowanceTargetAddress(quote)
+    : null;
 
   let gasLimits: (string | number)[] = [];
   let swapAssetNeedsUnlocking = false;
 
-  if (allowanceNeeded) {
+  if (allowanceTargetAddress) {
     swapAssetNeedsUnlocking = await assetNeedsUnlocking({
-      owner: accountAddress,
+      owner: quote.from,
       amount: sellAmount,
       assetToUnlock: assetToSell,
-      spender: allowanceTarget,
+      spender: allowanceTargetAddress,
       chainId,
     });
   }
 
   let unlockGasLimit;
 
-  if (swapAssetNeedsUnlocking) {
+  if (swapAssetNeedsUnlocking && allowanceTargetAddress) {
     unlockGasLimit = await estimateApprove({
-      owner: accountAddress,
-      tokenAddress: sellTokenAddress,
-      spender: allowanceTarget,
+      owner: quote.from,
+      tokenAddress: quote.sellTokenAddress,
+      spender: allowanceTargetAddress,
       chainId,
     });
     gasLimits = gasLimits.concat(unlockGasLimit);
@@ -74,38 +64,30 @@ export const createUnlockAndCrosschainSwapRap = async (
   const { sellAmount, assetToBuy, quote, chainId, assetToSell } =
     swapParameters;
 
-  const {
-    from: accountAddress,
-    allowanceTarget,
-    allowanceNeeded,
-  } = quote as {
-    from: Address;
-    sellTokenAddress: Address;
-    buyTokenAddress: Address;
-    allowanceTarget: Address;
-    allowanceNeeded: boolean;
-  };
+  const allowanceTargetAddress = quote.allowanceNeeded
+    ? getQuoteAllowanceTargetAddress(quote)
+    : null;
 
   let swapAssetNeedsUnlocking = false;
 
-  if (allowanceNeeded) {
+  if (allowanceTargetAddress) {
     swapAssetNeedsUnlocking = await assetNeedsUnlocking({
-      owner: accountAddress,
+      owner: quote.from,
       amount: sellAmount,
       assetToUnlock: assetToSell,
-      spender: allowanceTarget,
+      spender: allowanceTargetAddress,
       chainId,
     });
   }
 
-  if (swapAssetNeedsUnlocking) {
+  if (swapAssetNeedsUnlocking && allowanceTargetAddress) {
     const unlock = createNewAction('unlock', {
-      fromAddress: accountAddress,
+      fromAddress: quote.from,
       amount: sellAmount,
       assetToUnlock: assetToSell,
       chainId,
-      contractAddress: quote.to,
-    } as RapUnlockActionParameters);
+      contractAddress: allowanceTargetAddress,
+    } satisfies RapUnlockActionParameters);
     actions = actions.concat(unlock);
   }
 

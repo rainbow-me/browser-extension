@@ -44,6 +44,7 @@ import {
   SWAP_GAS_PADDING,
   estimateSwapGasLimitWithFakeApproval,
   getDefaultGasLimitForTrade,
+  getQuoteAllowanceTargetAddress,
   getTargetAddressForQuote,
   overrideWithFastSpeedIfNeeded,
   populateSwap,
@@ -143,6 +144,11 @@ export const estimateSwapGasLimit = async ({
   }
 };
 
+const getApproveSpender = (quote: Quote | CrosschainQuote) =>
+  quote.swapType === 'normal'
+    ? getTargetAddressForQuote(quote)
+    : getQuoteAllowanceTargetAddress(quote);
+
 export const estimateUnlockAndSwapFromMetadata = async ({
   swapAssetNeedsUnlocking,
   chainId,
@@ -160,7 +166,7 @@ export const estimateUnlockAndSwapFromMetadata = async ({
     ? await populateApprove({
         owner: accountAddress,
         tokenAddress: sellTokenAddress,
-        spender: getTargetAddressForQuote(quote),
+        spender: getApproveSpender(quote),
         chainId,
       })
     : null;

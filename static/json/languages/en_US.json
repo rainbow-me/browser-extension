@@ -1528,6 +1528,8 @@
     "close_cta": "Cancel",
     "handle_copy_title": "Tx Hash Copied",
     "revoke_approval": "Revoke Approval",
+    "estimating_fee": "Estimating fee…",
+    "tx_confirmed_or_not_found": "Transaction may have already been confirmed or could not be found",
     "speed_up_failed": {
       "title": "Speed up failed",
       "description": "Attempts to speed up a transaction can fail during network congestion, gas limit increases, or when the original transaction is confirmed first"

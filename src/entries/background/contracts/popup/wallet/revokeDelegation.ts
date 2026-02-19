@@ -16,6 +16,7 @@ const revokeDelegationRequestSchema = z.object({
 
 const revokeDelegationResponseSchema = z.object({
   txHash: hexSchema.optional(),
+  nonce: z.number().optional(),
   error: z.string().nullable(),
 });
 

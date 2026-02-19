@@ -50,13 +50,14 @@ export const ProactiveRevokeWatcher = () => {
     setDismissed(true);
     navigate(ROUTES.SETTINGS__DELEGATIONS__REVOKE, {
       state: {
+        address: currentAddress,
         delegationsToRevoke,
         initialIndex: 0,
         revokeReason: 'security_alert',
         backTo: ROUTES.HOME,
       },
     });
-  }, [data, navigate]);
+  }, [currentAddress, data, navigate]);
 
   const handleDismiss = useCallback(() => {
     setDismissed(true);

@@ -59,7 +59,7 @@ const needsUnlockQuote: Quote | QuoteError | null = {
   buyTokenAsset: {} as TokenAsset, // not used in this test
   feeTokenAsset: {} as TokenAsset, // not used in this test
   sellTokenAsset: {} as TokenAsset, // not used in this test
-  allowanceTarget: '0xSomeAllowanceTargetAddress',
+  allowanceTarget: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
   allowanceNeeded: true,
 };
 
@@ -100,7 +100,7 @@ const doesntNeedUnlockQuote: Quote | QuoteError | null = {
   buyTokenAsset: {} as TokenAsset, // not used in this test
   feeTokenAsset: {} as TokenAsset, // not used in this test
   sellTokenAsset: {} as TokenAsset, // not used in this test
-  allowanceTarget: '0xSomeAllowanceTargetAddress',
+  allowanceTarget: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
   allowanceNeeded: true,
 };
 

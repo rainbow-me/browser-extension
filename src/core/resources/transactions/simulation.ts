@@ -72,6 +72,14 @@ export async function estimateTransactionsGasLimit({
       transactions,
     });
 
+    if (results.length !== activeSteps.length) {
+      logger.warn(
+        '[estimateTransactionsGasLimit]: Simulation result count mismatch',
+        { expected: activeSteps.length, received: results.length },
+      );
+      return undefined;
+    }
+
     const gasEstimates = await Promise.all(
       results?.map(async (res, index) => {
         const step = activeSteps[index];

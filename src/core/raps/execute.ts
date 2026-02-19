@@ -8,7 +8,7 @@ import {
   supportsDelegation,
 } from '@rainbow-me/delegation';
 import { CrosschainQuote, Quote } from '@rainbow-me/swaps';
-import { Address } from 'viem';
+import { Address, UserRejectedRequestError } from 'viem';
 
 import config from '~/core/firebase/remoteConfig';
 import { useGasStore } from '~/core/state';
@@ -18,7 +18,10 @@ import { TransactionGasParams } from '~/core/types/gas';
 import { NewTransaction, TxHash } from '~/core/types/transactions';
 import { addNewTransaction, getNextNonce } from '~/core/utils/transactions';
 import { getViemClient } from '~/core/viem/clients';
-import { getViemWalletClient } from '~/core/viem/walletClient';
+import {
+  canUseDelegation,
+  getViemWalletClient,
+} from '~/core/viem/walletClient';
 import { RainbowError, logger } from '~/logger';
 
 import { swap, unlock } from './actions';
@@ -43,6 +46,31 @@ import {
 import { createUnlockAndCrosschainSwapRap } from './unlockAndCrosschainSwap';
 import { createUnlockAndSwapRap } from './unlockAndSwap';
 
+const ACTION_REJECTED = 'ACTION_REJECTED';
+
+function isAtomicGasParams(
+  gasParams: unknown,
+): gasParams is TransactionGasParams {
+  if (!gasParams || typeof gasParams !== 'object') return false;
+  const g = gasParams as Record<string, unknown>;
+  return (
+    'maxFeePerGas' in g &&
+    'maxPriorityFeePerGas' in g &&
+    !!g.maxFeePerGas &&
+    !!g.maxPriorityFeePerGas
+  );
+}
+
+function isUserRejectionError(error: unknown): boolean {
+  if (!error || typeof error !== 'object') return false;
+  const e = error as Error & { code?: string; cause?: unknown };
+  if (e instanceof UserRejectedRequestError) return true;
+  if (e.name === UserRejectedRequestError.name) return true;
+  if (e.code === ACTION_REJECTED || e.code === '4001') return true;
+  if (e.cause) return isUserRejectionError(e.cause);
+  return false;
+}
+
 export function createSwapRapByType<T extends RapTypes>(
   type: T,
   swapParameters: RapSwapActionParameters<T>,
@@ -61,40 +89,29 @@ export function createSwapRapByType<T extends RapTypes>(
   }
 }
 
-function typeAction<T extends RapActionTypes>(type: T, props: ActionProps<T>) {
-  switch (type) {
-    case 'unlock':
-      return () => unlock(props as ActionProps<'unlock'>);
-    case 'swap':
-      return () => swap(props as ActionProps<'swap'>);
-    case 'crosschainSwap':
-      return () => crosschainSwap(props as ActionProps<'crosschainSwap'>);
-    default:
-      // eslint-disable-next-line react/display-name
-      return () => null;
-  }
-}
+const actionExecutors = {
+  unlock: (p: ActionProps<'unlock'>) => unlock(p),
+  swap: (p: ActionProps<'swap'>) => swap(p),
+  crosschainSwap: (p: ActionProps<'crosschainSwap'>) => crosschainSwap(p),
+} as const satisfies {
+  [K in RapActionTypes]: (props: ActionProps<K>) => Promise<RapActionResult>;
+};
 
-/**
- * Get the prepare function for an action type (for atomic execution).
- */
-function typePrepareAction<T extends RapActionTypes>(
-  type: T,
-  props: PrepareActionProps<T>,
-): () => Promise<PrepareActionResult> {
-  switch (type) {
-    case 'unlock':
-      return () => prepareUnlock(props as PrepareActionProps<'unlock'>);
-    case 'swap':
-      return () => prepareSwap(props as PrepareActionProps<'swap'>);
-    case 'crosschainSwap':
-      return () =>
-        prepareCrosschainSwap(props as PrepareActionProps<'crosschainSwap'>);
-    default:
-      throw new Error(
-        `Action type "${type}" does not support atomic execution`,
-      );
-  }
+const prepareExecutors = {
+  unlock: (p: PrepareActionProps<'unlock'>) => prepareUnlock(p),
+  swap: (p: PrepareActionProps<'swap'>) => prepareSwap(p),
+  crosschainSwap: (p: PrepareActionProps<'crosschainSwap'>) =>
+    prepareCrosschainSwap(p),
+} as const satisfies {
+  [K in RapActionTypes]: (
+    props: PrepareActionProps<K>,
+  ) => Promise<PrepareActionResult>;
+};
+
+function hasTransaction(
+  r: PrepareActionResult,
+): r is { call: BatchCall; transaction: Omit<NewTransaction, 'hash'> } {
+  return 'transaction' in r && !!r.transaction;
 }
 
 export async function executeAction<T extends RapActionTypes>({
@@ -121,10 +138,14 @@ export async function executeAction<T extends RapActionTypes>({
       parameters,
       baseNonce,
     };
-    const { nonce, hash } = (await typeAction<T>(
-      type,
-      actionProps,
-    )()) as RapActionResult;
+    const { nonce, hash } =
+      type === 'unlock'
+        ? await actionExecutors.unlock(actionProps as ActionProps<'unlock'>)
+        : type === 'swap'
+        ? await actionExecutors.swap(actionProps as ActionProps<'swap'>)
+        : await actionExecutors.crosschainSwap(
+            actionProps as ActionProps<'crosschainSwap'>,
+          );
     return { baseNonce: nonce, errorMessage: null, hash };
   } catch (error) {
     logger.error(new RainbowError(`rap: ${rapName} - error execute action`), {
@@ -232,7 +253,7 @@ export const walletExecuteRap = async (
     >;
     const { chainId, quote } = swapParams;
     const { selectedGas } = useGasStore.getState();
-    const gasParams = selectedGas.transactionGasParams as TransactionGasParams;
+    const gasParams = selectedGas.transactionGasParams;
 
     if (!quote) {
       return {
@@ -242,126 +263,122 @@ export const walletExecuteRap = async (
       };
     }
 
-    try {
-      const calls: BatchCall[] = [];
-      let pendingTransaction: Omit<NewTransaction, 'hash'> | null = null;
+    const userAddress = (await wallet.getAddress()) as Address;
+    const canUse = await canUseDelegation(userAddress);
+    const gasParamsEip1559 = isAtomicGasParams(gasParams) ? gasParams : null;
 
-      // Prepare all actions
-      for (const action of actions) {
-        const prepareResult = await typePrepareAction(action.type, {
-          parameters: action.parameters,
-          wallet,
-          chainId,
-          quote: quote as Quote | CrosschainQuote,
-        } as PrepareActionProps<typeof action.type>)();
+    if (canUse && gasParamsEip1559) {
+      try {
+        const calls: BatchCall[] = [];
+        let pendingTransaction: Omit<NewTransaction, 'hash'> | null = null;
 
-        if (prepareResult.call) {
-          calls.push(prepareResult.call);
-        }
-        if ('transaction' in prepareResult && prepareResult.transaction) {
-          pendingTransaction = prepareResult.transaction;
-        }
-      }
-
-      if (!calls.length) {
-        return {
-          nonce: undefined,
-          errorMessage: 'No calls to execute',
-          hash: null,
-        };
-      }
-
-      // Get wallet client for atomic execution
-      const userAddress = (await wallet.getAddress()) as Address;
-
-      // supportsDelegation() already checked above, so we can proceed
-      const walletClient = await getViemWalletClient({
-        address: userAddress,
-        chainId,
-      });
-
-      if (walletClient) {
-        try {
-          // Get public client
-          const publicClient = getViemClient({ chainId });
-
-          // Get nonce for the transaction
-          // Note: SDK increments +2 between authorization and execute, so we account for that
-          const baseNonce = await getNextNonce({
-            address: userAddress,
-            chainId: chainId as ChainId,
-          });
-
-          // Execute batched transaction
-          const result = await executeBatchedTransaction({
-            calls,
-            walletClient,
-            publicClient,
+        for (const action of actions) {
+          const props = {
+            parameters: action.parameters,
+            wallet,
             chainId,
-            nonce: baseNonce,
-            transactionOptions: {
-              maxFeePerGas: BigInt(gasParams.maxFeePerGas ?? 0),
-              maxPriorityFeePerGas: BigInt(gasParams.maxPriorityFeePerGas ?? 0),
-              gasLimit: null,
-            },
-          });
+            quote: quote as Quote | CrosschainQuote,
+          };
+          const prepareResult =
+            action.type === 'unlock'
+              ? await prepareExecutors.unlock(
+                  props as PrepareActionProps<'unlock'>,
+                )
+              : action.type === 'swap'
+              ? await prepareExecutors.swap(props as PrepareActionProps<'swap'>)
+              : await prepareExecutors.crosschainSwap(
+                  props as PrepareActionProps<'crosschainSwap'>,
+                );
 
-          if (result?.hash) {
-            // pendingTransaction should always exist since unlock is always followed by swap/crosschainSwap
-            if (!pendingTransaction) {
-              logger.error(
-                new RainbowError(
-                  `[${rapName}] No pending transaction prepared for atomic execution`,
-                ),
-              );
-            } else {
-              // eip7702 consumes 2 nonces, so use baseNonce+1 for pending tx
-              // eip1559 uses just baseNonce
-              const pendingTxNonce =
-                result.type === 'eip7702' ? baseNonce + 1 : baseNonce;
-
-              // Add pending transaction with hash and nonce
-              const transaction: NewTransaction = {
-                ...pendingTransaction,
-                hash: result.hash as TxHash,
-                nonce: pendingTxNonce,
-              };
-
-              addNewTransaction({
-                address: quote.from as Address,
-                chainId,
-                transaction,
-              });
-            }
-
-            logger.debug(`[${rapName}] executed atomically (${result.type})`, {
-              hash: result.hash,
-            });
-            return {
-              nonce: baseNonce,
-              errorMessage: null,
-              hash: result.hash,
-            };
+          if (prepareResult.call) calls.push(prepareResult.call);
+          if (hasTransaction(prepareResult)) {
+            pendingTransaction = prepareResult.transaction;
           }
-        } catch (error) {
-          logger.warn(
-            `[${rapName}] atomic execution failed - falling back to normal flow`,
-            {
-              message: (error as Error)?.message,
-            },
-          );
-          // Fall through to sequential execution path below
         }
+
+        if (!calls.length) {
+          return {
+            nonce: undefined,
+            errorMessage: 'No calls to execute',
+            hash: null,
+          };
+        }
+
+        const walletClient = await getViemWalletClient({
+          address: userAddress,
+          chainId,
+        });
+
+        if (walletClient) {
+          try {
+            const publicClient = getViemClient({ chainId });
+            const baseNonce = await getNextNonce({
+              address: userAddress,
+              chainId: chainId as ChainId,
+            });
+
+            const result = await executeBatchedTransaction({
+              calls,
+              walletClient,
+              publicClient,
+              chainId,
+              nonce: baseNonce,
+              transactionOptions: {
+                maxFeePerGas: BigInt(gasParamsEip1559.maxFeePerGas ?? 0),
+                maxPriorityFeePerGas: BigInt(
+                  gasParamsEip1559.maxPriorityFeePerGas ?? 0,
+                ),
+                gasLimit: null,
+              },
+            });
+
+            if (result?.hash) {
+              if (pendingTransaction) {
+                const pendingTxNonce =
+                  result.type === 'eip7702' ? baseNonce + 1 : baseNonce;
+                addNewTransaction({
+                  address: quote.from as Address,
+                  chainId,
+                  transaction: {
+                    ...pendingTransaction,
+                    hash: result.hash as TxHash,
+                    nonce: pendingTxNonce,
+                  },
+                });
+              }
+              return {
+                nonce: baseNonce,
+                errorMessage: null,
+                hash: result.hash,
+              };
+            }
+          } catch (error) {
+            if (isUserRejectionError(error)) {
+              return {
+                nonce: undefined,
+                errorMessage: (error as Error).message,
+                hash: null,
+              };
+            }
+            logger.warn(
+              `[${rapName}] atomic execution failed - falling back to normal flow`,
+              { message: (error as Error)?.message },
+            );
+          }
+        }
+      } catch (error) {
+        if (isUserRejectionError(error)) {
+          return {
+            nonce: undefined,
+            errorMessage: (error as Error).message,
+            hash: null,
+          };
+        }
+        logger.warn(
+          `[${rapName}] atomic execution preparation failed - falling back to normal flow`,
+          { message: (error as Error)?.message },
+        );
       }
-      // Fall through to sequential execution path below
-    } catch (error) {
-      logger.warn(
-        `[${rapName}] atomic execution preparation failed - falling back to normal flow`,
-        {
-          message: (error as Error)?.message,
-        },
-      );
-      // Fall through to sequential execution path below
     }
   }
 

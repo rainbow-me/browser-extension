@@ -11,6 +11,7 @@ import {
 import { Address, erc20Abi } from 'viem';
 import { mainnet } from 'viem/chains';
 
+import { requireAddress } from '~/core/schemas/address';
 import { useNetworkStore } from '~/core/state/networks/networks';
 
 import { ChainId } from '../types/chains';
@@ -308,3 +309,7 @@ export const getTargetAddressForQuote = (quote: Quote | CrosschainQuote) => {
   }
   return targetAddress as Address;
 };
+
+export const getQuoteAllowanceTargetAddress = (quote: {
+  allowanceTarget?: string;
+}): Address => requireAddress(quote.allowanceTarget, 'quote.allowanceTarget');

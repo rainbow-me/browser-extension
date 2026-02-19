@@ -55,6 +55,7 @@ const DEFAULT_GAS_LIMIT = 100000n;
 type RevokeReason = 'settings' | 'security_alert';
 
 interface LocationState {
+  address?: Address;
   delegationsToRevoke: DelegationToRevoke[];
   initialIndex?: number;
   backTo?: string;
@@ -76,6 +77,9 @@ export const RevokeDelegationPage = () => {
   const clearCustomGasModified = useGasStore(
     (state) => state.clearCustomGasModified,
   );
+
+  const revokeAddress =
+    (location.state as LocationState)?.address ?? currentAddress;
 
   // Supports both single and multiple delegations:
   // - Single: array with one delegation, processes once and returns
@@ -126,13 +130,13 @@ export const RevokeDelegationPage = () => {
   }, [currentDelegation, delegationsToRevoke.length]);
 
   const handleRevoke = useCallback(async () => {
-    if (!currentDelegation || !currentAddress) return;
+    if (!currentDelegation || !revokeAddress) return;
 
     setSending(true);
     setRevokeStatus('claiming');
 
     try {
-      const { type } = await getWallet(currentAddress);
+      const { type } = await getWallet(revokeAddress);
       // Change the label while we wait for confirmation
       if (type === 'HardwareWalletKeychain') {
         setWaitingForDevice(true);
@@ -150,7 +154,7 @@ export const RevokeDelegationPage = () => {
 
       const result = await popupClient.wallet.revokeDelegation({
         chainId: currentDelegation.chainId,
-        userAddress: currentAddress as Address,
+        userAddress: revokeAddress as Address,
         transactionOptions: {
           maxFeePerGas: toHex(maxFeePerGas),
           maxPriorityFeePerGas: toHex(maxPriorityFeePerGas),
@@ -184,18 +188,17 @@ export const RevokeDelegationPage = () => {
       }
 
       if (result.txHash) {
-        // Add transaction to pending
         const transaction: NewTransaction = {
           changes: [],
           data: '0x',
           value: '0',
-          from: currentAddress,
-          to: currentAddress,
+          from: revokeAddress,
+          to: revokeAddress,
           hash: result.txHash as TxHash,
           chainId: currentDelegation.chainId,
           status: 'pending',
           type: 'revoke',
-          nonce: 0, // Will be updated by the chain
+          nonce: result.nonce ?? 0,
           gasPrice: (gasParams as TransactionLegacyGasParams)?.gasPrice,
           maxFeePerGas: (gasParams as TransactionGasParams)?.maxFeePerGas,
           maxPriorityFeePerGas: (gasParams as TransactionGasParams)
@@ -203,7 +206,7 @@ export const RevokeDelegationPage = () => {
         };
 
         await addNewTransaction({
-          address: currentAddress,
+          address: revokeAddress,
           chainId: currentDelegation.chainId,
           transaction,
         });
@@ -242,6 +245,7 @@ export const RevokeDelegationPage = () => {
           navigate(ROUTES.SETTINGS__DELEGATIONS__REVOKE, {
             replace: true,
             state: {
+              address: revokeAddress,
               delegationsToRevoke,
               initialIndex: nextIndex,
               backTo: locationState?.backTo || ROUTES.SETTINGS__DELEGATIONS,
@@ -281,7 +285,7 @@ export const RevokeDelegationPage = () => {
     }
   }, [
     currentDelegation,
-    currentAddress,
+    revokeAddress,
     selectedGas.transactionGasParams,
     isLastDelegation,
     navigate,
@@ -544,10 +548,10 @@ export const RevokeDelegationPage = () => {
             <Row>
               <TransactionFee
                 chainId={currentDelegation.chainId}
-                address={currentAddress}
+                address={revokeAddress}
                 transactionRequest={{
-                  to: currentAddress,
-                  from: currentAddress,
+                  to: revokeAddress,
+                  from: revokeAddress,
                   chainId: currentDelegation.chainId,
                   data: '0x',
                   value: '0x0',
