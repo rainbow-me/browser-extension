@@ -12,6 +12,12 @@ export interface ChainDelegation {
   chainId: number;
   contractAddress?: Address;
   isThirdParty: boolean;
+  /** Contract address to revoke, present when revokeReason is set */
+  revokeAddress?: Address;
+  /** Current delegation contract name, present when delegated to Rainbow */
+  currentContractName?: string;
+  /** Delegation status from SDK */
+  delegationStatus?: DelegationStatus;
 }
 
 /**

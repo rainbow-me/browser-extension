@@ -1,11 +1,13 @@
 import { motion } from 'framer-motion';
 import { useCallback, useMemo, useRef } from 'react';
 
+import { i18n } from '~/core/languages';
 import { useApprovals } from '~/core/resources/approvals/approvals';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import {
   RainbowTransaction,
   TransactionStatus,
+  isDelegationTransactionType,
 } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
 import { isLowerCaseMatch, truncateString } from '~/core/utils/strings';
@@ -208,6 +210,9 @@ const ActivityDescription = ({
   const { type, to } = transaction;
   let description = transaction.description;
   let tag: string | undefined;
+  if (isDelegationTransactionType(type)) {
+    description = i18n.t('transactions.delegate_description');
+  }
   if (type === 'contract_interaction' && to) {
     description = transaction.contract?.name || truncateAddress(to);
     tag = transaction.description;

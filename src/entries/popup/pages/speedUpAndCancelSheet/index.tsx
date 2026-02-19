@@ -56,7 +56,10 @@ const greaterValueInHex = (a: string, b: string) =>
 
 function hasIncompleteStoredData(tx: PendingTransaction): boolean {
   return (
-    tx.data === '0x' || (tx.nonce === 0 && tx.type === 'revoke') || !tx.gasLimit
+    tx.data === '0x' ||
+    (tx.nonce === 0 &&
+      (tx.type === 'revoke' || tx.type === 'revoke_delegation')) ||
+    !tx.gasLimit
   );
 }
 

@@ -97,9 +97,11 @@ const transactionTypes = {
   withoutChanges: [
     'cancel',
     'contract_interaction',
+    'delegate',
     'deployment',
     'approve',
     'revoke',
+    'revoke_delegation',
     'speed_up',
   ],
   withChanges: [
@@ -144,6 +146,13 @@ type TransactionWithoutChangesType =
 export type TransactionType =
   | TransactionWithChangesType
   | TransactionWithoutChangesType;
+
+export type DelegationTransactionType = 'delegate' | 'revoke_delegation';
+
+export const isDelegationTransactionType = (
+  type: TransactionType,
+): type is DelegationTransactionType =>
+  type === 'delegate' || type === 'revoke_delegation';
 
 export type TransactionDirection = 'in' | 'out' | 'self';
 

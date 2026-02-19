@@ -10,8 +10,17 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
-import { ChainDelegation } from '~/core/types/delegations';
+import type { ChainDelegation } from '~/core/types/delegations';
 import { RainbowError, logger } from '~/logger';
+
+const toLocalDelegationStatus = (
+  status: (typeof DelegationStatus)[keyof typeof DelegationStatus],
+): ChainDelegation['delegationStatus'] => {
+  if (status === DelegationStatus.RAINBOW_DELEGATED) return 'RAINBOW_DELEGATED';
+  if (status === DelegationStatus.THIRD_PARTY_DELEGATED)
+    return 'THIRD_PARTY_DELEGATED';
+  return undefined;
+};
 
 // ///////////////////////////////////////////////
 // Query Types
@@ -48,6 +57,9 @@ async function delegationsQueryFunction({
       contractAddress: result.currentContract || undefined,
       isThirdParty:
         result.delegationStatus === DelegationStatus.THIRD_PARTY_DELEGATED,
+      revokeAddress: result.revokeAddress ?? undefined,
+      currentContractName: result.currentContractName ?? undefined,
+      delegationStatus: toLocalDelegationStatus(result.delegationStatus),
     }));
   } catch (e) {
     logger.error(new RainbowError('delegationsQueryFunction: '), {

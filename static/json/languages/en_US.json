@@ -400,6 +400,18 @@
       "confirmed": "Revoked",
       "failed": "Revoke Failed"
     },
+    "delegate": {
+      "pending": "Delegating",
+      "confirmed": "Approved",
+      "failed": "Delegation Failed"
+    },
+    "revoke_delegation": {
+      "pending": "Revoking",
+      "confirmed": "Revoked",
+      "failed": "Revoke Failed"
+    },
+    "delegate_description": "Wallet Delegation",
+    "revoke_delegation_description": "Wallet Delegation",
     "sale": {
       "pending": "Selling",
       "confirmed": "Sold",
@@ -1412,6 +1424,7 @@
     "token_contract": "Token Contract",
     "token_standard": "Token Standard",
     "revoke_approval": "Revoke Approval",
+    "smart_account": "Smart Account",
     "error_title": "Unable to load activity",
     "error_message": "We couldn't fetch this transaction.\nTry again or head back to your activity.",
     "error_retry": "Try Again",
