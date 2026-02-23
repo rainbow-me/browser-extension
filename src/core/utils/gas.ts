@@ -18,6 +18,7 @@ import {
   SupportedCurrencyKey,
   supportedCurrencies,
 } from '../references';
+import { isLegacyMeteorologyFeeData } from '../resources/gas/classification';
 import {
   MeteorologyLegacyResponse,
   MeteorologyResponse,
@@ -647,8 +648,8 @@ export const parseGasFeeParamsBySpeed = ({
   optimismL1SecurityFee?: string | null;
   additionalTime?: number;
 }) => {
-  if ((data as MeteorologyResponse)?.data?.currentBaseFee) {
-    const response = data as MeteorologyResponse;
+  if (!isLegacyMeteorologyFeeData(data)) {
+    const response = data;
     const {
       data: {
         currentBaseFee,
@@ -693,7 +694,7 @@ export const parseGasFeeParamsBySpeed = ({
       }),
     };
   } else {
-    const response = data as MeteorologyLegacyResponse;
+    const response = data;
     const chainWaitTime = getChainWaitTime(chainId);
     const parseGasFeeParamsSpeed = ({
       speed,
