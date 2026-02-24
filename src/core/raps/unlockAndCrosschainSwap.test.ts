@@ -1,9 +1,8 @@
 import {
   CrosschainQuote,
-  Quote,
-  QuoteError,
   SwapType,
   TokenAsset,
+  getRainbowRouterContractAddress,
 } from '@rainbow-me/swaps';
 import { beforeAll, expect, test } from 'vitest';
 
@@ -26,7 +25,7 @@ import {
 
 let swapGasLimit = 0;
 
-const needsUnlockQuote: Quote | QuoteError | null = {
+const needsUnlockQuote: CrosschainQuote = {
   chainId: 1,
   buyAmount: '22815411',
   buyAmountDisplay: '22815411',
@@ -59,11 +58,18 @@ const needsUnlockQuote: Quote | QuoteError | null = {
   buyTokenAsset: {} as TokenAsset, // not used in this test
   feeTokenAsset: {} as TokenAsset, // not used in this test
   sellTokenAsset: {} as TokenAsset, // not used in this test
-  allowanceTarget: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
+  allowanceTarget: getRainbowRouterContractAddress(1),
   allowanceNeeded: true,
+  routes: [
+    {
+      recipient: '0x5B570F0F8E2a29B7bCBbfC000f9C7b78D45b7C35',
+      userTxs: [{ recipient: '0x5B570F0F8E2a29B7bCBbfC000f9C7b78D45b7C35' }],
+    } as unknown as CrosschainQuote['routes'][0],
+  ],
+  refuel: null,
 };
 
-const doesntNeedUnlockQuote: Quote | QuoteError | null = {
+const doesntNeedUnlockQuote: CrosschainQuote = {
   chainId: 1,
   buyAmount: '2934529154',
   buyAmountDisplay: '2934529154',
@@ -100,8 +106,15 @@ const doesntNeedUnlockQuote: Quote | QuoteError | null = {
   buyTokenAsset: {} as TokenAsset, // not used in this test
   feeTokenAsset: {} as TokenAsset, // not used in this test
   sellTokenAsset: {} as TokenAsset, // not used in this test
-  allowanceTarget: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
-  allowanceNeeded: true,
+  allowanceTarget: getRainbowRouterContractAddress(1),
+  allowanceNeeded: false,
+  routes: [
+    {
+      recipient: TEST_ADDRESS_2,
+      userTxs: [{ recipient: TEST_ADDRESS_2 }],
+    } as unknown as CrosschainQuote['routes'][0],
+  ],
+  refuel: null,
 };
 
 beforeAll(async () => {
@@ -114,7 +127,7 @@ test.todo(
   '[rap/unlockAndCrosschainSwap] :: estimate unlock and crosschain swap rap without unlock',
   async () => {
     const gasLimit = await estimateUnlockAndCrosschainSwap({
-      quote: doesntNeedUnlockQuote as CrosschainQuote,
+      quote: doesntNeedUnlockQuote,
       chainId: 1,
       assetToSell: ETH_MAINNET_ASSET,
       sellAmount: '1000000000000000000',
@@ -129,7 +142,7 @@ test.todo(
   '[rap/unlockAndCrosschainSwap] :: estimate unlock and crosschain swap rap with unlock',
   async () => {
     const gasLimit = await estimateUnlockAndCrosschainSwap({
-      quote: needsUnlockQuote as CrosschainQuote,
+      quote: needsUnlockQuote,
       chainId: 1,
       assetToSell: ENS_MAINNET_ASSET,
       sellAmount: '1000000000000000000',
@@ -142,7 +155,7 @@ test.todo(
 
 test('[rap/unlockAndCrosschainSwap] :: create unlock and crosschain swap rap without unlock', async () => {
   const rap = await createUnlockAndCrosschainSwapRap({
-    quote: doesntNeedUnlockQuote as CrosschainQuote,
+    quote: doesntNeedUnlockQuote,
     chainId: 1,
     sellAmount: '1000000000000000000',
     assetToSell: ETH_MAINNET_ASSET,
@@ -153,7 +166,7 @@ test('[rap/unlockAndCrosschainSwap] :: create unlock and crosschain swap rap wit
 
 test('[rap/unlockAndCrosschainSwap] :: create unlock and crosschain swap rap with unlock', async () => {
   const rap = await createUnlockAndCrosschainSwapRap({
-    quote: needsUnlockQuote as CrosschainQuote,
+    quote: needsUnlockQuote,
     chainId: 1,
     sellAmount: '1000000000000000000',
     assetToSell: ENS_MAINNET_ASSET,

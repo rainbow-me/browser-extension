@@ -16,7 +16,7 @@ export function setupDelegationClient(): void {
 
   configure({
     platformClient: platformHttp,
-    logger: logger,
+    logger: logger.createServiceLogger(logger.DebugContext.delegation),
     getCurrentAddress: ($) => $(useCurrentAddressStore).currentAddress,
     storeOptions: {
       sync: { engine: syncEngine },
