@@ -117,7 +117,7 @@
         "block_explorer_url": "블록 탐색기 URL",
         "add_network": "네트워크 추가",
         "add_rpc": "RPC 엔드포인트 추가",
-        "add_network_rpc": "%{rpcName} RPC 추가",
+        "add_network_rpc": "%{networkName} RPC 추가",
         "add_asset": "커스텀 토큰 추가",
         "network_added": "네트워크 추가됨",
         "network_added_correctly": "%{networkName}",
@@ -125,10 +125,13 @@
         "remove_rpc": "RPC 제거",
         "remove_network": "네트워크 제거",
         "tokens": "토큰",
+        "chain_id_mismatch": "이 RPC는 %{networkName}이(가) 아니라 체인 ID %{chainId}용입니다",
         "cant_connect": "이 RPC 엔드포인트에 연결할 수 없습니다",
         "rpc_not_responding": "제공된 RPC 엔드포인트가 응답하지 않습니다",
         "rainbow_default_rpc": "Rainbow",
-        "rainbow_default": "Rainbow"
+        "rainbow_default": "Rainbow",
+        "network_already_exists": "이 RPC는 %{networkName}에 속하며, 이 네트워크는 이미 네트워크 목록에 있습니다.",
+        "add_rpc_instead": "기존 네트워크에 RPC 추가"
       },
       "rpc_endpoints": "RPC 엔드포인트",
       "watch_asset": {
@@ -1664,7 +1667,7 @@
     "unsupported_network": "지원되지 않는 네트워크",
     "no_active_session": "활성 세션이 없음",
     "already_added": "RPC 활성화됨",
-    "set_as_active": "새 RPC 활성화됨",
+    "rpc_added": "새 RPC 추가됨",
     "already_active": "네트워크 이미 추가됨"
   },
   "alert": {
