@@ -117,7 +117,7 @@
         "block_explorer_url": "Blok Gezgini URL",
         "add_network": "Ağ Ekle",
         "add_rpc": "RPC Uç Noktası Ekle",
-        "add_network_rpc": "%{rpcName} RPC Ekle",
+        "add_network_rpc": "%{networkName} RPC Ekle",
         "add_asset": "Özel Token Ekle",
         "network_added": "Ağ Eklendi",
         "network_added_correctly": "%{networkName}",
@@ -125,10 +125,13 @@
         "remove_rpc": "RPC'yi Kaldır",
         "remove_network": "Ağı Kaldır",
         "tokens": "Tokenler",
+        "chain_id_mismatch": "Bu RPC, %{networkName} değil, %{chainId} zincir kimliği içindir",
         "cant_connect": "Bu RPC uç noktasına bağlanılamıyor",
         "rpc_not_responding": "Belirtilen RPC uç noktası yanıt vermiyor",
         "rainbow_default_rpc": "Rainbow",
-        "rainbow_default": "Rainbow"
+        "rainbow_default": "Rainbow",
+        "network_already_exists": "Bu RPC, ağlarınızda zaten bulunan %{networkName} ağına ait.",
+        "add_rpc_instead": "Mevcut ağa RPC ekle"
       },
       "rpc_endpoints": "RPC Uç Noktaları",
       "watch_asset": {
@@ -1664,7 +1667,7 @@
     "unsupported_network": "Desteklenmeyen ağ",
     "no_active_session": "Aktif oturum yok",
     "already_added": "RPC aktif edildi",
-    "set_as_active": "Yeni RPC aktif edildi",
+    "rpc_added": "Yeni RPC eklendi",
     "already_active": "Ağ zaten eklendi"
   },
   "alert": {
