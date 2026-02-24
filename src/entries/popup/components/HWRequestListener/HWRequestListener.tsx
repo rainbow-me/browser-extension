@@ -37,9 +37,9 @@ const processHwSigningRequest = async (
     if (!response) {
       return { error: 'No response from hardware wallet' };
     }
-    return response;
+    return { signature: response };
   } catch (e: any) {
-    return { error: e?.name || e };
+    return { error: e?.message || e?.name || String(e) };
   }
 };
 

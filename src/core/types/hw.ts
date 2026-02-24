@@ -22,4 +22,4 @@ export type HWSigningRequest =
       payload: { message: TypedDataMessage; address: Address };
     };
 
-export type HWSigningResponse = Hex | { error: string };
+export type HWSigningResponse = { signature: Hex } | { error: string };
