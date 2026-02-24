@@ -117,7 +117,7 @@
         "block_explorer_url": "ब्लॉक एक्सप्लोरर URL",
         "add_network": "नेटवर्क जोड़ें",
         "add_rpc": "RPC एंडपॉइंट जोड़ें",
-        "add_network_rpc": "%{rpcName} RPC जोड़ें",
+        "add_network_rpc": "%{networkName} RPC जोड़ें",
         "add_asset": "कस्टम टोकन जोड़ें",
         "network_added": "नेटवर्क जोड़ा गया",
         "network_added_correctly": "%{networkName}",
@@ -125,10 +125,13 @@
         "remove_rpc": "RPC हटाएं",
         "remove_network": "नेटवर्क हटाएं",
         "tokens": "टोकन्स",
+        "chain_id_mismatch": "यह RPC चेन ID %{chainId} के लिए है, %{networkName} के लिए नहीं",
         "cant_connect": "इस RPC एंडपॉइंट से कनेक्ट नहीं हो सकता",
         "rpc_not_responding": "प्रदान की गई RPC एंडपॉइंट प्रतिसाद नहीं दे रहा है",
         "rainbow_default_rpc": "Rainbow",
-        "rainbow_default": "रेनबो"
+        "rainbow_default": "रेनबो",
+        "network_already_exists": "यह RPC %{networkName} से संबंधित है, जो आपके नेटवर्क में पहले से मौजूद है।",
+        "add_rpc_instead": "मौजूदा नेटवर्क में RPC जोड़ें"
       },
       "rpc_endpoints": "RPC एंडपॉइंट्स",
       "watch_asset": {
@@ -1664,7 +1667,7 @@
     "unsupported_network": "असमर्थित नेटवर्क",
     "no_active_session": "कोई सक्रिय सत्र नहीं है",
     "already_added": "RPC सक्रिय",
-    "set_as_active": "नया RPC सक्रिय",
+    "rpc_added": "नया RPC जोड़ा गया",
     "already_active": "नेटवर्क पहले से जोड़ा गया"
   },
   "alert": {
