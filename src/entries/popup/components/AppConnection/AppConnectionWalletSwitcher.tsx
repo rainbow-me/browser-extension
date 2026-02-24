@@ -167,7 +167,11 @@ export const AppConnectionWalletSwitcher = () => {
                                 })
                               }
                               address={account.address}
-                              chainId={appSession.sessions?.[account.address]}
+                              chainId={
+                                appSession?.sessions[account.address] ??
+                                activeSession?.chainId ??
+                                ChainId.mainnet
+                              }
                               active={isLowerCaseMatch(
                                 activeSession?.address,
                                 account.address,
