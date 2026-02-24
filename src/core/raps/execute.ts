@@ -5,6 +5,7 @@ import { Signer } from '@ethersproject/abstract-signer';
 import {
   type BatchCall,
   executeBatchedTransaction,
+  prepareBatchedTransaction,
   supportsDelegation,
 } from '@rainbow-me/delegation';
 import { CrosschainQuote, Quote } from '@rainbow-me/swaps';
@@ -337,6 +338,32 @@ export const walletExecuteRap = async (
               chainId: chainId as ChainId,
             });
 
+            const preparedTx = await prepareBatchedTransaction({
+              from: userAddress,
+              calls,
+              chainId,
+              nonce: baseNonce,
+            });
+
+            const gasLimit = await publicClient
+              .estimateGas({
+                account: userAddress,
+                to: preparedTx.to,
+                data: preparedTx.data,
+                value: preparedTx.value ? BigInt(preparedTx.value) : 0n,
+                ...(preparedTx.authorization_list?.length && {
+                  type: 'eip7702' as const,
+                  authorizationList: preparedTx.authorization_list.map(
+                    ({ address, chainId, nonce }) => ({
+                      address,
+                      chainId: Number(chainId),
+                      nonce: Number(nonce),
+                    }),
+                  ),
+                }),
+              })
+              .catch(() => null);
+
             const result = await executeBatchedTransaction({
               calls,
               walletClient,
@@ -348,23 +375,26 @@ export const walletExecuteRap = async (
                 maxPriorityFeePerGas: BigInt(
                   gasParamsEip1559.maxPriorityFeePerGas ?? 0,
                 ),
-                gasLimit: null,
+                gasLimit,
               },
             });
 
             if (result?.hash) {
               if (pendingTransaction) {
-                const pendingTxNonce =
-                  result.type === 'eip7702' ? baseNonce + 1 : baseNonce;
+                const isDelegating = result.type === 'eip7702';
                 addNewTransaction({
                   address: quote.from as Address,
                   chainId,
                   transaction: {
                     ...pendingTransaction,
                     hash: result.hash as TxHash,
-                    nonce: pendingTxNonce,
+                    nonce: isDelegating ? baseNonce + 1 : baseNonce,
                     batch: true,
-                    delegation: result.type === 'eip7702',
+                    delegation: isDelegating,
+                    data: preparedTx.data,
+                    to: preparedTx.to,
+                    value: preparedTx.value ? String(preparedTx.value) : '0',
+                    gasLimit: gasLimit?.toString(),
                   },
                 });
               }

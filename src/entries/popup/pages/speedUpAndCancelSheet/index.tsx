@@ -76,8 +76,8 @@ type FetchedTxForReplacement = Pick<
   | 'from'
   | 'chainId'
 > & {
-  /** Ethereum tx type (0=legacy, 2=EIP-1559, 4=EIP-7702) - required for speed up of type 4 */
-  txType?: number;
+  /** True when EIP-7702 (type 4) - required for speed up replacement */
+  delegation?: boolean;
 };
 
 async function fetchPendingTransaction(
@@ -99,7 +99,7 @@ async function fetchPendingTransaction(
     gasLimit: tx.gasLimit?.toString() ?? '0',
     maxFeePerGas: tx.maxFeePerGas?.toString(),
     maxPriorityFeePerGas: tx.maxPriorityFeePerGas?.toString(),
-    ...(tx.type != null && { txType: tx.type }),
+    ...(tx.type === 4 && { delegation: true }),
   };
 }
 
@@ -148,14 +148,14 @@ const cancelTransaction = async (
 };
 
 const speedUpTransaction = async (
-  transaction: PendingTransaction & { txType?: number },
+  transaction: PendingTransaction & { delegation?: boolean },
   selectedGasParams: TransactionGasParams | TransactionLegacyGasParams,
 ): Promise<TransactionRequest> => {
   const gasParams = await gasParamsToOverrideTransaction(
     transaction,
     selectedGasParams,
   );
-  const { data, chainId, from, to, nonce, gasLimit, value, txType } =
+  const { data, chainId, from, to, nonce, gasLimit, value, delegation } =
     transaction;
   return {
     data,
@@ -164,10 +164,9 @@ const speedUpTransaction = async (
     to,
     nonce,
     gasLimit,
-    value: value ? toHex(value) : toHex('0'),
+    value: toHex(value || '0'),
     ...gasParams,
-    // Preserve type for EIP-7702 (type 4) replacements
-    ...(txType !== undefined && { type: txType }),
+    ...(delegation && { type: 4 }),
   };
 };
 
