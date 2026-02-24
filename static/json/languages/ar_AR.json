@@ -117,7 +117,7 @@
         "block_explorer_url": "رابط مستكشف الكتل",
         "add_network": "إضافة شبكة",
         "add_rpc": "إضافة نقطة نهاية RPC",
-        "add_network_rpc": "إضافة RPC %{rpcName}",
+        "add_network_rpc": "إضافة RPC %{networkName}",
         "add_asset": "إضافة رمز مخصص",
         "network_added": "تمت إضافة الشبكة",
         "network_added_correctly": "%{networkName}",
@@ -125,10 +125,13 @@
         "remove_rpc": "إزالة RPC",
         "remove_network": "إزالة الشبكة",
         "tokens": "رموز",
+        "chain_id_mismatch": "هذا الـ RPC مخصص لمعرّف السلسلة %{chainId}، وليس لـ %{networkName}",
         "cant_connect": "لا يمكن الاتصال بهذه النقطة النهائية لـ RPC",
         "rpc_not_responding": "نقطة النهاية لـ RPC المُقدمة لا تستجيب",
         "rainbow_default_rpc": "Rainbow",
-        "rainbow_default": "رينبو"
+        "rainbow_default": "رينبو",
+        "network_already_exists": "هذا الـ RPC تابع لـ %{networkName}، والذي يوجد بالفعل ضمن شبكاتك.",
+        "add_rpc_instead": "إضافة RPC إلى شبكة موجودة"
       },
       "rpc_endpoints": "نقاط نهاية RPC",
       "watch_asset": {
@@ -1664,7 +1667,7 @@
     "unsupported_network": "شبكة غير مدعومة",
     "no_active_session": "لا يوجد جلسة نشطة",
     "already_added": "تم تفعيل RPC",
-    "set_as_active": "RPC الجديد مفعل",
+    "rpc_added": "تمت إضافة RPC جديد",
     "already_active": "الشبكة مُضافة مسبقًا"
   },
   "alert": {
