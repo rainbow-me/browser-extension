@@ -117,7 +117,7 @@
         "block_explorer_url": "区块浏览器网址",
         "add_network": "添加网络",
         "add_rpc": "添加RPC端点",
-        "add_network_rpc": "添加 %{rpcName} RPC",
+        "add_network_rpc": "添加 %{networkName} RPC",
         "add_asset": "添加自定义代币",
         "network_added": "网络已添加",
         "network_added_correctly": "%{networkName}",
@@ -125,10 +125,13 @@
         "remove_rpc": "移除RPC",
         "remove_network": "移除网络",
         "tokens": "代币",
+        "chain_id_mismatch": "此 RPC 用于链 ID %{chainId}，而非 %{networkName}",
         "cant_connect": "无法连接到此RPC端点",
         "rpc_not_responding": "提供的RPC端点无响应",
         "rainbow_default_rpc": "Rainbow",
-        "rainbow_default": "Rainbow"
+        "rainbow_default": "Rainbow",
+        "network_already_exists": "此 RPC 属于 %{networkName}，该网络已存在于你的网络列表中。",
+        "add_rpc_instead": "将 RPC 添加到现有网络"
       },
       "rpc_endpoints": "RPC端点",
       "watch_asset": {
@@ -1664,7 +1667,7 @@
     "unsupported_network": "不支持的网络",
     "no_active_session": "没有活跃的会话",
     "already_added": "RPC已激活",
-    "set_as_active": "新RPC已激活",
+    "rpc_added": "已添加新 RPC",
     "already_active": "网络已添加"
   },
   "alert": {
