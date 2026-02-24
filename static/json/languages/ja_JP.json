@@ -117,7 +117,7 @@
         "block_explorer_url": "ブロックエクスプローラーURL",
         "add_network": "ネットワーク追加",
         "add_rpc": "RPCエンドポイントを追加",
-        "add_network_rpc": "%{rpcName} RPCを追加",
+        "add_network_rpc": "%{networkName} RPCを追加",
         "add_asset": "カスタムトークンを追加",
         "network_added": "ネットワークを追加しました",
         "network_added_correctly": "%{networkName}",
@@ -125,10 +125,13 @@
         "remove_rpc": "RPCを削除",
         "remove_network": "ネットワークを削除",
         "tokens": "トークン",
+        "chain_id_mismatch": "このRPCは%{networkName}ではなく、チェーンID %{chainId} 用です",
         "cant_connect": "このRPCエンドポイントに接続できません",
         "rpc_not_responding": "指定されたRPCエンドポイントが応答していません",
         "rainbow_default_rpc": "Rainbow",
-        "rainbow_default": "Rainbow"
+        "rainbow_default": "Rainbow",
+        "network_already_exists": "このRPCは%{networkName}に属しています。%{networkName}はすでにネットワークに存在します。",
+        "add_rpc_instead": "既存のネットワークにRPCを追加"
       },
       "rpc_endpoints": "RPCエンドポイント",
       "watch_asset": {
@@ -1664,7 +1667,7 @@
     "unsupported_network": "サポートされていないネットワークです",
     "no_active_session": "アクティブなセッションがありません",
     "already_added": "RPCを有効にしました",
-    "set_as_active": "新しいRPCを有効にしました",
+    "rpc_added": "新しいRPCを追加しました",
     "already_active": "ネットワークは既に追加されています"
   },
   "alert": {
