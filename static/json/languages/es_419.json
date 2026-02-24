@@ -117,7 +117,7 @@
         "block_explorer_url": "URL del explorador de bloques",
         "add_network": "Agregar Red",
         "add_rpc": "Agregar Punto de Conexión RPC",
-        "add_network_rpc": "Agregar %{rpcName} RPC",
+        "add_network_rpc": "Agregar RPC de %{networkName}",
         "add_asset": "Agregar Token Personalizado",
         "network_added": "Red Añadida",
         "network_added_correctly": "%{networkName}",
@@ -125,10 +125,13 @@
         "remove_rpc": "Eliminar RPC",
         "remove_network": "Eliminar Red",
         "tokens": "Tokens",
+        "chain_id_mismatch": "Este RPC es para el ID de cadena %{chainId}, no para %{networkName}",
         "cant_connect": "No se puede conectar a este punto final RPC",
         "rpc_not_responding": "El punto final RPC proporcionado no responde",
         "rainbow_default_rpc": "Rainbow",
-        "rainbow_default": "Rainbow"
+        "rainbow_default": "Rainbow",
+        "network_already_exists": "Este RPC pertenece a %{networkName}, que ya existe en tus redes.",
+        "add_rpc_instead": "Agregar RPC a una red existente"
       },
       "rpc_endpoints": "Puntos de conexión RPC",
       "watch_asset": {
@@ -1664,7 +1667,7 @@
     "unsupported_network": "Red no compatible",
     "no_active_session": "No hay sesión activa",
     "already_added": "RPC activado",
-    "set_as_active": "Nuevo RPC activado",
+    "rpc_added": "Nuevo RPC agregado",
     "already_active": "Red ya agregada"
   },
   "alert": {
