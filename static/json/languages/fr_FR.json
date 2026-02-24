@@ -117,7 +117,7 @@
         "block_explorer_url": "URL de l'explorateur de blocs",
         "add_network": "Ajouter un réseau",
         "add_rpc": "Ajouter un point de terminaison RPC",
-        "add_network_rpc": "Ajouter %{rpcName} RPC",
+        "add_network_rpc": "Ajouter le RPC %{networkName}",
         "add_asset": "Ajouter un jeton personnalisé",
         "network_added": "Réseau ajouté",
         "network_added_correctly": "%{networkName}",
@@ -125,10 +125,13 @@
         "remove_rpc": "Supprimer RPC",
         "remove_network": "Retirer le réseau",
         "tokens": "Jetons",
+        "chain_id_mismatch": "Ce RPC est pour l’ID de chaîne %{chainId}, pas %{networkName}",
         "cant_connect": "Impossible de se connecter à ce point de terminaison RPC",
         "rpc_not_responding": "Le point de terminaison RPC fourni ne répond pas",
         "rainbow_default_rpc": "Rainbow",
-        "rainbow_default": "Rainbow"
+        "rainbow_default": "Rainbow",
+        "network_already_exists": "Ce RPC appartient à %{networkName}, qui existe déjà dans vos réseaux.",
+        "add_rpc_instead": "Ajouter un RPC à un réseau existant"
       },
       "rpc_endpoints": "Points de terminaison RPC",
       "watch_asset": {
@@ -1664,7 +1667,7 @@
     "unsupported_network": "Réseau non pris en charge",
     "no_active_session": "Aucune session active",
     "already_added": "RPC activé",
-    "set_as_active": "Nouveau RPC activé",
+    "rpc_added": "Nouveau RPC ajouté",
     "already_active": "Réseau déjà ajouté"
   },
   "alert": {
