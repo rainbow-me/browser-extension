@@ -52,8 +52,6 @@ export const defaultslippagInBips = (chainId: ChainId) => {
   }
 };
 
-const IS_TESTING = process.env.IS_TESTING === 'true';
-
 const DEFAULT_CONFIG = {
   // features
   send_enabled: true,
@@ -67,10 +65,8 @@ const DEFAULT_CONFIG = {
   defi_positions_enabled: false,
   degen_mode_enabled: true,
   approvals_enabled: false,
-  // Disable atomic swaps and delegation in test builds so E2E swap tests
-  // use the sequential execution path without needing delegation API access.
-  atomic_swaps_enabled: !IS_TESTING,
-  delegation_enabled: !IS_TESTING,
+  atomic_swaps_enabled: true,
+  delegation_enabled: true,
   // SWAPS
   default_slippage_bips: Object.values(
     useNetworkStore.getState().getBackendSupportedChains(true),
@@ -122,6 +118,8 @@ export function useRemoteConfig<K extends keyof RainbowConfig>(
   );
   return value;
 }
+
+const IS_TESTING = process.env.IS_TESTING === 'true';
 
 export const init = async () => {
   try {
