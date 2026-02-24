@@ -31,7 +31,8 @@ export const ROUTES = {
   SETTINGS__APPROVALS: '/settings/approvals', // Approvals
   SETTINGS__NETWORKS__RPCS: '/settings/networks/rpcs', // RPCs per network
   SETTINGS__NETWORKS__CUSTOM_NETWORKS: '/settings/networks/custom-networks', // Custom Networks List
-  SETTINGS__NETWORKS__CUSTOM_RPC: '/settings/networks/custom-chain', // Networks Custom Chain
+  SETTINGS__NETWORKS__CUSTOM_RPC: '/settings/networks/custom-chain', // Networks Custom Chain (New Network)
+  SETTINGS__NETWORKS__ADD_RPC: '/settings/networks/add-rpc', // Add RPC to existing network
   SETTINGS__NETWORKS__CUSTOM_RPC__DETAILS:
     '/settings/networks/custom-chain/details', // Networks Custom Chain details
   SETTINGS__PRIVACY: '/settings/privacy', // Privacy

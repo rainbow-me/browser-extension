@@ -117,7 +117,7 @@
         "block_explorer_url": "Block Explorer URL",
         "add_network": "Add Network",
         "add_rpc": "Add RPC Endpoint",
-        "add_network_rpc": "Add %{rpcName} RPC",
+        "add_network_rpc": "Add %{networkName} RPC",
         "add_asset": "Add Custom Token",
         "network_added": "Network Added",
         "network_added_correctly": "%{networkName}",
@@ -125,10 +125,13 @@
         "remove_rpc": "Remove RPC",
         "remove_network": "Remove Network",
         "tokens": "Tokens",
+        "chain_id_mismatch": "This RPC is for chain ID %{chainId}, not %{networkName}",
         "cant_connect": "Can't connect to this RPC endpoint",
         "rpc_not_responding": "The provided RPC endpoint is not responding",
         "rainbow_default_rpc": "Rainbow",
-        "rainbow_default": "Rainbow"
+        "rainbow_default": "Rainbow",
+        "network_already_exists": "This RPC belongs to %{networkName}, which already exists in your networks.",
+        "add_rpc_instead": "Add RPC to existing network"
       },
       "rpc_endpoints": "RPC Endpoints",
       "watch_asset": {
@@ -1664,7 +1667,7 @@
     "unsupported_network": "Unsupported network",
     "no_active_session": "No active session",
     "already_added": "RPC activated",
-    "set_as_active": "New RPC activated",
+    "rpc_added": "New RPC added",
     "already_active": "Network already added"
   },
   "alert": {
