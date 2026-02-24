@@ -117,7 +117,7 @@
         "block_explorer_url": "URL Eksplorer Blok",
         "add_network": "Tambah Jaringan",
         "add_rpc": "Tambahkan Endpoint RPC",
-        "add_network_rpc": "Tambahkan RPC %{rpcName}",
+        "add_network_rpc": "Tambahkan RPC %{networkName}",
         "add_asset": "Tambah Token Khusus",
         "network_added": "Jaringan Ditambahkan",
         "network_added_correctly": "%{networkName}",
@@ -125,10 +125,13 @@
         "remove_rpc": "Hapus RPC",
         "remove_network": "Hapus Jaringan",
         "tokens": "Tokens",
+        "chain_id_mismatch": "RPC ini untuk ID chain %{chainId}, bukan %{networkName}",
         "cant_connect": "Tidak bisa terhubung ke RPC endpoint ini",
         "rpc_not_responding": "RPC endpoint yang diberikan tidak merespon",
         "rainbow_default_rpc": "Rainbow",
-        "rainbow_default": "Rainbow"
+        "rainbow_default": "Rainbow",
+        "network_already_exists": "RPC ini milik %{networkName}, yang sudah ada di jaringan Anda.",
+        "add_rpc_instead": "Tambahkan RPC ke jaringan yang sudah ada"
       },
       "rpc_endpoints": "Endpoint RPC",
       "watch_asset": {
@@ -1664,7 +1667,7 @@
     "unsupported_network": "Jaringan tidak didukung",
     "no_active_session": "Tidak ada sesi aktif",
     "already_added": "RPC diaktifkan",
-    "set_as_active": "RPC baru diaktifkan",
+    "rpc_added": "RPC baru ditambahkan",
     "already_active": "Jaringan sudah ditambahkan"
   },
   "alert": {
