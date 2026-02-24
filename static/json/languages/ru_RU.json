@@ -117,7 +117,7 @@
         "block_explorer_url": "URL блок-эксплорера",
         "add_network": "Добавить сеть",
         "add_rpc": "Добавить RPC-точку доступа",
-        "add_network_rpc": "Добавить RPC %{rpcName}",
+        "add_network_rpc": "Добавить RPC %{networkName}",
         "add_asset": "Добавить пользовательский токен",
         "network_added": "Сеть добавлена",
         "network_added_correctly": "%{networkName}",
@@ -125,10 +125,13 @@
         "remove_rpc": "Удалить RPC",
         "remove_network": "Удалить сеть",
         "tokens": "Токены",
+        "chain_id_mismatch": "Этот RPC предназначен для chain ID %{chainId}, а не для %{networkName}",
         "cant_connect": "Не удаётся подключиться к этому RPC-эндпоинту",
         "rpc_not_responding": "Предоставленный RPC-эндпоинт не отвечает",
         "rainbow_default_rpc": "Rainbow",
-        "rainbow_default": "Rainbow"
+        "rainbow_default": "Rainbow",
+        "network_already_exists": "Этот RPC относится к %{networkName}, которая уже есть в ваших сетях.",
+        "add_rpc_instead": "Добавить RPC к существующей сети"
       },
       "rpc_endpoints": "RPC-конечные точки",
       "watch_asset": {
@@ -1664,7 +1667,7 @@
     "unsupported_network": "Неподдерживаемая сеть",
     "no_active_session": "Нет активной сессии",
     "already_added": "RPC активирован",
-    "set_as_active": "Новый RPC активирован",
+    "rpc_added": "Новый RPC добавлен",
     "already_active": "Сеть уже добавлена"
   },
   "alert": {
