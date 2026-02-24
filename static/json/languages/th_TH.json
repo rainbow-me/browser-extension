@@ -117,7 +117,7 @@
         "block_explorer_url": "URL เบราว์เซอร์บล็อก",
         "add_network": "เพิ่มเครือข่าย",
         "add_rpc": "เพิ่มจุดปลายทาง RPC",
-        "add_network_rpc": "เพิ่ม %{rpcName} RPC",
+        "add_network_rpc": "เพิ่ม %{networkName} RPC",
         "add_asset": "เพิ่มโทเค็นที่กำหนดเอง",
         "network_added": "เครือข่ายถูกเพิ่มแล้ว",
         "network_added_correctly": "%{networkName}",
@@ -125,10 +125,13 @@
         "remove_rpc": "ลบ RPC",
         "remove_network": "ลบเครือข่าย",
         "tokens": "โทเคน",
+        "chain_id_mismatch": "RPC นี้สำหรับ Chain ID %{chainId} ไม่ใช่ %{networkName}",
         "cant_connect": "ไม่สามารถเชื่อมต่อกับ RPC endpoint นี้ได้",
         "rpc_not_responding": "RPC endpoint ที่ให้มาไม่ตอบสนอง",
         "rainbow_default_rpc": "Rainbow",
-        "rainbow_default": "Rainbow"
+        "rainbow_default": "Rainbow",
+        "network_already_exists": "RPC นี้เป็นของ %{networkName} ซึ่งมีอยู่แล้วในเครือข่ายของคุณ",
+        "add_rpc_instead": "เพิ่ม RPC ไปยังเครือข่ายที่มีอยู่"
       },
       "rpc_endpoints": "จุดปลายทาง RPC",
       "watch_asset": {
@@ -1664,7 +1667,7 @@
     "unsupported_network": "ไม่รองรับเครือข่าย",
     "no_active_session": "ไม่มีเซสชั่นที่กำลังทำงาน",
     "already_added": "เปิดใช้งาน RPC แล้ว",
-    "set_as_active": "เปิดใช้งาน RPC ใหม่แล้ว",
+    "rpc_added": "เพิ่ม RPC ใหม่แล้ว",
     "already_active": "เครือข่ายถูกเพิ่มแล้ว"
   },
   "alert": {
