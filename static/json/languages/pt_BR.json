@@ -117,7 +117,7 @@
         "block_explorer_url": "URL do Explorador de Blocos",
         "add_network": "Adicionar Rede",
         "add_rpc": "Adicionar Ponto de Acesso RPC",
-        "add_network_rpc": "Adicionar RPC %{rpcName}",
+        "add_network_rpc": "Adicionar RPC %{networkName}",
         "add_asset": "Adicionar Token Personalizado",
         "network_added": "Rede Adicionada",
         "network_added_correctly": "%{networkName}",
@@ -125,10 +125,13 @@
         "remove_rpc": "Remover RPC",
         "remove_network": "Remover Rede",
         "tokens": "Tokens",
+        "chain_id_mismatch": "Este RPC é para o ID da chain %{chainId}, não para %{networkName}",
         "cant_connect": "Não é possível conectar a este ponto final RPC",
         "rpc_not_responding": "O ponto final RPC fornecido não está respondendo",
         "rainbow_default_rpc": "Arco-íris",
-        "rainbow_default": "Arco-íris"
+        "rainbow_default": "Arco-íris",
+        "network_already_exists": "Este RPC pertence a %{networkName}, que já existe nas suas redes.",
+        "add_rpc_instead": "Adicionar RPC à rede existente"
       },
       "rpc_endpoints": "Pontos finais RPC",
       "watch_asset": {
@@ -1664,7 +1667,7 @@
     "unsupported_network": "Rede não suportada",
     "no_active_session": "Nenhuma sessão ativa",
     "already_added": "RPC ativado",
-    "set_as_active": "Novo RPC ativado",
+    "rpc_added": "Novo RPC adicionado",
     "already_active": "Rede já adicionada"
   },
   "alert": {
