@@ -19,7 +19,7 @@ export const useEnhanceWithEnsNames = <
     queries: accounts.map((account) => ({
       queryFn: async () =>
         getEnsName(getViemClient({ chainId }), { address: account.address }),
-      queryKey: [{ entity: 'ensName', address: account.address, chainId }],
+      queryKey: ['ensName', account.address, chainId],
       refetchOnWindowFocus: false,
       staleTime: 20 * 1000, // 20s
     })),
